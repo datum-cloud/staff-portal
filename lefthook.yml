@@ -1,0 +1,11 @@
+pre-commit:
+  parallel: true
+  commands:
+    eslint:
+      glob: '*.{js,ts}'
+      run: bun run lint {staged_files}
+      auto_add: true
+    prettier:
+      glob: '*.{js,ts,json}'
+      run: bun run format {staged_files}
+      auto_add: true
