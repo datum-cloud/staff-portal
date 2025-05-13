@@ -11,7 +11,12 @@
     "start": "bun ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
     "i18n:extract": "lingui extract --clean",
-    "i18n:compile": "lingui compile --typescript"
+    "i18n:compile": "lingui compile --typescript",
+    "test:e2e": "start-server-and-test 'bun run dev' http://localhost:3000 'bunx cypress run'",
+    "test:e2e:prod": "start-server-and-test 'bun run start' http://localhost:3000 'bunx cypress run --quiet'",
+    "test:e2e:debug": "start-server-and-test 'bun run start' http://localhost:3000 'bunx cypress open'",
+    "test:unit:prod": "bunx cypress run --component --quiet",
+    "test:unit:debug": "bunx cypress open --component"
   },
   "dependencies": {
     "@lingui/core": "^5.3.1",
@@ -40,6 +45,7 @@
     "@typescript-eslint/eslint-plugin": "^8.32.0",
     "@typescript-eslint/parser": "^8.32.0",
     "autoprefixer": "^10.4.21",
+    "cypress": "^14.3.3",
     "eslint": "^9.26.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
@@ -50,6 +56,7 @@
     "postcss": "^8.5.3",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
+    "start-server-and-test": "^2.0.11",
     "tailwindcss": "^4.1.6",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.32.0",

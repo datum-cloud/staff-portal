@@ -12,6 +12,15 @@ import { ServerRouter } from 'react-router';
 
 export const streamTimeout = 5_000;
 
+function isBot(userAgent: string | null): boolean {
+  if (!userAgent) return false;
+
+  // Skip bot detection for Cypress tests
+  if (/Cypress|axios/.test(userAgent)) return false;
+
+  return isbot(userAgent);
+}
+
 export default function handleRequest(
   request: Request,
   responseStatusCode: number,
@@ -24,7 +33,7 @@ export default function handleRequest(
   // Ensure requests from bots and SPA Mode renders wait for all content to load before responding
   // https://react.dev/reference/react-dom/server/renderToPipeableStream#waiting-for-all-content-to-load-for-crawlers-and-static-generation
   let userAgent = request.headers.get('user-agent');
-  return (userAgent && isbot(userAgent)) || routerContext.isSpaMode
+  return isBot(userAgent) || routerContext.isSpaMode
     ? handleBotRequest(request, responseStatusCode, responseHeaders, routerContext)
     : handleBrowserRequest(request, responseStatusCode, responseHeaders, routerContext);
 }

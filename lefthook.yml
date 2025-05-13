@@ -4,10 +4,10 @@ pre-commit:
     eslint:
       glob: '*.{js,ts}'
       exclude: 'locales/*'
-      run: bun run lint {staged_files}
+      run: bunx eslint {staged_files} --fix
       auto_add: true
     prettier:
       glob: '*.{js,ts,json}'
       exclude: 'locales/*'
-      run: bun run format {staged_files}
+      run: bunx prettier --write {staged_files}
       auto_add: true
