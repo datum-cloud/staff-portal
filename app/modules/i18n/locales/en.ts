@@ -1,4 +1,1 @@
-/*eslint-disable*/
-import type { Messages } from '@lingui/core';
-
-export const messages = JSON.parse('{}') as Messages;
+/*eslint-disable*/import type{Messages}from"@lingui/core";export const messages=JSON.parse("{\"QcTGfQ\":[\"App Version:\"]}")as Messages;

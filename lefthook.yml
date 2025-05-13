@@ -3,9 +3,11 @@ pre-commit:
   commands:
     eslint:
       glob: '*.{js,ts}'
+      exclude: 'locales/*'
       run: bun run lint {staged_files}
       auto_add: true
     prettier:
       glob: '*.{js,ts,json}'
+      exclude: 'locales/*'
       run: bun run format {staged_files}
       auto_add: true
