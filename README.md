@@ -21,6 +21,7 @@ Datum Staff Portal is a modern web application built with React and TypeScript, 
 - **Type Safety**: TypeScript
 - **Build Tool**: Vite
 - **Server**: Hono
+- **Internationalization**: Lingui
 
 ## Project Structure
 
@@ -32,6 +33,8 @@ staff-portal/
 │ ├── features/ # Feature-specific code
 │ ├── hooks/ # Custom React hooks
 │ ├── layouts/ # Page layouts
+│ ├── modules/ # Third-party library integrations and configurations
+│ │ └── i18n/ # Internationalization files
 │ ├── providers/ # React context providers
 │ ├── routes/ # Application routes
 │ ├── server/ # Server-side code
@@ -94,6 +97,8 @@ bun run start
 - `bun run lint` - Run ESLint
 - `bun run format` - Format code with Prettier
 - `bun run typecheck` - Run TypeScript type checking
+- `bun run extract` - Extract messages for translation
+- `bun run compile` - Compile translation messages
 
 ## Code Quality
 

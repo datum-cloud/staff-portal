@@ -1,5 +1,4 @@
 import prettierConfig from './prettier.config.cjs';
-import eslintPluginImport from 'eslint-plugin-import';
 import eslintPluginJsxA11y from 'eslint-plugin-jsx-a11y';
 import eslintPluginPrettier from 'eslint-plugin-prettier';
 import eslintPluginReact from 'eslint-plugin-react';
@@ -30,7 +29,7 @@ export default [
       '@typescript-eslint': tseslint.plugin,
       react: eslintPluginReact,
       'react-hooks': eslintPluginReactHooks,
-      import: eslintPluginImport,
+      // import: eslintPluginImport,
       'jsx-a11y': eslintPluginJsxA11y,
       prettier: eslintPluginPrettier,
     },
@@ -40,13 +39,13 @@ export default [
       ...eslintPluginReactHooks.configs.recommended.rules,
       ...eslintPluginPrettier.configs.recommended.rules,
       'prettier/prettier': ['error', prettierConfig],
-      'import/order': [
-        'warn',
-        {
-          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-          'newlines-between': 'never',
-        },
-      ],
+      // 'import/order': [
+      //   'warn',
+      //   {
+      //     groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+      //     'newlines-between': 'never',
+      //   },
+      // ],
     },
     settings: {
       react: {

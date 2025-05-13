@@ -12,7 +12,7 @@ declare module 'react-router' {
   }
 }
 
-export const getLoadContext = createGetLoadContext((c, { mode, build }) => {
+export const getLoadContext = createGetLoadContext((_c, { mode, build }) => {
   const isProductionMode = mode === 'production';
   return {
     appVersion: isProductionMode ? build.assets.version : 'dev',

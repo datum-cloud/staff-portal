@@ -1,15 +1,17 @@
+import type { Route } from './+types/root';
+import { linguiServer, localeCookie } from '@/modules/i18n/lingui.server';
 import styles from '@/styles/root.css?url';
 import React from 'react';
-import {
-  Links,
-  LinksFunction,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from 'react-router';
+import { data, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
-export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles }];
+export const links: Route.LinksFunction = () => [{ rel: 'stylesheet', href: styles }];
+
+export async function loader({ request }: Route.LoaderArgs) {
+  const locale = await linguiServer.getLocale(request);
+  const cookie = await localeCookie.serialize(locale);
+
+  return data({ locale }, { headers: { 'Set-Cookie': cookie } });
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
