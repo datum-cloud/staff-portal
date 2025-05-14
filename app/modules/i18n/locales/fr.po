@@ -13,6 +13,14 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: app/components/welcome.tsx:14
+#: app/components/welcome.tsx:12
 msgid "App Version:"
+msgstr ""
+
+#: app/components/welcome.tsx:21
+msgid "Simplifying cloud operations"
+msgstr ""
+
+#: app/components/welcome.tsx:19
+msgid "Welcome to Datum - Staff Portal"
 msgstr ""
