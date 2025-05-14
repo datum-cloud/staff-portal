@@ -37,6 +37,9 @@ export default defineConfig({
             allow: ['..'],
           },
         },
+        optimizeDeps: {
+          include: ['react', 'react-dom', 'react/jsx-runtime'],
+        },
       },
     },
     viewportWidth: 1280,
