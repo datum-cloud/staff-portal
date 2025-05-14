@@ -1,17 +1,29 @@
-import { API_BASENAME, api } from './api';
-import { getLoadContext } from './context';
+import { API_BASENAME, api } from './routes/api';
+import { bunAdapter } from '@/server/adapter/bun';
+import { nodeAdapter } from '@/server/adapter/node';
 import { Hono } from 'hono';
-import { createHonoServer } from 'react-router-hono-server/bun';
 
-// Create a root Hono app
-const app = new Hono();
-
-// Mount the API app at /api
+// Create the Hono app
+export const app = new Hono();
 app.route(API_BASENAME, api);
 
-export default await createHonoServer({
-  // Pass the root Hono app to the server.
-  // It will be used to mount the React Router app on the `basename` defined in react-router.config.ts
-  app,
-  getLoadContext,
-});
+const isCypress = process.env.CYPRESS === 'true';
+
+// Force Node runtime for Cypress
+if (isCypress) {
+  process.env.RUNTIME = 'node';
+}
+
+export default await (async () => {
+  // Always use Node for Cypress
+  if (isCypress || process.env.RUNTIME === 'node') {
+    return await nodeAdapter(app);
+  }
+
+  // Only try Bun if we're not in Cypress and not explicitly set to Node
+  try {
+    return await bunAdapter(app);
+  } catch {
+    return await nodeAdapter(app);
+  }
+})();

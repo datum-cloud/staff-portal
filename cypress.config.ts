@@ -30,6 +30,14 @@ export default defineConfig({
     devServer: {
       framework: 'react',
       bundler: 'vite',
+      viteConfig: {
+        server: {
+          fs: {
+            strict: false,
+            allow: ['..'],
+          },
+        },
+      },
     },
     viewportWidth: 1280,
     viewportHeight: 720,

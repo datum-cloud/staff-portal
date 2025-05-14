@@ -4,8 +4,8 @@ import React from 'react';
 
 export function meta({}: Route.MetaFunction) {
   return [
-    { title: 'New React Router App' },
-    { name: 'description', content: 'Welcome to React Router!' },
+    { title: 'Datum - Staff Portal' },
+    { name: 'description', content: 'Welcome to Datum - Staff Portal' },
   ];
 }
 
