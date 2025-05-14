@@ -40,6 +40,11 @@ staff-portal/
 │ ├── server/ # Server-side code
 │ ├── styles/ # Global styles
 │ └── utils/ # Utility functions
+├── cypress/ # Cypress test files
+│ ├── e2e/ # End-to-end test files
+│ ├── fixtures/ # Test fixtures and mock data
+│ ├── support/ # Support files and custom commands
+│ └── component/ # Component test files
 ├── docs/ # Documentation
 ├── public/ # Static assets
 └── .github/ # GitHub configuration
@@ -99,6 +104,30 @@ bun run start
 - `bun run typecheck` - Run TypeScript type checking
 - `bun run extract` - Extract messages for translation
 - `bun run compile` - Compile translation messages
+- `bun run test:e2e` - Run end-to-end tests in CI mode
+- `bun run test:e2e:prod` - Run end-to-end tests against production build
+- `bun run test:e2e:debug` - Open Cypress Test Runner for E2E tests
+- `bun run test:unit:prod` - Run component tests in CI mode
+- `bun run test:unit:debug` - Open Cypress Test Runner for component tests
+
+## Testing
+
+The project uses Cypress for both end-to-end (e2e) and component testing:
+
+### Component Testing
+
+- Component tests are written using Cypress Component Testing
+- Tests are located in the `cypress/component` directory
+- Run component tests in CI mode with `bun run test:unit:prod`
+- Open Cypress Test Runner for component tests with `bun run test:unit:debug`
+
+### End-to-End Testing
+
+- E2E tests are written using Cypress
+- Tests are located in the `cypress/e2e` directory
+- Run E2E tests in CI mode with `bun run test:e2e`
+- Run E2E tests against production build with `bun run test:e2e:prod`
+- Open Cypress Test Runner for E2E tests with `bun run test:e2e:debug`
 
 ## Code Quality
 
