@@ -89,11 +89,7 @@ export class LanguageDetector {
   }
 
   private isSessionOnly(options: LanguageDetectorOption) {
-    if (
-      options.order?.length === 1 &&
-      options.order[0] === 'session' &&
-      !options.sessionStorage
-    ) {
+    if (options.order?.length === 1 && options.order[0] === 'session' && !options.sessionStorage) {
       throw new Error(
         'You need a sessionStorage if you want to only get the locale from the session'
       );
@@ -102,9 +98,7 @@ export class LanguageDetector {
 
   private isCookieOnly(options: LanguageDetectorOption) {
     if (options.order?.length === 1 && options.order[0] === 'cookie' && !options.cookie) {
-      throw new Error(
-        'You need a cookie if you want to only get the locale from the cookie'
-      );
+      throw new Error('You need a cookie if you want to only get the locale from the cookie');
     }
   }
 
@@ -158,9 +152,7 @@ export class LanguageDetector {
   private async fromSessionStorage(request: Request): Promise<string | null> {
     if (!this.options.sessionStorage) return null;
 
-    const session = await this.options.sessionStorage.getSession(
-      request.headers.get('Cookie')
-    );
+    const session = await this.options.sessionStorage.getSession(request.headers.get('Cookie'));
 
     const lng = session.get(this.options.sessionKey ?? 'lng');
 

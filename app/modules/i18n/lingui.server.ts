@@ -12,8 +12,7 @@ export const localeCookie = createCookie('lng', {
 export const linguiServer = new ReactRouterLingui({
   detection: {
     supportedLanguages: config.locales,
-    fallbackLanguage:
-      (!!config.fallbackLocales && config.fallbackLocales?.default) || 'en',
+    fallbackLanguage: (!!config.fallbackLocales && config.fallbackLocales?.default) || 'en',
     cookie: localeCookie,
   },
 });

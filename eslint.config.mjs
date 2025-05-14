@@ -1,4 +1,4 @@
-import prettierConfig from './prettier.config.cjs';
+import prettierConfig from './prettier.config.mjs';
 import eslintPluginJsxA11y from 'eslint-plugin-jsx-a11y';
 import eslintPluginPrettier from 'eslint-plugin-prettier';
 import eslintPluginReact from 'eslint-plugin-react';
