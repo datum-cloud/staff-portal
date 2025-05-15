@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: staff-portal
+    app.kubernetes.io/name: staff-portal
+    app.kubernetes.io/version: 1.0.0
+  name: staff-portal
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: frontend
+      app.kubernetes.io/instance: staff-portal
+      app.kubernetes.io/name: staff-portal
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: staff-portal
+        app.kubernetes.io/name: staff-portal
+    spec:
+      containers:
+        - name: staff-portal
+          image: ghcr.io/datum-cloud/staff-portal:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+              name: http
+              protocol: TCP
+          env:
+            - name: OTEL_LOG_LEVEL
+              value: 'info'
+            - name: OTEL_ENABLED
+              value: 'true'
+            - name: API_URL
+              value: https://api.datum.net
+            - name: APP_URL
+              value: https://cloud.datum.net
+          envFrom:
+            - secretRef:
+                name: staff-portal
+          resources:
+            # TODO: Specify resource requests
+            limits:
+              cpu: 1
+              memory: 1Gi
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 10
+            httpGet:
+              path: /_healthz
+              port: 3000
+              scheme: HTTP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 10
+            httpGet:
+              path: /_readyz
+              port: 3000
+              scheme: HTTP
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30

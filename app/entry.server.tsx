@@ -1,5 +1,6 @@
 import { loadCatalog } from '@/modules/i18n/lingui';
 import { linguiServer } from '@/modules/i18n/lingui.server';
+import { NonceProvider } from '@/providers/nonce.provider';
 import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
 import { createReadableStreamFromReadable } from '@react-router/node';
@@ -26,7 +27,7 @@ export default function handleRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   routerContext: EntryContext,
-  _loadContext: AppLoadContext
+  loadContext: AppLoadContext
   // If you have middleware enabled:
   // loadContext: unstable_RouterContextProvider
 ) {
@@ -34,21 +35,31 @@ export default function handleRequest(
   // https://react.dev/reference/react-dom/server/renderToPipeableStream#waiting-for-all-content-to-load-for-crawlers-and-static-generation
   let userAgent = request.headers.get('user-agent');
   return isBot(userAgent) || routerContext.isSpaMode
-    ? handleBotRequest(request, responseStatusCode, responseHeaders, routerContext)
-    : handleBrowserRequest(request, responseStatusCode, responseHeaders, routerContext);
+    ? handleBotRequest(request, responseStatusCode, responseHeaders, routerContext, loadContext)
+    : handleBrowserRequest(
+        request,
+        responseStatusCode,
+        responseHeaders,
+        routerContext,
+        loadContext
+      );
 }
 
 function handleBotRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  reactRouterContext: EntryContext
+  reactRouterContext: EntryContext,
+  loadContext: AppLoadContext
 ) {
   return new Promise((resolve, reject) => {
     let shellRendered = false;
     const { pipe, abort } = renderToPipeableStream(
-      <ServerRouter context={reactRouterContext} url={request.url} />,
+      <NonceProvider value={loadContext.cspNonce}>
+        <ServerRouter context={reactRouterContext} url={request.url} />
+      </NonceProvider>,
       {
+        nonce: loadContext.cspNonce,
         onAllReady() {
           shellRendered = true;
           const body = new PassThrough();
@@ -88,7 +99,8 @@ async function handleBrowserRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  reactRouterContext: EntryContext
+  reactRouterContext: EntryContext,
+  loadContext: AppLoadContext
 ) {
   const locale = await linguiServer.getLocale(request);
   await loadCatalog(locale);
@@ -96,10 +108,13 @@ async function handleBrowserRequest(
   return new Promise((resolve, reject) => {
     let shellRendered = false;
     const { pipe, abort } = renderToPipeableStream(
-      <I18nProvider i18n={i18n}>
-        <ServerRouter context={reactRouterContext} url={request.url} />
-      </I18nProvider>,
+      <NonceProvider value={loadContext.cspNonce}>
+        <I18nProvider i18n={i18n}>
+          <ServerRouter context={reactRouterContext} url={request.url} />
+        </I18nProvider>
+      </NonceProvider>,
       {
+        nonce: loadContext.cspNonce,
         onShellReady() {
           shellRendered = true;
           const body = new PassThrough();
