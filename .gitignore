@@ -1,0 +1,14 @@
+node_modules
+
+/.cache
+/build
+.env
+.DS_Store
+.react-router/
+
+.cursor/
+
+cypress/screenshots
+cypress/videos
+cypress/results
+.windsurfrules
