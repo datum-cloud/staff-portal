@@ -67,8 +67,5 @@
     "vite": "^6.3.5",
     "vite-plugin-babel-macros": "^1.0.6",
     "vite-tsconfig-paths": "^5.1.4"
-  },
-  "resolutions": {
-    "@mongodb-js/zstd": "^1.2.2"
   }
 }

@@ -1,4 +1,6 @@
 import { Context } from 'hono';
+import { SecureHeadersVariables } from 'hono/secure-headers';
+import type { AppLoadContext } from 'react-router';
 
 /**
  * Declare our loaders and actions context type
@@ -28,8 +30,10 @@ type ContextOptions = {
 };
 
 // Create a function to generate the load context creator
-export const createContextGenerator = <Env extends { Variables: { secureHeadersNonce: string } }>(
-  createGetLoadContextFn: (callback: (c: Context<Env>, options: ContextOptions) => any) => any
+export const createContextGenerator = <Env extends { Variables: SecureHeadersVariables }>(
+  createGetLoadContextFn: (
+    callback: (c: Context<Env>, options: ContextOptions) => AppLoadContext
+  ) => (c: Context<Env>, options: ContextOptions) => AppLoadContext
 ) => {
   return createGetLoadContextFn((c: Context<Env>, { mode, build }) => {
     const isProductionMode = mode === 'production';
