@@ -28,9 +28,12 @@ export function ClientHintCheck({ nonce }: { nonce: string }) {
   const { revalidate } = useRevalidator();
   React.useEffect(() => subscribeToSchemeChange(() => revalidate()), [revalidate]);
 
+  // Ensure nonce is always a string to match server rendering
+  const nonceValue = nonce || '';
+
   return (
     <script
-      nonce={nonce}
+      nonce={nonceValue}
       dangerouslySetInnerHTML={{
         __html: hintsUtils.getClientHintCheckScript(),
       }}

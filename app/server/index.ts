@@ -2,7 +2,6 @@ import { API_BASENAME, api } from './routes/api';
 import { bunAdapter } from '@/server/adapter/bun';
 import { nodeAdapter } from '@/server/adapter/node';
 import { Hono } from 'hono';
-import { compress } from 'hono-compress';
 import { logger } from 'hono/logger';
 import { NONCE, secureHeaders, SecureHeadersVariables } from 'hono/secure-headers';
 
@@ -20,9 +19,6 @@ if (IS_CYPRESS) {
 export const app = new Hono<{ Variables: SecureHeadersVariables }>();
 
 app.use(logger());
-app.use(compress());
-
-// Add security headers
 app.use(
   '*',
   secureHeaders({
@@ -38,7 +34,11 @@ app.use(
       fontSrc: ["'self'"],
       frameSrc: ["'self'"],
       imgSrc: ["'self'", 'data:'],
+      // Allow all script types with nonce
       scriptSrc: ["'strict-dynamic'", "'self'", NONCE],
+      // Allow inline scripts with nonce
+      scriptSrcElem: ["'strict-dynamic'", "'self'", NONCE],
+      // Allow inline event handlers with nonce
       scriptSrcAttr: [NONCE],
       upgradeInsecureRequests: [],
     },

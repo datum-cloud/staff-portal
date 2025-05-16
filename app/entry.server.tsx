@@ -56,7 +56,7 @@ function handleBotRequest(
     let shellRendered = false;
     const { pipe, abort } = renderToPipeableStream(
       <NonceProvider value={loadContext.cspNonce}>
-        <ServerRouter context={reactRouterContext} url={request.url} />
+        <ServerRouter nonce={loadContext.cspNonce} context={reactRouterContext} url={request.url} />
       </NonceProvider>,
       {
         nonce: loadContext.cspNonce,
@@ -110,7 +110,11 @@ async function handleBrowserRequest(
     const { pipe, abort } = renderToPipeableStream(
       <NonceProvider value={loadContext.cspNonce}>
         <I18nProvider i18n={i18n}>
-          <ServerRouter context={reactRouterContext} url={request.url} />
+          <ServerRouter
+            nonce={loadContext.cspNonce}
+            context={reactRouterContext}
+            url={request.url}
+          />
         </I18nProvider>
       </NonceProvider>,
       {

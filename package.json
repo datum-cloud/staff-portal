@@ -30,7 +30,6 @@
     "accept-language-parser": "^1.5.0",
     "dotenv": "^16.5.0",
     "hono": "^4.7.9",
-    "hono-compress": "^0.7.0",
     "intl-parse-accept-language": "^1.0.0",
     "isbot": "^5.1.27",
     "react": "^19.1.0",
