@@ -1,0 +1,10 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: staff-portal
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: staff-portal
+  endpoints:
+    - port: http

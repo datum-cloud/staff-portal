@@ -1,0 +1,5 @@
+{
+  "purpose": "Designed to streamline cloud operations management",
+  "maintainers": ["@gaghan430", "@yahyafakhroji", "@mustela"],
+  "stack": ["React", "TypeScript", "TailwindCSS", "Hono", "React Router"]
+}
