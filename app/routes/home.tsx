@@ -1,6 +1,5 @@
 import type { Route } from './+types/home';
 import { Welcome } from '@/components/welcome';
-import React from 'react';
 
 export function meta({}: Route.MetaFunction) {
   return [

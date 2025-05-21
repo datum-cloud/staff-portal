@@ -1,11 +1,12 @@
 import config from '../../../lingui.config';
 import { ReactRouterLingui } from './react-router.server';
+import { env } from '@/utils/config';
 import { createCookie } from 'react-router';
 
 export const localeCookie = createCookie('lng', {
   path: '/',
   sameSite: 'lax',
-  secure: process.env.NODE_ENV === 'production',
+  secure: env.isProd,
   httpOnly: true,
 });
 
