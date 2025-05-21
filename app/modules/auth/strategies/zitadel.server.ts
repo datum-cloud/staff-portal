@@ -3,6 +3,23 @@ import { apiRequest } from '@/modules/axios';
 import { env } from '@/utils/config/env.server';
 import { AuthenticationError } from '@/utils/errors';
 import { OAuth2Strategy } from 'remix-auth-oauth2';
+import { z } from 'zod';
+
+const UserInfoSchema = z.object({
+  email: z.string().email(),
+  email_verified: z.boolean(),
+  family_name: z.string(),
+  given_name: z.string(),
+  locale: z.string(),
+  name: z.string(),
+  preferred_username: z.string(),
+  sub: z.string(),
+  updated_at: z.number(),
+  'urn:zitadel:iam:org:id': z.string(),
+  'urn:zitadel:iam:user:resourceowner:id': z.string(),
+  'urn:zitadel:iam:user:resourceowner:name': z.string(),
+  'urn:zitadel:iam:user:resourceowner:primary_domain': z.string(),
+});
 
 export const zitadelStrategy = await OAuth2Strategy.discover<ISession>(
   env.AUTH_OIDC_ISSUER,
@@ -36,14 +53,15 @@ export const zitadelStrategy = await OAuth2Strategy.discover<ISession>(
       headers: {
         Authorization: `Bearer ${tokens.accessToken()}`,
       },
-    });
-    console.log(user);
+    })
+      .output(UserInfoSchema)
+      .execute();
 
     return {
       accessToken: tokens.accessToken(),
-      idToken: tokens.idToken(),
       refreshToken: tokens.hasRefreshToken() ? tokens.refreshToken() : null,
       expiredAt: tokens.accessTokenExpiresAt(),
+      sub: user.sub,
     };
   }
 );

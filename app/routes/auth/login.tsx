@@ -11,3 +11,7 @@ export function meta({}: Route.MetaFunction) {
 export function loader({ request }: Route.LoaderArgs) {
   return authenticator.authenticate('zitadel', request);
 }
+
+export default function Login() {
+  return <div>Loading...</div>;
+}

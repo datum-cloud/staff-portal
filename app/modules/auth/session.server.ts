@@ -2,7 +2,7 @@ import { env } from '@/utils/config';
 import { createCookie, createCookieSessionStorage } from 'react-router';
 
 export interface ISession {
-  idToken: string;
+  sub: string;
   accessToken: string;
   refreshToken: string | null;
   expiredAt: Date;
