@@ -44,9 +44,6 @@ spec:
               value: https://api.datum.net
             - name: APP_URL
               value: https://admin.datum.net
-          envFrom:
-            - secretRef:
-                name: staff-portal
           resources:
             # TODO: Specify resource requests
             limits:
