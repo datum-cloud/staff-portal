@@ -50,3 +50,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return <Outlet />;
 }
+
+export function ErrorBoundary({ error }: { error: Error }) {
+  let message = "We've encountered a problem, please try again. Sorry!";
+
+  // Handle standard JavaScript errors
+  if (error instanceof Error) {
+    message = error.message;
+  }
+
+  return (
+    <div className="error-container">
+      <h1>Something went wrong</h1>
+      <p>{message}</p>
+    </div>
+  );
+}

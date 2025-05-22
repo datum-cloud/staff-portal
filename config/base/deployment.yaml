@@ -43,7 +43,7 @@ spec:
             - name: API_URL
               value: https://api.datum.net
             - name: APP_URL
-              value: https://admin.datum.net
+              value: https://staff.datum.net
           resources:
             # TODO: Specify resource requests
             limits:

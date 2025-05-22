@@ -8,12 +8,7 @@ import tseslint from 'typescript-eslint';
 export default [
   {
     files: ['**/*.ts', '**/*.tsx'],
-    ignores: [
-      '!**/.server',
-      '!**/.client',
-      'remix.init/*',
-      'public/js/elk-worker.min.js',
-    ],
+    ignores: ['!**/.server', '!**/.client', 'remix.init/*', 'public/js/elk-worker.min.js'],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
@@ -39,6 +34,7 @@ export default [
       ...eslintPluginReactHooks.configs.recommended.rules,
       ...eslintPluginPrettier.configs.recommended.rules,
       'prettier/prettier': ['error', prettierConfig],
+      'react/react-in-jsx-scope': 'off',
       // 'import/order': [
       //   'warn',
       //   {
