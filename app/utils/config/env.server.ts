@@ -1,3 +1,4 @@
+import { toBoolean } from '@/utils/helpers';
 import { z } from 'zod';
 
 const envSchema = z.object({
@@ -35,6 +36,7 @@ export const env = {
   isDev: parsedEnv.NODE_ENV === 'development',
   isProd: parsedEnv.NODE_ENV === 'production',
   isTest: parsedEnv.NODE_ENV === 'test',
-  isCypress: process.env.CYPRESS === 'true',
-  isOtelEnabled: !!(process.env.OTEL_ENABLED === 'true' && process.env.OTEL_EXPORTER_OTLP_ENDPOINT),
+  isCypress: toBoolean(process.env.CYPRESS),
+  isOtelEnabled:
+    toBoolean(process.env.OTEL_ENABLED) && process.env.OTEL_EXPORTER_OTLP_ENDPOINT !== '',
 };

@@ -8,23 +8,15 @@ import { Hono } from 'hono';
 import { logger } from 'hono/logger';
 import { NONCE, secureHeaders, SecureHeadersVariables } from 'hono/secure-headers';
 
-// Force Node runtime for Cypress
-if (env.isCypress) {
-  process.env.RUNTIME = 'node';
-}
-
 // Create the Hono app
 const app = new Hono<{ Variables: SecureHeadersVariables }>();
 
 // Prometheus metrics & OpenTelemetry
-if (env.isProd) {
+if (env.isOtelEnabled) {
   const { printMetrics, registerMetrics } = prometheus({ collectDefaultMetrics: true });
   app.use('*', registerMetrics);
   app.get('/metrics', printMetrics);
-
-  if (env.isOtelEnabled) {
-    app.use('*', otel());
-  }
+  app.use('*', otel());
 }
 
 app.use(logger());
@@ -69,6 +61,11 @@ app.get('/.well-known/appspecific/com.chrome.devtools.json', (c) => {
 });
 
 export default await (async () => {
+  // Force Node runtime for Cypress
+  if (env.isCypress) {
+    process.env.RUNTIME = 'node';
+  }
+
   // Always use Node for Cypress
   if (env.isCypress || process.env.RUNTIME === 'node') {
     return await nodeAdapter(app);
