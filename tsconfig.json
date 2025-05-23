@@ -9,6 +9,7 @@
     "cypress/**/*.ts",
     "cypress/**/*.tsx"
   ],
+  "exclude": ["node_modules", "dist", "build"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "types": ["@react-router/node", "vite/client"],
