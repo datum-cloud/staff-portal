@@ -25,7 +25,7 @@ export const zitadelStrategy = await OAuth2Strategy.discover<ISession>(
   env.AUTH_OIDC_ISSUER,
   {
     clientId: env.AUTH_OIDC_CLIENT_ID,
-    clientSecret: env.AUTH_OIDC_CLIENT_SECRET,
+    clientSecret: env.AUTH_OIDC_CLIENT_SECRET ?? null,
     redirectURI: `${env.APP_URL}/auth/callback`,
     scopes: [
       'openid',
