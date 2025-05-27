@@ -17,10 +17,11 @@ env:
   CYPRESS_BASE_URL: http://localhost:3000
   CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
   BUN_CACHE: ~/.bun/install/cache
+  BUN_VERSION: 1.2.13 # Pin to a specific version for stability
 
 jobs:
-  install:
-    name: Install Dependencies
+  setup:
+    name: Setup Environment
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,7 +30,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          bun-version: ${{ env.BUN_VERSION }}
 
       - name: Cache Dependencies
         id: cache-deps
@@ -38,15 +39,26 @@ jobs:
           path: |
             ${{ env.BUN_CACHE }}
             **/node_modules
-          key: ${{ runner.os }}-deps-${{ hashFiles('**/bun.lockb', '**/package.json') }}
+          key: ${{ runner.os }}-deps-v1-${{ hashFiles('**/bun.lockb', '**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-deps-v1-
 
-      - name: Install
+      - name: Install Dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: bun install --frozen-lockfile
 
-  lint:
-    needs: install
-    name: Lint & Format
+      - name: Cache Build
+        id: cache-build
+        uses: actions/cache@v4
+        with:
+          path: build
+          key: build-v1-${{ github.sha }}
+          restore-keys: |
+            build-v1-
+
+  code-quality:
+    needs: setup
+    name: Code Quality Checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -54,6 +66,8 @@ jobs:
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
 
       - name: Restore Cache
         uses: actions/cache@v4
@@ -61,39 +75,23 @@ jobs:
           path: |
             ${{ env.BUN_CACHE }}
             **/node_modules
-          key: ${{ runner.os }}-deps-${{ hashFiles('**/bun.lockb', '**/package.json') }}
+          key: ${{ runner.os }}-deps-v1-${{ hashFiles('**/bun.lockb', '**/package.json') }}
 
-      - name: Run Lint & Format
-        run: |
-          echo "Running lint check..."
-          bun run lint
-          echo "Running format check..."
-          bun run format
+      - name: Install Dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: bun install --frozen-lockfile
 
-  typecheck:
-    needs: install
-    name: Type Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Run Lint
+        run: bun run lint
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-
-      - name: Restore Cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ${{ env.BUN_CACHE }}
-            **/node_modules
-          key: ${{ runner.os }}-deps-${{ hashFiles('**/bun.lockb', '**/package.json') }}
+      - name: Run Format Check
+        run: bun run format:check
 
       - name: Run Typecheck
         run: bun run typecheck
 
   build:
-    needs: [lint, typecheck]
+    needs: code-quality
     name: Build
     runs-on: ubuntu-latest
     if: ${{ !failure() && !cancelled() }}
@@ -103,6 +101,8 @@ jobs:
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
 
       - name: Restore Cache
         uses: actions/cache@v4
@@ -110,7 +110,11 @@ jobs:
           path: |
             ${{ env.BUN_CACHE }}
             **/node_modules
-          key: ${{ runner.os }}-deps-${{ hashFiles('**/bun.lockb', '**/package.json') }}
+          key: ${{ runner.os }}-deps-v1-${{ hashFiles('**/bun.lockb', '**/package.json') }}
+
+      - name: Install Dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: bun install --frozen-lockfile
 
       - name: Build
         run: bun run build
@@ -119,9 +123,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: build
-          key: build-${{ github.sha }}
+          key: build-v1-${{ github.sha }}
 
-  tests:
+  test:
     needs: build
     name: Tests
     runs-on: ubuntu-latest
@@ -133,6 +137,8 @@ jobs:
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
 
       - name: Restore Dependencies Cache
         uses: actions/cache@v4
@@ -140,13 +146,17 @@ jobs:
           path: |
             ${{ env.BUN_CACHE }}
             **/node_modules
-          key: ${{ runner.os }}-deps-${{ hashFiles('**/bun.lockb', '**/package.json') }}
+          key: ${{ runner.os }}-deps-v1-${{ hashFiles('**/bun.lockb', '**/package.json') }}
 
       - name: Restore Build Cache
         uses: actions/cache@v4
         with:
           path: build
-          key: build-${{ github.sha }}
+          key: build-v1-${{ github.sha }}
+
+      - name: Install Dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: bun install --frozen-lockfile
 
       - name: Setup Cypress
         run: |
@@ -168,11 +178,11 @@ jobs:
       #   id: e2e
       #   run: bun run test:e2e:prod
 
-      - name: Upload Artifacts
+      - name: Upload Test Artifacts
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: cypress-artifacts-${{ github.run_id }}
+          name: test-artifacts-${{ github.run_id }}
           path: |
             cypress/videos
             cypress/screenshots
@@ -181,9 +191,9 @@ jobs:
           compression-level: 9
           if-no-files-found: warn
 
-  status-check:
-    needs: [install, lint, typecheck, build, tests]
-    name: Final Status Check
+  status:
+    needs: [setup, code-quality, build, test]
+    name: Final Status
     runs-on: ubuntu-latest
     if: always()
     steps:

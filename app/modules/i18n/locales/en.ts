@@ -1,1 +1,1 @@
-/*eslint-disable*/import type{Messages}from"@lingui/core";export const messages=JSON.parse("{\"QcTGfQ\":[\"App Version:\"],\"bdkkEh\":[\"Simplifying cloud operations\"],\"mL+CII\":[\"Welcome to Datum - Staff Portal\"]}")as Messages;
+/*eslint-disable*/import type{Messages}from"@lingui/core";export const messages=JSON.parse("{\"QcTGfQ\":[\"App Version:\"],\"nOhz3x\":[\"Logout\"],\"bdkkEh\":[\"Simplifying cloud operations\"],\"mL+CII\":[\"Welcome to Datum - Staff Portal\"]}")as Messages;
