@@ -1,6 +1,6 @@
-import { ISession } from '../session.server';
 import { apiRequest } from '@/modules/axios';
 import { env } from '@/utils/config/env.server';
+import { tokenCookie } from '@/utils/cookies';
 import { AuthenticationError } from '@/utils/errors';
 import { OAuth2Strategy } from 'remix-auth-oauth2';
 import { z } from 'zod';
@@ -21,7 +21,37 @@ const UserInfoSchema = z.object({
   'urn:zitadel:iam:user:resourceowner:primary_domain': z.string(),
 });
 
-export const zitadelStrategy = await OAuth2Strategy.discover<ISession>(
+export interface IZitadelResponse {
+  sub: string;
+  idToken: string;
+  accessToken: string;
+  refreshToken: string | null;
+  expiredAt: Date;
+}
+
+class ZitadelStrategy extends OAuth2Strategy<IZitadelResponse> {
+  async logout(request: Request) {
+    const { data } = await tokenCookie.get(request);
+    if (!data?.idToken) {
+      throw new AuthenticationError('No id_token in request');
+    }
+
+    const body = new URLSearchParams();
+    body.append('id_token_hint', data.idToken);
+
+    await apiRequest({
+      method: 'POST',
+      url: '/oidc/v1/end_session',
+      baseURL: env.AUTH_OIDC_ISSUER,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      data: body,
+    }).execute();
+  }
+}
+
+export const zitadelStrategy = await ZitadelStrategy.discover<IZitadelResponse>(
   env.AUTH_OIDC_ISSUER,
   {
     clientId: env.AUTH_OIDC_CLIENT_ID,
@@ -37,7 +67,7 @@ export const zitadelStrategy = await OAuth2Strategy.discover<ISession>(
       'urn:zitadel:iam:org:id:320164429750667059',
     ],
   },
-  async ({ tokens }): Promise<ISession> => {
+  async ({ tokens }): Promise<IZitadelResponse> => {
     if (!tokens.idToken()) {
       throw new AuthenticationError('No id_token in response');
     }
@@ -58,6 +88,7 @@ export const zitadelStrategy = await OAuth2Strategy.discover<ISession>(
       .execute();
 
     return {
+      idToken: tokens.idToken(),
       accessToken: tokens.accessToken(),
       refreshToken: tokens.hasRefreshToken() ? tokens.refreshToken() : null,
       expiredAt: tokens.accessTokenExpiresAt(),

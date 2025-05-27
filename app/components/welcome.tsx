@@ -1,8 +1,9 @@
 import { useLingui } from '@lingui/react/macro';
-import React from 'react';
+import { useNavigate } from 'react-router';
 
 export function Welcome({ message }: { message: string }) {
   const { t } = useLingui();
+  const navigate = useNavigate();
 
   return (
     <main className="flex h-screen items-center justify-center">
@@ -19,6 +20,13 @@ export function Welcome({ message }: { message: string }) {
               {t`Welcome to Datum - Staff Portal`}
             </h1>
             <p className="text-gray-600 dark:text-gray-400">{t`Simplifying cloud operations`}</p>
+            <button
+              className="mt-4 cursor-pointer rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+              onClick={() => {
+                navigate('/logout');
+              }}>
+              {t`Logout`}
+            </button>
           </div>
         </header>
       </div>
