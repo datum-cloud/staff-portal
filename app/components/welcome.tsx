@@ -1,5 +1,6 @@
+import { Button } from '@/modules/shadcn/ui/button';
 import { useLingui } from '@lingui/react/macro';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 export function Welcome({ message }: { message: string }) {
   const { t } = useLingui();
@@ -20,13 +21,10 @@ export function Welcome({ message }: { message: string }) {
               {t`Welcome to Datum - Staff Portal`}
             </h1>
             <p className="text-gray-600 dark:text-gray-400">{t`Simplifying cloud operations`}</p>
-            <button
-              className="mt-4 cursor-pointer rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-              onClick={() => {
-                navigate('/logout');
-              }}>
-              {t`Logout`}
-            </button>
+            <Button asChild>
+              <Link to="/logout">{t`Logout`}</Link>
+            </Button>
+            <Button>Test 4</Button>
           </div>
         </header>
       </div>
