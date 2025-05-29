@@ -1,12 +1,10 @@
-"use client"
-
-import { ChevronRight, type LucideIcon } from "lucide-react"
+'use client';
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/modules/shadcn/ui/collapsible"
+} from '@/modules/shadcn/ui/collapsible';
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -16,21 +14,22 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/modules/shadcn/ui/sidebar"
+} from '@/modules/shadcn/ui/sidebar';
+import { ChevronRight, type LucideIcon } from 'lucide-react';
 
 export function NavMain({
   items,
 }: {
   items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
+    title: string;
+    url: string;
+    icon?: LucideIcon;
+    isActive?: boolean;
     items?: {
-      title: string
-      url: string
-    }[]
-  }[]
+      title: string;
+      url: string;
+    }[];
+  }[];
 }) {
   return (
     <SidebarGroup>
@@ -41,8 +40,7 @@ export function NavMain({
             key={item.title}
             asChild
             defaultOpen={item.isActive}
-            className="group/collapsible"
-          >
+            className="group/collapsible">
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton tooltip={item.title}>
@@ -69,5 +67,5 @@ export function NavMain({
         ))}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

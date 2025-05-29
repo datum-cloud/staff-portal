@@ -1,12 +1,4 @@
-"use client"
-
-import {
-  Folder,
-  Forward,
-  MoreHorizontal,
-  Trash2,
-  type LucideIcon,
-} from "lucide-react"
+'use client';
 
 import {
   DropdownMenu,
@@ -14,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/modules/shadcn/ui/dropdown-menu"
+} from '@/modules/shadcn/ui/dropdown-menu';
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -23,18 +15,19 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/modules/shadcn/ui/sidebar"
+} from '@/modules/shadcn/ui/sidebar';
+import { Folder, Forward, MoreHorizontal, Trash2, type LucideIcon } from 'lucide-react';
 
 export function NavProjects({
   projects,
 }: {
   projects: {
-    name: string
-    url: string
-    icon: LucideIcon
-  }[]
+    name: string;
+    url: string;
+    icon: LucideIcon;
+  }[];
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile } = useSidebar();
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -57,9 +50,8 @@ export function NavProjects({
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 className="w-48 rounded-lg"
-                side={isMobile ? "bottom" : "right"}
-                align={isMobile ? "end" : "start"}
-              >
+                side={isMobile ? 'bottom' : 'right'}
+                align={isMobile ? 'end' : 'start'}>
                 <DropdownMenuItem>
                   <Folder className="text-muted-foreground" />
                   <span>View Project</span>
@@ -85,5 +77,5 @@ export function NavProjects({
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }
