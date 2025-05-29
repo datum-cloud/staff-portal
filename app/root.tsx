@@ -3,12 +3,12 @@ import { ClientHintCheck } from '@/components/misc/client-hints';
 import { loadCatalog, useLocale } from '@/modules/i18n/lingui';
 import { linguiServer, localeCookie } from '@/modules/i18n/lingui.server';
 import { useNonce } from '@/providers/nonce.provider';
-import styles from '@/styles/root.css?url';
+import RootCSS from '@/styles/root.css?url';
 import { i18n } from '@lingui/core';
 import React, { useEffect, useMemo } from 'react';
 import { data, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
-export const links: Route.LinksFunction = () => [{ rel: 'stylesheet', href: styles }];
+export const links: Route.LinksFunction = () => [{ rel: 'stylesheet', href: RootCSS, as: 'style' }];
 
 export async function loader({ request }: Route.LoaderArgs) {
   const locale = await linguiServer.getLocale(request);
@@ -38,7 +38,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="h-auto w-full">
         {children}
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
