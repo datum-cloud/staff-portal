@@ -1,7 +1,8 @@
+import { AuthUser } from '@/resources/schemas/auth.schema';
 import React, { createContext, useContext, useMemo, useState } from 'react';
 
 interface IContextProps {
-  user: any;
+  user: AuthUser | null;
 }
 
 const AppContext = createContext<IContextProps>({
@@ -10,7 +11,7 @@ const AppContext = createContext<IContextProps>({
 
 interface IProviderProps {
   children: React.ReactNode;
-  user: any;
+  user: AuthUser;
 }
 
 export const AppProvider: React.FC<IProviderProps> = ({ user, children }) => {

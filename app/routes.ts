@@ -23,6 +23,8 @@ export default [
       route('vendors', 'routes/relationship/vendor.tsx'),
     ]),
     route('logout', 'routes/auth/logout.tsx'),
+
+    route('demo', 'routes/demo.tsx'),
   ]),
 
   layout('layouts/public.layout.tsx', [

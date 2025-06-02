@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from '@/modules/shadcn/ui/card';
 import { ChartConfig, ChartContainer } from '@/modules/shadcn/ui/chart';
-import { Area, AreaChart, Line, LineChart, ResponsiveContainer } from 'recharts';
+import { Area, AreaChart, Line, LineChart } from 'recharts';
 
 const data = [
   {
@@ -68,28 +68,26 @@ export function CardsStats() {
           <CardDescription>+20.1% from last month</CardDescription>
         </CardHeader>
         <CardContent className="pb-0">
-          <div style={{ width: '100%', height: '80px', minHeight: '80px' }}>
-            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={80}>
-              <LineChart
-                data={data}
-                margin={{
-                  top: 5,
-                  right: 10,
-                  left: 10,
-                  bottom: 0,
-                }}>
-                <Line
-                  type="monotone"
-                  strokeWidth={2}
-                  dataKey="revenue"
-                  stroke="var(--color-revenue)"
-                  activeDot={{
-                    r: 6,
-                  }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+          <ChartContainer config={chartConfig} className="min-h-[80px] w-full">
+            <LineChart
+              data={data}
+              margin={{
+                top: 5,
+                right: 10,
+                left: 10,
+                bottom: 0,
+              }}>
+              <Line
+                type="monotone"
+                strokeWidth={2}
+                dataKey="revenue"
+                stroke="var(--color-revenue)"
+                activeDot={{
+                  r: 6,
+                }}
+              />
+            </LineChart>
+          </ChartContainer>
         </CardContent>
       </Card>
       <Card className="pb-0 lg:hidden xl:flex">
@@ -104,25 +102,23 @@ export function CardsStats() {
           </CardAction>
         </CardHeader>
         <CardContent className="mt-auto max-h-[124px] flex-1 p-0">
-          <div style={{ width: '100%', height: '124px', minHeight: '124px' }}>
-            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={124}>
-              <AreaChart
-                data={data}
-                margin={{
-                  left: 0,
-                  right: 0,
-                }}>
-                <Area
-                  dataKey="subscription"
-                  fill="var(--color-subscription)"
-                  fillOpacity={0.05}
-                  stroke="var(--color-subscription)"
-                  strokeWidth={2}
-                  type="monotone"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+          <ChartContainer config={chartConfig} className="size-full">
+            <AreaChart
+              data={data}
+              margin={{
+                left: 0,
+                right: 0,
+              }}>
+              <Area
+                dataKey="subscription"
+                fill="var(--color-subscription)"
+                fillOpacity={0.05}
+                stroke="var(--color-subscription)"
+                strokeWidth={2}
+                type="monotone"
+              />
+            </AreaChart>
+          </ChartContainer>
         </CardContent>
       </Card>
     </div>

@@ -19,14 +19,12 @@ export async function loader({ request }: Route.LoaderArgs) {
   const locale = await linguiServer.getLocale(request);
   const cookie = await localeCookie.serialize(locale);
   const { getTheme } = await themeSessionResolver(request);
-  const user = await sessionCookie.get(request);
 
-  // const user = await authUserQuery(request.headers.get('Cookie') ?? '');
+  // Get user from session
+  const session = await sessionCookie.get(request);
+  const user = await authUserQuery(session?.data?.accessToken ?? '');
 
-  return data(
-    { locale, theme: getTheme(), user: user?.data },
-    { headers: { 'Set-Cookie': cookie } }
-  );
+  return data({ locale, theme: getTheme(), user }, { headers: { 'Set-Cookie': cookie } });
 }
 
 export default function AppWithProviders() {

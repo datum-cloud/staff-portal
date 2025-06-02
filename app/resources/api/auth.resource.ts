@@ -1,12 +1,14 @@
 import { apiRequest } from '@/modules/axios';
 import { AuthUserSchema } from '@/resources/schemas/auth.schema';
+import { env } from '@/utils/config/env.server';
 
-export const authUserQuery = (cookie: string) =>
+export const authUserQuery = (token: string) =>
   apiRequest({
     method: 'GET',
-    url: `/auth/session`,
+    url: '/oidc/v1/userinfo',
+    baseURL: env.AUTH_OIDC_ISSUER,
     headers: {
-      Cookie: cookie,
+      Authorization: `Bearer ${token}`,
     },
   })
     .output(AuthUserSchema)
