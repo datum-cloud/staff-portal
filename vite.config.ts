@@ -25,12 +25,12 @@ export default defineConfig({
   },
   plugins: [
     tailwindcss(),
+    reactRouter(),
+    tsconfigPaths(),
     reactRouterHonoServer({
       runtime: 'bun',
     }),
     macrosPlugin(),
     lingui(),
-    reactRouter(),
-    tsconfigPaths(),
   ],
 });

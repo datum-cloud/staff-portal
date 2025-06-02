@@ -1,12 +1,15 @@
+import { Button } from '@/modules/shadcn/ui/button';
 import { useLingui } from '@lingui/react/macro';
 import { useNavigate } from 'react-router';
+import { Theme, useTheme } from 'remix-themes';
 
 export function Welcome({ message }: { message: string }) {
   const { t } = useLingui();
   const navigate = useNavigate();
+  const [, setTheme] = useTheme();
 
   return (
-    <main className="flex h-screen items-center justify-center">
+    <main className="flex h-screen items-center justify-center bg-amber-200">
       <div className="flex flex-col items-center gap-16">
         <header className="flex flex-col items-center gap-9">
           <h1 className="leading text-2xl font-bold text-gray-800 dark:text-gray-100">
@@ -20,13 +23,13 @@ export function Welcome({ message }: { message: string }) {
               {t`Welcome to Datum - Staff Portal`}
             </h1>
             <p className="text-gray-600 dark:text-gray-400">{t`Simplifying cloud operations`}</p>
-            <button
-              className="mt-4 cursor-pointer rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-              onClick={() => {
-                navigate('/logout');
-              }}>
-              {t`Logout`}
-            </button>
+            <Button onClick={() => navigate('/logout')}>{t`Logout`}</Button>
+            <Button onClick={() => setTheme(Theme.LIGHT)}>Light</Button>
+            <Button onClick={() => setTheme(Theme.DARK)}>Dark</Button>
+          </div>
+
+          <div style={{ '--sidebar-test': '100px' } as React.CSSProperties}>
+            <div className="w-[var(--sidebar-test)] bg-amber-300">tet2</div>
           </div>
         </header>
       </div>

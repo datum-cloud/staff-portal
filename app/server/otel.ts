@@ -1,4 +1,4 @@
-import { env } from '@/utils/config';
+import { env } from '@/utils/config/env.server';
 import { credentials } from '@grpc/grpc-js';
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';

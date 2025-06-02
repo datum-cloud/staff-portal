@@ -1,4 +1,4 @@
-import { env } from '@/utils/config';
+import { env } from '@/utils/config/env.server';
 
 // Initialize OpenTelemetry before importing the main application
 if (env.isOtelEnabled) {
