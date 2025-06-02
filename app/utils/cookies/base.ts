@@ -1,4 +1,4 @@
-import { env } from '@/utils/config';
+import { env } from '@/utils/config/env.server';
 import { createCookie, createCookieSessionStorage } from 'react-router';
 
 export interface IBaseCookieData {}

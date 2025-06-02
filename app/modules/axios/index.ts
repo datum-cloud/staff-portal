@@ -1,5 +1,5 @@
 import { AxiosCurlLibrary } from './axios-curl';
-import { env } from '@/utils/config';
+import { env } from '@/utils/config/env.server';
 import Axios, {
   AxiosError,
   AxiosRequestConfig,

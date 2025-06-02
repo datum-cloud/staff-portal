@@ -1,7 +1,7 @@
 import { API_BASENAME, api } from './routes/api';
 import { bunAdapter } from '@/server/adapter/bun';
 import { nodeAdapter } from '@/server/adapter/node';
-import { env } from '@/utils/config';
+import { env } from '@/utils/config/env.server';
 import { otel } from '@hono/otel';
 import { prometheus } from '@hono/prometheus';
 import { Hono } from 'hono';

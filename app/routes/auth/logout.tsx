@@ -13,6 +13,8 @@ export function meta({}: Route.MetaFunction) {
 
 export async function loader({ request }: Route.LoaderArgs) {
   await authenticator.logout('zitadel', request);
+
+  // clear cookies
   const token = await tokenCookie.destroy(request);
   const session = await sessionCookie.destroy(request);
 
