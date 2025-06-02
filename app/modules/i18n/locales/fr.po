@@ -13,18 +13,76 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: app/components/welcome.tsx:13
+#: app/components/app-sidebar/nav-user.tsx:80
+msgid "Account"
+msgstr ""
+
+#: app/components/welcome.tsx:16
 msgid "App Version:"
 msgstr ""
 
-#: app/components/welcome.tsx:28
+#: app/components/app-sidebar/index.tsx:79
+msgid "Contacts"
+msgstr ""
+
+#: app/components/app-sidebar/index.tsx:66
+msgid "Customers"
+msgstr ""
+
+#: app/layouts/private.layout.tsx:53
+#: app/components/app-sidebar/index.tsx:60
+msgid "Dashboard"
+msgstr ""
+
+#: app/components/app-sidebar/nav-user.tsx:90
+msgid "Log out"
+msgstr ""
+
+#: app/components/welcome.tsx:26
 msgid "Logout"
 msgstr ""
 
-#: app/components/welcome.tsx:22
+#: app/components/app-sidebar/index.tsx:75
+msgid "Marketing"
+msgstr ""
+
+#: app/components/app-sidebar/index.tsx:89
+msgid "Members"
+msgstr ""
+
+#: app/components/app-sidebar/nav-user.tsx:84
+msgid "Notifications"
+msgstr ""
+
+#: app/components/app-sidebar/index.tsx:71
+#: app/components/app-sidebar/index.tsx:84
+msgid "Organizations"
+msgstr ""
+
+#: app/components/app-sidebar/index.tsx:93
+msgid "Relationships"
+msgstr ""
+
+#: app/components/app-sidebar/index.tsx:88
+msgid "Settings"
+msgstr ""
+
+#: app/components/welcome.tsx:25
 msgid "Simplifying cloud operations"
 msgstr ""
 
-#: app/components/welcome.tsx:20
+#: app/components/app-sidebar/index.tsx:80
+msgid "Subscriptions"
+msgstr ""
+
+#: app/components/app-sidebar/index.tsx:70
+msgid "Users"
+msgstr ""
+
+#: app/components/app-sidebar/index.tsx:96
+msgid "Vendors"
+msgstr ""
+
+#: app/components/welcome.tsx:23
 msgid "Welcome to Datum - Staff Portal"
 msgstr ""
