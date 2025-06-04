@@ -12,5 +12,5 @@ pre-commit:
       run: bunx prettier --write {staged_files}
       auto_add: true
     i18n:
-      run: bunx lingui extract --clean && bunx lingui compile --typescript
+      run: bunx lingui extract --clean && bunx lingui compile --typescript && git add app/modules/i18n/locales/
       auto_add: true
