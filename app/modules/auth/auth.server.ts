@@ -1,5 +1,9 @@
 import { zitadelStrategy } from './strategies/zitadel.server';
+import { sessionCookie, tokenCookie } from '@/utils/cookies';
 import { AuthenticationError } from '@/utils/errors';
+import { combineHeaders } from '@/utils/helpers';
+import { isPast } from 'date-fns';
+import { redirect } from 'react-router';
 import { Authenticator } from 'remix-auth';
 
 export interface ISession {
@@ -23,6 +27,47 @@ class CustomAuthenticator extends Authenticator<ISession> {
     }
 
     throw new AuthenticationError(`Strategy ${strategy} does not support logout`);
+  }
+
+  async refresh(strategy: string, request: Request): Promise<ISession> {
+    const provider = this.get(strategy);
+    if (!provider) {
+      throw new AuthenticationError(`Strategy ${strategy} not found`);
+    }
+
+    if (typeof (provider as any).refresh === 'function') {
+      return await (provider as any).refresh(request);
+    }
+
+    throw new AuthenticationError(`Strategy ${strategy} does not support refresh token`);
+  }
+
+  async isAuthenticated(request: Request): Promise<Response | boolean> {
+    const session = await sessionCookie.get(request);
+
+    // Check if session is expired
+    if (session?.data?.expiredAt && isPast(session.data.expiredAt)) {
+      // Todo: refresh token
+
+      // Redirect to logout page
+      throw redirect('/logout', 302);
+    }
+
+    return !!session?.data;
+  }
+
+  async getSession(request: Request): Promise<(ISession & { headers: Headers }) | null> {
+    const session = await sessionCookie.get(request);
+    const idToken = await tokenCookie.get(request);
+
+    return {
+      sub: session.data?.sub ?? '',
+      idToken: idToken.data?.idToken ?? '',
+      accessToken: session.data?.accessToken ?? '',
+      refreshToken: session.data?.refreshToken ?? null,
+      expiredAt: session.data?.expiredAt ?? new Date(),
+      headers: combineHeaders(session.headers, idToken.headers),
+    };
   }
 }
 

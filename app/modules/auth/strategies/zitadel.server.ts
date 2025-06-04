@@ -1,7 +1,7 @@
 import { apiRequest } from '@/modules/axios';
 import { authUserQuery } from '@/resources/api/auth.resource';
 import { env } from '@/utils/config/env.server';
-import { tokenCookie } from '@/utils/cookies';
+import { sessionCookie, tokenCookie } from '@/utils/cookies';
 import { AuthenticationError } from '@/utils/errors';
 import { OAuth2Strategy } from 'remix-auth-oauth2';
 
@@ -32,6 +32,23 @@ class ZitadelStrategy extends OAuth2Strategy<IZitadelResponse> {
       },
       data: body,
     }).execute();
+  }
+
+  async refresh(request: Request): Promise<IZitadelResponse> {
+    const { data } = await sessionCookie.get(request);
+    if (!data?.refreshToken) {
+      throw new AuthenticationError('No refresh_token in request');
+    }
+
+    const tokens = await this.refreshToken(data.refreshToken);
+
+    return {
+      idToken: tokens.idToken(),
+      accessToken: tokens.accessToken(),
+      refreshToken: tokens.hasRefreshToken() ? tokens.refreshToken() : null,
+      expiredAt: tokens.accessTokenExpiresAt(),
+      sub: data.sub,
+    };
   }
 }
 

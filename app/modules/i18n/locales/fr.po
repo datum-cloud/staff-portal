@@ -29,7 +29,7 @@ msgstr ""
 msgid "Customers"
 msgstr ""
 
-#: app/layouts/private.layout.tsx:53
+#: app/components/app-topbar/index.tsx:33
 #: app/components/app-sidebar/index.tsx:60
 msgid "Dashboard"
 msgstr ""

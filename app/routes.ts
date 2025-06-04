@@ -22,7 +22,6 @@ export default [
       index('routes/relationship/index.tsx'),
       route('vendors', 'routes/relationship/vendor.tsx'),
     ]),
-    route('logout', 'routes/auth/logout.tsx'),
 
     route('demo', 'routes/demo.tsx'),
   ]),
@@ -31,6 +30,8 @@ export default [
     route('login', 'routes/auth/login.tsx'),
     route('auth/callback', 'routes/auth/callback.tsx'),
   ]),
+
+  route('logout', 'routes/auth/logout.tsx'),
 
   ...prefix('action', [route('set-theme', 'routes/action/set-theme.tsx')]),
 ] satisfies RouteConfig;

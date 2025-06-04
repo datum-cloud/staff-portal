@@ -11,3 +11,6 @@ pre-commit:
       exclude: 'locales/*'
       run: bunx prettier --write {staged_files}
       auto_add: true
+    i18n:
+      run: bunx lingui extract --clean && bunx lingui compile --typescript
+      auto_add: true
