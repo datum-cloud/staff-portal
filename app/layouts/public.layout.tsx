@@ -1,11 +1,12 @@
 import type { Route } from './+types/public.layout';
-import { sessionCookie } from '@/utils/cookies';
+import { authenticator } from '@/modules/auth/auth.server';
 import { Outlet, redirect } from 'react-router';
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const session = await sessionCookie.get(request);
-  if (session?.data) {
-    return redirect('/', { headers: session.headers });
+  const isAuthenticated = await authenticator.isAuthenticated(request);
+  if (isAuthenticated) {
+    const session = await authenticator.getSession(request);
+    return redirect('/', { headers: session?.headers });
   }
 
   return null;

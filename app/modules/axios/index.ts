@@ -68,7 +68,11 @@ const onResponse = (response: AxiosResponse): AxiosResponse => {
 const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   // console.error(`[response error] [${JSON.stringify(error)}]`);
 
-  return Promise.reject(error);
+  if (env.isDebug) {
+    return Promise.reject(error);
+  }
+
+  return Promise.reject(error.message);
 };
 
 http.interceptors.request.use(onRequest, onRequestError);
