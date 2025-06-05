@@ -31,7 +31,7 @@ app.use(
     contentSecurityPolicy: {
       reportTo: env.isDev ? '/' : undefined,
       defaultSrc: ["'self'"],
-      connectSrc: ["'self'", ...(env.isDev ? ['ws:'] : []), 'https://api.staging.env.datum.net'],
+      connectSrc: ["'self'", ...(env.isDev ? ['ws:'] : []), env.API_URL],
       fontSrc: ["'self'"],
       frameSrc: ["'self'"],
       imgSrc: ["'self'", 'data:'],
