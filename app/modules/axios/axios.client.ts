@@ -1,5 +1,3 @@
-import { AxiosCurlLibrary } from './axios-curl';
-import { env } from '@/utils/config/env.server';
 import Axios, {
   AxiosError,
   AxiosRequestConfig,
@@ -8,9 +6,9 @@ import Axios, {
 } from 'axios';
 import { z } from 'zod';
 
-export const http = Axios.create({
+export const httpClient = Axios.create({
   timeout: 20 * 1000,
-  baseURL: env.API_URL,
+  baseURL: window.ENV?.API_URL ?? '',
 });
 
 function defaultLogCallback(curlResult: any, err: any) {
@@ -24,33 +22,6 @@ function defaultLogCallback(curlResult: any, err: any) {
 
 const onRequest = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
   // console.info(`[request] [${JSON.stringify(config)}]`);
-
-  // Only log the curl command in development mode
-  if (env.isDev) {
-    try {
-      const curl = new AxiosCurlLibrary(config);
-      (config as any).curlObject = curl;
-      (config as any).curlCommand = curl.generateCommand();
-      (config as any).clearCurl = () => {
-        delete (config as any).curlObject;
-        delete (config as any).curlCommand;
-        delete (config as any).clearCurl;
-      };
-    } catch (err) {
-      // Even if the axios middleware is stopped, no error should occur outside.
-      defaultLogCallback(null, err);
-    } finally {
-      if ((config as any).curlirize !== false) {
-        defaultLogCallback(
-          {
-            command: (config as any).curlCommand,
-            object: (config as any).curlObject,
-          },
-          null
-        );
-      }
-    }
-  }
 
   return config;
 };
@@ -68,15 +39,15 @@ const onResponse = (response: AxiosResponse): AxiosResponse => {
 const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   // console.error(`[response error] [${JSON.stringify(error)}]`);
 
-  if (env.isDebug) {
+  if (window.ENV.DEBUG) {
     return Promise.reject(error);
   }
 
   return Promise.reject(error.message);
 };
 
-http.interceptors.request.use(onRequest, onRequestError);
-http.interceptors.response.use(onResponse, onResponseError);
+httpClient.interceptors.request.use(onRequest, onRequestError);
+httpClient.interceptors.response.use(onResponse, onResponseError);
 
 interface RequestBuilder<TInput = unknown, TOutput = unknown> {
   input<T>(schema: z.ZodType<T>): RequestBuilder<T, TOutput>;
@@ -84,7 +55,7 @@ interface RequestBuilder<TInput = unknown, TOutput = unknown> {
   execute(): Promise<TOutput>;
 }
 
-export const apiRequest = (config: AxiosRequestConfig): RequestBuilder => {
+export const apiRequestClient = (config: AxiosRequestConfig): RequestBuilder => {
   let inputSchema: z.ZodType | undefined;
   let outputSchema: z.ZodType | undefined;
 
@@ -102,7 +73,7 @@ export const apiRequest = (config: AxiosRequestConfig): RequestBuilder => {
         config.data = inputSchema.parse(config.data);
       }
 
-      const response = await http(config);
+      const response = await httpClient(config);
 
       // if (outputSchema) {
       //   return outputSchema.parse(response.data);

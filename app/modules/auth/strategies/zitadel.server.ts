@@ -1,4 +1,4 @@
-import { apiRequest } from '@/modules/axios';
+import { apiRequest } from '@/modules/axios/axios.server';
 import { authUserQuery } from '@/resources/api/auth.resource';
 import { env } from '@/utils/config/env.server';
 import { sessionCookie, tokenCookie } from '@/utils/cookies';
@@ -66,6 +66,7 @@ export const zitadelStrategy = await ZitadelStrategy.discover<IZitadelResponse>(
       'address',
       'offline_access',
       'urn:zitadel:iam:org:id:320164429750667059',
+      'urn:zitadel:iam:org:project:id:318312178111218908:aud',
     ],
   },
   async ({ tokens }): Promise<IZitadelResponse> => {
