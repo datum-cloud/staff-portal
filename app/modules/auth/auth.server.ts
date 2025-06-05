@@ -3,7 +3,6 @@ import { sessionCookie, tokenCookie } from '@/utils/cookies';
 import { AuthenticationError } from '@/utils/errors';
 import { combineHeaders } from '@/utils/helpers';
 import { isPast } from 'date-fns';
-import { redirect } from 'react-router';
 import { Authenticator } from 'remix-auth';
 
 export interface ISession {
@@ -19,27 +18,29 @@ class CustomAuthenticator extends Authenticator<ISession> {
   async logout(strategy: string, request: Request) {
     const provider = this.get(strategy);
     if (!provider) {
-      throw new AuthenticationError(`Strategy ${strategy} not found`);
+      throw new AuthenticationError(`Strategy ${strategy} not found`).toResponse();
     }
 
     if (typeof (provider as any).logout === 'function') {
       return await (provider as any).logout(request);
     }
 
-    throw new AuthenticationError(`Strategy ${strategy} does not support logout`);
+    throw new AuthenticationError(`Strategy ${strategy} does not support logout`).toResponse();
   }
 
   async refresh(strategy: string, request: Request): Promise<ISession> {
     const provider = this.get(strategy);
     if (!provider) {
-      throw new AuthenticationError(`Strategy ${strategy} not found`);
+      throw new AuthenticationError(`Strategy ${strategy} not found`).toResponse();
     }
 
     if (typeof (provider as any).refresh === 'function') {
       return await (provider as any).refresh(request);
     }
 
-    throw new AuthenticationError(`Strategy ${strategy} does not support refresh token`);
+    throw new AuthenticationError(
+      `Strategy ${strategy} does not support refresh token`
+    ).toResponse();
   }
 
   async isAuthenticated(request: Request): Promise<Response | boolean> {
@@ -50,7 +51,7 @@ class CustomAuthenticator extends Authenticator<ISession> {
       // Todo: refresh token
 
       // Redirect to logout page
-      throw redirect('/logout', 302);
+      throw new AuthenticationError('Session expired').toResponse();
     }
 
     return !!session?.data;
