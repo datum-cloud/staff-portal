@@ -6,6 +6,7 @@ import { authenticator } from '@/modules/auth/auth.server';
 import { loadCatalog, useLocale } from '@/modules/i18n/lingui';
 import { linguiServer } from '@/modules/i18n/lingui.server';
 import { queryClient } from '@/modules/tanstack/query';
+import { AppProvider } from '@/providers/app.provider';
 import { AuthProvider } from '@/providers/auth.provider';
 import { useNonce } from '@/providers/nonce.provider';
 import { authUserQuery } from '@/resources/api/auth.resource';
@@ -113,7 +114,9 @@ export default function AppWithProviders() {
   return (
     <AuthProvider user={data.user ?? undefined} token={data.token ?? undefined}>
       <QueryClientProvider client={queryClient}>
-        <App />
+        <AppProvider>
+          <App />
+        </AppProvider>
       </QueryClientProvider>
     </AuthProvider>
   );

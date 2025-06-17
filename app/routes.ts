@@ -3,10 +3,10 @@ import { type RouteConfig, index, layout, prefix, route } from '@react-router/de
 export default [
   layout('layouts/private.layout.tsx', [
     index('routes/dashboard.tsx'),
-    route('customers', 'routes/customers/layout.tsx', [
-      index('routes/customers/index.tsx'),
-      route('users', 'routes/customers/user.tsx'),
-      route('organizations', 'routes/customers/organization.tsx'),
+    route('customers', 'routes/customer/layout.tsx', [
+      index('routes/customer/index.tsx'),
+      route('users', 'routes/customer/user.tsx'),
+      route('organizations', 'routes/customer/organization.tsx'),
     ]),
     route('marketing', 'routes/marketing/layout.tsx', [
       index('routes/marketing/index.tsx'),

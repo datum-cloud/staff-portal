@@ -1,5 +1,6 @@
 import type { Route } from './+types/public.layout';
 import { AppSidebar } from '@/components/app-sidebar';
+import AppToolbar from '@/components/app-toolbar';
 import AppTopbar from '@/components/app-topbar';
 import { authenticator } from '@/modules/auth/auth.server';
 import { SidebarInset, SidebarProvider } from '@/modules/shadcn/ui/sidebar';
@@ -25,6 +26,7 @@ export default function PrivateLayout() {
       <AppSidebar />
       <SidebarInset>
         <AppTopbar />
+        <AppToolbar />
         <Outlet />
       </SidebarInset>
     </SidebarProvider>

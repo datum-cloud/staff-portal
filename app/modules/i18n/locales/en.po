@@ -21,16 +21,16 @@ msgstr "Account"
 msgid "App Version:"
 msgstr "App Version:"
 
-#: app/components/app-sidebar/index.tsx:79
+#: app/components/app-sidebar/index.tsx:113
 msgid "Contacts"
 msgstr "Contacts"
 
-#: app/components/app-sidebar/index.tsx:66
+#: app/components/app-sidebar/index.tsx:100
 msgid "Customers"
 msgstr "Customers"
 
 #: app/components/app-topbar/index.tsx:33
-#: app/components/app-sidebar/index.tsx:60
+#: app/components/app-sidebar/index.tsx:94
 msgid "Dashboard"
 msgstr "Dashboard"
 
@@ -42,11 +42,11 @@ msgstr "Log out"
 msgid "Logout"
 msgstr "Logout"
 
-#: app/components/app-sidebar/index.tsx:75
+#: app/components/app-sidebar/index.tsx:109
 msgid "Marketing"
 msgstr "Marketing"
 
-#: app/components/app-sidebar/index.tsx:89
+#: app/components/app-sidebar/index.tsx:123
 msgid "Members"
 msgstr "Members"
 
@@ -54,16 +54,16 @@ msgstr "Members"
 msgid "Notifications"
 msgstr "Notifications"
 
-#: app/components/app-sidebar/index.tsx:71
-#: app/components/app-sidebar/index.tsx:84
+#: app/components/app-sidebar/index.tsx:105
+#: app/components/app-sidebar/index.tsx:118
 msgid "Organizations"
 msgstr "Organizations"
 
-#: app/components/app-sidebar/index.tsx:93
+#: app/components/app-sidebar/index.tsx:127
 msgid "Relationships"
 msgstr "Relationships"
 
-#: app/components/app-sidebar/index.tsx:88
+#: app/components/app-sidebar/index.tsx:122
 msgid "Settings"
 msgstr "Settings"
 
@@ -71,15 +71,15 @@ msgstr "Settings"
 msgid "Simplifying cloud operations"
 msgstr "Simplifying cloud operations"
 
-#: app/components/app-sidebar/index.tsx:80
+#: app/components/app-sidebar/index.tsx:114
 msgid "Subscriptions"
 msgstr "Subscriptions"
 
-#: app/components/app-sidebar/index.tsx:70
+#: app/components/app-sidebar/index.tsx:104
 msgid "Users"
 msgstr "Users"
 
-#: app/components/app-sidebar/index.tsx:96
+#: app/components/app-sidebar/index.tsx:130
 msgid "Vendors"
 msgstr "Vendors"
 
