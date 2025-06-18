@@ -17,7 +17,7 @@ const AppToolbar = () => {
   return (
     <div
       className={cn(
-        'bg-background sticky top-0 z-10 flex h-16 shrink-0 items-center justify-end gap-2 border-b p-4 ease-linear',
+        'bg-background sticky top-0 z-10 flex h-14 shrink-0 items-center justify-end gap-2 border-b px-4 ease-linear',
         scrolled && 'shadow-sm'
       )}>
       {actions}

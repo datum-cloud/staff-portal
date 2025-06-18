@@ -118,9 +118,6 @@ body {
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --sidebar-width: 16rem;
-  --sidebar-width-icon: 3rem;
-  --sidebar-width-mobile: 18rem;
 }
 
 @layer base {
