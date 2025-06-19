@@ -31,6 +31,7 @@
   --chart-3: #e1ebea;
   --chart-4: #f2e6bc;
   --chart-5: #383238;
+  --nprogress-color: var(--secondary);
 
   --sidebar-width: 14rem;
   --sidebar-width-icon: 3rem;
@@ -68,5 +69,6 @@
     --chart-3: #e1ebea;
     --chart-4: #f2e6bc;
     --chart-5: #383238;
+    --nprogress-color: var(--secondary);
   }
 }

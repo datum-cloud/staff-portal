@@ -24,6 +24,11 @@ export default [
     ]),
 
     route('demo', 'routes/demo.tsx'),
+
+    // Add this block for dynamic resource views
+    route('resources', 'routes/resource/layout.tsx', [
+      route(':group/:kind', 'routes/resource/index.tsx'),
+    ]),
   ]),
 
   layout('layouts/public.layout.tsx', [

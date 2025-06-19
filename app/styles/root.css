@@ -4,4 +4,5 @@
 @custom-variant dark (&:is(.dark *));
 
 @import '../modules/shadcn/style.css';
+@import '../modules/nprogress/style.css';
 @import './theme-alpha.css';
