@@ -99,7 +99,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader className="flex h-16 flex-col justify-center px-4 py-2">
+      <SidebarHeader className="flex h-12 flex-col justify-center px-4 py-2">
         <Link to="/" className="flex items-center gap-2">
           <LogoIcon
             width={24}

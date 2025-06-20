@@ -5,7 +5,9 @@ import { ClientHintCheck } from '@/components/misc/client-hints';
 import { authenticator } from '@/modules/auth/auth.server';
 import { loadCatalog, useLocale } from '@/modules/i18n/lingui';
 import { linguiServer } from '@/modules/i18n/lingui.server';
+import { configureProgress, startProgress, stopProgress } from '@/modules/nprogress';
 import { queryClient } from '@/modules/tanstack/query';
+import { AppProvider } from '@/providers/app.provider';
 import { AuthProvider } from '@/providers/auth.provider';
 import { useNonce } from '@/providers/nonce.provider';
 import { authUserQuery } from '@/resources/api/auth.resource';
@@ -25,6 +27,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useNavigation,
   useRouteError,
   useRouteLoaderData,
 } from 'react-router';
@@ -109,11 +112,26 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function AppWithProviders() {
   const data = useLoaderData<typeof loader>();
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    configureProgress();
+  }, []);
+
+  useEffect(() => {
+    if (navigation.state === 'loading') {
+      startProgress();
+    } else {
+      stopProgress();
+    }
+  }, [navigation.state]);
 
   return (
     <AuthProvider user={data.user ?? undefined} token={data.token ?? undefined}>
       <QueryClientProvider client={queryClient}>
-        <App />
+        <AppProvider>
+          <App />
+        </AppProvider>
       </QueryClientProvider>
     </AuthProvider>
   );
@@ -132,7 +150,7 @@ function ErrorLayout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="bg-background theme-alpha overscroll-none font-sans antialiased">
-        {children}
+        <div className="flex min-h-screen items-center justify-center">{children}</div>
 
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
