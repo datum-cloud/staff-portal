@@ -150,7 +150,7 @@ function ErrorLayout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="bg-background theme-alpha overscroll-none font-sans antialiased">
-        {children}
+        <div className="flex min-h-screen items-center justify-center">{children}</div>
 
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
