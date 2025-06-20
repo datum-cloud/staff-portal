@@ -34,5 +34,4 @@ export default [
   route('logout', 'routes/auth/logout.tsx'),
 
   ...prefix('action', [route('set-theme', 'routes/action/set-theme.tsx')]),
-  ...prefix('error', [route('session-expired', 'routes/error/session-expired.tsx')]),
 ] satisfies RouteConfig;
