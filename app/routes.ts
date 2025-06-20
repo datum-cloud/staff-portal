@@ -24,11 +24,6 @@ export default [
     ]),
 
     route('demo', 'routes/demo.tsx'),
-
-    // Add this block for dynamic resource views
-    route('resources', 'routes/resource/layout.tsx', [
-      route(':group/:kind', 'routes/resource/index.tsx'),
-    ]),
   ]),
 
   layout('layouts/public.layout.tsx', [
@@ -39,4 +34,5 @@ export default [
   route('logout', 'routes/auth/logout.tsx'),
 
   ...prefix('action', [route('set-theme', 'routes/action/set-theme.tsx')]),
+  ...prefix('error', [route('session-expired', 'routes/error/session-expired.tsx')]),
 ] satisfies RouteConfig;
