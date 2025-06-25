@@ -1,12 +1,17 @@
+import { AuthUser } from '@/resources/schemas/auth.schema';
 import React, { createContext, ReactNode, useContext, useMemo, useState } from 'react';
 
 interface IContextProps {
+  user: AuthUser | null;
+  setUser: (user: AuthUser) => void;
   actions: ReactNode[];
   addActions: (children: ReactNode) => void;
   removeActions: (children: ReactNode) => void;
 }
 
 const AppContext = createContext<IContextProps>({
+  user: null,
+  setUser: () => {},
   actions: [],
   addActions: () => {},
   removeActions: () => {},
@@ -14,9 +19,11 @@ const AppContext = createContext<IContextProps>({
 
 interface IProviderProps {
   children: ReactNode;
+  user?: AuthUser;
 }
 
-export const AppProvider: React.FC<IProviderProps> = ({ children }) => {
+export const AppProvider: React.FC<IProviderProps> = ({ children, user }) => {
+  const [userState, setUserState] = useState<AuthUser | null>(user ?? null);
   const [actions, setActions] = useState<ReactNode[]>([]);
 
   const addActions = (nodes: ReactNode) => {
@@ -29,11 +36,13 @@ export const AppProvider: React.FC<IProviderProps> = ({ children }) => {
 
   const contextPayload = useMemo(
     () => ({
+      user: userState,
+      setUser: setUserState,
       actions,
       addActions,
       removeActions,
     }),
-    [actions]
+    [actions, userState]
   );
 
   return <AppContext.Provider value={contextPayload}>{children}</AppContext.Provider>;
