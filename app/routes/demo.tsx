@@ -11,19 +11,31 @@ import { CardsReportIssue } from '@/components/demo/card-report';
 import { CardsShare } from '@/components/demo/card-share';
 import { CardsStats } from '@/components/demo/card-stats';
 import { CardsTeamMembers } from '@/components/demo/card-team';
+import { Button } from '@/modules/shadcn/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/modules/shadcn/ui/card';
 import { metaObject } from '@/utils/helpers';
+import { Theme, useTheme } from 'remix-themes';
 
 export const meta: Route.MetaFunction = () => {
   return metaObject('Demo');
 };
 
 export default function Demo() {
+  const [, setTheme] = useTheme();
+
   return (
     <div className="md:grids-col-2 grid p-4 **:data-[slot=card]:shadow-none md:gap-4 lg:grid-cols-10 xl:grid-cols-11">
       <div className="grid gap-4 lg:col-span-4 xl:col-span-6">
         <CardsStats />
         <div className="grid gap-1 sm:grid-cols-[auto_1fr] md:hidden">
           <CardsCalendar />
+
           <div className="pt-3 sm:pt-0 sm:pl-2 xl:pl-4">
             <CardsActivityGoal />
           </div>
@@ -54,6 +66,19 @@ export default function Demo() {
           </div>
           <div className="pt-3 sm:col-span-2 xl:pt-3">
             <CardsExerciseMinutes />
+          </div>
+          <div className="pt-3 sm:col-span-2 xl:pt-3">
+            <Card>
+              <CardHeader>
+                <CardTitle>Theme</CardTitle>
+                <CardDescription>Change the theme of the app.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button onClick={() => setTheme(Theme.LIGHT)}>Light</Button>
+                &nbsp;
+                <Button onClick={() => setTheme(Theme.DARK)}>Dark</Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
         <div className="hidden md:block">

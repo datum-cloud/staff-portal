@@ -72,15 +72,12 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   if (error.response?.status === 401) {
     const data = error.response?.data as { error: string; error_description: string };
     if (data.error === 'access_denied' && data.error_description === 'access token invalid') {
+      // no need to throw error AuthenticationError().toResponse()
       throw new AuthenticationError('Session expired');
     }
   }
 
-  if (env.isDebug) {
-    return Promise.reject(error);
-  }
-
-  return Promise.reject(error.message);
+  return Promise.reject(error);
 };
 
 http.interceptors.request.use(onRequest, onRequestError);

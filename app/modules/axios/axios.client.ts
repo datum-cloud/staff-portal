@@ -8,7 +8,7 @@ import { z } from 'zod';
 
 export const httpClient = Axios.create({
   timeout: 20 * 1000,
-  baseURL: window.ENV?.API_URL ?? '',
+  baseURL: '/api/internal',
 });
 
 function defaultLogCallback(curlResult: any, err: any) {
@@ -39,11 +39,14 @@ const onResponse = (response: AxiosResponse): AxiosResponse => {
 const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   // console.error(`[response error] [${JSON.stringify(error)}]`);
 
-  if (window.ENV.DEBUG) {
-    return Promise.reject(error);
+  if (error.response?.status === 401) {
+    const data = error.response?.data as { error: string; code: string };
+    if (data.code === 'AUTH_ERROR') {
+      window.location.href = '/error/session-expired';
+    }
   }
 
-  return Promise.reject(error.message);
+  return Promise.reject(error);
 };
 
 httpClient.interceptors.request.use(onRequest, onRequestError);

@@ -16,14 +16,14 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/modules/shadcn/ui/sidebar';
-import { useAuth } from '@/providers/auth.provider';
+import { useApp } from '@/providers/app.provider';
 import { useLingui } from '@lingui/react/macro';
 import { BadgeCheck, Bell, ChevronsUpDown, LogOut } from 'lucide-react';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
 export function NavUser() {
-  const { user } = useAuth();
+  const { user } = useApp();
   const { t } = useLingui();
   const { isMobile } = useSidebar();
   const navigate = useNavigate();

@@ -8,11 +8,9 @@ import { linguiServer } from '@/modules/i18n/lingui.server';
 import { configureProgress, startProgress, stopProgress } from '@/modules/nprogress';
 import { queryClient } from '@/modules/tanstack/query';
 import { AppProvider } from '@/providers/app.provider';
-import { AuthProvider } from '@/providers/auth.provider';
 import { useNonce } from '@/providers/nonce.provider';
 import { authUserQuery } from '@/resources/api/auth.resource';
 import styles from '@/styles/root.css?url';
-import { env } from '@/utils/config/env.server';
 import { localeCookie, themeSessionResolver } from '@/utils/cookies';
 import { i18n } from '@lingui/core';
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -41,11 +39,9 @@ export async function loader({ request }: Route.LoaderArgs) {
   const { getTheme } = await themeSessionResolver(request);
 
   let user = null;
-  let token = null;
   const isAuthenticated = await authenticator.isAuthenticated(request);
   if (isAuthenticated) {
     const session = await authenticator.getSession(request);
-    token = session?.accessToken;
     user = await authUserQuery(session?.accessToken ?? '');
   }
 
@@ -53,12 +49,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     {
       locale,
       user,
-      token,
       theme: getTheme(),
-      ENV: {
-        API_URL: env.API_URL,
-        DEBUG: env.isDebug,
-      },
     },
     { headers: { 'Set-Cookie': cookie } }
   );
@@ -92,9 +83,6 @@ function App() {
         <Outlet />
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
-        <script nonce={nonce} suppressHydrationWarning>
-          {`window.ENV = ${JSON.stringify(data.ENV)};`}
-        </script>
       </body>
     </html>
   );
@@ -127,13 +115,11 @@ export default function AppWithProviders() {
   }, [navigation.state]);
 
   return (
-    <AuthProvider user={data.user ?? undefined} token={data.token ?? undefined}>
+    <AppProvider user={data.user ?? undefined}>
       <QueryClientProvider client={queryClient}>
-        <AppProvider>
-          <App />
-        </AppProvider>
+        <App />
       </QueryClientProvider>
-    </AuthProvider>
+    </AppProvider>
   );
 }
 
