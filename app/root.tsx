@@ -2,6 +2,7 @@ import type { Route } from './+types/root';
 import AuthError from '@/components/error/auth';
 import GenericError from '@/components/error/generic';
 import { ClientHintCheck } from '@/components/misc/client-hints';
+import { ThemeSwitcher } from '@/components/theme-switcher';
 import { authenticator } from '@/modules/auth/auth.server';
 import { loadCatalog, useLocale } from '@/modules/i18n/lingui';
 import { linguiServer } from '@/modules/i18n/lingui.server';
@@ -83,6 +84,7 @@ function App() {
         <Outlet />
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
+        <ThemeSwitcher />
       </body>
     </html>
   );
