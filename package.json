@@ -59,7 +59,7 @@
     "hono": "^4.7.9",
     "intl-parse-accept-language": "^1.0.0",
     "isbot": "^5.1.27",
-    "lucide-react": "^0.522.0",
+    "lucide-react": "^0.525.0",
     "nprogress": "^0.2.0",
     "nuqs": "^2.4.3",
     "object-hash": "^3.0.0",
