@@ -65,8 +65,8 @@ export const zitadelStrategy = await ZitadelStrategy.discover<IZitadelResponse>(
       'phone',
       'address',
       'offline_access',
-      'urn:zitadel:iam:org:id:320164429750667059',
-      'urn:zitadel:iam:org:project:id:318312178111218908:aud',
+      // 'urn:zitadel:iam:org:id:320164429750667059',
+      // 'urn:zitadel:iam:org:project:id:318312178111218908:aud',
     ],
   },
   async ({ tokens }): Promise<IZitadelResponse> => {

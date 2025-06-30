@@ -12,6 +12,7 @@ import { AppProvider } from '@/providers/app.provider';
 import { useNonce } from '@/providers/nonce.provider';
 import { authUserQuery } from '@/resources/api/auth.resource';
 import styles from '@/styles/root.css?url';
+import { env } from '@/utils/config/env.server';
 import { localeCookie, themeSessionResolver } from '@/utils/cookies';
 import { i18n } from '@lingui/core';
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -23,6 +24,7 @@ import {
   Links,
   Meta,
   Outlet,
+  redirect,
   Scripts,
   ScrollRestoration,
   useLoaderData,
@@ -42,6 +44,11 @@ export async function loader({ request }: Route.LoaderArgs) {
   let user = null;
   const isAuthenticated = await authenticator.isAuthenticated(request);
   if (isAuthenticated) {
+    const isValid = await authenticator.isValidSession(request);
+    if (!isValid) {
+      throw redirect('/logout');
+    }
+
     const session = await authenticator.getSession(request);
     user = await authUserQuery(session?.accessToken ?? '');
   }
@@ -51,6 +58,9 @@ export async function loader({ request }: Route.LoaderArgs) {
       locale,
       user,
       theme: getTheme(),
+      ENV: {
+        DEBUG: env.isDebug,
+      },
     },
     { headers: { 'Set-Cookie': cookie } }
   );
@@ -85,6 +95,11 @@ function App() {
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
         <ThemeSwitcher />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify(data?.ENV)}`,
+          }}
+        />
       </body>
     </html>
   );

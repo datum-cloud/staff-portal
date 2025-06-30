@@ -18,8 +18,6 @@ export async function loader({ request }: Route.LoaderArgs) {
     throw new AuthenticationError('Authentication failed');
   }
 
-  console.log('credentials', credentials);
-
   const session = await sessionCookie.set(request, {
     sub: credentials.sub,
     accessToken: credentials.accessToken,
