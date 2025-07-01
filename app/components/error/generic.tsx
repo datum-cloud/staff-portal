@@ -2,10 +2,16 @@ import { LogoIcon } from '@/components/logo/logo-icon';
 import { Button } from '@/modules/shadcn/ui/button';
 import { Card, CardContent } from '@/modules/shadcn/ui/card';
 import { HomeIcon, RefreshCcwIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 
 const GenericError = ({ message }: { message: string }) => {
   const navigate = useNavigate();
+  const [isDebug, setIsDebug] = useState(false);
+
+  useEffect(() => {
+    setIsDebug(window.ENV?.DEBUG || ['localhost', '127.0.0.1'].includes(window.location.hostname));
+  }, []);
 
   return (
     <Card className="w-1/2 overflow-hidden">
@@ -14,18 +20,19 @@ const GenericError = ({ message }: { message: string }) => {
 
         <div className="flex max-w-xl flex-col gap-2">
           <p className="w-full text-center text-2xl font-bold">Whoops! Something went wrong.</p>
+          <p className="text-muted-foreground text-center text-sm">
+            Something went wrong on our end. Our team has been notified, and we&apos;re working to
+            fix it. Please try again later. If the issue persists, reach out to{' '}
+            <Link to={`mailto:support@datum.net`} className="text-primary underline">
+              support@datum.net
+            </Link>
+            .
+          </p>
 
-          {['localhost', '127.0.0.1'].includes(window.location.hostname) ? (
-            <div className="text-muted-foreground text-center text-sm">{message}</div>
-          ) : (
-            <p className="text-muted-foreground text-center text-sm">
-              Something went wrong on our end. Our team has been notified, and we&apos;re working to
-              fix it. Please try again later. If the issue persists, reach out to{' '}
-              <Link to={`mailto:support@datum.net`} className="text-primary underline">
-                support@datum.net
-              </Link>
-              .
-            </p>
+          {isDebug && (
+            <div className="text-muted-foreground rounded-r-md border-l-4 border-red-500 bg-red-50 p-4 text-center text-sm dark:bg-red-950/20">
+              <code className="font-mono text-xs">{message}</code>
+            </div>
           )}
         </div>
         <div className="flex items-center gap-2">

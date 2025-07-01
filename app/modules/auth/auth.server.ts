@@ -43,18 +43,22 @@ class CustomAuthenticator extends Authenticator<ISession> {
     ).toResponse();
   }
 
-  async isAuthenticated(request: Request): Promise<Response | boolean> {
+  async isAuthenticated(request: Request): Promise<boolean> {
+    const session = await sessionCookie.get(request);
+    return !!session?.data;
+  }
+
+  async isValidSession(request: Request): Promise<boolean> {
     const session = await sessionCookie.get(request);
 
     // Check if session is expired
     if (session?.data?.expiredAt && isPast(session.data.expiredAt)) {
       // Todo: refresh token
 
-      // Redirect to logout page
-      throw new AuthenticationError('Session expired').toResponse();
+      return false;
     }
 
-    return !!session?.data;
+    return true;
   }
 
   async getSession(request: Request): Promise<(ISession & { headers: Headers }) | null> {

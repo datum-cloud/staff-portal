@@ -72,8 +72,7 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   if (error.response?.status === 401) {
     const data = error.response?.data as { error: string; error_description: string };
     if (data.error === 'access_denied' && data.error_description === 'access token invalid') {
-      // no need to throw error AuthenticationError().toResponse()
-      throw new AuthenticationError('Session expired');
+      throw new AuthenticationError('Session expired').toResponse();
     }
   }
 

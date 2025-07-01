@@ -42,7 +42,7 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   if (error.response?.status === 401) {
     const data = error.response?.data as { error: string; code: string };
     if (data.code === 'AUTH_ERROR') {
-      window.location.href = '/error/session-expired';
+      window.location.href = '/logout';
     }
   }
 
