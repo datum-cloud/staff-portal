@@ -4,8 +4,10 @@ import AppToolbar from '@/components/app-toolbar';
 import AppTopbar from '@/components/app-topbar';
 import { authenticator } from '@/modules/auth/auth.server';
 import { SidebarInset, SidebarProvider } from '@/modules/shadcn/ui/sidebar';
+import { AppProvider } from '@/providers/app.provider';
+import { authUserQuery } from '@/resources/api/auth.resource';
 import { metaObject } from '@/utils/helpers';
-import { Outlet, redirect } from 'react-router';
+import { data, Outlet, redirect, useLoaderData } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
   return metaObject('Dashboard');
@@ -17,18 +19,30 @@ export async function loader({ request }: Route.LoaderArgs) {
     return redirect('/login');
   }
 
-  return null;
+  const isValid = await authenticator.isValidSession(request);
+  if (!isValid) {
+    return redirect('/logout');
+  }
+
+  const session = await authenticator.getSession(request);
+  const user = await authUserQuery(session?.accessToken ?? '');
+
+  return data({ user });
 }
 
 export default function PrivateLayout() {
+  const data = useLoaderData<typeof loader>();
+
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <AppTopbar />
-        <AppToolbar />
-        <Outlet />
-      </SidebarInset>
-    </SidebarProvider>
+    <AppProvider user={data.user ?? undefined}>
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <AppTopbar />
+          <AppToolbar />
+          <Outlet />
+        </SidebarInset>
+      </SidebarProvider>
+    </AppProvider>
   );
 }
