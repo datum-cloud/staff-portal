@@ -33,10 +33,6 @@
   --chart-5: #383238;
   --nprogress-color: var(--secondary);
 
-  --sidebar-width: 14rem;
-  --sidebar-width-icon: 3rem;
-  --sidebar-width-mobile: 18rem;
-
   @variant dark {
     --sidebar: #3b3150;
     --sidebar-foreground: #f5f5f7;
@@ -56,9 +52,9 @@
     --primary-foreground: #312847;
     --secondary: #f27a67;
     --secondary-foreground: #f5f5f7;
-    --muted: #443a5b;
+    --muted: #73688d;
     --muted-foreground: #bbb5c6;
-    --accent: #443a5b;
+    --accent: #73688d;
     --accent-foreground: #f5f5f7;
     --destructive: #e93f3f;
     --border: #443a5b;
