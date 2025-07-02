@@ -2,21 +2,18 @@ import type { Route } from './+types/root';
 import AuthError from '@/components/error/auth';
 import GenericError from '@/components/error/generic';
 import { ClientHintCheck } from '@/components/misc/client-hints';
-import { ThemeSwitcher } from '@/components/theme-switcher';
-import { authenticator } from '@/modules/auth/auth.server';
 import { loadCatalog, useLocale } from '@/modules/i18n/lingui';
 import { linguiServer } from '@/modules/i18n/lingui.server';
 import { configureProgress, startProgress, stopProgress } from '@/modules/nprogress';
 import { queryClient } from '@/modules/tanstack/query';
-import { AppProvider } from '@/providers/app.provider';
 import { useNonce } from '@/providers/nonce.provider';
-import { authUserQuery } from '@/resources/api/auth.resource';
 import styles from '@/styles/root.css?url';
 import { env } from '@/utils/config/env.server';
 import { localeCookie, themeSessionResolver } from '@/utils/cookies';
 import { i18n } from '@lingui/core';
 import { QueryClientProvider } from '@tanstack/react-query';
 import clsx from 'clsx';
+import { NuqsAdapter } from 'nuqs/adapters/react-router/v7';
 import { useEffect, useMemo } from 'react';
 import {
   data,
@@ -24,7 +21,6 @@ import {
   Links,
   Meta,
   Outlet,
-  redirect,
   Scripts,
   ScrollRestoration,
   useLoaderData,
@@ -41,22 +37,9 @@ export async function loader({ request }: Route.LoaderArgs) {
   const cookie = await localeCookie.serialize(locale);
   const { getTheme } = await themeSessionResolver(request);
 
-  let user = null;
-  const isAuthenticated = await authenticator.isAuthenticated(request);
-  if (isAuthenticated) {
-    const isValid = await authenticator.isValidSession(request);
-    if (!isValid) {
-      throw redirect('/logout');
-    }
-
-    const session = await authenticator.getSession(request);
-    user = await authUserQuery(session?.accessToken ?? '');
-  }
-
   return data(
     {
       locale,
-      user,
       theme: getTheme(),
       ENV: {
         DEBUG: env.isDebug,
@@ -94,7 +77,6 @@ function App() {
         <Outlet />
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
-        <ThemeSwitcher />
         <script
           dangerouslySetInnerHTML={{
             __html: `window.ENV = ${JSON.stringify(data?.ENV)}`,
@@ -116,7 +98,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function AppWithProviders() {
-  const data = useLoaderData<typeof loader>();
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -132,11 +113,11 @@ export default function AppWithProviders() {
   }, [navigation.state]);
 
   return (
-    <AppProvider user={data.user ?? undefined}>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <NuqsAdapter>
         <App />
-      </QueryClientProvider>
-    </AppProvider>
+      </NuqsAdapter>
+    </QueryClientProvider>
   );
 }
 

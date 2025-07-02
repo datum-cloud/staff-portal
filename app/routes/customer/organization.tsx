@@ -1,25 +1,18 @@
-import type { Route } from './+types/organization';
-import { DataTable } from '@/modules/shadcn/ui/data-table';
-import { useOrgQuery } from '@/resources/api/organization.resource';
+import type { Route } from './+types/user';
+import AppActionBar from '@/components/app-actiobar';
+import { DataTable } from '@/modules/data-table/components/data-table';
+import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
+import {
+  DataTableProvider,
+  useDataTableInstance,
+} from '@/modules/data-table/providers/data-table.provider';
+import { Button } from '@/modules/shadcn/ui/button';
+import { Input } from '@/modules/shadcn/ui/input';
+import { orgQuery } from '@/resources/api/organization.resource';
+import { Organization, OrganizationResponse } from '@/resources/schemas/org.schema';
 import { metaObject } from '@/utils/helpers';
 import { createColumnHelper } from '@tanstack/react-table';
-
-type Person = {
-  firstName: string;
-  lastName: string;
-  age: number;
-  visits: number;
-  status: string;
-  progress: number;
-};
-
-const columnHelper = createColumnHelper<Person>();
-const columns = [
-  columnHelper.accessor('firstName', {
-    header: 'First Name',
-    cell: (info) => info.getValue(),
-  }),
-];
+import { PlusIcon } from 'lucide-react';
 
 export const meta: Route.MetaFunction = () => {
   return metaObject('Organizations');
@@ -29,22 +22,68 @@ export const handle = {
   breadcrumb: () => <span>Organizations</span>,
 };
 
-export default function CustomerOrganization() {
-  const { data } = useOrgQuery();
+const columnHelper = createColumnHelper<Organization>();
+
+const columns = [
+  columnHelper.accessor('metadata.name', {
+    header: 'Name',
+  }),
+  columnHelper.accessor('metadata.uid', {
+    header: 'UID',
+  }),
+  columnHelper.accessor('spec.type', {
+    header: 'Type',
+  }),
+];
+
+export function OrganizationsToolbar() {
+  const { table } = useDataTableInstance();
 
   return (
-    <DataTable
+    <div className="mb-4 flex gap-2">
+      <Input
+        placeholder="Search by name/email"
+        value={table.getState().globalFilter ?? ''}
+        onChange={(e) => table.setGlobalFilter(e.target.value)}
+        className="w-64"
+      />
+    </div>
+  );
+}
+
+export function OrganizationsTable() {
+  const { table } = useDataTableInstance();
+  return <DataTable table={table} />;
+}
+
+export default function CustomerOrganization() {
+  const tableState = useDataTableQuery<OrganizationResponse>({
+    queryKeyPrefix: 'orgs',
+    fetchFn: () => orgQuery(),
+    initialPageSize: 10,
+    useSorting: true,
+    useGlobalFilter: true,
+  });
+
+  return (
+    <DataTableProvider<Organization, OrganizationResponse>
       columns={columns}
-      data={[
-        {
-          firstName: 'John',
-          lastName: 'Doe',
-          age: 25,
-          visits: 10,
-          status: 'active',
-          progress: 50,
-        },
-      ]}
-    />
+      transform={(data) => ({
+        rows: data?.data?.items,
+        pageCount: data?.data?.items?.length,
+      })}
+      {...tableState}>
+      <AppActionBar>
+        <Button>
+          <PlusIcon />
+          New
+        </Button>
+      </AppActionBar>
+
+      <div className="m-4 flex flex-col gap-2">
+        <OrganizationsToolbar />
+        <OrganizationsTable />
+      </div>
+    </DataTableProvider>
   );
 }
