@@ -1,5 +1,6 @@
 import { getCommonPinningStyles } from '../lib/data-table';
 import { useDataTableInstance } from '../providers/data-table.provider';
+import { DataTableLoading } from './data-table-loading';
 import { DataTablePagination } from './data-table-pagination';
 import { cn } from '@/modules/shadcn/lib/utils';
 import {
@@ -10,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/modules/shadcn/ui/table';
-import { type Table as TanstackTable, flexRender } from '@tanstack/react-table';
+import { flexRender } from '@tanstack/react-table';
 import type * as React from 'react';
 
 interface DataTableProps<TData> extends React.ComponentProps<'div'> {
@@ -23,7 +24,17 @@ export function DataTable<TData>({
   className,
   ...props
 }: DataTableProps<TData>) {
-  const { table } = useDataTableInstance<TData>();
+  const { table, query } = useDataTableInstance<TData>();
+
+  // Show loading state when query is loading
+  if (query.isLoading) {
+    return (
+      <DataTableLoading<TData> rows={5} actionBar={actionBar} className={className} {...props}>
+        {children}
+      </DataTableLoading>
+    );
+  }
+
   return (
     <div className={cn('flex w-full flex-col gap-2.5 overflow-auto', className)} {...props}>
       {children}
