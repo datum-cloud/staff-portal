@@ -54,16 +54,10 @@ export function UsersToolbar() {
   );
 }
 
-export function UsersTable() {
-  const { table } = useDataTableInstance();
-  return <DataTable table={table} />;
-}
-
 export default function CustomerUser() {
   const tableState = useDataTableQuery<UserResponse>({
     queryKeyPrefix: 'users',
-    fetchFn: () => userQuery(),
-    initialPageSize: 10,
+    fetchFn: userQuery,
     useSorting: true,
     useGlobalFilter: true,
   });
@@ -72,8 +66,8 @@ export default function CustomerUser() {
     <DataTableProvider<User, UserResponse>
       columns={columns}
       transform={(data) => ({
-        rows: data?.data?.items,
-        pageCount: data?.data?.items?.length,
+        rows: data?.data?.items || [],
+        cursor: data?.data?.metadata?.continue,
       })}
       {...tableState}>
       <AppActionBar>
@@ -85,7 +79,7 @@ export default function CustomerUser() {
 
       <div className="m-4 flex flex-col gap-2">
         <UsersToolbar />
-        <UsersTable />
+        <DataTable<User> />
       </div>
     </DataTableProvider>
   );

@@ -51,16 +51,10 @@ export function OrganizationsToolbar() {
   );
 }
 
-export function OrganizationsTable() {
-  const { table } = useDataTableInstance();
-  return <DataTable table={table} />;
-}
-
 export default function CustomerOrganization() {
   const tableState = useDataTableQuery<OrganizationResponse>({
     queryKeyPrefix: 'orgs',
-    fetchFn: () => orgQuery(),
-    initialPageSize: 10,
+    fetchFn: orgQuery,
     useSorting: true,
     useGlobalFilter: true,
   });
@@ -69,8 +63,8 @@ export default function CustomerOrganization() {
     <DataTableProvider<Organization, OrganizationResponse>
       columns={columns}
       transform={(data) => ({
-        rows: data?.data?.items,
-        pageCount: data?.data?.items?.length,
+        rows: data?.data?.items || [],
+        cursor: data?.data?.metadata?.continue,
       })}
       {...tableState}>
       <AppActionBar>
@@ -82,7 +76,7 @@ export default function CustomerOrganization() {
 
       <div className="m-4 flex flex-col gap-2">
         <OrganizationsToolbar />
-        <OrganizationsTable />
+        <DataTable<Organization> />
       </div>
     </DataTableProvider>
   );
