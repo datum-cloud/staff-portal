@@ -1,12 +1,8 @@
 import { apiRequestClient } from '@/modules/axios/axios.client';
+import { ListQueryParams } from '@/resources/schemas/common.schema';
 import { OrganizationResponseSchema } from '@/resources/schemas/org.schema';
 
-export interface OrgQueryParams {
-  limit?: number;
-  cursor?: string;
-}
-
-export const orgQuery = (params?: OrgQueryParams) => {
+export const orgQuery = (params?: ListQueryParams) => {
   return apiRequestClient({
     method: 'GET',
     url: '/apis/resourcemanager.miloapis.com/v1alpha1/organizations',

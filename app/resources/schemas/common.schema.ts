@@ -20,3 +20,9 @@ export const ProxyRequestSuccessSchema = createProxyResponseSchema(z.any());
 
 // Type for the example schema
 export type ProxyRequestSuccess = z.infer<typeof ProxyRequestSuccessSchema>;
+
+export const ListQueryParamsSchema = z.object({
+  limit: z.number().optional(),
+  cursor: z.string().optional(),
+});
+export type ListQueryParams = z.infer<typeof ListQueryParamsSchema>;

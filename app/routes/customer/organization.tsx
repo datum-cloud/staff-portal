@@ -39,9 +39,14 @@ const columns = [
   columnHelper.accessor('spec.type', {
     header: 'Type',
     cell: ({ getValue }) => {
+      if (!getValue()) {
+        return null;
+      }
+
       if (getValue() === 'Personal') {
         return <Badge>{getValue()}</Badge>;
       }
+
       return <Badge variant="secondary">{getValue()}</Badge>;
     },
   }),

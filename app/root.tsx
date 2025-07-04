@@ -78,6 +78,7 @@ function App() {
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
         <script
+          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: `window.ENV = ${JSON.stringify(data?.ENV)}`,
           }}

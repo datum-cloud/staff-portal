@@ -21,14 +21,18 @@ export const handle = {
 const columnHelper = createColumnHelper<User>();
 
 const columns = [
-  columnHelper.accessor('spec.givenName', {
-    header: 'Given Name',
-  }),
-  columnHelper.accessor('spec.familyName', {
-    header: 'Family Name',
-  }),
   columnHelper.accessor('metadata.uid', {
     header: 'UID',
+  }),
+  columnHelper.accessor('spec.givenName', {
+    header: 'Name',
+    cell: ({ row }) => {
+      return (
+        <span>
+          {row.original.spec.givenName} {row.original.spec.familyName}
+        </span>
+      );
+    },
   }),
   columnHelper.accessor('spec.email', {
     header: 'Email',
@@ -46,10 +50,12 @@ export default function CustomerUser() {
   return (
     <DataTableProvider<User, UserResponse>
       columns={columns}
-      transform={(data) => ({
-        rows: data?.data?.items || [],
-        cursor: data?.data?.metadata?.continue,
-      })}
+      transform={(data) => {
+        return {
+          rows: data?.data?.items || [],
+          cursor: data?.data?.metadata?.continue,
+        };
+      }}
       {...tableState}>
       <AppActionBar>
         <Button>
