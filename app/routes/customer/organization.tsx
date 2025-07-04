@@ -21,6 +21,9 @@ export const handle = {
 
 const columnHelper = createColumnHelper<Organization>();
 const columns = [
+  columnHelper.accessor('metadata.uid', {
+    header: 'UID',
+  }),
   columnHelper.accessor('metadata.annotations', {
     header: 'Name',
     cell: ({ row }) => {
@@ -32,9 +35,6 @@ const columns = [
   }),
   columnHelper.accessor('metadata.name', {
     header: 'Slug',
-  }),
-  columnHelper.accessor('metadata.uid', {
-    header: 'UID',
   }),
   columnHelper.accessor('spec.type', {
     header: 'Type',
