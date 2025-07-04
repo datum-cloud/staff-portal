@@ -3,65 +3,44 @@ import AppActionBar from '@/components/app-actiobar';
 import { DataTable } from '@/modules/data-table/components/data-table';
 import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
 import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';
-import { Badge } from '@/modules/shadcn/ui/badge';
 import { Button } from '@/modules/shadcn/ui/button';
-import { orgQuery } from '@/resources/api/organization.resource';
-import { Organization, OrganizationResponse } from '@/resources/schemas/organization.schema';
+import { projectQuery } from '@/resources/api/project.resource';
+import { Project, ProjectResponse } from '@/resources/schemas/project.schema';
 import { metaObject } from '@/utils/helpers';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusIcon } from 'lucide-react';
 
 export const meta: Route.MetaFunction = () => {
-  return metaObject('Organizations');
+  return metaObject('Projects');
 };
 
 export const handle = {
-  breadcrumb: () => <span>Organizations</span>,
+  breadcrumb: () => <span>Projects</span>,
 };
 
-const columnHelper = createColumnHelper<Organization>();
+const columnHelper = createColumnHelper<Project>();
 const columns = [
   columnHelper.accessor('metadata.uid', {
     header: 'UID',
   }),
-  columnHelper.accessor('metadata.annotations', {
-    header: 'Name',
-    cell: ({ row }) => {
-      return (
-        row.original.metadata.annotations?.['kubernetes.io/display-name'] ||
-        row.original.metadata.name
-      );
-    },
-  }),
   columnHelper.accessor('metadata.name', {
-    header: 'Slug',
+    header: 'Name',
   }),
-  columnHelper.accessor('spec.type', {
-    header: 'Type',
-    cell: ({ getValue }) => {
-      if (!getValue()) {
-        return null;
-      }
-
-      if (getValue() === 'Personal') {
-        return <Badge>{getValue()}</Badge>;
-      }
-
-      return <Badge variant="secondary">{getValue()}</Badge>;
-    },
+  columnHelper.accessor('spec.ownerRef.name', {
+    header: 'Organization',
   }),
 ];
 
-export default function CustomerOrganization() {
-  const tableState = useDataTableQuery<OrganizationResponse>({
-    queryKeyPrefix: 'orgs',
-    fetchFn: orgQuery,
+export default function CustomerProject() {
+  const tableState = useDataTableQuery<ProjectResponse>({
+    queryKeyPrefix: 'projects',
+    fetchFn: projectQuery,
     useSorting: true,
     useGlobalFilter: true,
   });
 
   return (
-    <DataTableProvider<Organization, OrganizationResponse>
+    <DataTableProvider<Project, ProjectResponse>
       columns={columns}
       transform={(data) => ({
         rows: data?.data?.items || [],
@@ -76,7 +55,7 @@ export default function CustomerOrganization() {
       </AppActionBar>
 
       <div className="m-4 flex flex-col gap-2">
-        <DataTable<Organization> />
+        <DataTable<Project> />
       </div>
     </DataTableProvider>
   );

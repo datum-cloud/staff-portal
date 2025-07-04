@@ -8,6 +8,7 @@ export default [
       index('routes/customer/index.tsx'),
       route('users', 'routes/customer/user.tsx'),
       route('organizations', 'routes/customer/organization.tsx'),
+      route('projects', 'routes/customer/project.tsx'),
     ]),
     route('marketing', 'routes/marketing/layout.tsx', [
       index('routes/marketing/index.tsx'),
