@@ -4,58 +4,48 @@ import { DataTable } from '@/modules/data-table/components/data-table';
 import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
 import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';
 import { Button } from '@/modules/shadcn/ui/button';
-import { userQuery } from '@/resources/api/user.resource';
-import { User, UserResponse } from '@/resources/schemas/user.schema';
+import { projectQuery } from '@/resources/api/project.resource';
+import { Project, ProjectResponse } from '@/resources/schemas/project.schema';
 import { metaObject } from '@/utils/helpers';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusIcon } from 'lucide-react';
 
 export const meta: Route.MetaFunction = () => {
-  return metaObject('Users');
+  return metaObject('Projects');
 };
 
 export const handle = {
-  breadcrumb: () => <span>Users</span>,
+  breadcrumb: () => <span>Projects</span>,
 };
 
-const columnHelper = createColumnHelper<User>();
-
+const columnHelper = createColumnHelper<Project>();
 const columns = [
   columnHelper.accessor('metadata.uid', {
     header: 'UID',
   }),
-  columnHelper.accessor('spec.givenName', {
+  columnHelper.accessor('metadata.name', {
     header: 'Name',
-    cell: ({ row }) => {
-      return (
-        <span>
-          {row.original.spec.givenName} {row.original.spec.familyName}
-        </span>
-      );
-    },
   }),
-  columnHelper.accessor('spec.email', {
-    header: 'Email',
+  columnHelper.accessor('spec.ownerRef.name', {
+    header: 'Organization',
   }),
 ];
 
-export default function CustomerUser() {
-  const tableState = useDataTableQuery<UserResponse>({
-    queryKeyPrefix: 'users',
-    fetchFn: userQuery,
+export default function CustomerProject() {
+  const tableState = useDataTableQuery<ProjectResponse>({
+    queryKeyPrefix: 'projects',
+    fetchFn: projectQuery,
     useSorting: true,
     useGlobalFilter: true,
   });
 
   return (
-    <DataTableProvider<User, UserResponse>
+    <DataTableProvider<Project, ProjectResponse>
       columns={columns}
-      transform={(data) => {
-        return {
-          rows: data?.data?.items || [],
-          cursor: data?.data?.metadata?.continue,
-        };
-      }}
+      transform={(data) => ({
+        rows: data?.data?.items || [],
+        cursor: data?.data?.metadata?.continue,
+      })}
       {...tableState}>
       <AppActionBar>
         <Button>
@@ -65,7 +55,7 @@ export default function CustomerUser() {
       </AppActionBar>
 
       <div className="m-4 flex flex-col gap-2">
-        <DataTable<User> />
+        <DataTable<Project> />
       </div>
     </DataTableProvider>
   );

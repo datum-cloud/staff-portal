@@ -69,6 +69,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       submenuItems: [
         { title: t`Users`, href: '/customers/users' },
         { title: t`Organizations`, href: '/customers/organizations' },
+        { title: t`Projects`, href: '/customers/projects' },
       ],
     },
     {

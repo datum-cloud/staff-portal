@@ -10,21 +10,16 @@ import { useCallback, useMemo } from 'react';
 
 // --- Types ---
 export interface FetchArgs {
-  pageIndex: number;
-  pageSize: number;
+  limit: number;
+  cursor?: string;
   sorting?: SortingState;
   globalFilter?: string;
-}
-
-export interface FetchResult<T> {
-  rows: T[];
-  pageCount: number;
 }
 
 export interface UseDataTableQueryOptions<T> {
   queryKeyPrefix: string;
   fetchFn: (args: FetchArgs) => Promise<T>;
-  initialPageSize?: number;
+  initialLimit?: number;
   useSorting?: boolean;
   useGlobalFilter?: boolean;
   enabled?: boolean;
@@ -32,15 +27,15 @@ export interface UseDataTableQueryOptions<T> {
 
 export interface UseDataTableQueryReturn<T> {
   query: ReturnType<typeof useQuery<T>>;
-  pageIndex: number;
-  pageSize: number;
+  limit: number;
+  cursor?: string;
   sorting: SortingState;
   globalFilter: string;
   columnVisibility: VisibilityState;
   columnPinning: ColumnPinningState;
   columnOrder: string[];
-  setPageIndex: (i: number) => void;
-  setPageSize: (s: number) => void;
+  setLimit: (s: number) => void;
+  setCursor: (token: string) => void;
   setSorting?: OnChangeFn<SortingState>;
   setGlobalFilter?: OnChangeFn<string>;
   setColumnVisibility: OnChangeFn<VisibilityState>;
@@ -95,17 +90,14 @@ const serializeColumnVisibility = (visibility: VisibilityState): string[] => {
 export function useDataTableQuery<T>({
   queryKeyPrefix,
   fetchFn,
-  initialPageSize = 10,
+  initialLimit = 10,
   useSorting = true,
   useGlobalFilter = true,
   enabled = true,
 }: UseDataTableQueryOptions<T>): UseDataTableQueryReturn<T> {
   // --- URL State Management ---
-  const [pageIndex, setPageIndexRaw] = useQueryState('page', parseAsInteger.withDefault(0));
-  const [pageSize, setPageSize] = useQueryState(
-    'size',
-    parseAsInteger.withDefault(initialPageSize)
-  );
+  const [limitRaw, setLimitRaw] = useQueryState('limit', parseAsInteger.withDefault(initialLimit));
+  const [cursor, setCursor] = useQueryState('cursor', parseAsString.withDefault(''));
   const [sortRaw, setSortRaw] = useQueryState(
     'sort',
     parseAsArrayOf(parseAsString).withDefault([])
@@ -130,6 +122,29 @@ export function useDataTableQuery<T>({
 
   const columnOrder = useMemo(() => [...orderColumns], [orderColumns]);
 
+  // --- Query Key Construction ---
+  const queryKey = useMemo(() => {
+    const key = [queryKeyPrefix, limitRaw];
+    if (cursor) key.push(cursor);
+    if (useSorting) key.push(sorting.map(toSortString).join(','));
+    if (useGlobalFilter) key.push(globalFilter);
+    return key;
+  }, [queryKeyPrefix, limitRaw, cursor, useSorting, sorting, useGlobalFilter, globalFilter]);
+
+  // --- Query Execution ---
+  const query = useQuery({
+    queryKey,
+    queryFn: () =>
+      fetchFn({
+        limit: limitRaw,
+        cursor: cursor || undefined,
+        sorting: useSorting ? sorting : undefined,
+        globalFilter: useGlobalFilter ? globalFilter : undefined,
+      }),
+    placeholderData: keepPreviousData,
+    enabled,
+  });
+
   // --- Memoized Setters ---
   const setSorting = useMemo(() => {
     if (!useSorting) return undefined;
@@ -137,9 +152,9 @@ export function useDataTableQuery<T>({
     return ((updater: SortingState | ((old: SortingState) => SortingState)) => {
       const next = typeof updater === 'function' ? updater(sorting) : updater;
       setSortRaw(next.map(toSortString));
-      setPageIndexRaw(0);
+      setCursor(''); // Reset cursor when sorting changes
     }) as OnChangeFn<SortingState>;
-  }, [useSorting, sorting, setSortRaw, setPageIndexRaw]);
+  }, [useSorting, sorting, setSortRaw, setCursor]);
 
   const setGlobalFilter = useMemo(() => {
     if (!useGlobalFilter) return undefined;
@@ -147,11 +162,17 @@ export function useDataTableQuery<T>({
     return ((value: string | ((old: string) => string)) => {
       const next = typeof value === 'function' ? value(globalFilter) : value;
       setGlobalFilterRaw(next);
-      setPageIndexRaw(0);
+      setCursor(''); // Reset cursor when filter changes
     }) as OnChangeFn<string>;
-  }, [useGlobalFilter, globalFilter, setGlobalFilterRaw, setPageIndexRaw]);
+  }, [useGlobalFilter, globalFilter, setGlobalFilterRaw, setCursor]);
 
-  const setPageIndex = useCallback((i: number) => setPageIndexRaw(i), [setPageIndexRaw]);
+  const setLimit = useCallback(
+    (s: number) => {
+      setLimitRaw(s);
+      setCursor(''); // Reset cursor when limit changes
+    },
+    [setLimitRaw, setCursor]
+  );
 
   const setColumnVisibility = useCallback<OnChangeFn<VisibilityState>>(
     (updater) => {
@@ -179,39 +200,17 @@ export function useDataTableQuery<T>({
     [columnOrder, setOrderColumns]
   );
 
-  // --- Query Key Construction ---
-  const queryKey = useMemo(() => {
-    const key = [queryKeyPrefix, pageIndex, pageSize];
-    if (useSorting) key.push(sorting.map(toSortString).join(','));
-    if (useGlobalFilter) key.push(globalFilter);
-    return key;
-  }, [queryKeyPrefix, pageIndex, pageSize, useSorting, sorting, useGlobalFilter, globalFilter]);
-
-  // --- Query Execution ---
-  const query = useQuery({
-    queryKey,
-    queryFn: () =>
-      fetchFn({
-        pageIndex,
-        pageSize,
-        sorting: useSorting ? sorting : undefined,
-        globalFilter: useGlobalFilter ? globalFilter : undefined,
-      }),
-    placeholderData: keepPreviousData,
-    enabled,
-  });
-
   return {
     query,
-    pageIndex,
-    pageSize,
+    limit: limitRaw,
+    cursor,
     sorting,
     globalFilter,
     columnVisibility,
     columnPinning,
     columnOrder,
-    setPageIndex,
-    setPageSize,
+    setLimit,
+    setCursor,
     setSorting,
     setGlobalFilter,
     setColumnVisibility,
