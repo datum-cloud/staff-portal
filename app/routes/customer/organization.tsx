@@ -25,7 +25,7 @@ const columns = [
     header: 'UID',
   }),
   columnHelper.accessor('metadata.annotations', {
-    header: 'Name',
+    header: 'Description',
     cell: ({ row }) => {
       return (
         row.original.metadata.annotations?.['kubernetes.io/display-name'] ||
@@ -34,7 +34,7 @@ const columns = [
     },
   }),
   columnHelper.accessor('metadata.name', {
-    header: 'Slug',
+    header: 'Name',
   }),
   columnHelper.accessor('spec.type', {
     header: 'Type',
