@@ -45,20 +45,15 @@ const BadgeState = ({ state, noColor, tooltip, className }: Props) => {
   const IconComponent = config.icon;
 
   if (!IconComponent) {
-    // Extract color name from bg-color class (e.g., "bg-green-500" -> "green-500")
-    const colorName = config.color.replace('bg-', '');
-
-    // Use provided border/text colors or auto-derive them
-    const borderColor = (config as any).borderColor || `border-${colorName}`;
-    const textColor = (config as any).textColor || 'text-white'; // White text for all dark backgrounds
+    const textColor = (config as any).textColor || 'text-white';
 
     return (
       <Badge
         variant="outline"
         className={cn(
           noColor ? '' : config.color,
-          noColor ? '' : borderColor,
           noColor ? '' : textColor,
+          'border-none',
           'text-xs',
           className
         )}>

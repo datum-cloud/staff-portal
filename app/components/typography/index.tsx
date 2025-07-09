@@ -33,7 +33,7 @@ const textVariants = cva('leading-relaxed', {
     size: {
       xs: 'text-xs',
       sm: 'text-sm',
-      base: 'text-base',
+      base: 'text-sm',
       lg: 'text-lg',
       xl: 'text-xl',
       '2xl': 'text-2xl',
@@ -81,7 +81,7 @@ const paragraphVariants = cva('leading-relaxed', {
     size: {
       xs: 'text-xs',
       sm: 'text-sm',
-      base: 'text-base',
+      base: 'text-sm',
       lg: 'text-lg',
       xl: 'text-xl',
     },

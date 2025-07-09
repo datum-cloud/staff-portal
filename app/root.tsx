@@ -163,7 +163,6 @@ export function ErrorBoundary() {
   let message = "We've encountered a problem, please try again. Sorry!";
 
   if (isRouteErrorResponse(error)) {
-    console.log(error);
     if (error.statusText === 'AUTH_ERROR') {
       return (
         <ErrorLayout>

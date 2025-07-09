@@ -9,10 +9,10 @@ function truncateMiddle(str: string, maxLength = 16) {
   return `${str.slice(0, half)}...${str.slice(-half)}`;
 }
 
-function UIDDisplay({ uuid }: { uuid: string }) {
+function UIDDisplay({ value }: { value: string }) {
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(uuid);
+      await navigator.clipboard.writeText(value);
       toast.success('UUID copied to clipboard');
     } catch (err) {
       toast.error('Failed to copy UID');
@@ -20,8 +20,8 @@ function UIDDisplay({ uuid }: { uuid: string }) {
   };
 
   return (
-    <div className="flex items-center space-x-2 font-mono text-sm">
-      <span>{truncateMiddle(uuid)}</span>
+    <div className="flex items-center space-x-2">
+      <span>{truncateMiddle(value)}</span>
       <Tooltip>
         <TooltipTrigger asChild>
           <Button variant="ghost" size="icon" onClick={handleCopy} className="h-6 w-6">

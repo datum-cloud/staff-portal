@@ -37,7 +37,7 @@ const columns = [
   columnHelper.accessor('metadata.uid', {
     header: 'UID',
     cell: ({ getValue }) => {
-      return <UIDDisplay uuid={getValue()} />;
+      return <UIDDisplay value={getValue()} />;
     },
   }),
   columnHelper.accessor('spec.type', {
