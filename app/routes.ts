@@ -1,41 +1,57 @@
-import { type RouteConfig, index, layout, prefix, route } from '@react-router/dev/routes';
+import {
+  type RouteConfig,
+  index,
+  layout,
+  prefix,
+  route,
+} from "@react-router/dev/routes";
 
 export default [
   // Protected routes with auth
-  layout('layouts/private.layout.tsx', [
-    index('routes/dashboard.tsx'),
-    route('customers', 'routes/customer/layout.tsx', [
-      index('routes/customer/index.tsx'),
-      route('users', 'routes/customer/user.tsx'),
-      route('organizations', 'routes/customer/organization.tsx'),
-      route('projects', 'routes/customer/project.tsx'),
+  layout("layouts/private.layout.tsx", [
+    index("routes/dashboard.tsx"),
+    route("customers", "routes/customer/layout.tsx", [
+      index("routes/customer/index.tsx"),
+      route("users", "routes/customer/user.tsx"),
+
+      route("organizations", "routes/customer/organization/layout.tsx", [
+        index("routes/customer/organization/index.tsx"),
+
+        route(":orgName", "routes/customer/organization/detail/layout.tsx", [
+          index("routes/customer/organization/detail/index.tsx"),
+        ]),
+      ]),
+
+      route("projects", "routes/customer/project.tsx"),
     ]),
-    route('marketing', 'routes/marketing/layout.tsx', [
-      index('routes/marketing/index.tsx'),
-      route('contacts', 'routes/marketing/contact.tsx'),
-      route('subscriptions', 'routes/marketing/subscription.tsx'),
+    route("marketing", "routes/marketing/layout.tsx", [
+      index("routes/marketing/index.tsx"),
+      route("contacts", "routes/marketing/contact.tsx"),
+      route("subscriptions", "routes/marketing/subscription.tsx"),
     ]),
-    route('organizations', 'routes/organization/layout.tsx', [
-      index('routes/organization/index.tsx'),
-      route('members', 'routes/organization/member.tsx'),
-      route('settings', 'routes/organization/setting.tsx'),
+    route("organizations", "routes/organization/layout.tsx", [
+      index("routes/organization/index.tsx"),
+      route("members", "routes/organization/member.tsx"),
+      route("settings", "routes/organization/setting.tsx"),
     ]),
-    route('relationships', 'routes/relationship/layout.tsx', [
-      index('routes/relationship/index.tsx'),
-      route('vendors', 'routes/relationship/vendor.tsx'),
+    route("relationships", "routes/relationship/layout.tsx", [
+      index("routes/relationship/index.tsx"),
+      route("vendors", "routes/relationship/vendor.tsx"),
     ]),
 
-    route('demo', 'routes/demo.tsx'),
+    route("demo", "routes/demo.tsx"),
   ]),
 
   // Public routes without auth
-  layout('layouts/public.layout.tsx', [
-    route('login', 'routes/auth/login.tsx'),
-    route('auth/callback', 'routes/auth/callback.tsx'),
+  layout("layouts/public.layout.tsx", [
+    route("login", "routes/auth/login.tsx"),
+    route("auth/callback", "routes/auth/callback.tsx"),
   ]),
 
   // Global routes
-  route('logout', 'routes/auth/logout.tsx'),
-  ...prefix('action', [route('set-theme', 'routes/action/set-theme.tsx')]),
-  ...prefix('error', [route('session-expired', 'routes/error/session-expired.tsx')]),
+  route("logout", "routes/auth/logout.tsx"),
+  ...prefix("action", [route("set-theme", "routes/action/set-theme.tsx")]),
+  ...prefix("error", [
+    route("session-expired", "routes/error/session-expired.tsx"),
+  ]),
 ] satisfies RouteConfig;

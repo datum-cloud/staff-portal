@@ -1,5 +1,5 @@
-import { createProxyResponseSchema } from './common.schema';
-import { z } from 'zod';
+import { createProxyResponseSchema } from "./common.schema";
+import { z } from "zod";
 
 // ManagedField schema
 const ManagedFieldSchema = z.object({
@@ -23,7 +23,7 @@ const OwnerReferenceSchema = z.object({
 const OrganizationMetadataSchema = z.object({
   annotations: z
     .object({
-      'kubernetes.io/display-name': z.string(),
+      "kubernetes.io/display-name": z.string(),
     })
     .optional(),
   creationTimestamp: z.string(),
@@ -43,7 +43,7 @@ const OrganizationSpecSchema = z.object({
 // Individual Organization schema
 export const OrganizationSchema = z.object({
   apiVersion: z.string(),
-  kind: z.literal('Organization'),
+  kind: z.literal("Organization"),
   metadata: OrganizationMetadataSchema,
   spec: OrganizationSpecSchema,
 });
@@ -58,7 +58,7 @@ const OrganizationListMetadataSchema = z.object({
 export const OrganizationListSchema = z.object({
   apiVersion: z.string(),
   items: z.array(OrganizationSchema),
-  kind: z.literal('OrganizationList'),
+  kind: z.literal("OrganizationList"),
   metadata: OrganizationListMetadataSchema,
 });
 
@@ -66,5 +66,13 @@ export const OrganizationListSchema = z.object({
 export type Organization = z.infer<typeof OrganizationSchema>;
 export type OrganizationList = z.infer<typeof OrganizationListSchema>;
 
-export const OrganizationResponseSchema = createProxyResponseSchema(OrganizationListSchema);
+export const OrganizationListResponseSchema = createProxyResponseSchema(
+  OrganizationListSchema,
+);
+export type OrganizationListResponse = z.infer<
+  typeof OrganizationListResponseSchema
+>;
+
+export const OrganizationResponseSchema =
+  createProxyResponseSchema(OrganizationSchema);
 export type OrganizationResponse = z.infer<typeof OrganizationResponseSchema>;

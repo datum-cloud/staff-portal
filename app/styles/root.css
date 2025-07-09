@@ -5,4 +5,5 @@
 
 @import '../modules/shadcn/style.css';
 @import '../modules/nprogress/style.css';
+@import '../modules/toast/style.css';
 @import './theme-alpha.css';

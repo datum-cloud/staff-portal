@@ -1,9 +1,9 @@
-import { apiRequest } from '@/modules/axios/axios.server';
-import { authUserQuery } from '@/resources/api/auth.resource';
-import { env } from '@/utils/config/env.server';
-import { sessionCookie, tokenCookie } from '@/utils/cookies';
-import { AuthenticationError } from '@/utils/errors';
-import { OAuth2Strategy } from 'remix-auth-oauth2';
+import { apiRequest } from "@/modules/axios/axios.server";
+import { authUserQuery } from "@/resources/request/server/auth.request";
+import { env } from "@/utils/config/env.server";
+import { sessionCookie, tokenCookie } from "@/utils/cookies";
+import { AuthenticationError } from "@/utils/errors";
+import { OAuth2Strategy } from "remix-auth-oauth2";
 
 export interface IZitadelResponse {
   sub: string;
@@ -17,18 +17,18 @@ class ZitadelStrategy extends OAuth2Strategy<IZitadelResponse> {
   async logout(request: Request) {
     const { data } = await tokenCookie.get(request);
     if (!data?.idToken) {
-      throw new AuthenticationError('No id_token in request');
+      throw new AuthenticationError("No id_token in request");
     }
 
     const body = new URLSearchParams();
-    body.append('id_token_hint', data.idToken);
+    body.append("id_token_hint", data.idToken);
 
     await apiRequest({
-      method: 'POST',
-      url: '/oidc/v1/end_session',
+      method: "POST",
+      url: "/oidc/v1/end_session",
       baseURL: env.AUTH_OIDC_ISSUER,
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        "Content-Type": "application/x-www-form-urlencoded",
       },
       data: body,
     }).execute();
@@ -37,7 +37,7 @@ class ZitadelStrategy extends OAuth2Strategy<IZitadelResponse> {
   async refresh(request: Request): Promise<IZitadelResponse> {
     const { data } = await sessionCookie.get(request);
     if (!data?.refreshToken) {
-      throw new AuthenticationError('No refresh_token in request');
+      throw new AuthenticationError("No refresh_token in request");
     }
 
     const tokens = await this.refreshToken(data.refreshToken);
@@ -59,23 +59,23 @@ export const zitadelStrategy = await ZitadelStrategy.discover<IZitadelResponse>(
     clientSecret: env.AUTH_OIDC_CLIENT_SECRET ?? null,
     redirectURI: `${env.APP_URL}/auth/callback`,
     scopes: [
-      'openid',
-      'profile',
-      'email',
-      'phone',
-      'address',
-      'offline_access',
+      "openid",
+      "profile",
+      "email",
+      "phone",
+      "address",
+      "offline_access",
       // 'urn:zitadel:iam:org:id:320164429750667059',
       // 'urn:zitadel:iam:org:project:id:318312178111218908:aud',
     ],
   },
   async ({ tokens }): Promise<IZitadelResponse> => {
     if (!tokens.idToken()) {
-      throw new AuthenticationError('No id_token in response');
+      throw new AuthenticationError("No id_token in response");
     }
 
     if (!tokens.accessToken()) {
-      throw new AuthenticationError('No access_token in response');
+      throw new AuthenticationError("No access_token in response");
     }
 
     const user = await authUserQuery(tokens.accessToken());
@@ -87,5 +87,5 @@ export const zitadelStrategy = await ZitadelStrategy.discover<IZitadelResponse>(
       expiredAt: tokens.accessTokenExpiresAt(),
       sub: user.sub,
     };
-  }
+  },
 );

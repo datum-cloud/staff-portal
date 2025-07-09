@@ -17,10 +17,6 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
-#: app/components/welcome.tsx:16
-msgid "App Version:"
-msgstr ""
-
 #: app/components/app-sidebar/index.tsx:80
 msgid "Contacts"
 msgstr ""
@@ -29,17 +25,13 @@ msgstr ""
 msgid "Customers"
 msgstr ""
 
-#: app/components/app-toolbar/index.tsx:43
+#: app/components/app-toolbar/index.tsx:41
 #: app/components/app-sidebar/index.tsx:60
 msgid "Dashboard"
 msgstr ""
 
 #: app/components/app-sidebar/nav-user.tsx:90
 msgid "Log out"
-msgstr ""
-
-#: app/components/welcome.tsx:26
-msgid "Logout"
 msgstr ""
 
 #: app/components/app-sidebar/index.tsx:76
@@ -71,10 +63,6 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: app/components/welcome.tsx:25
-msgid "Simplifying cloud operations"
-msgstr ""
-
 #: app/components/app-sidebar/index.tsx:81
 msgid "Subscriptions"
 msgstr ""
@@ -85,8 +73,4 @@ msgstr ""
 
 #: app/components/app-sidebar/index.tsx:97
 msgid "Vendors"
-msgstr ""
-
-#: app/components/welcome.tsx:23
-msgid "Welcome to Datum - Staff Portal"
 msgstr ""
