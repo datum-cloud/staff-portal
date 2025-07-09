@@ -15,15 +15,19 @@ function titleCase(str: string): string {
 const StateConfig = {
   yes: {
     icon: null,
-    color: 'bg-green-500',
+    color: '#10b981',
   },
   no: {
     icon: null,
-    color: 'bg-red-400',
+    color: '#f87171',
   },
   personal: {
     icon: null,
-    color: 'bg-blue-500',
+    color: '#3b82f6',
+  },
+  organization: {
+    icon: null,
+    color: '#06b6d4',
   },
 } as const;
 
@@ -45,25 +49,21 @@ const BadgeState = ({ state, noColor, tooltip, className }: Props) => {
   const IconComponent = config.icon;
 
   if (!IconComponent) {
-    const textColor = (config as any).textColor || 'text-white';
+    const textColor = (config as any).textColor || '#ffffff';
 
     return (
       <Badge
         variant="outline"
-        className={cn(
-          noColor ? '' : config.color,
-          noColor ? '' : textColor,
-          'border-none',
-          'text-xs',
-          className
-        )}>
+        className={cn('border-none', 'text-xs', className)}
+        style={{
+          backgroundColor: noColor ? 'transparent' : config.color,
+          color: noColor ? 'inherit' : textColor,
+        }}>
         {titleCase(normalizedState)}
       </Badge>
     );
   }
 
-  // Since all our states have null icons, this code path is never reached
-  // But keeping it for future extensibility
   const iconElement = null;
 
   if (tooltip) {

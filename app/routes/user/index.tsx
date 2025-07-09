@@ -1,6 +1,6 @@
-import type { Route } from './+types/user';
+import type { Route } from './+types/index';
 import AppActionBar from '@/components/app-actiobar';
-import UIDDisplay from '@/components/uid-display';
+import IDDisplay from '@/components/id-display';
 import { DataTable } from '@/modules/data-table/components/data-table';
 import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
 import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';
@@ -16,10 +16,6 @@ export const meta: Route.MetaFunction = () => {
   return metaObject('Users');
 };
 
-export const handle = {
-  breadcrumb: () => <span>Users</span>,
-};
-
 const columnHelper = createColumnHelper<User>();
 
 const columns = [
@@ -27,7 +23,7 @@ const columns = [
     header: 'Name',
     cell: ({ row }) => {
       return (
-        <Link to={`/customers/users/${row.original.metadata.uid}`}>
+        <Link to={`./${row.original.metadata.uid}`}>
           {row.original.spec.givenName} {row.original.spec.familyName}
         </Link>
       );
@@ -37,14 +33,14 @@ const columns = [
     header: 'Email',
   }),
   columnHelper.accessor('metadata.uid', {
-    header: 'UID',
+    header: 'ID',
     cell: ({ getValue }) => {
-      return <UIDDisplay value={getValue()} />;
+      return <IDDisplay value={getValue()} />;
     },
   }),
 ];
 
-export default function CustomerUser() {
+export default function Page() {
   const tableState = useDataTableQuery<UserResponse>({
     queryKeyPrefix: 'users',
     fetchFn: userQuery,

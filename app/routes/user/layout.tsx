@@ -1,9 +1,9 @@
 import { Outlet } from 'react-router';
 
 export const handle = {
-  breadcrumb: () => <span>Customers</span>,
+  breadcrumb: () => <span>Users</span>,
 };
 
-export default function CustomerLayout() {
+export default function Layout() {
   return <Outlet />;
 }

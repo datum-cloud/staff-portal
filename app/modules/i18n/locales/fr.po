@@ -17,16 +17,8 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
-#: app/components/app-sidebar/index.tsx:80
-msgid "Contacts"
-msgstr ""
-
-#: app/components/app-sidebar/index.tsx:66
-msgid "Customers"
-msgstr ""
-
 #: app/components/app-toolbar/index.tsx:41
-#: app/components/app-sidebar/index.tsx:60
+#: app/components/app-sidebar/index.tsx:65
 msgid "Dashboard"
 msgstr ""
 
@@ -34,43 +26,18 @@ msgstr ""
 msgid "Log out"
 msgstr ""
 
-#: app/components/app-sidebar/index.tsx:76
-msgid "Marketing"
-msgstr ""
-
-#: app/components/app-sidebar/index.tsx:90
-msgid "Members"
-msgstr ""
-
 #: app/components/app-sidebar/nav-user.tsx:84
 msgid "Notifications"
 msgstr ""
 
-#: app/components/app-sidebar/index.tsx:71
-#: app/components/app-sidebar/index.tsx:85
+#: app/components/app-sidebar/index.tsx:77
 msgid "Organizations"
 msgstr ""
 
-#: app/components/app-sidebar/index.tsx:72
+#: app/components/app-sidebar/index.tsx:83
 msgid "Projects"
 msgstr ""
 
-#: app/components/app-sidebar/index.tsx:94
-msgid "Relationships"
-msgstr ""
-
-#: app/components/app-sidebar/index.tsx:89
-msgid "Settings"
-msgstr ""
-
-#: app/components/app-sidebar/index.tsx:81
-msgid "Subscriptions"
-msgstr ""
-
-#: app/components/app-sidebar/index.tsx:70
+#: app/components/app-sidebar/index.tsx:71
 msgid "Users"
-msgstr ""
-
-#: app/components/app-sidebar/index.tsx:97
-msgid "Vendors"
 msgstr ""

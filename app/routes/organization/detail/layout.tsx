@@ -17,6 +17,6 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   return data;
 };
 
-export default function CustomerOrganizationDetailLayout() {
+export default function Layout() {
   return <Outlet />;
 }

@@ -25,15 +25,7 @@ import {
   useSidebar,
 } from '@/modules/shadcn/ui/sidebar';
 import { useLingui } from '@lingui/react/macro';
-import {
-  Building,
-  ChevronRight,
-  Handshake,
-  Home,
-  LucideIcon,
-  Newspaper,
-  Users,
-} from 'lucide-react';
+import { Building2, ChevronRight, Folders, Home, LucideIcon, Users } from 'lucide-react';
 import * as React from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
 
@@ -55,6 +47,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { t } = useLingui();
   const location = useLocation();
 
+  // Helper function to check if a menu item is active
+  const isMenuItemActive = (href: string | undefined) => {
+    if (!href) return false;
+
+    // Special case for dashboard (root path)
+    if (href === '/') {
+      return location.pathname === '/' || location.pathname === '/dashboard';
+    }
+
+    // For other routes, check if the current path starts with the href
+    return location.pathname.startsWith(href);
+  };
+
   const menuItems: MenuItem[] = [
     {
       title: t`Dashboard`,
@@ -63,38 +68,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       hasSubmenu: false,
     },
     {
-      title: t`Customers`,
+      title: t`Users`,
       icon: Users,
-      hasSubmenu: true,
-      submenuItems: [
-        { title: t`Users`, href: '/customers/users' },
-        { title: t`Organizations`, href: '/customers/organizations' },
-        { title: t`Projects`, href: '/customers/projects' },
-      ],
-    },
-    {
-      title: t`Marketing`,
-      icon: Newspaper,
-      hasSubmenu: true,
-      submenuItems: [
-        { title: t`Contacts`, href: '/marketing/contacts' },
-        { title: t`Subscriptions`, href: '/marketing/subscriptions' },
-      ],
+      href: '/users',
+      hasSubmenu: false,
     },
     {
       title: t`Organizations`,
-      icon: Building,
-      hasSubmenu: true,
-      submenuItems: [
-        { title: t`Settings`, href: '/organizations/settings' },
-        { title: t`Members`, href: '/organizations/members' },
-      ],
+      icon: Building2,
+      href: '/organizations',
+      hasSubmenu: false,
     },
     {
-      title: t`Relationships`,
-      icon: Handshake,
-      hasSubmenu: true,
-      submenuItems: [{ title: t`Vendors`, href: '/relationships/vendors' }],
+      title: t`Projects`,
+      icon: Folders,
+      href: '/projects',
+      hasSubmenu: false,
     },
   ];
 
@@ -118,9 +107,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               {item.hasSubmenu ? (
                 <Collapsible
                   asChild
-                  defaultOpen={item.submenuItems?.some((subItem) =>
-                    location.pathname.startsWith(subItem.href)
-                  )}
+                  defaultOpen={item.submenuItems?.some((subItem) => isMenuItemActive(subItem.href))}
                   className="group/collapsible">
                   <SidebarMenuItem>
                     <CollapsibleTrigger asChild>
@@ -134,9 +121,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       <SidebarMenuSub>
                         {item.submenuItems?.map((subItem, subIndex) => (
                           <SidebarMenuSubItem key={subIndex}>
-                            <SidebarMenuSubButton
-                              asChild
-                              isActive={location.pathname.startsWith(subItem.href)}>
+                            <SidebarMenuSubButton asChild isActive={isMenuItemActive(subItem.href)}>
                               <NavLink to={subItem.href}>
                                 <span>{subItem.title}</span>
                               </NavLink>
@@ -149,7 +134,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </Collapsible>
               ) : (
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={location.pathname === item.href}>
+                  <SidebarMenuButton asChild isActive={isMenuItemActive(item.href)}>
                     <NavLink to={item.href ?? ''}>
                       <item.icon />
                       <span>{item.title}</span>

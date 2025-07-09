@@ -4,6 +4,6 @@ export const handle = {
   breadcrumb: () => <span>Organizations</span>,
 };
 
-export default function OrganizationLayout() {
+export default function Layout() {
   return <Outlet />;
 }
