@@ -1,11 +1,7 @@
-import { Button } from "@/modules/shadcn/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/modules/shadcn/ui/tooltip";
-import { toast } from "@/modules/toast";
-import { Copy } from "lucide-react";
+import { Button } from '@/modules/shadcn/ui/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/modules/shadcn/ui/tooltip';
+import { toast } from '@/modules/toast';
+import { Copy } from 'lucide-react';
 
 function truncateMiddle(str: string, maxLength = 16) {
   if (str.length <= maxLength) return str;
@@ -17,9 +13,9 @@ function UIDDisplay({ uuid }: { uuid: string }) {
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(uuid);
-      toast.success("UUID copied to clipboard");
+      toast.success('UUID copied to clipboard');
     } catch (err) {
-      toast.error("Failed to copy UID");
+      toast.error('Failed to copy UID');
     }
   };
 
@@ -28,12 +24,7 @@ function UIDDisplay({ uuid }: { uuid: string }) {
       <span>{truncateMiddle(uuid)}</span>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleCopy}
-            className="h-6 w-6"
-          >
+          <Button variant="ghost" size="icon" onClick={handleCopy} className="h-6 w-6">
             <Copy className="h-4 w-4" />
           </Button>
         </TooltipTrigger>

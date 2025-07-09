@@ -3,12 +3,12 @@ import Axios, {
   AxiosRequestConfig,
   AxiosResponse,
   InternalAxiosRequestConfig,
-} from "axios";
-import { z } from "zod";
+} from 'axios';
+import { z } from 'zod';
 
 export const httpClient = Axios.create({
   timeout: 20 * 1000,
-  baseURL: "/api/internal",
+  baseURL: '/api/internal',
 });
 
 function defaultLogCallback(curlResult: any, err: any) {
@@ -20,9 +20,7 @@ function defaultLogCallback(curlResult: any, err: any) {
   }
 }
 
-const onRequest = (
-  config: InternalAxiosRequestConfig,
-): InternalAxiosRequestConfig => {
+const onRequest = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
   // console.info(`[request] [${JSON.stringify(config)}]`);
 
   return config;
@@ -45,8 +43,8 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   switch (error.response?.status) {
     case 401: {
       const data = error.response?.data as { error: string; code: string };
-      if (data.code === "AUTH_ERROR") {
-        window.location.href = "/logout";
+      if (data.code === 'AUTH_ERROR') {
+        window.location.href = '/logout';
       }
     }
   }
@@ -63,9 +61,7 @@ interface RequestBuilder<TInput = unknown, TOutput = unknown> {
   execute(): Promise<TOutput>;
 }
 
-export const apiRequestClient = (
-  config: AxiosRequestConfig,
-): RequestBuilder => {
+export const apiRequestClient = (config: AxiosRequestConfig): RequestBuilder => {
   let inputSchema: z.ZodType | undefined;
   let outputSchema: z.ZodType | undefined;
 

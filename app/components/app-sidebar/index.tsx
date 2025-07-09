@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { NavUser } from "./nav-user";
-import { LogoIcon } from "@/components/logo/logo-icon";
-import { LogoText } from "@/components/logo/logo-text";
-import { cn } from "@/modules/shadcn/lib/utils";
+import { NavUser } from './nav-user';
+import { LogoIcon } from '@/components/logo/logo-icon';
+import { LogoText } from '@/components/logo/logo-text';
+import { cn } from '@/modules/shadcn/lib/utils';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/modules/shadcn/ui/collapsible";
+} from '@/modules/shadcn/ui/collapsible';
 import {
   Sidebar,
   SidebarContent,
@@ -23,8 +23,8 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
   useSidebar,
-} from "@/modules/shadcn/ui/sidebar";
-import { useLingui } from "@lingui/react/macro";
+} from '@/modules/shadcn/ui/sidebar';
+import { useLingui } from '@lingui/react/macro';
 import {
   Building,
   ChevronRight,
@@ -33,9 +33,9 @@ import {
   LucideIcon,
   Newspaper,
   Users,
-} from "lucide-react";
-import * as React from "react";
-import { Link, NavLink, useLocation } from "react-router";
+} from 'lucide-react';
+import * as React from 'react';
+import { Link, NavLink, useLocation } from 'react-router';
 
 interface SubMenuItem {
   title: string;
@@ -59,7 +59,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     {
       title: t`Dashboard`,
       icon: Home,
-      href: "/",
+      href: '/',
       hasSubmenu: false,
     },
     {
@@ -67,9 +67,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       icon: Users,
       hasSubmenu: true,
       submenuItems: [
-        { title: t`Users`, href: "/customers/users" },
-        { title: t`Organizations`, href: "/customers/organizations" },
-        { title: t`Projects`, href: "/customers/projects" },
+        { title: t`Users`, href: '/customers/users' },
+        { title: t`Organizations`, href: '/customers/organizations' },
+        { title: t`Projects`, href: '/customers/projects' },
       ],
     },
     {
@@ -77,8 +77,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       icon: Newspaper,
       hasSubmenu: true,
       submenuItems: [
-        { title: t`Contacts`, href: "/marketing/contacts" },
-        { title: t`Subscriptions`, href: "/marketing/subscriptions" },
+        { title: t`Contacts`, href: '/marketing/contacts' },
+        { title: t`Subscriptions`, href: '/marketing/subscriptions' },
       ],
     },
     {
@@ -86,15 +86,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       icon: Building,
       hasSubmenu: true,
       submenuItems: [
-        { title: t`Settings`, href: "/organizations/settings" },
-        { title: t`Members`, href: "/organizations/members" },
+        { title: t`Settings`, href: '/organizations/settings' },
+        { title: t`Members`, href: '/organizations/members' },
       ],
     },
     {
       title: t`Relationships`,
       icon: Handshake,
       hasSubmenu: true,
-      submenuItems: [{ title: t`Vendors`, href: "/relationships/vendors" }],
+      submenuItems: [{ title: t`Vendors`, href: '/relationships/vendors' }],
     },
   ];
 
@@ -104,12 +104,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <Link to="/" className="flex items-center gap-2">
           <LogoIcon
             width={24}
-            className={cn(
-              "transition-transform duration-500",
-              !open && "rotate-[360deg]",
-            )}
+            className={cn('transition-transform duration-500', !open && 'rotate-[360deg]')}
           />
-          {state === "expanded" && (
+          {state === 'expanded' && (
             <LogoText width={55} className="transition-opacity duration-500" />
           )}
         </Link>
@@ -122,10 +119,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <Collapsible
                   asChild
                   defaultOpen={item.submenuItems?.some((subItem) =>
-                    location.pathname.startsWith(subItem.href),
+                    location.pathname.startsWith(subItem.href)
                   )}
-                  className="group/collapsible"
-                >
+                  className="group/collapsible">
                   <SidebarMenuItem>
                     <CollapsibleTrigger asChild>
                       <SidebarMenuButton tooltip={item.title}>
@@ -140,10 +136,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                           <SidebarMenuSubItem key={subIndex}>
                             <SidebarMenuSubButton
                               asChild
-                              isActive={location.pathname.startsWith(
-                                subItem.href,
-                              )}
-                            >
+                              isActive={location.pathname.startsWith(subItem.href)}>
                               <NavLink to={subItem.href}>
                                 <span>{subItem.title}</span>
                               </NavLink>
@@ -156,11 +149,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </Collapsible>
               ) : (
                 <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={location.pathname === item.href}
-                  >
-                    <NavLink to={item.href ?? ""}>
+                  <SidebarMenuButton asChild isActive={location.pathname === item.href}>
+                    <NavLink to={item.href ?? ''}>
                       <item.icon />
                       <span>{item.title}</span>
                     </NavLink>

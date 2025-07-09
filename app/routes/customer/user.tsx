@@ -1,19 +1,19 @@
-import type { Route } from "./+types/user";
-import AppActionBar from "@/components/app-actiobar";
-import UIDDisplay from "@/components/uid-display";
-import { DataTable } from "@/modules/data-table/components/data-table";
-import { useDataTableQuery } from "@/modules/data-table/hooks/useDataTableQuery";
-import { DataTableProvider } from "@/modules/data-table/providers/data-table.provider";
-import { Button } from "@/modules/shadcn/ui/button";
-import { userQuery } from "@/resources/request/client/user.request";
-import { User, UserResponse } from "@/resources/schemas/user.schema";
-import { metaObject } from "@/utils/helpers";
-import { createColumnHelper } from "@tanstack/react-table";
-import { PlusIcon } from "lucide-react";
-import { Link } from "react-router";
+import type { Route } from './+types/user';
+import AppActionBar from '@/components/app-actiobar';
+import UIDDisplay from '@/components/uid-display';
+import { DataTable } from '@/modules/data-table/components/data-table';
+import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
+import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';
+import { Button } from '@/modules/shadcn/ui/button';
+import { userQuery } from '@/resources/request/client/user.request';
+import { User, UserResponse } from '@/resources/schemas/user.schema';
+import { metaObject } from '@/utils/helpers';
+import { createColumnHelper } from '@tanstack/react-table';
+import { PlusIcon } from 'lucide-react';
+import { Link } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
-  return metaObject("Users");
+  return metaObject('Users');
 };
 
 export const handle = {
@@ -23,8 +23,8 @@ export const handle = {
 const columnHelper = createColumnHelper<User>();
 
 const columns = [
-  columnHelper.accessor("spec.givenName", {
-    header: "Name",
+  columnHelper.accessor('spec.givenName', {
+    header: 'Name',
     cell: ({ row }) => {
       return (
         <Link to={`/customers/users/${row.original.metadata.uid}`}>
@@ -33,11 +33,11 @@ const columns = [
       );
     },
   }),
-  columnHelper.accessor("spec.email", {
-    header: "Email",
+  columnHelper.accessor('spec.email', {
+    header: 'Email',
   }),
-  columnHelper.accessor("metadata.uid", {
-    header: "UID",
+  columnHelper.accessor('metadata.uid', {
+    header: 'UID',
     cell: ({ getValue }) => {
       return <UIDDisplay uuid={getValue()} />;
     },
@@ -46,7 +46,7 @@ const columns = [
 
 export default function CustomerUser() {
   const tableState = useDataTableQuery<UserResponse>({
-    queryKeyPrefix: "users",
+    queryKeyPrefix: 'users',
     fetchFn: userQuery,
     useSorting: true,
     useGlobalFilter: true,
@@ -61,8 +61,7 @@ export default function CustomerUser() {
           cursor: data?.data?.metadata?.continue,
         };
       }}
-      {...tableState}
-    >
+      {...tableState}>
       <AppActionBar>
         <Button>
           <PlusIcon />

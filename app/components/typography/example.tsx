@@ -1,13 +1,4 @@
-import {
-  Blockquote,
-  Code,
-  Link,
-  List,
-  ListItem,
-  Paragraph,
-  Text,
-  Title,
-} from "./index";
+import { Blockquote, Code, Link, List, ListItem, Paragraph, Text, Title } from './index';
 
 export function TypographyExample() {
   return (
@@ -77,8 +68,8 @@ export function TypographyExample() {
         <div className="space-y-2">
           <Text copyable>Copyable Text</Text>
           <Text ellipsis className="max-w-xs">
-            This is a very long text that will be truncated with ellipsis when
-            it exceeds the container width
+            This is a very long text that will be truncated with ellipsis when it exceeds the
+            container width
           </Text>
         </div>
       </div>
@@ -88,20 +79,18 @@ export function TypographyExample() {
         <h2 className="mb-4 text-2xl font-bold">Paragraph Examples</h2>
 
         <Paragraph>
-          This is a default paragraph with normal spacing. Lorem ipsum dolor sit
-          amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
-          labore et dolore magna aliqua.
+          This is a default paragraph with normal spacing. Lorem ipsum dolor sit amet, consectetur
+          adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
         </Paragraph>
 
         <Paragraph size="lg" spacing="loose">
-          This is a large paragraph with loose spacing. Lorem ipsum dolor sit
-          amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
-          labore et dolore magna aliqua.
+          This is a large paragraph with loose spacing. Lorem ipsum dolor sit amet, consectetur
+          adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
         </Paragraph>
 
         <Paragraph size="sm" spacing="tight">
-          This is a small paragraph with tight spacing. Lorem ipsum dolor sit
-          amet, consectetur adipiscing elit.
+          This is a small paragraph with tight spacing. Lorem ipsum dolor sit amet, consectetur
+          adipiscing elit.
         </Paragraph>
       </div>
 
@@ -115,8 +104,8 @@ export function TypographyExample() {
             External Link
           </Link>
           <Text>
-            This is a paragraph with a{" "}
-            <Link href="https://example.com">inline link</Link> inside it.
+            This is a paragraph with a <Link href="https://example.com">inline link</Link> inside
+            it.
           </Text>
         </div>
       </div>
@@ -151,8 +140,8 @@ export function TypographyExample() {
         <h2 className="mb-4 text-2xl font-bold">Blockquote Examples</h2>
 
         <Blockquote>
-          &ldquo;This is a blockquote example. It demonstrates how to use the
-          Blockquote component with proper styling and typography.&rdquo;
+          &ldquo;This is a blockquote example. It demonstrates how to use the Blockquote component
+          with proper styling and typography.&rdquo;
         </Blockquote>
       </div>
 
@@ -181,10 +170,9 @@ export function TypographyExample() {
           <Title level={3}>Article Title</Title>
 
           <Paragraph>
-            This is the introduction paragraph. It provides an overview of the
-            content that follows.
+            This is the introduction paragraph. It provides an overview of the content that follows.
             <Text textColor="muted" size="sm">
-              {" "}
+              {' '}
               This is a smaller, muted text within the paragraph.
             </Text>
           </Paragraph>
@@ -192,8 +180,7 @@ export function TypographyExample() {
           <Title level={4}>Section Heading</Title>
 
           <Paragraph>
-            This section contains more detailed information. You can use various
-            text styles:
+            This section contains more detailed information. You can use various text styles:
           </Paragraph>
 
           <List>
@@ -204,21 +191,18 @@ export function TypographyExample() {
               <Text type="code">Code snippets</Text> for technical content
             </ListItem>
             <ListItem>
-              <Text type="mark">Highlighted text</Text> for important
-              information
+              <Text type="mark">Highlighted text</Text> for important information
             </ListItem>
           </List>
 
           <Blockquote>
-            &ldquo;This is a quote that adds context to the article. It can be
-            used to provide additional perspective or reference external
-            sources.&rdquo;
+            &ldquo;This is a quote that adds context to the article. It can be used to provide
+            additional perspective or reference external sources.&rdquo;
           </Blockquote>
 
           <Paragraph>
             The article concludes with a final paragraph. You can include
-            <Link href="https://example.com"> links</Link> and other elements as
-            needed.
+            <Link href="https://example.com"> links</Link> and other elements as needed.
           </Paragraph>
         </div>
       </div>

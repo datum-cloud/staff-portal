@@ -1,4 +1,4 @@
-import { meta } from "@/utils/config/meta.config";
+import { meta } from '@/utils/config/meta.config';
 import type {
   ClientLoaderFunction,
   LoaderFunction,
@@ -6,7 +6,7 @@ import type {
   MetaFunction,
   RouteMatch,
   RouteObject,
-} from "react-router";
+} from 'react-router';
 
 type RouteMatchMeta = {
   meta?: MetaDescriptor[];
@@ -53,13 +53,11 @@ type CreateMetaArgs = {
  */
 export function mergeMeta<
   Loader extends LoaderFunction | ClientLoaderFunction | unknown = unknown,
-  ParentsLoaders extends Record<
+  ParentsLoaders extends Record<string, LoaderFunction | ClientLoaderFunction | unknown> = Record<
     string,
-    LoaderFunction | ClientLoaderFunction | unknown
-  > = Record<string, unknown>,
->(
-  leafMetaFn: MetaFunction<Loader, ParentsLoaders>,
-): MetaFunction<Loader, ParentsLoaders> {
+    unknown
+  >,
+>(leafMetaFn: MetaFunction<Loader, ParentsLoaders>): MetaFunction<Loader, ParentsLoaders> {
   return (args) => {
     const leafMeta = leafMetaFn(args);
 
@@ -105,7 +103,7 @@ export function mergeMeta<
  */
 
 export function mergeRouteModuleMeta(
-  leafMetaFn: (args: CreateMetaArgs) => MetaDescriptor[],
+  leafMetaFn: (args: CreateMetaArgs) => MetaDescriptor[]
 ): (args: CreateMetaArgs) => MetaDescriptor[] {
   return (args) => {
     const leafMeta = leafMetaFn(args);
@@ -119,10 +117,7 @@ export function mergeRouteModuleMeta(
     }, leafMeta);
   };
 }
-function addUniqueMeta(
-  acc: MetaDescriptor[] | undefined,
-  parentMeta: MetaDescriptor,
-) {
+function addUniqueMeta(acc: MetaDescriptor[] | undefined, parentMeta: MetaDescriptor) {
   if (acc?.findIndex((meta) => isMetaEqual(meta, parentMeta)) === -1) {
     acc.push(parentMeta);
   }
@@ -136,31 +131,26 @@ function isMetaEqual(meta1: MetaDescriptor, meta2: MetaDescriptor): boolean {
 }
 
 export function metaObject(title?: string, description?: string) {
-  const formattedTitle = title
-    ? `${title} | ${meta.siteTitle}`
-    : meta.siteTitle;
+  const formattedTitle = title ? `${title} | ${meta.siteTitle}` : meta.siteTitle;
   const formattedDescription = description ?? meta.siteDescription;
   const ogImage = `${meta.siteUrl}/og-image.jpg`;
 
   return [
     { title: formattedTitle },
-    { name: "description", content: formattedDescription },
-    { property: "og:title", content: formattedTitle },
-    { property: "og:description", content: formattedDescription },
-    { property: "og:type", content: "website" },
-    { property: "og:url", content: meta.siteUrl },
-    { property: "og:image", content: ogImage },
-    { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:title", content: formattedTitle },
-    { name: "twitter:description", content: formattedDescription },
-    { name: "twitter:image", content: ogImage },
+    { name: 'description', content: formattedDescription },
+    { property: 'og:title', content: formattedTitle },
+    { property: 'og:description', content: formattedDescription },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: meta.siteUrl },
+    { property: 'og:image', content: ogImage },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: formattedTitle },
+    { name: 'twitter:description', content: formattedDescription },
+    { name: 'twitter:image', content: ogImage },
   ];
 }
 
-export function extractDataFromMatches<T>(
-  matches: any[],
-  routeId: string,
-): T | undefined {
+export function extractDataFromMatches<T>(matches: any[], routeId: string): T | undefined {
   const match = matches.find((match) => match?.id === routeId);
   return match?.data as T | undefined;
 }

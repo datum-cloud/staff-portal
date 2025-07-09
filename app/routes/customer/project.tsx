@@ -1,19 +1,19 @@
-import type { Route } from "./+types/project";
-import AppActionBar from "@/components/app-actiobar";
-import UIDDisplay from "@/components/uid-display";
-import { DataTable } from "@/modules/data-table/components/data-table";
-import { useDataTableQuery } from "@/modules/data-table/hooks/useDataTableQuery";
-import { DataTableProvider } from "@/modules/data-table/providers/data-table.provider";
-import { Button } from "@/modules/shadcn/ui/button";
-import { projectQuery } from "@/resources/request/client/project.request";
-import { Project, ProjectResponse } from "@/resources/schemas/project.schema";
-import { metaObject } from "@/utils/helpers";
-import { createColumnHelper } from "@tanstack/react-table";
-import { PlusIcon } from "lucide-react";
-import { Link } from "react-router";
+import type { Route } from './+types/project';
+import AppActionBar from '@/components/app-actiobar';
+import UIDDisplay from '@/components/uid-display';
+import { DataTable } from '@/modules/data-table/components/data-table';
+import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
+import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';
+import { Button } from '@/modules/shadcn/ui/button';
+import { projectQuery } from '@/resources/request/client/project.request';
+import { Project, ProjectResponse } from '@/resources/schemas/project.schema';
+import { metaObject } from '@/utils/helpers';
+import { createColumnHelper } from '@tanstack/react-table';
+import { PlusIcon } from 'lucide-react';
+import { Link } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
-  return metaObject("Projects");
+  return metaObject('Projects');
 };
 
 export const handle = {
@@ -22,22 +22,20 @@ export const handle = {
 
 const columnHelper = createColumnHelper<Project>();
 const columns = [
-  columnHelper.accessor("metadata.name", {
-    header: "Name",
+  columnHelper.accessor('metadata.name', {
+    header: 'Name',
     cell: ({ getValue }) => {
       return <Link to={`/customers/projects/${getValue()}`}>{getValue()}</Link>;
     },
   }),
-  columnHelper.accessor("spec.ownerRef.name", {
-    header: "Organization",
+  columnHelper.accessor('spec.ownerRef.name', {
+    header: 'Organization',
     cell: ({ getValue }) => {
-      return (
-        <Link to={`/customers/organizations/${getValue()}`}>{getValue()}</Link>
-      );
+      return <Link to={`/customers/organizations/${getValue()}`}>{getValue()}</Link>;
     },
   }),
-  columnHelper.accessor("metadata.uid", {
-    header: "UID",
+  columnHelper.accessor('metadata.uid', {
+    header: 'UID',
     cell: ({ getValue }) => {
       return <UIDDisplay uuid={getValue()} />;
     },
@@ -46,7 +44,7 @@ const columns = [
 
 export default function CustomerProject() {
   const tableState = useDataTableQuery<ProjectResponse>({
-    queryKeyPrefix: "projects",
+    queryKeyPrefix: 'projects',
     fetchFn: projectQuery,
     useSorting: true,
     useGlobalFilter: true,
@@ -59,8 +57,7 @@ export default function CustomerProject() {
         rows: data?.data?.items || [],
         cursor: data?.data?.metadata?.continue,
       })}
-      {...tableState}
-    >
+      {...tableState}>
       <AppActionBar>
         <Button>
           <PlusIcon />
