@@ -1,4 +1,4 @@
-import type { Route } from './+types/dashboard';
+import type { Route } from './+types/demo';
 import { CardsCreateAccount } from '@/components/demo/card-account';
 import { CardsActivityGoal } from '@/components/demo/card-activity';
 import { CardsCalendar } from '@/components/demo/card-calendar';

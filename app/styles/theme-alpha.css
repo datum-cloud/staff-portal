@@ -67,4 +67,21 @@
     --chart-5: #383238;
     --nprogress-color: var(--secondary);
   }
+
+  a {
+    color: var(--secondary);
+
+    &:hover {
+      color: var(--foreground);
+    }
+  }
+
+  [data-slot='sidebar-container'] a,
+  [data-slot='breadcrumb'] a {
+    color: inherit;
+
+    &:hover {
+      color: var(--foreground);
+    }
+  }
 }

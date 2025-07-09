@@ -5,7 +5,7 @@ import AppTopbar from '@/components/app-topbar';
 import { authenticator } from '@/modules/auth/auth.server';
 import { SidebarInset, SidebarProvider } from '@/modules/shadcn/ui/sidebar';
 import { AppProvider } from '@/providers/app.provider';
-import { authUserQuery } from '@/resources/api/auth.resource';
+import { authUserQuery } from '@/resources/request/server/auth.request';
 import { metaObject } from '@/utils/helpers';
 import { data, Outlet, redirect, useLoaderData } from 'react-router';
 

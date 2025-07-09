@@ -39,10 +39,13 @@ const onResponse = (response: AxiosResponse): AxiosResponse => {
 const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   // console.error(`[response error] [${JSON.stringify(error)}]`);
 
-  if (error.response?.status === 401) {
-    const data = error.response?.data as { error: string; code: string };
-    if (data.code === 'AUTH_ERROR') {
-      window.location.href = '/logout';
+  // this error mostly comes from forward proxy server
+  switch (error.response?.status) {
+    case 401: {
+      const data = error.response?.data as { error: string; code: string };
+      if (data.code === 'AUTH_ERROR') {
+        window.location.href = '/logout';
+      }
     }
   }
 

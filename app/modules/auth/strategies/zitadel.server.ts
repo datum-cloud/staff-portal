@@ -1,5 +1,5 @@
 import { apiRequest } from '@/modules/axios/axios.server';
-import { authUserQuery } from '@/resources/api/auth.resource';
+import { authUserQuery } from '@/resources/request/server/auth.request';
 import { env } from '@/utils/config/env.server';
 import { sessionCookie, tokenCookie } from '@/utils/cookies';
 import { AuthenticationError } from '@/utils/errors';

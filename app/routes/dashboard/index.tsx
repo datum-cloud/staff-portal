@@ -1,15 +1,11 @@
-import type { Route } from './+types/contact';
+import type { Route } from './+types/index';
 import { metaObject } from '@/utils/helpers';
 
 export const meta: Route.MetaFunction = () => {
-  return metaObject('Contacts');
+  return metaObject('Dashboard');
 };
 
-export const handle = {
-  breadcrumb: () => <span>Contacts</span>,
-};
-
-export default function MarketingContact() {
+export default function Page() {
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
       {Array.from({ length: 24 }).map((_, index) => (

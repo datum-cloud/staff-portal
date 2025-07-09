@@ -4,6 +4,8 @@ import type {
   LoaderFunction,
   MetaDescriptor,
   MetaFunction,
+  RouteMatch,
+  RouteObject,
 } from 'react-router';
 
 type RouteMatchMeta = {
@@ -146,4 +148,9 @@ export function metaObject(title?: string, description?: string) {
     { name: 'twitter:description', content: formattedDescription },
     { name: 'twitter:image', content: ogImage },
   ];
+}
+
+export function extractDataFromMatches<T>(matches: any[], routeId: string): T | undefined {
+  const match = matches.find((match) => match?.id === routeId);
+  return match?.data as T | undefined;
 }

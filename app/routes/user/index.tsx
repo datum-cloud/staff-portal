@@ -1,45 +1,46 @@
-import type { Route } from './+types/user';
+import type { Route } from './+types/index';
 import AppActionBar from '@/components/app-actiobar';
+import IDDisplay from '@/components/id-display';
 import { DataTable } from '@/modules/data-table/components/data-table';
 import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
 import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';
 import { Button } from '@/modules/shadcn/ui/button';
-import { userQuery } from '@/resources/api/user.resource';
+import { userQuery } from '@/resources/request/client/user.request';
 import { User, UserResponse } from '@/resources/schemas/user.schema';
 import { metaObject } from '@/utils/helpers';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusIcon } from 'lucide-react';
+import { Link } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
   return metaObject('Users');
 };
 
-export const handle = {
-  breadcrumb: () => <span>Users</span>,
-};
-
 const columnHelper = createColumnHelper<User>();
 
 const columns = [
-  columnHelper.accessor('metadata.uid', {
-    header: 'UID',
-  }),
   columnHelper.accessor('spec.givenName', {
     header: 'Name',
     cell: ({ row }) => {
       return (
-        <span>
+        <Link to={`./${row.original.metadata.uid}`}>
           {row.original.spec.givenName} {row.original.spec.familyName}
-        </span>
+        </Link>
       );
     },
   }),
   columnHelper.accessor('spec.email', {
     header: 'Email',
   }),
+  columnHelper.accessor('metadata.uid', {
+    header: 'ID',
+    cell: ({ getValue }) => {
+      return <IDDisplay value={getValue()} />;
+    },
+  }),
 ];
 
-export default function CustomerUser() {
+export default function Page() {
   const tableState = useDataTableQuery<UserResponse>({
     queryKeyPrefix: 'users',
     fetchFn: userQuery,

@@ -6,6 +6,7 @@ import { loadCatalog, useLocale } from '@/modules/i18n/lingui';
 import { linguiServer } from '@/modules/i18n/lingui.server';
 import { configureProgress, startProgress, stopProgress } from '@/modules/nprogress';
 import { queryClient } from '@/modules/tanstack/query';
+import { Toaster } from '@/modules/toast';
 import { useNonce } from '@/providers/nonce.provider';
 import styles from '@/styles/root.css?url';
 import { env } from '@/utils/config/env.server';
@@ -75,6 +76,19 @@ function App() {
       </head>
       <body className="bg-background theme-alpha overscroll-none font-sans antialiased">
         <Outlet />
+
+        <Toaster
+          theme={theme as 'light' | 'dark' | 'system'}
+          className="toaster group"
+          style={
+            {
+              '--normal-bg': 'var(--popover)',
+              '--normal-text': 'var(--popover-foreground)',
+              '--normal-border': 'var(--border)',
+            } as React.CSSProperties
+          }
+        />
+
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
         <script
@@ -155,6 +169,8 @@ export function ErrorBoundary() {
           <AuthError message={error.data.message} />
         </ErrorLayout>
       );
+    } else if (error?.data?.message) {
+      message = error.data.message;
     } else {
       message = `${error.status} ${error.statusText}`;
     }

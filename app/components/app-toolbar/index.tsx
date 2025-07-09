@@ -2,16 +2,14 @@ import { cn } from '@/modules/shadcn/lib/utils';
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/modules/shadcn/ui/breadcrumb';
 import { useApp } from '@/providers/app.provider';
 import { useLingui } from '@lingui/react/macro';
-import React from 'react';
-import { useEffect, useState } from 'react';
-import { useMatches } from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { Link, useMatches } from 'react-router';
 
 const AppToolbar = () => {
   const { t } = useLingui();
@@ -40,7 +38,7 @@ const AppToolbar = () => {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem className="hidden md:block">
-            <BreadcrumbLink href="/">{t`Dashboard`}</BreadcrumbLink>
+            <Link to="/">{t`Dashboard`}</Link>
           </BreadcrumbItem>
           {crumbs.map((crumb, idx) => (
             <React.Fragment key={crumb.path}>
@@ -49,7 +47,7 @@ const AppToolbar = () => {
                 {idx === crumbs.length - 1 ? (
                   <BreadcrumbPage>{crumb.name}</BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink href={crumb.path}>{crumb.name}</BreadcrumbLink>
+                  <Link to={crumb.path}>{crumb.name}</Link>
                 )}
               </BreadcrumbItem>
             </React.Fragment>

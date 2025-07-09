@@ -39,7 +39,7 @@ spec:
             - name: OTEL_LOG_LEVEL
               value: 'info'
             - name: OTEL_ENABLED
-              value: 'true'
+              value: 'false'
             - name: API_URL
               value: https://api.datum.net
             - name: APP_URL

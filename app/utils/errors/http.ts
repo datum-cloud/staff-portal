@@ -1,5 +1,11 @@
 import { AppError } from './base';
 
+export class HttpError extends AppError {
+  constructor(message: string = 'An unexpected error occurred', status: number = 500) {
+    super(message, status, 'HTTP_ERROR');
+  }
+}
+
 export class BadRequestError extends AppError {
   constructor(message: string = 'Bad request') {
     super(message, 400, 'BAD_REQUEST');

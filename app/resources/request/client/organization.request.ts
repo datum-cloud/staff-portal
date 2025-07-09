@@ -1,6 +1,6 @@
 import { apiRequestClient } from '@/modules/axios/axios.client';
 import { ListQueryParams } from '@/resources/schemas/common.schema';
-import { OrganizationResponseSchema } from '@/resources/schemas/organization.schema';
+import { OrganizationListResponseSchema } from '@/resources/schemas/organization.schema';
 
 export const orgQuery = (params?: ListQueryParams) => {
   return apiRequestClient({
@@ -11,6 +11,6 @@ export const orgQuery = (params?: ListQueryParams) => {
       ...(params?.cursor && { continue: params.cursor }),
     },
   })
-    .output(OrganizationResponseSchema)
+    .output(OrganizationListResponseSchema)
     .execute();
 };

@@ -66,5 +66,8 @@ export const OrganizationListSchema = z.object({
 export type Organization = z.infer<typeof OrganizationSchema>;
 export type OrganizationList = z.infer<typeof OrganizationListSchema>;
 
-export const OrganizationResponseSchema = createProxyResponseSchema(OrganizationListSchema);
+export const OrganizationListResponseSchema = createProxyResponseSchema(OrganizationListSchema);
+export type OrganizationListResponse = z.infer<typeof OrganizationListResponseSchema>;
+
+export const OrganizationResponseSchema = createProxyResponseSchema(OrganizationSchema);
 export type OrganizationResponse = z.infer<typeof OrganizationResponseSchema>;

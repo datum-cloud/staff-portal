@@ -1,6 +1,11 @@
 import { AxiosCurlLibrary } from './axios-curl';
 import { env } from '@/utils/config/env.server';
-import { AuthenticationError } from '@/utils/errors';
+import {
+  AuthenticationError,
+  AuthorizationError,
+  BadRequestError,
+  HttpError,
+} from '@/utils/errors';
 import Axios, {
   AxiosError,
   AxiosRequestConfig,
@@ -69,14 +74,27 @@ const onResponse = (response: AxiosResponse): AxiosResponse => {
 const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   // console.error(`[response error] [${JSON.stringify(error)}]`);
 
-  if (error.response?.status === 401) {
-    const data = error.response?.data as { error: string; error_description: string };
-    if (data.error === 'access_denied' && data.error_description === 'access token invalid') {
-      throw new AuthenticationError('Session expired').toResponse();
+  // this error mostly comes from API server
+  switch (error.response?.status) {
+    case 401: {
+      const data = error.response?.data as {
+        error: string;
+        error_description: string;
+      };
+      if (data.error === 'access_denied' && data.error_description === 'access token invalid') {
+        throw new AuthenticationError('Session expired').toResponse();
+      }
+    }
+    case 403: {
+      const data = error.response?.data as { message: string; reason: string };
+      throw new AuthorizationError(
+        data?.message ?? 'Not authorized to perform this action'
+      ).toResponse();
+    }
+    default: {
+      throw new HttpError('An unexpected error occurred', error.response?.status).toResponse();
     }
   }
-
-  return Promise.reject(error);
 };
 
 http.interceptors.request.use(onRequest, onRequestError);
