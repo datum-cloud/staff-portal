@@ -1,5 +1,6 @@
 import type { Route } from './+types/login';
 import { authenticator } from '@/modules/auth/auth.server';
+import { Trans } from '@lingui/react/macro';
 
 export function meta({}: Route.MetaFunction) {
   return [
@@ -13,5 +14,9 @@ export function loader({ request }: Route.LoaderArgs) {
 }
 
 export default function Login() {
-  return <div>Loading...</div>;
+  return (
+    <div>
+      <Trans>Loading...</Trans>
+    </div>
+  );
 }

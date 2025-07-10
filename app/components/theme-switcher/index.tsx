@@ -6,6 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/modules/shadcn/ui/dropdown-menu';
+import { Trans } from '@lingui/react/macro';
 import { CheckIcon, MoonIcon, SunIcon } from 'lucide-react';
 import { useEffect } from 'react';
 import { Theme, useTheme } from 'remix-themes';
@@ -32,10 +33,11 @@ function ThemeSwitcher() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme(Theme.LIGHT)}>
-          Light <CheckIcon size={14} className={cn('ml-auto', theme !== Theme.LIGHT && 'hidden')} />
+          <Trans>Light</Trans>{' '}
+          <CheckIcon size={14} className={cn('ml-auto', theme !== Theme.LIGHT && 'hidden')} />
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme(Theme.DARK)}>
-          Dark
+          <Trans>Dark</Trans>{' '}
           <CheckIcon size={14} className={cn('ml-auto', theme !== Theme.DARK && 'hidden')} />
         </DropdownMenuItem>
       </DropdownMenuContent>

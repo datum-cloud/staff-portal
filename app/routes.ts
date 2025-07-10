@@ -18,7 +18,13 @@ export default [
     ]),
 
     // Projects
-    route('projects', 'routes/project/layout.tsx', [index('routes/project/index.tsx')]),
+    route('projects', 'routes/project/layout.tsx', [
+      index('routes/project/index.tsx'),
+
+      route(':projectName', 'routes/project/detail/layout.tsx', [
+        index('routes/project/detail/index.tsx'),
+      ]),
+    ]),
 
     route('demo', 'routes/demo.tsx'),
   ]),

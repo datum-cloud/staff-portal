@@ -17,26 +17,74 @@ msgstr ""
 msgid "Account"
 msgstr "Account"
 
+#: app/routes/project/detail/index.tsx:57
+#: app/routes/organization/detail/index.tsx:66
+msgid "Created at"
+msgstr "Created at"
+
+#: app/components/theme-switcher/index.tsx:40
+msgid "Dark"
+msgstr "Dark"
+
 #: app/components/app-toolbar/index.tsx:41
 #: app/components/app-sidebar/index.tsx:65
 msgid "Dashboard"
 msgstr "Dashboard"
 
+#: app/routes/organization/index.tsx:30
+#: app/routes/organization/detail/index.tsx:46
+msgid "Description"
+msgstr "Description"
+
+#: app/components/theme-switcher/index.tsx:36
+msgid "Light"
+msgstr "Light"
+
+#: app/routes/auth/logout.tsx:30
+#: app/routes/auth/login.tsx:19
+#: app/routes/auth/callback.tsx:40
+msgid "Loading..."
+msgstr "Loading..."
+
 #: app/components/app-sidebar/nav-user.tsx:90
 msgid "Log out"
 msgstr "Log out"
+
+#: app/routes/project/index.tsx:23
+#: app/routes/project/detail/index.tsx:32
+#: app/routes/organization/index.tsx:24
+#: app/routes/organization/detail/index.tsx:33
+msgid "Name"
+msgstr "Name"
+
+#: app/routes/project/index.tsx:55
+#: app/routes/organization/index.tsx:65
+msgid "New"
+msgstr "New"
 
 #: app/components/app-sidebar/nav-user.tsx:84
 msgid "Notifications"
 msgstr "Notifications"
 
+#: app/routes/project/index.tsx:29
+#: app/routes/project/detail/index.tsx:45
+msgid "Organization"
+msgstr "Organization"
+
+#: app/routes/organization/layout.tsx:5
 #: app/components/app-sidebar/index.tsx:77
 msgid "Organizations"
 msgstr "Organizations"
 
+#: app/routes/project/layout.tsx:5
 #: app/components/app-sidebar/index.tsx:83
 msgid "Projects"
 msgstr "Projects"
+
+#: app/routes/organization/index.tsx:39
+#: app/routes/organization/detail/index.tsx:56
+msgid "Type"
+msgstr "Type"
 
 #: app/components/app-sidebar/index.tsx:71
 msgid "Users"
