@@ -19,24 +19,20 @@ export const meta: Route.MetaFunction = () => {
 const columnHelper = createColumnHelper<User>();
 
 const columns = [
-  columnHelper.accessor('spec.givenName', {
+  columnHelper.accessor('metadata.name', {
     header: 'Name',
+    cell: ({ getValue }) => {
+      return <Link to={`./${getValue()}`}>{getValue()}</Link>;
+    },
+  }),
+  columnHelper.accessor('spec.givenName', {
+    header: 'Full Name',
     cell: ({ row }) => {
-      return (
-        <Link to={`./${row.original.metadata.uid}`}>
-          {row.original.spec.givenName} {row.original.spec.familyName}
-        </Link>
-      );
+      return `${row.original.spec.givenName} ${row.original.spec.familyName}`;
     },
   }),
   columnHelper.accessor('spec.email', {
     header: 'Email',
-  }),
-  columnHelper.accessor('metadata.uid', {
-    header: 'ID',
-    cell: ({ getValue }) => {
-      return <IDDisplay value={getValue()} />;
-    },
   }),
 ];
 

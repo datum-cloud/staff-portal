@@ -2,6 +2,7 @@ import type { Route } from './+types/login';
 import { authenticator } from '@/modules/auth/auth.server';
 import { sessionCookie, tokenCookie } from '@/utils/cookies';
 import { combineHeaders } from '@/utils/helpers';
+import { Trans } from '@lingui/react/macro';
 import { redirect } from 'react-router';
 
 export function meta({}: Route.MetaFunction) {
@@ -24,5 +25,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export default function Logout() {
-  return <div>Loading...</div>;
+  return (
+    <div>
+      <Trans>Loading...</Trans>
+    </div>
+  );
 }

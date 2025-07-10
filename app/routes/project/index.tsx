@@ -8,6 +8,7 @@ import { Button } from '@/modules/shadcn/ui/button';
 import { projectQuery } from '@/resources/request/client/project.request';
 import { Project, ProjectResponse } from '@/resources/schemas/project.schema';
 import { metaObject } from '@/utils/helpers';
+import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusIcon } from 'lucide-react';
 import { Link } from 'react-router';
@@ -19,21 +20,15 @@ export const meta: Route.MetaFunction = () => {
 const columnHelper = createColumnHelper<Project>();
 const columns = [
   columnHelper.accessor('metadata.name', {
-    header: 'Name',
+    header: () => <Trans>Name</Trans>,
     cell: ({ getValue }) => {
       return <Link to={`./${getValue()}`}>{getValue()}</Link>;
     },
   }),
   columnHelper.accessor('spec.ownerRef.name', {
-    header: 'Organization',
+    header: () => <Trans>Organization</Trans>,
     cell: ({ getValue }) => {
       return <Link to={`/organizations/${getValue()}`}>{getValue()}</Link>;
-    },
-  }),
-  columnHelper.accessor('metadata.uid', {
-    header: 'ID',
-    cell: ({ getValue }) => {
-      return <IDDisplay value={getValue()} />;
     },
   }),
 ];
@@ -57,7 +52,7 @@ export default function Page() {
       <AppActionBar>
         <Button>
           <PlusIcon />
-          New
+          <Trans>New</Trans>
         </Button>
       </AppActionBar>
 

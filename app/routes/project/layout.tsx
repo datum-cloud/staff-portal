@@ -1,7 +1,8 @@
+import { Trans } from '@lingui/react/macro';
 import { Outlet } from 'react-router';
 
 export const handle = {
-  breadcrumb: () => <span>Projects</span>,
+  breadcrumb: () => <Trans>Projects</Trans>,
 };
 
 export default function Layout() {

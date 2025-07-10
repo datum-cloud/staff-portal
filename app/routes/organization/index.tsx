@@ -9,6 +9,7 @@ import { Button } from '@/modules/shadcn/ui/button';
 import { orgQuery } from '@/resources/request/client/organization.request';
 import { Organization, OrganizationListResponse } from '@/resources/schemas/organization.schema';
 import { metaObject } from '@/utils/helpers';
+import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusIcon } from 'lucide-react';
 import { Link } from 'react-router';
@@ -20,13 +21,13 @@ export const meta: Route.MetaFunction = () => {
 const columnHelper = createColumnHelper<Organization>();
 const columns = [
   columnHelper.accessor('metadata.name', {
-    header: 'Name',
+    header: () => <Trans>Name</Trans>,
     cell: ({ getValue }) => {
       return <Link to={`./${getValue()}`}>{getValue()}</Link>;
     },
   }),
   columnHelper.accessor('metadata.annotations', {
-    header: 'Description',
+    header: () => <Trans>Description</Trans>,
     cell: ({ row }) => {
       return (
         row.original.metadata.annotations?.['kubernetes.io/display-name'] ||
@@ -34,14 +35,8 @@ const columns = [
       );
     },
   }),
-  columnHelper.accessor('metadata.uid', {
-    header: 'ID',
-    cell: ({ getValue }) => {
-      return <IDDisplay value={getValue()} />;
-    },
-  }),
   columnHelper.accessor('spec.type', {
-    header: 'Type',
+    header: () => <Trans>Type</Trans>,
     cell: ({ getValue }) => {
       return <BadgeState state={getValue() ?? 'Organization'} />;
     },
@@ -67,7 +62,7 @@ export default function Page() {
       <AppActionBar>
         <Button>
           <PlusIcon />
-          New
+          <Trans>New</Trans>
         </Button>
       </AppActionBar>
 
