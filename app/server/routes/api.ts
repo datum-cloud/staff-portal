@@ -1,5 +1,6 @@
 import { authenticator } from '@/modules/auth/auth.server';
 import { apiRequest } from '@/modules/axios/axios.server';
+import { EnvVariables } from '@/server/iface';
 import { env } from '@/utils/config/env.server';
 import { AuthenticationError } from '@/utils/errors';
 import { AxiosError } from 'axios';
@@ -8,7 +9,7 @@ import { Hono } from 'hono';
 const API_BASENAME = '/api';
 
 // Create an API Hono app
-const api = new Hono();
+const api = new Hono<{ Variables: EnvVariables }>();
 
 api.get('/', async (c) => {
   return c.json({ message: 'Staff API' });
@@ -16,6 +17,15 @@ api.get('/', async (c) => {
 
 // Internal proxy route - catch-all for /api/internal/*
 api.all('/internal/*', async (c) => {
+  const startTime = Date.now();
+  const requestId = c.get('requestId') || Math.random().toString(36).substring(7);
+
+  console.log(`🔍 [${requestId}] API Proxy Request Started:`, {
+    method: c.req.method,
+    path: c.req.path,
+    url: c.req.url,
+  });
+
   // Get cookies from the request
   const cookieHeader = c.req.header('Cookie');
 
@@ -42,8 +52,6 @@ api.all('/internal/*', async (c) => {
     if (!session?.accessToken) {
       throw new AuthenticationError('No access token available');
     }
-
-    // Get the path after /api/internal/
 
     // Get query parameters
     const searchParams = c.req.query();
@@ -87,6 +95,9 @@ api.all('/internal/*', async (c) => {
       ...(requestBody && { data: requestBody }),
     }).execute();
 
+    const duration = Date.now() - startTime;
+    console.log(`✅ [${requestId}] API request successful (${duration}ms)`);
+
     // Return the response with appropriate headers
     return c.json(
       {
@@ -102,8 +113,17 @@ api.all('/internal/*', async (c) => {
       }
     );
   } catch (error) {
+    const duration = Date.now() - startTime;
+
+    console.error(`❌ [${requestId}] API Proxy Error (${duration}ms):`, {
+      error: error instanceof Error ? error.message : String(error),
+      errorType: error?.constructor?.name || typeof error,
+      path,
+      method: c.req.method,
+    });
+
     if (env.isDebug) {
-      console.error('Internal proxy error:', error);
+      console.error(`🔍 [${requestId}] Full error details:`, error);
     }
 
     // Handle different types of errors

@@ -29,6 +29,7 @@ export default async function handleRequest(
   loadContext: AppLoadContext
 ) {
   let userAgent = request.headers.get('user-agent');
+  const requestId = loadContext.requestId;
   const callbackName = isBot(userAgent) || routerContext.isSpaMode ? 'onAllReady' : 'onShellReady';
 
   const locale = await linguiServer.getLocale(request);
@@ -61,12 +62,22 @@ export default async function handleRequest(
           pipe(body);
         },
         onShellError(error: unknown) {
+          console.error(`❌ [${requestId}] Shell rendering error:`, error);
+
           reject(error);
         },
         onError(error: unknown) {
           responseStatusCode = 500;
+
+          console.error(`❌ [${requestId}] React rendering error (500):`, {
+            error: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : undefined,
+            url: request.url,
+            userAgent: userAgent,
+          });
+
           if (shellRendered) {
-            console.error(error);
+            console.error(`❌ [${requestId}] Error after shell rendered:`, error);
           }
         },
       }
