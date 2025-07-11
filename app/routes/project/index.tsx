@@ -1,6 +1,5 @@
 import type { Route } from './+types/index';
 import AppActionBar from '@/components/app-actiobar';
-import IDDisplay from '@/components/id-display';
 import { DataTable } from '@/modules/data-table/components/data-table';
 import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
 import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';

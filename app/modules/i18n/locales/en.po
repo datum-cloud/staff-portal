@@ -17,6 +17,7 @@ msgstr ""
 msgid "Account"
 msgstr "Account"
 
+#: app/routes/user/detail/index.tsx:69
 #: app/routes/project/detail/index.tsx:57
 #: app/routes/organization/detail/index.tsx:66
 msgid "Created at"
@@ -36,6 +37,18 @@ msgstr "Dashboard"
 msgid "Description"
 msgstr "Description"
 
+#: app/routes/user/detail/index.tsx:59
+msgid "Email"
+msgstr "Email"
+
+#: app/routes/user/detail/index.tsx:47
+msgid "Full Name"
+msgstr "Full Name"
+
+#: app/routes/user/detail/index.tsx:34
+msgid "ID"
+msgstr "ID"
+
 #: app/components/theme-switcher/index.tsx:36
 msgid "Light"
 msgstr "Light"
@@ -50,14 +63,14 @@ msgstr "Loading..."
 msgid "Log out"
 msgstr "Log out"
 
-#: app/routes/project/index.tsx:23
+#: app/routes/project/index.tsx:22
 #: app/routes/project/detail/index.tsx:32
 #: app/routes/organization/index.tsx:24
 #: app/routes/organization/detail/index.tsx:33
 msgid "Name"
 msgstr "Name"
 
-#: app/routes/project/index.tsx:55
+#: app/routes/project/index.tsx:54
 #: app/routes/organization/index.tsx:65
 msgid "New"
 msgstr "New"
@@ -66,7 +79,7 @@ msgstr "New"
 msgid "Notifications"
 msgstr "Notifications"
 
-#: app/routes/project/index.tsx:29
+#: app/routes/project/index.tsx:28
 #: app/routes/project/detail/index.tsx:45
 msgid "Organization"
 msgstr "Organization"
