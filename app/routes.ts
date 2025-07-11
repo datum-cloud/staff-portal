@@ -6,7 +6,11 @@ export default [
     index('routes/dashboard/index.tsx'),
 
     // Users
-    route('users', 'routes/user/layout.tsx', [index('routes/user/index.tsx')]),
+    route('users', 'routes/user/layout.tsx', [
+      index('routes/user/index.tsx'),
+
+      route(':userId', 'routes/user/detail/layout.tsx', [index('routes/user/detail/index.tsx')]),
+    ]),
 
     // Organizations
     route('organizations', 'routes/organization/layout.tsx', [
