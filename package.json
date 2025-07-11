@@ -10,7 +10,7 @@
     "lint": "bunx eslint \"{app,lib}/**/*.{ts,tsx}\" --fix",
     "format": "bunx prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\" \"!**/locales/**\"",
     "format:check": "bunx prettier --check \"**/*.{js,jsx,ts,tsx,json,css,md}\" \"!**/locales/**\"",
-    "start": "bun ./build/server/index.js",
+    "start": "bun ./docker-start.js",
     "typecheck": "bunx react-router typegen && tsc",
     "i18n:extract": "lingui extract --clean",
     "i18n:compile": "lingui compile --typescript",
