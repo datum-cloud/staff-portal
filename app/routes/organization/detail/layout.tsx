@@ -1,7 +1,9 @@
 import type { Route } from './+types/layout';
+import { SubLayout } from '@/components/sub-layout';
 import { authenticator } from '@/modules/auth/auth.server';
 import { orgDetailQuery } from '@/resources/request/server/organization.request';
 import { Organization } from '@/resources/schemas/organization.schema';
+import { FileText, Folders } from 'lucide-react';
 import { Outlet } from 'react-router';
 
 export const handle = {
@@ -18,5 +20,27 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 };
 
 export default function Layout() {
-  return <Outlet />;
+  const menuItems = [
+    {
+      title: 'Overview',
+      href: '',
+      icon: FileText,
+    },
+    {
+      title: 'Projects',
+      href: './projects',
+      icon: Folders,
+    },
+  ];
+
+  return (
+    <SubLayout>
+      <SubLayout.SidebarLeft>
+        <SubLayout.SidebarMenu menuItems={menuItems} />
+      </SubLayout.SidebarLeft>
+      <SubLayout.Content>
+        <Outlet />
+      </SubLayout.Content>
+    </SubLayout>
+  );
 }

@@ -18,6 +18,7 @@ export default [
 
       route(':orgName', 'routes/organization/detail/layout.tsx', [
         index('routes/organization/detail/index.tsx'),
+        route('projects', 'routes/organization/detail/project.tsx'),
       ]),
     ]),
 

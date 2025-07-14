@@ -12,7 +12,7 @@ import { useRouteLoaderData } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const data = extractDataFromMatches<Organization>(matches, 'routes/organization/detail/layout');
-  return metaObject(`Detail - ${data?.metadata?.annotations?.['kubernetes.io/display-name']}`);
+  return metaObject(`Overview - ${data?.metadata?.annotations?.['kubernetes.io/display-name']}`);
 };
 
 export default function Page() {
@@ -21,7 +21,6 @@ export default function Page() {
   return (
     <div className="m-4 flex flex-col gap-1">
       <Title>{data?.metadata?.annotations?.['kubernetes.io/display-name']}</Title>
-      <Text textColor="muted">{data?.metadata?.name}</Text>
 
       <Card className="mt-4 shadow-none">
         <CardContent>
