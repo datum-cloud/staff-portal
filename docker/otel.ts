@@ -150,7 +150,7 @@ async function initializeOtel() {
       console.log('📊 OpenTelemetry is disabled or endpoint not configured');
       console.log('📊 OTEL_ENABLED:', process.env.OTEL_ENABLED);
       console.log('📊 OTEL_EXPORTER_OTLP_ENDPOINT:', process.env.OTEL_EXPORTER_OTLP_ENDPOINT);
-      return;
+      return false;
     }
 
     // Enable logging for development only
@@ -190,11 +190,15 @@ async function initializeOtel() {
       }
       // Don't throw - let the app continue without telemetry
       console.warn('⚠️ Continuing without OpenTelemetry due to initialization error');
+      return false;
     }
   } catch (error) {
     console.error('❌ Unexpected error during OpenTelemetry initialization:', error);
     console.warn('⚠️ Continuing without OpenTelemetry due to unexpected error');
+    return false;
   }
+
+  return true;
 }
 
 // Export the initialization function for manual control
