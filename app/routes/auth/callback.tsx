@@ -1,5 +1,5 @@
 import type { Route } from './+types/callback';
-import { authenticator } from '@/modules/auth/auth.server';
+import { authenticator } from '@/modules/auth';
 import { sessionCookie, tokenCookie } from '@/utils/cookies';
 import { AuthenticationError } from '@/utils/errors';
 import { combineHeaders } from '@/utils/helpers';

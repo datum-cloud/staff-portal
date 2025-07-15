@@ -1,4 +1,4 @@
-import { authenticator } from '@/modules/auth/auth.server';
+import { authenticator } from '@/modules/auth';
 import { apiRequest } from '@/modules/axios/axios.server';
 import { EnvVariables } from '@/server/iface';
 import { env } from '@/utils/config/env.server';
