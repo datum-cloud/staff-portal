@@ -33,7 +33,11 @@ msgstr "Dark"
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: app/routes/organization/index.tsx:30
+#: app/routes/organization/index.tsx:72
+msgid "Delete Selected"
+msgstr "Delete Selected"
+
+#: app/routes/organization/index.tsx:27
 #: app/routes/organization/detail/index.tsx:45
 msgid "Description"
 msgstr "Description"
@@ -66,14 +70,14 @@ msgstr "Log out"
 
 #: app/routes/project/index.tsx:22
 #: app/routes/project/detail/index.tsx:32
-#: app/routes/organization/index.tsx:24
+#: app/routes/organization/index.tsx:21
 #: app/routes/organization/detail/project.tsx:27
 #: app/routes/organization/detail/index.tsx:32
 msgid "Name"
 msgstr "Name"
 
 #: app/routes/project/index.tsx:54
-#: app/routes/organization/index.tsx:65
+#: app/routes/organization/index.tsx:78
 msgid "New"
 msgstr "New"
 
@@ -96,7 +100,7 @@ msgstr "Organizations"
 msgid "Projects"
 msgstr "Projects"
 
-#: app/routes/organization/index.tsx:39
+#: app/routes/organization/index.tsx:36
 #: app/routes/organization/detail/index.tsx:55
 msgid "Type"
 msgstr "Type"

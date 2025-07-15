@@ -2,11 +2,12 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import {
   ColumnPinningState,
   OnChangeFn,
+  RowSelectionState,
   SortingState,
   VisibilityState,
 } from '@tanstack/react-table';
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryState } from 'nuqs';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 // --- Types ---
 export interface FetchArgs {
@@ -34,6 +35,7 @@ export interface UseDataTableQueryReturn<T> {
   columnVisibility: VisibilityState;
   columnPinning: ColumnPinningState;
   columnOrder: string[];
+  rowSelection: RowSelectionState;
   setLimit: (s: number) => void;
   setCursor: (token: string) => void;
   setSorting?: OnChangeFn<SortingState>;
@@ -41,6 +43,7 @@ export interface UseDataTableQueryReturn<T> {
   setColumnVisibility: OnChangeFn<VisibilityState>;
   setColumnPinning: OnChangeFn<ColumnPinningState>;
   setColumnOrder: OnChangeFn<string[]>;
+  setRowSelection: OnChangeFn<RowSelectionState>;
 }
 
 // --- Sorting utilities ---
@@ -112,6 +115,7 @@ export function useDataTableQuery<T>({
     'order',
     parseAsArrayOf(parseAsString).withDefault([])
   );
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   // --- Memoized State Transformations ---
   const sorting = useMemo(() => toSortingState(sortRaw), [sortRaw]);
@@ -202,6 +206,15 @@ export function useDataTableQuery<T>({
     [columnOrder, setOrderColumns]
   );
 
+  // --- Row Selection with Callbacks ---
+  const setSafeRowSelection = useCallback<OnChangeFn<RowSelectionState>>(
+    (updater) => {
+      const next = typeof updater === 'function' ? updater(rowSelection) : updater;
+      setRowSelection(next);
+    },
+    [rowSelection]
+  );
+
   return {
     query,
     limit: limitRaw,
@@ -211,6 +224,7 @@ export function useDataTableQuery<T>({
     columnVisibility,
     columnPinning,
     columnOrder,
+    rowSelection,
     setLimit,
     setCursor,
     setSorting,
@@ -218,5 +232,6 @@ export function useDataTableQuery<T>({
     setColumnVisibility,
     setColumnPinning,
     setColumnOrder,
+    setRowSelection: setSafeRowSelection,
   };
 }

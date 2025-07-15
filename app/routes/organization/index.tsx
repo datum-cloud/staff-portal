@@ -1,17 +1,14 @@
 import type { Route } from './+types/index';
 import AppActionBar from '@/components/app-actiobar';
 import BadgeState from '@/components/badge-state';
-import IDDisplay from '@/components/id-display';
-import { DataTable } from '@/modules/data-table/components/data-table';
-import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
-import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';
+import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/data-table';
 import { Button } from '@/modules/shadcn/ui/button';
 import { orgQuery } from '@/resources/request/client/organization.request';
 import { Organization, OrganizationListResponse } from '@/resources/schemas/organization.schema';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
-import { PlusIcon } from 'lucide-react';
+import { PlusIcon, Trash2Icon } from 'lucide-react';
 import { Link } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
@@ -53,22 +50,41 @@ export default function Page() {
 
   return (
     <DataTableProvider<Organization, OrganizationListResponse>
+      {...tableState}
       columns={columns}
+      selectable
       transform={(data) => ({
         rows: data?.data?.items || [],
         cursor: data?.data?.metadata?.continue,
-      })}
-      {...tableState}>
-      <AppActionBar>
-        <Button>
-          <PlusIcon />
-          <Trans>New</Trans>
-        </Button>
-      </AppActionBar>
+      })}>
+      {({ table }) => (
+        <>
+          <AppActionBar>
+            <div className="flex items-center gap-2">
+              {table.getFilteredSelectedRowModel().rows.length > 0 && (
+                <>
+                  <span className="text-muted-foreground text-sm">
+                    {table.getFilteredSelectedRowModel().rows.length} item
+                    {table.getFilteredSelectedRowModel().rows.length === 1 ? '' : 's'} selected
+                  </span>
+                  <Button variant="destructive" size="sm">
+                    <Trash2Icon className="h-4 w-4" />
+                    <Trans>Delete Selected</Trans>
+                  </Button>
+                </>
+              )}
+              <Button>
+                <PlusIcon />
+                <Trans>New</Trans>
+              </Button>
+            </div>
+          </AppActionBar>
 
-      <div className="m-4 flex flex-col gap-2">
-        <DataTable<Organization> />
-      </div>
+          <div className="m-4 flex flex-col gap-2">
+            <DataTable />
+          </div>
+        </>
+      )}
     </DataTableProvider>
   );
 }

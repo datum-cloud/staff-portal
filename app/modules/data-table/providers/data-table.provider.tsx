@@ -1,14 +1,16 @@
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import { createSelectColumn } from '../components/data-table-select';
+import { UseQueryResult } from '@tanstack/react-query';
 import {
-  useReactTable,
+  ColumnDef,
+  ColumnPinningState,
   getCoreRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  ColumnDef,
-  SortingState,
   OnChangeFn,
+  RowSelectionState,
+  SortingState,
+  useReactTable,
   VisibilityState,
-  ColumnPinningState,
 } from '@tanstack/react-table';
 import hash from 'object-hash';
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -45,6 +47,8 @@ interface DataTableProviderProps<TData, TQuery = DataTableQuery<TData>> {
   columns: ColumnDef<TData, any>[];
   query: UseQueryResult<TQuery>;
   transform?: (raw: TQuery) => DataTableQuery<TData>;
+  selectable?: boolean;
+  getRowId?: (row: TData, index: number, parent?: any) => string;
 
   limit: number;
   cursor?: string;
@@ -53,6 +57,7 @@ interface DataTableProviderProps<TData, TQuery = DataTableQuery<TData>> {
   columnVisibility?: VisibilityState;
   columnPinning?: ColumnPinningState;
   columnOrder?: string[];
+  rowSelection?: RowSelectionState;
 
   setLimit: (s: number) => void;
   setCursor: (token: string) => void;
@@ -61,14 +66,17 @@ interface DataTableProviderProps<TData, TQuery = DataTableQuery<TData>> {
   setColumnVisibility?: OnChangeFn<VisibilityState>;
   setColumnPinning?: OnChangeFn<ColumnPinningState>;
   setColumnOrder?: OnChangeFn<string[]>;
+  setRowSelection?: OnChangeFn<RowSelectionState>;
 
-  children: React.ReactNode;
+  children: React.ReactNode | ((context: DataTableContextType<TData, TQuery>) => React.ReactNode);
 }
 
 export function DataTableProvider<TData, TQuery = DataTableQuery<TData>>({
   columns,
   query,
   transform,
+  selectable = false,
+  getRowId,
   children,
   limit,
   cursor,
@@ -77,6 +85,7 @@ export function DataTableProvider<TData, TQuery = DataTableQuery<TData>>({
   columnVisibility,
   columnPinning,
   columnOrder,
+  rowSelection,
   setLimit,
   setCursor,
   setSorting,
@@ -84,6 +93,7 @@ export function DataTableProvider<TData, TQuery = DataTableQuery<TData>>({
   setColumnVisibility,
   setColumnPinning,
   setColumnOrder,
+  setRowSelection,
 }: DataTableProviderProps<TData, TQuery>) {
   // Cursor-based pagination state
   const [cursorHistory, setCursorHistory] = useState<string[]>(['']); // [''] = first page
@@ -116,29 +126,23 @@ export function DataTableProvider<TData, TQuery = DataTableQuery<TData>>({
     }
   }, [sorting, globalFilter, limit]);
 
-  const safeColumnVisibility = useMemo<VisibilityState>(() => {
-    return columnVisibility && typeof columnVisibility === 'object' && !('_def' in columnVisibility)
-      ? columnVisibility
-      : {};
-  }, [columnVisibility]);
-
-  const safeColumnPinning = useMemo<ColumnPinningState>(() => {
-    return columnPinning && typeof columnPinning === 'object' && !('_def' in columnPinning)
-      ? columnPinning
-      : {};
-  }, [columnPinning]);
+  // Add select column if selectable is enabled
+  const enhancedColumns = useMemo(() => {
+    return selectable ? [createSelectColumn<TData>(), ...columns] : columns;
+  }, [selectable, columns]);
 
   const table = useReactTable<TData>({
     data: rows,
-    columns,
+    columns: enhancedColumns,
     rowCount: rows.length,
     state: {
       pagination: { pageIndex: currentPage, pageSize: limit },
       sorting: sorting ?? [],
       globalFilter: globalFilter ?? '',
-      columnVisibility: safeColumnVisibility,
-      columnPinning: safeColumnPinning,
+      columnVisibility: columnVisibility ?? {},
+      columnPinning: columnPinning ?? {},
       columnOrder: columnOrder ?? [],
+      rowSelection: rowSelection ?? {},
     },
     manualPagination: true,
     manualSorting: !!setSorting,
@@ -148,6 +152,7 @@ export function DataTableProvider<TData, TQuery = DataTableQuery<TData>>({
     onColumnVisibilityChange: setColumnVisibility,
     onColumnPinningChange: setColumnPinning,
     onColumnOrderChange: setColumnOrder,
+    onRowSelectionChange: setRowSelection,
     onPaginationChange: (updater) => {
       const next =
         typeof updater === 'function'
@@ -184,6 +189,7 @@ export function DataTableProvider<TData, TQuery = DataTableQuery<TData>>({
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getRowId: getRowId,
   });
 
   const value = useMemo<DataTableContextType<TData, TQuery>>(
@@ -196,5 +202,9 @@ export function DataTableProvider<TData, TQuery = DataTableQuery<TData>>({
     [table, query, hasNextPage, hasPrevPage]
   );
 
-  return <DataTableContext.Provider value={value}>{children}</DataTableContext.Provider>;
+  return (
+    <DataTableContext.Provider value={value}>
+      {typeof children === 'function' ? children(value) : children}
+    </DataTableContext.Provider>
+  );
 }
