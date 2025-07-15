@@ -90,7 +90,7 @@ const serializeColumnVisibility = (visibility: VisibilityState): string[] => {
 export function useDataTableQuery<T>({
   queryKeyPrefix,
   fetchFn,
-  initialLimit = 10,
+  initialLimit = 20,
   useSorting = true,
   useGlobalFilter = true,
   enabled = true,

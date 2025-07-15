@@ -19,7 +19,8 @@ msgstr ""
 
 #: app/routes/user/detail/index.tsx:69
 #: app/routes/project/detail/index.tsx:57
-#: app/routes/organization/detail/index.tsx:66
+#: app/routes/organization/detail/project.tsx:33
+#: app/routes/organization/detail/index.tsx:65
 msgid "Created at"
 msgstr ""
 
@@ -33,7 +34,7 @@ msgid "Dashboard"
 msgstr ""
 
 #: app/routes/organization/index.tsx:30
-#: app/routes/organization/detail/index.tsx:46
+#: app/routes/organization/detail/index.tsx:45
 msgid "Description"
 msgstr ""
 
@@ -66,7 +67,8 @@ msgstr ""
 #: app/routes/project/index.tsx:22
 #: app/routes/project/detail/index.tsx:32
 #: app/routes/organization/index.tsx:24
-#: app/routes/organization/detail/index.tsx:33
+#: app/routes/organization/detail/project.tsx:27
+#: app/routes/organization/detail/index.tsx:32
 msgid "Name"
 msgstr ""
 
@@ -95,7 +97,7 @@ msgid "Projects"
 msgstr ""
 
 #: app/routes/organization/index.tsx:39
-#: app/routes/organization/detail/index.tsx:56
+#: app/routes/organization/detail/index.tsx:55
 msgid "Type"
 msgstr ""
 
