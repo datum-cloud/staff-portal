@@ -1,4 +1,4 @@
-import { createZitadelStrategy } from './strategies/zitadel.server';
+import { createZitadelStrategy } from './strategies/zitadel.strategy';
 import { AuthProvider } from './types';
 
 // Available authentication providers

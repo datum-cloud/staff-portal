@@ -9,8 +9,8 @@ export type { ISession } from './types';
 export * from './oauth.helper';
 
 // Strategies
-export { createZitadelStrategy } from './strategies/zitadel.server';
-export type { IZitadelResponse } from './strategies/zitadel.server';
+export { createZitadelStrategy } from './strategies/zitadel.strategy';
+export type { IZitadelResponse } from './strategies/zitadel.strategy';
 
 // Internal components (for advanced usage)
 export { authProviders } from './providers';
