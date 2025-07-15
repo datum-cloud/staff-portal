@@ -17,7 +17,7 @@ export interface FetchArgs {
 }
 
 export interface UseDataTableQueryOptions<T> {
-  queryKeyPrefix: string;
+  queryKeyPrefix: string | string[];
   fetchFn: (args: FetchArgs) => Promise<T>;
   initialLimit?: number;
   useSorting?: boolean;
@@ -124,7 +124,9 @@ export function useDataTableQuery<T>({
 
   // --- Query Key Construction ---
   const queryKey = useMemo(() => {
-    const key = [queryKeyPrefix, limitRaw];
+    const key = Array.isArray(queryKeyPrefix)
+      ? [...queryKeyPrefix, limitRaw]
+      : [queryKeyPrefix, limitRaw];
     if (cursor) key.push(cursor);
     if (useSorting) key.push(sorting.map(toSortString).join(','));
     if (useGlobalFilter) key.push(globalFilter);

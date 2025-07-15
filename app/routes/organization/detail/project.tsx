@@ -26,7 +26,7 @@ const columns = [
   columnHelper.accessor('metadata.name', {
     header: () => <Trans>Name</Trans>,
     cell: ({ getValue }) => {
-      return <Link to={`./${getValue()}`}>{getValue()}</Link>;
+      return <Link to={`/projects/${getValue()}`}>{getValue()}</Link>;
     },
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
@@ -41,7 +41,7 @@ export default function Page() {
   const data = useRouteLoaderData('routes/organization/detail/layout') as Organization;
 
   const tableState = useDataTableQuery<ProjectResponse>({
-    queryKeyPrefix: 'projects',
+    queryKeyPrefix: ['projects', data.metadata.name],
     fetchFn: (params) => orgProjectsQuery(data.metadata.name, params),
     useSorting: true,
     useGlobalFilter: true,
