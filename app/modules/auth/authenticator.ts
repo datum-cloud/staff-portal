@@ -1,20 +1,12 @@
-import { zitadelStrategy } from './strategies/zitadel.server';
+import { ISession } from './types';
 import { sessionCookie, tokenCookie } from '@/utils/cookies';
 import { AuthenticationError } from '@/utils/errors';
 import { combineHeaders } from '@/utils/helpers';
 import { isPast } from 'date-fns';
 import { Authenticator } from 'remix-auth';
 
-export interface ISession {
-  sub: string;
-  idToken: string;
-  accessToken: string;
-  refreshToken: string | null;
-  expiredAt: Date;
-}
-
 // Extend the Authenticator class
-class CustomAuthenticator extends Authenticator<ISession> {
+export class CustomAuthenticator extends Authenticator<ISession> {
   async logout(strategy: string, request: Request) {
     const provider = this.get(strategy);
     if (!provider) {
@@ -54,7 +46,6 @@ class CustomAuthenticator extends Authenticator<ISession> {
     // Check if session is expired
     if (session?.data?.expiredAt && isPast(session.data.expiredAt)) {
       // Todo: refresh token
-
       return false;
     }
 
@@ -78,6 +69,3 @@ class CustomAuthenticator extends Authenticator<ISession> {
 
 // Use the extended class instead of the base Authenticator
 export const authenticator = new CustomAuthenticator();
-
-// provide support for multiple strategies
-authenticator.use(zitadelStrategy, 'zitadel');

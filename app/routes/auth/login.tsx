@@ -1,5 +1,5 @@
 import type { Route } from './+types/login';
-import { authenticator } from '@/modules/auth/auth.server';
+import { authenticator } from '@/modules/auth';
 import { Trans } from '@lingui/react/macro';
 
 export function meta({}: Route.MetaFunction) {

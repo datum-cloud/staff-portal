@@ -1,6 +1,6 @@
 import type { Route } from './+types/layout';
 import { SubLayout } from '@/components/sub-layout';
-import { authenticator } from '@/modules/auth/auth.server';
+import { authenticator } from '@/modules/auth';
 import { projectDetailQuery } from '@/resources/request/server/project.request';
 import { Project } from '@/resources/schemas/project.schema';
 import { Outlet } from 'react-router';

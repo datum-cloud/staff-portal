@@ -1,6 +1,6 @@
 import type { Route } from './+types/layout';
 import { SubLayout } from '@/components/sub-layout';
-import { authenticator } from '@/modules/auth/auth.server';
+import { authenticator } from '@/modules/auth';
 import { orgDetailQuery } from '@/resources/request/server/organization.request';
 import { Organization } from '@/resources/schemas/organization.schema';
 import { FileText, Folders } from 'lucide-react';

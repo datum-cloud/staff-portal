@@ -23,6 +23,10 @@ export default defineConfig({
       include: ['react-dom/server.node'],
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1000,
+    target: 'esnext',
+  },
   plugins: [
     tailwindcss(),
     reactRouter(),

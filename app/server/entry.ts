@@ -1,4 +1,5 @@
 import { api, API_BASENAME } from './routes/api';
+import { authenticator, initializeAuthenticator } from '@/modules/auth';
 import { bunAdapter } from '@/server/adapter/bun';
 import { nodeAdapter } from '@/server/adapter/node';
 import { EnvVariables } from '@/server/iface';
@@ -78,6 +79,11 @@ app.get('/.well-known/appspecific/com.chrome.devtools.json', (c) => {
 });
 
 export default await (async () => {
+  // Initialize authenticator strategies (non-blocking)
+  initializeAuthenticator(authenticator).catch((error) => {
+    console.warn('⚠️  Authenticator initialization failed:', error);
+  });
+
   // Force Node runtime for Cypress
   if (env.isCypress) {
     process.env.RUNTIME = 'node';

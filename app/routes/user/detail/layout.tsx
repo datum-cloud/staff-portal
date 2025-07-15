@@ -1,5 +1,5 @@
 import type { Route } from './+types/layout';
-import { authenticator } from '@/modules/auth/auth.server';
+import { authenticator } from '@/modules/auth';
 import { userDetailQuery } from '@/resources/request/server/user.request';
 import { User } from '@/resources/schemas/user.schema';
 import { Outlet } from 'react-router';
