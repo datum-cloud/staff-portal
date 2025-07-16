@@ -8,6 +8,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/modules/shadcn/ui/dialog';
+import { Input } from '@/modules/shadcn/ui/input';
+import { Trans } from '@lingui/react/macro';
 import { useState } from 'react';
 
 interface ConfirmDialogProps {
@@ -20,6 +22,8 @@ interface ConfirmDialogProps {
   variant?: 'default' | 'destructive';
   onConfirm: () => Promise<void> | void;
   onCancel?: () => void;
+  requireConfirmation?: boolean;
+  confirmationText?: string;
 }
 
 export default function ConfirmDialog({
@@ -32,14 +36,23 @@ export default function ConfirmDialog({
   variant = 'default',
   onConfirm,
   onCancel,
+  requireConfirmation = false,
+  confirmationText = 'delete',
 }: ConfirmDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [confirmationInput, setConfirmationInput] = useState('');
 
   const handleConfirm = async () => {
+    if (requireConfirmation && confirmationInput !== confirmationText) {
+      return;
+    }
+
     setIsLoading(true);
     try {
       await onConfirm();
       onOpenChange(false);
+      // Reset confirmation input when dialog closes
+      setConfirmationInput('');
     } catch (error) {
       console.error('Error during confirmation:', error);
     } finally {
@@ -51,6 +64,8 @@ export default function ConfirmDialog({
     if (!isLoading) {
       onCancel?.();
       onOpenChange(false);
+      // Reset confirmation input when dialog closes
+      setConfirmationInput('');
     }
   };
 
@@ -58,8 +73,14 @@ export default function ConfirmDialog({
     // Only allow closing if not loading
     if (!isLoading) {
       onOpenChange(newOpen);
+      // Reset confirmation input when dialog closes
+      if (!newOpen) {
+        setConfirmationInput('');
+      }
     }
   };
+
+  const isConfirmDisabled = requireConfirmation && confirmationInput !== confirmationText;
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -68,6 +89,23 @@ export default function ConfirmDialog({
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
+
+        {requireConfirmation && (
+          <div className="flex flex-col gap-2">
+            <label htmlFor="confirmation-input" className="text-sm font-medium">
+              <Trans>
+                Enter the word <strong>{confirmationText}</strong> to perform this action.
+              </Trans>
+            </label>
+            <Input
+              id="confirmation-input"
+              value={confirmationInput}
+              onChange={(e) => setConfirmationInput(e.target.value)}
+              disabled={isLoading}
+            />
+          </div>
+        )}
+
         <DialogFooter className="gap-2">
           <Button
             variant="outline"
@@ -80,6 +118,7 @@ export default function ConfirmDialog({
             variant={variant === 'destructive' ? 'destructive' : 'default'}
             onClick={handleConfirm}
             loading={isLoading}
+            disabled={isConfirmDisabled}
             className="flex-1 sm:flex-none">
             <span>{confirmText}</span>
           </ButtonLoading>

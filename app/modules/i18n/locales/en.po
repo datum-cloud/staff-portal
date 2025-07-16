@@ -17,17 +17,12 @@ msgstr ""
 msgid "Account"
 msgstr "Account"
 
-#. placeholder {0}: Object.keys(tableState.rowSelection).length
-#: app/routes/organization/index.tsx:136
-msgid "Are you sure you want to delete {0} selected organization(s)? This action cannot be undone."
-msgstr "Are you sure you want to delete {0} selected organization(s)? This action cannot be undone."
-
-#. placeholder {0}: deleteDialog.orgs[0]?.metadata.name
-#: app/routes/organization/index.tsx:137
+#. placeholder {0}: data.metadata.name
+#: app/routes/organization/detail/layout.tsx:68
 msgid "Are you sure you want to delete organization \"{0}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete organization \"{0}\"? This action cannot be undone."
 
-#: app/routes/organization/index.tsx:140
+#: app/routes/organization/detail/layout.tsx:70
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -47,24 +42,16 @@ msgstr "Dark"
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: app/routes/organization/index.tsx:82
-#: app/routes/organization/index.tsx:139
+#: app/routes/organization/detail/layout.tsx:69
+#: app/routes/organization/detail/layout.tsx:78
 msgid "Delete"
 msgstr "Delete"
 
-#: app/routes/organization/index.tsx:133
+#: app/routes/organization/detail/layout.tsx:67
 msgid "Delete Organization"
 msgstr "Delete Organization"
 
-#: app/routes/organization/index.tsx:133
-msgid "Delete Organizations"
-msgstr "Delete Organizations"
-
-#: app/routes/organization/index.tsx:106
-msgid "Delete Selected"
-msgstr "Delete Selected"
-
-#: app/routes/organization/index.tsx:31
+#: app/routes/organization/index.tsx:24
 #: app/routes/organization/detail/index.tsx:45
 msgid "Description"
 msgstr "Description"
@@ -73,9 +60,13 @@ msgstr "Description"
 msgid "Email"
 msgstr "Email"
 
-#: app/routes/organization/index.tsx:76
-msgid "Failed to delete organization(s)"
-msgstr "Failed to delete organization(s)"
+#: app/components/confirm-dialog/index.tsx:96
+msgid "Enter the word <0>{confirmationText}</0> to perform this action."
+msgstr "Enter the word <0>{confirmationText}</0> to perform this action."
+
+#: app/routes/organization/detail/layout.tsx:45
+msgid "Failed to delete organization"
+msgstr "Failed to delete organization"
 
 #: app/routes/user/detail/index.tsx:47
 msgid "Full Name"
@@ -101,7 +92,7 @@ msgstr "Log out"
 
 #: app/routes/project/index.tsx:22
 #: app/routes/project/detail/index.tsx:32
-#: app/routes/organization/index.tsx:25
+#: app/routes/organization/index.tsx:18
 #: app/routes/organization/detail/project.tsx:27
 #: app/routes/organization/detail/index.tsx:32
 msgid "Name"
@@ -120,21 +111,21 @@ msgstr "Notifications"
 msgid "Organization"
 msgstr "Organization"
 
+#: app/routes/organization/detail/layout.tsx:43
+msgid "Organization deleted successfully"
+msgstr "Organization deleted successfully"
+
 #: app/routes/organization/layout.tsx:5
 #: app/components/app-sidebar/index.tsx:77
 msgid "Organizations"
 msgstr "Organizations"
-
-#: app/routes/organization/index.tsx:74
-msgid "Organizations deleted successfully"
-msgstr "Organizations deleted successfully"
 
 #: app/routes/project/layout.tsx:5
 #: app/components/app-sidebar/index.tsx:83
 msgid "Projects"
 msgstr "Projects"
 
-#: app/routes/organization/index.tsx:40
+#: app/routes/organization/index.tsx:33
 #: app/routes/organization/detail/index.tsx:55
 msgid "Type"
 msgstr "Type"

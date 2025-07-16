@@ -1,4 +1,5 @@
 import { SidebarMenuComponent } from './sidebar-menu';
+import AppActionBar from '@/components/app-actiobar';
 import { cn } from '@/modules/shadcn/lib/utils';
 import * as React from 'react';
 
@@ -60,6 +61,7 @@ const SubLayoutComponent = React.memo(function SubLayout({
     let leftSidebar: React.ReactElement | null = null;
     let rightSidebar: React.ReactElement | null = null;
     let content: React.ReactElement | null = null;
+    let actionBar: React.ReactElement | null = null;
 
     React.Children.forEach(children, (child) => {
       if (React.isValidElement(child)) {
@@ -69,19 +71,24 @@ const SubLayoutComponent = React.memo(function SubLayout({
           rightSidebar = child;
         } else if (child.type === SubLayoutContent) {
           content = child;
+        } else if (child.type === AppActionBar) {
+          actionBar = child;
         }
       }
     });
 
-    return { leftSidebar, rightSidebar, content };
+    return { leftSidebar, rightSidebar, content, actionBar };
   }, [children]);
 
   return (
-    <div className={cn('flex h-full w-full', className)} {...props}>
-      {slots.leftSidebar}
-      {slots.content}
-      {slots.rightSidebar}
-    </div>
+    <>
+      {slots.actionBar}
+      <div className={cn('flex h-full w-full', className)} {...props}>
+        {slots.leftSidebar}
+        {slots.content}
+        {slots.rightSidebar}
+      </div>
+    </>
   );
 });
 
@@ -91,6 +98,7 @@ const SubLayout = Object.assign(SubLayoutComponent, {
   SidebarRight: SubLayoutSidebarRight,
   Content: SubLayoutContent,
   SidebarMenu: SidebarMenuComponent,
+  ActionBar: AppActionBar,
 });
 
 export { SubLayout };
