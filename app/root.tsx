@@ -78,6 +78,7 @@ function App() {
         <Outlet />
 
         <Toaster
+          richColors
           theme={theme as 'light' | 'dark' | 'system'}
           className="toaster group"
           style={

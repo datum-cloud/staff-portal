@@ -17,9 +17,19 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
+#. placeholder {0}: data.metadata.name
+#: app/routes/organization/detail/layout.tsx:68
+msgid "Are you sure you want to delete organization \"{0}\"? This action cannot be undone."
+msgstr ""
+
+#: app/routes/organization/detail/layout.tsx:70
+msgid "Cancel"
+msgstr ""
+
 #: app/routes/user/detail/index.tsx:69
 #: app/routes/project/detail/index.tsx:57
-#: app/routes/organization/detail/index.tsx:66
+#: app/routes/organization/detail/project.tsx:33
+#: app/routes/organization/detail/index.tsx:65
 msgid "Created at"
 msgstr ""
 
@@ -32,13 +42,30 @@ msgstr ""
 msgid "Dashboard"
 msgstr ""
 
-#: app/routes/organization/index.tsx:30
-#: app/routes/organization/detail/index.tsx:46
+#: app/routes/organization/detail/layout.tsx:69
+#: app/routes/organization/detail/layout.tsx:78
+msgid "Delete"
+msgstr ""
+
+#: app/routes/organization/detail/layout.tsx:67
+msgid "Delete Organization"
+msgstr ""
+
+#: app/routes/organization/index.tsx:24
+#: app/routes/organization/detail/index.tsx:45
 msgid "Description"
 msgstr ""
 
 #: app/routes/user/detail/index.tsx:59
 msgid "Email"
+msgstr ""
+
+#: app/components/confirm-dialog/index.tsx:96
+msgid "Enter the word <0>{confirmationText}</0> to perform this action."
+msgstr ""
+
+#: app/routes/organization/detail/layout.tsx:45
+msgid "Failed to delete organization"
 msgstr ""
 
 #: app/routes/user/detail/index.tsx:47
@@ -65,13 +92,13 @@ msgstr ""
 
 #: app/routes/project/index.tsx:22
 #: app/routes/project/detail/index.tsx:32
-#: app/routes/organization/index.tsx:24
-#: app/routes/organization/detail/index.tsx:33
+#: app/routes/organization/index.tsx:18
+#: app/routes/organization/detail/project.tsx:27
+#: app/routes/organization/detail/index.tsx:32
 msgid "Name"
 msgstr ""
 
 #: app/routes/project/index.tsx:54
-#: app/routes/organization/index.tsx:65
 msgid "New"
 msgstr ""
 
@@ -84,6 +111,10 @@ msgstr ""
 msgid "Organization"
 msgstr ""
 
+#: app/routes/organization/detail/layout.tsx:43
+msgid "Organization deleted successfully"
+msgstr ""
+
 #: app/routes/organization/layout.tsx:5
 #: app/components/app-sidebar/index.tsx:77
 msgid "Organizations"
@@ -94,8 +125,8 @@ msgstr ""
 msgid "Projects"
 msgstr ""
 
-#: app/routes/organization/index.tsx:39
-#: app/routes/organization/detail/index.tsx:56
+#: app/routes/organization/index.tsx:33
+#: app/routes/organization/detail/index.tsx:55
 msgid "Type"
 msgstr ""
 

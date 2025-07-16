@@ -1,5 +1,6 @@
 import type { Route } from './+types/layout';
-import { authenticator } from '@/modules/auth/auth.server';
+import { SubLayout } from '@/components/sub-layout';
+import { authenticator } from '@/modules/auth';
 import { projectDetailQuery } from '@/resources/request/server/project.request';
 import { Project } from '@/resources/schemas/project.schema';
 import { Outlet } from 'react-router';
@@ -16,5 +17,11 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 };
 
 export default function Layout() {
-  return <Outlet />;
+  return (
+    <SubLayout>
+      <SubLayout.Content>
+        <Outlet />
+      </SubLayout.Content>
+    </SubLayout>
+  );
 }

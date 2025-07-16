@@ -1,17 +1,11 @@
 import type { Route } from './+types/index';
-import AppActionBar from '@/components/app-actiobar';
 import BadgeState from '@/components/badge-state';
-import IDDisplay from '@/components/id-display';
-import { DataTable } from '@/modules/data-table/components/data-table';
-import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
-import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';
-import { Button } from '@/modules/shadcn/ui/button';
+import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/data-table';
 import { orgQuery } from '@/resources/request/client/organization.request';
 import { Organization, OrganizationListResponse } from '@/resources/schemas/organization.schema';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
-import { PlusIcon } from 'lucide-react';
 import { Link } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
@@ -53,21 +47,14 @@ export default function Page() {
 
   return (
     <DataTableProvider<Organization, OrganizationListResponse>
+      {...tableState}
       columns={columns}
       transform={(data) => ({
         rows: data?.data?.items || [],
         cursor: data?.data?.metadata?.continue,
-      })}
-      {...tableState}>
-      <AppActionBar>
-        <Button>
-          <PlusIcon />
-          <Trans>New</Trans>
-        </Button>
-      </AppActionBar>
-
+      })}>
       <div className="m-4 flex flex-col gap-2">
-        <DataTable<Organization> />
+        <DataTable />
       </div>
     </DataTableProvider>
   );

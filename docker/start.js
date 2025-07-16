@@ -46,8 +46,10 @@ try {
     .then(async (otelModule) => {
       try {
         // Initialize OpenTelemetry manually
-        await otelModule.initializeOtel();
-        console.log('✅ OpenTelemetry loaded successfully');
+        const isOtelInitialized = await otelModule.initializeOtel();
+        if (isOtelInitialized) {
+          console.log('✅ OpenTelemetry loaded successfully');
+        }
       } catch (otelError) {
         console.warn(
           '⚠️ OpenTelemetry initialization failed, continuing without telemetry:',

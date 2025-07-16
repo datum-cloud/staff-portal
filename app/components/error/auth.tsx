@@ -17,10 +17,10 @@ const AuthError = ({ message }: { message: string }) => {
         <LogoIcon width={64} className="mb-4" />
 
         <div className="flex max-w-xl flex-col gap-2">
-          <p className="w-full text-center text-2xl font-bold">Session Expired</p>
+          <p className="w-full text-center text-2xl font-bold">Your session has expired</p>
           <div className="text-muted-foreground flex items-center justify-center gap-2 text-center text-sm">
             <Loader2Icon className="size-4 animate-spin" />
-            Redirecting to login...
+            Logging out...
           </div>
         </div>
       </CardContent>
