@@ -1,5 +1,6 @@
 'use client';
 
+import Tooltip from '@/components/tooltip';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/modules/shadcn/ui/avatar';
 import { Button } from '@/modules/shadcn/ui/button';
@@ -21,12 +22,6 @@ import {
   DialogTitle,
 } from '@/modules/shadcn/ui/dialog';
 import { Input } from '@/modules/shadcn/ui/input';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/modules/shadcn/ui/tooltip';
 import { ArrowUpIcon, CheckIcon, PlusIcon } from 'lucide-react';
 import * as React from 'react';
 
@@ -99,21 +94,16 @@ export function CardsChat() {
               <p className="text-muted-foreground text-xs">m@example.com</p>
             </div>
           </div>
-          <TooltipProvider delayDuration={0}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="secondary"
-                  className="ml-auto size-8 rounded-full"
-                  onClick={() => setOpen(true)}>
-                  <PlusIcon />
-                  <span className="sr-only">New message</span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent sideOffset={10}>New message</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Tooltip message="New message">
+            <Button
+              size="icon"
+              variant="secondary"
+              className="ml-auto size-8 rounded-full"
+              onClick={() => setOpen(true)}>
+              <PlusIcon />
+              <span className="sr-only">New message</span>
+            </Button>
+          </Tooltip>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col gap-4">

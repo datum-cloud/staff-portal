@@ -1,6 +1,6 @@
+import Tooltip from '@/components/tooltip';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Badge } from '@/modules/shadcn/ui/badge';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/modules/shadcn/ui/tooltip';
 import * as React from 'react';
 
 // Helper function to convert string to title case
@@ -29,7 +29,18 @@ const StateConfig = {
     icon: null,
     color: '#06b6d4',
   },
+  business: {
+    icon: null,
+    color: '#f59e0b',
+  },
 } as const;
+
+// Default configuration for unknown states
+const DefaultConfig = {
+  icon: null,
+  color: '#6b7280',
+  textColor: '#ffffff',
+};
 
 type State = keyof typeof StateConfig;
 
@@ -42,9 +53,9 @@ type Props = {
 
 const BadgeState = ({ state, noColor, tooltip, className }: Props) => {
   const normalizedState = String(state ?? '').toLowerCase();
-  const config = StateConfig[normalizedState as State];
+  const config = StateConfig[normalizedState as State] || DefaultConfig;
 
-  if (!config) return null;
+  if (!normalizedState) return null;
 
   const IconComponent = config.icon;
 
@@ -68,13 +79,8 @@ const BadgeState = ({ state, noColor, tooltip, className }: Props) => {
 
   if (tooltip) {
     return (
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div className="inline-flex cursor-pointer">{iconElement}</div>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>{titleCase(tooltip || normalizedState)}</p>
-        </TooltipContent>
+      <Tooltip message={titleCase(tooltip || normalizedState)}>
+        <div className="inline-flex cursor-pointer">{iconElement}</div>
       </Tooltip>
     );
   }

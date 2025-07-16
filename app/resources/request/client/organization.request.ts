@@ -16,10 +16,10 @@ export const orgQuery = (params?: ListQueryParams) => {
     .execute();
 };
 
-export const orgProjectsQuery = (orgId: string, params?: ListQueryParams) => {
+export const orgProjectsQuery = (orgName: string, params?: ListQueryParams) => {
   return apiRequestClient({
     method: 'GET',
-    url: `/apis/resourcemanager.miloapis.com/v1alpha1/organizations/${orgId}/control-plane/apis/resourcemanager.miloapis.com/v1alpha1/projects`,
+    url: `/apis/resourcemanager.miloapis.com/v1alpha1/organizations/${orgName}/control-plane/apis/resourcemanager.miloapis.com/v1alpha1/projects`,
     params: {
       ...(params?.limit && { limit: params.limit }),
       ...(params?.cursor && { continue: params.cursor }),
@@ -27,4 +27,11 @@ export const orgProjectsQuery = (orgId: string, params?: ListQueryParams) => {
   })
     .output(ProjectResponseSchema)
     .execute();
+};
+
+export const orgDeleteMutation = (orgName: string) => {
+  return apiRequestClient({
+    method: 'DELETE',
+    url: `/apis/resourcemanager.miloapis.com/v1alpha1/organizations/${orgName}`,
+  }).execute();
 };

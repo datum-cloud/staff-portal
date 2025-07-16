@@ -17,6 +17,15 @@ msgstr ""
 msgid "Account"
 msgstr "Account"
 
+#. placeholder {0}: data.metadata.name
+#: app/routes/organization/detail/layout.tsx:68
+msgid "Are you sure you want to delete organization \"{0}\"? This action cannot be undone."
+msgstr "Are you sure you want to delete organization \"{0}\"? This action cannot be undone."
+
+#: app/routes/organization/detail/layout.tsx:70
+msgid "Cancel"
+msgstr "Cancel"
+
 #: app/routes/user/detail/index.tsx:69
 #: app/routes/project/detail/index.tsx:57
 #: app/routes/organization/detail/project.tsx:33
@@ -33,7 +42,16 @@ msgstr "Dark"
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: app/routes/organization/index.tsx:30
+#: app/routes/organization/detail/layout.tsx:69
+#: app/routes/organization/detail/layout.tsx:78
+msgid "Delete"
+msgstr "Delete"
+
+#: app/routes/organization/detail/layout.tsx:67
+msgid "Delete Organization"
+msgstr "Delete Organization"
+
+#: app/routes/organization/index.tsx:24
 #: app/routes/organization/detail/index.tsx:45
 msgid "Description"
 msgstr "Description"
@@ -41,6 +59,14 @@ msgstr "Description"
 #: app/routes/user/detail/index.tsx:59
 msgid "Email"
 msgstr "Email"
+
+#: app/components/confirm-dialog/index.tsx:96
+msgid "Enter the word <0>{confirmationText}</0> to perform this action."
+msgstr "Enter the word <0>{confirmationText}</0> to perform this action."
+
+#: app/routes/organization/detail/layout.tsx:45
+msgid "Failed to delete organization"
+msgstr "Failed to delete organization"
 
 #: app/routes/user/detail/index.tsx:47
 msgid "Full Name"
@@ -66,14 +92,13 @@ msgstr "Log out"
 
 #: app/routes/project/index.tsx:22
 #: app/routes/project/detail/index.tsx:32
-#: app/routes/organization/index.tsx:24
+#: app/routes/organization/index.tsx:18
 #: app/routes/organization/detail/project.tsx:27
 #: app/routes/organization/detail/index.tsx:32
 msgid "Name"
 msgstr "Name"
 
 #: app/routes/project/index.tsx:54
-#: app/routes/organization/index.tsx:65
 msgid "New"
 msgstr "New"
 
@@ -86,6 +111,10 @@ msgstr "Notifications"
 msgid "Organization"
 msgstr "Organization"
 
+#: app/routes/organization/detail/layout.tsx:43
+msgid "Organization deleted successfully"
+msgstr "Organization deleted successfully"
+
 #: app/routes/organization/layout.tsx:5
 #: app/components/app-sidebar/index.tsx:77
 msgid "Organizations"
@@ -96,7 +125,7 @@ msgstr "Organizations"
 msgid "Projects"
 msgstr "Projects"
 
-#: app/routes/organization/index.tsx:39
+#: app/routes/organization/index.tsx:33
 #: app/routes/organization/detail/index.tsx:55
 msgid "Type"
 msgstr "Type"
