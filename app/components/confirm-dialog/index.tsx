@@ -37,7 +37,7 @@ export default function ConfirmDialog({
   onConfirm,
   onCancel,
   requireConfirmation = false,
-  confirmationText = 'delete',
+  confirmationText = 'DELETE',
 }: ConfirmDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [confirmationInput, setConfirmationInput] = useState('');
