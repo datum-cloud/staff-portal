@@ -1,93 +1,138 @@
-import type { Route } from './+types/demo';
-import { CardsCreateAccount } from '@/components/demo/card-account';
-import { CardsActivityGoal } from '@/components/demo/card-activity';
-import { CardsCalendar } from '@/components/demo/card-calendar';
-import { CardsChat } from '@/components/demo/card-chat';
-import { CardsCookieSettings } from '@/components/demo/card-cookie';
-import { CardsExerciseMinutes } from '@/components/demo/card-exercise';
-import { CardsForms } from '@/components/demo/card-form';
-import { CardsPayments } from '@/components/demo/card-payment';
-import { CardsReportIssue } from '@/components/demo/card-report';
-import { CardsShare } from '@/components/demo/card-share';
-import { CardsStats } from '@/components/demo/card-stats';
-import { CardsTeamMembers } from '@/components/demo/card-team';
+import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/data-table';
 import { Button } from '@/modules/shadcn/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/modules/shadcn/ui/card';
-import { metaObject } from '@/utils/helpers';
-import { Theme, useTheme } from 'remix-themes';
+import { createColumnHelper } from '@tanstack/react-table';
+import { EditIcon, Trash2Icon } from 'lucide-react';
+import { useState } from 'react';
 
-export const meta: Route.MetaFunction = () => {
-  return metaObject('Demo');
-};
+interface DemoData {
+  id: string;
+  name: string;
+  email: string;
+  status: string;
+}
 
-export default function Demo() {
-  const [, setTheme] = useTheme();
+const columnHelper = createColumnHelper<DemoData>();
+
+const columns = [
+  columnHelper.accessor('name', {
+    header: 'Name',
+    cell: ({ getValue }) => <strong>{getValue()}</strong>,
+  }),
+  columnHelper.accessor('email', {
+    header: 'Email',
+  }),
+  columnHelper.accessor('status', {
+    header: 'Status',
+    cell: ({ getValue }) => (
+      <span
+        className={`rounded px-2 py-1 text-xs ${getValue() === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+        {getValue()}
+      </span>
+    ),
+  }),
+];
+
+const demoData: DemoData[] = [
+  { id: '1', name: 'John Doe', email: 'john@example.com', status: 'active' },
+  { id: '2', name: 'Jane Smith', email: 'jane@example.com', status: 'inactive' },
+  { id: '3', name: 'Bob Johnson', email: 'bob@example.com', status: 'active' },
+];
+
+const actions = [
+  {
+    label: 'Edit',
+    icon: EditIcon,
+    onClick: (row: DemoData) => console.log('Edit:', row),
+  },
+  {
+    label: 'Delete',
+    icon: Trash2Icon,
+    variant: 'destructive' as const,
+    onClick: (row: DemoData) => console.log('Delete:', row),
+  },
+];
+
+export default function DemoPage() {
+  const [selectedRows, setSelectedRows] = useState<Record<string, boolean>>({});
+
+  // Mock query state
+  const mockQuery = {
+    data: { rows: demoData, cursor: undefined },
+    isLoading: false,
+    isError: false,
+  } as any;
+
+  const tableState = {
+    query: mockQuery,
+    limit: 10,
+    cursor: '',
+    sorting: [],
+    globalFilter: '',
+    columnVisibility: {},
+    columnPinning: {},
+    columnOrder: [],
+    rowSelection: selectedRows,
+    setLimit: () => {},
+    setCursor: () => {},
+    setSorting: () => {},
+    setGlobalFilter: () => {},
+    setColumnVisibility: () => {},
+    setColumnPinning: () => {},
+    setColumnOrder: () => {},
+    setRowSelection: setSelectedRows,
+  };
 
   return (
-    <div className="md:grids-col-2 grid p-4 **:data-[slot=card]:shadow-none md:gap-4 lg:grid-cols-10 xl:grid-cols-11">
-      <div className="grid gap-4 lg:col-span-4 xl:col-span-6">
-        <CardsStats />
-        <div className="grid gap-1 sm:grid-cols-[auto_1fr] md:hidden">
-          <CardsCalendar />
-
-          <div className="pt-3 sm:pt-0 sm:pl-2 xl:pl-4">
-            <CardsActivityGoal />
-          </div>
-          <div className="pt-3 sm:col-span-2 xl:pt-4">
-            <CardsExerciseMinutes />
-          </div>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-          <div className="flex flex-col gap-4">
-            <CardsForms />
-            <CardsTeamMembers />
-            <CardsCookieSettings />
-          </div>
-          <div className="flex flex-col gap-4">
-            <CardsCreateAccount />
-            <CardsChat />
-            <div className="hidden xl:block">
-              <CardsReportIssue />
-            </div>
-          </div>
-        </div>
+    <div className="space-y-8 p-6">
+      <div>
+        <h1 className="mb-4 text-2xl font-bold">Data Table Select/Actions Demo</h1>
+        <p className="mb-6 text-gray-600">
+          This demo shows the enhanced first column approach that combines select/actions with the
+          first column content.
+        </p>
       </div>
-      <div className="flex flex-col gap-4 lg:col-span-6 xl:col-span-5">
-        <div className="hidden gap-1 sm:grid-cols-[auto_1fr] md:grid">
-          <CardsCalendar />
-          <div className="pt-3 sm:pt-0 sm:pl-2 xl:pl-3">
-            <CardsActivityGoal />
+
+      {/* Select + Actions */}
+      <div>
+        <h2 className="mb-4 text-xl font-semibold">Select + Actions</h2>
+        <p className="mb-4 text-sm text-gray-500">
+          Shows both selection checkbox and actions dropdown combined with the first column content.
+        </p>
+        <DataTableProvider<DemoData> {...tableState} columns={columns} selectable actions={actions}>
+          <div className="overflow-hidden rounded-lg border">
+            <DataTable<DemoData> />
           </div>
-          <div className="pt-3 sm:col-span-2 xl:pt-3">
-            <CardsExerciseMinutes />
+        </DataTableProvider>
+      </div>
+
+      {/* Actions Only */}
+      <div>
+        <h2 className="mb-4 text-xl font-semibold">Actions Only</h2>
+        <p className="mb-4 text-sm text-gray-500">
+          Shows how it works with only actions (no selection).
+        </p>
+        <DataTableProvider<DemoData>
+          {...tableState}
+          columns={columns}
+          selectable={false}
+          actions={actions}>
+          <div className="overflow-hidden rounded-lg border">
+            <DataTable<DemoData> />
           </div>
-          <div className="pt-3 sm:col-span-2 xl:pt-3">
-            <Card>
-              <CardHeader>
-                <CardTitle>Theme</CardTitle>
-                <CardDescription>Change the theme of the app.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button onClick={() => setTheme(Theme.LIGHT)}>Light</Button>
-                &nbsp;
-                <Button onClick={() => setTheme(Theme.DARK)}>Dark</Button>
-              </CardContent>
-            </Card>
+        </DataTableProvider>
+      </div>
+
+      {/* Selection Only */}
+      <div>
+        <h2 className="mb-4 text-xl font-semibold">Selection Only</h2>
+        <p className="mb-4 text-sm text-gray-500">
+          Shows how it works with only selection (no actions).
+        </p>
+        <DataTableProvider<DemoData> {...tableState} columns={columns} selectable actions={[]}>
+          <div className="overflow-hidden rounded-lg border">
+            <DataTable<DemoData> />
           </div>
-        </div>
-        <div className="hidden md:block">
-          <CardsPayments />
-        </div>
-        <CardsShare />
-        <div className="xl:hidden">
-          <CardsReportIssue />
-        </div>
+        </DataTableProvider>
       </div>
     </div>
   );

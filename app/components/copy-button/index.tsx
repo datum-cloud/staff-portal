@@ -1,5 +1,5 @@
+import Tooltip from '@/components/tooltip';
 import { Button } from '@/modules/shadcn/ui/button';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/modules/shadcn/ui/tooltip';
 import { toast } from '@/modules/toast';
 import { Copy } from 'lucide-react';
 
@@ -30,17 +30,14 @@ function CopyButton({
   };
 
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Button
-          variant={variant}
-          size="icon"
-          onClick={handleCopy}
-          className={size === 'sm' ? 'h-6 w-6' : 'h-8 w-8'}>
-          <Copy className={size === 'sm' ? 'h-4 w-4' : 'h-4 w-4'} />
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent>{tooltipText}</TooltipContent>
+    <Tooltip message={tooltipText}>
+      <Button
+        variant={variant}
+        size="icon"
+        onClick={handleCopy}
+        className={size === 'sm' ? 'h-6 w-6' : 'h-8 w-8'}>
+        <Copy className={size === 'sm' ? 'h-4 w-4' : 'h-4 w-4'} />
+      </Button>
     </Tooltip>
   );
 }

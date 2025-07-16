@@ -1,4 +1,7 @@
-import { createSelectColumn } from '../components/data-table-select';
+import {
+  enhanceFirstColumnWithSelectActions,
+  type ActionItem,
+} from '../components/data-table-select-actions';
 import { UseQueryResult } from '@tanstack/react-query';
 import {
   ColumnDef,
@@ -48,6 +51,7 @@ interface DataTableProviderProps<TData, TQuery = DataTableQuery<TData>> {
   query: UseQueryResult<TQuery>;
   transform?: (raw: TQuery) => DataTableQuery<TData>;
   selectable?: boolean;
+  actions?: ActionItem<TData>[];
   getRowId?: (row: TData, index: number, parent?: any) => string;
 
   limit: number;
@@ -76,6 +80,7 @@ export function DataTableProvider<TData, TQuery = DataTableQuery<TData>>({
   query,
   transform,
   selectable = false,
+  actions,
   getRowId,
   children,
   limit,
@@ -126,10 +131,28 @@ export function DataTableProvider<TData, TQuery = DataTableQuery<TData>>({
     }
   }, [sorting, globalFilter, limit]);
 
-  // Add select column if selectable is enabled
+  // Add flexible select/actions column
   const enhancedColumns = useMemo(() => {
-    return selectable ? [createSelectColumn<TData>(), ...columns] : columns;
-  }, [selectable, columns]);
+    const hasActions = actions && actions.length > 0;
+    const isSelectable = selectable;
+
+    // If no actions and not selectable, return original columns
+    if (!hasActions && !isSelectable) {
+      return columns;
+    }
+
+    // Always use the enhanced first column approach
+    if (columns.length > 0) {
+      const [firstColumn, ...restColumns] = columns;
+      const enhancedFirstColumn = enhanceFirstColumnWithSelectActions(firstColumn, {
+        selectable,
+        actions,
+      });
+      return [enhancedFirstColumn, ...restColumns];
+    }
+
+    return columns;
+  }, [selectable, actions, columns]);
 
   const table = useReactTable<TData>({
     data: rows,

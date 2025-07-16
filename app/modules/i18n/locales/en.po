@@ -17,6 +17,20 @@ msgstr ""
 msgid "Account"
 msgstr "Account"
 
+#. placeholder {0}: Object.keys(tableState.rowSelection).length
+#: app/routes/organization/index.tsx:136
+msgid "Are you sure you want to delete {0} selected organization(s)? This action cannot be undone."
+msgstr "Are you sure you want to delete {0} selected organization(s)? This action cannot be undone."
+
+#. placeholder {0}: deleteDialog.orgs[0]?.metadata.name
+#: app/routes/organization/index.tsx:137
+msgid "Are you sure you want to delete organization \"{0}\"? This action cannot be undone."
+msgstr "Are you sure you want to delete organization \"{0}\"? This action cannot be undone."
+
+#: app/routes/organization/index.tsx:140
+msgid "Cancel"
+msgstr "Cancel"
+
 #: app/routes/user/detail/index.tsx:69
 #: app/routes/project/detail/index.tsx:57
 #: app/routes/organization/detail/project.tsx:33
@@ -33,11 +47,24 @@ msgstr "Dark"
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: app/routes/organization/index.tsx:72
+#: app/routes/organization/index.tsx:82
+#: app/routes/organization/index.tsx:139
+msgid "Delete"
+msgstr "Delete"
+
+#: app/routes/organization/index.tsx:133
+msgid "Delete Organization"
+msgstr "Delete Organization"
+
+#: app/routes/organization/index.tsx:133
+msgid "Delete Organizations"
+msgstr "Delete Organizations"
+
+#: app/routes/organization/index.tsx:106
 msgid "Delete Selected"
 msgstr "Delete Selected"
 
-#: app/routes/organization/index.tsx:27
+#: app/routes/organization/index.tsx:31
 #: app/routes/organization/detail/index.tsx:45
 msgid "Description"
 msgstr "Description"
@@ -45,6 +72,10 @@ msgstr "Description"
 #: app/routes/user/detail/index.tsx:59
 msgid "Email"
 msgstr "Email"
+
+#: app/routes/organization/index.tsx:76
+msgid "Failed to delete organization(s)"
+msgstr "Failed to delete organization(s)"
 
 #: app/routes/user/detail/index.tsx:47
 msgid "Full Name"
@@ -70,14 +101,13 @@ msgstr "Log out"
 
 #: app/routes/project/index.tsx:22
 #: app/routes/project/detail/index.tsx:32
-#: app/routes/organization/index.tsx:21
+#: app/routes/organization/index.tsx:25
 #: app/routes/organization/detail/project.tsx:27
 #: app/routes/organization/detail/index.tsx:32
 msgid "Name"
 msgstr "Name"
 
 #: app/routes/project/index.tsx:54
-#: app/routes/organization/index.tsx:78
 msgid "New"
 msgstr "New"
 
@@ -95,12 +125,16 @@ msgstr "Organization"
 msgid "Organizations"
 msgstr "Organizations"
 
+#: app/routes/organization/index.tsx:74
+msgid "Organizations deleted successfully"
+msgstr "Organizations deleted successfully"
+
 #: app/routes/project/layout.tsx:5
 #: app/components/app-sidebar/index.tsx:83
 msgid "Projects"
 msgstr "Projects"
 
-#: app/routes/organization/index.tsx:36
+#: app/routes/organization/index.tsx:40
 #: app/routes/organization/detail/index.tsx:55
 msgid "Type"
 msgstr "Type"
