@@ -1,14 +1,11 @@
 import type { Route } from './+types/index';
-import AppActionBar from '@/components/app-actiobar';
 import { DataTable } from '@/modules/data-table/components/data-table';
 import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
 import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';
-import { Button } from '@/modules/shadcn/ui/button';
 import { userQuery } from '@/resources/request/client/user.request';
 import { User, UserResponse } from '@/resources/schemas/user.schema';
 import { metaObject } from '@/utils/helpers';
 import { createColumnHelper } from '@tanstack/react-table';
-import { PlusIcon } from 'lucide-react';
 import { Link } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
@@ -53,13 +50,6 @@ export default function Page() {
         };
       }}
       {...tableState}>
-      <AppActionBar>
-        <Button>
-          <PlusIcon />
-          New
-        </Button>
-      </AppActionBar>
-
       <div className="m-4 flex flex-col gap-2">
         <DataTable<User> />
       </div>
