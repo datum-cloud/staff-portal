@@ -1,16 +1,12 @@
 import type { Route } from './+types/layout';
-import ConfirmDialog from '@/components/confirm-dialog';
+import DeleteActionButton from '@/components/delete-action-button';
 import { SubLayout } from '@/components/sub-layout';
-import Tooltip from '@/components/tooltip';
 import { authenticator } from '@/modules/auth';
-import { Button } from '@/modules/shadcn/ui/button';
 import { toast } from '@/modules/toast';
 import { projectDeleteMutation } from '@/resources/request/client/project.request';
 import { projectDetailQuery } from '@/resources/request/server/project.request';
 import { Project } from '@/resources/schemas/project.schema';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { Trash2Icon } from 'lucide-react';
-import { useState } from 'react';
+import { useLingui } from '@lingui/react/macro';
 import { Outlet, useLoaderData, useNavigate } from 'react-router';
 
 export const handle = {
@@ -29,15 +25,10 @@ export default function Layout() {
   const navigate = useNavigate();
   const data = useLoaderData() as Project;
 
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-  const handleDeleteOrg = async () => {
+  const handleDeleteProject = async () => {
     try {
       await projectDeleteMutation(data.metadata.name);
-
-      setDeleteDialogOpen(false);
       navigate('/projects');
-
       toast.success(t`Project deleted successfully`);
     } catch (error) {
       toast.error(t`Failed to delete project`);
@@ -45,31 +36,17 @@ export default function Layout() {
   };
 
   return (
-    <>
-      <ConfirmDialog
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        title={t`Delete Project`}
-        description={t`Are you sure you want to delete project "${data.metadata.name}"? This action cannot be undone.`}
-        confirmText={t`Delete`}
-        cancelText={t`Cancel`}
-        variant="destructive"
-        onConfirm={handleDeleteOrg}
-        requireConfirmation
-      />
-
-      <SubLayout>
-        <SubLayout.ActionBar>
-          <Tooltip message={<Trans>Delete</Trans>}>
-            <Button variant="destructive" size="sm" onClick={() => setDeleteDialogOpen(true)}>
-              <Trash2Icon />
-            </Button>
-          </Tooltip>
-        </SubLayout.ActionBar>
-        <SubLayout.Content>
-          <Outlet />
-        </SubLayout.Content>
-      </SubLayout>
-    </>
+    <SubLayout>
+      <SubLayout.ActionBar>
+        <DeleteActionButton
+          itemType="Project"
+          description={t`Are you sure you want to delete project "${data.metadata.name}"? This action cannot be undone.`}
+          onConfirm={handleDeleteProject}
+        />
+      </SubLayout.ActionBar>
+      <SubLayout.Content>
+        <Outlet />
+      </SubLayout.Content>
+    </SubLayout>
   );
 }
