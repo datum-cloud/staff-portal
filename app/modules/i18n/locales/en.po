@@ -47,11 +47,6 @@ msgstr "Created at"
 msgid "Dark"
 msgstr "Dark"
 
-#: app/components/app-toolbar/index.tsx:41
-#: app/components/app-sidebar/index.tsx:65
-msgid "Dashboard"
-msgstr "Dashboard"
-
 #: app/components/delete-action-button/index.tsx:40
 #: app/components/delete-action-button/index.tsx:47
 msgid "Delete"

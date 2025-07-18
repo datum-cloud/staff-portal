@@ -37,12 +37,13 @@ const AppToolbar = () => {
       )}>
       <Breadcrumb>
         <BreadcrumbList>
-          <BreadcrumbItem className="hidden md:block">
+          {/* TODO: Temporary hide dashboard breadcrumb */}
+          {/* <BreadcrumbItem className="hidden md:block">
             <Link to="/">{t`Dashboard`}</Link>
-          </BreadcrumbItem>
+          </BreadcrumbItem> */}
           {crumbs.map((crumb, idx) => (
             <React.Fragment key={crumb.path}>
-              <BreadcrumbSeparator className="hidden md:block" />
+              {idx !== 0 && <BreadcrumbSeparator className="hidden md:block" />}
               <BreadcrumbItem>
                 {idx === crumbs.length - 1 ? (
                   <BreadcrumbPage>{crumb.name}</BreadcrumbPage>
