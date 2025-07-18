@@ -36,7 +36,7 @@ msgstr "Are you sure you want to delete user \"{0}\"? This action cannot be undo
 msgid "Cancel"
 msgstr "Cancel"
 
-#: app/routes/user/detail/index.tsx:70
+#: app/routes/user/detail/index.tsx:68
 #: app/routes/project/detail/index.tsx:57
 #: app/routes/organization/detail/project.tsx:33
 #: app/routes/organization/detail/index.tsx:65
@@ -61,7 +61,7 @@ msgstr "Delete {itemType}"
 msgid "Description"
 msgstr "Description"
 
-#: app/routes/user/detail/index.tsx:60
+#: app/routes/user/detail/index.tsx:58
 msgid "Email"
 msgstr "Email"
 
@@ -81,11 +81,11 @@ msgstr "Failed to delete project"
 msgid "Failed to delete user"
 msgstr "Failed to delete user"
 
-#: app/routes/user/detail/index.tsx:48
+#: app/routes/user/detail/index.tsx:46
 msgid "Full Name"
 msgstr "Full Name"
 
-#: app/routes/user/detail/index.tsx:35
+#: app/routes/user/detail/index.tsx:33
 msgid "ID"
 msgstr "ID"
 

@@ -36,7 +36,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:70
+#: app/routes/user/detail/index.tsx:68
 #: app/routes/project/detail/index.tsx:57
 #: app/routes/organization/detail/project.tsx:33
 #: app/routes/organization/detail/index.tsx:65
@@ -61,7 +61,7 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:60
+#: app/routes/user/detail/index.tsx:58
 msgid "Email"
 msgstr ""
 
@@ -81,11 +81,11 @@ msgstr ""
 msgid "Failed to delete user"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:48
+#: app/routes/user/detail/index.tsx:46
 msgid "Full Name"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:35
+#: app/routes/user/detail/index.tsx:33
 msgid "ID"
 msgstr ""
 
