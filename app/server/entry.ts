@@ -49,9 +49,15 @@ app.use(
     contentSecurityPolicy: {
       reportTo: env.isDev ? '/' : undefined,
       defaultSrc: ["'self'"],
-      connectSrc: ["'self'", ...(env.isDev ? ['ws:'] : []), env.API_URL],
+      connectSrc: [
+        "'self'",
+        ...(env.isDev ? ['ws:'] : []),
+        env.API_URL,
+        'https://*.marker.io',
+        'https://*.sentry.io',
+      ],
       fontSrc: ["'self'"],
-      frameSrc: ["'self'"],
+      frameSrc: ["'self'", 'https://*.marker.io', 'https://*.sentry.io'],
       imgSrc: ["'self'", 'data:'],
       // Allow all script types with nonce
       scriptSrc: ["'strict-dynamic'", "'self'", NONCE],
@@ -59,6 +65,8 @@ app.use(
       scriptSrcElem: ["'strict-dynamic'", "'self'", NONCE],
       // Allow inline event handlers with nonce
       scriptSrcAttr: [NONCE],
+      // Allow inline styles for third-party widgets
+      styleSrc: ["'self'", "'unsafe-inline'"],
       upgradeInsecureRequests: [],
     },
   })

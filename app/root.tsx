@@ -4,6 +4,7 @@ import GenericError from '@/components/error/generic';
 import { ClientHintCheck } from '@/components/misc/client-hints';
 import { loadCatalog, useLocale } from '@/modules/i18n/lingui';
 import { linguiServer } from '@/modules/i18n/lingui.server';
+import MarkerIoEmbed from '@/modules/markerio';
 import { configureProgress, startProgress, stopProgress } from '@/modules/nprogress';
 import { queryClient } from '@/modules/tanstack/query';
 import { Toaster } from '@/modules/toast';
@@ -90,6 +91,8 @@ function App() {
           }
         />
 
+        <MarkerIoEmbed nonce={nonce} />
+
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
         <script
@@ -98,6 +101,37 @@ function App() {
             __html: `window.ENV = ${JSON.stringify(data?.ENV)}`,
           }}
         />
+        {/* <script
+          nonce={nonce}
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.markerConfig = {
+                project: '687952f45b4bbadf4fa3f66e', 
+                source: 'snippet',
+              };
+
+              !function(e,r,a){
+                if(!e.__Marker){
+                  e.__Marker = {};
+                  var t = [], n = { __cs: t };
+                  ["show","hide","isVisible","capture","cancelCapture","unload","reload","isExtensionInstalled","setReporter","clearReporter","setCustomData","on","off"]
+                    .forEach(function(e){
+                      n[e]=function(){
+                        var r = Array.prototype.slice.call(arguments);
+                        r.unshift(e), t.push(r)
+                      }
+                    });
+                  e.Marker = n;
+                  var s = r.createElement("script");
+                  s.async = 1;
+                  s.src = "https://edge.marker.io/latest/shim.js";
+                  var i = r.getElementsByTagName("script")[0];
+                  i.parentNode.insertBefore(s, i)
+                }
+              }(window, document);
+            `,
+          }}
+        /> */}
       </body>
     </html>
   );
