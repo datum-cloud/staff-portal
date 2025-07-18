@@ -4,6 +4,7 @@ import GenericError from '@/components/error/generic';
 import { ClientHintCheck } from '@/components/misc/client-hints';
 import { loadCatalog, useLocale } from '@/modules/i18n/lingui';
 import { linguiServer } from '@/modules/i18n/lingui.server';
+import MarkerIoEmbed from '@/modules/markerio';
 import { configureProgress, startProgress, stopProgress } from '@/modules/nprogress';
 import { queryClient } from '@/modules/tanstack/query';
 import { Toaster } from '@/modules/toast';
@@ -89,6 +90,8 @@ function App() {
             } as React.CSSProperties
           }
         />
+
+        <MarkerIoEmbed nonce={nonce} />
 
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
