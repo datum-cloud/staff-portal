@@ -1,5 +1,6 @@
 import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/data-table';
 import { Button } from '@/modules/shadcn/ui/button';
+import { logger } from '@/utils/logger';
 import { createColumnHelper } from '@tanstack/react-table';
 import { EditIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
@@ -42,13 +43,13 @@ const actions = [
   {
     label: 'Edit',
     icon: EditIcon,
-    onClick: (row: DemoData) => console.log('Edit:', row),
+    onClick: (row: DemoData) => logger.business('Edit demo row', { rowId: row.id, row }),
   },
   {
     label: 'Delete',
     icon: Trash2Icon,
     variant: 'destructive' as const,
-    onClick: (row: DemoData) => console.log('Delete:', row),
+    onClick: (row: DemoData) => logger.business('Delete demo row', { rowId: row.id, row }),
   },
 ];
 

@@ -16,6 +16,11 @@ declare module 'react-router' {
      * The CSP nonce
      */
     readonly cspNonce: string;
+
+    /**
+     * The request ID
+     */
+    readonly requestId: string;
   }
 }
 

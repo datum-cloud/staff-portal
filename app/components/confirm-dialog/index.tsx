@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from '@/modules/shadcn/ui/dialog';
 import { Input } from '@/modules/shadcn/ui/input';
+import { logger } from '@/utils/logger';
 import { Trans } from '@lingui/react/macro';
 import { useState } from 'react';
 
@@ -54,7 +55,11 @@ export default function ConfirmDialog({
       // Reset confirmation input when dialog closes
       setConfirmationInput('');
     } catch (error) {
-      console.error('Error during confirmation:', error);
+      logger.error('Error during confirmation', {
+        error: error instanceof Error ? error.message : String(error),
+        title,
+        action: 'confirm',
+      });
     } finally {
       setIsLoading(false);
     }

@@ -36,7 +36,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:69
+#: app/routes/user/detail/index.tsx:68
 #: app/routes/project/detail/index.tsx:57
 #: app/routes/organization/detail/project.tsx:33
 #: app/routes/organization/detail/index.tsx:65
@@ -61,11 +61,11 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:59
+#: app/routes/user/detail/index.tsx:58
 msgid "Email"
 msgstr ""
 
-#: app/components/confirm-dialog/index.tsx:96
+#: app/components/confirm-dialog/index.tsx:101
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr ""
 
@@ -81,11 +81,11 @@ msgstr ""
 msgid "Failed to delete user"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:47
+#: app/routes/user/detail/index.tsx:46
 msgid "Full Name"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:34
+#: app/routes/user/detail/index.tsx:33
 msgid "ID"
 msgstr ""
 

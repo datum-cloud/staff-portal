@@ -6,6 +6,7 @@ import {
   BadRequestError,
   HttpError,
 } from '@/utils/errors';
+import { logger } from '@/utils/logger';
 import Axios, {
   AxiosError,
   AxiosRequestConfig,
@@ -22,9 +23,9 @@ export const http = Axios.create({
 function defaultLogCallback(curlResult: any, err: any) {
   const { command } = curlResult;
   if (err) {
-    console.error(err);
+    logger.error('Axios curl error', { error: err instanceof Error ? err.message : String(err) });
   } else {
-    console.info(command);
+    logger.debug('Axios curl command', { command });
   }
 }
 

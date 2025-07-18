@@ -1,4 +1,5 @@
 import { AuthenticationError } from '@/utils/errors';
+import { logger } from '@/utils/logger';
 import { OAuth2Strategy } from 'remix-auth-oauth2';
 import { CodeChallengeMethod } from 'remix-auth-oauth2';
 
@@ -46,8 +47,13 @@ export async function createOAuthStrategyWithFallback<T>(
     const strategy = await createStrategy();
     return { strategy, isFallback: false };
   } catch (error) {
-    console.warn(`⚠️  Failed to discover ${strategyName} OIDC configuration:`, error);
-    console.warn(`⚠️  Authentication will not be available until OIDC issuer is accessible`);
+    logger.warn(`Failed to discover ${strategyName} OIDC configuration`, {
+      strategyName,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    logger.warn(`Authentication will not be available until OIDC issuer is accessible`, {
+      strategyName,
+    });
 
     const fallbackStrategy = new StrategyClass(fallbackConfig, async () => {
       throw new AuthenticationError('OIDC issuer is not accessible. Please try again later.');
