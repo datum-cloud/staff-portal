@@ -1,6 +1,7 @@
 import { loadCatalog } from '@/modules/i18n/lingui';
 import { linguiServer } from '@/modules/i18n/lingui.server';
 import { NonceProvider } from '@/providers/nonce.provider';
+import { logger } from '@/utils/logger';
 import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
 import { createReadableStreamFromReadable } from '@react-router/node';
@@ -62,14 +63,19 @@ export default async function handleRequest(
           pipe(body);
         },
         onShellError(error: unknown) {
-          console.error(`❌ [${requestId}] Shell rendering error:`, error);
+          logger.error(`Shell rendering error`, {
+            reqId: requestId,
+            error: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : undefined,
+          });
 
           reject(error);
         },
         onError(error: unknown) {
           responseStatusCode = 500;
 
-          console.error(`❌ [${requestId}] React rendering error (500):`, {
+          logger.error(`React rendering error (500)`, {
+            reqId: requestId,
             error: error instanceof Error ? error.message : String(error),
             stack: error instanceof Error ? error.stack : undefined,
             url: request.url,
@@ -77,7 +83,10 @@ export default async function handleRequest(
           });
 
           if (shellRendered) {
-            console.error(`❌ [${requestId}] Error after shell rendered:`, error);
+            logger.error(`Error after shell rendered`, {
+              reqId: requestId,
+              error: error instanceof Error ? error.message : String(error),
+            });
           }
         },
       }

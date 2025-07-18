@@ -12,5 +12,6 @@ export const nodeAdapter = async (app: Hono<{ Variables: EnvVariables }>) => {
   return createNodeHonoServer({
     app,
     getLoadContext,
+    defaultLogger: false,
   });
 };

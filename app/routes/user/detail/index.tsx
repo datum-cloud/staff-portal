@@ -6,8 +6,9 @@ import { Card, CardContent } from '@/modules/shadcn/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
 import { User } from '@/resources/schemas/user.schema';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
+import { logger } from '@/utils/logger';
 import { Trans } from '@lingui/react/macro';
-import { Link, useRouteLoaderData } from 'react-router';
+import { useRouteLoaderData } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const data = extractDataFromMatches<User>(matches, 'routes/user/detail/layout');
@@ -16,7 +17,7 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 
 export default function Page() {
   const data = useRouteLoaderData('routes/user/detail/layout') as User;
-  console.log(data);
+  logger.info('data', { data });
   return (
     <div className="m-4 flex flex-col gap-1">
       <Title>

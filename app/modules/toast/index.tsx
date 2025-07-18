@@ -769,7 +769,8 @@ const Toaster = React.forwardRef<HTMLElement, ToasterProps>(function Toaster(pro
             setActualTheme('light');
           }
         } catch (e) {
-          console.error(e);
+          // This is a Safari-specific error that can be safely ignored
+          // It's related to deprecated addListener API in older Safari versions
         }
       });
     }
