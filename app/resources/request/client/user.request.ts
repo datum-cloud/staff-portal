@@ -14,3 +14,10 @@ export const userQuery = (params?: ListQueryParams) => {
     .output(UserResponseSchema)
     .execute();
 };
+
+export const userDeleteMutation = (userId: string) => {
+  return apiRequestClient({
+    method: 'DELETE',
+    url: `/apis/iam.miloapis.com/v1alpha1/users/${userId}`,
+  }).execute();
+};

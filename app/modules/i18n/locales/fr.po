@@ -18,11 +18,21 @@ msgid "Account"
 msgstr ""
 
 #. placeholder {0}: data.metadata.name
-#: app/routes/organization/detail/layout.tsx:68
+#: app/routes/organization/detail/layout.tsx:59
 msgid "Are you sure you want to delete organization \"{0}\"? This action cannot be undone."
 msgstr ""
 
-#: app/routes/organization/detail/layout.tsx:70
+#. placeholder {0}: data.metadata.name
+#: app/routes/project/detail/layout.tsx:43
+msgid "Are you sure you want to delete project \"{0}\"? This action cannot be undone."
+msgstr ""
+
+#. placeholder {0}: data.metadata.name
+#: app/routes/user/detail/layout.tsx:47
+msgid "Are you sure you want to delete user \"{0}\"? This action cannot be undone."
+msgstr ""
+
+#: app/components/delete-action-button/index.tsx:41
 msgid "Cancel"
 msgstr ""
 
@@ -42,13 +52,13 @@ msgstr ""
 msgid "Dashboard"
 msgstr ""
 
-#: app/routes/organization/detail/layout.tsx:69
-#: app/routes/organization/detail/layout.tsx:78
+#: app/components/delete-action-button/index.tsx:40
+#: app/components/delete-action-button/index.tsx:47
 msgid "Delete"
 msgstr ""
 
-#: app/routes/organization/detail/layout.tsx:67
-msgid "Delete Organization"
+#: app/components/delete-action-button/index.tsx:38
+msgid "Delete {itemType}"
 msgstr ""
 
 #: app/routes/organization/index.tsx:24
@@ -64,8 +74,16 @@ msgstr ""
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr ""
 
-#: app/routes/organization/detail/layout.tsx:45
+#: app/routes/organization/detail/layout.tsx:37
 msgid "Failed to delete organization"
+msgstr ""
+
+#: app/routes/project/detail/layout.tsx:34
+msgid "Failed to delete project"
+msgstr ""
+
+#: app/routes/user/detail/layout.tsx:38
+msgid "Failed to delete user"
 msgstr ""
 
 #: app/routes/user/detail/index.tsx:47
@@ -90,7 +108,7 @@ msgstr ""
 msgid "Log out"
 msgstr ""
 
-#: app/routes/project/index.tsx:22
+#: app/routes/project/index.tsx:19
 #: app/routes/project/detail/index.tsx:32
 #: app/routes/organization/index.tsx:18
 #: app/routes/organization/detail/project.tsx:27
@@ -98,26 +116,26 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: app/routes/project/index.tsx:54
-msgid "New"
-msgstr ""
-
 #: app/components/app-sidebar/nav-user.tsx:84
 msgid "Notifications"
 msgstr ""
 
-#: app/routes/project/index.tsx:28
+#: app/routes/project/index.tsx:25
 #: app/routes/project/detail/index.tsx:45
 msgid "Organization"
 msgstr ""
 
-#: app/routes/organization/detail/layout.tsx:43
+#: app/routes/organization/detail/layout.tsx:35
 msgid "Organization deleted successfully"
 msgstr ""
 
 #: app/routes/organization/layout.tsx:5
 #: app/components/app-sidebar/index.tsx:77
 msgid "Organizations"
+msgstr ""
+
+#: app/routes/project/detail/layout.tsx:32
+msgid "Project deleted successfully"
 msgstr ""
 
 #: app/routes/project/layout.tsx:5
@@ -128,6 +146,10 @@ msgstr ""
 #: app/routes/organization/index.tsx:33
 #: app/routes/organization/detail/index.tsx:55
 msgid "Type"
+msgstr ""
+
+#: app/routes/user/detail/layout.tsx:36
+msgid "User deleted successfully"
 msgstr ""
 
 #: app/components/app-sidebar/index.tsx:71

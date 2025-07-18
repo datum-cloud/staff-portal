@@ -14,3 +14,10 @@ export const projectQuery = (params?: ListQueryParams) => {
     .output(ProjectResponseSchema)
     .execute();
 };
+
+export const projectDeleteMutation = (projectName: string) => {
+  return apiRequestClient({
+    method: 'DELETE',
+    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}`,
+  }).execute();
+};
