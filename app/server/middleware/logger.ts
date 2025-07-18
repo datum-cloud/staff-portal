@@ -54,6 +54,12 @@ export function honoLoggerMiddleware() {
   return createMiddleware(async (c: Context, next: Next) => {
     const startTime = Date.now();
     const requestId = c.get('requestId');
+    const path = c.req.path;
+
+    // Skip logging for health check and metrics endpoints
+    if (path === '/_healthz' || path === '/_readyz' || path === '/metrics') {
+      return next();
+    }
 
     // Log request start
     logger.info(`${c.req.method} ${c.req.url}`, {
