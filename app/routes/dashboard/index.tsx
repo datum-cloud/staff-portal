@@ -1,16 +1,16 @@
 import type { Route } from './+types/index';
 import { metaObject } from '@/utils/helpers';
+import { redirect } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
   return metaObject('Dashboard');
 };
 
+export async function loader({ request }: Route.LoaderArgs) {
+  // TODO: Temporary redirect to users
+  return redirect('/users');
+}
+
 export default function Page() {
-  return (
-    <div className="flex flex-1 flex-col gap-4 p-4">
-      {Array.from({ length: 24 }).map((_, index) => (
-        <div key={index} className="bg-muted/50 aspect-video h-12 w-full rounded-lg" />
-      ))}
-    </div>
-  );
+  return null;
 }

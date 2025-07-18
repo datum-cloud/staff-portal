@@ -61,12 +61,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   };
 
   const menuItems: MenuItem[] = [
-    {
-      title: t`Dashboard`,
-      icon: Home,
-      href: '/',
-      hasSubmenu: false,
-    },
+    // {
+    //   title: t`Dashboard`,
+    //   icon: Home,
+    //   href: '/',
+    //   hasSubmenu: false,
+    // },
     {
       title: t`Users`,
       icon: Users,
