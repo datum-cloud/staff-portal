@@ -1,4 +1,5 @@
 import type { Route } from './+types/index';
+import IDDisplay from '@/components/id-display';
 import { DataTable } from '@/modules/data-table/components/data-table';
 import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
 import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';
@@ -15,20 +16,24 @@ export const meta: Route.MetaFunction = () => {
 const columnHelper = createColumnHelper<User>();
 
 const columns = [
-  columnHelper.accessor('metadata.name', {
-    header: 'ID',
-    cell: ({ getValue }) => {
-      return <Link to={`./${getValue()}`}>{getValue()}</Link>;
-    },
-  }),
   columnHelper.accessor('spec.givenName', {
     header: 'Full Name',
     cell: ({ row }) => {
-      return `${row.original.spec.givenName} ${row.original.spec.familyName}`;
+      return (
+        <Link to={`./${row.original.metadata.name}`}>
+          {row.original.spec.givenName} {row.original.spec.familyName}
+        </Link>
+      );
     },
   }),
   columnHelper.accessor('spec.email', {
     header: 'Email',
+  }),
+  columnHelper.accessor('metadata.name', {
+    header: 'ID',
+    cell: ({ getValue }) => {
+      return <IDDisplay value={getValue()} />;
+    },
   }),
 ];
 
