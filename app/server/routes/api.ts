@@ -3,6 +3,7 @@ import { apiRequest } from '@/modules/axios/axios.server';
 import { EnvVariables } from '@/server/iface';
 import { env } from '@/utils/config/env.server';
 import { AuthenticationError } from '@/utils/errors';
+import { createRequestLogger } from '@/utils/logger';
 import { AxiosError } from 'axios';
 import { Hono } from 'hono';
 
@@ -17,10 +18,11 @@ api.get('/', async (c) => {
 
 // Internal proxy route - catch-all for /api/internal/*
 api.all('/internal/*', async (c) => {
-  const startTime = Date.now();
-  const requestId = c.get('requestId') || Math.random().toString(36).substring(7);
+  const startTime = performance.now();
+  const reqLogger = createRequestLogger(c);
+  const reqId = c.get('requestId');
 
-  console.log(`🔍 [${requestId}] API Proxy Request Started:`, {
+  reqLogger.info('API Proxy Request Started', {
     method: c.req.method,
     path: c.req.path,
     url: c.req.url,
@@ -95,12 +97,13 @@ api.all('/internal/*', async (c) => {
       ...(requestBody && { data: requestBody }),
     }).execute();
 
-    const duration = Date.now() - startTime;
-    console.log(`✅ [${requestId}] API request successful (${duration}ms)`);
+    const duration = Math.round(performance.now() - startTime);
+    reqLogger.info('API request successful', { duration, path });
 
     // Return the response with appropriate headers
     return c.json(
       {
+        requestId: reqId,
         code: 'PROXY_REQUEST_SUCCESS',
         data: response,
         path,
@@ -113,23 +116,25 @@ api.all('/internal/*', async (c) => {
       }
     );
   } catch (error) {
-    const duration = Date.now() - startTime;
+    const duration = Math.round(performance.now() - startTime);
 
-    console.error(`❌ [${requestId}] API Proxy Error (${duration}ms):`, {
+    reqLogger.error('API Proxy Error', {
       error: error instanceof Error ? error.message : String(error),
       errorType: error?.constructor?.name || typeof error,
       path,
       method: c.req.method,
+      duration,
     });
 
     if (env.isDebug) {
-      console.error(`🔍 [${requestId}] Full error details:`, error);
+      reqLogger.debug('Full error details', { error });
     }
 
     // Handle different types of errors
     if (error instanceof AuthenticationError) {
       return c.json(
         {
+          requestId: reqId,
           code: error.code,
           error: error.message,
           path,
@@ -141,6 +146,7 @@ api.all('/internal/*', async (c) => {
     if (error instanceof AxiosError) {
       return c.json(
         {
+          requestId: reqId,
           code: 'PROXY_REQUEST_FAILED',
           error: error.response?.data?.message || error.message,
           path,
@@ -153,6 +159,7 @@ api.all('/internal/*', async (c) => {
       const body = await error.json();
       return c.json(
         {
+          requestId: reqId,
           code: error.statusText,
           error: body?.message || error.statusText,
           path,
@@ -164,6 +171,7 @@ api.all('/internal/*', async (c) => {
     if (typeof error === 'string') {
       return c.json(
         {
+          requestId: reqId,
           code: 'PROXY_REQUEST_FAILED',
           error: error,
           path,
@@ -175,6 +183,7 @@ api.all('/internal/*', async (c) => {
     // Return a generic error response
     return c.json(
       {
+        requestId: reqId,
         code: 'PROXY_REQUEST_FAILED',
         error: error instanceof Error ? error.message : 'Unknown error',
         path,

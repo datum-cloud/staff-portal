@@ -1,4 +1,5 @@
 import { loadCatalog } from '@/modules/i18n/lingui';
+import { logger } from '@/utils/logger';
 import { i18n } from '@lingui/core';
 import { detect, fromHtmlTag } from '@lingui/detect-locale';
 import { I18nProvider } from '@lingui/react';
@@ -22,4 +23,9 @@ async function main() {
   });
 }
 
-main().catch(console.error);
+main().catch((error) => {
+  logger.error('Client hydration error', {
+    error: error instanceof Error ? error.message : String(error),
+    stack: error instanceof Error ? error.stack : undefined,
+  });
+});

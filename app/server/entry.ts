@@ -3,12 +3,12 @@ import { authenticator, initializeAuthenticator } from '@/modules/auth';
 import { bunAdapter } from '@/server/adapter/bun';
 import { nodeAdapter } from '@/server/adapter/node';
 import { EnvVariables } from '@/server/iface';
+import { honoLoggerMiddleware } from '@/server/middleware';
 import { env } from '@/utils/config/env.server';
+import { logger } from '@/utils/logger';
 import { otel } from '@hono/otel';
 import { prometheus } from '@hono/prometheus';
 import { Hono } from 'hono';
-import type { MiddlewareHandler } from 'hono';
-import { logger } from 'hono/logger';
 import { requestId } from 'hono/request-id';
 import { NONCE, secureHeaders } from 'hono/secure-headers';
 
@@ -23,21 +23,10 @@ if (env.isOtelEnabled) {
   app.use('*', otel());
 }
 
-// Custom logger that filters out health check endpoints
-const customLogger: MiddlewareHandler = async (c, next) => {
-  const path = c.req.path;
-
-  // Skip logging for health check endpoints
-  if (path === '/_healthz' || path === '/_readyz' || path === '/metrics') {
-    return next();
-  }
-
-  // Use the default logger for other endpoints
-  return logger()(c, next);
-};
-
-app.use(customLogger);
 app.use(requestId());
+
+app.use(honoLoggerMiddleware());
+
 app.use(
   '*',
   secureHeaders({
@@ -89,7 +78,7 @@ app.get('/.well-known/appspecific/com.chrome.devtools.json', (c) => {
 export default await (async () => {
   // Initialize authenticator strategies (non-blocking)
   initializeAuthenticator(authenticator).catch((error) => {
-    console.warn('⚠️  Authenticator initialization failed:', error);
+    logger.error('Authenticator initialization failed', { error: error.message });
   });
 
   // Force Node runtime for Cypress

@@ -1,5 +1,6 @@
 import { createContextGenerator } from '../context';
-import { EnvVariables } from '@/server/iface';
+import { EnvVariables } from '../iface';
+import { honoLoggerMiddleware } from '../middleware';
 import { Hono } from 'hono';
 import {
   createGetLoadContext as createNodeGetLoadContext,
@@ -12,5 +13,9 @@ export const nodeAdapter = async (app: Hono<{ Variables: EnvVariables }>) => {
   return createNodeHonoServer({
     app,
     getLoadContext,
+    defaultLogger: false,
+    configure: (app) => {
+      app.use(honoLoggerMiddleware());
+    },
   });
 };
