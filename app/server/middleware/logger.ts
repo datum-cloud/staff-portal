@@ -1,4 +1,4 @@
-import { logger } from '@/utils/logger';
+import { logger, createRequestLogger } from '@/utils/logger';
 import { Context, Next } from 'hono';
 import { createMiddleware } from 'hono/factory';
 
@@ -53,7 +53,6 @@ export function loggerMiddleware() {
 export function honoLoggerMiddleware() {
   return createMiddleware(async (c: Context, next: Next) => {
     const startTime = Date.now();
-    const requestId = c.get('requestId');
     const path = c.req.path;
 
     // Skip logging for health check and metrics endpoints
@@ -61,9 +60,11 @@ export function honoLoggerMiddleware() {
       return next();
     }
 
+    // Create request logger with reqId context
+    const reqLogger = createRequestLogger(c);
+
     // Log request start
-    logger.info(`${c.req.method} ${c.req.url}`, {
-      reqId: requestId,
+    reqLogger.info(`${c.req.method} ${c.req.url}`, {
       method: c.req.method,
       url: c.req.url,
       userAgent: c.req.header('user-agent'),
@@ -74,8 +75,7 @@ export function honoLoggerMiddleware() {
       await next();
     } catch (error) {
       // Log any errors that occur during request processing
-      logger.error('Request processing error', {
-        reqId: requestId,
+      reqLogger.error('Request processing error', {
         error: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
       });
@@ -86,8 +86,7 @@ export function honoLoggerMiddleware() {
     const responseTime = Date.now() - startTime;
 
     // Log response completion
-    logger.info(`${c.req.method} ${c.req.url} - ${c.res.status}`, {
-      reqId: requestId,
+    reqLogger.info(`${c.req.method} ${c.req.url} - ${c.res.status}`, {
       status: c.res.status,
       responseTime: `${responseTime}ms`,
       contentLength: c.res.headers.get('content-length'),

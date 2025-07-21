@@ -4,7 +4,7 @@ import { Loader2Icon } from 'lucide-react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
-const AuthError = ({ message }: { message: string }) => {
+const AuthError = ({ message, requestId }: { message: string; requestId?: string }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,6 +22,13 @@ const AuthError = ({ message }: { message: string }) => {
             <Loader2Icon className="size-4 animate-spin" />
             Logging out...
           </div>
+          {requestId && (
+            <div className="text-muted-foreground rounded-r-md border-l-4 border-red-500 bg-red-50 p-4 text-center text-sm dark:bg-red-950/20">
+              <div className="text-xs">
+                <strong>Request ID:</strong> {requestId}
+              </div>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

@@ -1,3 +1,4 @@
+import { toast } from '@/modules/toast';
 import { logger } from '@/utils/logger';
 import Axios, {
   AxiosError,
@@ -40,15 +41,53 @@ const onResponse = (response: AxiosResponse): AxiosResponse => {
 const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   // console.error(`[response error] [${JSON.stringify(error)}]`);
 
-  // this error mostly comes from forward proxy server
-  switch (error.response?.status) {
-    case 401: {
-      const data = error.response?.data as { error: string; code: string };
-      if (data.code === 'AUTH_ERROR') {
-        window.location.href = '/logout';
+  // Extract error message from response
+  const getErrorMessage = (error: AxiosError): string => {
+    // Try to get error message from response data
+    if (error.response?.data) {
+      const data = error.response.data as any;
+
+      // Handle different response data structures
+      if (typeof data === 'string') {
+        return data;
+      }
+
+      if (typeof data === 'object') {
+        // Common error response formats - prioritize 'error' field for your API format
+        if (data.error) return data.error;
+        if (data.message) return data.message;
+        if (data.detail) return data.detail;
+        if (data.description) return data.description;
+
+        // If it's an object with error details, try to extract meaningful message
+        const errorKeys = Object.keys(data).filter((key) =>
+          ['message', 'error', 'detail', 'description', 'reason', 'cause'].includes(key)
+        );
+        if (errorKeys.length > 0) {
+          return data[errorKeys[0]];
+        }
       }
     }
+
+    // Fallback to status text or generic message
+    return error.response?.statusText || error.message || 'An unexpected error occurred';
+  };
+
+  const errorMessage = getErrorMessage(error);
+
+  // Handle 401 AUTH_ERROR -> redirect to logout
+  if (error.response?.status === 401) {
+    const data = error.response?.data as { error: string; code: string };
+    if (data.code === 'AUTH_ERROR') {
+      window.location.href = '/logout';
+      return Promise.reject(error);
+    }
   }
+
+  // For all other errors, show toast with meaningful info
+  toast.error('Error', {
+    description: errorMessage,
+  });
 
   return Promise.reject(error);
 };
