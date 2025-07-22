@@ -165,16 +165,18 @@ function ErrorLayout({ children }: { children: React.ReactNode }) {
 export function ErrorBoundary() {
   const error = useRouteError();
   let message = "We've encountered a problem, please try again. Sorry!";
+  let requestId: string | undefined;
 
   if (isRouteErrorResponse(error)) {
     if (error.statusText === 'AUTH_ERROR') {
       return (
         <ErrorLayout>
-          <AuthError message={error.data.message} />
+          <AuthError message={error.data.message} requestId={error.data?.requestId} />
         </ErrorLayout>
       );
     } else if (error?.data?.message) {
       message = error.data.message;
+      requestId = error.data.requestId;
     } else {
       message = `${error.status} ${error.statusText}`;
     }
@@ -184,7 +186,7 @@ export function ErrorBoundary() {
 
   return (
     <ErrorLayout>
-      <GenericError message={message} />
+      <GenericError message={message} requestId={requestId} />
     </ErrorLayout>
   );
 }

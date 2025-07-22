@@ -5,7 +5,7 @@ import { HomeIcon, RefreshCcwIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 
-const GenericError = ({ message }: { message: string }) => {
+const GenericError = ({ message, requestId }: { message: string; requestId?: string }) => {
   const navigate = useNavigate();
   const [isDebug, setIsDebug] = useState(false);
 
@@ -29,11 +29,14 @@ const GenericError = ({ message }: { message: string }) => {
             .
           </p>
 
-          {isDebug && (
-            <div className="text-muted-foreground rounded-r-md border-l-4 border-red-500 bg-red-50 p-4 text-center text-sm dark:bg-red-950/20">
-              <code className="font-mono text-xs">{message}</code>
-            </div>
-          )}
+          <div className="text-muted-foreground rounded-r-md border-l-4 border-red-500 bg-red-50 p-4 text-center text-sm dark:bg-red-950/20">
+            <code className="font-mono text-xs">{message}</code>
+            {requestId && (
+              <div className="mt-2 text-xs">
+                <strong>Request ID:</strong> {requestId}
+              </div>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <Link to={'/'}>

@@ -1,10 +1,11 @@
 import { authenticator } from '@/modules/auth';
 import { apiRequest } from '@/modules/axios/axios.server';
 import { EnvVariables } from '@/server/iface';
+import { logApiError, logApiSuccess } from '@/server/logger';
+import { createErrorResponse, createSuccessResponse } from '@/server/response';
 import { env } from '@/utils/config/env.server';
-import { AuthenticationError } from '@/utils/errors';
+import { AuthenticationError, ConflictError } from '@/utils/errors';
 import { createRequestLogger } from '@/utils/logger';
-import { AxiosError } from 'axios';
 import { Hono } from 'hono';
 
 const API_BASENAME = '/api';
@@ -22,11 +23,22 @@ api.all('/internal/*', async (c) => {
   const reqLogger = createRequestLogger(c);
   const reqId = c.get('requestId');
 
-  reqLogger.info('API Proxy Request Started', {
-    method: c.req.method,
+  // Extract request context for logging
+  const requestContext = {
     path: c.req.path,
+    method: c.req.method,
     url: c.req.url,
-  });
+    userAgent: c.req.header('User-Agent'),
+    ip:
+      c.req.header('x-forwarded-for') ||
+      c.req.header('x-real-ip') ||
+      c.req.header('x-client-ip') ||
+      c.req.header('cf-connecting-ip') ||
+      c.req.header('x-forwarded') ||
+      'unknown',
+  };
+
+  reqLogger.info('API Request Started', requestContext);
 
   // Get cookies from the request
   const cookieHeader = c.req.header('Cookie');
@@ -98,98 +110,49 @@ api.all('/internal/*', async (c) => {
     }).execute();
 
     const duration = Math.round(performance.now() - startTime);
-    reqLogger.info('API request successful', { duration, path });
 
-    // Return the response with appropriate headers
-    return c.json(
-      {
-        requestId: reqId,
-        code: 'PROXY_REQUEST_SUCCESS',
-        data: response,
-        path,
-      },
-      200,
-      {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        Pragma: 'no-cache',
-        Expires: '0',
-      }
-    );
-  } catch (error) {
-    const duration = Math.round(performance.now() - startTime);
+    // Log success with response size estimation
+    const responseSize =
+      typeof response === 'string'
+        ? response.length
+        : response
+          ? JSON.stringify(response).length
+          : 0;
 
-    reqLogger.error('API Proxy Error', {
-      error: error instanceof Error ? error.message : String(error),
-      errorType: error?.constructor?.name || typeof error,
+    logApiSuccess(reqLogger, {
       path,
       method: c.req.method,
       duration,
+      userAgent: requestContext.userAgent,
+      ip: requestContext.ip,
+      responseSize,
+    });
+
+    // Return the response with appropriate headers
+    return c.json(createSuccessResponse(reqId, response, path), 200, {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      Pragma: 'no-cache',
+      Expires: '0',
+    });
+  } catch (error) {
+    const duration = Math.round(performance.now() - startTime);
+
+    // Use typed error logging
+    await logApiError(reqLogger, error, {
+      path,
+      method: c.req.method,
+      duration,
+      userAgent: requestContext.userAgent,
+      ip: requestContext.ip,
     });
 
     if (env.isDebug) {
       reqLogger.debug('Full error details', { error });
     }
 
-    // Handle different types of errors
-    if (error instanceof AuthenticationError) {
-      return c.json(
-        {
-          requestId: reqId,
-          code: error.code,
-          error: error.message,
-          path,
-        },
-        401
-      );
-    }
-
-    if (error instanceof AxiosError) {
-      return c.json(
-        {
-          requestId: reqId,
-          code: 'PROXY_REQUEST_FAILED',
-          error: error.response?.data?.message || error.message,
-          path,
-        },
-        (error?.status as any) || 500
-      );
-    }
-
-    if (error instanceof Response) {
-      const body = await error.json();
-      return c.json(
-        {
-          requestId: reqId,
-          code: error.statusText,
-          error: body?.message || error.statusText,
-          path,
-        },
-        (error?.status as any) || 500
-      );
-    }
-
-    if (typeof error === 'string') {
-      return c.json(
-        {
-          requestId: reqId,
-          code: 'PROXY_REQUEST_FAILED',
-          error: error,
-          path,
-        },
-        500
-      );
-    }
-
-    // Return a generic error response
-    return c.json(
-      {
-        requestId: reqId,
-        code: 'PROXY_REQUEST_FAILED',
-        error: error instanceof Error ? error.message : 'Unknown error',
-        path,
-      },
-      500
-    );
+    // Create error response using the extracted function
+    const { response, status } = await createErrorResponse(reqId, error, path);
+    return c.json(response, status as any);
   }
 });
 

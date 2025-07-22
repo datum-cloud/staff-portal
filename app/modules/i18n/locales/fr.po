@@ -95,7 +95,7 @@ msgstr ""
 
 #: app/routes/auth/logout.tsx:30
 #: app/routes/auth/login.tsx:19
-#: app/routes/auth/callback.tsx:40
+#: app/routes/auth/callback.tsx:51
 msgid "Loading..."
 msgstr ""
 
