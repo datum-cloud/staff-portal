@@ -55,7 +55,8 @@ const AppToolbar = () => {
           ))}
         </BreadcrumbList>
       </Breadcrumb>
-      {actions}
+
+      <div className="flex items-center gap-2">{actions}</div>
     </div>
   );
 };

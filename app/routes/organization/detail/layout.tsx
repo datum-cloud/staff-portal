@@ -40,13 +40,13 @@ export default function Layout() {
 
   const menuItems = [
     {
-      title: 'Overview',
-      href: '',
+      title: t`Overview`,
+      href: `/organizations/${data.metadata.name}`,
       icon: FileText,
     },
     {
-      title: 'Projects',
-      href: './projects',
+      title: t`Projects`,
+      href: `/organizations/${data.metadata.name}/projects`,
       icon: Folders,
     },
   ];

@@ -1,9 +1,9 @@
 import { apiRequestClient } from '@/modules/axios/axios.client';
 import { ListQueryParams } from '@/resources/schemas/common.schema';
 import { OrganizationListResponseSchema } from '@/resources/schemas/organization.schema';
-import { ProjectResponseSchema } from '@/resources/schemas/project.schema';
+import { ProjectListResponseSchema } from '@/resources/schemas/project.schema';
 
-export const orgQuery = (params?: ListQueryParams) => {
+export const orgListQuery = (params?: ListQueryParams) => {
   return apiRequestClient({
     method: 'GET',
     url: '/apis/resourcemanager.miloapis.com/v1alpha1/organizations',
@@ -16,7 +16,7 @@ export const orgQuery = (params?: ListQueryParams) => {
     .execute();
 };
 
-export const orgProjectsQuery = (orgName: string, params?: ListQueryParams) => {
+export const orgProjectListQuery = (orgName: string, params?: ListQueryParams) => {
   return apiRequestClient({
     method: 'GET',
     url: `/apis/resourcemanager.miloapis.com/v1alpha1/organizations/${orgName}/control-plane/apis/resourcemanager.miloapis.com/v1alpha1/projects`,
@@ -25,7 +25,7 @@ export const orgProjectsQuery = (orgName: string, params?: ListQueryParams) => {
       ...(params?.cursor && { continue: params.cursor }),
     },
   })
-    .output(ProjectResponseSchema)
+    .output(ProjectListResponseSchema)
     .execute();
 };
 

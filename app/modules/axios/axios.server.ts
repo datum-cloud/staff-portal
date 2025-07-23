@@ -5,8 +5,10 @@ import {
   AuthorizationError,
   BadRequestError,
   HttpError,
+  NotFoundError,
 } from '@/utils/errors';
 import { logger } from '@/utils/logger';
+import { AsyncLocalStorage } from 'async_hooks';
 import Axios, {
   AxiosError,
   AxiosRequestConfig,
@@ -14,6 +16,19 @@ import Axios, {
   InternalAxiosRequestConfig,
 } from 'axios';
 import { z } from 'zod';
+
+// AsyncLocalStorage to store request context
+const requestContext = new AsyncLocalStorage<{ requestId?: string }>();
+
+// Helper to get current request ID
+function getCurrentRequestId(): string | undefined {
+  return requestContext.getStore()?.requestId;
+}
+
+// Helper to run code with request context
+export function withRequestContext<T>(requestId: string, fn: () => T): T {
+  return requestContext.run({ requestId }, fn);
+}
 
 export const http = Axios.create({
   timeout: 20 * 1000,
@@ -31,6 +46,13 @@ function defaultLogCallback(curlResult: any, err: any) {
 
 const onRequest = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
   // console.info(`[request] [${JSON.stringify(config)}]`);
+
+  // Automatically add request ID to headers if available in current context
+  const requestId = getCurrentRequestId();
+  if (requestId) {
+    config.headers = config.headers || {};
+    config.headers['X-Request-ID'] = requestId;
+  }
 
   // Only log the curl command in development mode
   if (env.isDev) {
@@ -75,6 +97,20 @@ const onResponse = (response: AxiosResponse): AxiosResponse => {
 const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   // console.error(`[response error] [${JSON.stringify(error)}]`);
 
+  // Get requestId from AsyncLocalStorage
+  const requestId = getCurrentRequestId();
+
+  // Log the API request error with consistent format
+  if (requestId) {
+    logger.error('API Request Error', {
+      requestId,
+      url: error.config?.url,
+      method: error.config?.method,
+      status: error.response?.status,
+      error: error.message,
+    });
+  }
+
   // this error mostly comes from API server
   switch (error.response?.status) {
     case 401: {
@@ -83,17 +119,29 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
         error_description: string;
       };
       if (data.error === 'access_denied' && data.error_description === 'access token invalid') {
-        throw new AuthenticationError('Session expired').toResponse();
+        const authError = new AuthenticationError('Session expired', requestId);
+        throw authError.toResponse();
       }
     }
     case 403: {
       const data = error.response?.data as { message: string; reason: string };
-      throw new AuthorizationError(
-        data?.message ?? 'Not authorized to perform this action'
-      ).toResponse();
+      const authError = new AuthorizationError(
+        data?.message ?? 'Not authorized to perform this action',
+        requestId
+      );
+      throw authError.toResponse();
+    }
+    case 404: {
+      const notFoundError = new NotFoundError('Resource not found', requestId);
+      throw notFoundError.toResponse();
     }
     default: {
-      throw new HttpError('An unexpected error occurred', error.response?.status).toResponse();
+      const httpError = new HttpError(
+        'An unexpected error occurred',
+        error.response?.status,
+        requestId
+      );
+      throw httpError.toResponse();
     }
   }
 };

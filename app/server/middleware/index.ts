@@ -1,2 +1,3 @@
-export { loggerMiddleware, honoLoggerMiddleware, simpleLoggerMiddleware } from './logger';
+export { loggerMiddleware, honoLoggerMiddleware } from './logger';
+export { requestContextMiddleware } from './request-context';
 export { cache } from './cache';

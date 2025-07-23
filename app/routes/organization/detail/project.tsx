@@ -3,10 +3,9 @@ import DateFormatter from '@/components/date-formatter';
 import { DataTable } from '@/modules/data-table/components/data-table';
 import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
 import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';
-import { orgProjectsQuery } from '@/resources/request/client/organization.request';
-import { projectQuery } from '@/resources/request/client/project.request';
+import { orgProjectListQuery } from '@/resources/request/client/organization.request';
 import { Organization } from '@/resources/schemas/organization.schema';
-import { Project, ProjectResponse } from '@/resources/schemas/project.schema';
+import { Project, ProjectListResponse, ProjectResponse } from '@/resources/schemas/project.schema';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -18,7 +17,7 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 };
 
 export const handle = {
-  breadcrumb: () => <span>Projects</span>,
+  breadcrumb: () => <Trans>Projects</Trans>,
 };
 
 const columnHelper = createColumnHelper<Project>();
@@ -40,15 +39,15 @@ const columns = [
 export default function Page() {
   const data = useRouteLoaderData('routes/organization/detail/layout') as Organization;
 
-  const tableState = useDataTableQuery<ProjectResponse>({
+  const tableState = useDataTableQuery<ProjectListResponse>({
     queryKeyPrefix: ['projects', data.metadata.name],
-    fetchFn: (params) => orgProjectsQuery(data.metadata.name, params),
+    fetchFn: (params) => orgProjectListQuery(data.metadata.name, params),
     useSorting: true,
     useGlobalFilter: true,
   });
 
   return (
-    <DataTableProvider<Project, ProjectResponse>
+    <DataTableProvider<Project, ProjectListResponse>
       columns={columns}
       transform={(data) => ({
         rows: data?.data?.items || [],

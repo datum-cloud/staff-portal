@@ -58,13 +58,13 @@ api.all('/internal/*', async (c) => {
     // Check if user is authenticated
     const isAuthenticated = await authenticator.isAuthenticated(request);
     if (!isAuthenticated) {
-      throw new AuthenticationError('Authentication required');
+      throw new AuthenticationError('Authentication required', reqId);
     }
 
     // Get the session with access token
     const session = await authenticator.getSession(request);
     if (!session?.accessToken) {
-      throw new AuthenticationError('No access token available');
+      throw new AuthenticationError('No access token available', reqId);
     }
 
     // Get query parameters

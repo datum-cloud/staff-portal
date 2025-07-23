@@ -89,7 +89,7 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   const errorInfo = getErrorMessage(error);
 
   // For all other errors, show toast with meaningful info
-  const title = errorInfo.requestId ? `Error ID: ${errorInfo.requestId}` : 'Error';
+  const title = errorInfo.requestId ? `Request ID: ${errorInfo.requestId}` : 'Error';
   toast.error(title, { description: errorInfo.message });
 
   return Promise.reject(error);

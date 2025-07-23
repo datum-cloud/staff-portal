@@ -30,12 +30,12 @@ const GenericError = ({ message, requestId }: { message: string; requestId?: str
           </p>
 
           <div className="text-muted-foreground rounded-r-md border-l-4 border-red-500 bg-red-50 p-4 text-center text-sm dark:bg-red-950/20">
-            <code className="font-mono text-xs">{message}</code>
             {requestId && (
               <div className="mt-2 text-xs">
                 <strong>Request ID:</strong> {requestId}
               </div>
             )}
+            {isDebug && <code className="font-mono text-xs">{message}</code>}
           </div>
         </div>
         <div className="flex items-center gap-2">

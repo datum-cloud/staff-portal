@@ -2,15 +2,16 @@ import type { Route } from './+types/index';
 import { DataTable } from '@/modules/data-table/components/data-table';
 import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
 import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';
-import { projectQuery } from '@/resources/request/client/project.request';
-import { Project, ProjectResponse } from '@/resources/schemas/project.schema';
+import { projectListQuery } from '@/resources/request/client/project.request';
+import { Project, ProjectListResponse } from '@/resources/schemas/project.schema';
 import { metaObject } from '@/utils/helpers';
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Link } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
-  return metaObject('Projects');
+  return metaObject(t`Projects`);
 };
 
 const columnHelper = createColumnHelper<Project>();
@@ -30,15 +31,15 @@ const columns = [
 ];
 
 export default function Page() {
-  const tableState = useDataTableQuery<ProjectResponse>({
+  const tableState = useDataTableQuery<ProjectListResponse>({
     queryKeyPrefix: 'projects',
-    fetchFn: projectQuery,
+    fetchFn: projectListQuery,
     useSorting: true,
     useGlobalFilter: true,
   });
 
   return (
-    <DataTableProvider<Project, ProjectResponse>
+    <DataTableProvider<Project, ProjectListResponse>
       columns={columns}
       transform={(data) => ({
         rows: data?.data?.items || [],

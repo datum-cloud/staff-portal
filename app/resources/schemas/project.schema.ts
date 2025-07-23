@@ -92,5 +92,8 @@ export const ProjectListSchema = z.object({
 export type Project = z.infer<typeof ProjectSchema>;
 export type ProjectList = z.infer<typeof ProjectListSchema>;
 
-export const ProjectResponseSchema = createProxyResponseSchema(ProjectListSchema);
+export const ProjectListResponseSchema = createProxyResponseSchema(ProjectListSchema);
+export type ProjectListResponse = z.infer<typeof ProjectListResponseSchema>;
+
+export const ProjectResponseSchema = createProxyResponseSchema(ProjectSchema);
 export type ProjectResponse = z.infer<typeof ProjectResponseSchema>;

@@ -3,21 +3,23 @@ import IDDisplay from '@/components/id-display';
 import { DataTable } from '@/modules/data-table/components/data-table';
 import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
 import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';
-import { userQuery } from '@/resources/request/client/user.request';
-import { User, UserResponse } from '@/resources/schemas/user.schema';
+import { userListQuery } from '@/resources/request/client/user.request';
+import { User, UserListResponse } from '@/resources/schemas/user.schema';
 import { metaObject } from '@/utils/helpers';
+import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Link } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
-  return metaObject('Users');
+  return metaObject(t`Users`);
 };
 
 const columnHelper = createColumnHelper<User>();
 
 const columns = [
   columnHelper.accessor('spec.givenName', {
-    header: 'Full Name',
+    header: () => <Trans>Full Name</Trans>,
     cell: ({ row }) => {
       return (
         <Link to={`./${row.original.metadata.name}`}>
@@ -27,10 +29,10 @@ const columns = [
     },
   }),
   columnHelper.accessor('spec.email', {
-    header: 'Email',
+    header: () => <Trans>Email</Trans>,
   }),
   columnHelper.accessor('metadata.name', {
-    header: 'ID',
+    header: () => <Trans>ID</Trans>,
     cell: ({ getValue }) => {
       return <IDDisplay value={getValue()} />;
     },
@@ -38,15 +40,15 @@ const columns = [
 ];
 
 export default function Page() {
-  const tableState = useDataTableQuery<UserResponse>({
+  const tableState = useDataTableQuery<UserListResponse>({
     queryKeyPrefix: 'users',
-    fetchFn: userQuery,
+    fetchFn: userListQuery,
     useSorting: true,
     useGlobalFilter: true,
   });
 
   return (
-    <DataTableProvider<User, UserResponse>
+    <DataTableProvider<User, UserListResponse>
       columns={columns}
       transform={(data) => {
         return {

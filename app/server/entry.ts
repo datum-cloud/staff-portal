@@ -3,7 +3,7 @@ import { authenticator, initializeAuthenticator } from '@/modules/auth';
 import { bunAdapter } from '@/server/adapter/bun';
 import { nodeAdapter } from '@/server/adapter/node';
 import { EnvVariables } from '@/server/iface';
-import { honoLoggerMiddleware } from '@/server/middleware';
+import { honoLoggerMiddleware, requestContextMiddleware } from '@/server/middleware';
 import { env } from '@/utils/config/env.server';
 import { logger } from '@/utils/logger';
 import { otel } from '@hono/otel';
@@ -24,6 +24,8 @@ if (env.isOtelEnabled) {
 }
 
 app.use(requestId());
+
+app.use(requestContextMiddleware());
 
 app.use(honoLoggerMiddleware());
 

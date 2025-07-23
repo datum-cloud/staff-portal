@@ -56,8 +56,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       return location.pathname === '/' || location.pathname === '/dashboard';
     }
 
-    // For other routes, check if the current path starts with the href
-    return location.pathname.startsWith(href);
+    // For other routes, use exact path matching for better precision
+    // This prevents /users from being active when on /users/123
+    const normalizedHref = href.replace(/\/+$/, '');
+    const normalizedPathname = location.pathname.replace(/\/+$/, '');
+
+    // Check if we're exactly on the route or on a sub-route
+    return (
+      normalizedPathname === normalizedHref || normalizedPathname.startsWith(normalizedHref + '/')
+    );
   };
 
   const menuItems: MenuItem[] = [
