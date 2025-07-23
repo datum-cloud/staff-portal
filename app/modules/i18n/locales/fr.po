@@ -26,18 +26,21 @@ msgid "Activity"
 msgstr ""
 
 #. placeholder {0}: data.metadata.annotations?.['kubernetes.io/display-name']
+#. placeholder {1}: data.metadata.name
 #: app/routes/organization/detail/layout.tsx:59
-msgid "Are you sure you want to delete organization \"{0}\"? This action cannot be undone."
+msgid "Are you sure you want to delete organization \"{0} ({1})\"? This action cannot be undone."
 msgstr ""
 
 #. placeholder {0}: data.metadata.annotations?.['kubernetes.io/description']
+#. placeholder {1}: data.metadata.name
 #: app/routes/project/detail/index.tsx:42
-msgid "Are you sure you want to delete project \"{0}\"? This action cannot be undone."
+msgid "Are you sure you want to delete project \"{0} ({1})\"? This action cannot be undone."
 msgstr ""
 
-#. placeholder {0}: data.metadata.name
+#. placeholder {0}: data.spec.givenName
+#. placeholder {1}: data.spec.familyName
 #: app/routes/user/detail/layout.tsx:47
-msgid "Are you sure you want to delete user \"{0}\"? This action cannot be undone."
+msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr ""
 
 #: app/components/delete-action-button/index.tsx:43
