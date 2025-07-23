@@ -15,7 +15,7 @@ import { Link, useNavigate, useRouteLoaderData } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const data = extractDataFromMatches<Project>(matches, 'routes/project/detail/layout');
-  return metaObject(`Detail - ${data?.metadata?.name}`);
+  return metaObject(`Detail - ${data?.metadata?.annotations?.['kubernetes.io/description']}`);
 };
 
 export default function Page() {
@@ -39,14 +39,13 @@ export default function Page() {
         <DeleteActionButton
           tooltip={t`Delete Project`}
           itemType="Project"
-          description={t`Are you sure you want to delete project "${data.metadata.name}"? This action cannot be undone.`}
+          description={t`Are you sure you want to delete project "${data.metadata.annotations?.['kubernetes.io/description']}"? This action cannot be undone.`}
           onConfirm={handleDeleteProject}
         />
       </AppActionBar>
 
       <div className="m-4 flex flex-col gap-1">
-        <Title>{data?.metadata?.name}</Title>
-        <Text textColor="muted">{data?.metadata?.annotations?.['kubernetes.io/description']}</Text>
+        <Title>{data?.metadata?.annotations?.['kubernetes.io/description']}</Title>
 
         <Card className="mt-4 shadow-none">
           <CardContent>
@@ -55,14 +54,21 @@ export default function Page() {
                 <TableRow>
                   <TableCell width="25%">
                     <Text textColor="muted">
+                      <Trans>Description</Trans>
+                    </Text>
+                  </TableCell>
+                  <TableCell>
+                    <Text>{data?.metadata?.annotations?.['kubernetes.io/description']}</Text>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell width="25%">
+                    <Text textColor="muted">
                       <Trans>Name</Trans>
                     </Text>
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Text>{data?.metadata?.name}</Text>
-                      <CopyButton value={data?.metadata?.name} />
-                    </div>
+                    <Text>{data?.metadata?.name}</Text>
                   </TableCell>
                 </TableRow>
                 <TableRow>

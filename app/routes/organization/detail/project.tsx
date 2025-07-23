@@ -22,11 +22,15 @@ export const handle = {
 
 const columnHelper = createColumnHelper<Project>();
 const columns = [
+  columnHelper.accessor((row) => row.metadata.annotations?.['kubernetes.io/description'], {
+    id: 'description',
+    header: () => <Trans>Description</Trans>,
+    cell: ({ getValue, row }) => {
+      return <Link to={`/projects/${row.original.metadata.name}`}>{getValue()}</Link>;
+    },
+  }),
   columnHelper.accessor('metadata.name', {
     header: () => <Trans>Name</Trans>,
-    cell: ({ getValue }) => {
-      return <Link to={`/projects/${getValue()}`}>{getValue()}</Link>;
-    },
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
     header: () => <Trans>Created at</Trans>,

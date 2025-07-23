@@ -29,24 +29,21 @@ export default function Page() {
               <TableRow>
                 <TableCell width="25%">
                   <Text textColor="muted">
-                    <Trans>Name</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <Text>{data?.metadata?.name}</Text>
-                    <CopyButton value={data?.metadata?.name} />
-                  </div>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
                     <Trans>Description</Trans>
                   </Text>
                 </TableCell>
                 <TableCell>
                   <Text>{data?.metadata?.annotations?.['kubernetes.io/display-name']}</Text>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell width="25%">
+                  <Text textColor="muted">
+                    <Trans>Name</Trans>
+                  </Text>
+                </TableCell>
+                <TableCell>
+                  <Text>{data?.metadata?.name}</Text>
                 </TableCell>
               </TableRow>
               <TableRow>

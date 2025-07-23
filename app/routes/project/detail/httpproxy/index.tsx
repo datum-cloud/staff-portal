@@ -1,17 +1,13 @@
 import type { Route } from './+types/index';
-import AppActionBar from '@/components/app-actiobar';
 import BadgeCondition from '@/components/badge-condition';
 import DateFormatter from '@/components/date-formatter';
-import Tooltip from '@/components/tooltip';
 import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/data-table';
-import { ButtonLink } from '@/modules/shadcn/ui/button-link';
 import { projectHttpProxyListQuery } from '@/resources/request/client/project.request';
 import { HTTPProxy, HTTPProxyListResponse } from '@/resources/schemas/httpproxy.schema';
 import { Project } from '@/resources/schemas/project.schema';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
-import { PlusIcon } from 'lucide-react';
 import { Link, useRouteLoaderData } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
@@ -61,26 +57,16 @@ export default function Page() {
   ];
 
   return (
-    <>
-      {/* <AppActionBar>
-        <Tooltip message={<Trans>New HTTP Proxy</Trans>}>
-          <ButtonLink size="sm" to={`/projects/${data.metadata.name}/http-proxies/create`}>
-            <PlusIcon />
-            <Trans>New</Trans>
-          </ButtonLink>
-        </Tooltip>
-      </AppActionBar> */}
-      <DataTableProvider<HTTPProxy, HTTPProxyListResponse>
-        columns={columns}
-        transform={(data) => ({
-          rows: data?.data?.items || [],
-          cursor: data?.data?.metadata?.continue,
-        })}
-        {...tableState}>
-        <div className="m-4 flex flex-col gap-2">
-          <DataTable<HTTPProxy> />
-        </div>
-      </DataTableProvider>
-    </>
+    <DataTableProvider<HTTPProxy, HTTPProxyListResponse>
+      columns={columns}
+      transform={(data) => ({
+        rows: data?.data?.items || [],
+        cursor: data?.data?.metadata?.continue,
+      })}
+      {...tableState}>
+      <div className="m-4 flex flex-col gap-2">
+        <DataTable<HTTPProxy> />
+      </div>
+    </DataTableProvider>
   );
 }
