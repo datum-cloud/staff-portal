@@ -1,4 +1,5 @@
 import { apiRequest } from '@/modules/axios/axios.server';
+import { HTTPProxySchema } from '@/resources/schemas/httpproxy.schema';
 import { ProjectSchema } from '@/resources/schemas/project.schema';
 
 export const projectDetailQuery = (token: string, projectName: string) => {
@@ -10,5 +11,22 @@ export const projectDetailQuery = (token: string, projectName: string) => {
     },
   })
     .output(ProjectSchema)
+    .execute();
+};
+
+export const projectHttpProxyDetailQuery = (
+  token: string,
+  projectName: string,
+  httpProxyName: string,
+  namespace: string = 'default'
+) => {
+  return apiRequest({
+    method: 'GET',
+    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/networking.datumapis.com/v1alpha/namespaces/${namespace}/httpproxies/${httpProxyName}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .output(HTTPProxySchema)
     .execute();
 };

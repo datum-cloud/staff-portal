@@ -68,7 +68,7 @@
     --nprogress-color: var(--secondary);
   }
 
-  a {
+  a:not([data-button-link]) {
     color: var(--secondary);
 
     &:hover {

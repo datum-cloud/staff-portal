@@ -1,15 +1,16 @@
 import type { Route } from './+types/index';
 import BadgeState from '@/components/badge-state';
 import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/data-table';
-import { orgQuery } from '@/resources/request/client/organization.request';
+import { orgListQuery } from '@/resources/request/client/organization.request';
 import { Organization, OrganizationListResponse } from '@/resources/schemas/organization.schema';
 import { metaObject } from '@/utils/helpers';
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Link } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
-  return metaObject('Organizations');
+  return metaObject(t`Organizations`);
 };
 
 const columnHelper = createColumnHelper<Organization>();
@@ -40,7 +41,7 @@ const columns = [
 export default function Page() {
   const tableState = useDataTableQuery<OrganizationListResponse>({
     queryKeyPrefix: 'orgs',
-    fetchFn: orgQuery,
+    fetchFn: orgListQuery,
     useSorting: true,
     useGlobalFilter: true,
   });

@@ -2,7 +2,7 @@ import { Trans } from '@lingui/react/macro';
 import { Outlet } from 'react-router';
 
 export const handle = {
-  breadcrumb: () => <Trans>Users</Trans>,
+  breadcrumb: () => <Trans>HTTP Proxies</Trans>,
 };
 
 export default function Layout() {

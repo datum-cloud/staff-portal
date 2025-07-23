@@ -14,6 +14,7 @@ interface DeleteActionButtonProps {
   onConfirm: () => void | Promise<void>;
   /** Optional additional props for the button */
   buttonProps?: React.ComponentProps<typeof Button>;
+  tooltip?: string;
 }
 
 export default function DeleteActionButton({
@@ -21,6 +22,7 @@ export default function DeleteActionButton({
   description,
   onConfirm,
   buttonProps = {},
+  tooltip,
 }: DeleteActionButtonProps) {
   const { t } = useLingui();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -44,7 +46,7 @@ export default function DeleteActionButton({
         requireConfirmation
       />
 
-      <Tooltip message={<Trans>Delete</Trans>}>
+      <Tooltip message={tooltip || <Trans>Delete</Trans>}>
         <Button
           variant="destructive"
           size="sm"

@@ -35,9 +35,17 @@ export async function loader({ request, context }: Route.LoaderArgs) {
       headers: combineHeaders(session.headers, token.headers),
     });
   } catch (error) {
-    logger.error('OAuth callback error', { error });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    const url = new URL(request.url);
+    logger.error('OAuth callback error', {
+      error: message,
+      url: url.toString(),
+      hostname: url.hostname,
+      protocol: url.protocol,
+      cookies: request.headers.get('Cookie') || 'none',
+    });
 
-    if (error instanceof Error && error.message.includes('Missing state on cookie')) {
+    if (message.includes('Missing state on cookie')) {
       return redirect(`/error/oauth-error?error=missing_state&request_id=${context.requestId}`);
     }
 

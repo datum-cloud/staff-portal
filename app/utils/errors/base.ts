@@ -2,7 +2,8 @@ export class AppError extends Error {
   constructor(
     message: string,
     public statusCode: number = 500,
-    public code?: string
+    public code?: string,
+    public requestId?: string
   ) {
     super(message);
     this.name = this.constructor.name;
@@ -13,6 +14,7 @@ export class AppError extends Error {
     const body = JSON.stringify({
       message: this.message,
       error: this.name,
+      requestId: this.requestId,
     });
 
     return new Response(body, {

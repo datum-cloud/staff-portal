@@ -150,7 +150,13 @@ export function metaObject(title?: string, description?: string) {
   ];
 }
 
-export function extractDataFromMatches<T>(matches: any[], routeId: string): T | undefined {
-  const match = matches.find((match) => match?.id === routeId);
-  return match?.data as T | undefined;
+export function extractDataFromMatches<T>(matches: any[], routeId?: string): T | undefined {
+  if (routeId) {
+    const match = matches.find((match) => match?.id === routeId);
+    return match?.data as T | undefined;
+  }
+
+  // If no routeId provided, get data from the current route (last match)
+  const currentMatch = matches[matches.length - 1];
+  return currentMatch?.data as T | undefined;
 }

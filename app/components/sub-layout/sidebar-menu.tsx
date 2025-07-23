@@ -14,7 +14,8 @@ import {
   SidebarMenuSubItem,
 } from '@/modules/shadcn/ui/sidebar';
 import { ChevronRight, LucideIcon } from 'lucide-react';
-import { NavLink, useLocation, useMatches } from 'react-router';
+import * as React from 'react';
+import { NavLink, useLocation } from 'react-router';
 
 export interface SubMenuItem {
   title: string;
@@ -39,22 +40,64 @@ const normalizePath = (path: string) => path.replace(/\/+$/, '');
 
 export function SidebarMenuComponent({ menuItems, className }: SidebarMenuProps) {
   const location = useLocation();
-  const matches = useMatches();
-  const parentMatch = matches[matches.length - 2];
 
-  const isMenuItemActive = (href: string | undefined) => {
+  // Memoize normalized pathname to avoid recalculation
+  const normalizedPathname = React.useMemo(
+    () => normalizePath(location.pathname),
+    [location.pathname]
+  );
+
+  // Memoize normalized hrefs for all menu items
+  const normalizedHrefs = React.useMemo(() => {
+    const hrefs = new Map<MenuItem, string>();
+    menuItems.forEach((item) => {
+      if (item.href) {
+        hrefs.set(item, normalizePath(item.href));
+      }
+    });
+    return hrefs;
+  }, [menuItems]);
+
+  // Memoize the most specific active item to avoid recalculating for each item
+  const mostSpecificActiveItem = React.useMemo(() => {
+    let mostSpecificItem: MenuItem | null = null;
+    let maxLength = 0;
+
+    for (const item of menuItems) {
+      if (!item.href) continue;
+
+      const normalizedHref = normalizedHrefs.get(item)!;
+      const isActive =
+        normalizedPathname === normalizedHref ||
+        normalizedPathname.startsWith(normalizedHref + '/');
+
+      if (isActive && normalizedHref.length > maxLength) {
+        maxLength = normalizedHref.length;
+        mostSpecificItem = item;
+      }
+    }
+
+    return mostSpecificItem;
+  }, [menuItems, normalizedHrefs, normalizedPathname]);
+
+  const isMenuItemActive = (
+    href: string | undefined,
+    checkSpecificity: boolean = false,
+    currentItem?: MenuItem
+  ) => {
     if (href === undefined) return false;
 
-    if (href === '') {
-      return normalizePath(location.pathname) === normalizePath(parentMatch.pathname);
+    const normalizedHref = normalizePath(href);
+    const isActive =
+      normalizedPathname === normalizedHref || normalizedPathname.startsWith(normalizedHref + '/');
+
+    // If we don't need to check specificity (for submenu items), return early
+    if (!checkSpecificity || !currentItem) {
+      return isActive;
     }
 
-    if (href.startsWith('./')) {
-      const relativePath = href.substring(2);
-      return location.pathname.endsWith(relativePath);
-    }
-
-    return location.pathname.startsWith(href);
+    // For main menu items, check if this is the most specific active item
+    return mostSpecificActiveItem === currentItem;
   };
 
   return (
@@ -97,7 +140,7 @@ export function SidebarMenuComponent({ menuItems, className }: SidebarMenuProps)
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
-                  isActive={isMenuItemActive(item.href)}
+                  isActive={isMenuItemActive(item.href, true, item)}
                   className="text-muted-foreground! hover:bg-accent hover:text-foreground! data-[active=true]:bg-accent data-[active=true]:text-foreground!">
                   <NavLink to={item.href ?? '#'}>
                     {item.icon && <item.icon />}

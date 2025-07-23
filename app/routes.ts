@@ -28,6 +28,12 @@ export default [
 
       route(':projectName', 'routes/project/detail/layout.tsx', [
         index('routes/project/detail/index.tsx'),
+
+        route('http-proxies', 'routes/project/detail/httpproxy/layout.tsx', [
+          index('routes/project/detail/httpproxy/index.tsx'),
+          route('create', 'routes/project/detail/httpproxy/create.tsx'),
+          route(':httpProxyName', 'routes/project/detail/httpproxy/detail.tsx'),
+        ]),
       ]),
     ]),
 

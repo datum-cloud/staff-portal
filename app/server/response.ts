@@ -54,10 +54,16 @@ export async function createErrorResponse(
   if (error instanceof Response) {
     // Try to extract error message from response body
     let errorMessage = error.statusText;
+    let responseRequestId = requestId; // Default to the passed requestId
 
     try {
       const clonedResponse = error.clone();
       const responseData = await clonedResponse.json();
+
+      // Extract request ID from response if available
+      if (responseData?.requestId) {
+        responseRequestId = responseData.requestId;
+      }
 
       // Handle different error response formats
       if (responseData?.message) {
@@ -80,7 +86,7 @@ export async function createErrorResponse(
 
     return {
       response: {
-        requestId,
+        requestId: responseRequestId,
         code: error.statusText || 'HTTP_ERROR',
         error: errorMessage,
         path,

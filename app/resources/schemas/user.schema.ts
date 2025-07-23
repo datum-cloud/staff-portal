@@ -54,5 +54,8 @@ export const UserListSchema = z.object({
 export type User = z.infer<typeof UserSchema>;
 export type UserList = z.infer<typeof UserListSchema>;
 
-export const UserResponseSchema = createProxyResponseSchema(UserListSchema);
+export const UserListResponseSchema = createProxyResponseSchema(UserListSchema);
+export type UserListResponse = z.infer<typeof UserListResponseSchema>;
+
+export const UserResponseSchema = createProxyResponseSchema(UserSchema);
 export type UserResponse = z.infer<typeof UserResponseSchema>;

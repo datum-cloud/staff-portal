@@ -15,31 +15,42 @@ function titleCase(str: string): string {
 const StateConfig = {
   yes: {
     icon: null,
-    color: '#10b981',
+    variant: 'default' as const,
+    className:
+      'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800',
   },
   no: {
     icon: null,
-    color: '#f87171',
+    variant: 'destructive' as const,
+    className:
+      'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800',
   },
   personal: {
     icon: null,
-    color: '#3b82f6',
+    variant: 'default' as const,
+    className:
+      'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800',
   },
   organization: {
     icon: null,
-    color: '#06b6d4',
+    variant: 'default' as const,
+    className:
+      'bg-cyan-100 text-cyan-800 border-cyan-200 dark:bg-cyan-900/20 dark:text-cyan-400 dark:border-cyan-800',
   },
   business: {
     icon: null,
-    color: '#f59e0b',
+    variant: 'default' as const,
+    className:
+      'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800',
   },
 } as const;
 
 // Default configuration for unknown states
 const DefaultConfig = {
   icon: null,
-  color: '#6b7280',
-  textColor: '#ffffff',
+  variant: 'secondary' as const,
+  className:
+    'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/20 dark:text-gray-400 dark:border-gray-800',
 };
 
 type State = keyof typeof StateConfig;
@@ -60,16 +71,16 @@ const BadgeState = ({ state, noColor, tooltip, className }: Props) => {
   const IconComponent = config.icon;
 
   if (!IconComponent) {
-    const textColor = (config as any).textColor || '#ffffff';
-
     return (
       <Badge
-        variant="outline"
-        className={cn('border-none', 'text-xs', className)}
-        style={{
-          backgroundColor: noColor ? 'transparent' : config.color,
-          color: noColor ? 'inherit' : textColor,
-        }}>
+        variant={noColor ? 'outline' : config.variant}
+        className={cn(
+          'inline-flex items-center gap-1 text-xs font-medium',
+          noColor
+            ? 'border-gray-200 text-gray-700 dark:border-gray-700 dark:text-gray-300'
+            : config.className,
+          className
+        )}>
         {titleCase(normalizedState)}
       </Badge>
     );

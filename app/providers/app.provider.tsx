@@ -27,7 +27,7 @@ export const AppProvider: React.FC<IProviderProps> = ({ children, user }) => {
   const [actions, setActions] = useState<ReactNode[]>([]);
 
   const addActions = (nodes: ReactNode) => {
-    setActions((prevActions) => [...prevActions, nodes]);
+    setActions((prevActions) => [nodes, ...prevActions]);
   };
 
   const removeActions = (nodes: ReactNode) => {
