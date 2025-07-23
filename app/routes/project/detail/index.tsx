@@ -39,7 +39,7 @@ export default function Page() {
         <DeleteActionButton
           tooltip={t`Delete Project`}
           itemType="Project"
-          description={t`Are you sure you want to delete project "${data.metadata.annotations?.['kubernetes.io/description']}"? This action cannot be undone.`}
+          description={t`Are you sure you want to delete project "${data.metadata.annotations?.['kubernetes.io/description']} (${data.metadata.name})"? This action cannot be undone.`}
           onConfirm={handleDeleteProject}
         />
       </AppActionBar>
