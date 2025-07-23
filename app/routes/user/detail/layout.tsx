@@ -44,7 +44,7 @@ export default function Layout() {
       <SubLayout.ActionBar>
         <DeleteActionButton
           itemType="User"
-          description={t`Are you sure you want to delete user "${data.metadata.name}"? This action cannot be undone.`}
+          description={t`Are you sure you want to delete user "${data.spec.givenName} ${data.spec.familyName}"? This action cannot be undone.`}
           onConfirm={handleDeleteUser}
         />
       </SubLayout.ActionBar>

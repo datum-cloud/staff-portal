@@ -11,7 +11,7 @@ import { useRouteLoaderData } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const data = extractDataFromMatches<User>(matches, 'routes/user/detail/layout');
-  return metaObject(`Detail - ${data?.metadata?.name}`);
+  return metaObject(`Detail - ${data?.spec?.givenName} ${data?.spec?.familyName}`);
 };
 
 export default function Page() {

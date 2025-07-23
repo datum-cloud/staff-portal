@@ -56,7 +56,7 @@ export default function Layout() {
       <SubLayout.ActionBar>
         <DeleteActionButton
           itemType="Organization"
-          description={t`Are you sure you want to delete organization "${data.metadata.annotations?.['kubernetes.io/display-name']}"? This action cannot be undone.`}
+          description={t`Are you sure you want to delete organization "${data.metadata.annotations?.['kubernetes.io/display-name']} (${data.metadata.name})"? This action cannot be undone.`}
           onConfirm={handleDeleteOrganization}
         />
       </SubLayout.ActionBar>
