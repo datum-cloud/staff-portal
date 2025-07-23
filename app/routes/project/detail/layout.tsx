@@ -8,7 +8,9 @@ import { FileText, Waypoints } from 'lucide-react';
 import { Outlet, useLoaderData } from 'react-router';
 
 export const handle = {
-  breadcrumb: (data: Project) => <span>{data.metadata.name}</span>,
+  breadcrumb: (data: Project) => (
+    <span>{data.metadata.annotations?.['kubernetes.io/description']}</span>
+  ),
 };
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {

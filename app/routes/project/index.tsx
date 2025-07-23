@@ -1,4 +1,5 @@
 import type { Route } from './+types/index';
+import DateFormatter from '@/components/date-formatter';
 import { DataTable } from '@/modules/data-table/components/data-table';
 import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
 import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';
@@ -16,16 +17,26 @@ export const meta: Route.MetaFunction = () => {
 
 const columnHelper = createColumnHelper<Project>();
 const columns = [
+  columnHelper.accessor((row) => row.metadata.annotations?.['kubernetes.io/description'], {
+    id: 'description',
+    header: () => <Trans>Description</Trans>,
+    cell: ({ getValue, row }) => {
+      return <Link to={`./${row.original.metadata.name}`}>{getValue()}</Link>;
+    },
+  }),
   columnHelper.accessor('metadata.name', {
     header: () => <Trans>Name</Trans>,
-    cell: ({ getValue }) => {
-      return <Link to={`./${getValue()}`}>{getValue()}</Link>;
-    },
   }),
   columnHelper.accessor('spec.ownerRef.name', {
     header: () => <Trans>Organization</Trans>,
     cell: ({ getValue }) => {
       return <Link to={`/organizations/${getValue()}`}>{getValue()}</Link>;
+    },
+  }),
+  columnHelper.accessor('metadata.creationTimestamp', {
+    header: () => <Trans>Created at</Trans>,
+    cell: ({ getValue }) => {
+      return <DateFormatter date={getValue()} withTime />;
     },
   }),
 ];
