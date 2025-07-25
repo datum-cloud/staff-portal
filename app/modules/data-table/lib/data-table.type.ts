@@ -1,6 +1,41 @@
 import { DataTableConfig } from './data-table.config';
-import { FilterItemSchema } from './data-table.parser';
 import type { ColumnSort, Row, RowData } from '@tanstack/react-table';
+import { z } from 'zod';
+
+// Define FilterItemSchema here to break circular dependency
+const filterItemSchema = z.object({
+  id: z.string(),
+  value: z.union([z.string(), z.array(z.string())]),
+  variant: z.enum([
+    'text',
+    'number',
+    'range',
+    'date',
+    'dateRange',
+    'boolean',
+    'select',
+    'multiSelect',
+  ]),
+  operator: z.enum([
+    'iLike',
+    'notILike',
+    'eq',
+    'ne',
+    'inArray',
+    'notInArray',
+    'isEmpty',
+    'isNotEmpty',
+    'lt',
+    'lte',
+    'gt',
+    'gte',
+    'isBetween',
+    'isRelativeToToday',
+  ]),
+  filterId: z.string(),
+});
+
+export type FilterItemSchema = z.infer<typeof filterItemSchema>;
 
 declare module '@tanstack/react-table' {
   // biome-ignore lint/correctness/noUnusedVariables: <explanation>

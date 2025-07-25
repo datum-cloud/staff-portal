@@ -1,5 +1,5 @@
 import { dataTableConfig } from './data-table.config';
-import { ExtendedColumnFilter, ExtendedColumnSort } from './data-table.type';
+import { ExtendedColumnFilter, ExtendedColumnSort, FilterItemSchema } from './data-table.type';
 import { createParser } from 'nuqs/server';
 import { z } from 'zod';
 
@@ -42,8 +42,6 @@ const filterItemSchema = z.object({
   operator: z.enum(dataTableConfig.operators),
   filterId: z.string(),
 });
-
-export type FilterItemSchema = z.infer<typeof filterItemSchema>;
 
 export const getFiltersStateParser = <TData>(columnIds?: string[] | Set<string>) => {
   const validKeys = columnIds ? (columnIds instanceof Set ? columnIds : new Set(columnIds)) : null;

@@ -33,6 +33,8 @@ export default [
           index('routes/project/detail/httpproxy/index.tsx'),
           route(':httpProxyName', 'routes/project/detail/httpproxy/detail.tsx'),
         ]),
+
+        route('activity', 'routes/project/detail/activity.tsx'),
       ]),
     ]),
 

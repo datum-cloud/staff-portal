@@ -44,7 +44,6 @@ export default function Page() {
     queryKeyPrefix: 'users',
     fetchFn: userListQuery,
     useSorting: true,
-    useGlobalFilter: true,
   });
 
   return (

@@ -43,7 +43,6 @@ export default function Page() {
     queryKeyPrefix: 'orgs',
     fetchFn: orgListQuery,
     useSorting: true,
-    useGlobalFilter: true,
   });
 
   return (

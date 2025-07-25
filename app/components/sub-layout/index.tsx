@@ -18,7 +18,10 @@ const SubLayoutSidebarLeft = React.memo(function SubLayoutSidebarLeft({
 }: SubLayoutSidebarProps) {
   return (
     <div
-      className={cn('text-sidebar-foreground w-48 flex-shrink-0 border-r', className)}
+      className={cn(
+        'text-sidebar-foreground sticky top-14 z-10 h-[calc(100vh-3.5rem)] w-48 flex-shrink-0 border-r ease-linear',
+        className
+      )}
       {...props}>
       {children}
     </div>

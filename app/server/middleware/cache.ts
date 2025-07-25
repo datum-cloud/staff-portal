@@ -1,6 +1,6 @@
 import { createMiddleware } from 'hono/factory';
 
-export function cache(seconds: number) {
+export function cacheMiddleware(seconds: number) {
   return createMiddleware(async (c, next) => {
     if (!c.req.path.match(/\.[a-zA-Z0-9]+$/) || c.req.path.endsWith('.data')) {
       return next();
