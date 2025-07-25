@@ -4,7 +4,7 @@ import { authenticator } from '@/modules/auth';
 import { projectDetailQuery } from '@/resources/request/server/project.request';
 import { Project } from '@/resources/schemas/project.schema';
 import { useLingui } from '@lingui/react/macro';
-import { FileText, Waypoints } from 'lucide-react';
+import { FileText, SquareActivity, Waypoints } from 'lucide-react';
 import { Outlet, useLoaderData } from 'react-router';
 
 export const handle = {
@@ -34,6 +34,11 @@ export default function Layout() {
       title: t`HTTP Proxy`,
       href: `/projects/${data.metadata.name}/http-proxies`,
       icon: Waypoints,
+    },
+    {
+      title: t`Activity`,
+      href: `/projects/${data.metadata.name}/activity`,
+      icon: SquareActivity,
     },
   ];
 

@@ -46,7 +46,6 @@ export default function Page() {
     queryKeyPrefix: 'projects',
     fetchFn: projectListQuery,
     useSorting: true,
-    useGlobalFilter: true,
   });
 
   return (

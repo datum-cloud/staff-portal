@@ -57,7 +57,7 @@ interface DataTableProviderProps<TData, TQuery = DataTableQuery<TData>> {
   limit: number;
   cursor?: string;
   sorting?: SortingState;
-  globalFilter?: string;
+  filters?: Record<string, any>;
   columnVisibility?: VisibilityState;
   columnPinning?: ColumnPinningState;
   columnOrder?: string[];
@@ -66,7 +66,10 @@ interface DataTableProviderProps<TData, TQuery = DataTableQuery<TData>> {
   setLimit: (s: number) => void;
   setCursor: (token: string) => void;
   setSorting?: OnChangeFn<SortingState>;
-  setGlobalFilter?: OnChangeFn<string>;
+  setFilter?: (filterKey: string, value: any) => void;
+  setFilters?: (newFilters: Partial<Record<string, any>>) => void;
+  clearFilter?: (filterKey: string) => void;
+  clearAllFilters?: () => void;
   setColumnVisibility?: OnChangeFn<VisibilityState>;
   setColumnPinning?: OnChangeFn<ColumnPinningState>;
   setColumnOrder?: OnChangeFn<string[]>;
@@ -86,7 +89,7 @@ export function DataTableProvider<TData, TQuery = DataTableQuery<TData>>({
   limit,
   cursor,
   sorting,
-  globalFilter,
+  filters,
   columnVisibility,
   columnPinning,
   columnOrder,
@@ -94,7 +97,10 @@ export function DataTableProvider<TData, TQuery = DataTableQuery<TData>>({
   setLimit,
   setCursor,
   setSorting,
-  setGlobalFilter,
+  setFilter,
+  setFilters,
+  clearFilter,
+  clearAllFilters,
   setColumnVisibility,
   setColumnPinning,
   setColumnOrder,
@@ -122,14 +128,14 @@ export function DataTableProvider<TData, TQuery = DataTableQuery<TData>>({
 
   // Reset pagination when filters change (but not when cursor changes)
   useEffect(() => {
-    const currentFilterHash = hash({ sorting, globalFilter, limit });
+    const currentFilterHash = hash({ sorting, filters, limit });
 
     if (currentFilterHash !== prevFilterHashRef.current) {
       setCursorHistory(['']);
       setCurrentPage(0);
       prevFilterHashRef.current = currentFilterHash;
     }
-  }, [sorting, globalFilter, limit]);
+  }, [sorting, filters, limit]);
 
   // Add flexible select/actions column
   const enhancedColumns = useMemo(() => {
@@ -161,7 +167,6 @@ export function DataTableProvider<TData, TQuery = DataTableQuery<TData>>({
     state: {
       pagination: { pageIndex: currentPage, pageSize: limit },
       sorting: sorting ?? [],
-      globalFilter: globalFilter ?? '',
       columnVisibility: columnVisibility ?? {},
       columnPinning: columnPinning ?? {},
       columnOrder: columnOrder ?? [],
@@ -169,9 +174,7 @@ export function DataTableProvider<TData, TQuery = DataTableQuery<TData>>({
     },
     manualPagination: true,
     manualSorting: !!setSorting,
-    manualFiltering: !!setGlobalFilter,
     onSortingChange: setSorting,
-    onGlobalFilterChange: setGlobalFilter,
     onColumnVisibilityChange: setColumnVisibility,
     onColumnPinningChange: setColumnPinning,
     onColumnOrderChange: setColumnOrder,

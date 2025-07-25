@@ -1,3 +1,4 @@
+import { ListQueryParams } from '@/resources/schemas/common.schema';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import {
   ColumnPinningState,
@@ -7,14 +8,24 @@ import {
   VisibilityState,
 } from '@tanstack/react-table';
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryState } from 'nuqs';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 // --- Types ---
-export interface FetchArgs {
-  limit: number;
-  cursor?: string;
+export interface FilterValue {
+  [key: string]: any;
+}
+
+export interface FilterConfig {
+  [filterKey: string]: {
+    parser?: (value: any) => any;
+    serializer?: (value: any) => any;
+    defaultValue?: any;
+  };
+}
+
+export interface FetchArgs extends ListQueryParams {
   sorting?: SortingState;
-  globalFilter?: string;
+  search?: string;
 }
 
 export interface UseDataTableQueryOptions<T> {
@@ -22,7 +33,9 @@ export interface UseDataTableQueryOptions<T> {
   fetchFn: (args: FetchArgs) => Promise<T>;
   initialLimit?: number;
   useSorting?: boolean;
-  useGlobalFilter?: boolean;
+  useFilters?: boolean;
+  useSearch?: boolean;
+  filterConfig?: FilterConfig;
   enabled?: boolean;
 }
 
@@ -31,7 +44,8 @@ export interface UseDataTableQueryReturn<T> {
   limit: number;
   cursor?: string;
   sorting: SortingState;
-  globalFilter: string;
+  filters: FilterValue;
+  search?: string;
   columnVisibility: VisibilityState;
   columnPinning: ColumnPinningState;
   columnOrder: string[];
@@ -39,7 +53,12 @@ export interface UseDataTableQueryReturn<T> {
   setLimit: (s: number) => void;
   setCursor: (token: string) => void;
   setSorting?: OnChangeFn<SortingState>;
-  setGlobalFilter?: OnChangeFn<string>;
+  setFilter: (filterKey: string, value: any) => void;
+  setFilters: (newFilters: Partial<FilterValue>) => void;
+  clearFilter: (filterKey: string) => void;
+  clearAllFilters: () => void;
+  setSearch?: (value: string) => void;
+  clearSearch?: () => void;
   setColumnVisibility: OnChangeFn<VisibilityState>;
   setColumnPinning: OnChangeFn<ColumnPinningState>;
   setColumnOrder: OnChangeFn<string[]>;
@@ -95,7 +114,9 @@ export function useDataTableQuery<T>({
   fetchFn,
   initialLimit = 20,
   useSorting = true,
-  useGlobalFilter = true,
+  useFilters = false,
+  useSearch = false,
+  filterConfig = {},
   enabled = true,
 }: UseDataTableQueryOptions<T>): UseDataTableQueryReturn<T> {
   // --- URL State Management ---
@@ -105,7 +126,8 @@ export function useDataTableQuery<T>({
     'sort',
     parseAsArrayOf(parseAsString).withDefault([])
   );
-  const [globalFilter, setGlobalFilterRaw] = useQueryState('search', parseAsString.withDefault(''));
+  const [filtersRaw, setFiltersRaw] = useQueryState('filters', parseAsString.withDefault(''));
+  const [searchRaw, setSearchRaw] = useQueryState('search', parseAsString.withDefault(''));
   const [visibleColumns, setVisibleColumns] = useQueryState(
     'columns',
     parseAsArrayOf(parseAsString).withDefault([])
@@ -120,11 +142,52 @@ export function useDataTableQuery<T>({
   // --- Memoized State Transformations ---
   const sorting = useMemo(() => toSortingState(sortRaw), [sortRaw]);
 
+  const filters = useMemo(() => {
+    const result = {} as Record<string, any>;
+
+    if (!filtersRaw || !useFilters) return result;
+
+    try {
+      const parsed = JSON.parse(filtersRaw);
+
+      // Handle all values from the parsed filters
+      Object.entries(parsed).forEach(([filterKey, rawValue]) => {
+        if (rawValue !== undefined) {
+          try {
+            const filterConfigItem = filterConfig[filterKey];
+            result[filterKey] = filterConfigItem?.parser
+              ? filterConfigItem.parser(rawValue)
+              : rawValue;
+          } catch (error) {
+            console.warn(`Failed to parse filter value for ${filterKey}:`, error);
+          }
+        }
+      });
+
+      // Apply default values from filter config
+      Object.entries(filterConfig).forEach(([filterKey, filterConfigItem]) => {
+        if (result[filterKey] === undefined && filterConfigItem.defaultValue !== undefined) {
+          result[filterKey] = filterConfigItem.defaultValue;
+        }
+      });
+    } catch (error) {
+      console.warn('Failed to parse filter values:', error);
+    }
+
+    return result;
+  }, [filtersRaw, useFilters, filterConfig]);
+
   const columnVisibility = useMemo(() => parseColumnVisibility(visibleColumns), [visibleColumns]);
 
   const columnPinning = useMemo(() => parseColumnPinning(pinColumns), [pinColumns]);
 
   const columnOrder = useMemo(() => [...orderColumns], [orderColumns]);
+
+  // --- Search State ---
+  const search = useMemo(() => {
+    if (!useSearch || !searchRaw) return undefined;
+    return searchRaw.trim() || undefined;
+  }, [useSearch, searchRaw]);
 
   // --- Query Key Construction ---
   const queryKey = useMemo(() => {
@@ -133,9 +196,20 @@ export function useDataTableQuery<T>({
       : [queryKeyPrefix, limitRaw];
     if (cursor) key.push(cursor);
     if (useSorting) key.push(sorting.map(toSortString).join(','));
-    if (useGlobalFilter) key.push(globalFilter);
+    if (useFilters && filtersRaw) key.push(filtersRaw);
+    if (useSearch && searchRaw) key.push(searchRaw);
     return key;
-  }, [queryKeyPrefix, limitRaw, cursor, useSorting, sorting, useGlobalFilter, globalFilter]);
+  }, [
+    queryKeyPrefix,
+    limitRaw,
+    cursor,
+    useSorting,
+    sorting,
+    useFilters,
+    filtersRaw,
+    useSearch,
+    searchRaw,
+  ]);
 
   // --- Query Execution ---
   const query = useQuery({
@@ -145,7 +219,8 @@ export function useDataTableQuery<T>({
         limit: limitRaw,
         cursor: cursor || undefined,
         sorting: useSorting ? sorting : undefined,
-        globalFilter: useGlobalFilter ? globalFilter : undefined,
+        filters: useFilters ? filters : undefined,
+        search: useSearch ? search : undefined,
       }),
     placeholderData: keepPreviousData,
     enabled,
@@ -162,15 +237,86 @@ export function useDataTableQuery<T>({
     }) as OnChangeFn<SortingState>;
   }, [useSorting, sorting, setSortRaw, setCursor]);
 
-  const setGlobalFilter = useMemo(() => {
-    if (!useGlobalFilter) return undefined;
+  const setFilter = useCallback(
+    (filterKey: string, value: any) => {
+      if (!useFilters) return;
 
-    return ((value: string | ((old: string) => string)) => {
-      const next = typeof value === 'function' ? value(globalFilter) : value;
-      setGlobalFilterRaw(next);
-      setCursor(''); // Reset cursor when filter changes
-    }) as OnChangeFn<string>;
-  }, [useGlobalFilter, globalFilter, setGlobalFilterRaw, setCursor]);
+      const currentFilters = filtersRaw ? JSON.parse(filtersRaw) : {};
+      const filterConfigItem = filterConfig[filterKey];
+
+      const serializedValue = filterConfigItem?.serializer
+        ? filterConfigItem.serializer(value)
+        : value;
+
+      const newFilters = {
+        ...currentFilters,
+        [filterKey]: serializedValue,
+      };
+
+      setFiltersRaw(JSON.stringify(newFilters));
+      setCursor(''); // Reset cursor when filters change
+    },
+    [filtersRaw, useFilters, filterConfig, setFiltersRaw, setCursor]
+  );
+
+  const setFilters = useCallback(
+    (newFilters: Partial<FilterValue>) => {
+      if (!useFilters) return;
+
+      const currentFilters = filtersRaw ? JSON.parse(filtersRaw) : {};
+      const updatedFilters = { ...currentFilters };
+
+      Object.entries(newFilters).forEach(([filterKey, value]) => {
+        const filterConfigItem = filterConfig[filterKey];
+        const serializedValue = filterConfigItem?.serializer
+          ? filterConfigItem.serializer(value)
+          : value;
+        updatedFilters[filterKey] = serializedValue;
+      });
+
+      setFiltersRaw(JSON.stringify(updatedFilters));
+      setCursor(''); // Reset cursor when filters change
+    },
+    [filtersRaw, useFilters, filterConfig, setFiltersRaw, setCursor]
+  );
+
+  const clearFilter = useCallback(
+    (filterKey: string) => {
+      if (!useFilters) return;
+
+      const currentFilters = filtersRaw ? JSON.parse(filtersRaw) : {};
+      const { [filterKey]: removed, ...remainingFilters } = currentFilters;
+      setFiltersRaw(
+        Object.keys(remainingFilters).length > 0 ? JSON.stringify(remainingFilters) : ''
+      );
+      setCursor(''); // Reset cursor when filters change
+    },
+    [filtersRaw, useFilters, setFiltersRaw, setCursor]
+  );
+
+  const clearAllFilters = useCallback(() => {
+    if (!useFilters) return;
+
+    setFiltersRaw('');
+    setCursor(''); // Reset cursor when filters change
+  }, [useFilters, setFiltersRaw, setCursor]);
+
+  const setSearch = useCallback(
+    (value: string) => {
+      if (!useSearch) return;
+
+      setSearchRaw(value);
+      setCursor(''); // Reset cursor when search changes
+    },
+    [useSearch, setSearchRaw, setCursor]
+  );
+
+  const clearSearch = useCallback(() => {
+    if (!useSearch) return;
+
+    setSearchRaw('');
+    setCursor(''); // Reset cursor when search changes
+  }, [useSearch, setSearchRaw, setCursor]);
 
   const setLimit = useCallback(
     (s: number) => {
@@ -220,7 +366,8 @@ export function useDataTableQuery<T>({
     limit: limitRaw,
     cursor,
     sorting,
-    globalFilter,
+    filters,
+    search,
     columnVisibility,
     columnPinning,
     columnOrder,
@@ -228,10 +375,58 @@ export function useDataTableQuery<T>({
     setLimit,
     setCursor,
     setSorting,
-    setGlobalFilter,
+    setFilter,
+    setFilters,
+    clearFilter,
+    clearAllFilters,
+    setSearch,
+    clearSearch,
     setColumnVisibility,
     setColumnPinning,
     setColumnOrder,
     setRowSelection: setSafeRowSelection,
   };
 }
+
+// Predefined filter configurations for common use cases
+export const filterConfigs = {
+  // Date range filter - store nanosecond timestamps directly (no conversion needed)
+  dateRange: {},
+
+  // Number range filter
+  numberRange: {
+    min: {
+      parser: (value: any) => Number(value),
+      serializer: (value: number) => value,
+    },
+    max: {
+      parser: (value: any) => Number(value),
+      serializer: (value: number) => value,
+    },
+  },
+
+  // Multi-select filter
+  multiSelect: {
+    values: {
+      parser: (value: any) => (Array.isArray(value) ? value : [value]),
+      serializer: (value: string[]) => value,
+      defaultValue: [],
+    },
+  },
+
+  // Single select filter
+  select: {
+    value: {
+      parser: (value: any) => value,
+      serializer: (value: string) => value,
+    },
+  },
+
+  // Boolean filter
+  boolean: {
+    value: {
+      parser: (value: any) => Boolean(value),
+      serializer: (value: boolean) => value,
+    },
+  },
+} as const;

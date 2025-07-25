@@ -47,7 +47,6 @@ export default function Page() {
     queryKeyPrefix: ['projects', data.metadata.name],
     fetchFn: (params) => orgProjectListQuery(data.metadata.name, params),
     useSorting: true,
-    useGlobalFilter: true,
   });
 
   return (

@@ -43,6 +43,31 @@ const StateConfig = {
     className:
       'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800',
   },
+  // Activity log states
+  success: {
+    icon: null,
+    variant: 'default' as const,
+    className:
+      'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800',
+  },
+  error: {
+    icon: null,
+    variant: 'destructive' as const,
+    className:
+      'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800',
+  },
+  warning: {
+    icon: null,
+    variant: 'default' as const,
+    className:
+      'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800',
+  },
+  info: {
+    icon: null,
+    variant: 'default' as const,
+    className:
+      'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800',
+  },
 } as const;
 
 // Default configuration for unknown states
@@ -57,18 +82,22 @@ type State = keyof typeof StateConfig;
 
 type Props = {
   state: State | string;
+  message?: string; // Custom text to display instead of state name
   noColor?: boolean;
   tooltip?: string;
   className?: string;
 };
 
-const BadgeState = ({ state, noColor, tooltip, className }: Props) => {
+const BadgeState = ({ state, message, noColor, tooltip, className }: Props) => {
   const normalizedState = String(state ?? '').toLowerCase();
   const config = StateConfig[normalizedState as State] || DefaultConfig;
 
-  if (!normalizedState) return null;
+  if (!normalizedState && !message) return null;
 
   const IconComponent = config.icon;
+
+  // Use custom message if provided, otherwise fall back to titleCase state
+  const displayText = message || titleCase(normalizedState);
 
   if (!IconComponent) {
     return (
@@ -81,7 +110,7 @@ const BadgeState = ({ state, noColor, tooltip, className }: Props) => {
             : config.className,
           className
         )}>
-        {titleCase(normalizedState)}
+        {displayText}
       </Badge>
     );
   }

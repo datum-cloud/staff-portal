@@ -24,5 +24,7 @@ export type ProxyRequestSuccess = z.infer<typeof ProxyRequestSuccessSchema>;
 export const ListQueryParamsSchema = z.object({
   limit: z.number().optional(),
   cursor: z.string().optional(),
+  filters: z.record(z.any()).optional(),
+  search: z.string().optional(),
 });
 export type ListQueryParams = z.infer<typeof ListQueryParamsSchema>;

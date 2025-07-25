@@ -24,7 +24,6 @@ export default function Page() {
     queryKeyPrefix: ['http-proxy', data.metadata.name],
     fetchFn: (params) => projectHttpProxyListQuery(data.metadata.name, params),
     useSorting: true,
-    useGlobalFilter: true,
   });
 
   const columns = [

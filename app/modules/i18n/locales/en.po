@@ -17,6 +17,14 @@ msgstr ""
 msgid "Account"
 msgstr "Account"
 
+#: app/routes/project/detail/activity.tsx:77
+msgid "Action"
+msgstr "Action"
+
+#: app/routes/project/detail/layout.tsx:39
+msgid "Activity"
+msgstr "Activity"
+
 #. placeholder {0}: data.metadata.annotations?.['kubernetes.io/display-name']
 #: app/routes/organization/detail/layout.tsx:59
 msgid "Are you sure you want to delete organization \"{0}\"? This action cannot be undone."
@@ -39,7 +47,7 @@ msgstr "Cancel"
 #: app/routes/user/detail/index.tsx:68
 #: app/routes/project/index.tsx:37
 #: app/routes/project/detail/index.tsx:89
-#: app/routes/project/detail/httpproxy/index.tsx:54
+#: app/routes/project/detail/httpproxy/index.tsx:53
 #: app/routes/project/detail/httpproxy/detail.tsx:99
 #: app/routes/organization/detail/project.tsx:36
 #: app/routes/organization/detail/index.tsx:62
@@ -76,7 +84,7 @@ msgstr "Description"
 msgid "Email"
 msgstr "Email"
 
-#: app/routes/project/detail/httpproxy/index.tsx:38
+#: app/routes/project/detail/httpproxy/index.tsx:37
 #: app/routes/project/detail/httpproxy/detail.tsx:59
 msgid "Endpoint"
 msgstr "Endpoint"
@@ -96,6 +104,10 @@ msgstr "Failed to delete project"
 #: app/routes/user/detail/layout.tsx:38
 msgid "Failed to delete user"
 msgstr "Failed to delete user"
+
+#: app/routes/project/detail/activity.tsx:166
+msgid "Filter by time range"
+msgstr "Filter by time range"
 
 #: app/routes/user/index.tsx:22
 #: app/routes/user/detail/index.tsx:46
@@ -133,9 +145,13 @@ msgstr "Loading..."
 msgid "Log out"
 msgstr "Log out"
 
+#: app/routes/project/detail/activity.tsx:35
+msgid "Message"
+msgstr "Message"
+
 #: app/routes/project/index.tsx:28
 #: app/routes/project/detail/index.tsx:67
-#: app/routes/project/detail/httpproxy/index.tsx:32
+#: app/routes/project/detail/httpproxy/index.tsx:31
 #: app/routes/project/detail/httpproxy/detail.tsx:49
 #: app/routes/organization/index.tsx:19
 #: app/routes/organization/detail/project.tsx:33
@@ -179,10 +195,23 @@ msgstr "Project deleted successfully"
 msgid "Projects"
 msgstr "Projects"
 
-#: app/routes/project/detail/httpproxy/index.tsx:48
+#: app/routes/project/detail/activity.tsx:138
+msgid "Search activity..."
+msgstr "Search activity..."
+
+#: app/routes/project/detail/activity.tsx:66
+msgid "Source IP"
+msgstr "Source IP"
+
+#: app/routes/project/detail/activity.tsx:90
+#: app/routes/project/detail/httpproxy/index.tsx:47
 #: app/routes/project/detail/httpproxy/detail.tsx:87
 msgid "Status"
 msgstr "Status"
+
+#: app/routes/project/detail/activity.tsx:81
+msgid "Timestamp"
+msgstr "Timestamp"
 
 #: app/routes/organization/index.tsx:34
 #: app/routes/organization/detail/index.tsx:52
