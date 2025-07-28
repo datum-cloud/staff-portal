@@ -13,6 +13,30 @@ const API_BASENAME = '/api';
 // Create an API Hono app
 const api = new Hono<{ Variables: EnvVariables }>();
 
+// Helper function to extract request context
+const extractRequestContext = (c: any) => ({
+  path: c.req.path,
+  method: c.req.method,
+  url: c.req.url,
+  userAgent: c.req.header('User-Agent'),
+  ip:
+    c.req.header('x-forwarded-for') ||
+    c.req.header('x-real-ip') ||
+    c.req.header('x-client-ip') ||
+    c.req.header('cf-connecting-ip') ||
+    c.req.header('x-forwarded') ||
+    'unknown',
+});
+
+// Helper function to create success response with common headers
+const createSuccessResponseWithHeaders = (c: any, reqId: string, data: any, path: string) => {
+  return c.json(createSuccessResponse(reqId, data, path), 200, {
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    Pragma: 'no-cache',
+    Expires: '0',
+  });
+};
+
 // Public endpoint (no auth required)
 api.get('/', async (c) => {
   return c.json({ message: 'Staff API' });
@@ -23,21 +47,7 @@ api.all('/internal/*', authMiddleware(), async (c) => {
   const startTime = performance.now();
   const reqLogger = createRequestLogger(c);
   const reqId = c.get('requestId');
-
-  // Extract request context for logging
-  const requestContext = {
-    path: c.req.path,
-    method: c.req.method,
-    url: c.req.url,
-    userAgent: c.req.header('User-Agent'),
-    ip:
-      c.req.header('x-forwarded-for') ||
-      c.req.header('x-real-ip') ||
-      c.req.header('x-client-ip') ||
-      c.req.header('cf-connecting-ip') ||
-      c.req.header('x-forwarded') ||
-      'unknown',
-  };
+  const requestContext = extractRequestContext(c);
 
   reqLogger.info('API Request Started', requestContext);
 
@@ -89,29 +99,16 @@ api.all('/internal/*', authMiddleware(), async (c) => {
 
     const duration = Math.round(performance.now() - startTime);
 
-    // Log success with response size estimation
-    const responseSize =
-      typeof response === 'string'
-        ? response.length
-        : response
-          ? JSON.stringify(response).length
-          : 0;
-
+    // Log success
     logApiSuccess(reqLogger, {
       path,
       method: c.req.method,
       duration,
       userAgent: requestContext.userAgent,
       ip: requestContext.ip,
-      responseSize,
     });
 
-    // Return the response with appropriate headers
-    return c.json(createSuccessResponse(reqId, response, path), 200, {
-      'Cache-Control': 'no-cache, no-store, must-revalidate',
-      Pragma: 'no-cache',
-      Expires: '0',
-    });
+    return createSuccessResponseWithHeaders(c, reqId, response, path);
   } catch (error) {
     const duration = Math.round(performance.now() - startTime);
 
@@ -128,7 +125,6 @@ api.all('/internal/*', authMiddleware(), async (c) => {
       reqLogger.debug('Full error details', { error });
     }
 
-    // Create error response using the extracted function
     const { response, status } = await createErrorResponse(reqId, error, path);
     return c.json(response, status as any);
   }
@@ -139,21 +135,7 @@ api.get('/activity', authMiddleware(), async (c) => {
   const startTime = performance.now();
   const reqLogger = createRequestLogger(c);
   const reqId = c.get('requestId');
-
-  // Extract request context for logging
-  const requestContext = {
-    path: c.req.path,
-    method: c.req.method,
-    url: c.req.url,
-    userAgent: c.req.header('User-Agent'),
-    ip:
-      c.req.header('x-forwarded-for') ||
-      c.req.header('x-real-ip') ||
-      c.req.header('x-client-ip') ||
-      c.req.header('cf-connecting-ip') ||
-      c.req.header('x-forwarded') ||
-      'unknown',
-  };
+  const requestContext = extractRequestContext(c);
 
   reqLogger.info('Activity API Request Started', requestContext);
 
@@ -177,7 +159,7 @@ api.get('/activity', authMiddleware(), async (c) => {
 
     const duration = Math.round(performance.now() - startTime);
 
-    // Log success with response size estimation
+    // Log success
     logApiSuccess(reqLogger, {
       path: c.req.path,
       method: c.req.method,
@@ -186,12 +168,7 @@ api.get('/activity', authMiddleware(), async (c) => {
       ip: requestContext.ip,
     });
 
-    // Return the response with appropriate headers
-    return c.json(createSuccessResponse(reqId, response, c.req.path), 200, {
-      'Cache-Control': 'no-cache, no-store, must-revalidate',
-      Pragma: 'no-cache',
-      Expires: '0',
-    });
+    return createSuccessResponseWithHeaders(c, reqId, response, c.req.path);
   } catch (error) {
     const duration = Math.round(performance.now() - startTime);
 
