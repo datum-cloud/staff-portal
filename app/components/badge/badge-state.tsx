@@ -1,4 +1,4 @@
-import Tooltip from '@/components/tooltip';
+import { Tooltip } from '@/components/tooltip';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Badge } from '@/modules/shadcn/ui/badge';
 import * as React from 'react';

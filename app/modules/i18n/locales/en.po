@@ -17,11 +17,13 @@ msgstr ""
 msgid "Account"
 msgstr "Account"
 
-#: app/routes/project/detail/activity.tsx:77
+#: app/components/list/list-activity.tsx:78
 msgid "Action"
 msgstr "Action"
 
+#: app/routes/activity.tsx:11
 #: app/routes/project/detail/layout.tsx:39
+#: app/components/app-sidebar/index.tsx:96
 msgid "Activity"
 msgstr "Activity"
 
@@ -43,7 +45,7 @@ msgstr "Are you sure you want to delete project \"{0} ({1})\"? This action canno
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 
-#: app/components/delete-action-button/index.tsx:43
+#: app/components/button/button-delete-action.tsx:43
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -61,12 +63,12 @@ msgstr "Created at"
 msgid "Dark"
 msgstr "Dark"
 
-#: app/components/delete-action-button/index.tsx:42
-#: app/components/delete-action-button/index.tsx:49
+#: app/components/button/button-delete-action.tsx:42
+#: app/components/button/button-delete-action.tsx:49
 msgid "Delete"
 msgstr "Delete"
 
-#: app/components/delete-action-button/index.tsx:40
+#: app/components/button/button-delete-action.tsx:40
 msgid "Delete {itemType}"
 msgstr "Delete {itemType}"
 
@@ -92,7 +94,7 @@ msgstr "Email"
 msgid "Endpoint"
 msgstr "Endpoint"
 
-#: app/components/confirm-dialog/index.tsx:101
+#: app/components/dialog/dialog-confirm.tsx:101
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr "Enter the word <0>{confirmationText}</0> to perform this action."
 
@@ -108,7 +110,7 @@ msgstr "Failed to delete project"
 msgid "Failed to delete user"
 msgstr "Failed to delete user"
 
-#: app/routes/project/detail/activity.tsx:166
+#: app/components/list/list-activity.tsx:183
 msgid "Filter by time range"
 msgstr "Filter by time range"
 
@@ -148,7 +150,7 @@ msgstr "Loading..."
 msgid "Log out"
 msgstr "Log out"
 
-#: app/routes/project/detail/activity.tsx:35
+#: app/components/list/list-activity.tsx:33
 msgid "Message"
 msgstr "Message"
 
@@ -198,21 +200,21 @@ msgstr "Project deleted successfully"
 msgid "Projects"
 msgstr "Projects"
 
-#: app/routes/project/detail/activity.tsx:138
+#: app/components/list/list-activity.tsx:155
 msgid "Search activity..."
 msgstr "Search activity..."
 
-#: app/routes/project/detail/activity.tsx:66
+#: app/components/list/list-activity.tsx:67
 msgid "Source IP"
 msgstr "Source IP"
 
-#: app/routes/project/detail/activity.tsx:90
 #: app/routes/project/detail/httpproxy/index.tsx:47
 #: app/routes/project/detail/httpproxy/detail.tsx:87
+#: app/components/list/list-activity.tsx:91
 msgid "Status"
 msgstr "Status"
 
-#: app/routes/project/detail/activity.tsx:81
+#: app/components/list/list-activity.tsx:82
 msgid "Timestamp"
 msgstr "Timestamp"
 

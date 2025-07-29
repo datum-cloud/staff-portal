@@ -1,11 +1,11 @@
-import ConfirmDialog from '@/components/confirm-dialog';
-import Tooltip from '@/components/tooltip';
+import DialogConfirm from '@/components/dialog/dialog-confirm';
+import { Tooltip } from '@/components/tooltip';
 import { Button } from '@/modules/shadcn/ui/button';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 
-interface DeleteActionButtonProps {
+interface ButtonDeleteActionProps {
   /** The type of item being deleted (e.g., "Project", "Organization", "User") */
   itemType: string;
   /** The description text for the confirmation dialog */
@@ -17,13 +17,13 @@ interface DeleteActionButtonProps {
   tooltip?: string;
 }
 
-export default function DeleteActionButton({
+export default function ButtonDeleteAction({
   itemType,
   description,
   onConfirm,
   buttonProps = {},
   tooltip,
-}: DeleteActionButtonProps) {
+}: ButtonDeleteActionProps) {
   const { t } = useLingui();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -34,7 +34,7 @@ export default function DeleteActionButton({
 
   return (
     <>
-      <ConfirmDialog
+      <DialogConfirm
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title={t`Delete ${itemType}`}

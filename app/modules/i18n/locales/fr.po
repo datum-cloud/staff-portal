@@ -17,11 +17,13 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
-#: app/routes/project/detail/activity.tsx:77
+#: app/components/list/list-activity.tsx:78
 msgid "Action"
 msgstr ""
 
+#: app/routes/activity.tsx:11
 #: app/routes/project/detail/layout.tsx:39
+#: app/components/app-sidebar/index.tsx:96
 msgid "Activity"
 msgstr ""
 
@@ -43,7 +45,7 @@ msgstr ""
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr ""
 
-#: app/components/delete-action-button/index.tsx:43
+#: app/components/button/button-delete-action.tsx:43
 msgid "Cancel"
 msgstr ""
 
@@ -61,12 +63,12 @@ msgstr ""
 msgid "Dark"
 msgstr ""
 
-#: app/components/delete-action-button/index.tsx:42
-#: app/components/delete-action-button/index.tsx:49
+#: app/components/button/button-delete-action.tsx:42
+#: app/components/button/button-delete-action.tsx:49
 msgid "Delete"
 msgstr ""
 
-#: app/components/delete-action-button/index.tsx:40
+#: app/components/button/button-delete-action.tsx:40
 msgid "Delete {itemType}"
 msgstr ""
 
@@ -92,7 +94,7 @@ msgstr ""
 msgid "Endpoint"
 msgstr ""
 
-#: app/components/confirm-dialog/index.tsx:101
+#: app/components/dialog/dialog-confirm.tsx:101
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr ""
 
@@ -108,7 +110,7 @@ msgstr ""
 msgid "Failed to delete user"
 msgstr ""
 
-#: app/routes/project/detail/activity.tsx:166
+#: app/components/list/list-activity.tsx:183
 msgid "Filter by time range"
 msgstr ""
 
@@ -148,7 +150,7 @@ msgstr ""
 msgid "Log out"
 msgstr ""
 
-#: app/routes/project/detail/activity.tsx:35
+#: app/components/list/list-activity.tsx:33
 msgid "Message"
 msgstr ""
 
@@ -198,21 +200,21 @@ msgstr ""
 msgid "Projects"
 msgstr ""
 
-#: app/routes/project/detail/activity.tsx:138
+#: app/components/list/list-activity.tsx:155
 msgid "Search activity..."
 msgstr ""
 
-#: app/routes/project/detail/activity.tsx:66
+#: app/components/list/list-activity.tsx:67
 msgid "Source IP"
 msgstr ""
 
-#: app/routes/project/detail/activity.tsx:90
 #: app/routes/project/detail/httpproxy/index.tsx:47
 #: app/routes/project/detail/httpproxy/detail.tsx:87
+#: app/components/list/list-activity.tsx:91
 msgid "Status"
 msgstr ""
 
-#: app/routes/project/detail/activity.tsx:81
+#: app/components/list/list-activity.tsx:82
 msgid "Timestamp"
 msgstr ""
 

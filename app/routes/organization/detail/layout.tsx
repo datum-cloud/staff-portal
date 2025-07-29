@@ -1,5 +1,5 @@
 import type { Route } from './+types/layout';
-import DeleteActionButton from '@/components/delete-action-button';
+import { ButtonDeleteAction } from '@/components/button';
 import { SubLayout } from '@/components/sub-layout';
 import { authenticator } from '@/modules/auth';
 import { toast } from '@/modules/toast';
@@ -54,7 +54,7 @@ export default function Layout() {
   return (
     <SubLayout>
       <SubLayout.ActionBar>
-        <DeleteActionButton
+        <ButtonDeleteAction
           itemType="Organization"
           description={t`Are you sure you want to delete organization "${data.metadata.annotations?.['kubernetes.io/display-name']} (${data.metadata.name})"? This action cannot be undone.`}
           onConfirm={handleDeleteOrganization}

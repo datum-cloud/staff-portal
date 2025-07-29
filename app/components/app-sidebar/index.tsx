@@ -25,7 +25,7 @@ import {
   useSidebar,
 } from '@/modules/shadcn/ui/sidebar';
 import { useLingui } from '@lingui/react/macro';
-import { Building2, ChevronRight, Folders, Home, LucideIcon, Users } from 'lucide-react';
+import { Building2, ChevronRight, Folders, LucideIcon, SquareActivity, Users } from 'lucide-react';
 import * as React from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
 
@@ -90,6 +90,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       title: t`Projects`,
       icon: Folders,
       href: '/projects',
+      hasSubmenu: false,
+    },
+    {
+      title: t`Activity`,
+      href: `/activity`,
+      icon: SquareActivity,
       hasSubmenu: false,
     },
   ];

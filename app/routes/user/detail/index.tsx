@@ -1,6 +1,6 @@
 import type { Route } from './+types/index';
-import CopyButton from '@/components/copy-button';
-import DateFormatter from '@/components/date-formatter';
+import { ButtonCopy } from '@/components/button';
+import { DateFormatter } from '@/components/date';
 import { Text, Title } from '@/components/typography';
 import { Card, CardContent } from '@/modules/shadcn/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
@@ -36,7 +36,7 @@ export default function Page() {
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <Text>{data?.metadata?.name}</Text>
-                    <CopyButton value={data?.metadata?.name} />
+                    <ButtonCopy value={data?.metadata?.name} />
                   </div>
                 </TableCell>
               </TableRow>

@@ -1,6 +1,6 @@
 import type { Route } from './+types/detail';
-import BadgeCondition from '@/components/badge-condition';
-import DateFormatter from '@/components/date-formatter';
+import { BadgeCondition } from '@/components/badge';
+import { DateFormatter } from '@/components/date';
 import { Text, Title } from '@/components/typography';
 import { authenticator } from '@/modules/auth';
 import { Card, CardContent } from '@/modules/shadcn/ui/card';

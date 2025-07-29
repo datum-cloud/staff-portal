@@ -1,6 +1,6 @@
 import type { Route } from './+types/index';
-import BadgeCondition from '@/components/badge-condition';
-import DateFormatter from '@/components/date-formatter';
+import { BadgeCondition } from '@/components/badge';
+import { DateFormatter } from '@/components/date';
 import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/data-table';
 import { projectHttpProxyListQuery } from '@/resources/request/client/project.request';
 import { HTTPProxy, HTTPProxyListResponse } from '@/resources/schemas/httpproxy.schema';
