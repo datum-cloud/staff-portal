@@ -23,6 +23,7 @@ msgstr ""
 
 #: app/routes/activity.tsx:11
 #: app/routes/project/detail/layout.tsx:40
+#: app/routes/project/detail/activity.tsx:9
 #: app/components/app-sidebar/index.tsx:98
 msgid "Activity"
 msgstr ""
@@ -59,7 +60,7 @@ msgstr ""
 msgid "Created at"
 msgstr ""
 
-#: app/routes/customers/layout.tsx:5
+#: app/routes/customers/layout.tsx:7
 #: app/components/app-sidebar/index.tsx:79
 msgid "Customers"
 msgstr ""
@@ -128,12 +129,9 @@ msgstr ""
 msgid "Hostname"
 msgstr ""
 
+#: app/routes/project/detail/layout.tsx:35
 #: app/routes/project/detail/httpproxy/layout.tsx:5
 msgid "HTTP Proxies"
-msgstr ""
-
-#: app/routes/project/detail/layout.tsx:35
-msgid "HTTP Proxy"
 msgstr ""
 
 #: app/routes/user/index.tsx:35

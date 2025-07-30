@@ -32,7 +32,7 @@ export default function Layout() {
       icon: FileText,
     },
     {
-      title: t`HTTP Proxy`,
+      title: t`HTTP Proxies`,
       href: projectRoutes.httpProxy.list(data.metadata.name),
       icon: Waypoints,
     },
