@@ -1,6 +1,6 @@
 'use client';
 
-import Tooltip from '@/components/tooltip';
+import { Tooltip } from '@/components/tooltip';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/modules/shadcn/ui/avatar';
 import { Button } from '@/modules/shadcn/ui/button';

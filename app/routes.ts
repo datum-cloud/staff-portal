@@ -38,6 +38,9 @@ export default [
       ]),
     ]),
 
+    // Activity
+    route('activity', 'routes/activity.tsx'),
+
     route('demo', 'routes/demo.tsx'),
   ]),
 

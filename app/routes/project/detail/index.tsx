@@ -1,8 +1,8 @@
 import type { Route } from './+types/index';
 import AppActionBar from '@/components/app-actiobar';
-import CopyButton from '@/components/copy-button';
-import DateFormatter from '@/components/date-formatter';
-import DeleteActionButton from '@/components/delete-action-button';
+import { ButtonDeleteAction } from '@/components/button';
+import { ButtonCopy } from '@/components/button';
+import { DateFormatter } from '@/components/date';
 import { Text, Title } from '@/components/typography';
 import { Card, CardContent } from '@/modules/shadcn/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
@@ -36,7 +36,7 @@ export default function Page() {
   return (
     <>
       <AppActionBar>
-        <DeleteActionButton
+        <ButtonDeleteAction
           tooltip={t`Delete Project`}
           itemType="Project"
           description={t`Are you sure you want to delete project "${data.metadata.annotations?.['kubernetes.io/description']} (${data.metadata.name})"? This action cannot be undone.`}

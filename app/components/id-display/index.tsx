@@ -1,4 +1,4 @@
-import CopyButton from '@/components/copy-button';
+import { ButtonCopy } from '@/components/button';
 
 function truncateMiddle(str: string, maxLength = 16) {
   if (str.length <= maxLength) return str;
@@ -10,7 +10,7 @@ function IDDisplay({ value }: { value: string }) {
   return (
     <div className="flex items-center space-x-2">
       <span>{truncateMiddle(value)}</span>
-      <CopyButton value={value} />
+      <ButtonCopy value={value} />
     </div>
   );
 }

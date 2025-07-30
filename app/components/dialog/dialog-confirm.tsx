@@ -1,4 +1,4 @@
-import ButtonLoading from '@/components/button-loading';
+import { ButtonLoading } from '@/components/button';
 import { Button } from '@/modules/shadcn/ui/button';
 import {
   Dialog,
@@ -13,7 +13,7 @@ import { logger } from '@/utils/logger';
 import { Trans } from '@lingui/react/macro';
 import { useState } from 'react';
 
-interface ConfirmDialogProps {
+interface DialogConfirmProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
@@ -27,7 +27,7 @@ interface ConfirmDialogProps {
   confirmationText?: string;
 }
 
-export default function ConfirmDialog({
+export default function DialogConfirm({
   open,
   onOpenChange,
   title,
@@ -39,7 +39,7 @@ export default function ConfirmDialog({
   onCancel,
   requireConfirmation = false,
   confirmationText = 'DELETE',
-}: ConfirmDialogProps) {
+}: DialogConfirmProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [confirmationInput, setConfirmationInput] = useState('');
 

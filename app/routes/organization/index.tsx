@@ -1,5 +1,5 @@
 import type { Route } from './+types/index';
-import BadgeState from '@/components/badge-state';
+import { BadgeState } from '@/components/badge';
 import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/data-table';
 import { orgListQuery } from '@/resources/request/client/organization.request';
 import { Organization, OrganizationListResponse } from '@/resources/schemas/organization.schema';

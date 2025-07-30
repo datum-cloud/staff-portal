@@ -1,9 +1,9 @@
-import Tooltip from '@/components/tooltip';
+import { Tooltip } from '@/components/tooltip';
 import { Button } from '@/modules/shadcn/ui/button';
 import { toast } from '@/modules/toast';
 import { Copy } from 'lucide-react';
 
-interface CopyButtonProps {
+interface ButtonCopyProps {
   value: string;
   successMessage?: string;
   errorMessage?: string;
@@ -12,14 +12,14 @@ interface CopyButtonProps {
   variant?: 'ghost' | 'outline' | 'default';
 }
 
-function CopyButton({
+function ButtonCopy({
   value,
   successMessage = 'Copied to clipboard',
   errorMessage = 'Failed to copy',
   tooltipText = 'Copy',
   size = 'sm',
   variant = 'ghost',
-}: CopyButtonProps) {
+}: ButtonCopyProps) {
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(value);
@@ -42,4 +42,4 @@ function CopyButton({
   );
 }
 
-export default CopyButton;
+export default ButtonCopy;

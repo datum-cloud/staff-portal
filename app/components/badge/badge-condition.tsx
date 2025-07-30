@@ -1,5 +1,5 @@
-import DateFormatter from '@/components/date-formatter';
-import Tooltip from '@/components/tooltip';
+import { DateFormatter } from '@/components/date';
+import { Tooltip } from '@/components/tooltip';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Badge } from '@/modules/shadcn/ui/badge';
 import { CheckCircle, Clock, XCircle } from 'lucide-react';

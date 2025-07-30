@@ -1,4 +1,4 @@
-import BadgeState from './index';
+import { BadgeState } from './index';
 
 export default function BadgeStateExample() {
   return (

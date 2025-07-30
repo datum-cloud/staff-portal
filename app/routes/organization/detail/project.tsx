@@ -1,5 +1,5 @@
 import type { Route } from './+types/index';
-import DateFormatter from '@/components/date-formatter';
+import { DateFormatter } from '@/components/date';
 import { DataTable } from '@/modules/data-table/components/data-table';
 import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
 import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';

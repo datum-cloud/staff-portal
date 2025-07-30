@@ -10,7 +10,7 @@ import { CalendarIcon, X } from 'lucide-react';
 import * as React from 'react';
 import { DateRange } from 'react-day-picker';
 
-interface DateTimeRangePickerProps {
+interface DateRangePickerProps {
   value?: DateRange;
   onValueChange?: (value: DateRange | undefined) => void;
   placeholder?: string;
@@ -18,13 +18,13 @@ interface DateTimeRangePickerProps {
   disabled?: boolean;
 }
 
-export function DateTimeRangePicker({
+export function DateRangePicker({
   value,
   onValueChange,
   placeholder = 'Pick a date range',
   className,
   disabled = false,
-}: DateTimeRangePickerProps) {
+}: DateRangePickerProps) {
   const [startTime, setStartTime] = React.useState<string>('');
   const [endTime, setEndTime] = React.useState<string>('');
 
