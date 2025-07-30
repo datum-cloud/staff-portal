@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table
 import { toast } from '@/modules/toast';
 import { projectDeleteMutation } from '@/resources/request/client/project.request';
 import { Project } from '@/resources/schemas/project.schema';
+import { projectRoutes, orgRoutes } from '@/utils/config/routes.config';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Link, useNavigate, useRouteLoaderData } from 'react-router';
@@ -26,7 +27,7 @@ export default function Page() {
   const handleDeleteProject = async () => {
     try {
       await projectDeleteMutation(data.metadata.name);
-      navigate('/projects');
+      navigate(projectRoutes.list());
       toast.success(t`Project deleted successfully`);
     } catch (error) {
       toast.error(t`Failed to delete project`);
@@ -78,7 +79,7 @@ export default function Page() {
                     </Text>
                   </TableCell>
                   <TableCell>
-                    <Link to={`/organizations/${data?.spec?.ownerRef?.name}`}>
+                    <Link to={orgRoutes.detail(data?.spec?.ownerRef?.name)}>
                       {data?.spec?.ownerRef?.name}
                     </Link>
                   </TableCell>

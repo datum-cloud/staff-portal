@@ -5,36 +5,40 @@ export default [
   layout('layouts/private.layout.tsx', [
     index('routes/dashboard/index.tsx'),
 
-    // Users
-    route('users', 'routes/user/layout.tsx', [
-      index('routes/user/index.tsx'),
+    // Customers
+    route('customers', 'routes/customers/layout.tsx', [
+      index('routes/customers/index.tsx'),
+      // Users
+      route('users', 'routes/user/layout.tsx', [
+        index('routes/user/index.tsx'),
 
-      route(':userId', 'routes/user/detail/layout.tsx', [index('routes/user/detail/index.tsx')]),
-    ]),
-
-    // Organizations
-    route('organizations', 'routes/organization/layout.tsx', [
-      index('routes/organization/index.tsx'),
-
-      route(':orgName', 'routes/organization/detail/layout.tsx', [
-        index('routes/organization/detail/index.tsx'),
-        route('projects', 'routes/organization/detail/project.tsx'),
+        route(':userId', 'routes/user/detail/layout.tsx', [index('routes/user/detail/index.tsx')]),
       ]),
-    ]),
 
-    // Projects
-    route('projects', 'routes/project/layout.tsx', [
-      index('routes/project/index.tsx'),
+      // Organizations
+      route('organizations', 'routes/organization/layout.tsx', [
+        index('routes/organization/index.tsx'),
 
-      route(':projectName', 'routes/project/detail/layout.tsx', [
-        index('routes/project/detail/index.tsx'),
-
-        route('http-proxies', 'routes/project/detail/httpproxy/layout.tsx', [
-          index('routes/project/detail/httpproxy/index.tsx'),
-          route(':httpProxyName', 'routes/project/detail/httpproxy/detail.tsx'),
+        route(':orgName', 'routes/organization/detail/layout.tsx', [
+          index('routes/organization/detail/index.tsx'),
+          route('projects', 'routes/organization/detail/project.tsx'),
         ]),
+      ]),
 
-        route('activity', 'routes/project/detail/activity.tsx'),
+      // Projects
+      route('projects', 'routes/project/layout.tsx', [
+        index('routes/project/index.tsx'),
+
+        route(':projectName', 'routes/project/detail/layout.tsx', [
+          index('routes/project/detail/index.tsx'),
+
+          route('http-proxies', 'routes/project/detail/httpproxy/layout.tsx', [
+            index('routes/project/detail/httpproxy/index.tsx'),
+            route(':httpProxyName', 'routes/project/detail/httpproxy/detail.tsx'),
+          ]),
+
+          route('activity', 'routes/project/detail/activity.tsx'),
+        ]),
       ]),
     ]),
 

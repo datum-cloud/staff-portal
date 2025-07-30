@@ -1,6 +1,5 @@
 import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
-import { ButtonCopy } from '@/components/button';
 import { DateFormatter } from '@/components/date';
 import { Text, Title } from '@/components/typography';
 import { Card, CardContent } from '@/modules/shadcn/ui/card';

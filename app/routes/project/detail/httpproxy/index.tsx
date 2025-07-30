@@ -5,6 +5,7 @@ import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/data-
 import { projectHttpProxyListQuery } from '@/resources/request/client/project.request';
 import { HTTPProxy, HTTPProxyListResponse } from '@/resources/schemas/httpproxy.schema';
 import { Project } from '@/resources/schemas/project.schema';
+import { projectRoutes } from '@/utils/config/routes.config';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -30,7 +31,9 @@ export default function Page() {
     columnHelper.accessor('metadata.name', {
       header: () => <Trans>Name</Trans>,
       cell: ({ getValue }) => (
-        <Link to={`/projects/${data.metadata.name}/http-proxies/${getValue()}`}>{getValue()}</Link>
+        <Link to={projectRoutes.httpProxy.detail(data.metadata.name, getValue())}>
+          {getValue()}
+        </Link>
       ),
     }),
     columnHelper.accessor('spec.rules', {

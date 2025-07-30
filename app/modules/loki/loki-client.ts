@@ -103,7 +103,6 @@ export async function executeLokiQuery(
       timerange: response.timerange,
     });
 
-    console.log('response', JSON.stringify(response.logs));
     return response;
   } catch (error) {
     logger.error('Loki query failed', {
