@@ -5,6 +5,7 @@ import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery'
 import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';
 import { projectListQuery } from '@/resources/request/client/project.request';
 import { Project, ProjectListResponse } from '@/resources/schemas/project.schema';
+import { projectRoutes, orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
@@ -30,7 +31,7 @@ const columns = [
   columnHelper.accessor('spec.ownerRef.name', {
     header: () => <Trans>Organization</Trans>,
     cell: ({ getValue }) => {
-      return <Link to={`/organizations/${getValue()}`}>{getValue()}</Link>;
+      return <Link to={orgRoutes.detail(getValue())}>{getValue()}</Link>;
     },
   }),
   columnHelper.accessor('metadata.creationTimestamp', {

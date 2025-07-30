@@ -24,8 +24,9 @@ import {
   SidebarRail,
   useSidebar,
 } from '@/modules/shadcn/ui/sidebar';
+import { orgRoutes, projectRoutes, routes, userRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
-import { Building2, ChevronRight, Folders, LucideIcon, SquareActivity, Users } from 'lucide-react';
+import { ChevronRight, LucideIcon, SquareActivity, Users } from 'lucide-react';
 import * as React from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
 
@@ -75,26 +76,27 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     //   hasSubmenu: false,
     // },
     {
-      title: t`Users`,
+      title: t`Customers`,
       icon: Users,
-      href: '/users',
-      hasSubmenu: false,
-    },
-    {
-      title: t`Organizations`,
-      icon: Building2,
-      href: '/organizations',
-      hasSubmenu: false,
-    },
-    {
-      title: t`Projects`,
-      icon: Folders,
-      href: '/projects',
-      hasSubmenu: false,
+      hasSubmenu: true,
+      submenuItems: [
+        {
+          title: t`Users`,
+          href: userRoutes.list(),
+        },
+        {
+          title: t`Organizations`,
+          href: orgRoutes.list(),
+        },
+        {
+          title: t`Projects`,
+          href: projectRoutes.list(),
+        },
+      ],
     },
     {
       title: t`Activity`,
-      href: `/activity`,
+      href: routes.activity(),
       icon: SquareActivity,
       hasSubmenu: false,
     },

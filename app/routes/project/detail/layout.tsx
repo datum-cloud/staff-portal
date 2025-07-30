@@ -3,6 +3,7 @@ import { SubLayout } from '@/components/sub-layout';
 import { authenticator } from '@/modules/auth';
 import { projectDetailQuery } from '@/resources/request/server/project.request';
 import { Project } from '@/resources/schemas/project.schema';
+import { projectRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
 import { FileText, SquareActivity, Waypoints } from 'lucide-react';
 import { Outlet, useLoaderData } from 'react-router';
@@ -27,17 +28,17 @@ export default function Layout() {
   const menuItems = [
     {
       title: t`Overview`,
-      href: `/projects/${data.metadata.name}`,
+      href: projectRoutes.detail(data.metadata.name),
       icon: FileText,
     },
     {
-      title: t`HTTP Proxy`,
-      href: `/projects/${data.metadata.name}/http-proxies`,
+      title: t`HTTP Proxies`,
+      href: projectRoutes.httpProxy.list(data.metadata.name),
       icon: Waypoints,
     },
     {
       title: t`Activity`,
-      href: `/projects/${data.metadata.name}/activity`,
+      href: projectRoutes.activity(data.metadata.name),
       icon: SquareActivity,
     },
   ];

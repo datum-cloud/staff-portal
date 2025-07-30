@@ -6,6 +6,7 @@ import { toast } from '@/modules/toast';
 import { orgDeleteMutation } from '@/resources/request/client/organization.request';
 import { orgDetailQuery } from '@/resources/request/server/organization.request';
 import { Organization } from '@/resources/schemas/organization.schema';
+import { orgRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
 import { FileText, Folders } from 'lucide-react';
 import { Outlet, useLoaderData, useNavigate } from 'react-router';
@@ -31,7 +32,7 @@ export default function Layout() {
   const handleDeleteOrganization = async () => {
     try {
       await orgDeleteMutation(data.metadata.name);
-      navigate('/organizations');
+      navigate(orgRoutes.list());
       toast.success(t`Organization deleted successfully`);
     } catch (error) {
       toast.error(t`Failed to delete organization`);
@@ -41,12 +42,12 @@ export default function Layout() {
   const menuItems = [
     {
       title: t`Overview`,
-      href: `/organizations/${data.metadata.name}`,
+      href: orgRoutes.detail(data.metadata.name),
       icon: FileText,
     },
     {
       title: t`Projects`,
-      href: `/organizations/${data.metadata.name}/projects`,
+      href: orgRoutes.projects(data.metadata.name),
       icon: Folders,
     },
   ];

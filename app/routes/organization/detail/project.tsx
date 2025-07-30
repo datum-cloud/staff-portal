@@ -6,6 +6,7 @@ import { DataTableProvider } from '@/modules/data-table/providers/data-table.pro
 import { orgProjectListQuery } from '@/resources/request/client/organization.request';
 import { Organization } from '@/resources/schemas/organization.schema';
 import { Project, ProjectListResponse, ProjectResponse } from '@/resources/schemas/project.schema';
+import { projectRoutes } from '@/utils/config/routes.config';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -26,7 +27,7 @@ const columns = [
     id: 'description',
     header: () => <Trans>Description</Trans>,
     cell: ({ getValue, row }) => {
-      return <Link to={`/projects/${row.original.metadata.name}`}>{getValue()}</Link>;
+      return <Link to={projectRoutes.detail(row.original.metadata.name)}>{getValue()}</Link>;
     },
   }),
   columnHelper.accessor('metadata.name', {

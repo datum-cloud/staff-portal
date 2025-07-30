@@ -6,6 +6,7 @@ import { toast } from '@/modules/toast';
 import { userDeleteMutation } from '@/resources/request/client/user.request';
 import { userDetailQuery } from '@/resources/request/server/user.request';
 import { User } from '@/resources/schemas/user.schema';
+import { userRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
 import { Outlet, useLoaderData, useNavigate } from 'react-router';
 
@@ -32,7 +33,7 @@ export default function Layout() {
   const handleDeleteUser = async () => {
     try {
       await userDeleteMutation(data.metadata.name);
-      navigate('/users');
+      navigate(userRoutes.list());
       toast.success(t`User deleted successfully`);
     } catch (error) {
       toast.error(t`Failed to delete user`);
