@@ -36,13 +36,23 @@ export class LokiActivityLogsService {
     const logQuery = buildLogQLQuery({
       baseSelector: '{telemetry_datumapis_com_audit_log="true"}',
       projectName,
-      // Hybrid filtering approach
+      orgName: queryParams.orgName,
+      // Enhanced filtering approach
       q: queryParams.q,
       user: queryParams.user,
-      resource: queryParams.resource,
       status: queryParams.status,
       actions: queryParams.actions,
+      // Single resource support
+      resourceType: queryParams.resourceType,
+      resourceId: queryParams.resourceId,
+      // Advanced filtering options
+      responseCode: queryParams.responseCode,
+      apiGroup: queryParams.apiGroup,
+      namespace: queryParams.namespace,
+      sourceIP: queryParams.sourceIP,
     });
+
+    console.log('logQuery', logQuery);
 
     // Execute query
     const response = await executeLokiQuery(client, logQuery, {

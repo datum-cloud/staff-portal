@@ -12,5 +12,5 @@ export const handle = {
 };
 
 export default function Page() {
-  return <ListActivity />;
+  return <ListActivity queryKeyPrefix={['activity']} />;
 }

@@ -11,15 +11,16 @@ export const LokiConfigSchema = z.object({
   defaultTimeRange: z.string(),
 });
 
+// Enhanced query parameters supporting single resource and advanced filtering
 export const QueryParamsSchema = z.object({
   limit: z.string().optional(),
   start: z.string().optional(),
   end: z.string().optional(),
-  project: z.string().optional(),
-  // Hybrid filtering approach
+  project: z.string().optional(), // Legacy project filter
+  orgName: z.string().optional(), // Organization filter
+  // Enhanced filtering options
   q: z.string().optional(), // Flexible search across multiple fields (user, resource, action, etc.)
   user: z.string().optional(), // Specific user filter
-  resource: z.string().optional(), // Specific resource type filter
   status: z.string().optional(), // Status filter (success, error, or specific codes like 403)
   /**
    * Action filter
@@ -35,6 +36,14 @@ export const QueryParamsSchema = z.object({
    * * - Wildcard to match all verbs
    */
   actions: z.string().optional(), // Comma-separated list of verbs to filter (e.g., "create,update,delete")
+  // Single resource support
+  resourceType: z.string().optional(), // Resource type filter
+  resourceId: z.string().optional(), // Resource ID filter
+  // Advanced filtering
+  responseCode: z.string().optional(), // Specific HTTP response code
+  apiGroup: z.string().optional(), // Specific API group filter
+  namespace: z.string().optional(), // Specific namespace filter
+  sourceIP: z.string().optional(), // Source IP filter
 });
 
 export const ValidatedQueryParamsSchema = z.object({
@@ -101,16 +110,25 @@ export const ActivityLogsResponseSchema = z.object({
   }),
 });
 
+// Enhanced LogQL query options supporting single resource and advanced patterns
 export const LogQLQueryOptionsSchema = z.object({
   baseSelector: z.string(),
   projectName: z.string().optional(),
-  // Hybrid filtering approach
+  orgName: z.string().optional(), // Organization filter
+  // Enhanced filtering approach
   q: z.string().optional(), // Flexible search across multiple fields
   user: z.string().optional(), // Specific user filter
-  action: z.string().optional(), // Specific action filter
-  resource: z.string().optional(), // Specific resource type filter
+  action: z.string().optional(), // Specific action filter (legacy)
   status: z.string().optional(), // Status filter (success, error, or specific codes)
   actions: z.string().optional(), // Comma-separated list of verbs to filter (e.g., "create,update,delete")
+  // Single resource support
+  resourceType: z.string().optional(), // Resource type filter
+  resourceId: z.string().optional(), // Resource ID filter
+  // Advanced filtering options
+  responseCode: z.string().optional(), // Specific HTTP response code
+  apiGroup: z.string().optional(), // Specific API group filter
+  namespace: z.string().optional(), // Specific namespace filter
+  sourceIP: z.string().optional(), // Source IP filter
 });
 
 export const FormatAuditMessageOptionsSchema = z.object({
