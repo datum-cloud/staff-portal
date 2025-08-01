@@ -1,15 +1,12 @@
 import type { Route } from './+types/layout';
-import { ButtonDeleteAction } from '@/components/button';
 import { SubLayout } from '@/components/sub-layout';
 import { authenticator } from '@/modules/auth';
-import { toast } from '@/modules/toast';
-import { orgDeleteMutation } from '@/resources/request/client/organization.request';
 import { orgDetailQuery } from '@/resources/request/server/organization.request';
 import { Organization } from '@/resources/schemas/organization.schema';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
-import { FileText, Folders } from 'lucide-react';
-import { Outlet, useLoaderData, useNavigate } from 'react-router';
+import { FileText, Folders, SquareActivity } from 'lucide-react';
+import { Outlet, useLoaderData } from 'react-router';
 
 export const handle = {
   breadcrumb: (data: Organization) => (
@@ -26,18 +23,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 
 export default function Layout() {
   const { t } = useLingui();
-  const navigate = useNavigate();
   const data = useLoaderData() as Organization;
-
-  const handleDeleteOrganization = async () => {
-    try {
-      await orgDeleteMutation(data.metadata.name);
-      navigate(orgRoutes.list());
-      toast.success(t`Organization deleted successfully`);
-    } catch (error) {
-      toast.error(t`Failed to delete organization`);
-    }
-  };
 
   const menuItems = [
     {
@@ -50,17 +36,15 @@ export default function Layout() {
       href: orgRoutes.projects(data.metadata.name),
       icon: Folders,
     },
+    {
+      title: t`Activity`,
+      href: orgRoutes.activity(data.metadata.name),
+      icon: SquareActivity,
+    },
   ];
 
   return (
     <SubLayout>
-      <SubLayout.ActionBar>
-        <ButtonDeleteAction
-          itemType="Organization"
-          description={t`Are you sure you want to delete organization "${data.metadata.annotations?.['kubernetes.io/display-name']} (${data.metadata.name})"? This action cannot be undone.`}
-          onConfirm={handleDeleteOrganization}
-        />
-      </SubLayout.ActionBar>
       <SubLayout.SidebarLeft>
         <SubLayout.SidebarMenu menuItems={menuItems} />
       </SubLayout.SidebarLeft>

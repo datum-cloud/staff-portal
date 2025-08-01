@@ -22,6 +22,7 @@ export default [
         route(':orgName', 'routes/organization/detail/layout.tsx', [
           index('routes/organization/detail/index.tsx'),
           route('projects', 'routes/organization/detail/project.tsx'),
+          route('activity', 'routes/organization/detail/activity.tsx'),
         ]),
       ]),
 
@@ -31,13 +32,12 @@ export default [
 
         route(':projectName', 'routes/project/detail/layout.tsx', [
           index('routes/project/detail/index.tsx'),
+          route('activity', 'routes/project/detail/activity.tsx'),
 
           route('http-proxies', 'routes/project/detail/httpproxy/layout.tsx', [
             index('routes/project/detail/httpproxy/index.tsx'),
             route(':httpProxyName', 'routes/project/detail/httpproxy/detail.tsx'),
           ]),
-
-          route('activity', 'routes/project/detail/activity.tsx'),
         ]),
       ]),
     ]),

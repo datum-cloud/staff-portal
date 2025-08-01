@@ -24,13 +24,15 @@ msgstr ""
 #: app/routes/activity.tsx:11
 #: app/routes/project/detail/layout.tsx:40
 #: app/routes/project/detail/activity.tsx:9
+#: app/routes/organization/detail/layout.tsx:40
+#: app/routes/organization/detail/activity.tsx:9
 #: app/components/app-sidebar/index.tsx:98
 msgid "Activity"
 msgstr ""
 
 #. placeholder {0}: data.metadata.annotations?.['kubernetes.io/display-name']
 #. placeholder {1}: data.metadata.name
-#: app/routes/organization/detail/layout.tsx:60
+#: app/routes/organization/detail/index.tsx:42
 msgid "Are you sure you want to delete organization \"{0} ({1})\"? This action cannot be undone."
 msgstr ""
 
@@ -56,7 +58,7 @@ msgstr ""
 #: app/routes/project/detail/httpproxy/index.tsx:56
 #: app/routes/project/detail/httpproxy/detail.tsx:99
 #: app/routes/organization/detail/project.tsx:37
-#: app/routes/organization/detail/index.tsx:61
+#: app/routes/organization/detail/index.tsx:86
 msgid "Created at"
 msgstr ""
 
@@ -86,7 +88,7 @@ msgstr ""
 #: app/routes/project/detail/index.tsx:58
 #: app/routes/organization/index.tsx:25
 #: app/routes/organization/detail/project.tsx:28
-#: app/routes/organization/detail/index.tsx:31
+#: app/routes/organization/detail/index.tsx:56
 msgid "Description"
 msgstr ""
 
@@ -104,7 +106,7 @@ msgstr ""
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr ""
 
-#: app/routes/organization/detail/layout.tsx:38
+#: app/routes/organization/detail/index.tsx:33
 msgid "Failed to delete organization"
 msgstr ""
 
@@ -116,7 +118,7 @@ msgstr ""
 msgid "Failed to delete user"
 msgstr ""
 
-#: app/components/list/list-activity.tsx:183
+#: app/components/list/list-activity.tsx:206
 msgid "Filter by time range"
 msgstr ""
 
@@ -163,7 +165,7 @@ msgstr ""
 #: app/routes/project/detail/httpproxy/detail.tsx:49
 #: app/routes/organization/index.tsx:19
 #: app/routes/organization/detail/project.tsx:34
-#: app/routes/organization/detail/index.tsx:41
+#: app/routes/organization/detail/index.tsx:66
 msgid "Name"
 msgstr ""
 
@@ -176,7 +178,7 @@ msgstr ""
 msgid "Organization"
 msgstr ""
 
-#: app/routes/organization/detail/layout.tsx:36
+#: app/routes/organization/detail/index.tsx:31
 msgid "Organization deleted successfully"
 msgstr ""
 
@@ -187,7 +189,7 @@ msgid "Organizations"
 msgstr ""
 
 #: app/routes/project/detail/layout.tsx:30
-#: app/routes/organization/detail/layout.tsx:44
+#: app/routes/organization/detail/layout.tsx:30
 msgid "Overview"
 msgstr ""
 
@@ -198,12 +200,12 @@ msgstr ""
 #: app/routes/project/layout.tsx:5
 #: app/routes/project/index.tsx:16
 #: app/routes/organization/detail/project.tsx:21
-#: app/routes/organization/detail/layout.tsx:49
+#: app/routes/organization/detail/layout.tsx:35
 #: app/components/app-sidebar/index.tsx:92
 msgid "Projects"
 msgstr ""
 
-#: app/components/list/list-activity.tsx:155
+#: app/components/list/list-activity.tsx:178
 msgid "Search activity..."
 msgstr ""
 
@@ -222,7 +224,7 @@ msgid "Timestamp"
 msgstr ""
 
 #: app/routes/organization/index.tsx:34
-#: app/routes/organization/detail/index.tsx:51
+#: app/routes/organization/detail/index.tsx:76
 msgid "Type"
 msgstr ""
 

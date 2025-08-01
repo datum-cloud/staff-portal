@@ -17,16 +17,38 @@ export const LOKI_CONFIG: LokiConfig = {
 } as const;
 
 /**
- * Builds LogQL query string with hybrid filtering approach
+ * Builds LogQL query string with enhanced filtering approach supporting multiple resources
+ * Based on GitHub ticket query patterns and examples
  */
 export function buildLogQLQuery(options: LogQLQueryOptions): string {
-  const { baseSelector, projectName, q, user, resource, status, actions } = options;
+  const {
+    baseSelector,
+    projectName,
+    orgName,
+    q,
+    user,
+    status,
+    actions,
+    resourceType,
+    resourceId,
+    responseCode,
+    apiGroup,
+    namespace,
+    sourceIP,
+  } = options;
 
   let query = `${baseSelector} | json`;
+
+  query += ` | stage="ResponseComplete" | requestURI !~ ".*dryRun=All.*"`;
 
   // Project filter (legacy support)
   if (projectName) {
     query += ` | annotations_resourcemanager_miloapis_com_project_name="${projectName}"`;
+  }
+
+  // Organization filter
+  if (orgName) {
+    query += ` | annotations_resourcemanager_miloapis_com_organization_name="${orgName}"`;
   }
 
   // Filter for specific verbs using regex (if verbs parameter is provided)
@@ -41,21 +63,22 @@ export function buildLogQLQuery(options: LogQLQueryOptions): string {
     }
   }
 
-  // Note: LogQL doesn't support OR conditions in filters
-  // The 'q' parameter will be handled by client-side filtering
-  // Only specific field filters are supported in LogQL
+  // Single resource filtering
+  if (resourceType) {
+    query += ` | objectRef_resource="${resourceType}"`;
+  }
 
-  // Specific field filters (AND conditions)
+  if (resourceId) {
+    query += ` | objectRef_name="${resourceId}"`;
+  }
+
+  // User filter
   if (user) {
     query += ` | user_username="${user}"`;
   }
 
-  if (resource) {
-    query += ` | objectRef_resource="${resource}"`;
-  }
-
+  // Status filter - enhanced to support specific response codes
   if (status) {
-    // Handle status filter - can be 'success', 'error', or specific codes
     if (status === 'success') {
       query += ` | responseStatus_code < 400`;
     } else if (status === 'error') {
@@ -65,6 +88,30 @@ export function buildLogQLQuery(options: LogQLQueryOptions): string {
       query += ` | responseStatus_code = ${status}`;
     }
   }
+
+  // Specific response code filter (new)
+  if (responseCode) {
+    query += ` | responseStatus_code = ${responseCode}`;
+  }
+
+  // API Group filter (new)
+  if (apiGroup) {
+    query += ` | objectRef_apiGroup="${apiGroup}"`;
+  }
+
+  // Namespace filter (new)
+  if (namespace) {
+    query += ` | objectRef_namespace="${namespace}"`;
+  }
+
+  // Source IP filter (new)
+  if (sourceIP) {
+    query += ` | sourceIPs=~"${sourceIP}"`;
+  }
+
+  // Note: LogQL doesn't support OR conditions in filters
+  // The 'q' parameter will be handled by client-side filtering
+  // Only specific field filters are supported in LogQL
 
   return query;
 }
@@ -105,12 +152,24 @@ export async function executeLokiQuery(
 
     return response;
   } catch (error) {
-    logger.error('Loki query failed', {
-      error: error instanceof Error ? error.message : String(error),
-    });
+    // Safely stringify and parse error object
+    const safeError = (() => {
+      try {
+        const errorString = JSON.stringify(error);
+        return JSON.parse(errorString);
+      } catch {
+        return error instanceof Error ? error.message : String(error);
+      }
+    })();
 
-    if (error instanceof Error && error.message === 'Unauthorized') {
-      throw new AuthenticationError('Unauthorized');
+    logger.error('Loki query failed', { error: safeError });
+
+    if ((error as any).name === 'HttpieOnHttpError') {
+      if ((error as any).statusMessage === 'Unauthorized') {
+        throw new AuthenticationError('Unauthorized');
+      }
+
+      throw new Error(`Failed to query Loki: ${(error as any).data}`);
     }
 
     throw new Error(

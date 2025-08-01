@@ -141,17 +141,26 @@ api.get('/activity', authMiddleware(), async (c) => {
 
   try {
     const token = getToken(c);
+
     const queryParams: QueryParams = {
       limit: c.req.query('limit') || undefined,
       start: c.req.query('start') || undefined,
       end: c.req.query('end') || undefined,
       project: c.req.query('project') || undefined,
-      // Hybrid filtering approach
+      orgName: c.req.query('organization') || undefined,
+      // Enhanced filtering approach
       q: c.req.query('q') || undefined,
       user: c.req.query('user') || undefined,
       actions: c.req.query('actions') || undefined,
-      resource: c.req.query('resource') || undefined,
       status: c.req.query('status') || undefined,
+      // Single resource support
+      resourceType: c.req.query('resourceType') || undefined,
+      resourceId: c.req.query('resourceId') || undefined,
+      // Advanced filtering options
+      responseCode: c.req.query('responseCode') || undefined,
+      apiGroup: c.req.query('apiGroup') || undefined,
+      namespace: c.req.query('namespace') || undefined,
+      sourceIP: c.req.query('sourceIP') || undefined,
     };
 
     const service = new LokiActivityLogsService(token);

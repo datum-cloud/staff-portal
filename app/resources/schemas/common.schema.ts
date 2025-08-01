@@ -27,4 +27,5 @@ export const ListQueryParamsSchema = z.object({
   filters: z.record(z.any()).optional(),
   search: z.string().optional(),
 });
+
 export type ListQueryParams = z.infer<typeof ListQueryParamsSchema>;

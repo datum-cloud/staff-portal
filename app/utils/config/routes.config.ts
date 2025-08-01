@@ -9,6 +9,7 @@ export const orgRoutes = {
   list: () => '/customers/organizations',
   detail: (orgName: string) => `/customers/organizations/${orgName}`,
   projects: (orgName: string) => `/customers/organizations/${orgName}/projects`,
+  activity: (orgName: string) => `/customers/organizations/${orgName}/activity`,
 } as const;
 
 // Projects feature routes

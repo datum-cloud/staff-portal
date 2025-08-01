@@ -1,6 +1,5 @@
 import { BadgeState } from '@/components/badge';
-import { DateFormatter } from '@/components/date';
-import { DateRangePicker } from '@/components/date';
+import { DateFormatter, DateRangePicker } from '@/components/date';
 import { Tooltip } from '@/components/tooltip';
 import { Text } from '@/components/typography';
 import {
@@ -12,7 +11,7 @@ import {
 import { ActivityLogEntry } from '@/modules/loki';
 import { Input } from '@/modules/shadcn/ui/input';
 import { activityListQuery } from '@/resources/request/client/activity.request';
-import { ProjectActivityListResponse } from '@/resources/schemas/activity.schema';
+import { ActivityListResponse, ActivityQueryParams } from '@/resources/schemas/activity.schema';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 import { formatDistanceToNowStrict, fromUnixTime, getUnixTime, subDays } from 'date-fns';
@@ -20,7 +19,8 @@ import { AlertTriangle, CheckCircle, Info, XCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface ListActivityProps {
-  projectName?: string;
+  resourceType?: string;
+  resourceId?: string;
   queryKeyPrefix?: string[];
   searchPlaceholder?: string;
   timeRangePlaceholder?: string;
@@ -103,7 +103,8 @@ const createColumns = () => [
 ];
 
 export default function ListActivity({
-  projectName,
+  resourceType,
+  resourceId,
   queryKeyPrefix = ['activity'],
   searchPlaceholder,
   timeRangePlaceholder,
@@ -111,17 +112,39 @@ export default function ListActivity({
   const { t } = useLingui();
   const [searchInput, setSearchInput] = useState('');
 
-  const tableState = useDataTableQuery<ProjectActivityListResponse>({
+  const tableState = useDataTableQuery<ActivityListResponse>({
     queryKeyPrefix,
     fetchFn: (args) => {
       // If no date filters are set, default to last 7 days
       const defaultStartDate = getUnixTime(subDays(new Date(), 7)) * 1000000000; // Convert to nanoseconds
-      const filters = {
+      const filters: ActivityQueryParams = {
         ...args.filters,
         start: args.filters?.start || defaultStartDate,
       };
 
-      return activityListQuery(projectName || null, {
+      const resource = {
+        resourceType,
+        resourceId,
+      };
+
+      switch (resourceType) {
+        case 'project':
+          filters.project = resourceId;
+          resource.resourceType = undefined;
+          resource.resourceId = undefined;
+          break;
+        case 'organization':
+          filters.organization = resourceId;
+          resource.resourceType = undefined;
+          resource.resourceId = undefined;
+          break;
+        // TODO: add another resource type
+        default:
+          // Use regular parameters instead of object
+          break;
+      }
+
+      return activityListQuery(resource.resourceType, resource.resourceId, {
         ...args,
         filters,
       });
@@ -142,7 +165,7 @@ export default function ListActivity({
   }, [searchInput, tableState.setSearch]);
 
   return (
-    <DataTableProvider<ActivityLogEntry, ProjectActivityListResponse>
+    <DataTableProvider<ActivityLogEntry, ActivityListResponse>
       columns={createColumns()}
       transform={(data) => ({
         rows: data?.data?.logs || [],
