@@ -22,6 +22,8 @@ msgid "Action"
 msgstr "Action"
 
 #: app/routes/activity.tsx:11
+#: app/routes/user/detail/layout.tsx:37
+#: app/routes/user/detail/activity.tsx:9
 #: app/routes/project/detail/layout.tsx:40
 #: app/routes/project/detail/activity.tsx:9
 #: app/routes/organization/detail/layout.tsx:40
@@ -44,7 +46,7 @@ msgstr "Are you sure you want to delete project \"{0} ({1})\"? This action canno
 
 #. placeholder {0}: data.spec.givenName
 #. placeholder {1}: data.spec.familyName
-#: app/routes/user/detail/layout.tsx:48
+#: app/routes/user/detail/index.tsx:41
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 
@@ -52,7 +54,7 @@ msgstr "Are you sure you want to delete user \"{0} {1}\"? This action cannot be 
 msgid "Cancel"
 msgstr "Cancel"
 
-#: app/routes/user/detail/index.tsx:68
+#: app/routes/user/detail/index.tsx:93
 #: app/routes/project/index.tsx:38
 #: app/routes/project/detail/index.tsx:90
 #: app/routes/project/detail/httpproxy/index.tsx:56
@@ -93,7 +95,7 @@ msgid "Description"
 msgstr "Description"
 
 #: app/routes/user/index.tsx:32
-#: app/routes/user/detail/index.tsx:58
+#: app/routes/user/detail/index.tsx:83
 msgid "Email"
 msgstr "Email"
 
@@ -114,16 +116,16 @@ msgstr "Failed to delete organization"
 msgid "Failed to delete project"
 msgstr "Failed to delete project"
 
-#: app/routes/user/detail/layout.tsx:39
+#: app/routes/user/detail/index.tsx:32
 msgid "Failed to delete user"
 msgstr "Failed to delete user"
 
-#: app/components/list/list-activity.tsx:206
+#: app/components/list/list-activity.tsx:211
 msgid "Filter by time range"
 msgstr "Filter by time range"
 
 #: app/routes/user/index.tsx:22
-#: app/routes/user/detail/index.tsx:46
+#: app/routes/user/detail/index.tsx:71
 msgid "Full Name"
 msgstr "Full Name"
 
@@ -137,7 +139,7 @@ msgid "HTTP Proxies"
 msgstr "HTTP Proxies"
 
 #: app/routes/user/index.tsx:35
-#: app/routes/user/detail/index.tsx:33
+#: app/routes/user/detail/index.tsx:58
 msgid "ID"
 msgstr "ID"
 
@@ -188,6 +190,7 @@ msgstr "Organization deleted successfully"
 msgid "Organizations"
 msgstr "Organizations"
 
+#: app/routes/user/detail/layout.tsx:32
 #: app/routes/project/detail/layout.tsx:30
 #: app/routes/organization/detail/layout.tsx:30
 msgid "Overview"
@@ -205,7 +208,7 @@ msgstr "Project deleted successfully"
 msgid "Projects"
 msgstr "Projects"
 
-#: app/components/list/list-activity.tsx:178
+#: app/components/list/list-activity.tsx:183
 msgid "Search activity..."
 msgstr "Search activity..."
 
@@ -228,7 +231,7 @@ msgstr "Timestamp"
 msgid "Type"
 msgstr "Type"
 
-#: app/routes/user/detail/layout.tsx:37
+#: app/routes/user/detail/index.tsx:30
 msgid "User deleted successfully"
 msgstr "User deleted successfully"
 

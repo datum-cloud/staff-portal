@@ -17,7 +17,7 @@ export const QueryParamsSchema = z.object({
   start: z.string().optional(),
   end: z.string().optional(),
   project: z.string().optional(), // Legacy project filter
-  orgName: z.string().optional(), // Organization filter
+  organization: z.string().optional(), // Organization filter
   // Enhanced filtering options
   q: z.string().optional(), // Flexible search across multiple fields (user, resource, action, etc.)
   user: z.string().optional(), // Specific user filter

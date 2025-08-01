@@ -36,7 +36,7 @@ export class LokiActivityLogsService {
     const logQuery = buildLogQLQuery({
       baseSelector: '{telemetry_datumapis_com_audit_log="true"}',
       projectName,
-      orgName: queryParams.orgName,
+      orgName: queryParams.organization,
       // Enhanced filtering approach
       q: queryParams.q,
       user: queryParams.user,

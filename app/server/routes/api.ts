@@ -147,7 +147,7 @@ api.get('/activity', authMiddleware(), async (c) => {
       start: c.req.query('start') || undefined,
       end: c.req.query('end') || undefined,
       project: c.req.query('project') || undefined,
-      orgName: c.req.query('organization') || undefined,
+      organization: c.req.query('organization') || undefined,
       // Enhanced filtering approach
       q: c.req.query('q') || undefined,
       user: c.req.query('user') || undefined,
