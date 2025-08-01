@@ -12,7 +12,10 @@ export default [
       route('users', 'routes/user/layout.tsx', [
         index('routes/user/index.tsx'),
 
-        route(':userId', 'routes/user/detail/layout.tsx', [index('routes/user/detail/index.tsx')]),
+        route(':userId', 'routes/user/detail/layout.tsx', [
+          index('routes/user/detail/index.tsx'),
+          route('activity', 'routes/user/detail/activity.tsx'),
+        ]),
       ]),
 
       // Organizations

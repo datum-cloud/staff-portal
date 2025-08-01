@@ -2,6 +2,7 @@
 export const userRoutes = {
   list: () => '/customers/users',
   detail: (userId: string) => `/customers/users/${userId}`,
+  activity: (userId: string) => `/customers/users/${userId}/activity`,
 } as const;
 
 // Organizations feature routes

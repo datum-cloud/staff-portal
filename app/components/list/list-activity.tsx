@@ -138,6 +138,11 @@ export default function ListActivity({
           resource.resourceType = undefined;
           resource.resourceId = undefined;
           break;
+        case 'user':
+          filters.user = resourceId;
+          resource.resourceType = undefined;
+          resource.resourceId = undefined;
+          break;
         // TODO: add another resource type
         default:
           // Use regular parameters instead of object

@@ -1,14 +1,12 @@
 import type { Route } from './+types/layout';
-import { ButtonDeleteAction } from '@/components/button';
 import { SubLayout } from '@/components/sub-layout';
 import { authenticator } from '@/modules/auth';
-import { toast } from '@/modules/toast';
-import { userDeleteMutation } from '@/resources/request/client/user.request';
 import { userDetailQuery } from '@/resources/request/server/user.request';
 import { User } from '@/resources/schemas/user.schema';
 import { userRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
-import { Outlet, useLoaderData, useNavigate } from 'react-router';
+import { FileText, SquareActivity } from 'lucide-react';
+import { Outlet, useLoaderData } from 'react-router';
 
 export const handle = {
   breadcrumb: (data: User) => (
@@ -27,28 +25,26 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 
 export default function Layout() {
   const { t } = useLingui();
-  const navigate = useNavigate();
   const data = useLoaderData() as User;
 
-  const handleDeleteUser = async () => {
-    try {
-      await userDeleteMutation(data.metadata.name);
-      navigate(userRoutes.list());
-      toast.success(t`User deleted successfully`);
-    } catch (error) {
-      toast.error(t`Failed to delete user`);
-    }
-  };
+  const menuItems = [
+    {
+      title: t`Overview`,
+      href: userRoutes.detail(data.metadata.name),
+      icon: FileText,
+    },
+    {
+      title: t`Activity`,
+      href: userRoutes.activity(data.metadata.name),
+      icon: SquareActivity,
+    },
+  ];
 
   return (
     <SubLayout>
-      <SubLayout.ActionBar>
-        <ButtonDeleteAction
-          itemType="User"
-          description={t`Are you sure you want to delete user "${data.spec.givenName} ${data.spec.familyName}"? This action cannot be undone.`}
-          onConfirm={handleDeleteUser}
-        />
-      </SubLayout.ActionBar>
+      <SubLayout.SidebarLeft>
+        <SubLayout.SidebarMenu menuItems={menuItems} />
+      </SubLayout.SidebarLeft>
       <SubLayout.Content>
         <Outlet />
       </SubLayout.Content>
