@@ -10,15 +10,15 @@ import {
 } from '@/modules/data-table';
 import { ActivityLogEntry } from '@/modules/loki';
 import { Input } from '@/modules/shadcn/ui/input';
-import { activityListQuery } from '@/resources/request/client/activity.request';
-import { ActivityListResponse, ActivityQueryParams } from '@/resources/schemas/activity.schema';
+import { activityListQuery } from '@/resources/request/client';
+import { ActivityListResponse, ActivityQueryParams } from '@/resources/schemas';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 import { formatDistanceToNowStrict, fromUnixTime, getUnixTime, subDays } from 'date-fns';
 import { AlertTriangle, CheckCircle, Info, XCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-interface ListActivityProps {
+interface ActivityListProps {
   resourceType?: string;
   resourceId?: string;
   queryKeyPrefix?: string[];
@@ -102,13 +102,13 @@ const createColumns = () => [
   }),
 ];
 
-export default function ListActivity({
+export default function ActivityList({
   resourceType,
   resourceId,
   queryKeyPrefix = ['activity'],
   searchPlaceholder,
   timeRangePlaceholder,
-}: ListActivityProps) {
+}: ActivityListProps) {
   const { t } = useLingui();
   const [searchInput, setSearchInput] = useState('');
 

@@ -1,16 +1,14 @@
 import type { Route } from './+types/index';
 import { DateFormatter } from '@/components/date';
-import { DataTable } from '@/modules/data-table/components/data-table';
-import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
-import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';
-import { orgProjectListQuery } from '@/resources/request/client/organization.request';
-import { Organization } from '@/resources/schemas/organization.schema';
-import { Project, ProjectListResponse, ProjectResponse } from '@/resources/schemas/project.schema';
+import { DisplayName } from '@/components/display';
+import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/data-table';
+import { orgProjectListQuery } from '@/resources/request/client';
+import { Organization, Project, ProjectListResponse } from '@/resources/schemas';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
-import { Link, useRouteLoaderData } from 'react-router';
+import { useRouteLoaderData } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const data = extractDataFromMatches<Organization>(matches, 'routes/organization/detail/layout');
@@ -23,15 +21,20 @@ export const handle = {
 
 const columnHelper = createColumnHelper<Project>();
 const columns = [
-  columnHelper.accessor((row) => row.metadata.annotations?.['kubernetes.io/description'], {
-    id: 'description',
-    header: () => <Trans>Description</Trans>,
-    cell: ({ getValue, row }) => {
-      return <Link to={projectRoutes.detail(row.original.metadata.name)}>{getValue()}</Link>;
-    },
-  }),
   columnHelper.accessor('metadata.name', {
     header: () => <Trans>Name</Trans>,
+    cell: ({ row }) => {
+      const projectName = row.original.metadata.name;
+      const description = row.original.metadata.annotations?.['kubernetes.io/description'];
+
+      return (
+        <DisplayName
+          displayName={description || projectName}
+          name={projectName}
+          to={projectRoutes.detail(projectName)}
+        />
+      );
+    },
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
     header: () => <Trans>Created at</Trans>,

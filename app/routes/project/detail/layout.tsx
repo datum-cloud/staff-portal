@@ -1,8 +1,8 @@
 import type { Route } from './+types/layout';
 import { SubLayout } from '@/components/sub-layout';
 import { authenticator } from '@/modules/auth';
-import { projectDetailQuery } from '@/resources/request/server/project.request';
-import { Project } from '@/resources/schemas/project.schema';
+import { projectDetailQuery } from '@/resources/request/server';
+import { Project } from '@/resources/schemas';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
 import { FileText, SquareActivity, Waypoints } from 'lucide-react';

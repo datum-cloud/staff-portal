@@ -42,7 +42,7 @@ import {
   createStaticBreadcrumbItem,
   type BreadcrumbItem,
 } from '@/components/breadcrumb';
-import { Project } from '@/resources/schemas/project.schema';
+import { Project } from '@/resources/schemas';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { Trans } from '@lingui/react/macro';
 
@@ -56,10 +56,7 @@ export const handle = {
       return [
         createClickableBreadcrumbItem(<Trans>Customers</Trans>, '/customers'),
         createClickableBreadcrumbItem(organizationName, orgRoutes.detail(organizationName)),
-        createClickableBreadcrumbItem(
-          <Trans>Projects</Trans>,
-          orgRoutes.projects(organizationName)
-        ),
+        createClickableBreadcrumbItem(<Trans>Projects</Trans>, orgRoutes.project(organizationName)),
         createStaticBreadcrumbItem(projectName),
       ];
     },
@@ -81,7 +78,7 @@ import {
   createStaticBreadcrumbItem,
   type BreadcrumbItem,
 } from '@/components/breadcrumb';
-import { User } from '@/resources/schemas/user.schema';
+import { User } from '@/resources/schemas';
 import { Trans } from '@lingui/react/macro';
 
 export const handle = {
@@ -111,7 +108,7 @@ import {
   createStaticBreadcrumbItem,
   type BreadcrumbItem,
 } from '@/components/breadcrumb';
-import { Organization } from '@/resources/schemas/organization.schema';
+import { Organization } from '@/resources/schemas';
 import { Trans } from '@lingui/react/macro';
 
 export const handle = {
@@ -141,7 +138,7 @@ import {
   createStaticBreadcrumbItem,
   type BreadcrumbItem,
 } from '@/components/breadcrumb';
-import { Organization } from '@/resources/schemas/organization.schema';
+import { Organization } from '@/resources/schemas';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { Trans } from '@lingui/react/macro';
 
@@ -173,7 +170,7 @@ import {
   createStaticBreadcrumbItem,
   type BreadcrumbItem,
 } from '@/components/breadcrumb';
-import { Project } from '@/resources/schemas/project.schema';
+import { Project } from '@/resources/schemas';
 import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { Trans } from '@lingui/react/macro';
 
@@ -187,10 +184,7 @@ export const handle = {
       return [
         createClickableBreadcrumbItem(<Trans>Customers</Trans>, '/customers'),
         createClickableBreadcrumbItem(organizationName, orgRoutes.detail(organizationName)),
-        createClickableBreadcrumbItem(
-          <Trans>Projects</Trans>,
-          orgRoutes.projects(organizationName)
-        ),
+        createClickableBreadcrumbItem(<Trans>Projects</Trans>, orgRoutes.project(organizationName)),
         createClickableBreadcrumbItem(projectName, projectRoutes.detail(data.metadata.name)),
         {
           label: <Trans>Documentation</Trans>,
@@ -222,7 +216,7 @@ import {
   createStaticBreadcrumbItem,
   type BreadcrumbItem,
 } from '@/components/breadcrumb';
-import { Organization } from '@/resources/schemas/organization.schema';
+import { Organization } from '@/resources/schemas';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { Trans } from '@lingui/react/macro';
 
@@ -262,7 +256,7 @@ import {
   createStaticBreadcrumbItem,
   type BreadcrumbItem,
 } from '@/components/breadcrumb';
-import { Project } from '@/resources/schemas/project.schema';
+import { Project } from '@/resources/schemas';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { Trans } from '@lingui/react/macro';
 

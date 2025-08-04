@@ -1,5 +1,4 @@
-import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/data-table';
-import { Button } from '@/modules/shadcn/ui/button';
+import { DataTable, DataTableProvider } from '@/modules/data-table';
 import { logger } from '@/utils/logger';
 import { createColumnHelper } from '@tanstack/react-table';
 import { EditIcon, Trash2Icon } from 'lucide-react';

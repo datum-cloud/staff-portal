@@ -14,6 +14,7 @@ export default [
 
         route(':userId', 'routes/user/detail/layout.tsx', [
           index('routes/user/detail/index.tsx'),
+          route('organizations', 'routes/user/detail/organization.tsx'),
           route('activity', 'routes/user/detail/activity.tsx'),
         ]),
       ]),
@@ -24,6 +25,7 @@ export default [
 
         route(':orgName', 'routes/organization/detail/layout.tsx', [
           index('routes/organization/detail/index.tsx'),
+          route('members', 'routes/organization/detail/member.tsx'),
           route('projects', 'routes/organization/detail/project.tsx'),
           route('activity', 'routes/organization/detail/activity.tsx'),
         ]),

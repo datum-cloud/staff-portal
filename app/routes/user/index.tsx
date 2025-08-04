@@ -1,10 +1,9 @@
 import type { Route } from './+types/index';
-import IDDisplay from '@/components/id-display';
-import { DataTable } from '@/modules/data-table/components/data-table';
-import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
-import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';
-import { userListQuery } from '@/resources/request/client/user.request';
-import { User, UserListResponse } from '@/resources/schemas/user.schema';
+import { DateFormatter } from '@/components/date';
+import { DisplayId, DisplayName } from '@/components/display';
+import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/data-table';
+import { userListQuery } from '@/resources/request/client';
+import { User, UserListResponse } from '@/resources/schemas';
 import { metaObject } from '@/utils/helpers';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
@@ -19,23 +18,24 @@ const columnHelper = createColumnHelper<User>();
 
 const columns = [
   columnHelper.accessor('spec.givenName', {
-    header: () => <Trans>Full Name</Trans>,
+    header: () => <Trans>Name</Trans>,
     cell: ({ row }) => {
-      return (
-        <Link to={`./${row.original.metadata.name}`}>
-          {row.original.spec.givenName} {row.original.spec.familyName}
-        </Link>
-      );
+      const userName = row.original.metadata.name;
+      const displayName = `${row.original.spec.givenName} ${row.original.spec.familyName}`;
+      const email = row.original.spec.email;
+
+      return <DisplayName displayName={displayName} name={email} to={`./${userName}`} />;
     },
-  }),
-  columnHelper.accessor('spec.email', {
-    header: () => <Trans>Email</Trans>,
   }),
   columnHelper.accessor('metadata.name', {
     header: () => <Trans>ID</Trans>,
     cell: ({ getValue }) => {
-      return <IDDisplay value={getValue()} />;
+      return <DisplayId value={getValue()} />;
     },
+  }),
+  columnHelper.accessor('metadata.creationTimestamp', {
+    header: () => <Trans>Created</Trans>,
+    cell: ({ getValue }) => <DateFormatter date={getValue()} withTime />,
   }),
 ];
 

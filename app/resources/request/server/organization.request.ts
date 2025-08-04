@@ -1,5 +1,5 @@
 import { apiRequest } from '@/modules/axios/axios.server';
-import { OrganizationSchema } from '@/resources/schemas/organization.schema';
+import { OrganizationSchema } from '@/resources/schemas';
 
 export const orgDetailQuery = (token: string, orgName: string) => {
   return apiRequest({

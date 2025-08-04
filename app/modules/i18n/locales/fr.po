@@ -17,16 +17,16 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
-#: app/components/list/list-activity.tsx:78
+#: app/features/activity/components/activity-list.tsx:78
 msgid "Action"
 msgstr ""
 
 #: app/routes/activity.tsx:11
-#: app/routes/user/detail/layout.tsx:37
+#: app/routes/user/detail/layout.tsx:42
 #: app/routes/user/detail/activity.tsx:9
 #: app/routes/project/detail/layout.tsx:40
 #: app/routes/project/detail/activity.tsx:9
-#: app/routes/organization/detail/layout.tsx:40
+#: app/routes/organization/detail/layout.tsx:45
 #: app/routes/organization/detail/activity.tsx:9
 #: app/components/app-sidebar/index.tsx:98
 msgid "Activity"
@@ -54,12 +54,17 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: app/routes/user/index.tsx:37
+#: app/routes/organization/index.tsx:38
+msgid "Created"
+msgstr ""
+
 #: app/routes/user/detail/index.tsx:93
-#: app/routes/project/index.tsx:38
+#: app/routes/project/index.tsx:42
 #: app/routes/project/detail/index.tsx:90
-#: app/routes/project/detail/httpproxy/index.tsx:56
+#: app/routes/project/detail/httpproxy/index.tsx:55
 #: app/routes/project/detail/httpproxy/detail.tsx:99
-#: app/routes/organization/detail/project.tsx:37
+#: app/routes/organization/detail/project.tsx:40
 #: app/routes/organization/detail/index.tsx:86
 msgid "Created at"
 msgstr ""
@@ -86,20 +91,16 @@ msgstr ""
 msgid "Delete Project"
 msgstr ""
 
-#: app/routes/project/index.tsx:23
 #: app/routes/project/detail/index.tsx:58
-#: app/routes/organization/index.tsx:25
-#: app/routes/organization/detail/project.tsx:28
 #: app/routes/organization/detail/index.tsx:56
 msgid "Description"
 msgstr ""
 
-#: app/routes/user/index.tsx:32
 #: app/routes/user/detail/index.tsx:83
 msgid "Email"
 msgstr ""
 
-#: app/routes/project/detail/httpproxy/index.tsx:40
+#: app/routes/project/detail/httpproxy/index.tsx:39
 #: app/routes/project/detail/httpproxy/detail.tsx:59
 msgid "Endpoint"
 msgstr ""
@@ -120,11 +121,10 @@ msgstr ""
 msgid "Failed to delete user"
 msgstr ""
 
-#: app/components/list/list-activity.tsx:211
+#: app/features/activity/components/activity-list.tsx:211
 msgid "Filter by time range"
 msgstr ""
 
-#: app/routes/user/index.tsx:22
 #: app/routes/user/detail/index.tsx:71
 msgid "Full Name"
 msgstr ""
@@ -138,9 +138,14 @@ msgstr ""
 msgid "HTTP Proxies"
 msgstr ""
 
-#: app/routes/user/index.tsx:35
+#: app/routes/user/index.tsx:31
 #: app/routes/user/detail/index.tsx:58
 msgid "ID"
+msgstr ""
+
+#: app/routes/user/detail/organization.tsx:36
+#: app/routes/organization/detail/member.tsx:39
+msgid "Joined"
 msgstr ""
 
 #: app/components/theme-switcher/index.tsx:36
@@ -157,16 +162,24 @@ msgstr ""
 msgid "Log out"
 msgstr ""
 
-#: app/components/list/list-activity.tsx:33
+#: app/routes/organization/detail/member.tsx:45
+#: app/routes/organization/detail/layout.tsx:35
+msgid "Members"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:33
 msgid "Message"
 msgstr ""
 
-#: app/routes/project/index.tsx:29
+#: app/routes/user/index.tsx:21
+#: app/routes/user/detail/organization.tsx:18
+#: app/routes/project/index.tsx:21
 #: app/routes/project/detail/index.tsx:68
-#: app/routes/project/detail/httpproxy/index.tsx:32
+#: app/routes/project/detail/httpproxy/index.tsx:31
 #: app/routes/project/detail/httpproxy/detail.tsx:49
-#: app/routes/organization/index.tsx:19
-#: app/routes/organization/detail/project.tsx:34
+#: app/routes/organization/index.tsx:21
+#: app/routes/organization/detail/project.tsx:25
+#: app/routes/organization/detail/member.tsx:18
 #: app/routes/organization/detail/index.tsx:66
 msgid "Name"
 msgstr ""
@@ -175,7 +188,7 @@ msgstr ""
 msgid "Notifications"
 msgstr ""
 
-#: app/routes/project/index.tsx:32
+#: app/routes/project/index.tsx:36
 #: app/routes/project/detail/index.tsx:78
 msgid "Organization"
 msgstr ""
@@ -184,8 +197,10 @@ msgstr ""
 msgid "Organization deleted successfully"
 msgstr ""
 
+#: app/routes/user/detail/organization.tsx:42
+#: app/routes/user/detail/layout.tsx:37
 #: app/routes/organization/layout.tsx:5
-#: app/routes/organization/index.tsx:13
+#: app/routes/organization/index.tsx:15
 #: app/components/app-sidebar/index.tsx:88
 msgid "Organizations"
 msgstr ""
@@ -201,32 +216,34 @@ msgid "Project deleted successfully"
 msgstr ""
 
 #: app/routes/project/layout.tsx:5
-#: app/routes/project/index.tsx:16
-#: app/routes/organization/detail/project.tsx:21
-#: app/routes/organization/detail/layout.tsx:35
+#: app/routes/project/index.tsx:15
+#: app/routes/organization/detail/project.tsx:19
+#: app/routes/organization/detail/layout.tsx:40
 #: app/components/app-sidebar/index.tsx:92
 msgid "Projects"
 msgstr ""
 
-#: app/components/list/list-activity.tsx:183
+#: app/features/activity/components/activity-list.tsx:183
 msgid "Search activity..."
 msgstr ""
 
-#: app/components/list/list-activity.tsx:67
+#: app/features/activity/components/activity-list.tsx:67
 msgid "Source IP"
 msgstr ""
 
-#: app/routes/project/detail/httpproxy/index.tsx:50
+#: app/routes/project/detail/httpproxy/index.tsx:49
 #: app/routes/project/detail/httpproxy/detail.tsx:87
-#: app/components/list/list-activity.tsx:91
+#: app/features/activity/components/activity-list.tsx:91
 msgid "Status"
 msgstr ""
 
-#: app/components/list/list-activity.tsx:82
+#: app/features/activity/components/activity-list.tsx:82
 msgid "Timestamp"
 msgstr ""
 
-#: app/routes/organization/index.tsx:34
+#: app/routes/user/detail/organization.tsx:32
+#: app/routes/organization/index.tsx:32
+#: app/routes/organization/detail/member.tsx:35
 #: app/routes/organization/detail/index.tsx:76
 msgid "Type"
 msgstr ""
@@ -236,7 +253,7 @@ msgid "User deleted successfully"
 msgstr ""
 
 #: app/routes/user/layout.tsx:5
-#: app/routes/user/index.tsx:15
+#: app/routes/user/index.tsx:14
 #: app/components/app-sidebar/index.tsx:84
 msgid "Users"
 msgstr ""

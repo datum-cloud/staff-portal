@@ -1,6 +1,6 @@
 import { createGenericOAuthProvider, OAuthProviderConfig } from '../oauth.helper';
 import { apiRequest } from '@/modules/axios/axios.server';
-import { authUserQuery } from '@/resources/request/server/auth.request';
+import { authUserQuery } from '@/resources/request/server';
 import { env } from '@/utils/config/env.server';
 import { sessionCookie, tokenCookie } from '@/utils/cookies';
 import { AuthenticationError } from '@/utils/errors';

@@ -1,5 +1,5 @@
 import { apiRequest } from '@/modules/axios/axios.server';
-import { AuthUserSchema } from '@/resources/schemas/auth.schema';
+import { AuthUserSchema } from '@/resources/schemas';
 import { env } from '@/utils/config/env.server';
 
 export const authUserQuery = (token: string) =>

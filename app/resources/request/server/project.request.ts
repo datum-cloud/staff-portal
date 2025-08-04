@@ -1,6 +1,5 @@
 import { apiRequest } from '@/modules/axios/axios.server';
-import { HTTPProxySchema } from '@/resources/schemas/httpproxy.schema';
-import { ProjectSchema } from '@/resources/schemas/project.schema';
+import { HTTPProxySchema, ProjectSchema } from '@/resources/schemas';
 
 export const projectDetailQuery = (token: string, projectName: string) => {
   return apiRequest({

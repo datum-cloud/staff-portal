@@ -1,7 +1,9 @@
 import { apiRequestClient } from '@/modules/axios/axios.client';
-import { ListQueryParams } from '@/resources/schemas/common.schema';
-import { OrganizationListResponseSchema } from '@/resources/schemas/organization.schema';
-import { ProjectListResponseSchema } from '@/resources/schemas/project.schema';
+import {
+  ListQueryParams,
+  OrganizationListResponseSchema,
+  ProjectListResponseSchema,
+} from '@/resources/schemas';
 
 export const orgListQuery = (params?: ListQueryParams) => {
   return apiRequestClient({

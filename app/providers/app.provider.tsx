@@ -1,4 +1,4 @@
-import { AuthUser } from '@/resources/schemas/auth.schema';
+import { AuthUser } from '@/resources/schemas';
 import React, { createContext, ReactNode, useContext, useMemo, useState } from 'react';
 
 interface IContextProps {
