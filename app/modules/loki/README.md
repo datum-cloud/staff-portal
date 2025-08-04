@@ -304,7 +304,7 @@ activityListQuery(
 ### Example Usage
 
 ```typescript
-import { activityListQuery } from '@/resources/request/client/activity.request';
+import { activityListQuery } from '@/resources/request/client';
 
 // Query httpproxy activity
 const activity = await activityListQuery('httpproxy', 'acme-corp', {

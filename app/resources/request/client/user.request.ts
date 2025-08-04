@@ -1,6 +1,5 @@
 import { apiRequestClient } from '@/modules/axios/axios.client';
-import { ListQueryParams } from '@/resources/schemas/common.schema';
-import { UserListResponseSchema } from '@/resources/schemas/user.schema';
+import { ListQueryParams, UserListResponseSchema } from '@/resources/schemas';
 
 export const userListQuery = (params?: ListQueryParams) => {
   return apiRequestClient({

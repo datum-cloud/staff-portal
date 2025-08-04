@@ -1,6 +1,6 @@
 import type { Route } from './+types/activity';
-import { ListActivity } from '@/components/list';
-import { Project } from '@/resources/schemas/project.schema';
+import { ActivityList } from '@/features/activity';
+import { Project } from '@/resources/schemas';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 import { useRouteLoaderData } from 'react-router';
@@ -18,7 +18,7 @@ export default function Page() {
   const data = useRouteLoaderData('routes/project/detail/layout') as Project;
 
   return (
-    <ListActivity
+    <ActivityList
       resourceType="project"
       resourceId={data.metadata.name}
       queryKeyPrefix={['projects', data.metadata.name, 'activity']}

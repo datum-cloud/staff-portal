@@ -1,6 +1,6 @@
 import type { Route } from './+types/activity';
-import { ListActivity } from '@/components/list';
-import { User } from '@/resources/schemas/user.schema';
+import { ActivityList } from '@/features/activity';
+import { User } from '@/resources/schemas';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 import { useRouteLoaderData } from 'react-router';
@@ -18,7 +18,7 @@ export default function Page() {
   const data = useRouteLoaderData('routes/user/detail/layout') as User;
 
   return (
-    <ListActivity
+    <ActivityList
       resourceType="user"
       resourceId={data.spec.email}
       queryKeyPrefix={['users', data.metadata.name, 'activity']}

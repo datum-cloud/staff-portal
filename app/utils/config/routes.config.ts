@@ -3,13 +3,15 @@ export const userRoutes = {
   list: () => '/customers/users',
   detail: (userId: string) => `/customers/users/${userId}`,
   activity: (userId: string) => `/customers/users/${userId}/activity`,
+  organization: (userId: string) => `/customers/users/${userId}/organizations`,
 } as const;
 
 // Organizations feature routes
 export const orgRoutes = {
   list: () => '/customers/organizations',
   detail: (orgName: string) => `/customers/organizations/${orgName}`,
-  projects: (orgName: string) => `/customers/organizations/${orgName}/projects`,
+  project: (orgName: string) => `/customers/organizations/${orgName}/projects`,
+  member: (orgName: string) => `/customers/organizations/${orgName}/members`,
   activity: (orgName: string) => `/customers/organizations/${orgName}/activity`,
 } as const;
 

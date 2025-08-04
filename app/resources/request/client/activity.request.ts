@@ -2,16 +2,14 @@ import { apiRequestClient } from '@/modules/axios/axios.client';
 import {
   ActivityListResponseSchema,
   ActivityQueryParams,
-} from '@/resources/schemas/activity.schema';
-import { ListQueryParams } from '@/resources/schemas/common.schema';
+  ListQueryParams,
+} from '@/resources/schemas';
 
 // Activity query with single resource support
 export const activityListQuery = (
   resourceType?: string,
   resourceId?: string,
-  params?: Omit<ListQueryParams, 'filters'> & {
-    filters?: ActivityQueryParams;
-  }
+  params?: ListQueryParams<ActivityQueryParams>
 ) => {
   return apiRequestClient({
     method: 'GET',

@@ -1,11 +1,11 @@
 import type { Route } from './+types/layout';
 import { SubLayout } from '@/components/sub-layout';
 import { authenticator } from '@/modules/auth';
-import { orgDetailQuery } from '@/resources/request/server/organization.request';
-import { Organization } from '@/resources/schemas/organization.schema';
+import { orgDetailQuery } from '@/resources/request/server';
+import { Organization } from '@/resources/schemas';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
-import { FileText, Folders, SquareActivity } from 'lucide-react';
+import { FileText, Folders, SquareActivity, Users } from 'lucide-react';
 import { Outlet, useLoaderData } from 'react-router';
 
 export const handle = {
@@ -32,8 +32,13 @@ export default function Layout() {
       icon: FileText,
     },
     {
+      title: t`Members`,
+      href: orgRoutes.member(data.metadata.name),
+      icon: Users,
+    },
+    {
       title: t`Projects`,
-      href: orgRoutes.projects(data.metadata.name),
+      href: orgRoutes.project(data.metadata.name),
       icon: Folders,
     },
     {

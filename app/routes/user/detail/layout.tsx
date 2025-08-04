@@ -1,11 +1,11 @@
 import type { Route } from './+types/layout';
 import { SubLayout } from '@/components/sub-layout';
 import { authenticator } from '@/modules/auth';
-import { userDetailQuery } from '@/resources/request/server/user.request';
-import { User } from '@/resources/schemas/user.schema';
+import { userDetailQuery } from '@/resources/request/server';
+import { User } from '@/resources/schemas';
 import { userRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
-import { FileText, SquareActivity } from 'lucide-react';
+import { Building2, FileText, SquareActivity } from 'lucide-react';
 import { Outlet, useLoaderData } from 'react-router';
 
 export const handle = {
@@ -32,6 +32,11 @@ export default function Layout() {
       title: t`Overview`,
       href: userRoutes.detail(data.metadata.name),
       icon: FileText,
+    },
+    {
+      title: t`Organizations`,
+      href: userRoutes.organization(data.metadata.name),
+      icon: Building2,
     },
     {
       title: t`Activity`,

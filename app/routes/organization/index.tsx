@@ -1,8 +1,10 @@
 import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
+import { DateFormatter } from '@/components/date';
+import { DisplayName } from '@/components/display';
 import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/data-table';
-import { orgListQuery } from '@/resources/request/client/organization.request';
-import { Organization, OrganizationListResponse } from '@/resources/schemas/organization.schema';
+import { orgListQuery } from '@/resources/request/client';
+import { Organization, OrganizationListResponse } from '@/resources/schemas';
 import { metaObject } from '@/utils/helpers';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
@@ -17,16 +19,12 @@ const columnHelper = createColumnHelper<Organization>();
 const columns = [
   columnHelper.accessor('metadata.name', {
     header: () => <Trans>Name</Trans>,
-    cell: ({ getValue }) => {
-      return <Link to={`./${getValue()}`}>{getValue()}</Link>;
-    },
-  }),
-  columnHelper.accessor('metadata.annotations', {
-    header: () => <Trans>Description</Trans>,
     cell: ({ row }) => {
+      const orgName = row.original.metadata.name;
+      const displayName = row.original.metadata.annotations?.['kubernetes.io/display-name'];
+
       return (
-        row.original.metadata.annotations?.['kubernetes.io/display-name'] ||
-        row.original.metadata.name
+        <DisplayName displayName={displayName || orgName} name={orgName} to={`./${orgName}`} />
       );
     },
   }),
@@ -35,6 +33,10 @@ const columns = [
     cell: ({ getValue }) => {
       return <BadgeState state={getValue() ?? 'Organization'} />;
     },
+  }),
+  columnHelper.accessor('metadata.creationTimestamp', {
+    header: () => <Trans>Created</Trans>,
+    cell: ({ getValue }) => <DateFormatter date={getValue()} withTime />,
   }),
 ];
 

@@ -1,5 +1,5 @@
 import { apiRequest } from '@/modules/axios/axios.server';
-import { UserSchema } from '@/resources/schemas/user.schema';
+import { UserSchema } from '@/resources/schemas';
 
 export const userDetailQuery = (token: string, userId: string) => {
   return apiRequest({

@@ -1,11 +1,10 @@
 import type { Route } from './+types/index';
 import { DateFormatter } from '@/components/date';
-import { DataTable } from '@/modules/data-table/components/data-table';
-import { useDataTableQuery } from '@/modules/data-table/hooks/useDataTableQuery';
-import { DataTableProvider } from '@/modules/data-table/providers/data-table.provider';
-import { projectListQuery } from '@/resources/request/client/project.request';
-import { Project, ProjectListResponse } from '@/resources/schemas/project.schema';
-import { projectRoutes, orgRoutes } from '@/utils/config/routes.config';
+import { DisplayName } from '@/components/display';
+import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/data-table';
+import { projectListQuery } from '@/resources/request/client';
+import { Project, ProjectListResponse } from '@/resources/schemas';
+import { orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
@@ -18,15 +17,20 @@ export const meta: Route.MetaFunction = () => {
 
 const columnHelper = createColumnHelper<Project>();
 const columns = [
-  columnHelper.accessor((row) => row.metadata.annotations?.['kubernetes.io/description'], {
-    id: 'description',
-    header: () => <Trans>Description</Trans>,
-    cell: ({ getValue, row }) => {
-      return <Link to={`./${row.original.metadata.name}`}>{getValue()}</Link>;
-    },
-  }),
   columnHelper.accessor('metadata.name', {
     header: () => <Trans>Name</Trans>,
+    cell: ({ row }) => {
+      const projectName = row.original.metadata.name;
+      const description = row.original.metadata.annotations?.['kubernetes.io/description'];
+
+      return (
+        <DisplayName
+          displayName={description || projectName}
+          name={projectName}
+          to={`./${projectName}`}
+        />
+      );
+    },
   }),
   columnHelper.accessor('spec.ownerRef.name', {
     header: () => <Trans>Organization</Trans>,

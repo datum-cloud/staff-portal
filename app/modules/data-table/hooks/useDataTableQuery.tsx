@@ -1,4 +1,4 @@
-import { ListQueryParams } from '@/resources/schemas/common.schema';
+import { ListQueryParams } from '@/resources/schemas';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import {
   ColumnPinningState,

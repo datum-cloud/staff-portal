@@ -1,5 +1,5 @@
 import type { Route } from './+types/activity';
-import { ListActivity } from '@/components/list';
+import { ActivityList } from '@/features/activity';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 
@@ -12,5 +12,5 @@ export const handle = {
 };
 
 export default function Page() {
-  return <ListActivity queryKeyPrefix={['activity']} />;
+  return <ActivityList queryKeyPrefix={['activity']} />;
 }
