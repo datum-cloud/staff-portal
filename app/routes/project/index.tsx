@@ -39,7 +39,7 @@ const columns = [
     },
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
-    header: () => <Trans>Created at</Trans>,
+    header: () => <Trans>Created</Trans>,
     cell: ({ getValue }) => {
       return <DateFormatter date={getValue()} withTime />;
     },

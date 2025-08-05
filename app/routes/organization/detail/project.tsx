@@ -1,18 +1,18 @@
+import { useOrganizationDetailData, getOrganizationDetailMetadata } from '../shared';
 import type { Route } from './+types/index';
 import { DateFormatter } from '@/components/date';
 import { DisplayName } from '@/components/display';
 import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/data-table';
 import { orgProjectListQuery } from '@/resources/request/client';
-import { Organization, Project, ProjectListResponse } from '@/resources/schemas';
+import { Project, ProjectListResponse } from '@/resources/schemas';
 import { projectRoutes } from '@/utils/config/routes.config';
-import { extractDataFromMatches, metaObject } from '@/utils/helpers';
+import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
-import { useRouteLoaderData } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const data = extractDataFromMatches<Organization>(matches, 'routes/organization/detail/layout');
-  return metaObject(`Projects - ${data?.metadata?.annotations?.['kubernetes.io/display-name']}`);
+  const { organizationName } = getOrganizationDetailMetadata(matches);
+  return metaObject(`Projects - ${organizationName}`);
 };
 
 export const handle = {
@@ -37,7 +37,7 @@ const columns = [
     },
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
-    header: () => <Trans>Created at</Trans>,
+    header: () => <Trans>Created</Trans>,
     cell: ({ getValue }) => {
       return <DateFormatter date={getValue()} withTime />;
     },
@@ -45,7 +45,7 @@ const columns = [
 ];
 
 export default function Page() {
-  const data = useRouteLoaderData('routes/organization/detail/layout') as Organization;
+  const data = useOrganizationDetailData();
 
   const tableState = useDataTableQuery<ProjectListResponse>({
     queryKeyPrefix: ['projects', data.metadata.name],

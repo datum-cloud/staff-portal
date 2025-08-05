@@ -1,3 +1,4 @@
+import { useUserDetailData, getUserDetailMetadata } from '../shared';
 import type { Route } from './+types/index';
 import AppActionBar from '@/components/app-actiobar';
 import { ButtonCopy, ButtonDeleteAction } from '@/components/button';
@@ -7,21 +8,20 @@ import { Card, CardContent } from '@/modules/shadcn/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
 import { toast } from '@/modules/toast';
 import { userDeleteMutation } from '@/resources/request/client';
-import { User } from '@/resources/schemas';
 import { userRoutes } from '@/utils/config/routes.config';
-import { extractDataFromMatches, metaObject } from '@/utils/helpers';
+import { metaObject } from '@/utils/helpers';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useNavigate, useRouteLoaderData } from 'react-router';
+import { useNavigate } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const data = extractDataFromMatches<User>(matches, 'routes/user/detail/layout');
-  return metaObject(`Detail - ${data?.spec?.givenName} ${data?.spec?.familyName}`);
+  const { userName } = getUserDetailMetadata(matches);
+  return metaObject(`Detail - ${userName}`);
 };
 
 export default function Page() {
   const { t } = useLingui();
   const navigate = useNavigate();
-  const data = useRouteLoaderData('routes/user/detail/layout') as User;
+  const data = useUserDetailData();
 
   const handleDeleteUser = async () => {
     try {
@@ -90,7 +90,7 @@ export default function Page() {
                 <TableRow>
                   <TableCell width="25%">
                     <Text textColor="muted">
-                      <Trans>Created at</Trans>
+                      <Trans>Created</Trans>
                     </Text>
                   </TableCell>
                   <TableCell>

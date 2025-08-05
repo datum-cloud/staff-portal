@@ -1,28 +1,29 @@
+import { useProjectDetailData, getProjectDetailMetadata } from '../../shared';
 import type { Route } from './+types/index';
 import { BadgeCondition } from '@/components/badge';
 import { DateFormatter } from '@/components/date';
 import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/data-table';
 import { projectHttpProxyListQuery } from '@/resources/request/client';
-import { HTTPProxy, HTTPProxyListResponse, Project } from '@/resources/schemas';
+import { HTTPProxy, HTTPProxyListResponse } from '@/resources/schemas';
 import { projectRoutes } from '@/utils/config/routes.config';
-import { extractDataFromMatches, metaObject } from '@/utils/helpers';
+import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
-import { Link, useRouteLoaderData } from 'react-router';
+import { Link } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const data = extractDataFromMatches<Project>(matches, 'routes/project/detail/layout');
-  return metaObject(`HTTPProxy - ${data?.metadata?.name}`);
+  const { projectName } = getProjectDetailMetadata(matches);
+  return metaObject(`HTTPProxy - ${projectName}`);
 };
 
 const columnHelper = createColumnHelper<HTTPProxy>();
 
 export default function Page() {
-  const data = useRouteLoaderData('routes/project/detail/layout') as Project;
+  const { project } = useProjectDetailData();
 
   const tableState = useDataTableQuery<HTTPProxyListResponse>({
-    queryKeyPrefix: ['http-proxy', data.metadata.name],
-    fetchFn: (params) => projectHttpProxyListQuery(data.metadata.name, params),
+    queryKeyPrefix: ['http-proxy', project.metadata.name],
+    fetchFn: (params) => projectHttpProxyListQuery(project.metadata.name, params),
     useSorting: true,
   });
 
@@ -30,7 +31,7 @@ export default function Page() {
     columnHelper.accessor('metadata.name', {
       header: () => <Trans>Name</Trans>,
       cell: ({ getValue }) => (
-        <Link to={projectRoutes.httpProxy.detail(data.metadata.name, getValue())}>
+        <Link to={projectRoutes.httpProxy.detail(project.metadata.name, getValue())}>
           {getValue()}
         </Link>
       ),
@@ -52,7 +53,7 @@ export default function Page() {
       ),
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
-      header: () => <Trans>Created at</Trans>,
+      header: () => <Trans>Created</Trans>,
       cell: ({ getValue }) => <DateFormatter date={getValue()} withTime />,
     }),
   ];

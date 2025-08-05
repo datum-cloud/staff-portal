@@ -32,8 +32,12 @@ export interface EnhancedRouteHandle {
   customBreadcrumb?: {
     /** Function to generate custom breadcrumb items */
     generateItems: (params: any, data: any) => BreadcrumbItem[];
-    /** Whether to replace auto-generated breadcrumbs */
-    replace?: boolean;
+    /** Replacement strategy:
+     * - 'full': Replace all breadcrumbs
+     * - 'self': Replace only current level
+     * - number: Replace N levels (negative = up to parent, positive = down to children)
+     */
+    replace?: 'full' | 'self' | number;
   };
 }
 
@@ -57,12 +61,20 @@ export function useCustomBreadcrumbs(): BreadcrumbItem[] | null {
         // Generate custom breadcrumb items
         const customItems = handle.customBreadcrumb.generateItems(params, match.data);
 
-        if (handle.customBreadcrumb.replace !== false) {
-          // Replace auto-generated breadcrumbs completely
+        const replaceStrategy = handle.customBreadcrumb.replace;
+
+        if (replaceStrategy === 'full') {
+          // Replace all breadcrumbs
           return customItems;
+        } else if (replaceStrategy === 'self') {
+          // Replace only current level
+          return replaceBreadcrumbLevels(matches, match, customItems, 0);
+        } else if (typeof replaceStrategy === 'number') {
+          // Replace N levels (negative = up to parent, positive = down to children)
+          return replaceBreadcrumbLevels(matches, match, customItems, replaceStrategy);
         } else {
-          // Insert custom breadcrumbs at the correct position
-          return insertCustomBreadcrumbs(matches, match, customItems);
+          // Default: replace all breadcrumbs
+          return customItems;
         }
       } catch (error) {
         console.warn('Error generating page-level custom breadcrumbs:', error);
@@ -72,6 +84,72 @@ export function useCustomBreadcrumbs(): BreadcrumbItem[] | null {
   }
 
   return null;
+}
+
+/**
+ * Replace specific number of breadcrumb levels from the current route
+ */
+function replaceBreadcrumbLevels(
+  matches: any[],
+  currentMatch: any,
+  customItems: BreadcrumbItem[],
+  replaceLevels: number
+): BreadcrumbItem[] {
+  const result: BreadcrumbItem[] = [];
+  const currentMatchIndex = matches.findIndex((match) => match === currentMatch);
+
+  if (currentMatchIndex === -1) {
+    return customItems;
+  }
+
+  if (replaceLevels <= 0) {
+    // Replace up to parent levels (negative numbers or zero)
+    const parentLevels = Math.abs(replaceLevels);
+    // Add breadcrumbs from matches before the replacement area
+    for (let i = 0; i < currentMatchIndex - parentLevels; i++) {
+      const match = matches[i];
+      if (match.handle?.breadcrumb) {
+        const breadcrumbItem = createBreadcrumbItemFromHandle(match.handle.breadcrumb, match);
+        result.push(breadcrumbItem);
+      }
+    }
+
+    // Add the custom breadcrumb items
+    result.push(...customItems);
+
+    // Add breadcrumbs from matches after the replacement area
+    for (let i = currentMatchIndex + 1; i < matches.length; i++) {
+      const match = matches[i];
+      if (match.handle?.breadcrumb) {
+        const breadcrumbItem = createBreadcrumbItemFromHandle(match.handle.breadcrumb, match);
+        result.push(breadcrumbItem);
+      }
+    }
+  } else {
+    // Replace down to child levels (positive numbers)
+    // Add breadcrumbs from matches before the current match
+    for (let i = 0; i < currentMatchIndex; i++) {
+      const match = matches[i];
+      if (match.handle?.breadcrumb) {
+        const breadcrumbItem = createBreadcrumbItemFromHandle(match.handle.breadcrumb, match);
+        result.push(breadcrumbItem);
+      }
+    }
+
+    // Add the custom breadcrumb items
+    result.push(...customItems);
+
+    // Add breadcrumbs from matches after the replacement area (skip the specified number of child levels)
+    for (let i = currentMatchIndex + 1 + replaceLevels; i < matches.length; i++) {
+      const match = matches[i];
+      if (match.handle?.breadcrumb) {
+        const breadcrumbItem = createBreadcrumbItemFromHandle(match.handle.breadcrumb, match);
+        result.push(breadcrumbItem);
+      }
+    }
+  }
+
+  return result;
 }
 
 /**
