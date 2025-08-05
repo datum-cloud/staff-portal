@@ -1,44 +1,84 @@
 import type { Route } from './+types/layout';
+import {
+  createClickableBreadcrumbItem,
+  createStaticBreadcrumbItem,
+  type BreadcrumbItem,
+} from '@/components/breadcrumb';
 import { SubLayout } from '@/components/sub-layout';
 import { authenticator } from '@/modules/auth';
-import { projectDetailQuery } from '@/resources/request/server';
-import { Project } from '@/resources/schemas';
-import { projectRoutes } from '@/utils/config/routes.config';
-import { useLingui } from '@lingui/react/macro';
+import { orgDetailQuery, projectDetailQuery } from '@/resources/request/server';
+import { Organization, Project } from '@/resources/schemas';
+import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { FileText, SquareActivity, Waypoints } from 'lucide-react';
 import { Outlet, useLoaderData } from 'react-router';
 
 export const handle = {
-  breadcrumb: (data: Project) => (
-    <span>{data.metadata.annotations?.['kubernetes.io/description']}</span>
-  ),
+  customBreadcrumb: {
+    generateItems: (
+      params: any,
+      data: { project: Project; organization: Organization }
+    ): BreadcrumbItem[] => {
+      const organizationName =
+        data?.organization?.metadata?.annotations?.['kubernetes.io/display-name'] ||
+        data?.organization?.metadata?.name;
+      const projectName =
+        data?.project?.metadata?.annotations?.['kubernetes.io/description'] ||
+        data?.project?.metadata?.name;
+
+      return [
+        createStaticBreadcrumbItem(<Trans>Customers</Trans>),
+        createClickableBreadcrumbItem(<Trans>Organizations</Trans>, orgRoutes.list()),
+        createClickableBreadcrumbItem(
+          organizationName,
+          orgRoutes.detail(data?.organization?.metadata?.name)
+        ),
+        createClickableBreadcrumbItem(
+          <Trans>Projects</Trans>,
+          orgRoutes.project(data?.organization?.metadata?.name)
+        ),
+        createClickableBreadcrumbItem(
+          projectName,
+          projectRoutes.detail(data.project.metadata.name)
+        ),
+      ];
+    },
+    replace: -2,
+  },
 };
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const session = await authenticator.getSession(request);
-  const data = await projectDetailQuery(session?.accessToken ?? '', params?.projectName ?? '');
+  const project = await projectDetailQuery(session?.accessToken ?? '', params?.projectName ?? '');
+  const organization = await orgDetailQuery(
+    session?.accessToken ?? '',
+    project?.spec?.ownerRef?.name ?? ''
+  );
 
-  return data;
+  return { project, organization };
 };
 
 export default function Layout() {
   const { t } = useLingui();
-  const data = useLoaderData() as Project;
+  const { project } = useLoaderData() as {
+    project: Project;
+    organization: Organization;
+  };
 
   const menuItems = [
     {
       title: t`Overview`,
-      href: projectRoutes.detail(data.metadata.name),
+      href: projectRoutes.detail(project.metadata.name),
       icon: FileText,
     },
     {
       title: t`HTTP Proxies`,
-      href: projectRoutes.httpProxy.list(data.metadata.name),
+      href: projectRoutes.httpProxy.list(project.metadata.name),
       icon: Waypoints,
     },
     {
       title: t`Activity`,
-      href: projectRoutes.activity(data.metadata.name),
+      href: projectRoutes.activity(project.metadata.name),
       icon: SquareActivity,
     },
   ];

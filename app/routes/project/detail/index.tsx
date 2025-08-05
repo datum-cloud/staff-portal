@@ -1,3 +1,4 @@
+import { useProjectDetailData, getProjectDetailMetadata } from '../shared';
 import type { Route } from './+types/index';
 import AppActionBar from '@/components/app-actiobar';
 import { ButtonDeleteAction } from '@/components/button';
@@ -8,25 +9,24 @@ import { Card, CardContent } from '@/modules/shadcn/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
 import { toast } from '@/modules/toast';
 import { projectDeleteMutation } from '@/resources/request/client';
-import { Project } from '@/resources/schemas';
 import { projectRoutes, orgRoutes } from '@/utils/config/routes.config';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Link, useNavigate, useRouteLoaderData } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const data = extractDataFromMatches<Project>(matches, 'routes/project/detail/layout');
-  return metaObject(`Detail - ${data?.metadata?.annotations?.['kubernetes.io/description']}`);
+  const { projectName } = getProjectDetailMetadata(matches);
+  return metaObject(`Detail - ${projectName}`);
 };
 
 export default function Page() {
-  const data = useRouteLoaderData('routes/project/detail/layout') as Project;
+  const { project, organization } = useProjectDetailData();
   const { t } = useLingui();
   const navigate = useNavigate();
 
   const handleDeleteProject = async () => {
     try {
-      await projectDeleteMutation(data.metadata.name);
+      await projectDeleteMutation(project.metadata.name);
       navigate(projectRoutes.list());
       toast.success(t`Project deleted successfully`);
     } catch (error) {
@@ -40,13 +40,13 @@ export default function Page() {
         <ButtonDeleteAction
           tooltip={t`Delete Project`}
           itemType="Project"
-          description={t`Are you sure you want to delete project "${data.metadata.annotations?.['kubernetes.io/description']} (${data.metadata.name})"? This action cannot be undone.`}
+          description={t`Are you sure you want to delete project "${project.metadata.annotations?.['kubernetes.io/description']} (${project.metadata.name})"? This action cannot be undone.`}
           onConfirm={handleDeleteProject}
         />
       </AppActionBar>
 
       <div className="m-4 flex flex-col gap-1">
-        <Title>{data?.metadata?.annotations?.['kubernetes.io/description']}</Title>
+        <Title>{project?.metadata?.annotations?.['kubernetes.io/description']}</Title>
 
         <Card className="mt-4 shadow-none">
           <CardContent>
@@ -59,7 +59,7 @@ export default function Page() {
                     </Text>
                   </TableCell>
                   <TableCell>
-                    <Text>{data?.metadata?.annotations?.['kubernetes.io/description']}</Text>
+                    <Text>{project?.metadata?.annotations?.['kubernetes.io/description']}</Text>
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -69,7 +69,7 @@ export default function Page() {
                     </Text>
                   </TableCell>
                   <TableCell>
-                    <Text>{data?.metadata?.name}</Text>
+                    <Text>{project?.metadata?.name}</Text>
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -79,20 +79,20 @@ export default function Page() {
                     </Text>
                   </TableCell>
                   <TableCell>
-                    <Link to={orgRoutes.detail(data?.spec?.ownerRef?.name)}>
-                      {data?.spec?.ownerRef?.name}
+                    <Link to={orgRoutes.detail(organization?.metadata?.name)}>
+                      {organization?.metadata?.annotations?.['kubernetes.io/display-name']}
                     </Link>
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell width="25%">
                     <Text textColor="muted">
-                      <Trans>Created at</Trans>
+                      <Trans>Created</Trans>
                     </Text>
                   </TableCell>
                   <TableCell>
                     <Text>
-                      <DateFormatter date={data?.metadata?.creationTimestamp} withTime />
+                      <DateFormatter date={project?.metadata?.creationTimestamp} withTime />
                     </Text>
                   </TableCell>
                 </TableRow>

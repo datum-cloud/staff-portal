@@ -23,11 +23,11 @@ msgstr ""
 
 #: app/routes/activity.tsx:11
 #: app/routes/user/detail/layout.tsx:42
-#: app/routes/user/detail/activity.tsx:9
-#: app/routes/project/detail/layout.tsx:40
-#: app/routes/project/detail/activity.tsx:9
+#: app/routes/user/detail/activity.tsx:8
+#: app/routes/project/detail/layout.tsx:80
+#: app/routes/project/detail/activity.tsx:8
 #: app/routes/organization/detail/layout.tsx:45
-#: app/routes/organization/detail/activity.tsx:9
+#: app/routes/organization/detail/activity.tsx:8
 #: app/components/app-sidebar/index.tsx:98
 msgid "Activity"
 msgstr ""
@@ -38,8 +38,8 @@ msgstr ""
 msgid "Are you sure you want to delete organization \"{0} ({1})\"? This action cannot be undone."
 msgstr ""
 
-#. placeholder {0}: data.metadata.annotations?.['kubernetes.io/description']
-#. placeholder {1}: data.metadata.name
+#. placeholder {0}: project.metadata.annotations?.['kubernetes.io/description']
+#. placeholder {1}: project.metadata.name
 #: app/routes/project/detail/index.tsx:43
 msgid "Are you sure you want to delete project \"{0} ({1})\"? This action cannot be undone."
 msgstr ""
@@ -55,20 +55,18 @@ msgid "Cancel"
 msgstr ""
 
 #: app/routes/user/index.tsx:37
-#: app/routes/organization/index.tsx:38
-msgid "Created"
-msgstr ""
-
 #: app/routes/user/detail/index.tsx:93
 #: app/routes/project/index.tsx:42
 #: app/routes/project/detail/index.tsx:90
-#: app/routes/project/detail/httpproxy/index.tsx:55
+#: app/routes/project/detail/httpproxy/index.tsx:56
 #: app/routes/project/detail/httpproxy/detail.tsx:99
+#: app/routes/organization/index.tsx:38
 #: app/routes/organization/detail/project.tsx:40
 #: app/routes/organization/detail/index.tsx:86
-msgid "Created at"
+msgid "Created"
 msgstr ""
 
+#: app/routes/project/detail/layout.tsx:30
 #: app/routes/customers/layout.tsx:7
 #: app/components/app-sidebar/index.tsx:79
 msgid "Customers"
@@ -100,7 +98,7 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: app/routes/project/detail/httpproxy/index.tsx:39
+#: app/routes/project/detail/httpproxy/index.tsx:40
 #: app/routes/project/detail/httpproxy/detail.tsx:59
 msgid "Endpoint"
 msgstr ""
@@ -133,7 +131,7 @@ msgstr ""
 msgid "Hostname"
 msgstr ""
 
-#: app/routes/project/detail/layout.tsx:35
+#: app/routes/project/detail/layout.tsx:75
 #: app/routes/project/detail/httpproxy/layout.tsx:5
 msgid "HTTP Proxies"
 msgstr ""
@@ -175,7 +173,7 @@ msgstr ""
 #: app/routes/user/detail/organization.tsx:18
 #: app/routes/project/index.tsx:21
 #: app/routes/project/detail/index.tsx:68
-#: app/routes/project/detail/httpproxy/index.tsx:31
+#: app/routes/project/detail/httpproxy/index.tsx:32
 #: app/routes/project/detail/httpproxy/detail.tsx:49
 #: app/routes/organization/index.tsx:21
 #: app/routes/organization/detail/project.tsx:25
@@ -199,6 +197,7 @@ msgstr ""
 
 #: app/routes/user/detail/organization.tsx:42
 #: app/routes/user/detail/layout.tsx:37
+#: app/routes/project/detail/layout.tsx:31
 #: app/routes/organization/layout.tsx:5
 #: app/routes/organization/index.tsx:15
 #: app/components/app-sidebar/index.tsx:88
@@ -206,7 +205,7 @@ msgid "Organizations"
 msgstr ""
 
 #: app/routes/user/detail/layout.tsx:32
-#: app/routes/project/detail/layout.tsx:30
+#: app/routes/project/detail/layout.tsx:70
 #: app/routes/organization/detail/layout.tsx:30
 msgid "Overview"
 msgstr ""
@@ -217,6 +216,7 @@ msgstr ""
 
 #: app/routes/project/layout.tsx:5
 #: app/routes/project/index.tsx:15
+#: app/routes/project/detail/layout.tsx:37
 #: app/routes/organization/detail/project.tsx:19
 #: app/routes/organization/detail/layout.tsx:40
 #: app/components/app-sidebar/index.tsx:92
@@ -231,7 +231,7 @@ msgstr ""
 msgid "Source IP"
 msgstr ""
 
-#: app/routes/project/detail/httpproxy/index.tsx:49
+#: app/routes/project/detail/httpproxy/index.tsx:50
 #: app/routes/project/detail/httpproxy/detail.tsx:87
 #: app/features/activity/components/activity-list.tsx:91
 msgid "Status"

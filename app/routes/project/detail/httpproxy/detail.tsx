@@ -96,7 +96,7 @@ export default function Page() {
               <TableRow>
                 <TableCell width="25%">
                   <Text textColor="muted">
-                    <Trans>Created at</Trans>
+                    <Trans>Created</Trans>
                   </Text>
                 </TableCell>
                 <TableCell>

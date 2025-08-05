@@ -1,3 +1,4 @@
+import { useOrganizationDetailData, getOrganizationDetailMetadata } from '../shared';
 import type { Route } from './+types/index';
 import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
@@ -8,20 +9,19 @@ import { Card, CardContent } from '@/modules/shadcn/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
 import { toast } from '@/modules/toast';
 import { orgDeleteMutation } from '@/resources/request/client';
-import { Organization } from '@/resources/schemas';
 import { orgRoutes } from '@/utils/config/routes.config';
-import { extractDataFromMatches, metaObject } from '@/utils/helpers';
+import { metaObject } from '@/utils/helpers';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useNavigate, useRouteLoaderData } from 'react-router';
+import { useNavigate } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const data = extractDataFromMatches<Organization>(matches, 'routes/organization/detail/layout');
-  return metaObject(`Overview - ${data?.metadata?.annotations?.['kubernetes.io/display-name']}`);
+  const { organizationName } = getOrganizationDetailMetadata(matches);
+  return metaObject(`Overview - ${organizationName}`);
 };
 
 export default function Page() {
   const { t } = useLingui();
-  const data = useRouteLoaderData('routes/organization/detail/layout') as Organization;
+  const data = useOrganizationDetailData();
   const navigate = useNavigate();
 
   const handleDeleteOrganization = async () => {
@@ -83,7 +83,7 @@ export default function Page() {
                 <TableRow>
                   <TableCell width="25%">
                     <Text textColor="muted">
-                      <Trans>Created at</Trans>
+                      <Trans>Created</Trans>
                     </Text>
                   </TableCell>
                   <TableCell>

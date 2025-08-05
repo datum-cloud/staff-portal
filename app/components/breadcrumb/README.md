@@ -35,6 +35,22 @@ The **preferred approach** is to define custom breadcrumbs directly in your rout
 
 Add a `customBreadcrumb` property to your route's `handle`:
 
+### Replacement Strategies
+
+The breadcrumb system supports flexible replacement strategies with a single `replace` property:
+
+1. **Full Replacement** (`replace: 'full'`): Replaces all auto-generated breadcrumbs
+2. **Self Replacement** (`replace: 'self'`): Replace only the current level
+3. **Partial Replacement** (`replace: number`):
+   - Negative numbers: Replace N levels up to parent (e.g., `-2` = current + 2 parent levels)
+   - Positive numbers: Replace N levels down to children (e.g., `1` = current + 1 child level)
+
+**Partial Replacement** is particularly useful for layout routes where you want to:
+
+- Replace the current level and parent levels with custom breadcrumbs
+- Allow sub-pages to add their own breadcrumbs automatically
+- Avoid duplicating breadcrumb logic across multiple sub-pages
+
 ```tsx
 // In your route file (e.g., app/routes/project/detail/layout.tsx)
 import {
@@ -245,45 +261,95 @@ export const handle = {
 };
 ```
 
-### Example 6: Project Activity Page
+### Example 6: Project Layout with Partial Replacement
 
-**Result**: `Customers > Projects > My Project > Activity`
+**Result**: `Organizations > Acme Corporation > Projects > My Project` (for layout) + `Activity` (for sub-pages)
 
 ```tsx
-// In app/routes/project/detail/activity.tsx
+// In app/routes/project/detail/layout.tsx
 import {
   createClickableBreadcrumbItem,
   createStaticBreadcrumbItem,
   type BreadcrumbItem,
 } from '@/components/breadcrumb';
 import { Project } from '@/resources/schemas';
-import { projectRoutes } from '@/utils/config/routes.config';
+import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { Trans } from '@lingui/react/macro';
 
 export const handle = {
   customBreadcrumb: {
     generateItems: (params: any, data: Project): BreadcrumbItem[] => {
+      const organizationName = data?.spec?.ownerRef?.name;
       const projectName =
         data?.metadata?.annotations?.['kubernetes.io/description'] || data?.metadata?.name;
 
       return [
-        createClickableBreadcrumbItem(<Trans>Customers</Trans>, '/customers'),
-        createClickableBreadcrumbItem(<Trans>Projects</Trans>, '/customers/projects'),
+        createClickableBreadcrumbItem(<Trans>Organizations</Trans>, '/customers/organizations'),
+        createClickableBreadcrumbItem(organizationName, orgRoutes.detail(organizationName)),
+        createClickableBreadcrumbItem(<Trans>Projects</Trans>, orgRoutes.project(organizationName)),
         createClickableBreadcrumbItem(projectName, projectRoutes.detail(data.metadata.name)),
-        createStaticBreadcrumbItem(<Trans>Activity</Trans>),
       ];
     },
-    replace: true,
+    replace: 2, // Replace current level and 2 parent levels, allowing sub-pages to add their own breadcrumbs
+  },
+};
+```
+
+### Example 7: Project Activity Page (Simple)
+
+**Result**: `Organizations > Acme Corporation > Projects > My Project > Activity`
+
+```tsx
+// In app/routes/project/detail/activity.tsx
+import { Trans } from '@lingui/react/macro';
+
+export const handle = {
+  breadcrumb: () => <Trans>Activity</Trans>,
+};
+```
+
+### Example 8: Different Replacement Strategies
+
+```tsx
+// Full replacement
+export const handle = {
+  customBreadcrumb: {
+    generateItems: () => [...],
+    replace: 'full', // Replace all breadcrumbs
+  },
+};
+
+// Replace only current level
+export const handle = {
+  customBreadcrumb: {
+    generateItems: () => [...],
+    replace: 'self', // Replace only current level
+  },
+};
+
+// Replace current + 2 parent levels
+export const handle = {
+  customBreadcrumb: {
+    generateItems: () => [...],
+    replace: -2, // Replace current + 2 parent levels
+  },
+};
+
+// Replace current + 1 child level
+export const handle = {
+  customBreadcrumb: {
+    generateItems: () => [...],
+    replace: 1, // Replace current + 1 child level
   },
 };
 ```
 
 ## Configuration Options
 
-| Property        | Type       | Description                                                   |
-| --------------- | ---------- | ------------------------------------------------------------- |
-| `generateItems` | `function` | Function that returns breadcrumb items                        |
-| `replace`       | `boolean`  | Whether to replace auto-generated breadcrumbs (default: true) |
+| Property        | Type                         | Description                                                                                                |
+| --------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `generateItems` | `function`                   | Function that returns breadcrumb items                                                                     |
+| `replace`       | `'full' \| 'self' \| number` | Replacement strategy: `'full'` = replace all, `'self'` = replace current only, `number` = replace N levels |
 
 ## Manual Custom Breadcrumbs
 
