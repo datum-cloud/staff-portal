@@ -25,6 +25,11 @@ export const projectRoutes = {
       `/customers/projects/${projectName}/http-proxies/${httpProxyName}`,
   },
   activity: (projectName: string) => `/customers/projects/${projectName}/activity`,
+  exportPolicy: {
+    list: (projectName: string) => `/customers/projects/${projectName}/export-policies`,
+    detail: (projectName: string, exportPolicyName: string) =>
+      `/customers/projects/${projectName}/export-policies/${exportPolicyName}`,
+  },
 } as const;
 
 // Main routes object

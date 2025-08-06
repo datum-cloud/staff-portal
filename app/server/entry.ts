@@ -47,7 +47,7 @@ app.use(
         'https://*.marker.io',
         'https://*.sentry.io',
       ],
-      fontSrc: ["'self'"],
+      fontSrc: ["'self'", "'unsafe-inline'", 'https://*.jsdelivr.net'],
       frameSrc: ["'self'", 'https://*.marker.io', 'https://*.sentry.io'],
       imgSrc: ["'self'", 'data:'],
       // Allow all script types with nonce
@@ -57,7 +57,7 @@ app.use(
       // Allow inline event handlers with nonce
       scriptSrcAttr: [NONCE],
       // Allow inline styles for third-party widgets
-      styleSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://*.jsdelivr.net'],
       upgradeInsecureRequests: [],
     },
   })

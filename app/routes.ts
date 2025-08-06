@@ -38,7 +38,10 @@ export default [
         route(':projectName', 'routes/project/detail/layout.tsx', [
           index('routes/project/detail/index.tsx'),
           route('activity', 'routes/project/detail/activity.tsx'),
-
+          route('export-policies', 'routes/project/detail/export-policy/layout.tsx', [
+            index('routes/project/detail/export-policy/index.tsx'),
+            route(':exportPolicyName', 'routes/project/detail/export-policy/detail.tsx'),
+          ]),
           route('http-proxies', 'routes/project/detail/httpproxy/layout.tsx', [
             index('routes/project/detail/httpproxy/index.tsx'),
             route(':httpProxyName', 'routes/project/detail/httpproxy/detail.tsx'),

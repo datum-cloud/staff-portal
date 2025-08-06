@@ -13,6 +13,14 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: app/routes/project/detail/export-policy/index.tsx:40
+msgid "# of Sinks"
+msgstr ""
+
+#: app/routes/project/detail/export-policy/index.tsx:44
+msgid "# of Sources"
+msgstr ""
+
 #: app/components/app-sidebar/nav-user.tsx:80
 msgid "Account"
 msgstr ""
@@ -24,7 +32,7 @@ msgstr ""
 #: app/routes/activity.tsx:11
 #: app/routes/user/detail/layout.tsx:42
 #: app/routes/user/detail/activity.tsx:8
-#: app/routes/project/detail/layout.tsx:80
+#: app/routes/project/detail/layout.tsx:85
 #: app/routes/project/detail/activity.tsx:8
 #: app/routes/organization/detail/layout.tsx:45
 #: app/routes/organization/detail/activity.tsx:8
@@ -54,12 +62,19 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: app/routes/project/detail/export-policy/detail.tsx:188
+#: app/routes/project/detail/export-policy/detail.tsx:222
+msgid "Configuration"
+msgstr ""
+
 #: app/routes/user/index.tsx:37
 #: app/routes/user/detail/index.tsx:93
 #: app/routes/project/index.tsx:42
 #: app/routes/project/detail/index.tsx:90
 #: app/routes/project/detail/httpproxy/index.tsx:56
 #: app/routes/project/detail/httpproxy/detail.tsx:99
+#: app/routes/project/detail/export-policy/index.tsx:54
+#: app/routes/project/detail/export-policy/detail.tsx:96
 #: app/routes/organization/index.tsx:38
 #: app/routes/organization/detail/project.tsx:40
 #: app/routes/organization/detail/index.tsx:86
@@ -105,6 +120,11 @@ msgstr ""
 
 #: app/components/dialog/dialog-confirm.tsx:101
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
+msgstr ""
+
+#: app/routes/project/detail/layout.tsx:80
+#: app/routes/project/detail/export-policy/layout.tsx:5
+msgid "Export Policies"
 msgstr ""
 
 #: app/routes/organization/detail/index.tsx:33
@@ -169,17 +189,29 @@ msgstr ""
 msgid "Message"
 msgstr ""
 
+#: app/routes/project/detail/export-policy/detail.tsx:127
+msgid "MetricsQL"
+msgstr ""
+
 #: app/routes/user/index.tsx:21
 #: app/routes/user/detail/organization.tsx:18
 #: app/routes/project/index.tsx:21
 #: app/routes/project/detail/index.tsx:68
 #: app/routes/project/detail/httpproxy/index.tsx:32
 #: app/routes/project/detail/httpproxy/detail.tsx:49
+#: app/routes/project/detail/export-policy/index.tsx:32
+#: app/routes/project/detail/export-policy/detail.tsx:62
+#: app/routes/project/detail/export-policy/detail.tsx:124
+#: app/routes/project/detail/export-policy/detail.tsx:176
 #: app/routes/organization/index.tsx:21
 #: app/routes/organization/detail/project.tsx:25
 #: app/routes/organization/detail/member.tsx:18
 #: app/routes/organization/detail/index.tsx:66
 msgid "Name"
+msgstr ""
+
+#: app/routes/project/detail/export-policy/detail.tsx:74
+msgid "Namespace"
 msgstr ""
 
 #: app/components/app-sidebar/nav-user.tsx:84
@@ -223,16 +255,35 @@ msgstr ""
 msgid "Projects"
 msgstr ""
 
+#: app/routes/project/detail/export-policy/detail.tsx:142
+msgid "Query"
+msgstr ""
+
 #: app/features/activity/components/activity-list.tsx:183
 msgid "Search activity..."
+msgstr ""
+
+#: app/routes/project/detail/export-policy/detail.tsx:165
+msgid "Sinks"
+msgstr ""
+
+#: app/routes/project/detail/export-policy/detail.tsx:182
+msgid "Source"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:67
 msgid "Source IP"
 msgstr ""
 
+#: app/routes/project/detail/export-policy/detail.tsx:113
+msgid "Sources"
+msgstr ""
+
 #: app/routes/project/detail/httpproxy/index.tsx:50
 #: app/routes/project/detail/httpproxy/detail.tsx:87
+#: app/routes/project/detail/export-policy/index.tsx:48
+#: app/routes/project/detail/export-policy/detail.tsx:84
+#: app/routes/project/detail/export-policy/detail.tsx:185
 #: app/features/activity/components/activity-list.tsx:91
 msgid "Status"
 msgstr ""
@@ -242,6 +293,7 @@ msgid "Timestamp"
 msgstr ""
 
 #: app/routes/user/detail/organization.tsx:32
+#: app/routes/project/detail/export-policy/detail.tsx:179
 #: app/routes/organization/index.tsx:32
 #: app/routes/organization/detail/member.tsx:35
 #: app/routes/organization/detail/index.tsx:76
