@@ -3,6 +3,7 @@ import {
   ListQueryParams,
   HTTPProxyListResponseSchema,
   ProjectListResponseSchema,
+  ExportPolicyListResponseSchema,
 } from '@/resources/schemas';
 
 export const projectListQuery = (params?: ListQueryParams) => {
@@ -28,6 +29,19 @@ export const projectHttpProxyListQuery = (projectName: string, params?: ListQuer
     },
   })
     .output(HTTPProxyListResponseSchema)
+    .execute();
+};
+
+export const projectExportPolicyListQuery = (projectName: string, params?: ListQueryParams) => {
+  return apiRequestClient({
+    method: 'GET',
+    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/telemetry.miloapis.com/v1alpha1/namespaces/default/exportpolicies`,
+    params: {
+      ...(params?.limit && { limit: params.limit }),
+      ...(params?.cursor && { continue: params.cursor }),
+    },
+  })
+    .output(ExportPolicyListResponseSchema)
     .execute();
 };
 

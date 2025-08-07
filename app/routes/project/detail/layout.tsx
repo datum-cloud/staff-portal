@@ -10,7 +10,7 @@ import { orgDetailQuery, projectDetailQuery } from '@/resources/request/server';
 import { Organization, Project } from '@/resources/schemas';
 import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { FileText, SquareActivity, Waypoints } from 'lucide-react';
+import { ChartArea, FileText, SquareActivity, Waypoints } from 'lucide-react';
 import { Outlet, useLoaderData } from 'react-router';
 
 export const handle = {
@@ -75,6 +75,11 @@ export default function Layout() {
       title: t`HTTP Proxies`,
       href: projectRoutes.httpProxy.list(project.metadata.name),
       icon: Waypoints,
+    },
+    {
+      title: t`Export Policies`,
+      href: projectRoutes.exportPolicy.list(project.metadata.name),
+      icon: ChartArea,
     },
     {
       title: t`Activity`,

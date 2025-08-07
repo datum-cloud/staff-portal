@@ -1,3 +1,4 @@
+import { ButtonCopy } from '@/components/button';
 import { Text } from '@/components/typography';
 import { Link } from 'react-router';
 
@@ -10,6 +11,8 @@ interface NameDisplayProps {
   to: string;
   /** Optional className for the container */
   className?: string;
+  /** Whether to show the copy button */
+  withCopy?: boolean;
 }
 
 /**
@@ -25,15 +28,24 @@ interface NameDisplayProps {
  * />
  * ```
  */
-export const NameDisplay = ({ displayName, name, to, className = '' }: NameDisplayProps) => {
+export const NameDisplay = ({
+  displayName,
+  name,
+  to,
+  className = '',
+  withCopy = false,
+}: NameDisplayProps) => {
   return (
     <div className={`flex flex-col ${className}`}>
       <div>
         <Link to={to}>{displayName}</Link>
       </div>
-      <Text size="sm" textColor="muted">
-        {name}
-      </Text>
+      <div className="flex items-center space-x-2">
+        <Text size="sm" textColor="muted">
+          {name}
+        </Text>
+        {withCopy && <ButtonCopy value={name} />}
+      </div>
     </div>
   );
 };
