@@ -9,7 +9,6 @@ import { metaObject } from '@/utils/helpers';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
-import { Link } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Users`);

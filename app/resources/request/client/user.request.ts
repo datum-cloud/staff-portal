@@ -3,8 +3,10 @@ import {
   ListQueryParams,
   UserDeactivate,
   UserDeactivateSchema,
+  UserDeactivationResponseSchema,
   UserListResponseSchema,
 } from '@/resources/schemas';
+import { useQuery } from '@tanstack/react-query';
 
 export const userListQuery = (params?: ListQueryParams) => {
   return apiRequestClient({
@@ -41,4 +43,18 @@ export const userReactivateMutation = (userId: string) => {
     method: 'DELETE',
     url: `/apis/iam.miloapis.com/v1alpha1/userdeactivations/${userId}`,
   }).execute();
+};
+
+export const useUserDeactivationQuery = (userId: string, state?: string) => {
+  return useQuery({
+    queryKey: ['user', 'deactivation', userId],
+    queryFn: () =>
+      apiRequestClient({
+        method: 'GET',
+        url: `/apis/iam.miloapis.com/v1alpha1/userdeactivations/${userId}`,
+      })
+        .output(UserDeactivationResponseSchema)
+        .execute(),
+    enabled: !!userId && state === 'Inactive',
+  });
 };

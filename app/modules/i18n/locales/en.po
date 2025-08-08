@@ -32,7 +32,7 @@ msgstr "Action"
 #: app/routes/activity.tsx:11
 #: app/routes/user/detail/layout.tsx:42
 #: app/routes/user/detail/activity.tsx:8
-#: app/routes/project/detail/layout.tsx:85
+#: app/routes/project/detail/layout.tsx:82
 #: app/routes/project/detail/activity.tsx:8
 #: app/routes/organization/detail/layout.tsx:45
 #: app/routes/organization/detail/activity.tsx:8
@@ -48,18 +48,22 @@ msgstr "Are you sure you want to delete organization \"{0} ({1})\"? This action 
 
 #. placeholder {0}: project.metadata.annotations?.['kubernetes.io/description']
 #. placeholder {1}: project.metadata.name
-#: app/routes/project/detail/index.tsx:43
+#: app/routes/project/detail/index.tsx:42
 msgid "Are you sure you want to delete project \"{0} ({1})\"? This action cannot be undone."
 msgstr "Are you sure you want to delete project \"{0} ({1})\"? This action cannot be undone."
 
 #. placeholder {0}: data.spec.givenName
 #. placeholder {1}: data.spec.familyName
-#: app/routes/user/detail/index.tsx:99
+#: app/routes/user/detail/index.tsx:108
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 
-#: app/routes/user/detail/index.tsx:101
-#: app/routes/user/detail/index.tsx:113
+#: app/routes/user/detail/index.tsx:265
+msgid "By:"
+msgstr "By:"
+
+#: app/routes/user/detail/index.tsx:110
+#: app/routes/user/detail/index.tsx:122
 #: app/components/button/button-delete-action.tsx:43
 msgid "Cancel"
 msgstr "Cancel"
@@ -69,10 +73,10 @@ msgstr "Cancel"
 msgid "Configuration"
 msgstr "Configuration"
 
-#: app/routes/user/index.tsx:42
-#: app/routes/user/detail/index.tsx:183
+#: app/routes/user/index.tsx:41
+#: app/routes/user/detail/index.tsx:194
 #: app/routes/project/index.tsx:42
-#: app/routes/project/detail/index.tsx:90
+#: app/routes/project/detail/index.tsx:89
 #: app/routes/project/detail/httpproxy/index.tsx:56
 #: app/routes/project/detail/httpproxy/detail.tsx:99
 #: app/routes/project/detail/export-policy/index.tsx:54
@@ -89,7 +93,7 @@ msgstr "Created"
 msgid "Customers"
 msgstr "Customers"
 
-#: app/routes/user/detail/index.tsx:200
+#: app/routes/user/detail/index.tsx:211
 msgid "Danger Zone"
 msgstr "Danger Zone"
 
@@ -97,18 +101,22 @@ msgstr "Danger Zone"
 msgid "Dark"
 msgstr "Dark"
 
-#: app/routes/user/detail/index.tsx:112
-#: app/routes/user/detail/index.tsx:238
+#: app/routes/user/detail/index.tsx:121
+#: app/routes/user/detail/index.tsx:250
 msgid "Deactivate"
 msgstr "Deactivate"
 
-#: app/routes/user/detail/index.tsx:110
-#: app/routes/user/detail/index.tsx:214
+#: app/routes/user/detail/index.tsx:119
+#: app/routes/user/detail/index.tsx:226
 msgid "Deactivate User"
 msgstr "Deactivate User"
 
-#: app/routes/user/detail/index.tsx:100
-#: app/routes/user/detail/index.tsx:257
+#: app/routes/user/detail/index.tsx:259
+msgid "Deactivation Details"
+msgstr "Deactivation Details"
+
+#: app/routes/user/detail/index.tsx:109
+#: app/routes/user/detail/index.tsx:305
 #: app/components/button/button-delete-action.tsx:42
 #: app/components/button/button-delete-action.tsx:49
 msgid "Delete"
@@ -118,21 +126,21 @@ msgstr "Delete"
 msgid "Delete {itemType}"
 msgstr "Delete {itemType}"
 
-#: app/routes/project/detail/index.tsx:41
+#: app/routes/project/detail/index.tsx:40
 msgid "Delete Project"
 msgstr "Delete Project"
 
-#: app/routes/user/detail/index.tsx:98
-#: app/routes/user/detail/index.tsx:246
+#: app/routes/user/detail/index.tsx:107
+#: app/routes/user/detail/index.tsx:294
 msgid "Delete User"
 msgstr "Delete User"
 
-#: app/routes/project/detail/index.tsx:58
+#: app/routes/project/detail/index.tsx:57
 #: app/routes/organization/detail/index.tsx:56
 msgid "Description"
 msgstr "Description"
 
-#: app/routes/user/detail/index.tsx:163
+#: app/routes/user/detail/index.tsx:172
 msgid "Email"
 msgstr "Email"
 
@@ -141,7 +149,7 @@ msgstr "Email"
 msgid "Endpoint"
 msgstr "Endpoint"
 
-#: app/routes/user/detail/index.tsx:120
+#: app/routes/user/detail/index.tsx:129
 msgid "Enter reason for deactivation..."
 msgstr "Enter reason for deactivation..."
 
@@ -149,7 +157,7 @@ msgstr "Enter reason for deactivation..."
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr "Enter the word <0>{confirmationText}</0> to perform this action."
 
-#: app/routes/project/detail/layout.tsx:80
+#: app/routes/project/detail/layout.tsx:77
 #: app/routes/project/detail/export-policy/layout.tsx:5
 msgid "Export Policies"
 msgstr "Export Policies"
@@ -158,11 +166,11 @@ msgstr "Export Policies"
 msgid "Failed to delete organization"
 msgstr "Failed to delete organization"
 
-#: app/routes/project/detail/index.tsx:33
+#: app/routes/project/detail/index.tsx:32
 msgid "Failed to delete project"
 msgstr "Failed to delete project"
 
-#: app/routes/user/detail/index.tsx:55
+#: app/routes/user/detail/index.tsx:62
 msgid "Failed to delete user"
 msgstr "Failed to delete user"
 
@@ -170,7 +178,7 @@ msgstr "Failed to delete user"
 msgid "Filter by time range"
 msgstr "Filter by time range"
 
-#: app/routes/user/detail/index.tsx:151
+#: app/routes/user/detail/index.tsx:160
 msgid "Full Name"
 msgstr "Full Name"
 
@@ -178,17 +186,17 @@ msgstr "Full Name"
 msgid "Hostname"
 msgstr "Hostname"
 
-#: app/routes/project/detail/layout.tsx:75
+#: app/routes/project/detail/layout.tsx:72
 #: app/routes/project/detail/httpproxy/layout.tsx:5
 msgid "HTTP Proxies"
 msgstr "HTTP Proxies"
 
-#: app/routes/user/index.tsx:32
-#: app/routes/user/detail/index.tsx:138
+#: app/routes/user/index.tsx:31
+#: app/routes/user/detail/index.tsx:147
 msgid "ID"
 msgstr "ID"
 
-#: app/routes/user/detail/index.tsx:203
+#: app/routes/user/detail/index.tsx:214
 msgid "Irreversible and destructive actions"
 msgstr "Irreversible and destructive actions"
 
@@ -224,10 +232,10 @@ msgstr "Message"
 msgid "MetricsQL"
 msgstr "MetricsQL"
 
-#: app/routes/user/index.tsx:22
+#: app/routes/user/index.tsx:21
 #: app/routes/user/detail/organization.tsx:18
 #: app/routes/project/index.tsx:21
-#: app/routes/project/detail/index.tsx:68
+#: app/routes/project/detail/index.tsx:67
 #: app/routes/project/detail/httpproxy/index.tsx:32
 #: app/routes/project/detail/httpproxy/detail.tsx:49
 #: app/routes/project/detail/export-policy/index.tsx:32
@@ -250,7 +258,7 @@ msgid "Notifications"
 msgstr "Notifications"
 
 #: app/routes/project/index.tsx:36
-#: app/routes/project/detail/index.tsx:78
+#: app/routes/project/detail/index.tsx:77
 msgid "Organization"
 msgstr "Organization"
 
@@ -268,22 +276,22 @@ msgid "Organizations"
 msgstr "Organizations"
 
 #: app/routes/user/detail/layout.tsx:32
-#: app/routes/project/detail/layout.tsx:70
+#: app/routes/project/detail/layout.tsx:67
 #: app/routes/organization/detail/layout.tsx:30
 msgid "Overview"
 msgstr "Overview"
 
-#: app/routes/user/detail/index.tsx:249
+#: app/routes/user/detail/index.tsx:297
 msgid "Permanently delete this user and all associated data"
 msgstr "Permanently delete this user and all associated data"
 
 #. placeholder {0}: data.spec.givenName
 #. placeholder {1}: data.spec.familyName
-#: app/routes/user/detail/index.tsx:111
+#: app/routes/user/detail/index.tsx:120
 msgid "Please provide a reason for deactivating \"{0} {1}\"."
 msgstr "Please provide a reason for deactivating \"{0} {1}\"."
 
-#: app/routes/project/detail/index.tsx:31
+#: app/routes/project/detail/index.tsx:30
 msgid "Project deleted successfully"
 msgstr "Project deleted successfully"
 
@@ -300,21 +308,25 @@ msgstr "Projects"
 msgid "Query"
 msgstr "Query"
 
-#: app/routes/user/detail/index.tsx:219
+#: app/routes/user/detail/index.tsx:231
 msgid "Re-enable this user's access"
 msgstr "Re-enable this user's access"
 
-#: app/routes/user/detail/index.tsx:236
+#: app/routes/user/detail/index.tsx:248
 msgid "Reactivate"
 msgstr "Reactivate"
 
-#: app/routes/user/detail/index.tsx:212
+#: app/routes/user/detail/index.tsx:224
 msgid "Reactivate User"
 msgstr "Reactivate User"
 
-#: app/routes/user/detail/index.tsx:119
+#: app/routes/user/detail/index.tsx:128
 msgid "Reason for deactivation"
 msgstr "Reason for deactivation"
+
+#: app/routes/user/detail/index.tsx:282
+msgid "Reason:"
+msgstr "Reason:"
 
 #: app/features/activity/components/activity-list.tsx:183
 msgid "Search activity..."
@@ -336,8 +348,8 @@ msgstr "Source IP"
 msgid "Sources"
 msgstr "Sources"
 
-#: app/routes/user/index.tsx:38
-#: app/routes/user/detail/index.tsx:173
+#: app/routes/user/index.tsx:37
+#: app/routes/user/detail/index.tsx:182
 #: app/routes/project/detail/httpproxy/index.tsx:50
 #: app/routes/project/detail/httpproxy/detail.tsx:87
 #: app/routes/project/detail/export-policy/index.tsx:48
@@ -347,7 +359,7 @@ msgstr "Sources"
 msgid "Status"
 msgstr "Status"
 
-#: app/routes/user/detail/index.tsx:221
+#: app/routes/user/detail/index.tsx:233
 msgid "Temporarily disable this user's access"
 msgstr "Temporarily disable this user's access"
 
@@ -363,20 +375,24 @@ msgstr "Timestamp"
 msgid "Type"
 msgstr "Type"
 
-#: app/routes/user/detail/index.tsx:76
+#: app/routes/user/detail/index.tsx:84
 msgid "User deactivated successfully"
 msgstr "User deactivated successfully"
 
-#: app/routes/user/detail/index.tsx:53
+#: app/routes/user/detail/index.tsx:60
 msgid "User deleted successfully"
 msgstr "User deleted successfully"
 
-#: app/routes/user/detail/index.tsx:86
+#: app/routes/user/detail/index.tsx:95
 msgid "User reactivated successfully"
 msgstr "User reactivated successfully"
 
 #: app/routes/user/layout.tsx:5
-#: app/routes/user/index.tsx:15
+#: app/routes/user/index.tsx:14
 #: app/components/app-sidebar/index.tsx:84
 msgid "Users"
 msgstr "Users"
+
+#: app/routes/user/detail/index.tsx:271
+msgid "When:"
+msgstr "When:"

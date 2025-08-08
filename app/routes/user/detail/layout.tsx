@@ -25,7 +25,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 
 export default function Layout() {
   const { t } = useLingui();
-  const data = useLoaderData() as User;
+  const data = useLoaderData<typeof loader>();
 
   const menuItems = [
     {
