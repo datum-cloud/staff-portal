@@ -13,6 +13,7 @@ const buttonVariants = cva(
         tertiary: '',
         warning: '',
         danger: '',
+        success: '',
       },
       theme: {
         solid: '',
@@ -159,6 +160,32 @@ const buttonVariants = cva(
         theme: 'borderless',
         className:
           'text-destructive hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-gray-700 dark:active:bg-gray-600',
+      },
+
+      // Success button variants
+      {
+        type: 'success',
+        theme: 'solid',
+        className:
+          'bg-green-600 text-white hover:bg-green-700 active:bg-green-800 dark:bg-green-500 dark:hover:bg-green-600 dark:active:bg-green-700',
+      },
+      {
+        type: 'success',
+        theme: 'light',
+        className:
+          'bg-gray-200 text-green-600 hover:bg-gray-300 active:bg-gray-400 dark:bg-gray-700 dark:text-green-400 dark:hover:bg-gray-600 dark:active:bg-gray-500',
+      },
+      {
+        type: 'success',
+        theme: 'outline',
+        className:
+          'border-green-600 text-green-600 hover:bg-green-600 hover:text-white active:bg-green-700 active:text-white dark:border-green-500 dark:text-green-500 dark:hover:bg-green-500 dark:hover:text-white dark:active:bg-green-600 dark:active:text-white',
+      },
+      {
+        type: 'success',
+        theme: 'borderless',
+        className:
+          'text-green-600 hover:bg-gray-200 active:bg-gray-300 dark:text-green-400 dark:hover:bg-gray-700 dark:active:bg-gray-600',
       },
     ],
     defaultVariants: {

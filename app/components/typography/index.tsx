@@ -20,10 +20,21 @@ const titleVariants = cva('font-semibold leading-tight tracking-tight', {
       bold: 'font-bold',
       extrabold: 'font-extrabold',
     },
+    textColor: {
+      default: 'text-foreground',
+      muted: 'text-muted-foreground',
+      primary: 'text-primary',
+      secondary: 'text-secondary-foreground',
+      destructive: 'text-destructive',
+      success: 'text-green-600 dark:text-green-400',
+      warning: 'text-yellow-600 dark:text-yellow-400',
+      info: 'text-blue-600 dark:text-blue-400',
+    },
   },
   defaultVariants: {
     level: 4,
     weight: 'semibold',
+    textColor: 'default',
   },
 });
 
@@ -105,14 +116,14 @@ interface TitleProps
 }
 
 const Title = React.forwardRef<HTMLHeadingElement, TitleProps>(
-  ({ className, level, weight, as, children, ...props }, ref) => {
+  ({ className, level, weight, textColor, as, children, ...props }, ref) => {
     const Component = as || (`h${level || 1}` as keyof React.JSX.IntrinsicElements);
 
     return React.createElement(
       Component,
       {
         ref,
-        className: cn(titleVariants({ level, weight, className })),
+        className: cn(titleVariants({ level, weight, textColor, className })),
         ...props,
       },
       children

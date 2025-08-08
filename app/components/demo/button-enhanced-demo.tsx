@@ -34,6 +34,7 @@ export default function ButtonDemo() {
             <Button type="tertiary">Tertiary</Button>
             <Button type="warning">Warning</Button>
             <Button type="danger">Danger</Button>
+            <Button type="success">Success</Button>
           </div>
         </CardContent>
       </Card>
@@ -45,7 +46,7 @@ export default function ButtonDemo() {
           <CardDescription>Different visual themes for each button type</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {['primary', 'secondary', 'tertiary', 'warning', 'danger'].map((type) => (
+          {['primary', 'secondary', 'tertiary', 'warning', 'danger', 'success'].map((type) => (
             <div key={type} className="space-y-2">
               <h4 className="text-sm font-medium capitalize">{type}</h4>
               <div className="flex flex-wrap gap-2">
@@ -125,6 +126,12 @@ export default function ButtonDemo() {
                 size="small"
                 icon={<Trash2 className="h-3 w-3" />}
               />
+              <Button
+                type="success"
+                theme="solid"
+                size="small"
+                icon={<Plus className="h-3 w-3" />}
+              />
             </div>
           </div>
 
@@ -161,6 +168,12 @@ export default function ButtonDemo() {
                 size="default"
                 icon={<Trash2 className="h-4 w-4" />}
               />
+              <Button
+                type="success"
+                theme="outline"
+                size="default"
+                icon={<Plus className="h-4 w-4" />}
+              />
             </div>
           </div>
 
@@ -196,6 +209,12 @@ export default function ButtonDemo() {
                 theme="solid"
                 size="large"
                 icon={<Trash2 className="h-5 w-5" />}
+              />
+              <Button
+                type="success"
+                theme="light"
+                size="large"
+                icon={<Plus className="h-5 w-5" />}
               />
             </div>
           </div>
@@ -253,6 +272,9 @@ export default function ButtonDemo() {
             <Button type="secondary" icon={<Heart className="h-4 w-4" />} theme="light">
               Like
             </Button>
+            <Button type="success" icon={<Plus className="h-4 w-4" />} theme="solid">
+              Save
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -280,6 +302,13 @@ export default function ButtonDemo() {
               loading={loading.danger}
               onClick={() => handleLoadingDemo('danger')}>
               {loading.danger ? 'Deleting...' : 'Delete'}
+            </Button>
+            <Button
+              type="success"
+              theme="solid"
+              loading={loading.success}
+              onClick={() => handleLoadingDemo('success')}>
+              {loading.success ? 'Saving...' : 'Save'}
             </Button>
           </div>
         </CardContent>

@@ -25,6 +25,7 @@ import {
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { Shield, ShieldCheckIcon, ShieldXIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useRevalidator } from 'react-router';
 import { z } from 'zod';
@@ -205,9 +206,108 @@ export default function Page() {
           </CardContent>
         </Card>
 
+        <Card className="mt-4 shadow-none">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              <Trans>Account Management</Trans>
+            </CardTitle>
+            <CardDescription>
+              <Trans>Manage user access and account status</Trans>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {data?.status?.state === 'Inactive' ? (
+              <>
+                <div className="flex items-center justify-between rounded-lg border border-green-500 bg-green-50 p-4">
+                  <div>
+                    <Title
+                      level={6}
+                      weight="medium"
+                      textColor="success"
+                      className="flex items-center gap-2">
+                      <ShieldCheckIcon className="h-4 w-4" />
+                      <Trans>Reactivate User</Trans>
+                    </Title>
+                    <Text textColor="success" size="sm" as="p">
+                      <Trans>
+                        Re-enable this user&apos;s access to the system. They will be able to sign
+                        in immediately.
+                      </Trans>
+                    </Text>
+                  </div>
+                  <Button
+                    type="success"
+                    size="small"
+                    loading={isReactivating}
+                    onClick={() => handleReactivateUser()}>
+                    <Trans>Reactivate</Trans>
+                  </Button>
+                </div>
+
+                <div className="mt-3 space-y-2 rounded-md border bg-gray-200/50 p-3">
+                  <div className="flex items-center gap-2">
+                    <Text size="sm" weight="medium">
+                      <Trans>Deactivation Details</Trans>
+                    </Text>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <Text textColor="muted" size="sm">
+                        <Trans>By:</Trans>
+                      </Text>
+                      <Text size="sm">{deactivationData?.data?.spec?.deactivatedBy}</Text>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Text textColor="muted" size="sm">
+                        <Trans>When:</Trans>
+                      </Text>
+                      <Text size="sm">
+                        <DateFormatter
+                          date={deactivationData?.data?.metadata?.creationTimestamp ?? ''}
+                          withTime
+                        />
+                      </Text>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <Text textColor="muted" size="sm">
+                        <Trans>Reason:</Trans>
+                      </Text>
+                      <Text size="sm">{deactivationData?.data?.spec?.reason}</Text>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center justify-between rounded-lg border border-yellow-500 bg-yellow-50 p-4">
+                <div>
+                  <Title
+                    level={6}
+                    weight="medium"
+                    textColor="warning"
+                    className="flex items-center gap-2">
+                    <ShieldXIcon className="h-4 w-4" />
+                    <Trans>Deactivate User</Trans>
+                  </Title>
+                  <Text textColor="warning" size="sm" as="p">
+                    <Trans>
+                      Temporarily prevent user from signing in. The user can be reactivated at any
+                      time and all data will remain intact.
+                    </Trans>
+                  </Text>
+                </div>
+                <Button type="warning" size="small" onClick={() => setDeactivateDialogOpen(true)}>
+                  <Trans>Deactivate</Trans>
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         <Card className="border-destructive/20 mt-4 shadow-none">
           <CardHeader>
-            <CardTitle className="text-destructive">
+            <CardTitle className="text-destructive flex items-center gap-2">
+              <Trash2Icon className="h-4 w-4" />
               <Trans>Danger Zone</Trans>
             </CardTitle>
             <CardDescription>
@@ -215,96 +315,18 @@ export default function Page() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              <div className="border-destructive flex flex-col rounded-lg border p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <Title level={6} weight="medium">
-                      {data?.status?.state === 'Inactive' ? (
-                        <Trans>Reactivate User</Trans>
-                      ) : (
-                        <Trans>Deactivate User</Trans>
-                      )}
-                    </Title>
-                    <Text textColor="muted" size="sm" as="p">
-                      {data?.status?.state === 'Inactive' ? (
-                        <Trans>Re-enable this user&apos;s access</Trans>
-                      ) : (
-                        <Trans>Temporarily disable this user&apos;s access</Trans>
-                      )}
-                    </Text>
-                  </div>
-                  <Button
-                    type="danger"
-                    theme="outline"
-                    size="small"
-                    loading={isReactivating}
-                    onClick={() =>
-                      data?.status?.state === 'Inactive'
-                        ? handleReactivateUser()
-                        : setDeactivateDialogOpen(true)
-                    }>
-                    {data?.status?.state === 'Inactive' ? (
-                      <Trans>Reactivate</Trans>
-                    ) : (
-                      <Trans>Deactivate</Trans>
-                    )}
-                  </Button>
-                </div>
-
-                {data?.status?.state === 'Inactive' && (
-                  <div className="bg-muted/40 mt-3 space-y-2 rounded-md p-3">
-                    <div className="flex items-center gap-2">
-                      <Text textColor="muted" size="sm" weight="medium">
-                        <Trans>Deactivation Details</Trans>
-                      </Text>
-                    </div>
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <Text textColor="muted" size="xs">
-                          <Trans>By:</Trans>
-                        </Text>
-                        <Text size="xs">{deactivationData?.data?.spec?.deactivatedBy}</Text>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Text textColor="muted" size="xs">
-                          <Trans>When:</Trans>
-                        </Text>
-                        <Text size="xs">
-                          <DateFormatter
-                            date={deactivationData?.data?.metadata?.creationTimestamp ?? ''}
-                            withTime
-                          />
-                        </Text>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <Text textColor="muted" size="xs">
-                          <Trans>Reason:</Trans>
-                        </Text>
-                        <Text size="xs">{deactivationData?.data?.spec?.reason}</Text>
-                      </div>
-                    </div>
-                  </div>
-                )}
+            <div className="border-destructive bg-destructive/5 flex items-center justify-between rounded-lg border p-4">
+              <div>
+                <Title level={6} weight="medium" textColor="destructive">
+                  <Trans>Delete User</Trans>
+                </Title>
+                <Text textColor="destructive" size="sm" as="p">
+                  <Trans>Permanently delete this user and all associated data</Trans>
+                </Text>
               </div>
-
-              <div className="border-destructive bg-destructive/5 flex items-center justify-between rounded-lg border p-4">
-                <div>
-                  <Title level={6} weight="medium" className="text-destructive">
-                    <Trans>Delete User</Trans>
-                  </Title>
-                  <Text textColor="muted" size="sm" as="p">
-                    <Trans>Permanently delete this user and all associated data</Trans>
-                  </Text>
-                </div>
-                <Button
-                  type="danger"
-                  theme="outline"
-                  size="small"
-                  onClick={() => setDeleteDialogOpen(true)}>
-                  <Trans>Delete</Trans>
-                </Button>
-              </div>
+              <Button type="danger" size="small" onClick={() => setDeleteDialogOpen(true)}>
+                <Trans>Delete</Trans>
+              </Button>
             </div>
           </CardContent>
         </Card>
