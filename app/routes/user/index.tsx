@@ -1,4 +1,5 @@
 import type { Route } from './+types/index';
+import { BadgeState } from '@/components/badge';
 import { DateFormatter } from '@/components/date';
 import { DisplayId, DisplayName } from '@/components/display';
 import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/data-table';
@@ -32,6 +33,10 @@ const columns = [
     cell: ({ getValue }) => {
       return <DisplayId value={getValue()} />;
     },
+  }),
+  columnHelper.accessor('status.state', {
+    header: () => <Trans>Status</Trans>,
+    cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Active'} />,
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
     header: () => <Trans>Created</Trans>,

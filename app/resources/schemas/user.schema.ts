@@ -5,9 +5,10 @@ import { z } from 'zod';
 const ManagedFieldSchema = z.object({
   apiVersion: z.string(),
   fieldsType: z.string(),
-  fieldsV1: z.record(z.any()).optional(),
+  fieldsV1: z.record(z.record(z.record(z.any()))).optional(),
   manager: z.string(),
   operation: z.string(),
+  subresource: z.string().optional(),
   time: z.string(),
 });
 
@@ -28,12 +29,28 @@ const UserSpecSchema = z.object({
   givenName: z.string(),
 });
 
+// User status condition schema
+const UserStatusConditionSchema = z.object({
+  lastTransitionTime: z.string(),
+  message: z.string(),
+  reason: z.string(),
+  status: z.string(),
+  type: z.string(),
+});
+
+// User status schema
+const UserStatusSchema = z.object({
+  conditions: z.array(UserStatusConditionSchema),
+  state: z.string(),
+});
+
 // Individual User schema
 export const UserSchema = z.object({
   apiVersion: z.string(),
   kind: z.literal('User'),
   metadata: UserMetadataSchema,
   spec: UserSpecSchema,
+  status: UserStatusSchema.optional(),
 });
 
 // UserList metadata schema
@@ -59,3 +76,21 @@ export type UserListResponse = z.infer<typeof UserListResponseSchema>;
 
 export const UserResponseSchema = createProxyResponseSchema(UserSchema);
 export type UserResponse = z.infer<typeof UserResponseSchema>;
+
+export const UserDeactivateSchema = z.object({
+  apiVersion: z.string(),
+  kind: z.string(),
+  metadata: z.object({
+    name: z.string(),
+  }),
+  spec: z.object({
+    deactivatedBy: z.string(),
+    description: z.string(),
+    reason: z.string(),
+    userRef: z.object({
+      name: z.string(),
+    }),
+  }),
+});
+
+export type UserDeactivate = z.infer<typeof UserDeactivateSchema>;

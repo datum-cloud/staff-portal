@@ -1,6 +1,6 @@
 import type { Route } from './+types/not-found';
+import { Button } from '@/components/button';
 import { LogoIcon } from '@/components/logo/logo-icon';
-import { Button } from '@/modules/shadcn/ui/button';
 import { Card, CardContent } from '@/modules/shadcn/ui/card';
 import { createRequestLogger, logger } from '@/utils/logger';
 import { HomeIcon, RefreshCcwIcon } from 'lucide-react';
@@ -74,12 +74,12 @@ export default function NotFound() {
           </div>
           <div className="flex items-center gap-2">
             <Link to={'/'}>
-              <Button size="sm">
+              <Button size="small">
                 <HomeIcon className="size-4" />
                 Back to Home
               </Button>
             </Link>
-            <Button variant="outline" size="sm" onClick={() => navigate(-1)}>
+            <Button type="secondary" theme="outline" size="small" onClick={() => navigate(-1)}>
               <RefreshCcwIcon className="size-4" />
               Go Back
             </Button>

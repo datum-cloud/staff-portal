@@ -1,3 +1,5 @@
+import ButtonEnhancedDemo from '@/components/demo/button-enhanced-demo';
+import { FormDemo } from '@/components/demo/form-demo';
 import { DataTable, DataTableProvider } from '@/modules/data-table';
 import { logger } from '@/utils/logger';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -84,6 +86,9 @@ export default function DemoPage() {
 
   return (
     <div className="space-y-8 p-6">
+      <FormDemo />
+      <ButtonEnhancedDemo />
+
       <div>
         <h1 className="mb-4 text-2xl font-bold">Data Table Select/Actions Demo</h1>
         <p className="mb-6 text-gray-600">

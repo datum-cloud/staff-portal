@@ -1,5 +1,5 @@
+import { Button } from './button-enhanced';
 import { Tooltip } from '@/components/tooltip';
-import { Button } from '@/modules/shadcn/ui/button';
 import { toast } from '@/modules/toast';
 import { Copy } from 'lucide-react';
 
@@ -29,10 +29,26 @@ function ButtonCopy({
     }
   };
 
+  // Map old variant to new type/theme
+  const getButtonProps = () => {
+    switch (variant) {
+      case 'ghost':
+        return { type: 'tertiary' as const, theme: 'borderless' as const };
+      case 'outline':
+        return { type: 'secondary' as const, theme: 'outline' as const };
+      case 'default':
+      default:
+        return { type: 'primary' as const, theme: 'solid' as const };
+    }
+  };
+
+  const buttonProps = getButtonProps();
+
   return (
     <Tooltip message={tooltipText}>
       <Button
-        variant={variant}
+        type={buttonProps.type}
+        theme={buttonProps.theme}
         size="icon"
         onClick={handleCopy}
         className={size === 'sm' ? 'h-6 w-6' : 'h-8 w-8'}>

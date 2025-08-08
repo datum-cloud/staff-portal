@@ -25,6 +25,18 @@ const StateConfig = {
     className:
       'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800',
   },
+  active: {
+    icon: null,
+    variant: 'default' as const,
+    className:
+      'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800',
+  },
+  inactive: {
+    icon: null,
+    variant: 'destructive' as const,
+    className:
+      'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800',
+  },
   personal: {
     icon: null,
     variant: 'default' as const,

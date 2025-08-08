@@ -1,6 +1,6 @@
+import { Button } from './button-enhanced';
 import DialogConfirm from '@/components/dialog/dialog-confirm';
 import { Tooltip } from '@/components/tooltip';
-import { Button } from '@/modules/shadcn/ui/button';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
@@ -48,11 +48,12 @@ export default function ButtonDeleteAction({
 
       <Tooltip message={tooltip || <Trans>Delete</Trans>}>
         <Button
-          variant="destructive"
-          size="sm"
+          type="danger"
+          theme="light"
+          size="icon"
           onClick={() => setDeleteDialogOpen(true)}
           {...buttonProps}>
-          <Trash2Icon />
+          <Trash2Icon className="h-4 w-4" />
         </Button>
       </Tooltip>
     </>

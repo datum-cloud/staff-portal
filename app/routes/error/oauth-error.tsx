@@ -1,6 +1,6 @@
 import type { Route } from './+types/oauth-error';
+import { Button } from '@/components/button';
 import { LogoIcon } from '@/components/logo/logo-icon';
-import { Button } from '@/modules/shadcn/ui/button';
 import { Card, CardContent } from '@/modules/shadcn/ui/card';
 import { HomeIcon, RefreshCcwIcon } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router';
@@ -48,13 +48,13 @@ export default function OAuthError() {
           </div>
           <div className="flex items-center gap-2">
             <Link to={'/'}>
-              <Button size="sm">
+              <Button size="small">
                 <HomeIcon className="size-4" />
                 Back to Home
               </Button>
             </Link>
             <Link to="/login">
-              <Button variant="outline" size="sm">
+              <Button type="secondary" theme="outline" size="small">
                 <RefreshCcwIcon className="size-4" />
                 Try Again
               </Button>

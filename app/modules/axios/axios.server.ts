@@ -6,6 +6,7 @@ import {
   BadRequestError,
   HttpError,
   NotFoundError,
+  ValidationError,
 } from '@/utils/errors';
 import { logger } from '@/utils/logger';
 import { AsyncLocalStorage } from 'async_hooks';
@@ -134,6 +135,11 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
     case 404: {
       const notFoundError = new NotFoundError('Resource not found', requestId);
       throw notFoundError.toResponse();
+    }
+    case 422: {
+      const data = error.response?.data as { message: string; reason: string };
+      const validationError = new ValidationError(data.message, requestId);
+      throw validationError.toResponse();
     }
     default: {
       const httpError = new HttpError(
