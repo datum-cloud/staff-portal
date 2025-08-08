@@ -20,7 +20,7 @@ import { projectExportPolicyDetailQuery } from '@/resources/request/server';
 import { ExportPolicy } from '@/resources/schemas';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
-import { Badge, CodeIcon, SettingsIcon } from 'lucide-react';
+import { CodeIcon, SettingsIcon } from 'lucide-react';
 import { useLoaderData } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
@@ -45,7 +45,7 @@ export const handle = {
 };
 
 export default function Page() {
-  const data = useLoaderData() as ExportPolicy;
+  const data = useLoaderData<typeof loader>();
   console.log(data);
 
   return (

@@ -16,6 +16,10 @@ export const meta: Route.MetaFunction = ({ matches }) => {
   return metaObject(`HTTPProxy - ${data?.metadata?.name}`);
 };
 
+export const handle = {
+  breadcrumb: (data: HTTPProxy) => <span>{data.metadata.name}</span>,
+};
+
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const session = await authenticator.getSession(request);
 
@@ -28,12 +32,8 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   return data;
 };
 
-export const handle = {
-  breadcrumb: (data: HTTPProxy) => <span>{data.metadata.name}</span>,
-};
-
 export default function Page() {
-  const data = useLoaderData() as HTTPProxy;
+  const data = useLoaderData<typeof loader>();
 
   return (
     <div className="m-4 flex flex-col gap-1">

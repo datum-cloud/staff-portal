@@ -1,7 +1,7 @@
-import { useProjectDetailData, getProjectDetailMetadata } from '../shared';
+import { getProjectDetailMetadata, useProjectDetailData } from '../shared';
 import type { Route } from './+types/activity';
 import { ActivityList } from '@/features/activity';
-import { extractDataFromMatches, metaObject } from '@/utils/helpers';
+import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 
 export const handle = {

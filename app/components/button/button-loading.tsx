@@ -1,4 +1,4 @@
-import { Button } from '@/modules/shadcn/ui/button';
+import { Button } from './button-enhanced';
 import { Loader2Icon } from 'lucide-react';
 import { ReactNode } from 'react';
 

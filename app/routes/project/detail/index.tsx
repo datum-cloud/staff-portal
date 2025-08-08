@@ -1,16 +1,15 @@
-import { useProjectDetailData, getProjectDetailMetadata } from '../shared';
+import { getProjectDetailMetadata, useProjectDetailData } from '../shared';
 import type { Route } from './+types/index';
 import AppActionBar from '@/components/app-actiobar';
 import { ButtonDeleteAction } from '@/components/button';
-import { ButtonCopy } from '@/components/button';
 import { DateFormatter } from '@/components/date';
 import { Text, Title } from '@/components/typography';
 import { Card, CardContent } from '@/modules/shadcn/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
 import { toast } from '@/modules/toast';
 import { projectDeleteMutation } from '@/resources/request/client';
-import { projectRoutes, orgRoutes } from '@/utils/config/routes.config';
-import { extractDataFromMatches, metaObject } from '@/utils/helpers';
+import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
+import { metaObject } from '@/utils/helpers';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Link, useNavigate } from 'react-router';
 

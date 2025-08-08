@@ -60,10 +60,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 
 export default function Layout() {
   const { t } = useLingui();
-  const { project } = useLoaderData() as {
-    project: Project;
-    organization: Organization;
-  };
+  const { project } = useLoaderData<typeof loader>();
 
   const menuItems = [
     {

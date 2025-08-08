@@ -1,5 +1,5 @@
 import { ButtonLoading } from '@/components/button';
-import { Button } from '@/modules/shadcn/ui/button';
+import { Button } from '@/components/button';
 import {
   Dialog,
   DialogContent,
@@ -113,20 +113,22 @@ export default function DialogConfirm({
 
         <DialogFooter className="gap-2">
           <Button
-            variant="outline"
+            type="tertiary"
+            theme="borderless"
             onClick={handleCancel}
             disabled={isLoading}
             className="flex-1 sm:flex-none">
             <span>{cancelText}</span>
           </Button>
-          <ButtonLoading
-            variant={variant === 'destructive' ? 'destructive' : 'default'}
-            onClick={handleConfirm}
+          <Button
+            type={variant === 'destructive' ? 'danger' : 'primary'}
+            theme="solid"
             loading={isLoading}
+            onClick={handleConfirm}
             disabled={isConfirmDisabled}
             className="flex-1 sm:flex-none">
             <span>{confirmText}</span>
-          </ButtonLoading>
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

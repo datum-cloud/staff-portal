@@ -1,4 +1,5 @@
 import type { Route } from './+types/index';
+import { BadgeState } from '@/components/badge';
 import { DateFormatter } from '@/components/date';
 import { DisplayId, DisplayName } from '@/components/display';
 import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/data-table';
@@ -8,7 +9,6 @@ import { metaObject } from '@/utils/helpers';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
-import { Link } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Users`);
@@ -32,6 +32,10 @@ const columns = [
     cell: ({ getValue }) => {
       return <DisplayId value={getValue()} />;
     },
+  }),
+  columnHelper.accessor('status.state', {
+    header: () => <Trans>Status</Trans>,
+    cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Active'} />,
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
     header: () => <Trans>Created</Trans>,
