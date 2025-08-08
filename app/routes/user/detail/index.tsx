@@ -254,13 +254,13 @@ export default function Page() {
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <Text textColor="muted" size="sm">
-                        <Trans>By:</Trans>
+                        <Trans>Deactivated By:</Trans>
                       </Text>
                       <Text size="sm">{deactivationData?.data?.spec?.deactivatedBy}</Text>
                     </div>
                     <div className="flex items-center gap-2">
                       <Text textColor="muted" size="sm">
-                        <Trans>When:</Trans>
+                        <Trans>Deactivated At:</Trans>
                       </Text>
                       <Text size="sm">
                         <DateFormatter
@@ -271,7 +271,7 @@ export default function Page() {
                     </div>
                     <div className="flex items-start gap-2">
                       <Text textColor="muted" size="sm">
-                        <Trans>Reason:</Trans>
+                        <Trans>Deactivation Reason:</Trans>
                       </Text>
                       <Text size="sm">{deactivationData?.data?.spec?.reason}</Text>
                     </div>

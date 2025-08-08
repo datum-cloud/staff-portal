@@ -62,10 +62,6 @@ msgstr ""
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:257
-msgid "By:"
-msgstr ""
-
 #: app/routes/user/detail/index.tsx:111
 #: app/routes/user/detail/index.tsx:123
 #: app/components/button/button-delete-action.tsx:43
@@ -115,8 +111,20 @@ msgstr ""
 msgid "Deactivate User"
 msgstr ""
 
+#: app/routes/user/detail/index.tsx:263
+msgid "Deactivated At:"
+msgstr ""
+
+#: app/routes/user/detail/index.tsx:257
+msgid "Deactivated By:"
+msgstr ""
+
 #: app/routes/user/detail/index.tsx:251
 msgid "Deactivation Details"
+msgstr ""
+
+#: app/routes/user/detail/index.tsx:274
+msgid "Deactivation Reason:"
 msgstr ""
 
 #: app/routes/user/detail/index.tsx:110
@@ -332,10 +340,6 @@ msgstr ""
 msgid "Reason for deactivation"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:274
-msgid "Reason:"
-msgstr ""
-
 #: app/features/activity/components/activity-list.tsx:183
 msgid "Search activity..."
 msgstr ""
@@ -399,8 +403,4 @@ msgstr ""
 #: app/routes/user/index.tsx:14
 #: app/components/app-sidebar/index.tsx:84
 msgid "Users"
-msgstr ""
-
-#: app/routes/user/detail/index.tsx:263
-msgid "When:"
 msgstr ""

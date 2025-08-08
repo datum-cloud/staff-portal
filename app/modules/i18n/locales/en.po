@@ -62,10 +62,6 @@ msgstr "Are you sure you want to delete project \"{0} ({1})\"? This action canno
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 
-#: app/routes/user/detail/index.tsx:257
-msgid "By:"
-msgstr "By:"
-
 #: app/routes/user/detail/index.tsx:111
 #: app/routes/user/detail/index.tsx:123
 #: app/components/button/button-delete-action.tsx:43
@@ -115,9 +111,21 @@ msgstr "Deactivate"
 msgid "Deactivate User"
 msgstr "Deactivate User"
 
+#: app/routes/user/detail/index.tsx:263
+msgid "Deactivated At:"
+msgstr "Deactivated At:"
+
+#: app/routes/user/detail/index.tsx:257
+msgid "Deactivated By:"
+msgstr "Deactivated By:"
+
 #: app/routes/user/detail/index.tsx:251
 msgid "Deactivation Details"
 msgstr "Deactivation Details"
+
+#: app/routes/user/detail/index.tsx:274
+msgid "Deactivation Reason:"
+msgstr "Deactivation Reason:"
 
 #: app/routes/user/detail/index.tsx:110
 #: app/routes/user/detail/index.tsx:328
@@ -332,10 +340,6 @@ msgstr "Reactivate User"
 msgid "Reason for deactivation"
 msgstr "Reason for deactivation"
 
-#: app/routes/user/detail/index.tsx:274
-msgid "Reason:"
-msgstr "Reason:"
-
 #: app/features/activity/components/activity-list.tsx:183
 msgid "Search activity..."
 msgstr "Search activity..."
@@ -400,7 +404,3 @@ msgstr "User reactivated successfully"
 #: app/components/app-sidebar/index.tsx:84
 msgid "Users"
 msgstr "Users"
-
-#: app/routes/user/detail/index.tsx:263
-msgid "When:"
-msgstr "When:"
