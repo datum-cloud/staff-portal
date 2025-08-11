@@ -78,7 +78,7 @@ msgstr ""
 #: app/routes/project/index.tsx:42
 #: app/routes/project/detail/index.tsx:89
 #: app/routes/project/detail/httpproxy/index.tsx:56
-#: app/routes/project/detail/httpproxy/detail.tsx:99
+#: app/routes/project/detail/httpproxy/detail.tsx:121
 #: app/routes/project/detail/export-policy/index.tsx:54
 #: app/routes/project/detail/export-policy/detail.tsx:96
 #: app/routes/organization/index.tsx:38
@@ -157,7 +157,7 @@ msgid "Email"
 msgstr ""
 
 #: app/routes/project/detail/httpproxy/index.tsx:40
-#: app/routes/project/detail/httpproxy/detail.tsx:59
+#: app/routes/project/detail/httpproxy/detail.tsx:95
 msgid "Endpoint"
 msgstr ""
 
@@ -194,8 +194,12 @@ msgstr ""
 msgid "Full Name"
 msgstr ""
 
-#: app/routes/project/detail/httpproxy/detail.tsx:73
-msgid "Hostname"
+#: app/routes/project/detail/httpproxy/detail.tsx:75
+msgid "General"
+msgstr ""
+
+#: app/routes/project/detail/httpproxy/detail.tsx:138
+msgid "Hostnames"
 msgstr ""
 
 #: app/routes/project/detail/layout.tsx:72
@@ -253,7 +257,7 @@ msgstr ""
 #: app/routes/project/index.tsx:21
 #: app/routes/project/detail/index.tsx:67
 #: app/routes/project/detail/httpproxy/index.tsx:32
-#: app/routes/project/detail/httpproxy/detail.tsx:49
+#: app/routes/project/detail/httpproxy/detail.tsx:85
 #: app/routes/project/detail/export-policy/index.tsx:32
 #: app/routes/project/detail/export-policy/detail.tsx:62
 #: app/routes/project/detail/export-policy/detail.tsx:124
@@ -363,7 +367,7 @@ msgstr ""
 #: app/routes/user/index.tsx:37
 #: app/routes/user/detail/index.tsx:183
 #: app/routes/project/detail/httpproxy/index.tsx:50
-#: app/routes/project/detail/httpproxy/detail.tsx:87
+#: app/routes/project/detail/httpproxy/detail.tsx:109
 #: app/routes/project/detail/export-policy/index.tsx:48
 #: app/routes/project/detail/export-policy/detail.tsx:84
 #: app/routes/project/detail/export-policy/detail.tsx:185
