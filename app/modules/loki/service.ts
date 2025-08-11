@@ -52,8 +52,6 @@ export class LokiActivityLogsService {
       sourceIP: queryParams.sourceIP,
     });
 
-    console.log('logQuery', logQuery);
-
     // Execute query
     const response = await executeLokiQuery(client, logQuery, {
       start: validatedParams.start,

@@ -42,6 +42,10 @@ export default [
             index('routes/project/detail/export-policy/index.tsx'),
             route(':exportPolicyName', 'routes/project/detail/export-policy/detail.tsx'),
           ]),
+          route('domains', 'routes/project/detail/domain/layout.tsx', [
+            index('routes/project/detail/domain/index.tsx'),
+            route(':domainName', 'routes/project/detail/domain/detail.tsx'),
+          ]),
           route('http-proxies', 'routes/project/detail/httpproxy/layout.tsx', [
             index('routes/project/detail/httpproxy/index.tsx'),
             route(':httpProxyName', 'routes/project/detail/httpproxy/detail.tsx'),

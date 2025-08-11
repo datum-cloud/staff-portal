@@ -4,6 +4,8 @@ import {
   HTTPProxyListResponseSchema,
   ProjectListResponseSchema,
   ExportPolicyListResponseSchema,
+  DomainListResponseSchema,
+  DomainResponseSchema,
 } from '@/resources/schemas';
 
 export const projectListQuery = (params?: ListQueryParams) => {
@@ -42,6 +44,32 @@ export const projectExportPolicyListQuery = (projectName: string, params?: ListQ
     },
   })
     .output(ExportPolicyListResponseSchema)
+    .execute();
+};
+
+export const projectDomainListQuery = (projectName: string, params?: ListQueryParams) => {
+  return apiRequestClient({
+    method: 'GET',
+    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/networking.datumapis.com/v1alpha/domains`,
+    params: {
+      ...(params?.limit && { limit: params.limit }),
+      ...(params?.cursor && { continue: params.cursor }),
+    },
+  })
+    .output(DomainListResponseSchema)
+    .execute();
+};
+
+export const projectDomainStatusQuery = (
+  projectName: string,
+  domainName: string,
+  namespace: string = 'default'
+) => {
+  return apiRequestClient({
+    method: 'GET',
+    url: `apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/networking.datumapis.com/v1alpha/namespaces/${namespace}/domains/${domainName}/status`,
+  })
+    .output(DomainResponseSchema)
     .execute();
 };
 

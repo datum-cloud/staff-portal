@@ -1,6 +1,7 @@
 import { Tooltip } from '@/components/tooltip';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Badge } from '@/modules/shadcn/ui/badge';
+import { Loader2 } from 'lucide-react';
 import * as React from 'react';
 
 // Helper function to convert string to title case
@@ -80,6 +81,12 @@ const StateConfig = {
     className:
       'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800',
   },
+  pending: {
+    icon: null,
+    variant: 'secondary' as const,
+    className:
+      'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/20 dark:text-gray-400 dark:border-gray-800',
+  },
 } as const;
 
 // Default configuration for unknown states
@@ -98,9 +105,10 @@ type Props = {
   noColor?: boolean;
   tooltip?: string;
   className?: string;
+  loading?: boolean;
 };
 
-const BadgeState = ({ state, message, noColor, tooltip, className }: Props) => {
+const BadgeState = ({ state, message, noColor, tooltip, className, loading }: Props) => {
   const normalizedState = String(state ?? '').toLowerCase();
   const config = StateConfig[normalizedState as State] || DefaultConfig;
 
@@ -122,6 +130,7 @@ const BadgeState = ({ state, message, noColor, tooltip, className }: Props) => {
             : config.className,
           className
         )}>
+        {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
         {displayText}
       </Badge>
     );

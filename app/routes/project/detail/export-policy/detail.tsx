@@ -46,7 +46,6 @@ export const handle = {
 
 export default function Page() {
   const data = useLoaderData<typeof loader>();
-  console.log(data);
 
   return (
     <div className="m-4 flex flex-col gap-1">
