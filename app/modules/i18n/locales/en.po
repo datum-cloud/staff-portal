@@ -159,6 +159,10 @@ msgstr "Description"
 msgid "Domain"
 msgstr "Domain"
 
+#: app/features/domain/components/domain-status-probe.tsx:106
+msgid "Domain verification is in progress. This may take a few minutes."
+msgstr "Domain verification is in progress. This may take a few minutes."
+
 #: app/routes/project/detail/layout.tsx:72
 #: app/routes/project/detail/domain/layout.tsx:5
 msgid "Domains"
@@ -198,6 +202,10 @@ msgstr "Failed to delete project"
 msgid "Failed to delete user"
 msgstr "Failed to delete user"
 
+#: app/features/domain/components/domain-status-probe.tsx:42
+msgid "Failed to load status"
+msgstr "Failed to load status"
+
 #: app/features/activity/components/activity-list.tsx:211
 msgid "Filter by time range"
 msgstr "Filter by time range"
@@ -236,6 +244,10 @@ msgstr "Joined"
 #: app/components/theme-switcher/index.tsx:36
 msgid "Light"
 msgstr "Light"
+
+#: app/features/domain/components/domain-status-probe.tsx:38
+msgid "Loading status..."
+msgstr "Loading status..."
 
 #: app/routes/auth/logout.tsx:30
 #: app/routes/auth/login.tsx:19
@@ -315,6 +327,10 @@ msgstr "Organizations"
 #: app/routes/organization/detail/layout.tsx:30
 msgid "Overview"
 msgstr "Overview"
+
+#: app/features/domain/components/domain-status-probe.tsx:83
+msgid "Pending Validation Checks:"
+msgstr "Pending Validation Checks:"
 
 #: app/routes/user/detail/index.tsx:323
 msgid "Permanently delete this user and all associated data"
@@ -396,6 +412,10 @@ msgstr "Status"
 msgid "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 msgstr "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 
+#: app/features/domain/components/domain-status-probe.tsx:101
+msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
+msgstr "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
+
 #: app/features/activity/components/activity-list.tsx:82
 msgid "Timestamp"
 msgstr "Timestamp"
@@ -407,6 +427,10 @@ msgstr "Timestamp"
 #: app/routes/organization/detail/index.tsx:76
 msgid "Type"
 msgstr "Type"
+
+#: app/features/domain/components/domain-status-probe.tsx:93
+msgid "Update your DNS provider with the provided record, or use the HTTP token method."
+msgstr "Update your DNS provider with the provided record, or use the HTTP token method."
 
 #: app/routes/user/detail/index.tsx:84
 msgid "User deactivated successfully"
@@ -425,3 +449,11 @@ msgstr "User reactivated successfully"
 #: app/components/app-sidebar/index.tsx:84
 msgid "Users"
 msgstr "Users"
+
+#: app/features/domain/components/domain-status-probe.tsx:65
+msgid "Verification in progress..."
+msgstr "Verification in progress..."
+
+#: app/features/domain/components/domain-status-probe.tsx:65
+msgid "Verified"
+msgstr "Verified"

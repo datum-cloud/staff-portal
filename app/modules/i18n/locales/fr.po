@@ -159,6 +159,10 @@ msgstr ""
 msgid "Domain"
 msgstr ""
 
+#: app/features/domain/components/domain-status-probe.tsx:106
+msgid "Domain verification is in progress. This may take a few minutes."
+msgstr ""
+
 #: app/routes/project/detail/layout.tsx:72
 #: app/routes/project/detail/domain/layout.tsx:5
 msgid "Domains"
@@ -198,6 +202,10 @@ msgstr ""
 msgid "Failed to delete user"
 msgstr ""
 
+#: app/features/domain/components/domain-status-probe.tsx:42
+msgid "Failed to load status"
+msgstr ""
+
 #: app/features/activity/components/activity-list.tsx:211
 msgid "Filter by time range"
 msgstr ""
@@ -235,6 +243,10 @@ msgstr ""
 
 #: app/components/theme-switcher/index.tsx:36
 msgid "Light"
+msgstr ""
+
+#: app/features/domain/components/domain-status-probe.tsx:38
+msgid "Loading status..."
 msgstr ""
 
 #: app/routes/auth/logout.tsx:30
@@ -314,6 +326,10 @@ msgstr ""
 #: app/routes/project/detail/layout.tsx:67
 #: app/routes/organization/detail/layout.tsx:30
 msgid "Overview"
+msgstr ""
+
+#: app/features/domain/components/domain-status-probe.tsx:83
+msgid "Pending Validation Checks:"
 msgstr ""
 
 #: app/routes/user/detail/index.tsx:323
@@ -396,6 +412,10 @@ msgstr ""
 msgid "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 msgstr ""
 
+#: app/features/domain/components/domain-status-probe.tsx:101
+msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
+msgstr ""
+
 #: app/features/activity/components/activity-list.tsx:82
 msgid "Timestamp"
 msgstr ""
@@ -406,6 +426,10 @@ msgstr ""
 #: app/routes/organization/detail/member.tsx:35
 #: app/routes/organization/detail/index.tsx:76
 msgid "Type"
+msgstr ""
+
+#: app/features/domain/components/domain-status-probe.tsx:93
+msgid "Update your DNS provider with the provided record, or use the HTTP token method."
 msgstr ""
 
 #: app/routes/user/detail/index.tsx:84
@@ -424,4 +448,12 @@ msgstr ""
 #: app/routes/user/index.tsx:14
 #: app/components/app-sidebar/index.tsx:84
 msgid "Users"
+msgstr ""
+
+#: app/features/domain/components/domain-status-probe.tsx:65
+msgid "Verification in progress..."
+msgstr ""
+
+#: app/features/domain/components/domain-status-probe.tsx:65
+msgid "Verified"
 msgstr ""

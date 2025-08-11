@@ -3,6 +3,7 @@ import { Text } from '@/components/typography';
 import { useDomainStatus } from '@/features/domain/hooks/useDomainStatus';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/modules/shadcn/ui/hover-card';
+import { useLingui } from '@lingui/react/macro';
 
 // Map condition type to friendly title
 function getConditionTitle(conditionType: string): string {
@@ -25,6 +26,7 @@ export function DomainStatusProbe({
   projectName: string;
   domainName: string;
 }) {
+  const { t } = useLingui();
   const { data, isLoading, error } = useDomainStatus(projectName, domainName, {
     enabled: Boolean(domainName),
     refetchIntervalMs: 10000,
@@ -33,19 +35,11 @@ export function DomainStatusProbe({
   if (!domainName) return null;
 
   if (isLoading) {
-    return (
-      <Text size="xs" textColor="muted">
-        Loading domain status…
-      </Text>
-    );
+    return <BadgeState state="pending" message={t`Loading status...`} loading />;
   }
 
   if (error) {
-    return (
-      <Text size="xs" textColor="destructive">
-        Failed to load domain status
-      </Text>
-    );
+    return <BadgeState state="error" message={t`Failed to load status`} />;
   }
 
   const status = data?.data?.status;
@@ -65,11 +59,10 @@ export function DomainStatusProbe({
   );
 
   const isActive = Boolean(conditions[0]?.status === 'True');
-  const isError = priorityConditions.some((c) => c.status === 'False');
 
-  // Badge shows Failed when any priority condition is explicitly False, Verified when active, otherwise pending
-  const badgeState = isError ? 'error' : isActive ? 'success' : 'pending';
-  const message = isError ? 'Failed' : isActive ? 'Verified' : 'Verification in progress...';
+  // Always show pending until fully active, mirroring the reference component
+  const badgeState = isActive ? 'success' : 'pending';
+  const message = isActive ? t`Verified` : t`Verification in progress...`;
 
   return (
     <HoverCard openDelay={300}>
@@ -79,7 +72,7 @@ export function DomainStatusProbe({
             'inline-flex cursor-pointer items-center gap-1',
             isActive ? 'pointer-events-none' : ''
           )}>
-          <BadgeState state={badgeState} message={message} loading={!isActive && !isError} />
+          <BadgeState state={badgeState} message={message} loading={!isActive} />
         </span>
       </HoverCardTrigger>
       <HoverCardContent
@@ -87,7 +80,7 @@ export function DomainStatusProbe({
         {priorityConditions.length > 0 ? (
           <div className="space-y-1.5">
             <Text size="sm" weight="semibold" textColor="warning">
-              Pending Validation Checks:
+              {t`Pending Validation Checks:`}
             </Text>
             <ul className="ml-4 list-disc space-y-1">
               {priorityConditions.map((condition) => (
@@ -97,7 +90,7 @@ export function DomainStatusProbe({
                   </Text>
                   <Text as="span" size="sm">
                     {condition.type === 'Verified'
-                      ? 'Update your DNS provider with the provided record, or use the HTTP token method.'
+                      ? t`Update your DNS provider with the provided record, or use the HTTP token method.`
                       : condition.message}
                   </Text>
                 </li>
@@ -105,13 +98,12 @@ export function DomainStatusProbe({
             </ul>
 
             <Text as="p" size="xs" textColor="muted">
-              These items are checked every few minutes. If you&apos;ve already made changes, they
-              should resolve shortly.
+              {t`These items are checked every few minutes. If you've already made changes, they should resolve shortly.`}
             </Text>
           </div>
         ) : (
           <Text size="sm" textColor="muted">
-            Domain verification is in progress. This may take a few minutes.
+            {t`Domain verification is in progress. This may take a few minutes.`}
           </Text>
         )}
       </HoverCardContent>
