@@ -1,7 +1,7 @@
 # ==========================================
 # BASE STAGE - Common dependencies and setup
 # ==========================================
-FROM oven/bun:1.2.17 AS base
+FROM oven/bun:1.2.20 AS base
 
 # Install system dependencies and clean up in the same layer
 RUN apt-get update && \
