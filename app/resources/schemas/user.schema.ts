@@ -1,7 +1,6 @@
 import { createProxyResponseSchema } from './common.schema';
 import { z } from 'zod';
 
-// Individual User schema
 export const UserSchema = z.object({
   apiVersion: z.string(),
   kind: z.literal('User'),
@@ -46,21 +45,16 @@ export const UserSchema = z.object({
     .optional(),
 });
 
-// UserList metadata schema
-const UserListMetadataSchema = z.object({
-  continue: z.string(),
-  resourceVersion: z.string(),
-});
-
-// UserList schema
 export const UserListSchema = z.object({
   apiVersion: z.string(),
   items: z.array(UserSchema),
   kind: z.literal('UserList'),
-  metadata: UserListMetadataSchema,
+  metadata: z.object({
+    continue: z.string(),
+    resourceVersion: z.string(),
+  }),
 });
 
-// Type exports
 export type User = z.infer<typeof UserSchema>;
 export const UserListResponseSchema = createProxyResponseSchema(UserListSchema);
 export type UserListResponse = z.infer<typeof UserListResponseSchema>;
