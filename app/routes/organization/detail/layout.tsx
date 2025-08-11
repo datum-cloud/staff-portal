@@ -32,11 +32,6 @@ export default function Layout() {
       icon: FileText,
     },
     {
-      title: t`Members`,
-      href: orgRoutes.member(data.metadata.name),
-      icon: Users,
-    },
-    {
       title: t`Projects`,
       href: orgRoutes.project(data.metadata.name),
       icon: Folders,
@@ -45,6 +40,11 @@ export default function Layout() {
       title: t`Activity`,
       href: orgRoutes.activity(data.metadata.name),
       icon: SquareActivity,
+    },
+    {
+      title: t`Members`,
+      href: orgRoutes.member(data.metadata.name),
+      icon: Users,
     },
   ];
 

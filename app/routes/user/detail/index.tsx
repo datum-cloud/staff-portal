@@ -52,7 +52,6 @@ export default function Page() {
     data.metadata.name,
     data.status?.state
   );
-  console.log(deactivationData);
 
   const handleDeleteUser = async () => {
     try {

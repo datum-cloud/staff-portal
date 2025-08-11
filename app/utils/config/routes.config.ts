@@ -19,6 +19,11 @@ export const orgRoutes = {
 export const projectRoutes = {
   list: () => '/customers/projects',
   detail: (projectName: string) => `/customers/projects/${projectName}`,
+  domain: {
+    list: (projectName: string) => `/customers/projects/${projectName}/domains`,
+    detail: (projectName: string, domainName: string) =>
+      `/customers/projects/${projectName}/domains/${domainName}`,
+  },
   httpProxy: {
     list: (projectName: string) => `/customers/projects/${projectName}/http-proxies`,
     detail: (projectName: string, httpProxyName: string) =>

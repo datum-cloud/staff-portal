@@ -9,3 +9,4 @@ export * from './activity.schema';
 export * from './httpproxy.schema';
 export * from './auth.schema';
 export * from './export-policy.schema';
+export * from './domain.schema';
