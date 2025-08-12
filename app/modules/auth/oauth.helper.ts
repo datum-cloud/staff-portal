@@ -1,7 +1,5 @@
-import { AuthenticationError } from '@/utils/errors';
 import { logger } from '@/utils/logger';
-import { OAuth2Strategy } from 'remix-auth-oauth2';
-import { CodeChallengeMethod } from 'remix-auth-oauth2';
+import { CodeChallengeMethod, OAuth2Strategy } from 'remix-auth-oauth2';
 
 export interface OAuthFallbackConfig {
   clientId: string;
@@ -41,23 +39,23 @@ export async function createOAuthStrategyWithFallback<T>(
   StrategyClass: {
     new (config: any, callback: any): OAuth2Strategy<T>;
     discover<T>(issuer: string, config: any, callback: any): Promise<OAuth2Strategy<T>>;
-  }
+  },
+  callback: (params: any) => Promise<T>
 ): Promise<OAuthStrategyResult<T>> {
   try {
     const strategy = await createStrategy();
+    throw new Error('test');
     return { strategy, isFallback: false };
   } catch (error) {
     logger.warn(`Failed to discover ${strategyName} OIDC configuration`, {
       strategyName,
       error: error instanceof Error ? error.message : String(error),
     });
-    logger.warn(`Authentication will not be available until OIDC issuer is accessible`, {
+    logger.warn(`Discovery failed; using manual OAuth endpoints until issuer is accessible`, {
       strategyName,
     });
 
-    const fallbackStrategy = new StrategyClass(fallbackConfig, async () => {
-      throw new AuthenticationError('OIDC issuer is not accessible. Please try again later.');
-    });
+    const fallbackStrategy = new StrategyClass(fallbackConfig, callback);
 
     return {
       strategy: fallbackStrategy,
@@ -106,6 +104,7 @@ export async function createGenericOAuthProvider<T>(
         callback
       ),
     fallbackConfig,
-    StrategyClass
+    StrategyClass,
+    callback
   );
 }
