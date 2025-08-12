@@ -44,7 +44,6 @@ export async function createOAuthStrategyWithFallback<T>(
 ): Promise<OAuthStrategyResult<T>> {
   try {
     const strategy = await createStrategy();
-    throw new Error('test');
     return { strategy, isFallback: false };
   } catch (error) {
     logger.warn(`Failed to discover ${strategyName} OIDC configuration`, {
