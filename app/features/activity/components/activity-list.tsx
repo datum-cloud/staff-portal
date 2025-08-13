@@ -24,9 +24,23 @@ import { activityListQuery } from '@/resources/request/client';
 import { ActivityListResponse, ActivityQueryParams } from '@/resources/schemas';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
-import { formatDistanceToNowStrict, fromUnixTime, getUnixTime, subDays } from 'date-fns';
+import {
+  formatDistanceToNowStrict,
+  fromUnixTime,
+  getUnixTime,
+  subDays,
+  subHours,
+  subMinutes,
+  startOfDay,
+  endOfDay,
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+} from 'date-fns';
 import { AlertTriangle, CheckCircle, Info, XCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { DateRange } from 'react-day-picker';
 
 interface ActivityListProps {
   resourceType?: string;
@@ -110,6 +124,82 @@ const createColumns = () => [
       return <BadgeState state={state} message={displayMessage} />;
     },
   }),
+];
+
+// Custom presets limited to 30 days or less
+const ACTIVITY_DATE_PRESETS = [
+  {
+    label: 'Last 5 minutes',
+    getValue: () => ({ from: subMinutes(new Date(), 5), to: new Date() }),
+  },
+  {
+    label: 'Last 15 minutes',
+    getValue: () => ({ from: subMinutes(new Date(), 15), to: new Date() }),
+  },
+  {
+    label: 'Last 30 minutes',
+    getValue: () => ({ from: subMinutes(new Date(), 30), to: new Date() }),
+  },
+  {
+    label: 'Last 1 hour',
+    getValue: () => ({ from: subHours(new Date(), 1), to: new Date() }),
+  },
+  {
+    label: 'Last 3 hours',
+    getValue: () => ({ from: subHours(new Date(), 3), to: new Date() }),
+  },
+  {
+    label: 'Last 6 hours',
+    getValue: () => ({ from: subHours(new Date(), 6), to: new Date() }),
+  },
+  {
+    label: 'Last 12 hours',
+    getValue: () => ({ from: subHours(new Date(), 12), to: new Date() }),
+  },
+  {
+    label: 'Last 24 hours',
+    getValue: () => ({ from: subHours(new Date(), 24), to: new Date() }),
+  },
+  {
+    label: 'Last 2 days',
+    getValue: () => ({ from: subDays(new Date(), 2), to: new Date() }),
+  },
+  {
+    label: 'Last 7 days',
+    getValue: () => ({ from: subDays(new Date(), 7), to: new Date() }),
+  },
+  {
+    label: 'Last 14 days',
+    getValue: () => ({ from: subDays(new Date(), 14), to: new Date() }),
+  },
+  {
+    label: 'Last 30 days',
+    getValue: () => ({ from: subDays(new Date(), 30), to: new Date() }),
+  },
+  {
+    label: 'Today',
+    getValue: () => ({ from: startOfDay(new Date()), to: endOfDay(new Date()) }),
+  },
+  {
+    label: 'Today so far',
+    getValue: () => ({ from: startOfDay(new Date()), to: new Date() }),
+  },
+  {
+    label: 'This week',
+    getValue: () => ({ from: startOfWeek(new Date()), to: endOfWeek(new Date()) }),
+  },
+  {
+    label: 'This week so far',
+    getValue: () => ({ from: startOfWeek(new Date()), to: new Date() }),
+  },
+  {
+    label: 'This month',
+    getValue: () => ({ from: startOfMonth(new Date()), to: endOfMonth(new Date()) }),
+  },
+  {
+    label: 'This month so far',
+    getValue: () => ({ from: startOfMonth(new Date()), to: new Date() }),
+  },
 ];
 
 export default function ActivityList({
@@ -196,7 +286,7 @@ export default function ActivityList({
             className="w-64"
           />
           <DateRangePicker
-            defaultPresets
+            presets={ACTIVITY_DATE_PRESETS}
             placeholder={timeRangePlaceholder || t`Filter by time range`}
             value={
               tableState.filters.start || tableState.filters.end

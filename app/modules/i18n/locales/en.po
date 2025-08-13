@@ -29,7 +29,7 @@ msgstr "Account"
 msgid "Account Management"
 msgstr "Account Management"
 
-#: app/features/activity/components/activity-list.tsx:88
+#: app/features/activity/components/activity-list.tsx:102
 msgid "Action"
 msgstr "Action"
 
@@ -44,11 +44,11 @@ msgstr "Action"
 msgid "Activity"
 msgstr "Activity"
 
-#: app/features/activity/components/activity-list.tsx:285
+#: app/features/activity/components/activity-list.tsx:375
 msgid "All read operations"
 msgstr "All read operations"
 
-#: app/features/activity/components/activity-list.tsx:282
+#: app/features/activity/components/activity-list.tsx:372
 msgid "All write operations"
 msgstr "All write operations"
 
@@ -76,7 +76,7 @@ msgstr "Are you sure you want to delete user \"{0} {1}\"? This action cannot be 
 msgid "Cancel"
 msgstr "Cancel"
 
-#: app/features/activity/components/activity-list.tsx:290
+#: app/features/activity/components/activity-list.tsx:380
 msgid "Clear"
 msgstr "Clear"
 
@@ -85,7 +85,7 @@ msgstr "Clear"
 msgid "Configuration"
 msgstr "Configuration"
 
-#: app/features/activity/components/activity-list.tsx:231
+#: app/features/activity/components/activity-list.tsx:321
 msgid "Create"
 msgstr "Create"
 
@@ -147,7 +147,7 @@ msgstr "Deactivation Reason:"
 
 #: app/routes/user/detail/index.tsx:109
 #: app/routes/user/detail/index.tsx:327
-#: app/features/activity/components/activity-list.tsx:234
+#: app/features/activity/components/activity-list.tsx:324
 #: app/components/button/button-delete-action.tsx:42
 #: app/components/button/button-delete-action.tsx:49
 msgid "Delete"
@@ -227,16 +227,16 @@ msgstr "Failed to delete user"
 msgid "Failed to load status"
 msgstr "Failed to load status"
 
-#: app/features/activity/components/activity-list.tsx:264
-#: app/features/activity/components/activity-list.tsx:269
+#: app/features/activity/components/activity-list.tsx:354
+#: app/features/activity/components/activity-list.tsx:359
 msgid "Filter by action"
 msgstr "Filter by action"
 
-#: app/features/activity/components/activity-list.tsx:263
+#: app/features/activity/components/activity-list.tsx:353
 msgid "Filter by action ({selectedCount})"
 msgstr "Filter by action ({selectedCount})"
 
-#: app/features/activity/components/activity-list.tsx:200
+#: app/features/activity/components/activity-list.tsx:290
 msgid "Filter by time range"
 msgstr "Filter by time range"
 
@@ -248,7 +248,7 @@ msgstr "Full Name"
 msgid "General"
 msgstr "General"
 
-#: app/features/activity/components/activity-list.tsx:228
+#: app/features/activity/components/activity-list.tsx:318
 msgid "Get"
 msgstr "Get"
 
@@ -279,7 +279,7 @@ msgstr "Joined"
 msgid "Light"
 msgstr "Light"
 
-#: app/features/activity/components/activity-list.tsx:229
+#: app/features/activity/components/activity-list.tsx:319
 msgid "List"
 msgstr "List"
 
@@ -306,7 +306,7 @@ msgstr "Manage user access and account status"
 msgid "Members"
 msgstr "Members"
 
-#: app/features/activity/components/activity-list.tsx:43
+#: app/features/activity/components/activity-list.tsx:57
 msgid "Message"
 msgstr "Message"
 
@@ -366,7 +366,7 @@ msgstr "Organizations"
 msgid "Overview"
 msgstr "Overview"
 
-#: app/features/activity/components/activity-list.tsx:233
+#: app/features/activity/components/activity-list.tsx:323
 msgid "Patch"
 msgstr "Patch"
 
@@ -421,7 +421,7 @@ msgstr "Reactivate User"
 msgid "Reason for deactivation"
 msgstr "Reason for deactivation"
 
-#: app/features/activity/components/activity-list.tsx:193
+#: app/features/activity/components/activity-list.tsx:283
 msgid "Search activity..."
 msgstr "Search activity..."
 
@@ -433,7 +433,7 @@ msgstr "Sinks"
 msgid "Source"
 msgstr "Source"
 
-#: app/features/activity/components/activity-list.tsx:77
+#: app/features/activity/components/activity-list.tsx:91
 msgid "Source IP"
 msgstr "Source IP"
 
@@ -454,7 +454,7 @@ msgstr "Start Time"
 #: app/routes/project/detail/export-policy/detail.tsx:184
 #: app/routes/project/detail/domain/index.tsx:45
 #: app/routes/project/detail/domain/detail.tsx:85
-#: app/features/activity/components/activity-list.tsx:101
+#: app/features/activity/components/activity-list.tsx:115
 msgid "Status"
 msgstr "Status"
 
@@ -466,7 +466,7 @@ msgstr "Temporarily prevent user from signing in. The user can be reactivated at
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 msgstr "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 
-#: app/features/activity/components/activity-list.tsx:92
+#: app/features/activity/components/activity-list.tsx:106
 msgid "Timestamp"
 msgstr "Timestamp"
 
@@ -478,7 +478,7 @@ msgstr "Timestamp"
 msgid "Type"
 msgstr "Type"
 
-#: app/features/activity/components/activity-list.tsx:232
+#: app/features/activity/components/activity-list.tsx:322
 msgid "Update"
 msgstr "Update"
 
@@ -512,6 +512,6 @@ msgstr "Verification in progress..."
 msgid "Verified"
 msgstr "Verified"
 
-#: app/features/activity/components/activity-list.tsx:230
+#: app/features/activity/components/activity-list.tsx:320
 msgid "Watch"
 msgstr "Watch"
