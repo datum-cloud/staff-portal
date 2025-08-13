@@ -29,7 +29,7 @@ msgstr ""
 msgid "Account Management"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:78
+#: app/features/activity/components/activity-list.tsx:102
 msgid "Action"
 msgstr ""
 
@@ -42,6 +42,14 @@ msgstr ""
 #: app/routes/organization/detail/activity.tsx:8
 #: app/components/app-sidebar/index.tsx:98
 msgid "Activity"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:375
+msgid "All read operations"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:372
+msgid "All write operations"
 msgstr ""
 
 #. placeholder {0}: data.metadata.annotations?.['kubernetes.io/display-name']
@@ -68,9 +76,17 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: app/features/activity/components/activity-list.tsx:380
+msgid "Clear"
+msgstr ""
+
 #: app/routes/project/detail/export-policy/detail.tsx:187
 #: app/routes/project/detail/export-policy/detail.tsx:221
 msgid "Configuration"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:321
+msgid "Create"
 msgstr ""
 
 #: app/routes/user/index.tsx:41
@@ -131,6 +147,7 @@ msgstr ""
 
 #: app/routes/user/detail/index.tsx:109
 #: app/routes/user/detail/index.tsx:327
+#: app/features/activity/components/activity-list.tsx:324
 #: app/components/button/button-delete-action.tsx:42
 #: app/components/button/button-delete-action.tsx:49
 msgid "Delete"
@@ -172,6 +189,10 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
+#: app/components/date/date-range-picker.tsx:263
+msgid "End Time"
+msgstr ""
+
 #: app/routes/project/detail/httpproxy/index.tsx:40
 #: app/routes/project/detail/httpproxy/detail.tsx:95
 msgid "Endpoint"
@@ -206,7 +227,16 @@ msgstr ""
 msgid "Failed to load status"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:211
+#: app/features/activity/components/activity-list.tsx:354
+#: app/features/activity/components/activity-list.tsx:359
+msgid "Filter by action"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:353
+msgid "Filter by action ({selectedCount})"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:290
 msgid "Filter by time range"
 msgstr ""
 
@@ -216,6 +246,10 @@ msgstr ""
 
 #: app/routes/project/detail/httpproxy/detail.tsx:75
 msgid "General"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:318
+msgid "Get"
 msgstr ""
 
 #: app/routes/project/detail/httpproxy/detail.tsx:138
@@ -245,6 +279,10 @@ msgstr ""
 msgid "Light"
 msgstr ""
 
+#: app/features/activity/components/activity-list.tsx:319
+msgid "List"
+msgstr ""
+
 #: app/features/domain/components/domain-status-probe.tsx:38
 msgid "Loading status..."
 msgstr ""
@@ -268,7 +306,7 @@ msgstr ""
 msgid "Members"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:33
+#: app/features/activity/components/activity-list.tsx:57
 msgid "Message"
 msgstr ""
 
@@ -328,6 +366,10 @@ msgstr ""
 msgid "Overview"
 msgstr ""
 
+#: app/features/activity/components/activity-list.tsx:323
+msgid "Patch"
+msgstr ""
+
 #: app/features/domain/components/domain-status-probe.tsx:83
 msgid "Pending Validation Checks:"
 msgstr ""
@@ -359,6 +401,10 @@ msgstr ""
 msgid "Query"
 msgstr ""
 
+#: app/components/date/date-range-picker.tsx:277
+msgid "Quick ranges"
+msgstr ""
+
 #: app/routes/user/detail/index.tsx:232
 msgid "Re-enable this user's access to the system. They will be able to sign in immediately."
 msgstr ""
@@ -375,7 +421,7 @@ msgstr ""
 msgid "Reason for deactivation"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:183
+#: app/features/activity/components/activity-list.tsx:283
 msgid "Search activity..."
 msgstr ""
 
@@ -387,12 +433,16 @@ msgstr ""
 msgid "Source"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:67
+#: app/features/activity/components/activity-list.tsx:91
 msgid "Source IP"
 msgstr ""
 
 #: app/routes/project/detail/export-policy/detail.tsx:112
 msgid "Sources"
+msgstr ""
+
+#: app/components/date/date-range-picker.tsx:252
+msgid "Start Time"
 msgstr ""
 
 #: app/routes/user/index.tsx:37
@@ -404,7 +454,7 @@ msgstr ""
 #: app/routes/project/detail/export-policy/detail.tsx:184
 #: app/routes/project/detail/domain/index.tsx:45
 #: app/routes/project/detail/domain/detail.tsx:85
-#: app/features/activity/components/activity-list.tsx:91
+#: app/features/activity/components/activity-list.tsx:115
 msgid "Status"
 msgstr ""
 
@@ -416,7 +466,7 @@ msgstr ""
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:82
+#: app/features/activity/components/activity-list.tsx:106
 msgid "Timestamp"
 msgstr ""
 
@@ -426,6 +476,10 @@ msgstr ""
 #: app/routes/organization/detail/member.tsx:35
 #: app/routes/organization/detail/index.tsx:76
 msgid "Type"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:322
+msgid "Update"
 msgstr ""
 
 #: app/features/domain/components/domain-status-probe.tsx:93
@@ -456,4 +510,8 @@ msgstr ""
 
 #: app/features/domain/components/domain-status-probe.tsx:65
 msgid "Verified"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:320
+msgid "Watch"
 msgstr ""
