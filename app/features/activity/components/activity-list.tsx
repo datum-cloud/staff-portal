@@ -9,6 +9,16 @@ import {
   useDataTableQuery,
 } from '@/modules/data-table';
 import { ActivityLogEntry } from '@/modules/loki';
+import { Button } from '@/modules/shadcn/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/modules/shadcn/ui/dropdown-menu';
 import { Input } from '@/modules/shadcn/ui/input';
 import { activityListQuery } from '@/resources/request/client';
 import { ActivityListResponse, ActivityQueryParams } from '@/resources/schemas';
@@ -76,7 +86,7 @@ const createColumns = () => [
   }),
   columnHelper.accessor('verb', {
     header: () => <Trans>Action</Trans>,
-    cell: ({ getValue }) => <span>{getValue() || '-'}</span>,
+    cell: ({ getValue }) => <BadgeState state={getValue() || 'info'} />,
   }),
   columnHelper.accessor('timestamp', {
     header: () => <Trans>Timestamp</Trans>,
@@ -186,6 +196,8 @@ export default function ActivityList({
             className="w-64"
           />
           <DateRangePicker
+            defaultPresets
+            placeholder={timeRangePlaceholder || t`Filter by time range`}
             value={
               tableState.filters.start || tableState.filters.end
                 ? {
@@ -208,8 +220,79 @@ export default function ActivityList({
                 tableState.clearAllFilters();
               }
             }}
-            placeholder={timeRangePlaceholder || t`Filter by time range`}
           />
+
+          {/* Actions filter */}
+          {(() => {
+            const ACTION_OPTIONS = [
+              { value: 'get', label: t`Get` },
+              { value: 'list', label: t`List` },
+              { value: 'watch', label: t`Watch` },
+              { value: 'create', label: t`Create` },
+              { value: 'update', label: t`Update` },
+              { value: 'patch', label: t`Patch` },
+              { value: 'delete', label: t`Delete` },
+            ] as const;
+
+            const current =
+              (tableState.filters.actions as string | undefined)?.split(',').filter(Boolean) ?? [];
+            const currentSet = new Set(current);
+            const selectedCount = current.length;
+
+            const setActions = (values: string[]) => {
+              if (values.length > 0) tableState.setFilter('actions', values.join(','));
+              else tableState.clearFilter('actions');
+            };
+
+            const toggle = (value: string, checked: boolean) => {
+              const next = new Set(currentSet);
+              if (checked) next.add(value);
+              else next.delete(value);
+              setActions(Array.from(next));
+            };
+
+            const setWrites = () =>
+              setActions(['create', 'update', 'patch', 'delete', 'deletecollection']);
+            const setReads = () => setActions(['get', 'list', 'watch']);
+
+            return (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">
+                    {selectedCount > 0
+                      ? t`Filter by action (${selectedCount})`
+                      : t`Filter by action`}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-56">
+                  <DropdownMenuLabel>
+                    <Trans>Filter by action</Trans>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {ACTION_OPTIONS.map((opt) => (
+                    <DropdownMenuCheckboxItem
+                      key={opt.value}
+                      checked={currentSet.has(opt.value)}
+                      onCheckedChange={(c) => toggle(opt.value, Boolean(c))}>
+                      {opt.label}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={setWrites}>
+                    <Trans>All write operations</Trans>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={setReads}>
+                    <Trans>All read operations</Trans>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => tableState.clearFilter('actions')}
+                    data-variant="destructive">
+                    <Trans>Clear</Trans>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            );
+          })()}
         </div>
 
         <DataTable<ActivityLogEntry> />
