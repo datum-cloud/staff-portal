@@ -1,11 +1,11 @@
 import type { Route } from './+types/detail';
 import { BadgeCondition, BadgeState } from '@/components/badge';
+import { Button } from '@/components/button';
 import { DateFormatter } from '@/components/date';
 import { DisplayText } from '@/components/display';
 import { Text, Title } from '@/components/typography';
 import { authenticator } from '@/modules/auth';
 import { CodeEditor } from '@/modules/code-editor';
-import { Button } from '@/modules/shadcn/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/modules/shadcn/ui/popover';
 import {
@@ -136,8 +136,11 @@ export default function Page() {
                   <TableCell>
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" size="sm">
-                          <CodeIcon className="size-4" />
+                        <Button
+                          type="primary"
+                          theme="outline"
+                          size="small"
+                          icon={<CodeIcon className="size-4" />}>
                           <Trans>Query</Trans>
                         </Button>
                       </PopoverTrigger>
@@ -216,8 +219,11 @@ export default function Page() {
                   <TableCell>
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" size="sm">
-                          <SettingsIcon className="size-4" />
+                        <Button
+                          type="primary"
+                          theme="outline"
+                          size="small"
+                          icon={<SettingsIcon className="size-4" />}>
                           <Trans>Configuration</Trans>
                         </Button>
                       </PopoverTrigger>

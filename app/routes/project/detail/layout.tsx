@@ -10,7 +10,7 @@ import { orgDetailQuery, projectDetailQuery } from '@/resources/request/server';
 import { Organization, Project } from '@/resources/schemas';
 import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { ChartArea, FileText, Globe, SquareActivity, Waypoints } from 'lucide-react';
+import { ChartArea, FileText, Globe, Lock, SquareActivity, Waypoints } from 'lucide-react';
 import { Outlet, useLoaderData } from 'react-router';
 
 export const handle = {
@@ -87,6 +87,11 @@ export default function Layout() {
       title: t`Activity`,
       href: projectRoutes.activity(project.metadata.name),
       icon: SquareActivity,
+    },
+    {
+      title: t`Secrets`,
+      href: projectRoutes.secret.list(project.metadata.name),
+      icon: Lock,
     },
   ];
 

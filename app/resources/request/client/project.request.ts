@@ -6,6 +6,7 @@ import {
   ExportPolicyListResponseSchema,
   DomainListResponseSchema,
   DomainResponseSchema,
+  SecretListResponseSchema,
 } from '@/resources/schemas';
 
 export const projectListQuery = (params?: ListQueryParams) => {
@@ -57,6 +58,20 @@ export const projectDomainListQuery = (projectName: string, params?: ListQueryPa
     },
   })
     .output(DomainListResponseSchema)
+    .execute();
+};
+
+export const projectSecretListQuery = (projectName: string, params?: ListQueryParams) => {
+  return apiRequestClient({
+    method: 'GET',
+    url: '',
+    baseURL: `/api/secrets/${projectName}`,
+    params: {
+      ...(params?.limit && { limit: params.limit }),
+      ...(params?.cursor && { continue: params.cursor }),
+    },
+  })
+    .output(SecretListResponseSchema)
     .execute();
 };
 

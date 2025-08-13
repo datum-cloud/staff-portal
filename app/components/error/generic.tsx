@@ -1,5 +1,5 @@
+import { Button } from '@/components/button';
 import { LogoIcon } from '@/components/logo/logo-icon';
-import { Button } from '@/modules/shadcn/ui/button';
 import { Card, CardContent } from '@/modules/shadcn/ui/card';
 import { HomeIcon, RefreshCcwIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -40,13 +40,16 @@ const GenericError = ({ message, requestId }: { message: string; requestId?: str
         </div>
         <div className="flex items-center gap-2">
           <Link to={'/'}>
-            <Button size="sm">
-              <HomeIcon className="size-4" />
+            <Button size="small" icon={<HomeIcon className="size-4" />}>
               Back to Home
             </Button>
           </Link>
-          <Button variant="outline" size="sm" onClick={() => navigate(0)}>
-            <RefreshCcwIcon className="size-4" />
+          <Button
+            type="primary"
+            theme="outline"
+            size="small"
+            icon={<RefreshCcwIcon className="size-4" />}
+            onClick={() => navigate(0)}>
             Refresh Page
           </Button>
         </div>

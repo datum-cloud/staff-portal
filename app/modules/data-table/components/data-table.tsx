@@ -2,8 +2,8 @@ import { getCommonPinningStyles } from '../lib/data-table';
 import { useDataTableInstance } from '../providers/data-table.provider';
 import { DataTableLoading } from './data-table-loading';
 import { DataTablePagination } from './data-table-pagination';
+import { Button } from '@/components/button';
 import { cn } from '@/modules/shadcn/lib/utils';
-import { Button } from '@/modules/shadcn/ui/button';
 import {
   Table,
   TableBody,
@@ -53,8 +53,9 @@ export function DataTable<TData>({
             </p>
           </div>
           <Button
-            variant="outline"
-            size="sm"
+            type="primary"
+            theme="outline"
+            size="small"
             onClick={() => query.refetch()}
             disabled={query.isRefetching}
             className="mt-2">

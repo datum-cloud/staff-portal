@@ -1,5 +1,6 @@
 import { apiRequest } from '@/modules/axios/axios.server';
 import { LokiActivityLogsService, QueryParams } from '@/modules/loki/server';
+import { SecretListSchema } from '@/resources/schemas';
 import { EnvVariables } from '@/server/iface';
 import { logApiError, logApiSuccess } from '@/server/logger';
 import { authMiddleware, getToken } from '@/server/middleware';
@@ -191,6 +192,82 @@ api.get('/activity', authMiddleware(), async (c) => {
     });
 
     const { response, status } = await createErrorResponse(reqId, error, '/activity');
+    return c.json(response, status as any);
+  }
+});
+
+// Secret list API - secure proxy that strips secret values
+api.get('/secrets/:projectName', authMiddleware(), async (c) => {
+  const startTime = performance.now();
+  const reqLogger = createRequestLogger(c);
+  const reqId = c.get('requestId');
+  const requestContext = extractRequestContext(c);
+
+  reqLogger.info('Secret List API Request Started', requestContext);
+
+  try {
+    const token = getToken(c);
+    const projectName = c.req.param('projectName');
+
+    // Get query parameters for pagination
+    const limit = c.req.query('limit');
+    const cursor = c.req.query('continue');
+
+    // Make request to Kubernetes API
+    const url = `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/api/v1/namespaces/default/secrets`;
+    const params: Record<string, string> = {};
+    if (limit) params.limit = limit;
+    if (cursor) params.continue = cursor;
+
+    const response = await apiRequest({
+      method: 'GET',
+      url,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params,
+    })
+      .output(SecretListSchema)
+      .execute();
+
+    // Transform the response to mask secret values with ****
+    const transformedResponse = {
+      ...response,
+      items:
+        response.items?.map((secret: any) => ({
+          ...secret,
+          data: secret.data
+            ? Object.keys(secret.data).reduce((acc: any, key: string) => {
+                acc[key] = '****';
+                return acc;
+              }, {})
+            : {},
+        })) || [],
+    };
+
+    const duration = Math.round(performance.now() - startTime);
+
+    logApiSuccess(reqLogger, {
+      path: c.req.path,
+      method: c.req.method,
+      duration,
+      userAgent: requestContext.userAgent,
+      ip: requestContext.ip,
+    });
+
+    return createSuccessResponseWithHeaders(c, reqId, transformedResponse, c.req.path);
+  } catch (error) {
+    const duration = Math.round(performance.now() - startTime);
+
+    await logApiError(reqLogger, error, {
+      path: c.req.path,
+      method: c.req.method,
+      duration,
+      userAgent: requestContext.userAgent,
+      ip: requestContext.ip,
+    });
+
+    const { response, status } = await createErrorResponse(reqId, error, '/secrets');
     return c.json(response, status as any);
   }
 });

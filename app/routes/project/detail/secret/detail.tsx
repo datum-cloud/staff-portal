@@ -2,40 +2,50 @@ import type { Route } from './+types/detail';
 import { DateFormatter } from '@/components/date';
 import { DisplayText } from '@/components/display';
 import { Text, Title } from '@/components/typography';
-import { DomainStatusProbe } from '@/features/domain';
 import { authenticator } from '@/modules/auth';
-import { Card, CardContent } from '@/modules/shadcn/ui/card';
-import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
-import { projectDomainDetailQuery } from '@/resources/request/server';
-import { Domain } from '@/resources/schemas';
-import { useProjectDetailData } from '@/routes/project/shared';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/modules/shadcn/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/modules/shadcn/ui/table';
+import { projectSecretDetailQuery } from '@/resources/request/server';
+import { Secret } from '@/resources/schemas';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 import { useLoaderData } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const data = extractDataFromMatches<Domain>(matches);
-  return metaObject(`Domain - ${data?.metadata?.name}`);
+  const data = extractDataFromMatches<Secret>(matches);
+  return metaObject(`Secret - ${data?.metadata?.name}`);
 };
 
 export const handle = {
-  breadcrumb: (data: Domain) => <span>{data.metadata.name}</span>,
+  breadcrumb: (data: Secret) => <span>{data.metadata.name}</span>,
 };
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const session = await authenticator.getSession(request);
 
-  const data = await projectDomainDetailQuery(
+  const data = await projectSecretDetailQuery(
     session?.accessToken ?? '',
     params?.projectName ?? '',
-    params?.domainName ?? ''
+    params?.secretName ?? ''
   );
 
   return data;
 };
 
 export default function Page() {
-  const { project } = useProjectDetailData();
   const data = useLoaderData<typeof loader>();
 
   return (
@@ -71,24 +81,11 @@ export default function Page() {
               <TableRow>
                 <TableCell width="25%">
                   <Text textColor="muted">
-                    <Trans>Domain</Trans>
+                    <Trans>Type</Trans>
                   </Text>
                 </TableCell>
                 <TableCell>
-                  <Text>{data?.spec?.domainName}</Text>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Status</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  <DomainStatusProbe
-                    projectName={project.metadata.name}
-                    domainName={data?.metadata?.name}
-                  />
+                  <Text>{data?.type}</Text>
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -103,6 +100,32 @@ export default function Page() {
                   </Text>
                 </TableCell>
               </TableRow>
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      <Card className="mt-4 shadow-none">
+        <CardHeader>
+          <CardTitle>Key-value pairs</CardTitle>
+          <CardDescription>The key-value pairs securely stored as secrets.</CardDescription>
+        </CardHeader>
+
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Key</TableHead>
+                <TableHead>Value</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {Object.entries(data?.data ?? {}).map(([key, value]) => (
+                <TableRow key={key}>
+                  <TableCell>{key}</TableCell>
+                  <TableCell>{value}</TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </CardContent>

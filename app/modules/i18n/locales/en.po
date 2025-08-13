@@ -80,8 +80,8 @@ msgstr "Cancel"
 msgid "Clear"
 msgstr "Clear"
 
-#: app/routes/project/detail/export-policy/detail.tsx:187
-#: app/routes/project/detail/export-policy/detail.tsx:221
+#: app/routes/project/detail/export-policy/detail.tsx:190
+#: app/routes/project/detail/export-policy/detail.tsx:227
 msgid "Configuration"
 msgstr "Configuration"
 
@@ -93,12 +93,14 @@ msgstr "Create"
 #: app/routes/user/detail/index.tsx:194
 #: app/routes/project/index.tsx:42
 #: app/routes/project/detail/index.tsx:89
+#: app/routes/project/detail/secret/index.tsx:43
+#: app/routes/project/detail/secret/detail.tsx:94
 #: app/routes/project/detail/httpproxy/index.tsx:56
 #: app/routes/project/detail/httpproxy/detail.tsx:121
 #: app/routes/project/detail/export-policy/index.tsx:54
 #: app/routes/project/detail/export-policy/detail.tsx:95
 #: app/routes/project/detail/domain/index.tsx:54
-#: app/routes/project/detail/domain/detail.tsx:98
+#: app/routes/project/detail/domain/detail.tsx:97
 #: app/routes/organization/index.tsx:38
 #: app/routes/organization/detail/project.tsx:40
 #: app/routes/organization/detail/index.tsx:86
@@ -172,7 +174,7 @@ msgid "Description"
 msgstr "Description"
 
 #: app/routes/project/detail/domain/index.tsx:41
-#: app/routes/project/detail/domain/detail.tsx:75
+#: app/routes/project/detail/domain/detail.tsx:74
 msgid "Domain"
 msgstr "Domain"
 
@@ -318,14 +320,16 @@ msgstr "MetricsQL"
 #: app/routes/user/detail/organization.tsx:18
 #: app/routes/project/index.tsx:21
 #: app/routes/project/detail/index.tsx:67
+#: app/routes/project/detail/secret/index.tsx:31
+#: app/routes/project/detail/secret/detail.tsx:62
 #: app/routes/project/detail/httpproxy/index.tsx:32
 #: app/routes/project/detail/httpproxy/detail.tsx:85
 #: app/routes/project/detail/export-policy/index.tsx:32
 #: app/routes/project/detail/export-policy/detail.tsx:61
 #: app/routes/project/detail/export-policy/detail.tsx:123
-#: app/routes/project/detail/export-policy/detail.tsx:175
+#: app/routes/project/detail/export-policy/detail.tsx:178
 #: app/routes/project/detail/domain/index.tsx:33
-#: app/routes/project/detail/domain/detail.tsx:53
+#: app/routes/project/detail/domain/detail.tsx:52
 #: app/routes/organization/index.tsx:21
 #: app/routes/organization/detail/project.tsx:25
 #: app/routes/organization/detail/member.tsx:18
@@ -333,8 +337,9 @@ msgstr "MetricsQL"
 msgid "Name"
 msgstr "Name"
 
+#: app/routes/project/detail/secret/detail.tsx:74
 #: app/routes/project/detail/export-policy/detail.tsx:73
-#: app/routes/project/detail/domain/detail.tsx:65
+#: app/routes/project/detail/domain/detail.tsx:64
 msgid "Namespace"
 msgstr "Namespace"
 
@@ -397,7 +402,7 @@ msgstr "Project deleted successfully"
 msgid "Projects"
 msgstr "Projects"
 
-#: app/routes/project/detail/export-policy/detail.tsx:141
+#: app/routes/project/detail/export-policy/detail.tsx:144
 msgid "Query"
 msgstr "Query"
 
@@ -425,11 +430,16 @@ msgstr "Reason for deactivation"
 msgid "Search activity..."
 msgstr "Search activity..."
 
-#: app/routes/project/detail/export-policy/detail.tsx:164
+#: app/routes/project/detail/layout.tsx:92
+#: app/routes/project/detail/secret/layout.tsx:5
+msgid "Secrets"
+msgstr "Secrets"
+
+#: app/routes/project/detail/export-policy/detail.tsx:167
 msgid "Sinks"
 msgstr "Sinks"
 
-#: app/routes/project/detail/export-policy/detail.tsx:181
+#: app/routes/project/detail/export-policy/detail.tsx:184
 msgid "Source"
 msgstr "Source"
 
@@ -451,9 +461,9 @@ msgstr "Start Time"
 #: app/routes/project/detail/httpproxy/detail.tsx:109
 #: app/routes/project/detail/export-policy/index.tsx:48
 #: app/routes/project/detail/export-policy/detail.tsx:83
-#: app/routes/project/detail/export-policy/detail.tsx:184
+#: app/routes/project/detail/export-policy/detail.tsx:187
 #: app/routes/project/detail/domain/index.tsx:45
-#: app/routes/project/detail/domain/detail.tsx:85
+#: app/routes/project/detail/domain/detail.tsx:84
 #: app/features/activity/components/activity-list.tsx:115
 msgid "Status"
 msgstr "Status"
@@ -471,7 +481,9 @@ msgid "Timestamp"
 msgstr "Timestamp"
 
 #: app/routes/user/detail/organization.tsx:32
-#: app/routes/project/detail/export-policy/detail.tsx:178
+#: app/routes/project/detail/secret/index.tsx:39
+#: app/routes/project/detail/secret/detail.tsx:84
+#: app/routes/project/detail/export-policy/detail.tsx:181
 #: app/routes/organization/index.tsx:32
 #: app/routes/organization/detail/member.tsx:35
 #: app/routes/organization/detail/index.tsx:76

@@ -24,6 +24,11 @@ export const projectRoutes = {
     detail: (projectName: string, domainName: string) =>
       `/customers/projects/${projectName}/domains/${domainName}`,
   },
+  secret: {
+    list: (projectName: string) => `/customers/projects/${projectName}/secrets`,
+    detail: (projectName: string, secretName: string) =>
+      `/customers/projects/${projectName}/secrets/${secretName}`,
+  },
   httpProxy: {
     list: (projectName: string) => `/customers/projects/${projectName}/http-proxies`,
     detail: (projectName: string, httpProxyName: string) =>

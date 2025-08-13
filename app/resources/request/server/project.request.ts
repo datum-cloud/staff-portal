@@ -1,9 +1,11 @@
 import { apiRequest } from '@/modules/axios/axios.server';
 import {
+  DomainSchema,
+  ExportPolicySchema,
   HTTPProxySchema,
   ProjectSchema,
-  ExportPolicySchema,
-  DomainSchema,
+  Secret,
+  SecretSchema,
 } from '@/resources/schemas';
 
 export const projectDetailQuery = (token: string, projectName: string) => {
@@ -67,4 +69,34 @@ export const projectDomainDetailQuery = (
   })
     .output(DomainSchema)
     .execute();
+};
+
+export const projectSecretDetailQuery = async (
+  token: string,
+  projectName: string,
+  secretName: string,
+  namespace: string = 'default'
+) => {
+  const response = await apiRequest({
+    method: 'GET',
+    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/api/v1/namespaces/${namespace}/secrets/${secretName}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .output(SecretSchema)
+    .execute();
+
+  // Transform the response to mask secret values with ****
+  const transformedResponse: Secret = {
+    ...response,
+    data: response.data
+      ? Object.keys(response.data).reduce((acc: any, key: string) => {
+          acc[key] = '****';
+          return acc;
+        }, {})
+      : {},
+  };
+
+  return transformedResponse;
 };

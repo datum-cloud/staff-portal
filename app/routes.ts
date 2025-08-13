@@ -46,6 +46,10 @@ export default [
             index('routes/project/detail/domain/index.tsx'),
             route(':domainName', 'routes/project/detail/domain/detail.tsx'),
           ]),
+          route('secrets', 'routes/project/detail/secret/layout.tsx', [
+            index('routes/project/detail/secret/index.tsx'),
+            route(':secretName', 'routes/project/detail/secret/detail.tsx'),
+          ]),
           route('http-proxies', 'routes/project/detail/httpproxy/layout.tsx', [
             index('routes/project/detail/httpproxy/index.tsx'),
             route(':httpProxyName', 'routes/project/detail/httpproxy/detail.tsx'),
