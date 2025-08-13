@@ -116,14 +116,12 @@ export default function Page() {
             <TableHeader>
               <TableRow>
                 <TableHead>Key</TableHead>
-                <TableHead>Value</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {Object.entries(data?.data ?? {}).map(([key, value]) => (
                 <TableRow key={key}>
                   <TableCell>{key}</TableCell>
-                  <TableCell>{value}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
