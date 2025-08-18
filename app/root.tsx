@@ -14,6 +14,7 @@ import { localeCookie } from '@/utils/cookies';
 import { configureProgress, startProgress, stopProgress } from '@datum-ui/nprogress';
 import { Toaster } from '@datum-ui/toast';
 import { i18n } from '@lingui/core';
+import * as Sentry from '@sentry/react-router';
 import { QueryClientProvider } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { NuqsAdapter } from 'nuqs/adapters/react-router/v7';
@@ -42,6 +43,9 @@ export async function loader({ request }: Route.LoaderArgs) {
       locale,
       ENV: {
         DEBUG: env.isDebug,
+        SENTRY_ENV: env.SENTRY_ENV,
+        SENTRY_DSN: env.SENTRY_DSN,
+        VERSION: env.VERSION,
       },
     },
     { headers: { 'Set-Cookie': cookie } }
@@ -173,6 +177,8 @@ export function ErrorBoundary() {
       message = `${error.status} ${error.statusText}`;
     }
   } else if (error instanceof Error) {
+    // you only want to capture non 404-errors that reach the boundary
+    Sentry.captureException(error);
     message = error.message;
   }
 

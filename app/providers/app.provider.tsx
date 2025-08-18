@@ -1,5 +1,6 @@
 import { Theme, useTheme } from '@/modules/datum-themes';
 import { User } from '@/resources/schemas';
+import { setSentryUser, clearSentryUser } from '@/utils/logger';
 import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 
 interface IContextProps {
@@ -70,6 +71,15 @@ export const AppProvider: React.FC<IProviderProps> = ({ children, user }) => {
     const metaThemeColor = document.querySelector("meta[name='theme-color']");
     if (metaThemeColor) metaThemeColor.setAttribute('content', themeColor);
   }, [resolvedTheme]);
+
+  // Update Sentry user context when user state changes
+  useEffect(() => {
+    if (userState) {
+      setSentryUser(userState);
+    } else {
+      clearSentryUser();
+    }
+  }, [userState]);
 
   return <AppContext.Provider value={contextPayload}>{children}</AppContext.Provider>;
 };
