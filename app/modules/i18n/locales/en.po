@@ -40,7 +40,7 @@ msgstr "Action"
 #: app/routes/project/detail/activity.tsx:8
 #: app/routes/organization/detail/layout.tsx:40
 #: app/routes/organization/detail/activity.tsx:8
-#: app/components/app-sidebar/index.tsx:98
+#: app/components/app-sidebar/index.tsx:99
 msgid "Activity"
 msgstr "Activity"
 
@@ -107,7 +107,7 @@ msgstr "Created"
 
 #: app/routes/project/detail/layout.tsx:30
 #: app/routes/customers/layout.tsx:7
-#: app/components/app-sidebar/index.tsx:79
+#: app/components/app-sidebar/index.tsx:80
 msgid "Customers"
 msgstr "Customers"
 
@@ -356,7 +356,7 @@ msgstr "Organization deleted successfully"
 #: app/routes/project/detail/layout.tsx:31
 #: app/routes/organization/layout.tsx:5
 #: app/routes/organization/index.tsx:15
-#: app/components/app-sidebar/index.tsx:88
+#: app/components/app-sidebar/index.tsx:89
 msgid "Organizations"
 msgstr "Organizations"
 
@@ -393,7 +393,7 @@ msgstr "Project deleted successfully"
 #: app/routes/project/detail/layout.tsx:37
 #: app/routes/organization/detail/project.tsx:19
 #: app/routes/organization/detail/layout.tsx:35
-#: app/components/app-sidebar/index.tsx:92
+#: app/components/app-sidebar/index.tsx:93
 msgid "Projects"
 msgstr "Projects"
 
@@ -500,7 +500,7 @@ msgstr "User reactivated successfully"
 
 #: app/routes/user/layout.tsx:5
 #: app/routes/user/index.tsx:14
-#: app/components/app-sidebar/index.tsx:84
+#: app/components/app-sidebar/index.tsx:85
 msgid "Users"
 msgstr "Users"
 

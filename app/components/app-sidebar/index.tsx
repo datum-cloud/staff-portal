@@ -9,6 +9,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/modules/shadcn/ui/collapsible';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/modules/shadcn/ui/hover-card';
 import {
   Sidebar,
   SidebarContent,
@@ -120,33 +121,65 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           {menuItems.map((item, index) => (
             <SidebarMenu key={index}>
               {item.hasSubmenu ? (
-                <Collapsible
-                  asChild
-                  defaultOpen={item.submenuItems?.some((subItem) => isMenuItemActive(subItem.href))}
-                  className="group/collapsible">
-                  <SidebarMenuItem>
-                    <CollapsibleTrigger asChild>
-                      <SidebarMenuButton tooltip={item.title}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                      </SidebarMenuButton>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <SidebarMenuSub>
+                state === 'expanded' ? (
+                  <Collapsible
+                    asChild
+                    defaultOpen={item.submenuItems?.some((subItem) =>
+                      isMenuItemActive(subItem.href)
+                    )}
+                    className="group/collapsible">
+                    <SidebarMenuItem>
+                      <CollapsibleTrigger asChild>
+                        <SidebarMenuButton tooltip={item.title}>
+                          <item.icon />
+                          <span>{item.title}</span>
+                          <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                        </SidebarMenuButton>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {item.submenuItems?.map((subItem, subIndex) => (
+                            <SidebarMenuSubItem key={subIndex}>
+                              <SidebarMenuSubButton
+                                asChild
+                                isActive={isMenuItemActive(subItem.href)}>
+                                <NavLink to={subItem.href}>
+                                  <span>{subItem.title}</span>
+                                </NavLink>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          ))}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    </SidebarMenuItem>
+                  </Collapsible>
+                ) : (
+                  <HoverCard openDelay={0}>
+                    <HoverCardTrigger asChild>
+                      <SidebarMenuItem>
+                        <SidebarMenuButton tooltip={item.title}>
+                          <item.icon />
+                          <span>{item.title}</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    </HoverCardTrigger>
+                    <HoverCardContent side="left" align="start" className="w-48 p-2 shadow-sm">
+                      <div className="space-y-1">
                         {item.submenuItems?.map((subItem, subIndex) => (
-                          <SidebarMenuSubItem key={subIndex}>
-                            <SidebarMenuSubButton asChild isActive={isMenuItemActive(subItem.href)}>
-                              <NavLink to={subItem.href}>
-                                <span>{subItem.title}</span>
-                              </NavLink>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
+                          <NavLink
+                            key={subIndex}
+                            to={subItem.href}
+                            className={cn(
+                              'hover:bg-accent hover:text-accent-foreground block rounded-md px-3 py-2 text-sm transition-colors',
+                              isMenuItemActive(subItem.href) && 'bg-accent text-accent-foreground'
+                            )}>
+                            {subItem.title}
+                          </NavLink>
                         ))}
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
-                  </SidebarMenuItem>
-                </Collapsible>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
+                )
               ) : (
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild isActive={isMenuItemActive(item.href)}>
