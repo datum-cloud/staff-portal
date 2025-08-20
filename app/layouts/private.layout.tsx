@@ -35,7 +35,7 @@ export default function PrivateLayout() {
 
   return (
     <AppProvider user={data.user ?? undefined}>
-      <SidebarProvider>
+      <SidebarProvider defaultOpen={false}>
         <AppSidebar />
         <SidebarInset>
           <AppTopbar />

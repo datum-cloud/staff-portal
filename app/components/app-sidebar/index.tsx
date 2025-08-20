@@ -157,7 +157,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <HoverCard openDelay={0}>
                     <HoverCardTrigger asChild>
                       <SidebarMenuItem>
-                        <SidebarMenuButton tooltip={item.title}>
+                        <SidebarMenuButton>
                           <item.icon />
                           <span>{item.title}</span>
                         </SidebarMenuButton>
@@ -182,7 +182,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 )
               ) : (
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={isMenuItemActive(item.href)}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isMenuItemActive(item.href)}
+                    tooltip={item.title}>
                     <NavLink to={item.href ?? ''}>
                       <item.icon />
                       <span>{item.title}</span>
