@@ -12,6 +12,7 @@ export const orgListQuery = (params?: ListQueryParams) => {
     params: {
       ...(params?.limit && { limit: params.limit }),
       ...(params?.cursor && { continue: params.cursor }),
+      ...(params?.search && { fieldSelector: `metadata.name=${params.search}` }),
     },
   })
     .output(OrganizationListResponseSchema)

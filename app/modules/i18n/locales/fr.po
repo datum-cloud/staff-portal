@@ -13,6 +13,15 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. placeholder {0}: item.title
+#: app/components/app-search/index.tsx:163
+msgid "{0}"
+msgstr ""
+
+#: app/components/app-search/search-result-group.tsx:33
+msgid "{heading}"
+msgstr ""
+
 #: app/routes/project/detail/export-policy/index.tsx:40
 msgid "# of Sinks"
 msgstr ""
@@ -338,6 +347,14 @@ msgstr ""
 msgid "Namespace"
 msgstr ""
 
+#: app/components/app-search/index.tsx:155
+msgid "Navigation"
+msgstr ""
+
+#: app/components/app-search/index.tsx:183
+msgid "No results found."
+msgstr ""
+
 #: app/components/app-sidebar/nav-user.tsx:84
 msgid "Notifications"
 msgstr ""
@@ -425,6 +442,10 @@ msgstr ""
 msgid "Search activity..."
 msgstr ""
 
+#: app/components/app-search/index.tsx:179
+msgid "Searching..."
+msgstr ""
+
 #: app/routes/project/detail/export-policy/detail.tsx:164
 msgid "Sinks"
 msgstr ""
@@ -476,6 +497,10 @@ msgstr ""
 #: app/routes/organization/detail/member.tsx:35
 #: app/routes/organization/detail/index.tsx:76
 msgid "Type"
+msgstr ""
+
+#: app/components/app-search/index.tsx:149
+msgid "Type a command or search..."
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:322
