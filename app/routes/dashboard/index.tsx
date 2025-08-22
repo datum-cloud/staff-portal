@@ -1,17 +1,22 @@
 import type { Route } from './+types/index';
-import { userRoutes } from '@/utils/config/routes.config';
+import { RecentUsersWidget } from '@/features/dashboard';
 import { metaObject } from '@/utils/helpers';
-import { redirect } from 'react-router';
+import { Trans } from '@lingui/react/macro';
 
 export const meta: Route.MetaFunction = () => {
   return metaObject('Dashboard');
 };
 
-export async function loader({ request }: Route.LoaderArgs) {
-  // TODO: Temporary redirect to users
-  return redirect(userRoutes.list());
-}
+export const handle = {
+  breadcrumb: () => <Trans>Dashboard</Trans>,
+};
 
 export default function Page() {
-  return null;
+  return (
+    <div className="flex flex-1 flex-col gap-4 p-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <RecentUsersWidget />
+      </div>
+    </div>
+  );
 }

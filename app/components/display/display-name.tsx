@@ -6,7 +6,7 @@ interface NameDisplayProps {
   /** The display name/description to show as the main link text */
   displayName: string;
   /** The ID/name to show as subtext */
-  name: string;
+  name?: string;
   /** The route to navigate to */
   to: string;
   /** Optional className for the container */
@@ -41,10 +41,12 @@ export const NameDisplay = ({
         <Link to={to}>{displayName}</Link>
       </div>
       <div className="flex items-center space-x-2">
-        <Text size="sm" textColor="muted">
-          {name}
-        </Text>
-        {withCopy && <ButtonCopy value={name} />}
+        {name && (
+          <Text size="sm" textColor="muted">
+            {name}
+          </Text>
+        )}
+        {withCopy && <ButtonCopy value={name ?? ''} />}
       </div>
     </div>
   );

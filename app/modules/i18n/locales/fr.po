@@ -49,7 +49,7 @@ msgstr ""
 #: app/routes/project/detail/activity.tsx:8
 #: app/routes/organization/detail/layout.tsx:40
 #: app/routes/organization/detail/activity.tsx:8
-#: app/components/app-sidebar/index.tsx:99
+#: app/components/app-sidebar/index.tsx:100
 msgid "Activity"
 msgstr ""
 
@@ -126,6 +126,11 @@ msgstr ""
 
 #: app/components/theme-switcher/index.tsx:40
 msgid "Dark"
+msgstr ""
+
+#: app/routes/dashboard/index.tsx:11
+#: app/components/app-sidebar/index.tsx:74
+msgid "Dashboard"
 msgstr ""
 
 #: app/routes/user/detail/index.tsx:121
@@ -284,6 +289,10 @@ msgstr ""
 msgid "Joined"
 msgstr ""
 
+#: app/features/dashboard/components/recent-users-widget.tsx:44
+msgid "Last 10 new users who joined Datum"
+msgstr ""
+
 #: app/components/theme-switcher/index.tsx:36
 msgid "Light"
 msgstr ""
@@ -355,6 +364,10 @@ msgstr ""
 msgid "No results found."
 msgstr ""
 
+#: app/features/dashboard/components/recent-users-widget.tsx:84
+msgid "No users yet"
+msgstr ""
+
 #: app/components/app-sidebar/nav-user.tsx:84
 msgid "Notifications"
 msgstr ""
@@ -373,7 +386,7 @@ msgstr ""
 #: app/routes/project/detail/layout.tsx:31
 #: app/routes/organization/layout.tsx:5
 #: app/routes/organization/index.tsx:15
-#: app/components/app-sidebar/index.tsx:89
+#: app/components/app-sidebar/index.tsx:90
 msgid "Organizations"
 msgstr ""
 
@@ -410,7 +423,7 @@ msgstr ""
 #: app/routes/project/detail/layout.tsx:37
 #: app/routes/organization/detail/project.tsx:19
 #: app/routes/organization/detail/layout.tsx:35
-#: app/components/app-sidebar/index.tsx:93
+#: app/components/app-sidebar/index.tsx:94
 msgid "Projects"
 msgstr ""
 
@@ -525,8 +538,12 @@ msgstr ""
 
 #: app/routes/user/layout.tsx:5
 #: app/routes/user/index.tsx:14
-#: app/components/app-sidebar/index.tsx:85
+#: app/components/app-sidebar/index.tsx:86
 msgid "Users"
+msgstr ""
+
+#: app/features/dashboard/components/recent-users-widget.tsx:87
+msgid "Users will appear here once they join Datum"
 msgstr ""
 
 #: app/features/domain/components/domain-status-probe.tsx:65
@@ -535,6 +552,10 @@ msgstr ""
 
 #: app/features/domain/components/domain-status-probe.tsx:65
 msgid "Verified"
+msgstr ""
+
+#: app/features/dashboard/components/recent-users-widget.tsx:39
+msgid "View All"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:320
