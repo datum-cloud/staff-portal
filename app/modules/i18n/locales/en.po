@@ -354,7 +354,7 @@ msgstr "Name"
 #: app/routes/project/detail/export-policy/detail.tsx:73
 #: app/routes/project/detail/domain/detail.tsx:65
 msgid "Namespace"
-msgstr "Namespace<<<<<<< HEAD"
+msgstr "Namespace"
 
 #: app/components/app-search/index.tsx:155
 msgid "Navigation"
