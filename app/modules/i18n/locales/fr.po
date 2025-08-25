@@ -289,7 +289,7 @@ msgstr ""
 msgid "Joined"
 msgstr ""
 
-#: app/features/dashboard/components/recent-users-widget.tsx:44
+#: app/features/dashboard/components/recent-users-widget.tsx:111
 msgid "Last 10 new users who joined Datum"
 msgstr ""
 
@@ -354,7 +354,7 @@ msgstr ""
 #: app/routes/project/detail/export-policy/detail.tsx:73
 #: app/routes/project/detail/domain/detail.tsx:65
 msgid "Namespace"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: app/components/app-search/index.tsx:155
 msgid "Navigation"
@@ -364,7 +364,7 @@ msgstr ""
 msgid "No results found."
 msgstr ""
 
-#: app/features/dashboard/components/recent-users-widget.tsx:84
+#: app/features/dashboard/components/recent-users-widget.tsx:63
 msgid "No users yet"
 msgstr ""
 
@@ -542,7 +542,7 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-#: app/features/dashboard/components/recent-users-widget.tsx:87
+#: app/features/dashboard/components/recent-users-widget.tsx:66
 msgid "Users will appear here once they join Datum"
 msgstr ""
 
@@ -554,7 +554,7 @@ msgstr ""
 msgid "Verified"
 msgstr ""
 
-#: app/features/dashboard/components/recent-users-widget.tsx:39
+#: app/features/dashboard/components/recent-users-widget.tsx:106
 msgid "View All"
 msgstr ""
 

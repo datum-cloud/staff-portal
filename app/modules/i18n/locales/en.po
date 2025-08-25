@@ -289,7 +289,7 @@ msgstr "Irreversible and destructive actions"
 msgid "Joined"
 msgstr "Joined"
 
-#: app/features/dashboard/components/recent-users-widget.tsx:44
+#: app/features/dashboard/components/recent-users-widget.tsx:111
 msgid "Last 10 new users who joined Datum"
 msgstr "Last 10 new users who joined Datum"
 
@@ -354,7 +354,7 @@ msgstr "Name"
 #: app/routes/project/detail/export-policy/detail.tsx:73
 #: app/routes/project/detail/domain/detail.tsx:65
 msgid "Namespace"
-msgstr "Namespace"
+msgstr "Namespace<<<<<<< HEAD"
 
 #: app/components/app-search/index.tsx:155
 msgid "Navigation"
@@ -364,7 +364,7 @@ msgstr "Navigation"
 msgid "No results found."
 msgstr "No results found."
 
-#: app/features/dashboard/components/recent-users-widget.tsx:84
+#: app/features/dashboard/components/recent-users-widget.tsx:63
 msgid "No users yet"
 msgstr "No users yet"
 
@@ -542,7 +542,7 @@ msgstr "User reactivated successfully"
 msgid "Users"
 msgstr "Users"
 
-#: app/features/dashboard/components/recent-users-widget.tsx:87
+#: app/features/dashboard/components/recent-users-widget.tsx:66
 msgid "Users will appear here once they join Datum"
 msgstr "Users will appear here once they join Datum"
 
@@ -554,7 +554,7 @@ msgstr "Verification in progress..."
 msgid "Verified"
 msgstr "Verified"
 
-#: app/features/dashboard/components/recent-users-widget.tsx:39
+#: app/features/dashboard/components/recent-users-widget.tsx:106
 msgid "View All"
 msgstr "View All"
 

@@ -1,26 +1,93 @@
-import { BadgeState } from '@/components/badge';
 import { Button } from '@/components/button';
 import { DateFormatter } from '@/components/date';
 import { DisplayName } from '@/components/display';
 import { Text, Title } from '@/components/typography';
 import { Avatar, AvatarFallback } from '@/modules/shadcn/ui/avatar';
 import { Card, CardContent, CardDescription, CardHeader } from '@/modules/shadcn/ui/card';
-import { userListQuery } from '@/resources/request/client';
-import { User } from '@/resources/schemas';
+import { activityListQuery } from '@/resources/request/client';
 import { userRoutes } from '@/utils/config/routes.config';
 import { Trans } from '@lingui/react/macro';
 import { useQuery } from '@tanstack/react-query';
+import { getUnixTime, subDays } from 'date-fns';
 import { ArrowRight, Users } from 'lucide-react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
+
+function UserItem({ log }: { log: any }) {
+  const userData = useMemo(() => {
+    try {
+      const data = JSON.parse(log?.raw || '{}');
+      return data?.responseObject;
+    } catch {
+      return null;
+    }
+  }, [log?.raw]);
+
+  if (!userData) return null;
+
+  const { givenName, familyName } = userData.spec;
+  const initials = `${givenName?.charAt(0) || ''}${familyName?.charAt(0) || ''}`;
+  const fullName = `${givenName || ''} ${familyName || ''}`.trim();
+
+  return (
+    <div key={log.user?.username} className="flex items-center gap-3 rounded-md border p-2">
+      <Avatar className="h-8 w-8">
+        <AvatarFallback className="text-xs font-medium">{initials || '?'}</AvatarFallback>
+      </Avatar>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-start justify-between">
+          <div className="min-w-0 flex-1">
+            <DisplayName
+              displayName={fullName}
+              name={userData.spec.email}
+              to={userRoutes.detail(userData.metadata.name)}
+            />
+          </div>
+          <div className="ml-3 flex items-center gap-2">
+            <Text size="sm" textColor="muted">
+              <DateFormatter date={userData.metadata.creationTimestamp} withTime />
+            </Text>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Extracted empty state component
+function EmptyState() {
+  return (
+    <div className="flex flex-col items-center justify-center py-6 text-center">
+      <Users className="text-muted-foreground mb-3 h-8 w-8" />
+      <Title level={5} className="mb-1">
+        <Trans>No users yet</Trans>
+      </Title>
+      <Text size="sm" textColor="muted">
+        <Trans>Users will appear here once they join Datum</Trans>
+      </Text>
+    </div>
+  );
+}
 
 export function RecentUsersWidget() {
   const navigate = useNavigate();
-  const { data: userListData } = useQuery({
+
+  const { data: userListData, isLoading } = useQuery({
     queryKey: ['users', 'recent'],
-    queryFn: () => userListQuery({ limit: 10 }),
+    queryFn: () =>
+      activityListQuery('users', undefined, {
+        filters: {
+          actions: 'create',
+          user: 'zitadel-actions-server',
+          start: getUnixTime(subDays(new Date(), 7)) * 1000000000,
+        },
+        limit: 10,
+      }),
   });
 
-  const recentUsers = userListData?.data?.items || [];
+  const recentUsers = useMemo(() => userListData?.data?.logs || [], [userListData?.data?.logs]);
+
+  const handleViewAll = useMemo(() => () => navigate(userRoutes.list()), [navigate]);
 
   return (
     <Card className="md:col-span-2 lg:col-span-2 xl:col-span-2">
@@ -35,7 +102,7 @@ export function RecentUsersWidget() {
             theme="outline"
             size="small"
             icon={<ArrowRight size={16} />}
-            onClick={() => navigate(userRoutes.list())}>
+            onClick={handleViewAll}>
             <Trans>View All</Trans>
           </Button>
         </div>
@@ -46,47 +113,26 @@ export function RecentUsersWidget() {
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-0">
-        {recentUsers.length > 0 ? (
+        {isLoading ? (
           <div className="space-y-2">
-            {recentUsers.map((user: User) => (
-              <div
-                key={user.metadata.name}
-                className="flex items-center gap-3 rounded-md border p-2">
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback className="text-xs font-medium">
-                    {user.spec.givenName.charAt(0)}
-                    {user.spec.familyName.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between">
-                    <div className="min-w-0 flex-1">
-                      <DisplayName
-                        displayName={`${user.spec.givenName} ${user.spec.familyName}`}
-                        to={`/user/${user.metadata.name}`}
-                      />
-                    </div>
-                    <div className="ml-3 flex items-center gap-2">
-                      <BadgeState state={user.status?.state ?? 'Active'} />
-                    </div>
-                  </div>
-                  <div className="text-muted-foreground mt-0.5 text-xs">
-                    <DateFormatter date={user.metadata.creationTimestamp} withTime />
-                  </div>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex animate-pulse items-center gap-3 rounded-md border p-2">
+                <div className="bg-muted h-8 w-8 rounded-full" />
+                <div className="flex-1 space-y-2">
+                  <div className="bg-muted h-4 w-3/4 rounded" />
+                  <div className="bg-muted h-3 w-1/2 rounded" />
                 </div>
               </div>
             ))}
           </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-6 text-center">
-            <Users className="text-muted-foreground mb-3 h-8 w-8" />
-            <Title level={5} className="mb-1">
-              <Trans>No users yet</Trans>
-            </Title>
-            <Text size="sm" textColor="muted">
-              <Trans>Users will appear here once they join Datum</Trans>
-            </Text>
+        ) : recentUsers.length > 0 ? (
+          <div className="space-y-2">
+            {recentUsers.map((log) => (
+              <UserItem key={log.user?.username} log={log} />
+            ))}
           </div>
+        ) : (
+          <EmptyState />
         )}
       </CardContent>
     </Card>
