@@ -27,7 +27,7 @@ import {
 } from '@/modules/shadcn/ui/sidebar';
 import { orgRoutes, projectRoutes, routes, userRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
-import { ChevronRight, LucideIcon, SquareActivity, Users } from 'lucide-react';
+import { ChevronRight, Home, LucideIcon, SquareActivity, Users } from 'lucide-react';
 import * as React from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
 
@@ -70,15 +70,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   };
 
   const menuItems: MenuItem[] = [
-    // {
-    //   title: t`Dashboard`,
-    //   icon: Home,
-    //   href: '/',
-    //   hasSubmenu: false,
-    // },
+    {
+      title: t`Dashboard`,
+      icon: Home,
+      href: '/',
+      hasSubmenu: false,
+    },
     {
       title: t`Customers`,
       icon: Users,
+      href: userRoutes.list(),
       hasSubmenu: true,
       submenuItems: [
         {
@@ -157,9 +158,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <HoverCard openDelay={0}>
                     <HoverCardTrigger asChild>
                       <SidebarMenuItem>
-                        <SidebarMenuButton>
-                          <item.icon />
-                          <span>{item.title}</span>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={item.submenuItems?.some((subItem) =>
+                            isMenuItemActive(subItem.href)
+                          )}>
+                          <NavLink to={item.href ?? ''}>
+                            <item.icon />
+                            <span>{item.title}</span>
+                          </NavLink>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
                     </HoverCardTrigger>

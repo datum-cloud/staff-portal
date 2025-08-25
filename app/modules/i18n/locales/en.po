@@ -49,7 +49,7 @@ msgstr "Action"
 #: app/routes/project/detail/activity.tsx:8
 #: app/routes/organization/detail/layout.tsx:40
 #: app/routes/organization/detail/activity.tsx:8
-#: app/components/app-sidebar/index.tsx:99
+#: app/components/app-sidebar/index.tsx:100
 msgid "Activity"
 msgstr "Activity"
 
@@ -127,6 +127,11 @@ msgstr "Danger Zone"
 #: app/components/theme-switcher/index.tsx:40
 msgid "Dark"
 msgstr "Dark"
+
+#: app/routes/dashboard/index.tsx:11
+#: app/components/app-sidebar/index.tsx:74
+msgid "Dashboard"
+msgstr "Dashboard"
 
 #: app/routes/user/detail/index.tsx:121
 #: app/routes/user/detail/index.tsx:299
@@ -284,6 +289,10 @@ msgstr "Irreversible and destructive actions"
 msgid "Joined"
 msgstr "Joined"
 
+#: app/features/dashboard/components/recent-users-widget.tsx:111
+msgid "Last 10 new users who joined Datum"
+msgstr "Last 10 new users who joined Datum"
+
 #: app/components/theme-switcher/index.tsx:36
 msgid "Light"
 msgstr "Light"
@@ -355,6 +364,10 @@ msgstr "Navigation"
 msgid "No results found."
 msgstr "No results found."
 
+#: app/features/dashboard/components/recent-users-widget.tsx:63
+msgid "No users yet"
+msgstr "No users yet"
+
 #: app/components/app-sidebar/nav-user.tsx:84
 msgid "Notifications"
 msgstr "Notifications"
@@ -373,7 +386,7 @@ msgstr "Organization deleted successfully"
 #: app/routes/project/detail/layout.tsx:31
 #: app/routes/organization/layout.tsx:5
 #: app/routes/organization/index.tsx:15
-#: app/components/app-sidebar/index.tsx:89
+#: app/components/app-sidebar/index.tsx:90
 msgid "Organizations"
 msgstr "Organizations"
 
@@ -410,7 +423,7 @@ msgstr "Project deleted successfully"
 #: app/routes/project/detail/layout.tsx:37
 #: app/routes/organization/detail/project.tsx:19
 #: app/routes/organization/detail/layout.tsx:35
-#: app/components/app-sidebar/index.tsx:93
+#: app/components/app-sidebar/index.tsx:94
 msgid "Projects"
 msgstr "Projects"
 
@@ -525,9 +538,13 @@ msgstr "User reactivated successfully"
 
 #: app/routes/user/layout.tsx:5
 #: app/routes/user/index.tsx:14
-#: app/components/app-sidebar/index.tsx:85
+#: app/components/app-sidebar/index.tsx:86
 msgid "Users"
 msgstr "Users"
+
+#: app/features/dashboard/components/recent-users-widget.tsx:66
+msgid "Users will appear here once they join Datum"
+msgstr "Users will appear here once they join Datum"
 
 #: app/features/domain/components/domain-status-probe.tsx:65
 msgid "Verification in progress..."
@@ -536,6 +553,10 @@ msgstr "Verification in progress..."
 #: app/features/domain/components/domain-status-probe.tsx:65
 msgid "Verified"
 msgstr "Verified"
+
+#: app/features/dashboard/components/recent-users-widget.tsx:106
+msgid "View All"
+msgstr "View All"
 
 #: app/features/activity/components/activity-list.tsx:320
 msgid "Watch"
