@@ -1,6 +1,6 @@
 import { logoStyles } from './logo.styles';
+import { useTheme } from '@/modules/datum-themes';
 import { cn } from '@/modules/shadcn/lib/utils';
-import { useTheme, Theme } from 'remix-themes';
 
 export interface LogoProps {
   width?: number;
@@ -9,8 +9,10 @@ export interface LogoProps {
 }
 
 export const Logo = ({ width = 385, className }: LogoProps) => {
-  const [theme] = useTheme();
-  const { base, icon, text } = logoStyles({ theme: theme ?? Theme.LIGHT });
+  const { resolvedTheme } = useTheme();
+  const { base, icon, text } = logoStyles({
+    theme: (resolvedTheme as 'light' | 'dark') ?? 'light',
+  });
 
   return (
     <svg
@@ -18,7 +20,8 @@ export const Logo = ({ width = 385, className }: LogoProps) => {
       className={cn(base(), className)}
       viewBox="0 0 555 148"
       fill="none"
-      xmlns="http://www.w3.org/2000/svg">
+      xmlns="http://www.w3.org/2000/svg"
+      suppressHydrationWarning>
       {/* Datum Icon */}
       <path
         className={icon()}

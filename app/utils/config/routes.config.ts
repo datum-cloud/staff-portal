@@ -44,7 +44,7 @@ export const routes = {
   login: () => '/login',
   logout: () => '/logout',
   authCallback: () => '/auth/callback',
-  setTheme: () => '/action/set-theme',
+
   sessionExpired: () => '/error/session-expired',
   oauthError: () => '/error/oauth-error',
 
