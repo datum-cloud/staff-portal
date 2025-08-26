@@ -1,3 +1,4 @@
+import { useTheme } from '@/modules/datum-themes';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Button } from '@/modules/shadcn/ui/button';
 import {
@@ -7,20 +8,19 @@ import {
   DropdownMenuTrigger,
 } from '@/modules/shadcn/ui/dropdown-menu';
 import { Trans } from '@lingui/react/macro';
-import { CheckIcon, MoonIcon, SunIcon } from 'lucide-react';
+import { CheckIcon, MoonIcon, SunIcon, MonitorIcon } from 'lucide-react';
 import { useEffect } from 'react';
-import { Theme, useTheme } from 'remix-themes';
 
 function ThemeSwitcher() {
-  const [theme, setTheme] = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
 
   /* Update theme-color meta tag
    * when theme is updated */
   useEffect(() => {
-    const themeColor = theme === 'dark' ? '#020817' : '#fff';
+    const themeColor = resolvedTheme === 'dark' ? '#020817' : '#fff';
     const metaThemeColor = document.querySelector("meta[name='theme-color']");
     if (metaThemeColor) metaThemeColor.setAttribute('content', themeColor);
-  }, [theme]);
+  }, [resolvedTheme]);
 
   return (
     <DropdownMenu modal={false}>
@@ -32,13 +32,20 @@ function ThemeSwitcher() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme(Theme.LIGHT)}>
-          <Trans>Light</Trans>{' '}
-          <CheckIcon size={14} className={cn('ml-auto', theme !== Theme.LIGHT && 'hidden')} />
+        <DropdownMenuItem onClick={() => setTheme('light')}>
+          <SunIcon size={14} className="mr-2" />
+          <Trans>Light</Trans>
+          <CheckIcon size={14} className={cn('ml-auto', theme !== 'light' && 'hidden')} />
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme(Theme.DARK)}>
-          <Trans>Dark</Trans>{' '}
-          <CheckIcon size={14} className={cn('ml-auto', theme !== Theme.DARK && 'hidden')} />
+        <DropdownMenuItem onClick={() => setTheme('dark')}>
+          <MoonIcon size={14} className="mr-2" />
+          <Trans>Dark</Trans>
+          <CheckIcon size={14} className={cn('ml-auto', theme !== 'dark' && 'hidden')} />
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('system')}>
+          <MonitorIcon size={14} className="mr-2" />
+          <Trans>System</Trans>
+          <CheckIcon size={14} className={cn('ml-auto', theme !== 'system' && 'hidden')} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

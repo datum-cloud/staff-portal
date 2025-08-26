@@ -218,7 +218,7 @@ export default function Page() {
           <CardContent>
             {data?.status?.state === 'Inactive' ? (
               <>
-                <div className="flex items-center justify-between rounded-lg border border-green-500 bg-green-50 p-4">
+                <div className="flex items-center justify-between rounded-lg border border-green-500 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20">
                   <div>
                     <Title
                       level={6}
@@ -278,7 +278,7 @@ export default function Page() {
                 </div>
               </>
             ) : (
-              <div className="flex items-center justify-between rounded-lg border border-yellow-500 bg-yellow-50 p-4">
+              <div className="flex items-center justify-between rounded-lg border border-yellow-500 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
                 <div>
                   <Title
                     level={6}

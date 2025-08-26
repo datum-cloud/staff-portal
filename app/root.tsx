@@ -2,6 +2,7 @@ import type { Route } from './+types/root';
 import AuthError from '@/components/error/auth';
 import GenericError from '@/components/error/generic';
 import { ClientHintCheck } from '@/components/misc/client-hints';
+import { ThemeProvider, useTheme, ThemeScript } from '@/modules/datum-themes';
 import { loadCatalog, useLocale } from '@/modules/i18n/lingui';
 import { linguiServer } from '@/modules/i18n/lingui.server';
 import MarkerIoEmbed from '@/modules/markerio';
@@ -11,7 +12,7 @@ import { Toaster } from '@/modules/toast';
 import { useNonce } from '@/providers/nonce.provider';
 import styles from '@/styles/root.css?url';
 import { env } from '@/utils/config/env.server';
-import { localeCookie, themeSessionResolver } from '@/utils/cookies';
+import { localeCookie } from '@/utils/cookies';
 import { i18n } from '@lingui/core';
 import { QueryClientProvider } from '@tanstack/react-query';
 import clsx from 'clsx';
@@ -30,19 +31,16 @@ import {
   useRouteError,
   useRouteLoaderData,
 } from 'react-router';
-import { PreventFlashOnWrongTheme, Theme, ThemeProvider, useTheme } from 'remix-themes';
 
 export const links: Route.LinksFunction = () => [{ rel: 'stylesheet', href: styles, as: 'style' }];
 
 export async function loader({ request }: Route.LoaderArgs) {
   const locale = await linguiServer.getLocale(request);
   const cookie = await localeCookie.serialize(locale);
-  const { getTheme } = await themeSessionResolver(request);
 
   return data(
     {
       locale,
-      theme: getTheme(),
       ENV: {
         DEBUG: env.isDebug,
       },
@@ -53,7 +51,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 function App() {
   const data = useLoaderData<typeof loader>();
-  const [theme] = useTheme();
+  const { resolvedTheme } = useTheme();
   const nonce = useNonce();
   const locale = useLocale();
 
@@ -66,13 +64,13 @@ function App() {
   }, [locale]);
 
   return (
-    <html lang={lang} className={clsx(theme)}>
+    <html lang={lang} className={clsx(resolvedTheme)} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <ClientHintCheck nonce={nonce} />
+        <ThemeScript nonce={nonce} defaultTheme="light" />
         <Meta />
-        <PreventFlashOnWrongTheme ssrTheme={Boolean(data?.theme)} />
         <Links />
       </head>
       <body className="bg-background theme-alpha overscroll-none font-sans antialiased">
@@ -80,7 +78,7 @@ function App() {
 
         <Toaster
           richColors
-          theme={theme as 'light' | 'dark' | 'system'}
+          theme={resolvedTheme as 'light' | 'dark'}
           className="toaster group"
           style={
             {
@@ -107,13 +105,7 @@ function App() {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const data = useRouteLoaderData<typeof loader>('root');
-
-  return (
-    <ThemeProvider specifiedTheme={data?.theme ?? Theme.LIGHT} themeAction="/action/set-theme">
-      {children}
-    </ThemeProvider>
-  );
+  return <ThemeProvider defaultTheme="light">{children}</ThemeProvider>;
 }
 
 export default function AppWithProviders() {
@@ -142,13 +134,14 @@ export default function AppWithProviders() {
 
 function ErrorLayout({ children }: { children: React.ReactNode }) {
   const nonce = useNonce();
-  const [theme] = useTheme();
+  const { resolvedTheme } = useTheme();
 
   return (
-    <html lang="en" className={clsx(theme)}>
+    <html lang="en" className={clsx(resolvedTheme)} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <ThemeScript nonce={nonce} defaultTheme="light" />
         <Meta />
         <Links />
       </head>

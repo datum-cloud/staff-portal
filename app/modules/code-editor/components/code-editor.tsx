@@ -1,9 +1,9 @@
 import { CodeEditorProps } from './code-editor.types';
+import { useTheme } from '@/modules/datum-themes';
 import { cn } from '@/modules/shadcn/lib/utils';
 import Editor, { Monaco } from '@monaco-editor/react';
 import { editor } from 'monaco-editor';
 import { useRef } from 'react';
-import { useTheme, Theme } from 'remix-themes';
 
 export const CodeEditor = ({
   value = '',
@@ -16,7 +16,7 @@ export const CodeEditor = ({
   readOnly = false,
   minHeight = '200px',
 }: CodeEditorProps) => {
-  const [theme] = useTheme();
+  const { resolvedTheme } = useTheme();
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
 
   // Handle editor mounting
@@ -67,7 +67,7 @@ export const CodeEditor = ({
         <Editor
           value={value}
           language={language}
-          theme={theme === Theme.DARK ? 'vs-dark' : 'light'}
+          theme={resolvedTheme === 'dark' ? 'vs-dark' : 'light'}
           options={{
             readOnly,
             automaticLayout: true,

@@ -1,11 +1,11 @@
 import { LogoProps } from './logo';
 import { logoStyles } from './logo.styles';
+import { useTheme } from '@/modules/datum-themes';
 import { cn } from '@/modules/shadcn/lib/utils';
-import { useTheme, Theme } from 'remix-themes';
 
 export const LogoText = ({ width = 385, className }: LogoProps) => {
-  const [theme] = useTheme();
-  const { base, text } = logoStyles({ theme: theme ?? Theme.LIGHT });
+  const { resolvedTheme } = useTheme();
+  const { base, text } = logoStyles({ theme: (resolvedTheme as 'light' | 'dark') ?? 'light' });
 
   return (
     <svg
@@ -14,7 +14,8 @@ export const LogoText = ({ width = 385, className }: LogoProps) => {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 340 148"
       fill="none"
-      width={width}>
+      width={width}
+      suppressHydrationWarning>
       <path
         className={text()}
         d="m322.5 53.2q9.3 0 14.1 5.8 4.9 5.7 4.9 15.7v42.1h-14.8v-38.6q0-12.2-9.4-12.2-5.4 0-9 5.1-3.6 5-3.6 12.9v32.8h-14.8v-38.6q0-5.9-2.3-9.1-2.4-3.1-7.1-3.1-5.4 0-9 5.1-3.6 5-3.6 12.8v32.9h-14.9v-62.3h14.7v11.3h0.3q1.7-5.2 6.3-8.9 4.7-3.7 11.6-3.7 7 0 11.4 3.4 4.5 3.4 6.2 9.7h0.4q1.9-5.6 6.6-9.3 4.8-3.8 12-3.8z"

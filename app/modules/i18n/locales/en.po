@@ -124,7 +124,7 @@ msgstr "Customers"
 msgid "Danger Zone"
 msgstr "Danger Zone"
 
-#: app/components/theme-switcher/index.tsx:40
+#: app/components/theme-switcher/index.tsx:42
 msgid "Dark"
 msgstr "Dark"
 
@@ -293,7 +293,7 @@ msgstr "Joined"
 msgid "Last 10 new users who joined Datum"
 msgstr "Last 10 new users who joined Datum"
 
-#: app/components/theme-switcher/index.tsx:36
+#: app/components/theme-switcher/index.tsx:37
 msgid "Light"
 msgstr "Light"
 
@@ -491,6 +491,10 @@ msgstr "Start Time"
 #: app/features/activity/components/activity-list.tsx:115
 msgid "Status"
 msgstr "Status"
+
+#: app/components/theme-switcher/index.tsx:47
+msgid "System"
+msgstr "System"
 
 #: app/routes/user/detail/index.tsx:292
 msgid "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
