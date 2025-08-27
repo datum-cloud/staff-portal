@@ -1,6 +1,6 @@
-import { Button } from './button-enhanced';
 import DialogConfirm from '@/components/dialog/dialog-confirm';
-import { Tooltip } from '@/components/tooltip';
+import { Button } from '@/modules/datum-ui/button';
+import { Tooltip } from '@datum-ui/tooltip';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Trash2Icon } from 'lucide-react';
 import { useState } from 'react';

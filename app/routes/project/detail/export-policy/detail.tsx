@@ -2,9 +2,7 @@ import type { Route } from './+types/detail';
 import { BadgeCondition, BadgeState } from '@/components/badge';
 import { DateFormatter } from '@/components/date';
 import { DisplayText } from '@/components/display';
-import { Text, Title } from '@/components/typography';
 import { authenticator } from '@/modules/auth';
-import { CodeEditor } from '@/modules/code-editor';
 import { Button } from '@/modules/shadcn/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/modules/shadcn/ui/popover';
@@ -19,6 +17,8 @@ import {
 import { projectExportPolicyDetailQuery } from '@/resources/request/server';
 import { ExportPolicy } from '@/resources/schemas';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
+import { CodeEditor } from '@datum-ui/code-editor';
+import { Text, Title } from '@datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { CodeIcon, SettingsIcon } from 'lucide-react';
 import { useLoaderData } from 'react-router';

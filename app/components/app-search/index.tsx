@@ -1,7 +1,6 @@
 'use client';
 
 import { SearchResultGroup } from './search-result-group';
-import { Text } from '@/components/typography';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Button } from '@/modules/shadcn/ui/button';
 import {
@@ -15,6 +14,7 @@ import {
 import { orgListQuery, projectListQuery, userListQuery } from '@/resources/request/client';
 import { Organization, Project, User } from '@/resources/schemas';
 import { routes } from '@/utils/config/routes.config';
+import { Text } from '@datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
 import { useQuery } from '@tanstack/react-query';
 import { Activity, Building2, FolderOpen, Home, Loader2, SearchIcon, Users } from 'lucide-react';

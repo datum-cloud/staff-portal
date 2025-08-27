@@ -1,4 +1,3 @@
-import { Button } from '@/components/button';
 import {
   Card,
   CardContent,
@@ -6,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/modules/shadcn/ui/card';
+import { Button } from '@datum-ui/button';
 import { Download, Heart, Plus, Settings, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 

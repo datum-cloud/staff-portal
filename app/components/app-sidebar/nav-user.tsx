@@ -17,8 +17,9 @@ import {
   useSidebar,
 } from '@/modules/shadcn/ui/sidebar';
 import { useApp } from '@/providers/app.provider';
+import { routes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
-import { BadgeCheck, Bell, ChevronsUpDown, LogOut } from 'lucide-react';
+import { BadgeCheck, Bell, ChevronsUpDown, LogOut, User } from 'lucide-react';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -45,9 +46,9 @@ export function NavUser() {
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
-              <Avatar className="h-8 w-8 rounded-lg">
+              <Avatar className="h-8 w-8 rounded-md">
                 <AvatarImage src={user?.avatar} alt={user?.name} />
-                <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
+                <AvatarFallback className="rounded-md">{initials}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user?.name}</span>
@@ -57,15 +58,15 @@ export function NavUser() {
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-md"
             side={isMobile ? 'bottom' : 'right'}
             align="end"
             sideOffset={4}>
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
+                <Avatar className="h-8 w-8 rounded-md">
                   <AvatarImage src={user?.avatar} alt={user?.name} />
-                  <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
+                  <AvatarFallback className="rounded-md">{initials}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user?.name}</span>
@@ -75,8 +76,8 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
+              <DropdownMenuItem onClick={() => navigate(routes.account())}>
+                <User />
                 {t`Account`}
               </DropdownMenuItem>
               <DropdownMenuItem>

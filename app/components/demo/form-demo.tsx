@@ -1,7 +1,7 @@
-import { Button } from '@/components/button';
-import { Form } from '@/components/form';
-import { Title, Text } from '@/components/typography';
-import { toast } from '@/modules/toast';
+import { Button } from '@datum-ui/button';
+import { Form } from '@datum-ui/form';
+import { toast } from '@datum-ui/toast';
+import { Title, Text } from '@datum-ui/typography';
 import { z } from 'zod';
 
 const testSchema = z.object({

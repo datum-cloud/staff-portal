@@ -4,6 +4,5 @@
 @custom-variant dark (&:is([data-theme="dark"] *));
 
 @import '../modules/shadcn/style.css';
-@import '../modules/nprogress/style.css';
-@import '../modules/toast/style.css';
+@import '../modules/datum-ui/datum-ui.css';
 @import './theme-alpha.css';

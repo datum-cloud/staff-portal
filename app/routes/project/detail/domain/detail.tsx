@@ -2,7 +2,6 @@ import type { Route } from './+types/detail';
 import { BadgeCondition } from '@/components/badge';
 import { DateFormatter } from '@/components/date';
 import { DisplayText } from '@/components/display';
-import { Text, Title } from '@/components/typography';
 import { DomainStatusProbe } from '@/features/domain';
 import { authenticator } from '@/modules/auth';
 import { Card, CardContent } from '@/modules/shadcn/ui/card';
@@ -11,6 +10,7 @@ import { projectDomainDetailQuery } from '@/resources/request/server';
 import { Domain } from '@/resources/schemas';
 import { useProjectDetailData } from '@/routes/project/shared';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
+import { Text, Title } from '@datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { useLoaderData } from 'react-router';
 

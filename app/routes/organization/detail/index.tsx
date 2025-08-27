@@ -4,13 +4,13 @@ import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
 import { ButtonDeleteAction } from '@/components/button';
 import { DateFormatter } from '@/components/date';
-import { Text, Title } from '@/components/typography';
 import { Card, CardContent } from '@/modules/shadcn/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
-import { toast } from '@/modules/toast';
 import { orgDeleteMutation } from '@/resources/request/client';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { toast } from '@datum-ui/toast';
+import { Text, Title } from '@datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useNavigate } from 'react-router';
 
