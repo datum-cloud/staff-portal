@@ -2,17 +2,17 @@ import type { Route } from './+types/root';
 import AuthError from '@/components/error/auth';
 import GenericError from '@/components/error/generic';
 import { ClientHintCheck } from '@/components/misc/client-hints';
-import { ThemeProvider, useTheme, ThemeScript } from '@/modules/datum-themes';
+import { ThemeProvider, ThemeScript, useTheme } from '@/modules/datum-themes';
 import { loadCatalog, useLocale } from '@/modules/i18n/lingui';
 import { linguiServer } from '@/modules/i18n/lingui.server';
 import MarkerIoEmbed from '@/modules/markerio';
-import { configureProgress, startProgress, stopProgress } from '@/modules/nprogress';
 import { queryClient } from '@/modules/tanstack/query';
-import { Toaster } from '@/modules/toast';
 import { useNonce } from '@/providers/nonce.provider';
 import styles from '@/styles/root.css?url';
 import { env } from '@/utils/config/env.server';
 import { localeCookie } from '@/utils/cookies';
+import { configureProgress, startProgress, stopProgress } from '@datum-ui/nprogress';
+import { Toaster } from '@datum-ui/toast';
 import { i18n } from '@lingui/core';
 import { QueryClientProvider } from '@tanstack/react-query';
 import clsx from 'clsx';
@@ -29,7 +29,6 @@ import {
   useLoaderData,
   useNavigation,
   useRouteError,
-  useRouteLoaderData,
 } from 'react-router';
 
 export const links: Route.LinksFunction = () => [{ rel: 'stylesheet', href: styles, as: 'style' }];

@@ -1,11 +1,11 @@
-import { Button } from '@/components/button';
 import { DateFormatter } from '@/components/date';
 import { DisplayName } from '@/components/display';
-import { Text, Title } from '@/components/typography';
 import { Avatar, AvatarFallback } from '@/modules/shadcn/ui/avatar';
 import { Card, CardContent, CardDescription, CardHeader } from '@/modules/shadcn/ui/card';
 import { activityListQuery } from '@/resources/request/client';
 import { userRoutes } from '@/utils/config/routes.config';
+import { Button } from '@datum-ui/button';
+import { Text, Title } from '@datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { useQuery } from '@tanstack/react-query';
 import { getUnixTime, subDays } from 'date-fns';
@@ -128,7 +128,7 @@ export function RecentUsersWidget() {
         ) : recentUsers.length > 0 ? (
           <div className="space-y-2">
             {recentUsers.map((log) => (
-              <UserItem key={log.user?.username} log={log} />
+              <UserItem key={log.auditId} log={log} />
             ))}
           </div>
         ) : (

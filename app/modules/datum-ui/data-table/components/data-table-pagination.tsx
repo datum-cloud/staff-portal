@@ -1,4 +1,3 @@
-import { useDataTableInstance } from '@/modules/data-table/providers/data-table.provider';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Button } from '@/modules/shadcn/ui/button';
 import {
@@ -8,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/modules/shadcn/ui/select';
+import { useDataTableInstance } from '@datum-ui/data-table/providers/data-table.provider';
 import type { Table } from '@tanstack/react-table';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 

@@ -41,6 +41,7 @@ export const projectRoutes = {
 export const routes = {
   dashboard: () => '/',
   activity: () => '/activity',
+  account: () => '/account',
   login: () => '/login',
   logout: () => '/logout',
   authCallback: () => '/auth/callback',

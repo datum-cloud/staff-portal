@@ -1,13 +1,5 @@
 import { BadgeState } from '@/components/badge';
 import { DateFormatter, DateRangePicker } from '@/components/date';
-import { Tooltip } from '@/components/tooltip';
-import { Text } from '@/components/typography';
-import {
-  DataTable,
-  DataTableProvider,
-  filterConfigs,
-  useDataTableQuery,
-} from '@/modules/data-table';
 import { ActivityLogEntry } from '@/modules/loki';
 import { Button } from '@/modules/shadcn/ui/button';
 import {
@@ -22,6 +14,14 @@ import {
 import { Input } from '@/modules/shadcn/ui/input';
 import { activityListQuery } from '@/resources/request/client';
 import { ActivityListResponse, ActivityQueryParams } from '@/resources/schemas';
+import {
+  DataTable,
+  DataTableProvider,
+  filterConfigs,
+  useDataTableQuery,
+} from '@datum-ui/data-table';
+import { Tooltip } from '@datum-ui/tooltip';
+import { Text } from '@datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 import {

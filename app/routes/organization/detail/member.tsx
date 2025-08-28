@@ -3,11 +3,11 @@ import type { Route } from './+types/member';
 import { BadgeState } from '@/components/badge';
 import { DateFormatter } from '@/components/date';
 import { DisplayName } from '@/components/display';
-import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/data-table';
 import { orgMemberListQuery } from '@/resources/request/client';
 import { Member, MemberListResponse } from '@/resources/schemas';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 

@@ -1,7 +1,7 @@
 import ButtonEnhancedDemo from '@/components/demo/button-enhanced-demo';
 import { FormDemo } from '@/components/demo/form-demo';
-import { DataTable, DataTableProvider } from '@/modules/data-table';
 import { logger } from '@/utils/logger';
+import { DataTable, DataTableProvider } from '@datum-ui/data-table';
 import { createColumnHelper } from '@tanstack/react-table';
 import { EditIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';

@@ -1,6 +1,5 @@
 'use client';
 
-import { Tooltip } from '@/components/tooltip';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/modules/shadcn/ui/avatar';
 import { Button } from '@/modules/shadcn/ui/button';
@@ -22,6 +21,7 @@ import {
   DialogTitle,
 } from '@/modules/shadcn/ui/dialog';
 import { Input } from '@/modules/shadcn/ui/input';
+import { Tooltip } from '@datum-ui/tooltip';
 import { ArrowUpIcon, CheckIcon, PlusIcon } from 'lucide-react';
 import * as React from 'react';
 

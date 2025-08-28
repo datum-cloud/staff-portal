@@ -1,6 +1,6 @@
-import { Tooltip } from '@/components/tooltip';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Badge } from '@/modules/shadcn/ui/badge';
+import { Tooltip } from '@datum-ui/tooltip';
 import { Loader2 } from 'lucide-react';
 import * as React from 'react';
 

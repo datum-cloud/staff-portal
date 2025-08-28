@@ -1,6 +1,6 @@
-import { Button } from './button-enhanced';
-import { Tooltip } from '@/components/tooltip';
-import { toast } from '@/modules/toast';
+import { Button } from '@/modules/datum-ui/button';
+import { toast } from '@datum-ui/toast';
+import { Tooltip } from '@datum-ui/tooltip';
 import { Copy } from 'lucide-react';
 
 interface ButtonCopyProps {

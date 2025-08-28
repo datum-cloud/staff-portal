@@ -1,4 +1,4 @@
-import { Button } from './button-enhanced';
+import { Button } from '@/modules/datum-ui/button';
 import { Loader2Icon } from 'lucide-react';
 import { ReactNode } from 'react';
 

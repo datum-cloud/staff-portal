@@ -1,8 +1,8 @@
 import type { Route } from './+types/not-found';
-import { Button } from '@/components/button';
 import { LogoIcon } from '@/components/logo/logo-icon';
 import { Card, CardContent } from '@/modules/shadcn/ui/card';
 import { createRequestLogger, logger } from '@/utils/logger';
+import { Button } from '@datum-ui/button';
 import { HomeIcon, RefreshCcwIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';

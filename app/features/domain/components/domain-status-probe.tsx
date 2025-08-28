@@ -1,8 +1,8 @@
 import BadgeState from '@/components/badge/badge-state';
-import { Text } from '@/components/typography';
 import { useDomainStatus } from '@/features/domain/hooks/useDomainStatus';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/modules/shadcn/ui/hover-card';
+import { Text } from '@datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
 
 // Map condition type to friendly title

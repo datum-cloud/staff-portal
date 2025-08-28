@@ -57,6 +57,9 @@ export default [
     // Activity
     route('activity', 'routes/activity.tsx'),
 
+    // Account
+    route('account', 'routes/account.tsx'),
+
     route('demo', 'routes/demo.tsx'),
   ]),
 

@@ -1,5 +1,5 @@
-import { toast } from '@/modules/toast';
 import { logger } from '@/utils/logger';
+import { toast } from '@datum-ui/toast';
 import Axios, {
   AxiosError,
   AxiosRequestConfig,

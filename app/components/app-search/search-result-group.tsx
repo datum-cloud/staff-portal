@@ -1,6 +1,6 @@
-import { Text } from '@/components/typography';
 import { CommandGroup, CommandItem } from '@/modules/shadcn/ui/command';
 import { Organization, Project, User } from '@/resources/schemas';
+import { Text } from '@datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
 import { LucideIcon } from 'lucide-react';
 

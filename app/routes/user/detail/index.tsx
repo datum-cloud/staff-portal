@@ -1,11 +1,9 @@
 import { getUserDetailMetadata, useUserDetailData } from '../shared';
 import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
-import { Button, ButtonCopy } from '@/components/button';
+import { ButtonCopy } from '@/components/button';
 import { DateFormatter } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
-import { Form } from '@/components/form';
-import { Text, Title } from '@/components/typography';
 import {
   Card,
   CardContent,
@@ -14,7 +12,6 @@ import {
   CardTitle,
 } from '@/modules/shadcn/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
-import { toast } from '@/modules/toast';
 import { useApp } from '@/providers/app.provider';
 import {
   useUserDeactivationQuery,
@@ -24,6 +21,10 @@ import {
 } from '@/resources/request/client';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { Button } from '@datum-ui/button';
+import { Form } from '@datum-ui/form';
+import { toast } from '@datum-ui/toast';
+import { Text, Title } from '@datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Shield, ShieldCheckIcon, ShieldXIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';

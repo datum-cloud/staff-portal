@@ -1,5 +1,3 @@
-import { Button } from '@/components/button';
-import { Form } from '@/components/form';
 import {
   Dialog,
   DialogContent,
@@ -8,6 +6,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/modules/shadcn/ui/dialog';
+import { Button } from '@datum-ui/button';
+import { Form } from '@datum-ui/form';
 import { ReactNode, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { ZodSchema, z } from 'zod';
