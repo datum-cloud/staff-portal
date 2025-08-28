@@ -6,7 +6,7 @@ A comprehensive, type-safe form library built with React Hook Form, Zod validati
 
 - 🔒 **Type-safe**: Full TypeScript support with Zod schema validation
 - 🎯 **Compound Components**: Intuitive API with nested component structure
-- ✅ **Built-in Validation**: Zod schema validation with custom error messages
+- ✅ **Dual Validation**: Support for both Zod schema validation and React Hook Form rules validation
 - 🎨 **Consistent Styling**: Built on shadcn/ui for consistent design
 - ♿ **Accessible**: ARIA attributes and keyboard navigation support
 - 🔄 **Flexible**: Support for render props and direct children patterns
@@ -22,7 +22,11 @@ import { Form } from '@/components/form';
 
 ## Basic Usage
 
-### Simple Form Example
+The Form component supports two validation modes:
+
+### 1. Schema-based Validation (Recommended)
+
+Use Zod schemas for type-safe validation with automatic TypeScript inference.
 
 ```tsx
 import { Form } from '@/components/form';
@@ -65,28 +69,103 @@ function UserForm() {
 }
 ```
 
+### 2. Rules-based Validation
+
+Use React Hook Form's native validation rules without a schema.
+
+```tsx
+import { Form } from '@/components/form';
+
+function UserForm() {
+  const handleSubmit = (values: any) => {
+    console.log('Form submitted:', values);
+  };
+
+  return (
+    <Form
+      defaultValues={{
+        name: '',
+        email: '',
+        age: 18,
+      }}
+      onSubmit={handleSubmit}>
+      <Form.Input
+        field="name"
+        label="Full Name"
+        placeholder="Enter your full name"
+        required
+        rules={{
+          required: 'Name is required',
+          minLength: { value: 2, message: 'Name must be at least 2 characters' },
+          pattern: {
+            value: /^[a-zA-Z\s]+$/,
+            message: 'Name can only contain letters and spaces',
+          },
+        }}
+      />
+      <Form.Input
+        field="email"
+        label="Email Address"
+        type="email"
+        placeholder="Enter your email"
+        required
+        rules={{
+          required: 'Email is required',
+          pattern: {
+            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+            message: 'Invalid email address',
+          },
+        }}
+      />
+      <Form.Input
+        field="age"
+        label="Age"
+        type="number"
+        placeholder="Enter your age"
+        required
+        rules={{
+          required: 'Age is required',
+          min: { value: 18, message: 'Must be at least 18 years old' },
+          max: { value: 100, message: 'Invalid age' },
+        }}
+      />
+      <button type="submit">Submit</button>
+    </Form>
+  );
+}
+```
+
 ## Available Components
 
 ### Form (Root Component)
 
-The main form wrapper that provides context and handles form submission.
+The main form wrapper that provides context and handles form submission. Supports both schema-based and rules-based validation.
 
 #### Props
 
-| Prop                        | Type                                                           | Default        | Description                                  |
-| --------------------------- | -------------------------------------------------------------- | -------------- | -------------------------------------------- |
-| `schema`                    | `ZodSchema`                                                    | -              | Zod schema for validation and type inference |
-| `defaultValues`             | `z.infer<TSchema>`                                             | -              | Initial form values                          |
-| `onSubmit`                  | `(values: z.infer<TSchema>) => void`                           | -              | Submit handler function                      |
-| `children`                  | `ReactNode \| (form: UseFormReturn) => ReactNode`              | -              | Form content or render prop                  |
-| `className`                 | `string`                                                       | -              | CSS classes for the form element             |
-| `mode`                      | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'` | `'onSubmit'`   | When validation occurs                       |
-| `reValidateMode`            | `'onChange' \| 'onBlur' \| 'onSubmit'`                         | `'onChange'`   | When re-validation occurs                    |
-| `shouldFocusError`          | `boolean`                                                      | `true`         | Auto-focus first error field                 |
-| `shouldUseNativeValidation` | `boolean`                                                      | `false`        | Use browser HTML5 validation                 |
-| `shouldUnregister`          | `boolean`                                                      | `false`        | Remove fields on unmount                     |
-| `criteriaMode`              | `'firstError' \| 'all'`                                        | `'firstError'` | Error display mode                           |
-| `delayError`                | `number`                                                       | -              | Delay error display (ms)                     |
+| Prop                        | Type                                                           | Default        | Description                                                |
+| --------------------------- | -------------------------------------------------------------- | -------------- | ---------------------------------------------------------- |
+| `schema`                    | `ZodSchema` (optional)                                         | -              | Zod schema for validation and type inference (schema mode) |
+| `defaultValues`             | `z.infer<TSchema> \| Record<string, any>`                      | -              | Initial form values                                        |
+| `onSubmit`                  | `(values: z.infer<TSchema> \| any) => void`                    | -              | Submit handler function                                    |
+| `children`                  | `ReactNode \| (form: UseFormReturn) => ReactNode`              | -              | Form content or render prop                                |
+| `className`                 | `string`                                                       | -              | CSS classes for the form element                           |
+| `mode`                      | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'` | `'onSubmit'`   | When validation occurs                                     |
+| `reValidateMode`            | `'onChange' \| 'onBlur' \| 'onSubmit'`                         | `'onChange'`   | When re-validation occurs                                  |
+| `shouldFocusError`          | `boolean`                                                      | `true`         | Auto-focus first error field                               |
+| `shouldUseNativeValidation` | `boolean`                                                      | `false`        | Use browser HTML5 validation                               |
+| `shouldUnregister`          | `boolean`                                                      | `false`        | Remove fields on unmount                                   |
+| `criteriaMode`              | `'firstError' \| 'all'`                                        | `'firstError'` | Error display mode                                         |
+| `delayError`                | `number`                                                       | -              | Delay error display (ms)                                   |
+
+#### Validation Modes
+
+The Form component automatically detects which validation mode to use:
+
+1. **Schema Mode**: When a `schema` prop is provided, the form uses Zod validation
+2. **Rules Mode**: When no `schema` is provided, the form uses React Hook Form's native validation rules
+
+**Note**: In schema mode, the `rules` prop on individual fields is redundant since Zod handles all validation. In rules mode, the `rules` prop is required for validation.
 
 ### Form.Input
 

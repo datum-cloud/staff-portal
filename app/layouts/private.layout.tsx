@@ -5,7 +5,7 @@ import AppTopbar from '@/components/app-topbar';
 import { authenticator } from '@/modules/auth';
 import { SidebarInset, SidebarProvider } from '@/modules/shadcn/ui/sidebar';
 import { AppProvider } from '@/providers/app.provider';
-import { authUserQuery } from '@/resources/request/server';
+import { authUserQuery, userDetailQuery } from '@/resources/request/server';
 import { metaObject } from '@/utils/helpers';
 import { data, Outlet, redirect, useLoaderData } from 'react-router';
 
@@ -25,7 +25,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   }
 
   const session = await authenticator.getSession(request);
-  const user = await authUserQuery(session?.accessToken ?? '');
+  const user = await userDetailQuery(session?.accessToken ?? '', session?.sub ?? '');
 
   return data({ user });
 }

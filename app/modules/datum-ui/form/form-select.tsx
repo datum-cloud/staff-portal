@@ -29,6 +29,10 @@ interface FormSelectProps extends Omit<ComponentProps<typeof Select>, 'name'> {
   hideError?: boolean;
   options: SelectOption[];
   placeholder?: string;
+  rules?: {
+    required?: boolean | string;
+    validate?: (value: any) => boolean | string | Promise<boolean | string>;
+  };
 }
 
 export function FormSelect({
@@ -39,6 +43,7 @@ export function FormSelect({
   hideError = false,
   options,
   placeholder = 'Select an option',
+  rules,
   ...props
 }: FormSelectProps) {
   const { form } = useFormContext();
@@ -47,7 +52,11 @@ export function FormSelect({
     <FormField
       control={form.control}
       name={field}
-      render={({ field: fieldProps }) => (
+      rules={{
+        ...rules,
+        ...(required && { required: required === true ? 'This field is required' : required }),
+      }}
+      render={({ field: fieldProps, fieldState: { error } }) => (
         <FormItem>
           {label && (
             <FormLabel
@@ -58,7 +67,7 @@ export function FormSelect({
           {description && <FormDescription>{description}</FormDescription>}
           <FormControl>
             <Select onValueChange={fieldProps.onChange} value={fieldProps.value} {...props}>
-              <SelectTrigger>
+              <SelectTrigger aria-invalid={!!error}>
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
               <SelectContent>

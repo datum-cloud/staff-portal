@@ -5,6 +5,9 @@ import {
   UserDeactivateSchema,
   UserDeactivationResponseSchema,
   UserListResponseSchema,
+  UserResponseSchema,
+  UserUpdate,
+  UserUpdateSchema,
 } from '@/resources/schemas';
 import { useQuery } from '@tanstack/react-query';
 
@@ -19,6 +22,23 @@ export const userListQuery = (params?: ListQueryParams) => {
     },
   })
     .output(UserListResponseSchema)
+    .execute();
+};
+
+export const userUpdateMutation = (userId: string, payload: UserUpdate) => {
+  return apiRequestClient({
+    method: 'PATCH',
+    url: `/apis/iam.miloapis.com/v1alpha1/users/${userId}`,
+    params: {
+      fieldManager: 'datum-staff-portal',
+    },
+    headers: {
+      'Content-Type': 'application/merge-patch+json',
+    },
+    data: payload,
+  })
+    .input(UserUpdateSchema)
+    .output(UserResponseSchema)
     .execute();
 };
 

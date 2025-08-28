@@ -35,6 +35,10 @@ interface FormRadioGroupProps {
   hideError?: boolean;
   children: ReactNode;
   className?: string;
+  rules?: {
+    required?: boolean | string;
+    validate?: (value: any) => boolean | string | Promise<boolean | string>;
+  };
 }
 
 export function FormRadioGroup({
@@ -45,6 +49,7 @@ export function FormRadioGroup({
   hideError = false,
   children,
   className,
+  rules,
 }: FormRadioGroupProps) {
   const { form } = useFormContext();
 
@@ -52,6 +57,10 @@ export function FormRadioGroup({
     <FormField
       control={form.control}
       name={field}
+      rules={{
+        ...rules,
+        ...(required && { required: required === true ? 'This field is required' : required }),
+      }}
       render={({ field: fieldProps, fieldState: { error } }) => {
         const value = fieldProps.value || '';
         const hasError = !!error;
