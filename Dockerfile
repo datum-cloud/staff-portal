@@ -36,6 +36,10 @@ RUN bun run build && \
 # ==========================================
 FROM base
 
+# Accept VERSION as build argument and set as environment variable
+ARG VERSION=dev
+ENV VERSION=${VERSION}
+
 # Copy only necessary files from build stage
 COPY --from=build /app/build /app/build
 COPY --from=build /app/public /app/public
