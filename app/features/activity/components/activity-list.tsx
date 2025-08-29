@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/modules/shadcn/ui/dropdown-menu';
 import { Input } from '@/modules/shadcn/ui/input';
+import { useApp } from '@/providers/app.provider';
 import { activityListQuery } from '@/resources/request/client';
 import { ActivityListResponse, ActivityQueryParams } from '@/resources/schemas';
 import {
@@ -25,22 +26,22 @@ import { Text } from '@datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 import {
+  endOfDay,
+  endOfMonth,
+  endOfWeek,
   formatDistanceToNowStrict,
   fromUnixTime,
   getUnixTime,
+  startOfDay,
+  startOfMonth,
+  startOfWeek,
   subDays,
   subHours,
   subMinutes,
-  startOfDay,
-  endOfDay,
-  startOfWeek,
-  endOfWeek,
-  startOfMonth,
-  endOfMonth,
 } from 'date-fns';
+import { fromZonedTime, toZonedTime } from 'date-fns-tz';
 import { AlertTriangle, CheckCircle, Info, XCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { DateRange } from 'react-day-picker';
 
 interface ActivityListProps {
   resourceType?: string;
@@ -210,7 +211,21 @@ export default function ActivityList({
   timeRangePlaceholder,
 }: ActivityListProps) {
   const { t } = useLingui();
+  const { settings } = useApp();
   const [searchInput, setSearchInput] = useState('');
+
+  // Helper functions for timezone conversion
+  const convertFromApiTimestamp = (timestamp: string) => {
+    const utcDate = fromUnixTime(parseInt(timestamp) / 1000000000);
+    const timeZone = settings?.timezone;
+    return timeZone && timeZone !== 'Etc/GMT' ? fromZonedTime(utcDate, timeZone) : utcDate;
+  };
+
+  const convertToApiTimestamp = (date: Date) => {
+    const timeZone = settings?.timezone;
+    const utcDate = timeZone && timeZone !== 'Etc/GMT' ? toZonedTime(date, timeZone) : date;
+    return getUnixTime(utcDate) * 1000000000;
+  };
 
   const tableState = useDataTableQuery<ActivityListResponse>({
     queryKeyPrefix,
@@ -292,10 +307,10 @@ export default function ActivityList({
               tableState.filters.start || tableState.filters.end
                 ? {
                     from: tableState.filters.start
-                      ? fromUnixTime(parseInt(tableState.filters.start) / 1000000000)
+                      ? convertFromApiTimestamp(tableState.filters.start)
                       : undefined,
                     to: tableState.filters.end
-                      ? fromUnixTime(parseInt(tableState.filters.end) / 1000000000)
+                      ? convertFromApiTimestamp(tableState.filters.end)
                       : undefined,
                   }
                 : undefined
@@ -303,8 +318,8 @@ export default function ActivityList({
             onValueChange={(range) => {
               if (range) {
                 const filters: Record<string, any> = {};
-                if (range.from) filters.start = getUnixTime(range.from) * 1000000000; // Convert to nanoseconds
-                if (range.to) filters.end = getUnixTime(range.to) * 1000000000; // Convert to nanoseconds
+                if (range.from) filters.start = convertToApiTimestamp(range.from);
+                if (range.to) filters.end = convertToApiTimestamp(range.to);
                 tableState.setFilters(filters);
               } else {
                 tableState.clearAllFilters();

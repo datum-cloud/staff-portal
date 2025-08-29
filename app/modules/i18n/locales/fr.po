@@ -39,7 +39,7 @@ msgstr ""
 msgid "Account Management"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:102
+#: app/features/activity/components/activity-list.tsx:103
 msgid "Action"
 msgstr ""
 
@@ -54,11 +54,11 @@ msgstr ""
 msgid "Activity"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:375
+#: app/features/activity/components/activity-list.tsx:390
 msgid "All read operations"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:372
+#: app/features/activity/components/activity-list.tsx:387
 msgid "All write operations"
 msgstr ""
 
@@ -94,7 +94,7 @@ msgstr ""
 msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:380
+#: app/features/activity/components/activity-list.tsx:395
 msgid "Clear"
 msgstr ""
 
@@ -103,7 +103,7 @@ msgstr ""
 msgid "Configuration"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:321
+#: app/features/activity/components/activity-list.tsx:336
 msgid "Create"
 msgstr ""
 
@@ -170,7 +170,7 @@ msgstr ""
 
 #: app/routes/user/detail/index.tsx:110
 #: app/routes/user/detail/index.tsx:328
-#: app/features/activity/components/activity-list.tsx:324
+#: app/features/activity/components/activity-list.tsx:339
 #: app/components/button/button-delete-action.tsx:42
 #: app/components/button/button-delete-action.tsx:49
 msgid "Delete"
@@ -250,16 +250,16 @@ msgstr ""
 msgid "Failed to load status"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:354
-#: app/features/activity/components/activity-list.tsx:359
+#: app/features/activity/components/activity-list.tsx:369
+#: app/features/activity/components/activity-list.tsx:374
 msgid "Filter by action"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:353
+#: app/features/activity/components/activity-list.tsx:368
 msgid "Filter by action ({selectedCount})"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:290
+#: app/features/activity/components/activity-list.tsx:305
 msgid "Filter by time range"
 msgstr ""
 
@@ -275,7 +275,7 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:318
+#: app/features/activity/components/activity-list.tsx:333
 msgid "Get"
 msgstr ""
 
@@ -314,7 +314,7 @@ msgstr ""
 msgid "Light"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:319
+#: app/features/activity/components/activity-list.tsx:334
 msgid "List"
 msgstr ""
 
@@ -341,7 +341,7 @@ msgstr ""
 msgid "Members"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:57
+#: app/features/activity/components/activity-list.tsx:58
 msgid "Message"
 msgstr ""
 
@@ -413,7 +413,7 @@ msgstr ""
 msgid "Overview"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:323
+#: app/features/activity/components/activity-list.tsx:338
 msgid "Patch"
 msgstr ""
 
@@ -488,7 +488,7 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:283
+#: app/features/activity/components/activity-list.tsx:298
 msgid "Search activity..."
 msgstr ""
 
@@ -508,7 +508,7 @@ msgstr ""
 msgid "Source"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:91
+#: app/features/activity/components/activity-list.tsx:92
 msgid "Source IP"
 msgstr ""
 
@@ -529,7 +529,7 @@ msgstr ""
 #: app/routes/project/detail/export-policy/detail.tsx:184
 #: app/routes/project/detail/domain/index.tsx:45
 #: app/routes/project/detail/domain/detail.tsx:85
-#: app/features/activity/components/activity-list.tsx:115
+#: app/features/activity/components/activity-list.tsx:116
 msgid "Status"
 msgstr ""
 
@@ -545,7 +545,7 @@ msgstr ""
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:106
+#: app/features/activity/components/activity-list.tsx:107
 msgid "Timestamp"
 msgstr ""
 
@@ -561,7 +561,7 @@ msgstr ""
 msgid "Type a command or search..."
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:322
+#: app/features/activity/components/activity-list.tsx:337
 msgid "Update"
 msgstr ""
 
@@ -603,6 +603,6 @@ msgstr ""
 msgid "View All"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:320
+#: app/features/activity/components/activity-list.tsx:335
 msgid "Watch"
 msgstr ""
