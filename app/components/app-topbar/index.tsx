@@ -1,5 +1,4 @@
 import AppSearch from '@/components/app-search';
-import ThemeSwitcher from '@/components/theme-switcher';
 import { Separator } from '@/modules/shadcn/ui/separator';
 import { SidebarTrigger } from '@/modules/shadcn/ui/sidebar';
 
@@ -9,9 +8,7 @@ const AppTopbar = () => {
       <SidebarTrigger className="-ml-1" />
       <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />
       <AppSearch />
-      <div className="ml-auto flex items-center space-x-4">
-        <ThemeSwitcher />
-      </div>
+      <div className="ml-auto flex items-center space-x-4" />
     </header>
   );
 };

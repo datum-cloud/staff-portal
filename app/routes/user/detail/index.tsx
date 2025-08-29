@@ -74,7 +74,7 @@ export default function Page() {
         },
         spec: {
           reason: formData.reason,
-          deactivatedBy: user?.sub ?? '',
+          deactivatedBy: user?.metadata?.name ?? '',
           description: '',
           userRef: {
             name: data.metadata.name,

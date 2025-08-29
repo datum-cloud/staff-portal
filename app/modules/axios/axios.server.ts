@@ -142,8 +142,9 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
       throw validationError.toResponse();
     }
     default: {
+      const data = error.response?.data as { message: string; reason: string };
       const httpError = new HttpError(
-        'An unexpected error occurred',
+        data?.message ?? 'An unexpected error occurred',
         error.response?.status,
         requestId
       );

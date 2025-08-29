@@ -1,12 +1,17 @@
-import { AuthUser } from '@/resources/schemas';
-import React, { createContext, ReactNode, useContext, useMemo, useState } from 'react';
+import { Theme, useTheme } from '@/modules/datum-themes';
+import { User } from '@/resources/schemas';
+import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 
 interface IContextProps {
-  user: AuthUser | null;
-  setUser: (user: AuthUser) => void;
+  user: User | null;
+  setUser: (user: User) => void;
   actions: ReactNode[];
   addActions: (children: ReactNode) => void;
   removeActions: (children: ReactNode) => void;
+  settings: {
+    theme: Theme;
+    timezone: string;
+  };
 }
 
 const AppContext = createContext<IContextProps>({
@@ -15,16 +20,21 @@ const AppContext = createContext<IContextProps>({
   actions: [],
   addActions: () => {},
   removeActions: () => {},
+  settings: {
+    theme: 'light',
+    timezone: 'Etc/GMT',
+  },
 });
 
 interface IProviderProps {
   children: ReactNode;
-  user?: AuthUser;
+  user?: User;
 }
 
 export const AppProvider: React.FC<IProviderProps> = ({ children, user }) => {
-  const [userState, setUserState] = useState<AuthUser | null>(user ?? null);
+  const [userState, setUserState] = useState<User | null>(user ?? null);
   const [actions, setActions] = useState<ReactNode[]>([]);
+  const { resolvedTheme, setTheme } = useTheme();
 
   const addActions = (nodes: ReactNode) => {
     setActions((prevActions) => [nodes, ...prevActions]);
@@ -41,9 +51,25 @@ export const AppProvider: React.FC<IProviderProps> = ({ children, user }) => {
       actions,
       addActions,
       removeActions,
+      settings: {
+        theme: (userState?.metadata.annotations?.['preferences/theme'] as Theme) ?? 'light',
+        timezone: userState?.metadata.annotations?.['preferences/timezone'] ?? 'Etc/GMT',
+      },
     }),
     [actions, userState]
   );
+
+  // Update theme when settings change
+  useEffect(() => {
+    setTheme(contextPayload.settings.theme);
+  }, [contextPayload.settings]);
+
+  // Update theme-color meta tag when theme changes
+  useEffect(() => {
+    const themeColor = resolvedTheme === 'dark' ? '#020817' : '#fff';
+    const metaThemeColor = document.querySelector("meta[name='theme-color']");
+    if (metaThemeColor) metaThemeColor.setAttribute('content', themeColor);
+  }, [resolvedTheme]);
 
   return <AppContext.Provider value={contextPayload}>{children}</AppContext.Provider>;
 };

@@ -1,4 +1,6 @@
+import { useApp } from '@/providers/app.provider';
 import { parseISO, isValid, format as formatDate } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz';
 
 type Props = {
   date: string | Date;
@@ -13,6 +15,7 @@ const DateFormatter = ({
   format = 'MMM dd, yyyy',
   fallback = 'Invalid Date',
 }: Props) => {
+  const { settings } = useApp();
   let parsedDate: Date;
 
   if (typeof date === 'string') {
@@ -31,6 +34,20 @@ const DateFormatter = ({
     } else {
       format = 'EEE, MMM dd yyyy, h:mm a';
     }
+  }
+
+  // When a timezone is provided in settings, format in that timezone and append GMT offset
+  const timeZone = settings?.timezone;
+
+  if (timeZone) {
+    // Format in the user's timezone
+    const formattedDate = formatInTimeZone(parsedDate, timeZone, format);
+
+    // Get the timezone offset for the suffix
+    const offset = formatInTimeZone(parsedDate, timeZone, 'xxx'); // Returns format like "+07:00" or "-05:00"
+    const tzSuffix = ` GMT${offset}`;
+
+    return <span>{`${formattedDate}${tzSuffix}`}</span>;
   }
 
   return <span>{formatDate(parsedDate, format)}</span>;

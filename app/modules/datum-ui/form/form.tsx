@@ -36,13 +36,17 @@ function createZodResolver(schema: any): Resolver<any> {
   };
 }
 
-type FormProps<TSchema extends ZodSchema> = {
-  // Schema & Type Inference
-  schema: TSchema; // The Zod schema that defines form structure and validation rules
-  defaultValues: z.infer<TSchema>; // Initial values for form fields (automatically typed from schema)
-  onSubmit: (values: z.infer<TSchema>) => void | Promise<void>; // Function called when form is submitted (receives validated data)
-  children?: ((form: UseFormReturn<z.infer<TSchema>>) => ReactNode) | ReactNode; // Render prop that receives the form instance or direct children
+// Type for form data when using schema
+type SchemaFormData<TSchema extends ZodSchema> = z.infer<TSchema>;
 
+// Type for form data when using rules (generic object)
+type RulesFormData = Record<string, any>;
+
+// Union type for form data
+type FormData = SchemaFormData<any> | RulesFormData;
+
+// Base form props that are common to both modes
+type BaseFormProps = {
   // Styling
   className?: string; // CSS classes for the form element
 
@@ -56,9 +60,29 @@ type FormProps<TSchema extends ZodSchema> = {
   shouldUnregister?: boolean; // Remove fields from form state when component unmounts
   criteriaMode?: 'firstError' | 'all'; // How many validation errors to show per field
   delayError?: number; // Delay showing error messages (in milliseconds)
+
+  // Children
+  children?: ((form: UseFormReturn<any>) => ReactNode) | ReactNode; // Render prop that receives the form instance or direct children
 };
 
-export function Form<TSchema extends ZodSchema>({
+// Form props when using schema
+type SchemaFormProps<TSchema extends ZodSchema> = BaseFormProps & {
+  schema: TSchema; // The Zod schema that defines form structure and validation rules
+  defaultValues: SchemaFormData<TSchema>; // Initial values for form fields (automatically typed from schema)
+  onSubmit: (values: SchemaFormData<TSchema>) => void | Promise<void>; // Function called when form is submitted (receives validated data)
+};
+
+// Form props when using rules (no schema)
+type RulesFormProps = BaseFormProps & {
+  schema?: never; // No schema allowed
+  defaultValues: RulesFormData; // Initial values for form fields
+  onSubmit: (values: RulesFormData) => void | Promise<void>; // Function called when form is submitted
+};
+
+// Union type for all form props
+type FormProps<TSchema extends ZodSchema = never> = SchemaFormProps<TSchema> | RulesFormProps;
+
+export function Form<TSchema extends ZodSchema = never>({
   schema,
   defaultValues,
   onSubmit,
@@ -71,9 +95,14 @@ export function Form<TSchema extends ZodSchema>({
   shouldUnregister = false,
   criteriaMode = 'firstError',
   delayError,
+  ...rest
 }: FormProps<TSchema>) {
-  const form = useForm<z.infer<TSchema>>({
-    resolver: createZodResolver(schema),
+  // Determine if we're using schema or rules-based validation
+  const isSchemaMode = schema !== undefined;
+
+  const form = useForm<any>({
+    // Use Zod resolver if schema is provided, otherwise use React Hook Form's native validation
+    resolver: isSchemaMode ? createZodResolver(schema!) : undefined,
     defaultValues,
     mode,
     reValidateMode,

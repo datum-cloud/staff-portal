@@ -221,6 +221,6 @@ const getSystemTheme = (e?: MediaQueryList | MediaQueryListEvent) => {
 };
 
 // Re-export types
-export type { Attribute, ThemeProviderProps, UseThemeProps } from './types';
+export type { Attribute, ThemeProviderProps, UseThemeProps, Theme } from './types';
 export { ThemeScript } from './theme-script';
 export { ClientOnly } from './client-only';
