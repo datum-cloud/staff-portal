@@ -1,4 +1,9 @@
 .theme-alpha {
+  /* Alliance No1 Font Family */
+  --font-sans:
+    'Alliance No1', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+
   --sidebar: #f0f0f2;
   --sidebar-foreground: #312847;
   --sidebar-primary: #63597b;
