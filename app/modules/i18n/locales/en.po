@@ -30,8 +30,8 @@ msgstr "# of Sinks"
 msgid "# of Sources"
 msgstr "# of Sources"
 
-#: app/routes/account.tsx:12
-#: app/components/app-sidebar/nav-user.tsx:81
+#: app/routes/account.tsx:13
+#: app/components/app-sidebar/nav-user.tsx:85
 msgid "Account"
 msgstr "Account"
 
@@ -39,7 +39,7 @@ msgstr "Account"
 msgid "Account Management"
 msgstr "Account Management"
 
-#: app/features/activity/components/activity-list.tsx:102
+#: app/features/activity/components/activity-list.tsx:103
 msgid "Action"
 msgstr "Action"
 
@@ -54,13 +54,17 @@ msgstr "Action"
 msgid "Activity"
 msgstr "Activity"
 
-#: app/features/activity/components/activity-list.tsx:375
+#: app/features/activity/components/activity-list.tsx:390
 msgid "All read operations"
 msgstr "All read operations"
 
-#: app/features/activity/components/activity-list.tsx:372
+#: app/features/activity/components/activity-list.tsx:387
 msgid "All write operations"
 msgstr "All write operations"
+
+#: app/features/preferences/components/preferences-form.tsx:125
+msgid "Apply"
+msgstr "Apply"
 
 #. placeholder {0}: data.metadata.annotations?.['kubernetes.io/display-name']
 #. placeholder {1}: data.metadata.name
@@ -86,7 +90,11 @@ msgstr "Are you sure you want to delete user \"{0} {1}\"? This action cannot be 
 msgid "Cancel"
 msgstr "Cancel"
 
-#: app/features/activity/components/activity-list.tsx:380
+#: app/features/preferences/components/preferences-form.tsx:94
+msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
+msgstr "Choose how the portal looks to you. Select a single theme, or sync with your system."
+
+#: app/features/activity/components/activity-list.tsx:395
 msgid "Clear"
 msgstr "Clear"
 
@@ -95,7 +103,7 @@ msgstr "Clear"
 msgid "Configuration"
 msgstr "Configuration"
 
-#: app/features/activity/components/activity-list.tsx:321
+#: app/features/activity/components/activity-list.tsx:336
 msgid "Create"
 msgstr "Create"
 
@@ -162,7 +170,7 @@ msgstr "Deactivation Reason:"
 
 #: app/routes/user/detail/index.tsx:110
 #: app/routes/user/detail/index.tsx:328
-#: app/features/activity/components/activity-list.tsx:324
+#: app/features/activity/components/activity-list.tsx:339
 #: app/components/button/button-delete-action.tsx:42
 #: app/components/button/button-delete-action.tsx:49
 msgid "Delete"
@@ -242,18 +250,22 @@ msgstr "Failed to delete user"
 msgid "Failed to load status"
 msgstr "Failed to load status"
 
-#: app/features/activity/components/activity-list.tsx:354
-#: app/features/activity/components/activity-list.tsx:359
+#: app/features/activity/components/activity-list.tsx:369
+#: app/features/activity/components/activity-list.tsx:374
 msgid "Filter by action"
 msgstr "Filter by action"
 
-#: app/features/activity/components/activity-list.tsx:353
+#: app/features/activity/components/activity-list.tsx:368
 msgid "Filter by action ({selectedCount})"
 msgstr "Filter by action ({selectedCount})"
 
-#: app/features/activity/components/activity-list.tsx:290
+#: app/features/activity/components/activity-list.tsx:305
 msgid "Filter by time range"
 msgstr "Filter by time range"
+
+#: app/features/profile/components/profile-form.tsx:15
+msgid "First name is required"
+msgstr "First name is required"
 
 #: app/routes/user/detail/index.tsx:161
 msgid "Full Name"
@@ -263,7 +275,7 @@ msgstr "Full Name"
 msgid "General"
 msgstr "General"
 
-#: app/features/activity/components/activity-list.tsx:318
+#: app/features/activity/components/activity-list.tsx:333
 msgid "Get"
 msgstr "Get"
 
@@ -294,11 +306,15 @@ msgstr "Joined"
 msgid "Last 10 new users who joined Datum"
 msgstr "Last 10 new users who joined Datum"
 
+#: app/features/profile/components/profile-form.tsx:16
+msgid "Last name is required"
+msgstr "Last name is required"
+
 #: app/components/theme-switcher/index.tsx:37
 msgid "Light"
 msgstr "Light"
 
-#: app/features/activity/components/activity-list.tsx:319
+#: app/features/activity/components/activity-list.tsx:334
 msgid "List"
 msgstr "List"
 
@@ -312,7 +328,7 @@ msgstr "Loading status..."
 msgid "Loading..."
 msgstr "Loading..."
 
-#: app/components/app-sidebar/nav-user.tsx:91
+#: app/components/app-sidebar/nav-user.tsx:95
 msgid "Log out"
 msgstr "Log out"
 
@@ -325,7 +341,7 @@ msgstr "Manage user access and account status"
 msgid "Members"
 msgstr "Members"
 
-#: app/features/activity/components/activity-list.tsx:57
+#: app/features/activity/components/activity-list.tsx:58
 msgid "Message"
 msgstr "Message"
 
@@ -369,7 +385,7 @@ msgstr "No results found."
 msgid "No users yet"
 msgstr "No users yet"
 
-#: app/components/app-sidebar/nav-user.tsx:85
+#: app/components/app-sidebar/nav-user.tsx:89
 msgid "Notifications"
 msgstr "Notifications"
 
@@ -397,7 +413,7 @@ msgstr "Organizations"
 msgid "Overview"
 msgstr "Overview"
 
-#: app/features/activity/components/activity-list.tsx:323
+#: app/features/activity/components/activity-list.tsx:338
 msgid "Patch"
 msgstr "Patch"
 
@@ -414,6 +430,22 @@ msgstr "Permanently delete this user and all associated data"
 #: app/routes/user/detail/index.tsx:121
 msgid "Please provide a reason for deactivating \"{0} {1}\"."
 msgstr "Please provide a reason for deactivating \"{0} {1}\"."
+
+#: app/features/preferences/components/preferences-form.tsx:72
+msgid "Portal Preferences"
+msgstr "Portal Preferences"
+
+#: app/features/preferences/components/preferences-form.tsx:62
+msgid "Preferences updated successfully"
+msgstr "Preferences updated successfully"
+
+#: app/features/profile/components/profile-form.tsx:23
+msgid "Profile Information"
+msgstr "Profile Information"
+
+#: app/features/profile/components/profile-form.tsx:46
+msgid "Profile updated successfully"
+msgstr "Profile updated successfully"
 
 #: app/routes/project/detail/index.tsx:30
 msgid "Project deleted successfully"
@@ -452,13 +484,21 @@ msgstr "Reactivate User"
 msgid "Reason for deactivation"
 msgstr "Reason for deactivation"
 
-#: app/features/activity/components/activity-list.tsx:283
+#: app/features/profile/components/profile-form.tsx:58
+msgid "Save"
+msgstr "Save"
+
+#: app/features/activity/components/activity-list.tsx:298
 msgid "Search activity..."
 msgstr "Search activity..."
 
 #: app/components/app-search/index.tsx:179
 msgid "Searching..."
 msgstr "Searching..."
+
+#: app/features/preferences/components/preferences-form.tsx:80
+msgid "Select timezone..."
+msgstr "Select timezone..."
 
 #: app/routes/project/detail/export-policy/detail.tsx:164
 msgid "Sinks"
@@ -468,7 +508,7 @@ msgstr "Sinks"
 msgid "Source"
 msgstr "Source"
 
-#: app/features/activity/components/activity-list.tsx:91
+#: app/features/activity/components/activity-list.tsx:92
 msgid "Source IP"
 msgstr "Source IP"
 
@@ -489,7 +529,7 @@ msgstr "Start Time"
 #: app/routes/project/detail/export-policy/detail.tsx:184
 #: app/routes/project/detail/domain/index.tsx:45
 #: app/routes/project/detail/domain/detail.tsx:85
-#: app/features/activity/components/activity-list.tsx:115
+#: app/features/activity/components/activity-list.tsx:116
 msgid "Status"
 msgstr "Status"
 
@@ -505,7 +545,7 @@ msgstr "Temporarily prevent user from signing in. The user can be reactivated at
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 msgstr "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 
-#: app/features/activity/components/activity-list.tsx:106
+#: app/features/activity/components/activity-list.tsx:107
 msgid "Timestamp"
 msgstr "Timestamp"
 
@@ -521,7 +561,7 @@ msgstr "Type"
 msgid "Type a command or search..."
 msgstr "Type a command or search..."
 
-#: app/features/activity/components/activity-list.tsx:322
+#: app/features/activity/components/activity-list.tsx:337
 msgid "Update"
 msgstr "Update"
 
@@ -563,6 +603,6 @@ msgstr "Verified"
 msgid "View All"
 msgstr "View All"
 
-#: app/features/activity/components/activity-list.tsx:320
+#: app/features/activity/components/activity-list.tsx:335
 msgid "Watch"
 msgstr "Watch"

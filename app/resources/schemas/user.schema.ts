@@ -5,6 +5,12 @@ export const UserSchema = z.object({
   apiVersion: z.string(),
   kind: z.literal('User'),
   metadata: z.object({
+    annotations: z
+      .object({
+        'preferences/theme': z.string().optional(),
+        'preferences/timezone': z.string().optional(),
+      })
+      .optional(),
     creationTimestamp: z.string(),
     generation: z.number(),
     managedFields: z
@@ -63,9 +69,32 @@ export type UserList = z.infer<typeof UserListSchema>;
 export const UserResponseSchema = createProxyResponseSchema(UserSchema);
 export type UserResponse = z.infer<typeof UserResponseSchema>;
 
+export const UserUpdateSchema = z.object({
+  apiVersion: z.literal('iam.miloapis.com/v1alpha1'),
+  kind: z.literal('User'),
+  metadata: z
+    .object({
+      annotations: z
+        .object({
+          'preferences/theme': z.string().optional(),
+          'preferences/timezone': z.string().optional(),
+        })
+        .optional(),
+    })
+    .optional(),
+  spec: z
+    .object({
+      familyName: z.string(),
+      givenName: z.string(),
+    })
+    .optional(),
+});
+
+export type UserUpdate = z.infer<typeof UserUpdateSchema>;
+
 export const UserDeactivateSchema = z.object({
-  apiVersion: z.string(),
-  kind: z.string(),
+  apiVersion: z.literal('iam.miloapis.com/v1alpha1'),
+  kind: z.literal('UserDeactivation'),
   metadata: z.object({
     name: z.string(),
   }),

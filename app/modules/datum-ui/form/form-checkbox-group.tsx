@@ -35,6 +35,10 @@ interface FormCheckboxGroupProps {
   hideError?: boolean;
   children: ReactNode;
   className?: string;
+  rules?: {
+    required?: boolean | string;
+    validate?: (value: any) => boolean | string | Promise<boolean | string>;
+  };
 }
 
 export function FormCheckboxGroup({
@@ -45,6 +49,7 @@ export function FormCheckboxGroup({
   hideError = false,
   children,
   className,
+  rules,
 }: FormCheckboxGroupProps) {
   const { form } = useFormContext();
 
@@ -52,6 +57,10 @@ export function FormCheckboxGroup({
     <FormField
       control={form.control}
       name={field}
+      rules={{
+        ...rules,
+        ...(required && { required: required === true ? 'This field is required' : required }),
+      }}
       render={({ field: fieldProps, fieldState: { error } }) => {
         const values = fieldProps.value || [];
         const hasError = !!error;
