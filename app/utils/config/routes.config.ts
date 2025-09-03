@@ -35,6 +35,11 @@ export const projectRoutes = {
     detail: (projectName: string, exportPolicyName: string) =>
       `/customers/projects/${projectName}/export-policies/${exportPolicyName}`,
   },
+  secret: {
+    list: (projectName: string) => `/customers/projects/${projectName}/secrets`,
+    detail: (projectName: string, secretName: string) =>
+      `/customers/projects/${projectName}/secrets/${secretName}`,
+  },
 } as const;
 
 // Main routes object

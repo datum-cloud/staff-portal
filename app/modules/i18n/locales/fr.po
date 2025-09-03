@@ -352,6 +352,7 @@ msgstr ""
 #: app/routes/user/index.tsx:21
 #: app/routes/user/detail/organization.tsx:18
 #: app/routes/project/index.tsx:21
+#: app/routes/project/detail/secret.tsx:36
 #: app/routes/project/detail/index.tsx:67
 #: app/routes/project/detail/httpproxy/index.tsx:32
 #: app/routes/project/detail/httpproxy/detail.tsx:85
@@ -368,6 +369,7 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
+#: app/routes/project/detail/secret.tsx:39
 #: app/routes/project/detail/export-policy/detail.tsx:73
 #: app/routes/project/detail/domain/detail.tsx:65
 msgid "Namespace"
@@ -496,6 +498,11 @@ msgstr ""
 msgid "Searching..."
 msgstr ""
 
+#: app/routes/project/detail/secret.tsx:11
+#: app/routes/project/detail/layout.tsx:92
+msgid "Secrets"
+msgstr ""
+
 #: app/features/preferences/components/preferences-form.tsx:80
 msgid "Select timezone..."
 msgstr ""
@@ -597,6 +604,10 @@ msgstr ""
 
 #: app/features/domain/components/domain-status-probe.tsx:65
 msgid "Verified"
+msgstr ""
+
+#: app/routes/project/detail/secret.tsx:42
+msgid "Version"
 msgstr ""
 
 #: app/features/dashboard/components/recent-users-widget.tsx:106

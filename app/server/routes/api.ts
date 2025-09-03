@@ -1,5 +1,6 @@
 import { apiRequest } from '@/modules/axios/axios.server';
 import { LokiActivityLogsService, QueryParams } from '@/modules/loki/server';
+import { PrometheusService } from '@/modules/prometheus';
 import { EnvVariables } from '@/server/iface';
 import { logApiError, logApiSuccess } from '@/server/logger';
 import { authMiddleware, getToken } from '@/server/middleware';
@@ -191,6 +192,56 @@ api.get('/activity', authMiddleware(), async (c) => {
     });
 
     const { response, status } = await createErrorResponse(reqId, error, '/activity');
+    return c.json(response, status as any);
+  }
+});
+
+// Metrics API (get data from Prometheus)
+api.post('/metrics', authMiddleware(), async (c) => {
+  const startTime = performance.now();
+  const reqLogger = createRequestLogger(c);
+  const reqId = c.get('requestId');
+  const requestContext = extractRequestContext(c);
+
+  reqLogger.info('Metrics API Request Started', requestContext);
+
+  try {
+    const token = getToken(c);
+    const body = await c.req.json();
+    const { type, ...params } = body;
+
+    if (!type) {
+      throw new Error('Query type is required');
+    }
+
+    const service = new PrometheusService(token);
+    const response = await service.handleAPIRequest({ type, ...params });
+
+    const duration = Math.round(performance.now() - startTime);
+
+    // Log success
+    logApiSuccess(reqLogger, {
+      path: c.req.path,
+      method: c.req.method,
+      duration,
+      userAgent: requestContext.userAgent,
+      ip: requestContext.ip,
+    });
+
+    return createSuccessResponseWithHeaders(c, reqId, response, c.req.path);
+  } catch (error) {
+    const duration = Math.round(performance.now() - startTime);
+
+    // Use typed error logging
+    await logApiError(reqLogger, error, {
+      path: c.req.path,
+      method: c.req.method,
+      duration,
+      userAgent: requestContext.userAgent,
+      ip: requestContext.ip,
+    });
+
+    const { response, status } = await createErrorResponse(reqId, error, '/metrics');
     return c.json(response, status as any);
   }
 });
