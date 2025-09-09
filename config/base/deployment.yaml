@@ -36,6 +36,8 @@ spec:
               name: http
               protocol: TCP
           env:
+            - name: VERSION
+              value: 'production'
             - name: OTEL_LOG_LEVEL
               value: 'info'
             - name: OTEL_ENABLED
@@ -44,6 +46,8 @@ spec:
               value: https://api.datum.net
             - name: APP_URL
               value: https://staff.datum.net
+            - name: SENTRY_DSN
+              value: https://56c4dfcefba49a7f1ad181fa50978eb9@sentry.prod.env.datum.net/2
           envFrom:
             - secretRef:
                 name: staff-portal

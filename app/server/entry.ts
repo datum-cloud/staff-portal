@@ -6,7 +6,6 @@ import { EnvVariables } from '@/server/iface';
 import { honoLoggerMiddleware, requestContextMiddleware } from '@/server/middleware';
 import { env } from '@/utils/config/env.server';
 import { logger } from '@/utils/logger';
-import { otel } from '@hono/otel';
 import { prometheus } from '@hono/prometheus';
 import { Hono } from 'hono';
 import { requestId } from 'hono/request-id';
@@ -15,12 +14,12 @@ import { NONCE, secureHeaders } from 'hono/secure-headers';
 // Create the Hono app
 const app = new Hono<{ Variables: EnvVariables }>();
 
-// Prometheus metrics & OpenTelemetry
+// Prometheus metrics (OpenTelemetry handled by observability factory)
 if (env.isOtelEnabled) {
   const { printMetrics, registerMetrics } = prometheus({ collectDefaultMetrics: true });
   app.use('*', registerMetrics);
   app.get('/metrics', printMetrics);
-  app.use('*', otel());
+  // OpenTelemetry is now handled by the observability factory, not Hono middleware
 }
 
 app.use(requestId());
@@ -46,9 +45,10 @@ app.use(
         env.API_URL,
         'https://*.marker.io',
         'https://*.sentry.io',
+        'https://*.datum.net',
       ],
       fontSrc: ["'self'", "'unsafe-inline'", 'https://*.jsdelivr.net'],
-      frameSrc: ["'self'", 'https://*.marker.io', 'https://*.sentry.io'],
+      frameSrc: ["'self'", 'https://*.marker.io', 'https://*.sentry.io', 'https://*.datum.net'],
       imgSrc: ["'self'", 'data:'],
       // Allow all script types with nonce
       scriptSrc: ["'strict-dynamic'", "'self'", NONCE],

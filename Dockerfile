@@ -5,7 +5,8 @@ FROM oven/bun:1.2.17 AS base
 
 # Install system dependencies and clean up in the same layer
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends unzip && \
+    apt-get install -y --no-install-recommends unzip ca-certificates && \
+    update-ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
@@ -13,6 +14,10 @@ RUN apt-get update && \
 WORKDIR /app
 ENV NODE_ENV=production \
     PORT=3000
+
+# Accept VERSION as build argument and set as environment variable
+ARG VERSION=dev
+ENV VERSION=${VERSION}
 
 # ==========================================
 # BUILD STAGE - Compile and prepare the app
@@ -41,10 +46,6 @@ RUN bun run build && \
 # ==========================================
 FROM base
 
-# Accept VERSION as build argument and set as environment variable
-ARG VERSION=dev
-ENV VERSION=${VERSION}
-
 # Copy only necessary files from build stage
 COPY --from=build /app/build /app/build
 COPY --from=build /app/public /app/public
@@ -52,7 +53,7 @@ COPY --from=build /app/package.json /app/package.json
 COPY --from=build /app/bun.lock /app/bun.lock
 COPY --from=build /app/node_modules /app/node_modules
 COPY --from=build /app/.env /app/.env
-COPY --from=build /app/docker /app/docker
+COPY --from=build /app/observability /app/observability
 
 # Expose port
 EXPOSE ${PORT}

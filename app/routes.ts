@@ -62,6 +62,7 @@ export default [
     route('account', 'routes/account.tsx'),
 
     route('demo', 'routes/demo.tsx'),
+    route('test-sentry', 'routes/test-sentry.tsx'),
   ]),
 
   // Public routes without auth

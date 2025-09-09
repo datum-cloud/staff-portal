@@ -8,6 +8,7 @@ const envSchema = z.object({
   AUTH_OIDC_ISSUER: z.string().url(),
   AUTH_OIDC_CLIENT_ID: z.string(),
   SESSION_SECRET: z.string().min(32),
+  VERSION: z.string(),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -33,6 +34,10 @@ export const env = {
   OTEL_EXPORTER_OTLP_ENDPOINT: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
   OTEL_LOG_LEVEL: process.env.OTEL_LOG_LEVEL,
 
+  // Sentry configuration
+  SENTRY_ENV: process.env.SENTRY_ENV,
+  SENTRY_DSN: process.env.SENTRY_DSN,
+
   isDev: parsedEnv.NODE_ENV === 'development',
   isProd: parsedEnv.NODE_ENV === 'production',
   isTest: parsedEnv.NODE_ENV === 'test',
@@ -40,4 +45,5 @@ export const env = {
   isCypress: toBoolean(process.env.CYPRESS),
   isOtelEnabled:
     toBoolean(process.env.OTEL_ENABLED) && process.env.OTEL_EXPORTER_OTLP_ENDPOINT !== '',
+  isSentryEnabled: !!process.env.SENTRY_DSN,
 };

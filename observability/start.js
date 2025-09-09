@@ -1,13 +1,13 @@
 /**
- * Docker Entry Point
+ * Production Entry Point
  *
- * This script initializes OpenTelemetry instrumentation before starting the application.
- * It's designed specifically for the Docker/Bun environment.
+ * This script initializes observability services before starting the application.
+ * It uses the factory pattern for clean, extensible observability management.
  */
 
 /* global process */
 
-console.log('🚀 Starting application in Docker environment...');
+console.log('🚀 Starting application in production environment...');
 
 /**
  * Start the Bun server with the given module
@@ -32,7 +32,6 @@ function startServer(module) {
  * Load and start the server
  */
 function loadAndStartServer() {
-  console.log('⏳ Starting server...');
   return import('../build/server/index.js').then(startServer).catch((error) => {
     console.error('❌ Error loading server:', error);
     process.exit(1);
@@ -40,28 +39,28 @@ function loadAndStartServer() {
 }
 
 try {
-  // Load OpenTelemetry first
-  console.log('📊 Loading OpenTelemetry instrumentation...');
-  import('./otel.ts')
-    .then(async (otelModule) => {
+  // Load observability services first
+  console.log('📊 Loading observability services...');
+
+  import('./index.ts')
+    .then(async (observabilityModule) => {
       try {
-        // Initialize OpenTelemetry manually
-        const isOtelInitialized = await otelModule.initializeOtel();
-        if (isOtelInitialized) {
-          console.log('✅ OpenTelemetry loaded successfully');
-        }
-      } catch (otelError) {
+        // Initialize observability with all providers
+        const results = await observabilityModule.initializeObservability();
+        console.log('📊 Observability initialization results:', results);
+      } catch (observabilityError) {
         console.warn(
-          '⚠️ OpenTelemetry initialization failed, continuing without telemetry:',
-          otelError?.message || otelError
+          '⚠️ Observability initialization failed, continuing without observability:',
+          observabilityError?.message || observabilityError
         );
       }
+
       return loadAndStartServer();
     })
     .catch((error) => {
-      console.error('❌ Error loading OpenTelemetry:', error);
-      // Continue with server startup even if OpenTelemetry fails
-      console.log('⚠️ Starting server without OpenTelemetry...');
+      console.error('❌ Error loading observability module:', error);
+      // Continue with server startup even if observability fails
+      console.log('⚠️ Starting server without observability...');
       return loadAndStartServer();
     });
 } catch (error) {
