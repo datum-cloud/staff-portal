@@ -19,6 +19,11 @@ ENV NODE_ENV=production \
 # ==========================================
 FROM base AS build
 
+ARG SENTRY_AUTH_TOKEN
+
+# Set environment variables
+ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
+
 # Install dependencies first (better layer caching)
 COPY --link package.json bun.lock ./
 RUN bun install --frozen-lockfile
