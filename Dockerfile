@@ -15,18 +15,16 @@ WORKDIR /app
 ENV NODE_ENV=production \
     PORT=3000
 
-# Accept VERSION as build argument and set as environment variable
-ARG VERSION=dev
-ENV VERSION=${VERSION}
-
 # ==========================================
 # BUILD STAGE - Compile and prepare the app
 # ==========================================
 FROM base AS build
 
 ARG SENTRY_AUTH_TOKEN
+ARG VERSION=dev
 
 # Set environment variables
+ENV VERSION=${VERSION}
 ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
 
 # Install dependencies first (better layer caching)
@@ -45,6 +43,10 @@ RUN bun run build && \
 # PRODUCTION STAGE - Final lightweight image
 # ==========================================
 FROM base
+
+# Accept VERSION as build argument and set as environment variable
+ARG VERSION=dev
+ENV VERSION=${VERSION}
 
 # Copy only necessary files from build stage
 COPY --from=build /app/build /app/build
