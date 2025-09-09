@@ -36,8 +36,6 @@ spec:
               name: http
               protocol: TCP
           env:
-            - name: VERSION
-              value: 'production'
             - name: OTEL_LOG_LEVEL
               value: 'info'
             - name: OTEL_ENABLED
