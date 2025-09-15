@@ -61,6 +61,21 @@ export const projectDomainListQuery = (projectName: string, params?: ListQueryPa
     .execute();
 };
 
+export const projectEmailActivityListQuery = (projectName: string, params?: ListQueryParams) => {
+  return (
+    apiRequestClient({
+      method: 'GET',
+      url: `/apis/resourcemanager.miloapis.com/v1alpha/projects/${projectName}/control-plane/apis/notification.miloapis.com/v1alpha/emails`,
+      params: {
+        ...(params?.limit && { limit: params.limit }),
+        ...(params?.cursor && { continue: params.cursor }),
+      },
+    })
+      // .output(EmailActivityListResponseSchema)
+      .execute()
+  );
+};
+
 export const projectDomainStatusQuery = (
   projectName: string,
   domainName: string,
