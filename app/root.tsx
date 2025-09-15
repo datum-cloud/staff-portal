@@ -2,6 +2,7 @@ import type { Route } from './+types/root';
 import AuthError from '@/components/error/auth';
 import GenericError from '@/components/error/generic';
 import { ClientHintCheck } from '@/components/misc/client-hints';
+import { FaviconLinks } from '@/components/misc/favicon-links';
 import { ThemeProvider, ThemeScript, useTheme } from '@/modules/datum-themes';
 import { loadCatalog, useLocale } from '@/modules/i18n/lingui';
 import { linguiServer } from '@/modules/i18n/lingui.server';
@@ -71,6 +72,7 @@ function App() {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <FaviconLinks />
         <ClientHintCheck nonce={nonce} />
         <ThemeScript nonce={nonce} defaultTheme="light" />
         <Meta />

@@ -9,12 +9,12 @@ export const logoStyles = tv({
   variants: {
     theme: {
       dark: {
-        icon: 'fill-white',
+        icon: 'fill-[#E6F59F]',
         text: 'fill-white',
       },
       light: {
-        icon: 'fill-[#F27A67]',
-        text: 'fill-[#312847]',
+        icon: 'fill-[#bf9595]',
+        text: 'fill-[#0c1d31]',
       },
     },
   },
