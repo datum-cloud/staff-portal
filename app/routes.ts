@@ -38,7 +38,6 @@ export default [
         route(':projectName', 'routes/project/detail/layout.tsx', [
           index('routes/project/detail/index.tsx'),
           route('activity', 'routes/project/detail/activity.tsx'),
-          route('email-activity', 'routes/project/detail/email-activity.tsx'),
           route('export-policies', 'routes/project/detail/export-policy/layout.tsx', [
             index('routes/project/detail/export-policy/index.tsx'),
             route(':exportPolicyName', 'routes/project/detail/export-policy/detail.tsx'),
@@ -58,6 +57,9 @@ export default [
 
     // Activity
     route('activity', 'routes/activity.tsx'),
+
+    // Email Activity
+    route('email-activity', 'routes/email-activity.tsx'),
 
     // Account
     route('account', 'routes/account.tsx'),

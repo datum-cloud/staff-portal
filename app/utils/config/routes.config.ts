@@ -30,7 +30,6 @@ export const projectRoutes = {
       `/customers/projects/${projectName}/http-proxies/${httpProxyName}`,
   },
   activity: (projectName: string) => `/customers/projects/${projectName}/activity`,
-  emailActivity: (projectName: string) => `/customers/projects/${projectName}/email-activity`,
   exportPolicy: {
     list: (projectName: string) => `/customers/projects/${projectName}/export-policies`,
     detail: (projectName: string, exportPolicyName: string) =>
@@ -47,6 +46,7 @@ export const projectRoutes = {
 export const routes = {
   dashboard: () => '/',
   activity: () => '/activity',
+  emailActivity: () => '/email-activity',
   account: () => '/account',
   login: () => '/login',
   logout: () => '/logout',

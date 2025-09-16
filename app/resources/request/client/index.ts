@@ -15,3 +15,6 @@ export * from './membership.request';
 
 // Metrics requests
 export * from './metrics.request';
+
+// Email activity requests
+export * from './email.request';

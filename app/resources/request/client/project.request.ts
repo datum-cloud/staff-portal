@@ -1,11 +1,11 @@
 import { apiRequestClient } from '@/modules/axios/axios.client';
 import {
-  ListQueryParams,
-  HTTPProxyListResponseSchema,
-  ProjectListResponseSchema,
-  ExportPolicyListResponseSchema,
   DomainListResponseSchema,
   DomainResponseSchema,
+  ExportPolicyListResponseSchema,
+  HTTPProxyListResponseSchema,
+  ListQueryParams,
+  ProjectListResponseSchema,
 } from '@/resources/schemas';
 
 export const projectListQuery = (params?: ListQueryParams) => {
@@ -59,21 +59,6 @@ export const projectDomainListQuery = (projectName: string, params?: ListQueryPa
   })
     .output(DomainListResponseSchema)
     .execute();
-};
-
-export const projectEmailActivityListQuery = (projectName: string, params?: ListQueryParams) => {
-  return (
-    apiRequestClient({
-      method: 'GET',
-      url: `/apis/resourcemanager.miloapis.com/v1alpha/projects/${projectName}/control-plane/apis/notification.miloapis.com/v1alpha/emails`,
-      params: {
-        ...(params?.limit && { limit: params.limit }),
-        ...(params?.cursor && { continue: params.cursor }),
-      },
-    })
-      // .output(EmailActivityListResponseSchema)
-      .execute()
-  );
 };
 
 export const projectDomainStatusQuery = (

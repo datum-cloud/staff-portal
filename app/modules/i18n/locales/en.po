@@ -46,11 +46,11 @@ msgstr "Action"
 #: app/routes/activity.tsx:11
 #: app/routes/user/detail/layout.tsx:42
 #: app/routes/user/detail/activity.tsx:8
-#: app/routes/project/detail/layout.tsx:95
+#: app/routes/project/detail/layout.tsx:87
 #: app/routes/project/detail/activity.tsx:8
 #: app/routes/organization/detail/layout.tsx:40
 #: app/routes/organization/detail/activity.tsx:8
-#: app/components/app-sidebar/index.tsx:100
+#: app/components/app-sidebar/index.tsx:106
 msgid "Activity"
 msgstr "Activity"
 
@@ -107,6 +107,7 @@ msgstr "Configuration"
 msgid "Create"
 msgstr "Create"
 
+#: app/routes/email-activity.tsx:37
 #: app/routes/user/index.tsx:41
 #: app/routes/user/detail/index.tsx:195
 #: app/routes/project/index.tsx:42
@@ -123,7 +124,7 @@ msgstr "Create"
 msgid "Created"
 msgstr "Created"
 
-#: app/routes/project/detail/layout.tsx:38
+#: app/routes/project/detail/layout.tsx:30
 #: app/routes/customers/layout.tsx:7
 #: app/components/app-sidebar/index.tsx:80
 msgid "Customers"
@@ -203,7 +204,7 @@ msgstr "Domain"
 msgid "Domain verification is in progress. This may take a few minutes."
 msgstr "Domain verification is in progress. This may take a few minutes."
 
-#: app/routes/project/detail/layout.tsx:80
+#: app/routes/project/detail/layout.tsx:72
 #: app/routes/project/detail/domain/layout.tsx:5
 msgid "Domains"
 msgstr "Domains"
@@ -212,8 +213,8 @@ msgstr "Domains"
 msgid "Email"
 msgstr "Email"
 
-#: app/routes/project/detail/layout.tsx:100
-#: app/routes/project/detail/email-activity.tsx:14
+#: app/routes/email-activity.tsx:16
+#: app/components/app-sidebar/index.tsx:100
 msgid "Email Activity"
 msgstr "Email Activity"
 
@@ -234,7 +235,7 @@ msgstr "Enter reason for deactivation..."
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr "Enter the word <0>{confirmationText}</0> to perform this action."
 
-#: app/routes/project/detail/layout.tsx:90
+#: app/routes/project/detail/layout.tsx:82
 #: app/routes/project/detail/export-policy/layout.tsx:5
 msgid "Export Policies"
 msgstr "Export Policies"
@@ -288,7 +289,7 @@ msgstr "Get"
 msgid "Hostnames"
 msgstr "Hostnames"
 
-#: app/routes/project/detail/layout.tsx:85
+#: app/routes/project/detail/layout.tsx:77
 #: app/routes/project/detail/httpproxy/layout.tsx:5
 msgid "HTTP Proxies"
 msgstr "HTTP Proxies"
@@ -354,6 +355,7 @@ msgstr "Message"
 msgid "MetricsQL"
 msgstr "MetricsQL"
 
+#: app/routes/email-activity.tsx:22
 #: app/routes/user/index.tsx:21
 #: app/routes/user/detail/organization.tsx:18
 #: app/routes/project/index.tsx:21
@@ -407,7 +409,7 @@ msgstr "Organization deleted successfully"
 
 #: app/routes/user/detail/organization.tsx:42
 #: app/routes/user/detail/layout.tsx:37
-#: app/routes/project/detail/layout.tsx:39
+#: app/routes/project/detail/layout.tsx:31
 #: app/routes/organization/layout.tsx:5
 #: app/routes/organization/index.tsx:15
 #: app/components/app-sidebar/index.tsx:90
@@ -415,7 +417,7 @@ msgid "Organizations"
 msgstr "Organizations"
 
 #: app/routes/user/detail/layout.tsx:32
-#: app/routes/project/detail/layout.tsx:75
+#: app/routes/project/detail/layout.tsx:67
 #: app/routes/organization/detail/layout.tsx:30
 msgid "Overview"
 msgstr "Overview"
@@ -460,7 +462,7 @@ msgstr "Project deleted successfully"
 
 #: app/routes/project/layout.tsx:5
 #: app/routes/project/index.tsx:15
-#: app/routes/project/detail/layout.tsx:45
+#: app/routes/project/detail/layout.tsx:37
 #: app/routes/organization/detail/project.tsx:19
 #: app/routes/organization/detail/layout.tsx:35
 #: app/components/app-sidebar/index.tsx:94
@@ -504,7 +506,7 @@ msgid "Searching..."
 msgstr "Searching..."
 
 #: app/routes/project/detail/secret.tsx:11
-#: app/routes/project/detail/layout.tsx:105
+#: app/routes/project/detail/layout.tsx:92
 msgid "Secrets"
 msgstr "Secrets"
 
@@ -532,6 +534,7 @@ msgstr "Sources"
 msgid "Start Time"
 msgstr "Start Time"
 
+#: app/routes/email-activity.tsx:31
 #: app/routes/user/index.tsx:37
 #: app/routes/user/detail/index.tsx:183
 #: app/routes/project/detail/httpproxy/index.tsx:50
