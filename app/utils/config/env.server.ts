@@ -3,9 +3,9 @@ import { z } from 'zod';
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  APP_URL: z.string().url(),
-  API_URL: z.string().url(),
-  AUTH_OIDC_ISSUER: z.string().url(),
+  APP_URL: z.url(),
+  API_URL: z.url(),
+  AUTH_OIDC_ISSUER: z.url(),
   AUTH_OIDC_CLIENT_ID: z.string(),
   SESSION_SECRET: z.string().min(32),
   VERSION: z.string(),
@@ -18,7 +18,7 @@ function getEnv(): Env {
     return envSchema.parse(process.env);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const missingVars = error.errors.map((err) => err.path.join('.')).join(', ');
+      const missingVars = error.issues.map((issue) => issue.path.join('.')).join(', ');
       throw new Error(`Missing or invalid environment variables: ${missingVars}`);
     }
     throw error;

@@ -57,6 +57,6 @@ export const ListQueryParamsSchema = z.object({
    * - Kubernetes-style field selectors: { fieldSelector: 'spec.role=admin,spec.userRef.name=john' }
    * - Label selectors: { labelSelector: 'app=frontend,env=prod' }
    */
-  filters: z.record(z.any()).optional(),
+  filters: z.record(z.string(), z.any()).optional(),
   search: z.string().optional(),
 });

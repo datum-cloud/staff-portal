@@ -12,7 +12,7 @@ export const DomainSchema = z.object({
         z.object({
           apiVersion: z.string(),
           fieldsType: z.string(),
-          fieldsV1: z.record(z.any()).optional(),
+          fieldsV1: z.record(z.string(), z.any()).optional(),
           manager: z.string(),
           operation: z.string(),
           subresource: z.string().optional(),
