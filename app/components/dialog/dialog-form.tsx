@@ -9,24 +9,24 @@ import {
 import { Button } from '@datum-ui/button';
 import { Form } from '@datum-ui/form';
 import { ReactNode, useState } from 'react';
-import { UseFormReturn } from 'react-hook-form';
-import { ZodSchema, z } from 'zod';
+import { FieldValues, UseFormReturn } from 'react-hook-form';
+import { z } from 'zod';
 
-interface DialogFormProps<TSchema extends ZodSchema> {
+interface DialogFormProps<TValues extends FieldValues> {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
   description?: string;
   submitText?: string;
   cancelText?: string;
-  onSubmit: (data: z.infer<TSchema>) => Promise<void> | void;
+  onSubmit: (data: TValues) => Promise<void> | void;
   onCancel?: () => void;
-  schema: TSchema;
-  defaultValues?: z.infer<TSchema>;
-  children: ((form: UseFormReturn<z.infer<TSchema>>) => ReactNode) | ReactNode;
+  schema: z.ZodType<TValues>;
+  defaultValues?: TValues;
+  children: ((form: UseFormReturn<TValues>) => ReactNode) | ReactNode;
 }
 
-export default function DialogForm<TSchema extends ZodSchema>({
+export default function DialogForm<TValues extends FieldValues>({
   open,
   onOpenChange,
   title,
@@ -36,12 +36,12 @@ export default function DialogForm<TSchema extends ZodSchema>({
   onSubmit,
   onCancel,
   schema,
-  defaultValues = {} as z.infer<TSchema>,
+  defaultValues = {} as TValues,
   children,
-}: DialogFormProps<TSchema>) {
+}: DialogFormProps<TValues>) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (data: z.infer<TSchema>) => {
+  const handleSubmit = async (data: TValues) => {
     setIsLoading(true);
     try {
       await onSubmit(data);

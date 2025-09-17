@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
 export const AuthUserSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   email_verified: z.boolean(),
   family_name: z.string(),
   given_name: z.string(),
   locale: z.string(),
   name: z.string(),
-  avatar: z.string().url().optional(),
+  avatar: z.url().optional(),
   preferred_username: z.string(),
   sub: z.string(),
   updated_at: z.number(),

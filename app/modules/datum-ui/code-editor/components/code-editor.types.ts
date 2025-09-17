@@ -36,13 +36,15 @@ export interface CodeEditorTabsProps {
 
 export const jsonSchema = z.object({
   jsonContent: z
-    .string({ required_error: 'JSON content is required' })
+    .string()
+    .min(1, 'JSON content is required')
     .refine(isValidJson, { message: 'Invalid JSON format' }),
 });
 
 export const yamlSchema = z.object({
   yamlContent: z
-    .string({ required_error: 'YAML content is required' })
+    .string()
+    .min(1, 'YAML content is required')
     .refine(isValidYaml, { message: 'Invalid YAML format' }),
 });
 
@@ -54,7 +56,7 @@ export function createCodeEditorSchema(name: string = 'Content') {
   return z
     .object({
       // The actual content
-      content: z.string({ required_error: `${name} is required` }).min(1, `${name} is required`),
+      content: z.string().min(1, `${name} is required`),
       // The format identifier (json or yaml)
       format: z.enum(['json', 'yaml']),
     })

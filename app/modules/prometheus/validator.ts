@@ -17,20 +17,16 @@ import { z } from 'zod';
  */
 export const timeRangeSchema = z
   .object({
-    start: z
-      .union([z.date(), z.string().datetime(), z.number().int().positive()])
-      .transform((val) => {
-        if (val instanceof Date) return val;
-        if (typeof val === 'string') return new Date(val);
-        return new Date(val * 1000); // Unix timestamp to Date
-      }),
-    end: z
-      .union([z.date(), z.string().datetime(), z.number().int().positive()])
-      .transform((val) => {
-        if (val instanceof Date) return val;
-        if (typeof val === 'string') return new Date(val);
-        return new Date(val * 1000); // Unix timestamp to Date
-      }),
+    start: z.union([z.date(), z.iso.datetime(), z.number().int().positive()]).transform((val) => {
+      if (val instanceof Date) return val;
+      if (typeof val === 'string') return new Date(val);
+      return new Date(val * 1000); // Unix timestamp to Date
+    }),
+    end: z.union([z.date(), z.iso.datetime(), z.number().int().positive()]).transform((val) => {
+      if (val instanceof Date) return val;
+      if (typeof val === 'string') return new Date(val);
+      return new Date(val * 1000); // Unix timestamp to Date
+    }),
   })
   .refine((data) => data.start < data.end, {
     message: 'Start time must be before end time',
@@ -91,7 +87,7 @@ export const rangeQueryParamsSchema = z
  */
 export const queryBuilderOptionsSchema = z.object({
   metric: z.string().min(1, 'Metric name is required'),
-  filters: z.record(z.string()).optional(),
+  filters: z.record(z.string(), z.string()).optional(),
   functions: z.array(z.string()).optional(),
   groupBy: z.array(z.string()).optional(),
   aggregation: z.enum(['sum', 'avg', 'max', 'min', 'count']).optional(),
@@ -105,10 +101,10 @@ export function validateQueryOptions(options: unknown): PrometheusQueryOptions {
     return prometheusQueryOptionsSchema.parse(options);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const firstError = error.errors[0];
+      const firstIssue = error.issues[0];
       throw new QueryValidationError(
-        firstError.message,
-        firstError.path.join('.'),
+        firstIssue.message,
+        firstIssue.path.join('.'),
         JSON.stringify(options)
       );
     }
@@ -124,10 +120,10 @@ export function validateInstantQueryParams(params: unknown): PrometheusInstantQu
     return instantQueryParamsSchema.parse(params);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const firstError = error.errors[0];
+      const firstIssue = error.issues[0];
       throw new QueryValidationError(
-        firstError.message,
-        firstError.path.join('.'),
+        firstIssue.message,
+        firstIssue.path.join('.'),
         JSON.stringify(params)
       );
     }
@@ -143,10 +139,10 @@ export function validateRangeQueryParams(params: unknown): PrometheusRangeQueryP
     return rangeQueryParamsSchema.parse(params);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const firstError = error.errors[0];
+      const firstIssue = error.issues[0];
       throw new QueryValidationError(
-        firstError.message,
-        firstError.path.join('.'),
+        firstIssue.message,
+        firstIssue.path.join('.'),
         JSON.stringify(params)
       );
     }
@@ -162,10 +158,10 @@ export function validateQueryBuilderOptions(options: unknown): QueryBuilderOptio
     return queryBuilderOptionsSchema.parse(options);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const firstError = error.errors[0];
+      const firstIssue = error.issues[0];
       throw new QueryValidationError(
-        firstError.message,
-        firstError.path.join('.'),
+        firstIssue.message,
+        firstIssue.path.join('.'),
         JSON.stringify(options)
       );
     }
@@ -192,10 +188,10 @@ export function validateTimeRange(timeRange: unknown): TimeRange {
     return timeRangeSchema.parse(timeRange);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const firstError = error.errors[0];
+      const firstIssue = error.issues[0];
       throw new QueryValidationError(
-        firstError.message,
-        firstError.path.join('.'),
+        firstIssue.message,
+        firstIssue.path.join('.'),
         JSON.stringify(timeRange)
       );
     }
