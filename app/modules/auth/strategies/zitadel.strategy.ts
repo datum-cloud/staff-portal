@@ -1,10 +1,9 @@
 import { createGenericOAuthProvider, OAuthProviderConfig } from '../oauth.helper';
-import { apiRequest } from '@/modules/axios/axios.server';
 import { authUserQuery } from '@/resources/request/server';
 import { env } from '@/utils/config/env.server';
 import { sessionCookie, tokenCookie } from '@/utils/cookies';
 import { AuthenticationError } from '@/utils/errors';
-import { CodeChallengeMethod, OAuth2Strategy } from 'remix-auth-oauth2';
+import { OAuth2Strategy } from 'remix-auth-oauth2';
 
 export interface IZitadelResponse {
   sub: string;
@@ -24,15 +23,13 @@ class ZitadelStrategy extends OAuth2Strategy<IZitadelResponse> {
     const body = new URLSearchParams();
     body.append('id_token_hint', data.idToken);
 
-    await apiRequest({
+    await fetch(`${env.AUTH_OIDC_ISSUER}/oidc/v1/end_session`, {
       method: 'POST',
-      url: '/oidc/v1/end_session',
-      baseURL: env.AUTH_OIDC_ISSUER,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      data: body,
-    }).execute();
+      body,
+    });
   }
 
   async refresh(request: Request): Promise<IZitadelResponse> {
