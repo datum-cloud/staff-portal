@@ -22,7 +22,7 @@ export abstract class BaseCookie<T extends IBaseCookieData> {
   }
 
   private initialize() {
-    this.cookie = createCookie(this.COOKIE_KEY, {
+    this.cookie = createCookie(`${this.COOKIE_KEY}_staff`, {
       path: '/',
       domain: new URL(env.APP_URL).hostname,
       sameSite: 'lax',
