@@ -58,6 +58,8 @@ export async function createZitadelStrategy() {
     clientSecret: env.AUTH_OIDC_CLIENT_SECRET,
     redirectURI: `${env.APP_URL}/auth/callback`,
     scopes: ['openid', 'profile', 'email', 'phone', 'address', 'offline_access'],
+    // Force re-authentication to avoid silent SSO
+    prompt: 'login',
   };
 
   return createGenericOAuthProvider(

@@ -19,6 +19,7 @@ export interface OAuthProviderConfig {
   clientSecret?: string;
   redirectURI: string;
   scopes: string[];
+  prompt?: string;
   endpoints?: {
     authorization?: string;
     token?: string;
@@ -99,6 +100,7 @@ export async function createGenericOAuthProvider<T>(
           clientSecret: config.clientSecret ?? null,
           redirectURI: config.redirectURI,
           scopes: config.scopes,
+          prompt: config.prompt,
         },
         callback
       ),
