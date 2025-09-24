@@ -1,6 +1,14 @@
 import { logger } from '@/utils/logger';
 import { CodeChallengeMethod, OAuth2Strategy } from 'remix-auth-oauth2';
 
+export enum OIDCPrompt {
+  NONE = 'none',
+  LOGIN = 'login',
+  CONSENT = 'consent',
+  SELECT_ACCOUNT = 'select_account',
+  CREATE = 'create',
+}
+
 export interface OAuthFallbackConfig {
   clientId: string;
   clientSecret: string | null;
@@ -19,6 +27,7 @@ export interface OAuthProviderConfig {
   clientSecret?: string;
   redirectURI: string;
   scopes: string[];
+  prompt?: OIDCPrompt;
   endpoints?: {
     authorization?: string;
     token?: string;
@@ -99,6 +108,7 @@ export async function createGenericOAuthProvider<T>(
           clientSecret: config.clientSecret ?? null,
           redirectURI: config.redirectURI,
           scopes: config.scopes,
+          prompt: config.prompt,
         },
         callback
       ),
