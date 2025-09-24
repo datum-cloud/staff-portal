@@ -1,4 +1,4 @@
-import { createGenericOAuthProvider, OAuthProviderConfig } from '../oauth.helper';
+import { createGenericOAuthProvider, OAuthProviderConfig, OIDCPrompt } from '../oauth.helper';
 import { authUserQuery } from '@/resources/request/server';
 import { env } from '@/utils/config/env.server';
 import { sessionCookie, tokenCookie } from '@/utils/cookies';
@@ -59,7 +59,7 @@ export async function createZitadelStrategy() {
     redirectURI: `${env.APP_URL}/auth/callback`,
     scopes: ['openid', 'profile', 'email', 'phone', 'address', 'offline_access'],
     // Force re-authentication to avoid silent SSO
-    prompt: 'login',
+    prompt: OIDCPrompt.LOGIN,
   };
 
   return createGenericOAuthProvider(
