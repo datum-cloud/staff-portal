@@ -1,5 +1,6 @@
 import { Theme, useTheme } from '@/modules/datum-themes';
 import { User } from '@/resources/schemas';
+import { getBrowserTimezone } from '@/utils/helpers/timezone';
 import { setSentryUser, clearSentryUser } from '@/utils/logger';
 import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 
@@ -54,7 +55,7 @@ export const AppProvider: React.FC<IProviderProps> = ({ children, user }) => {
       removeActions,
       settings: {
         theme: (userState?.metadata.annotations?.['preferences/theme'] as Theme) ?? 'light',
-        timezone: userState?.metadata.annotations?.['preferences/timezone'] ?? 'Etc/GMT',
+        timezone: userState?.metadata.annotations?.['preferences/timezone'] ?? getBrowserTimezone(),
       },
     }),
     [actions, userState]
@@ -63,7 +64,7 @@ export const AppProvider: React.FC<IProviderProps> = ({ children, user }) => {
   // Update theme when settings change
   useEffect(() => {
     setTheme(contextPayload.settings.theme);
-  }, [contextPayload.settings]);
+  }, [contextPayload.settings, setTheme]);
 
   // Update theme-color meta tag when theme changes
   useEffect(() => {
