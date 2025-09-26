@@ -322,7 +322,7 @@ msgstr "List"
 msgid "Loading status..."
 msgstr "Loading status..."
 
-#: app/routes/auth/logout.tsx:30
+#: app/routes/auth/logout.tsx:36
 #: app/routes/auth/login.tsx:19
 #: app/routes/auth/callback.tsx:59
 msgid "Loading..."

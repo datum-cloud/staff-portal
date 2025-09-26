@@ -1,5 +1,5 @@
 import { ThemePreview } from './theme-preview';
-import { SelectTimezone } from '@/components/select';
+import { SelectTimezone } from '@/components/select/timezone';
 import { Theme } from '@/modules/datum-themes';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { useApp } from '@/providers/app.provider';
@@ -82,7 +82,7 @@ export function PreferencesForm() {
               onValueChange={(tz) => {
                 setPreferences((prev) => ({
                   ...prev,
-                  timezone: tz.value,
+                  timezone: tz.timezoneName,
                 }));
               }}
             />

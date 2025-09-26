@@ -2,6 +2,7 @@ import type { Route } from './+types/login';
 import { authenticator } from '@/modules/auth';
 import { sessionCookie, tokenCookie } from '@/utils/cookies';
 import { combineHeaders } from '@/utils/helpers';
+import logger from '@/utils/logger';
 import { Trans } from '@lingui/react/macro';
 import { redirect } from 'react-router';
 
@@ -13,7 +14,12 @@ export function meta({}: Route.MetaFunction) {
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
-  await authenticator.logout('zitadel', request);
+  // do not await this, it will block the request
+  authenticator.logout('zitadel', request).catch((error) => {
+    logger.error('Error logging out', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+  });
 
   // clear cookies
   const token = await tokenCookie.destroy(request);
