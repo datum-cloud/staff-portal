@@ -12,3 +12,4 @@ export * from './export-policy.schema';
 export * from './domain.schema';
 export * from './secret.schema';
 export * from './email.schema';
+export * from './quota.schema';

@@ -18,3 +18,6 @@ export * from './metrics.request';
 
 // Email activity requests
 export * from './email.request';
+
+// Quota requests
+export * from './quota.request';

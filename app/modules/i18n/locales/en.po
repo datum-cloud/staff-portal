@@ -46,7 +46,7 @@ msgstr "Action"
 #: app/routes/activity.tsx:11
 #: app/routes/user/detail/layout.tsx:42
 #: app/routes/user/detail/activity.tsx:8
-#: app/routes/project/detail/layout.tsx:87
+#: app/routes/project/detail/layout.tsx:95
 #: app/routes/project/detail/activity.tsx:8
 #: app/routes/organization/detail/layout.tsx:40
 #: app/routes/organization/detail/activity.tsx:8
@@ -61,6 +61,10 @@ msgstr "All read operations"
 #: app/features/activity/components/activity-list.tsx:387
 msgid "All write operations"
 msgstr "All write operations"
+
+#: app/features/quota/components/quota-grant-list.tsx:49
+msgid "Allocation"
+msgstr "Allocation"
 
 #: app/features/preferences/components/preferences-form.tsx:125
 msgid "Apply"
@@ -116,15 +120,16 @@ msgstr "Create"
 #: app/routes/project/detail/httpproxy/detail.tsx:121
 #: app/routes/project/detail/export-policy/index.tsx:54
 #: app/routes/project/detail/export-policy/detail.tsx:95
-#: app/routes/project/detail/domain/index.tsx:54
+#: app/routes/project/detail/domain/index.tsx:53
 #: app/routes/project/detail/domain/detail.tsx:98
 #: app/routes/organization/index.tsx:38
 #: app/routes/organization/detail/project.tsx:40
 #: app/routes/organization/detail/index.tsx:86
+#: app/features/quota/components/quota-grant-list.tsx:68
 msgid "Created"
 msgstr "Created"
 
-#: app/routes/project/detail/layout.tsx:30
+#: app/routes/project/detail/layout.tsx:38
 #: app/routes/customers/layout.tsx:7
 #: app/components/app-sidebar/index.tsx:80
 msgid "Customers"
@@ -195,7 +200,7 @@ msgstr "Delete User"
 msgid "Description"
 msgstr "Description"
 
-#: app/routes/project/detail/domain/index.tsx:41
+#: app/routes/project/detail/domain/index.tsx:40
 #: app/routes/project/detail/domain/detail.tsx:75
 msgid "Domain"
 msgstr "Domain"
@@ -204,7 +209,7 @@ msgstr "Domain"
 msgid "Domain verification is in progress. This may take a few minutes."
 msgstr "Domain verification is in progress. This may take a few minutes."
 
-#: app/routes/project/detail/layout.tsx:72
+#: app/routes/project/detail/layout.tsx:80
 #: app/routes/project/detail/domain/layout.tsx:5
 msgid "Domains"
 msgstr "Domains"
@@ -235,7 +240,7 @@ msgstr "Enter reason for deactivation..."
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr "Enter the word <0>{confirmationText}</0> to perform this action."
 
-#: app/routes/project/detail/layout.tsx:82
+#: app/routes/project/detail/layout.tsx:90
 #: app/routes/project/detail/export-policy/layout.tsx:5
 msgid "Export Policies"
 msgstr "Export Policies"
@@ -289,7 +294,7 @@ msgstr "Get"
 msgid "Hostnames"
 msgstr "Hostnames"
 
-#: app/routes/project/detail/layout.tsx:77
+#: app/routes/project/detail/layout.tsx:85
 #: app/routes/project/detail/httpproxy/layout.tsx:5
 msgid "HTTP Proxies"
 msgstr "HTTP Proxies"
@@ -304,7 +309,7 @@ msgid "Irreversible and destructive actions"
 msgstr "Irreversible and destructive actions"
 
 #: app/routes/user/detail/organization.tsx:36
-#: app/routes/organization/detail/member.tsx:39
+#: app/routes/organization/detail/member.tsx:47
 msgid "Joined"
 msgstr "Joined"
 
@@ -342,7 +347,7 @@ msgstr "Log out"
 msgid "Manage user access and account status"
 msgstr "Manage user access and account status"
 
-#: app/routes/organization/detail/member.tsx:45
+#: app/routes/organization/detail/member.tsx:15
 #: app/routes/organization/detail/layout.tsx:45
 msgid "Members"
 msgstr "Members"
@@ -359,7 +364,7 @@ msgstr "MetricsQL"
 #: app/routes/user/index.tsx:21
 #: app/routes/user/detail/organization.tsx:18
 #: app/routes/project/index.tsx:21
-#: app/routes/project/detail/secret.tsx:36
+#: app/routes/project/detail/secret.tsx:22
 #: app/routes/project/detail/index.tsx:67
 #: app/routes/project/detail/httpproxy/index.tsx:32
 #: app/routes/project/detail/httpproxy/detail.tsx:85
@@ -367,16 +372,17 @@ msgstr "MetricsQL"
 #: app/routes/project/detail/export-policy/detail.tsx:61
 #: app/routes/project/detail/export-policy/detail.tsx:123
 #: app/routes/project/detail/export-policy/detail.tsx:175
-#: app/routes/project/detail/domain/index.tsx:33
+#: app/routes/project/detail/domain/index.tsx:32
 #: app/routes/project/detail/domain/detail.tsx:53
 #: app/routes/organization/index.tsx:21
 #: app/routes/organization/detail/project.tsx:25
-#: app/routes/organization/detail/member.tsx:18
+#: app/routes/organization/detail/member.tsx:26
 #: app/routes/organization/detail/index.tsx:66
+#: app/features/quota/components/quota-grant-list.tsx:30
 msgid "Name"
 msgstr "Name"
 
-#: app/routes/project/detail/secret.tsx:39
+#: app/routes/project/detail/secret.tsx:25
 #: app/routes/project/detail/export-policy/detail.tsx:73
 #: app/routes/project/detail/domain/detail.tsx:65
 msgid "Namespace"
@@ -409,7 +415,7 @@ msgstr "Organization deleted successfully"
 
 #: app/routes/user/detail/organization.tsx:42
 #: app/routes/user/detail/layout.tsx:37
-#: app/routes/project/detail/layout.tsx:31
+#: app/routes/project/detail/layout.tsx:39
 #: app/routes/organization/layout.tsx:5
 #: app/routes/organization/index.tsx:15
 #: app/components/app-sidebar/index.tsx:90
@@ -417,7 +423,7 @@ msgid "Organizations"
 msgstr "Organizations"
 
 #: app/routes/user/detail/layout.tsx:32
-#: app/routes/project/detail/layout.tsx:67
+#: app/routes/project/detail/layout.tsx:75
 #: app/routes/organization/detail/layout.tsx:30
 msgid "Overview"
 msgstr "Overview"
@@ -462,8 +468,8 @@ msgstr "Project deleted successfully"
 
 #: app/routes/project/layout.tsx:5
 #: app/routes/project/index.tsx:15
-#: app/routes/project/detail/layout.tsx:37
-#: app/routes/organization/detail/project.tsx:19
+#: app/routes/project/detail/layout.tsx:45
+#: app/routes/organization/detail/project.tsx:14
 #: app/routes/organization/detail/layout.tsx:35
 #: app/components/app-sidebar/index.tsx:94
 msgid "Projects"
@@ -476,6 +482,13 @@ msgstr "Query"
 #: app/components/date/date-range-picker.tsx:277
 msgid "Quick ranges"
 msgstr "Quick ranges"
+
+#: app/routes/project/detail/quota.tsx:9
+#: app/routes/project/detail/layout.tsx:105
+#: app/routes/organization/detail/quota.tsx:9
+#: app/routes/organization/detail/layout.tsx:50
+msgid "Quotas"
+msgstr "Quotas"
 
 #: app/routes/user/detail/index.tsx:233
 msgid "Re-enable this user's access to the system. They will be able to sign in immediately."
@@ -493,6 +506,10 @@ msgstr "Reactivate User"
 msgid "Reason for deactivation"
 msgstr "Reason for deactivation"
 
+#: app/features/quota/components/quota-grant-list.tsx:35
+msgid "Resource Type"
+msgstr "Resource Type"
+
 #: app/features/profile/components/profile-form.tsx:58
 msgid "Save"
 msgstr "Save"
@@ -506,7 +523,7 @@ msgid "Searching..."
 msgstr "Searching..."
 
 #: app/routes/project/detail/secret.tsx:11
-#: app/routes/project/detail/layout.tsx:92
+#: app/routes/project/detail/layout.tsx:100
 msgid "Secrets"
 msgstr "Secrets"
 
@@ -542,8 +559,9 @@ msgstr "Start Time"
 #: app/routes/project/detail/export-policy/index.tsx:48
 #: app/routes/project/detail/export-policy/detail.tsx:83
 #: app/routes/project/detail/export-policy/detail.tsx:184
-#: app/routes/project/detail/domain/index.tsx:45
+#: app/routes/project/detail/domain/index.tsx:44
 #: app/routes/project/detail/domain/detail.tsx:85
+#: app/features/quota/components/quota-grant-list.tsx:62
 #: app/features/activity/components/activity-list.tsx:116
 msgid "Status"
 msgstr "Status"
@@ -567,7 +585,7 @@ msgstr "Timestamp"
 #: app/routes/user/detail/organization.tsx:32
 #: app/routes/project/detail/export-policy/detail.tsx:178
 #: app/routes/organization/index.tsx:32
-#: app/routes/organization/detail/member.tsx:35
+#: app/routes/organization/detail/member.tsx:43
 #: app/routes/organization/detail/index.tsx:76
 msgid "Type"
 msgstr "Type"
@@ -614,7 +632,7 @@ msgstr "Verification in progress..."
 msgid "Verified"
 msgstr "Verified"
 
-#: app/routes/project/detail/secret.tsx:42
+#: app/routes/project/detail/secret.tsx:28
 msgid "Version"
 msgstr "Version"
 

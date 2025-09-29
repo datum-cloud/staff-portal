@@ -11,8 +11,16 @@ import { DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 
-const columnHelper = createColumnHelper<Member>();
+export const handle = {
+  breadcrumb: () => <Trans>Members</Trans>,
+};
 
+export const meta: Route.MetaFunction = ({ matches }) => {
+  const { organizationName } = getOrganizationDetailMetadata(matches);
+  return metaObject(`Members - ${organizationName}`);
+};
+
+const columnHelper = createColumnHelper<Member>();
 const columns = [
   columnHelper.accessor('spec.userRef.name', {
     header: () => <Trans>Name</Trans>,
@@ -40,15 +48,6 @@ const columns = [
     cell: ({ getValue }) => <DateFormatter date={getValue()} withTime />,
   }),
 ];
-
-export const handle = {
-  breadcrumb: () => <Trans>Members</Trans>,
-};
-
-export const meta: Route.MetaFunction = ({ matches }) => {
-  const { organizationName } = getOrganizationDetailMetadata(matches);
-  return metaObject(`Members - ${organizationName}`);
-};
 
 export default function Page() {
   const data = useOrganizationDetailData();
