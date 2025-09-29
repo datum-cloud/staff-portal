@@ -46,6 +46,7 @@ export const projectRoutes = {
 export const routes = {
   dashboard: () => '/',
   activity: () => '/activity',
+  emailActivity: () => '/email-activity',
   account: () => '/account',
   login: () => '/login',
   logout: () => '/logout',

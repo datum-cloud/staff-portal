@@ -50,7 +50,7 @@ msgstr "Action"
 #: app/routes/project/detail/activity.tsx:8
 #: app/routes/organization/detail/layout.tsx:40
 #: app/routes/organization/detail/activity.tsx:8
-#: app/components/app-sidebar/index.tsx:100
+#: app/components/app-sidebar/index.tsx:106
 msgid "Activity"
 msgstr "Activity"
 
@@ -107,6 +107,7 @@ msgstr "Configuration"
 msgid "Create"
 msgstr "Create"
 
+#: app/routes/email-activity.tsx:37
 #: app/routes/user/index.tsx:41
 #: app/routes/user/detail/index.tsx:195
 #: app/routes/project/index.tsx:42
@@ -211,6 +212,11 @@ msgstr "Domains"
 #: app/routes/user/detail/index.tsx:173
 msgid "Email"
 msgstr "Email"
+
+#: app/routes/email-activity.tsx:16
+#: app/components/app-sidebar/index.tsx:100
+msgid "Email Activity"
+msgstr "Email Activity"
 
 #: app/components/date/date-range-picker.tsx:263
 msgid "End Time"
@@ -349,6 +355,7 @@ msgstr "Message"
 msgid "MetricsQL"
 msgstr "MetricsQL"
 
+#: app/routes/email-activity.tsx:22
 #: app/routes/user/index.tsx:21
 #: app/routes/user/detail/organization.tsx:18
 #: app/routes/project/index.tsx:21
@@ -527,6 +534,7 @@ msgstr "Sources"
 msgid "Start Time"
 msgstr "Start Time"
 
+#: app/routes/email-activity.tsx:31
 #: app/routes/user/index.tsx:37
 #: app/routes/user/detail/index.tsx:183
 #: app/routes/project/detail/httpproxy/index.tsx:50

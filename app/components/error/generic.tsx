@@ -31,7 +31,7 @@ const GenericError = ({ message, requestId }: { message: string; requestId?: str
 
           <div className="text-muted-foreground rounded-r-md border-l-4 border-red-500 bg-red-50 p-4 text-center text-sm dark:bg-red-950/20">
             {requestId && (
-              <div className="mt-2 text-xs">
+              <div className="text-xs">
                 <strong>Request ID:</strong> {requestId}
               </div>
             )}

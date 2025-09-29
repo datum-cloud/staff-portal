@@ -27,7 +27,7 @@ import {
 } from '@/modules/shadcn/ui/sidebar';
 import { orgRoutes, projectRoutes, routes, userRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
-import { ChevronRight, Home, LucideIcon, SquareActivity, Users } from 'lucide-react';
+import { ChevronRight, Home, LucideIcon, MailSearch, SquareActivity, Users } from 'lucide-react';
 import * as React from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
 
@@ -95,6 +95,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           href: projectRoutes.list(),
         },
       ],
+    },
+    {
+      title: t`Email Activity`,
+      href: routes.emailActivity(),
+      icon: MailSearch,
+      hasSubmenu: false,
     },
     {
       title: t`Activity`,
