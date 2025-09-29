@@ -5,7 +5,7 @@ import { orgDetailQuery } from '@/resources/request/server';
 import { Organization } from '@/resources/schemas';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
-import { FileText, Folders, SquareActivity, Users } from 'lucide-react';
+import { CircleGauge, FileText, Folders, SquareActivity, Users } from 'lucide-react';
 import { Outlet, useLoaderData } from 'react-router';
 
 export const handle = {
@@ -45,6 +45,11 @@ export default function Layout() {
       title: t`Members`,
       href: orgRoutes.member(data.metadata.name),
       icon: Users,
+    },
+    {
+      title: t`Quotas`,
+      href: orgRoutes.quota(data.metadata.name),
+      icon: CircleGauge,
     },
   ];
 

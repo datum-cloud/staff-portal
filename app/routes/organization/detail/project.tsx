@@ -10,13 +10,13 @@ import { DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 
+export const handle = {
+  breadcrumb: () => <Trans>Projects</Trans>,
+};
+
 export const meta: Route.MetaFunction = ({ matches }) => {
   const { organizationName } = getOrganizationDetailMetadata(matches);
   return metaObject(`Projects - ${organizationName}`);
-};
-
-export const handle = {
-  breadcrumb: () => <Trans>Projects</Trans>,
 };
 
 const columnHelper = createColumnHelper<Project>();
@@ -48,7 +48,7 @@ export default function Page() {
   const data = useOrganizationDetailData();
 
   const tableState = useDataTableQuery<ProjectListResponse>({
-    queryKeyPrefix: ['projects', data.metadata.name],
+    queryKeyPrefix: ['organizations', data.metadata.name, 'projects'],
     fetchFn: (params) => orgProjectListQuery(data.metadata.name, params),
     useSorting: true,
   });

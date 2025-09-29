@@ -17,6 +17,17 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 };
 
 const columnHelper = createColumnHelper<Secret>();
+const columns = [
+  columnHelper.accessor('metric.resource_name', {
+    header: () => <Trans>Name</Trans>,
+  }),
+  columnHelper.accessor('metric.resource_namespace', {
+    header: () => <Trans>Namespace</Trans>,
+  }),
+  columnHelper.accessor('metric.resource_version', {
+    header: () => <Trans>Version</Trans>,
+  }),
+];
 
 export default function Page() {
   const { project } = useProjectDetailData();
@@ -30,18 +41,6 @@ export default function Page() {
       }),
     useSorting: true,
   });
-
-  const columns = [
-    columnHelper.accessor('metric.resource_name', {
-      header: () => <Trans>Name</Trans>,
-    }),
-    columnHelper.accessor('metric.resource_namespace', {
-      header: () => <Trans>Namespace</Trans>,
-    }),
-    columnHelper.accessor('metric.resource_version', {
-      header: () => <Trans>Version</Trans>,
-    }),
-  ];
 
   return (
     <DataTableProvider<Secret, SecretListResponse>

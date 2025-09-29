@@ -1,6 +1,5 @@
 import { getProjectDetailMetadata, useProjectDetailData } from '../../shared';
 import type { Route } from './+types/index';
-import { BadgeCondition } from '@/components/badge';
 import { DateFormatter } from '@/components/date';
 import { DomainStatusProbe } from '@/features/domain';
 import { projectDomainListQuery } from '@/resources/request/client';
