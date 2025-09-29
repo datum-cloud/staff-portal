@@ -5,7 +5,7 @@ export const EmailSchema = z.object({
   apiVersion: z.string(),
   kind: z.literal('Email'),
   metadata: z.object({
-    annotations: z.record(z.string()).optional(),
+    annotations: z.record(z.string(), z.any()).optional(),
     creationTimestamp: z.string(),
     generation: z.number(),
     managedFields: z
@@ -13,7 +13,7 @@ export const EmailSchema = z.object({
         z.object({
           apiVersion: z.string(),
           fieldsType: z.string(),
-          fieldsV1: z.record(z.any()).optional(),
+          fieldsV1: z.record(z.string(), z.any()).optional(),
           manager: z.string(),
           operation: z.string(),
           subresource: z.string().optional(),
