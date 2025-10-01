@@ -28,7 +28,10 @@ export default [
           route('members', 'routes/organization/detail/member.tsx'),
           route('projects', 'routes/organization/detail/project.tsx'),
           route('activity', 'routes/organization/detail/activity.tsx'),
-          route('quotas', 'routes/organization/detail/quota.tsx'),
+          route('quotas', 'routes/organization/detail/quota/layout.tsx', [
+            route('usage', 'routes/organization/detail/quota/usage.tsx'),
+            route('grants', 'routes/organization/detail/quota/grant.tsx'),
+          ]),
         ]),
       ]),
 
@@ -51,7 +54,10 @@ export default [
             index('routes/project/detail/httpproxy/index.tsx'),
             route(':httpProxyName', 'routes/project/detail/httpproxy/detail.tsx'),
           ]),
-          route('quotas', 'routes/project/detail/quota.tsx'),
+          route('quotas', 'routes/project/detail/quota/layout.tsx', [
+            route('usage', 'routes/project/detail/quota/usage.tsx'),
+            route('grants', 'routes/project/detail/quota/grant.tsx'),
+          ]),
           route('secrets', 'routes/project/detail/secret.tsx'),
         ]),
       ]),

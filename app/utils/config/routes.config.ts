@@ -13,14 +13,20 @@ export const orgRoutes = {
   project: (orgName: string) => `/customers/organizations/${orgName}/projects`,
   member: (orgName: string) => `/customers/organizations/${orgName}/members`,
   activity: (orgName: string) => `/customers/organizations/${orgName}/activity`,
-  quota: (orgName: string) => `/customers/organizations/${orgName}/quotas`,
+  quota: {
+    usage: (orgName: string) => `/customers/organizations/${orgName}/quotas/usage`,
+    grant: (orgName: string) => `/customers/organizations/${orgName}/quotas/grants`,
+  },
 } as const;
 
 // Projects feature routes
 export const projectRoutes = {
   list: () => '/customers/projects',
   detail: (projectName: string) => `/customers/projects/${projectName}`,
-  quota: (projectName: string) => `/customers/projects/${projectName}/quotas`,
+  quota: {
+    usage: (projectName: string) => `/customers/projects/${projectName}/quotas/usage`,
+    grant: (projectName: string) => `/customers/projects/${projectName}/quotas/grants`,
+  },
   domain: {
     list: (projectName: string) => `/customers/projects/${projectName}/domains`,
     detail: (projectName: string, domainName: string) =>

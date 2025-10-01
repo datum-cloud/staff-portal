@@ -14,6 +14,7 @@ import {
   SidebarMenuSubItem,
 } from '@/modules/shadcn/ui/sidebar';
 import { ChevronRight, LucideIcon } from 'lucide-react';
+import * as React from 'react';
 import { NavLink, useLocation } from 'react-router';
 
 export interface SubMenuItem {

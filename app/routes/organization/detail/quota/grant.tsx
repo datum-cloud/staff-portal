@@ -1,17 +1,17 @@
-import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../shared';
-import type { Route } from './+types/quota';
+import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../../shared';
+import type { Route } from './+types/grant';
 import { QuotaGrantList } from '@/features/quota';
 import { orgQuotaGrantListQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 
 export const handle = {
-  breadcrumb: () => <Trans>Quotas</Trans>,
+  breadcrumb: () => <Trans>Grants</Trans>,
 };
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const { organizationName } = getOrganizationDetailMetadata(matches);
-  return metaObject(`Quotas - ${organizationName}`);
+  return metaObject(`Grants - ${organizationName}`);
 };
 
 export default function Page() {
@@ -19,7 +19,7 @@ export default function Page() {
 
   return (
     <QuotaGrantList
-      queryKeyPrefix={['organizations', data.metadata.name, 'quotas']}
+      queryKeyPrefix={['organizations', data.metadata.name, 'grants']}
       fetchFn={(params) => orgQuotaGrantListQuery(data.metadata.name, params)}
     />
   );
