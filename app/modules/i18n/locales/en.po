@@ -48,7 +48,7 @@ msgstr "Action"
 #: app/routes/user/detail/activity.tsx:8
 #: app/routes/project/detail/layout.tsx:95
 #: app/routes/project/detail/activity.tsx:8
-#: app/routes/organization/detail/layout.tsx:40
+#: app/routes/organization/detail/layout.tsx:42
 #: app/routes/organization/detail/activity.tsx:8
 #: app/components/app-sidebar/index.tsx:106
 msgid "Activity"
@@ -126,6 +126,7 @@ msgstr "Create"
 #: app/routes/organization/detail/project.tsx:40
 #: app/routes/organization/detail/index.tsx:86
 #: app/features/quota/components/quota-grant-list.tsx:68
+#: app/features/quota/components/quota-bucket-list.tsx:80
 msgid "Created"
 msgstr "Created"
 
@@ -290,6 +291,14 @@ msgstr "General"
 msgid "Get"
 msgstr "Get"
 
+#: app/routes/project/detail/layout.tsx:114
+#: app/routes/project/detail/quota/grant.tsx:9
+#: app/routes/organization/detail/layout.tsx:61
+#: app/routes/organization/detail/quota/grant.tsx:9
+#: app/features/quota/components/quota-bucket-list.tsx:26
+msgid "Grants"
+msgstr "Grants"
+
 #: app/routes/project/detail/httpproxy/detail.tsx:138
 msgid "Hostnames"
 msgstr "Hostnames"
@@ -348,7 +357,7 @@ msgid "Manage user access and account status"
 msgstr "Manage user access and account status"
 
 #: app/routes/organization/detail/member.tsx:15
-#: app/routes/organization/detail/layout.tsx:45
+#: app/routes/organization/detail/layout.tsx:47
 msgid "Members"
 msgstr "Members"
 
@@ -379,6 +388,7 @@ msgstr "MetricsQL"
 #: app/routes/organization/detail/member.tsx:26
 #: app/routes/organization/detail/index.tsx:66
 #: app/features/quota/components/quota-grant-list.tsx:30
+#: app/features/quota/components/quota-bucket-list.tsx:17
 msgid "Name"
 msgstr "Name"
 
@@ -424,7 +434,7 @@ msgstr "Organizations"
 
 #: app/routes/user/detail/layout.tsx:32
 #: app/routes/project/detail/layout.tsx:75
-#: app/routes/organization/detail/layout.tsx:30
+#: app/routes/organization/detail/layout.tsx:32
 msgid "Overview"
 msgstr "Overview"
 
@@ -470,7 +480,7 @@ msgstr "Project deleted successfully"
 #: app/routes/project/index.tsx:15
 #: app/routes/project/detail/layout.tsx:45
 #: app/routes/organization/detail/project.tsx:14
-#: app/routes/organization/detail/layout.tsx:35
+#: app/routes/organization/detail/layout.tsx:37
 #: app/components/app-sidebar/index.tsx:94
 msgid "Projects"
 msgstr "Projects"
@@ -483,10 +493,10 @@ msgstr "Query"
 msgid "Quick ranges"
 msgstr "Quick ranges"
 
-#: app/routes/project/detail/quota.tsx:9
 #: app/routes/project/detail/layout.tsx:105
-#: app/routes/organization/detail/quota.tsx:9
-#: app/routes/organization/detail/layout.tsx:50
+#: app/routes/project/detail/quota/layout.tsx:5
+#: app/routes/organization/detail/layout.tsx:52
+#: app/routes/organization/detail/quota/layout.tsx:5
 msgid "Quotas"
 msgstr "Quotas"
 
@@ -507,6 +517,7 @@ msgid "Reason for deactivation"
 msgstr "Reason for deactivation"
 
 #: app/features/quota/components/quota-grant-list.tsx:35
+#: app/features/quota/components/quota-bucket-list.tsx:21
 msgid "Resource Type"
 msgstr "Resource Type"
 
@@ -601,6 +612,14 @@ msgstr "Update"
 #: app/features/domain/components/domain-status-probe.tsx:93
 msgid "Update your DNS provider with the provided record, or use the HTTP token method."
 msgstr "Update your DNS provider with the provided record, or use the HTTP token method."
+
+#: app/routes/project/detail/layout.tsx:110
+#: app/routes/project/detail/quota/usage.tsx:9
+#: app/routes/organization/detail/layout.tsx:57
+#: app/routes/organization/detail/quota/usage.tsx:9
+#: app/features/quota/components/quota-bucket-list.tsx:47
+msgid "Usage"
+msgstr "Usage"
 
 #: app/routes/user/detail/index.tsx:85
 msgid "User deactivated successfully"

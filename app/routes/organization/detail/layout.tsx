@@ -9,9 +9,11 @@ import { CircleGauge, FileText, Folders, SquareActivity, Users } from 'lucide-re
 import { Outlet, useLoaderData } from 'react-router';
 
 export const handle = {
-  breadcrumb: (data: Organization) => (
-    <span>{data.metadata.annotations?.['kubernetes.io/display-name']}</span>
-  ),
+  breadcrumb: (data: Organization) => {
+    const displayName =
+      data.metadata.annotations?.['kubernetes.io/display-name'] || data.metadata.name;
+    return <span>{displayName}</span>;
+  },
 };
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
@@ -48,8 +50,18 @@ export default function Layout() {
     },
     {
       title: t`Quotas`,
-      href: orgRoutes.quota(data.metadata.name),
       icon: CircleGauge,
+      hasSubmenu: true,
+      submenuItems: [
+        {
+          title: t`Usage`,
+          href: `${orgRoutes.quota.usage(data.metadata.name)}`,
+        },
+        {
+          title: t`Grants`,
+          href: orgRoutes.quota.grant(data.metadata.name),
+        },
+      ],
     },
   ];
 

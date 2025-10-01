@@ -103,8 +103,18 @@ export default function Layout() {
     },
     {
       title: t`Quotas`,
-      href: projectRoutes.quota(project.metadata.name),
       icon: CircleGauge,
+      hasSubmenu: true,
+      submenuItems: [
+        {
+          title: t`Usage`,
+          href: `${projectRoutes.quota.usage(project.metadata.name)}`,
+        },
+        {
+          title: t`Grants`,
+          href: projectRoutes.quota.grant(project.metadata.name),
+        },
+      ],
     },
   ];
 

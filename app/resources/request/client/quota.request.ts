@@ -1,5 +1,9 @@
 import { apiRequestClient } from '@/modules/axios/axios.client';
-import { ListQueryParams } from '@/resources/schemas';
+import {
+  AllowanceBucketListResponseSchema,
+  AllowanceBucketResponseSchema,
+  ListQueryParams,
+} from '@/resources/schemas';
 import { ResourceGrantListResponseSchema, ResourceGrantResponseSchema } from '@/resources/schemas';
 import { z } from 'zod';
 
@@ -114,7 +118,7 @@ export const quotaBucketListQuery = (
     url: '/apis/quota.miloapis.com/v1alpha1/allowancebuckets',
     params: buildCommonParams(params),
   })
-    .output(z.any())
+    .output(AllowanceBucketListResponseSchema)
     .execute();
 };
 
@@ -124,7 +128,7 @@ export const quotaBucketDetailQuery = (name: string) => {
     method: 'GET',
     url: `/apis/quota.miloapis.com/v1alpha1/allowancebuckets/${name}`,
   })
-    .output(z.any())
+    .output(AllowanceBucketResponseSchema)
     .execute();
 };
 
