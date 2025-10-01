@@ -1,6 +1,6 @@
 import type { Route } from './+types/account';
 import { PreferencesForm } from '@/features/preferences';
-import { ProfileForm } from '@/features/profile';
+import { ProfileForm, ProfileSessionsCard } from '@/features/profile';
 import { metaObject } from '@/utils/helpers';
 import { Col, Row } from '@datum-ui/grid';
 import { Trans } from '@lingui/react/macro';
@@ -25,6 +25,12 @@ export default function Page() {
       <Row>
         <Col span={12} offset={6}>
           <PreferencesForm />
+        </Col>
+      </Row>
+
+      <Row className="mt-4">
+        <Col span={12} offset={6}>
+          <ProfileSessionsCard />
         </Col>
       </Row>
     </div>

@@ -39,8 +39,13 @@ msgstr ""
 msgid "Account Management"
 msgstr ""
 
+#: app/features/profile/components/profile-sessions-card.tsx:49
 #: app/features/activity/components/activity-list.tsx:103
 msgid "Action"
+msgstr ""
+
+#: app/features/profile/components/profile-sessions-card.tsx:28
+msgid "Active Sessions"
 msgstr ""
 
 #: app/routes/activity.tsx:11
@@ -127,6 +132,7 @@ msgstr ""
 #: app/routes/organization/detail/index.tsx:86
 #: app/features/quota/components/quota-grant-list.tsx:68
 #: app/features/quota/components/quota-bucket-list.tsx:80
+#: app/features/profile/components/profile-sessions-card.tsx:43
 msgid "Created"
 msgstr ""
 
@@ -224,6 +230,10 @@ msgstr ""
 msgid "Email Activity"
 msgstr ""
 
+#: app/features/profile/components/profile-sessions-card.tsx:89
+msgid "End session"
+msgstr ""
+
 #: app/components/date/date-range-picker.tsx:263
 msgid "End Time"
 msgstr ""
@@ -239,6 +249,10 @@ msgstr ""
 
 #: app/components/dialog/dialog-confirm.tsx:100
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
+msgstr ""
+
+#: app/features/profile/components/profile-sessions-card.tsx:46
+msgid "Expires"
 msgstr ""
 
 #: app/routes/project/detail/layout.tsx:90
@@ -311,6 +325,10 @@ msgstr ""
 #: app/routes/user/index.tsx:31
 #: app/routes/user/detail/index.tsx:148
 msgid "ID"
+msgstr ""
+
+#: app/features/profile/components/profile-sessions-card.tsx:40
+msgid "IP"
 msgstr ""
 
 #: app/routes/user/detail/index.tsx:314
@@ -400,6 +418,10 @@ msgstr ""
 
 #: app/components/app-search/index.tsx:155
 msgid "Navigation"
+msgstr ""
+
+#: app/features/profile/components/profile-sessions-card.tsx:57
+msgid "No active sessions."
 msgstr ""
 
 #: app/components/app-search/index.tsx:183
@@ -540,6 +562,10 @@ msgstr ""
 
 #: app/features/preferences/components/preferences-form.tsx:80
 msgid "Select timezone..."
+msgstr ""
+
+#: app/features/profile/components/profile-sessions-card.tsx:37
+msgid "Session ID"
 msgstr ""
 
 #: app/routes/project/detail/export-policy/detail.tsx:164

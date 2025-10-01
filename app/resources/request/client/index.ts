@@ -21,3 +21,6 @@ export * from './email.request';
 
 // Quota requests
 export * from './quota.request';
+
+// Identity virtual API
+export * from './identity.request';

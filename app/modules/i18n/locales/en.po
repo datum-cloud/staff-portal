@@ -39,9 +39,14 @@ msgstr "Account"
 msgid "Account Management"
 msgstr "Account Management"
 
+#: app/features/profile/components/profile-sessions-card.tsx:49
 #: app/features/activity/components/activity-list.tsx:103
 msgid "Action"
 msgstr "Action"
+
+#: app/features/profile/components/profile-sessions-card.tsx:28
+msgid "Active Sessions"
+msgstr "Active Sessions"
 
 #: app/routes/activity.tsx:11
 #: app/routes/user/detail/layout.tsx:42
@@ -127,6 +132,7 @@ msgstr "Create"
 #: app/routes/organization/detail/index.tsx:86
 #: app/features/quota/components/quota-grant-list.tsx:68
 #: app/features/quota/components/quota-bucket-list.tsx:80
+#: app/features/profile/components/profile-sessions-card.tsx:43
 msgid "Created"
 msgstr "Created"
 
@@ -224,6 +230,10 @@ msgstr "Email"
 msgid "Email Activity"
 msgstr "Email Activity"
 
+#: app/features/profile/components/profile-sessions-card.tsx:89
+msgid "End session"
+msgstr "End session"
+
 #: app/components/date/date-range-picker.tsx:263
 msgid "End Time"
 msgstr "End Time"
@@ -240,6 +250,10 @@ msgstr "Enter reason for deactivation..."
 #: app/components/dialog/dialog-confirm.tsx:100
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr "Enter the word <0>{confirmationText}</0> to perform this action."
+
+#: app/features/profile/components/profile-sessions-card.tsx:46
+msgid "Expires"
+msgstr "Expires"
 
 #: app/routes/project/detail/layout.tsx:90
 #: app/routes/project/detail/export-policy/layout.tsx:5
@@ -312,6 +326,10 @@ msgstr "HTTP Proxies"
 #: app/routes/user/detail/index.tsx:148
 msgid "ID"
 msgstr "ID"
+
+#: app/features/profile/components/profile-sessions-card.tsx:40
+msgid "IP"
+msgstr "IP"
 
 #: app/routes/user/detail/index.tsx:314
 msgid "Irreversible and destructive actions"
@@ -401,6 +419,10 @@ msgstr "Namespace"
 #: app/components/app-search/index.tsx:155
 msgid "Navigation"
 msgstr "Navigation"
+
+#: app/features/profile/components/profile-sessions-card.tsx:57
+msgid "No active sessions."
+msgstr "No active sessions."
 
 #: app/components/app-search/index.tsx:183
 msgid "No results found."
@@ -541,6 +563,10 @@ msgstr "Secrets"
 #: app/features/preferences/components/preferences-form.tsx:80
 msgid "Select timezone..."
 msgstr "Select timezone..."
+
+#: app/features/profile/components/profile-sessions-card.tsx:37
+msgid "Session ID"
+msgstr "Session ID"
 
 #: app/routes/project/detail/export-policy/detail.tsx:164
 msgid "Sinks"
