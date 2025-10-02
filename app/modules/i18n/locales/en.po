@@ -34,14 +34,12 @@ msgstr "# of Sources"
 msgid "Account Management"
 msgstr "Account Management"
 
-#: app/features/profile/components/profile-sessions-card.tsx:56
 #: app/features/activity/components/activity-list.tsx:103
 msgid "Action"
 msgstr "Action"
 
 #: app/routes/profile/session.tsx:17
 #: app/routes/profile/layout.tsx:21
-#: app/features/profile/components/profile-sessions-card.tsx:35
 msgid "Active Sessions"
 msgstr "Active Sessions"
 
@@ -136,7 +134,6 @@ msgstr "Create"
 #: app/routes/organization/detail/index.tsx:86
 #: app/features/quota/components/quota-grant-list.tsx:68
 #: app/features/quota/components/quota-bucket-list.tsx:80
-#: app/features/profile/components/profile-sessions-card.tsx:50
 msgid "Created"
 msgstr "Created"
 
@@ -239,10 +236,6 @@ msgstr "Email"
 msgid "Email Activity"
 msgstr "Email Activity"
 
-#: app/features/profile/components/profile-sessions-card.tsx:105
-msgid "End session"
-msgstr "End session"
-
 #: app/components/date/date-range-picker.tsx:263
 msgid "End Time"
 msgstr "End Time"
@@ -261,7 +254,6 @@ msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr "Enter the word <0>{confirmationText}</0> to perform this action."
 
 #: app/routes/profile/session.tsx:48
-#: app/features/profile/components/profile-sessions-card.tsx:53
 msgid "Expires"
 msgstr "Expires"
 
@@ -342,7 +334,6 @@ msgid "ID"
 msgstr "ID"
 
 #: app/routes/profile/session.tsx:34
-#: app/features/profile/components/profile-sessions-card.tsx:47
 msgid "IP"
 msgstr "IP"
 
@@ -439,10 +430,6 @@ msgstr "Namespace"
 #: app/components/app-search/index.tsx:155
 msgid "Navigation"
 msgstr "Navigation"
-
-#: app/features/profile/components/profile-sessions-card.tsx:64
-msgid "No active sessions."
-msgstr "No active sessions."
 
 #: app/components/app-search/index.tsx:183
 msgid "No results found."
@@ -589,7 +576,6 @@ msgid "Session deleted successfully"
 msgstr "Session deleted successfully"
 
 #: app/routes/profile/session.tsx:27
-#: app/features/profile/components/profile-sessions-card.tsx:44
 msgid "Session ID"
 msgstr "Session ID"
 
