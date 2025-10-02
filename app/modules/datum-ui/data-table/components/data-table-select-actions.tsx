@@ -78,6 +78,16 @@ export function enhanceFirstColumnWithSelectActions<TData>(
           </div>
         );
       }
+
+      if (hasActions && !isSelectable) {
+        return (
+          <div className="flex items-center justify-start gap-2">
+            <div className="w-6" />
+            <div>{originalHeaderContent}</div>
+          </div>
+        );
+      }
+
       return originalHeaderContent;
     },
     cell: ({ row, ...context }: any) => {

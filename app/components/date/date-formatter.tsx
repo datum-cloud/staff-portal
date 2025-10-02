@@ -7,6 +7,7 @@ type Props = {
   withTime?: boolean | 'short';
   format?: string;
   fallback?: string;
+  withGMT?: boolean; // when formatting with a timezone, append GMT offset suffix (default: true)
 };
 
 const DateFormatter = ({
@@ -14,6 +15,7 @@ const DateFormatter = ({
   withTime,
   format = 'MMM dd, yyyy',
   fallback = 'Invalid Date',
+  withGMT = true,
 }: Props) => {
   const { settings } = useApp();
   let parsedDate: Date;
@@ -44,10 +46,13 @@ const DateFormatter = ({
     const formattedDate = formatInTimeZone(parsedDate, timeZone, format);
 
     // Get the timezone offset for the suffix
-    const offset = formatInTimeZone(parsedDate, timeZone, 'xxx'); // Returns format like "+07:00" or "-05:00"
-    const tzSuffix = ` GMT${offset}`;
+    if (withGMT) {
+      const offset = formatInTimeZone(parsedDate, timeZone, 'xxx'); // Returns format like "+07:00" or "-05:00"
+      const tzSuffix = ` GMT${offset}`;
+      return <span>{`${formattedDate}${tzSuffix}`}</span>;
+    }
 
-    return <span>{`${formattedDate}${tzSuffix}`}</span>;
+    return <span>{formattedDate}</span>;
   }
 
   return <span>{formatDate(parsedDate, format)}</span>;

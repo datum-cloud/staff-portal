@@ -1,4 +1,4 @@
-import type { Route } from './+types/account';
+import type { Route } from './+types/setting';
 import { PreferencesForm } from '@/features/preferences';
 import { ProfileForm } from '@/features/profile';
 import { metaObject } from '@/utils/helpers';
@@ -6,11 +6,11 @@ import { Col, Row } from '@datum-ui/grid';
 import { Trans } from '@lingui/react/macro';
 
 export const meta: Route.MetaFunction = () => {
-  return metaObject('Account');
+  return metaObject('Settings');
 };
 
 export const handle = {
-  breadcrumb: () => <Trans>Account</Trans>,
+  breadcrumb: () => <Trans>Settings</Trans>,
 };
 
 export default function Page() {

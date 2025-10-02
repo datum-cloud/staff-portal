@@ -50,12 +50,17 @@ export const projectRoutes = {
   },
 } as const;
 
+// Profile feature routes
+export const profileRoutes = {
+  settings: () => '/profile/settings',
+  sessions: () => '/profile/sessions',
+} as const;
+
 // Main routes object
 export const routes = {
   dashboard: () => '/',
   activity: () => '/activity',
   emailActivity: () => '/email-activity',
-  account: () => '/account',
   login: () => '/login',
   logout: () => '/logout',
   authCallback: () => '/auth/callback',
@@ -66,4 +71,5 @@ export const routes = {
   users: userRoutes,
   organizations: orgRoutes,
   projects: projectRoutes,
+  profile: profileRoutes,
 } as const;

@@ -80,9 +80,9 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => navigate(routes.account())}>
+              <DropdownMenuItem onClick={() => navigate(routes.profile.settings())}>
                 <User />
-                {t`Account`}
+                {t`My Profile`}
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />

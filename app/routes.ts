@@ -69,8 +69,11 @@ export default [
     // Email Activity
     route('email-activity', 'routes/email-activity.tsx'),
 
-    // Account
-    route('account', 'routes/account.tsx'),
+    // Profile
+    route('profile', 'routes/profile/layout.tsx', [
+      route('settings', 'routes/profile/setting.tsx'),
+      route('sessions', 'routes/profile/session.tsx'),
+    ]),
 
     route('demo', 'routes/demo.tsx'),
     route('test-sentry', 'routes/test-sentry.tsx'),

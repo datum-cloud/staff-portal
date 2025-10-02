@@ -30,17 +30,17 @@ msgstr ""
 msgid "# of Sources"
 msgstr ""
 
-#: app/routes/account.tsx:13
-#: app/components/app-sidebar/nav-user.tsx:85
-msgid "Account"
-msgstr ""
-
 #: app/routes/user/detail/index.tsx:213
 msgid "Account Management"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:103
 msgid "Action"
+msgstr ""
+
+#: app/routes/profile/session.tsx:17
+#: app/routes/profile/layout.tsx:21
+msgid "Active Sessions"
 msgstr ""
 
 #: app/routes/activity.tsx:11
@@ -82,6 +82,11 @@ msgstr ""
 msgid "Are you sure you want to delete project \"{0} ({1})\"? This action cannot be undone."
 msgstr ""
 
+#. placeholder {0}: selectedSession?.metadata.name
+#: app/routes/profile/session.tsx:82
+msgid "Are you sure you want to delete session \"{0}\"? This action cannot be undone."
+msgstr ""
+
 #. placeholder {0}: data.spec.givenName
 #. placeholder {1}: data.spec.familyName
 #: app/routes/user/detail/index.tsx:109
@@ -90,6 +95,7 @@ msgstr ""
 
 #: app/routes/user/detail/index.tsx:111
 #: app/routes/user/detail/index.tsx:123
+#: app/routes/profile/session.tsx:84
 #: app/components/button/button-delete-action.tsx:43
 msgid "Cancel"
 msgstr ""
@@ -122,6 +128,7 @@ msgstr ""
 #: app/routes/project/detail/export-policy/detail.tsx:95
 #: app/routes/project/detail/domain/index.tsx:53
 #: app/routes/project/detail/domain/detail.tsx:98
+#: app/routes/profile/session.tsx:41
 #: app/routes/organization/index.tsx:38
 #: app/routes/organization/detail/project.tsx:40
 #: app/routes/organization/detail/index.tsx:86
@@ -177,6 +184,7 @@ msgstr ""
 
 #: app/routes/user/detail/index.tsx:110
 #: app/routes/user/detail/index.tsx:328
+#: app/routes/profile/session.tsx:83
 #: app/features/activity/components/activity-list.tsx:339
 #: app/components/button/button-delete-action.tsx:42
 #: app/components/button/button-delete-action.tsx:49
@@ -189,6 +197,10 @@ msgstr ""
 
 #: app/routes/project/detail/index.tsx:40
 msgid "Delete Project"
+msgstr ""
+
+#: app/routes/profile/session.tsx:81
+msgid "Delete Session"
 msgstr ""
 
 #: app/routes/user/detail/index.tsx:108
@@ -241,6 +253,10 @@ msgstr ""
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr ""
 
+#: app/routes/profile/session.tsx:48
+msgid "Expires"
+msgstr ""
+
 #: app/routes/project/detail/layout.tsx:90
 #: app/routes/project/detail/export-policy/layout.tsx:5
 msgid "Export Policies"
@@ -252,6 +268,10 @@ msgstr ""
 
 #: app/routes/project/detail/index.tsx:32
 msgid "Failed to delete project"
+msgstr ""
+
+#: app/routes/profile/session.tsx:99
+msgid "Failed to delete session"
 msgstr ""
 
 #: app/routes/user/detail/index.tsx:63
@@ -313,6 +333,10 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
+#: app/routes/profile/session.tsx:34
+msgid "IP"
+msgstr ""
+
 #: app/routes/user/detail/index.tsx:314
 msgid "Irreversible and destructive actions"
 msgstr ""
@@ -367,6 +391,11 @@ msgstr ""
 
 #: app/routes/project/detail/export-policy/detail.tsx:126
 msgid "MetricsQL"
+msgstr ""
+
+#: app/routes/profile/layout.tsx:8
+#: app/components/app-sidebar/nav-user.tsx:85
+msgid "My Profile"
 msgstr ""
 
 #: app/routes/email-activity.tsx:22
@@ -540,6 +569,19 @@ msgstr ""
 
 #: app/features/preferences/components/preferences-form.tsx:80
 msgid "Select timezone..."
+msgstr ""
+
+#: app/routes/profile/session.tsx:97
+msgid "Session deleted successfully"
+msgstr ""
+
+#: app/routes/profile/session.tsx:27
+msgid "Session ID"
+msgstr ""
+
+#: app/routes/profile/setting.tsx:13
+#: app/routes/profile/layout.tsx:16
+msgid "Settings"
 msgstr ""
 
 #: app/routes/project/detail/export-policy/detail.tsx:164
