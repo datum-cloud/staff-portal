@@ -1,13 +1,20 @@
 import { DateFormatter } from '@/components/date';
 import { Button } from '@/modules/shadcn/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/modules/shadcn/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/modules/shadcn/ui/table';
 import { useApp } from '@/providers/app.provider';
 import { sessionDeleteMutation, sessionListQuery } from '@/resources/request/client';
 import { IdentitySession } from '@/resources/schemas';
+import { Tooltip } from '@datum-ui/tooltip';
 import { Trans } from '@lingui/react/macro';
 import { useQuery } from '@tanstack/react-query';
-import { Tooltip } from '@datum-ui/tooltip';
 import { Trash } from 'lucide-react';
 
 export function ProfileSessionsCard() {
@@ -60,27 +67,36 @@ export function ProfileSessionsCard() {
               ) : (
                 sessions.map((s) => {
                   const sessionId = s.metadata.name;
-                  const shortId = sessionId && sessionId.length > 14 ? `${sessionId.slice(0, 14)}…` : sessionId;
+                  const shortId =
+                    sessionId && sessionId.length > 14 ? `${sessionId.slice(0, 14)}…` : sessionId;
                   const ip = s.status?.ip || '';
 
                   return (
                     <TableRow key={sessionId}>
                       <TableCell
-                        className="w-[160px] max-w-[160px] whitespace-nowrap overflow-hidden text-ellipsis font-mono text-sm"
+                        className="w-[160px] max-w-[160px] overflow-hidden font-mono text-sm text-ellipsis whitespace-nowrap"
                         title={sessionId}>
                         {shortId}
                       </TableCell>
                       <TableCell>{ip || '—'}</TableCell>
                       <TableCell>
                         {s.status?.createdAt ? (
-                          <DateFormatter date={s.status.createdAt} withTime="short" withGMT={false} />
+                          <DateFormatter
+                            date={s.status.createdAt}
+                            withTime="short"
+                            withGMT={false}
+                          />
                         ) : (
                           '—'
                         )}
                       </TableCell>
                       <TableCell>
                         {s.status?.expiresAt ? (
-                          <DateFormatter date={s.status.expiresAt} withTime="short" withGMT={false} />
+                          <DateFormatter
+                            date={s.status.expiresAt}
+                            withTime="short"
+                            withGMT={false}
+                          />
                         ) : (
                           '—'
                         )}
@@ -111,6 +127,3 @@ export function ProfileSessionsCard() {
     </Card>
   );
 }
-
-
-

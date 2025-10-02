@@ -1,16 +1,16 @@
-import type { Route } from './+types/account';
+import type { Route } from './+types/setting';
 import { PreferencesForm } from '@/features/preferences';
-import { ProfileForm, ProfileSessionsCard } from '@/features/profile';
+import { ProfileForm } from '@/features/profile';
 import { metaObject } from '@/utils/helpers';
 import { Col, Row } from '@datum-ui/grid';
 import { Trans } from '@lingui/react/macro';
 
 export const meta: Route.MetaFunction = () => {
-  return metaObject('Account');
+  return metaObject('Settings');
 };
 
 export const handle = {
-  breadcrumb: () => <Trans>Account</Trans>,
+  breadcrumb: () => <Trans>Settings</Trans>,
 };
 
 export default function Page() {
@@ -25,12 +25,6 @@ export default function Page() {
       <Row>
         <Col span={12} offset={6}>
           <PreferencesForm />
-        </Col>
-      </Row>
-
-      <Row className="mt-4">
-        <Col span={12} offset={6}>
-          <ProfileSessionsCard />
         </Col>
       </Row>
     </div>

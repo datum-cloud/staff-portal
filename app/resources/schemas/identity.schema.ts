@@ -39,10 +39,9 @@ export const IdentitySessionListSchema = z.object({
 export type IdentitySession = z.infer<typeof IdentitySessionSchema>;
 export type IdentitySessionList = z.infer<typeof IdentitySessionListSchema>;
 
-export const IdentitySessionListResponseSchema = createProxyResponseSchema(IdentitySessionListSchema);
+export const IdentitySessionListResponseSchema =
+  createProxyResponseSchema(IdentitySessionListSchema);
 export type IdentitySessionListResponse = z.infer<typeof IdentitySessionListResponseSchema>;
 
 export const IdentitySessionResponseSchema = createProxyResponseSchema(IdentitySessionSchema);
 export type IdentitySessionResponse = z.infer<typeof IdentitySessionResponseSchema>;
-
-

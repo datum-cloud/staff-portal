@@ -30,21 +30,18 @@ msgstr "# of Sinks"
 msgid "# of Sources"
 msgstr "# of Sources"
 
-#: app/routes/account.tsx:13
-#: app/components/app-sidebar/nav-user.tsx:85
-msgid "Account"
-msgstr "Account"
-
 #: app/routes/user/detail/index.tsx:213
 msgid "Account Management"
 msgstr "Account Management"
 
-#: app/features/profile/components/profile-sessions-card.tsx:49
+#: app/features/profile/components/profile-sessions-card.tsx:56
 #: app/features/activity/components/activity-list.tsx:103
 msgid "Action"
 msgstr "Action"
 
-#: app/features/profile/components/profile-sessions-card.tsx:28
+#: app/routes/profile/session.tsx:17
+#: app/routes/profile/layout.tsx:21
+#: app/features/profile/components/profile-sessions-card.tsx:35
 msgid "Active Sessions"
 msgstr "Active Sessions"
 
@@ -87,6 +84,11 @@ msgstr "Are you sure you want to delete organization \"{0} ({1})\"? This action 
 msgid "Are you sure you want to delete project \"{0} ({1})\"? This action cannot be undone."
 msgstr "Are you sure you want to delete project \"{0} ({1})\"? This action cannot be undone."
 
+#. placeholder {0}: selectedSession?.metadata.name
+#: app/routes/profile/session.tsx:82
+msgid "Are you sure you want to delete session \"{0}\"? This action cannot be undone."
+msgstr "Are you sure you want to delete session \"{0}\"? This action cannot be undone."
+
 #. placeholder {0}: data.spec.givenName
 #. placeholder {1}: data.spec.familyName
 #: app/routes/user/detail/index.tsx:109
@@ -95,6 +97,7 @@ msgstr "Are you sure you want to delete user \"{0} {1}\"? This action cannot be 
 
 #: app/routes/user/detail/index.tsx:111
 #: app/routes/user/detail/index.tsx:123
+#: app/routes/profile/session.tsx:84
 #: app/components/button/button-delete-action.tsx:43
 msgid "Cancel"
 msgstr "Cancel"
@@ -127,12 +130,13 @@ msgstr "Create"
 #: app/routes/project/detail/export-policy/detail.tsx:95
 #: app/routes/project/detail/domain/index.tsx:53
 #: app/routes/project/detail/domain/detail.tsx:98
+#: app/routes/profile/session.tsx:41
 #: app/routes/organization/index.tsx:38
 #: app/routes/organization/detail/project.tsx:40
 #: app/routes/organization/detail/index.tsx:86
 #: app/features/quota/components/quota-grant-list.tsx:68
 #: app/features/quota/components/quota-bucket-list.tsx:80
-#: app/features/profile/components/profile-sessions-card.tsx:43
+#: app/features/profile/components/profile-sessions-card.tsx:50
 msgid "Created"
 msgstr "Created"
 
@@ -183,6 +187,7 @@ msgstr "Deactivation Reason:"
 
 #: app/routes/user/detail/index.tsx:110
 #: app/routes/user/detail/index.tsx:328
+#: app/routes/profile/session.tsx:83
 #: app/features/activity/components/activity-list.tsx:339
 #: app/components/button/button-delete-action.tsx:42
 #: app/components/button/button-delete-action.tsx:49
@@ -196,6 +201,10 @@ msgstr "Delete {itemType}"
 #: app/routes/project/detail/index.tsx:40
 msgid "Delete Project"
 msgstr "Delete Project"
+
+#: app/routes/profile/session.tsx:81
+msgid "Delete Session"
+msgstr "Delete Session"
 
 #: app/routes/user/detail/index.tsx:108
 #: app/routes/user/detail/index.tsx:321
@@ -230,7 +239,7 @@ msgstr "Email"
 msgid "Email Activity"
 msgstr "Email Activity"
 
-#: app/features/profile/components/profile-sessions-card.tsx:89
+#: app/features/profile/components/profile-sessions-card.tsx:105
 msgid "End session"
 msgstr "End session"
 
@@ -251,7 +260,8 @@ msgstr "Enter reason for deactivation..."
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr "Enter the word <0>{confirmationText}</0> to perform this action."
 
-#: app/features/profile/components/profile-sessions-card.tsx:46
+#: app/routes/profile/session.tsx:48
+#: app/features/profile/components/profile-sessions-card.tsx:53
 msgid "Expires"
 msgstr "Expires"
 
@@ -267,6 +277,10 @@ msgstr "Failed to delete organization"
 #: app/routes/project/detail/index.tsx:32
 msgid "Failed to delete project"
 msgstr "Failed to delete project"
+
+#: app/routes/profile/session.tsx:99
+msgid "Failed to delete session"
+msgstr "Failed to delete session"
 
 #: app/routes/user/detail/index.tsx:63
 msgid "Failed to delete user"
@@ -327,7 +341,8 @@ msgstr "HTTP Proxies"
 msgid "ID"
 msgstr "ID"
 
-#: app/features/profile/components/profile-sessions-card.tsx:40
+#: app/routes/profile/session.tsx:34
+#: app/features/profile/components/profile-sessions-card.tsx:47
 msgid "IP"
 msgstr "IP"
 
@@ -387,6 +402,11 @@ msgstr "Message"
 msgid "MetricsQL"
 msgstr "MetricsQL"
 
+#: app/routes/profile/layout.tsx:8
+#: app/components/app-sidebar/nav-user.tsx:85
+msgid "My Profile"
+msgstr "My Profile"
+
 #: app/routes/email-activity.tsx:22
 #: app/routes/user/index.tsx:21
 #: app/routes/user/detail/organization.tsx:18
@@ -420,7 +440,7 @@ msgstr "Namespace"
 msgid "Navigation"
 msgstr "Navigation"
 
-#: app/features/profile/components/profile-sessions-card.tsx:57
+#: app/features/profile/components/profile-sessions-card.tsx:64
 msgid "No active sessions."
 msgstr "No active sessions."
 
@@ -564,9 +584,19 @@ msgstr "Secrets"
 msgid "Select timezone..."
 msgstr "Select timezone..."
 
-#: app/features/profile/components/profile-sessions-card.tsx:37
+#: app/routes/profile/session.tsx:97
+msgid "Session deleted successfully"
+msgstr "Session deleted successfully"
+
+#: app/routes/profile/session.tsx:27
+#: app/features/profile/components/profile-sessions-card.tsx:44
 msgid "Session ID"
 msgstr "Session ID"
+
+#: app/routes/profile/setting.tsx:13
+#: app/routes/profile/layout.tsx:16
+msgid "Settings"
+msgstr "Settings"
 
 #: app/routes/project/detail/export-policy/detail.tsx:164
 msgid "Sinks"
