@@ -38,7 +38,7 @@ msgstr ""
 msgid "Action"
 msgstr ""
 
-#: app/routes/profile/session.tsx:17
+#: app/routes/profile/session.tsx:22
 #: app/routes/profile/layout.tsx:21
 msgid "Active Sessions"
 msgstr ""
@@ -83,7 +83,7 @@ msgid "Are you sure you want to delete project \"{0} ({1})\"? This action cannot
 msgstr ""
 
 #. placeholder {0}: selectedSession?.metadata.name
-#: app/routes/profile/session.tsx:82
+#: app/routes/profile/session.tsx:87
 msgid "Are you sure you want to delete session \"{0}\"? This action cannot be undone."
 msgstr ""
 
@@ -95,7 +95,8 @@ msgstr ""
 
 #: app/routes/user/detail/index.tsx:111
 #: app/routes/user/detail/index.tsx:123
-#: app/routes/profile/session.tsx:84
+#: app/routes/profile/session.tsx:89
+#: app/features/quota/components/quota-bucket-list.tsx:146
 #: app/components/button/button-delete-action.tsx:43
 msgid "Cancel"
 msgstr ""
@@ -128,12 +129,12 @@ msgstr ""
 #: app/routes/project/detail/export-policy/detail.tsx:95
 #: app/routes/project/detail/domain/index.tsx:53
 #: app/routes/project/detail/domain/detail.tsx:98
-#: app/routes/profile/session.tsx:41
+#: app/routes/profile/session.tsx:46
 #: app/routes/organization/index.tsx:38
 #: app/routes/organization/detail/project.tsx:40
 #: app/routes/organization/detail/index.tsx:86
 #: app/features/quota/components/quota-grant-list.tsx:68
-#: app/features/quota/components/quota-bucket-list.tsx:80
+#: app/features/quota/components/quota-bucket-list.tsx:68
 msgid "Created"
 msgstr ""
 
@@ -184,7 +185,7 @@ msgstr ""
 
 #: app/routes/user/detail/index.tsx:110
 #: app/routes/user/detail/index.tsx:328
-#: app/routes/profile/session.tsx:83
+#: app/routes/profile/session.tsx:88
 #: app/features/activity/components/activity-list.tsx:339
 #: app/components/button/button-delete-action.tsx:42
 #: app/components/button/button-delete-action.tsx:49
@@ -199,7 +200,7 @@ msgstr ""
 msgid "Delete Project"
 msgstr ""
 
-#: app/routes/profile/session.tsx:81
+#: app/routes/profile/session.tsx:86
 msgid "Delete Session"
 msgstr ""
 
@@ -225,6 +226,11 @@ msgstr ""
 #: app/routes/project/detail/layout.tsx:80
 #: app/routes/project/detail/domain/layout.tsx:5
 msgid "Domains"
+msgstr ""
+
+#: app/features/quota/components/quota-bucket-list.tsx:87
+#: app/features/quota/components/quota-bucket-list.tsx:144
+msgid "Edit Quota"
 msgstr ""
 
 #: app/routes/user/detail/index.tsx:173
@@ -253,7 +259,7 @@ msgstr ""
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr ""
 
-#: app/routes/profile/session.tsx:48
+#: app/routes/profile/session.tsx:53
 msgid "Expires"
 msgstr ""
 
@@ -270,7 +276,7 @@ msgstr ""
 msgid "Failed to delete project"
 msgstr ""
 
-#: app/routes/profile/session.tsx:99
+#: app/routes/profile/session.tsx:104
 msgid "Failed to delete session"
 msgstr ""
 
@@ -315,7 +321,6 @@ msgstr ""
 #: app/routes/project/detail/quota/grant.tsx:9
 #: app/routes/organization/detail/layout.tsx:61
 #: app/routes/organization/detail/quota/grant.tsx:9
-#: app/features/quota/components/quota-bucket-list.tsx:26
 msgid "Grants"
 msgstr ""
 
@@ -333,7 +338,7 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
-#: app/routes/profile/session.tsx:34
+#: app/routes/profile/session.tsx:39
 msgid "IP"
 msgstr ""
 
@@ -356,6 +361,10 @@ msgstr ""
 
 #: app/components/theme-switcher/index.tsx:37
 msgid "Light"
+msgstr ""
+
+#: app/features/quota/components/quota-bucket-list.tsx:156
+msgid "Limit:"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:334
@@ -417,7 +426,6 @@ msgstr ""
 #: app/routes/organization/detail/member.tsx:26
 #: app/routes/organization/detail/index.tsx:66
 #: app/features/quota/components/quota-grant-list.tsx:30
-#: app/features/quota/components/quota-bucket-list.tsx:17
 msgid "Name"
 msgstr ""
 
@@ -429,6 +437,10 @@ msgstr ""
 
 #: app/components/app-search/index.tsx:155
 msgid "Navigation"
+msgstr ""
+
+#: app/features/quota/components/quota-bucket-list.tsx:161
+msgid "New Limit"
 msgstr ""
 
 #: app/components/app-search/index.tsx:183
@@ -522,6 +534,10 @@ msgstr ""
 msgid "Quick ranges"
 msgstr ""
 
+#: app/features/quota/components/quota-bucket-list.tsx:133
+msgid "Quota updated successfully"
+msgstr ""
+
 #: app/routes/project/detail/layout.tsx:105
 #: app/routes/project/detail/quota/layout.tsx:5
 #: app/routes/organization/detail/layout.tsx:52
@@ -546,8 +562,12 @@ msgid "Reason for deactivation"
 msgstr ""
 
 #: app/features/quota/components/quota-grant-list.tsx:35
-#: app/features/quota/components/quota-bucket-list.tsx:21
+#: app/features/quota/components/quota-bucket-list.tsx:30
 msgid "Resource Type"
+msgstr ""
+
+#: app/features/quota/components/quota-bucket-list.tsx:152
+msgid "Resource Type:"
 msgstr ""
 
 #: app/features/profile/components/profile-form.tsx:58
@@ -571,11 +591,11 @@ msgstr ""
 msgid "Select timezone..."
 msgstr ""
 
-#: app/routes/profile/session.tsx:97
+#: app/routes/profile/session.tsx:102
 msgid "Session deleted successfully"
 msgstr ""
 
-#: app/routes/profile/session.tsx:27
+#: app/routes/profile/session.tsx:32
 msgid "Session ID"
 msgstr ""
 
@@ -647,6 +667,7 @@ msgstr ""
 msgid "Type a command or search..."
 msgstr ""
 
+#: app/features/quota/components/quota-bucket-list.tsx:145
 #: app/features/activity/components/activity-list.tsx:337
 msgid "Update"
 msgstr ""
@@ -659,7 +680,7 @@ msgstr ""
 #: app/routes/project/detail/quota/usage.tsx:9
 #: app/routes/organization/detail/layout.tsx:57
 #: app/routes/organization/detail/quota/usage.tsx:9
-#: app/features/quota/components/quota-bucket-list.tsx:47
+#: app/features/quota/components/quota-bucket-list.tsx:35
 msgid "Usage"
 msgstr ""
 

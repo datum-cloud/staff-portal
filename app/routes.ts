@@ -29,6 +29,7 @@ export default [
           route('projects', 'routes/organization/detail/project.tsx'),
           route('activity', 'routes/organization/detail/activity.tsx'),
           route('quotas', 'routes/organization/detail/quota/layout.tsx', [
+            index('routes/organization/detail/quota/index.tsx'),
             route('usage', 'routes/organization/detail/quota/usage.tsx'),
             route('grants', 'routes/organization/detail/quota/grant.tsx'),
           ]),
@@ -55,6 +56,7 @@ export default [
             route(':httpProxyName', 'routes/project/detail/httpproxy/detail.tsx'),
           ]),
           route('quotas', 'routes/project/detail/quota/layout.tsx', [
+            index('routes/project/detail/quota/index.tsx'),
             route('usage', 'routes/project/detail/quota/usage.tsx'),
             route('grants', 'routes/project/detail/quota/grant.tsx'),
           ]),
@@ -71,6 +73,7 @@ export default [
 
     // Profile
     route('profile', 'routes/profile/layout.tsx', [
+      index('routes/profile/index.tsx'),
       route('settings', 'routes/profile/setting.tsx'),
       route('sessions', 'routes/profile/session.tsx'),
     ]),

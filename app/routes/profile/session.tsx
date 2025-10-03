@@ -1,7 +1,12 @@
 import type { Route } from './+types/session';
 import { DateFormatter } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
-import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/datum-ui/data-table';
+import {
+  DataTable,
+  DataTableProvider,
+  useDataTableQuery,
+  type ActionItem,
+} from '@/modules/datum-ui/data-table';
 import { toast } from '@/modules/datum-ui/toast';
 import { Text } from '@/modules/datum-ui/typography';
 import { useApp } from '@/providers/app.provider';
@@ -64,7 +69,7 @@ export default function Page() {
     useSorting: true,
   });
 
-  const actions = [
+  const actions: ActionItem<IdentitySession>[] = [
     {
       label: 'Delete',
       icon: Trash2Icon,

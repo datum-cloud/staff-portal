@@ -3,8 +3,11 @@ import {
   AllowanceBucketListResponseSchema,
   AllowanceBucketResponseSchema,
   ListQueryParams,
+  ResourceGrantCreate,
+  ResourceGrantCreateSchema,
+  ResourceGrantListResponseSchema,
+  ResourceGrantResponseSchema,
 } from '@/resources/schemas';
-import { ResourceGrantListResponseSchema, ResourceGrantResponseSchema } from '@/resources/schemas';
 import { z } from 'zod';
 
 // Generic helpers for optional selectors
@@ -105,6 +108,16 @@ export const projectQuotaGrantListQuery = (
     ...params,
     fieldSelector: fieldSelectorParts.join(','),
   });
+};
+
+export const quotaGrantCreateMutation = (payload: ResourceGrantCreate) => {
+  return apiRequestClient({
+    method: 'POST',
+    url: `/apis/quota.miloapis.com/v1alpha1/namespaces/${payload.metadata.namespace}/resourcegrants`,
+    data: payload,
+  })
+    .input(ResourceGrantCreateSchema)
+    .execute();
 };
 
 // ------------------------
