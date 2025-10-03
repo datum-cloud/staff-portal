@@ -94,6 +94,38 @@ export type ResourceGrantListResponse = z.infer<typeof ResourceGrantListResponse
 export const ResourceGrantResponseSchema = createProxyResponseSchema(ResourceGrantSchema);
 export type ResourceGrantResponse = z.infer<typeof ResourceGrantResponseSchema>;
 
+export const ResourceGrantCreateSchema = z.object({
+  apiVersion: z.literal('quota.miloapis.com/v1alpha1'),
+  kind: z.literal('ResourceGrant'),
+  metadata: z.object({
+    generateName: z.string().min(1),
+    namespace: z.string().min(1),
+  }),
+  spec: z.object({
+    consumerRef: z.object({
+      apiGroup: z.string().default('resourcemanager.miloapis.com'),
+      kind: z.enum(['Organization', 'Project']),
+      name: z.string().min(1),
+    }),
+    allowances: z
+      .array(
+        z.object({
+          resourceType: z.string().min(1),
+          buckets: z
+            .array(
+              z.object({
+                amount: z.number().int().min(1),
+              })
+            )
+            .min(1),
+        })
+      )
+      .min(1),
+  }),
+});
+
+export type ResourceGrantCreate = z.infer<typeof ResourceGrantCreateSchema>;
+
 export const AllowanceBucketSchema = z.object({
   apiVersion: z.string(),
   kind: z.literal('AllowanceBucket'),
@@ -123,7 +155,7 @@ export const AllowanceBucketSchema = z.object({
   spec: z.object({
     consumerRef: z.object({
       apiGroup: z.string().optional(),
-      kind: z.string(),
+      kind: z.enum(['Organization', 'Project']),
       name: z.string(),
       namespace: z.string().optional(),
     }),

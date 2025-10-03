@@ -81,7 +81,7 @@ export default function Page() {
           },
         },
       });
-      revalidate();
+      revalidate(); // Refresh the user detail page
       toast.success(t`User deactivated successfully`);
     } catch (error) {
       throw error; // Re-throw to keep dialog open
@@ -92,7 +92,7 @@ export default function Page() {
     setIsReactivating(true);
     try {
       await userReactivateMutation(data.metadata.name);
-      revalidate();
+      revalidate(); // Refresh the user detail page
       toast.success(t`User reactivated successfully`);
       setIsReactivating(false);
     } catch {
