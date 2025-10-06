@@ -1,3 +1,4 @@
+import { Tooltip } from '../../tooltip';
 import { Button } from '@/modules/shadcn/ui/button';
 import { Checkbox } from '@/modules/shadcn/ui/checkbox';
 import {
@@ -16,7 +17,8 @@ export interface ActionItem<TData> {
   onClick: (row: TData) => void;
   icon?: React.ComponentType<{ className?: string }>;
   variant?: 'default' | 'destructive';
-  disabled?: boolean;
+  disabled?: boolean | ((row: TData) => boolean);
+  tooltip?: string | ((row: TData) => string);
 }
 
 export interface SelectActionsColumnConfig<TData> {
@@ -121,16 +123,30 @@ export function enhanceFirstColumnWithSelectActions<TData>(
                 {config.label && config.actions!.length > 0 && <DropdownMenuSeparator />}
                 {config.actions!.map((action, index) => {
                   const Icon = action.icon;
-                  return (
+                  const isDisabled =
+                    typeof action.disabled === 'function' ? action.disabled(data) : action.disabled;
+                  const tooltipText =
+                    typeof action.tooltip === 'function' ? action.tooltip(data) : action.tooltip;
+                  const menuItem = (
                     <DropdownMenuItem
                       key={index}
-                      onClick={() => action.onClick(data)}
-                      disabled={action.disabled}
+                      onClick={() => !isDisabled && action.onClick(data)}
+                      disabled={isDisabled}
                       variant={action.variant}>
                       {Icon && <Icon className="h-4 w-4" />}
                       {action.label}
                     </DropdownMenuItem>
                   );
+
+                  if (tooltipText && isDisabled) {
+                    return (
+                      <Tooltip key={index} message={tooltipText}>
+                        <div className="w-full">{menuItem}</div>
+                      </Tooltip>
+                    );
+                  }
+
+                  return menuItem;
                 })}
               </DropdownMenuContent>
             </DropdownMenu>

@@ -44,6 +44,20 @@ const columns = [
       const total = limit;
       const percentage = total > 0 ? Math.round((used / total) * 100) : 0;
 
+      // Determine progress bar color based on thresholds
+      const getProgressBarColor = (percentage: number, limit: number) => {
+        if (limit === 0) {
+          return 'bg-gray-400'; // Gray for no limit set
+        }
+        if (percentage <= 70) {
+          return 'bg-green-500'; // Green for healthy usage (0-70%)
+        }
+        if (percentage <= 90) {
+          return 'bg-yellow-500'; // Yellow for warning (70-90%)
+        }
+        return 'bg-red-500'; // Red for critical (90-100%)
+      };
+
       return (
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
@@ -56,7 +70,7 @@ const columns = [
           </div>
           <div className="bg-muted h-2 w-full rounded-full">
             <div
-              className="bg-primary h-2 rounded-full transition-all"
+              className={`${getProgressBarColor(percentage, total)} h-2 rounded-full transition-all`}
               style={{ width: `${Math.min(percentage, 100)}%` }}
             />
           </div>
@@ -103,7 +117,6 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn }: QuotaBucketListProp
 
   const handleEditQuota = async (formData: z.infer<typeof increaseSchema>) => {
     try {
-      const name = [selected?.spec.consumerRef.name ?? '', getTime(new Date())];
       const newLimit = formData.newLimit;
       const amount = Math.max(0, newLimit - currentLimit);
 
@@ -111,7 +124,7 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn }: QuotaBucketListProp
         apiVersion: 'quota.miloapis.com/v1alpha1',
         kind: 'ResourceGrant',
         metadata: {
-          generateName: name.join('-'),
+          generateName: `${selected?.spec.consumerRef.name ?? ''}-quota-`,
           namespace: selected?.metadata.namespace ?? '',
         },
         spec: {

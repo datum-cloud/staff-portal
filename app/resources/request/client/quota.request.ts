@@ -120,6 +120,13 @@ export const quotaGrantCreateMutation = (payload: ResourceGrantCreate) => {
     .execute();
 };
 
+export const quotaGrantDeleteMutation = (name: string, namespace: string = 'default') => {
+  return apiRequestClient({
+    method: 'DELETE',
+    url: `/apis/quota.miloapis.com/v1alpha1/namespaces/${namespace}/resourcegrants/${name}`,
+  }).execute();
+};
+
 // ------------------------
 // AllowanceBuckets
 // ------------------------
@@ -177,6 +184,14 @@ export const projectQuotaBucketListQuery = (
   });
 };
 
+export const quotaBucketDeleteMutation = (name: string) => {
+  // Buckets are cluster-scoped, so no namespace needed
+  return apiRequestClient({
+    method: 'DELETE',
+    url: `/apis/quota.miloapis.com/v1alpha1/allowancebuckets/${name}`,
+  }).execute();
+};
+
 // ------------------------
 // ResourceClaims
 // ------------------------
@@ -227,4 +242,12 @@ export const projectQuotaClaimListQuery = (
     ...params,
     fieldSelector: parts.join(','),
   });
+};
+
+export const quotaClaimDeleteMutation = (name: string, namespace: string = 'default') => {
+  // Claims are generally namespaced
+  return apiRequestClient({
+    method: 'DELETE',
+    url: `/apis/quota.miloapis.com/v1alpha1/namespaces/${namespace}/resourceclaims/${name}`,
+  }).execute();
 };
