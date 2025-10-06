@@ -71,10 +71,10 @@ export default function Page() {
 
   const actions: ActionItem<IdentitySession>[] = [
     {
-      label: 'Delete',
+      label: t`Delete`,
       icon: Trash2Icon,
       variant: 'destructive' as const,
-      onClick: (row: IdentitySession) => setSelectedSession(row),
+      onClick: (row) => setSelectedSession(row),
     },
   ];
 

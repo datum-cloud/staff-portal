@@ -62,13 +62,18 @@ msgstr "All read operations"
 msgid "All write operations"
 msgstr "All write operations"
 
-#: app/features/quota/components/quota-grant-list.tsx:49
+#: app/features/quota/components/quota-grant-list.tsx:59
 msgid "Allocation"
 msgstr "Allocation"
 
 #: app/features/preferences/components/preferences-form.tsx:125
 msgid "Apply"
 msgstr "Apply"
+
+#. placeholder {0}: selectedGrant?.metadata.name
+#: app/features/quota/components/quota-grant-list.tsx:140
+msgid "Are you sure you want to delete grant \"{0}\"? This action cannot be undone."
+msgstr "Are you sure you want to delete grant \"{0}\"? This action cannot be undone."
 
 #. placeholder {0}: data.metadata.annotations?.['kubernetes.io/display-name']
 #. placeholder {1}: data.metadata.name
@@ -93,13 +98,26 @@ msgstr "Are you sure you want to delete session \"{0}\"? This action cannot be u
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 
+#: app/features/quota/components/quota-grant-list.tsx:126
+msgid "Auto-managed by grant creation policy. Cannot be deleted."
+msgstr "Auto-managed by grant creation policy. Cannot be deleted."
+
+#: app/features/quota/components/quota-grant-list.tsx:125
+msgid "Auto-managed by policy \"{policyName}\". Cannot be deleted."
+msgstr "Auto-managed by policy \"{policyName}\". Cannot be deleted."
+
 #: app/routes/user/detail/index.tsx:111
 #: app/routes/user/detail/index.tsx:123
 #: app/routes/profile/session.tsx:89
-#: app/features/quota/components/quota-bucket-list.tsx:146
+#: app/features/quota/components/quota-grant-list.tsx:142
+#: app/features/quota/components/quota-bucket-list.tsx:159
 #: app/components/button/button-delete-action.tsx:43
 msgid "Cancel"
 msgstr "Cancel"
+
+#: app/features/quota/components/quota-grant-list.tsx:117
+msgid "Cannot delete inactive grant"
+msgstr "Cannot delete inactive grant"
 
 #: app/features/preferences/components/preferences-form.tsx:94
 msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
@@ -133,8 +151,8 @@ msgstr "Create"
 #: app/routes/organization/index.tsx:38
 #: app/routes/organization/detail/project.tsx:40
 #: app/routes/organization/detail/index.tsx:86
-#: app/features/quota/components/quota-grant-list.tsx:68
-#: app/features/quota/components/quota-bucket-list.tsx:68
+#: app/features/quota/components/quota-grant-list.tsx:78
+#: app/features/quota/components/quota-bucket-list.tsx:82
 msgid "Created"
 msgstr "Created"
 
@@ -185,7 +203,9 @@ msgstr "Deactivation Reason:"
 
 #: app/routes/user/detail/index.tsx:110
 #: app/routes/user/detail/index.tsx:328
+#: app/routes/profile/session.tsx:74
 #: app/routes/profile/session.tsx:88
+#: app/features/quota/components/quota-grant-list.tsx:141
 #: app/features/activity/components/activity-list.tsx:339
 #: app/components/button/button-delete-action.tsx:42
 #: app/components/button/button-delete-action.tsx:49
@@ -195,6 +215,10 @@ msgstr "Delete"
 #: app/components/button/button-delete-action.tsx:40
 msgid "Delete {itemType}"
 msgstr "Delete {itemType}"
+
+#: app/features/quota/components/quota-grant-list.tsx:139
+msgid "Delete Grant"
+msgstr "Delete Grant"
 
 #: app/routes/project/detail/index.tsx:40
 msgid "Delete Project"
@@ -228,8 +252,8 @@ msgstr "Domain verification is in progress. This may take a few minutes."
 msgid "Domains"
 msgstr "Domains"
 
-#: app/features/quota/components/quota-bucket-list.tsx:87
-#: app/features/quota/components/quota-bucket-list.tsx:144
+#: app/features/quota/components/quota-bucket-list.tsx:101
+#: app/features/quota/components/quota-bucket-list.tsx:157
 msgid "Edit Quota"
 msgstr "Edit Quota"
 
@@ -267,6 +291,10 @@ msgstr "Expires"
 #: app/routes/project/detail/export-policy/layout.tsx:5
 msgid "Export Policies"
 msgstr "Export Policies"
+
+#: app/features/quota/components/quota-grant-list.tsx:157
+msgid "Failed to delete grant"
+msgstr "Failed to delete grant"
 
 #: app/routes/organization/detail/index.tsx:33
 msgid "Failed to delete organization"
@@ -317,6 +345,10 @@ msgstr "General"
 msgid "Get"
 msgstr "Get"
 
+#: app/features/quota/components/quota-grant-list.tsx:155
+msgid "Grant deleted successfully"
+msgstr "Grant deleted successfully"
+
 #: app/routes/project/detail/layout.tsx:114
 #: app/routes/project/detail/quota/grant.tsx:9
 #: app/routes/organization/detail/layout.tsx:61
@@ -363,7 +395,7 @@ msgstr "Last name is required"
 msgid "Light"
 msgstr "Light"
 
-#: app/features/quota/components/quota-bucket-list.tsx:156
+#: app/features/quota/components/quota-bucket-list.tsx:169
 msgid "Limit:"
 msgstr "Limit:"
 
@@ -425,7 +457,7 @@ msgstr "My Profile"
 #: app/routes/organization/detail/project.tsx:25
 #: app/routes/organization/detail/member.tsx:26
 #: app/routes/organization/detail/index.tsx:66
-#: app/features/quota/components/quota-grant-list.tsx:30
+#: app/features/quota/components/quota-grant-list.tsx:40
 msgid "Name"
 msgstr "Name"
 
@@ -439,7 +471,7 @@ msgstr "Namespace"
 msgid "Navigation"
 msgstr "Navigation"
 
-#: app/features/quota/components/quota-bucket-list.tsx:161
+#: app/features/quota/components/quota-bucket-list.tsx:174
 msgid "New Limit"
 msgstr "New Limit"
 
@@ -534,7 +566,7 @@ msgstr "Query"
 msgid "Quick ranges"
 msgstr "Quick ranges"
 
-#: app/features/quota/components/quota-bucket-list.tsx:133
+#: app/features/quota/components/quota-bucket-list.tsx:146
 msgid "Quota updated successfully"
 msgstr "Quota updated successfully"
 
@@ -561,12 +593,12 @@ msgstr "Reactivate User"
 msgid "Reason for deactivation"
 msgstr "Reason for deactivation"
 
-#: app/features/quota/components/quota-grant-list.tsx:35
+#: app/features/quota/components/quota-grant-list.tsx:45
 #: app/features/quota/components/quota-bucket-list.tsx:30
 msgid "Resource Type"
 msgstr "Resource Type"
 
-#: app/features/quota/components/quota-bucket-list.tsx:152
+#: app/features/quota/components/quota-bucket-list.tsx:165
 msgid "Resource Type:"
 msgstr "Resource Type:"
 
@@ -634,7 +666,7 @@ msgstr "Start Time"
 #: app/routes/project/detail/export-policy/detail.tsx:184
 #: app/routes/project/detail/domain/index.tsx:44
 #: app/routes/project/detail/domain/detail.tsx:85
-#: app/features/quota/components/quota-grant-list.tsx:62
+#: app/features/quota/components/quota-grant-list.tsx:72
 #: app/features/activity/components/activity-list.tsx:116
 msgid "Status"
 msgstr "Status"
@@ -667,7 +699,7 @@ msgstr "Type"
 msgid "Type a command or search..."
 msgstr "Type a command or search..."
 
-#: app/features/quota/components/quota-bucket-list.tsx:145
+#: app/features/quota/components/quota-bucket-list.tsx:158
 #: app/features/activity/components/activity-list.tsx:337
 msgid "Update"
 msgstr "Update"
