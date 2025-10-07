@@ -51,21 +51,18 @@ class ZitadelStrategy extends OAuth2Strategy<IZitadelResponse> {
 }
 
 export async function createZitadelStrategy() {
+  const defaultScopes = ['openid', 'profile', 'email', 'phone', 'address', 'offline_access'];
+  const mergedScopes = Array.from(
+    new Set([...(defaultScopes as string[]), ...((env.authOidcScopes as string[]) ?? [])])
+  );
+
   const config: OAuthProviderConfig = {
     name: 'Zitadel',
     issuer: env.AUTH_OIDC_ISSUER,
     clientId: env.AUTH_OIDC_CLIENT_ID,
     clientSecret: env.AUTH_OIDC_CLIENT_SECRET,
     redirectURI: `${env.APP_URL}/auth/callback`,
-    scopes: [
-      'openid',
-      'profile',
-      'email',
-      'phone',
-      'address',
-      'offline_access',
-      // 'urn:zitadel:iam:org:id:325848471661779545',
-    ],
+    scopes: mergedScopes,
     // Force re-authentication to avoid silent SSO
     prompt: OIDCPrompt.LOGIN,
   };
