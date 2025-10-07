@@ -9,6 +9,15 @@ const envSchema = z.object({
   AUTH_OIDC_CLIENT_ID: z.string(),
   SESSION_SECRET: z.string().min(32),
   VERSION: z.string(),
+
+  // Optional configuration
+  AUTH_OIDC_SCOPES: z.string().optional(),
+  AUTH_OIDC_CLIENT_SECRET: z.string().optional(),
+  OTEL_ENABLED: z.string().optional(),
+  OTEL_EXPORTER_OTLP_ENDPOINT: z.string().optional(),
+  OTEL_LOG_LEVEL: z.string().optional(),
+  SENTRY_ENV: z.string().optional(),
+  SENTRY_DSN: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -29,21 +38,16 @@ const parsedEnv = getEnv();
 
 export const env = {
   ...parsedEnv,
-  AUTH_OIDC_CLIENT_SECRET: process.env.AUTH_OIDC_CLIENT_SECRET,
-  OTEL_ENABLED: process.env.OTEL_ENABLED,
-  OTEL_EXPORTER_OTLP_ENDPOINT: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
-  OTEL_LOG_LEVEL: process.env.OTEL_LOG_LEVEL,
-
-  // Sentry configuration
-  SENTRY_ENV: process.env.SENTRY_ENV,
-  SENTRY_DSN: process.env.SENTRY_DSN,
-
+  authOidcScopes: parsedEnv.AUTH_OIDC_SCOPES
+    ? parsedEnv.AUTH_OIDC_SCOPES.split(/[ ,]+/)
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : [],
   isDev: parsedEnv.NODE_ENV === 'development',
   isProd: parsedEnv.NODE_ENV === 'production',
   isTest: parsedEnv.NODE_ENV === 'test',
   isDebug: toBoolean(process.env.DEBUG),
   isCypress: toBoolean(process.env.CYPRESS),
-  isOtelEnabled:
-    toBoolean(process.env.OTEL_ENABLED) && process.env.OTEL_EXPORTER_OTLP_ENDPOINT !== '',
-  isSentryEnabled: !!process.env.SENTRY_DSN,
+  isOtelEnabled: toBoolean(parsedEnv.OTEL_ENABLED) && parsedEnv.OTEL_EXPORTER_OTLP_ENDPOINT !== '',
+  isSentryEnabled: !!parsedEnv.SENTRY_DSN,
 };
