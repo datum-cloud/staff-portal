@@ -14,6 +14,7 @@ export {
   addSentryBreadcrumb,
   setSentryTag,
   setSentryContext,
+  captureApiError,
 } from './sentry';
 
 // Create and export default logger instance

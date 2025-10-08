@@ -1,4 +1,5 @@
 import { logger } from '@/utils/logger';
+import { captureApiError } from '@/utils/logger';
 import { toast } from '@datum-ui/toast';
 import Axios, {
   AxiosError,
@@ -87,6 +88,18 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   };
 
   const errorInfo = getErrorMessage(error);
+
+  // Capture API request errors to Sentry with proper context
+  const sentryError = new Error(`API Request Failed: ${errorInfo.message}`);
+  sentryError.name = 'ApiRequestError';
+
+  captureApiError(sentryError, {
+    url: error.config?.url,
+    method: error.config?.method,
+    status: error.response?.status,
+    requestId: errorInfo?.requestId,
+    responseData: error.response?.data,
+  });
 
   // For all other errors, show toast with meaningful info
   const title = errorInfo.requestId ? `Request ID: ${errorInfo.requestId}` : 'Error';
