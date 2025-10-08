@@ -71,28 +71,6 @@ async function handleRequest(
             stack: error instanceof Error ? error.stack : undefined,
           });
 
-          // Capture server-side rendering errors to Sentry
-          if (error instanceof Error) {
-            const sentryError = new Error(`Server Shell Rendering Error: ${error.message}`);
-            sentryError.name = 'ServerShellRenderingError';
-            sentryError.stack = error.stack;
-
-            // Import Sentry dynamically to avoid issues
-            import('@sentry/react').then(({ captureException }) => {
-              captureException(sentryError, {
-                tags: {
-                  'error.type': 'server_rendering',
-                  'error.component': 'shell',
-                },
-                extra: {
-                  requestId,
-                  url: request.url,
-                  userAgent: userAgent,
-                },
-              });
-            });
-          }
-
           reject(error);
         },
         onError(error: unknown) {
@@ -105,29 +83,6 @@ async function handleRequest(
             url: request.url,
             userAgent: userAgent,
           });
-
-          // Capture server-side rendering errors to Sentry
-          if (error instanceof Error) {
-            const sentryError = new Error(`Server React Rendering Error: ${error.message}`);
-            sentryError.name = 'ServerReactRenderingError';
-            sentryError.stack = error.stack;
-
-            // Import Sentry dynamically to avoid issues
-            import('@sentry/react').then(({ captureException }) => {
-              captureException(sentryError, {
-                tags: {
-                  'error.type': 'server_rendering',
-                  'error.component': 'react',
-                  'error.after_shell': shellRendered ? 'true' : 'false',
-                },
-                extra: {
-                  requestId,
-                  url: request.url,
-                  userAgent: userAgent,
-                },
-              });
-            });
-          }
 
           if (shellRendered) {
             logger.error(`Error after shell rendered`, {
@@ -145,7 +100,6 @@ async function handleRequest(
 
 // Wrap the handleRequest function with Sentry
 export default Sentry.wrapSentryHandleRequest(handleRequest);
-
 // Export handleError for Sentry error capture
 export const handleError = Sentry.createSentryHandleError({
   logErrors: false,
