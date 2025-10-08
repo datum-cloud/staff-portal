@@ -1,40 +1,55 @@
 import type { User } from '@/resources/schemas';
 import * as Sentry from '@sentry/react';
 
+interface UserContext {
+  id: string;
+  uid: string;
+  email: string;
+  username: string;
+  name: string;
+  creation_date: string;
+  state?: string;
+  theme?: string;
+  timezone?: string;
+  generation: number;
+  resource_version: string;
+}
+
 /**
  * Set user context in Sentry for error tracking
  * This function should be called when a user logs in
  */
 export function setSentryUser(user: User): void {
-  // Set user context in Sentry for error tracking
-  Sentry.setUser({
-    id: user.metadata.uid,
-    email: user.spec.email,
-    username: user.metadata.name,
-  });
-
-  // Add user context as tags for better filtering in Sentry
-  Sentry.setTag('user.id', user.metadata.uid);
-  Sentry.setTag('user.email', user.spec.email);
-  Sentry.setTag('user.name', `${user.spec.givenName} ${user.spec.familyName}`);
-  Sentry.setTag('user.creation_date', user.metadata.creationTimestamp);
-  Sentry.setTag('user.state', user.status?.state || 'unknown');
-  Sentry.setTag('user.theme', user.metadata.annotations?.['preferences/theme'] || 'light');
-  Sentry.setTag('user.timezone', user.metadata.annotations?.['preferences/timezone'] || 'Etc/GMT');
-
-  // Add user context as extra data for more detailed debugging
-  Sentry.setContext('user', {
+  const normalizedUser: UserContext = {
+    id: user.metadata.name,
     uid: user.metadata.uid,
     email: user.spec.email,
-    fullName: `${user.spec.givenName} ${user.spec.familyName}`,
-    username: user.metadata.name,
-    creationDate: user.metadata.creationTimestamp,
+    username: user.spec.email,
+    name: `${user.spec.givenName} ${user.spec.familyName}`,
+    creation_date: user.metadata.creationTimestamp,
     state: user.status?.state,
     theme: user.metadata.annotations?.['preferences/theme'],
     timezone: user.metadata.annotations?.['preferences/timezone'],
     generation: user.metadata.generation,
-    resourceVersion: user.metadata.resourceVersion,
+    resource_version: user.metadata.resourceVersion,
+  };
+
+  // Set user context in Sentry for error tracking
+  Sentry.setUser({
+    id: normalizedUser.id,
+    email: normalizedUser.email,
+    username: normalizedUser.username,
   });
+
+  // Add user context as tags for better filtering in Sentry
+  (Object.entries(normalizedUser) as Array<[string, unknown]>).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      Sentry.setTag(`user.${key}`, String(value));
+    }
+  });
+
+  // Add user context as extra data for more detailed debugging
+  Sentry.setContext('user', normalizedUser as unknown as Record<string, unknown>);
 }
 
 /**
@@ -43,14 +58,26 @@ export function setSentryUser(user: User): void {
  */
 export function clearSentryUser(): void {
   Sentry.setUser(null);
-  Sentry.setTag('user.id', undefined);
-  Sentry.setTag('user.email', undefined);
-  Sentry.setTag('user.name', undefined);
-  Sentry.setTag('user.creation_date', undefined);
-  Sentry.setTag('user.state', undefined);
-  Sentry.setTag('user.theme', undefined);
-  Sentry.setTag('user.timezone', undefined);
   Sentry.setContext('user', null);
+
+  // Clear all user-related tags based on the NormalizedUser interface
+  const userTagKeys: Array<keyof UserContext> = [
+    'id',
+    'uid',
+    'email',
+    'username',
+    'name',
+    'creation_date',
+    'state',
+    'theme',
+    'timezone',
+    'generation',
+    'resource_version',
+  ];
+
+  userTagKeys.forEach((key) => {
+    Sentry.setTag(`user.${key}`, undefined);
+  });
 }
 
 /**
@@ -82,4 +109,54 @@ export function setSentryTag(key: string, value: string | number | boolean | und
  */
 export function setSentryContext(name: string, context: Record<string, any> | null): void {
   Sentry.setContext(name, context);
+}
+
+/**
+ * Capture API request errors with proper context and categorization
+ */
+export function captureApiError(
+  error: Error,
+  context: {
+    url?: string;
+    method?: string;
+    status?: number;
+    requestId?: string;
+    responseData?: any;
+  }
+): void {
+  // Add breadcrumb for debugging context
+  addSentryBreadcrumb(
+    `API request failed: ${context.method?.toUpperCase()} ${context.url}`,
+    'http',
+    'error',
+    {
+      url: context.url,
+      method: context.method,
+      status: context.status,
+      requestId: context.requestId,
+    }
+  );
+
+  // Set tags for better filtering in Sentry
+  setSentryTag('error.type', 'api_request');
+  setSentryTag('error.status', context.status?.toString() || 'unknown');
+  setSentryTag('error.endpoint', context.url || 'unknown');
+  setSentryTag('error.method', context.method || 'unknown');
+  if (context.requestId) {
+    setSentryTag('error.request_id', context.requestId);
+  }
+
+  // Capture the error with additional context
+  Sentry.captureException(error, {
+    tags: {
+      'error.type': 'api_request',
+      'error.status': context.status?.toString() || 'unknown',
+      'error.endpoint': context.url || 'unknown',
+      'error.method': context.method || 'unknown',
+    },
+    extra: {
+      requestId: context.requestId,
+      responseData: context.responseData,
+    },
+  });
 }

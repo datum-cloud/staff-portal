@@ -100,7 +100,6 @@ async function handleRequest(
 
 // Wrap the handleRequest function with Sentry
 export default Sentry.wrapSentryHandleRequest(handleRequest);
-
 // Export handleError for Sentry error capture
 export const handleError = Sentry.createSentryHandleError({
   logErrors: false,

@@ -9,6 +9,7 @@ import {
   ValidationError,
 } from '@/utils/errors';
 import { logger } from '@/utils/logger';
+import { captureApiError } from '@/utils/logger';
 import { AsyncLocalStorage } from 'async_hooks';
 import Axios, {
   AxiosError,
@@ -111,6 +112,18 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
       error: error.message,
     });
   }
+
+  // Capture server-side API request errors to Sentry
+  const sentryError = new Error(`Server API Request Failed: ${error.message}`);
+  sentryError.name = 'ServerApiRequestError';
+
+  captureApiError(sentryError, {
+    url: error.config?.url,
+    method: error.config?.method,
+    status: error.response?.status,
+    requestId: requestId,
+    responseData: error.response?.data,
+  });
 
   // this error mostly comes from API server
   switch (error.response?.status) {

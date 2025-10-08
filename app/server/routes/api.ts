@@ -6,7 +6,7 @@ import { logApiError, logApiSuccess } from '@/server/logger';
 import { authMiddleware, getToken } from '@/server/middleware';
 import { createErrorResponse, createSuccessResponse } from '@/server/response';
 import { env } from '@/utils/config/env.server';
-import { createRequestLogger } from '@/utils/logger';
+import { captureApiError, createRequestLogger } from '@/utils/logger';
 import { Hono } from 'hono';
 
 const API_BASENAME = '/api';
@@ -122,6 +122,15 @@ api.all('/internal/*', authMiddleware(), async (c) => {
       ip: requestContext.ip,
     });
 
+    // Capture server-side API errors to Sentry
+    if (error instanceof Error) {
+      captureApiError(error, {
+        url: path,
+        method: c.req.method,
+        requestId: reqId,
+      });
+    }
+
     if (env.isDebug) {
       reqLogger.debug('Full error details', { error });
     }
@@ -191,6 +200,15 @@ api.get('/activity', authMiddleware(), async (c) => {
       ip: requestContext.ip,
     });
 
+    // Capture server-side API errors to Sentry
+    if (error instanceof Error) {
+      captureApiError(error, {
+        url: c.req.path,
+        method: c.req.method,
+        requestId: reqId,
+      });
+    }
+
     const { response, status } = await createErrorResponse(reqId, error, '/activity');
     return c.json(response, status as any);
   }
@@ -240,6 +258,15 @@ api.post('/metrics', authMiddleware(), async (c) => {
       userAgent: requestContext.userAgent,
       ip: requestContext.ip,
     });
+
+    // Capture server-side API errors to Sentry
+    if (error instanceof Error) {
+      captureApiError(error, {
+        url: c.req.path,
+        method: c.req.method,
+        requestId: reqId,
+      });
+    }
 
     const { response, status } = await createErrorResponse(reqId, error, '/metrics');
     return c.json(response, status as any);
