@@ -1,12 +1,26 @@
 import type { User } from '@/resources/schemas';
 import * as Sentry from '@sentry/react';
 
+interface UserContext {
+  id: string;
+  uid: string;
+  email: string;
+  username: string;
+  name: string;
+  creation_date: string;
+  state?: string;
+  theme?: string;
+  timezone?: string;
+  generation: number;
+  resource_version: string;
+}
+
 /**
  * Set user context in Sentry for error tracking
  * This function should be called when a user logs in
  */
 export function setSentryUser(user: User): void {
-  const normalizedUser = {
+  const normalizedUser: UserContext = {
     id: user.metadata.name,
     uid: user.metadata.uid,
     email: user.spec.email,
@@ -18,7 +32,7 @@ export function setSentryUser(user: User): void {
     timezone: user.metadata.annotations?.['preferences/timezone'],
     generation: user.metadata.generation,
     resource_version: user.metadata.resourceVersion,
-  } as const;
+  };
 
   // Set user context in Sentry for error tracking
   Sentry.setUser({
@@ -35,7 +49,7 @@ export function setSentryUser(user: User): void {
   });
 
   // Add user context as extra data for more detailed debugging
-  Sentry.setContext('user', normalizedUser);
+  Sentry.setContext('user', normalizedUser as unknown as Record<string, unknown>);
 }
 
 /**
@@ -45,6 +59,25 @@ export function setSentryUser(user: User): void {
 export function clearSentryUser(): void {
   Sentry.setUser(null);
   Sentry.setContext('user', null);
+
+  // Clear all user-related tags based on the NormalizedUser interface
+  const userTagKeys: Array<keyof UserContext> = [
+    'id',
+    'uid',
+    'email',
+    'username',
+    'name',
+    'creation_date',
+    'state',
+    'theme',
+    'timezone',
+    'generation',
+    'resource_version',
+  ];
+
+  userTagKeys.forEach((key) => {
+    Sentry.setTag(`user.${key}`, undefined);
+  });
 }
 
 /**
