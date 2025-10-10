@@ -1,5 +1,4 @@
 import type { Route } from './+types/detail';
-import { BadgeCondition } from '@/components/badge';
 import { DateFormatter } from '@/components/date';
 import { DisplayText } from '@/components/display';
 import { DomainStatusProbe } from '@/features/domain';

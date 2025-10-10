@@ -35,6 +35,7 @@ export default [
       ...eslintPluginPrettier.configs.recommended.rules,
       'prettier/prettier': ['error', prettierConfig],
       'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off', // Disable prop-types since we use TypeScript
       // 'import/order': [
       //   'warn',
       //   {

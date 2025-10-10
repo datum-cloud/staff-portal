@@ -143,19 +143,15 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn }: QuotaGrantListProps)
         variant="destructive"
         requireConfirmation
         onConfirm={async () => {
-          try {
-            await quotaGrantDeleteMutation(
-              selectedGrant?.metadata.name ?? '',
-              selectedGrant?.metadata.namespace ?? ''
-            );
-            await new Promise((resolve) =>
-              setTimeout(() => resolve(tableState.query.refetch()), 1000)
-            );
-            setSelectedGrant(null);
-            toast.success(t`Grant deleted successfully`);
-          } catch (error) {
-            toast.error(t`Failed to delete grant`);
-          }
+          await quotaGrantDeleteMutation(
+            selectedGrant?.metadata.name ?? '',
+            selectedGrant?.metadata.namespace ?? ''
+          );
+          await new Promise((resolve) =>
+            setTimeout(() => resolve(tableState.query.refetch()), 1000)
+          );
+          setSelectedGrant(null);
+          toast.success(t`Grant deleted successfully`);
         }}
       />
 

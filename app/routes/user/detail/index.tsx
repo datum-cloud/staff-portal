@@ -55,13 +55,9 @@ export default function Page() {
   );
 
   const handleDeleteUser = async () => {
-    try {
-      await userDeleteMutation(data.metadata.name);
-      navigate(userRoutes.list());
-      toast.success(t`User deleted successfully`);
-    } catch (error) {
-      toast.error(t`Failed to delete user`);
-    }
+    await userDeleteMutation(data.metadata.name);
+    navigate(userRoutes.list());
+    toast.success(t`User deleted successfully`);
   };
 
   const handleDeactivateUser = async (formData: z.infer<typeof deactivateSchema>) => {

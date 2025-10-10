@@ -25,13 +25,9 @@ export default function Page() {
   const navigate = useNavigate();
 
   const handleDeleteOrganization = async () => {
-    try {
-      await orgDeleteMutation(data.metadata.name);
-      navigate(orgRoutes.list());
-      toast.success(t`Organization deleted successfully`);
-    } catch (error) {
-      toast.error(t`Failed to delete organization`);
-    }
+    await orgDeleteMutation(data.metadata.name);
+    navigate(orgRoutes.list());
+    toast.success(t`Organization deleted successfully`);
   };
 
   return (
