@@ -24,13 +24,9 @@ export default function Page() {
   const navigate = useNavigate();
 
   const handleDeleteProject = async () => {
-    try {
-      await projectDeleteMutation(project.metadata.name);
-      navigate(projectRoutes.list());
-      toast.success(t`Project deleted successfully`);
-    } catch (error) {
-      toast.error(t`Failed to delete project`);
-    }
+    await projectDeleteMutation(project.metadata.name);
+    navigate(projectRoutes.list());
+    toast.success(t`Project deleted successfully`);
   };
 
   return (

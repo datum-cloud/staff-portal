@@ -1,7 +1,7 @@
 import { Theme, useTheme } from '@/modules/datum-themes';
 import { User } from '@/resources/schemas';
-import { getBrowserTimezone } from '@/utils/helpers/timezone';
-import { setSentryUser, clearSentryUser } from '@/utils/logger';
+import { getBrowserTimezone } from '@/utils/helpers';
+import { clearSentryUser, setSentryUser } from '@/utils/logger';
 import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 
 interface IContextProps {

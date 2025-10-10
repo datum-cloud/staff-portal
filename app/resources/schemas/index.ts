@@ -14,3 +14,4 @@ export * from './secret.schema';
 export * from './email.schema';
 export * from './quota.schema';
 export * from './identity.schema';
+export * from './contact.schema';

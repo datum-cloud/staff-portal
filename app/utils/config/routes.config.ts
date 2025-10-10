@@ -50,6 +50,12 @@ export const projectRoutes = {
   },
 } as const;
 
+export const contactRoutes = {
+  list: () => '/contacts',
+  create: () => '/contacts/create',
+  edit: (contactName: string) => `/contacts/${contactName}`,
+} as const;
+
 // Profile feature routes
 export const profileRoutes = {
   settings: () => '/profile/settings',
@@ -71,5 +77,6 @@ export const routes = {
   users: userRoutes,
   organizations: orgRoutes,
   projects: projectRoutes,
+  contacts: contactRoutes,
   profile: profileRoutes,
 } as const;

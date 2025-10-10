@@ -90,19 +90,15 @@ export default function Page() {
         variant="destructive"
         requireConfirmation
         onConfirm={async () => {
-          try {
-            await sessionDeleteMutation(
-              user?.metadata.name ?? '',
-              selectedSession?.metadata.name ?? ''
-            );
-            await new Promise((resolve) =>
-              setTimeout(() => resolve(tableState.query.refetch()), 1000)
-            );
-            setSelectedSession(null);
-            toast.success(t`Session deleted successfully`);
-          } catch (error) {
-            toast.error(t`Failed to delete session`);
-          }
+          await sessionDeleteMutation(
+            user?.metadata.name ?? '',
+            selectedSession?.metadata.name ?? ''
+          );
+          await new Promise((resolve) =>
+            setTimeout(() => resolve(tableState.query.refetch()), 1000)
+          );
+          setSelectedSession(null);
+          toast.success(t`Session deleted successfully`);
         }}
       />
 

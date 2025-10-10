@@ -53,7 +53,7 @@ export default function ButtonDeleteAction({
           size="icon"
           onClick={() => setDeleteDialogOpen(true)}
           {...buttonProps}>
-          <Trash2Icon className="h-4 w-4" />
+          <Trash2Icon size={16} />
         </Button>
       </Tooltip>
     </>

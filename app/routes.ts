@@ -68,6 +68,13 @@ export default [
     // Activity
     route('activity', 'routes/activity.tsx'),
 
+    // Contacts
+    route('contacts', 'routes/contact/layout.tsx', [
+      index('routes/contact/index.tsx'),
+      route('create', 'routes/contact/create.tsx'),
+      route(':contactName', 'routes/contact/edit.tsx'),
+    ]),
+
     // Email Activity
     route('email-activity', 'routes/email-activity.tsx'),
 

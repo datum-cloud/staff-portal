@@ -27,8 +27,8 @@
     "rootDirs": [".", "./.react-router/types"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./app/*"],
-      "@datum-ui/*": ["./app/modules/datum-ui/*"]
+      "@datum-ui/*": ["./app/modules/datum-ui/*"],
+      "@/*": ["./app/*"]
     },
 
     // Vite takes care of building everything, not tsc.
