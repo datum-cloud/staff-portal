@@ -102,7 +102,6 @@ export default function Page() {
         confirmText={t`Delete`}
         cancelText={t`Cancel`}
         variant="destructive"
-        requireConfirmation
         onConfirm={async () => {
           await contactDeleteMutation(selectedContact?.metadata?.name ?? '');
           await new Promise((resolve) =>
