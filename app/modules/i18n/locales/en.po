@@ -50,9 +50,17 @@ msgstr "Active Sessions"
 #: app/routes/project/detail/activity.tsx:8
 #: app/routes/organization/detail/layout.tsx:42
 #: app/routes/organization/detail/activity.tsx:8
-#: app/components/app-sidebar/index.tsx:126
+#: app/components/app-sidebar/index.tsx:134
 msgid "Activity"
 msgstr "Activity"
+
+#: app/routes/group/member.tsx:154
+msgid "Add"
+msgstr "Add"
+
+#: app/routes/group/member.tsx:153
+msgid "Add Member"
+msgstr "Add Member"
 
 #: app/features/activity/components/activity-list.tsx:390
 msgid "All read operations"
@@ -79,6 +87,11 @@ msgstr "Are you sure you want to delete contact \"{0}\"? This action cannot be u
 #: app/features/quota/components/quota-grant-list.tsx:140
 msgid "Are you sure you want to delete grant \"{0}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete grant \"{0}\"? This action cannot be undone."
+
+#. placeholder {0}: selectedGroupMembership?.metadata?.name ?? ''
+#: app/routes/group/member.tsx:136
+msgid "Are you sure you want to delete member \"{0}\"? This action cannot be undone."
+msgstr "Are you sure you want to delete member \"{0}\"? This action cannot be undone."
 
 #. placeholder {0}: data.metadata.annotations?.['kubernetes.io/display-name']
 #. placeholder {1}: data.metadata.name
@@ -118,6 +131,8 @@ msgstr "Auto-managed by policy \"{policyName}\". Cannot be deleted."
 #: app/routes/user/detail/index.tsx:107
 #: app/routes/user/detail/index.tsx:119
 #: app/routes/profile/session.tsx:89
+#: app/routes/group/member.tsx:138
+#: app/routes/group/member.tsx:155
 #: app/routes/contact/index.tsx:103
 #: app/features/quota/components/quota-grant-list.tsx:142
 #: app/features/quota/components/quota-bucket-list.tsx:159
@@ -162,7 +177,7 @@ msgstr "Contact updated successfully"
 
 #: app/routes/contact/layout.tsx:5
 #: app/routes/contact/index.tsx:22
-#: app/components/app-sidebar/index.tsx:114
+#: app/components/app-sidebar/index.tsx:116
 msgid "Contacts"
 msgstr "Contacts"
 
@@ -191,6 +206,8 @@ msgstr "Create"
 #: app/routes/organization/index.tsx:37
 #: app/routes/organization/detail/project.tsx:40
 #: app/routes/organization/detail/index.tsx:82
+#: app/routes/group/member.tsx:63
+#: app/routes/group/index.tsx:34
 #: app/routes/contact/index.tsx:58
 #: app/features/quota/components/quota-grant-list.tsx:78
 #: app/features/quota/components/quota-bucket-list.tsx:82
@@ -199,7 +216,7 @@ msgstr "Created"
 
 #: app/routes/project/detail/layout.tsx:38
 #: app/routes/customers/layout.tsx:7
-#: app/components/app-sidebar/index.tsx:94
+#: app/components/app-sidebar/index.tsx:96
 msgid "Customers"
 msgstr "Customers"
 
@@ -212,7 +229,7 @@ msgid "Dark"
 msgstr "Dark"
 
 #: app/routes/dashboard/index.tsx:11
-#: app/components/app-sidebar/index.tsx:88
+#: app/components/app-sidebar/index.tsx:90
 msgid "Dashboard"
 msgstr "Dashboard"
 
@@ -246,6 +263,7 @@ msgstr "Deactivation Reason:"
 #: app/routes/user/detail/index.tsx:324
 #: app/routes/profile/session.tsx:74
 #: app/routes/profile/session.tsx:88
+#: app/routes/group/member.tsx:137
 #: app/routes/contact/index.tsx:102
 #: app/features/quota/components/quota-grant-list.tsx:141
 #: app/features/activity/components/activity-list.tsx:339
@@ -265,6 +283,10 @@ msgstr "Delete Contact"
 #: app/features/quota/components/quota-grant-list.tsx:139
 msgid "Delete Grant"
 msgstr "Delete Grant"
+
+#: app/routes/group/member.tsx:135
+msgid "Delete Member"
+msgstr "Delete Member"
 
 #: app/routes/project/detail/index.tsx:36
 msgid "Delete Project"
@@ -310,7 +332,7 @@ msgid "Email"
 msgstr "Email"
 
 #: app/routes/email-activity.tsx:16
-#: app/components/app-sidebar/index.tsx:120
+#: app/components/app-sidebar/index.tsx:128
 msgid "Email Activity"
 msgstr "Email Activity"
 
@@ -388,6 +410,12 @@ msgstr "Grant deleted successfully"
 #: app/routes/organization/detail/quota/grant.tsx:9
 msgid "Grants"
 msgstr "Grants"
+
+#: app/routes/group/layout.tsx:5
+#: app/routes/group/index.tsx:13
+#: app/components/app-sidebar/index.tsx:122
+msgid "Groups"
+msgstr "Groups"
 
 #: app/routes/project/detail/httpproxy/detail.tsx:138
 msgid "Hostnames"
@@ -475,6 +503,14 @@ msgstr "Log out"
 msgid "Manage user access and account status"
 msgstr "Manage user access and account status"
 
+#: app/routes/group/member.tsx:115
+msgid "Member added successfully"
+msgstr "Member added successfully"
+
+#: app/routes/group/member.tsx:146
+msgid "Member deleted successfully"
+msgstr "Member deleted successfully"
+
 #: app/routes/organization/detail/member.tsx:15
 #: app/routes/organization/detail/layout.tsx:47
 msgid "Members"
@@ -511,6 +547,8 @@ msgstr "My Profile"
 #: app/routes/organization/detail/project.tsx:25
 #: app/routes/organization/detail/member.tsx:26
 #: app/routes/organization/detail/index.tsx:62
+#: app/routes/group/member.tsx:48
+#: app/routes/group/index.tsx:19
 #: app/routes/contact/index.tsx:28
 #: app/features/quota/components/quota-grant-list.tsx:40
 msgid "Name"
@@ -526,6 +564,7 @@ msgstr "Namespace"
 msgid "Navigation"
 msgstr "Navigation"
 
+#: app/routes/group/member.tsx:128
 #: app/routes/contact/index.tsx:93
 msgid "New"
 msgstr "New"
@@ -561,7 +600,7 @@ msgstr "Organization deleted successfully"
 #: app/routes/project/detail/layout.tsx:39
 #: app/routes/organization/layout.tsx:5
 #: app/routes/organization/index.tsx:14
-#: app/components/app-sidebar/index.tsx:104
+#: app/components/app-sidebar/index.tsx:106
 msgid "Organizations"
 msgstr "Organizations"
 
@@ -618,7 +657,7 @@ msgstr "Project deleted successfully"
 #: app/routes/project/detail/layout.tsx:45
 #: app/routes/organization/detail/project.tsx:14
 #: app/routes/organization/detail/layout.tsx:37
-#: app/components/app-sidebar/index.tsx:108
+#: app/components/app-sidebar/index.tsx:110
 msgid "Projects"
 msgstr "Projects"
 
@@ -822,13 +861,17 @@ msgstr "User deactivated successfully"
 msgid "User deleted successfully"
 msgstr "User deleted successfully"
 
+#: app/routes/group/member.tsx:159
+msgid "User ID"
+msgstr "User ID"
+
 #: app/routes/user/detail/index.tsx:92
 msgid "User reactivated successfully"
 msgstr "User reactivated successfully"
 
 #: app/routes/user/layout.tsx:5
 #: app/routes/user/index.tsx:14
-#: app/components/app-sidebar/index.tsx:100
+#: app/components/app-sidebar/index.tsx:102
 msgid "Users"
 msgstr "Users"
 
