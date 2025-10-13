@@ -7,6 +7,7 @@ import {
   ListQueryParams,
   ProjectListResponseSchema,
 } from '@/resources/schemas';
+import { useQuery } from '@tanstack/react-query';
 
 export const projectListQuery = (params?: ListQueryParams) => {
   return apiRequestClient({
@@ -79,4 +80,12 @@ export const projectDeleteMutation = (projectName: string) => {
     method: 'DELETE',
     url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}`,
   }).execute();
+};
+
+export const useProjectListQuery = (params?: ListQueryParams) => {
+  return useQuery({
+    queryKey: ['projects', 'list', params],
+    queryFn: () => projectListQuery(params),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 };

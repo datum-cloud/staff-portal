@@ -4,6 +4,7 @@ import {
   OrganizationListResponseSchema,
   ProjectListResponseSchema,
 } from '@/resources/schemas';
+import { useQuery } from '@tanstack/react-query';
 
 export const orgListQuery = (params?: ListQueryParams) => {
   return apiRequestClient({
@@ -37,4 +38,12 @@ export const orgDeleteMutation = (orgName: string) => {
     method: 'DELETE',
     url: `/apis/resourcemanager.miloapis.com/v1alpha1/organizations/${orgName}`,
   }).execute();
+};
+
+export const useOrgListQuery = (params?: ListQueryParams) => {
+  return useQuery({
+    queryKey: ['organizations', 'list', params],
+    queryFn: () => orgListQuery(params),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 };
