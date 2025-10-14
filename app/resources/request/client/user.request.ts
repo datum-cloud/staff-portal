@@ -79,3 +79,11 @@ export const useUserDeactivationQuery = (userId: string, state?: string) => {
     enabled: !!userId && state === 'Inactive',
   });
 };
+
+export const useUserListQuery = (params?: ListQueryParams) => {
+  return useQuery({
+    queryKey: ['users', 'list', params],
+    queryFn: () => userListQuery(params),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};

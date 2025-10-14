@@ -67,7 +67,7 @@ export function FormSelect({
           {description && <FormDescription>{description}</FormDescription>}
           <FormControl>
             <Select onValueChange={fieldProps.onChange} value={fieldProps.value} {...props}>
-              <SelectTrigger aria-invalid={!!error}>
+              <SelectTrigger aria-invalid={!!error} className="w-full">
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
               <SelectContent>
