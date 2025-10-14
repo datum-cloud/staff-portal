@@ -3,3 +3,4 @@ export * from './project.request';
 export * from './user.request';
 export * from './auth.request';
 export * from './contact.request';
+export * from './group.request';

@@ -50,6 +50,12 @@ export const projectRoutes = {
   },
 } as const;
 
+// Groups feature routes
+export const groupRoutes = {
+  list: () => '/groups',
+} as const;
+
+// Contacts feature routes
 export const contactRoutes = {
   list: () => '/contacts',
   create: () => '/contacts/create',
@@ -78,5 +84,6 @@ export const routes = {
   organizations: orgRoutes,
   projects: projectRoutes,
   contacts: contactRoutes,
+  groups: groupRoutes,
   profile: profileRoutes,
 } as const;

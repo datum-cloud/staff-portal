@@ -27,6 +27,7 @@ import {
 } from '@/modules/shadcn/ui/sidebar';
 import {
   contactRoutes,
+  groupRoutes,
   orgRoutes,
   projectRoutes,
   routes,
@@ -39,6 +40,7 @@ import {
   Home,
   LucideIcon,
   MailSearch,
+  ShieldUser,
   SquareActivity,
   Users,
 } from 'lucide-react';
@@ -114,6 +116,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       title: t`Contacts`,
       href: contactRoutes.list(),
       icon: Contact,
+      hasSubmenu: false,
+    },
+    {
+      title: t`Groups`,
+      href: groupRoutes.list(),
+      icon: ShieldUser,
       hasSubmenu: false,
     },
     {

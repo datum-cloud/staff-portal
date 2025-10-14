@@ -1,4 +1,3 @@
-import { AutocompleteOption } from '@/modules/datum-ui/form/form-autocomplete';
 import { useOrgListQuery } from '@/resources/request/client/organization.request';
 import { useProjectListQuery } from '@/resources/request/client/project.request';
 import { useUserListQuery } from '@/resources/request/client/user.request';
@@ -14,10 +13,13 @@ export function useUserSearch() {
 
   const options = React.useMemo(() => {
     if (!data?.data?.items) return [];
-    return data.data.items.map((user) => ({
-      value: user.metadata.name,
-      label: `${user.spec.givenName} ${user.spec.familyName}`,
-    }));
+    return data.data.items
+      .map((user) => ({
+        value: user.metadata.name,
+        label: `${user.spec.givenName} ${user.spec.familyName}`,
+        description: user.spec.email,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
   }, [data]);
 
   const setSearch = React.useCallback((query: string) => {
@@ -37,10 +39,12 @@ export function useOrganizationSearch() {
 
   const options = React.useMemo(() => {
     if (!data?.data?.items) return [];
-    return data.data.items.map((org) => ({
-      value: org.metadata.name,
-      label: org.metadata.annotations?.['kubernetes.io/display-name'] || org.metadata.name,
-    }));
+    return data.data.items
+      .map((org) => ({
+        value: org.metadata.name,
+        label: org.metadata.annotations?.['kubernetes.io/display-name'] || org.metadata.name,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
   }, [data]);
 
   const setSearch = React.useCallback((query: string) => {
@@ -60,10 +64,12 @@ export function useProjectSearch() {
 
   const options = React.useMemo(() => {
     if (!data?.data?.items) return [];
-    return data.data.items.map((project) => ({
-      value: project.metadata.name,
-      label: project.metadata.annotations?.['kubernetes.io/description'] || project.metadata.name,
-    }));
+    return data.data.items
+      .map((project) => ({
+        value: project.metadata.name,
+        label: project.metadata.annotations?.['kubernetes.io/description'] || project.metadata.name,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
   }, [data]);
 
   const setSearch = React.useCallback((query: string) => {
