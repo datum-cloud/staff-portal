@@ -12,21 +12,21 @@ import {
   CommandList,
 } from '@/modules/shadcn/ui/command';
 import {
+  FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
-  FormDescription,
 } from '@/modules/shadcn/ui/form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/modules/shadcn/ui/popover';
 import { Check, ChevronsUpDown } from 'lucide-react';
-import { ComponentProps } from 'react';
 import * as React from 'react';
 
 export interface AutocompleteOption {
   value: string;
   label: string;
+  description?: string;
   disabled?: boolean;
 }
 
@@ -175,7 +175,14 @@ export const FormAutocomplete: React.FC<FormAutocompleteProps> = ({
                           value={option.value}
                           onSelect={() => handleSelect(option.value)}
                           disabled={option.disabled}>
-                          {option.label}
+                          <div className="flex flex-col">
+                            <span className="font-medium">{option.label}</span>
+                            {option.description && (
+                              <span className="text-muted-foreground text-xs">
+                                {option.description}
+                              </span>
+                            )}
+                          </div>
                           <Check
                             className={cn(
                               'ml-auto h-4 w-4',

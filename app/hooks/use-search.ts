@@ -17,6 +17,7 @@ export function useUserSearch() {
       .map((user) => ({
         value: user.metadata.name,
         label: `${user.spec.givenName} ${user.spec.familyName}`,
+        description: user.spec.email,
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [data]);
