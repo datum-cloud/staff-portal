@@ -1,8 +1,4 @@
-import {
-  useOrganizationSearch,
-  useProjectSearch,
-  useUserSearch,
-} from '../hooks/use-search-associations';
+import { useOrganizationSearch, useProjectSearch, useUserSearch } from '@/hooks';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/modules/shadcn/ui/tabs';
 import { contactCreateMutation, contactUpdateMutation } from '@/resources/request/client';
 import { Contact, ContactCreate } from '@/resources/schemas';
@@ -138,7 +134,6 @@ export const ContactForm: React.FC<Props> = ({ contact }) => {
                     isLoading={usersLoading}
                     onSearch={setUserSearch}
                     searchDebounceMs={300}
-                    width="w-full"
                     disabled={usersLoading}
                   />
                 </div>
@@ -156,7 +151,6 @@ export const ContactForm: React.FC<Props> = ({ contact }) => {
                     isLoading={orgsLoading}
                     onSearch={setOrgSearch}
                     searchDebounceMs={300}
-                    width="w-full"
                     disabled={orgsLoading}
                   />
                 </div>
@@ -172,7 +166,6 @@ export const ContactForm: React.FC<Props> = ({ contact }) => {
                     isLoading={projectsLoading}
                     onSearch={setProjectSearch}
                     searchDebounceMs={300}
-                    width="w-full"
                     disabled={projectsLoading}
                   />
                 </div>

@@ -4,6 +4,7 @@ import AppActionBar from '@/components/app-actiobar';
 import { DateFormatter } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
+import { useUserSearch } from '@/hooks';
 import { authenticator } from '@/modules/auth';
 import {
   groupMembershipCreateMutation,
@@ -72,6 +73,12 @@ export default function Page() {
     null
   );
   const [isAddMember, setIsAddMember] = useState(false);
+
+  const {
+    options: userOptions,
+    isLoading: usersLoading,
+    setSearch: setUserSearch,
+  } = useUserSearch();
 
   const tableState = useDataTableQuery<GroupMembershipListResponse>({
     queryKeyPrefix: ['groups', data.metadata.name, 'members'],
@@ -156,7 +163,17 @@ export default function Page() {
         onSubmit={handleAddMember}
         schema={addMemberSchema}
         defaultValues={{ name: '' }}>
-        <Form.Input field="name" label={t`User ID`} required />
+        <Form.Autocomplete
+          modal
+          field="name"
+          placeholder={usersLoading ? t`Loading users...` : t`Select a user...`}
+          searchPlaceholder={t`Search users...`}
+          options={userOptions}
+          isLoading={usersLoading}
+          onSearch={setUserSearch}
+          searchDebounceMs={300}
+          disabled={usersLoading}
+        />
       </DialogForm>
 
       <DataTableProvider<GroupMembership, GroupMembershipListResponse>

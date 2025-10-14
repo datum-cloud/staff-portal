@@ -43,8 +43,7 @@ interface FormAutocompleteProps {
   className?: string;
   triggerClassName?: string;
   contentClassName?: string;
-  width?: string;
-  maxHeight?: string;
+  modal?: boolean;
   // Simple props approach
   options: AutocompleteOption[];
   isLoading?: boolean;
@@ -69,8 +68,7 @@ export const FormAutocomplete: React.FC<FormAutocompleteProps> = ({
   className,
   triggerClassName,
   contentClassName,
-  width = 'w-full',
-  maxHeight = 'max-h-60',
+  modal = false,
   options = [],
   isLoading = false,
   onSearch,
@@ -140,7 +138,7 @@ export const FormAutocomplete: React.FC<FormAutocompleteProps> = ({
               </FormLabel>
             )}
             {description && <FormDescription>{description}</FormDescription>}
-            <Popover open={open} onOpenChange={setOpen}>
+            <Popover open={open} onOpenChange={setOpen} modal={modal}>
               <PopoverTrigger asChild>
                 <FormControl>
                   <Button
@@ -161,7 +159,7 @@ export const FormAutocomplete: React.FC<FormAutocompleteProps> = ({
                   </Button>
                 </FormControl>
               </PopoverTrigger>
-              <PopoverContent className={cn('p-0', contentClassName)}>
+              <PopoverContent className={cn('p-0', contentClassName)} side="bottom" align="start">
                 <Command>
                   <CommandInput
                     placeholder={searchPlaceholder}
