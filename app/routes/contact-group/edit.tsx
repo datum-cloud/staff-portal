@@ -1,35 +1,37 @@
 import type { Route } from './+types/edit';
-import { getContactDetailMetadata, useContactDetailData } from './shared';
-import { ContactForm } from '@/features/contact';
+import { getContactGroupDetailMetadata, useContactGroupDetailData } from './shared';
+import { ContactGroupForm } from '@/features/contact-group';
 import { authenticator } from '@/modules/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
-import { contactDetailQuery } from '@/resources/request/server';
-import { Contact } from '@/resources/schemas';
+import { contactGroupDetailQuery } from '@/resources/request/server';
+import { ContactGroup } from '@/resources/schemas';
 import { metaObject } from '@/utils/helpers';
 import { Col, Row } from '@datum-ui/grid';
 import { Trans } from '@lingui/react/macro';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const { contactName } = getContactDetailMetadata(matches);
-  return metaObject(`Edit - ${contactName}`);
+  const { contactGroupName } = getContactGroupDetailMetadata(matches);
+  return metaObject(`Edit - ${contactGroupName}`);
 };
 
 export const handle = {
-  breadcrumb: (data: Contact) => {
-    const displayName = [data.spec?.givenName, data.spec?.familyName].filter(Boolean).join(' ');
-    return <span>{displayName}</span>;
+  breadcrumb: (data: ContactGroup) => {
+    return <span>{data.spec?.displayName || data.metadata.name}</span>;
   },
 };
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const session = await authenticator.getSession(request);
-  const data = await contactDetailQuery(session?.accessToken ?? '', params?.contactName ?? '');
+  const data = await contactGroupDetailQuery(
+    session?.accessToken ?? '',
+    params?.contactGroupName ?? ''
+  );
 
   return data;
 };
 
 export default function Page() {
-  const data = useContactDetailData();
+  const data = useContactGroupDetailData();
 
   return (
     <div className="m-4">
@@ -38,11 +40,11 @@ export default function Page() {
           <Card>
             <CardHeader>
               <CardTitle>
-                <Trans>Contact Information</Trans>
+                <Trans>Contact Group Information</Trans>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ContactForm contact={data} />
+              <ContactGroupForm contactGroup={data} />
             </CardContent>
           </Card>
         </Col>

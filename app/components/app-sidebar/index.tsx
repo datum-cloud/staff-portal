@@ -26,6 +26,7 @@ import {
   useSidebar,
 } from '@/modules/shadcn/ui/sidebar';
 import {
+  contactGroupRoutes,
   contactRoutes,
   groupRoutes,
   orgRoutes,
@@ -94,8 +95,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     },
     {
       title: t`Customers`,
-      icon: Users,
       href: userRoutes.list(),
+      icon: Users,
       hasSubmenu: true,
       submenuItems: [
         {
@@ -116,7 +117,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       title: t`Contacts`,
       href: contactRoutes.list(),
       icon: Contact,
-      hasSubmenu: false,
+      hasSubmenu: true,
+      submenuItems: [
+        {
+          title: t`List`,
+          href: contactRoutes.list(),
+        },
+        {
+          title: t`Groups`,
+          href: contactGroupRoutes.list(),
+        },
+      ],
     },
     {
       title: t`Groups`,
