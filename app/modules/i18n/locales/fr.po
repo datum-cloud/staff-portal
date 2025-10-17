@@ -218,6 +218,7 @@ msgstr ""
 #: app/routes/contact/layout.tsx:5
 #: app/routes/contact/index.tsx:22
 #: app/components/app-sidebar/index.tsx:117
+#: app/components/app-sidebar/index.tsx:123
 msgid "Contacts"
 msgstr ""
 
@@ -530,7 +531,6 @@ msgid "Limit:"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:334
-#: app/components/app-sidebar/index.tsx:123
 msgid "List"
 msgstr ""
 

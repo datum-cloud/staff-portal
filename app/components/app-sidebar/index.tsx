@@ -120,7 +120,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       hasSubmenu: true,
       submenuItems: [
         {
-          title: t`List`,
+          title: t`Contacts`,
           href: contactRoutes.list(),
         },
         {
