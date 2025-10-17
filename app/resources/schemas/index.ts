@@ -16,3 +16,4 @@ export * from './quota.schema';
 export * from './identity.schema';
 export * from './contact.schema';
 export * from './group.schema';
+export * from './contact-group';

@@ -8,6 +8,7 @@ import {
   ContactListResponseSchema,
   ListQueryParams,
 } from '@/resources/schemas';
+import { useQuery } from '@tanstack/react-query';
 
 export const contactListQuery = (params?: ListQueryParams) => {
   return apiRequestClient({
@@ -16,6 +17,7 @@ export const contactListQuery = (params?: ListQueryParams) => {
     params: {
       ...(params?.limit && { limit: params.limit }),
       ...(params?.cursor && { continue: params.cursor }),
+      ...(params?.search && { fieldSelector: `metadata.name=${params.search}` }),
     },
   })
     .output(ContactListResponseSchema)
@@ -59,4 +61,12 @@ export const contactDeleteMutation = (name: string, namespace: string = 'default
     method: 'DELETE',
     url: `/apis/notification.miloapis.com/v1alpha1/namespaces/${namespace}/contacts/${name}`,
   }).execute();
+};
+
+export const useContactListQuery = (params?: ListQueryParams) => {
+  return useQuery({
+    queryKey: ['contacts', 'list', params],
+    queryFn: () => contactListQuery(params),
+    staleTime: 5 * 60 * 1000,
+  });
 };

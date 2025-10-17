@@ -1,6 +1,9 @@
-import { useOrgListQuery } from '@/resources/request/client/organization.request';
-import { useProjectListQuery } from '@/resources/request/client/project.request';
-import { useUserListQuery } from '@/resources/request/client/user.request';
+import {
+  useContactListQuery,
+  useOrgListQuery,
+  useProjectListQuery,
+  useUserListQuery,
+} from '@/resources/request/client';
 import * as React from 'react';
 
 export function useUserSearch() {
@@ -68,6 +71,32 @@ export function useProjectSearch() {
       .map((project) => ({
         value: project.metadata.name,
         label: project.metadata.annotations?.['kubernetes.io/description'] || project.metadata.name,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [data]);
+
+  const setSearch = React.useCallback((query: string) => {
+    setSearchQuery(query);
+  }, []);
+
+  return { options, isLoading, setSearch };
+}
+
+export function useContactSearch() {
+  const [searchQuery, setSearchQuery] = React.useState('');
+
+  const { data: data, isLoading } = useContactListQuery({
+    limit: 50,
+    ...(searchQuery && { search: searchQuery }),
+  });
+
+  const options = React.useMemo(() => {
+    if (!data?.data?.items) return [];
+    return data.data.items
+      .map((c) => ({
+        value: c.metadata.name,
+        label: `${c.spec.givenName} ${c.spec.familyName}`.trim() || c.metadata.name,
+        description: c.spec.email,
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [data]);

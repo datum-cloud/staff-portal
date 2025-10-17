@@ -129,11 +129,19 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   switch (error.response?.status) {
     case 401: {
       const data = error.response?.data as {
-        error: string;
-        error_description: string;
+        error?: string;
+        error_description?: string;
+        message?: string;
+        reason?: string;
       };
-      if (data.error === 'access_denied' && data.error_description === 'access token invalid') {
+      if (data?.error === 'access_denied' && data?.error_description === 'access token invalid') {
         const authError = new AuthenticationError('Session expired', requestId);
+        throw authError.toResponse();
+      } else if (data?.message === 'Unauthorized' && data?.reason === 'Unauthorized') {
+        const authError = new AuthenticationError(
+          'Not authorized to perform this action',
+          requestId
+        );
         throw authError.toResponse();
       }
     }

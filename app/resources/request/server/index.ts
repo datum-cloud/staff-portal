@@ -4,3 +4,4 @@ export * from './user.request';
 export * from './auth.request';
 export * from './contact.request';
 export * from './group.request';
+export * from './contact-group.request';

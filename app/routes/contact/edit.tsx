@@ -11,7 +11,7 @@ import { Trans } from '@lingui/react/macro';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const { contactName } = getContactDetailMetadata(matches);
-  return metaObject(`Overview - ${contactName}`);
+  return metaObject(`Edit - ${contactName}`);
 };
 
 export const handle = {
