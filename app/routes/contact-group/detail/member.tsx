@@ -12,7 +12,7 @@ import {
 } from '@/resources/request/client';
 import { ContactGroupMembership, ContactGroupMembershipListResponse } from '@/resources/schemas';
 import { contactRoutes } from '@/utils/config/routes.config';
-import { metaObject } from '@/utils/helpers';
+import { generateMetadataName, metaObject } from '@/utils/helpers';
 import { Button } from '@datum-ui/button';
 import { ActionItem, DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
 import { Form } from '@datum-ui/form';
@@ -48,7 +48,7 @@ const columns = [
     },
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
-    header: () => <Trans>Joined</Trans>,
+    header: () => <Trans>Added</Trans>,
     cell: ({ getValue }) => <DateFormatter date={getValue()} withTime />,
   }),
 ];
@@ -70,7 +70,7 @@ export default function Page() {
     fetchFn: (params) =>
       contactGroupMembershipListQuery({
         ...params,
-        // filters: { fieldSelector: `spec.contactGroupRef.name=${data.metadata.name}` },
+        filters: { fieldSelector: `spec.contactGroupRef.name=${data.metadata.name}` },
       }),
     useSorting: true,
   });
@@ -93,7 +93,7 @@ export default function Page() {
       apiVersion: 'notification.miloapis.com/v1alpha1',
       kind: 'ContactGroupMembership',
       metadata: {
-        name: [data.metadata.name, formData.name, 'member'].join('-'),
+        name: generateMetadataName([data.metadata.name, formData.name].filter(Boolean).join('-')),
         namespace: 'default',
       },
       spec: {
@@ -121,16 +121,14 @@ export default function Page() {
         open={!!selectedMembership}
         onOpenChange={() => setSelectedMembership(null)}
         title={t`Delete Member`}
-        description={t`Are you sure you want to delete member "${
-          selectedMembership?.spec?.contactRef?.name ?? ''
-        }"? This action cannot be undone.`}
+        description={t`Are you sure you want to delete member "${selectedMembership?.spec?.contactRef?.name ?? ''}"? This action cannot be undone.`}
         confirmText={t`Delete`}
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={async () => {
           await contactGroupMembershipDeleteMutation(selectedMembership?.metadata?.name ?? '');
           await new Promise((resolve) =>
-            setTimeout(() => resolve(tableState.query.refetch()), 1000)
+            setTimeout(() => resolve(tableState.query.refetch()), 2000)
           );
           setSelectedMembership(null);
           toast.success(t`Member deleted successfully`);
