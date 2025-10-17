@@ -65,7 +65,8 @@ export const contactRoutes = {
 export const contactGroupRoutes = {
   list: () => '/contact-groups',
   create: () => '/contact-groups/create',
-  edit: (contactGroupName: string) => `/contact-groups/${contactGroupName}`,
+  detail: (contactGroupName: string) => `/contact-groups/${contactGroupName}`,
+  member: (contactGroupName: string) => `/contact-groups/${contactGroupName}/members`,
 } as const;
 
 // Profile feature routes

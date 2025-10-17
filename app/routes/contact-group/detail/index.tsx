@@ -1,33 +1,14 @@
-import type { Route } from './+types/edit';
-import { getContactGroupDetailMetadata, useContactGroupDetailData } from './shared';
+import { getContactGroupDetailMetadata, useContactGroupDetailData } from '../shared';
+import type { Route } from './+types/index';
 import { ContactGroupForm } from '@/features/contact-group';
-import { authenticator } from '@/modules/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
-import { contactGroupDetailQuery } from '@/resources/request/server';
-import { ContactGroup } from '@/resources/schemas';
 import { metaObject } from '@/utils/helpers';
 import { Col, Row } from '@datum-ui/grid';
 import { Trans } from '@lingui/react/macro';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const { contactGroupName } = getContactGroupDetailMetadata(matches);
-  return metaObject(`Edit - ${contactGroupName}`);
-};
-
-export const handle = {
-  breadcrumb: (data: ContactGroup) => {
-    return <span>{data.spec?.displayName || data.metadata.name}</span>;
-  },
-};
-
-export const loader = async ({ params, request }: Route.LoaderArgs) => {
-  const session = await authenticator.getSession(request);
-  const data = await contactGroupDetailQuery(
-    session?.accessToken ?? '',
-    params?.contactGroupName ?? ''
-  );
-
-  return data;
+  return metaObject(`Details - ${contactGroupName}`);
 };
 
 export default function Page() {

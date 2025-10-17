@@ -2,10 +2,14 @@ import { apiRequestClient } from '@/modules/axios/axios.client';
 import {
   ContactGroupCreate,
   ContactGroupCreateSchema,
+  ContactGroupListResponseSchema,
+  ContactGroupMembershipCreate,
+  ContactGroupMembershipCreateSchema,
+  ContactGroupMembershipListResponseSchema,
+  ContactGroupMembershipResponseSchema,
+  ContactGroupResponseSchema,
   ContactGroupUpdate,
   ContactGroupUpdateSchema,
-  ContactGroupResponseSchema,
-  ContactGroupListResponseSchema,
   ListQueryParams,
 } from '@/resources/schemas';
 
@@ -61,5 +65,45 @@ export const contactGroupDeleteMutation = (name: string, namespace: string = 'de
   return apiRequestClient({
     method: 'DELETE',
     url: `/apis/notification.miloapis.com/v1alpha1/namespaces/${namespace}/contactgroups/${name}`,
+  }).execute();
+};
+
+export const contactGroupMembershipListQuery = (
+  params?: ListQueryParams<{ fieldSelector?: string }>
+) => {
+  return apiRequestClient({
+    method: 'GET',
+    url: '/apis/notification.miloapis.com/v1alpha1/contactgroupmemberships',
+    params: {
+      ...(params?.limit && { limit: params.limit }),
+      ...(params?.cursor && { continue: params.cursor }),
+      ...(params?.filters?.fieldSelector && { fieldSelector: params.filters.fieldSelector }),
+    },
+  })
+    .output(ContactGroupMembershipListResponseSchema)
+    .execute();
+};
+
+export const contactGroupMembershipCreateMutation = (
+  payload: ContactGroupMembershipCreate,
+  namespace: string = 'default'
+) => {
+  return apiRequestClient({
+    method: 'POST',
+    url: `/apis/notification.miloapis.com/v1alpha1/namespaces/${namespace}/contactgroupmemberships`,
+    data: payload,
+  })
+    .input(ContactGroupMembershipCreateSchema)
+    .output(ContactGroupMembershipResponseSchema)
+    .execute();
+};
+
+export const contactGroupMembershipDeleteMutation = (
+  name: string,
+  namespace: string = 'default'
+) => {
+  return apiRequestClient({
+    method: 'DELETE',
+    url: `/apis/notification.miloapis.com/v1alpha1/namespaces/${namespace}/contactgroupmemberships/${name}`,
   }).execute();
 };

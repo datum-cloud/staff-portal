@@ -69,7 +69,7 @@ export default function Page() {
     {
       label: 'Edit',
       icon: EditIcon,
-      onClick: (row) => navigate(contactGroupRoutes.edit(row.metadata.name)),
+      onClick: (row) => navigate(contactGroupRoutes.detail(row.metadata.name)),
     },
     {
       label: 'Delete',
