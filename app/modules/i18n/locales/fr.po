@@ -448,7 +448,7 @@ msgstr ""
 msgid "Joined"
 msgstr ""
 
-#: app/features/dashboard/components/recent-users-widget.tsx:111
+#: app/features/dashboard/components/recent-users-widget.tsx:112
 msgid "Last 10 new users who joined Datum"
 msgstr ""
 
@@ -890,7 +890,7 @@ msgstr ""
 msgid "Version"
 msgstr ""
 
-#: app/features/dashboard/components/recent-users-widget.tsx:106
+#: app/features/dashboard/components/recent-users-widget.tsx:107
 msgid "View All"
 msgstr ""
 

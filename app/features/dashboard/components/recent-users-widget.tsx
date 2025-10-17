@@ -23,9 +23,9 @@ function UserItem({ log }: { log: any }) {
     }
   }, [log?.raw]);
 
-  if (!userData) return null;
+  if (!userData?.spec) return null;
 
-  const { givenName, familyName } = userData.spec;
+  const { givenName, familyName } = userData?.spec ?? {};
   const initials = `${givenName?.charAt(0) || ''}${familyName?.charAt(0) || ''}`;
   const fullName = `${givenName || ''} ${familyName || ''}`.trim();
 
@@ -39,13 +39,13 @@ function UserItem({ log }: { log: any }) {
           <div className="min-w-0 flex-1">
             <DisplayName
               displayName={fullName}
-              name={userData.spec.email}
+              name={userData?.spec?.email}
               to={userRoutes.detail(userData.metadata.name)}
             />
           </div>
           <div className="ml-3 flex items-center gap-2">
             <Text size="sm" textColor="muted">
-              <DateFormatter date={userData.metadata.creationTimestamp} withTime />
+              <DateFormatter date={userData?.metadata?.creationTimestamp} withTime />
             </Text>
           </div>
         </div>
@@ -79,6 +79,7 @@ export function RecentUsersWidget() {
         filters: {
           actions: 'create',
           user: 'zitadel-actions-server',
+          status: 'success',
           start: getUnixTime(subDays(new Date(), 7)) * 1000000000,
         },
         limit: 10,

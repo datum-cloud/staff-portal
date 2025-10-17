@@ -448,7 +448,7 @@ msgstr "Irreversible and destructive actions"
 msgid "Joined"
 msgstr "Joined"
 
-#: app/features/dashboard/components/recent-users-widget.tsx:111
+#: app/features/dashboard/components/recent-users-widget.tsx:112
 msgid "Last 10 new users who joined Datum"
 msgstr "Last 10 new users who joined Datum"
 
@@ -890,7 +890,7 @@ msgstr "Verified"
 msgid "Version"
 msgstr "Version"
 
-#: app/features/dashboard/components/recent-users-widget.tsx:106
+#: app/features/dashboard/components/recent-users-widget.tsx:107
 msgid "View All"
 msgstr "View All"
 
