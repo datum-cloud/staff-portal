@@ -9,8 +9,8 @@
 </p>
 
 ## Overview
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdatum-cloud%2Fstaff-portal.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdatum-cloud%2Fstaff-portal?ref=badge_shield)
 
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdatum-cloud%2Fstaff-portal.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdatum-cloud%2Fstaff-portal?ref=badge_shield)
 
 Datum Staff Portal is a modern web application built with React and TypeScript, designed to streamline cloud operations management. The application uses the latest React Router v7 and is powered by Bun runtime.
 
@@ -146,6 +146,6 @@ The project uses several tools to maintain code quality:
 2. Make your changes
 3. Submit a pull request
 
-
 ## License
+
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdatum-cloud%2Fstaff-portal.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdatum-cloud%2Fstaff-portal?ref=badge_large)
