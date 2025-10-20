@@ -126,8 +126,12 @@ msgstr ""
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:175
-msgid "Associate this contact with a user, organization, or project"
+#: app/features/contact/components/contact-form.tsx:126
+msgid "Associate with User"
+msgstr ""
+
+#: app/features/contact/components/contact-form.tsx:113
+msgid "Associated with User: "
 msgstr ""
 
 #: app/features/quota/components/quota-grant-list.tsx:126
@@ -150,7 +154,7 @@ msgstr ""
 #: app/features/quota/components/quota-grant-list.tsx:142
 #: app/features/quota/components/quota-bucket-list.tsx:159
 #: app/features/contact-group/components/contact-group-form.tsx:80
-#: app/features/contact/components/contact-form.tsx:184
+#: app/features/contact/components/contact-form.tsx:155
 #: app/components/button/button-delete-action.tsx:43
 msgid "Cancel"
 msgstr ""
@@ -172,7 +176,7 @@ msgstr ""
 msgid "Configuration"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:86
+#: app/features/contact/components/contact-form.tsx:88
 msgid "Contact created successfully"
 msgstr ""
 
@@ -211,7 +215,7 @@ msgstr ""
 msgid "Contact Information"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:72
+#: app/features/contact/components/contact-form.tsx:61
 msgid "Contact updated successfully"
 msgstr ""
 
@@ -229,7 +233,7 @@ msgstr ""
 #: app/routes/contact-group/create.tsx:14
 #: app/routes/contact/create.tsx:14
 #: app/features/contact-group/components/contact-group-form.tsx:86
-#: app/features/contact/components/contact-form.tsx:190
+#: app/features/contact/components/contact-form.tsx:161
 #: app/features/activity/components/activity-list.tsx:336
 msgid "Create"
 msgstr ""
@@ -387,7 +391,7 @@ msgstr ""
 
 #: app/routes/user/detail/index.tsx:169
 #: app/routes/contact/index.tsx:43
-#: app/features/contact/components/contact-form.tsx:105
+#: app/features/contact/components/contact-form.tsx:108
 msgid "Email"
 msgstr ""
 
@@ -439,12 +443,12 @@ msgstr ""
 msgid "Filter by time range"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:103
+#: app/features/contact/components/contact-form.tsx:106
 msgid "First Name"
 msgstr ""
 
 #: app/features/profile/components/profile-form.tsx:15
-#: app/features/contact/components/contact-form.tsx:46
+#: app/features/contact/components/contact-form.tsx:32
 msgid "First name is required"
 msgstr ""
 
@@ -492,7 +496,7 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:48
+#: app/features/contact/components/contact-form.tsx:34
 msgid "Invalid email address"
 msgstr ""
 
@@ -513,12 +517,12 @@ msgstr ""
 msgid "Last 10 new users who joined Datum"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:104
+#: app/features/contact/components/contact-form.tsx:107
 msgid "Last Name"
 msgstr ""
 
 #: app/features/profile/components/profile-form.tsx:16
-#: app/features/contact/components/contact-form.tsx:47
+#: app/features/contact/components/contact-form.tsx:33
 msgid "Last name is required"
 msgstr ""
 
@@ -538,20 +542,12 @@ msgstr ""
 msgid "Loading contacts..."
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:147
-msgid "Loading organizations..."
-msgstr ""
-
-#: app/features/contact/components/contact-form.tsx:163
-msgid "Loading projects..."
-msgstr ""
-
 #: app/features/domain/components/domain-status-probe.tsx:38
 msgid "Loading status..."
 msgstr ""
 
 #: app/routes/group/member.tsx:169
-#: app/features/contact/components/contact-form.tsx:131
+#: app/features/contact/components/contact-form.tsx:132
 msgid "Loading users..."
 msgstr ""
 
@@ -663,9 +659,12 @@ msgstr ""
 msgid "Notifications"
 msgstr ""
 
+#: app/features/contact/components/contact-form.tsx:143
+msgid "Once a contact is associated with a user, this association cannot be removed or changed later."
+msgstr ""
+
 #: app/routes/project/index.tsx:36
 #: app/routes/project/detail/index.tsx:73
-#: app/features/contact/components/contact-form.tsx:119
 msgid "Organization"
 msgstr ""
 
@@ -724,10 +723,6 @@ msgstr ""
 
 #: app/features/profile/components/profile-form.tsx:46
 msgid "Profile updated successfully"
-msgstr ""
-
-#: app/features/contact/components/contact-form.tsx:123
-msgid "Project"
 msgstr ""
 
 #: app/routes/project/detail/index.tsx:29
@@ -803,16 +798,8 @@ msgstr ""
 msgid "Search contacts..."
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:149
-msgid "Search organizations..."
-msgstr ""
-
-#: app/features/contact/components/contact-form.tsx:164
-msgid "Search projects..."
-msgstr ""
-
 #: app/routes/group/member.tsx:170
-#: app/features/contact/components/contact-form.tsx:132
+#: app/features/contact/components/contact-form.tsx:133
 msgid "Search users..."
 msgstr ""
 
@@ -829,17 +816,9 @@ msgstr ""
 msgid "Select a contact..."
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:163
-msgid "Select a project..."
-msgstr ""
-
 #: app/routes/group/member.tsx:169
-#: app/features/contact/components/contact-form.tsx:131
+#: app/features/contact/components/contact-form.tsx:132
 msgid "Select a user..."
-msgstr ""
-
-#: app/features/contact/components/contact-form.tsx:147
-msgid "Select an organization..."
 msgstr ""
 
 #: app/features/preferences/components/preferences-form.tsx:80
@@ -900,8 +879,8 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:49
-msgid "Subject is required"
+#: app/features/contact/components/contact-form.tsx:47
+msgid "Subject is required when association is enabled"
 msgstr ""
 
 #: app/components/theme-switcher/index.tsx:47
@@ -934,7 +913,7 @@ msgstr ""
 
 #: app/features/quota/components/quota-bucket-list.tsx:158
 #: app/features/contact-group/components/contact-group-form.tsx:86
-#: app/features/contact/components/contact-form.tsx:190
+#: app/features/contact/components/contact-form.tsx:161
 #: app/features/activity/components/activity-list.tsx:337
 msgid "Update"
 msgstr ""
@@ -949,10 +928,6 @@ msgstr ""
 #: app/routes/organization/detail/quota/usage.tsx:9
 #: app/features/quota/components/quota-bucket-list.tsx:35
 msgid "Usage"
-msgstr ""
-
-#: app/features/contact/components/contact-form.tsx:115
-msgid "User"
 msgstr ""
 
 #: app/routes/user/detail/index.tsx:81
@@ -996,6 +971,10 @@ msgstr ""
 #: app/routes/contact-group/index.tsx:42
 #: app/features/contact-group/components/contact-group-form.tsx:67
 msgid "Visibility"
+msgstr ""
+
+#: app/features/contact/components/contact-form.tsx:142
+msgid "Warning"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:335

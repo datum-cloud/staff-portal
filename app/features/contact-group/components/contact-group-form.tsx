@@ -33,7 +33,7 @@ export const ContactGroupForm: React.FC<Props> = ({ contactGroup }) => {
       await contactGroupUpdateMutation(contactGroup.metadata.name, { spec });
       toast.success(t`Contact group updated successfully`);
     } else {
-      await contactGroupCreateMutation({
+      const data = await contactGroupCreateMutation({
         apiVersion: 'notification.miloapis.com/v1alpha1',
         kind: 'ContactGroup',
         spec,
@@ -44,7 +44,7 @@ export const ContactGroupForm: React.FC<Props> = ({ contactGroup }) => {
           namespace: 'default',
         },
       });
-      navigate(contactGroupRoutes.list());
+      navigate(contactGroupRoutes.detail(data.data.metadata.name));
       toast.success(t`Contact group created successfully`);
     }
   };
