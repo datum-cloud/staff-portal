@@ -30,7 +30,7 @@
     "@lingui/react": "^5.3.1",
     "@monaco-editor/react": "^4.7.0",
     "@myunisoft/loki": "^6.0.0",
-    "@opentelemetry/auto-instrumentations-node": "^0.62.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.66.0",
     "@opentelemetry/exporter-metrics-otlp-http": "^0.203.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.203.0",
     "@opentelemetry/sdk-node": "^0.203.0",
