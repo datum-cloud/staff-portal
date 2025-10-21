@@ -104,12 +104,27 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
 
   // Log the API request error with consistent format
   if (requestId) {
+    const data = error.response?.data as {
+      message?: string;
+      reason?: string;
+      error?: string;
+      error_description?: string;
+    };
+
     logger.error('API Request Error', {
       requestId,
       url: error.config?.url,
       method: error.config?.method,
       status: error.response?.status,
       error: error.message,
+      data: Object.fromEntries(
+        Object.entries({
+          message: data?.message,
+          reason: data?.reason,
+          error: data?.error,
+          error_description: data?.error_description,
+        }).filter(([_, v]) => !!v)
+      ),
     });
   }
 
