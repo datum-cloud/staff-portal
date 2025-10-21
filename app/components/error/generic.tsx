@@ -19,26 +19,18 @@ const GenericError = ({ message, requestId }: { message: string; requestId?: str
         <LogoIcon width={64} className="mb-4" />
 
         <div className="flex max-w-xl flex-col gap-2">
-          <p className="w-full text-center text-2xl font-bold">Whoops! Something went wrong.</p>
-          <p className="text-muted-foreground text-center text-sm">
-            Something went wrong on our end. Our team has been notified, and we&apos;re working to
-            fix it. Please try again later. If the issue persists, reach out to{' '}
-            <Link to={`mailto:support@datum.net`} className="text-primary underline">
-              support@datum.net
-            </Link>
-            .
+          <p className="w-full text-center text-2xl font-bold">
+            Something glitched! Probably not your fault.
           </p>
 
-          {(requestId || isDebug) && (
-            <div className="text-muted-foreground rounded-r-md border-l-4 border-red-500 bg-red-50 p-4 text-center text-sm dark:bg-red-950/20">
-              {requestId && (
-                <div className="text-xs">
-                  <strong>Request ID:</strong> {requestId}
-                </div>
-              )}
-              {isDebug && <code className="font-mono text-xs">{message}</code>}
-            </div>
-          )}
+          <div className="text-muted-foreground rounded-r-md border-l-4 border-red-500 bg-red-50 p-4 text-center text-sm dark:bg-red-950/20">
+            {requestId && (
+              <div className="text-xs">
+                <strong>Request ID:</strong> {requestId}
+              </div>
+            )}
+            <code className="font-mono text-xs">{message}</code>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <Link to={'/'}>
@@ -47,10 +39,6 @@ const GenericError = ({ message, requestId }: { message: string; requestId?: str
               Back to Home
             </Button>
           </Link>
-          <Button variant="outline" size="sm" onClick={() => navigate(0)}>
-            <RefreshCcwIcon className="size-4" />
-            Refresh Page
-          </Button>
         </div>
       </CardContent>
     </Card>
