@@ -40,7 +40,7 @@ function UserItem({ log }: { log: any }) {
             <DisplayName
               displayName={fullName}
               name={userData?.spec?.email}
-              to={userRoutes.detail(userData.metadata.name)}
+              to={userRoutes.detail(userData?.metadata?.name || 'unknown')}
             />
           </div>
           <div className="ml-3 flex items-center gap-2">
@@ -128,8 +128,8 @@ export function RecentUsersWidget() {
           </div>
         ) : recentUsers.length > 0 ? (
           <div className="space-y-2">
-            {recentUsers.map((log) => (
-              <UserItem key={log.auditId} log={log} />
+            {recentUsers.map((log, index) => (
+              <UserItem key={log.auditId || `user-${index}`} log={log} />
             ))}
           </div>
         ) : (

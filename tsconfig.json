@@ -7,12 +7,14 @@
     "**/.client/**/*.ts",
     "**/.client/**/*.tsx",
     "cypress/**/*.ts",
-    "cypress/**/*.tsx"
+    "cypress/**/*.tsx",
+    "tests/**/*.ts",
+    "tests/**/*.tsx"
   ],
   "exclude": ["node_modules", "dist", "build"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "types": ["@react-router/node", "vite/client"],
+    "types": ["@react-router/node", "vite/client", "vitest/globals"],
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
@@ -28,6 +30,7 @@
     "baseUrl": ".",
     "paths": {
       "@datum-ui/*": ["./app/modules/datum-ui/*"],
+      "@/tests/*": ["./tests/*"],
       "@/*": ["./app/*"]
     },
 

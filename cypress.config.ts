@@ -6,8 +6,8 @@ dotenv.config();
 export default defineConfig({
   e2e: {
     baseUrl: process.env.CYPRESS_BASE_URL || 'http://localhost:3000',
-    supportFile: 'cypress/support/e2e.ts',
-    specPattern: 'cypress/e2e/**/*.{cy,spec}.{js,jsx,ts,tsx}',
+    supportFile: 'tests/setup/e2e/e2e.ts',
+    specPattern: 'tests/e2e/**/*.{cy,spec}.{js,jsx,ts,tsx}',
     viewportWidth: 1280,
     viewportHeight: 720,
     video: true,
@@ -25,26 +25,5 @@ export default defineConfig({
 
       return config;
     },
-  },
-  component: {
-    devServer: {
-      framework: 'react',
-      bundler: 'vite',
-      viteConfig: {
-        server: {
-          fs: {
-            strict: false,
-            allow: ['..'],
-          },
-        },
-        optimizeDeps: {
-          include: ['react', 'react-dom', 'react/jsx-runtime'],
-        },
-      },
-    },
-    viewportWidth: 1280,
-    viewportHeight: 720,
-    supportFile: 'cypress/support/component.tsx',
-    specPattern: 'cypress/component/**/*.{cy,spec}.{js,jsx,ts,tsx}',
   },
 });
