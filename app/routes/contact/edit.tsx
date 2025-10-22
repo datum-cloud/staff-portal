@@ -28,7 +28,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const contact = await contactDetailQuery(session?.accessToken ?? '', params?.contactName ?? '');
 
   let user: User | undefined;
-  if (contact?.spec?.subject?.name) {
+  if (contact?.spec?.subject?.name && contact?.spec?.subject?.kind === 'User') {
     user = await userDetailQuery(session?.accessToken ?? '', contact?.spec?.subject?.name ?? '');
   }
 
