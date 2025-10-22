@@ -15,7 +15,10 @@ export function useContactDetailData() {
 export function getContactDetailMetadata(matches: any[]) {
   const data = extractDataFromMatches<ContactDetailLoaderData>(matches, 'routes/contact/edit');
   return {
-    contact: data,
-    contactName: [data?.spec?.givenName, data?.spec?.familyName].filter(Boolean).join(' '),
+    contact: data?.contact,
+    user: data?.user,
+    contactName: [data?.contact?.spec?.givenName, data?.contact?.spec?.familyName]
+      .filter(Boolean)
+      .join(' '),
   };
 }

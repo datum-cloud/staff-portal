@@ -1,6 +1,6 @@
 import { useUserSearch } from '@/hooks';
 import { contactCreateMutation, contactUpdateMutation } from '@/resources/request/client';
-import { Contact } from '@/resources/schemas';
+import { Contact, User } from '@/resources/schemas';
 import { contactRoutes, userRoutes } from '@/utils/config/routes.config';
 import { generateMetadataName } from '@/utils/helpers';
 import { Alert } from '@datum-ui/alert';
@@ -15,9 +15,10 @@ import z from 'zod';
 
 interface Props {
   contact?: Contact;
+  user?: User;
 }
 
-export const ContactForm: React.FC<Props> = ({ contact }) => {
+export const ContactForm: React.FC<Props> = ({ contact, user }) => {
   const navigate = useNavigate();
   const { t } = useLingui();
 
@@ -107,15 +108,15 @@ export const ContactForm: React.FC<Props> = ({ contact }) => {
           <Form.Input field="last_name" label={t`Last Name`} required />
           <Form.Input field="email" label={t`Email`} required />
 
-          {contact && contact.spec.subject && (
+          {user && (
             <div className="flex items-center gap-2">
               <Text size="sm" textColor="muted">
                 <Trans>Associated with User: </Trans>
               </Text>
 
               <Text size="sm">
-                <Link to={userRoutes.detail(contact.spec.subject.name)}>
-                  {contact.spec.subject.name}
+                <Link to={userRoutes.detail(user.metadata.name)}>
+                  {user.spec.givenName} {user.spec.familyName} ({user.spec.email})
                 </Link>
               </Text>
             </div>
