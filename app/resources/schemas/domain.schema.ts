@@ -29,6 +29,7 @@ export const DomainSchema = z.object({
     domainName: z.string(),
   }),
   status: z.object({
+    apex: z.boolean(),
     conditions: z.array(
       z.object({
         lastTransitionTime: z.string(),
@@ -39,6 +40,39 @@ export const DomainSchema = z.object({
         type: z.string(),
       })
     ),
+    nameservers: z.array(
+      z.object({
+        hostname: z.string(),
+        ips: z.array(
+          z.object({
+            address: z.string(),
+            registrantName: z.string(),
+          })
+        ),
+      })
+    ),
+    registration: z.object({
+      createdAt: z.string(),
+      dnssec: z.object({
+        enabled: z.boolean(),
+      }),
+      domain: z.string(),
+      expiresAt: z.string(),
+      handle: z.string(),
+      nextRefreshAttempt: z.string(),
+      registrar: z.object({
+        ianaID: z.string(),
+        name: z.string(),
+        url: z.string(),
+      }),
+      registry: z.object({
+        name: z.string(),
+        url: z.string(),
+      }),
+      source: z.string(),
+      statuses: z.array(z.string()),
+      updatedAt: z.string(),
+    }),
     verification: z.object({
       dnsRecord: z.object({
         content: z.string(),

@@ -247,7 +247,7 @@ msgstr ""
 #: app/routes/project/detail/httpproxy/detail.tsx:121
 #: app/routes/project/detail/export-policy/index.tsx:54
 #: app/routes/project/detail/export-policy/detail.tsx:95
-#: app/routes/project/detail/domain/index.tsx:53
+#: app/routes/project/detail/domain/index.tsx:65
 #: app/routes/project/detail/domain/detail.tsx:97
 #: app/routes/profile/session.tsx:46
 #: app/routes/organization/index.tsx:37
@@ -370,6 +370,10 @@ msgstr ""
 msgid "Display name is required"
 msgstr ""
 
+#: app/routes/project/detail/domain/index.tsx:48
+msgid "DNS Providers"
+msgstr ""
+
 #: app/routes/project/detail/domain/index.tsx:40
 #: app/routes/project/detail/domain/detail.tsx:74
 msgid "Domain"
@@ -415,6 +419,10 @@ msgstr ""
 
 #: app/components/dialog/dialog-confirm.tsx:100
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
+msgstr ""
+
+#: app/routes/project/detail/domain/index.tsx:52
+msgid "Expiration Date"
 msgstr ""
 
 #: app/routes/profile/session.tsx:53
@@ -777,6 +785,10 @@ msgstr ""
 msgid "Reason for deactivation"
 msgstr ""
 
+#: app/routes/project/detail/domain/index.tsx:44
+msgid "Registrar"
+msgstr ""
+
 #: app/features/quota/components/quota-grant-list.tsx:45
 #: app/features/quota/components/quota-bucket-list.tsx:30
 msgid "Resource Type"
@@ -870,7 +882,7 @@ msgstr ""
 #: app/routes/project/detail/export-policy/index.tsx:48
 #: app/routes/project/detail/export-policy/detail.tsx:83
 #: app/routes/project/detail/export-policy/detail.tsx:184
-#: app/routes/project/detail/domain/index.tsx:44
+#: app/routes/project/detail/domain/index.tsx:56
 #: app/routes/project/detail/domain/detail.tsx:84
 #: app/routes/contact-group/index.tsx:48
 #: app/routes/contact/index.tsx:52
