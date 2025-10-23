@@ -28,17 +28,13 @@ export default function Page() {
   });
 
   const columns = [
-    columnHelper.accessor('metadata.name', {
-      header: () => <Trans>Name</Trans>,
-      cell: ({ getValue }) => (
-        <Link to={projectRoutes.domain.detail(project.metadata.name, getValue())}>
+    columnHelper.accessor('spec.domainName', {
+      header: () => <Trans>Domain</Trans>,
+      cell: ({ getValue, row }) => (
+        <Link to={projectRoutes.domain.detail(project.metadata.name, row.original.metadata.name)}>
           {getValue()}
         </Link>
       ),
-    }),
-    columnHelper.accessor('spec.domainName', {
-      header: () => <Trans>Domain</Trans>,
-      cell: ({ getValue }) => getValue(),
     }),
     columnHelper.accessor('status.registration.registrar.name', {
       header: () => <Trans>Registrar</Trans>,
