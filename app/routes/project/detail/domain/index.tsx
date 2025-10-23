@@ -1,7 +1,7 @@
 import { getProjectDetailMetadata, useProjectDetailData } from '../../shared';
 import type { Route } from './+types/index';
 import { DateFormatter } from '@/components/date';
-import { DomainStatusProbe } from '@/features/domain';
+import { DomainDnsProviders, DomainExpiration, DomainStatusProbe } from '@/features/domain';
 import { projectDomainListQuery } from '@/resources/request/client';
 import { Domain, DomainListResponse } from '@/resources/schemas';
 import { projectRoutes } from '@/utils/config/routes.config';
@@ -28,17 +28,25 @@ export default function Page() {
   });
 
   const columns = [
-    columnHelper.accessor('metadata.name', {
-      header: () => <Trans>Name</Trans>,
-      cell: ({ getValue }) => (
-        <Link to={projectRoutes.domain.detail(project.metadata.name, getValue())}>
+    columnHelper.accessor('spec.domainName', {
+      header: () => <Trans>Domain</Trans>,
+      cell: ({ getValue, row }) => (
+        <Link to={projectRoutes.domain.detail(project.metadata.name, row.original.metadata.name)}>
           {getValue()}
         </Link>
       ),
     }),
-    columnHelper.accessor('spec.domainName', {
-      header: () => <Trans>Domain</Trans>,
+    columnHelper.accessor('status.registration.registrar.name', {
+      header: () => <Trans>Registrar</Trans>,
       cell: ({ getValue }) => getValue(),
+    }),
+    columnHelper.accessor('status.nameservers', {
+      header: () => <Trans>DNS Providers</Trans>,
+      cell: ({ getValue }) => <DomainDnsProviders nameservers={getValue()} maxVisible={2} />,
+    }),
+    columnHelper.accessor('status.registration.expiresAt', {
+      header: () => <Trans>Expiration Date</Trans>,
+      cell: ({ getValue }) => <DomainExpiration expiresAt={getValue()} />,
     }),
     columnHelper.accessor('status', {
       header: () => <Trans>Status</Trans>,
