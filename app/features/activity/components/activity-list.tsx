@@ -1,17 +1,16 @@
 import { BadgeState } from '@/components/badge';
-import { DateFormatter } from '@/components/date';
+import { DateFormatter, DateRangePicker } from '@/components/date';
 import { ActivityLogEntry } from '@/modules/loki';
 import { useApp } from '@/providers/app.provider';
 import { activityListQuery } from '@/resources/request/client';
 import { ActivityListResponse, ActivityQueryParams } from '@/resources/schemas';
 import {
   DataTable,
+  DataTableFacetFilter,
   DataTableProvider,
+  DataTableSearch,
   filterConfigs,
   useDataTableQuery,
-  DataTableSearch,
-  DataTableFacetFilter,
-  DataTableDateFilter,
 } from '@datum-ui/data-table';
 import { Tooltip } from '@datum-ui/tooltip';
 import { Text } from '@datum-ui/typography';
@@ -33,7 +32,6 @@ import {
 } from 'date-fns';
 import { fromZonedTime, toZonedTime } from 'date-fns-tz';
 import { AlertTriangle, CheckCircle, Info, XCircle } from 'lucide-react';
-import { useState } from 'react';
 
 interface ActivityListProps {
   resourceType?: string;
@@ -282,10 +280,9 @@ export default function ActivityList({
             onValueChange={tableState.setSearch || (() => {})}
           />
 
-          <DataTableDateFilter
-            label={t`Time Range`}
-            placeholder={timeRangePlaceholder || t`Filter by time range`}
+          <DateRangePicker
             presets={ACTIVITY_DATE_PRESETS}
+            placeholder={timeRangePlaceholder || t`Filter by time range`}
             value={
               tableState.filters.start || tableState.filters.end
                 ? {

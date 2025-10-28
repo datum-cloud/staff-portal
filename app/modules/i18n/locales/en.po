@@ -44,11 +44,11 @@ msgstr "# of Sources"
 msgid "Account Management"
 msgstr "Account Management"
 
-#: app/features/activity/components/activity-list.tsx:95
+#: app/features/activity/components/activity-list.tsx:93
 msgid "Action"
 msgstr "Action"
 
-#: app/features/activity/components/activity-list.tsx:314
+#: app/features/activity/components/activity-list.tsx:311
 msgid "Actions"
 msgstr "Actions"
 
@@ -82,11 +82,11 @@ msgstr "Add Member"
 msgid "Added"
 msgstr "Added"
 
-#: app/features/activity/components/activity-list.tsx:344
+#: app/features/activity/components/activity-list.tsx:341
 msgid "All read operations"
 msgstr "All read operations"
 
-#: app/features/activity/components/activity-list.tsx:338
+#: app/features/activity/components/activity-list.tsx:335
 msgid "All write operations"
 msgstr "All write operations"
 
@@ -258,7 +258,7 @@ msgstr "Contacts - Create"
 #: app/routes/contact/create.tsx:14
 #: app/features/contact-group/components/contact-group-form.tsx:86
 #: app/features/contact/components/contact-form.tsx:162
-#: app/features/activity/components/activity-list.tsx:321
+#: app/features/activity/components/activity-list.tsx:318
 msgid "Create"
 msgstr "Create"
 
@@ -338,7 +338,7 @@ msgstr "Deactivation Reason:"
 #: app/routes/contact-group/detail/member.tsx:125
 #: app/routes/contact/index.tsx:102
 #: app/features/quota/components/quota-grant-list.tsx:141
-#: app/features/activity/components/activity-list.tsx:324
+#: app/features/activity/components/activity-list.tsx:321
 #: app/components/danger-zone-card/index.tsx:48
 #: app/components/danger-zone-card/index.tsx:76
 #: app/components/button/button-delete-action.tsx:42
@@ -474,7 +474,7 @@ msgstr "Export Policies"
 msgid "Failed to load status"
 msgstr "Failed to load status"
 
-#: app/features/activity/components/activity-list.tsx:315
+#: app/features/activity/components/activity-list.tsx:312
 msgid "Filter by action"
 msgstr "Filter by action"
 
@@ -482,8 +482,7 @@ msgstr "Filter by action"
 msgid "Filter by approval"
 msgstr "Filter by approval"
 
-#: app/modules/datum-ui/data-table/components/data-table-date-filter.tsx:48
-#: app/features/activity/components/activity-list.tsx:287
+#: app/features/activity/components/activity-list.tsx:285
 msgid "Filter by time range"
 msgstr "Filter by time range"
 
@@ -504,7 +503,7 @@ msgstr "Full Name"
 msgid "General"
 msgstr "General"
 
-#: app/features/activity/components/activity-list.tsx:318
+#: app/features/activity/components/activity-list.tsx:315
 msgid "Get"
 msgstr "Get"
 
@@ -578,7 +577,7 @@ msgstr "Light"
 msgid "Limit:"
 msgstr "Limit:"
 
-#: app/features/activity/components/activity-list.tsx:319
+#: app/features/activity/components/activity-list.tsx:316
 msgid "List"
 msgstr "List"
 
@@ -630,7 +629,7 @@ msgstr "Member deleted successfully"
 msgid "Members"
 msgstr "Members"
 
-#: app/features/activity/components/activity-list.tsx:50
+#: app/features/activity/components/activity-list.tsx:48
 msgid "Message"
 msgstr "Message"
 
@@ -733,7 +732,7 @@ msgstr "Organizations"
 msgid "Overview"
 msgstr "Overview"
 
-#: app/features/activity/components/activity-list.tsx:323
+#: app/features/activity/components/activity-list.tsx:320
 msgid "Patch"
 msgstr "Patch"
 
@@ -886,7 +885,7 @@ msgstr "Resource Type:"
 msgid "Save"
 msgstr "Save"
 
-#: app/features/activity/components/activity-list.tsx:280
+#: app/features/activity/components/activity-list.tsx:278
 msgid "Search activity..."
 msgstr "Search activity..."
 
@@ -950,7 +949,7 @@ msgstr "Sinks"
 msgid "Source"
 msgstr "Source"
 
-#: app/features/activity/components/activity-list.tsx:84
+#: app/features/activity/components/activity-list.tsx:82
 msgid "Source IP"
 msgstr "Source IP"
 
@@ -975,7 +974,7 @@ msgstr "Start Time"
 #: app/routes/contact-group/index.tsx:48
 #: app/routes/contact/index.tsx:52
 #: app/features/quota/components/quota-grant-list.tsx:72
-#: app/features/activity/components/activity-list.tsx:108
+#: app/features/activity/components/activity-list.tsx:106
 msgid "Status"
 msgstr "Status"
 
@@ -995,11 +994,7 @@ msgstr "Temporarily prevent user from signing in. The user can be reactivated at
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 msgstr "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 
-#: app/features/activity/components/activity-list.tsx:286
-msgid "Time Range"
-msgstr "Time Range"
-
-#: app/features/activity/components/activity-list.tsx:99
+#: app/features/activity/components/activity-list.tsx:97
 msgid "Timestamp"
 msgstr "Timestamp"
 
@@ -1018,7 +1013,7 @@ msgstr "Type a command or search..."
 #: app/features/quota/components/quota-bucket-list.tsx:158
 #: app/features/contact-group/components/contact-group-form.tsx:86
 #: app/features/contact/components/contact-form.tsx:162
-#: app/features/activity/components/activity-list.tsx:322
+#: app/features/activity/components/activity-list.tsx:319
 msgid "Update"
 msgstr "Update"
 
@@ -1089,6 +1084,6 @@ msgstr "Visibility"
 msgid "Warning"
 msgstr "Warning"
 
-#: app/features/activity/components/activity-list.tsx:320
+#: app/features/activity/components/activity-list.tsx:317
 msgid "Watch"
 msgstr "Watch"
