@@ -50,10 +50,7 @@ const columns = [
   }),
   columnHelper.accessor('status.registrationApproval', {
     header: () => <Trans>Registration Approval</Trans>,
-    cell: ({ getValue }) => {
-      const approval = getValue();
-      return approval ? <BadgeState state={approval} /> : <BadgeState state="unknown" />;
-    },
+    cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Unknown'} />,
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
     header: () => <Trans>Created</Trans>,

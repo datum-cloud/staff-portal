@@ -140,35 +140,35 @@ export default function Page() {
             <Text textColor="muted">{data?.spec?.email}</Text>
           </div>
 
-          {data?.status?.registrationApproval === 'Pending' && (
-            <div className="flex items-center gap-2">
-              <Button
-                theme="outline"
-                size="small"
-                icon={<CheckIcon size={16} />}
-                loading={isApproving}
-                onClick={async () => {
-                  setIsApproving(true);
-                  try {
-                    await approveUser(data, async () => {
-                      revalidate();
-                    });
-                  } finally {
-                    setIsApproving(false);
-                  }
-                }}>
-                <Trans>Approve</Trans>
-              </Button>
-              <Button
-                theme="outline"
-                type="danger"
-                size="small"
-                icon={<XIcon size={16} />}
-                onClick={() => setRejectDialogOpen(true)}>
-                <Trans>Reject</Trans>
-              </Button>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            <Button
+              theme="outline"
+              size="small"
+              icon={<CheckIcon size={16} />}
+              loading={isApproving}
+              disabled={data?.status?.registrationApproval !== 'Pending'}
+              onClick={async () => {
+                setIsApproving(true);
+                try {
+                  await approveUser(data, async () => {
+                    revalidate();
+                  });
+                } finally {
+                  setIsApproving(false);
+                }
+              }}>
+              <Trans>Approve</Trans>
+            </Button>
+            <Button
+              theme="outline"
+              type="danger"
+              size="small"
+              icon={<XIcon size={16} />}
+              disabled={data?.status?.registrationApproval !== 'Pending'}
+              onClick={() => setRejectDialogOpen(true)}>
+              <Trans>Reject</Trans>
+            </Button>
+          </div>
         </div>
 
         <Card className="mt-4 shadow-none">
@@ -208,6 +208,18 @@ export default function Page() {
                   </TableCell>
                   <TableCell>
                     <Text>{data?.spec?.email}</Text>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell width="25%">
+                    <Text textColor="muted">
+                      <Trans>Registration Approval</Trans>
+                    </Text>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-col gap-2">
+                      <BadgeState state={data?.status?.registrationApproval ?? 'Unknown'} />
+                    </div>
                   </TableCell>
                 </TableRow>
                 <TableRow>

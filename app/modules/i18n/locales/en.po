@@ -40,7 +40,7 @@ msgstr "# of Sinks"
 msgid "# of Sources"
 msgstr "# of Sources"
 
-#: app/routes/user/detail/index.tsx:246
+#: app/routes/user/detail/index.tsx:258
 msgid "Account Management"
 msgstr "Account Management"
 
@@ -98,12 +98,12 @@ msgstr "Allocation"
 msgid "Apply"
 msgstr "Apply"
 
-#: app/routes/user/index.tsx:85
+#: app/routes/user/index.tsx:82
 #: app/routes/user/detail/index.tsx:160
 msgid "Approve"
 msgstr "Approve"
 
-#: app/routes/user/index.tsx:146
+#: app/routes/user/index.tsx:143
 msgid "Approved"
 msgstr "Approved"
 
@@ -145,7 +145,7 @@ msgstr "Are you sure you want to delete session \"{0}\"? This action cannot be u
 
 #. placeholder {0}: data.spec.givenName
 #. placeholder {1}: data.spec.familyName
-#: app/routes/user/detail/index.tsx:344
+#: app/routes/user/detail/index.tsx:356
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 
@@ -263,8 +263,8 @@ msgid "Create"
 msgstr "Create"
 
 #: app/routes/email-activity.tsx:37
-#: app/routes/user/index.tsx:59
-#: app/routes/user/detail/index.tsx:228
+#: app/routes/user/index.tsx:56
+#: app/routes/user/detail/index.tsx:240
 #: app/routes/project/index.tsx:42
 #: app/routes/project/detail/index.tsx:74
 #: app/routes/project/detail/httpproxy/index.tsx:56
@@ -306,28 +306,28 @@ msgid "Dashboard"
 msgstr "Dashboard"
 
 #: app/routes/user/detail/index.tsx:112
-#: app/routes/user/detail/index.tsx:333
+#: app/routes/user/detail/index.tsx:345
 msgid "Deactivate"
 msgstr "Deactivate"
 
 #: app/routes/user/detail/index.tsx:110
-#: app/routes/user/detail/index.tsx:323
+#: app/routes/user/detail/index.tsx:335
 msgid "Deactivate User"
 msgstr "Deactivate User"
 
-#: app/routes/user/detail/index.tsx:296
+#: app/routes/user/detail/index.tsx:308
 msgid "Deactivated At:"
 msgstr "Deactivated At:"
 
-#: app/routes/user/detail/index.tsx:290
+#: app/routes/user/detail/index.tsx:302
 msgid "Deactivated By:"
 msgstr "Deactivated By:"
 
-#: app/routes/user/detail/index.tsx:284
+#: app/routes/user/detail/index.tsx:296
 msgid "Deactivation Details"
 msgstr "Deactivation Details"
 
-#: app/routes/user/detail/index.tsx:307
+#: app/routes/user/detail/index.tsx:319
 msgid "Deactivation Reason:"
 msgstr "Deactivation Reason:"
 
@@ -378,8 +378,8 @@ msgstr "Delete Project"
 msgid "Delete Session"
 msgstr "Delete Session"
 
-#: app/routes/user/detail/index.tsx:341
-#: app/routes/user/detail/index.tsx:343
+#: app/routes/user/detail/index.tsx:353
+#: app/routes/user/detail/index.tsx:355
 msgid "Delete User"
 msgstr "Delete User"
 
@@ -478,7 +478,7 @@ msgstr "Failed to load status"
 msgid "Filter by action"
 msgstr "Filter by action"
 
-#: app/routes/user/index.tsx:144
+#: app/routes/user/index.tsx:141
 msgid "Filter by approval"
 msgstr "Filter by approval"
 
@@ -604,11 +604,11 @@ msgstr "Loading..."
 msgid "Log out"
 msgstr "Log out"
 
-#: app/routes/user/index.tsx:80
+#: app/routes/user/index.tsx:77
 msgid "Manage"
 msgstr "Manage"
 
-#: app/routes/user/detail/index.tsx:249
+#: app/routes/user/detail/index.tsx:261
 msgid "Manage user access and account status"
 msgstr "Manage user access and account status"
 
@@ -736,7 +736,7 @@ msgstr "Overview"
 msgid "Patch"
 msgstr "Patch"
 
-#: app/routes/user/index.tsx:148
+#: app/routes/user/index.tsx:145
 msgid "Pending"
 msgstr "Pending"
 
@@ -752,7 +752,7 @@ msgstr "Permanently delete this organization and all associated data"
 msgid "Permanently delete this project and all associated data"
 msgstr "Permanently delete this project and all associated data"
 
-#: app/routes/user/detail/index.tsx:342
+#: app/routes/user/detail/index.tsx:354
 msgid "Permanently delete this user and all associated data"
 msgstr "Permanently delete this user and all associated data"
 
@@ -824,15 +824,15 @@ msgstr "Quota updated successfully"
 msgid "Quotas"
 msgstr "Quotas"
 
-#: app/routes/user/detail/index.tsx:266
+#: app/routes/user/detail/index.tsx:278
 msgid "Re-enable this user's access to the system. They will be able to sign in immediately."
 msgstr "Re-enable this user's access to the system. They will be able to sign in immediately."
 
-#: app/routes/user/detail/index.tsx:277
+#: app/routes/user/detail/index.tsx:289
 msgid "Reactivate"
 msgstr "Reactivate"
 
-#: app/routes/user/detail/index.tsx:263
+#: app/routes/user/detail/index.tsx:275
 msgid "Reactivate User"
 msgstr "Reactivate User"
 
@@ -850,12 +850,13 @@ msgid "Registrar"
 msgstr "Registrar"
 
 #: app/routes/user/index.tsx:52
-#: app/routes/user/index.tsx:143
+#: app/routes/user/index.tsx:140
+#: app/routes/user/detail/index.tsx:216
 msgid "Registration Approval"
 msgstr "Registration Approval"
 
-#: app/routes/user/index.tsx:102
-#: app/routes/user/detail/index.tsx:168
+#: app/routes/user/index.tsx:99
+#: app/routes/user/detail/index.tsx:169
 #: app/features/user/components/user-reject-dialog.tsx:29
 msgid "Reject"
 msgstr "Reject"
@@ -864,7 +865,7 @@ msgstr "Reject"
 msgid "Reject User"
 msgstr "Reject User"
 
-#: app/routes/user/index.tsx:147
+#: app/routes/user/index.tsx:144
 msgid "Rejected"
 msgstr "Rejected"
 
@@ -963,7 +964,7 @@ msgstr "Start Time"
 
 #: app/routes/email-activity.tsx:31
 #: app/routes/user/index.tsx:48
-#: app/routes/user/detail/index.tsx:216
+#: app/routes/user/detail/index.tsx:228
 #: app/routes/project/detail/httpproxy/index.tsx:50
 #: app/routes/project/detail/httpproxy/detail.tsx:109
 #: app/routes/project/detail/export-policy/index.tsx:48
@@ -986,7 +987,7 @@ msgstr "Subject is required when association is enabled"
 msgid "System"
 msgstr "System"
 
-#: app/routes/user/detail/index.tsx:326
+#: app/routes/user/detail/index.tsx:338
 msgid "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 msgstr "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 
