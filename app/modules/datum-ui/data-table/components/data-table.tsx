@@ -73,11 +73,14 @@ export function DataTable<TData>({
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="bg-muted hover:bg-muted">
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
                     colSpan={header.colSpan}
+                    className={cn(
+                      header.column.id === 'actions' && 'bg-background sticky right-0 z-10'
+                    )}
                     style={{
                       ...getCommonPinningStyles({ column: header.column }),
                     }}>
@@ -96,6 +99,9 @@ export function DataTable<TData>({
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
+                      className={cn(
+                        cell.column.id === 'actions' && 'bg-background sticky right-0 z-10'
+                      )}
                       style={{
                         ...getCommonPinningStyles({ column: cell.column }),
                       }}>

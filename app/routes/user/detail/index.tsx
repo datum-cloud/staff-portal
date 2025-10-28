@@ -2,8 +2,10 @@ import { getUserDetailMetadata, useUserDetailData } from '../shared';
 import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
 import { ButtonCopy } from '@/components/button';
+import { DangerZoneCard } from '@/components/danger-zone-card';
 import { DateFormatter } from '@/components/date';
-import { DialogConfirm, DialogForm } from '@/components/dialog';
+import { DialogForm } from '@/components/dialog';
+import { UserRejectDialog, useUserApproval } from '@/features/user';
 import {
   Card,
   CardContent,
@@ -26,7 +28,7 @@ import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
 import { Text, Title } from '@datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Shield, ShieldCheckIcon, ShieldXIcon, Trash2Icon } from 'lucide-react';
+import { CheckIcon, Shield, ShieldCheckIcon, ShieldXIcon, XIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useRevalidator } from 'react-router';
 import { z } from 'zod';
@@ -46,13 +48,17 @@ export default function Page() {
   const navigate = useNavigate();
   const { revalidate } = useRevalidator();
   const data = useUserDetailData();
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deactivateDialogOpen, setDeactivateDialogOpen] = useState(false);
+  const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [isReactivating, setIsReactivating] = useState(false);
+  const [isApproving, setIsApproving] = useState(false);
+
   const { data: deactivationData } = useUserDeactivationQuery(
     data.metadata.name,
     data.status?.state
   );
+
+  const { approveUser } = useUserApproval();
 
   const handleDeleteUser = async () => {
     await userDeleteMutation(data.metadata.name);
@@ -98,18 +104,6 @@ export default function Page() {
 
   return (
     <>
-      <DialogConfirm
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        title={t`Delete User`}
-        description={t`Are you sure you want to delete user "${data.spec.givenName} ${data.spec.familyName}"? This action cannot be undone.`}
-        confirmText={t`Delete`}
-        cancelText={t`Cancel`}
-        variant="destructive"
-        onConfirm={handleDeleteUser}
-        requireConfirmation
-      />
-
       <DialogForm
         open={deactivateDialogOpen}
         onOpenChange={setDeactivateDialogOpen}
@@ -128,11 +122,54 @@ export default function Page() {
         />
       </DialogForm>
 
+      <UserRejectDialog
+        open={rejectDialogOpen}
+        onOpenChange={setRejectDialogOpen}
+        user={data}
+        onSuccess={async () => {
+          revalidate();
+        }}
+      />
+
       <div className="m-4 flex flex-col gap-1">
-        <Title>
-          {data?.spec?.givenName} {data?.spec?.familyName}
-        </Title>
-        <Text textColor="muted">{data?.spec?.email}</Text>
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col">
+            <Title>
+              {data?.spec?.givenName} {data?.spec?.familyName}
+            </Title>
+            <Text textColor="muted">{data?.spec?.email}</Text>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button
+              theme="outline"
+              size="small"
+              icon={<CheckIcon size={16} />}
+              loading={isApproving}
+              disabled={data?.status?.registrationApproval !== 'Pending'}
+              onClick={async () => {
+                setIsApproving(true);
+                try {
+                  await approveUser(data, async () => {
+                    revalidate();
+                  });
+                } finally {
+                  setIsApproving(false);
+                }
+              }}>
+              <Trans>Approve</Trans>
+            </Button>
+            <Button
+              theme="outline"
+              type="danger"
+              size="small"
+              icon={<XIcon size={16} />}
+              disabled={data?.status?.registrationApproval !== 'Pending'}
+              onClick={() => setRejectDialogOpen(true)}>
+              <Trans>Reject</Trans>
+            </Button>
+          </div>
+        </div>
 
         <Card className="mt-4 shadow-none">
           <CardContent>
@@ -171,6 +208,18 @@ export default function Page() {
                   </TableCell>
                   <TableCell>
                     <Text>{data?.spec?.email}</Text>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell width="25%">
+                    <Text textColor="muted">
+                      <Trans>Registration Approval</Trans>
+                    </Text>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-col gap-2">
+                      <BadgeState state={data?.status?.registrationApproval ?? 'Unknown'} />
+                    </div>
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -300,32 +349,13 @@ export default function Page() {
           </CardContent>
         </Card>
 
-        <Card className="border-destructive/20 mt-4 shadow-none">
-          <CardHeader>
-            <CardTitle className="text-destructive flex items-center gap-2">
-              <Trash2Icon className="h-4 w-4" />
-              <Trans>Danger Zone</Trans>
-            </CardTitle>
-            <CardDescription>
-              <Trans>Irreversible and destructive actions</Trans>
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="border-destructive bg-destructive/5 flex items-center justify-between rounded-lg border p-4">
-              <div>
-                <Title level={6} weight="medium" textColor="destructive">
-                  <Trans>Delete User</Trans>
-                </Title>
-                <Text textColor="destructive" size="sm" as="p">
-                  <Trans>Permanently delete this user and all associated data</Trans>
-                </Text>
-              </div>
-              <Button type="danger" size="small" onClick={() => setDeleteDialogOpen(true)}>
-                <Trans>Delete</Trans>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <DangerZoneCard
+          deleteTitle={t`Delete User`}
+          deleteDescription={t`Permanently delete this user and all associated data`}
+          dialogTitle={t`Delete User`}
+          dialogDescription={t`Are you sure you want to delete user "${data.spec.givenName} ${data.spec.familyName}"? This action cannot be undone.`}
+          onConfirm={handleDeleteUser}
+        />
       </div>
     </>
   );

@@ -1,23 +1,14 @@
 import { BadgeState } from '@/components/badge';
 import { DateFormatter, DateRangePicker } from '@/components/date';
 import { ActivityLogEntry } from '@/modules/loki';
-import { Button } from '@/modules/shadcn/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/modules/shadcn/ui/dropdown-menu';
-import { Input } from '@/modules/shadcn/ui/input';
 import { useApp } from '@/providers/app.provider';
 import { activityListQuery } from '@/resources/request/client';
 import { ActivityListResponse, ActivityQueryParams } from '@/resources/schemas';
 import {
   DataTable,
+  DataTableFacetFilter,
   DataTableProvider,
+  DataTableSearch,
   filterConfigs,
   useDataTableQuery,
 } from '@datum-ui/data-table';
@@ -41,7 +32,6 @@ import {
 } from 'date-fns';
 import { fromZonedTime, toZonedTime } from 'date-fns-tz';
 import { AlertTriangle, CheckCircle, Info, XCircle } from 'lucide-react';
-import { useEffect, useState } from 'react';
 
 interface ActivityListProps {
   resourceType?: string;
@@ -212,7 +202,6 @@ export default function ActivityList({
 }: ActivityListProps) {
   const { t } = useLingui();
   const { settings } = useApp();
-  const [searchInput, setSearchInput] = useState('');
 
   // Helper functions for timezone conversion
   const convertFromApiTimestamp = (timestamp: string) => {
@@ -275,15 +264,6 @@ export default function ActivityList({
     filterConfig: filterConfigs.dateRange,
   });
 
-  // Debounce search input
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      tableState.setSearch?.(searchInput);
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [searchInput, tableState.setSearch]);
-
   return (
     <DataTableProvider<ActivityLogEntry, ActivityListResponse>
       columns={createColumns()}
@@ -294,12 +274,12 @@ export default function ActivityList({
       {...tableState}>
       <div className="m-4 flex flex-col gap-2">
         <div className="flex items-center gap-4">
-          <Input
+          <DataTableSearch
             placeholder={searchPlaceholder || t`Search activity...`}
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            className="w-64"
+            value={tableState.search}
+            onValueChange={tableState.setSearch || (() => {})}
           />
+
           <DateRangePicker
             presets={ACTIVITY_DATE_PRESETS}
             placeholder={timeRangePlaceholder || t`Filter by time range`}
@@ -327,9 +307,11 @@ export default function ActivityList({
             }}
           />
 
-          {/* Actions filter */}
-          {(() => {
-            const ACTION_OPTIONS = [
+          <DataTableFacetFilter
+            label={t`Actions`}
+            placeholder={t`Filter by action`}
+            multiSelect
+            options={[
               { value: 'get', label: t`Get` },
               { value: 'list', label: t`List` },
               { value: 'watch', label: t`Watch` },
@@ -337,67 +319,32 @@ export default function ActivityList({
               { value: 'update', label: t`Update` },
               { value: 'patch', label: t`Patch` },
               { value: 'delete', label: t`Delete` },
-            ] as const;
-
-            const current =
-              (tableState.filters.actions as string | undefined)?.split(',').filter(Boolean) ?? [];
-            const currentSet = new Set(current);
-            const selectedCount = current.length;
-
-            const setActions = (values: string[]) => {
-              if (values.length > 0) tableState.setFilter('actions', values.join(','));
-              else tableState.clearFilter('actions');
-            };
-
-            const toggle = (value: string, checked: boolean) => {
-              const next = new Set(currentSet);
-              if (checked) next.add(value);
-              else next.delete(value);
-              setActions(Array.from(next));
-            };
-
-            const setWrites = () =>
-              setActions(['create', 'update', 'patch', 'delete', 'deletecollection']);
-            const setReads = () => setActions(['get', 'list', 'watch']);
-
-            return (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline">
-                    {selectedCount > 0
-                      ? t`Filter by action (${selectedCount})`
-                      : t`Filter by action`}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-56">
-                  <DropdownMenuLabel>
-                    <Trans>Filter by action</Trans>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {ACTION_OPTIONS.map((opt) => (
-                    <DropdownMenuCheckboxItem
-                      key={opt.value}
-                      checked={currentSet.has(opt.value)}
-                      onCheckedChange={(c) => toggle(opt.value, Boolean(c))}>
-                      {opt.label}
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={setWrites}>
-                    <Trans>All write operations</Trans>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={setReads}>
-                    <Trans>All read operations</Trans>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => tableState.clearFilter('actions')}
-                    data-variant="destructive">
-                    <Trans>Clear</Trans>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            );
-          })()}
+            ]}
+            value={
+              (tableState.filters.actions as string | undefined)?.split(',').filter(Boolean) ?? []
+            }
+            onValueChange={(value) => {
+              if (value && Array.isArray(value) && value.length > 0) {
+                tableState.setFilter('actions', value.join(','));
+              } else {
+                tableState.clearFilter('actions');
+              }
+            }}
+            menuItems={[
+              {
+                label: t`All write operations`,
+                onClick: () => {
+                  tableState.setFilter('actions', 'create,update,patch,delete,deletecollection');
+                },
+              },
+              {
+                label: t`All read operations`,
+                onClick: () => {
+                  tableState.setFilter('actions', 'get,list,watch');
+                },
+              },
+            ]}
+          />
         </div>
 
         <DataTable<ActivityLogEntry> />

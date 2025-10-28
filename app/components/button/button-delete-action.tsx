@@ -1,5 +1,5 @@
 import DialogConfirm from '@/components/dialog/dialog-confirm';
-import { Button } from '@/modules/datum-ui/button';
+import { Button } from '@datum-ui/button';
 import { Tooltip } from '@datum-ui/tooltip';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Trash2Icon } from 'lucide-react';
@@ -49,7 +49,6 @@ export default function ButtonDeleteAction({
       <Tooltip message={tooltip || <Trans>Delete</Trans>}>
         <Button
           type="danger"
-          theme="light"
           size="icon"
           onClick={() => setDeleteDialogOpen(true)}
           {...buttonProps}>

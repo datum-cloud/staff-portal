@@ -2,6 +2,8 @@ export * from './components/data-table';
 export * from './components/data-table-loading';
 export * from './components/data-table-pagination';
 export * from './components/data-table-select-actions';
+export * from './components/data-table-search';
+export * from './components/data-table-facet-filter';
 export * from './hooks/useDataTableQuery';
 export * from './lib/data-table';
 export * from './lib/data-table.config';

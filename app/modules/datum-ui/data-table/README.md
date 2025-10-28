@@ -11,6 +11,26 @@ The filtering system is built into the `useDataTableQuery` hook and provides:
 - ✅ **Type-safe**: Full TypeScript support
 - ✅ **Backward compatible**: Existing tables continue to work
 - ✅ **Reusable**: Predefined filter configurations for common use cases
+- ✅ **Modern Design**: Actions column fixed on scroll for better UX
+
+## Design Features
+
+### Actions Column
+
+The data table now features a **dedicated actions column** positioned at the right end of the table that:
+
+- **Stays fixed** during horizontal scrolling for easy access
+- **Combines row selection** and **row actions** in one column
+- **Maintains clean separation** from content columns
+- **Provides consistent positioning** across all table states
+
+The actions column includes:
+
+- Row selection checkboxes (when `selectable={true}`)
+- Action dropdown menus with customizable actions
+- **Loading states** for async actions
+- Proper accessibility support
+- Responsive design for mobile devices
 
 ## Basic Usage
 
@@ -65,6 +85,57 @@ tableState.clearSearch();
 
 // Clear all filters
 tableState.clearAllFilters();
+```
+
+### 4. Action Loading States
+
+Actions support loading states for async operations. The loading state is shown on the trigger button (not in the menu):
+
+```tsx
+const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
+
+const actions: ActionItem<Contact>[] = [
+  {
+    label: 'Edit',
+    icon: EditIcon,
+    onClick: async (row) => {
+      setLoadingStates((prev) => ({ ...prev, [row.id]: true }));
+      try {
+        await editContact(row.id);
+        navigate(`/edit/${row.id}`);
+      } finally {
+        setLoadingStates((prev) => ({ ...prev, [row.id]: false }));
+      }
+    },
+  },
+  {
+    label: 'Delete',
+    icon: Trash2Icon,
+    variant: 'destructive',
+    onClick: async (row) => {
+      setLoadingStates((prev) => ({ ...prev, [`delete-${row.id}`]: true }));
+      try {
+        await deleteContact(row.id);
+        // Refresh table or remove from list
+      } finally {
+        setLoadingStates((prev) => ({ ...prev, [`delete-${row.id}`]: false }));
+      }
+    },
+  },
+];
+
+// Use in DataTableProvider
+<DataTableProvider<Contact, ContactListResponse>
+  {...tableState}
+  actions={actions}
+  actionsLoading={(row) => loadingStates[row.id] || loadingStates[`delete-${row.id}`] || false}
+  columns={columns}
+  transform={(data) => ({
+    rows: data?.data?.items || [],
+    cursor: data?.data?.metadata?.continue,
+  })}>
+  <DataTable />
+</DataTableProvider>;
 ```
 
 ## Predefined Filter Configurations
