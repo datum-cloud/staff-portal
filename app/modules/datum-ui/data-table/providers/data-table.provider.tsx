@@ -1,5 +1,7 @@
 import {
-  enhanceFirstColumnWithSelectActions,
+  createActionsColumn,
+  createSelectionColumn,
+  enhanceFirstColumnWithSelection,
   type ActionItem,
 } from '../components/data-table-select-actions';
 import { UseQueryResult } from '@tanstack/react-query';
@@ -52,6 +54,7 @@ interface DataTableProviderProps<TData, TQuery = DataTableQuery<TData>> {
   transform?: (raw: TQuery) => DataTableQuery<TData>;
   selectable?: boolean;
   actions?: ActionItem<TData>[];
+  actionsLoading?: boolean | ((row: TData) => boolean);
   getRowId?: (row: TData, index: number, parent?: any) => string;
 
   limit: number;
@@ -84,6 +87,7 @@ export function DataTableProvider<TData, TQuery = DataTableQuery<TData>>({
   transform,
   selectable = false,
   actions,
+  actionsLoading,
   getRowId,
   children,
   limit,
@@ -137,7 +141,7 @@ export function DataTableProvider<TData, TQuery = DataTableQuery<TData>>({
     }
   }, [sorting, filters, limit]);
 
-  // Add flexible select/actions column
+  // Add selection to first column (embedded) and actions column (separate)
   const enhancedColumns = useMemo(() => {
     const hasActions = actions && actions.length > 0;
     const isSelectable = selectable;
@@ -147,18 +151,27 @@ export function DataTableProvider<TData, TQuery = DataTableQuery<TData>>({
       return columns;
     }
 
-    // Always use the enhanced first column approach
-    if (columns.length > 0) {
-      const [firstColumn, ...restColumns] = columns;
-      const enhancedFirstColumn = enhanceFirstColumnWithSelectActions(firstColumn, {
-        selectable,
-        actions,
-      });
-      return [enhancedFirstColumn, ...restColumns];
+    const newColumns = [...columns];
+
+    // Enhance first column with selection checkbox (embedded, no extra space)
+    if (isSelectable && newColumns.length > 0) {
+      newColumns[0] = enhanceFirstColumnWithSelection(newColumns[0]);
     }
 
-    return columns;
-  }, [selectable, actions, columns]);
+    // Add actions column at the end (right side)
+    if (hasActions) {
+      const actionsColumn = createActionsColumn({
+        selectable: false, // Selection is handled by first column enhancement
+        actions,
+        loading: actionsLoading,
+      });
+      if (actionsColumn) {
+        newColumns.push(actionsColumn);
+      }
+    }
+
+    return newColumns;
+  }, [selectable, actions, actionsLoading, columns]);
 
   const table = useReactTable<TData>({
     data: rows,

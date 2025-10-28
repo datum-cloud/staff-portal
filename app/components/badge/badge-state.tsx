@@ -99,6 +99,25 @@ const StateConfig = {
     className:
       'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/20 dark:text-gray-400 dark:border-gray-800',
   },
+  // Registration approval states
+  approved: {
+    icon: null,
+    variant: 'default' as const,
+    className:
+      'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800',
+  },
+  rejected: {
+    icon: null,
+    variant: 'destructive' as const,
+    className:
+      'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800',
+  },
+  unknown: {
+    icon: null,
+    variant: 'secondary' as const,
+    className:
+      'bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-900/20 dark:text-gray-500 dark:border-gray-800',
+  },
   // Action verbs
   create: {
     icon: null,

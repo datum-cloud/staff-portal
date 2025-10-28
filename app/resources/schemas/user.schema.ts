@@ -47,6 +47,7 @@ export const UserSchema = z.object({
         })
       ),
       state: z.string(),
+      registrationApproval: z.enum(['Approved', 'Rejected', 'Pending']),
     })
     .optional(),
 });
@@ -160,3 +161,46 @@ export const UserDeactivationSchema = z.object({
 export type UserDeactivation = z.infer<typeof UserDeactivationSchema>;
 export const UserDeactivationResponseSchema = createProxyResponseSchema(UserDeactivationSchema);
 export type UserDeactivationResponse = z.infer<typeof UserDeactivationResponseSchema>;
+
+export const UserApproveSchema = z.object({
+  apiVersion: z.literal('iam.miloapis.com/v1alpha1'),
+  kind: z.literal('PlatformAccessApproval'),
+  metadata: z.object({
+    name: z.string(),
+  }),
+  spec: z.object({
+    subjectRef: z.object({
+      userRef: z.object({
+        name: z.string(),
+      }),
+    }),
+    approverRef: z
+      .object({
+        name: z.string(),
+      })
+      .optional(),
+  }),
+});
+
+export type UserApprove = z.infer<typeof UserApproveSchema>;
+
+export const UserRejectSchema = z.object({
+  apiVersion: z.literal('iam.miloapis.com/v1alpha1'),
+  kind: z.literal('PlatformAccessRejection'),
+  metadata: z.object({
+    name: z.string(),
+  }),
+  spec: z.object({
+    subjectRef: z.object({
+      name: z.string(),
+    }),
+    reason: z.string(),
+    rejecterRef: z
+      .object({
+        name: z.string(),
+      })
+      .optional(),
+  }),
+});
+
+export type UserReject = z.infer<typeof UserRejectSchema>;

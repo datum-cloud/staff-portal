@@ -1,10 +1,14 @@
 import { apiRequestClient } from '@/modules/axios/axios.client';
 import {
   ListQueryParams,
+  UserApprove,
+  UserApproveSchema,
   UserDeactivate,
   UserDeactivateSchema,
   UserDeactivationResponseSchema,
   UserListResponseSchema,
+  UserReject,
+  UserRejectSchema,
   UserResponseSchema,
   UserUpdate,
   UserUpdateSchema,
@@ -12,13 +16,30 @@ import {
 import { useQuery } from '@tanstack/react-query';
 
 export const userListQuery = (params?: ListQueryParams) => {
+  const fieldSelectors: Record<string, string> = {};
+
+  if (params?.search) {
+    fieldSelectors['spec.email'] = params.search;
+  }
+
+  if (params?.filters?.registrationApproval) {
+    fieldSelectors['status.registrationApproval'] = params.filters.registrationApproval;
+  }
+
+  const fieldSelectorString =
+    Object.keys(fieldSelectors).length > 0
+      ? Object.entries(fieldSelectors)
+          .map(([key, value]) => `${key}=${value}`)
+          .join(',')
+      : undefined;
+
   return apiRequestClient({
     method: 'GET',
     url: '/apis/iam.miloapis.com/v1alpha1/users',
     params: {
       ...(params?.limit && { limit: params.limit }),
       ...(params?.cursor && { continue: params.cursor }),
-      ...(params?.search && { fieldSelector: `metadata.name=${params.search}` }),
+      ...(fieldSelectorString && { fieldSelector: fieldSelectorString }),
     },
   })
     .output(UserListResponseSchema)
@@ -47,6 +68,26 @@ export const userDeleteMutation = (userId: string) => {
     method: 'DELETE',
     url: `/apis/iam.miloapis.com/v1alpha1/users/${userId}`,
   }).execute();
+};
+
+export const userApproveMutation = (payload: UserApprove) => {
+  return apiRequestClient({
+    method: 'POST',
+    url: '/apis/iam.miloapis.com/v1alpha1/platformaccessapprovals',
+    data: payload,
+  })
+    .input(UserApproveSchema)
+    .execute();
+};
+
+export const userRejectMutation = (payload: UserReject) => {
+  return apiRequestClient({
+    method: 'POST',
+    url: '/apis/iam.miloapis.com/v1alpha1/platformaccessrejections',
+    data: payload,
+  })
+    .input(UserRejectSchema)
+    .execute();
 };
 
 export const userDeactivateMutation = (payload: UserDeactivate) => {

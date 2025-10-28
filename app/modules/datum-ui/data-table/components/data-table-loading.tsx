@@ -38,6 +38,9 @@ export function DataTableLoading<TData>({
                   <TableHead
                     key={header.id}
                     colSpan={header.colSpan}
+                    className={cn(
+                      header.column.id === 'actions' && 'bg-background sticky right-0 z-10'
+                    )}
                     style={{
                       ...getCommonPinningStyles({ column: header.column }),
                     }}>
@@ -53,6 +56,7 @@ export function DataTableLoading<TData>({
                 {table.getAllColumns().map((column) => (
                   <TableCell
                     key={`loading-cell-${column.id}-${index}`}
+                    className={cn(column.id === 'actions' && 'bg-background sticky right-0 z-10')}
                     style={{
                       ...getCommonPinningStyles({ column }),
                     }}>
