@@ -188,7 +188,8 @@ export const MemberInvitationCreateSchema = z.object({
   apiVersion: z.literal('iam.miloapis.com/v1alpha1'),
   kind: z.literal('UserInvitation'),
   metadata: z.object({
-    name: z.string(),
+    name: z.string().optional(),
+    generateName: z.string().optional(),
   }),
   spec: z.object({
     familyName: z.string(),

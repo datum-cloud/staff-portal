@@ -64,6 +64,10 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
       const data = await contactCreateMutation({
         apiVersion: 'notification.miloapis.com/v1alpha1',
         kind: 'Contact',
+        metadata: {
+          generateName: 'contact-',
+          namespace: 'default',
+        },
         spec: {
           familyName: value.last_name,
           givenName: value.first_name,
@@ -77,12 +81,6 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
                 namespace: '',
               },
             }),
-        },
-        metadata: {
-          name: generateMetadataName(
-            [value.first_name, value.last_name, 'contact'].filter(Boolean).join('-')
-          ),
-          namespace: 'default',
         },
       });
       navigate(contactRoutes.edit(data.data.metadata.name));

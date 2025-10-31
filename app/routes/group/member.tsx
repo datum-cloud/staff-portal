@@ -109,7 +109,7 @@ export default function Page() {
         apiVersion: 'iam.miloapis.com/v1alpha1',
         kind: 'GroupMembership',
         metadata: {
-          name: [data.metadata.name, formData.name].join('-'),
+          generateName: 'group-membership-',
           namespace: 'milo-system',
         },
         spec: {
