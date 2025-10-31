@@ -66,6 +66,7 @@ export const ContactSchema = z.object({
     })
     .optional(),
 });
+export type Contact = z.infer<typeof ContactSchema>;
 
 export const ContactListSchema = z.object({
   apiVersion: z.string(),
@@ -76,8 +77,6 @@ export const ContactListSchema = z.object({
     resourceVersion: z.string(),
   }),
 });
-
-export type Contact = z.infer<typeof ContactSchema>;
 export type ContactList = z.infer<typeof ContactListSchema>;
 
 export const ContactListResponseSchema = createProxyResponseSchema(ContactListSchema);
@@ -108,7 +107,6 @@ export const ContactCreateSchema = z.object({
       .optional(),
   }),
 });
-
 export type ContactCreate = z.infer<typeof ContactCreateSchema>;
 
 export const ContactUpdateSchema = ContactCreateSchema.partial();

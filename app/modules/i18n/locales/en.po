@@ -167,6 +167,7 @@ msgstr "Auto-managed by policy \"{policyName}\". Cannot be deleted."
 
 #: app/routes/user/detail/index.tsx:113
 #: app/routes/profile/session.tsx:89
+#: app/routes/organization/detail/member.tsx:119
 #: app/routes/group/member.tsx:145
 #: app/routes/group/member.tsx:162
 #: app/routes/contact-group/index.tsx:99
@@ -543,6 +544,14 @@ msgstr "ID"
 msgid "Invalid email address"
 msgstr "Invalid email address"
 
+#: app/routes/organization/detail/member.tsx:130
+msgid "Invitation cancelled successfully"
+msgstr "Invitation cancelled successfully"
+
+#: app/routes/organization/detail/member.tsx:112
+msgid "Invitation resend successfully"
+msgstr "Invitation resend successfully"
+
 #: app/routes/profile/session.tsx:39
 msgid "IP"
 msgstr "IP"
@@ -552,7 +561,6 @@ msgid "Irreversible and destructive actions"
 msgstr "Irreversible and destructive actions"
 
 #: app/routes/user/detail/organization.tsx:36
-#: app/routes/organization/detail/member.tsx:47
 msgid "Joined"
 msgstr "Joined"
 
@@ -622,7 +630,7 @@ msgstr "Member added successfully"
 msgid "Member deleted successfully"
 msgstr "Member deleted successfully"
 
-#: app/routes/organization/detail/member.tsx:15
+#: app/routes/organization/detail/member.tsx:22
 #: app/routes/organization/detail/layout.tsx:47
 #: app/routes/contact-group/detail/member.tsx:27
 #: app/routes/contact-group/detail/layout.tsx:39
@@ -656,7 +664,7 @@ msgstr "My Profile"
 #: app/routes/project/detail/export-policy/detail.tsx:175
 #: app/routes/organization/index.tsx:20
 #: app/routes/organization/detail/project.tsx:25
-#: app/routes/organization/detail/member.tsx:26
+#: app/routes/organization/detail/member.tsx:33
 #: app/routes/organization/detail/index.tsx:53
 #: app/routes/group/member.tsx:49
 #: app/routes/group/index.tsx:19
@@ -768,6 +776,11 @@ msgstr "Please provide a reason for deactivating \"{0} {1}\"."
 msgid "Please provide a reason for rejecting \"{0} {1}\"."
 msgstr "Please provide a reason for rejecting \"{0} {1}\"."
 
+#. placeholder {0}: remainingMinutes !== 1 ? 's' : ''
+#: app/routes/organization/detail/member.tsx:84
+msgid "Please wait {remainingMinutes} more minute{0} before resending this invitation"
+msgstr "Please wait {remainingMinutes} more minute{0} before resending this invitation"
+
 #: app/features/preferences/components/preferences-form.tsx:72
 msgid "Portal Preferences"
 msgstr "Portal Preferences"
@@ -869,6 +882,10 @@ msgstr "Reject User"
 msgid "Rejected"
 msgstr "Rejected"
 
+#: app/routes/organization/detail/member.tsx:72
+msgid "Resend"
+msgstr "Resend"
+
 #: app/routes/project/detail/domain/detail.tsx:52
 msgid "Resource Name"
 msgstr "Resource Name"
@@ -881,6 +898,10 @@ msgstr "Resource Type"
 #: app/features/quota/components/quota-bucket-list.tsx:165
 msgid "Resource Type:"
 msgstr "Resource Type:"
+
+#: app/routes/organization/detail/member.tsx:53
+msgid "Role"
+msgstr "Role"
 
 #: app/features/profile/components/profile-form.tsx:58
 msgid "Save"
@@ -1002,7 +1023,6 @@ msgstr "Timestamp"
 #: app/routes/user/detail/organization.tsx:32
 #: app/routes/project/detail/export-policy/detail.tsx:178
 #: app/routes/organization/index.tsx:31
-#: app/routes/organization/detail/member.tsx:43
 #: app/routes/organization/detail/index.tsx:63
 msgid "Type"
 msgstr "Type"

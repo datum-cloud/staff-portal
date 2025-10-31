@@ -1,17 +1,9 @@
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Badge } from '@/modules/shadcn/ui/badge';
+import { startCase } from '@/utils/helpers';
 import { Tooltip } from '@datum-ui/tooltip';
 import { Loader2 } from 'lucide-react';
 import * as React from 'react';
-
-// Helper function to convert string to title case
-function titleCase(str: string): string {
-  return str
-    .toLowerCase()
-    .split('_')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}
 
 const StateConfig = {
   yes: {
@@ -106,7 +98,19 @@ const StateConfig = {
     className:
       'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800',
   },
+  accepted: {
+    icon: null,
+    variant: 'default' as const,
+    className:
+      'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800',
+  },
   rejected: {
+    icon: null,
+    variant: 'destructive' as const,
+    className:
+      'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800',
+  },
+  declined: {
     icon: null,
     variant: 'destructive' as const,
     className:
@@ -197,7 +201,7 @@ const BadgeState = ({ state, message, noColor, tooltip, className, loading }: Pr
   const IconComponent = config.icon;
 
   // Use custom message if provided, otherwise fall back to titleCase state
-  const displayText = message || titleCase(normalizedState);
+  const displayText = message || startCase(normalizedState);
 
   if (!IconComponent) {
     return (
@@ -220,7 +224,7 @@ const BadgeState = ({ state, message, noColor, tooltip, className, loading }: Pr
 
   if (tooltip) {
     return (
-      <Tooltip message={titleCase(tooltip || normalizedState)}>
+      <Tooltip message={startCase(tooltip || normalizedState)}>
         <div className="inline-flex cursor-pointer">{iconElement}</div>
       </Tooltip>
     );

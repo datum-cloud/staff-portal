@@ -17,14 +17,16 @@ export function DataTableSearch({
   debounceMs = 300,
   className = 'w-64',
 }: DataTableSearchProps) {
-  const [searchInput, setSearchInput] = useState(value || '');
+  const [searchInput, setSearchInput] = useState(value ?? '');
 
   // Sync external value changes
   useEffect(() => {
-    if (value !== undefined && value !== searchInput) {
-      setSearchInput(value);
+    if (value === undefined) {
+      setSearchInput('');
+      return;
     }
-  }, [value, searchInput]);
+    setSearchInput(value);
+  }, [value]);
 
   // Debounce search input
   useEffect(() => {
