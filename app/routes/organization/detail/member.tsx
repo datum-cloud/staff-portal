@@ -94,7 +94,7 @@ export default function Page() {
             apiVersion: 'iam.miloapis.com/v1alpha1',
             kind: 'UserInvitation',
             metadata: {
-              name: generateMetadataName([data.metadata.name, row.name].filter(Boolean).join('-')),
+              generateName: 'user-invitation-',
             },
             spec: {
               email: row.email,

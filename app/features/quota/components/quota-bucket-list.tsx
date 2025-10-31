@@ -124,7 +124,7 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn }: QuotaBucketListProp
         apiVersion: 'quota.miloapis.com/v1alpha1',
         kind: 'ResourceGrant',
         metadata: {
-          generateName: `${selected?.spec.consumerRef.name ?? ''}-quota-`,
+          generateName: 'resource-grant-',
           namespace: selected?.metadata.namespace ?? '',
         },
         spec: {

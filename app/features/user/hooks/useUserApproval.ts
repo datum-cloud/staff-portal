@@ -13,7 +13,7 @@ export function useUserApproval() {
       await userApproveMutation({
         apiVersion: 'iam.miloapis.com/v1alpha1',
         kind: 'PlatformAccessApproval',
-        metadata: { name: `${user.metadata.name}-approval` },
+        metadata: { generateName: 'platform-access-approval-' },
         spec: {
           subjectRef: { userRef: { name: user.metadata.name } },
           approverRef: { name: currentUser?.metadata.name ?? '' },
@@ -28,7 +28,7 @@ export function useUserApproval() {
       await userRejectMutation({
         apiVersion: 'iam.miloapis.com/v1alpha1',
         kind: 'PlatformAccessRejection',
-        metadata: { name: `${user?.metadata.name}-rejection` },
+        metadata: { generateName: 'platform-access-rejection-' },
         spec: {
           subjectRef: { name: user?.metadata.name ?? '' },
           reason: reason,

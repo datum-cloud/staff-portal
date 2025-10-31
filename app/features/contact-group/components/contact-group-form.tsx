@@ -38,9 +38,7 @@ export const ContactGroupForm: React.FC<Props> = ({ contactGroup }) => {
         kind: 'ContactGroup',
         spec,
         metadata: {
-          name: generateMetadataName(
-            [value.display_name, 'contact-group'].filter(Boolean).join('-')
-          ),
+          generateName: 'contact-group-',
           namespace: 'default',
         },
       });

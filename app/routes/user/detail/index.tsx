@@ -72,7 +72,7 @@ export default function Page() {
         apiVersion: 'iam.miloapis.com/v1alpha1',
         kind: 'UserDeactivation',
         metadata: {
-          name: data.metadata.name,
+          generateName: 'user-deactivation-',
         },
         spec: {
           reason: formData.reason,

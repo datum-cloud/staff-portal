@@ -93,7 +93,7 @@ export default function Page() {
       apiVersion: 'notification.miloapis.com/v1alpha1',
       kind: 'ContactGroupMembership',
       metadata: {
-        name: generateMetadataName([data.metadata.name, formData.name].filter(Boolean).join('-')),
+        generateName: 'contact-group-membership-',
         namespace: 'default',
       },
       spec: {
