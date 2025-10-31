@@ -1,3 +1,8 @@
+/**
+ * Converts a value to a boolean.
+ * @param value - The value to convert to boolean.
+ * @returns A boolean representation of the input.
+ */
 export function toBoolean(value: string | boolean | undefined | null): boolean {
   if (typeof value === 'boolean') return value;
   if (!value) return false;
@@ -24,4 +29,16 @@ export function generateMetadataName(prefix: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9-]/g, '')
     .substring(0, 63);
+}
+
+/**
+ * Converts a string to start case.
+ * @param input - The string to convert to start case.
+ * @returns The string in start case.
+ */
+export function startCase(input: string): string {
+  if (!input) return '';
+
+  const words = input.match(/[A-Z]?[a-z]+|[A-Z]+(?![a-z])|\d+/g) || [];
+  return words.map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
 }
