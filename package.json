@@ -116,7 +116,7 @@
     "lefthook": "^2.0.0",
     "postcss": "^8.5.3",
     "prettier": "^3.5.3",
-    "prettier-plugin-tailwindcss": "^0.6.11",
+    "prettier-plugin-tailwindcss": "^0.7.0",
     "start-server-and-test": "^2.0.11",
     "tailwindcss": "^4.1.6",
     "tw-animate-css": "^1.3.0",
