@@ -7,6 +7,8 @@ export const activityListFixture = {
       logs: [],
       query: '',
       timeRange: { start: '2025-10-14T04:16:07.000Z', end: '2025-10-21T04:16:08.613Z' },
+      nextPageToken: undefined,
+      hasNextPage: false,
     },
     path: '/api/activity',
   },
@@ -116,6 +118,8 @@ export const activityListFixture = {
       query:
         '{telemetry_datumapis_com_audit_log="true"} | json | stage="ResponseComplete" | requestURI !~ ".*dryRun=All.*" | verb=~"(?i)(create)" | objectRef_resource="users" | user_username="zitadel-actions-server" | responseStatus_code < 400',
       timeRange: { start: '2025-10-14T04:16:07.000Z', end: '2025-10-21T04:16:08.613Z' },
+      nextPageToken: '2025-10-16T22:17:06.824Z',
+      hasNextPage: true,
     },
     path: '/api/activity',
   },
@@ -165,6 +169,8 @@ export const activityListFixture = {
       query:
         '{telemetry_datumapis_com_audit_log="true"} | json | stage="ResponseComplete" | requestURI !~ ".*dryRun=All.*" | verb=~"(?i)(create)" | objectRef_resource="users" | user_username="zitadel-actions-server" | responseStatus_code < 400',
       timeRange: { start: '2025-10-14T04:16:07.000Z', end: '2025-10-21T04:16:08.613Z' },
+      nextPageToken: undefined,
+      hasNextPage: false,
     },
     path: '/api/activity',
   },

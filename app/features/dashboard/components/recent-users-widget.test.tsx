@@ -110,6 +110,7 @@ describe('RecentUsersWidget', () => {
           logs: [],
           query: '',
           timeRange: { start: '2025-10-14T04:16:07.000Z', end: '2025-10-21T04:16:08.613Z' },
+          hasNextPage: false,
         },
         path: '/api/activity',
       });
@@ -143,6 +144,7 @@ describe('RecentUsersWidget', () => {
           ],
           query: '',
           timeRange: { start: '2025-10-14T04:16:07.000Z', end: '2025-10-21T04:16:08.613Z' },
+          hasNextPage: false,
         },
         path: '/api/activity',
       });
@@ -171,6 +173,7 @@ describe('RecentUsersWidget', () => {
           ],
           query: '',
           timeRange: { start: '2025-10-14T04:16:07.000Z', end: '2025-10-21T04:16:08.613Z' },
+          hasNextPage: false,
         },
         path: '/api/activity',
       });
@@ -206,6 +209,7 @@ describe('RecentUsersWidget', () => {
           ],
           query: '',
           timeRange: { start: '2025-10-14T04:16:07.000Z', end: '2025-10-21T04:16:08.613Z' },
+          hasNextPage: false,
         },
         path: '/api/activity',
       });
@@ -242,6 +246,7 @@ describe('RecentUsersWidget', () => {
           ],
           query: '',
           timeRange: { start: '2025-10-14T04:16:07.000Z', end: '2025-10-21T04:16:08.613Z' },
+          hasNextPage: false,
         },
         path: '/api/activity',
       });

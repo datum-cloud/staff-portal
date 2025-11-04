@@ -156,6 +156,7 @@ api.get('/activity', authMiddleware(), async (c) => {
       limit: c.req.query('limit') || undefined,
       start: c.req.query('start') || undefined,
       end: c.req.query('end') || undefined,
+      pageToken: c.req.query('pageToken') || undefined,
       project: c.req.query('project') || undefined,
       organization: c.req.query('organization') || undefined,
       // Enhanced filtering approach
