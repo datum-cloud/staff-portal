@@ -24,11 +24,14 @@ export const handle = {
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const session = await authenticator.getSession(request);
+  const url = new URL(request.url);
+  const namespace = url.searchParams.get('namespace') ?? 'default';
 
   const data = await projectDomainDetailQuery(
     session?.accessToken ?? '',
     params?.projectName ?? '',
-    params?.domainName ?? ''
+    params?.domainName ?? '',
+    namespace
   );
 
   return data;
@@ -118,6 +121,7 @@ export default function Page() {
                   <DomainStatusProbe
                     projectName={project.metadata.name}
                     domainName={data?.metadata?.name}
+                    namespace={data?.metadata?.namespace}
                   />
                 </TableCell>
               </TableRow>

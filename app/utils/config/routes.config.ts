@@ -29,8 +29,10 @@ export const projectRoutes = {
   },
   domain: {
     list: (projectName: string) => `/customers/projects/${projectName}/domains`,
-    detail: (projectName: string, domainName: string) =>
-      `/customers/projects/${projectName}/domains/${domainName}`,
+    detail: (projectName: string, domainName: string, namespace?: string) => {
+      const path = `/customers/projects/${projectName}/domains/${domainName}`;
+      return namespace ? `${path}?namespace=${encodeURIComponent(namespace)}` : path;
+    },
   },
   httpProxy: {
     list: (projectName: string) => `/customers/projects/${projectName}/http-proxies`,

@@ -22,12 +22,16 @@ function getConditionTitle(conditionType: string): string {
 export function DomainStatusProbe({
   projectName,
   domainName,
+  namespace,
 }: {
   projectName: string;
   domainName: string;
+  namespace?: string;
 }) {
   const { t } = useLingui();
+  const namespaceToUse = namespace ?? 'default';
   const { data, isLoading, error } = useDomainStatus(projectName, domainName, {
+    namespace: namespaceToUse,
     enabled: Boolean(domainName),
     refetchIntervalMs: 10000,
   });

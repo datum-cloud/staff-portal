@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 type UseDomainStatusOptions = {
   enabled?: boolean;
   refetchIntervalMs?: number | false;
+  namespace?: string;
 };
 
 export function useDomainStatus(
@@ -11,13 +12,14 @@ export function useDomainStatus(
   domainName: string | undefined,
   options?: UseDomainStatusOptions
 ) {
+  const namespace = options?.namespace ?? 'default';
   const enabled = Boolean(domainName) && (options?.enabled ?? true);
   const refetchInterval = options?.refetchIntervalMs ?? 10000;
 
   return useQuery({
-    queryKey: ['domains', domainName, 'status'],
+    queryKey: ['projects', projectName, 'domains', namespace, domainName, 'status'],
     enabled,
-    queryFn: () => projectDomainStatusQuery(projectName, domainName as string),
+    queryFn: () => projectDomainStatusQuery(projectName, domainName as string, namespace),
     refetchInterval: enabled
       ? typeof refetchInterval === 'number'
         ? refetchInterval

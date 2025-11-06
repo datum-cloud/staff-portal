@@ -31,7 +31,12 @@ export default function Page() {
     columnHelper.accessor('spec.domainName', {
       header: () => <Trans>Domain</Trans>,
       cell: ({ getValue, row }) => (
-        <Link to={projectRoutes.domain.detail(project.metadata.name, row.original.metadata.name)}>
+        <Link
+          to={projectRoutes.domain.detail(
+            project.metadata.name,
+            row.original.metadata.name,
+            row.original.metadata.namespace
+          )}>
           {getValue()}
         </Link>
       ),
@@ -54,6 +59,7 @@ export default function Page() {
         <DomainStatusProbe
           projectName={project.metadata.name}
           domainName={row.original.metadata.name}
+          namespace={row.original.metadata.namespace}
         />
       ),
     }),

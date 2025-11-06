@@ -67,11 +67,19 @@ describe('project.request', () => {
     });
   });
 
-  test('projectDomainStatusQuery', async () => {
+  test('projectDomainStatusQuery defaults to the default namespace', async () => {
     await projectDomainStatusQuery('proj', 'example.com');
     expect(axiosMock.apiRequestClient).toHaveBeenCalledWith({
       method: 'GET',
       url: 'apis/resourcemanager.miloapis.com/v1alpha1/projects/proj/control-plane/apis/networking.datumapis.com/v1alpha/namespaces/default/domains/example.com/status',
+    });
+  });
+
+  test('projectDomainStatusQuery uses provided namespace', async () => {
+    await projectDomainStatusQuery('proj', 'example.com', 'org-acme');
+    expect(axiosMock.apiRequestClient).toHaveBeenCalledWith({
+      method: 'GET',
+      url: 'apis/resourcemanager.miloapis.com/v1alpha1/projects/proj/control-plane/apis/networking.datumapis.com/v1alpha/namespaces/org-acme/domains/example.com/status',
     });
   });
 
