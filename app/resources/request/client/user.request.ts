@@ -6,6 +6,8 @@ import {
   UserDeactivate,
   UserDeactivateSchema,
   UserDeactivationResponseSchema,
+  UserInvite,
+  UserInviteSchema,
   UserListResponseSchema,
   UserReject,
   UserRejectSchema,
@@ -68,6 +70,16 @@ export const userDeleteMutation = (userId: string) => {
     method: 'DELETE',
     url: `/apis/iam.miloapis.com/v1alpha1/users/${userId}`,
   }).execute();
+};
+
+export const userInviteMutation = (payload: UserInvite) => {
+  return apiRequestClient({
+    method: 'POST',
+    url: '/apis/iam.miloapis.com/v1alpha1/platforminvitations',
+    data: payload,
+  })
+    .input(UserInviteSchema)
+    .execute();
 };
 
 export const userApproveMutation = (payload: UserApprove) => {

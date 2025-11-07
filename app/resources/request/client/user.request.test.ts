@@ -1,4 +1,4 @@
-import type { UserUpdate, UserApprove, UserReject, UserDeactivate } from '@/resources/schemas';
+import type { UserUpdate, UserApprove, UserReject, UserDeactivate, UserInvite } from '@/resources/schemas';
 import {
   importAfterMocks,
   mockLogger,
@@ -17,6 +17,7 @@ describe('user.request', () => {
   let userRejectMutation: typeof import('./user.request').userRejectMutation;
   let userDeactivateMutation: typeof import('./user.request').userDeactivateMutation;
   let userReactivateMutation: typeof import('./user.request').userReactivateMutation;
+  let userInviteMutation: typeof import('./user.request').userInviteMutation;
 
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -30,6 +31,7 @@ describe('user.request', () => {
     userRejectMutation = mod.userRejectMutation;
     userDeactivateMutation = mod.userDeactivateMutation;
     userReactivateMutation = mod.userReactivateMutation;
+    userInviteMutation = mod.userInviteMutation;
   });
 
   test('userListQuery builds combined fieldSelector', async () => {
@@ -147,5 +149,48 @@ describe('user.request', () => {
       url: '/apis/iam.miloapis.com/v1alpha1/userdeactivations/user-3',
     });
     expect(axiosMock.__builder.execute).toHaveBeenCalledTimes(1);
+  });
+
+  test('userInviteMutation validates typed input', async () => {
+    const payload: UserInvite = {
+      apiVersion: 'iam.miloapis.com/v1alpha1',
+      kind: 'PlatformInvitation',
+      metadata: { name: 'sample-invitation-8' },
+      spec: {
+        email: 'jane.doe@example.com',
+        familyName: 'Doe',
+        givenName: 'Jane',
+        scheduleAt: '2025-12-31T21:30:00Z',
+      },
+    };
+
+    await userInviteMutation(payload);
+    expect(axiosMock.apiRequestClient).toHaveBeenCalledWith({
+      method: 'POST',
+      url: '/apis/iam.miloapis.com/v1alpha1/platforminvitations',
+      data: payload,
+    });
+    expect(axiosMock.__builder.input).toHaveBeenCalledTimes(1);
+  });
+
+  test('userInviteMutation works without scheduleAt', async () => {
+    const payload: UserInvite = {
+      apiVersion: 'iam.miloapis.com/v1alpha1',
+      kind: 'PlatformInvitation',
+      metadata: { generateName: 'invitation-' },
+      spec: {
+        email: 'john.doe@example.com',
+        familyName: 'Doe',
+        givenName: 'John',
+      },
+    };
+
+    await userInviteMutation(payload);
+    expect(axiosMock.apiRequestClient).toHaveBeenCalledWith({
+      method: 'POST',
+      url: '/apis/iam.miloapis.com/v1alpha1/platforminvitations',
+      data: payload,
+    });
+    expect(axiosMock.__builder.input).toHaveBeenCalledTimes(1);
   });
 });

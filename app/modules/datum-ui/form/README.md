@@ -398,6 +398,121 @@ Toggle switch field.
 />
 ```
 
+### Form.DatePicker
+
+Date selection field with calendar popover. Stores values as `Date` objects.
+
+#### Props
+
+| Prop              | Type                | Default         | Description                         |
+| ----------------- | ------------------- | --------------- | ----------------------------------- |
+| `field`           | `string`            | -               | Form field name (must match schema) |
+| `label`           | `string`            | -               | Field label                         |
+| `description`     | `string`            | -               | Field description/help text         |
+| `required`        | `boolean \| string` | -               | Required field indicator            |
+| `hideError`       | `boolean`           | `false`         | Hide error message                  |
+| `placeholder`     | `string`            | `'Pick a date'` | Placeholder text                    |
+| `disabled`        | `boolean`           | `false`         | Disable the picker                  |
+| `className`       | `string`            | -               | CSS classes for the field           |
+| `showClearButton` | `boolean`           | `true`          | Show clear button when value is set |
+| `calendarProps`   | `CalendarProps`     | -               | Props to pass to Calendar component |
+| `rules`           | `ValidationRules`   | -               | Additional validation rules         |
+
+#### Example
+
+```tsx
+const eventSchema = z.object({
+  eventDate: z.date({ required_error: 'Event date is required' }),
+});
+
+<Form.DatePicker
+  field="eventDate"
+  label="Event Date"
+  description="Select the date for your event"
+  placeholder="Choose a date"
+  required
+/>;
+```
+
+**Note**: The field value is stored as a `Date` object. In Zod schemas, use `z.date()` for type safety.
+
+### Form.TimePicker
+
+Time selection field using native HTML5 time input. Stores values as strings in `HH:mm` format.
+
+#### Props
+
+| Prop            | Type                | Default | Description                         |
+| --------------- | ------------------- | ------- | ----------------------------------- |
+| `field`         | `string`            | -       | Form field name (must match schema) |
+| `label`         | `string`            | -       | Field label                         |
+| `description`   | `string`            | -       | Field description/help text         |
+| `required`      | `boolean \| string` | -       | Required field indicator            |
+| `hideError`     | `boolean`           | `false` | Hide error message                  |
+| `placeholder`   | `string`            | -       | Placeholder text                    |
+| `className`     | `string`            | -       | CSS classes for the field           |
+| `rules`         | `ValidationRules`   | -       | Additional validation rules         |
+| `...inputProps` | `InputProps`        | -       | All standard input props            |
+
+#### Example
+
+```tsx
+const scheduleSchema = z.object({
+  startTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Invalid time format'),
+});
+
+<Form.TimePicker
+  field="startTime"
+  label="Start Time"
+  description="Select the start time"
+  placeholder="HH:mm"
+  required
+/>;
+```
+
+**Note**: The field value is stored as a string in `HH:mm` format (e.g., `"14:30"`). In Zod schemas, use `z.string()` with pattern validation.
+
+### Form.DateTimePicker
+
+Combined date and time selection field. Stores values as `Date` objects with both date and time components.
+
+#### Props
+
+| Prop              | Type                | Default                  | Description                         |
+| ----------------- | ------------------- | ------------------------ | ----------------------------------- |
+| `field`           | `string`            | -                        | Form field name (must match schema) |
+| `label`           | `string`            | -                        | Field label                         |
+| `description`     | `string`            | -                        | Field description/help text         |
+| `required`        | `boolean \| string` | -                        | Required field indicator            |
+| `hideError`       | `boolean`           | `false`                  | Hide error message                  |
+| `placeholder`     | `string`            | `'Pick a date and time'` | Placeholder text                    |
+| `timePlaceholder` | `string`            | `'HH:mm'`                | Time input placeholder              |
+| `disabled`        | `boolean`           | `false`                  | Disable the picker                  |
+| `className`       | `string`            | -                        | CSS classes for the field           |
+| `showClearButton` | `boolean`           | `true`                   | Show clear button when value is set |
+| `calendarProps`   | `CalendarProps`     | -                        | Props to pass to Calendar component |
+| `dateFormat`      | `string`            | `'PPP'`                  | Date format for display (date-fns)  |
+| `rules`           | `ValidationRules`   | -                        | Additional validation rules         |
+
+#### Example
+
+```tsx
+const appointmentSchema = z.object({
+  appointmentDateTime: z.date({ required_error: 'Appointment date and time is required' }),
+});
+
+<Form.DateTimePicker
+  field="appointmentDateTime"
+  label="Appointment Date & Time"
+  description="Select the date and time for your appointment"
+  placeholder="Pick a date and time"
+  dateFormat="PPP"
+  required
+/>;
+```
+
+**Note**: The field value is stored as a `Date` object with both date and time components. In Zod schemas, use `z.date()` for type safety. The component automatically synchronizes the date and time selections.
+
 ## Advanced Usage
 
 ### Using Render Props
@@ -446,6 +561,11 @@ const userSchema = z.object({
     notifications: z.boolean(),
     theme: z.enum(['light', 'dark', 'auto']),
   }),
+  schedule: z.object({
+    startDate: z.date({ required_error: 'Start date is required' }),
+    startTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Invalid time format'),
+    endDateTime: z.date({ required_error: 'End date and time is required' }),
+  }),
 });
 
 function ComplexForm() {
@@ -456,6 +576,7 @@ function ComplexForm() {
         personalInfo: { firstName: '', lastName: '', email: '', phone: '' },
         address: { street: '', city: '', zipCode: '' },
         preferences: { newsletter: false, notifications: true, theme: 'light' },
+        schedule: { startDate: undefined, startTime: '', endDateTime: undefined },
       }}
       onSubmit={handleSubmit}>
       <div className="space-y-6">
@@ -487,6 +608,13 @@ function ComplexForm() {
               { label: 'Auto', value: 'auto' },
             ]}
           />
+        </div>
+
+        <div>
+          <h3>Schedule</h3>
+          <Form.DatePicker field="schedule.startDate" label="Start Date" required />
+          <Form.TimePicker field="schedule.startTime" label="Start Time" required />
+          <Form.DateTimePicker field="schedule.endDateTime" label="End Date & Time" required />
         </div>
       </div>
     </Form>

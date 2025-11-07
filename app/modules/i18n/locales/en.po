@@ -15,12 +15,12 @@ msgstr ""
 
 #. placeholder {0}: item.label
 #. placeholder {0}: item.title
-#: app/modules/datum-ui/data-table/components/data-table-facet-filter.tsx:113
+#: app/modules/datum-ui/data-table/components/data-table-facet-filter.tsx:114
 #: app/components/app-search/index.tsx:163
 msgid "{0}"
 msgstr "{0}"
 
-#: app/modules/datum-ui/data-table/components/data-table-facet-filter.tsx:121
+#: app/modules/datum-ui/data-table/components/data-table-facet-filter.tsx:122
 msgid "{clearLabel}"
 msgstr "{clearLabel}"
 
@@ -28,7 +28,7 @@ msgstr "{clearLabel}"
 msgid "{heading}"
 msgstr "{heading}"
 
-#: app/modules/datum-ui/data-table/components/data-table-facet-filter.tsx:89
+#: app/modules/datum-ui/data-table/components/data-table-facet-filter.tsx:90
 msgid "{label}"
 msgstr "{label}"
 
@@ -98,12 +98,12 @@ msgstr "Allocation"
 msgid "Apply"
 msgstr "Apply"
 
-#: app/routes/user/index.tsx:82
+#: app/routes/user/index.tsx:89
 #: app/routes/user/detail/index.tsx:160
 msgid "Approve"
 msgstr "Approve"
 
-#: app/routes/user/index.tsx:143
+#: app/routes/user/index.tsx:194
 msgid "Approved"
 msgstr "Approved"
 
@@ -165,6 +165,7 @@ msgstr "Auto-managed by grant creation policy. Cannot be deleted."
 msgid "Auto-managed by policy \"{policyName}\". Cannot be deleted."
 msgstr "Auto-managed by policy \"{policyName}\". Cannot be deleted."
 
+#: app/routes/user/index.tsx:128
 #: app/routes/user/detail/index.tsx:113
 #: app/routes/profile/session.tsx:89
 #: app/routes/organization/detail/member.tsx:119
@@ -192,7 +193,7 @@ msgstr "Cannot delete inactive grant"
 msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
 msgstr "Choose how the portal looks to you. Select a single theme, or sync with your system."
 
-#: app/modules/datum-ui/data-table/components/data-table-facet-filter.tsx:44
+#: app/modules/datum-ui/data-table/components/data-table-facet-filter.tsx:45
 msgid "Clear"
 msgstr "Clear"
 
@@ -264,7 +265,7 @@ msgid "Create"
 msgstr "Create"
 
 #: app/routes/email-activity.tsx:37
-#: app/routes/user/index.tsx:56
+#: app/routes/user/index.tsx:61
 #: app/routes/user/detail/index.tsx:240
 #: app/routes/project/index.tsx:42
 #: app/routes/project/detail/index.tsx:74
@@ -425,6 +426,7 @@ msgstr "Domains"
 msgid "Edit Quota"
 msgstr "Edit Quota"
 
+#: app/routes/user/index.tsx:155
 #: app/routes/user/detail/index.tsx:206
 #: app/routes/contact/index.tsx:43
 #: app/features/contact/components/contact-form.tsx:107
@@ -435,6 +437,10 @@ msgstr "Email"
 #: app/components/app-sidebar/index.tsx:139
 msgid "Email Activity"
 msgstr "Email Activity"
+
+#: app/routes/user/index.tsx:117
+msgid "Email is required"
+msgstr "Email is required"
 
 #: app/components/date/date-range-picker.tsx:263
 msgid "End Time"
@@ -479,7 +485,7 @@ msgstr "Failed to load status"
 msgid "Filter by action"
 msgstr "Filter by action"
 
-#: app/routes/user/index.tsx:141
+#: app/routes/user/index.tsx:192
 msgid "Filter by approval"
 msgstr "Filter by approval"
 
@@ -487,10 +493,12 @@ msgstr "Filter by approval"
 msgid "Filter by time range"
 msgstr "Filter by time range"
 
+#: app/routes/user/index.tsx:153
 #: app/features/contact/components/contact-form.tsx:105
 msgid "First Name"
 msgstr "First Name"
 
+#: app/routes/user/index.tsx:115
 #: app/features/profile/components/profile-form.tsx:15
 #: app/features/contact/components/contact-form.tsx:33
 msgid "First name is required"
@@ -535,11 +543,12 @@ msgstr "Hostnames"
 msgid "HTTP Proxies"
 msgstr "HTTP Proxies"
 
-#: app/routes/user/index.tsx:42
+#: app/routes/user/index.tsx:47
 #: app/routes/user/detail/index.tsx:181
 msgid "ID"
 msgstr "ID"
 
+#: app/routes/user/index.tsx:117
 #: app/features/contact/components/contact-form.tsx:35
 msgid "Invalid email address"
 msgstr "Invalid email address"
@@ -551,6 +560,15 @@ msgstr "Invitation cancelled successfully"
 #: app/routes/organization/detail/member.tsx:112
 msgid "Invitation resend successfully"
 msgstr "Invitation resend successfully"
+
+#: app/routes/user/index.tsx:127
+msgid "Invite"
+msgstr "Invite"
+
+#: app/routes/user/index.tsx:126
+#: app/routes/user/index.tsx:208
+msgid "Invite User"
+msgstr "Invite User"
 
 #: app/routes/profile/session.tsx:39
 msgid "IP"
@@ -568,10 +586,12 @@ msgstr "Joined"
 msgid "Last 10 new users who joined Datum"
 msgstr "Last 10 new users who joined Datum"
 
+#: app/routes/user/index.tsx:154
 #: app/features/contact/components/contact-form.tsx:106
 msgid "Last Name"
 msgstr "Last Name"
 
+#: app/routes/user/index.tsx:116
 #: app/features/profile/components/profile-form.tsx:16
 #: app/features/contact/components/contact-form.tsx:34
 msgid "Last name is required"
@@ -612,7 +632,7 @@ msgstr "Loading..."
 msgid "Log out"
 msgstr "Log out"
 
-#: app/routes/user/index.tsx:77
+#: app/routes/user/index.tsx:84
 msgid "Manage"
 msgstr "Manage"
 
@@ -651,7 +671,7 @@ msgid "My Profile"
 msgstr "My Profile"
 
 #: app/routes/email-activity.tsx:22
-#: app/routes/user/index.tsx:32
+#: app/routes/user/index.tsx:37
 #: app/routes/user/detail/organization.tsx:18
 #: app/routes/project/index.tsx:21
 #: app/routes/project/detail/secret.tsx:22
@@ -744,7 +764,7 @@ msgstr "Overview"
 msgid "Patch"
 msgstr "Patch"
 
-#: app/routes/user/index.tsx:145
+#: app/routes/user/index.tsx:196
 msgid "Pending"
 msgstr "Pending"
 
@@ -862,13 +882,13 @@ msgstr "Reason for rejection"
 msgid "Registrar"
 msgstr "Registrar"
 
-#: app/routes/user/index.tsx:52
-#: app/routes/user/index.tsx:140
+#: app/routes/user/index.tsx:57
+#: app/routes/user/index.tsx:191
 #: app/routes/user/detail/index.tsx:216
 msgid "Registration Approval"
 msgstr "Registration Approval"
 
-#: app/routes/user/index.tsx:99
+#: app/routes/user/index.tsx:106
 #: app/routes/user/detail/index.tsx:169
 #: app/features/user/components/user-reject-dialog.tsx:29
 msgid "Reject"
@@ -878,7 +898,7 @@ msgstr "Reject"
 msgid "Reject User"
 msgstr "Reject User"
 
-#: app/routes/user/index.tsx:144
+#: app/routes/user/index.tsx:195
 msgid "Rejected"
 msgstr "Rejected"
 
@@ -906,6 +926,10 @@ msgstr "Role"
 #: app/features/profile/components/profile-form.tsx:58
 msgid "Save"
 msgstr "Save"
+
+#: app/routes/user/index.tsx:156
+msgid "Schedule At"
+msgstr "Schedule At"
 
 #: app/features/activity/components/activity-list.tsx:278
 msgid "Search activity..."
@@ -984,7 +1008,7 @@ msgid "Start Time"
 msgstr "Start Time"
 
 #: app/routes/email-activity.tsx:31
-#: app/routes/user/index.tsx:48
+#: app/routes/user/index.tsx:53
 #: app/routes/user/detail/index.tsx:228
 #: app/routes/project/detail/httpproxy/index.tsx:50
 #: app/routes/project/detail/httpproxy/detail.tsx:109
@@ -1062,6 +1086,10 @@ msgstr "User deactivated successfully"
 msgid "User deleted successfully"
 msgstr "User deleted successfully"
 
+#: app/routes/user/index.tsx:148
+msgid "User invited successfully"
+msgstr "User invited successfully"
+
 #: app/routes/user/detail/index.tsx:98
 msgid "User reactivated successfully"
 msgstr "User reactivated successfully"
@@ -1071,7 +1099,7 @@ msgid "User rejected successfully"
 msgstr "User rejected successfully"
 
 #: app/routes/user/layout.tsx:5
-#: app/routes/user/index.tsx:25
+#: app/routes/user/index.tsx:30
 #: app/components/app-sidebar/index.tsx:103
 msgid "Users"
 msgstr "Users"

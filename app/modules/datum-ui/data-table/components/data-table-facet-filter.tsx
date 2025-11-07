@@ -1,4 +1,4 @@
-import { Button } from '@/modules/shadcn/ui/button';
+// import { Button } from '@/modules/shadcn/ui/button';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -8,6 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/modules/shadcn/ui/dropdown-menu';
+import { Button } from '@datum-ui/button';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
@@ -80,7 +81,7 @@ export function DataTableFacetFilter({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className={className}>
+        <Button type="primary" theme="outline" className={className}>
           {selectedCount > 0 ? `${label} (${selectedCount})` : placeholder || label}
         </Button>
       </DropdownMenuTrigger>
