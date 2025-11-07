@@ -15,11 +15,10 @@ export * from './validator';
 // Export formatting utilities (client-safe)
 export * from './formatter';
 
-// Export parsing utilities (client-safe)
-export * from './parser';
-
 // Export client-side utilities (browser-safe)
 export * from './client-utils';
 
-// Note: Server-only exports (loki-client and service) are excluded to prevent
-// bundling Node.js specific code (@myunisoft/loki) in the browser
+// Note: Server-only exports are excluded to prevent bundling Node.js specific code:
+// - loki-client (uses @myunisoft/loki)
+// - service (Loki activity logs service)
+// - parser (uses server-side API discovery)

@@ -16,7 +16,7 @@ export const QueryParamsSchema = z.object({
   limit: z.string().optional(),
   start: z.string().optional(),
   end: z.string().optional(),
-  pageToken: z.string().optional(),
+  pageToken: z.string().optional(), // Keyset pagination token (timestamp of last log from previous page)
   project: z.string().optional(), // Legacy project filter
   organization: z.string().optional(), // Organization filter
   // Enhanced filtering options
@@ -60,6 +60,7 @@ export const LokiQueryResponseSchema = z.object({
 
 export const ActivityLogEntrySchema = z.object({
   timestamp: z.string(),
+  timestampNs: z.string().optional(), // Nanosecond timestamp for Loki pagination
   message: z.string(),
   formattedMessage: z.string().optional(), // HTML formatted message with class names
   statusMessage: z.string().optional(), // Status code and description
@@ -109,8 +110,10 @@ export const ActivityLogsResponseSchema = z.object({
     start: z.string(), // ISO date string
     end: z.string(), // ISO date string
   }),
+  // Keyset pagination support: timestamp of the last log for next page query
   nextPageToken: z.string().optional(),
-  hasNextPage: z.boolean().optional(),
+  // Whether more results are available
+  hasNextPage: z.boolean().default(false),
 });
 
 // Enhanced LogQL query options supporting single resource and advanced patterns
@@ -138,6 +141,7 @@ export const FormatAuditMessageOptionsSchema = z.object({
   truncate: z.boolean().optional(),
   maxLength: z.number().optional(),
   truncateSuffix: z.string().optional(),
+  hideErrorMessage: z.boolean().optional(),
 });
 
 export const ActivityCategorySchema = z.object({

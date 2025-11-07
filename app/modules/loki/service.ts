@@ -57,12 +57,15 @@ export class LokiActivityLogsService {
       start: validatedParams.start,
       end: validatedParams.end,
       limit: validatedParams.limit,
+      // Use pageToken as end boundary for keyset pagination
       ...(queryParams.pageToken && { endOverride: queryParams.pageToken }),
     });
 
-    // Process logs
+    // Process logs with API discovery for accurate resource singularization
     let logs =
-      response.logs && Array.isArray(response.logs) ? processLogEntries(response.logs) : [];
+      response.logs && Array.isArray(response.logs)
+        ? await processLogEntries(response.logs, this.accessToken)
+        : [];
 
     // Apply flexible search (q parameter) on server side
     if (queryParams.q) {
@@ -94,10 +97,14 @@ export class LokiActivityLogsService {
     const startTime = convertTimeToUserFriendly(validatedParams.start);
     const endTime = convertTimeToUserFriendly(validatedParams.end);
 
-    // Prepare pagination metadata
+    // Calculate pagination tokens
+    // nextPageToken is the timestamp of the last log (for keyset pagination)
+    // We need to convert ISO timestamp to nanoseconds for Loki's end parameter
     let nextPageToken: string | undefined;
     if (logs.length > 0) {
       const lastTimestamp = logs[logs.length - 1].timestamp;
+      // Convert ISO string to nanoseconds (Loki expects nanoseconds)
+      // ISO string like "2025-10-17T01:56:52.733Z" -> milliseconds -> nanoseconds
       const ms = new Date(lastTimestamp).getTime();
       nextPageToken = (ms * 1000000).toString();
     }

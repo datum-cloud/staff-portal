@@ -1,9 +1,11 @@
+import ActivityDetailDrawer from './activity-detail-drawer';
 import { BadgeState } from '@/components/badge';
 import { DateFormatter, DateRangePicker } from '@/components/date';
 import { ActivityLogEntry } from '@/modules/loki';
 import { useApp } from '@/providers/app.provider';
 import { activityListQuery } from '@/resources/request/client';
 import { ActivityListResponse, ActivityQueryParams } from '@/resources/schemas';
+import { Button } from '@datum-ui/button';
 import {
   DataTable,
   DataTableFacetFilter,
@@ -31,7 +33,8 @@ import {
   subMinutes,
 } from 'date-fns';
 import { fromZonedTime, toZonedTime } from 'date-fns-tz';
-import { AlertTriangle, CheckCircle, Info, XCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Info, RefreshCw, XCircle } from 'lucide-react';
+import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 
 interface ActivityListProps {
   resourceType?: string;
@@ -43,9 +46,11 @@ interface ActivityListProps {
 
 const columnHelper = createColumnHelper<ActivityLogEntry>();
 
-const createColumns = () => [
+const createColumns = (onRowClick?: (entry: ActivityLogEntry) => void) => [
   columnHelper.accessor('message', {
     header: () => <Trans>Message</Trans>,
+    enableSorting: false,
+    size: 500, // Give message column maximum priority
     cell: ({ row }) => {
       const log = row.original;
       return (
@@ -73,13 +78,78 @@ const createColumns = () => [
           ) : (
             <p className="break-words whitespace-pre-wrap">{log.message}</p>
           )}
+
+          {/* Hidden button for row click handling */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onRowClick?.(log);
+            }}
+            className="hidden"
+            type="button"
+            aria-hidden="true"
+          />
         </div>
       );
     },
   }),
   columnHelper.display({
+    id: 'context',
+    header: () => <Trans>Context</Trans>,
+    size: 200,
+    cell: ({ row }) => {
+      const log = row.original;
+
+      // Get annotations
+      const projectName = log.annotations?.['resourcemanager.miloapis.com/project-name'];
+      const organizationName = log.annotations?.['resourcemanager.miloapis.com/organization-name'];
+      const controlPlaneType = log.annotations?.['telemetry.miloapis.com/control-plane-type'];
+
+      // Check for Project context
+      if (projectName) {
+        return (
+          <div className="flex flex-col">
+            <span className="text-xs font-semibold text-gray-600">Project</span>
+            <span className="text-sm font-medium text-gray-900">{projectName}</span>
+          </div>
+        );
+      }
+
+      if (controlPlaneType === 'project') {
+        return (
+          <div className="flex flex-col">
+            <span className="text-xs font-semibold text-gray-600">Project</span>
+          </div>
+        );
+      }
+
+      // Check for Organization context (only if annotation is present)
+      if (organizationName) {
+        return (
+          <div className="flex flex-col">
+            <span className="text-xs font-semibold text-gray-600">Organization</span>
+            <span className="text-sm font-medium text-gray-900">{organizationName}</span>
+          </div>
+        );
+      }
+
+      // Check for Platform context (core without organization annotation)
+      if (controlPlaneType === 'core') {
+        return (
+          <div className="flex flex-col">
+            <span className="text-xs font-semibold text-gray-600">Platform</span>
+          </div>
+        );
+      }
+
+      // Fallback
+      return <Text textColor="muted">-</Text>;
+    },
+  }),
+  columnHelper.display({
     id: 'sourceIPs',
     header: () => <Trans>Source IP</Trans>,
+    size: 150, // Medium priority
     cell: ({ row }) => {
       const log = row.original;
       return (log.sourceIPs ?? []).length > 0 ? (
@@ -91,10 +161,12 @@ const createColumns = () => [
   }),
   columnHelper.accessor('verb', {
     header: () => <Trans>Action</Trans>,
+    size: 100, // Minimal priority - just enough for badge
     cell: ({ getValue }) => <BadgeState state={getValue() || 'info'} />,
   }),
   columnHelper.accessor('timestamp', {
     header: () => <Trans>Timestamp</Trans>,
+    size: 140, // Medium-high priority
     cell: ({ getValue }) => (
       <Tooltip message={<DateFormatter date={getValue()} withTime />}>
         <span>{formatDistanceToNowStrict(new Date(getValue()), { addSuffix: true })}</span>
@@ -104,15 +176,16 @@ const createColumns = () => [
   columnHelper.display({
     id: 'status',
     header: () => <Trans>Status</Trans>,
+    size: 110, // Minimal priority - just enough for badge
     cell: ({ row }) => {
       const log = row.original;
       if (!log.statusMessage && !log.category) return null;
 
-      // Use category for styling, statusMessage for display text
+      // Use category for styling, show status category by default
+      // Full statusMessage available in tooltip
       const state = log.category || 'info';
-      const displayMessage = log.statusMessage || log.category;
 
-      return <BadgeState state={state} message={displayMessage} />;
+      return <BadgeState state={state} tooltip={log.statusMessage} />;
     },
   }),
 ];
@@ -202,28 +275,39 @@ export default function ActivityList({
 }: ActivityListProps) {
   const { t } = useLingui();
   const { settings } = useApp();
+  const [selectedEntry, setSelectedEntry] = useState<ActivityLogEntry | null>(null);
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
 
   // Helper functions for timezone conversion
-  const convertFromApiTimestamp = (timestamp: string) => {
-    const utcDate = fromUnixTime(parseInt(timestamp) / 1000000000);
-    const timeZone = settings?.timezone;
-    return timeZone && timeZone !== 'Etc/GMT' ? fromZonedTime(utcDate, timeZone) : utcDate;
-  };
+  const convertFromApiTimestamp = useCallback(
+    (timestamp: string) => {
+      const utcDate = fromUnixTime(parseInt(timestamp) / 1000000000);
+      const timeZone = settings?.timezone;
+      return timeZone && timeZone !== 'Etc/GMT' ? fromZonedTime(utcDate, timeZone) : utcDate;
+    },
+    [settings?.timezone]
+  );
 
-  const convertToApiTimestamp = (date: Date) => {
-    const timeZone = settings?.timezone;
-    const utcDate = timeZone && timeZone !== 'Etc/GMT' ? toZonedTime(date, timeZone) : date;
-    return getUnixTime(utcDate) * 1000000000;
-  };
+  const convertToApiTimestamp = useCallback(
+    (date: Date) => {
+      const timeZone = settings?.timezone;
+      const utcDate = timeZone && timeZone !== 'Etc/GMT' ? toZonedTime(date, timeZone) : date;
+      return getUnixTime(utcDate) * 1000000000;
+    },
+    [settings?.timezone]
+  );
 
   const tableState = useDataTableQuery<ActivityListResponse>({
     queryKeyPrefix,
     fetchFn: (args) => {
-      // If no date filters are set, default to last 7 days
-      const defaultStartDate = getUnixTime(subDays(new Date(), 7)) * 1000000000; // Convert to nanoseconds
+      // If no date filters are set, default to last 24 hours ending "now"
+      const now = new Date();
+      const defaultStartDate = convertToApiTimestamp(subHours(now, 24));
+      const defaultEndDate = convertToApiTimestamp(now);
       const filters: ActivityQueryParams = {
         ...args.filters,
         start: args.filters?.start || defaultStartDate,
+        end: args.filters?.end || defaultEndDate,
       };
 
       const resource = {
@@ -264,91 +348,191 @@ export default function ActivityList({
     filterConfig: filterConfigs.dateRange,
   });
 
+  const defaultRange = useMemo(() => {
+    const to = new Date();
+    return {
+      from: subHours(to, 24),
+      to,
+    };
+  }, []);
+
+  const pickerLabel = useMemo(() => {
+    if (tableState.filters.start || tableState.filters.end) return undefined;
+    return t`Last 24 Hours`;
+  }, [tableState.filters.end, tableState.filters.start, t]);
+
+  const pickerValue = useMemo(() => {
+    if (tableState.filters.start || tableState.filters.end) {
+      return {
+        from: tableState.filters.start
+          ? convertFromApiTimestamp(tableState.filters.start)
+          : undefined,
+        to: tableState.filters.end ? convertFromApiTimestamp(tableState.filters.end) : undefined,
+      };
+    }
+    return defaultRange;
+  }, [convertFromApiTimestamp, defaultRange, tableState.filters.end, tableState.filters.start]);
+
+  const handleRowClick = (entry: ActivityLogEntry) => {
+    setSelectedEntry(entry);
+    setIsDetailDialogOpen(true);
+  };
+
+  // Add row click handlers using event delegation for row clicks
+  const tableWrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const wrapper = tableWrapperRef.current;
+    if (!wrapper) return;
+
+    const handleClick = (e: MouseEvent) => {
+      const row = (e.target as HTMLElement).closest('tbody tr');
+      if (!row) return;
+
+      // Check if click is on a button or link (to avoid double-handling)
+      const target = e.target as HTMLElement;
+      if (target.closest('button') || target.closest('a')) {
+        return;
+      }
+
+      // Find and click the hidden button in the message cell
+      const button = row.querySelector('button[aria-hidden="true"]') as HTMLButtonElement;
+      if (button) {
+        button.click();
+      }
+    };
+
+    wrapper.addEventListener('click', handleClick);
+    return () => wrapper.removeEventListener('click', handleClick);
+  }, []);
+
   return (
-    <DataTableProvider<ActivityLogEntry, ActivityListResponse>
-      columns={createColumns()}
-      transform={(data) => ({
-        rows: data?.data?.logs || [],
-        cursor: data?.data?.nextPageToken || '',
-      })}
-      {...tableState}>
-      <div className="m-4 flex flex-col gap-2">
-        <div className="flex items-center gap-4">
-          <DataTableSearch
-            placeholder={searchPlaceholder || t`Search activity...`}
-            value={tableState.search}
-            onValueChange={tableState.setSearch || (() => {})}
-          />
+    <>
+      <DataTableProvider<ActivityLogEntry, ActivityListResponse>
+        columns={createColumns(handleRowClick)}
+        transform={(data) => ({
+          rows: data?.data?.logs || [],
+          cursor: data?.data?.nextPageToken || '',
+        })}
+        {...tableState}>
+        <div className="m-4 flex flex-col gap-2">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-1 flex-wrap items-center gap-4">
+              <DataTableSearch
+                placeholder={searchPlaceholder || t`Search activity...`}
+                value={tableState.search}
+                onValueChange={tableState.setSearch || (() => {})}
+              />
 
-          <DateRangePicker
-            presets={ACTIVITY_DATE_PRESETS}
-            placeholder={timeRangePlaceholder || t`Filter by time range`}
-            value={
-              tableState.filters.start || tableState.filters.end
-                ? {
-                    from: tableState.filters.start
-                      ? convertFromApiTimestamp(tableState.filters.start)
-                      : undefined,
-                    to: tableState.filters.end
-                      ? convertFromApiTimestamp(tableState.filters.end)
-                      : undefined,
+              <DataTableFacetFilter
+                label={t`Actions`}
+                placeholder={t`Filter by action`}
+                multiSelect
+                options={[
+                  { value: 'get', label: t`Get` },
+                  { value: 'list', label: t`List` },
+                  { value: 'watch', label: t`Watch` },
+                  { value: 'create', label: t`Create` },
+                  { value: 'update', label: t`Update` },
+                  { value: 'patch', label: t`Patch` },
+                  { value: 'delete', label: t`Delete` },
+                ]}
+                value={
+                  (tableState.filters.actions as string | undefined)?.split(',').filter(Boolean) ??
+                  []
+                }
+                onValueChange={(value) => {
+                  if (value && Array.isArray(value) && value.length > 0) {
+                    tableState.setFilter('actions', value.join(','));
+                  } else {
+                    tableState.clearFilter('actions');
                   }
-                : undefined
-            }
-            onValueChange={(range) => {
-              if (range) {
-                const filters: Record<string, any> = {};
-                if (range.from) filters.start = convertToApiTimestamp(range.from);
-                if (range.to) filters.end = convertToApiTimestamp(range.to);
-                tableState.setFilters(filters);
-              } else {
-                tableState.clearAllFilters();
-              }
-            }}
-          />
+                }}
+                menuItems={[
+                  {
+                    label: t`All write operations`,
+                    onClick: () => {
+                      tableState.setFilter(
+                        'actions',
+                        'create,update,patch,delete,deletecollection'
+                      );
+                    },
+                  },
+                  {
+                    label: t`All read operations`,
+                    onClick: () => {
+                      tableState.setFilter('actions', 'get,list,watch');
+                    },
+                  },
+                ]}
+              />
+            </div>
 
-          <DataTableFacetFilter
-            label={t`Actions`}
-            placeholder={t`Filter by action`}
-            multiSelect
-            options={[
-              { value: 'get', label: t`Get` },
-              { value: 'list', label: t`List` },
-              { value: 'watch', label: t`Watch` },
-              { value: 'create', label: t`Create` },
-              { value: 'update', label: t`Update` },
-              { value: 'patch', label: t`Patch` },
-              { value: 'delete', label: t`Delete` },
-            ]}
-            value={
-              (tableState.filters.actions as string | undefined)?.split(',').filter(Boolean) ?? []
-            }
-            onValueChange={(value) => {
-              if (value && Array.isArray(value) && value.length > 0) {
-                tableState.setFilter('actions', value.join(','));
-              } else {
-                tableState.clearFilter('actions');
+            <div className="ml-auto flex items-center gap-3">
+              <DateRangePicker
+                className="w-auto"
+                presets={ACTIVITY_DATE_PRESETS}
+                placeholder={timeRangePlaceholder || t`Filter by time range`}
+                value={pickerValue}
+                valueLabel={pickerLabel}
+                showSelectedPresetLabel
+                onValueChange={(range) => {
+                  if (range) {
+                    const filters: Record<string, any> = {};
+                    if (range.from) filters.start = convertToApiTimestamp(range.from);
+                    if (range.to) filters.end = convertToApiTimestamp(range.to);
+                    tableState.setFilters(filters);
+                  } else {
+                    tableState.clearAllFilters();
+                  }
+                }}
+              />
+
+              <Button
+                type="secondary"
+                theme="outline"
+                size="small"
+                onClick={() => tableState.query.refetch()}
+                disabled={tableState.query.isFetching}
+                icon={
+                  <RefreshCw
+                    size={16}
+                    className={tableState.query.isFetching ? 'animate-spin' : undefined}
+                  />
+                }>
+                {tableState.query.isFetching ? (
+                  <Trans>Refreshing...</Trans>
+                ) : (
+                  <Trans>Refresh</Trans>
+                )}
+              </Button>
+            </div>
+          </div>
+
+          <div
+            ref={tableWrapperRef}
+            className="activity-table-wrapper relative cursor-pointer"
+            role="region"
+            aria-label={t`Activity logs table`}
+            aria-busy={tableState.query.isFetching}>
+            <style>{`
+              .activity-table-wrapper tbody tr {
+                transition: background-color 0.2s ease;
               }
-            }}
-            menuItems={[
-              {
-                label: t`All write operations`,
-                onClick: () => {
-                  tableState.setFilter('actions', 'create,update,patch,delete,deletecollection');
-                },
-              },
-              {
-                label: t`All read operations`,
-                onClick: () => {
-                  tableState.setFilter('actions', 'get,list,watch');
-                },
-              },
-            ]}
-          />
+              .activity-table-wrapper tbody tr:hover {
+                background-color: rgba(59, 130, 246, 0.05);
+              }
+            `}</style>
+            <DataTable<ActivityLogEntry> />
+          </div>
         </div>
+      </DataTableProvider>
 
-        <DataTable<ActivityLogEntry> />
-      </div>
-    </DataTableProvider>
+      <ActivityDetailDrawer
+        open={isDetailDialogOpen}
+        onOpenChange={setIsDetailDialogOpen}
+        entry={selectedEntry}
+      />
+    </>
   );
 }

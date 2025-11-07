@@ -44,11 +44,11 @@ msgstr "# of Sources"
 msgid "Account Management"
 msgstr "Account Management"
 
-#: app/features/activity/components/activity-list.tsx:93
+#: app/features/activity/components/activity-list.tsx:163
 msgid "Action"
 msgstr "Action"
 
-#: app/features/activity/components/activity-list.tsx:311
+#: app/features/activity/components/activity-list.tsx:428
 msgid "Actions"
 msgstr "Actions"
 
@@ -68,6 +68,14 @@ msgstr "Active Sessions"
 msgid "Activity"
 msgstr "Activity"
 
+#: app/features/activity/components/activity-detail-drawer.tsx:611
+msgid "Activity Details"
+msgstr "Activity Details"
+
+#: app/features/activity/components/activity-list.tsx:516
+msgid "Activity logs table"
+msgstr "Activity logs table"
+
 #: app/routes/group/member.tsx:161
 #: app/routes/contact-group/detail/member.tsx:142
 msgid "Add"
@@ -82,17 +90,22 @@ msgstr "Add Member"
 msgid "Added"
 msgstr "Added"
 
-#: app/features/activity/components/activity-list.tsx:341
+#: app/features/activity/components/activity-list.tsx:462
 msgid "All read operations"
 msgstr "All read operations"
 
-#: app/features/activity/components/activity-list.tsx:335
+#: app/features/activity/components/activity-list.tsx:453
 msgid "All write operations"
 msgstr "All write operations"
 
 #: app/features/quota/components/quota-grant-list.tsx:59
 msgid "Allocation"
 msgstr "Allocation"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:550
+#: app/features/activity/components/activity-detail-drawer.tsx:1080
+msgid "Annotations"
+msgstr "Annotations"
 
 #: app/features/preferences/components/preferences-form.tsx:125
 msgid "Apply"
@@ -157,6 +170,15 @@ msgstr "Associate with User"
 msgid "Associated with User: "
 msgstr "Associated with User: "
 
+#: app/features/activity/components/activity-detail-drawer.tsx:626
+msgid "Audit ID"
+msgstr "Audit ID"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:541
+#: app/features/activity/components/activity-detail-drawer.tsx:1066
+msgid "Audit Metadata"
+msgstr "Audit Metadata"
+
 #: app/features/quota/components/quota-grant-list.tsx:126
 msgid "Auto-managed by grant creation policy. Cannot be deleted."
 msgstr "Auto-managed by grant creation policy. Cannot be deleted."
@@ -164,6 +186,10 @@ msgstr "Auto-managed by grant creation policy. Cannot be deleted."
 #: app/features/quota/components/quota-grant-list.tsx:125
 msgid "Auto-managed by policy \"{policyName}\". Cannot be deleted."
 msgstr "Auto-managed by policy \"{policyName}\". Cannot be deleted."
+
+#: app/features/activity/components/activity-detail-drawer.tsx:179
+msgid "Automatically managed by the API server. Disable to hide managedFields and focus on other metadata."
+msgstr "Automatically managed by the API server. Disable to hide managedFields and focus on other metadata."
 
 #: app/routes/user/index.tsx:142
 #: app/routes/user/detail/index.tsx:113
@@ -196,6 +222,11 @@ msgstr "Choose how the portal looks to you. Select a single theme, or sync with 
 #: app/modules/datum-ui/data-table/components/data-table-facet-filter.tsx:45
 msgid "Clear"
 msgstr "Clear"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:432
+#: app/features/activity/components/activity-detail-drawer.tsx:1010
+msgid "Code"
+msgstr "Code"
 
 #: app/routes/project/detail/export-policy/detail.tsx:187
 #: app/routes/project/detail/export-policy/detail.tsx:221
@@ -256,11 +287,37 @@ msgstr "Contacts"
 msgid "Contacts - Create"
 msgstr "Contacts - Create"
 
+#: app/features/activity/components/activity-list.tsx:98
+#: app/features/activity/components/activity-detail-drawer.tsx:714
+msgid "Context"
+msgstr "Context"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:211
+#: app/features/activity/components/activity-detail-drawer.tsx:1119
+msgid "Copied!"
+msgstr "Copied!"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:211
+#: app/features/activity/components/activity-detail-drawer.tsx:1119
+msgid "Copy"
+msgstr "Copy"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:1116
+msgid "Copy raw audit log JSON"
+msgstr "Copy raw audit log JSON"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:86
+#: app/features/activity/components/activity-detail-drawer.tsx:112
+#: app/features/activity/components/activity-detail-drawer.tsx:208
+#: app/features/activity/components/activity-detail-drawer.tsx:632
+msgid "Copy to clipboard"
+msgstr "Copy to clipboard"
+
 #: app/routes/contact-group/create.tsx:14
 #: app/routes/contact/create.tsx:14
 #: app/features/contact-group/components/contact-group-form.tsx:84
 #: app/features/contact/components/contact-form.tsx:160
-#: app/features/activity/components/activity-list.tsx:318
+#: app/features/activity/components/activity-list.tsx:435
 msgid "Create"
 msgstr "Create"
 
@@ -340,7 +397,7 @@ msgstr "Deactivation Reason:"
 #: app/routes/contact-group/detail/member.tsx:125
 #: app/routes/contact/index.tsx:102
 #: app/features/quota/components/quota-grant-list.tsx:141
-#: app/features/activity/components/activity-list.tsx:321
+#: app/features/activity/components/activity-list.tsx:438
 #: app/components/danger-zone-card/index.tsx:48
 #: app/components/danger-zone-card/index.tsx:76
 #: app/components/button/button-delete-action.tsx:42
@@ -463,6 +520,15 @@ msgstr "Enter reason for rejection..."
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr "Enter the word <0>{confirmationText}</0> to perform this action."
 
+#: app/features/activity/components/activity-detail-drawer.tsx:841
+msgid "Error"
+msgstr "Error"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:290
+#: app/features/activity/components/activity-detail-drawer.tsx:676
+msgid "Event Summary"
+msgstr "Event Summary"
+
 #: app/routes/project/detail/domain/index.tsx:53
 #: app/routes/project/detail/domain/detail.tsx:105
 msgid "Expiration Date"
@@ -481,7 +547,7 @@ msgstr "Export Policies"
 msgid "Failed to load status"
 msgstr "Failed to load status"
 
-#: app/features/activity/components/activity-list.tsx:312
+#: app/features/activity/components/activity-list.tsx:429
 msgid "Filter by action"
 msgstr "Filter by action"
 
@@ -489,7 +555,7 @@ msgstr "Filter by action"
 msgid "Filter by approval"
 msgstr "Filter by approval"
 
-#: app/features/activity/components/activity-list.tsx:285
+#: app/features/activity/components/activity-list.tsx:475
 msgid "Filter by time range"
 msgstr "Filter by time range"
 
@@ -504,6 +570,10 @@ msgstr "First Name"
 msgid "First name is required"
 msgstr "First name is required"
 
+#: app/features/activity/components/activity-detail-drawer.tsx:866
+msgid "From"
+msgstr "From"
+
 #: app/routes/user/detail/index.tsx:194
 msgid "Full Name"
 msgstr "Full Name"
@@ -512,7 +582,7 @@ msgstr "Full Name"
 msgid "General"
 msgstr "General"
 
-#: app/features/activity/components/activity-list.tsx:315
+#: app/features/activity/components/activity-list.tsx:432
 msgid "Get"
 msgstr "Get"
 
@@ -529,6 +599,8 @@ msgstr "Grants"
 
 #: app/routes/group/layout.tsx:5
 #: app/routes/group/index.tsx:13
+#: app/features/activity/components/activity-detail-drawer.tsx:407
+#: app/features/activity/components/activity-detail-drawer.tsx:924
 #: app/components/app-sidebar/index.tsx:127
 #: app/components/app-sidebar/index.tsx:133
 msgid "Groups"
@@ -547,6 +619,10 @@ msgstr "HTTP Proxies"
 #: app/routes/user/detail/index.tsx:181
 msgid "ID"
 msgstr "ID"
+
+#: app/features/activity/components/formatted-message.tsx:54
+msgid "in the"
+msgstr "in the"
 
 #: app/routes/user/index.tsx:118
 #: app/features/contact/components/contact-form.tsx:35
@@ -586,6 +662,10 @@ msgstr "Joined"
 msgid "Last 10 new users who joined Datum"
 msgstr "Last 10 new users who joined Datum"
 
+#: app/features/activity/components/activity-list.tsx:361
+msgid "Last 24 Hours"
+msgstr "Last 24 Hours"
+
 #: app/routes/user/index.tsx:178
 #: app/features/contact/components/contact-form.tsx:106
 msgid "Last Name"
@@ -605,7 +685,7 @@ msgstr "Light"
 msgid "Limit:"
 msgstr "Limit:"
 
-#: app/features/activity/components/activity-list.tsx:316
+#: app/features/activity/components/activity-list.tsx:433
 msgid "List"
 msgstr "List"
 
@@ -657,7 +737,7 @@ msgstr "Member deleted successfully"
 msgid "Members"
 msgstr "Members"
 
-#: app/features/activity/components/activity-list.tsx:48
+#: app/features/activity/components/activity-list.tsx:51
 msgid "Message"
 msgstr "Message"
 
@@ -698,6 +778,10 @@ msgstr "Name"
 #: app/routes/contact-group/detail/member.tsx:88
 msgid "Name is required"
 msgstr "Name is required"
+
+#: app/features/activity/components/formatted-message.tsx:62
+msgid "namespace"
+msgstr "namespace"
 
 #: app/routes/project/detail/secret.tsx:25
 #: app/routes/project/detail/export-policy/detail.tsx:73
@@ -745,6 +829,10 @@ msgstr "Organization"
 msgid "Organization deleted successfully"
 msgstr "Organization deleted successfully"
 
+#: app/features/activity/components/activity-detail-drawer.tsx:728
+msgid "Organization:"
+msgstr "Organization:"
+
 #: app/routes/user/detail/organization.tsx:42
 #: app/routes/user/detail/layout.tsx:37
 #: app/routes/project/detail/layout.tsx:39
@@ -757,10 +845,11 @@ msgstr "Organizations"
 #: app/routes/user/detail/layout.tsx:32
 #: app/routes/project/detail/layout.tsx:75
 #: app/routes/organization/detail/layout.tsx:32
+#: app/features/activity/components/activity-detail-drawer.tsx:651
 msgid "Overview"
 msgstr "Overview"
 
-#: app/features/activity/components/activity-list.tsx:320
+#: app/features/activity/components/activity-list.tsx:437
 msgid "Patch"
 msgstr "Patch"
 
@@ -783,6 +872,11 @@ msgstr "Permanently delete this project and all associated data"
 #: app/routes/user/detail/index.tsx:354
 msgid "Permanently delete this user and all associated data"
 msgstr "Permanently delete this user and all associated data"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:736
+#: app/features/activity/components/activity-detail-drawer.tsx:744
+msgid "Platform:"
+msgstr "Platform:"
 
 #. placeholder {0}: data.spec.givenName
 #. placeholder {1}: data.spec.familyName
@@ -825,6 +919,10 @@ msgstr "Profile updated successfully"
 msgid "Project deleted successfully"
 msgstr "Project deleted successfully"
 
+#: app/features/activity/components/activity-detail-drawer.tsx:720
+msgid "Project:"
+msgstr "Project:"
+
 #: app/routes/project/layout.tsx:5
 #: app/routes/project/index.tsx:15
 #: app/routes/project/detail/layout.tsx:45
@@ -857,6 +955,11 @@ msgstr "Quota updated successfully"
 msgid "Quotas"
 msgstr "Quotas"
 
+#: app/features/activity/components/activity-detail-drawer.tsx:661
+#: app/features/activity/components/activity-detail-drawer.tsx:1107
+msgid "Raw Audit Log"
+msgstr "Raw Audit Log"
+
 #: app/routes/user/detail/index.tsx:278
 msgid "Re-enable this user's access to the system. They will be able to sign in immediately."
 msgstr "Re-enable this user's access to the system. They will be able to sign in immediately."
@@ -869,6 +972,11 @@ msgstr "Reactivate"
 msgid "Reactivate User"
 msgstr "Reactivate User"
 
+#: app/features/activity/components/activity-detail-drawer.tsx:445
+#: app/features/activity/components/activity-detail-drawer.tsx:1023
+msgid "Reason"
+msgstr "Reason"
+
 #: app/routes/user/detail/index.tsx:119
 msgid "Reason for deactivation"
 msgstr "Reason for deactivation"
@@ -876,6 +984,14 @@ msgstr "Reason for deactivation"
 #: app/features/user/components/user-reject-dialog.tsx:42
 msgid "Reason for rejection"
 msgstr "Reason for rejection"
+
+#: app/features/activity/components/activity-list.tsx:506
+msgid "Refresh"
+msgstr "Refresh"
+
+#: app/features/activity/components/activity-list.tsx:504
+msgid "Refreshing..."
+msgstr "Refreshing..."
 
 #: app/routes/project/detail/domain/index.tsx:45
 #: app/routes/project/detail/domain/detail.tsx:85
@@ -902,9 +1018,29 @@ msgstr "Reject User"
 msgid "Rejected"
 msgstr "Rejected"
 
+#: app/features/activity/components/activity-detail-drawer.tsx:485
+#: app/features/activity/components/activity-detail-drawer.tsx:946
+msgid "Request"
+msgstr "Request"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:522
+#: app/features/activity/components/activity-detail-drawer.tsx:985
+msgid "Request Body"
+msgstr "Request Body"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:515
+#: app/features/activity/components/activity-detail-drawer.tsx:978
+msgid "Request Object"
+msgstr "Request Object"
+
 #: app/routes/organization/detail/member.tsx:72
 msgid "Resend"
 msgstr "Resend"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:387
+#: app/features/activity/components/activity-detail-drawer.tsx:902
+msgid "Resource"
+msgstr "Resource"
 
 #: app/routes/project/detail/domain/detail.tsx:53
 msgid "Resource Name"
@@ -918,6 +1054,21 @@ msgstr "Resource Type"
 #: app/features/quota/components/quota-bucket-list.tsx:165
 msgid "Resource Type:"
 msgstr "Resource Type:"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:426
+#: app/features/activity/components/activity-detail-drawer.tsx:1002
+msgid "Response"
+msgstr "Response"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:468
+#: app/features/activity/components/activity-detail-drawer.tsx:1046
+msgid "Response Body"
+msgstr "Response Body"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:461
+#: app/features/activity/components/activity-detail-drawer.tsx:1039
+msgid "Response Object"
+msgstr "Response Object"
 
 #: app/routes/organization/detail/member.tsx:53
 msgid "Role"
@@ -935,7 +1086,7 @@ msgstr "Schedule date and time is required"
 msgid "Schedule invitation to be sent at specific time"
 msgstr "Schedule invitation to be sent at specific time"
 
-#: app/features/activity/components/activity-list.tsx:278
+#: app/features/activity/components/activity-list.tsx:422
 msgid "Search activity..."
 msgstr "Search activity..."
 
@@ -991,6 +1142,10 @@ msgstr "Session ID"
 msgid "Settings"
 msgstr "Settings"
 
+#: app/features/activity/components/activity-detail-drawer.tsx:227
+msgid "Show managed fields"
+msgstr "Show managed fields"
+
 #: app/routes/project/detail/export-policy/detail.tsx:164
 msgid "Sinks"
 msgstr "Sinks"
@@ -999,9 +1154,14 @@ msgstr "Sinks"
 msgid "Source"
 msgstr "Source"
 
-#: app/features/activity/components/activity-list.tsx:82
+#: app/features/activity/components/activity-list.tsx:151
 msgid "Source IP"
 msgstr "Source IP"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:493
+#: app/features/activity/components/activity-detail-drawer.tsx:956
+msgid "Source IPs"
+msgstr "Source IPs"
 
 #: app/routes/project/detail/export-policy/detail.tsx:112
 msgid "Sources"
@@ -1024,7 +1184,9 @@ msgstr "Start Time"
 #: app/routes/contact-group/index.tsx:48
 #: app/routes/contact/index.tsx:52
 #: app/features/quota/components/quota-grant-list.tsx:72
-#: app/features/activity/components/activity-list.tsx:106
+#: app/features/activity/components/activity-list.tsx:178
+#: app/features/activity/components/activity-detail-drawer.tsx:354
+#: app/features/activity/components/activity-detail-drawer.tsx:802
 msgid "Status"
 msgstr "Status"
 
@@ -1044,9 +1206,13 @@ msgstr "Temporarily prevent user from signing in. The user can be reactivated at
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 msgstr "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 
-#: app/features/activity/components/activity-list.tsx:97
+#: app/features/activity/components/activity-list.tsx:168
 msgid "Timestamp"
 msgstr "Timestamp"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:173
+msgid "Tracks which field manager controls each field. Prevents overwrites and manages conflicts when multiple actors change fields."
+msgstr "Tracks which field manager controls each field. Prevents overwrites and manages conflicts when multiple actors change fields."
 
 #: app/routes/user/detail/organization.tsx:32
 #: app/routes/project/detail/export-policy/detail.tsx:178
@@ -1062,7 +1228,7 @@ msgstr "Type a command or search..."
 #: app/features/quota/components/quota-bucket-list.tsx:158
 #: app/features/contact-group/components/contact-group-form.tsx:84
 #: app/features/contact/components/contact-form.tsx:160
-#: app/features/activity/components/activity-list.tsx:319
+#: app/features/activity/components/activity-list.tsx:436
 msgid "Update"
 msgstr "Update"
 
@@ -1077,6 +1243,15 @@ msgstr "Update your DNS provider with the provided record, or use the HTTP token
 #: app/features/quota/components/quota-bucket-list.tsx:35
 msgid "Usage"
 msgstr "Usage"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:400
+#: app/features/activity/components/activity-detail-drawer.tsx:915
+msgid "User"
+msgstr "User"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:884
+msgid "User Agent"
+msgstr "User Agent"
 
 #: app/features/user/hooks/useUserApproval.ts:24
 msgid "User approved successfully"
@@ -1137,6 +1312,21 @@ msgstr "Visibility"
 msgid "Warning"
 msgstr "Warning"
 
-#: app/features/activity/components/activity-list.tsx:317
+#: app/features/activity/components/activity-list.tsx:434
 msgid "Watch"
 msgstr "Watch"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:326
+#: app/features/activity/components/activity-detail-drawer.tsx:774
+msgid "What"
+msgstr "What"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:343
+#: app/features/activity/components/activity-detail-drawer.tsx:791
+msgid "When"
+msgstr "When"
+
+#: app/features/activity/components/activity-detail-drawer.tsx:312
+#: app/features/activity/components/activity-detail-drawer.tsx:760
+msgid "Who"
+msgstr "Who"
