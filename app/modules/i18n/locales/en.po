@@ -272,7 +272,7 @@ msgstr "Create"
 #: app/routes/project/detail/httpproxy/detail.tsx:121
 #: app/routes/project/detail/export-policy/index.tsx:54
 #: app/routes/project/detail/export-policy/detail.tsx:95
-#: app/routes/project/detail/domain/index.tsx:62
+#: app/routes/project/detail/domain/index.tsx:67
 #: app/routes/project/detail/domain/detail.tsx:129
 #: app/routes/profile/session.tsx:46
 #: app/routes/organization/index.tsx:37
@@ -401,7 +401,7 @@ msgstr "Display Name"
 msgid "Display name is required"
 msgstr "Display name is required"
 
-#: app/routes/project/detail/domain/index.tsx:44
+#: app/routes/project/detail/domain/index.tsx:49
 #: app/routes/project/detail/domain/detail.tsx:95
 msgid "DNS Providers"
 msgstr "DNS Providers"
@@ -457,7 +457,7 @@ msgstr "Enter reason for rejection..."
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr "Enter the word <0>{confirmationText}</0> to perform this action."
 
-#: app/routes/project/detail/domain/index.tsx:48
+#: app/routes/project/detail/domain/index.tsx:53
 #: app/routes/project/detail/domain/detail.tsx:105
 msgid "Expiration Date"
 msgstr "Expiration Date"
@@ -857,7 +857,7 @@ msgstr "Reason for deactivation"
 msgid "Reason for rejection"
 msgstr "Reason for rejection"
 
-#: app/routes/project/detail/domain/index.tsx:40
+#: app/routes/project/detail/domain/index.tsx:45
 #: app/routes/project/detail/domain/detail.tsx:85
 msgid "Registrar"
 msgstr "Registrar"
@@ -991,7 +991,7 @@ msgstr "Start Time"
 #: app/routes/project/detail/export-policy/index.tsx:48
 #: app/routes/project/detail/export-policy/detail.tsx:83
 #: app/routes/project/detail/export-policy/detail.tsx:184
-#: app/routes/project/detail/domain/index.tsx:52
+#: app/routes/project/detail/domain/index.tsx:57
 #: app/routes/project/detail/domain/detail.tsx:115
 #: app/routes/contact-group/index.tsx:48
 #: app/routes/contact/index.tsx:52

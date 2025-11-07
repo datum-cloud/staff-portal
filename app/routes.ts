@@ -49,7 +49,7 @@ export default [
           ]),
           route('domains', 'routes/project/detail/domain/layout.tsx', [
             index('routes/project/detail/domain/index.tsx'),
-            route(':domainName', 'routes/project/detail/domain/detail.tsx'),
+            route(':namespace/:domainName', 'routes/project/detail/domain/detail.tsx'),
           ]),
           route('http-proxies', 'routes/project/detail/httpproxy/layout.tsx', [
             index('routes/project/detail/httpproxy/index.tsx'),
