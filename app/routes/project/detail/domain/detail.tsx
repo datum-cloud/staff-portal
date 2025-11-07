@@ -28,7 +28,8 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const data = await projectDomainDetailQuery(
     session?.accessToken ?? '',
     params?.projectName ?? '',
-    params?.domainName ?? ''
+    params?.domainName ?? '',
+    params?.namespace as string
   );
 
   return data;
@@ -118,6 +119,7 @@ export default function Page() {
                   <DomainStatusProbe
                     projectName={project.metadata.name}
                     domainName={data?.metadata?.name}
+                    namespace={data?.metadata?.namespace}
                   />
                 </TableCell>
               </TableRow>

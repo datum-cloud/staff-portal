@@ -9,15 +9,16 @@ type UseDomainStatusOptions = {
 export function useDomainStatus(
   projectName: string,
   domainName: string | undefined,
+  namespace: string,
   options?: UseDomainStatusOptions
 ) {
   const enabled = Boolean(domainName) && (options?.enabled ?? true);
   const refetchInterval = options?.refetchIntervalMs ?? 10000;
 
   return useQuery({
-    queryKey: ['domains', domainName, 'status'],
+    queryKey: ['domains', domainName, namespace, 'status'],
     enabled,
-    queryFn: () => projectDomainStatusQuery(projectName, domainName as string),
+    queryFn: () => projectDomainStatusQuery(projectName, domainName as string, namespace),
     refetchInterval: enabled
       ? typeof refetchInterval === 'number'
         ? refetchInterval
