@@ -52,11 +52,12 @@ export class LokiActivityLogsService {
       sourceIP: queryParams.sourceIP,
     });
 
-    // Execute query
+    // Execute query with optional pageToken override
     const response = await executeLokiQuery(client, logQuery, {
       start: validatedParams.start,
       end: validatedParams.end,
       limit: validatedParams.limit,
+      ...(queryParams.pageToken && { endOverride: queryParams.pageToken }),
     });
 
     // Process logs
@@ -93,6 +94,15 @@ export class LokiActivityLogsService {
     const startTime = convertTimeToUserFriendly(validatedParams.start);
     const endTime = convertTimeToUserFriendly(validatedParams.end);
 
+    // Prepare pagination metadata
+    let nextPageToken: string | undefined;
+    if (logs.length > 0) {
+      const lastTimestamp = logs[logs.length - 1].timestamp;
+      const ms = new Date(lastTimestamp).getTime();
+      nextPageToken = (ms * 1000000).toString();
+    }
+    const hasNextPage = logs.length >= validatedParams.limit;
+
     // Build response
     return {
       logs,
@@ -101,6 +111,8 @@ export class LokiActivityLogsService {
         start: startTime,
         end: endTime,
       },
+      nextPageToken,
+      hasNextPage,
     };
   }
 }

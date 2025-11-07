@@ -16,6 +16,7 @@ export const QueryParamsSchema = z.object({
   limit: z.string().optional(),
   start: z.string().optional(),
   end: z.string().optional(),
+  pageToken: z.string().optional(),
   project: z.string().optional(), // Legacy project filter
   organization: z.string().optional(), // Organization filter
   // Enhanced filtering options
@@ -108,6 +109,8 @@ export const ActivityLogsResponseSchema = z.object({
     start: z.string(), // ISO date string
     end: z.string(), // ISO date string
   }),
+  nextPageToken: z.string().optional(),
+  hasNextPage: z.boolean().optional(),
 });
 
 // Enhanced LogQL query options supporting single resource and advanced patterns

@@ -139,12 +139,20 @@ export async function executeLokiQuery(
     start: string;
     end: string;
     limit: number;
+    endOverride?: string; // Optional override for pageToken-based pagination
   }
 ): Promise<LokiQueryResponse> {
   try {
     logger.debug('Executing LogQL query', { query, options });
 
-    const response = (await client.Loki.queryRange(query, options)) as LokiQueryResponse;
+    // Use endOverride if provided (for pageToken-based pagination)
+    const queryOptions = {
+      start: options.start,
+      end: options.endOverride || options.end,
+      limit: options.limit,
+    };
+
+    const response = (await client.Loki.queryRange(query, queryOptions)) as LokiQueryResponse;
     logger.debug('Loki response received', {
       logsCount: response.logs?.length || 0,
       timerange: response.timerange,
