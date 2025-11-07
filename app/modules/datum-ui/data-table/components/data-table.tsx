@@ -28,10 +28,18 @@ export function DataTable<TData>({
 }: DataTableProps<TData>) {
   const { table, query } = useDataTableInstance<TData>();
 
-  // Show loading state when query is loading
-  if (query.isLoading) {
+  const skeletonRowCount = table.getState().pagination?.pageSize ?? 5;
+  const shouldShowLoadingState =
+    query.isInitialLoading || (query.isFetching && !query.isInitialLoading);
+
+  // Show loading state whenever the query is fetching (initial load or refetch)
+  if (shouldShowLoadingState) {
     return (
-      <DataTableLoading<TData> rows={5} actionBar={actionBar} className={className} {...props}>
+      <DataTableLoading<TData>
+        rows={skeletonRowCount}
+        actionBar={actionBar}
+        className={className}
+        {...props}>
         {children}
       </DataTableLoading>
     );

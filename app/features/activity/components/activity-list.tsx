@@ -5,6 +5,7 @@ import { ActivityLogEntry } from '@/modules/loki';
 import { useApp } from '@/providers/app.provider';
 import { activityListQuery } from '@/resources/request/client';
 import { ActivityListResponse, ActivityQueryParams } from '@/resources/schemas';
+import { Button } from '@datum-ui/button';
 import {
   DataTable,
   DataTableFacetFilter,
@@ -32,8 +33,8 @@ import {
   subMinutes,
 } from 'date-fns';
 import { fromZonedTime, toZonedTime } from 'date-fns-tz';
-import { AlertTriangle, CheckCircle, Info, XCircle, Loader2 } from 'lucide-react';
-import { useState, useRef, useEffect } from 'react';
+import { AlertTriangle, CheckCircle, Info, RefreshCw, XCircle } from 'lucide-react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 
 interface ActivityListProps {
   resourceType?: string;
@@ -293,11 +294,14 @@ export default function ActivityList({
   const tableState = useDataTableQuery<ActivityListResponse>({
     queryKeyPrefix,
     fetchFn: (args) => {
-      // If no date filters are set, default to last 7 days
-      const defaultStartDate = getUnixTime(subDays(new Date(), 7)) * 1000000000; // Convert to nanoseconds
+      // If no date filters are set, default to last 24 hours ending "now"
+      const now = new Date();
+      const defaultStartDate = convertToApiTimestamp(subHours(now, 24));
+      const defaultEndDate = convertToApiTimestamp(now);
       const filters: ActivityQueryParams = {
         ...args.filters,
         start: args.filters?.start || defaultStartDate,
+        end: args.filters?.end || defaultEndDate,
       };
 
       const resource = {
@@ -337,6 +341,31 @@ export default function ActivityList({
     useSearch: true,
     filterConfig: filterConfigs.dateRange,
   });
+
+  const defaultRange = useMemo(() => {
+    const to = new Date();
+    return {
+      from: subHours(to, 24),
+      to,
+    };
+  }, [tableState.query.dataUpdatedAt]);
+
+  const pickerLabel = useMemo(() => {
+    if (tableState.filters.start || tableState.filters.end) return undefined;
+    return t`Last 24 Hours`;
+  }, [tableState.filters.end, tableState.filters.start, t]);
+
+  const pickerValue = useMemo(() => {
+    if (tableState.filters.start || tableState.filters.end) {
+      return {
+        from: tableState.filters.start
+          ? convertFromApiTimestamp(tableState.filters.start)
+          : undefined,
+        to: tableState.filters.end ? convertFromApiTimestamp(tableState.filters.end) : undefined,
+      };
+    }
+    return defaultRange;
+  }, [defaultRange, tableState.filters.end, tableState.filters.start]);
 
   const handleRowClick = (entry: ActivityLogEntry) => {
     setSelectedEntry(entry);
@@ -381,85 +410,105 @@ export default function ActivityList({
         })}
         {...tableState}>
         <div className="m-4 flex flex-col gap-2">
-          <div className="flex items-center gap-4">
-            <DataTableSearch
-              placeholder={searchPlaceholder || t`Search activity...`}
-              value={tableState.search}
-              onValueChange={tableState.setSearch || (() => {})}
-            />
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-1 flex-wrap items-center gap-4">
+              <DataTableSearch
+                placeholder={searchPlaceholder || t`Search activity...`}
+                value={tableState.search}
+                onValueChange={tableState.setSearch || (() => {})}
+              />
 
-            <DateRangePicker
-              presets={ACTIVITY_DATE_PRESETS}
-              placeholder={timeRangePlaceholder || t`Filter by time range`}
-              value={
-                tableState.filters.start || tableState.filters.end
-                  ? {
-                      from: tableState.filters.start
-                        ? convertFromApiTimestamp(tableState.filters.start)
-                        : undefined,
-                      to: tableState.filters.end
-                        ? convertFromApiTimestamp(tableState.filters.end)
-                        : undefined,
-                    }
-                  : undefined
-              }
-              onValueChange={(range) => {
-                if (range) {
-                  const filters: Record<string, any> = {};
-                  if (range.from) filters.start = convertToApiTimestamp(range.from);
-                  if (range.to) filters.end = convertToApiTimestamp(range.to);
-                  tableState.setFilters(filters);
-                } else {
-                  tableState.clearAllFilters();
+              <DataTableFacetFilter
+                label={t`Actions`}
+                placeholder={t`Filter by action`}
+                multiSelect
+                options={[
+                  { value: 'get', label: t`Get` },
+                  { value: 'list', label: t`List` },
+                  { value: 'watch', label: t`Watch` },
+                  { value: 'create', label: t`Create` },
+                  { value: 'update', label: t`Update` },
+                  { value: 'patch', label: t`Patch` },
+                  { value: 'delete', label: t`Delete` },
+                ]}
+                value={
+                  (tableState.filters.actions as string | undefined)?.split(',').filter(Boolean) ??
+                  []
                 }
-              }}
-            />
+                onValueChange={(value) => {
+                  if (value && Array.isArray(value) && value.length > 0) {
+                    tableState.setFilter('actions', value.join(','));
+                  } else {
+                    tableState.clearFilter('actions');
+                  }
+                }}
+                menuItems={[
+                  {
+                    label: t`All write operations`,
+                    onClick: () => {
+                      tableState.setFilter(
+                        'actions',
+                        'create,update,patch,delete,deletecollection'
+                      );
+                    },
+                  },
+                  {
+                    label: t`All read operations`,
+                    onClick: () => {
+                      tableState.setFilter('actions', 'get,list,watch');
+                    },
+                  },
+                ]}
+              />
+            </div>
 
-            <DataTableFacetFilter
-              label={t`Actions`}
-              placeholder={t`Filter by action`}
-              multiSelect
-              options={[
-                { value: 'get', label: t`Get` },
-                { value: 'list', label: t`List` },
-                { value: 'watch', label: t`Watch` },
-                { value: 'create', label: t`Create` },
-                { value: 'update', label: t`Update` },
-                { value: 'patch', label: t`Patch` },
-                { value: 'delete', label: t`Delete` },
-              ]}
-              value={
-                (tableState.filters.actions as string | undefined)?.split(',').filter(Boolean) ?? []
-              }
-              onValueChange={(value) => {
-                if (value && Array.isArray(value) && value.length > 0) {
-                  tableState.setFilter('actions', value.join(','));
-                } else {
-                  tableState.clearFilter('actions');
-                }
-              }}
-              menuItems={[
-                {
-                  label: t`All write operations`,
-                  onClick: () => {
-                    tableState.setFilter('actions', 'create,update,patch,delete,deletecollection');
-                  },
-                },
-                {
-                  label: t`All read operations`,
-                  onClick: () => {
-                    tableState.setFilter('actions', 'get,list,watch');
-                  },
-                },
-              ]}
-            />
+            <div className="ml-auto flex items-center gap-3">
+              <DateRangePicker
+                className="w-auto"
+                presets={ACTIVITY_DATE_PRESETS}
+                placeholder={timeRangePlaceholder || t`Filter by time range`}
+                value={pickerValue}
+                valueLabel={pickerLabel}
+                showSelectedPresetLabel
+                onValueChange={(range) => {
+                  if (range) {
+                    const filters: Record<string, any> = {};
+                    if (range.from) filters.start = convertToApiTimestamp(range.from);
+                    if (range.to) filters.end = convertToApiTimestamp(range.to);
+                    tableState.setFilters(filters);
+                  } else {
+                    tableState.clearAllFilters();
+                  }
+                }}
+              />
+
+              <Button
+                type="secondary"
+                theme="outline"
+                size="small"
+                onClick={() => tableState.query.refetch()}
+                disabled={tableState.query.isFetching}
+                icon={
+                  <RefreshCw
+                    size={16}
+                    className={tableState.query.isFetching ? 'animate-spin' : undefined}
+                  />
+                }>
+                {tableState.query.isFetching ? (
+                  <Trans>Refreshing...</Trans>
+                ) : (
+                  <Trans>Refresh</Trans>
+                )}
+              </Button>
+            </div>
           </div>
 
           <div
             ref={tableWrapperRef}
             className="activity-table-wrapper relative cursor-pointer"
             role="region"
-            aria-label={t`Activity logs table`}>
+            aria-label={t`Activity logs table`}
+            aria-busy={tableState.query.isFetching}>
             <style>{`
               .activity-table-wrapper tbody tr {
                 transition: background-color 0.2s ease;
@@ -468,11 +517,6 @@ export default function ActivityList({
                 background-color: rgba(59, 130, 246, 0.05);
               }
             `}</style>
-            {tableState.query.isFetching && (
-              <div className="absolute inset-0 z-10 flex items-center justify-center rounded-md bg-white/40 backdrop-blur-sm">
-                <Loader2 size={32} className="animate-spin text-blue-600" />
-              </div>
-            )}
             <DataTable<ActivityLogEntry> />
           </div>
         </div>

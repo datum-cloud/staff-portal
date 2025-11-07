@@ -44,11 +44,11 @@ msgstr "# of Sources"
 msgid "Account Management"
 msgstr "Account Management"
 
-#: app/features/activity/components/activity-list.tsx:162
+#: app/features/activity/components/activity-list.tsx:163
 msgid "Action"
 msgstr "Action"
 
-#: app/features/activity/components/activity-list.tsx:419
+#: app/features/activity/components/activity-list.tsx:422
 msgid "Actions"
 msgstr "Actions"
 
@@ -72,7 +72,7 @@ msgstr "Activity"
 msgid "Activity Details"
 msgstr "Activity Details"
 
-#: app/features/activity/components/activity-list.tsx:462
+#: app/features/activity/components/activity-list.tsx:510
 msgid "Activity logs table"
 msgstr "Activity logs table"
 
@@ -90,11 +90,11 @@ msgstr "Add Member"
 msgid "Added"
 msgstr "Added"
 
-#: app/features/activity/components/activity-list.tsx:449
+#: app/features/activity/components/activity-list.tsx:456
 msgid "All read operations"
 msgstr "All read operations"
 
-#: app/features/activity/components/activity-list.tsx:443
+#: app/features/activity/components/activity-list.tsx:447
 msgid "All write operations"
 msgstr "All write operations"
 
@@ -275,7 +275,7 @@ msgstr "Contacts"
 msgid "Contacts - Create"
 msgstr "Contacts - Create"
 
-#: app/features/activity/components/activity-list.tsx:97
+#: app/features/activity/components/activity-list.tsx:98
 msgid "Context"
 msgstr "Context"
 
@@ -306,7 +306,7 @@ msgstr "Copy to clipboard"
 #: app/routes/contact/create.tsx:14
 #: app/features/contact-group/components/contact-group-form.tsx:84
 #: app/features/contact/components/contact-form.tsx:160
-#: app/features/activity/components/activity-list.tsx:426
+#: app/features/activity/components/activity-list.tsx:429
 msgid "Create"
 msgstr "Create"
 
@@ -386,7 +386,7 @@ msgstr "Deactivation Reason:"
 #: app/routes/contact-group/detail/member.tsx:125
 #: app/routes/contact/index.tsx:102
 #: app/features/quota/components/quota-grant-list.tsx:141
-#: app/features/activity/components/activity-list.tsx:429
+#: app/features/activity/components/activity-list.tsx:432
 #: app/components/danger-zone-card/index.tsx:48
 #: app/components/danger-zone-card/index.tsx:76
 #: app/components/button/button-delete-action.tsx:42
@@ -530,7 +530,7 @@ msgstr "Export Policies"
 msgid "Failed to load status"
 msgstr "Failed to load status"
 
-#: app/features/activity/components/activity-list.tsx:420
+#: app/features/activity/components/activity-list.tsx:423
 msgid "Filter by action"
 msgstr "Filter by action"
 
@@ -538,7 +538,7 @@ msgstr "Filter by action"
 msgid "Filter by approval"
 msgstr "Filter by approval"
 
-#: app/features/activity/components/activity-list.tsx:393
+#: app/features/activity/components/activity-list.tsx:469
 msgid "Filter by time range"
 msgstr "Filter by time range"
 
@@ -563,7 +563,7 @@ msgstr "Full Name"
 msgid "General"
 msgstr "General"
 
-#: app/features/activity/components/activity-list.tsx:423
+#: app/features/activity/components/activity-list.tsx:426
 msgid "Get"
 msgstr "Get"
 
@@ -628,6 +628,10 @@ msgstr "Joined"
 msgid "Last 10 new users who joined Datum"
 msgstr "Last 10 new users who joined Datum"
 
+#: app/features/activity/components/activity-list.tsx:355
+msgid "Last 24 Hours"
+msgstr "Last 24 Hours"
+
 #: app/features/contact/components/contact-form.tsx:106
 msgid "Last Name"
 msgstr "Last Name"
@@ -645,7 +649,7 @@ msgstr "Light"
 msgid "Limit:"
 msgstr "Limit:"
 
-#: app/features/activity/components/activity-list.tsx:424
+#: app/features/activity/components/activity-list.tsx:427
 msgid "List"
 msgstr "List"
 
@@ -697,7 +701,7 @@ msgstr "Member deleted successfully"
 msgid "Members"
 msgstr "Members"
 
-#: app/features/activity/components/activity-list.tsx:50
+#: app/features/activity/components/activity-list.tsx:51
 msgid "Message"
 msgstr "Message"
 
@@ -801,7 +805,7 @@ msgstr "Organizations"
 msgid "Overview"
 msgstr "Overview"
 
-#: app/features/activity/components/activity-list.tsx:428
+#: app/features/activity/components/activity-list.tsx:431
 msgid "Patch"
 msgstr "Patch"
 
@@ -927,6 +931,14 @@ msgstr "Reason for deactivation"
 msgid "Reason for rejection"
 msgstr "Reason for rejection"
 
+#: app/features/activity/components/activity-list.tsx:500
+msgid "Refresh"
+msgstr "Refresh"
+
+#: app/features/activity/components/activity-list.tsx:498
+msgid "Refreshing..."
+msgstr "Refreshing..."
+
 #: app/routes/project/detail/domain/index.tsx:40
 #: app/routes/project/detail/domain/detail.tsx:84
 msgid "Registrar"
@@ -1005,7 +1017,7 @@ msgstr "Role"
 msgid "Save"
 msgstr "Save"
 
-#: app/features/activity/components/activity-list.tsx:386
+#: app/features/activity/components/activity-list.tsx:416
 msgid "Search activity..."
 msgstr "Search activity..."
 
@@ -1069,7 +1081,7 @@ msgstr "Sinks"
 msgid "Source"
 msgstr "Source"
 
-#: app/features/activity/components/activity-list.tsx:150
+#: app/features/activity/components/activity-list.tsx:151
 msgid "Source IP"
 msgstr "Source IP"
 
@@ -1098,7 +1110,7 @@ msgstr "Start Time"
 #: app/routes/contact-group/index.tsx:48
 #: app/routes/contact/index.tsx:52
 #: app/features/quota/components/quota-grant-list.tsx:72
-#: app/features/activity/components/activity-list.tsx:177
+#: app/features/activity/components/activity-list.tsx:178
 #: app/features/activity/components/activity-detail-drawer.tsx:381
 msgid "Status"
 msgstr "Status"
@@ -1119,7 +1131,7 @@ msgstr "Temporarily prevent user from signing in. The user can be reactivated at
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 msgstr "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 
-#: app/features/activity/components/activity-list.tsx:167
+#: app/features/activity/components/activity-list.tsx:168
 msgid "Timestamp"
 msgstr "Timestamp"
 
@@ -1137,7 +1149,7 @@ msgstr "Type a command or search..."
 #: app/features/quota/components/quota-bucket-list.tsx:158
 #: app/features/contact-group/components/contact-group-form.tsx:84
 #: app/features/contact/components/contact-form.tsx:160
-#: app/features/activity/components/activity-list.tsx:427
+#: app/features/activity/components/activity-list.tsx:430
 msgid "Update"
 msgstr "Update"
 
@@ -1216,7 +1228,7 @@ msgstr "Visibility"
 msgid "Warning"
 msgstr "Warning"
 
-#: app/features/activity/components/activity-list.tsx:425
+#: app/features/activity/components/activity-list.tsx:428
 msgid "Watch"
 msgstr "Watch"
 
