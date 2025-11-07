@@ -207,3 +207,20 @@ export const UserRejectSchema = z.object({
 });
 
 export type UserReject = z.infer<typeof UserRejectSchema>;
+
+export const UserInviteSchema = z.object({
+  apiVersion: z.literal('iam.miloapis.com/v1alpha1'),
+  kind: z.literal('PlatformInvitation'),
+  metadata: z.object({
+    name: z.string().optional(),
+    generateName: z.string().optional(),
+  }),
+  spec: z.object({
+    email: z.email(),
+    familyName: z.string(),
+    givenName: z.string(),
+    scheduleAt: z.string().optional(),
+  }),
+});
+
+export type UserInvite = z.infer<typeof UserInviteSchema>;
