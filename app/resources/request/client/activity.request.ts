@@ -19,6 +19,7 @@ export const activityListQuery = (
       // Only Write operations are logged (default)
       actions: 'create,update,patch,delete,deletecollection',
       ...(params?.limit && { limit: params.limit }),
+      ...(params?.cursor && { pageToken: params.cursor }),
       ...(params?.filters?.start && { start: params.filters.start }),
       ...(params?.filters?.end && { end: params.filters.end }),
       ...(params?.search && { q: params.search }),

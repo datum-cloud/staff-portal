@@ -269,7 +269,7 @@ export default function ActivityList({
       columns={createColumns()}
       transform={(data) => ({
         rows: data?.data?.logs || [],
-        cursor: '',
+        cursor: data?.data?.nextPageToken || '',
       })}
       {...tableState}>
       <div className="m-4 flex flex-col gap-2">
