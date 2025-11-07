@@ -111,12 +111,26 @@ export default function Page() {
     },
   ];
 
-  const inviteSchema = z.object({
-    givenName: z.string().nonempty(t`First name is required`),
-    familyName: z.string().nonempty(t`Last name is required`),
-    email: z.email(t`Invalid email address`).nonempty(t`Email is required`),
-    scheduleAt: z.date().optional(),
-  });
+  const inviteSchema = z
+    .object({
+      givenName: z.string().nonempty(t`First name is required`),
+      familyName: z.string().nonempty(t`Last name is required`),
+      email: z.email(t`Invalid email address`).nonempty(t`Email is required`),
+      scheduleEnabled: z.boolean().optional(),
+      scheduleAt: z.date().optional(),
+    })
+    .refine(
+      (data) => {
+        if (data.scheduleEnabled === true) {
+          return data.scheduleAt !== undefined && data.scheduleAt !== null;
+        }
+        return true;
+      },
+      {
+        message: t`Schedule date and time is required`,
+        path: ['scheduleAt'],
+      }
+    );
 
   return (
     <>
@@ -127,7 +141,13 @@ export default function Page() {
         submitText={t`Invite`}
         cancelText={t`Cancel`}
         schema={inviteSchema}
-        defaultValues={{ givenName: '', familyName: '', email: '', scheduleAt: undefined }}
+        defaultValues={{
+          givenName: '',
+          familyName: '',
+          email: '',
+          scheduleEnabled: false,
+          scheduleAt: undefined,
+        }}
         onSubmit={async (formData: z.infer<typeof inviteSchema>) => {
           try {
             await userInviteMutation({
@@ -138,7 +158,9 @@ export default function Page() {
                 email: formData.email,
                 familyName: formData.familyName,
                 givenName: formData.givenName,
-                scheduleAt: formData.scheduleAt?.toISOString(),
+                ...(formData.scheduleEnabled && {
+                  scheduleAt: formData.scheduleAt?.toISOString(),
+                }),
               },
             });
 
@@ -150,10 +172,20 @@ export default function Page() {
             throw error; // Re-throw to keep dialog open
           }
         }}>
-        <Form.Input field="givenName" label={t`First Name`} required />
-        <Form.Input field="familyName" label={t`Last Name`} required />
-        <Form.Input field="email" label={t`Email`} required />
-        <Form.DateTimePicker modal field="scheduleAt" label={t`Schedule At`} />
+        {(form) => (
+          <>
+            <Form.Input field="givenName" label={t`First Name`} required />
+            <Form.Input field="familyName" label={t`Last Name`} required />
+            <Form.Input field="email" label={t`Email`} required />
+            <Form.Switch
+              field="scheduleEnabled"
+              label={t`Schedule invitation to be sent at specific time`}
+            />
+            {form.watch('scheduleEnabled') && (
+              <Form.DateTimePicker modal field="scheduleAt" required />
+            )}
+          </>
+        )}
       </DialogForm>
 
       <UserRejectDialog
