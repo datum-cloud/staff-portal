@@ -166,7 +166,7 @@ export function FormDateTimePicker({
                           setTimeValue('');
                         }}
                         disabled={disabled}
-                        className="ring-offset-background focus:ring-ring absolute right-2 top-1/2 -translate-y-1/2 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none">
+                        className="ring-offset-background focus:ring-ring absolute top-1/2 right-2 -translate-y-1/2 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:pointer-events-none">
                         <X className="h-4 w-4" />
                       </button>
                     )}

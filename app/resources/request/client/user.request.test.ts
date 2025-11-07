@@ -1,4 +1,10 @@
-import type { UserUpdate, UserApprove, UserReject, UserDeactivate, UserInvite } from '@/resources/schemas';
+import type {
+  UserUpdate,
+  UserApprove,
+  UserReject,
+  UserDeactivate,
+  UserInvite,
+} from '@/resources/schemas';
 import {
   importAfterMocks,
   mockLogger,
