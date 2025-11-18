@@ -62,11 +62,11 @@ export const UserListSchema = z.object({
   }),
 });
 
-export type User = z.infer<typeof UserSchema>;
+export type UserList = z.infer<typeof UserListSchema>;
 export const UserListResponseSchema = createProxyResponseSchema(UserListSchema);
 export type UserListResponse = z.infer<typeof UserListResponseSchema>;
 
-export type UserList = z.infer<typeof UserListSchema>;
+export type User = z.infer<typeof UserSchema>;
 export const UserResponseSchema = createProxyResponseSchema(UserSchema);
 export type UserResponse = z.infer<typeof UserResponseSchema>;
 
@@ -158,6 +158,22 @@ export const UserDeactivationSchema = z.object({
     })
     .optional(),
 });
+
+export const UserDeactivationListSchema = z.object({
+  apiVersion: z.string(),
+  items: z.array(UserDeactivationSchema),
+  kind: z.literal('UserDeactivationList'),
+  metadata: z.object({
+    continue: z.string(),
+    resourceVersion: z.string(),
+  }),
+});
+
+export type UserDeactivationList = z.infer<typeof UserDeactivationListSchema>;
+export const UserDeactivationListResponseSchema = createProxyResponseSchema(
+  UserDeactivationListSchema
+);
+export type UserDeactivationListResponse = z.infer<typeof UserDeactivationListResponseSchema>;
 
 export type UserDeactivation = z.infer<typeof UserDeactivationSchema>;
 export const UserDeactivationResponseSchema = createProxyResponseSchema(UserDeactivationSchema);

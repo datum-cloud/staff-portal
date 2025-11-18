@@ -20,6 +20,10 @@ const DateFormatter = ({
   const { settings } = useApp();
   let parsedDate: Date;
 
+  if (!date) {
+    return null;
+  }
+
   if (typeof date === 'string') {
     parsedDate = parseISO(date);
   } else {

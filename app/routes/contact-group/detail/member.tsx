@@ -37,12 +37,13 @@ const columns = [
   columnHelper.accessor('spec.contactRef.name', {
     header: () => <Trans>Name</Trans>,
     cell: ({ row }) => {
+      const namespace = row.original.spec.contactRef.namespace;
       const contactName = row.original.spec.contactRef.name;
       return (
         <DisplayName
           displayName={contactName}
           name={contactName}
-          to={contactRoutes.edit(contactName)}
+          to={contactRoutes.edit(namespace, contactName)}
         />
       );
     },

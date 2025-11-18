@@ -19,13 +19,19 @@ export const handle = {
     const displayName = [data.contact?.spec?.givenName, data.contact?.spec?.familyName]
       .filter(Boolean)
       .join(' ');
-    return <span>{displayName}</span>;
+    const contactName = data.contact?.metadata?.name ?? '';
+
+    return <span>{displayName || contactName}</span>;
   },
 };
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const session = await authenticator.getSession(request);
-  const contact = await contactDetailQuery(session?.accessToken ?? '', params?.contactName ?? '');
+  const contact = await contactDetailQuery(
+    session?.accessToken ?? '',
+    params?.contactName ?? '',
+    params?.namespace ?? ''
+  );
 
   let user: User | undefined;
   if (contact?.spec?.subject?.name && contact?.spec?.subject?.kind === 'User') {

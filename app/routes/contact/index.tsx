@@ -28,13 +28,15 @@ const columns = [
     header: () => <Trans>Name</Trans>,
     cell: ({ row }) => {
       const contactName = row.original.metadata.name;
-      const displayName = `${row.original.spec.givenName} ${row.original.spec.familyName}`.trim();
+      const displayName = [row.original.spec.givenName, row.original.spec.familyName]
+        .filter(Boolean)
+        .join(' ');
 
       return (
         <DisplayName
           displayName={displayName || contactName}
           name={contactName}
-          to={`./${contactName}`}
+          to={contactRoutes.edit(row.original.metadata.namespace, contactName)}
         />
       );
     },
@@ -73,7 +75,7 @@ export default function Page() {
     {
       label: 'Edit',
       icon: EditIcon,
-      onClick: (row) => navigate(contactRoutes.edit(row.metadata.name)),
+      onClick: (row) => navigate(contactRoutes.edit(row.metadata.namespace, row.metadata.name)),
     },
     {
       label: 'Delete',
