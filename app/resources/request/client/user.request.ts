@@ -5,7 +5,7 @@ import {
   UserApproveSchema,
   UserDeactivate,
   UserDeactivateSchema,
-  UserDeactivationResponseSchema,
+  UserDeactivationListResponseSchema,
   UserInvite,
   UserInviteSchema,
   UserListResponseSchema,
@@ -122,13 +122,21 @@ export const userReactivateMutation = (userId: string) => {
 export const useUserDeactivationQuery = (userId: string, state?: string) => {
   return useQuery({
     queryKey: ['user', 'deactivation', userId],
-    queryFn: () =>
-      apiRequestClient({
+    queryFn: async () => {
+      const response = await apiRequestClient({
         method: 'GET',
-        url: `/apis/iam.miloapis.com/v1alpha1/userdeactivations/${userId}`,
+        url: `/apis/iam.miloapis.com/v1alpha1/userdeactivations`,
+        params: {
+          limit: 1,
+          fieldSelector: `spec.userRef.name=${userId}`,
+        },
       })
-        .output(UserDeactivationResponseSchema)
-        .execute(),
+        .output(UserDeactivationListResponseSchema)
+        .execute();
+
+      const data = response?.data?.items?.[0] ?? null;
+      return { ...response, data };
+    },
     enabled: !!userId && state === 'Inactive',
   });
 };

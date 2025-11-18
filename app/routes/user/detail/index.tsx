@@ -83,7 +83,7 @@ export default function Page() {
           },
         },
       });
-      revalidate(); // Refresh the user detail page
+      await new Promise((resolve) => setTimeout(() => resolve(revalidate()), 1000));
       toast.success(t`User deactivated successfully`);
     } catch (error) {
       throw error; // Re-throw to keep dialog open
@@ -93,8 +93,8 @@ export default function Page() {
   const handleReactivateUser = async () => {
     setIsReactivating(true);
     try {
-      await userReactivateMutation(data.metadata.name);
-      revalidate(); // Refresh the user detail page
+      await userReactivateMutation(deactivationData?.data?.metadata?.name ?? '');
+      await new Promise((resolve) => setTimeout(() => resolve(revalidate()), 1000));
       toast.success(t`User reactivated successfully`);
       setIsReactivating(false);
     } catch {
