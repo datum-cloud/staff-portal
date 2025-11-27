@@ -30,6 +30,10 @@ export interface AutocompleteOption {
   disabled?: boolean;
 }
 
+const defaultAutocompleteFilterValue = (option: AutocompleteOption) => {
+  return [option.label, option.description, option.value].filter(Boolean).join(' ');
+};
+
 interface FormAutocompleteProps {
   field: string;
   label?: string;
@@ -49,6 +53,10 @@ interface FormAutocompleteProps {
   isLoading?: boolean;
   onSearch?: (query: string) => void;
   searchDebounceMs?: number;
+  /**
+   * Returns the string that cmdk should filter on for each option.
+   */
+  getValue?: (option: AutocompleteOption) => string;
   rules?: {
     required?: boolean | string;
     validate?: (value: any) => boolean | string | Promise<boolean | string>;
@@ -73,6 +81,7 @@ export const FormAutocomplete: React.FC<FormAutocompleteProps> = ({
   isLoading = false,
   onSearch,
   searchDebounceMs = 300,
+  getValue = defaultAutocompleteFilterValue,
   rules,
 }) => {
   const form = useFormContext();
@@ -172,7 +181,7 @@ export const FormAutocomplete: React.FC<FormAutocompleteProps> = ({
                       {options.map((option) => (
                         <CommandItem
                           key={option.value}
-                          value={option.value}
+                          value={getValue(option)}
                           onSelect={() => handleSelect(option.value)}
                           disabled={option.disabled}>
                           <div className="flex flex-col">

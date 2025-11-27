@@ -167,7 +167,7 @@ export default function Page() {
           modal
           field="name"
           placeholder={usersLoading ? t`Loading users...` : t`Select a user...`}
-          searchPlaceholder={t`Search users...`}
+          searchPlaceholder={t`Enter the full email to search...`}
           options={userOptions}
           isLoading={usersLoading}
           onSearch={setUserSearch}

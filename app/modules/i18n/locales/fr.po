@@ -459,6 +459,10 @@ msgstr ""
 msgid "Enter reason for rejection..."
 msgstr ""
 
+#: app/routes/group/member.tsx:170
+msgid "Enter the full email to search..."
+msgstr ""
+
 #: app/components/dialog/dialog-confirm.tsx:100
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr ""
@@ -943,7 +947,6 @@ msgstr ""
 msgid "Search contacts..."
 msgstr ""
 
-#: app/routes/group/member.tsx:170
 #: app/features/contact/components/contact-form.tsx:132
 msgid "Search users..."
 msgstr ""
