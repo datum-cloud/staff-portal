@@ -459,7 +459,7 @@ msgstr "Enter reason for deactivation..."
 msgid "Enter reason for rejection..."
 msgstr "Enter reason for rejection..."
 
-#: app/routes/group/member.tsx:170
+#: app/routes/group/member.tsx:169
 msgid "Enter the full email to search..."
 msgstr "Enter the full email to search..."
 
@@ -621,7 +621,6 @@ msgstr "Loading contacts..."
 msgid "Loading status..."
 msgstr "Loading status..."
 
-#: app/routes/group/member.tsx:169
 #: app/features/contact/components/contact-form.tsx:131
 msgid "Loading users..."
 msgstr "Loading users..."
@@ -968,7 +967,6 @@ msgstr "Secrets"
 msgid "Select a contact..."
 msgstr "Select a contact..."
 
-#: app/routes/group/member.tsx:169
 #: app/features/contact/components/contact-form.tsx:131
 msgid "Select a user..."
 msgstr "Select a user..."
