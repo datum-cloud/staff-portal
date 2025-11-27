@@ -15,6 +15,7 @@ describe('project.request', () => {
   let projectDomainListQuery: typeof import('./project.request').projectDomainListQuery;
   let projectDomainStatusQuery: typeof import('./project.request').projectDomainStatusQuery;
   let projectDeleteMutation: typeof import('./project.request').projectDeleteMutation;
+  let projectDnsListQuery: typeof import('./project.request').projectDnsListQuery;
 
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -27,6 +28,7 @@ describe('project.request', () => {
     projectDomainListQuery = mod.projectDomainListQuery;
     projectDomainStatusQuery = mod.projectDomainStatusQuery;
     projectDeleteMutation = mod.projectDeleteMutation;
+    projectDnsListQuery = mod.projectDnsListQuery;
   }, 20000);
 
   test('projectListQuery with search', async () => {
@@ -55,6 +57,15 @@ describe('project.request', () => {
       method: 'GET',
       url: '/apis/resourcemanager.miloapis.com/v1alpha1/projects/proj/control-plane/apis/telemetry.miloapis.com/v1alpha1/namespaces/default/exportpolicies',
       params: { limit: 3 },
+    });
+  });
+
+  test('projectDnsListQuery', async () => {
+    await projectDnsListQuery('proj', { limit: 4, cursor: 'n3' });
+    expect(axiosMock.apiRequestClient).toHaveBeenCalledWith({
+      method: 'GET',
+      url: '/apis/resourcemanager.miloapis.com/v1alpha1/projects/proj/control-plane/apis/networking.datumapis.com/v1alpha/dnszones',
+      params: { limit: 4, continue: 'n3' },
     });
   });
 

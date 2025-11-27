@@ -16,6 +16,7 @@ import {
   FileText,
   Globe,
   Lock,
+  Router,
   SquareActivity,
   Waypoints,
 } from 'lucide-react';
@@ -75,6 +76,11 @@ export default function Layout() {
       title: t`Overview`,
       href: projectRoutes.detail(project.metadata.name),
       icon: FileText,
+    },
+    {
+      title: t`DNS`,
+      href: projectRoutes.dns.list(project.metadata.name),
+      icon: Router,
     },
     {
       title: t`Domains`,

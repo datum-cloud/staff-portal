@@ -27,6 +27,11 @@ export const projectRoutes = {
     usage: (projectName: string) => `/customers/projects/${projectName}/quotas/usage`,
     grant: (projectName: string) => `/customers/projects/${projectName}/quotas/grants`,
   },
+  dns: {
+    list: (projectName: string) => `/customers/projects/${projectName}/dns`,
+    detail: (projectName: string, namespace: string, dnsName: string) =>
+      `/customers/projects/${projectName}/dns/${namespace}/${dnsName}`,
+  },
   domain: {
     list: (projectName: string) => `/customers/projects/${projectName}/domains`,
     detail: (projectName: string, namespace: string, domainName: string) =>

@@ -5,6 +5,13 @@ import { Tooltip } from '@datum-ui/tooltip';
 import { Loader2 } from 'lucide-react';
 import * as React from 'react';
 
+type BadgeStateIcon = React.ElementType<{ className?: string }>;
+type BadgeStateConfigEntry = {
+  icon: BadgeStateIcon | null;
+  variant: 'default' | 'secondary' | 'destructive';
+  className: string;
+};
+
 const StateConfig = {
   yes: {
     icon: null,
@@ -171,7 +178,7 @@ const StateConfig = {
     className:
       'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800',
   },
-} as const;
+} as Record<string, BadgeStateConfigEntry>;
 
 // Default configuration for unknown states
 const DefaultConfig = {
@@ -188,49 +195,45 @@ type Props = {
   message?: string; // Custom text to display instead of state name
   noColor?: boolean;
   tooltip?: string;
+  icon?: BadgeStateIcon;
   className?: string;
   loading?: boolean;
 };
 
-const BadgeState = ({ state, message, noColor, tooltip, className, loading }: Props) => {
+const BadgeState = ({ state, message, noColor, tooltip, icon, className, loading }: Props) => {
   const normalizedState = String(state ?? '').toLowerCase();
   const config = StateConfig[normalizedState as State] || DefaultConfig;
+  const IconComponent = icon || config.icon;
 
   if (!normalizedState && !message) return null;
 
-  const IconComponent = config.icon;
-
   // Use custom message if provided, otherwise fall back to titleCase state
   const displayText = message || startCase(normalizedState);
-
-  if (!IconComponent) {
-    return (
-      <Badge
-        variant={noColor ? 'outline' : config.variant}
-        className={cn(
-          'inline-flex items-center gap-1 text-xs font-medium',
-          noColor
-            ? 'border-gray-200 text-gray-700 dark:border-gray-700 dark:text-gray-300'
-            : config.className,
-          className
-        )}>
-        {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
-        {displayText}
-      </Badge>
-    );
-  }
-
-  const iconElement = null;
+  const badgeContent = (
+    <Badge
+      variant={noColor ? 'outline' : config.variant}
+      className={cn(
+        'inline-flex items-center gap-1 text-xs font-medium',
+        noColor
+          ? 'border-gray-200 text-gray-700 dark:border-gray-700 dark:text-gray-300'
+          : config.className,
+        className
+      )}>
+      {IconComponent ? <IconComponent className="h-3 w-3" /> : null}
+      {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
+      {displayText}
+    </Badge>
+  );
 
   if (tooltip) {
     return (
       <Tooltip message={startCase(tooltip || normalizedState)}>
-        <div className="inline-flex cursor-pointer">{iconElement}</div>
+        <div className="inline-flex cursor-help">{badgeContent}</div>
       </Tooltip>
     );
   }
 
-  return <div>{iconElement}</div>;
+  return badgeContent;
 };
 
 export default BadgeState;

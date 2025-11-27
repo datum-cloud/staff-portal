@@ -60,7 +60,7 @@ msgstr ""
 #: app/routes/activity.tsx:11
 #: app/routes/user/detail/layout.tsx:42
 #: app/routes/user/detail/activity.tsx:8
-#: app/routes/project/detail/layout.tsx:95
+#: app/routes/project/detail/layout.tsx:101
 #: app/routes/project/detail/activity.tsx:8
 #: app/routes/organization/detail/layout.tsx:42
 #: app/routes/organization/detail/activity.tsx:8
@@ -279,6 +279,8 @@ msgstr ""
 #: app/routes/project/detail/export-policy/detail.tsx:95
 #: app/routes/project/detail/domain/index.tsx:67
 #: app/routes/project/detail/domain/detail.tsx:129
+#: app/routes/project/detail/dns/index.tsx:65
+#: app/routes/project/detail/dns/detail.tsx:129
 #: app/routes/profile/session.tsx:46
 #: app/routes/organization/index.tsx:37
 #: app/routes/organization/detail/project.tsx:40
@@ -292,7 +294,7 @@ msgstr ""
 msgid "Created"
 msgstr ""
 
-#: app/routes/project/detail/layout.tsx:38
+#: app/routes/project/detail/layout.tsx:39
 #: app/routes/customers/layout.tsx:7
 #: app/components/app-sidebar/index.tsx:97
 msgid "Customers"
@@ -390,6 +392,7 @@ msgid "Delete User"
 msgstr ""
 
 #: app/routes/project/detail/index.tsx:42
+#: app/routes/project/detail/dns/index.tsx:70
 #: app/routes/organization/detail/index.tsx:43
 msgid "Description"
 msgstr ""
@@ -406,13 +409,24 @@ msgstr ""
 msgid "Display name is required"
 msgstr ""
 
+#: app/routes/project/detail/layout.tsx:81
+#: app/routes/project/detail/dns/layout.tsx:5
+msgid "DNS"
+msgstr ""
+
+#: app/routes/project/detail/dns/index.tsx:51
+msgid "DNS Host"
+msgstr ""
+
 #: app/routes/project/detail/domain/index.tsx:49
 #: app/routes/project/detail/domain/detail.tsx:95
+#: app/routes/project/detail/dns/detail.tsx:95
 msgid "DNS Providers"
 msgstr ""
 
 #: app/routes/project/detail/domain/index.tsx:32
 #: app/routes/project/detail/domain/detail.tsx:75
+#: app/routes/project/detail/dns/detail.tsx:75
 msgid "Domain"
 msgstr ""
 
@@ -420,7 +434,7 @@ msgstr ""
 msgid "Domain verification is in progress. This may take a few minutes."
 msgstr ""
 
-#: app/routes/project/detail/layout.tsx:80
+#: app/routes/project/detail/layout.tsx:86
 #: app/routes/project/detail/domain/layout.tsx:5
 msgid "Domains"
 msgstr ""
@@ -473,6 +487,7 @@ msgstr ""
 
 #: app/routes/project/detail/domain/index.tsx:53
 #: app/routes/project/detail/domain/detail.tsx:105
+#: app/routes/project/detail/dns/detail.tsx:105
 msgid "Expiration Date"
 msgstr ""
 
@@ -480,7 +495,7 @@ msgstr ""
 msgid "Expires"
 msgstr ""
 
-#: app/routes/project/detail/layout.tsx:90
+#: app/routes/project/detail/layout.tsx:96
 #: app/routes/project/detail/export-policy/layout.tsx:5
 msgid "Export Policies"
 msgstr ""
@@ -528,7 +543,7 @@ msgstr ""
 msgid "Grant deleted successfully"
 msgstr ""
 
-#: app/routes/project/detail/layout.tsx:114
+#: app/routes/project/detail/layout.tsx:120
 #: app/routes/project/detail/quota/grant.tsx:9
 #: app/routes/organization/detail/layout.tsx:61
 #: app/routes/organization/detail/quota/grant.tsx:9
@@ -546,7 +561,7 @@ msgstr ""
 msgid "Hostnames"
 msgstr ""
 
-#: app/routes/project/detail/layout.tsx:85
+#: app/routes/project/detail/layout.tsx:91
 #: app/routes/project/detail/httpproxy/layout.tsx:5
 msgid "HTTP Proxies"
 msgstr ""
@@ -709,6 +724,7 @@ msgstr ""
 #: app/routes/project/detail/secret.tsx:25
 #: app/routes/project/detail/export-policy/detail.tsx:73
 #: app/routes/project/detail/domain/detail.tsx:65
+#: app/routes/project/detail/dns/detail.tsx:65
 msgid "Namespace"
 msgstr ""
 
@@ -747,7 +763,7 @@ msgstr ""
 
 #: app/routes/user/detail/organization.tsx:42
 #: app/routes/user/detail/layout.tsx:37
-#: app/routes/project/detail/layout.tsx:39
+#: app/routes/project/detail/layout.tsx:40
 #: app/routes/organization/layout.tsx:5
 #: app/routes/organization/index.tsx:14
 #: app/components/app-sidebar/index.tsx:107
@@ -755,7 +771,7 @@ msgid "Organizations"
 msgstr ""
 
 #: app/routes/user/detail/layout.tsx:32
-#: app/routes/project/detail/layout.tsx:75
+#: app/routes/project/detail/layout.tsx:76
 #: app/routes/organization/detail/layout.tsx:32
 msgid "Overview"
 msgstr ""
@@ -827,7 +843,7 @@ msgstr ""
 
 #: app/routes/project/layout.tsx:5
 #: app/routes/project/index.tsx:15
-#: app/routes/project/detail/layout.tsx:45
+#: app/routes/project/detail/layout.tsx:46
 #: app/routes/organization/detail/project.tsx:14
 #: app/routes/organization/detail/layout.tsx:37
 #: app/components/app-sidebar/index.tsx:111
@@ -850,7 +866,7 @@ msgstr ""
 msgid "Quota updated successfully"
 msgstr ""
 
-#: app/routes/project/detail/layout.tsx:105
+#: app/routes/project/detail/layout.tsx:111
 #: app/routes/project/detail/quota/layout.tsx:5
 #: app/routes/organization/detail/layout.tsx:52
 #: app/routes/organization/detail/quota/layout.tsx:5
@@ -877,8 +893,13 @@ msgstr ""
 msgid "Reason for rejection"
 msgstr ""
 
+#: app/routes/project/detail/dns/index.tsx:61
+msgid "Records"
+msgstr ""
+
 #: app/routes/project/detail/domain/index.tsx:45
 #: app/routes/project/detail/domain/detail.tsx:85
+#: app/routes/project/detail/dns/detail.tsx:85
 msgid "Registrar"
 msgstr ""
 
@@ -907,6 +928,7 @@ msgid "Resend"
 msgstr ""
 
 #: app/routes/project/detail/domain/detail.tsx:53
+#: app/routes/project/detail/dns/detail.tsx:53
 msgid "Resource Name"
 msgstr ""
 
@@ -956,7 +978,7 @@ msgid "Searching..."
 msgstr ""
 
 #: app/routes/project/detail/secret.tsx:11
-#: app/routes/project/detail/layout.tsx:100
+#: app/routes/project/detail/layout.tsx:106
 msgid "Secrets"
 msgstr ""
 
@@ -1019,6 +1041,7 @@ msgstr ""
 #: app/routes/project/detail/export-policy/detail.tsx:184
 #: app/routes/project/detail/domain/index.tsx:57
 #: app/routes/project/detail/domain/detail.tsx:115
+#: app/routes/project/detail/dns/detail.tsx:115
 #: app/routes/contact-group/index.tsx:48
 #: app/routes/contact/index.tsx:54
 #: app/features/quota/components/quota-grant-list.tsx:72
@@ -1068,7 +1091,7 @@ msgstr ""
 msgid "Update your DNS provider with the provided record, or use the HTTP token method."
 msgstr ""
 
-#: app/routes/project/detail/layout.tsx:110
+#: app/routes/project/detail/layout.tsx:116
 #: app/routes/project/detail/quota/usage.tsx:9
 #: app/routes/organization/detail/layout.tsx:57
 #: app/routes/organization/detail/quota/usage.tsx:9
@@ -1137,4 +1160,8 @@ msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:317
 msgid "Watch"
+msgstr ""
+
+#: app/routes/project/detail/dns/index.tsx:32
+msgid "Zone Name"
 msgstr ""
