@@ -68,8 +68,12 @@ msgstr "Active Sessions"
 msgid "Activity"
 msgstr "Activity"
 
+#: app/routes/group/member.tsx:135
 #: app/routes/group/member.tsx:161
+#: app/routes/contact-group/index.tsx:89
+#: app/routes/contact-group/detail/member.tsx:117
 #: app/routes/contact-group/detail/member.tsx:143
+#: app/routes/contact/index.tsx:95
 msgid "Add"
 msgstr "Add"
 
@@ -711,13 +715,6 @@ msgstr "Namespace"
 #: app/components/app-search/index.tsx:155
 msgid "Navigation"
 msgstr "Navigation"
-
-#: app/routes/group/member.tsx:135
-#: app/routes/contact-group/index.tsx:89
-#: app/routes/contact-group/detail/member.tsx:117
-#: app/routes/contact/index.tsx:95
-msgid "New"
-msgstr "New"
 
 #: app/features/quota/components/quota-bucket-list.tsx:174
 msgid "New Limit"

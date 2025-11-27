@@ -132,7 +132,7 @@ export default function Page() {
           type="primary"
           icon={<PlusCircleIcon size={16} />}
           onClick={() => setIsAddMember(true)}>
-          <Trans>New</Trans>
+          <Trans>Add</Trans>
         </Button>
       </AppActionBar>
 

@@ -77,7 +77,7 @@ export const FormAutosearch: React.FC<FormAutosearchProps> = ({
     value: string;
     onChange: (value: string) => void;
   } | null>(null);
-  const [persistedLabel, setPersistedLabel] = React.useState('');
+  const [persistedOption, setPersistedOption] = React.useState<AutocompleteOption | null>(null);
   const [searchExecuted, setSearchExecuted] = React.useState(false);
 
   const searchDebounceRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -116,9 +116,9 @@ export const FormAutosearch: React.FC<FormAutosearchProps> = ({
 
   const normalizedQuery = searchQuery.trim();
   const handleSelect = React.useCallback(
-    (value: string, label?: string) => {
-      setPersistedLabel(label ?? '');
-      fieldRef.current?.onChange(value);
+    (option: AutocompleteOption) => {
+      setPersistedOption(option);
+      fieldRef.current?.onChange(option.value);
       setSearchQuery('');
       onSearch?.('');
       setOpen(false);
@@ -127,12 +127,14 @@ export const FormAutosearch: React.FC<FormAutosearchProps> = ({
   );
 
   const handleClear = React.useCallback(() => {
-    fieldRef.current?.onChange('');
+    setPersistedOption(null);
     setSearchQuery('');
     onSearch?.('');
     setOpen(false);
     setSearchExecuted(false);
-  }, [onSearch]);
+    fieldRef.current?.onChange('');
+    form.form.clearErrors(field);
+  }, [field, form.form, onSearch]);
 
   React.useEffect(() => {
     const fieldValue = fieldRef.current?.value;
@@ -141,7 +143,7 @@ export const FormAutosearch: React.FC<FormAutosearchProps> = ({
     }
 
     if (options.length === 1 && !options[0].disabled) {
-      handleSelect(options[0].value, options[0].label);
+      handleSelect(options[0]);
     }
   }, [normalizedQuery, options, handleSelect]);
 
@@ -157,8 +159,10 @@ export const FormAutosearch: React.FC<FormAutosearchProps> = ({
         fieldRef.current = fieldProps;
         const hasSearch = Boolean(normalizedQuery);
         const showResults = hasSearch && !fieldProps.value && options.length > 1;
-        const selectedOption = options.find((option) => option.value === fieldProps.value);
-        const selectedLabel = selectedOption?.label ?? (fieldProps.value ? persistedLabel : '');
+        const selectedOption =
+          options.find((option) => option.value === fieldProps.value) ?? persistedOption;
+        const selectedLabel = selectedOption?.label ?? '';
+        const selectedDescription = selectedOption?.description ?? '';
         const showNoResults = hasSearch && !isLoading && options.length === 0 && searchExecuted;
 
         return (
@@ -175,9 +179,13 @@ export const FormAutosearch: React.FC<FormAutosearchProps> = ({
 
             {fieldProps.value ? (
               <div className="border-border bg-muted/10 flex items-center justify-between gap-2 rounded-md border px-3 py-1 pr-1">
-                <span className="text-sm font-medium">{selectedLabel}</span>
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium">{selectedLabel}</span>
+                  {selectedDescription && (
+                    <span className="text-muted-foreground text-xs">{selectedDescription}</span>
+                  )}
+                </div>
                 <Button
-                  className="h-7"
                   size="small"
                   type="tertiary"
                   theme="borderless"
@@ -229,7 +237,7 @@ export const FormAutosearch: React.FC<FormAutosearchProps> = ({
                             <CommandItem
                               key={option.value}
                               value={getValue(option)}
-                              onSelect={() => handleSelect(option.value, option.label)}
+                              onSelect={() => handleSelect(option)}
                               disabled={option.disabled}>
                               <div className="flex flex-col">
                                 <span className="font-medium">{option.label}</span>
