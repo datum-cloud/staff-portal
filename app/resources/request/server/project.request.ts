@@ -4,6 +4,7 @@ import {
   ProjectSchema,
   ExportPolicySchema,
   DomainSchema,
+  DNSZoneSchema,
 } from '@/resources/schemas';
 
 export const projectDetailQuery = (token: string, projectName: string) => {
@@ -49,6 +50,23 @@ export const projectExportPolicyDetailQuery = (
     },
   })
     .output(ExportPolicySchema)
+    .execute();
+};
+
+export const projectDnsDetailQuery = (
+  token: string,
+  projectName: string,
+  dnsName: string,
+  namespace: string = 'default'
+) => {
+  return apiRequest({
+    method: 'GET',
+    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/dns.networking.miloapis.com/v1alpha1/namespaces/${namespace}/dnszones/${dnsName}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .output(DNSZoneSchema)
     .execute();
 };
 

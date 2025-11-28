@@ -5,11 +5,13 @@ import { DateFormatter } from '@/components/date';
 import { DnsHostChips } from '@/features/dns';
 import { projectDnsListQuery } from '@/resources/request/client';
 import { DNSZone, DNSZoneListResponse } from '@/resources/schemas';
+import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject, transformControlPlaneStatus } from '@/utils/helpers';
 import { DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Loader2Icon } from 'lucide-react';
+import { Link } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const { projectName } = getProjectDetailMetadata(matches);
@@ -23,7 +25,7 @@ export default function Page() {
 
   const tableState = useDataTableQuery<DNSZoneListResponse>({
     queryKeyPrefix: ['projects', project.metadata.name, 'dns'],
-    fetchFn: (params) => projectDnsListQuery(project.metadata.name, params) as any,
+    fetchFn: (params) => projectDnsListQuery(project.metadata.name, params),
     useSorting: true,
   });
 
@@ -36,7 +38,14 @@ export default function Page() {
         });
         return (
           <div className="flex items-center gap-2">
-            <span className="font-medium">{row.original.spec.domainName}</span>
+            <Link
+              to={projectRoutes.dns.detail(
+                project.metadata.name,
+                row.original.metadata.namespace,
+                row.original.metadata.name
+              )}>
+              <span className="font-medium">{row.original.spec.domainName}</span>
+            </Link>
             <BadgeProgrammingError
               isProgrammed={status.isProgrammed}
               programmedReason={status.programmedReason}

@@ -1,6 +1,7 @@
 import { apiRequestClient } from '@/modules/axios/axios.client';
 import {
-  DNSZoneListResponse,
+  DNSRecordListResponseSchema,
+  DNSRecordResponseSchema,
   DNSZoneListResponseSchema,
   DomainListResponseSchema,
   DomainResponseSchema,
@@ -9,6 +10,7 @@ import {
   ListQueryParams,
   ProjectListResponseSchema,
 } from '@/resources/schemas';
+import { flattenManagedRecordSets } from '@/utils/helpers';
 import { useQuery } from '@tanstack/react-query';
 
 export const projectListQuery = (params?: ListQueryParams) => {
@@ -41,7 +43,7 @@ export const projectHttpProxyListQuery = (projectName: string, params?: ListQuer
 export const projectExportPolicyListQuery = (projectName: string, params?: ListQueryParams) => {
   return apiRequestClient({
     method: 'GET',
-    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/telemetry.miloapis.com/v1alpha1/namespaces/default/exportpolicies`,
+    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/telemetry.miloapis.com/v1alpha1/exportpolicies`,
     params: {
       ...(params?.limit && { limit: params.limit }),
       ...(params?.cursor && { continue: params.cursor }),
@@ -52,221 +54,48 @@ export const projectExportPolicyListQuery = (projectName: string, params?: ListQ
 };
 
 export const projectDnsListQuery = (projectName: string, params?: ListQueryParams) => {
-  // return apiRequestClient({
-  //   method: 'GET',
-  //   url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/dns.networking.miloapis.com/v1alpha1/namespaces/default/dnszones`,
-  //   params: {
-  //     ...(params?.limit && { limit: params.limit }),
-  //     ...(params?.cursor && { continue: params.cursor }),
-  //   },
-  // })
-  //   .output(DNSZoneListResponseSchema)
-  //   .execute();
+  return apiRequestClient({
+    method: 'GET',
+    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/dns.networking.miloapis.com/v1alpha1/dnszones`,
+    params: {
+      ...(params?.limit && { limit: params.limit }),
+      ...(params?.cursor && { continue: params.cursor }),
+    },
+  })
+    .output(DNSZoneListResponseSchema)
+    .execute();
+};
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        data: {
-          apiVersion: 'dns.networking.miloapis.com/v1alpha1',
-          items: [
-            {
-              apiVersion: 'dns.networking.miloapis.com/v1alpha1',
-              kind: 'DNSZone',
-              metadata: {
-                annotations: {
-                  'kubernetes.io/description': 'Personal Site',
-                },
-                creationTimestamp: '2025-11-26T03:34:33Z',
-                finalizers: ['dns.networking.miloapis.com/finalize-dnszone'],
-                generation: 1,
-                managedFields: [
-                  {
-                    apiVersion: 'dns.networking.miloapis.com/v1alpha1',
-                    fieldsType: 'FieldsV1',
-                    fieldsV1: {
-                      'f:metadata': {
-                        'f:annotations': {
-                          '.': {},
-                          'f:kubernetes.io/description': {},
-                        },
-                      },
-                      'f:spec': {
-                        '.': {},
-                        'f:dnsZoneClassName': {},
-                        'f:domainName': {},
-                      },
-                    },
-                    manager: 'axios',
-                    operation: 'Update',
-                    time: '2025-11-26T03:34:33Z',
-                  },
-                  {
-                    apiVersion: 'dns.networking.miloapis.com/v1alpha1',
-                    fieldsType: 'FieldsV1',
-                    fieldsV1: {
-                      'f:metadata': {
-                        'f:finalizers': {
-                          '.': {},
-                          'v:"dns.networking.miloapis.com/finalize-dnszone"': {},
-                        },
-                      },
-                    },
-                    manager: 'manager',
-                    operation: 'Update',
-                    time: '2025-11-26T03:34:33Z',
-                  },
-                  {
-                    apiVersion: 'dns.networking.miloapis.com/v1alpha1',
-                    fieldsType: 'FieldsV1',
-                    fieldsV1: {
-                      'f:status': {
-                        '.': {},
-                        'f:conditions': {
-                          '.': {},
-                          'k:{"type":"Accepted"}': {
-                            '.': {},
-                            'f:lastTransitionTime': {},
-                            'f:message': {},
-                            'f:observedGeneration': {},
-                            'f:reason': {},
-                            'f:status': {},
-                            'f:type': {},
-                          },
-                          'k:{"type":"Programmed"}': {
-                            '.': {},
-                            'f:lastTransitionTime': {},
-                            'f:message': {},
-                            'f:observedGeneration': {},
-                            'f:reason': {},
-                            'f:status': {},
-                            'f:type': {},
-                          },
-                        },
-                        'f:domainRef': {
-                          '.': {},
-                          'f:name': {},
-                          'f:status': {
-                            '.': {},
-                            'f:nameservers': {},
-                          },
-                        },
-                        'f:nameservers': {},
-                        'f:recordCount': {},
-                      },
-                    },
-                    manager: 'manager',
-                    operation: 'Update',
-                    subresource: 'status',
-                    time: '2025-11-26T04:21:56Z',
-                  },
-                ],
-                name: 'hiyahya-dev-envqwx',
-                namespace: 'default',
-                resourceVersion: '302153111',
-                uid: 'cf7e9bac-39f4-4c2b-9211-b5364c94261b',
-              },
-              spec: {
-                dnsZoneClassName: 'datum-external-global-dns',
-                domainName: 'hiyahya.dev',
-              },
-              status: {
-                conditions: [
-                  {
-                    lastTransitionTime: '2025-11-26T03:34:33Z',
-                    message: 'Nameservers retrieved from downstream',
-                    observedGeneration: 1,
-                    reason: 'Accepted',
-                    status: 'True',
-                    type: 'Accepted',
-                  },
-                  {
-                    lastTransitionTime: '2025-11-26T03:34:34Z',
-                    message: 'Default records ensured',
-                    observedGeneration: 1,
-                    reason: 'Programmed',
-                    status: 'True',
-                    type: 'Programmed',
-                  },
-                ],
-                domainRef: {
-                  name: 'hiyahya-dev-clw2d',
-                  status: {
-                    nameservers: [
-                      {
-                        hostname: 'connie.ns.cloudflare.com',
-                        ips: [
-                          {
-                            address: '172.64.32.247',
-                            registrantName: 'Cloudflare, Inc.',
-                          },
-                          {
-                            address: '108.162.192.247',
-                            registrantName: 'Cloudflare, Inc.',
-                          },
-                          {
-                            address: '173.245.58.247',
-                            registrantName: 'Cloudflare, Inc.',
-                          },
-                          {
-                            address: '2606:4700:50::adf5:3af7',
-                            registrantName: 'Cloudflare, Inc.',
-                          },
-                          {
-                            address: '2803:f800:50::6ca2:c0f7',
-                            registrantName: 'CloudFlare Latin America S.R.L',
-                          },
-                          {
-                            address: '2a06:98c1:50::ac40:20f7',
-                            registrantName: 'MNT-CLOUDFLARE',
-                          },
-                        ],
-                      },
-                      {
-                        hostname: 'paul.ns.cloudflare.com',
-                        ips: [
-                          {
-                            address: '108.162.193.135',
-                            registrantName: 'Cloudflare, Inc.',
-                          },
-                          {
-                            address: '173.245.59.135',
-                            registrantName: 'Cloudflare, Inc.',
-                          },
-                          {
-                            address: '172.64.33.135',
-                            registrantName: 'Cloudflare, Inc.',
-                          },
-                          {
-                            address: '2803:f800:50::6ca2:c187',
-                            registrantName: 'CloudFlare Latin America S.R.L',
-                          },
-                          {
-                            address: '2606:4700:58::adf5:3b87',
-                            registrantName: 'Cloudflare, Inc.',
-                          },
-                          {
-                            address: '2a06:98c1:50::ac40:2187',
-                            registrantName: 'MNT-CLOUDFLARE',
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                },
-                nameservers: ['ns1.datum-staging.net', 'ns2.datum-staging.net'],
-                recordCount: 13,
-              },
-            },
-          ],
-          kind: 'DNSZoneList',
-          metadata: {
-            continue: '',
-            resourceVersion: '302273856',
-          },
-        },
-      } as unknown as DNSZoneListResponse);
-    }, 1000);
-  });
+export const projectDnsRecordListQuery = async (
+  projectName: string,
+  dnsName: string,
+  namespace: string = 'default'
+) => {
+  const response = await apiRequestClient({
+    method: 'GET',
+    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/dns.networking.miloapis.com/v1alpha1/namespaces/${namespace}/dnsrecordsets`,
+    params: {
+      fieldSelector: `spec.dnsZoneRef.name=${dnsName}`,
+    },
+  })
+    .output(DNSRecordListResponseSchema)
+    .execute();
+
+  const flattened = flattenManagedRecordSets(response.data);
+  return { ...response, data: flattened };
+};
+
+export const projectDnsRecordStatusQuery = (
+  projectName: string,
+  dnsRecordName: string,
+  namespace: string = 'default'
+) => {
+  return apiRequestClient({
+    method: 'GET',
+    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/dns.networking.miloapis.com/v1alpha1/namespaces/${namespace}/dnsrecordsets/${dnsRecordName}/status`,
+  })
+    .output(DNSRecordResponseSchema)
+    .execute();
 };
 
 export const projectDomainListQuery = (projectName: string, params?: ListQueryParams) => {
@@ -289,7 +118,7 @@ export const projectDomainStatusQuery = (
 ) => {
   return apiRequestClient({
     method: 'GET',
-    url: `apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/networking.datumapis.com/v1alpha/namespaces/${namespace}/domains/${domainName}/status`,
+    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/networking.datumapis.com/v1alpha/namespaces/${namespace}/domains/${domainName}/status`,
   })
     .output(DomainResponseSchema)
     .execute();

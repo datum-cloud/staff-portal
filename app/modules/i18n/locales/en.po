@@ -260,6 +260,10 @@ msgstr "Contacts"
 msgid "Contacts - Create"
 msgstr "Contacts - Create"
 
+#: app/routes/project/detail/dns/detail.tsx:107
+msgid "Content"
+msgstr "Content"
+
 #: app/routes/contact-group/create.tsx:14
 #: app/routes/contact/create.tsx:14
 #: app/features/contact-group/components/contact-group-form.tsx:84
@@ -279,8 +283,7 @@ msgstr "Create"
 #: app/routes/project/detail/export-policy/detail.tsx:95
 #: app/routes/project/detail/domain/index.tsx:67
 #: app/routes/project/detail/domain/detail.tsx:129
-#: app/routes/project/detail/dns/index.tsx:65
-#: app/routes/project/detail/dns/detail.tsx:129
+#: app/routes/project/detail/dns/index.tsx:74
 #: app/routes/profile/session.tsx:46
 #: app/routes/organization/index.tsx:37
 #: app/routes/organization/detail/project.tsx:40
@@ -392,7 +395,7 @@ msgid "Delete User"
 msgstr "Delete User"
 
 #: app/routes/project/detail/index.tsx:42
-#: app/routes/project/detail/dns/index.tsx:70
+#: app/routes/project/detail/dns/index.tsx:79
 #: app/routes/organization/detail/index.tsx:43
 msgid "Description"
 msgstr "Description"
@@ -414,19 +417,26 @@ msgstr "Display name is required"
 msgid "DNS"
 msgstr "DNS"
 
-#: app/routes/project/detail/dns/index.tsx:51
+#: app/routes/project/detail/dns/index.tsx:60
+#: app/routes/project/detail/dns/detail.tsx:206
 msgid "DNS Host"
 msgstr "DNS Host"
 
 #: app/routes/project/detail/domain/index.tsx:49
 #: app/routes/project/detail/domain/detail.tsx:95
-#: app/routes/project/detail/dns/detail.tsx:95
 msgid "DNS Providers"
 msgstr "DNS Providers"
 
+#: app/features/dns/components/dns-record-status-probe.tsx:57
+msgid "DNS record is being validated"
+msgstr "DNS record is being validated"
+
+#: app/routes/project/detail/dns/detail.tsx:170
+msgid "DNS Records"
+msgstr "DNS Records"
+
 #: app/routes/project/detail/domain/index.tsx:32
 #: app/routes/project/detail/domain/detail.tsx:75
-#: app/routes/project/detail/dns/detail.tsx:75
 msgid "Domain"
 msgstr "Domain"
 
@@ -487,7 +497,6 @@ msgstr "Enter the word <0>{confirmationText}</0> to perform this action."
 
 #: app/routes/project/detail/domain/index.tsx:53
 #: app/routes/project/detail/domain/detail.tsx:105
-#: app/routes/project/detail/dns/detail.tsx:105
 msgid "Expiration Date"
 msgstr "Expiration Date"
 
@@ -499,6 +508,10 @@ msgstr "Expires"
 #: app/routes/project/detail/export-policy/layout.tsx:5
 msgid "Export Policies"
 msgstr "Export Policies"
+
+#: app/features/dns/components/dns-record-status-probe.tsx:33
+msgid "Failed to load DNS record status"
+msgstr "Failed to load DNS record status"
 
 #: app/features/domain/components/domain-status-probe.tsx:44
 msgid "Failed to load status"
@@ -637,6 +650,7 @@ msgid "Loading contacts..."
 msgstr "Loading contacts..."
 
 #: app/features/domain/components/domain-status-probe.tsx:40
+#: app/features/dns/components/dns-record-status-probe.tsx:29
 msgid "Loading status..."
 msgstr "Loading status..."
 
@@ -704,6 +718,7 @@ msgstr "My Profile"
 #: app/routes/project/detail/export-policy/detail.tsx:61
 #: app/routes/project/detail/export-policy/detail.tsx:123
 #: app/routes/project/detail/export-policy/detail.tsx:175
+#: app/routes/project/detail/dns/detail.tsx:103
 #: app/routes/organization/index.tsx:20
 #: app/routes/organization/detail/project.tsx:25
 #: app/routes/organization/detail/member.tsx:33
@@ -721,10 +736,13 @@ msgstr "Name"
 msgid "Name is required"
 msgstr "Name is required"
 
+#: app/routes/project/detail/dns/detail.tsx:191
+msgid "Nameservers"
+msgstr "Nameservers"
+
 #: app/routes/project/detail/secret.tsx:25
 #: app/routes/project/detail/export-policy/detail.tsx:73
 #: app/routes/project/detail/domain/detail.tsx:65
-#: app/routes/project/detail/dns/detail.tsx:65
 msgid "Namespace"
 msgstr "Namespace"
 
@@ -825,6 +843,10 @@ msgstr "Portal Preferences"
 msgid "Preferences updated successfully"
 msgstr "Preferences updated successfully"
 
+#: app/routes/project/detail/dns/detail.tsx:120
+msgid "Priority of mail servers defined by MX records. Lowest value = highest priority."
+msgstr "Priority of mail servers defined by MX records. Lowest value = highest priority."
+
 #: app/features/contact-group/components/contact-group-form.tsx:69
 msgid "Private"
 msgstr "Private"
@@ -893,13 +915,13 @@ msgstr "Reason for deactivation"
 msgid "Reason for rejection"
 msgstr "Reason for rejection"
 
-#: app/routes/project/detail/dns/index.tsx:61
+#: app/routes/project/detail/dns/index.tsx:70
 msgid "Records"
 msgstr "Records"
 
 #: app/routes/project/detail/domain/index.tsx:45
 #: app/routes/project/detail/domain/detail.tsx:85
-#: app/routes/project/detail/dns/detail.tsx:85
+#: app/routes/project/detail/dns/detail.tsx:209
 msgid "Registrar"
 msgstr "Registrar"
 
@@ -928,7 +950,6 @@ msgid "Resend"
 msgstr "Resend"
 
 #: app/routes/project/detail/domain/detail.tsx:53
-#: app/routes/project/detail/dns/detail.tsx:53
 msgid "Resource Name"
 msgstr "Resource Name"
 
@@ -1041,7 +1062,6 @@ msgstr "Start Time"
 #: app/routes/project/detail/export-policy/detail.tsx:184
 #: app/routes/project/detail/domain/index.tsx:57
 #: app/routes/project/detail/domain/detail.tsx:115
-#: app/routes/project/detail/dns/detail.tsx:115
 #: app/routes/contact-group/index.tsx:48
 #: app/routes/contact/index.tsx:54
 #: app/features/quota/components/quota-grant-list.tsx:72
@@ -1069,8 +1089,14 @@ msgstr "These items are checked every few minutes. If you've already made change
 msgid "Timestamp"
 msgstr "Timestamp"
 
+#: app/routes/project/detail/dns/detail.tsx:157
+msgid "TTL"
+msgstr "TTL"
+
 #: app/routes/user/detail/organization.tsx:32
 #: app/routes/project/detail/export-policy/detail.tsx:178
+#: app/routes/project/detail/dns/detail.tsx:88
+#: app/routes/project/detail/dns/detail.tsx:200
 #: app/routes/organization/index.tsx:31
 #: app/routes/organization/detail/index.tsx:63
 msgid "Type"
@@ -1133,6 +1159,14 @@ msgstr "Users"
 msgid "Users will appear here once they join Datum"
 msgstr "Users will appear here once they join Datum"
 
+#: app/features/dns/components/dns-record-status-probe.tsx:66
+msgid "Validating"
+msgstr "Validating"
+
+#: app/routes/project/detail/dns/detail.tsx:203
+msgid "Value"
+msgstr "Value"
+
 #: app/features/domain/components/domain-status-probe.tsx:67
 msgid "Verification in progress..."
 msgstr "Verification in progress..."
@@ -1162,6 +1196,6 @@ msgstr "Warning"
 msgid "Watch"
 msgstr "Watch"
 
-#: app/routes/project/detail/dns/index.tsx:32
+#: app/routes/project/detail/dns/index.tsx:34
 msgid "Zone Name"
 msgstr "Zone Name"

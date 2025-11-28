@@ -1,7 +1,7 @@
 import { DateFormatter } from '@/components/date';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Badge } from '@/modules/shadcn/ui/badge';
-import { ControlPlaneStatus } from '@/resources/interfaces';
+import { ControlPlaneStatus } from '@/resources/schemas';
 import { Tooltip } from '@datum-ui/tooltip';
 import { CheckCircle, Clock, XCircle } from 'lucide-react';
 

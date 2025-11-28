@@ -1,4 +1,4 @@
-import { ControlPlaneStatus, IExtendedControlPlaneStatus } from '@/resources/interfaces';
+import { ControlPlaneStatus, ExtendedControlPlaneStatus } from '@/resources/schemas';
 
 /**
  * Enhanced status extraction options
@@ -93,7 +93,7 @@ function autoDetectRequiredConditions(conditionMap: Map<string, any>): string[] 
 export function transformControlPlaneStatus(
   status: any,
   options: TransformStatusOptions = {}
-): IExtendedControlPlaneStatus {
+): ExtendedControlPlaneStatus {
   const { includeConditionDetails = false } = options;
 
   // No status object
@@ -170,7 +170,7 @@ export function transformControlPlaneStatus(
   }
 
   // Base response
-  const response: IExtendedControlPlaneStatus = {
+  const response: ExtendedControlPlaneStatus = {
     status: finalStatus,
     message: finalMessage,
     ...rest,
