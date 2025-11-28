@@ -4,14 +4,6 @@ import { Chip } from '@/components/chip';
 import { DnsRecordStatusProbe } from '@/features/dns';
 import { authenticator } from '@/modules/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/modules/shadcn/ui/table';
 import { projectDnsRecordListQuery } from '@/resources/request/client';
 import { projectDnsDetailQuery, projectDomainDetailQuery } from '@/resources/request/server';
 import {
@@ -22,15 +14,25 @@ import {
 } from '@/resources/schemas';
 import { useProjectDetailData } from '@/routes/project/shared';
 import { extractDataFromMatches, formatTTL, metaObject } from '@/utils/helpers';
-import { DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
+import { DataTable, DataTableProvider, SimpleTable, useDataTableQuery } from '@datum-ui/data-table';
 import { Text, Title } from '@datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
+import { useMemo } from 'react';
 import { useLoaderData } from 'react-router';
 
 type DNSZoneWithDomain = {
   dns: DNSZone;
   domain: Domain;
+};
+
+type NameserverRow = {
+  hostname: string;
+  ips: Array<{
+    address: string;
+    registrantName: string;
+  }>;
+  registrarName?: string;
 };
 
 export const meta: Route.MetaFunction = ({ matches }) => {
@@ -65,7 +67,8 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   return { dns, domain };
 };
 
-const columnHelper = createColumnHelper<DNSRecordFlattened>();
+const dnsRecordColumnHelper = createColumnHelper<DNSRecordFlattened>();
+const nameserverColumnHelper = createColumnHelper<NameserverRow>();
 
 export default function Page() {
   const { t } = useLingui();
@@ -83,8 +86,17 @@ export default function Page() {
     useSorting: true,
   });
 
-  const columns = [
-    columnHelper.accessor('type', {
+  const nameserverData = useMemo(
+    () =>
+      (domain?.status?.nameservers ?? []).map((nameserver) => ({
+        ...nameserver,
+        registrarName: domain?.status?.registration?.registrar?.name,
+      })),
+    [domain]
+  );
+
+  const dnsRecordColumns = [
+    dnsRecordColumnHelper.accessor('type', {
       header: () => <Trans>Type</Trans>,
       cell: ({ getValue, row }) => (
         <div className="flex items-center gap-2">
@@ -99,11 +111,11 @@ export default function Page() {
       ),
       size: 50,
     }),
-    columnHelper.accessor('name', {
+    dnsRecordColumnHelper.accessor('name', {
       header: () => <Trans>Name</Trans>,
       size: 50,
     }),
-    columnHelper.accessor('value', {
+    dnsRecordColumnHelper.accessor('value', {
       header: () => <Trans>Content</Trans>,
       cell: ({ row }) => {
         const { type, value } = row.original;
@@ -153,10 +165,36 @@ export default function Page() {
         return <div className="text-wrap break-all whitespace-normal">{content()}</div>;
       },
     }),
-    columnHelper.accessor('ttl', {
+    dnsRecordColumnHelper.accessor('ttl', {
       header: () => <Trans>TTL</Trans>,
       size: 50,
       cell: ({ getValue }) => formatTTL(getValue()),
+    }),
+  ];
+
+  const nameserverColumns = [
+    nameserverColumnHelper.display({
+      id: 'type',
+      header: () => <Trans>Type</Trans>,
+      cell: () => <BadgeState state="pending" message="NS" />,
+    }),
+    nameserverColumnHelper.accessor('hostname', {
+      header: () => <Trans>Value</Trans>,
+    }),
+    nameserverColumnHelper.accessor('ips', {
+      header: () => <Trans>DNS Host</Trans>,
+      cell: ({ getValue }) => (
+        <Chip
+          items={getValue().map((ip: { registrantName: string }) => ip.registrantName)}
+          maxVisible={2}
+          variant="outline"
+          wrap={false}
+        />
+      ),
+    }),
+    nameserverColumnHelper.accessor('registrarName', {
+      header: () => <Trans>Registrar</Trans>,
+      cell: ({ getValue }) => <BadgeState state="pending" message={getValue() ?? ''} />,
     }),
   ];
 
@@ -172,7 +210,7 @@ export default function Page() {
         </CardHeader>
         <CardContent>
           <DataTableProvider<DNSRecordFlattened, DNSRecordFlattenedListResponse>
-            columns={columns}
+            columns={dnsRecordColumns}
             transform={(data) => ({
               rows: data?.data || [],
               cursor: undefined,
@@ -192,58 +230,11 @@ export default function Page() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-hidden rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted hover:bg-muted">
-                  <TableHead>
-                    <Trans>Type</Trans>
-                  </TableHead>
-                  <TableHead>
-                    <Trans>Value</Trans>
-                  </TableHead>
-                  <TableHead>
-                    <Trans>DNS Host</Trans>
-                  </TableHead>
-                  <TableHead>
-                    <Trans>Registrar</Trans>
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {(domain?.status?.nameservers ?? []).length > 0 ? (
-                  domain?.status?.nameservers.map((nameserver) => (
-                    <TableRow key={nameserver.hostname}>
-                      <TableCell>
-                        <BadgeState state="pending" message="NS" />
-                      </TableCell>
-                      <TableCell>{nameserver.hostname}</TableCell>
-                      <TableCell>
-                        <Chip
-                          items={nameserver.ips.map((ip) => ip.registrantName)}
-                          maxVisible={2}
-                          variant="outline"
-                          wrap={false}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <BadgeState
-                          state="pending"
-                          message={domain?.status?.registration?.registrar?.name}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={4} className="h-24 text-center">
-                      No results.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
+          <SimpleTable<NameserverRow>
+            getRowId={(row) => row.hostname}
+            columns={nameserverColumns}
+            data={nameserverData}
+          />
         </CardContent>
       </Card>
     </div>

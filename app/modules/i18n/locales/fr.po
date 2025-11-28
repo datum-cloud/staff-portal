@@ -260,7 +260,7 @@ msgstr ""
 msgid "Contacts - Create"
 msgstr ""
 
-#: app/routes/project/detail/dns/detail.tsx:107
+#: app/routes/project/detail/dns/detail.tsx:119
 msgid "Content"
 msgstr ""
 
@@ -418,7 +418,7 @@ msgid "DNS"
 msgstr ""
 
 #: app/routes/project/detail/dns/index.tsx:60
-#: app/routes/project/detail/dns/detail.tsx:206
+#: app/routes/project/detail/dns/detail.tsx:185
 msgid "DNS Host"
 msgstr ""
 
@@ -431,7 +431,7 @@ msgstr ""
 msgid "DNS record is being validated"
 msgstr ""
 
-#: app/routes/project/detail/dns/detail.tsx:170
+#: app/routes/project/detail/dns/detail.tsx:208
 msgid "DNS Records"
 msgstr ""
 
@@ -718,7 +718,7 @@ msgstr ""
 #: app/routes/project/detail/export-policy/detail.tsx:61
 #: app/routes/project/detail/export-policy/detail.tsx:123
 #: app/routes/project/detail/export-policy/detail.tsx:175
-#: app/routes/project/detail/dns/detail.tsx:103
+#: app/routes/project/detail/dns/detail.tsx:115
 #: app/routes/organization/index.tsx:20
 #: app/routes/organization/detail/project.tsx:25
 #: app/routes/organization/detail/member.tsx:33
@@ -736,7 +736,7 @@ msgstr ""
 msgid "Name is required"
 msgstr ""
 
-#: app/routes/project/detail/dns/detail.tsx:191
+#: app/routes/project/detail/dns/detail.tsx:229
 msgid "Nameservers"
 msgstr ""
 
@@ -843,7 +843,7 @@ msgstr ""
 msgid "Preferences updated successfully"
 msgstr ""
 
-#: app/routes/project/detail/dns/detail.tsx:120
+#: app/routes/project/detail/dns/detail.tsx:132
 msgid "Priority of mail servers defined by MX records. Lowest value = highest priority."
 msgstr ""
 
@@ -921,7 +921,7 @@ msgstr ""
 
 #: app/routes/project/detail/domain/index.tsx:45
 #: app/routes/project/detail/domain/detail.tsx:85
-#: app/routes/project/detail/dns/detail.tsx:209
+#: app/routes/project/detail/dns/detail.tsx:196
 msgid "Registrar"
 msgstr ""
 
@@ -1089,14 +1089,14 @@ msgstr ""
 msgid "Timestamp"
 msgstr ""
 
-#: app/routes/project/detail/dns/detail.tsx:157
+#: app/routes/project/detail/dns/detail.tsx:169
 msgid "TTL"
 msgstr ""
 
 #: app/routes/user/detail/organization.tsx:32
 #: app/routes/project/detail/export-policy/detail.tsx:178
-#: app/routes/project/detail/dns/detail.tsx:88
-#: app/routes/project/detail/dns/detail.tsx:200
+#: app/routes/project/detail/dns/detail.tsx:100
+#: app/routes/project/detail/dns/detail.tsx:178
 #: app/routes/organization/index.tsx:31
 #: app/routes/organization/detail/index.tsx:63
 msgid "Type"
@@ -1163,7 +1163,7 @@ msgstr ""
 msgid "Validating"
 msgstr ""
 
-#: app/routes/project/detail/dns/detail.tsx:203
+#: app/routes/project/detail/dns/detail.tsx:182
 msgid "Value"
 msgstr ""
 
