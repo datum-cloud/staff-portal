@@ -68,8 +68,12 @@ msgstr ""
 msgid "Activity"
 msgstr ""
 
+#: app/routes/group/member.tsx:135
 #: app/routes/group/member.tsx:161
+#: app/routes/contact-group/index.tsx:89
+#: app/routes/contact-group/detail/member.tsx:117
 #: app/routes/contact-group/detail/member.tsx:143
+#: app/routes/contact/index.tsx:95
 msgid "Add"
 msgstr ""
 
@@ -459,6 +463,10 @@ msgstr ""
 msgid "Enter reason for rejection..."
 msgstr ""
 
+#: app/routes/group/member.tsx:169
+msgid "Enter the full email to search..."
+msgstr ""
+
 #: app/components/dialog/dialog-confirm.tsx:100
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr ""
@@ -617,7 +625,6 @@ msgstr ""
 msgid "Loading status..."
 msgstr ""
 
-#: app/routes/group/member.tsx:169
 #: app/features/contact/components/contact-form.tsx:131
 msgid "Loading users..."
 msgstr ""
@@ -707,13 +714,6 @@ msgstr ""
 
 #: app/components/app-search/index.tsx:155
 msgid "Navigation"
-msgstr ""
-
-#: app/routes/group/member.tsx:135
-#: app/routes/contact-group/index.tsx:89
-#: app/routes/contact-group/detail/member.tsx:117
-#: app/routes/contact/index.tsx:95
-msgid "New"
 msgstr ""
 
 #: app/features/quota/components/quota-bucket-list.tsx:174
@@ -943,7 +943,6 @@ msgstr ""
 msgid "Search contacts..."
 msgstr ""
 
-#: app/routes/group/member.tsx:170
 #: app/features/contact/components/contact-form.tsx:132
 msgid "Search users..."
 msgstr ""
@@ -965,7 +964,6 @@ msgstr ""
 msgid "Select a contact..."
 msgstr ""
 
-#: app/routes/group/member.tsx:169
 #: app/features/contact/components/contact-form.tsx:131
 msgid "Select a user..."
 msgstr ""

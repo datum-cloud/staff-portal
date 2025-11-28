@@ -86,7 +86,7 @@ export default function Page() {
           type="primary"
           icon={<PlusCircleIcon size={16} />}
           onClick={() => navigate(contactGroupRoutes.create())}>
-          <Trans>New</Trans>
+          <Trans>Add</Trans>
         </Button>
       </AppActionBar>
 

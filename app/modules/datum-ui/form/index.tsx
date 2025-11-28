@@ -1,5 +1,6 @@
 import { Form } from './form';
 import { FormAutocomplete } from './form-autocomplete';
+import { FormAutosearch } from './form-autosearch';
 import { FormCheckbox } from './form-checkbox';
 import { FormCheckboxGroup, FormCheckboxItem } from './form-checkbox-group';
 import { FormProvider } from './form-context';
@@ -17,6 +18,7 @@ const FormCompound = Object.assign(Form, {
   Textarea: FormTextarea,
   Select: FormSelect,
   Autocomplete: FormAutocomplete,
+  Autosearch: FormAutosearch,
   Checkbox: FormCheckbox,
   CheckboxGroup: FormCheckboxGroup,
   CheckboxItem: FormCheckboxItem,

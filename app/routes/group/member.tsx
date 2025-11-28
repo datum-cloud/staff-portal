@@ -100,7 +100,7 @@ export default function Page() {
   ];
 
   const addMemberSchema = z.object({
-    name: z.string().nonempty('Name is required'),
+    name: z.string().nonempty('User is required'),
   });
 
   const handleAddMember = async (formData: z.infer<typeof addMemberSchema>) => {
@@ -132,7 +132,7 @@ export default function Page() {
           type="primary"
           icon={<PlusCircleIcon size={16} />}
           onClick={() => setIsAddMember(true)}>
-          <Trans>New</Trans>
+          <Trans>Add</Trans>
         </Button>
       </AppActionBar>
 
@@ -163,16 +163,14 @@ export default function Page() {
         onSubmit={handleAddMember}
         schema={addMemberSchema}
         defaultValues={{ name: '' }}>
-        <Form.Autocomplete
+        <Form.Autosearch
           modal
           field="name"
-          placeholder={usersLoading ? t`Loading users...` : t`Select a user...`}
-          searchPlaceholder={t`Search users...`}
+          placeholder={t`Enter the full email to search...`}
           options={userOptions}
           isLoading={usersLoading}
           onSearch={setUserSearch}
-          searchDebounceMs={300}
-          disabled={usersLoading}
+          searchDebounceMs={500}
         />
       </DialogForm>
 
