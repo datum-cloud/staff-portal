@@ -736,7 +736,7 @@ msgstr ""
 msgid "Name is required"
 msgstr ""
 
-#: app/routes/project/detail/dns/detail.tsx:229
+#: app/routes/project/detail/dns/detail.tsx:226
 msgid "Nameservers"
 msgstr ""
 

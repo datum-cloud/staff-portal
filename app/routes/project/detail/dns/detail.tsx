@@ -211,10 +211,7 @@ export default function Page() {
         <CardContent>
           <DataTableProvider<DNSRecordFlattened, DNSRecordFlattenedListResponse>
             columns={dnsRecordColumns}
-            transform={(data) => ({
-              rows: data?.data || [],
-              cursor: undefined,
-            })}
+            transform={(data) => ({ rows: data?.data || [], cursor: undefined })}
             {...tableState}>
             <div className="flex flex-col gap-2">
               <DataTable<DNSRecordFlattened> />
