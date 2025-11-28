@@ -18,3 +18,5 @@ export * from './contact.schema';
 export * from './group.schema';
 export * from './contact-group';
 export * from './membership.schema';
+export * from './control-plane.schema';
+export * from './dns.schema';

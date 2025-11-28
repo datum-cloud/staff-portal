@@ -60,7 +60,7 @@ msgstr "Active Sessions"
 #: app/routes/activity.tsx:11
 #: app/routes/user/detail/layout.tsx:42
 #: app/routes/user/detail/activity.tsx:8
-#: app/routes/project/detail/layout.tsx:95
+#: app/routes/project/detail/layout.tsx:101
 #: app/routes/project/detail/activity.tsx:8
 #: app/routes/organization/detail/layout.tsx:42
 #: app/routes/organization/detail/activity.tsx:8
@@ -260,6 +260,10 @@ msgstr "Contacts"
 msgid "Contacts - Create"
 msgstr "Contacts - Create"
 
+#: app/routes/project/detail/dns/detail.tsx:119
+msgid "Content"
+msgstr "Content"
+
 #: app/routes/contact-group/create.tsx:14
 #: app/routes/contact/create.tsx:14
 #: app/features/contact-group/components/contact-group-form.tsx:84
@@ -279,6 +283,7 @@ msgstr "Create"
 #: app/routes/project/detail/export-policy/detail.tsx:95
 #: app/routes/project/detail/domain/index.tsx:67
 #: app/routes/project/detail/domain/detail.tsx:129
+#: app/routes/project/detail/dns/index.tsx:74
 #: app/routes/profile/session.tsx:46
 #: app/routes/organization/index.tsx:37
 #: app/routes/organization/detail/project.tsx:40
@@ -292,7 +297,7 @@ msgstr "Create"
 msgid "Created"
 msgstr "Created"
 
-#: app/routes/project/detail/layout.tsx:38
+#: app/routes/project/detail/layout.tsx:39
 #: app/routes/customers/layout.tsx:7
 #: app/components/app-sidebar/index.tsx:97
 msgid "Customers"
@@ -390,6 +395,7 @@ msgid "Delete User"
 msgstr "Delete User"
 
 #: app/routes/project/detail/index.tsx:42
+#: app/routes/project/detail/dns/index.tsx:79
 #: app/routes/organization/detail/index.tsx:43
 msgid "Description"
 msgstr "Description"
@@ -406,10 +412,28 @@ msgstr "Display Name"
 msgid "Display name is required"
 msgstr "Display name is required"
 
+#: app/routes/project/detail/layout.tsx:81
+#: app/routes/project/detail/dns/layout.tsx:5
+msgid "DNS"
+msgstr "DNS"
+
+#: app/routes/project/detail/dns/index.tsx:60
+#: app/routes/project/detail/dns/detail.tsx:185
+msgid "DNS Host"
+msgstr "DNS Host"
+
 #: app/routes/project/detail/domain/index.tsx:49
 #: app/routes/project/detail/domain/detail.tsx:95
 msgid "DNS Providers"
 msgstr "DNS Providers"
+
+#: app/features/dns/components/dns-record-status-probe.tsx:57
+msgid "DNS record is being validated"
+msgstr "DNS record is being validated"
+
+#: app/routes/project/detail/dns/detail.tsx:208
+msgid "DNS Records"
+msgstr "DNS Records"
 
 #: app/routes/project/detail/domain/index.tsx:32
 #: app/routes/project/detail/domain/detail.tsx:75
@@ -420,7 +444,7 @@ msgstr "Domain"
 msgid "Domain verification is in progress. This may take a few minutes."
 msgstr "Domain verification is in progress. This may take a few minutes."
 
-#: app/routes/project/detail/layout.tsx:80
+#: app/routes/project/detail/layout.tsx:86
 #: app/routes/project/detail/domain/layout.tsx:5
 msgid "Domains"
 msgstr "Domains"
@@ -480,10 +504,14 @@ msgstr "Expiration Date"
 msgid "Expires"
 msgstr "Expires"
 
-#: app/routes/project/detail/layout.tsx:90
+#: app/routes/project/detail/layout.tsx:96
 #: app/routes/project/detail/export-policy/layout.tsx:5
 msgid "Export Policies"
 msgstr "Export Policies"
+
+#: app/features/dns/components/dns-record-status-probe.tsx:33
+msgid "Failed to load DNS record status"
+msgstr "Failed to load DNS record status"
 
 #: app/features/domain/components/domain-status-probe.tsx:44
 msgid "Failed to load status"
@@ -528,7 +556,7 @@ msgstr "Get"
 msgid "Grant deleted successfully"
 msgstr "Grant deleted successfully"
 
-#: app/routes/project/detail/layout.tsx:114
+#: app/routes/project/detail/layout.tsx:120
 #: app/routes/project/detail/quota/grant.tsx:9
 #: app/routes/organization/detail/layout.tsx:61
 #: app/routes/organization/detail/quota/grant.tsx:9
@@ -546,7 +574,7 @@ msgstr "Groups"
 msgid "Hostnames"
 msgstr "Hostnames"
 
-#: app/routes/project/detail/layout.tsx:85
+#: app/routes/project/detail/layout.tsx:91
 #: app/routes/project/detail/httpproxy/layout.tsx:5
 msgid "HTTP Proxies"
 msgstr "HTTP Proxies"
@@ -622,6 +650,7 @@ msgid "Loading contacts..."
 msgstr "Loading contacts..."
 
 #: app/features/domain/components/domain-status-probe.tsx:40
+#: app/features/dns/components/dns-record-status-probe.tsx:29
 msgid "Loading status..."
 msgstr "Loading status..."
 
@@ -689,6 +718,7 @@ msgstr "My Profile"
 #: app/routes/project/detail/export-policy/detail.tsx:61
 #: app/routes/project/detail/export-policy/detail.tsx:123
 #: app/routes/project/detail/export-policy/detail.tsx:175
+#: app/routes/project/detail/dns/detail.tsx:115
 #: app/routes/organization/index.tsx:20
 #: app/routes/organization/detail/project.tsx:25
 #: app/routes/organization/detail/member.tsx:33
@@ -705,6 +735,10 @@ msgstr "Name"
 #: app/routes/contact-group/detail/member.tsx:89
 msgid "Name is required"
 msgstr "Name is required"
+
+#: app/routes/project/detail/dns/detail.tsx:226
+msgid "Nameservers"
+msgstr "Nameservers"
 
 #: app/routes/project/detail/secret.tsx:25
 #: app/routes/project/detail/export-policy/detail.tsx:73
@@ -747,7 +781,7 @@ msgstr "Organization deleted successfully"
 
 #: app/routes/user/detail/organization.tsx:42
 #: app/routes/user/detail/layout.tsx:37
-#: app/routes/project/detail/layout.tsx:39
+#: app/routes/project/detail/layout.tsx:40
 #: app/routes/organization/layout.tsx:5
 #: app/routes/organization/index.tsx:14
 #: app/components/app-sidebar/index.tsx:107
@@ -755,7 +789,7 @@ msgid "Organizations"
 msgstr "Organizations"
 
 #: app/routes/user/detail/layout.tsx:32
-#: app/routes/project/detail/layout.tsx:75
+#: app/routes/project/detail/layout.tsx:76
 #: app/routes/organization/detail/layout.tsx:32
 msgid "Overview"
 msgstr "Overview"
@@ -809,6 +843,10 @@ msgstr "Portal Preferences"
 msgid "Preferences updated successfully"
 msgstr "Preferences updated successfully"
 
+#: app/routes/project/detail/dns/detail.tsx:132
+msgid "Priority of mail servers defined by MX records. Lowest value = highest priority."
+msgstr "Priority of mail servers defined by MX records. Lowest value = highest priority."
+
 #: app/features/contact-group/components/contact-group-form.tsx:69
 msgid "Private"
 msgstr "Private"
@@ -827,7 +865,7 @@ msgstr "Project deleted successfully"
 
 #: app/routes/project/layout.tsx:5
 #: app/routes/project/index.tsx:15
-#: app/routes/project/detail/layout.tsx:45
+#: app/routes/project/detail/layout.tsx:46
 #: app/routes/organization/detail/project.tsx:14
 #: app/routes/organization/detail/layout.tsx:37
 #: app/components/app-sidebar/index.tsx:111
@@ -850,7 +888,7 @@ msgstr "Quick ranges"
 msgid "Quota updated successfully"
 msgstr "Quota updated successfully"
 
-#: app/routes/project/detail/layout.tsx:105
+#: app/routes/project/detail/layout.tsx:111
 #: app/routes/project/detail/quota/layout.tsx:5
 #: app/routes/organization/detail/layout.tsx:52
 #: app/routes/organization/detail/quota/layout.tsx:5
@@ -877,8 +915,13 @@ msgstr "Reason for deactivation"
 msgid "Reason for rejection"
 msgstr "Reason for rejection"
 
+#: app/routes/project/detail/dns/index.tsx:70
+msgid "Records"
+msgstr "Records"
+
 #: app/routes/project/detail/domain/index.tsx:45
 #: app/routes/project/detail/domain/detail.tsx:85
+#: app/routes/project/detail/dns/detail.tsx:196
 msgid "Registrar"
 msgstr "Registrar"
 
@@ -956,7 +999,7 @@ msgid "Searching..."
 msgstr "Searching..."
 
 #: app/routes/project/detail/secret.tsx:11
-#: app/routes/project/detail/layout.tsx:100
+#: app/routes/project/detail/layout.tsx:106
 msgid "Secrets"
 msgstr "Secrets"
 
@@ -1046,8 +1089,14 @@ msgstr "These items are checked every few minutes. If you've already made change
 msgid "Timestamp"
 msgstr "Timestamp"
 
+#: app/routes/project/detail/dns/detail.tsx:169
+msgid "TTL"
+msgstr "TTL"
+
 #: app/routes/user/detail/organization.tsx:32
 #: app/routes/project/detail/export-policy/detail.tsx:178
+#: app/routes/project/detail/dns/detail.tsx:100
+#: app/routes/project/detail/dns/detail.tsx:178
 #: app/routes/organization/index.tsx:31
 #: app/routes/organization/detail/index.tsx:63
 msgid "Type"
@@ -1068,7 +1117,7 @@ msgstr "Update"
 msgid "Update your DNS provider with the provided record, or use the HTTP token method."
 msgstr "Update your DNS provider with the provided record, or use the HTTP token method."
 
-#: app/routes/project/detail/layout.tsx:110
+#: app/routes/project/detail/layout.tsx:116
 #: app/routes/project/detail/quota/usage.tsx:9
 #: app/routes/organization/detail/layout.tsx:57
 #: app/routes/organization/detail/quota/usage.tsx:9
@@ -1110,6 +1159,14 @@ msgstr "Users"
 msgid "Users will appear here once they join Datum"
 msgstr "Users will appear here once they join Datum"
 
+#: app/features/dns/components/dns-record-status-probe.tsx:66
+msgid "Validating"
+msgstr "Validating"
+
+#: app/routes/project/detail/dns/detail.tsx:182
+msgid "Value"
+msgstr "Value"
+
 #: app/features/domain/components/domain-status-probe.tsx:67
 msgid "Verification in progress..."
 msgstr "Verification in progress..."
@@ -1138,3 +1195,7 @@ msgstr "Warning"
 #: app/features/activity/components/activity-list.tsx:317
 msgid "Watch"
 msgstr "Watch"
+
+#: app/routes/project/detail/dns/index.tsx:34
+msgid "Zone Name"
+msgstr "Zone Name"

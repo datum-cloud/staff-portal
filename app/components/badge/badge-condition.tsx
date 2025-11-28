@@ -1,15 +1,9 @@
 import { DateFormatter } from '@/components/date';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Badge } from '@/modules/shadcn/ui/badge';
+import { ControlPlaneStatus } from '@/resources/schemas';
 import { Tooltip } from '@datum-ui/tooltip';
 import { CheckCircle, Clock, XCircle } from 'lucide-react';
-
-// Status enum
-export enum ControlPlaneStatus {
-  Active = 'active',
-  Pending = 'pending',
-  Error = 'error',
-}
 
 // Unified configuration for both modes
 const StatusConfig = {
@@ -33,7 +27,7 @@ const StatusConfig = {
       'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/20 dark:text-gray-400 dark:border-gray-800',
   },
   // Control plane mode (summarized)
-  [ControlPlaneStatus.Active]: {
+  [ControlPlaneStatus.Success]: {
     icon: CheckCircle,
     variant: 'default' as const,
     className:
@@ -87,7 +81,8 @@ function getControlPlaneStatus(status: any): { status: ControlPlaneStatus; messa
   if (status && (conditions ?? []).length > 0) {
     const condition = conditions[0];
     return {
-      status: condition?.status === 'True' ? ControlPlaneStatus.Active : ControlPlaneStatus.Pending,
+      status:
+        condition?.status === 'True' ? ControlPlaneStatus.Success : ControlPlaneStatus.Pending,
       message: condition?.message ?? '',
     };
   }

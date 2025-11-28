@@ -47,6 +47,10 @@ export default [
             index('routes/project/detail/export-policy/index.tsx'),
             route(':exportPolicyName', 'routes/project/detail/export-policy/detail.tsx'),
           ]),
+          route('dns', 'routes/project/detail/dns/layout.tsx', [
+            index('routes/project/detail/dns/index.tsx'),
+            route(':namespace/:dnsName', 'routes/project/detail/dns/detail.tsx'),
+          ]),
           route('domains', 'routes/project/detail/domain/layout.tsx', [
             index('routes/project/detail/domain/index.tsx'),
             route(':namespace/:domainName', 'routes/project/detail/domain/detail.tsx'),

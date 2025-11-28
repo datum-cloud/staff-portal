@@ -37,6 +37,8 @@ export interface UseDataTableQueryOptions<T> {
   useSearch?: boolean;
   filterConfig?: FilterConfig;
   enabled?: boolean;
+  // Optional namespace to prefix URL parameters for multiple tables on the same page
+  namespace?: string;
 }
 
 export interface UseDataTableQueryReturn<T> {
@@ -118,23 +120,39 @@ export function useDataTableQuery<T>({
   useSearch = false,
   filterConfig = {},
   enabled = true,
+  namespace,
 }: UseDataTableQueryOptions<T>): UseDataTableQueryReturn<T> {
+  // Helper to prefix parameter names when namespace is provided
+  const getParamName = (name: string) => (namespace ? `${namespace}_${name}` : name);
+
   // --- URL State Management ---
-  const [limitRaw, setLimitRaw] = useQueryState('limit', parseAsInteger.withDefault(initialLimit));
-  const [cursor, setCursor] = useQueryState('cursor', parseAsString.withDefault(''));
+  const [limitRaw, setLimitRaw] = useQueryState(
+    getParamName('limit'),
+    parseAsInteger.withDefault(initialLimit)
+  );
+  const [cursor, setCursor] = useQueryState(getParamName('cursor'), parseAsString.withDefault(''));
   const [sortRaw, setSortRaw] = useQueryState(
-    'sort',
+    getParamName('sort'),
     parseAsArrayOf(parseAsString).withDefault([])
   );
-  const [filtersRaw, setFiltersRaw] = useQueryState('filters', parseAsString.withDefault(''));
-  const [searchRaw, setSearchRaw] = useQueryState('search', parseAsString.withDefault(''));
+  const [filtersRaw, setFiltersRaw] = useQueryState(
+    getParamName('filters'),
+    parseAsString.withDefault('')
+  );
+  const [searchRaw, setSearchRaw] = useQueryState(
+    getParamName('search'),
+    parseAsString.withDefault('')
+  );
   const [visibleColumns, setVisibleColumns] = useQueryState(
-    'columns',
+    getParamName('columns'),
     parseAsArrayOf(parseAsString).withDefault([])
   );
-  const [pinColumns, setPinColumns] = useQueryState('pins', parseAsString.withDefault(''));
+  const [pinColumns, setPinColumns] = useQueryState(
+    getParamName('pins'),
+    parseAsString.withDefault('')
+  );
   const [orderColumns, setOrderColumns] = useQueryState(
-    'order',
+    getParamName('order'),
     parseAsArrayOf(parseAsString).withDefault([])
   );
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
