@@ -18,6 +18,7 @@ export interface ActionItem<TData> {
   icon?: React.ComponentType<{ className?: string }>;
   variant?: 'default' | 'destructive';
   disabled?: boolean | ((row: TData) => boolean);
+  hide?: boolean | ((row: TData) => boolean);
   tooltip?: string | ((row: TData) => string);
   loading?: boolean | ((row: TData) => boolean);
 }
@@ -154,6 +155,13 @@ export function createActionsColumn<TData>(
               {config.label && config.actions!.length > 0 && <DropdownMenuSeparator />}
               {config.actions!.map((action, index) => {
                 const Icon = action.icon;
+                const isHidden =
+                  typeof action.hide === 'function' ? action.hide(data) : action.hide;
+
+                if (isHidden) {
+                  return null;
+                }
+
                 const isDisabled =
                   typeof action.disabled === 'function' ? action.disabled(data) : action.disabled;
                 const tooltipText =

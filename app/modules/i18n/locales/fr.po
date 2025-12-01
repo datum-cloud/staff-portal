@@ -107,7 +107,7 @@ msgstr ""
 msgid "Approve"
 msgstr ""
 
-#: app/routes/user/index.tsx:226
+#: app/routes/user/index.tsx:243
 msgid "Approved"
 msgstr ""
 
@@ -169,7 +169,7 @@ msgstr ""
 msgid "Auto-managed by policy \"{policyName}\". Cannot be deleted."
 msgstr ""
 
-#: app/routes/user/index.tsx:142
+#: app/routes/user/index.tsx:159
 #: app/routes/user/detail/index.tsx:114
 #: app/routes/profile/session.tsx:89
 #: app/routes/organization/detail/member.tsx:119
@@ -454,7 +454,7 @@ msgstr ""
 msgid "Edit Quota"
 msgstr ""
 
-#: app/routes/user/index.tsx:179
+#: app/routes/user/index.tsx:196
 #: app/routes/user/detail/index.tsx:227
 #: app/routes/contact/index.tsx:45
 #: app/features/contact/components/contact-form.tsx:107
@@ -466,7 +466,7 @@ msgstr ""
 msgid "Email Activity"
 msgstr ""
 
-#: app/routes/user/index.tsx:118
+#: app/routes/user/index.tsx:135
 msgid "Email is required"
 msgstr ""
 
@@ -521,7 +521,7 @@ msgstr ""
 msgid "Filter by action"
 msgstr ""
 
-#: app/routes/user/index.tsx:224
+#: app/routes/user/index.tsx:241
 msgid "Filter by approval"
 msgstr ""
 
@@ -529,12 +529,12 @@ msgstr ""
 msgid "Filter by time range"
 msgstr ""
 
-#: app/routes/user/index.tsx:177
+#: app/routes/user/index.tsx:194
 #: app/features/contact/components/contact-form.tsx:105
 msgid "First Name"
 msgstr ""
 
-#: app/routes/user/index.tsx:116
+#: app/routes/user/index.tsx:133
 #: app/features/profile/components/profile-form.tsx:15
 #: app/features/contact/components/contact-form.tsx:33
 msgid "First name is required"
@@ -584,7 +584,7 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
-#: app/routes/user/index.tsx:118
+#: app/routes/user/index.tsx:135
 #: app/features/contact/components/contact-form.tsx:35
 msgid "Invalid email address"
 msgstr ""
@@ -597,12 +597,12 @@ msgstr ""
 msgid "Invitation resend successfully"
 msgstr ""
 
-#: app/routes/user/index.tsx:141
+#: app/routes/user/index.tsx:158
 msgid "Invite"
 msgstr ""
 
-#: app/routes/user/index.tsx:140
-#: app/routes/user/index.tsx:240
+#: app/routes/user/index.tsx:157
+#: app/routes/user/index.tsx:257
 msgid "Invite User"
 msgstr ""
 
@@ -622,12 +622,12 @@ msgstr ""
 msgid "Last 10 new users who joined Datum"
 msgstr ""
 
-#: app/routes/user/index.tsx:178
+#: app/routes/user/index.tsx:195
 #: app/features/contact/components/contact-form.tsx:106
 msgid "Last Name"
 msgstr ""
 
-#: app/routes/user/index.tsx:117
+#: app/routes/user/index.tsx:134
 #: app/features/profile/components/profile-form.tsx:16
 #: app/features/contact/components/contact-form.tsx:34
 msgid "Last name is required"
@@ -701,6 +701,7 @@ msgstr ""
 msgid "MetricsQL"
 msgstr ""
 
+#: app/routes/user/index.tsx:113
 #: app/routes/user/detail/index.tsx:189
 msgid "Move to Pending"
 msgstr ""
@@ -802,7 +803,7 @@ msgstr ""
 msgid "Patch"
 msgstr ""
 
-#: app/routes/user/index.tsx:228
+#: app/routes/user/index.tsx:245
 msgid "Pending"
 msgstr ""
 
@@ -930,7 +931,7 @@ msgid "Registrar"
 msgstr ""
 
 #: app/routes/user/index.tsx:57
-#: app/routes/user/index.tsx:223
+#: app/routes/user/index.tsx:240
 #: app/routes/user/detail/index.tsx:237
 msgid "Registration Approval"
 msgstr ""
@@ -945,7 +946,7 @@ msgstr ""
 msgid "Reject User"
 msgstr ""
 
-#: app/routes/user/index.tsx:227
+#: app/routes/user/index.tsx:244
 msgid "Rejected"
 msgstr ""
 
@@ -974,11 +975,11 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: app/routes/user/index.tsx:130
+#: app/routes/user/index.tsx:147
 msgid "Schedule date and time is required"
 msgstr ""
 
-#: app/routes/user/index.tsx:182
+#: app/routes/user/index.tsx:199
 msgid "Schedule invitation to be sent at specific time"
 msgstr ""
 
@@ -1141,7 +1142,7 @@ msgstr ""
 msgid "User deleted successfully"
 msgstr ""
 
-#: app/routes/user/index.tsx:170
+#: app/routes/user/index.tsx:187
 msgid "User invited successfully"
 msgstr ""
 
