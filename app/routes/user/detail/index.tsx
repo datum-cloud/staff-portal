@@ -28,7 +28,7 @@ import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
 import { Text, Title } from '@datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { CheckIcon, Shield, ShieldCheckIcon, ShieldXIcon, XIcon } from 'lucide-react';
+import { CheckIcon, RotateCcw, Shield, ShieldCheckIcon, ShieldXIcon, XIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useRevalidator } from 'react-router';
 import { z } from 'zod';
@@ -52,13 +52,14 @@ export default function Page() {
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [isReactivating, setIsReactivating] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
+  const [isMovingToPending, setIsMovingToPending] = useState(false);
 
   const { data: deactivationData } = useUserDeactivationQuery(
     data.metadata.name,
     data.status?.state
   );
 
-  const { approveUser } = useUserApproval();
+  const { approveUser, pendingUser } = useUserApproval();
 
   const handleDeleteUser = async () => {
     await userDeleteMutation(data.metadata.name);
@@ -141,33 +142,53 @@ export default function Page() {
           </div>
 
           <div className="flex items-center gap-2">
-            <Button
-              theme="outline"
-              size="small"
-              icon={<CheckIcon size={16} />}
-              loading={isApproving}
-              disabled={data?.status?.registrationApproval !== 'Pending'}
-              onClick={async () => {
-                setIsApproving(true);
-                try {
-                  await approveUser(data, async () => {
-                    revalidate();
-                  });
-                } finally {
-                  setIsApproving(false);
-                }
-              }}>
-              <Trans>Approve</Trans>
-            </Button>
-            <Button
-              theme="outline"
-              type="danger"
-              size="small"
-              icon={<XIcon size={16} />}
-              disabled={data?.status?.registrationApproval !== 'Pending'}
-              onClick={() => setRejectDialogOpen(true)}>
-              <Trans>Reject</Trans>
-            </Button>
+            {data?.status?.registrationApproval === 'Pending' ? (
+              <>
+                <Button
+                  theme="outline"
+                  size="small"
+                  icon={<CheckIcon size={16} />}
+                  loading={isApproving}
+                  onClick={async () => {
+                    setIsApproving(true);
+                    try {
+                      await approveUser(data, async () => {
+                        revalidate();
+                      });
+                    } finally {
+                      setIsApproving(false);
+                    }
+                  }}>
+                  <Trans>Approve</Trans>
+                </Button>
+                <Button
+                  theme="outline"
+                  type="danger"
+                  size="small"
+                  icon={<XIcon size={16} />}
+                  onClick={() => setRejectDialogOpen(true)}>
+                  <Trans>Reject</Trans>
+                </Button>
+              </>
+            ) : (
+              <Button
+                theme="outline"
+                size="small"
+                icon={<RotateCcw size={16} />}
+                loading={isMovingToPending}
+                onClick={async () => {
+                  setIsMovingToPending(true);
+                  try {
+                    await pendingUser(data, async () => {
+                      revalidate();
+                    });
+                  } finally {
+                    setIsMovingToPending(false);
+                  }
+                }}>
+                <Trans>Move to Pending</Trans>
+              </Button>
+            )}
           </div>
         </div>
 

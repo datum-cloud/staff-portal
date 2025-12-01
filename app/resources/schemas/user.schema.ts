@@ -200,7 +200,23 @@ export const UserApproveSchema = z.object({
   }),
 });
 
+export const UserApproveListSchema = z.object({
+  apiVersion: z.string(),
+  items: z.array(UserApproveSchema),
+  kind: z.literal('PlatformAccessApprovalList'),
+  metadata: z.object({
+    continue: z.string(),
+    resourceVersion: z.string(),
+  }),
+});
+
 export type UserApprove = z.infer<typeof UserApproveSchema>;
+export const UserApproveResponseSchema = createProxyResponseSchema(UserApproveSchema);
+export type UserApproveResponse = z.infer<typeof UserApproveResponseSchema>;
+
+export type UserApproveList = z.infer<typeof UserApproveListSchema>;
+export const UserApproveListResponseSchema = createProxyResponseSchema(UserApproveListSchema);
+export type UserApproveListResponse = z.infer<typeof UserApproveListResponseSchema>;
 
 export const UserRejectSchema = z.object({
   apiVersion: z.literal('iam.miloapis.com/v1alpha1'),
@@ -222,7 +238,23 @@ export const UserRejectSchema = z.object({
   }),
 });
 
+export const UserRejectListSchema = z.object({
+  apiVersion: z.string(),
+  items: z.array(UserRejectSchema),
+  kind: z.literal('PlatformAccessRejectionList'),
+  metadata: z.object({
+    continue: z.string(),
+    resourceVersion: z.string(),
+  }),
+});
+
 export type UserReject = z.infer<typeof UserRejectSchema>;
+export const UserRejectResponseSchema = createProxyResponseSchema(UserRejectSchema);
+export type UserRejectResponse = z.infer<typeof UserRejectResponseSchema>;
+
+export type UserRejectList = z.infer<typeof UserRejectListSchema>;
+export const UserRejectListResponseSchema = createProxyResponseSchema(UserRejectListSchema);
+export type UserRejectListResponse = z.infer<typeof UserRejectListResponseSchema>;
 
 export const UserInviteSchema = z.object({
   apiVersion: z.literal('iam.miloapis.com/v1alpha1'),
@@ -239,4 +271,20 @@ export const UserInviteSchema = z.object({
   }),
 });
 
+export const UserInviteListSchema = z.object({
+  apiVersion: z.string(),
+  items: z.array(UserInviteSchema),
+  kind: z.literal('PlatformInvitationList'),
+  metadata: z.object({
+    continue: z.string(),
+    resourceVersion: z.string(),
+  }),
+});
+
 export type UserInvite = z.infer<typeof UserInviteSchema>;
+export const UserInviteResponseSchema = createProxyResponseSchema(UserInviteSchema);
+export type UserInviteResponse = z.infer<typeof UserInviteResponseSchema>;
+
+export type UserInviteList = z.infer<typeof UserInviteListSchema>;
+export const UserInviteListResponseSchema = createProxyResponseSchema(UserInviteListSchema);
+export type UserInviteListResponse = z.infer<typeof UserInviteListResponseSchema>;

@@ -21,7 +21,7 @@ import { toast } from '@datum-ui/toast';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
-import { CheckIcon, EditIcon, UserPlus, XIcon } from 'lucide-react';
+import { CheckIcon, EditIcon, RotateCcwIcon, UserPlus, XIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { z } from 'zod';
@@ -69,7 +69,7 @@ export default function Page() {
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
 
-  const { approveUser } = useUserApproval();
+  const { approveUser, pendingUser } = useUserApproval();
 
   const tableState = useDataTableQuery<UserListResponse>({
     queryKeyPrefix: ['users'],
@@ -88,7 +88,7 @@ export default function Page() {
     {
       label: t`Approve`,
       icon: CheckIcon,
-      disabled: (row) => row.status?.registrationApproval !== 'Pending',
+      hide: (row) => row.status?.registrationApproval !== 'Pending',
       onClick: async (row) => {
         setLoadingStates((prev) => ({ ...prev, [row.metadata.name]: true }));
         try {
@@ -106,8 +106,25 @@ export default function Page() {
       label: t`Reject`,
       icon: XIcon,
       variant: 'destructive' as const,
-      disabled: (row) => row.status?.registrationApproval !== 'Pending',
+      hide: (row) => row.status?.registrationApproval !== 'Pending',
       onClick: (row) => setSelectedUser(row),
+    },
+    {
+      label: t`Move to Pending`,
+      icon: RotateCcwIcon,
+      hide: (row) => row.status?.registrationApproval === 'Pending',
+      onClick: async (row) => {
+        setLoadingStates((prev) => ({ ...prev, [row.metadata.name]: true }));
+        try {
+          await pendingUser(row, async () => {
+            await new Promise((resolve) =>
+              setTimeout(() => resolve(tableState.query.refetch()), 1000)
+            );
+          });
+        } finally {
+          setLoadingStates((prev) => ({ ...prev, [row.metadata.name]: false }));
+        }
+      },
     },
   ];
 
