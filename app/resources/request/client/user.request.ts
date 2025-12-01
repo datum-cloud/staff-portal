@@ -2,14 +2,18 @@ import { apiRequestClient } from '@/modules/axios/axios.client';
 import {
   ListQueryParams,
   UserApprove,
+  UserApproveListResponseSchema,
+  UserApproveResponseSchema,
   UserApproveSchema,
   UserDeactivate,
   UserDeactivateSchema,
   UserDeactivationListResponseSchema,
   UserInvite,
+  UserInviteResponseSchema,
   UserInviteSchema,
   UserListResponseSchema,
   UserReject,
+  UserRejectListResponseSchema,
   UserRejectSchema,
   UserResponseSchema,
   UserUpdate,
@@ -48,6 +52,36 @@ export const userListQuery = (params?: ListQueryParams) => {
     .execute();
 };
 
+export const userFindApprovalQuery = async (userId: string) => {
+  const response = await apiRequestClient({
+    method: 'GET',
+    url: `/apis/iam.miloapis.com/v1alpha1/platformaccessapprovals`,
+    params: {
+      limit: 1,
+      fieldSelector: `spec.subjectRef.userRef.name=${userId}`,
+    },
+  })
+    .output(UserApproveListResponseSchema)
+    .execute();
+
+  return response?.data?.items?.[0] ?? null;
+};
+
+export const userFindRejectionQuery = async (userId: string) => {
+  const response = await apiRequestClient({
+    method: 'GET',
+    url: `/apis/iam.miloapis.com/v1alpha1/platformaccessrejections`,
+    params: {
+      limit: 1,
+      fieldSelector: `spec.subjectRef.name=${userId}`,
+    },
+  })
+    .output(UserRejectListResponseSchema)
+    .execute();
+
+  return response?.data?.items?.[0] ?? null;
+};
+
 export const userUpdateMutation = (userId: string, payload: UserUpdate) => {
   return apiRequestClient({
     method: 'PATCH',
@@ -79,6 +113,7 @@ export const userInviteMutation = (payload: UserInvite) => {
     data: payload,
   })
     .input(UserInviteSchema)
+    .output(UserInviteResponseSchema)
     .execute();
 };
 
@@ -89,7 +124,15 @@ export const userApproveMutation = (payload: UserApprove) => {
     data: payload,
   })
     .input(UserApproveSchema)
+    .output(UserApproveResponseSchema)
     .execute();
+};
+
+export const userDeleteApprovalMutation = async (approvalName: string) => {
+  return apiRequestClient({
+    method: 'DELETE',
+    url: `/apis/iam.miloapis.com/v1alpha1/platformaccessapprovals/${approvalName}`,
+  }).execute();
 };
 
 export const userRejectMutation = (payload: UserReject) => {
@@ -100,6 +143,13 @@ export const userRejectMutation = (payload: UserReject) => {
   })
     .input(UserRejectSchema)
     .execute();
+};
+
+export const userDeleteRejectionMutation = (rejectionName: string) => {
+  return apiRequestClient({
+    method: 'DELETE',
+    url: `/apis/iam.miloapis.com/v1alpha1/platformaccessrejections/${rejectionName}`,
+  }).execute();
 };
 
 export const userDeactivateMutation = (payload: UserDeactivate) => {

@@ -1,5 +1,12 @@
 import { useApp } from '@/providers/app.provider';
-import { userApproveMutation, userRejectMutation } from '@/resources/request/client';
+import {
+  userApproveMutation,
+  userDeleteApprovalMutation,
+  userDeleteRejectionMutation,
+  userFindApprovalQuery,
+  userFindRejectionQuery,
+  userRejectMutation,
+} from '@/resources/request/client';
 import { User } from '@/resources/schemas';
 import { toast } from '@datum-ui/toast';
 import { useLingui } from '@lingui/react/macro';
@@ -38,6 +45,32 @@ export function useUserApproval() {
 
       await onSuccess();
       toast.success(t`User rejected successfully`);
+    },
+
+    pendingUser: async (user: User, onSuccess: () => Promise<void>) => {
+      if (user.status?.registrationApproval === 'Approved') {
+        const approval = await userFindApprovalQuery(user.metadata.name);
+        if (!approval) {
+          toast.error(t`User is not approved`);
+          return;
+        }
+
+        await userDeleteApprovalMutation(approval.metadata.name ?? '');
+      } else if (user.status?.registrationApproval === 'Rejected') {
+        const rejection = await userFindRejectionQuery(user.metadata.name);
+        if (!rejection) {
+          toast.error(t`User is not rejected`);
+          return;
+        }
+
+        await userDeleteRejectionMutation(rejection.metadata.name ?? '');
+      } else {
+        toast.error(t`User is not approved or rejected`);
+        return;
+      }
+
+      await onSuccess();
+      toast.success(t`User moved to pending successfully`);
     },
   };
 }
