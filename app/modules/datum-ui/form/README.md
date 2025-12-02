@@ -276,28 +276,28 @@ Multi-select transfer list with left (source) and right (selected) panels. Suppo
 
 #### Props
 
-| Prop                   | Type                                                                                     | Default              | Description                                                                     |
-| ---------------------- | ---------------------------------------------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------- |
-| `field`                | `string`                                                                                | -                    | Form field name (stores an array of selected values)                            |
-| `label`                | `string`                                                                                | -                    | Field label                                                                     |
-| `description`          | `string`                                                                                | -                    | Field description/help text                                                     |
-| `required`             | `boolean \| string`                                                                     | -                    | Required field indicator / custom required message                              |
-| `hideError`            | `boolean`                                                                               | `false`              | Hide error message                                                              |
-| `dataSource`           | `TransferOption[] \| TransferGroup[]`                                                   | `[]`                 | Source options (flat list or grouped)                                           |
-| `type`                 | `'list' \| 'groupList'`                                                                 | `'list'`             | Transfer type: flat list or grouped list                                        |
-| `searchPlaceholder`    | `string`                                                                                | `'Search...'`        | Placeholder text for the search input                                           |
-| `emptyMessage`         | `string`                                                                                | `'No results found.'` | Message shown when there are no items on the left                               |
-| `disabled`             | `boolean`                                                                               | `false`              | Disable the entire control                                                      |
-| `className`            | `string`                                                                                | -                    | CSS classes for the field wrapper                                               |
-| `filter`               | `boolean \| (input: string, item: TransferOption) => boolean`                           | `true`               | Local filter control: disable or provide a custom filter function               |
-| `onSearch`             | `(inputValue: string) => void`                                                          | -                    | Called (debounced) when search input changes; ideal for server-side search      |
-| `renderSourceItem`     | `(item: TransferOption & { onChange: () => void }) => ReactNode`                        | -                    | Custom render for a single item in the left panel                               |
-| `renderSelectedItem`   | `(item: TransferOption & { onRemove: () => void }) => ReactNode`                        | -                    | Custom render for a single item in the right panel                              |
-| `renderSourceHeader`   | `(props: { searchValue: string; onSearchChange: (value: string) => void }) => ReactNode` | -                    | Custom render for the left header (e.g. custom search UI)                       |
-| `renderSelectedHeader` | `(props: { count: number }) => ReactNode`                                               | -                    | Custom render for the right header                                              |
-| `width`                | `number \| string`                                                                      | `568`                | Total width of the transfer component                                           |
-| `height`               | `number \| string`                                                                      | `416`                | Total height of the transfer component                                          |
-| `rules`                | `ValidationRules`                                                                       | -                    | Additional validation rules (rules mode only)                                    |
+| Prop                   | Type                                                                                     | Default               | Description                                                                |
+| ---------------------- | ---------------------------------------------------------------------------------------- | --------------------- | -------------------------------------------------------------------------- |
+| `field`                | `string`                                                                                 | -                     | Form field name (stores an array of selected values)                       |
+| `label`                | `string`                                                                                 | -                     | Field label                                                                |
+| `description`          | `string`                                                                                 | -                     | Field description/help text                                                |
+| `required`             | `boolean \| string`                                                                      | -                     | Required field indicator / custom required message                         |
+| `hideError`            | `boolean`                                                                                | `false`               | Hide error message                                                         |
+| `dataSource`           | `TransferOption[] \| TransferGroup[]`                                                    | `[]`                  | Source options (flat list or grouped)                                      |
+| `type`                 | `'list' \| 'groupList'`                                                                  | `'list'`              | Transfer type: flat list or grouped list                                   |
+| `searchPlaceholder`    | `string`                                                                                 | `'Search...'`         | Placeholder text for the search input                                      |
+| `emptyMessage`         | `string`                                                                                 | `'No results found.'` | Message shown when there are no items on the left                          |
+| `disabled`             | `boolean`                                                                                | `false`               | Disable the entire control                                                 |
+| `className`            | `string`                                                                                 | -                     | CSS classes for the field wrapper                                          |
+| `filter`               | `boolean \| (input: string, item: TransferOption) => boolean`                            | `true`                | Local filter control: disable or provide a custom filter function          |
+| `onSearch`             | `(inputValue: string) => void`                                                           | -                     | Called (debounced) when search input changes; ideal for server-side search |
+| `renderSourceItem`     | `(item: TransferOption & { onChange: () => void }) => ReactNode`                         | -                     | Custom render for a single item in the left panel                          |
+| `renderSelectedItem`   | `(item: TransferOption & { onRemove: () => void }) => ReactNode`                         | -                     | Custom render for a single item in the right panel                         |
+| `renderSourceHeader`   | `(props: { searchValue: string; onSearchChange: (value: string) => void }) => ReactNode` | -                     | Custom render for the left header (e.g. custom search UI)                  |
+| `renderSelectedHeader` | `(props: { count: number }) => ReactNode`                                                | -                     | Custom render for the right header                                         |
+| `width`                | `number \| string`                                                                       | `568`                 | Total width of the transfer component                                      |
+| `height`               | `number \| string`                                                                       | `416`                 | Total height of the transfer component                                     |
+| `rules`                | `ValidationRules`                                                                        | -                     | Additional validation rules (rules mode only)                              |
 
 `TransferOption` is:
 
@@ -318,10 +318,7 @@ const schema = z.object({
   groups: z.array(z.string()),
 });
 
-<Form
-  schema={schema}
-  defaultValues={{ groups: [] }}
-  onSubmit={(values) => console.log(values)}>
+<Form schema={schema} defaultValues={{ groups: [] }} onSubmit={(values) => console.log(values)}>
   <Form.Transfer
     field="groups"
     label="Groups"
@@ -332,7 +329,7 @@ const schema = z.object({
       { value: 'viewers', label: 'Viewers' },
     ]}
   />
-</Form>
+</Form>;
 ```
 
 #### Example (server-side search)
