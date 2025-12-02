@@ -1,5 +1,10 @@
 import { useUserSearch } from '@/hooks';
-import { contactCreateMutation, contactUpdateMutation } from '@/resources/request/client';
+import {
+  contactCreateMutation,
+  contactGroupMembershipCreateMutation,
+  contactUpdateMutation,
+  useContactGroupListQuery,
+} from '@/resources/request/client';
 import { Contact, User } from '@/resources/schemas';
 import { contactRoutes, userRoutes } from '@/utils/config/routes.config';
 import { generateMetadataName } from '@/utils/helpers';
@@ -28,6 +33,8 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
     setSearch: setUserSearch,
   } = useUserSearch();
 
+  const { data: contactGroups, isLoading: contactGroupsLoading } = useContactGroupListQuery();
+
   const contactSchema = z
     .object({
       first_name: z.string().nonempty(t`First name is required`),
@@ -35,22 +42,36 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
       email: z.email(t`Invalid email address`),
       has_association: z.boolean().optional(),
       subject: z.string().optional(),
+      has_groups: z.boolean().optional(),
+      groups: z.array(z.string()).optional(),
     })
     .refine(
       (data) => {
-        // Only validate subject requirement for new contacts (not editing)
         if (!contact && data.has_association && !data.subject) {
           return false;
         }
         return true;
       },
       {
-        message: t`Subject is required when association is enabled`,
+        message: t`Subject is required when user association is enabled`,
         path: ['subject'],
+      }
+    )
+    .refine(
+      (data) => {
+        if (!contact && data.has_groups && !data.groups?.length) {
+          return false;
+        }
+        return true;
+      },
+      {
+        message: t`Groups are required when groups association is enabled`,
+        path: ['groups'],
       }
     );
 
   const onSubmit = async (value: z.infer<typeof contactSchema>) => {
+    console.log(value);
     if (contact) {
       await contactUpdateMutation(contact.metadata.name, {
         spec: {
@@ -83,6 +104,27 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
             }),
         },
       });
+
+      // Auto associate with groups
+      if (value.has_groups && value.groups?.length) {
+        await Promise.all(
+          value.groups.map(async (group) => {
+            await contactGroupMembershipCreateMutation({
+              apiVersion: 'notification.miloapis.com/v1alpha1',
+              kind: 'ContactGroupMembership',
+              metadata: {
+                generateName: 'contact-group-membership-',
+                namespace: 'default',
+              },
+              spec: {
+                contactGroupRef: { name: group, namespace: 'default' },
+                contactRef: { name: data.data.metadata.name, namespace: 'default' },
+              },
+            });
+          })
+        );
+      }
+
       navigate(contactRoutes.edit(data.data.metadata.namespace, data.data.metadata.name));
       toast.success(t`Contact created successfully`);
     }
@@ -98,6 +140,8 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
         email: contact?.spec?.email ?? '',
         has_association: !!contact?.spec?.subject,
         subject: contact?.spec?.subject?.name || '',
+        has_groups: false,
+        groups: [],
       }}
       onSubmit={onSubmit}>
       {(form) => (
@@ -123,18 +167,15 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
           {!contact && (
             <>
               <Form.Switch field="has_association" label={t`Associate with User`} />
-
               {form.getValues('has_association') && (
                 <>
-                  <Form.Autocomplete
+                  <Form.Autosearch
                     field="subject"
-                    placeholder={usersLoading ? t`Loading users...` : t`Select a user...`}
-                    searchPlaceholder={t`Search users...`}
+                    placeholder={t`Enter the full email to search...`}
                     options={userOptions}
                     isLoading={usersLoading}
                     onSearch={setUserSearch}
-                    searchDebounceMs={300}
-                    disabled={usersLoading}
+                    searchDebounceMs={500}
                   />
                   <Alert
                     variant="warning"
@@ -142,6 +183,18 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
                     description={t`Once a contact is associated with a user, this association cannot be removed or changed later.`}
                   />
                 </>
+              )}
+
+              <Form.Switch field="has_groups" label={t`Associate with Groups`} />
+              {form.getValues('has_groups') && (
+                <Form.Transfer
+                  field="groups"
+                  dataSource={(contactGroups?.data?.items ?? []).map((group) => ({
+                    value: group.metadata.name,
+                    label: group.spec.displayName,
+                    key: group.metadata.name,
+                  }))}
+                />
               )}
             </>
           )}

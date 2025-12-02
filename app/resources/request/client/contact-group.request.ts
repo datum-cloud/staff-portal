@@ -12,6 +12,7 @@ import {
   ContactGroupUpdateSchema,
   ListQueryParams,
 } from '@/resources/schemas';
+import { useQuery } from '@tanstack/react-query';
 
 export const contactGroupListQuery = (params?: ListQueryParams) => {
   return apiRequestClient({
@@ -106,4 +107,12 @@ export const contactGroupMembershipDeleteMutation = (
     method: 'DELETE',
     url: `/apis/notification.miloapis.com/v1alpha1/namespaces/${namespace}/contactgroupmemberships/${name}`,
   }).execute();
+};
+
+export const useContactGroupListQuery = (params?: ListQueryParams) => {
+  return useQuery({
+    queryKey: ['contact-groups', 'list', params],
+    queryFn: () => contactGroupListQuery(params),
+    staleTime: 5 * 60 * 1000,
+  });
 };
