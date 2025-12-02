@@ -7,13 +7,13 @@ import {
 } from '@/resources/request/client';
 import { Contact, User } from '@/resources/schemas';
 import { contactRoutes, userRoutes } from '@/utils/config/routes.config';
-import { generateMetadataName } from '@/utils/helpers';
 import { Alert } from '@datum-ui/alert';
 import { Button } from '@datum-ui/button';
 import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
 import { Text } from '@datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { Loader2 } from 'lucide-react';
 import * as React from 'react';
 import { Link, useNavigate } from 'react-router';
 import z from 'zod';
@@ -42,7 +42,6 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
       email: z.email(t`Invalid email address`),
       has_association: z.boolean().optional(),
       subject: z.string().optional(),
-      has_groups: z.boolean().optional(),
       groups: z.array(z.string()).optional(),
     })
     .refine(
@@ -55,18 +54,6 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
       {
         message: t`Subject is required when user association is enabled`,
         path: ['subject'],
-      }
-    )
-    .refine(
-      (data) => {
-        if (!contact && data.has_groups && !data.groups?.length) {
-          return false;
-        }
-        return true;
-      },
-      {
-        message: t`Groups are required when groups association is enabled`,
-        path: ['groups'],
       }
     );
 
@@ -106,7 +93,7 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
       });
 
       // Auto associate with groups
-      if (value.has_groups && value.groups?.length) {
+      if (value.groups?.length) {
         await Promise.all(
           value.groups.map(async (group) => {
             await contactGroupMembershipCreateMutation({
@@ -140,7 +127,6 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
         email: contact?.spec?.email ?? '',
         has_association: !!contact?.spec?.subject,
         subject: contact?.spec?.subject?.name || '',
-        has_groups: false,
         groups: [],
       }}
       onSubmit={onSubmit}>
@@ -166,6 +152,22 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
 
           {!contact && (
             <>
+              {contactGroupsLoading ? (
+                <div className="flex items-center py-2">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Text>{t`Loading mail lists...`}</Text>
+                </div>
+              ) : (
+                <Form.CheckboxGroup field="groups" label={t`Mail Lists`}>
+                  {(contactGroups?.data?.items ?? []).map((group) => (
+                    <Form.CheckboxItem key={group.metadata.name} value={group.metadata.name}>
+                      {group.spec.displayName}
+                    </Form.CheckboxItem>
+                  ))}
+                </Form.CheckboxGroup>
+              )}
+
+              <hr />
               <Form.Switch field="has_association" label={t`Associate with User`} />
               {form.getValues('has_association') && (
                 <>
@@ -183,18 +185,6 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
                     description={t`Once a contact is associated with a user, this association cannot be removed or changed later.`}
                   />
                 </>
-              )}
-
-              <Form.Switch field="has_groups" label={t`Associate with Groups`} />
-              {form.getValues('has_groups') && (
-                <Form.Transfer
-                  field="groups"
-                  dataSource={(contactGroups?.data?.items ?? []).map((group) => ({
-                    value: group.metadata.name,
-                    label: group.spec.displayName,
-                    key: group.metadata.name,
-                  }))}
-                />
               )}
             </>
           )}
