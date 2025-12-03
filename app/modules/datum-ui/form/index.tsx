@@ -12,6 +12,7 @@ import { FormSelect } from './form-select';
 import { FormSwitch } from './form-switch';
 import { FormTextarea } from './form-textarea';
 import { FormTimePicker } from './form-time-picker';
+import { FormTransfer } from './form-transfer';
 
 const FormCompound = Object.assign(Form, {
   Input: FormInput,
@@ -28,6 +29,7 @@ const FormCompound = Object.assign(Form, {
   DatePicker: FormDatePicker,
   TimePicker: FormTimePicker,
   DateTimePicker: FormDateTimePicker,
+  Transfer: FormTransfer,
   Provider: FormProvider,
 });
 

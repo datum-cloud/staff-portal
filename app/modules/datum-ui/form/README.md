@@ -270,6 +270,93 @@ Dropdown selection field.
 />
 ```
 
+### Form.Transfer
+
+Multi-select transfer list with left (source) and right (selected) panels. Supports local filtering and server-side search.
+
+#### Props
+
+| Prop                   | Type                                                                                     | Default               | Description                                                                |
+| ---------------------- | ---------------------------------------------------------------------------------------- | --------------------- | -------------------------------------------------------------------------- |
+| `field`                | `string`                                                                                 | -                     | Form field name (stores an array of selected values)                       |
+| `label`                | `string`                                                                                 | -                     | Field label                                                                |
+| `description`          | `string`                                                                                 | -                     | Field description/help text                                                |
+| `required`             | `boolean \| string`                                                                      | -                     | Required field indicator / custom required message                         |
+| `hideError`            | `boolean`                                                                                | `false`               | Hide error message                                                         |
+| `dataSource`           | `TransferOption[] \| TransferGroup[]`                                                    | `[]`                  | Source options (flat list or grouped)                                      |
+| `type`                 | `'list' \| 'groupList'`                                                                  | `'list'`              | Transfer type: flat list or grouped list                                   |
+| `searchPlaceholder`    | `string`                                                                                 | `'Search...'`         | Placeholder text for the search input                                      |
+| `emptyMessage`         | `string`                                                                                 | `'No results found.'` | Message shown when there are no items on the left                          |
+| `disabled`             | `boolean`                                                                                | `false`               | Disable the entire control                                                 |
+| `className`            | `string`                                                                                 | -                     | CSS classes for the field wrapper                                          |
+| `filter`               | `boolean \| (input: string, item: TransferOption) => boolean`                            | `true`                | Local filter control: disable or provide a custom filter function          |
+| `onSearch`             | `(inputValue: string) => void`                                                           | -                     | Called (debounced) when search input changes; ideal for server-side search |
+| `renderSourceItem`     | `(item: TransferOption & { onChange: () => void }) => ReactNode`                         | -                     | Custom render for a single item in the left panel                          |
+| `renderSelectedItem`   | `(item: TransferOption & { onRemove: () => void }) => ReactNode`                         | -                     | Custom render for a single item in the right panel                         |
+| `renderSourceHeader`   | `(props: { searchValue: string; onSearchChange: (value: string) => void }) => ReactNode` | -                     | Custom render for the left header (e.g. custom search UI)                  |
+| `renderSelectedHeader` | `(props: { count: number }) => ReactNode`                                                | -                     | Custom render for the right header                                         |
+| `width`                | `number \| string`                                                                       | `568`                 | Total width of the transfer component                                      |
+| `height`               | `number \| string`                                                                       | `416`                 | Total height of the transfer component                                     |
+| `rules`                | `ValidationRules`                                                                        | -                     | Additional validation rules (rules mode only)                              |
+
+`TransferOption` is:
+
+```ts
+type TransferOption = {
+  value: string | number;
+  label: string;
+  description?: string;
+  disabled?: boolean;
+  key?: string | number;
+};
+```
+
+#### Example (flat list)
+
+```tsx
+const schema = z.object({
+  groups: z.array(z.string()),
+});
+
+<Form schema={schema} defaultValues={{ groups: [] }} onSubmit={(values) => console.log(values)}>
+  <Form.Transfer
+    field="groups"
+    label="Groups"
+    searchPlaceholder="Search groups..."
+    dataSource={[
+      { value: 'admins', label: 'Admins' },
+      { value: 'editors', label: 'Editors' },
+      { value: 'viewers', label: 'Viewers' },
+    ]}
+  />
+</Form>;
+```
+
+#### Example (server-side search)
+
+```tsx
+const [groups, setGroups] = React.useState<TransferOption[]>([]);
+
+const handleSearch = async (query: string) => {
+  const result = await fetchGroupsFromServer({ query });
+  setGroups(
+    result.items.map((g) => ({
+      value: g.metadata.name,
+      label: g.spec.displayName,
+      key: g.metadata.name,
+    }))
+  );
+};
+
+<Form.Transfer
+  field="groups"
+  label="Groups"
+  dataSource={groups}
+  filter={false} // disable local filtering, rely on server results
+  onSearch={handleSearch}
+/>;
+```
+
 ### Form.Checkbox
 
 Single checkbox field.

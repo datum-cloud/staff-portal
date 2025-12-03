@@ -1,14 +1,19 @@
 import { useUserSearch } from '@/hooks';
-import { contactCreateMutation, contactUpdateMutation } from '@/resources/request/client';
+import {
+  contactCreateMutation,
+  contactGroupMembershipCreateMutation,
+  contactUpdateMutation,
+  useContactGroupListQuery,
+} from '@/resources/request/client';
 import { Contact, User } from '@/resources/schemas';
 import { contactRoutes, userRoutes } from '@/utils/config/routes.config';
-import { generateMetadataName } from '@/utils/helpers';
 import { Alert } from '@datum-ui/alert';
 import { Button } from '@datum-ui/button';
 import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
 import { Text } from '@datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { Loader2 } from 'lucide-react';
 import * as React from 'react';
 import { Link, useNavigate } from 'react-router';
 import z from 'zod';
@@ -28,6 +33,8 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
     setSearch: setUserSearch,
   } = useUserSearch();
 
+  const { data: contactGroups, isLoading: contactGroupsLoading } = useContactGroupListQuery();
+
   const contactSchema = z
     .object({
       first_name: z.string().nonempty(t`First name is required`),
@@ -35,22 +42,23 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
       email: z.email(t`Invalid email address`),
       has_association: z.boolean().optional(),
       subject: z.string().optional(),
+      groups: z.array(z.string()).optional(),
     })
     .refine(
       (data) => {
-        // Only validate subject requirement for new contacts (not editing)
         if (!contact && data.has_association && !data.subject) {
           return false;
         }
         return true;
       },
       {
-        message: t`Subject is required when association is enabled`,
+        message: t`Subject is required when user association is enabled`,
         path: ['subject'],
       }
     );
 
   const onSubmit = async (value: z.infer<typeof contactSchema>) => {
+    console.log(value);
     if (contact) {
       await contactUpdateMutation(contact.metadata.name, {
         spec: {
@@ -83,6 +91,27 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
             }),
         },
       });
+
+      // Auto associate with groups
+      if (value.groups?.length) {
+        await Promise.all(
+          value.groups.map(async (group) => {
+            await contactGroupMembershipCreateMutation({
+              apiVersion: 'notification.miloapis.com/v1alpha1',
+              kind: 'ContactGroupMembership',
+              metadata: {
+                generateName: 'contact-group-membership-',
+                namespace: 'default',
+              },
+              spec: {
+                contactGroupRef: { name: group, namespace: 'default' },
+                contactRef: { name: data.data.metadata.name, namespace: 'default' },
+              },
+            });
+          })
+        );
+      }
+
       navigate(contactRoutes.edit(data.data.metadata.namespace, data.data.metadata.name));
       toast.success(t`Contact created successfully`);
     }
@@ -98,6 +127,7 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
         email: contact?.spec?.email ?? '',
         has_association: !!contact?.spec?.subject,
         subject: contact?.spec?.subject?.name || '',
+        groups: [],
       }}
       onSubmit={onSubmit}>
       {(form) => (
@@ -122,19 +152,32 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
 
           {!contact && (
             <>
-              <Form.Switch field="has_association" label={t`Associate with User`} />
+              {contactGroupsLoading ? (
+                <div className="flex items-center py-2">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Text>{t`Loading mail lists...`}</Text>
+                </div>
+              ) : (
+                <Form.CheckboxGroup field="groups" label={t`Mail Lists`}>
+                  {(contactGroups?.data?.items ?? []).map((group) => (
+                    <Form.CheckboxItem key={group.metadata.name} value={group.metadata.name}>
+                      {group.spec.displayName}
+                    </Form.CheckboxItem>
+                  ))}
+                </Form.CheckboxGroup>
+              )}
 
+              <hr />
+              <Form.Switch field="has_association" label={t`Associate with User`} />
               {form.getValues('has_association') && (
                 <>
-                  <Form.Autocomplete
+                  <Form.Autosearch
                     field="subject"
-                    placeholder={usersLoading ? t`Loading users...` : t`Select a user...`}
-                    searchPlaceholder={t`Search users...`}
+                    placeholder={t`Enter the full email to search...`}
                     options={userOptions}
                     isLoading={usersLoading}
                     onSearch={setUserSearch}
-                    searchDebounceMs={300}
-                    disabled={usersLoading}
+                    searchDebounceMs={500}
                   />
                   <Alert
                     variant="warning"
