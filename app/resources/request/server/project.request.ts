@@ -1,88 +1,96 @@
-import { apiRequest } from '@/modules/axios/axios.server';
+import { readDnsNetworkingMiloapisComV1Alpha1NamespacedDnsZone } from '@openapi/dns.networking.miloapis.com/v1alpha1';
 import {
-  HTTPProxySchema,
-  ProjectSchema,
-  ExportPolicySchema,
-  DomainSchema,
-  DNSZoneSchema,
-} from '@/resources/schemas';
+  readNetworkingDatumapisComV1AlphaNamespacedDomain,
+  readNetworkingDatumapisComV1AlphaNamespacedHttpProxy,
+} from '@openapi/networking.datumapis.com/v1alpha';
+import { readResourcemanagerMiloapisComV1Alpha1Project } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
+import { UnwrapProxyResponse } from '@openapi/shared/core/types.gen';
+import { readTelemetryMiloapisComV1Alpha1NamespacedExportPolicy } from '@openapi/telemetry.miloapis.com/v1alpha1';
 
-export const projectDetailQuery = (token: string, projectName: string) => {
-  return apiRequest({
-    method: 'GET',
-    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}`,
+export const projectDetailQuery = async (token: string, projectName: string) => {
+  const response = await readResourcemanagerMiloapisComV1Alpha1Project({
+    path: {
+      name: projectName,
+    },
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  })
-    .output(ProjectSchema)
-    .execute();
+  });
+  return response.data as unknown as UnwrapProxyResponse<typeof response.data>;
 };
 
-export const projectHttpProxyDetailQuery = (
+export const projectHttpProxyDetailQuery = async (
   token: string,
   projectName: string,
   httpProxyName: string,
   namespace: string = 'default'
 ) => {
-  return apiRequest({
-    method: 'GET',
-    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/networking.datumapis.com/v1alpha/namespaces/${namespace}/httpproxies/${httpProxyName}`,
+  const response = await readNetworkingDatumapisComV1AlphaNamespacedHttpProxy({
+    baseURL: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    path: {
+      namespace,
+      name: httpProxyName,
+    },
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  })
-    .output(HTTPProxySchema)
-    .execute();
+  });
+  return response.data as unknown as UnwrapProxyResponse<typeof response.data>;
 };
 
-export const projectExportPolicyDetailQuery = (
+export const projectExportPolicyDetailQuery = async (
   token: string,
   projectName: string,
   exportPolicyName: string,
   namespace: string = 'default'
 ) => {
-  return apiRequest({
-    method: 'GET',
-    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/telemetry.miloapis.com/v1alpha1/namespaces/${namespace}/exportpolicies/${exportPolicyName}`,
+  const response = await readTelemetryMiloapisComV1Alpha1NamespacedExportPolicy({
+    baseURL: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    path: {
+      namespace,
+      name: exportPolicyName,
+    },
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  })
-    .output(ExportPolicySchema)
-    .execute();
+  });
+  return response.data as unknown as UnwrapProxyResponse<typeof response.data>;
 };
 
-export const projectDnsDetailQuery = (
+export const projectDnsDetailQuery = async (
   token: string,
   projectName: string,
   dnsName: string,
   namespace: string = 'default'
 ) => {
-  return apiRequest({
-    method: 'GET',
-    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/dns.networking.miloapis.com/v1alpha1/namespaces/${namespace}/dnszones/${dnsName}`,
+  const response = await readDnsNetworkingMiloapisComV1Alpha1NamespacedDnsZone({
+    baseURL: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    path: {
+      namespace,
+      name: dnsName,
+    },
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  })
-    .output(DNSZoneSchema)
-    .execute();
+  });
+  return response.data as unknown as UnwrapProxyResponse<typeof response.data>;
 };
 
-export const projectDomainDetailQuery = (
+export const projectDomainDetailQuery = async (
   token: string,
   projectName: string,
   domainName: string,
   namespace: string = 'default'
 ) => {
-  return apiRequest({
-    method: 'GET',
-    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/networking.datumapis.com/v1alpha/namespaces/${namespace}/domains/${domainName}`,
+  const response = await readNetworkingDatumapisComV1AlphaNamespacedDomain({
+    baseURL: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    path: {
+      namespace,
+      name: domainName,
+    },
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  })
-    .output(DomainSchema)
-    .execute();
+  });
+  return response.data as unknown as UnwrapProxyResponse<typeof response.data>;
 };

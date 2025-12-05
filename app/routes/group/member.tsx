@@ -84,11 +84,11 @@ export default function Page() {
   } = useUserSearch();
 
   const tableState = useDataTableQuery<ComMiloapisIamV1Alpha1GroupMembershipList>({
-    queryKeyPrefix: ['groups', data.metadata.name, 'members'],
+    queryKeyPrefix: ['groups', data.metadata?.name ?? '', 'members'],
     fetchFn: (params) =>
       groupMembershipListQuery({
         ...params,
-        filters: { fieldSelector: `spec.groupRef.name=${data.metadata.name}` },
+        filters: { fieldSelector: `spec.groupRef.name=${data.metadata?.name ?? ''}` },
       }),
     useSorting: true,
   });
@@ -109,7 +109,7 @@ export default function Page() {
   const handleAddMember = async (formData: z.infer<typeof addMemberSchema>) => {
     try {
       await groupMembershipCreateMutation('milo-system', {
-        groupRef: { name: data.metadata.name, namespace: 'milo-system' },
+        groupRef: { name: data.metadata?.name ?? '', namespace: 'milo-system' },
         userRef: { name: formData.name },
       });
 

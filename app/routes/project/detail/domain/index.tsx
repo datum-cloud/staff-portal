@@ -25,8 +25,8 @@ export default function Page() {
   const { project } = useProjectDetailData();
 
   const tableState = useDataTableQuery<ComDatumapisNetworkingV1AlphaDomainList>({
-    queryKeyPrefix: ['projects', project.metadata.name, 'domains'],
-    fetchFn: (params) => projectDomainListQuery(project.metadata.name, params),
+    queryKeyPrefix: ['projects', project.metadata?.name ?? '', 'domains'],
+    fetchFn: (params) => projectDomainListQuery(project.metadata?.name ?? '', params),
     useSorting: true,
   });
 
@@ -36,7 +36,7 @@ export default function Page() {
       cell: ({ getValue, row }) => (
         <Link
           to={projectRoutes.domain.detail(
-            project.metadata.name,
+            project.metadata?.name ?? '',
             row.original.metadata?.namespace ?? '',
             row.original.metadata?.name ?? ''
           )}>
@@ -60,7 +60,7 @@ export default function Page() {
       header: () => <Trans>Status</Trans>,
       cell: ({ row }) => (
         <DomainStatusProbe
-          projectName={project.metadata.name}
+          projectName={project.metadata?.name ?? ''}
           domainName={row.original.metadata?.name ?? ''}
           namespace={row.original.metadata?.namespace ?? ''}
         />

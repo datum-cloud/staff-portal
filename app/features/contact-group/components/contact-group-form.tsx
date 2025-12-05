@@ -1,7 +1,5 @@
 import { contactGroupCreateMutation, contactGroupUpdateMutation } from '@/resources/request/client';
-import { ContactGroup, ContactGroupCreate } from '@/resources/schemas';
 import { contactGroupRoutes } from '@/utils/config/routes.config';
-import { generateMetadataName } from '@/utils/helpers';
 import { Button } from '@datum-ui/button';
 import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
@@ -12,7 +10,7 @@ import { useNavigate } from 'react-router';
 import z from 'zod';
 
 interface Props {
-  contactGroup?: ContactGroup;
+  contactGroup?: ComMiloapisNotificationV1Alpha1ContactGroup;
 }
 
 export const ContactGroupForm: React.FC<Props> = ({ contactGroup }) => {

@@ -1,11 +1,4 @@
-import { apiRequestClient } from '@/modules/axios/axios.client';
-import {
-  GroupMembershipCreate,
-  GroupMembershipCreateSchema,
-  GroupMembershipFilters,
-  GroupMembershipResponseSchema,
-  ListQueryParams,
-} from '@/resources/schemas';
+import { GroupMembershipFilters, ListQueryParams } from '@/resources/schemas';
 import {
   ComMiloapisIamV1Alpha1GroupMembership,
   createIamMiloapisComV1Alpha1NamespacedGroupMembership,

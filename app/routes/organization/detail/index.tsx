@@ -24,7 +24,7 @@ export default function Page() {
   const navigate = useNavigate();
 
   const handleDeleteOrganization = async () => {
-    await orgDeleteMutation(data.metadata.name);
+    await orgDeleteMutation(data.metadata?.name ?? '');
     navigate(orgRoutes.list());
     toast.success(t`Organization deleted successfully`);
   };
@@ -88,7 +88,7 @@ export default function Page() {
         deleteTitle={t`Delete Organization`}
         deleteDescription={t`Permanently delete this organization and all associated data`}
         dialogTitle={t`Delete Organization`}
-        dialogDescription={t`Are you sure you want to delete organization "${data.metadata.annotations?.['kubernetes.io/display-name']} (${data.metadata.name})"? This action cannot be undone.`}
+        dialogDescription={t`Are you sure you want to delete organization "${data.metadata?.annotations?.['kubernetes.io/display-name'] ?? ''} (${data.metadata?.name ?? ''})"? This action cannot be undone.`}
         onConfirm={handleDeleteOrganization}
       />
     </div>

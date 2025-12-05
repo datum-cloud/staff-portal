@@ -51,8 +51,8 @@ export default function Page() {
   const data = useOrganizationDetailData();
 
   const tableState = useDataTableQuery<ComMiloapisResourcemanagerV1Alpha1ProjectList>({
-    queryKeyPrefix: ['organizations', data.metadata.name, 'projects'],
-    fetchFn: (params) => orgProjectListQuery(data.metadata.name, params),
+    queryKeyPrefix: ['organizations', data.metadata?.name ?? '', 'projects'],
+    fetchFn: (params) => orgProjectListQuery(data.metadata?.name ?? '', params),
     useSorting: true,
   });
 

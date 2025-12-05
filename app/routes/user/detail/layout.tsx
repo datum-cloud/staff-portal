@@ -2,16 +2,16 @@ import type { Route } from './+types/layout';
 import { SubLayout } from '@/components/sub-layout';
 import { authenticator } from '@/modules/auth';
 import { userDetailQuery } from '@/resources/request/server';
-import { User } from '@/resources/schemas';
 import { userRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
+import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import { Building2, FileText, SquareActivity } from 'lucide-react';
 import { Outlet, useLoaderData } from 'react-router';
 
 export const handle = {
-  breadcrumb: (data: User) => (
+  breadcrumb: (data: ComMiloapisIamV1Alpha1User) => (
     <span>
-      {data.spec.givenName} {data.spec.familyName}
+      {data.spec?.givenName ?? ''} {data.spec?.familyName ?? ''}
     </span>
   ),
 };
@@ -30,17 +30,17 @@ export default function Layout() {
   const menuItems = [
     {
       title: t`Overview`,
-      href: userRoutes.detail(data.metadata.name),
+      href: userRoutes.detail(data.metadata?.name ?? ''),
       icon: FileText,
     },
     {
       title: t`Organizations`,
-      href: userRoutes.organization(data.metadata.name),
+      href: userRoutes.organization(data.metadata?.name ?? ''),
       icon: Building2,
     },
     {
       title: t`Activity`,
-      href: userRoutes.activity(data.metadata.name),
+      href: userRoutes.activity(data.metadata?.name ?? ''),
       icon: SquareActivity,
     },
   ];

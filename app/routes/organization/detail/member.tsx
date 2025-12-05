@@ -62,8 +62,8 @@ export default function Page() {
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
 
   const tableState = useDataTableQuery<TeamMemberList>({
-    queryKeyPrefix: ['organizations', data.metadata.name, 'members'],
-    fetchFn: (args) => orgMemberListQuery(data.metadata.name, args),
+    queryKeyPrefix: ['organizations', data.metadata?.name ?? '', 'members'],
+    fetchFn: (args) => orgMemberListQuery(data.metadata?.name ?? '', args),
     useSorting: true,
   });
 
@@ -89,13 +89,13 @@ export default function Page() {
 
         setLoadingStates((prev) => ({ ...prev, [row.name]: true }));
         try {
-          await orgInvitationDeleteMutation(data.metadata.name, row.name);
-          await orgInvitationCreateMutation(data.metadata.name, {
+          await orgInvitationDeleteMutation(data.metadata?.name ?? '', row.name);
+          await orgInvitationCreateMutation(data.metadata?.name ?? '', {
             email: row.email,
             familyName: row.familyName,
             givenName: row.givenName,
             expirationDate: formatRFC3339(addHours(new Date(), 24)),
-            organizationRef: { name: data.metadata.name },
+            organizationRef: { name: data.metadata?.name ?? '' },
             roles: row?.roles ?? [],
             state: 'Pending',
           });
@@ -116,7 +116,7 @@ export default function Page() {
       onClick: async (row) => {
         setLoadingStates((prev) => ({ ...prev, [row.name]: true }));
         try {
-          await orgInvitationDeleteMutation(data.metadata.name, row.name);
+          await orgInvitationDeleteMutation(data.metadata?.name ?? '', row.name);
           await new Promise((resolve) =>
             setTimeout(() => resolve(tableState.query.refetch()), 1000)
           );

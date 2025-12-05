@@ -7,9 +7,12 @@ import {
 import { SubLayout } from '@/components/sub-layout';
 import { authenticator } from '@/modules/auth';
 import { orgDetailQuery, projectDetailQuery } from '@/resources/request/server';
-import { Organization, Project } from '@/resources/schemas';
 import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { Trans, useLingui } from '@lingui/react/macro';
+import {
+  ComMiloapisResourcemanagerV1Alpha1Organization,
+  ComMiloapisResourcemanagerV1Alpha1Project,
+} from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import {
   ChartArea,
   CircleGauge,
@@ -26,7 +29,10 @@ export const handle = {
   customBreadcrumb: {
     generateItems: (
       params: any,
-      data: { project: Project; organization: Organization }
+      data: {
+        project: ComMiloapisResourcemanagerV1Alpha1Project;
+        organization: ComMiloapisResourcemanagerV1Alpha1Organization;
+      }
     ): BreadcrumbItem[] => {
       const organizationName =
         data?.organization?.metadata?.annotations?.['kubernetes.io/display-name'] ||
@@ -40,15 +46,15 @@ export const handle = {
         createClickableBreadcrumbItem(<Trans>Organizations</Trans>, orgRoutes.list()),
         createClickableBreadcrumbItem(
           organizationName,
-          orgRoutes.detail(data?.organization?.metadata?.name)
+          orgRoutes.detail(data?.organization?.metadata?.name ?? '')
         ),
         createClickableBreadcrumbItem(
           <Trans>Projects</Trans>,
-          orgRoutes.project(data?.organization?.metadata?.name)
+          orgRoutes.project(data?.organization?.metadata?.name ?? '')
         ),
         createClickableBreadcrumbItem(
           projectName,
-          projectRoutes.detail(data.project.metadata.name)
+          projectRoutes.detail(data.project.metadata?.name ?? '')
         ),
       ];
     },
@@ -74,37 +80,37 @@ export default function Layout() {
   const menuItems = [
     {
       title: t`Overview`,
-      href: projectRoutes.detail(project.metadata.name),
+      href: projectRoutes.detail(project?.metadata?.name ?? ''),
       icon: FileText,
     },
     {
       title: t`DNS`,
-      href: projectRoutes.dns.list(project.metadata.name),
+      href: projectRoutes.dns.list(project?.metadata?.name ?? ''),
       icon: Router,
     },
     {
       title: t`Domains`,
-      href: projectRoutes.domain.list(project.metadata.name),
+      href: projectRoutes.domain.list(project?.metadata?.name ?? ''),
       icon: Globe,
     },
     {
       title: t`HTTP Proxies`,
-      href: projectRoutes.httpProxy.list(project.metadata.name),
+      href: projectRoutes.httpProxy.list(project?.metadata?.name ?? ''),
       icon: Waypoints,
     },
     {
       title: t`Export Policies`,
-      href: projectRoutes.exportPolicy.list(project.metadata.name),
+      href: projectRoutes.exportPolicy.list(project?.metadata?.name ?? ''),
       icon: ChartArea,
     },
     {
       title: t`Activity`,
-      href: projectRoutes.activity(project.metadata.name),
+      href: projectRoutes.activity(project?.metadata?.name ?? ''),
       icon: SquareActivity,
     },
     {
       title: t`Secrets`,
-      href: projectRoutes.secret.list(project.metadata.name),
+      href: projectRoutes.secret.list(project?.metadata?.name ?? ''),
       icon: Lock,
     },
     {
@@ -114,11 +120,11 @@ export default function Layout() {
       submenuItems: [
         {
           title: t`Usage`,
-          href: `${projectRoutes.quota.usage(project.metadata.name)}`,
+          href: `${projectRoutes.quota.usage(project?.metadata?.name ?? '')}`,
         },
         {
           title: t`Grants`,
-          href: projectRoutes.quota.grant(project.metadata.name),
+          href: projectRoutes.quota.grant(project?.metadata?.name ?? ''),
         },
       ],
     },

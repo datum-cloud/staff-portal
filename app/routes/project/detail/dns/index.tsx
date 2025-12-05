@@ -27,8 +27,8 @@ export default function Page() {
   const { project } = useProjectDetailData();
 
   const tableState = useDataTableQuery<ComMiloapisNetworkingDnsV1Alpha1DnsZoneList>({
-    queryKeyPrefix: ['projects', project.metadata.name, 'dns'],
-    fetchFn: (params) => projectDnsListQuery(project.metadata.name, params),
+    queryKeyPrefix: ['projects', project.metadata?.name ?? '', 'dns'],
+    fetchFn: (params) => projectDnsListQuery(project.metadata?.name ?? '', params),
     useSorting: true,
   });
 
@@ -43,7 +43,7 @@ export default function Page() {
           <div className="flex items-center gap-2">
             <Link
               to={projectRoutes.dns.detail(
-                project.metadata.name,
+                project.metadata?.name ?? '',
                 row.original.metadata?.namespace ?? '',
                 row.original.metadata?.name ?? ''
               )}>

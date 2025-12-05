@@ -1,14 +1,14 @@
-import { apiRequest } from '@/modules/axios/axios.server';
-import { OrganizationSchema } from '@/resources/schemas';
+import { readResourcemanagerMiloapisComV1Alpha1Organization } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
+import { UnwrapProxyResponse } from '@openapi/shared/core/types.gen';
 
-export const orgDetailQuery = (token: string, orgName: string) => {
-  return apiRequest({
-    method: 'GET',
-    url: `/apis/resourcemanager.miloapis.com/v1alpha1/organizations/${orgName}`,
+export const orgDetailQuery = async (token: string, orgName: string) => {
+  const response = await readResourcemanagerMiloapisComV1Alpha1Organization({
+    path: {
+      name: orgName,
+    },
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  })
-    .output(OrganizationSchema)
-    .execute();
+  });
+  return response.data as unknown as UnwrapProxyResponse<typeof response.data>;
 };

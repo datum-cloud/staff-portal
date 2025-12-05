@@ -25,8 +25,8 @@ export default function Page() {
   const { project } = useProjectDetailData();
 
   const tableState = useDataTableQuery<ComMiloapisTelemetryV1Alpha1ExportPolicyList>({
-    queryKeyPrefix: ['projects', project.metadata.name, 'export-policies'],
-    fetchFn: (params) => projectExportPolicyListQuery(project.metadata.name, params),
+    queryKeyPrefix: ['projects', project.metadata?.name ?? '', 'export-policies'],
+    fetchFn: (params) => projectExportPolicyListQuery(project.metadata?.name ?? '', params),
     useSorting: true,
   });
 
@@ -34,7 +34,8 @@ export default function Page() {
     columnHelper.accessor('metadata.name', {
       header: () => <Trans>Name</Trans>,
       cell: ({ getValue }) => (
-        <Link to={projectRoutes.exportPolicy.detail(project.metadata.name, getValue() ?? '')}>
+        <Link
+          to={projectRoutes.exportPolicy.detail(project.metadata?.name ?? '', getValue() ?? '')}>
           {getValue()}
         </Link>
       ),

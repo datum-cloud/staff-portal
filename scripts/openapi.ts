@@ -88,49 +88,6 @@ export type ProxyResponse<T> = {
 
 // Helper type to unwrap ProxyResponse if present, otherwise return T as-is
 export type UnwrapProxyResponse<T> = T extends ProxyResponse<infer U> ? U : T;
-
-/**
- * Generic server-side helper to call any SDK function with:
- * - Automatic token injection
- * - throwOnError: true (errors throw instead of returning)
- * - Response unwrapping (server-side responses are not wrapped)
- *
- * @param token - Access token (e.g., from session.accessToken)
- * @param fn - SDK function to call
- * @param options - Options to pass to the SDK function (headers will be merged)
- * @returns Unwrapped response data (not ProxyResponse)
- *
- * @example
- * const session = await authenticator.getSession(request);
- * const contactList = await withServerAuth(
- *   session?.accessToken ?? '',
- *   listNotificationMiloapisComV1Alpha1ContactForAllNamespaces,
- *   { query: { limit: 20 } }
- * );
- * const contacts = contactList.items; // Already unwrapped!
- */
-export async function withServerAuth<TResponse, TData extends { headers?: Record<string, string> }>(
-  token: string,
-  fn: (options: TData & { throwOnError: true }) => Promise<{ data: TResponse }>,
-  options?: Omit<TData, 'headers'> & { headers?: Record<string, string> }
-): Promise<UnwrapProxyResponse<TResponse>> {
-  if (!token) {
-    throw new Error('Access token is required');
-  }
-
-  const response = await fn({
-    ...options,
-    throwOnError: true,
-    headers: {
-      Authorization: \`Bearer \${token}\`,
-      ...(options?.headers ?? {}),
-    },
-  } as unknown as TData & { throwOnError: true });
-
-  // Server-side: response.data is NOT wrapped (goes directly to API)
-  // But TypeScript thinks it's wrapped, so we unwrap it
-  return response.data as UnwrapProxyResponse<TResponse>;
-}
 `;
 
     // Insert at the end of the file

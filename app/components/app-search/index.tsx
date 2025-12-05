@@ -12,10 +12,10 @@ import {
   CommandList,
 } from '@/modules/shadcn/ui/command';
 import { orgListQuery, projectListQuery, userListQuery } from '@/resources/request/client';
-import { User } from '@/resources/schemas';
 import { routes } from '@/utils/config/routes.config';
 import { Text } from '@datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
+import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import {
   ComMiloapisResourcemanagerV1Alpha1Organization,
   ComMiloapisResourcemanagerV1Alpha1Project,
@@ -128,10 +128,7 @@ function AppSearch({ className = '', placeholder = 'Search' }: Props) {
   // Calculate overall state
   const isLoading = orgsLoading || projectsLoading || usersLoading;
   const hasResults =
-    (orgs?.items?.length ?? 0) +
-      (projects?.items?.length ?? 0) +
-      (users?.data?.items?.length ?? 0) >
-    0;
+    (orgs?.items?.length ?? 0) + (projects?.items?.length ?? 0) + (users?.items?.length ?? 0) > 0;
 
   return (
     <>
@@ -228,17 +225,19 @@ function AppSearch({ className = '', placeholder = 'Search' }: Props) {
                   />
 
                   {/* Users */}
-                  <SearchResultGroup<User>
+                  <SearchResultGroup<ComMiloapisIamV1Alpha1User>
                     heading="Users"
-                    items={users?.data?.items || []}
+                    items={users?.items || []}
                     icon={Users}
                     getValue={(user) =>
-                      `${user.metadata.name} ${user.spec.givenName} ${user.spec.familyName} ${user.spec.email}`
+                      `${user.metadata?.name ?? ''} ${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''} ${user.spec?.email ?? ''}`
                     }
-                    getTitle={(user) => `${user.spec.givenName} ${user.spec.familyName}`}
-                    getSubtitle={(user) => user.spec.email}
+                    getTitle={(user) =>
+                      `${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''}`
+                    }
+                    getSubtitle={(user) => user.spec?.email ?? ''}
                     onSelect={(user) =>
-                      runCommand(() => navigate(routes.users.detail(user.metadata.name)))
+                      runCommand(() => navigate(routes.users.detail(user.metadata?.name ?? '')))
                     }
                   />
                 </>

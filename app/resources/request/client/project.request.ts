@@ -81,7 +81,7 @@ export const projectDnsRecordListQuery = async (
   });
 
   const flattened = flattenManagedRecordSets(response.data.data);
-  return { ...response, data: flattened };
+  return flattened;
 };
 
 export const projectDnsRecordStatusQuery = async (

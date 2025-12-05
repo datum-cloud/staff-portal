@@ -19,8 +19,8 @@ export default function Page() {
   return (
     <ActivityList
       resourceType="project"
-      resourceId={project.metadata.name}
-      queryKeyPrefix={['projects', project.metadata.name, 'activity']}
+      resourceId={project?.metadata?.name ?? ''}
+      queryKeyPrefix={['projects', project?.metadata?.name ?? '', 'activity']}
     />
   );
 }

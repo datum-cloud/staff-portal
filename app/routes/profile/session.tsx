@@ -69,7 +69,7 @@ export default function Page() {
 
   const tableState = useDataTableQuery<ComMiloapisGoMiloPkgApisIdentityV1Alpha1SessionList>({
     queryKeyPrefix: 'sessions',
-    fetchFn: (params) => sessionListQuery(user?.metadata.name ?? '', params),
+    fetchFn: (params) => sessionListQuery(user?.metadata?.name ?? '', params),
     useSorting: true,
   });
 
@@ -95,7 +95,7 @@ export default function Page() {
         requireConfirmation
         onConfirm={async () => {
           await sessionDeleteMutation(
-            user?.metadata.name ?? '',
+            user?.metadata?.name ?? '',
             selectedSession?.metadata?.name ?? ''
           );
           await new Promise((resolve) =>

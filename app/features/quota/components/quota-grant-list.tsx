@@ -9,21 +9,24 @@ import {
 } from '@/modules/datum-ui/data-table';
 import { toast } from '@/modules/datum-ui/toast';
 import { quotaGrantDeleteMutation } from '@/resources/request/client';
-import { ResourceGrant, ResourceGrantListResponse } from '@/resources/schemas';
 import { Trans, useLingui } from '@lingui/react/macro';
+import {
+  ComMiloapisQuotaV1Alpha1ResourceGrant,
+  ComMiloapisQuotaV1Alpha1ResourceGrantList,
+} from '@openapi/quota.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 
 interface QuotaGrantListProps {
   queryKeyPrefix: string[];
-  fetchFn: (params: any) => Promise<ResourceGrantListResponse>;
+  fetchFn: (params: any) => Promise<ComMiloapisQuotaV1Alpha1ResourceGrantList>;
 }
 
-const columnHelper = createColumnHelper<ResourceGrant>();
+const columnHelper = createColumnHelper<ComMiloapisQuotaV1Alpha1ResourceGrant>();
 
 function computeAllocationByResourceType(
-  allowances: ResourceGrant['spec']['allowances'] | undefined
+  allowances: ComMiloapisQuotaV1Alpha1ResourceGrant['spec']['allowances'] | undefined
 ) {
   const allocationByResourceType = new Map<string, number>();
   const list = allowances || [];
@@ -84,14 +87,16 @@ const columns = [
 
 export function QuotaGrantList({ queryKeyPrefix, fetchFn }: QuotaGrantListProps) {
   const { t } = useLingui();
-  const [selectedGrant, setSelectedGrant] = useState<ResourceGrant | null>(null);
-  const tableState = useDataTableQuery<ResourceGrantListResponse>({
+  const [selectedGrant, setSelectedGrant] = useState<ComMiloapisQuotaV1Alpha1ResourceGrant | null>(
+    null
+  );
+  const tableState = useDataTableQuery<ComMiloapisQuotaV1Alpha1ResourceGrantList>({
     queryKeyPrefix,
     fetchFn,
     useSorting: true,
   });
 
-  const actions: ActionItem<ResourceGrant>[] = [
+  const actions: ActionItem<ComMiloapisQuotaV1Alpha1ResourceGrant>[] = [
     {
       label: 'Delete',
       icon: Trash2Icon,
@@ -105,7 +110,7 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn }: QuotaGrantListProps)
         if (isInactive) return true;
 
         // Disable if grant is auto-created by policy
-        const isAutoCreated = row.metadata.labels?.['quota.miloapis.com/auto-created'] === 'true';
+        const isAutoCreated = row.metadata?.labels?.['quota.miloapis.com/auto-created'] === 'true';
         return isAutoCreated;
       },
       tooltip: (row) => {
@@ -118,9 +123,9 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn }: QuotaGrantListProps)
         }
 
         // Show tooltip for auto-created grants
-        const isAutoCreated = row.metadata.labels?.['quota.miloapis.com/auto-created'] === 'true';
+        const isAutoCreated = row.metadata?.labels?.['quota.miloapis.com/auto-created'] === 'true';
         if (isAutoCreated) {
-          const policyName = row.metadata.labels?.['quota.miloapis.com/policy'];
+          const policyName = row.metadata?.labels?.['quota.miloapis.com/policy'];
           return policyName
             ? t`Auto-managed by policy "${policyName}". Cannot be deleted.`
             : t`Auto-managed by grant creation policy. Cannot be deleted.`;
@@ -137,15 +142,15 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn }: QuotaGrantListProps)
         open={!!selectedGrant}
         onOpenChange={() => setSelectedGrant(null)}
         title={t`Delete Grant`}
-        description={t`Are you sure you want to delete grant "${selectedGrant?.metadata.name}"? This action cannot be undone.`}
+        description={t`Are you sure you want to delete grant "${selectedGrant?.metadata?.name}"? This action cannot be undone.`}
         confirmText={t`Delete`}
         cancelText={t`Cancel`}
         variant="destructive"
         requireConfirmation
         onConfirm={async () => {
           await quotaGrantDeleteMutation(
-            selectedGrant?.metadata.name ?? '',
-            selectedGrant?.metadata.namespace ?? ''
+            selectedGrant?.metadata?.name ?? '',
+            selectedGrant?.metadata?.namespace ?? ''
           );
           await new Promise((resolve) =>
             setTimeout(() => resolve(tableState.query.refetch()), 1000)
@@ -155,16 +160,19 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn }: QuotaGrantListProps)
         }}
       />
 
-      <DataTableProvider<ResourceGrant, ResourceGrantListResponse>
+      <DataTableProvider<
+        ComMiloapisQuotaV1Alpha1ResourceGrant,
+        ComMiloapisQuotaV1Alpha1ResourceGrantList
+      >
         columns={columns}
         actions={actions}
         transform={(resp) => ({
-          rows: resp?.data?.items || [],
-          cursor: resp?.data?.metadata?.continue,
+          rows: resp?.items || [],
+          cursor: resp?.metadata?.continue,
         })}
         {...tableState}>
         <div className="m-4 flex flex-col gap-2">
-          <DataTable<ResourceGrant> />
+          <DataTable />
         </div>
       </DataTableProvider>
     </>

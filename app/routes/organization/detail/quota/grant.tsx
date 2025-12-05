@@ -19,8 +19,8 @@ export default function Page() {
 
   return (
     <QuotaGrantList
-      queryKeyPrefix={['organizations', data.metadata.name, 'grants']}
-      fetchFn={(params) => orgQuotaGrantListQuery(data.metadata.name, params)}
+      queryKeyPrefix={['organizations', data.metadata?.name ?? '', 'grants']}
+      fetchFn={(params) => orgQuotaGrantListQuery(data.metadata?.name ?? '', params)}
     />
   );
 }

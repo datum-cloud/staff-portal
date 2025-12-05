@@ -4,10 +4,10 @@ import { ContactForm } from '@/features/contact';
 import { authenticator } from '@/modules/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { contactDetailQuery, userDetailQuery } from '@/resources/request/server';
-import { User } from '@/resources/schemas';
 import { metaObject } from '@/utils/helpers';
 import { Col, Row } from '@datum-ui/grid';
 import { Trans } from '@lingui/react/macro';
+import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const { contactName } = getContactDetailMetadata(matches);
@@ -33,7 +33,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     params?.namespace ?? ''
   );
 
-  let user: User | undefined;
+  let user: ComMiloapisIamV1Alpha1User | undefined;
   if (contact?.spec?.subject?.name && contact?.spec?.subject?.kind === 'User') {
     user = await userDetailQuery(session?.accessToken ?? '', contact?.spec?.subject?.name ?? '');
   }

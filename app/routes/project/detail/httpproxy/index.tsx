@@ -25,8 +25,8 @@ export default function Page() {
   const { project } = useProjectDetailData();
 
   const tableState = useDataTableQuery<ComDatumapisNetworkingV1AlphaHttpProxyList>({
-    queryKeyPrefix: ['projects', project.metadata.name, 'http-proxies'],
-    fetchFn: (params) => projectHttpProxyListQuery(project.metadata.name, params),
+    queryKeyPrefix: ['projects', project?.metadata?.name ?? '', 'http-proxies'],
+    fetchFn: (params) => projectHttpProxyListQuery(project?.metadata?.name ?? '', params),
     useSorting: true,
   });
 
@@ -34,7 +34,7 @@ export default function Page() {
     columnHelper.accessor('metadata.name', {
       header: () => <Trans>Name</Trans>,
       cell: ({ getValue }) => (
-        <Link to={projectRoutes.httpProxy.detail(project.metadata.name, getValue() ?? '')}>
+        <Link to={projectRoutes.httpProxy.detail(project?.metadata?.name ?? '', getValue() ?? '')}>
           {getValue()}
         </Link>
       ),

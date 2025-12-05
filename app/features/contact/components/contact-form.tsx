@@ -5,7 +5,6 @@ import {
   contactUpdateMutation,
   useContactGroupListQuery,
 } from '@/resources/request/client';
-import { Contact, User } from '@/resources/schemas';
 import { contactRoutes, userRoutes } from '@/utils/config/routes.config';
 import { Alert } from '@datum-ui/alert';
 import { Button } from '@datum-ui/button';
@@ -13,18 +12,16 @@ import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
 import { Text } from '@datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
-import {
-  createNotificationMiloapisComV1Alpha1NamespacedContact,
-  patchNotificationMiloapisComV1Alpha1NamespacedContact,
-} from '@openapi/notification.miloapis.com/v1alpha1';
+import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
+import { ComMiloapisNotificationV1Alpha1Contact } from '@openapi/notification.miloapis.com/v1alpha1';
 import { Loader2 } from 'lucide-react';
 import * as React from 'react';
 import { Link, useNavigate } from 'react-router';
 import z from 'zod';
 
 interface Props {
-  contact?: Contact;
-  user?: User;
+  contact?: ComMiloapisNotificationV1Alpha1Contact;
+  user?: ComMiloapisIamV1Alpha1User;
 }
 
 export const ContactForm: React.FC<Props> = ({ contact, user }) => {
@@ -131,8 +128,9 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
               </Text>
 
               <Text size="sm">
-                <Link to={userRoutes.detail(user.metadata.name)}>
-                  {user.spec.givenName} {user.spec.familyName} ({user.spec.email})
+                <Link to={userRoutes.detail(user.metadata?.name ?? '')}>
+                  {user.spec?.givenName ?? ''} {user.spec?.familyName ?? ''} (
+                  {user.spec?.email ?? ''})
                 </Link>
               </Text>
             </div>

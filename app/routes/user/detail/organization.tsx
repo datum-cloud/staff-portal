@@ -55,8 +55,8 @@ export default function Page() {
 
   const tableState =
     useDataTableQuery<ComMiloapisResourcemanagerV1Alpha1OrganizationMembershipList>({
-      queryKeyPrefix: ['users', data.metadata.name, 'organizations'],
-      fetchFn: (args) => userOrgListQuery(data.metadata.name, args),
+      queryKeyPrefix: ['users', data.metadata?.name ?? '', 'organizations'],
+      fetchFn: (args) => userOrgListQuery(data.metadata?.name ?? '', args),
       useSorting: true,
     });
 

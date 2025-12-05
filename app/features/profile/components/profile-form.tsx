@@ -28,17 +28,13 @@ export function ProfileForm() {
           className="space-y-4"
           schema={userSchema}
           defaultValues={{
-            first_name: user?.spec.givenName || '',
-            last_name: user?.spec.familyName || '',
+            first_name: user?.spec?.givenName ?? '',
+            last_name: user?.spec?.familyName ?? '',
           }}
           onSubmit={async (value: z.infer<typeof userSchema>) => {
-            const { data: updatedUser } = await userUpdateMutation(user?.metadata.name || '', {
-              apiVersion: 'iam.miloapis.com/v1alpha1',
-              kind: 'User',
-              spec: {
-                familyName: value.last_name,
-                givenName: value.first_name,
-              },
+            const updatedUser = await userUpdateMutation(user?.metadata?.name || '', {
+              familyName: value.last_name,
+              givenName: value.first_name,
             });
 
             // update user in store

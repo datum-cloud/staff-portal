@@ -1,4 +1,4 @@
-import type { User } from '@/resources/schemas';
+import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import * as Sentry from '@sentry/react';
 
 interface UserContext {
@@ -19,19 +19,19 @@ interface UserContext {
  * Set user context in Sentry for error tracking
  * This function should be called when a user logs in
  */
-export function setSentryUser(user: User): void {
+export function setSentryUser(user: ComMiloapisIamV1Alpha1User): void {
   const normalizedUser: UserContext = {
-    id: user.metadata.name,
-    uid: user.metadata.uid,
-    email: user.spec.email,
-    username: user.spec.email,
-    name: `${user.spec.givenName} ${user.spec.familyName}`,
-    creation_date: user.metadata.creationTimestamp,
+    id: user.metadata?.name ?? '',
+    uid: user.metadata?.uid ?? '',
+    email: user.spec?.email ?? '',
+    username: user.spec?.email ?? '',
+    name: `${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''}`,
+    creation_date: user.metadata?.creationTimestamp ?? '',
     state: user.status?.state,
-    theme: user.metadata.annotations?.['preferences/theme'],
-    timezone: user.metadata.annotations?.['preferences/timezone'],
-    generation: user.metadata.generation,
-    resource_version: user.metadata.resourceVersion,
+    theme: user.metadata?.annotations?.['preferences/theme'],
+    timezone: user.metadata?.annotations?.['preferences/timezone'],
+    generation: user.metadata?.generation ?? 0,
+    resource_version: user.metadata?.resourceVersion ?? '',
   };
 
   // Set user context in Sentry for error tracking

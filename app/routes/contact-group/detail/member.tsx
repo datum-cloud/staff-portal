@@ -71,11 +71,11 @@ export default function Page() {
   } = useContactSearch();
 
   const tableState = useDataTableQuery<ComMiloapisNotificationV1Alpha1ContactGroupMembershipList>({
-    queryKeyPrefix: ['contact-groups', data.metadata.name, 'members'],
+    queryKeyPrefix: ['contact-groups', data.metadata?.name ?? '', 'members'],
     fetchFn: (params) =>
       contactGroupMembershipListQuery({
         ...params,
-        filters: { fieldSelector: `spec.contactGroupRef.name=${data.metadata.name}` },
+        filters: { fieldSelector: `spec.contactGroupRef.name=${data.metadata?.name ?? ''}` },
       }),
     useSorting: true,
   });
@@ -95,7 +95,7 @@ export default function Page() {
 
   const handleAddMember = async (formData: z.infer<typeof addMemberSchema>) => {
     await contactGroupMembershipCreateMutation('default', {
-      contactGroupRef: { name: data.metadata.name, namespace: 'default' },
+      contactGroupRef: { name: data.metadata?.name ?? '', namespace: 'default' },
       contactRef: { name: formData.name, namespace: 'default' },
     });
 

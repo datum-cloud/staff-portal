@@ -23,7 +23,7 @@ export default function Page() {
   const navigate = useNavigate();
 
   const handleDeleteProject = async () => {
-    await projectDeleteMutation(project.metadata.name);
+    await projectDeleteMutation(project?.metadata?.name ?? '');
     navigate(projectRoutes.list());
     toast.success(t`Project deleted successfully`);
   };
@@ -63,7 +63,7 @@ export default function Page() {
                   </Text>
                 </TableCell>
                 <TableCell>
-                  <Link to={orgRoutes.detail(organization?.metadata?.name)}>
+                  <Link to={orgRoutes.detail(organization?.metadata?.name ?? '')}>
                     {organization?.metadata?.annotations?.['kubernetes.io/display-name']}
                   </Link>
                 </TableCell>
@@ -89,7 +89,7 @@ export default function Page() {
         deleteTitle={t`Delete Project`}
         deleteDescription={t`Permanently delete this project and all associated data`}
         dialogTitle={t`Delete Project`}
-        dialogDescription={t`Are you sure you want to delete project "${project.metadata.annotations?.['kubernetes.io/description']} (${project.metadata.name})"? This action cannot be undone.`}
+        dialogDescription={t`Are you sure you want to delete project "${project?.metadata?.annotations?.['kubernetes.io/description']} (${project?.metadata?.name ?? ''})"? This action cannot be undone.`}
         onConfirm={handleDeleteProject}
       />
     </div>

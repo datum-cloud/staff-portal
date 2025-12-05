@@ -19,8 +19,8 @@ export default function Page() {
   return (
     <ActivityList
       resourceType="user"
-      resourceId={data.spec.email}
-      queryKeyPrefix={['users', data.metadata.name, 'activity']}
+      resourceId={data.spec?.email ?? ''}
+      queryKeyPrefix={['users', data.metadata?.name ?? '', 'activity']}
     />
   );
 }
