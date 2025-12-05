@@ -1,15 +1,16 @@
-import { apiRequestClient } from '@/modules/axios/axios.client';
-import { EmailListResponseSchema, ListQueryParams } from '@/resources/schemas';
+import { ListQueryParams } from '@/resources/schemas';
+import { listNotificationMiloapisComV1Alpha1NamespacedEmail } from '@openapi/notification.miloapis.com/v1alpha1';
 
-export const emailListQuery = (params?: ListQueryParams) => {
-  return apiRequestClient({
-    method: 'GET',
-    url: '/apis/notification.miloapis.com/v1alpha1/namespaces/milo-system/emails',
-    params: {
-      ...(params?.limit && { limit: params.limit }),
-      ...(params?.cursor && { continue: params.cursor }),
+export const emailListQuery = async (
+  namespace: string = 'milo-system',
+  params?: ListQueryParams
+) => {
+  const response = await listNotificationMiloapisComV1Alpha1NamespacedEmail({
+    path: { namespace },
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
     },
-  })
-    .output(EmailListResponseSchema)
-    .execute();
+  });
+  return response.data.data;
 };

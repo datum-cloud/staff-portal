@@ -1,5 +1,5 @@
-import { apiRequestClient } from '@/modules/axios/axios.client';
-import { ListQueryParams, MemberListResponseSchema, MembershipFilters } from '@/resources/schemas';
+import { ListQueryParams, MembershipFilters } from '@/resources/schemas';
+import { listResourcemanagerMiloapisComV1Alpha1OrganizationMembershipForAllNamespaces } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 
 // Helper function to build field selectors (Kubernetes API style)
 export const buildFieldSelector = (selectors: Record<string, string>): string => {
@@ -27,7 +27,10 @@ export const buildFieldSelector = (selectors: Record<string, string>): string =>
  * })
  * ```
  */
-export const userOrgListQuery = (userName: string, params?: ListQueryParams<MembershipFilters>) => {
+export const userOrgListQuery = async (
+  userName: string,
+  params?: ListQueryParams<MembershipFilters>
+) => {
   // Build field selectors
   const fieldSelectors: Record<string, string> = {};
 
@@ -48,15 +51,13 @@ export const userOrgListQuery = (userName: string, params?: ListQueryParams<Memb
   const fieldSelectorString =
     Object.keys(fieldSelectors).length > 0 ? buildFieldSelector(fieldSelectors) : undefined;
 
-  return apiRequestClient({
-    method: 'GET',
-    url: '/apis/resourcemanager.miloapis.com/v1alpha1/organizationmemberships',
-    params: {
-      ...(params?.limit && { limit: params.limit }),
-      ...(params?.cursor && { continue: params.cursor }),
-      ...(fieldSelectorString && { fieldSelector: fieldSelectorString }),
-    },
-  })
-    .output(MemberListResponseSchema)
-    .execute();
+  const response =
+    await listResourcemanagerMiloapisComV1Alpha1OrganizationMembershipForAllNamespaces({
+      query: {
+        limit: params?.limit,
+        continue: params?.cursor,
+        ...(fieldSelectorString && { fieldSelector: fieldSelectorString }),
+      },
+    });
+  return response.data.data;
 };

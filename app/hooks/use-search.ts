@@ -91,12 +91,12 @@ export function useContactSearch() {
   });
 
   const options = React.useMemo(() => {
-    if (!data?.data?.items) return [];
-    return data.data.items
+    if (!data?.items) return [];
+    return data.items
       .map((c) => ({
-        value: c.metadata.name,
-        label: `${c.spec.givenName} ${c.spec.familyName}`.trim() || c.metadata.name,
-        description: c.spec.email,
+        value: c.metadata?.name ?? '',
+        label: `${c.spec?.givenName} ${c.spec?.familyName}`.trim() || (c.metadata?.name ?? ''),
+        description: c.spec?.email ?? '',
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [data]);

@@ -12,7 +12,6 @@ import {
   groupMembershipListQuery,
 } from '@/resources/request/client';
 import { groupDetailQuery } from '@/resources/request/server';
-import { Group, GroupMembership, GroupMembershipListResponse } from '@/resources/schemas';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-ui/button';
@@ -20,6 +19,11 @@ import { ActionItem, DataTable, DataTableProvider, useDataTableQuery } from '@da
 import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
 import { Trans, useLingui } from '@lingui/react/macro';
+import {
+  ComMiloapisIamV1Alpha1Group,
+  ComMiloapisIamV1Alpha1GroupMembership,
+  ComMiloapisIamV1Alpha1GroupMembershipList,
+} from '@openapi/iam.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
@@ -31,8 +35,8 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 };
 
 export const handle = {
-  breadcrumb: (data: Group) => {
-    return <span>{data.metadata.name}</span>;
+  breadcrumb: (data: ComMiloapisIamV1Alpha1Group) => {
+    return <span>{data.metadata?.name ?? ''}</span>;
   },
 };
 
@@ -43,19 +47,19 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   return data;
 };
 
-const columnHelper = createColumnHelper<GroupMembership>();
+const columnHelper = createColumnHelper<ComMiloapisIamV1Alpha1GroupMembership>();
 const columns = [
   columnHelper.accessor('metadata.name', {
     header: () => <Trans>Name</Trans>,
     cell: ({ row }) => {
-      const groupName = row.original.metadata.name;
-      const displayName = row.original.metadata.namespace;
+      const groupName = row.original.metadata?.name ?? '';
+      const displayName = row.original.metadata?.namespace;
 
       return (
         <DisplayName
           displayName={groupName}
           name={displayName || groupName}
-          to={userRoutes.detail(row.original.spec.userRef.name)}
+          to={userRoutes.detail(row.original.spec?.userRef?.name ?? '')}
         />
       );
     },
@@ -69,9 +73,8 @@ const columns = [
 export default function Page() {
   const { t } = useLingui();
   const data = useGroupDetailData();
-  const [selectedGroupMembership, setSelectedGroupMembership] = useState<GroupMembership | null>(
-    null
-  );
+  const [selectedGroupMembership, setSelectedGroupMembership] =
+    useState<ComMiloapisIamV1Alpha1GroupMembership | null>(null);
   const [isAddMember, setIsAddMember] = useState(false);
 
   const {
@@ -80,7 +83,7 @@ export default function Page() {
     setSearch: setUserSearch,
   } = useUserSearch();
 
-  const tableState = useDataTableQuery<GroupMembershipListResponse>({
+  const tableState = useDataTableQuery<ComMiloapisIamV1Alpha1GroupMembershipList>({
     queryKeyPrefix: ['groups', data.metadata.name, 'members'],
     fetchFn: (params) =>
       groupMembershipListQuery({
@@ -90,7 +93,7 @@ export default function Page() {
     useSorting: true,
   });
 
-  const actions: ActionItem<GroupMembership>[] = [
+  const actions: ActionItem<ComMiloapisIamV1Alpha1GroupMembership>[] = [
     {
       label: 'Delete',
       icon: Trash2Icon,
@@ -105,17 +108,9 @@ export default function Page() {
 
   const handleAddMember = async (formData: z.infer<typeof addMemberSchema>) => {
     try {
-      await groupMembershipCreateMutation({
-        apiVersion: 'iam.miloapis.com/v1alpha1',
-        kind: 'GroupMembership',
-        metadata: {
-          generateName: 'group-membership-',
-          namespace: 'milo-system',
-        },
-        spec: {
-          groupRef: { name: data.metadata.name, namespace: 'milo-system' },
-          userRef: { name: formData.name },
-        },
+      await groupMembershipCreateMutation('milo-system', {
+        groupRef: { name: data.metadata.name, namespace: 'milo-system' },
+        userRef: { name: formData.name },
       });
 
       await new Promise((resolve) => setTimeout(() => resolve(tableState.query.refetch()), 1000));
@@ -145,7 +140,7 @@ export default function Page() {
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={async () => {
-          await groupMembershipDeleteMutation(selectedGroupMembership?.metadata?.name ?? '');
+          await groupMembershipDeleteMutation(selectedGroupMembership?.metadata);
           await new Promise((resolve) =>
             setTimeout(() => resolve(tableState.query.refetch()), 1000)
           );
@@ -174,13 +169,16 @@ export default function Page() {
         />
       </DialogForm>
 
-      <DataTableProvider<GroupMembership, GroupMembershipListResponse>
+      <DataTableProvider<
+        ComMiloapisIamV1Alpha1GroupMembership,
+        ComMiloapisIamV1Alpha1GroupMembershipList
+      >
         {...tableState}
         columns={columns}
         actions={actions}
         transform={(data) => ({
-          rows: data?.data?.items || [],
-          cursor: data?.data?.metadata?.continue,
+          rows: data?.items || [],
+          cursor: data?.metadata?.continue,
         })}>
         <div className="m-4 flex flex-col gap-2">
           <DataTable />

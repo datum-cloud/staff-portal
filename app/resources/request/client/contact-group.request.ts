@@ -1,112 +1,111 @@
-import { apiRequestClient } from '@/modules/axios/axios.client';
+import { ListQueryParams } from '@/resources/schemas';
 import {
-  ContactGroupCreate,
-  ContactGroupCreateSchema,
-  ContactGroupListResponseSchema,
-  ContactGroupMembershipCreate,
-  ContactGroupMembershipCreateSchema,
-  ContactGroupMembershipListResponseSchema,
-  ContactGroupMembershipResponseSchema,
-  ContactGroupResponseSchema,
-  ContactGroupUpdate,
-  ContactGroupUpdateSchema,
-  ListQueryParams,
-} from '@/resources/schemas';
+  ComMiloapisNotificationV1Alpha1ContactGroup,
+  ComMiloapisNotificationV1Alpha1ContactGroupMembership,
+  createNotificationMiloapisComV1Alpha1NamespacedContactGroup,
+  createNotificationMiloapisComV1Alpha1NamespacedContactGroupMembership,
+  deleteNotificationMiloapisComV1Alpha1NamespacedContactGroup,
+  deleteNotificationMiloapisComV1Alpha1NamespacedContactGroupMembership,
+  listNotificationMiloapisComV1Alpha1ContactGroupForAllNamespaces,
+  listNotificationMiloapisComV1Alpha1ContactGroupMembershipForAllNamespaces,
+  patchNotificationMiloapisComV1Alpha1NamespacedContactGroup,
+} from '@openapi/notification.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
 
-export const contactGroupListQuery = (params?: ListQueryParams) => {
-  return apiRequestClient({
-    method: 'GET',
-    url: '/apis/notification.miloapis.com/v1alpha1/contactgroups',
-    params: {
-      ...(params?.limit && { limit: params.limit }),
-      ...(params?.cursor && { continue: params.cursor }),
+export const contactGroupListQuery = async (params?: ListQueryParams) => {
+  const response = await listNotificationMiloapisComV1Alpha1ContactGroupForAllNamespaces({
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
     },
-  })
-    .output(ContactGroupListResponseSchema)
-    .execute();
+  });
+  return response.data.data;
 };
 
-export const contactGroupCreateMutation = (
-  payload: ContactGroupCreate,
-  namespace: string = 'default'
+export const contactGroupCreateMutation = async (
+  namespace: string = 'default',
+  payload: ComMiloapisNotificationV1Alpha1ContactGroup['spec']
 ) => {
-  return apiRequestClient({
-    method: 'POST',
-    url: `/apis/notification.miloapis.com/v1alpha1/namespaces/${namespace}/contactgroups`,
-    data: payload,
-  })
-    .input(ContactGroupCreateSchema)
-    .output(ContactGroupResponseSchema)
-    .execute();
+  const response = await createNotificationMiloapisComV1Alpha1NamespacedContactGroup({
+    path: { namespace },
+    body: {
+      apiVersion: 'notification.miloapis.com/v1alpha1',
+      kind: 'ContactGroup',
+      metadata: {
+        generateName: 'contact-group-',
+        namespace,
+      },
+      spec: payload,
+    },
+  });
+  return response.data.data;
 };
 
-export const contactGroupUpdateMutation = (
-  name: string,
-  payload: ContactGroupUpdate,
-  namespace: string = 'default'
+export const contactGroupUpdateMutation = async (
+  metadata: ComMiloapisNotificationV1Alpha1ContactGroup['metadata'],
+  payload: ComMiloapisNotificationV1Alpha1ContactGroup['spec']
 ) => {
-  return apiRequestClient({
-    method: 'PATCH',
-    url: `/apis/notification.miloapis.com/v1alpha1/namespaces/${namespace}/contactgroups/${name}`,
-    params: {
+  const response = await patchNotificationMiloapisComV1Alpha1NamespacedContactGroup({
+    path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
+    query: {
       fieldManager: 'datum-staff-portal',
     },
     headers: {
       'Content-Type': 'application/merge-patch+json',
     },
-    data: payload,
-  })
-    .input(ContactGroupUpdateSchema)
-    .output(ContactGroupResponseSchema)
-    .execute();
+    body: {
+      spec: payload,
+    },
+  });
+  return response.data.data;
 };
 
-export const contactGroupDeleteMutation = (name: string, namespace: string = 'default') => {
-  return apiRequestClient({
-    method: 'DELETE',
-    url: `/apis/notification.miloapis.com/v1alpha1/namespaces/${namespace}/contactgroups/${name}`,
-  }).execute();
+export const contactGroupDeleteMutation = (
+  metadata: ComMiloapisNotificationV1Alpha1ContactGroup['metadata']
+) => {
+  return deleteNotificationMiloapisComV1Alpha1NamespacedContactGroup({
+    path: {
+      namespace: metadata?.namespace ?? '',
+      name: metadata?.name ?? '',
+    },
+  });
 };
 
-export const contactGroupMembershipListQuery = (
+export const contactGroupMembershipListQuery = async (
   params?: ListQueryParams<{ fieldSelector?: string }>
 ) => {
-  return apiRequestClient({
-    method: 'GET',
-    url: '/apis/notification.miloapis.com/v1alpha1/contactgroupmemberships',
-    params: {
-      ...(params?.limit && { limit: params.limit }),
-      ...(params?.cursor && { continue: params.cursor }),
+  const response = await listNotificationMiloapisComV1Alpha1ContactGroupMembershipForAllNamespaces({
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
       ...(params?.filters?.fieldSelector && { fieldSelector: params.filters.fieldSelector }),
     },
-  })
-    .output(ContactGroupMembershipListResponseSchema)
-    .execute();
+  });
+  return response.data.data;
 };
 
-export const contactGroupMembershipCreateMutation = (
-  payload: ContactGroupMembershipCreate,
-  namespace: string = 'default'
+export const contactGroupMembershipCreateMutation = async (
+  namespace: string = 'default',
+  payload: ComMiloapisNotificationV1Alpha1ContactGroupMembership['spec']
 ) => {
-  return apiRequestClient({
-    method: 'POST',
-    url: `/apis/notification.miloapis.com/v1alpha1/namespaces/${namespace}/contactgroupmemberships`,
-    data: payload,
-  })
-    .input(ContactGroupMembershipCreateSchema)
-    .output(ContactGroupMembershipResponseSchema)
-    .execute();
+  const response = await createNotificationMiloapisComV1Alpha1NamespacedContactGroupMembership({
+    path: { namespace },
+    body: {
+      apiVersion: 'notification.miloapis.com/v1alpha1',
+      kind: 'ContactGroupMembership',
+      metadata: { generateName: 'contact-group-membership-', namespace },
+      spec: payload,
+    },
+  });
+  return response.data.data;
 };
 
 export const contactGroupMembershipDeleteMutation = (
-  name: string,
-  namespace: string = 'default'
+  metadata: ComMiloapisNotificationV1Alpha1ContactGroupMembership['metadata']
 ) => {
-  return apiRequestClient({
-    method: 'DELETE',
-    url: `/apis/notification.miloapis.com/v1alpha1/namespaces/${namespace}/contactgroupmemberships/${name}`,
-  }).execute();
+  return deleteNotificationMiloapisComV1Alpha1NamespacedContactGroupMembership({
+    path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
+  });
 };
 
 export const useContactGroupListQuery = (params?: ListQueryParams) => {

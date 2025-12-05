@@ -1,17 +1,26 @@
 import { Chip } from '@/components/chip';
-import { DNSZoneDomainRefNameserver } from '@/resources/schemas';
+import { ComMiloapisNetworkingDnsV1Alpha1DnsZone } from '@openapi/dns.networking.miloapis.com/v1alpha1';
+
+// Extract nameserver type from OpenAPI generated type
+type DnsZoneStatus = NonNullable<ComMiloapisNetworkingDnsV1Alpha1DnsZone['status']>;
+type DnsZoneDomainRef = NonNullable<DnsZoneStatus['domainRef']>;
+type DnsZoneDomainRefStatus = NonNullable<DnsZoneDomainRef['status']>;
+type DnsZoneNameserver = NonNullable<DnsZoneDomainRefStatus['nameservers']>[number];
+type DnsZoneNameserverIp = NonNullable<DnsZoneNameserver['ips']>[number];
 
 /**
  * Helper function to extract unique registrant names (DNS host providers)
  * from nameservers or IPs data
  */
 const extractRegistrantNames = (
-  data: DNSZoneDomainRefNameserver[] | DNSZoneDomainRefNameserver['ips'] | undefined
+  data: DnsZoneNameserver[] | DnsZoneNameserverIp[] | undefined
 ): string[] => {
   if (!data?.length) return [];
 
   // Type guard to determine if data is nameservers or IPs
-  const isNameservers = (d: typeof data): d is DNSZoneDomainRefNameserver[] => {
+  const isNameservers = (
+    d: DnsZoneNameserver[] | DnsZoneNameserverIp[]
+  ): d is DnsZoneNameserver[] => {
     return Array.isArray(d) && d.length > 0 && 'hostname' in d[0];
   };
 
@@ -37,7 +46,7 @@ const extractRegistrantNames = (
 };
 
 export interface DnsHostChipsProps {
-  data?: DNSZoneDomainRefNameserver[] | DNSZoneDomainRefNameserver['ips'];
+  data?: DnsZoneNameserver[] | DnsZoneNameserverIp[];
   maxVisible?: number;
   wrap?: boolean;
   emptyText?: string;

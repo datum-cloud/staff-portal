@@ -11,9 +11,12 @@ import { toast } from '@/modules/datum-ui/toast';
 import { Text } from '@/modules/datum-ui/typography';
 import { useApp } from '@/providers/app.provider';
 import { sessionDeleteMutation, sessionListQuery } from '@/resources/request/client';
-import { IdentitySession, IdentitySessionListResponse } from '@/resources/schemas';
 import { metaObject } from '@/utils/helpers';
 import { Trans, useLingui } from '@lingui/react/macro';
+import {
+  ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session,
+  ComMiloapisGoMiloPkgApisIdentityV1Alpha1SessionList,
+} from '@openapi/identity.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
@@ -26,7 +29,7 @@ export const meta: Route.MetaFunction = () => {
   return metaObject('Active Sessions');
 };
 
-const columnHelper = createColumnHelper<IdentitySession>();
+const columnHelper = createColumnHelper<ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session>();
 const columns = [
   columnHelper.accessor('metadata.name', {
     header: () => <Trans>Session ID</Trans>,
@@ -61,15 +64,16 @@ const columns = [
 export default function Page() {
   const { t } = useLingui();
   const { user } = useApp();
-  const [selectedSession, setSelectedSession] = useState<IdentitySession | null>(null);
+  const [selectedSession, setSelectedSession] =
+    useState<ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session | null>(null);
 
-  const tableState = useDataTableQuery<IdentitySessionListResponse>({
+  const tableState = useDataTableQuery<ComMiloapisGoMiloPkgApisIdentityV1Alpha1SessionList>({
     queryKeyPrefix: 'sessions',
     fetchFn: (params) => sessionListQuery(user?.metadata.name ?? '', params),
     useSorting: true,
   });
 
-  const actions: ActionItem<IdentitySession>[] = [
+  const actions: ActionItem<ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session>[] = [
     {
       label: t`Delete`,
       icon: Trash2Icon,
@@ -84,7 +88,7 @@ export default function Page() {
         open={!!selectedSession}
         onOpenChange={() => setSelectedSession(null)}
         title={t`Delete Session`}
-        description={t`Are you sure you want to delete session "${selectedSession?.metadata.name}"? This action cannot be undone.`}
+        description={t`Are you sure you want to delete session "${selectedSession?.metadata?.name ?? ''}"? This action cannot be undone.`}
         confirmText={t`Delete`}
         cancelText={t`Cancel`}
         variant="destructive"
@@ -92,7 +96,7 @@ export default function Page() {
         onConfirm={async () => {
           await sessionDeleteMutation(
             user?.metadata.name ?? '',
-            selectedSession?.metadata.name ?? ''
+            selectedSession?.metadata?.name ?? ''
           );
           await new Promise((resolve) =>
             setTimeout(() => resolve(tableState.query.refetch()), 1000)
@@ -102,16 +106,19 @@ export default function Page() {
         }}
       />
 
-      <DataTableProvider<IdentitySession, IdentitySessionListResponse>
+      <DataTableProvider<
+        ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session,
+        ComMiloapisGoMiloPkgApisIdentityV1Alpha1SessionList
+      >
         columns={columns}
         actions={actions}
         transform={(data) => ({
-          rows: data?.data?.items || [],
-          cursor: data?.data?.metadata?.continue,
+          rows: data?.items || [],
+          cursor: data?.metadata?.continue,
         })}
         {...tableState}>
         <div className="m-4 flex flex-col gap-2">
-          <DataTable<IdentitySession> />
+          <DataTable />
         </div>
       </DataTableProvider>
     </>

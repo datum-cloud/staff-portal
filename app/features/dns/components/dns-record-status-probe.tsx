@@ -33,7 +33,7 @@ export function DnsRecordStatusProbe({
     return <BadgeState state="error" tooltip={t`Failed to load DNS record status`} />;
   }
 
-  const status = data?.data?.status;
+  const status = data?.status;
 
   // If programmed (success state), don't show badge
   if (status?.isProgrammed === true) {

@@ -1,9 +1,11 @@
+import { http } from '@/modules/axios/axios.server';
 import { loadCatalog } from '@/modules/i18n/lingui';
 import { linguiServer } from '@/modules/i18n/lingui.server';
 import { NonceProvider } from '@/providers/nonce.provider';
 import { logger } from '@/utils/logger';
 import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
+import { client } from '@openapi/shared/client.gen';
 import { createReadableStreamFromReadable } from '@react-router/node';
 import * as Sentry from '@sentry/react-router';
 import { isbot } from 'isbot';
@@ -11,6 +13,11 @@ import { PassThrough } from 'node:stream';
 import { renderToPipeableStream } from 'react-dom/server';
 import type { AppLoadContext, EntryContext } from 'react-router';
 import { ServerRouter } from 'react-router';
+
+// Configure default client for server-side
+client.setConfig({
+  axios: http,
+});
 
 export const streamTimeout = 5_000;
 

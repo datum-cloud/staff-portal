@@ -1,58 +1,62 @@
 import { apiRequestClient } from '@/modules/axios/axios.client';
 import {
-  GroupListResponseSchema,
   GroupMembershipCreate,
   GroupMembershipCreateSchema,
   GroupMembershipFilters,
-  GroupMembershipListResponseSchema,
   GroupMembershipResponseSchema,
   ListQueryParams,
 } from '@/resources/schemas';
+import {
+  ComMiloapisIamV1Alpha1GroupMembership,
+  createIamMiloapisComV1Alpha1NamespacedGroupMembership,
+  deleteIamMiloapisComV1Alpha1NamespacedGroupMembership,
+  listIamMiloapisComV1Alpha1GroupForAllNamespaces,
+  listIamMiloapisComV1Alpha1GroupMembershipForAllNamespaces,
+} from '@openapi/iam.miloapis.com/v1alpha1';
 
-export const groupListQuery = (params?: ListQueryParams) => {
-  return apiRequestClient({
-    method: 'GET',
-    url: '/apis/iam.miloapis.com/v1alpha1/groups',
-    params: {
-      ...(params?.limit && { limit: params.limit }),
-      ...(params?.cursor && { continue: params.cursor }),
+export const groupListQuery = async (params?: ListQueryParams) => {
+  const response = await listIamMiloapisComV1Alpha1GroupForAllNamespaces({
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
     },
-  })
-    .output(GroupListResponseSchema)
-    .execute();
+  });
+  return response.data.data;
 };
 
-export const groupMembershipListQuery = (params?: ListQueryParams<GroupMembershipFilters>) => {
-  return apiRequestClient({
-    method: 'GET',
-    url: '/apis/iam.miloapis.com/v1alpha1/groupmemberships',
-    params: {
-      ...(params?.limit && { limit: params.limit }),
-      ...(params?.cursor && { continue: params.cursor }),
+export const groupMembershipListQuery = async (
+  params?: ListQueryParams<GroupMembershipFilters>
+) => {
+  const response = await listIamMiloapisComV1Alpha1GroupMembershipForAllNamespaces({
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
       ...(params?.filters?.fieldSelector && { fieldSelector: params.filters.fieldSelector }),
     },
-  })
-    .output(GroupMembershipListResponseSchema)
-    .execute();
+  });
+  return response.data.data;
 };
 
-export const groupMembershipDeleteMutation = (name: string, namespace: string = 'milo-system') => {
-  return apiRequestClient({
-    method: 'DELETE',
-    url: `/apis/iam.miloapis.com/v1alpha1/namespaces/${namespace}/groupmemberships/${name}`,
-  }).execute();
-};
-
-export const groupMembershipCreateMutation = (
-  payload: GroupMembershipCreate,
-  namespace: string = 'milo-system'
+export const groupMembershipDeleteMutation = (
+  metadata: ComMiloapisIamV1Alpha1GroupMembership['metadata']
 ) => {
-  return apiRequestClient({
-    method: 'POST',
-    url: `/apis/iam.miloapis.com/v1alpha1/namespaces/${namespace}/groupmemberships`,
-    data: payload,
-  })
-    .input(GroupMembershipCreateSchema)
-    .output(GroupMembershipResponseSchema)
-    .execute();
+  return deleteIamMiloapisComV1Alpha1NamespacedGroupMembership({
+    path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
+  });
+};
+
+export const groupMembershipCreateMutation = async (
+  namespace: string = 'milo-system',
+  payload: ComMiloapisIamV1Alpha1GroupMembership['spec']
+) => {
+  const response = await createIamMiloapisComV1Alpha1NamespacedGroupMembership({
+    path: { namespace },
+    body: {
+      apiVersion: 'iam.miloapis.com/v1alpha1',
+      kind: 'GroupMembership',
+      metadata: { generateName: 'group-membership-', namespace },
+      spec: payload,
+    },
+  });
+  return response.data.data;
 };

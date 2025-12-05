@@ -6,6 +6,7 @@ import { Button } from '@datum-ui/button';
 import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
 import { useLingui } from '@lingui/react/macro';
+import { ComMiloapisNotificationV1Alpha1ContactGroup } from '@openapi/notification.miloapis.com/v1alpha1';
 import * as React from 'react';
 import { useNavigate } from 'react-router';
 import z from 'zod';
@@ -24,25 +25,17 @@ export const ContactGroupForm: React.FC<Props> = ({ contactGroup }) => {
   });
 
   const onSubmit = async (value: z.infer<typeof contactGroupSchema>) => {
-    const spec: ContactGroupCreate['spec'] = {
+    const spec: ComMiloapisNotificationV1Alpha1ContactGroup['spec'] = {
       displayName: value.display_name,
       visibility: value.visibility || 'public',
     };
 
     if (contactGroup) {
-      await contactGroupUpdateMutation(contactGroup.metadata.name, { spec });
+      await contactGroupUpdateMutation(contactGroup.metadata, spec);
       toast.success(t`Contact group updated successfully`);
     } else {
-      const data = await contactGroupCreateMutation({
-        apiVersion: 'notification.miloapis.com/v1alpha1',
-        kind: 'ContactGroup',
-        spec,
-        metadata: {
-          generateName: 'contact-group-',
-          namespace: 'default',
-        },
-      });
-      navigate(contactGroupRoutes.detail(data.data.metadata.name));
+      const data = await contactGroupCreateMutation('default', spec);
+      navigate(contactGroupRoutes.detail(data.metadata?.name ?? ''));
       toast.success(t`Contact group created successfully`);
     }
   };

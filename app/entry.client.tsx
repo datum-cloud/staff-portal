@@ -1,8 +1,10 @@
+import { httpClient } from '@/modules/axios/axios.client';
 import { loadCatalog } from '@/modules/i18n/lingui';
 import { logger } from '@/utils/logger';
 import { i18n } from '@lingui/core';
 import { detect, fromHtmlTag } from '@lingui/detect-locale';
 import { I18nProvider } from '@lingui/react';
+import { client } from '@openapi/shared/client.gen';
 import * as Sentry from '@sentry/react-router';
 import { StrictMode, startTransition } from 'react';
 import { hydrateRoot } from 'react-dom/client';
@@ -47,6 +49,11 @@ Sentry.init({
 
   // Release name
   release: env?.VERSION || 'dev',
+});
+
+// Configure default client for client-side (goes through /api/internal proxy)
+client.setConfig({
+  axios: httpClient,
 });
 
 async function main() {

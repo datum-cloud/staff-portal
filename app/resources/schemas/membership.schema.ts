@@ -207,7 +207,7 @@ const TeamMemberSchema = z.object({
   givenName: z.string(),
   familyName: z.string(),
   email: z.string(),
-  roles: z.array(z.object({ name: z.string(), namespace: z.string() })).optional(),
+  roles: z.array(z.object({ name: z.string(), namespace: z.string().optional() })).optional(),
   invitationState: z.enum(['Pending', 'Accepted', 'Declined']).optional(),
   type: z.enum(['member', 'invitation']),
   name: z.string(),

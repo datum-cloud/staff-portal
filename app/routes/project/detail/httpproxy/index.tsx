@@ -1,13 +1,16 @@
-import { useProjectDetailData, getProjectDetailMetadata } from '../../shared';
+import { getProjectDetailMetadata, useProjectDetailData } from '../../shared';
 import type { Route } from './+types/index';
 import { BadgeCondition } from '@/components/badge';
 import { DateFormatter } from '@/components/date';
 import { projectHttpProxyListQuery } from '@/resources/request/client';
-import { HTTPProxy, HTTPProxyListResponse } from '@/resources/schemas';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
 import { Trans } from '@lingui/react/macro';
+import {
+  ComDatumapisNetworkingV1AlphaHttpProxy,
+  ComDatumapisNetworkingV1AlphaHttpProxyList,
+} from '@openapi/networking.datumapis.com/v1alpha';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Link } from 'react-router';
 
@@ -16,12 +19,12 @@ export const meta: Route.MetaFunction = ({ matches }) => {
   return metaObject(`HTTPProxy - ${projectName}`);
 };
 
-const columnHelper = createColumnHelper<HTTPProxy>();
+const columnHelper = createColumnHelper<ComDatumapisNetworkingV1AlphaHttpProxy>();
 
 export default function Page() {
   const { project } = useProjectDetailData();
 
-  const tableState = useDataTableQuery<HTTPProxyListResponse>({
+  const tableState = useDataTableQuery<ComDatumapisNetworkingV1AlphaHttpProxyList>({
     queryKeyPrefix: ['projects', project.metadata.name, 'http-proxies'],
     fetchFn: (params) => projectHttpProxyListQuery(project.metadata.name, params),
     useSorting: true,
@@ -31,7 +34,7 @@ export default function Page() {
     columnHelper.accessor('metadata.name', {
       header: () => <Trans>Name</Trans>,
       cell: ({ getValue }) => (
-        <Link to={projectRoutes.httpProxy.detail(project.metadata.name, getValue())}>
+        <Link to={projectRoutes.httpProxy.detail(project.metadata.name, getValue() ?? '')}>
           {getValue()}
         </Link>
       ),
@@ -40,8 +43,8 @@ export default function Page() {
       header: () => <Trans>Endpoint</Trans>,
       cell: ({ getValue }) => (
         <div className="flex flex-col gap-2">
-          {getValue().map((rule, index) => (
-            <div key={index}>{rule.backends.map((backend) => backend.endpoint).join(', ')}</div>
+          {getValue()?.map((rule, index) => (
+            <div key={index}>{rule.backends?.map((backend) => backend.endpoint).join(', ')}</div>
           ))}
         </div>
       ),
@@ -59,15 +62,18 @@ export default function Page() {
   ];
 
   return (
-    <DataTableProvider<HTTPProxy, HTTPProxyListResponse>
+    <DataTableProvider<
+      ComDatumapisNetworkingV1AlphaHttpProxy,
+      ComDatumapisNetworkingV1AlphaHttpProxyList
+    >
       columns={columns}
       transform={(data) => ({
-        rows: data?.data?.items || [],
-        cursor: data?.data?.metadata?.continue,
+        rows: data?.items || [],
+        cursor: data?.metadata?.continue,
       })}
       {...tableState}>
       <div className="m-4 flex flex-col gap-2">
-        <DataTable<HTTPProxy> />
+        <DataTable />
       </div>
     </DataTableProvider>
   );

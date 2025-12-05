@@ -1,118 +1,126 @@
-import { apiRequestClient } from '@/modules/axios/axios.client';
+import { PROXY_URL } from '@/modules/axios/axios.client';
+import { ListQueryParams, TeamMember } from '@/resources/schemas';
 import {
-  ListQueryParams,
-  MemberInvitationCreate,
-  MemberInvitationListResponse,
-  MemberInvitationListResponseSchema,
-  MemberInvitationResponseSchema,
-  MemberListResponseSchema,
-  OrganizationListResponseSchema,
-  ProjectListResponseSchema,
-  TeamMember,
-} from '@/resources/schemas';
+  ComMiloapisIamV1Alpha1UserInvitation,
+  createIamMiloapisComV1Alpha1NamespacedUserInvitation,
+  deleteIamMiloapisComV1Alpha1NamespacedUserInvitation,
+  listIamMiloapisComV1Alpha1NamespacedUserInvitation,
+} from '@openapi/iam.miloapis.com/v1alpha1';
+import {
+  deleteResourcemanagerMiloapisComV1Alpha1Organization,
+  listResourcemanagerMiloapisComV1Alpha1NamespacedOrganizationMembership,
+  listResourcemanagerMiloapisComV1Alpha1Organization,
+  listResourcemanagerMiloapisComV1Alpha1Project,
+} from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
 
-export const orgListQuery = (params?: ListQueryParams) => {
-  return apiRequestClient({
-    method: 'GET',
-    url: '/apis/resourcemanager.miloapis.com/v1alpha1/organizations',
-    params: {
-      ...(params?.limit && { limit: params.limit }),
-      ...(params?.cursor && { continue: params.cursor }),
+export const orgListQuery = async (params?: ListQueryParams) => {
+  const response = await listResourcemanagerMiloapisComV1Alpha1Organization({
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
       ...(params?.search && { fieldSelector: `metadata.name=${params.search}` }),
     },
-  })
-    .output(OrganizationListResponseSchema)
-    .execute();
+  });
+  return response.data.data;
 };
 
-export const orgProjectListQuery = (orgName: string, params?: ListQueryParams) => {
-  return apiRequestClient({
-    method: 'GET',
-    url: `/apis/resourcemanager.miloapis.com/v1alpha1/organizations/${orgName}/control-plane/apis/resourcemanager.miloapis.com/v1alpha1/projects`,
-    params: {
-      ...(params?.limit && { limit: params.limit }),
-      ...(params?.cursor && { continue: params.cursor }),
+export const orgProjectListQuery = async (orgName: string, params?: ListQueryParams) => {
+  const response = await listResourcemanagerMiloapisComV1Alpha1Project({
+    baseURL: `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/organizations/${orgName}/control-plane`,
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
     },
-  })
-    .output(ProjectListResponseSchema)
-    .execute();
+  });
+  return response.data.data;
 };
 
 export const orgMemberListQuery = async (orgName: string, params?: ListQueryParams) => {
-  const memberList = await apiRequestClient({
-    method: 'GET',
-    url: `/apis/resourcemanager.miloapis.com/v1alpha1/namespaces/organization-${orgName}/organizationmemberships`,
-    params: {
-      ...(params?.limit && { limit: params.limit }),
-      ...(params?.cursor && { continue: params.cursor }),
-    },
-  })
-    .output(MemberListResponseSchema)
-    .execute();
+  const memberResponse =
+    await listResourcemanagerMiloapisComV1Alpha1NamespacedOrganizationMembership({
+      path: {
+        namespace: `organization-${orgName}`,
+      },
+      query: {
+        limit: params?.limit,
+        continue: params?.cursor,
+      },
+    });
+  const memberList = memberResponse.data.data;
 
-  const invitationList = await apiRequestClient({
-    method: 'GET',
-    url: `/apis/iam.miloapis.com/v1alpha1/namespaces/organization-${orgName}/userinvitations`,
-    params: {
-      ...(params?.limit && { limit: params.limit }),
-      ...(params?.cursor && { continue: params.cursor }),
+  const invitationResponse = await listIamMiloapisComV1Alpha1NamespacedUserInvitation({
+    path: {
+      namespace: `organization-${orgName}`,
     },
-  })
-    .output(MemberInvitationListResponseSchema)
-    .execute();
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
+    },
+  });
+  const invitationList = invitationResponse.data.data;
 
-  const members: TeamMember[] = memberList.data.items.map((member) => ({
+  const members: TeamMember[] = memberList.items.map((member) => ({
     givenName: member.status?.user?.givenName ?? '',
     familyName: member.status?.user?.familyName ?? '',
     email: member.status?.user?.email || '',
-    roles: undefined,
+    roles: member.spec?.roles ?? [],
     type: 'member' as const,
-    name: member.spec.userRef.name,
+    name: member.spec?.userRef?.name ?? '',
     invitationState: undefined,
-    createdAt: member.metadata.creationTimestamp,
+    createdAt: member.metadata?.creationTimestamp ?? '',
   }));
 
-  const invitations: TeamMember[] = invitationList.data.items.map((invitation) => ({
-    givenName: invitation.spec.givenName ?? '',
-    familyName: invitation.spec.familyName ?? '',
-    email: invitation.spec.email,
-    roles: invitation.spec.roles,
+  const invitations: TeamMember[] = invitationList.items.map((invitation) => ({
+    givenName: invitation.spec?.givenName ?? '',
+    familyName: invitation.spec?.familyName ?? '',
+    email: invitation.spec?.email ?? '',
+    roles: invitation.spec?.roles ?? [],
     type: 'invitation' as const,
-    name: invitation.metadata.name,
-    invitationState: invitation.spec.state,
-    createdAt: invitation.metadata.creationTimestamp,
+    name: invitation.metadata?.name ?? '',
+    invitationState: invitation.spec?.state ?? undefined,
+    createdAt: invitation.metadata?.creationTimestamp ?? '',
   }));
 
-  return {
-    code: 'API_REQUEST_SUCCESS',
-    data: [...members, ...invitations],
-    path: `/apis/resourcemanager.miloapis.com/v1alpha1/namespaces/organization-${orgName}/organizationmemberships`,
-  };
+  return [...members, ...invitations];
 };
 
-export const orgInvitationCreateMutation = (orgName: string, payload: MemberInvitationCreate) => {
-  return apiRequestClient({
-    method: 'POST',
-    url: `/apis/iam.miloapis.com/v1alpha1/namespaces/organization-${orgName}/userinvitations`,
-    data: payload,
-  })
-    .output(MemberInvitationResponseSchema)
-    .execute();
+export const orgInvitationCreateMutation = async (
+  orgName: string,
+  payload: ComMiloapisIamV1Alpha1UserInvitation['spec']
+) => {
+  const response = await createIamMiloapisComV1Alpha1NamespacedUserInvitation({
+    path: {
+      namespace: `organization-${orgName}`,
+    },
+    body: {
+      apiVersion: 'iam.miloapis.com/v1alpha1',
+      kind: 'UserInvitation',
+      metadata: {
+        generateName: 'user-invitation-',
+      },
+      spec: payload,
+    },
+  });
+
+  return response.data.data;
 };
 
-export const orgInvitationDeleteMutation = (orgName: string, name: string) => {
-  return apiRequestClient({
-    method: 'DELETE',
-    url: `/apis/iam.miloapis.com/v1alpha1/namespaces/organization-${orgName}/userinvitations/${name}`,
-  }).execute();
+export const orgInvitationDeleteMutation = async (orgName: string, name: string) => {
+  return deleteIamMiloapisComV1Alpha1NamespacedUserInvitation({
+    path: {
+      namespace: `organization-${orgName}`,
+      name,
+    },
+  });
 };
 
 export const orgDeleteMutation = (orgName: string) => {
-  return apiRequestClient({
-    method: 'DELETE',
-    url: `/apis/resourcemanager.miloapis.com/v1alpha1/organizations/${orgName}`,
-  }).execute();
+  return deleteResourcemanagerMiloapisComV1Alpha1Organization({
+    path: {
+      name: orgName,
+    },
+  });
 };
 
 export const useOrgListQuery = (params?: ListQueryParams) => {

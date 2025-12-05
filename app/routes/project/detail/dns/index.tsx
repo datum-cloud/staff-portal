@@ -4,11 +4,14 @@ import { BadgeProgrammingError } from '@/components/badge';
 import { DateFormatter } from '@/components/date';
 import { DnsHostChips } from '@/features/dns';
 import { projectDnsListQuery } from '@/resources/request/client';
-import { DNSZone, DNSZoneListResponse } from '@/resources/schemas';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject, transformControlPlaneStatus } from '@/utils/helpers';
 import { DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
 import { Trans } from '@lingui/react/macro';
+import {
+  ComMiloapisNetworkingDnsV1Alpha1DnsZone,
+  ComMiloapisNetworkingDnsV1Alpha1DnsZoneList,
+} from '@openapi/dns.networking.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Loader2Icon } from 'lucide-react';
 import { Link } from 'react-router';
@@ -18,12 +21,12 @@ export const meta: Route.MetaFunction = ({ matches }) => {
   return metaObject(`DNS - ${projectName}`);
 };
 
-const columnHelper = createColumnHelper<DNSZone>();
+const columnHelper = createColumnHelper<ComMiloapisNetworkingDnsV1Alpha1DnsZone>();
 
 export default function Page() {
   const { project } = useProjectDetailData();
 
-  const tableState = useDataTableQuery<DNSZoneListResponse>({
+  const tableState = useDataTableQuery<ComMiloapisNetworkingDnsV1Alpha1DnsZoneList>({
     queryKeyPrefix: ['projects', project.metadata.name, 'dns'],
     fetchFn: (params) => projectDnsListQuery(project.metadata.name, params),
     useSorting: true,
@@ -41,8 +44,8 @@ export default function Page() {
             <Link
               to={projectRoutes.dns.detail(
                 project.metadata.name,
-                row.original.metadata.namespace,
-                row.original.metadata.name
+                row.original.metadata?.namespace ?? '',
+                row.original.metadata?.name ?? ''
               )}>
               <span className="font-medium">{row.original.spec.domainName}</span>
             </Link>
@@ -63,7 +66,7 @@ export default function Page() {
           return <Loader2Icon className="text-muted-foreground size-4 animate-spin" />;
         }
 
-        return <DnsHostChips data={getValue()} maxVisible={2} />;
+        return <DnsHostChips data={getValue() ?? []} maxVisible={2} />;
       },
     }),
     columnHelper.accessor('status.recordCount', {
@@ -74,7 +77,7 @@ export default function Page() {
       header: () => <Trans>Created</Trans>,
       cell: ({ getValue }) => <DateFormatter date={getValue()} withTime />,
     }),
-    columnHelper.accessor((row) => row.metadata.annotations?.['kubernetes.io/description'], {
+    columnHelper.accessor((row) => row.metadata?.annotations?.['kubernetes.io/description'], {
       id: 'description',
       header: () => <Trans>Description</Trans>,
       cell: ({ getValue }) => getValue() ?? '-',
@@ -82,15 +85,18 @@ export default function Page() {
   ];
 
   return (
-    <DataTableProvider<DNSZone, DNSZoneListResponse>
+    <DataTableProvider<
+      ComMiloapisNetworkingDnsV1Alpha1DnsZone,
+      ComMiloapisNetworkingDnsV1Alpha1DnsZoneList
+    >
       columns={columns}
       transform={(data) => ({
-        rows: data?.data?.items || [],
-        cursor: data?.data?.metadata?.continue,
+        rows: data?.items || [],
+        cursor: data?.metadata?.continue,
       })}
       {...tableState}>
       <div className="m-4 flex flex-col gap-2">
-        <DataTable<DNSZone> />
+        <DataTable />
       </div>
     </DataTableProvider>
   );

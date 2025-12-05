@@ -1,8 +1,12 @@
 import { Chip } from '@/components/chip';
-import { Domain } from '@/resources/schemas';
+import { ComDatumapisNetworkingV1AlphaDomain } from '@openapi/networking.datumapis.com/v1alpha';
+
+// Extract nameservers type from OpenAPI generated type
+type DomainStatus = NonNullable<ComDatumapisNetworkingV1AlphaDomain['status']>;
+type DomainNameservers = DomainStatus['nameservers'];
 
 export interface DomainDnsProvidersProps {
-  nameservers?: Domain['status']['nameservers'];
+  nameservers?: DomainNameservers;
   maxVisible?: number;
   wrap?: boolean;
 }

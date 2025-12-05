@@ -1,12 +1,13 @@
 import { projectDomainStatusQuery } from '@/resources/request/client';
-import { ControlPlaneStatus, Domain } from '@/resources/schemas';
+import { ControlPlaneStatus } from '@/resources/schemas';
 import { transformControlPlaneStatus } from '@/utils/helpers/control-plane.helper';
+import { ComDatumapisNetworkingV1AlphaDomain } from '@openapi/networking.datumapis.com/v1alpha';
 import { useQuery } from '@tanstack/react-query';
 
 type UseDomainStatusOptions = {
   enabled?: boolean;
   refetchIntervalMs?: number | false;
-  initialDomainStatus?: Domain['status'];
+  initialDomainStatus?: ComDatumapisNetworkingV1AlphaDomain['status'];
 };
 
 export function useDomainStatus(
@@ -41,11 +42,10 @@ export function useDomainStatus(
     queryFn: () => projectDomainStatusQuery(projectName, domainName as string, namespace),
     initialData: initialDomainStatus
       ? {
-          code: '200',
-          data: {
-            status: initialDomainStatus,
-          } as Domain,
-          path: '',
+          status: initialDomainStatus,
+          spec: {
+            domainName: domainName as string,
+          },
         }
       : undefined,
     refetchInterval: enabled

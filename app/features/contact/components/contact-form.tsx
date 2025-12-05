@@ -13,6 +13,10 @@ import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
 import { Text } from '@datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
+import {
+  createNotificationMiloapisComV1Alpha1NamespacedContact,
+  patchNotificationMiloapisComV1Alpha1NamespacedContact,
+} from '@openapi/notification.miloapis.com/v1alpha1';
 import { Loader2 } from 'lucide-react';
 import * as React from 'react';
 import { Link, useNavigate } from 'react-router';
@@ -58,61 +62,45 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
     );
 
   const onSubmit = async (value: z.infer<typeof contactSchema>) => {
-    console.log(value);
     if (contact) {
-      await contactUpdateMutation(contact.metadata.name, {
-        spec: {
-          familyName: value.last_name,
-          givenName: value.first_name,
-          email: value.email,
-        },
+      await contactUpdateMutation(contact.metadata, {
+        familyName: value.last_name,
+        givenName: value.first_name,
+        email: value.email,
       });
       toast.success(t`Contact updated successfully`);
     } else {
-      const data = await contactCreateMutation({
-        apiVersion: 'notification.miloapis.com/v1alpha1',
-        kind: 'Contact',
-        metadata: {
-          generateName: 'contact-',
-          namespace: 'default',
-        },
-        spec: {
-          familyName: value.last_name,
-          givenName: value.first_name,
-          email: value.email,
-          ...(value.has_association &&
-            value.subject && {
-              subject: {
-                apiGroup: 'iam.miloapis.com',
-                kind: 'User',
-                name: value.subject,
-                namespace: '',
-              },
-            }),
-        },
+      const response = await contactCreateMutation('default', {
+        familyName: value.last_name,
+        givenName: value.first_name,
+        email: value.email,
+        ...(value.has_association &&
+          value.subject && {
+            subject: {
+              apiGroup: 'iam.miloapis.com',
+              kind: 'User',
+              name: value.subject,
+              namespace: '',
+            },
+          }),
       });
+
+      const contactName = response.metadata?.name ?? '';
+      const contactNamespace = response.metadata?.namespace ?? '';
 
       // Auto associate with groups
       if (value.groups?.length) {
         await Promise.all(
           value.groups.map(async (group) => {
-            await contactGroupMembershipCreateMutation({
-              apiVersion: 'notification.miloapis.com/v1alpha1',
-              kind: 'ContactGroupMembership',
-              metadata: {
-                generateName: 'contact-group-membership-',
-                namespace: 'default',
-              },
-              spec: {
-                contactGroupRef: { name: group, namespace: 'default' },
-                contactRef: { name: data.data.metadata.name, namespace: 'default' },
-              },
+            await contactGroupMembershipCreateMutation('default', {
+              contactGroupRef: { name: group, namespace: 'default' },
+              contactRef: { name: contactName, namespace: contactNamespace },
             });
           })
         );
       }
 
-      navigate(contactRoutes.edit(data.data.metadata.namespace, data.data.metadata.name));
+      navigate(contactRoutes.edit(contactNamespace, contactName));
       toast.success(t`Contact created successfully`);
     }
   };
@@ -159,9 +147,11 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
                 </div>
               ) : (
                 <Form.CheckboxGroup field="groups" label={t`Mail Lists`}>
-                  {(contactGroups?.data?.items ?? []).map((group) => (
-                    <Form.CheckboxItem key={group.metadata.name} value={group.metadata.name}>
-                      {group.spec.displayName}
+                  {(contactGroups?.items ?? []).map((group) => (
+                    <Form.CheckboxItem
+                      key={group.metadata?.name ?? ''}
+                      value={group.metadata?.name ?? ''}>
+                      {group.spec?.displayName ?? ''}
                     </Form.CheckboxItem>
                   ))}
                 </Form.CheckboxGroup>

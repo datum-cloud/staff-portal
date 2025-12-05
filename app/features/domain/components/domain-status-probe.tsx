@@ -44,7 +44,7 @@ export function DomainStatusProbe({
     return <BadgeState state="error" message={t`Failed to load status`} />;
   }
 
-  const status = data?.data?.status;
+  const status = data?.status;
   const conditions = (status?.conditions ?? []) as Array<{
     type: string;
     status: 'True' | 'False' | 'Unknown';

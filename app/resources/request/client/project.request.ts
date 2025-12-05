@@ -1,69 +1,68 @@
-import { apiRequestClient } from '@/modules/axios/axios.client';
-import {
-  DNSRecordListResponseSchema,
-  DNSRecordResponseSchema,
-  DNSZoneListResponseSchema,
-  DomainListResponseSchema,
-  DomainResponseSchema,
-  ExportPolicyListResponseSchema,
-  HTTPProxyListResponseSchema,
-  ListQueryParams,
-  ProjectListResponseSchema,
-} from '@/resources/schemas';
+import { PROXY_URL } from '@/modules/axios/axios.client';
+import { ListQueryParams } from '@/resources/schemas';
 import { flattenManagedRecordSets } from '@/utils/helpers';
+import {
+  listDnsNetworkingMiloapisComV1Alpha1DnsZoneForAllNamespaces,
+  listDnsNetworkingMiloapisComV1Alpha1NamespacedDnsRecordSet,
+  readDnsNetworkingMiloapisComV1Alpha1NamespacedDnsRecordSetStatus,
+} from '@openapi/dns.networking.miloapis.com/v1alpha1';
+import {
+  listNetworkingDatumapisComV1AlphaDomainForAllNamespaces,
+  listNetworkingDatumapisComV1AlphaHttpProxyForAllNamespaces,
+  readNetworkingDatumapisComV1AlphaNamespacedDomainStatus,
+} from '@openapi/networking.datumapis.com/v1alpha';
+import {
+  deleteResourcemanagerMiloapisComV1Alpha1Project,
+  listResourcemanagerMiloapisComV1Alpha1Project,
+} from '@openapi/resourcemanager.miloapis.com/v1alpha1';
+import { listTelemetryMiloapisComV1Alpha1ExportPolicyForAllNamespaces } from '@openapi/telemetry.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
 
-export const projectListQuery = (params?: ListQueryParams) => {
-  return apiRequestClient({
-    method: 'GET',
-    url: '/apis/resourcemanager.miloapis.com/v1alpha1/projects',
-    params: {
-      ...(params?.limit && { limit: params.limit }),
-      ...(params?.cursor && { continue: params.cursor }),
+export const projectListQuery = async (params?: ListQueryParams) => {
+  const response = await listResourcemanagerMiloapisComV1Alpha1Project({
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
       ...(params?.search && { fieldSelector: `metadata.name=${params.search}` }),
     },
-  })
-    .output(ProjectListResponseSchema)
-    .execute();
+  });
+  return response.data.data;
 };
 
-export const projectHttpProxyListQuery = (projectName: string, params?: ListQueryParams) => {
-  return apiRequestClient({
-    method: 'GET',
-    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/networking.datumapis.com/v1alpha/httpproxies`,
-    params: {
-      ...(params?.limit && { limit: params.limit }),
-      ...(params?.cursor && { continue: params.cursor }),
+export const projectHttpProxyListQuery = async (projectName: string, params?: ListQueryParams) => {
+  const response = await listNetworkingDatumapisComV1AlphaHttpProxyForAllNamespaces({
+    baseURL: `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
     },
-  })
-    .output(HTTPProxyListResponseSchema)
-    .execute();
+  });
+  return response.data.data;
 };
 
-export const projectExportPolicyListQuery = (projectName: string, params?: ListQueryParams) => {
-  return apiRequestClient({
-    method: 'GET',
-    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/telemetry.miloapis.com/v1alpha1/exportpolicies`,
-    params: {
-      ...(params?.limit && { limit: params.limit }),
-      ...(params?.cursor && { continue: params.cursor }),
+export const projectExportPolicyListQuery = async (
+  projectName: string,
+  params?: ListQueryParams
+) => {
+  const response = await listTelemetryMiloapisComV1Alpha1ExportPolicyForAllNamespaces({
+    baseURL: `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
     },
-  })
-    .output(ExportPolicyListResponseSchema)
-    .execute();
+  });
+  return response.data.data;
 };
 
-export const projectDnsListQuery = (projectName: string, params?: ListQueryParams) => {
-  return apiRequestClient({
-    method: 'GET',
-    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/dns.networking.miloapis.com/v1alpha1/dnszones`,
-    params: {
-      ...(params?.limit && { limit: params.limit }),
-      ...(params?.cursor && { continue: params.cursor }),
+export const projectDnsListQuery = async (projectName: string, params?: ListQueryParams) => {
+  const response = await listDnsNetworkingMiloapisComV1Alpha1DnsZoneForAllNamespaces({
+    baseURL: `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
     },
-  })
-    .output(DNSZoneListResponseSchema)
-    .execute();
+  });
+  return response.data.data;
 };
 
 export const projectDnsRecordListQuery = async (
@@ -71,64 +70,68 @@ export const projectDnsRecordListQuery = async (
   dnsName: string,
   namespace: string = 'default'
 ) => {
-  const response = await apiRequestClient({
-    method: 'GET',
-    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/dns.networking.miloapis.com/v1alpha1/namespaces/${namespace}/dnsrecordsets`,
-    params: {
+  const response = await listDnsNetworkingMiloapisComV1Alpha1NamespacedDnsRecordSet({
+    baseURL: `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    path: {
+      namespace,
+    },
+    query: {
       fieldSelector: `spec.dnsZoneRef.name=${dnsName}`,
     },
-  })
-    .output(DNSRecordListResponseSchema)
-    .execute();
+  });
 
-  const flattened = flattenManagedRecordSets(response.data);
+  const flattened = flattenManagedRecordSets(response.data.data);
   return { ...response, data: flattened };
 };
 
-export const projectDnsRecordStatusQuery = (
+export const projectDnsRecordStatusQuery = async (
   projectName: string,
   dnsRecordName: string,
   namespace: string = 'default'
 ) => {
-  return apiRequestClient({
-    method: 'GET',
-    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/dns.networking.miloapis.com/v1alpha1/namespaces/${namespace}/dnsrecordsets/${dnsRecordName}/status`,
-  })
-    .output(DNSRecordResponseSchema)
-    .execute();
+  const response = await readDnsNetworkingMiloapisComV1Alpha1NamespacedDnsRecordSetStatus({
+    baseURL: `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    path: {
+      namespace,
+      name: dnsRecordName,
+    },
+  });
+
+  return response.data.data;
 };
 
-export const projectDomainListQuery = (projectName: string, params?: ListQueryParams) => {
-  return apiRequestClient({
-    method: 'GET',
-    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/networking.datumapis.com/v1alpha/domains`,
-    params: {
+export const projectDomainListQuery = async (projectName: string, params?: ListQueryParams) => {
+  const response = await listNetworkingDatumapisComV1AlphaDomainForAllNamespaces({
+    baseURL: `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    query: {
       ...(params?.limit && { limit: params.limit }),
       ...(params?.cursor && { continue: params.cursor }),
     },
-  })
-    .output(DomainListResponseSchema)
-    .execute();
+  });
+  return response.data.data;
 };
 
-export const projectDomainStatusQuery = (
+export const projectDomainStatusQuery = async (
   projectName: string,
   domainName: string,
   namespace: string = 'default'
 ) => {
-  return apiRequestClient({
-    method: 'GET',
-    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane/apis/networking.datumapis.com/v1alpha/namespaces/${namespace}/domains/${domainName}/status`,
-  })
-    .output(DomainResponseSchema)
-    .execute();
+  const response = await readNetworkingDatumapisComV1AlphaNamespacedDomainStatus({
+    baseURL: `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    path: {
+      namespace,
+      name: domainName,
+    },
+  });
+  return response.data.data;
 };
 
 export const projectDeleteMutation = (projectName: string) => {
-  return apiRequestClient({
-    method: 'DELETE',
-    url: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}`,
-  }).execute();
+  return deleteResourcemanagerMiloapisComV1Alpha1Project({
+    path: {
+      name: projectName,
+    },
+  });
 };
 
 export const useProjectListQuery = (params?: ListQueryParams) => {

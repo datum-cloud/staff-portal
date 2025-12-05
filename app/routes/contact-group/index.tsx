@@ -5,7 +5,6 @@ import { DateFormatter } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
 import { contactGroupDeleteMutation, contactGroupListQuery } from '@/resources/request/client';
-import { ContactGroup, ContactGroupListResponse } from '@/resources/schemas';
 import { contactGroupRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-ui/button';
@@ -13,6 +12,10 @@ import { ActionItem, DataTable, DataTableProvider, useDataTableQuery } from '@da
 import { toast } from '@datum-ui/toast';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import {
+  ComMiloapisNotificationV1Alpha1ContactGroup,
+  ComMiloapisNotificationV1Alpha1ContactGroupList,
+} from '@openapi/notification.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { EditIcon, PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
@@ -22,16 +25,16 @@ export const meta: Route.MetaFunction = () => {
   return metaObject(t`Contact Groups`);
 };
 
-const columnHelper = createColumnHelper<ContactGroup>();
+const columnHelper = createColumnHelper<ComMiloapisNotificationV1Alpha1ContactGroup>();
 const columns = [
   columnHelper.accessor('metadata.name', {
     header: () => <Trans>Name</Trans>,
     cell: ({ row }) => {
-      const contactGroupName = row.original.metadata.name;
+      const contactGroupName = row.original.metadata?.name ?? '';
 
       return (
         <DisplayName
-          displayName={row.original.spec.displayName}
+          displayName={row.original.spec?.displayName ?? ''}
           name={contactGroupName}
           to={`./${contactGroupName}`}
         />
@@ -58,18 +61,19 @@ const columns = [
 
 export default function Page() {
   const navigate = useNavigate();
-  const [selectedContactGroup, setSelectedContactGroup] = useState<ContactGroup | null>(null);
-  const tableState = useDataTableQuery<ContactGroupListResponse>({
+  const [selectedContactGroup, setSelectedContactGroup] =
+    useState<ComMiloapisNotificationV1Alpha1ContactGroup | null>(null);
+  const tableState = useDataTableQuery<ComMiloapisNotificationV1Alpha1ContactGroupList>({
+    useSorting: true,
     queryKeyPrefix: 'contact-groups',
     fetchFn: contactGroupListQuery,
-    useSorting: true,
   });
 
-  const actions: ActionItem<ContactGroup>[] = [
+  const actions: ActionItem<ComMiloapisNotificationV1Alpha1ContactGroup>[] = [
     {
       label: 'Edit',
       icon: EditIcon,
-      onClick: (row) => navigate(contactGroupRoutes.detail(row.metadata.name)),
+      onClick: (row) => navigate(contactGroupRoutes.detail(row.metadata?.name ?? '')),
     },
     {
       label: 'Delete',
@@ -99,7 +103,7 @@ export default function Page() {
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={async () => {
-          await contactGroupDeleteMutation(selectedContactGroup?.metadata?.name ?? '');
+          await contactGroupDeleteMutation(selectedContactGroup?.metadata);
           await new Promise((resolve) =>
             setTimeout(() => resolve(tableState.query.refetch()), 1000)
           );
@@ -108,13 +112,16 @@ export default function Page() {
         }}
       />
 
-      <DataTableProvider<ContactGroup, ContactGroupListResponse>
+      <DataTableProvider<
+        ComMiloapisNotificationV1Alpha1ContactGroup,
+        ComMiloapisNotificationV1Alpha1ContactGroupList
+      >
         {...tableState}
         actions={actions}
         columns={columns}
         transform={(data) => ({
-          rows: data?.data?.items || [],
-          cursor: data?.data?.metadata?.continue,
+          rows: data.items || [],
+          cursor: data.metadata?.continue,
         })}>
         <div className="m-4 flex flex-col gap-2">
           <DataTable />

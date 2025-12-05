@@ -5,7 +5,6 @@ import { DateFormatter } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
 import { contactDeleteMutation, contactListQuery } from '@/resources/request/client';
-import { Contact, ContactListResponse } from '@/resources/schemas';
 import { contactRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-ui/button';
@@ -13,6 +12,11 @@ import { ActionItem, DataTable, DataTableProvider, useDataTableQuery } from '@da
 import { toast } from '@datum-ui/toast';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import {
+  type ComMiloapisNotificationV1Alpha1Contact,
+  type ComMiloapisNotificationV1Alpha1ContactList,
+} from '@openapi/notification.miloapis.com/v1alpha1';
+import type { ProxyResponse } from '@openapi/shared/core/types.gen';
 import { createColumnHelper } from '@tanstack/react-table';
 import { EditIcon, PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
@@ -22,13 +26,13 @@ export const meta: Route.MetaFunction = () => {
   return metaObject(t`Contacts`);
 };
 
-const columnHelper = createColumnHelper<Contact>();
+const columnHelper = createColumnHelper<ComMiloapisNotificationV1Alpha1Contact>();
 const columns = [
   columnHelper.accessor('metadata.name', {
     header: () => <Trans>Name</Trans>,
     cell: ({ row }) => {
-      const contactName = row.original.metadata.name;
-      const displayName = [row.original.spec.givenName, row.original.spec.familyName]
+      const contactName = row.original.metadata?.name ?? '';
+      const displayName = [row.original.spec?.givenName, row.original.spec?.familyName]
         .filter(Boolean)
         .join(' ');
 
@@ -36,7 +40,7 @@ const columns = [
         <DisplayName
           displayName={displayName || contactName}
           name={contactName}
-          to={contactRoutes.edit(row.original.metadata.namespace, contactName)}
+          to={contactRoutes.edit(row.original.metadata?.namespace ?? '', contactName)}
         />
       );
     },
@@ -64,18 +68,21 @@ const columns = [
 
 export default function Page() {
   const navigate = useNavigate();
-  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
-  const tableState = useDataTableQuery<ContactListResponse>({
+  const [selectedContact, setSelectedContact] =
+    useState<ComMiloapisNotificationV1Alpha1Contact | null>(null);
+  const tableState = useDataTableQuery<ComMiloapisNotificationV1Alpha1ContactList>({
+    useSorting: true,
     queryKeyPrefix: 'contacts',
     fetchFn: contactListQuery,
-    useSorting: true,
   });
 
-  const actions: ActionItem<Contact>[] = [
+  const actions: ActionItem<ComMiloapisNotificationV1Alpha1Contact>[] = [
     {
       label: 'Edit',
       icon: EditIcon,
-      onClick: (row) => navigate(contactRoutes.edit(row.metadata.namespace, row.metadata.name)),
+      onClick: (row) => {
+        navigate(contactRoutes.edit(row.metadata?.namespace ?? '', row.metadata?.name ?? ''));
+      },
     },
     {
       label: 'Delete',
@@ -105,7 +112,7 @@ export default function Page() {
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={async () => {
-          await contactDeleteMutation(selectedContact?.metadata?.name ?? '');
+          await contactDeleteMutation(selectedContact?.metadata);
           await new Promise((resolve) =>
             setTimeout(() => resolve(tableState.query.refetch()), 1000)
           );
@@ -114,13 +121,16 @@ export default function Page() {
         }}
       />
 
-      <DataTableProvider<Contact, ContactListResponse>
+      <DataTableProvider<
+        ComMiloapisNotificationV1Alpha1Contact,
+        ComMiloapisNotificationV1Alpha1ContactList
+      >
         {...tableState}
         actions={actions}
         columns={columns}
         transform={(data) => ({
-          rows: data?.data?.items || [],
-          cursor: data?.data?.metadata?.continue,
+          rows: data.items || [],
+          cursor: data.metadata?.continue,
         })}>
         <div className="m-4 flex flex-col gap-2">
           <DataTable />
