@@ -28,6 +28,11 @@ jobs:
     secrets: inherit
 
   publish-kustomize-bundles:
+    # Add explicit dependency so that the kustomize bundles only get published
+    # if the container image has been built successfully. This helps prevent
+    # situations where the deployment manifests are picked up by flux but the
+    # container is still being created.
+    needs: [publish-container-image]
     permissions:
       id-token: write
       contents: read
@@ -36,4 +41,6 @@ jobs:
     with:
       bundle-name: ghcr.io/datum-cloud/staff-portal-kustomize
       bundle-path: config
+      image-overlays: config/base
+      image-name: ghcr.io/datum-cloud/staff-portal
     secrets: inherit
