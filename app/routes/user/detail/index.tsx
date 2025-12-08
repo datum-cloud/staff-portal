@@ -5,6 +5,7 @@ import { ButtonCopy } from '@/components/button';
 import { DangerZoneCard } from '@/components/danger-zone-card';
 import { DateFormatter } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
+import { AddNoteDialog, NoteList } from '@/features/note';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
 import {
   Card,
@@ -53,6 +54,11 @@ export default function Page() {
   const [isReactivating, setIsReactivating] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
   const [isMovingToPending, setIsMovingToPending] = useState(false);
+  const [noteRefreshTrigger, setNoteRefreshTrigger] = useState(0);
+
+  const handleNoteCreated = () => {
+    setNoteRefreshTrigger((prev) => prev + 1);
+  };
 
   const { data: deactivationData } = useUserDeactivationQuery(
     data.metadata.name,
@@ -134,11 +140,22 @@ export default function Page() {
 
       <div className="m-4 flex flex-col gap-1">
         <div className="flex items-center justify-between">
-          <div className="flex flex-col">
-            <Title>
-              {data?.spec?.givenName} {data?.spec?.familyName}
-            </Title>
-            <Text textColor="muted">{data?.spec?.email}</Text>
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col">
+              <Title>
+                {data?.spec?.givenName} {data?.spec?.familyName}
+              </Title>
+              <Text textColor="muted">{data?.spec?.email}</Text>
+            </div>
+            <div className="bg-border h-10 w-px" />
+            <AddNoteDialog
+              subjectRef={{
+                apiGroup: 'iam_miloapis_com',
+                kind: 'User',
+                name: data.metadata.name,
+              }}
+              onSuccess={handleNoteCreated}
+            />
           </div>
 
           <div className="flex items-center gap-2">
@@ -271,6 +288,15 @@ export default function Page() {
             </Table>
           </CardContent>
         </Card>
+
+        <NoteList
+          subjectRef={{
+            apiGroup: 'iam_miloapis_com',
+            kind: 'User',
+            name: data.metadata.name,
+          }}
+          refreshTrigger={noteRefreshTrigger}
+        />
 
         <Card className="mt-4 shadow-none">
           <CardHeader>
