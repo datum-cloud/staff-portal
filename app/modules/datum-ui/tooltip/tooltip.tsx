@@ -9,13 +9,21 @@ interface TooltipProps {
   message: string | ReactNode;
   children: ReactNode;
   delayDuration?: number;
+  maxWidth?: number;
 }
 
-export default function Tooltip({ message, children, delayDuration = 200 }: TooltipProps) {
+export default function Tooltip({
+  message,
+  children,
+  delayDuration = 200,
+  maxWidth = 450,
+}: TooltipProps) {
   return (
     <TooltipPrimitive delayDuration={delayDuration}>
       <TooltipTrigger asChild>{children}</TooltipTrigger>
-      <TooltipContent>
+      <TooltipContent
+        className="text-sm break-words whitespace-normal"
+        style={{ maxWidth: `${maxWidth}px` }}>
         <span>{message}</span>
       </TooltipContent>
     </TooltipPrimitive>
