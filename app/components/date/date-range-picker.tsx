@@ -38,7 +38,67 @@ interface DateRangePickerProps {
   presets?: DateRangePreset[];
   defaultPresets?: boolean;
   showSelectedPresetLabel?: boolean;
+  showTimePicker?: boolean;
+  showClearButton?: boolean;
 }
+
+const DEFAULT_PRESETS: DateRangePreset[] = [
+  {
+    label: 'Last 5 minutes',
+    getValue: () => ({ from: subMinutes(new Date(), 5), to: new Date() }),
+  },
+  {
+    label: 'Last 15 minutes',
+    getValue: () => ({ from: subMinutes(new Date(), 15), to: new Date() }),
+  },
+  {
+    label: 'Last 30 minutes',
+    getValue: () => ({ from: subMinutes(new Date(), 30), to: new Date() }),
+  },
+  { label: 'Last 1 hour', getValue: () => ({ from: subHours(new Date(), 1), to: new Date() }) },
+  { label: 'Last 3 hours', getValue: () => ({ from: subHours(new Date(), 3), to: new Date() }) },
+  { label: 'Last 6 hours', getValue: () => ({ from: subHours(new Date(), 6), to: new Date() }) },
+  {
+    label: 'Last 12 hours',
+    getValue: () => ({ from: subHours(new Date(), 12), to: new Date() }),
+  },
+  {
+    label: 'Last 24 hours',
+    getValue: () => ({ from: subHours(new Date(), 24), to: new Date() }),
+  },
+  { label: 'Last 2 days', getValue: () => ({ from: subDays(new Date(), 2), to: new Date() }) },
+  { label: 'Last 7 days', getValue: () => ({ from: subDays(new Date(), 7), to: new Date() }) },
+  { label: 'Last 30 days', getValue: () => ({ from: subDays(new Date(), 30), to: new Date() }) },
+  {
+    label: 'Today',
+    getValue: () => ({ from: startOfDay(new Date()), to: endOfDay(new Date()) }),
+  },
+  { label: 'Today so far', getValue: () => ({ from: startOfDay(new Date()), to: new Date() }) },
+  {
+    label: 'This week',
+    getValue: () => ({ from: startOfWeek(new Date()), to: endOfWeek(new Date()) }),
+  },
+  {
+    label: 'This week so far',
+    getValue: () => ({ from: startOfWeek(new Date()), to: new Date() }),
+  },
+  {
+    label: 'This month',
+    getValue: () => ({ from: startOfMonth(new Date()), to: endOfMonth(new Date()) }),
+  },
+  {
+    label: 'This month so far',
+    getValue: () => ({ from: startOfMonth(new Date()), to: new Date() }),
+  },
+  {
+    label: 'This year',
+    getValue: () => ({ from: startOfYear(new Date()), to: endOfYear(new Date()) }),
+  },
+  {
+    label: 'This year so far',
+    getValue: () => ({ from: startOfYear(new Date()), to: new Date() }),
+  },
+];
 
 export function DateRangePicker({
   value,
@@ -49,69 +109,13 @@ export function DateRangePicker({
   presets,
   defaultPresets = false,
   showSelectedPresetLabel = false,
+  showTimePicker = true,
+  showClearButton = true,
 }: DateRangePickerProps) {
   const [startTime, setStartTime] = React.useState<string>('');
   const [endTime, setEndTime] = React.useState<string>('');
   const [open, setOpen] = React.useState<boolean>(false);
   const [selectedPresetLabel, setSelectedPresetLabel] = React.useState<string | undefined>();
-
-  const DEFAULT_PRESETS: DateRangePreset[] = [
-    {
-      label: 'Last 5 minutes',
-      getValue: () => ({ from: subMinutes(new Date(), 5), to: new Date() }),
-    },
-    {
-      label: 'Last 15 minutes',
-      getValue: () => ({ from: subMinutes(new Date(), 15), to: new Date() }),
-    },
-    {
-      label: 'Last 30 minutes',
-      getValue: () => ({ from: subMinutes(new Date(), 30), to: new Date() }),
-    },
-    { label: 'Last 1 hour', getValue: () => ({ from: subHours(new Date(), 1), to: new Date() }) },
-    { label: 'Last 3 hours', getValue: () => ({ from: subHours(new Date(), 3), to: new Date() }) },
-    { label: 'Last 6 hours', getValue: () => ({ from: subHours(new Date(), 6), to: new Date() }) },
-    {
-      label: 'Last 12 hours',
-      getValue: () => ({ from: subHours(new Date(), 12), to: new Date() }),
-    },
-    {
-      label: 'Last 24 hours',
-      getValue: () => ({ from: subHours(new Date(), 24), to: new Date() }),
-    },
-    { label: 'Last 2 days', getValue: () => ({ from: subDays(new Date(), 2), to: new Date() }) },
-    { label: 'Last 7 days', getValue: () => ({ from: subDays(new Date(), 7), to: new Date() }) },
-    { label: 'Last 30 days', getValue: () => ({ from: subDays(new Date(), 30), to: new Date() }) },
-    {
-      label: 'Today',
-      getValue: () => ({ from: startOfDay(new Date()), to: endOfDay(new Date()) }),
-    },
-    { label: 'Today so far', getValue: () => ({ from: startOfDay(new Date()), to: new Date() }) },
-    {
-      label: 'This week',
-      getValue: () => ({ from: startOfWeek(new Date()), to: endOfWeek(new Date()) }),
-    },
-    {
-      label: 'This week so far',
-      getValue: () => ({ from: startOfWeek(new Date()), to: new Date() }),
-    },
-    {
-      label: 'This month',
-      getValue: () => ({ from: startOfMonth(new Date()), to: endOfMonth(new Date()) }),
-    },
-    {
-      label: 'This month so far',
-      getValue: () => ({ from: startOfMonth(new Date()), to: new Date() }),
-    },
-    {
-      label: 'This year',
-      getValue: () => ({ from: startOfYear(new Date()), to: endOfYear(new Date()) }),
-    },
-    {
-      label: 'This year so far',
-      getValue: () => ({ from: startOfYear(new Date()), to: new Date() }),
-    },
-  ];
 
   const resolvedPresets: DateRangePreset[] | undefined = React.useMemo(() => {
     if (presets && presets.length > 0) return presets;
@@ -226,12 +230,25 @@ export function DateRangePicker({
           <Button
             variant="outline"
             className={cn(
-              'w-[350px] justify-start text-left font-normal',
+              'relative w-[350px] justify-start pr-8 text-left font-normal',
               !value && 'text-muted-foreground'
             )}
             disabled={disabled}>
             <CalendarIcon className="mr-2 h-4 w-4" />
             {formatDisplayValue()}
+            {value && showClearButton && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  clearRange();
+                }}
+                disabled={disabled}
+                className="absolute right-1 h-6 w-6">
+                <X className="h-3 w-3" />
+              </Button>
+            )}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
@@ -246,37 +263,40 @@ export function DateRangePicker({
                   onSelect={handleDateSelect}
                   numberOfMonths={2}
                 />
-                <div className="mt-3 flex items-center gap-2">
-                  <div className="flex-1">
-                    <label className="text-sm font-medium">
-                      <Trans>Start Time</Trans>
-                    </label>
-                    <Input
-                      type="time"
-                      value={startTime}
-                      onChange={(e) => handleTimeChange('start', e.target.value)}
-                      className="mt-1"
-                    />
+                {showTimePicker && (
+                  <div className="mt-3 flex items-center gap-2">
+                    <div className="flex-1">
+                      <label className="text-sm font-medium">
+                        <Trans>Start Time</Trans>
+                      </label>
+                      <Input
+                        type="time"
+                        value={startTime}
+                        onChange={(e) => handleTimeChange('start', e.target.value)}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label className="text-sm font-medium">
+                        <Trans>End Time</Trans>
+                      </label>
+                      <Input
+                        type="time"
+                        value={endTime}
+                        onChange={(e) => handleTimeChange('end', e.target.value)}
+                        className="mt-1"
+                      />
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <label className="text-sm font-medium">
-                      <Trans>End Time</Trans>
-                    </label>
-                    <Input
-                      type="time"
-                      value={endTime}
-                      onChange={(e) => handleTimeChange('end', e.target.value)}
-                      className="mt-1"
-                    />
-                  </div>
-                </div>
+                )}
               </div>
               {resolvedPresets && resolvedPresets.length > 0 && (
                 <div className="w-56 border-l pl-3">
                   <div className="mb-2 text-sm font-medium">
                     <Trans>Quick ranges</Trans>
                   </div>
-                  <div className="flex max-h-96 flex-col gap-1 overflow-y-auto pr-1">
+                  <div
+                    className={`flex ${!showTimePicker ? 'max-h-64' : 'max-h-84'} flex-col gap-1 overflow-y-auto pr-1`}>
                     {resolvedPresets.map((preset) => (
                       <Button
                         key={preset.label}
@@ -295,16 +315,6 @@ export function DateRangePicker({
           </div>
         </PopoverContent>
       </Popover>
-      {value && (
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={clearRange}
-          disabled={disabled}
-          className="h-9 w-9">
-          <X className="h-4 w-4" />
-        </Button>
-      )}
     </div>
   );
 }

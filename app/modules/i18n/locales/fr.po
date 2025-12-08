@@ -44,11 +44,11 @@ msgstr ""
 msgid "Account Management"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:93
+#: app/features/activity/components/activity-list.tsx:94
 msgid "Action"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:311
+#: app/features/activity/components/activity-list.tsx:323
 msgid "Actions"
 msgstr ""
 
@@ -86,11 +86,11 @@ msgstr ""
 msgid "Added"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:341
+#: app/features/activity/components/activity-list.tsx:353
 msgid "All read operations"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:335
+#: app/features/activity/components/activity-list.tsx:347
 msgid "All write operations"
 msgstr ""
 
@@ -268,7 +268,7 @@ msgstr ""
 #: app/routes/contact/create.tsx:14
 #: app/features/contact-group/components/contact-group-form.tsx:75
 #: app/features/contact/components/contact-form.tsx:191
-#: app/features/activity/components/activity-list.tsx:318
+#: app/features/activity/components/activity-list.tsx:330
 msgid "Create"
 msgstr ""
 
@@ -349,7 +349,7 @@ msgstr ""
 #: app/routes/contact-group/detail/member.tsx:122
 #: app/routes/contact/index.tsx:111
 #: app/features/quota/components/quota-grant-list.tsx:146
-#: app/features/activity/components/activity-list.tsx:321
+#: app/features/activity/components/activity-list.tsx:333
 #: app/components/danger-zone-card/index.tsx:48
 #: app/components/danger-zone-card/index.tsx:76
 #: app/components/button/button-delete-action.tsx:42
@@ -470,7 +470,7 @@ msgstr ""
 msgid "Email is required"
 msgstr ""
 
-#: app/components/date/date-range-picker.tsx:263
+#: app/components/date/date-range-picker.tsx:281
 msgid "End Time"
 msgstr ""
 
@@ -518,7 +518,7 @@ msgstr ""
 msgid "Failed to load status"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:312
+#: app/features/activity/components/activity-list.tsx:324
 msgid "Filter by action"
 msgstr ""
 
@@ -526,7 +526,7 @@ msgstr ""
 msgid "Filter by approval"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:285
+#: app/features/activity/components/activity-list.tsx:300
 msgid "Filter by time range"
 msgstr ""
 
@@ -549,7 +549,7 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:315
+#: app/features/activity/components/activity-list.tsx:327
 msgid "Get"
 msgstr ""
 
@@ -642,7 +642,7 @@ msgstr ""
 msgid "Limit:"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:316
+#: app/features/activity/components/activity-list.tsx:328
 msgid "List"
 msgstr ""
 
@@ -698,7 +698,7 @@ msgstr ""
 msgid "Members"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:48
+#: app/features/activity/components/activity-list.tsx:49
 msgid "Message"
 msgstr ""
 
@@ -804,7 +804,7 @@ msgstr ""
 msgid "Overview"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:320
+#: app/features/activity/components/activity-list.tsx:332
 msgid "Patch"
 msgstr ""
 
@@ -890,7 +890,7 @@ msgstr ""
 msgid "Query"
 msgstr ""
 
-#: app/components/date/date-range-picker.tsx:277
+#: app/components/date/date-range-picker.tsx:296
 msgid "Quick ranges"
 msgstr ""
 
@@ -988,7 +988,7 @@ msgstr ""
 msgid "Schedule invitation to be sent at specific time"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:278
+#: app/features/activity/components/activity-list.tsx:293
 msgid "Search activity..."
 msgstr ""
 
@@ -1042,7 +1042,7 @@ msgstr ""
 msgid "Source"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:82
+#: app/features/activity/components/activity-list.tsx:83
 msgid "Source IP"
 msgstr ""
 
@@ -1050,7 +1050,7 @@ msgstr ""
 msgid "Sources"
 msgstr ""
 
-#: app/components/date/date-range-picker.tsx:252
+#: app/components/date/date-range-picker.tsx:270
 msgid "Start Time"
 msgstr ""
 
@@ -1067,7 +1067,7 @@ msgstr ""
 #: app/routes/contact-group/index.tsx:51
 #: app/routes/contact/index.tsx:58
 #: app/features/quota/components/quota-grant-list.tsx:75
-#: app/features/activity/components/activity-list.tsx:106
+#: app/features/activity/components/activity-list.tsx:107
 msgid "Status"
 msgstr ""
 
@@ -1087,7 +1087,7 @@ msgstr ""
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:97
+#: app/features/activity/components/activity-list.tsx:98
 msgid "Timestamp"
 msgstr ""
 
@@ -1111,7 +1111,7 @@ msgstr ""
 #: app/features/quota/components/quota-bucket-list.tsx:152
 #: app/features/contact-group/components/contact-group-form.tsx:75
 #: app/features/contact/components/contact-form.tsx:191
-#: app/features/activity/components/activity-list.tsx:319
+#: app/features/activity/components/activity-list.tsx:331
 msgid "Update"
 msgstr ""
 
@@ -1210,7 +1210,7 @@ msgstr ""
 msgid "Warning"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:317
+#: app/features/activity/components/activity-list.tsx:329
 msgid "Watch"
 msgstr ""
 
