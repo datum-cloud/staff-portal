@@ -1,12 +1,12 @@
 import { Theme, useTheme } from '@/modules/datum-themes';
-import { User } from '@/resources/schemas';
 import { getBrowserTimezone } from '@/utils/helpers';
 import { clearSentryUser, setSentryUser } from '@/utils/logger';
+import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 
 interface IContextProps {
-  user: User | null;
-  setUser: (user: User) => void;
+  user: ComMiloapisIamV1Alpha1User | null;
+  setUser: (user: ComMiloapisIamV1Alpha1User) => void;
   actions: ReactNode[];
   addActions: (children: ReactNode) => void;
   removeActions: (children: ReactNode) => void;
@@ -30,11 +30,11 @@ const AppContext = createContext<IContextProps>({
 
 interface IProviderProps {
   children: ReactNode;
-  user?: User;
+  user?: ComMiloapisIamV1Alpha1User;
 }
 
 export const AppProvider: React.FC<IProviderProps> = ({ children, user }) => {
-  const [userState, setUserState] = useState<User | null>(user ?? null);
+  const [userState, setUserState] = useState<ComMiloapisIamV1Alpha1User | null>(user ?? null);
   const [actions, setActions] = useState<ReactNode[]>([]);
   const { resolvedTheme, setTheme } = useTheme();
 
@@ -54,8 +54,9 @@ export const AppProvider: React.FC<IProviderProps> = ({ children, user }) => {
       addActions,
       removeActions,
       settings: {
-        theme: (userState?.metadata.annotations?.['preferences/theme'] as Theme) ?? 'light',
-        timezone: userState?.metadata.annotations?.['preferences/timezone'] ?? getBrowserTimezone(),
+        theme: (userState?.metadata?.annotations?.['preferences/theme'] as Theme) ?? 'light',
+        timezone:
+          userState?.metadata?.annotations?.['preferences/timezone'] ?? getBrowserTimezone(),
       },
     }),
     [actions, userState]

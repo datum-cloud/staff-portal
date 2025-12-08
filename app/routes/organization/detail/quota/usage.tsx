@@ -19,8 +19,8 @@ export default function Page() {
 
   return (
     <QuotaBucketList
-      queryKeyPrefix={['organizations', data.metadata.name, 'buckets']}
-      fetchFn={(params) => orgQuotaBucketListQuery(data.metadata.name, params)}
+      queryKeyPrefix={['organizations', data.metadata?.name ?? '', 'buckets']}
+      fetchFn={(params) => orgQuotaBucketListQuery(data.metadata?.name ?? '', params)}
     />
   );
 }

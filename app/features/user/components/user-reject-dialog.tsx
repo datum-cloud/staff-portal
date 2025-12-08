@@ -1,13 +1,13 @@
 import { DialogForm } from '@/components/dialog';
 import { useUserApproval } from '@/features/user';
-import { User } from '@/resources/schemas';
 import { Form } from '@datum-ui/form';
 import { useLingui } from '@lingui/react/macro';
+import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import z from 'zod';
 
 interface UserRejectDialogProps {
   open: boolean;
-  user: User | null;
+  user: ComMiloapisIamV1Alpha1User | null;
   onOpenChange: (open: boolean) => void;
   onSuccess: () => Promise<void>;
 }
@@ -25,12 +25,12 @@ export function UserRejectDialog({ open, onOpenChange, user, onSuccess }: UserRe
       open={open}
       onOpenChange={onOpenChange}
       title={t`Reject User`}
-      description={t`Please provide a reason for rejecting "${user?.spec.givenName ?? ''} ${user?.spec.familyName ?? ''}".`}
+      description={t`Please provide a reason for rejecting "${user?.spec?.givenName ?? ''} ${user?.spec?.familyName ?? ''}".`}
       submitText={t`Reject`}
       cancelText={t`Cancel`}
       onSubmit={async (formData: z.infer<typeof rejectSchema>) => {
         try {
-          await rejectUser(user as User, formData.reason, onSuccess);
+          await rejectUser(user as ComMiloapisIamV1Alpha1User, formData.reason, onSuccess);
         } catch (error) {
           throw error; // Re-throw to keep dialog open
         }

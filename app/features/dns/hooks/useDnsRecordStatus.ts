@@ -43,25 +43,18 @@ export function useDnsRecordStatus(
 
       // Transform the status using the same pattern as DNS record flattening
       // The response.data is a DNSRecord, which has status.conditions
-      const transformedStatus = transformControlPlaneStatus(response.data?.status, {
+      const transformedStatus = transformControlPlaneStatus(response.status, {
         requiredConditions: ['Accepted', 'Programmed'],
         includeConditionDetails: true,
       });
 
       return {
-        ...response,
-        data: {
-          status: transformedStatus as ExtendedControlPlaneStatus,
-        },
+        status: transformedStatus as ExtendedControlPlaneStatus,
       };
     },
     initialData: initialStatus
       ? {
-          code: '200',
-          data: {
-            status: initialStatus,
-          },
-          path: '',
+          status: initialStatus,
         }
       : undefined,
     refetchInterval: enabled

@@ -30,7 +30,7 @@ export function NavUser() {
   const navigate = useNavigate();
 
   const fullName = useMemo(() => {
-    return `${user?.spec.givenName} ${user?.spec.familyName}`;
+    return `${user?.spec?.givenName ?? ''} ${user?.spec?.familyName ?? ''}`;
   }, [user]);
 
   const initials = useMemo(() => {
@@ -56,7 +56,7 @@ export function NavUser() {
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{fullName}</span>
-                <span className="truncate text-xs">{user?.spec.email}</span>
+                <span className="truncate text-xs">{user?.spec?.email ?? ''}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -74,7 +74,7 @@ export function NavUser() {
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{fullName}</span>
-                  <span className="truncate text-xs">{user?.spec.email}</span>
+                  <span className="truncate text-xs">{user?.spec?.email ?? ''}</span>
                 </div>
               </div>
             </DropdownMenuLabel>

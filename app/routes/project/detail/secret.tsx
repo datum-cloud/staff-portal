@@ -33,11 +33,11 @@ export default function Page() {
   const { project } = useProjectDetailData();
 
   const tableState = useDataTableQuery<SecretListResponse>({
-    queryKeyPrefix: ['projects', project.metadata.name, 'secrets'],
+    queryKeyPrefix: ['projects', project?.metadata?.name ?? '', 'secrets'],
     fetchFn: () =>
       metricsCreateMutation({
         type: 'instant',
-        query: `datum_cloud_core_secret_info{resourcemanager_datumapis_com_project_name="${project.metadata.name}"}`,
+        query: `datum_cloud_core_secret_info{resourcemanager_datumapis_com_project_name="${project?.metadata?.name ?? ''}"}`,
       }),
     useSorting: true,
   });

@@ -12,3 +12,6 @@ cypress/screenshots
 cypress/videos
 cypress/results
 .windsurfrules
+
+# OpenAPI temp files (not the generated code)
+.openapi-temp/

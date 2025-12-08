@@ -9,9 +9,11 @@ import Axios, {
 } from 'axios';
 import { z } from 'zod';
 
+export const PROXY_URL = '/api/internal';
+
 export const httpClient = Axios.create({
   timeout: 20 * 1000,
-  baseURL: '/api/internal',
+  baseURL: PROXY_URL,
 });
 
 function defaultLogCallback(curlResult: any, err: any) {
@@ -25,7 +27,6 @@ function defaultLogCallback(curlResult: any, err: any) {
 
 const onRequest = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
   // console.info(`[request] [${JSON.stringify(config)}]`);
-
   return config;
 };
 

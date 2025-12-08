@@ -15,12 +15,12 @@ export function useUserSearch() {
   });
 
   const options = React.useMemo(() => {
-    if (!data?.data?.items) return [];
-    return data.data.items
+    if (!data?.items) return [];
+    return data.items
       .map((user) => ({
-        value: user.metadata.name,
-        label: `${user.spec.givenName} ${user.spec.familyName}`,
-        description: user.spec.email,
+        value: user.metadata?.name ?? '',
+        label: `${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''}`,
+        description: user.spec?.email ?? '',
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [data]);
@@ -41,13 +41,14 @@ export function useOrganizationSearch() {
   });
 
   const options = React.useMemo(() => {
-    if (!data?.data?.items) return [];
-    return data.data.items
+    if (!data?.items) return [];
+    return data.items
       .map((org) => ({
-        value: org.metadata.name,
-        label: org.metadata.annotations?.['kubernetes.io/display-name'] || org.metadata.name,
+        value: org.metadata?.name ?? '',
+        label:
+          org.metadata?.annotations?.['kubernetes.io/display-name'] || (org.metadata?.name ?? ''),
       }))
-      .sort((a, b) => a.label.localeCompare(b.label));
+      .sort((a, b) => a.label?.localeCompare(b.label ?? '') ?? 0);
   }, [data]);
 
   const setSearch = React.useCallback((query: string) => {
@@ -66,11 +67,13 @@ export function useProjectSearch() {
   });
 
   const options = React.useMemo(() => {
-    if (!data?.data?.items) return [];
-    return data.data.items
+    if (!data?.items) return [];
+    return data.items
       .map((project) => ({
-        value: project.metadata.name,
-        label: project.metadata.annotations?.['kubernetes.io/description'] || project.metadata.name,
+        value: project.metadata?.name ?? '',
+        label:
+          project.metadata?.annotations?.['kubernetes.io/description'] ||
+          (project.metadata?.name ?? ''),
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [data]);
@@ -91,12 +94,12 @@ export function useContactSearch() {
   });
 
   const options = React.useMemo(() => {
-    if (!data?.data?.items) return [];
-    return data.data.items
+    if (!data?.items) return [];
+    return data.items
       .map((c) => ({
-        value: c.metadata.name,
-        label: `${c.spec.givenName} ${c.spec.familyName}`.trim() || c.metadata.name,
-        description: c.spec.email,
+        value: c.metadata?.name ?? '',
+        label: `${c.spec?.givenName} ${c.spec?.familyName}`.trim() || (c.metadata?.name ?? ''),
+        description: c.spec?.email ?? '',
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [data]);

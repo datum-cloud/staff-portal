@@ -3,7 +3,7 @@ import { parseISO, isValid, format as formatDate } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
 
 type Props = {
-  date: string | Date;
+  date?: string | Date;
   withTime?: boolean | 'short';
   format?: string;
   fallback?: string;

@@ -3,12 +3,12 @@ import { SelectTimezone } from '@/components/select/timezone';
 import { Theme } from '@/modules/datum-themes';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { useApp } from '@/providers/app.provider';
-import { userUpdateMutation } from '@/resources/request/client';
+import { userUpdatePreferencesMutation } from '@/resources/request/client';
 import { Button } from '@datum-ui/button';
 import { toast } from '@datum-ui/toast';
 import { Text } from '@datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const THEME_OPTIONS: readonly { readonly value: Theme; readonly label: string }[] = [
   { value: 'dark', label: 'Dark' },
@@ -47,14 +47,10 @@ export function PreferencesForm() {
   const handlePreferencesUpdate = async () => {
     setIsUpdatingPreferences(true);
     try {
-      const { data: updatedUser } = await userUpdateMutation(user?.metadata.name || '', {
-        apiVersion: 'iam.miloapis.com/v1alpha1',
-        kind: 'User',
-        metadata: {
-          annotations: {
-            'preferences/timezone': preferences.timezone,
-            'preferences/theme': preferences.theme,
-          },
+      const updatedUser = await userUpdatePreferencesMutation(user?.metadata?.name || '', {
+        annotations: {
+          'preferences/timezone': preferences.timezone,
+          'preferences/theme': preferences.theme,
         },
       });
 

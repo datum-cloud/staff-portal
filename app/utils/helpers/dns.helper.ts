@@ -1,8 +1,10 @@
 import { DNSRecordFlattenedList, ExtendedControlPlaneStatus } from '@/resources/schemas';
-import { DNSRecordList } from '@/resources/schemas';
 import { transformControlPlaneStatus } from '@/utils/helpers/control-plane.helper';
+import { ComMiloapisNetworkingDnsV1Alpha1DnsRecordSetList } from '@openapi/dns.networking.miloapis.com/v1alpha1';
 
-export function flattenManagedRecordSets(records: DNSRecordList): DNSRecordFlattenedList {
+export function flattenManagedRecordSets(
+  records: ComMiloapisNetworkingDnsV1Alpha1DnsRecordSetList
+): DNSRecordFlattenedList {
   const flattened = (records.items || []).flatMap((item) => {
     const { metadata, spec, status } = item;
     const recordType = spec?.recordType ?? '';

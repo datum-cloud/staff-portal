@@ -15,16 +15,16 @@ import {
   TableRow,
 } from '@/modules/shadcn/ui/table';
 import { projectExportPolicyDetailQuery } from '@/resources/request/server';
-import { ExportPolicy } from '@/resources/schemas';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { CodeEditor } from '@datum-ui/code-editor';
 import { Text, Title } from '@datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
+import { ComMiloapisTelemetryV1Alpha1ExportPolicy } from '@openapi/telemetry.miloapis.com/v1alpha1';
 import { CodeIcon, SettingsIcon } from 'lucide-react';
 import { useLoaderData } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const data = extractDataFromMatches<ExportPolicy>(matches);
+  const data = extractDataFromMatches<ComMiloapisTelemetryV1Alpha1ExportPolicy>(matches);
   return metaObject(`Export Policy - ${data?.metadata?.name}`);
 };
 
@@ -41,7 +41,9 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 };
 
 export const handle = {
-  breadcrumb: (data: ExportPolicy) => <span>{data.metadata.name}</span>,
+  breadcrumb: (data: ComMiloapisTelemetryV1Alpha1ExportPolicy) => (
+    <span>{data?.metadata?.name ?? ''}</span>
+  ),
 };
 
 export default function Page() {
@@ -63,7 +65,7 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <Text>
-                    <DisplayText value={data?.metadata?.name} withCopy />
+                    <DisplayText value={data?.metadata?.name ?? ''} withCopy />
                   </Text>
                 </TableCell>
               </TableRow>
@@ -143,7 +145,7 @@ export default function Page() {
                       </PopoverTrigger>
                       <PopoverContent className="min-w-[400px]">
                         <CodeEditor
-                          value={source.metrics.metricsql}
+                          value={source.metrics?.metricsql ?? ''}
                           language="promql"
                           readOnly
                           minHeight="100px"
@@ -209,7 +211,7 @@ export default function Page() {
                   </TableCell>
                   <TableCell>
                     {(() => {
-                      const currentStatus = data.status.sinks.find((s) => s.name === sink.name);
+                      const currentStatus = data?.status?.sinks?.find((s) => s.name === sink.name);
                       return <BadgeCondition status={currentStatus} multiple={false} showMessage />;
                     })()}
                   </TableCell>

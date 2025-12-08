@@ -2,16 +2,16 @@ import type { Route } from './+types/layout';
 import { SubLayout } from '@/components/sub-layout';
 import { authenticator } from '@/modules/auth';
 import { orgDetailQuery } from '@/resources/request/server';
-import { Organization } from '@/resources/schemas';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
+import { ComMiloapisResourcemanagerV1Alpha1Organization } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { CircleGauge, FileText, Folders, SquareActivity, Users } from 'lucide-react';
 import { Outlet, useLoaderData } from 'react-router';
 
 export const handle = {
-  breadcrumb: (data: Organization) => {
+  breadcrumb: (data: ComMiloapisResourcemanagerV1Alpha1Organization) => {
     const displayName =
-      data.metadata.annotations?.['kubernetes.io/display-name'] || data.metadata.name;
+      data?.metadata?.annotations?.['kubernetes.io/display-name'] || data?.metadata?.name;
     return <span>{displayName}</span>;
   },
 };
@@ -25,27 +25,27 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 
 export default function Layout() {
   const { t } = useLingui();
-  const data = useLoaderData() as Organization;
+  const data = useLoaderData<typeof loader>();
 
   const menuItems = [
     {
       title: t`Overview`,
-      href: orgRoutes.detail(data.metadata.name),
+      href: orgRoutes.detail(data?.metadata?.name ?? ''),
       icon: FileText,
     },
     {
       title: t`Projects`,
-      href: orgRoutes.project(data.metadata.name),
+      href: orgRoutes.project(data?.metadata?.name ?? ''),
       icon: Folders,
     },
     {
       title: t`Activity`,
-      href: orgRoutes.activity(data.metadata.name),
+      href: orgRoutes.activity(data?.metadata?.name ?? ''),
       icon: SquareActivity,
     },
     {
       title: t`Members`,
-      href: orgRoutes.member(data.metadata.name),
+      href: orgRoutes.member(data?.metadata?.name ?? ''),
       icon: Users,
     },
     {
@@ -55,11 +55,11 @@ export default function Layout() {
       submenuItems: [
         {
           title: t`Usage`,
-          href: `${orgRoutes.quota.usage(data.metadata.name)}`,
+          href: `${orgRoutes.quota.usage(data?.metadata?.name ?? '')}`,
         },
         {
           title: t`Grants`,
-          href: orgRoutes.quota.grant(data.metadata.name),
+          href: orgRoutes.quota.grant(data?.metadata?.name ?? ''),
         },
       ],
     },

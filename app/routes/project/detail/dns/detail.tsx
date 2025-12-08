@@ -6,31 +6,28 @@ import { authenticator } from '@/modules/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { projectDnsRecordListQuery } from '@/resources/request/client';
 import { projectDnsDetailQuery, projectDomainDetailQuery } from '@/resources/request/server';
-import {
-  DNSRecordFlattened,
-  DNSRecordFlattenedListResponse,
-  DNSZone,
-  Domain,
-} from '@/resources/schemas';
+import { DNSRecordFlattened } from '@/resources/schemas';
 import { useProjectDetailData } from '@/routes/project/shared';
 import { extractDataFromMatches, formatTTL, metaObject } from '@/utils/helpers';
 import { DataTable, DataTableProvider, SimpleTable, useDataTableQuery } from '@datum-ui/data-table';
 import { Text, Title } from '@datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { ComMiloapisNetworkingDnsV1Alpha1DnsZone } from '@openapi/dns.networking.miloapis.com/v1alpha1';
+import { ComDatumapisNetworkingV1AlphaDomain } from '@openapi/networking.datumapis.com/v1alpha';
 import { createColumnHelper } from '@tanstack/react-table';
 import { useMemo } from 'react';
 import { useLoaderData } from 'react-router';
 
 type DNSZoneWithDomain = {
-  dns: DNSZone;
-  domain: Domain;
+  dns: ComMiloapisNetworkingDnsV1Alpha1DnsZone;
+  domain: ComDatumapisNetworkingV1AlphaDomain;
 };
 
 type NameserverRow = {
-  hostname: string;
-  ips: Array<{
-    address: string;
-    registrantName: string;
+  hostname?: string;
+  ips?: Array<{
+    address?: string;
+    registrantName?: string;
   }>;
   registrarName?: string;
 };
@@ -54,7 +51,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     params?.namespace as string
   );
 
-  let domain: Domain | undefined;
+  let domain: ComDatumapisNetworkingV1AlphaDomain | undefined;
   if (dns?.status?.domainRef?.name) {
     domain = await projectDomainDetailQuery(
       session?.accessToken ?? '',
@@ -75,12 +72,12 @@ export default function Page() {
   const { project } = useProjectDetailData();
   const { dns, domain } = useLoaderData<typeof loader>();
 
-  const tableState = useDataTableQuery<DNSRecordFlattenedListResponse>({
-    queryKeyPrefix: ['dns', dns?.metadata?.name, 'records'],
+  const tableState = useDataTableQuery<DNSRecordFlattened[]>({
+    queryKeyPrefix: ['dns', dns?.metadata?.name ?? '', 'records'],
     fetchFn: () =>
       projectDnsRecordListQuery(
-        project.metadata.name,
-        dns?.metadata?.name,
+        project.metadata?.name ?? '',
+        dns?.metadata?.name ?? '',
         dns?.metadata?.namespace
       ),
     useSorting: true,
@@ -102,9 +99,9 @@ export default function Page() {
         <div className="flex items-center gap-2">
           <BadgeState state={getValue()} message={getValue()?.toUpperCase() ?? ''} />
           <DnsRecordStatusProbe
-            projectName={project.metadata.name}
+            projectName={project.metadata?.name ?? ''}
             dnsRecordName={row.original.recordSetName ?? ''}
-            namespace={dns?.metadata?.namespace}
+            namespace={dns?.metadata?.namespace ?? ''}
             initialStatus={row.original.status}
           />
         </div>
@@ -185,7 +182,9 @@ export default function Page() {
       header: () => <Trans>DNS Host</Trans>,
       cell: ({ getValue }) => (
         <Chip
-          items={getValue().map((ip: { registrantName: string }) => ip.registrantName)}
+          items={
+            getValue()?.map((ip: { registrantName?: string }) => ip.registrantName ?? '') ?? []
+          }
           maxVisible={2}
           variant="outline"
           wrap={false}
@@ -209,12 +208,12 @@ export default function Page() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <DataTableProvider<DNSRecordFlattened, DNSRecordFlattenedListResponse>
+          <DataTableProvider<DNSRecordFlattened, DNSRecordFlattened[]>
             columns={dnsRecordColumns}
-            transform={(data) => ({ rows: data?.data || [], cursor: undefined })}
+            transform={(data) => ({ rows: data || [], cursor: undefined })}
             {...tableState}>
             <div className="flex flex-col gap-2">
-              <DataTable<DNSRecordFlattened> />
+              <DataTable />
             </div>
           </DataTableProvider>
         </CardContent>
@@ -228,7 +227,7 @@ export default function Page() {
         </CardHeader>
         <CardContent>
           <SimpleTable<NameserverRow>
-            getRowId={(row) => row.hostname}
+            getRowId={(row) => row?.hostname ?? ''}
             columns={nameserverColumns}
             data={nameserverData}
           />

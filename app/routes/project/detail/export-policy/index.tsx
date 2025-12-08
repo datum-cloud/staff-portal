@@ -1,13 +1,16 @@
-import { useProjectDetailData, getProjectDetailMetadata } from '../../shared';
+import { getProjectDetailMetadata, useProjectDetailData } from '../../shared';
 import type { Route } from './+types/index';
 import { BadgeCondition } from '@/components/badge';
 import { DateFormatter } from '@/components/date';
 import { projectExportPolicyListQuery } from '@/resources/request/client';
-import { ExportPolicy, ExportPolicyListResponse } from '@/resources/schemas';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
 import { Trans } from '@lingui/react/macro';
+import {
+  ComMiloapisTelemetryV1Alpha1ExportPolicy,
+  ComMiloapisTelemetryV1Alpha1ExportPolicyList,
+} from '@openapi/telemetry.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Link } from 'react-router';
 
@@ -16,14 +19,14 @@ export const meta: Route.MetaFunction = ({ matches }) => {
   return metaObject(`Export Policies - ${projectName}`);
 };
 
-const columnHelper = createColumnHelper<ExportPolicy>();
+const columnHelper = createColumnHelper<ComMiloapisTelemetryV1Alpha1ExportPolicy>();
 
 export default function Page() {
   const { project } = useProjectDetailData();
 
-  const tableState = useDataTableQuery<ExportPolicyListResponse>({
-    queryKeyPrefix: ['projects', project.metadata.name, 'export-policies'],
-    fetchFn: (params) => projectExportPolicyListQuery(project.metadata.name, params),
+  const tableState = useDataTableQuery<ComMiloapisTelemetryV1Alpha1ExportPolicyList>({
+    queryKeyPrefix: ['projects', project.metadata?.name ?? '', 'export-policies'],
+    fetchFn: (params) => projectExportPolicyListQuery(project.metadata?.name ?? '', params),
     useSorting: true,
   });
 
@@ -31,7 +34,8 @@ export default function Page() {
     columnHelper.accessor('metadata.name', {
       header: () => <Trans>Name</Trans>,
       cell: ({ getValue }) => (
-        <Link to={projectRoutes.exportPolicy.detail(project.metadata.name, getValue())}>
+        <Link
+          to={projectRoutes.exportPolicy.detail(project.metadata?.name ?? '', getValue() ?? '')}>
           {getValue()}
         </Link>
       ),
@@ -57,15 +61,18 @@ export default function Page() {
   ];
 
   return (
-    <DataTableProvider<ExportPolicy, ExportPolicyListResponse>
+    <DataTableProvider<
+      ComMiloapisTelemetryV1Alpha1ExportPolicy,
+      ComMiloapisTelemetryV1Alpha1ExportPolicyList
+    >
       columns={columns}
       transform={(data) => ({
-        rows: data?.data?.items || [],
-        cursor: data?.data?.metadata?.continue,
+        rows: data?.items || [],
+        cursor: data?.metadata?.continue,
       })}
       {...tableState}>
       <div className="m-4 flex flex-col gap-2">
-        <DataTable<ExportPolicy> />
+        <DataTable />
       </div>
     </DataTableProvider>
   );

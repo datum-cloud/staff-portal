@@ -6,20 +6,20 @@ import { authenticator } from '@/modules/auth';
 import { Card, CardContent } from '@/modules/shadcn/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
 import { projectDomainDetailQuery } from '@/resources/request/server';
-import { Domain } from '@/resources/schemas';
 import { useProjectDetailData } from '@/routes/project/shared';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Text, Title } from '@datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
+import { ComDatumapisNetworkingV1AlphaDomain } from '@openapi/networking.datumapis.com/v1alpha';
 import { useLoaderData } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const data = extractDataFromMatches<Domain>(matches);
+  const data = extractDataFromMatches<ComDatumapisNetworkingV1AlphaDomain>(matches);
   return metaObject(`Domain - ${data?.spec?.domainName}`);
 };
 
 export const handle = {
-  breadcrumb: (data: Domain) => <span>{data?.spec?.domainName}</span>,
+  breadcrumb: (data: ComDatumapisNetworkingV1AlphaDomain) => <span>{data?.spec?.domainName}</span>,
 };
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
@@ -55,7 +55,7 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <Text>
-                    <DisplayText value={data?.metadata?.name} withCopy />
+                    <DisplayText value={data?.metadata?.name ?? ''} withCopy />
                   </Text>
                 </TableCell>
               </TableRow>
@@ -66,7 +66,7 @@ export default function Page() {
                   </Text>
                 </TableCell>
                 <TableCell>
-                  <Text>{data?.metadata?.namespace}</Text>
+                  <Text>{data?.metadata?.namespace ?? ''}</Text>
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -117,9 +117,9 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <DomainStatusProbe
-                    projectName={project.metadata.name}
-                    domainName={data?.metadata?.name}
-                    namespace={data?.metadata?.namespace}
+                    projectName={project.metadata?.name ?? ''}
+                    domainName={data?.metadata?.name ?? ''}
+                    namespace={data?.metadata?.namespace ?? ''}
                   />
                 </TableCell>
               </TableRow>

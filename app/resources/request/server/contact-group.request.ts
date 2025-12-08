@@ -1,18 +1,19 @@
-import { apiRequest } from '@/modules/axios/axios.server';
-import { ContactGroupSchema } from '@/resources/schemas';
+import { readNotificationMiloapisComV1Alpha1NamespacedContactGroup } from '@openapi/notification.miloapis.com/v1alpha1';
+import { UnwrapProxyResponse } from '@openapi/shared/core/types.gen';
 
-export const contactGroupDetailQuery = (
+export const contactGroupDetailQuery = async (
   token: string,
   contactGroupName: string,
   namespace: string = 'default'
 ) => {
-  return apiRequest({
-    method: 'GET',
-    url: `/apis/notification.miloapis.com/v1alpha1/namespaces/${namespace}/contactgroups/${contactGroupName}`,
+  const response = await readNotificationMiloapisComV1Alpha1NamespacedContactGroup({
+    path: {
+      namespace,
+      name: contactGroupName,
+    },
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  })
-    .output(ContactGroupSchema)
-    .execute();
+  });
+  return response.data as UnwrapProxyResponse<typeof response.data>;
 };

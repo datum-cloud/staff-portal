@@ -1,18 +1,20 @@
-import { apiRequest } from '@/modules/axios/axios.server';
-import { ContactSchema } from '@/resources/schemas';
+import { readNotificationMiloapisComV1Alpha1NamespacedContact } from '@openapi/notification.miloapis.com/v1alpha1';
+import { UnwrapProxyResponse } from '@openapi/shared/core/types.gen';
 
-export const contactDetailQuery = (
+export const contactDetailQuery = async (
   token: string,
   contactName: string,
   namespace: string = 'default'
 ) => {
-  return apiRequest({
-    method: 'GET',
-    url: `/apis/notification.miloapis.com/v1alpha1/namespaces/${namespace}/contacts/${contactName}`,
+  const response = await readNotificationMiloapisComV1Alpha1NamespacedContact({
+    path: {
+      namespace,
+      name: contactName,
+    },
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  })
-    .output(ContactSchema)
-    .execute();
+  });
+
+  return response.data as UnwrapProxyResponse<typeof response.data>;
 };

@@ -5,7 +5,6 @@ import { DialogForm } from '@/components/dialog';
 import { DisplayId, DisplayName } from '@/components/display';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
 import { userInviteMutation, userListQuery } from '@/resources/request/client';
-import { User, UserListResponse } from '@/resources/schemas';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-ui/button';
@@ -20,6 +19,10 @@ import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import {
+  ComMiloapisIamV1Alpha1User,
+  ComMiloapisIamV1Alpha1UserList,
+} from '@openapi/iam.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { CheckIcon, EditIcon, RotateCcwIcon, UserPlus, XIcon } from 'lucide-react';
 import { useState } from 'react';
@@ -30,15 +33,15 @@ export const meta: Route.MetaFunction = () => {
   return metaObject(t`Users`);
 };
 
-const columnHelper = createColumnHelper<User>();
+const columnHelper = createColumnHelper<ComMiloapisIamV1Alpha1User>();
 
 const columns = [
   columnHelper.accessor('spec.givenName', {
     header: () => <Trans>Name</Trans>,
     cell: ({ row }) => {
-      const userName = row.original.metadata.name;
-      const displayName = `${row.original.spec.givenName} ${row.original.spec.familyName}`;
-      const email = row.original.spec.email;
+      const userName = row.original.metadata?.name ?? '';
+      const displayName = `${row.original.spec?.givenName ?? ''} ${row.original.spec?.familyName ?? ''}`;
+      const email = row.original.spec?.email ?? '';
 
       return <DisplayName displayName={displayName} name={email} to={`./${userName}`} />;
     },
@@ -46,7 +49,7 @@ const columns = [
   columnHelper.accessor('metadata.name', {
     header: () => <Trans>ID</Trans>,
     cell: ({ getValue }) => {
-      return <DisplayId value={getValue()} />;
+      return <DisplayId value={getValue() ?? ''} />;
     },
   }),
   columnHelper.accessor('status.state', {
@@ -65,13 +68,13 @@ const columns = [
 
 export default function Page() {
   const navigate = useNavigate();
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUser, setSelectedUser] = useState<ComMiloapisIamV1Alpha1User | null>(null);
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
 
   const { approveUser, pendingUser } = useUserApproval();
 
-  const tableState = useDataTableQuery<UserListResponse>({
+  const tableState = useDataTableQuery<ComMiloapisIamV1Alpha1UserList>({
     queryKeyPrefix: ['users'],
     fetchFn: (args) => userListQuery(args),
     useSorting: true,
@@ -79,18 +82,18 @@ export default function Page() {
     useSearch: true,
   });
 
-  const actions: ActionItem<User>[] = [
+  const actions: ActionItem<ComMiloapisIamV1Alpha1User>[] = [
     {
       label: t`Manage`,
       icon: EditIcon,
-      onClick: (row) => navigate(userRoutes.detail(row.metadata.name)),
+      onClick: (row) => navigate(userRoutes.detail(row.metadata?.name ?? '')),
     },
     {
       label: t`Approve`,
       icon: CheckIcon,
       hide: (row) => row.status?.registrationApproval !== 'Pending',
       onClick: async (row) => {
-        setLoadingStates((prev) => ({ ...prev, [row.metadata.name]: true }));
+        setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: true }));
         try {
           await approveUser(row, async () => {
             await new Promise((resolve) =>
@@ -98,7 +101,7 @@ export default function Page() {
             );
           });
         } finally {
-          setLoadingStates((prev) => ({ ...prev, [row.metadata.name]: false }));
+          setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: false }));
         }
       },
     },
@@ -114,7 +117,7 @@ export default function Page() {
       icon: RotateCcwIcon,
       hide: (row) => row.status?.registrationApproval === 'Pending',
       onClick: async (row) => {
-        setLoadingStates((prev) => ({ ...prev, [row.metadata.name]: true }));
+        setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: true }));
         try {
           await pendingUser(row, async () => {
             await new Promise((resolve) =>
@@ -122,7 +125,7 @@ export default function Page() {
             );
           });
         } finally {
-          setLoadingStates((prev) => ({ ...prev, [row.metadata.name]: false }));
+          setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: false }));
         }
       },
     },
@@ -216,14 +219,14 @@ export default function Page() {
         }}
       />
 
-      <DataTableProvider<User, UserListResponse>
+      <DataTableProvider<ComMiloapisIamV1Alpha1User, ComMiloapisIamV1Alpha1UserList>
         columns={columns}
         actions={actions}
-        actionsLoading={(row) => loadingStates[row.metadata.name] || false}
+        actionsLoading={(row) => loadingStates[row?.metadata?.name ?? ''] || false}
         transform={(data) => {
           return {
-            rows: data?.data?.items || [],
-            cursor: data?.data?.metadata?.continue,
+            rows: data?.items || [],
+            cursor: data?.metadata?.continue,
           };
         }}
         {...tableState}>
@@ -259,7 +262,7 @@ export default function Page() {
             </div>
           </div>
 
-          <DataTable<User> />
+          <DataTable />
         </div>
       </DataTableProvider>
     </>

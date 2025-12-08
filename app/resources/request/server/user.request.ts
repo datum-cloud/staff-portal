@@ -1,14 +1,14 @@
-import { apiRequest } from '@/modules/axios/axios.server';
-import { UserSchema } from '@/resources/schemas';
+import { readIamMiloapisComV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
+import { UnwrapProxyResponse } from '@openapi/shared/core/types.gen';
 
-export const userDetailQuery = (token: string, userId: string) => {
-  return apiRequest({
-    method: 'GET',
-    url: `/apis/iam.miloapis.com/v1alpha1/users/${userId}`,
+export const userDetailQuery = async (token: string, userId: string) => {
+  const response = await readIamMiloapisComV1Alpha1User({
+    path: {
+      name: userId,
+    },
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  })
-    .output(UserSchema)
-    .execute();
+  });
+  return response.data as UnwrapProxyResponse<typeof response.data>;
 };

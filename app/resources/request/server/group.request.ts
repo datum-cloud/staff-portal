@@ -1,18 +1,19 @@
-import { apiRequest } from '@/modules/axios/axios.server';
-import { GroupSchema } from '@/resources/schemas';
+import { readIamMiloapisComV1Alpha1NamespacedGroup } from '@openapi/iam.miloapis.com/v1alpha1';
+import { UnwrapProxyResponse } from '@openapi/shared/core/types.gen';
 
-export const groupDetailQuery = (
+export const groupDetailQuery = async (
   token: string,
   groupName: string,
   namespace: string = 'milo-system'
 ) => {
-  return apiRequest({
-    method: 'GET',
-    url: `/apis/iam.miloapis.com/v1alpha1/namespaces/${namespace}/groups/${groupName}`,
+  const response = await readIamMiloapisComV1Alpha1NamespacedGroup({
+    path: {
+      namespace,
+      name: groupName,
+    },
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  })
-    .output(GroupSchema)
-    .execute();
+  });
+  return response.data as UnwrapProxyResponse<typeof response.data>;
 };

@@ -6,21 +6,23 @@ import { authenticator } from '@/modules/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
 import { projectHttpProxyDetailQuery } from '@/resources/request/server';
-import { HTTPProxy } from '@/resources/schemas';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Tooltip } from '@datum-ui/tooltip';
-import { Text, Title } from '@datum-ui/typography';
+import { Text } from '@datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
+import { ComDatumapisNetworkingV1AlphaHttpProxy } from '@openapi/networking.datumapis.com/v1alpha';
 import { useMemo } from 'react';
 import { useLoaderData } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const data = extractDataFromMatches<HTTPProxy>(matches);
+  const data = extractDataFromMatches<ComDatumapisNetworkingV1AlphaHttpProxy>(matches);
   return metaObject(`HTTPProxy - ${data?.metadata?.name}`);
 };
 
 export const handle = {
-  breadcrumb: (data: HTTPProxy) => <span>{data.metadata.name}</span>,
+  breadcrumb: (data: ComDatumapisNetworkingV1AlphaHttpProxy) => (
+    <span>{data?.metadata?.name ?? ''}</span>
+  ),
 };
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
@@ -97,8 +99,8 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <Text>
-                    {data?.spec?.rules.map((rule) =>
-                      rule.backends.map((backend) => backend.endpoint).join(', ')
+                    {data?.spec?.rules.map(
+                      (rule) => rule.backends?.map((backend) => backend.endpoint).join(', ') ?? ''
                     )}
                   </Text>
                 </TableCell>

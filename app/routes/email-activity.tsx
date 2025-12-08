@@ -3,9 +3,12 @@ import { BadgeCondition } from '@/components/badge';
 import { DateFormatter } from '@/components/date';
 import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/datum-ui/data-table';
 import { emailListQuery } from '@/resources/request/client';
-import { Email, EmailListResponse } from '@/resources/schemas';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
+import {
+  ComMiloapisNotificationV1Alpha1Email,
+  ComMiloapisNotificationV1Alpha1EmailList,
+} from '@openapi/notification.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
@@ -16,7 +19,7 @@ export const handle = {
   breadcrumb: () => <Trans>Email Activity</Trans>,
 };
 
-const columnHelper = createColumnHelper<Email>();
+const columnHelper = createColumnHelper<ComMiloapisNotificationV1Alpha1Email>();
 const columns = [
   columnHelper.accessor('metadata.name', {
     header: () => <Trans>Name</Trans>,
@@ -42,22 +45,25 @@ const columns = [
 ];
 
 export default function Page() {
-  const tableState = useDataTableQuery<EmailListResponse>({
+  const tableState = useDataTableQuery<ComMiloapisNotificationV1Alpha1EmailList>({
     queryKeyPrefix: 'emails',
-    fetchFn: emailListQuery,
+    fetchFn: (params) => emailListQuery('milo-system', params),
     useSorting: true,
   });
 
   return (
-    <DataTableProvider<Email, EmailListResponse>
+    <DataTableProvider<
+      ComMiloapisNotificationV1Alpha1Email,
+      ComMiloapisNotificationV1Alpha1EmailList
+    >
       columns={columns}
       transform={(data) => ({
-        rows: data?.data?.items || [],
-        cursor: data?.data?.metadata?.continue,
+        rows: data?.items || [],
+        cursor: data?.metadata?.continue,
       })}
       {...tableState}>
       <div className="m-4 flex flex-col gap-2">
-        <DataTable<Email> />
+        <DataTable />
       </div>
     </DataTableProvider>
   );

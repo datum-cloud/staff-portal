@@ -7,9 +7,9 @@ import {
   orgInvitationDeleteMutation,
   orgMemberListQuery,
 } from '@/resources/request/client';
-import { TeamMember, TeamMemberListResponse } from '@/resources/schemas';
+import { TeamMember, TeamMemberList } from '@/resources/schemas';
 import { userRoutes } from '@/utils/config/routes.config';
-import { generateMetadataName, metaObject } from '@/utils/helpers';
+import { metaObject } from '@/utils/helpers';
 import { ActionItem, DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
 import { toast } from '@datum-ui/toast';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -61,9 +61,9 @@ export default function Page() {
 
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
 
-  const tableState = useDataTableQuery<TeamMemberListResponse>({
-    queryKeyPrefix: ['organizations', data.metadata.name, 'members'],
-    fetchFn: (args) => orgMemberListQuery(data.metadata.name, args),
+  const tableState = useDataTableQuery<TeamMemberList>({
+    queryKeyPrefix: ['organizations', data.metadata?.name ?? '', 'members'],
+    fetchFn: (args) => orgMemberListQuery(data.metadata?.name ?? '', args),
     useSorting: true,
   });
 
@@ -89,22 +89,15 @@ export default function Page() {
 
         setLoadingStates((prev) => ({ ...prev, [row.name]: true }));
         try {
-          await orgInvitationDeleteMutation(data.metadata.name, row.name);
-          await orgInvitationCreateMutation(data.metadata.name, {
-            apiVersion: 'iam.miloapis.com/v1alpha1',
-            kind: 'UserInvitation',
-            metadata: {
-              generateName: 'user-invitation-',
-            },
-            spec: {
-              email: row.email,
-              familyName: row.familyName,
-              givenName: row.givenName,
-              expirationDate: formatRFC3339(addHours(new Date(), 24)),
-              organizationRef: { name: data.metadata.name },
-              roles: row.roles,
-              state: 'Pending',
-            },
+          await orgInvitationDeleteMutation(data.metadata?.name ?? '', row.name);
+          await orgInvitationCreateMutation(data.metadata?.name ?? '', {
+            email: row.email,
+            familyName: row.familyName,
+            givenName: row.givenName,
+            expirationDate: formatRFC3339(addHours(new Date(), 24)),
+            organizationRef: { name: data.metadata?.name ?? '' },
+            roles: row?.roles ?? [],
+            state: 'Pending',
           });
           await new Promise((resolve) =>
             setTimeout(() => resolve(tableState.query.refetch()), 1000)
@@ -123,7 +116,7 @@ export default function Page() {
       onClick: async (row) => {
         setLoadingStates((prev) => ({ ...prev, [row.name]: true }));
         try {
-          await orgInvitationDeleteMutation(data.metadata.name, row.name);
+          await orgInvitationDeleteMutation(data.metadata?.name ?? '', row.name);
           await new Promise((resolve) =>
             setTimeout(() => resolve(tableState.query.refetch()), 1000)
           );
@@ -136,13 +129,13 @@ export default function Page() {
   ];
 
   return (
-    <DataTableProvider<TeamMember, TeamMemberListResponse>
+    <DataTableProvider<TeamMember, TeamMemberList>
       {...tableState}
       columns={columns}
       actions={actions}
       actionsLoading={(row) => loadingStates[row.name] || false}
       transform={(data) => ({
-        rows: data?.data || [],
+        rows: data || [],
         cursor: undefined,
       })}>
       <div className="m-4 flex flex-col gap-2">

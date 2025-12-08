@@ -55,14 +55,14 @@ export default function Page() {
   const [isMovingToPending, setIsMovingToPending] = useState(false);
 
   const { data: deactivationData } = useUserDeactivationQuery(
-    data.metadata.name,
+    data.metadata?.name ?? '',
     data.status?.state
   );
 
   const { approveUser, pendingUser } = useUserApproval();
 
   const handleDeleteUser = async () => {
-    await userDeleteMutation(data.metadata.name);
+    await userDeleteMutation(data.metadata?.name ?? '');
     navigate(userRoutes.list());
     toast.success(t`User deleted successfully`);
   };
@@ -70,18 +70,11 @@ export default function Page() {
   const handleDeactivateUser = async (formData: z.infer<typeof deactivateSchema>) => {
     try {
       await userDeactivateMutation({
-        apiVersion: 'iam.miloapis.com/v1alpha1',
-        kind: 'UserDeactivation',
-        metadata: {
-          generateName: 'user-deactivation-',
-        },
-        spec: {
-          reason: formData.reason,
-          deactivatedBy: user?.metadata?.name ?? '',
-          description: '',
-          userRef: {
-            name: data.metadata.name,
-          },
+        reason: formData.reason,
+        deactivatedBy: user?.metadata?.name ?? '',
+        description: '',
+        userRef: {
+          name: data.metadata?.name ?? '',
         },
       });
       await new Promise((resolve) => setTimeout(() => resolve(revalidate()), 1000));
@@ -109,7 +102,7 @@ export default function Page() {
         open={deactivateDialogOpen}
         onOpenChange={setDeactivateDialogOpen}
         title={t`Deactivate User`}
-        description={t`Please provide a reason for deactivating "${data.spec.givenName} ${data.spec.familyName}".`}
+        description={t`Please provide a reason for deactivating "${data.spec?.givenName ?? ''} ${data.spec?.familyName ?? ''}".`}
         submitText={t`Deactivate`}
         cancelText={t`Cancel`}
         onSubmit={handleDeactivateUser}
@@ -205,7 +198,7 @@ export default function Page() {
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Text>{data?.metadata?.name}</Text>
-                      <ButtonCopy value={data?.metadata?.name} />
+                      <ButtonCopy value={data?.metadata?.name ?? ''} />
                     </div>
                   </TableCell>
                 </TableRow>
@@ -374,7 +367,7 @@ export default function Page() {
           deleteTitle={t`Delete User`}
           deleteDescription={t`Permanently delete this user and all associated data`}
           dialogTitle={t`Delete User`}
-          dialogDescription={t`Are you sure you want to delete user "${data.spec.givenName} ${data.spec.familyName}"? This action cannot be undone.`}
+          dialogDescription={t`Are you sure you want to delete user "${data.spec?.givenName ?? ''} ${data.spec?.familyName ?? ''}"? This action cannot be undone.`}
           onConfirm={handleDeleteUser}
         />
       </div>

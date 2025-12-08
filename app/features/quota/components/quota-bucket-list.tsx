@@ -1,7 +1,6 @@
 import { DateFormatter } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
 import { quotaGrantCreateMutation } from '@/resources/request/client';
-import { AllowanceBucket, AllowanceBucketListResponse } from '@/resources/schemas';
 import {
   DataTable,
   DataTableProvider,
@@ -12,18 +11,21 @@ import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
 import { Text } from '@datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
+import {
+  ComMiloapisQuotaV1Alpha1AllowanceBucket,
+  ComMiloapisQuotaV1Alpha1AllowanceBucketList,
+} from '@openapi/quota.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
-import { getTime } from 'date-fns';
 import { PencilIcon } from 'lucide-react';
 import { useState } from 'react';
 import z from 'zod';
 
 interface QuotaBucketListProps {
   queryKeyPrefix: string[];
-  fetchFn: (params: any) => Promise<AllowanceBucketListResponse>;
+  fetchFn: (params: any) => Promise<ComMiloapisQuotaV1Alpha1AllowanceBucketList>;
 }
 
-const columnHelper = createColumnHelper<AllowanceBucket>();
+const columnHelper = createColumnHelper<ComMiloapisQuotaV1Alpha1AllowanceBucket>();
 
 const columns = [
   columnHelper.accessor('spec.resourceType', {
@@ -88,19 +90,19 @@ const columns = [
 
 export function QuotaBucketList({ queryKeyPrefix, fetchFn }: QuotaBucketListProps) {
   const { t } = useLingui();
-  const [selected, setSelected] = useState<AllowanceBucket | null>(null);
+  const [selected, setSelected] = useState<ComMiloapisQuotaV1Alpha1AllowanceBucket | null>(null);
 
-  const tableState = useDataTableQuery<AllowanceBucketListResponse>({
+  const tableState = useDataTableQuery<ComMiloapisQuotaV1Alpha1AllowanceBucketList>({
     queryKeyPrefix,
     fetchFn,
     useSorting: true,
   });
 
-  const actions: ActionItem<AllowanceBucket>[] = [
+  const actions: ActionItem<ComMiloapisQuotaV1Alpha1AllowanceBucket>[] = [
     {
       label: t`Edit Quota`,
       icon: PencilIcon,
-      onClick: (row: AllowanceBucket) => {
+      onClick: (row: ComMiloapisQuotaV1Alpha1AllowanceBucket) => {
         setSelected(row);
       },
     },
@@ -120,26 +122,18 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn }: QuotaBucketListProp
       const newLimit = formData.newLimit;
       const amount = Math.max(0, newLimit - currentLimit);
 
-      await quotaGrantCreateMutation({
-        apiVersion: 'quota.miloapis.com/v1alpha1',
-        kind: 'ResourceGrant',
-        metadata: {
-          generateName: 'resource-grant-',
-          namespace: selected?.metadata.namespace ?? '',
+      await quotaGrantCreateMutation(selected?.metadata?.namespace ?? '', {
+        consumerRef: {
+          apiGroup: selected?.spec.consumerRef.apiGroup ?? '',
+          kind: selected?.spec.consumerRef.kind as 'Organization' | 'Project',
+          name: selected?.spec.consumerRef.name ?? '',
         },
-        spec: {
-          consumerRef: {
-            apiGroup: selected?.spec.consumerRef.apiGroup ?? '',
-            kind: selected?.spec.consumerRef.kind ?? 'Organization',
-            name: selected?.spec.consumerRef.name ?? '',
+        allowances: [
+          {
+            resourceType: selected?.spec.resourceType ?? '',
+            buckets: [{ amount }],
           },
-          allowances: [
-            {
-              resourceType: selected?.spec.resourceType ?? '',
-              buckets: [{ amount }],
-            },
-          ],
-        },
+        ],
       });
 
       await new Promise((resolve) => setTimeout(() => resolve(tableState.query.refetch()), 1000));
@@ -174,16 +168,19 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn }: QuotaBucketListProp
         <Form.Input field="newLimit" label={t`New Limit`} required />
       </DialogForm>
 
-      <DataTableProvider<AllowanceBucket, AllowanceBucketListResponse>
+      <DataTableProvider<
+        ComMiloapisQuotaV1Alpha1AllowanceBucket,
+        ComMiloapisQuotaV1Alpha1AllowanceBucketList
+      >
         columns={columns}
         actions={actions}
         transform={(resp) => ({
-          rows: resp?.data?.items || [],
-          cursor: resp?.data?.metadata?.continue,
+          rows: resp?.items || [],
+          cursor: resp?.metadata?.continue,
         })}
         {...tableState}>
         <div className="m-4 flex flex-col gap-2">
-          <DataTable<AllowanceBucket> />
+          <DataTable />
         </div>
       </DataTableProvider>
     </>

@@ -1,78 +1,71 @@
-import { apiRequestClient } from '@/modules/axios/axios.client';
+import { ListQueryParams } from '@/resources/schemas';
 import {
-  AllowanceBucketListResponseSchema,
-  AllowanceBucketResponseSchema,
-  ListQueryParams,
-  ResourceGrantCreate,
-  ResourceGrantCreateSchema,
-  ResourceGrantListResponseSchema,
-  ResourceGrantResponseSchema,
-} from '@/resources/schemas';
-import { z } from 'zod';
-
-// Generic helpers for optional selectors
-const buildCommonParams = (
-  params?: ListQueryParams & {
-    fieldSelector?: string;
-    labelSelector?: string;
-  }
-) => ({
-  ...(params?.limit && { limit: params.limit }),
-  ...(params?.cursor && { continue: params.cursor }),
-  ...(params?.fieldSelector && { fieldSelector: params.fieldSelector }),
-  ...(params?.labelSelector && { labelSelector: params.labelSelector }),
-});
+  ComMiloapisQuotaV1Alpha1AllowanceBucket,
+  ComMiloapisQuotaV1Alpha1ResourceClaim,
+  ComMiloapisQuotaV1Alpha1ResourceGrant,
+  createQuotaMiloapisComV1Alpha1NamespacedResourceGrant,
+  deleteQuotaMiloapisComV1Alpha1NamespacedAllowanceBucket,
+  deleteQuotaMiloapisComV1Alpha1NamespacedResourceClaim,
+  deleteQuotaMiloapisComV1Alpha1NamespacedResourceGrant,
+  listQuotaMiloapisComV1Alpha1AllowanceBucketForAllNamespaces,
+  listQuotaMiloapisComV1Alpha1ResourceClaimForAllNamespaces,
+  listQuotaMiloapisComV1Alpha1ResourceGrantForAllNamespaces,
+  listQuotaMiloapisComV1Alpha1ResourceRegistration,
+  readQuotaMiloapisComV1Alpha1NamespacedAllowanceBucket,
+  readQuotaMiloapisComV1Alpha1NamespacedResourceClaim,
+  readQuotaMiloapisComV1Alpha1NamespacedResourceGrant,
+  readQuotaMiloapisComV1Alpha1ResourceRegistration,
+} from '@openapi/quota.miloapis.com/v1alpha1';
 
 // ------------------------
 // ResourceRegistrations
 // ------------------------
-export const quotaRegistrationListQuery = (
+export const quotaRegistrationListQuery = async (
   params?: ListQueryParams & { fieldSelector?: string; labelSelector?: string }
 ) => {
-  return (
-    apiRequestClient({
-      method: 'GET',
-      url: '/apis/quota.miloapis.com/v1alpha1/resourceregistrations',
-      params: buildCommonParams(params),
-    })
-      // TODO: replace z.any() with concrete schema when available
-      .output(z.any())
-      .execute()
-  );
+  const response = await listQuotaMiloapisComV1Alpha1ResourceRegistration({
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
+      ...(params?.fieldSelector && { fieldSelector: params.fieldSelector }),
+      ...(params?.labelSelector && { labelSelector: params.labelSelector }),
+    },
+  });
+  return response.data.data;
 };
 
-export const quotaRegistrationDetailQuery = (name: string) => {
-  return apiRequestClient({
-    method: 'GET',
-    url: `/apis/quota.miloapis.com/v1alpha1/resourceregistrations/${name}`,
-  })
-    .output(z.any())
-    .execute();
+export const quotaRegistrationDetailQuery = async (name: string) => {
+  const response = await readQuotaMiloapisComV1Alpha1ResourceRegistration({
+    path: { name },
+  });
+  return response.data.data;
 };
 
 // ------------------------
 // ResourceGrants
 // ------------------------
-export const quotaGrantListQuery = (
+export const quotaGrantListQuery = async (
   params?: ListQueryParams & { fieldSelector?: string; labelSelector?: string }
 ) => {
-  return apiRequestClient({
-    method: 'GET',
-    url: '/apis/quota.miloapis.com/v1alpha1/resourcegrants',
-    params: buildCommonParams(params),
-  })
-    .output(ResourceGrantListResponseSchema)
-    .execute();
+  const response = await listQuotaMiloapisComV1Alpha1ResourceGrantForAllNamespaces({
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
+      ...(params?.fieldSelector && { fieldSelector: params.fieldSelector }),
+      ...(params?.labelSelector && { labelSelector: params.labelSelector }),
+    },
+  });
+  return response.data.data;
 };
 
-export const quotaGrantDetailQuery = (name: string, namespace: string = 'default') => {
+export const quotaGrantDetailQuery = async (
+  metadata: ComMiloapisQuotaV1Alpha1ResourceGrant['metadata']
+) => {
   // Grants are namespaced (namespace is typically the organization namespace)
-  return apiRequestClient({
-    method: 'GET',
-    url: `/apis/quota.miloapis.com/v1alpha1/namespaces/${namespace}/resourcegrants/${name}`,
-  })
-    .output(ResourceGrantResponseSchema)
-    .execute();
+  const response = await readQuotaMiloapisComV1Alpha1NamespacedResourceGrant({
+    path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
+  });
+  return response.data.data;
 };
 
 // Convenience: list grants for a specific Organization consumer
@@ -110,46 +103,57 @@ export const projectQuotaGrantListQuery = (
   });
 };
 
-export const quotaGrantCreateMutation = (payload: ResourceGrantCreate) => {
-  return apiRequestClient({
-    method: 'POST',
-    url: `/apis/quota.miloapis.com/v1alpha1/namespaces/${payload.metadata.namespace}/resourcegrants`,
-    data: payload,
-  })
-    .input(ResourceGrantCreateSchema)
-    .execute();
+export const quotaGrantCreateMutation = async (
+  namespace: string,
+  payload: ComMiloapisQuotaV1Alpha1ResourceGrant['spec']
+) => {
+  const response = await createQuotaMiloapisComV1Alpha1NamespacedResourceGrant({
+    path: { namespace },
+    body: {
+      apiVersion: 'quota.miloapis.com/v1alpha1',
+      kind: 'ResourceGrant',
+      metadata: {
+        generateName: 'resource-grant-',
+        namespace,
+      },
+      spec: payload,
+    },
+  });
+  return response.data.data;
 };
 
-export const quotaGrantDeleteMutation = (name: string, namespace: string = 'default') => {
-  return apiRequestClient({
-    method: 'DELETE',
-    url: `/apis/quota.miloapis.com/v1alpha1/namespaces/${namespace}/resourcegrants/${name}`,
-  }).execute();
+export const quotaGrantDeleteMutation = async (name: string, namespace: string = 'default') => {
+  return deleteQuotaMiloapisComV1Alpha1NamespacedResourceGrant({
+    path: { namespace, name },
+  });
 };
 
 // ------------------------
 // AllowanceBuckets
 // ------------------------
-export const quotaBucketListQuery = (
+export const quotaBucketListQuery = async (
   params?: ListQueryParams & { fieldSelector?: string; labelSelector?: string }
 ) => {
-  return apiRequestClient({
-    method: 'GET',
-    url: '/apis/quota.miloapis.com/v1alpha1/allowancebuckets',
-    params: buildCommonParams(params),
-  })
-    .output(AllowanceBucketListResponseSchema)
-    .execute();
+  const response = await listQuotaMiloapisComV1Alpha1AllowanceBucketForAllNamespaces({
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
+      ...(params?.fieldSelector && { fieldSelector: params.fieldSelector }),
+      ...(params?.labelSelector && { labelSelector: params.labelSelector }),
+    },
+  });
+  return response.data.data;
 };
 
-export const quotaBucketDetailQuery = (name: string) => {
-  // Buckets are cluster-scoped (one per consumer+resourceType), exposed by name
-  return apiRequestClient({
-    method: 'GET',
-    url: `/apis/quota.miloapis.com/v1alpha1/allowancebuckets/${name}`,
-  })
-    .output(AllowanceBucketResponseSchema)
-    .execute();
+export const quotaBucketDetailQuery = async (
+  metadata: ComMiloapisQuotaV1Alpha1AllowanceBucket['metadata']
+) => {
+  // Note: OpenAPI has namespaced version, using default namespace
+  // Buckets are typically cluster-scoped (one per consumer+resourceType), exposed by name
+  const response = await readQuotaMiloapisComV1Alpha1NamespacedAllowanceBucket({
+    path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
+  });
+  return response.data.data;
 };
 
 export const orgQuotaBucketListQuery = (
@@ -184,37 +188,41 @@ export const projectQuotaBucketListQuery = (
   });
 };
 
-export const quotaBucketDeleteMutation = (name: string) => {
-  // Buckets are cluster-scoped, so no namespace needed
-  return apiRequestClient({
-    method: 'DELETE',
-    url: `/apis/quota.miloapis.com/v1alpha1/allowancebuckets/${name}`,
-  }).execute();
+export const quotaBucketDeleteMutation = async (
+  metadata: ComMiloapisQuotaV1Alpha1AllowanceBucket['metadata']
+) => {
+  // Note: OpenAPI has namespaced version, using default namespace
+  // Buckets are typically cluster-scoped, but OpenAPI requires namespace
+  return deleteQuotaMiloapisComV1Alpha1NamespacedAllowanceBucket({
+    path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
+  });
 };
 
 // ------------------------
 // ResourceClaims
 // ------------------------
-export const quotaClaimListQuery = (
+export const quotaClaimListQuery = async (
   params?: ListQueryParams & { fieldSelector?: string; labelSelector?: string }
 ) => {
-  return apiRequestClient({
-    method: 'GET',
-    url: '/apis/quota.miloapis.com/v1alpha1/resourceclaims',
-    params: buildCommonParams(params),
-  })
-    .output(z.any())
-    .execute();
+  const response = await listQuotaMiloapisComV1Alpha1ResourceClaimForAllNamespaces({
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
+      ...(params?.fieldSelector && { fieldSelector: params.fieldSelector }),
+      ...(params?.labelSelector && { labelSelector: params.labelSelector }),
+    },
+  });
+  return response.data.data;
 };
 
-export const quotaClaimDetailQuery = (name: string, namespace: string = 'default') => {
+export const quotaClaimDetailQuery = async (
+  metadata: ComMiloapisQuotaV1Alpha1ResourceClaim['metadata']
+) => {
   // Claims are generally namespaced
-  return apiRequestClient({
-    method: 'GET',
-    url: `/apis/quota.miloapis.com/v1alpha1/namespaces/${namespace}/resourceclaims/${name}`,
-  })
-    .output(z.any())
-    .execute();
+  const response = await readQuotaMiloapisComV1Alpha1NamespacedResourceClaim({
+    path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
+  });
+  return response.data.data;
 };
 
 export const orgQuotaClaimListQuery = (
@@ -244,10 +252,11 @@ export const projectQuotaClaimListQuery = (
   });
 };
 
-export const quotaClaimDeleteMutation = (name: string, namespace: string = 'default') => {
+export const quotaClaimDeleteMutation = async (
+  metadata: ComMiloapisQuotaV1Alpha1ResourceClaim['metadata']
+) => {
   // Claims are generally namespaced
-  return apiRequestClient({
-    method: 'DELETE',
-    url: `/apis/quota.miloapis.com/v1alpha1/namespaces/${namespace}/resourceclaims/${name}`,
-  }).execute();
+  return deleteQuotaMiloapisComV1Alpha1NamespacedResourceClaim({
+    path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
+  });
 };

@@ -16,7 +16,7 @@ export function getUserDetailMetadata(matches: any[]) {
   const data = extractDataFromMatches<UserDetailLoaderData>(matches, 'routes/user/detail/layout');
   return {
     user: data,
-    userName: data ? `${data.spec.givenName} ${data.spec.familyName}` : '',
+    userName: data ? `${data?.spec?.givenName ?? ''} ${data?.spec?.familyName ?? ''}` : '',
     userEmail: data?.spec?.email || '',
   };
 }

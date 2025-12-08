@@ -12,10 +12,14 @@ import {
   CommandList,
 } from '@/modules/shadcn/ui/command';
 import { orgListQuery, projectListQuery, userListQuery } from '@/resources/request/client';
-import { Organization, Project, User } from '@/resources/schemas';
 import { routes } from '@/utils/config/routes.config';
 import { Text } from '@datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
+import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
+import {
+  ComMiloapisResourcemanagerV1Alpha1Organization,
+  ComMiloapisResourcemanagerV1Alpha1Project,
+} from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
 import { Activity, Building2, FolderOpen, Home, Loader2, SearchIcon, Users } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
@@ -124,10 +128,7 @@ function AppSearch({ className = '', placeholder = 'Search' }: Props) {
   // Calculate overall state
   const isLoading = orgsLoading || projectsLoading || usersLoading;
   const hasResults =
-    (orgs?.data?.items?.length ?? 0) +
-      (projects?.data?.items?.length ?? 0) +
-      (users?.data?.items?.length ?? 0) >
-    0;
+    (orgs?.items?.length ?? 0) + (projects?.items?.length ?? 0) + (users?.items?.length ?? 0) > 0;
 
   return (
     <>
@@ -184,52 +185,59 @@ function AppSearch({ className = '', placeholder = 'Search' }: Props) {
               ) : (
                 <>
                   {/* Organizations */}
-                  <SearchResultGroup<Organization>
+                  <SearchResultGroup<ComMiloapisResourcemanagerV1Alpha1Organization>
                     heading="Organizations"
-                    items={orgs?.data?.items || []}
+                    items={orgs?.items || []}
                     icon={Building2}
                     getValue={(org) =>
-                      `${org.metadata.name} ${org.metadata.annotations?.['kubernetes.io/display-name'] ?? ''}`
+                      `${org.metadata?.name ?? ''} ${org.metadata?.annotations?.['kubernetes.io/display-name'] ?? ''}`
                     }
                     getTitle={(org) =>
-                      org.metadata.annotations?.['kubernetes.io/display-name'] || org.metadata.name
+                      org.metadata?.annotations?.['kubernetes.io/display-name'] ||
+                      (org.metadata?.name ?? '')
                     }
-                    getSubtitle={(org) => org.metadata.name}
+                    getSubtitle={(org) => org.metadata?.name ?? ''}
                     onSelect={(org) =>
-                      runCommand(() => navigate(routes.organizations.detail(org.metadata.name)))
+                      runCommand(() =>
+                        navigate(routes.organizations.detail(org.metadata?.name ?? ''))
+                      )
                     }
                   />
 
                   {/* Projects */}
-                  <SearchResultGroup<Project>
+                  <SearchResultGroup<ComMiloapisResourcemanagerV1Alpha1Project>
                     heading="Projects"
-                    items={projects?.data?.items || []}
+                    items={projects?.items || []}
                     icon={FolderOpen}
                     getValue={(project) =>
-                      `${project.metadata.name} ${project.metadata.annotations?.['kubernetes.io/description'] ?? ''}`
+                      `${project.metadata?.name ?? ''} ${project.metadata?.annotations?.['kubernetes.io/description'] ?? ''}`
                     }
                     getTitle={(project) =>
-                      project.metadata.annotations?.['kubernetes.io/description'] ||
-                      project.metadata.name
+                      project.metadata?.annotations?.['kubernetes.io/description'] ||
+                      (project.metadata?.name ?? '')
                     }
-                    getSubtitle={(project) => project.metadata.name}
+                    getSubtitle={(project) => project.metadata?.name ?? ''}
                     onSelect={(project) =>
-                      runCommand(() => navigate(routes.projects.detail(project.metadata.name)))
+                      runCommand(() =>
+                        navigate(routes.projects.detail(project.metadata?.name ?? ''))
+                      )
                     }
                   />
 
                   {/* Users */}
-                  <SearchResultGroup<User>
+                  <SearchResultGroup<ComMiloapisIamV1Alpha1User>
                     heading="Users"
-                    items={users?.data?.items || []}
+                    items={users?.items || []}
                     icon={Users}
                     getValue={(user) =>
-                      `${user.metadata.name} ${user.spec.givenName} ${user.spec.familyName} ${user.spec.email}`
+                      `${user.metadata?.name ?? ''} ${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''} ${user.spec?.email ?? ''}`
                     }
-                    getTitle={(user) => `${user.spec.givenName} ${user.spec.familyName}`}
-                    getSubtitle={(user) => user.spec.email}
+                    getTitle={(user) =>
+                      `${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''}`
+                    }
+                    getSubtitle={(user) => user.spec?.email ?? ''}
                     onSelect={(user) =>
-                      runCommand(() => navigate(routes.users.detail(user.metadata.name)))
+                      runCommand(() => navigate(routes.users.detail(user.metadata?.name ?? '')))
                     }
                   />
                 </>

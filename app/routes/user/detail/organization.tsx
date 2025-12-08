@@ -3,21 +3,24 @@ import { BadgeState } from '@/components/badge';
 import { DateFormatter } from '@/components/date';
 import { DisplayName } from '@/components/display';
 import { userOrgListQuery } from '@/resources/request/client';
-import { User, Member, MemberListResponse } from '@/resources/schemas';
+import { getUserDetailMetadata, useUserDetailData } from '@/routes/user/shared';
 import { orgRoutes } from '@/utils/config/routes.config';
-import { extractDataFromMatches, metaObject } from '@/utils/helpers';
+import { metaObject } from '@/utils/helpers';
 import { DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
 import { Trans } from '@lingui/react/macro';
+import {
+  ComMiloapisResourcemanagerV1Alpha1OrganizationMembership,
+  ComMiloapisResourcemanagerV1Alpha1OrganizationMembershipList,
+} from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
-import { useRouteLoaderData } from 'react-router';
 
-const columnHelper = createColumnHelper<Member>();
+const columnHelper = createColumnHelper<ComMiloapisResourcemanagerV1Alpha1OrganizationMembership>();
 
 const columns = [
   columnHelper.accessor('spec.organizationRef.name', {
     header: () => <Trans>Name</Trans>,
     cell: ({ row }) => {
-      const orgName = row.original.spec.organizationRef.name;
+      const orgName = row.original.spec?.organizationRef?.name ?? '';
       const displayName = row.original.status?.organization?.displayName;
       return (
         <DisplayName
@@ -30,7 +33,7 @@ const columns = [
   }),
   columnHelper.accessor('status.organization.type', {
     header: () => <Trans>Type</Trans>,
-    cell: ({ getValue }) => <BadgeState state={getValue()} />,
+    cell: ({ getValue }) => <BadgeState state={getValue() ?? ''} />,
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
     header: () => <Trans>Joined</Trans>,
@@ -43,26 +46,30 @@ export const handle = {
 };
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const data = extractDataFromMatches<User>(matches, 'routes/user/detail/layout');
-  return metaObject(`Organizations - ${data?.spec?.givenName} ${data?.spec?.familyName}`);
+  const { userName } = getUserDetailMetadata(matches);
+  return metaObject(`Organizations - ${userName}`);
 };
 
 export default function Page() {
-  const data = useRouteLoaderData('routes/user/detail/layout') as User;
+  const data = useUserDetailData();
 
-  const tableState = useDataTableQuery<MemberListResponse>({
-    queryKeyPrefix: ['users', data.metadata.name, 'organizations'],
-    fetchFn: (args) => userOrgListQuery(data.metadata.name, args),
-    useSorting: true,
-  });
+  const tableState =
+    useDataTableQuery<ComMiloapisResourcemanagerV1Alpha1OrganizationMembershipList>({
+      queryKeyPrefix: ['users', data.metadata?.name ?? '', 'organizations'],
+      fetchFn: (args) => userOrgListQuery(data.metadata?.name ?? '', args),
+      useSorting: true,
+    });
 
   return (
-    <DataTableProvider<Member, MemberListResponse>
+    <DataTableProvider<
+      ComMiloapisResourcemanagerV1Alpha1OrganizationMembership,
+      ComMiloapisResourcemanagerV1Alpha1OrganizationMembershipList
+    >
       {...tableState}
       columns={columns}
       transform={(data) => ({
-        rows: data?.data?.items || [],
-        cursor: data?.data?.metadata?.continue,
+        rows: data?.items || [],
+        cursor: data?.metadata?.continue,
       })}>
       <div className="m-4 flex flex-col gap-2">
         <DataTable />

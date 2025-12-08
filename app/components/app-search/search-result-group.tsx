@@ -1,5 +1,4 @@
 import { CommandGroup, CommandItem } from '@/modules/shadcn/ui/command';
-import { Organization, Project, User } from '@/resources/schemas';
 import { Text } from '@datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
 import { LucideIcon } from 'lucide-react';
@@ -14,7 +13,7 @@ interface SearchResultGroupProps<T> {
   onSelect: (item: T) => void;
 }
 
-export const SearchResultGroup = <T extends { metadata: { name: string } }>({
+export const SearchResultGroup = <T extends { metadata?: { name?: string } }>({
   heading,
   items,
   icon,
@@ -35,7 +34,7 @@ export const SearchResultGroup = <T extends { metadata: { name: string } }>({
         const Icon = icon;
         return (
           <CommandItem
-            key={item.metadata.name}
+            key={item.metadata?.name ?? ''}
             value={getValue(item)}
             onSelect={() => onSelect(item)}>
             <Icon className="mr-2 h-4 w-4" />
