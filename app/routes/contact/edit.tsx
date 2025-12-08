@@ -1,6 +1,7 @@
 import type { Route } from './+types/edit';
 import { ContactDetailLoaderData, getContactDetailMetadata, useContactDetailData } from './shared';
 import { ContactForm } from '@/features/contact';
+import { AddNoteDialog, ShowNotesDialog } from '@/features/note';
 import { authenticator } from '@/modules/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { contactDetailQuery, userDetailQuery } from '@/resources/request/server';
@@ -8,6 +9,7 @@ import { User } from '@/resources/schemas';
 import { metaObject } from '@/utils/helpers';
 import { Col, Row } from '@datum-ui/grid';
 import { Trans } from '@lingui/react/macro';
+import { useState } from 'react';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const { contactName } = getContactDetailMetadata(matches);
@@ -43,16 +45,37 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 
 export default function Page() {
   const data = useContactDetailData();
+  const [noteRefreshTrigger, setNoteRefreshTrigger] = useState(0);
+
+  const handleNoteCreated = () => {
+    setNoteRefreshTrigger((prev) => prev + 1);
+  };
+
+  const subjectRef = data?.contact
+    ? {
+        apiGroup: 'notification_miloapis_com' as const,
+        kind: 'Contact' as const,
+        name: data.contact.metadata.name,
+        namespace: data.contact.metadata.namespace,
+      }
+    : null;
 
   return (
     <div className="m-4">
       <Row className="mb-4">
         <Col span={12} offset={6}>
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>
                 <Trans>Contact Information</Trans>
               </CardTitle>
+              {subjectRef && (
+                <div className="flex items-center gap-2">
+                  <ShowNotesDialog subjectRef={subjectRef} refreshTrigger={noteRefreshTrigger} />
+                  <div className="bg-border h-6 w-px" />
+                  <AddNoteDialog subjectRef={subjectRef} onSuccess={handleNoteCreated} />
+                </div>
+              )}
             </CardHeader>
             <CardContent>
               <ContactForm contact={data?.contact} user={data?.user} />
