@@ -215,6 +215,100 @@ api.get('/activity', authMiddleware(), async (c) => {
   }
 });
 
+// GraphQL proxy route - forwards GraphQL requests to the GraphQL server
+api.post('/graphql', authMiddleware(), async (c) => {
+  const startTime = performance.now();
+  const reqLogger = createRequestLogger(c);
+  const reqId = c.get('requestId');
+  const requestContext = extractRequestContext(c);
+
+  reqLogger.info('GraphQL API Request Started', requestContext);
+
+  try {
+    // Check if GraphQL URL is configured
+    if (!env.GRAPHQL_URL) {
+      return c.json(
+        { error: 'GraphQL endpoint not configured', code: 'GRAPHQL_NOT_CONFIGURED' },
+        503
+      );
+    }
+
+    const token = getToken(c);
+    const body = await c.req.json();
+
+    // Forward to GraphQL server
+    const response = await fetch(env.GRAPHQL_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(body),
+    });
+
+    const duration = Math.round(performance.now() - startTime);
+
+    // Check if response is JSON
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      const text = await response.text();
+      reqLogger.error('GraphQL server returned non-JSON response', {
+        status: response.status,
+        contentType,
+        body: text.slice(0, 500), // Log first 500 chars for debugging
+      });
+      return c.json(
+        {
+          errors: [
+            {
+              message: `GraphQL server error: ${response.status} ${response.statusText}`,
+              extensions: { code: 'GRAPHQL_SERVER_ERROR', status: response.status },
+            },
+          ],
+        },
+        response.status as any
+      );
+    }
+
+    const data = await response.json();
+
+    // Log success
+    logApiSuccess(reqLogger, {
+      path: c.req.path,
+      method: c.req.method,
+      duration,
+      userAgent: requestContext.userAgent,
+      ip: requestContext.ip,
+    });
+
+    // Return the GraphQL response directly (not wrapped in our standard format)
+    return c.json(data, response.status as any);
+  } catch (error) {
+    const duration = Math.round(performance.now() - startTime);
+
+    // Use typed error logging
+    await logApiError(reqLogger, error, {
+      path: c.req.path,
+      method: c.req.method,
+      duration,
+      userAgent: requestContext.userAgent,
+      ip: requestContext.ip,
+    });
+
+    // Capture server-side API errors to Sentry
+    if (error instanceof Error) {
+      captureApiError(error, {
+        url: c.req.path,
+        method: c.req.method,
+        requestId: reqId,
+      });
+    }
+
+    const { response, status } = await createErrorResponse(reqId, error, '/graphql');
+    return c.json(response, status as any);
+  }
+});
+
 // Metrics API (get data from Prometheus)
 api.post('/metrics', authMiddleware(), async (c) => {
   const startTime = performance.now();

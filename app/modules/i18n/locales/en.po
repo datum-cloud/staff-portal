@@ -14,8 +14,10 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. placeholder {0}: item.label
+#. placeholder {0}: showExpiredOnly ? `Showing ${filteredNotes.length} expired of ${notes.length} follow-ups` : `Showing ${filteredNotes.length} follow-ups`
 #. placeholder {0}: item.title
 #: app/modules/datum-ui/data-table/components/data-table-facet-filter.tsx:114
+#: app/features/note/components/follow-ups-list.tsx:328
 #: app/components/app-search/index.tsx:163
 msgid "{0}"
 msgstr "{0}"
@@ -40,7 +42,7 @@ msgstr "# of Sinks"
 msgid "# of Sources"
 msgstr "# of Sources"
 
-#: app/routes/user/detail/index.tsx:279
+#: app/routes/user/detail/index.tsx:305
 msgid "Account Management"
 msgstr "Account Management"
 
@@ -82,9 +84,24 @@ msgstr "Add"
 msgid "Add Member"
 msgstr "Add Member"
 
+#: app/features/note/components/note-form.tsx:61
+#: app/features/note/components/note-form.tsx:67
+#: app/features/note/components/note-form.tsx:68
+msgid "Add Note"
+msgstr "Add Note"
+
 #: app/routes/contact-group/detail/member.tsx:52
 msgid "Added"
 msgstr "Added"
+
+#: app/features/note/components/note-list.tsx:331
+#: app/features/note/components/note-list.tsx:335
+msgid "All creators"
+msgstr "All creators"
+
+#: app/features/note/components/follow-ups-list.tsx:189
+msgid "All follow-ups"
+msgstr "All follow-ups"
 
 #: app/features/activity/components/activity-list.tsx:341
 msgid "All read operations"
@@ -103,7 +120,7 @@ msgid "Apply"
 msgstr "Apply"
 
 #: app/routes/user/index.tsx:89
-#: app/routes/user/detail/index.tsx:162
+#: app/routes/user/detail/index.tsx:179
 msgid "Approve"
 msgstr "Approve"
 
@@ -147,9 +164,13 @@ msgstr "Are you sure you want to delete project \"{0} ({1})\"? This action canno
 msgid "Are you sure you want to delete session \"{0}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete session \"{0}\"? This action cannot be undone."
 
+#: app/features/note/components/note-list.tsx:259
+msgid "Are you sure you want to delete this note? This action cannot be undone."
+msgstr "Are you sure you want to delete this note? This action cannot be undone."
+
 #. placeholder {0}: data.spec.givenName
 #. placeholder {1}: data.spec.familyName
-#: app/routes/user/detail/index.tsx:377
+#: app/routes/user/detail/index.tsx:403
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 
@@ -170,7 +191,7 @@ msgid "Auto-managed by policy \"{policyName}\". Cannot be deleted."
 msgstr "Auto-managed by policy \"{policyName}\". Cannot be deleted."
 
 #: app/routes/user/index.tsx:159
-#: app/routes/user/detail/index.tsx:114
+#: app/routes/user/detail/index.tsx:120
 #: app/routes/profile/session.tsx:89
 #: app/routes/organization/detail/member.tsx:119
 #: app/routes/group/member.tsx:145
@@ -182,6 +203,9 @@ msgstr "Auto-managed by policy \"{policyName}\". Cannot be deleted."
 #: app/features/user/components/user-reject-dialog.tsx:30
 #: app/features/quota/components/quota-grant-list.tsx:142
 #: app/features/quota/components/quota-bucket-list.tsx:159
+#: app/features/note/components/note-list.tsx:261
+#: app/features/note/components/note-list.tsx:273
+#: app/features/note/components/note-form.tsx:69
 #: app/features/contact-group/components/contact-group-form.tsx:78
 #: app/features/contact/components/contact-form.tsx:197
 #: app/components/danger-zone-card/index.tsx:49
@@ -240,7 +264,7 @@ msgstr "Contact Groups"
 msgid "Contact Groups - Create"
 msgstr "Contact Groups - Create"
 
-#: app/routes/contact/edit.tsx:54
+#: app/routes/contact/edit.tsx:70
 #: app/routes/contact/create.tsx:25
 msgid "Contact Information"
 msgstr "Contact Information"
@@ -261,8 +285,17 @@ msgid "Contacts - Create"
 msgstr "Contacts - Create"
 
 #: app/routes/project/detail/dns/detail.tsx:119
+#: app/features/note/components/note-list.tsx:407
 msgid "Content"
 msgstr "Content"
+
+#: app/features/note/components/note-list.tsx:529
+msgid "Copy next action"
+msgstr "Copy next action"
+
+#: app/features/note/components/note-list.tsx:518
+msgid "Copy note"
+msgstr "Copy note"
 
 #: app/routes/contact-group/create.tsx:14
 #: app/routes/contact/create.tsx:14
@@ -274,7 +307,7 @@ msgstr "Create"
 
 #: app/routes/email-activity.tsx:37
 #: app/routes/user/index.tsx:61
-#: app/routes/user/detail/index.tsx:261
+#: app/routes/user/detail/index.tsx:278
 #: app/routes/project/index.tsx:42
 #: app/routes/project/detail/index.tsx:74
 #: app/routes/project/detail/httpproxy/index.tsx:56
@@ -294,8 +327,23 @@ msgstr "Create"
 #: app/routes/contact/index.tsx:60
 #: app/features/quota/components/quota-grant-list.tsx:78
 #: app/features/quota/components/quota-bucket-list.tsx:82
+#: app/features/note/components/note-list.tsx:397
+#: app/features/note/components/follow-ups-list.tsx:234
 msgid "Created"
 msgstr "Created"
+
+#: app/features/note/components/follow-ups-list.tsx:239
+msgid "Created By"
+msgstr "Created By"
+
+#. placeholder {0}: note.status?.createdBy || 'Unknown'
+#: app/features/note/components/note-list.tsx:481
+msgid "Created by: {0}"
+msgstr "Created by: {0}"
+
+#: app/features/note/components/note-form.tsx:68
+msgid "Creating..."
+msgstr "Creating..."
 
 #: app/routes/project/detail/layout.tsx:39
 #: app/routes/customers/layout.tsx:7
@@ -316,29 +364,29 @@ msgstr "Dark"
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: app/routes/user/detail/index.tsx:113
-#: app/routes/user/detail/index.tsx:366
+#: app/routes/user/detail/index.tsx:119
+#: app/routes/user/detail/index.tsx:392
 msgid "Deactivate"
 msgstr "Deactivate"
 
-#: app/routes/user/detail/index.tsx:111
-#: app/routes/user/detail/index.tsx:356
+#: app/routes/user/detail/index.tsx:117
+#: app/routes/user/detail/index.tsx:382
 msgid "Deactivate User"
 msgstr "Deactivate User"
 
-#: app/routes/user/detail/index.tsx:329
+#: app/routes/user/detail/index.tsx:355
 msgid "Deactivated At:"
 msgstr "Deactivated At:"
 
-#: app/routes/user/detail/index.tsx:323
+#: app/routes/user/detail/index.tsx:349
 msgid "Deactivated By:"
 msgstr "Deactivated By:"
 
-#: app/routes/user/detail/index.tsx:317
+#: app/routes/user/detail/index.tsx:343
 msgid "Deactivation Details"
 msgstr "Deactivation Details"
 
-#: app/routes/user/detail/index.tsx:340
+#: app/routes/user/detail/index.tsx:366
 msgid "Deactivation Reason:"
 msgstr "Deactivation Reason:"
 
@@ -349,6 +397,7 @@ msgstr "Deactivation Reason:"
 #: app/routes/contact-group/detail/member.tsx:126
 #: app/routes/contact/index.tsx:104
 #: app/features/quota/components/quota-grant-list.tsx:141
+#: app/features/note/components/note-list.tsx:260
 #: app/features/activity/components/activity-list.tsx:321
 #: app/components/danger-zone-card/index.tsx:48
 #: app/components/danger-zone-card/index.tsx:76
@@ -375,6 +424,14 @@ msgstr "Delete Grant"
 msgid "Delete Member"
 msgstr "Delete Member"
 
+#: app/features/note/components/note-list.tsx:563
+msgid "Delete note"
+msgstr "Delete note"
+
+#: app/features/note/components/note-list.tsx:258
+msgid "Delete Note"
+msgstr "Delete Note"
+
 #: app/routes/organization/detail/index.tsx:88
 #: app/routes/organization/detail/index.tsx:90
 msgid "Delete Organization"
@@ -389,8 +446,8 @@ msgstr "Delete Project"
 msgid "Delete Session"
 msgstr "Delete Session"
 
-#: app/routes/user/detail/index.tsx:374
-#: app/routes/user/detail/index.tsx:376
+#: app/routes/user/detail/index.tsx:400
+#: app/routes/user/detail/index.tsx:402
 msgid "Delete User"
 msgstr "Delete User"
 
@@ -449,13 +506,21 @@ msgstr "Domain verification is in progress. This may take a few minutes."
 msgid "Domains"
 msgstr "Domains"
 
+#: app/features/note/components/note-list.tsx:558
+msgid "Edit note"
+msgstr "Edit note"
+
+#: app/features/note/components/note-list.tsx:271
+msgid "Edit Note"
+msgstr "Edit Note"
+
 #: app/features/quota/components/quota-bucket-list.tsx:101
 #: app/features/quota/components/quota-bucket-list.tsx:157
 msgid "Edit Quota"
 msgstr "Edit Quota"
 
 #: app/routes/user/index.tsx:196
-#: app/routes/user/detail/index.tsx:227
+#: app/routes/user/detail/index.tsx:244
 #: app/routes/contact/index.tsx:45
 #: app/features/contact/components/contact-form.tsx:137
 msgid "Email"
@@ -479,7 +544,7 @@ msgstr "End Time"
 msgid "Endpoint"
 msgstr "Endpoint"
 
-#: app/routes/user/detail/index.tsx:121
+#: app/routes/user/detail/index.tsx:127
 msgid "Enter reason for deactivation..."
 msgstr "Enter reason for deactivation..."
 
@@ -495,6 +560,20 @@ msgstr "Enter the full email to search..."
 #: app/components/dialog/dialog-confirm.tsx:100
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr "Enter the word <0>{confirmationText}</0> to perform this action."
+
+#: app/features/note/components/note-list.tsx:292
+#: app/features/note/components/note-form.tsx:84
+msgid "Enter your note here..."
+msgstr "Enter your note here..."
+
+#: app/features/note/components/follow-ups-list.tsx:220
+msgid "Error loading follow-ups: {error}"
+msgstr "Error loading follow-ups: {error}"
+
+#. placeholder {0}: error.message
+#: app/features/note/components/note-list.tsx:372
+msgid "Error loading notes: {0}"
+msgstr "Error loading notes: {0}"
 
 #: app/routes/project/detail/domain/index.tsx:53
 #: app/routes/project/detail/domain/detail.tsx:105
@@ -526,6 +605,14 @@ msgstr "Filter by action"
 msgid "Filter by approval"
 msgstr "Filter by approval"
 
+#: app/features/note/components/note-list.tsx:327
+msgid "Filter by Creator"
+msgstr "Filter by Creator"
+
+#: app/features/note/components/note-list.tsx:348
+msgid "Filter by Next Action Time"
+msgstr "Filter by Next Action Time"
+
 #: app/features/activity/components/activity-list.tsx:285
 msgid "Filter by time range"
 msgstr "Filter by time range"
@@ -541,7 +628,24 @@ msgstr "First Name"
 msgid "First name is required"
 msgstr "First name is required"
 
-#: app/routes/user/detail/index.tsx:215
+#: app/features/note/components/note-list.tsx:419
+msgid "Follow Up"
+msgstr "Follow Up"
+
+#: app/features/note/components/note-list.tsx:297
+#: app/features/note/components/note-form.tsx:89
+msgid "Follow Up Required"
+msgstr "Follow Up Required"
+
+#: app/features/note/components/note-list.tsx:150
+msgid "Follow-up status updated"
+msgstr "Follow-up status updated"
+
+#: app/features/note/components/my-follow-ups-dialog.tsx:33
+msgid "Follow-ups"
+msgstr "Follow-ups"
+
+#: app/routes/user/detail/index.tsx:232
 msgid "Full Name"
 msgstr "Full Name"
 
@@ -581,9 +685,15 @@ msgid "HTTP Proxies"
 msgstr "HTTP Proxies"
 
 #: app/routes/user/index.tsx:47
-#: app/routes/user/detail/index.tsx:202
+#: app/routes/user/detail/index.tsx:219
 msgid "ID"
 msgstr "ID"
+
+#: app/features/note/components/note-list.tsx:301
+#: app/features/note/components/note-list.tsx:403
+#: app/features/note/components/note-form.tsx:93
+msgid "Interaction Time"
+msgstr "Interaction Time"
 
 #: app/routes/user/index.tsx:135
 #: app/features/contact/components/contact-form.tsx:42
@@ -646,13 +756,25 @@ msgstr "Limit:"
 msgid "List"
 msgstr "List"
 
+#: app/features/note/components/show-notes-dialog.tsx:25
+msgid "List Notes"
+msgstr "List Notes"
+
 #: app/routes/contact-group/detail/member.tsx:151
 msgid "Loading contacts..."
 msgstr "Loading contacts..."
 
+#: app/features/note/components/follow-ups-list.tsx:211
+msgid "Loading follow-ups..."
+msgstr "Loading follow-ups..."
+
 #: app/features/contact/components/contact-form.tsx:158
 msgid "Loading mail lists..."
 msgstr "Loading mail lists..."
+
+#: app/features/note/components/note-list.tsx:363
+msgid "Loading notes..."
+msgstr "Loading notes..."
 
 #: app/features/domain/components/domain-status-probe.tsx:40
 #: app/features/dns/components/dns-record-status-probe.tsx:29
@@ -665,7 +787,7 @@ msgstr "Loading status..."
 msgid "Loading..."
 msgstr "Loading..."
 
-#: app/components/app-sidebar/nav-user.tsx:95
+#: app/components/app-sidebar/nav-user.tsx:104
 msgid "Log out"
 msgstr "Log out"
 
@@ -677,7 +799,7 @@ msgstr "Mail Lists"
 msgid "Manage"
 msgstr "Manage"
 
-#: app/routes/user/detail/index.tsx:282
+#: app/routes/user/detail/index.tsx:308
 msgid "Manage user access and account status"
 msgstr "Manage user access and account status"
 
@@ -707,12 +829,20 @@ msgid "MetricsQL"
 msgstr "MetricsQL"
 
 #: app/routes/user/index.tsx:113
-#: app/routes/user/detail/index.tsx:189
+#: app/routes/user/detail/index.tsx:206
 msgid "Move to Pending"
 msgstr "Move to Pending"
 
+#: app/features/note/components/follow-ups-list.tsx:186
+msgid "My follow-ups"
+msgstr "My follow-ups"
+
+#: app/features/note/components/my-follow-ups-dialog.tsx:26
+msgid "My Follow-ups"
+msgstr "My Follow-ups"
+
 #: app/routes/profile/layout.tsx:8
-#: app/components/app-sidebar/nav-user.tsx:85
+#: app/components/app-sidebar/nav-user.tsx:86
 msgid "My Profile"
 msgstr "My Profile"
 
@@ -764,6 +894,27 @@ msgstr "Navigation"
 msgid "New Limit"
 msgstr "New Limit"
 
+#: app/features/note/components/note-list.tsx:308
+#: app/features/note/components/note-list.tsx:410
+#: app/features/note/components/note-form.tsx:100
+msgid "Next Action"
+msgstr "Next Action"
+
+#: app/features/note/components/note-list.tsx:314
+#: app/features/note/components/note-list.tsx:415
+#: app/features/note/components/note-form.tsx:106
+#: app/features/note/components/follow-ups-list.tsx:248
+msgid "Next Action Time"
+msgstr "Next Action Time"
+
+#: app/features/note/components/follow-ups-list.tsx:259
+msgid "No follow-ups found"
+msgstr "No follow-ups found"
+
+#: app/features/note/components/note-list.tsx:429
+msgid "No notes found"
+msgstr "No notes found"
+
 #: app/components/app-search/index.tsx:183
 msgid "No results found."
 msgstr "No results found."
@@ -772,13 +923,59 @@ msgstr "No results found."
 msgid "No users yet"
 msgstr "No users yet"
 
-#: app/components/app-sidebar/nav-user.tsx:89
+#: app/features/note/components/note-list.tsx:291
+#: app/features/note/components/note-form.tsx:83
+msgid "Note"
+msgstr "Note"
+
+#: app/features/note/components/note-form.tsx:28
+msgid "Note content is required"
+msgstr "Note content is required"
+
+#: app/features/note/components/note-form.tsx:29
+msgid "Note content must be at most 1000 characters"
+msgstr "Note content must be at most 1000 characters"
+
+#: app/features/note/components/note-form.tsx:47
+msgid "Note created successfully"
+msgstr "Note created successfully"
+
+#: app/features/note/components/note-list.tsx:113
+msgid "Note deleted successfully"
+msgstr "Note deleted successfully"
+
+#: app/features/note/components/note-list.tsx:482
+msgid "Note info"
+msgstr "Note info"
+
+#: app/features/note/components/note-list.tsx:135
+msgid "Note updated successfully"
+msgstr "Note updated successfully"
+
+#: app/features/note/components/show-notes-dialog.tsx:31
+#: app/features/note/components/note-list.tsx:459
+msgid "Notes"
+msgstr "Notes"
+
+#: app/components/app-sidebar/nav-user.tsx:92
+msgid "Notes Follow-ups"
+msgstr "Notes Follow-ups"
+
+#: app/components/app-sidebar/nav-user.tsx:98
 msgid "Notifications"
 msgstr "Notifications"
 
 #: app/features/contact/components/contact-form.tsx:185
 msgid "Once a contact is associated with a user, this association cannot be removed or changed later."
 msgstr "Once a contact is associated with a user, this association cannot be removed or changed later."
+
+#: app/features/note/components/follow-ups-list.tsx:306
+msgid "Open Contact in new tab"
+msgstr "Open Contact in new tab"
+
+#: app/features/note/components/follow-ups-list.tsx:305
+msgid "Open User in new tab"
+msgstr "Open User in new tab"
 
 #: app/routes/project/index.tsx:36
 #: app/routes/project/detail/index.tsx:62
@@ -824,13 +1021,20 @@ msgstr "Permanently delete this organization and all associated data"
 msgid "Permanently delete this project and all associated data"
 msgstr "Permanently delete this project and all associated data"
 
-#: app/routes/user/detail/index.tsx:375
+#: app/routes/user/detail/index.tsx:401
 msgid "Permanently delete this user and all associated data"
 msgstr "Permanently delete this user and all associated data"
 
+#: app/features/note/components/note-list.tsx:302
+#: app/features/note/components/note-list.tsx:315
+#: app/features/note/components/note-form.tsx:94
+#: app/features/note/components/note-form.tsx:107
+msgid "Pick a date and time"
+msgstr "Pick a date and time"
+
 #. placeholder {0}: data.spec.givenName
 #. placeholder {1}: data.spec.familyName
-#: app/routes/user/detail/index.tsx:112
+#: app/routes/user/detail/index.tsx:118
 msgid "Please provide a reason for deactivating \"{0} {1}\"."
 msgstr "Please provide a reason for deactivating \"{0} {1}\"."
 
@@ -905,19 +1109,19 @@ msgstr "Quota updated successfully"
 msgid "Quotas"
 msgstr "Quotas"
 
-#: app/routes/user/detail/index.tsx:299
+#: app/routes/user/detail/index.tsx:325
 msgid "Re-enable this user's access to the system. They will be able to sign in immediately."
 msgstr "Re-enable this user's access to the system. They will be able to sign in immediately."
 
-#: app/routes/user/detail/index.tsx:310
+#: app/routes/user/detail/index.tsx:336
 msgid "Reactivate"
 msgstr "Reactivate"
 
-#: app/routes/user/detail/index.tsx:296
+#: app/routes/user/detail/index.tsx:322
 msgid "Reactivate User"
 msgstr "Reactivate User"
 
-#: app/routes/user/detail/index.tsx:120
+#: app/routes/user/detail/index.tsx:126
 msgid "Reason for deactivation"
 msgstr "Reason for deactivation"
 
@@ -937,12 +1141,12 @@ msgstr "Registrar"
 
 #: app/routes/user/index.tsx:57
 #: app/routes/user/index.tsx:240
-#: app/routes/user/detail/index.tsx:237
+#: app/routes/user/detail/index.tsx:254
 msgid "Registration Approval"
 msgstr "Registration Approval"
 
 #: app/routes/user/index.tsx:106
-#: app/routes/user/detail/index.tsx:170
+#: app/routes/user/detail/index.tsx:187
 #: app/features/user/components/user-reject-dialog.tsx:29
 msgid "Reject"
 msgstr "Reject"
@@ -977,8 +1181,13 @@ msgid "Role"
 msgstr "Role"
 
 #: app/features/profile/components/profile-form.tsx:58
+#: app/features/note/components/note-list.tsx:272
 msgid "Save"
 msgstr "Save"
+
+#: app/features/note/components/note-list.tsx:272
+msgid "Saving..."
+msgstr "Saving..."
 
 #: app/routes/user/index.tsx:147
 msgid "Schedule date and time is required"
@@ -1013,6 +1222,14 @@ msgstr "Secrets"
 msgid "Select a contact..."
 msgstr "Select a contact..."
 
+#: app/features/note/components/follow-ups-list.tsx:182
+msgid "Select creator"
+msgstr "Select creator"
+
+#: app/features/note/components/note-list.tsx:353
+msgid "Select date range"
+msgstr "Select date range"
+
 #: app/features/preferences/components/preferences-form.tsx:80
 msgid "Select timezone..."
 msgstr "Select timezone..."
@@ -1033,6 +1250,14 @@ msgstr "Session ID"
 #: app/routes/profile/layout.tsx:16
 msgid "Settings"
 msgstr "Settings"
+
+#: app/features/note/components/follow-ups-list.tsx:176
+msgid "Show"
+msgstr "Show"
+
+#: app/features/note/components/follow-ups-list.tsx:202
+msgid "Show expired only"
+msgstr "Show expired only"
 
 #: app/routes/project/detail/export-policy/detail.tsx:164
 msgid "Sinks"
@@ -1056,7 +1281,7 @@ msgstr "Start Time"
 
 #: app/routes/email-activity.tsx:31
 #: app/routes/user/index.tsx:53
-#: app/routes/user/detail/index.tsx:249
+#: app/routes/user/detail/index.tsx:266
 #: app/routes/project/detail/httpproxy/index.tsx:50
 #: app/routes/project/detail/httpproxy/detail.tsx:109
 #: app/routes/project/detail/export-policy/index.tsx:48
@@ -1075,11 +1300,15 @@ msgstr "Status"
 msgid "Subject is required when user association is enabled"
 msgstr "Subject is required when user association is enabled"
 
+#: app/features/note/components/follow-ups-list.tsx:243
+msgid "Subject Type"
+msgstr "Subject Type"
+
 #: app/components/theme-switcher/index.tsx:47
 msgid "System"
 msgstr "System"
 
-#: app/routes/user/detail/index.tsx:359
+#: app/routes/user/detail/index.tsx:385
 msgid "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 msgstr "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 
@@ -1131,11 +1360,11 @@ msgstr "Usage"
 msgid "User approved successfully"
 msgstr "User approved successfully"
 
-#: app/routes/user/detail/index.tsx:88
+#: app/routes/user/detail/index.tsx:94
 msgid "User deactivated successfully"
 msgstr "User deactivated successfully"
 
-#: app/routes/user/detail/index.tsx:67
+#: app/routes/user/detail/index.tsx:73
 msgid "User deleted successfully"
 msgstr "User deleted successfully"
 
@@ -1159,7 +1388,7 @@ msgstr "User is not rejected"
 msgid "User moved to pending successfully"
 msgstr "User moved to pending successfully"
 
-#: app/routes/user/detail/index.tsx:99
+#: app/routes/user/detail/index.tsx:105
 msgid "User reactivated successfully"
 msgstr "User reactivated successfully"
 
@@ -1213,6 +1442,11 @@ msgstr "Warning"
 #: app/features/activity/components/activity-list.tsx:317
 msgid "Watch"
 msgstr "Watch"
+
+#: app/features/note/components/note-list.tsx:309
+#: app/features/note/components/note-form.tsx:101
+msgid "What's the next follow-up action?"
+msgstr "What's the next follow-up action?"
 
 #: app/routes/project/detail/dns/index.tsx:34
 msgid "Zone Name"

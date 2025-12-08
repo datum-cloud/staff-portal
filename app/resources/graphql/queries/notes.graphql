@@ -1,0 +1,101 @@
+# Query notes filtered by fieldSelector
+# Usage examples:
+#   - For User: { fieldSelector: "spec.subjectRef.kind=User,spec.subjectRef.name=341930314890740746" }
+#   - For Contact: { fieldSelector: "spec.subjectRef.kind=Contact,spec.subjectRef.name=contact-abc123,spec.subjectRef.namespace=default" }
+query ListNotes($fieldSelector: String) {
+  listCrmMiloapisComV1alpha1Note(fieldSelector: $fieldSelector) {
+    apiVersion
+    kind
+    items {
+      metadata {
+        name
+        creationTimestamp
+      }
+      spec {
+        followUp
+        content
+        interactionTime
+        nextAction
+        nextActionTime
+        subjectRef {
+          name
+          namespace
+          kind
+        }
+      }
+      status {
+        createdBy
+      }
+    }
+  }
+}
+
+# Query follow-up notes (notes with followUp=true)
+# Used for the "My Follow-ups" feature
+# fieldSelector should include "spec.followUp=true" and optionally "status.createdBy=email@example.com"
+query ListFollowUpNotes($fieldSelector: String!) {
+  listCrmMiloapisComV1alpha1Note(fieldSelector: $fieldSelector) {
+    apiVersion
+    kind
+    items {
+      metadata {
+        name
+        creationTimestamp
+      }
+      spec {
+        followUp
+        nextActionTime
+        subjectRef {
+          name
+          namespace
+          kind
+        }
+      }
+      status {
+        createdBy
+      }
+    }
+  }
+}
+
+# Create a new note
+mutation CreateNote($input: com_miloapis_crm_v1alpha1_Note_Input!) {
+  createCrmMiloapisComV1alpha1Note(input: $input) {
+    apiVersion
+    kind
+    metadata {
+      name
+      generateName
+    }
+    spec {
+      followUp
+      content
+      interactionTime
+      nextAction
+      nextActionTime
+      subjectRef {
+        apiGroup
+        kind
+        name
+      }
+    }
+  }
+}
+
+# Update an existing note (patch)
+mutation PatchNote($name: String!, $input: JSON!) {
+  patchCrmMiloapisComV1alpha1Note(name: $name, input: $input) {
+    apiVersion
+    kind
+    metadata {
+      name
+    }
+    spec {
+      followUp
+      content
+      interactionTime
+      nextAction
+      nextActionTime
+    }
+  }
+}
