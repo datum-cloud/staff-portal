@@ -32,6 +32,7 @@ import {
 } from 'date-fns';
 import { fromZonedTime, toZonedTime } from 'date-fns-tz';
 import { AlertTriangle, CheckCircle, Info, XCircle } from 'lucide-react';
+import { useCallback, useMemo } from 'react';
 
 interface ActivityListProps {
   resourceType?: string;
@@ -210,20 +211,34 @@ export default function ActivityList({
     return timeZone && timeZone !== 'Etc/GMT' ? fromZonedTime(utcDate, timeZone) : utcDate;
   };
 
-  const convertToApiTimestamp = (date: Date) => {
-    const timeZone = settings?.timezone;
-    const utcDate = timeZone && timeZone !== 'Etc/GMT' ? toZonedTime(date, timeZone) : date;
-    return getUnixTime(utcDate) * 1000000000;
-  };
+  const convertToApiTimestamp = useCallback(
+    (date: Date) => {
+      const timeZone = settings?.timezone;
+      const utcDate = timeZone && timeZone !== 'Etc/GMT' ? toZonedTime(date, timeZone) : date;
+      return getUnixTime(utcDate) * 1000000000;
+    },
+    [settings?.timezone]
+  );
+
+  // Create filterConfig with default "Last 7 days" values
+  const activityFilterConfig = useMemo(() => {
+    const now = new Date();
+    const sevenDaysAgo = subDays(now, 7);
+    return {
+      start: {
+        defaultValue: convertToApiTimestamp(sevenDaysAgo),
+      },
+      end: {
+        defaultValue: convertToApiTimestamp(now),
+      },
+    };
+  }, [convertToApiTimestamp]);
 
   const tableState = useDataTableQuery<ActivityListResponse>({
     queryKeyPrefix,
     fetchFn: (args) => {
-      // If no date filters are set, default to last 7 days
-      const defaultStartDate = getUnixTime(subDays(new Date(), 7)) * 1000000000; // Convert to nanoseconds
       const filters: ActivityQueryParams = {
         ...args.filters,
-        start: args.filters?.start || defaultStartDate,
       };
 
       const resource = {
@@ -261,7 +276,7 @@ export default function ActivityList({
     useSorting: true,
     useFilters: true,
     useSearch: true,
-    filterConfig: filterConfigs.dateRange,
+    filterConfig: activityFilterConfig,
   });
 
   return (
@@ -283,18 +298,15 @@ export default function ActivityList({
           <DateRangePicker
             presets={ACTIVITY_DATE_PRESETS}
             placeholder={timeRangePlaceholder || t`Filter by time range`}
-            value={
-              tableState.filters.start || tableState.filters.end
-                ? {
-                    from: tableState.filters.start
-                      ? convertFromApiTimestamp(tableState.filters.start)
-                      : undefined,
-                    to: tableState.filters.end
-                      ? convertFromApiTimestamp(tableState.filters.end)
-                      : undefined,
-                  }
-                : undefined
-            }
+            showClearButton={false}
+            value={{
+              from: tableState.filters.start
+                ? convertFromApiTimestamp(String(tableState.filters.start))
+                : undefined,
+              to: tableState.filters.end
+                ? convertFromApiTimestamp(String(tableState.filters.end))
+                : undefined,
+            }}
             onValueChange={(range) => {
               if (range) {
                 const filters: Record<string, any> = {};

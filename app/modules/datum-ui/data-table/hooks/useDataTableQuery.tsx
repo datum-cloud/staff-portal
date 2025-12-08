@@ -163,34 +163,37 @@ export function useDataTableQuery<T>({
   const filters = useMemo(() => {
     const result = {} as Record<string, any>;
 
-    if (!filtersRaw || !useFilters) return result;
+    if (!useFilters) return result;
 
-    try {
-      const parsed = JSON.parse(filtersRaw);
+    // Parse filters from URL if they exist
+    if (filtersRaw) {
+      try {
+        const parsed = JSON.parse(filtersRaw);
 
-      // Handle all values from the parsed filters
-      Object.entries(parsed).forEach(([filterKey, rawValue]) => {
-        if (rawValue !== undefined) {
-          try {
-            const filterConfigItem = filterConfig[filterKey];
-            result[filterKey] = filterConfigItem?.parser
-              ? filterConfigItem.parser(rawValue)
-              : rawValue;
-          } catch (error) {
-            console.warn(`Failed to parse filter value for ${filterKey}:`, error);
+        // Handle all values from the parsed filters
+        Object.entries(parsed).forEach(([filterKey, rawValue]) => {
+          if (rawValue !== undefined) {
+            try {
+              const filterConfigItem = filterConfig[filterKey];
+              result[filterKey] = filterConfigItem?.parser
+                ? filterConfigItem.parser(rawValue)
+                : rawValue;
+            } catch (error) {
+              console.warn(`Failed to parse filter value for ${filterKey}:`, error);
+            }
           }
-        }
-      });
-
-      // Apply default values from filter config
-      Object.entries(filterConfig).forEach(([filterKey, filterConfigItem]) => {
-        if (result[filterKey] === undefined && filterConfigItem.defaultValue !== undefined) {
-          result[filterKey] = filterConfigItem.defaultValue;
-        }
-      });
-    } catch (error) {
-      console.warn('Failed to parse filter values:', error);
+        });
+      } catch (error) {
+        console.warn('Failed to parse filter values:', error);
+      }
     }
+
+    // Apply default values from filter config (even when filtersRaw is empty)
+    Object.entries(filterConfig).forEach(([filterKey, filterConfigItem]) => {
+      if (result[filterKey] === undefined && filterConfigItem.defaultValue !== undefined) {
+        result[filterKey] = filterConfigItem.defaultValue;
+      }
+    });
 
     return result;
   }, [filtersRaw, useFilters, filterConfig]);
