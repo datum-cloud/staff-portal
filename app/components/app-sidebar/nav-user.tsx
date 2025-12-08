@@ -1,5 +1,6 @@
 'use client';
 
+import { MyFollowUpsDialog } from '@/features/note';
 import { Avatar, AvatarFallback, AvatarImage } from '@/modules/shadcn/ui/avatar';
 import {
   DropdownMenu,
@@ -19,7 +20,7 @@ import {
 import { useApp } from '@/providers/app.provider';
 import { routes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
-import { Bell, ChevronsUpDown, LogOut, User } from 'lucide-react';
+import { Bell, ChevronsUpDown, ClipboardList, LogOut, User } from 'lucide-react';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -84,6 +85,14 @@ export function NavUser() {
                 <User />
                 {t`My Profile`}
               </DropdownMenuItem>
+              <MyFollowUpsDialog
+                trigger={
+                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                    <ClipboardList />
+                    {t`Notes Follow-ups`}
+                  </DropdownMenuItem>
+                }
+              />
               <DropdownMenuItem>
                 <Bell />
                 {t`Notifications`}
