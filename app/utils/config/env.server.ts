@@ -5,6 +5,7 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   APP_URL: z.url(),
   API_URL: z.url(),
+  GRAPHQL_URL: z.url().optional(),
   AUTH_OIDC_ISSUER: z.url(),
   AUTH_OIDC_CLIENT_ID: z.string(),
   SESSION_SECRET: z.string().min(32),
