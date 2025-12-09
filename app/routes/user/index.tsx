@@ -1,4 +1,5 @@
 import type { Route } from './+types/index';
+import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
 import { DateFormatter } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
@@ -155,6 +156,12 @@ export default function Page() {
 
   return (
     <>
+      <AppActionBar>
+        <Button icon={<UserPlus size={16} />} onClick={() => setInviteDialogOpen(true)}>
+          <Trans>Invite User</Trans>
+        </Button>
+      </AppActionBar>
+
       <DialogForm
         open={inviteDialogOpen}
         onOpenChange={setInviteDialogOpen}
@@ -232,35 +239,27 @@ export default function Page() {
         }}
         {...tableState}>
         <div className="m-4 flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              {/* <DataTableSearch
+          <div className="flex items-center gap-4">
+            {/* <DataTableSearch
                 placeholder={t`Search users...`}
                 value={tableState.search}
                 onValueChange={tableState.setSearch || (() => {})}
               /> */}
 
-              <DataTableFacetFilter
-                label={t`Registration Approval`}
-                placeholder={t`Filter by approval`}
-                options={[
-                  { value: 'Approved', label: t`Approved` },
-                  { value: 'Rejected', label: t`Rejected` },
-                  { value: 'Pending', label: t`Pending` },
-                ]}
-                value={tableState.filters.registrationApproval}
-                onValueChange={(value) => {
-                  if (value) tableState.setFilter('registrationApproval', value);
-                  else tableState.clearFilter('registrationApproval');
-                }}
-              />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Button icon={<UserPlus size={16} />} onClick={() => setInviteDialogOpen(true)}>
-                {t`Invite User`}
-              </Button>
-            </div>
+            <DataTableFacetFilter
+              label={t`Registration Approval`}
+              placeholder={t`Filter by approval`}
+              options={[
+                { value: 'Approved', label: t`Approved` },
+                { value: 'Rejected', label: t`Rejected` },
+                { value: 'Pending', label: t`Pending` },
+              ]}
+              value={tableState.filters.registrationApproval}
+              onValueChange={(value) => {
+                if (value) tableState.setFilter('registrationApproval', value);
+                else tableState.clearFilter('registrationApproval');
+              }}
+            />
           </div>
 
           <DataTableActiveFilters

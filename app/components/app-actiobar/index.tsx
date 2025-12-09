@@ -1,16 +1,23 @@
 import { useApp } from '@/providers/app.provider';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useRef } from 'react';
 
 const AppActionBar = ({ children }: { children: ReactNode }) => {
   const { addActions, removeActions } = useApp();
+  // Store the initial children in a ref - this creates a stable reference
+  // that won't change during the component lifecycle
+  const childrenRef = useRef<ReactNode>(children);
 
   useEffect(() => {
-    addActions(children);
+    // Capture the children value to use in cleanup
+    const actionsToAdd = childrenRef.current;
+    // Add actions on mount
+    addActions(actionsToAdd);
 
     return () => {
-      removeActions(children);
+      // Remove actions on unmount
+      removeActions(actionsToAdd);
     };
-  }, [children]);
+  }, [addActions, removeActions]);
 
   return <></>;
 };
