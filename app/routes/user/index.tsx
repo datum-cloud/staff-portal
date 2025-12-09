@@ -11,6 +11,7 @@ import { Button } from '@datum-ui/button';
 import {
   ActionItem,
   DataTable,
+  DataTableActiveFilters,
   DataTableFacetFilter,
   DataTableProvider,
   useDataTableQuery,
@@ -261,6 +262,29 @@ export default function Page() {
               </Button>
             </div>
           </div>
+
+          <DataTableActiveFilters
+            filters={tableState.filters}
+            search={tableState.search}
+            onClearFilter={tableState.clearFilter}
+            onClearAllFilters={tableState.clearAllFilters}
+            onClearSearch={tableState.clearSearch}
+            filterLabels={{
+              registrationApproval: t`Registration Approval`,
+            }}
+            formatFilterValue={(key, value) => {
+              if (key === 'registrationApproval') {
+                const labels: Record<string, string> = {
+                  Approved: t`Approved`,
+                  Rejected: t`Rejected`,
+                  Pending: t`Pending`,
+                };
+                return labels[value] || value;
+              }
+              return String(value);
+            }}
+            excludeFilters={['search']}
+          />
 
           <DataTable />
         </div>

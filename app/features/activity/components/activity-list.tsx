@@ -6,6 +6,7 @@ import { activityListQuery } from '@/resources/request/client';
 import { ActivityListResponse, ActivityQueryParams } from '@/resources/schemas';
 import {
   DataTable,
+  DataTableActiveFilters,
   DataTableFacetFilter,
   DataTableProvider,
   DataTableSearch,
@@ -20,6 +21,7 @@ import {
   endOfDay,
   endOfMonth,
   endOfWeek,
+  format,
   formatDistanceToNowStrict,
   fromUnixTime,
   getUnixTime,
@@ -358,6 +360,74 @@ export default function ActivityList({
             ]}
           />
         </div>
+
+        <DataTableActiveFilters
+          filters={tableState.filters}
+          filterConfig={activityFilterConfig}
+          search={tableState.search}
+          onClearFilter={tableState.clearFilter}
+          onClearAllFilters={tableState.clearAllFilters}
+          onClearSearch={tableState.clearSearch}
+          filterLabels={{
+            timeRange: t`Time range`,
+            actions: t`Actions`,
+          }}
+          filterGroups={{
+            timeRange: ['start', 'end'],
+          }}
+          excludeFilters={['search', 'timeRange']}
+          formatFilterValue={(key, value) => {
+            // Format actions filter
+            if (key === 'actions') {
+              const actionLabels: Record<string, string> = {
+                get: t`Get`,
+                list: t`List`,
+                watch: t`Watch`,
+                create: t`Create`,
+                update: t`Update`,
+                patch: t`Patch`,
+                delete: t`Delete`,
+                deletecollection: t`Delete Collection`,
+              };
+              const actions = String(value).split(',').filter(Boolean);
+              return actions.map((action) => actionLabels[action] || action).join(', ');
+            }
+
+            return String(value);
+          }}
+          multiValueFilters={['actions']}
+          formatFilterItem={(filterKey, itemValue) => {
+            if (filterKey === 'actions') {
+              const actionLabels: Record<string, string> = {
+                get: t`Get`,
+                list: t`List`,
+                watch: t`Watch`,
+                create: t`Create`,
+                update: t`Update`,
+                patch: t`Patch`,
+                delete: t`Delete`,
+                deletecollection: t`Delete Collection`,
+              };
+              return actionLabels[itemValue] || itemValue;
+            }
+            return itemValue;
+          }}
+          onClearFilterItem={(filterKey, itemValue) => {
+            if (filterKey === 'actions') {
+              const currentActions =
+                (tableState.filters.actions as string | undefined)?.split(',').filter(Boolean) ||
+                [];
+              const remainingActions = currentActions.filter(
+                (action) => action.trim() !== itemValue
+              );
+              if (remainingActions.length > 0) {
+                tableState.setFilter('actions', remainingActions.join(','));
+              } else {
+                tableState.clearFilter('actions');
+              }
+            }
+          }}
+        />
 
         <DataTable<ActivityLogEntry> />
       </div>

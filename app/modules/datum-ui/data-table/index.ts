@@ -1,4 +1,5 @@
 export * from './components/data-table';
+export * from './components/data-table-active-filters';
 export * from './components/data-table-loading';
 export * from './components/data-table-pagination';
 export * from './components/data-table-select-actions';
