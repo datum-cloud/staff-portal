@@ -87,7 +87,237 @@ tableState.clearSearch();
 tableState.clearAllFilters();
 ```
 
-### 4. Action Loading States
+### 4. Display Active Filters
+
+The `DataTableActiveFilters` component provides a visual representation of all active filters with hierarchical controls for clearing them.
+
+#### Features
+
+- **Hierarchical Filter Display**: Shows filter groups with individual items
+- **Three-Level Clearing**:
+  - **Per Item**: Remove individual items from multi-value filters
+  - **Per Filter Group**: Clear all items in a specific filter category
+  - **Clear All**: Remove all active filters at once
+- **Smart Visibility**:
+  - Group clear button (X) only shows when there are 2+ items in that group
+  - Clear all button (trash icon) only shows when there are 3+ filter groups
+- **Custom Formatting**: Format filter values and labels for better UX
+- **Search Integration**: Displays active search queries
+
+#### Basic Usage
+
+```tsx
+import {
+  DataTableActiveFilters,
+  DataTableProvider,
+  DataTable,
+  useDataTableQuery,
+} from '@datum-ui/data-table';
+
+export default function MyDataTable() {
+  const tableState = useDataTableQuery<MyResponseType>({
+    queryKeyPrefix: ['my', 'data'],
+    fetchFn: (args) => myApiCall(args),
+    useFilters: true,
+    useSearch: true,
+  });
+
+  return (
+    <DataTableProvider<MyDataType, MyResponseType>
+      columns={columns}
+      transform={(data) => ({
+        rows: data?.items || [],
+        cursor: data?.nextCursor,
+      })}
+      {...tableState}>
+      <div className="m-4 flex flex-col gap-2">
+        {/* Filter controls */}
+        <div className="flex items-center gap-4">{/* Your filter inputs here */}</div>
+
+        {/* Active filters display */}
+        <DataTableActiveFilters
+          filters={tableState.filters}
+          filterConfig={filterConfig}
+          search={tableState.search}
+          onClearFilter={tableState.clearFilter}
+          onClearAllFilters={tableState.clearAllFilters}
+          onClearSearch={tableState.clearSearch}
+        />
+
+        <DataTable<MyDataType> />
+      </div>
+    </DataTableProvider>
+  );
+}
+```
+
+#### Multi-Value Filters
+
+For filters that contain multiple values (e.g., comma-separated actions), you can display individual items:
+
+```tsx
+<DataTableActiveFilters
+  filters={tableState.filters}
+  filterConfig={filterConfig}
+  search={tableState.search}
+  onClearFilter={tableState.clearFilter}
+  onClearAllFilters={tableState.clearAllFilters}
+  onClearSearch={tableState.clearSearch}
+  // Enable multi-value filter display
+  multiValueFilters={['actions', 'tags']}
+  // Format individual items
+  formatFilterItem={(filterKey, itemValue) => {
+    if (filterKey === 'actions') {
+      const labels: Record<string, string> = {
+        get: 'Get',
+        list: 'List',
+        create: 'Create',
+        update: 'Update',
+        delete: 'Delete',
+      };
+      return labels[itemValue] || itemValue;
+    }
+    return itemValue;
+  }}
+  // Handle individual item removal
+  onClearFilterItem={(filterKey, itemValue) => {
+    if (filterKey === 'actions') {
+      const current =
+        (tableState.filters.actions as string | undefined)?.split(',').filter(Boolean) || [];
+      const remaining = current.filter((action) => action.trim() !== itemValue);
+      if (remaining.length > 0) {
+        tableState.setFilter('actions', remaining.join(','));
+      } else {
+        tableState.clearFilter('actions');
+      }
+    }
+  }}
+/>
+```
+
+#### Grouped Filters
+
+Combine multiple filter keys into a single display group (e.g., date ranges):
+
+```tsx
+<DataTableActiveFilters
+  filters={tableState.filters}
+  filterConfig={filterConfig}
+  onClearFilter={tableState.clearFilter}
+  onClearAllFilters={tableState.clearAllFilters}
+  // Group start and end into a single "Time range" filter
+  filterGroups={{
+    timeRange: ['start', 'end'],
+  }}
+  filterLabels={{
+    timeRange: 'Time range',
+  }}
+  formatGroupedFilter={(groupKey, values) => {
+    if (groupKey === 'timeRange') {
+      const start = values.start ? new Date(values.start) : null;
+      const end = values.end ? new Date(values.end) : null;
+      if (start && end) {
+        return `${format(start, 'MMM dd, yyyy')} - ${format(end, 'MMM dd, yyyy')}`;
+      }
+    }
+    return null;
+  }}
+/>
+```
+
+#### Custom Formatting
+
+Customize how filter values are displayed:
+
+```tsx
+<DataTableActiveFilters
+  filters={tableState.filters}
+  filterConfig={filterConfig}
+  onClearFilter={tableState.clearFilter}
+  onClearAllFilters={tableState.clearAllFilters}
+  // Custom labels for filter keys
+  filterLabels={{
+    status: 'Status',
+    category: 'Category',
+    actions: 'Actions',
+  }}
+  // Custom formatter for filter values
+  formatFilterValue={(key, value) => {
+    if (key === 'status') {
+      const statusLabels: Record<string, string> = {
+        active: 'Active',
+        inactive: 'Inactive',
+        pending: 'Pending',
+      };
+      return statusLabels[value] || value;
+    }
+    return String(value);
+  }}
+/>
+```
+
+#### Excluding Filters from Display
+
+You can exclude specific filters or filter groups from being displayed in the active filters section:
+
+```tsx
+<DataTableActiveFilters
+  filters={tableState.filters}
+  filterConfig={filterConfig}
+  search={tableState.search}
+  onClearFilter={tableState.clearFilter}
+  onClearAllFilters={tableState.clearAllFilters}
+  onClearSearch={tableState.clearSearch}
+  filterGroups={{
+    timeRange: ['start', 'end'],
+  }}
+  // Exclude search and timeRange from active filters display
+  excludeFilters={['search', 'timeRange']}
+/>
+```
+
+The `excludeFilters` prop accepts an array of:
+
+- Filter keys (e.g., `'search'`, `'status'`) - excludes individual filters
+- Filter group keys (e.g., `'timeRange'`) - excludes the entire group and all its keys
+
+**Note**: When excluding a filter group, all keys in that group are automatically excluded from individual display as well.
+
+#### Props Reference
+
+| Prop                  | Type                                                                           | Required | Description                                                |
+| --------------------- | ------------------------------------------------------------------------------ | -------- | ---------------------------------------------------------- |
+| `filters`             | `FilterValue`                                                                  | Yes      | Current filter values from `tableState.filters`            |
+| `filterConfig`        | `FilterConfig`                                                                 | No       | Filter configuration to determine default values           |
+| `search`              | `string`                                                                       | No       | Current search query from `tableState.search`              |
+| `onClearFilter`       | `(key: string) => void`                                                        | Yes      | Callback to clear a specific filter                        |
+| `onClearAllFilters`   | `() => void`                                                                   | Yes      | Callback to clear all filters                              |
+| `onClearSearch`       | `() => void`                                                                   | No       | Callback to clear search query                             |
+| `filterLabels`        | `Record<string, string>`                                                       | No       | Custom labels for filter keys                              |
+| `filterGroups`        | `Record<string, string[]>`                                                     | No       | Group multiple filter keys together                        |
+| `formatGroupedFilter` | `(groupKey: string, values: Record<string, any>) => string \| React.ReactNode` | No       | Custom formatter for grouped filters                       |
+| `formatFilterValue`   | `(key: string, value: any) => string \| React.ReactNode`                       | No       | Custom formatter for individual filter values              |
+| `multiValueFilters`   | `string[]`                                                                     | No       | Filter keys that should display individual items           |
+| `formatFilterItem`    | `(filterKey: string, itemValue: string) => string`                             | No       | Formatter for individual items in multi-value filters      |
+| `onClearFilterItem`   | `(filterKey: string, itemValue: string) => void`                               | No       | Callback to remove individual item from multi-value filter |
+| `excludeFilters`      | `string[]`                                                                     | No       | Filter keys or group keys to exclude from display          |
+| `className`           | `string`                                                                       | No       | Additional CSS classes                                     |
+
+#### Visual Structure
+
+The component displays filters in a hierarchical structure:
+
+```
+Selected Filters  [Filter Group 1] [Item 1 (x)] [Item 2 (x)] [X]  [Filter Group 2] [Value (x)]  [🗑️]
+                  └─ Label         └─ Items     └─ Clear     └─ Single value    └─ Clear All
+```
+
+- **Filter Group**: Bordered container with filter label
+- **Individual Items**: Badges for each item in multi-value filters
+- **Clear Group (X)**: Only visible when group has 2+ items
+- **Clear All (🗑️)**: Only visible when 3+ filter groups are active
+
+### 5. Action Loading States
 
 Actions support loading states for async operations. The loading state is shown on the trigger button (not in the menu):
 

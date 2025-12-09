@@ -2,7 +2,15 @@ import { Theme, useTheme } from '@/modules/datum-themes';
 import { getBrowserTimezone } from '@/utils/helpers';
 import { clearSentryUser, setSentryUser } from '@/utils/logger';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
-import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 interface IContextProps {
   user: ComMiloapisIamV1Alpha1User | null;
@@ -38,13 +46,13 @@ export const AppProvider: React.FC<IProviderProps> = ({ children, user }) => {
   const [actions, setActions] = useState<ReactNode[]>([]);
   const { resolvedTheme, setTheme } = useTheme();
 
-  const addActions = (nodes: ReactNode) => {
+  const addActions = useCallback((nodes: ReactNode) => {
     setActions((prevActions) => [nodes, ...prevActions]);
-  };
+  }, []);
 
-  const removeActions = (nodes: ReactNode) => {
+  const removeActions = useCallback((nodes: ReactNode) => {
     setActions((prevActions) => prevActions.filter((action) => action !== nodes));
-  };
+  }, []);
 
   const contextPayload = useMemo(
     () => ({
