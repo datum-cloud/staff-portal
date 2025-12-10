@@ -13,6 +13,7 @@ export const contactListQuery = async (params?: ListQueryParams) => {
     query: {
       limit: params?.limit,
       continue: params?.cursor,
+      ...(params?.search && { fieldSelector: `spec.email=${params.search}` }),
     },
   });
   return response.data.data;
@@ -72,5 +73,6 @@ export const useContactListQuery = (params?: ListQueryParams) => {
     queryKey: ['contacts', 'list', params],
     queryFn: () => contactListQuery(params),
     staleTime: 5 * 60 * 1000,
+    enabled: !!params?.search,
   });
 };
