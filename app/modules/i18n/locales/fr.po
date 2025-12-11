@@ -499,6 +499,7 @@ msgid "Enter reason for rejection..."
 msgstr ""
 
 #: app/routes/group/member.tsx:164
+#: app/routes/contact-group/detail/member.tsx:147
 #: app/features/contact/components/contact-form.tsx:164
 msgid "Enter the full email to search..."
 msgstr ""
@@ -659,10 +660,6 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:384
 #: app/features/activity/components/activity-list.tsx:403
 msgid "List"
-msgstr ""
-
-#: app/routes/contact-group/detail/member.tsx:147
-msgid "Loading contacts..."
 msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:144
@@ -1016,10 +1013,6 @@ msgstr ""
 msgid "Search activity..."
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:148
-msgid "Search contacts..."
-msgstr ""
-
 #: app/modules/datum-ui/data-table/components/data-table-search.tsx:14
 msgid "Search..."
 msgstr ""
@@ -1031,10 +1024,6 @@ msgstr ""
 #: app/routes/project/detail/secret.tsx:11
 #: app/routes/project/detail/layout.tsx:112
 msgid "Secrets"
-msgstr ""
-
-#: app/routes/contact-group/detail/member.tsx:147
-msgid "Select a contact..."
 msgstr ""
 
 #: app/features/preferences/components/preferences-form.tsx:76

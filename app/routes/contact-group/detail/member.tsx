@@ -141,16 +141,14 @@ export default function Page() {
         onSubmit={handleAddMember}
         schema={addMemberSchema}
         defaultValues={{ name: '' }}>
-        <Form.Autocomplete
+        <Form.Autosearch
           modal
           field="name"
-          placeholder={contactsLoading ? t`Loading contacts...` : t`Select a contact...`}
-          searchPlaceholder={t`Search contacts...`}
+          placeholder={t`Enter the full email to search...`}
           options={contactOptions}
           isLoading={contactsLoading}
           onSearch={setContactSearch}
-          searchDebounceMs={300}
-          disabled={contactsLoading}
+          searchDebounceMs={500}
         />
       </DialogForm>
 
