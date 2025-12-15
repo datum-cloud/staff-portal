@@ -99,10 +99,6 @@ msgstr "All write operations"
 msgid "Allocation"
 msgstr "Allocation"
 
-#: app/features/preferences/components/preferences-form.tsx:121
-msgid "Apply"
-msgstr "Apply"
-
 #: app/routes/user/index.tsx:94
 #: app/routes/user/detail/index.tsx:155
 msgid "Approve"
@@ -195,7 +191,7 @@ msgstr "Cancel"
 msgid "Cannot delete inactive grant"
 msgstr "Cannot delete inactive grant"
 
-#: app/features/preferences/components/preferences-form.tsx:90
+#: app/features/preferences/components/preferences-form.tsx:94
 msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
 msgstr "Choose how the portal looks to you. Select a single theme, or sync with your system."
 
@@ -530,6 +526,14 @@ msgstr "Failed to load DNS record status"
 msgid "Failed to load status"
 msgstr "Failed to load status"
 
+#: app/features/preferences/components/preferences-form.tsx:42
+msgid "Failed to update theme"
+msgstr "Failed to update theme"
+
+#: app/features/preferences/components/preferences-form.tsx:64
+msgid "Failed to update timezone"
+msgstr "Failed to update timezone"
+
 #: app/features/activity/components/activity-list.tsx:326
 msgid "Filter by action"
 msgstr "Filter by action"
@@ -860,13 +864,9 @@ msgstr "Please provide a reason for rejecting \"{0} {1}\"."
 msgid "Please wait {remainingMinutes} more minute{0} before resending this invitation"
 msgstr "Please wait {remainingMinutes} more minute{0} before resending this invitation"
 
-#: app/features/preferences/components/preferences-form.tsx:68
+#: app/features/preferences/components/preferences-form.tsx:76
 msgid "Portal Preferences"
 msgstr "Portal Preferences"
-
-#: app/features/preferences/components/preferences-form.tsx:58
-msgid "Preferences updated successfully"
-msgstr "Preferences updated successfully"
 
 #: app/routes/project/detail/dns/detail.tsx:129
 msgid "Priority of mail servers defined by MX records. Lowest value = highest priority."
@@ -1026,7 +1026,7 @@ msgstr "Searching..."
 msgid "Secrets"
 msgstr "Secrets"
 
-#: app/features/preferences/components/preferences-form.tsx:76
+#: app/features/preferences/components/preferences-form.tsx:84
 msgid "Select timezone..."
 msgstr "Select timezone..."
 
@@ -1111,6 +1111,10 @@ msgstr "Time range"
 #: app/features/activity/components/activity-list.tsx:100
 msgid "Timestamp"
 msgstr "Timestamp"
+
+#: app/features/preferences/components/preferences-form.tsx:62
+msgid "Timezone updated successfully"
+msgstr "Timezone updated successfully"
 
 #: app/routes/project/detail/dns/detail.tsx:166
 msgid "TTL"

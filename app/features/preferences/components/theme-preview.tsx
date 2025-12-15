@@ -30,16 +30,19 @@ export const ThemePreview = ({
   value,
   selected,
   onSelect,
+  disabled = false,
 }: {
   value: Theme;
   selected: boolean;
   onSelect: (value: Theme) => void;
+  disabled?: boolean;
 }) => {
   const containerClass = cn(
     'data-[selected=true]:border-primary data-[selected=true]:shadow-lg data-[selected=true]:shadow-primary/20 data-[selected=true]:ring-2 data-[selected=true]:ring-primary/10',
     'aspect-video rounded border transition-all',
     value !== 'system' && (value === 'dark' ? 'bg-slate-900' : 'bg-white'),
-    value === 'system' && 'relative overflow-hidden'
+    value === 'system' && 'relative overflow-hidden',
+    disabled && 'opacity-50 cursor-not-allowed'
   );
   return (
     <div className="relative" data-testid={`theme-${value}`}>
@@ -72,8 +75,9 @@ export const ThemePreview = ({
         name="theme"
         value={value}
         checked={selected}
-        onChange={() => onSelect(value)}
-        className="absolute inset-0 cursor-pointer opacity-0"
+        disabled={disabled}
+        onChange={() => !disabled && onSelect(value)}
+        className="absolute inset-0 cursor-pointer opacity-0 disabled:cursor-not-allowed"
       />
     </div>
   );

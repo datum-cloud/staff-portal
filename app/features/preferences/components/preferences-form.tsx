@@ -1,14 +1,13 @@
 import { ThemePreview } from './theme-preview';
 import { SelectTimezone } from '@/components/select/timezone';
-import { Theme } from '@/modules/datum-themes';
+import { Theme, useTheme } from '@/modules/datum-themes';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { useApp } from '@/providers/app.provider';
 import { userUpdatePreferencesMutation } from '@/resources/request/client';
-import { Button } from '@datum-ui/button';
 import { toast } from '@datum-ui/toast';
 import { Text } from '@datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 const THEME_OPTIONS: readonly { readonly value: Theme; readonly label: string }[] = [
   { value: 'dark', label: 'Dark' },
@@ -19,47 +18,56 @@ const THEME_OPTIONS: readonly { readonly value: Theme; readonly label: string }[
 export function PreferencesForm() {
   const { user, setUser, settings } = useApp();
   const { t } = useLingui();
+  const { setTheme } = useTheme();
+  const [isUpdatingTheme, setIsUpdatingTheme] = useState(false);
+  const [isUpdatingTimezone, setIsUpdatingTimezone] = useState(false);
 
-  // Local state for preferences
-  const [preferences, setPreferences] = useState({
-    timezone: settings.timezone,
-    theme: settings.theme,
-  });
-  const [isPreferencesDirty, setIsPreferencesDirty] = useState(false);
-  const [isUpdatingPreferences, setIsUpdatingPreferences] = useState(false);
+  const handleThemeUpdate = useCallback(
+    async (theme: Theme) => {
+      // Optimistically apply theme immediately for instant feedback
+      setTheme(theme);
+      setIsUpdatingTheme(true);
 
-  // Update local state when settings change
-  useEffect(() => {
-    setPreferences({
-      timezone: settings.timezone,
-      theme: settings.theme,
-    });
-    setIsPreferencesDirty(false);
-  }, [settings.timezone, settings.theme]);
+      try {
+        const updatedUser = await userUpdatePreferencesMutation(user?.metadata?.name || '', {
+          annotations: {
+            'preferences/theme': theme,
+          },
+        });
 
-  // Check if preferences are dirty
-  useEffect(() => {
-    const isDirty =
-      preferences.timezone !== settings.timezone || preferences.theme !== settings.theme;
-    setIsPreferencesDirty(isDirty);
-  }, [preferences, settings]);
+        setUser(updatedUser);
+      } catch (error) {
+        // Revert theme on error - AppProvider will sync settings.theme
+        setTheme(settings.theme);
+        toast.error(t`Failed to update theme`);
+      } finally {
+        setIsUpdatingTheme(false);
+      }
+    },
+    [user?.metadata?.name, setUser, setTheme, settings.theme, t]
+  );
 
-  const handlePreferencesUpdate = async () => {
-    setIsUpdatingPreferences(true);
-    try {
-      const updatedUser = await userUpdatePreferencesMutation(user?.metadata?.name || '', {
-        annotations: {
-          'preferences/timezone': preferences.timezone,
-          'preferences/theme': preferences.theme,
-        },
-      });
+  const handleTimezoneUpdate = useCallback(
+    async (timezone: string) => {
+      setIsUpdatingTimezone(true);
 
-      setUser(updatedUser);
-      toast.success(t`Preferences updated successfully`);
-    } finally {
-      setIsUpdatingPreferences(false);
-    }
-  };
+      try {
+        const updatedUser = await userUpdatePreferencesMutation(user?.metadata?.name || '', {
+          annotations: {
+            'preferences/timezone': timezone,
+          },
+        });
+
+        setUser(updatedUser);
+        toast.success(t`Timezone updated successfully`);
+      } catch (error) {
+        toast.error(t`Failed to update timezone`);
+      } finally {
+        setIsUpdatingTimezone(false);
+      }
+    },
+    [user?.metadata?.name, setUser, t]
+  );
 
   return (
     <Card>
@@ -74,13 +82,9 @@ export function PreferencesForm() {
             <Text strong>Timezone</Text>
             <SelectTimezone
               placeholder={t`Select timezone...`}
-              selectedValue={preferences.timezone}
-              onValueChange={(tz) => {
-                setPreferences((prev) => ({
-                  ...prev,
-                  timezone: tz.timezoneName,
-                }));
-              }}
+              selectedValue={settings.timezone}
+              disabled={isUpdatingTimezone}
+              onValueChange={(tz) => handleTimezoneUpdate(tz.timezoneName)}
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -98,28 +102,15 @@ export function PreferencesForm() {
                 <div key={opt.value}>
                   <ThemePreview
                     value={opt.value}
-                    selected={preferences.theme === opt.value}
-                    onSelect={(theme) => {
-                      setPreferences((prev) => ({
-                        ...prev,
-                        theme,
-                      }));
-                    }}
+                    selected={settings.theme === opt.value}
+                    disabled={isUpdatingTheme}
+                    onSelect={handleThemeUpdate}
                   />
 
                   <Text>{opt.label}</Text>
                 </div>
               ))}
             </div>
-          </div>
-
-          <div className="flex justify-end gap-2 pt-4">
-            <Button
-              onClick={handlePreferencesUpdate}
-              disabled={!isPreferencesDirty}
-              loading={isUpdatingPreferences}>
-              <Trans>Apply</Trans>
-            </Button>
           </div>
         </div>
       </CardContent>
