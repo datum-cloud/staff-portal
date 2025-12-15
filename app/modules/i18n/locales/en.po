@@ -191,7 +191,7 @@ msgstr "Cancel"
 msgid "Cannot delete inactive grant"
 msgstr "Cannot delete inactive grant"
 
-#: app/features/preferences/components/preferences-form.tsx:95
+#: app/features/preferences/components/preferences-form.tsx:94
 msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
 msgstr "Choose how the portal looks to you. Select a single theme, or sync with your system."
 
@@ -526,11 +526,11 @@ msgstr "Failed to load DNS record status"
 msgid "Failed to load status"
 msgstr "Failed to load status"
 
-#: app/features/preferences/components/preferences-form.tsx:43
+#: app/features/preferences/components/preferences-form.tsx:42
 msgid "Failed to update theme"
 msgstr "Failed to update theme"
 
-#: app/features/preferences/components/preferences-form.tsx:65
+#: app/features/preferences/components/preferences-form.tsx:64
 msgid "Failed to update timezone"
 msgstr "Failed to update timezone"
 
@@ -864,7 +864,7 @@ msgstr "Please provide a reason for rejecting \"{0} {1}\"."
 msgid "Please wait {remainingMinutes} more minute{0} before resending this invitation"
 msgstr "Please wait {remainingMinutes} more minute{0} before resending this invitation"
 
-#: app/features/preferences/components/preferences-form.tsx:77
+#: app/features/preferences/components/preferences-form.tsx:76
 msgid "Portal Preferences"
 msgstr "Portal Preferences"
 
@@ -1026,7 +1026,7 @@ msgstr "Searching..."
 msgid "Secrets"
 msgstr "Secrets"
 
-#: app/features/preferences/components/preferences-form.tsx:85
+#: app/features/preferences/components/preferences-form.tsx:84
 msgid "Select timezone..."
 msgstr "Select timezone..."
 
@@ -1100,10 +1100,6 @@ msgstr "System"
 msgid "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 msgstr "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 
-#: app/features/preferences/components/preferences-form.tsx:39
-msgid "Theme updated successfully"
-msgstr "Theme updated successfully"
-
 #: app/features/domain/components/domain-status-probe.tsx:103
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 msgstr "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
@@ -1116,7 +1112,7 @@ msgstr "Time range"
 msgid "Timestamp"
 msgstr "Timestamp"
 
-#: app/features/preferences/components/preferences-form.tsx:63
+#: app/features/preferences/components/preferences-form.tsx:62
 msgid "Timezone updated successfully"
 msgstr "Timezone updated successfully"
 

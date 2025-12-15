@@ -36,7 +36,6 @@ export function PreferencesForm() {
         });
 
         setUser(updatedUser);
-        toast.success(t`Theme updated successfully`);
       } catch (error) {
         // Revert theme on error - AppProvider will sync settings.theme
         setTheme(settings.theme);
