@@ -99,10 +99,6 @@ msgstr ""
 msgid "Allocation"
 msgstr ""
 
-#: app/features/preferences/components/preferences-form.tsx:121
-msgid "Apply"
-msgstr ""
-
 #: app/routes/user/index.tsx:94
 #: app/routes/user/detail/index.tsx:155
 msgid "Approve"
@@ -195,7 +191,7 @@ msgstr ""
 msgid "Cannot delete inactive grant"
 msgstr ""
 
-#: app/features/preferences/components/preferences-form.tsx:90
+#: app/features/preferences/components/preferences-form.tsx:95
 msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
 msgstr ""
 
@@ -530,6 +526,14 @@ msgstr ""
 msgid "Failed to load status"
 msgstr ""
 
+#: app/features/preferences/components/preferences-form.tsx:43
+msgid "Failed to update theme"
+msgstr ""
+
+#: app/features/preferences/components/preferences-form.tsx:65
+msgid "Failed to update timezone"
+msgstr ""
+
 #: app/features/activity/components/activity-list.tsx:326
 msgid "Filter by action"
 msgstr ""
@@ -860,12 +864,8 @@ msgstr ""
 msgid "Please wait {remainingMinutes} more minute{0} before resending this invitation"
 msgstr ""
 
-#: app/features/preferences/components/preferences-form.tsx:68
+#: app/features/preferences/components/preferences-form.tsx:77
 msgid "Portal Preferences"
-msgstr ""
-
-#: app/features/preferences/components/preferences-form.tsx:58
-msgid "Preferences updated successfully"
 msgstr ""
 
 #: app/routes/project/detail/dns/detail.tsx:129
@@ -1026,7 +1026,7 @@ msgstr ""
 msgid "Secrets"
 msgstr ""
 
-#: app/features/preferences/components/preferences-form.tsx:76
+#: app/features/preferences/components/preferences-form.tsx:85
 msgid "Select timezone..."
 msgstr ""
 
@@ -1100,6 +1100,10 @@ msgstr ""
 msgid "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 msgstr ""
 
+#: app/features/preferences/components/preferences-form.tsx:39
+msgid "Theme updated successfully"
+msgstr ""
+
 #: app/features/domain/components/domain-status-probe.tsx:103
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 msgstr ""
@@ -1110,6 +1114,10 @@ msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:100
 msgid "Timestamp"
+msgstr ""
+
+#: app/features/preferences/components/preferences-form.tsx:63
+msgid "Timezone updated successfully"
 msgstr ""
 
 #: app/routes/project/detail/dns/detail.tsx:166
