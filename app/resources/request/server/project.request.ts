@@ -1,3 +1,4 @@
+import { env } from '@/utils/config/env.server';
 import { readDnsNetworkingMiloapisComV1Alpha1NamespacedDnsZone } from '@openapi/dns.networking.miloapis.com/v1alpha1';
 import {
   readNetworkingDatumapisComV1AlphaNamespacedDomain,
@@ -26,7 +27,7 @@ export const projectHttpProxyDetailQuery = async (
   namespace: string = 'default'
 ) => {
   const response = await readNetworkingDatumapisComV1AlphaNamespacedHttpProxy({
-    baseURL: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    baseURL: `${env.API_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
     path: {
       namespace,
       name: httpProxyName,
@@ -45,7 +46,7 @@ export const projectExportPolicyDetailQuery = async (
   namespace: string = 'default'
 ) => {
   const response = await readTelemetryMiloapisComV1Alpha1NamespacedExportPolicy({
-    baseURL: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    baseURL: `${env.API_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
     path: {
       namespace,
       name: exportPolicyName,
@@ -64,7 +65,7 @@ export const projectDnsDetailQuery = async (
   namespace: string = 'default'
 ) => {
   const response = await readDnsNetworkingMiloapisComV1Alpha1NamespacedDnsZone({
-    baseURL: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    baseURL: `${env.API_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
     path: {
       namespace,
       name: dnsName,
@@ -83,7 +84,7 @@ export const projectDomainDetailQuery = async (
   namespace: string = 'default'
 ) => {
   const response = await readNetworkingDatumapisComV1AlphaNamespacedDomain({
-    baseURL: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    baseURL: `${env.API_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
     path: {
       namespace,
       name: domainName,
