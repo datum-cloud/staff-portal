@@ -174,7 +174,8 @@ api.get('/activity', authMiddleware(), async (c) => {
       sourceIP: c.req.query('sourceIP') || undefined,
     };
 
-    // TODO: Temporary mock response, because Loki is not working, replace with clickhouse later
+    // TODO: Temporary mock response, because Loki is not working, replace with Activity API later:
+    //   https://github.com/datum-cloud/activity
     // const service = new LokiActivityLogsService(token);
     // const response = await service.getActivityLogs(queryParams);
 
