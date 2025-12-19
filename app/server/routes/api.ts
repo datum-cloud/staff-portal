@@ -174,8 +174,20 @@ api.get('/activity', authMiddleware(), async (c) => {
       sourceIP: c.req.query('sourceIP') || undefined,
     };
 
-    const service = new LokiActivityLogsService(token);
-    const response = await service.getActivityLogs(queryParams);
+    // TODO: Temporary mock response, because Loki is not working, replace with clickhouse later
+    // const service = new LokiActivityLogsService(token);
+    // const response = await service.getActivityLogs(queryParams);
+
+    const response = {
+      logs: [],
+      query: '',
+      timeRange: {
+        start: '',
+        end: '',
+      },
+      nextPageToken: false,
+      hasNextPage: false,
+    };
 
     const duration = Math.round(performance.now() - startTime);
 
