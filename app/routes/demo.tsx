@@ -1,7 +1,6 @@
 import ButtonEnhancedDemo from '@/components/demo/button-enhanced-demo';
 import { FormDemo } from '@/components/demo/form-demo';
 import { logger } from '@/utils/logger';
-import { DataTable, DataTableProvider } from '@datum-ui/data-table';
 import {
   ClientDataTable,
   ClientDataTableProvider,
@@ -10,6 +9,7 @@ import {
   createAdvancedSearch,
   useClientDataTableQuery,
 } from '@datum-ui/client-data-table';
+import { DataTable, DataTableProvider } from '@datum-ui/data-table';
 import { DataTableActiveFilters } from '@datum-ui/data-table';
 import { createColumnHelper } from '@tanstack/react-table';
 import { EditIcon, Trash2Icon } from 'lucide-react';
@@ -65,16 +65,96 @@ interface ClientDemoDataList {
 }
 
 const clientDemoData: ClientDemoData[] = [
-  { id: '1', name: 'John Doe', firstName: 'John', lastName: 'Doe', email: 'john@example.com', status: 'active', category: 'premium' },
-  { id: '2', name: 'Jane Smith', firstName: 'Jane', lastName: 'Smith', email: 'jane@example.com', status: 'inactive', category: 'basic' },
-  { id: '3', name: 'Bob Johnson', firstName: 'Bob', lastName: 'Johnson', email: 'bob@example.com', status: 'active', category: 'free' },
-  { id: '4', name: 'Alice Williams', firstName: 'Alice', lastName: 'Williams', email: 'alice@example.com', status: 'pending', category: 'premium' },
-  { id: '5', name: 'Charlie Brown', firstName: 'Charlie', lastName: 'Brown', email: 'charlie@example.com', status: 'active', category: 'basic' },
-  { id: '6', name: 'Diana Prince', firstName: 'Diana', lastName: 'Prince', email: 'diana@example.com', status: 'inactive', category: 'free' },
-  { id: '7', name: 'Edward Norton', firstName: 'Edward', lastName: 'Norton', email: 'edward@example.com', status: 'active', category: 'premium' },
-  { id: '8', name: 'Fiona Apple', firstName: 'Fiona', lastName: 'Apple', email: 'fiona@example.com', status: 'pending', category: 'basic' },
-  { id: '9', name: 'George Washington', firstName: 'George', lastName: 'Washington', email: 'george@example.com', status: 'active', category: 'free' },
-  { id: '10', name: 'Helen Keller', firstName: 'Helen', lastName: 'Keller', email: 'helen@example.com', status: 'inactive', category: 'premium' },
+  {
+    id: '1',
+    name: 'John Doe',
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john@example.com',
+    status: 'active',
+    category: 'premium',
+  },
+  {
+    id: '2',
+    name: 'Jane Smith',
+    firstName: 'Jane',
+    lastName: 'Smith',
+    email: 'jane@example.com',
+    status: 'inactive',
+    category: 'basic',
+  },
+  {
+    id: '3',
+    name: 'Bob Johnson',
+    firstName: 'Bob',
+    lastName: 'Johnson',
+    email: 'bob@example.com',
+    status: 'active',
+    category: 'free',
+  },
+  {
+    id: '4',
+    name: 'Alice Williams',
+    firstName: 'Alice',
+    lastName: 'Williams',
+    email: 'alice@example.com',
+    status: 'pending',
+    category: 'premium',
+  },
+  {
+    id: '5',
+    name: 'Charlie Brown',
+    firstName: 'Charlie',
+    lastName: 'Brown',
+    email: 'charlie@example.com',
+    status: 'active',
+    category: 'basic',
+  },
+  {
+    id: '6',
+    name: 'Diana Prince',
+    firstName: 'Diana',
+    lastName: 'Prince',
+    email: 'diana@example.com',
+    status: 'inactive',
+    category: 'free',
+  },
+  {
+    id: '7',
+    name: 'Edward Norton',
+    firstName: 'Edward',
+    lastName: 'Norton',
+    email: 'edward@example.com',
+    status: 'active',
+    category: 'premium',
+  },
+  {
+    id: '8',
+    name: 'Fiona Apple',
+    firstName: 'Fiona',
+    lastName: 'Apple',
+    email: 'fiona@example.com',
+    status: 'pending',
+    category: 'basic',
+  },
+  {
+    id: '9',
+    name: 'George Washington',
+    firstName: 'George',
+    lastName: 'Washington',
+    email: 'george@example.com',
+    status: 'active',
+    category: 'free',
+  },
+  {
+    id: '10',
+    name: 'Helen Keller',
+    firstName: 'Helen',
+    lastName: 'Keller',
+    email: 'helen@example.com',
+    status: 'inactive',
+    category: 'premium',
+  },
 ];
 
 const clientColumnHelper = createColumnHelper<ClientDemoData>();
@@ -96,9 +176,7 @@ const clientColumns = [
         inactive: 'bg-red-100 text-red-800',
         pending: 'bg-yellow-100 text-yellow-800',
       };
-      return (
-        <span className={`rounded px-2 py-1 text-xs ${colors[status]}`}>{status}</span>
-      );
+      return <span className={`rounded px-2 py-1 text-xs ${colors[status]}`}>{status}</span>;
     },
   }),
   clientColumnHelper.accessor('category', {
@@ -323,9 +401,7 @@ function ClientDataTableDemo() {
           (row) => row.firstName?.toLowerCase() || '',
           (row) => row.lastName?.toLowerCase() || '',
         ],
-        [
-          (row) => `${row.firstName} ${row.lastName}`.trim().toLowerCase(),
-        ]
+        [(row) => `${row.firstName} ${row.lastName}`.trim().toLowerCase()]
       )}
       {...tableState}>
       <div className="flex flex-col gap-4">
@@ -399,12 +475,10 @@ function ClientDataTableSearchOnlyDemo() {
     <ClientDataTableProvider<ClientDemoData, ClientDemoDataList>
       columns={clientColumns}
       transform={(data) => data?.items || []}
-      globalFilterFn={createAdvancedSearch<ClientDemoData>(
-        [
-          (row) => row.name?.toLowerCase() || '',
-          (row) => row.email?.toLowerCase() || '',
-        ]
-      )}
+      globalFilterFn={createAdvancedSearch<ClientDemoData>([
+        (row) => row.name?.toLowerCase() || '',
+        (row) => row.email?.toLowerCase() || '',
+      ])}
       {...tableState}>
       <div className="flex flex-col gap-4">
         <ClientDataTableSearch placeholder="Search..." />

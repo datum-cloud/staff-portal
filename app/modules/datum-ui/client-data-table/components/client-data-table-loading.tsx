@@ -1,3 +1,4 @@
+import { useClientDataTableInstance } from '../providers/client-data-table.provider';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Skeleton } from '@/modules/shadcn/ui/skeleton';
 import {
@@ -9,7 +10,6 @@ import {
   TableRow,
 } from '@/modules/shadcn/ui/table';
 import { getCommonPinningStyles } from '@datum-ui/data-table/lib/data-table';
-import { useClientDataTableInstance } from '../providers/client-data-table.provider';
 import type * as React from 'react';
 
 interface ClientDataTableLoadingProps<TData> extends React.ComponentProps<'div'> {
