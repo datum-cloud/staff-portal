@@ -10,13 +10,14 @@ import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-ui/button';
 import {
-  ActionItem,
-  DataTable,
-  DataTableActiveFilters,
-  DataTableFacetFilter,
-  DataTableProvider,
-  useDataTableQuery,
-} from '@datum-ui/data-table';
+  ClientDataTable,
+  ClientDataTableFacetFilter,
+  ClientDataTableProvider,
+  ClientDataTableSearch,
+  createAdvancedSearch,
+  useClientDataTableQuery,
+} from '@datum-ui/client-data-table';
+import { ActionItem, DataTableActiveFilters } from '@datum-ui/data-table';
 import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
 import { t } from '@lingui/core/macro';
@@ -25,7 +26,7 @@ import {
   ComMiloapisIamV1Alpha1User,
   ComMiloapisIamV1Alpha1UserList,
 } from '@openapi/iam.miloapis.com/v1alpha1';
-import { createColumnHelper } from '@tanstack/react-table';
+import { createColumnHelper, FilterFn } from '@tanstack/react-table';
 import { CheckIcon, EditIcon, RotateCcwIcon, UserPlus, XIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -76,9 +77,9 @@ export default function Page() {
 
   const { approveUser, pendingUser } = useUserApproval();
 
-  const tableState = useDataTableQuery<ComMiloapisIamV1Alpha1UserList>({
-    queryKeyPrefix: ['users'],
-    fetchFn: (args) => userListQuery(args),
+  const tableState = useClientDataTableQuery<ComMiloapisIamV1Alpha1UserList>({
+    queryKeyPrefix: 'users',
+    fetchFn: userListQuery,
     useSorting: true,
     useFilters: true,
     useSearch: true,
@@ -227,26 +228,35 @@ export default function Page() {
         }}
       />
 
-      <DataTableProvider<ComMiloapisIamV1Alpha1User, ComMiloapisIamV1Alpha1UserList>
+      <ClientDataTableProvider<ComMiloapisIamV1Alpha1User, ComMiloapisIamV1Alpha1UserList>
         columns={columns}
         actions={actions}
         actionsLoading={(row) => loadingStates[row?.metadata?.name ?? ''] || false}
-        transform={(data) => {
-          return {
-            rows: data?.items || [],
-            cursor: data?.metadata?.continue,
-          };
+        transform={(data) => data?.items || []}
+        filterFn={(row, filters) => {
+          if (filters.registrationApproval) {
+            return row.status?.registrationApproval === filters.registrationApproval;
+          }
+          return true;
         }}
+        globalFilterFn={createAdvancedSearch<ComMiloapisIamV1Alpha1User>(
+          [
+            (row) => row.spec?.email?.toLowerCase() || '',
+            (row) => row.spec?.givenName?.toLowerCase() || '',
+            (row) => row.spec?.familyName?.toLowerCase() || '',
+            (row) => row.metadata?.name?.toLowerCase() || '',
+          ],
+          [
+            (row) =>
+              `${row.spec?.givenName || ''} ${row.spec?.familyName || ''}`.trim().toLowerCase(),
+          ]
+        )}
         {...tableState}>
         <div className="m-4 flex flex-col gap-2">
           <div className="flex items-center gap-4">
-            {/* <DataTableSearch
-                placeholder={t`Search users...`}
-                value={tableState.search}
-                onValueChange={tableState.setSearch || (() => {})}
-              /> */}
-
-            <DataTableFacetFilter
+            <ClientDataTableSearch placeholder={t`Search users...`} />
+            <ClientDataTableFacetFilter
+              filterKey="registrationApproval"
               label={t`Registration Approval`}
               placeholder={t`Filter by approval`}
               options={[
@@ -254,11 +264,6 @@ export default function Page() {
                 { value: 'Rejected', label: t`Rejected` },
                 { value: 'Pending', label: t`Pending` },
               ]}
-              value={tableState.filters.registrationApproval}
-              onValueChange={(value) => {
-                if (value) tableState.setFilter('registrationApproval', value);
-                else tableState.clearFilter('registrationApproval');
-              }}
             />
           </div>
 
@@ -285,9 +290,9 @@ export default function Page() {
             excludeFilters={['search']}
           />
 
-          <DataTable />
+          <ClientDataTable<ComMiloapisIamV1Alpha1User> />
         </div>
-      </DataTableProvider>
+      </ClientDataTableProvider>
     </>
   );
 }

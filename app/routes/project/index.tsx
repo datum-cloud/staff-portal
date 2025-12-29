@@ -4,7 +4,13 @@ import { DisplayName } from '@/components/display';
 import { projectListQuery } from '@/resources/request/client';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
+import {
+  ClientDataTable,
+  ClientDataTableProvider,
+  ClientDataTableSearch,
+  createAdvancedSearch,
+  useClientDataTableQuery,
+} from '@datum-ui/client-data-table';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import {
@@ -50,26 +56,32 @@ const columns = [
 ];
 
 export default function Page() {
-  const tableState = useDataTableQuery<ComMiloapisResourcemanagerV1Alpha1ProjectList>({
+  const tableState = useClientDataTableQuery<ComMiloapisResourcemanagerV1Alpha1ProjectList>({
     queryKeyPrefix: 'projects',
     fetchFn: projectListQuery,
     useSorting: true,
+    useSearch: true,
   });
 
   return (
-    <DataTableProvider<
+    <ClientDataTableProvider<
       ComMiloapisResourcemanagerV1Alpha1Project,
       ComMiloapisResourcemanagerV1Alpha1ProjectList
     >
       columns={columns}
-      transform={(data) => ({
-        rows: data?.items || [],
-        cursor: data?.metadata?.continue,
-      })}
+      transform={(data) => data?.items || []}
+      globalFilterFn={createAdvancedSearch<ComMiloapisResourcemanagerV1Alpha1Project>([
+        (row) => row.metadata?.name?.toLowerCase() || '',
+        (row) => row.metadata?.annotations?.['kubernetes.io/description']?.toLowerCase() || '',
+        (row) => row.spec?.ownerRef?.name?.toLowerCase() || '',
+      ])}
       {...tableState}>
       <div className="m-4 flex flex-col gap-2">
-        <DataTable />
+        <div className="flex items-center gap-4">
+          <ClientDataTableSearch placeholder={t`Search projects...`} />
+        </div>
+        <ClientDataTable<ComMiloapisResourcemanagerV1Alpha1Project> />
       </div>
-    </DataTableProvider>
+    </ClientDataTableProvider>
   );
 }
