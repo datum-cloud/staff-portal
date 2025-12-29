@@ -4,7 +4,15 @@ import { DateFormatter } from '@/components/date';
 import { DisplayName } from '@/components/display';
 import { orgListQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
-import { DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
+import {
+  ClientDataTable,
+  ClientDataTableProvider,
+  ClientDataTableSearch,
+  ClientDataTableFacetFilter,
+  createAdvancedSearch,
+  useClientDataTableQuery,
+} from '@datum-ui/client-data-table';
+import { DataTableActiveFilters } from '@datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import {
@@ -43,26 +51,69 @@ const columns = [
 ];
 
 export default function Page() {
-  const tableState = useDataTableQuery<ComMiloapisResourcemanagerV1Alpha1OrganizationList>({
+  const tableState = useClientDataTableQuery<ComMiloapisResourcemanagerV1Alpha1OrganizationList>({
     queryKeyPrefix: 'orgs',
     fetchFn: orgListQuery,
     useSorting: true,
+    useSearch: true,
+    useFilters: true,
   });
 
   return (
-    <DataTableProvider<
+    <ClientDataTableProvider<
       ComMiloapisResourcemanagerV1Alpha1Organization,
       ComMiloapisResourcemanagerV1Alpha1OrganizationList
     >
       {...tableState}
       columns={columns}
-      transform={(data) => ({
-        rows: data?.items || [],
-        cursor: data?.metadata?.continue,
-      })}>
+      transform={(data) => data?.items || []}
+      filterFn={(row, filters) => {
+        if (filters.type && row.spec?.type !== filters.type) {
+          return false;
+        }
+        return true;
+      }}
+      globalFilterFn={createAdvancedSearch<ComMiloapisResourcemanagerV1Alpha1Organization>([
+        (row) => row.metadata?.name?.toLowerCase() || '',
+        (row) => row.metadata?.annotations?.['kubernetes.io/display-name']?.toLowerCase() || '',
+        (row) => row.spec?.type?.toLowerCase() || '',
+      ])}>
       <div className="m-4 flex flex-col gap-2">
-        <DataTable />
+        <div className="flex items-center gap-4">
+          <ClientDataTableSearch placeholder={t`Search organizations...`} />
+          <ClientDataTableFacetFilter
+            filterKey="type"
+            label={t`Organization Type`}
+            placeholder={t`Filter by type`}
+            options={[
+              { value: 'Personal', label: t`Personal` },
+              { value: 'Standard', label: t`Standard` },
+            ]}
+          />
+        </div>
+        <DataTableActiveFilters
+          filters={tableState.filters}
+          search={tableState.search}
+          onClearFilter={tableState.clearFilter}
+          onClearAllFilters={tableState.clearAllFilters}
+          onClearSearch={tableState.clearSearch}
+          filterLabels={{
+            type: t`Organization Type`,
+          }}
+          formatFilterValue={(key, value) => {
+            if (key === 'type') {
+              const labels: Record<string, string> = {
+                Personal: t`Personal`,
+                Standard: t`Standard`,
+              };
+              return labels[value] || value;
+            }
+            return String(value);
+          }}
+          excludeFilters={['search']}
+        />
+        <ClientDataTable<ComMiloapisResourcemanagerV1Alpha1Organization> />
       </div>
-    </DataTableProvider>
+    </ClientDataTableProvider>
   );
 }
