@@ -64,3 +64,57 @@ export function getValidFilters<TData>(
         : filter.value !== '' && filter.value !== null && filter.value !== undefined)
   );
 }
+
+/**
+ * Checks if an error is a 410 ResourceExpired error (expired cursor token).
+ * This is used to automatically handle expired pagination tokens by clearing
+ * the cursor and refetching from the beginning.
+ */
+export function isExpiredCursorError(error: unknown): boolean {
+  // Check for AxiosError with 410 status
+  if (error && typeof error === 'object' && 'response' in error) {
+    const axiosError = error as { response?: { status?: number; data?: any } };
+    if (axiosError.response?.status === 410) {
+      return true;
+    }
+    // Also check error message in response data
+    if (axiosError.response?.data) {
+      const data = axiosError.response.data;
+      const errorMessage =
+        typeof data === 'string' ? data : (data as any)?.error || (data as any)?.message || '';
+      if (errorMessage) {
+        const message = String(errorMessage).toLowerCase();
+        if (
+          message.includes('continue') ||
+          message.includes('token') ||
+          message.includes('too old') ||
+          message.includes('expired') ||
+          message.includes('provided continue parameter')
+        ) {
+          return true;
+        }
+      }
+    }
+  }
+
+  // Check for error message containing ResourceExpired or 410
+  if (error instanceof Error) {
+    const message = error.message.toLowerCase();
+    return (
+      message.includes('410') ||
+      message.includes('resourceexpired') ||
+      message.includes('continue token') ||
+      message.includes('continue parameter') ||
+      message.includes('provided continue parameter') ||
+      message.includes('too old') ||
+      message.includes('inconsistent list')
+    );
+  }
+
+  // Check for error object with status code
+  if (error && typeof error === 'object' && 'status' in error) {
+    return (error as { status?: number }).status === 410;
+  }
+
+  return false;
+}
