@@ -1,4 +1,4 @@
-import { getCommonPinningStyles } from '../lib/data-table';
+import { getCommonPinningStyles, isExpiredCursorError } from '../lib/data-table';
 import { useDataTableInstance } from '../providers/data-table.provider';
 import { DataTableLoading } from './data-table-loading';
 import { DataTablePagination } from './data-table-pagination';
@@ -28,8 +28,10 @@ export function DataTable<TData>({
 }: DataTableProps<TData>) {
   const { table, query } = useDataTableInstance<TData>();
 
-  // Show loading state when query is loading
-  if (query.isLoading) {
+  // Show loading state when query is loading or when we're handling an expired cursor error
+  // (expired cursor errors are automatically handled by clearing the cursor and refetching)
+  const isExpiredCursor = query.isError && isExpiredCursorError(query.error);
+  if (query.isLoading || isExpiredCursor) {
     return (
       <DataTableLoading<TData> rows={5} actionBar={actionBar} className={className} {...props}>
         {children}
@@ -37,7 +39,7 @@ export function DataTable<TData>({
     );
   }
 
-  // Show error state when query has error
+  // Show error state when query has error (but not expired cursor errors, which are handled automatically)
   if (query.isError) {
     return (
       <div className={cn('flex w-full flex-col gap-2.5 overflow-auto', className)} {...props}>

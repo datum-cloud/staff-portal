@@ -141,6 +141,14 @@ export function DataTableProvider<TData, TQuery = DataTableQuery<TData>>({
     }
   }, [sorting, filters, limit]);
 
+  // Reset pagination when cursor is cleared (e.g., expired token)
+  useEffect(() => {
+    if (!cursor && currentPage > 0) {
+      setCursorHistory(['']);
+      setCurrentPage(0);
+    }
+  }, [cursor, currentPage]);
+
   // Add selection to first column (embedded) and actions column (separate)
   const enhancedColumns = useMemo(() => {
     const hasActions = actions && actions.length > 0;

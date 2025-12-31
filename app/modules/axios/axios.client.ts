@@ -1,3 +1,4 @@
+import { isExpiredCursorError } from '@/modules/datum-ui/data-table/lib/data-table';
 import { logger } from '@/utils/logger';
 import { captureApiError } from '@/utils/logger';
 import { toast } from '@datum-ui/toast';
@@ -102,9 +103,14 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
     responseData: error.response?.data,
   });
 
-  // For all other errors, show toast with meaningful info
-  const title = errorInfo.requestId ? `Request ID: ${errorInfo.requestId}` : 'Error';
-  toast.error(title, { description: errorInfo.message });
+  // Check if this is an expired cursor error (410) - these are handled automatically by data tables
+  const isExpiredCursor = isExpiredCursorError(error);
+  // Skip toast for expired cursor errors - they're handled automatically by data tables
+  if (!isExpiredCursor) {
+    // For all other errors, show toast with meaningful info
+    const title = errorInfo.requestId ? `Request ID: ${errorInfo.requestId}` : 'Error';
+    toast.error(title, { description: errorInfo.message });
+  }
 
   return Promise.reject(error);
 };

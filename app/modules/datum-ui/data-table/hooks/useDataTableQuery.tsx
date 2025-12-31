@@ -1,3 +1,4 @@
+import { isExpiredCursorError } from '../lib/data-table';
 import { ListQueryParams } from '@/resources/schemas';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import {
@@ -245,7 +246,25 @@ export function useDataTableQuery<T>({
       }),
     placeholderData: keepPreviousData,
     enabled,
+    retry: (failureCount, error) => {
+      if (isExpiredCursorError(error)) {
+        return false;
+      }
+      return failureCount < 3;
+    },
   });
+
+  // Auto-handle expired cursor tokens
+  useEffect(() => {
+    if (!cursor || !query.isError) {
+      return;
+    }
+
+    const error = query.error;
+    if (isExpiredCursorError(error)) {
+      setCursor('');
+    }
+  }, [query.isError, query.error, cursor, setCursor]);
 
   // --- Memoized Setters ---
   const setSorting = useMemo(() => {
