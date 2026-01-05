@@ -3,7 +3,13 @@ import { DateFormatter } from '@/components/date';
 import { DisplayName } from '@/components/display';
 import { groupListQuery } from '@/resources/request/client/group.request';
 import { metaObject } from '@/utils/helpers';
-import { DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
+import {
+  ClientDataTable,
+  ClientDataTableProvider,
+  ClientDataTableSearch,
+  createAdvancedSearch,
+  useClientDataTableQuery,
+} from '@datum-ui/client-data-table';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import {
@@ -40,23 +46,26 @@ const columns = [
 ];
 
 export default function Page() {
-  const tableState = useDataTableQuery<ComMiloapisIamV1Alpha1GroupList>({
+  const tableState = useClientDataTableQuery<ComMiloapisIamV1Alpha1GroupList>({
     queryKeyPrefix: 'groups',
-    fetchFn: groupListQuery,
+    fetchFn: () => groupListQuery(),
     useSorting: true,
+    useSearch: true,
   });
 
   return (
-    <DataTableProvider<ComMiloapisIamV1Alpha1Group, ComMiloapisIamV1Alpha1GroupList>
+    <ClientDataTableProvider<ComMiloapisIamV1Alpha1Group, ComMiloapisIamV1Alpha1GroupList>
       {...tableState}
       columns={columns}
-      transform={(data) => ({
-        rows: data?.items || [],
-        cursor: data?.metadata?.continue,
-      })}>
+      transform={(data) => data?.items || []}
+      globalFilterFn={createAdvancedSearch<ComMiloapisIamV1Alpha1Group>([
+        (row) => row.metadata?.name?.toLowerCase() || '',
+        (row) => row.metadata?.namespace?.toLowerCase() || '',
+      ])}>
       <div className="m-4 flex flex-col gap-2">
-        <DataTable />
+        <ClientDataTableSearch placeholder={t`Search groups...`} />
+        <ClientDataTable />
       </div>
-    </DataTableProvider>
+    </ClientDataTableProvider>
   );
 }

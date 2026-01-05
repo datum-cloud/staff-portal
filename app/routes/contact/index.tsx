@@ -8,7 +8,14 @@ import { contactDeleteMutation, contactListQuery } from '@/resources/request/cli
 import { contactRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-ui/button';
-import { ActionItem, DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
+import {
+  ClientDataTable,
+  ClientDataTableProvider,
+  ClientDataTableSearch,
+  createAdvancedSearch,
+  useClientDataTableQuery,
+} from '@datum-ui/client-data-table';
+import { ActionItem } from '@datum-ui/data-table';
 import { toast } from '@datum-ui/toast';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
@@ -16,7 +23,6 @@ import {
   type ComMiloapisNotificationV1Alpha1Contact,
   type ComMiloapisNotificationV1Alpha1ContactList,
 } from '@openapi/notification.miloapis.com/v1alpha1';
-import type { ProxyResponse } from '@openapi/shared/core/types.gen';
 import { createColumnHelper } from '@tanstack/react-table';
 import { EditIcon, PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
@@ -70,10 +76,11 @@ export default function Page() {
   const navigate = useNavigate();
   const [selectedContact, setSelectedContact] =
     useState<ComMiloapisNotificationV1Alpha1Contact | null>(null);
-  const tableState = useDataTableQuery<ComMiloapisNotificationV1Alpha1ContactList>({
+  const tableState = useClientDataTableQuery<ComMiloapisNotificationV1Alpha1ContactList>({
     useSorting: true,
+    useSearch: true,
     queryKeyPrefix: 'contacts',
-    fetchFn: contactListQuery,
+    fetchFn: () => contactListQuery(),
   });
 
   const actions: ActionItem<ComMiloapisNotificationV1Alpha1Contact>[] = [
@@ -121,21 +128,27 @@ export default function Page() {
         }}
       />
 
-      <DataTableProvider<
+      <ClientDataTableProvider<
         ComMiloapisNotificationV1Alpha1Contact,
         ComMiloapisNotificationV1Alpha1ContactList
       >
         {...tableState}
         actions={actions}
         columns={columns}
-        transform={(data) => ({
-          rows: data.items || [],
-          cursor: data.metadata?.continue,
-        })}>
+        transform={(data) => data.items || []}
+        globalFilterFn={createAdvancedSearch<ComMiloapisNotificationV1Alpha1Contact>([
+          (row) => row.metadata?.name?.toLowerCase() || '',
+          (row) => row.spec?.givenName?.toLowerCase() || '',
+          (row) => row.spec?.familyName?.toLowerCase() || '',
+          (row) => row.spec?.email?.toLowerCase() || '',
+          (row) =>
+            `${row.spec?.givenName || ''} ${row.spec?.familyName || ''}`.trim().toLowerCase(),
+        ])}>
         <div className="m-4 flex flex-col gap-2">
-          <DataTable />
+          <ClientDataTableSearch placeholder={t`Search contacts...`} />
+          <ClientDataTable />
         </div>
-      </DataTableProvider>
+      </ClientDataTableProvider>
     </>
   );
 }

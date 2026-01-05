@@ -5,7 +5,14 @@ import { DisplayName } from '@/components/display';
 import { orgProjectListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
+import {
+  ClientDataTable,
+  ClientDataTableProvider,
+  ClientDataTableSearch,
+  createAdvancedSearch,
+  useClientDataTableQuery,
+} from '@datum-ui/client-data-table';
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import {
   ComMiloapisResourcemanagerV1Alpha1Project,
@@ -50,26 +57,29 @@ const columns = [
 export default function Page() {
   const data = useOrganizationDetailData();
 
-  const tableState = useDataTableQuery<ComMiloapisResourcemanagerV1Alpha1ProjectList>({
+  const tableState = useClientDataTableQuery<ComMiloapisResourcemanagerV1Alpha1ProjectList>({
     queryKeyPrefix: ['organizations', data.metadata?.name ?? '', 'projects'],
-    fetchFn: (params) => orgProjectListQuery(data.metadata?.name ?? '', params),
+    fetchFn: () => orgProjectListQuery(data.metadata?.name ?? ''),
     useSorting: true,
+    useSearch: true,
   });
 
   return (
-    <DataTableProvider<
+    <ClientDataTableProvider<
       ComMiloapisResourcemanagerV1Alpha1Project,
       ComMiloapisResourcemanagerV1Alpha1ProjectList
     >
       columns={columns}
-      transform={(data) => ({
-        rows: data?.items || [],
-        cursor: data?.metadata?.continue,
-      })}
+      transform={(data) => data?.items || []}
+      globalFilterFn={createAdvancedSearch<ComMiloapisResourcemanagerV1Alpha1Project>([
+        (row) => row.metadata?.name?.toLowerCase() || '',
+        (row) => row.metadata?.annotations?.['kubernetes.io/description']?.toLowerCase() || '',
+      ])}
       {...tableState}>
       <div className="m-4 flex flex-col gap-2">
-        <DataTable />
+        <ClientDataTableSearch placeholder={t`Search projects...`} />
+        <ClientDataTable />
       </div>
-    </DataTableProvider>
+    </ClientDataTableProvider>
   );
 }

@@ -8,7 +8,14 @@ import { contactGroupDeleteMutation, contactGroupListQuery } from '@/resources/r
 import { contactGroupRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-ui/button';
-import { ActionItem, DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
+import {
+  ClientDataTable,
+  ClientDataTableProvider,
+  ClientDataTableSearch,
+  createAdvancedSearch,
+  useClientDataTableQuery,
+} from '@datum-ui/client-data-table';
+import { ActionItem } from '@datum-ui/data-table';
 import { toast } from '@datum-ui/toast';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
@@ -63,10 +70,11 @@ export default function Page() {
   const navigate = useNavigate();
   const [selectedContactGroup, setSelectedContactGroup] =
     useState<ComMiloapisNotificationV1Alpha1ContactGroup | null>(null);
-  const tableState = useDataTableQuery<ComMiloapisNotificationV1Alpha1ContactGroupList>({
+  const tableState = useClientDataTableQuery<ComMiloapisNotificationV1Alpha1ContactGroupList>({
     useSorting: true,
+    useSearch: true,
     queryKeyPrefix: 'contact-groups',
-    fetchFn: contactGroupListQuery,
+    fetchFn: () => contactGroupListQuery(),
   });
 
   const actions: ActionItem<ComMiloapisNotificationV1Alpha1ContactGroup>[] = [
@@ -112,21 +120,24 @@ export default function Page() {
         }}
       />
 
-      <DataTableProvider<
+      <ClientDataTableProvider<
         ComMiloapisNotificationV1Alpha1ContactGroup,
         ComMiloapisNotificationV1Alpha1ContactGroupList
       >
         {...tableState}
         actions={actions}
         columns={columns}
-        transform={(data) => ({
-          rows: data.items || [],
-          cursor: data.metadata?.continue,
-        })}>
+        transform={(data) => data.items || []}
+        globalFilterFn={createAdvancedSearch<ComMiloapisNotificationV1Alpha1ContactGroup>([
+          (row) => row.metadata?.name?.toLowerCase() || '',
+          (row) => row.spec?.displayName?.toLowerCase() || '',
+          (row) => row.spec?.visibility?.toLowerCase() || '',
+        ])}>
         <div className="m-4 flex flex-col gap-2">
-          <DataTable />
+          <ClientDataTableSearch placeholder={t`Search contact groups...`} />
+          <ClientDataTable />
         </div>
-      </DataTableProvider>
+      </ClientDataTableProvider>
     </>
   );
 }
