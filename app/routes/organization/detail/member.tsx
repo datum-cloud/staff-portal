@@ -10,8 +10,16 @@ import {
 import { TeamMember, TeamMemberList } from '@/resources/schemas';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { ActionItem, DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
+import {
+  ClientDataTable,
+  ClientDataTableProvider,
+  ClientDataTableSearch,
+  createAdvancedSearch,
+  useClientDataTableQuery,
+} from '@datum-ui/client-data-table';
+import { ActionItem } from '@datum-ui/data-table';
 import { toast } from '@datum-ui/toast';
+import { t as tCore } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 import { addHours, differenceInMinutes, formatRFC3339 } from 'date-fns';
@@ -48,6 +56,7 @@ const columns = [
   columnHelper.accessor('invitationState', {
     header: () => '',
     cell: ({ getValue }) => <BadgeState state={getValue() ?? ''} />,
+    enableSorting: false,
   }),
   columnHelper.accessor('roles', {
     header: () => <Trans>Role</Trans>,
@@ -61,10 +70,11 @@ export default function Page() {
 
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
 
-  const tableState = useDataTableQuery<TeamMemberList>({
+  const tableState = useClientDataTableQuery<TeamMemberList>({
     queryKeyPrefix: ['organizations', data.metadata?.name ?? '', 'members'],
-    fetchFn: (args) => orgMemberListQuery(data.metadata?.name ?? '', args),
+    fetchFn: () => orgMemberListQuery(data.metadata?.name ?? ''),
     useSorting: true,
+    useSearch: true,
   });
 
   const actions: ActionItem<TeamMember>[] = [
@@ -129,18 +139,23 @@ export default function Page() {
   ];
 
   return (
-    <DataTableProvider<TeamMember, TeamMemberList>
+    <ClientDataTableProvider<TeamMember, TeamMemberList>
       {...tableState}
       columns={columns}
       actions={actions}
       actionsLoading={(row) => loadingStates[row.name] || false}
-      transform={(data) => ({
-        rows: data || [],
-        cursor: undefined,
-      })}>
+      transform={(data) => data || []}
+      globalFilterFn={createAdvancedSearch<TeamMember>([
+        (row) => row.name?.toLowerCase() || '',
+        (row) => row.givenName?.toLowerCase() || '',
+        (row) => row.familyName?.toLowerCase() || '',
+        (row) => row.email?.toLowerCase() || '',
+        (row) => `${row.givenName || ''} ${row.familyName || ''}`.trim().toLowerCase(),
+      ])}>
       <div className="m-4 flex flex-col gap-2">
-        <DataTable />
+        <ClientDataTableSearch placeholder={tCore`Search members...`} />
+        <ClientDataTable />
       </div>
-    </DataTableProvider>
+    </ClientDataTableProvider>
   );
 }

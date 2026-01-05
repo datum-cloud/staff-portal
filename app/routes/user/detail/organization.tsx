@@ -6,7 +6,14 @@ import { userOrgListQuery } from '@/resources/request/client';
 import { getUserDetailMetadata, useUserDetailData } from '@/routes/user/shared';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
+import {
+  ClientDataTable,
+  ClientDataTableProvider,
+  ClientDataTableSearch,
+  createAdvancedSearch,
+  useClientDataTableQuery,
+} from '@datum-ui/client-data-table';
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import {
   ComMiloapisResourcemanagerV1Alpha1OrganizationMembership,
@@ -54,26 +61,32 @@ export default function Page() {
   const data = useUserDetailData();
 
   const tableState =
-    useDataTableQuery<ComMiloapisResourcemanagerV1Alpha1OrganizationMembershipList>({
+    useClientDataTableQuery<ComMiloapisResourcemanagerV1Alpha1OrganizationMembershipList>({
       queryKeyPrefix: ['users', data.metadata?.name ?? '', 'organizations'],
-      fetchFn: (args) => userOrgListQuery(data.metadata?.name ?? '', args),
+      fetchFn: () => userOrgListQuery(data.metadata?.name ?? ''),
       useSorting: true,
+      useSearch: true,
     });
 
   return (
-    <DataTableProvider<
+    <ClientDataTableProvider<
       ComMiloapisResourcemanagerV1Alpha1OrganizationMembership,
       ComMiloapisResourcemanagerV1Alpha1OrganizationMembershipList
     >
       {...tableState}
       columns={columns}
-      transform={(data) => ({
-        rows: data?.items || [],
-        cursor: data?.metadata?.continue,
-      })}>
+      transform={(data) => data?.items || []}
+      globalFilterFn={createAdvancedSearch<ComMiloapisResourcemanagerV1Alpha1OrganizationMembership>(
+        [
+          (row) => row.spec?.organizationRef?.name?.toLowerCase() || '',
+          (row) => row.status?.organization?.displayName?.toLowerCase() || '',
+          (row) => row.status?.organization?.type?.toLowerCase() || '',
+        ]
+      )}>
       <div className="m-4 flex flex-col gap-2">
-        <DataTable />
+        <ClientDataTableSearch placeholder={t`Search organizations...`} />
+        <ClientDataTable />
       </div>
-    </DataTableProvider>
+    </ClientDataTableProvider>
   );
 }
