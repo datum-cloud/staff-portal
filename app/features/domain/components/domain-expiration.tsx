@@ -1,5 +1,5 @@
 import { BadgeState } from '@/components/badge';
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { addMonths, isBefore } from 'date-fns';
 
 export interface DomainExpirationProps {
@@ -16,7 +16,7 @@ export const DomainExpiration = ({ expiresAt, showBadge = true }: DomainExpirati
 
   return (
     <div className="flex items-center gap-2">
-      <DateFormatter date={expiresAt} format="MMM d, yyyy" />
+      <DateTime date={expiresAt} />
       {showBadge && isExpiringSoon && <BadgeState state="warning" message="Expires soon" />}
     </div>
   );

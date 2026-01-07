@@ -2,7 +2,7 @@ import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../sha
 import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
 import { DangerZoneCard } from '@/components/danger-zone-card';
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { Card, CardContent } from '@/modules/shadcn/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
 import { orgDeleteMutation } from '@/resources/request/client';
@@ -75,7 +75,7 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <Text>
-                    <DateFormatter date={data?.metadata?.creationTimestamp} withTime />
+                    <DateTime date={data?.metadata?.creationTimestamp} variant="both" />
                   </Text>
                 </TableCell>
               </TableRow>

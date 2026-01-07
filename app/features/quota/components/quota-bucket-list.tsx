@@ -1,4 +1,4 @@
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
 import { quotaGrantCreateMutation } from '@/resources/request/client';
 import {
@@ -83,7 +83,7 @@ const columns = [
   columnHelper.accessor('metadata.creationTimestamp', {
     header: () => <Trans>Created</Trans>,
     cell: ({ getValue }) => {
-      return <DateFormatter date={getValue()} withTime />;
+      return <DateTime date={getValue()} />;
     },
   }),
 ];

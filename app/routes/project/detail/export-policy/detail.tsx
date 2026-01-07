@@ -1,6 +1,6 @@
 import type { Route } from './+types/detail';
 import { BadgeCondition, BadgeState } from '@/components/badge';
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { DisplayText } from '@/components/display';
 import { authenticator } from '@/modules/auth';
 import { Button } from '@/modules/shadcn/ui/button';
@@ -99,7 +99,7 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <Text>
-                    <DateFormatter date={data?.metadata?.creationTimestamp} withTime />
+                    <DateTime date={data?.metadata?.creationTimestamp} variant="both" />
                   </Text>
                 </TableCell>
               </TableRow>

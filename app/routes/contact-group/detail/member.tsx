@@ -1,7 +1,7 @@
 import { getContactGroupDetailMetadata, useContactGroupDetailData } from '../shared';
 import type { Route } from './+types/member';
 import AppActionBar from '@/components/app-actiobar';
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
 import { useContactSearch } from '@/hooks';
@@ -53,7 +53,7 @@ const columns = [
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
     header: () => <Trans>Added</Trans>,
-    cell: ({ getValue }) => <DateFormatter date={getValue()} withTime />,
+    cell: ({ getValue }) => <DateTime date={getValue()} />,
   }),
 ];
 

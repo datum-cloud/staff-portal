@@ -147,7 +147,7 @@ msgstr "Are you sure you want to delete session \"{0}\"? This action cannot be u
 
 #. placeholder {0}: data.spec?.givenName ?? ''
 #. placeholder {1}: data.spec?.familyName ?? ''
-#: app/routes/user/detail/index.tsx:370
+#: app/routes/user/detail/index.tsx:369
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 
@@ -318,12 +318,12 @@ msgid "Dashboard"
 msgstr "Dashboard"
 
 #: app/routes/user/detail/index.tsx:106
-#: app/routes/user/detail/index.tsx:359
+#: app/routes/user/detail/index.tsx:358
 msgid "Deactivate"
 msgstr "Deactivate"
 
 #: app/routes/user/detail/index.tsx:104
-#: app/routes/user/detail/index.tsx:349
+#: app/routes/user/detail/index.tsx:348
 msgid "Deactivate User"
 msgstr "Deactivate User"
 
@@ -339,7 +339,7 @@ msgstr "Deactivated By:"
 msgid "Deactivation Details"
 msgstr "Deactivation Details"
 
-#: app/routes/user/detail/index.tsx:333
+#: app/routes/user/detail/index.tsx:332
 msgid "Deactivation Reason:"
 msgstr "Deactivation Reason:"
 
@@ -397,8 +397,8 @@ msgstr "Delete Project"
 msgid "Delete Session"
 msgstr "Delete Session"
 
-#: app/routes/user/detail/index.tsx:367
-#: app/routes/user/detail/index.tsx:369
+#: app/routes/user/detail/index.tsx:366
+#: app/routes/user/detail/index.tsx:368
 msgid "Delete User"
 msgstr "Delete User"
 
@@ -853,7 +853,7 @@ msgstr "Permanently delete this organization and all associated data"
 msgid "Permanently delete this project and all associated data"
 msgstr "Permanently delete this project and all associated data"
 
-#: app/routes/user/detail/index.tsx:368
+#: app/routes/user/detail/index.tsx:367
 msgid "Permanently delete this user and all associated data"
 msgstr "Permanently delete this user and all associated data"
 
@@ -1147,7 +1147,7 @@ msgstr "Subject is required when user association is enabled"
 msgid "System"
 msgstr "System"
 
-#: app/routes/user/detail/index.tsx:352
+#: app/routes/user/detail/index.tsx:351
 msgid "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 msgstr "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 

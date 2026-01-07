@@ -1,6 +1,6 @@
 import type { Route } from './+types/email-activity';
 import { BadgeCondition } from '@/components/badge';
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { DataTable, DataTableProvider, useDataTableQuery } from '@/modules/datum-ui/data-table';
 import { emailListQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
@@ -39,7 +39,7 @@ const columns = [
   columnHelper.accessor('metadata.creationTimestamp', {
     header: () => <Trans>Created</Trans>,
     cell: ({ getValue }) => {
-      return <DateFormatter date={getValue()} withTime />;
+      return <DateTime date={getValue()} />;
     },
   }),
 ];

@@ -1,7 +1,7 @@
 import { getProjectDetailMetadata, useProjectDetailData } from '../../shared';
 import type { Route } from './+types/index';
 import { BadgeCondition } from '@/components/badge';
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { projectExportPolicyListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
@@ -56,7 +56,7 @@ export default function Page() {
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       header: () => <Trans>Created</Trans>,
-      cell: ({ getValue }) => <DateFormatter date={getValue()} withTime />,
+      cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
   ];
 

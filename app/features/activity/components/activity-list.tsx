@@ -1,5 +1,5 @@
 import { BadgeState } from '@/components/badge';
-import { DateFormatter, DateRangePicker } from '@/components/date';
+import { DateTime, DateRangePicker } from '@/components/date';
 import { ActivityLogEntry } from '@/modules/loki';
 import { useApp } from '@/providers/app.provider';
 import { activityListQuery } from '@/resources/request/client';
@@ -99,7 +99,7 @@ const createColumns = () => [
   columnHelper.accessor('timestamp', {
     header: () => <Trans>Timestamp</Trans>,
     cell: ({ getValue }) => (
-      <Tooltip message={<DateFormatter date={getValue()} withTime />}>
+      <Tooltip message={<DateTime date={getValue()} />}>
         <span>{formatDistanceToNowStrict(new Date(getValue()), { addSuffix: true })}</span>
       </Tooltip>
     ),

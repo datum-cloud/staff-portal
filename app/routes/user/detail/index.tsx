@@ -3,7 +3,7 @@ import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
 import { ButtonCopy } from '@/components/button';
 import { DangerZoneCard } from '@/components/danger-zone-card';
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
 import {
@@ -256,7 +256,7 @@ export default function Page() {
                   </TableCell>
                   <TableCell>
                     <Text>
-                      <DateFormatter date={data?.metadata?.creationTimestamp} withTime />
+                      <DateTime date={data?.metadata?.creationTimestamp} variant="both" />
                     </Text>
                   </TableCell>
                 </TableRow>
@@ -322,9 +322,8 @@ export default function Page() {
                         <Trans>Deactivated At:</Trans>
                       </Text>
                       <Text size="sm">
-                        <DateFormatter
+                        <DateTime
                           date={deactivationData?.data?.metadata?.creationTimestamp ?? ''}
-                          withTime
                         />
                       </Text>
                     </div>

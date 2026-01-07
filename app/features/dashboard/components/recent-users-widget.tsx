@@ -1,4 +1,4 @@
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
 import { Avatar, AvatarFallback } from '@/modules/shadcn/ui/avatar';
 import { Card, CardContent, CardDescription, CardHeader } from '@/modules/shadcn/ui/card';
@@ -45,7 +45,7 @@ function UserItem({ log }: { log: any }) {
           </div>
           <div className="ml-3 flex items-center gap-2">
             <Text size="sm" textColor="muted">
-              <DateFormatter date={userData?.metadata?.creationTimestamp} withTime />
+              <DateTime date={userData?.metadata?.creationTimestamp} />
             </Text>
           </div>
         </div>
