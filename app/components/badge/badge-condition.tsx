@@ -1,4 +1,4 @@
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Badge } from '@/modules/shadcn/ui/badge';
 import { ControlPlaneStatus } from '@/resources/schemas';
@@ -101,7 +101,7 @@ function createTooltipContent(title: string, message: string, lastTransitionTime
       <div className="mt-1 text-sm">{message}</div>
       {lastTransitionTime && (
         <div className="mt-1 text-xs opacity-60">
-          Last transition: <DateFormatter date={lastTransitionTime} withTime />
+          Last transition: <DateTime date={lastTransitionTime} tooltip={false} />
         </div>
       )}
     </div>

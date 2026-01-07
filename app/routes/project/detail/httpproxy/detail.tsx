@@ -1,7 +1,7 @@
 import type { Route } from './+types/detail';
 import { BadgeCondition, BadgeState } from '@/components/badge';
 import { ButtonCopy } from '@/components/button';
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { authenticator } from '@/modules/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
@@ -125,7 +125,7 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <Text>
-                    <DateFormatter date={data?.metadata?.creationTimestamp} withTime />
+                    <DateTime date={data?.metadata?.creationTimestamp} variant="both" />
                   </Text>
                 </TableCell>
               </TableRow>

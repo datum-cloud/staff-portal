@@ -1,7 +1,7 @@
 import { getProjectDetailMetadata, useProjectDetailData } from '../../shared';
 import type { Route } from './+types/index';
 import { BadgeProgrammingError } from '@/components/badge';
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { DnsHostChips } from '@/features/dns';
 import { projectDnsListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
@@ -75,7 +75,7 @@ export default function Page() {
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       header: () => <Trans>Created</Trans>,
-      cell: ({ getValue }) => <DateFormatter date={getValue()} withTime />,
+      cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
     columnHelper.accessor((row) => row.metadata?.annotations?.['kubernetes.io/description'], {
       id: 'description',

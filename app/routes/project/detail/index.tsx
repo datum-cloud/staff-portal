@@ -1,7 +1,7 @@
 import { getProjectDetailMetadata, useProjectDetailData } from '../shared';
 import type { Route } from './+types/index';
 import { DangerZoneCard } from '@/components/danger-zone-card';
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { Card, CardContent } from '@/modules/shadcn/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
 import { projectDeleteMutation } from '@/resources/request/client';
@@ -76,7 +76,7 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <Text>
-                    <DateFormatter date={project?.metadata?.creationTimestamp} withTime />
+                    <DateTime date={project?.metadata?.creationTimestamp} variant="both" />
                   </Text>
                 </TableCell>
               </TableRow>

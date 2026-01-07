@@ -1,5 +1,5 @@
 import type { Route } from './+types/session';
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
 import {
   DataTable,
@@ -49,14 +49,14 @@ const columns = [
     header: () => <Trans>Created</Trans>,
     cell: ({ getValue }) => {
       if (!getValue()) return <Text textColor="muted">—</Text>;
-      return <DateFormatter date={getValue()} withTime />;
+      return <DateTime date={getValue()} />;
     },
   }),
   columnHelper.accessor('status.expiresAt', {
     header: () => <Trans>Expires</Trans>,
     cell: ({ getValue }) => {
       if (!getValue()) return <Text textColor="muted">—</Text>;
-      return <DateFormatter date={getValue() ?? ''} withTime />;
+      return <DateTime date={getValue() ?? ''} />;
     },
   }),
 ];

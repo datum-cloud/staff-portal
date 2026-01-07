@@ -1,5 +1,5 @@
 import { BadgeCondition } from '@/components/badge';
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
 import {
   ActionItem,
@@ -80,7 +80,7 @@ const columns = [
   columnHelper.accessor('metadata.creationTimestamp', {
     header: () => <Trans>Created</Trans>,
     cell: ({ getValue }) => {
-      return <DateFormatter date={getValue()} withTime />;
+      return <DateTime date={getValue()} />;
     },
   }),
 ];

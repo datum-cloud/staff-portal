@@ -1,6 +1,6 @@
 import type { Route } from './+types/organization';
 import { BadgeState } from '@/components/badge';
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
 import { userOrgListQuery } from '@/resources/request/client';
 import { getUserDetailMetadata, useUserDetailData } from '@/routes/user/shared';
@@ -44,7 +44,7 @@ const columns = [
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
     header: () => <Trans>Joined</Trans>,
-    cell: ({ getValue }) => <DateFormatter date={getValue()} withTime />,
+    cell: ({ getValue }) => <DateTime date={getValue()} />,
   }),
 ];
 

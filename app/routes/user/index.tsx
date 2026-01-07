@@ -1,7 +1,7 @@
 import type { Route } from './+types/index';
 import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
 import { DisplayId, DisplayName } from '@/components/display';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
@@ -65,7 +65,7 @@ const columns = [
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
     header: () => <Trans>Created</Trans>,
-    cell: ({ getValue }) => <DateFormatter date={getValue()} withTime />,
+    cell: ({ getValue }) => <DateTime date={getValue()} />,
   }),
 ];
 

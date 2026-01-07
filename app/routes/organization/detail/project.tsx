@@ -1,6 +1,6 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../shared';
 import type { Route } from './+types/index';
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
 import { orgProjectListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
@@ -49,7 +49,7 @@ const columns = [
   columnHelper.accessor('metadata.creationTimestamp', {
     header: () => <Trans>Created</Trans>,
     cell: ({ getValue }) => {
-      return <DateFormatter date={getValue()} withTime />;
+      return <DateTime date={getValue()} />;
     },
   }),
 ];

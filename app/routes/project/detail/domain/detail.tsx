@@ -1,5 +1,5 @@
 import type { Route } from './+types/detail';
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { DisplayText } from '@/components/display';
 import { DomainDnsProviders, DomainExpiration, DomainStatusProbe } from '@/features/domain';
 import { authenticator } from '@/modules/auth';
@@ -131,7 +131,7 @@ export default function Page() {
                 </TableCell>
                 <TableCell>
                   <Text>
-                    <DateFormatter date={data?.metadata?.creationTimestamp} withTime />
+                    <DateTime date={data?.metadata?.creationTimestamp} variant="both" />
                   </Text>
                 </TableCell>
               </TableRow>

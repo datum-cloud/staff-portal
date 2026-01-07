@@ -1,6 +1,6 @@
 import { getProjectDetailMetadata, useProjectDetailData } from '../../shared';
 import type { Route } from './+types/index';
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { DomainDnsProviders, DomainExpiration, DomainStatusProbe } from '@/features/domain';
 import { projectDomainListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
@@ -68,7 +68,7 @@ export default function Page() {
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       header: () => <Trans>Created</Trans>,
-      cell: ({ getValue }) => <DateFormatter date={getValue()} withTime />,
+      cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
   ];
 

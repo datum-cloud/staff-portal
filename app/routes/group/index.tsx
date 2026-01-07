@@ -1,5 +1,5 @@
 import type { Route } from './+types/index';
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
 import { groupListQuery } from '@/resources/request/client/group.request';
 import { metaObject } from '@/utils/helpers';
@@ -41,7 +41,7 @@ const columns = [
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
     header: () => <Trans>Created</Trans>,
-    cell: ({ getValue }) => <DateFormatter date={getValue()} withTime />,
+    cell: ({ getValue }) => <DateTime date={getValue()} />,
   }),
 ];
 

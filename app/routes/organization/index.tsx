@@ -1,6 +1,6 @@
 import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
-import { DateFormatter } from '@/components/date';
+import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
 import { orgListQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
@@ -46,7 +46,7 @@ const columns = [
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
     header: () => <Trans>Created</Trans>,
-    cell: ({ getValue }) => <DateFormatter date={getValue()} withTime />,
+    cell: ({ getValue }) => <DateTime date={getValue()} />,
   }),
 ];
 
