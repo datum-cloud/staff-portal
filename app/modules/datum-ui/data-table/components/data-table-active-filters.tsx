@@ -286,7 +286,7 @@ export function DataTableActiveFilters({
         </div>
       ))}
       {/* Trash icon to clear all filters - only show if more than 2 filter groups */}
-      {filterGroupCount > 2 && (
+      {filterGroupCount > 1 && (
         <Tooltip message="Clear all filters">
           <button
             type="button"

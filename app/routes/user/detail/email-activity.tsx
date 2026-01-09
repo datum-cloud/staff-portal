@@ -1,6 +1,7 @@
 import type { Route } from './+types/email-activity';
 import { EmailList } from '@/features/email';
-import { emailListQuery } from '@/resources/request/client';
+import { userEmailListQuery } from '@/resources/request/client';
+import { useUserDetailData } from '@/routes/user/shared';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 
@@ -13,5 +14,12 @@ export const handle = {
 };
 
 export default function Page() {
-  return <EmailList queryKeyPrefix="emails" fetchFn={() => emailListQuery('milo-system', {})} />;
+  const data = useUserDetailData();
+
+  return (
+    <EmailList
+      queryKeyPrefix={['users', data.metadata?.name ?? '', 'email-activity']}
+      fetchFn={() => userEmailListQuery(data.metadata?.name ?? '', data.spec?.email ?? '')}
+    />
+  );
 }

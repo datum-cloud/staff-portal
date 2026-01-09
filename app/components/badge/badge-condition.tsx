@@ -71,6 +71,7 @@ type Props = {
   showReason?: boolean;
   showMessage?: boolean;
   className?: string;
+  customLabel?: string;
 };
 
 // Transform function for control plane status
@@ -115,12 +116,14 @@ const BadgeCondition = ({
   showReason = false,
   showMessage = false,
   className,
+  customLabel,
 }: Props) => {
   // Control plane mode (single badge)
   if (!multiple && status !== undefined) {
     const { status: controlStatus, message } = getControlPlaneStatus(status);
     const config = StatusConfig[controlStatus];
     const IconComponent = config.icon;
+    const displayLabel = customLabel || config.label;
 
     const badgeContent = (
       <Badge
@@ -131,13 +134,13 @@ const BadgeCondition = ({
           className
         )}>
         <IconComponent className="h-3 w-3" />
-        {config.label}
+        {displayLabel}
       </Badge>
     );
 
     if (showMessage && message) {
       const tooltipContent = createTooltipContent(
-        config.label,
+        displayLabel,
         message,
         status?.conditions?.[0]?.lastTransitionTime
       );
@@ -158,6 +161,7 @@ const BadgeCondition = ({
   const config =
     StatusConfig[condition.status as keyof typeof StatusConfig] || StatusConfig.Unknown;
   const IconComponent = config.icon;
+  const displayLabel = customLabel || condition.type;
 
   const badgeContent = (
     <Badge
@@ -168,7 +172,7 @@ const BadgeCondition = ({
         className
       )}>
       <IconComponent className="h-3 w-3" />
-      {condition.type}
+      {displayLabel}
       {showReason && condition.reason && (
         <span className="ml-1 text-xs opacity-75">({condition.reason})</span>
       )}
@@ -177,7 +181,7 @@ const BadgeCondition = ({
 
   if (showMessage && condition.message) {
     const tooltipContent = createTooltipContent(
-      condition.type,
+      displayLabel,
       condition.message,
       condition.lastTransitionTime
     );

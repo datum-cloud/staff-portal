@@ -16,6 +16,7 @@ export default [
           index('routes/user/detail/index.tsx'),
           route('organizations', 'routes/user/detail/organization.tsx'),
           route('activity', 'routes/user/detail/activity.tsx'),
+          route('email-activity', 'routes/user/detail/email-activity.tsx'),
         ]),
       ]),
 

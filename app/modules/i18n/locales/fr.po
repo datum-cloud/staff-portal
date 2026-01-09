@@ -59,7 +59,7 @@ msgid "Active Sessions"
 msgstr ""
 
 #: app/routes/activity.tsx:11
-#: app/routes/user/detail/layout.tsx:42
+#: app/routes/user/detail/layout.tsx:47
 #: app/routes/user/detail/activity.tsx:8
 #: app/routes/project/detail/layout.tsx:107
 #: app/routes/project/detail/activity.tsx:8
@@ -273,7 +273,6 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
-#: app/routes/email-activity.tsx:40
 #: app/routes/user/index.tsx:67
 #: app/routes/user/detail/index.tsx:254
 #: app/routes/project/index.tsx:51
@@ -295,6 +294,7 @@ msgstr ""
 #: app/routes/contact/index.tsx:70
 #: app/features/quota/components/quota-grant-list.tsx:81
 #: app/features/quota/components/quota-bucket-list.tsx:84
+#: app/features/email/components/email-list.tsx:118
 msgid "Created"
 msgstr ""
 
@@ -402,6 +402,12 @@ msgstr ""
 msgid "Delete User"
 msgstr ""
 
+#: app/features/email/components/email-list.tsx:74
+#: app/features/email/components/email-list.tsx:185
+#: app/features/email/components/email-list.tsx:215
+msgid "Delivered"
+msgstr ""
+
 #: app/routes/project/detail/index.tsx:42
 #: app/routes/project/detail/dns/index.tsx:82
 #: app/routes/organization/detail/index.tsx:43
@@ -469,7 +475,9 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: app/routes/email-activity.tsx:19
+#: app/routes/email-activity.tsx:12
+#: app/routes/user/detail/layout.tsx:42
+#: app/routes/user/detail/email-activity.tsx:13
 #: app/components/app-sidebar/index.tsx:139
 msgid "Email Activity"
 msgstr ""
@@ -519,6 +527,12 @@ msgstr ""
 msgid "Export Policies"
 msgstr ""
 
+#: app/features/email/components/email-list.tsx:75
+#: app/features/email/components/email-list.tsx:186
+#: app/features/email/components/email-list.tsx:216
+msgid "Failed"
+msgstr ""
+
 #: app/features/dns/components/dns-record-status-probe.tsx:33
 msgid "Failed to load DNS record status"
 msgstr ""
@@ -541,6 +555,14 @@ msgstr ""
 
 #: app/routes/user/index.tsx:261
 msgid "Filter by approval"
+msgstr ""
+
+#: app/features/email/components/email-list.tsx:173
+msgid "Filter by priority"
+msgstr ""
+
+#: app/features/email/components/email-list.tsx:183
+msgid "Filter by status"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:302
@@ -592,6 +614,11 @@ msgstr ""
 #: app/components/app-sidebar/index.tsx:127
 #: app/components/app-sidebar/index.tsx:133
 msgid "Groups"
+msgstr ""
+
+#: app/features/email/components/email-list.tsx:176
+#: app/features/email/components/email-list.tsx:206
+msgid "High"
 msgstr ""
 
 #: app/routes/project/detail/httpproxy/detail.tsx:140
@@ -690,6 +717,11 @@ msgstr ""
 msgid "Log out"
 msgstr ""
 
+#: app/features/email/components/email-list.tsx:177
+#: app/features/email/components/email-list.tsx:207
+msgid "Low"
+msgstr ""
+
 #: app/features/contact/components/contact-form.tsx:147
 msgid "Mail Lists"
 msgstr ""
@@ -737,7 +769,6 @@ msgstr ""
 msgid "My Profile"
 msgstr ""
 
-#: app/routes/email-activity.tsx:25
 #: app/routes/user/index.tsx:43
 #: app/routes/user/detail/organization.tsx:28
 #: app/routes/project/index.tsx:30
@@ -793,6 +824,11 @@ msgstr ""
 msgid "No users yet"
 msgstr ""
 
+#: app/features/email/components/email-list.tsx:175
+#: app/features/email/components/email-list.tsx:205
+msgid "Normal"
+msgstr ""
+
 #: app/components/app-sidebar/nav-user.tsx:89
 msgid "Notifications"
 msgstr ""
@@ -838,6 +874,9 @@ msgstr ""
 
 #: app/routes/user/index.tsx:265
 #: app/routes/user/index.tsx:284
+#: app/features/email/components/email-list.tsx:76
+#: app/features/email/components/email-list.tsx:187
+#: app/features/email/components/email-list.tsx:217
 msgid "Pending"
 msgstr ""
 
@@ -883,6 +922,12 @@ msgstr ""
 msgid "Portal Preferences"
 msgstr ""
 
+#: app/features/email/components/email-list.tsx:93
+#: app/features/email/components/email-list.tsx:172
+#: app/features/email/components/email-list.tsx:199
+msgid "Priority"
+msgstr ""
+
 #: app/routes/project/detail/dns/detail.tsx:129
 msgid "Priority of mail servers defined by MX records. Lowest value = highest priority."
 msgstr ""
@@ -910,6 +955,10 @@ msgstr ""
 #: app/routes/organization/detail/layout.tsx:37
 #: app/components/app-sidebar/index.tsx:111
 msgid "Projects"
+msgstr ""
+
+#: app/features/email/components/email-list.tsx:105
+msgid "Provider ID"
 msgstr ""
 
 #: app/features/contact-group/components/contact-group-form.tsx:59
@@ -953,6 +1002,10 @@ msgstr ""
 
 #: app/features/user/components/user-reject-dialog.tsx:42
 msgid "Reason for rejection"
+msgstr ""
+
+#: app/features/email/components/email-list.tsx:61
+msgid "Recipient"
 msgstr ""
 
 #: app/routes/project/detail/dns/index.tsx:73
@@ -1034,6 +1087,10 @@ msgstr ""
 
 #: app/routes/contact/index.tsx:148
 msgid "Search contacts..."
+msgstr ""
+
+#: app/features/email/components/email-list.tsx:169
+msgid "Search email activity..."
 msgstr ""
 
 #: app/routes/group/index.tsx:66
@@ -1122,7 +1179,6 @@ msgstr ""
 msgid "Start Time"
 msgstr ""
 
-#: app/routes/email-activity.tsx:34
 #: app/routes/user/index.tsx:59
 #: app/routes/user/detail/index.tsx:242
 #: app/routes/project/detail/httpproxy/index.tsx:53
@@ -1135,6 +1191,9 @@ msgstr ""
 #: app/routes/contact-group/index.tsx:58
 #: app/routes/contact/index.tsx:64
 #: app/features/quota/components/quota-grant-list.tsx:75
+#: app/features/email/components/email-list.tsx:68
+#: app/features/email/components/email-list.tsx:182
+#: app/features/email/components/email-list.tsx:200
 #: app/features/activity/components/activity-list.tsx:109
 msgid "Status"
 msgstr ""
@@ -1145,6 +1204,10 @@ msgstr ""
 
 #: app/components/theme-switcher/index.tsx:47
 msgid "System"
+msgstr ""
+
+#: app/features/email/components/email-list.tsx:45
+msgid "Template"
 msgstr ""
 
 #: app/routes/user/detail/index.tsx:351

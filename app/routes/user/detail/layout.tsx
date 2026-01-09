@@ -5,7 +5,7 @@ import { userDetailQuery } from '@/resources/request/server';
 import { userRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
-import { Building2, FileText, SquareActivity } from 'lucide-react';
+import { Building2, FileText, MailSearch, SquareActivity } from 'lucide-react';
 import { Outlet, useLoaderData } from 'react-router';
 
 export const handle = {
@@ -37,6 +37,11 @@ export default function Layout() {
       title: t`Organizations`,
       href: userRoutes.organization(data.metadata?.name ?? ''),
       icon: Building2,
+    },
+    {
+      title: t`Email Activity`,
+      href: userRoutes.emailActivity(data.metadata?.name ?? ''),
+      icon: MailSearch,
     },
     {
       title: t`Activity`,
