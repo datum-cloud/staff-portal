@@ -16,6 +16,7 @@ import {
   listIamMiloapisComV1Alpha1UserDeactivation,
   patchIamMiloapisComV1Alpha1User,
 } from '@openapi/iam.miloapis.com/v1alpha1';
+import { listNotificationMiloapisComV1Alpha1EmailForAllNamespaces } from '@openapi/notification.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
 
 export const userListQuery = async (params?: ListQueryParams) => {
@@ -167,6 +168,33 @@ export const userReactivateMutation = async (userId: string) => {
   return deleteIamMiloapisComV1Alpha1UserDeactivation({
     path: { name: userId },
   });
+};
+
+export const userEmailListQuery = async (
+  userId: string,
+  userEmail: string,
+  params?: ListQueryParams
+) => {
+  const listByEmail = await listNotificationMiloapisComV1Alpha1EmailForAllNamespaces({
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
+      fieldSelector: `spec.recipient.emailAddress=${userEmail}`,
+    },
+  });
+
+  const listByUser = await listNotificationMiloapisComV1Alpha1EmailForAllNamespaces({
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
+      fieldSelector: `spec.recipient.userRef.name=${userId}`,
+    },
+  });
+
+  return {
+    ...listByEmail.data.data,
+    items: [...(listByEmail.data.data?.items ?? []), ...(listByUser.data.data?.items ?? [])],
+  };
 };
 
 export const useUserDeactivationQuery = (userId: string, state?: string) => {

@@ -59,7 +59,7 @@ msgid "Active Sessions"
 msgstr "Active Sessions"
 
 #: app/routes/activity.tsx:11
-#: app/routes/user/detail/layout.tsx:42
+#: app/routes/user/detail/layout.tsx:47
 #: app/routes/user/detail/activity.tsx:8
 #: app/routes/project/detail/layout.tsx:107
 #: app/routes/project/detail/activity.tsx:8
@@ -273,7 +273,6 @@ msgstr "Content"
 msgid "Create"
 msgstr "Create"
 
-#: app/routes/email-activity.tsx:40
 #: app/routes/user/index.tsx:67
 #: app/routes/user/detail/index.tsx:254
 #: app/routes/project/index.tsx:51
@@ -295,6 +294,7 @@ msgstr "Create"
 #: app/routes/contact/index.tsx:70
 #: app/features/quota/components/quota-grant-list.tsx:81
 #: app/features/quota/components/quota-bucket-list.tsx:84
+#: app/features/email/components/email-list.tsx:118
 msgid "Created"
 msgstr "Created"
 
@@ -402,6 +402,12 @@ msgstr "Delete Session"
 msgid "Delete User"
 msgstr "Delete User"
 
+#: app/features/email/components/email-list.tsx:74
+#: app/features/email/components/email-list.tsx:185
+#: app/features/email/components/email-list.tsx:215
+msgid "Delivered"
+msgstr "Delivered"
+
 #: app/routes/project/detail/index.tsx:42
 #: app/routes/project/detail/dns/index.tsx:82
 #: app/routes/organization/detail/index.tsx:43
@@ -469,7 +475,9 @@ msgstr "Edit Quota"
 msgid "Email"
 msgstr "Email"
 
-#: app/routes/email-activity.tsx:19
+#: app/routes/email-activity.tsx:12
+#: app/routes/user/detail/layout.tsx:42
+#: app/routes/user/detail/email-activity.tsx:13
 #: app/components/app-sidebar/index.tsx:139
 msgid "Email Activity"
 msgstr "Email Activity"
@@ -519,6 +527,12 @@ msgstr "Expires"
 msgid "Export Policies"
 msgstr "Export Policies"
 
+#: app/features/email/components/email-list.tsx:75
+#: app/features/email/components/email-list.tsx:186
+#: app/features/email/components/email-list.tsx:216
+msgid "Failed"
+msgstr "Failed"
+
 #: app/features/dns/components/dns-record-status-probe.tsx:33
 msgid "Failed to load DNS record status"
 msgstr "Failed to load DNS record status"
@@ -542,6 +556,14 @@ msgstr "Filter by action"
 #: app/routes/user/index.tsx:261
 msgid "Filter by approval"
 msgstr "Filter by approval"
+
+#: app/features/email/components/email-list.tsx:173
+msgid "Filter by priority"
+msgstr "Filter by priority"
+
+#: app/features/email/components/email-list.tsx:183
+msgid "Filter by status"
+msgstr "Filter by status"
 
 #: app/features/activity/components/activity-list.tsx:302
 msgid "Filter by time range"
@@ -593,6 +615,11 @@ msgstr "Grants"
 #: app/components/app-sidebar/index.tsx:133
 msgid "Groups"
 msgstr "Groups"
+
+#: app/features/email/components/email-list.tsx:176
+#: app/features/email/components/email-list.tsx:206
+msgid "High"
+msgstr "High"
 
 #: app/routes/project/detail/httpproxy/detail.tsx:140
 msgid "Hostnames"
@@ -690,6 +717,11 @@ msgstr "Loading..."
 msgid "Log out"
 msgstr "Log out"
 
+#: app/features/email/components/email-list.tsx:177
+#: app/features/email/components/email-list.tsx:207
+msgid "Low"
+msgstr "Low"
+
 #: app/features/contact/components/contact-form.tsx:147
 msgid "Mail Lists"
 msgstr "Mail Lists"
@@ -737,7 +769,6 @@ msgstr "Move to Pending"
 msgid "My Profile"
 msgstr "My Profile"
 
-#: app/routes/email-activity.tsx:25
 #: app/routes/user/index.tsx:43
 #: app/routes/user/detail/organization.tsx:28
 #: app/routes/project/index.tsx:30
@@ -793,6 +824,11 @@ msgstr "No results found."
 msgid "No users yet"
 msgstr "No users yet"
 
+#: app/features/email/components/email-list.tsx:175
+#: app/features/email/components/email-list.tsx:205
+msgid "Normal"
+msgstr "Normal"
+
 #: app/components/app-sidebar/nav-user.tsx:89
 msgid "Notifications"
 msgstr "Notifications"
@@ -838,6 +874,9 @@ msgstr "Patch"
 
 #: app/routes/user/index.tsx:265
 #: app/routes/user/index.tsx:284
+#: app/features/email/components/email-list.tsx:76
+#: app/features/email/components/email-list.tsx:187
+#: app/features/email/components/email-list.tsx:217
 msgid "Pending"
 msgstr "Pending"
 
@@ -883,6 +922,12 @@ msgstr "Please wait {remainingMinutes} more minute{0} before resending this invi
 msgid "Portal Preferences"
 msgstr "Portal Preferences"
 
+#: app/features/email/components/email-list.tsx:93
+#: app/features/email/components/email-list.tsx:172
+#: app/features/email/components/email-list.tsx:199
+msgid "Priority"
+msgstr "Priority"
+
 #: app/routes/project/detail/dns/detail.tsx:129
 msgid "Priority of mail servers defined by MX records. Lowest value = highest priority."
 msgstr "Priority of mail servers defined by MX records. Lowest value = highest priority."
@@ -911,6 +956,10 @@ msgstr "Project deleted successfully"
 #: app/components/app-sidebar/index.tsx:111
 msgid "Projects"
 msgstr "Projects"
+
+#: app/features/email/components/email-list.tsx:105
+msgid "Provider ID"
+msgstr "Provider ID"
 
 #: app/features/contact-group/components/contact-group-form.tsx:59
 msgid "Public"
@@ -954,6 +1003,10 @@ msgstr "Reason for deactivation"
 #: app/features/user/components/user-reject-dialog.tsx:42
 msgid "Reason for rejection"
 msgstr "Reason for rejection"
+
+#: app/features/email/components/email-list.tsx:61
+msgid "Recipient"
+msgstr "Recipient"
 
 #: app/routes/project/detail/dns/index.tsx:73
 msgid "Records"
@@ -1035,6 +1088,10 @@ msgstr "Search contact groups..."
 #: app/routes/contact/index.tsx:148
 msgid "Search contacts..."
 msgstr "Search contacts..."
+
+#: app/features/email/components/email-list.tsx:169
+msgid "Search email activity..."
+msgstr "Search email activity..."
 
 #: app/routes/group/index.tsx:66
 msgid "Search groups..."
@@ -1122,7 +1179,6 @@ msgstr "Standard"
 msgid "Start Time"
 msgstr "Start Time"
 
-#: app/routes/email-activity.tsx:34
 #: app/routes/user/index.tsx:59
 #: app/routes/user/detail/index.tsx:242
 #: app/routes/project/detail/httpproxy/index.tsx:53
@@ -1135,6 +1191,9 @@ msgstr "Start Time"
 #: app/routes/contact-group/index.tsx:58
 #: app/routes/contact/index.tsx:64
 #: app/features/quota/components/quota-grant-list.tsx:75
+#: app/features/email/components/email-list.tsx:68
+#: app/features/email/components/email-list.tsx:182
+#: app/features/email/components/email-list.tsx:200
 #: app/features/activity/components/activity-list.tsx:109
 msgid "Status"
 msgstr "Status"
@@ -1146,6 +1205,10 @@ msgstr "Subject is required when user association is enabled"
 #: app/components/theme-switcher/index.tsx:47
 msgid "System"
 msgstr "System"
+
+#: app/features/email/components/email-list.tsx:45
+msgid "Template"
+msgstr "Template"
 
 #: app/routes/user/detail/index.tsx:351
 msgid "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
