@@ -45,6 +45,20 @@ const columns = [
       return value ? <Text>{value}</Text> : <Text textColor="muted">—</Text>;
     },
   }),
+  columnHelper.display({
+    id: 'providerId',
+    header: () => <Trans>Fingerprint ID</Trans>,
+    cell: ({ row }) => {
+      const fingerprintId = row.original.status?.fingerprintID;
+      return fingerprintId ? (
+        <Text size="sm" textColor="muted">
+          {fingerprintId}
+        </Text>
+      ) : (
+        <Text textColor="muted">-</Text>
+      );
+    },
+  }),
   columnHelper.accessor('status.createdAt', {
     header: () => <Trans>Created</Trans>,
     cell: ({ getValue }) => {
