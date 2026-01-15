@@ -1285,6 +1285,11 @@ export type ComMiloapisIamV1Alpha1User = {
    */
   status?: {
     /**
+     * AvatarURL points to the avatar image associated with the user. This value is
+     * populated by the auth provider or any service that provides a user avatar URL.
+     */
+    avatarUrl?: string;
+    /**
      * Conditions provide conditions that represent the current status of the User.
      */
     conditions?: Array<{
@@ -1321,6 +1326,12 @@ export type ComMiloapisIamV1Alpha1User = {
        */
       type: string;
     }>;
+    /**
+     * LastLoginProvider records the identity provider that was most recently used by the
+     * user to log in (e.g., "github" or "google"). This field is set by the auth provider
+     * based on authentication events.
+     */
+    lastLoginProvider?: ('github' | 'google') & ('github' | 'google');
     /**
      * RegistrationApproval represents the administrator’s decision on the user’s registration request.
      * States:

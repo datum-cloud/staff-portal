@@ -141,7 +141,7 @@ msgid "Are you sure you want to delete project \"{0} ({1})\"? This action cannot
 msgstr "Are you sure you want to delete project \"{0} ({1})\"? This action cannot be undone."
 
 #. placeholder {0}: selectedSession?.metadata?.name ?? ''
-#: app/routes/profile/session.tsx:91
+#: app/routes/profile/session.tsx:98
 msgid "Are you sure you want to delete session \"{0}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete session \"{0}\"? This action cannot be undone."
 
@@ -169,7 +169,7 @@ msgstr "Auto-managed by policy \"{policyName}\". Cannot be deleted."
 
 #: app/routes/user/index.tsx:171
 #: app/routes/user/detail/index.tsx:107
-#: app/routes/profile/session.tsx:93
+#: app/routes/profile/session.tsx:100
 #: app/routes/organization/detail/member.tsx:122
 #: app/routes/group/member.tsx:140
 #: app/routes/group/member.tsx:157
@@ -284,7 +284,7 @@ msgstr "Create"
 #: app/routes/project/detail/domain/index.tsx:70
 #: app/routes/project/detail/domain/detail.tsx:129
 #: app/routes/project/detail/dns/index.tsx:77
-#: app/routes/profile/session.tsx:49
+#: app/routes/profile/session.tsx:56
 #: app/routes/organization/index.tsx:48
 #: app/routes/organization/detail/project.tsx:50
 #: app/routes/organization/detail/index.tsx:73
@@ -343,8 +343,8 @@ msgstr "Deactivation Details"
 msgid "Deactivation Reason:"
 msgstr "Deactivation Reason:"
 
-#: app/routes/profile/session.tsx:78
-#: app/routes/profile/session.tsx:92
+#: app/routes/profile/session.tsx:85
+#: app/routes/profile/session.tsx:99
 #: app/routes/group/member.tsx:139
 #: app/routes/contact-group/index.tsx:110
 #: app/routes/contact-group/detail/member.tsx:122
@@ -393,7 +393,7 @@ msgstr "Delete Organization"
 msgid "Delete Project"
 msgstr "Delete Project"
 
-#: app/routes/profile/session.tsx:90
+#: app/routes/profile/session.tsx:97
 msgid "Delete Session"
 msgstr "Delete Session"
 
@@ -518,7 +518,7 @@ msgstr "Enter the word <0>{confirmationText}</0> to perform this action."
 msgid "Expiration Date"
 msgstr "Expiration Date"
 
-#: app/routes/profile/session.tsx:56
+#: app/routes/profile/session.tsx:63
 msgid "Expires"
 msgstr "Expires"
 
@@ -572,6 +572,10 @@ msgstr "Filter by time range"
 #: app/routes/organization/index.tsx:87
 msgid "Filter by type"
 msgstr "Filter by type"
+
+#: app/routes/profile/session.tsx:49
+msgid "Fingerprint ID"
+msgstr "Fingerprint ID"
 
 #: app/routes/user/index.tsx:206
 #: app/features/contact/components/contact-form.tsx:120
@@ -1141,7 +1145,7 @@ msgstr "Select visibility..."
 msgid "Selected Filters"
 msgstr "Selected Filters"
 
-#: app/routes/profile/session.tsx:105
+#: app/routes/profile/session.tsx:112
 msgid "Session deleted successfully"
 msgstr "Session deleted successfully"
 

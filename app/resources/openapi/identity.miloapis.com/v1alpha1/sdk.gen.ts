@@ -11,9 +11,15 @@ import type {
   ListIdentityMiloapisComV1Alpha1SessionData,
   ListIdentityMiloapisComV1Alpha1SessionErrors,
   ListIdentityMiloapisComV1Alpha1SessionResponses,
+  ListIdentityMiloapisComV1Alpha1UserIdentityData,
+  ListIdentityMiloapisComV1Alpha1UserIdentityErrors,
+  ListIdentityMiloapisComV1Alpha1UserIdentityResponses,
   ReadIdentityMiloapisComV1Alpha1SessionData,
   ReadIdentityMiloapisComV1Alpha1SessionErrors,
   ReadIdentityMiloapisComV1Alpha1SessionResponses,
+  ReadIdentityMiloapisComV1Alpha1UserIdentityData,
+  ReadIdentityMiloapisComV1Alpha1UserIdentityErrors,
+  ReadIdentityMiloapisComV1Alpha1UserIdentityResponses,
 } from './types.gen';
 
 export type Options<
@@ -98,5 +104,37 @@ export const readIdentityMiloapisComV1Alpha1Session = <ThrowOnError extends bool
   >({
     responseType: 'json',
     url: '/apis/identity.miloapis.com/v1alpha1/sessions/{name}',
+    ...options,
+  });
+
+/**
+ * list objects of kind UserIdentity
+ */
+export const listIdentityMiloapisComV1Alpha1UserIdentity = <ThrowOnError extends boolean = true>(
+  options?: Options<ListIdentityMiloapisComV1Alpha1UserIdentityData, ThrowOnError>
+) =>
+  (options?.client ?? client).get<
+    ListIdentityMiloapisComV1Alpha1UserIdentityResponses,
+    ListIdentityMiloapisComV1Alpha1UserIdentityErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/identity.miloapis.com/v1alpha1/useridentities',
+    ...options,
+  });
+
+/**
+ * read the specified UserIdentity
+ */
+export const readIdentityMiloapisComV1Alpha1UserIdentity = <ThrowOnError extends boolean = true>(
+  options: Options<ReadIdentityMiloapisComV1Alpha1UserIdentityData, ThrowOnError>
+) =>
+  (options.client ?? client).get<
+    ReadIdentityMiloapisComV1Alpha1UserIdentityResponses,
+    ReadIdentityMiloapisComV1Alpha1UserIdentityErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/identity.miloapis.com/v1alpha1/useridentities/{name}',
     ...options,
   });
