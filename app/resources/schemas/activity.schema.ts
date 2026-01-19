@@ -1,5 +1,5 @@
 import { createProxyResponseSchema } from './common.schema';
-import { ActivityLogsResponseSchema } from '@/modules/loki';
+import type { IoK8sApiserverPkgApisAuditV1Event } from '@openapi/activity.miloapis.com/v1alpha1';
 import { z } from 'zod';
 
 // Activity-specific query parameters
@@ -19,7 +19,19 @@ export const ActivityQueryParamsSchema = z.object({
   organization: z.string().optional(),
 });
 
+export const ActivityLogsResponseSchema = z.object({
+  logs: z.array(z.any()), // Using z.any() since we're using OpenAPI types directly
+  query: z.string(),
+  timeRange: z.object({
+    start: z.string(), // ISO date string
+    end: z.string(), // ISO date string
+  }),
+  nextPageToken: z.string().optional(),
+  hasNextPage: z.boolean().optional(),
+});
+
 export const ActivityListResponseSchema = createProxyResponseSchema(ActivityLogsResponseSchema);
 
 export type ActivityListResponse = z.infer<typeof ActivityListResponseSchema>;
 export type ActivityQueryParams = z.infer<typeof ActivityQueryParamsSchema>;
+export type ActivityLogEntry = IoK8sApiserverPkgApisAuditV1Event;
