@@ -37,7 +37,7 @@ describe('RecentUsersWidget', () => {
     });
 
     test('should render users when data is available', async () => {
-      mockActivityListQuery.mockResolvedValue(activityListFixture.withUsers);
+      mockActivityListQuery.mockResolvedValue(activityListFixture.withUsers as any);
 
       render(<RecentUsersWidget />);
 
@@ -61,7 +61,7 @@ describe('RecentUsersWidget', () => {
 
   describe('Failure scenarios', () => {
     test('should handle malformed user data gracefully', async () => {
-      mockActivityListQuery.mockResolvedValue(activityListFixture.malformed);
+      mockActivityListQuery.mockResolvedValue(activityListFixture.malformed as any);
 
       render(<RecentUsersWidget />);
 
@@ -110,6 +110,7 @@ describe('RecentUsersWidget', () => {
           logs: [],
           query: '',
           timeRange: { start: '2025-10-14T04:16:07.000Z', end: '2025-10-21T04:16:08.613Z' },
+          nextPageToken: undefined,
           hasNextPage: false,
         },
         path: '/api/activity',
@@ -128,8 +129,8 @@ describe('RecentUsersWidget', () => {
         data: {
           logs: [
             {
-              timestamp: '2025-10-17T01:56:52.733Z',
-              message: 'User created',
+              auditID: 'test-audit-id',
+              requestURI: '/apis/test',
               level: 'debug',
               raw: JSON.stringify({
                 responseObject: {
@@ -140,10 +141,11 @@ describe('RecentUsersWidget', () => {
                   },
                 },
               }),
-            },
+            } as any,
           ],
           query: '',
           timeRange: { start: '2025-10-14T04:16:07.000Z', end: '2025-10-21T04:16:08.613Z' },
+          nextPageToken: undefined,
           hasNextPage: false,
         },
         path: '/api/activity',
@@ -163,16 +165,16 @@ describe('RecentUsersWidget', () => {
         data: {
           logs: [
             {
-              timestamp: '2025-10-17T01:56:52.733Z',
-              message: 'User created',
+              auditID: 'test-id',
+              requestURI: '/apis/test',
               level: 'debug',
               raw: '',
-              auditId: 'test-id',
               user: { username: 'test', uid: 'test', groups: [] },
-            },
+            } as any,
           ],
           query: '',
           timeRange: { start: '2025-10-14T04:16:07.000Z', end: '2025-10-21T04:16:08.613Z' },
+          nextPageToken: undefined,
           hasNextPage: false,
         },
         path: '/api/activity',
@@ -192,8 +194,8 @@ describe('RecentUsersWidget', () => {
         data: {
           logs: [
             {
-              timestamp: '2025-10-17T01:56:52.733Z',
-              message: 'User created',
+              auditID: 'test-id',
+              requestURI: '/apis/test',
               level: 'debug',
               raw: JSON.stringify({
                 responseObject: {
@@ -203,12 +205,12 @@ describe('RecentUsersWidget', () => {
                   },
                 },
               }),
-              auditId: 'test-id',
               user: { username: 'test', uid: 'test', groups: [] },
-            },
+            } as any,
           ],
           query: '',
           timeRange: { start: '2025-10-14T04:16:07.000Z', end: '2025-10-21T04:16:08.613Z' },
+          nextPageToken: undefined,
           hasNextPage: false,
         },
         path: '/api/activity',
@@ -228,8 +230,8 @@ describe('RecentUsersWidget', () => {
         data: {
           logs: [
             {
-              timestamp: '2025-10-17T01:56:52.733Z',
-              message: 'User created',
+              auditID: 'test-id',
+              requestURI: '/apis/test',
               level: 'debug',
               raw: JSON.stringify({
                 responseObject: {
@@ -240,12 +242,12 @@ describe('RecentUsersWidget', () => {
                   },
                 },
               }),
-              auditId: 'test-id',
               user: { username: 'test', uid: 'test', groups: [] },
-            },
+            } as any,
           ],
           query: '',
           timeRange: { start: '2025-10-14T04:16:07.000Z', end: '2025-10-21T04:16:08.613Z' },
+          nextPageToken: undefined,
           hasNextPage: false,
         },
         path: '/api/activity',

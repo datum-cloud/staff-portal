@@ -129,7 +129,7 @@ export function RecentUsersWidget() {
         ) : recentUsers.length > 0 ? (
           <div className="space-y-2">
             {recentUsers.map((log, index) => (
-              <UserItem key={log.auditId || `user-${index}`} log={log} />
+              <UserItem key={log.auditID || `user-${index}`} log={log} />
             ))}
           </div>
         ) : (
