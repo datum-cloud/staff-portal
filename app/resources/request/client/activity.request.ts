@@ -84,7 +84,6 @@ export const activityListQuery = async (
   resourceId?: string,
   params?: ListQueryParams<ActivityQueryParams>
 ) => {
-  console.log(params);
   const baseURL = getBaseUrl(
     params?.filters?.organization,
     params?.filters?.project || (resourceType === 'project' ? resourceId : undefined)
@@ -119,8 +118,6 @@ export const activityListQuery = async (
       ...(filter && { filter }),
     },
   };
-
-  console.log(auditLogQuery);
 
   // Call the CRD API
   const response = await createActivityMiloapisComV1Alpha1AuditLogQuery({
