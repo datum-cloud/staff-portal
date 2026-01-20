@@ -140,45 +140,18 @@ api.all('/internal/*', authMiddleware(), async (c) => {
   }
 });
 
-// Activity API (get data from telemetry - loki)
+// Activity API - now handled client-side via CRD API
+// This endpoint is kept for backward compatibility but should not be used
 api.get('/activity', authMiddleware(), async (c) => {
   const startTime = performance.now();
   const reqLogger = createRequestLogger(c);
   const reqId = c.get('requestId');
   const requestContext = extractRequestContext(c);
 
-  reqLogger.info('Activity API Request Started', requestContext);
+  reqLogger.info('Activity API Request Started (deprecated)', requestContext);
 
   try {
-    const token = getToken(c);
-
-    const queryParams: QueryParams = {
-      limit: c.req.query('limit') || undefined,
-      start: c.req.query('start') || undefined,
-      end: c.req.query('end') || undefined,
-      pageToken: c.req.query('pageToken') || undefined,
-      project: c.req.query('project') || undefined,
-      organization: c.req.query('organization') || undefined,
-      // Enhanced filtering approach
-      q: c.req.query('q') || undefined,
-      user: c.req.query('user') || undefined,
-      actions: c.req.query('actions') || undefined,
-      status: c.req.query('status') || undefined,
-      // Single resource support
-      resourceType: c.req.query('resourceType') || undefined,
-      resourceId: c.req.query('resourceId') || undefined,
-      // Advanced filtering options
-      responseCode: c.req.query('responseCode') || undefined,
-      apiGroup: c.req.query('apiGroup') || undefined,
-      namespace: c.req.query('namespace') || undefined,
-      sourceIP: c.req.query('sourceIP') || undefined,
-    };
-
-    // TODO: Temporary mock response, because Loki is not working, replace with Activity API later:
-    //   https://github.com/datum-cloud/activity
-    // const service = new LokiActivityLogsService(token);
-    // const response = await service.getActivityLogs(queryParams);
-
+    // Return empty response - activity queries should use client-side CRD API
     const response = {
       logs: [],
       query: '',
@@ -186,13 +159,12 @@ api.get('/activity', authMiddleware(), async (c) => {
         start: '',
         end: '',
       },
-      nextPageToken: false,
+      nextPageToken: undefined,
       hasNextPage: false,
     };
 
     const duration = Math.round(performance.now() - startTime);
 
-    // Log success
     logApiSuccess(reqLogger, {
       path: c.req.path,
       method: c.req.method,
@@ -205,7 +177,6 @@ api.get('/activity', authMiddleware(), async (c) => {
   } catch (error) {
     const duration = Math.round(performance.now() - startTime);
 
-    // Use typed error logging
     await logApiError(reqLogger, error, {
       path: c.req.path,
       method: c.req.method,
@@ -214,7 +185,6 @@ api.get('/activity', authMiddleware(), async (c) => {
       ip: requestContext.ip,
     });
 
-    // Capture server-side API errors to Sentry
     if (error instanceof Error) {
       captureApiError(error, {
         url: c.req.path,

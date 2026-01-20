@@ -1,28 +1,22 @@
-import { BadgeState } from '@/components/badge';
-import { DateTime, DateRangePicker } from '@/components/date';
-import { ActivityLogEntry } from '@/modules/loki';
+import { DateRangePicker, DateTime } from '@/components/date';
+import { Badge } from '@/modules/shadcn/ui/badge';
 import { useApp } from '@/providers/app.provider';
 import { activityListQuery } from '@/resources/request/client';
-import { ActivityListResponse, ActivityQueryParams } from '@/resources/schemas';
+import { ActivityListResponse, ActivityLogEntry, ActivityQueryParams } from '@/resources/schemas';
 import {
   DataTable,
   DataTableActiveFilters,
   DataTableFacetFilter,
   DataTableProvider,
   DataTableSearch,
-  filterConfigs,
   useDataTableQuery,
 } from '@datum-ui/data-table';
-import { Tooltip } from '@datum-ui/tooltip';
-import { Text } from '@datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 import {
   endOfDay,
   endOfMonth,
   endOfWeek,
-  format,
-  formatDistanceToNowStrict,
   fromUnixTime,
   getUnixTime,
   startOfDay,
@@ -33,7 +27,6 @@ import {
   subMinutes,
 } from 'date-fns';
 import { fromZonedTime, toZonedTime } from 'date-fns-tz';
-import { AlertTriangle, CheckCircle, Info, XCircle } from 'lucide-react';
 import { useCallback, useMemo } from 'react';
 
 interface ActivityListProps {
@@ -46,79 +39,138 @@ interface ActivityListProps {
 
 const columnHelper = createColumnHelper<ActivityLogEntry>();
 
-const createColumns = () => [
-  columnHelper.accessor('message', {
-    header: () => <Trans>Message</Trans>,
-    cell: ({ row }) => {
-      const log = row.original;
-      return (
-        <div className="flex gap-2">
-          {/* Icon based on category/status */}
-          <div className="relative top-[4px]">
-            {log.category === 'success' && (
-              <CheckCircle size={14} className="flex-shrink-0 text-green-600" />
-            )}
-            {log.category === 'error' && (
-              <XCircle size={14} className="flex-shrink-0 text-red-600" />
-            )}
-            {log.category === 'warning' && (
-              <AlertTriangle size={14} className="flex-shrink-0 text-amber-600" />
-            )}
-            {log.category === 'info' && <Info size={14} className="flex-shrink-0 text-blue-600" />}
-            {!log.category && <Info size={14} className="flex-shrink-0 text-gray-600" />}
+// Resource labels mapping (simplified from reference)
+const RESOURCE_LABELS: Record<string, string> = {
+  dnszones: 'DNS zone',
+  dnsrecords: 'DNS record',
+  dnsrecordsets: 'DNS record set',
+  httpproxies: 'HTTP proxy',
+  domains: 'Domain',
+  projects: 'Project',
+  users: 'User',
+  groups: 'Group',
+  roles: 'Role',
+  secrets: 'Secret',
+  invitations: 'Invitation',
+  members: 'Member',
+  namespaces: 'Namespace',
+  organizations: 'Organization',
+  dnszonediscoveries: 'DNS zone discovery',
+  exportpolicies: 'Export policy',
+};
+
+// Verb past tense mapping
+const VERB_PAST_TENSE: Record<string, string> = {
+  create: 'Created',
+  update: 'Updated',
+  delete: 'Deleted',
+  patch: 'Modified',
+  list: 'Listed',
+  get: 'Retrieved',
+  watch: 'Watched',
+};
+
+/**
+ * Converts camelCase/PascalCase resource name to title case.
+ * Example: "exportPolicies" -> "Export Policy", "dnsZones" -> "DNS Zone"
+ */
+function formatResourceName(resource: string): string {
+  // Remove trailing 's' for plural
+  const singular = resource.replace(/s$/, '');
+
+  // Split camelCase/PascalCase and capitalize each word
+  const words = singular.replace(/([A-Z])/g, ' $1').split(/[\s-]+/);
+  return words.map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+}
+
+/**
+ * Humanizes an action based on verb and resource.
+ */
+function humanizeAction(verb: string, resource: string): string {
+  const verbText = VERB_PAST_TENSE[verb] || verb.charAt(0).toUpperCase() + verb.slice(1);
+  const resourceText = RESOURCE_LABELS[resource] || formatResourceName(resource);
+
+  const article = /^[aeiou]/i.test(resourceText) ? 'an' : 'a';
+  return `${verbText} ${article} ${resourceText}`;
+}
+
+/**
+ * Formats resource details for display.
+ */
+function formatDetails(resource: string, resourceName: string): string {
+  const label = RESOURCE_LABELS[resource] || resource;
+  if (!resourceName) {
+    return label;
+  }
+  return `${label}: ${resourceName}`;
+}
+
+/**
+ * Gets timestamp from event.
+ */
+function getEventTimestamp(event: ActivityLogEntry): Date {
+  const timestamp =
+    event.requestReceivedTimestamp || event.stageTimestamp || new Date().toISOString();
+  return new Date(timestamp);
+}
+
+/**
+ * Returns column definitions for the Activity Log table.
+ */
+function createColumns(user?: { metadata?: { name?: string } }) {
+  return [
+    columnHelper.display({
+      id: 'user',
+      header: () => <Trans>User</Trans>,
+      cell: ({ row }) => {
+        const event = row.original;
+        const userName = event.user?.username || '-';
+        const userId = event.user?.uid;
+        const isCurrentUser = user?.metadata?.name && userId === user.metadata.name;
+
+        return (
+          <div className="flex items-center justify-between gap-2">
+            <span>{userName}</span>
+            {isCurrentUser && <Badge variant="outline">You</Badge>}
           </div>
-
-          {log.formattedMessage ? (
-            <div
-              className="break-words whitespace-pre-wrap"
-              dangerouslySetInnerHTML={{ __html: log.formattedMessage }}
-            />
-          ) : (
-            <p className="break-words whitespace-pre-wrap">{log.message}</p>
-          )}
-        </div>
-      );
-    },
-  }),
-  columnHelper.display({
-    id: 'sourceIPs',
-    header: () => <Trans>Source IP</Trans>,
-    cell: ({ row }) => {
-      const log = row.original;
-      return (log.sourceIPs ?? []).length > 0 ? (
-        <span>{log.sourceIPs?.join(', ')}</span>
-      ) : (
-        <Text textColor="muted">-</Text>
-      );
-    },
-  }),
-  columnHelper.accessor('verb', {
-    header: () => <Trans>Action</Trans>,
-    cell: ({ getValue }) => <BadgeState state={getValue() || 'info'} />,
-  }),
-  columnHelper.accessor('timestamp', {
-    header: () => <Trans>Timestamp</Trans>,
-    cell: ({ getValue }) => (
-      <Tooltip message={<DateTime date={getValue()} />}>
-        <span>{formatDistanceToNowStrict(new Date(getValue()), { addSuffix: true })}</span>
-      </Tooltip>
-    ),
-  }),
-  columnHelper.display({
-    id: 'status',
-    header: () => <Trans>Status</Trans>,
-    cell: ({ row }) => {
-      const log = row.original;
-      if (!log.statusMessage && !log.category) return null;
-
-      // Use category for styling, statusMessage for display text
-      const state = log.category || 'info';
-      const displayMessage = log.statusMessage || log.category;
-
-      return <BadgeState state={state} message={displayMessage} />;
-    },
-  }),
-];
+        );
+      },
+    }),
+    columnHelper.display({
+      id: 'action',
+      header: () => <Trans>Action</Trans>,
+      size: 180,
+      cell: ({ row }) => {
+        const event = row.original;
+        const verb = event.verb || 'unknown';
+        const resource = event.objectRef?.resource || 'resource';
+        const action = humanizeAction(verb, resource);
+        return <span>{action}</span>;
+      },
+    }),
+    columnHelper.display({
+      id: 'details',
+      header: () => <Trans>Target</Trans>,
+      cell: ({ row }) => {
+        const event = row.original;
+        const resource = event.objectRef?.resource || 'unknown';
+        const resourceName = event.objectRef?.name || '';
+        const details = formatDetails(resource, resourceName);
+        return <span title={resourceName}>{details}</span>;
+      },
+    }),
+    columnHelper.display({
+      id: 'date',
+      header: () => <Trans>Date</Trans>,
+      size: 150,
+      cell: ({ row }) => {
+        const event = row.original;
+        const timestamp = getEventTimestamp(event);
+        return <DateTime date={timestamp} />;
+      },
+    }),
+  ];
+}
 
 // Custom presets limited to 30 days or less
 const ACTIVITY_DATE_PRESETS = [
@@ -204,7 +256,7 @@ export default function ActivityList({
   timeRangePlaceholder,
 }: ActivityListProps) {
   const { t } = useLingui();
-  const { settings } = useApp();
+  const { settings, user } = useApp();
 
   // Helper functions for timezone conversion
   const convertFromApiTimestamp = (timestamp: string) => {
@@ -283,7 +335,7 @@ export default function ActivityList({
 
   return (
     <DataTableProvider<ActivityLogEntry, ActivityListResponse>
-      columns={createColumns()}
+      columns={createColumns(user || undefined)}
       transform={(data) => ({
         rows: data?.data?.logs || [],
         cursor: data?.data?.nextPageToken || '',
