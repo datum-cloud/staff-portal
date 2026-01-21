@@ -693,7 +693,7 @@ msgstr "Irreversible and destructive actions"
 msgid "Joined"
 msgstr "Joined"
 
-#: app/features/dashboard/components/recent-users-widget.tsx:112
+#: app/features/dashboard/components/recent-users-widget.tsx:108
 msgid "Last 10 new users who joined Datum"
 msgstr "Last 10 new users who joined Datum"
 
@@ -857,7 +857,7 @@ msgstr "New Limit"
 msgid "No results found."
 msgstr "No results found."
 
-#: app/features/dashboard/components/recent-users-widget.tsx:63
+#: app/features/dashboard/components/recent-users-widget.tsx:57
 msgid "No users yet"
 msgstr "No users yet"
 
@@ -1354,7 +1354,7 @@ msgstr "User rejected successfully"
 msgid "Users"
 msgstr "Users"
 
-#: app/features/dashboard/components/recent-users-widget.tsx:66
+#: app/features/dashboard/components/recent-users-widget.tsx:60
 msgid "Users will appear here once they join Datum"
 msgstr "Users will appear here once they join Datum"
 
@@ -1378,7 +1378,7 @@ msgstr "Verified"
 msgid "Version"
 msgstr "Version"
 
-#: app/features/dashboard/components/recent-users-widget.tsx:107
+#: app/features/dashboard/components/recent-users-widget.tsx:103
 msgid "View All"
 msgstr "View All"
 

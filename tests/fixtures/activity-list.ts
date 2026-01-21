@@ -65,6 +65,17 @@ export const activityListFixture = {
           responseStatus: {
             code: 201,
           },
+          responseObject: {
+            spec: {
+              email: 'evetere@datum.net',
+              familyName: 'Vetere',
+              givenName: 'Evan',
+            },
+            metadata: {
+              name: '342540775839501844',
+              creationTimestamp: '2025-10-17T01:56:52Z',
+            },
+          },
         },
         {
           timestamp: '2025-10-16T22:17:06.824Z',
@@ -112,6 +123,17 @@ export const activityListFixture = {
           },
           responseStatus: {
             code: 201,
+          },
+          responseObject: {
+            spec: {
+              email: 'smith+staff@datum.net',
+              familyName: 'Smith',
+              givenName: 'Zach',
+            },
+            metadata: {
+              name: '342518653603807268',
+              creationTimestamp: '2025-10-16T22:17:06Z',
+            },
           },
         },
       ],

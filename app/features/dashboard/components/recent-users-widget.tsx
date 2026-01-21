@@ -7,21 +7,15 @@ import { userRoutes } from '@/utils/config/routes.config';
 import { Button } from '@datum-ui/button';
 import { Text, Title } from '@datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
+import { IoK8sApiserverPkgApisAuditV1Event } from '@openapi/activity.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
 import { getUnixTime, subDays } from 'date-fns';
 import { ArrowRight, Users } from 'lucide-react';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
-function UserItem({ log }: { log: any }) {
-  const userData = useMemo(() => {
-    try {
-      const data = JSON.parse(log?.raw || '{}');
-      return data?.responseObject;
-    } catch {
-      return null;
-    }
-  }, [log?.raw]);
+function UserItem({ log }: { log: IoK8sApiserverPkgApisAuditV1Event }) {
+  const userData = log.responseObject as any;
 
   if (!userData?.spec) return null;
 
@@ -86,8 +80,10 @@ export function RecentUsersWidget() {
       }),
   });
 
-  const recentUsers = useMemo(() => userListData?.data?.logs || [], [userListData?.data?.logs]);
-
+  const recentUsers = useMemo(
+    () => (userListData?.data?.logs || []).filter((log) => (log.responseObject as any)?.spec),
+    [userListData?.data?.logs]
+  );
   const handleViewAll = useMemo(() => () => navigate(userRoutes.list()), [navigate]);
 
   return (
