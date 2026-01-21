@@ -40,6 +40,10 @@ msgstr ""
 msgid "# of Sources"
 msgstr ""
 
+#: app/features/user/components/user-identity-card.tsx:27
+msgid "Account Identities"
+msgstr ""
+
 #: app/routes/user/detail/index.tsx:272
 msgid "Account Management"
 msgstr ""
@@ -189,6 +193,10 @@ msgstr ""
 
 #: app/features/quota/components/quota-grant-list.tsx:122
 msgid "Cannot delete inactive grant"
+msgstr ""
+
+#: app/features/user/components/user-identity-card.tsx:76
+msgid "Change your Primary Email in GitHub (your primary email)"
 msgstr ""
 
 #: app/features/preferences/components/preferences-form.tsx:94
@@ -486,6 +494,10 @@ msgstr ""
 msgid "Email Activity"
 msgstr ""
 
+#: app/features/user/components/user-identity-card.tsx:66
+msgid "Email addresses for GitHub identities should be updated through GitHub"
+msgstr ""
+
 #: app/routes/user/index.tsx:141
 msgid "Email is required"
 msgstr ""
@@ -633,6 +645,10 @@ msgstr ""
 msgid "Hostnames"
 msgstr ""
 
+#: app/features/user/components/user-identity-card.tsx:98
+msgid "How to update your GitHub email"
+msgstr ""
+
 #: app/routes/project/detail/layout.tsx:97
 #: app/routes/project/detail/httpproxy/layout.tsx:5
 msgid "HTTP Proxies"
@@ -721,8 +737,24 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
+#: app/features/user/components/user-identity-card.tsx:90
+msgid "Log back into Datum"
+msgstr ""
+
+#: app/features/user/components/user-identity-card.tsx:84
+msgid "Log back into GitHub (with the new, desired email set as primary)"
+msgstr ""
+
 #: app/components/app-sidebar/nav-user.tsx:95
 msgid "Log out"
+msgstr ""
+
+#: app/features/user/components/user-identity-card.tsx:73
+msgid "Log out of Datum"
+msgstr ""
+
+#: app/features/user/components/user-identity-card.tsx:81
+msgid "Log out of GitHub"
 msgstr ""
 
 #: app/features/email/components/email-list.tsx:177
@@ -735,6 +767,7 @@ msgid "Mail Lists"
 msgstr ""
 
 #: app/routes/user/index.tsx:90
+#: app/features/user/components/user-identity-card.tsx:111
 msgid "Manage"
 msgstr ""
 
@@ -1153,7 +1186,7 @@ msgstr ""
 msgid "Session ID"
 msgstr ""
 
-#: app/routes/profile/setting.tsx:13
+#: app/routes/profile/setting.tsx:15
 #: app/routes/profile/layout.tsx:16
 msgid "Settings"
 msgstr ""
@@ -1257,6 +1290,10 @@ msgstr ""
 
 #: app/features/domain/components/domain-status-probe.tsx:95
 msgid "Update your DNS provider with the provided record, or use the HTTP token method."
+msgstr ""
+
+#: app/features/user/components/user-identity-card.tsx:63
+msgid "Updating email addresses for GitHub identities"
 msgstr ""
 
 #: app/routes/project/detail/layout.tsx:122

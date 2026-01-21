@@ -40,6 +40,10 @@ msgstr "# of Sinks"
 msgid "# of Sources"
 msgstr "# of Sources"
 
+#: app/features/user/components/user-identity-card.tsx:27
+msgid "Account Identities"
+msgstr "Account Identities"
+
 #: app/routes/user/detail/index.tsx:272
 msgid "Account Management"
 msgstr "Account Management"
@@ -190,6 +194,10 @@ msgstr "Cancel"
 #: app/features/quota/components/quota-grant-list.tsx:122
 msgid "Cannot delete inactive grant"
 msgstr "Cannot delete inactive grant"
+
+#: app/features/user/components/user-identity-card.tsx:76
+msgid "Change your Primary Email in GitHub (your primary email)"
+msgstr "Change your Primary Email in GitHub (your primary email)"
 
 #: app/features/preferences/components/preferences-form.tsx:94
 msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
@@ -486,6 +494,10 @@ msgstr "Email"
 msgid "Email Activity"
 msgstr "Email Activity"
 
+#: app/features/user/components/user-identity-card.tsx:66
+msgid "Email addresses for GitHub identities should be updated through GitHub"
+msgstr "Email addresses for GitHub identities should be updated through GitHub"
+
 #: app/routes/user/index.tsx:141
 msgid "Email is required"
 msgstr "Email is required"
@@ -633,6 +645,10 @@ msgstr "High"
 msgid "Hostnames"
 msgstr "Hostnames"
 
+#: app/features/user/components/user-identity-card.tsx:98
+msgid "How to update your GitHub email"
+msgstr "How to update your GitHub email"
+
 #: app/routes/project/detail/layout.tsx:97
 #: app/routes/project/detail/httpproxy/layout.tsx:5
 msgid "HTTP Proxies"
@@ -721,9 +737,25 @@ msgstr "Loading status..."
 msgid "Loading..."
 msgstr "Loading..."
 
+#: app/features/user/components/user-identity-card.tsx:90
+msgid "Log back into Datum"
+msgstr "Log back into Datum"
+
+#: app/features/user/components/user-identity-card.tsx:84
+msgid "Log back into GitHub (with the new, desired email set as primary)"
+msgstr "Log back into GitHub (with the new, desired email set as primary)"
+
 #: app/components/app-sidebar/nav-user.tsx:95
 msgid "Log out"
 msgstr "Log out"
+
+#: app/features/user/components/user-identity-card.tsx:73
+msgid "Log out of Datum"
+msgstr "Log out of Datum"
+
+#: app/features/user/components/user-identity-card.tsx:81
+msgid "Log out of GitHub"
+msgstr "Log out of GitHub"
 
 #: app/features/email/components/email-list.tsx:177
 #: app/features/email/components/email-list.tsx:207
@@ -735,6 +767,7 @@ msgid "Mail Lists"
 msgstr "Mail Lists"
 
 #: app/routes/user/index.tsx:90
+#: app/features/user/components/user-identity-card.tsx:111
 msgid "Manage"
 msgstr "Manage"
 
@@ -1153,7 +1186,7 @@ msgstr "Session deleted successfully"
 msgid "Session ID"
 msgstr "Session ID"
 
-#: app/routes/profile/setting.tsx:13
+#: app/routes/profile/setting.tsx:15
 #: app/routes/profile/layout.tsx:16
 msgid "Settings"
 msgstr "Settings"
@@ -1258,6 +1291,10 @@ msgstr "Update"
 #: app/features/domain/components/domain-status-probe.tsx:95
 msgid "Update your DNS provider with the provided record, or use the HTTP token method."
 msgstr "Update your DNS provider with the provided record, or use the HTTP token method."
+
+#: app/features/user/components/user-identity-card.tsx:63
+msgid "Updating email addresses for GitHub identities"
+msgstr "Updating email addresses for GitHub identities"
 
 #: app/routes/project/detail/layout.tsx:122
 #: app/routes/project/detail/quota/usage.tsx:9

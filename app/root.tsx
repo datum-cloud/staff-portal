@@ -47,6 +47,7 @@ export async function loader({ request }: Route.LoaderArgs) {
         SENTRY_ENV: env.SENTRY_ENV,
         SENTRY_DSN: env.SENTRY_DSN,
         VERSION: env.VERSION,
+        AUTH_OIDC_ISSUER: env.AUTH_OIDC_ISSUER,
       },
     },
     { headers: { 'Set-Cookie': cookie } }
