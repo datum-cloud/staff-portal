@@ -1,5 +1,7 @@
 import { BadgeCondition } from '@/components/badge';
 import { DateTime } from '@/components/date';
+import { EmailDetailDialog } from '@/features/email/components/email-detail-dialog';
+import { extractTemplateName, getEmailStatus } from '@/features/email/email-utils';
 import {
   ClientDataTable,
   ClientDataTableFacetFilter,
@@ -9,6 +11,7 @@ import {
   useClientDataTableQuery,
 } from '@datum-ui/client-data-table';
 import { DataTableActiveFilters } from '@datum-ui/data-table';
+import type { ActionItem } from '@datum-ui/data-table';
 import { Text } from '@datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
@@ -17,6 +20,7 @@ import {
   ComMiloapisNotificationV1Alpha1EmailList,
 } from '@openapi/notification.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
+import { useState } from 'react';
 
 interface EmailListProps {
   queryKeyPrefix: string | string[];
@@ -25,20 +29,6 @@ interface EmailListProps {
 }
 
 const columnHelper = createColumnHelper<ComMiloapisNotificationV1Alpha1Email>();
-
-const extractTemplateName = (templateRef?: string): string => {
-  if (!templateRef) return '-';
-  const parts = templateRef.split(/[-.]/);
-  return parts[parts.length - 1] || templateRef;
-};
-
-const getEmailStatus = (email: ComMiloapisNotificationV1Alpha1Email): string | undefined => {
-  const conditions = email.status?.conditions;
-  if (!conditions || conditions.length === 0) return undefined;
-
-  const firstCondition = conditions[0];
-  return firstCondition?.status;
-};
 
 const createColumns = () => [
   columnHelper.accessor('spec.templateRef.name', {
@@ -59,8 +49,8 @@ const createColumns = () => [
   }),
   columnHelper.accessor('spec.recipient.emailAddress', {
     header: () => <Trans>Recipient</Trans>,
-    cell: ({ getValue }) => {
-      const email = getValue();
+    cell: ({ row, getValue }) => {
+      const email = row.original.status?.emailAddress || getValue();
       return email ? <Text size="sm">{email}</Text> : <Text textColor="muted">-</Text>;
     },
   }),
@@ -131,12 +121,34 @@ export default function EmailList({ queryKeyPrefix, fetchFn, searchPlaceholder }
     useSearch: true,
   });
 
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [selectedEmail, setSelectedEmail] = useState<ComMiloapisNotificationV1Alpha1Email | null>(
+    null
+  );
+
+  const handleShowDetails = (email: ComMiloapisNotificationV1Alpha1Email) => {
+    setSelectedEmail(email);
+    setDetailsOpen(true);
+  };
+
+  const handleDetailsOpenChange = (open: boolean) => {
+    setDetailsOpen(open);
+  };
+
+  const actions: ActionItem<ComMiloapisNotificationV1Alpha1Email>[] = [
+    {
+      label: t`Details`,
+      onClick: (row: ComMiloapisNotificationV1Alpha1Email) => handleShowDetails(row),
+    },
+  ];
+
   return (
     <ClientDataTableProvider<
       ComMiloapisNotificationV1Alpha1Email,
       ComMiloapisNotificationV1Alpha1EmailList
     >
       columns={createColumns()}
+      actions={actions}
       transform={(data) => data?.items || []}
       filterFn={(row, filters) => {
         // Filter by priority
@@ -157,7 +169,10 @@ export default function EmailList({ queryKeyPrefix, fetchFn, searchPlaceholder }
         return true;
       }}
       globalFilterFn={createAdvancedSearch<ComMiloapisNotificationV1Alpha1Email>([
-        (row) => row.spec?.recipient?.emailAddress?.toLowerCase() || '',
+        (row) =>
+          row.status?.emailAddress?.toLowerCase() ||
+          row.spec?.recipient?.emailAddress?.toLowerCase() ||
+          '',
         (row) => row.spec?.templateRef?.name?.toLowerCase() || '',
         (row) => extractTemplateName(row.spec?.templateRef?.name).toLowerCase(),
         (row) => row.metadata?.name?.toLowerCase() || '',
@@ -225,6 +240,12 @@ export default function EmailList({ queryKeyPrefix, fetchFn, searchPlaceholder }
 
         <ClientDataTable<ComMiloapisNotificationV1Alpha1Email> />
       </div>
+
+      <EmailDetailDialog
+        open={detailsOpen}
+        email={selectedEmail}
+        onOpenChange={handleDetailsOpenChange}
+      />
     </ClientDataTableProvider>
   );
 }

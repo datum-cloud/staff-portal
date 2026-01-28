@@ -208,6 +208,10 @@ msgstr ""
 msgid "Clear"
 msgstr ""
 
+#: app/features/email/components/email-detail-dialog.tsx:86
+msgid "Close"
+msgstr ""
+
 #: app/routes/project/detail/export-policy/detail.tsx:189
 #: app/routes/project/detail/export-policy/detail.tsx:223
 msgid "Configuration"
@@ -302,7 +306,7 @@ msgstr ""
 #: app/routes/contact/index.tsx:70
 #: app/features/quota/components/quota-grant-list.tsx:81
 #: app/features/quota/components/quota-bucket-list.tsx:84
-#: app/features/email/components/email-list.tsx:118
+#: app/features/email/components/email-list.tsx:108
 msgid "Created"
 msgstr ""
 
@@ -414,9 +418,9 @@ msgstr ""
 msgid "Delete User"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:74
-#: app/features/email/components/email-list.tsx:185
-#: app/features/email/components/email-list.tsx:215
+#: app/features/email/components/email-list.tsx:64
+#: app/features/email/components/email-list.tsx:200
+#: app/features/email/components/email-list.tsx:230
 msgid "Delivered"
 msgstr ""
 
@@ -427,6 +431,7 @@ msgid "Description"
 msgstr ""
 
 #: app/routes/contact-group/detail/layout.tsx:34
+#: app/features/email/components/email-list.tsx:140
 msgid "Details"
 msgstr ""
 
@@ -498,6 +503,14 @@ msgstr ""
 msgid "Email addresses for GitHub identities should be updated through GitHub"
 msgstr ""
 
+#: app/features/email/components/email-detail-dialog.tsx:39
+msgid "Email details"
+msgstr ""
+
+#: app/features/email/components/email-detail-dialog.tsx:73
+msgid "Email HTML preview"
+msgstr ""
+
 #: app/routes/user/index.tsx:141
 msgid "Email is required"
 msgstr ""
@@ -543,9 +556,9 @@ msgstr ""
 msgid "Export Policies"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:75
-#: app/features/email/components/email-list.tsx:186
-#: app/features/email/components/email-list.tsx:216
+#: app/features/email/components/email-list.tsx:65
+#: app/features/email/components/email-list.tsx:201
+#: app/features/email/components/email-list.tsx:231
 msgid "Failed"
 msgstr ""
 
@@ -573,11 +586,11 @@ msgstr ""
 msgid "Filter by approval"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:173
+#: app/features/email/components/email-list.tsx:188
 msgid "Filter by priority"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:183
+#: app/features/email/components/email-list.tsx:198
 msgid "Filter by status"
 msgstr ""
 
@@ -636,8 +649,8 @@ msgstr ""
 msgid "Groups"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:176
-#: app/features/email/components/email-list.tsx:206
+#: app/features/email/components/email-list.tsx:191
+#: app/features/email/components/email-list.tsx:221
 msgid "High"
 msgstr ""
 
@@ -647,6 +660,10 @@ msgstr ""
 
 #: app/features/user/components/user-identity-card.tsx:98
 msgid "How to update your GitHub email"
+msgstr ""
+
+#: app/features/email/components/email-detail-dialog.tsx:59
+msgid "HTML"
 msgstr ""
 
 #: app/routes/project/detail/layout.tsx:97
@@ -757,8 +774,8 @@ msgstr ""
 msgid "Log out of GitHub"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:177
-#: app/features/email/components/email-list.tsx:207
+#: app/features/email/components/email-list.tsx:192
+#: app/features/email/components/email-list.tsx:222
 msgid "Low"
 msgstr ""
 
@@ -861,8 +878,8 @@ msgstr ""
 msgid "No users yet"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:175
-#: app/features/email/components/email-list.tsx:205
+#: app/features/email/components/email-list.tsx:190
+#: app/features/email/components/email-list.tsx:220
 msgid "Normal"
 msgstr ""
 
@@ -911,9 +928,9 @@ msgstr ""
 
 #: app/routes/user/index.tsx:265
 #: app/routes/user/index.tsx:284
-#: app/features/email/components/email-list.tsx:76
-#: app/features/email/components/email-list.tsx:187
-#: app/features/email/components/email-list.tsx:217
+#: app/features/email/components/email-list.tsx:66
+#: app/features/email/components/email-list.tsx:202
+#: app/features/email/components/email-list.tsx:232
 msgid "Pending"
 msgstr ""
 
@@ -959,9 +976,9 @@ msgstr ""
 msgid "Portal Preferences"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:93
-#: app/features/email/components/email-list.tsx:172
-#: app/features/email/components/email-list.tsx:199
+#: app/features/email/components/email-list.tsx:83
+#: app/features/email/components/email-list.tsx:187
+#: app/features/email/components/email-list.tsx:214
 msgid "Priority"
 msgstr ""
 
@@ -994,7 +1011,7 @@ msgstr ""
 msgid "Projects"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:105
+#: app/features/email/components/email-list.tsx:95
 msgid "Provider ID"
 msgstr ""
 
@@ -1041,7 +1058,7 @@ msgstr ""
 msgid "Reason for rejection"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:61
+#: app/features/email/components/email-list.tsx:51
 msgid "Recipient"
 msgstr ""
 
@@ -1126,7 +1143,7 @@ msgstr ""
 msgid "Search contacts..."
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:169
+#: app/features/email/components/email-list.tsx:184
 msgid "Search email activity..."
 msgstr ""
 
@@ -1224,14 +1241,18 @@ msgstr ""
 #: app/routes/contact-group/index.tsx:58
 #: app/routes/contact/index.tsx:64
 #: app/features/quota/components/quota-grant-list.tsx:75
-#: app/features/email/components/email-list.tsx:68
-#: app/features/email/components/email-list.tsx:182
-#: app/features/email/components/email-list.tsx:200
+#: app/features/email/components/email-list.tsx:58
+#: app/features/email/components/email-list.tsx:197
+#: app/features/email/components/email-list.tsx:215
 msgid "Status"
 msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:56
 msgid "Subject is required when user association is enabled"
+msgstr ""
+
+#: app/features/email/components/email-detail-dialog.tsx:49
+msgid "Subject: "
 msgstr ""
 
 #: app/components/theme-switcher/index.tsx:47
@@ -1242,12 +1263,16 @@ msgstr ""
 msgid "Target"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:45
+#: app/features/email/components/email-list.tsx:35
 msgid "Template"
 msgstr ""
 
 #: app/routes/user/detail/index.tsx:351
 msgid "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
+msgstr ""
+
+#: app/features/email/components/email-detail-dialog.tsx:58
+msgid "Text"
 msgstr ""
 
 #: app/features/domain/components/domain-status-probe.tsx:103

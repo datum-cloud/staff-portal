@@ -208,6 +208,10 @@ msgstr "Choose how the portal looks to you. Select a single theme, or sync with 
 msgid "Clear"
 msgstr "Clear"
 
+#: app/features/email/components/email-detail-dialog.tsx:86
+msgid "Close"
+msgstr "Close"
+
 #: app/routes/project/detail/export-policy/detail.tsx:189
 #: app/routes/project/detail/export-policy/detail.tsx:223
 msgid "Configuration"
@@ -302,7 +306,7 @@ msgstr "Create"
 #: app/routes/contact/index.tsx:70
 #: app/features/quota/components/quota-grant-list.tsx:81
 #: app/features/quota/components/quota-bucket-list.tsx:84
-#: app/features/email/components/email-list.tsx:118
+#: app/features/email/components/email-list.tsx:108
 msgid "Created"
 msgstr "Created"
 
@@ -414,9 +418,9 @@ msgstr "Delete Session"
 msgid "Delete User"
 msgstr "Delete User"
 
-#: app/features/email/components/email-list.tsx:74
-#: app/features/email/components/email-list.tsx:185
-#: app/features/email/components/email-list.tsx:215
+#: app/features/email/components/email-list.tsx:64
+#: app/features/email/components/email-list.tsx:200
+#: app/features/email/components/email-list.tsx:230
 msgid "Delivered"
 msgstr "Delivered"
 
@@ -427,6 +431,7 @@ msgid "Description"
 msgstr "Description"
 
 #: app/routes/contact-group/detail/layout.tsx:34
+#: app/features/email/components/email-list.tsx:140
 msgid "Details"
 msgstr "Details"
 
@@ -498,6 +503,14 @@ msgstr "Email Activity"
 msgid "Email addresses for GitHub identities should be updated through GitHub"
 msgstr "Email addresses for GitHub identities should be updated through GitHub"
 
+#: app/features/email/components/email-detail-dialog.tsx:39
+msgid "Email details"
+msgstr "Email details"
+
+#: app/features/email/components/email-detail-dialog.tsx:73
+msgid "Email HTML preview"
+msgstr "Email HTML preview"
+
 #: app/routes/user/index.tsx:141
 msgid "Email is required"
 msgstr "Email is required"
@@ -543,9 +556,9 @@ msgstr "Expires"
 msgid "Export Policies"
 msgstr "Export Policies"
 
-#: app/features/email/components/email-list.tsx:75
-#: app/features/email/components/email-list.tsx:186
-#: app/features/email/components/email-list.tsx:216
+#: app/features/email/components/email-list.tsx:65
+#: app/features/email/components/email-list.tsx:201
+#: app/features/email/components/email-list.tsx:231
 msgid "Failed"
 msgstr "Failed"
 
@@ -573,11 +586,11 @@ msgstr "Filter by action"
 msgid "Filter by approval"
 msgstr "Filter by approval"
 
-#: app/features/email/components/email-list.tsx:173
+#: app/features/email/components/email-list.tsx:188
 msgid "Filter by priority"
 msgstr "Filter by priority"
 
-#: app/features/email/components/email-list.tsx:183
+#: app/features/email/components/email-list.tsx:198
 msgid "Filter by status"
 msgstr "Filter by status"
 
@@ -636,8 +649,8 @@ msgstr "Grants"
 msgid "Groups"
 msgstr "Groups"
 
-#: app/features/email/components/email-list.tsx:176
-#: app/features/email/components/email-list.tsx:206
+#: app/features/email/components/email-list.tsx:191
+#: app/features/email/components/email-list.tsx:221
 msgid "High"
 msgstr "High"
 
@@ -648,6 +661,10 @@ msgstr "Hostnames"
 #: app/features/user/components/user-identity-card.tsx:98
 msgid "How to update your GitHub email"
 msgstr "How to update your GitHub email"
+
+#: app/features/email/components/email-detail-dialog.tsx:59
+msgid "HTML"
+msgstr "HTML"
 
 #: app/routes/project/detail/layout.tsx:97
 #: app/routes/project/detail/httpproxy/layout.tsx:5
@@ -757,8 +774,8 @@ msgstr "Log out of Datum"
 msgid "Log out of GitHub"
 msgstr "Log out of GitHub"
 
-#: app/features/email/components/email-list.tsx:177
-#: app/features/email/components/email-list.tsx:207
+#: app/features/email/components/email-list.tsx:192
+#: app/features/email/components/email-list.tsx:222
 msgid "Low"
 msgstr "Low"
 
@@ -861,8 +878,8 @@ msgstr "No results found."
 msgid "No users yet"
 msgstr "No users yet"
 
-#: app/features/email/components/email-list.tsx:175
-#: app/features/email/components/email-list.tsx:205
+#: app/features/email/components/email-list.tsx:190
+#: app/features/email/components/email-list.tsx:220
 msgid "Normal"
 msgstr "Normal"
 
@@ -911,9 +928,9 @@ msgstr "Patch"
 
 #: app/routes/user/index.tsx:265
 #: app/routes/user/index.tsx:284
-#: app/features/email/components/email-list.tsx:76
-#: app/features/email/components/email-list.tsx:187
-#: app/features/email/components/email-list.tsx:217
+#: app/features/email/components/email-list.tsx:66
+#: app/features/email/components/email-list.tsx:202
+#: app/features/email/components/email-list.tsx:232
 msgid "Pending"
 msgstr "Pending"
 
@@ -959,9 +976,9 @@ msgstr "Please wait {remainingMinutes} more minute{0} before resending this invi
 msgid "Portal Preferences"
 msgstr "Portal Preferences"
 
-#: app/features/email/components/email-list.tsx:93
-#: app/features/email/components/email-list.tsx:172
-#: app/features/email/components/email-list.tsx:199
+#: app/features/email/components/email-list.tsx:83
+#: app/features/email/components/email-list.tsx:187
+#: app/features/email/components/email-list.tsx:214
 msgid "Priority"
 msgstr "Priority"
 
@@ -994,7 +1011,7 @@ msgstr "Project deleted successfully"
 msgid "Projects"
 msgstr "Projects"
 
-#: app/features/email/components/email-list.tsx:105
+#: app/features/email/components/email-list.tsx:95
 msgid "Provider ID"
 msgstr "Provider ID"
 
@@ -1041,7 +1058,7 @@ msgstr "Reason for deactivation"
 msgid "Reason for rejection"
 msgstr "Reason for rejection"
 
-#: app/features/email/components/email-list.tsx:61
+#: app/features/email/components/email-list.tsx:51
 msgid "Recipient"
 msgstr "Recipient"
 
@@ -1126,7 +1143,7 @@ msgstr "Search contact groups..."
 msgid "Search contacts..."
 msgstr "Search contacts..."
 
-#: app/features/email/components/email-list.tsx:169
+#: app/features/email/components/email-list.tsx:184
 msgid "Search email activity..."
 msgstr "Search email activity..."
 
@@ -1224,15 +1241,19 @@ msgstr "Start Time"
 #: app/routes/contact-group/index.tsx:58
 #: app/routes/contact/index.tsx:64
 #: app/features/quota/components/quota-grant-list.tsx:75
-#: app/features/email/components/email-list.tsx:68
-#: app/features/email/components/email-list.tsx:182
-#: app/features/email/components/email-list.tsx:200
+#: app/features/email/components/email-list.tsx:58
+#: app/features/email/components/email-list.tsx:197
+#: app/features/email/components/email-list.tsx:215
 msgid "Status"
 msgstr "Status"
 
 #: app/features/contact/components/contact-form.tsx:56
 msgid "Subject is required when user association is enabled"
 msgstr "Subject is required when user association is enabled"
+
+#: app/features/email/components/email-detail-dialog.tsx:49
+msgid "Subject: "
+msgstr "Subject: "
 
 #: app/components/theme-switcher/index.tsx:47
 msgid "System"
@@ -1242,13 +1263,17 @@ msgstr "System"
 msgid "Target"
 msgstr "Target"
 
-#: app/features/email/components/email-list.tsx:45
+#: app/features/email/components/email-list.tsx:35
 msgid "Template"
 msgstr "Template"
 
 #: app/routes/user/detail/index.tsx:351
 msgid "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 msgstr "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
+
+#: app/features/email/components/email-detail-dialog.tsx:58
+msgid "Text"
+msgstr "Text"
 
 #: app/features/domain/components/domain-status-probe.tsx:103
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
