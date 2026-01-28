@@ -11,13 +11,10 @@ export const normalizeBody = (body?: string): string => {
   return body.trim();
 };
 
-export const getEmailStatus = (
-  email: ComMiloapisNotificationV1Alpha1Email
-): string | undefined => {
+export const getEmailStatus = (email: ComMiloapisNotificationV1Alpha1Email): string | undefined => {
   const conditions = email.status?.conditions;
   if (!conditions || conditions.length === 0) return undefined;
 
   const firstCondition = conditions[0];
   return firstCondition?.status;
 };
-
