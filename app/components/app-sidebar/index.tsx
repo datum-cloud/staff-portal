@@ -137,7 +137,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     },
     {
       title: t`Email Activity`,
-      href: routes.emailActivity(),
+      href: routes.emailActivity.list(),
       icon: MailSearch,
       hasSubmenu: false,
     },

@@ -1,7 +1,7 @@
-import { BadgeCondition } from '@/components/badge';
+import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
-import { EmailDetailDialog } from '@/features/email/components/email-detail-dialog';
-import { extractTemplateName, getEmailStatus } from '@/features/email/email-utils';
+import { getEmailCondition } from '@/features/email/email-utils';
+import { startCase } from '@/utils/helpers';
 import {
   ClientDataTable,
   ClientDataTableFacetFilter,
@@ -11,7 +11,6 @@ import {
   useClientDataTableQuery,
 } from '@datum-ui/client-data-table';
 import { DataTableActiveFilters } from '@datum-ui/data-table';
-import type { ActionItem } from '@datum-ui/data-table';
 import { Text } from '@datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
@@ -20,99 +19,23 @@ import {
   ComMiloapisNotificationV1Alpha1EmailList,
 } from '@openapi/notification.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
-import { useState } from 'react';
+import { Link } from 'react-router';
 
 interface EmailListProps {
   queryKeyPrefix: string | string[];
   fetchFn: () => Promise<ComMiloapisNotificationV1Alpha1EmailList>;
+  detailPath: (namespace: string, emailName: string) => string;
   searchPlaceholder?: string;
 }
 
 const columnHelper = createColumnHelper<ComMiloapisNotificationV1Alpha1Email>();
 
-const createColumns = () => [
-  columnHelper.accessor('spec.templateRef.name', {
-    header: () => <Trans>Template</Trans>,
-    cell: ({ getValue }) => {
-      const templateName = extractTemplateName(getValue());
-      return (
-        <div className="flex flex-col">
-          <Text className="font-medium">{templateName}</Text>
-          {getValue() && getValue() !== templateName && (
-            <Text size="sm" textColor="muted" className="max-w-xs truncate">
-              {getValue()}
-            </Text>
-          )}
-        </div>
-      );
-    },
-  }),
-  columnHelper.accessor('spec.recipient.emailAddress', {
-    header: () => <Trans>Recipient</Trans>,
-    cell: ({ row, getValue }) => {
-      const email = row.original.status?.emailAddress || getValue();
-      return email ? <Text size="sm">{email}</Text> : <Text textColor="muted">-</Text>;
-    },
-  }),
-  columnHelper.accessor('status', {
-    header: () => <Trans>Status</Trans>,
-    cell: ({ row }) => {
-      const status = row.original.status;
-      const conditionStatus = getEmailStatus(row.original);
-
-      const statusLabel: Record<string, string> = {
-        True: t`Delivered`,
-        False: t`Failed`,
-        Unknown: t`Pending`,
-      };
-
-      const customLabel = conditionStatus ? statusLabel[conditionStatus] : undefined;
-
-      return (
-        <BadgeCondition
-          status={status}
-          multiple={false}
-          showMessage
-          className="text-xs"
-          customLabel={customLabel}
-        />
-      );
-    },
-  }),
-  columnHelper.accessor('spec.priority', {
-    header: () => <Trans>Priority</Trans>,
-    cell: ({ getValue }) => {
-      const priority = getValue();
-      return priority ? (
-        <Text className="capitalize">{priority}</Text>
-      ) : (
-        <Text textColor="muted">-</Text>
-      );
-    },
-  }),
-  columnHelper.display({
-    id: 'providerId',
-    header: () => <Trans>Provider ID</Trans>,
-    cell: ({ row }) => {
-      const providerId = row.original.status?.providerID;
-      return providerId ? (
-        <Text size="sm" textColor="muted">
-          {providerId}
-        </Text>
-      ) : (
-        <Text textColor="muted">-</Text>
-      );
-    },
-  }),
-  columnHelper.accessor('metadata.creationTimestamp', {
-    header: () => <Trans>Created</Trans>,
-    cell: ({ getValue }) => {
-      return <DateTime date={getValue()} />;
-    },
-  }),
-];
-
-export default function EmailList({ queryKeyPrefix, fetchFn, searchPlaceholder }: EmailListProps) {
+export default function EmailList({
+  queryKeyPrefix,
+  fetchFn,
+  searchPlaceholder,
+  detailPath,
+}: EmailListProps) {
   const tableState = useClientDataTableQuery<ComMiloapisNotificationV1Alpha1EmailList>({
     queryKeyPrefix,
     fetchFn,
@@ -121,25 +44,54 @@ export default function EmailList({ queryKeyPrefix, fetchFn, searchPlaceholder }
     useSearch: true,
   });
 
-  const [detailsOpen, setDetailsOpen] = useState(false);
-  const [selectedEmail, setSelectedEmail] = useState<ComMiloapisNotificationV1Alpha1Email | null>(
-    null
-  );
+  const columns = [
+    columnHelper.accessor('status.emailAddress', {
+      header: () => <Trans>Recipient</Trans>,
+      cell: ({ row, getValue }) => {
+        return (
+          <Link
+            to={detailPath(
+              row.original.metadata?.namespace ?? '',
+              row.original.metadata?.name ?? ''
+            )}>
+            {getValue()}
+          </Link>
+        );
+      },
+    }),
+    columnHelper.accessor('status', {
+      header: () => <Trans>Status</Trans>,
+      cell: ({ row }) => {
+        const condition = getEmailCondition(row.original);
 
-  const handleShowDetails = (email: ComMiloapisNotificationV1Alpha1Email) => {
-    setSelectedEmail(email);
-    setDetailsOpen(true);
-  };
-
-  const handleDetailsOpenChange = (open: boolean) => {
-    setDetailsOpen(open);
-  };
-
-  const actions: ActionItem<ComMiloapisNotificationV1Alpha1Email>[] = [
-    {
-      label: t`Details`,
-      onClick: (row: ComMiloapisNotificationV1Alpha1Email) => handleShowDetails(row),
-    },
+        return (
+          <BadgeState
+            state={condition?.status?.toLowerCase() ?? ''}
+            message={startCase(condition?.reason ?? '')}
+            tooltip={condition?.message}
+          />
+        );
+      },
+    }),
+    columnHelper.accessor('status.subject', {
+      header: () => <Trans>Subject</Trans>,
+      cell: ({ getValue }) => {
+        const subject = getValue();
+        return subject ? (
+          <Text size="sm" className="max-w-xs truncate" title={subject}>
+            {subject}
+          </Text>
+        ) : (
+          <Text textColor="muted">-</Text>
+        );
+      },
+    }),
+    columnHelper.accessor('metadata.creationTimestamp', {
+      header: () => <Trans>Sent</Trans>,
+      cell: ({ getValue }) => {
+        return <DateTime date={getValue()} />;
+      },
+    }),
   ];
 
   return (
@@ -147,8 +99,7 @@ export default function EmailList({ queryKeyPrefix, fetchFn, searchPlaceholder }
       ComMiloapisNotificationV1Alpha1Email,
       ComMiloapisNotificationV1Alpha1EmailList
     >
-      columns={createColumns()}
-      actions={actions}
+      columns={columns}
       transform={(data) => data?.items || []}
       filterFn={(row, filters) => {
         // Filter by priority
@@ -160,8 +111,8 @@ export default function EmailList({ queryKeyPrefix, fetchFn, searchPlaceholder }
 
         // Filter by status (from conditions)
         if (filters.status) {
-          const emailStatus = getEmailStatus(row);
-          if (emailStatus !== filters.status) {
+          const condition = getEmailCondition(row);
+          if (condition?.status !== filters.status) {
             return false;
           }
         }
@@ -173,10 +124,6 @@ export default function EmailList({ queryKeyPrefix, fetchFn, searchPlaceholder }
           row.status?.emailAddress?.toLowerCase() ||
           row.spec?.recipient?.emailAddress?.toLowerCase() ||
           '',
-        (row) => row.spec?.templateRef?.name?.toLowerCase() || '',
-        (row) => extractTemplateName(row.spec?.templateRef?.name).toLowerCase(),
-        (row) => row.metadata?.name?.toLowerCase() || '',
-        (row) => row.status?.providerID?.toLowerCase() || '',
       ])}
       {...tableState}>
       <div className="m-4 flex flex-col gap-2">
@@ -240,12 +187,6 @@ export default function EmailList({ queryKeyPrefix, fetchFn, searchPlaceholder }
 
         <ClientDataTable<ComMiloapisNotificationV1Alpha1Email> />
       </div>
-
-      <EmailDetailDialog
-        open={detailsOpen}
-        email={selectedEmail}
-        onOpenChange={handleDetailsOpenChange}
-      />
     </ClientDataTableProvider>
   );
 }

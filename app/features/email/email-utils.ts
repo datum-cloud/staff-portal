@@ -11,10 +11,15 @@ export const normalizeBody = (body?: string): string => {
   return body.trim();
 };
 
-export const getEmailStatus = (email: ComMiloapisNotificationV1Alpha1Email): string | undefined => {
+type EmailStatusCondition = NonNullable<
+  NonNullable<ComMiloapisNotificationV1Alpha1Email['status']>['conditions']
+>[number];
+
+export const getEmailCondition = (
+  email: ComMiloapisNotificationV1Alpha1Email
+): EmailStatusCondition | undefined => {
   const conditions = email.status?.conditions;
   if (!conditions || conditions.length === 0) return undefined;
 
-  const firstCondition = conditions[0];
-  return firstCondition?.status;
+  return conditions[0];
 };

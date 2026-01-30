@@ -40,7 +40,7 @@ export default function Layout() {
     },
     {
       title: t`Email Activity`,
-      href: userRoutes.emailActivity(data.metadata?.name ?? ''),
+      href: userRoutes.emailActivity.list(data.metadata?.name ?? ''),
       icon: MailSearch,
     },
     {
