@@ -10,6 +10,21 @@ export function toBoolean(value: string | boolean | undefined | null): boolean {
 }
 
 /**
+ * Gets the origin of a URL.
+ * @param url - The URL to get the origin of.
+ * @returns The origin of the URL.
+ */
+export function getOrigin(url: string | undefined): string | undefined {
+  if (!url) return undefined;
+
+  try {
+    return new URL(url).origin;
+  } catch {
+    return '';
+  }
+}
+
+/**
  * Generates a Kubernetes-style metadata name with a prefix and 6 random characters
  * @param prefix - The prefix for the name (e.g., 'cm715p')
  * @returns A string in the format: {prefix}-{6-random-chars}

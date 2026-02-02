@@ -2,6 +2,7 @@ import { IdentityItem } from './identity-item';
 import { IdentityItemSkeleton } from './identity-item-skeleton';
 import GitHubIcon from '@/components/icon/github';
 import GoogleIcon from '@/components/icon/google';
+import { useEnv } from '@/hooks';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { useIdentityListQuery } from '@/resources/request/client';
 import { ButtonLink } from '@datum-ui/button';
@@ -18,6 +19,7 @@ const PROVIDERS: Record<string, { label: string; Icon: ComponentType<SVGProps<SV
 
 export const UserIdentityCard = ({ userId }: { userId: string }) => {
   const { data: identities, isLoading: isLoadingIdentities } = useIdentityListQuery(userId);
+  const env = useEnv();
 
   return (
     <Card>
@@ -101,7 +103,7 @@ export const UserIdentityCard = ({ userId }: { userId: string }) => {
                         </Tooltip>
                       )}
                       <ButtonLink
-                        href={`${window.ENV.AUTH_OIDC_ISSUER}/ui/v2/login/idp/link`}
+                        href={`${env?.AUTH_OIDC_ISSUER}/ui/v2/login/idp/link`}
                         target="_blank"
                         rel="noopener noreferrer"
                         theme="outline"

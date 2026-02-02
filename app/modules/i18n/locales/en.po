@@ -40,11 +40,11 @@ msgstr "# of Sinks"
 msgid "# of Sources"
 msgstr "# of Sources"
 
-#: app/features/user/components/user-identity-card.tsx:27
+#: app/features/user/components/user-identity-card.tsx:29
 msgid "Account Identities"
 msgstr "Account Identities"
 
-#: app/routes/user/detail/index.tsx:272
+#: app/routes/user/detail/index.tsx:306
 msgid "Account Management"
 msgstr "Account Management"
 
@@ -104,7 +104,7 @@ msgid "Allocation"
 msgstr "Allocation"
 
 #: app/routes/user/index.tsx:95
-#: app/routes/user/detail/index.tsx:155
+#: app/routes/user/detail/index.tsx:189
 msgid "Approve"
 msgstr "Approve"
 
@@ -151,7 +151,7 @@ msgstr "Are you sure you want to delete session \"{0}\"? This action cannot be u
 
 #. placeholder {0}: data.spec?.givenName ?? ''
 #. placeholder {1}: data.spec?.familyName ?? ''
-#: app/routes/user/detail/index.tsx:369
+#: app/routes/user/detail/index.tsx:403
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 
@@ -172,7 +172,7 @@ msgid "Auto-managed by policy \"{policyName}\". Cannot be deleted."
 msgstr "Auto-managed by policy \"{policyName}\". Cannot be deleted."
 
 #: app/routes/user/index.tsx:171
-#: app/routes/user/detail/index.tsx:107
+#: app/routes/user/detail/index.tsx:129
 #: app/routes/profile/session.tsx:100
 #: app/routes/organization/detail/member.tsx:122
 #: app/routes/group/member.tsx:140
@@ -195,7 +195,7 @@ msgstr "Cancel"
 msgid "Cannot delete inactive grant"
 msgstr "Cannot delete inactive grant"
 
-#: app/features/user/components/user-identity-card.tsx:76
+#: app/features/user/components/user-identity-card.tsx:78
 msgid "Change your Primary Email in GitHub (your primary email)"
 msgstr "Change your Primary Email in GitHub (your primary email)"
 
@@ -282,7 +282,7 @@ msgid "Create"
 msgstr "Create"
 
 #: app/routes/user/index.tsx:67
-#: app/routes/user/detail/index.tsx:254
+#: app/routes/user/detail/index.tsx:288
 #: app/routes/project/index.tsx:51
 #: app/routes/project/detail/index.tsx:74
 #: app/routes/project/detail/httpproxy/index.tsx:59
@@ -328,29 +328,29 @@ msgstr "Dashboard"
 msgid "Date"
 msgstr "Date"
 
-#: app/routes/user/detail/index.tsx:106
-#: app/routes/user/detail/index.tsx:358
+#: app/routes/user/detail/index.tsx:128
+#: app/routes/user/detail/index.tsx:392
 msgid "Deactivate"
 msgstr "Deactivate"
 
-#: app/routes/user/detail/index.tsx:104
-#: app/routes/user/detail/index.tsx:348
+#: app/routes/user/detail/index.tsx:126
+#: app/routes/user/detail/index.tsx:382
 msgid "Deactivate User"
 msgstr "Deactivate User"
 
-#: app/routes/user/detail/index.tsx:322
+#: app/routes/user/detail/index.tsx:356
 msgid "Deactivated At:"
 msgstr "Deactivated At:"
 
-#: app/routes/user/detail/index.tsx:316
+#: app/routes/user/detail/index.tsx:350
 msgid "Deactivated By:"
 msgstr "Deactivated By:"
 
-#: app/routes/user/detail/index.tsx:310
+#: app/routes/user/detail/index.tsx:344
 msgid "Deactivation Details"
 msgstr "Deactivation Details"
 
-#: app/routes/user/detail/index.tsx:332
+#: app/routes/user/detail/index.tsx:366
 msgid "Deactivation Reason:"
 msgstr "Deactivation Reason:"
 
@@ -408,8 +408,8 @@ msgstr "Delete Project"
 msgid "Delete Session"
 msgstr "Delete Session"
 
-#: app/routes/user/detail/index.tsx:366
-#: app/routes/user/detail/index.tsx:368
+#: app/routes/user/detail/index.tsx:400
+#: app/routes/user/detail/index.tsx:402
 msgid "Delete User"
 msgstr "Delete User"
 
@@ -479,7 +479,7 @@ msgid "Edit Quota"
 msgstr "Edit Quota"
 
 #: app/routes/user/index.tsx:208
-#: app/routes/user/detail/index.tsx:220
+#: app/routes/user/detail/index.tsx:254
 #: app/routes/contact/index.tsx:55
 #: app/features/contact/components/contact-form.tsx:122
 msgid "Email"
@@ -493,7 +493,7 @@ msgstr "Email"
 msgid "Email Activity"
 msgstr "Email Activity"
 
-#: app/features/user/components/user-identity-card.tsx:66
+#: app/features/user/components/user-identity-card.tsx:68
 msgid "Email addresses for GitHub identities should be updated through GitHub"
 msgstr "Email addresses for GitHub identities should be updated through GitHub"
 
@@ -514,7 +514,7 @@ msgstr "End Time"
 msgid "Endpoint"
 msgstr "Endpoint"
 
-#: app/routes/user/detail/index.tsx:114
+#: app/routes/user/detail/index.tsx:136
 msgid "Enter reason for deactivation..."
 msgstr "Enter reason for deactivation..."
 
@@ -606,7 +606,7 @@ msgstr "First Name"
 msgid "First name is required"
 msgstr "First name is required"
 
-#: app/routes/user/detail/index.tsx:208
+#: app/routes/user/detail/index.tsx:242
 msgid "Full Name"
 msgstr "Full Name"
 
@@ -647,7 +647,7 @@ msgstr "High"
 msgid "Hostnames"
 msgstr "Hostnames"
 
-#: app/features/user/components/user-identity-card.tsx:98
+#: app/features/user/components/user-identity-card.tsx:100
 msgid "How to update your GitHub email"
 msgstr "How to update your GitHub email"
 
@@ -661,7 +661,7 @@ msgid "HTTP Proxies"
 msgstr "HTTP Proxies"
 
 #: app/routes/user/index.tsx:53
-#: app/routes/user/detail/index.tsx:195
+#: app/routes/user/detail/index.tsx:229
 msgid "ID"
 msgstr "ID"
 
@@ -743,11 +743,11 @@ msgstr "Loading status..."
 msgid "Loading..."
 msgstr "Loading..."
 
-#: app/features/user/components/user-identity-card.tsx:90
+#: app/features/user/components/user-identity-card.tsx:92
 msgid "Log back into Datum"
 msgstr "Log back into Datum"
 
-#: app/features/user/components/user-identity-card.tsx:84
+#: app/features/user/components/user-identity-card.tsx:86
 msgid "Log back into GitHub (with the new, desired email set as primary)"
 msgstr "Log back into GitHub (with the new, desired email set as primary)"
 
@@ -755,11 +755,11 @@ msgstr "Log back into GitHub (with the new, desired email set as primary)"
 msgid "Log out"
 msgstr "Log out"
 
-#: app/features/user/components/user-identity-card.tsx:73
+#: app/features/user/components/user-identity-card.tsx:75
 msgid "Log out of Datum"
 msgstr "Log out of Datum"
 
-#: app/features/user/components/user-identity-card.tsx:81
+#: app/features/user/components/user-identity-card.tsx:83
 msgid "Log out of GitHub"
 msgstr "Log out of GitHub"
 
@@ -773,11 +773,11 @@ msgid "Mail Lists"
 msgstr "Mail Lists"
 
 #: app/routes/user/index.tsx:90
-#: app/features/user/components/user-identity-card.tsx:111
+#: app/features/user/components/user-identity-card.tsx:113
 msgid "Manage"
 msgstr "Manage"
 
-#: app/routes/user/detail/index.tsx:275
+#: app/routes/user/detail/index.tsx:309
 msgid "Manage user access and account status"
 msgstr "Manage user access and account status"
 
@@ -803,7 +803,7 @@ msgid "MetricsQL"
 msgstr "MetricsQL"
 
 #: app/routes/user/index.tsx:119
-#: app/routes/user/detail/index.tsx:182
+#: app/routes/user/detail/index.tsx:216
 msgid "Move to Pending"
 msgstr "Move to Pending"
 
@@ -934,7 +934,7 @@ msgstr "Permanently delete this organization and all associated data"
 msgid "Permanently delete this project and all associated data"
 msgstr "Permanently delete this project and all associated data"
 
-#: app/routes/user/detail/index.tsx:367
+#: app/routes/user/detail/index.tsx:401
 msgid "Permanently delete this user and all associated data"
 msgstr "Permanently delete this user and all associated data"
 
@@ -949,7 +949,7 @@ msgstr "Plain Text"
 
 #. placeholder {0}: data.spec?.givenName ?? ''
 #. placeholder {1}: data.spec?.familyName ?? ''
-#: app/routes/user/detail/index.tsx:105
+#: app/routes/user/detail/index.tsx:127
 msgid "Please provide a reason for deactivating \"{0} {1}\"."
 msgstr "Please provide a reason for deactivating \"{0} {1}\"."
 
@@ -1034,19 +1034,19 @@ msgstr "Quota updated successfully"
 msgid "Quotas"
 msgstr "Quotas"
 
-#: app/routes/user/detail/index.tsx:292
+#: app/routes/user/detail/index.tsx:326
 msgid "Re-enable this user's access to the system. They will be able to sign in immediately."
 msgstr "Re-enable this user's access to the system. They will be able to sign in immediately."
 
-#: app/routes/user/detail/index.tsx:303
+#: app/routes/user/detail/index.tsx:337
 msgid "Reactivate"
 msgstr "Reactivate"
 
-#: app/routes/user/detail/index.tsx:289
+#: app/routes/user/detail/index.tsx:323
 msgid "Reactivate User"
 msgstr "Reactivate User"
 
-#: app/routes/user/detail/index.tsx:113
+#: app/routes/user/detail/index.tsx:135
 msgid "Reason for deactivation"
 msgstr "Reason for deactivation"
 
@@ -1071,12 +1071,12 @@ msgstr "Registrar"
 #: app/routes/user/index.tsx:63
 #: app/routes/user/index.tsx:260
 #: app/routes/user/index.tsx:277
-#: app/routes/user/detail/index.tsx:230
+#: app/routes/user/detail/index.tsx:264
 msgid "Registration Approval"
 msgstr "Registration Approval"
 
 #: app/routes/user/index.tsx:112
-#: app/routes/user/detail/index.tsx:163
+#: app/routes/user/detail/index.tsx:197
 #: app/features/user/components/user-reject-dialog.tsx:29
 msgid "Reject"
 msgstr "Reject"
@@ -1231,7 +1231,7 @@ msgid "Start Time"
 msgstr "Start Time"
 
 #: app/routes/user/index.tsx:59
-#: app/routes/user/detail/index.tsx:242
+#: app/routes/user/detail/index.tsx:276
 #: app/routes/project/detail/httpproxy/index.tsx:53
 #: app/routes/project/detail/httpproxy/detail.tsx:111
 #: app/routes/project/detail/export-policy/index.tsx:52
@@ -1270,7 +1270,7 @@ msgstr "Target"
 msgid "Template"
 msgstr "Template"
 
-#: app/routes/user/detail/index.tsx:351
+#: app/routes/user/detail/index.tsx:385
 msgid "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 msgstr "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 
@@ -1316,7 +1316,7 @@ msgstr "Update"
 msgid "Update your DNS provider with the provided record, or use the HTTP token method."
 msgstr "Update your DNS provider with the provided record, or use the HTTP token method."
 
-#: app/features/user/components/user-identity-card.tsx:63
+#: app/features/user/components/user-identity-card.tsx:65
 msgid "Updating email addresses for GitHub identities"
 msgstr "Updating email addresses for GitHub identities"
 
@@ -1336,11 +1336,11 @@ msgstr "User"
 msgid "User approved successfully"
 msgstr "User approved successfully"
 
-#: app/routes/user/detail/index.tsx:81
+#: app/routes/user/detail/index.tsx:103
 msgid "User deactivated successfully"
 msgstr "User deactivated successfully"
 
-#: app/routes/user/detail/index.tsx:67
+#: app/routes/user/detail/index.tsx:89
 msgid "User deleted successfully"
 msgstr "User deleted successfully"
 
@@ -1364,7 +1364,7 @@ msgstr "User is not rejected"
 msgid "User moved to pending successfully"
 msgstr "User moved to pending successfully"
 
-#: app/routes/user/detail/index.tsx:92
+#: app/routes/user/detail/index.tsx:114
 msgid "User reactivated successfully"
 msgstr "User reactivated successfully"
 
@@ -1405,6 +1405,10 @@ msgstr "Version"
 #: app/features/dashboard/components/recent-users-widget.tsx:103
 msgid "View All"
 msgstr "View All"
+
+#: app/routes/user/detail/index.tsx:169
+msgid "View in Sentry"
+msgstr "View in Sentry"
 
 #: app/routes/contact-group/index.tsx:52
 #: app/features/contact-group/components/contact-group-form.tsx:56

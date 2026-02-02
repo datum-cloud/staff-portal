@@ -3,6 +3,7 @@ import AuthError from '@/components/error/auth';
 import GenericError from '@/components/error/generic';
 import { ClientHintCheck } from '@/components/misc/client-hints';
 import { FaviconLinks } from '@/components/misc/favicon-links';
+import type { PublicEnv } from '@/hooks';
 import { ThemeProvider, ThemeScript, useTheme } from '@/modules/datum-themes';
 import { loadCatalog, useLocale } from '@/modules/i18n/lingui';
 import { linguiServer } from '@/modules/i18n/lingui.server';
@@ -46,9 +47,10 @@ export async function loader({ request }: Route.LoaderArgs) {
         DEBUG: env.isDebug,
         SENTRY_ENV: env.SENTRY_ENV,
         SENTRY_DSN: env.SENTRY_DSN,
+        SENTRY_UI_URL: env.sentryUiUrl,
         VERSION: env.VERSION,
         AUTH_OIDC_ISSUER: env.AUTH_OIDC_ISSUER,
-      },
+      } satisfies PublicEnv,
     },
     { headers: { 'Set-Cookie': cookie } }
   );
