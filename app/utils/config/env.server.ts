@@ -1,4 +1,4 @@
-import { toBoolean } from '@/utils/helpers';
+import { getOrigin, toBoolean } from '@/utils/helpers';
 import { z } from 'zod';
 
 const envSchema = z.object({
@@ -50,4 +50,5 @@ export const env = {
   isCypress: toBoolean(process.env.CYPRESS),
   isOtelEnabled: toBoolean(parsedEnv.OTEL_ENABLED) && parsedEnv.OTEL_EXPORTER_OTLP_ENDPOINT !== '',
   isSentryEnabled: !!parsedEnv.SENTRY_DSN,
+  sentryUiUrl: getOrigin(parsedEnv.SENTRY_DSN),
 };

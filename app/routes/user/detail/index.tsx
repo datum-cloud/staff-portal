@@ -6,6 +6,7 @@ import { DangerZoneCard } from '@/components/danger-zone-card';
 import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
+import { useEnv } from '@/hooks';
 import {
   Card,
   CardContent,
@@ -23,15 +24,34 @@ import {
 } from '@/resources/request/client';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { Button } from '@datum-ui/button';
+import { Button, ButtonLink } from '@datum-ui/button';
 import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
 import { Text, Title } from '@datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { CheckIcon, RotateCcw, Shield, ShieldCheckIcon, ShieldXIcon, XIcon } from 'lucide-react';
+import {
+  CheckIcon,
+  ExternalLinkIcon,
+  RotateCcw,
+  Shield,
+  ShieldCheckIcon,
+  ShieldXIcon,
+  XIcon,
+} from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useRevalidator } from 'react-router';
 import { z } from 'zod';
+
+function getSentryIssuesUrl(baseUrl: string | undefined, userId: string): string | null {
+  if (!baseUrl) return null;
+  const query = `is:unresolved user.username:${userId}`;
+  const params = new URLSearchParams({
+    query,
+    referrer: 'issue-list',
+    statsPeriod: '24h',
+  });
+  return `${baseUrl}/organizations/sentry/issues/?${params.toString()}`;
+}
 
 const deactivateSchema = z.object({
   reason: z.string().min(5, 'Reason must be at least 5 characters'),
@@ -60,6 +80,8 @@ export default function Page() {
   );
 
   const { approveUser, pendingUser } = useUserApproval();
+  const env = useEnv();
+  const sentryIssuesUrl = getSentryIssuesUrl(env?.SENTRY_UI_URL, data?.metadata?.name ?? '');
 
   const handleDeleteUser = async () => {
     await userDeleteMutation(data.metadata?.name ?? '');
@@ -135,6 +157,18 @@ export default function Page() {
           </div>
 
           <div className="flex items-center gap-2">
+            {sentryIssuesUrl && (
+              <ButtonLink
+                href={sentryIssuesUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                theme="outline"
+                size="small"
+                icon={<ExternalLinkIcon size={16} />}
+                iconPosition="right">
+                <Trans>View in Sentry</Trans>
+              </ButtonLink>
+            )}
             {data?.status?.registrationApproval === 'Pending' ? (
               <>
                 <Button
