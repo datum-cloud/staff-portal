@@ -49,7 +49,8 @@ app.use(
       ],
       fontSrc: ["'self'", "'unsafe-inline'", 'https://*.jsdelivr.net'],
       frameSrc: ["'self'", 'https://*.marker.io', 'https://*.sentry.io', 'https://*.datum.net'],
-      imgSrc: ["'self'", 'data:'],
+      // Allow HTTPS images for email previews (Resend, Loops, and other email providers)
+      imgSrc: ["'self'", 'data:', 'https:'],
       // Allow all script types with nonce
       scriptSrc: ["'strict-dynamic'", "'self'", NONCE],
       // Allow inline scripts with nonce

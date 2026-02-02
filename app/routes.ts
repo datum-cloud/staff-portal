@@ -8,6 +8,7 @@ export default [
     // Customers
     route('customers', 'routes/customers/layout.tsx', [
       index('routes/customers/index.tsx'),
+
       // Users
       route('users', 'routes/user/layout.tsx', [
         index('routes/user/index.tsx'),
@@ -16,7 +17,10 @@ export default [
           index('routes/user/detail/index.tsx'),
           route('organizations', 'routes/user/detail/organization.tsx'),
           route('activity', 'routes/user/detail/activity.tsx'),
-          route('email-activity', 'routes/user/detail/email-activity.tsx'),
+          route('email-activity', 'routes/user/detail/email-activity/layout.tsx', [
+            index('routes/user/detail/email-activity/index.tsx'),
+            route(':namespace/:emailName', 'routes/user/detail/email-activity/detail.tsx'),
+          ]),
         ]),
       ]),
 
@@ -97,7 +101,10 @@ export default [
     ]),
 
     // Email Activity
-    route('email-activity', 'routes/email-activity.tsx'),
+    route('email-activity', 'routes/email-activity/layout.tsx', [
+      index('routes/email-activity/index.tsx'),
+      route(':namespace/:emailName', 'routes/email-activity/detail.tsx'),
+    ]),
 
     // Profile
     route('profile', 'routes/profile/layout.tsx', [
