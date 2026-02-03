@@ -20,18 +20,27 @@ export const ContactGroupForm: React.FC<Props> = ({ contactGroup }) => {
   const contactGroupSchema = z.object({
     display_name: z.string().nonempty(t`Display name is required`),
     visibility: z.enum(['public', 'private']).optional(),
+    provider_id: z.string().optional(),
+    description: z.string().optional(),
   });
 
   const onSubmit = async (value: z.infer<typeof contactGroupSchema>) => {
-    const spec: ComMiloapisNotificationV1Alpha1ContactGroup['spec'] = {
+    const baseSpec: ComMiloapisNotificationV1Alpha1ContactGroup['spec'] = {
       displayName: value.display_name,
       visibility: value.visibility || 'public',
+      ...(value.description !== undefined && { description: value.description }),
     };
 
     if (contactGroup) {
-      await contactGroupUpdateMutation(contactGroup.metadata, spec);
+      await contactGroupUpdateMutation(contactGroup.metadata, baseSpec);
       toast.success(t`Contact group updated successfully`);
     } else {
+      const spec: ComMiloapisNotificationV1Alpha1ContactGroup['spec'] = {
+        ...baseSpec,
+        ...(value.provider_id?.trim() && {
+          providers: [{ id: value.provider_id.trim(), name: 'Loops' }],
+        }),
+      };
       const data = await contactGroupCreateMutation('default', spec);
       navigate(contactGroupRoutes.detail(data.metadata?.name ?? ''));
       toast.success(t`Contact group created successfully`);
@@ -45,11 +54,30 @@ export const ContactGroupForm: React.FC<Props> = ({ contactGroup }) => {
       defaultValues={{
         display_name: contactGroup?.spec?.displayName ?? '',
         visibility: contactGroup?.spec?.visibility ?? 'public',
+        provider_id: contactGroup?.spec?.providers?.find((p) => p.name === 'Loops')?.id ?? '',
+        description: contactGroup?.spec?.description ?? '',
       }}
       onSubmit={onSubmit}>
       {(form) => (
         <>
           <Form.Input field="display_name" label={t`Display Name`} required />
+
+          <Form.Input
+            field="provider_id"
+            label={t`Provider ID`}
+            disabled={!!contactGroup}
+            description={
+              contactGroup
+                ? t`Provider ID cannot be changed after the contact group is created.`
+                : undefined
+            }
+          />
+
+          <Form.Textarea
+            field="description"
+            label={t`Description`}
+            description={t`Manually sync this description with the one in Loops (used for opt-in pages).`}
+          />
 
           <Form.Select
             field="visibility"
