@@ -184,7 +184,7 @@ msgstr ""
 #: app/features/user/components/user-reject-dialog.tsx:30
 #: app/features/quota/components/quota-grant-list.tsx:147
 #: app/features/quota/components/quota-bucket-list.tsx:153
-#: app/features/contact-group/components/contact-group-form.tsx:69
+#: app/features/contact-group/components/contact-group-form.tsx:97
 #: app/features/contact/components/contact-form.tsx:185
 #: app/components/danger-zone-card/index.tsx:49
 #: app/components/button/button-delete-action.tsx:43
@@ -221,7 +221,7 @@ msgstr ""
 msgid "Contact deleted successfully"
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:37
+#: app/features/contact-group/components/contact-group-form.tsx:46
 msgid "Contact group created successfully"
 msgstr ""
 
@@ -234,7 +234,7 @@ msgstr ""
 msgid "Contact Group Information"
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:33
+#: app/features/contact-group/components/contact-group-form.tsx:36
 msgid "Contact group updated successfully"
 msgstr ""
 
@@ -273,7 +273,7 @@ msgstr ""
 
 #: app/routes/contact-group/create.tsx:14
 #: app/routes/contact/create.tsx:14
-#: app/features/contact-group/components/contact-group-form.tsx:75
+#: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:191
 #: app/features/activity/components/activity-list.tsx:384
 #: app/features/activity/components/activity-list.tsx:438
@@ -421,6 +421,7 @@ msgstr ""
 #: app/routes/project/detail/index.tsx:42
 #: app/routes/project/detail/dns/index.tsx:82
 #: app/routes/organization/detail/index.tsx:43
+#: app/features/contact-group/components/contact-group-form.tsx:78
 msgid "Description"
 msgstr ""
 
@@ -428,7 +429,7 @@ msgstr ""
 msgid "Details"
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:52
+#: app/features/contact-group/components/contact-group-form.tsx:63
 msgid "Display Name"
 msgstr ""
 
@@ -781,6 +782,10 @@ msgstr ""
 msgid "Manage user access and account status"
 msgstr ""
 
+#: app/features/contact-group/components/contact-group-form.tsx:79
+msgid "Manually sync this description with the one in Loops (used for opt-in pages)."
+msgstr ""
+
 #: app/routes/group/member.tsx:117
 #: app/routes/contact-group/detail/member.tsx:103
 msgid "Member added successfully"
@@ -982,7 +987,7 @@ msgstr ""
 msgid "Priority of mail servers defined by MX records. Lowest value = highest priority."
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:60
+#: app/features/contact-group/components/contact-group-form.tsx:88
 msgid "Private"
 msgstr ""
 
@@ -1008,10 +1013,15 @@ msgid "Projects"
 msgstr ""
 
 #: app/features/email/components/email-detail.tsx:103
+#: app/features/contact-group/components/contact-group-form.tsx:67
 msgid "Provider ID"
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:59
+#: app/features/contact-group/components/contact-group-form.tsx:71
+msgid "Provider ID cannot be changed after the contact group is created."
+msgstr ""
+
+#: app/features/contact-group/components/contact-group-form.tsx:87
 msgid "Public"
 msgstr ""
 
@@ -1183,7 +1193,7 @@ msgstr ""
 msgid "Select timezone..."
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:57
+#: app/features/contact-group/components/contact-group-form.tsx:85
 msgid "Select visibility..."
 msgstr ""
 
@@ -1304,7 +1314,7 @@ msgid "Type a command or search..."
 msgstr ""
 
 #: app/features/quota/components/quota-bucket-list.tsx:152
-#: app/features/contact-group/components/contact-group-form.tsx:75
+#: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:191
 #: app/features/activity/components/activity-list.tsx:385
 #: app/features/activity/components/activity-list.tsx:439
@@ -1411,7 +1421,7 @@ msgid "View in Sentry"
 msgstr ""
 
 #: app/routes/contact-group/index.tsx:52
-#: app/features/contact-group/components/contact-group-form.tsx:56
+#: app/features/contact-group/components/contact-group-form.tsx:84
 msgid "Visibility"
 msgstr ""
 
