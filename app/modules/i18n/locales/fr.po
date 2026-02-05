@@ -76,18 +76,18 @@ msgstr ""
 #: app/routes/group/member.tsx:130
 #: app/routes/group/member.tsx:156
 #: app/routes/contact-group/index.tsx:101
-#: app/routes/contact-group/detail/member.tsx:113
-#: app/routes/contact-group/detail/member.tsx:139
+#: app/routes/contact-group/detail/member.tsx:147
+#: app/routes/contact-group/detail/member.tsx:173
 #: app/routes/contact/index.tsx:109
 msgid "Add"
 msgstr ""
 
 #: app/routes/group/member.tsx:155
-#: app/routes/contact-group/detail/member.tsx:138
+#: app/routes/contact-group/detail/member.tsx:172
 msgid "Add Member"
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:55
+#: app/routes/contact-group/detail/member.tsx:79
 msgid "Added"
 msgstr ""
 
@@ -126,10 +126,12 @@ msgid "Are you sure you want to delete grant \"{0}\"? This action cannot be undo
 msgstr ""
 
 #. placeholder {0}: selectedGroupMembership?.metadata?.name ?? ''
-#. placeholder {0}: selectedMembership?.spec?.contactRef?.name ?? ''
 #: app/routes/group/member.tsx:138
-#: app/routes/contact-group/detail/member.tsx:121
 msgid "Are you sure you want to delete member \"{0}\"? This action cannot be undone."
+msgstr ""
+
+#: app/routes/contact-group/detail/member.tsx:155
+msgid "Are you sure you want to delete member \"{deleteMemberDisplayName}\"? This action cannot be undone."
 msgstr ""
 
 #. placeholder {0}: data.metadata?.annotations?.['kubernetes.io/display-name'] ?? ''
@@ -178,8 +180,8 @@ msgstr ""
 #: app/routes/group/member.tsx:140
 #: app/routes/group/member.tsx:157
 #: app/routes/contact-group/index.tsx:111
-#: app/routes/contact-group/detail/member.tsx:123
-#: app/routes/contact-group/detail/member.tsx:140
+#: app/routes/contact-group/detail/member.tsx:157
+#: app/routes/contact-group/detail/member.tsx:174
 #: app/routes/contact/index.tsx:119
 #: app/features/user/components/user-reject-dialog.tsx:30
 #: app/features/quota/components/quota-grant-list.tsx:147
@@ -247,8 +249,8 @@ msgstr ""
 msgid "Contact Groups - Create"
 msgstr ""
 
-#: app/routes/contact/edit.tsx:54
 #: app/routes/contact/create.tsx:25
+#: app/routes/contact/detail/index.tsx:24
 msgid "Contact Information"
 msgstr ""
 
@@ -358,7 +360,7 @@ msgstr ""
 #: app/routes/profile/session.tsx:99
 #: app/routes/group/member.tsx:139
 #: app/routes/contact-group/index.tsx:110
-#: app/routes/contact-group/detail/member.tsx:122
+#: app/routes/contact-group/detail/member.tsx:156
 #: app/routes/contact/index.tsx:118
 #: app/features/quota/components/quota-grant-list.tsx:146
 #: app/features/activity/components/activity-list.tsx:387
@@ -390,7 +392,7 @@ msgid "Delete Grant"
 msgstr ""
 
 #: app/routes/group/member.tsx:137
-#: app/routes/contact-group/detail/member.tsx:120
+#: app/routes/contact-group/detail/member.tsx:154
 msgid "Delete Member"
 msgstr ""
 
@@ -426,6 +428,7 @@ msgid "Description"
 msgstr ""
 
 #: app/routes/contact-group/detail/layout.tsx:34
+#: app/routes/contact/detail/layout.tsx:45
 msgid "Details"
 msgstr ""
 
@@ -481,6 +484,7 @@ msgstr ""
 
 #: app/routes/user/index.tsx:208
 #: app/routes/user/detail/index.tsx:254
+#: app/routes/contact-group/detail/member.tsx:64
 #: app/routes/contact/index.tsx:55
 #: app/features/contact/components/contact-form.tsx:122
 msgid "Email"
@@ -524,7 +528,7 @@ msgid "Enter reason for rejection..."
 msgstr ""
 
 #: app/routes/group/member.tsx:164
-#: app/routes/contact-group/detail/member.tsx:147
+#: app/routes/contact-group/detail/member.tsx:181
 #: app/features/contact/components/contact-form.tsx:164
 msgid "Enter the full email to search..."
 msgstr ""
@@ -634,6 +638,8 @@ msgstr ""
 
 #: app/routes/group/layout.tsx:5
 #: app/routes/group/index.tsx:22
+#: app/routes/contact/detail/layout.tsx:53
+#: app/routes/contact/detail/group.tsx:18
 #: app/components/app-sidebar/index.tsx:127
 #: app/components/app-sidebar/index.tsx:133
 msgid "Groups"
@@ -697,6 +703,7 @@ msgid "Irreversible and destructive actions"
 msgstr ""
 
 #: app/routes/user/detail/organization.tsx:46
+#: app/routes/contact/detail/group.tsx:69
 msgid "Joined"
 msgstr ""
 
@@ -787,18 +794,18 @@ msgid "Manually sync this description with the one in Loops (used for opt-in pag
 msgstr ""
 
 #: app/routes/group/member.tsx:117
-#: app/routes/contact-group/detail/member.tsx:103
+#: app/routes/contact-group/detail/member.tsx:137
 msgid "Member added successfully"
 msgstr ""
 
 #: app/routes/group/member.tsx:148
-#: app/routes/contact-group/detail/member.tsx:131
+#: app/routes/contact-group/detail/member.tsx:165
 msgid "Member deleted successfully"
 msgstr ""
 
 #: app/routes/organization/detail/member.tsx:30
 #: app/routes/organization/detail/layout.tsx:47
-#: app/routes/contact-group/detail/member.tsx:30
+#: app/routes/contact-group/detail/member.tsx:31
 #: app/routes/contact-group/detail/layout.tsx:39
 msgid "Members"
 msgstr ""
@@ -836,13 +843,14 @@ msgstr ""
 #: app/routes/group/member.tsx:53
 #: app/routes/group/index.tsx:28
 #: app/routes/contact-group/index.tsx:38
-#: app/routes/contact-group/detail/member.tsx:41
+#: app/routes/contact-group/detail/member.tsx:43
 #: app/routes/contact/index.tsx:38
+#: app/routes/contact/detail/group.tsx:30
 #: app/features/quota/components/quota-grant-list.tsx:43
 msgid "Name"
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:93
+#: app/routes/contact-group/detail/member.tsx:127
 msgid "Name is required"
 msgstr ""
 
@@ -1250,7 +1258,9 @@ msgstr ""
 #: app/routes/project/detail/domain/index.tsx:60
 #: app/routes/project/detail/domain/detail.tsx:115
 #: app/routes/contact-group/index.tsx:58
+#: app/routes/contact-group/detail/member.tsx:69
 #: app/routes/contact/index.tsx:64
+#: app/routes/contact/detail/group.tsx:55
 #: app/features/quota/components/quota-grant-list.tsx:75
 #: app/features/email/components/email-list.tsx:63
 #: app/features/email/components/email-list.tsx:144
@@ -1421,6 +1431,7 @@ msgid "View in Sentry"
 msgstr ""
 
 #: app/routes/contact-group/index.tsx:52
+#: app/routes/contact/detail/group.tsx:47
 #: app/features/contact-group/components/contact-group-form.tsx:84
 msgid "Visibility"
 msgstr ""

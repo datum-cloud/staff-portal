@@ -8,3 +8,4 @@ export * from './dns.schema';
 export * from './secret.schema';
 export * from './membership.schema';
 export * from './control-plane.schema';
+export * from './contact.schema';

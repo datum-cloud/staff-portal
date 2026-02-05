@@ -81,7 +81,10 @@ export default [
     route('contacts', 'routes/contact/layout.tsx', [
       index('routes/contact/index.tsx'),
       route('create', 'routes/contact/create.tsx'),
-      route(':namespace/:contactName', 'routes/contact/edit.tsx'),
+      route(':namespace/:contactName', 'routes/contact/detail/layout.tsx', [
+        index('routes/contact/detail/index.tsx'),
+        route('groups', 'routes/contact/detail/group.tsx'),
+      ]),
     ]),
 
     // Contact Groups

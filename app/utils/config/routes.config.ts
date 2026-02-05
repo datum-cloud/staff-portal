@@ -69,7 +69,8 @@ export const groupRoutes = {
 export const contactRoutes = {
   list: () => '/contacts',
   create: () => '/contacts/create',
-  edit: (namespace: string, contactName: string) => `/contacts/${namespace}/${contactName}`,
+  detail: (namespace: string, contactName: string) => `/contacts/${namespace}/${contactName}`,
+  group: (namespace: string, contactName: string) => `/contacts/${namespace}/${contactName}/groups`,
 } as const;
 
 export const contactGroupRoutes = {

@@ -46,7 +46,7 @@ const columns = [
         <DisplayName
           displayName={displayName || contactName}
           name={contactName}
-          to={contactRoutes.edit(row.original.metadata?.namespace ?? '', contactName)}
+          to={contactRoutes.detail(row.original.metadata?.namespace ?? '', contactName)}
         />
       );
     },
@@ -88,7 +88,7 @@ export default function Page() {
       label: 'Edit',
       icon: EditIcon,
       onClick: (row) => {
-        navigate(contactRoutes.edit(row.metadata?.namespace ?? '', row.metadata?.name ?? ''));
+        navigate(contactRoutes.detail(row.metadata?.namespace ?? '', row.metadata?.name ?? ''));
       },
     },
     {

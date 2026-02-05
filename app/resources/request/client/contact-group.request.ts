@@ -7,8 +7,8 @@ import {
   deleteNotificationMiloapisComV1Alpha1NamespacedContactGroup,
   deleteNotificationMiloapisComV1Alpha1NamespacedContactGroupMembership,
   listNotificationMiloapisComV1Alpha1ContactGroupForAllNamespaces,
-  listNotificationMiloapisComV1Alpha1ContactGroupMembershipForAllNamespaces,
   patchNotificationMiloapisComV1Alpha1NamespacedContactGroup,
+  readNotificationMiloapisComV1Alpha1NamespacedContactGroup,
 } from '@openapi/notification.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
 
@@ -18,6 +18,13 @@ export const contactGroupListQuery = async (params?: ListQueryParams) => {
       limit: params?.limit,
       continue: params?.cursor,
     },
+  });
+  return response.data.data;
+};
+
+export const contactGroupDetailQuery = async (name: string, namespace: string = 'default') => {
+  const response = await readNotificationMiloapisComV1Alpha1NamespacedContactGroup({
+    path: { namespace, name },
   });
   return response.data.data;
 };
@@ -69,19 +76,6 @@ export const contactGroupDeleteMutation = (
       name: metadata?.name ?? '',
     },
   });
-};
-
-export const contactGroupMembershipListQuery = async (
-  params?: ListQueryParams<{ fieldSelector?: string }>
-) => {
-  const response = await listNotificationMiloapisComV1Alpha1ContactGroupMembershipForAllNamespaces({
-    query: {
-      limit: params?.limit,
-      continue: params?.cursor,
-      ...(params?.filters?.fieldSelector && { fieldSelector: params.filters.fieldSelector }),
-    },
-  });
-  return response.data.data;
 };
 
 export const contactGroupMembershipCreateMutation = async (

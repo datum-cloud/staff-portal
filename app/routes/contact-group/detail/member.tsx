@@ -1,6 +1,7 @@
 import { getContactGroupDetailMetadata, useContactGroupDetailData } from '../shared';
 import type { Route } from './+types/member';
 import AppActionBar from '@/components/app-actiobar';
+import { BadgeCondition } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
@@ -8,8 +9,12 @@ import { useContactSearch } from '@/hooks';
 import {
   contactGroupMembershipCreateMutation,
   contactGroupMembershipDeleteMutation,
-  contactGroupMembershipListQuery,
+  contactMembershipForGroupListQuery,
 } from '@/resources/request/client';
+import {
+  ContactGroupMembershipListWithContacts,
+  ContactGroupMembershipWithContact,
+} from '@/resources/schemas';
 import { contactRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-ui/button';
@@ -17,13 +22,9 @@ import { ActionItem, DataTable, DataTableProvider, useDataTableQuery } from '@da
 import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
 import { Trans, useLingui } from '@lingui/react/macro';
-import {
-  ComMiloapisNotificationV1Alpha1ContactGroupMembership,
-  ComMiloapisNotificationV1Alpha1ContactGroupMembershipList,
-} from '@openapi/notification.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import z from 'zod';
 
 export const handle = {
@@ -35,19 +36,42 @@ export const meta: Route.MetaFunction = ({ matches }) => {
   return metaObject(`Members - ${contactGroupName}`);
 };
 
-const columnHelper = createColumnHelper<ComMiloapisNotificationV1Alpha1ContactGroupMembership>();
+const columnHelper = createColumnHelper<ContactGroupMembershipWithContact>();
 const columns = [
-  columnHelper.accessor('spec.contactRef.name', {
+  columnHelper.display({
+    id: 'name',
     header: () => <Trans>Name</Trans>,
     cell: ({ row }) => {
-      const namespace = row.original.spec?.contactRef?.namespace ?? '';
-      const contactName = row.original.spec?.contactRef?.name ?? '';
+      const contact = row.original.contact;
+      const contactNamespace =
+        contact?.metadata?.namespace ?? row.original.spec?.contactRef?.namespace;
+      const contactName = contact?.metadata?.name ?? row.original.spec?.contactRef?.name;
+      const displayName = [contact?.spec?.givenName, contact?.spec?.familyName]
+        .filter(Boolean)
+        .join(' ');
+
       return (
         <DisplayName
-          displayName={contactName}
+          displayName={displayName || contactName || ''}
           name={contactName}
-          to={contactRoutes.edit(namespace, contactName)}
+          to={contactRoutes.detail(contactNamespace ?? '', contactName ?? '')}
         />
+      );
+    },
+  }),
+  columnHelper.display({
+    id: 'email',
+    header: () => <Trans>Email</Trans>,
+    cell: ({ row }) => row.original.contact?.spec?.email ?? '—',
+  }),
+  columnHelper.display({
+    id: 'status',
+    header: () => <Trans>Status</Trans>,
+    cell: ({ row }) => {
+      const contact = row.original.contact;
+      if (!contact?.status) return '—';
+      return (
+        <BadgeCondition status={contact.status} multiple={false} showMessage className="text-xs" />
       );
     },
   }),
@@ -61,7 +85,7 @@ export default function Page() {
   const { t } = useLingui();
   const data = useContactGroupDetailData();
   const [selectedMembership, setSelectedMembership] =
-    useState<ComMiloapisNotificationV1Alpha1ContactGroupMembership | null>(null);
+    useState<ContactGroupMembershipWithContact | null>(null);
   const [isAddMember, setIsAddMember] = useState(false);
 
   const {
@@ -70,17 +94,17 @@ export default function Page() {
     setSearch: setContactSearch,
   } = useContactSearch();
 
-  const tableState = useDataTableQuery<ComMiloapisNotificationV1Alpha1ContactGroupMembershipList>({
+  const tableState = useDataTableQuery<ContactGroupMembershipListWithContacts>({
     queryKeyPrefix: ['contact-groups', data.metadata?.name ?? '', 'members'],
     fetchFn: (params) =>
-      contactGroupMembershipListQuery({
+      contactMembershipForGroupListQuery({
         ...params,
         filters: { fieldSelector: `spec.contactGroupRef.name=${data.metadata?.name ?? ''}` },
       }),
     useSorting: true,
   });
 
-  const actions: ActionItem<ComMiloapisNotificationV1Alpha1ContactGroupMembership>[] = [
+  const actions: ActionItem<ContactGroupMembershipWithContact>[] = [
     {
       label: 'Delete',
       icon: Trash2Icon,
@@ -88,6 +112,16 @@ export default function Page() {
       onClick: (row) => setSelectedMembership(row),
     },
   ];
+
+  const deleteMemberDisplayName = useMemo(() => {
+    if (!selectedMembership) return '';
+    const contact = selectedMembership.contact;
+    if (contact) {
+      const name = [contact.spec?.givenName, contact.spec?.familyName].filter(Boolean).join(' ');
+      return name || (selectedMembership.spec?.contactRef?.name ?? '');
+    }
+    return selectedMembership.spec?.contactRef?.name ?? '';
+  }, [selectedMembership]);
 
   const addMemberSchema = z.object({
     name: z.string().nonempty(t`Name is required`),
@@ -118,7 +152,7 @@ export default function Page() {
         open={!!selectedMembership}
         onOpenChange={() => setSelectedMembership(null)}
         title={t`Delete Member`}
-        description={t`Are you sure you want to delete member "${selectedMembership?.spec?.contactRef?.name ?? ''}"? This action cannot be undone.`}
+        description={t`Are you sure you want to delete member "${deleteMemberDisplayName}"? This action cannot be undone.`}
         confirmText={t`Delete`}
         cancelText={t`Cancel`}
         variant="destructive"
@@ -152,10 +186,7 @@ export default function Page() {
         />
       </DialogForm>
 
-      <DataTableProvider<
-        ComMiloapisNotificationV1Alpha1ContactGroupMembership,
-        ComMiloapisNotificationV1Alpha1ContactGroupMembershipList
-      >
+      <DataTableProvider<ContactGroupMembershipWithContact, ContactGroupMembershipListWithContacts>
         {...tableState}
         columns={columns}
         actions={actions}
