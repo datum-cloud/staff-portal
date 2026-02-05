@@ -10,3 +10,4 @@ export * from './identity.request';
 export * from './contact.request';
 export * from './group.request';
 export * from './contact-group.request';
+export * from './contact-membership.request';

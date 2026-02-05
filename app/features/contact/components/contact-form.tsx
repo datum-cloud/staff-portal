@@ -97,7 +97,7 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
         );
       }
 
-      navigate(contactRoutes.edit(contactNamespace, contactName));
+      navigate(contactRoutes.detail(contactNamespace, contactName));
       toast.success(t`Contact created successfully`);
     }
   };

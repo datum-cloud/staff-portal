@@ -4,6 +4,7 @@ import {
   deleteNotificationMiloapisComV1Alpha1NamespacedContact,
   listNotificationMiloapisComV1Alpha1ContactForAllNamespaces,
   patchNotificationMiloapisComV1Alpha1NamespacedContact,
+  readNotificationMiloapisComV1Alpha1NamespacedContact,
   type ComMiloapisNotificationV1Alpha1Contact,
 } from '@openapi/notification.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
@@ -15,6 +16,13 @@ export const contactListQuery = async (params?: ListQueryParams) => {
       continue: params?.cursor,
       ...(params?.search && { fieldSelector: `spec.email=${params.search}` }),
     },
+  });
+  return response.data.data;
+};
+
+export const contactDetailQuery = async (name: string, namespace: string = 'default') => {
+  const response = await readNotificationMiloapisComV1Alpha1NamespacedContact({
+    path: { namespace, name },
   });
   return response.data.data;
 };
