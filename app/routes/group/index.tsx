@@ -40,6 +40,7 @@ const columns = [
     },
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
+    id: 'metadata.creationTimestamp',
     header: () => <Trans>Created</Trans>,
     cell: ({ getValue }) => <DateTime date={getValue()} />,
   }),
@@ -49,6 +50,7 @@ export default function Page() {
   const tableState = useClientDataTableQuery<ComMiloapisIamV1Alpha1GroupList>({
     queryKeyPrefix: 'groups',
     fetchFn: () => groupListQuery(),
+    defaultSort: ['metadata.creationTimestamp:desc'],
     useSorting: true,
     useSearch: true,
   });

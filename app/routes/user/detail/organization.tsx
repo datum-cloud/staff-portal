@@ -43,6 +43,7 @@ const columns = [
     cell: ({ getValue }) => <BadgeState state={getValue() ?? ''} />,
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
+    id: 'metadata.creationTimestamp',
     header: () => <Trans>Joined</Trans>,
     cell: ({ getValue }) => <DateTime date={getValue()} />,
   }),
@@ -64,6 +65,7 @@ export default function Page() {
     useClientDataTableQuery<ComMiloapisResourcemanagerV1Alpha1OrganizationMembershipList>({
       queryKeyPrefix: ['users', data.metadata?.name ?? '', 'organizations'],
       fetchFn: () => userOrgListQuery(data.metadata?.name ?? ''),
+      defaultSort: ['metadata.creationTimestamp:desc'],
       useSorting: true,
       useSearch: true,
     });

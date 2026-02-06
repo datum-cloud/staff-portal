@@ -61,6 +61,7 @@ const columns = [
     ),
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
+    id: 'metadata.creationTimestamp',
     header: () => <Trans>Created</Trans>,
     cell: ({ getValue }) => <DateTime date={getValue()} />,
   }),
@@ -71,6 +72,7 @@ export default function Page() {
   const [selectedContactGroup, setSelectedContactGroup] =
     useState<ComMiloapisNotificationV1Alpha1ContactGroup | null>(null);
   const tableState = useClientDataTableQuery<ComMiloapisNotificationV1Alpha1ContactGroupList>({
+    defaultSort: ['metadata.creationTimestamp:desc'],
     useSorting: true,
     useSearch: true,
     queryKeyPrefix: 'contact-groups',

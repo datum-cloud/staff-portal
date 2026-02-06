@@ -64,6 +64,7 @@ const columns = [
     cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Unknown'} />,
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
+    id: 'metadata.creationTimestamp',
     header: () => <Trans>Created</Trans>,
     cell: ({ getValue }) => <DateTime date={getValue()} />,
   }),
@@ -80,6 +81,7 @@ export default function Page() {
   const tableState = useClientDataTableQuery<ComMiloapisIamV1Alpha1UserList>({
     queryKeyPrefix: 'users',
     fetchFn: userListQuery,
+    defaultSort: ['metadata.creationTimestamp:desc'],
     useSorting: true,
     useFilters: true,
     useSearch: true,

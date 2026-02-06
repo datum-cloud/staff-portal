@@ -39,6 +39,7 @@ export default function EmailList({
   const tableState = useClientDataTableQuery<ComMiloapisNotificationV1Alpha1EmailList>({
     queryKeyPrefix,
     fetchFn,
+    defaultSort: ['metadata.creationTimestamp:desc'],
     useSorting: true,
     useFilters: true,
     useSearch: true,
@@ -68,7 +69,6 @@ export default function EmailList({
           <BadgeState
             state={condition?.status?.toLowerCase() ?? ''}
             message={startCase(condition?.reason ?? '')}
-            tooltip={condition?.message}
           />
         );
       },
@@ -87,6 +87,7 @@ export default function EmailList({
       },
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
+      id: 'metadata.creationTimestamp',
       header: () => <Trans>Sent</Trans>,
       cell: ({ getValue }) => {
         return <DateTime date={getValue()} />;
