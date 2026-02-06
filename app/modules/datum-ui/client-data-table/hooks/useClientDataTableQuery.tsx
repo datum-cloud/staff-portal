@@ -30,6 +30,8 @@ export interface UseClientDataTableQueryOptions<TQuery> {
   queryKeyPrefix: string | string[];
   fetchFn: (args?: FetchArgs) => Promise<TQuery>;
   initialPageSize?: number;
+  /** Default sort when no sort param in URL. Each item: "columnId:asc" or "columnId:desc" */
+  defaultSort?: string[];
   useSorting?: boolean;
   useFilters?: boolean;
   useSearch?: boolean;
@@ -116,6 +118,7 @@ export function useClientDataTableQuery<TQuery>({
   queryKeyPrefix,
   fetchFn,
   initialPageSize = 20,
+  defaultSort,
   useSorting = true,
   useFilters = false,
   useSearch = false,
@@ -138,7 +141,7 @@ export function useClientDataTableQuery<TQuery>({
   );
   const [sortRaw, setSortRaw] = useQueryState(
     getParamName('sort'),
-    parseAsArrayOf(parseAsString).withDefault([])
+    parseAsArrayOf(parseAsString).withDefault(defaultSort ?? [])
   );
   const [filtersRaw, setFiltersRaw] = useQueryState(
     getParamName('filters'),

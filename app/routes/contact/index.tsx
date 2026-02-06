@@ -67,6 +67,7 @@ const columns = [
     ),
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
+    id: 'metadata.creationTimestamp',
     header: () => <Trans>Created</Trans>,
     cell: ({ getValue }) => <DateTime date={getValue()} />,
   }),
@@ -77,6 +78,7 @@ export default function Page() {
   const [selectedContact, setSelectedContact] =
     useState<ComMiloapisNotificationV1Alpha1Contact | null>(null);
   const tableState = useClientDataTableQuery<ComMiloapisNotificationV1Alpha1ContactList>({
+    defaultSort: ['metadata.creationTimestamp:desc'],
     useSorting: true,
     useSearch: true,
     queryKeyPrefix: 'contacts',

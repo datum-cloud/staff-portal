@@ -48,6 +48,7 @@ const columns = [
     },
   }),
   columnHelper.accessor('metadata.creationTimestamp', {
+    id: 'metadata.creationTimestamp',
     header: () => <Trans>Created</Trans>,
     cell: ({ getValue }) => {
       return <DateTime date={getValue()} />;
@@ -59,6 +60,7 @@ export default function Page() {
   const tableState = useClientDataTableQuery<ComMiloapisResourcemanagerV1Alpha1ProjectList>({
     queryKeyPrefix: 'projects',
     fetchFn: projectListQuery,
+    defaultSort: ['metadata.creationTimestamp:desc'],
     useSorting: true,
     useSearch: true,
   });
