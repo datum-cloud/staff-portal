@@ -63,7 +63,7 @@ msgid "Active Sessions"
 msgstr "Active Sessions"
 
 #: app/routes/activity.tsx:11
-#: app/routes/user/detail/layout.tsx:47
+#: app/routes/user/detail/layout.tsx:52
 #: app/routes/user/detail/activity.tsx:8
 #: app/routes/project/detail/layout.tsx:107
 #: app/routes/project/detail/activity.tsx:8
@@ -78,7 +78,7 @@ msgstr "Activity"
 #: app/routes/contact-group/index.tsx:103
 #: app/routes/contact-group/detail/member.tsx:147
 #: app/routes/contact-group/detail/member.tsx:173
-#: app/routes/contact/index.tsx:111
+#: app/routes/contact/index.tsx:27
 msgid "Add"
 msgstr "Add"
 
@@ -116,7 +116,7 @@ msgstr "Approved"
 #. placeholder {0}: selectedContactGroup?.spec?.displayName ?? ''
 #. placeholder {0}: selectedContact?.metadata?.name ?? ''
 #: app/routes/contact-group/index.tsx:111
-#: app/routes/contact/index.tsx:119
+#: app/features/contact/components/contact-list.tsx:116
 msgid "Are you sure you want to delete contact \"{0}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete contact \"{0}\"? This action cannot be undone."
 
@@ -182,11 +182,11 @@ msgstr "Auto-managed by policy \"{policyName}\". Cannot be deleted."
 #: app/routes/contact-group/index.tsx:113
 #: app/routes/contact-group/detail/member.tsx:157
 #: app/routes/contact-group/detail/member.tsx:174
-#: app/routes/contact/index.tsx:121
 #: app/features/user/components/user-reject-dialog.tsx:30
 #: app/features/quota/components/quota-grant-list.tsx:147
 #: app/features/quota/components/quota-bucket-list.tsx:153
 #: app/features/contact-group/components/contact-group-form.tsx:97
+#: app/features/contact/components/contact-list.tsx:118
 #: app/features/contact/components/contact-form.tsx:185
 #: app/components/danger-zone-card/index.tsx:49
 #: app/components/button/button-delete-action.tsx:43
@@ -219,7 +219,7 @@ msgstr "Configuration"
 msgid "Contact created successfully"
 msgstr "Contact created successfully"
 
-#: app/routes/contact/index.tsx:129
+#: app/features/contact/components/contact-list.tsx:127
 msgid "Contact deleted successfully"
 msgstr "Contact deleted successfully"
 
@@ -258,8 +258,10 @@ msgstr "Contact Information"
 msgid "Contact updated successfully"
 msgstr "Contact updated successfully"
 
+#: app/routes/user/detail/layout.tsx:42
+#: app/routes/user/detail/contacts.tsx:9
 #: app/routes/contact/layout.tsx:5
-#: app/routes/contact/index.tsx:32
+#: app/routes/contact/index.tsx:14
 #: app/components/app-sidebar/index.tsx:117
 #: app/components/app-sidebar/index.tsx:123
 msgid "Contacts"
@@ -301,9 +303,9 @@ msgstr "Create"
 #: app/routes/group/member.tsx:68
 #: app/routes/group/index.tsx:44
 #: app/routes/contact-group/index.tsx:65
-#: app/routes/contact/index.tsx:71
 #: app/features/quota/components/quota-grant-list.tsx:81
 #: app/features/quota/components/quota-bucket-list.tsx:84
+#: app/features/contact/components/contact-list.tsx:58
 msgid "Created"
 msgstr "Created"
 
@@ -361,8 +363,8 @@ msgstr "Deactivation Reason:"
 #: app/routes/group/member.tsx:139
 #: app/routes/contact-group/index.tsx:112
 #: app/routes/contact-group/detail/member.tsx:156
-#: app/routes/contact/index.tsx:120
 #: app/features/quota/components/quota-grant-list.tsx:146
+#: app/features/contact/components/contact-list.tsx:117
 #: app/features/activity/components/activity-list.tsx:387
 #: app/features/activity/components/activity-list.tsx:441
 #: app/features/activity/components/activity-list.tsx:460
@@ -383,7 +385,7 @@ msgid "Delete Collection"
 msgstr "Delete Collection"
 
 #: app/routes/contact-group/index.tsx:110
-#: app/routes/contact/index.tsx:118
+#: app/features/contact/components/contact-list.tsx:115
 msgid "Delete Contact"
 msgstr "Delete Contact"
 
@@ -415,8 +417,8 @@ msgstr "Delete Session"
 msgid "Delete User"
 msgstr "Delete User"
 
-#: app/features/email/components/email-list.tsx:148
-#: app/features/email/components/email-list.tsx:178
+#: app/features/email/components/email-list.tsx:143
+#: app/features/email/components/email-list.tsx:173
 msgid "Delivered"
 msgstr "Delivered"
 
@@ -485,15 +487,15 @@ msgstr "Edit Quota"
 #: app/routes/user/index.tsx:210
 #: app/routes/user/detail/index.tsx:254
 #: app/routes/contact-group/detail/member.tsx:64
-#: app/routes/contact/index.tsx:55
+#: app/features/contact/components/contact-list.tsx:47
 #: app/features/contact/components/contact-form.tsx:122
 msgid "Email"
 msgstr "Email"
 
-#: app/routes/user/detail/layout.tsx:42
-#: app/routes/user/detail/email-activity/layout.tsx:5
+#: app/routes/user/detail/layout.tsx:47
+#: app/routes/user/detail/email-activity.tsx:9
 #: app/routes/email-activity/layout.tsx:5
-#: app/routes/email-activity/index.tsx:13
+#: app/routes/email-activity/index.tsx:12
 #: app/components/app-sidebar/index.tsx:139
 msgid "Email Activity"
 msgstr "Email Activity"
@@ -551,8 +553,8 @@ msgstr "Expires"
 msgid "Export Policies"
 msgstr "Export Policies"
 
-#: app/features/email/components/email-list.tsx:149
-#: app/features/email/components/email-list.tsx:179
+#: app/features/email/components/email-list.tsx:144
+#: app/features/email/components/email-list.tsx:174
 msgid "Failed"
 msgstr "Failed"
 
@@ -580,11 +582,11 @@ msgstr "Filter by action"
 msgid "Filter by approval"
 msgstr "Filter by approval"
 
-#: app/features/email/components/email-list.tsx:136
+#: app/features/email/components/email-list.tsx:131
 msgid "Filter by priority"
 msgstr "Filter by priority"
 
-#: app/features/email/components/email-list.tsx:146
+#: app/features/email/components/email-list.tsx:141
 msgid "Filter by status"
 msgstr "Filter by status"
 
@@ -645,8 +647,8 @@ msgstr "Grants"
 msgid "Groups"
 msgstr "Groups"
 
-#: app/features/email/components/email-list.tsx:139
-#: app/features/email/components/email-list.tsx:169
+#: app/features/email/components/email-list.tsx:134
+#: app/features/email/components/email-list.tsx:164
 msgid "High"
 msgstr "High"
 
@@ -771,8 +773,8 @@ msgstr "Log out of Datum"
 msgid "Log out of GitHub"
 msgstr "Log out of GitHub"
 
-#: app/features/email/components/email-list.tsx:140
-#: app/features/email/components/email-list.tsx:170
+#: app/features/email/components/email-list.tsx:135
+#: app/features/email/components/email-list.tsx:165
 msgid "Low"
 msgstr "Low"
 
@@ -844,9 +846,9 @@ msgstr "My Profile"
 #: app/routes/group/index.tsx:28
 #: app/routes/contact-group/index.tsx:38
 #: app/routes/contact-group/detail/member.tsx:43
-#: app/routes/contact/index.tsx:38
 #: app/routes/contact/detail/group.tsx:30
 #: app/features/quota/components/quota-grant-list.tsx:43
+#: app/features/contact/components/contact-list.tsx:30
 msgid "Name"
 msgstr "Name"
 
@@ -880,8 +882,8 @@ msgstr "No results found."
 msgid "No users yet"
 msgstr "No users yet"
 
-#: app/features/email/components/email-list.tsx:138
-#: app/features/email/components/email-list.tsx:168
+#: app/features/email/components/email-list.tsx:133
+#: app/features/email/components/email-list.tsx:163
 msgid "Normal"
 msgstr "Normal"
 
@@ -930,8 +932,8 @@ msgstr "Patch"
 
 #: app/routes/user/index.tsx:267
 #: app/routes/user/index.tsx:286
-#: app/features/email/components/email-list.tsx:150
-#: app/features/email/components/email-list.tsx:180
+#: app/features/email/components/email-list.tsx:145
+#: app/features/email/components/email-list.tsx:175
 msgid "Pending"
 msgstr "Pending"
 
@@ -985,8 +987,8 @@ msgstr "Portal Preferences"
 msgid "Preview"
 msgstr "Preview"
 
-#: app/features/email/components/email-list.tsx:135
-#: app/features/email/components/email-list.tsx:162
+#: app/features/email/components/email-list.tsx:130
+#: app/features/email/components/email-list.tsx:157
 #: app/features/email/components/email-detail.tsx:93
 msgid "Priority"
 msgstr "Priority"
@@ -1072,7 +1074,7 @@ msgstr "Reason for deactivation"
 msgid "Reason for rejection"
 msgstr "Reason for rejection"
 
-#: app/features/email/components/email-list.tsx:50
+#: app/features/email/components/email-list.tsx:45
 msgid "Recipient"
 msgstr "Recipient"
 
@@ -1153,11 +1155,11 @@ msgstr "Search activity..."
 msgid "Search contact groups..."
 msgstr "Search contact groups..."
 
-#: app/routes/contact/index.tsx:150
+#: app/features/contact/components/contact-list.tsx:142
 msgid "Search contacts..."
 msgstr "Search contacts..."
 
-#: app/features/email/components/email-list.tsx:132
+#: app/features/email/components/email-list.tsx:127
 msgid "Search email activity..."
 msgstr "Search email activity..."
 
@@ -1209,7 +1211,7 @@ msgstr "Select visibility..."
 msgid "Selected Filters"
 msgstr "Selected Filters"
 
-#: app/features/email/components/email-list.tsx:91
+#: app/features/email/components/email-list.tsx:86
 #: app/features/email/components/email-detail.tsx:81
 msgid "Sent"
 msgstr "Sent"
@@ -1259,17 +1261,17 @@ msgstr "Start Time"
 #: app/routes/project/detail/domain/detail.tsx:115
 #: app/routes/contact-group/index.tsx:58
 #: app/routes/contact-group/detail/member.tsx:69
-#: app/routes/contact/index.tsx:64
 #: app/routes/contact/detail/group.tsx:55
 #: app/features/quota/components/quota-grant-list.tsx:75
-#: app/features/email/components/email-list.tsx:64
-#: app/features/email/components/email-list.tsx:145
-#: app/features/email/components/email-list.tsx:163
+#: app/features/email/components/email-list.tsx:59
+#: app/features/email/components/email-list.tsx:140
+#: app/features/email/components/email-list.tsx:158
 #: app/features/email/components/email-detail.tsx:57
+#: app/features/contact/components/contact-list.tsx:51
 msgid "Status"
 msgstr "Status"
 
-#: app/features/email/components/email-list.tsx:77
+#: app/features/email/components/email-list.tsx:72
 #: app/features/email/components/email-detail.tsx:47
 msgid "Subject"
 msgstr "Subject"

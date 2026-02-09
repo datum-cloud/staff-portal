@@ -5,7 +5,7 @@ import { userDetailQuery } from '@/resources/request/server';
 import { userRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
-import { Building2, FileText, MailSearch, SquareActivity } from 'lucide-react';
+import { Building2, Contact, FileText, MailSearch, SquareActivity } from 'lucide-react';
 import { Outlet, useLoaderData } from 'react-router';
 
 export const handle = {
@@ -39,8 +39,13 @@ export default function Layout() {
       icon: Building2,
     },
     {
+      title: t`Contacts`,
+      href: userRoutes.contacts(data.metadata?.name ?? ''),
+      icon: Contact,
+    },
+    {
       title: t`Email Activity`,
-      href: userRoutes.emailActivity.list(data.metadata?.name ?? ''),
+      href: userRoutes.emailActivity(data.metadata?.name ?? ''),
       icon: MailSearch,
     },
     {

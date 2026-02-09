@@ -1,9 +1,13 @@
-import type { Route } from './+types/index';
+import type { Route } from './+types/email-activity';
 import { EmailList } from '@/features/email';
 import { userEmailListQuery } from '@/resources/request/client';
 import { getUserDetailMetadata, useUserDetailData } from '@/routes/user/shared';
-import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { Trans } from '@lingui/react/macro';
+
+export const handle = {
+  breadcrumb: () => <Trans>Email Activity</Trans>,
+};
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const { userName } = getUserDetailMetadata(matches);
@@ -17,9 +21,6 @@ export default function Page() {
     <EmailList
       queryKeyPrefix={['users', data.metadata?.name ?? '', 'email-activity']}
       fetchFn={() => userEmailListQuery(data.metadata?.name ?? '', data.spec?.email ?? '')}
-      detailPath={(namespace, emailName) =>
-        userRoutes.emailActivity.detail(data.metadata?.name ?? '', namespace, emailName)
-      }
     />
   );
 }

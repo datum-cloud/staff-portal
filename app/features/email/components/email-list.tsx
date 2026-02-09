@@ -1,6 +1,7 @@
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { getEmailCondition } from '@/features/email/email-utils';
+import { routes } from '@/utils/config/routes.config';
 import { startCase } from '@/utils/helpers';
 import {
   ClientDataTable,
@@ -24,18 +25,12 @@ import { Link } from 'react-router';
 interface EmailListProps {
   queryKeyPrefix: string | string[];
   fetchFn: () => Promise<ComMiloapisNotificationV1Alpha1EmailList>;
-  detailPath: (namespace: string, emailName: string) => string;
   searchPlaceholder?: string;
 }
 
 const columnHelper = createColumnHelper<ComMiloapisNotificationV1Alpha1Email>();
 
-export default function EmailList({
-  queryKeyPrefix,
-  fetchFn,
-  searchPlaceholder,
-  detailPath,
-}: EmailListProps) {
+export default function EmailList({ queryKeyPrefix, fetchFn, searchPlaceholder }: EmailListProps) {
   const tableState = useClientDataTableQuery<ComMiloapisNotificationV1Alpha1EmailList>({
     queryKeyPrefix,
     fetchFn,
@@ -51,7 +46,7 @@ export default function EmailList({
       cell: ({ row, getValue }) => {
         return (
           <Link
-            to={detailPath(
+            to={routes.emailActivityDetail(
               row.original.metadata?.namespace ?? '',
               row.original.metadata?.name ?? ''
             )}>

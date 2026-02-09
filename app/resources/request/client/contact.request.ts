@@ -9,12 +9,15 @@ import {
 } from '@openapi/notification.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
 
-export const contactListQuery = async (params?: ListQueryParams) => {
+export const contactListQuery = async (params?: ListQueryParams<{ fieldSelector?: string }>) => {
+  const fieldSelector =
+    params?.filters?.fieldSelector ?? (params?.search ? `spec.email=${params.search}` : undefined);
+
   const response = await listNotificationMiloapisComV1Alpha1ContactForAllNamespaces({
     query: {
       limit: params?.limit,
       continue: params?.cursor,
-      ...(params?.search && { fieldSelector: `spec.email=${params.search}` }),
+      ...(fieldSelector && { fieldSelector }),
     },
   });
   return response.data.data;

@@ -16,11 +16,9 @@ export default [
         route(':userId', 'routes/user/detail/layout.tsx', [
           index('routes/user/detail/index.tsx'),
           route('organizations', 'routes/user/detail/organization.tsx'),
+          route('contacts', 'routes/user/detail/contacts.tsx'),
           route('activity', 'routes/user/detail/activity.tsx'),
-          route('email-activity', 'routes/user/detail/email-activity/layout.tsx', [
-            index('routes/user/detail/email-activity/index.tsx'),
-            route(':namespace/:emailName', 'routes/user/detail/email-activity/detail.tsx'),
-          ]),
+          route('email-activity', 'routes/user/detail/email-activity.tsx'),
         ]),
       ]),
 
