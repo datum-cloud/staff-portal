@@ -4,11 +4,8 @@ export const userRoutes = {
   detail: (userId: string) => `/customers/users/${userId}`,
   activity: (userId: string) => `/customers/users/${userId}/activity`,
   organization: (userId: string) => `/customers/users/${userId}/organizations`,
-  emailActivity: {
-    list: (userId: string) => `/customers/users/${userId}/email-activity`,
-    detail: (userId: string, namespace: string, emailName: string) =>
-      `/customers/users/${userId}/email-activity/${namespace}/${emailName}`,
-  },
+  contacts: (userId: string) => `/customers/users/${userId}/contacts`,
+  emailActivity: (userId: string) => `/customers/users/${userId}/email-activity`,
 } as const;
 
 // Organizations feature routes
@@ -90,10 +87,9 @@ export const profileRoutes = {
 export const routes = {
   dashboard: () => '/',
   activity: () => '/activity',
-  emailActivity: {
-    list: () => '/email-activity',
-    detail: (namespace: string, emailName: string) => `/email-activity/${namespace}/${emailName}`,
-  },
+  emailActivity: () => '/email-activity',
+  emailActivityDetail: (namespace: string, emailName: string) =>
+    `/email-activity/${namespace}/${emailName}`,
   login: () => '/login',
   logout: () => '/logout',
   authCallback: () => '/auth/callback',
