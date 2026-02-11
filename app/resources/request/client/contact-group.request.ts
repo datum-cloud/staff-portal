@@ -17,6 +17,7 @@ export const contactGroupListQuery = async (params?: ListQueryParams) => {
     query: {
       limit: params?.limit,
       continue: params?.cursor,
+      ...(params?.search && { fieldSelector: `metadata.name=${params.search}` }),
     },
   });
   return response.data.data;
