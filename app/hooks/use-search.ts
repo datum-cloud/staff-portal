@@ -1,4 +1,5 @@
 import {
+  useContactGroupListQuery,
   useContactListQuery,
   useOrgListQuery,
   useProjectListQuery,
@@ -97,9 +98,34 @@ export function useContactSearch() {
     if (!data?.items) return [];
     return data.items
       .map((c) => ({
-        value: c.metadata?.name ?? '',
+        value: [c.metadata?.name ?? '', c.metadata?.namespace ?? 'default'].join('|'),
         label: `${c.spec?.givenName} ${c.spec?.familyName}`.trim() || (c.metadata?.name ?? ''),
         description: c.spec?.email ?? '',
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [data]);
+
+  const setSearch = React.useCallback((query: string) => {
+    setSearchQuery(query);
+  }, []);
+
+  return { options, isLoading, setSearch };
+}
+
+export function useContactGroupSearch() {
+  const [searchQuery, setSearchQuery] = React.useState('');
+
+  const { data: data, isLoading } = useContactGroupListQuery({
+    ...(searchQuery && { search: searchQuery }),
+  });
+
+  const options = React.useMemo(() => {
+    if (!data?.items) return [];
+    return data.items
+      .map((c) => ({
+        value: [c.metadata?.name ?? '', c.metadata?.namespace ?? 'default'].join('|'),
+        label: c.spec?.displayName ?? '',
+        description: c.spec?.description ?? '',
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [data]);
