@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback } from '@/modules/shadcn/ui/avatar';
 import { Card, CardContent, CardDescription, CardHeader } from '@/modules/shadcn/ui/card';
 import { activityListQuery } from '@/resources/request/client';
 import { userRoutes } from '@/utils/config/routes.config';
-import { Button } from '@datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui';
 import { Text, Title } from '@datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { IoK8sApiserverPkgApisAuditV1Event } from '@openapi/activity.miloapis.com/v1alpha1';

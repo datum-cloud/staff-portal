@@ -169,8 +169,8 @@ function CustomIconAlerts() {
 ### Custom Content
 
 ```tsx
+import { Button } from '@datum-cloud/datum-ui';
 import { Alert } from '@datum-ui/alert';
-import { Button } from '@datum-ui/button';
 
 function CustomContentAlert() {
   return (

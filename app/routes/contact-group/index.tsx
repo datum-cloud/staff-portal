@@ -7,7 +7,7 @@ import { DisplayName } from '@/components/display';
 import { contactGroupDeleteMutation, contactGroupListQuery } from '@/resources/request/client';
 import { contactGroupRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { Button } from '@datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui';
 import {
   ClientDataTable,
   ClientDataTableProvider,

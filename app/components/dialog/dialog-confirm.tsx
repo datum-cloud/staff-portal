@@ -8,7 +8,7 @@ import {
 } from '@/modules/shadcn/ui/dialog';
 import { Input } from '@/modules/shadcn/ui/input';
 import { logger } from '@/utils/logger';
-import { Button } from '@datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui';
 import { Trans } from '@lingui/react/macro';
 import { useState } from 'react';
 

@@ -8,7 +8,7 @@ import { UserRejectDialog, useUserApproval } from '@/features/user';
 import { userInviteMutation, userListQuery } from '@/resources/request/client';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { Button } from '@datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui';
 import {
   ClientDataTable,
   ClientDataTableFacetFilter,

@@ -1,6 +1,6 @@
 import { contactGroupCreateMutation, contactGroupUpdateMutation } from '@/resources/request/client';
 import { contactGroupRoutes } from '@/utils/config/routes.config';
-import { Button } from '@datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui';
 import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
 import { useLingui } from '@lingui/react/macro';

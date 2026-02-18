@@ -62,7 +62,7 @@ vi.mock('@/modules/shadcn/ui/card', () => ({
 }));
 
 // Mock the Button component
-vi.mock('@datum-ui/button', () => ({
+vi.mock('@datum-cloud/datum-ui', () => ({
   Button: ({ children, onClick, type, size, ...props }: any) => (
     <button
       onClick={onClick}

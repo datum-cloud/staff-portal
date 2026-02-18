@@ -24,7 +24,8 @@ import {
 } from '@/resources/request/client';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { Button, ButtonLink } from '@datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui';
+import { ButtonLink } from '@datum-ui/button';
 import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
 import { Text, Title } from '@datum-ui/typography';

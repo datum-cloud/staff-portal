@@ -4,7 +4,7 @@ import { ContactList } from '@/features/contact';
 import { contactListQuery } from '@/resources/request/client';
 import { contactRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { Button } from '@datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { PlusCircleIcon } from 'lucide-react';

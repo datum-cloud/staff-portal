@@ -14,7 +14,7 @@ import {
 import { groupDetailQuery } from '@/resources/request/server';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { Button } from '@datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui';
 import { ActionItem, DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
 import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';

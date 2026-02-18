@@ -1,4 +1,4 @@
-import { Button } from '@datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui';
 import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
 import { Title, Text } from '@datum-ui/typography';
