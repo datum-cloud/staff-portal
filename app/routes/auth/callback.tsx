@@ -1,6 +1,11 @@
 import type { Route } from './+types/callback';
 import { authenticator } from '@/modules/auth';
-import { sessionCookie, tokenCookie } from '@/utils/cookies';
+import {
+  getRedirectDestination,
+  redirectToCookie,
+  sessionCookie,
+  tokenCookie,
+} from '@/utils/cookies';
 import { AuthenticationError } from '@/utils/errors';
 import { combineHeaders } from '@/utils/helpers';
 import logger from '@/utils/logger';
@@ -31,8 +36,15 @@ export async function loader({ request, context }: Route.LoaderArgs) {
       idToken: credentials.idToken,
     });
 
-    return redirect('/', {
-      headers: combineHeaders(session.headers, token.headers),
+    // Redirect to originally requested page if stored in cookie
+    const redirectTo = await redirectToCookie.parse(request.headers.get('Cookie') ?? '');
+    const destination = getRedirectDestination(redirectTo);
+    const clearRedirectCookie = await redirectToCookie.serialize('', { maxAge: 0 });
+
+    return redirect(destination, {
+      headers: combineHeaders(session.headers, token.headers, {
+        'Set-Cookie': clearRedirectCookie,
+      }),
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
