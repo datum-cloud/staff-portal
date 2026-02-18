@@ -1,6 +1,8 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
+@import '@datum-cloud/datum-ui/styles';
+
 @custom-variant dark (&:is([data-theme="dark"] *));
 
 @import './fonts.css';

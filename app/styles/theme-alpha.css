@@ -1,3 +1,17 @@
+/* datum-ui color utilities — must come before .theme-alpha so CSS vars resolve correctly */
+@theme inline {
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-tertiary: var(--tertiary);
+  --color-tertiary-foreground: var(--tertiary-foreground);
+  --color-quaternary: var(--quaternary);
+  --color-quaternary-foreground: var(--quaternary-foreground);
+  --color-btn-primary: var(--btn-primary);
+  --color-btn-secondary: var(--btn-secondary);
+  --color-btn-tertiary: var(--btn-tertiary);
+  --color-btn-quaternary: var(--btn-quaternary);
+  --color-btn-quaternary-hover: var(--btn-quaternary-hover);
+}
+
 .theme-alpha {
   /* Alliance No1 Font Family */
   --font-sans:
@@ -28,6 +42,19 @@
   --accent: #ecebef;
   --accent-foreground: #312847;
   --destructive: #e93f3f;
+  --destructive-foreground: #ffffff;
+
+  /* datum-ui button vars */
+  --btn-primary: var(--primary);
+  --btn-secondary: var(--secondary);
+  --tertiary: var(--accent);
+  --tertiary-foreground: var(--accent-foreground);
+  --btn-tertiary: var(--tertiary);
+  --quaternary: var(--muted);
+  --quaternary-foreground: var(--foreground);
+  --btn-quaternary: var(--quaternary);
+  --btn-quaternary-hover: var(--muted-foreground);
+
   --border: #dfdce5;
   --input: #dfdce5;
   --ring: #73688d;
@@ -62,6 +89,7 @@
     --accent: #73688d;
     --accent-foreground: #f5f5f7;
     --destructive: #e93f3f;
+    --destructive-foreground: #ffffff;
     --border: #73688d;
     --input: #73688d;
     --ring: #73688d;
