@@ -775,8 +775,8 @@ msgid "Loading status..."
 msgstr ""
 
 #: app/routes/auth/logout.tsx:36
-#: app/routes/auth/login.tsx:19
-#: app/routes/auth/callback.tsx:59
+#: app/routes/auth/login.tsx:41
+#: app/routes/auth/callback.tsx:71
 msgid "Loading..."
 msgstr ""
 
