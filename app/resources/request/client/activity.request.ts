@@ -35,7 +35,7 @@ function buildCelFilter(params: ActivityQueryParams): string | undefined {
 
   // User filter
   if (params.user) {
-    conditions.push(`user.username == '${params.user}'`);
+    conditions.push(`objectRef.resource == '${params.user}'`);
   }
 
   // Response code filter

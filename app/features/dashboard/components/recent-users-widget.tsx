@@ -72,7 +72,7 @@ export function RecentUsersWidget() {
       activityListQuery('users', undefined, {
         filters: {
           actions: 'create',
-          user: 'zitadel-actions-server',
+          user: 'users',
           status: 'success',
           start: getUnixTime(subDays(new Date(), 7)) * 1000000000,
         },
