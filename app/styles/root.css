@@ -1,8 +1,10 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
+/* prettier-ignore */
 @source "../../node_modules/@datum-cloud/datum-ui/dist";
 
+/* prettier-ignore */
 @custom-variant dark (&:is([data-theme="dark"] *));
 
 @import './fonts.css';
