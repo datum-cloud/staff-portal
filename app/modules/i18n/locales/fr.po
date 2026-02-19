@@ -48,12 +48,12 @@ msgstr ""
 msgid "Account Management"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:151
+#: app/features/activity/components/activity-list.tsx:141
 msgid "Action"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:471
-#: app/features/activity/components/activity-list.tsx:531
+#: app/features/activity/components/activity-list.tsx:377
+#: app/features/activity/components/activity-list.tsx:425
 msgid "Actions"
 msgstr ""
 
@@ -97,11 +97,11 @@ msgstr ""
 msgid "Added"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:493
+#: app/features/activity/components/activity-list.tsx:407
 msgid "All read operations"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:487
+#: app/features/activity/components/activity-list.tsx:401
 msgid "All write operations"
 msgstr ""
 
@@ -292,8 +292,9 @@ msgstr ""
 #: app/routes/contact/create.tsx:14
 #: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:191
-#: app/features/activity/components/activity-list.tsx:545
-#: app/features/activity/components/activity-list.tsx:564
+#: app/features/activity/components/activity-list.tsx:384
+#: app/features/activity/components/activity-list.tsx:438
+#: app/features/activity/components/activity-list.tsx:457
 msgid "Create"
 msgstr ""
 
@@ -302,7 +303,7 @@ msgstr ""
 #: app/routes/project/index.tsx:52
 #: app/routes/project/detail/index.tsx:74
 #: app/routes/project/detail/httpproxy/index.tsx:59
-#: app/routes/project/detail/httpproxy/detail.tsx:200
+#: app/routes/project/detail/httpproxy/detail.tsx:123
 #: app/routes/project/detail/export-policy/index.tsx:58
 #: app/routes/project/detail/export-policy/detail.tsx:97
 #: app/routes/project/detail/domain/index.tsx:70
@@ -340,7 +341,7 @@ msgstr ""
 msgid "Dashboard"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:174
+#: app/features/activity/components/activity-list.tsx:164
 msgid "Date"
 msgstr ""
 
@@ -378,8 +379,9 @@ msgstr ""
 #: app/routes/contact/detail/group.tsx:186
 #: app/features/quota/components/quota-grant-list.tsx:146
 #: app/features/contact/components/contact-list.tsx:117
-#: app/features/activity/components/activity-list.tsx:548
-#: app/features/activity/components/activity-list.tsx:567
+#: app/features/activity/components/activity-list.tsx:387
+#: app/features/activity/components/activity-list.tsx:441
+#: app/features/activity/components/activity-list.tsx:460
 #: app/components/danger-zone-card/index.tsx:48
 #: app/components/danger-zone-card/index.tsx:76
 #: app/components/button/button-delete-action.tsx:42
@@ -391,8 +393,8 @@ msgstr ""
 msgid "Delete {itemType}"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:549
-#: app/features/activity/components/activity-list.tsx:568
+#: app/features/activity/components/activity-list.tsx:442
+#: app/features/activity/components/activity-list.tsx:461
 msgid "Delete Collection"
 msgstr ""
 
@@ -445,10 +447,6 @@ msgstr ""
 #: app/routes/contact-group/detail/layout.tsx:34
 #: app/routes/contact/detail/layout.tsx:45
 msgid "Details"
-msgstr ""
-
-#: app/routes/project/detail/httpproxy/detail.tsx:271
-msgid "Disabled"
 msgstr ""
 
 #: app/features/contact-group/components/contact-group-form.tsx:63
@@ -529,20 +527,12 @@ msgstr ""
 msgid "Email is required"
 msgstr ""
 
-#: app/routes/project/detail/httpproxy/detail.tsx:255
-msgid "Enable traffic protection to apply OWASP Core Rule Set security policies to this HTTP proxy."
-msgstr ""
-
-#: app/routes/project/detail/httpproxy/detail.tsx:271
-msgid "Enabled"
-msgstr ""
-
 #: app/components/date/date-range-picker.tsx:281
 msgid "End Time"
 msgstr ""
 
 #: app/routes/project/detail/httpproxy/index.tsx:43
-#: app/routes/project/detail/httpproxy/detail.tsx:174
+#: app/routes/project/detail/httpproxy/detail.tsx:97
 msgid "Endpoint"
 msgstr ""
 
@@ -583,14 +573,6 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: app/routes/project/detail/httpproxy/detail.tsx:113
-msgid "Failed to disable traffic protection policy"
-msgstr ""
-
-#: app/routes/project/detail/httpproxy/detail.tsx:112
-msgid "Failed to enable traffic protection policy"
-msgstr ""
-
 #: app/features/dns/components/dns-record-status-probe.tsx:33
 msgid "Failed to load DNS record status"
 msgstr ""
@@ -607,7 +589,7 @@ msgstr ""
 msgid "Failed to update timezone"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:472
+#: app/features/activity/components/activity-list.tsx:378
 msgid "Filter by action"
 msgstr ""
 
@@ -619,15 +601,11 @@ msgstr ""
 msgid "Filter by priority"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:504
-msgid "Filter by resource"
-msgstr ""
-
 #: app/features/email/components/email-list.tsx:141
 msgid "Filter by status"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:448
+#: app/features/activity/components/activity-list.tsx:354
 msgid "Filter by time range"
 msgstr ""
 
@@ -654,12 +632,13 @@ msgstr ""
 msgid "Full Name"
 msgstr ""
 
-#: app/routes/project/detail/httpproxy/detail.tsx:154
+#: app/routes/project/detail/httpproxy/detail.tsx:77
 msgid "General"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:542
-#: app/features/activity/components/activity-list.tsx:561
+#: app/features/activity/components/activity-list.tsx:381
+#: app/features/activity/components/activity-list.tsx:435
+#: app/features/activity/components/activity-list.tsx:454
 msgid "Get"
 msgstr ""
 
@@ -700,7 +679,7 @@ msgstr ""
 msgid "High"
 msgstr ""
 
-#: app/routes/project/detail/httpproxy/detail.tsx:217
+#: app/routes/project/detail/httpproxy/detail.tsx:140
 msgid "Hostnames"
 msgstr ""
 
@@ -780,8 +759,9 @@ msgstr ""
 msgid "Limit:"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:543
-#: app/features/activity/components/activity-list.tsx:562
+#: app/features/activity/components/activity-list.tsx:382
+#: app/features/activity/components/activity-list.tsx:436
+#: app/features/activity/components/activity-list.tsx:455
 msgid "List"
 msgstr ""
 
@@ -883,7 +863,7 @@ msgstr ""
 #: app/routes/project/detail/secret.tsx:22
 #: app/routes/project/detail/index.tsx:52
 #: app/routes/project/detail/httpproxy/index.tsx:35
-#: app/routes/project/detail/httpproxy/detail.tsx:164
+#: app/routes/project/detail/httpproxy/detail.tsx:87
 #: app/routes/project/detail/export-policy/index.tsx:35
 #: app/routes/project/detail/export-policy/detail.tsx:63
 #: app/routes/project/detail/export-policy/detail.tsx:125
@@ -971,8 +951,9 @@ msgstr ""
 msgid "Overview"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:547
-#: app/features/activity/components/activity-list.tsx:566
+#: app/features/activity/components/activity-list.tsx:386
+#: app/features/activity/components/activity-list.tsx:440
+#: app/features/activity/components/activity-list.tsx:459
 msgid "Patch"
 msgstr ""
 
@@ -1166,8 +1147,6 @@ msgstr ""
 
 #: app/features/quota/components/quota-grant-list.tsx:48
 #: app/features/quota/components/quota-bucket-list.tsx:32
-#: app/features/activity/components/activity-list.tsx:503
-#: app/features/activity/components/activity-list.tsx:532
 msgid "Resource Type"
 msgstr ""
 
@@ -1195,7 +1174,7 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:441
+#: app/features/activity/components/activity-list.tsx:347
 msgid "Search activity..."
 msgstr ""
 
@@ -1308,7 +1287,7 @@ msgstr ""
 #: app/routes/user/index.tsx:59
 #: app/routes/user/detail/index.tsx:277
 #: app/routes/project/detail/httpproxy/index.tsx:53
-#: app/routes/project/detail/httpproxy/detail.tsx:188
+#: app/routes/project/detail/httpproxy/detail.tsx:111
 #: app/routes/project/detail/export-policy/index.tsx:52
 #: app/routes/project/detail/export-policy/detail.tsx:85
 #: app/routes/project/detail/export-policy/detail.tsx:186
@@ -1339,7 +1318,7 @@ msgstr ""
 msgid "System"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:163
+#: app/features/activity/components/activity-list.tsx:153
 msgid "Target"
 msgstr ""
 
@@ -1355,24 +1334,12 @@ msgstr ""
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:530
+#: app/features/activity/components/activity-list.tsx:424
 msgid "Time range"
 msgstr ""
 
 #: app/features/preferences/components/preferences-form.tsx:62
 msgid "Timezone updated successfully"
-msgstr ""
-
-#: app/routes/project/detail/httpproxy/detail.tsx:252
-msgid "Traffic Protection"
-msgstr ""
-
-#: app/routes/project/detail/httpproxy/detail.tsx:107
-msgid "Traffic protection policy disabled"
-msgstr ""
-
-#: app/routes/project/detail/httpproxy/detail.tsx:102
-msgid "Traffic protection policy enabled"
 msgstr ""
 
 #: app/routes/project/detail/dns/detail.tsx:166
@@ -1395,8 +1362,9 @@ msgstr ""
 #: app/features/quota/components/quota-bucket-list.tsx:152
 #: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:191
-#: app/features/activity/components/activity-list.tsx:546
-#: app/features/activity/components/activity-list.tsx:565
+#: app/features/activity/components/activity-list.tsx:385
+#: app/features/activity/components/activity-list.tsx:439
+#: app/features/activity/components/activity-list.tsx:458
 msgid "Update"
 msgstr ""
 
@@ -1416,7 +1384,7 @@ msgstr ""
 msgid "Usage"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:134
+#: app/features/activity/components/activity-list.tsx:124
 msgid "User"
 msgstr ""
 
@@ -1508,8 +1476,9 @@ msgstr ""
 msgid "Warning"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:544
-#: app/features/activity/components/activity-list.tsx:563
+#: app/features/activity/components/activity-list.tsx:383
+#: app/features/activity/components/activity-list.tsx:437
+#: app/features/activity/components/activity-list.tsx:456
 msgid "Watch"
 msgstr ""
 
