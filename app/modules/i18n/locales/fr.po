@@ -200,7 +200,7 @@ msgstr ""
 #: app/features/quota/components/quota-bucket-list.tsx:153
 #: app/features/contact-group/components/contact-group-form.tsx:97
 #: app/features/contact/components/contact-list.tsx:118
-#: app/features/contact/components/contact-form.tsx:182
+#: app/features/contact/components/contact-form.tsx:185
 #: app/components/danger-zone-card/index.tsx:49
 #: app/components/button/button-delete-action.tsx:43
 msgid "Cancel"
@@ -291,7 +291,7 @@ msgstr ""
 #: app/routes/contact-group/create.tsx:14
 #: app/routes/contact/create.tsx:14
 #: app/features/contact-group/components/contact-group-form.tsx:103
-#: app/features/contact/components/contact-form.tsx:188
+#: app/features/contact/components/contact-form.tsx:191
 #: app/features/activity/components/activity-list.tsx:545
 #: app/features/activity/components/activity-list.tsx:564
 msgid "Create"
@@ -1394,7 +1394,7 @@ msgstr ""
 
 #: app/features/quota/components/quota-bucket-list.tsx:152
 #: app/features/contact-group/components/contact-group-form.tsx:103
-#: app/features/contact/components/contact-form.tsx:188
+#: app/features/contact/components/contact-form.tsx:191
 #: app/features/activity/components/activity-list.tsx:546
 #: app/features/activity/components/activity-list.tsx:565
 msgid "Update"

@@ -12,13 +12,14 @@ export default defineConfig((config) => {
   const isProduction = process.env.NODE_ENV === 'production';
 
   return {
-    resolve: !isProduction
-      ? {}
-      : {
-          alias: {
-            'react-dom/server': 'react-dom/server.node',
-          },
+    resolve: {
+      dedupe: ['react', 'react-dom', 'sonner'],
+      ...(isProduction && {
+        alias: {
+          'react-dom/server': 'react-dom/server.node',
         },
+      }),
+    },
     server: {
       port: 3000,
     },
@@ -26,6 +27,7 @@ export default defineConfig((config) => {
       optimizeDeps: {
         include: ['react-dom/server.node'],
       },
+      noExternal: [/^@datum-cloud\//],
     },
     build: {
       chunkSizeWarningLimit: 1000,
