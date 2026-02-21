@@ -32,6 +32,7 @@ export default function ButtonDemo() {
             <Button type="primary">Primary</Button>
             <Button type="secondary">Secondary</Button>
             <Button type="tertiary">Tertiary</Button>
+            <Button type="quaternary">Quaternary</Button>
             <Button type="warning">Warning</Button>
             <Button type="danger">Danger</Button>
             <Button type="success">Success</Button>
@@ -46,25 +47,27 @@ export default function ButtonDemo() {
           <CardDescription>Different visual themes for each button type</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {['primary', 'secondary', 'tertiary', 'warning', 'danger', 'success'].map((type) => (
-            <div key={type} className="space-y-2">
-              <h4 className="text-sm font-medium capitalize">{type}</h4>
-              <div className="flex flex-wrap gap-2">
-                <Button type={type as any} theme="solid">
-                  Solid
-                </Button>
-                <Button type={type as any} theme="light">
-                  Light
-                </Button>
-                <Button type={type as any} theme="outline">
-                  Outline
-                </Button>
-                <Button type={type as any} theme="borderless">
-                  Borderless
-                </Button>
+          {['primary', 'secondary', 'tertiary', 'quaternary', 'warning', 'danger', 'success'].map(
+            (type) => (
+              <div key={type} className="space-y-2">
+                <h4 className="text-sm font-medium capitalize">{type}</h4>
+                <div className="flex flex-wrap gap-2">
+                  <Button type={type as any} theme="solid">
+                    Solid
+                  </Button>
+                  <Button type={type as any} theme="light">
+                    Light
+                  </Button>
+                  <Button type={type as any} theme="outline">
+                    Outline
+                  </Button>
+                  <Button type={type as any} theme="borderless">
+                    Borderless
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          )}
         </CardContent>
       </Card>
 
