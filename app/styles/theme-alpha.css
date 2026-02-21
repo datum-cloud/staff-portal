@@ -47,8 +47,8 @@
   /* datum-ui button vars */
   --btn-primary: var(--primary);
   --btn-secondary: var(--secondary);
-  --tertiary: #73688d;
-  --tertiary-foreground: #f5f5f7;
+  --tertiary: var(--accent);
+  --tertiary-foreground: var(--accent-foreground);
   --btn-tertiary: var(--tertiary);
   --quaternary: var(--muted);
   --quaternary-foreground: var(--foreground);
@@ -88,8 +88,6 @@
     --muted-foreground: #bbb5c6;
     --accent: #73688d;
     --accent-foreground: #f5f5f7;
-    --tertiary: #bbb5c6;
-    --tertiary-foreground: #312847;
     --destructive: #e93f3f;
     --destructive-foreground: #ffffff;
     --border: #73688d;
