@@ -16,7 +16,7 @@ msgstr ""
 #. placeholder {0}: item.label
 #. placeholder {0}: item.title
 #: app/modules/datum-ui/data-table/components/data-table-facet-filter.tsx:114
-#: app/components/app-search/index.tsx:164
+#: app/components/app-search/search-panel.tsx:61
 msgid "{0}"
 msgstr "{0}"
 
@@ -893,7 +893,7 @@ msgstr "Nameservers"
 msgid "Namespace"
 msgstr "Namespace"
 
-#: app/components/app-search/index.tsx:156
+#: app/components/app-search/search-panel.tsx:55
 msgid "Navigation"
 msgstr "Navigation"
 
@@ -901,9 +901,9 @@ msgstr "Navigation"
 msgid "New Limit"
 msgstr "New Limit"
 
-#: app/components/app-search/index.tsx:184
-msgid "No results found."
-msgstr "No results found."
+#: app/components/app-search/search-panel.tsx:102
+msgid "No users found matching '{query}'"
+msgstr "No users found matching '{query}'"
 
 #: app/features/dashboard/components/recent-users-widget.tsx:57
 msgid "No users yet"
@@ -1220,7 +1220,7 @@ msgstr "Search users..."
 msgid "Search..."
 msgstr "Search..."
 
-#: app/components/app-search/index.tsx:180
+#: app/components/app-search/search-panel.tsx:79
 msgid "Searching..."
 msgstr "Searching..."
 
@@ -1355,9 +1355,9 @@ msgstr "TTL"
 msgid "Type"
 msgstr "Type"
 
-#: app/components/app-search/index.tsx:150
-msgid "Type a command or search..."
-msgstr "Type a command or search..."
+#: app/components/app-search/search-panel.tsx:72
+msgid "Type at least 2 characters to search"
+msgstr "Type at least 2 characters to search"
 
 #: app/features/quota/components/quota-bucket-list.tsx:152
 #: app/features/contact-group/components/contact-group-form.tsx:103
@@ -1431,6 +1431,7 @@ msgstr "User rejected successfully"
 #: app/routes/user/layout.tsx:5
 #: app/routes/user/index.tsx:36
 #: app/components/app-sidebar/index.tsx:103
+#: app/components/app-search/search-panel.tsx:76
 msgid "Users"
 msgstr "Users"
 
