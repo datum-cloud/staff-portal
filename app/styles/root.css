@@ -7,8 +7,7 @@
 /* prettier-ignore */
 @custom-variant dark (&:is(.dark *));
 
-@import '@datum-cloud/datum-ui/styles/fonts.css';
-@import '@datum-cloud/datum-ui/styles/tokens/figma-tokens.css';
+@import '@datum-cloud/datum-ui/styles/theme.css';
+
 @import '../modules/shadcn/style.css';
 @import '../modules/datum-ui/datum-ui.css';
-@import '@datum-cloud/datum-ui/styles/themes/alpha.css';
