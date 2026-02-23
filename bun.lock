@@ -6,7 +6,6 @@
       "name": "staff-portal",
       "dependencies": {
         "@epic-web/client-hints": "^1.3.5",
-        "@hono/otel": "^1.0.0",
         "@hono/prometheus": "^1.0.1",
         "@lingui/core": "^5.3.1",
         "@lingui/detect-locale": "^5.3.1",
@@ -317,8 +316,6 @@
     "@hono/node-server": ["@hono/node-server@1.14.3", "", { "peerDependencies": { "hono": "^4" } }, "sha512-KuDMwwghtFYSmIpr4WrKs1VpelTrptvJ+6x6mbUcZnFcc213cumTF5BdqfHyW93B19TNI4Vaev14vOI2a0Ie3w=="],
 
     "@hono/node-ws": ["@hono/node-ws@1.1.5", "", { "dependencies": { "ws": "^8.17.0" }, "peerDependencies": { "@hono/node-server": "^1.11.1", "hono": "^4.6.0" } }, "sha512-PXEioArWbwRECpZpi2tRqlgRlZp5MjszJhYGQ3uq3tmzpDwy5+57WwCFTWjolVWb5Rct3+X0wZUqXOest2ozVA=="],
-
-    "@hono/otel": ["@hono/otel@1.1.0", "", { "dependencies": { "@opentelemetry/api": "^1.9.0", "@opentelemetry/semantic-conventions": "^1.28.0" }, "peerDependencies": { "hono": ">=4.0.0" } }, "sha512-3lXExGP+odVTF3W1kTHgRGw4d4xdiYpeRs8dnTwfnHfw5uGEXgUzmkB4/ZQd3tDxYRt7eUhnWuBk5ChV97eqkA=="],
 
     "@hono/prometheus": ["@hono/prometheus@1.0.1", "", { "peerDependencies": { "hono": ">=3.*", "prom-client": "^15.0.0" } }, "sha512-PjMbjAppCgbvRP2aLxqJc1XJLxfmg4dLsS5R5ITt7qCf9Ab/xSRul/LHNVvYK2/ECi3BOPprSnlSizksBJmXBQ=="],
 
