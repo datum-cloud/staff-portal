@@ -53,14 +53,16 @@ export function enhanceFirstColumnWithSelection<TData>(
 
       return (
         <div className="flex items-center justify-start gap-2">
-          <Checkbox
-            checked={
-              table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && 'indeterminate')
-            }
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-            aria-label="Select all"
-          />
+          <div onClick={(e) => e.stopPropagation()} role="presentation">
+            <Checkbox
+              checked={
+                table.getIsAllPageRowsSelected() ||
+                (table.getIsSomePageRowsSelected() && 'indeterminate')
+              }
+              onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+              aria-label="Select all"
+            />
+          </div>
           <div>{originalHeaderContent}</div>
         </div>
       );
@@ -74,11 +76,13 @@ export function enhanceFirstColumnWithSelection<TData>(
 
       return (
         <div className="flex items-center justify-start gap-2">
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
-            aria-label="Select row"
-          />
+          <div onClick={(e) => e.stopPropagation()} role="presentation">
+            <Checkbox
+              checked={row.getIsSelected()}
+              onCheckedChange={(value) => row.toggleSelected(!!value)}
+              aria-label="Select row"
+            />
+          </div>
           <div>{originalCellContent}</div>
         </div>
       );

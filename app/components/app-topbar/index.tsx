@@ -1,6 +1,7 @@
 import AppSearch from '@/components/app-search';
 import { Separator } from '@/modules/shadcn/ui/separator';
 import { SidebarTrigger } from '@/modules/shadcn/ui/sidebar';
+import { TaskQueueDropdown } from '@datum-ui/task-queue';
 
 const AppTopbar = () => {
   return (
@@ -8,7 +9,9 @@ const AppTopbar = () => {
       <SidebarTrigger className="-ml-1" />
       <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />
       <AppSearch />
-      <div className="ml-auto flex items-center space-x-4" />
+      <div className="ml-auto flex items-center space-x-4">
+        <TaskQueueDropdown />
+      </div>
     </header>
   );
 };
