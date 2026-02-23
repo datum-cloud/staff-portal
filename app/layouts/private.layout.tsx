@@ -6,6 +6,7 @@ import { authenticator } from '@/modules/auth';
 import { SidebarInset, SidebarProvider } from '@/modules/shadcn/ui/sidebar';
 import { AppProvider } from '@/providers/app.provider';
 import { userDetailQuery } from '@/resources/request/server';
+import { getLoginUrl, getRedirectToPath } from '@/utils/cookies';
 import { metaObject } from '@/utils/helpers';
 import { data, Outlet, redirect, useLoaderData } from 'react-router';
 
@@ -16,7 +17,7 @@ export const meta: Route.MetaFunction = () => {
 export async function loader({ request }: Route.LoaderArgs) {
   const isAuthenticated = await authenticator.isAuthenticated(request);
   if (!isAuthenticated) {
-    return redirect('/login');
+    return redirect(getLoginUrl(getRedirectToPath(request.url)));
   }
 
   const isValid = await authenticator.isValidSession(request);
