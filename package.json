@@ -129,7 +129,7 @@
     "vite": "^7.0.0",
     "vite-plugin-babel-macros": "^1.0.6",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.0"
   },
   "overrides": {
     "react-is": "^19.0.0-rc-69d4b800-20241021"
