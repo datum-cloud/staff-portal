@@ -75,7 +75,7 @@ msgstr "Activity"
 
 #: app/routes/group/member.tsx:130
 #: app/routes/group/member.tsx:156
-#: app/routes/contact-group/index.tsx:103
+#: app/routes/contact-group/index.tsx:120
 #: app/routes/contact-group/detail/member.tsx:185
 #: app/routes/contact-group/detail/member.tsx:211
 #: app/routes/contact/index.tsx:27
@@ -119,9 +119,19 @@ msgstr "Approve"
 msgid "Approved"
 msgstr "Approved"
 
+#. placeholder {0}: bulkDeleteRows[0]?.spec?.displayName ?? bulkDeleteRows[0]?.metadata?.name ?? ''
+#: app/routes/contact-group/index.tsx:148
+msgid "Are you sure you want to delete \"{0}\"? This action cannot be undone."
+msgstr "Are you sure you want to delete \"{0}\"? This action cannot be undone."
+
+#. placeholder {0}: bulkDeleteRows?.length ?? 0
+#: app/routes/contact-group/index.tsx:149
+msgid "Are you sure you want to delete {0} contact groups? This action cannot be undone."
+msgstr "Are you sure you want to delete {0} contact groups? This action cannot be undone."
+
 #. placeholder {0}: selectedContactGroup?.spec?.displayName ?? ''
 #. placeholder {0}: selectedContact?.metadata?.name ?? ''
-#: app/routes/contact-group/index.tsx:111
+#: app/routes/contact-group/index.tsx:128
 #: app/features/contact/components/contact-list.tsx:116
 msgid "Are you sure you want to delete contact \"{0}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete contact \"{0}\"? This action cannot be undone."
@@ -190,7 +200,8 @@ msgstr "Auto-managed by policy \"{policyName}\". Cannot be deleted."
 #: app/routes/organization/detail/member.tsx:122
 #: app/routes/group/member.tsx:140
 #: app/routes/group/member.tsx:157
-#: app/routes/contact-group/index.tsx:113
+#: app/routes/contact-group/index.tsx:130
+#: app/routes/contact-group/index.tsx:152
 #: app/routes/contact-group/detail/member.tsx:195
 #: app/routes/contact-group/detail/member.tsx:212
 #: app/routes/contact/detail/group.tsx:187
@@ -240,7 +251,7 @@ msgstr "Contact deleted successfully"
 msgid "Contact group created successfully"
 msgstr "Contact group created successfully"
 
-#: app/routes/contact-group/index.tsx:121
+#: app/routes/contact-group/index.tsx:138
 msgid "Contact Group deleted successfully"
 msgstr "Contact Group deleted successfully"
 
@@ -254,7 +265,7 @@ msgid "Contact group updated successfully"
 msgstr "Contact group updated successfully"
 
 #: app/routes/contact-group/layout.tsx:5
-#: app/routes/contact-group/index.tsx:32
+#: app/routes/contact-group/index.tsx:34
 msgid "Contact Groups"
 msgstr "Contact Groups"
 
@@ -315,7 +326,7 @@ msgstr "Create"
 #: app/routes/organization/detail/index.tsx:73
 #: app/routes/group/member.tsx:68
 #: app/routes/group/index.tsx:44
-#: app/routes/contact-group/index.tsx:65
+#: app/routes/contact-group/index.tsx:67
 #: app/features/quota/components/quota-grant-list.tsx:81
 #: app/features/quota/components/quota-bucket-list.tsx:84
 #: app/features/contact/components/contact-list.tsx:58
@@ -374,7 +385,8 @@ msgstr "Deactivation Reason:"
 #: app/routes/profile/session.tsx:85
 #: app/routes/profile/session.tsx:99
 #: app/routes/group/member.tsx:139
-#: app/routes/contact-group/index.tsx:112
+#: app/routes/contact-group/index.tsx:129
+#: app/routes/contact-group/index.tsx:151
 #: app/routes/contact-group/detail/member.tsx:194
 #: app/routes/contact/detail/group.tsx:186
 #: app/features/quota/components/quota-grant-list.tsx:146
@@ -389,19 +401,36 @@ msgstr "Deactivation Reason:"
 msgid "Delete"
 msgstr "Delete"
 
+#. placeholder {0}: rows.length
+#: app/routes/contact-group/index.tsx:159
+msgid "Delete {0} contact groups"
+msgstr "Delete {0} contact groups"
+
 #: app/components/button/button-delete-action.tsx:40
 msgid "Delete {itemType}"
 msgstr "Delete {itemType}"
+
+#: app/routes/contact-group/index.tsx:233
+msgid "Delete {selectedCount} selected"
+msgstr "Delete {selectedCount} selected"
 
 #: app/features/activity/components/activity-list.tsx:442
 #: app/features/activity/components/activity-list.tsx:461
 msgid "Delete Collection"
 msgstr "Delete Collection"
 
-#: app/routes/contact-group/index.tsx:110
+#: app/routes/contact-group/index.tsx:127
 #: app/features/contact/components/contact-list.tsx:115
 msgid "Delete Contact"
 msgstr "Delete Contact"
+
+#: app/routes/contact-group/index.tsx:159
+msgid "Delete contact group"
+msgstr "Delete contact group"
+
+#: app/routes/contact-group/index.tsx:145
+msgid "Delete contact groups"
+msgstr "Delete contact groups"
 
 #: app/features/quota/components/quota-grant-list.tsx:144
 msgid "Delete Grant"
@@ -875,7 +904,7 @@ msgstr "My Profile"
 #: app/routes/organization/detail/index.tsx:53
 #: app/routes/group/member.tsx:53
 #: app/routes/group/index.tsx:28
-#: app/routes/contact-group/index.tsx:38
+#: app/routes/contact-group/index.tsx:40
 #: app/routes/contact-group/detail/member.tsx:59
 #: app/routes/contact/detail/group.tsx:52
 #: app/features/quota/components/quota-grant-list.tsx:43
@@ -1178,7 +1207,7 @@ msgstr "Search"
 msgid "Search activity..."
 msgstr "Search activity..."
 
-#: app/routes/contact-group/index.tsx:139
+#: app/routes/contact-group/index.tsx:226
 msgid "Search contact groups..."
 msgstr "Search contact groups..."
 
@@ -1293,7 +1322,7 @@ msgstr "Start Time"
 #: app/routes/project/detail/export-policy/detail.tsx:186
 #: app/routes/project/detail/domain/index.tsx:60
 #: app/routes/project/detail/domain/detail.tsx:115
-#: app/routes/contact-group/index.tsx:58
+#: app/routes/contact-group/index.tsx:60
 #: app/routes/contact-group/detail/member.tsx:86
 #: app/routes/contact/detail/group.tsx:78
 #: app/features/quota/components/quota-grant-list.tsx:75
@@ -1313,6 +1342,10 @@ msgstr "Subject"
 #: app/features/contact/components/contact-form.tsx:56
 msgid "Subject is required when user association is enabled"
 msgstr "Subject is required when user association is enabled"
+
+#: app/routes/contact-group/index.tsx:177
+msgid "Summary"
+msgstr "Summary"
 
 #: app/components/theme-switcher/index.tsx:47
 msgid "System"
@@ -1462,11 +1495,15 @@ msgstr "Version"
 msgid "View All"
 msgstr "View All"
 
+#: app/routes/contact-group/index.tsx:198
+msgid "View contact groups"
+msgstr "View contact groups"
+
 #: app/routes/user/detail/index.tsx:169
 msgid "View in Sentry"
 msgstr "View in Sentry"
 
-#: app/routes/contact-group/index.tsx:52
+#: app/routes/contact-group/index.tsx:54
 #: app/routes/contact/detail/group.tsx:70
 #: app/features/contact-group/components/contact-group-form.tsx:84
 msgid "Visibility"
