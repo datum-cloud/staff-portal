@@ -1,5 +1,5 @@
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 import macrosPlugin from 'vite-plugin-babel-macros';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
