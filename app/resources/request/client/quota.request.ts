@@ -1,3 +1,4 @@
+import { PROXY_URL } from '@/modules/axios/axios.client';
 import { ListQueryParams } from '@/resources/schemas';
 import {
   ComMiloapisQuotaV1Alpha1AllowanceBucket,
@@ -7,15 +8,24 @@ import {
   deleteQuotaMiloapisComV1Alpha1NamespacedAllowanceBucket,
   deleteQuotaMiloapisComV1Alpha1NamespacedResourceClaim,
   deleteQuotaMiloapisComV1Alpha1NamespacedResourceGrant,
-  listQuotaMiloapisComV1Alpha1AllowanceBucketForAllNamespaces,
-  listQuotaMiloapisComV1Alpha1ResourceClaimForAllNamespaces,
-  listQuotaMiloapisComV1Alpha1ResourceGrantForAllNamespaces,
+  listQuotaMiloapisComV1Alpha1NamespacedAllowanceBucket,
+  listQuotaMiloapisComV1Alpha1NamespacedResourceClaim,
+  listQuotaMiloapisComV1Alpha1NamespacedResourceGrant,
   listQuotaMiloapisComV1Alpha1ResourceRegistration,
   readQuotaMiloapisComV1Alpha1NamespacedAllowanceBucket,
   readQuotaMiloapisComV1Alpha1NamespacedResourceClaim,
   readQuotaMiloapisComV1Alpha1NamespacedResourceGrant,
   readQuotaMiloapisComV1Alpha1ResourceRegistration,
 } from '@openapi/quota.miloapis.com/v1alpha1';
+
+const MILO_SYSTEM_NAMESPACE = 'milo-system';
+
+// Helper to build control-plane baseURL
+const getProjectControlPlaneBaseURL = (projectName: string) =>
+  `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`;
+
+const getOrgControlPlaneBaseURL = (orgName: string) =>
+  `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/organizations/${orgName}/control-plane`;
 
 // ------------------------
 // ResourceRegistrations
@@ -45,9 +55,12 @@ export const quotaRegistrationDetailQuery = async (name: string) => {
 // ResourceGrants
 // ------------------------
 export const quotaGrantListQuery = async (
-  params?: ListQueryParams & { fieldSelector?: string; labelSelector?: string }
+  namespace: string,
+  params?: ListQueryParams & { fieldSelector?: string; labelSelector?: string; baseURL?: string }
 ) => {
-  const response = await listQuotaMiloapisComV1Alpha1ResourceGrantForAllNamespaces({
+  const response = await listQuotaMiloapisComV1Alpha1NamespacedResourceGrant({
+    ...(params?.baseURL && { baseURL: params.baseURL }),
+    path: { namespace },
     query: {
       limit: params?.limit,
       continue: params?.cursor,
@@ -80,8 +93,9 @@ export const orgQuotaGrantListQuery = (
   if (params?.resourceType)
     fieldSelectorParts.push(`spec.allowances.resourceType=${params.resourceType}`);
 
-  return quotaGrantListQuery({
+  return quotaGrantListQuery(orgName, {
     ...params,
+    baseURL: getOrgControlPlaneBaseURL(orgName),
     fieldSelector: fieldSelectorParts.join(','),
   });
 };
@@ -97,8 +111,9 @@ export const projectQuotaGrantListQuery = (
   if (params?.resourceType)
     fieldSelectorParts.push(`spec.allowances.resourceType=${params.resourceType}`);
 
-  return quotaGrantListQuery({
+  return quotaGrantListQuery(MILO_SYSTEM_NAMESPACE, {
     ...params,
+    baseURL: getProjectControlPlaneBaseURL(projectName),
     fieldSelector: fieldSelectorParts.join(','),
   });
 };
@@ -132,9 +147,12 @@ export const quotaGrantDeleteMutation = async (name: string, namespace: string =
 // AllowanceBuckets
 // ------------------------
 export const quotaBucketListQuery = async (
-  params?: ListQueryParams & { fieldSelector?: string; labelSelector?: string }
+  namespace: string,
+  params?: ListQueryParams & { fieldSelector?: string; labelSelector?: string; baseURL?: string }
 ) => {
-  const response = await listQuotaMiloapisComV1Alpha1AllowanceBucketForAllNamespaces({
+  const response = await listQuotaMiloapisComV1Alpha1NamespacedAllowanceBucket({
+    ...(params?.baseURL && { baseURL: params.baseURL }),
+    path: { namespace },
     query: {
       limit: params?.limit,
       continue: params?.cursor,
@@ -166,8 +184,9 @@ export const orgQuotaBucketListQuery = (
   ];
   if (params?.resourceType) fieldSelectorParts.push(`spec.resourceType=${params.resourceType}`);
 
-  return quotaBucketListQuery({
+  return quotaBucketListQuery(orgName, {
     ...params,
+    baseURL: getOrgControlPlaneBaseURL(orgName),
     fieldSelector: fieldSelectorParts.join(','),
   });
 };
@@ -182,8 +201,9 @@ export const projectQuotaBucketListQuery = (
   ];
   if (params?.resourceType) fieldSelectorParts.push(`spec.resourceType=${params.resourceType}`);
 
-  return quotaBucketListQuery({
+  return quotaBucketListQuery(MILO_SYSTEM_NAMESPACE, {
     ...params,
+    baseURL: getProjectControlPlaneBaseURL(projectName),
     fieldSelector: fieldSelectorParts.join(','),
   });
 };
@@ -202,9 +222,12 @@ export const quotaBucketDeleteMutation = async (
 // ResourceClaims
 // ------------------------
 export const quotaClaimListQuery = async (
-  params?: ListQueryParams & { fieldSelector?: string; labelSelector?: string }
+  namespace: string,
+  params?: ListQueryParams & { fieldSelector?: string; labelSelector?: string; baseURL?: string }
 ) => {
-  const response = await listQuotaMiloapisComV1Alpha1ResourceClaimForAllNamespaces({
+  const response = await listQuotaMiloapisComV1Alpha1NamespacedResourceClaim({
+    ...(params?.baseURL && { baseURL: params.baseURL }),
+    path: { namespace },
     query: {
       limit: params?.limit,
       continue: params?.cursor,
@@ -233,8 +256,9 @@ export const orgQuotaClaimListQuery = (
   // Filter by request resourceType if provided (server-side may ignore; client can post-filter)
   if (params?.resourceType) parts.push(`spec.requests.resourceType=${params.resourceType}`);
 
-  return quotaClaimListQuery({
+  return quotaClaimListQuery(orgName, {
     ...params,
+    baseURL: getOrgControlPlaneBaseURL(orgName),
     fieldSelector: parts.join(','),
   });
 };
@@ -246,8 +270,9 @@ export const projectQuotaClaimListQuery = (
   const parts = [`spec.consumerRef.kind=Project`, `spec.consumerRef.name=${projectName}`];
   if (params?.resourceType) parts.push(`spec.requests.resourceType=${params.resourceType}`);
 
-  return quotaClaimListQuery({
+  return quotaClaimListQuery(MILO_SYSTEM_NAMESPACE, {
     ...params,
+    baseURL: getProjectControlPlaneBaseURL(projectName),
     fieldSelector: parts.join(','),
   });
 };
