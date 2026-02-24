@@ -40,6 +40,60 @@ msgstr ""
 msgid "# of Sources"
 msgstr ""
 
+#: app/features/activity/components/activity-list.tsx:476
+#: app/features/activity/components/activity-list.tsx:584
+#: app/features/activity/components/activity-list.tsx:641
+msgid "200 - OK"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:477
+#: app/features/activity/components/activity-list.tsx:585
+#: app/features/activity/components/activity-list.tsx:642
+msgid "201 - Created"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:478
+#: app/features/activity/components/activity-list.tsx:586
+#: app/features/activity/components/activity-list.tsx:643
+msgid "204 - No Content"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:479
+#: app/features/activity/components/activity-list.tsx:587
+#: app/features/activity/components/activity-list.tsx:644
+msgid "400 - Bad Request"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:480
+#: app/features/activity/components/activity-list.tsx:588
+#: app/features/activity/components/activity-list.tsx:645
+msgid "401 - Unauthorized"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:481
+#: app/features/activity/components/activity-list.tsx:589
+#: app/features/activity/components/activity-list.tsx:646
+msgid "403 - Forbidden"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:482
+#: app/features/activity/components/activity-list.tsx:590
+#: app/features/activity/components/activity-list.tsx:647
+msgid "404 - Not Found"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:483
+#: app/features/activity/components/activity-list.tsx:591
+#: app/features/activity/components/activity-list.tsx:648
+msgid "409 - Conflict"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:484
+#: app/features/activity/components/activity-list.tsx:592
+#: app/features/activity/components/activity-list.tsx:649
+msgid "500 - Server Error"
+msgstr ""
+
 #: app/features/user/components/user-identity-card.tsx:29
 msgid "Account Identities"
 msgstr ""
@@ -48,12 +102,12 @@ msgstr ""
 msgid "Account Management"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:141
+#: app/features/activity/components/activity-list.tsx:191
 msgid "Action"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:377
-#: app/features/activity/components/activity-list.tsx:425
+#: app/features/activity/components/activity-list.tsx:428
+#: app/features/activity/components/activity-list.tsx:555
 msgid "Actions"
 msgstr ""
 
@@ -97,16 +151,21 @@ msgstr ""
 msgid "Added"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:407
+#: app/features/activity/components/activity-list.tsx:463
 msgid "All read operations"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:401
+#: app/features/activity/components/activity-list.tsx:457
 msgid "All write operations"
 msgstr ""
 
 #: app/features/quota/components/quota-grant-list.tsx:62
 msgid "Allocation"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:528
+#: app/features/activity/components/activity-list.tsx:558
+msgid "API Group"
 msgstr ""
 
 #: app/routes/user/index.tsx:97
@@ -303,9 +362,9 @@ msgstr ""
 #: app/routes/contact/create.tsx:14
 #: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:191
-#: app/features/activity/components/activity-list.tsx:384
-#: app/features/activity/components/activity-list.tsx:438
-#: app/features/activity/components/activity-list.tsx:457
+#: app/features/activity/components/activity-list.tsx:435
+#: app/features/activity/components/activity-list.tsx:571
+#: app/features/activity/components/activity-list.tsx:630
 msgid "Create"
 msgstr ""
 
@@ -352,7 +411,7 @@ msgstr ""
 msgid "Dashboard"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:164
+#: app/features/activity/components/activity-list.tsx:212
 msgid "Date"
 msgstr ""
 
@@ -391,9 +450,9 @@ msgstr ""
 #: app/routes/contact/detail/group.tsx:186
 #: app/features/quota/components/quota-grant-list.tsx:146
 #: app/features/contact/components/contact-list.tsx:117
-#: app/features/activity/components/activity-list.tsx:387
-#: app/features/activity/components/activity-list.tsx:441
-#: app/features/activity/components/activity-list.tsx:460
+#: app/features/activity/components/activity-list.tsx:438
+#: app/features/activity/components/activity-list.tsx:574
+#: app/features/activity/components/activity-list.tsx:633
 #: app/components/danger-zone-card/index.tsx:48
 #: app/components/danger-zone-card/index.tsx:76
 #: app/components/button/button-delete-action.tsx:42
@@ -414,8 +473,8 @@ msgstr ""
 msgid "Delete {selectedCount} selected"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:442
-#: app/features/activity/components/activity-list.tsx:461
+#: app/features/activity/components/activity-list.tsx:575
+#: app/features/activity/components/activity-list.tsx:634
 msgid "Delete Collection"
 msgstr ""
 
@@ -501,16 +560,37 @@ msgstr ""
 msgid "DNS Providers"
 msgstr ""
 
+#: app/features/activity/components/activity-list.tsx:502
+#: app/features/activity/components/activity-list.tsx:602
+#: app/features/activity/components/activity-list.tsx:657
+msgid "DNS Record"
+msgstr ""
+
 #: app/features/dns/components/dns-record-status-probe.tsx:57
 msgid "DNS record is being validated"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:503
+#: app/features/activity/components/activity-list.tsx:603
+#: app/features/activity/components/activity-list.tsx:658
+msgid "DNS Record Set"
 msgstr ""
 
 #: app/routes/project/detail/dns/detail.tsx:207
 msgid "DNS Records"
 msgstr ""
 
+#: app/features/activity/components/activity-list.tsx:501
+#: app/features/activity/components/activity-list.tsx:601
+#: app/features/activity/components/activity-list.tsx:656
+msgid "DNS Zone"
+msgstr ""
+
 #: app/routes/project/detail/domain/index.tsx:35
 #: app/routes/project/detail/domain/detail.tsx:75
+#: app/features/activity/components/activity-list.tsx:505
+#: app/features/activity/components/activity-list.tsx:605
+#: app/features/activity/components/activity-list.tsx:660
 msgid "Domain"
 msgstr ""
 
@@ -597,6 +677,12 @@ msgstr ""
 msgid "Export Policies"
 msgstr ""
 
+#: app/features/activity/components/activity-list.tsx:515
+#: app/features/activity/components/activity-list.tsx:615
+#: app/features/activity/components/activity-list.tsx:670
+msgid "Export Policy"
+msgstr ""
+
 #: app/features/email/components/email-list.tsx:144
 #: app/features/email/components/email-list.tsx:174
 msgid "Failed"
@@ -618,8 +704,12 @@ msgstr ""
 msgid "Failed to update timezone"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:378
+#: app/features/activity/components/activity-list.tsx:429
 msgid "Filter by action"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:529
+msgid "Filter by API group"
 msgstr ""
 
 #: app/routes/user/index.tsx:263
@@ -630,11 +720,19 @@ msgstr ""
 msgid "Filter by priority"
 msgstr ""
 
+#: app/features/activity/components/activity-list.tsx:498
+msgid "Filter by resource type"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:473
+msgid "Filter by response code"
+msgstr ""
+
 #: app/features/email/components/email-list.tsx:141
 msgid "Filter by status"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:354
+#: app/features/activity/components/activity-list.tsx:405
 msgid "Filter by time range"
 msgstr ""
 
@@ -665,9 +763,9 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:381
-#: app/features/activity/components/activity-list.tsx:435
-#: app/features/activity/components/activity-list.tsx:454
+#: app/features/activity/components/activity-list.tsx:432
+#: app/features/activity/components/activity-list.tsx:568
+#: app/features/activity/components/activity-list.tsx:627
 msgid "Get"
 msgstr ""
 
@@ -680,6 +778,12 @@ msgstr ""
 #: app/routes/organization/detail/layout.tsx:61
 #: app/routes/organization/detail/quota/grant.tsx:9
 msgid "Grants"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:508
+#: app/features/activity/components/activity-list.tsx:608
+#: app/features/activity/components/activity-list.tsx:663
+msgid "Group"
 msgstr ""
 
 #: app/routes/contact/detail/group.tsx:164
@@ -725,6 +829,12 @@ msgstr ""
 msgid "HTTP Proxies"
 msgstr ""
 
+#: app/features/activity/components/activity-list.tsx:504
+#: app/features/activity/components/activity-list.tsx:604
+#: app/features/activity/components/activity-list.tsx:659
+msgid "HTTP Proxy"
+msgstr ""
+
 #: app/routes/user/index.tsx:53
 #: app/routes/user/detail/index.tsx:229
 msgid "ID"
@@ -733,6 +843,12 @@ msgstr ""
 #: app/routes/user/index.tsx:143
 #: app/features/contact/components/contact-form.tsx:43
 msgid "Invalid email address"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:511
+#: app/features/activity/components/activity-list.tsx:611
+#: app/features/activity/components/activity-list.tsx:666
+msgid "Invitation"
 msgstr ""
 
 #: app/routes/organization/detail/member.tsx:133
@@ -788,9 +904,9 @@ msgstr ""
 msgid "Limit:"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:382
-#: app/features/activity/components/activity-list.tsx:436
-#: app/features/activity/components/activity-list.tsx:455
+#: app/features/activity/components/activity-list.tsx:433
+#: app/features/activity/components/activity-list.tsx:569
+#: app/features/activity/components/activity-list.tsx:628
 msgid "List"
 msgstr ""
 
@@ -849,6 +965,12 @@ msgstr ""
 
 #: app/features/contact-group/components/contact-group-form.tsx:79
 msgid "Manually sync this description with the one in Loops (used for opt-in pages)."
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:512
+#: app/features/activity/components/activity-list.tsx:612
+#: app/features/activity/components/activity-list.tsx:667
+msgid "Member"
 msgstr ""
 
 #: app/routes/group/member.tsx:117
@@ -919,6 +1041,9 @@ msgstr ""
 #: app/routes/project/detail/secret.tsx:25
 #: app/routes/project/detail/export-policy/detail.tsx:75
 #: app/routes/project/detail/domain/detail.tsx:65
+#: app/features/activity/components/activity-list.tsx:513
+#: app/features/activity/components/activity-list.tsx:613
+#: app/features/activity/components/activity-list.tsx:668
 msgid "Namespace"
 msgstr ""
 
@@ -953,6 +1078,9 @@ msgstr ""
 
 #: app/routes/project/index.tsx:45
 #: app/routes/project/detail/index.tsx:62
+#: app/features/activity/components/activity-list.tsx:514
+#: app/features/activity/components/activity-list.tsx:614
+#: app/features/activity/components/activity-list.tsx:669
 msgid "Organization"
 msgstr ""
 
@@ -980,9 +1108,9 @@ msgstr ""
 msgid "Overview"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:386
-#: app/features/activity/components/activity-list.tsx:440
-#: app/features/activity/components/activity-list.tsx:459
+#: app/features/activity/components/activity-list.tsx:437
+#: app/features/activity/components/activity-list.tsx:573
+#: app/features/activity/components/activity-list.tsx:632
 msgid "Patch"
 msgstr ""
 
@@ -1063,6 +1191,12 @@ msgstr ""
 
 #: app/features/profile/components/profile-form.tsx:42
 msgid "Profile updated successfully"
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:506
+#: app/features/activity/components/activity-list.tsx:606
+#: app/features/activity/components/activity-list.tsx:661
+msgid "Project"
 msgstr ""
 
 #: app/routes/project/detail/index.tsx:28
@@ -1176,6 +1310,8 @@ msgstr ""
 
 #: app/features/quota/components/quota-grant-list.tsx:48
 #: app/features/quota/components/quota-bucket-list.tsx:32
+#: app/features/activity/components/activity-list.tsx:497
+#: app/features/activity/components/activity-list.tsx:557
 msgid "Resource Type"
 msgstr ""
 
@@ -1183,7 +1319,15 @@ msgstr ""
 msgid "Resource Type:"
 msgstr ""
 
+#: app/features/activity/components/activity-list.tsx:472
+#: app/features/activity/components/activity-list.tsx:556
+msgid "Response Code"
+msgstr ""
+
 #: app/routes/organization/detail/member.tsx:62
+#: app/features/activity/components/activity-list.tsx:509
+#: app/features/activity/components/activity-list.tsx:609
+#: app/features/activity/components/activity-list.tsx:664
 msgid "Role"
 msgstr ""
 
@@ -1203,7 +1347,7 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:347
+#: app/features/activity/components/activity-list.tsx:398
 msgid "Search activity..."
 msgstr ""
 
@@ -1251,6 +1395,12 @@ msgstr ""
 
 #: app/components/app-search/index.tsx:180
 msgid "Searching..."
+msgstr ""
+
+#: app/features/activity/components/activity-list.tsx:510
+#: app/features/activity/components/activity-list.tsx:610
+#: app/features/activity/components/activity-list.tsx:665
+msgid "Secret"
 msgstr ""
 
 #: app/routes/project/detail/secret.tsx:11
@@ -1351,7 +1501,7 @@ msgstr ""
 msgid "System"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:153
+#: app/features/activity/components/activity-list.tsx:203
 msgid "Target"
 msgstr ""
 
@@ -1363,11 +1513,15 @@ msgstr ""
 msgid "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 msgstr ""
 
+#: app/features/activity/components/activity-list.tsx:131
+msgid "Tenant"
+msgstr ""
+
 #: app/features/domain/components/domain-status-probe.tsx:103
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:424
+#: app/features/activity/components/activity-list.tsx:554
 msgid "Time range"
 msgstr ""
 
@@ -1395,9 +1549,9 @@ msgstr ""
 #: app/features/quota/components/quota-bucket-list.tsx:152
 #: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:191
-#: app/features/activity/components/activity-list.tsx:385
-#: app/features/activity/components/activity-list.tsx:439
-#: app/features/activity/components/activity-list.tsx:458
+#: app/features/activity/components/activity-list.tsx:436
+#: app/features/activity/components/activity-list.tsx:572
+#: app/features/activity/components/activity-list.tsx:631
 msgid "Update"
 msgstr ""
 
@@ -1417,7 +1571,10 @@ msgstr ""
 msgid "Usage"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:124
+#: app/features/activity/components/activity-list.tsx:114
+#: app/features/activity/components/activity-list.tsx:507
+#: app/features/activity/components/activity-list.tsx:607
+#: app/features/activity/components/activity-list.tsx:662
 msgid "User"
 msgstr ""
 
@@ -1513,9 +1670,9 @@ msgstr ""
 msgid "Warning"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:383
-#: app/features/activity/components/activity-list.tsx:437
-#: app/features/activity/components/activity-list.tsx:456
+#: app/features/activity/components/activity-list.tsx:434
+#: app/features/activity/components/activity-list.tsx:570
+#: app/features/activity/components/activity-list.tsx:629
 msgid "Watch"
 msgstr ""
 

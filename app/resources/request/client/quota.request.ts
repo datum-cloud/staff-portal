@@ -93,7 +93,7 @@ export const orgQuotaGrantListQuery = (
   if (params?.resourceType)
     fieldSelectorParts.push(`spec.allowances.resourceType=${params.resourceType}`);
 
-  return quotaGrantListQuery(orgName, {
+  return quotaGrantListQuery(`organization-${orgName}`, {
     ...params,
     baseURL: getOrgControlPlaneBaseURL(orgName),
     fieldSelector: fieldSelectorParts.join(','),
@@ -184,7 +184,7 @@ export const orgQuotaBucketListQuery = (
   ];
   if (params?.resourceType) fieldSelectorParts.push(`spec.resourceType=${params.resourceType}`);
 
-  return quotaBucketListQuery(orgName, {
+  return quotaBucketListQuery(`organization-${orgName}`, {
     ...params,
     baseURL: getOrgControlPlaneBaseURL(orgName),
     fieldSelector: fieldSelectorParts.join(','),
@@ -256,7 +256,7 @@ export const orgQuotaClaimListQuery = (
   // Filter by request resourceType if provided (server-side may ignore; client can post-filter)
   if (params?.resourceType) parts.push(`spec.requests.resourceType=${params.resourceType}`);
 
-  return quotaClaimListQuery(orgName, {
+  return quotaClaimListQuery(`organization-${orgName}`, {
     ...params,
     baseURL: getOrgControlPlaneBaseURL(orgName),
     fieldSelector: parts.join(','),
