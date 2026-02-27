@@ -30,26 +30,26 @@ const getOrgControlPlaneBaseURL = (orgName: string) =>
 // ------------------------
 // ResourceRegistrations
 // ------------------------
-export const quotaRegistrationListQuery = async (
-  params?: ListQueryParams & { fieldSelector?: string; labelSelector?: string }
-) => {
-  const response = await listQuotaMiloapisComV1Alpha1ResourceRegistration({
-    query: {
-      limit: params?.limit,
-      continue: params?.cursor,
-      ...(params?.fieldSelector && { fieldSelector: params.fieldSelector }),
-      ...(params?.labelSelector && { labelSelector: params.labelSelector }),
-    },
-  });
-  return response.data.data;
-};
+// export const quotaRegistrationListQuery = async (
+//   params?: ListQueryParams & { fieldSelector?: string; labelSelector?: string }
+// ) => {
+//   const response = await listQuotaMiloapisComV1Alpha1ResourceRegistration({
+//     query: {
+//       limit: params?.limit,
+//       continue: params?.cursor,
+//       ...(params?.fieldSelector && { fieldSelector: params.fieldSelector }),
+//       ...(params?.labelSelector && { labelSelector: params.labelSelector }),
+//     },
+//   });
+//   return response.data.data;
+// };
 
-export const quotaRegistrationDetailQuery = async (name: string) => {
-  const response = await readQuotaMiloapisComV1Alpha1ResourceRegistration({
-    path: { name },
-  });
-  return response.data.data;
-};
+// export const quotaRegistrationDetailQuery = async (name: string) => {
+//   const response = await readQuotaMiloapisComV1Alpha1ResourceRegistration({
+//     path: { name },
+//   });
+//   return response.data.data;
+// };
 
 // ------------------------
 // ResourceGrants
@@ -71,17 +71,16 @@ export const quotaGrantListQuery = async (
   return response.data.data;
 };
 
-export const quotaGrantDetailQuery = async (
-  metadata: ComMiloapisQuotaV1Alpha1ResourceGrant['metadata']
-) => {
-  // Grants are namespaced (namespace is typically the organization namespace)
-  const response = await readQuotaMiloapisComV1Alpha1NamespacedResourceGrant({
-    path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
-  });
-  return response.data.data;
-};
+// export const quotaGrantDetailQuery = async (
+//   metadata: ComMiloapisQuotaV1Alpha1ResourceGrant['metadata']
+// ) => {
+//   // Grants are namespaced (namespace is typically the organization namespace)
+//   const response = await readQuotaMiloapisComV1Alpha1NamespacedResourceGrant({
+//     path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
+//   });
+//   return response.data.data;
+// };
 
-// Convenience: list grants for a specific Organization consumer
 export const orgQuotaGrantListQuery = (
   orgName: string,
   params?: ListQueryParams & { resourceType?: string; labelSelector?: string }
@@ -119,10 +118,12 @@ export const projectQuotaGrantListQuery = (
 };
 
 export const quotaGrantCreateMutation = async (
+  baseURL: string,
   namespace: string,
   payload: ComMiloapisQuotaV1Alpha1ResourceGrant['spec']
 ) => {
   const response = await createQuotaMiloapisComV1Alpha1NamespacedResourceGrant({
+    baseURL,
     path: { namespace },
     body: {
       apiVersion: 'quota.miloapis.com/v1alpha1',
@@ -137,10 +138,47 @@ export const quotaGrantCreateMutation = async (
   return response.data.data;
 };
 
-export const quotaGrantDeleteMutation = async (name: string, namespace: string = 'default') => {
+export const orgQuotaGrantCreateMutation = async (
+  orgName: string,
+  namespace: string,
+  payload: ComMiloapisQuotaV1Alpha1ResourceGrant['spec']
+) => {
+  return quotaGrantCreateMutation(getOrgControlPlaneBaseURL(orgName), namespace, payload);
+};
+
+export const projectQuotaGrantCreateMutation = async (
+  projectName: string,
+  namespace: string,
+  payload: ComMiloapisQuotaV1Alpha1ResourceGrant['spec']
+) => {
+  return quotaGrantCreateMutation(getProjectControlPlaneBaseURL(projectName), namespace, payload);
+};
+
+export const quotaGrantDeleteMutation = async (
+  baseURL: string,
+  name: string,
+  namespace: string = 'default'
+) => {
   return deleteQuotaMiloapisComV1Alpha1NamespacedResourceGrant({
+    baseURL,
     path: { namespace, name },
   });
+};
+
+export const orgQuotaGrantDeleteMutation = async (
+  orgName: string,
+  name: string,
+  namespace: string = 'default'
+) => {
+  return quotaGrantDeleteMutation(getOrgControlPlaneBaseURL(orgName), name, namespace);
+};
+
+export const projectQuotaGrantDeleteMutation = async (
+  projectName: string,
+  name: string,
+  namespace: string = 'default'
+) => {
+  return quotaGrantDeleteMutation(getProjectControlPlaneBaseURL(projectName), name, namespace);
 };
 
 // ------------------------
@@ -163,16 +201,16 @@ export const quotaBucketListQuery = async (
   return response.data.data;
 };
 
-export const quotaBucketDetailQuery = async (
-  metadata: ComMiloapisQuotaV1Alpha1AllowanceBucket['metadata']
-) => {
-  // Note: OpenAPI has namespaced version, using default namespace
-  // Buckets are typically cluster-scoped (one per consumer+resourceType), exposed by name
-  const response = await readQuotaMiloapisComV1Alpha1NamespacedAllowanceBucket({
-    path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
-  });
-  return response.data.data;
-};
+// export const quotaBucketDetailQuery = async (
+//   metadata: ComMiloapisQuotaV1Alpha1AllowanceBucket['metadata']
+// ) => {
+//   // Note: OpenAPI has namespaced version, using default namespace
+//   // Buckets are typically cluster-scoped (one per consumer+resourceType), exposed by name
+//   const response = await readQuotaMiloapisComV1Alpha1NamespacedAllowanceBucket({
+//     path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
+//   });
+//   return response.data.data;
+// };
 
 export const orgQuotaBucketListQuery = (
   orgName: string,
@@ -208,15 +246,15 @@ export const projectQuotaBucketListQuery = (
   });
 };
 
-export const quotaBucketDeleteMutation = async (
-  metadata: ComMiloapisQuotaV1Alpha1AllowanceBucket['metadata']
-) => {
-  // Note: OpenAPI has namespaced version, using default namespace
-  // Buckets are typically cluster-scoped, but OpenAPI requires namespace
-  return deleteQuotaMiloapisComV1Alpha1NamespacedAllowanceBucket({
-    path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
-  });
-};
+// export const quotaBucketDeleteMutation = async (
+//   metadata: ComMiloapisQuotaV1Alpha1AllowanceBucket['metadata']
+// ) => {
+//   // Note: OpenAPI has namespaced version, using default namespace
+//   // Buckets are typically cluster-scoped, but OpenAPI requires namespace
+//   return deleteQuotaMiloapisComV1Alpha1NamespacedAllowanceBucket({
+//     path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
+//   });
+// };
 
 // ------------------------
 // ResourceClaims
@@ -238,15 +276,15 @@ export const quotaClaimListQuery = async (
   return response.data.data;
 };
 
-export const quotaClaimDetailQuery = async (
-  metadata: ComMiloapisQuotaV1Alpha1ResourceClaim['metadata']
-) => {
-  // Claims are generally namespaced
-  const response = await readQuotaMiloapisComV1Alpha1NamespacedResourceClaim({
-    path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
-  });
-  return response.data.data;
-};
+// export const quotaClaimDetailQuery = async (
+//   metadata: ComMiloapisQuotaV1Alpha1ResourceClaim['metadata']
+// ) => {
+//   // Claims are generally namespaced
+//   const response = await readQuotaMiloapisComV1Alpha1NamespacedResourceClaim({
+//     path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
+//   });
+//   return response.data.data;
+// };
 
 export const orgQuotaClaimListQuery = (
   orgName: string,
@@ -277,11 +315,11 @@ export const projectQuotaClaimListQuery = (
   });
 };
 
-export const quotaClaimDeleteMutation = async (
-  metadata: ComMiloapisQuotaV1Alpha1ResourceClaim['metadata']
-) => {
-  // Claims are generally namespaced
-  return deleteQuotaMiloapisComV1Alpha1NamespacedResourceClaim({
-    path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
-  });
-};
+// export const quotaClaimDeleteMutation = async (
+//   metadata: ComMiloapisQuotaV1Alpha1ResourceClaim['metadata']
+// ) => {
+//   // Claims are generally namespaced
+//   return deleteQuotaMiloapisComV1Alpha1NamespacedResourceClaim({
+//     path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
+//   });
+// };

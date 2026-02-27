@@ -21,6 +21,7 @@ import { useState } from 'react';
 interface QuotaGrantListProps {
   queryKeyPrefix: string[];
   fetchFn: (params: any) => Promise<ComMiloapisQuotaV1Alpha1ResourceGrantList>;
+  deleteGrantFn: (name: string, namespace: string) => Promise<any>;
 }
 
 const columnHelper = createColumnHelper<ComMiloapisQuotaV1Alpha1ResourceGrant>();
@@ -85,7 +86,7 @@ const columns = [
   }),
 ];
 
-export function QuotaGrantList({ queryKeyPrefix, fetchFn }: QuotaGrantListProps) {
+export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: QuotaGrantListProps) {
   const { t } = useLingui();
   const [selectedGrant, setSelectedGrant] = useState<ComMiloapisQuotaV1Alpha1ResourceGrant | null>(
     null
@@ -148,7 +149,7 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn }: QuotaGrantListProps)
         variant="destructive"
         requireConfirmation
         onConfirm={async () => {
-          await quotaGrantDeleteMutation(
+          await deleteGrantFn(
             selectedGrant?.metadata?.name ?? '',
             selectedGrant?.metadata?.namespace ?? ''
           );
