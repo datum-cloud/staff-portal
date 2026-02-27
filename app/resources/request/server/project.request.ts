@@ -4,6 +4,7 @@ import {
   readNetworkingDatumapisComV1AlphaNamespacedDomain,
   readNetworkingDatumapisComV1AlphaNamespacedHttpProxy,
 } from '@openapi/networking.datumapis.com/v1alpha';
+import { listNotesMiloapisComV1Alpha1NamespacedNote } from '@openapi/notes.miloapis.com/v1alpha1';
 import { readResourcemanagerMiloapisComV1Alpha1Project } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { UnwrapProxyResponse } from '@openapi/shared/core/types.gen';
 import { readTelemetryMiloapisComV1Alpha1NamespacedExportPolicy } from '@openapi/telemetry.miloapis.com/v1alpha1';
@@ -88,6 +89,27 @@ export const projectDomainDetailQuery = async (
     path: {
       namespace,
       name: domainName,
+    },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data as unknown as UnwrapProxyResponse<typeof response.data>;
+};
+
+export const projectDomainNotesQuery = async (
+  token: string,
+  projectName: string,
+  domainName: string,
+  namespace: string = 'default'
+) => {
+  const response = await listNotesMiloapisComV1Alpha1NamespacedNote({
+    baseURL: `${env.API_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    path: {
+      namespace,
+    },
+    query: {
+      fieldSelector: `spec.subjectRef.name=${domainName},spec.subjectRef.kind=Domain`,
     },
     headers: {
       Authorization: `Bearer ${token}`,
