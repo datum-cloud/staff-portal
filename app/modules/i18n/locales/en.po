@@ -105,7 +105,7 @@ msgstr "All read operations"
 msgid "All write operations"
 msgstr "All write operations"
 
-#: app/features/quota/components/quota-grant-list.tsx:62
+#: app/features/quota/components/quota-grant-list.tsx:63
 msgid "Allocation"
 msgstr "Allocation"
 
@@ -137,7 +137,7 @@ msgid "Are you sure you want to delete contact \"{0}\"? This action cannot be un
 msgstr "Are you sure you want to delete contact \"{0}\"? This action cannot be undone."
 
 #. placeholder {0}: selectedGrant?.metadata?.name
-#: app/features/quota/components/quota-grant-list.tsx:145
+#: app/features/quota/components/quota-grant-list.tsx:146
 msgid "Are you sure you want to delete grant \"{0}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete grant \"{0}\"? This action cannot be undone."
 
@@ -186,11 +186,11 @@ msgstr "Associate with User"
 msgid "Associated with User: "
 msgstr "Associated with User: "
 
-#: app/features/quota/components/quota-grant-list.tsx:131
+#: app/features/quota/components/quota-grant-list.tsx:132
 msgid "Auto-managed by grant creation policy. Cannot be deleted."
 msgstr "Auto-managed by grant creation policy. Cannot be deleted."
 
-#: app/features/quota/components/quota-grant-list.tsx:130
+#: app/features/quota/components/quota-grant-list.tsx:131
 msgid "Auto-managed by policy \"{policyName}\". Cannot be deleted."
 msgstr "Auto-managed by policy \"{policyName}\". Cannot be deleted."
 
@@ -207,8 +207,8 @@ msgstr "Auto-managed by policy \"{policyName}\". Cannot be deleted."
 #: app/routes/contact/detail/group.tsx:187
 #: app/routes/contact/detail/group.tsx:204
 #: app/features/user/components/user-reject-dialog.tsx:30
-#: app/features/quota/components/quota-grant-list.tsx:147
-#: app/features/quota/components/quota-bucket-list.tsx:153
+#: app/features/quota/components/quota-grant-list.tsx:148
+#: app/features/quota/components/quota-bucket-list.tsx:158
 #: app/features/contact-group/components/contact-group-form.tsx:97
 #: app/features/contact/components/contact-list.tsx:118
 #: app/features/contact/components/contact-form.tsx:185
@@ -217,7 +217,7 @@ msgstr "Auto-managed by policy \"{policyName}\". Cannot be deleted."
 msgid "Cancel"
 msgstr "Cancel"
 
-#: app/features/quota/components/quota-grant-list.tsx:122
+#: app/features/quota/components/quota-grant-list.tsx:123
 msgid "Cannot delete inactive grant"
 msgstr "Cannot delete inactive grant"
 
@@ -327,8 +327,8 @@ msgstr "Create"
 #: app/routes/group/member.tsx:68
 #: app/routes/group/index.tsx:44
 #: app/routes/contact-group/index.tsx:67
-#: app/features/quota/components/quota-grant-list.tsx:81
-#: app/features/quota/components/quota-bucket-list.tsx:84
+#: app/features/quota/components/quota-grant-list.tsx:82
+#: app/features/quota/components/quota-bucket-list.tsx:89
 #: app/features/contact/components/contact-list.tsx:58
 msgid "Created"
 msgstr "Created"
@@ -389,7 +389,7 @@ msgstr "Deactivation Reason:"
 #: app/routes/contact-group/index.tsx:151
 #: app/routes/contact-group/detail/member.tsx:194
 #: app/routes/contact/detail/group.tsx:186
-#: app/features/quota/components/quota-grant-list.tsx:146
+#: app/features/quota/components/quota-grant-list.tsx:147
 #: app/features/contact/components/contact-list.tsx:117
 #: app/features/activity/components/activity-list.tsx:387
 #: app/features/activity/components/activity-list.tsx:441
@@ -432,7 +432,7 @@ msgstr "Delete contact group"
 msgid "Delete contact groups"
 msgstr "Delete contact groups"
 
-#: app/features/quota/components/quota-grant-list.tsx:144
+#: app/features/quota/components/quota-grant-list.tsx:145
 msgid "Delete Grant"
 msgstr "Delete Grant"
 
@@ -523,8 +523,8 @@ msgstr "Domain verification is in progress. This may take a few minutes."
 msgid "Domains"
 msgstr "Domains"
 
-#: app/features/quota/components/quota-bucket-list.tsx:103
-#: app/features/quota/components/quota-bucket-list.tsx:151
+#: app/features/quota/components/quota-bucket-list.tsx:108
+#: app/features/quota/components/quota-bucket-list.tsx:156
 msgid "Edit Quota"
 msgstr "Edit Quota"
 
@@ -671,12 +671,12 @@ msgstr "General"
 msgid "Get"
 msgstr "Get"
 
-#: app/features/quota/components/quota-grant-list.tsx:159
+#: app/features/quota/components/quota-grant-list.tsx:160
 msgid "Grant deleted successfully"
 msgstr "Grant deleted successfully"
 
 #: app/routes/project/detail/layout.tsx:126
-#: app/routes/project/detail/quota/grant.tsx:9
+#: app/routes/project/detail/quota/grant.tsx:12
 #: app/routes/organization/detail/layout.tsx:61
 #: app/routes/organization/detail/quota/grant.tsx:9
 msgid "Grants"
@@ -784,7 +784,7 @@ msgstr "Last name is required"
 msgid "Light"
 msgstr "Light"
 
-#: app/features/quota/components/quota-bucket-list.tsx:163
+#: app/features/quota/components/quota-bucket-list.tsx:168
 msgid "Limit:"
 msgstr "Limit:"
 
@@ -907,7 +907,7 @@ msgstr "My Profile"
 #: app/routes/contact-group/index.tsx:40
 #: app/routes/contact-group/detail/member.tsx:59
 #: app/routes/contact/detail/group.tsx:52
-#: app/features/quota/components/quota-grant-list.tsx:43
+#: app/features/quota/components/quota-grant-list.tsx:44
 #: app/features/contact/components/contact-list.tsx:30
 msgid "Name"
 msgstr "Name"
@@ -926,7 +926,7 @@ msgstr "Namespace"
 msgid "Navigation"
 msgstr "Navigation"
 
-#: app/features/quota/components/quota-bucket-list.tsx:168
+#: app/features/quota/components/quota-bucket-list.tsx:173
 msgid "New Limit"
 msgstr "New Limit"
 
@@ -1099,7 +1099,7 @@ msgstr "Query"
 msgid "Quick ranges"
 msgstr "Quick ranges"
 
-#: app/features/quota/components/quota-bucket-list.tsx:140
+#: app/features/quota/components/quota-bucket-list.tsx:145
 msgid "Quota updated successfully"
 msgstr "Quota updated successfully"
 
@@ -1174,12 +1174,12 @@ msgstr "Resend"
 msgid "Resource Name"
 msgstr "Resource Name"
 
-#: app/features/quota/components/quota-grant-list.tsx:48
-#: app/features/quota/components/quota-bucket-list.tsx:32
+#: app/features/quota/components/quota-grant-list.tsx:49
+#: app/features/quota/components/quota-bucket-list.tsx:37
 msgid "Resource Type"
 msgstr "Resource Type"
 
-#: app/features/quota/components/quota-bucket-list.tsx:159
+#: app/features/quota/components/quota-bucket-list.tsx:164
 msgid "Resource Type:"
 msgstr "Resource Type:"
 
@@ -1325,7 +1325,7 @@ msgstr "Start Time"
 #: app/routes/contact-group/index.tsx:60
 #: app/routes/contact-group/detail/member.tsx:86
 #: app/routes/contact/detail/group.tsx:78
-#: app/features/quota/components/quota-grant-list.tsx:75
+#: app/features/quota/components/quota-grant-list.tsx:76
 #: app/features/email/components/email-list.tsx:59
 #: app/features/email/components/email-list.tsx:140
 #: app/features/email/components/email-list.tsx:158
@@ -1392,7 +1392,7 @@ msgstr "Type"
 msgid "Type a command or search..."
 msgstr "Type a command or search..."
 
-#: app/features/quota/components/quota-bucket-list.tsx:152
+#: app/features/quota/components/quota-bucket-list.tsx:157
 #: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:191
 #: app/features/activity/components/activity-list.tsx:385
@@ -1410,10 +1410,10 @@ msgid "Updating email addresses for GitHub identities"
 msgstr "Updating email addresses for GitHub identities"
 
 #: app/routes/project/detail/layout.tsx:122
-#: app/routes/project/detail/quota/usage.tsx:9
+#: app/routes/project/detail/quota/usage.tsx:12
 #: app/routes/organization/detail/layout.tsx:57
 #: app/routes/organization/detail/quota/usage.tsx:9
-#: app/features/quota/components/quota-bucket-list.tsx:37
+#: app/features/quota/components/quota-bucket-list.tsx:42
 msgid "Usage"
 msgstr "Usage"
 
