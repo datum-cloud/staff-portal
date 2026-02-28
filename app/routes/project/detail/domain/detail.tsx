@@ -1,17 +1,27 @@
 import type { Route } from './+types/detail';
 import { DateTime } from '@/components/date';
 import { DisplayText } from '@/components/display';
-import { DomainDnsProviders, DomainExpiration, DomainStatusProbe } from '@/features/domain';
+import {
+  CreateNoteForm,
+  DomainDnsProviders,
+  DomainExpiration,
+  DomainStatusProbe,
+  NotesList,
+} from '@/features/domain';
 import { authenticator } from '@/modules/auth';
-import { Card, CardContent } from '@/modules/shadcn/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
-import { projectDomainDetailQuery } from '@/resources/request/server';
+import {
+  projectDomainDetailQuery,
+  projectDomainNotesQuery,
+  userDetailQuery,
+} from '@/resources/request/server';
 import { useProjectDetailData } from '@/routes/project/shared';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Text, Title } from '@datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { ComDatumapisNetworkingV1AlphaDomain } from '@openapi/networking.datumapis.com/v1alpha';
-import { useLoaderData } from 'react-router';
+import { useLoaderData, useRevalidator } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const data = extractDataFromMatches<ComDatumapisNetworkingV1AlphaDomain>(matches);
@@ -25,19 +35,47 @@ export const handle = {
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const session = await authenticator.getSession(request);
 
-  const data = await projectDomainDetailQuery(
-    session?.accessToken ?? '',
-    params?.projectName ?? '',
-    params?.domainName ?? '',
-    params?.namespace as string
+  const [data, notes] = await Promise.all([
+    projectDomainDetailQuery(
+      session?.accessToken ?? '',
+      params?.projectName ?? '',
+      params?.domainName ?? '',
+      params?.namespace as string
+    ),
+    projectDomainNotesQuery(
+      session?.accessToken ?? '',
+      params?.projectName ?? '',
+      params?.domainName ?? '',
+      params?.namespace as string
+    ).catch(() => null),
+  ]);
+
+  const creatorIds = [
+    ...new Set(
+      (notes?.items ?? []).map((n) => n.spec?.creatorRef?.name).filter((id): id is string => !!id)
+    ),
+  ];
+
+  const userEmails = Object.fromEntries(
+    await Promise.all(
+      creatorIds.map(async (id) => {
+        try {
+          const user = await userDetailQuery(session?.accessToken ?? '', id);
+          return [id, user?.spec?.email ?? id] as [string, string];
+        } catch {
+          return [id, id] as [string, string];
+        }
+      })
+    )
   );
 
-  return data;
+  return { data, notes, userEmails };
 };
 
 export default function Page() {
   const { project } = useProjectDetailData();
-  const data = useLoaderData<typeof loader>();
+  const { data, notes, userEmails } = useLoaderData<typeof loader>();
+  const { revalidate } = useRevalidator();
 
   return (
     <div className="m-4 flex flex-col gap-1">
@@ -137,6 +175,29 @@ export default function Page() {
               </TableRow>
             </TableBody>
           </Table>
+        </CardContent>
+      </Card>
+
+      <Card className="mt-4 shadow-none">
+        <CardHeader>
+          <CardTitle>
+            <Trans>Notes</Trans>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-3">
+          <NotesList
+            notes={notes}
+            projectName={project.metadata?.name ?? ''}
+            namespace={data?.metadata?.namespace ?? ''}
+            userEmails={userEmails}
+            onNoteDeleted={revalidate}
+          />
+          <CreateNoteForm
+            projectName={project.metadata?.name ?? ''}
+            namespace={data?.metadata?.namespace ?? ''}
+            domainName={data?.metadata?.name ?? ''}
+            onCreated={revalidate}
+          />
         </CardContent>
       </Card>
     </div>

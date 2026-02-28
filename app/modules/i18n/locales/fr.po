@@ -84,6 +84,10 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
+#: app/features/domain/components/create-note-form.tsx:45
+msgid "Add a note"
+msgstr ""
+
 #: app/routes/contact/detail/group.tsx:202
 msgid "Add Group"
 msgstr ""
@@ -93,8 +97,16 @@ msgstr ""
 msgid "Add Member"
 msgstr ""
 
+#: app/features/domain/components/create-note-form.tsx:64
+msgid "Add Note"
+msgstr ""
+
 #: app/routes/contact-group/detail/member.tsx:97
 msgid "Added"
+msgstr ""
+
+#: app/features/domain/components/note-card.tsx:38
+msgid "Added by"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:407
@@ -318,7 +330,7 @@ msgstr ""
 #: app/routes/project/detail/export-policy/index.tsx:58
 #: app/routes/project/detail/export-policy/detail.tsx:97
 #: app/routes/project/detail/domain/index.tsx:70
-#: app/routes/project/detail/domain/detail.tsx:129
+#: app/routes/project/detail/domain/detail.tsx:167
 #: app/routes/project/detail/dns/index.tsx:77
 #: app/routes/profile/session.tsx:56
 #: app/routes/organization/index.tsx:49
@@ -497,7 +509,7 @@ msgid "DNS Host"
 msgstr ""
 
 #: app/routes/project/detail/domain/index.tsx:52
-#: app/routes/project/detail/domain/detail.tsx:95
+#: app/routes/project/detail/domain/detail.tsx:133
 msgid "DNS Providers"
 msgstr ""
 
@@ -510,7 +522,7 @@ msgid "DNS Records"
 msgstr ""
 
 #: app/routes/project/detail/domain/index.tsx:35
-#: app/routes/project/detail/domain/detail.tsx:75
+#: app/routes/project/detail/domain/detail.tsx:113
 msgid "Domain"
 msgstr ""
 
@@ -565,6 +577,10 @@ msgstr ""
 msgid "Endpoint"
 msgstr ""
 
+#: app/features/domain/components/create-note-form.tsx:52
+msgid "Enter note content..."
+msgstr ""
+
 #: app/routes/user/detail/index.tsx:136
 msgid "Enter reason for deactivation..."
 msgstr ""
@@ -584,7 +600,7 @@ msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr ""
 
 #: app/routes/project/detail/domain/index.tsx:56
-#: app/routes/project/detail/domain/detail.tsx:105
+#: app/routes/project/detail/domain/detail.tsx:143
 msgid "Expiration Date"
 msgstr ""
 
@@ -918,7 +934,7 @@ msgstr ""
 
 #: app/routes/project/detail/secret.tsx:25
 #: app/routes/project/detail/export-policy/detail.tsx:75
-#: app/routes/project/detail/domain/detail.tsx:65
+#: app/routes/project/detail/domain/detail.tsx:103
 msgid "Namespace"
 msgstr ""
 
@@ -928,6 +944,10 @@ msgstr ""
 
 #: app/features/quota/components/quota-bucket-list.tsx:173
 msgid "New Limit"
+msgstr ""
+
+#: app/features/domain/components/notes-list.tsx:30
+msgid "No notes yet. Add the first note below."
 msgstr ""
 
 #: app/components/app-search/index.tsx:184
@@ -941,6 +961,22 @@ msgstr ""
 #: app/features/email/components/email-list.tsx:133
 #: app/features/email/components/email-list.tsx:163
 msgid "Normal"
+msgstr ""
+
+#: app/features/domain/components/note-card.tsx:44
+msgid "Note"
+msgstr ""
+
+#: app/features/domain/components/create-note-form.tsx:33
+msgid "Note added"
+msgstr ""
+
+#: app/features/domain/components/note-card.tsx:26
+msgid "Note deleted"
+msgstr ""
+
+#: app/routes/project/detail/domain/detail.tsx:184
+msgid "Notes"
 msgstr ""
 
 #: app/components/app-sidebar/nav-user.tsx:89
@@ -1139,7 +1175,7 @@ msgid "Records"
 msgstr ""
 
 #: app/routes/project/detail/domain/index.tsx:48
-#: app/routes/project/detail/domain/detail.tsx:85
+#: app/routes/project/detail/domain/detail.tsx:123
 #: app/routes/project/detail/dns/detail.tsx:195
 msgid "Registrar"
 msgstr ""
@@ -1170,7 +1206,7 @@ msgstr ""
 msgid "Resend"
 msgstr ""
 
-#: app/routes/project/detail/domain/detail.tsx:53
+#: app/routes/project/detail/domain/detail.tsx:91
 msgid "Resource Name"
 msgstr ""
 
@@ -1321,7 +1357,7 @@ msgstr ""
 #: app/routes/project/detail/export-policy/detail.tsx:85
 #: app/routes/project/detail/export-policy/detail.tsx:186
 #: app/routes/project/detail/domain/index.tsx:60
-#: app/routes/project/detail/domain/detail.tsx:115
+#: app/routes/project/detail/domain/detail.tsx:153
 #: app/routes/contact-group/index.tsx:60
 #: app/routes/contact-group/detail/member.tsx:86
 #: app/routes/contact/detail/group.tsx:78
@@ -1367,6 +1403,10 @@ msgstr ""
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 msgstr ""
 
+#: app/features/domain/components/note-card.tsx:45
+msgid "This note will be permanently deleted and cannot be recovered."
+msgstr ""
+
 #: app/features/activity/components/activity-list.tsx:424
 msgid "Time range"
 msgstr ""
@@ -1390,6 +1430,10 @@ msgstr ""
 
 #: app/components/app-search/index.tsx:150
 msgid "Type a command or search..."
+msgstr ""
+
+#: app/features/domain/components/note-card.tsx:38
+msgid "Unknown"
 msgstr ""
 
 #: app/features/quota/components/quota-bucket-list.tsx:157
