@@ -14,6 +14,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import {
   ComMiloapisQuotaV1Alpha1AllowanceBucket,
   ComMiloapisQuotaV1Alpha1AllowanceBucketList,
+  ComMiloapisQuotaV1Alpha1ResourceGrant,
 } from '@openapi/quota.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PencilIcon } from 'lucide-react';
@@ -23,6 +24,10 @@ import z from 'zod';
 interface QuotaBucketListProps {
   queryKeyPrefix: string[];
   fetchFn: (params: any) => Promise<ComMiloapisQuotaV1Alpha1AllowanceBucketList>;
+  createGrantFn: (
+    namespace: string,
+    payload: ComMiloapisQuotaV1Alpha1ResourceGrant['spec']
+  ) => Promise<ComMiloapisQuotaV1Alpha1ResourceGrant>;
 }
 
 const columnHelper = createColumnHelper<ComMiloapisQuotaV1Alpha1AllowanceBucket>();
@@ -88,7 +93,7 @@ const columns = [
   }),
 ];
 
-export function QuotaBucketList({ queryKeyPrefix, fetchFn }: QuotaBucketListProps) {
+export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: QuotaBucketListProps) {
   const { t } = useLingui();
   const [selected, setSelected] = useState<ComMiloapisQuotaV1Alpha1AllowanceBucket | null>(null);
 
@@ -122,7 +127,7 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn }: QuotaBucketListProp
       const newLimit = formData.newLimit;
       const amount = Math.max(0, newLimit - currentLimit);
 
-      await quotaGrantCreateMutation(selected?.metadata?.namespace ?? '', {
+      await createGrantFn(selected?.metadata?.namespace ?? '', {
         consumerRef: {
           apiGroup: selected?.spec.consumerRef.apiGroup ?? '',
           kind: selected?.spec.consumerRef.kind as 'Organization' | 'Project',
