@@ -7,10 +7,17 @@ interface NotesListProps {
   notes: ComMiloapisNotesV1Alpha1NoteList | null | undefined;
   projectName: string;
   namespace: string;
+  userEmails?: Record<string, string>;
   onNoteDeleted: () => void;
 }
 
-export function NotesList({ notes, projectName, namespace, onNoteDeleted }: NotesListProps) {
+export function NotesList({
+  notes,
+  projectName,
+  namespace,
+  userEmails,
+  onNoteDeleted,
+}: NotesListProps) {
   const sorted = [...(notes?.items ?? [])].sort(
     (a, b) =>
       new Date(b.metadata?.creationTimestamp ?? 0).getTime() -
@@ -26,15 +33,19 @@ export function NotesList({ notes, projectName, namespace, onNoteDeleted }: Note
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="divide-y">
       {sorted.map((note) => (
-        <NoteCard
-          key={note.metadata?.name}
-          note={note}
-          projectName={projectName}
-          namespace={namespace}
-          onDeleted={onNoteDeleted}
-        />
+        <div key={note.metadata?.name} className="py-2 first:pt-0 last:pb-0">
+          <NoteCard
+            note={note}
+            projectName={projectName}
+            namespace={namespace}
+            creatorEmail={
+              note.spec?.creatorRef?.name ? userEmails?.[note.spec.creatorRef.name] : undefined
+            }
+            onDeleted={onNoteDeleted}
+          />
+        </div>
       ))}
     </div>
   );

@@ -1,6 +1,5 @@
 import ButtonDeleteAction from '@/components/button/button-delete-action';
 import { DateTime } from '@/components/date';
-import { Card, CardContent } from '@/modules/shadcn/ui/card';
 import { noteDeleteMutation } from '@/resources/request/client';
 import { toast } from '@datum-ui/toast';
 import { Text } from '@datum-ui/typography';
@@ -11,10 +10,11 @@ interface NoteCardProps {
   note: ComMiloapisNotesV1Alpha1Note;
   projectName: string;
   namespace: string;
+  creatorEmail?: string;
   onDeleted: () => void;
 }
 
-export function NoteCard({ note, projectName, namespace, onDeleted }: NoteCardProps) {
+export function NoteCard({ note, projectName, namespace, creatorEmail, onDeleted }: NoteCardProps) {
   const { t } = useLingui();
 
   const noteName = note.metadata?.name;
@@ -31,31 +31,21 @@ export function NoteCard({ note, projectName, namespace, onDeleted }: NoteCardPr
   };
 
   return (
-    <Card className="shadow-none">
-      <CardContent className="pt-4">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex min-w-0 flex-1 flex-col gap-1">
-            <Text className="break-words whitespace-pre-wrap">{note.spec?.content}</Text>
-            <div className="mt-1 flex items-center gap-2">
-              <Text size="xs" textColor="muted">
-                <Trans>Added by</Trans> {note.spec?.creatorRef?.name ?? t`Unknown`}
-              </Text>
-              <Text size="xs" textColor="muted">
-                &middot;
-              </Text>
-              <Text size="xs" textColor="muted">
-                <DateTime date={note.metadata?.creationTimestamp} variant="both" />
-              </Text>
-            </div>
-          </div>
-          <ButtonDeleteAction
-            itemType={t`Note`}
-            description={t`This note will be permanently deleted and cannot be recovered.`}
-            onConfirm={handleDelete}
-            disabled={!noteName}
-          />
-        </div>
-      </CardContent>
-    </Card>
+    <div className="flex items-start justify-between gap-4">
+      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <Text className="break-words whitespace-pre-wrap">{note.spec?.content}</Text>
+        <Text size="xs" textColor="muted">
+          <Trans>Added by</Trans> {creatorEmail ?? note.spec?.creatorRef?.name ?? t`Unknown`}
+          {' · '}
+          <DateTime date={note.metadata?.creationTimestamp} variant="both" />
+        </Text>
+      </div>
+      <ButtonDeleteAction
+        itemType={t`Note`}
+        description={t`This note will be permanently deleted and cannot be recovered.`}
+        onConfirm={handleDelete}
+        disabled={!noteName}
+      />
+    </div>
   );
 }

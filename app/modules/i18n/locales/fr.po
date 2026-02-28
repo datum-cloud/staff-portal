@@ -105,7 +105,7 @@ msgstr ""
 msgid "Added"
 msgstr ""
 
-#: app/features/domain/components/note-card.tsx:41
+#: app/features/domain/components/note-card.tsx:38
 msgid "Added by"
 msgstr ""
 
@@ -330,7 +330,7 @@ msgstr ""
 #: app/routes/project/detail/export-policy/index.tsx:58
 #: app/routes/project/detail/export-policy/detail.tsx:97
 #: app/routes/project/detail/domain/index.tsx:70
-#: app/routes/project/detail/domain/detail.tsx:144
+#: app/routes/project/detail/domain/detail.tsx:167
 #: app/routes/project/detail/dns/index.tsx:77
 #: app/routes/profile/session.tsx:56
 #: app/routes/organization/index.tsx:49
@@ -509,7 +509,7 @@ msgid "DNS Host"
 msgstr ""
 
 #: app/routes/project/detail/domain/index.tsx:52
-#: app/routes/project/detail/domain/detail.tsx:110
+#: app/routes/project/detail/domain/detail.tsx:133
 msgid "DNS Providers"
 msgstr ""
 
@@ -522,7 +522,7 @@ msgid "DNS Records"
 msgstr ""
 
 #: app/routes/project/detail/domain/index.tsx:35
-#: app/routes/project/detail/domain/detail.tsx:90
+#: app/routes/project/detail/domain/detail.tsx:113
 msgid "Domain"
 msgstr ""
 
@@ -600,7 +600,7 @@ msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr ""
 
 #: app/routes/project/detail/domain/index.tsx:56
-#: app/routes/project/detail/domain/detail.tsx:120
+#: app/routes/project/detail/domain/detail.tsx:143
 msgid "Expiration Date"
 msgstr ""
 
@@ -934,7 +934,7 @@ msgstr ""
 
 #: app/routes/project/detail/secret.tsx:25
 #: app/routes/project/detail/export-policy/detail.tsx:75
-#: app/routes/project/detail/domain/detail.tsx:80
+#: app/routes/project/detail/domain/detail.tsx:103
 msgid "Namespace"
 msgstr ""
 
@@ -946,7 +946,7 @@ msgstr ""
 msgid "New Limit"
 msgstr ""
 
-#: app/features/domain/components/notes-list.tsx:23
+#: app/features/domain/components/notes-list.tsx:30
 msgid "No notes yet. Add the first note below."
 msgstr ""
 
@@ -963,7 +963,7 @@ msgstr ""
 msgid "Normal"
 msgstr ""
 
-#: app/features/domain/components/note-card.tsx:52
+#: app/features/domain/components/note-card.tsx:44
 msgid "Note"
 msgstr ""
 
@@ -975,7 +975,7 @@ msgstr ""
 msgid "Note deleted"
 msgstr ""
 
-#: app/routes/project/detail/domain/detail.tsx:161
+#: app/routes/project/detail/domain/detail.tsx:184
 msgid "Notes"
 msgstr ""
 
@@ -1175,7 +1175,7 @@ msgid "Records"
 msgstr ""
 
 #: app/routes/project/detail/domain/index.tsx:48
-#: app/routes/project/detail/domain/detail.tsx:100
+#: app/routes/project/detail/domain/detail.tsx:123
 #: app/routes/project/detail/dns/detail.tsx:195
 msgid "Registrar"
 msgstr ""
@@ -1206,7 +1206,7 @@ msgstr ""
 msgid "Resend"
 msgstr ""
 
-#: app/routes/project/detail/domain/detail.tsx:68
+#: app/routes/project/detail/domain/detail.tsx:91
 msgid "Resource Name"
 msgstr ""
 
@@ -1357,7 +1357,7 @@ msgstr ""
 #: app/routes/project/detail/export-policy/detail.tsx:85
 #: app/routes/project/detail/export-policy/detail.tsx:186
 #: app/routes/project/detail/domain/index.tsx:60
-#: app/routes/project/detail/domain/detail.tsx:130
+#: app/routes/project/detail/domain/detail.tsx:153
 #: app/routes/contact-group/index.tsx:60
 #: app/routes/contact-group/detail/member.tsx:86
 #: app/routes/contact/detail/group.tsx:78
@@ -1403,7 +1403,7 @@ msgstr ""
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 msgstr ""
 
-#: app/features/domain/components/note-card.tsx:53
+#: app/features/domain/components/note-card.tsx:45
 msgid "This note will be permanently deleted and cannot be recovered."
 msgstr ""
 
@@ -1432,7 +1432,7 @@ msgstr ""
 msgid "Type a command or search..."
 msgstr ""
 
-#: app/features/domain/components/note-card.tsx:41
+#: app/features/domain/components/note-card.tsx:38
 msgid "Unknown"
 msgstr ""
 

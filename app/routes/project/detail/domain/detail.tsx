@@ -11,7 +11,11 @@ import {
 import { authenticator } from '@/modules/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
-import { projectDomainDetailQuery, projectDomainNotesQuery } from '@/resources/request/server';
+import {
+  projectDomainDetailQuery,
+  projectDomainNotesQuery,
+  userDetailQuery,
+} from '@/resources/request/server';
 import { useProjectDetailData } from '@/routes/project/shared';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Text, Title } from '@datum-ui/typography';
@@ -46,12 +50,31 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     ).catch(() => null),
   ]);
 
-  return { data, notes };
+  const creatorIds = [
+    ...new Set(
+      (notes?.items ?? []).map((n) => n.spec?.creatorRef?.name).filter((id): id is string => !!id)
+    ),
+  ];
+
+  const userEmails = Object.fromEntries(
+    await Promise.all(
+      creatorIds.map(async (id) => {
+        try {
+          const user = await userDetailQuery(session?.accessToken ?? '', id);
+          return [id, user?.spec?.email ?? id] as [string, string];
+        } catch {
+          return [id, id] as [string, string];
+        }
+      })
+    )
+  );
+
+  return { data, notes, userEmails };
 };
 
 export default function Page() {
   const { project } = useProjectDetailData();
-  const { data, notes } = useLoaderData<typeof loader>();
+  const { data, notes, userEmails } = useLoaderData<typeof loader>();
   const { revalidate } = useRevalidator();
 
   return (
@@ -161,11 +184,12 @@ export default function Page() {
             <Trans>Notes</Trans>
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col gap-4">
+        <CardContent className="flex flex-col gap-3">
           <NotesList
             notes={notes}
             projectName={project.metadata?.name ?? ''}
             namespace={data?.metadata?.namespace ?? ''}
+            userEmails={userEmails}
             onNoteDeleted={revalidate}
           />
           <CreateNoteForm
