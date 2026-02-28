@@ -44,7 +44,7 @@ export function NoteCard({ note, projectName, namespace, creatorEmail, onDeleted
         itemType={t`Note`}
         description={t`This note will be permanently deleted and cannot be recovered.`}
         onConfirm={handleDelete}
-        disabled={!noteName}
+        buttonProps={{ disabled: !noteName }}
       />
     </div>
   );
