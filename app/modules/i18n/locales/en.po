@@ -16,7 +16,7 @@ msgstr ""
 #. placeholder {0}: item.label
 #. placeholder {0}: item.title
 #: app/modules/datum-ui/data-table/components/data-table-facet-filter.tsx:114
-#: app/components/app-search/index.tsx:164
+#: app/components/app-search/index.tsx:211
 msgid "{0}"
 msgstr "{0}"
 
@@ -24,7 +24,7 @@ msgstr "{0}"
 msgid "{clearLabel}"
 msgstr "{clearLabel}"
 
-#: app/components/app-search/search-result-group.tsx:32
+#: app/components/app-search/search-result-group.tsx:34
 msgid "{heading}"
 msgstr "{heading}"
 
@@ -938,7 +938,7 @@ msgstr "Nameservers"
 msgid "Namespace"
 msgstr "Namespace"
 
-#: app/components/app-search/index.tsx:156
+#: app/components/app-search/index.tsx:203
 msgid "Navigation"
 msgstr "Navigation"
 
@@ -950,7 +950,7 @@ msgstr "New Limit"
 msgid "No notes yet. Add the first note below."
 msgstr "No notes yet. Add the first note below."
 
-#: app/components/app-search/index.tsx:184
+#: app/components/app-search/index.tsx:237
 msgid "No results found."
 msgstr "No results found."
 
@@ -1261,6 +1261,10 @@ msgstr "Search email activity..."
 msgid "Search groups..."
 msgstr "Search groups..."
 
+#: app/components/app-search/index.tsx:235
+msgid "Search is temporarily unavailable. Please try again."
+msgstr "Search is temporarily unavailable. Please try again."
+
 #: app/routes/organization/detail/member.tsx:156
 #: app/routes/contact-group/detail/member.tsx:237
 msgid "Search members..."
@@ -1285,7 +1289,7 @@ msgstr "Search users..."
 msgid "Search..."
 msgstr "Search..."
 
-#: app/components/app-search/index.tsx:180
+#: app/components/app-search/index.tsx:228
 msgid "Searching..."
 msgstr "Searching..."
 
@@ -1331,6 +1335,10 @@ msgstr "Settings"
 #: app/routes/project/detail/export-policy/detail.tsx:166
 msgid "Sinks"
 msgstr "Sinks"
+
+#: app/components/app-search/index.tsx:242
+msgid "Some results may be missing."
+msgstr "Some results may be missing."
 
 #: app/routes/project/detail/export-policy/detail.tsx:183
 msgid "Source"
@@ -1428,9 +1436,9 @@ msgstr "TTL"
 msgid "Type"
 msgstr "Type"
 
-#: app/components/app-search/index.tsx:150
-msgid "Type a command or search..."
-msgstr "Type a command or search..."
+#: app/components/app-search/index.tsx:222
+msgid "Type at least 3 characters to search."
+msgstr "Type at least 3 characters to search."
 
 #: app/features/domain/components/note-card.tsx:38
 msgid "Unknown"

@@ -12,3 +12,4 @@ export * from './group.request';
 export * from './contact-group.request';
 export * from './contact-membership.request';
 export * from './note.request';
+export * from './search.request';

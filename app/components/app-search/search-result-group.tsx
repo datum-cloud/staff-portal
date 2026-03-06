@@ -10,6 +10,7 @@ interface SearchResultGroupProps<T> {
   getValue: (item: T) => string;
   getTitle: (item: T) => string;
   getSubtitle: (item: T) => string;
+  getDetail?: (item: T) => string;
   onSelect: (item: T) => void;
 }
 
@@ -20,6 +21,7 @@ export const SearchResultGroup = <T extends { metadata?: { name?: string } }>({
   getValue,
   getTitle,
   getSubtitle,
+  getDetail,
   onSelect,
 }: SearchResultGroupProps<T>) => {
   const { t } = useLingui();
@@ -36,14 +38,22 @@ export const SearchResultGroup = <T extends { metadata?: { name?: string } }>({
           <CommandItem
             key={item.metadata?.name ?? ''}
             value={getValue(item)}
+            className="cursor-pointer"
             onSelect={() => onSelect(item)}>
-            <Icon className="mr-2 h-4 w-4" />
-            <Text>{getTitle(item)}</Text>
-            {getSubtitle(item) && (
-              <Text size="xs" textColor="muted" className="ml-auto">
-                {getSubtitle(item)}
-              </Text>
-            )}
+            <Icon className="mt-0.5 mr-2 h-4 w-4 shrink-0 self-start" />
+            <div className="flex min-w-0 flex-col">
+              <Text className="truncate">{getTitle(item)}</Text>
+              {getSubtitle(item) && (
+                <Text size="xs" textColor="muted" className="truncate">
+                  {getSubtitle(item)}
+                </Text>
+              )}
+              {getDetail && getDetail(item) && (
+                <Text size="xs" textColor="muted" className="truncate opacity-60">
+                  {getDetail(item)}
+                </Text>
+              )}
+            </div>
           </CommandItem>
         );
       })}
