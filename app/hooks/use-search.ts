@@ -117,7 +117,7 @@ export function useContactSearch() {
     setSearchQuery(query);
   }, []);
 
-  return { options, isLoading, setSearch };
+  return { options, isLoading, setSearch, searchQuery };
 }
 
 export function useContactGroupSearch() {

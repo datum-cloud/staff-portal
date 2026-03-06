@@ -143,6 +143,7 @@ msgstr "Active Sessions"
 msgid "Activity"
 msgstr "Activity"
 
+<<<<<<< HEAD
 #: app/routes/activity-hub/layout.tsx:26
 msgid "Activity Feed"
 msgstr "Activity Feed"
@@ -152,6 +153,13 @@ msgstr "Activity Feed"
 #: app/routes/contact-group/index.tsx:108
 #: app/routes/contact-group/detail/member.tsx:180
 #: app/routes/contact-group/detail/member.tsx:204
+=======
+#: app/routes/group/member.tsx:130
+#: app/routes/group/member.tsx:156
+#: app/routes/contact-group/index.tsx:120
+#: app/routes/contact-group/detail/member.tsx:263
+#: app/routes/contact-group/detail/member.tsx:292
+>>>>>>> b728563 (Contact Group "Add Member" Modal Does Not Allow Creating New Contacts)
 #: app/routes/contact/index.tsx:27
 #: app/routes/contact/detail/group.tsx:151
 #: app/routes/contact/detail/group.tsx:173
@@ -166,8 +174,13 @@ msgstr "Add a note"
 msgid "Add Group"
 msgstr "Add Group"
 
+<<<<<<< HEAD
 #: app/routes/group/member.tsx:143
 #: app/routes/contact-group/detail/member.tsx:203
+=======
+#: app/routes/group/member.tsx:155
+#: app/routes/contact-group/detail/member.tsx:291
+>>>>>>> b728563 (Contact Group "Add Member" Modal Does Not Allow Creating New Contacts)
 msgid "Add Member"
 msgstr "Add Member"
 
@@ -175,6 +188,7 @@ msgstr "Add Member"
 msgid "Add Note"
 msgstr "Add Note"
 
+<<<<<<< HEAD
 #: app/routes/fraud/providers/index.tsx:120
 msgid "Add Provider"
 msgstr "Add Provider"
@@ -188,6 +202,9 @@ msgid "Add Trigger"
 msgstr "Add Trigger"
 
 #: app/routes/contact-group/detail/member.tsx:132
+=======
+#: app/routes/contact-group/detail/member.tsx:98
+>>>>>>> b728563 (Contact Group "Add Member" Modal Does Not Allow Creating New Contacts)
 msgid "Added"
 msgstr "Added"
 
@@ -258,7 +275,11 @@ msgstr "Are you sure you want to delete group \"{0}\"? This action cannot be und
 msgid "Are you sure you want to delete member \"{0}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete member \"{0}\"? This action cannot be undone."
 
+<<<<<<< HEAD
 #: app/routes/contact-group/detail/member.tsx:188
+=======
+#: app/routes/contact-group/detail/member.tsx:271
+>>>>>>> b728563 (Contact Group "Add Member" Modal Does Not Allow Creating New Contacts)
 msgid "Are you sure you want to delete member \"{deleteMemberDisplayName}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete member \"{deleteMemberDisplayName}\"? This action cannot be undone."
 
@@ -301,6 +322,7 @@ msgstr "Are you sure you want to delete this fraud evaluation? This action canno
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 
+#: app/routes/contact-group/detail/member.tsx:338
 #: app/features/contact/components/contact-form.tsx:159
 msgid "Associate with User"
 msgstr "Associate with User"
@@ -323,6 +345,7 @@ msgstr "Back to evaluations"
 
 #: app/routes/user/index.tsx:167
 #: app/routes/user/detail/index.tsx:129
+<<<<<<< HEAD
 #: app/routes/profile/session.tsx:104
 #: app/routes/organization/detail/member.tsx:85
 #: app/routes/group/member.tsx:130
@@ -340,6 +363,18 @@ msgstr "Back to evaluations"
 #: app/routes/contact-group/detail/member.tsx:205
 #: app/routes/contact/detail/group.tsx:160
 #: app/routes/contact/detail/group.tsx:174
+=======
+#: app/routes/profile/session.tsx:100
+#: app/routes/organization/detail/member.tsx:122
+#: app/routes/group/member.tsx:140
+#: app/routes/group/member.tsx:157
+#: app/routes/contact-group/index.tsx:130
+#: app/routes/contact-group/index.tsx:152
+#: app/routes/contact-group/detail/member.tsx:273
+#: app/routes/contact-group/detail/member.tsx:293
+#: app/routes/contact/detail/group.tsx:187
+#: app/routes/contact/detail/group.tsx:204
+>>>>>>> b728563 (Contact Group "Add Member" Modal Does Not Allow Creating New Contacts)
 #: app/features/user/components/user-reject-dialog.tsx:30
 #: app/features/quota/components/quota-grant-list.tsx:137
 #: app/features/quota/components/quota-bucket-list.tsx:131
@@ -374,9 +409,15 @@ msgstr "Completed"
 msgid "Configuration"
 msgstr "Configuration"
 
+<<<<<<< HEAD
 #: app/features/fraud/detail/evaluation-sections.tsx:233
 msgid "Contact"
 msgstr "Contact"
+=======
+#: app/routes/contact-group/detail/member.tsx:248
+msgid "Contact created and added to the group"
+msgstr "Contact created and added to the group"
+>>>>>>> b728563 (Contact Group "Add Member" Modal Does Not Allow Creating New Contacts)
 
 #: app/features/contact/components/contact-form.tsx:101
 msgid "Contact created successfully"
@@ -458,6 +499,7 @@ msgstr "Copy shareable link with current filters"
 msgid "Create"
 msgstr "Create"
 
+<<<<<<< HEAD
 #: app/features/fraud/policy/policy-form.tsx:136
 msgid "Create Fraud Policy"
 msgstr "Create Fraud Policy"
@@ -472,6 +514,13 @@ msgid "Create Policy"
 msgstr "Create Policy"
 
 #: app/routes/user/index.tsx:115
+=======
+#: app/routes/contact-group/detail/member.tsx:331
+msgid "Create a new contact with this email"
+msgstr "Create a new contact with this email"
+
+#: app/routes/user/index.tsx:68
+>>>>>>> b728563 (Contact Group "Add Member" Modal Does Not Allow Creating New Contacts)
 #: app/routes/user/detail/index.tsx:288
 #: app/routes/project/index.tsx:48
 #: app/routes/project/detail/index.tsx:74
@@ -556,6 +605,7 @@ msgstr "Deactivation Details"
 msgid "Deactivation Reason:"
 msgstr "Deactivation Reason:"
 
+<<<<<<< HEAD
 #: app/routes/fraud/index.tsx:160
 #: app/routes/fraud/index.tsx:307
 #: app/routes/fraud/index.tsx:321
@@ -593,6 +643,20 @@ msgstr "Degraded"
 #: app/features/activity/components/activity-list.tsx:440
 #: app/features/activity/components/activity-list.tsx:584
 #: app/features/activity/components/activity-list.tsx:643
+=======
+#: app/routes/profile/session.tsx:85
+#: app/routes/profile/session.tsx:99
+#: app/routes/group/member.tsx:139
+#: app/routes/contact-group/index.tsx:129
+#: app/routes/contact-group/index.tsx:151
+#: app/routes/contact-group/detail/member.tsx:272
+#: app/routes/contact/detail/group.tsx:186
+#: app/features/quota/components/quota-grant-list.tsx:147
+#: app/features/contact/components/contact-list.tsx:117
+#: app/features/activity/components/activity-list.tsx:387
+#: app/features/activity/components/activity-list.tsx:441
+#: app/features/activity/components/activity-list.tsx:460
+>>>>>>> b728563 (Contact Group "Add Member" Modal Does Not Allow Creating New Contacts)
 #: app/components/danger-zone-card/index.tsx:48
 #: app/components/danger-zone-card/index.tsx:76
 #: app/components/button/button-delete-action.tsx:42
@@ -640,9 +704,15 @@ msgstr "Delete Evaluation"
 msgid "Delete Grant"
 msgstr "Delete Grant"
 
+<<<<<<< HEAD
 #: app/routes/group/member.tsx:127
 #: app/routes/contact-group/detail/member.tsx:187
 #: app/routes/contact/detail/group.tsx:157
+=======
+#: app/routes/group/member.tsx:137
+#: app/routes/contact-group/detail/member.tsx:270
+#: app/routes/contact/detail/group.tsx:184
+>>>>>>> b728563 (Contact Group "Add Member" Modal Does Not Allow Creating New Contacts)
 msgid "Delete Member"
 msgstr "Delete Member"
 
@@ -779,9 +849,14 @@ msgstr "Edit Quota"
 
 #: app/routes/user/index.tsx:202
 #: app/routes/user/detail/index.tsx:254
+<<<<<<< HEAD
 #: app/routes/fraud/index.tsx:122
 #: app/routes/contact-group/detail/member.tsx:111
 #: app/features/contact/components/contact-list.tsx:83
+=======
+#: app/routes/contact-group/detail/member.tsx:82
+#: app/features/contact/components/contact-list.tsx:47
+>>>>>>> b728563 (Contact Group "Add Member" Modal Does Not Allow Creating New Contacts)
 #: app/features/contact/components/contact-form.tsx:122
 msgid "Email"
 msgstr "Email"
@@ -840,8 +915,13 @@ msgstr "Enter reason for deactivation..."
 msgid "Enter reason for rejection..."
 msgstr "Enter reason for rejection..."
 
+<<<<<<< HEAD
 #: app/routes/group/member.tsx:163
 #: app/routes/contact-group/detail/member.tsx:212
+=======
+#: app/routes/group/member.tsx:164
+#: app/routes/contact-group/detail/member.tsx:342
+>>>>>>> b728563 (Contact Group "Add Member" Modal Does Not Allow Creating New Contacts)
 #: app/features/contact/components/contact-form.tsx:164
 msgid "Enter the full email to search..."
 msgstr "Enter the full email to search..."
@@ -983,7 +1063,15 @@ msgstr "Filter by type"
 msgid "Fingerprint ID"
 msgstr "Fingerprint ID"
 
+<<<<<<< HEAD
 #: app/routes/user/index.tsx:200
+=======
+#: app/routes/contact-group/detail/member.tsx:335
+msgid "First name"
+msgstr "First name"
+
+#: app/routes/user/index.tsx:208
+>>>>>>> b728563 (Contact Group "Add Member" Modal Does Not Allow Creating New Contacts)
 #: app/features/contact/components/contact-form.tsx:120
 msgid "First Name"
 msgstr "First Name"
@@ -1161,7 +1249,15 @@ msgstr "Joined"
 msgid "Last 10 new users who joined Datum"
 msgstr "Last 10 new users who joined Datum"
 
+<<<<<<< HEAD
 #: app/routes/user/index.tsx:201
+=======
+#: app/routes/contact-group/detail/member.tsx:336
+msgid "Last name"
+msgstr "Last name"
+
+#: app/routes/user/index.tsx:209
+>>>>>>> b728563 (Contact Group "Add Member" Modal Does Not Allow Creating New Contacts)
 #: app/features/contact/components/contact-form.tsx:121
 msgid "Last Name"
 msgstr "Last Name"
@@ -1276,6 +1372,7 @@ msgstr "Manage users"
 msgid "Manually sync this description with the one in Loops (used for opt-in pages)."
 msgstr "Manually sync this description with the one in Loops (used for opt-in pages)."
 
+<<<<<<< HEAD
 #: app/features/activity/components/activity-list.tsx:517
 #: app/features/activity/components/activity-list.tsx:622
 #: app/features/activity/components/activity-list.tsx:677
@@ -1299,6 +1396,21 @@ msgstr "Member is required"
 #: app/routes/organization/detail/member.tsx:25
 #: app/routes/organization/detail/layout.tsx:47
 #: app/routes/contact-group/detail/member.tsx:33
+=======
+#: app/routes/group/member.tsx:117
+#: app/routes/contact-group/detail/member.tsx:249
+msgid "Member added successfully"
+msgstr "Member added successfully"
+
+#: app/routes/group/member.tsx:148
+#: app/routes/contact-group/detail/member.tsx:281
+msgid "Member deleted successfully"
+msgstr "Member deleted successfully"
+
+#: app/routes/organization/detail/member.tsx:30
+#: app/routes/organization/detail/layout.tsx:47
+#: app/routes/contact-group/detail/member.tsx:39
+>>>>>>> b728563 (Contact Group "Add Member" Modal Does Not Allow Creating New Contacts)
 #: app/routes/contact-group/detail/layout.tsx:39
 msgid "Members"
 msgstr "Members"
@@ -1333,6 +1445,7 @@ msgstr "My Profile"
 #: app/routes/organization/detail/project.tsx:39
 #: app/routes/organization/detail/member.tsx:104
 #: app/routes/organization/detail/index.tsx:53
+<<<<<<< HEAD
 #: app/routes/group/member.tsx:79
 #: app/routes/group/index.tsx:23
 #: app/routes/fraud/providers/index.tsx:52
@@ -1343,6 +1456,15 @@ msgstr "My Profile"
 #: app/features/quota/components/quota-grant-list.tsx:74
 #: app/features/fraud/policy/policy-form.tsx:150
 #: app/features/contact/components/contact-list.tsx:66
+=======
+#: app/routes/group/member.tsx:53
+#: app/routes/group/index.tsx:28
+#: app/routes/contact-group/index.tsx:40
+#: app/routes/contact-group/detail/member.tsx:60
+#: app/routes/contact/detail/group.tsx:52
+#: app/features/quota/components/quota-grant-list.tsx:44
+#: app/features/contact/components/contact-list.tsx:30
+>>>>>>> b728563 (Contact Group "Add Member" Modal Does Not Allow Creating New Contacts)
 msgid "Name"
 msgstr "Name"
 
@@ -1375,6 +1497,7 @@ msgstr "New Fraud Evaluation"
 msgid "New Limit"
 msgstr "New Limit"
 
+<<<<<<< HEAD
 #: app/routes/profile/session.tsx:140
 msgid "No active sessions."
 msgstr "No active sessions."
@@ -1441,6 +1564,16 @@ msgstr "No members found."
 msgid "No members in this group."
 msgstr "No members in this group."
 
+=======
+#: app/routes/contact-group/detail/member.tsx:324
+msgid "No contacts found with this email. You can create a new contact below."
+msgstr "No contacts found with this email. You can create a new contact below."
+
+#: app/routes/contact-group/detail/member.tsx:325
+msgid "No contacts found."
+msgstr "No contacts found."
+
+>>>>>>> b728563 (Contact Group "Add Member" Modal Does Not Allow Creating New Contacts)
 #: app/features/domain/components/notes-list.tsx:30
 msgid "No notes yet. Add the first note below."
 msgstr "No notes yet. Add the first note below."
@@ -1604,6 +1737,10 @@ msgstr "Please provide a reason for deactivating \"{0} {1}\"."
 #: app/features/user/components/user-reject-dialog.tsx:28
 msgid "Please provide a reason for rejecting \"{0} {1}\"."
 msgstr "Please provide a reason for rejecting \"{0} {1}\"."
+
+#: app/routes/contact-group/detail/member.tsx:189
+msgid "Please select an existing contact or provide details to create a new one"
+msgstr "Please select an existing contact or provide details to create a new one"
 
 #. placeholder {0}: remainingMinutes !== 1 ? 's' : ''
 #: app/routes/organization/detail/member.tsx:60
@@ -1901,6 +2038,7 @@ msgstr "Search domains..."
 msgid "Search email activity..."
 msgstr "Search email activity..."
 
+<<<<<<< HEAD
 #: app/routes/project/detail/export-policy/index.tsx:74
 msgid "Search export policies..."
 msgstr "Search export policies..."
@@ -1926,6 +2064,20 @@ msgstr "Search is temporarily unavailable. Please try again."
 #: app/routes/organization/detail/member.tsx:167
 #: app/routes/group/member.tsx:189
 #: app/routes/contact-group/detail/member.tsx:243
+=======
+#: app/routes/contact-group/detail/member.tsx:313
+msgid "Search for an existing contact by email..."
+msgstr "Search for an existing contact by email..."
+
+#: app/routes/group/index.tsx:68
+#: app/routes/contact/detail/group.tsx:212
+#: app/routes/contact/detail/group.tsx:228
+msgid "Search groups..."
+msgstr "Search groups..."
+
+#: app/routes/organization/detail/member.tsx:156
+#: app/routes/contact-group/detail/member.tsx:368
+>>>>>>> b728563 (Contact Group "Add Member" Modal Does Not Allow Creating New Contacts)
 msgid "Search members..."
 msgstr "Search members..."
 
@@ -2091,6 +2243,7 @@ msgstr "Start Time"
 #: app/routes/project/detail/export-policy/detail.tsx:186
 #: app/routes/project/detail/domain/index.tsx:54
 #: app/routes/project/detail/domain/detail.tsx:153
+<<<<<<< HEAD
 #: app/routes/fraud/providers/index.tsx:82
 #: app/routes/contact-group/index.tsx:78
 #: app/routes/contact-group/detail/member.tsx:116
@@ -2100,6 +2253,15 @@ msgstr "Start Time"
 #: app/features/email/components/email-list.tsx:67
 #: app/features/email/components/email-list.tsx:138
 #: app/features/email/components/email-list.tsx:152
+=======
+#: app/routes/contact-group/index.tsx:60
+#: app/routes/contact-group/detail/member.tsx:87
+#: app/routes/contact/detail/group.tsx:78
+#: app/features/quota/components/quota-grant-list.tsx:76
+#: app/features/email/components/email-list.tsx:59
+#: app/features/email/components/email-list.tsx:140
+#: app/features/email/components/email-list.tsx:158
+>>>>>>> b728563 (Contact Group "Add Member" Modal Does Not Allow Creating New Contacts)
 #: app/features/email/components/email-detail.tsx:57
 #: app/features/contact/components/contact-list.tsx:87
 msgid "Status"
@@ -2110,6 +2272,7 @@ msgstr "Status"
 msgid "Subject"
 msgstr "Subject"
 
+#: app/routes/contact-group/detail/member.tsx:201
 #: app/features/contact/components/contact-form.tsx:56
 msgid "Subject is required when user association is enabled"
 msgstr "Subject is required when user association is enabled"
