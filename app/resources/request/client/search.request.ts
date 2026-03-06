@@ -1,15 +1,15 @@
-import { PROXY_URL } from '@/modules/axios/axios.client';
 import { userGetQuery } from './user.request';
-import {
-  createSearchMiloapisComV1Alpha1ResourceSearchQuery,
-  NetMiloapisGoSearchPkgApisSearchV1Alpha1ResourceSearchQuery,
-  NetMiloapisGoSearchPkgApisSearchV1Alpha1TargetResource,
-} from '@openapi/search.miloapis.com/v1alpha1';
+import { PROXY_URL } from '@/modules/axios/axios.client';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import {
   ComMiloapisResourcemanagerV1Alpha1Organization,
   ComMiloapisResourcemanagerV1Alpha1Project,
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
+import {
+  createSearchMiloapisComV1Alpha1ResourceSearchQuery,
+  NetMiloapisGoSearchPkgApisSearchV1Alpha1ResourceSearchQuery,
+  NetMiloapisGoSearchPkgApisSearchV1Alpha1TargetResource,
+} from '@openapi/search.miloapis.com/v1alpha1';
 
 /**
  * Builds a ResourceSearchQuery CRD body for the given query string and target resources.
@@ -49,12 +49,14 @@ async function executeSearch<T>(
 
   const results = response.data?.data?.status?.results ?? [];
 
-  return results
-    .slice()
-    .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0))
-    // Cast is safe: each query is scoped to one kind via targetResources,
-    // so the API only returns resources of type T.
-    .map((result) => result.resource as T);
+  return (
+    results
+      .slice()
+      .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0))
+      // Cast is safe: each query is scoped to one kind via targetResources,
+      // so the API only returns resources of type T.
+      .map((result) => result.resource as T)
+  );
 }
 
 /**

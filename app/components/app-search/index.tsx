@@ -104,19 +104,31 @@ function AppSearch({ className = '', placeholder = 'Search' }: Props) {
     retry: false,
   };
 
-  const { data: userResults, isLoading: usersLoading, isError: usersError } = useQuery({
+  const {
+    data: userResults,
+    isLoading: usersLoading,
+    isError: usersError,
+  } = useQuery({
     queryKey: ['search', 'users', debouncedSearch],
     queryFn: () => searchUsersQuery(debouncedSearch),
     ...queryOptions,
   });
 
-  const { data: orgResults, isLoading: orgsLoading, isError: orgsError } = useQuery({
+  const {
+    data: orgResults,
+    isLoading: orgsLoading,
+    isError: orgsError,
+  } = useQuery({
     queryKey: ['search', 'organizations', debouncedSearch],
     queryFn: () => searchOrganizationsQuery(debouncedSearch),
     ...queryOptions,
   });
 
-  const { data: projectResults, isLoading: projectsLoading, isError: projectsError } = useQuery({
+  const {
+    data: projectResults,
+    isLoading: projectsLoading,
+    isError: projectsError,
+  } = useQuery({
     queryKey: ['search', 'projects', debouncedSearch],
     queryFn: () => searchProjectsQuery(debouncedSearch),
     ...queryOptions,
@@ -137,8 +149,9 @@ function AppSearch({ className = '', placeholder = 'Search' }: Props) {
     (orgResults?.length ?? 0) > 0 ||
     (projectResults?.length ?? 0) > 0;
 
-  const getDisplayName = (item: { metadata?: { name?: string; annotations?: Record<string, string> } }) =>
-    item.metadata?.annotations?.['kubernetes.io/display-name'] || item.metadata?.name || '';
+  const getDisplayName = (item: {
+    metadata?: { name?: string; annotations?: Record<string, string> };
+  }) => item.metadata?.annotations?.['kubernetes.io/display-name'] || item.metadata?.name || '';
 
   return (
     <div ref={containerRef} className={cn('relative', className)}>
@@ -178,113 +191,114 @@ function AppSearch({ className = '', placeholder = 'Search' }: Props) {
       </div>
 
       {/* Dropdown results panel — portalled to body to escape header stacking context */}
-      {open && createPortal(
-        <div
-          ref={panelRef}
-          className="bg-popover text-popover-foreground fixed z-50 rounded-md border shadow-md"
-          style={{ top: dropdownPos.top, left: dropdownPos.left, width: dropdownPos.width }}>
-          <Command shouldFilter={false}>
-            <CommandList className="max-h-[400px]">
-              {(!search || search.length === 0) && (
-                <CommandGroup heading={t`Navigation`}>
-                  {searchItems.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <CommandItem
-                        key={item.href}
-                        onSelect={() => runCommand(() => navigate(item.href))}>
-                        <Icon className="mr-2 h-4 w-4" />
-                        <Text>{t`${item.title}`}</Text>
-                        <Text size="xs" textColor="muted" className="ml-auto">
-                          {item.description}
-                        </Text>
-                      </CommandItem>
-                    );
-                  })}
-                </CommandGroup>
-              )}
+      {open &&
+        createPortal(
+          <div
+            ref={panelRef}
+            className="bg-popover text-popover-foreground fixed z-50 rounded-md border shadow-md"
+            style={{ top: dropdownPos.top, left: dropdownPos.left, width: dropdownPos.width }}>
+            <Command shouldFilter={false}>
+              <CommandList className="max-h-[400px]">
+                {(!search || search.length === 0) && (
+                  <CommandGroup heading={t`Navigation`}>
+                    {searchItems.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <CommandItem
+                          key={item.href}
+                          onSelect={() => runCommand(() => navigate(item.href))}>
+                          <Icon className="mr-2 h-4 w-4" />
+                          <Text>{t`${item.title}`}</Text>
+                          <Text size="xs" textColor="muted" className="ml-auto">
+                            {item.description}
+                          </Text>
+                        </CommandItem>
+                      );
+                    })}
+                  </CommandGroup>
+                )}
 
-              {search && search.length > 0 && search.length < 3 && (
-                <CommandEmpty>{t`Type at least 3 characters to search.`}</CommandEmpty>
-              )}
+                {search && search.length > 0 && search.length < 3 && (
+                  <CommandEmpty>{t`Type at least 3 characters to search.`}</CommandEmpty>
+                )}
 
-              {search && search.length >= 3 && isLoading && (
-                <CommandEmpty>
-                  <Loader2 className="mx-auto mb-1 h-4 w-4 animate-spin opacity-50" />
-                  <Text size="sm">{t`Searching...`}</Text>
-                </CommandEmpty>
-              )}
+                {search && search.length >= 3 && isLoading && (
+                  <CommandEmpty>
+                    <Loader2 className="mx-auto mb-1 h-4 w-4 animate-spin opacity-50" />
+                    <Text size="sm">{t`Searching...`}</Text>
+                  </CommandEmpty>
+                )}
 
-              {search && search.length >= 3 && !isLoading && (
-                <>
-                  {allError ? (
-                    <CommandEmpty>{t`Search is temporarily unavailable. Please try again.`}</CommandEmpty>
-                  ) : !hasResults ? (
-                    <CommandEmpty>{t`No results found.`}</CommandEmpty>
-                  ) : (
-                    <>
-                      {someError && (
-                        <Text size="xs" textColor="muted" className="px-3 py-1.5">
-                          {t`Some results may be missing.`}
-                        </Text>
-                      )}
-                      {/* FR-11: Organizations → Projects → Users */}
-                      <SearchResultGroup<ComMiloapisResourcemanagerV1Alpha1Organization>
-                        heading="Organizations"
-                        items={orgResults || []}
-                        icon={Building2}
-                        getValue={(org) =>
-                          `${org.metadata?.name ?? ''} ${getDisplayName(org)} ${org.metadata?.annotations?.['kubernetes.io/description'] ?? ''}`
-                        }
-                        getTitle={(org) => getDisplayName(org)}
-                        getSubtitle={(org) => org.metadata?.name ?? ''}
-                        onSelect={(org) =>
-                          runCommand(() =>
-                            navigate(routes.organizations.detail(org.metadata?.name ?? ''))
-                          )
-                        }
-                      />
-                      <SearchResultGroup<ComMiloapisResourcemanagerV1Alpha1Project>
-                        heading="Projects"
-                        items={projectResults || []}
-                        icon={FolderOpen}
-                        getValue={(project) =>
-                          `${project.metadata?.name ?? ''} ${getDisplayName(project)} ${project.metadata?.annotations?.['kubernetes.io/description'] ?? ''}`
-                        }
-                        getTitle={(project) => getDisplayName(project)}
-                        getSubtitle={(project) => project.metadata?.name ?? ''}
-                        onSelect={(project) =>
-                          runCommand(() =>
-                            navigate(routes.projects.detail(project.metadata?.name ?? ''))
-                          )
-                        }
-                      />
-                      <SearchResultGroup<ComMiloapisIamV1Alpha1User>
-                        heading="Users"
-                        items={userResults || []}
-                        icon={Users}
-                        getValue={(user) =>
-                          `${user.metadata?.name ?? ''} ${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''} ${user.spec?.email ?? ''}`
-                        }
-                        getTitle={(user) =>
-                          `${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''}`.trim()
-                        }
-                        getSubtitle={(user) => user.spec?.email ?? ''}
-                        onSelect={(user) =>
-                          runCommand(() =>
-                            navigate(routes.users.detail(user.metadata?.name ?? ''))
-                          )
-                        }
-                      />
-                    </>
-                  )}
-                </>
-              )}
-            </CommandList>
-          </Command>
-        </div>,
-        document.body
-      )}
+                {search && search.length >= 3 && !isLoading && (
+                  <>
+                    {allError ? (
+                      <CommandEmpty>{t`Search is temporarily unavailable. Please try again.`}</CommandEmpty>
+                    ) : !hasResults ? (
+                      <CommandEmpty>{t`No results found.`}</CommandEmpty>
+                    ) : (
+                      <>
+                        {someError && (
+                          <Text size="xs" textColor="muted" className="px-3 py-1.5">
+                            {t`Some results may be missing.`}
+                          </Text>
+                        )}
+                        {/* FR-11: Organizations → Projects → Users */}
+                        <SearchResultGroup<ComMiloapisResourcemanagerV1Alpha1Organization>
+                          heading="Organizations"
+                          items={orgResults || []}
+                          icon={Building2}
+                          getValue={(org) =>
+                            `${org.metadata?.name ?? ''} ${getDisplayName(org)} ${org.metadata?.annotations?.['kubernetes.io/description'] ?? ''}`
+                          }
+                          getTitle={(org) => getDisplayName(org)}
+                          getSubtitle={(org) => org.metadata?.name ?? ''}
+                          onSelect={(org) =>
+                            runCommand(() =>
+                              navigate(routes.organizations.detail(org.metadata?.name ?? ''))
+                            )
+                          }
+                        />
+                        <SearchResultGroup<ComMiloapisResourcemanagerV1Alpha1Project>
+                          heading="Projects"
+                          items={projectResults || []}
+                          icon={FolderOpen}
+                          getValue={(project) =>
+                            `${project.metadata?.name ?? ''} ${getDisplayName(project)} ${project.metadata?.annotations?.['kubernetes.io/description'] ?? ''}`
+                          }
+                          getTitle={(project) => getDisplayName(project)}
+                          getSubtitle={(project) => project.metadata?.name ?? ''}
+                          onSelect={(project) =>
+                            runCommand(() =>
+                              navigate(routes.projects.detail(project.metadata?.name ?? ''))
+                            )
+                          }
+                        />
+                        <SearchResultGroup<ComMiloapisIamV1Alpha1User>
+                          heading="Users"
+                          items={userResults || []}
+                          icon={Users}
+                          getValue={(user) =>
+                            `${user.metadata?.name ?? ''} ${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''} ${user.spec?.email ?? ''}`
+                          }
+                          getTitle={(user) =>
+                            `${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''}`.trim()
+                          }
+                          getSubtitle={(user) => user.spec?.email ?? ''}
+                          onSelect={(user) =>
+                            runCommand(() =>
+                              navigate(routes.users.detail(user.metadata?.name ?? ''))
+                            )
+                          }
+                        />
+                      </>
+                    )}
+                  </>
+                )}
+              </CommandList>
+            </Command>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
