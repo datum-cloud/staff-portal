@@ -1,5 +1,5 @@
-import { Theme } from '@/modules/datum-themes';
 import { cn } from '@/modules/shadcn/lib/utils';
+import type { Theme } from '@datum-cloud/datum-ui/theme';
 import { Check } from 'lucide-react';
 
 const SkeletonPreview = ({ variant }: { variant: 'dark' | 'light' }) => {

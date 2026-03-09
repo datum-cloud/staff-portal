@@ -237,7 +237,7 @@ msgstr "Cannot delete inactive grant"
 msgid "Change your Primary Email in GitHub (your primary email)"
 msgstr "Change your Primary Email in GitHub (your primary email)"
 
-#: app/features/preferences/components/preferences-form.tsx:94
+#: app/features/preferences/components/preferences-form.tsx:95
 msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
 msgstr "Choose how the portal looks to you. Select a single theme, or sync with your system."
 
@@ -626,11 +626,11 @@ msgstr "Failed to load DNS record status"
 msgid "Failed to load status"
 msgstr "Failed to load status"
 
-#: app/features/preferences/components/preferences-form.tsx:42
+#: app/features/preferences/components/preferences-form.tsx:43
 msgid "Failed to update theme"
 msgstr "Failed to update theme"
 
-#: app/features/preferences/components/preferences-form.tsx:64
+#: app/features/preferences/components/preferences-form.tsx:65
 msgid "Failed to update timezone"
 msgstr "Failed to update timezone"
 
@@ -1071,7 +1071,7 @@ msgstr "Please provide a reason for rejecting \"{0} {1}\"."
 msgid "Please wait {remainingMinutes} more minute{0} before resending this invitation"
 msgstr "Please wait {remainingMinutes} more minute{0} before resending this invitation"
 
-#: app/features/preferences/components/preferences-form.tsx:76
+#: app/features/preferences/components/preferences-form.tsx:77
 msgid "Portal Preferences"
 msgstr "Portal Preferences"
 
@@ -1298,7 +1298,7 @@ msgstr "Secrets"
 msgid "Select group..."
 msgstr "Select group..."
 
-#: app/features/preferences/components/preferences-form.tsx:84
+#: app/features/preferences/components/preferences-form.tsx:85
 msgid "Select timezone..."
 msgstr "Select timezone..."
 
@@ -1411,7 +1411,7 @@ msgstr "This note will be permanently deleted and cannot be recovered."
 msgid "Time range"
 msgstr "Time range"
 
-#: app/features/preferences/components/preferences-form.tsx:62
+#: app/features/preferences/components/preferences-form.tsx:63
 msgid "Timezone updated successfully"
 msgstr "Timezone updated successfully"
 

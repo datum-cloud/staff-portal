@@ -1,7 +1,7 @@
 import { LogoProps } from './logo';
 import { logoStyles } from './logo.styles';
-import { useTheme } from '@/modules/datum-themes';
 import { cn } from '@/modules/shadcn/lib/utils';
+import { useTheme } from '@datum-cloud/datum-ui/theme';
 
 export const LogoText = ({ className }: LogoProps) => {
   const { resolvedTheme } = useTheme();

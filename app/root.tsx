@@ -4,7 +4,6 @@ import GenericError from '@/components/error/generic';
 import { ClientHintCheck } from '@/components/misc/client-hints';
 import { FaviconLinks } from '@/components/misc/favicon-links';
 import type { PublicEnv } from '@/hooks';
-import { ThemeProvider, ThemeScript, useTheme } from '@/modules/datum-themes';
 import { loadCatalog, useLocale } from '@/modules/i18n/lingui';
 import { linguiServer } from '@/modules/i18n/lingui.server';
 import MarkerIoEmbed from '@/modules/markerio';
@@ -13,6 +12,7 @@ import { useNonce } from '@/providers/nonce.provider';
 import styles from '@/styles/root.css?url';
 import { env } from '@/utils/config/env.server';
 import { localeCookie } from '@/utils/cookies';
+import { ThemeProvider, ThemeScript, useTheme } from '@datum-cloud/datum-ui/theme';
 import { configureProgress, startProgress, stopProgress } from '@datum-ui/nprogress';
 import { Toaster } from '@datum-ui/toast';
 import { i18n } from '@lingui/core';
@@ -77,7 +77,7 @@ function App() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <FaviconLinks />
         <ClientHintCheck nonce={nonce} />
-        <ThemeScript nonce={nonce} defaultTheme="light" />
+        <ThemeScript nonce={nonce} attribute="class" defaultTheme="light" />
         <Meta />
         <Links />
       </head>
@@ -113,7 +113,11 @@ function App() {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  return <ThemeProvider defaultTheme="light">{children}</ThemeProvider>;
+  return (
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+      {children}
+    </ThemeProvider>
+  );
 }
 
 export default function AppWithProviders() {
@@ -149,7 +153,7 @@ function ErrorLayout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <ThemeScript nonce={nonce} defaultTheme="light" />
+        <ThemeScript nonce={nonce} attribute="class" defaultTheme="light" />
         <Meta />
         <Links />
       </head>

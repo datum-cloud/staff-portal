@@ -237,7 +237,7 @@ msgstr ""
 msgid "Change your Primary Email in GitHub (your primary email)"
 msgstr ""
 
-#: app/features/preferences/components/preferences-form.tsx:94
+#: app/features/preferences/components/preferences-form.tsx:95
 msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
 msgstr ""
 
@@ -626,11 +626,11 @@ msgstr ""
 msgid "Failed to load status"
 msgstr ""
 
-#: app/features/preferences/components/preferences-form.tsx:42
+#: app/features/preferences/components/preferences-form.tsx:43
 msgid "Failed to update theme"
 msgstr ""
 
-#: app/features/preferences/components/preferences-form.tsx:64
+#: app/features/preferences/components/preferences-form.tsx:65
 msgid "Failed to update timezone"
 msgstr ""
 
@@ -1071,7 +1071,7 @@ msgstr ""
 msgid "Please wait {remainingMinutes} more minute{0} before resending this invitation"
 msgstr ""
 
-#: app/features/preferences/components/preferences-form.tsx:76
+#: app/features/preferences/components/preferences-form.tsx:77
 msgid "Portal Preferences"
 msgstr ""
 
@@ -1298,7 +1298,7 @@ msgstr ""
 msgid "Select group..."
 msgstr ""
 
-#: app/features/preferences/components/preferences-form.tsx:84
+#: app/features/preferences/components/preferences-form.tsx:85
 msgid "Select timezone..."
 msgstr ""
 
@@ -1411,7 +1411,7 @@ msgstr ""
 msgid "Time range"
 msgstr ""
 
-#: app/features/preferences/components/preferences-form.tsx:62
+#: app/features/preferences/components/preferences-form.tsx:63
 msgid "Timezone updated successfully"
 msgstr ""
 
