@@ -2,7 +2,7 @@ import ButtonDeleteAction from '@/components/button/button-delete-action';
 import { DateTime } from '@/components/date';
 import { noteDeleteMutation } from '@/resources/request/client';
 import { Text } from '@datum-cloud/datum-ui/typography';
-import { toast } from '@datum-ui/toast';
+import { toast } from '@datum-cloud/datum-ui/toast';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisNotesV1Alpha1Note } from '@openapi/notes.miloapis.com/v1alpha1';
 

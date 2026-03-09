@@ -17,7 +17,7 @@ import {
 } from '@datum-ui/client-data-table';
 import { ActionItem } from '@datum-ui/data-table';
 import { useTaskQueue } from '@datum-ui/task-queue';
-import { toast } from '@datum-ui/toast';
+import { toast } from '@datum-cloud/datum-ui/toast';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import {

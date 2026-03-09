@@ -19,7 +19,7 @@ import {
 } from '@datum-ui/client-data-table';
 import { ActionItem, DataTableActiveFilters } from '@datum-ui/data-table';
 import { Form } from '@datum-ui/form';
-import { toast } from '@datum-ui/toast';
+import { toast } from '@datum-cloud/datum-ui/toast';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import {

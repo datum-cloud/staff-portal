@@ -3,7 +3,7 @@ import { useApp } from '@/providers/app.provider';
 import { userUpdateMutation } from '@/resources/request/client';
 import { Button } from '@datum-ui/button';
 import { Form } from '@datum-ui/form';
-import { toast } from '@datum-ui/toast';
+import { toast } from '@datum-cloud/datum-ui/toast';
 import { Trans, useLingui } from '@lingui/react/macro';
 import z from 'zod';
 

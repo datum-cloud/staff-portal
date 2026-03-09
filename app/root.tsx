@@ -14,7 +14,7 @@ import { env } from '@/utils/config/env.server';
 import { localeCookie } from '@/utils/cookies';
 import { configureProgress, startProgress, stopProgress } from '@datum-cloud/datum-ui/nprogress';
 import { ThemeProvider, ThemeScript, useTheme } from '@datum-cloud/datum-ui/theme';
-import { Toaster } from '@datum-ui/toast';
+import { Toaster } from '@datum-cloud/datum-ui/toast';
 import { i18n } from '@lingui/core';
 import * as Sentry from '@sentry/react-router';
 import { QueryClientProvider } from '@tanstack/react-query';

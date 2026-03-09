@@ -9,7 +9,7 @@ import { orgDeleteMutation } from '@/resources/request/client';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
-import { toast } from '@datum-ui/toast';
+import { toast } from '@datum-cloud/datum-ui/toast';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useNavigate } from 'react-router';
 

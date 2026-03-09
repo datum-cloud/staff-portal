@@ -1,6 +1,6 @@
 import { Button } from '@/modules/datum-ui/button';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
-import { toast } from '@datum-ui/toast';
+import { toast } from '@datum-cloud/datum-ui/toast';
 import { Copy } from 'lucide-react';
 
 interface ButtonCopyProps {

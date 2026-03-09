@@ -1,7 +1,7 @@
 import { isExpiredCursorError } from '@/modules/datum-ui/data-table/lib/data-table';
 import { logger } from '@/utils/logger';
 import { captureApiError } from '@/utils/logger';
-import { toast } from '@datum-ui/toast';
+import { toast } from '@datum-cloud/datum-ui/toast';
 import Axios, {
   AxiosError,
   AxiosRequestConfig,
