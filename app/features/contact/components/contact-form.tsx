@@ -6,7 +6,7 @@ import {
   useContactGroupListQuery,
 } from '@/resources/request/client';
 import { contactRoutes, userRoutes } from '@/utils/config/routes.config';
-import { Alert } from '@datum-ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@datum-cloud/datum-ui/alert';
 import { Button } from '@datum-ui/button';
 import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
@@ -167,11 +167,10 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
                     onSearch={setUserSearch}
                     searchDebounceMs={500}
                   />
-                  <Alert
-                    variant="warning"
-                    title={t`Warning`}
-                    description={t`Once a contact is associated with a user, this association cannot be removed or changed later.`}
-                  />
+                  <Alert variant="warning">
+                    <AlertTitle>{t`Warning`}</AlertTitle>
+                    <AlertDescription>{t`Once a contact is associated with a user, this association cannot be removed or changed later.`}</AlertDescription>
+                  </Alert>
                 </>
               )}
             </>
