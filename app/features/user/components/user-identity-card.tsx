@@ -6,7 +6,7 @@ import { useEnv } from '@/hooks';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { useIdentityListQuery } from '@/resources/request/client';
 import { ButtonLink } from '@datum-ui/button';
-import { Tooltip } from '@datum-ui/tooltip';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Trans } from '@lingui/react/macro';
 import { CircleAlertIcon, ExternalLinkIcon, FingerprintPattern, MailIcon } from 'lucide-react';
 import { ComponentType, SVGProps } from 'react';

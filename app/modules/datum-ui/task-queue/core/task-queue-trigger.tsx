@@ -2,7 +2,7 @@ import type { Task } from '../types';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Badge } from '@/modules/shadcn/ui/badge';
 import { Button } from '@datum-ui/button';
-import { Tooltip } from '@datum-ui/tooltip';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { ListTodo } from 'lucide-react';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 
