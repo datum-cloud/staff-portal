@@ -10,7 +10,7 @@ import { Alert, AlertDescription, AlertTitle } from '@datum-cloud/datum-ui/alert
 import { Button } from '@datum-ui/button';
 import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
-import { Text } from '@datum-ui/typography';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import { ComMiloapisNotificationV1Alpha1Contact } from '@openapi/notification.miloapis.com/v1alpha1';

@@ -17,7 +17,7 @@ import {
 import { projectExportPolicyDetailQuery } from '@/resources/request/server';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { CodeEditor } from '@datum-ui/code-editor';
-import { Text, Title } from '@datum-ui/typography';
+import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { ComMiloapisTelemetryV1Alpha1ExportPolicy } from '@openapi/telemetry.miloapis.com/v1alpha1';
 import { CodeIcon, SettingsIcon } from 'lucide-react';
@@ -51,7 +51,7 @@ export default function Page() {
 
   return (
     <div className="m-4 flex flex-col gap-1">
-      <Title>{data?.metadata?.name}</Title>
+      <Title level={1}>{data?.metadata?.name}</Title>
 
       <Card className="mt-4 shadow-none">
         <CardContent>

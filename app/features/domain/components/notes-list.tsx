@@ -1,5 +1,5 @@
 import { NoteCard } from './note-card';
-import { Text } from '@datum-ui/typography';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { ComMiloapisNotesV1Alpha1NoteList } from '@openapi/notes.miloapis.com/v1alpha1';
 

@@ -13,7 +13,7 @@ import {
 } from '@/modules/shadcn/ui/command';
 import { orgListQuery, projectListQuery, userListQuery } from '@/resources/request/client';
 import { routes } from '@/utils/config/routes.config';
-import { Text } from '@datum-ui/typography';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import {

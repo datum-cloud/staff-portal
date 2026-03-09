@@ -8,7 +8,7 @@ import { projectDeleteMutation } from '@/resources/request/client';
 import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { toast } from '@datum-ui/toast';
-import { Text, Title } from '@datum-ui/typography';
+import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Link, useNavigate } from 'react-router';
 
@@ -30,7 +30,7 @@ export default function Page() {
 
   return (
     <div className="m-4 flex flex-col gap-1">
-      <Title>{project?.metadata?.annotations?.['kubernetes.io/description']}</Title>
+      <Title level={1}>{project?.metadata?.annotations?.['kubernetes.io/description']}</Title>
 
       <Card className="mt-4 shadow-none">
         <CardContent>

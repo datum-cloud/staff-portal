@@ -27,7 +27,7 @@ import { metaObject } from '@/utils/helpers';
 import { Button, ButtonLink } from '@datum-ui/button';
 import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
-import { Text, Title } from '@datum-ui/typography';
+import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import {
   CheckIcon,
@@ -150,7 +150,7 @@ export default function Page() {
       <div className="m-4 flex flex-col gap-1">
         <div className="flex items-center justify-between">
           <div className="flex flex-col">
-            <Title>
+            <Title level={1}>
               {data?.spec?.givenName} {data?.spec?.familyName}
             </Title>
             <Text textColor="muted">{data?.spec?.email}</Text>

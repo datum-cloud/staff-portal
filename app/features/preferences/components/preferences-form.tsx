@@ -6,7 +6,7 @@ import { userUpdatePreferencesMutation } from '@/resources/request/client';
 import type { Theme } from '@datum-cloud/datum-ui';
 import { useTheme } from '@datum-cloud/datum-ui/theme';
 import { toast } from '@datum-ui/toast';
-import { Text } from '@datum-ui/typography';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useCallback, useState } from 'react';
 

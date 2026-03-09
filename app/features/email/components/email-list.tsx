@@ -12,7 +12,7 @@ import {
   useClientDataTableQuery,
 } from '@datum-ui/client-data-table';
 import { DataTableActiveFilters } from '@datum-ui/data-table';
-import { Text } from '@datum-ui/typography';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import {

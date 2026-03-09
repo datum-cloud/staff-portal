@@ -18,7 +18,7 @@ import {
 } from '@/resources/request/server';
 import { useProjectDetailData } from '@/routes/project/shared';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
-import { Text, Title } from '@datum-ui/typography';
+import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { ComDatumapisNetworkingV1AlphaDomain } from '@openapi/networking.datumapis.com/v1alpha';
 import { useLoaderData, useRevalidator } from 'react-router';
@@ -79,7 +79,7 @@ export default function Page() {
 
   return (
     <div className="m-4 flex flex-col gap-1">
-      <Title>{data?.spec?.domainName}</Title>
+      <Title level={1}>{data?.spec?.domainName}</Title>
 
       <Card className="mt-4 shadow-none">
         <CardContent>

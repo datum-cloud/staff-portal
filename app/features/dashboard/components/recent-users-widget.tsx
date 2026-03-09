@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader } from '@/modules/shadcn
 import { activityListQuery } from '@/resources/request/client';
 import { userRoutes } from '@/utils/config/routes.config';
 import { Button } from '@datum-ui/button';
-import { Text, Title } from '@datum-ui/typography';
+import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { IoK8sApiserverPkgApisAuditV1Event } from '@openapi/activity.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';

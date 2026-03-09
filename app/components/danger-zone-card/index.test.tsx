@@ -76,7 +76,7 @@ vi.mock('@datum-ui/button', () => ({
 }));
 
 // Mock the Typography components
-vi.mock('@datum-ui/typography', () => ({
+vi.mock('@datum-cloud/datum-ui/typography', () => ({
   Text: ({ children, textColor, size, as }: any) => (
     <span data-testid="text" data-text-color={textColor} data-size={size} data-as={as}>
       {children}
