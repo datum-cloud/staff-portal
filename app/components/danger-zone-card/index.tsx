@@ -6,8 +6,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/modules/shadcn/ui/card';
-import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Trash2Icon } from 'lucide-react';
 import { useState } from 'react';

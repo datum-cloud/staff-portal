@@ -1,6 +1,6 @@
 import DialogConfirm from '@/components/dialog/dialog-confirm';
-import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Trash2Icon } from 'lucide-react';
 import { useState } from 'react';

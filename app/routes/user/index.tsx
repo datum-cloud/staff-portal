@@ -8,8 +8,8 @@ import { UserRejectDialog, useUserApproval } from '@/features/user';
 import { userInviteMutation, userListQuery } from '@/resources/request/client';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { toast } from '@datum-cloud/datum-ui/toast';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { toast } from '@datum-cloud/datum-ui/toast';
 import {
   ClientDataTable,
   ClientDataTableFacetFilter,

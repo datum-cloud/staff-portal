@@ -17,8 +17,8 @@ import {
 } from '@/resources/schemas';
 import { contactRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { toast } from '@datum-cloud/datum-ui/toast';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { toast } from '@datum-cloud/datum-ui/toast';
 import {
   ClientDataTable,
   ClientDataTableProvider,
