@@ -24,10 +24,10 @@ import {
 } from '@/resources/request/client';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Button, ButtonLink } from '@datum-ui/button';
 import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
-import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import {
   CheckIcon,

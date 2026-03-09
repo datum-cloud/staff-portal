@@ -1,6 +1,7 @@
 import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
 import { quotaGrantCreateMutation } from '@/resources/request/client';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import {
   DataTable,
   DataTableProvider,
@@ -9,7 +10,6 @@ import {
 } from '@datum-ui/data-table';
 import { Form } from '@datum-ui/form';
 import { toast } from '@datum-ui/toast';
-import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import {
   ComMiloapisQuotaV1Alpha1AllowanceBucket,

@@ -16,8 +16,8 @@ import {
 } from '@/modules/shadcn/ui/table';
 import { projectExportPolicyDetailQuery } from '@/resources/request/server';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
-import { CodeEditor } from '@datum-ui/code-editor';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
+import { CodeEditor } from '@datum-ui/code-editor';
 import { Trans } from '@lingui/react/macro';
 import { ComMiloapisTelemetryV1Alpha1ExportPolicy } from '@openapi/telemetry.miloapis.com/v1alpha1';
 import { CodeIcon, SettingsIcon } from 'lucide-react';

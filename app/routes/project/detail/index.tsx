@@ -7,8 +7,8 @@ import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table
 import { projectDeleteMutation } from '@/resources/request/client';
 import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { toast } from '@datum-ui/toast';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
+import { toast } from '@datum-ui/toast';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Link, useNavigate } from 'react-router';
 
