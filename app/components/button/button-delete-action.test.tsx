@@ -54,7 +54,7 @@ vi.mock('@datum-cloud/datum-ui/tooltip', () => ({
 }));
 
 // Mock the Button component
-vi.mock('@datum-ui/button', () => ({
+vi.mock('@datum-cloud/datum-ui/button', () => ({
   Button: ({ children, onClick, type, size, ...props }: any) => (
     <button
       onClick={onClick}

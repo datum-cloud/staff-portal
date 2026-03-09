@@ -21,7 +21,7 @@ import {
 import { Input } from '@/modules/shadcn/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/modules/shadcn/ui/popover';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
-import { Button } from '@datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
 import { AlertCircle, Check, Loader2 } from 'lucide-react';
 import * as React from 'react';
 

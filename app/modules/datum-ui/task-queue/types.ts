@@ -1,4 +1,4 @@
-import type { ButtonProps } from '@datum-ui/button';
+import type { ButtonProps } from '@datum-cloud/datum-ui/button';
 import type { ReactNode } from 'react';
 
 // --- Task Status ---

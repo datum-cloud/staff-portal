@@ -2,7 +2,7 @@ import { Textarea } from '@/modules/shadcn/ui/textarea';
 import { noteCreateMutation } from '@/resources/request/client';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
-import { Button } from '@datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 

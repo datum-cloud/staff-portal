@@ -26,7 +26,7 @@ import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
-import { Button, ButtonLink } from '@datum-ui/button';
+import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
 import { Form } from '@datum-ui/form';
 import { Trans, useLingui } from '@lingui/react/macro';
 import {
@@ -158,7 +158,7 @@ export default function Page() {
 
           <div className="flex items-center gap-2">
             {sentryIssuesUrl && (
-              <ButtonLink
+              <LinkButton
                 href={sentryIssuesUrl}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -167,7 +167,7 @@ export default function Page() {
                 icon={<ExternalLinkIcon size={16} />}
                 iconPosition="right">
                 <Trans>View in Sentry</Trans>
-              </ButtonLink>
+              </LinkButton>
             )}
             {data?.status?.registrationApproval === 'Pending' ? (
               <>

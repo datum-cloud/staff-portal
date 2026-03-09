@@ -1,6 +1,6 @@
 import type { Task } from '../types';
 import { extractItemId } from '../utils';
-import { Button, type ButtonProps } from '@datum-ui/button';
+import { Button, type ButtonProps } from '@datum-cloud/datum-ui/button';
 
 interface TaskPanelActionsProps {
   task: Task;

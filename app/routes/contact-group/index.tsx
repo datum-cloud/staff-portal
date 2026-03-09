@@ -8,7 +8,7 @@ import { contactGroupDeleteMutation, contactGroupListQuery } from '@/resources/r
 import { contactGroupRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import { Button } from '@datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
 import {
   ClientDataTable,
   ClientDataTableProvider,

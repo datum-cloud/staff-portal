@@ -1,6 +1,6 @@
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Title, Text } from '@datum-cloud/datum-ui/typography';
-import { Button } from '@datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
 import { Form } from '@datum-ui/form';
 import { z } from 'zod';
 

@@ -6,7 +6,7 @@ import { useEnv } from '@/hooks';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { useIdentityListQuery } from '@/resources/request/client';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
-import { ButtonLink } from '@datum-ui/button';
+import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Trans } from '@lingui/react/macro';
 import { CircleAlertIcon, ExternalLinkIcon, FingerprintPattern, MailIcon } from 'lucide-react';
 import { ComponentType, SVGProps } from 'react';
@@ -102,7 +102,7 @@ export const UserIdentityCard = ({ userId }: { userId: string }) => {
                           </div>
                         </Tooltip>
                       )}
-                      <ButtonLink
+                      <LinkButton
                         href={`${env?.AUTH_OIDC_ISSUER}/ui/v2/login/idp/link`}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -111,7 +111,7 @@ export const UserIdentityCard = ({ userId }: { userId: string }) => {
                         icon={<ExternalLinkIcon size={12} />}
                         iconPosition="right">
                         <Trans>Manage</Trans>
-                      </ButtonLink>
+                      </LinkButton>
                     </>
                   }
                 />

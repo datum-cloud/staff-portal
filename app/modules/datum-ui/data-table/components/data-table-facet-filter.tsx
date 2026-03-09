@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/modules/shadcn/ui/dropdown-menu';
-import { Button } from '@datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
