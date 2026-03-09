@@ -12,6 +12,9 @@ import {
 } from '@/modules/shadcn/ui/table';
 import type * as React from 'react';
 
+/** Override so skeleton is visible in light mode (bg-accent is too close to background there) */
+const skeletonVisible = 'bg-border dark:bg-accent';
+
 interface DataTableLoadingProps<TData> extends React.ComponentProps<'div'> {
   rows?: number;
   actionBar?: React.ReactNode;
@@ -44,7 +47,9 @@ export function DataTableLoading<TData>({
                     style={{
                       ...getCommonPinningStyles({ column: header.column }),
                     }}>
-                    {header.isPlaceholder ? null : <Skeleton className="h-4 w-20" />}
+                    {header.isPlaceholder ? null : (
+                      <Skeleton className={cn(skeletonVisible, 'h-4 w-20')} />
+                    )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -60,7 +65,7 @@ export function DataTableLoading<TData>({
                     style={{
                       ...getCommonPinningStyles({ column }),
                     }}>
-                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className={cn(skeletonVisible, 'h-4 w-full')} />
                   </TableCell>
                 ))}
               </TableRow>
@@ -71,23 +76,23 @@ export function DataTableLoading<TData>({
       <div className="flex flex-col gap-2.5">
         <div className="flex w-full flex-col-reverse items-center justify-between gap-4 overflow-auto p-1 sm:flex-row sm:gap-8">
           <div className="text-muted-foreground flex-1 text-sm whitespace-nowrap">
-            <Skeleton className="h-4 w-32" />
+            <Skeleton className={cn(skeletonVisible, 'h-4 w-32')} />
           </div>
           <div className="flex flex-col-reverse items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
             <div className="flex items-center space-x-2">
-              <Skeleton className="h-4 w-20" />
-              <Skeleton className="h-8 w-[4.5rem]" />
+              <Skeleton className={cn(skeletonVisible, 'h-4 w-20')} />
+              <Skeleton className={cn(skeletonVisible, 'h-8 w-[4.5rem]')} />
             </div>
             <div className="flex items-center justify-center text-sm font-medium">
-              <Skeleton className="h-4 w-16" />
+              <Skeleton className={cn(skeletonVisible, 'h-4 w-16')} />
             </div>
             <div className="flex items-center space-x-2">
-              <Skeleton className="size-8" />
-              <Skeleton className="size-8" />
+              <Skeleton className={cn(skeletonVisible, 'size-8')} />
+              <Skeleton className={cn(skeletonVisible, 'size-8')} />
             </div>
           </div>
         </div>
-        {actionBar && <Skeleton className="h-10 w-full" />}
+        {actionBar && <Skeleton className={cn(skeletonVisible, 'h-10 w-full')} />}
       </div>
     </div>
   );

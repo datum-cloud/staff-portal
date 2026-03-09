@@ -1,4 +1,3 @@
-import { useTheme } from '@/modules/datum-themes';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Button } from '@/modules/shadcn/ui/button';
 import {
@@ -7,6 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/modules/shadcn/ui/dropdown-menu';
+import { useTheme } from '@datum-cloud/datum-ui/theme';
 import { Trans } from '@lingui/react/macro';
 import { CheckIcon, MoonIcon, SunIcon, MonitorIcon } from 'lucide-react';
 import { useEffect } from 'react';

@@ -1,6 +1,6 @@
-import { Theme, useTheme } from '@/modules/datum-themes';
 import { getBrowserTimezone } from '@/utils/helpers';
 import { clearSentryUser, setSentryUser } from '@/utils/logger';
+import { useTheme, type Theme } from '@datum-cloud/datum-ui/theme';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import React, {
   createContext,

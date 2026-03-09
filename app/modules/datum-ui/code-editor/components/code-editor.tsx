@@ -1,6 +1,6 @@
 import { CodeEditorProps } from './code-editor.types';
-import { useTheme } from '@/modules/datum-themes';
 import { cn } from '@/modules/shadcn/lib/utils';
+import { useTheme } from '@datum-cloud/datum-ui/theme';
 import Editor, { Monaco } from '@monaco-editor/react';
 import { editor } from 'monaco-editor';
 import { useRef } from 'react';

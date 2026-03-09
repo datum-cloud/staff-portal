@@ -1,9 +1,10 @@
 import { ThemePreview } from './theme-preview';
 import { SelectTimezone } from '@/components/select/timezone';
-import { Theme, useTheme } from '@/modules/datum-themes';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { useApp } from '@/providers/app.provider';
 import { userUpdatePreferencesMutation } from '@/resources/request/client';
+import type { Theme } from '@datum-cloud/datum-ui';
+import { useTheme } from '@datum-cloud/datum-ui/theme';
 import { toast } from '@datum-ui/toast';
 import { Text } from '@datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
