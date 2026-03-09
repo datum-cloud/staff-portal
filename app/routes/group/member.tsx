@@ -14,10 +14,10 @@ import {
 import { groupDetailQuery } from '@/resources/request/server';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { toast } from '@datum-cloud/datum-ui/toast';
 import { Button } from '@datum-ui/button';
 import { ActionItem, DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
 import { Form } from '@datum-ui/form';
-import { toast } from '@datum-cloud/datum-ui/toast';
 import { Trans, useLingui } from '@lingui/react/macro';
 import {
   ComMiloapisIamV1Alpha1Group,

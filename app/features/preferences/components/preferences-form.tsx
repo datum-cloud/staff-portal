@@ -5,8 +5,8 @@ import { useApp } from '@/providers/app.provider';
 import { userUpdatePreferencesMutation } from '@/resources/request/client';
 import type { Theme } from '@datum-cloud/datum-ui';
 import { useTheme } from '@datum-cloud/datum-ui/theme';
-import { Text } from '@datum-cloud/datum-ui/typography';
 import { toast } from '@datum-cloud/datum-ui/toast';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useCallback, useState } from 'react';
 

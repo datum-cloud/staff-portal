@@ -4,6 +4,7 @@ import { DialogConfirm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
 import { contactDeleteMutation } from '@/resources/request/client';
 import { contactRoutes } from '@/utils/config/routes.config';
+import { toast } from '@datum-cloud/datum-ui/toast';
 import {
   ClientDataTable,
   ClientDataTableProvider,
@@ -12,7 +13,6 @@ import {
   useClientDataTableQuery,
 } from '@datum-ui/client-data-table';
 import { ActionItem } from '@datum-ui/data-table';
-import { toast } from '@datum-cloud/datum-ui/toast';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import {

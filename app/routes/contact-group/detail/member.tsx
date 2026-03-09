@@ -17,6 +17,7 @@ import {
 } from '@/resources/schemas';
 import { contactRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { toast } from '@datum-cloud/datum-ui/toast';
 import { Button } from '@datum-ui/button';
 import {
   ClientDataTable,
@@ -27,7 +28,6 @@ import {
 } from '@datum-ui/client-data-table';
 import { ActionItem } from '@datum-ui/data-table';
 import { Form } from '@datum-ui/form';
-import { toast } from '@datum-cloud/datum-ui/toast';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';

@@ -8,8 +8,8 @@ import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table
 import { orgDeleteMutation } from '@/resources/request/client';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { toast } from '@datum-cloud/datum-ui/toast';
+import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useNavigate } from 'react-router';
 
