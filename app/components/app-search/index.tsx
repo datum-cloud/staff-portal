@@ -2,16 +2,19 @@
 
 import { SearchResultGroup } from './search-result-group';
 import { cn } from '@/modules/shadcn/lib/utils';
-import { Button } from '@/modules/shadcn/ui/button';
 import {
-  CommandDialog,
+  Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from '@/modules/shadcn/ui/command';
-import { orgListQuery, projectListQuery, userListQuery } from '@/resources/request/client';
+import { Input } from '@/modules/shadcn/ui/input';
+import {
+  searchOrganizationsQuery,
+  searchProjectsQuery,
+  searchUsersQuery,
+} from '@/resources/request/client';
 import { routes } from '@/utils/config/routes.config';
 import { Text } from '@datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
@@ -22,29 +25,18 @@ import {
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
 import { Activity, Building2, FolderOpen, Home, Loader2, SearchIcon, Users } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router';
 
 interface Props {
   className?: string;
-  type?: React.HTMLInputTypeAttribute;
   placeholder?: string;
 }
 
-// Define search items using route configuration
 const searchItems = [
-  {
-    title: 'Dashboard',
-    icon: Home,
-    href: routes.dashboard(),
-    description: 'Go to dashboard',
-  },
-  {
-    title: 'Users',
-    icon: Users,
-    href: routes.users.list(),
-    description: 'Manage users',
-  },
+  { title: 'Dashboard', icon: Home, href: routes.dashboard(), description: 'Go to dashboard' },
+  { title: 'Users', icon: Users, href: routes.users.list(), description: 'Manage users' },
   {
     title: 'Organizations',
     icon: Building2,
@@ -57,32 +49,46 @@ const searchItems = [
     href: routes.projects.list(),
     description: 'Manage projects',
   },
-  {
-    title: 'Activity',
-    icon: Activity,
-    href: routes.activity(),
-    description: 'View activity logs',
-  },
+  { title: 'Activity', icon: Activity, href: routes.activity(), description: 'View activity logs' },
 ];
 
 function AppSearch({ className = '', placeholder = 'Search' }: Props) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 420 });
+  const inputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { t } = useLingui();
 
-  // Handle keyboard shortcut (Cmd+K)
+  // Cmd+K focuses the search input
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setOpen((open) => !open);
+        inputRef.current?.focus();
       }
     };
-
     document.addEventListener('keydown', down);
     return () => document.removeEventListener('keydown', down);
+  }, []);
+
+  // Click outside closes the panel — must exclude the portalled panel itself,
+  // otherwise mousedown on a result fires before onSelect and closes the panel.
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+      const inInput = containerRef.current?.contains(target);
+      const inPanel = panelRef.current?.contains(target);
+      if (!inInput && !inPanel) {
+        setOpen(false);
+        setSearch('');
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   // Debounce search input
@@ -91,162 +97,209 @@ function AppSearch({ className = '', placeholder = 'Search' }: Props) {
     return () => clearTimeout(id);
   }, [search]);
 
-  // Centralized search queries
-  const { data: orgs, isLoading: orgsLoading } = useQuery({
-    queryKey: ['orgs', 'search', debouncedSearch],
-    queryFn: () => orgListQuery({ search: debouncedSearch, limit: 5 }),
-    enabled: open && debouncedSearch.length > 0,
+  const queryOptions = {
+    enabled: open && debouncedSearch.length >= 3,
     staleTime: 30000,
     refetchOnWindowFocus: false,
+    retry: false,
+  };
+
+  const {
+    data: userResults,
+    isLoading: usersLoading,
+    isError: usersError,
+  } = useQuery({
+    queryKey: ['search', 'users', debouncedSearch],
+    queryFn: () => searchUsersQuery(debouncedSearch),
+    ...queryOptions,
   });
 
-  const { data: projects, isLoading: projectsLoading } = useQuery({
-    queryKey: ['projects', 'search', debouncedSearch],
-    queryFn: () => projectListQuery({ search: debouncedSearch, limit: 5 }),
-    enabled: open && debouncedSearch.length > 0,
-    staleTime: 30000,
-    refetchOnWindowFocus: false,
+  const {
+    data: orgResults,
+    isLoading: orgsLoading,
+    isError: orgsError,
+  } = useQuery({
+    queryKey: ['search', 'organizations', debouncedSearch],
+    queryFn: () => searchOrganizationsQuery(debouncedSearch),
+    ...queryOptions,
   });
 
-  const { data: users, isLoading: usersLoading } = useQuery({
-    queryKey: ['users', 'search', debouncedSearch],
-    queryFn: () => userListQuery({ search: debouncedSearch, limit: 5 }),
-    enabled: open && debouncedSearch.length > 0,
-    staleTime: 30000,
-    refetchOnWindowFocus: false,
+  const {
+    data: projectResults,
+    isLoading: projectsLoading,
+    isError: projectsError,
+  } = useQuery({
+    queryKey: ['search', 'projects', debouncedSearch],
+    queryFn: () => searchProjectsQuery(debouncedSearch),
+    ...queryOptions,
   });
 
   const runCommand = useCallback((command: () => unknown) => {
     setOpen(false);
+    setSearch('');
+    inputRef.current?.blur();
     command();
   }, []);
 
-  const handleSearchChange = useCallback((value: string) => {
-    setSearch(value);
-  }, []);
-
-  // Calculate overall state
-  const isLoading = orgsLoading || projectsLoading || usersLoading;
+  const isLoading = usersLoading || orgsLoading || projectsLoading;
+  const allError = usersError && orgsError && projectsError;
+  const someError = (usersError || orgsError || projectsError) && !allError;
   const hasResults =
-    (orgs?.items?.length ?? 0) + (projects?.items?.length ?? 0) + (users?.items?.length ?? 0) > 0;
+    (userResults?.length ?? 0) > 0 ||
+    (orgResults?.length ?? 0) > 0 ||
+    (projectResults?.length ?? 0) > 0;
+
+  const getDisplayName = (item: {
+    metadata?: { name?: string; annotations?: Record<string, string> };
+  }) => item.metadata?.annotations?.['kubernetes.io/display-name'] || item.metadata?.name || '';
 
   return (
-    <>
-      <Button
-        variant="outline"
-        className={cn(
-          'bg-muted/25 text-muted-foreground hover:bg-muted/50 relative h-8 w-full flex-1 justify-start rounded-md text-sm font-normal shadow-none sm:pr-12 md:w-40 md:flex-none lg:w-56 xl:w-64',
-          className
-        )}
-        onClick={() => setOpen(true)}>
-        <SearchIcon aria-hidden="true" className="absolute top-1/2 left-1.5 -translate-y-1/2" />
-        <span className="ml-3">{placeholder}</span>
-        <kbd className="bg-muted pointer-events-none absolute top-[0.3rem] right-[0.3rem] hidden h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium opacity-100 select-none sm:flex">
-          <span className="text-xs">⌘</span>K
-        </kbd>
-      </Button>
-      <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput
-          placeholder={t`Type a command or search...`}
+    <div ref={containerRef} className={cn('relative', className)}>
+      {/* Inline search input */}
+      <div className="bg-muted/25 hover:bg-muted/50 text-muted-foreground flex h-8 w-full items-center gap-1.5 rounded-md border px-2 md:w-40 lg:w-56 xl:w-64">
+        <SearchIcon className="h-4 w-4 shrink-0 opacity-50" aria-hidden="true" />
+        <Input
+          ref={inputRef}
+          className="h-full min-w-0 flex-1 border-0 p-0 shadow-none focus-visible:ring-0"
+          placeholder={placeholder}
           value={search}
-          onValueChange={handleSearchChange}
+          onChange={(e) => setSearch(e.target.value)}
+          onFocus={() => {
+            if (containerRef.current) {
+              const rect = containerRef.current.getBoundingClientRect();
+              setDropdownPos({
+                top: rect.bottom + 4,
+                left: rect.left,
+                width: Math.max(rect.width, 420),
+              });
+            }
+            setOpen(true);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              setOpen(false);
+              setSearch('');
+              inputRef.current?.blur();
+            }
+          }}
         />
-        <CommandList>
-          {(!search || search.length === 0) && (
-            <CommandGroup heading={t`Navigation`}>
-              {searchItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <CommandItem
-                    key={item.href}
-                    onSelect={() => runCommand(() => navigate(item.href))}>
-                    <Icon className="mr-2 h-4 w-4" />
-                    <Text>{t`${item.title}`}</Text>
-                    <Text size="xs" textColor="muted" className="ml-auto">
-                      {item.description}
-                    </Text>
-                  </CommandItem>
-                );
-              })}
-            </CommandGroup>
-          )}
+        {!open && (
+          <kbd className="bg-muted pointer-events-none hidden h-5 shrink-0 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium select-none sm:flex">
+            <span className="text-xs">⌘</span>K
+          </kbd>
+        )}
+      </div>
 
-          {search && search.length > 0 && (
-            <>
-              {isLoading ? (
-                <CommandEmpty>
-                  <div className="flex items-center justify-center py-6">
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    <Text>{t`Searching...`}</Text>
-                  </div>
-                </CommandEmpty>
-              ) : !hasResults ? (
-                <CommandEmpty>{t`No results found.`}</CommandEmpty>
-              ) : (
-                <>
-                  {/* Organizations */}
-                  <SearchResultGroup<ComMiloapisResourcemanagerV1Alpha1Organization>
-                    heading="Organizations"
-                    items={orgs?.items || []}
-                    icon={Building2}
-                    getValue={(org) =>
-                      `${org.metadata?.name ?? ''} ${org.metadata?.annotations?.['kubernetes.io/display-name'] ?? ''}`
-                    }
-                    getTitle={(org) =>
-                      org.metadata?.annotations?.['kubernetes.io/display-name'] ||
-                      (org.metadata?.name ?? '')
-                    }
-                    getSubtitle={(org) => org.metadata?.name ?? ''}
-                    onSelect={(org) =>
-                      runCommand(() =>
-                        navigate(routes.organizations.detail(org.metadata?.name ?? ''))
-                      )
-                    }
-                  />
+      {/* Dropdown results panel — portalled to body to escape header stacking context */}
+      {open &&
+        createPortal(
+          <div
+            ref={panelRef}
+            className="bg-popover text-popover-foreground fixed z-50 rounded-md border shadow-md"
+            style={{ top: dropdownPos.top, left: dropdownPos.left, width: dropdownPos.width }}>
+            <Command shouldFilter={false}>
+              <CommandList className="max-h-[400px]">
+                {(!search || search.length === 0) && (
+                  <CommandGroup heading={t`Navigation`}>
+                    {searchItems.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <CommandItem
+                          key={item.href}
+                          onSelect={() => runCommand(() => navigate(item.href))}>
+                          <Icon className="mr-2 h-4 w-4" />
+                          <Text>{t`${item.title}`}</Text>
+                          <Text size="xs" textColor="muted" className="ml-auto">
+                            {item.description}
+                          </Text>
+                        </CommandItem>
+                      );
+                    })}
+                  </CommandGroup>
+                )}
 
-                  {/* Projects */}
-                  <SearchResultGroup<ComMiloapisResourcemanagerV1Alpha1Project>
-                    heading="Projects"
-                    items={projects?.items || []}
-                    icon={FolderOpen}
-                    getValue={(project) =>
-                      `${project.metadata?.name ?? ''} ${project.metadata?.annotations?.['kubernetes.io/description'] ?? ''}`
-                    }
-                    getTitle={(project) =>
-                      project.metadata?.annotations?.['kubernetes.io/description'] ||
-                      (project.metadata?.name ?? '')
-                    }
-                    getSubtitle={(project) => project.metadata?.name ?? ''}
-                    onSelect={(project) =>
-                      runCommand(() =>
-                        navigate(routes.projects.detail(project.metadata?.name ?? ''))
-                      )
-                    }
-                  />
+                {search && search.length > 0 && search.length < 3 && (
+                  <CommandEmpty>{t`Type at least 3 characters to search.`}</CommandEmpty>
+                )}
 
-                  {/* Users */}
-                  <SearchResultGroup<ComMiloapisIamV1Alpha1User>
-                    heading="Users"
-                    items={users?.items || []}
-                    icon={Users}
-                    getValue={(user) =>
-                      `${user.metadata?.name ?? ''} ${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''} ${user.spec?.email ?? ''}`
-                    }
-                    getTitle={(user) =>
-                      `${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''}`
-                    }
-                    getSubtitle={(user) => user.spec?.email ?? ''}
-                    onSelect={(user) =>
-                      runCommand(() => navigate(routes.users.detail(user.metadata?.name ?? '')))
-                    }
-                  />
-                </>
-              )}
-            </>
-          )}
-        </CommandList>
-      </CommandDialog>
-    </>
+                {search && search.length >= 3 && isLoading && (
+                  <CommandEmpty>
+                    <Loader2 className="mx-auto mb-1 h-4 w-4 animate-spin opacity-50" />
+                    <Text size="sm">{t`Searching...`}</Text>
+                  </CommandEmpty>
+                )}
+
+                {search && search.length >= 3 && !isLoading && (
+                  <>
+                    {allError ? (
+                      <CommandEmpty>{t`Search is temporarily unavailable. Please try again.`}</CommandEmpty>
+                    ) : !hasResults ? (
+                      <CommandEmpty>{t`No results found.`}</CommandEmpty>
+                    ) : (
+                      <>
+                        {someError && (
+                          <Text size="xs" textColor="muted" className="px-3 py-1.5">
+                            {t`Some results may be missing.`}
+                          </Text>
+                        )}
+                        {/* FR-11: Organizations → Projects → Users */}
+                        <SearchResultGroup<ComMiloapisResourcemanagerV1Alpha1Organization>
+                          heading="Organizations"
+                          items={orgResults || []}
+                          icon={Building2}
+                          getValue={(org) =>
+                            `${org.metadata?.name ?? ''} ${getDisplayName(org)} ${org.metadata?.annotations?.['kubernetes.io/description'] ?? ''}`
+                          }
+                          getTitle={(org) => getDisplayName(org)}
+                          getSubtitle={(org) => org.metadata?.name ?? ''}
+                          onSelect={(org) =>
+                            runCommand(() =>
+                              navigate(routes.organizations.detail(org.metadata?.name ?? ''))
+                            )
+                          }
+                        />
+                        <SearchResultGroup<ComMiloapisResourcemanagerV1Alpha1Project>
+                          heading="Projects"
+                          items={projectResults || []}
+                          icon={FolderOpen}
+                          getValue={(project) =>
+                            `${project.metadata?.name ?? ''} ${getDisplayName(project)} ${project.metadata?.annotations?.['kubernetes.io/description'] ?? ''}`
+                          }
+                          getTitle={(project) => getDisplayName(project)}
+                          getSubtitle={(project) => project.metadata?.name ?? ''}
+                          onSelect={(project) =>
+                            runCommand(() =>
+                              navigate(routes.projects.detail(project.metadata?.name ?? ''))
+                            )
+                          }
+                        />
+                        <SearchResultGroup<ComMiloapisIamV1Alpha1User>
+                          heading="Users"
+                          items={userResults || []}
+                          icon={Users}
+                          getValue={(user) =>
+                            `${user.metadata?.name ?? ''} ${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''} ${user.spec?.email ?? ''}`
+                          }
+                          getTitle={(user) =>
+                            `${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''}`.trim()
+                          }
+                          getSubtitle={(user) => user.spec?.email ?? ''}
+                          onSelect={(user) =>
+                            runCommand(() =>
+                              navigate(routes.users.detail(user.metadata?.name ?? ''))
+                            )
+                          }
+                        />
+                      </>
+                    )}
+                  </>
+                )}
+              </CommandList>
+            </Command>
+          </div>,
+          document.body
+        )}
+    </div>
   );
 }
 

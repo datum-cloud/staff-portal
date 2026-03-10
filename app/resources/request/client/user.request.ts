@@ -15,9 +15,17 @@ import {
   listIamMiloapisComV1Alpha1User,
   listIamMiloapisComV1Alpha1UserDeactivation,
   patchIamMiloapisComV1Alpha1User,
+  readIamMiloapisComV1Alpha1User,
 } from '@openapi/iam.miloapis.com/v1alpha1';
 import { listNotificationMiloapisComV1Alpha1EmailForAllNamespaces } from '@openapi/notification.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
+
+export const userGetQuery = async (userId: string): Promise<ComMiloapisIamV1Alpha1User | null> => {
+  const response = await readIamMiloapisComV1Alpha1User({
+    path: { name: userId },
+  });
+  return response.data?.data ?? null;
+};
 
 export const userListQuery = async (params?: ListQueryParams) => {
   const fieldSelectors: Record<string, string> = {};
