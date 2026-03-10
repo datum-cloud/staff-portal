@@ -8,7 +8,8 @@ import { UserRejectDialog, useUserApproval } from '@/features/user';
 import { userInviteMutation, userListQuery } from '@/resources/request/client';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { Button } from '@datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
+import { toast } from '@datum-cloud/datum-ui/toast';
 import {
   ClientDataTable,
   ClientDataTableFacetFilter,
@@ -19,7 +20,6 @@ import {
 } from '@datum-ui/client-data-table';
 import { ActionItem, DataTableActiveFilters } from '@datum-ui/data-table';
 import { Form } from '@datum-ui/form';
-import { toast } from '@datum-ui/toast';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import {

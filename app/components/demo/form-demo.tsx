@@ -1,7 +1,7 @@
-import { Button } from '@datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
+import { toast } from '@datum-cloud/datum-ui/toast';
+import { Title, Text } from '@datum-cloud/datum-ui/typography';
 import { Form } from '@datum-ui/form';
-import { toast } from '@datum-ui/toast';
-import { Title, Text } from '@datum-ui/typography';
 import { z } from 'zod';
 
 const testSchema = z.object({

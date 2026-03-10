@@ -1,5 +1,5 @@
 import { ButtonCopy } from '@/components/button';
-import { Text } from '@datum-ui/typography';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Link } from 'react-router';
 
 interface NameDisplayProps {

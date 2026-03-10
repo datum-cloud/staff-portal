@@ -8,8 +8,8 @@ import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table
 import { orgDeleteMutation } from '@/resources/request/client';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { toast } from '@datum-ui/toast';
-import { Text, Title } from '@datum-ui/typography';
+import { toast } from '@datum-cloud/datum-ui/toast';
+import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useNavigate } from 'react-router';
 
@@ -31,7 +31,7 @@ export default function Page() {
 
   return (
     <div className="m-4 flex flex-col gap-1">
-      <Title>{data?.metadata?.annotations?.['kubernetes.io/display-name']}</Title>
+      <Title level={1}>{data?.metadata?.annotations?.['kubernetes.io/display-name']}</Title>
 
       <Card className="mt-4 shadow-none">
         <CardContent>

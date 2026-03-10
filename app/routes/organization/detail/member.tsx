@@ -10,6 +10,7 @@ import {
 import { TeamMember, TeamMemberList } from '@/resources/schemas';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { toast } from '@datum-cloud/datum-ui/toast';
 import {
   ClientDataTable,
   ClientDataTableProvider,
@@ -18,7 +19,6 @@ import {
   useClientDataTableQuery,
 } from '@datum-ui/client-data-table';
 import { ActionItem } from '@datum-ui/data-table';
-import { toast } from '@datum-ui/toast';
 import { t as tCore } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';

@@ -7,8 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/ca
 import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
 import { projectHttpProxyDetailQuery } from '@/resources/request/server';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
-import { Tooltip } from '@datum-ui/tooltip';
-import { Text } from '@datum-ui/typography';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { ComDatumapisNetworkingV1AlphaHttpProxy } from '@openapi/networking.datumapis.com/v1alpha';
 import { useMemo } from 'react';

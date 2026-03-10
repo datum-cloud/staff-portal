@@ -1,6 +1,6 @@
 import type { FilterConfig, FilterValue } from '../hooks/useDataTableQuery';
 import { Badge } from '@/modules/shadcn/ui/badge';
-import { Tooltip } from '@datum-ui/tooltip';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { format } from 'date-fns';

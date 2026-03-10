@@ -62,7 +62,7 @@ vi.mock('@/modules/shadcn/ui/card', () => ({
 }));
 
 // Mock the Button component
-vi.mock('@datum-ui/button', () => ({
+vi.mock('@datum-cloud/datum-ui/button', () => ({
   Button: ({ children, onClick, type, size, ...props }: any) => (
     <button
       onClick={onClick}
@@ -76,7 +76,7 @@ vi.mock('@datum-ui/button', () => ({
 }));
 
 // Mock the Typography components
-vi.mock('@datum-ui/typography', () => ({
+vi.mock('@datum-cloud/datum-ui/typography', () => ({
   Text: ({ children, textColor, size, as }: any) => (
     <span data-testid="text" data-text-color={textColor} data-size={size} data-as={as}>
       {children}

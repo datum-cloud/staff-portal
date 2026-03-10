@@ -9,7 +9,7 @@ import { Card, CardContent } from '@/modules/shadcn/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/modules/shadcn/ui/tabs';
 import { startCase } from '@/utils/helpers';
-import { Text, Title } from '@datum-ui/typography';
+import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisNotificationV1Alpha1Email } from '@openapi/notification.miloapis.com/v1alpha1';
@@ -35,7 +35,7 @@ export function EmailDetail({ email }: EmailDetailProps) {
 
   return (
     <div className="m-4 flex flex-col gap-4">
-      <Title>{recipient}</Title>
+      <Title level={1}>{recipient}</Title>
 
       <Card className="shadow-none">
         <CardContent>

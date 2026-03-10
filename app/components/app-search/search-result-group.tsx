@@ -1,5 +1,5 @@
 import { CommandGroup, CommandItem } from '@/modules/shadcn/ui/command';
-import { Text } from '@datum-ui/typography';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
 import { LucideIcon } from 'lucide-react';
 

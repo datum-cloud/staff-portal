@@ -12,7 +12,7 @@ vi.mock('@/modules/shadcn/ui/badge', () => ({
 }));
 
 // Mock Tooltip (even though current code path doesn't reach it without icons)
-vi.mock('@datum-ui/tooltip', () => ({
+vi.mock('@datum-cloud/datum-ui/tooltip', () => ({
   Tooltip: ({ message, children }: any) => (
     <div data-testid="tooltip" title={message}>
       {children}

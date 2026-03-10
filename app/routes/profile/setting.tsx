@@ -4,7 +4,7 @@ import { ProfileForm } from '@/features/profile';
 import { UserIdentityCard } from '@/features/user/components/user-identity-card';
 import { useApp } from '@/providers/app.provider';
 import { metaObject } from '@/utils/helpers';
-import { Col, Row } from '@datum-ui/grid';
+import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { Trans } from '@lingui/react/macro';
 
 export const meta: Route.MetaFunction = () => {

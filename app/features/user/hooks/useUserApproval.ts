@@ -7,7 +7,7 @@ import {
   userFindRejectionQuery,
   userRejectMutation,
 } from '@/resources/request/client';
-import { toast } from '@datum-ui/toast';
+import { toast } from '@datum-cloud/datum-ui/toast';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 

@@ -2,7 +2,7 @@ import type { Route } from './+types/create';
 import { ContactGroupForm } from '@/features/contact-group';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { metaObject } from '@/utils/helpers';
-import { Col, Row } from '@datum-ui/grid';
+import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 

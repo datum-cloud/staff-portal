@@ -3,6 +3,7 @@ import { DateTime } from '@/components/date';
 import { getEmailCondition } from '@/features/email/email-utils';
 import { routes } from '@/utils/config/routes.config';
 import { startCase } from '@/utils/helpers';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import {
   ClientDataTable,
   ClientDataTableFacetFilter,
@@ -12,7 +13,6 @@ import {
   useClientDataTableQuery,
 } from '@datum-ui/client-data-table';
 import { DataTableActiveFilters } from '@datum-ui/data-table';
-import { Text } from '@datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import {

@@ -6,11 +6,11 @@ import {
   useContactGroupListQuery,
 } from '@/resources/request/client';
 import { contactRoutes, userRoutes } from '@/utils/config/routes.config';
-import { Alert } from '@datum-ui/alert';
-import { Button } from '@datum-ui/button';
+import { Alert, AlertDescription, AlertTitle } from '@datum-cloud/datum-ui/alert';
+import { Button } from '@datum-cloud/datum-ui/button';
+import { toast } from '@datum-cloud/datum-ui/toast';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Form } from '@datum-ui/form';
-import { toast } from '@datum-ui/toast';
-import { Text } from '@datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import { ComMiloapisNotificationV1Alpha1Contact } from '@openapi/notification.miloapis.com/v1alpha1';
@@ -167,11 +167,10 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
                     onSearch={setUserSearch}
                     searchDebounceMs={500}
                   />
-                  <Alert
-                    variant="warning"
-                    title={t`Warning`}
-                    description={t`Once a contact is associated with a user, this association cannot be removed or changed later.`}
-                  />
+                  <Alert variant="warning">
+                    <AlertTitle>{t`Warning`}</AlertTitle>
+                    <AlertDescription>{t`Once a contact is associated with a user, this association cannot be removed or changed later.`}</AlertDescription>
+                  </Alert>
                 </>
               )}
             </>

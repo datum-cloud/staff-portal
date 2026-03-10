@@ -1,10 +1,10 @@
 import type { Task } from '../types';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Badge } from '@/modules/shadcn/ui/badge';
-import { Button } from '@datum-ui/button';
-import { Tooltip } from '@datum-ui/tooltip';
+import { Button } from '@datum-cloud/datum-ui/button';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { ListTodo } from 'lucide-react';
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import { forwardRef, type RefObject, useEffect, useRef, useState } from 'react';
 
 interface TaskQueueTriggerProps {
   tasks: Task[];
@@ -50,7 +50,7 @@ export const TaskQueueTrigger = forwardRef<HTMLButtonElement, TaskQueueTriggerPr
     return (
       <Tooltip message="Tasks">
         <Button
-          ref={ref}
+          ref={ref as RefObject<HTMLButtonElement | null>}
           type="tertiary"
           theme="borderless"
           size="small"

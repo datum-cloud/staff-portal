@@ -2,7 +2,7 @@ import { DateTime } from '@/components/date';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Badge } from '@/modules/shadcn/ui/badge';
 import { ControlPlaneStatus } from '@/resources/schemas';
-import { Tooltip } from '@datum-ui/tooltip';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { CheckCircle, Clock, XCircle } from 'lucide-react';
 
 // Unified configuration for both modes

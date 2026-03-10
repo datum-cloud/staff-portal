@@ -21,7 +21,7 @@ import {
   DialogTitle,
 } from '@/modules/shadcn/ui/dialog';
 import { Input } from '@/modules/shadcn/ui/input';
-import { Tooltip } from '@datum-ui/tooltip';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { ArrowUpIcon, CheckIcon, PlusIcon } from 'lucide-react';
 import * as React from 'react';
 

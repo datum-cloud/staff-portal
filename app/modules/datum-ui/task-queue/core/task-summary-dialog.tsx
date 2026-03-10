@@ -17,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/modules/shadcn/ui/table';
-import { Button } from '@datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
 import {
   useReactTable,
   getCoreRowModel,

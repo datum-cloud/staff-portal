@@ -223,7 +223,7 @@ msgstr "Auto-managed by policy \"{policyName}\". Cannot be deleted."
 #: app/features/quota/components/quota-bucket-list.tsx:158
 #: app/features/contact-group/components/contact-group-form.tsx:97
 #: app/features/contact/components/contact-list.tsx:118
-#: app/features/contact/components/contact-form.tsx:185
+#: app/features/contact/components/contact-form.tsx:184
 #: app/components/danger-zone-card/index.tsx:49
 #: app/components/button/button-delete-action.tsx:43
 msgid "Cancel"
@@ -314,7 +314,7 @@ msgstr "Content"
 #: app/routes/contact-group/create.tsx:14
 #: app/routes/contact/create.tsx:14
 #: app/features/contact-group/components/contact-group-form.tsx:103
-#: app/features/contact/components/contact-form.tsx:191
+#: app/features/contact/components/contact-form.tsx:190
 #: app/features/activity/components/activity-list.tsx:384
 #: app/features/activity/components/activity-list.tsx:438
 #: app/features/activity/components/activity-list.tsx:457
@@ -983,7 +983,7 @@ msgstr "Notes"
 msgid "Notifications"
 msgstr "Notifications"
 
-#: app/features/contact/components/contact-form.tsx:173
+#: app/features/contact/components/contact-form.tsx:172
 msgid "Once a contact is associated with a user, this association cannot be removed or changed later."
 msgstr "Once a contact is associated with a user, this association cannot be removed or changed later."
 
@@ -1446,7 +1446,7 @@ msgstr "Unknown"
 
 #: app/features/quota/components/quota-bucket-list.tsx:157
 #: app/features/contact-group/components/contact-group-form.tsx:103
-#: app/features/contact/components/contact-form.tsx:191
+#: app/features/contact/components/contact-form.tsx:190
 #: app/features/activity/components/activity-list.tsx:385
 #: app/features/activity/components/activity-list.tsx:439
 #: app/features/activity/components/activity-list.tsx:458
@@ -1561,7 +1561,7 @@ msgstr "View in Sentry"
 msgid "Visibility"
 msgstr "Visibility"
 
-#: app/features/contact/components/contact-form.tsx:172
+#: app/features/contact/components/contact-form.tsx:171
 msgid "Warning"
 msgstr "Warning"
 

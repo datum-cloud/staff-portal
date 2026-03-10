@@ -1,8 +1,8 @@
 import { contactGroupCreateMutation, contactGroupUpdateMutation } from '@/resources/request/client';
 import { contactGroupRoutes } from '@/utils/config/routes.config';
-import { Button } from '@datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
+import { toast } from '@datum-cloud/datum-ui/toast';
 import { Form } from '@datum-ui/form';
-import { toast } from '@datum-ui/toast';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisNotificationV1Alpha1ContactGroup } from '@openapi/notification.miloapis.com/v1alpha1';
 import * as React from 'react';

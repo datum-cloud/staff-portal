@@ -1,7 +1,7 @@
 import { cn } from '@/modules/shadcn/lib/utils';
 import { Badge } from '@/modules/shadcn/ui/badge';
 import { startCase } from '@/utils/helpers';
-import { Tooltip } from '@datum-ui/tooltip';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Loader2 } from 'lucide-react';
 import * as React from 'react';
 
