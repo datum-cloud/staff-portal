@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 
 const AppToolbar = () => {
   const { t } = useLingui();
-  const { actions } = useApp();
+  const { actions, navigation } = useApp();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -18,10 +18,13 @@ const AppToolbar = () => {
   return (
     <div
       className={cn(
-        'bg-background sticky top-0 z-10 flex h-14 shrink-0 items-center justify-between gap-2 border-b px-4 ease-linear',
+        'bg-background sticky top-12 z-10 flex h-14 shrink-0 items-center justify-between gap-2 border-b px-4 ease-linear',
         scrolled && 'shadow-sm'
       )}>
-      <Breadcrumb />
+      <div className="flex items-center gap-4">
+        <Breadcrumb />
+        {navigation}
+      </div>
 
       <div className="flex items-center gap-2">{actions}</div>
     </div>

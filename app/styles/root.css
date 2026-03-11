@@ -4,3 +4,9 @@
 /* Optional — only if you use these components */
 @import '@datum-cloud/datum-ui/grid';
 @import '@datum-cloud/datum-ui/nprogress';
+
+/* Scan activity-ui library source for Tailwind classes (for local development) */
+@source "../../../activity/ui/src/**/*.{ts,tsx}";
+
+/* Scan activity-ui components for Tailwind classes */
+@source "../../node_modules/@datum-cloud/activity-ui/dist/**/*.js";

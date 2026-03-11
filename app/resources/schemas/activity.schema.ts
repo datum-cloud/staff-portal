@@ -17,6 +17,7 @@ export const ActivityQueryParamsSchema = z.object({
   sourceIP: z.string().optional(),
   project: z.string().optional(),
   organization: z.string().optional(),
+  resourceName: z.string().optional(), // Filter by specific resource name
 });
 
 export const ActivityLogsResponseSchema = z.object({

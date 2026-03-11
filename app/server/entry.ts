@@ -11,6 +11,9 @@ import { Hono } from 'hono';
 import { requestId } from 'hono/request-id';
 import { NONCE, secureHeaders } from 'hono/secure-headers';
 
+// Check if running in devcontainer
+const isDevContainer = process.env.HOME === '/home/bun';
+
 // Create the Hono app
 const app = new Hono<{ Variables: EnvVariables }>();
 
@@ -38,28 +41,37 @@ app.use(
     crossOriginEmbedderPolicy: false,
     contentSecurityPolicy: {
       reportTo: env.isDev ? '/' : undefined,
-      defaultSrc: ["'self'"],
+      defaultSrc: ["'self'", ...(env.isDev && isDevContainer ? ['http:'] : [])],
       connectSrc: [
         "'self'",
-        ...(env.isDev ? ['ws:'] : []),
+        ...(env.isDev ? ['ws:', 'wss:', 'http:', 'https:'] : []),
         env.API_URL,
         'https://*.marker.io',
         'https://*.sentry.io',
         'https://*.datum.net',
       ],
-      fontSrc: ["'self'", "'unsafe-inline'", 'https://*.jsdelivr.net'],
+      fontSrc: ["'self'", "'unsafe-inline'", 'http://*.jsdelivr.net', 'https://*.jsdelivr.net'],
       frameSrc: ["'self'", 'https://*.marker.io', 'https://*.sentry.io', 'https://*.datum.net'],
-      // Allow HTTPS images for email previews (Resend, Loops, and other email providers)
-      imgSrc: ["'self'", 'data:', 'https:'],
+      imgSrc: ["'self'", 'data:', ...(env.isDev && isDevContainer ? ['http:'] : [])],
       // Allow all script types with nonce
-      scriptSrc: ["'strict-dynamic'", "'self'", NONCE],
+      scriptSrc: [
+        "'strict-dynamic'",
+        "'self'",
+        NONCE,
+        ...(env.isDev && isDevContainer ? ['http:'] : []),
+      ],
       // Allow inline scripts with nonce
-      scriptSrcElem: ["'strict-dynamic'", "'self'", NONCE],
+      scriptSrcElem: [
+        "'strict-dynamic'",
+        "'self'",
+        NONCE,
+        ...(env.isDev && isDevContainer ? ['http:'] : []),
+      ],
       // Allow inline event handlers with nonce
       scriptSrcAttr: [NONCE],
       // Allow inline styles for third-party widgets
-      styleSrc: ["'self'", "'unsafe-inline'", 'https://*.jsdelivr.net'],
-      upgradeInsecureRequests: [],
+      styleSrc: ["'self'", "'unsafe-inline'", 'http://*.jsdelivr.net', 'https://*.jsdelivr.net'],
+      ...(isDevContainer ? {} : { upgradeInsecureRequests: [] }),
     },
   })
 );

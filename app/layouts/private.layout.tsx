@@ -40,7 +40,7 @@ export default function PrivateLayout() {
       <TaskQueueProvider config={{ storageType: 'memory' }}>
         <SidebarProvider defaultOpen={false}>
           <AppSidebar />
-          <SidebarInset>
+          <SidebarInset className="overflow-hidden">
             <AppTopbar />
             <AppToolbar />
             <Outlet />

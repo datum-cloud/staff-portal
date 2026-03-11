@@ -5,6 +5,7 @@
     "": {
       "name": "staff-portal",
       "dependencies": {
+        "@datum-cloud/activity-ui": "0.1.0",
         "@datum-cloud/datum-ui": "0.2.1",
         "@epic-web/client-hints": "^1.3.5",
         "@hono/prometheus": "^1.0.1",
@@ -186,6 +187,8 @@
     "@cypress/xvfb": ["@cypress/xvfb@1.2.4", "", { "dependencies": { "debug": "^3.1.0", "lodash.once": "^4.1.1" } }, "sha512-skbBzPggOVYCbnGgV+0dmBdW/s77ZkAOXIC1knS8NagwDjBrNC1LuXtQJeiN6l+m7lzmHtaoUw/ctJKdqkG57Q=="],
 
     "@date-fns/tz": ["@date-fns/tz@1.4.1", "", {}, "sha512-P5LUNhtbj6YfI3iJjw5EL9eUAG6OitD0W3fWQcpQjDRc/QIsL0tRNuO1PcDvPccWL1fSTXXdE1ds+l95DV/OFA=="],
+
+    "@datum-cloud/activity-ui": ["@datum-cloud/activity-ui@0.1.0", "", { "dependencies": { "class-variance-authority": "^0.7.1", "clsx": "^2.1.1", "date-fns": "^3.0.6", "js-yaml": "^4.1.1", "lucide-react": "^0.563.0", "tailwind-merge": "^3.4.0", "tailwindcss-animate": "^1.0.7" }, "peerDependencies": { "@monaco-editor/react": "^4.6.0", "@radix-ui/react-checkbox": "^1.0.0", "@radix-ui/react-dialog": "^1.0.0", "@radix-ui/react-popover": "^1.0.0", "@radix-ui/react-select": "^2.0.0", "@radix-ui/react-separator": "^1.0.0", "@radix-ui/react-tabs": "^1.0.0", "@radix-ui/react-tooltip": "^1.0.0", "cmdk": "^1.0.0", "monaco-editor": "^0.52.0", "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" } }, "sha512-VT/2dkb0rVAsiL1V/PQ6tBBJtLGP4KQ+AhLdLxC64XuiNNVKoTcc1IJeOjWaVT8wtd7Ccf8UD0XmIYT0ZBkCog=="],
 
     "@datum-cloud/datum-ui": ["@datum-cloud/datum-ui@0.2.1", "", { "dependencies": { "class-variance-authority": "^0.7", "clsx": "^2.1.1", "lucide-react": "^0.556", "tailwind-merge": "^3.5.0" }, "peerDependencies": { "@conform-to/react": ">=1", "@conform-to/zod": ">=1", "@radix-ui/react-avatar": ">=1", "@radix-ui/react-checkbox": ">=1", "@radix-ui/react-collapsible": ">=1", "@radix-ui/react-dialog": ">=1", "@radix-ui/react-dropdown-menu": ">=2", "@radix-ui/react-hover-card": ">=1", "@radix-ui/react-label": ">=2", "@radix-ui/react-popover": ">=1", "@radix-ui/react-radio-group": ">=1", "@radix-ui/react-select": ">=2", "@radix-ui/react-separator": ">=1", "@radix-ui/react-slot": ">=1", "@radix-ui/react-switch": ">=1", "@radix-ui/react-tabs": ">=1", "@radix-ui/react-tooltip": ">=1", "@radix-ui/react-visually-hidden": ">=1", "@stepperize/react": ">=4", "@tanstack/react-virtual": ">=3", "cmdk": ">=1", "date-fns": ">=4", "date-fns-tz": ">=3", "leaflet": ">=1.9", "leaflet-draw": ">=1", "leaflet.fullscreen": ">=5", "leaflet.markercluster": ">=1.5", "motion": ">=11", "nprogress": ">=0.2", "react": ">=19", "react-day-picker": ">=9", "react-dom": ">=19", "react-dropzone": ">=14", "react-leaflet": ">=5", "react-leaflet-markercluster": ">=5.0.0-rc.0", "react-number-format": ">=5", "recharts": ">=2", "sonner": ">=2", "zod": ">=3" }, "optionalPeers": ["@conform-to/react", "@conform-to/zod", "@radix-ui/react-avatar", "@radix-ui/react-checkbox", "@radix-ui/react-collapsible", "@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-hover-card", "@radix-ui/react-label", "@radix-ui/react-popover", "@radix-ui/react-radio-group", "@radix-ui/react-select", "@radix-ui/react-separator", "@radix-ui/react-slot", "@radix-ui/react-switch", "@radix-ui/react-tabs", "@radix-ui/react-tooltip", "@radix-ui/react-visually-hidden", "@stepperize/react", "@tanstack/react-virtual", "cmdk", "date-fns", "date-fns-tz", "leaflet", "leaflet-draw", "leaflet.fullscreen", "leaflet.markercluster", "motion", "nprogress", "react-day-picker", "react-dropzone", "react-leaflet", "react-leaflet-markercluster", "react-number-format", "recharts", "sonner", "zod"] }, "sha512-Odwk7+NnVE6Wz0gM2eokLBMoI7U4zEgtsdJui+D9uRVLrM9h61SJEJz/G7A5xQS2U2Hwqk4ojlzROOYJ9OIdJQ=="],
 
@@ -2113,6 +2116,8 @@
 
     "tailwindcss": ["tailwindcss@4.1.8", "", {}, "sha512-kjeW8gjdxasbmFKpVGrGd5T4i40mV5J2Rasw48QARfYeQ8YS9x02ON9SFWax3Qf616rt4Cp3nVNIj6Hd1mP3og=="],
 
+    "tailwindcss-animate": ["tailwindcss-animate@1.0.7", "", { "peerDependencies": { "tailwindcss": ">=3.0.0 || insiders" } }, "sha512-bl6mpH3T7I3UFxuvDEXLxy/VuFxBk5bbzplh7tXI68mwMokNYd1t9qPBHlnyTwfa4JGC4zP516I1hYYtQ/vspA=="],
+
     "tapable": ["tapable@2.2.2", "", {}, "sha512-Re10+NauLTMCudc7T5WLFLAwDhQ0JWdrMK+9B2M8zR5hRExKmsRDCBA7/aV/pNJFltmBFO5BAMlQFi/vq3nKOg=="],
 
     "tar": ["tar@7.4.3", "", { "dependencies": { "@isaacs/fs-minipass": "^4.0.0", "chownr": "^3.0.0", "minipass": "^7.1.2", "minizlib": "^3.0.1", "mkdirp": "^3.0.1", "yallist": "^5.0.0" } }, "sha512-5S7Va8hKfV7W5U6g3aYxXmlPoZVAwUMy9AOKyF2fVuZa2UD3qZjg578OrLRt8PcNN1PleVaL/5/yYATNL0ICUw=="],
@@ -2318,6 +2323,14 @@
     "@babel/template/@babel/types": ["@babel/types@7.27.3", "", { "dependencies": { "@babel/helper-string-parser": "^7.27.1", "@babel/helper-validator-identifier": "^7.27.1" } }, "sha512-Y1GkI4ktrtvmawoSq+4FCVHNryea6uR+qUQy0AGxLSsjCX0nVmkYQMBLHDkXZuo5hGx7eYdnIaslsdBFm7zbUw=="],
 
     "@cypress/xvfb/debug": ["debug@3.2.7", "", { "dependencies": { "ms": "^2.1.1" } }, "sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ=="],
+
+    "@datum-cloud/activity-ui/date-fns": ["date-fns@3.6.0", "", {}, "sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww=="],
+
+    "@datum-cloud/activity-ui/js-yaml": ["js-yaml@4.1.1", "", { "dependencies": { "argparse": "^2.0.1" }, "bin": { "js-yaml": "bin/js-yaml.js" } }, "sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA=="],
+
+    "@datum-cloud/activity-ui/lucide-react": ["lucide-react@0.563.0", "", { "peerDependencies": { "react": "^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-8dXPB2GI4dI8jV4MgUDGBeLdGk8ekfqVZ0BdLcrRzocGgG75ltNEmWS+gE7uokKF/0oSUuczNDT+g9hFJ23FkA=="],
+
+    "@datum-cloud/activity-ui/tailwind-merge": ["tailwind-merge@3.5.0", "", {}, "sha512-I8K9wewnVDkL1NTGoqWmVEIlUcB9gFriAEkXkfCjX5ib8ezGxtR3xD7iZIxrfArjEsH7F1CHD4RFUtxefdqV/A=="],
 
     "@datum-cloud/datum-ui/lucide-react": ["lucide-react@0.556.0", "", { "peerDependencies": { "react": "^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-iOb8dRk7kLaYBZhR2VlV1CeJGxChBgUthpSP8wom9jfj79qovgG6qcSdiy6vkoREKPnbUYzJsCn4o4PtG3Iy+A=="],
 
