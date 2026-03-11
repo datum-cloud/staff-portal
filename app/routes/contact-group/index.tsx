@@ -8,6 +8,7 @@ import { contactGroupDeleteMutation, contactGroupListQuery } from '@/resources/r
 import { contactGroupRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { useTaskQueue } from '@datum-cloud/datum-ui/task-queue';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import {
   ClientDataTable,
@@ -17,7 +18,6 @@ import {
   useClientDataTableQuery,
 } from '@datum-ui/client-data-table';
 import { ActionItem } from '@datum-ui/data-table';
-import { useTaskQueue } from '@datum-ui/task-queue';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import {

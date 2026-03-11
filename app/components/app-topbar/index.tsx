@@ -1,7 +1,7 @@
 import AppSearch from '@/components/app-search';
 import { Separator } from '@/modules/shadcn/ui/separator';
 import { SidebarTrigger } from '@/modules/shadcn/ui/sidebar';
-import { TaskQueueDropdown } from '@datum-ui/task-queue';
+import { TaskQueueDropdown } from '@datum-cloud/datum-ui/task-queue';
 
 const AppTopbar = () => {
   return (

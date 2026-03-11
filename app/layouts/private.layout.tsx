@@ -8,7 +8,7 @@ import { AppProvider } from '@/providers/app.provider';
 import { userDetailQuery } from '@/resources/request/server';
 import { getLoginUrl, getRedirectToPath } from '@/utils/cookies';
 import { metaObject } from '@/utils/helpers';
-import { TaskQueueProvider } from '@datum-ui/task-queue';
+import { TaskQueueProvider } from '@datum-cloud/datum-ui/task-queue';
 import { data, Outlet, redirect, useLoaderData } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
