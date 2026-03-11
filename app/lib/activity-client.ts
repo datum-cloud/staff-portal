@@ -15,6 +15,7 @@
  *   Examples:
  *   - Organization: `/apis/resourcemanager.miloapis.com/v1alpha1/organizations/{orgName}/control-plane`
  *   - Project: `/apis/resourcemanager.miloapis.com/v1alpha1/projects/{projectName}/control-plane`
+ *   - User: `/apis/iam.miloapis.com/v1alpha1/users/{userId}/control-plane`
  */
 export function createActivityClientConfig(controlPlanePath?: string) {
   const baseUrl = controlPlanePath ? `/api/internal${controlPlanePath}` : '/api/internal';
@@ -50,4 +51,11 @@ export function getOrganizationControlPlanePath(organizationName: string): strin
  */
 export function getProjectControlPlanePath(projectName: string): string {
   return `/apis/resourcemanager.miloapis.com/v1alpha1/projects/${encodeURIComponent(projectName)}/control-plane`;
+}
+
+/**
+ * Build the control plane path for a user.
+ */
+export function getUserControlPlanePath(userId: string): string {
+  return `/apis/iam.miloapis.com/v1alpha1/users/${encodeURIComponent(userId)}/control-plane`;
 }

@@ -19,7 +19,6 @@ export default [
           route('contacts', 'routes/user/detail/contacts.tsx'),
           route('activity', 'routes/user/detail/activity/layout.tsx', [
             index('routes/user/detail/activity/index.tsx'),
-            route('events', 'routes/user/detail/activity/events.tsx'),
             route('audit-logs', 'routes/user/detail/activity/audit-logs.tsx'),
           ]),
           route('email-activity', 'routes/user/detail/email-activity.tsx'),

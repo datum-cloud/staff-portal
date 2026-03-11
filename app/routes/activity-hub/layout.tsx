@@ -1,7 +1,7 @@
 import AppActionBar from '@/components/app-actiobar';
 import AppNavigation from '@/components/app-navigation';
-import { Button } from '@datum-ui/button';
 import { Tabs, TabsList, TabsLinkTrigger } from '@datum-cloud/datum-ui/tabs';
+import { Button } from '@datum-ui/button';
 import { Share2, Check } from 'lucide-react';
 import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router';
@@ -46,11 +46,7 @@ export default function ActivityLayout() {
         <Tabs value={activeTab}>
           <TabsList>
             {activityTabs.map((tab) => (
-              <TabsLinkTrigger
-                key={tab.value}
-                value={tab.value}
-                href={tab.to}
-                linkComponent={Link}>
+              <TabsLinkTrigger key={tab.value} value={tab.value} href={tab.to} linkComponent={Link}>
                 {tab.label}
               </TabsLinkTrigger>
             ))}

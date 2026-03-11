@@ -1,6 +1,6 @@
 import { useUserDetailData, getUserDetailMetadata } from '../../shared';
 import type { Route } from './+types/index';
-import { createActivityClientConfig } from '@/lib/activity-client';
+import { createActivityClientConfig, getUserControlPlanePath } from '@/lib/activity-client';
 import { staffResourceLinkResolver, staffTenantLinkResolver } from '@/lib/activity-link-resolvers';
 import { metaObject } from '@/utils/helpers';
 import {
@@ -26,10 +26,11 @@ export default function Page() {
   const data = useUserDetailData();
   const navigate = useNavigate();
 
-  const client = useMemo(() => new ActivityApiClient(createActivityClientConfig()), []);
-
-  const userEmail = data.spec?.email ?? '';
-  const actorNames = useMemo(() => (userEmail ? [userEmail] : []), [userEmail]);
+  const userId = data.metadata?.name ?? '';
+  const client = useMemo(
+    () => new ActivityApiClient(createActivityClientConfig(getUserControlPlanePath(userId))),
+    [userId]
+  );
 
   const handleTenantClick = useCallback(
     (tenant: Tenant, e: React.MouseEvent) => {
@@ -68,7 +69,6 @@ export default function Page() {
   return (
     <ActivityFeed
       client={client}
-      initialFilters={{ actorNames }}
       tenantRenderer={renderTenant}
       resourceLinkResolver={staffResourceLinkResolver}
       compact={true}
