@@ -1,22 +1,31 @@
 import AppActionBar from '@/components/app-actiobar';
 import AppNavigation from '@/components/app-navigation';
-import { NavTabs, type NavTabItem } from '@/components/nav-tabs';
 import { Button } from '@datum-ui/button';
+import { Tabs, TabsList, TabsLinkTrigger } from '@datum-cloud/datum-ui/tabs';
 import { Share2, Check } from 'lucide-react';
 import { useState } from 'react';
-import { Outlet } from 'react-router';
+import { Link, Outlet, useLocation } from 'react-router';
 
-const activityTabs: NavTabItem[] = [
-  { label: 'Activity Feed', to: '/activity/feed' },
-  { label: 'Events', to: '/activity/events' },
-  { label: 'Audit Logs', to: '/activity/audit-logs' },
-  { label: 'Manage Policies', to: '/activity/policies' },
+const activityTabs = [
+  { label: 'Activity Feed', value: 'feed', to: '/activity/feed' },
+  { label: 'Events', value: 'events', to: '/activity/events' },
+  { label: 'Audit Logs', value: 'audit-logs', to: '/activity/audit-logs' },
+  { label: 'Manage Policies', value: 'policies', to: '/activity/policies' },
 ];
+
+function useActiveTab() {
+  const { pathname } = useLocation();
+  if (pathname.startsWith('/activity/policies')) return 'policies';
+  if (pathname.startsWith('/activity/audit-logs')) return 'audit-logs';
+  if (pathname.startsWith('/activity/events')) return 'events';
+  return 'feed';
+}
 
 /**
  * Activity hub layout with horizontal tab navigation
  */
 export default function ActivityLayout() {
+  const activeTab = useActiveTab();
   const [copied, setCopied] = useState(false);
 
   // Handle share button click - copy current URL to clipboard
@@ -34,7 +43,19 @@ export default function ActivityLayout() {
     <div className="flex flex-1 flex-col overflow-hidden">
       {/* Inject menu navigation into the app toolbar navigation slot */}
       <AppNavigation>
-        <NavTabs tabs={activityTabs} variant="menu" />
+        <Tabs value={activeTab}>
+          <TabsList>
+            {activityTabs.map((tab) => (
+              <TabsLinkTrigger
+                key={tab.value}
+                value={tab.value}
+                href={tab.to}
+                linkComponent={Link}>
+                {tab.label}
+              </TabsLinkTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
       </AppNavigation>
 
       {/* Inject share button into the app toolbar actions slot */}

@@ -155,10 +155,22 @@ export function parseActivityFilters(searchParams: URLSearchParams): Partial<Act
     filters.apiGroups = apiGroups.split(',').filter(Boolean);
   }
 
+  // Resource namespaces (comma-separated)
+  const resourceNamespaces = searchParams.get('resourceNamespaces');
+  if (resourceNamespaces) {
+    filters.resourceNamespaces = resourceNamespaces.split(',').filter(Boolean);
+  }
+
   // Resource UID (single value)
   const resourceUid = searchParams.get('resourceUid');
   if (resourceUid) {
     filters.resourceUid = resourceUid;
+  }
+
+  // Resource name (partial match)
+  const resourceName = searchParams.get('resourceName');
+  if (resourceName) {
+    filters.resourceName = resourceName;
   }
 
   // Search text
