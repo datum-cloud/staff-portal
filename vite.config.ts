@@ -10,33 +10,18 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig((config) => {
   const isProduction = process.env.NODE_ENV === 'production';
-  const isDevContainer = process.env.HOME === '/home/bun';
-
-  const serverConfig: any = {
-    port: 3000,
-    host: isDevContainer ? '0.0.0.0' : undefined,
-  };
-
-  if (isDevContainer) {
-    serverConfig.https = false;
-    serverConfig.hmr = {
-      protocol: 'ws',
-      host: 'localhost',
-      port: 3000,
-    };
-  }
 
   return {
-    resolve: {
-      alias: {
-        ...(isProduction
-          ? {
-              'react-dom/server': 'react-dom/server.node',
-            }
-          : {}),
-      },
+    resolve: !isProduction
+      ? {}
+      : {
+          alias: {
+            'react-dom/server': 'react-dom/server.node',
+          },
+        },
+    server: {
+      port: 3000,
     },
-    server: serverConfig,
     ssr: {
       optimizeDeps: {
         include: ['react-dom/server.node'],
