@@ -19,9 +19,6 @@ function convertTimestampToISO(timestamp: number): string {
 function buildCelFilter(params: ActivityQueryParams): string | undefined {
   const conditions: string[] = [];
 
-  // Exclude system users by default
-  conditions.push(`user.username.startsWith('system:') == false`);
-
   // Exclude activity API group by default
   conditions.push(`objectRef.apiGroup != 'activity.miloapis.com'`);
 
@@ -41,7 +38,7 @@ function buildCelFilter(params: ActivityQueryParams): string | undefined {
 
   // User filter
   if (params.user) {
-    conditions.push(`objectRef.resource == '${params.user}'`);
+    conditions.push(`user.username == '${params.user}'`);
   }
 
   // Response code filter
