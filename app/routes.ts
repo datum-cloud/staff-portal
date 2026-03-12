@@ -17,7 +17,10 @@ export default [
           index('routes/user/detail/index.tsx'),
           route('organizations', 'routes/user/detail/organization.tsx'),
           route('contacts', 'routes/user/detail/contacts.tsx'),
-          route('activity', 'routes/user/detail/activity.tsx'),
+          route('activity', 'routes/user/detail/activity/layout.tsx', [
+            index('routes/user/detail/activity/index.tsx'),
+            route('audit-logs', 'routes/user/detail/activity/audit-logs.tsx'),
+          ]),
           route('email-activity', 'routes/user/detail/email-activity.tsx'),
         ]),
       ]),
@@ -30,7 +33,11 @@ export default [
           index('routes/organization/detail/index.tsx'),
           route('members', 'routes/organization/detail/member.tsx'),
           route('projects', 'routes/organization/detail/project.tsx'),
-          route('activity', 'routes/organization/detail/activity.tsx'),
+          route('activity', 'routes/organization/detail/activity/layout.tsx', [
+            index('routes/organization/detail/activity/index.tsx'),
+            route('events', 'routes/organization/detail/activity/events.tsx'),
+            route('audit-logs', 'routes/organization/detail/activity/audit-logs.tsx'),
+          ]),
           route('quotas', 'routes/organization/detail/quota/layout.tsx', [
             index('routes/organization/detail/quota/index.tsx'),
             route('usage', 'routes/organization/detail/quota/usage.tsx'),
@@ -45,7 +52,11 @@ export default [
 
         route(':projectName', 'routes/project/detail/layout.tsx', [
           index('routes/project/detail/index.tsx'),
-          route('activity', 'routes/project/detail/activity.tsx'),
+          route('activity', 'routes/project/detail/activity/layout.tsx', [
+            index('routes/project/detail/activity/index.tsx'),
+            route('events', 'routes/project/detail/activity/events.tsx'),
+            route('audit-logs', 'routes/project/detail/activity/audit-logs.tsx'),
+          ]),
           route('export-policies', 'routes/project/detail/export-policy/layout.tsx', [
             index('routes/project/detail/export-policy/index.tsx'),
             route(':exportPolicyName', 'routes/project/detail/export-policy/detail.tsx'),
@@ -72,8 +83,20 @@ export default [
       ]),
     ]),
 
-    // Activity
-    route('activity', 'routes/activity.tsx'),
+    // Activity Hub (old single-page activity kept for backward compatibility)
+    route('activity-legacy', 'routes/activity.tsx'),
+
+    // Activity Hub (new tabbed interface)
+    route('activity', 'routes/activity-hub/layout.tsx', [
+      index('routes/activity-hub/index.tsx'),
+      route('feed', 'routes/activity-hub/feed.tsx'),
+      route('events', 'routes/activity-hub/events.tsx'),
+      route('audit-logs', 'routes/activity-hub/audit-logs.tsx'),
+      route('policies', 'routes/activity-hub/policies/layout.tsx', [
+        index('routes/activity-hub/policies/index.tsx'),
+        route(':policyName', 'routes/activity-hub/policies/detail.tsx'),
+      ]),
+    ]),
 
     // Contacts
     route('contacts', 'routes/contact/layout.tsx', [

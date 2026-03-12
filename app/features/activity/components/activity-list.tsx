@@ -28,6 +28,7 @@ import {
 } from 'date-fns';
 import { fromZonedTime, toZonedTime } from 'date-fns-tz';
 import { useCallback, useMemo } from 'react';
+import { Link } from 'react-router';
 
 interface ActivityListProps {
   resourceType?: string;
@@ -95,17 +96,6 @@ function humanizeAction(verb: string, resource: string): string {
 }
 
 /**
- * Formats resource details for display.
- */
-function formatDetails(resource: string, resourceName: string): string {
-  const label = RESOURCE_LABELS[resource] || resource;
-  if (!resourceName) {
-    return label;
-  }
-  return `${label}: ${resourceName}`;
-}
-
-/**
  * Gets timestamp from event.
  */
 function getEventTimestamp(event: ActivityLogEntry): Date {
@@ -137,6 +127,68 @@ function createColumns(user?: { metadata?: { name?: string } }) {
       },
     }),
     columnHelper.display({
+      id: 'tenant',
+      header: () => <Trans>Tenant</Trans>,
+      cell: ({ row }) => {
+        const event = row.original as any;
+
+        // Try multiple ways to access annotations
+        let annotations = event.annotations || event.Annotations || {};
+
+        // Try nested access if needed
+        if (typeof annotations !== 'object' || annotations === null) {
+          annotations = {};
+        }
+
+        const scopeName =
+          annotations['platform.miloapis.com/scope.name'] ||
+          annotations['platform.miloapis.com/scope-name'] ||
+          annotations['platformMiloapisComScopeName'] ||
+          (event.objectRef?.namespace ? event.objectRef.namespace : '-');
+
+        const scopeType =
+          annotations['platform.miloapis.com/scope.type'] ||
+          annotations['platform.miloapis.com/scope-type'] ||
+          annotations['platformMiloapisComScopeType'] ||
+          (event.objectRef?.resource ? event.objectRef.resource : '-');
+
+        const getTenantLink = () => {
+          if (!scopeName || scopeName === '-') return null;
+
+          const normalizedType = scopeType?.toLowerCase().trim() || '';
+
+          if (normalizedType.includes('organization')) {
+            return `/customers/organizations/${scopeName}`;
+          } else if (normalizedType.includes('project')) {
+            return `/customers/projects/${scopeName}`;
+          } else if (normalizedType.includes('user')) {
+            return `/customers/users/${scopeName}`;
+          } else if (normalizedType === 'global' || normalizedType === '-') {
+            return null;
+          }
+          // Default: try to guess based on common patterns
+          return null;
+        };
+
+        const tenantLink = getTenantLink();
+
+        return (
+          <div className="flex flex-col gap-1">
+            {tenantLink ? (
+              <Link
+                to={tenantLink}
+                className="font-medium text-blue-600 hover:text-blue-800 hover:underline">
+                {scopeName}
+              </Link>
+            ) : (
+              <span>{scopeName}</span>
+            )}
+            <span className="text-xs font-bold text-gray-600">{scopeType}</span>
+          </div>
+        );
+      },
+    }),
+    columnHelper.display({
       id: 'action',
       header: () => <Trans>Action</Trans>,
       size: 180,
@@ -153,10 +205,8 @@ function createColumns(user?: { metadata?: { name?: string } }) {
       header: () => <Trans>Target</Trans>,
       cell: ({ row }) => {
         const event = row.original;
-        const resource = event.objectRef?.resource || 'unknown';
-        const resourceName = event.objectRef?.name || '';
-        const details = formatDetails(resource, resourceName);
-        return <span title={resourceName}>{details}</span>;
+        const resourceName = event.objectRef?.name || '-';
+        return <span>{resourceName}</span>;
       },
     }),
     columnHelper.display({
@@ -274,7 +324,7 @@ export default function ActivityList({
     [settings?.timezone]
   );
 
-  // Create filterConfig with default "Last 7 days" values
+  // Create filterConfig with default "Last 7 days" values and modification-only actions
   const activityFilterConfig = useMemo(() => {
     const now = new Date();
     const sevenDaysAgo = subDays(now, 7);
@@ -284,6 +334,9 @@ export default function ActivityList({
       },
       end: {
         defaultValue: convertToApiTimestamp(now),
+      },
+      actions: {
+        defaultValue: 'create,update,patch,delete,deletecollection',
       },
     };
   }, [convertToApiTimestamp]);
@@ -387,7 +440,12 @@ export default function ActivityList({
               { value: 'delete', label: t`Delete` },
             ]}
             value={
-              (tableState.filters.actions as string | undefined)?.split(',').filter(Boolean) ?? []
+              (
+                (tableState.filters.actions as string | undefined) ||
+                activityFilterConfig.actions.defaultValue
+              )
+                ?.split(',')
+                .filter(Boolean) ?? []
             }
             onValueChange={(value) => {
               if (value && Array.isArray(value) && value.length > 0) {
@@ -411,6 +469,88 @@ export default function ActivityList({
               },
             ]}
           />
+
+          <DataTableFacetFilter
+            label={t`Response Code`}
+            placeholder={t`Filter by response code`}
+            multiSelect
+            options={[
+              { value: '200', label: t`200 - OK` },
+              { value: '201', label: t`201 - Created` },
+              { value: '204', label: t`204 - No Content` },
+              { value: '400', label: t`400 - Bad Request` },
+              { value: '401', label: t`401 - Unauthorized` },
+              { value: '403', label: t`403 - Forbidden` },
+              { value: '404', label: t`404 - Not Found` },
+              { value: '409', label: t`409 - Conflict` },
+              { value: '500', label: t`500 - Server Error` },
+            ]}
+            value={
+              (tableState.filters.responseCode as string | undefined)?.split(',').filter(Boolean) ??
+              []
+            }
+            onValueChange={(value) => {
+              if (value && Array.isArray(value) && value.length > 0) {
+                tableState.setFilter('responseCode', value.join(','));
+              } else {
+                tableState.clearFilter('responseCode');
+              }
+            }}
+          />
+
+          <DataTableFacetFilter
+            label={t`Resource Type`}
+            placeholder={t`Filter by resource type`}
+            multiSelect
+            options={[
+              { value: 'dnszones', label: t`DNS Zone` },
+              { value: 'dnsrecords', label: t`DNS Record` },
+              { value: 'dnsrecordsets', label: t`DNS Record Set` },
+              { value: 'httpproxies', label: t`HTTP Proxy` },
+              { value: 'domains', label: t`Domain` },
+              { value: 'projects', label: t`Project` },
+              { value: 'users', label: t`User` },
+              { value: 'groups', label: t`Group` },
+              { value: 'roles', label: t`Role` },
+              { value: 'secrets', label: t`Secret` },
+              { value: 'invitations', label: t`Invitation` },
+              { value: 'members', label: t`Member` },
+              { value: 'namespaces', label: t`Namespace` },
+              { value: 'organizations', label: t`Organization` },
+              { value: 'exportpolicies', label: t`Export Policy` },
+            ]}
+            value={
+              (tableState.filters.resourceType as string | undefined)?.split(',').filter(Boolean) ??
+              []
+            }
+            onValueChange={(value) => {
+              if (value && Array.isArray(value) && value.length > 0) {
+                tableState.setFilter('resourceType', value.join(','));
+              } else {
+                tableState.clearFilter('resourceType');
+              }
+            }}
+          />
+
+          <DataTableFacetFilter
+            label={t`API Group`}
+            placeholder={t`Filter by API group`}
+            multiSelect
+            options={[
+              { value: 'dns.miloapis.com', label: 'dns.miloapis.com' },
+              { value: 'resourcemanager.miloapis.com', label: 'resourcemanager.miloapis.com' },
+            ]}
+            value={
+              (tableState.filters.apiGroup as string | undefined)?.split(',').filter(Boolean) ?? []
+            }
+            onValueChange={(value) => {
+              if (value && Array.isArray(value) && value.length > 0) {
+                tableState.setFilter('apiGroup', value.join(','));
+              } else {
+                tableState.clearFilter('apiGroup');
+              }
+            }}
+          />
         </div>
 
         <DataTableActiveFilters
@@ -423,6 +563,9 @@ export default function ActivityList({
           filterLabels={{
             timeRange: t`Time range`,
             actions: t`Actions`,
+            responseCode: t`Response Code`,
+            resourceType: t`Resource Type`,
+            apiGroup: t`API Group`,
           }}
           filterGroups={{
             timeRange: ['start', 'end'],
@@ -445,9 +588,49 @@ export default function ActivityList({
               return actions.map((action) => actionLabels[action] || action).join(', ');
             }
 
+            // Format response code filter
+            if (key === 'responseCode') {
+              const codeLabels: Record<string, string> = {
+                '200': t`200 - OK`,
+                '201': t`201 - Created`,
+                '204': t`204 - No Content`,
+                '400': t`400 - Bad Request`,
+                '401': t`401 - Unauthorized`,
+                '403': t`403 - Forbidden`,
+                '404': t`404 - Not Found`,
+                '409': t`409 - Conflict`,
+                '500': t`500 - Server Error`,
+              };
+              const codes = String(value).split(',').filter(Boolean);
+              return codes.map((code) => codeLabels[code] || code).join(', ');
+            }
+
+            // Format resource type filter
+            if (key === 'resourceType') {
+              const resourceLabels: Record<string, string> = {
+                dnszones: t`DNS Zone`,
+                dnsrecords: t`DNS Record`,
+                dnsrecordsets: t`DNS Record Set`,
+                httpproxies: t`HTTP Proxy`,
+                domains: t`Domain`,
+                projects: t`Project`,
+                users: t`User`,
+                groups: t`Group`,
+                roles: t`Role`,
+                secrets: t`Secret`,
+                invitations: t`Invitation`,
+                members: t`Member`,
+                namespaces: t`Namespace`,
+                organizations: t`Organization`,
+                exportpolicies: t`Export Policy`,
+              };
+              const resources = String(value).split(',').filter(Boolean);
+              return resources.map((resource) => resourceLabels[resource] || resource).join(', ');
+            }
+
             return String(value);
           }}
-          multiValueFilters={['actions']}
+          multiValueFilters={['actions', 'responseCode', 'resourceType', 'apiGroup']}
           formatFilterItem={(filterKey, itemValue) => {
             if (filterKey === 'actions') {
               const actionLabels: Record<string, string> = {
@@ -462,20 +645,61 @@ export default function ActivityList({
               };
               return actionLabels[itemValue] || itemValue;
             }
+
+            if (filterKey === 'responseCode') {
+              const codeLabels: Record<string, string> = {
+                '200': t`200 - OK`,
+                '201': t`201 - Created`,
+                '204': t`204 - No Content`,
+                '400': t`400 - Bad Request`,
+                '401': t`401 - Unauthorized`,
+                '403': t`403 - Forbidden`,
+                '404': t`404 - Not Found`,
+                '409': t`409 - Conflict`,
+                '500': t`500 - Server Error`,
+              };
+              return codeLabels[itemValue] || itemValue;
+            }
+
+            if (filterKey === 'resourceType') {
+              const resourceLabels: Record<string, string> = {
+                dnszones: t`DNS Zone`,
+                dnsrecords: t`DNS Record`,
+                dnsrecordsets: t`DNS Record Set`,
+                httpproxies: t`HTTP Proxy`,
+                domains: t`Domain`,
+                projects: t`Project`,
+                users: t`User`,
+                groups: t`Group`,
+                roles: t`Role`,
+                secrets: t`Secret`,
+                invitations: t`Invitation`,
+                members: t`Member`,
+                namespaces: t`Namespace`,
+                organizations: t`Organization`,
+                exportpolicies: t`Export Policy`,
+              };
+              return resourceLabels[itemValue] || itemValue;
+            }
+
             return itemValue;
           }}
           onClearFilterItem={(filterKey, itemValue) => {
-            if (filterKey === 'actions') {
-              const currentActions =
-                (tableState.filters.actions as string | undefined)?.split(',').filter(Boolean) ||
-                [];
-              const remainingActions = currentActions.filter(
-                (action) => action.trim() !== itemValue
-              );
-              if (remainingActions.length > 0) {
-                tableState.setFilter('actions', remainingActions.join(','));
+            const multiFilterKeys = ['actions', 'responseCode', 'resourceType', 'apiGroup'];
+            if (multiFilterKeys.includes(filterKey)) {
+              const currentValues =
+                (
+                  tableState.filters[filterKey as keyof typeof tableState.filters] as
+                    | string
+                    | undefined
+                )
+                  ?.split(',')
+                  .filter(Boolean) || [];
+              const remainingValues = currentValues.filter((v) => v.trim() !== itemValue);
+              if (remainingValues.length > 0) {
+                tableState.setFilter(filterKey, remainingValues.join(','));
               } else {
-                tableState.clearFilter('actions');
+                tableState.clearFilter(filterKey);
               }
             }
           }}

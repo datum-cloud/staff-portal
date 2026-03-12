@@ -18,6 +18,8 @@ interface IContextProps {
   actions: ReactNode[];
   addActions: (children: ReactNode) => void;
   removeActions: (children: ReactNode) => void;
+  navigation: ReactNode | null;
+  setNavigation: (node: ReactNode | null) => void;
   settings: {
     theme: Theme;
     timezone: string;
@@ -30,6 +32,8 @@ const AppContext = createContext<IContextProps>({
   actions: [],
   addActions: () => {},
   removeActions: () => {},
+  navigation: null,
+  setNavigation: () => {},
   settings: {
     theme: 'light',
     timezone: 'Etc/GMT',
@@ -44,6 +48,7 @@ interface IProviderProps {
 export const AppProvider: React.FC<IProviderProps> = ({ children, user }) => {
   const [userState, setUserState] = useState<ComMiloapisIamV1Alpha1User | null>(user ?? null);
   const [actions, setActions] = useState<ReactNode[]>([]);
+  const [navigation, setNavigation] = useState<ReactNode | null>(null);
   const { resolvedTheme, setTheme } = useTheme();
 
   const addActions = useCallback((nodes: ReactNode) => {
@@ -61,13 +66,15 @@ export const AppProvider: React.FC<IProviderProps> = ({ children, user }) => {
       actions,
       addActions,
       removeActions,
+      navigation,
+      setNavigation,
       settings: {
         theme: (userState?.metadata?.annotations?.['preferences/theme'] as Theme) ?? 'light',
         timezone:
           userState?.metadata?.annotations?.['preferences/timezone'] ?? getBrowserTimezone(),
       },
     }),
-    [actions, userState]
+    [actions, navigation, userState]
   );
 
   // Update theme when settings change

@@ -2,12 +2,11 @@ import { redirect } from 'react-router';
 
 /**
  * Redirect /activity to /activity/feed
- * Legacy route preserved for backwards compatibility
  */
 export function loader() {
   return redirect('/activity/feed');
 }
 
-export default function ActivityRedirect() {
+export default function ActivityIndex() {
   return null;
 }

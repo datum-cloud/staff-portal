@@ -1,0 +1,87 @@
+import AppActionBar from '@/components/app-actiobar';
+import AppNavigation from '@/components/app-navigation';
+import { Tabs, TabsList, TabsLinkTrigger } from '@datum-cloud/datum-ui/tabs';
+import { Button } from '@datum-ui/button';
+import { Share2, Check } from 'lucide-react';
+import { useState } from 'react';
+import { Link, Outlet, useLocation } from 'react-router';
+
+const activityTabs = [
+  { label: 'Activity Feed', value: 'feed', to: '/activity/feed' },
+  { label: 'Events', value: 'events', to: '/activity/events' },
+  { label: 'Audit Logs', value: 'audit-logs', to: '/activity/audit-logs' },
+  { label: 'Manage Policies', value: 'policies', to: '/activity/policies' },
+];
+
+function useActiveTab() {
+  const { pathname } = useLocation();
+  if (pathname.startsWith('/activity/policies')) return 'policies';
+  if (pathname.startsWith('/activity/audit-logs')) return 'audit-logs';
+  if (pathname.startsWith('/activity/events')) return 'events';
+  return 'feed';
+}
+
+/**
+ * Activity hub layout with horizontal tab navigation
+ */
+export default function ActivityLayout() {
+  const activeTab = useActiveTab();
+  const [copied, setCopied] = useState(false);
+
+  // Handle share button click - copy current URL to clipboard
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy URL:', err);
+    }
+  };
+
+  return (
+    <div className="flex flex-1 flex-col overflow-hidden">
+      {/* Inject menu navigation into the app toolbar navigation slot */}
+      <AppNavigation>
+        <Tabs value={activeTab}>
+          <TabsList>
+            {activityTabs.map((tab) => (
+              <TabsLinkTrigger key={tab.value} value={tab.value} href={tab.to} linkComponent={Link}>
+                {tab.label}
+              </TabsLinkTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+      </AppNavigation>
+
+      {/* Inject share button into the app toolbar actions slot */}
+      <AppActionBar>
+        <Button
+          type="secondary"
+          theme="outline"
+          size="small"
+          onClick={handleShare}
+          title="Copy shareable link with current filters">
+          {copied ? (
+            <>
+              <Check className="mr-2 h-4 w-4" />
+              Copied!
+            </>
+          ) : (
+            <>
+              <Share2 className="mr-2 h-4 w-4" />
+              Share
+            </>
+          )}
+        </Button>
+      </AppActionBar>
+
+      {/* Tab Content - flex-1 min-h-0 allows child to scroll within bounds */}
+      <div className="min-h-0 flex-1 overflow-hidden px-4 py-4">
+        <div className="mx-auto flex h-full max-w-7xl flex-col">
+          <Outlet />
+        </div>
+      </div>
+    </div>
+  );
+}
