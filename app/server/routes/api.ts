@@ -84,6 +84,12 @@ api.all('/internal/*', authMiddleware(), async (c) => {
       headers['User-Agent'] = userAgent;
     }
 
+    // Forward the client IP so the API server audit log captures it in sourceIPs.
+    const clientIP = c.req.header('X-Forwarded-For')?.split(',')[0]?.trim();
+    if (clientIP) {
+      headers['X-Forwarded-For'] = clientIP;
+    }
+
     // Prepare request body for non-GET requests
     let requestBody: string | undefined;
     if (c.req.method !== 'GET' && c.req.method !== 'HEAD') {
