@@ -902,7 +902,7 @@ msgstr "IP"
 msgid "Irreversible and destructive actions"
 msgstr "Irreversible and destructive actions"
 
-#: app/routes/user/detail/organization.tsx:60
+#: app/routes/user/detail/organization.tsx:59
 #: app/routes/contact/detail/group.tsx:115
 msgid "Joined"
 msgstr "Joined"
@@ -1035,7 +1035,7 @@ msgid "My Profile"
 msgstr "My Profile"
 
 #: app/routes/user/index.tsx:87
-#: app/routes/user/detail/organization.tsx:41
+#: app/routes/user/detail/organization.tsx:40
 #: app/routes/project/index.tsx:25
 #: app/routes/project/detail/secret.tsx:22
 #: app/routes/project/detail/index.tsx:52
@@ -1107,7 +1107,7 @@ msgstr "No members found."
 msgid "No notes yet. Add the first note below."
 msgstr "No notes yet. Add the first note below."
 
-#: app/routes/user/detail/organization.tsx:91
+#: app/routes/user/detail/organization.tsx:88
 #: app/routes/organization/index.tsx:104
 msgid "No organizations found."
 msgstr "No organizations found."
@@ -1175,7 +1175,7 @@ msgstr "Organization deleted successfully"
 msgid "Organization Type"
 msgstr "Organization Type"
 
-#: app/routes/user/detail/organization.tsx:21
+#: app/routes/user/detail/organization.tsx:20
 #: app/routes/user/detail/layout.tsx:37
 #: app/routes/project/detail/layout.tsx:46
 #: app/routes/organization/layout.tsx:5
@@ -1460,7 +1460,7 @@ msgstr "Search is temporarily unavailable. Please try again."
 msgid "Search members..."
 msgstr "Search members..."
 
-#: app/routes/user/detail/organization.tsx:87
+#: app/routes/user/detail/organization.tsx:84
 #: app/routes/organization/index.tsx:75
 msgid "Search organizations..."
 msgstr "Search organizations..."
@@ -1627,7 +1627,7 @@ msgstr "Timezone updated successfully"
 msgid "TTL"
 msgstr "TTL"
 
-#: app/routes/user/detail/organization.tsx:55
+#: app/routes/user/detail/organization.tsx:54
 #: app/routes/project/detail/export-policy/detail.tsx:180
 #: app/routes/project/detail/dns/detail.tsx:97
 #: app/routes/project/detail/dns/detail.tsx:175

@@ -222,9 +222,7 @@ export default function Page() {
         data={items}
         columns={columns}
         pageSize={20}
-        getRowId={(row) =>
-          `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`
-        }
+        getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
         defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
         searchFn={(row, search) => {
           const q = search.trim().toLowerCase();

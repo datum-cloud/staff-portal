@@ -141,7 +141,9 @@ export default function Page() {
           const taskRows = bulkDeleteRows ?? [];
           setBulkDeleteRows(null);
           const taskTitle =
-            taskRows.length === 1 ? t`Delete contact group` : t`Delete ${taskRows.length} contact groups`;
+            taskRows.length === 1
+              ? t`Delete contact group`
+              : t`Delete ${taskRows.length} contact groups`;
           enqueue({
             title: taskTitle,
             icon: <Trash2Icon className="size-4" />,
@@ -201,11 +203,7 @@ export default function Page() {
         searchFn={(row, search) => {
           const q = search.trim().toLowerCase();
           if (!q) return true;
-          return [
-            row.metadata?.name,
-            row.spec?.displayName,
-            row.spec?.visibility,
-          ]
+          return [row.metadata?.name, row.spec?.displayName, row.spec?.visibility]
             .map((s) => (s ?? '').toLowerCase())
             .some((s) => s.includes(q));
         }}>

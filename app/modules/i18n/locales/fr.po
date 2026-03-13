@@ -902,7 +902,7 @@ msgstr ""
 msgid "Irreversible and destructive actions"
 msgstr ""
 
-#: app/routes/user/detail/organization.tsx:60
+#: app/routes/user/detail/organization.tsx:59
 #: app/routes/contact/detail/group.tsx:115
 msgid "Joined"
 msgstr ""
@@ -1035,7 +1035,7 @@ msgid "My Profile"
 msgstr ""
 
 #: app/routes/user/index.tsx:87
-#: app/routes/user/detail/organization.tsx:41
+#: app/routes/user/detail/organization.tsx:40
 #: app/routes/project/index.tsx:25
 #: app/routes/project/detail/secret.tsx:22
 #: app/routes/project/detail/index.tsx:52
@@ -1107,7 +1107,7 @@ msgstr ""
 msgid "No notes yet. Add the first note below."
 msgstr ""
 
-#: app/routes/user/detail/organization.tsx:91
+#: app/routes/user/detail/organization.tsx:88
 #: app/routes/organization/index.tsx:104
 msgid "No organizations found."
 msgstr ""
@@ -1175,7 +1175,7 @@ msgstr ""
 msgid "Organization Type"
 msgstr ""
 
-#: app/routes/user/detail/organization.tsx:21
+#: app/routes/user/detail/organization.tsx:20
 #: app/routes/user/detail/layout.tsx:37
 #: app/routes/project/detail/layout.tsx:46
 #: app/routes/organization/layout.tsx:5
@@ -1460,7 +1460,7 @@ msgstr ""
 msgid "Search members..."
 msgstr ""
 
-#: app/routes/user/detail/organization.tsx:87
+#: app/routes/user/detail/organization.tsx:84
 #: app/routes/organization/index.tsx:75
 msgid "Search organizations..."
 msgstr ""
@@ -1627,7 +1627,7 @@ msgstr ""
 msgid "TTL"
 msgstr ""
 
-#: app/routes/user/detail/organization.tsx:55
+#: app/routes/user/detail/organization.tsx:54
 #: app/routes/project/detail/export-policy/detail.tsx:180
 #: app/routes/project/detail/dns/detail.tsx:97
 #: app/routes/project/detail/dns/detail.tsx:175

@@ -39,8 +39,7 @@ export default function Page() {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => {
         const projectName = row.original.metadata?.name ?? '';
-        const description =
-          row.original.metadata?.annotations?.['kubernetes.io/description'] ?? '';
+        const description = row.original.metadata?.annotations?.['kubernetes.io/description'] ?? '';
         return (
           <DisplayName
             displayName={description || projectName}
@@ -69,9 +68,7 @@ export default function Page() {
         const q = search.trim().toLowerCase();
         if (!q) return true;
         const name = (row.metadata?.name ?? '').toLowerCase();
-        const desc = (
-          row.metadata?.annotations?.['kubernetes.io/description'] ?? ''
-        ).toLowerCase();
+        const desc = (row.metadata?.annotations?.['kubernetes.io/description'] ?? '').toLowerCase();
         return name.includes(q) || desc.includes(q);
       }}>
       <Card className="m-4 py-4 shadow-none">

@@ -208,9 +208,7 @@ function buildClientDemoColumns(
     }),
     clientColumnHelper.accessor('category', {
       header: ({ column }) => <DatumDataTable.ColumnHeader column={column} title="Category" />,
-      cell: ({ getValue }) => (
-        <span className="text-sm capitalize">{getValue()}</span>
-      ),
+      cell: ({ getValue }) => <span className="text-sm capitalize">{getValue()}</span>,
     }),
     clientColumnHelper.display({
       id: 'actions',
@@ -219,8 +217,7 @@ function buildClientDemoColumns(
         <div className="flex w-full justify-end">
           <DatumDataTable.RowActions
             isLoading={
-              loadingStates[`edit-${row.original.id}`] ||
-              loadingStates[`delete-${row.original.id}`]
+              loadingStates[`edit-${row.original.id}`] || loadingStates[`delete-${row.original.id}`]
             }
             row={row}
             actions={demoActions}
@@ -484,16 +481,12 @@ function ClientDataTableSearchOnlyDemo() {
             inactive: 'bg-red-100 text-red-800',
             pending: 'bg-yellow-100 text-yellow-800',
           };
-          return (
-            <span className={`rounded px-2 py-1 text-xs ${colors[status]}`}>{status}</span>
-          );
+          return <span className={`rounded px-2 py-1 text-xs ${colors[status]}`}>{status}</span>;
         },
       }),
       clientColumnHelper.accessor('category', {
         header: 'Category',
-        cell: ({ getValue }) => (
-          <span className="text-sm capitalize">{getValue()}</span>
-        ),
+        cell: ({ getValue }) => <span className="text-sm capitalize">{getValue()}</span>,
       }),
     ],
     []
@@ -510,8 +503,7 @@ function ClientDataTableSearchOnlyDemo() {
         const q = search.trim().toLowerCase();
         if (!q) return true;
         return (
-          (row.name ?? '').toLowerCase().includes(q) ||
-          (row.email ?? '').toLowerCase().includes(q)
+          (row.name ?? '').toLowerCase().includes(q) || (row.email ?? '').toLowerCase().includes(q)
         );
       }}>
       <div className="flex flex-col gap-4">

@@ -14,8 +14,7 @@ import { ComMiloapisResourcemanagerV1Alpha1OrganizationMembership } from '@opena
 import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 
-const columnHelper =
-  createColumnHelper<ComMiloapisResourcemanagerV1Alpha1OrganizationMembership>();
+const columnHelper = createColumnHelper<ComMiloapisResourcemanagerV1Alpha1OrganizationMembership>();
 
 export const handle = {
   breadcrumb: () => <Trans>Organizations</Trans>,
@@ -70,9 +69,7 @@ export default function Page() {
       data={rows}
       columns={columns}
       pageSize={20}
-      getRowId={(row) =>
-        `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`
-      }
+      getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
       defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
       searchFn={(row, search) => {
         const q = search.trim().toLowerCase();

@@ -87,9 +87,7 @@ export default function Page() {
           const cg = row.original.contactGroup;
           const n = cg?.metadata?.name ?? '';
           const d = cg?.spec?.displayName ?? '';
-          return (
-            <DisplayName displayName={d} name={n} to={contactGroupRoutes.detail(n)} />
-          );
+          return <DisplayName displayName={d} name={n} to={contactGroupRoutes.detail(n)} />;
         },
       }
     ),
@@ -146,7 +144,10 @@ export default function Page() {
   return (
     <>
       <AppActionBar>
-        <Button type="primary" icon={<PlusCircleIcon size={16} />} onClick={() => setIsAddGroup(true)}>
+        <Button
+          type="primary"
+          icon={<PlusCircleIcon size={16} />}
+          onClick={() => setIsAddGroup(true)}>
           <Trans>Add</Trans>
         </Button>
       </AppActionBar>
