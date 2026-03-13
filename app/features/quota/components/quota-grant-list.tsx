@@ -1,27 +1,24 @@
 import { BadgeCondition } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
-import {
-  ActionItem,
-  DataTable,
-  DataTableProvider,
-  useDataTableQuery,
-} from '@/modules/datum-ui/data-table';
-import { toast } from '@/modules/datum-ui/toast';
-import { quotaGrantDeleteMutation } from '@/resources/request/client';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
+import { toast } from '@datum-cloud/datum-ui/toast';
+import { t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 import {
   ComMiloapisQuotaV1Alpha1ResourceGrant,
   ComMiloapisQuotaV1Alpha1ResourceGrantList,
 } from '@openapi/quota.miloapis.com/v1alpha1';
+import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Trash2Icon } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 interface QuotaGrantListProps {
   queryKeyPrefix: string[];
-  fetchFn: (params: any) => Promise<ComMiloapisQuotaV1Alpha1ResourceGrantList>;
-  deleteGrantFn: (name: string, namespace: string) => Promise<any>;
+  fetchFn: (params?: Record<string, unknown>) => Promise<ComMiloapisQuotaV1Alpha1ResourceGrantList>;
+  deleteGrantFn: (name: string, namespace: string) => Promise<unknown>;
 }
 
 const columnHelper = createColumnHelper<ComMiloapisQuotaV1Alpha1ResourceGrant>();
@@ -39,113 +36,105 @@ function computeAllocationByResourceType(
   return Array.from(allocationByResourceType.entries());
 }
 
-const columns = [
-  columnHelper.accessor('metadata.name', {
-    header: () => <Trans>Name</Trans>,
-    cell: ({ getValue }) => getValue(),
-  }),
-  columnHelper.accessor((row) => row.spec.allowances, {
-    id: 'resourceTypes',
-    header: () => <Trans>Resource Type</Trans>,
-    cell: ({ getValue }) => {
-      const entries = computeAllocationByResourceType(getValue());
-      return (
-        <div className="flex flex-col gap-1">
-          {entries.map(([type]) => (
-            <div key={type}>{type}</div>
-          ))}
-        </div>
-      );
-    },
-  }),
-  columnHelper.accessor((row) => row.spec.allowances, {
-    id: 'allocations',
-    header: () => <Trans>Allocation</Trans>,
-    cell: ({ getValue }) => {
-      const entries = computeAllocationByResourceType(getValue());
-      return (
-        <div className="flex flex-col gap-1">
-          {entries.map(([type, total]) => (
-            <div key={type}>{total}</div>
-          ))}
-        </div>
-      );
-    },
-  }),
-  columnHelper.accessor('status', {
-    header: () => <Trans>Status</Trans>,
-    cell: ({ getValue }) => (
-      <BadgeCondition status={getValue()} multiple={false} showMessage className="text-xs" />
-    ),
-  }),
-  columnHelper.accessor('metadata.creationTimestamp', {
-    header: () => <Trans>Created</Trans>,
-    cell: ({ getValue }) => {
-      return <DateTime date={getValue()} />;
-    },
-  }),
-];
-
 export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: QuotaGrantListProps) {
-  const { t } = useLingui();
+  const { t: tMacro } = useLingui();
   const [selectedGrant, setSelectedGrant] = useState<ComMiloapisQuotaV1Alpha1ResourceGrant | null>(
     null
   );
-  const tableState = useDataTableQuery<ComMiloapisQuotaV1Alpha1ResourceGrantList>({
-    queryKeyPrefix,
-    fetchFn,
-    useSorting: true,
+
+  const tableQuery = useQuery({
+    queryKey: [...queryKeyPrefix, 'list'],
+    queryFn: () => fetchFn({}),
+    enabled: queryKeyPrefix.length > 0 && queryKeyPrefix.some(Boolean),
+    staleTime: 60 * 1000,
   });
 
-  const actions: ActionItem<ComMiloapisQuotaV1Alpha1ResourceGrant>[] = [
-    {
-      label: 'Delete',
-      icon: Trash2Icon,
-      variant: 'destructive' as const,
-      onClick: (row) => setSelectedGrant(row),
-      disabled: (row) => {
-        // Disable if grant is not active
-        const isInactive = row.status?.conditions?.some(
-          (c) => c.type === 'Active' && c.status === 'False'
-        );
-        if (isInactive) return true;
-
-        // Disable if grant is auto-created by policy
-        const isAutoCreated = row.metadata?.labels?.['quota.miloapis.com/auto-created'] === 'true';
-        return isAutoCreated;
+  const actions: ActionItem<ComMiloapisQuotaV1Alpha1ResourceGrant>[] = useMemo(
+    () => [
+      {
+        label: tMacro`Delete`,
+        icon: Trash2Icon,
+        variant: 'destructive' as const,
+        onClick: (row) => setSelectedGrant(row),
+        disabled: (row) => {
+          const isInactive = row.status?.conditions?.some(
+            (c) => c.type === 'Active' && c.status === 'False'
+          );
+          if (isInactive) return true;
+          return row.metadata?.labels?.['quota.miloapis.com/auto-created'] === 'true';
+        },
       },
-      tooltip: (row) => {
-        // Show tooltip for inactive grants
-        const isInactive = row.status?.conditions?.some(
-          (c) => c.type === 'Active' && c.status === 'False'
-        );
-        if (isInactive) {
-          return t`Cannot delete inactive grant`;
-        }
+    ],
+    [tMacro]
+  );
 
-        // Show tooltip for auto-created grants
-        const isAutoCreated = row.metadata?.labels?.['quota.miloapis.com/auto-created'] === 'true';
-        if (isAutoCreated) {
-          const policyName = row.metadata?.labels?.['quota.miloapis.com/policy'];
-          return policyName
-            ? t`Auto-managed by policy "${policyName}". Cannot be deleted.`
-            : t`Auto-managed by grant creation policy. Cannot be deleted.`;
-        }
-
-        return '';
-      },
-    },
-  ];
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor('metadata.name', {
+        header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+        cell: ({ getValue }) => getValue(),
+      }),
+      columnHelper.accessor((row) => row.spec.allowances, {
+        id: 'resourceTypes',
+        header: () => t`Resource Type`,
+        cell: ({ getValue }) => {
+          const entries = computeAllocationByResourceType(getValue());
+          return (
+            <div className="flex flex-col gap-1">
+              {entries.map(([type]) => (
+                <div key={type}>{type}</div>
+              ))}
+            </div>
+          );
+        },
+      }),
+      columnHelper.accessor((row) => row.spec.allowances, {
+        id: 'allocations',
+        header: () => t`Allocation`,
+        cell: ({ getValue }) => {
+          const entries = computeAllocationByResourceType(getValue());
+          return (
+            <div className="flex flex-col gap-1">
+              {entries.map(([type, total]) => (
+                <div key={type}>{total}</div>
+              ))}
+            </div>
+          );
+        },
+      }),
+      columnHelper.accessor('status', {
+        header: () => t`Status`,
+        cell: ({ getValue }) => (
+          <BadgeCondition status={getValue()} multiple={false} showMessage className="text-xs" />
+        ),
+      }),
+      columnHelper.accessor('metadata.creationTimestamp', {
+        id: 'metadata.creationTimestamp',
+        header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+        cell: ({ getValue }) => <DateTime date={getValue()} />,
+      }),
+      columnHelper.display({
+        id: 'actions',
+        header: () => <div className="text-right" />,
+        cell: ({ row }) => (
+          <div className="flex w-full justify-end">
+            <DataTable.RowActions row={row} actions={actions} />
+          </div>
+        ),
+      }),
+    ],
+    [actions]
+  );
 
   return (
     <>
       <DialogConfirm
         open={!!selectedGrant}
         onOpenChange={() => setSelectedGrant(null)}
-        title={t`Delete Grant`}
-        description={t`Are you sure you want to delete grant "${selectedGrant?.metadata?.name}"? This action cannot be undone.`}
-        confirmText={t`Delete`}
-        cancelText={t`Cancel`}
+        title={tMacro`Delete Grant`}
+        description={tMacro`Are you sure you want to delete grant "${selectedGrant?.metadata?.name}"? This action cannot be undone.`}
+        confirmText={tMacro`Delete`}
+        cancelText={tMacro`Cancel`}
         variant="destructive"
         requireConfirmation
         onConfirm={async () => {
@@ -153,29 +142,42 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: Quota
             selectedGrant?.metadata?.name ?? '',
             selectedGrant?.metadata?.namespace ?? ''
           );
-          await new Promise((resolve) =>
-            setTimeout(() => resolve(tableState.query.refetch()), 1000)
-          );
+          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
           setSelectedGrant(null);
-          toast.success(t`Grant deleted successfully`);
+          toast.success(tMacro`Grant deleted successfully`);
         }}
       />
 
-      <DataTableProvider<
-        ComMiloapisQuotaV1Alpha1ResourceGrant,
-        ComMiloapisQuotaV1Alpha1ResourceGrantList
-      >
+      <DataTable.Client
+        loading={tableQuery.isLoading}
+        data={tableQuery.data?.items ?? []}
         columns={columns}
-        actions={actions}
-        transform={(resp) => ({
-          rows: resp?.items || [],
-          cursor: resp?.metadata?.continue,
-        })}
-        {...tableState}>
-        <div className="m-4 flex flex-col gap-2">
-          <DataTable />
-        </div>
-      </DataTableProvider>
+        pageSize={20}
+        getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
+        defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+        searchFn={(row, search) => {
+          const q = search.trim().toLowerCase();
+          if (!q) return true;
+          const name = (row.metadata?.name ?? '').toLowerCase();
+          const types = computeAllocationByResourceType(row.spec?.allowances)
+            .map(([type]) => type.toLowerCase())
+            .join(' ');
+          return name.includes(q) || types.includes(q);
+        }}>
+        <Card className="m-4 py-4 shadow-none">
+          <CardContent className="flex flex-col gap-2 px-4">
+            <div className="flex flex-wrap items-center gap-4">
+              <DataTable.Search placeholder={t`Search grants...`} className="w-64 min-w-[12rem]" />
+            </div>
+            <DataTable.Content
+              headerClassName="bg-muted/50"
+              className="border-t border-b border-solid"
+              emptyMessage={t`No grants found.`}
+            />
+            <DataTable.Pagination className="pb-0" />
+          </CardContent>
+        </Card>
+      </DataTable.Client>
     </>
   );
 }

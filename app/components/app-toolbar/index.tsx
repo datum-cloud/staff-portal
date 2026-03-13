@@ -1,11 +1,9 @@
 import { Breadcrumb } from '@/components/breadcrumb';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { useApp } from '@/providers/app.provider';
-import { useLingui } from '@lingui/react/macro';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const AppToolbar = () => {
-  const { t } = useLingui();
   const { actions, navigation } = useApp();
   const [scrolled, setScrolled] = useState(false);
 

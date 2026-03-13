@@ -3,15 +3,13 @@ import type { Route } from './+types/index';
 import { BadgeProgrammingError } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DnsHostChips } from '@/features/dns';
-import { projectDnsListQuery } from '@/resources/request/client';
+import { useProjectDnsListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject, transformControlPlaneStatus } from '@/utils/helpers';
-import { DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
-import { Trans } from '@lingui/react/macro';
-import {
-  ComMiloapisNetworkingDnsV1Alpha1DnsZone,
-  ComMiloapisNetworkingDnsV1Alpha1DnsZoneList,
-} from '@openapi/dns.networking.miloapis.com/v1alpha1';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { DataTable } from '@datum-cloud/datum-ui/data-table';
+import { t } from '@lingui/core/macro';
+import { ComMiloapisNetworkingDnsV1Alpha1DnsZone } from '@openapi/dns.networking.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Loader2Icon } from 'lucide-react';
 import { Link } from 'react-router';
@@ -25,16 +23,12 @@ const columnHelper = createColumnHelper<ComMiloapisNetworkingDnsV1Alpha1DnsZone>
 
 export default function Page() {
   const { project } = useProjectDetailData();
-
-  const tableState = useDataTableQuery<ComMiloapisNetworkingDnsV1Alpha1DnsZoneList>({
-    queryKeyPrefix: ['projects', project.metadata?.name ?? '', 'dns'],
-    fetchFn: (params) => projectDnsListQuery(project.metadata?.name ?? '', params),
-    useSorting: true,
-  });
+  const projectName = project.metadata?.name ?? '';
+  const tableQuery = useProjectDnsListQuery(projectName);
 
   const columns = [
     columnHelper.accessor('spec.domainName', {
-      header: () => <Trans>Zone Name</Trans>,
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Zone Name`} />,
       cell: ({ row }) => {
         const status = transformControlPlaneStatus(row.original.status, {
           includeConditionDetails: true,
@@ -43,7 +37,7 @@ export default function Page() {
           <div className="flex items-center gap-2">
             <Link
               to={projectRoutes.dns.detail(
-                project.metadata?.name ?? '',
+                projectName,
                 row.original.metadata?.namespace ?? '',
                 row.original.metadata?.name ?? ''
               )}>
@@ -60,44 +54,58 @@ export default function Page() {
       },
     }),
     columnHelper.accessor('status.domainRef.status.nameservers', {
-      header: () => <Trans>DNS Host</Trans>,
+      header: () => t`DNS Host`,
       cell: ({ getValue }) => {
         if (!getValue()) {
           return <Loader2Icon className="text-muted-foreground size-4 animate-spin" />;
         }
-
         return <DnsHostChips data={getValue() ?? []} maxVisible={2} />;
       },
     }),
     columnHelper.accessor('status.recordCount', {
-      header: () => <Trans>Records</Trans>,
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Records`} />,
       cell: ({ getValue }) => getValue() ?? '-',
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
-      header: () => <Trans>Created</Trans>,
+      id: 'metadata.creationTimestamp',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
     columnHelper.accessor((row) => row.metadata?.annotations?.['kubernetes.io/description'], {
       id: 'description',
-      header: () => <Trans>Description</Trans>,
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Description`} />,
       cell: ({ getValue }) => getValue() ?? '-',
     }),
   ];
 
   return (
-    <DataTableProvider<
-      ComMiloapisNetworkingDnsV1Alpha1DnsZone,
-      ComMiloapisNetworkingDnsV1Alpha1DnsZoneList
-    >
+    <DataTable.Client
+      loading={tableQuery.isLoading}
+      data={tableQuery.data?.items ?? []}
       columns={columns}
-      transform={(data) => ({
-        rows: data?.items || [],
-        cursor: data?.metadata?.continue,
-      })}
-      {...tableState}>
-      <div className="m-4 flex flex-col gap-2">
-        <DataTable />
-      </div>
-    </DataTableProvider>
+      pageSize={20}
+      getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
+      defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+      searchFn={(row, search) => {
+        const q = search.trim().toLowerCase();
+        if (!q) return true;
+        const zone = (row.spec?.domainName ?? '').toLowerCase();
+        const desc = (row.metadata?.annotations?.['kubernetes.io/description'] ?? '').toLowerCase();
+        return zone.includes(q) || desc.includes(q);
+      }}>
+      <Card className="m-4 py-4 shadow-none">
+        <CardContent className="flex flex-col gap-2 px-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <DataTable.Search placeholder={t`Search DNS zones...`} className="w-64 min-w-[12rem]" />
+          </div>
+          <DataTable.Content
+            headerClassName="bg-muted/50"
+            className="border-t border-b border-solid"
+            emptyMessage={t`No DNS zones found.`}
+          />
+          <DataTable.Pagination className="pb-0" />
+        </CardContent>
+      </Card>
+    </DataTable.Client>
   );
 }

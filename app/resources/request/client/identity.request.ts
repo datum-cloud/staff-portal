@@ -28,6 +28,15 @@ export const sessionDeleteMutation = (userId: string, sessionName: string) => {
   });
 };
 
+export const useSessionListQuery = (userId: string, params?: ListQueryParams) => {
+  return useQuery({
+    queryKey: ['sessions', 'list', userId, params],
+    queryFn: () => sessionListQuery(userId, params),
+    enabled: Boolean(userId),
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
 export const useIdentityListQuery = (userId: string, params?: ListQueryParams) => {
   return useQuery({
     queryKey: ['identity', 'list', userId, params],

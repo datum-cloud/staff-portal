@@ -9,20 +9,20 @@ import { authenticator } from '@/modules/auth';
 import {
   groupMembershipCreateMutation,
   groupMembershipDeleteMutation,
-  groupMembershipListQuery,
+  useGroupMembershipListQuery,
 } from '@/resources/request/client';
 import { groupDetailQuery } from '@/resources/request/server';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import { ActionItem, DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
 import { Form } from '@datum-ui/form';
 import { Trans, useLingui } from '@lingui/react/macro';
 import {
   ComMiloapisIamV1Alpha1Group,
   ComMiloapisIamV1Alpha1GroupMembership,
-  ComMiloapisIamV1Alpha1GroupMembershipList,
 } from '@openapi/iam.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
@@ -48,31 +48,13 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 };
 
 const columnHelper = createColumnHelper<ComMiloapisIamV1Alpha1GroupMembership>();
-const columns = [
-  columnHelper.accessor('metadata.name', {
-    header: () => <Trans>Name</Trans>,
-    cell: ({ row }) => {
-      const groupName = row.original.metadata?.name ?? '';
-      const displayName = row.original.metadata?.namespace;
-
-      return (
-        <DisplayName
-          displayName={groupName}
-          name={displayName || groupName}
-          to={userRoutes.detail(row.original.spec?.userRef?.name ?? '')}
-        />
-      );
-    },
-  }),
-  columnHelper.accessor('metadata.creationTimestamp', {
-    header: () => <Trans>Created</Trans>,
-    cell: ({ getValue }) => <DateTime date={getValue()} />,
-  }),
-];
 
 export default function Page() {
   const { t } = useLingui();
-  const data = useGroupDetailData();
+  const group = useGroupDetailData();
+  const groupName = group.metadata?.name ?? '';
+  const tableQuery = useGroupMembershipListQuery(groupName);
+
   const [selectedGroupMembership, setSelectedGroupMembership] =
     useState<ComMiloapisIamV1Alpha1GroupMembership | null>(null);
   const [isAddMember, setIsAddMember] = useState(false);
@@ -83,16 +65,6 @@ export default function Page() {
     setSearch: setUserSearch,
   } = useUserSearch();
 
-  const tableState = useDataTableQuery<ComMiloapisIamV1Alpha1GroupMembershipList>({
-    queryKeyPrefix: ['groups', data.metadata?.name ?? '', 'members'],
-    fetchFn: (params) =>
-      groupMembershipListQuery({
-        ...params,
-        filters: { fieldSelector: `spec.groupRef.name=${data.metadata?.name ?? ''}` },
-      }),
-    useSorting: true,
-  });
-
   const actions: ActionItem<ComMiloapisIamV1Alpha1GroupMembership>[] = [
     {
       label: t`Delete`,
@@ -102,23 +74,41 @@ export default function Page() {
     },
   ];
 
+  const columns = [
+    columnHelper.accessor('metadata.name', {
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+      cell: ({ row }) => {
+        const name = row.original.metadata?.name ?? '';
+        const displayName = row.original.metadata?.namespace;
+
+        return (
+          <DisplayName
+            displayName={name}
+            name={displayName || name}
+            to={userRoutes.detail(row.original.spec?.userRef?.name ?? '')}
+          />
+        );
+      },
+    }),
+    columnHelper.accessor('metadata.creationTimestamp', {
+      id: 'metadata.creationTimestamp',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      cell: ({ getValue }) => <DateTime date={getValue()} />,
+    }),
+    columnHelper.display({
+      id: 'actions',
+      header: () => <div className="text-right" />,
+      cell: ({ row }) => (
+        <div className="flex w-full justify-end">
+          <DataTable.RowActions row={row} actions={actions} />
+        </div>
+      ),
+    }),
+  ];
+
   const addMemberSchema = z.object({
     name: z.string().nonempty('User is required'),
   });
-
-  const handleAddMember = async (formData: z.infer<typeof addMemberSchema>) => {
-    try {
-      await groupMembershipCreateMutation('milo-system', {
-        groupRef: { name: data.metadata?.name ?? '', namespace: 'milo-system' },
-        userRef: { name: formData.name },
-      });
-
-      await new Promise((resolve) => setTimeout(() => resolve(tableState.query.refetch()), 1000));
-      toast.success(t`Member added successfully`);
-    } catch (error) {
-      throw error; // Re-throw to keep dialog open
-    }
-  };
 
   return (
     <>
@@ -141,9 +131,7 @@ export default function Page() {
         variant="destructive"
         onConfirm={async () => {
           await groupMembershipDeleteMutation(selectedGroupMembership?.metadata);
-          await new Promise((resolve) =>
-            setTimeout(() => resolve(tableState.query.refetch()), 1000)
-          );
+          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
           setSelectedGroupMembership(null);
           toast.success(t`Member deleted successfully`);
         }}
@@ -155,7 +143,18 @@ export default function Page() {
         title={t`Add Member`}
         submitText={t`Add`}
         cancelText={t`Cancel`}
-        onSubmit={handleAddMember}
+        onSubmit={async (formData) => {
+          try {
+            await groupMembershipCreateMutation('milo-system', {
+              groupRef: { name: groupName, namespace: 'milo-system' },
+              userRef: { name: formData.name },
+            });
+            await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
+            toast.success(t`Member added successfully`);
+          } catch (error) {
+            throw error;
+          }
+        }}
         schema={addMemberSchema}
         defaultValues={{ name: '' }}>
         <Form.Autosearch
@@ -169,21 +168,36 @@ export default function Page() {
         />
       </DialogForm>
 
-      <DataTableProvider<
-        ComMiloapisIamV1Alpha1GroupMembership,
-        ComMiloapisIamV1Alpha1GroupMembershipList
-      >
-        {...tableState}
+      <DataTable.Client
+        loading={tableQuery.isLoading}
+        data={tableQuery.data?.items ?? []}
         columns={columns}
-        actions={actions}
-        transform={(data) => ({
-          rows: data?.items || [],
-          cursor: data?.metadata?.continue,
-        })}>
-        <div className="m-4 flex flex-col gap-2">
-          <DataTable />
-        </div>
-      </DataTableProvider>
+        pageSize={20}
+        getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
+        defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+        searchFn={(row, search) => {
+          const q = search.trim().toLowerCase();
+          if (!q) return true;
+          const name = (row.metadata?.name ?? '').toLowerCase();
+          const ns = (row.metadata?.namespace ?? '').toLowerCase();
+          const userRef = (row.spec?.userRef?.name ?? '').toLowerCase();
+          return name.includes(q) || ns.includes(q) || userRef.includes(q);
+        }}>
+        <Card className="m-4 py-4 shadow-none">
+          <CardContent className="flex flex-col gap-2 px-4">
+            <div className="flex flex-wrap items-center gap-4">
+              <DataTable.Search placeholder={t`Search members...`} className="w-64 min-w-[12rem]" />
+            </div>
+
+            <DataTable.Content
+              headerClassName="bg-muted/50"
+              className="border-t border-b border-solid"
+              emptyMessage={t`No members in this group.`}
+            />
+            <DataTable.Pagination className="pb-0" />
+          </CardContent>
+        </Card>
+      </DataTable.Client>
     </>
   );
 }

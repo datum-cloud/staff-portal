@@ -2,15 +2,13 @@ import { getProjectDetailMetadata, useProjectDetailData } from '../../shared';
 import type { Route } from './+types/index';
 import { DateTime } from '@/components/date';
 import { DomainDnsProviders, DomainExpiration, DomainStatusProbe } from '@/features/domain';
-import { projectDomainListQuery } from '@/resources/request/client';
+import { useProjectDomainListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { DataTable, DataTableProvider, useDataTableQuery } from '@datum-ui/data-table';
-import { Trans } from '@lingui/react/macro';
-import {
-  ComDatumapisNetworkingV1AlphaDomain,
-  ComDatumapisNetworkingV1AlphaDomainList,
-} from '@openapi/networking.datumapis.com/v1alpha';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { DataTable } from '@datum-cloud/datum-ui/data-table';
+import { t } from '@lingui/core/macro';
+import { ComDatumapisNetworkingV1AlphaDomain } from '@openapi/networking.datumapis.com/v1alpha';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Link } from 'react-router';
 
@@ -23,20 +21,16 @@ const columnHelper = createColumnHelper<ComDatumapisNetworkingV1AlphaDomain>();
 
 export default function Page() {
   const { project } = useProjectDetailData();
-
-  const tableState = useDataTableQuery<ComDatumapisNetworkingV1AlphaDomainList>({
-    queryKeyPrefix: ['projects', project.metadata?.name ?? '', 'domains'],
-    fetchFn: (params) => projectDomainListQuery(project.metadata?.name ?? '', params),
-    useSorting: true,
-  });
+  const projectName = project.metadata?.name ?? '';
+  const tableQuery = useProjectDomainListQuery(projectName);
 
   const columns = [
     columnHelper.accessor('spec.domainName', {
-      header: () => <Trans>Domain</Trans>,
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Domain`} />,
       cell: ({ getValue, row }) => (
         <Link
           to={projectRoutes.domain.detail(
-            project.metadata?.name ?? '',
+            projectName,
             row.original.metadata?.namespace ?? '',
             row.original.metadata?.name ?? ''
           )}>
@@ -45,44 +39,64 @@ export default function Page() {
       ),
     }),
     columnHelper.accessor('status.registration.registrar.name', {
-      header: () => <Trans>Registrar</Trans>,
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Registrar`} />,
       cell: ({ getValue }) => getValue(),
     }),
     columnHelper.accessor('status.nameservers', {
-      header: () => <Trans>DNS Providers</Trans>,
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`DNS Providers`} />,
       cell: ({ getValue }) => <DomainDnsProviders nameservers={getValue() ?? []} maxVisible={2} />,
     }),
     columnHelper.accessor('status.registration.expiresAt', {
-      header: () => <Trans>Expiration Date</Trans>,
+      header: ({ column }) => (
+        <DataTable.ColumnHeader column={column} title={t`Expiration Date`} />
+      ),
       cell: ({ getValue }) => <DomainExpiration expiresAt={getValue()} />,
     }),
     columnHelper.accessor('status', {
-      header: () => <Trans>Status</Trans>,
+      header: () => t`Status`,
       cell: ({ row }) => (
         <DomainStatusProbe
-          projectName={project.metadata?.name ?? ''}
+          projectName={projectName}
           domainName={row.original.metadata?.name ?? ''}
           namespace={row.original.metadata?.namespace ?? ''}
         />
       ),
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
-      header: () => <Trans>Created</Trans>,
+      id: 'metadata.creationTimestamp',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
   ];
 
   return (
-    <DataTableProvider<ComDatumapisNetworkingV1AlphaDomain, ComDatumapisNetworkingV1AlphaDomainList>
+    <DataTable.Client
+      loading={tableQuery.isLoading}
+      data={tableQuery.data?.items ?? []}
       columns={columns}
-      transform={(data) => ({
-        rows: data?.items || [],
-        cursor: data?.metadata?.continue,
-      })}
-      {...tableState}>
-      <div className="m-4 flex flex-col gap-2">
-        <DataTable />
-      </div>
-    </DataTableProvider>
+      pageSize={20}
+      getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
+      defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+      searchFn={(row, search) => {
+        const q = search.trim().toLowerCase();
+        if (!q) return true;
+        const domain = (row.spec?.domainName ?? '').toLowerCase();
+        const registrar = (row.status?.registration?.registrar?.name ?? '').toLowerCase();
+        return domain.includes(q) || registrar.includes(q);
+      }}>
+      <Card className="m-4 py-4 shadow-none">
+        <CardContent className="flex flex-col gap-2 px-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <DataTable.Search placeholder={t`Search domains...`} className="w-64 min-w-[12rem]" />
+          </div>
+          <DataTable.Content
+            headerClassName="bg-muted/50"
+            className="border-t border-b border-solid"
+            emptyMessage={t`No domains found.`}
+          />
+          <DataTable.Pagination className="pb-0" />
+        </CardContent>
+      </Card>
+    </DataTable.Client>
   );
 }

@@ -11,8 +11,8 @@ import { useQuery } from '@tanstack/react-query';
 export const groupListQuery = async (params?: ListQueryParams) => {
   const response = await listIamMiloapisComV1Alpha1GroupForAllNamespaces({
     query: {
-      limit: params?.limit,
-      continue: params?.cursor,
+      ...(params?.limit && { limit: params.limit }),
+      ...(params?.cursor && { continue: params.cursor }),
     },
   });
   return response.data.data;
@@ -26,17 +26,39 @@ export const useGroupListQuery = (params?: ListQueryParams) => {
   });
 };
 
+/** Same query shape as `userListQuery`: omit limit/continue for full list (client table). */
 export const groupMembershipListQuery = async (
   params?: ListQueryParams<GroupMembershipFilters>
 ) => {
   const response = await listIamMiloapisComV1Alpha1GroupMembershipForAllNamespaces({
     query: {
-      limit: params?.limit,
-      continue: params?.cursor,
+      ...(params?.limit && { limit: params.limit }),
+      ...(params?.cursor && { continue: params.cursor }),
       ...(params?.filters?.fieldSelector && { fieldSelector: params.filters.fieldSelector }),
     },
   });
   return response.data.data;
+};
+
+/**
+ * Members of a single group. Pass `params` only if you need server paging; otherwise
+ * client table uses full `data.items` (no limit in params).
+ */
+export const useGroupMembershipListQuery = (
+  groupName: string,
+  params?: ListQueryParams<GroupMembershipFilters>
+) => {
+  return useQuery({
+    queryKey: ['groups', groupName, 'members', 'list', params],
+    queryFn: () =>
+      groupMembershipListQuery({
+        limit: params?.limit,
+        cursor: params?.cursor,
+        filters: { fieldSelector: `spec.groupRef.name=${groupName}` },
+      }),
+    enabled: Boolean(groupName),
+    staleTime: 5 * 60 * 1000,
+  });
 };
 
 export const groupMembershipDeleteMutation = (
