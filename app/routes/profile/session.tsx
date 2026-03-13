@@ -1,18 +1,16 @@
 import type { Route } from './+types/session';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
+import { useApp } from '@/providers/app.provider';
 import { sessionDeleteMutation, useSessionListQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
-import { Text } from '@datum-cloud/datum-ui/typography';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import { useApp } from '@/providers/app.provider';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
-import {
-  ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session,
-} from '@openapi/identity.miloapis.com/v1alpha1';
+import { ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session } from '@openapi/identity.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
@@ -62,9 +60,7 @@ export default function Page() {
       },
     }),
     columnHelper.accessor('status.fingerprintID', {
-      header: ({ column }) => (
-        <DataTable.ColumnHeader column={column} title={t`Fingerprint ID`} />
-      ),
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Fingerprint ID`} />,
       cell: ({ getValue }) => {
         const value = getValue();
         return value ? <Text>{value}</Text> : <Text className="text-muted-foreground">—</Text>;
@@ -126,18 +122,17 @@ export default function Page() {
         searchFn={(row, search) => {
           const q = search.trim().toLowerCase();
           if (!q) return true;
-          return [
-            row.metadata?.name,
-            row.status?.ip,
-            row.status?.fingerprintID,
-          ]
+          return [row.metadata?.name, row.status?.ip, row.status?.fingerprintID]
             .map((v) => (v ?? '').toLowerCase())
             .some((v) => v.includes(q));
         }}>
         <Card className="m-4 py-4 shadow-none">
           <CardContent className="flex flex-col gap-2 px-4">
             <div className="flex flex-wrap items-center gap-4">
-              <DataTable.Search placeholder={t`Search sessions...`} className="w-64 min-w-[12rem]" />
+              <DataTable.Search
+                placeholder={t`Search sessions...`}
+                className="w-64 min-w-[12rem]"
+              />
             </div>
             <DataTable.Content
               headerClassName="bg-muted/50"

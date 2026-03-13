@@ -1,6 +1,5 @@
 import { PROXY_URL } from '@/modules/axios/axios.client';
 import { ListQueryParams } from '@/resources/schemas';
-import { useQuery } from '@tanstack/react-query';
 import {
   ComMiloapisQuotaV1Alpha1AllowanceBucket,
   ComMiloapisQuotaV1Alpha1ResourceClaim,
@@ -18,6 +17,7 @@ import {
   readQuotaMiloapisComV1Alpha1NamespacedResourceGrant,
   readQuotaMiloapisComV1Alpha1ResourceRegistration,
 } from '@openapi/quota.miloapis.com/v1alpha1';
+import { useQuery } from '@tanstack/react-query';
 
 const MILO_SYSTEM_NAMESPACE = 'milo-system';
 

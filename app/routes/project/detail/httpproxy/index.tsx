@@ -28,9 +28,7 @@ export default function Page() {
     columnHelper.accessor('metadata.name', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
       cell: ({ getValue }) => (
-        <Link to={projectRoutes.httpProxy.detail(projectName, getValue() ?? '')}>
-          {getValue()}
-        </Link>
+        <Link to={projectRoutes.httpProxy.detail(projectName, getValue() ?? '')}>{getValue()}</Link>
       ),
     }),
     columnHelper.accessor('spec.rules', {
@@ -78,7 +76,10 @@ export default function Page() {
       <Card className="m-4 py-4 shadow-none">
         <CardContent className="flex flex-col gap-2 px-4">
           <div className="flex flex-wrap items-center gap-4">
-            <DataTable.Search placeholder={t`Search HTTP proxies...`} className="w-64 min-w-[12rem]" />
+            <DataTable.Search
+              placeholder={t`Search HTTP proxies...`}
+              className="w-64 min-w-[12rem]"
+            />
           </div>
           <DataTable.Content
             headerClassName="bg-muted/50"

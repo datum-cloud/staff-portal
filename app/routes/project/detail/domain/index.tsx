@@ -47,9 +47,7 @@ export default function Page() {
       cell: ({ getValue }) => <DomainDnsProviders nameservers={getValue() ?? []} maxVisible={2} />,
     }),
     columnHelper.accessor('status.registration.expiresAt', {
-      header: ({ column }) => (
-        <DataTable.ColumnHeader column={column} title={t`Expiration Date`} />
-      ),
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Expiration Date`} />,
       cell: ({ getValue }) => <DomainExpiration expiresAt={getValue()} />,
     }),
     columnHelper.accessor('status', {

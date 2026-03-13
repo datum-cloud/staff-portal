@@ -7,8 +7,8 @@ import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { createColumnHelper } from '@tanstack/react-table';
 import { useQuery } from '@tanstack/react-query';
+import { createColumnHelper } from '@tanstack/react-table';
 
 export const handle = {
   breadcrumb: () => <Trans>Secrets</Trans>,

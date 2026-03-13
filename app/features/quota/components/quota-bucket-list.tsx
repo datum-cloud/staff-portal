@@ -20,7 +20,9 @@ import z from 'zod';
 
 interface QuotaBucketListProps {
   queryKeyPrefix: string[];
-  fetchFn: (params?: Record<string, unknown>) => Promise<ComMiloapisQuotaV1Alpha1AllowanceBucketList>;
+  fetchFn: (
+    params?: Record<string, unknown>
+  ) => Promise<ComMiloapisQuotaV1Alpha1AllowanceBucketList>;
   createGrantFn: (
     namespace: string,
     payload: ComMiloapisQuotaV1Alpha1ResourceGrant['spec']
@@ -54,9 +56,7 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
   const columns = useMemo(
     () => [
       columnHelper.accessor('spec.resourceType', {
-        header: ({ column }) => (
-          <DataTable.ColumnHeader column={column} title={t`Resource Type`} />
-        ),
+        header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Resource Type`} />,
         cell: ({ getValue }) => getValue(),
       }),
       columnHelper.accessor('status', {
@@ -70,7 +70,13 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
           const total = lim;
           const pct = total > 0 ? Math.round((used / total) * 100) : 0;
           const bar =
-            total === 0 ? 'bg-gray-400' : pct <= 70 ? 'bg-green-500' : pct <= 90 ? 'bg-yellow-500' : 'bg-red-500';
+            total === 0
+              ? 'bg-gray-400'
+              : pct <= 70
+                ? 'bg-green-500'
+                : pct <= 90
+                  ? 'bg-yellow-500'
+                  : 'bg-red-500';
           return (
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
@@ -80,7 +86,10 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
                 <Text className="text-muted-foreground text-xs">({pct}%)</Text>
               </div>
               <div className="bg-muted h-2 w-full rounded-full">
-                <div className={`${bar} h-2 rounded-full transition-all`} style={{ width: `${Math.min(pct, 100)}%` }} />
+                <div
+                  className={`${bar} h-2 rounded-full transition-all`}
+                  style={{ width: `${Math.min(pct, 100)}%` }}
+                />
               </div>
             </div>
           );
@@ -106,7 +115,10 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
 
   const currentLimit = selected?.status?.limit ?? 0;
   const increaseSchema = z.object({
-    newLimit: z.coerce.number().int().min(currentLimit + 1, `New limit must be > ${currentLimit}`),
+    newLimit: z.coerce
+      .number()
+      .int()
+      .min(currentLimit + 1, `New limit must be > ${currentLimit}`),
   });
 
   return (
@@ -166,7 +178,10 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
         <Card className="m-4 py-4 shadow-none">
           <CardContent className="flex flex-col gap-2 px-4">
             <div className="flex flex-wrap items-center gap-4">
-              <DataTable.Search placeholder={t`Search by resource type...`} className="w-64 min-w-[12rem]" />
+              <DataTable.Search
+                placeholder={t`Search by resource type...`}
+                className="w-64 min-w-[12rem]"
+              />
             </div>
             <DataTable.Content
               headerClassName="bg-muted/50"
