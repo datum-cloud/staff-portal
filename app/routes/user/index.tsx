@@ -5,28 +5,18 @@ import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
 import { DisplayId, DisplayName } from '@/components/display';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
-import { userInviteMutation, userListQuery } from '@/resources/request/client';
+import { userInviteMutation, useUserListQuery } from '@/resources/request/client';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import {
-  ClientDataTable,
-  ClientDataTableFacetFilter,
-  ClientDataTableProvider,
-  ClientDataTableSearch,
-  createAdvancedSearch,
-  useClientDataTableQuery,
-} from '@datum-ui/client-data-table';
-import { ActionItem, DataTableActiveFilters } from '@datum-ui/data-table';
 import { Form } from '@datum-ui/form';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import {
-  ComMiloapisIamV1Alpha1User,
-  ComMiloapisIamV1Alpha1UserList,
-} from '@openapi/iam.miloapis.com/v1alpha1';
-import { createColumnHelper, FilterFn } from '@tanstack/react-table';
+import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
+import { createColumnHelper } from '@tanstack/react-table';
 import { CheckIcon, EditIcon, RotateCcwIcon, UserPlus, XIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -38,38 +28,6 @@ export const meta: Route.MetaFunction = () => {
 
 const columnHelper = createColumnHelper<ComMiloapisIamV1Alpha1User>();
 
-const columns = [
-  columnHelper.accessor('spec.givenName', {
-    header: () => <Trans>Name</Trans>,
-    cell: ({ row }) => {
-      const userName = row.original.metadata?.name ?? '';
-      const displayName = `${row.original.spec?.givenName ?? ''} ${row.original.spec?.familyName ?? ''}`;
-      const email = row.original.spec?.email ?? '';
-
-      return <DisplayName displayName={displayName} name={email} to={`./${userName}`} />;
-    },
-  }),
-  columnHelper.accessor('metadata.name', {
-    header: () => <Trans>ID</Trans>,
-    cell: ({ getValue }) => {
-      return <DisplayId value={getValue() ?? ''} />;
-    },
-  }),
-  columnHelper.accessor('status.state', {
-    header: () => <Trans>Status</Trans>,
-    cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Active'} />,
-  }),
-  columnHelper.accessor('status.registrationApproval', {
-    header: () => <Trans>Registration Approval</Trans>,
-    cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Unknown'} />,
-  }),
-  columnHelper.accessor('metadata.creationTimestamp', {
-    id: 'metadata.creationTimestamp',
-    header: () => <Trans>Created</Trans>,
-    cell: ({ getValue }) => <DateTime date={getValue()} />,
-  }),
-];
-
 export default function Page() {
   const navigate = useNavigate();
   const [selectedUser, setSelectedUser] = useState<ComMiloapisIamV1Alpha1User | null>(null);
@@ -77,15 +35,7 @@ export default function Page() {
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
 
   const { approveUser, pendingUser } = useUserApproval();
-
-  const tableState = useClientDataTableQuery<ComMiloapisIamV1Alpha1UserList>({
-    queryKeyPrefix: 'users',
-    fetchFn: userListQuery,
-    defaultSort: ['metadata.creationTimestamp:desc'],
-    useSorting: true,
-    useFilters: true,
-    useSearch: true,
-  });
+  const tableQuery = useUserListQuery();
 
   const actions: ActionItem<ComMiloapisIamV1Alpha1User>[] = [
     {
@@ -96,14 +46,12 @@ export default function Page() {
     {
       label: t`Approve`,
       icon: CheckIcon,
-      hide: (row) => row.status?.registrationApproval !== 'Pending',
+      hidden: (row) => row.status?.registrationApproval !== 'Pending',
       onClick: async (row) => {
         setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: true }));
         try {
           await approveUser(row, async () => {
-            await new Promise((resolve) =>
-              setTimeout(() => resolve(tableState.query.refetch()), 1000)
-            );
+            await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
           });
         } finally {
           setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: false }));
@@ -114,26 +62,72 @@ export default function Page() {
       label: t`Reject`,
       icon: XIcon,
       variant: 'destructive' as const,
-      hide: (row) => row.status?.registrationApproval !== 'Pending',
+      hidden: (row) => row.status?.registrationApproval !== 'Pending',
       onClick: (row) => setSelectedUser(row),
     },
     {
       label: t`Move to Pending`,
       icon: RotateCcwIcon,
-      hide: (row) => row.status?.registrationApproval === 'Pending',
+      hidden: (row) => row.status?.registrationApproval === 'Pending',
       onClick: async (row) => {
         setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: true }));
         try {
           await pendingUser(row, async () => {
-            await new Promise((resolve) =>
-              setTimeout(() => resolve(tableState.query.refetch()), 1000)
-            );
+            await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
           });
         } finally {
           setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: false }));
         }
       },
     },
+  ];
+
+  const columns = [
+    columnHelper.accessor('spec.givenName', {
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+      cell: ({ row }) => {
+        const userName = row.original.metadata?.name ?? '';
+        const displayName = `${row.original.spec?.givenName ?? ''} ${row.original.spec?.familyName ?? ''}`;
+        const email = row.original.spec?.email ?? '';
+
+        return <DisplayName displayName={displayName} name={email} to={`./${userName}`} />;
+      },
+    }),
+    columnHelper.accessor('metadata.name', {
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`ID`} />,
+      cell: ({ getValue }) => {
+        return <DisplayId value={getValue() ?? ''} />;
+      },
+    }),
+    columnHelper.accessor('status.state', {
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Status`} />,
+      cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Active'} />,
+    }),
+    columnHelper.accessor('status.registrationApproval', {
+      id: 'registrationApproval',
+      header: ({ column }) => (
+        <DataTable.ColumnHeader column={column} title={t`Registration Approval`} />
+      ),
+      cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Unknown'} />,
+    }),
+    columnHelper.accessor('metadata.creationTimestamp', {
+      id: 'metadata.creationTimestamp',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      cell: ({ getValue }) => <DateTime date={getValue()} />,
+    }),
+    columnHelper.display({
+      id: 'actions',
+      header: () => <div className="text-right" />,
+      cell: ({ row }) => (
+        <div className="flex w-full justify-end">
+          <DataTable.RowActions
+            isLoading={loadingStates[row.original.metadata?.name ?? '']}
+            row={row}
+            actions={actions}
+          />
+        </div>
+      ),
+    }),
   ];
 
   const inviteSchema = z
@@ -195,9 +189,7 @@ export default function Page() {
               },
             });
 
-            await new Promise((resolve) =>
-              setTimeout(() => resolve(tableState.query.refetch()), 1000)
-            );
+            await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
             toast.success(t`User invited successfully`);
           } catch (error) {
             throw error; // Re-throw to keep dialog open
@@ -224,77 +216,79 @@ export default function Page() {
         onOpenChange={() => setSelectedUser(null)}
         user={selectedUser}
         onSuccess={async () => {
-          await new Promise((resolve) =>
-            setTimeout(() => resolve(tableState.query.refetch()), 1000)
-          );
+          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
         }}
       />
 
-      <ClientDataTableProvider<ComMiloapisIamV1Alpha1User, ComMiloapisIamV1Alpha1UserList>
+      <DataTable.Client
+        loading={tableQuery.isLoading}
+        data={tableQuery.data?.items ?? []}
         columns={columns}
-        actions={actions}
-        actionsLoading={(row) => loadingStates[row?.metadata?.name ?? ''] || false}
-        transform={(data) => data?.items || []}
-        filterFn={(row, filters) => {
-          if (filters.registrationApproval) {
-            return row.status?.registrationApproval === filters.registrationApproval;
-          }
-          return true;
+        pageSize={20}
+        getRowId={(row) => row.metadata?.name ?? ''}
+        defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+        filterFns={{
+          'status.registrationApproval': (cellValue, filterValue) =>
+            String(cellValue ?? '').toLowerCase() === String(filterValue ?? '').toLowerCase(),
         }}
-        globalFilterFn={createAdvancedSearch<ComMiloapisIamV1Alpha1User>(
-          [
-            (row) => row.spec?.email?.toLowerCase() || '',
-            (row) => row.spec?.givenName?.toLowerCase() || '',
-            (row) => row.spec?.familyName?.toLowerCase() || '',
-            (row) => row.metadata?.name?.toLowerCase() || '',
-          ],
-          [
-            (row) =>
-              `${row.spec?.givenName || ''} ${row.spec?.familyName || ''}`.trim().toLowerCase(),
-          ]
-        )}
-        {...tableState}>
-        <div className="m-4 flex flex-col gap-2">
-          <div className="flex items-center gap-4">
-            <ClientDataTableSearch placeholder={t`Search users...`} />
-            <ClientDataTableFacetFilter
-              filterKey="registrationApproval"
-              label={t`Registration Approval`}
-              placeholder={t`Filter by approval`}
-              options={[
-                { value: 'Approved', label: t`Approved` },
-                { value: 'Rejected', label: t`Rejected` },
-                { value: 'Pending', label: t`Pending` },
-              ]}
+        searchFn={(row, search) => {
+          const q = search.trim().toLowerCase();
+          if (!q) return true;
+
+          const fields = [
+            row.spec?.email,
+            row.spec?.givenName,
+            row.spec?.familyName,
+            row.metadata?.name,
+            `${row.spec?.givenName ?? ''} ${row.spec?.familyName ?? ''}`.trim(),
+          ];
+
+          return fields
+            .map((value) => (value ?? '').toLowerCase())
+            .some((value) => value.includes(q));
+        }}>
+        <Card className="m-4 py-4 shadow-none">
+          <CardContent className="flex flex-col gap-2 px-4">
+            <div className="flex items-center gap-4">
+              <DataTable.Search placeholder={t`Search users...`} className="w-64" />
+              <DataTable.SelectFilter
+                column="status.registrationApproval"
+                label={t`Registration Approval`}
+                placeholder={t`Filter by approval`}
+                options={[
+                  { value: 'Approved', label: t`Approved` },
+                  { value: 'Rejected', label: t`Rejected` },
+                  { value: 'Pending', label: t`Pending` },
+                ]}
+              />
+            </div>
+
+            <DataTable.ActiveFilters
+              excludeFilters={['search']}
+              filterLabels={{
+                'status.registrationApproval': t`Registration Approval`,
+              }}
+              formatFilterValue={{
+                'status.registrationApproval': (value: string) => {
+                  const labels: Record<string, string> = {
+                    Approved: t`Approved`,
+                    Rejected: t`Rejected`,
+                    Pending: t`Pending`,
+                  };
+                  return labels[value] ?? String(value);
+                },
+              }}
             />
-          </div>
 
-          <DataTableActiveFilters
-            filters={tableState.filters}
-            search={tableState.search}
-            onClearFilter={tableState.clearFilter}
-            onClearAllFilters={tableState.clearAllFilters}
-            onClearSearch={tableState.clearSearch}
-            filterLabels={{
-              registrationApproval: t`Registration Approval`,
-            }}
-            formatFilterValue={(key, value) => {
-              if (key === 'registrationApproval') {
-                const labels: Record<string, string> = {
-                  Approved: t`Approved`,
-                  Rejected: t`Rejected`,
-                  Pending: t`Pending`,
-                };
-                return labels[value] || value;
-              }
-              return String(value);
-            }}
-            excludeFilters={['search']}
-          />
-
-          <ClientDataTable<ComMiloapisIamV1Alpha1User> />
-        </div>
-      </ClientDataTableProvider>
+            <DataTable.Content
+              headerClassName="bg-muted/50"
+              className="border-t border-b border-solid"
+              emptyMessage={t`No users found.`}
+            />
+            <DataTable.Pagination className="pb-0" />
+          </CardContent>
+        </Card>
+      </DataTable.Client>
     </>
   );
 }

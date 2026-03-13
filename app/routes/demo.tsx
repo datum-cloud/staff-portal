@@ -1,18 +1,12 @@
 import ButtonEnhancedDemo from '@/components/demo/button-enhanced-demo';
 import { FormDemo } from '@/components/demo/form-demo';
 import { logger } from '@/utils/logger';
-import {
-  ClientDataTable,
-  ClientDataTableProvider,
-  ClientDataTableSearch,
-  ClientDataTableFacetFilter,
-  createAdvancedSearch,
-  useClientDataTableQuery,
-} from '@datum-ui/client-data-table';
+import { DataTable as DatumDataTable } from '@datum-cloud/datum-ui/data-table';
 import { DataTable, DataTableProvider } from '@datum-ui/data-table';
-import { DataTableActiveFilters } from '@datum-ui/data-table';
+import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { EditIcon, Trash2Icon } from 'lucide-react';
+import type React from 'react';
 import { useMemo, useState } from 'react';
 
 interface DemoData {
@@ -159,34 +153,83 @@ const clientDemoData: ClientDemoData[] = [
 
 const clientColumnHelper = createColumnHelper<ClientDemoData>();
 
-const clientColumns = [
-  clientColumnHelper.accessor('name', {
-    header: 'Name',
-    cell: ({ getValue }) => <strong>{getValue()}</strong>,
-  }),
-  clientColumnHelper.accessor('email', {
-    header: 'Email',
-  }),
-  clientColumnHelper.accessor('status', {
-    header: 'Status',
-    cell: ({ getValue }) => {
-      const status = getValue();
-      const colors = {
-        active: 'bg-green-100 text-green-800',
-        inactive: 'bg-red-100 text-red-800',
-        pending: 'bg-yellow-100 text-yellow-800',
-      };
-      return <span className={`rounded px-2 py-1 text-xs ${colors[status]}`}>{status}</span>;
+function buildClientDemoColumns(
+  loadingStates: Record<string, boolean>,
+  setLoadingStates: React.Dispatch<React.SetStateAction<Record<string, boolean>>>
+) {
+  const demoActions = [
+    {
+      label: 'Edit',
+      icon: EditIcon,
+      onClick: async (row: ClientDemoData) => {
+        setLoadingStates((prev) => ({ ...prev, [`edit-${row.id}`]: true }));
+        try {
+          await new Promise((r) => setTimeout(r, 500));
+          logger.business('Edit demo row', { rowId: row.id, row });
+        } finally {
+          setLoadingStates((prev) => ({ ...prev, [`edit-${row.id}`]: false }));
+        }
+      },
     },
-  }),
-  clientColumnHelper.accessor('category', {
-    header: 'Category',
-    cell: ({ getValue }) => {
-      const category = getValue();
-      return <span className="text-sm capitalize">{category}</span>;
+    {
+      label: 'Delete',
+      icon: Trash2Icon,
+      variant: 'destructive' as const,
+      onClick: async (row: ClientDemoData) => {
+        setLoadingStates((prev) => ({ ...prev, [`delete-${row.id}`]: true }));
+        try {
+          await new Promise((r) => setTimeout(r, 500));
+          logger.business('Delete demo row', { rowId: row.id, row });
+        } finally {
+          setLoadingStates((prev) => ({ ...prev, [`delete-${row.id}`]: false }));
+        }
+      },
     },
-  }),
-];
+  ];
+  return [
+    clientColumnHelper.accessor('name', {
+      header: ({ column }) => <DatumDataTable.ColumnHeader column={column} title="Name" />,
+      cell: ({ getValue }) => <strong>{getValue()}</strong>,
+    }),
+    clientColumnHelper.accessor('email', {
+      header: ({ column }) => <DatumDataTable.ColumnHeader column={column} title="Email" />,
+    }),
+    clientColumnHelper.accessor('status', {
+      header: ({ column }) => <DatumDataTable.ColumnHeader column={column} title="Status" />,
+      cell: ({ getValue }) => {
+        const status = getValue();
+        const colors = {
+          active: 'bg-green-100 text-green-800',
+          inactive: 'bg-red-100 text-red-800',
+          pending: 'bg-yellow-100 text-yellow-800',
+        };
+        return <span className={`rounded px-2 py-1 text-xs ${colors[status]}`}>{status}</span>;
+      },
+    }),
+    clientColumnHelper.accessor('category', {
+      header: ({ column }) => <DatumDataTable.ColumnHeader column={column} title="Category" />,
+      cell: ({ getValue }) => (
+        <span className="text-sm capitalize">{getValue()}</span>
+      ),
+    }),
+    clientColumnHelper.display({
+      id: 'actions',
+      header: () => <div className="text-right" />,
+      cell: ({ row }) => (
+        <div className="flex w-full justify-end">
+          <DatumDataTable.RowActions
+            isLoading={
+              loadingStates[`edit-${row.original.id}`] ||
+              loadingStates[`delete-${row.original.id}`]
+            }
+            row={row}
+            actions={demoActions}
+          />
+        </div>
+      ),
+    }),
+  ];
+}
 
 const fetchClientDemoData = async (): Promise<ClientDemoDataList> => {
   await new Promise((resolve) => setTimeout(resolve, 500));
@@ -332,83 +375,50 @@ export default function DemoPage() {
   );
 }
 
-// Client-Side Data Table Demo Components
 function ClientDataTableDemo() {
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
-
-  const tableState = useClientDataTableQuery<ClientDemoDataList>({
-    queryKeyPrefix: 'client-table-demo',
-    fetchFn: fetchClientDemoData,
-    useSorting: true,
-    useSearch: true,
-    useFilters: true,
-    initialPageSize: 10,
+  const tableQuery = useQuery({
+    queryKey: ['demo', 'client-table-full'],
+    queryFn: fetchClientDemoData,
   });
-
-  const demoActions = useMemo(
-    () => [
-      {
-        label: 'Edit',
-        icon: EditIcon,
-        onClick: async (row: ClientDemoData) => {
-          setLoadingStates((prev) => ({ ...prev, [`edit-${row.id}`]: true }));
-          try {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            logger.business('Edit demo row', { rowId: row.id, row });
-          } finally {
-            setLoadingStates((prev) => ({ ...prev, [`edit-${row.id}`]: false }));
-          }
-        },
-      },
-      {
-        label: 'Delete',
-        icon: Trash2Icon,
-        variant: 'destructive' as const,
-        onClick: async (row: ClientDemoData) => {
-          setLoadingStates((prev) => ({ ...prev, [`delete-${row.id}`]: true }));
-          try {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            logger.business('Delete demo row', { rowId: row.id, row });
-          } finally {
-            setLoadingStates((prev) => ({ ...prev, [`delete-${row.id}`]: false }));
-          }
-        },
-      },
-    ],
-    []
+  const columns = useMemo(
+    () => buildClientDemoColumns(loadingStates, setLoadingStates),
+    [loadingStates]
   );
+  const rows = tableQuery.data?.items ?? [];
 
   return (
-    <ClientDataTableProvider<ClientDemoData, ClientDemoDataList>
-      columns={clientColumns}
-      transform={(data) => data?.items || []}
-      actions={demoActions}
-      actionsLoading={(row) =>
-        loadingStates[`edit-${row.id}`] || loadingStates[`delete-${row.id}`] || false
-      }
-      filterFn={(row, filters) => {
-        if (filters.status && row.status !== filters.status) {
-          return false;
-        }
-        if (filters.category && row.category !== filters.category) {
-          return false;
-        }
-        return true;
+    <DatumDataTable.Client
+      loading={tableQuery.isLoading}
+      data={rows}
+      columns={columns}
+      pageSize={10}
+      getRowId={(r) => r.id}
+      defaultSort={[{ id: 'name', desc: false }]}
+      filterFns={{
+        status: (cellValue, filterValue) =>
+          String(cellValue ?? '').toLowerCase() === String(filterValue ?? '').toLowerCase(),
+        category: (cellValue, filterValue) =>
+          String(cellValue ?? '').toLowerCase() === String(filterValue ?? '').toLowerCase(),
       }}
-      globalFilterFn={createAdvancedSearch<ClientDemoData>(
-        [
-          (row) => row.email?.toLowerCase() || '',
-          (row) => row.firstName?.toLowerCase() || '',
-          (row) => row.lastName?.toLowerCase() || '',
-        ],
-        [(row) => `${row.firstName} ${row.lastName}`.trim().toLowerCase()]
-      )}
-      {...tableState}>
+      searchFn={(row, search) => {
+        const q = search.trim().toLowerCase();
+        if (!q) return true;
+        return [
+          row.name,
+          row.email,
+          row.firstName,
+          row.lastName,
+          `${row.firstName} ${row.lastName}`.trim(),
+        ]
+          .map((s) => (s ?? '').toLowerCase())
+          .some((s) => s.includes(q));
+      }}>
       <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-4">
-          <ClientDataTableSearch placeholder="Search by name or email..." />
-          <ClientDataTableFacetFilter
-            filterKey="status"
+        <div className="flex flex-wrap items-center gap-4">
+          <DatumDataTable.Search placeholder="Search by name or email..." className="w-64" />
+          <DatumDataTable.SelectFilter
+            column="status"
             label="Status"
             placeholder="Filter by status"
             options={[
@@ -417,8 +427,8 @@ function ClientDataTableDemo() {
               { value: 'pending', label: 'Pending' },
             ]}
           />
-          <ClientDataTableFacetFilter
-            filterKey="category"
+          <DatumDataTable.SelectFilter
+            column="category"
             label="Category"
             placeholder="Filter by category"
             options={[
@@ -428,87 +438,114 @@ function ClientDataTableDemo() {
             ]}
           />
         </div>
-        <DataTableActiveFilters
-          filters={tableState.filters}
-          search={tableState.search}
-          onClearFilter={tableState.clearFilter}
-          onClearAllFilters={tableState.clearAllFilters}
-          onClearSearch={tableState.clearSearch}
-          filterLabels={{
-            status: 'Status',
-            category: 'Category',
-          }}
-          formatFilterValue={(key, value) => {
-            if (key === 'status') {
+        <DatumDataTable.ActiveFilters
+          excludeFilters={['search']}
+          filterLabels={{ status: 'Status', category: 'Category' }}
+          formatFilterValue={{
+            status: (value: string) => {
               const labels: Record<string, string> = {
                 active: 'Active',
                 inactive: 'Inactive',
                 pending: 'Pending',
               };
-              return labels[value] || value;
-            }
-            if (key === 'category') {
-              return String(value).charAt(0).toUpperCase() + String(value).slice(1);
-            }
-            return String(value);
+              return labels[value] ?? value;
+            },
+            category: (value: string) =>
+              String(value).charAt(0).toUpperCase() + String(value).slice(1),
           }}
-          excludeFilters={['search']}
         />
         <div className="overflow-hidden rounded-lg border">
-          <ClientDataTable<ClientDemoData> />
+          <DatumDataTable.Content emptyMessage="No rows." />
         </div>
+        <DatumDataTable.Pagination pageSizes={[5, 10, 20]} />
       </div>
-    </ClientDataTableProvider>
+    </DatumDataTable.Client>
   );
 }
 
 function ClientDataTableSearchOnlyDemo() {
-  const tableState = useClientDataTableQuery<ClientDemoDataList>({
-    queryKeyPrefix: 'client-table-demo-search',
-    fetchFn: fetchClientDemoData,
-    useSorting: true,
-    useSearch: true,
-    useFilters: false,
+  const tableQuery = useQuery({
+    queryKey: ['demo', 'client-table-search'],
+    queryFn: fetchClientDemoData,
   });
+  const columns = useMemo(
+    () => [
+      clientColumnHelper.accessor('name', {
+        header: ({ column }) => <DatumDataTable.ColumnHeader column={column} title="Name" />,
+        cell: ({ getValue }) => <strong>{getValue()}</strong>,
+      }),
+      clientColumnHelper.accessor('email', { header: 'Email' }),
+      clientColumnHelper.accessor('status', {
+        header: 'Status',
+        cell: ({ getValue }) => {
+          const status = getValue();
+          const colors = {
+            active: 'bg-green-100 text-green-800',
+            inactive: 'bg-red-100 text-red-800',
+            pending: 'bg-yellow-100 text-yellow-800',
+          };
+          return (
+            <span className={`rounded px-2 py-1 text-xs ${colors[status]}`}>{status}</span>
+          );
+        },
+      }),
+      clientColumnHelper.accessor('category', {
+        header: 'Category',
+        cell: ({ getValue }) => (
+          <span className="text-sm capitalize">{getValue()}</span>
+        ),
+      }),
+    ],
+    []
+  );
 
   return (
-    <ClientDataTableProvider<ClientDemoData, ClientDemoDataList>
-      columns={clientColumns}
-      transform={(data) => data?.items || []}
-      globalFilterFn={createAdvancedSearch<ClientDemoData>([
-        (row) => row.name?.toLowerCase() || '',
-        (row) => row.email?.toLowerCase() || '',
-      ])}
-      {...tableState}>
+    <DatumDataTable.Client
+      loading={tableQuery.isLoading}
+      data={tableQuery.data?.items ?? []}
+      columns={columns}
+      pageSize={10}
+      getRowId={(r) => r.id}
+      searchFn={(row, search) => {
+        const q = search.trim().toLowerCase();
+        if (!q) return true;
+        return (
+          (row.name ?? '').toLowerCase().includes(q) ||
+          (row.email ?? '').toLowerCase().includes(q)
+        );
+      }}>
       <div className="flex flex-col gap-4">
-        <ClientDataTableSearch placeholder="Search..." />
+        <DatumDataTable.Search placeholder="Search..." className="w-64" />
         <div className="overflow-hidden rounded-lg border">
-          <ClientDataTable<ClientDemoData> />
+          <DatumDataTable.Content />
         </div>
+        <DatumDataTable.Pagination />
       </div>
-    </ClientDataTableProvider>
+    </DatumDataTable.Client>
   );
 }
 
 function ClientDataTableActionsOnlyDemo() {
+  const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
+  const tableQuery = useQuery({
+    queryKey: ['demo', 'client-table-actions'],
+    queryFn: fetchClientDemoData,
+  });
+  const columns = useMemo(
+    () => buildClientDemoColumns(loadingStates, setLoadingStates),
+    [loadingStates]
+  );
+
   return (
-    <ClientDataTableProvider<ClientDemoData, ClientDemoDataList>
-      columns={clientColumns}
-      transform={(data) => data?.items || []}
-      actions={actions.map((action) => ({
-        ...action,
-        onClick: (row: ClientDemoData) => action.onClick(row as DemoData),
-      }))}
-      {...useClientDataTableQuery<ClientDemoDataList>({
-        queryKeyPrefix: 'client-table-demo-actions',
-        fetchFn: fetchClientDemoData,
-        useSorting: true,
-        useSearch: false,
-        useFilters: false,
-      })}>
+    <DatumDataTable.Client
+      loading={tableQuery.isLoading}
+      data={tableQuery.data?.items ?? []}
+      columns={columns}
+      pageSize={10}
+      getRowId={(r) => r.id}>
       <div className="overflow-hidden rounded-lg border">
-        <ClientDataTable<ClientDemoData> />
+        <DatumDataTable.Content />
       </div>
-    </ClientDataTableProvider>
+    </DatumDataTable.Client>
   );
 }

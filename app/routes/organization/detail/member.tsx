@@ -7,20 +7,15 @@ import {
   orgInvitationDeleteMutation,
   orgMemberListQuery,
 } from '@/resources/request/client';
-import { TeamMember, TeamMemberList } from '@/resources/schemas';
+import { TeamMember } from '@/resources/schemas';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import {
-  ClientDataTable,
-  ClientDataTableProvider,
-  ClientDataTableSearch,
-  createAdvancedSearch,
-  useClientDataTableQuery,
-} from '@datum-ui/client-data-table';
-import { ActionItem } from '@datum-ui/data-table';
 import { t as tCore } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { addHours, differenceInMinutes, formatRFC3339 } from 'date-fns';
 import { CircleXIcon, MailIcon } from 'lucide-react';
@@ -36,58 +31,29 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 };
 
 const columnHelper = createColumnHelper<TeamMember>();
-const columns = [
-  columnHelper.accessor('givenName', {
-    header: () => <Trans>Name</Trans>,
-    cell: ({ row }) => {
-      const userName = row.original.name;
-      const displayName = `${row.original.givenName} ${row.original.familyName}`;
-      const email = row.original.email;
-
-      return (
-        <DisplayName
-          displayName={displayName}
-          name={email || userName}
-          to={userRoutes.detail(userName)}
-        />
-      );
-    },
-  }),
-  columnHelper.accessor('invitationState', {
-    header: () => '',
-    cell: ({ getValue }) => <BadgeState state={getValue() ?? ''} />,
-    enableSorting: false,
-  }),
-  columnHelper.accessor('roles', {
-    header: () => <Trans>Role</Trans>,
-    cell: ({ getValue }) => <BadgeState state={getValue()?.[0]?.name ?? ''} />,
-  }),
-];
 
 export default function Page() {
   const { t } = useLingui();
   const data = useOrganizationDetailData();
-
+  const orgName = data.metadata?.name ?? '';
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
 
-  const tableState = useClientDataTableQuery<TeamMemberList>({
-    queryKeyPrefix: ['organizations', data.metadata?.name ?? '', 'members'],
-    fetchFn: () => orgMemberListQuery(data.metadata?.name ?? ''),
-    useSorting: true,
-    useSearch: true,
+  const tableQuery = useQuery({
+    queryKey: ['organizations', orgName, 'members', 'list'],
+    queryFn: () => orgMemberListQuery(orgName),
+    enabled: !!orgName,
   });
 
   const actions: ActionItem<TeamMember>[] = [
     {
       label: t`Resend`,
       icon: MailIcon,
-      disabled: (row) => row.invitationState !== 'Pending',
+      hidden: (row) => row.invitationState !== 'Pending',
       onClick: async (row) => {
         if (row.createdAt) {
           const createdAt = new Date(row.createdAt);
           const now = new Date();
           const minutesSinceCreation = differenceInMinutes(now, createdAt);
-
           if (minutesSinceCreation < 10) {
             const remainingMinutes = 10 - minutesSinceCreation;
             toast.error(
@@ -96,22 +62,19 @@ export default function Page() {
             return;
           }
         }
-
         setLoadingStates((prev) => ({ ...prev, [row.name]: true }));
         try {
-          await orgInvitationDeleteMutation(data.metadata?.name ?? '', row.name);
-          await orgInvitationCreateMutation(data.metadata?.name ?? '', {
+          await orgInvitationDeleteMutation(orgName, row.name);
+          await orgInvitationCreateMutation(orgName, {
             email: row.email,
             familyName: row.familyName,
             givenName: row.givenName,
             expirationDate: formatRFC3339(addHours(new Date(), 24)),
-            organizationRef: { name: data.metadata?.name ?? '' },
+            organizationRef: { name: orgName },
             roles: row?.roles ?? [],
             state: 'Pending',
           });
-          await new Promise((resolve) =>
-            setTimeout(() => resolve(tableState.query.refetch()), 1000)
-          );
+          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
           toast.success(t`Invitation resend successfully`);
         } finally {
           setLoadingStates((prev) => ({ ...prev, [row.name]: false }));
@@ -122,14 +85,12 @@ export default function Page() {
       label: t`Cancel`,
       icon: CircleXIcon,
       variant: 'destructive' as const,
-      disabled: (row) => row.invitationState !== 'Pending',
+      hidden: (row) => row.invitationState !== 'Pending',
       onClick: async (row) => {
         setLoadingStates((prev) => ({ ...prev, [row.name]: true }));
         try {
-          await orgInvitationDeleteMutation(data.metadata?.name ?? '', row.name);
-          await new Promise((resolve) =>
-            setTimeout(() => resolve(tableState.query.refetch()), 1000)
-          );
+          await orgInvitationDeleteMutation(orgName, row.name);
+          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
           toast.success(t`Invitation cancelled successfully`);
         } finally {
           setLoadingStates((prev) => ({ ...prev, [row.name]: false }));
@@ -138,24 +99,80 @@ export default function Page() {
     },
   ];
 
+  const columns = [
+    columnHelper.accessor('givenName', {
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={tCore`Name`} />,
+      cell: ({ row }) => {
+        const userName = row.original.name;
+        const displayName = `${row.original.givenName} ${row.original.familyName}`;
+        const email = row.original.email;
+        return (
+          <DisplayName
+            displayName={displayName}
+            name={email || userName}
+            to={userRoutes.detail(userName)}
+          />
+        );
+      },
+    }),
+    columnHelper.accessor('invitationState', {
+      header: () => '',
+      cell: ({ getValue }) => <BadgeState state={getValue() ?? ''} />,
+      enableSorting: false,
+    }),
+    columnHelper.accessor('roles', {
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={tCore`Role`} />,
+      cell: ({ getValue }) => <BadgeState state={getValue()?.[0]?.name ?? ''} />,
+    }),
+    columnHelper.display({
+      id: 'actions',
+      header: () => <div className="text-right" />,
+      cell: ({ row }) => (
+        <div className="flex w-full justify-end">
+          <DataTable.RowActions
+            isLoading={loadingStates[row.original.name]}
+            row={row}
+            actions={actions}
+          />
+        </div>
+      ),
+    }),
+  ];
+
+  const members = tableQuery.data ?? [];
+
   return (
-    <ClientDataTableProvider<TeamMember, TeamMemberList>
-      {...tableState}
+    <DataTable.Client
+      loading={tableQuery.isLoading}
+      data={members}
       columns={columns}
-      actions={actions}
-      actionsLoading={(row) => loadingStates[row.name] || false}
-      transform={(data) => data || []}
-      globalFilterFn={createAdvancedSearch<TeamMember>([
-        (row) => row.name?.toLowerCase() || '',
-        (row) => row.givenName?.toLowerCase() || '',
-        (row) => row.familyName?.toLowerCase() || '',
-        (row) => row.email?.toLowerCase() || '',
-        (row) => `${row.givenName || ''} ${row.familyName || ''}`.trim().toLowerCase(),
-      ])}>
-      <div className="m-4 flex flex-col gap-2">
-        <ClientDataTableSearch placeholder={tCore`Search members...`} />
-        <ClientDataTable />
-      </div>
-    </ClientDataTableProvider>
+      pageSize={20}
+      getRowId={(row) => row.name}
+      defaultSort={[]}
+      searchFn={(row, search) => {
+        const q = search.trim().toLowerCase();
+        if (!q) return true;
+        return [
+          row.name,
+          row.givenName,
+          row.familyName,
+          row.email,
+          `${row.givenName || ''} ${row.familyName || ''}`.trim(),
+        ]
+          .map((s) => (s ?? '').toLowerCase())
+          .some((s) => s.includes(q));
+      }}>
+      <Card className="m-4 py-4 shadow-none">
+        <CardContent className="flex flex-col gap-2 px-4">
+          <DataTable.Search placeholder={tCore`Search members...`} className="w-64" />
+          <DataTable.Content
+            headerClassName="bg-muted/50"
+            className="border-t border-b border-solid"
+            emptyMessage={tCore`No members found.`}
+          />
+          <DataTable.Pagination className="pb-0" />
+        </CardContent>
+      </Card>
+    </DataTable.Client>
   );
 }

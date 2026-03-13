@@ -2,23 +2,12 @@ import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
-import { orgListQuery } from '@/resources/request/client';
+import { useOrgListQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
-import {
-  ClientDataTable,
-  ClientDataTableProvider,
-  ClientDataTableSearch,
-  ClientDataTableFacetFilter,
-  createAdvancedSearch,
-  useClientDataTableQuery,
-} from '@datum-ui/client-data-table';
-import { DataTableActiveFilters } from '@datum-ui/data-table';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
-import { Trans } from '@lingui/react/macro';
-import {
-  ComMiloapisResourcemanagerV1Alpha1Organization,
-  ComMiloapisResourcemanagerV1Alpha1OrganizationList,
-} from '@openapi/resourcemanager.miloapis.com/v1alpha1';
+import type { ComMiloapisResourcemanagerV1Alpha1Organization } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 
 export const meta: Route.MetaFunction = () => {
@@ -26,96 +15,97 @@ export const meta: Route.MetaFunction = () => {
 };
 
 const columnHelper = createColumnHelper<ComMiloapisResourcemanagerV1Alpha1Organization>();
-const columns = [
-  columnHelper.accessor('metadata.name', {
-    header: () => <Trans>Name</Trans>,
-    cell: ({ row }) => {
-      const orgName = row.original.metadata?.name ?? '';
-      const displayName = row.original.metadata?.annotations?.['kubernetes.io/display-name'] ?? '';
-
-      return (
-        <DisplayName displayName={displayName || orgName} name={orgName} to={`./${orgName}`} />
-      );
-    },
-  }),
-  columnHelper.accessor('spec.type', {
-    header: () => <Trans>Type</Trans>,
-    cell: ({ getValue }) => {
-      return <BadgeState state={getValue() ?? 'Organization'} />;
-    },
-  }),
-  columnHelper.accessor('metadata.creationTimestamp', {
-    id: 'metadata.creationTimestamp',
-    header: () => <Trans>Created</Trans>,
-    cell: ({ getValue }) => <DateTime date={getValue()} />,
-  }),
-];
 
 export default function Page() {
-  const tableState = useClientDataTableQuery<ComMiloapisResourcemanagerV1Alpha1OrganizationList>({
-    queryKeyPrefix: 'orgs',
-    fetchFn: orgListQuery,
-    defaultSort: ['metadata.creationTimestamp:desc'],
-    useSorting: true,
-    useSearch: true,
-    useFilters: true,
-  });
+  const tableQuery = useOrgListQuery();
+
+  const columns = [
+    columnHelper.accessor('metadata.name', {
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+      cell: ({ row }) => {
+        const orgName = row.original.metadata?.name ?? '';
+        const displayName =
+          row.original.metadata?.annotations?.['kubernetes.io/display-name'] ?? '';
+
+        return (
+          <DisplayName displayName={displayName || orgName} name={orgName} to={`./${orgName}`} />
+        );
+      },
+    }),
+    columnHelper.accessor('spec.type', {
+      id: 'type',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Type`} />,
+      cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Organization'} />,
+    }),
+    columnHelper.accessor('metadata.creationTimestamp', {
+      id: 'metadata.creationTimestamp',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      cell: ({ getValue }) => <DateTime date={getValue()} />,
+    }),
+  ];
+
+  const items = tableQuery.data?.items ?? [];
+  const data = items.map((row) => ({ ...row, type: row.spec?.type }));
 
   return (
-    <ClientDataTableProvider<
-      ComMiloapisResourcemanagerV1Alpha1Organization,
-      ComMiloapisResourcemanagerV1Alpha1OrganizationList
-    >
-      {...tableState}
+    <DataTable.Client
+      loading={tableQuery.isLoading}
+      data={data}
       columns={columns}
-      transform={(data) => data?.items || []}
-      filterFn={(row, filters) => {
-        if (filters.type && row.spec?.type !== filters.type) {
-          return false;
-        }
-        return true;
+      pageSize={20}
+      getRowId={(row) => row.metadata?.name ?? ''}
+      defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+      filterFns={{
+        type: (cellValue, filterValue) =>
+          String(cellValue ?? '').toLowerCase() === String(filterValue ?? '').toLowerCase(),
       }}
-      globalFilterFn={createAdvancedSearch<ComMiloapisResourcemanagerV1Alpha1Organization>([
-        (row) => row.metadata?.name?.toLowerCase() || '',
-        (row) => row.metadata?.annotations?.['kubernetes.io/display-name']?.toLowerCase() || '',
-        (row) => row.spec?.type?.toLowerCase() || '',
-      ])}>
-      <div className="m-4 flex flex-col gap-2">
-        <div className="flex items-center gap-4">
-          <ClientDataTableSearch placeholder={t`Search organizations...`} />
-          <ClientDataTableFacetFilter
-            filterKey="type"
-            label={t`Organization Type`}
-            placeholder={t`Filter by type`}
-            options={[
-              { value: 'Personal', label: t`Personal` },
-              { value: 'Standard', label: t`Standard` },
-            ]}
+      searchFn={(row, search) => {
+        const q = search.trim().toLowerCase();
+        if (!q) return true;
+        const name = (row.metadata?.name ?? '').toLowerCase();
+        const display = (
+          row.metadata?.annotations?.['kubernetes.io/display-name'] ?? ''
+        ).toLowerCase();
+        const type = (row.spec?.type ?? '').toLowerCase();
+        return name.includes(q) || display.includes(q) || type.includes(q);
+      }}>
+      <Card className="m-4 py-4 shadow-none">
+        <CardContent className="flex flex-col gap-2 px-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <DataTable.Search placeholder={t`Search organizations...`} className="w-64" />
+            <DataTable.SelectFilter
+              column="type"
+              label={t`Organization Type`}
+              placeholder={t`Filter by type`}
+              options={[
+                { value: 'Personal', label: t`Personal` },
+                { value: 'Standard', label: t`Standard` },
+              ]}
+            />
+          </div>
+
+          <DataTable.ActiveFilters
+            excludeFilters={['search']}
+            filterLabels={{ type: t`Organization Type` }}
+            formatFilterValue={{
+              type: (value: string) => {
+                const labels: Record<string, string> = {
+                  Personal: t`Personal`,
+                  Standard: t`Standard`,
+                };
+                return labels[value] ?? String(value);
+              },
+            }}
           />
-        </div>
-        <DataTableActiveFilters
-          filters={tableState.filters}
-          search={tableState.search}
-          onClearFilter={tableState.clearFilter}
-          onClearAllFilters={tableState.clearAllFilters}
-          onClearSearch={tableState.clearSearch}
-          filterLabels={{
-            type: t`Organization Type`,
-          }}
-          formatFilterValue={(key, value) => {
-            if (key === 'type') {
-              const labels: Record<string, string> = {
-                Personal: t`Personal`,
-                Standard: t`Standard`,
-              };
-              return labels[value] || value;
-            }
-            return String(value);
-          }}
-          excludeFilters={['search']}
-        />
-        <ClientDataTable<ComMiloapisResourcemanagerV1Alpha1Organization> />
-      </div>
-    </ClientDataTableProvider>
+
+          <DataTable.Content
+            headerClassName="bg-muted/50"
+            className="border-t border-b border-solid"
+            emptyMessage={t`No organizations found.`}
+          />
+          <DataTable.Pagination className="pb-0" />
+        </CardContent>
+      </Card>
+    </DataTable.Client>
   );
 }

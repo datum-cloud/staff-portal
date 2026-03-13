@@ -11,32 +11,22 @@ import {
   contactGroupMembershipDeleteMutation,
   contactMembershipForContactListQuery,
 } from '@/resources/request/client';
-import {
-  ContactMembershipListWithContactGroups,
-  ContactMembershipWithContactGroup,
-} from '@/resources/schemas';
+import type { ContactMembershipWithContactGroup } from '@/resources/schemas';
 import { contactGroupRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import {
-  ClientDataTable,
-  ClientDataTableProvider,
-  ClientDataTableSearch,
-  createAdvancedSearch,
-  useClientDataTableQuery,
-} from '@datum-ui/client-data-table';
-import { ActionItem } from '@datum-ui/data-table';
 import { Form } from '@datum-ui/form';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import z from 'zod';
 
-export const handle = {
-  breadcrumb: () => <Trans>Groups</Trans>,
-};
+export const handle = { breadcrumb: () => <Trans>Groups</Trans> };
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const { contactName } = getContactDetailMetadata(matches);
@@ -44,89 +34,31 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 };
 
 const columnHelper = createColumnHelper<ContactMembershipWithContactGroup>();
-const columns = [
-  columnHelper.accessor(
-    (row) => row.contactGroup?.spec?.displayName ?? row.contactGroup?.metadata?.name ?? '',
-    {
-      id: 'name',
-      header: () => <Trans>Name</Trans>,
-      cell: ({ row }) => {
-        const contactGroup = row.original.contactGroup;
-        const contactGroupName = contactGroup?.metadata?.name ?? '';
-        const displayName = contactGroup?.spec?.displayName ?? '';
-
-        return (
-          <DisplayName
-            displayName={displayName}
-            name={contactGroupName}
-            to={contactGroupRoutes.detail(contactGroupName)}
-          />
-        );
-      },
-    }
-  ),
-  columnHelper.accessor((row) => row.contactGroup?.spec?.visibility ?? 'public', {
-    id: 'visibility',
-    header: () => <Trans>Visibility</Trans>,
-    cell: ({ row }) => {
-      const contactGroup = row.original.contactGroup;
-      return <BadgeState state={contactGroup?.spec?.visibility ?? 'public'} />;
-    },
-  }),
-  columnHelper.accessor((row) => row.contactGroup?.status ?? null, {
-    id: 'status',
-    header: () => <Trans>Status</Trans>,
-    cell: ({ row }) => {
-      const contactGroup = row.original.contactGroup;
-      return (
-        <BadgeCondition
-          status={contactGroup?.status ?? null}
-          multiple={false}
-          showMessage
-          className="text-xs"
-        />
-      );
-    },
-  }),
-  columnHelper.accessor('metadata.creationTimestamp', {
-    id: 'metadata.creationTimestamp',
-    header: () => <Trans>Joined</Trans>,
-    cell: ({ getValue }) => <DateTime date={getValue()} />,
-  }),
-];
-
-const globalFilterFn = createAdvancedSearch<ContactMembershipWithContactGroup>([
-  (row) => row.contactGroup?.metadata?.name?.toLowerCase() || '',
-  (row) => row.contactGroup?.spec?.displayName?.toLowerCase() || '',
-  (row) => row.contactGroup?.spec?.visibility?.toLowerCase() || '',
-  (row) => row.contactGroup?.spec?.description?.toLowerCase() || '',
-]);
 
 export default function Page() {
   const { t } = useLingui();
-  const data = useContactDetailData();
+  const detail = useContactDetailData();
+  const contactName = detail.contact?.metadata?.name ?? '';
+
+  const tableQuery = useQuery({
+    queryKey: ['contacts', contactName, 'groups', 'list'],
+    queryFn: () =>
+      contactMembershipForContactListQuery({
+        filters: { fieldSelector: `spec.contactRef.name=${contactName}` },
+      }),
+    enabled: !!contactName,
+  });
+
+  const items = tableQuery.data?.items ?? [];
   const [selectedGroup, setSelectedGroup] = useState<ContactMembershipWithContactGroup | null>(
     null
   );
   const [isAddGroup, setIsAddGroup] = useState(false);
-
   const { options: contactGroupOptions, isLoading: contactGroupsLoading } = useContactGroupSearch();
 
-  const tableState = useClientDataTableQuery<ContactMembershipListWithContactGroups>({
-    queryKeyPrefix: ['contacts', data.contact?.metadata?.name ?? '', 'groups'],
-    fetchFn: () =>
-      contactMembershipForContactListQuery({
-        filters: { fieldSelector: `spec.contactRef.name=${data.contact?.metadata?.name ?? ''}` },
-      }),
-    defaultSort: ['metadata.creationTimestamp:desc'],
-    useSorting: true,
-    useSearch: true,
-  });
-
-  // Filter out contact groups that are already added to the contact
   const contactGroupFilteredOptions = useMemo(() => {
     return contactGroupOptions.filter((option) => {
-      return !tableState.query.data?.items?.some((item) => {
+      return !items.some((item) => {
         const name = [
           item.contactGroup?.metadata?.name ?? '',
           item.contactGroup?.metadata?.namespace ?? 'default',
@@ -134,50 +66,90 @@ export default function Page() {
         return name === option.value;
       });
     });
-  }, [contactGroupOptions, tableState.query.data?.items]);
+  }, [contactGroupOptions, items]);
 
   const actions: ActionItem<ContactMembershipWithContactGroup>[] = [
     {
-      label: 'Delete',
+      label: t`Delete`,
       icon: Trash2Icon,
       variant: 'destructive' as const,
       onClick: (row) => setSelectedGroup(row),
     },
   ];
 
-  const addGroupSchema = z.object({
-    name: z.string().nonempty(t`Group is required`),
-  });
+  const columns = [
+    columnHelper.accessor(
+      (row) => row.contactGroup?.spec?.displayName ?? row.contactGroup?.metadata?.name ?? '',
+      {
+        id: 'name',
+        header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+        cell: ({ row }) => {
+          const cg = row.original.contactGroup;
+          const n = cg?.metadata?.name ?? '';
+          const d = cg?.spec?.displayName ?? '';
+          return (
+            <DisplayName displayName={d} name={n} to={contactGroupRoutes.detail(n)} />
+          );
+        },
+      }
+    ),
+    columnHelper.accessor((row) => row.contactGroup?.spec?.visibility ?? 'public', {
+      id: 'visibility',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Visibility`} />,
+      cell: ({ row }) => (
+        <BadgeState state={row.original.contactGroup?.spec?.visibility ?? 'public'} />
+      ),
+    }),
+    columnHelper.accessor((row) => row.contactGroup?.status ?? null, {
+      id: 'status',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Status`} />,
+      cell: ({ row }) => (
+        <BadgeCondition
+          status={row.original.contactGroup?.status ?? null}
+          multiple={false}
+          showMessage
+          className="text-xs"
+        />
+      ),
+    }),
+    columnHelper.accessor('metadata.creationTimestamp', {
+      id: 'metadata.creationTimestamp',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Joined`} />,
+      cell: ({ getValue }) => <DateTime date={getValue()} />,
+    }),
+    columnHelper.display({
+      id: 'actions',
+      header: () => <div className="text-right" />,
+      cell: ({ row }) => (
+        <div className="flex w-full justify-end">
+          <DataTable.RowActions row={row} actions={actions} />
+        </div>
+      ),
+    }),
+  ];
+
+  const addGroupSchema = z.object({ name: z.string().nonempty(t`Group is required`) });
 
   const handleAddGroup = async (formData: z.infer<typeof addGroupSchema>) => {
-    try {
-      const [name, namespace] = formData.name.split('|');
-      await contactGroupMembershipCreateMutation('default', {
-        contactGroupRef: { name, namespace },
-        contactRef: {
-          name: data.contact?.metadata?.name ?? '',
-          namespace: data.contact?.metadata?.namespace ?? 'default',
-        },
-      });
-
-      await new Promise((resolve) => setTimeout(() => resolve(tableState.query.refetch()), 1000));
-      toast.success(t`Group added successfully`);
-    } catch (error) {
-      throw error; // Re-throw to keep dialog open
-    }
+    const [name, namespace] = formData.name.split('|');
+    await contactGroupMembershipCreateMutation('default', {
+      contactGroupRef: { name, namespace },
+      contactRef: {
+        name: detail.contact?.metadata?.name ?? '',
+        namespace: detail.contact?.metadata?.namespace ?? 'default',
+      },
+    });
+    await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 1000));
+    toast.success(t`Group added successfully`);
   };
 
   return (
     <>
       <AppActionBar>
-        <Button
-          type="primary"
-          icon={<PlusCircleIcon size={16} />}
-          onClick={() => setIsAddGroup(true)}>
+        <Button type="primary" icon={<PlusCircleIcon size={16} />} onClick={() => setIsAddGroup(true)}>
           <Trans>Add</Trans>
         </Button>
       </AppActionBar>
-
       <DialogConfirm
         open={!!selectedGroup}
         onOpenChange={() => setSelectedGroup(null)}
@@ -188,14 +160,11 @@ export default function Page() {
         variant="destructive"
         onConfirm={async () => {
           await contactGroupMembershipDeleteMutation(selectedGroup?.metadata);
-          await new Promise((resolve) =>
-            setTimeout(() => resolve(tableState.query.refetch()), 2000)
-          );
+          await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 2000));
           setSelectedGroup(null);
           toast.success(t`Group deleted successfully`);
         }}
       />
-
       <DialogForm
         open={isAddGroup}
         onOpenChange={() => setIsAddGroup(false)}
@@ -214,21 +183,38 @@ export default function Page() {
           isLoading={contactGroupsLoading}
         />
       </DialogForm>
-
-      <ClientDataTableProvider<
-        ContactMembershipWithContactGroup,
-        ContactMembershipListWithContactGroups
-      >
-        {...tableState}
+      <DataTable.Client
+        loading={tableQuery.isLoading}
+        data={items}
         columns={columns}
-        actions={actions}
-        transform={(data) => data?.items ?? []}
-        globalFilterFn={globalFilterFn}>
-        <div className="m-4 flex flex-col gap-2">
-          <ClientDataTableSearch placeholder={t`Search groups...`} />
-          <ClientDataTable />
-        </div>
-      </ClientDataTableProvider>
+        pageSize={20}
+        getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
+        defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+        searchFn={(row, search) => {
+          const q = search.trim().toLowerCase();
+          if (!q) return true;
+          const cg = row.contactGroup;
+          return [
+            cg?.metadata?.name,
+            cg?.spec?.displayName,
+            cg?.spec?.visibility,
+            cg?.spec?.description,
+          ]
+            .map((s) => (s ?? '').toLowerCase())
+            .some((s) => s.includes(q));
+        }}>
+        <Card className="m-4 py-4 shadow-none">
+          <CardContent className="flex flex-col gap-2 px-4">
+            <DataTable.Search placeholder={t`Search groups...`} className="w-64" />
+            <DataTable.Content
+              headerClassName="bg-muted/50"
+              className="border-t border-b border-solid"
+              emptyMessage={t`No groups found.`}
+            />
+            <DataTable.Pagination className="pb-0" />
+          </CardContent>
+        </Card>
+      </DataTable.Client>
     </>
   );
 }

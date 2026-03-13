@@ -3,16 +3,24 @@ import {
   useContactListQuery,
   useOrgListQuery,
   useProjectListQuery,
+  userListQuery,
   useUserListQuery,
 } from '@/resources/request/client';
+import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
 
 export function useUserSearch() {
   const [searchQuery, setSearchQuery] = React.useState('');
 
-  const { data: data, isLoading } = useUserListQuery({
+  const params = {
     limit: 50,
     ...(searchQuery && { search: searchQuery }),
+  };
+  const { data: data, isLoading } = useQuery({
+    queryKey: ['users', 'list', params],
+    queryFn: () => userListQuery(params),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: !!searchQuery,
   });
 
   const options = React.useMemo(() => {

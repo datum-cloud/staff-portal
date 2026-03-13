@@ -18,7 +18,7 @@ import {
   readIamMiloapisComV1Alpha1User,
 } from '@openapi/iam.miloapis.com/v1alpha1';
 import { listNotificationMiloapisComV1Alpha1EmailForAllNamespaces } from '@openapi/notification.miloapis.com/v1alpha1';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 export const userGetQuery = async (userId: string): Promise<ComMiloapisIamV1Alpha1User | null> => {
   const response = await readIamMiloapisComV1Alpha1User({
@@ -228,6 +228,5 @@ export const useUserListQuery = (params?: ListQueryParams) => {
     queryKey: ['users', 'list', params],
     queryFn: () => userListQuery(params),
     staleTime: 5 * 60 * 1000, // 5 minutes
-    enabled: !!params?.search,
   });
 };

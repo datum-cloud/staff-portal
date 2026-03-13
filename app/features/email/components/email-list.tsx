@@ -3,23 +3,17 @@ import { DateTime } from '@/components/date';
 import { getEmailCondition } from '@/features/email/email-utils';
 import { routes } from '@/utils/config/routes.config';
 import { startCase } from '@/utils/helpers';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Text } from '@datum-cloud/datum-ui/typography';
-import {
-  ClientDataTable,
-  ClientDataTableFacetFilter,
-  ClientDataTableProvider,
-  ClientDataTableSearch,
-  createAdvancedSearch,
-  useClientDataTableQuery,
-} from '@datum-ui/client-data-table';
-import { DataTableActiveFilters } from '@datum-ui/data-table';
 import { t } from '@lingui/core/macro';
-import { Trans } from '@lingui/react/macro';
 import {
   ComMiloapisNotificationV1Alpha1Email,
   ComMiloapisNotificationV1Alpha1EmailList,
 } from '@openapi/notification.miloapis.com/v1alpha1';
+import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
+import { useMemo } from 'react';
 import { Link } from 'react-router';
 
 interface EmailListProps {
@@ -28,38 +22,51 @@ interface EmailListProps {
   searchPlaceholder?: string;
 }
 
-const columnHelper = createColumnHelper<ComMiloapisNotificationV1Alpha1Email>();
+function listQueryKey(prefix: string | string[]) {
+  return Array.isArray(prefix) ? [...prefix, 'list'] : [prefix, 'list'];
+}
+
+function rowsForTable(items: ComMiloapisNotificationV1Alpha1Email[]) {
+  return items.map((row) => ({
+    ...row,
+    priority: row.spec?.priority,
+    deliveryStatus: getEmailCondition(row)?.status,
+  }));
+}
+
+const columnHelper = createColumnHelper<
+  ComMiloapisNotificationV1Alpha1Email & {
+    priority?: string;
+    deliveryStatus?: string;
+  }
+>();
 
 export default function EmailList({ queryKeyPrefix, fetchFn, searchPlaceholder }: EmailListProps) {
-  const tableState = useClientDataTableQuery<ComMiloapisNotificationV1Alpha1EmailList>({
-    queryKeyPrefix,
-    fetchFn,
-    defaultSort: ['metadata.creationTimestamp:desc'],
-    useSorting: true,
-    useFilters: true,
-    useSearch: true,
+  const queryKey = useMemo(() => listQueryKey(queryKeyPrefix), [queryKeyPrefix]);
+  const tableQuery = useQuery({
+    queryKey,
+    queryFn: fetchFn,
   });
+
+  const data = useMemo(() => rowsForTable(tableQuery.data?.items ?? []), [tableQuery.data?.items]);
 
   const columns = [
     columnHelper.accessor('status.emailAddress', {
-      header: () => <Trans>Recipient</Trans>,
-      cell: ({ row, getValue }) => {
-        return (
-          <Link
-            to={routes.emailActivityDetail(
-              row.original.metadata?.namespace ?? '',
-              row.original.metadata?.name ?? ''
-            )}>
-            {getValue()}
-          </Link>
-        );
-      },
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Recipient`} />,
+      cell: ({ row, getValue }) => (
+        <Link
+          to={routes.emailActivityDetail(
+            row.original.metadata?.namespace ?? '',
+            row.original.metadata?.name ?? ''
+          )}>
+          {getValue()}
+        </Link>
+      ),
     }),
     columnHelper.accessor('status', {
-      header: () => <Trans>Status</Trans>,
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Status`} />,
       cell: ({ row }) => {
         const condition = getEmailCondition(row.original);
-
         return (
           <BadgeState
             state={condition?.status?.toLowerCase() ?? ''}
@@ -69,7 +76,7 @@ export default function EmailList({ queryKeyPrefix, fetchFn, searchPlaceholder }
       },
     }),
     columnHelper.accessor('status.subject', {
-      header: () => <Trans>Subject</Trans>,
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Subject`} />,
       cell: ({ getValue }) => {
         const subject = getValue();
         return subject ? (
@@ -83,106 +90,97 @@ export default function EmailList({ queryKeyPrefix, fetchFn, searchPlaceholder }
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'metadata.creationTimestamp',
-      header: () => <Trans>Sent</Trans>,
-      cell: ({ getValue }) => {
-        return <DateTime date={getValue()} />;
-      },
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Sent`} />,
+      cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
   ];
 
   return (
-    <ClientDataTableProvider<
-      ComMiloapisNotificationV1Alpha1Email,
-      ComMiloapisNotificationV1Alpha1EmailList
-    >
+    <DataTable.Client
+      loading={tableQuery.isLoading}
+      data={data}
       columns={columns}
-      transform={(data) => data?.items || []}
-      filterFn={(row, filters) => {
-        // Filter by priority
-        if (filters.priority) {
-          if (row.spec?.priority !== filters.priority) {
-            return false;
-          }
-        }
-
-        // Filter by status (from conditions)
-        if (filters.status) {
-          const condition = getEmailCondition(row);
-          if (condition?.status !== filters.status) {
-            return false;
-          }
-        }
-
-        return true;
+      pageSize={20}
+      getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
+      defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+      filterFns={{
+        'spec.priority': (cellValue, filterValue) =>
+          String(cellValue ?? '').toLowerCase() === String(filterValue ?? '').toLowerCase(),
+        deliveryStatus: (cellValue, filterValue) =>
+          String(cellValue ?? '') === String(filterValue ?? ''),
       }}
-      globalFilterFn={createAdvancedSearch<ComMiloapisNotificationV1Alpha1Email>([
-        (row) =>
-          row.status?.emailAddress?.toLowerCase() ||
-          row.spec?.recipient?.emailAddress?.toLowerCase() ||
-          '',
-      ])}
-      {...tableState}>
-      <div className="m-4 flex flex-col gap-2">
-        <div className="flex items-center gap-4">
-          <ClientDataTableSearch placeholder={searchPlaceholder || t`Search email activity...`} />
-          <ClientDataTableFacetFilter
-            filterKey="priority"
-            label={t`Priority`}
-            placeholder={t`Filter by priority`}
-            options={[
-              { value: 'normal', label: t`Normal` },
-              { value: 'high', label: t`High` },
-              { value: 'low', label: t`Low` },
-            ]}
-          />
-          <ClientDataTableFacetFilter
-            filterKey="status"
-            label={t`Status`}
-            placeholder={t`Filter by status`}
-            options={[
-              { value: 'True', label: t`Delivered` },
-              { value: 'False', label: t`Failed` },
-              { value: 'Unknown', label: t`Pending` },
-            ]}
-          />
-        </div>
+      searchFn={(row, search) => {
+        const q = search.trim().toLowerCase();
+        if (!q) return true;
+        const a = (row.status?.emailAddress ?? '').toLowerCase();
+        const b = (row.spec?.recipient?.emailAddress ?? '').toLowerCase();
+        return a.includes(q) || b.includes(q);
+      }}>
+      <Card className="m-4 py-4 shadow-none">
+        <CardContent className="flex flex-col gap-2 px-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <DataTable.Search
+              placeholder={searchPlaceholder ?? t`Search email activity...`}
+              className="w-64 min-w-[12rem]"
+            />
+            <DataTable.SelectFilter
+              column="spec.priority"
+              label={t`Priority`}
+              placeholder={t`Filter by priority`}
+              options={[
+                { value: 'normal', label: t`Normal` },
+                { value: 'high', label: t`High` },
+                { value: 'low', label: t`Low` },
+              ]}
+            />
+            <DataTable.SelectFilter
+              column="deliveryStatus"
+              label={t`Status`}
+              placeholder={t`Filter by status`}
+              options={[
+                { value: 'True', label: t`Delivered` },
+                { value: 'False', label: t`Failed` },
+                { value: 'Unknown', label: t`Pending` },
+              ]}
+            />
+          </div>
 
-        <DataTableActiveFilters
-          filters={tableState.filters}
-          search={tableState.search}
-          onClearFilter={tableState.clearFilter}
-          onClearAllFilters={tableState.clearAllFilters}
-          onClearSearch={tableState.clearSearch}
-          filterLabels={{
-            priority: t`Priority`,
-            status: t`Status`,
-          }}
-          formatFilterValue={(key, value) => {
-            if (key === 'priority') {
-              const labels: Record<string, string> = {
-                normal: t`Normal`,
-                high: t`High`,
-                low: t`Low`,
-              };
-              return (
-                labels[value] || String(value).charAt(0).toUpperCase() + String(value).slice(1)
-              );
-            }
-            if (key === 'status') {
-              const labels: Record<string, string> = {
-                True: t`Delivered`,
-                False: t`Failed`,
-                Unknown: t`Pending`,
-              };
-              return labels[value] || String(value);
-            }
-            return String(value);
-          }}
-          excludeFilters={['search']}
-        />
+          <DataTable.ActiveFilters
+            excludeFilters={['search']}
+            filterLabels={{
+              'spec.priority': t`Priority`,
+              deliveryStatus: t`Status`,
+            }}
+            formatFilterValue={{
+              'spec.priority': (value: string) => {
+                const labels: Record<string, string> = {
+                  normal: t`Normal`,
+                  high: t`High`,
+                  low: t`Low`,
+                };
+                return (
+                  labels[value] || String(value).charAt(0).toUpperCase() + String(value).slice(1)
+                );
+              },
+              deliveryStatus: (value: string) => {
+                const labels: Record<string, string> = {
+                  True: t`Delivered`,
+                  False: t`Failed`,
+                  Unknown: t`Pending`,
+                };
+                return labels[value] ?? String(value);
+              },
+            }}
+          />
 
-        <ClientDataTable<ComMiloapisNotificationV1Alpha1Email> />
-      </div>
-    </ClientDataTableProvider>
+          <DataTable.Content
+            headerClassName="bg-muted/50"
+            className="border-t border-b border-solid"
+            emptyMessage={t`No email activity found.`}
+          />
+          <DataTable.Pagination className="pb-0" />
+        </CardContent>
+      </Card>
+    </DataTable.Client>
   );
 }

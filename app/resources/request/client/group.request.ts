@@ -6,6 +6,7 @@ import {
   listIamMiloapisComV1Alpha1GroupForAllNamespaces,
   listIamMiloapisComV1Alpha1GroupMembershipForAllNamespaces,
 } from '@openapi/iam.miloapis.com/v1alpha1';
+import { useQuery } from '@tanstack/react-query';
 
 export const groupListQuery = async (params?: ListQueryParams) => {
   const response = await listIamMiloapisComV1Alpha1GroupForAllNamespaces({
@@ -15,6 +16,14 @@ export const groupListQuery = async (params?: ListQueryParams) => {
     },
   });
   return response.data.data;
+};
+
+export const useGroupListQuery = (params?: ListQueryParams) => {
+  return useQuery({
+    queryKey: ['groups', 'list', params],
+    queryFn: () => groupListQuery(params),
+    staleTime: 5 * 60 * 1000,
+  });
 };
 
 export const groupMembershipListQuery = async (

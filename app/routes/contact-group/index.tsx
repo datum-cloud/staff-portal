@@ -8,26 +8,17 @@ import { contactGroupDeleteMutation, contactGroupListQuery } from '@/resources/r
 import { contactGroupRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { useTaskQueue } from '@datum-cloud/datum-ui/task-queue';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import {
-  ClientDataTable,
-  ClientDataTableProvider,
-  ClientDataTableSearch,
-  createAdvancedSearch,
-  useClientDataTableQuery,
-} from '@datum-ui/client-data-table';
-import { ActionItem } from '@datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import {
-  ComMiloapisNotificationV1Alpha1ContactGroup,
-  ComMiloapisNotificationV1Alpha1ContactGroupList,
-} from '@openapi/notification.miloapis.com/v1alpha1';
-import { useQueryClient } from '@tanstack/react-query';
+import { ComMiloapisNotificationV1Alpha1ContactGroup } from '@openapi/notification.miloapis.com/v1alpha1';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { EditIcon, PlusCircleIcon, Trash2Icon } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
@@ -35,39 +26,6 @@ export const meta: Route.MetaFunction = () => {
 };
 
 const columnHelper = createColumnHelper<ComMiloapisNotificationV1Alpha1ContactGroup>();
-const columns = [
-  columnHelper.accessor('metadata.name', {
-    header: () => <Trans>Name</Trans>,
-    cell: ({ row }) => {
-      const contactGroupName = row.original.metadata?.name ?? '';
-
-      return (
-        <DisplayName
-          displayName={row.original.spec?.displayName ?? ''}
-          name={contactGroupName}
-          to={`./${contactGroupName}`}
-        />
-      );
-    },
-  }),
-  columnHelper.accessor('spec.visibility', {
-    header: () => <Trans>Visibility</Trans>,
-    cell: ({ getValue }) => {
-      return <BadgeState state={getValue() ?? 'public'} />;
-    },
-  }),
-  columnHelper.accessor('status', {
-    header: () => <Trans>Status</Trans>,
-    cell: ({ getValue }) => (
-      <BadgeCondition status={getValue()} multiple={false} showMessage className="text-xs" />
-    ),
-  }),
-  columnHelper.accessor('metadata.creationTimestamp', {
-    id: 'metadata.creationTimestamp',
-    header: () => <Trans>Created</Trans>,
-    cell: ({ getValue }) => <DateTime date={getValue()} />,
-  }),
-];
 
 export default function Page() {
   const navigate = useNavigate();
@@ -79,36 +37,66 @@ export default function Page() {
     ComMiloapisNotificationV1Alpha1ContactGroup[] | null
   >(null);
 
-  const tableState = useClientDataTableQuery<ComMiloapisNotificationV1Alpha1ContactGroupList>({
-    defaultSort: ['metadata.creationTimestamp:desc'],
-    useSorting: true,
-    useSearch: true,
-    queryKeyPrefix: 'contact-groups',
-    fetchFn: () => contactGroupListQuery(),
+  const tableQuery = useQuery({
+    queryKey: ['contact-groups', 'list'],
+    queryFn: () => contactGroupListQuery(),
   });
-
-  const { selectedRowsForBulk, selectedCount } = useMemo(() => {
-    const data = tableState.query.data?.items ?? [];
-    const selectedIds = Object.keys(tableState.rowSelection ?? {}).filter(
-      (id) => tableState.rowSelection![id]
-    );
-    const rows = data.filter((row) => selectedIds.includes(row.metadata?.name ?? ''));
-    return { selectedRowsForBulk: rows, selectedCount: rows.length };
-  }, [tableState.query.data, tableState.rowSelection]);
 
   const actions: ActionItem<ComMiloapisNotificationV1Alpha1ContactGroup>[] = [
     {
-      label: 'Edit',
+      label: t`Edit`,
       icon: EditIcon,
       onClick: (row) => navigate(contactGroupRoutes.detail(row.metadata?.name ?? '')),
     },
     {
-      label: 'Delete',
+      label: t`Delete`,
       icon: Trash2Icon,
       variant: 'destructive' as const,
       onClick: (row) => setSelectedContactGroup(row),
     },
   ];
+
+  const columns = [
+    columnHelper.accessor('metadata.name', {
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+      cell: ({ row }) => {
+        const contactGroupName = row.original.metadata?.name ?? '';
+        return (
+          <DisplayName
+            displayName={row.original.spec?.displayName ?? ''}
+            name={contactGroupName}
+            to={`./${contactGroupName}`}
+          />
+        );
+      },
+    }),
+    columnHelper.accessor('spec.visibility', {
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Visibility`} />,
+      cell: ({ getValue }) => <BadgeState state={getValue() ?? 'public'} />,
+    }),
+    columnHelper.accessor('status', {
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Status`} />,
+      cell: ({ getValue }) => (
+        <BadgeCondition status={getValue()} multiple={false} showMessage className="text-xs" />
+      ),
+    }),
+    columnHelper.accessor('metadata.creationTimestamp', {
+      id: 'metadata.creationTimestamp',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      cell: ({ getValue }) => <DateTime date={getValue()} />,
+    }),
+    columnHelper.display({
+      id: 'actions',
+      header: () => <div className="text-right" />,
+      cell: ({ row }) => (
+        <div className="flex w-full justify-end">
+          <DataTable.RowActions row={row} actions={actions} />
+        </div>
+      ),
+    }),
+  ];
+
+  const rows = tableQuery.data?.items ?? [];
 
   return (
     <>
@@ -131,9 +119,7 @@ export default function Page() {
         variant="destructive"
         onConfirm={async () => {
           await contactGroupDeleteMutation(selectedContactGroup?.metadata);
-          await new Promise((resolve) =>
-            setTimeout(() => resolve(tableState.query.refetch()), 1000)
-          );
+          await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 1000));
           setSelectedContactGroup(null);
           toast.success(t`Contact Group deleted successfully`);
         }}
@@ -152,15 +138,14 @@ export default function Page() {
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={() => {
-          const rows = bulkDeleteRows ?? [];
+          const taskRows = bulkDeleteRows ?? [];
           setBulkDeleteRows(null);
-          tableState.setRowSelection({});
           const taskTitle =
-            rows.length === 1 ? t`Delete contact group` : t`Delete ${rows.length} contact groups`;
+            taskRows.length === 1 ? t`Delete contact group` : t`Delete ${taskRows.length} contact groups`;
           enqueue({
             title: taskTitle,
             icon: <Trash2Icon className="size-4" />,
-            items: rows,
+            items: taskRows,
             itemConcurrency: 3,
             getItemId: (row) => row.metadata?.name ?? '',
             processItem: async (row) => {
@@ -168,7 +153,6 @@ export default function Page() {
             },
             onComplete: () => {
               queryClient.invalidateQueries({ queryKey: ['contact-groups'] });
-              tableState.setRowSelection({});
             },
             completionActions: (_result, { failed, items: summaryItems }) => [
               ...(failed > 0
@@ -206,37 +190,56 @@ export default function Page() {
         }}
       />
 
-      <ClientDataTableProvider<
-        ComMiloapisNotificationV1Alpha1ContactGroup,
-        ComMiloapisNotificationV1Alpha1ContactGroupList
-      >
-        {...tableState}
-        selectable
-        getRowId={(row) => row.metadata?.name ?? ''}
-        actions={actions}
+      <DataTable.Client
+        loading={tableQuery.isLoading}
+        data={rows}
         columns={columns}
-        transform={(data) => data.items || []}
-        globalFilterFn={createAdvancedSearch<ComMiloapisNotificationV1Alpha1ContactGroup>([
-          (row) => row.metadata?.name?.toLowerCase() || '',
-          (row) => row.spec?.displayName?.toLowerCase() || '',
-          (row) => row.spec?.visibility?.toLowerCase() || '',
-        ])}>
-        <div className="m-4 flex flex-col gap-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <ClientDataTableSearch placeholder={t`Search contact groups...`} />
-            {selectedCount > 0 && (
-              <Button
-                type="danger"
-                theme="outline"
-                icon={<Trash2Icon size={16} />}
-                onClick={() => setBulkDeleteRows(selectedRowsForBulk)}>
-                <Trans>Delete {selectedCount} selected</Trans>
-              </Button>
-            )}
-          </div>
-          <ClientDataTable />
-        </div>
-      </ClientDataTableProvider>
+        pageSize={20}
+        getRowId={(row) => row.metadata?.name ?? ''}
+        enableRowSelection
+        defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+        searchFn={(row, search) => {
+          const q = search.trim().toLowerCase();
+          if (!q) return true;
+          return [
+            row.metadata?.name,
+            row.spec?.displayName,
+            row.spec?.visibility,
+          ]
+            .map((s) => (s ?? '').toLowerCase())
+            .some((s) => s.includes(q));
+        }}>
+        <Card className="m-4 py-4 shadow-none">
+          <CardContent className="flex flex-col gap-2 px-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <DataTable.Search placeholder={t`Search contact groups...`} className="w-64" />
+              <DataTable.BulkActions>
+                {(selectedRows) =>
+                  selectedRows.length > 0 ? (
+                    <Button
+                      type="danger"
+                      theme="outline"
+                      icon={<Trash2Icon size={16} />}
+                      onClick={() =>
+                        setBulkDeleteRows(
+                          selectedRows as ComMiloapisNotificationV1Alpha1ContactGroup[]
+                        )
+                      }>
+                      <Trans>Delete {selectedRows.length} selected</Trans>
+                    </Button>
+                  ) : null
+                }
+              </DataTable.BulkActions>
+            </div>
+            <DataTable.Content
+              headerClassName="bg-muted/50"
+              className="border-t border-b border-solid"
+              emptyMessage={t`No contact groups found.`}
+            />
+            <DataTable.Pagination className="pb-0" />
+          </CardContent>
+        </Card>
+      </DataTable.Client>
     </>
   );
 }
