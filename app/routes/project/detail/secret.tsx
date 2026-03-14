@@ -56,8 +56,8 @@ export default function Page() {
       data={rows}
       columns={columns}
       pageSize={20}
-      getRowId={(row, i) =>
-        `${row.metric.resource_namespace}/${row.metric.resource_name}/${row.metric.resource_version}/${i}`
+      getRowId={(row) =>
+        `${row.metric.resource_namespace}/${row.metric.resource_name}/${row.metric.resource_version}/${row.value[1]}`
       }
       searchFn={(row, search) => {
         const q = search.trim().toLowerCase();
