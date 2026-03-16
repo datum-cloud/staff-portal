@@ -82,6 +82,8 @@ export const fraudRoutes = {
   list: () => '/fraud',
   evaluations: () => '/fraud',
   providers: () => '/fraud/providers',
+  providerCreate: () => '/fraud/providers/create',
+  providerDetail: (name: string) => `/fraud/providers/${name}`,
   policy: () => '/fraud/policy',
   evaluationDetail: (name: string) => `/fraud/${name}`,
 } as const;

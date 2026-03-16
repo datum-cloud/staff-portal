@@ -86,7 +86,11 @@ export default [
     // Fraud & Abuse
     route('fraud', 'routes/fraud/layout.tsx', [
       index('routes/fraud/index.tsx'),
-      route('providers', 'routes/fraud/providers.tsx'),
+      route('providers', 'routes/fraud/providers/layout.tsx', [
+        index('routes/fraud/providers/index.tsx'),
+        route('create', 'routes/fraud/providers/create.tsx'),
+        route(':providerName', 'routes/fraud/providers/detail.tsx'),
+      ]),
       route('policy', 'routes/fraud/policy.tsx'),
       route(':evalName', 'routes/fraud/detail/index.tsx'),
     ]),
