@@ -33,8 +33,8 @@ export const projectHttpProxyListQuery = async (projectName: string, params?: Li
   const response = await listNetworkingDatumapisComV1AlphaHttpProxyForAllNamespaces({
     baseURL: `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
     query: {
-      limit: params?.limit,
-      continue: params?.cursor,
+      ...(params?.limit && { limit: params.limit }),
+      ...(params?.cursor && { continue: params.cursor }),
     },
   });
   return response.data.data;
@@ -47,8 +47,8 @@ export const projectExportPolicyListQuery = async (
   const response = await listTelemetryMiloapisComV1Alpha1ExportPolicyForAllNamespaces({
     baseURL: `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
     query: {
-      limit: params?.limit,
-      continue: params?.cursor,
+      ...(params?.limit && { limit: params.limit }),
+      ...(params?.cursor && { continue: params.cursor }),
     },
   });
   return response.data.data;
@@ -58,8 +58,8 @@ export const projectDnsListQuery = async (projectName: string, params?: ListQuer
   const response = await listDnsNetworkingMiloapisComV1Alpha1DnsZoneForAllNamespaces({
     baseURL: `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
     query: {
-      limit: params?.limit,
-      continue: params?.cursor,
+      ...(params?.limit && { limit: params.limit }),
+      ...(params?.cursor && { continue: params.cursor }),
     },
   });
   return response.data.data;
@@ -82,6 +82,19 @@ export const projectDnsRecordListQuery = async (
 
   const flattened = flattenManagedRecordSets(response.data.data);
   return flattened;
+};
+
+export const useProjectDnsRecordListQuery = (
+  projectName: string,
+  dnsName: string,
+  namespace: string = 'default'
+) => {
+  return useQuery({
+    queryKey: ['projects', projectName, 'dns', dnsName, 'records', namespace],
+    queryFn: () => projectDnsRecordListQuery(projectName, dnsName, namespace),
+    enabled: Boolean(projectName && dnsName),
+    staleTime: 60 * 1000,
+  });
 };
 
 export const projectDnsRecordStatusQuery = async (
@@ -139,5 +152,41 @@ export const useProjectListQuery = (params?: ListQueryParams) => {
     queryKey: ['projects', 'list', params],
     queryFn: () => projectListQuery(params),
     staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+export const useProjectDomainListQuery = (projectName: string, params?: ListQueryParams) => {
+  return useQuery({
+    queryKey: ['projects', projectName, 'domains', 'list', params],
+    queryFn: () => projectDomainListQuery(projectName, params),
+    enabled: Boolean(projectName),
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useProjectHttpProxyListQuery = (projectName: string, params?: ListQueryParams) => {
+  return useQuery({
+    queryKey: ['projects', projectName, 'http-proxies', 'list', params],
+    queryFn: () => projectHttpProxyListQuery(projectName, params),
+    enabled: Boolean(projectName),
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useProjectExportPolicyListQuery = (projectName: string, params?: ListQueryParams) => {
+  return useQuery({
+    queryKey: ['projects', projectName, 'export-policies', 'list', params],
+    queryFn: () => projectExportPolicyListQuery(projectName, params),
+    enabled: Boolean(projectName),
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useProjectDnsListQuery = (projectName: string, params?: ListQueryParams) => {
+  return useQuery({
+    queryKey: ['projects', projectName, 'dns', 'list', params],
+    queryFn: () => projectDnsListQuery(projectName, params),
+    enabled: Boolean(projectName),
+    staleTime: 5 * 60 * 1000,
   });
 };

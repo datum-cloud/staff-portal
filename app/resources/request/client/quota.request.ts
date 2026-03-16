@@ -17,6 +17,7 @@ import {
   readQuotaMiloapisComV1Alpha1NamespacedResourceGrant,
   readQuotaMiloapisComV1Alpha1ResourceRegistration,
 } from '@openapi/quota.miloapis.com/v1alpha1';
+import { useQuery } from '@tanstack/react-query';
 
 const MILO_SYSTEM_NAMESPACE = 'milo-system';
 
@@ -62,8 +63,8 @@ export const quotaGrantListQuery = async (
     ...(params?.baseURL && { baseURL: params.baseURL }),
     path: { namespace },
     query: {
-      limit: params?.limit,
-      continue: params?.cursor,
+      ...(params?.limit && { limit: params.limit }),
+      ...(params?.cursor && { continue: params.cursor }),
       ...(params?.fieldSelector && { fieldSelector: params.fieldSelector }),
       ...(params?.labelSelector && { labelSelector: params.labelSelector }),
     },
@@ -192,8 +193,8 @@ export const quotaBucketListQuery = async (
     ...(params?.baseURL && { baseURL: params.baseURL }),
     path: { namespace },
     query: {
-      limit: params?.limit,
-      continue: params?.cursor,
+      ...(params?.limit && { limit: params.limit }),
+      ...(params?.cursor && { continue: params.cursor }),
       ...(params?.fieldSelector && { fieldSelector: params.fieldSelector }),
       ...(params?.labelSelector && { labelSelector: params.labelSelector }),
     },
@@ -323,3 +324,39 @@ export const projectQuotaClaimListQuery = (
 //     path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
 //   });
 // };
+
+export const useOrgQuotaBucketListQuery = (orgName: string, params?: ListQueryParams) => {
+  return useQuery({
+    queryKey: ['organizations', orgName, 'quota', 'buckets', 'list', params],
+    queryFn: () => orgQuotaBucketListQuery(orgName, params),
+    enabled: Boolean(orgName),
+    staleTime: 60 * 1000,
+  });
+};
+
+export const useProjectQuotaBucketListQuery = (projectName: string, params?: ListQueryParams) => {
+  return useQuery({
+    queryKey: ['projects', projectName, 'quota', 'buckets', 'list', params],
+    queryFn: () => projectQuotaBucketListQuery(projectName, params),
+    enabled: Boolean(projectName),
+    staleTime: 60 * 1000,
+  });
+};
+
+export const useOrgQuotaGrantListQuery = (orgName: string, params?: ListQueryParams) => {
+  return useQuery({
+    queryKey: ['organizations', orgName, 'quota', 'grants', 'list', params],
+    queryFn: () => orgQuotaGrantListQuery(orgName, params),
+    enabled: Boolean(orgName),
+    staleTime: 60 * 1000,
+  });
+};
+
+export const useProjectQuotaGrantListQuery = (projectName: string, params?: ListQueryParams) => {
+  return useQuery({
+    queryKey: ['projects', projectName, 'quota', 'grants', 'list', params],
+    queryFn: () => projectQuotaGrantListQuery(projectName, params),
+    enabled: Boolean(projectName),
+    staleTime: 60 * 1000,
+  });
+};

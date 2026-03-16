@@ -1,29 +1,28 @@
 import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
-import { quotaGrantCreateMutation } from '@/resources/request/client';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
-import {
-  DataTable,
-  DataTableProvider,
-  useDataTableQuery,
-  type ActionItem,
-} from '@datum-ui/data-table';
 import { Form } from '@datum-ui/form';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 import {
   ComMiloapisQuotaV1Alpha1AllowanceBucket,
   ComMiloapisQuotaV1Alpha1AllowanceBucketList,
   ComMiloapisQuotaV1Alpha1ResourceGrant,
 } from '@openapi/quota.miloapis.com/v1alpha1';
+import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PencilIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import z from 'zod';
 
 interface QuotaBucketListProps {
   queryKeyPrefix: string[];
-  fetchFn: (params: any) => Promise<ComMiloapisQuotaV1Alpha1AllowanceBucketList>;
+  fetchFn: (
+    params?: Record<string, unknown>
+  ) => Promise<ComMiloapisQuotaV1Alpha1AllowanceBucketList>;
   createGrantFn: (
     namespace: string,
     payload: ComMiloapisQuotaV1Alpha1ResourceGrant['spec']
@@ -32,89 +31,89 @@ interface QuotaBucketListProps {
 
 const columnHelper = createColumnHelper<ComMiloapisQuotaV1Alpha1AllowanceBucket>();
 
-const columns = [
-  columnHelper.accessor('spec.resourceType', {
-    header: () => <Trans>Resource Type</Trans>,
-    cell: ({ getValue }) => getValue(),
-  }),
-  columnHelper.accessor('status', {
-    id: 'usage',
-    header: () => <Trans>Usage</Trans>,
-    cell: ({ getValue }) => {
-      const status = getValue();
-      if (!status) {
-        return <Text textColor="muted">-</Text>;
-      }
-
-      const { allocated = 0, available = 0, limit = 0 } = status;
-      const used = allocated;
-      const total = limit;
-      const percentage = total > 0 ? Math.round((used / total) * 100) : 0;
-
-      // Determine progress bar color based on thresholds
-      const getProgressBarColor = (percentage: number, limit: number) => {
-        if (limit === 0) {
-          return 'bg-gray-400'; // Gray for no limit set
-        }
-        if (percentage <= 70) {
-          return 'bg-green-500'; // Green for healthy usage (0-70%)
-        }
-        if (percentage <= 90) {
-          return 'bg-yellow-500'; // Yellow for warning (70-90%)
-        }
-        return 'bg-red-500'; // Red for critical (90-100%)
-      };
-
-      return (
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <Text size="sm" weight="medium">
-              {used} / {total}
-            </Text>
-            <Text size="xs" textColor="muted">
-              ({percentage}%)
-            </Text>
-          </div>
-          <div className="bg-muted h-2 w-full rounded-full">
-            <div
-              className={`${getProgressBarColor(percentage, total)} h-2 rounded-full transition-all`}
-              style={{ width: `${Math.min(percentage, 100)}%` }}
-            />
-          </div>
-        </div>
-      );
-    },
-  }),
-  columnHelper.accessor('metadata.creationTimestamp', {
-    header: () => <Trans>Created</Trans>,
-    cell: ({ getValue }) => {
-      return <DateTime date={getValue()} />;
-    },
-  }),
-];
-
 export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: QuotaBucketListProps) {
-  const { t } = useLingui();
+  const { t: tMacro } = useLingui();
   const [selected, setSelected] = useState<ComMiloapisQuotaV1Alpha1AllowanceBucket | null>(null);
 
-  const tableState = useDataTableQuery<ComMiloapisQuotaV1Alpha1AllowanceBucketList>({
-    queryKeyPrefix,
-    fetchFn,
-    useSorting: true,
+  const tableQuery = useQuery({
+    queryKey: [...queryKeyPrefix, 'list'],
+    queryFn: () => fetchFn({}),
+    enabled: queryKeyPrefix.length > 0 && queryKeyPrefix.some(Boolean),
+    staleTime: 60 * 1000,
   });
 
-  const actions: ActionItem<ComMiloapisQuotaV1Alpha1AllowanceBucket>[] = [
-    {
-      label: t`Edit Quota`,
-      icon: PencilIcon,
-      onClick: (row: ComMiloapisQuotaV1Alpha1AllowanceBucket) => {
-        setSelected(row);
+  const actions: ActionItem<ComMiloapisQuotaV1Alpha1AllowanceBucket>[] = useMemo(
+    () => [
+      {
+        label: tMacro`Edit Quota`,
+        icon: PencilIcon,
+        onClick: (row) => setSelected(row),
       },
-    },
-  ];
+    ],
+    [tMacro]
+  );
+
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor('spec.resourceType', {
+        header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Resource Type`} />,
+        cell: ({ getValue }) => getValue(),
+      }),
+      columnHelper.accessor('status', {
+        id: 'usage',
+        header: () => t`Usage`,
+        cell: ({ getValue }) => {
+          const status = getValue();
+          if (!status) return <Text className="text-muted-foreground">-</Text>;
+          const { allocated = 0, limit: lim = 0 } = status;
+          const used = allocated;
+          const total = lim;
+          const pct = total > 0 ? Math.round((used / total) * 100) : 0;
+          const bar =
+            total === 0
+              ? 'bg-gray-400'
+              : pct <= 70
+                ? 'bg-green-500'
+                : pct <= 90
+                  ? 'bg-yellow-500'
+                  : 'bg-red-500';
+          return (
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <Text className="text-sm font-medium">
+                  {used} / {total}
+                </Text>
+                <Text className="text-muted-foreground text-xs">({pct}%)</Text>
+              </div>
+              <div className="bg-muted h-2 w-full rounded-full">
+                <div
+                  className={`${bar} h-2 rounded-full transition-all`}
+                  style={{ width: `${Math.min(pct, 100)}%` }}
+                />
+              </div>
+            </div>
+          );
+        },
+      }),
+      columnHelper.accessor('metadata.creationTimestamp', {
+        id: 'metadata.creationTimestamp',
+        header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+        cell: ({ getValue }) => <DateTime date={getValue()} />,
+      }),
+      columnHelper.display({
+        id: 'actions',
+        header: () => <div className="text-right" />,
+        cell: ({ row }) => (
+          <div className="flex w-full justify-end">
+            <DataTable.RowActions row={row} actions={actions} />
+          </div>
+        ),
+      }),
+    ],
+    [actions]
+  );
 
   const currentLimit = selected?.status?.limit ?? 0;
-
   const increaseSchema = z.object({
     newLimit: z.coerce
       .number()
@@ -122,72 +121,77 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
       .min(currentLimit + 1, `New limit must be > ${currentLimit}`),
   });
 
-  const handleEditQuota = async (formData: z.infer<typeof increaseSchema>) => {
-    try {
-      const newLimit = formData.newLimit;
-      const amount = Math.max(0, newLimit - currentLimit);
-
-      await createGrantFn(selected?.metadata?.namespace ?? '', {
-        consumerRef: {
-          apiGroup: selected?.spec.consumerRef.apiGroup ?? '',
-          kind: selected?.spec.consumerRef.kind as 'Organization' | 'Project',
-          name: selected?.spec.consumerRef.name ?? '',
-        },
-        allowances: [
-          {
-            resourceType: selected?.spec.resourceType ?? '',
-            buckets: [{ amount }],
-          },
-        ],
-      });
-
-      await new Promise((resolve) => setTimeout(() => resolve(tableState.query.refetch()), 1000));
-      toast.success(t`Quota updated successfully`);
-    } catch (error) {
-      throw error; // Re-throw to keep dialog open
-    }
-  };
-
   return (
     <>
       <DialogForm
         open={!!selected}
         onOpenChange={() => setSelected(null)}
-        title={t`Edit Quota`}
-        submitText={t`Update`}
-        cancelText={t`Cancel`}
-        onSubmit={handleEditQuota}
+        title={tMacro`Edit Quota`}
+        submitText={tMacro`Update`}
+        cancelText={tMacro`Cancel`}
+        onSubmit={async (formData) => {
+          try {
+            const amount = Math.max(0, formData.newLimit - currentLimit);
+            await createGrantFn(selected?.metadata?.namespace ?? '', {
+              consumerRef: {
+                apiGroup: selected?.spec.consumerRef.apiGroup ?? '',
+                kind: selected?.spec.consumerRef.kind as 'Organization' | 'Project',
+                name: selected?.spec.consumerRef.name ?? '',
+              },
+              allowances: [
+                { resourceType: selected?.spec.resourceType ?? '', buckets: [{ amount }] },
+              ],
+            });
+            await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 1000));
+            toast.success(tMacro`Quota updated successfully`);
+          } catch (e) {
+            throw e;
+          }
+        }}
         schema={increaseSchema}
         defaultValues={{ newLimit: 0 }}>
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <Text textColor="muted">{t`Resource Type:`}</Text>
+            <Text className="text-muted-foreground">{tMacro`Resource Type:`}</Text>
             <Text>{selected?.spec.resourceType}</Text>
           </div>
           <div className="flex items-center gap-2">
-            <Text textColor="muted">{t`Limit:`}</Text>
+            <Text className="text-muted-foreground">{tMacro`Limit:`}</Text>
             <Text>{currentLimit}</Text>
           </div>
         </div>
-
-        <Form.Input field="newLimit" label={t`New Limit`} required />
+        <Form.Input field="newLimit" label={tMacro`New Limit`} required />
       </DialogForm>
 
-      <DataTableProvider<
-        ComMiloapisQuotaV1Alpha1AllowanceBucket,
-        ComMiloapisQuotaV1Alpha1AllowanceBucketList
-      >
+      <DataTable.Client
+        loading={tableQuery.isLoading}
+        data={tableQuery.data?.items ?? []}
         columns={columns}
-        actions={actions}
-        transform={(resp) => ({
-          rows: resp?.items || [],
-          cursor: resp?.metadata?.continue,
-        })}
-        {...tableState}>
-        <div className="m-4 flex flex-col gap-2">
-          <DataTable />
-        </div>
-      </DataTableProvider>
+        pageSize={20}
+        getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
+        defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+        searchFn={(row, search) => {
+          const q = search.trim().toLowerCase();
+          if (!q) return true;
+          return (row.spec?.resourceType ?? '').toLowerCase().includes(q);
+        }}>
+        <Card className="m-4 py-4 shadow-none">
+          <CardContent className="flex flex-col gap-2 px-4">
+            <div className="flex flex-wrap items-center gap-4">
+              <DataTable.Search
+                placeholder={t`Search by resource type...`}
+                className="w-64 min-w-[12rem]"
+              />
+            </div>
+            <DataTable.Content
+              headerClassName="bg-muted/50"
+              className="border-t border-b border-solid"
+              emptyMessage={t`No quota buckets found.`}
+            />
+            <DataTable.Pagination className="pb-0" />
+          </CardContent>
+        </Card>
+      </DataTable.Client>
     </>
   );
 }

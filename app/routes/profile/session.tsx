@@ -1,22 +1,16 @@
 import type { Route } from './+types/session';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
-import {
-  DataTable,
-  DataTableProvider,
-  useDataTableQuery,
-  type ActionItem,
-} from '@/modules/datum-ui/data-table';
-import { toast } from '@/modules/datum-ui/toast';
-import { Text } from '@/modules/datum-ui/typography';
 import { useApp } from '@/providers/app.provider';
-import { sessionDeleteMutation, sessionListQuery } from '@/resources/request/client';
+import { sessionDeleteMutation, useSessionListQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
+import { toast } from '@datum-cloud/datum-ui/toast';
+import { Text } from '@datum-cloud/datum-ui/typography';
+import { t } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
-import {
-  ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session,
-  ComMiloapisGoMiloPkgApisIdentityV1Alpha1SessionList,
-} from '@openapi/identity.miloapis.com/v1alpha1';
+import { ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session } from '@openapi/identity.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
@@ -30,63 +24,73 @@ export const meta: Route.MetaFunction = () => {
 };
 
 const columnHelper = createColumnHelper<ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session>();
-const columns = [
-  columnHelper.accessor('metadata.name', {
-    header: () => <Trans>Session ID</Trans>,
-    cell: ({ getValue }) => {
-      const value = getValue();
-      return value ? <Text>{value}</Text> : <Text textColor="muted">—</Text>;
-    },
-  }),
-  columnHelper.accessor('status.ip', {
-    header: () => <Trans>IP</Trans>,
-    cell: ({ getValue }) => {
-      const value = getValue();
-      return value ? <Text>{value}</Text> : <Text textColor="muted">—</Text>;
-    },
-  }),
-  columnHelper.accessor('status.fingerprintID', {
-    header: () => <Trans>Fingerprint ID</Trans>,
-    cell: ({ getValue }) => {
-      const value = getValue();
-      return value ? <Text>{value}</Text> : <Text textColor="muted">—</Text>;
-    },
-  }),
-  columnHelper.accessor('status.createdAt', {
-    header: () => <Trans>Created</Trans>,
-    cell: ({ getValue }) => {
-      if (!getValue()) return <Text textColor="muted">—</Text>;
-      return <DateTime date={getValue()} />;
-    },
-  }),
-  columnHelper.accessor('status.expiresAt', {
-    header: () => <Trans>Expires</Trans>,
-    cell: ({ getValue }) => {
-      if (!getValue()) return <Text textColor="muted">—</Text>;
-      return <DateTime date={getValue() ?? ''} />;
-    },
-  }),
-];
 
 export default function Page() {
-  const { t } = useLingui();
+  const { t: tMacro } = useLingui();
   const { user } = useApp();
+  const userId = user?.metadata?.name ?? '';
+  const tableQuery = useSessionListQuery(userId);
+
   const [selectedSession, setSelectedSession] =
     useState<ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session | null>(null);
 
-  const tableState = useDataTableQuery<ComMiloapisGoMiloPkgApisIdentityV1Alpha1SessionList>({
-    queryKeyPrefix: 'sessions',
-    fetchFn: (params) => sessionListQuery(user?.metadata?.name ?? '', params),
-    useSorting: true,
-  });
-
   const actions: ActionItem<ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session>[] = [
     {
-      label: t`Delete`,
+      label: tMacro`Delete`,
       icon: Trash2Icon,
       variant: 'destructive' as const,
       onClick: (row) => setSelectedSession(row),
     },
+  ];
+
+  const columns = [
+    columnHelper.accessor('metadata.name', {
+      id: 'metadata.name',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Session ID`} />,
+      cell: ({ getValue }) => {
+        const value = getValue();
+        return value ? <Text>{value}</Text> : <Text className="text-muted-foreground">—</Text>;
+      },
+    }),
+    columnHelper.accessor('status.ip', {
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`IP`} />,
+      cell: ({ getValue }) => {
+        const value = getValue();
+        return value ? <Text>{value}</Text> : <Text className="text-muted-foreground">—</Text>;
+      },
+    }),
+    columnHelper.accessor('status.fingerprintID', {
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Fingerprint ID`} />,
+      cell: ({ getValue }) => {
+        const value = getValue();
+        return value ? <Text>{value}</Text> : <Text className="text-muted-foreground">—</Text>;
+      },
+    }),
+    columnHelper.accessor('status.createdAt', {
+      id: 'status.createdAt',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      cell: ({ getValue }) => {
+        if (!getValue()) return <Text className="text-muted-foreground">—</Text>;
+        return <DateTime date={getValue()} />;
+      },
+    }),
+    columnHelper.accessor('status.expiresAt', {
+      id: 'status.expiresAt',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Expires`} />,
+      cell: ({ getValue }) => {
+        if (!getValue()) return <Text className="text-muted-foreground">—</Text>;
+        return <DateTime date={getValue() ?? ''} />;
+      },
+    }),
+    columnHelper.display({
+      id: 'actions',
+      header: () => <div className="text-right" />,
+      cell: ({ row }) => (
+        <div className="flex w-full justify-end">
+          <DataTable.RowActions row={row} actions={actions} />
+        </div>
+      ),
+    }),
   ];
 
   return (
@@ -94,40 +98,51 @@ export default function Page() {
       <DialogConfirm
         open={!!selectedSession}
         onOpenChange={() => setSelectedSession(null)}
-        title={t`Delete Session`}
-        description={t`Are you sure you want to delete session "${selectedSession?.metadata?.name ?? ''}"? This action cannot be undone.`}
-        confirmText={t`Delete`}
-        cancelText={t`Cancel`}
+        title={tMacro`Delete Session`}
+        description={tMacro`Are you sure you want to delete session "${selectedSession?.metadata?.name ?? ''}"? This action cannot be undone.`}
+        confirmText={tMacro`Delete`}
+        cancelText={tMacro`Cancel`}
         variant="destructive"
         requireConfirmation
         onConfirm={async () => {
-          await sessionDeleteMutation(
-            user?.metadata?.name ?? '',
-            selectedSession?.metadata?.name ?? ''
-          );
-          await new Promise((resolve) =>
-            setTimeout(() => resolve(tableState.query.refetch()), 1000)
-          );
+          await sessionDeleteMutation(userId, selectedSession?.metadata?.name ?? '');
+          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
           setSelectedSession(null);
-          toast.success(t`Session deleted successfully`);
+          toast.success(tMacro`Session deleted successfully`);
         }}
       />
 
-      <DataTableProvider<
-        ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session,
-        ComMiloapisGoMiloPkgApisIdentityV1Alpha1SessionList
-      >
+      <DataTable.Client
+        loading={tableQuery.isLoading}
+        data={tableQuery.data?.items ?? []}
         columns={columns}
-        actions={actions}
-        transform={(data) => ({
-          rows: data?.items || [],
-          cursor: data?.metadata?.continue,
-        })}
-        {...tableState}>
-        <div className="m-4 flex flex-col gap-2">
-          <DataTable />
-        </div>
-      </DataTableProvider>
+        pageSize={20}
+        getRowId={(row) => row.metadata?.name ?? ''}
+        defaultSort={[{ id: 'status.createdAt', desc: true }]}
+        searchFn={(row, search) => {
+          const q = search.trim().toLowerCase();
+          if (!q) return true;
+          return [row.metadata?.name, row.status?.ip, row.status?.fingerprintID]
+            .map((v) => (v ?? '').toLowerCase())
+            .some((v) => v.includes(q));
+        }}>
+        <Card className="m-4 py-4 shadow-none">
+          <CardContent className="flex flex-col gap-2 px-4">
+            <div className="flex flex-wrap items-center gap-4">
+              <DataTable.Search
+                placeholder={t`Search sessions...`}
+                className="w-64 min-w-[12rem]"
+              />
+            </div>
+            <DataTable.Content
+              headerClassName="bg-muted/50"
+              className="border-t border-b border-solid"
+              emptyMessage={t`No active sessions.`}
+            />
+            <DataTable.Pagination className="pb-0" />
+          </CardContent>
+        </Card>
+      </DataTable.Client>
     </>
   );
 }

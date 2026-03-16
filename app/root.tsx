@@ -81,7 +81,7 @@ function App() {
         <Meta />
         <Links />
       </head>
-      <body className="bg-background theme-alpha flex h-screen flex-col overflow-hidden overscroll-none font-sans antialiased">
+      <body className="bg-background theme-alpha overscroll-none font-sans antialiased">
         <Outlet />
 
         <Toaster

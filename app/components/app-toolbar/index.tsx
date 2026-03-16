@@ -1,11 +1,9 @@
 import { Breadcrumb } from '@/components/breadcrumb';
 import { cn } from '@/modules/shadcn/lib/utils';
 import { useApp } from '@/providers/app.provider';
-import { useLingui } from '@lingui/react/macro';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const AppToolbar = () => {
-  const { t } = useLingui();
   const { actions, navigation } = useApp();
   const [scrolled, setScrolled] = useState(false);
 
@@ -18,7 +16,7 @@ const AppToolbar = () => {
   return (
     <div
       className={cn(
-        'bg-background sticky top-12 z-10 flex h-14 shrink-0 items-center justify-between gap-2 border-b px-4 ease-linear',
+        'bg-background sticky top-0 z-10 flex h-14 shrink-0 items-center justify-between gap-2 border-b px-4 ease-linear',
         scrolled && 'shadow-sm'
       )}>
       <div className="flex items-center gap-4">

@@ -4,13 +4,15 @@ import { Chip } from '@/components/chip';
 import { DnsRecordStatusProbe } from '@/features/dns';
 import { authenticator } from '@/modules/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
-import { projectDnsRecordListQuery } from '@/resources/request/client';
+import { useProjectDnsRecordListQuery } from '@/resources/request/client';
 import { projectDnsDetailQuery, projectDomainDetailQuery } from '@/resources/request/server';
 import { DNSRecordFlattened } from '@/resources/schemas';
 import { useProjectDetailData } from '@/routes/project/shared';
 import { extractDataFromMatches, formatTTL, metaObject } from '@/utils/helpers';
+import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
-import { DataTable, DataTableProvider, SimpleTable, useDataTableQuery } from '@datum-ui/data-table';
+import { SimpleTable } from '@datum-ui/data-table';
+import { t } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisNetworkingDnsV1Alpha1DnsZone } from '@openapi/dns.networking.miloapis.com/v1alpha1';
 import { ComDatumapisNetworkingV1AlphaDomain } from '@openapi/networking.datumapis.com/v1alpha';
@@ -68,20 +70,14 @@ const dnsRecordColumnHelper = createColumnHelper<DNSRecordFlattened>();
 const nameserverColumnHelper = createColumnHelper<NameserverRow>();
 
 export default function Page() {
-  const { t } = useLingui();
+  const { t: tMacro } = useLingui();
   const { project } = useProjectDetailData();
   const { dns, domain } = useLoaderData<typeof loader>();
+  const projectName = project.metadata?.name ?? '';
+  const dnsName = dns?.metadata?.name ?? '';
+  const namespace = dns?.metadata?.namespace ?? 'default';
 
-  const tableState = useDataTableQuery<DNSRecordFlattened[]>({
-    queryKeyPrefix: ['dns', dns?.metadata?.name ?? '', 'records'],
-    fetchFn: () =>
-      projectDnsRecordListQuery(
-        project.metadata?.name ?? '',
-        dns?.metadata?.name ?? '',
-        dns?.metadata?.namespace
-      ),
-    useSorting: true,
-  });
+  const tableQuery = useProjectDnsRecordListQuery(projectName, dnsName, namespace);
 
   const nameserverData = useMemo(
     () =>
@@ -94,14 +90,14 @@ export default function Page() {
 
   const dnsRecordColumns = [
     dnsRecordColumnHelper.accessor('type', {
-      header: () => <Trans>Type</Trans>,
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Type`} />,
       cell: ({ getValue, row }) => (
         <div className="flex items-center gap-2">
           <BadgeState state={getValue()} message={getValue()?.toUpperCase() ?? ''} />
           <DnsRecordStatusProbe
-            projectName={project.metadata?.name ?? ''}
+            projectName={projectName}
             dnsRecordName={row.original.recordSetName ?? ''}
-            namespace={dns?.metadata?.namespace ?? ''}
+            namespace={namespace}
             initialStatus={row.original.status}
           />
         </div>
@@ -109,15 +105,14 @@ export default function Page() {
       size: 50,
     }),
     dnsRecordColumnHelper.accessor('name', {
-      header: () => <Trans>Name</Trans>,
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
       size: 50,
     }),
     dnsRecordColumnHelper.accessor('value', {
-      header: () => <Trans>Content</Trans>,
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Content`} />,
       cell: ({ row }) => {
         const { type, value } = row.original;
         const content = () => {
-          // MX records: decode "preference|exchange" format
           if (type === 'MX' && value.includes('|')) {
             const [preference, exchange] = value.split('|');
             return (
@@ -126,44 +121,31 @@ export default function Page() {
                 <BadgeState
                   state="info"
                   message={preference}
-                  tooltip={t`Priority of mail servers defined by MX records. Lowest value = highest priority.`}
+                  tooltip={tMacro`Priority of mail servers defined by MX records. Lowest value = highest priority.`}
                 />
               </div>
             );
           }
-
-          // SOA records: parse JSON and format for display
           if (type === 'SOA') {
             try {
               const soa = JSON.parse(value);
               return (
-                <Text size="sm" className="break-all">
+                <Text className="text-sm break-all">
                   {soa.mname} {soa.rname} {soa.refresh || 0} {soa.retry || 0} {soa.expire || 0}{' '}
                   {soa.ttl || 0}
                 </Text>
               );
             } catch {
-              // Fallback if JSON parsing fails
-              return (
-                <Text size="sm" className="break-all">
-                  {value}
-                </Text>
-              );
+              return <Text className="text-sm break-all">{value}</Text>;
             }
           }
-
-          return (
-            <Text size="sm" className="break-all">
-              {value}
-            </Text>
-          );
+          return <Text className="text-sm break-all">{value}</Text>;
         };
-
         return <div className="text-wrap break-all whitespace-normal">{content()}</div>;
       },
     }),
     dnsRecordColumnHelper.accessor('ttl', {
-      header: () => <Trans>TTL</Trans>,
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`TTL`} />,
       size: 50,
       cell: ({ getValue }) => formatTTL(getValue()),
     }),
@@ -207,15 +189,37 @@ export default function Page() {
             <Trans>DNS Records</Trans>
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <DataTableProvider<DNSRecordFlattened, DNSRecordFlattened[]>
+        <CardContent className="pt-0">
+          <DataTable.Client
+            loading={tableQuery.isLoading}
+            data={tableQuery.data ?? []}
             columns={dnsRecordColumns}
-            transform={(data) => ({ rows: data || [], cursor: undefined })}
-            {...tableState}>
-            <div className="flex flex-col gap-2">
-              <DataTable />
+            pageSize={25}
+            getRowId={(row) =>
+              row.recordSetId ??
+              `${row.recordSetName ?? ''}-${row.type}-${row.name}-${row.value}-${row.dnsZoneId}`
+            }
+            defaultSort={[{ id: 'name', desc: false }]}
+            searchFn={(row, search) => {
+              const q = search.trim().toLowerCase();
+              if (!q) return true;
+              return [row.type, row.name, row.value]
+                .map((v) => (v ?? '').toLowerCase())
+                .some((v) => v.includes(q));
+            }}>
+            <div className="flex flex-col gap-2 pt-2">
+              <DataTable.Search
+                placeholder={t`Search records...`}
+                className="w-full max-w-md min-w-[12rem]"
+              />
+              <DataTable.Content
+                headerClassName="bg-muted/50"
+                className="border-t border-b border-solid"
+                emptyMessage={t`No DNS records found.`}
+              />
+              <DataTable.Pagination className="pb-0" />
             </div>
-          </DataTableProvider>
+          </DataTable.Client>
         </CardContent>
       </Card>
 

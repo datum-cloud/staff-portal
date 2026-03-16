@@ -18,17 +18,12 @@ import {
 import { contactRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import {
-  ClientDataTable,
-  ClientDataTableProvider,
-  ClientDataTableSearch,
-  createAdvancedSearch,
-  useClientDataTableQuery,
-} from '@datum-ui/client-data-table';
-import { ActionItem } from '@datum-ui/data-table';
 import { Form } from '@datum-ui/form';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useMemo, useState } from 'react';
@@ -44,103 +39,108 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 };
 
 const columnHelper = createColumnHelper<ContactGroupMembershipWithContact>();
-const columns = [
-  columnHelper.accessor(
-    (row) => {
-      const contact = row.contact;
-      const contactName = contact?.metadata?.name ?? row.spec?.contactRef?.name ?? '';
-      const displayName = [contact?.spec?.givenName, contact?.spec?.familyName]
-        .filter(Boolean)
-        .join(' ');
-      return displayName || contactName || '';
-    },
-    {
-      id: 'name',
-      header: () => <Trans>Name</Trans>,
-      cell: ({ row }) => {
-        const contact = row.original.contact;
-        const contactNamespace =
-          contact?.metadata?.namespace ?? row.original.spec?.contactRef?.namespace;
-        const contactName = contact?.metadata?.name ?? row.original.spec?.contactRef?.name;
-        const displayName = [contact?.spec?.givenName, contact?.spec?.familyName]
-          .filter(Boolean)
-          .join(' ');
-
-        return (
-          <DisplayName
-            displayName={displayName || contactName || ''}
-            name={contactName}
-            to={contactRoutes.detail(contactNamespace ?? '', contactName ?? '')}
-          />
-        );
-      },
-    }
-  ),
-  columnHelper.accessor((row) => row.contact?.spec?.email ?? '—', {
-    id: 'email',
-    header: () => <Trans>Email</Trans>,
-    cell: ({ row }) => row.original.contact?.spec?.email ?? '—',
-  }),
-  columnHelper.accessor((row) => row.contact?.status ?? null, {
-    id: 'status',
-    header: () => <Trans>Status</Trans>,
-    cell: ({ row }) => {
-      const contact = row.original.contact;
-      if (!contact?.status) return '—';
-      return (
-        <BadgeCondition status={contact.status} multiple={false} showMessage className="text-xs" />
-      );
-    },
-  }),
-  columnHelper.accessor('metadata.creationTimestamp', {
-    id: 'metadata.creationTimestamp',
-    header: () => <Trans>Added</Trans>,
-    cell: ({ getValue }) => <DateTime date={getValue()} />,
-  }),
-];
-
-const globalFilterFn = createAdvancedSearch<ContactGroupMembershipWithContact>([
-  (row) => row.contact?.metadata?.name?.toLowerCase() || '',
-  (row) => row.contact?.spec?.givenName?.toLowerCase() || '',
-  (row) => row.contact?.spec?.familyName?.toLowerCase() || '',
-  (row) => row.contact?.spec?.email?.toLowerCase() || '',
-  (row) =>
-    `${row.contact?.spec?.givenName || ''} ${row.contact?.spec?.familyName || ''}`
-      .trim()
-      .toLowerCase(),
-]);
 
 export default function Page() {
   const { t } = useLingui();
-  const data = useContactGroupDetailData();
+  const groupData = useContactGroupDetailData();
+  const groupName = groupData.metadata?.name ?? '';
+
+  const tableQuery = useQuery({
+    queryKey: ['contact-groups', groupName, 'members', 'list'],
+    queryFn: () =>
+      contactMembershipForGroupListQuery({
+        filters: { fieldSelector: `spec.contactGroupRef.name=${groupName}` },
+      }),
+    enabled: !!groupName,
+  });
+
   const [selectedMembership, setSelectedMembership] =
     useState<ContactGroupMembershipWithContact | null>(null);
   const [isAddMember, setIsAddMember] = useState(false);
-
   const {
     options: contactOptions,
     isLoading: contactsLoading,
     setSearch: setContactSearch,
   } = useContactSearch();
 
-  const tableState = useClientDataTableQuery<ContactGroupMembershipListWithContacts>({
-    queryKeyPrefix: ['contact-groups', data.metadata?.name ?? '', 'members'],
-    fetchFn: () =>
-      contactMembershipForGroupListQuery({
-        filters: { fieldSelector: `spec.contactGroupRef.name=${data.metadata?.name ?? ''}` },
-      }),
-    defaultSort: ['metadata.creationTimestamp:desc'],
-    useSorting: true,
-    useSearch: true,
-  });
+  const items =
+    (tableQuery.data as ContactGroupMembershipListWithContacts | undefined)?.items ?? [];
 
   const actions: ActionItem<ContactGroupMembershipWithContact>[] = [
     {
-      label: 'Delete',
+      label: t`Delete`,
       icon: Trash2Icon,
       variant: 'destructive' as const,
       onClick: (row) => setSelectedMembership(row),
     },
+  ];
+
+  const columns = [
+    columnHelper.accessor(
+      (row) => {
+        const contact = row.contact;
+        const contactName = contact?.metadata?.name ?? row.spec?.contactRef?.name ?? '';
+        const displayName = [contact?.spec?.givenName, contact?.spec?.familyName]
+          .filter(Boolean)
+          .join(' ');
+        return displayName || contactName || '';
+      },
+      {
+        id: 'name',
+        header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+        cell: ({ row }) => {
+          const contact = row.original.contact;
+          const contactNamespace =
+            contact?.metadata?.namespace ?? row.original.spec?.contactRef?.namespace;
+          const contactName = contact?.metadata?.name ?? row.original.spec?.contactRef?.name;
+          const displayName = [contact?.spec?.givenName, contact?.spec?.familyName]
+            .filter(Boolean)
+            .join(' ');
+          return (
+            <DisplayName
+              displayName={displayName || contactName || ''}
+              name={contactName}
+              to={contactRoutes.detail(contactNamespace ?? '', contactName ?? '')}
+            />
+          );
+        },
+      }
+    ),
+    columnHelper.accessor((row) => row.contact?.spec?.email ?? '—', {
+      id: 'email',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Email`} />,
+      cell: ({ row }) => row.original.contact?.spec?.email ?? '—',
+    }),
+    columnHelper.accessor((row) => row.contact?.status ?? null, {
+      id: 'status',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Status`} />,
+      cell: ({ row }) => {
+        const contact = row.original.contact;
+        if (!contact?.status) return '—';
+        return (
+          <BadgeCondition
+            status={contact.status}
+            multiple={false}
+            showMessage
+            className="text-xs"
+          />
+        );
+      },
+    }),
+    columnHelper.accessor('metadata.creationTimestamp', {
+      id: 'metadata.creationTimestamp',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Added`} />,
+      cell: ({ getValue }) => <DateTime date={getValue()} />,
+    }),
+    columnHelper.display({
+      id: 'actions',
+      header: () => <div className="text-right" />,
+      cell: ({ row }) => (
+        <div className="flex w-full justify-end">
+          <DataTable.RowActions row={row} actions={actions} />
+        </div>
+      ),
+    }),
   ];
 
   const deleteMemberDisplayName = useMemo(() => {
@@ -158,21 +158,16 @@ export default function Page() {
   });
 
   const handleAddMember = async (formData: z.infer<typeof addMemberSchema>) => {
-    try {
-      const [name, namespace] = formData.name.split('|');
-      await contactGroupMembershipCreateMutation('default', {
-        contactGroupRef: {
-          name: data.metadata?.name ?? '',
-          namespace: data.metadata?.namespace ?? 'default',
-        },
-        contactRef: { name, namespace },
-      });
-
-      await new Promise((resolve) => setTimeout(() => resolve(tableState.query.refetch()), 1000));
-      toast.success(t`Member added successfully`);
-    } catch (error) {
-      throw error; // Re-throw to keep dialog open
-    }
+    const [name, namespace] = formData.name.split('|');
+    await contactGroupMembershipCreateMutation('default', {
+      contactGroupRef: {
+        name: groupData.metadata?.name ?? '',
+        namespace: groupData.metadata?.namespace ?? 'default',
+      },
+      contactRef: { name, namespace },
+    });
+    await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
+    toast.success(t`Member added successfully`);
   };
 
   return (
@@ -196,9 +191,7 @@ export default function Page() {
         variant="destructive"
         onConfirm={async () => {
           await contactGroupMembershipDeleteMutation(selectedMembership?.metadata);
-          await new Promise((resolve) =>
-            setTimeout(() => resolve(tableState.query.refetch()), 2000)
-          );
+          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 2000));
           setSelectedMembership(null);
           toast.success(t`Member deleted successfully`);
         }}
@@ -224,20 +217,39 @@ export default function Page() {
         />
       </DialogForm>
 
-      <ClientDataTableProvider<
-        ContactGroupMembershipWithContact,
-        ContactGroupMembershipListWithContacts
-      >
-        {...tableState}
+      <DataTable.Client
+        loading={tableQuery.isLoading}
+        data={items}
         columns={columns}
-        actions={actions}
-        transform={(data) => data?.items ?? []}
-        globalFilterFn={globalFilterFn}>
-        <div className="m-4 flex flex-col gap-2">
-          <ClientDataTableSearch placeholder={t`Search members...`} />
-          <ClientDataTable />
-        </div>
-      </ClientDataTableProvider>
+        pageSize={20}
+        getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
+        defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+        searchFn={(row, search) => {
+          const q = search.trim().toLowerCase();
+          if (!q) return true;
+          const c = row.contact;
+          return [
+            c?.metadata?.name,
+            c?.spec?.givenName,
+            c?.spec?.familyName,
+            c?.spec?.email,
+            `${c?.spec?.givenName || ''} ${c?.spec?.familyName || ''}`.trim(),
+          ]
+            .map((s) => (s ?? '').toLowerCase())
+            .some((s) => s.includes(q));
+        }}>
+        <Card className="m-4 py-4 shadow-none">
+          <CardContent className="flex flex-col gap-2 px-4">
+            <DataTable.Search placeholder={t`Search members...`} className="w-64" />
+            <DataTable.Content
+              headerClassName="bg-muted/50"
+              className="border-t border-b border-solid"
+              emptyMessage={t`No members found.`}
+            />
+            <DataTable.Pagination className="pb-0" />
+          </CardContent>
+        </Card>
+      </DataTable.Client>
     </>
   );
 }
