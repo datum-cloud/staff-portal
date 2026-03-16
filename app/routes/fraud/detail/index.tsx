@@ -2,14 +2,25 @@ import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DisplayId } from '@/components/display';
-import { useFraudEvaluationDetailQuery } from '@/resources/request/client';
-import type { HistoryEntry, ProviderResult, StageResult } from '@/resources/types/fraud.types';
+import {
+  contactListQuery,
+  useFraudEvaluationDetailQuery,
+  useFraudEvaluationListQuery,
+  userGetQuery,
+} from '@/resources/request/client';
+import type {
+  FraudEvaluation,
+  HistoryEntry,
+  ProviderResult,
+  StageResult,
+} from '@/resources/types/fraud.types';
 import { fraudRoutes, userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ArrowLeft, Clock, History, Layers, User } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { ArrowLeft, Clock, History, Layers, Mail, User } from 'lucide-react';
 import { Link, useParams } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
@@ -116,10 +127,104 @@ function HistoryTable({ entries }: { entries: HistoryEntry[] }) {
   );
 }
 
+function UserEvaluationsTable({
+  evaluations,
+  currentName,
+}: {
+  evaluations: FraudEvaluation[];
+  currentName: string;
+}) {
+  if (evaluations.length <= 1) return null;
+
+  return (
+    <Card className="shadow-none">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-base">
+          <History className="h-4 w-4" />
+          <Trans>All Evaluations for this User</Trans>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="divide-border divide-y">
+          {evaluations.map((evaluation) => {
+            const isCurrent = evaluation.metadata?.name === currentName;
+            return (
+              <div
+                key={evaluation.metadata?.name}
+                className={`flex items-center justify-between py-2 ${isCurrent ? 'bg-muted/50 -mx-2 rounded px-2' : ''}`}>
+                <div className="flex items-center gap-2">
+                  {isCurrent ? (
+                    <span className="text-sm font-medium">
+                      {evaluation.metadata?.name}{' '}
+                      <span className="text-muted-foreground text-xs">(current)</span>
+                    </span>
+                  ) : (
+                    <Link
+                      to={fraudRoutes.evaluationDetail(evaluation.metadata?.name ?? '')}
+                      className="text-primary text-sm font-medium hover:underline">
+                      {evaluation.metadata?.name}
+                    </Link>
+                  )}
+                </div>
+                <div className="flex items-center gap-3">
+                  <BadgeState state={evaluation.status?.phase ?? 'Pending'} />
+                  {evaluation.status?.compositeScore && (
+                    <span className="font-mono text-sm">{evaluation.status.compositeScore}</span>
+                  )}
+                  {evaluation.status?.decision && evaluation.status.decision !== 'NONE' && (
+                    <BadgeState
+                      state={evaluation.status.decision === 'DEACTIVATE' ? 'error' : 'warning'}
+                      message={evaluation.status.decision}
+                    />
+                  )}
+                  <DateTime date={evaluation.status?.lastEvaluationTime} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function Page() {
   const { evalName } = useParams();
   const evalQuery = useFraudEvaluationDetailQuery(evalName ?? '');
   const evaluation = evalQuery.data;
+
+  const userId = evaluation?.spec?.userRef?.name;
+
+  const userQuery = useQuery({
+    queryKey: ['fraud', 'user-detail', userId],
+    queryFn: () => userGetQuery(userId!),
+    enabled: !!userId,
+  });
+
+  const contactQuery = useQuery({
+    queryKey: ['fraud', 'user-contact', userId],
+    queryFn: () =>
+      contactListQuery({
+        limit: 1,
+        filters: { fieldSelector: `spec.subject.name=${userId}` },
+      }),
+    enabled: !!userId,
+  });
+
+  const userEmail = userQuery.data?.spec?.email;
+  const contact = contactQuery.data?.items?.[0];
+  const contactName =
+    `${contact?.spec?.givenName ?? ''} ${contact?.spec?.familyName ?? ''}`.trim() || null;
+
+  // Fetch all evaluations to filter by the same user
+  const allEvalsQuery = useFraudEvaluationListQuery();
+  const userEvaluations = (allEvalsQuery.data?.items ?? [])
+    .filter((e) => e.spec?.userRef?.name === evaluation?.spec?.userRef?.name)
+    .sort(
+      (a, b) =>
+        new Date(b.status?.lastEvaluationTime ?? 0).getTime() -
+        new Date(a.status?.lastEvaluationTime ?? 0).getTime()
+    );
 
   if (evalQuery.isLoading) {
     return (
@@ -177,6 +282,22 @@ export default function Page() {
                 </div>
               </Link>
             </div>
+            {(contactName || userEmail) && (
+              <div>
+                <h4 className="text-muted-foreground mb-1 text-xs font-medium tracking-wide uppercase">
+                  <Trans>Contact</Trans>
+                </h4>
+                <div className="space-y-0.5">
+                  {contactName && <div className="text-sm font-medium">{contactName}</div>}
+                  {userEmail && (
+                    <div className="text-muted-foreground flex items-center gap-1 text-sm">
+                      <Mail className="h-3 w-3" />
+                      {userEmail}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
             <div>
               <h4 className="text-muted-foreground mb-1 text-xs font-medium tracking-wide uppercase">
                 <Trans>Score</Trans>
@@ -247,8 +368,13 @@ export default function Page() {
         </div>
       )}
 
-      {/* History */}
-      {evaluation.status?.history && <HistoryTable entries={evaluation.status.history} />}
+      {/* Inline History (from this evaluation's status.history) */}
+      {evaluation.status?.history && evaluation.status.history.length > 0 && (
+        <HistoryTable entries={evaluation.status.history} />
+      )}
+
+      {/* All evaluations for this user */}
+      <UserEvaluationsTable evaluations={userEvaluations} currentName={evalName ?? ''} />
     </div>
   );
 }

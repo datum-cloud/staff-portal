@@ -4,10 +4,11 @@ import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayId } from '@/components/display';
-import { useUserSearch } from '@/hooks';
 import {
+  contactListQuery,
   fraudEvaluationCreateMutation,
   fraudEvaluationDeleteMutation,
+  searchUsersQuery,
   useFraudEvaluationListQuery,
   useFraudPolicyListQuery,
 } from '@/resources/request/client';
@@ -21,9 +22,10 @@ import { toast } from '@datum-cloud/datum-ui/toast';
 import { Form } from '@datum-ui/form';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { z } from 'zod';
 
@@ -42,13 +44,52 @@ export default function Page() {
   const policyQuery = useFraudPolicyListQuery();
   const [showNewEval, setShowNewEval] = useState(false);
   const [selectedEval, setSelectedEval] = useState<FraudEvaluation | null>(null);
+  const [userSearchQuery, setUserSearchQuery] = useState('');
 
-  const {
-    options: userOptions,
-    isLoading: usersLoading,
-    setSearch: setUserSearch,
-  } = useUserSearch();
+  const contactsQuery = useQuery({
+    queryKey: ['fraud', 'contacts-all'],
+    queryFn: () => contactListQuery(),
+    staleTime: 5 * 60 * 1000,
+  });
 
+  const contactsByUser = useMemo(() => {
+    const map = new Map<string, { email?: string; name?: string }>();
+    for (const contact of contactsQuery.data?.items ?? []) {
+      const userId = contact.spec?.subject?.name;
+      if (!userId) continue;
+      const name =
+        `${contact.spec?.givenName ?? ''} ${contact.spec?.familyName ?? ''}`.trim() || undefined;
+      map.set(userId, { email: contact.spec?.email, name });
+    }
+    return map;
+  }, [contactsQuery.data]);
+
+  const { data: searchResults, isLoading: usersLoading } = useQuery({
+    queryKey: ['fraud', 'user-search', userSearchQuery],
+    queryFn: () => searchUsersQuery(userSearchQuery),
+    enabled: userSearchQuery.length >= 2,
+    staleTime: 30 * 1000,
+  });
+
+  const userOptions = useMemo(() => {
+    if (!searchResults) return [];
+    return searchResults.map((user) => {
+      const userId = user.metadata?.name ?? '';
+      const contact = contactsByUser.get(userId);
+      const label =
+        `${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''}`.trim() ||
+        contact?.name ||
+        userId;
+      const description = user.spec?.email ?? contact?.email ?? userId;
+      return { value: userId, label, description };
+    });
+  }, [searchResults, contactsByUser]);
+
+  const setUserSearch = useCallback((query: string) => {
+    setUserSearchQuery(query);
+  }, []);
+
+  const policyLoaded = !policyQuery.isLoading;
   const policyName = policyQuery.data?.items?.[0]?.metadata?.name;
 
   const actions: ActionItem<FraudEvaluation>[] = [
@@ -72,9 +113,15 @@ export default function Page() {
         );
       },
     }),
-    columnHelper.accessor('spec.policyRef.name', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Policy`} />,
-      cell: ({ getValue }) => <span className="text-sm">{getValue()}</span>,
+    columnHelper.display({
+      id: 'email',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Email`} />,
+      cell: ({ row }) => {
+        const userId = row.original.spec?.userRef?.name;
+        const email = userId ? contactsByUser.get(userId)?.email : undefined;
+        if (!email) return <span className="text-muted-foreground text-sm">-</span>;
+        return <span className="text-sm">{email}</span>;
+      },
     }),
     columnHelper.accessor('status.phase', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Phase`} />,
@@ -142,7 +189,7 @@ export default function Page() {
         <Button
           type="primary"
           icon={<PlusCircleIcon size={16} />}
-          disabled={!policyName}
+          disabled={policyLoaded && !policyName}
           onClick={() => setShowNewEval(true)}>
           <Trans>New Evaluation</Trans>
         </Button>
@@ -212,12 +259,21 @@ export default function Page() {
           const userId = (row.spec?.userRef?.name ?? '').toLowerCase();
           const name = (row.metadata?.name ?? '').toLowerCase();
           const decision = (row.status?.decision ?? '').toLowerCase();
-          return userId.includes(q) || name.includes(q) || decision.includes(q);
+          const contact = userId ? contactsByUser.get(row.spec?.userRef?.name ?? '') : undefined;
+          const email = (contact?.email ?? '').toLowerCase();
+          const contactName = (contact?.name ?? '').toLowerCase();
+          return (
+            userId.includes(q) ||
+            name.includes(q) ||
+            decision.includes(q) ||
+            email.includes(q) ||
+            contactName.includes(q)
+          );
         }}>
         <Card className="m-4 py-4 shadow-none">
           <CardContent className="flex flex-col gap-2 px-4">
             <div className="flex items-center gap-4">
-              <DataTable.Search placeholder={t`Search by user ID...`} className="w-64" />
+              <DataTable.Search placeholder={t`Search by email, name, or ID...`} className="w-64" />
               <DataTable.SelectFilter
                 column="status.phase"
                 label={t`Phase`}
