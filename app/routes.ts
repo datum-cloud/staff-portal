@@ -83,6 +83,14 @@ export default [
       ]),
     ]),
 
+    // Fraud & Abuse
+    route('fraud', 'routes/fraud/layout.tsx', [
+      index('routes/fraud/index.tsx'),
+      route('providers', 'routes/fraud/providers.tsx'),
+      route('policy', 'routes/fraud/policy.tsx'),
+      route(':evalName', 'routes/fraud/detail/index.tsx'),
+    ]),
+
     // Activity Hub (old single-page activity kept for backward compatibility)
     route('activity-legacy', 'routes/activity.tsx'),
 
