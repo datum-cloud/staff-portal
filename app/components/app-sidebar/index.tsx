@@ -28,6 +28,7 @@ import {
 import {
   contactGroupRoutes,
   contactRoutes,
+  fraudRoutes,
   groupRoutes,
   orgRoutes,
   projectRoutes,
@@ -41,6 +42,7 @@ import {
   Home,
   LucideIcon,
   MailSearch,
+  ShieldAlert,
   ShieldUser,
   SquareActivity,
   Users,
@@ -145,6 +147,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       title: t`Activity`,
       href: routes.activity(),
       icon: SquareActivity,
+      hasSubmenu: false,
+    },
+    {
+      title: t`Fraud & Abuse`,
+      href: fraudRoutes.list(),
+      icon: ShieldAlert,
       hasSubmenu: false,
     },
   ];

@@ -77,6 +77,15 @@ export const contactGroupRoutes = {
   member: (contactGroupName: string) => `/contact-groups/${contactGroupName}/members`,
 } as const;
 
+// Fraud feature routes
+export const fraudRoutes = {
+  list: () => '/fraud',
+  evaluations: () => '/fraud',
+  providers: () => '/fraud/providers',
+  policy: () => '/fraud/policy',
+  evaluationDetail: (name: string) => `/fraud/${name}`,
+} as const;
+
 // Profile feature routes
 export const profileRoutes = {
   settings: () => '/profile/settings',
@@ -104,4 +113,5 @@ export const routes = {
   groups: groupRoutes,
   profile: profileRoutes,
   contactGroups: contactGroupRoutes,
+  fraud: fraudRoutes,
 } as const;
