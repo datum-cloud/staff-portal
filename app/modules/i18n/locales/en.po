@@ -175,6 +175,10 @@ msgstr "Added"
 msgid "Added by"
 msgstr "Added by"
 
+#: app/routes/fraud/detail/index.tsx:141
+msgid "All Evaluations for this User"
+msgstr "All Evaluations for this User"
+
 #: app/features/activity/components/activity-list.tsx:465
 msgid "All read operations"
 msgstr "All read operations"
@@ -285,7 +289,7 @@ msgstr "Associate with User"
 msgid "Associated with User: "
 msgstr "Associated with User: "
 
-#: app/routes/fraud/detail/index.tsx:155
+#: app/routes/fraud/detail/index.tsx:234
 msgid "Back to evaluations"
 msgstr "Back to evaluations"
 
@@ -514,7 +518,7 @@ msgstr "Deactivation Reason:"
 #: app/routes/fraud/index.tsx:117
 #: app/routes/fraud/index.tsx:252
 #: app/routes/fraud/index.tsx:266
-#: app/routes/fraud/detail/index.tsx:194
+#: app/routes/fraud/detail/index.tsx:273
 msgid "Decision"
 msgstr "Decision"
 
@@ -769,7 +773,7 @@ msgid "Endpoint"
 msgstr "Endpoint"
 
 #: app/routes/fraud/index.tsx:128
-#: app/routes/fraud/detail/index.tsx:207
+#: app/routes/fraud/detail/index.tsx:286
 msgid "Enforcement"
 msgstr "Enforcement"
 
@@ -805,7 +809,7 @@ msgid "Error"
 msgstr "Error"
 
 #: app/routes/fraud/index.tsx:143
-#: app/routes/fraud/detail/index.tsx:227
+#: app/routes/fraud/detail/index.tsx:306
 msgid "Evaluated"
 msgstr "Evaluated"
 
@@ -813,15 +817,15 @@ msgstr "Evaluated"
 msgid "Evaluation deleted successfully"
 msgstr "Evaluation deleted successfully"
 
-#: app/routes/fraud/detail/index.tsx:87
+#: app/routes/fraud/detail/index.tsx:95
 msgid "Evaluation History"
 msgstr "Evaluation History"
 
-#: app/routes/fraud/detail/index.tsx:141
+#: app/routes/fraud/detail/index.tsx:220
 msgid "Evaluation not found."
 msgstr "Evaluation not found."
 
-#: app/routes/fraud/detail/index.tsx:162
+#: app/routes/fraud/detail/index.tsx:241
 msgid "Evaluation Overview"
 msgstr "Evaluation Overview"
 
@@ -940,7 +944,7 @@ msgstr "First name is required"
 msgid "Fraud & Abuse"
 msgstr "Fraud & Abuse"
 
-#: app/routes/fraud/detail/index.tsx:16
+#: app/routes/fraud/detail/index.tsx:24
 msgid "Fraud Evaluation Detail"
 msgstr "Fraud Evaluation Detail"
 
@@ -1128,7 +1132,7 @@ msgstr "Limit:"
 msgid "List"
 msgstr "List"
 
-#: app/routes/fraud/detail/index.tsx:129
+#: app/routes/fraud/detail/index.tsx:208
 msgid "Loading evaluation..."
 msgstr "Loading evaluation..."
 
@@ -1499,7 +1503,7 @@ msgstr "Personal"
 #: app/routes/fraud/index.tsx:98
 #: app/routes/fraud/index.tsx:241
 #: app/routes/fraud/index.tsx:265
-#: app/routes/fraud/detail/index.tsx:188
+#: app/routes/fraud/detail/index.tsx:267
 msgid "Phase"
 msgstr "Phase"
 
@@ -1775,7 +1779,7 @@ msgid "Schedule invitation to be sent at specific time"
 msgstr "Schedule invitation to be sent at specific time"
 
 #: app/routes/fraud/index.tsx:102
-#: app/routes/fraud/detail/index.tsx:182
+#: app/routes/fraud/detail/index.tsx:261
 msgid "Score"
 msgstr "Score"
 
@@ -1970,7 +1974,7 @@ msgstr "Stage {0}"
 msgid "Stage Name"
 msgstr "Stage Name"
 
-#: app/routes/fraud/detail/index.tsx:240
+#: app/routes/fraud/detail/index.tsx:319
 msgid "Stage Results"
 msgstr "Stage Results"
 
@@ -2113,7 +2117,7 @@ msgid "Usage"
 msgstr "Usage"
 
 #: app/routes/fraud/index.tsx:83
-#: app/routes/fraud/detail/index.tsx:169
+#: app/routes/fraud/detail/index.tsx:248
 #: app/features/activity/components/activity-list.tsx:114
 #: app/features/activity/components/activity-list.tsx:512
 #: app/features/activity/components/activity-list.tsx:617
