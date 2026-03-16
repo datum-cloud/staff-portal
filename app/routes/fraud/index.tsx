@@ -4,10 +4,10 @@ import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayId } from '@/components/display';
-import { useUserSearch } from '@/hooks';
 import {
   fraudEvaluationCreateMutation,
   fraudEvaluationDeleteMutation,
+  searchUsersQuery,
   useFraudEvaluationListQuery,
   useFraudPolicyListQuery,
 } from '@/resources/request/client';
@@ -21,9 +21,10 @@ import { toast } from '@datum-cloud/datum-ui/toast';
 import { Form } from '@datum-ui/form';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { z } from 'zod';
 
@@ -42,12 +43,27 @@ export default function Page() {
   const policyQuery = useFraudPolicyListQuery();
   const [showNewEval, setShowNewEval] = useState(false);
   const [selectedEval, setSelectedEval] = useState<FraudEvaluation | null>(null);
+  const [userSearchQuery, setUserSearchQuery] = useState('');
 
-  const {
-    options: userOptions,
-    isLoading: usersLoading,
-    setSearch: setUserSearch,
-  } = useUserSearch();
+  const { data: searchResults, isLoading: usersLoading } = useQuery({
+    queryKey: ['fraud', 'user-search', userSearchQuery],
+    queryFn: () => searchUsersQuery(userSearchQuery),
+    enabled: userSearchQuery.length >= 2,
+    staleTime: 30 * 1000,
+  });
+
+  const userOptions = useMemo(() => {
+    if (!searchResults) return [];
+    return searchResults.map((user) => ({
+      value: user.metadata?.name ?? '',
+      label: `${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''}`.trim() || (user.metadata?.name ?? ''),
+      description: user.spec?.email ?? user.metadata?.name ?? '',
+    }));
+  }, [searchResults]);
+
+  const setUserSearch = useCallback((query: string) => {
+    setUserSearchQuery(query);
+  }, []);
 
   const policyName = policyQuery.data?.items?.[0]?.metadata?.name;
 
