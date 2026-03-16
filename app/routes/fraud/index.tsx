@@ -65,6 +65,7 @@ export default function Page() {
     setUserSearchQuery(query);
   }, []);
 
+  const policyLoaded = !policyQuery.isLoading;
   const policyName = policyQuery.data?.items?.[0]?.metadata?.name;
 
   const actions: ActionItem<FraudEvaluation>[] = [
@@ -158,7 +159,7 @@ export default function Page() {
         <Button
           type="primary"
           icon={<PlusCircleIcon size={16} />}
-          disabled={!policyName}
+          disabled={policyLoaded && !policyName}
           onClick={() => setShowNewEval(true)}>
           <Trans>New Evaluation</Trans>
         </Button>
