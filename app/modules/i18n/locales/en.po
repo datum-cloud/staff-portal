@@ -175,7 +175,7 @@ msgstr "Added"
 msgid "Added by"
 msgstr "Added by"
 
-#: app/routes/fraud/detail/index.tsx:141
+#: app/routes/fraud/detail/index.tsx:144
 msgid "All Evaluations for this User"
 msgstr "All Evaluations for this User"
 
@@ -271,7 +271,7 @@ msgstr "Are you sure you want to delete session \"{0}\"? This action cannot be u
 msgid "Are you sure you want to delete the fraud policy \"{0}\"? This will disable all fraud evaluation."
 msgstr "Are you sure you want to delete the fraud policy \"{0}\"? This will disable all fraud evaluation."
 
-#: app/routes/fraud/index.tsx:209
+#: app/routes/fraud/index.tsx:237
 msgid "Are you sure you want to delete this fraud evaluation? This action cannot be undone."
 msgstr "Are you sure you want to delete this fraud evaluation? This action cannot be undone."
 
@@ -289,7 +289,7 @@ msgstr "Associate with User"
 msgid "Associated with User: "
 msgstr "Associated with User: "
 
-#: app/routes/fraud/detail/index.tsx:234
+#: app/routes/fraud/detail/index.tsx:260
 msgid "Back to evaluations"
 msgstr "Back to evaluations"
 
@@ -301,8 +301,8 @@ msgstr "Back to evaluations"
 #: app/routes/group/member.tsx:145
 #: app/routes/fraud/policy.tsx:431
 #: app/routes/fraud/policy.tsx:529
-#: app/routes/fraud/index.tsx:176
-#: app/routes/fraud/index.tsx:211
+#: app/routes/fraud/index.tsx:204
+#: app/routes/fraud/index.tsx:239
 #: app/routes/fraud/providers/index.tsx:129
 #: app/routes/fraud/providers/detail.tsx:153
 #: app/routes/fraud/providers/detail.tsx:172
@@ -337,7 +337,7 @@ msgstr "Choose how the portal looks to you. Select a single theme, or sync with 
 msgid "Clear"
 msgstr "Clear"
 
-#: app/routes/fraud/index.tsx:245
+#: app/routes/fraud/index.tsx:282
 msgid "Completed"
 msgstr "Completed"
 
@@ -345,6 +345,10 @@ msgstr "Completed"
 #: app/routes/project/detail/export-policy/detail.tsx:223
 msgid "Configuration"
 msgstr "Configuration"
+
+#: app/routes/fraud/detail/index.tsx:288
+msgid "Contact"
+msgstr "Contact"
 
 #: app/features/contact/components/contact-form.tsx:101
 msgid "Contact created successfully"
@@ -486,7 +490,7 @@ msgstr "Date"
 
 #: app/routes/user/detail/index.tsx:128
 #: app/routes/user/detail/index.tsx:392
-#: app/routes/fraud/index.tsx:258
+#: app/routes/fraud/index.tsx:295
 msgid "Deactivate"
 msgstr "Deactivate"
 
@@ -515,10 +519,10 @@ msgstr "Deactivation Details"
 msgid "Deactivation Reason:"
 msgstr "Deactivation Reason:"
 
-#: app/routes/fraud/index.tsx:118
-#: app/routes/fraud/index.tsx:253
-#: app/routes/fraud/index.tsx:267
-#: app/routes/fraud/detail/index.tsx:273
+#: app/routes/fraud/index.tsx:146
+#: app/routes/fraud/index.tsx:290
+#: app/routes/fraud/index.tsx:304
+#: app/routes/fraud/detail/index.tsx:315
 msgid "Decision"
 msgstr "Decision"
 
@@ -528,8 +532,8 @@ msgstr "Decision"
 #: app/routes/group/member.tsx:129
 #: app/routes/fraud/policy.tsx:130
 #: app/routes/fraud/policy.tsx:528
-#: app/routes/fraud/index.tsx:75
-#: app/routes/fraud/index.tsx:210
+#: app/routes/fraud/index.tsx:97
+#: app/routes/fraud/index.tsx:238
 #: app/routes/fraud/providers/index.tsx:42
 #: app/routes/fraud/providers/index.tsx:128
 #: app/routes/fraud/providers/detail.tsx:100
@@ -587,7 +591,7 @@ msgstr "Delete contact group"
 msgid "Delete contact groups"
 msgstr "Delete contact groups"
 
-#: app/routes/fraud/index.tsx:208
+#: app/routes/fraud/index.tsx:236
 msgid "Delete Evaluation"
 msgstr "Delete Evaluation"
 
@@ -734,6 +738,7 @@ msgstr "Edit Quota"
 
 #: app/routes/user/index.tsx:202
 #: app/routes/user/detail/index.tsx:254
+#: app/routes/fraud/index.tsx:118
 #: app/routes/contact-group/detail/member.tsx:111
 #: app/features/contact/components/contact-list.tsx:83
 #: app/features/contact/components/contact-form.tsx:122
@@ -772,8 +777,8 @@ msgstr "End Time"
 msgid "Endpoint"
 msgstr "Endpoint"
 
-#: app/routes/fraud/index.tsx:129
-#: app/routes/fraud/detail/index.tsx:286
+#: app/routes/fraud/index.tsx:157
+#: app/routes/fraud/detail/index.tsx:328
 msgid "Enforcement"
 msgstr "Enforcement"
 
@@ -804,28 +809,28 @@ msgstr "Enter the full email to search..."
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr "Enter the word <0>{confirmationText}</0> to perform this action."
 
-#: app/routes/fraud/index.tsx:248
+#: app/routes/fraud/index.tsx:285
 msgid "Error"
 msgstr "Error"
 
-#: app/routes/fraud/index.tsx:144
-#: app/routes/fraud/detail/index.tsx:306
+#: app/routes/fraud/index.tsx:172
+#: app/routes/fraud/detail/index.tsx:348
 msgid "Evaluated"
 msgstr "Evaluated"
 
-#: app/routes/fraud/index.tsx:217
+#: app/routes/fraud/index.tsx:245
 msgid "Evaluation deleted successfully"
 msgstr "Evaluation deleted successfully"
 
-#: app/routes/fraud/detail/index.tsx:95
+#: app/routes/fraud/detail/index.tsx:98
 msgid "Evaluation History"
 msgstr "Evaluation History"
 
-#: app/routes/fraud/detail/index.tsx:220
+#: app/routes/fraud/detail/index.tsx:246
 msgid "Evaluation not found."
 msgstr "Evaluation not found."
 
-#: app/routes/fraud/detail/index.tsx:241
+#: app/routes/fraud/detail/index.tsx:267
 msgid "Evaluation Overview"
 msgstr "Evaluation Overview"
 
@@ -892,11 +897,11 @@ msgstr "Filter by API group"
 msgid "Filter by approval"
 msgstr "Filter by approval"
 
-#: app/routes/fraud/index.tsx:254
+#: app/routes/fraud/index.tsx:291
 msgid "Filter by decision"
 msgstr "Filter by decision"
 
-#: app/routes/fraud/index.tsx:243
+#: app/routes/fraud/index.tsx:280
 msgid "Filter by phase"
 msgstr "Filter by phase"
 
@@ -944,15 +949,15 @@ msgstr "First name is required"
 msgid "Fraud & Abuse"
 msgstr "Fraud & Abuse"
 
-#: app/routes/fraud/detail/index.tsx:24
+#: app/routes/fraud/detail/index.tsx:27
 msgid "Fraud Evaluation Detail"
 msgstr "Fraud Evaluation Detail"
 
-#: app/routes/fraud/index.tsx:192
+#: app/routes/fraud/index.tsx:220
 msgid "Fraud evaluation started"
 msgstr "Fraud evaluation started"
 
-#: app/routes/fraud/index.tsx:32
+#: app/routes/fraud/index.tsx:33
 msgid "Fraud Evaluations"
 msgstr "Fraud Evaluations"
 
@@ -1132,7 +1137,7 @@ msgstr "Limit:"
 msgid "List"
 msgstr "List"
 
-#: app/routes/fraud/detail/index.tsx:208
+#: app/routes/fraud/detail/index.tsx:234
 msgid "Loading evaluation..."
 msgstr "Loading evaluation..."
 
@@ -1288,11 +1293,11 @@ msgstr "Namespace"
 msgid "Navigation"
 msgstr "Navigation"
 
-#: app/routes/fraud/index.tsx:166
+#: app/routes/fraud/index.tsx:194
 msgid "New Evaluation"
 msgstr "New Evaluation"
 
-#: app/routes/fraud/index.tsx:173
+#: app/routes/fraud/index.tsx:201
 msgid "New Fraud Evaluation"
 msgstr "New Fraud Evaluation"
 
@@ -1332,7 +1337,7 @@ msgstr "No email activity found."
 msgid "No export policies found."
 msgstr "No export policies found."
 
-#: app/routes/fraud/index.tsx:274
+#: app/routes/fraud/index.tsx:311
 msgid "No fraud evaluations found."
 msgstr "No fraud evaluations found."
 
@@ -1400,7 +1405,7 @@ msgstr "No users found."
 msgid "No users yet"
 msgstr "No users yet"
 
-#: app/routes/fraud/index.tsx:256
+#: app/routes/fraud/index.tsx:293
 msgid "None"
 msgstr "None"
 
@@ -1473,7 +1478,7 @@ msgstr "Patch"
 
 #: app/routes/user/index.tsx:261
 #: app/routes/user/index.tsx:276
-#: app/routes/fraud/index.tsx:247
+#: app/routes/fraud/index.tsx:284
 #: app/features/email/components/email-list.tsx:143
 #: app/features/email/components/email-list.tsx:169
 msgid "Pending"
@@ -1500,10 +1505,10 @@ msgstr "Permanently delete this user and all associated data"
 msgid "Personal"
 msgstr "Personal"
 
-#: app/routes/fraud/index.tsx:99
-#: app/routes/fraud/index.tsx:242
-#: app/routes/fraud/index.tsx:266
-#: app/routes/fraud/detail/index.tsx:267
+#: app/routes/fraud/index.tsx:127
+#: app/routes/fraud/index.tsx:279
+#: app/routes/fraud/index.tsx:303
+#: app/routes/fraud/detail/index.tsx:309
 msgid "Phase"
 msgstr "Phase"
 
@@ -1531,10 +1536,6 @@ msgstr "Please provide a reason for rejecting \"{0} {1}\"."
 #: app/routes/organization/detail/member.tsx:60
 msgid "Please wait {remainingMinutes} more minute{0} before resending this invitation"
 msgstr "Please wait {remainingMinutes} more minute{0} before resending this invitation"
-
-#: app/routes/fraud/index.tsx:95
-msgid "Policy"
-msgstr "Policy"
 
 #: app/routes/fraud/policy.tsx:303
 msgid "Policy created successfully"
@@ -1743,7 +1744,7 @@ msgstr "Resource Type:"
 msgid "Response Code"
 msgstr "Response Code"
 
-#: app/routes/fraud/index.tsx:257
+#: app/routes/fraud/index.tsx:294
 msgid "Review"
 msgstr "Review"
 
@@ -1758,11 +1759,11 @@ msgstr "Review Threshold"
 msgid "Role"
 msgstr "Role"
 
-#: app/routes/fraud/index.tsx:175
+#: app/routes/fraud/index.tsx:203
 msgid "Run Evaluation"
 msgstr "Run Evaluation"
 
-#: app/routes/fraud/index.tsx:246
+#: app/routes/fraud/index.tsx:283
 msgid "Running"
 msgstr "Running"
 
@@ -1778,8 +1779,8 @@ msgstr "Schedule date and time is required"
 msgid "Schedule invitation to be sent at specific time"
 msgstr "Schedule invitation to be sent at specific time"
 
-#: app/routes/fraud/index.tsx:103
-#: app/routes/fraud/detail/index.tsx:261
+#: app/routes/fraud/index.tsx:131
+#: app/routes/fraud/detail/index.tsx:303
 msgid "Score"
 msgstr "Score"
 
@@ -1791,17 +1792,17 @@ msgstr "Search"
 msgid "Search activity..."
 msgstr "Search activity..."
 
-#: app/routes/fraud/index.tsx:197
+#: app/routes/fraud/index.tsx:276
+msgid "Search by email, name, or ID..."
+msgstr "Search by email, name, or ID..."
+
+#: app/routes/fraud/index.tsx:225
 msgid "Search by name or email..."
 msgstr "Search by name or email..."
 
 #: app/features/quota/components/quota-bucket-list.tsx:182
 msgid "Search by resource type..."
 msgstr "Search by resource type..."
-
-#: app/routes/fraud/index.tsx:239
-msgid "Search by user ID..."
-msgstr "Search by user ID..."
 
 #: app/routes/contact-group/index.tsx:213
 msgid "Search contact groups..."
@@ -1907,7 +1908,7 @@ msgstr "Secret Namespace"
 msgid "Secrets"
 msgstr "Secrets"
 
-#: app/routes/fraud/index.tsx:174
+#: app/routes/fraud/index.tsx:202
 msgid "Select a user to run a fraud evaluation against the current policy."
 msgstr "Select a user to run a fraud evaluation against the current policy."
 
@@ -1974,7 +1975,7 @@ msgstr "Stage {0}"
 msgid "Stage Name"
 msgstr "Stage Name"
 
-#: app/routes/fraud/detail/index.tsx:319
+#: app/routes/fraud/detail/index.tsx:361
 msgid "Stage Results"
 msgstr "Stage Results"
 
@@ -2116,8 +2117,8 @@ msgstr "Updating email addresses for GitHub identities"
 msgid "Usage"
 msgstr "Usage"
 
-#: app/routes/fraud/index.tsx:84
-#: app/routes/fraud/detail/index.tsx:248
+#: app/routes/fraud/index.tsx:106
+#: app/routes/fraud/detail/index.tsx:274
 #: app/features/activity/components/activity-list.tsx:114
 #: app/features/activity/components/activity-list.tsx:512
 #: app/features/activity/components/activity-list.tsx:617

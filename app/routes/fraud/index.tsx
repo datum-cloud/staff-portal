@@ -5,6 +5,7 @@ import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayId } from '@/components/display';
 import {
+  contactListQuery,
   fraudEvaluationCreateMutation,
   fraudEvaluationDeleteMutation,
   searchUsersQuery,
@@ -45,6 +46,24 @@ export default function Page() {
   const [selectedEval, setSelectedEval] = useState<FraudEvaluation | null>(null);
   const [userSearchQuery, setUserSearchQuery] = useState('');
 
+  const contactsQuery = useQuery({
+    queryKey: ['fraud', 'contacts-all'],
+    queryFn: () => contactListQuery(),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const contactsByUser = useMemo(() => {
+    const map = new Map<string, { email?: string; name?: string }>();
+    for (const contact of contactsQuery.data?.items ?? []) {
+      const userId = contact.spec?.subject?.name;
+      if (!userId) continue;
+      const name =
+        `${contact.spec?.givenName ?? ''} ${contact.spec?.familyName ?? ''}`.trim() || undefined;
+      map.set(userId, { email: contact.spec?.email, name });
+    }
+    return map;
+  }, [contactsQuery.data]);
+
   const { data: searchResults, isLoading: usersLoading } = useQuery({
     queryKey: ['fraud', 'user-search', userSearchQuery],
     queryFn: () => searchUsersQuery(userSearchQuery),
@@ -54,12 +73,17 @@ export default function Page() {
 
   const userOptions = useMemo(() => {
     if (!searchResults) return [];
-    return searchResults.map((user) => ({
-      value: user.metadata?.name ?? '',
-      label: `${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''}`.trim() || (user.metadata?.name ?? ''),
-      description: user.spec?.email ?? user.metadata?.name ?? '',
-    }));
-  }, [searchResults]);
+    return searchResults.map((user) => {
+      const userId = user.metadata?.name ?? '';
+      const contact = contactsByUser.get(userId);
+      const label =
+        `${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''}`.trim() ||
+        contact?.name ||
+        userId;
+      const description = user.spec?.email ?? contact?.email ?? userId;
+      return { value: userId, label, description };
+    });
+  }, [searchResults, contactsByUser]);
 
   const setUserSearch = useCallback((query: string) => {
     setUserSearchQuery(query);
@@ -89,9 +113,15 @@ export default function Page() {
         );
       },
     }),
-    columnHelper.accessor('spec.policyRef.name', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Policy`} />,
-      cell: ({ getValue }) => <span className="text-sm">{getValue()}</span>,
+    columnHelper.display({
+      id: 'email',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Email`} />,
+      cell: ({ row }) => {
+        const userId = row.original.spec?.userRef?.name;
+        const email = userId ? contactsByUser.get(userId)?.email : undefined;
+        if (!email) return <span className="text-muted-foreground text-sm">-</span>;
+        return <span className="text-sm">{email}</span>;
+      },
     }),
     columnHelper.accessor('status.phase', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Phase`} />,
@@ -229,12 +259,21 @@ export default function Page() {
           const userId = (row.spec?.userRef?.name ?? '').toLowerCase();
           const name = (row.metadata?.name ?? '').toLowerCase();
           const decision = (row.status?.decision ?? '').toLowerCase();
-          return userId.includes(q) || name.includes(q) || decision.includes(q);
+          const contact = userId ? contactsByUser.get(row.spec?.userRef?.name ?? '') : undefined;
+          const email = (contact?.email ?? '').toLowerCase();
+          const contactName = (contact?.name ?? '').toLowerCase();
+          return (
+            userId.includes(q) ||
+            name.includes(q) ||
+            decision.includes(q) ||
+            email.includes(q) ||
+            contactName.includes(q)
+          );
         }}>
         <Card className="m-4 py-4 shadow-none">
           <CardContent className="flex flex-col gap-2 px-4">
             <div className="flex items-center gap-4">
-              <DataTable.Search placeholder={t`Search by user ID...`} className="w-64" />
+              <DataTable.Search placeholder={t`Search by email, name, or ID...`} className="w-64" />
               <DataTable.SelectFilter
                 column="status.phase"
                 label={t`Phase`}

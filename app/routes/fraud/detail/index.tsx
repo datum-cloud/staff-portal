@@ -3,8 +3,10 @@ import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DisplayId } from '@/components/display';
 import {
+  contactListQuery,
   useFraudEvaluationDetailQuery,
   useFraudEvaluationListQuery,
+  userGetQuery,
 } from '@/resources/request/client';
 import type {
   FraudEvaluation,
@@ -17,7 +19,8 @@ import { metaObject } from '@/utils/helpers';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ArrowLeft, Clock, History, Layers, User } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { ArrowLeft, Clock, History, Layers, Mail, User } from 'lucide-react';
 import { Link, useParams } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
@@ -190,6 +193,29 @@ export default function Page() {
   const evalQuery = useFraudEvaluationDetailQuery(evalName ?? '');
   const evaluation = evalQuery.data;
 
+  const userId = evaluation?.spec?.userRef?.name;
+
+  const userQuery = useQuery({
+    queryKey: ['fraud', 'user-detail', userId],
+    queryFn: () => userGetQuery(userId!),
+    enabled: !!userId,
+  });
+
+  const contactQuery = useQuery({
+    queryKey: ['fraud', 'user-contact', userId],
+    queryFn: () =>
+      contactListQuery({
+        limit: 1,
+        filters: { fieldSelector: `spec.subject.name=${userId}` },
+      }),
+    enabled: !!userId,
+  });
+
+  const userEmail = userQuery.data?.spec?.email;
+  const contact = contactQuery.data?.items?.[0];
+  const contactName =
+    `${contact?.spec?.givenName ?? ''} ${contact?.spec?.familyName ?? ''}`.trim() || null;
+
   // Fetch all evaluations to filter by the same user
   const allEvalsQuery = useFraudEvaluationListQuery();
   const userEvaluations = (allEvalsQuery.data?.items ?? [])
@@ -256,6 +282,22 @@ export default function Page() {
                 </div>
               </Link>
             </div>
+            {(contactName || userEmail) && (
+              <div>
+                <h4 className="text-muted-foreground mb-1 text-xs font-medium tracking-wide uppercase">
+                  <Trans>Contact</Trans>
+                </h4>
+                <div className="space-y-0.5">
+                  {contactName && <div className="text-sm font-medium">{contactName}</div>}
+                  {userEmail && (
+                    <div className="text-muted-foreground flex items-center gap-1 text-sm">
+                      <Mail className="h-3 w-3" />
+                      {userEmail}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
             <div>
               <h4 className="text-muted-foreground mb-1 text-xs font-medium tracking-wide uppercase">
                 <Trans>Score</Trans>
