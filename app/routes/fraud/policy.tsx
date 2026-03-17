@@ -185,6 +185,29 @@ function PolicyDetail({
         </CardContent>
       </Card>
 
+      {/* Triggers */}
+      {policy.spec.triggers && policy.spec.triggers.length > 0 && (
+        <Card className="shadow-none">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Zap className="h-4 w-4" />
+              <Trans>Triggers</Trans>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              {policy.spec.triggers.map((trigger, i) => (
+                <BadgeState
+                  key={i}
+                  state="info"
+                  message={trigger.type === 'Event' ? trigger.event ?? trigger.type : trigger.type}
+                />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Pipeline Stages */}
       <div>
         <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold">
@@ -212,6 +235,11 @@ const stageSchema = z.object({
   shortCircuitBelow: z.coerce.number().optional(),
 });
 
+const triggerSchema = z.object({
+  type: z.enum(['Event', 'Manual']),
+  event: z.string().optional(),
+});
+
 const policyFormSchema = z.object({
   name: z
     .string()
@@ -219,6 +247,7 @@ const policyFormSchema = z.object({
     .regex(/^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/, 'Must be a valid Kubernetes name'),
   enforcementMode: z.enum(['OBSERVE', 'AUTO']),
   maxEntries: z.coerce.number().min(1).default(50),
+  triggers: z.array(triggerSchema).optional(),
   stages: z.array(stageSchema).min(1, 'At least one stage is required'),
 });
 
@@ -229,6 +258,10 @@ function policyToFormValues(policy: FraudPolicy): PolicyFormValues {
     name: policy.metadata?.name ?? '',
     enforcementMode: policy.spec.enforcement.mode,
     maxEntries: policy.spec.historyRetention?.maxEntries ?? 50,
+    triggers: policy.spec.triggers?.map((t) => ({
+      type: t.type as 'Event' | 'Manual',
+      event: t.event,
+    })),
     stages: policy.spec.stages.map((s) => ({
       name: s.name,
       providers: s.providers.map((p) => p.providerRef.name).join(', '),
@@ -246,6 +279,9 @@ function formValuesToSpec(values: PolicyFormValues): FraudPolicySpec {
   return {
     enforcement: { mode: values.enforcementMode },
     historyRetention: { maxEntries: values.maxEntries },
+    triggers: values.triggers?.filter((t) => t.type).length
+      ? values.triggers?.filter((t) => t.type)
+      : undefined,
     stages: values.stages.map((s) => ({
       name: s.name,
       providers: s.providers
@@ -281,6 +317,7 @@ function PolicyForm({
         name: 'default',
         enforcementMode: 'OBSERVE',
         maxEntries: 50,
+        triggers: [],
         stages: [
           {
             name: 'initial-screening',
@@ -338,6 +375,69 @@ function PolicyForm({
                   label={t`History Retention (max entries)`}
                   type="number"
                 />
+
+                <div className="border-t pt-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-sm font-semibold">
+                      <Trans>Triggers</Trans>
+                    </h4>
+                    <Button
+                      type="tertiary"
+                      theme="outline"
+                      size="small"
+                      icon={<PlusCircleIcon size={14} />}
+                      htmlType="button"
+                      onClick={() => {
+                        const current = form.getValues('triggers') ?? [];
+                        form.setValue('triggers', [...current, { type: 'Event', event: '' }], {
+                          shouldDirty: true,
+                        });
+                      }}>
+                      <Trans>Add Trigger</Trans>
+                    </Button>
+                  </div>
+
+                  {(form.watch('triggers') ?? []).map((_: unknown, idx: number) => (
+                    <div key={idx} className="border rounded-lg p-4 mb-3 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">
+                          <Trans>Trigger {idx + 1}</Trans>
+                        </span>
+                        <Button
+                          type="tertiary"
+                          theme="borderless"
+                          size="small"
+                          icon={<XIcon size={14} />}
+                          htmlType="button"
+                          onClick={() => {
+                            const current = form.getValues('triggers') ?? [];
+                            form.setValue(
+                              'triggers',
+                              current.filter((_: unknown, i: number) => i !== idx),
+                              { shouldDirty: true },
+                            );
+                          }}
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <Form.Select
+                          field={`triggers.${idx}.type`}
+                          label={t`Type`}
+                          required
+                          options={[
+                            { label: 'Event', value: 'Event' },
+                            { label: 'Manual', value: 'Manual' },
+                          ]}
+                        />
+                        <Form.Select
+                          field={`triggers.${idx}.event`}
+                          label={t`Event`}
+                          options={[{ label: 'UserCreated', value: 'UserCreated' }]}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
 
                 <div className="border-t pt-4">
                   <div className="flex items-center justify-between mb-3">
