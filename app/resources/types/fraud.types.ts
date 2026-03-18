@@ -102,8 +102,8 @@ export type FraudEvaluationSpec = {
 export type FraudEvaluationStatus = {
   phase?: 'Pending' | 'Running' | 'Completed' | 'Error';
   compositeScore?: string;
-  decision?: 'NONE' | 'REVIEW' | 'DEACTIVATE';
-  enforcementAction?: 'NONE' | 'OBSERVED' | 'REVIEW_FLAGGED' | 'DEACTIVATED';
+  decision?: 'ACCEPTED' | 'REVIEW' | 'DEACTIVATE';
+  enforcementAction?: 'OBSERVED' | 'ENFORCED';
   trigger?: string;
   lastEvaluationTime?: string;
   stageResults?: StageResult[];
