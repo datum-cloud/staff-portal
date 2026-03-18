@@ -158,9 +158,7 @@ export default function Page() {
       cell: ({ getValue }) => {
         const action = getValue();
         if (!action) return <span className="text-muted-foreground text-sm">None</span>;
-        return (
-          <BadgeState state={action === 'OBSERVED' ? 'info' : 'active'} message={action} />
-        );
+        return <BadgeState state={action === 'OBSERVED' ? 'info' : 'active'} message={action} />;
       },
     }),
     columnHelper.accessor('status.lastEvaluationTime', {
