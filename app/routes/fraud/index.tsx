@@ -146,8 +146,8 @@ export default function Page() {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Decision`} />,
       cell: ({ getValue }) => {
         const decision = getValue();
-        if (!decision || decision === 'NONE')
-          return <span className="text-muted-foreground text-sm">None</span>;
+        if (!decision || decision === 'ACCEPTED')
+          return <span className="text-muted-foreground text-sm">Accepted</span>;
         return (
           <BadgeState state={decision === 'DEACTIVATE' ? 'error' : 'warning'} message={decision} />
         );
@@ -157,14 +157,10 @@ export default function Page() {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Enforcement`} />,
       cell: ({ getValue }) => {
         const action = getValue();
-        if (!action || action === 'NONE')
-          return <span className="text-muted-foreground text-sm">None</span>;
-        const stateMap: Record<string, string> = {
-          OBSERVED: 'info',
-          REVIEW_FLAGGED: 'warning',
-          DEACTIVATED: 'error',
-        };
-        return <BadgeState state={stateMap[action] ?? 'unknown'} message={action} />;
+        if (!action) return <span className="text-muted-foreground text-sm">None</span>;
+        return (
+          <BadgeState state={action === 'OBSERVED' ? 'info' : 'active'} message={action} />
+        );
       },
     }),
     columnHelper.accessor('status.lastEvaluationTime', {
@@ -290,7 +286,7 @@ export default function Page() {
                 label={t`Decision`}
                 placeholder={t`Filter by decision`}
                 options={[
-                  { value: 'NONE', label: t`None` },
+                  { value: 'ACCEPTED', label: t`Accepted` },
                   { value: 'REVIEW', label: t`Review` },
                   { value: 'DEACTIVATE', label: t`Deactivate` },
                 ]}

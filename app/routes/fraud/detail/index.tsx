@@ -171,7 +171,7 @@ function UserEvaluationsTable({
                   {evaluation.status?.compositeScore && (
                     <span className="font-mono text-sm">{evaluation.status.compositeScore}</span>
                   )}
-                  {evaluation.status?.decision && evaluation.status.decision !== 'NONE' && (
+                  {evaluation.status?.decision && evaluation.status.decision !== 'ACCEPTED' && (
                     <BadgeState
                       state={evaluation.status.decision === 'DEACTIVATE' ? 'error' : 'warning'}
                       message={evaluation.status.decision}
@@ -314,7 +314,7 @@ export default function Page() {
               <h4 className="text-muted-foreground mb-1 text-xs font-medium tracking-wide uppercase">
                 <Trans>Decision</Trans>
               </h4>
-              {evaluation.status?.decision && evaluation.status.decision !== 'NONE' ? (
+              {evaluation.status?.decision && evaluation.status.decision !== 'ACCEPTED' ? (
                 <BadgeState
                   state={evaluation.status.decision === 'DEACTIVATE' ? 'error' : 'warning'}
                   message={evaluation.status.decision}
@@ -327,16 +327,9 @@ export default function Page() {
               <h4 className="text-muted-foreground mb-1 text-xs font-medium tracking-wide uppercase">
                 <Trans>Enforcement</Trans>
               </h4>
-              {evaluation.status?.enforcementAction &&
-              evaluation.status.enforcementAction !== 'NONE' ? (
+              {evaluation.status?.enforcementAction ? (
                 <BadgeState
-                  state={
-                    evaluation.status.enforcementAction === 'DEACTIVATED'
-                      ? 'error'
-                      : evaluation.status.enforcementAction === 'OBSERVED'
-                        ? 'info'
-                        : 'warning'
-                  }
+                  state={evaluation.status.enforcementAction === 'OBSERVED' ? 'info' : 'active'}
                   message={evaluation.status.enforcementAction}
                 />
               ) : (
