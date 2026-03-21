@@ -74,6 +74,7 @@ export function RecentUsersWidget() {
           resourceType: 'users',
           status: 'success',
           start: 'now-7d',
+          end: 'now',
         },
         limit: 10,
       }),
