@@ -9,7 +9,6 @@ import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { IoK8sApiserverPkgApisAuditV1Event } from '@openapi/activity.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
-import { getUnixTime, subDays } from 'date-fns';
 import { ArrowRight, Users } from 'lucide-react';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
@@ -74,7 +73,8 @@ export function RecentUsersWidget() {
           actions: 'create',
           resourceType: 'users',
           status: 'success',
-          start: getUnixTime(subDays(new Date(), 7)) * 1000000000,
+          start: 'now-7d',
+          end: 'now',
         },
         limit: 10,
       }),

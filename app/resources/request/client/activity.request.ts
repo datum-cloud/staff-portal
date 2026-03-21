@@ -195,9 +195,15 @@ export const activityListQuery = async (
   const defaultEndTime = now.toISOString();
 
   const startTime = params?.filters?.start
-    ? convertTimestampToISO(params.filters.start)
+    ? typeof params.filters.start === 'string'
+      ? params.filters.start
+      : convertTimestampToISO(params.filters.start)
     : defaultStartTime;
-  const endTime = params?.filters?.end ? convertTimestampToISO(params.filters.end) : defaultEndTime;
+  const endTime = params?.filters?.end
+    ? typeof params.filters.end === 'string'
+      ? params.filters.end
+      : convertTimestampToISO(params.filters.end)
+    : defaultEndTime;
 
   // Build CEL filter
   const filter = buildCelFilter(params?.filters || {});
