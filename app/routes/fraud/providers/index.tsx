@@ -3,10 +3,7 @@ import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
-import {
-  fraudProviderDeleteMutation,
-  useFraudProviderListQuery,
-} from '@/resources/request/client';
+import { fraudProviderDeleteMutation, useFraudProviderListQuery } from '@/resources/request/client';
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';

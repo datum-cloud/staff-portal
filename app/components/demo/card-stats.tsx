@@ -64,66 +64,66 @@ export function CardsStats() {
     <Row gutter={[16, 16]}>
       <Col span={24} sm={12} lg={24} xl={12}>
         <Card>
-        <CardHeader>
-          <CardDescription>Total Revenue</CardDescription>
-          <CardTitle className="text-3xl">$15,231.89</CardTitle>
-          <CardDescription>+20.1% from last month</CardDescription>
-        </CardHeader>
-        <CardContent className="pb-0">
-          <ChartContainer config={chartConfig} className="min-h-[80px] w-full">
-            <LineChart
-              data={data}
-              margin={{
-                top: 5,
-                right: 10,
-                left: 10,
-                bottom: 0,
-              }}>
-              <Line
-                type="monotone"
-                strokeWidth={2}
-                dataKey="revenue"
-                stroke="var(--color-revenue)"
-                activeDot={{
-                  r: 6,
-                }}
-              />
-            </LineChart>
-          </ChartContainer>
-        </CardContent>
+          <CardHeader>
+            <CardDescription>Total Revenue</CardDescription>
+            <CardTitle className="text-3xl">$15,231.89</CardTitle>
+            <CardDescription>+20.1% from last month</CardDescription>
+          </CardHeader>
+          <CardContent className="pb-0">
+            <ChartContainer config={chartConfig} className="min-h-[80px] w-full">
+              <LineChart
+                data={data}
+                margin={{
+                  top: 5,
+                  right: 10,
+                  left: 10,
+                  bottom: 0,
+                }}>
+                <Line
+                  type="monotone"
+                  strokeWidth={2}
+                  dataKey="revenue"
+                  stroke="var(--color-revenue)"
+                  activeDot={{
+                    r: 6,
+                  }}
+                />
+              </LineChart>
+            </ChartContainer>
+          </CardContent>
         </Card>
       </Col>
       <Col span={24} sm={12} lg={24} xl={12}>
         <Card className="pb-0 lg:hidden xl:flex">
-        <CardHeader>
-          <CardDescription>Subscriptions</CardDescription>
-          <CardTitle className="text-3xl">+2,350</CardTitle>
-          <CardDescription>+180.1% from last month</CardDescription>
-          <CardAction>
-            <Button variant="ghost" size="sm">
-              View More
-            </Button>
-          </CardAction>
-        </CardHeader>
-        <CardContent className="mt-auto max-h-[124px] flex-1 p-0">
-          <ChartContainer config={chartConfig} className="size-full">
-            <AreaChart
-              data={data}
-              margin={{
-                left: 0,
-                right: 0,
-              }}>
-              <Area
-                dataKey="subscription"
-                fill="var(--color-subscription)"
-                fillOpacity={0.05}
-                stroke="var(--color-subscription)"
-                strokeWidth={2}
-                type="monotone"
-              />
-            </AreaChart>
-          </ChartContainer>
-        </CardContent>
+          <CardHeader>
+            <CardDescription>Subscriptions</CardDescription>
+            <CardTitle className="text-3xl">+2,350</CardTitle>
+            <CardDescription>+180.1% from last month</CardDescription>
+            <CardAction>
+              <Button variant="ghost" size="sm">
+                View More
+              </Button>
+            </CardAction>
+          </CardHeader>
+          <CardContent className="mt-auto max-h-[124px] flex-1 p-0">
+            <ChartContainer config={chartConfig} className="size-full">
+              <AreaChart
+                data={data}
+                margin={{
+                  left: 0,
+                  right: 0,
+                }}>
+                <Area
+                  dataKey="subscription"
+                  fill="var(--color-subscription)"
+                  fillOpacity={0.05}
+                  stroke="var(--color-subscription)"
+                  strokeWidth={2}
+                  type="monotone"
+                />
+              </AreaChart>
+            </ChartContainer>
+          </CardContent>
         </Card>
       </Col>
     </Row>

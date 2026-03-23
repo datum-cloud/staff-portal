@@ -35,38 +35,38 @@ export function CardsReportIssue() {
         <Row gutter={[16, 16]}>
           <Col span={24} sm={12}>
             <div className="flex flex-col gap-3">
-            <Label htmlFor={`area-${id}`}>Area</Label>
-            <Select defaultValue="billing">
-              <SelectTrigger id={`area-${id}`} aria-label="Area" className="w-full">
-                <SelectValue placeholder="Select" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="team">Team</SelectItem>
-                <SelectItem value="billing">Billing</SelectItem>
-                <SelectItem value="account">Account</SelectItem>
-                <SelectItem value="deployments">Deployments</SelectItem>
-                <SelectItem value="support">Support</SelectItem>
-              </SelectContent>
-            </Select>
+              <Label htmlFor={`area-${id}`}>Area</Label>
+              <Select defaultValue="billing">
+                <SelectTrigger id={`area-${id}`} aria-label="Area" className="w-full">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="team">Team</SelectItem>
+                  <SelectItem value="billing">Billing</SelectItem>
+                  <SelectItem value="account">Account</SelectItem>
+                  <SelectItem value="deployments">Deployments</SelectItem>
+                  <SelectItem value="support">Support</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </Col>
           <Col span={24} sm={12}>
             <div className="flex flex-col gap-3">
-            <Label htmlFor={`security-level-${id}`}>Security Level</Label>
-            <Select defaultValue="2">
-              <SelectTrigger
-                id={`security-level-${id}`}
-                className="w-full [&_span]:!block [&_span]:truncate"
-                aria-label="Security Level">
-                <SelectValue placeholder="Select level" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">Severity 1 (Highest)</SelectItem>
-                <SelectItem value="2">Severity 2</SelectItem>
-                <SelectItem value="3">Severity 3</SelectItem>
-                <SelectItem value="4">Severity 4 (Lowest)</SelectItem>
-              </SelectContent>
-            </Select>
+              <Label htmlFor={`security-level-${id}`}>Security Level</Label>
+              <Select defaultValue="2">
+                <SelectTrigger
+                  id={`security-level-${id}`}
+                  className="w-full [&_span]:!block [&_span]:truncate"
+                  aria-label="Security Level">
+                  <SelectValue placeholder="Select level" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Severity 1 (Highest)</SelectItem>
+                  <SelectItem value="2">Severity 2</SelectItem>
+                  <SelectItem value="3">Severity 3</SelectItem>
+                  <SelectItem value="4">Severity 4 (Lowest)</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </Col>
         </Row>

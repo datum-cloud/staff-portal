@@ -1,8 +1,5 @@
 import type { Route } from './+types/create';
-import {
-  fraudProviderCreateMutation,
-  useFraudProviderListQuery,
-} from '@/resources/request/client';
+import { fraudProviderCreateMutation, useFraudProviderListQuery } from '@/resources/request/client';
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
