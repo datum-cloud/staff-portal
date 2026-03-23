@@ -10,6 +10,7 @@ import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { toast } from '@datum-cloud/datum-ui/toast';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Form } from '@datum-ui/form';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
@@ -45,9 +46,9 @@ export default function Page() {
     return (
       <Card className="m-4 shadow-none">
         <CardContent className="flex items-center justify-center py-12">
-          <span className="text-muted-foreground text-sm">
+          <Text size="sm" textColor="muted">
             <Trans>Loading provider...</Trans>
-          </span>
+          </Text>
         </CardContent>
       </Card>
     );
@@ -57,9 +58,9 @@ export default function Page() {
     return (
       <Card className="m-4 shadow-none">
         <CardContent className="flex items-center justify-center py-12">
-          <span className="text-muted-foreground text-sm">
+          <Text size="sm" textColor="muted">
             <Trans>Provider not found.</Trans>
-          </span>
+          </Text>
         </CardContent>
       </Card>
     );
@@ -134,9 +135,9 @@ export default function Page() {
                   />
                   <Form.Input field="endpoint" label={t`Endpoint`} />
                   <div className="border-t pt-4">
-                    <h4 className="text-sm font-medium mb-3">
+                    <Text size="sm" weight="medium" className="mb-3">
                       <Trans>Credentials Reference</Trans>
-                    </h4>
+                    </Text>
                     <div className="space-y-4">
                       <Form.Input field="credentialsRefName" label={t`Secret Name`} />
                       <Form.Input field="credentialsRefNamespace" label={t`Secret Namespace`} />

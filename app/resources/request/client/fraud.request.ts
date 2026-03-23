@@ -1,38 +1,51 @@
 import { ListQueryParams } from '@/resources/schemas';
-import type {
-  FraudEvaluation,
-  FraudPolicy,
-  FraudPolicySpec,
-  FraudProvider,
-  FraudProviderSpec,
-  KubernetesList,
-} from '@/resources/types/fraud.types';
-import { client } from '@openapi/shared/client.gen';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { toast } from '@datum-cloud/datum-ui/toast';
-import { t } from '@lingui/core/macro';
+import {
+  createFraudMiloapisComV1Alpha1FraudEvaluation,
+  createFraudMiloapisComV1Alpha1FraudPolicy,
+  createFraudMiloapisComV1Alpha1FraudProvider,
+  deleteFraudMiloapisComV1Alpha1FraudEvaluation,
+  deleteFraudMiloapisComV1Alpha1FraudPolicy,
+  deleteFraudMiloapisComV1Alpha1FraudProvider,
+  listFraudMiloapisComV1Alpha1FraudEvaluation,
+  listFraudMiloapisComV1Alpha1FraudPolicy,
+  listFraudMiloapisComV1Alpha1FraudProvider,
+  patchFraudMiloapisComV1Alpha1FraudPolicy,
+  patchFraudMiloapisComV1Alpha1FraudProvider,
+  readFraudMiloapisComV1Alpha1FraudEvaluation,
+  readFraudMiloapisComV1Alpha1FraudPolicy,
+  readFraudMiloapisComV1Alpha1FraudProvider,
+  type ComMiloapisFraudV1Alpha1FraudEvaluation,
+  type ComMiloapisFraudV1Alpha1FraudEvaluationList,
+  type ComMiloapisFraudV1Alpha1FraudPolicy,
+  type ComMiloapisFraudV1Alpha1FraudPolicyList,
+  type ComMiloapisFraudV1Alpha1FraudProvider,
+  type ComMiloapisFraudV1Alpha1FraudProviderList,
+} from '@openapi/fraud.miloapis.com/v1alpha1';
+import { useQuery } from '@tanstack/react-query';
 
-const FRAUD_API_BASE = '/apis/fraud.miloapis.com/v1alpha1';
+type FraudPolicy = ComMiloapisFraudV1Alpha1FraudPolicy;
+type FraudPolicySpec = ComMiloapisFraudV1Alpha1FraudPolicy['spec'];
+type FraudProvider = ComMiloapisFraudV1Alpha1FraudProvider;
+type FraudProviderSpec = ComMiloapisFraudV1Alpha1FraudProvider['spec'];
+type FraudEvaluation = ComMiloapisFraudV1Alpha1FraudEvaluation;
 
 // ─── FraudPolicy ───
 
-export const fraudPolicyListQuery = async (): Promise<KubernetesList<FraudPolicy> | null> => {
-  const response = await client.get({
-    url: `${FRAUD_API_BASE}/fraudpolicies`,
-  });
-  return (response.data as any)?.data ?? response.data ?? null;
-};
+export const fraudPolicyListQuery =
+  async (): Promise<ComMiloapisFraudV1Alpha1FraudPolicyList | null> => {
+    const response = await listFraudMiloapisComV1Alpha1FraudPolicy();
+    return response.data.data ?? null;
+  };
 
 export const fraudPolicyGetQuery = async (name: string): Promise<FraudPolicy | null> => {
-  const response = await client.get({
-    url: `${FRAUD_API_BASE}/fraudpolicies/${name}`,
+  const response = await readFraudMiloapisComV1Alpha1FraudPolicy({
+    path: { name },
   });
-  return (response.data as any)?.data ?? response.data ?? null;
+  return response.data.data ?? null;
 };
 
 export const fraudPolicyCreateMutation = async (name: string, spec: FraudPolicySpec) => {
-  const response = await client.post({
-    url: `${FRAUD_API_BASE}/fraudpolicies`,
+  const response = await createFraudMiloapisComV1Alpha1FraudPolicy({
     body: {
       apiVersion: 'fraud.miloapis.com/v1alpha1',
       kind: 'FraudPolicy',
@@ -40,21 +53,21 @@ export const fraudPolicyCreateMutation = async (name: string, spec: FraudPolicyS
       spec,
     },
   });
-  return (response.data as any)?.data ?? response.data;
+  return response.data.data;
 };
 
 export const fraudPolicyUpdateMutation = async (name: string, spec: Partial<FraudPolicySpec>) => {
-  const response = await client.patch({
-    url: `${FRAUD_API_BASE}/fraudpolicies/${name}`,
+  const response = await patchFraudMiloapisComV1Alpha1FraudPolicy({
+    path: { name },
     headers: { 'Content-Type': 'application/merge-patch+json' },
     body: { spec },
   });
-  return (response.data as any)?.data ?? response.data;
+  return response.data.data;
 };
 
 export const fraudPolicyDeleteMutation = async (name: string) => {
-  return client.delete({
-    url: `${FRAUD_API_BASE}/fraudpolicies/${name}`,
+  return deleteFraudMiloapisComV1Alpha1FraudPolicy({
+    path: { name },
   });
 };
 
@@ -77,23 +90,21 @@ export const useFraudPolicyDetailQuery = (name: string) => {
 
 // ─── FraudProvider ───
 
-export const fraudProviderListQuery = async (): Promise<KubernetesList<FraudProvider> | null> => {
-  const response = await client.get({
-    url: `${FRAUD_API_BASE}/fraudproviders`,
-  });
-  return (response.data as any)?.data ?? response.data ?? null;
-};
+export const fraudProviderListQuery =
+  async (): Promise<ComMiloapisFraudV1Alpha1FraudProviderList | null> => {
+    const response = await listFraudMiloapisComV1Alpha1FraudProvider();
+    return response.data.data ?? null;
+  };
 
 export const fraudProviderGetQuery = async (name: string): Promise<FraudProvider | null> => {
-  const response = await client.get({
-    url: `${FRAUD_API_BASE}/fraudproviders/${name}`,
+  const response = await readFraudMiloapisComV1Alpha1FraudProvider({
+    path: { name },
   });
-  return (response.data as any)?.data ?? response.data ?? null;
+  return response.data.data ?? null;
 };
 
 export const fraudProviderCreateMutation = async (name: string, spec: FraudProviderSpec) => {
-  const response = await client.post({
-    url: `${FRAUD_API_BASE}/fraudproviders`,
+  const response = await createFraudMiloapisComV1Alpha1FraudProvider({
     body: {
       apiVersion: 'fraud.miloapis.com/v1alpha1',
       kind: 'FraudProvider',
@@ -101,24 +112,24 @@ export const fraudProviderCreateMutation = async (name: string, spec: FraudProvi
       spec,
     },
   });
-  return (response.data as any)?.data ?? response.data;
+  return response.data.data;
 };
 
 export const fraudProviderUpdateMutation = async (
   name: string,
   spec: Partial<FraudProviderSpec>
 ) => {
-  const response = await client.patch({
-    url: `${FRAUD_API_BASE}/fraudproviders/${name}`,
+  const response = await patchFraudMiloapisComV1Alpha1FraudProvider({
+    path: { name },
     headers: { 'Content-Type': 'application/merge-patch+json' },
     body: { spec },
   });
-  return (response.data as any)?.data ?? response.data;
+  return response.data.data;
 };
 
 export const fraudProviderDeleteMutation = async (name: string) => {
-  return client.delete({
-    url: `${FRAUD_API_BASE}/fraudproviders/${name}`,
+  return deleteFraudMiloapisComV1Alpha1FraudProvider({
+    path: { name },
   });
 };
 
@@ -143,43 +154,40 @@ export const useFraudProviderDetailQuery = (name: string) => {
 
 export const fraudEvaluationListQuery = async (
   params?: ListQueryParams
-): Promise<KubernetesList<FraudEvaluation> | null> => {
-  const searchParams = new URLSearchParams();
-  if (params?.limit) searchParams.set('limit', String(params.limit));
-  if (params?.cursor) searchParams.set('continue', params.cursor);
-  if (params?.search) searchParams.set('fieldSelector', `spec.userRef.name=${params.search}`);
-
-  const qs = searchParams.toString();
-  const response = await client.get({
-    url: `${FRAUD_API_BASE}/fraudevaluations${qs ? `?${qs}` : ''}`,
+): Promise<ComMiloapisFraudV1Alpha1FraudEvaluationList | null> => {
+  const response = await listFraudMiloapisComV1Alpha1FraudEvaluation({
+    query: {
+      ...(params?.limit && { limit: params.limit }),
+      ...(params?.cursor && { continue: params.cursor }),
+      ...(params?.search && { fieldSelector: `spec.userRef.name=${params.search}` }),
+    },
   });
-  return (response.data as any)?.data ?? response.data ?? null;
+  return response.data.data ?? null;
 };
 
 export const fraudEvaluationGetQuery = async (name: string): Promise<FraudEvaluation | null> => {
-  const response = await client.get({
-    url: `${FRAUD_API_BASE}/fraudevaluations/${name}`,
+  const response = await readFraudMiloapisComV1Alpha1FraudEvaluation({
+    path: { name },
   });
-  return (response.data as any)?.data ?? response.data ?? null;
+  return response.data.data ?? null;
 };
 
 export const fraudEvaluationCreateMutation = async (payload: FraudEvaluation) => {
-  const response = await client.post({
-    url: `${FRAUD_API_BASE}/fraudevaluations`,
+  const response = await createFraudMiloapisComV1Alpha1FraudEvaluation({
     body: payload,
   });
-  return (response.data as any)?.data ?? response.data;
+  return response.data.data;
 };
 
 export const fraudEvaluationDeleteMutation = async (name: string) => {
-  return client.delete({
-    url: `${FRAUD_API_BASE}/fraudevaluations/${name}`,
+  return deleteFraudMiloapisComV1Alpha1FraudEvaluation({
+    path: { name },
   });
 };
 
 export const useFraudEvaluationListQuery = (params?: ListQueryParams) => {
   return useQuery({
-    queryKey: ['fraud', 'evaluations', params],
+    queryKey: ['fraud', 'evaluations', 'list', params],
     queryFn: () => fraudEvaluationListQuery(params),
     staleTime: 5 * 60 * 1000,
   });

@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/ca
 import { useApp } from '@/providers/app.provider';
 import { userUpdatePreferencesMutation } from '@/resources/request/client';
 import type { Theme } from '@datum-cloud/datum-ui';
+import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { useTheme } from '@datum-cloud/datum-ui/theme';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
@@ -98,9 +99,9 @@ export function PreferencesForm() {
                 </Trans>
               </Text>
             </div>
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            <Row gutter={[16, 16]}>
               {THEME_OPTIONS.map((opt) => (
-                <div key={opt.value}>
+                <Col key={opt.value} span={12} md={6}>
                   <ThemePreview
                     value={opt.value}
                     selected={settings.theme === opt.value}
@@ -109,9 +110,9 @@ export function PreferencesForm() {
                   />
 
                   <Text>{opt.label}</Text>
-                </div>
+                </Col>
               ))}
-            </div>
+            </Row>
           </div>
         </div>
       </CardContent>
