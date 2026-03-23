@@ -137,9 +137,8 @@ export const thingListQuery = async (params?: { limit?: number; cursor?: string 
 ## Template: Client Query module
 
 ```ts
-import { useQuery } from '@tanstack/react-query';
-
 import { thingListQuery } from '../apis/thing.api';
+import { useQuery } from '@tanstack/react-query';
 
 export const thingQueryKeys = {
   all: ['things'] as const,
