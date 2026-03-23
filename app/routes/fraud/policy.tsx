@@ -14,8 +14,6 @@ import { useState } from 'react';
 
 export const meta: Route.MetaFunction = () => metaObject(t`Fraud Policy`);
 
-// ─── Page ───
-
 export default function Page() {
   const policyQuery = useFraudPolicyListQuery();
   const policies = policyQuery.data?.items ?? [];

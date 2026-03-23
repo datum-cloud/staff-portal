@@ -275,7 +275,7 @@ msgid "Are you sure you want to delete session \"{0}\"? This action cannot be un
 msgstr "Are you sure you want to delete session \"{0}\"? This action cannot be undone."
 
 #. placeholder {0}: policy.metadata?.name ?? ''
-#: app/routes/fraud/policy.tsx:98
+#: app/routes/fraud/policy.tsx:96
 msgid "Are you sure you want to delete the fraud policy \"{0}\"? This will disable all fraud evaluation."
 msgstr "Are you sure you want to delete the fraud policy \"{0}\"? This will disable all fraud evaluation."
 
@@ -307,7 +307,7 @@ msgstr "Back to evaluations"
 #: app/routes/organization/detail/member.tsx:85
 #: app/routes/group/member.tsx:130
 #: app/routes/group/member.tsx:145
-#: app/routes/fraud/policy.tsx:100
+#: app/routes/fraud/policy.tsx:98
 #: app/routes/fraud/index.tsx:220
 #: app/routes/fraud/index.tsx:255
 #: app/routes/fraud/providers/index.tsx:129
@@ -439,7 +439,7 @@ msgstr "Create Fraud Policy"
 msgid "Create Fraud Provider"
 msgstr "Create Fraud Provider"
 
-#: app/routes/fraud/policy.tsx:64
+#: app/routes/fraud/policy.tsx:62
 msgid "Create Policy"
 msgstr "Create Policy"
 
@@ -538,7 +538,7 @@ msgstr "Decision"
 #: app/routes/profile/session.tsx:103
 #: app/routes/group/member.tsx:70
 #: app/routes/group/member.tsx:129
-#: app/routes/fraud/policy.tsx:99
+#: app/routes/fraud/policy.tsx:97
 #: app/routes/fraud/index.tsx:100
 #: app/routes/fraud/index.tsx:254
 #: app/routes/fraud/providers/index.tsx:42
@@ -618,7 +618,7 @@ msgstr "Delete Member"
 msgid "Delete Organization"
 msgstr "Delete Organization"
 
-#: app/routes/fraud/policy.tsx:97
+#: app/routes/fraud/policy.tsx:95
 msgid "Delete Policy"
 msgstr "Delete Policy"
 
@@ -1157,7 +1157,7 @@ msgstr "Loading evaluation..."
 msgid "Loading mail lists..."
 msgstr "Loading mail lists..."
 
-#: app/routes/fraud/policy.tsx:32
+#: app/routes/fraud/policy.tsx:30
 msgid "Loading policy..."
 msgstr "Loading policy..."
 
@@ -1353,7 +1353,7 @@ msgstr "No export policies found."
 msgid "No fraud evaluations found."
 msgstr "No fraud evaluations found."
 
-#: app/routes/fraud/policy.tsx:58
+#: app/routes/fraud/policy.tsx:56
 msgid "No fraud policy configured."
 msgstr "No fraud policy configured."
 
@@ -1549,7 +1549,7 @@ msgstr "Please wait {remainingMinutes} more minute{0} before resending this invi
 msgid "Policy created successfully"
 msgstr "Policy created successfully"
 
-#: app/routes/fraud/policy.tsx:106
+#: app/routes/fraud/policy.tsx:104
 msgid "Policy deleted successfully"
 msgstr "Policy deleted successfully"
 
