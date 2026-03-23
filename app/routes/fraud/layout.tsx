@@ -38,7 +38,7 @@ export default function FraudLayout() {
         </Tabs>
       </AppNavigation>
 
-      <div className="min-h-0 flex-1 overflow-auto px-4 py-4">
+      <div className="min-h-0 flex-1 overflow-auto">
         <Outlet />
       </div>
     </div>

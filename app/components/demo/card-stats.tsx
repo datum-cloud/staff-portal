@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from '@/modules/shadcn/ui/card';
 import { ChartConfig, ChartContainer } from '@/modules/shadcn/ui/chart';
+import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { Area, AreaChart, Line, LineChart } from 'recharts';
 
 const data = [
@@ -60,8 +61,9 @@ const chartConfig = {
 
 export function CardsStats() {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-      <Card>
+    <Row gutter={[16, 16]}>
+      <Col span={24} sm={12} lg={24} xl={12}>
+        <Card>
         <CardHeader>
           <CardDescription>Total Revenue</CardDescription>
           <CardTitle className="text-3xl">$15,231.89</CardTitle>
@@ -89,8 +91,10 @@ export function CardsStats() {
             </LineChart>
           </ChartContainer>
         </CardContent>
-      </Card>
-      <Card className="pb-0 lg:hidden xl:flex">
+        </Card>
+      </Col>
+      <Col span={24} sm={12} lg={24} xl={12}>
+        <Card className="pb-0 lg:hidden xl:flex">
         <CardHeader>
           <CardDescription>Subscriptions</CardDescription>
           <CardTitle className="text-3xl">+2,350</CardTitle>
@@ -120,7 +124,8 @@ export function CardsStats() {
             </AreaChart>
           </ChartContainer>
         </CardContent>
-      </Card>
-    </div>
+        </Card>
+      </Col>
+    </Row>
   );
 }

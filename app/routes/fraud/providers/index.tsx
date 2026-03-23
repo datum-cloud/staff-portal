@@ -7,19 +7,22 @@ import {
   fraudProviderDeleteMutation,
   useFraudProviderListQuery,
 } from '@/resources/request/client';
-import type { FraudProvider } from '@/resources/types/fraud.types';
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import type { ComMiloapisFraudV1Alpha1FraudProvider } from '@openapi/fraud.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { EditIcon, PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+
+type FraudProvider = ComMiloapisFraudV1Alpha1FraudProvider;
 
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Fraud Providers`);
@@ -71,9 +74,9 @@ export default function Page() {
     columnHelper.accessor('spec.config.endpoint', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Endpoint`} />,
       cell: ({ getValue }) => (
-        <span className="text-muted-foreground max-w-xs truncate text-sm">
+        <Text size="sm" textColor="muted" className="max-w-xs truncate">
           {getValue() ?? 'default'}
-        </span>
+        </Text>
       ),
     }),
     columnHelper.display({
@@ -130,7 +133,7 @@ export default function Page() {
         variant="destructive"
         onConfirm={async () => {
           await fraudProviderDeleteMutation(selectedProvider?.metadata?.name ?? '');
-          await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 1000));
+          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
           setSelectedProvider(null);
           toast.success(t`Provider deleted successfully`);
         }}

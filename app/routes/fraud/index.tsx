@@ -12,22 +12,25 @@ import {
   useFraudEvaluationListQuery,
   useFraudPolicyListQuery,
 } from '@/resources/request/client';
-import type { FraudEvaluation } from '@/resources/types/fraud.types';
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Form } from '@datum-ui/form';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
+import type { ComMiloapisFraudV1Alpha1FraudEvaluation } from '@openapi/fraud.miloapis.com/v1alpha1';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { z } from 'zod';
+
+type FraudEvaluation = ComMiloapisFraudV1Alpha1FraudEvaluation;
 
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Fraud Evaluations`);
@@ -119,8 +122,8 @@ export default function Page() {
       cell: ({ row }) => {
         const userId = row.original.spec?.userRef?.name;
         const email = userId ? contactsByUser.get(userId)?.email : undefined;
-        if (!email) return <span className="text-muted-foreground text-sm">-</span>;
-        return <span className="text-sm">{email}</span>;
+        if (!email) return <Text size="sm" textColor="muted">-</Text>;
+        return <Text size="sm">{email}</Text>;
       },
     }),
     columnHelper.accessor('status.phase', {
@@ -131,7 +134,7 @@ export default function Page() {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Score`} />,
       cell: ({ getValue }) => {
         const score = getValue();
-        if (!score) return <span className="text-muted-foreground text-sm">-</span>;
+        if (!score) return <Text size="sm" textColor="muted">-</Text>;
         const numScore = parseFloat(score);
         const color =
           numScore >= 70
@@ -139,15 +142,14 @@ export default function Page() {
             : numScore >= 30
               ? 'text-yellow-600 dark:text-yellow-400'
               : 'text-green-600 dark:text-green-400';
-        return <span className={`font-mono text-sm font-medium ${color}`}>{score}</span>;
+        return <Text className={`font-mono text-sm font-medium ${color}`}>{score}</Text>;
       },
     }),
     columnHelper.accessor('status.decision', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Decision`} />,
       cell: ({ getValue }) => {
         const decision = getValue();
-        if (!decision || decision === 'ACCEPTED')
-          return <span className="text-muted-foreground text-sm">Accepted</span>;
+        if (!decision || decision === 'ACCEPTED') return <Text size="sm" textColor="muted">Accepted</Text>;
         return (
           <BadgeState state={decision === 'DEACTIVATE' ? 'error' : 'warning'} message={decision} />
         );
@@ -157,7 +159,7 @@ export default function Page() {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Enforcement`} />,
       cell: ({ getValue }) => {
         const action = getValue();
-        if (!action) return <span className="text-muted-foreground text-sm">None</span>;
+        if (!action) return <Text size="sm" textColor="muted">None</Text>;
         return <BadgeState state={action === 'OBSERVED' ? 'info' : 'active'} message={action} />;
       },
     }),
@@ -210,7 +212,7 @@ export default function Page() {
               policyRef: { name: policyName ?? '' },
             },
           });
-          await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 1000));
+          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
           toast.success(t`Fraud evaluation started`);
         }}>
         <Form.Autosearch
@@ -234,7 +236,7 @@ export default function Page() {
         variant="destructive"
         onConfirm={async () => {
           await fraudEvaluationDeleteMutation(selectedEval?.metadata?.name ?? '');
-          await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 1000));
+          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
           setSelectedEval(null);
           toast.success(t`Evaluation deleted successfully`);
         }}

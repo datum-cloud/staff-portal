@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from '@/modules/shadcn/ui/select';
 import { Textarea } from '@/modules/shadcn/ui/textarea';
+import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import * as React from 'react';
 
 export function CardsReportIssue() {
@@ -31,8 +32,9 @@ export function CardsReportIssue() {
         <CardDescription>What area are you having problems with?</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="flex flex-col gap-3">
+        <Row gutter={[16, 16]}>
+          <Col span={24} sm={12}>
+            <div className="flex flex-col gap-3">
             <Label htmlFor={`area-${id}`}>Area</Label>
             <Select defaultValue="billing">
               <SelectTrigger id={`area-${id}`} aria-label="Area" className="w-full">
@@ -46,8 +48,10 @@ export function CardsReportIssue() {
                 <SelectItem value="support">Support</SelectItem>
               </SelectContent>
             </Select>
-          </div>
-          <div className="flex flex-col gap-3">
+            </div>
+          </Col>
+          <Col span={24} sm={12}>
+            <div className="flex flex-col gap-3">
             <Label htmlFor={`security-level-${id}`}>Security Level</Label>
             <Select defaultValue="2">
               <SelectTrigger
@@ -63,8 +67,9 @@ export function CardsReportIssue() {
                 <SelectItem value="4">Severity 4 (Lowest)</SelectItem>
               </SelectContent>
             </Select>
-          </div>
-        </div>
+            </div>
+          </Col>
+        </Row>
         <div className="flex flex-col gap-3">
           <Label htmlFor={`subject-${id}`}>Subject</Label>
           <Input id={`subject-${id}`} placeholder="I need help with..." />
