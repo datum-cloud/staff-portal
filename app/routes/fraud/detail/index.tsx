@@ -6,12 +6,11 @@ import {
   StageResultsSection,
   UserEvaluationsTable,
 } from '@/features/fraud';
+import { contactListQuery, userGetQuery } from '@/resources/request/client';
 import {
-  contactListQuery,
   useFraudEvaluationDetailQuery,
   useFraudEvaluationListQuery,
-  userGetQuery,
-} from '@/resources/request/client';
+} from '@/resources/request/client/queries/fraud.queries';
 import { metaObject } from '@/utils/helpers';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { Text } from '@datum-cloud/datum-ui/typography';

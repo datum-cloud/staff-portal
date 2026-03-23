@@ -94,12 +94,12 @@ msgstr ""
 msgid "500 - Server Error"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:309
+#: app/routes/fraud/index.tsx:313
 msgid "Accepted"
 msgstr ""
 
 #: app/routes/fraud/providers/detail.tsx:144
-#: app/routes/fraud/providers/create.tsx:110
+#: app/routes/fraud/providers/create.tsx:111
 msgid "Account ID Key"
 msgstr ""
 
@@ -163,15 +163,15 @@ msgstr ""
 msgid "Add Note"
 msgstr ""
 
-#: app/routes/fraud/providers/index.tsx:119
+#: app/routes/fraud/providers/index.tsx:120
 msgid "Add Provider"
 msgstr ""
 
-#: app/features/fraud/policy/policy-form.tsx:265
+#: app/features/fraud/policy/policy-form.tsx:262
 msgid "Add Stage"
 msgstr ""
 
-#: app/features/fraud/policy/policy-form.tsx:186
+#: app/features/fraud/policy/policy-form.tsx:183
 msgid "Add Trigger"
 msgstr ""
 
@@ -264,7 +264,7 @@ msgstr ""
 
 #. placeholder {0}: selectedProvider?.metadata?.name ?? ''
 #. placeholder {0}: provider.metadata?.name ?? ''
-#: app/routes/fraud/providers/index.tsx:127
+#: app/routes/fraud/providers/index.tsx:128
 #: app/routes/fraud/providers/detail.tsx:171
 msgid "Are you sure you want to delete provider \"{0}\"? This action cannot be undone."
 msgstr ""
@@ -275,11 +275,11 @@ msgid "Are you sure you want to delete session \"{0}\"? This action cannot be un
 msgstr ""
 
 #. placeholder {0}: policy.metadata?.name ?? ''
-#: app/routes/fraud/policy.tsx:96
+#: app/routes/fraud/policy.tsx:97
 msgid "Are you sure you want to delete the fraud policy \"{0}\"? This will disable all fraud evaluation."
 msgstr ""
 
-#: app/routes/fraud/index.tsx:253
+#: app/routes/fraud/index.tsx:257
 msgid "Are you sure you want to delete this fraud evaluation? This action cannot be undone."
 msgstr ""
 
@@ -307,13 +307,13 @@ msgstr ""
 #: app/routes/organization/detail/member.tsx:85
 #: app/routes/group/member.tsx:130
 #: app/routes/group/member.tsx:145
-#: app/routes/fraud/policy.tsx:98
-#: app/routes/fraud/index.tsx:220
-#: app/routes/fraud/index.tsx:255
-#: app/routes/fraud/providers/index.tsx:129
+#: app/routes/fraud/policy.tsx:99
+#: app/routes/fraud/index.tsx:224
+#: app/routes/fraud/index.tsx:259
+#: app/routes/fraud/providers/index.tsx:130
 #: app/routes/fraud/providers/detail.tsx:154
 #: app/routes/fraud/providers/detail.tsx:173
-#: app/routes/fraud/providers/create.tsx:120
+#: app/routes/fraud/providers/create.tsx:121
 #: app/routes/contact-group/index.tsx:118
 #: app/routes/contact-group/index.tsx:138
 #: app/routes/contact-group/detail/member.tsx:190
@@ -323,7 +323,7 @@ msgstr ""
 #: app/features/user/components/user-reject-dialog.tsx:30
 #: app/features/quota/components/quota-grant-list.tsx:137
 #: app/features/quota/components/quota-bucket-list.tsx:131
-#: app/features/fraud/policy/policy-form.tsx:333
+#: app/features/fraud/policy/policy-form.tsx:330
 #: app/features/contact-group/components/contact-group-form.tsx:97
 #: app/features/contact/components/contact-list.tsx:116
 #: app/features/contact/components/contact-form.tsx:184
@@ -345,7 +345,7 @@ msgstr ""
 msgid "Clear"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:298
+#: app/routes/fraud/index.tsx:302
 msgid "Completed"
 msgstr ""
 
@@ -418,10 +418,10 @@ msgstr ""
 msgid "Content"
 msgstr ""
 
-#: app/routes/fraud/providers/create.tsx:123
+#: app/routes/fraud/providers/create.tsx:124
 #: app/routes/contact-group/create.tsx:14
 #: app/routes/contact/create.tsx:14
-#: app/features/fraud/policy/policy-form.tsx:336
+#: app/features/fraud/policy/policy-form.tsx:333
 #: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:190
 #: app/features/activity/components/activity-list.tsx:437
@@ -430,16 +430,16 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
-#: app/features/fraud/policy/policy-form.tsx:139
+#: app/features/fraud/policy/policy-form.tsx:136
 msgid "Create Fraud Policy"
 msgstr ""
 
-#: app/routes/fraud/providers/create.tsx:16
-#: app/routes/fraud/providers/create.tsx:66
+#: app/routes/fraud/providers/create.tsx:17
+#: app/routes/fraud/providers/create.tsx:67
 msgid "Create Fraud Provider"
 msgstr ""
 
-#: app/routes/fraud/policy.tsx:62
+#: app/routes/fraud/policy.tsx:63
 msgid "Create Policy"
 msgstr ""
 
@@ -460,7 +460,7 @@ msgstr ""
 #: app/routes/organization/detail/index.tsx:73
 #: app/routes/group/member.tsx:95
 #: app/routes/group/index.tsx:39
-#: app/routes/fraud/providers/index.tsx:98
+#: app/routes/fraud/providers/index.tsx:99
 #: app/routes/contact-group/index.tsx:85
 #: app/features/quota/components/quota-grant-list.tsx:113
 #: app/features/quota/components/quota-bucket-list.tsx:100
@@ -469,7 +469,7 @@ msgid "Created"
 msgstr ""
 
 #: app/routes/fraud/providers/detail.tsx:139
-#: app/routes/fraud/providers/create.tsx:105
+#: app/routes/fraud/providers/create.tsx:106
 msgid "Credentials Reference"
 msgstr ""
 
@@ -498,11 +498,11 @@ msgstr ""
 
 #: app/routes/user/detail/index.tsx:128
 #: app/routes/user/detail/index.tsx:392
-#: app/routes/fraud/index.tsx:311
+#: app/routes/fraud/index.tsx:315
 msgid "Deactivate"
 msgstr ""
 
-#: app/features/fraud/policy/policy-form.tsx:310
+#: app/features/fraud/policy/policy-form.tsx:307
 msgid "Deactivate Threshold"
 msgstr ""
 
@@ -527,9 +527,9 @@ msgstr ""
 msgid "Deactivation Reason:"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:159
-#: app/routes/fraud/index.tsx:306
-#: app/routes/fraud/index.tsx:320
+#: app/routes/fraud/index.tsx:163
+#: app/routes/fraud/index.tsx:310
+#: app/routes/fraud/index.tsx:324
 #: app/features/fraud/detail/evaluation-sections.tsx:263
 msgid "Decision"
 msgstr ""
@@ -538,11 +538,11 @@ msgstr ""
 #: app/routes/profile/session.tsx:103
 #: app/routes/group/member.tsx:70
 #: app/routes/group/member.tsx:129
-#: app/routes/fraud/policy.tsx:97
-#: app/routes/fraud/index.tsx:100
-#: app/routes/fraud/index.tsx:254
-#: app/routes/fraud/providers/index.tsx:42
-#: app/routes/fraud/providers/index.tsx:128
+#: app/routes/fraud/policy.tsx:98
+#: app/routes/fraud/index.tsx:104
+#: app/routes/fraud/index.tsx:258
+#: app/routes/fraud/providers/index.tsx:43
+#: app/routes/fraud/providers/index.tsx:129
 #: app/routes/fraud/providers/detail.tsx:101
 #: app/routes/fraud/providers/detail.tsx:172
 #: app/routes/contact-group/index.tsx:52
@@ -599,7 +599,7 @@ msgstr ""
 msgid "Delete contact groups"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:252
+#: app/routes/fraud/index.tsx:256
 msgid "Delete Evaluation"
 msgstr ""
 
@@ -618,7 +618,7 @@ msgstr ""
 msgid "Delete Organization"
 msgstr ""
 
-#: app/routes/fraud/policy.tsx:95
+#: app/routes/fraud/policy.tsx:96
 msgid "Delete Policy"
 msgstr ""
 
@@ -627,7 +627,7 @@ msgstr ""
 msgid "Delete Project"
 msgstr ""
 
-#: app/routes/fraud/providers/index.tsx:126
+#: app/routes/fraud/providers/index.tsx:127
 #: app/routes/fraud/providers/detail.tsx:170
 msgid "Delete Provider"
 msgstr ""
@@ -724,14 +724,14 @@ msgstr ""
 msgid "Domains"
 msgstr ""
 
-#: app/routes/fraud/providers/index.tsx:37
+#: app/routes/fraud/providers/index.tsx:38
 #: app/routes/contact-group/index.tsx:47
 #: app/features/fraud/policy/policy-detail.tsx:92
 #: app/features/contact/components/contact-list.tsx:50
 msgid "Edit"
 msgstr ""
 
-#: app/features/fraud/policy/policy-form.tsx:139
+#: app/features/fraud/policy/policy-form.tsx:136
 msgid "Edit Fraud Policy"
 msgstr ""
 
@@ -746,7 +746,7 @@ msgstr ""
 
 #: app/routes/user/index.tsx:202
 #: app/routes/user/detail/index.tsx:254
-#: app/routes/fraud/index.tsx:121
+#: app/routes/fraud/index.tsx:125
 #: app/routes/contact-group/detail/member.tsx:111
 #: app/features/contact/components/contact-list.tsx:83
 #: app/features/contact/components/contact-form.tsx:122
@@ -779,18 +779,18 @@ msgstr ""
 
 #: app/routes/project/detail/httpproxy/index.tsx:35
 #: app/routes/project/detail/httpproxy/detail.tsx:97
-#: app/routes/fraud/providers/index.tsx:72
+#: app/routes/fraud/providers/index.tsx:73
 #: app/routes/fraud/providers/detail.tsx:136
-#: app/routes/fraud/providers/create.tsx:102
+#: app/routes/fraud/providers/create.tsx:103
 msgid "Endpoint"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:174
+#: app/routes/fraud/index.tsx:178
 #: app/features/fraud/detail/evaluation-sections.tsx:278
 msgid "Enforcement"
 msgstr ""
 
-#: app/features/fraud/policy/policy-form.tsx:156
+#: app/features/fraud/policy/policy-form.tsx:153
 #: app/features/fraud/policy/policy-detail.tsx:111
 msgid "Enforcement Mode"
 msgstr ""
@@ -817,16 +817,16 @@ msgstr ""
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr ""
 
-#: app/routes/fraud/index.tsx:301
+#: app/routes/fraud/index.tsx:305
 msgid "Error"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:188
+#: app/routes/fraud/index.tsx:192
 #: app/features/fraud/detail/evaluation-sections.tsx:293
 msgid "Evaluated"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:261
+#: app/routes/fraud/index.tsx:265
 msgid "Evaluation deleted successfully"
 msgstr ""
 
@@ -834,7 +834,7 @@ msgstr ""
 msgid "Evaluation History"
 msgstr ""
 
-#: app/routes/fraud/detail/index.tsx:82
+#: app/routes/fraud/detail/index.tsx:84
 msgid "Evaluation not found."
 msgstr ""
 
@@ -846,7 +846,7 @@ msgstr ""
 msgid "Evaluation Pipeline"
 msgstr ""
 
-#: app/features/fraud/policy/policy-form.tsx:227
+#: app/features/fraud/policy/policy-form.tsx:224
 msgid "Event"
 msgstr ""
 
@@ -891,9 +891,9 @@ msgstr ""
 msgid "Failed to update timezone"
 msgstr ""
 
-#: app/routes/fraud/providers/index.tsx:65
+#: app/routes/fraud/providers/index.tsx:66
 #: app/routes/fraud/providers/detail.tsx:129
-#: app/routes/fraud/providers/create.tsx:95
+#: app/routes/fraud/providers/create.tsx:96
 msgid "Failure Policy"
 msgstr ""
 
@@ -909,11 +909,11 @@ msgstr ""
 msgid "Filter by approval"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:307
+#: app/routes/fraud/index.tsx:311
 msgid "Filter by decision"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:296
+#: app/routes/fraud/index.tsx:300
 msgid "Filter by phase"
 msgstr ""
 
@@ -961,23 +961,23 @@ msgstr ""
 msgid "Fraud & Abuse"
 msgstr ""
 
-#: app/routes/fraud/detail/index.tsx:24
+#: app/routes/fraud/detail/index.tsx:26
 msgid "Fraud Evaluation Detail"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:236
+#: app/routes/fraud/index.tsx:240
 msgid "Fraud evaluation started"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:36
+#: app/routes/fraud/index.tsx:40
 msgid "Fraud Evaluations"
 msgstr ""
 
-#: app/routes/fraud/policy.tsx:15
+#: app/routes/fraud/policy.tsx:16
 msgid "Fraud Policy"
 msgstr ""
 
-#: app/routes/fraud/providers/index.tsx:25
+#: app/routes/fraud/providers/index.tsx:26
 msgid "Fraud Providers"
 msgstr ""
 
@@ -1042,7 +1042,7 @@ msgstr ""
 msgid "History Retention"
 msgstr ""
 
-#: app/features/fraud/policy/policy-form.tsx:165
+#: app/features/fraud/policy/policy-form.tsx:162
 msgid "History Retention (max entries)"
 msgstr ""
 
@@ -1131,7 +1131,7 @@ msgid "Last name is required"
 msgstr ""
 
 #: app/routes/fraud/providers/detail.tsx:145
-#: app/routes/fraud/providers/create.tsx:111
+#: app/routes/fraud/providers/create.tsx:112
 msgid "License Key Key"
 msgstr ""
 
@@ -1149,7 +1149,7 @@ msgstr ""
 msgid "List"
 msgstr ""
 
-#: app/routes/fraud/detail/index.tsx:70
+#: app/routes/fraud/detail/index.tsx:72
 msgid "Loading evaluation..."
 msgstr ""
 
@@ -1157,7 +1157,7 @@ msgstr ""
 msgid "Loading mail lists..."
 msgstr ""
 
-#: app/routes/fraud/policy.tsx:30
+#: app/routes/fraud/policy.tsx:31
 msgid "Loading policy..."
 msgstr ""
 
@@ -1277,13 +1277,13 @@ msgstr ""
 #: app/routes/organization/detail/index.tsx:53
 #: app/routes/group/member.tsx:79
 #: app/routes/group/index.tsx:23
-#: app/routes/fraud/providers/index.tsx:51
-#: app/routes/fraud/providers/create.tsx:86
+#: app/routes/fraud/providers/index.tsx:52
+#: app/routes/fraud/providers/create.tsx:87
 #: app/routes/contact-group/index.tsx:61
 #: app/routes/contact-group/detail/member.tsx:90
 #: app/routes/contact/detail/group.tsx:85
 #: app/features/quota/components/quota-grant-list.tsx:74
-#: app/features/fraud/policy/policy-form.tsx:153
+#: app/features/fraud/policy/policy-form.tsx:150
 #: app/features/contact/components/contact-list.tsx:66
 msgid "Name"
 msgstr ""
@@ -1305,11 +1305,11 @@ msgstr ""
 msgid "Navigation"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:210
+#: app/routes/fraud/index.tsx:214
 msgid "New Evaluation"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:217
+#: app/routes/fraud/index.tsx:221
 msgid "New Fraud Evaluation"
 msgstr ""
 
@@ -1349,15 +1349,15 @@ msgstr ""
 msgid "No export policies found."
 msgstr ""
 
-#: app/routes/fraud/index.tsx:327
+#: app/routes/fraud/index.tsx:331
 msgid "No fraud evaluations found."
 msgstr ""
 
-#: app/routes/fraud/policy.tsx:56
+#: app/routes/fraud/policy.tsx:57
 msgid "No fraud policy configured."
 msgstr ""
 
-#: app/routes/fraud/providers/index.tsx:151
+#: app/routes/fraud/providers/index.tsx:152
 msgid "No fraud providers configured."
 msgstr ""
 
@@ -1486,7 +1486,7 @@ msgstr ""
 
 #: app/routes/user/index.tsx:261
 #: app/routes/user/index.tsx:276
-#: app/routes/fraud/index.tsx:300
+#: app/routes/fraud/index.tsx:304
 #: app/features/email/components/email-list.tsx:143
 #: app/features/email/components/email-list.tsx:169
 msgid "Pending"
@@ -1513,14 +1513,14 @@ msgstr ""
 msgid "Personal"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:135
-#: app/routes/fraud/index.tsx:295
-#: app/routes/fraud/index.tsx:319
+#: app/routes/fraud/index.tsx:139
+#: app/routes/fraud/index.tsx:299
+#: app/routes/fraud/index.tsx:323
 #: app/features/fraud/detail/evaluation-sections.tsx:257
 msgid "Phase"
 msgstr ""
 
-#: app/features/fraud/policy/policy-form.tsx:239
+#: app/features/fraud/policy/policy-form.tsx:236
 msgid "Pipeline Stages"
 msgstr ""
 
@@ -1545,15 +1545,15 @@ msgstr ""
 msgid "Please wait {remainingMinutes} more minute{0} before resending this invitation"
 msgstr ""
 
-#: app/features/fraud/policy/policy-form.tsx:130
+#: app/features/fraud/policy/policy-form.tsx:127
 msgid "Policy created successfully"
 msgstr ""
 
-#: app/routes/fraud/policy.tsx:104
+#: app/routes/fraud/policy.tsx:105
 msgid "Policy deleted successfully"
 msgstr ""
 
-#: app/features/fraud/policy/policy-form.tsx:127
+#: app/features/fraud/policy/policy-form.tsx:124
 msgid "Policy updated successfully"
 msgstr ""
 
@@ -1606,11 +1606,11 @@ msgstr ""
 msgid "Projects"
 msgstr ""
 
-#: app/routes/fraud/providers/create.tsx:56
+#: app/routes/fraud/providers/create.tsx:57
 msgid "Provider created successfully"
 msgstr ""
 
-#: app/routes/fraud/providers/index.tsx:135
+#: app/routes/fraud/providers/index.tsx:136
 #: app/routes/fraud/providers/detail.tsx:177
 msgid "Provider deleted successfully"
 msgstr ""
@@ -1629,7 +1629,7 @@ msgid "Provider not found."
 msgstr ""
 
 #: app/routes/fraud/providers/detail.tsx:123
-#: app/routes/fraud/providers/create.tsx:89
+#: app/routes/fraud/providers/create.tsx:90
 msgid "Provider Type"
 msgstr ""
 
@@ -1641,7 +1641,7 @@ msgstr ""
 msgid "Providers"
 msgstr ""
 
-#: app/features/fraud/policy/policy-form.tsx:296
+#: app/features/fraud/policy/policy-form.tsx:293
 msgid "Providers (comma-separated)"
 msgstr ""
 
@@ -1724,7 +1724,7 @@ msgstr ""
 msgid "Rejected"
 msgstr ""
 
-#: app/features/fraud/policy/policy-form.tsx:317
+#: app/features/fraud/policy/policy-form.tsx:314
 msgid "Required"
 msgstr ""
 
@@ -1752,11 +1752,11 @@ msgstr ""
 msgid "Response Code"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:310
+#: app/routes/fraud/index.tsx:314
 msgid "Review"
 msgstr ""
 
-#: app/features/fraud/policy/policy-form.tsx:303
+#: app/features/fraud/policy/policy-form.tsx:300
 msgid "Review Threshold"
 msgstr ""
 
@@ -1767,11 +1767,11 @@ msgstr ""
 msgid "Role"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:219
+#: app/routes/fraud/index.tsx:223
 msgid "Run Evaluation"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:299
+#: app/routes/fraud/index.tsx:303
 msgid "Running"
 msgstr ""
 
@@ -1787,7 +1787,7 @@ msgstr ""
 msgid "Schedule invitation to be sent at specific time"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:139
+#: app/routes/fraud/index.tsx:143
 #: app/features/fraud/detail/evaluation-sections.tsx:251
 msgid "Score"
 msgstr ""
@@ -1800,11 +1800,11 @@ msgstr ""
 msgid "Search activity..."
 msgstr ""
 
-#: app/routes/fraud/index.tsx:292
+#: app/routes/fraud/index.tsx:296
 msgid "Search by email, name, or ID..."
 msgstr ""
 
-#: app/routes/fraud/index.tsx:241
+#: app/routes/fraud/index.tsx:245
 msgid "Search by name or email..."
 msgstr ""
 
@@ -1902,12 +1902,12 @@ msgid "Secret"
 msgstr ""
 
 #: app/routes/fraud/providers/detail.tsx:142
-#: app/routes/fraud/providers/create.tsx:108
+#: app/routes/fraud/providers/create.tsx:109
 msgid "Secret Name"
 msgstr ""
 
 #: app/routes/fraud/providers/detail.tsx:143
-#: app/routes/fraud/providers/create.tsx:109
+#: app/routes/fraud/providers/create.tsx:110
 msgid "Secret Namespace"
 msgstr ""
 
@@ -1916,7 +1916,7 @@ msgstr ""
 msgid "Secrets"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:218
+#: app/routes/fraud/index.tsx:222
 msgid "Select a user to run a fraud evaluation against the current policy."
 msgstr ""
 
@@ -1954,7 +1954,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: app/features/fraud/policy/policy-form.tsx:322
+#: app/features/fraud/policy/policy-form.tsx:319
 msgid "Short-circuit Below"
 msgstr ""
 
@@ -1975,11 +1975,11 @@ msgid "Sources"
 msgstr ""
 
 #. placeholder {0}: idx + 1
-#: app/features/fraud/policy/policy-form.tsx:273
+#: app/features/fraud/policy/policy-form.tsx:270
 msgid "Stage {0}"
 msgstr ""
 
-#: app/features/fraud/policy/policy-form.tsx:293
+#: app/features/fraud/policy/policy-form.tsx:290
 msgid "Stage Name"
 msgstr ""
 
@@ -2009,7 +2009,7 @@ msgstr ""
 #: app/routes/project/detail/export-policy/detail.tsx:186
 #: app/routes/project/detail/domain/index.tsx:54
 #: app/routes/project/detail/domain/detail.tsx:153
-#: app/routes/fraud/providers/index.tsx:81
+#: app/routes/fraud/providers/index.tsx:82
 #: app/routes/contact-group/index.tsx:78
 #: app/routes/contact-group/detail/member.tsx:116
 #: app/routes/contact/detail/group.tsx:103
@@ -2077,11 +2077,11 @@ msgid "Timezone updated successfully"
 msgstr ""
 
 #. placeholder {0}: idx + 1
-#: app/features/fraud/policy/policy-form.tsx:194
+#: app/features/fraud/policy/policy-form.tsx:191
 msgid "Trigger {0}"
 msgstr ""
 
-#: app/features/fraud/policy/policy-form.tsx:172
+#: app/features/fraud/policy/policy-form.tsx:169
 #: app/features/fraud/policy/policy-detail.tsx:178
 msgid "Triggers"
 msgstr ""
@@ -2096,8 +2096,8 @@ msgstr ""
 #: app/routes/project/detail/dns/detail.tsx:157
 #: app/routes/organization/index.tsx:37
 #: app/routes/organization/detail/index.tsx:63
-#: app/routes/fraud/providers/index.tsx:61
-#: app/features/fraud/policy/policy-form.tsx:216
+#: app/routes/fraud/providers/index.tsx:62
+#: app/features/fraud/policy/policy-form.tsx:213
 msgid "Type"
 msgstr ""
 
@@ -2111,7 +2111,7 @@ msgstr ""
 
 #: app/routes/fraud/providers/detail.tsx:157
 #: app/features/quota/components/quota-bucket-list.tsx:130
-#: app/features/fraud/policy/policy-form.tsx:336
+#: app/features/fraud/policy/policy-form.tsx:333
 #: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:190
 #: app/features/activity/components/activity-list.tsx:438
@@ -2136,7 +2136,7 @@ msgstr ""
 msgid "Usage"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:109
+#: app/routes/fraud/index.tsx:113
 #: app/features/fraud/detail/evaluation-sections.tsx:215
 #: app/features/activity/components/activity-list.tsx:114
 #: app/features/activity/components/activity-list.tsx:512

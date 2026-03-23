@@ -21,30 +21,27 @@ import {
   type ComMiloapisFraudV1Alpha1FraudProvider,
   type ComMiloapisFraudV1Alpha1FraudProviderList,
 } from '@openapi/fraud.miloapis.com/v1alpha1';
-import { useQuery } from '@tanstack/react-query';
 
-type FraudPolicy = ComMiloapisFraudV1Alpha1FraudPolicy;
-type FraudPolicySpec = ComMiloapisFraudV1Alpha1FraudPolicy['spec'];
-type FraudProvider = ComMiloapisFraudV1Alpha1FraudProvider;
-type FraudProviderSpec = ComMiloapisFraudV1Alpha1FraudProvider['spec'];
-type FraudEvaluation = ComMiloapisFraudV1Alpha1FraudEvaluation;
+export type FraudPolicy = ComMiloapisFraudV1Alpha1FraudPolicy;
+export type FraudPolicySpec = ComMiloapisFraudV1Alpha1FraudPolicy['spec'];
+export type FraudProvider = ComMiloapisFraudV1Alpha1FraudProvider;
+export type FraudProviderSpec = ComMiloapisFraudV1Alpha1FraudProvider['spec'];
+export type FraudEvaluation = ComMiloapisFraudV1Alpha1FraudEvaluation;
 
-// ─── FraudPolicy ───
-
-export const fraudPolicyListQuery =
+export const listFraudPolicies =
   async (): Promise<ComMiloapisFraudV1Alpha1FraudPolicyList | null> => {
     const response = await listFraudMiloapisComV1Alpha1FraudPolicy();
     return response.data.data ?? null;
   };
 
-export const fraudPolicyGetQuery = async (name: string): Promise<FraudPolicy | null> => {
+export const getFraudPolicy = async (name: string): Promise<FraudPolicy | null> => {
   const response = await readFraudMiloapisComV1Alpha1FraudPolicy({
     path: { name },
   });
   return response.data.data ?? null;
 };
 
-export const fraudPolicyCreateMutation = async (name: string, spec: FraudPolicySpec) => {
+export const createFraudPolicy = async (name: string, spec: FraudPolicySpec) => {
   const response = await createFraudMiloapisComV1Alpha1FraudPolicy({
     body: {
       apiVersion: 'fraud.miloapis.com/v1alpha1',
@@ -56,7 +53,7 @@ export const fraudPolicyCreateMutation = async (name: string, spec: FraudPolicyS
   return response.data.data;
 };
 
-export const fraudPolicyUpdateMutation = async (name: string, spec: Partial<FraudPolicySpec>) => {
+export const updateFraudPolicy = async (name: string, spec: Partial<FraudPolicySpec>) => {
   const response = await patchFraudMiloapisComV1Alpha1FraudPolicy({
     path: { name },
     headers: { 'Content-Type': 'application/merge-patch+json' },
@@ -65,45 +62,26 @@ export const fraudPolicyUpdateMutation = async (name: string, spec: Partial<Frau
   return response.data.data;
 };
 
-export const fraudPolicyDeleteMutation = async (name: string) => {
+export const deleteFraudPolicy = async (name: string) => {
   return deleteFraudMiloapisComV1Alpha1FraudPolicy({
     path: { name },
   });
 };
 
-export const useFraudPolicyListQuery = () => {
-  return useQuery({
-    queryKey: ['fraud', 'policies'],
-    queryFn: () => fraudPolicyListQuery(),
-    staleTime: 5 * 60 * 1000,
-  });
-};
-
-export const useFraudPolicyDetailQuery = (name: string) => {
-  return useQuery({
-    queryKey: ['fraud', 'policies', name],
-    queryFn: () => fraudPolicyGetQuery(name),
-    enabled: !!name,
-    staleTime: 30 * 1000,
-  });
-};
-
-// ─── FraudProvider ───
-
-export const fraudProviderListQuery =
+export const listFraudProviders =
   async (): Promise<ComMiloapisFraudV1Alpha1FraudProviderList | null> => {
     const response = await listFraudMiloapisComV1Alpha1FraudProvider();
     return response.data.data ?? null;
   };
 
-export const fraudProviderGetQuery = async (name: string): Promise<FraudProvider | null> => {
+export const getFraudProvider = async (name: string): Promise<FraudProvider | null> => {
   const response = await readFraudMiloapisComV1Alpha1FraudProvider({
     path: { name },
   });
   return response.data.data ?? null;
 };
 
-export const fraudProviderCreateMutation = async (name: string, spec: FraudProviderSpec) => {
+export const createFraudProvider = async (name: string, spec: FraudProviderSpec) => {
   const response = await createFraudMiloapisComV1Alpha1FraudProvider({
     body: {
       apiVersion: 'fraud.miloapis.com/v1alpha1',
@@ -115,10 +93,7 @@ export const fraudProviderCreateMutation = async (name: string, spec: FraudProvi
   return response.data.data;
 };
 
-export const fraudProviderUpdateMutation = async (
-  name: string,
-  spec: Partial<FraudProviderSpec>
-) => {
+export const updateFraudProvider = async (name: string, spec: Partial<FraudProviderSpec>) => {
   const response = await patchFraudMiloapisComV1Alpha1FraudProvider({
     path: { name },
     headers: { 'Content-Type': 'application/merge-patch+json' },
@@ -127,32 +102,13 @@ export const fraudProviderUpdateMutation = async (
   return response.data.data;
 };
 
-export const fraudProviderDeleteMutation = async (name: string) => {
+export const deleteFraudProvider = async (name: string) => {
   return deleteFraudMiloapisComV1Alpha1FraudProvider({
     path: { name },
   });
 };
 
-export const useFraudProviderListQuery = () => {
-  return useQuery({
-    queryKey: ['fraud', 'providers'],
-    queryFn: () => fraudProviderListQuery(),
-    staleTime: 5 * 60 * 1000,
-  });
-};
-
-export const useFraudProviderDetailQuery = (name: string) => {
-  return useQuery({
-    queryKey: ['fraud', 'providers', name],
-    queryFn: () => fraudProviderGetQuery(name),
-    enabled: !!name,
-    staleTime: 30 * 1000,
-  });
-};
-
-// ─── FraudEvaluation ───
-
-export const fraudEvaluationListQuery = async (
+export const listFraudEvaluations = async (
   params?: ListQueryParams
 ): Promise<ComMiloapisFraudV1Alpha1FraudEvaluationList | null> => {
   const response = await listFraudMiloapisComV1Alpha1FraudEvaluation({
@@ -165,39 +121,22 @@ export const fraudEvaluationListQuery = async (
   return response.data.data ?? null;
 };
 
-export const fraudEvaluationGetQuery = async (name: string): Promise<FraudEvaluation | null> => {
+export const getFraudEvaluation = async (name: string): Promise<FraudEvaluation | null> => {
   const response = await readFraudMiloapisComV1Alpha1FraudEvaluation({
     path: { name },
   });
   return response.data.data ?? null;
 };
 
-export const fraudEvaluationCreateMutation = async (payload: FraudEvaluation) => {
+export const createFraudEvaluation = async (payload: FraudEvaluation) => {
   const response = await createFraudMiloapisComV1Alpha1FraudEvaluation({
     body: payload,
   });
   return response.data.data;
 };
 
-export const fraudEvaluationDeleteMutation = async (name: string) => {
+export const deleteFraudEvaluation = async (name: string) => {
   return deleteFraudMiloapisComV1Alpha1FraudEvaluation({
     path: { name },
-  });
-};
-
-export const useFraudEvaluationListQuery = (params?: ListQueryParams) => {
-  return useQuery({
-    queryKey: ['fraud', 'evaluations', 'list', params],
-    queryFn: () => fraudEvaluationListQuery(params),
-    staleTime: 5 * 60 * 1000,
-  });
-};
-
-export const useFraudEvaluationDetailQuery = (name: string) => {
-  return useQuery({
-    queryKey: ['fraud', 'evaluations', name],
-    queryFn: () => fraudEvaluationGetQuery(name),
-    enabled: !!name,
-    staleTime: 30 * 1000,
   });
 };

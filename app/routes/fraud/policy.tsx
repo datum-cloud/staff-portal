@@ -1,7 +1,8 @@
 import type { Route } from './+types/policy';
 import { DialogConfirm } from '@/components/dialog';
 import { PolicyDetail, PolicyForm } from '@/features/fraud';
-import { fraudPolicyDeleteMutation, useFraudPolicyListQuery } from '@/resources/request/client';
+import { deleteFraudPolicy } from '@/resources/request/client/apis/fraud.api';
+import { useFraudPolicyListQuery } from '@/resources/request/client/queries/fraud.queries';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
@@ -100,7 +101,7 @@ export default function Page() {
         requireConfirmation
         confirmationText="DELETE"
         onConfirm={async () => {
-          await fraudPolicyDeleteMutation(policy.metadata?.name ?? '');
+          await deleteFraudPolicy(policy.metadata?.name ?? '');
           toast.success(t`Policy deleted successfully`);
           await new Promise((resolve) => setTimeout(() => resolve(policyQuery.refetch()), 1000));
         }}

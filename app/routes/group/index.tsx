@@ -1,7 +1,7 @@
 import type { Route } from './+types/index';
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
-import { useGroupListQuery } from '@/resources/request/client/group.request';
+import { useGroupListQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';

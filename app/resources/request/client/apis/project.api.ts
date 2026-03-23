@@ -16,7 +16,6 @@ import {
   listResourcemanagerMiloapisComV1Alpha1Project,
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { listTelemetryMiloapisComV1Alpha1ExportPolicyForAllNamespaces } from '@openapi/telemetry.miloapis.com/v1alpha1';
-import { useQuery } from '@tanstack/react-query';
 
 export const projectListQuery = async (params?: ListQueryParams) => {
   const response = await listResourcemanagerMiloapisComV1Alpha1Project({
@@ -84,19 +83,6 @@ export const projectDnsRecordListQuery = async (
   return flattened;
 };
 
-export const useProjectDnsRecordListQuery = (
-  projectName: string,
-  dnsName: string,
-  namespace: string = 'default'
-) => {
-  return useQuery({
-    queryKey: ['projects', projectName, 'dns', dnsName, 'records', namespace],
-    queryFn: () => projectDnsRecordListQuery(projectName, dnsName, namespace),
-    enabled: Boolean(projectName && dnsName),
-    staleTime: 60 * 1000,
-  });
-};
-
 export const projectDnsRecordStatusQuery = async (
   projectName: string,
   dnsRecordName: string,
@@ -144,49 +130,5 @@ export const projectDeleteMutation = (projectName: string) => {
     path: {
       name: projectName,
     },
-  });
-};
-
-export const useProjectListQuery = (params?: ListQueryParams) => {
-  return useQuery({
-    queryKey: ['projects', 'list', params],
-    queryFn: () => projectListQuery(params),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-};
-
-export const useProjectDomainListQuery = (projectName: string, params?: ListQueryParams) => {
-  return useQuery({
-    queryKey: ['projects', projectName, 'domains', 'list', params],
-    queryFn: () => projectDomainListQuery(projectName, params),
-    enabled: Boolean(projectName),
-    staleTime: 5 * 60 * 1000,
-  });
-};
-
-export const useProjectHttpProxyListQuery = (projectName: string, params?: ListQueryParams) => {
-  return useQuery({
-    queryKey: ['projects', projectName, 'http-proxies', 'list', params],
-    queryFn: () => projectHttpProxyListQuery(projectName, params),
-    enabled: Boolean(projectName),
-    staleTime: 5 * 60 * 1000,
-  });
-};
-
-export const useProjectExportPolicyListQuery = (projectName: string, params?: ListQueryParams) => {
-  return useQuery({
-    queryKey: ['projects', projectName, 'export-policies', 'list', params],
-    queryFn: () => projectExportPolicyListQuery(projectName, params),
-    enabled: Boolean(projectName),
-    staleTime: 5 * 60 * 1000,
-  });
-};
-
-export const useProjectDnsListQuery = (projectName: string, params?: ListQueryParams) => {
-  return useQuery({
-    queryKey: ['projects', projectName, 'dns', 'list', params],
-    queryFn: () => projectDnsListQuery(projectName, params),
-    enabled: Boolean(projectName),
-    staleTime: 5 * 60 * 1000,
   });
 };

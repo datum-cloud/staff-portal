@@ -10,7 +10,6 @@ import {
   patchNotificationMiloapisComV1Alpha1NamespacedContactGroup,
   readNotificationMiloapisComV1Alpha1NamespacedContactGroup,
 } from '@openapi/notification.miloapis.com/v1alpha1';
-import { useQuery } from '@tanstack/react-query';
 
 export const contactGroupListQuery = async (params?: ListQueryParams) => {
   const response = await listNotificationMiloapisComV1Alpha1ContactGroupForAllNamespaces({
@@ -100,13 +99,5 @@ export const contactGroupMembershipDeleteMutation = (
 ) => {
   return deleteNotificationMiloapisComV1Alpha1NamespacedContactGroupMembership({
     path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
-  });
-};
-
-export const useContactGroupListQuery = (params?: ListQueryParams) => {
-  return useQuery({
-    queryKey: ['contact-groups', 'list', params],
-    queryFn: () => contactGroupListQuery(params),
-    staleTime: 5 * 60 * 1000,
   });
 };

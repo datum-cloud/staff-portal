@@ -63,7 +63,8 @@ Cross-cutting foundations.
 API and type resources.
 
 - `openapi/`: generated SDK and types
-- `request/client`: browser-side query/mutation wrappers
+- `request/client/apis`: browser-side API functions (no React hooks)
+- `request/client/queries`: browser-side React Query hooks + query keys
 - `request/server`: server-side wrappers needing bearer token
 - `schemas/`: zod schemas
 
