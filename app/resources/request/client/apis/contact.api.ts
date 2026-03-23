@@ -7,7 +7,6 @@ import {
   readNotificationMiloapisComV1Alpha1NamespacedContact,
   type ComMiloapisNotificationV1Alpha1Contact,
 } from '@openapi/notification.miloapis.com/v1alpha1';
-import { useQuery } from '@tanstack/react-query';
 
 export const contactListQuery = async (params?: ListQueryParams<{ fieldSelector?: string }>) => {
   const fieldSelector =
@@ -76,14 +75,5 @@ export const contactDeleteMutation = (
       namespace: metadata?.namespace ?? '',
       name: metadata?.name ?? '',
     },
-  });
-};
-
-export const useContactListQuery = (params?: ListQueryParams) => {
-  return useQuery({
-    queryKey: ['contacts', 'list', params],
-    queryFn: () => contactListQuery(params),
-    staleTime: 5 * 60 * 1000,
-    enabled: !!params?.search,
   });
 };

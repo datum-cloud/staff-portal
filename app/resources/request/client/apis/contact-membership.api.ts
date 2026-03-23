@@ -1,4 +1,5 @@
-import { contactDetailQuery, contactGroupDetailQuery } from '@/resources/request/client';
+import { contactGroupDetailQuery } from './contact-group.api';
+import { contactDetailQuery } from './contact.api';
 import {
   ContactGroupMembershipListWithContacts,
   ContactMembershipListWithContactGroups,

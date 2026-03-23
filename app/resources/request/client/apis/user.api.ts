@@ -18,7 +18,6 @@ import {
   readIamMiloapisComV1Alpha1User,
 } from '@openapi/iam.miloapis.com/v1alpha1';
 import { listNotificationMiloapisComV1Alpha1EmailForAllNamespaces } from '@openapi/notification.miloapis.com/v1alpha1';
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 export const userGetQuery = async (userId: string): Promise<ComMiloapisIamV1Alpha1User | null> => {
   const response = await readIamMiloapisComV1Alpha1User({
@@ -205,28 +204,14 @@ export const userEmailListQuery = async (
   };
 };
 
-export const useUserDeactivationQuery = (userId: string, state?: string) => {
-  return useQuery({
-    queryKey: ['user', 'deactivation', userId],
-    queryFn: async () => {
-      const response = await listIamMiloapisComV1Alpha1UserDeactivation({
-        query: {
-          limit: 1,
-          fieldSelector: `spec.userRef.name=${userId}`,
-        },
-      });
-
-      const data = response.data.data?.items?.[0] ?? null;
-      return { ...response, data };
+export const userDeactivationQuery = async (userId: string) => {
+  const response = await listIamMiloapisComV1Alpha1UserDeactivation({
+    query: {
+      limit: 1,
+      fieldSelector: `spec.userRef.name=${userId}`,
     },
-    enabled: !!userId && state === 'Inactive',
   });
-};
 
-export const useUserListQuery = (params?: ListQueryParams) => {
-  return useQuery({
-    queryKey: ['users', 'list', params],
-    queryFn: () => userListQuery(params),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+  const data = response.data.data?.items?.[0] ?? null;
+  return { ...response, data };
 };

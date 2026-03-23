@@ -4,7 +4,7 @@
 
 Most UI requests follow this path:
 
-1. Route/page calls a query or mutation wrapper from `app/resources/request/client/**`
+1. Route/page calls hooks from `app/resources/request/client/queries/**` and/or API functions from `app/resources/request/client/apis/**`
 2. Wrapper calls OpenAPI generated SDK function (`@openapi/...`)
 3. OpenAPI client uses browser axios client (`httpClient`) configured in `app/entry.client.tsx`
 4. Browser request goes to `/api/internal/*`
@@ -19,12 +19,18 @@ Most UI requests follow this path:
 - Defines typed request functions and typed models
 - Should be treated as generated source of truth (do not hand-edit)
 
-### Client wrappers (`app/resources/request/client/**`)
+### Client API layer (`app/resources/request/client/apis/**`)
 
-- App-facing query and mutation functions
-- React Query hooks (`useQuery`, `useMutation`) and query keys
-- App-specific request shaping (`fieldSelector`, pagination mapping, payload adaptation)
+- Pure async functions that call OpenAPI generated SDK functions
+- No React hooks in this layer
+- Handles app-specific request shaping (`fieldSelector`, pagination mapping, payload adaptation)
 - Should call generated SDK functions (not raw manual URL strings) when SDK exists
+
+### Client Query layer (`app/resources/request/client/queries/**`)
+
+- React Query hooks (`useQuery`) and query key definitions
+- Owns cache key shape and stale-time policy
+- Calls only API functions from `client/apis/**` (not generated SDK directly)
 
 ### Server wrappers (`app/resources/request/server/**`)
 
@@ -66,34 +72,56 @@ This is why many route files have light loaders and richer client queries in req
 
 1. Regenerate OpenAPI SDK if endpoint is new:
    - `bun run openapi:generate`
-2. Add wrapper in `app/resources/request/client/<feature>.request.ts`:
-   - export async query/mutation function
+2. Add API wrapper in `app/resources/request/client/apis/<feature>.api.ts`:
+   - export async query/mutation functions
    - unwrap response payload consistently
-   - export React Query hook with stable `queryKey`
-3. If a route `loader` needs the same endpoint, add server companion in `app/resources/request/server/<feature>.request.ts`.
-4. Consume from route/feature component, not directly from generated SDK.
+3. Add query hooks in `app/resources/request/client/queries/<feature>.queries.ts`:
+   - export query-key object and React Query hooks
+   - keep keys stable and descriptive
+4. If a route `loader` needs the same endpoint, add server companion in `app/resources/request/server/<feature>.request.ts`.
+5. Consume from route/feature component, not directly from generated SDK.
 
-## Fraud-specific notes (standardized pattern)
+## Standardized request structure (current)
 
-- Fraud request module now follows SDK-first pattern via `@openapi/fraud.miloapis.com/v1alpha1`.
+- Client request modules are split by responsibility:
+  - `client/apis/*.api.ts` for API functions
+  - `client/queries/*.queries.ts` for hooks + query keys
+- Legacy `client/*.request.ts` files have been removed.
 - Prefer returning `response.data.data` directly when SDK types already model `ProxyResponse<T>`.
 - Keep patch content-type explicit when needed (`application/merge-patch+json`) even if SDK defaults differ.
 
 ## Query key conventions
 
-Use descriptive stable keys:
+Use exported query-key objects inside each `*.queries.ts` module.
 
-- list: `['<entity>', 'list', params]`
-- detail: `['<entity>', 'detail', id]`
-- related resources: `['<entity>', '<subresource>', id, params]`
+Recommended shape:
 
-Consistent keys are required for reliable invalidation and cache behavior.
+- root: `<feature>QueryKeys.all`
+- list: `<feature>QueryKeys.list(params)`
+- detail: `<feature>QueryKeys.detail(id)`
+- nested resources: `<feature>QueryKeys.<resource>.list(...)`, `.detail(...)`
 
-## Template: Client request module
+Example:
+
+```ts
+export const fraudQueryKeys = {
+  all: ['fraud'] as const,
+  policies: {
+    all: () => ['fraud', 'policies'] as const,
+    detail: (name: string) => ['fraud', 'policies', name] as const,
+  },
+  evaluations: {
+    all: () => ['fraud', 'evaluations'] as const,
+    list: (params?: ListQueryParams) => ['fraud', 'evaluations', 'list', params] as const,
+    detail: (name: string) => ['fraud', 'evaluations', name] as const,
+  },
+};
+```
+
+## Template: Client API module
 
 ```ts
 import { listYourServiceV1Alpha1Thing } from '@openapi/your.service/v1alpha1';
-import { useQuery } from '@tanstack/react-query';
 
 export const thingListQuery = async (params?: { limit?: number; cursor?: string }) => {
   const response = await listYourServiceV1Alpha1Thing({
@@ -104,10 +132,22 @@ export const thingListQuery = async (params?: { limit?: number; cursor?: string 
   });
   return response.data.data;
 };
+```
+
+## Template: Client Query module
+
+```ts
+import { thingListQuery } from '../apis/thing.api';
+import { useQuery } from '@tanstack/react-query';
+
+export const thingQueryKeys = {
+  all: ['things'] as const,
+  list: (params?: { limit?: number; cursor?: string }) => ['things', 'list', params] as const,
+};
 
 export const useThingListQuery = (params?: { limit?: number; cursor?: string }) =>
   useQuery({
-    queryKey: ['thing', 'list', params],
+    queryKey: thingQueryKeys.list(params),
     queryFn: () => thingListQuery(params),
   });
 ```

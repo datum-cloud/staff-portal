@@ -4,25 +4,16 @@ import { createActivityMiloapisComV1Alpha1AuditLogQuery } from '@openapi/activit
 import type { ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogQuery } from '@openapi/activity.miloapis.com/v1alpha1';
 import { subDays } from 'date-fns';
 
-/**
- * Converts Unix timestamp (nanoseconds) to ISO 8601 string (e.g., "2024-01-01T00:00:00Z")
- */
 function convertTimestampToISO(timestamp: number): string {
-  const timestampMs = timestamp / 1000000; // Convert nanoseconds to milliseconds
+  const timestampMs = timestamp / 1000000;
   const date = new Date(timestampMs);
   return date.toISOString();
 }
 
-/**
- * Builds a CEL filter expression from query parameters
- */
 function buildCelFilter(params: ActivityQueryParams): string | undefined {
   const conditions: string[] = [];
-
-  // Exclude activity API group by default
   conditions.push(`objectRef.apiGroup != 'activity.miloapis.com'`);
 
-  // Actions filter
   if (params.actions) {
     const actions = params.actions
       .split(',')
@@ -36,12 +27,10 @@ function buildCelFilter(params: ActivityQueryParams): string | undefined {
     }
   }
 
-  // User filter
   if (params.user) {
     conditions.push(`user.username == '${params.user}'`);
   }
 
-  // Response code filter
   if (params.responseCode) {
     const codes = params.responseCode
       .split(',')
@@ -56,7 +45,6 @@ function buildCelFilter(params: ActivityQueryParams): string | undefined {
     }
   }
 
-  // Resource type filter
   if (params.resourceType) {
     const resources = params.resourceType
       .split(',')
@@ -70,7 +58,6 @@ function buildCelFilter(params: ActivityQueryParams): string | undefined {
     }
   }
 
-  // API group filter
   if (params.apiGroup) {
     const groups = params.apiGroup
       .split(',')
@@ -84,17 +71,14 @@ function buildCelFilter(params: ActivityQueryParams): string | undefined {
     }
   }
 
-  // Namespace filter
   if (params.namespace) {
     conditions.push(`objectRef.namespace == '${params.namespace}'`);
   }
 
-  // Resource name filter
   if (params.resourceName) {
     conditions.push(`objectRef.name == '${params.resourceName}'`);
   }
 
-  // Source IP filter
   if (params.sourceIP) {
     conditions.push(`'${params.sourceIP}' in sourceIPs`);
   }
@@ -102,9 +86,6 @@ function buildCelFilter(params: ActivityQueryParams): string | undefined {
   return conditions.length > 0 ? conditions.join(' && ') : undefined;
 }
 
-/**
- * Gets the base URL for the CRD API based on context
- */
 function getBaseUrl(organization?: string, project?: string): string {
   if (project) {
     return `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${project}/control-plane`;
@@ -114,12 +95,7 @@ function getBaseUrl(organization?: string, project?: string): string {
   return PROXY_URL;
 }
 
-/**
- * Fetches the previous activity for a given activity entry
- * Returns the previous activity for the same resource, or null if not found
- */
 export const getPreviousActivity = async (activity: any, baseURL?: string): Promise<any | null> => {
-  // Extract resource info from the activity
   const resourceType = activity?.objectRef?.resource;
   const resourceName = activity?.objectRef?.name;
   const resourceNamespace = activity?.objectRef?.namespace;
@@ -131,9 +107,6 @@ export const getPreviousActivity = async (activity: any, baseURL?: string): Prom
 
   try {
     const url = baseURL || PROXY_URL;
-
-    // Use a time range of last 30 days to find previous activity
-    // (API has max 720 hours = 30 days limit)
     const now = new Date();
     const thirtyDaysAgo = subDays(now, 30);
     const startTime = thirtyDaysAgo.toISOString();
@@ -150,7 +123,7 @@ export const getPreviousActivity = async (activity: any, baseURL?: string): Prom
         spec: {
           startTime,
           endTime,
-          limit: 10, // Get more to find previous after filtering
+          limit: 10,
           filter: `objectRef.resource == '${resourceType}' && objectRef.name == '${resourceName}' && user.username.startsWith('system:') == false && objectRef.apiGroup != 'activity.miloapis.com'${
             resourceNamespace ? ` && objectRef.namespace == '${resourceNamespace}'` : ''
           }`,
@@ -162,8 +135,6 @@ export const getPreviousActivity = async (activity: any, baseURL?: string): Prom
     });
 
     const results = response.data?.data?.status?.results || [];
-
-    // Find the first activity that is not the current one
     const previousActivity = results.find(
       (result: any) => result?.auditID && result.auditID !== currentAuditId
     );
@@ -175,9 +146,6 @@ export const getPreviousActivity = async (activity: any, baseURL?: string): Prom
   }
 };
 
-/**
- * Activity query with single resource support using CRD API
- */
 export const activityListQuery = async (
   resourceType?: string,
   resourceId?: string,
@@ -188,8 +156,6 @@ export const activityListQuery = async (
     params?.filters?.project || (resourceType === 'project' ? resourceId : undefined)
   );
 
-  // Convert timestamps to ISO 8601 format (absolute timestamps)
-  // This ensures pagination works correctly since timestamps remain constant
   const now = new Date();
   const defaultStartTime = subDays(now, 7).toISOString();
   const defaultEndTime = now.toISOString();
@@ -205,10 +171,8 @@ export const activityListQuery = async (
       : convertTimestampToISO(params.filters.end)
     : defaultEndTime;
 
-  // Build CEL filter
   const filter = buildCelFilter(params?.filters || {});
 
-  // Build the AuditLogQuery CRD
   const auditLogQuery: ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogQuery = {
     apiVersion: 'activity.miloapis.com/v1alpha1',
     kind: 'AuditLogQuery',
@@ -224,7 +188,6 @@ export const activityListQuery = async (
     },
   };
 
-  // Call the CRD API
   const response = await createActivityMiloapisComV1Alpha1AuditLogQuery({
     baseURL,
     body: auditLogQuery,
@@ -238,7 +201,6 @@ export const activityListQuery = async (
     throw new Error('No status in AuditLogQuery response');
   }
 
-  // Return raw audit events directly
   const responseData = {
     logs: status.results || [],
     query: '',

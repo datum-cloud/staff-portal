@@ -12,7 +12,6 @@ import {
   listResourcemanagerMiloapisComV1Alpha1Organization,
   listResourcemanagerMiloapisComV1Alpha1Project,
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
-import { useQuery } from '@tanstack/react-query';
 
 export const orgListQuery = async (params?: ListQueryParams) => {
   const response = await listResourcemanagerMiloapisComV1Alpha1Organization({
@@ -120,13 +119,5 @@ export const orgDeleteMutation = (orgName: string) => {
     path: {
       name: orgName,
     },
-  });
-};
-
-export const useOrgListQuery = (params?: ListQueryParams) => {
-  return useQuery({
-    queryKey: ['organizations', 'list', params],
-    queryFn: () => orgListQuery(params),
-    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };

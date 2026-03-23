@@ -1,5 +1,6 @@
 import type { Route } from './+types/create';
-import { fraudProviderCreateMutation, useFraudProviderListQuery } from '@/resources/request/client';
+import { createFraudProvider } from '@/resources/request/client/apis/fraud.api';
+import { useFraudProviderListQuery } from '@/resources/request/client/queries/fraud.queries';
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -37,7 +38,7 @@ export default function Page() {
   const listQuery = useFraudProviderListQuery();
 
   const handleSubmit = async (values: ProviderFormValues) => {
-    await fraudProviderCreateMutation(values.name, {
+    await createFraudProvider(values.name, {
       type: values.type,
       failurePolicy: values.failurePolicy,
       config: {

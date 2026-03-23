@@ -21,7 +21,9 @@ This section documents the implementation patterns used in `staff-portal`, inclu
 - Page modules live in `app/routes/**`, and route-level data usually mixes:
   - `loader` for access checks and shell-critical data
   - React Query hooks from `app/resources/request/client/**` for page data
-- API calls are OpenAPI-generated first, then wrapped by request modules for app-level usage.
+- API calls are OpenAPI-generated first, then wrapped by:
+  - `client/apis/*.api.ts` for pure API functions
+  - `client/queries/*.queries.ts` for React Query hooks and keys
 
 ## Core Paths
 

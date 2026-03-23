@@ -1,9 +1,6 @@
 import type { FraudPolicy, FraudPolicySpec } from './types';
-import {
-  fraudPolicyCreateMutation,
-  fraudPolicyUpdateMutation,
-  useFraudProviderListQuery,
-} from '@/resources/request/client';
+import { createFraudPolicy, updateFraudPolicy } from '@/resources/request/client/apis/fraud.api';
+import { useFraudProviderListQuery } from '@/resources/request/client/queries/fraud.queries';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
@@ -123,10 +120,10 @@ export function PolicyForm({
   const handleSubmit = async (values: PolicyFormValues) => {
     const spec = formValuesToSpec(values);
     if (policy) {
-      await fraudPolicyUpdateMutation(policy.metadata?.name ?? '', spec);
+      await updateFraudPolicy(policy.metadata?.name ?? '', spec);
       toast.success(t`Policy updated successfully`);
     } else {
-      await fraudPolicyCreateMutation(values.name, spec);
+      await createFraudPolicy(values.name, spec);
       toast.success(t`Policy created successfully`);
     }
     await onSaved();

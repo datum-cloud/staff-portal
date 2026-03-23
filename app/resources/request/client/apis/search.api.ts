@@ -1,4 +1,4 @@
-import { userGetQuery } from './user.request';
+import { userGetQuery } from './user.api';
 import { PROXY_URL } from '@/modules/axios/axios.client';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import {
@@ -11,9 +11,6 @@ import {
   NetMiloapisGoSearchPkgApisSearchV1Alpha1TargetResource,
 } from '@openapi/search.miloapis.com/v1alpha1';
 
-/**
- * Builds a ResourceSearchQuery CRD body for the given query string and target resources.
- */
 function buildQuery(
   queryString: string,
   targetResources: NetMiloapisGoSearchPkgApisSearchV1Alpha1TargetResource[],
@@ -33,9 +30,6 @@ function buildQuery(
   };
 }
 
-/**
- * Executes a search query and returns extracted, typed entity objects sorted by relevance score.
- */
 async function executeSearch<T>(
   queryBody: NetMiloapisGoSearchPkgApisSearchV1Alpha1ResourceSearchQuery
 ): Promise<T[]> {
@@ -49,21 +43,12 @@ async function executeSearch<T>(
 
   const results = response.data?.data?.status?.results ?? [];
 
-  return (
-    results
-      .slice()
-      .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0))
-      // Cast is safe: each query is scoped to one kind via targetResources,
-      // so the API only returns resources of type T.
-      .map((result) => result.resource as T)
-  );
+  return results
+    .slice()
+    .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0))
+    .map((result) => result.resource as T);
 }
 
-/**
- * Searches for User resources, then enriches results with full user data from the IAM API.
- * The search index only stores a subset of fields; fetching the full resource ensures
- * givenName, familyName, email, etc. are always populated.
- */
 export const searchUsersQuery = async (
   queryString: string
 ): Promise<ComMiloapisIamV1Alpha1User[]> => {
@@ -91,9 +76,6 @@ export const searchUsersQuery = async (
   }
 };
 
-/**
- * Searches for Organization resources.
- */
 export const searchOrganizationsQuery = (
   queryString: string
 ): Promise<ComMiloapisResourcemanagerV1Alpha1Organization[]> => {
@@ -105,9 +87,6 @@ export const searchOrganizationsQuery = (
   );
 };
 
-/**
- * Searches for Project resources.
- */
 export const searchProjectsQuery = (
   queryString: string
 ): Promise<ComMiloapisResourcemanagerV1Alpha1Project[]> => {

@@ -4,14 +4,15 @@ import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayId } from '@/components/display';
+import { contactListQuery, searchUsersQuery } from '@/resources/request/client';
 import {
-  contactListQuery,
-  fraudEvaluationCreateMutation,
-  fraudEvaluationDeleteMutation,
-  searchUsersQuery,
+  createFraudEvaluation,
+  deleteFraudEvaluation,
+} from '@/resources/request/client/apis/fraud.api';
+import {
   useFraudEvaluationListQuery,
   useFraudPolicyListQuery,
-} from '@/resources/request/client';
+} from '@/resources/request/client/queries/fraud.queries';
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -221,7 +222,7 @@ export default function Page() {
         schema={newEvalSchema}
         defaultValues={{ user: '' }}
         onSubmit={async (data) => {
-          await fraudEvaluationCreateMutation({
+          await createFraudEvaluation({
             apiVersion: 'fraud.miloapis.com/v1alpha1',
             kind: 'FraudEvaluation',
             metadata: {
@@ -255,7 +256,7 @@ export default function Page() {
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={async () => {
-          await fraudEvaluationDeleteMutation(selectedEval?.metadata?.name ?? '');
+          await deleteFraudEvaluation(selectedEval?.metadata?.name ?? '');
           await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
           setSelectedEval(null);
           toast.success(t`Evaluation deleted successfully`);

@@ -1,10 +1,10 @@
 import type { Route } from './+types/detail';
 import { DialogConfirm } from '@/components/dialog';
 import {
-  fraudProviderDeleteMutation,
-  fraudProviderUpdateMutation,
-  useFraudProviderDetailQuery,
-} from '@/resources/request/client';
+  deleteFraudProvider,
+  updateFraudProvider,
+} from '@/resources/request/client/apis/fraud.api';
+import { useFraudProviderDetailQuery } from '@/resources/request/client/queries/fraud.queries';
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -67,7 +67,7 @@ export default function Page() {
   }
 
   const handleSubmit = async (values: ProviderFormValues) => {
-    await fraudProviderUpdateMutation(providerName ?? '', {
+    await updateFraudProvider(providerName ?? '', {
       type: values.type,
       failurePolicy: values.failurePolicy,
       config: {
@@ -173,7 +173,7 @@ export default function Page() {
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={async () => {
-          await fraudProviderDeleteMutation(provider.metadata?.name ?? '');
+          await deleteFraudProvider(provider.metadata?.name ?? '');
           toast.success(t`Provider deleted successfully`);
           navigate(fraudRoutes.providers());
         }}
