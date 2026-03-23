@@ -92,8 +92,8 @@ Consistent keys are required for reliable invalidation and cache behavior.
 ## Template: Client request module
 
 ```ts
-import { useQuery } from '@tanstack/react-query';
 import { listYourServiceV1Alpha1Thing } from '@openapi/your.service/v1alpha1';
+import { useQuery } from '@tanstack/react-query';
 
 export const thingListQuery = async (params?: { limit?: number; cursor?: string }) => {
   const response = await listYourServiceV1Alpha1Thing({
