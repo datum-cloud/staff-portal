@@ -37,7 +37,7 @@ export default function Page() {
     {
       label: t`Edit`,
       icon: EditIcon,
-      onClick: (row) => navigate(fraudRoutes.providerDetail(row.metadata?.name ?? '')),
+      onClick: (row) => navigate(fraudRoutes.providers.detail(row.metadata?.name ?? '')),
     },
     {
       label: t`Delete`,
@@ -52,7 +52,7 @@ export default function Page() {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
       cell: ({ getValue }) => (
         <Link
-          to={fraudRoutes.providerDetail(getValue() ?? '')}
+          to={fraudRoutes.providers.detail(getValue() ?? '')}
           className="font-medium text-blue-600 hover:underline">
           {getValue()}
         </Link>
@@ -116,7 +116,7 @@ export default function Page() {
         <Button
           type="primary"
           icon={<PlusCircleIcon size={16} />}
-          onClick={() => navigate(fraudRoutes.providerCreate())}>
+          onClick={() => navigate(fraudRoutes.providers.create())}>
           <Trans>Add Provider</Trans>
         </Button>
       </AppActionBar>

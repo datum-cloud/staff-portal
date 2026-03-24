@@ -105,7 +105,7 @@ export default function Layout() {
     },
     {
       title: t`Activity`,
-      href: projectRoutes.activity(project?.metadata?.name ?? ''),
+      href: projectRoutes.activity.root(project?.metadata?.name ?? ''),
       icon: SquareActivity,
     },
     {

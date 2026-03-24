@@ -27,6 +27,7 @@ Route modules for pages and sub-layouts.
 - Typically exports `loader`, `meta`, `handle`, default component
 - Uses `index.tsx` for default pages and `layout.tsx` for nested shells
 - Complex features are grouped by folder (`project`, `organization`, `fraud`, etc.)
+- Route links should use helpers from `app/utils/config/routes.config.ts` (favor nested route groups with `root/list/detail` semantics)
 
 ### `app/layouts/**`
 

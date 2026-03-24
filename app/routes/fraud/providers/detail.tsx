@@ -150,7 +150,7 @@ export default function Page() {
                       type="tertiary"
                       theme="borderless"
                       htmlType="button"
-                      onClick={() => navigate(fraudRoutes.providers())}>
+                      onClick={() => navigate(fraudRoutes.providers.list())}>
                       {t`Cancel`}
                     </Button>
                     <Button htmlType="submit" disabled={!form.formState.isDirty}>
@@ -175,7 +175,7 @@ export default function Page() {
         onConfirm={async () => {
           await deleteFraudProvider(provider.metadata?.name ?? '');
           toast.success(t`Provider deleted successfully`);
-          navigate(fraudRoutes.providers());
+          navigate(fraudRoutes.providers.list());
         }}
       />
     </div>

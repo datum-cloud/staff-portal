@@ -1,7 +1,10 @@
 import { getProjectDetailMetadata, useProjectDetailData } from '../../shared';
 import type { Route } from './+types/index';
-import { createActivityClientConfig, getProjectControlPlanePath } from '@/lib/activity-client';
-import { staffResourceLinkResolver } from '@/lib/activity-link-resolvers';
+import {
+  createActivityClientConfig,
+  getProjectControlPlanePath,
+} from '@/features/activity/lib/activity-client';
+import { staffResourceLinkResolver } from '@/features/activity/lib/activity-link-resolvers';
 import { metaObject } from '@/utils/helpers';
 import { ActivityFeed, ActivityApiClient } from '@datum-cloud/activity-ui';
 import { Trans } from '@lingui/react/macro';

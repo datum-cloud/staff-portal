@@ -5,8 +5,8 @@ import { Trans } from '@lingui/react/macro';
 import { Link, Outlet, useLocation } from 'react-router';
 
 const fraudTabs = [
-  { label: 'Evaluations', value: 'evaluations', to: fraudRoutes.evaluations() },
-  { label: 'Providers', value: 'providers', to: fraudRoutes.providers() },
+  { label: 'Evaluations', value: 'evaluations', to: fraudRoutes.evaluations.list() },
+  { label: 'Providers', value: 'providers', to: fraudRoutes.providers.list() },
   { label: 'Policy', value: 'policy', to: fraudRoutes.policy() },
 ];
 

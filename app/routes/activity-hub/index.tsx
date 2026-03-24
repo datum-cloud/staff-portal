@@ -1,10 +1,11 @@
+import { activityRoutes } from '@/utils/config/routes.config';
 import { redirect } from 'react-router';
 
 /**
  * Redirect /activity to /activity/feed
  */
 export function loader() {
-  return redirect('/activity/feed');
+  return redirect(activityRoutes.feed());
 }
 
 export default function ActivityIndex() {

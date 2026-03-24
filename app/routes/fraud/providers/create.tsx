@@ -55,7 +55,7 @@ export default function Page() {
     });
     await listQuery.refetch();
     toast.success(t`Provider created successfully`);
-    navigate(fraudRoutes.providers());
+    navigate(fraudRoutes.providers.list());
   };
 
   return (
@@ -117,7 +117,7 @@ export default function Page() {
                       type="tertiary"
                       theme="borderless"
                       htmlType="button"
-                      onClick={() => navigate(fraudRoutes.providers())}>
+                      onClick={() => navigate(fraudRoutes.providers.list())}>
                       {t`Cancel`}
                     </Button>
                     <Button htmlType="submit" disabled={!form.formState.isDirty}>

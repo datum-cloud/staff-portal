@@ -145,13 +145,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     },
     {
       title: t`Activity`,
-      href: routes.activity(),
+      href: routes.activity.root(),
       icon: SquareActivity,
       hasSubmenu: false,
     },
     {
       title: t`Fraud & Abuse`,
-      href: fraudRoutes.list(),
+      href: fraudRoutes.root(),
       icon: ShieldAlert,
       hasSubmenu: false,
     },

@@ -56,7 +56,7 @@ Avoid overloading loaders with all CRUD fetches if the page already uses React Q
 3. Add `meta` and optional `handle` for breadcrumb/title consistency.
 4. Add `loader` only when server-time checks/data are needed.
 5. Build page with shared components (`app/components`) and feature modules (`app/features`).
-6. Move API calls to `app/resources/request/client/<feature>.request.ts`.
+6. Move API calls to `app/resources/request/client/apis/<feature>.api.ts` and hooks/query keys to `app/resources/request/client/queries/<feature>.queries.ts`.
 7. If needed for server loader calls, add companion in `app/resources/request/server`.
 
 ## 6) Suggested file layout for a new section
@@ -97,7 +97,37 @@ Recommendation for consistency:
 - Keep page titles aligned with `meta`
 - Reuse route config helpers from `app/utils/config/routes.config.ts` for links
 
-## 8) Navigation placement convention
+## 8) Route Config Naming Convention (`routes.config.ts`)
+
+Use nested route groups when multiple routes share the same base path.
+
+Preferred pattern:
+
+- `root`: canonical entry path for a section/workspace
+- `list`: list page path for resource collections
+- `detail`: detail path with route params
+- `create` / `edit`: explicit CRUD leaf routes
+
+Example:
+
+```ts
+export const projectRoutes = {
+  detail: (projectName: string) => `/customers/projects/${projectName}`,
+  activity: {
+    root: (projectName: string) => `/customers/projects/${projectName}/activity`,
+    events: (projectName: string) => `/customers/projects/${projectName}/activity/events`,
+    auditLogs: (projectName: string) => `/customers/projects/${projectName}/activity/audit-logs`,
+  },
+};
+```
+
+Guidance:
+
+- Use `root` for section hubs or nested workspaces (ex: `activity.root()`).
+- Use `list` for resource list screens (ex: `providers.list()`, `evaluations.list()`).
+- If a feature has both and they resolve to the same URL, keep both only when it improves readability at call sites; otherwise prefer one canonical helper.
+
+## 9) Navigation placement convention
 
 - If navigation belongs to a section-level hub, use route `layout.tsx` with `AppNavigation` tabs.
 - If navigation belongs to a resource workspace (detail-oriented), use `SubLayout.SidebarMenu`.
