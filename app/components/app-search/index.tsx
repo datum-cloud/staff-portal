@@ -34,30 +34,7 @@ interface Props {
   placeholder?: string;
 }
 
-const searchItems = [
-  { title: 'Dashboard', icon: Home, href: routes.dashboard(), description: 'Go to dashboard' },
-  { title: 'Users', icon: Users, href: routes.users.list(), description: 'Manage users' },
-  {
-    title: 'Organizations',
-    icon: Building2,
-    href: routes.organizations.list(),
-    description: 'Manage organizations',
-  },
-  {
-    title: 'Projects',
-    icon: FolderOpen,
-    href: routes.projects.list(),
-    description: 'Manage projects',
-  },
-  {
-    title: 'Activity',
-    icon: Activity,
-    href: routes.activity.root(),
-    description: 'View activity logs',
-  },
-];
-
-function AppSearch({ className = '', placeholder = 'Search' }: Props) {
+function AppSearch({ className = '', placeholder }: Props) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -67,6 +44,28 @@ function AppSearch({ className = '', placeholder = 'Search' }: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { t } = useLingui();
+  const searchItems = [
+    { title: t`Dashboard`, icon: Home, href: routes.dashboard(), description: t`Go to dashboard` },
+    { title: t`Users`, icon: Users, href: routes.users.list(), description: t`Manage users` },
+    {
+      title: t`Organizations`,
+      icon: Building2,
+      href: routes.organizations.list(),
+      description: t`Manage organizations`,
+    },
+    {
+      title: t`Projects`,
+      icon: FolderOpen,
+      href: routes.projects.list(),
+      description: t`Manage projects`,
+    },
+    {
+      title: t`Activity`,
+      icon: Activity,
+      href: routes.activity.root(),
+      description: t`View activity logs`,
+    },
+  ];
 
   // Cmd+K focuses the search input
   useEffect(() => {
@@ -166,7 +165,7 @@ function AppSearch({ className = '', placeholder = 'Search' }: Props) {
         <Input
           ref={inputRef}
           className="h-full min-w-0 flex-1 border-0 p-0 shadow-none focus-visible:ring-0"
-          placeholder={placeholder}
+          placeholder={placeholder ?? t`Search`}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           onFocus={() => {
@@ -213,7 +212,7 @@ function AppSearch({ className = '', placeholder = 'Search' }: Props) {
                           key={item.href}
                           onSelect={() => runCommand(() => navigate(item.href))}>
                           <Icon className="mr-2 h-4 w-4" />
-                          <Text>{t`${item.title}`}</Text>
+                          <Text>{item.title}</Text>
                           <Text size="xs" textColor="muted" className="ml-auto">
                             {item.description}
                           </Text>
@@ -249,7 +248,7 @@ function AppSearch({ className = '', placeholder = 'Search' }: Props) {
                         )}
                         {/* FR-11: Organizations → Projects → Users */}
                         <SearchResultGroup<ComMiloapisResourcemanagerV1Alpha1Organization>
-                          heading="Organizations"
+                          heading={t`Organizations`}
                           items={orgResults || []}
                           icon={Building2}
                           getValue={(org) =>
@@ -264,7 +263,7 @@ function AppSearch({ className = '', placeholder = 'Search' }: Props) {
                           }
                         />
                         <SearchResultGroup<ComMiloapisResourcemanagerV1Alpha1Project>
-                          heading="Projects"
+                          heading={t`Projects`}
                           items={projectResults || []}
                           icon={FolderOpen}
                           getValue={(project) =>
@@ -279,7 +278,7 @@ function AppSearch({ className = '', placeholder = 'Search' }: Props) {
                           }
                         />
                         <SearchResultGroup<ComMiloapisIamV1Alpha1User>
-                          heading="Users"
+                          heading={t`Users`}
                           items={userResults || []}
                           icon={Users}
                           getValue={(user) =>

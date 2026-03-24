@@ -6,6 +6,7 @@ import { fraudRoutes, userRoutes } from '@/utils/config/routes.config';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { ArrowLeft, Clock, History, Layers, Mail, User } from 'lucide-react';
 import { Link } from 'react-router';
@@ -36,7 +37,7 @@ function ProviderResultRow({ result }: { result: ProviderResult }) {
         {result.failurePolicyApplied && (
           <BadgeState state="warning" message={result.failurePolicyApplied} />
         )}
-        {result.error && <BadgeState state="error" message="Error" tooltip={result.error} />}
+        {result.error && <BadgeState state="error" message={t`Error`} tooltip={result.error} />}
       </div>
       <div className="flex items-center gap-4">
         {result.duration && (
@@ -62,7 +63,7 @@ function StageResultCard({ result, index }: { result: StageResult; index: number
             </span>
             {result.name}
           </div>
-          {result.skipped && <BadgeState state="pending" message="Skipped" />}
+          {result.skipped && <BadgeState state="pending" message={t`Skipped`} />}
         </CardTitle>
       </CardHeader>
       {!result.skipped && result.providerResults && (
@@ -148,7 +149,7 @@ export function UserEvaluationsTable({
                     <Text size="sm" weight="medium">
                       {evaluation.metadata?.name}{' '}
                       <Text as="span" size="xs" textColor="muted">
-                        (current)
+                        {t`(current)`}
                       </Text>
                     </Text>
                   ) : (
@@ -269,7 +270,7 @@ export function EvaluationOverview({
               />
             ) : (
               <Text size="sm" textColor="muted">
-                None
+                {t`None`}
               </Text>
             )}
           </Col>
@@ -284,7 +285,7 @@ export function EvaluationOverview({
               />
             ) : (
               <Text size="sm" textColor="muted">
-                None
+                {t`None`}
               </Text>
             )}
           </Col>

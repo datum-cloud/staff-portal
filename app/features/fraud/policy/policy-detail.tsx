@@ -4,6 +4,7 @@ import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { ArrowRightLeft, Edit2Icon, Eye, Layers, Shield, Trash2Icon, Zap } from 'lucide-react';
 
@@ -19,11 +20,11 @@ function StageCard({ stage, index }: { stage: Stage; index: number }) {
             {stage.name}
           </CardTitle>
           <div className="flex items-center gap-2">
-            {stage.required && <BadgeState state="info" message="Required" />}
+            {stage.required && <BadgeState state="info" message={t`Required`} />}
             {stage.shortCircuit && (
               <BadgeState
                 state="pending"
-                message={`Short-circuit < ${stage.shortCircuit.skipWhenBelow}`}
+                message={t`Short-circuit < ${stage.shortCircuit.skipWhenBelow}`}
               />
             )}
           </div>
@@ -145,7 +146,7 @@ export function PolicyDetail({
               </Text>
               <div className="flex items-center gap-2">
                 <Text size="sm" weight="medium">
-                  {policy.spec.historyRetention?.maxEntries ?? 50} entries
+                  {t`${policy.spec.historyRetention?.maxEntries ?? 50} entries`}
                 </Text>
               </div>
             </Col>
@@ -160,10 +161,12 @@ export function PolicyDetail({
                 {available && (
                   <BadgeState
                     state={available.status === 'True' ? 'active' : 'error'}
-                    message={available.status === 'True' ? 'Available' : 'Unavailable'}
+                    message={available.status === 'True' ? t`Available` : t`Unavailable`}
                   />
                 )}
-                {degraded?.status === 'True' && <BadgeState state="warning" message="Degraded" />}
+                {degraded?.status === 'True' && (
+                  <BadgeState state="warning" message={t`Degraded`} />
+                )}
               </div>
             </Col>
           </Row>
