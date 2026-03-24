@@ -111,7 +111,7 @@ export default function Page() {
       cell: ({ row }) => {
         const name = row.original.metadata?.name ?? '';
         return (
-          <Link to={fraudRoutes.evaluationDetail(name)} className="text-primary hover:underline">
+          <Link to={fraudRoutes.evaluations.detail(name)} className="text-primary hover:underline">
             <DisplayId value={row.original.spec?.userRef?.name ?? ''} />
           </Link>
         );

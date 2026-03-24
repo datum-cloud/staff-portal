@@ -16,7 +16,7 @@ msgstr ""
 #. placeholder {0}: item.label
 #. placeholder {0}: item.title
 #: app/modules/datum-ui/data-table/components/data-table-facet-filter.tsx:114
-#: app/components/app-search/index.tsx:211
+#: app/components/app-search/index.tsx:216
 msgid "{0}"
 msgstr "{0}"
 
@@ -126,11 +126,11 @@ msgid "Active Sessions"
 msgstr "Active Sessions"
 
 #: app/routes/user/detail/layout.tsx:52
-#: app/routes/user/detail/activity/index.tsx:17
+#: app/routes/user/detail/activity/index.tsx:23
 #: app/routes/project/detail/layout.tsx:107
-#: app/routes/project/detail/activity/index.tsx:11
+#: app/routes/project/detail/activity/index.tsx:14
 #: app/routes/organization/detail/layout.tsx:42
-#: app/routes/organization/detail/activity/index.tsx:11
+#: app/routes/organization/detail/activity/index.tsx:14
 #: app/components/app-sidebar/index.tsx:147
 msgid "Activity"
 msgstr "Activity"
@@ -1301,7 +1301,7 @@ msgstr "Nameservers"
 msgid "Namespace"
 msgstr "Namespace"
 
-#: app/components/app-search/index.tsx:203
+#: app/components/app-search/index.tsx:208
 msgid "Navigation"
 msgstr "Navigation"
 
@@ -1401,7 +1401,7 @@ msgstr "No projects found."
 msgid "No quota buckets found."
 msgstr "No quota buckets found."
 
-#: app/components/app-search/index.tsx:237
+#: app/components/app-search/index.tsx:242
 msgid "No results found."
 msgstr "No results found."
 
@@ -1850,7 +1850,7 @@ msgstr "Search groups..."
 msgid "Search HTTP proxies..."
 msgstr "Search HTTP proxies..."
 
-#: app/components/app-search/index.tsx:235
+#: app/components/app-search/index.tsx:240
 msgid "Search is temporarily unavailable. Please try again."
 msgstr "Search is temporarily unavailable. Please try again."
 
@@ -1891,7 +1891,7 @@ msgstr "Search users..."
 msgid "Search..."
 msgstr "Search..."
 
-#: app/components/app-search/index.tsx:228
+#: app/components/app-search/index.tsx:233
 msgid "Searching..."
 msgstr "Searching..."
 
@@ -1962,7 +1962,7 @@ msgstr "Short-circuit Below"
 msgid "Sinks"
 msgstr "Sinks"
 
-#: app/components/app-search/index.tsx:242
+#: app/components/app-search/index.tsx:247
 msgid "Some results may be missing."
 msgstr "Some results may be missing."
 
@@ -2101,7 +2101,7 @@ msgstr "TTL"
 msgid "Type"
 msgstr "Type"
 
-#: app/components/app-search/index.tsx:222
+#: app/components/app-search/index.tsx:227
 msgid "Type at least 3 characters to search."
 msgstr "Type at least 3 characters to search."
 

@@ -40,7 +40,7 @@ export default function Layout() {
     },
     {
       title: t`Activity`,
-      href: orgRoutes.activity(data?.metadata?.name ?? ''),
+      href: orgRoutes.activity.root(data?.metadata?.name ?? ''),
       icon: SquareActivity,
     },
     {

@@ -1,5 +1,6 @@
 import AppActionBar from '@/components/app-actiobar';
 import AppNavigation from '@/components/app-navigation';
+import { activityRoutes } from '@/utils/config/routes.config';
 import { Tabs, TabsList, TabsLinkTrigger } from '@datum-cloud/datum-ui/tabs';
 import { Button } from '@datum-ui/button';
 import { Share2, Check } from 'lucide-react';
@@ -7,17 +8,17 @@ import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router';
 
 const activityTabs = [
-  { label: 'Activity Feed', value: 'feed', to: '/activity/feed' },
-  { label: 'Events', value: 'events', to: '/activity/events' },
-  { label: 'Audit Logs', value: 'audit-logs', to: '/activity/audit-logs' },
-  { label: 'Manage Policies', value: 'policies', to: '/activity/policies' },
+  { label: 'Activity Feed', value: 'feed', to: activityRoutes.feed() },
+  { label: 'Events', value: 'events', to: activityRoutes.events() },
+  { label: 'Audit Logs', value: 'audit-logs', to: activityRoutes.auditLogs() },
+  { label: 'Manage Policies', value: 'policies', to: activityRoutes.policies.list() },
 ];
 
 function useActiveTab() {
   const { pathname } = useLocation();
-  if (pathname.startsWith('/activity/policies')) return 'policies';
-  if (pathname.startsWith('/activity/audit-logs')) return 'audit-logs';
-  if (pathname.startsWith('/activity/events')) return 'events';
+  if (pathname.startsWith(activityRoutes.policies.list())) return 'policies';
+  if (pathname.startsWith(activityRoutes.auditLogs())) return 'audit-logs';
+  if (pathname.startsWith(activityRoutes.events())) return 'events';
   return 'feed';
 }
 

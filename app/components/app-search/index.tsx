@@ -49,7 +49,12 @@ const searchItems = [
     href: routes.projects.list(),
     description: 'Manage projects',
   },
-  { title: 'Activity', icon: Activity, href: routes.activity(), description: 'View activity logs' },
+  {
+    title: 'Activity',
+    icon: Activity,
+    href: routes.activity.root(),
+    description: 'View activity logs',
+  },
 ];
 
 function AppSearch({ className = '', placeholder = 'Search' }: Props) {

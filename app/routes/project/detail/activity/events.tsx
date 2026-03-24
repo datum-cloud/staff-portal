@@ -1,5 +1,8 @@
 import { useProjectDetailData } from '../../shared';
-import { createActivityClientConfig, getProjectControlPlanePath } from '@/lib/activity-client';
+import {
+  createActivityClientConfig,
+  getProjectControlPlanePath,
+} from '@/features/activity/lib/activity-client';
 import { EventsFeed, ActivityApiClient } from '@datum-cloud/activity-ui';
 import { useMemo } from 'react';
 

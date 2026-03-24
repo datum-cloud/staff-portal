@@ -1,5 +1,9 @@
-import { createActivityClientConfig } from '@/lib/activity-client';
-import { parseEventFilters, parseTimeRange, serializeEventFilters } from '@/lib/activity-filters';
+import { createActivityClientConfig } from '@/features/activity/lib/activity-client';
+import {
+  parseEventFilters,
+  parseTimeRange,
+  serializeEventFilters,
+} from '@/features/activity/lib/activity-filters';
 import {
   EventsFeed,
   ActivityApiClient,

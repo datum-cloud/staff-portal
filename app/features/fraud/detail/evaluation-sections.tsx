@@ -153,7 +153,7 @@ export function UserEvaluationsTable({
                     </Text>
                   ) : (
                     <Link
-                      to={fraudRoutes.evaluationDetail(evaluation.metadata?.name ?? '')}
+                      to={fraudRoutes.evaluations.detail(evaluation.metadata?.name ?? '')}
                       className="text-primary text-sm font-medium hover:underline">
                       {evaluation.metadata?.name}
                     </Link>
@@ -184,7 +184,7 @@ export function UserEvaluationsTable({
 export function EvaluationBackLink() {
   return (
     <Link
-      to={fraudRoutes.list()}
+      to={fraudRoutes.root()}
       className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm">
       <ArrowLeft className="h-3 w-3" />
       <Trans>Back to evaluations</Trans>
