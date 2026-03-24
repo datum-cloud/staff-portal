@@ -5,7 +5,11 @@ import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
 import { DisplayId, DisplayName } from '@/components/display';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
-import { userInviteMutation, useUserListQuery } from '@/resources/request/client';
+import {
+  useInvalidateUserList,
+  userInviteMutation,
+  useUserListQuery,
+} from '@/resources/request/client';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -36,6 +40,7 @@ export default function Page() {
 
   const { approveUser, pendingUser } = useUserApproval();
   const tableQuery = useUserListQuery();
+  const invalidateUserList = useInvalidateUserList();
 
   const actions: ActionItem<ComMiloapisIamV1Alpha1User>[] = [
     {
@@ -51,7 +56,7 @@ export default function Page() {
         setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: true }));
         try {
           await approveUser(row, async () => {
-            await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
+            await invalidateUserList();
           });
         } finally {
           setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: false }));
@@ -73,7 +78,7 @@ export default function Page() {
         setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: true }));
         try {
           await pendingUser(row, async () => {
-            await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
+            await invalidateUserList();
           });
         } finally {
           setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: false }));
@@ -189,7 +194,7 @@ export default function Page() {
               },
             });
 
-            await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
+            await invalidateUserList();
             toast.success(t`User invited successfully`);
           } catch (error) {
             throw error; // Re-throw to keep dialog open
@@ -216,7 +221,7 @@ export default function Page() {
         onOpenChange={() => setSelectedUser(null)}
         user={selectedUser}
         onSuccess={async () => {
-          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
+          await invalidateUserList();
         }}
       />
 

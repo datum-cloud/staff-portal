@@ -4,15 +4,13 @@ import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayId } from '@/components/display';
-import { contactListQuery, searchUsersQuery } from '@/resources/request/client';
+import { useContactAllListQuery, useSearchUsersQuery } from '@/resources/request/client';
 import {
-  createFraudEvaluation,
-  deleteFraudEvaluation,
-} from '@/resources/request/client/apis/fraud.api';
-import {
+  useCreateFraudEvaluationMutation,
+  useDeleteFraudEvaluationMutation,
   useFraudEvaluationListQuery,
   useFraudPolicyListQuery,
-} from '@/resources/request/client/queries/fraud.queries';
+} from '@/resources/request/client';
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -24,7 +22,6 @@ import { Form } from '@datum-ui/form';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisFraudV1Alpha1FraudEvaluation } from '@openapi/fraud.miloapis.com/v1alpha1';
-import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
@@ -49,12 +46,10 @@ export default function Page() {
   const [showNewEval, setShowNewEval] = useState(false);
   const [selectedEval, setSelectedEval] = useState<FraudEvaluation | null>(null);
   const [userSearchQuery, setUserSearchQuery] = useState('');
+  const createEvaluationMutation = useCreateFraudEvaluationMutation();
+  const deleteEvaluationMutation = useDeleteFraudEvaluationMutation();
 
-  const contactsQuery = useQuery({
-    queryKey: ['fraud', 'contacts-all'],
-    queryFn: () => contactListQuery(),
-    staleTime: 5 * 60 * 1000,
-  });
+  const contactsQuery = useContactAllListQuery();
 
   const contactsByUser = useMemo(() => {
     const map = new Map<string, { email?: string; name?: string }>();
@@ -68,12 +63,7 @@ export default function Page() {
     return map;
   }, [contactsQuery.data]);
 
-  const { data: searchResults, isLoading: usersLoading } = useQuery({
-    queryKey: ['fraud', 'user-search', userSearchQuery],
-    queryFn: () => searchUsersQuery(userSearchQuery),
-    enabled: userSearchQuery.length >= 2,
-    staleTime: 30 * 1000,
-  });
+  const { data: searchResults, isLoading: usersLoading } = useSearchUsersQuery(userSearchQuery, 2);
 
   const userOptions = useMemo(() => {
     if (!searchResults) return [];
@@ -222,7 +212,7 @@ export default function Page() {
         schema={newEvalSchema}
         defaultValues={{ user: '' }}
         onSubmit={async (data) => {
-          await createFraudEvaluation({
+          await createEvaluationMutation.mutateAsync({
             apiVersion: 'fraud.miloapis.com/v1alpha1',
             kind: 'FraudEvaluation',
             metadata: {
@@ -233,7 +223,6 @@ export default function Page() {
               policyRef: { name: policyName ?? '' },
             },
           });
-          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
           toast.success(t`Fraud evaluation started`);
         }}>
         <Form.Autosearch
@@ -256,8 +245,7 @@ export default function Page() {
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={async () => {
-          await deleteFraudEvaluation(selectedEval?.metadata?.name ?? '');
-          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
+          await deleteEvaluationMutation.mutateAsync(selectedEval?.metadata?.name ?? '');
           setSelectedEval(null);
           toast.success(t`Evaluation deleted successfully`);
         }}

@@ -1,10 +1,12 @@
 export * from './apis/activity.api';
 export * from './apis/membership.api';
 export * from './apis/metrics.api';
+export * from './queries/metrics.queries';
 export * from './apis/email.api';
 export * from './apis/contact-membership.api';
 export * from './apis/note.api';
 export * from './apis/search.api';
+export * from './queries/search.queries';
 
 export * from './apis/organization.api';
 export * from './queries/organization.queries';

@@ -7,9 +7,9 @@ import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
 import { useContactGroupSearch } from '@/hooks';
 import {
-  contactGroupMembershipCreateMutation,
-  contactGroupMembershipDeleteMutation,
-  contactMembershipForContactListQuery,
+  useCreateContactGroupMembershipMutation,
+  useDeleteContactGroupMembershipMutation,
+  useContactGroupMembershipListQuery,
 } from '@/resources/request/client';
 import type { ContactMembershipWithContactGroup } from '@/resources/schemas';
 import { contactGroupRoutes } from '@/utils/config/routes.config';
@@ -20,7 +20,6 @@ import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Form } from '@datum-ui/form';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useMemo, useState } from 'react';
@@ -40,20 +39,15 @@ export default function Page() {
   const detail = useContactDetailData();
   const contactName = detail.contact?.metadata?.name ?? '';
 
-  const tableQuery = useQuery({
-    queryKey: ['contacts', contactName, 'groups', 'list'],
-    queryFn: () =>
-      contactMembershipForContactListQuery({
-        filters: { fieldSelector: `spec.contactRef.name=${contactName}` },
-      }),
-    enabled: !!contactName,
-  });
+  const tableQuery = useContactGroupMembershipListQuery(contactName);
 
   const items = tableQuery.data?.items ?? [];
   const [selectedGroup, setSelectedGroup] = useState<ContactMembershipWithContactGroup | null>(
     null
   );
   const [isAddGroup, setIsAddGroup] = useState(false);
+  const createMembershipMutation = useCreateContactGroupMembershipMutation();
+  const deleteMembershipMutation = useDeleteContactGroupMembershipMutation();
   const { options: contactGroupOptions, isLoading: contactGroupsLoading } = useContactGroupSearch();
 
   const contactGroupFilteredOptions = useMemo(() => {
@@ -130,14 +124,16 @@ export default function Page() {
 
   const handleAddGroup = async (formData: z.infer<typeof addGroupSchema>) => {
     const [name, namespace] = formData.name.split('|');
-    await contactGroupMembershipCreateMutation('default', {
-      contactGroupRef: { name, namespace },
-      contactRef: {
-        name: detail.contact?.metadata?.name ?? '',
-        namespace: detail.contact?.metadata?.namespace ?? 'default',
+    await createMembershipMutation.mutateAsync({
+      namespace: 'default',
+      payload: {
+        contactGroupRef: { name, namespace },
+        contactRef: {
+          name: detail.contact?.metadata?.name ?? '',
+          namespace: detail.contact?.metadata?.namespace ?? 'default',
+        },
       },
     });
-    await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 1000));
     toast.success(t`Group added successfully`);
   };
 
@@ -160,8 +156,7 @@ export default function Page() {
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={async () => {
-          await contactGroupMembershipDeleteMutation(selectedGroup?.metadata);
-          await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 2000));
+          await deleteMembershipMutation.mutateAsync(selectedGroup?.metadata);
           setSelectedGroup(null);
           toast.success(t`Group deleted successfully`);
         }}

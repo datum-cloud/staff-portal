@@ -6,17 +6,16 @@ import {
   StageResultsSection,
   UserEvaluationsTable,
 } from '@/features/fraud';
-import { contactListQuery, userGetQuery } from '@/resources/request/client';
+import { useContactBySubjectUserQuery, useUserDetailQuery } from '@/resources/request/client';
 import {
   useFraudEvaluationDetailQuery,
   useFraudEvaluationListQuery,
-} from '@/resources/request/client/queries/fraud.queries';
+} from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
@@ -30,21 +29,9 @@ export default function Page() {
 
   const userId = evaluation?.spec?.userRef?.name;
 
-  const userQuery = useQuery({
-    queryKey: ['fraud', 'user-detail', userId],
-    queryFn: () => userGetQuery(userId!),
-    enabled: !!userId,
-  });
+  const userQuery = useUserDetailQuery(userId ?? '');
 
-  const contactQuery = useQuery({
-    queryKey: ['fraud', 'user-contact', userId],
-    queryFn: () =>
-      contactListQuery({
-        limit: 1,
-        filters: { fieldSelector: `spec.subject.name=${userId}` },
-      }),
-    enabled: !!userId,
-  });
+  const contactQuery = useContactBySubjectUserQuery(userId ?? '');
 
   const userEmail = userQuery.data?.spec?.email;
   const contact = contactQuery.data?.items?.[0];

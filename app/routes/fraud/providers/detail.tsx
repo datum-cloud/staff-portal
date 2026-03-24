@@ -1,10 +1,10 @@
 import type { Route } from './+types/detail';
 import { DialogConfirm } from '@/components/dialog';
 import {
-  deleteFraudProvider,
-  updateFraudProvider,
-} from '@/resources/request/client/apis/fraud.api';
-import { useFraudProviderDetailQuery } from '@/resources/request/client/queries/fraud.queries';
+  useDeleteFraudProviderMutation,
+  useFraudProviderDetailQuery,
+  useUpdateFraudProviderMutation,
+} from '@/resources/request/client';
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -41,6 +41,8 @@ export default function Page() {
   const providerQuery = useFraudProviderDetailQuery(providerName ?? '');
   const provider = providerQuery.data;
   const [showDelete, setShowDelete] = useState(false);
+  const updateProviderMutation = useUpdateFraudProviderMutation();
+  const deleteProviderMutation = useDeleteFraudProviderMutation();
 
   if (providerQuery.isLoading) {
     return (
@@ -67,22 +69,24 @@ export default function Page() {
   }
 
   const handleSubmit = async (values: ProviderFormValues) => {
-    await updateFraudProvider(providerName ?? '', {
-      type: values.type,
-      failurePolicy: values.failurePolicy,
-      config: {
-        endpoint: values.endpoint || undefined,
-        credentialsRef: values.credentialsRefName
-          ? {
-              name: values.credentialsRefName,
-              namespace: values.credentialsRefNamespace || undefined,
-              accountIDKey: values.accountIDKey || undefined,
-              licenseKeyKey: values.licenseKeyKey || undefined,
-            }
-          : undefined,
+    await updateProviderMutation.mutateAsync({
+      name: providerName ?? '',
+      spec: {
+        type: values.type,
+        failurePolicy: values.failurePolicy,
+        config: {
+          endpoint: values.endpoint || undefined,
+          credentialsRef: values.credentialsRefName
+            ? {
+                name: values.credentialsRefName,
+                namespace: values.credentialsRefNamespace || undefined,
+                accountIDKey: values.accountIDKey || undefined,
+                licenseKeyKey: values.licenseKeyKey || undefined,
+              }
+            : undefined,
+        },
       },
     });
-    await providerQuery.refetch();
     toast.success(t`Provider updated successfully`);
   };
 
@@ -173,7 +177,7 @@ export default function Page() {
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={async () => {
-          await deleteFraudProvider(provider.metadata?.name ?? '');
+          await deleteProviderMutation.mutateAsync(provider.metadata?.name ?? '');
           toast.success(t`Provider deleted successfully`);
           navigate(fraudRoutes.providers.list());
         }}

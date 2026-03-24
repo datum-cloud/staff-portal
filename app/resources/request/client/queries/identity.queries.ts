@@ -1,6 +1,7 @@
 import { identityListQuery, sessionListQuery } from '../apis/identity.api';
+import { sessionDeleteMutation } from '../apis/identity.api';
 import { ListQueryParams } from '@/resources/schemas';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export const identityQueryKeys = {
   all: ['identity'] as const,
@@ -26,5 +27,21 @@ export const useIdentityListQuery = (userId: string, params?: ListQueryParams) =
     queryKey: identityQueryKeys.list(userId, params),
     queryFn: () => identityListQuery(userId, params),
     staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useDeleteSessionMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ userId, sessionName }: { userId: string; sessionName: string }) =>
+      sessionDeleteMutation(userId, sessionName),
+    onSuccess: async (_, variables) => {
+      await queryClient.invalidateQueries({
+        queryKey: sessionQueryKeys.all,
+      });
+      await queryClient.invalidateQueries({
+        queryKey: sessionQueryKeys.list(variables.userId),
+      });
+    },
   });
 };

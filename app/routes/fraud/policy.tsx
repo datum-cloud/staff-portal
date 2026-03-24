@@ -1,8 +1,7 @@
 import type { Route } from './+types/policy';
 import { DialogConfirm } from '@/components/dialog';
 import { PolicyDetail, PolicyForm } from '@/features/fraud';
-import { deleteFraudPolicy } from '@/resources/request/client/apis/fraud.api';
-import { useFraudPolicyListQuery } from '@/resources/request/client/queries/fraud.queries';
+import { useDeleteFraudPolicyMutation, useFraudPolicyListQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
@@ -17,6 +16,7 @@ export const meta: Route.MetaFunction = () => metaObject(t`Fraud Policy`);
 
 export default function Page() {
   const policyQuery = useFraudPolicyListQuery();
+  const deletePolicyMutation = useDeleteFraudPolicyMutation();
   const policies = policyQuery.data?.items ?? [];
   const policy = policies[0];
   const [editing, setEditing] = useState(false);
@@ -43,7 +43,6 @@ export default function Page() {
           onCancel={() => setCreating(false)}
           onSaved={async () => {
             setCreating(false);
-            await new Promise((resolve) => setTimeout(() => resolve(policyQuery.refetch()), 1000));
           }}
         />
       );
@@ -75,7 +74,6 @@ export default function Page() {
         onCancel={() => setEditing(false)}
         onSaved={async () => {
           setEditing(false);
-          await new Promise((resolve) => setTimeout(() => resolve(policyQuery.refetch()), 1000));
         }}
       />
     );
@@ -101,9 +99,8 @@ export default function Page() {
         requireConfirmation
         confirmationText="DELETE"
         onConfirm={async () => {
-          await deleteFraudPolicy(policy.metadata?.name ?? '');
+          await deletePolicyMutation.mutateAsync(policy.metadata?.name ?? '');
           toast.success(t`Policy deleted successfully`);
-          await new Promise((resolve) => setTimeout(() => resolve(policyQuery.refetch()), 1000));
         }}
       />
     </>
