@@ -1,6 +1,9 @@
 import type { FraudPolicy, FraudPolicySpec } from './types';
-import { createFraudPolicy, updateFraudPolicy } from '@/resources/request/client/apis/fraud.api';
-import { useFraudProviderListQuery } from '@/resources/request/client/queries/fraud.queries';
+import {
+  useCreateFraudPolicyMutation,
+  useFraudProviderListQuery,
+  useUpdateFraudPolicyMutation,
+} from '@/resources/request/client';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
@@ -93,6 +96,8 @@ export function PolicyForm({
   onSaved: () => void | Promise<void>;
 }) {
   const providerListQuery = useFraudProviderListQuery();
+  const createPolicyMutation = useCreateFraudPolicyMutation();
+  const updatePolicyMutation = useUpdateFraudPolicyMutation();
   const availableProviders = providerListQuery.data?.items ?? [];
 
   const defaultValues: PolicyFormValues = policy
@@ -120,10 +125,10 @@ export function PolicyForm({
   const handleSubmit = async (values: PolicyFormValues) => {
     const spec = formValuesToSpec(values);
     if (policy) {
-      await updateFraudPolicy(policy.metadata?.name ?? '', spec);
+      await updatePolicyMutation.mutateAsync({ name: policy.metadata?.name ?? '', spec });
       toast.success(t`Policy updated successfully`);
     } else {
-      await createFraudPolicy(values.name, spec);
+      await createPolicyMutation.mutateAsync({ name: values.name, spec });
       toast.success(t`Policy created successfully`);
     }
     await onSaved();

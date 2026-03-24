@@ -7,8 +7,8 @@ import { DisplayName } from '@/components/display';
 import { useUserSearch } from '@/hooks';
 import { authenticator } from '@/modules/auth';
 import {
-  groupMembershipCreateMutation,
-  groupMembershipDeleteMutation,
+  useCreateGroupMembershipMutation,
+  useDeleteGroupMembershipMutation,
   useGroupMembershipListQuery,
 } from '@/resources/request/client';
 import { groupDetailQuery } from '@/resources/request/server';
@@ -54,6 +54,8 @@ export default function Page() {
   const group = useGroupDetailData();
   const groupName = group.metadata?.name ?? '';
   const tableQuery = useGroupMembershipListQuery(groupName);
+  const createMembershipMutation = useCreateGroupMembershipMutation();
+  const deleteMembershipMutation = useDeleteGroupMembershipMutation();
 
   const [selectedGroupMembership, setSelectedGroupMembership] =
     useState<ComMiloapisIamV1Alpha1GroupMembership | null>(null);
@@ -130,8 +132,7 @@ export default function Page() {
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={async () => {
-          await groupMembershipDeleteMutation(selectedGroupMembership?.metadata);
-          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
+          await deleteMembershipMutation.mutateAsync(selectedGroupMembership?.metadata);
           setSelectedGroupMembership(null);
           toast.success(t`Member deleted successfully`);
         }}
@@ -145,11 +146,13 @@ export default function Page() {
         cancelText={t`Cancel`}
         onSubmit={async (formData) => {
           try {
-            await groupMembershipCreateMutation('milo-system', {
-              groupRef: { name: groupName, namespace: 'milo-system' },
-              userRef: { name: formData.name },
+            await createMembershipMutation.mutateAsync({
+              namespace: 'milo-system',
+              payload: {
+                groupRef: { name: groupName, namespace: 'milo-system' },
+                userRef: { name: formData.name },
+              },
             });
-            await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
             toast.success(t`Member added successfully`);
           } catch (error) {
             throw error;

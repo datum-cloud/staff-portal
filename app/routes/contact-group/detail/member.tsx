@@ -5,11 +5,12 @@ import { BadgeCondition } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
-import { useContactSearch } from '@/hooks';
+import { useContactSearch, useUserSearch } from '@/hooks';
 import {
-  contactGroupMembershipCreateMutation,
-  contactGroupMembershipDeleteMutation,
-  contactMembershipForGroupListQuery,
+  contactCreateMutation,
+  useCreateContactGroupMembershipMutation,
+  useDeleteContactGroupMembershipMutation,
+  useContactGroupMemberListQuery,
 } from '@/resources/request/client';
 import {
   ContactGroupMembershipListWithContacts,
@@ -23,7 +24,6 @@ import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Form } from '@datum-ui/form';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useMemo, useState } from 'react';
@@ -45,26 +45,35 @@ export default function Page() {
   const groupData = useContactGroupDetailData();
   const groupName = groupData.metadata?.name ?? '';
 
-  const tableQuery = useQuery({
-    queryKey: ['contact-groups', groupName, 'members', 'list'],
-    queryFn: () =>
-      contactMembershipForGroupListQuery({
-        filters: { fieldSelector: `spec.contactGroupRef.name=${groupName}` },
-      }),
-    enabled: !!groupName,
-  });
+  const tableQuery = useContactGroupMemberListQuery(groupName);
+
+  const items =
+    (tableQuery.data as ContactGroupMembershipListWithContacts | undefined)?.items ?? [];
 
   const [selectedMembership, setSelectedMembership] =
     useState<ContactGroupMembershipWithContact | null>(null);
   const [isAddMember, setIsAddMember] = useState(false);
+  const createMembershipMutation = useCreateContactGroupMembershipMutation();
+  const deleteMembershipMutation = useDeleteContactGroupMembershipMutation();
   const {
     options: contactOptions,
     isLoading: contactsLoading,
     setSearch: setContactSearch,
+    searchQuery: contactSearchQuery,
   } = useContactSearch();
+  const {
+    options: userOptions,
+    isLoading: usersLoading,
+    setSearch: setUserSearch,
+  } = useUserSearch();
 
-  const items =
-    (tableQuery.data as ContactGroupMembershipListWithContacts | undefined)?.items ?? [];
+  const isEmailNotFound = useMemo(() => {
+    const trimmed = contactSearchQuery.trim();
+    if (!trimmed) return false;
+    if (contactsLoading) return false;
+    const looksLikeEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
+    return looksLikeEmail && contactOptions.length === 0;
+  }, [contactSearchQuery, contactOptions.length, contactsLoading]);
 
   const actions: ActionItem<ContactGroupMembershipWithContact>[] = [
     {
@@ -153,21 +162,90 @@ export default function Page() {
     return selectedMembership.spec?.contactRef?.name ?? '';
   }, [selectedMembership]);
 
-  const addMemberSchema = z.object({
-    name: z.string().nonempty(t`Member is required`),
-  });
+  const addMemberSchema = z
+    .object({
+      name: z.string().optional(),
+      create_new: z.boolean().optional(),
+      first_name: z.string().optional(),
+      last_name: z.string().optional(),
+      has_association: z.boolean().optional(),
+      subject: z.string().optional(),
+    })
+    .refine(
+      (data) => {
+        if (data.create_new) {
+          return !!data.first_name && !!data.last_name;
+        }
+        return !!data.name;
+      },
+      {
+        message: t`Please select an existing contact or provide details to create a new one`,
+        path: ['name'],
+      }
+    )
+    .refine(
+      (data) => {
+        if (!data.create_new || !data.has_association) {
+          return true;
+        }
+        return !!data.subject;
+      },
+      {
+        message: t`Subject is required when user association is enabled`,
+        path: ['subject'],
+      }
+    );
 
   const handleAddMember = async (formData: z.infer<typeof addMemberSchema>) => {
-    const [name, namespace] = formData.name.split('|');
-    await contactGroupMembershipCreateMutation('default', {
-      contactGroupRef: {
-        name: groupData.metadata?.name ?? '',
-        namespace: groupData.metadata?.namespace ?? 'default',
-      },
-      contactRef: { name, namespace },
-    });
-    await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
-    toast.success(t`Member added successfully`);
+    try {
+      let contactName = '';
+      let contactNamespace = 'default';
+
+      if (formData.create_new) {
+        const emailFromSearch = contactSearchQuery.trim();
+
+        const response = await contactCreateMutation('default', {
+          familyName: formData.last_name ?? '',
+          givenName: formData.first_name ?? '',
+          email: emailFromSearch,
+          ...(formData.has_association &&
+            formData.subject && {
+              subject: {
+                apiGroup: 'iam.miloapis.com',
+                kind: 'User',
+                name: formData.subject,
+                namespace: '',
+              },
+            }),
+        });
+
+        contactName = response.metadata?.name ?? '';
+        contactNamespace = response.metadata?.namespace ?? 'default';
+      } else {
+        const [name, namespace] = (formData.name ?? '').split('|');
+        contactName = name;
+        contactNamespace = namespace || 'default';
+      }
+
+      await createMembershipMutation.mutateAsync({
+        namespace: 'default',
+        payload: {
+          contactGroupRef: {
+            name: groupData.metadata?.name ?? '',
+            namespace: groupData.metadata?.namespace ?? 'default',
+          },
+          contactRef: { name: contactName, namespace: contactNamespace },
+        },
+      });
+
+      toast.success(
+        formData.create_new
+          ? t`Contact created and added to the group`
+          : t`Member added successfully`
+      );
+    } catch (error) {
+      throw error; // Re-throw to keep dialog open
+    }
   };
 
   return (
@@ -190,8 +268,7 @@ export default function Page() {
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={async () => {
-          await contactGroupMembershipDeleteMutation(selectedMembership?.metadata);
-          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 2000));
+          await deleteMembershipMutation.mutateAsync(selectedMembership?.metadata);
           setSelectedMembership(null);
           toast.success(t`Member deleted successfully`);
         }}
@@ -199,22 +276,75 @@ export default function Page() {
 
       <DialogForm
         open={isAddMember}
-        onOpenChange={() => setIsAddMember(false)}
+        onOpenChange={(open) => {
+          if (!open) setContactSearch('');
+          setIsAddMember(open);
+        }}
         title={t`Add Member`}
         submitText={t`Add`}
         cancelText={t`Cancel`}
         onSubmit={handleAddMember}
         schema={addMemberSchema}
-        defaultValues={{ name: '' }}>
-        <Form.Autosearch
-          modal
-          field="name"
-          placeholder={t`Enter the full email to search...`}
-          options={contactOptions}
-          isLoading={contactsLoading}
-          onSearch={setContactSearch}
-          searchDebounceMs={500}
-        />
+        defaultValues={{
+          name: '',
+          create_new: false,
+          first_name: '',
+          last_name: '',
+          has_association: false,
+          subject: '',
+        }}>
+        {(form) => {
+          const createNew = form.watch('create_new');
+          const hasAssociation = form.watch('has_association');
+
+          return (
+            <>
+              <Form.Autosearch
+                modal
+                field="name"
+                placeholder={t`Search for an existing contact by email...`}
+                options={contactOptions}
+                isLoading={contactsLoading}
+                onSearch={(query) => {
+                  if (createNew) return;
+                  setContactSearch(query);
+                }}
+                disabled={createNew}
+                searchDebounceMs={500}
+                emptyMessage={
+                  isEmailNotFound
+                    ? t`No contacts found with this email. You can create a new contact below.`
+                    : t`No contacts found.`
+                }
+              />
+
+              {isEmailNotFound && (
+                <>
+                  <Form.Switch field="create_new" label={t`Create a new contact with this email`} />
+
+                  {createNew && (
+                    <>
+                      <Form.Input field="first_name" label={t`First name`} required />
+                      <Form.Input field="last_name" label={t`Last name`} required />
+
+                      <Form.Switch field="has_association" label={t`Associate with User`} />
+                      {hasAssociation && (
+                        <Form.Autosearch
+                          field="subject"
+                          placeholder={t`Enter the full email to search...`}
+                          options={userOptions}
+                          isLoading={usersLoading}
+                          onSearch={setUserSearch}
+                          searchDebounceMs={500}
+                        />
+                      )}
+                    </>
+                  )}
+                </>
+              )}
+            </>
+          );
+        }}
       </DialogForm>
 
       <DataTable.Client

@@ -32,6 +32,26 @@ Most UI requests follow this path:
 - Owns cache key shape and stale-time policy
 - Calls only API functions from `client/apis/**` (not generated SDK directly)
 
+#### Query ownership rule (important)
+
+- Default to **resource-owned hooks** in the corresponding resource query module.
+- Primary decision rule: place a hook by the endpoint/resource it calls (group/version/kind path ownership), not by which page currently uses it.
+- If a hook directly wraps one resource endpoint and has no feature-only behavior, it belongs to that resource query file.
+- Use feature query modules only for composition/orchestration.
+- Resource-owned hook modules map by resource:
+  - contacts -> `contact.queries.ts`
+  - users -> `user.queries.ts`
+  - projects -> `project.queries.ts`
+- Use **feature-owned hooks** only when the query is truly feature-specific:
+  - applies feature-only filters/selectors
+  - composes multiple resources for one feature screen
+  - needs feature-scoped cache keys/invalidation semantics
+
+Examples:
+
+- `useContactAllListQuery` belongs in `contact.queries.ts` (generic contact list).
+- `useFraudUserContactQuery(userId)` can live in `fraud.queries.ts` (Fraud-specific user-contact lookup selector).
+
 ### Server wrappers (`app/resources/request/server/**`)
 
 - For loader/server contexts requiring explicit token-aware calls
@@ -152,6 +172,35 @@ export const useThingListQuery = (params?: { limit?: number; cursor?: string }) 
   });
 ```
 
+## Mutation and invalidation pattern
+
+Use mutation hooks colocated with query keys in `queries/*.queries.ts` so invalidation behavior stays centralized.
+
+Preferred order:
+
+1. `useMutation` hook in query module calls API function
+2. `onSuccess` invalidates exported query keys via `queryClient.invalidateQueries(...)`
+3. route/component shows toast and handles UI state only
+
+Example:
+
+```ts
+export const useDeleteThingMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (name: string) => deleteThing(name),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: thingQueryKeys.all });
+    },
+  });
+};
+```
+
+Avoid in routes when possible:
+
+- `setTimeout(() => tableQuery.refetch(), ...)`
+- ad-hoc `invalidateQueries` keys that are not from exported `*QueryKeys`
+
 ## Template: Server request module
 
 ```ts
@@ -185,5 +234,6 @@ export default function ThingPage() {
 - Calling generated SDK directly from many route components
 - Mixing API request shape logic inside UI component render trees
 - Using unstable query keys
+- Duplicating generic resource hooks inside feature query modules
 - Duplicating form/table logic that already exists in shared modules
 - Re-implementing generated endpoints manually in request modules after SDK generation is available

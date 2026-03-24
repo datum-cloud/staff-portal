@@ -1,6 +1,5 @@
 import type { Route } from './+types/create';
-import { createFraudProvider } from '@/resources/request/client/apis/fraud.api';
-import { useFraudProviderListQuery } from '@/resources/request/client/queries/fraud.queries';
+import { useCreateFraudProviderMutation } from '@/resources/request/client';
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -35,25 +34,27 @@ type ProviderFormValues = z.infer<typeof providerSchema>;
 
 export default function Page() {
   const navigate = useNavigate();
-  const listQuery = useFraudProviderListQuery();
+  const createProviderMutation = useCreateFraudProviderMutation();
 
   const handleSubmit = async (values: ProviderFormValues) => {
-    await createFraudProvider(values.name, {
-      type: values.type,
-      failurePolicy: values.failurePolicy,
-      config: {
-        endpoint: values.endpoint || undefined,
-        credentialsRef: values.credentialsRefName
-          ? {
-              name: values.credentialsRefName,
-              namespace: values.credentialsRefNamespace || undefined,
-              accountIDKey: values.accountIDKey || undefined,
-              licenseKeyKey: values.licenseKeyKey || undefined,
-            }
-          : undefined,
+    await createProviderMutation.mutateAsync({
+      name: values.name,
+      spec: {
+        type: values.type,
+        failurePolicy: values.failurePolicy,
+        config: {
+          endpoint: values.endpoint || undefined,
+          credentialsRef: values.credentialsRefName
+            ? {
+                name: values.credentialsRefName,
+                namespace: values.credentialsRefNamespace || undefined,
+                accountIDKey: values.accountIDKey || undefined,
+                licenseKeyKey: values.licenseKeyKey || undefined,
+              }
+            : undefined,
+        },
       },
     });
-    await listQuery.refetch();
     toast.success(t`Provider created successfully`);
     navigate(fraudRoutes.providers.list());
   };

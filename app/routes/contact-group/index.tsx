@@ -4,7 +4,12 @@ import { BadgeCondition, BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
-import { contactGroupDeleteMutation, contactGroupListQuery } from '@/resources/request/client';
+import {
+  contactGroupDeleteMutation,
+  contactGroupQueryKeys,
+  useContactGroupListQuery,
+  useDeleteContactGroupMutation,
+} from '@/resources/request/client';
 import { contactGroupRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -15,7 +20,7 @@ import { toast } from '@datum-cloud/datum-ui/toast';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { ComMiloapisNotificationV1Alpha1ContactGroup } from '@openapi/notification.miloapis.com/v1alpha1';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { EditIcon, PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
@@ -37,10 +42,8 @@ export default function Page() {
     ComMiloapisNotificationV1Alpha1ContactGroup[] | null
   >(null);
 
-  const tableQuery = useQuery({
-    queryKey: ['contact-groups', 'list'],
-    queryFn: () => contactGroupListQuery(),
-  });
+  const tableQuery = useContactGroupListQuery();
+  const deleteContactGroupMutation = useDeleteContactGroupMutation();
 
   const actions: ActionItem<ComMiloapisNotificationV1Alpha1ContactGroup>[] = [
     {
@@ -118,8 +121,7 @@ export default function Page() {
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={async () => {
-          await contactGroupDeleteMutation(selectedContactGroup?.metadata);
-          await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 1000));
+          await deleteContactGroupMutation.mutateAsync(selectedContactGroup?.metadata);
           setSelectedContactGroup(null);
           toast.success(t`Contact Group deleted successfully`);
         }}
@@ -154,7 +156,7 @@ export default function Page() {
               await contactGroupDeleteMutation(row.metadata);
             },
             onComplete: () => {
-              queryClient.invalidateQueries({ queryKey: ['contact-groups'] });
+              queryClient.invalidateQueries({ queryKey: contactGroupQueryKeys.all });
             },
             completionActions: (_result, { failed, items: summaryItems }) => [
               ...(failed > 0

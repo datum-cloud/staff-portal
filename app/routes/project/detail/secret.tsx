@@ -1,13 +1,12 @@
 import { getProjectDetailMetadata, useProjectDetailData } from '../shared';
 import type { Route } from './+types/secret';
-import { metricsCreateMutation } from '@/resources/request/client';
+import { useProjectSecretMetricsQuery } from '@/resources/request/client';
 import { Secret } from '@/resources/schemas';
 import { metaObject } from '@/utils/helpers';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 
 export const handle = {
@@ -37,16 +36,7 @@ export default function Page() {
   const { project } = useProjectDetailData();
   const projectName = project?.metadata?.name ?? '';
 
-  const tableQuery = useQuery({
-    queryKey: ['projects', projectName, 'secrets', 'metrics'],
-    queryFn: () =>
-      metricsCreateMutation({
-        type: 'instant',
-        query: `datum_cloud_core_secret_info{resourcemanager_datumapis_com_project_name="${projectName}"}`,
-      }),
-    enabled: Boolean(projectName),
-    staleTime: 60 * 1000,
-  });
+  const tableQuery = useProjectSecretMetricsQuery(projectName);
 
   const rows = tableQuery.data?.data?.data?.result ?? [];
 

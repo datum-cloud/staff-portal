@@ -3,8 +3,10 @@ import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
-import { deleteFraudProvider } from '@/resources/request/client/apis/fraud.api';
-import { useFraudProviderListQuery } from '@/resources/request/client/queries/fraud.queries';
+import {
+  useDeleteFraudProviderMutation,
+  useFraudProviderListQuery,
+} from '@/resources/request/client';
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -32,6 +34,7 @@ export default function Page() {
   const navigate = useNavigate();
   const tableQuery = useFraudProviderListQuery();
   const [selectedProvider, setSelectedProvider] = useState<FraudProvider | null>(null);
+  const deleteProviderMutation = useDeleteFraudProviderMutation();
 
   const actions: ActionItem<FraudProvider>[] = [
     {
@@ -130,8 +133,7 @@ export default function Page() {
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={async () => {
-          await deleteFraudProvider(selectedProvider?.metadata?.name ?? '');
-          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
+          await deleteProviderMutation.mutateAsync(selectedProvider?.metadata?.name ?? '');
           setSelectedProvider(null);
           toast.success(t`Provider deleted successfully`);
         }}
