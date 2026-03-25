@@ -1,6 +1,7 @@
 import type { Route } from './+types/detail';
 import { BadgeState } from '@/components/badge';
 import { Chip } from '@/components/chip';
+import { SimpleTable } from '@/components/simple-table';
 import { DnsRecordStatusProbe } from '@/features/dns';
 import { authenticator } from '@/modules/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
@@ -9,7 +10,6 @@ import { projectDnsDetailQuery, projectDomainDetailQuery } from '@/resources/req
 import { DNSRecordFlattened } from '@/resources/schemas';
 import { useProjectDetailData } from '@/routes/project/shared';
 import { extractDataFromMatches, formatTTL, metaObject } from '@/utils/helpers';
-import { SimpleTable } from '@/components/simple-table';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
