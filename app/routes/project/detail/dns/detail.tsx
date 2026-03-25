@@ -9,9 +9,9 @@ import { projectDnsDetailQuery, projectDomainDetailQuery } from '@/resources/req
 import { DNSRecordFlattened } from '@/resources/schemas';
 import { useProjectDetailData } from '@/routes/project/shared';
 import { extractDataFromMatches, formatTTL, metaObject } from '@/utils/helpers';
+import { SimpleTable } from '@/components/simple-table';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
-import { SimpleTable } from '@datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisNetworkingDnsV1Alpha1DnsZone } from '@openapi/dns.networking.miloapis.com/v1alpha1';

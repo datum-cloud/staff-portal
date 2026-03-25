@@ -1,8 +1,8 @@
 import AppActionBar from '@/components/app-actiobar';
 import AppNavigation from '@/components/app-navigation';
 import { activityRoutes } from '@/utils/config/routes.config';
+import { Button } from '@datum-cloud/datum-ui/button';
 import { Tabs, TabsList, TabsLinkTrigger } from '@datum-cloud/datum-ui/tabs';
-import { Button } from '@datum-ui/button';
 import { t } from '@lingui/core/macro';
 import { Share2, Check } from 'lucide-react';
 import { useState } from 'react';
