@@ -1,6 +1,7 @@
 import type { Route } from './+types/detail';
 import { BadgeState } from '@/components/badge';
 import { Chip } from '@/components/chip';
+import { SimpleTable } from '@/components/simple-table';
 import { DnsRecordStatusProbe } from '@/features/dns';
 import { authenticator } from '@/modules/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
@@ -11,7 +12,6 @@ import { useProjectDetailData } from '@/routes/project/shared';
 import { extractDataFromMatches, formatTTL, metaObject } from '@/utils/helpers';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
-import { SimpleTable } from '@datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisNetworkingDnsV1Alpha1DnsZone } from '@openapi/dns.networking.miloapis.com/v1alpha1';

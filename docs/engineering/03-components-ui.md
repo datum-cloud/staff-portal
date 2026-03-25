@@ -68,7 +68,7 @@ Keep route files as orchestrators and move form internals to feature components.
 
 ## Data Table Pattern
 
-For complex list screens, follow `@datum-ui/data-table` and TanStack pattern:
+For complex list screens, follow `@datum-cloud/datum-ui/data-table` and TanStack pattern:
 
 - query params/state management
 - pagination/cursor behavior

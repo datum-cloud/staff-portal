@@ -81,7 +81,7 @@ function App() {
         <Meta />
         <Links />
       </head>
-      <body className="bg-background theme-alpha overscroll-none font-sans antialiased">
+      <body className="bg-background overscroll-none font-sans antialiased">
         <Outlet />
 
         <Toaster
@@ -157,7 +157,7 @@ function ErrorLayout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="bg-background theme-alpha overscroll-none font-sans antialiased">
+      <body className="bg-background overscroll-none font-sans antialiased">
         <div className="flex min-h-screen items-center justify-center">{children}</div>
 
         <ScrollRestoration nonce={nonce} />

@@ -1,4 +1,3 @@
-import { isExpiredCursorError } from '@/modules/datum-ui/data-table/lib/data-table';
 import { logger } from '@/utils/logger';
 import { captureApiError } from '@/utils/logger';
 import { toast } from '@datum-cloud/datum-ui/toast';
@@ -41,6 +40,42 @@ const onResponse = (response: AxiosResponse): AxiosResponse => {
   return response;
 };
 
+// Extract error message from response
+const getErrorMessage = (error: AxiosError): { message: string; requestId?: string } => {
+  // Try to get error message from response data
+  if (error.response?.data) {
+    const data = error.response.data as any;
+
+    // Handle different response data structures
+    if (typeof data === 'string') {
+      return { message: data };
+    }
+
+    if (typeof data === 'object') {
+      const requestId = data.requestId;
+
+      // Common error response formats - prioritize 'error' field for your API format
+      if (data.error) return { message: data.error, requestId };
+      if (data.message) return { message: data.message, requestId };
+      if (data.detail) return { message: data.detail, requestId };
+      if (data.description) return { message: data.description, requestId };
+
+      // If it's an object with error details, try to extract meaningful message
+      const errorKeys = Object.keys(data).filter((key) =>
+        ['message', 'error', 'detail', 'description', 'reason', 'cause'].includes(key)
+      );
+      if (errorKeys.length > 0) {
+        return { message: data[errorKeys[0]], requestId };
+      }
+    }
+  }
+
+  // Fallback to status text or generic message
+  return {
+    message: error.response?.statusText || error.message || 'An unexpected error occurred',
+  };
+};
+
 const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   // console.error(`[response error] [${JSON.stringify(error)}]`);
 
@@ -52,42 +87,6 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
       return Promise.reject(error);
     }
   }
-
-  // Extract error message from response
-  const getErrorMessage = (error: AxiosError): { message: string; requestId?: string } => {
-    // Try to get error message from response data
-    if (error.response?.data) {
-      const data = error.response.data as any;
-
-      // Handle different response data structures
-      if (typeof data === 'string') {
-        return { message: data };
-      }
-
-      if (typeof data === 'object') {
-        const requestId = data.requestId;
-
-        // Common error response formats - prioritize 'error' field for your API format
-        if (data.error) return { message: data.error, requestId };
-        if (data.message) return { message: data.message, requestId };
-        if (data.detail) return { message: data.detail, requestId };
-        if (data.description) return { message: data.description, requestId };
-
-        // If it's an object with error details, try to extract meaningful message
-        const errorKeys = Object.keys(data).filter((key) =>
-          ['message', 'error', 'detail', 'description', 'reason', 'cause'].includes(key)
-        );
-        if (errorKeys.length > 0) {
-          return { message: data[errorKeys[0]], requestId };
-        }
-      }
-    }
-
-    // Fallback to status text or generic message
-    return {
-      message: error.response?.statusText || error.message || 'An unexpected error occurred',
-    };
-  };
 
   const errorInfo = getErrorMessage(error);
 
@@ -103,14 +102,9 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
     responseData: error.response?.data,
   });
 
-  // Check if this is an expired cursor error (410) - these are handled automatically by data tables
-  const isExpiredCursor = isExpiredCursorError(error);
-  // Skip toast for expired cursor errors - they're handled automatically by data tables
-  if (!isExpiredCursor) {
-    // For all other errors, show toast with meaningful info
-    const title = errorInfo.requestId ? `Request ID: ${errorInfo.requestId}` : 'Error';
-    toast.error(title, { description: errorInfo.message });
-  }
+  // For all other errors, show toast with meaningful info
+  const title = errorInfo.requestId ? `Request ID: ${errorInfo.requestId}` : 'Error';
+  toast.error(title, { description: errorInfo.message });
 
   return Promise.reject(error);
 };

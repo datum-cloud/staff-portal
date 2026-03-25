@@ -1,4 +1,3 @@
-import { getCommonPinningStyles } from '../lib/data-table';
 import { cn } from '@/modules/shadcn/lib/utils';
 import {
   Table,
@@ -19,7 +18,7 @@ import {
 import type * as React from 'react';
 import { useState } from 'react';
 
-interface SimpleTableProps<TData> extends React.ComponentProps<'div'> {
+export interface SimpleTableProps<TData> extends React.ComponentProps<'div'> {
   columns: ColumnDef<TData, any>[];
   data: TData[];
   enableSorting?: boolean;
@@ -27,6 +26,10 @@ interface SimpleTableProps<TData> extends React.ComponentProps<'div'> {
   emptyMessage?: React.ReactNode;
 }
 
+/**
+ * Static TanStack table (no DataTable store). Used for small in-card lists
+ * where full DataTable.Client is unnecessary (e.g. DNS nameservers).
+ */
 export function SimpleTable<TData>({
   columns,
   data,
@@ -65,9 +68,6 @@ export function SimpleTable<TData>({
                     header.column.id === 'actions' && 'bg-background sticky right-0 z-10',
                     enableSorting && header.column.getCanSort() && 'cursor-pointer select-none'
                   )}
-                  style={{
-                    ...getCommonPinningStyles({ column: header.column }),
-                  }}
                   onClick={
                     enableSorting && header.column.getCanSort()
                       ? header.column.getToggleSortingHandler()
@@ -90,10 +90,7 @@ export function SimpleTable<TData>({
                     key={cell.id}
                     className={cn(
                       cell.column.id === 'actions' && 'bg-background sticky right-0 z-10'
-                    )}
-                    style={{
-                      ...getCommonPinningStyles({ column: cell.column }),
-                    }}>
+                    )}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
