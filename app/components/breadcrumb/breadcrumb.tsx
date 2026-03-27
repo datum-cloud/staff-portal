@@ -6,7 +6,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
   Breadcrumb as BreadcrumbUI,
-} from '@/modules/shadcn/ui/breadcrumb';
+} from '@datum-cloud/datum-ui/breadcrumb';
 import { ChevronRight } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router';

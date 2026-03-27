@@ -1,8 +1,8 @@
 import { getContactGroupDetailMetadata, useContactGroupDetailData } from '../shared';
 import type { Route } from './+types/index';
 import { ContactGroupForm } from '@/features/contact-group';
-import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { metaObject } from '@/utils/helpers';
+import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { Trans } from '@lingui/react/macro';
 

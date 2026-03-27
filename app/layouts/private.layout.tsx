@@ -3,11 +3,11 @@ import { AppSidebar } from '@/components/app-sidebar';
 import AppToolbar from '@/components/app-toolbar';
 import AppTopbar from '@/components/app-topbar';
 import { authenticator } from '@/modules/auth';
-import { SidebarInset, SidebarProvider } from '@/modules/shadcn/ui/sidebar';
 import { AppProvider } from '@/providers/app.provider';
 import { userDetailQuery } from '@/resources/request/server';
 import { getLoginUrl, getRedirectToPath } from '@/utils/cookies';
 import { metaObject } from '@/utils/helpers';
+import { SidebarInset, SidebarProvider } from '@datum-cloud/datum-ui/sidebar';
 import { TaskQueueProvider } from '@datum-cloud/datum-ui/task-queue';
 import { data, Outlet, redirect, useLoaderData } from 'react-router';
 

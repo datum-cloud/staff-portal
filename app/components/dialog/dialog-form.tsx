@@ -1,12 +1,5 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/modules/shadcn/ui/dialog';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Dialog } from '@datum-cloud/datum-ui/dialog';
 import { Form } from '@datum-ui/form';
 import { ReactNode, useState } from 'react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
@@ -69,11 +62,8 @@ export default function DialogForm<TValues extends FieldValues>({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md" showCloseButton={false}>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          {description && <DialogDescription>{description}</DialogDescription>}
-        </DialogHeader>
+      <Dialog.Content className="sm:max-w-md">
+        <Dialog.Header title={title} description={description} />
 
         <Form
           schema={schema}
@@ -83,11 +73,11 @@ export default function DialogForm<TValues extends FieldValues>({
           className="space-y-4">
           {(form) => (
             <>
-              <div className="space-y-4">
+              <Dialog.Body className="space-y-4 px-5">
                 {typeof children === 'function' ? children(form) : children}
-              </div>
+              </Dialog.Body>
 
-              <DialogFooter className="gap-2">
+              <Dialog.Footer className="gap-2">
                 <Button
                   type="tertiary"
                   theme="borderless"
@@ -106,11 +96,11 @@ export default function DialogForm<TValues extends FieldValues>({
                   className="flex-1 sm:flex-none">
                   <span>{submitText}</span>
                 </Button>
-              </DialogFooter>
+              </Dialog.Footer>
             </>
           )}
         </Form>
-      </DialogContent>
+      </Dialog.Content>
     </Dialog>
   );
 }

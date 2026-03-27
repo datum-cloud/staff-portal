@@ -1,7 +1,7 @@
 import type { Route } from './+types/oauth-error';
 import { LogoIcon } from '@/components/logo/logo-icon';
-import { Card, CardContent } from '@/modules/shadcn/ui/card';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { HomeIcon, RefreshCcwIcon } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router';
 
@@ -54,7 +54,7 @@ export default function OAuthError() {
               </Button>
             </Link>
             <Link to="/login">
-              <Button type="secondary" theme="outline" size="small">
+              <Button type="secondary" size="small">
                 <RefreshCcwIcon className="size-4" />
                 Try Again
               </Button>

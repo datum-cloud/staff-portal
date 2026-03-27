@@ -1,8 +1,6 @@
 'use client';
 
 import { useFormContext } from './form-context';
-import { cn } from '@/modules/shadcn/lib/utils';
-import { Button } from '@/modules/shadcn/ui/button';
 import {
   FormControl,
   FormDescription,
@@ -11,7 +9,9 @@ import {
   FormLabel,
   FormMessage,
 } from '@/modules/shadcn/ui/form';
-import { Input } from '@/modules/shadcn/ui/input';
+import { Button } from '@datum-cloud/datum-ui/button';
+import { Input } from '@datum-cloud/datum-ui/input';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { SearchIcon, X } from 'lucide-react';
 import * as React from 'react';
 
@@ -228,9 +228,9 @@ export const FormTransfer: React.FC<FormTransferProps> = ({
                           </span>
                           {filteredSourceOptions.length > 0 && (
                             <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
+                              htmlType="button"
+                              theme="borderless"
+                              size="small"
                               onClick={handleSelectAll}
                               disabled={disabled || allSelected}>
                               Select All
@@ -370,9 +370,9 @@ export const FormTransfer: React.FC<FormTransferProps> = ({
                           </span>
                           {selectedOptions.length > 0 && (
                             <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
+                              htmlType="button"
+                              theme="borderless"
+                              size="small"
                               onClick={handleDeselectAll}
                               disabled={disabled}>
                               Clear All
@@ -411,9 +411,9 @@ export const FormTransfer: React.FC<FormTransferProps> = ({
                                 )}
                               </div>
                               <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
+                                htmlType="button"
+                                theme="borderless"
+                                size="small"
                                 className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100"
                                 onClick={() => handleDeselect(option)}
                                 disabled={disabled}>

@@ -1,4 +1,4 @@
-import { cn } from '@/modules/shadcn/lib/utils';
+import { cn } from '@datum-cloud/datum-ui/utils';
 
 interface DividerProps extends React.HTMLAttributes<HTMLDivElement> {
   orientation?: 'horizontal' | 'vertical';

@@ -1,7 +1,6 @@
-import { cn } from '@/modules/shadcn/lib/utils';
-import { Badge, badgeVariants } from '@/modules/shadcn/ui/badge';
-import { Popover, PopoverContent, PopoverTrigger } from '@/modules/shadcn/ui/popover';
-import { VariantProps } from 'class-variance-authority';
+import { Badge, type BadgeProps } from '@datum-cloud/datum-ui/badge';
+import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import * as React from 'react';
 
 export type ChipItem = string | React.ReactNode;
@@ -12,7 +11,7 @@ export interface ChipProps {
   items: ChipItem[];
   maxVisible?: number;
   size?: ChipSize;
-  variant?: VariantProps<typeof badgeVariants>['variant'];
+  variant?: BadgeProps['type'] | 'outline';
   renderChip?: (item: ChipItem, index: number) => React.ReactNode;
   overflowLabel?: (hiddenCount: number) => string;
   className?: string;
@@ -55,7 +54,8 @@ export function Chip({
     return (
       <Badge
         key={index}
-        variant={variant}
+        type={variant === 'outline' ? 'secondary' : variant}
+        theme={variant === 'outline' ? 'outline' : undefined}
         className={cn(sizeClassNames[size], isClickable ? 'cursor-pointer' : 'cursor-default')}
         onClick={(event) => {
           event.stopPropagation();
@@ -108,7 +108,10 @@ export function Chip({
               setOpen((prev) => !prev);
             }
           }}>
-          <Badge variant={variant} className={sizeClassNames[size]}>
+          <Badge
+            type={variant === 'outline' ? 'secondary' : variant}
+            theme={variant === 'outline' ? 'outline' : undefined}
+            className={sizeClassNames[size]}>
             {overflowLabel(hiddenCount)}
           </Badge>
         </button>

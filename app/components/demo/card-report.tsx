@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/modules/shadcn/ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
 import {
   Card,
   CardContent,
@@ -8,18 +8,18 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/modules/shadcn/ui/card';
-import { Input } from '@/modules/shadcn/ui/input';
-import { Label } from '@/modules/shadcn/ui/label';
+} from '@datum-cloud/datum-ui/card';
+import { Col, Row } from '@datum-cloud/datum-ui/grid';
+import { Input } from '@datum-cloud/datum-ui/input';
+import { Label } from '@datum-cloud/datum-ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/modules/shadcn/ui/select';
-import { Textarea } from '@/modules/shadcn/ui/textarea';
-import { Col, Row } from '@datum-cloud/datum-ui/grid';
+} from '@datum-cloud/datum-ui/select';
+import { Textarea } from '@datum-cloud/datum-ui/textarea';
 import * as React from 'react';
 
 export function CardsReportIssue() {
@@ -84,10 +84,10 @@ export function CardsReportIssue() {
         </div>
       </CardContent>
       <CardFooter className="justify-end gap-2">
-        <Button variant="ghost" size="sm">
+        <Button theme="borderless" size="small">
           Cancel
         </Button>
-        <Button size="sm">Submit</Button>
+        <Button size="small">Submit</Button>
       </CardFooter>
     </Card>
   );

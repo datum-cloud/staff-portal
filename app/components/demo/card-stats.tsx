@@ -1,15 +1,14 @@
 'use client';
 
-import { Button } from '@/modules/shadcn/ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/modules/shadcn/ui/card';
-import { ChartConfig, ChartContainer } from '@/modules/shadcn/ui/chart';
+} from '@datum-cloud/datum-ui/card';
+import { ChartConfig, ChartContainer } from '@datum-cloud/datum-ui/chart';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { Area, AreaChart, Line, LineChart } from 'recharts';
 
@@ -95,15 +94,15 @@ export function CardsStats() {
       </Col>
       <Col span={24} sm={12} lg={24} xl={12}>
         <Card className="pb-0 lg:hidden xl:flex">
-          <CardHeader>
-            <CardDescription>Subscriptions</CardDescription>
-            <CardTitle className="text-3xl">+2,350</CardTitle>
-            <CardDescription>+180.1% from last month</CardDescription>
-            <CardAction>
-              <Button variant="ghost" size="sm">
-                View More
-              </Button>
-            </CardAction>
+          <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div className="min-w-0 space-y-1.5">
+              <CardDescription>Subscriptions</CardDescription>
+              <CardTitle className="text-3xl">+2,350</CardTitle>
+              <CardDescription>+180.1% from last month</CardDescription>
+            </div>
+            <Button theme="borderless" size="small" className="shrink-0">
+              View More
+            </Button>
           </CardHeader>
           <CardContent className="mt-auto max-h-[124px] flex-1 p-0">
             <ChartContainer config={chartConfig} className="size-full">

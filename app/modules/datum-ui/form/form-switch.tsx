@@ -7,7 +7,7 @@ import {
   FormMessage,
   FormDescription,
 } from '@/modules/shadcn/ui/form';
-import { Switch } from '@/modules/shadcn/ui/switch';
+import { Switch } from '@datum-cloud/datum-ui/switch';
 import { ComponentProps } from 'react';
 
 interface FormSwitchProps extends Omit<ComponentProps<typeof Switch>, 'name'> {

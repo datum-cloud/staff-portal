@@ -7,14 +7,6 @@ import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
 import { useEnv } from '@/hooks';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/modules/shadcn/ui/card';
-import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
 import { useApp } from '@/providers/app.provider';
 import {
   useUserDeactivationQuery,
@@ -25,6 +17,14 @@ import {
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@datum-cloud/datum-ui/card';
+import { Table, TableBody, TableCell, TableRow } from '@datum-cloud/datum-ui/table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Form } from '@datum-ui/form';
@@ -190,7 +190,6 @@ export default function Page() {
                 </Button>
                 <Button
                   theme="outline"
-                  type="danger"
                   size="small"
                   icon={<XIcon size={16} />}
                   onClick={() => setRejectDialogOpen(true)}>
@@ -265,9 +264,7 @@ export default function Page() {
                     </Text>
                   </TableCell>
                   <TableCell>
-                    <div className="flex flex-col gap-2">
-                      <BadgeState state={data?.status?.registrationApproval ?? 'Unknown'} />
-                    </div>
+                    <BadgeState state={data?.status?.registrationApproval ?? 'Unknown'} />
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -277,9 +274,7 @@ export default function Page() {
                     </Text>
                   </TableCell>
                   <TableCell>
-                    <div className="flex flex-col gap-2">
-                      <BadgeState state={data?.status?.state ?? 'Active'} />
-                    </div>
+                    <BadgeState state={data?.status?.state ?? 'Active'} />
                   </TableCell>
                 </TableRow>
                 <TableRow>

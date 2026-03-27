@@ -1,8 +1,8 @@
 import { DateRangePicker, DateTime } from '@/components/date';
-import { Badge } from '@/modules/shadcn/ui/badge';
 import { useApp } from '@/providers/app.provider';
 import { activityListQuery } from '@/resources/request/client';
 import { ActivityListResponse, ActivityLogEntry, ActivityQueryParams } from '@/resources/schemas';
+import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Button } from '@datum-cloud/datum-ui/button';
 import {
   DataTable as DatumDataTable,
@@ -123,7 +123,7 @@ function createColumns(user?: { metadata?: { name?: string } }) {
         return (
           <div className="flex items-center justify-between gap-2">
             <span>{userName}</span>
-            {isCurrentUser && <Badge variant="outline">You</Badge>}
+            {isCurrentUser && <Badge theme="outline">You</Badge>}
           </div>
         );
       },

@@ -13,7 +13,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/modules/shadcn/ui/select';
+} from '@datum-cloud/datum-ui/select';
 import { ComponentProps } from 'react';
 
 interface SelectOption {

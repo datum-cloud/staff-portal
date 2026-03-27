@@ -7,7 +7,7 @@ import {
   FormMessage,
   FormDescription,
 } from '@/modules/shadcn/ui/form';
-import { RadioGroup, RadioGroupItem } from '@/modules/shadcn/ui/radio-group';
+import { RadioGroup, RadioGroupItem } from '@datum-cloud/datum-ui/radio-group';
 import { ComponentProps, createContext, useContext, ReactNode } from 'react';
 
 interface RadioGroupContextValue {

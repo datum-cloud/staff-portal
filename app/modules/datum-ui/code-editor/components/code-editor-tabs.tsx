@@ -1,7 +1,7 @@
 import { isValidJson, isValidYaml, jsonToYaml, yamlToJson } from '../lib/editor';
 import { CodeEditor } from './code-editor';
 import { EditorLanguage, CodeEditorTabsProps } from './code-editor.types';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/modules/shadcn/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@datum-cloud/datum-ui/tabs';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { useEffect, useState } from 'react';
 

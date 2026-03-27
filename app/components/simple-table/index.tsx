@@ -1,4 +1,3 @@
-import { cn } from '@/modules/shadcn/lib/utils';
 import {
   Table,
   TableBody,
@@ -6,7 +5,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/modules/shadcn/ui/table';
+} from '@datum-cloud/datum-ui/table';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import {
   ColumnDef,
   flexRender,
