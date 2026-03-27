@@ -1,21 +1,21 @@
 'use client';
 
 import { SearchResultGroup } from './search-result-group';
-import { cn } from '@/modules/shadcn/lib/utils';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from '@/modules/shadcn/ui/command';
-import { Input } from '@/modules/shadcn/ui/input';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import {
   searchOrganizationsQuery,
   searchProjectsQuery,
   searchUsersQuery,
 } from '@/resources/request/client';
 import { routes } from '@/utils/config/routes.config';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from '@datum-cloud/datum-ui/command';
+import { Input } from '@datum-cloud/datum-ui/input';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';

@@ -1,5 +1,5 @@
 import { CodeEditorProps } from './code-editor.types';
-import { cn } from '@/modules/shadcn/lib/utils';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { useTheme } from '@datum-cloud/datum-ui/theme';
 import Editor, { Monaco } from '@monaco-editor/react';
 import { editor } from 'monaco-editor';

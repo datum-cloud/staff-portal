@@ -1,12 +1,12 @@
-import { cn } from '@/modules/shadcn/lib/utils';
-import { Button } from '@/modules/shadcn/ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/modules/shadcn/ui/dropdown-menu';
+} from '@datum-cloud/datum-ui/dropdown';
 import { useTheme } from '@datum-cloud/datum-ui/theme';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { Trans } from '@lingui/react/macro';
 import { CheckIcon, MoonIcon, SunIcon, MonitorIcon } from 'lucide-react';
 import { useEffect } from 'react';
@@ -25,7 +25,7 @@ function ThemeSwitcher() {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="scale-95 rounded-full">
+        <Button theme="borderless" size="icon" className="scale-95 rounded-full">
           <SunIcon className="size-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
           <MoonIcon className="absolute size-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
           <span className="sr-only">Toggle theme</span>

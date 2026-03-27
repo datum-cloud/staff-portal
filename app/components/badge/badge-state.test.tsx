@@ -3,7 +3,7 @@ import { render, screen } from '@/tests/setup/unit/test.utils';
 import { describe, expect, test, vi, beforeEach } from 'vitest';
 
 // Mock the Badge component to inspect variant and classes
-vi.mock('@/modules/shadcn/ui/badge', () => ({
+vi.mock('@datum-cloud/datum-ui/badge', () => ({
   Badge: ({ children, variant, className }: any) => (
     <div data-testid="badge" data-variant={variant} className={className}>
       {children}

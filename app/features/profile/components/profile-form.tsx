@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { useApp } from '@/providers/app.provider';
 import { userUpdateMutation } from '@/resources/request/client';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Form } from '@datum-ui/form';
 import { Trans, useLingui } from '@lingui/react/macro';

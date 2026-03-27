@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/modules/shadcn/ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
 import {
   Card,
   CardContent,
@@ -8,10 +8,10 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/modules/shadcn/ui/card';
-import { Input } from '@/modules/shadcn/ui/input';
-import { Label } from '@/modules/shadcn/ui/label';
+} from '@datum-cloud/datum-ui/card';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
+import { Input } from '@datum-cloud/datum-ui/input';
+import { Label } from '@datum-cloud/datum-ui/label';
 
 export function CardsCreateAccount() {
   return (
@@ -23,7 +23,7 @@ export function CardsCreateAccount() {
       <CardContent className="flex flex-col gap-4">
         <Row gutter={[24, 24]}>
           <Col span={12}>
-            <Button variant="outline">
+            <Button theme="outline">
               <svg viewBox="0 0 438.549 438.549">
                 <path
                   fill="currentColor"
@@ -33,7 +33,7 @@ export function CardsCreateAccount() {
             </Button>
           </Col>
           <Col span={12}>
-            <Button variant="outline">
+            <Button theme="outline">
               <svg role="img" viewBox="0 0 24 24">
                 <path
                   fill="currentColor"

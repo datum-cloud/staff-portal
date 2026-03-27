@@ -1,9 +1,9 @@
 'use client';
 
-import { cn } from '@/modules/shadcn/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '@/modules/shadcn/ui/avatar';
-import { Button } from '@/modules/shadcn/ui/button';
-import { Card, CardContent, CardFooter, CardHeader } from '@/modules/shadcn/ui/card';
+import { cn } from '@datum-cloud/datum-ui/utils';
+import { Avatar, AvatarFallback, AvatarImage } from '@datum-cloud/datum-ui/avatar';
+import { Button } from '@datum-cloud/datum-ui/button';
+import { Card, CardContent, CardFooter, CardHeader } from '@datum-cloud/datum-ui/card';
 import {
   Command,
   CommandEmpty,
@@ -11,16 +11,9 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/modules/shadcn/ui/command';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/modules/shadcn/ui/dialog';
-import { Input } from '@/modules/shadcn/ui/input';
+} from '@datum-cloud/datum-ui/command';
+import { Dialog } from '@datum-cloud/datum-ui/dialog';
+import { Input } from '@datum-cloud/datum-ui/input';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { ArrowUpIcon, CheckIcon, PlusIcon } from 'lucide-react';
 import * as React from 'react';
@@ -97,7 +90,7 @@ export function CardsChat() {
           <Tooltip message="New message">
             <Button
               size="icon"
-              variant="secondary"
+              type="secondary"
               className="ml-auto size-8 rounded-full"
               onClick={() => setOpen(true)}>
               <PlusIcon />
@@ -145,7 +138,7 @@ export function CardsChat() {
               onChange={(event) => setInput(event.target.value)}
             />
             <Button
-              type="submit"
+              htmlType="submit"
               size="icon"
               className="absolute top-1/2 right-2 size-6 -translate-y-1/2 rounded-full"
               disabled={inputLength === 0}>
@@ -156,51 +149,52 @@ export function CardsChat() {
         </CardFooter>
       </Card>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="gap-0 p-0 outline-none">
-          <DialogHeader className="px-4 pt-5 pb-4">
-            <DialogTitle>New message</DialogTitle>
-            <DialogDescription>
-              Invite a user to this thread. This will create a new group message.
-            </DialogDescription>
-          </DialogHeader>
-          <Command className="overflow-hidden rounded-t-none border-t bg-transparent">
-            <CommandInput placeholder="Search user..." />
-            <CommandList>
-              <CommandEmpty>No users found.</CommandEmpty>
-              <CommandGroup>
-                {users.map((user) => (
-                  <CommandItem
-                    key={user.email}
-                    data-active={selectedUsers.includes(user)}
-                    className="data-[active=true]:opacity-50"
-                    onSelect={() => {
-                      if (selectedUsers.includes(user)) {
-                        return setSelectedUsers(
-                          selectedUsers.filter((selectedUser) => selectedUser !== user)
-                        );
-                      }
+        <Dialog.Content className="gap-0 p-0 outline-none">
+          <Dialog.Header
+            title="New message"
+            description="Invite a user to this thread. This will create a new group message."
+            className="px-4 pt-5 pb-4"
+          />
+          <Dialog.Body className="py-0">
+            <Command className="overflow-hidden rounded-t-none border-t bg-transparent">
+              <CommandInput placeholder="Search user..." />
+              <CommandList>
+                <CommandEmpty>No users found.</CommandEmpty>
+                <CommandGroup>
+                  {users.map((user) => (
+                    <CommandItem
+                      key={user.email}
+                      data-active={selectedUsers.includes(user)}
+                      className="data-[active=true]:opacity-50"
+                      onSelect={() => {
+                        if (selectedUsers.includes(user)) {
+                          return setSelectedUsers(
+                            selectedUsers.filter((selectedUser) => selectedUser !== user)
+                          );
+                        }
 
-                      return setSelectedUsers(
-                        [...users].filter((u) => [...selectedUsers, user].includes(u))
-                      );
-                    }}>
-                    <Avatar className="border">
-                      <AvatarImage src={user.avatar} alt="Image" />
-                      <AvatarFallback>{user.name[0]}</AvatarFallback>
-                    </Avatar>
-                    <div className="ml-2">
-                      <p className="text-sm leading-none font-medium">{user.name}</p>
-                      <p className="text-muted-foreground text-sm">{user.email}</p>
-                    </div>
-                    {selectedUsers.includes(user) ? (
-                      <CheckIcon className="text-primary ml-auto flex size-4" />
-                    ) : null}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-          <DialogFooter className="flex items-center border-t p-4 sm:justify-between">
+                        return setSelectedUsers(
+                          [...users].filter((u) => [...selectedUsers, user].includes(u))
+                        );
+                      }}>
+                      <Avatar className="border">
+                        <AvatarImage src={user.avatar} alt="Image" />
+                        <AvatarFallback>{user.name[0]}</AvatarFallback>
+                      </Avatar>
+                      <div className="ml-2">
+                        <p className="text-sm leading-none font-medium">{user.name}</p>
+                        <p className="text-muted-foreground text-sm">{user.email}</p>
+                      </div>
+                      {selectedUsers.includes(user) ? (
+                        <CheckIcon className="text-primary ml-auto flex size-4" />
+                      ) : null}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </Dialog.Body>
+          <Dialog.Footer className="flex items-center border-t p-4 sm:justify-between">
             {selectedUsers.length > 0 ? (
               <div className="flex -space-x-2 overflow-hidden">
                 {selectedUsers.map((user) => (
@@ -215,14 +209,14 @@ export function CardsChat() {
             )}
             <Button
               disabled={selectedUsers.length < 2}
-              size="sm"
+              size="small"
               onClick={() => {
                 setOpen(false);
               }}>
               Continue
             </Button>
-          </DialogFooter>
-        </DialogContent>
+          </Dialog.Footer>
+        </Dialog.Content>
       </Dialog>
     </>
   );

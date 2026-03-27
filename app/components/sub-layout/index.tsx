@@ -1,6 +1,6 @@
 import { SidebarMenuComponent } from './sidebar-menu';
 import AppActionBar from '@/components/app-actiobar';
-import { cn } from '@/modules/shadcn/lib/utils';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import * as React from 'react';
 
 interface SubLayoutProps extends React.ComponentProps<'div'> {

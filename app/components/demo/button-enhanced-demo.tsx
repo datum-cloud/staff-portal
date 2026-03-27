@@ -1,11 +1,11 @@
+import { Button } from '@datum-cloud/datum-ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/modules/shadcn/ui/card';
-import { Button } from '@datum-cloud/datum-ui/button';
+} from '@datum-cloud/datum-ui/card';
 import { Download, Heart, Plus, Settings, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -102,12 +102,7 @@ export default function ButtonDemo() {
                 size="small"
                 icon={<Plus className="h-3 w-3" />}
               />
-              <Button
-                type="secondary"
-                theme="outline"
-                size="small"
-                icon={<Download className="h-3 w-3" />}
-              />
+              <Button type="secondary" size="small" icon={<Download className="h-3 w-3" />} />
               <Button
                 type="tertiary"
                 theme="light"
@@ -144,12 +139,7 @@ export default function ButtonDemo() {
                 size="default"
                 icon={<Plus className="h-4 w-4" />}
               />
-              <Button
-                type="secondary"
-                theme="outline"
-                size="default"
-                icon={<Download className="h-4 w-4" />}
-              />
+              <Button type="secondary" size="default" icon={<Download className="h-4 w-4" />} />
               <Button
                 type="tertiary"
                 theme="light"
@@ -186,12 +176,7 @@ export default function ButtonDemo() {
                 size="large"
                 icon={<Plus className="h-5 w-5" />}
               />
-              <Button
-                type="secondary"
-                theme="outline"
-                size="large"
-                icon={<Download className="h-5 w-5" />}
-              />
+              <Button type="secondary" size="large" icon={<Download className="h-5 w-5" />} />
               <Button
                 type="tertiary"
                 theme="light"
@@ -232,7 +217,6 @@ export default function ButtonDemo() {
               />
               <Button
                 type="secondary"
-                theme="outline"
                 size="default"
                 icon={<Download className="h-4 w-4" />}
                 loading={loading.iconDefault}
@@ -298,7 +282,6 @@ export default function ButtonDemo() {
             </Button>
             <Button
               type="danger"
-              theme="outline"
               loading={loading.danger}
               onClick={() => handleLoadingDemo('danger')}>
               {loading.danger ? 'Deleting...' : 'Delete'}
@@ -323,7 +306,7 @@ export default function ButtonDemo() {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Button block>Full Width Primary</Button>
-            <Button type="secondary" theme="outline" block>
+            <Button type="secondary" block>
               Full Width Secondary
             </Button>
             <Button type="danger" theme="light" block>
@@ -345,7 +328,7 @@ export default function ButtonDemo() {
             <Button type="secondary" disabled>
               Disabled Secondary
             </Button>
-            <Button type="danger" theme="outline" disabled>
+            <Button type="danger" disabled>
               Disabled Danger
             </Button>
             <Button icon={<Settings className="h-4 w-4" />} disabled>

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/modules/shadcn/ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
 import {
   Card,
   CardContent,
@@ -8,12 +8,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/modules/shadcn/ui/card';
-import { Checkbox } from '@/modules/shadcn/ui/checkbox';
-import { Input } from '@/modules/shadcn/ui/input';
-import { Label } from '@/modules/shadcn/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/modules/shadcn/ui/radio-group';
-import { Textarea } from '@/modules/shadcn/ui/textarea';
+} from '@datum-cloud/datum-ui/card';
+import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
+import { Input } from '@datum-cloud/datum-ui/input';
+import { Label } from '@datum-cloud/datum-ui/label';
+import { RadioGroup, RadioGroupItem } from '@datum-cloud/datum-ui/radio-group';
+import { Textarea } from '@datum-cloud/datum-ui/textarea';
 
 const plans = [
   {
@@ -109,10 +109,10 @@ export function CardsForms() {
         </div>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="outline" size="sm">
+        <Button theme="outline" size="small">
           Cancel
         </Button>
-        <Button size="sm">Upgrade Plan</Button>
+        <Button size="small">Upgrade Plan</Button>
       </CardFooter>
     </Card>
   );

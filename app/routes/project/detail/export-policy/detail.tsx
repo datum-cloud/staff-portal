@@ -3,9 +3,11 @@ import { BadgeCondition, BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DisplayText } from '@/components/display';
 import { authenticator } from '@/modules/auth';
-import { Button } from '@/modules/shadcn/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
-import { Popover, PopoverContent, PopoverTrigger } from '@/modules/shadcn/ui/popover';
+import { projectExportPolicyDetailQuery } from '@/resources/request/server';
+import { extractDataFromMatches, metaObject } from '@/utils/helpers';
+import { Button } from '@datum-cloud/datum-ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
+import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
 import {
   Table,
   TableBody,
@@ -13,9 +15,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/modules/shadcn/ui/table';
-import { projectExportPolicyDetailQuery } from '@/resources/request/server';
-import { extractDataFromMatches, metaObject } from '@/utils/helpers';
+} from '@datum-cloud/datum-ui/table';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { CodeEditor } from '@datum-ui/code-editor';
 import { Trans } from '@lingui/react/macro';
@@ -138,7 +138,7 @@ export default function Page() {
                   <TableCell>
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" size="sm">
+                        <Button theme="outline" size="small">
                           <CodeIcon className="size-4" />
                           <Trans>Query</Trans>
                         </Button>
@@ -218,7 +218,7 @@ export default function Page() {
                   <TableCell>
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" size="sm">
+                        <Button theme="outline" size="small">
                           <SettingsIcon className="size-4" />
                           <Trans>Configuration</Trans>
                         </Button>

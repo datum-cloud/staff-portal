@@ -1,7 +1,5 @@
 import { useFormContext } from './form-context';
-import { cn } from '@/modules/shadcn/lib/utils';
-import { Button } from '@/modules/shadcn/ui/button';
-import { Calendar } from '@/modules/shadcn/ui/calendar';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import {
   FormField,
   FormItem,
@@ -10,7 +8,9 @@ import {
   FormMessage,
   FormDescription,
 } from '@/modules/shadcn/ui/form';
-import { Popover, PopoverContent, PopoverTrigger } from '@/modules/shadcn/ui/popover';
+import { Button } from '@datum-cloud/datum-ui/button';
+import { Calendar } from '@datum-cloud/datum-ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
 import { format } from 'date-fns';
 import { CalendarIcon, X } from 'lucide-react';
 import * as React from 'react';
@@ -79,14 +79,14 @@ export function FormDatePicker({
               <PopoverTrigger asChild>
                 <FormControl>
                   <Button
-                    variant="outline"
+                    theme="outline"
                     className={cn(
                       'relative w-full justify-start pr-8 text-left font-normal',
                       !date && 'text-muted-foreground',
                       error && 'border-destructive'
                     )}
                     disabled={disabled}
-                    type="button">
+                    htmlType="button">
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {date ? format(date, 'PPP') : <span>{placeholder}</span>}
                     {showClearButton && date && (

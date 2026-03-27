@@ -9,8 +9,6 @@ import {
   NotesList,
 } from '@/features/domain';
 import { authenticator } from '@/modules/auth';
-import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
-import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
 import {
   projectDomainDetailQuery,
   projectDomainNotesQuery,
@@ -18,6 +16,8 @@ import {
 } from '@/resources/request/server';
 import { useProjectDetailData } from '@/routes/project/shared';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
+import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
+import { Table, TableBody, TableCell, TableRow } from '@datum-cloud/datum-ui/table';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { ComDatumapisNetworkingV1AlphaDomain } from '@openapi/networking.datumapis.com/v1alpha';

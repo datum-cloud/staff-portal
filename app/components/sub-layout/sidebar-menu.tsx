@@ -1,9 +1,9 @@
-import { cn } from '@/modules/shadcn/lib/utils';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/modules/shadcn/ui/collapsible';
+} from '@datum-cloud/datum-ui/collapsible';
 import {
   SidebarGroup,
   SidebarMenu,
@@ -12,7 +12,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from '@/modules/shadcn/ui/sidebar';
+} from '@datum-cloud/datum-ui/sidebar';
 import { ChevronRight, LucideIcon } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router';
 

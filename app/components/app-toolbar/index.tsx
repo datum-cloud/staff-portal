@@ -1,5 +1,5 @@
 import { Breadcrumb } from '@/components/breadcrumb';
-import { cn } from '@/modules/shadcn/lib/utils';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { useApp } from '@/providers/app.provider';
 import { useEffect, useState } from 'react';
 

@@ -3,13 +3,23 @@
 import { NavUser } from './nav-user';
 import { LogoIcon } from '@/components/logo/logo-icon';
 import { LogoText } from '@/components/logo/logo-text';
-import { cn } from '@/modules/shadcn/lib/utils';
+import { cn } from '@datum-cloud/datum-ui/utils';
+import {
+  contactGroupRoutes,
+  contactRoutes,
+  fraudRoutes,
+  groupRoutes,
+  orgRoutes,
+  projectRoutes,
+  routes,
+  userRoutes,
+} from '@/utils/config/routes.config';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/modules/shadcn/ui/collapsible';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/modules/shadcn/ui/hover-card';
+} from '@datum-cloud/datum-ui/collapsible';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@datum-cloud/datum-ui/hover-card';
 import {
   Sidebar,
   SidebarContent,
@@ -24,17 +34,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
   useSidebar,
-} from '@/modules/shadcn/ui/sidebar';
-import {
-  contactGroupRoutes,
-  contactRoutes,
-  fraudRoutes,
-  groupRoutes,
-  orgRoutes,
-  projectRoutes,
-  routes,
-  userRoutes,
-} from '@/utils/config/routes.config';
+} from '@datum-cloud/datum-ui/sidebar';
 import { useLingui } from '@lingui/react/macro';
 import {
   ChevronRight,

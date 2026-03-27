@@ -1,15 +1,5 @@
 'use client';
 
-import { Button } from '@/modules/shadcn/ui/button';
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/modules/shadcn/ui/card';
-import { Checkbox } from '@/modules/shadcn/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,7 +7,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/modules/shadcn/ui/dropdown-menu';
+} from '@datum-cloud/datum-ui/dropdown';
+import { Button } from '@datum-cloud/datum-ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@datum-cloud/datum-ui/card';
+import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
 import {
   Table,
   TableBody,
@@ -25,7 +24,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/modules/shadcn/ui/table';
+} from '@datum-cloud/datum-ui/table';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -143,7 +142,7 @@ export const columns: ColumnDef<Payment>[] = [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="size-8 p-0">
+            <Button theme="borderless" className="size-8 p-0">
               <span className="sr-only">Open menu</span>
               <MoreHorizontalIcon />
             </Button>
@@ -190,14 +189,14 @@ export function CardsPayments() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="text-xl">Payments</CardTitle>
-        <CardDescription>Manage your payments.</CardDescription>
-        <CardAction>
-          <Button variant="secondary" size="sm" className="shadow-none">
-            Add Payment
-          </Button>
-        </CardAction>
+      <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0 space-y-1.5">
+          <CardTitle className="text-xl">Payments</CardTitle>
+          <CardDescription>Manage your payments.</CardDescription>
+        </div>
+        <Button type="secondary" size="small" className="shrink-0 shadow-none">
+          Add Payment
+        </Button>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <div className="rounded-md border">
@@ -251,15 +250,15 @@ export function CardsPayments() {
           </div>
           <div className="flex gap-2">
             <Button
-              variant="outline"
-              size="sm"
+              theme="outline"
+              size="small"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}>
               Previous
             </Button>
             <Button
-              variant="outline"
-              size="sm"
+              theme="outline"
+              size="small"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}>
               Next

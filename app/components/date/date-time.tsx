@@ -9,7 +9,7 @@ import {
   parseDate,
 } from './formatters';
 import type { DateTimeProps, FormatterOptions } from './types';
-import { cn } from '@/modules/shadcn/lib/utils';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { useApp } from '@/providers/app.provider';
 import { getBrowserTimezone } from '@/utils/helpers/timezone.helper';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';

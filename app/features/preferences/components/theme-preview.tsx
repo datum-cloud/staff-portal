@@ -1,4 +1,4 @@
-import { cn } from '@/modules/shadcn/lib/utils';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import type { Theme } from '@datum-cloud/datum-ui/theme';
 import { Check } from 'lucide-react';
 

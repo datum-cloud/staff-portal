@@ -1,7 +1,7 @@
 import BadgeState from '@/components/badge/badge-state';
 import { useDomainStatus } from '@/features/domain/hooks/useDomainStatus';
-import { cn } from '@/modules/shadcn/lib/utils';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/modules/shadcn/ui/hover-card';
+import { cn } from '@datum-cloud/datum-ui/utils';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@datum-cloud/datum-ui/hover-card';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
 

@@ -1,19 +1,17 @@
 'use client';
 
 import {
+  ChartConfig,
+  ChartContainer,
+} from '@datum-cloud/datum-ui/chart';
+import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/modules/shadcn/ui/card';
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '@/modules/shadcn/ui/chart';
-import { CartesianGrid, Line, LineChart, XAxis } from 'recharts';
+} from '@datum-cloud/datum-ui/card';
+import { CartesianGrid, Line, LineChart, Tooltip, XAxis } from 'recharts';
 
 const data = [
   {
@@ -118,7 +116,7 @@ export function CardsExerciseMinutes() {
                 r: 5,
               }}
             />
-            <ChartTooltip content={<ChartTooltipContent />} />
+            <Tooltip />
           </LineChart>
         </ChartContainer>
       </CardContent>

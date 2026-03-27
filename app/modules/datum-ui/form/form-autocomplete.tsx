@@ -1,16 +1,7 @@
 'use client';
 
 import { useFormContext } from './form-context';
-import { cn } from '@/modules/shadcn/lib/utils';
-import { Button } from '@/modules/shadcn/ui/button';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/modules/shadcn/ui/command';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import {
   FormControl,
   FormDescription,
@@ -19,7 +10,16 @@ import {
   FormLabel,
   FormMessage,
 } from '@/modules/shadcn/ui/form';
-import { Popover, PopoverContent, PopoverTrigger } from '@/modules/shadcn/ui/popover';
+import { Button } from '@datum-cloud/datum-ui/button';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@datum-cloud/datum-ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import * as React from 'react';
 
@@ -151,7 +151,7 @@ export const FormAutocomplete: React.FC<FormAutocompleteProps> = ({
               <PopoverTrigger asChild>
                 <FormControl>
                   <Button
-                    variant="outline"
+                    theme="outline"
                     role="combobox"
                     aria-expanded={open}
                     aria-invalid={!!error}

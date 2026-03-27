@@ -1,5 +1,4 @@
 import { useFormContext } from './form-context';
-import { Checkbox } from '@/modules/shadcn/ui/checkbox';
 import {
   FormField,
   FormItem,
@@ -8,6 +7,7 @@ import {
   FormMessage,
   FormDescription,
 } from '@/modules/shadcn/ui/form';
+import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
 import { ComponentProps, createContext, useContext, ReactNode } from 'react';
 
 interface CheckboxGroupContextValue {
