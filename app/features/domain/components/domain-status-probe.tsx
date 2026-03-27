@@ -1,8 +1,8 @@
 import BadgeState from '@/components/badge/badge-state';
 import { useDomainStatus } from '@/features/domain/hooks/useDomainStatus';
-import { cn } from '@datum-cloud/datum-ui/utils';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@datum-cloud/datum-ui/hover-card';
 import { Text } from '@datum-cloud/datum-ui/typography';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { useLingui } from '@lingui/react/macro';
 
 // Map condition type to friendly title

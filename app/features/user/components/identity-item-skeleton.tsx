@@ -1,5 +1,5 @@
-import { cn } from '@datum-cloud/datum-ui/utils';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
+import { cn } from '@datum-cloud/datum-ui/utils';
 
 interface IdentityItemSkeletonProps {
   /**

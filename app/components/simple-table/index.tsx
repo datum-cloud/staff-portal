@@ -1,4 +1,3 @@
-import { cn } from '@datum-cloud/datum-ui/utils';
 import {
   Table,
   TableBody,
@@ -7,6 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from '@datum-cloud/datum-ui/table';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import {
   ColumnDef,
   flexRender,

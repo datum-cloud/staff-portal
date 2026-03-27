@@ -1,5 +1,7 @@
 'use client';
 
+import { useApp } from '@/providers/app.provider';
+import { routes } from '@/utils/config/routes.config';
 import { Avatar, AvatarFallback, AvatarImage } from '@datum-cloud/datum-ui/avatar';
 import {
   DropdownMenu,
@@ -10,8 +12,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@datum-cloud/datum-ui/dropdown';
-import { useApp } from '@/providers/app.provider';
-import { routes } from '@/utils/config/routes.config';
 import {
   SidebarMenu,
   SidebarMenuButton,

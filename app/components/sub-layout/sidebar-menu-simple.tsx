@@ -1,4 +1,3 @@
-import { cn } from '@datum-cloud/datum-ui/utils';
 import {
   Collapsible,
   CollapsibleContent,
@@ -13,6 +12,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@datum-cloud/datum-ui/sidebar';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { ChevronRight, LucideIcon } from 'lucide-react';
 import * as React from 'react';
 import { NavLink, useLocation } from 'react-router';

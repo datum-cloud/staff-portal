@@ -1,7 +1,6 @@
 'use client';
 
 import { SearchResultGroup } from './search-result-group';
-import { cn } from '@datum-cloud/datum-ui/utils';
 import {
   searchOrganizationsQuery,
   searchProjectsQuery,
@@ -17,6 +16,7 @@ import {
 } from '@datum-cloud/datum-ui/command';
 import { Input } from '@datum-cloud/datum-ui/input';
 import { Text } from '@datum-cloud/datum-ui/typography';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import {

@@ -3,7 +3,6 @@
 import { NavUser } from './nav-user';
 import { LogoIcon } from '@/components/logo/logo-icon';
 import { LogoText } from '@/components/logo/logo-text';
-import { cn } from '@datum-cloud/datum-ui/utils';
 import {
   contactGroupRoutes,
   contactRoutes,
@@ -35,6 +34,7 @@ import {
   SidebarRail,
   useSidebar,
 } from '@datum-cloud/datum-ui/sidebar';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { useLingui } from '@lingui/react/macro';
 import {
   ChevronRight,

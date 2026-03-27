@@ -1,8 +1,8 @@
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
-import { Avatar, AvatarFallback } from '@datum-cloud/datum-ui/avatar';
 import { activityListQuery } from '@/resources/request/client';
 import { userRoutes } from '@/utils/config/routes.config';
+import { Avatar, AvatarFallback } from '@datum-cloud/datum-ui/avatar';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardDescription, CardHeader } from '@datum-cloud/datum-ui/card';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';

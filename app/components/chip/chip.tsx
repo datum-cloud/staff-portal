@@ -1,6 +1,6 @@
-import { cn } from '@datum-cloud/datum-ui/utils';
 import { Badge, type BadgeProps } from '@datum-cloud/datum-ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import * as React from 'react';
 
 export type ChipItem = string | React.ReactNode;

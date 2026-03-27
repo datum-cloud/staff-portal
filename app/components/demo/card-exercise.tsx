@@ -1,16 +1,13 @@
 'use client';
 
 import {
-  ChartConfig,
-  ChartContainer,
-} from '@datum-cloud/datum-ui/chart';
-import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from '@datum-cloud/datum-ui/card';
+import { ChartConfig, ChartContainer } from '@datum-cloud/datum-ui/chart';
 import { CartesianGrid, Line, LineChart, Tooltip, XAxis } from 'recharts';
 
 const data = [
