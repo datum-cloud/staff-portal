@@ -7,6 +7,7 @@ import { projectExportPolicyDetailQuery } from '@/resources/request/server';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
+import { CodeEditor, type EditorLanguage } from '@datum-cloud/datum-ui/code-editor';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
 import {
   Table,
@@ -17,7 +18,6 @@ import {
   TableRow,
 } from '@datum-cloud/datum-ui/table';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
-import { CodeEditor } from '@datum-ui/code-editor';
 import { Trans } from '@lingui/react/macro';
 import { ComMiloapisTelemetryV1Alpha1ExportPolicy } from '@openapi/telemetry.miloapis.com/v1alpha1';
 import { CodeIcon, SettingsIcon } from 'lucide-react';
@@ -146,7 +146,7 @@ export default function Page() {
                       <PopoverContent className="min-w-[400px]">
                         <CodeEditor
                           value={source.metrics?.metricsql ?? ''}
-                          language="promql"
+                          language={'promql' as unknown as EditorLanguage}
                           readOnly
                           minHeight="100px"
                         />
