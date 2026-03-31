@@ -24,10 +24,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@datum-cloud/datum-ui/card';
+import { Form } from '@datum-cloud/datum-ui/form';
 import { Table, TableBody, TableCell, TableRow } from '@datum-cloud/datum-ui/table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
-import { Form } from '@datum-cloud/datum-ui/form';
 import { Trans, useLingui } from '@lingui/react/macro';
 import {
   CheckIcon,
