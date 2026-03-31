@@ -1,3 +1,4 @@
+import { FormAutosearch } from '@/components/form';
 import { useUserSearch } from '@/hooks';
 import {
   contactCreateMutation,
@@ -8,9 +9,10 @@ import {
 import { contactRoutes, userRoutes } from '@/utils/config/routes.config';
 import { Alert, AlertDescription, AlertTitle } from '@datum-cloud/datum-ui/alert';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
+import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
-import { Form } from '@datum-ui/form';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import { ComMiloapisNotificationV1Alpha1Contact } from '@openapi/notification.miloapis.com/v1alpha1';
@@ -103,7 +105,7 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
   };
 
   return (
-    <Form
+    <Form.Root
       className="space-y-4"
       schema={contactSchema}
       defaultValues={{
@@ -115,11 +117,17 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
         groups: [],
       }}
       onSubmit={onSubmit}>
-      {(form) => (
+      {({ isSubmitting, isDirty, isValid }) => (
         <>
-          <Form.Input field="first_name" label={t`First Name`} required />
-          <Form.Input field="last_name" label={t`Last Name`} required />
-          <Form.Input field="email" label={t`Email`} required />
+          <Form.Field name="first_name" label={t`First Name`} required>
+            <Form.Input />
+          </Form.Field>
+          <Form.Field name="last_name" label={t`Last Name`} required>
+            <Form.Input />
+          </Form.Field>
+          <Form.Field name="email" label={t`Email`} required>
+            <Form.Input />
+          </Form.Field>
 
           {user && (
             <div className="flex items-center gap-2">
@@ -144,26 +152,51 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
                   <Text>{t`Loading mail lists...`}</Text>
                 </div>
               ) : (
-                <Form.CheckboxGroup field="groups" label={t`Mail Lists`}>
-                  {(contactGroups?.items ?? []).map((group) => (
-                    <Form.CheckboxItem
-                      key={group.metadata?.name ?? ''}
-                      value={group.metadata?.name ?? ''}>
-                      {group.spec?.displayName ?? ''}
-                    </Form.CheckboxItem>
-                  ))}
-                </Form.CheckboxGroup>
+                <Form.Field name="groups" label={t`Mail Lists`}>
+                  {({ control }) => {
+                    const selectedGroups = Array.isArray(control.value)
+                      ? (control.value as string[])
+                      : [];
+
+                    return (
+                      <div className="space-y-2">
+                        {(contactGroups?.items ?? []).map((group) => {
+                          const value = group.metadata?.name ?? '';
+                          const checked = selectedGroups.includes(value);
+
+                          return (
+                            <label key={value} className="flex items-center gap-2">
+                              <Checkbox
+                                checked={checked}
+                                onCheckedChange={(nextChecked) => {
+                                  const shouldCheck = Boolean(nextChecked);
+                                  const nextValues = shouldCheck
+                                    ? [...selectedGroups, value]
+                                    : selectedGroups.filter((item) => item !== value);
+                                  control.change(nextValues);
+                                }}
+                              />
+                              <Text size="sm">{group.spec?.displayName ?? value}</Text>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    );
+                  }}
+                </Form.Field>
               )}
 
               <hr />
-              <Form.Switch field="has_association" label={t`Associate with User`} />
-              {form.getValues('has_association') && (
+              <Form.Field name="has_association">
+                <Form.Switch label={t`Associate with User`} />
+              </Form.Field>
+              <Form.When field="has_association" is={true}>
                 <>
-                  <Form.Autosearch
-                    field="subject"
+                  <FormAutosearch
+                    name="subject"
                     placeholder={t`Enter the full email to search...`}
                     options={userOptions}
-                    isLoading={usersLoading}
+                    loading={usersLoading}
                     onSearch={setUserSearch}
                     searchDebounceMs={500}
                   />
@@ -172,7 +205,7 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
                     <AlertDescription>{t`Once a contact is associated with a user, this association cannot be removed or changed later.`}</AlertDescription>
                   </Alert>
                 </>
-              )}
+              </Form.When>
             </>
           )}
 
@@ -185,13 +218,13 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
             </Button>
             <Button
               htmlType="submit"
-              disabled={!form.formState.isDirty}
-              loading={form.formState.isSubmitting}>
+              disabled={!isDirty || !isValid || isSubmitting}
+              loading={isSubmitting}>
               {contact ? t`Update` : t`Create`}
             </Button>
           </div>
         </>
       )}
-    </Form>
+    </Form.Root>
   );
 };

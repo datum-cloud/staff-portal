@@ -29,7 +29,6 @@
     "rootDirs": [".", "./.react-router/types"],
     "baseUrl": ".",
     "paths": {
-      "@datum-ui/*": ["./app/modules/datum-ui/*"],
       "@openapi/*": ["./app/resources/openapi/*"],
       "@/tests/*": ["./tests/*"],
       "@/*": ["./app/*"]

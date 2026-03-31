@@ -4,9 +4,9 @@ import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
+import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
-import { Form } from '@datum-ui/form';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { useNavigate } from 'react-router';
@@ -69,7 +69,7 @@ export default function Page() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Form
+            <Form.Root
               className="space-y-4"
               schema={providerSchema}
               defaultValues={{
@@ -83,34 +83,42 @@ export default function Page() {
                 licenseKeyKey: '',
               }}
               onSubmit={handleSubmit}>
-              {(form) => (
+              {({ isSubmitting, isDirty, isValid }) => (
                 <>
-                  <Form.Input field="name" label={t`Name`} required />
-                  <Form.Select
-                    field="type"
-                    label={t`Provider Type`}
-                    required
-                    options={[{ label: 'MaxMind', value: 'maxmind' }]}
-                  />
-                  <Form.Select
-                    field="failurePolicy"
-                    label={t`Failure Policy`}
-                    required
-                    options={[
-                      { label: 'Fail Open', value: 'FailOpen' },
-                      { label: 'Fail Closed', value: 'FailClosed' },
-                    ]}
-                  />
-                  <Form.Input field="endpoint" label={t`Endpoint`} />
+                  <Form.Field name="name" label={t`Name`} required>
+                    <Form.Input />
+                  </Form.Field>
+                  <Form.Field name="type" label={t`Provider Type`} required>
+                    <Form.Select>
+                      <Form.SelectItem value="maxmind">MaxMind</Form.SelectItem>
+                    </Form.Select>
+                  </Form.Field>
+                  <Form.Field name="failurePolicy" label={t`Failure Policy`} required>
+                    <Form.Select>
+                      <Form.SelectItem value="FailOpen">Fail Open</Form.SelectItem>
+                      <Form.SelectItem value="FailClosed">Fail Closed</Form.SelectItem>
+                    </Form.Select>
+                  </Form.Field>
+                  <Form.Field name="endpoint" label={t`Endpoint`}>
+                    <Form.Input />
+                  </Form.Field>
                   <div className="border-t pt-4">
                     <Text size="sm" weight="medium" className="mb-3">
                       <Trans>Credentials Reference</Trans>
                     </Text>
                     <div className="space-y-4">
-                      <Form.Input field="credentialsRefName" label={t`Secret Name`} />
-                      <Form.Input field="credentialsRefNamespace" label={t`Secret Namespace`} />
-                      <Form.Input field="accountIDKey" label={t`Account ID Key`} />
-                      <Form.Input field="licenseKeyKey" label={t`License Key Key`} />
+                      <Form.Field name="credentialsRefName" label={t`Secret Name`}>
+                        <Form.Input />
+                      </Form.Field>
+                      <Form.Field name="credentialsRefNamespace" label={t`Secret Namespace`}>
+                        <Form.Input />
+                      </Form.Field>
+                      <Form.Field name="accountIDKey" label={t`Account ID Key`}>
+                        <Form.Input />
+                      </Form.Field>
+                      <Form.Field name="licenseKeyKey" label={t`License Key Key`}>
+                        <Form.Input />
+                      </Form.Field>
                     </div>
                   </div>
                   <div className="flex justify-end gap-2 pt-4">
@@ -121,13 +129,16 @@ export default function Page() {
                       onClick={() => navigate(fraudRoutes.providers.list())}>
                       {t`Cancel`}
                     </Button>
-                    <Button htmlType="submit" disabled={!form.formState.isDirty}>
+                    <Button
+                      htmlType="submit"
+                      disabled={!isDirty || !isValid || isSubmitting}
+                      loading={isSubmitting}>
                       <Trans>Create</Trans>
                     </Button>
                   </div>
                 </>
               )}
-            </Form>
+            </Form.Root>
           </CardContent>
         </Card>
       </div>

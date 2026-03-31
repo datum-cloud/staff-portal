@@ -4,6 +4,7 @@ import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
 import { DisplayId, DisplayName } from '@/components/display';
+import { FormDateTimePicker } from '@/components/form';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
 import {
   useInvalidateUserList,
@@ -15,8 +16,8 @@ import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
+import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import { Form } from '@datum-ui/form';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
@@ -141,7 +142,7 @@ export default function Page() {
       familyName: z.string().nonempty(t`Last name is required`),
       email: z.email(t`Invalid email address`).nonempty(t`Email is required`),
       scheduleEnabled: z.boolean().optional(),
-      scheduleAt: z.date().optional(),
+      scheduleAt: z.coerce.date().optional(),
     })
     .refine(
       (data) => {
@@ -200,20 +201,23 @@ export default function Page() {
             throw error; // Re-throw to keep dialog open
           }
         }}>
-        {(form) => (
-          <>
-            <Form.Input field="givenName" label={t`First Name`} required />
-            <Form.Input field="familyName" label={t`Last Name`} required />
-            <Form.Input field="email" label={t`Email`} required />
-            <Form.Switch
-              field="scheduleEnabled"
-              label={t`Schedule invitation to be sent at specific time`}
-            />
-            {form.watch('scheduleEnabled') && (
-              <Form.DateTimePicker modal field="scheduleAt" required />
-            )}
-          </>
-        )}
+        <>
+          <Form.Field name="givenName" label={t`First Name`} required>
+            <Form.Input placeholder={t`Enter first name`} />
+          </Form.Field>
+          <Form.Field name="familyName" label={t`Last Name`} required>
+            <Form.Input />
+          </Form.Field>
+          <Form.Field name="email" label={t`Email`} required>
+            <Form.Input />
+          </Form.Field>
+          <Form.Field name="scheduleEnabled">
+            <Form.Switch label={t`Schedule invitation to be sent at specific time`} />
+          </Form.Field>
+          <Form.When field="scheduleEnabled" is={true}>
+            <FormDateTimePicker modal name="scheduleAt" label={t`Schedule At`} required />
+          </Form.When>
+        </>
       </DialogForm>
 
       <UserRejectDialog
