@@ -4,7 +4,6 @@ import AppActionBar from '@/components/app-actiobar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
-import { FormAutosearch } from '@/components/form';
 import { useUserSearch } from '@/hooks';
 import { authenticator } from '@/modules/auth';
 import {
@@ -161,15 +160,16 @@ export default function Page() {
         }}
         schema={addMemberSchema}
         defaultValues={{ name: '' }}>
-        <FormAutosearch
-          modal
-          name="name"
-          placeholder={t`Enter the full email to search...`}
-          options={userOptions}
-          loading={usersLoading}
-          onSearch={setUserSearch}
-          searchDebounceMs={500}
-        />
+        <Form.Field name="name">
+          <Form.Autosearch
+            modal
+            options={userOptions}
+            loading={usersLoading}
+            onSearch={setUserSearch}
+            searchDebounceMs={500}
+            placeholder={t`Enter the full email to search...`}
+          />
+        </Form.Field>
       </DialogForm>
 
       <DataTable.Client

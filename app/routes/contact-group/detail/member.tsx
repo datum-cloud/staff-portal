@@ -5,7 +5,6 @@ import { BadgeCondition } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
-import { FormAutosearch } from '@/components/form';
 import { useContactSearch, useUserSearch } from '@/hooks';
 import {
   contactCreateMutation,
@@ -65,24 +64,25 @@ function AddMemberFields({
 
   return (
     <>
-      <FormAutosearch
-        name="name"
-        label={t`Contact`}
-        placeholder={t`Search for an existing contact by email...`}
-        options={contactOptions}
-        loading={contactsLoading}
-        disabled={createNew}
-        emptyMessage={
-          isEmailNotFound
-            ? t`No contacts found with this email. You can create a new contact below.`
-            : t`No contacts found.`
-        }
-        onSearch={(query) => {
-          if (createNew) return;
-          setContactSearch(query);
-        }}
-        searchDebounceMs={500}
-      />
+      <Form.Field name="name" label={t`Contact`}>
+        <Form.Autosearch
+          modal
+          options={contactOptions}
+          loading={contactsLoading}
+          disabled={createNew}
+          placeholder={t`Search for an existing contact by email...`}
+          emptyMessage={
+            isEmailNotFound
+              ? t`No contacts found with this email. You can create a new contact below.`
+              : t`No contacts found.`
+          }
+          onSearch={(query) => {
+            if (createNew) return;
+            setContactSearch(query);
+          }}
+          searchDebounceMs={500}
+        />
+      </Form.Field>
 
       {isEmailNotFound && (
         <>
@@ -104,16 +104,16 @@ function AddMemberFields({
               </Form.Field>
 
               <Form.When field="has_association" is={true}>
-                <FormAutosearch
-                  name="subject"
-                  label={t`User`}
-                  required
-                  placeholder={t`Enter the full email to search...`}
-                  options={userOptions}
-                  loading={usersLoading}
-                  onSearch={setUserSearch}
-                  searchDebounceMs={500}
-                />
+                <Form.Field name="subject" label={t`User`} required>
+                  <Form.Autosearch
+                    modal
+                    options={userOptions}
+                    loading={usersLoading}
+                    onSearch={setUserSearch}
+                    searchDebounceMs={500}
+                    placeholder={t`Enter the full email to search...`}
+                  />
+                </Form.Field>
               </Form.When>
             </>
           </Form.When>
