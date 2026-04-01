@@ -17,8 +17,8 @@ import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
+import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import { Form } from '@datum-ui/form';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
@@ -170,14 +170,14 @@ export default function Page() {
         onSubmit={handleAddGroup}
         schema={addGroupSchema}
         defaultValues={{ name: '' }}>
-        <Form.Autocomplete
-          modal
-          field="name"
-          placeholder={t`Select group...`}
-          searchPlaceholder={t`Search groups...`}
-          options={contactGroupFilteredOptions}
-          isLoading={contactGroupsLoading}
-        />
+        <Form.Field name="name">
+          <Form.Autocomplete
+            placeholder={t`Select group...`}
+            searchPlaceholder={t`Search groups...`}
+            options={contactGroupFilteredOptions}
+            loading={contactGroupsLoading}
+          />
+        </Form.Field>
       </DialogForm>
       <DataTable.Client
         loading={tableQuery.isLoading}

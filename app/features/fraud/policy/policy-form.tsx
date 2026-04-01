@@ -6,10 +6,10 @@ import {
 } from '@/resources/request/client';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
+import { Form } from '@datum-cloud/datum-ui/form';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
-import { Form } from '@datum-ui/form';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { PlusCircleIcon, XIcon } from 'lucide-react';
@@ -142,206 +142,188 @@ export function PolicyForm({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Form
+        <Form.Root
           className="space-y-4"
           schema={policyFormSchema}
           defaultValues={defaultValues}
           onSubmit={handleSubmit}>
-          {(form) => {
-            const stages = form.watch('stages');
+          {({ isDirty, isSubmitting, isValid }) => (
+            <>
+              {!policy && (
+                <Form.Field name="name" label={t`Name`} required>
+                  <Form.Input />
+                </Form.Field>
+              )}
+              <Form.Field name="enforcementMode" label={t`Enforcement Mode`} required>
+                <Form.Select>
+                  <Form.SelectItem value="OBSERVE">Observe</Form.SelectItem>
+                  <Form.SelectItem value="AUTO">Auto</Form.SelectItem>
+                </Form.Select>
+              </Form.Field>
+              <Form.Field name="maxEntries" label={t`History Retention (max entries)`}>
+                <Form.Input type="number" />
+              </Form.Field>
 
-            return (
-              <>
-                {!policy && <Form.Input field="name" label={t`Name`} required />}
-                <Form.Select
-                  field="enforcementMode"
-                  label={t`Enforcement Mode`}
-                  required
-                  options={[
-                    { label: 'Observe', value: 'OBSERVE' },
-                    { label: 'Auto', value: 'AUTO' },
-                  ]}
-                />
-                <Form.Input
-                  field="maxEntries"
-                  label={t`History Retention (max entries)`}
-                  type="number"
-                />
-
-                <div className="border-t pt-4">
-                  <div className="mb-3 flex items-center justify-between">
-                    <Text size="sm" weight="semibold">
-                      <Trans>Triggers</Trans>
-                    </Text>
-                    <Button
-                      type="tertiary"
-                      theme="outline"
-                      size="small"
-                      icon={<PlusCircleIcon size={14} />}
-                      htmlType="button"
-                      onClick={() => {
-                        const current = form.getValues('triggers') ?? [];
-                        form.setValue('triggers', [...current, { type: 'Event', event: '' }], {
-                          shouldDirty: true,
-                        });
-                      }}>
-                      <Trans>Add Trigger</Trans>
-                    </Button>
-                  </div>
-
-                  {(form.watch('triggers') ?? []).map((_: unknown, idx: number) => (
-                    <div key={idx} className="mb-3 space-y-3 rounded-lg border p-4">
-                      <div className="flex items-center justify-between">
-                        <Text size="sm" weight="medium">
-                          <Trans>Trigger {idx + 1}</Trans>
+              <div className="border-t pt-4">
+                <Form.FieldArray name="triggers">
+                  {({ fields, append, remove }) => (
+                    <>
+                      <div className="mb-3 flex items-center justify-between">
+                        <Text size="sm" weight="semibold">
+                          <Trans>Triggers</Trans>
                         </Text>
                         <Button
                           type="tertiary"
-                          theme="borderless"
+                          theme="outline"
                           size="small"
-                          icon={<XIcon size={14} />}
+                          icon={<PlusCircleIcon size={14} />}
                           htmlType="button"
-                          onClick={() => {
-                            const current = form.getValues('triggers') ?? [];
-                            form.setValue(
-                              'triggers',
-                              current.filter((_: unknown, i: number) => i !== idx),
-                              { shouldDirty: true }
-                            );
-                          }}
-                        />
+                          onClick={() => append({ type: 'Event', event: '' })}>
+                          <Trans>Add Trigger</Trans>
+                        </Button>
                       </div>
-                      <Row gutter={[16, 16]}>
-                        <Col span={12}>
-                          <Form.Select
-                            field={`triggers.${idx}.type`}
-                            label={t`Type`}
-                            required
-                            options={[
-                              { label: 'Event', value: 'Event' },
-                              { label: 'Manual', value: 'Manual' },
-                            ]}
-                          />
-                        </Col>
-                        <Col span={12}>
-                          <Form.Select
-                            field={`triggers.${idx}.event`}
-                            label={t`Event`}
-                            options={[{ label: 'UserCreated', value: 'UserCreated' }]}
-                          />
-                        </Col>
-                      </Row>
-                    </div>
-                  ))}
-                </div>
 
-                <div className="border-t pt-4">
-                  <div className="mb-3 flex items-center justify-between">
-                    <Text size="sm" weight="semibold">
-                      <Trans>Pipeline Stages</Trans>
-                    </Text>
-                    <Button
-                      type="tertiary"
-                      theme="outline"
-                      size="small"
-                      icon={<PlusCircleIcon size={14} />}
-                      htmlType="button"
-                      onClick={() => {
-                        const current = form.getValues('stages');
-                        form.setValue(
-                          'stages',
-                          [
-                            ...current,
-                            {
+                      {fields.map((field, idx) => (
+                        <div key={field.key} className="mb-3 space-y-3 rounded-lg border p-4">
+                          <div className="flex items-center justify-between">
+                            <Text size="sm" weight="medium">
+                              <Trans>Trigger {idx + 1}</Trans>
+                            </Text>
+                            <Button
+                              type="tertiary"
+                              theme="borderless"
+                              size="small"
+                              icon={<XIcon size={14} />}
+                              htmlType="button"
+                              onClick={() => remove(idx)}
+                            />
+                          </div>
+                          <Row gutter={[16, 16]}>
+                            <Col span={12}>
+                              <Form.Field name={`${field.name}.type`} label={t`Type`} required>
+                                <Form.Select>
+                                  <Form.SelectItem value="Event">Event</Form.SelectItem>
+                                  <Form.SelectItem value="Manual">Manual</Form.SelectItem>
+                                </Form.Select>
+                              </Form.Field>
+                            </Col>
+                            <Col span={12}>
+                              <Form.Field name={`${field.name}.event`} label={t`Event`}>
+                                <Form.Select>
+                                  <Form.SelectItem value="UserCreated">UserCreated</Form.SelectItem>
+                                </Form.Select>
+                              </Form.Field>
+                            </Col>
+                          </Row>
+                        </div>
+                      ))}
+                    </>
+                  )}
+                </Form.FieldArray>
+              </div>
+
+              <div className="border-t pt-4">
+                <Form.FieldArray name="stages">
+                  {({ fields, append, remove }) => (
+                    <>
+                      <div className="mb-3 flex items-center justify-between">
+                        <Text size="sm" weight="semibold">
+                          <Trans>Pipeline Stages</Trans>
+                        </Text>
+                        <Button
+                          type="tertiary"
+                          theme="outline"
+                          size="small"
+                          icon={<PlusCircleIcon size={14} />}
+                          htmlType="button"
+                          onClick={() =>
+                            append({
                               name: '',
                               providers: '',
                               thresholdReviewScore: 50,
                               thresholdDeactivateScore: 80,
                               required: false,
                               shortCircuitBelow: undefined,
-                            },
-                          ],
-                          { shouldDirty: true }
-                        );
-                      }}>
-                      <Trans>Add Stage</Trans>
-                    </Button>
-                  </div>
-
-                  {stages.map((_: unknown, idx: number) => (
-                    <div key={idx} className="mb-3 space-y-3 rounded-lg border p-4">
-                      <div className="flex items-center justify-between">
-                        <Text size="sm" weight="medium">
-                          <Trans>Stage {idx + 1}</Trans>
-                        </Text>
-                        {stages.length > 1 && (
-                          <Button
-                            type="tertiary"
-                            theme="borderless"
-                            size="small"
-                            icon={<XIcon size={14} />}
-                            htmlType="button"
-                            onClick={() => {
-                              const current = form.getValues('stages');
-                              form.setValue(
-                                'stages',
-                                current.filter((_: unknown, i: number) => i !== idx),
-                                { shouldDirty: true }
-                              );
-                            }}
-                          />
-                        )}
+                            })
+                          }>
+                          <Trans>Add Stage</Trans>
+                        </Button>
                       </div>
-                      <Form.Input field={`stages.${idx}.name`} label={t`Stage Name`} required />
-                      <Form.Input
-                        field={`stages.${idx}.providers`}
-                        label={t`Providers (comma-separated)`}
-                        required
-                      />
-                      <Row gutter={[16, 16]}>
-                        <Col span={12}>
-                          <Form.Input
-                            field={`stages.${idx}.thresholdReviewScore`}
-                            label={t`Review Threshold`}
-                            type="number"
-                          />
-                        </Col>
-                        <Col span={12}>
-                          <Form.Input
-                            field={`stages.${idx}.thresholdDeactivateScore`}
-                            label={t`Deactivate Threshold`}
-                            type="number"
-                          />
-                        </Col>
-                      </Row>
-                      <Row gutter={[16, 16]}>
-                        <Col span={12}>
-                          <Form.Checkbox field={`stages.${idx}.required`} label={t`Required`} />
-                        </Col>
-                        <Col span={12}>
-                          <Form.Input
-                            field={`stages.${idx}.shortCircuitBelow`}
-                            label={t`Short-circuit Below`}
-                            type="number"
-                          />
-                        </Col>
-                      </Row>
-                    </div>
-                  ))}
-                </div>
 
-                <div className="flex justify-end gap-2 pt-4">
-                  <Button type="tertiary" theme="borderless" htmlType="button" onClick={onCancel}>
-                    {t`Cancel`}
-                  </Button>
-                  <Button htmlType="submit" disabled={!form.formState.isDirty}>
-                    {policy ? t`Update` : t`Create`}
-                  </Button>
-                </div>
-              </>
-            );
-          }}
-        </Form>
+                      {fields.map((field, idx) => (
+                        <div key={field.key} className="mb-3 space-y-3 rounded-lg border p-4">
+                          <div className="flex items-center justify-between">
+                            <Text size="sm" weight="medium">
+                              <Trans>Stage {idx + 1}</Trans>
+                            </Text>
+                            {fields.length > 1 && (
+                              <Button
+                                type="tertiary"
+                                theme="borderless"
+                                size="small"
+                                icon={<XIcon size={14} />}
+                                htmlType="button"
+                                onClick={() => remove(idx)}
+                              />
+                            )}
+                          </div>
+                          <Form.Field name={`${field.name}.name`} label={t`Stage Name`} required>
+                            <Form.Input />
+                          </Form.Field>
+                          <Form.Field
+                            name={`${field.name}.providers`}
+                            label={t`Providers (comma-separated)`}
+                            required>
+                            <Form.Input />
+                          </Form.Field>
+                          <Row gutter={[16, 16]}>
+                            <Col span={12}>
+                              <Form.Field
+                                name={`${field.name}.thresholdReviewScore`}
+                                label={t`Review Threshold`}>
+                                <Form.Input type="number" />
+                              </Form.Field>
+                            </Col>
+                            <Col span={12}>
+                              <Form.Field
+                                name={`${field.name}.thresholdDeactivateScore`}
+                                label={t`Deactivate Threshold`}>
+                                <Form.Input type="number" />
+                              </Form.Field>
+                            </Col>
+                          </Row>
+                          <Row gutter={[16, 16]}>
+                            <Col span={12}>
+                              <Form.Field name={`${field.name}.required`}>
+                                <Form.Checkbox label={t`Required`} />
+                              </Form.Field>
+                            </Col>
+                            <Col span={12}>
+                              <Form.Field
+                                name={`${field.name}.shortCircuitBelow`}
+                                label={t`Short-circuit Below`}>
+                                <Form.Input type="number" />
+                              </Form.Field>
+                            </Col>
+                          </Row>
+                        </div>
+                      ))}
+                    </>
+                  )}
+                </Form.FieldArray>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-4">
+                <Button type="tertiary" theme="borderless" htmlType="button" onClick={onCancel}>
+                  {t`Cancel`}
+                </Button>
+                <Button htmlType="submit" disabled={!isDirty || !isValid || isSubmitting}>
+                  {policy ? t`Update` : t`Create`}
+                </Button>
+              </div>
+            </>
+          )}
+        </Form.Root>
       </CardContent>
     </Card>
   );

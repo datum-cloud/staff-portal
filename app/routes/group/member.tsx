@@ -4,6 +4,7 @@ import AppActionBar from '@/components/app-actiobar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
+import { FormAutosearch } from '@/components/form';
 import { useUserSearch } from '@/hooks';
 import { authenticator } from '@/modules/auth';
 import {
@@ -17,8 +18,8 @@ import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
+import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import { Form } from '@datum-ui/form';
 import { Trans, useLingui } from '@lingui/react/macro';
 import {
   ComMiloapisIamV1Alpha1Group,
@@ -160,12 +161,12 @@ export default function Page() {
         }}
         schema={addMemberSchema}
         defaultValues={{ name: '' }}>
-        <Form.Autosearch
+        <FormAutosearch
           modal
-          field="name"
+          name="name"
           placeholder={t`Enter the full email to search...`}
           options={userOptions}
-          isLoading={usersLoading}
+          loading={usersLoading}
           onSearch={setUserSearch}
           searchDebounceMs={500}
         />

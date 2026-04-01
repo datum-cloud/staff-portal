@@ -12,6 +12,7 @@ import { useNonce } from '@/providers/nonce.provider';
 import styles from '@/styles/root.css?url';
 import { env } from '@/utils/config/env.server';
 import { localeCookie } from '@/utils/cookies';
+import { RHFAdapter } from '@datum-cloud/datum-ui/form/adapters/rhf';
 import { configureProgress, startProgress, stopProgress } from '@datum-cloud/datum-ui/nprogress';
 import { ThemeProvider, ThemeScript, useTheme } from '@datum-cloud/datum-ui/theme';
 import { Toaster } from '@datum-cloud/datum-ui/toast';
@@ -137,9 +138,11 @@ export default function AppWithProviders() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <NuqsAdapter>
-        <App />
-      </NuqsAdapter>
+      <RHFAdapter>
+        <NuqsAdapter>
+          <App />
+        </NuqsAdapter>
+      </RHFAdapter>
     </QueryClientProvider>
   );
 }

@@ -4,6 +4,7 @@ import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayId } from '@/components/display';
+import { FormAutosearch } from '@/components/form';
 import { useContactAllListQuery, useSearchUsersQuery } from '@/resources/request/client';
 import {
   useCreateFraudEvaluationMutation,
@@ -18,7 +19,6 @@ import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
-import { Form } from '@datum-ui/form';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisFraudV1Alpha1FraudEvaluation } from '@openapi/fraud.miloapis.com/v1alpha1';
@@ -225,12 +225,12 @@ export default function Page() {
           });
           toast.success(t`Fraud evaluation started`);
         }}>
-        <Form.Autosearch
+        <FormAutosearch
           modal
-          field="user"
+          name="user"
           placeholder={t`Search by name or email...`}
           options={userOptions}
-          isLoading={usersLoading}
+          loading={usersLoading}
           onSearch={setUserSearch}
           searchDebounceMs={500}
         />

@@ -5,12 +5,13 @@ import { BadgeCondition } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
+import { FormAutosearch } from '@/components/form';
 import { useContactSearch, useUserSearch } from '@/hooks';
 import {
   contactCreateMutation,
+  useContactGroupMemberListQuery,
   useCreateContactGroupMembershipMutation,
   useDeleteContactGroupMembershipMutation,
-  useContactGroupMemberListQuery,
 } from '@/resources/request/client';
 import {
   ContactGroupMembershipListWithContacts,
@@ -21,8 +22,8 @@ import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
+import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import { Form } from '@datum-ui/form';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
@@ -40,13 +41,94 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 
 const columnHelper = createColumnHelper<ContactGroupMembershipWithContact>();
 
+type AddMemberFieldsProps = {
+  contactOptions: { value: string; label: string; description?: string }[];
+  contactsLoading: boolean;
+  isEmailNotFound: boolean;
+  setContactSearch: (query: string) => void;
+  userOptions: { value: string; label: string; description?: string }[];
+  usersLoading: boolean;
+  setUserSearch: (query: string) => void;
+};
+
+function AddMemberFields({
+  contactOptions,
+  contactsLoading,
+  isEmailNotFound,
+  setContactSearch,
+  userOptions,
+  usersLoading,
+  setUserSearch,
+}: AddMemberFieldsProps) {
+  const { t } = useLingui();
+  const createNew = (Form.useWatch('create_new') as boolean | undefined) ?? false;
+
+  return (
+    <>
+      <FormAutosearch
+        name="name"
+        label={t`Contact`}
+        placeholder={t`Search for an existing contact by email...`}
+        options={contactOptions}
+        loading={contactsLoading}
+        disabled={createNew}
+        emptyMessage={
+          isEmailNotFound
+            ? t`No contacts found with this email. You can create a new contact below.`
+            : t`No contacts found.`
+        }
+        onSearch={(query) => {
+          if (createNew) return;
+          setContactSearch(query);
+        }}
+        searchDebounceMs={500}
+      />
+
+      {isEmailNotFound && (
+        <>
+          <Form.Field name="create_new">
+            <Form.Switch label={t`Create a new contact with this email`} />
+          </Form.Field>
+
+          <Form.When field="create_new" is={true}>
+            <>
+              <Form.Field name="first_name" label={t`First name`} required>
+                <Form.Input />
+              </Form.Field>
+              <Form.Field name="last_name" label={t`Last name`} required>
+                <Form.Input />
+              </Form.Field>
+
+              <Form.Field name="has_association">
+                <Form.Switch label={t`Associate with User`} />
+              </Form.Field>
+
+              <Form.When field="has_association" is={true}>
+                <FormAutosearch
+                  name="subject"
+                  label={t`User`}
+                  required
+                  placeholder={t`Enter the full email to search...`}
+                  options={userOptions}
+                  loading={usersLoading}
+                  onSearch={setUserSearch}
+                  searchDebounceMs={500}
+                />
+              </Form.When>
+            </>
+          </Form.When>
+        </>
+      )}
+    </>
+  );
+}
+
 export default function Page() {
   const { t } = useLingui();
   const groupData = useContactGroupDetailData();
   const groupName = groupData.metadata?.name ?? '';
 
   const tableQuery = useContactGroupMemberListQuery(groupName);
-
   const items =
     (tableQuery.data as ContactGroupMembershipListWithContacts | undefined)?.items ?? [];
 
@@ -173,9 +255,7 @@ export default function Page() {
     })
     .refine(
       (data) => {
-        if (data.create_new) {
-          return !!data.first_name && !!data.last_name;
-        }
+        if (data.create_new) return !!data.first_name && !!data.last_name;
         return !!data.name;
       },
       {
@@ -185,9 +265,7 @@ export default function Page() {
     )
     .refine(
       (data) => {
-        if (!data.create_new || !data.has_association) {
-          return true;
-        }
+        if (!data.create_new || !data.has_association) return true;
         return !!data.subject;
       },
       {
@@ -203,7 +281,6 @@ export default function Page() {
 
       if (formData.create_new) {
         const emailFromSearch = contactSearchQuery.trim();
-
         const response = await contactCreateMutation('default', {
           familyName: formData.last_name ?? '',
           givenName: formData.first_name ?? '',
@@ -244,7 +321,7 @@ export default function Page() {
           : t`Member added successfully`
       );
     } catch (error) {
-      throw error; // Re-throw to keep dialog open
+      throw error;
     }
   };
 
@@ -293,58 +370,15 @@ export default function Page() {
           has_association: false,
           subject: '',
         }}>
-        {(form) => {
-          const createNew = form.watch('create_new');
-          const hasAssociation = form.watch('has_association');
-
-          return (
-            <>
-              <Form.Autosearch
-                modal
-                field="name"
-                placeholder={t`Search for an existing contact by email...`}
-                options={contactOptions}
-                isLoading={contactsLoading}
-                onSearch={(query) => {
-                  if (createNew) return;
-                  setContactSearch(query);
-                }}
-                disabled={createNew}
-                searchDebounceMs={500}
-                emptyMessage={
-                  isEmailNotFound
-                    ? t`No contacts found with this email. You can create a new contact below.`
-                    : t`No contacts found.`
-                }
-              />
-
-              {isEmailNotFound && (
-                <>
-                  <Form.Switch field="create_new" label={t`Create a new contact with this email`} />
-
-                  {createNew && (
-                    <>
-                      <Form.Input field="first_name" label={t`First name`} required />
-                      <Form.Input field="last_name" label={t`Last name`} required />
-
-                      <Form.Switch field="has_association" label={t`Associate with User`} />
-                      {hasAssociation && (
-                        <Form.Autosearch
-                          field="subject"
-                          placeholder={t`Enter the full email to search...`}
-                          options={userOptions}
-                          isLoading={usersLoading}
-                          onSearch={setUserSearch}
-                          searchDebounceMs={500}
-                        />
-                      )}
-                    </>
-                  )}
-                </>
-              )}
-            </>
-          );
-        }}
+        <AddMemberFields
+          contactOptions={contactOptions}
+          contactsLoading={contactsLoading}
+          isEmailNotFound={isEmailNotFound}
+          setContactSearch={setContactSearch}
+          userOptions={userOptions}
+          usersLoading={usersLoading}
+          setUserSearch={setUserSearch}
+        />
       </DialogForm>
 
       <DataTable.Client
