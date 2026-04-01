@@ -4,7 +4,6 @@ import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayId } from '@/components/display';
-import { FormAutosearch } from '@/components/form';
 import { useContactAllListQuery, useSearchUsersQuery } from '@/resources/request/client';
 import {
   useCreateFraudEvaluationMutation,
@@ -17,6 +16,7 @@ import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
+import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
@@ -225,15 +225,16 @@ export default function Page() {
           });
           toast.success(t`Fraud evaluation started`);
         }}>
-        <FormAutosearch
-          modal
-          name="user"
-          placeholder={t`Search by name or email...`}
-          options={userOptions}
-          loading={usersLoading}
-          onSearch={setUserSearch}
-          searchDebounceMs={500}
-        />
+        <Form.Field name="user">
+          <Form.Autosearch
+            modal
+            options={userOptions}
+            onSearch={setUserSearch}
+            loading={usersLoading}
+            placeholder={t`Search by name or email...`}
+            searchDebounceMs={500}
+          />
+        </Form.Field>
       </DialogForm>
 
       <DialogConfirm

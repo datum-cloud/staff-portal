@@ -1,4 +1,3 @@
-import { FormAutosearch } from '@/components/form';
 import { useUserSearch } from '@/hooks';
 import {
   contactCreateMutation,
@@ -192,14 +191,15 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
               </Form.Field>
               <Form.When field="has_association" is={true}>
                 <>
-                  <FormAutosearch
-                    name="subject"
-                    placeholder={t`Enter the full email to search...`}
-                    options={userOptions}
-                    loading={usersLoading}
-                    onSearch={setUserSearch}
-                    searchDebounceMs={500}
-                  />
+                  <Form.Field name="subject">
+                    <Form.Autosearch
+                      options={userOptions}
+                      onSearch={setUserSearch}
+                      loading={usersLoading}
+                      placeholder={t`Enter the full email to search...`}
+                      searchDebounceMs={500}
+                    />
+                  </Form.Field>
                   <Alert variant="warning">
                     <AlertTitle>{t`Warning`}</AlertTitle>
                     <AlertDescription>{t`Once a contact is associated with a user, this association cannot be removed or changed later.`}</AlertDescription>

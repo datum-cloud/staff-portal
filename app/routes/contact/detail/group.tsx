@@ -48,7 +48,11 @@ export default function Page() {
   const [isAddGroup, setIsAddGroup] = useState(false);
   const createMembershipMutation = useCreateContactGroupMembershipMutation();
   const deleteMembershipMutation = useDeleteContactGroupMembershipMutation();
-  const { options: contactGroupOptions, isLoading: contactGroupsLoading } = useContactGroupSearch();
+  const {
+    options: contactGroupOptions,
+    isLoading: contactGroupsLoading,
+    setSearch: setContactGroupSearch,
+  } = useContactGroupSearch();
 
   const contactGroupFilteredOptions = useMemo(() => {
     return contactGroupOptions.filter((option) => {
@@ -172,10 +176,12 @@ export default function Page() {
         defaultValues={{ name: '' }}>
         <Form.Field name="name">
           <Form.Autocomplete
+            modal
             placeholder={t`Select group...`}
             searchPlaceholder={t`Search groups...`}
             options={contactGroupFilteredOptions}
             loading={contactGroupsLoading}
+            onSearchChange={(query) => setContactGroupSearch(query)}
           />
         </Form.Field>
       </DialogForm>

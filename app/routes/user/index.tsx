@@ -4,7 +4,6 @@ import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
 import { DisplayId, DisplayName } from '@/components/display';
-import { FormDateTimePicker } from '@/components/form';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
 import {
   useInvalidateUserList,
@@ -215,7 +214,13 @@ export default function Page() {
             <Form.Switch label={t`Schedule invitation to be sent at specific time`} />
           </Form.Field>
           <Form.When field="scheduleEnabled" is={true}>
-            <FormDateTimePicker modal name="scheduleAt" label={t`Schedule At`} required />
+            <Form.Field name="scheduleAt" label={t`Schedule At`} required>
+              <Form.DateTimePicker
+                modal
+                placeholder={t`Pick date and time Test`}
+                showTimezoneIndicator
+              />
+            </Form.Field>
           </Form.When>
         </>
       </DialogForm>
