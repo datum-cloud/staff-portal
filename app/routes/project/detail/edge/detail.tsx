@@ -3,7 +3,7 @@ import { BadgeCondition, BadgeState } from '@/components/badge';
 import { ButtonCopy } from '@/components/button';
 import { DateTime } from '@/components/date';
 import { authenticator } from '@/modules/auth';
-import { projectHttpProxyDetailQuery } from '@/resources/request/server';
+import { projectEdgeDetailQuery } from '@/resources/request/server';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@datum-cloud/datum-ui/table';
@@ -16,7 +16,7 @@ import { useLoaderData } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const data = extractDataFromMatches<ComDatumapisNetworkingV1AlphaHttpProxy>(matches);
-  return metaObject(`HTTPProxy - ${data?.metadata?.name}`);
+  return metaObject(`AI Edge - ${data?.metadata?.name}`);
 };
 
 export const handle = {
@@ -28,10 +28,10 @@ export const handle = {
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const session = await authenticator.getSession(request);
 
-  const data = await projectHttpProxyDetailQuery(
+  const data = await projectEdgeDetailQuery(
     session?.accessToken ?? '',
     params?.projectName ?? '',
-    params?.httpProxyName ?? ''
+    params?.edgeName ?? ''
   );
 
   return data;

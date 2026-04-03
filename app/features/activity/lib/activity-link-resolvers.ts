@@ -15,7 +15,7 @@ interface ResourceRouteConfig {
 }
 
 const PROJECT_RESOURCE_ROUTES: Record<string, ResourceRouteConfig> = {
-  HTTPProxy: { path: 'http-proxies', includeNamespace: false },
+  HTTPProxy: { path: 'edges', includeNamespace: false },
   DNSZone: { path: 'dns', includeNamespace: true },
   Domain: { path: 'domains', includeNamespace: true },
   ExportPolicy: { path: 'export-policies', includeNamespace: false },

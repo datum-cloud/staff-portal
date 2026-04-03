@@ -69,9 +69,9 @@ export default [
             index('routes/project/detail/domain/index.tsx'),
             route(':namespace/:domainName', 'routes/project/detail/domain/detail.tsx'),
           ]),
-          route('http-proxies', 'routes/project/detail/httpproxy/layout.tsx', [
-            index('routes/project/detail/httpproxy/index.tsx'),
-            route(':httpProxyName', 'routes/project/detail/httpproxy/detail.tsx'),
+          route('edges', 'routes/project/detail/edge/layout.tsx', [
+            index('routes/project/detail/edge/index.tsx'),
+            route(':edgeName', 'routes/project/detail/edge/detail.tsx'),
           ]),
           route('quotas', 'routes/project/detail/quota/layout.tsx', [
             index('routes/project/detail/quota/index.tsx'),

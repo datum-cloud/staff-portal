@@ -46,10 +46,10 @@ export const projectRoutes = {
     detail: (projectName: string, namespace: string, domainName: string) =>
       `/customers/projects/${projectName}/domains/${namespace}/${domainName}`,
   },
-  httpProxy: {
-    list: (projectName: string) => `/customers/projects/${projectName}/http-proxies`,
-    detail: (projectName: string, httpProxyName: string) =>
-      `/customers/projects/${projectName}/http-proxies/${httpProxyName}`,
+  edge: {
+    list: (projectName: string) => `/customers/projects/${projectName}/edges`,
+    detail: (projectName: string, edgeName: string) =>
+      `/customers/projects/${projectName}/edges/${edgeName}`,
   },
   activity: {
     root: (projectName: string) => `/customers/projects/${projectName}/activity`,
