@@ -28,7 +28,7 @@ export const projectListQuery = async (params?: ListQueryParams) => {
   return response.data.data;
 };
 
-export const projectHttpProxyListQuery = async (projectName: string, params?: ListQueryParams) => {
+export const projectEdgeListQuery = async (projectName: string, params?: ListQueryParams) => {
   const response = await listNetworkingDatumapisComV1AlphaHttpProxyForAllNamespaces({
     baseURL: `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
     query: {

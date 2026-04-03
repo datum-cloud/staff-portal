@@ -112,7 +112,7 @@ msgstr "Active Sessions"
 
 #: app/routes/user/detail/layout.tsx:52
 #: app/routes/user/detail/activity/index.tsx:23
-#: app/routes/project/detail/layout.tsx:107
+#: app/routes/project/detail/layout.tsx:112
 #: app/routes/project/detail/activity/index.tsx:14
 #: app/routes/organization/detail/layout.tsx:42
 #: app/routes/organization/detail/activity/index.tsx:14
@@ -172,6 +172,13 @@ msgstr "Added"
 #: app/features/domain/components/note-card.tsx:38
 msgid "Added by"
 msgstr "Added by"
+
+#: app/routes/project/detail/layout.tsx:87
+#: app/routes/project/detail/edge/layout.tsx:5
+#: app/features/activity/components/activity-list.tsx:388
+#: app/features/activity/components/activity-list.tsx:484
+msgid "AI Edge"
+msgstr "AI Edge"
 
 #: app/features/fraud/detail/evaluation-sections.tsx:136
 msgid "All Evaluations for this User"
@@ -457,10 +464,10 @@ msgstr "Create Policy"
 #: app/routes/user/detail/index.tsx:280
 #: app/routes/project/index.tsx:48
 #: app/routes/project/detail/index.tsx:74
-#: app/routes/project/detail/httpproxy/index.tsx:52
-#: app/routes/project/detail/httpproxy/detail.tsx:123
 #: app/routes/project/detail/export-policy/index.tsx:52
 #: app/routes/project/detail/export-policy/detail.tsx:97
+#: app/routes/project/detail/edge/index.tsx:52
+#: app/routes/project/detail/edge/detail.tsx:123
 #: app/routes/project/detail/domain/index.tsx:65
 #: app/routes/project/detail/domain/detail.tsx:167
 #: app/routes/project/detail/dns/index.tsx:71
@@ -679,7 +686,7 @@ msgstr "Display Name"
 msgid "Display name is required"
 msgstr "Display name is required"
 
-#: app/routes/project/detail/layout.tsx:87
+#: app/routes/project/detail/layout.tsx:92
 #: app/routes/project/detail/dns/layout.tsx:5
 msgid "DNS"
 msgstr "DNS"
@@ -728,7 +735,7 @@ msgstr "Domain"
 msgid "Domain verification is in progress. This may take a few minutes."
 msgstr "Domain verification is in progress. This may take a few minutes."
 
-#: app/routes/project/detail/layout.tsx:92
+#: app/routes/project/detail/layout.tsx:97
 #: app/routes/project/detail/domain/layout.tsx:5
 msgid "Domains"
 msgstr "Domains"
@@ -786,8 +793,8 @@ msgstr "Email is required"
 msgid "End Time"
 msgstr "End Time"
 
-#: app/routes/project/detail/httpproxy/index.tsx:35
-#: app/routes/project/detail/httpproxy/detail.tsx:97
+#: app/routes/project/detail/edge/index.tsx:35
+#: app/routes/project/detail/edge/detail.tsx:97
 #: app/routes/fraud/providers/index.tsx:76
 #: app/routes/fraud/providers/detail.tsx:136
 #: app/routes/fraud/providers/create.tsx:102
@@ -877,7 +884,6 @@ msgstr "Expiration Date"
 msgid "Expires"
 msgstr "Expires"
 
-#: app/routes/project/detail/layout.tsx:102
 #: app/routes/project/detail/export-policy/layout.tsx:5
 msgid "Export Policies"
 msgstr "Export Policies"
@@ -991,7 +997,7 @@ msgstr "Fraud Providers"
 msgid "Full Name"
 msgstr "Full Name"
 
-#: app/routes/project/detail/httpproxy/detail.tsx:77
+#: app/routes/project/detail/edge/detail.tsx:77
 msgid "General"
 msgstr "General"
 
@@ -1054,7 +1060,7 @@ msgstr "History Retention"
 msgid "History Retention (max entries)"
 msgstr "History Retention (max entries)"
 
-#: app/routes/project/detail/httpproxy/detail.tsx:140
+#: app/routes/project/detail/edge/detail.tsx:140
 msgid "Hostnames"
 msgstr "Hostnames"
 
@@ -1065,16 +1071,6 @@ msgstr "How to update your GitHub email"
 #: app/features/email/components/email-detail.tsx:121
 msgid "HTML"
 msgstr "HTML"
-
-#: app/routes/project/detail/layout.tsx:97
-#: app/routes/project/detail/httpproxy/layout.tsx:5
-msgid "HTTP Proxies"
-msgstr "HTTP Proxies"
-
-#: app/features/activity/components/activity-list.tsx:388
-#: app/features/activity/components/activity-list.tsx:484
-msgid "HTTP Proxy"
-msgstr "HTTP Proxy"
 
 #: app/routes/user/index.tsx:102
 #: app/routes/user/detail/index.tsx:225
@@ -1266,6 +1262,10 @@ msgstr "Member deleted successfully"
 msgid "Members"
 msgstr "Members"
 
+#: app/routes/project/detail/layout.tsx:102
+msgid "Metrics"
+msgstr "Metrics"
+
 #: app/routes/project/detail/export-policy/detail.tsx:128
 msgid "MetricsQL"
 msgstr "MetricsQL"
@@ -1285,12 +1285,12 @@ msgstr "My Profile"
 #: app/routes/project/index.tsx:25
 #: app/routes/project/detail/secret.tsx:25
 #: app/routes/project/detail/index.tsx:52
-#: app/routes/project/detail/httpproxy/index.tsx:29
-#: app/routes/project/detail/httpproxy/detail.tsx:87
 #: app/routes/project/detail/export-policy/index.tsx:29
 #: app/routes/project/detail/export-policy/detail.tsx:63
 #: app/routes/project/detail/export-policy/detail.tsx:125
 #: app/routes/project/detail/export-policy/detail.tsx:177
+#: app/routes/project/detail/edge/index.tsx:29
+#: app/routes/project/detail/edge/detail.tsx:87
 #: app/routes/project/detail/dns/detail.tsx:108
 #: app/routes/organization/index.tsx:24
 #: app/routes/organization/detail/project.tsx:34
@@ -1340,6 +1340,10 @@ msgstr "New Limit"
 #: app/routes/profile/session.tsx:143
 msgid "No active sessions."
 msgstr "No active sessions."
+
+#: app/routes/project/detail/edge/index.tsx:84
+msgid "No AI Edge found."
+msgstr "No AI Edge found."
 
 #: app/routes/contact-group/index.tsx:237
 msgid "No contact groups found."
@@ -1394,10 +1398,6 @@ msgstr "No grants found."
 #: app/routes/contact/detail/group.tsx:214
 msgid "No groups found."
 msgstr "No groups found."
-
-#: app/routes/project/detail/httpproxy/index.tsx:87
-msgid "No HTTP proxies found."
-msgstr "No HTTP proxies found."
 
 #: app/routes/organization/detail/member.tsx:169
 #: app/routes/contact-group/detail/member.tsx:411
@@ -1843,6 +1843,10 @@ msgstr "Search"
 msgid "Search activity..."
 msgstr "Search activity..."
 
+#: app/routes/project/detail/edge/index.tsx:79
+msgid "Search AI Edge..."
+msgstr "Search AI Edge..."
+
 #: app/routes/fraud/index.tsx:282
 msgid "Search by email, name, or ID..."
 msgstr "Search by email, name, or ID..."
@@ -1892,10 +1896,6 @@ msgstr "Search grants..."
 #: app/routes/contact/detail/group.tsx:210
 msgid "Search groups..."
 msgstr "Search groups..."
-
-#: app/routes/project/detail/httpproxy/index.tsx:80
-msgid "Search HTTP proxies..."
-msgstr "Search HTTP proxies..."
 
 #: app/components/app-search/index.tsx:239
 msgid "Search is temporarily unavailable. Please try again."
@@ -1953,7 +1953,7 @@ msgid "Secret Namespace"
 msgstr "Secret Namespace"
 
 #: app/routes/project/detail/secret.tsx:13
-#: app/routes/project/detail/layout.tsx:112
+#: app/routes/project/detail/layout.tsx:107
 msgid "Secrets"
 msgstr "Secrets"
 
@@ -2056,11 +2056,11 @@ msgstr "Start Time"
 
 #: app/routes/user/index.tsx:108
 #: app/routes/user/detail/index.tsx:270
-#: app/routes/project/detail/httpproxy/index.tsx:45
-#: app/routes/project/detail/httpproxy/detail.tsx:111
 #: app/routes/project/detail/export-policy/index.tsx:45
 #: app/routes/project/detail/export-policy/detail.tsx:85
 #: app/routes/project/detail/export-policy/detail.tsx:186
+#: app/routes/project/detail/edge/index.tsx:45
+#: app/routes/project/detail/edge/detail.tsx:111
 #: app/routes/project/detail/domain/index.tsx:54
 #: app/routes/project/detail/domain/detail.tsx:153
 #: app/routes/fraud/providers/index.tsx:85

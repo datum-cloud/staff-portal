@@ -14,14 +14,14 @@ import {
   ComMiloapisResourcemanagerV1Alpha1Project,
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import {
-  ChartArea,
+  ChartSpline,
   CircleGauge,
+  FileLock,
   FileText,
-  Globe,
-  Lock,
-  Router,
+  Gauge,
+  Layers,
+  Signpost,
   SquareActivity,
-  Waypoints,
 } from 'lucide-react';
 import { Outlet, useLoaderData } from 'react-router';
 
@@ -84,34 +84,34 @@ export default function Layout() {
       icon: FileText,
     },
     {
+      title: t`AI Edge`,
+      href: projectRoutes.edge.list(project?.metadata?.name ?? ''),
+      icon: Gauge,
+    },
+    {
       title: t`DNS`,
       href: projectRoutes.dns.list(project?.metadata?.name ?? ''),
-      icon: Router,
+      icon: Signpost,
     },
     {
       title: t`Domains`,
       href: projectRoutes.domain.list(project?.metadata?.name ?? ''),
-      icon: Globe,
+      icon: Layers,
     },
     {
-      title: t`HTTP Proxies`,
-      href: projectRoutes.httpProxy.list(project?.metadata?.name ?? ''),
-      icon: Waypoints,
-    },
-    {
-      title: t`Export Policies`,
+      title: t`Metrics`,
       href: projectRoutes.exportPolicy.list(project?.metadata?.name ?? ''),
-      icon: ChartArea,
+      icon: ChartSpline,
+    },
+    {
+      title: t`Secrets`,
+      href: projectRoutes.secret.list(project?.metadata?.name ?? ''),
+      icon: FileLock,
     },
     {
       title: t`Activity`,
       href: projectRoutes.activity.root(project?.metadata?.name ?? ''),
       icon: SquareActivity,
-    },
-    {
-      title: t`Secrets`,
-      href: projectRoutes.secret.list(project?.metadata?.name ?? ''),
-      icon: Lock,
     },
     {
       title: t`Quotas`,

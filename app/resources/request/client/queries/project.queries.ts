@@ -3,7 +3,7 @@ import {
   projectDnsRecordListQuery,
   projectDomainListQuery,
   projectExportPolicyListQuery,
-  projectHttpProxyListQuery,
+  projectEdgeListQuery,
   projectListQuery,
 } from '../apis/project.api';
 import { ListQueryParams } from '@/resources/schemas';
@@ -17,10 +17,10 @@ export const projectQueryKeys = {
     list: (projectName: string, params?: ListQueryParams) =>
       ['projects', projectName, 'domains', 'list', params] as const,
   },
-  httpProxies: {
-    all: (projectName: string) => ['projects', projectName, 'http-proxies'] as const,
+  edges: {
+    all: (projectName: string) => ['projects', projectName, 'edges'] as const,
     list: (projectName: string, params?: ListQueryParams) =>
-      ['projects', projectName, 'http-proxies', 'list', params] as const,
+      ['projects', projectName, 'edges', 'list', params] as const,
   },
   exportPolicies: {
     all: (projectName: string) => ['projects', projectName, 'export-policies'] as const,
@@ -66,10 +66,10 @@ export const useProjectDomainListQuery = (projectName: string, params?: ListQuer
   });
 };
 
-export const useProjectHttpProxyListQuery = (projectName: string, params?: ListQueryParams) => {
+export const useProjectEdgeListQuery = (projectName: string, params?: ListQueryParams) => {
   return useQuery({
-    queryKey: projectQueryKeys.httpProxies.list(projectName, params),
-    queryFn: () => projectHttpProxyListQuery(projectName, params),
+    queryKey: projectQueryKeys.edges.list(projectName, params),
+    queryFn: () => projectEdgeListQuery(projectName, params),
     enabled: Boolean(projectName),
     staleTime: 5 * 60 * 1000,
   });

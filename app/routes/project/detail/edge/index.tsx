@@ -2,7 +2,7 @@ import { getProjectDetailMetadata, useProjectDetailData } from '../../shared';
 import type { Route } from './+types/index';
 import { BadgeCondition } from '@/components/badge';
 import { DateTime } from '@/components/date';
-import { useProjectHttpProxyListQuery } from '@/resources/request/client';
+import { useProjectEdgeListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
@@ -14,7 +14,7 @@ import { Link } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const { projectName } = getProjectDetailMetadata(matches);
-  return metaObject(`HTTPProxy - ${projectName}`);
+  return metaObject(`AI Edge - ${projectName}`);
 };
 
 const columnHelper = createColumnHelper<ComDatumapisNetworkingV1AlphaHttpProxy>();
@@ -22,13 +22,13 @@ const columnHelper = createColumnHelper<ComDatumapisNetworkingV1AlphaHttpProxy>(
 export default function Page() {
   const { project } = useProjectDetailData();
   const projectName = project?.metadata?.name ?? '';
-  const tableQuery = useProjectHttpProxyListQuery(projectName);
+  const tableQuery = useProjectEdgeListQuery(projectName);
 
   const columns = [
     columnHelper.accessor('metadata.name', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
       cell: ({ getValue }) => (
-        <Link to={projectRoutes.httpProxy.detail(projectName, getValue() ?? '')}>{getValue()}</Link>
+        <Link to={projectRoutes.edge.detail(projectName, getValue() ?? '')}>{getValue()}</Link>
       ),
     }),
     columnHelper.accessor('spec.rules', {
@@ -76,15 +76,12 @@ export default function Page() {
       <Card className="m-4 py-4 shadow-none">
         <CardContent className="flex flex-col gap-2 px-4">
           <div className="flex flex-wrap items-center gap-4">
-            <DataTable.Search
-              placeholder={t`Search HTTP proxies...`}
-              className="w-64 min-w-[12rem]"
-            />
+            <DataTable.Search placeholder={t`Search AI Edge...`} className="w-64 min-w-[12rem]" />
           </div>
           <DataTable.Content
             headerClassName="bg-muted/50"
             className="border-t border-b border-solid"
-            emptyMessage={t`No HTTP proxies found.`}
+            emptyMessage={t`No AI Edge found.`}
           />
           <DataTable.Pagination className="pb-0" />
         </CardContent>
