@@ -360,9 +360,12 @@ api.post('/assistant', authMiddleware(), async (c) => {
       for await (const chunk of result.fullStream) {
         if (chunk.type === 'text-delta') {
           await s.write(formatDataStreamPart('text', chunk.textDelta));
+        } else if (chunk.type === 'step-start') {
+          await s.write(formatDataStreamPart('start_step', { messageId: chunk.messageId }));
         } else if (chunk.type === 'tool-call') {
           await s.write(formatDataStreamPart('tool_call', chunk));
         } else if (chunk.type === 'tool-result') {
+          // chunk includes args/toolName which aren't in the external type — cast is safe
           await s.write(formatDataStreamPart('tool_result', chunk as any));
         } else if (chunk.type === 'step-finish') {
           await s.write(

@@ -24,6 +24,9 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     error: chatError,
   } = useChat({
     api: '/api/assistant',
+    // maxSteps here is informational only — actual multi-step enforcement is
+    // in streamText on the server. Client-side tool re-submission is not used
+    // since all tools have server-side execute() functions.
     maxSteps: 20,
   });
 
