@@ -1,9 +1,9 @@
+import { useFraudAlertsWidget } from './use-fraud-alerts-widget';
 import * as client from '@/resources/request/client';
-import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { renderHook, waitFor } from '@testing-library/react';
 import React from 'react';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
-import { useFraudAlertsWidget } from './use-fraud-alerts-widget';
 
 vi.mock('@/resources/request/client', () => ({
   listFraudEvaluations: vi.fn(),
@@ -17,8 +17,9 @@ function createWrapper() {
       queries: { retry: false, gcTime: 0 },
     },
   });
-  return ({ children }: { children: React.ReactNode }) =>
+  const Wrapper = ({ children }: { children: React.ReactNode }) =>
     React.createElement(QueryClientProvider, { client: queryClient }, children);
+  return Wrapper;
 }
 
 function makeEvaluation(overrides: {
