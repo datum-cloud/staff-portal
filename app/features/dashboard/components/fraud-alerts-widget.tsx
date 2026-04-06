@@ -136,7 +136,7 @@ export function FraudAlertsWidget() {
                   onClick={() => navigate(fraudRoutes.evaluations.detail(alert.name))}>
                   <TableCell className="max-w-[140px]">
                     <Text size="sm" className="truncate font-medium">
-                      {alert.userRef}
+                      {alert.userDisplay}
                     </Text>
                   </TableCell>
                   <TableCell>
