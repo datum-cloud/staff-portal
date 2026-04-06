@@ -14,7 +14,7 @@ const MAX_MESSAGES = 50;
 const AssistantContext = createContext<AssistantContextValue | undefined>(undefined);
 
 function generateId(): string {
-  return Math.random().toString(36).slice(2, 10);
+  return crypto.randomUUID();
 }
 
 export function AssistantProvider({ children }: { children: ReactNode }) {

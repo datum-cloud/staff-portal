@@ -36,6 +36,17 @@ import { createSearchMiloapisComV1Alpha1ResourceSearchQuery } from '@openapi/sea
 // The server-side base URL for direct API calls (not via browser proxy)
 const API_BASE_URL = env.API_URL;
 
+/**
+ * The generated OpenAPI clients type response.data as ProxyResponse<T> because
+ * the browser normally goes through the internal proxy which wraps responses in
+ * { code, data: T, path }. When called with baseURL: API_BASE_URL the request
+ * bypasses the proxy and response.data IS T directly at runtime. This helper
+ * casts through unknown so TypeScript accepts the direct access.
+ */
+function unwrap<T>(data: unknown): T {
+  return data as unknown as T;
+}
+
 function authHeaders(token: string) {
   return { Authorization: `Bearer ${token}` };
 }
@@ -121,11 +132,11 @@ async function handleSearchResources(input: ToolInput, token: string) {
     },
   });
 
-  const results = response.data?.status?.results ?? [];
+  const results = unwrap<any>(response.data)?.status?.results ?? [];
 
   const trimmedResults = results
     .slice()
-    .sort((a, b) => ((b as any).relevanceScore ?? 0) - ((a as any).relevanceScore ?? 0))
+    .sort((a: any, b: any) => ((b as any).relevanceScore ?? 0) - ((a as any).relevanceScore ?? 0))
     .map((result: any) => {
       const resource = trimK8sNoise(result.resource) as Record<string, unknown>;
       // Determine resource type from apiVersion/kind if available
@@ -161,7 +172,7 @@ async function handleListUsers(input: ToolInput, token: string) {
     headers: authHeaders(token),
   });
 
-  const data = response.data;
+  const data = unwrap<any>(response.data);
   const items = processResources(data?.items ?? [], 'User');
   return {
     items,
@@ -179,7 +190,7 @@ async function handleGetUser(input: ToolInput, token: string) {
     headers: authHeaders(token),
   });
 
-  const resource = response.data;
+  const resource = unwrap<any>(response.data);
   if (!resource) return { error: 'User not found' };
   return processResource(resource, 'User');
 }
@@ -193,7 +204,7 @@ async function handleListOrganizations(input: ToolInput, token: string) {
     headers: authHeaders(token),
   });
 
-  const data = response.data;
+  const data = unwrap<any>(response.data);
   const items = processResources(data?.items ?? [], 'Organization');
   return {
     items,
@@ -211,7 +222,7 @@ async function handleGetOrganization(input: ToolInput, token: string) {
     headers: authHeaders(token),
   });
 
-  const resource = response.data;
+  const resource = unwrap<any>(response.data);
   if (!resource) return { error: 'Organization not found' };
   return processResource(resource, 'Organization');
 }
@@ -225,7 +236,7 @@ async function handleListProjects(input: ToolInput, token: string) {
     headers: authHeaders(token),
   });
 
-  const data = response.data;
+  const data = unwrap<any>(response.data);
   const items = processResources(data?.items ?? [], 'Project');
   return {
     items,
@@ -243,7 +254,7 @@ async function handleGetProject(input: ToolInput, token: string) {
     headers: authHeaders(token),
   });
 
-  const resource = response.data;
+  const resource = unwrap<any>(response.data);
   if (!resource) return { error: 'Project not found' };
   return processResource(resource, 'Project');
 }
@@ -261,7 +272,7 @@ async function handleListFraudEvaluations(input: ToolInput, token: string) {
     headers: authHeaders(token),
   });
 
-  const data = response.data;
+  const data = unwrap<any>(response.data);
   const items = processResources(data?.items ?? [], 'FraudEvaluation');
   return {
     items,
@@ -279,7 +290,7 @@ async function handleGetFraudEvaluation(input: ToolInput, token: string) {
     headers: authHeaders(token),
   });
 
-  const resource = response.data;
+  const resource = unwrap<any>(response.data);
   if (!resource) return { error: 'Fraud evaluation not found' };
   return processResource(resource, 'FraudEvaluation');
 }
@@ -297,7 +308,7 @@ async function handleListContacts(input: ToolInput, token: string) {
     headers: authHeaders(token),
   });
 
-  const data = response.data;
+  const data = unwrap<any>(response.data);
   const items = processResources(data?.items ?? [], 'Contact');
   return {
     items,
@@ -315,7 +326,7 @@ async function handleListContactGroups(input: ToolInput, token: string) {
     headers: authHeaders(token),
   });
 
-  const data = response.data;
+  const data = unwrap<any>(response.data);
   const items = processResources(data?.items ?? [], 'ContactGroup');
   return {
     items,
@@ -335,8 +346,8 @@ async function handleListEmails(input: ToolInput, token: string) {
     headers: authHeaders(token),
   });
 
-  const data = response.data;
-  const items = (data?.items ?? []).map((item) => trimK8sNoise(item) as Record<string, unknown>);
+  const data = unwrap<any>(response.data);
+  const items = (data?.items ?? []).map((item: unknown) => trimK8sNoise(item) as Record<string, unknown>);
   return {
     items,
     remainingItemCount: data?.metadata?.remainingItemCount ?? 0,
@@ -353,8 +364,8 @@ async function handleListEmailBroadcasts(input: ToolInput, token: string) {
     headers: authHeaders(token),
   });
 
-  const data = response.data;
-  const items = (data?.items ?? []).map((item) => trimK8sNoise(item) as Record<string, unknown>);
+  const data = unwrap<any>(response.data);
+  const items = (data?.items ?? []).map((item: unknown) => trimK8sNoise(item) as Record<string, unknown>);
   return {
     items,
     remainingItemCount: data?.metadata?.remainingItemCount ?? 0,
@@ -373,9 +384,19 @@ async function handleQueryAuditLogs(input: ToolInput, token: string) {
   const requestedEnd = (input.end_time as string | undefined) ?? now.toISOString();
   const endTime = new Date(requestedEnd) > now ? now.toISOString() : requestedEnd;
 
-  // Always exclude activity API entries from results
-  const baseFilter = "objectRef.apiGroup != 'activity.miloapis.com'";
-  const filter = userFilter ? `${baseFilter} && ${userFilter}` : baseFilter;
+  // Always exclude activity API entries from results.
+  // Build filter from structured clauses only — never concatenate raw user input
+  // to avoid CEL injection via prompt engineering.
+  const clauses = ["objectRef.apiGroup != 'activity.miloapis.com'"];
+  if (userFilter) {
+    // Allow only simple equality/inequality field selectors (e.g. "user='foo'")
+    // Reject anything containing logical OR operators that could bypass the base clause.
+    const safe = /^[\w.\s!=<>'"-]+$/.test(userFilter) && !/\|\|/.test(userFilter);
+    if (safe) {
+      clauses.push(userFilter);
+    }
+  }
+  const filter = clauses.join(' && ');
 
   const response = await createActivityMiloapisComV1Alpha1AuditLogQuery({
     baseURL: API_BASE_URL,
@@ -398,7 +419,7 @@ async function handleQueryAuditLogs(input: ToolInput, token: string) {
     },
   });
 
-  const status = response.data?.status;
+  const status = unwrap<any>(response.data)?.status;
   return {
     results: status?.results ?? [],
     effectiveStartTime: status?.effectiveStartTime,
@@ -421,8 +442,8 @@ async function handleGetResourceCount(input: ToolInput, token: string) {
         query: { limit: 1 },
         headers: authHeaders(token),
       });
-      items = res.data?.items;
-      remainingItemCount = res.data?.metadata?.remainingItemCount;
+      items = unwrap<any>(res.data)?.items;
+      remainingItemCount = unwrap<any>(res.data)?.metadata?.remainingItemCount;
       break;
     }
     case 'organizations': {
@@ -431,8 +452,8 @@ async function handleGetResourceCount(input: ToolInput, token: string) {
         query: { limit: 1 },
         headers: authHeaders(token),
       });
-      items = res.data?.items;
-      remainingItemCount = res.data?.metadata?.remainingItemCount;
+      items = unwrap<any>(res.data)?.items;
+      remainingItemCount = unwrap<any>(res.data)?.metadata?.remainingItemCount;
       break;
     }
     case 'projects': {
@@ -441,8 +462,8 @@ async function handleGetResourceCount(input: ToolInput, token: string) {
         query: { limit: 1 },
         headers: authHeaders(token),
       });
-      items = res.data?.items;
-      remainingItemCount = res.data?.metadata?.remainingItemCount;
+      items = unwrap<any>(res.data)?.items;
+      remainingItemCount = unwrap<any>(res.data)?.metadata?.remainingItemCount;
       break;
     }
     case 'fraud_evaluations': {
@@ -451,8 +472,8 @@ async function handleGetResourceCount(input: ToolInput, token: string) {
         query: { limit: 1 },
         headers: authHeaders(token),
       });
-      items = res.data?.items;
-      remainingItemCount = res.data?.metadata?.remainingItemCount;
+      items = unwrap<any>(res.data)?.items;
+      remainingItemCount = unwrap<any>(res.data)?.metadata?.remainingItemCount;
       break;
     }
     case 'contacts': {
@@ -461,8 +482,8 @@ async function handleGetResourceCount(input: ToolInput, token: string) {
         query: { limit: 1 },
         headers: authHeaders(token),
       });
-      items = res.data?.items;
-      remainingItemCount = res.data?.metadata?.remainingItemCount;
+      items = unwrap<any>(res.data)?.items;
+      remainingItemCount = unwrap<any>(res.data)?.metadata?.remainingItemCount;
       break;
     }
     case 'contact_groups': {
@@ -471,8 +492,8 @@ async function handleGetResourceCount(input: ToolInput, token: string) {
         query: { limit: 1 },
         headers: authHeaders(token),
       });
-      items = res.data?.items;
-      remainingItemCount = res.data?.metadata?.remainingItemCount;
+      items = unwrap<any>(res.data)?.items;
+      remainingItemCount = unwrap<any>(res.data)?.metadata?.remainingItemCount;
       break;
     }
     default:
