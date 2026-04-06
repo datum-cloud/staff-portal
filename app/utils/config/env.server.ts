@@ -10,6 +10,10 @@ const envSchema = z.object({
   SESSION_SECRET: z.string().min(32),
   VERSION: z.string(),
 
+  // Anthropic / Claude configuration
+  ANTHROPIC_API_KEY: z.string().optional(),
+  ANTHROPIC_MODEL: z.string().optional(),
+
   // Optional configuration
   AUTH_OIDC_SCOPES: z.string().optional(),
   AUTH_OIDC_CLIENT_SECRET: z.string().optional(),

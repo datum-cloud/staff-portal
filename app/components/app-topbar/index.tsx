@@ -1,4 +1,5 @@
 import AppSearch from '@/components/app-search';
+import { AssistantDrawer, AssistantTrigger } from '@/features/assistant';
 import { Separator } from '@datum-cloud/datum-ui/separator';
 import { SidebarTrigger } from '@datum-cloud/datum-ui/sidebar';
 import { TaskQueueDropdown } from '@datum-cloud/datum-ui/task-queue';
@@ -11,7 +12,9 @@ const AppTopbar = () => {
       <AppSearch />
       <div className="ml-auto flex items-center space-x-4">
         <TaskQueueDropdown />
+        <AssistantTrigger />
       </div>
+      <AssistantDrawer />
     </header>
   );
 };

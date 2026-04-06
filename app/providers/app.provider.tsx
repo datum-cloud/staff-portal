@@ -1,3 +1,4 @@
+import { AssistantProvider } from '@/features/assistant';
 import { getBrowserTimezone } from '@/utils/helpers';
 import { clearSentryUser, setSentryUser } from '@/utils/logger';
 import { useTheme, type Theme } from '@datum-cloud/datum-ui/theme';
@@ -98,7 +99,11 @@ export const AppProvider: React.FC<IProviderProps> = ({ children, user }) => {
     }
   }, [userState]);
 
-  return <AppContext.Provider value={contextPayload}>{children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider value={contextPayload}>
+      <AssistantProvider>{children}</AssistantProvider>
+    </AppContext.Provider>
+  );
 };
 
 export const useApp = () => {
