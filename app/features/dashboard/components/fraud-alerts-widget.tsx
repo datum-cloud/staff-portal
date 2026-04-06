@@ -72,8 +72,8 @@ export function FraudAlertsWidget() {
   const { alerts, totalCount, isLoading, isError, refetch } = useFraudAlertsWidget();
 
   return (
-    <Card className="md:col-span-2 lg:col-span-2 xl:col-span-2">
-      <CardHeader className="pb-3">
+    <Card className="md:col-span-2 lg:col-span-2 xl:col-span-2 py-0 gap-0">
+      <CardHeader className="px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ShieldAlert className="text-muted-foreground h-4 w-4" />
@@ -95,7 +95,7 @@ export function FraudAlertsWidget() {
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="pt-0">
+      <CardContent className="px-4 pb-3 pt-0">
         {isLoading ? (
           <LoadingSkeleton />
         ) : isError ? (

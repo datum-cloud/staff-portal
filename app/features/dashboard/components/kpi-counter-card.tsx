@@ -27,8 +27,8 @@ export function KpiCounterCard({
 }: KpiCounterCardProps) {
   return (
     <Link to={href} className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg">
-      <Card className="hover:bg-muted/50 cursor-pointer transition-colors h-full">
-        <CardContent className="flex flex-col gap-2 p-4">
+      <Card className="hover:bg-muted/50 cursor-pointer transition-colors h-full py-0 gap-0">
+        <CardContent className="flex flex-col gap-1.5 p-3">
           <div className="text-muted-foreground flex items-center gap-2">
             <span className="h-4 w-4 [&>svg]:h-4 [&>svg]:w-4">{icon}</span>
             <Text size="sm" textColor="muted">

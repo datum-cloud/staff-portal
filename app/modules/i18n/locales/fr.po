@@ -173,11 +173,19 @@ msgstr ""
 msgid "Added by"
 msgstr ""
 
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:126
+msgid "Age"
+msgstr ""
+
 #: app/routes/project/detail/layout.tsx:87
 #: app/routes/project/detail/edge/layout.tsx:5
 #: app/features/activity/components/activity-list.tsx:388
 #: app/features/activity/components/activity-list.tsx:484
 msgid "AI Edge"
+msgstr ""
+
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:50
+msgid "All evaluations are clear"
 msgstr ""
 
 #: app/features/fraud/detail/evaluation-sections.tsx:136
@@ -186,6 +194,10 @@ msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:443
 msgid "All read operations"
+msgstr ""
+
+#: app/features/dashboard/components/pending-approvals-widget.tsx:42
+msgid "All registrations are up to date"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:436
@@ -432,6 +444,14 @@ msgstr ""
 msgid "Copy shareable link with current filters"
 msgstr ""
 
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:61
+msgid "Could not load fraud alerts"
+msgstr ""
+
+#: app/features/dashboard/components/pending-approvals-widget.tsx:53
+msgid "Could not load pending approvals"
+msgstr ""
+
 #: app/routes/fraud/providers/create.tsx:136
 #: app/routes/contact-group/create.tsx:14
 #: app/routes/contact/create.tsx:14
@@ -504,7 +524,7 @@ msgstr ""
 msgid "Dark"
 msgstr ""
 
-#: app/routes/dashboard/index.tsx:11
+#: app/routes/dashboard/index.tsx:25
 #: app/components/app-sidebar/index.tsx:93
 #: app/components/app-search/index.tsx:48
 msgid "Dashboard"
@@ -549,6 +569,7 @@ msgstr ""
 #: app/routes/fraud/index.tsx:296
 #: app/routes/fraud/index.tsx:310
 #: app/features/fraud/detail/evaluation-sections.tsx:264
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:121
 msgid "Decision"
 msgstr ""
 
@@ -764,6 +785,7 @@ msgstr ""
 #: app/routes/user/detail/index.tsx:250
 #: app/routes/fraud/index.tsx:112
 #: app/routes/contact-group/detail/member.tsx:202
+#: app/features/dashboard/components/pending-approvals-widget.tsx:108
 #: app/features/contact/components/contact-list.tsx:83
 #: app/features/contact/components/contact-form.tsx:127
 msgid "Email"
@@ -973,6 +995,10 @@ msgstr ""
 msgid "Fraud & Abuse"
 msgstr ""
 
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:81
+msgid "Fraud Alerts"
+msgstr ""
+
 #: app/routes/fraud/detail/index.tsx:22
 msgid "Fraud Evaluation Detail"
 msgstr ""
@@ -982,6 +1008,7 @@ msgid "Fraud evaluation started"
 msgstr ""
 
 #: app/routes/fraud/index.tsx:34
+#: app/routes/dashboard/index.tsx:84
 msgid "Fraud Evaluations"
 msgstr ""
 
@@ -1305,6 +1332,7 @@ msgstr ""
 #: app/routes/contact/detail/group.tsx:83
 #: app/features/quota/components/quota-grant-list.tsx:74
 #: app/features/fraud/policy/policy-form.tsx:153
+#: app/features/dashboard/components/pending-approvals-widget.tsx:103
 #: app/features/contact/components/contact-list.tsx:66
 msgid "Name"
 msgstr ""
@@ -1378,6 +1406,10 @@ msgstr ""
 msgid "No export policies found."
 msgstr ""
 
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:47
+msgid "No fraud alerts"
+msgstr ""
+
 #: app/routes/fraud/index.tsx:317
 msgid "No fraud evaluations found."
 msgstr ""
@@ -1415,6 +1447,10 @@ msgstr ""
 #: app/routes/user/detail/organization.tsx:83
 #: app/routes/organization/index.tsx:104
 msgid "No organizations found."
+msgstr ""
+
+#: app/features/dashboard/components/pending-approvals-widget.tsx:39
+msgid "No pending approvals"
 msgstr ""
 
 #: app/routes/project/index.tsx:80
@@ -1497,6 +1533,7 @@ msgstr ""
 #: app/routes/project/detail/layout.tsx:46
 #: app/routes/organization/layout.tsx:5
 #: app/routes/organization/index.tsx:14
+#: app/routes/dashboard/index.tsx:68
 #: app/components/app-sidebar/index.tsx:109
 #: app/components/app-search/index.tsx:51
 #: app/components/app-search/index.tsx:251
@@ -1520,6 +1557,10 @@ msgstr ""
 #: app/features/email/components/email-list.tsx:143
 #: app/features/email/components/email-list.tsx:169
 msgid "Pending"
+msgstr ""
+
+#: app/features/dashboard/components/pending-approvals-widget.tsx:73
+msgid "Pending Approvals"
 msgstr ""
 
 #: app/features/domain/components/domain-status-probe.tsx:85
@@ -1639,6 +1680,7 @@ msgstr ""
 #: app/routes/project/detail/layout.tsx:52
 #: app/routes/organization/detail/project.tsx:16
 #: app/routes/organization/detail/layout.tsx:37
+#: app/routes/dashboard/index.tsx:76
 #: app/components/app-sidebar/index.tsx:113
 #: app/components/app-search/index.tsx:57
 #: app/components/app-search/index.tsx:266
@@ -1792,6 +1834,11 @@ msgstr ""
 msgid "Response Code"
 msgstr ""
 
+#: app/features/dashboard/components/pending-approvals-widget.tsx:56
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:64
+msgid "Retry"
+msgstr ""
+
 #: app/routes/fraud/index.tsx:300
 msgid "Review"
 msgstr ""
@@ -1832,6 +1879,7 @@ msgstr ""
 
 #: app/routes/fraud/index.tsx:130
 #: app/features/fraud/detail/evaluation-sections.tsx:252
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:116
 msgid "Score"
 msgstr ""
 
@@ -2193,6 +2241,7 @@ msgstr ""
 #: app/routes/fraud/index.tsx:100
 #: app/routes/contact-group/detail/member.tsx:107
 #: app/features/fraud/detail/evaluation-sections.tsx:216
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:111
 #: app/features/activity/components/activity-list.tsx:116
 #: app/features/activity/components/activity-list.tsx:391
 #: app/features/activity/components/activity-list.tsx:487
@@ -2241,6 +2290,7 @@ msgstr ""
 
 #: app/routes/user/layout.tsx:5
 #: app/routes/user/index.tsx:30
+#: app/routes/dashboard/index.tsx:60
 #: app/components/app-sidebar/index.tsx:105
 #: app/components/app-search/index.tsx:49
 #: app/components/app-search/index.tsx:281
@@ -2276,6 +2326,8 @@ msgid "View activity logs"
 msgstr ""
 
 #: app/features/dashboard/components/recent-users-widget.tsx:102
+#: app/features/dashboard/components/pending-approvals-widget.tsx:86
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:94
 msgid "View All"
 msgstr ""
 
@@ -2291,6 +2343,10 @@ msgstr ""
 #: app/routes/contact/detail/group.tsx:94
 #: app/features/contact-group/components/contact-group-form.tsx:85
 msgid "Visibility"
+msgstr ""
+
+#: app/features/dashboard/components/pending-approvals-widget.tsx:113
+msgid "Waiting Since"
 msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:204
