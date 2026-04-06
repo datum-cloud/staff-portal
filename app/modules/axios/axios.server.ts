@@ -33,7 +33,7 @@ export function withRequestContext<T>(requestId: string, fn: () => T): T {
 }
 
 export const http = Axios.create({
-  timeout: 20 * 1000,
+  timeout: 55 * 1000,
   baseURL: env.API_URL,
 });
 

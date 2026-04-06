@@ -12,7 +12,7 @@ import { z } from 'zod';
 export const PROXY_URL = '/api/internal';
 
 export const httpClient = Axios.create({
-  timeout: 20 * 1000,
+  timeout: 60 * 1000,
   baseURL: PROXY_URL,
 });
 
