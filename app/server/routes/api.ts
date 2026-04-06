@@ -1,6 +1,5 @@
 import { SYSTEM_PROMPT } from '@/features/assistant/lib/system-prompt';
-import { ASSISTANT_TOOLS, getToolLabel } from '@/features/assistant/lib/tool-definitions';
-import { executeAssistantTool } from '@/features/assistant/lib/tool-executor';
+import { createTools } from '@/features/assistant/lib/tool-definitions';
 import { apiRequest } from '@/modules/axios/axios.server';
 import { LokiActivityLogsService, QueryParams } from '@/modules/loki/server';
 import { PrometheusService } from '@/modules/prometheus';
@@ -10,19 +9,11 @@ import { authMiddleware, getToken } from '@/server/middleware';
 import { createErrorResponse, createSuccessResponse } from '@/server/response';
 import { env } from '@/utils/config/env.server';
 import { captureApiError, createRequestLogger } from '@/utils/logger';
-import Anthropic from '@anthropic-ai/sdk';
+import { createAnthropic } from '@ai-sdk/anthropic';
+import { formatDataStreamPart } from '@ai-sdk/ui-utils';
+import { streamText } from 'ai';
 import { Hono } from 'hono';
 import { stream } from 'hono/streaming';
-
-// Lazy singleton — instantiated once on first assistant request so the route
-// handler does not create a new client per request.
-let _anthropic: Anthropic | null = null;
-function getAnthropicClient(): Anthropic {
-  if (!_anthropic) {
-    _anthropic = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
-  }
-  return _anthropic;
-}
 
 const API_BASENAME = '/api';
 
@@ -281,17 +272,12 @@ api.post('/metrics', authMiddleware(), async (c) => {
 // ---- Assistant API ----
 
 const MAX_TOOL_ROUNDS = 20;
-const MAX_TOKENS_PER_RESPONSE = 4096;
 const MAX_MESSAGES_CAP = 50;
 const MAX_MESSAGE_CONTENT_LENGTH = 100_000;
 
 interface AssistantRequestMessage {
   role: 'user' | 'assistant';
   content: string;
-}
-
-interface AssistantRequest {
-  messages: AssistantRequestMessage[];
 }
 
 const VALID_ROLES = new Set<string>(['user', 'assistant']);
@@ -331,10 +317,10 @@ api.post('/assistant', authMiddleware(), async (c) => {
   }
 
   const token = getToken(c);
-  let body: AssistantRequest;
+  let body: { messages: unknown };
 
   try {
-    body = await c.req.json<AssistantRequest>();
+    body = await c.req.json();
   } catch {
     return c.json({ error: 'Invalid JSON request body' }, 400);
   }
@@ -344,127 +330,68 @@ api.post('/assistant', authMiddleware(), async (c) => {
     return c.json({ error: validationError }, 400);
   }
 
-  const messages = body.messages as AssistantRequestMessage[];
+  const messages = (body.messages as AssistantRequestMessage[])
+    .slice(-MAX_MESSAGES_CAP)
+    .map((m) => ({ role: m.role, content: m.content }));
 
-  // Enforce 50-message cap — drop oldest if exceeded
-  const cappedMessages: AssistantRequestMessage[] =
-    messages.length > MAX_MESSAGES_CAP
-      ? messages.slice(messages.length - MAX_MESSAGES_CAP)
-      : messages;
+  const systemPrompt =
+    SYSTEM_PROMPT + `\n\n## Current date\n\nToday is ${new Date().toISOString().slice(0, 10)}.`;
 
-  const anthropic = getAnthropicClient();
+  const anthropicProvider = createAnthropic({ apiKey: env.ANTHROPIC_API_KEY });
   const model = env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6';
 
-  return stream(c, async (s) => {
-    const write = async (event: object): Promise<void> => {
-      await s.write(JSON.stringify(event) + '\n');
-    };
-
-    try {
-      // Build the initial Anthropic messages array from conversation history.
-      // The loop appends tool_use blocks (assistant) and tool_result blocks (user)
-      // as subsequent rounds progress.
-      let currentMessages: any[] = cappedMessages.map((m) => ({
-        role: m.role,
-        content: m.content,
-      }));
-
-      let rounds = 0;
-
-      while (rounds < MAX_TOOL_ROUNDS) {
-        rounds++;
-
-        const systemPrompt =
-          SYSTEM_PROMPT +
-          `\n\n## Current date\n\nToday is ${new Date().toISOString().slice(0, 10)}.`;
-
-        const response = await anthropic.messages.create({
-          model,
-          max_tokens: MAX_TOKENS_PER_RESPONSE,
-          system: systemPrompt,
-          tools: ASSISTANT_TOOLS,
-          messages: currentMessages,
+  try {
+    const result = streamText({
+      model: anthropicProvider(model),
+      system: systemPrompt,
+      messages,
+      maxSteps: MAX_TOOL_ROUNDS,
+      tools: createTools(token),
+      onError: ({ error }) => {
+        reqLogger.error('Assistant stream error', {
+          error: error instanceof Error ? error.message : String(error),
         });
+      },
+    });
 
-        // Stream text blocks in small chunks (~50 chars) so the client sees tokens
-        // incrementally without sending one event per character.
-        for (const block of response.content) {
-          if (block.type === 'text') {
-            const chunkSize = 50;
-            for (let i = 0; i < block.text.length; i += chunkSize) {
-              await write({
-                type: 'text_delta',
-                text: block.text.slice(i, i + chunkSize),
-              });
-            }
+    // Stream via fullStream so we can inject "\n\n" between steps,
+    // preventing multi-step text from running together without spacing.
+    return stream(c, async (s) => {
+      for await (const chunk of result.fullStream) {
+        if (chunk.type === 'text-delta') {
+          await s.write(formatDataStreamPart('text', chunk.textDelta));
+        } else if (chunk.type === 'tool-call') {
+          await s.write(formatDataStreamPart('tool_call', chunk));
+        } else if (chunk.type === 'tool-result') {
+          await s.write(formatDataStreamPart('tool_result', chunk as any));
+        } else if (chunk.type === 'step-finish') {
+          await s.write(
+            formatDataStreamPart('finish_step', {
+              finishReason: chunk.finishReason,
+              usage: chunk.usage,
+              isContinued: chunk.isContinued,
+            })
+          );
+          // Inject a blank line so the next step's text doesn't run into this one
+          if (chunk.isContinued) {
+            await s.write(formatDataStreamPart('text', '\n\n'));
           }
+        } else if (chunk.type === 'finish') {
+          await s.write(
+            formatDataStreamPart('finish_message', {
+              finishReason: chunk.finishReason,
+              usage: chunk.usage,
+            })
+          );
         }
-
-        // Collect all tool_use blocks from this response
-        const toolUseBlocks = response.content.filter(
-          (b): b is Anthropic.ToolUseBlock => b.type === 'tool_use'
-        );
-
-        // No tool calls — we are done
-        if (toolUseBlocks.length === 0) {
-          break;
-        }
-
-        // Execute all tool calls and collect results
-        const toolResults: Anthropic.ToolResultBlockParam[] = [];
-
-        for (const toolBlock of toolUseBlocks) {
-          await write({
-            type: 'tool_start',
-            toolName: toolBlock.name,
-            label: getToolLabel(toolBlock.name),
-          });
-
-          try {
-            const result = await executeAssistantTool(toolBlock.name, toolBlock.input, token);
-            toolResults.push({
-              type: 'tool_result',
-              tool_use_id: toolBlock.id,
-              content: JSON.stringify(result),
-            });
-          } catch (toolErr) {
-            // Log full error server-side; send a safe message to Claude so it can
-            // communicate the failure without leaking internal error details.
-            reqLogger.warn('Tool execution error', {
-              tool: toolBlock.name,
-              error: toolErr instanceof Error ? toolErr.message : String(toolErr),
-            });
-            toolResults.push({
-              type: 'tool_result',
-              tool_use_id: toolBlock.id,
-              content: 'Tool execution failed. The data is temporarily unavailable.',
-              is_error: true,
-            });
-          }
-
-          await write({ type: 'tool_end', toolName: toolBlock.name });
-        }
-
-        // Append the assistant turn (with tool_use blocks) and the tool results
-        // as a new user turn, then loop for Claude's synthesis response.
-        currentMessages = [
-          ...currentMessages,
-          { role: 'assistant' as const, content: response.content },
-          { role: 'user' as const, content: toolResults },
-        ];
       }
-
-      await write({ type: 'message_stop' });
-    } catch (err) {
-      // Log full error server-side but never forward raw SDK messages to the client.
-      reqLogger.error('Assistant stream error', {
-        error: err instanceof Error ? err.message : String(err),
-      });
-      await write({ type: 'error', message: 'An error occurred. Please try again.' }).catch(
-        () => {}
-      );
-    }
-  });
+    });
+  } catch (err) {
+    reqLogger.error('Assistant request error', {
+      error: err instanceof Error ? err.message : String(err),
+    });
+    return c.json({ error: 'An error occurred. Please try again.' }, 500);
+  }
 });
 
 export { api, API_BASENAME };

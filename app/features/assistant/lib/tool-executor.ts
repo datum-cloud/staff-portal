@@ -347,7 +347,9 @@ async function handleListEmails(input: ToolInput, token: string) {
   });
 
   const data = unwrap<any>(response.data);
-  const items = (data?.items ?? []).map((item: unknown) => trimK8sNoise(item) as Record<string, unknown>);
+  const items = (data?.items ?? []).map(
+    (item: unknown) => trimK8sNoise(item) as Record<string, unknown>
+  );
   return {
     items,
     remainingItemCount: data?.metadata?.remainingItemCount ?? 0,
@@ -365,7 +367,9 @@ async function handleListEmailBroadcasts(input: ToolInput, token: string) {
   });
 
   const data = unwrap<any>(response.data);
-  const items = (data?.items ?? []).map((item: unknown) => trimK8sNoise(item) as Record<string, unknown>);
+  const items = (data?.items ?? []).map(
+    (item: unknown) => trimK8sNoise(item) as Record<string, unknown>
+  );
   return {
     items,
     remainingItemCount: data?.metadata?.remainingItemCount ?? 0,

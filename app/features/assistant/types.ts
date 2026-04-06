@@ -14,17 +14,6 @@ export interface Message {
   isStreaming?: boolean;
 }
 
-/**
- * SSE event types streamed from POST /api/assistant.
- * Each line in the response body is a JSON-serialised AssistantEvent.
- */
-export type AssistantEvent =
-  | { type: 'text_delta'; text: string }
-  | { type: 'tool_start'; toolName: string; label: string }
-  | { type: 'tool_end'; toolName: string }
-  | { type: 'message_stop' }
-  | { type: 'error'; message: string };
-
 /** Ephemeral indicator shown while a tool call is in flight */
 export interface ActiveTool {
   toolName: string;

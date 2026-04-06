@@ -26,6 +26,7 @@ export default defineConfig((config) => {
       optimizeDeps: {
         include: ['react-dom/server.node'],
       },
+      noExternal: ['ai', '@ai-sdk/anthropic'],
     },
     build: {
       chunkSizeWarningLimit: 1000,
