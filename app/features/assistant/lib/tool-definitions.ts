@@ -1,5 +1,5 @@
-import { jsonSchema, tool } from 'ai';
 import { executeAssistantTool } from './tool-executor';
+import { jsonSchema, tool } from 'ai';
 
 /**
  * Factory function that creates the AI SDK tools object for the operator
@@ -67,7 +67,7 @@ export function createTools(token: string) {
 
     get_user: tool({
       description:
-        "Get a specific user by their resource name (the Kubernetes metadata.name, not their email). Use search_resources first if you only know the email.",
+        'Get a specific user by their resource name (the Kubernetes metadata.name, not their email). Use search_resources first if you only know the email.',
       parameters: jsonSchema<Record<string, unknown>>({
         type: 'object',
         properties: {

@@ -86,7 +86,7 @@ export function useFraudAlertsWidget(): UseFraudAlertsWidgetResult {
           userDisplay: fullName ?? email ?? row.userRef,
         };
       }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     [topRows, userQueries]
   );
 
