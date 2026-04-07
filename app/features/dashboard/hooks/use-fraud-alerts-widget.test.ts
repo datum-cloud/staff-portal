@@ -288,6 +288,7 @@ describe('useFraudAlertsWidget', () => {
       expect(result.current.alerts[0]).toEqual({
         name: 'eval-abc',
         userRef: 'user-xyz',
+        userDisplay: 'user-xyz',
         compositeScore: 67.5,
         decision: 'REVIEW',
         creationTimestamp: '2025-03-15T10:00:00Z',
