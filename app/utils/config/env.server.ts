@@ -18,6 +18,21 @@ const envSchema = z.object({
   OTEL_LOG_LEVEL: z.string().optional(),
   SENTRY_ENV: z.string().optional(),
   SENTRY_DSN: z.string().optional(),
+
+  // Chatbot / AI assistant
+  CHATBOT_ENABLED: z.string().optional(),
+  ANTHROPIC_API_KEY: z.string().optional(),
+  ANTHROPIC_MODEL: z.string().optional(),
+
+  // Sentry API (for chatbot tools)
+  SENTRY_API_URL: z.string().optional(),
+  SENTRY_API_TOKEN: z.string().optional(),
+  SENTRY_ORGANIZATION: z.string().optional(),
+  SENTRY_EXCLUDED_PROJECTS: z.string().default('staff-portal,internal'),
+
+  // MCP cluster tools
+  MCP_URL: z.string().optional(),
+  MCP_API_KEY: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -51,4 +66,18 @@ export const env = {
   isOtelEnabled: toBoolean(parsedEnv.OTEL_ENABLED) && parsedEnv.OTEL_EXPORTER_OTLP_ENDPOINT !== '',
   isSentryEnabled: !!parsedEnv.SENTRY_DSN,
   sentryUiUrl: getOrigin(parsedEnv.SENTRY_DSN),
+  chatbotEnabled: toBoolean(parsedEnv.CHATBOT_ENABLED),
+  anthropicApiKey: parsedEnv.ANTHROPIC_API_KEY,
+  anthropicModel: parsedEnv.ANTHROPIC_MODEL,
+  sentryApiUrl: parsedEnv.SENTRY_API_URL,
+  sentryApiToken: parsedEnv.SENTRY_API_TOKEN,
+  sentryOrganization: parsedEnv.SENTRY_ORGANIZATION ?? 'sentry',
+  sentryExcludedProjects: parsedEnv.SENTRY_EXCLUDED_PROJECTS
+    ? parsedEnv.SENTRY_EXCLUDED_PROJECTS.split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : [],
+  sentryEnvironment: parsedEnv.SENTRY_ENV,
+  mcpUrl: parsedEnv.MCP_URL,
+  mcpApiKey: parsedEnv.MCP_API_KEY,
 };

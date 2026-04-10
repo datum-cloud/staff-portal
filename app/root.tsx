@@ -51,6 +51,7 @@ export async function loader({ request }: Route.LoaderArgs) {
         SENTRY_UI_URL: env.sentryUiUrl,
         VERSION: env.VERSION,
         AUTH_OIDC_ISSUER: env.AUTH_OIDC_ISSUER,
+        CHATBOT_ENABLED: env.chatbotEnabled,
       } satisfies PublicEnv,
     },
     { headers: { 'Set-Cookie': cookie } }
