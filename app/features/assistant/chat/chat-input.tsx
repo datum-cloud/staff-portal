@@ -3,13 +3,16 @@ import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import type { Editor } from '@tiptap/react';
 import { EditorContent } from '@tiptap/react';
-import { Mic, MicOff, SendHorizonal, Square } from 'lucide-react';
+import { Mic, MicOff, RotateCw, SendHorizonal, Square } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 
 interface ChatInputProps {
   editor: Editor | null;
   isReady: boolean;
+  canRetry: boolean;
   onSend: () => void;
   onStop: () => void;
+  onRetry: () => void;
   speechSupported?: boolean;
   isListening?: boolean;
   frequencyData?: number[];
@@ -19,8 +22,10 @@ interface ChatInputProps {
 export function ChatInput({
   editor,
   isReady,
+  canRetry,
   onSend,
   onStop,
+  onRetry,
   speechSupported,
   isListening,
   frequencyData,
@@ -54,6 +59,26 @@ export function ChatInput({
             </button>
           </Tooltip>
         )}
+
+        <AnimatePresence>
+          {canRetry && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 30 }}>
+              <Tooltip message="Retry last message" side="top">
+                <button
+                  onClick={onRetry}
+                  aria-label="Retry last message"
+                  className="text-muted-foreground hover:text-foreground mb-1.5 shrink-0 rounded p-1.5 transition-colors">
+                  <RotateCw className="size-4" />
+                </button>
+              </Tooltip>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {isReady ? (
           <Tooltip message="Send message" side="top">
             <button

@@ -46,42 +46,58 @@ assistantRoutes.post('/', authMiddleware(), async (c) => {
     return c.json({ error: 'Too Many Requests' }, 429);
   }
 
-  const anthropic = createAnthropic({ apiKey: env.anthropicApiKey });
-  const model = env.anthropicModel ?? 'claude-sonnet-4-6';
+  try {
+    const anthropic = createAnthropic({ apiKey: env.anthropicApiKey });
+    const model = env.anthropicModel ?? 'claude-sonnet-4-6';
 
-  const result = streamText({
-    model: anthropic(model),
-    system: buildSystemPrompt(clientOs),
-    messages: await convertToModelMessages(messages.slice(-MAX_MESSAGES)),
-    maxOutputTokens: 4096,
-    experimental_transform: smoothStream({ chunking: 'word', delayInMs: 40 }),
-    providerOptions: {
-      anthropic: {
-        thinking: {
-          type: 'enabled',
-          budgetTokens: 10000,
+    const result = streamText({
+      model: anthropic(model),
+      system: buildSystemPrompt(clientOs),
+      messages: await convertToModelMessages(messages.slice(-MAX_MESSAGES)),
+      maxOutputTokens: 4096,
+      experimental_transform: smoothStream({ chunking: 'word', delayInMs: 40 }),
+      providerOptions: {
+        anthropic: {
+          thinking: {
+            type: 'enabled',
+            budgetTokens: 10000,
+          },
+          metadata: { user_id: userId },
         },
-        metadata: { user_id: userId },
       },
-    },
-    stopWhen: stepCountIs(10),
-    tools: createAssistantTools({ accessToken: token }),
-  });
+      stopWhen: stepCountIs(10),
+      tools: createAssistantTools({ accessToken: token }),
+    });
 
-  result.usage.then(
-    (usage) => {
-      logger.info('assistant request completed', {
+    result.response.then(undefined, (err: unknown) => {
+      logger.error('assistant stream failed', {
         userId,
         model,
-        inputTokens: usage.inputTokens,
-        outputTokens: usage.outputTokens,
-        totalTokens: usage.totalTokens,
+        error: err instanceof Error ? err.message : String(err),
+        stack: err instanceof Error ? err.stack : undefined,
       });
-    },
-    (err: unknown) => {
-      logger.warn('failed to resolve assistant usage', { err });
-    }
-  );
+    });
 
-  return result.toUIMessageStreamResponse({ sendReasoning: true });
+    result.usage.then(
+      (usage) => {
+        logger.info('assistant request completed', {
+          userId,
+          model,
+          inputTokens: usage.inputTokens,
+          outputTokens: usage.outputTokens,
+          totalTokens: usage.totalTokens,
+        });
+      },
+      () => {}
+    );
+
+    return result.toUIMessageStreamResponse({ sendReasoning: true });
+  } catch (err) {
+    logger.error('assistant request failed', {
+      userId,
+      error: err instanceof Error ? err.message : String(err),
+      stack: err instanceof Error ? err.stack : undefined,
+    });
+    return c.json({ error: 'Failed to start assistant' }, 500);
+  }
 });

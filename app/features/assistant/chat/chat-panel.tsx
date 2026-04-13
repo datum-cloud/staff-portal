@@ -95,6 +95,7 @@ export function ChatPanel() {
     userScrolledUp,
     editor,
     handleSendClick,
+    handleRetry,
     sidebarOpen,
     setSidebarOpen,
     speech,
@@ -329,8 +330,10 @@ export function ChatPanel() {
           <ChatInput
             editor={editor}
             isReady={isReady}
+            canRetry={isReady && messages.some((m) => m.role === 'user')}
             onSend={handleSendClick}
             onStop={stop}
+            onRetry={handleRetry}
             speechSupported={speech.isSupported}
             isListening={speech.isListening}
             frequencyData={speech.frequencyData}

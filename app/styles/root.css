@@ -14,11 +14,19 @@
 @source '../../node_modules/@datum-cloud/activity-ui/dist/**/*.js';
 
 /* TipTap editor placeholder */
-.tiptap .is-editor-empty:first-child::before {
+.tiptap p.is-editor-empty:first-child {
+  position: relative;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
-  float: left;
   color: var(--color-muted-foreground);
   opacity: 0.5;
   pointer-events: none;
-  height: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

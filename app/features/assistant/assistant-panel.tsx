@@ -1,9 +1,48 @@
 import { useAssistant } from './assistant-context';
 import { useSidebar } from '@datum-cloud/datum-ui/sidebar';
+import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { AnimatePresence, motion } from 'motion/react';
 import { lazy, Suspense, useState } from 'react';
 
 const ChatPanel = lazy(() => import('./chat/chat-panel').then((m) => ({ default: m.ChatPanel })));
+
+function ChatPanelSkeleton() {
+  return (
+    <div className="flex h-full">
+      {/* Sidebar skeleton */}
+      <div className="bg-muted hidden w-[250px] shrink-0 flex-col gap-3 p-3 sm:flex">
+        <Skeleton className="h-8 w-full rounded-md" />
+        <div className="flex flex-col gap-2">
+          <Skeleton className="h-5 w-3/4 rounded" />
+          <Skeleton className="h-5 w-1/2 rounded" />
+          <Skeleton className="h-5 w-2/3 rounded" />
+        </div>
+      </div>
+
+      {/* Resize handle */}
+      <div className="bg-muted hidden w-4 shrink-0 sm:block" />
+
+      {/* Chat area skeleton */}
+      <div className="bg-muted flex min-w-0 flex-1 flex-col">
+        <div className="flex-1 space-y-4 p-4">
+          <Skeleton className="h-4 w-24 rounded" />
+          <Skeleton className="ml-auto h-10 w-3/5 rounded-2xl" />
+          <Skeleton className="h-16 w-4/5 rounded-xl" />
+          <Skeleton className="ml-auto h-10 w-2/5 rounded-2xl" />
+          <Skeleton className="h-20 w-4/5 rounded-xl" />
+        </div>
+
+        {/* Input skeleton */}
+        <div className="px-2 pb-2">
+          <div className="mx-auto sm:w-1/2">
+            <Skeleton className="h-12 w-full rounded-[28px]" />
+            <Skeleton className="mx-auto mt-1 h-3 w-40 rounded" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const MIN_HEIGHT = 150;
 const MAX_HEIGHT_RATIO = 0.8;
@@ -83,7 +122,7 @@ export function AssistantPanel() {
 
           <div className="relative min-h-0 flex-1 overflow-hidden">
             {isDragging && <div className="absolute inset-0 z-50" />}
-            <Suspense fallback={<div className="h-full w-full" />}>
+            <Suspense fallback={<ChatPanelSkeleton />}>
               <ChatPanel />
             </Suspense>
           </div>
