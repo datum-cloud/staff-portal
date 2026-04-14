@@ -52,6 +52,7 @@ export async function loader({ request }: Route.LoaderArgs) {
         VERSION: env.VERSION,
         AUTH_OIDC_ISSUER: env.AUTH_OIDC_ISSUER,
         CLOUD_PORTAL_URL: env.CLOUD_PORTAL_URL,
+        CHATBOT_ENABLED: env.chatbotEnabled,
       } satisfies PublicEnv,
     },
     { headers: { 'Set-Cookie': cookie } }

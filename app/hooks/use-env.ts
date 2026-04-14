@@ -12,6 +12,7 @@ export interface PublicEnv {
   VERSION?: string;
   AUTH_OIDC_ISSUER?: string;
   CLOUD_PORTAL_URL?: string;
+  CHATBOT_ENABLED?: boolean;
 }
 
 export function useEnv(): PublicEnv | undefined {
