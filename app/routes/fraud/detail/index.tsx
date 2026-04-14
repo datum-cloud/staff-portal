@@ -73,7 +73,7 @@ export default function Page() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 p-4">
       <EvaluationBackLink />
       <EvaluationOverview evaluation={evaluation} contactName={contactName} userEmail={userEmail} />
       <StageResultsSection stageResults={evaluation.status?.stageResults ?? []} />

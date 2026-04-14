@@ -6,6 +6,7 @@ import { logApiError, logApiSuccess } from '@/server/logger';
 import { authMiddleware, getToken } from '@/server/middleware';
 import { createErrorResponse, createSuccessResponse } from '@/server/response';
 import { assistantRoutes } from '@/server/routes/assistant';
+import { clusterRoutes } from '@/server/routes/cluster';
 import { env } from '@/utils/config/env.server';
 import { captureApiError, createRequestLogger } from '@/utils/logger';
 import { Hono } from 'hono';
@@ -265,5 +266,6 @@ api.post('/metrics', authMiddleware(), async (c) => {
 });
 
 api.route('/assistant', assistantRoutes);
+api.route('/cluster', clusterRoutes);
 
 export { api, API_BASENAME };

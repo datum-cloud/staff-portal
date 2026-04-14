@@ -53,6 +53,7 @@ export async function loader({ request }: Route.LoaderArgs) {
         AUTH_OIDC_ISSUER: env.AUTH_OIDC_ISSUER,
         CLOUD_PORTAL_URL: env.CLOUD_PORTAL_URL,
         CHATBOT_ENABLED: env.chatbotEnabled,
+        MCP_ENABLED: !!(env.mcpUrl && env.mcpApiKey),
       } satisfies PublicEnv,
     },
     { headers: { 'Set-Cookie': cookie } }

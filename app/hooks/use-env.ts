@@ -13,6 +13,7 @@ export interface PublicEnv {
   AUTH_OIDC_ISSUER?: string;
   CLOUD_PORTAL_URL?: string;
   CHATBOT_ENABLED?: boolean;
+  MCP_ENABLED?: boolean;
 }
 
 export function useEnv(): PublicEnv | undefined {

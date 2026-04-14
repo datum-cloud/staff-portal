@@ -173,6 +173,10 @@ msgstr "Added"
 msgid "Added by"
 msgstr "Added by"
 
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:154
+msgid "Age"
+msgstr "Age"
+
 #: app/routes/project/detail/layout.tsx:119
 #: app/routes/project/detail/edge/layout.tsx:5
 #: app/features/activity/components/activity-list.tsx:388
@@ -180,13 +184,25 @@ msgstr "Added by"
 msgid "AI Edge"
 msgstr "AI Edge"
 
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:78
+msgid "All evaluations are clear"
+msgstr "All evaluations are clear"
+
 #: app/features/fraud/detail/evaluation-sections.tsx:136
 msgid "All Evaluations for this User"
 msgstr "All Evaluations for this User"
 
+#: app/features/dashboard/components/quota-utilization-widget.tsx:95
+msgid "All quotas healthy"
+msgstr "All quotas healthy"
+
 #: app/features/activity/components/activity-list.tsx:443
 msgid "All read operations"
 msgstr "All read operations"
+
+#: app/features/dashboard/components/pending-approvals-widget.tsx:64
+msgid "All registrations are up to date"
+msgstr "All registrations are up to date"
 
 #: app/features/activity/components/activity-list.tsx:436
 msgid "All write operations"
@@ -346,6 +362,22 @@ msgstr "Change your Primary Email in GitHub (your primary email)"
 msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
 msgstr "Choose how the portal looks to you. Select a single theme, or sync with your system."
 
+#: app/features/dashboard/components/cluster-health-widget.tsx:190
+msgid "Cluster Health"
+msgstr "Cluster Health"
+
+#: app/features/dashboard/components/cluster-health-widget.tsx:205
+msgid "cluster healthy"
+msgstr "cluster healthy"
+
+#: app/features/dashboard/components/cluster-health-widget.tsx:44
+msgid "Cluster metrics unavailable"
+msgstr "Cluster metrics unavailable"
+
+#: app/features/dashboard/components/cluster-health-widget.tsx:207
+msgid "clusters healthy"
+msgstr "clusters healthy"
+
 #: app/routes/fraud/index.tsx:288
 msgid "Completed"
 msgstr "Completed"
@@ -432,6 +464,22 @@ msgstr "Copied!"
 msgid "Copy shareable link with current filters"
 msgstr "Copy shareable link with current filters"
 
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:89
+msgid "Could not load fraud alerts"
+msgstr "Could not load fraud alerts"
+
+#: app/features/dashboard/components/pending-approvals-widget.tsx:75
+msgid "Could not load pending approvals"
+msgstr "Could not load pending approvals"
+
+#: app/features/dashboard/components/quota-utilization-widget.tsx:109
+msgid "Could not load quota data"
+msgstr "Could not load quota data"
+
+#: app/features/dashboard/components/cluster-health-widget.tsx:47
+msgid "Could not query cluster health metrics"
+msgstr "Could not query cluster health metrics"
+
 #: app/routes/fraud/providers/create.tsx:136
 #: app/routes/contact-group/create.tsx:14
 #: app/routes/contact/create.tsx:14
@@ -504,7 +552,7 @@ msgstr "Danger Zone"
 msgid "Dark"
 msgstr "Dark"
 
-#: app/routes/dashboard/index.tsx:11
+#: app/routes/dashboard/index.tsx:28
 #: app/components/app-sidebar/index.tsx:93
 #: app/components/app-search/index.tsx:48
 msgid "Dashboard"
@@ -549,6 +597,7 @@ msgstr "Deactivation Reason:"
 #: app/routes/fraud/index.tsx:296
 #: app/routes/fraud/index.tsx:310
 #: app/features/fraud/detail/evaluation-sections.tsx:264
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:149
 msgid "Decision"
 msgstr "Decision"
 
@@ -764,6 +813,7 @@ msgstr "Edit Quota"
 #: app/routes/user/detail/index.tsx:250
 #: app/routes/fraud/index.tsx:112
 #: app/routes/contact-group/detail/member.tsx:202
+#: app/features/dashboard/components/pending-approvals-widget.tsx:130
 #: app/features/contact/components/contact-list.tsx:83
 #: app/features/contact/components/contact-form.tsx:127
 msgid "Email"
@@ -973,6 +1023,10 @@ msgstr "First name is required"
 msgid "Fraud & Abuse"
 msgstr "Fraud & Abuse"
 
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:109
+msgid "Fraud Alerts"
+msgstr "Fraud Alerts"
+
 #: app/routes/fraud/detail/index.tsx:22
 msgid "Fraud Evaluation Detail"
 msgstr "Fraud Evaluation Detail"
@@ -982,6 +1036,7 @@ msgid "Fraud evaluation started"
 msgstr "Fraud evaluation started"
 
 #: app/routes/fraud/index.tsx:34
+#: app/routes/dashboard/index.tsx:83
 msgid "Fraud Evaluations"
 msgstr "Fraud Evaluations"
 
@@ -1305,6 +1360,7 @@ msgstr "My Profile"
 #: app/routes/contact/detail/group.tsx:83
 #: app/features/quota/components/quota-grant-list.tsx:74
 #: app/features/fraud/policy/policy-form.tsx:153
+#: app/features/dashboard/components/pending-approvals-widget.tsx:125
 #: app/features/contact/components/contact-list.tsx:66
 msgid "Name"
 msgstr "Name"
@@ -1378,6 +1434,10 @@ msgstr "No email activity found."
 msgid "No export policies found."
 msgstr "No export policies found."
 
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:75
+msgid "No fraud alerts"
+msgstr "No fraud alerts"
+
 #: app/routes/fraud/index.tsx:317
 msgid "No fraud evaluations found."
 msgstr "No fraud evaluations found."
@@ -1417,6 +1477,10 @@ msgstr "No notes yet. Add the first note below."
 msgid "No organizations found."
 msgstr "No organizations found."
 
+#: app/features/dashboard/components/pending-approvals-widget.tsx:61
+msgid "No pending approvals"
+msgstr "No pending approvals"
+
 #: app/routes/project/index.tsx:80
 #: app/routes/organization/detail/project.tsx:75
 msgid "No projects found."
@@ -1425,6 +1489,10 @@ msgstr "No projects found."
 #: app/features/quota/components/quota-bucket-list.tsx:187
 msgid "No quota buckets found."
 msgstr "No quota buckets found."
+
+#: app/features/dashboard/components/quota-utilization-widget.tsx:98
+msgid "No quotas are above 70% utilization"
+msgstr "No quotas are above 70% utilization"
 
 #: app/components/app-search/index.tsx:241
 msgid "No results found."
@@ -1478,6 +1546,7 @@ msgstr "Once a contact is associated with a user, this association cannot be rem
 
 #: app/routes/project/index.tsx:40
 #: app/routes/project/detail/index.tsx:62
+#: app/features/dashboard/components/quota-utilization-widget.tsx:145
 #: app/features/activity/components/activity-list.tsx:398
 #: app/features/activity/components/activity-list.tsx:494
 msgid "Organization"
@@ -1497,6 +1566,7 @@ msgstr "Organization Type"
 #: app/routes/project/detail/layout.tsx:51
 #: app/routes/organization/layout.tsx:5
 #: app/routes/organization/index.tsx:14
+#: app/routes/dashboard/index.tsx:67
 #: app/components/app-sidebar/index.tsx:109
 #: app/components/app-search/index.tsx:51
 #: app/components/app-search/index.tsx:251
@@ -1508,6 +1578,10 @@ msgstr "Organizations"
 #: app/routes/organization/detail/layout.tsx:50
 msgid "Overview"
 msgstr "Overview"
+
+#: app/features/dashboard/components/quota-utilization-widget.tsx:150
+msgid "Owner"
+msgstr "Owner"
 
 #: app/features/activity/components/activity-list.tsx:369
 #: app/features/activity/components/activity-list.tsx:456
@@ -1521,6 +1595,10 @@ msgstr "Patch"
 #: app/features/email/components/email-list.tsx:169
 msgid "Pending"
 msgstr "Pending"
+
+#: app/features/dashboard/components/pending-approvals-widget.tsx:95
+msgid "Pending Approvals"
+msgstr "Pending Approvals"
 
 #: app/features/domain/components/domain-status-probe.tsx:85
 msgid "Pending Validation Checks:"
@@ -1639,6 +1717,7 @@ msgstr "Project deleted successfully"
 #: app/routes/project/detail/layout.tsx:57
 #: app/routes/organization/detail/project.tsx:16
 #: app/routes/organization/detail/layout.tsx:55
+#: app/routes/dashboard/index.tsx:75
 #: app/components/app-sidebar/index.tsx:113
 #: app/components/app-search/index.tsx:57
 #: app/components/app-search/index.tsx:266
@@ -1699,6 +1778,10 @@ msgstr "Quick ranges"
 #: app/features/quota/components/quota-bucket-list.tsx:142
 msgid "Quota updated successfully"
 msgstr "Quota updated successfully"
+
+#: app/features/dashboard/components/quota-utilization-widget.tsx:128
+msgid "Quota Utilization"
+msgstr "Quota Utilization"
 
 #: app/routes/project/detail/layout.tsx:149
 #: app/routes/project/detail/quota/layout.tsx:5
@@ -1772,6 +1855,10 @@ msgstr "Required"
 msgid "Resend"
 msgstr "Resend"
 
+#: app/features/dashboard/components/quota-utilization-widget.tsx:155
+msgid "Resource"
+msgstr "Resource"
+
 #: app/routes/project/detail/domain/detail.tsx:91
 msgid "Resource Name"
 msgstr "Resource Name"
@@ -1791,6 +1878,13 @@ msgstr "Resource Type:"
 #: app/features/activity/components/activity-list.tsx:514
 msgid "Response Code"
 msgstr "Response Code"
+
+#: app/features/dashboard/components/quota-utilization-widget.tsx:112
+#: app/features/dashboard/components/pending-approvals-widget.tsx:78
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:92
+#: app/features/dashboard/components/cluster-health-widget.tsx:50
+msgid "Retry"
+msgstr "Retry"
 
 #: app/routes/fraud/index.tsx:300
 msgid "Review"
@@ -1832,6 +1926,7 @@ msgstr "Schedule invitation to be sent at specific time"
 
 #: app/routes/fraud/index.tsx:130
 #: app/features/fraud/detail/evaluation-sections.tsx:252
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:144
 msgid "Score"
 msgstr "Score"
 
@@ -2187,12 +2282,14 @@ msgstr "Updating email addresses for GitHub identities"
 #: app/routes/organization/detail/layout.tsx:75
 #: app/routes/organization/detail/quota/usage.tsx:9
 #: app/features/quota/components/quota-bucket-list.tsx:60
+#: app/features/dashboard/components/quota-utilization-widget.tsx:160
 msgid "Usage"
 msgstr "Usage"
 
 #: app/routes/fraud/index.tsx:100
 #: app/routes/contact-group/detail/member.tsx:107
 #: app/features/fraud/detail/evaluation-sections.tsx:216
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:139
 #: app/features/activity/components/activity-list.tsx:116
 #: app/features/activity/components/activity-list.tsx:391
 #: app/features/activity/components/activity-list.tsx:487
@@ -2241,6 +2338,7 @@ msgstr "User rejected successfully"
 
 #: app/routes/user/layout.tsx:5
 #: app/routes/user/index.tsx:30
+#: app/routes/dashboard/index.tsx:59
 #: app/components/app-sidebar/index.tsx:105
 #: app/components/app-search/index.tsx:49
 #: app/components/app-search/index.tsx:281
@@ -2250,6 +2348,10 @@ msgstr "Users"
 #: app/features/dashboard/components/recent-users-widget.tsx:59
 msgid "Users will appear here once they join Datum"
 msgstr "Users will appear here once they join Datum"
+
+#: app/features/dashboard/components/quota-utilization-widget.tsx:165
+msgid "Utilization"
+msgstr "Utilization"
 
 #: app/features/dns/components/dns-record-status-probe.tsx:66
 msgid "Validating"
@@ -2276,6 +2378,8 @@ msgid "View activity logs"
 msgstr "View activity logs"
 
 #: app/features/dashboard/components/recent-users-widget.tsx:102
+#: app/features/dashboard/components/pending-approvals-widget.tsx:108
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:122
 msgid "View All"
 msgstr "View All"
 
@@ -2297,6 +2401,10 @@ msgstr "View in Sentry"
 #: app/features/contact-group/components/contact-group-form.tsx:85
 msgid "Visibility"
 msgstr "Visibility"
+
+#: app/features/dashboard/components/pending-approvals-widget.tsx:135
+msgid "Waiting Since"
+msgstr "Waiting Since"
 
 #: app/features/contact/components/contact-form.tsx:204
 msgid "Warning"
