@@ -108,7 +108,7 @@ export function RecentUsersWidget() {
           </Text>
         </CardDescription>
       </CardHeader>
-      <CardContent className="pt-0">
+      <CardContent className="min-h-[180px] pt-0">
         {isLoading ? (
           <div className="space-y-2">
             {Array.from({ length: 5 }).map((_, i) => (

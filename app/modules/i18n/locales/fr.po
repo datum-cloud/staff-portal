@@ -173,6 +173,10 @@ msgstr ""
 msgid "Added by"
 msgstr ""
 
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:154
+msgid "Age"
+msgstr ""
+
 #: app/routes/project/detail/layout.tsx:119
 #: app/routes/project/detail/edge/layout.tsx:5
 #: app/features/activity/components/activity-list.tsx:388
@@ -180,12 +184,24 @@ msgstr ""
 msgid "AI Edge"
 msgstr ""
 
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:78
+msgid "All evaluations are clear"
+msgstr ""
+
 #: app/features/fraud/detail/evaluation-sections.tsx:136
 msgid "All Evaluations for this User"
 msgstr ""
 
+#: app/features/dashboard/components/quota-utilization-widget.tsx:95
+msgid "All quotas healthy"
+msgstr ""
+
 #: app/features/activity/components/activity-list.tsx:443
 msgid "All read operations"
+msgstr ""
+
+#: app/features/dashboard/components/pending-approvals-widget.tsx:64
+msgid "All registrations are up to date"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:436
@@ -346,6 +362,22 @@ msgstr ""
 msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
 msgstr ""
 
+#: app/features/dashboard/components/cluster-health-widget.tsx:190
+msgid "Cluster Health"
+msgstr ""
+
+#: app/features/dashboard/components/cluster-health-widget.tsx:205
+msgid "cluster healthy"
+msgstr ""
+
+#: app/features/dashboard/components/cluster-health-widget.tsx:44
+msgid "Cluster metrics unavailable"
+msgstr ""
+
+#: app/features/dashboard/components/cluster-health-widget.tsx:207
+msgid "clusters healthy"
+msgstr ""
+
 #: app/routes/fraud/index.tsx:288
 msgid "Completed"
 msgstr ""
@@ -432,6 +464,22 @@ msgstr ""
 msgid "Copy shareable link with current filters"
 msgstr ""
 
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:89
+msgid "Could not load fraud alerts"
+msgstr ""
+
+#: app/features/dashboard/components/pending-approvals-widget.tsx:75
+msgid "Could not load pending approvals"
+msgstr ""
+
+#: app/features/dashboard/components/quota-utilization-widget.tsx:109
+msgid "Could not load quota data"
+msgstr ""
+
+#: app/features/dashboard/components/cluster-health-widget.tsx:47
+msgid "Could not query cluster health metrics"
+msgstr ""
+
 #: app/routes/fraud/providers/create.tsx:136
 #: app/routes/contact-group/create.tsx:14
 #: app/routes/contact/create.tsx:14
@@ -504,7 +552,7 @@ msgstr ""
 msgid "Dark"
 msgstr ""
 
-#: app/routes/dashboard/index.tsx:11
+#: app/routes/dashboard/index.tsx:28
 #: app/components/app-sidebar/index.tsx:93
 #: app/components/app-search/index.tsx:48
 msgid "Dashboard"
@@ -549,6 +597,7 @@ msgstr ""
 #: app/routes/fraud/index.tsx:296
 #: app/routes/fraud/index.tsx:310
 #: app/features/fraud/detail/evaluation-sections.tsx:264
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:149
 msgid "Decision"
 msgstr ""
 
@@ -764,6 +813,7 @@ msgstr ""
 #: app/routes/user/detail/index.tsx:250
 #: app/routes/fraud/index.tsx:112
 #: app/routes/contact-group/detail/member.tsx:202
+#: app/features/dashboard/components/pending-approvals-widget.tsx:130
 #: app/features/contact/components/contact-list.tsx:83
 #: app/features/contact/components/contact-form.tsx:127
 msgid "Email"
@@ -973,6 +1023,10 @@ msgstr ""
 msgid "Fraud & Abuse"
 msgstr ""
 
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:109
+msgid "Fraud Alerts"
+msgstr ""
+
 #: app/routes/fraud/detail/index.tsx:22
 msgid "Fraud Evaluation Detail"
 msgstr ""
@@ -982,6 +1036,7 @@ msgid "Fraud evaluation started"
 msgstr ""
 
 #: app/routes/fraud/index.tsx:34
+#: app/routes/dashboard/index.tsx:83
 msgid "Fraud Evaluations"
 msgstr ""
 
@@ -1305,6 +1360,7 @@ msgstr ""
 #: app/routes/contact/detail/group.tsx:83
 #: app/features/quota/components/quota-grant-list.tsx:74
 #: app/features/fraud/policy/policy-form.tsx:153
+#: app/features/dashboard/components/pending-approvals-widget.tsx:125
 #: app/features/contact/components/contact-list.tsx:66
 msgid "Name"
 msgstr ""
@@ -1378,6 +1434,10 @@ msgstr ""
 msgid "No export policies found."
 msgstr ""
 
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:75
+msgid "No fraud alerts"
+msgstr ""
+
 #: app/routes/fraud/index.tsx:317
 msgid "No fraud evaluations found."
 msgstr ""
@@ -1417,6 +1477,10 @@ msgstr ""
 msgid "No organizations found."
 msgstr ""
 
+#: app/features/dashboard/components/pending-approvals-widget.tsx:61
+msgid "No pending approvals"
+msgstr ""
+
 #: app/routes/project/index.tsx:80
 #: app/routes/organization/detail/project.tsx:75
 msgid "No projects found."
@@ -1424,6 +1488,10 @@ msgstr ""
 
 #: app/features/quota/components/quota-bucket-list.tsx:187
 msgid "No quota buckets found."
+msgstr ""
+
+#: app/features/dashboard/components/quota-utilization-widget.tsx:98
+msgid "No quotas are above 70% utilization"
 msgstr ""
 
 #: app/components/app-search/index.tsx:241
@@ -1478,6 +1546,7 @@ msgstr ""
 
 #: app/routes/project/index.tsx:40
 #: app/routes/project/detail/index.tsx:62
+#: app/features/dashboard/components/quota-utilization-widget.tsx:145
 #: app/features/activity/components/activity-list.tsx:398
 #: app/features/activity/components/activity-list.tsx:494
 msgid "Organization"
@@ -1497,6 +1566,7 @@ msgstr ""
 #: app/routes/project/detail/layout.tsx:51
 #: app/routes/organization/layout.tsx:5
 #: app/routes/organization/index.tsx:14
+#: app/routes/dashboard/index.tsx:67
 #: app/components/app-sidebar/index.tsx:109
 #: app/components/app-search/index.tsx:51
 #: app/components/app-search/index.tsx:251
@@ -1507,6 +1577,10 @@ msgstr ""
 #: app/routes/project/detail/layout.tsx:114
 #: app/routes/organization/detail/layout.tsx:50
 msgid "Overview"
+msgstr ""
+
+#: app/features/dashboard/components/quota-utilization-widget.tsx:150
+msgid "Owner"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:369
@@ -1520,6 +1594,10 @@ msgstr ""
 #: app/features/email/components/email-list.tsx:143
 #: app/features/email/components/email-list.tsx:169
 msgid "Pending"
+msgstr ""
+
+#: app/features/dashboard/components/pending-approvals-widget.tsx:95
+msgid "Pending Approvals"
 msgstr ""
 
 #: app/features/domain/components/domain-status-probe.tsx:85
@@ -1639,6 +1717,7 @@ msgstr ""
 #: app/routes/project/detail/layout.tsx:57
 #: app/routes/organization/detail/project.tsx:16
 #: app/routes/organization/detail/layout.tsx:55
+#: app/routes/dashboard/index.tsx:75
 #: app/components/app-sidebar/index.tsx:113
 #: app/components/app-search/index.tsx:57
 #: app/components/app-search/index.tsx:266
@@ -1698,6 +1777,10 @@ msgstr ""
 
 #: app/features/quota/components/quota-bucket-list.tsx:142
 msgid "Quota updated successfully"
+msgstr ""
+
+#: app/features/dashboard/components/quota-utilization-widget.tsx:128
+msgid "Quota Utilization"
 msgstr ""
 
 #: app/routes/project/detail/layout.tsx:149
@@ -1772,6 +1855,10 @@ msgstr ""
 msgid "Resend"
 msgstr ""
 
+#: app/features/dashboard/components/quota-utilization-widget.tsx:155
+msgid "Resource"
+msgstr ""
+
 #: app/routes/project/detail/domain/detail.tsx:91
 msgid "Resource Name"
 msgstr ""
@@ -1790,6 +1877,13 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:463
 #: app/features/activity/components/activity-list.tsx:514
 msgid "Response Code"
+msgstr ""
+
+#: app/features/dashboard/components/quota-utilization-widget.tsx:112
+#: app/features/dashboard/components/pending-approvals-widget.tsx:78
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:92
+#: app/features/dashboard/components/cluster-health-widget.tsx:50
+msgid "Retry"
 msgstr ""
 
 #: app/routes/fraud/index.tsx:300
@@ -1832,6 +1926,7 @@ msgstr ""
 
 #: app/routes/fraud/index.tsx:130
 #: app/features/fraud/detail/evaluation-sections.tsx:252
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:144
 msgid "Score"
 msgstr ""
 
@@ -2187,12 +2282,14 @@ msgstr ""
 #: app/routes/organization/detail/layout.tsx:75
 #: app/routes/organization/detail/quota/usage.tsx:9
 #: app/features/quota/components/quota-bucket-list.tsx:60
+#: app/features/dashboard/components/quota-utilization-widget.tsx:160
 msgid "Usage"
 msgstr ""
 
 #: app/routes/fraud/index.tsx:100
 #: app/routes/contact-group/detail/member.tsx:107
 #: app/features/fraud/detail/evaluation-sections.tsx:216
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:139
 #: app/features/activity/components/activity-list.tsx:116
 #: app/features/activity/components/activity-list.tsx:391
 #: app/features/activity/components/activity-list.tsx:487
@@ -2241,6 +2338,7 @@ msgstr ""
 
 #: app/routes/user/layout.tsx:5
 #: app/routes/user/index.tsx:30
+#: app/routes/dashboard/index.tsx:59
 #: app/components/app-sidebar/index.tsx:105
 #: app/components/app-search/index.tsx:49
 #: app/components/app-search/index.tsx:281
@@ -2249,6 +2347,10 @@ msgstr ""
 
 #: app/features/dashboard/components/recent-users-widget.tsx:59
 msgid "Users will appear here once they join Datum"
+msgstr ""
+
+#: app/features/dashboard/components/quota-utilization-widget.tsx:165
+msgid "Utilization"
 msgstr ""
 
 #: app/features/dns/components/dns-record-status-probe.tsx:66
@@ -2276,6 +2378,8 @@ msgid "View activity logs"
 msgstr ""
 
 #: app/features/dashboard/components/recent-users-widget.tsx:102
+#: app/features/dashboard/components/pending-approvals-widget.tsx:108
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:122
 msgid "View All"
 msgstr ""
 
@@ -2296,6 +2400,10 @@ msgstr ""
 #: app/routes/contact/detail/group.tsx:94
 #: app/features/contact-group/components/contact-group-form.tsx:85
 msgid "Visibility"
+msgstr ""
+
+#: app/features/dashboard/components/pending-approvals-widget.tsx:135
+msgid "Waiting Since"
 msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:204
