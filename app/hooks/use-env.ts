@@ -11,6 +11,7 @@ export interface PublicEnv {
   SENTRY_UI_URL?: string;
   VERSION?: string;
   AUTH_OIDC_ISSUER?: string;
+  CLOUD_PORTAL_URL?: string;
 }
 
 export function useEnv(): PublicEnv | undefined {

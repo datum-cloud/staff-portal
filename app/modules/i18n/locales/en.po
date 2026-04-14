@@ -112,9 +112,9 @@ msgstr "Active Sessions"
 
 #: app/routes/user/detail/layout.tsx:52
 #: app/routes/user/detail/activity/index.tsx:23
-#: app/routes/project/detail/layout.tsx:112
+#: app/routes/project/detail/layout.tsx:144
 #: app/routes/project/detail/activity/index.tsx:14
-#: app/routes/organization/detail/layout.tsx:42
+#: app/routes/organization/detail/layout.tsx:60
 #: app/routes/organization/detail/activity/index.tsx:14
 #: app/components/app-sidebar/index.tsx:147
 #: app/components/app-search/index.tsx:63
@@ -173,7 +173,7 @@ msgstr "Added"
 msgid "Added by"
 msgstr "Added by"
 
-#: app/routes/project/detail/layout.tsx:87
+#: app/routes/project/detail/layout.tsx:119
 #: app/routes/project/detail/edge/layout.tsx:5
 #: app/features/activity/components/activity-list.tsx:388
 #: app/features/activity/components/activity-list.tsx:484
@@ -490,7 +490,7 @@ msgstr "Created"
 msgid "Credentials Reference"
 msgstr "Credentials Reference"
 
-#: app/routes/project/detail/layout.tsx:45
+#: app/routes/project/detail/layout.tsx:50
 #: app/routes/customers/layout.tsx:7
 #: app/components/app-sidebar/index.tsx:99
 msgid "Customers"
@@ -686,7 +686,7 @@ msgstr "Display Name"
 msgid "Display name is required"
 msgstr "Display name is required"
 
-#: app/routes/project/detail/layout.tsx:92
+#: app/routes/project/detail/layout.tsx:124
 #: app/routes/project/detail/dns/layout.tsx:5
 msgid "DNS"
 msgstr "DNS"
@@ -735,7 +735,7 @@ msgstr "Domain"
 msgid "Domain verification is in progress. This may take a few minutes."
 msgstr "Domain verification is in progress. This may take a few minutes."
 
-#: app/routes/project/detail/layout.tsx:97
+#: app/routes/project/detail/layout.tsx:129
 #: app/routes/project/detail/domain/layout.tsx:5
 msgid "Domains"
 msgstr "Domains"
@@ -1014,9 +1014,9 @@ msgstr "Go to dashboard"
 msgid "Grant deleted successfully"
 msgstr "Grant deleted successfully"
 
-#: app/routes/project/detail/layout.tsx:126
+#: app/routes/project/detail/layout.tsx:158
 #: app/routes/project/detail/quota/grant.tsx:12
-#: app/routes/organization/detail/layout.tsx:61
+#: app/routes/organization/detail/layout.tsx:79
 #: app/routes/organization/detail/quota/grant.tsx:9
 msgid "Grants"
 msgstr "Grants"
@@ -1256,13 +1256,13 @@ msgid "Member deleted successfully"
 msgstr "Member deleted successfully"
 
 #: app/routes/organization/detail/member.tsx:24
-#: app/routes/organization/detail/layout.tsx:47
+#: app/routes/organization/detail/layout.tsx:65
 #: app/routes/contact-group/detail/member.tsx:33
 #: app/routes/contact-group/detail/layout.tsx:39
 msgid "Members"
 msgstr "Members"
 
-#: app/routes/project/detail/layout.tsx:102
+#: app/routes/project/detail/layout.tsx:134
 msgid "Metrics"
 msgstr "Metrics"
 
@@ -1494,7 +1494,7 @@ msgstr "Organization Type"
 
 #: app/routes/user/detail/organization.tsx:19
 #: app/routes/user/detail/layout.tsx:37
-#: app/routes/project/detail/layout.tsx:46
+#: app/routes/project/detail/layout.tsx:51
 #: app/routes/organization/layout.tsx:5
 #: app/routes/organization/index.tsx:14
 #: app/components/app-sidebar/index.tsx:109
@@ -1504,8 +1504,8 @@ msgid "Organizations"
 msgstr "Organizations"
 
 #: app/routes/user/detail/layout.tsx:32
-#: app/routes/project/detail/layout.tsx:82
-#: app/routes/organization/detail/layout.tsx:32
+#: app/routes/project/detail/layout.tsx:114
+#: app/routes/organization/detail/layout.tsx:50
 msgid "Overview"
 msgstr "Overview"
 
@@ -1636,9 +1636,9 @@ msgstr "Project deleted successfully"
 
 #: app/routes/project/layout.tsx:5
 #: app/routes/project/index.tsx:15
-#: app/routes/project/detail/layout.tsx:52
+#: app/routes/project/detail/layout.tsx:57
 #: app/routes/organization/detail/project.tsx:16
-#: app/routes/organization/detail/layout.tsx:37
+#: app/routes/organization/detail/layout.tsx:55
 #: app/components/app-sidebar/index.tsx:113
 #: app/components/app-search/index.tsx:57
 #: app/components/app-search/index.tsx:266
@@ -1700,9 +1700,9 @@ msgstr "Quick ranges"
 msgid "Quota updated successfully"
 msgstr "Quota updated successfully"
 
-#: app/routes/project/detail/layout.tsx:117
+#: app/routes/project/detail/layout.tsx:149
 #: app/routes/project/detail/quota/layout.tsx:5
-#: app/routes/organization/detail/layout.tsx:52
+#: app/routes/organization/detail/layout.tsx:70
 #: app/routes/organization/detail/quota/layout.tsx:5
 msgid "Quotas"
 msgstr "Quotas"
@@ -1953,7 +1953,7 @@ msgid "Secret Namespace"
 msgstr "Secret Namespace"
 
 #: app/routes/project/detail/secret.tsx:13
-#: app/routes/project/detail/layout.tsx:107
+#: app/routes/project/detail/layout.tsx:139
 msgid "Secrets"
 msgstr "Secrets"
 
@@ -2182,9 +2182,9 @@ msgstr "Update your DNS provider with the provided record, or use the HTTP token
 msgid "Updating email addresses for GitHub identities"
 msgstr "Updating email addresses for GitHub identities"
 
-#: app/routes/project/detail/layout.tsx:122
+#: app/routes/project/detail/layout.tsx:154
 #: app/routes/project/detail/quota/usage.tsx:12
-#: app/routes/organization/detail/layout.tsx:57
+#: app/routes/organization/detail/layout.tsx:75
 #: app/routes/organization/detail/quota/usage.tsx:9
 #: app/features/quota/components/quota-bucket-list.tsx:60
 msgid "Usage"
@@ -2282,6 +2282,11 @@ msgstr "View All"
 #: app/routes/contact-group/index.tsx:186
 msgid "View contact groups"
 msgstr "View contact groups"
+
+#: app/routes/project/detail/layout.tsx:178
+#: app/routes/organization/detail/layout.tsx:99
+msgid "View in Cloud Portal"
+msgstr "View in Cloud Portal"
 
 #: app/routes/user/detail/index.tsx:166
 msgid "View in Sentry"
