@@ -4,4 +4,5 @@ import { SecureHeadersVariables } from 'hono/secure-headers';
 export type EnvVariables = SecureHeadersVariables &
   RequestIdVariables & {
     token: string;
+    userId: string;
   };
