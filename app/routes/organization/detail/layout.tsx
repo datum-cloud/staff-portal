@@ -1,12 +1,16 @@
 import type { Route } from './+types/layout';
+import AppActionBar from '@/components/app-actiobar';
 import { SubLayout } from '@/components/sub-layout';
+import { useEnv } from '@/hooks';
 import { authenticator } from '@/modules/auth';
 import { orgDetailQuery } from '@/resources/request/server';
 import { orgRoutes } from '@/utils/config/routes.config';
-import { useLingui } from '@lingui/react/macro';
+import { LinkButton } from '@datum-cloud/datum-ui/button';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisResourcemanagerV1Alpha1Organization } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
-import { CircleGauge, FileText, Folders, SquareActivity, Users } from 'lucide-react';
-import { Outlet, useLoaderData } from 'react-router';
+import { CircleGauge, ExternalLink, FileText, Folders, SquareActivity, Users } from 'lucide-react';
+import { useMemo } from 'react';
+import { Outlet, useLoaderData, useLocation } from 'react-router';
 
 export const handle = {
   breadcrumb: (data: ComMiloapisResourcemanagerV1Alpha1Organization) => {
@@ -26,26 +30,40 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 export default function Layout() {
   const { t } = useLingui();
   const data = useLoaderData<typeof loader>();
+  const env = useEnv();
+  const { pathname } = useLocation();
+
+  const orgName = data?.metadata?.name ?? '';
+
+  const cloudOrgUrl = useMemo(() => {
+    if (!env?.CLOUD_PORTAL_URL || !orgName) return null;
+    const base = `${env.CLOUD_PORTAL_URL}/org/${orgName}`;
+    if (pathname.includes('/projects')) return `${base}/projects`;
+    if (pathname.includes('/members')) return `${base}/team`;
+    if (pathname.includes('/activity')) return `${base}/activity`;
+    if (pathname.includes('/quotas')) return `${base}/quotas`;
+    return base;
+  }, [env, orgName, pathname]);
 
   const menuItems = [
     {
       title: t`Overview`,
-      href: orgRoutes.detail(data?.metadata?.name ?? ''),
+      href: orgRoutes.detail(orgName),
       icon: FileText,
     },
     {
       title: t`Projects`,
-      href: orgRoutes.project(data?.metadata?.name ?? ''),
+      href: orgRoutes.project(orgName),
       icon: Folders,
     },
     {
       title: t`Activity`,
-      href: orgRoutes.activity.root(data?.metadata?.name ?? ''),
+      href: orgRoutes.activity.root(orgName),
       icon: SquareActivity,
     },
     {
       title: t`Members`,
-      href: orgRoutes.member(data?.metadata?.name ?? ''),
+      href: orgRoutes.member(orgName),
       icon: Users,
     },
     {
@@ -55,24 +73,41 @@ export default function Layout() {
       submenuItems: [
         {
           title: t`Usage`,
-          href: `${orgRoutes.quota.usage(data?.metadata?.name ?? '')}`,
+          href: `${orgRoutes.quota.usage(orgName)}`,
         },
         {
           title: t`Grants`,
-          href: orgRoutes.quota.grant(data?.metadata?.name ?? ''),
+          href: orgRoutes.quota.grant(orgName),
         },
       ],
     },
   ];
 
   return (
-    <SubLayout>
-      <SubLayout.SidebarLeft>
-        <SubLayout.SidebarMenu menuItems={menuItems} />
-      </SubLayout.SidebarLeft>
-      <SubLayout.Content>
-        <Outlet />
-      </SubLayout.Content>
-    </SubLayout>
+    <>
+      {cloudOrgUrl && (
+        <AppActionBar key={cloudOrgUrl}>
+          <LinkButton
+            href={cloudOrgUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            type="secondary"
+            theme="outline"
+            size="small"
+            icon={<ExternalLink size={12} />}
+            iconPosition="right">
+            <Trans>View in Cloud Portal</Trans>
+          </LinkButton>
+        </AppActionBar>
+      )}
+      <SubLayout>
+        <SubLayout.SidebarLeft>
+          <SubLayout.SidebarMenu menuItems={menuItems} />
+        </SubLayout.SidebarLeft>
+        <SubLayout.Content>
+          <Outlet />
+        </SubLayout.Content>
+      </SubLayout>
+    </>
   );
 }

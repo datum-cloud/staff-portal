@@ -11,6 +11,7 @@ const envSchema = z.object({
   VERSION: z.string(),
 
   // Optional configuration
+  CLOUD_PORTAL_URL: z.url().optional(),
   AUTH_OIDC_SCOPES: z.string().optional(),
   AUTH_OIDC_CLIENT_SECRET: z.string().optional(),
   OTEL_ENABLED: z.string().optional(),

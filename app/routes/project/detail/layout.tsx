@@ -1,13 +1,16 @@
 import type { Route } from './+types/layout';
+import AppActionBar from '@/components/app-actiobar';
 import {
   createClickableBreadcrumbItem,
   createStaticBreadcrumbItem,
   type BreadcrumbItem,
 } from '@/components/breadcrumb';
 import { SubLayout } from '@/components/sub-layout';
+import { useEnv } from '@/hooks';
 import { authenticator } from '@/modules/auth';
 import { orgDetailQuery, projectDetailQuery } from '@/resources/request/server';
 import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
+import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Trans, useLingui } from '@lingui/react/macro';
 import {
   ComMiloapisResourcemanagerV1Alpha1Organization,
@@ -16,6 +19,7 @@ import {
 import {
   ChartSpline,
   CircleGauge,
+  ExternalLink,
   FileLock,
   FileText,
   Gauge,
@@ -23,7 +27,8 @@ import {
   Signpost,
   SquareActivity,
 } from 'lucide-react';
-import { Outlet, useLoaderData } from 'react-router';
+import { useMemo } from 'react';
+import { Outlet, useLoaderData, useLocation, useParams } from 'react-router';
 
 export const handle = {
   customBreadcrumb: {
@@ -76,41 +81,68 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 export default function Layout() {
   const { t } = useLingui();
   const { project } = useLoaderData<typeof loader>();
+  const env = useEnv();
+  const { pathname } = useLocation();
+  const params = useParams();
+
+  const projectName = project?.metadata?.name ?? '';
+
+  const cloudProjectUrl = useMemo(() => {
+    if (!env?.CLOUD_PORTAL_URL || !projectName) return null;
+    const base = `${env.CLOUD_PORTAL_URL}/project/${projectName}`;
+
+    // Sub-resource detail pages (param present = on a specific resource detail)
+    if (params.edgeName) return `${base}/edge/${params.edgeName}`;
+    if (params.dnsName) return `${base}/dns-zones/${params.dnsName}`;
+    if (params.domainName) return `${base}/domains/${params.domainName}`;
+    if (params.exportPolicyName) return `${base}/export-policies/${params.exportPolicyName}`;
+
+    // Sub-resource list pages
+    if (pathname.includes('/edges')) return `${base}/edge`;
+    if (pathname.includes('/dns')) return `${base}/dns-zones`;
+    if (pathname.includes('/domains')) return `${base}/domains`;
+    if (pathname.includes('/export-policies')) return `${base}/export-policies`;
+    if (pathname.includes('/secrets')) return `${base}/secrets`;
+    if (pathname.includes('/activity')) return `${base}/activity`;
+    if (pathname.includes('/quotas')) return `${base}/quotas`;
+
+    return base;
+  }, [env, projectName, params, pathname]);
 
   const menuItems = [
     {
       title: t`Overview`,
-      href: projectRoutes.detail(project?.metadata?.name ?? ''),
+      href: projectRoutes.detail(projectName),
       icon: FileText,
     },
     {
       title: t`AI Edge`,
-      href: projectRoutes.edge.list(project?.metadata?.name ?? ''),
+      href: projectRoutes.edge.list(projectName),
       icon: Gauge,
     },
     {
       title: t`DNS`,
-      href: projectRoutes.dns.list(project?.metadata?.name ?? ''),
+      href: projectRoutes.dns.list(projectName),
       icon: Signpost,
     },
     {
       title: t`Domains`,
-      href: projectRoutes.domain.list(project?.metadata?.name ?? ''),
+      href: projectRoutes.domain.list(projectName),
       icon: Layers,
     },
     {
       title: t`Metrics`,
-      href: projectRoutes.exportPolicy.list(project?.metadata?.name ?? ''),
+      href: projectRoutes.exportPolicy.list(projectName),
       icon: ChartSpline,
     },
     {
       title: t`Secrets`,
-      href: projectRoutes.secret.list(project?.metadata?.name ?? ''),
+      href: projectRoutes.secret.list(projectName),
       icon: FileLock,
     },
     {
       title: t`Activity`,
-      href: projectRoutes.activity.root(project?.metadata?.name ?? ''),
+      href: projectRoutes.activity.root(projectName),
       icon: SquareActivity,
     },
     {
@@ -120,24 +152,41 @@ export default function Layout() {
       submenuItems: [
         {
           title: t`Usage`,
-          href: `${projectRoutes.quota.usage(project?.metadata?.name ?? '')}`,
+          href: `${projectRoutes.quota.usage(projectName)}`,
         },
         {
           title: t`Grants`,
-          href: projectRoutes.quota.grant(project?.metadata?.name ?? ''),
+          href: projectRoutes.quota.grant(projectName),
         },
       ],
     },
   ];
 
   return (
-    <SubLayout>
-      <SubLayout.SidebarLeft>
-        <SubLayout.SidebarMenu menuItems={menuItems} />
-      </SubLayout.SidebarLeft>
-      <SubLayout.Content>
-        <Outlet />
-      </SubLayout.Content>
-    </SubLayout>
+    <>
+      {cloudProjectUrl && (
+        <AppActionBar key={cloudProjectUrl}>
+          <LinkButton
+            href={cloudProjectUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            type="secondary"
+            theme="outline"
+            size="small"
+            icon={<ExternalLink size={12} />}
+            iconPosition="right">
+            <Trans>View in Cloud Portal</Trans>
+          </LinkButton>
+        </AppActionBar>
+      )}
+      <SubLayout>
+        <SubLayout.SidebarLeft>
+          <SubLayout.SidebarMenu menuItems={menuItems} />
+        </SubLayout.SidebarLeft>
+        <SubLayout.Content>
+          <Outlet />
+        </SubLayout.Content>
+      </SubLayout>
+    </>
   );
 }
