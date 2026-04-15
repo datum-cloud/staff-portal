@@ -98,7 +98,9 @@ export function createCustomerTools({ accessToken }: CustomerToolDeps) {
     listUsers: tool({
       description:
         'List platform users with optional filters.' +
-        ' Use this to browse users or filter by approval status.',
+        ' Use this to browse users or filter by approval status.' +
+        ' WARNING: This returns users in arbitrary order — it does NOT sort by creation date.' +
+        ' For "newest" / "most recent" / "latest" users, use `queryActivityLogs` instead with verb="create" and resourceType="users".',
       inputSchema: z.object({
         limit: z.number().int().min(1).max(50).default(20).describe('Max results to return'),
         registrationApproval: z
@@ -130,6 +132,7 @@ export function createCustomerTools({ accessToken }: CustomerToolDeps) {
                 email: u.spec?.email,
                 givenName: u.spec?.givenName,
                 familyName: u.spec?.familyName,
+                createdAt: u.metadata?.creationTimestamp,
                 registrationApproval: u.status?.registrationApproval,
                 url: `/customers/users/${encodeURIComponent(u.metadata?.name)}`,
               }))

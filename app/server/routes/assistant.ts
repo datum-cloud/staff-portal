@@ -1,6 +1,6 @@
 import { buildSystemPrompt, createAssistantTools } from '@/modules/assistant';
 import { EnvVariables } from '@/server/iface';
-import { authMiddleware, getToken } from '@/server/middleware';
+import { authMiddleware, getToken, getUserId } from '@/server/middleware';
 import { env } from '@/utils/config/env.server';
 import { logger } from '@/utils/logger';
 import { createAnthropic } from '@ai-sdk/anthropic';
@@ -33,6 +33,7 @@ assistantRoutes.post('/', authMiddleware(), async (c) => {
   }
 
   const token = getToken(c);
+  const userId = getUserId(c);
 
   const body = await c.req.json();
   const { messages, clientOs } = body as {
@@ -40,7 +41,12 @@ assistantRoutes.post('/', authMiddleware(), async (c) => {
     clientOs?: string;
   };
 
-  const userId = 'staff-user';
+  const lastUserMessage = messages.findLast((m) => m.role === 'user');
+  const userMessage = lastUserMessage?.parts
+    ?.filter((p): p is { type: 'text'; text: string } => p.type === 'text')
+    .map((p) => p.text)
+    .join(' ')
+    .slice(0, 500);
 
   if (!checkRateLimit(userId)) {
     return c.json({ error: 'Too Many Requests' }, 429);
@@ -73,6 +79,7 @@ assistantRoutes.post('/', authMiddleware(), async (c) => {
       logger.error('assistant stream failed', {
         userId,
         model,
+        userMessage,
         error: err instanceof Error ? err.message : String(err),
         stack: err instanceof Error ? err.stack : undefined,
       });
@@ -83,6 +90,7 @@ assistantRoutes.post('/', authMiddleware(), async (c) => {
         logger.info('assistant request completed', {
           userId,
           model,
+          userMessage,
           inputTokens: usage.inputTokens,
           outputTokens: usage.outputTokens,
           totalTokens: usage.totalTokens,
@@ -95,6 +103,7 @@ assistantRoutes.post('/', authMiddleware(), async (c) => {
   } catch (err) {
     logger.error('assistant request failed', {
       userId,
+      userMessage,
       error: err instanceof Error ? err.message : String(err),
       stack: err instanceof Error ? err.stack : undefined,
     });
