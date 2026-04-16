@@ -154,7 +154,7 @@ export function PendingApprovalsWidget() {
                           {fullName}
                         </Text>
                       </TableCell>
-                      <TableCell className="hidden md:table-cell max-w-[160px]">
+                      <TableCell className="hidden max-w-[160px] md:table-cell">
                         <Text size="sm" className="truncate">
                           {approval.email || '—'}
                         </Text>
