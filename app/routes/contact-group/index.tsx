@@ -1,6 +1,7 @@
 import type { Route } from './+types/index';
 import AppActionBar from '@/components/app-actiobar';
 import { BadgeCondition, BadgeState } from '@/components/badge';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
@@ -211,26 +212,33 @@ export default function Page() {
         }}>
         <Card className="m-4 py-4 shadow-none">
           <CardContent className="flex flex-col gap-2 px-4">
-            <div className="flex flex-wrap items-center gap-2">
-              <DataTable.Search placeholder={t`Search contact groups...`} className="w-64" />
-              <DataTable.BulkActions>
-                {(selectedRows) =>
-                  selectedRows.length > 0 ? (
-                    <Button
-                      type="danger"
-                      theme="outline"
-                      icon={<Trash2Icon size={16} />}
-                      onClick={() =>
-                        setBulkDeleteRows(
-                          selectedRows as ComMiloapisNotificationV1Alpha1ContactGroup[]
-                        )
-                      }>
-                      <Trans>Delete {selectedRows.length} selected</Trans>
-                    </Button>
-                  ) : null
-                }
-              </DataTable.BulkActions>
-            </div>
+            <DataTableToolbar
+              search={
+                <DataTable.Search
+                  placeholder={t`Search contact groups...`}
+                  className="w-full md:w-64"
+                />
+              }
+              extras={
+                <DataTable.BulkActions>
+                  {(selectedRows) =>
+                    selectedRows.length > 0 ? (
+                      <Button
+                        type="danger"
+                        theme="outline"
+                        icon={<Trash2Icon size={16} />}
+                        onClick={() =>
+                          setBulkDeleteRows(
+                            selectedRows as ComMiloapisNotificationV1Alpha1ContactGroup[]
+                          )
+                        }>
+                        <Trans>Delete {selectedRows.length} selected</Trans>
+                      </Button>
+                    ) : null
+                  }
+                </DataTable.BulkActions>
+              }
+            />
             <DataTable.Content
               headerClassName="bg-muted/50"
               className="border-t border-b border-solid"

@@ -26,60 +26,60 @@ msgstr ""
 msgid "{heading}"
 msgstr ""
 
-#: app/routes/project/detail/export-policy/index.tsx:37
+#: app/routes/project/detail/export-policy/index.tsx:38
 msgid "# of Sinks"
 msgstr ""
 
-#: app/routes/project/detail/export-policy/index.tsx:41
+#: app/routes/project/detail/export-policy/index.tsx:42
 msgid "# of Sources"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:374
-#: app/features/activity/components/activity-list.tsx:465
+#: app/features/activity/components/activity-list.tsx:375
+#: app/features/activity/components/activity-list.tsx:469
 msgid "200 - OK"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:375
-#: app/features/activity/components/activity-list.tsx:466
+#: app/features/activity/components/activity-list.tsx:376
+#: app/features/activity/components/activity-list.tsx:470
 msgid "201 - Created"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:376
-#: app/features/activity/components/activity-list.tsx:467
+#: app/features/activity/components/activity-list.tsx:377
+#: app/features/activity/components/activity-list.tsx:471
 msgid "204 - No Content"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:377
-#: app/features/activity/components/activity-list.tsx:468
+#: app/features/activity/components/activity-list.tsx:378
+#: app/features/activity/components/activity-list.tsx:472
 msgid "400 - Bad Request"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:378
-#: app/features/activity/components/activity-list.tsx:469
+#: app/features/activity/components/activity-list.tsx:379
+#: app/features/activity/components/activity-list.tsx:473
 msgid "401 - Unauthorized"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:379
-#: app/features/activity/components/activity-list.tsx:470
+#: app/features/activity/components/activity-list.tsx:380
+#: app/features/activity/components/activity-list.tsx:474
 msgid "403 - Forbidden"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:380
-#: app/features/activity/components/activity-list.tsx:471
+#: app/features/activity/components/activity-list.tsx:381
+#: app/features/activity/components/activity-list.tsx:475
 msgid "404 - Not Found"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:381
-#: app/features/activity/components/activity-list.tsx:472
+#: app/features/activity/components/activity-list.tsx:382
+#: app/features/activity/components/activity-list.tsx:476
 msgid "409 - Conflict"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:382
-#: app/features/activity/components/activity-list.tsx:473
+#: app/features/activity/components/activity-list.tsx:383
+#: app/features/activity/components/activity-list.tsx:477
 msgid "500 - Server Error"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:299
+#: app/routes/fraud/index.tsx:307
 msgid "Accepted"
 msgstr ""
 
@@ -92,32 +92,33 @@ msgstr ""
 msgid "Account Identities"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:298
+#: app/routes/user/detail/index.tsx:267
 msgid "Account Management"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:195
+#: app/features/activity/components/activity-list.tsx:196
 msgid "Action"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:449
-#: app/features/activity/components/activity-list.tsx:513
+#: app/features/activity/components/activity-list.tsx:453
+#: app/features/activity/components/activity-list.tsx:519
+#: app/components/app-toolbar/mobile-toolbar.tsx:89
 msgid "Actions"
 msgstr ""
 
-#: app/routes/profile/session.tsx:19
+#: app/routes/profile/session.tsx:20
 #: app/routes/profile/layout.tsx:21
 msgid "Active Sessions"
 msgstr ""
 
 #: app/routes/user/detail/layout.tsx:52
 #: app/routes/user/detail/activity/index.tsx:23
-#: app/routes/project/detail/layout.tsx:144
+#: app/routes/project/detail/layout.tsx:149
 #: app/routes/project/detail/activity/index.tsx:14
-#: app/routes/organization/detail/layout.tsx:60
+#: app/routes/organization/detail/layout.tsx:64
 #: app/routes/organization/detail/activity/index.tsx:14
 #: app/components/app-sidebar/index.tsx:147
-#: app/components/app-search/index.tsx:63
+#: app/components/app-search/use-app-search.ts:43
 msgid "Activity"
 msgstr ""
 
@@ -125,14 +126,14 @@ msgstr ""
 msgid "Activity Feed"
 msgstr ""
 
-#: app/routes/group/member.tsx:122
-#: app/routes/group/member.tsx:145
-#: app/routes/contact-group/index.tsx:111
-#: app/routes/contact-group/detail/member.tsx:335
-#: app/routes/contact-group/detail/member.tsx:361
+#: app/routes/group/member.tsx:123
+#: app/routes/group/member.tsx:146
+#: app/routes/contact-group/index.tsx:112
+#: app/routes/contact-group/detail/member.tsx:336
+#: app/routes/contact-group/detail/member.tsx:362
 #: app/routes/contact/index.tsx:27
-#: app/routes/contact/detail/group.tsx:151
-#: app/routes/contact/detail/group.tsx:172
+#: app/routes/contact/detail/group.tsx:152
+#: app/routes/contact/detail/group.tsx:173
 msgid "Add"
 msgstr ""
 
@@ -140,12 +141,12 @@ msgstr ""
 msgid "Add a note"
 msgstr ""
 
-#: app/routes/contact/detail/group.tsx:171
+#: app/routes/contact/detail/group.tsx:172
 msgid "Add Group"
 msgstr ""
 
-#: app/routes/group/member.tsx:144
-#: app/routes/contact-group/detail/member.tsx:360
+#: app/routes/group/member.tsx:145
+#: app/routes/contact-group/detail/member.tsx:361
 msgid "Add Member"
 msgstr ""
 
@@ -165,7 +166,7 @@ msgstr ""
 msgid "Add Trigger"
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:223
+#: app/routes/contact-group/detail/member.tsx:224
 msgid "Added"
 msgstr ""
 
@@ -177,10 +178,10 @@ msgstr ""
 msgid "Age"
 msgstr ""
 
-#: app/routes/project/detail/layout.tsx:119
+#: app/routes/project/detail/layout.tsx:124
 #: app/routes/project/detail/edge/layout.tsx:5
-#: app/features/activity/components/activity-list.tsx:388
-#: app/features/activity/components/activity-list.tsx:484
+#: app/features/activity/components/activity-list.tsx:389
+#: app/features/activity/components/activity-list.tsx:488
 msgid "AI Edge"
 msgstr ""
 
@@ -196,7 +197,7 @@ msgstr ""
 msgid "All quotas healthy"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:443
+#: app/features/activity/components/activity-list.tsx:447
 msgid "All read operations"
 msgstr ""
 
@@ -204,74 +205,74 @@ msgstr ""
 msgid "All registrations are up to date"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:436
+#: app/features/activity/components/activity-list.tsx:440
 msgid "All write operations"
 msgstr ""
 
-#: app/features/quota/components/quota-grant-list.tsx:93
+#: app/features/quota/components/quota-grant-list.tsx:94
 msgid "Allocation"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:501
-#: app/features/activity/components/activity-list.tsx:516
+#: app/features/activity/components/activity-list.tsx:505
+#: app/features/activity/components/activity-list.tsx:522
 msgid "API Group"
 msgstr ""
 
-#: app/routes/user/index.tsx:52
-#: app/routes/user/detail/index.tsx:186
+#: app/routes/user/index.tsx:53
+#: app/routes/user/detail/index.tsx:184
 msgid "Approve"
 msgstr ""
 
-#: app/routes/user/index.tsx:273
-#: app/routes/user/index.tsx:288
+#: app/routes/user/index.tsx:277
+#: app/routes/user/index.tsx:293
 msgid "Approved"
 msgstr ""
 
 #. placeholder {0}: bulkDeleteRows[0]?.spec?.displayName ?? bulkDeleteRows[0]?.metadata?.name ?? ''
-#: app/routes/contact-group/index.tsx:136
+#: app/routes/contact-group/index.tsx:137
 msgid "Are you sure you want to delete \"{0}\"? This action cannot be undone."
 msgstr ""
 
 #. placeholder {0}: bulkDeleteRows?.length ?? 0
-#: app/routes/contact-group/index.tsx:137
+#: app/routes/contact-group/index.tsx:138
 msgid "Are you sure you want to delete {0} contact groups? This action cannot be undone."
 msgstr ""
 
 #. placeholder {0}: selectedContactGroup?.spec?.displayName ?? ''
 #. placeholder {0}: selectedContact?.metadata?.name ?? ''
-#: app/routes/contact-group/index.tsx:119
-#: app/features/contact/components/contact-list.tsx:114
+#: app/routes/contact-group/index.tsx:120
+#: app/features/contact/components/contact-list.tsx:115
 msgid "Are you sure you want to delete contact \"{0}\"? This action cannot be undone."
 msgstr ""
 
 #. placeholder {0}: selectedGrant?.metadata?.name
-#: app/features/quota/components/quota-grant-list.tsx:135
+#: app/features/quota/components/quota-grant-list.tsx:136
 msgid "Are you sure you want to delete grant \"{0}\"? This action cannot be undone."
 msgstr ""
 
 #. placeholder {0}: selectedGroup?.contactGroup?.spec?.displayName ?? ''
-#: app/routes/contact/detail/group.tsx:158
+#: app/routes/contact/detail/group.tsx:159
 msgid "Are you sure you want to delete group \"{0}\"? This action cannot be undone."
 msgstr ""
 
 #. placeholder {0}: selectedGroupMembership?.metadata?.name ?? ''
-#: app/routes/group/member.tsx:130
+#: app/routes/group/member.tsx:131
 msgid "Are you sure you want to delete member \"{0}\"? This action cannot be undone."
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:343
+#: app/routes/contact-group/detail/member.tsx:344
 msgid "Are you sure you want to delete member \"{deleteMemberDisplayName}\"? This action cannot be undone."
 msgstr ""
 
 #. placeholder {0}: data.metadata?.annotations?.['kubernetes.io/display-name'] ?? ''
 #. placeholder {1}: data.metadata?.name ?? ''
-#: app/routes/organization/detail/index.tsx:91
+#: app/routes/organization/detail/index.tsx:70
 msgid "Are you sure you want to delete organization \"{0} ({1})\"? This action cannot be undone."
 msgstr ""
 
 #. placeholder {0}: project?.metadata?.annotations?.['kubernetes.io/description']
 #. placeholder {1}: project?.metadata?.name ?? ''
-#: app/routes/project/detail/index.tsx:92
+#: app/routes/project/detail/index.tsx:73
 msgid "Are you sure you want to delete project \"{0} ({1})\"? This action cannot be undone."
 msgstr ""
 
@@ -283,7 +284,7 @@ msgid "Are you sure you want to delete provider \"{0}\"? This action cannot be u
 msgstr ""
 
 #. placeholder {0}: selectedSession?.metadata?.name ?? ''
-#: app/routes/profile/session.tsx:103
+#: app/routes/profile/session.tsx:104
 msgid "Are you sure you want to delete session \"{0}\"? This action cannot be undone."
 msgstr ""
 
@@ -292,17 +293,17 @@ msgstr ""
 msgid "Are you sure you want to delete the fraud policy \"{0}\"? This will disable all fraud evaluation."
 msgstr ""
 
-#: app/routes/fraud/index.tsx:244
+#: app/routes/fraud/index.tsx:245
 msgid "Are you sure you want to delete this fraud evaluation? This action cannot be undone."
 msgstr ""
 
 #. placeholder {0}: data.spec?.givenName ?? ''
 #. placeholder {1}: data.spec?.familyName ?? ''
-#: app/routes/user/detail/index.tsx:395
+#: app/routes/user/detail/index.tsx:363
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:103
+#: app/routes/contact-group/detail/member.tsx:104
 #: app/features/contact/components/contact-form.tsx:190
 msgid "Associate with User"
 msgstr ""
@@ -319,35 +320,39 @@ msgstr ""
 msgid "Available"
 msgstr ""
 
+#: app/components/app-toolbar/mobile-toolbar.tsx:60
+msgid "Back"
+msgstr ""
+
 #: app/features/fraud/detail/evaluation-sections.tsx:191
 msgid "Back to evaluations"
 msgstr ""
 
-#: app/routes/user/index.tsx:172
-#: app/routes/user/detail/index.tsx:129
-#: app/routes/profile/session.tsx:105
-#: app/routes/organization/detail/member.tsx:84
-#: app/routes/group/member.tsx:132
-#: app/routes/group/member.tsx:146
+#: app/routes/user/index.tsx:173
+#: app/routes/user/detail/index.tsx:131
+#: app/routes/profile/session.tsx:106
+#: app/routes/organization/detail/member.tsx:85
+#: app/routes/group/member.tsx:133
+#: app/routes/group/member.tsx:147
 #: app/routes/fraud/policy.tsx:97
-#: app/routes/fraud/index.tsx:211
-#: app/routes/fraud/index.tsx:246
+#: app/routes/fraud/index.tsx:212
+#: app/routes/fraud/index.tsx:247
 #: app/routes/fraud/providers/index.tsx:133
 #: app/routes/fraud/providers/detail.tsx:164
 #: app/routes/fraud/providers/detail.tsx:186
 #: app/routes/fraud/providers/create.tsx:130
-#: app/routes/contact-group/index.tsx:121
-#: app/routes/contact-group/index.tsx:140
-#: app/routes/contact-group/detail/member.tsx:345
-#: app/routes/contact-group/detail/member.tsx:362
-#: app/routes/contact/detail/group.tsx:160
-#: app/routes/contact/detail/group.tsx:173
+#: app/routes/contact-group/index.tsx:122
+#: app/routes/contact-group/index.tsx:141
+#: app/routes/contact-group/detail/member.tsx:346
+#: app/routes/contact-group/detail/member.tsx:363
+#: app/routes/contact/detail/group.tsx:161
+#: app/routes/contact/detail/group.tsx:174
 #: app/features/user/components/user-reject-dialog.tsx:30
-#: app/features/quota/components/quota-grant-list.tsx:137
-#: app/features/quota/components/quota-bucket-list.tsx:127
+#: app/features/quota/components/quota-grant-list.tsx:138
+#: app/features/quota/components/quota-bucket-list.tsx:128
 #: app/features/fraud/policy/policy-form.tsx:318
 #: app/features/contact-group/components/contact-group-form.tsx:97
-#: app/features/contact/components/contact-list.tsx:116
+#: app/features/contact/components/contact-list.tsx:117
 #: app/features/contact/components/contact-form.tsx:217
 #: app/components/danger-zone-card/index.tsx:49
 #: app/components/button/button-delete-action.tsx:43
@@ -378,21 +383,21 @@ msgstr ""
 msgid "clusters healthy"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:288
+#: app/routes/fraud/index.tsx:296
 msgid "Completed"
 msgstr ""
 
-#: app/routes/project/detail/export-policy/detail.tsx:189
-#: app/routes/project/detail/export-policy/detail.tsx:223
+#: app/routes/project/detail/export-policy/detail.tsx:173
+#: app/routes/project/detail/export-policy/detail.tsx:207
 msgid "Configuration"
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:67
+#: app/routes/contact-group/detail/member.tsx:68
 #: app/features/fraud/detail/evaluation-sections.tsx:233
 msgid "Contact"
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:320
+#: app/routes/contact-group/detail/member.tsx:321
 msgid "Contact created and added to the group"
 msgstr ""
 
@@ -400,7 +405,7 @@ msgstr ""
 msgid "Contact created successfully"
 msgstr ""
 
-#: app/features/contact/components/contact-list.tsx:123
+#: app/features/contact/components/contact-list.tsx:124
 msgid "Contact deleted successfully"
 msgstr ""
 
@@ -408,7 +413,7 @@ msgstr ""
 msgid "Contact group created successfully"
 msgstr ""
 
-#: app/routes/contact-group/index.tsx:126
+#: app/routes/contact-group/index.tsx:127
 msgid "Contact Group deleted successfully"
 msgstr ""
 
@@ -422,7 +427,7 @@ msgid "Contact group updated successfully"
 msgstr ""
 
 #: app/routes/contact-group/layout.tsx:5
-#: app/routes/contact-group/index.tsx:30
+#: app/routes/contact-group/index.tsx:31
 msgid "Contact Groups"
 msgstr ""
 
@@ -452,7 +457,7 @@ msgstr ""
 msgid "Contacts - Create"
 msgstr ""
 
-#: app/routes/project/detail/dns/detail.tsx:112
+#: app/routes/project/detail/dns/detail.tsx:114
 msgid "Content"
 msgstr ""
 
@@ -486,12 +491,12 @@ msgstr ""
 #: app/features/fraud/policy/policy-form.tsx:321
 #: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:223
-#: app/features/activity/components/activity-list.tsx:367
-#: app/features/activity/components/activity-list.tsx:454
+#: app/features/activity/components/activity-list.tsx:368
+#: app/features/activity/components/activity-list.tsx:458
 msgid "Create"
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:90
+#: app/routes/contact-group/detail/member.tsx:91
 msgid "Create a new contact with this email"
 msgstr ""
 
@@ -508,28 +513,28 @@ msgstr ""
 msgid "Create Policy"
 msgstr ""
 
-#: app/routes/user/index.tsx:120
-#: app/routes/user/detail/index.tsx:280
-#: app/routes/project/index.tsx:48
-#: app/routes/project/detail/index.tsx:74
-#: app/routes/project/detail/export-policy/index.tsx:52
-#: app/routes/project/detail/export-policy/detail.tsx:97
-#: app/routes/project/detail/edge/index.tsx:52
+#: app/routes/user/index.tsx:121
+#: app/routes/user/detail/index.tsx:251
+#: app/routes/project/index.tsx:49
+#: app/routes/project/detail/index.tsx:57
+#: app/routes/project/detail/export-policy/index.tsx:53
+#: app/routes/project/detail/export-policy/detail.tsx:83
+#: app/routes/project/detail/edge/index.tsx:53
 #: app/routes/project/detail/edge/detail.tsx:123
-#: app/routes/project/detail/domain/index.tsx:65
-#: app/routes/project/detail/domain/detail.tsx:167
-#: app/routes/project/detail/dns/index.tsx:71
-#: app/routes/profile/session.tsx:72
-#: app/routes/organization/index.tsx:42
-#: app/routes/organization/detail/project.tsx:49
-#: app/routes/organization/detail/index.tsx:73
-#: app/routes/group/member.tsx:97
-#: app/routes/group/index.tsx:39
+#: app/routes/project/detail/domain/index.tsx:66
+#: app/routes/project/detail/domain/detail.tsx:130
+#: app/routes/project/detail/dns/index.tsx:72
+#: app/routes/profile/session.tsx:73
+#: app/routes/organization/index.tsx:43
+#: app/routes/organization/detail/project.tsx:50
+#: app/routes/organization/detail/index.tsx:54
+#: app/routes/group/member.tsx:98
+#: app/routes/group/index.tsx:40
 #: app/routes/fraud/providers/index.tsx:102
-#: app/routes/contact-group/index.tsx:88
-#: app/features/quota/components/quota-grant-list.tsx:113
-#: app/features/quota/components/quota-bucket-list.tsx:96
-#: app/features/contact/components/contact-list.tsx:94
+#: app/routes/contact-group/index.tsx:89
+#: app/features/quota/components/quota-grant-list.tsx:114
+#: app/features/quota/components/quota-bucket-list.tsx:97
+#: app/features/contact/components/contact-list.tsx:95
 msgid "Created"
 msgstr ""
 
@@ -554,17 +559,17 @@ msgstr ""
 
 #: app/routes/dashboard/index.tsx:28
 #: app/components/app-sidebar/index.tsx:93
-#: app/components/app-search/index.tsx:48
+#: app/components/app-search/use-app-search.ts:28
 msgid "Dashboard"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:216
+#: app/features/activity/components/activity-list.tsx:217
 msgid "Date"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:128
-#: app/routes/user/detail/index.tsx:384
-#: app/routes/fraud/index.tsx:301
+#: app/routes/user/detail/index.tsx:130
+#: app/routes/user/detail/index.tsx:351
+#: app/routes/fraud/index.tsx:309
 msgid "Deactivate"
 msgstr ""
 
@@ -572,30 +577,30 @@ msgstr ""
 msgid "Deactivate Threshold"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:126
-#: app/routes/user/detail/index.tsx:374
+#: app/routes/user/detail/index.tsx:128
+#: app/routes/user/detail/index.tsx:342
 msgid "Deactivate User"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:348
-msgid "Deactivated At:"
+#: app/routes/user/detail/index.tsx:315
+msgid "Deactivated At"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:342
-msgid "Deactivated By:"
+#: app/routes/user/detail/index.tsx:307
+msgid "Deactivated By"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:336
+#: app/routes/user/detail/index.tsx:299
 msgid "Deactivation Details"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:358
-msgid "Deactivation Reason:"
+#: app/routes/user/detail/index.tsx:329
+msgid "Deactivation Reason"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:150
-#: app/routes/fraud/index.tsx:296
-#: app/routes/fraud/index.tsx:310
+#: app/routes/fraud/index.tsx:151
+#: app/routes/fraud/index.tsx:304
+#: app/routes/fraud/index.tsx:320
 #: app/features/fraud/detail/evaluation-sections.tsx:264
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:149
 msgid "Decision"
@@ -605,45 +610,45 @@ msgstr ""
 msgid "Degraded"
 msgstr ""
 
-#: app/routes/profile/session.tsx:40
-#: app/routes/profile/session.tsx:104
-#: app/routes/group/member.tsx:72
-#: app/routes/group/member.tsx:131
+#: app/routes/profile/session.tsx:41
+#: app/routes/profile/session.tsx:105
+#: app/routes/group/member.tsx:73
+#: app/routes/group/member.tsx:132
 #: app/routes/fraud/policy.tsx:96
-#: app/routes/fraud/index.tsx:91
-#: app/routes/fraud/index.tsx:245
+#: app/routes/fraud/index.tsx:92
+#: app/routes/fraud/index.tsx:246
 #: app/routes/fraud/providers/index.tsx:46
 #: app/routes/fraud/providers/index.tsx:132
 #: app/routes/fraud/providers/detail.tsx:105
 #: app/routes/fraud/providers/detail.tsx:185
-#: app/routes/contact-group/index.tsx:55
-#: app/routes/contact-group/index.tsx:120
-#: app/routes/contact-group/index.tsx:139
-#: app/routes/contact-group/detail/member.tsx:162
-#: app/routes/contact-group/detail/member.tsx:344
-#: app/routes/contact/detail/group.tsx:71
-#: app/routes/contact/detail/group.tsx:159
-#: app/features/quota/components/quota-grant-list.tsx:55
-#: app/features/quota/components/quota-grant-list.tsx:136
+#: app/routes/contact-group/index.tsx:56
+#: app/routes/contact-group/index.tsx:121
+#: app/routes/contact-group/index.tsx:140
+#: app/routes/contact-group/detail/member.tsx:163
+#: app/routes/contact-group/detail/member.tsx:345
+#: app/routes/contact/detail/group.tsx:72
+#: app/routes/contact/detail/group.tsx:160
+#: app/features/quota/components/quota-grant-list.tsx:56
+#: app/features/quota/components/quota-grant-list.tsx:137
 #: app/features/fraud/policy/policy-detail.tsx:100
-#: app/features/contact/components/contact-list.tsx:57
-#: app/features/contact/components/contact-list.tsx:115
-#: app/features/activity/components/activity-list.tsx:370
-#: app/features/activity/components/activity-list.tsx:457
+#: app/features/contact/components/contact-list.tsx:58
+#: app/features/contact/components/contact-list.tsx:116
+#: app/features/activity/components/activity-list.tsx:371
+#: app/features/activity/components/activity-list.tsx:461
 #: app/components/danger-zone-card/index.tsx:48
-#: app/components/danger-zone-card/index.tsx:76
+#: app/components/danger-zone-card/index.tsx:72
 #: app/components/button/button-delete-action.tsx:42
 #: app/components/button/button-delete-action.tsx:49
 msgid "Delete"
 msgstr ""
 
 #. placeholder {0}: taskRows.length
-#: app/routes/contact-group/index.tsx:148
+#: app/routes/contact-group/index.tsx:149
 msgid "Delete {0} contact groups"
 msgstr ""
 
 #. placeholder {0}: selectedRows.length
-#: app/routes/contact-group/index.tsx:228
+#: app/routes/contact-group/index.tsx:235
 msgid "Delete {0} selected"
 msgstr ""
 
@@ -651,39 +656,39 @@ msgstr ""
 msgid "Delete {itemType}"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:371
+#: app/features/activity/components/activity-list.tsx:372
 msgid "Delete Collection"
 msgstr ""
 
-#: app/routes/contact-group/index.tsx:118
-#: app/features/contact/components/contact-list.tsx:113
+#: app/routes/contact-group/index.tsx:119
+#: app/features/contact/components/contact-list.tsx:114
 msgid "Delete Contact"
 msgstr ""
 
-#: app/routes/contact-group/index.tsx:147
+#: app/routes/contact-group/index.tsx:148
 msgid "Delete contact group"
 msgstr ""
 
-#: app/routes/contact-group/index.tsx:133
+#: app/routes/contact-group/index.tsx:134
 msgid "Delete contact groups"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:243
+#: app/routes/fraud/index.tsx:244
 msgid "Delete Evaluation"
 msgstr ""
 
-#: app/features/quota/components/quota-grant-list.tsx:134
+#: app/features/quota/components/quota-grant-list.tsx:135
 msgid "Delete Grant"
 msgstr ""
 
-#: app/routes/group/member.tsx:129
-#: app/routes/contact-group/detail/member.tsx:342
-#: app/routes/contact/detail/group.tsx:157
+#: app/routes/group/member.tsx:130
+#: app/routes/contact-group/detail/member.tsx:343
+#: app/routes/contact/detail/group.tsx:158
 msgid "Delete Member"
 msgstr ""
 
-#: app/routes/organization/detail/index.tsx:88
-#: app/routes/organization/detail/index.tsx:90
+#: app/routes/organization/detail/index.tsx:67
+#: app/routes/organization/detail/index.tsx:69
 msgid "Delete Organization"
 msgstr ""
 
@@ -691,8 +696,8 @@ msgstr ""
 msgid "Delete Policy"
 msgstr ""
 
-#: app/routes/project/detail/index.tsx:89
-#: app/routes/project/detail/index.tsx:91
+#: app/routes/project/detail/index.tsx:70
+#: app/routes/project/detail/index.tsx:72
 msgid "Delete Project"
 msgstr ""
 
@@ -701,23 +706,23 @@ msgstr ""
 msgid "Delete Provider"
 msgstr ""
 
-#: app/routes/profile/session.tsx:102
+#: app/routes/profile/session.tsx:103
 msgid "Delete Session"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:392
-#: app/routes/user/detail/index.tsx:394
+#: app/routes/user/detail/index.tsx:360
+#: app/routes/user/detail/index.tsx:362
 msgid "Delete User"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:141
-#: app/features/email/components/email-list.tsx:167
+#: app/features/email/components/email-list.tsx:146
+#: app/features/email/components/email-list.tsx:174
 msgid "Delivered"
 msgstr ""
 
-#: app/routes/project/detail/index.tsx:42
-#: app/routes/project/detail/dns/index.tsx:76
-#: app/routes/organization/detail/index.tsx:43
+#: app/routes/project/detail/index.tsx:41
+#: app/routes/project/detail/dns/index.tsx:77
+#: app/routes/organization/detail/index.tsx:42
 #: app/features/contact-group/components/contact-group-form.tsx:80
 msgid "Description"
 msgstr ""
@@ -735,23 +740,23 @@ msgstr ""
 msgid "Display name is required"
 msgstr ""
 
-#: app/routes/project/detail/layout.tsx:124
+#: app/routes/project/detail/layout.tsx:129
 #: app/routes/project/detail/dns/layout.tsx:5
 msgid "DNS"
 msgstr ""
 
-#: app/routes/project/detail/dns/index.tsx:57
-#: app/routes/project/detail/dns/detail.tsx:164
+#: app/routes/project/detail/dns/index.tsx:58
+#: app/routes/project/detail/dns/detail.tsx:166
 msgid "DNS Host"
 msgstr ""
 
-#: app/routes/project/detail/domain/index.tsx:46
-#: app/routes/project/detail/domain/detail.tsx:133
+#: app/routes/project/detail/domain/index.tsx:47
+#: app/routes/project/detail/domain/detail.tsx:110
 msgid "DNS Providers"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:386
-#: app/features/activity/components/activity-list.tsx:482
+#: app/features/activity/components/activity-list.tsx:387
+#: app/features/activity/components/activity-list.tsx:486
 msgid "DNS Record"
 msgstr ""
 
@@ -759,24 +764,24 @@ msgstr ""
 msgid "DNS record is being validated"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:387
-#: app/features/activity/components/activity-list.tsx:483
+#: app/features/activity/components/activity-list.tsx:388
+#: app/features/activity/components/activity-list.tsx:487
 msgid "DNS Record Set"
 msgstr ""
 
-#: app/routes/project/detail/dns/detail.tsx:189
+#: app/routes/project/detail/dns/detail.tsx:191
 msgid "DNS Records"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:385
-#: app/features/activity/components/activity-list.tsx:481
+#: app/features/activity/components/activity-list.tsx:386
+#: app/features/activity/components/activity-list.tsx:485
 msgid "DNS Zone"
 msgstr ""
 
-#: app/routes/project/detail/domain/index.tsx:29
-#: app/routes/project/detail/domain/detail.tsx:113
-#: app/features/activity/components/activity-list.tsx:389
-#: app/features/activity/components/activity-list.tsx:485
+#: app/routes/project/detail/domain/index.tsx:30
+#: app/routes/project/detail/domain/detail.tsx:102
+#: app/features/activity/components/activity-list.tsx:390
+#: app/features/activity/components/activity-list.tsx:489
 msgid "Domain"
 msgstr ""
 
@@ -784,15 +789,15 @@ msgstr ""
 msgid "Domain verification is in progress. This may take a few minutes."
 msgstr ""
 
-#: app/routes/project/detail/layout.tsx:129
+#: app/routes/project/detail/layout.tsx:134
 #: app/routes/project/detail/domain/layout.tsx:5
 msgid "Domains"
 msgstr ""
 
 #: app/routes/fraud/providers/index.tsx:41
-#: app/routes/contact-group/index.tsx:50
+#: app/routes/contact-group/index.tsx:51
 #: app/features/fraud/policy/policy-detail.tsx:93
-#: app/features/contact/components/contact-list.tsx:50
+#: app/features/contact/components/contact-list.tsx:51
 msgid "Edit"
 msgstr ""
 
@@ -804,17 +809,17 @@ msgstr ""
 msgid "Edit Fraud Provider"
 msgstr ""
 
-#: app/features/quota/components/quota-bucket-list.tsx:46
-#: app/features/quota/components/quota-bucket-list.tsx:125
+#: app/features/quota/components/quota-bucket-list.tsx:47
+#: app/features/quota/components/quota-bucket-list.tsx:126
 msgid "Edit Quota"
 msgstr ""
 
-#: app/routes/user/index.tsx:210
-#: app/routes/user/detail/index.tsx:250
-#: app/routes/fraud/index.tsx:112
-#: app/routes/contact-group/detail/member.tsx:202
+#: app/routes/user/index.tsx:211
+#: app/routes/user/detail/index.tsx:239
+#: app/routes/fraud/index.tsx:113
+#: app/routes/contact-group/detail/member.tsx:203
 #: app/features/dashboard/components/pending-approvals-widget.tsx:130
-#: app/features/contact/components/contact-list.tsx:83
+#: app/features/contact/components/contact-list.tsx:84
 #: app/features/contact/components/contact-form.tsx:127
 msgid "Email"
 msgstr ""
@@ -835,7 +840,7 @@ msgstr ""
 msgid "Email HTML preview"
 msgstr ""
 
-#: app/routes/user/index.tsx:142
+#: app/routes/user/index.tsx:143
 msgid "Email is required"
 msgstr ""
 
@@ -843,7 +848,7 @@ msgstr ""
 msgid "End Time"
 msgstr ""
 
-#: app/routes/project/detail/edge/index.tsx:35
+#: app/routes/project/detail/edge/index.tsx:36
 #: app/routes/project/detail/edge/detail.tsx:97
 #: app/routes/fraud/providers/index.tsx:76
 #: app/routes/fraud/providers/detail.tsx:136
@@ -851,7 +856,7 @@ msgstr ""
 msgid "Endpoint"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:165
+#: app/routes/fraud/index.tsx:166
 #: app/features/fraud/detail/evaluation-sections.tsx:279
 msgid "Enforcement"
 msgstr ""
@@ -861,7 +866,7 @@ msgstr ""
 msgid "Enforcement Mode"
 msgstr ""
 
-#: app/routes/user/index.tsx:205
+#: app/routes/user/index.tsx:206
 msgid "Enter first name"
 msgstr ""
 
@@ -869,7 +874,7 @@ msgstr ""
 msgid "Enter note content..."
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:134
+#: app/routes/user/detail/index.tsx:136
 msgid "Enter reason for deactivation..."
 msgstr ""
 
@@ -877,8 +882,8 @@ msgstr ""
 msgid "Enter reason for rejection..."
 msgstr ""
 
-#: app/routes/group/member.tsx:170
-#: app/routes/contact-group/detail/member.tsx:114
+#: app/routes/group/member.tsx:171
+#: app/routes/contact-group/detail/member.tsx:115
 #: app/features/contact/components/contact-form.tsx:199
 msgid "Enter the full email to search..."
 msgstr ""
@@ -887,17 +892,17 @@ msgstr ""
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr ""
 
-#: app/routes/fraud/index.tsx:291
+#: app/routes/fraud/index.tsx:299
 #: app/features/fraud/detail/evaluation-sections.tsx:40
 msgid "Error"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:179
+#: app/routes/fraud/index.tsx:180
 #: app/features/fraud/detail/evaluation-sections.tsx:294
 msgid "Evaluated"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:251
+#: app/routes/fraud/index.tsx:252
 msgid "Evaluation deleted successfully"
 msgstr ""
 
@@ -925,12 +930,12 @@ msgstr ""
 msgid "Events"
 msgstr ""
 
-#: app/routes/project/detail/domain/index.tsx:50
-#: app/routes/project/detail/domain/detail.tsx:143
+#: app/routes/project/detail/domain/index.tsx:51
+#: app/routes/project/detail/domain/detail.tsx:116
 msgid "Expiration Date"
 msgstr ""
 
-#: app/routes/profile/session.tsx:80
+#: app/routes/profile/session.tsx:81
 msgid "Expires"
 msgstr ""
 
@@ -938,13 +943,13 @@ msgstr ""
 msgid "Export Policies"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:399
-#: app/features/activity/components/activity-list.tsx:495
+#: app/features/activity/components/activity-list.tsx:400
+#: app/features/activity/components/activity-list.tsx:499
 msgid "Export Policy"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:142
-#: app/features/email/components/email-list.tsx:168
+#: app/features/email/components/email-list.tsx:147
+#: app/features/email/components/email-list.tsx:175
 msgid "Failed"
 msgstr ""
 
@@ -970,49 +975,58 @@ msgstr ""
 msgid "Failure Policy"
 msgstr ""
 
-#: app/routes/user/index.tsx:271
+#: app/routes/user/index.tsx:275
 msgid "Filter by approval"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:297
+#: app/routes/fraud/index.tsx:305
 msgid "Filter by decision"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:286
+#: app/routes/fraud/index.tsx:294
 msgid "Filter by phase"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:129
+#: app/features/email/components/email-list.tsx:134
 msgid "Filter by priority"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:139
+#: app/features/email/components/email-list.tsx:144
 msgid "Filter by status"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:412
+#: app/features/activity/components/activity-list.tsx:416
 msgid "Filter by time range"
 msgstr ""
 
-#: app/routes/organization/index.tsx:79
+#: app/routes/organization/index.tsx:86
 msgid "Filter by type"
 msgstr ""
 
-#: app/routes/profile/session.tsx:64
+#: app/components/data-table-toolbar/index.tsx:89
+msgid "Filter options"
+msgstr ""
+
+#: app/components/data-table-toolbar/index.tsx:74
+#: app/components/data-table-toolbar/index.tsx:92
+msgid "Filters"
+msgstr ""
+
+#: app/routes/profile/session.tsx:65
 msgid "Fingerprint ID"
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:95
+#: app/routes/contact-group/detail/member.tsx:96
 msgid "First name"
 msgstr ""
 
-#: app/routes/user/index.tsx:204
+#: app/routes/user/index.tsx:205
 #: app/features/profile/components/profile-form.tsx:46
 #: app/features/contact/components/contact-form.tsx:121
 msgid "First Name"
 msgstr ""
 
-#: app/routes/user/index.tsx:140
+#: app/routes/user/index.tsx:141
 #: app/features/profile/components/profile-form.tsx:15
 #: app/features/contact/components/contact-form.tsx:42
 msgid "First name is required"
@@ -1031,11 +1045,11 @@ msgstr ""
 msgid "Fraud Evaluation Detail"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:226
+#: app/routes/fraud/index.tsx:227
 msgid "Fraud evaluation started"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:34
+#: app/routes/fraud/index.tsx:35
 #: app/routes/dashboard/index.tsx:83
 msgid "Fraud Evaluations"
 msgstr ""
@@ -1048,7 +1062,7 @@ msgstr ""
 msgid "Fraud Providers"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:238
+#: app/routes/user/detail/index.tsx:231
 msgid "Full Name"
 msgstr ""
 
@@ -1056,54 +1070,54 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:364
-#: app/features/activity/components/activity-list.tsx:451
+#: app/features/activity/components/activity-list.tsx:365
+#: app/features/activity/components/activity-list.tsx:455
 msgid "Get"
 msgstr ""
 
-#: app/components/app-search/index.tsx:48
+#: app/components/app-search/use-app-search.ts:28
 msgid "Go to dashboard"
 msgstr ""
 
-#: app/features/quota/components/quota-grant-list.tsx:147
+#: app/features/quota/components/quota-grant-list.tsx:148
 msgid "Grant deleted successfully"
 msgstr ""
 
-#: app/routes/project/detail/layout.tsx:158
+#: app/routes/project/detail/layout.tsx:163
 #: app/routes/project/detail/quota/grant.tsx:12
-#: app/routes/organization/detail/layout.tsx:79
+#: app/routes/organization/detail/layout.tsx:83
 #: app/routes/organization/detail/quota/grant.tsx:9
 msgid "Grants"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:392
-#: app/features/activity/components/activity-list.tsx:488
+#: app/features/activity/components/activity-list.tsx:393
+#: app/features/activity/components/activity-list.tsx:492
 msgid "Group"
 msgstr ""
 
-#: app/routes/contact/detail/group.tsx:141
+#: app/routes/contact/detail/group.tsx:142
 msgid "Group added successfully"
 msgstr ""
 
-#: app/routes/contact/detail/group.tsx:165
+#: app/routes/contact/detail/group.tsx:166
 msgid "Group deleted successfully"
 msgstr ""
 
-#: app/routes/contact/detail/group.tsx:127
+#: app/routes/contact/detail/group.tsx:128
 msgid "Group is required"
 msgstr ""
 
 #: app/routes/group/layout.tsx:5
-#: app/routes/group/index.tsx:13
+#: app/routes/group/index.tsx:14
 #: app/routes/contact/detail/layout.tsx:53
-#: app/routes/contact/detail/group.tsx:28
+#: app/routes/contact/detail/group.tsx:29
 #: app/components/app-sidebar/index.tsx:129
 #: app/components/app-sidebar/index.tsx:135
 msgid "Groups"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:132
-#: app/features/email/components/email-list.tsx:158
+#: app/features/email/components/email-list.tsx:137
+#: app/features/email/components/email-list.tsx:165
 msgid "High"
 msgstr ""
 
@@ -1127,39 +1141,39 @@ msgstr ""
 msgid "HTML"
 msgstr ""
 
-#: app/routes/user/index.tsx:102
-#: app/routes/user/detail/index.tsx:225
+#: app/routes/user/index.tsx:103
+#: app/routes/user/detail/index.tsx:222
 msgid "ID"
 msgstr ""
 
-#: app/routes/user/index.tsx:142
+#: app/routes/user/index.tsx:143
 #: app/features/contact/components/contact-form.tsx:44
 msgid "Invalid email address"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:395
-#: app/features/activity/components/activity-list.tsx:491
+#: app/features/activity/components/activity-list.tsx:396
+#: app/features/activity/components/activity-list.tsx:495
 msgid "Invitation"
 msgstr ""
 
-#: app/routes/organization/detail/member.tsx:92
+#: app/routes/organization/detail/member.tsx:93
 msgid "Invitation cancelled successfully"
 msgstr ""
 
-#: app/routes/organization/detail/member.tsx:77
+#: app/routes/organization/detail/member.tsx:78
 msgid "Invitation resend successfully"
 msgstr ""
 
-#: app/routes/user/index.tsx:171
+#: app/routes/user/index.tsx:172
 msgid "Invite"
 msgstr ""
 
-#: app/routes/user/index.tsx:163
-#: app/routes/user/index.tsx:170
+#: app/routes/user/index.tsx:164
+#: app/routes/user/index.tsx:171
 msgid "Invite User"
 msgstr ""
 
-#: app/routes/profile/session.tsx:57
+#: app/routes/profile/session.tsx:58
 msgid "IP"
 msgstr ""
 
@@ -1167,8 +1181,8 @@ msgstr ""
 msgid "Irreversible and destructive actions"
 msgstr ""
 
-#: app/routes/user/detail/organization.tsx:54
-#: app/routes/contact/detail/group.tsx:113
+#: app/routes/user/detail/organization.tsx:55
+#: app/routes/contact/detail/group.tsx:114
 msgid "Joined"
 msgstr ""
 
@@ -1176,17 +1190,17 @@ msgstr ""
 msgid "Last 10 new users who joined Datum"
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:98
+#: app/routes/contact-group/detail/member.tsx:99
 msgid "Last name"
 msgstr ""
 
-#: app/routes/user/index.tsx:207
+#: app/routes/user/index.tsx:208
 #: app/features/profile/components/profile-form.tsx:49
 #: app/features/contact/components/contact-form.tsx:124
 msgid "Last Name"
 msgstr ""
 
-#: app/routes/user/index.tsx:141
+#: app/routes/user/index.tsx:142
 #: app/features/profile/components/profile-form.tsx:16
 #: app/features/contact/components/contact-form.tsx:43
 msgid "Last name is required"
@@ -1201,12 +1215,12 @@ msgstr ""
 msgid "Light"
 msgstr ""
 
-#: app/features/quota/components/quota-bucket-list.tsx:155
+#: app/features/quota/components/quota-bucket-list.tsx:156
 msgid "Limit:"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:365
-#: app/features/activity/components/activity-list.tsx:452
+#: app/features/activity/components/activity-list.tsx:366
+#: app/features/activity/components/activity-list.tsx:456
 msgid "List"
 msgstr ""
 
@@ -1257,8 +1271,8 @@ msgstr ""
 msgid "Log out of GitHub"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:133
-#: app/features/email/components/email-list.tsx:159
+#: app/features/email/components/email-list.tsx:138
+#: app/features/email/components/email-list.tsx:166
 msgid "Low"
 msgstr ""
 
@@ -1266,12 +1280,12 @@ msgstr ""
 msgid "Mail Lists"
 msgstr ""
 
-#: app/routes/user/index.tsx:47
+#: app/routes/user/index.tsx:48
 #: app/features/user/components/user-identity-card.tsx:113
 msgid "Manage"
 msgstr ""
 
-#: app/components/app-search/index.tsx:54
+#: app/components/app-search/use-app-search.ts:34
 msgid "Manage organizations"
 msgstr ""
 
@@ -1279,15 +1293,15 @@ msgstr ""
 msgid "Manage Policies"
 msgstr ""
 
-#: app/components/app-search/index.tsx:60
+#: app/components/app-search/use-app-search.ts:40
 msgid "Manage projects"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:301
+#: app/routes/user/detail/index.tsx:270
 msgid "Manage user access and account status"
 msgstr ""
 
-#: app/components/app-search/index.tsx:49
+#: app/components/app-search/use-app-search.ts:29
 msgid "Manage users"
 msgstr ""
 
@@ -1295,38 +1309,42 @@ msgstr ""
 msgid "Manually sync this description with the one in Loops (used for opt-in pages)."
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:396
-#: app/features/activity/components/activity-list.tsx:492
+#: app/features/activity/components/activity-list.tsx:397
+#: app/features/activity/components/activity-list.tsx:496
 msgid "Member"
 msgstr ""
 
-#: app/routes/group/member.tsx:156
-#: app/routes/contact-group/detail/member.tsx:321
+#: app/routes/group/member.tsx:157
+#: app/routes/contact-group/detail/member.tsx:322
 msgid "Member added successfully"
 msgstr ""
 
-#: app/routes/group/member.tsx:137
-#: app/routes/contact-group/detail/member.tsx:350
+#: app/routes/group/member.tsx:138
+#: app/routes/contact-group/detail/member.tsx:351
 msgid "Member deleted successfully"
 msgstr ""
 
-#: app/routes/organization/detail/member.tsx:24
-#: app/routes/organization/detail/layout.tsx:65
-#: app/routes/contact-group/detail/member.tsx:33
+#: app/routes/organization/detail/member.tsx:25
+#: app/routes/organization/detail/layout.tsx:69
+#: app/routes/contact-group/detail/member.tsx:34
 #: app/routes/contact-group/detail/layout.tsx:39
 msgid "Members"
 msgstr ""
 
-#: app/routes/project/detail/layout.tsx:134
+#: app/routes/project/detail/layout.tsx:139
 msgid "Metrics"
 msgstr ""
 
-#: app/routes/project/detail/export-policy/detail.tsx:128
+#: app/routes/project/detail/export-policy/detail.tsx:112
 msgid "MetricsQL"
 msgstr ""
 
-#: app/routes/user/index.tsx:74
-#: app/routes/user/detail/index.tsx:212
+#: app/components/app-toolbar/mobile-toolbar.tsx:71
+msgid "More options"
+msgstr ""
+
+#: app/routes/user/index.tsx:75
+#: app/routes/user/detail/index.tsx:210
 msgid "Move to Pending"
 msgstr ""
 
@@ -1335,61 +1353,61 @@ msgstr ""
 msgid "My Profile"
 msgstr ""
 
-#: app/routes/user/index.tsx:92
-#: app/routes/user/detail/organization.tsx:35
-#: app/routes/project/index.tsx:25
-#: app/routes/project/detail/secret.tsx:25
-#: app/routes/project/detail/index.tsx:52
-#: app/routes/project/detail/export-policy/index.tsx:29
+#: app/routes/user/index.tsx:93
+#: app/routes/user/detail/organization.tsx:36
+#: app/routes/project/index.tsx:26
+#: app/routes/project/detail/secret.tsx:26
+#: app/routes/project/detail/index.tsx:45
+#: app/routes/project/detail/export-policy/index.tsx:30
 #: app/routes/project/detail/export-policy/detail.tsx:63
-#: app/routes/project/detail/export-policy/detail.tsx:125
-#: app/routes/project/detail/export-policy/detail.tsx:177
-#: app/routes/project/detail/edge/index.tsx:29
+#: app/routes/project/detail/export-policy/detail.tsx:109
+#: app/routes/project/detail/export-policy/detail.tsx:161
+#: app/routes/project/detail/edge/index.tsx:30
 #: app/routes/project/detail/edge/detail.tsx:87
-#: app/routes/project/detail/dns/detail.tsx:108
-#: app/routes/organization/index.tsx:24
-#: app/routes/organization/detail/project.tsx:34
-#: app/routes/organization/detail/member.tsx:102
-#: app/routes/organization/detail/index.tsx:53
-#: app/routes/group/member.tsx:81
-#: app/routes/group/index.tsx:23
+#: app/routes/project/detail/dns/detail.tsx:110
+#: app/routes/organization/index.tsx:25
+#: app/routes/organization/detail/project.tsx:35
+#: app/routes/organization/detail/member.tsx:103
+#: app/routes/organization/detail/index.tsx:46
+#: app/routes/group/member.tsx:82
+#: app/routes/group/index.tsx:24
 #: app/routes/fraud/providers/index.tsx:55
 #: app/routes/fraud/providers/create.tsx:88
-#: app/routes/contact-group/index.tsx:64
-#: app/routes/contact-group/detail/member.tsx:181
-#: app/routes/contact/detail/group.tsx:83
-#: app/features/quota/components/quota-grant-list.tsx:74
+#: app/routes/contact-group/index.tsx:65
+#: app/routes/contact-group/detail/member.tsx:182
+#: app/routes/contact/detail/group.tsx:84
+#: app/features/quota/components/quota-grant-list.tsx:75
 #: app/features/fraud/policy/policy-form.tsx:153
 #: app/features/dashboard/components/pending-approvals-widget.tsx:125
-#: app/features/contact/components/contact-list.tsx:66
+#: app/features/contact/components/contact-list.tsx:67
 msgid "Name"
 msgstr ""
 
-#: app/routes/project/detail/dns/detail.tsx:229
+#: app/routes/project/detail/dns/detail.tsx:235
 msgid "Nameservers"
 msgstr ""
 
-#: app/routes/project/detail/secret.tsx:28
-#: app/routes/project/detail/export-policy/detail.tsx:75
-#: app/routes/project/detail/domain/detail.tsx:103
-#: app/features/activity/components/activity-list.tsx:397
-#: app/features/activity/components/activity-list.tsx:493
+#: app/routes/project/detail/secret.tsx:29
+#: app/routes/project/detail/export-policy/detail.tsx:71
+#: app/routes/project/detail/domain/detail.tsx:98
+#: app/features/activity/components/activity-list.tsx:398
+#: app/features/activity/components/activity-list.tsx:497
 msgid "Namespace"
 msgstr ""
 
-#: app/components/app-search/index.tsx:207
-msgid "Navigation"
+#: app/components/app-toolbar/mobile-toolbar.tsx:78
+msgid "Navigate up"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:201
+#: app/routes/fraud/index.tsx:202
 msgid "New Evaluation"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:208
+#: app/routes/fraud/index.tsx:209
 msgid "New Fraud Evaluation"
 msgstr ""
 
-#: app/features/quota/components/quota-bucket-list.tsx:159
+#: app/features/quota/components/quota-bucket-list.tsx:160
 msgid "New Limit"
 msgstr ""
 
@@ -1397,40 +1415,40 @@ msgstr ""
 msgid "No active sessions."
 msgstr ""
 
-#: app/routes/project/detail/edge/index.tsx:84
+#: app/routes/project/detail/edge/index.tsx:87
 msgid "No AI Edge found."
 msgstr ""
 
-#: app/routes/contact-group/index.tsx:237
+#: app/routes/contact-group/index.tsx:245
 msgid "No contact groups found."
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:76
+#: app/routes/contact-group/detail/member.tsx:77
 msgid "No contacts found with this email. You can create a new contact below."
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:77
-#: app/features/contact/components/contact-list.tsx:164
+#: app/routes/contact-group/detail/member.tsx:78
+#: app/features/contact/components/contact-list.tsx:167
 msgid "No contacts found."
 msgstr ""
 
-#: app/routes/project/detail/dns/detail.tsx:218
+#: app/routes/project/detail/dns/detail.tsx:224
 msgid "No DNS records found."
 msgstr ""
 
-#: app/routes/project/detail/dns/index.tsx:104
+#: app/routes/project/detail/dns/index.tsx:107
 msgid "No DNS zones found."
 msgstr ""
 
-#: app/routes/project/detail/domain/index.tsx:93
+#: app/routes/project/detail/domain/index.tsx:96
 msgid "No domains found."
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:179
+#: app/features/email/components/email-list.tsx:186
 msgid "No email activity found."
 msgstr ""
 
-#: app/routes/project/detail/export-policy/index.tsx:81
+#: app/routes/project/detail/export-policy/index.tsx:84
 msgid "No export policies found."
 msgstr ""
 
@@ -1438,7 +1456,7 @@ msgstr ""
 msgid "No fraud alerts"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:317
+#: app/routes/fraud/index.tsx:327
 msgid "No fraud evaluations found."
 msgstr ""
 
@@ -1450,21 +1468,21 @@ msgstr ""
 msgid "No fraud providers configured."
 msgstr ""
 
-#: app/features/quota/components/quota-grant-list.tsx:175
+#: app/features/quota/components/quota-grant-list.tsx:178
 msgid "No grants found."
 msgstr ""
 
-#: app/routes/group/index.tsx:68
-#: app/routes/contact/detail/group.tsx:214
+#: app/routes/group/index.tsx:71
+#: app/routes/contact/detail/group.tsx:219
 msgid "No groups found."
 msgstr ""
 
-#: app/routes/organization/detail/member.tsx:169
-#: app/routes/contact-group/detail/member.tsx:411
+#: app/routes/organization/detail/member.tsx:174
+#: app/routes/contact-group/detail/member.tsx:416
 msgid "No members found."
 msgstr ""
 
-#: app/routes/group/member.tsx:199
+#: app/routes/group/member.tsx:202
 msgid "No members in this group."
 msgstr ""
 
@@ -1472,8 +1490,8 @@ msgstr ""
 msgid "No notes yet. Add the first note below."
 msgstr ""
 
-#: app/routes/user/detail/organization.tsx:83
-#: app/routes/organization/index.tsx:104
+#: app/routes/user/detail/organization.tsx:91
+#: app/routes/organization/index.tsx:112
 msgid "No organizations found."
 msgstr ""
 
@@ -1481,12 +1499,12 @@ msgstr ""
 msgid "No pending approvals"
 msgstr ""
 
-#: app/routes/project/index.tsx:80
-#: app/routes/organization/detail/project.tsx:75
+#: app/routes/project/index.tsx:83
+#: app/routes/organization/detail/project.tsx:80
 msgid "No projects found."
 msgstr ""
 
-#: app/features/quota/components/quota-bucket-list.tsx:187
+#: app/features/quota/components/quota-bucket-list.tsx:190
 msgid "No quota buckets found."
 msgstr ""
 
@@ -1494,15 +1512,11 @@ msgstr ""
 msgid "No quotas are above 70% utilization"
 msgstr ""
 
-#: app/components/app-search/index.tsx:241
-msgid "No results found."
-msgstr ""
-
-#: app/routes/project/detail/secret.tsx:71
+#: app/routes/project/detail/secret.tsx:74
 msgid "No secrets found."
 msgstr ""
 
-#: app/routes/user/index.tsx:300
+#: app/routes/user/index.tsx:305
 msgid "No users found."
 msgstr ""
 
@@ -1515,8 +1529,8 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:131
-#: app/features/email/components/email-list.tsx:157
+#: app/features/email/components/email-list.tsx:136
+#: app/features/email/components/email-list.tsx:164
 msgid "Normal"
 msgstr ""
 
@@ -1532,7 +1546,7 @@ msgstr ""
 msgid "Note deleted"
 msgstr ""
 
-#: app/routes/project/detail/domain/detail.tsx:184
+#: app/routes/project/detail/domain/detail.tsx:145
 msgid "Notes"
 msgstr ""
 
@@ -1544,38 +1558,37 @@ msgstr ""
 msgid "Once a contact is associated with a user, this association cannot be removed or changed later."
 msgstr ""
 
-#: app/routes/project/index.tsx:40
-#: app/routes/project/detail/index.tsx:62
+#: app/routes/project/index.tsx:41
+#: app/routes/project/detail/index.tsx:49
 #: app/features/dashboard/components/quota-utilization-widget.tsx:145
-#: app/features/activity/components/activity-list.tsx:398
-#: app/features/activity/components/activity-list.tsx:494
+#: app/features/activity/components/activity-list.tsx:399
+#: app/features/activity/components/activity-list.tsx:498
 msgid "Organization"
 msgstr ""
 
-#: app/routes/organization/detail/index.tsx:29
+#: app/routes/organization/detail/index.tsx:30
 msgid "Organization deleted successfully"
 msgstr ""
 
-#: app/routes/organization/index.tsx:78
-#: app/routes/organization/index.tsx:89
+#: app/routes/organization/index.tsx:85
+#: app/routes/organization/index.tsx:97
 msgid "Organization Type"
 msgstr ""
 
-#: app/routes/user/detail/organization.tsx:19
+#: app/routes/user/detail/organization.tsx:20
 #: app/routes/user/detail/layout.tsx:37
 #: app/routes/project/detail/layout.tsx:51
 #: app/routes/organization/layout.tsx:5
-#: app/routes/organization/index.tsx:14
+#: app/routes/organization/index.tsx:15
 #: app/routes/dashboard/index.tsx:67
 #: app/components/app-sidebar/index.tsx:109
-#: app/components/app-search/index.tsx:51
-#: app/components/app-search/index.tsx:251
+#: app/components/app-search/use-app-search.ts:31
 msgid "Organizations"
 msgstr ""
 
 #: app/routes/user/detail/layout.tsx:32
-#: app/routes/project/detail/layout.tsx:114
-#: app/routes/organization/detail/layout.tsx:50
+#: app/routes/project/detail/layout.tsx:119
+#: app/routes/organization/detail/layout.tsx:54
 msgid "Overview"
 msgstr ""
 
@@ -1583,16 +1596,16 @@ msgstr ""
 msgid "Owner"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:369
-#: app/features/activity/components/activity-list.tsx:456
+#: app/features/activity/components/activity-list.tsx:370
+#: app/features/activity/components/activity-list.tsx:460
 msgid "Patch"
 msgstr ""
 
-#: app/routes/user/index.tsx:275
-#: app/routes/user/index.tsx:290
-#: app/routes/fraud/index.tsx:290
-#: app/features/email/components/email-list.tsx:143
-#: app/features/email/components/email-list.tsx:169
+#: app/routes/user/index.tsx:279
+#: app/routes/user/index.tsx:295
+#: app/routes/fraud/index.tsx:298
+#: app/features/email/components/email-list.tsx:148
+#: app/features/email/components/email-list.tsx:176
 msgid "Pending"
 msgstr ""
 
@@ -1604,31 +1617,31 @@ msgstr ""
 msgid "Pending Validation Checks:"
 msgstr ""
 
-#: app/routes/organization/detail/index.tsx:89
+#: app/routes/organization/detail/index.tsx:68
 msgid "Permanently delete this organization and all associated data"
 msgstr ""
 
-#: app/routes/project/detail/index.tsx:90
+#: app/routes/project/detail/index.tsx:71
 msgid "Permanently delete this project and all associated data"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:393
+#: app/routes/user/detail/index.tsx:361
 msgid "Permanently delete this user and all associated data"
 msgstr ""
 
-#: app/routes/organization/index.tsx:81
-#: app/routes/organization/index.tsx:93
+#: app/routes/organization/index.tsx:88
+#: app/routes/organization/index.tsx:101
 msgid "Personal"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:126
-#: app/routes/fraud/index.tsx:285
-#: app/routes/fraud/index.tsx:309
+#: app/routes/fraud/index.tsx:127
+#: app/routes/fraud/index.tsx:293
+#: app/routes/fraud/index.tsx:319
 #: app/features/fraud/detail/evaluation-sections.tsx:258
 msgid "Phase"
 msgstr ""
 
-#: app/routes/user/index.tsx:220
+#: app/routes/user/index.tsx:221
 msgid "Pick date and time Test"
 msgstr ""
 
@@ -1642,7 +1655,7 @@ msgstr ""
 
 #. placeholder {0}: data.spec?.givenName ?? ''
 #. placeholder {1}: data.spec?.familyName ?? ''
-#: app/routes/user/detail/index.tsx:127
+#: app/routes/user/detail/index.tsx:129
 msgid "Please provide a reason for deactivating \"{0} {1}\"."
 msgstr ""
 
@@ -1652,12 +1665,12 @@ msgstr ""
 msgid "Please provide a reason for rejecting \"{0} {1}\"."
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:262
+#: app/routes/contact-group/detail/member.tsx:263
 msgid "Please select an existing contact or provide details to create a new one"
 msgstr ""
 
 #. placeholder {0}: remainingMinutes !== 1 ? 's' : ''
-#: app/routes/organization/detail/member.tsx:57
+#: app/routes/organization/detail/member.tsx:58
 msgid "Please wait {remainingMinutes} more minute{0} before resending this invitation"
 msgstr ""
 
@@ -1681,13 +1694,13 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:128
-#: app/features/email/components/email-list.tsx:151
+#: app/features/email/components/email-list.tsx:133
+#: app/features/email/components/email-list.tsx:158
 #: app/features/email/components/email-detail.tsx:93
 msgid "Priority"
 msgstr ""
 
-#: app/routes/project/detail/dns/detail.tsx:124
+#: app/routes/project/detail/dns/detail.tsx:126
 msgid "Priority of mail servers defined by MX records. Lowest value = highest priority."
 msgstr ""
 
@@ -1703,24 +1716,23 @@ msgstr ""
 msgid "Profile updated successfully"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:390
-#: app/features/activity/components/activity-list.tsx:486
+#: app/features/activity/components/activity-list.tsx:391
+#: app/features/activity/components/activity-list.tsx:490
 msgid "Project"
 msgstr ""
 
-#: app/routes/project/detail/index.tsx:28
+#: app/routes/project/detail/index.tsx:29
 msgid "Project deleted successfully"
 msgstr ""
 
 #: app/routes/project/layout.tsx:5
-#: app/routes/project/index.tsx:15
+#: app/routes/project/index.tsx:16
 #: app/routes/project/detail/layout.tsx:57
-#: app/routes/organization/detail/project.tsx:16
-#: app/routes/organization/detail/layout.tsx:55
+#: app/routes/organization/detail/project.tsx:17
+#: app/routes/organization/detail/layout.tsx:59
 #: app/routes/dashboard/index.tsx:75
 #: app/components/app-sidebar/index.tsx:113
-#: app/components/app-search/index.tsx:57
-#: app/components/app-search/index.tsx:266
+#: app/components/app-search/use-app-search.ts:37
 msgid "Projects"
 msgstr ""
 
@@ -1767,7 +1779,7 @@ msgstr ""
 msgid "Public"
 msgstr ""
 
-#: app/routes/project/detail/export-policy/detail.tsx:143
+#: app/routes/project/detail/export-policy/detail.tsx:127
 msgid "Query"
 msgstr ""
 
@@ -1775,7 +1787,7 @@ msgstr ""
 msgid "Quick ranges"
 msgstr ""
 
-#: app/features/quota/components/quota-bucket-list.tsx:142
+#: app/features/quota/components/quota-bucket-list.tsx:143
 msgid "Quota updated successfully"
 msgstr ""
 
@@ -1783,26 +1795,26 @@ msgstr ""
 msgid "Quota Utilization"
 msgstr ""
 
-#: app/routes/project/detail/layout.tsx:149
+#: app/routes/project/detail/layout.tsx:154
 #: app/routes/project/detail/quota/layout.tsx:5
-#: app/routes/organization/detail/layout.tsx:70
+#: app/routes/organization/detail/layout.tsx:74
 #: app/routes/organization/detail/quota/layout.tsx:5
 msgid "Quotas"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:318
+#: app/routes/user/detail/index.tsx:281
 msgid "Re-enable this user's access to the system. They will be able to sign in immediately."
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:329
+#: app/routes/user/detail/index.tsx:292
 msgid "Reactivate"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:315
+#: app/routes/user/detail/index.tsx:279
 msgid "Reactivate User"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:133
+#: app/routes/user/detail/index.tsx:135
 msgid "Reason for deactivation"
 msgstr ""
 
@@ -1810,29 +1822,29 @@ msgstr ""
 msgid "Reason for rejection"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:55
+#: app/features/email/components/email-list.tsx:56
 msgid "Recipient"
 msgstr ""
 
-#: app/routes/project/detail/dns/index.tsx:66
+#: app/routes/project/detail/dns/index.tsx:67
 msgid "Records"
 msgstr ""
 
-#: app/routes/project/detail/domain/index.tsx:42
-#: app/routes/project/detail/domain/detail.tsx:123
-#: app/routes/project/detail/dns/detail.tsx:177
+#: app/routes/project/detail/domain/index.tsx:43
+#: app/routes/project/detail/domain/detail.tsx:106
+#: app/routes/project/detail/dns/detail.tsx:179
 msgid "Registrar"
 msgstr ""
 
-#: app/routes/user/index.tsx:114
-#: app/routes/user/index.tsx:270
-#: app/routes/user/index.tsx:283
-#: app/routes/user/detail/index.tsx:260
+#: app/routes/user/index.tsx:115
+#: app/routes/user/index.tsx:274
+#: app/routes/user/index.tsx:288
+#: app/routes/user/detail/index.tsx:243
 msgid "Registration Approval"
 msgstr ""
 
-#: app/routes/user/index.tsx:67
-#: app/routes/user/detail/index.tsx:193
+#: app/routes/user/index.tsx:68
+#: app/routes/user/detail/index.tsx:191
 #: app/features/user/components/user-reject-dialog.tsx:29
 msgid "Reject"
 msgstr ""
@@ -1841,8 +1853,8 @@ msgstr ""
 msgid "Reject User"
 msgstr ""
 
-#: app/routes/user/index.tsx:274
-#: app/routes/user/index.tsx:289
+#: app/routes/user/index.tsx:278
+#: app/routes/user/index.tsx:294
 msgid "Rejected"
 msgstr ""
 
@@ -1851,7 +1863,7 @@ msgstr ""
 msgid "Required"
 msgstr ""
 
-#: app/routes/organization/detail/member.tsx:46
+#: app/routes/organization/detail/member.tsx:47
 msgid "Resend"
 msgstr ""
 
@@ -1859,23 +1871,23 @@ msgstr ""
 msgid "Resource"
 msgstr ""
 
-#: app/routes/project/detail/domain/detail.tsx:91
+#: app/routes/project/detail/domain/detail.tsx:90
 msgid "Resource Name"
 msgstr ""
 
-#: app/features/quota/components/quota-grant-list.tsx:79
-#: app/features/quota/components/quota-bucket-list.tsx:55
-#: app/features/activity/components/activity-list.tsx:479
-#: app/features/activity/components/activity-list.tsx:515
+#: app/features/quota/components/quota-grant-list.tsx:80
+#: app/features/quota/components/quota-bucket-list.tsx:56
+#: app/features/activity/components/activity-list.tsx:483
+#: app/features/activity/components/activity-list.tsx:521
 msgid "Resource Type"
 msgstr ""
 
-#: app/features/quota/components/quota-bucket-list.tsx:151
+#: app/features/quota/components/quota-bucket-list.tsx:152
 msgid "Resource Type:"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:463
-#: app/features/activity/components/activity-list.tsx:514
+#: app/features/activity/components/activity-list.tsx:467
+#: app/features/activity/components/activity-list.tsx:520
 msgid "Response Code"
 msgstr ""
 
@@ -1886,7 +1898,7 @@ msgstr ""
 msgid "Retry"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:300
+#: app/routes/fraud/index.tsx:308
 msgid "Review"
 msgstr ""
 
@@ -1894,17 +1906,17 @@ msgstr ""
 msgid "Review Threshold"
 msgstr ""
 
-#: app/routes/organization/detail/member.tsx:122
-#: app/features/activity/components/activity-list.tsx:393
-#: app/features/activity/components/activity-list.tsx:489
+#: app/routes/organization/detail/member.tsx:123
+#: app/features/activity/components/activity-list.tsx:394
+#: app/features/activity/components/activity-list.tsx:493
 msgid "Role"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:210
+#: app/routes/fraud/index.tsx:211
 msgid "Run Evaluation"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:289
+#: app/routes/fraud/index.tsx:297
 msgid "Running"
 msgstr ""
 
@@ -1912,128 +1924,116 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: app/routes/user/index.tsx:217
+#: app/routes/user/index.tsx:218
 msgid "Schedule At"
 msgstr ""
 
-#: app/routes/user/index.tsx:154
+#: app/routes/user/index.tsx:155
 msgid "Schedule date and time is required"
 msgstr ""
 
-#: app/routes/user/index.tsx:214
+#: app/routes/user/index.tsx:215
 msgid "Schedule invitation to be sent at specific time"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:130
+#: app/routes/fraud/index.tsx:131
 #: app/features/fraud/detail/evaluation-sections.tsx:252
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:144
 msgid "Score"
 msgstr ""
 
-#: app/components/app-search/index.tsx:168
-msgid "Search"
-msgstr ""
-
-#: app/features/activity/components/activity-list.tsx:406
+#: app/features/activity/components/activity-list.tsx:408
 msgid "Search activity..."
 msgstr ""
 
-#: app/routes/project/detail/edge/index.tsx:79
+#: app/routes/project/detail/edge/index.tsx:81
 msgid "Search AI Edge..."
 msgstr ""
 
-#: app/routes/fraud/index.tsx:282
+#: app/routes/fraud/index.tsx:285
 msgid "Search by email, name, or ID..."
 msgstr ""
 
-#: app/routes/fraud/index.tsx:234
+#: app/routes/fraud/index.tsx:235
 msgid "Search by name or email..."
 msgstr ""
 
-#: app/features/quota/components/quota-bucket-list.tsx:180
+#: app/features/quota/components/quota-bucket-list.tsx:182
 msgid "Search by resource type..."
 msgstr ""
 
-#: app/routes/contact-group/index.tsx:215
+#: app/routes/contact-group/index.tsx:218
 msgid "Search contact groups..."
 msgstr ""
 
-#: app/features/contact/components/contact-list.tsx:156
+#: app/features/contact/components/contact-list.tsx:158
 msgid "Search contacts..."
 msgstr ""
 
-#: app/routes/project/detail/dns/index.tsx:99
+#: app/routes/project/detail/dns/index.tsx:101
 msgid "Search DNS zones..."
 msgstr ""
 
-#: app/routes/project/detail/domain/index.tsx:88
+#: app/routes/project/detail/domain/index.tsx:90
 msgid "Search domains..."
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:123
+#: app/features/email/components/email-list.tsx:125
 msgid "Search email activity..."
 msgstr ""
 
-#: app/routes/project/detail/export-policy/index.tsx:74
+#: app/routes/project/detail/export-policy/index.tsx:76
 msgid "Search export policies..."
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:73
+#: app/routes/contact-group/detail/member.tsx:74
 msgid "Search for an existing contact by email..."
 msgstr ""
 
-#: app/features/quota/components/quota-grant-list.tsx:170
+#: app/features/quota/components/quota-grant-list.tsx:172
 msgid "Search grants..."
 msgstr ""
 
-#: app/routes/group/index.tsx:62
-#: app/routes/contact/detail/group.tsx:181
-#: app/routes/contact/detail/group.tsx:210
+#: app/routes/group/index.tsx:64
+#: app/routes/contact/detail/group.tsx:182
+#: app/routes/contact/detail/group.tsx:213
 msgid "Search groups..."
 msgstr ""
 
-#: app/components/app-search/index.tsx:239
-msgid "Search is temporarily unavailable. Please try again."
-msgstr ""
-
-#: app/routes/organization/detail/member.tsx:165
-#: app/routes/group/member.tsx:193
-#: app/routes/contact-group/detail/member.tsx:407
+#: app/routes/organization/detail/member.tsx:168
+#: app/routes/group/member.tsx:195
+#: app/routes/contact-group/detail/member.tsx:410
 msgid "Search members..."
 msgstr ""
 
-#: app/routes/user/detail/organization.tsx:79
-#: app/routes/organization/index.tsx:75
+#: app/routes/user/detail/organization.tsx:83
+#: app/routes/organization/index.tsx:78
 msgid "Search organizations..."
 msgstr ""
 
-#: app/routes/project/index.tsx:74
-#: app/routes/organization/detail/project.tsx:71
+#: app/routes/project/index.tsx:76
+#: app/routes/organization/detail/project.tsx:74
 msgid "Search projects..."
 msgstr ""
 
-#: app/routes/project/detail/dns/detail.tsx:212
+#: app/routes/project/detail/dns/detail.tsx:216
 msgid "Search records..."
 msgstr ""
 
-#: app/routes/project/detail/secret.tsx:66
+#: app/routes/project/detail/secret.tsx:68
 msgid "Search secrets..."
 msgstr ""
 
-#: app/routes/profile/session.tsx:136
+#: app/routes/profile/session.tsx:137
 msgid "Search sessions..."
 msgstr ""
 
-#: app/routes/user/index.tsx:267
+#: app/routes/user/index.tsx:269
 msgid "Search users..."
 msgstr ""
 
-#: app/components/app-search/index.tsx:232
-msgid "Searching..."
-msgstr ""
-
-#: app/features/activity/components/activity-list.tsx:394
-#: app/features/activity/components/activity-list.tsx:490
+#: app/features/activity/components/activity-list.tsx:395
+#: app/features/activity/components/activity-list.tsx:494
 msgid "Secret"
 msgstr ""
 
@@ -2047,16 +2047,16 @@ msgstr ""
 msgid "Secret Namespace"
 msgstr ""
 
-#: app/routes/project/detail/secret.tsx:13
-#: app/routes/project/detail/layout.tsx:139
+#: app/routes/project/detail/secret.tsx:14
+#: app/routes/project/detail/layout.tsx:144
 msgid "Secrets"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:209
+#: app/routes/fraud/index.tsx:210
 msgid "Select a user to run a fraud evaluation against the current policy."
 msgstr ""
 
-#: app/routes/contact/detail/group.tsx:180
+#: app/routes/contact/detail/group.tsx:181
 msgid "Select group..."
 msgstr ""
 
@@ -2068,20 +2068,20 @@ msgstr ""
 msgid "Select visibility..."
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:510
+#: app/features/activity/components/activity-list.tsx:516
 msgid "Selected filters"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:93
+#: app/features/email/components/email-list.tsx:94
 #: app/features/email/components/email-detail.tsx:81
 msgid "Sent"
 msgstr ""
 
-#: app/routes/profile/session.tsx:114
+#: app/routes/profile/session.tsx:115
 msgid "Session deleted successfully"
 msgstr ""
 
-#: app/routes/profile/session.tsx:50
+#: app/routes/profile/session.tsx:51
 msgid "Session ID"
 msgstr ""
 
@@ -2103,7 +2103,7 @@ msgstr ""
 msgid "Short-circuit Below"
 msgstr ""
 
-#: app/routes/project/detail/export-policy/detail.tsx:166
+#: app/routes/project/detail/export-policy/detail.tsx:150
 msgid "Sinks"
 msgstr ""
 
@@ -2111,15 +2111,11 @@ msgstr ""
 msgid "Skipped"
 msgstr ""
 
-#: app/components/app-search/index.tsx:246
-msgid "Some results may be missing."
-msgstr ""
-
-#: app/routes/project/detail/export-policy/detail.tsx:183
+#: app/routes/project/detail/export-policy/detail.tsx:167
 msgid "Source"
 msgstr ""
 
-#: app/routes/project/detail/export-policy/detail.tsx:114
+#: app/routes/project/detail/export-policy/detail.tsx:98
 msgid "Sources"
 msgstr ""
 
@@ -2140,8 +2136,8 @@ msgstr ""
 msgid "Stages"
 msgstr ""
 
-#: app/routes/organization/index.tsx:82
-#: app/routes/organization/index.tsx:94
+#: app/routes/organization/index.tsx:89
+#: app/routes/organization/index.tsx:102
 msgid "Standard"
 msgstr ""
 
@@ -2149,40 +2145,40 @@ msgstr ""
 msgid "Start Time"
 msgstr ""
 
-#: app/routes/user/index.tsx:108
-#: app/routes/user/detail/index.tsx:270
-#: app/routes/project/detail/export-policy/index.tsx:45
-#: app/routes/project/detail/export-policy/detail.tsx:85
-#: app/routes/project/detail/export-policy/detail.tsx:186
-#: app/routes/project/detail/edge/index.tsx:45
+#: app/routes/user/index.tsx:109
+#: app/routes/user/detail/index.tsx:247
+#: app/routes/project/detail/export-policy/index.tsx:46
+#: app/routes/project/detail/export-policy/detail.tsx:75
+#: app/routes/project/detail/export-policy/detail.tsx:170
+#: app/routes/project/detail/edge/index.tsx:46
 #: app/routes/project/detail/edge/detail.tsx:111
-#: app/routes/project/detail/domain/index.tsx:54
-#: app/routes/project/detail/domain/detail.tsx:153
+#: app/routes/project/detail/domain/index.tsx:55
+#: app/routes/project/detail/domain/detail.tsx:120
 #: app/routes/fraud/providers/index.tsx:85
-#: app/routes/contact-group/index.tsx:81
-#: app/routes/contact-group/detail/member.tsx:207
-#: app/routes/contact/detail/group.tsx:101
-#: app/features/quota/components/quota-grant-list.tsx:106
+#: app/routes/contact-group/index.tsx:82
+#: app/routes/contact-group/detail/member.tsx:208
+#: app/routes/contact/detail/group.tsx:102
+#: app/features/quota/components/quota-grant-list.tsx:107
 #: app/features/fraud/policy/policy-detail.tsx:158
-#: app/features/email/components/email-list.tsx:67
-#: app/features/email/components/email-list.tsx:138
-#: app/features/email/components/email-list.tsx:152
+#: app/features/email/components/email-list.tsx:68
+#: app/features/email/components/email-list.tsx:143
+#: app/features/email/components/email-list.tsx:159
 #: app/features/email/components/email-detail.tsx:57
-#: app/features/contact/components/contact-list.tsx:87
+#: app/features/contact/components/contact-list.tsx:88
 msgid "Status"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:79
+#: app/features/email/components/email-list.tsx:80
 #: app/features/email/components/email-detail.tsx:47
 msgid "Subject"
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:272
+#: app/routes/contact-group/detail/member.tsx:273
 #: app/features/contact/components/contact-form.tsx:57
 msgid "Subject is required when user association is enabled"
 msgstr ""
 
-#: app/routes/contact-group/index.tsx:165
+#: app/routes/contact-group/index.tsx:166
 msgid "Summary"
 msgstr ""
 
@@ -2190,7 +2186,7 @@ msgstr ""
 msgid "System"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:207
+#: app/features/activity/components/activity-list.tsx:208
 msgid "Target"
 msgstr ""
 
@@ -2198,11 +2194,11 @@ msgstr ""
 msgid "Template"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:377
+#: app/routes/user/detail/index.tsx:344
 msgid "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:133
+#: app/features/activity/components/activity-list.tsx:134
 msgid "Tenant"
 msgstr ""
 
@@ -2232,23 +2228,19 @@ msgstr ""
 msgid "Triggers"
 msgstr ""
 
-#: app/routes/project/detail/dns/detail.tsx:148
+#: app/routes/project/detail/dns/detail.tsx:150
 msgid "TTL"
 msgstr ""
 
-#: app/routes/user/detail/organization.tsx:49
-#: app/routes/project/detail/export-policy/detail.tsx:180
-#: app/routes/project/detail/dns/detail.tsx:93
-#: app/routes/project/detail/dns/detail.tsx:157
-#: app/routes/organization/index.tsx:37
-#: app/routes/organization/detail/index.tsx:63
+#: app/routes/user/detail/organization.tsx:50
+#: app/routes/project/detail/export-policy/detail.tsx:164
+#: app/routes/project/detail/dns/detail.tsx:95
+#: app/routes/project/detail/dns/detail.tsx:159
+#: app/routes/organization/index.tsx:38
+#: app/routes/organization/detail/index.tsx:50
 #: app/routes/fraud/providers/index.tsx:65
 #: app/features/fraud/policy/policy-form.tsx:203
 msgid "Type"
-msgstr ""
-
-#: app/components/app-search/index.tsx:226
-msgid "Type at least 3 characters to search."
 msgstr ""
 
 #: app/features/fraud/policy/policy-detail.tsx:164
@@ -2260,12 +2252,12 @@ msgid "Unknown"
 msgstr ""
 
 #: app/routes/fraud/providers/detail.tsx:170
-#: app/features/quota/components/quota-bucket-list.tsx:126
+#: app/features/quota/components/quota-bucket-list.tsx:127
 #: app/features/fraud/policy/policy-form.tsx:321
 #: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:223
-#: app/features/activity/components/activity-list.tsx:368
-#: app/features/activity/components/activity-list.tsx:455
+#: app/features/activity/components/activity-list.tsx:369
+#: app/features/activity/components/activity-list.tsx:459
 msgid "Update"
 msgstr ""
 
@@ -2277,22 +2269,22 @@ msgstr ""
 msgid "Updating email addresses for GitHub identities"
 msgstr ""
 
-#: app/routes/project/detail/layout.tsx:154
+#: app/routes/project/detail/layout.tsx:159
 #: app/routes/project/detail/quota/usage.tsx:12
-#: app/routes/organization/detail/layout.tsx:75
+#: app/routes/organization/detail/layout.tsx:79
 #: app/routes/organization/detail/quota/usage.tsx:9
-#: app/features/quota/components/quota-bucket-list.tsx:60
+#: app/features/quota/components/quota-bucket-list.tsx:61
 #: app/features/dashboard/components/quota-utilization-widget.tsx:160
 msgid "Usage"
 msgstr ""
 
-#: app/routes/fraud/index.tsx:100
-#: app/routes/contact-group/detail/member.tsx:107
+#: app/routes/fraud/index.tsx:101
+#: app/routes/contact-group/detail/member.tsx:108
 #: app/features/fraud/detail/evaluation-sections.tsx:216
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:139
-#: app/features/activity/components/activity-list.tsx:116
-#: app/features/activity/components/activity-list.tsx:391
-#: app/features/activity/components/activity-list.tsx:487
+#: app/features/activity/components/activity-list.tsx:117
+#: app/features/activity/components/activity-list.tsx:392
+#: app/features/activity/components/activity-list.tsx:491
 msgid "User"
 msgstr ""
 
@@ -2300,15 +2292,15 @@ msgstr ""
 msgid "User approved successfully"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:103
+#: app/routes/user/detail/index.tsx:105
 msgid "User deactivated successfully"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:89
+#: app/routes/user/detail/index.tsx:91
 msgid "User deleted successfully"
 msgstr ""
 
-#: app/routes/user/index.tsx:198
+#: app/routes/user/index.tsx:199
 msgid "User invited successfully"
 msgstr ""
 
@@ -2328,7 +2320,7 @@ msgstr ""
 msgid "User moved to pending successfully"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:114
+#: app/routes/user/detail/index.tsx:116
 msgid "User reactivated successfully"
 msgstr ""
 
@@ -2337,11 +2329,10 @@ msgid "User rejected successfully"
 msgstr ""
 
 #: app/routes/user/layout.tsx:5
-#: app/routes/user/index.tsx:30
+#: app/routes/user/index.tsx:31
 #: app/routes/dashboard/index.tsx:59
 #: app/components/app-sidebar/index.tsx:105
-#: app/components/app-search/index.tsx:49
-#: app/components/app-search/index.tsx:281
+#: app/components/app-search/use-app-search.ts:29
 msgid "Users"
 msgstr ""
 
@@ -2357,7 +2348,7 @@ msgstr ""
 msgid "Validating"
 msgstr ""
 
-#: app/routes/project/detail/dns/detail.tsx:161
+#: app/routes/project/detail/dns/detail.tsx:163
 msgid "Value"
 msgstr ""
 
@@ -2369,11 +2360,11 @@ msgstr ""
 msgid "Verified"
 msgstr ""
 
-#: app/routes/project/detail/secret.tsx:31
+#: app/routes/project/detail/secret.tsx:32
 msgid "Version"
 msgstr ""
 
-#: app/components/app-search/index.tsx:66
+#: app/components/app-search/use-app-search.ts:46
 msgid "View activity logs"
 msgstr ""
 
@@ -2383,21 +2374,21 @@ msgstr ""
 msgid "View All"
 msgstr ""
 
-#: app/routes/contact-group/index.tsx:186
+#: app/routes/contact-group/index.tsx:187
 msgid "View contact groups"
 msgstr ""
 
-#: app/routes/project/detail/layout.tsx:178
-#: app/routes/organization/detail/layout.tsx:99
+#: app/routes/project/detail/layout.tsx:183
+#: app/routes/organization/detail/layout.tsx:103
 msgid "View in Cloud Portal"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:166
+#: app/routes/user/detail/index.tsx:164
 msgid "View in Sentry"
 msgstr ""
 
-#: app/routes/contact-group/index.tsx:77
-#: app/routes/contact/detail/group.tsx:94
+#: app/routes/contact-group/index.tsx:78
+#: app/routes/contact/detail/group.tsx:95
 #: app/features/contact-group/components/contact-group-form.tsx:85
 msgid "Visibility"
 msgstr ""
@@ -2410,11 +2401,11 @@ msgstr ""
 msgid "Warning"
 msgstr ""
 
-#: app/features/activity/components/activity-list.tsx:366
-#: app/features/activity/components/activity-list.tsx:453
+#: app/features/activity/components/activity-list.tsx:367
+#: app/features/activity/components/activity-list.tsx:457
 msgid "Watch"
 msgstr ""
 
-#: app/routes/project/detail/dns/index.tsx:31
+#: app/routes/project/detail/dns/index.tsx:32
 msgid "Zone Name"
 msgstr ""

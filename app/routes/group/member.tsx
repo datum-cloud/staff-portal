@@ -1,6 +1,7 @@
 import type { Route } from './+types/member';
 import { getGroupDetailMetadata, useGroupDetailData } from './shared';
 import AppActionBar from '@/components/app-actiobar';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
@@ -189,9 +190,11 @@ export default function Page() {
         }}>
         <Card className="m-4 py-4 shadow-none">
           <CardContent className="flex flex-col gap-2 px-4">
-            <div className="flex flex-wrap items-center gap-4">
-              <DataTable.Search placeholder={t`Search members...`} className="w-64 min-w-[12rem]" />
-            </div>
+            <DataTableToolbar
+              search={
+                <DataTable.Search placeholder={t`Search members...`} className="w-full md:w-64" />
+              }
+            />
 
             <DataTable.Content
               headerClassName="bg-muted/50"

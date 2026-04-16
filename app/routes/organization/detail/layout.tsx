@@ -38,10 +38,14 @@ export default function Layout() {
   const cloudOrgUrl = useMemo(() => {
     if (!env?.CLOUD_PORTAL_URL || !orgName) return null;
     const base = `${env.CLOUD_PORTAL_URL}/org/${orgName}`;
-    if (pathname.includes('/projects')) return `${base}/projects`;
-    if (pathname.includes('/members')) return `${base}/team`;
-    if (pathname.includes('/activity')) return `${base}/activity`;
-    if (pathname.includes('/quotas')) return `${base}/quotas`;
+    if (pathname.startsWith(orgRoutes.project(orgName))) return `${base}/projects`;
+    if (pathname.startsWith(orgRoutes.member(orgName))) return `${base}/team`;
+    if (pathname.startsWith(orgRoutes.activity.root(orgName))) return `${base}/activity`;
+    if (
+      pathname.startsWith(orgRoutes.quota.usage(orgName)) ||
+      pathname.startsWith(orgRoutes.quota.grant(orgName))
+    )
+      return `${base}/quotas`;
     return base;
   }, [env, orgName, pathname]);
 

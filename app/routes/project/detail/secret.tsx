@@ -1,5 +1,6 @@
 import { getProjectDetailMetadata, useProjectDetailData } from '../shared';
 import type { Route } from './+types/secret';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { useProjectSecretMetricsQuery } from '@/resources/request/client';
 import { Secret } from '@/resources/schemas';
 import { metaObject } from '@/utils/helpers';
@@ -62,9 +63,11 @@ export default function Page() {
       }}>
       <Card className="m-4 py-4 shadow-none">
         <CardContent className="flex flex-col gap-2 px-4">
-          <div className="flex flex-wrap items-center gap-4">
-            <DataTable.Search placeholder={t`Search secrets...`} className="w-64 min-w-[12rem]" />
-          </div>
+          <DataTableToolbar
+            search={
+              <DataTable.Search placeholder={t`Search secrets...`} className="w-full md:w-64" />
+            }
+          />
           <DataTable.Content
             headerClassName="bg-muted/50"
             className="border-t border-b border-solid"

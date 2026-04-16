@@ -1,6 +1,7 @@
 import type { Route } from './+types/index';
 import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
 import { DisplayId, DisplayName } from '@/components/display';
@@ -263,19 +264,23 @@ export default function Page() {
         }}>
         <Card className="m-4 py-4 shadow-none">
           <CardContent className="flex flex-col gap-2 px-4">
-            <div className="flex items-center gap-4">
-              <DataTable.Search placeholder={t`Search users...`} className="w-64" />
-              <DataTable.SelectFilter
-                column="status.registrationApproval"
-                label={t`Registration Approval`}
-                placeholder={t`Filter by approval`}
-                options={[
-                  { value: 'Approved', label: t`Approved` },
-                  { value: 'Rejected', label: t`Rejected` },
-                  { value: 'Pending', label: t`Pending` },
-                ]}
-              />
-            </div>
+            <DataTableToolbar
+              search={
+                <DataTable.Search placeholder={t`Search users...`} className="w-full md:w-64" />
+              }
+              filters={
+                <DataTable.SelectFilter
+                  column="status.registrationApproval"
+                  label={t`Registration Approval`}
+                  placeholder={t`Filter by approval`}
+                  options={[
+                    { value: 'Approved', label: t`Approved` },
+                    { value: 'Rejected', label: t`Rejected` },
+                    { value: 'Pending', label: t`Pending` },
+                  ]}
+                />
+              }
+            />
 
             <DataTable.ActiveFilters
               excludeFilters={['search']}

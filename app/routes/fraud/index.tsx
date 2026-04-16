@@ -1,6 +1,7 @@
 import type { Route } from './+types/index';
 import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayId } from '@/components/display';
@@ -278,30 +279,39 @@ export default function Page() {
         }}>
         <Card className="m-4 py-4 shadow-none">
           <CardContent className="flex flex-col gap-2 px-4">
-            <div className="flex items-center gap-4">
-              <DataTable.Search placeholder={t`Search by email, name, or ID...`} className="w-64" />
-              <DataTable.SelectFilter
-                column="status.phase"
-                label={t`Phase`}
-                placeholder={t`Filter by phase`}
-                options={[
-                  { value: 'Completed', label: t`Completed` },
-                  { value: 'Running', label: t`Running` },
-                  { value: 'Pending', label: t`Pending` },
-                  { value: 'Error', label: t`Error` },
-                ]}
-              />
-              <DataTable.SelectFilter
-                column="status.decision"
-                label={t`Decision`}
-                placeholder={t`Filter by decision`}
-                options={[
-                  { value: 'ACCEPTED', label: t`Accepted` },
-                  { value: 'REVIEW', label: t`Review` },
-                  { value: 'DEACTIVATE', label: t`Deactivate` },
-                ]}
-              />
-            </div>
+            <DataTableToolbar
+              search={
+                <DataTable.Search
+                  placeholder={t`Search by email, name, or ID...`}
+                  className="w-full md:w-64"
+                />
+              }
+              filters={
+                <>
+                  <DataTable.SelectFilter
+                    column="status.phase"
+                    label={t`Phase`}
+                    placeholder={t`Filter by phase`}
+                    options={[
+                      { value: 'Completed', label: t`Completed` },
+                      { value: 'Running', label: t`Running` },
+                      { value: 'Pending', label: t`Pending` },
+                      { value: 'Error', label: t`Error` },
+                    ]}
+                  />
+                  <DataTable.SelectFilter
+                    column="status.decision"
+                    label={t`Decision`}
+                    placeholder={t`Filter by decision`}
+                    options={[
+                      { value: 'ACCEPTED', label: t`Accepted` },
+                      { value: 'REVIEW', label: t`Review` },
+                      { value: 'DEACTIVATE', label: t`Deactivate` },
+                    ]}
+                  />
+                </>
+              }
+            />
 
             <DataTable.ActiveFilters
               excludeFilters={['search']}

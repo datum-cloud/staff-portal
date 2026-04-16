@@ -1,6 +1,8 @@
 import type { Route } from './+types/detail';
 import { BadgeState } from '@/components/badge';
 import { Chip } from '@/components/chip';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
+import { PageHeader } from '@/components/page-header';
 import { SimpleTable } from '@/components/simple-table';
 import { DnsRecordStatusProbe } from '@/features/dns';
 import { authenticator } from '@/modules/auth';
@@ -11,7 +13,7 @@ import { useProjectDetailData } from '@/routes/project/shared';
 import { extractDataFromMatches, formatTTL, metaObject } from '@/utils/helpers';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
-import { Text, Title } from '@datum-cloud/datum-ui/typography';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisNetworkingDnsV1Alpha1DnsZone } from '@openapi/dns.networking.miloapis.com/v1alpha1';
@@ -181,7 +183,7 @@ export default function Page() {
 
   return (
     <div className="m-4 flex flex-col gap-1">
-      <Title level={1}>{dns?.spec?.domainName}</Title>
+      <PageHeader title={dns?.spec?.domainName} />
 
       <Card className="mt-4 shadow-none">
         <CardHeader>
@@ -208,9 +210,13 @@ export default function Page() {
                 .some((v) => v.includes(q));
             }}>
             <div className="flex flex-col gap-2 pt-2">
-              <DataTable.Search
-                placeholder={t`Search records...`}
-                className="w-full max-w-md min-w-[12rem]"
+              <DataTableToolbar
+                search={
+                  <DataTable.Search
+                    placeholder={t`Search records...`}
+                    className="w-full max-w-md"
+                  />
+                }
               />
               <DataTable.Content
                 headerClassName="bg-muted/50"
