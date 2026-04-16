@@ -174,7 +174,7 @@ msgstr ""
 msgid "Added by"
 msgstr ""
 
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:154
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:155
 msgid "Age"
 msgstr ""
 
@@ -602,7 +602,7 @@ msgstr ""
 #: app/routes/fraud/index.tsx:304
 #: app/routes/fraud/index.tsx:320
 #: app/features/fraud/detail/evaluation-sections.tsx:264
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:149
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:150
 msgid "Decision"
 msgstr ""
 
@@ -818,7 +818,7 @@ msgstr ""
 #: app/routes/user/detail/index.tsx:239
 #: app/routes/fraud/index.tsx:113
 #: app/routes/contact-group/detail/member.tsx:203
-#: app/features/dashboard/components/pending-approvals-widget.tsx:130
+#: app/features/dashboard/components/pending-approvals-widget.tsx:131
 #: app/features/contact/components/contact-list.tsx:84
 #: app/features/contact/components/contact-form.tsx:127
 msgid "Email"
@@ -1378,7 +1378,7 @@ msgstr ""
 #: app/routes/contact/detail/group.tsx:84
 #: app/features/quota/components/quota-grant-list.tsx:75
 #: app/features/fraud/policy/policy-form.tsx:153
-#: app/features/dashboard/components/pending-approvals-widget.tsx:125
+#: app/features/dashboard/components/pending-approvals-widget.tsx:126
 #: app/features/contact/components/contact-list.tsx:67
 msgid "Name"
 msgstr ""
@@ -1560,7 +1560,7 @@ msgstr ""
 
 #: app/routes/project/index.tsx:41
 #: app/routes/project/detail/index.tsx:49
-#: app/features/dashboard/components/quota-utilization-widget.tsx:145
+#: app/features/dashboard/components/quota-utilization-widget.tsx:146
 #: app/features/activity/components/activity-list.tsx:399
 #: app/features/activity/components/activity-list.tsx:498
 msgid "Organization"
@@ -1592,7 +1592,7 @@ msgstr ""
 msgid "Overview"
 msgstr ""
 
-#: app/features/dashboard/components/quota-utilization-widget.tsx:150
+#: app/features/dashboard/components/quota-utilization-widget.tsx:151
 msgid "Owner"
 msgstr ""
 
@@ -1867,7 +1867,7 @@ msgstr ""
 msgid "Resend"
 msgstr ""
 
-#: app/features/dashboard/components/quota-utilization-widget.tsx:155
+#: app/features/dashboard/components/quota-utilization-widget.tsx:156
 msgid "Resource"
 msgstr ""
 
@@ -1938,7 +1938,7 @@ msgstr ""
 
 #: app/routes/fraud/index.tsx:131
 #: app/features/fraud/detail/evaluation-sections.tsx:252
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:144
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:145
 msgid "Score"
 msgstr ""
 
@@ -2274,14 +2274,14 @@ msgstr ""
 #: app/routes/organization/detail/layout.tsx:79
 #: app/routes/organization/detail/quota/usage.tsx:9
 #: app/features/quota/components/quota-bucket-list.tsx:61
-#: app/features/dashboard/components/quota-utilization-widget.tsx:160
+#: app/features/dashboard/components/quota-utilization-widget.tsx:161
 msgid "Usage"
 msgstr ""
 
 #: app/routes/fraud/index.tsx:101
 #: app/routes/contact-group/detail/member.tsx:108
 #: app/features/fraud/detail/evaluation-sections.tsx:216
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:139
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:140
 #: app/features/activity/components/activity-list.tsx:117
 #: app/features/activity/components/activity-list.tsx:392
 #: app/features/activity/components/activity-list.tsx:491
@@ -2340,7 +2340,7 @@ msgstr ""
 msgid "Users will appear here once they join Datum"
 msgstr ""
 
-#: app/features/dashboard/components/quota-utilization-widget.tsx:165
+#: app/features/dashboard/components/quota-utilization-widget.tsx:166
 msgid "Utilization"
 msgstr ""
 
@@ -2393,7 +2393,7 @@ msgstr ""
 msgid "Visibility"
 msgstr ""
 
-#: app/features/dashboard/components/pending-approvals-widget.tsx:135
+#: app/features/dashboard/components/pending-approvals-widget.tsx:136
 msgid "Waiting Since"
 msgstr ""
 

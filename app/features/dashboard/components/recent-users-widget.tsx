@@ -87,7 +87,7 @@ export function RecentUsersWidget() {
   const handleViewAll = useMemo(() => () => navigate(userRoutes.list()), [navigate]);
 
   return (
-    <Card className="md:col-span-2 lg:col-span-2 xl:col-span-2">
+    <Card className="min-w-0 md:col-span-2 lg:col-span-2 xl:col-span-2">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">

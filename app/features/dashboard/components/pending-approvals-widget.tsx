@@ -86,7 +86,7 @@ export function PendingApprovalsWidget() {
   const { approvals, totalCount, isLoading, isError, refetch } = usePendingApprovalsWidget();
 
   return (
-    <Card className="gap-0 py-0 md:col-span-2 lg:col-span-2 xl:col-span-2">
+    <Card className="min-w-0 gap-0 py-0 md:col-span-2 lg:col-span-2 xl:col-span-2">
       <CardHeader className="px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -117,57 +117,59 @@ export function PendingApprovalsWidget() {
         ) : approvals.length === 0 ? (
           <EmptyState />
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted hover:bg-muted">
-                <TableHead>
-                  <Text size="sm" textColor="muted">
-                    <Trans>Name</Trans>
-                  </Text>
-                </TableHead>
-                <TableHead>
-                  <Text size="sm" textColor="muted">
-                    <Trans>Email</Trans>
-                  </Text>
-                </TableHead>
-                <TableHead>
-                  <Text size="sm" textColor="muted">
-                    <Trans>Waiting Since</Trans>
-                  </Text>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {approvals.map((approval) => {
-                const fullName =
-                  [approval.givenName, approval.familyName].filter(Boolean).join(' ') ||
-                  approval.name;
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted hover:bg-muted">
+                  <TableHead>
+                    <Text size="sm" textColor="muted">
+                      <Trans>Name</Trans>
+                    </Text>
+                  </TableHead>
+                  <TableHead className="hidden md:table-cell">
+                    <Text size="sm" textColor="muted">
+                      <Trans>Email</Trans>
+                    </Text>
+                  </TableHead>
+                  <TableHead>
+                    <Text size="sm" textColor="muted">
+                      <Trans>Waiting Since</Trans>
+                    </Text>
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {approvals.map((approval) => {
+                  const fullName =
+                    [approval.givenName, approval.familyName].filter(Boolean).join(' ') ||
+                    approval.name;
 
-                return (
-                  <TableRow
-                    key={approval.name}
-                    className="cursor-pointer"
-                    onClick={() => navigate(userRoutes.detail(approval.name))}>
-                    <TableCell>
-                      <Text size="sm" className="font-medium">
-                        {fullName}
-                      </Text>
-                    </TableCell>
-                    <TableCell className="max-w-[160px]">
-                      <Text size="sm" className="truncate">
-                        {approval.email || '—'}
-                      </Text>
-                    </TableCell>
-                    <TableCell>
-                      <Text size="sm" textColor="muted">
-                        <DateTime date={approval.creationTimestamp} variant="relative" />
-                      </Text>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+                  return (
+                    <TableRow
+                      key={approval.name}
+                      className="cursor-pointer"
+                      onClick={() => navigate(userRoutes.detail(approval.name))}>
+                      <TableCell>
+                        <Text size="sm" className="font-medium">
+                          {fullName}
+                        </Text>
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell max-w-[160px]">
+                        <Text size="sm" className="truncate">
+                          {approval.email || '—'}
+                        </Text>
+                      </TableCell>
+                      <TableCell>
+                        <Text size="sm" textColor="muted">
+                          <DateTime date={approval.creationTimestamp} variant="relative" />
+                        </Text>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
         )}
       </CardContent>
     </Card>
