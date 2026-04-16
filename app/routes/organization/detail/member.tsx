@@ -1,6 +1,7 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../shared';
 import type { Route } from './+types/member';
 import { BadgeState } from '@/components/badge';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DisplayName } from '@/components/display';
 import {
   useOrgInvitationCreateMutation,
@@ -162,7 +163,11 @@ export default function Page() {
       }}>
       <Card className="m-4 py-4 shadow-none">
         <CardContent className="flex flex-col gap-2 px-4">
-          <DataTable.Search placeholder={tCore`Search members...`} className="w-64" />
+          <DataTableToolbar
+            search={
+              <DataTable.Search placeholder={tCore`Search members...`} className="w-full md:w-64" />
+            }
+          />
           <DataTable.Content
             headerClassName="bg-muted/50"
             className="border-t border-b border-solid"

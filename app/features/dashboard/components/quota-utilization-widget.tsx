@@ -120,7 +120,7 @@ export function QuotaUtilizationWidget() {
   const { buckets, isLoading, isError, refetch } = useQuotaUtilizationWidget();
 
   return (
-    <Card className="gap-0 py-0 md:col-span-2 lg:col-span-2 xl:col-span-2">
+    <Card className="min-w-0 gap-0 py-0 md:col-span-2 lg:col-span-2 xl:col-span-2">
       <CardHeader className="px-4 py-3">
         <div className="flex items-center gap-2">
           <Gauge className="text-muted-foreground h-4 w-4" />
@@ -137,87 +137,89 @@ export function QuotaUtilizationWidget() {
         ) : buckets.length === 0 ? (
           <EmptyState />
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted hover:bg-muted">
-                <TableHead>
-                  <Text size="sm" textColor="muted">
-                    <Trans>Organization</Trans>
-                  </Text>
-                </TableHead>
-                <TableHead>
-                  <Text size="sm" textColor="muted">
-                    <Trans>Owner</Trans>
-                  </Text>
-                </TableHead>
-                <TableHead>
-                  <Text size="sm" textColor="muted">
-                    <Trans>Resource</Trans>
-                  </Text>
-                </TableHead>
-                <TableHead>
-                  <Text size="sm" textColor="muted">
-                    <Trans>Usage</Trans>
-                  </Text>
-                </TableHead>
-                <TableHead className="text-right">
-                  <Text size="sm" textColor="muted">
-                    <Trans>Utilization</Trans>
-                  </Text>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {buckets.map((bucket) => (
-                <TableRow
-                  key={`${bucket.orgName}-${bucket.resourceType}`}
-                  className="cursor-pointer"
-                  onClick={() => navigate(orgRoutes.quota.usage(bucket.orgName))}>
-                  <TableCell>
-                    <div className="flex flex-col">
-                      <Text size="sm" className="font-medium">
-                        {bucket.orgDisplayName}
-                      </Text>
-                      {bucket.orgDisplayName !== bucket.orgName && (
-                        <Text size="xs" textColor="muted">
-                          {bucket.orgName}
-                        </Text>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="max-w-[160px]">
-                      <Text size="sm" className="block truncate" textColor="muted">
-                        {bucket.ownerEmail || '—'}
-                      </Text>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Text size="sm">{formatResourceType(bucket.resourceType)}</Text>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <div className="bg-muted h-2 w-full max-w-[100px] overflow-hidden rounded-full">
-                        <div
-                          className={`h-full rounded-full transition-all ${getUtilizationColor(bucket.percentage)}`}
-                          style={{ width: `${Math.min(bucket.percentage, 100)}%` }}
-                        />
-                      </div>
-                      <Text size="sm" textColor="muted" className="shrink-0">
-                        {bucket.allocated}/{bucket.limit}
-                      </Text>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <span
-                      className={`text-sm font-medium ${getUtilizationTextColor(bucket.percentage)}`}>
-                      {bucket.percentage}%
-                    </span>
-                  </TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted hover:bg-muted">
+                  <TableHead>
+                    <Text size="sm" textColor="muted">
+                      <Trans>Organization</Trans>
+                    </Text>
+                  </TableHead>
+                  <TableHead className="hidden md:table-cell">
+                    <Text size="sm" textColor="muted">
+                      <Trans>Owner</Trans>
+                    </Text>
+                  </TableHead>
+                  <TableHead>
+                    <Text size="sm" textColor="muted">
+                      <Trans>Resource</Trans>
+                    </Text>
+                  </TableHead>
+                  <TableHead>
+                    <Text size="sm" textColor="muted">
+                      <Trans>Usage</Trans>
+                    </Text>
+                  </TableHead>
+                  <TableHead className="text-right">
+                    <Text size="sm" textColor="muted">
+                      <Trans>Utilization</Trans>
+                    </Text>
+                  </TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {buckets.map((bucket) => (
+                  <TableRow
+                    key={`${bucket.orgName}-${bucket.resourceType}`}
+                    className="cursor-pointer"
+                    onClick={() => navigate(orgRoutes.quota.usage(bucket.orgName))}>
+                    <TableCell>
+                      <div className="flex flex-col">
+                        <Text size="sm" className="font-medium">
+                          {bucket.orgDisplayName}
+                        </Text>
+                        {bucket.orgDisplayName !== bucket.orgName && (
+                          <Text size="xs" textColor="muted">
+                            {bucket.orgName}
+                          </Text>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      <div className="max-w-[160px]">
+                        <Text size="sm" className="block truncate" textColor="muted">
+                          {bucket.ownerEmail || '—'}
+                        </Text>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Text size="sm">{formatResourceType(bucket.resourceType)}</Text>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <div className="bg-muted h-2 w-full max-w-[100px] overflow-hidden rounded-full">
+                          <div
+                            className={`h-full rounded-full transition-all ${getUtilizationColor(bucket.percentage)}`}
+                            style={{ width: `${Math.min(bucket.percentage, 100)}%` }}
+                          />
+                        </div>
+                        <Text size="sm" textColor="muted" className="shrink-0">
+                          {bucket.allocated}/{bucket.limit}
+                        </Text>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <span
+                        className={`text-sm font-medium ${getUtilizationTextColor(bucket.percentage)}`}>
+                        {bucket.percentage}%
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         )}
       </CardContent>
     </Card>

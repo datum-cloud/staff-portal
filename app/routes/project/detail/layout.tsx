@@ -98,13 +98,18 @@ export default function Layout() {
     if (params.exportPolicyName) return `${base}/export-policies/${params.exportPolicyName}`;
 
     // Sub-resource list pages
-    if (pathname.includes('/edges')) return `${base}/edge`;
-    if (pathname.includes('/dns')) return `${base}/dns-zones`;
-    if (pathname.includes('/domains')) return `${base}/domains`;
-    if (pathname.includes('/export-policies')) return `${base}/export-policies`;
-    if (pathname.includes('/secrets')) return `${base}/secrets`;
-    if (pathname.includes('/activity')) return `${base}/activity`;
-    if (pathname.includes('/quotas')) return `${base}/quotas`;
+    if (pathname.startsWith(projectRoutes.edge.list(projectName))) return `${base}/edge`;
+    if (pathname.startsWith(projectRoutes.dns.list(projectName))) return `${base}/dns-zones`;
+    if (pathname.startsWith(projectRoutes.domain.list(projectName))) return `${base}/domains`;
+    if (pathname.startsWith(projectRoutes.exportPolicy.list(projectName)))
+      return `${base}/export-policies`;
+    if (pathname.startsWith(projectRoutes.secret.list(projectName))) return `${base}/secrets`;
+    if (pathname.startsWith(projectRoutes.activity.root(projectName))) return `${base}/activity`;
+    if (
+      pathname.startsWith(projectRoutes.quota.usage(projectName)) ||
+      pathname.startsWith(projectRoutes.quota.grant(projectName))
+    )
+      return `${base}/quotas`;
 
     return base;
   }, [env, projectName, params, pathname]);

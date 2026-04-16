@@ -1,6 +1,8 @@
 import type { Route } from './+types/detail';
 import { DateTime } from '@/components/date';
+import { DescriptionList } from '@/components/description-list';
 import { DisplayText } from '@/components/display';
+import { PageHeader } from '@/components/page-header';
 import {
   CreateNoteForm,
   DomainDnsProviders,
@@ -17,8 +19,7 @@ import {
 import { useProjectDetailData } from '@/routes/project/shared';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
-import { Table, TableBody, TableCell, TableRow } from '@datum-cloud/datum-ui/table';
-import { Text, Title } from '@datum-cloud/datum-ui/typography';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { ComDatumapisNetworkingV1AlphaDomain } from '@openapi/networking.datumapis.com/v1alpha';
 import { useLoaderData, useRevalidator } from 'react-router';
@@ -79,102 +80,62 @@ export default function Page() {
 
   return (
     <div className="m-4 flex flex-col gap-1">
-      <Title level={1}>{data?.spec?.domainName}</Title>
+      <PageHeader title={data?.spec?.domainName} />
 
       <Card className="mt-4 shadow-none">
         <CardContent>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Resource Name</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
+          <DescriptionList
+            items={[
+              {
+                label: <Trans>Resource Name</Trans>,
+                value: (
                   <Text>
                     <DisplayText value={data?.metadata?.name ?? ''} withCopy />
                   </Text>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Namespace</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  <Text>{data?.metadata?.namespace ?? ''}</Text>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Domain</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  <Text>{data?.spec?.domainName}</Text>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Registrar</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  <Text>{data?.status?.registration?.registrar?.name}</Text>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>DNS Providers</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
+                ),
+              },
+              {
+                label: <Trans>Namespace</Trans>,
+                value: <Text>{data?.metadata?.namespace ?? ''}</Text>,
+              },
+              {
+                label: <Trans>Domain</Trans>,
+                value: <Text>{data?.spec?.domainName}</Text>,
+              },
+              {
+                label: <Trans>Registrar</Trans>,
+                value: <Text>{data?.status?.registration?.registrar?.name}</Text>,
+              },
+              {
+                label: <Trans>DNS Providers</Trans>,
+                value: (
                   <DomainDnsProviders nameservers={data?.status?.nameservers} maxVisible={2} />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Expiration Date</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  <DomainExpiration expiresAt={data?.status?.registration?.expiresAt} />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Status</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
+                ),
+              },
+              {
+                label: <Trans>Expiration Date</Trans>,
+                value: <DomainExpiration expiresAt={data?.status?.registration?.expiresAt} />,
+              },
+              {
+                label: <Trans>Status</Trans>,
+                value: (
                   <DomainStatusProbe
                     projectName={project.metadata?.name ?? ''}
                     domainName={data?.metadata?.name ?? ''}
                     namespace={data?.metadata?.namespace ?? ''}
                   />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Created</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
+                ),
+              },
+              {
+                label: <Trans>Created</Trans>,
+                value: (
                   <Text>
                     <DateTime date={data?.metadata?.creationTimestamp} variant="both" />
                   </Text>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+                ),
+              },
+            ]}
+          />
         </CardContent>
       </Card>
 

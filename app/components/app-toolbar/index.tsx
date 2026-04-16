@@ -1,4 +1,6 @@
+import { MobileToolbar } from './mobile-toolbar';
 import { Breadcrumb } from '@/components/breadcrumb';
+import { useBreakpoint } from '@/hooks/use-breakpoint';
 import { useApp } from '@/providers/app.provider';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { useEffect, useState } from 'react';
@@ -6,12 +8,18 @@ import { useEffect, useState } from 'react';
 const AppToolbar = () => {
   const { actions, navigation } = useApp();
   const [scrolled, setScrolled] = useState(false);
+  const breakpoint = useBreakpoint();
+  const isMobile = breakpoint === 'mobile';
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 0);
     window.addEventListener('scroll', handler);
     return () => window.removeEventListener('scroll', handler);
   }, []);
+
+  if (isMobile) {
+    return <MobileToolbar scrolled={scrolled} />;
+  }
 
   return (
     <div

@@ -100,7 +100,7 @@ export function FraudAlertsWidget() {
   const { alerts, totalCount, isLoading, isError, refetch } = useFraudAlertsWidget();
 
   return (
-    <Card className="gap-0 py-0 md:col-span-2 lg:col-span-2 xl:col-span-2">
+    <Card className="min-w-0 gap-0 py-0 md:col-span-2 lg:col-span-2 xl:col-span-2">
       <CardHeader className="px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -131,63 +131,65 @@ export function FraudAlertsWidget() {
         ) : alerts.length === 0 ? (
           <EmptyState />
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted hover:bg-muted">
-                <TableHead>
-                  <Text size="sm" textColor="muted">
-                    <Trans>User</Trans>
-                  </Text>
-                </TableHead>
-                <TableHead>
-                  <Text size="sm" textColor="muted">
-                    <Trans>Score</Trans>
-                  </Text>
-                </TableHead>
-                <TableHead>
-                  <Text size="sm" textColor="muted">
-                    <Trans>Decision</Trans>
-                  </Text>
-                </TableHead>
-                <TableHead>
-                  <Text size="sm" textColor="muted">
-                    <Trans>Age</Trans>
-                  </Text>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {alerts.map((alert) => (
-                <TableRow
-                  key={alert.name}
-                  className="cursor-pointer"
-                  onClick={() => navigate(fraudRoutes.evaluations.detail(alert.name))}>
-                  <TableCell className="max-w-[140px]">
-                    <Text size="sm" className="truncate font-medium">
-                      {alert.userDisplay}
-                    </Text>
-                  </TableCell>
-                  <TableCell>
-                    <span
-                      className={`font-mono text-sm font-medium ${getScoreColorClass(alert.compositeScore)}`}>
-                      {alert.compositeScore !== undefined ? alert.compositeScore : '—'}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <BadgeState
-                      state={alert.decision === 'DEACTIVATE' ? 'error' : 'warning'}
-                      message={alert.decision}
-                    />
-                  </TableCell>
-                  <TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted hover:bg-muted">
+                  <TableHead>
                     <Text size="sm" textColor="muted">
-                      <DateTime date={alert.creationTimestamp} variant="relative" />
+                      <Trans>User</Trans>
                     </Text>
-                  </TableCell>
+                  </TableHead>
+                  <TableHead>
+                    <Text size="sm" textColor="muted">
+                      <Trans>Score</Trans>
+                    </Text>
+                  </TableHead>
+                  <TableHead>
+                    <Text size="sm" textColor="muted">
+                      <Trans>Decision</Trans>
+                    </Text>
+                  </TableHead>
+                  <TableHead className="hidden md:table-cell">
+                    <Text size="sm" textColor="muted">
+                      <Trans>Age</Trans>
+                    </Text>
+                  </TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {alerts.map((alert) => (
+                  <TableRow
+                    key={alert.name}
+                    className="cursor-pointer"
+                    onClick={() => navigate(fraudRoutes.evaluations.detail(alert.name))}>
+                    <TableCell className="max-w-[140px]">
+                      <Text size="sm" className="truncate font-medium">
+                        {alert.userDisplay}
+                      </Text>
+                    </TableCell>
+                    <TableCell>
+                      <span
+                        className={`font-mono text-sm font-medium ${getScoreColorClass(alert.compositeScore)}`}>
+                        {alert.compositeScore !== undefined ? alert.compositeScore : '—'}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <BadgeState
+                        state={alert.decision === 'DEACTIVATE' ? 'error' : 'warning'}
+                        message={alert.decision}
+                      />
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      <Text size="sm" textColor="muted">
+                        <DateTime date={alert.creationTimestamp} variant="relative" />
+                      </Text>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         )}
       </CardContent>
     </Card>

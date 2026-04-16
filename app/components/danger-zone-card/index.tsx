@@ -1,3 +1,4 @@
+import { ActionCard } from '@/components/action-card';
 import { DialogConfirm } from '@/components/dialog';
 import { Button } from '@datum-cloud/datum-ui/button';
 import {
@@ -7,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@datum-cloud/datum-ui/card';
-import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
@@ -63,19 +63,16 @@ export function DangerZoneCard({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="border-destructive bg-destructive/5 flex items-center justify-between rounded-lg border p-4">
-            <div>
-              <Title level={6} weight="medium" textColor="destructive">
-                {deleteTitle}
-              </Title>
-              <Text textColor="destructive" size="sm" as="p">
-                {deleteDescription}
-              </Text>
-            </div>
-            <Button type="danger" size="small" onClick={() => setDeleteDialogOpen(true)}>
-              <Trans>Delete</Trans>
-            </Button>
-          </div>
+          <ActionCard
+            variant="destructive"
+            title={deleteTitle}
+            description={deleteDescription}
+            action={
+              <Button type="danger" size="small" onClick={() => setDeleteDialogOpen(true)}>
+                <Trans>Delete</Trans>
+              </Button>
+            }
+          />
         </CardContent>
       </Card>
     </>

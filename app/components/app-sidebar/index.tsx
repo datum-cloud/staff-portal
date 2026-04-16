@@ -64,7 +64,7 @@ interface MenuItem {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { open, state } = useSidebar();
+  const { open, state, isMobile, closeForNavigation } = useSidebar();
   const { t } = useLingui();
   const location = useLocation();
 
@@ -175,7 +175,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           {menuItems.map((item, index) => (
             <SidebarMenu key={index}>
               {item.hasSubmenu ? (
-                state === 'expanded' ? (
+                state === 'expanded' || isMobile ? (
                   <Collapsible
                     asChild
                     defaultOpen={item.submenuItems?.some((subItem) =>
@@ -197,7 +197,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                               <SidebarMenuSubButton
                                 asChild
                                 isActive={isMenuItemActive(subItem.href)}>
-                                <NavLink to={subItem.href}>
+                                <NavLink
+                                  to={subItem.href}
+                                  onClick={() => {
+                                    if (isMobile) closeForNavigation();
+                                  }}>
                                   <span>{subItem.title}</span>
                                 </NavLink>
                               </SidebarMenuSubButton>
@@ -246,7 +250,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     asChild
                     isActive={isMenuItemActive(item.href)}
                     tooltip={item.title}>
-                    <NavLink to={item.href ?? ''}>
+                    <NavLink
+                      to={item.href ?? ''}
+                      onClick={() => {
+                        if (isMobile) closeForNavigation();
+                      }}>
                       <item.icon />
                       <span>{item.title}</span>
                     </NavLink>
