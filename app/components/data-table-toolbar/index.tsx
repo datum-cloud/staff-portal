@@ -83,7 +83,7 @@ export function DataTableToolbar({ search, filters, extras, className }: DataTab
             )}
           </Button>
 
-          <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+          <Sheet open={sheetOpen} onOpenChange={setSheetOpen} modal={false}>
             <SheetContent side="bottom" className="flex max-h-[85svh] flex-col gap-0 p-0">
               <VisuallyHidden>
                 <SheetDescription>{t`Filter options`}</SheetDescription>

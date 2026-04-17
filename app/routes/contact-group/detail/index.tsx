@@ -17,7 +17,7 @@ export default function Page() {
   return (
     <div className="m-4">
       <Row className="mb-4">
-        <Col span={12} offset={6}>
+        <Col xs={24} md={{ span: 12, offset: 6 }}>
           <Card>
             <CardHeader>
               <CardTitle>
