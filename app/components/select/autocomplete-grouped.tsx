@@ -84,8 +84,10 @@ export function GroupedSelectAutocomplete({
           role="combobox"
           aria-expanded={open}
           disabled={disabled}
-          className={cn(width, 'justify-between', triggerClassName, className)}>
-          {selectedOption ? selectedOption.label : placeholder}
+          className={cn(width, 'justify-between overflow-hidden', triggerClassName, className)}>
+          <span className="min-w-0 truncate">
+            {selectedOption ? selectedOption.label : placeholder}
+          </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

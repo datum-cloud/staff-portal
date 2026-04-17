@@ -20,19 +20,19 @@ export default function Page() {
   return (
     <div className="m-4">
       <Row className="mb-4">
-        <Col span={12} offset={6}>
+        <Col xs={24} md={{ span: 12, offset: 6 }}>
           <ProfileForm />
         </Col>
       </Row>
 
       <Row className="mb-4">
-        <Col span={12} offset={6}>
+        <Col xs={24} md={{ span: 12, offset: 6 }}>
           <UserIdentityCard userId={user?.metadata?.name ?? ''} />
         </Col>
       </Row>
 
       <Row>
-        <Col span={12} offset={6}>
+        <Col xs={24} md={{ span: 12, offset: 6 }}>
           <PreferencesForm />
         </Col>
       </Row>
