@@ -55,7 +55,7 @@ export function SimpleTable<TData>({
   });
 
   return (
-    <div className={cn('overflow-hidden rounded-md border', className)} {...props}>
+    <div className={cn('overflow-x-auto rounded-md border', className)} {...props}>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
