@@ -11,6 +11,7 @@ import {
   useCreateGroupMembershipMutation,
   useDeleteGroupMembershipMutation,
   useGroupMembershipListQuery,
+  useUserListQuery,
 } from '@/resources/request/client';
 import { groupDetailQuery } from '@/resources/request/server';
 import { userRoutes } from '@/utils/config/routes.config';
@@ -27,7 +28,7 @@ import {
 } from '@openapi/iam.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import z from 'zod';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
@@ -55,8 +56,23 @@ export default function Page() {
   const group = useGroupDetailData();
   const groupName = group.metadata?.name ?? '';
   const tableQuery = useGroupMembershipListQuery(groupName);
+  const userListQueryResult = useUserListQuery({ limit: 500 });
   const createMembershipMutation = useCreateGroupMembershipMutation();
   const deleteMembershipMutation = useDeleteGroupMembershipMutation();
+
+  const userMap = useMemo(() => {
+    const map = new Map<string, { displayName: string; email: string }>();
+    for (const user of userListQueryResult.data?.items ?? []) {
+      const name = user.metadata?.name ?? '';
+      if (name) {
+        map.set(name, {
+          displayName: `${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''}`.trim() || name,
+          email: user.spec?.email ?? '',
+        });
+      }
+    }
+    return map;
+  }, [userListQueryResult.data]);
 
   const [selectedGroupMembership, setSelectedGroupMembership] =
     useState<ComMiloapisIamV1Alpha1GroupMembership | null>(null);
@@ -81,14 +97,16 @@ export default function Page() {
     columnHelper.accessor('metadata.name', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => {
-        const name = row.original.metadata?.name ?? '';
-        const displayName = row.original.metadata?.namespace;
+        const userRefName = row.original.spec?.userRef?.name ?? '';
+        const user = userMap.get(userRefName);
+        const displayName = user?.displayName || userRefName;
+        const email = user?.email ?? '';
 
         return (
           <DisplayName
-            displayName={name}
-            name={displayName || name}
-            to={userRoutes.detail(row.original.spec?.userRef?.name ?? '')}
+            displayName={displayName}
+            name={email || userRefName}
+            to={userRoutes.detail(userRefName)}
           />
         );
       },

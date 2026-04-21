@@ -126,8 +126,8 @@ msgstr "Activity"
 msgid "Activity Feed"
 msgstr "Activity Feed"
 
-#: app/routes/group/member.tsx:123
-#: app/routes/group/member.tsx:146
+#: app/routes/group/member.tsx:141
+#: app/routes/group/member.tsx:164
 #: app/routes/contact-group/index.tsx:112
 #: app/routes/contact-group/detail/member.tsx:336
 #: app/routes/contact-group/detail/member.tsx:362
@@ -145,7 +145,7 @@ msgstr "Add a note"
 msgid "Add Group"
 msgstr "Add Group"
 
-#: app/routes/group/member.tsx:145
+#: app/routes/group/member.tsx:163
 #: app/routes/contact-group/detail/member.tsx:361
 msgid "Add Member"
 msgstr "Add Member"
@@ -256,7 +256,7 @@ msgid "Are you sure you want to delete group \"{0}\"? This action cannot be undo
 msgstr "Are you sure you want to delete group \"{0}\"? This action cannot be undone."
 
 #. placeholder {0}: selectedGroupMembership?.metadata?.name ?? ''
-#: app/routes/group/member.tsx:131
+#: app/routes/group/member.tsx:149
 msgid "Are you sure you want to delete member \"{0}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete member \"{0}\"? This action cannot be undone."
 
@@ -332,8 +332,8 @@ msgstr "Back to evaluations"
 #: app/routes/user/detail/index.tsx:131
 #: app/routes/profile/session.tsx:106
 #: app/routes/organization/detail/member.tsx:85
-#: app/routes/group/member.tsx:133
-#: app/routes/group/member.tsx:147
+#: app/routes/group/member.tsx:151
+#: app/routes/group/member.tsx:165
 #: app/routes/fraud/policy.tsx:97
 #: app/routes/fraud/index.tsx:212
 #: app/routes/fraud/index.tsx:247
@@ -528,8 +528,8 @@ msgstr "Create Policy"
 #: app/routes/organization/index.tsx:43
 #: app/routes/organization/detail/project.tsx:50
 #: app/routes/organization/detail/index.tsx:54
-#: app/routes/group/member.tsx:98
-#: app/routes/group/index.tsx:40
+#: app/routes/group/member.tsx:116
+#: app/routes/group/index.tsx:35
 #: app/routes/fraud/providers/index.tsx:102
 #: app/routes/contact-group/index.tsx:89
 #: app/features/quota/components/quota-grant-list.tsx:114
@@ -612,8 +612,8 @@ msgstr "Degraded"
 
 #: app/routes/profile/session.tsx:41
 #: app/routes/profile/session.tsx:105
-#: app/routes/group/member.tsx:73
-#: app/routes/group/member.tsx:132
+#: app/routes/group/member.tsx:89
+#: app/routes/group/member.tsx:150
 #: app/routes/fraud/policy.tsx:96
 #: app/routes/fraud/index.tsx:92
 #: app/routes/fraud/index.tsx:246
@@ -681,7 +681,7 @@ msgstr "Delete Evaluation"
 msgid "Delete Grant"
 msgstr "Delete Grant"
 
-#: app/routes/group/member.tsx:130
+#: app/routes/group/member.tsx:148
 #: app/routes/contact-group/detail/member.tsx:343
 #: app/routes/contact/detail/group.tsx:158
 msgid "Delete Member"
@@ -882,7 +882,7 @@ msgstr "Enter reason for deactivation..."
 msgid "Enter reason for rejection..."
 msgstr "Enter reason for rejection..."
 
-#: app/routes/group/member.tsx:171
+#: app/routes/group/member.tsx:189
 #: app/routes/contact-group/detail/member.tsx:115
 #: app/features/contact/components/contact-form.tsx:199
 msgid "Enter the full email to search..."
@@ -1314,12 +1314,12 @@ msgstr "Manually sync this description with the one in Loops (used for opt-in pa
 msgid "Member"
 msgstr "Member"
 
-#: app/routes/group/member.tsx:157
+#: app/routes/group/member.tsx:175
 #: app/routes/contact-group/detail/member.tsx:322
 msgid "Member added successfully"
 msgstr "Member added successfully"
 
-#: app/routes/group/member.tsx:138
+#: app/routes/group/member.tsx:156
 #: app/routes/contact-group/detail/member.tsx:351
 msgid "Member deleted successfully"
 msgstr "Member deleted successfully"
@@ -1369,7 +1369,7 @@ msgstr "My Profile"
 #: app/routes/organization/detail/project.tsx:35
 #: app/routes/organization/detail/member.tsx:103
 #: app/routes/organization/detail/index.tsx:46
-#: app/routes/group/member.tsx:82
+#: app/routes/group/member.tsx:98
 #: app/routes/group/index.tsx:24
 #: app/routes/fraud/providers/index.tsx:55
 #: app/routes/fraud/providers/create.tsx:88
@@ -1472,7 +1472,7 @@ msgstr "No fraud providers configured."
 msgid "No grants found."
 msgstr "No grants found."
 
-#: app/routes/group/index.tsx:71
+#: app/routes/group/index.tsx:68
 #: app/routes/contact/detail/group.tsx:219
 msgid "No groups found."
 msgstr "No groups found."
@@ -1482,7 +1482,7 @@ msgstr "No groups found."
 msgid "No members found."
 msgstr "No members found."
 
-#: app/routes/group/member.tsx:202
+#: app/routes/group/member.tsx:220
 msgid "No members in this group."
 msgstr "No members in this group."
 
@@ -1994,14 +1994,14 @@ msgstr "Search for an existing contact by email..."
 msgid "Search grants..."
 msgstr "Search grants..."
 
-#: app/routes/group/index.tsx:64
+#: app/routes/group/index.tsx:61
 #: app/routes/contact/detail/group.tsx:182
 #: app/routes/contact/detail/group.tsx:213
 msgid "Search groups..."
 msgstr "Search groups..."
 
 #: app/routes/organization/detail/member.tsx:168
-#: app/routes/group/member.tsx:195
+#: app/routes/group/member.tsx:213
 #: app/routes/contact-group/detail/member.tsx:410
 msgid "Search members..."
 msgstr "Search members..."
