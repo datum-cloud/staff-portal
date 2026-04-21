@@ -27,13 +27,12 @@ export const meta: Route.MetaFunction = () => {
   return metaObject(t`Fraud Evaluation Detail`);
 };
 
-function ScoreDisplay({ score }: { score?: string }) {
+function ScoreDisplay({ score, decision }: { score?: string; decision?: string }) {
   if (!score) return <span className="text-muted-foreground">-</span>;
-  const numScore = parseFloat(score);
   const color =
-    numScore >= 70
+    decision === 'DEACTIVATE'
       ? 'text-red-600 dark:text-red-400'
-      : numScore >= 30
+      : decision === 'REVIEW'
         ? 'text-yellow-600 dark:text-yellow-400'
         : 'text-green-600 dark:text-green-400';
   return <span className={`font-mono text-2xl font-bold ${color}`}>{score}</span>;
@@ -302,7 +301,7 @@ export default function Page() {
               <h4 className="text-muted-foreground mb-1 text-xs font-medium tracking-wide uppercase">
                 <Trans>Score</Trans>
               </h4>
-              <ScoreDisplay score={evaluation.status?.compositeScore} />
+              <ScoreDisplay score={evaluation.status?.compositeScore} decision={evaluation.status?.decision} />
             </div>
             <div>
               <h4 className="text-muted-foreground mb-1 text-xs font-medium tracking-wide uppercase">

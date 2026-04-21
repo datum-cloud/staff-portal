@@ -17,12 +17,13 @@ import {
 import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
 import { useApp } from '@/providers/app.provider';
 import {
+  useFraudEvaluationListQuery,
   useUserDeactivationQuery,
   userDeactivateMutation,
   userDeleteMutation,
   userReactivateMutation,
 } from '@/resources/request/client';
-import { userRoutes } from '@/utils/config/routes.config';
+import { fraudRoutes, userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
 import { toast } from '@datum-cloud/datum-ui/toast';
@@ -34,6 +35,7 @@ import {
   ExternalLinkIcon,
   RotateCcw,
   Shield,
+  ShieldAlert,
   ShieldCheckIcon,
   ShieldXIcon,
   XIcon,
@@ -41,6 +43,12 @@ import {
 import { useState } from 'react';
 import { useNavigate, useRevalidator } from 'react-router';
 import { z } from 'zod';
+
+function getScoreColor(decision?: string) {
+  if (decision === 'DEACTIVATE') return 'text-red-600 dark:text-red-400';
+  if (decision === 'REVIEW') return 'text-yellow-600 dark:text-yellow-400';
+  return 'text-green-600 dark:text-green-400';
+}
 
 function getSentryIssuesUrl(baseUrl: string | undefined, userId: string): string | null {
   if (!baseUrl) return null;
@@ -81,6 +89,11 @@ export default function Page() {
 
   const { approveUser, pendingUser } = useUserApproval();
   const env = useEnv();
+
+  const { data: fraudEvalData, isLoading: isFraudLoading } = useFraudEvaluationListQuery(
+    data.metadata?.name ? { search: data.metadata.name } : undefined
+  );
+  const latestEval = fraudEvalData?.items?.[0];
   const sentryIssuesUrl = getSentryIssuesUrl(env?.SENTRY_UI_URL, data?.metadata?.name ?? '');
 
   const handleDeleteUser = async () => {
@@ -296,6 +309,75 @@ export default function Page() {
                 </TableRow>
               </TableBody>
             </Table>
+          </CardContent>
+        </Card>
+
+        <Card className="mt-4 shadow-none">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ShieldAlert className="h-4 w-4" />
+              <Trans>Fraud Assessment</Trans>
+            </CardTitle>
+            <CardDescription>
+              <Trans>Latest fraud evaluation for this user</Trans>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {isFraudLoading ? (
+              <Text textColor="muted" size="sm">
+                <Trans>Loading...</Trans>
+              </Text>
+            ) : latestEval ? (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-6">
+                  <div className="flex flex-col gap-1">
+                    <Text textColor="muted" size="sm">
+                      <Trans>Score</Trans>
+                    </Text>
+                    <span
+                      className={`font-mono text-2xl font-bold ${getScoreColor(latestEval.status?.decision)}`}>
+                      {latestEval.status?.compositeScore ?? '-'}
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <Text textColor="muted" size="sm">
+                      <Trans>Decision</Trans>
+                    </Text>
+                    <BadgeState
+                      state={
+                        latestEval.status?.decision === 'DEACTIVATE'
+                          ? 'error'
+                          : latestEval.status?.decision === 'REVIEW'
+                            ? 'warning'
+                            : 'pending'
+                      }
+                      message={latestEval.status?.decision ?? 'NONE'}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <Text textColor="muted" size="sm">
+                      <Trans>Last Evaluated</Trans>
+                    </Text>
+                    <Text size="sm">
+                      <DateTime date={latestEval.status?.lastEvaluationTime} variant="both" />
+                    </Text>
+                  </div>
+                </div>
+                <Button
+                  theme="outline"
+                  size="small"
+                  icon={<ExternalLinkIcon size={16} />}
+                  onClick={() =>
+                    navigate(fraudRoutes.evaluationDetail(latestEval.metadata?.name ?? ''))
+                  }>
+                  <Trans>View Evaluation</Trans>
+                </Button>
+              </div>
+            ) : (
+              <Text textColor="muted" size="sm">
+                <Trans>No fraud evaluations found for this user.</Trans>
+              </Text>
+            )}
           </CardContent>
         </Card>
 
