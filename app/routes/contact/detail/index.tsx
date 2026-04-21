@@ -1,8 +1,8 @@
 import { getContactDetailMetadata, useContactDetailData } from '../shared';
 import type { Route } from './+types/index';
 import { ContactForm } from '@/features/contact';
-import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { metaObject } from '@/utils/helpers';
+import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { Trans } from '@lingui/react/macro';
 
@@ -17,7 +17,7 @@ export default function Page() {
   return (
     <div className="m-4">
       <Row className="mb-4">
-        <Col span={12} offset={6}>
+        <Col xs={24} md={{ span: 12, offset: 6 }}>
           <Card>
             <CardHeader>
               <CardTitle>

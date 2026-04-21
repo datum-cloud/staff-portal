@@ -4,9 +4,29 @@
 /* Optional — only if you use these components */
 @import '@datum-cloud/datum-ui/grid';
 @import '@datum-cloud/datum-ui/nprogress';
+@source '../../node_modules/streamdown/dist/*.js';
+@source '../../node_modules/@streamdown/code/dist/*.js';
 
 /* Scan activity-ui library source for Tailwind classes (for local development) */
 @source '../../../activity/ui/src/**/*.{ts,tsx}';
 
 /* Scan activity-ui components for Tailwind classes */
 @source '../../node_modules/@datum-cloud/activity-ui/dist/**/*.js';
+
+/* TipTap editor placeholder */
+.tiptap p.is-editor-empty:first-child {
+  position: relative;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--color-muted-foreground);
+  opacity: 0.5;
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

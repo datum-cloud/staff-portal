@@ -45,7 +45,7 @@ vi.mock('@/components/dialog', () => ({
 }));
 
 // Mock the Card components
-vi.mock('@/modules/shadcn/ui/card', () => ({
+vi.mock('@datum-cloud/datum-ui/card', () => ({
   Card: ({ children, className }: any) => (
     <div data-testid="card" className={className}>
       {children}

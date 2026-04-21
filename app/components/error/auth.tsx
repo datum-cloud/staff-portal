@@ -1,5 +1,5 @@
 import { LogoIcon } from '@/components/logo/logo-icon';
-import { Card, CardContent } from '@/modules/shadcn/ui/card';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { Loader2Icon } from 'lucide-react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';

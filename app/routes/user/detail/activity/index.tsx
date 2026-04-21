@@ -1,7 +1,13 @@
 import { useUserDetailData, getUserDetailMetadata } from '../../shared';
 import type { Route } from './+types/index';
-import { createActivityClientConfig, getUserControlPlanePath } from '@/lib/activity-client';
-import { staffResourceLinkResolver, staffTenantLinkResolver } from '@/lib/activity-link-resolvers';
+import {
+  createActivityClientConfig,
+  getUserControlPlanePath,
+} from '@/features/activity/lib/activity-client';
+import {
+  staffResourceLinkResolver,
+  staffTenantLinkResolver,
+} from '@/features/activity/lib/activity-link-resolvers';
 import { metaObject } from '@/utils/helpers';
 import {
   ActivityFeed,

@@ -2,10 +2,10 @@ import BadgeState from './badge-state';
 import { render, screen } from '@/tests/setup/unit/test.utils';
 import { describe, expect, test, vi, beforeEach } from 'vitest';
 
-// Mock the Badge component to inspect variant and classes
-vi.mock('@/modules/shadcn/ui/badge', () => ({
-  Badge: ({ children, variant, className }: any) => (
-    <div data-testid="badge" data-variant={variant} className={className}>
+// Mock the Badge component to inspect type/theme and classes
+vi.mock('@datum-cloud/datum-ui/badge', () => ({
+  Badge: ({ children, type, theme, className }: any) => (
+    <div data-testid="badge" data-type={type} data-theme={theme} className={className}>
       {children}
     </div>
   ),
@@ -73,31 +73,31 @@ describe('BadgeState', () => {
     });
   });
 
-  describe('Variants and colors', () => {
-    test('uses configured variant for known states', () => {
+  describe('Colors and theming', () => {
+    test('uses configured color classes for known states', () => {
       render(<BadgeState state="active" />);
-      expect(screen.getByTestId('badge')).toHaveAttribute('data-variant', 'default');
+      expect(screen.getByTestId('badge')).toHaveClass('bg-green-100');
     });
 
-    test('uses destructive variant for error-like states', () => {
+    test('uses error color classes for error-like states', () => {
       render(<BadgeState state="error" />);
-      expect(screen.getByTestId('badge')).toHaveAttribute('data-variant', 'destructive');
+      expect(screen.getByTestId('badge')).toHaveClass('bg-red-100');
     });
 
-    test('uses secondary variant for pending', () => {
+    test('uses pending color classes for pending', () => {
       render(<BadgeState state="pending" />);
-      expect(screen.getByTestId('badge')).toHaveAttribute('data-variant', 'secondary');
+      expect(screen.getByTestId('badge')).toHaveClass('bg-gray-100');
     });
 
-    test('falls back to secondary variant for unknown states', () => {
+    test('falls back to gray color classes for unknown states', () => {
       render(<BadgeState state="mystery" />);
-      expect(screen.getByTestId('badge')).toHaveAttribute('data-variant', 'secondary');
+      expect(screen.getByTestId('badge')).toHaveClass('bg-gray-100');
     });
 
-    test('uses outline variant and gray styles when noColor is true', () => {
+    test('uses outline theme and gray styles when noColor is true', () => {
       render(<BadgeState state="error" noColor />);
       const badge = screen.getByTestId('badge');
-      expect(badge).toHaveAttribute('data-variant', 'outline');
+      expect(badge).toHaveAttribute('data-theme', 'outline');
       expect(badge).toHaveClass('border-gray-200');
     });
   });

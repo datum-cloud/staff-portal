@@ -6,5 +6,5 @@ export default function OrganizationActivityLayout() {
   const data = useOrganizationDetailData();
   const organizationName = data.metadata?.name ?? '';
 
-  return <ActivityLayout basePath={orgRoutes.activity(organizationName)} />;
+  return <ActivityLayout basePath={orgRoutes.activity.root(organizationName)} />;
 }

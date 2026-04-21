@@ -1,14 +1,14 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/modules/shadcn/ui/avatar';
-import { Button } from '@/modules/shadcn/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@datum-cloud/datum-ui/avatar';
+import { Button } from '@datum-cloud/datum-ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/modules/shadcn/ui/card';
+} from '@datum-cloud/datum-ui/card';
 import {
   Command,
   CommandEmpty,
@@ -16,8 +16,8 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/modules/shadcn/ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '@/modules/shadcn/ui/popover';
+} from '@datum-cloud/datum-ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
 import { ChevronDown } from 'lucide-react';
 
 const teamMembers = [
@@ -82,7 +82,7 @@ export function CardsTeamMembers() {
             </div>
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" size="sm" className="ml-auto shadow-none">
+                <Button theme="outline" size="small" className="ml-auto shadow-none">
                   {member.role} <ChevronDown />
                 </Button>
               </PopoverTrigger>

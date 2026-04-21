@@ -1,20 +1,15 @@
 import { getUserDetailMetadata, useUserDetailData } from '../shared';
 import type { Route } from './+types/index';
+import { ActionCard } from '@/components/action-card';
 import { BadgeState } from '@/components/badge';
 import { ButtonCopy } from '@/components/button';
 import { DangerZoneCard } from '@/components/danger-zone-card';
 import { DateTime } from '@/components/date';
+import { DescriptionList } from '@/components/description-list';
 import { DialogForm } from '@/components/dialog';
+import { PageHeader } from '@/components/page-header';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
 import { useEnv } from '@/hooks';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/modules/shadcn/ui/card';
-import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
 import { useApp } from '@/providers/app.provider';
 import {
   useFraudEvaluationListQuery,
@@ -26,9 +21,16 @@ import {
 import { fraudRoutes, userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@datum-cloud/datum-ui/card';
+import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import { Text, Title } from '@datum-cloud/datum-ui/typography';
-import { Form } from '@datum-ui/form';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import {
   CheckIcon,
@@ -143,12 +145,9 @@ export default function Page() {
         onSubmit={handleDeactivateUser}
         schema={deactivateSchema}
         defaultValues={{ reason: '' }}>
-        <Form.Input
-          field="reason"
-          label={t`Reason for deactivation`}
-          placeholder={t`Enter reason for deactivation...`}
-          required
-        />
+        <Form.Field name="reason" label={t`Reason for deactivation`} required>
+          <Form.Input placeholder={t`Enter reason for deactivation...`} />
+        </Form.Field>
       </DialogForm>
 
       <UserRejectDialog
@@ -161,154 +160,116 @@ export default function Page() {
       />
 
       <div className="m-4 flex flex-col gap-1">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col">
-            <Title level={1}>
-              {data?.spec?.givenName} {data?.spec?.familyName}
-            </Title>
-            <Text textColor="muted">{data?.spec?.email}</Text>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {sentryIssuesUrl && (
-              <LinkButton
-                href={sentryIssuesUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                theme="outline"
-                size="small"
-                icon={<ExternalLinkIcon size={16} />}
-                iconPosition="right">
-                <Trans>View in Sentry</Trans>
-              </LinkButton>
-            )}
-            {data?.status?.registrationApproval === 'Pending' ? (
-              <>
+        <PageHeader
+          title={`${data?.spec?.givenName ?? ''} ${data?.spec?.familyName ?? ''}`}
+          description={data?.spec?.email}
+          actions={
+            <>
+              {sentryIssuesUrl && (
+                <LinkButton
+                  href={sentryIssuesUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  theme="outline"
+                  size="small"
+                  icon={<ExternalLinkIcon size={16} />}
+                  iconPosition="right">
+                  <Trans>View in Sentry</Trans>
+                </LinkButton>
+              )}
+              {data?.status?.registrationApproval === 'Pending' ? (
+                <>
+                  <Button
+                    theme="outline"
+                    size="small"
+                    icon={<CheckIcon size={16} />}
+                    loading={isApproving}
+                    onClick={async () => {
+                      setIsApproving(true);
+                      try {
+                        await approveUser(data, async () => {
+                          revalidate();
+                        });
+                      } finally {
+                        setIsApproving(false);
+                      }
+                    }}>
+                    <Trans>Approve</Trans>
+                  </Button>
+                  <Button
+                    theme="outline"
+                    size="small"
+                    icon={<XIcon size={16} />}
+                    onClick={() => setRejectDialogOpen(true)}>
+                    <Trans>Reject</Trans>
+                  </Button>
+                </>
+              ) : (
                 <Button
                   theme="outline"
                   size="small"
-                  icon={<CheckIcon size={16} />}
-                  loading={isApproving}
+                  icon={<RotateCcw size={16} />}
+                  loading={isMovingToPending}
                   onClick={async () => {
-                    setIsApproving(true);
+                    setIsMovingToPending(true);
                     try {
-                      await approveUser(data, async () => {
+                      await pendingUser(data, async () => {
                         revalidate();
                       });
                     } finally {
-                      setIsApproving(false);
+                      setIsMovingToPending(false);
                     }
                   }}>
-                  <Trans>Approve</Trans>
+                  <Trans>Move to Pending</Trans>
                 </Button>
-                <Button
-                  theme="outline"
-                  type="danger"
-                  size="small"
-                  icon={<XIcon size={16} />}
-                  onClick={() => setRejectDialogOpen(true)}>
-                  <Trans>Reject</Trans>
-                </Button>
-              </>
-            ) : (
-              <Button
-                theme="outline"
-                size="small"
-                icon={<RotateCcw size={16} />}
-                loading={isMovingToPending}
-                onClick={async () => {
-                  setIsMovingToPending(true);
-                  try {
-                    await pendingUser(data, async () => {
-                      revalidate();
-                    });
-                  } finally {
-                    setIsMovingToPending(false);
-                  }
-                }}>
-                <Trans>Move to Pending</Trans>
-              </Button>
-            )}
-          </div>
-        </div>
+              )}
+            </>
+          }
+        />
 
         <Card className="mt-4 shadow-none">
           <CardContent>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell width="25%">
-                    <Text textColor="muted">
-                      <Trans>ID</Trans>
-                    </Text>
-                  </TableCell>
-                  <TableCell>
+            <DescriptionList
+              items={[
+                {
+                  label: <Trans>ID</Trans>,
+                  value: (
                     <div className="flex items-center gap-2">
                       <Text>{data?.metadata?.name}</Text>
                       <ButtonCopy value={data?.metadata?.name ?? ''} />
                     </div>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell width="25%">
-                    <Text textColor="muted">
-                      <Trans>Full Name</Trans>
-                    </Text>
-                  </TableCell>
-                  <TableCell>
+                  ),
+                },
+                {
+                  label: <Trans>Full Name</Trans>,
+                  value: (
                     <Text>
                       {data?.spec?.givenName} {data?.spec?.familyName}
                     </Text>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell width="25%">
-                    <Text textColor="muted">
-                      <Trans>Email</Trans>
-                    </Text>
-                  </TableCell>
-                  <TableCell>
-                    <Text>{data?.spec?.email}</Text>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell width="25%">
-                    <Text textColor="muted">
-                      <Trans>Registration Approval</Trans>
-                    </Text>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-col gap-2">
-                      <BadgeState state={data?.status?.registrationApproval ?? 'Unknown'} />
-                    </div>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell width="25%">
-                    <Text textColor="muted">
-                      <Trans>Status</Trans>
-                    </Text>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-col gap-2">
-                      <BadgeState state={data?.status?.state ?? 'Active'} />
-                    </div>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell width="25%">
-                    <Text textColor="muted">
-                      <Trans>Created</Trans>
-                    </Text>
-                  </TableCell>
-                  <TableCell>
+                  ),
+                },
+                {
+                  label: <Trans>Email</Trans>,
+                  value: <Text>{data?.spec?.email}</Text>,
+                },
+                {
+                  label: <Trans>Registration Approval</Trans>,
+                  value: <BadgeState state={data?.status?.registrationApproval ?? 'Unknown'} />,
+                },
+                {
+                  label: <Trans>Status</Trans>,
+                  value: <BadgeState state={data?.status?.state ?? 'Active'} />,
+                },
+                {
+                  label: <Trans>Created</Trans>,
+                  value: (
                     <Text>
                       <DateTime date={data?.metadata?.creationTimestamp} variant="both" />
                     </Text>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+                  ),
+                },
+              ]}
+            />
           </CardContent>
         </Card>
 
@@ -368,7 +329,7 @@ export default function Page() {
                   size="small"
                   icon={<ExternalLinkIcon size={16} />}
                   onClick={() =>
-                    navigate(fraudRoutes.evaluationDetail(latestEval.metadata?.name ?? ''))
+                    navigate(fraudRoutes.evaluations.detail(latestEval.metadata?.name ?? ''))
                   }>
                   <Trans>View Evaluation</Trans>
                 </Button>
@@ -394,86 +355,85 @@ export default function Page() {
           <CardContent>
             {data?.status?.state === 'Inactive' ? (
               <>
-                <div className="flex items-center justify-between rounded-lg border border-green-500 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20">
-                  <div>
-                    <Title
-                      level={6}
-                      weight="medium"
-                      textColor="success"
-                      className="flex items-center gap-2">
-                      <ShieldCheckIcon className="h-4 w-4" />
-                      <Trans>Reactivate User</Trans>
-                    </Title>
-                    <Text textColor="success" size="sm" as="p">
-                      <Trans>
-                        Re-enable this user&apos;s access to the system. They will be able to sign
-                        in immediately.
-                      </Trans>
-                    </Text>
-                  </div>
-                  <Button
-                    type="success"
-                    size="small"
-                    loading={isReactivating}
-                    onClick={() => handleReactivateUser()}>
-                    <Trans>Reactivate</Trans>
-                  </Button>
-                </div>
+                <ActionCard
+                  variant="success"
+                  icon={ShieldCheckIcon}
+                  title={<Trans>Reactivate User</Trans>}
+                  description={
+                    <Trans>
+                      Re-enable this user&apos;s access to the system. They will be able to sign in
+                      immediately.
+                    </Trans>
+                  }
+                  action={
+                    <Button
+                      type="success"
+                      size="small"
+                      loading={isReactivating}
+                      onClick={() => handleReactivateUser()}>
+                      <Trans>Reactivate</Trans>
+                    </Button>
+                  }
+                />
 
-                <div className="mt-3 space-y-2 rounded-md border bg-gray-200/50 p-3">
-                  <div className="flex items-center gap-2">
-                    <Text size="sm" weight="medium">
-                      <Trans>Deactivation Details</Trans>
-                    </Text>
-                  </div>
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <Text textColor="muted" size="sm">
-                        <Trans>Deactivated By:</Trans>
-                      </Text>
-                      <Text size="sm">{deactivationData?.data?.spec?.deactivatedBy}</Text>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Text textColor="muted" size="sm">
-                        <Trans>Deactivated At:</Trans>
-                      </Text>
-                      <Text size="sm">
-                        <DateTime
-                          date={deactivationData?.data?.metadata?.creationTimestamp ?? ''}
-                        />
-                      </Text>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Text textColor="muted" size="sm">
-                        <Trans>Deactivation Reason:</Trans>
-                      </Text>
-                      <Text size="sm">{deactivationData?.data?.spec?.reason}</Text>
-                    </div>
-                  </div>
+                <div className="bg-muted/40 mt-3 rounded-md border p-3">
+                  <Text size="sm" weight="medium" className="mb-2 block">
+                    <Trans>Deactivation Details</Trans>
+                  </Text>
+                  <DescriptionList
+                    labelWidth="40%"
+                    items={[
+                      {
+                        label: (
+                          <Text textColor="muted" size="sm">
+                            <Trans>Deactivated By</Trans>
+                          </Text>
+                        ),
+                        value: <Text size="sm">{deactivationData?.data?.spec?.deactivatedBy}</Text>,
+                      },
+                      {
+                        label: (
+                          <Text textColor="muted" size="sm">
+                            <Trans>Deactivated At</Trans>
+                          </Text>
+                        ),
+                        value: (
+                          <Text size="sm">
+                            <DateTime
+                              date={deactivationData?.data?.metadata?.creationTimestamp ?? ''}
+                            />
+                          </Text>
+                        ),
+                      },
+                      {
+                        label: (
+                          <Text textColor="muted" size="sm">
+                            <Trans>Deactivation Reason</Trans>
+                          </Text>
+                        ),
+                        value: <Text size="sm">{deactivationData?.data?.spec?.reason}</Text>,
+                      },
+                    ]}
+                  />
                 </div>
               </>
             ) : (
-              <div className="flex items-center justify-between rounded-lg border border-yellow-500 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
-                <div>
-                  <Title
-                    level={6}
-                    weight="medium"
-                    textColor="warning"
-                    className="flex items-center gap-2">
-                    <ShieldXIcon className="h-4 w-4" />
-                    <Trans>Deactivate User</Trans>
-                  </Title>
-                  <Text textColor="warning" size="sm" as="p">
-                    <Trans>
-                      Temporarily prevent user from signing in. The user can be reactivated at any
-                      time and all data will remain intact.
-                    </Trans>
-                  </Text>
-                </div>
-                <Button type="warning" size="small" onClick={() => setDeactivateDialogOpen(true)}>
-                  <Trans>Deactivate</Trans>
-                </Button>
-              </div>
+              <ActionCard
+                variant="warning"
+                icon={ShieldXIcon}
+                title={<Trans>Deactivate User</Trans>}
+                description={
+                  <Trans>
+                    Temporarily prevent user from signing in. The user can be reactivated at any
+                    time and all data will remain intact.
+                  </Trans>
+                }
+                action={
+                  <Button type="warning" size="small" onClick={() => setDeactivateDialogOpen(true)}>
+                    <Trans>Deactivate</Trans>
+                  </Button>
+                }
+              />
             )}
           </CardContent>
         </Card>

@@ -1,11 +1,16 @@
 import type { Route } from './+types/detail';
 import { BadgeCondition, BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
+import { DescriptionList } from '@/components/description-list';
 import { DisplayText } from '@/components/display';
+import { PageHeader } from '@/components/page-header';
 import { authenticator } from '@/modules/auth';
-import { Button } from '@/modules/shadcn/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
-import { Popover, PopoverContent, PopoverTrigger } from '@/modules/shadcn/ui/popover';
+import { projectExportPolicyDetailQuery } from '@/resources/request/server';
+import { extractDataFromMatches, metaObject } from '@/utils/helpers';
+import { Button } from '@datum-cloud/datum-ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
+import { CodeEditor, type EditorLanguage } from '@datum-cloud/datum-ui/code-editor';
+import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
 import {
   Table,
   TableBody,
@@ -13,11 +18,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/modules/shadcn/ui/table';
-import { projectExportPolicyDetailQuery } from '@/resources/request/server';
-import { extractDataFromMatches, metaObject } from '@/utils/helpers';
-import { Text, Title } from '@datum-cloud/datum-ui/typography';
-import { CodeEditor } from '@datum-ui/code-editor';
+} from '@datum-cloud/datum-ui/table';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { ComMiloapisTelemetryV1Alpha1ExportPolicy } from '@openapi/telemetry.miloapis.com/v1alpha1';
 import { CodeIcon, SettingsIcon } from 'lucide-react';
@@ -51,60 +53,42 @@ export default function Page() {
 
   return (
     <div className="m-4 flex flex-col gap-1">
-      <Title level={1}>{data?.metadata?.name}</Title>
+      <PageHeader title={data?.metadata?.name} />
 
       <Card className="mt-4 shadow-none">
         <CardContent>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Name</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
+          <DescriptionList
+            items={[
+              {
+                label: <Trans>Name</Trans>,
+                value: (
                   <Text>
                     <DisplayText value={data?.metadata?.name ?? ''} withCopy />
                   </Text>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Namespace</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  <Text>{data?.metadata?.namespace}</Text>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Status</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
+                ),
+              },
+              {
+                label: <Trans>Namespace</Trans>,
+                value: <Text>{data?.metadata?.namespace}</Text>,
+              },
+              {
+                label: <Trans>Status</Trans>,
+                value: (
                   <Text>
                     <BadgeCondition status={data?.status} multiple={false} showMessage />
                   </Text>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Created</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
+                ),
+              },
+              {
+                label: <Trans>Created</Trans>,
+                value: (
                   <Text>
                     <DateTime date={data?.metadata?.creationTimestamp} variant="both" />
                   </Text>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+                ),
+              },
+            ]}
+          />
         </CardContent>
       </Card>
 
@@ -138,7 +122,7 @@ export default function Page() {
                   <TableCell>
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" size="sm">
+                        <Button theme="outline" size="small">
                           <CodeIcon className="size-4" />
                           <Trans>Query</Trans>
                         </Button>
@@ -146,7 +130,7 @@ export default function Page() {
                       <PopoverContent className="min-w-[400px]">
                         <CodeEditor
                           value={source.metrics?.metricsql ?? ''}
-                          language="promql"
+                          language={'promql' as unknown as EditorLanguage}
                           readOnly
                           minHeight="100px"
                         />
@@ -218,7 +202,7 @@ export default function Page() {
                   <TableCell>
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" size="sm">
+                        <Button theme="outline" size="small">
                           <SettingsIcon className="size-4" />
                           <Trans>Configuration</Trans>
                         </Button>

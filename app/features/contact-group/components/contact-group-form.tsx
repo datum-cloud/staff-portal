@@ -1,8 +1,8 @@
 import { contactGroupCreateMutation, contactGroupUpdateMutation } from '@/resources/request/client';
 import { contactGroupRoutes } from '@/utils/config/routes.config';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import { Form } from '@datum-ui/form';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisNotificationV1Alpha1ContactGroup } from '@openapi/notification.miloapis.com/v1alpha1';
 import * as React from 'react';
@@ -48,7 +48,7 @@ export const ContactGroupForm: React.FC<Props> = ({ contactGroup }) => {
   };
 
   return (
-    <Form
+    <Form.Root
       className="space-y-4"
       schema={contactGroupSchema}
       defaultValues={{
@@ -58,36 +58,36 @@ export const ContactGroupForm: React.FC<Props> = ({ contactGroup }) => {
         description: contactGroup?.spec?.description ?? '',
       }}
       onSubmit={onSubmit}>
-      {(form) => (
+      {({ isSubmitting, isDirty, isValid }) => (
         <>
-          <Form.Input field="display_name" label={t`Display Name`} required />
+          <Form.Field name="display_name" label={t`Display Name`} required>
+            <Form.Input />
+          </Form.Field>
 
-          <Form.Input
-            field="provider_id"
+          <Form.Field
+            name="provider_id"
             label={t`Provider ID`}
-            disabled={!!contactGroup}
             description={
               contactGroup
                 ? t`Provider ID cannot be changed after the contact group is created.`
                 : undefined
-            }
-          />
+            }>
+            <Form.Input disabled={!!contactGroup} />
+          </Form.Field>
 
-          <Form.Textarea
-            field="description"
+          <Form.Field
+            name="description"
             label={t`Description`}
-            description={t`Manually sync this description with the one in Loops (used for opt-in pages).`}
-          />
+            description={t`Manually sync this description with the one in Loops (used for opt-in pages).`}>
+            <Form.Textarea />
+          </Form.Field>
 
-          <Form.Select
-            field="visibility"
-            label={t`Visibility`}
-            placeholder={t`Select visibility...`}
-            options={[
-              { value: 'public', label: t`Public` },
-              { value: 'private', label: t`Private` },
-            ]}
-          />
+          <Form.Field name="visibility" label={t`Visibility`}>
+            <Form.Select placeholder={t`Select visibility...`}>
+              <Form.SelectItem value="public">{t`Public`}</Form.SelectItem>
+              <Form.SelectItem value="private">{t`Private`}</Form.SelectItem>
+            </Form.Select>
+          </Form.Field>
 
           <div className="flex justify-end gap-2 pt-4">
             <Button
@@ -98,13 +98,13 @@ export const ContactGroupForm: React.FC<Props> = ({ contactGroup }) => {
             </Button>
             <Button
               htmlType="submit"
-              disabled={!form.formState.isDirty}
-              loading={form.formState.isSubmitting}>
+              disabled={!isDirty || !isValid || isSubmitting}
+              loading={isSubmitting}>
               {contactGroup ? t`Update` : t`Create`}
             </Button>
           </div>
         </>
       )}
-    </Form>
+    </Form.Root>
   );
 };

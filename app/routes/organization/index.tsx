@@ -1,5 +1,6 @@
 import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
 import { useOrgListQuery } from '@/resources/request/client';
@@ -71,18 +72,25 @@ export default function Page() {
       }}>
       <Card className="m-4 py-4 shadow-none">
         <CardContent className="flex flex-col gap-2 px-4">
-          <div className="flex flex-wrap items-center gap-4">
-            <DataTable.Search placeholder={t`Search organizations...`} className="w-64" />
-            <DataTable.SelectFilter
-              column="type"
-              label={t`Organization Type`}
-              placeholder={t`Filter by type`}
-              options={[
-                { value: 'Personal', label: t`Personal` },
-                { value: 'Standard', label: t`Standard` },
-              ]}
-            />
-          </div>
+          <DataTableToolbar
+            search={
+              <DataTable.Search
+                placeholder={t`Search organizations...`}
+                className="w-full md:w-64"
+              />
+            }
+            filters={
+              <DataTable.SelectFilter
+                column="type"
+                label={t`Organization Type`}
+                placeholder={t`Filter by type`}
+                options={[
+                  { value: 'Personal', label: t`Personal` },
+                  { value: 'Standard', label: t`Standard` },
+                ]}
+              />
+            }
+          />
 
           <DataTable.ActiveFilters
             excludeFilters={['search']}

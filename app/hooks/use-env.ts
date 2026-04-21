@@ -11,6 +11,9 @@ export interface PublicEnv {
   SENTRY_UI_URL?: string;
   VERSION?: string;
   AUTH_OIDC_ISSUER?: string;
+  CLOUD_PORTAL_URL?: string;
+  CHATBOT_ENABLED?: boolean;
+  MCP_ENABLED?: boolean;
 }
 
 export function useEnv(): PublicEnv | undefined {

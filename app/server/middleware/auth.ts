@@ -42,8 +42,8 @@ export function authMiddleware() {
         throw new AuthenticationError('No access token available', reqId);
       }
 
-      // Set access token in context using proper Hono way
       c.set('token', session.accessToken);
+      c.set('userId', session.sub);
 
       await next();
     } catch (error) {
@@ -71,7 +71,10 @@ export function authMiddleware() {
   });
 }
 
-// Helper function to safely get token from context
 export const getToken = (c: Context<{ Variables: EnvVariables }>) => {
   return c.get('token') as string;
+};
+
+export const getUserId = (c: Context<{ Variables: EnvVariables }>) => {
+  return c.get('userId') as string;
 };

@@ -1,9 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shadcn/ui/card';
 import { useApp } from '@/providers/app.provider';
 import { userUpdateMutation } from '@/resources/request/client';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
+import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import { Form } from '@datum-ui/form';
 import { Trans, useLingui } from '@lingui/react/macro';
 import z from 'zod';
 
@@ -24,7 +24,7 @@ export function ProfileForm() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Form
+        <Form.Root
           className="space-y-4"
           schema={userSchema}
           defaultValues={{
@@ -41,22 +41,26 @@ export function ProfileForm() {
             setUser(updatedUser);
             toast.success(t`Profile updated successfully`);
           }}>
-          {(form) => (
+          {({ isSubmitting, isDirty, isValid }) => (
             <>
-              <Form.Input field="first_name" label="First Name" required />
-              <Form.Input field="last_name" label="Last Name" required />
+              <Form.Field name="first_name" label={t`First Name`} required>
+                <Form.Input />
+              </Form.Field>
+              <Form.Field name="last_name" label={t`Last Name`} required>
+                <Form.Input />
+              </Form.Field>
 
               <div className="flex justify-end gap-2 pt-4">
                 <Button
                   htmlType="submit"
-                  disabled={!form.formState.isDirty}
-                  loading={form.formState.isSubmitting}>
+                  loading={isSubmitting}
+                  disabled={!isDirty || !isValid || isSubmitting}>
                   <Trans>Save</Trans>
                 </Button>
               </div>
             </>
           )}
-        </Form>
+        </Form.Root>
       </CardContent>
     </Card>
   );

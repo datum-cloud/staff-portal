@@ -1,11 +1,12 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../shared';
 import type { Route } from './+types/member';
 import { BadgeState } from '@/components/badge';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DisplayName } from '@/components/display';
 import {
-  orgInvitationCreateMutation,
-  orgInvitationDeleteMutation,
-  orgMemberListQuery,
+  useOrgInvitationCreateMutation,
+  useOrgInvitationDeleteMutation,
+  useOrgMemberListQuery,
 } from '@/resources/request/client';
 import { TeamMember } from '@/resources/schemas';
 import { userRoutes } from '@/utils/config/routes.config';
@@ -15,7 +16,6 @@ import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { t as tCore } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { addHours, differenceInMinutes, formatRFC3339 } from 'date-fns';
 import { CircleXIcon, MailIcon } from 'lucide-react';
@@ -37,12 +37,10 @@ export default function Page() {
   const data = useOrganizationDetailData();
   const orgName = data.metadata?.name ?? '';
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
+  const createInvitationMutation = useOrgInvitationCreateMutation();
+  const deleteInvitationMutation = useOrgInvitationDeleteMutation();
 
-  const tableQuery = useQuery({
-    queryKey: ['organizations', orgName, 'members', 'list'],
-    queryFn: () => orgMemberListQuery(orgName),
-    enabled: !!orgName,
-  });
+  const tableQuery = useOrgMemberListQuery(orgName);
 
   const actions: ActionItem<TeamMember>[] = [
     {
@@ -64,17 +62,19 @@ export default function Page() {
         }
         setLoadingStates((prev) => ({ ...prev, [row.name]: true }));
         try {
-          await orgInvitationDeleteMutation(orgName, row.name);
-          await orgInvitationCreateMutation(orgName, {
-            email: row.email,
-            familyName: row.familyName,
-            givenName: row.givenName,
-            expirationDate: formatRFC3339(addHours(new Date(), 24)),
-            organizationRef: { name: orgName },
-            roles: row?.roles ?? [],
-            state: 'Pending',
+          await deleteInvitationMutation.mutateAsync({ orgName, name: row.name });
+          await createInvitationMutation.mutateAsync({
+            orgName,
+            payload: {
+              email: row.email,
+              familyName: row.familyName,
+              givenName: row.givenName,
+              expirationDate: formatRFC3339(addHours(new Date(), 24)),
+              organizationRef: { name: orgName },
+              roles: row?.roles ?? [],
+              state: 'Pending',
+            },
           });
-          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
           toast.success(t`Invitation resend successfully`);
         } finally {
           setLoadingStates((prev) => ({ ...prev, [row.name]: false }));
@@ -89,8 +89,7 @@ export default function Page() {
       onClick: async (row) => {
         setLoadingStates((prev) => ({ ...prev, [row.name]: true }));
         try {
-          await orgInvitationDeleteMutation(orgName, row.name);
-          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
+          await deleteInvitationMutation.mutateAsync({ orgName, name: row.name });
           toast.success(t`Invitation cancelled successfully`);
         } finally {
           setLoadingStates((prev) => ({ ...prev, [row.name]: false }));
@@ -164,7 +163,11 @@ export default function Page() {
       }}>
       <Card className="m-4 py-4 shadow-none">
         <CardContent className="flex flex-col gap-2 px-4">
-          <DataTable.Search placeholder={tCore`Search members...`} className="w-64" />
+          <DataTableToolbar
+            search={
+              <DataTable.Search placeholder={tCore`Search members...`} className="w-full md:w-64" />
+            }
+          />
           <DataTable.Content
             headerClassName="bg-muted/50"
             className="border-t border-b border-solid"

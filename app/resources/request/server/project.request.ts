@@ -21,17 +21,17 @@ export const projectDetailQuery = async (token: string, projectName: string) => 
   return response.data as unknown as UnwrapProxyResponse<typeof response.data>;
 };
 
-export const projectHttpProxyDetailQuery = async (
+export const projectEdgeDetailQuery = async (
   token: string,
   projectName: string,
-  httpProxyName: string,
+  edgeName: string,
   namespace: string = 'default'
 ) => {
   const response = await readNetworkingDatumapisComV1AlphaNamespacedHttpProxy({
     baseURL: `${env.API_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
     path: {
       namespace,
-      name: httpProxyName,
+      name: edgeName,
     },
     headers: {
       Authorization: `Bearer ${token}`,

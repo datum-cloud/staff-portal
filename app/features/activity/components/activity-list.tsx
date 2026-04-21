@@ -1,16 +1,18 @@
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateRangePicker, DateTime } from '@/components/date';
-import { Badge } from '@/modules/shadcn/ui/badge';
 import { useApp } from '@/providers/app.provider';
 import { activityListQuery } from '@/resources/request/client';
 import { ActivityListResponse, ActivityLogEntry, ActivityQueryParams } from '@/resources/schemas';
+import { Badge } from '@datum-cloud/datum-ui/badge';
+import { Button } from '@datum-cloud/datum-ui/button';
 import {
-  DataTable,
-  DataTableActiveFilters,
-  DataTableFacetFilter,
-  DataTableProvider,
-  DataTableSearch,
-  useDataTableQuery,
-} from '@datum-ui/data-table';
+  DataTable as DatumDataTable,
+  useDataTableFilters,
+  useDataTablePagination,
+  useDataTableSearch,
+  useNuqsAdapter,
+} from '@datum-cloud/datum-ui/data-table';
+import type { FilterValue, ServerFetchArgs, StateAdapter } from '@datum-cloud/datum-ui/data-table';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 import {
@@ -27,7 +29,8 @@ import {
   subMinutes,
 } from 'date-fns';
 import { fromZonedTime, toZonedTime } from 'date-fns-tz';
-import { useCallback, useMemo } from 'react';
+import { parseAsArrayOf, parseAsString } from 'nuqs';
+import { useCallback, useLayoutEffect, useMemo } from 'react';
 import { Link } from 'react-router';
 
 interface ActivityListProps {
@@ -121,7 +124,7 @@ function createColumns(user?: { metadata?: { name?: string } }) {
         return (
           <div className="flex items-center justify-between gap-2">
             <span>{userName}</span>
-            {isCurrentUser && <Badge variant="outline">You</Badge>}
+            {isCurrentUser && <Badge theme="outline">You</Badge>}
           </div>
         );
       },
@@ -298,17 +301,246 @@ const ACTIVITY_DATE_PRESETS = [
   },
 ];
 
+function normalizeActivityFiltersForApi(filters: FilterValue): ActivityQueryParams {
+  const out: ActivityQueryParams = {};
+  const arrOrCsv = (v: unknown): string | undefined => {
+    if (Array.isArray(v) && v.length > 0) return v.filter(Boolean).join(',');
+    if (typeof v === 'string' && v.trim() !== '') return v;
+    return undefined;
+  };
+  if (filters.start != null && String(filters.start) !== '') {
+    out.start = String(filters.start);
+  }
+  if (filters.end != null && String(filters.end) !== '') {
+    out.end = String(filters.end);
+  }
+  const actions = arrOrCsv(filters.actions);
+  if (actions) out.actions = actions;
+  const responseCode = arrOrCsv(filters.responseCode);
+  if (responseCode) out.responseCode = responseCode;
+  const resourceType = arrOrCsv(filters.resourceType);
+  if (resourceType) out.resourceType = resourceType;
+  const apiGroup = arrOrCsv(filters.apiGroup);
+  if (apiGroup) out.apiGroup = apiGroup;
+  return out;
+}
+
+function ActivityNuqsHydration({ stateAdapter }: { stateAdapter: StateAdapter }) {
+  const { setFilter } = useDataTableFilters();
+  const { setSearch } = useDataTableSearch();
+  const { setPageIndex, setPageSize } = useDataTablePagination();
+
+  useLayoutEffect(() => {
+    const p = stateAdapter.read();
+    if (p.search) setSearch(p.search);
+    if (p.filters) {
+      for (const [key, value] of Object.entries(p.filters)) {
+        if (value == null || value === '') continue;
+        if (Array.isArray(value) && value.length === 0) continue;
+        setFilter(key, value);
+      }
+    }
+    if (p.pageSize != null) setPageSize(p.pageSize);
+    if (p.pageIndex != null && p.pageIndex > 0) setPageIndex(p.pageIndex);
+  }, [stateAdapter, setFilter, setSearch, setPageIndex, setPageSize]);
+
+  return null;
+}
+
+function ActivityTableToolbar({
+  searchPlaceholder,
+  timeRangePlaceholder,
+  convertFromApiTimestamp,
+  convertToApiTimestamp,
+}: {
+  searchPlaceholder?: string;
+  timeRangePlaceholder?: string;
+  convertFromApiTimestamp: (timestamp: string) => Date;
+  convertToApiTimestamp: (date: Date) => number;
+}) {
+  const { t } = useLingui();
+  const { filters, setFilter, clearAllFilters } = useDataTableFilters();
+
+  const actionLabels: Record<string, string> = {
+    get: t`Get`,
+    list: t`List`,
+    watch: t`Watch`,
+    create: t`Create`,
+    update: t`Update`,
+    patch: t`Patch`,
+    delete: t`Delete`,
+    deletecollection: t`Delete Collection`,
+  };
+  const codeLabels: Record<string, string> = {
+    '200': t`200 - OK`,
+    '201': t`201 - Created`,
+    '204': t`204 - No Content`,
+    '400': t`400 - Bad Request`,
+    '401': t`401 - Unauthorized`,
+    '403': t`403 - Forbidden`,
+    '404': t`404 - Not Found`,
+    '409': t`409 - Conflict`,
+    '500': t`500 - Server Error`,
+  };
+  const resourceLabels: Record<string, string> = {
+    dnszones: t`DNS Zone`,
+    dnsrecords: t`DNS Record`,
+    dnsrecordsets: t`DNS Record Set`,
+    httpproxies: t`AI Edge`,
+    domains: t`Domain`,
+    projects: t`Project`,
+    users: t`User`,
+    groups: t`Group`,
+    roles: t`Role`,
+    secrets: t`Secret`,
+    invitations: t`Invitation`,
+    members: t`Member`,
+    namespaces: t`Namespace`,
+    organizations: t`Organization`,
+    exportpolicies: t`Export Policy`,
+  };
+
+  return (
+    <>
+      <DataTableToolbar
+        search={
+          <DatumDataTable.Search
+            placeholder={searchPlaceholder || t`Search activity...`}
+            className="w-full md:w-64"
+          />
+        }
+        filters={
+          <>
+            <DateRangePicker
+              presets={ACTIVITY_DATE_PRESETS}
+              placeholder={timeRangePlaceholder || t`Filter by time range`}
+              showClearButton={false}
+              value={{
+                from: filters.start ? convertFromApiTimestamp(String(filters.start)) : undefined,
+                to: filters.end ? convertFromApiTimestamp(String(filters.end)) : undefined,
+              }}
+              onValueChange={(range) => {
+                if (range) {
+                  if (range.from) setFilter('start', String(convertToApiTimestamp(range.from)));
+                  if (range.to) setFilter('end', String(convertToApiTimestamp(range.to)));
+                } else {
+                  clearAllFilters();
+                }
+              }}
+            />
+
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                theme="outline"
+                size="small"
+                htmlType="button"
+                onClick={() =>
+                  setFilter('actions', ['create', 'update', 'patch', 'delete', 'deletecollection'])
+                }>
+                <Trans>All write operations</Trans>
+              </Button>
+              <Button
+                theme="outline"
+                size="small"
+                htmlType="button"
+                onClick={() => setFilter('actions', ['get', 'list', 'watch'])}>
+                <Trans>All read operations</Trans>
+              </Button>
+            </div>
+
+            <DatumDataTable.CheckboxFilter
+              column="actions"
+              label={t`Actions`}
+              options={[
+                { value: 'get', label: t`Get` },
+                { value: 'list', label: t`List` },
+                { value: 'watch', label: t`Watch` },
+                { value: 'create', label: t`Create` },
+                { value: 'update', label: t`Update` },
+                { value: 'patch', label: t`Patch` },
+                { value: 'delete', label: t`Delete` },
+              ]}
+            />
+
+            <DatumDataTable.CheckboxFilter
+              column="responseCode"
+              label={t`Response Code`}
+              options={[
+                { value: '200', label: t`200 - OK` },
+                { value: '201', label: t`201 - Created` },
+                { value: '204', label: t`204 - No Content` },
+                { value: '400', label: t`400 - Bad Request` },
+                { value: '401', label: t`401 - Unauthorized` },
+                { value: '403', label: t`403 - Forbidden` },
+                { value: '404', label: t`404 - Not Found` },
+                { value: '409', label: t`409 - Conflict` },
+                { value: '500', label: t`500 - Server Error` },
+              ]}
+            />
+
+            <DatumDataTable.CheckboxFilter
+              column="resourceType"
+              label={t`Resource Type`}
+              options={[
+                { value: 'dnszones', label: t`DNS Zone` },
+                { value: 'dnsrecords', label: t`DNS Record` },
+                { value: 'dnsrecordsets', label: t`DNS Record Set` },
+                { value: 'httpproxies', label: t`AI Edge` },
+                { value: 'domains', label: t`Domain` },
+                { value: 'projects', label: t`Project` },
+                { value: 'users', label: t`User` },
+                { value: 'groups', label: t`Group` },
+                { value: 'roles', label: t`Role` },
+                { value: 'secrets', label: t`Secret` },
+                { value: 'invitations', label: t`Invitation` },
+                { value: 'members', label: t`Member` },
+                { value: 'namespaces', label: t`Namespace` },
+                { value: 'organizations', label: t`Organization` },
+                { value: 'exportpolicies', label: t`Export Policy` },
+              ]}
+            />
+
+            <DatumDataTable.CheckboxFilter
+              column="apiGroup"
+              label={t`API Group`}
+              options={[
+                { value: 'dns.miloapis.com', label: 'dns.miloapis.com' },
+                { value: 'resourcemanager.miloapis.com', label: 'resourcemanager.miloapis.com' },
+              ]}
+            />
+          </>
+        }
+      />
+
+      <DatumDataTable.ActiveFilters
+        label={t`Selected filters`}
+        excludeFilters={['start', 'end', 'search']}
+        filterLabels={{
+          actions: t`Actions`,
+          responseCode: t`Response Code`,
+          resourceType: t`Resource Type`,
+          apiGroup: t`API Group`,
+        }}
+        formatFilterValue={{
+          actions: (item: string) => actionLabels[item] ?? item,
+          responseCode: (item: string) => codeLabels[item] ?? item,
+          resourceType: (item: string) => resourceLabels[item] ?? item,
+          apiGroup: (item: string) => item,
+        }}
+      />
+    </>
+  );
+}
+
 export default function ActivityList({
   resourceType,
   resourceId,
-  queryKeyPrefix = ['activity'],
+  queryKeyPrefix: _queryKeyPrefix = ['activity'],
   searchPlaceholder,
   timeRangePlaceholder,
 }: ActivityListProps) {
-  const { t } = useLingui();
   const { settings, user } = useApp();
 
-  // Helper functions for timezone conversion
   const convertFromApiTimestamp = (timestamp: string) => {
     const utcDate = fromUnixTime(parseInt(timestamp) / 1000000000);
     const timeZone = settings?.timezone;
@@ -324,29 +556,32 @@ export default function ActivityList({
     [settings?.timezone]
   );
 
-  // Create filterConfig with default "Last 7 days" values and modification-only actions
-  const activityFilterConfig = useMemo(() => {
+  const defaultFilters = useMemo(() => {
     const now = new Date();
     const sevenDaysAgo = subDays(now, 7);
     return {
-      start: {
-        defaultValue: convertToApiTimestamp(sevenDaysAgo),
-      },
-      end: {
-        defaultValue: convertToApiTimestamp(now),
-      },
-      actions: {
-        defaultValue: 'create,update,patch,delete,deletecollection',
-      },
+      start: String(convertToApiTimestamp(sevenDaysAgo)),
+      end: String(convertToApiTimestamp(now)),
+      actions: ['create', 'update', 'patch', 'delete', 'deletecollection'] as string[],
     };
   }, [convertToApiTimestamp]);
 
-  const tableState = useDataTableQuery<ActivityListResponse>({
-    queryKeyPrefix,
-    fetchFn: (args) => {
-      const filters: ActivityQueryParams = {
-        ...args.filters,
-      };
+  const stateAdapter = useNuqsAdapter({
+    filters: {
+      start: parseAsString.withDefault(''),
+      end: parseAsString.withDefault(''),
+      actions: parseAsArrayOf(parseAsString).withDefault([]),
+      responseCode: parseAsArrayOf(parseAsString).withDefault([]),
+      resourceType: parseAsArrayOf(parseAsString).withDefault([]),
+      apiGroup: parseAsArrayOf(parseAsString).withDefault([]),
+    },
+  });
+
+  const columns = useMemo(() => createColumns(user || undefined), [user]);
+
+  const fetchFn = useCallback(
+    async (args: ServerFetchArgs) => {
+      const filters: ActivityQueryParams = normalizeActivityFiltersForApi(args.filters);
 
       const resource = {
         resourceType,
@@ -369,344 +604,52 @@ export default function ActivityList({
           resource.resourceType = undefined;
           resource.resourceId = undefined;
           break;
-        // TODO: add another resource type
         default:
-          // Use regular parameters instead of object
           break;
       }
 
       return activityListQuery(resource.resourceType, resource.resourceId, {
-        ...args,
+        limit: args.limit,
+        cursor: args.cursor,
         filters,
+        search: args.search,
       });
     },
-    useSorting: true,
-    useFilters: true,
-    useSearch: true,
-    filterConfig: activityFilterConfig,
-  });
+    [resourceType, resourceId]
+  );
+
+  const transform = useCallback((data: ActivityListResponse) => {
+    const logs = data?.data?.logs || [];
+    const token = data?.data?.nextPageToken;
+    return {
+      data: logs,
+      cursor: token || undefined,
+      hasNextPage: !!token,
+    };
+  }, []);
 
   return (
-    <DataTableProvider<ActivityLogEntry, ActivityListResponse>
-      columns={createColumns(user || undefined)}
-      transform={(data) => ({
-        rows: data?.data?.logs || [],
-        cursor: data?.data?.nextPageToken || '',
-      })}
-      {...tableState}>
+    <DatumDataTable.Server
+      columns={columns}
+      fetchFn={fetchFn}
+      transform={transform}
+      limit={20}
+      getRowId={(row) => row.auditID}
+      defaultFilters={defaultFilters}
+      stateAdapter={stateAdapter}>
       <div className="m-4 flex flex-col gap-2">
-        <div className="flex items-center gap-4">
-          <DataTableSearch
-            placeholder={searchPlaceholder || t`Search activity...`}
-            value={tableState.search}
-            onValueChange={tableState.setSearch || (() => {})}
-          />
-
-          <DateRangePicker
-            presets={ACTIVITY_DATE_PRESETS}
-            placeholder={timeRangePlaceholder || t`Filter by time range`}
-            showClearButton={false}
-            value={{
-              from: tableState.filters.start
-                ? convertFromApiTimestamp(String(tableState.filters.start))
-                : undefined,
-              to: tableState.filters.end
-                ? convertFromApiTimestamp(String(tableState.filters.end))
-                : undefined,
-            }}
-            onValueChange={(range) => {
-              if (range) {
-                const filters: Record<string, any> = {};
-                if (range.from) filters.start = convertToApiTimestamp(range.from);
-                if (range.to) filters.end = convertToApiTimestamp(range.to);
-                tableState.setFilters(filters);
-              } else {
-                tableState.clearAllFilters();
-              }
-            }}
-          />
-
-          <DataTableFacetFilter
-            label={t`Actions`}
-            placeholder={t`Filter by action`}
-            multiSelect
-            options={[
-              { value: 'get', label: t`Get` },
-              { value: 'list', label: t`List` },
-              { value: 'watch', label: t`Watch` },
-              { value: 'create', label: t`Create` },
-              { value: 'update', label: t`Update` },
-              { value: 'patch', label: t`Patch` },
-              { value: 'delete', label: t`Delete` },
-            ]}
-            value={
-              (
-                (tableState.filters.actions as string | undefined) ||
-                activityFilterConfig.actions.defaultValue
-              )
-                ?.split(',')
-                .filter(Boolean) ?? []
-            }
-            onValueChange={(value) => {
-              if (value && Array.isArray(value) && value.length > 0) {
-                tableState.setFilter('actions', value.join(','));
-              } else {
-                tableState.clearFilter('actions');
-              }
-            }}
-            menuItems={[
-              {
-                label: t`All write operations`,
-                onClick: () => {
-                  tableState.setFilter('actions', 'create,update,patch,delete,deletecollection');
-                },
-              },
-              {
-                label: t`All read operations`,
-                onClick: () => {
-                  tableState.setFilter('actions', 'get,list,watch');
-                },
-              },
-            ]}
-          />
-
-          <DataTableFacetFilter
-            label={t`Response Code`}
-            placeholder={t`Filter by response code`}
-            multiSelect
-            options={[
-              { value: '200', label: t`200 - OK` },
-              { value: '201', label: t`201 - Created` },
-              { value: '204', label: t`204 - No Content` },
-              { value: '400', label: t`400 - Bad Request` },
-              { value: '401', label: t`401 - Unauthorized` },
-              { value: '403', label: t`403 - Forbidden` },
-              { value: '404', label: t`404 - Not Found` },
-              { value: '409', label: t`409 - Conflict` },
-              { value: '500', label: t`500 - Server Error` },
-            ]}
-            value={
-              (tableState.filters.responseCode as string | undefined)?.split(',').filter(Boolean) ??
-              []
-            }
-            onValueChange={(value) => {
-              if (value && Array.isArray(value) && value.length > 0) {
-                tableState.setFilter('responseCode', value.join(','));
-              } else {
-                tableState.clearFilter('responseCode');
-              }
-            }}
-          />
-
-          <DataTableFacetFilter
-            label={t`Resource Type`}
-            placeholder={t`Filter by resource type`}
-            multiSelect
-            options={[
-              { value: 'dnszones', label: t`DNS Zone` },
-              { value: 'dnsrecords', label: t`DNS Record` },
-              { value: 'dnsrecordsets', label: t`DNS Record Set` },
-              { value: 'httpproxies', label: t`HTTP Proxy` },
-              { value: 'domains', label: t`Domain` },
-              { value: 'projects', label: t`Project` },
-              { value: 'users', label: t`User` },
-              { value: 'groups', label: t`Group` },
-              { value: 'roles', label: t`Role` },
-              { value: 'secrets', label: t`Secret` },
-              { value: 'invitations', label: t`Invitation` },
-              { value: 'members', label: t`Member` },
-              { value: 'namespaces', label: t`Namespace` },
-              { value: 'organizations', label: t`Organization` },
-              { value: 'exportpolicies', label: t`Export Policy` },
-            ]}
-            value={
-              (tableState.filters.resourceType as string | undefined)?.split(',').filter(Boolean) ??
-              []
-            }
-            onValueChange={(value) => {
-              if (value && Array.isArray(value) && value.length > 0) {
-                tableState.setFilter('resourceType', value.join(','));
-              } else {
-                tableState.clearFilter('resourceType');
-              }
-            }}
-          />
-
-          <DataTableFacetFilter
-            label={t`API Group`}
-            placeholder={t`Filter by API group`}
-            multiSelect
-            options={[
-              { value: 'dns.miloapis.com', label: 'dns.miloapis.com' },
-              { value: 'resourcemanager.miloapis.com', label: 'resourcemanager.miloapis.com' },
-            ]}
-            value={
-              (tableState.filters.apiGroup as string | undefined)?.split(',').filter(Boolean) ?? []
-            }
-            onValueChange={(value) => {
-              if (value && Array.isArray(value) && value.length > 0) {
-                tableState.setFilter('apiGroup', value.join(','));
-              } else {
-                tableState.clearFilter('apiGroup');
-              }
-            }}
-          />
-        </div>
-
-        <DataTableActiveFilters
-          filters={tableState.filters}
-          filterConfig={activityFilterConfig}
-          search={tableState.search}
-          onClearFilter={tableState.clearFilter}
-          onClearAllFilters={tableState.clearAllFilters}
-          onClearSearch={tableState.clearSearch}
-          filterLabels={{
-            timeRange: t`Time range`,
-            actions: t`Actions`,
-            responseCode: t`Response Code`,
-            resourceType: t`Resource Type`,
-            apiGroup: t`API Group`,
-          }}
-          filterGroups={{
-            timeRange: ['start', 'end'],
-          }}
-          excludeFilters={['search', 'timeRange']}
-          formatFilterValue={(key, value) => {
-            // Format actions filter
-            if (key === 'actions') {
-              const actionLabels: Record<string, string> = {
-                get: t`Get`,
-                list: t`List`,
-                watch: t`Watch`,
-                create: t`Create`,
-                update: t`Update`,
-                patch: t`Patch`,
-                delete: t`Delete`,
-                deletecollection: t`Delete Collection`,
-              };
-              const actions = String(value).split(',').filter(Boolean);
-              return actions.map((action) => actionLabels[action] || action).join(', ');
-            }
-
-            // Format response code filter
-            if (key === 'responseCode') {
-              const codeLabels: Record<string, string> = {
-                '200': t`200 - OK`,
-                '201': t`201 - Created`,
-                '204': t`204 - No Content`,
-                '400': t`400 - Bad Request`,
-                '401': t`401 - Unauthorized`,
-                '403': t`403 - Forbidden`,
-                '404': t`404 - Not Found`,
-                '409': t`409 - Conflict`,
-                '500': t`500 - Server Error`,
-              };
-              const codes = String(value).split(',').filter(Boolean);
-              return codes.map((code) => codeLabels[code] || code).join(', ');
-            }
-
-            // Format resource type filter
-            if (key === 'resourceType') {
-              const resourceLabels: Record<string, string> = {
-                dnszones: t`DNS Zone`,
-                dnsrecords: t`DNS Record`,
-                dnsrecordsets: t`DNS Record Set`,
-                httpproxies: t`HTTP Proxy`,
-                domains: t`Domain`,
-                projects: t`Project`,
-                users: t`User`,
-                groups: t`Group`,
-                roles: t`Role`,
-                secrets: t`Secret`,
-                invitations: t`Invitation`,
-                members: t`Member`,
-                namespaces: t`Namespace`,
-                organizations: t`Organization`,
-                exportpolicies: t`Export Policy`,
-              };
-              const resources = String(value).split(',').filter(Boolean);
-              return resources.map((resource) => resourceLabels[resource] || resource).join(', ');
-            }
-
-            return String(value);
-          }}
-          multiValueFilters={['actions', 'responseCode', 'resourceType', 'apiGroup']}
-          formatFilterItem={(filterKey, itemValue) => {
-            if (filterKey === 'actions') {
-              const actionLabels: Record<string, string> = {
-                get: t`Get`,
-                list: t`List`,
-                watch: t`Watch`,
-                create: t`Create`,
-                update: t`Update`,
-                patch: t`Patch`,
-                delete: t`Delete`,
-                deletecollection: t`Delete Collection`,
-              };
-              return actionLabels[itemValue] || itemValue;
-            }
-
-            if (filterKey === 'responseCode') {
-              const codeLabels: Record<string, string> = {
-                '200': t`200 - OK`,
-                '201': t`201 - Created`,
-                '204': t`204 - No Content`,
-                '400': t`400 - Bad Request`,
-                '401': t`401 - Unauthorized`,
-                '403': t`403 - Forbidden`,
-                '404': t`404 - Not Found`,
-                '409': t`409 - Conflict`,
-                '500': t`500 - Server Error`,
-              };
-              return codeLabels[itemValue] || itemValue;
-            }
-
-            if (filterKey === 'resourceType') {
-              const resourceLabels: Record<string, string> = {
-                dnszones: t`DNS Zone`,
-                dnsrecords: t`DNS Record`,
-                dnsrecordsets: t`DNS Record Set`,
-                httpproxies: t`HTTP Proxy`,
-                domains: t`Domain`,
-                projects: t`Project`,
-                users: t`User`,
-                groups: t`Group`,
-                roles: t`Role`,
-                secrets: t`Secret`,
-                invitations: t`Invitation`,
-                members: t`Member`,
-                namespaces: t`Namespace`,
-                organizations: t`Organization`,
-                exportpolicies: t`Export Policy`,
-              };
-              return resourceLabels[itemValue] || itemValue;
-            }
-
-            return itemValue;
-          }}
-          onClearFilterItem={(filterKey, itemValue) => {
-            const multiFilterKeys = ['actions', 'responseCode', 'resourceType', 'apiGroup'];
-            if (multiFilterKeys.includes(filterKey)) {
-              const currentValues =
-                (
-                  tableState.filters[filterKey as keyof typeof tableState.filters] as
-                    | string
-                    | undefined
-                )
-                  ?.split(',')
-                  .filter(Boolean) || [];
-              const remainingValues = currentValues.filter((v) => v.trim() !== itemValue);
-              if (remainingValues.length > 0) {
-                tableState.setFilter(filterKey, remainingValues.join(','));
-              } else {
-                tableState.clearFilter(filterKey);
-              }
-            }
-          }}
+        <ActivityNuqsHydration stateAdapter={stateAdapter} />
+        <ActivityTableToolbar
+          searchPlaceholder={searchPlaceholder}
+          timeRangePlaceholder={timeRangePlaceholder}
+          convertFromApiTimestamp={convertFromApiTimestamp}
+          convertToApiTimestamp={convertToApiTimestamp}
         />
-
-        <DataTable<ActivityLogEntry> />
+        <div className="overflow-hidden rounded-lg border">
+          <DatumDataTable.Content emptyMessage="No activity found." />
+        </div>
+        <DatumDataTable.Pagination pageSizes={[10, 20, 50]} />
       </div>
-    </DataTableProvider>
+    </DatumDataTable.Server>
   );
 }

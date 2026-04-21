@@ -6,5 +6,5 @@ export default function ProjectActivityLayout() {
   const { project } = useProjectDetailData();
   const projectName = project?.metadata?.name ?? '';
 
-  return <ActivityLayout basePath={projectRoutes.activity(projectName)} />;
+  return <ActivityLayout basePath={projectRoutes.activity.root(projectName)} />;
 }

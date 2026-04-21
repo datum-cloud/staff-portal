@@ -1,6 +1,6 @@
-import { Textarea } from '@/modules/shadcn/ui/textarea';
 import { noteCreateMutation } from '@/resources/request/client';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Textarea } from '@datum-cloud/datum-ui/textarea';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';

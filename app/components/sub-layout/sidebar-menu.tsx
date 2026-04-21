@@ -1,9 +1,9 @@
-import { cn } from '@/modules/shadcn/lib/utils';
+import { isPathActive, pickMostSpecificHref } from './use-active-path';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/modules/shadcn/ui/collapsible';
+} from '@datum-cloud/datum-ui/collapsible';
 import {
   SidebarGroup,
   SidebarMenu,
@@ -12,7 +12,8 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from '@/modules/shadcn/ui/sidebar';
+} from '@datum-cloud/datum-ui/sidebar';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { ChevronRight, LucideIcon } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router';
 
@@ -34,24 +35,21 @@ interface SidebarMenuProps {
   className?: string;
 }
 
-// Helper to normalize paths by removing trailing slashes
-const normalizePath = (path: string) => path.replace(/\/+$/, '');
-
 export function SidebarMenuComponent({ menuItems, className }: SidebarMenuProps) {
   const location = useLocation();
-  const normalizedPathname = normalizePath(location.pathname);
 
-  // Simple helper to check if a path is active
-  const isPathActive = (href: string) => {
-    const normalizedHref = normalizePath(href);
-    return (
-      normalizedPathname === normalizedHref || normalizedPathname.startsWith(normalizedHref + '/')
-    );
-  };
+  const checkActive = (href: string) => isPathActive(location.pathname, href);
 
   // Check if any submenu item is active
   const hasActiveSubmenu = menuItems.some(
-    (item) => item.hasSubmenu && item.submenuItems?.some((subItem) => isPathActive(subItem.href))
+    (item) => item.hasSubmenu && item.submenuItems?.some((subItem) => checkActive(subItem.href))
+  );
+
+  // Most specific top-level href match — used to avoid lighting up parent
+  // items (like "Overview") when a sibling child route is actually active.
+  const mostSpecificHref = pickMostSpecificHref(
+    location.pathname,
+    menuItems.map((m) => m.href)
   );
 
   const isMenuItemActive = (
@@ -61,7 +59,7 @@ export function SidebarMenuComponent({ menuItems, className }: SidebarMenuProps)
   ) => {
     if (href === undefined) return false;
 
-    const isActive = isPathActive(href);
+    const isActive = checkActive(href);
 
     // For submenu items, just return the basic active state
     if (!checkSpecificity || !currentItem) {
@@ -73,24 +71,8 @@ export function SidebarMenuComponent({ menuItems, className }: SidebarMenuProps)
       return currentItem.hasSubmenu && isActive;
     }
 
-    // For main menu items, always use specificity logic
-    // Find the most specific (longest) matching path
-    let mostSpecificItem: MenuItem | null = null;
-    let maxLength = 0;
-
-    for (const item of menuItems) {
-      if (!item.href) continue;
-
-      const itemHref = normalizePath(item.href);
-      if (normalizedPathname === itemHref || normalizedPathname.startsWith(itemHref + '/')) {
-        if (itemHref.length > maxLength) {
-          maxLength = itemHref.length;
-          mostSpecificItem = item;
-        }
-      }
-    }
-
-    return currentItem === mostSpecificItem;
+    // For main menu items, only the most specific matching href is active
+    return currentItem.href === mostSpecificHref;
   };
 
   return (
@@ -101,7 +83,7 @@ export function SidebarMenuComponent({ menuItems, className }: SidebarMenuProps)
             {item.hasSubmenu ? (
               <Collapsible
                 asChild
-                defaultOpen={item.submenuItems?.some((subItem) => isPathActive(subItem.href))}
+                defaultOpen={item.submenuItems?.some((subItem) => checkActive(subItem.href))}
                 className="group/collapsible">
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
@@ -119,7 +101,7 @@ export function SidebarMenuComponent({ menuItems, className }: SidebarMenuProps)
                         <SidebarMenuSubItem key={subIndex}>
                           <SidebarMenuSubButton
                             asChild
-                            isActive={isPathActive(subItem.href)}
+                            isActive={checkActive(subItem.href)}
                             className="text-muted-foreground! hover:bg-accent hover:text-foreground! data-[active=true]:bg-accent data-[active=true]:text-foreground!">
                             <NavLink to={subItem.href}>
                               <span>{subItem.title}</span>

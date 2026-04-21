@@ -1,15 +1,14 @@
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
-import { Avatar, AvatarFallback } from '@/modules/shadcn/ui/avatar';
-import { Card, CardContent, CardDescription, CardHeader } from '@/modules/shadcn/ui/card';
 import { activityListQuery } from '@/resources/request/client';
 import { userRoutes } from '@/utils/config/routes.config';
+import { Avatar, AvatarFallback } from '@datum-cloud/datum-ui/avatar';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Card, CardContent, CardDescription, CardHeader } from '@datum-cloud/datum-ui/card';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { IoK8sApiserverPkgApisAuditV1Event } from '@openapi/activity.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
-import { getUnixTime, subDays } from 'date-fns';
 import { ArrowRight, Users } from 'lucide-react';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
@@ -74,7 +73,8 @@ export function RecentUsersWidget() {
           actions: 'create',
           resourceType: 'users',
           status: 'success',
-          start: getUnixTime(subDays(new Date(), 7)) * 1000000000,
+          start: 'now-7d',
+          end: 'now',
         },
         limit: 10,
       }),
@@ -87,7 +87,7 @@ export function RecentUsersWidget() {
   const handleViewAll = useMemo(() => () => navigate(userRoutes.list()), [navigate]);
 
   return (
-    <Card className="md:col-span-2 lg:col-span-2 xl:col-span-2">
+    <Card className="min-w-0 md:col-span-2 lg:col-span-2 xl:col-span-2">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -96,7 +96,6 @@ export function RecentUsersWidget() {
           </div>
           <Button
             type="secondary"
-            theme="outline"
             size="small"
             icon={<ArrowRight size={16} />}
             onClick={handleViewAll}>
@@ -109,7 +108,7 @@ export function RecentUsersWidget() {
           </Text>
         </CardDescription>
       </CardHeader>
-      <CardContent className="pt-0">
+      <CardContent className="min-h-[180px] pt-0">
         {isLoading ? (
           <div className="space-y-2">
             {Array.from({ length: 5 }).map((_, i) => (

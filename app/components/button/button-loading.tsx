@@ -1,8 +1,8 @@
-import { Button } from '@/modules/datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
 import { Loader2Icon } from 'lucide-react';
-import { ReactNode } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 
-interface ButtonLoadingProps extends React.ComponentProps<typeof Button> {
+interface ButtonLoadingProps extends ComponentProps<typeof Button> {
   children: ReactNode;
   loading?: boolean;
 }

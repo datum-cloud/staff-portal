@@ -2,13 +2,14 @@ import { getProjectDetailMetadata, useProjectDetailData } from '../shared';
 import type { Route } from './+types/index';
 import { DangerZoneCard } from '@/components/danger-zone-card';
 import { DateTime } from '@/components/date';
-import { Card, CardContent } from '@/modules/shadcn/ui/card';
-import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
+import { DescriptionList } from '@/components/description-list';
+import { PageHeader } from '@/components/page-header';
 import { projectDeleteMutation } from '@/resources/request/client';
 import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import { Text, Title } from '@datum-cloud/datum-ui/typography';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Link, useNavigate } from 'react-router';
 
@@ -30,58 +31,38 @@ export default function Page() {
 
   return (
     <div className="m-4 flex flex-col gap-1">
-      <Title level={1}>{project?.metadata?.annotations?.['kubernetes.io/description']}</Title>
+      <PageHeader title={project?.metadata?.annotations?.['kubernetes.io/description']} />
 
       <Card className="mt-4 shadow-none">
         <CardContent>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Description</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  <Text>{project?.metadata?.annotations?.['kubernetes.io/description']}</Text>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Name</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  <Text>{project?.metadata?.name}</Text>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Organization</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
+          <DescriptionList
+            items={[
+              {
+                label: <Trans>Description</Trans>,
+                value: <Text>{project?.metadata?.annotations?.['kubernetes.io/description']}</Text>,
+              },
+              {
+                label: <Trans>Name</Trans>,
+                value: <Text>{project?.metadata?.name}</Text>,
+              },
+              {
+                label: <Trans>Organization</Trans>,
+                value: (
                   <Link to={orgRoutes.detail(organization?.metadata?.name ?? '')}>
                     {organization?.metadata?.annotations?.['kubernetes.io/display-name']}
                   </Link>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Created</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
+                ),
+              },
+              {
+                label: <Trans>Created</Trans>,
+                value: (
                   <Text>
                     <DateTime date={project?.metadata?.creationTimestamp} variant="both" />
                   </Text>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+                ),
+              },
+            ]}
+          />
         </CardContent>
       </Card>
 

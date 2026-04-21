@@ -3,13 +3,22 @@
 import { NavUser } from './nav-user';
 import { LogoIcon } from '@/components/logo/logo-icon';
 import { LogoText } from '@/components/logo/logo-text';
-import { cn } from '@/modules/shadcn/lib/utils';
+import {
+  contactGroupRoutes,
+  contactRoutes,
+  fraudRoutes,
+  groupRoutes,
+  orgRoutes,
+  projectRoutes,
+  routes,
+  userRoutes,
+} from '@/utils/config/routes.config';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/modules/shadcn/ui/collapsible';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/modules/shadcn/ui/hover-card';
+} from '@datum-cloud/datum-ui/collapsible';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@datum-cloud/datum-ui/hover-card';
 import {
   Sidebar,
   SidebarContent,
@@ -24,17 +33,8 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
   useSidebar,
-} from '@/modules/shadcn/ui/sidebar';
-import {
-  contactGroupRoutes,
-  contactRoutes,
-  fraudRoutes,
-  groupRoutes,
-  orgRoutes,
-  projectRoutes,
-  routes,
-  userRoutes,
-} from '@/utils/config/routes.config';
+} from '@datum-cloud/datum-ui/sidebar';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { useLingui } from '@lingui/react/macro';
 import {
   ChevronRight,
@@ -64,7 +64,7 @@ interface MenuItem {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { open, state } = useSidebar();
+  const { open, state, isMobile, closeForNavigation } = useSidebar();
   const { t } = useLingui();
   const location = useLocation();
 
@@ -145,13 +145,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     },
     {
       title: t`Activity`,
-      href: routes.activity(),
+      href: routes.activity.root(),
       icon: SquareActivity,
       hasSubmenu: false,
     },
     {
       title: t`Fraud & Abuse`,
-      href: fraudRoutes.list(),
+      href: fraudRoutes.root(),
       icon: ShieldAlert,
       hasSubmenu: false,
     },
@@ -175,7 +175,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           {menuItems.map((item, index) => (
             <SidebarMenu key={index}>
               {item.hasSubmenu ? (
-                state === 'expanded' ? (
+                state === 'expanded' || isMobile ? (
                   <Collapsible
                     asChild
                     defaultOpen={item.submenuItems?.some((subItem) =>
@@ -197,7 +197,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                               <SidebarMenuSubButton
                                 asChild
                                 isActive={isMenuItemActive(subItem.href)}>
-                                <NavLink to={subItem.href}>
+                                <NavLink
+                                  to={subItem.href}
+                                  onClick={() => {
+                                    if (isMobile) closeForNavigation();
+                                  }}>
                                   <span>{subItem.title}</span>
                                 </NavLink>
                               </SidebarMenuSubButton>
@@ -246,7 +250,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     asChild
                     isActive={isMenuItemActive(item.href)}
                     tooltip={item.title}>
-                    <NavLink to={item.href ?? ''}>
+                    <NavLink
+                      to={item.href ?? ''}
+                      onClick={() => {
+                        if (isMobile) closeForNavigation();
+                      }}>
                       <item.icon />
                       <span>{item.title}</span>
                     </NavLink>

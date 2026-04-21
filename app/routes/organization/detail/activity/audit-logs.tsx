@@ -1,5 +1,8 @@
 import { useOrganizationDetailData } from '../../shared';
-import { createActivityClientConfig, getOrganizationControlPlanePath } from '@/lib/activity-client';
+import {
+  createActivityClientConfig,
+  getOrganizationControlPlanePath,
+} from '@/features/activity/lib/activity-client';
 import { AuditLogQueryComponent, ActivityApiClient } from '@datum-cloud/activity-ui';
 import { useMemo } from 'react';
 

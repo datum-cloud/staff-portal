@@ -1,4 +1,4 @@
-import { Button } from '@/modules/datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Copy } from 'lucide-react';

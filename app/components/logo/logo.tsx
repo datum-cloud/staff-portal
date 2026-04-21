@@ -1,6 +1,6 @@
 import { logoStyles } from './logo.styles';
-import { cn } from '@/modules/shadcn/lib/utils';
 import { useTheme } from '@datum-cloud/datum-ui/theme';
+import { cn } from '@datum-cloud/datum-ui/utils';
 
 export interface LogoProps {
   width?: number;

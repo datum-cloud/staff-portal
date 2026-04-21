@@ -1,4 +1,4 @@
-import { createActivityClientConfig } from '@/lib/activity-client';
+import { createActivityClientConfig } from '@/features/activity/lib/activity-client';
 import { AuditLogQueryComponent, ActivityApiClient } from '@datum-cloud/activity-ui';
 
 // Create client with proxy URL - no loader needed

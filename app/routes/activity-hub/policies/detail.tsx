@@ -1,5 +1,6 @@
-import { createActivityClientConfig } from '@/lib/activity-client';
-import { staffResourceLinkResolver } from '@/lib/activity-link-resolvers';
+import { createActivityClientConfig } from '@/features/activity/lib/activity-client';
+import { staffResourceLinkResolver } from '@/features/activity/lib/activity-link-resolvers';
+import { activityRoutes } from '@/utils/config/routes.config';
 import { PolicyEditor, ActivityApiClient } from '@datum-cloud/activity-ui';
 import type { ResourceRef } from '@datum-cloud/activity-ui';
 import { useParams, useNavigate } from 'react-router';
@@ -22,12 +23,12 @@ export default function PolicyDetailPage() {
 
   // Handle save success - navigate back to list
   const handleSaveSuccess = () => {
-    navigate('/activity/policies');
+    navigate(activityRoutes.policies.list());
   };
 
   // Handle cancel - navigate back to list
   const handleCancel = () => {
-    navigate('/activity/policies');
+    navigate(activityRoutes.policies.list());
   };
 
   // Handle resource click in preview - navigate to resource page

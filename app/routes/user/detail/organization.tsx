@@ -1,8 +1,9 @@
 import type { Route } from './+types/organization';
 import { BadgeState } from '@/components/badge';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
-import { userOrgListQuery } from '@/resources/request/client';
+import { useUserOrganizationListQuery } from '@/resources/request/client';
 import { getUserDetailMetadata, useUserDetailData } from '@/routes/user/shared';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
@@ -11,7 +12,6 @@ import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { ComMiloapisResourcemanagerV1Alpha1OrganizationMembership } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
-import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 
 const columnHelper = createColumnHelper<ComMiloapisResourcemanagerV1Alpha1OrganizationMembership>();
@@ -29,11 +29,7 @@ export default function Page() {
   const data = useUserDetailData();
   const userId = data.metadata?.name ?? '';
 
-  const tableQuery = useQuery({
-    queryKey: ['users', userId, 'organizations', 'list'],
-    queryFn: () => userOrgListQuery(userId),
-    enabled: !!userId,
-  });
+  const tableQuery = useUserOrganizationListQuery(userId);
 
   const columns = [
     columnHelper.accessor('spec.organizationRef.name', {
@@ -81,7 +77,14 @@ export default function Page() {
       }}>
       <Card className="m-4 py-4 shadow-none">
         <CardContent className="flex flex-col gap-2 px-4">
-          <DataTable.Search placeholder={t`Search organizations...`} className="w-64" />
+          <DataTableToolbar
+            search={
+              <DataTable.Search
+                placeholder={t`Search organizations...`}
+                className="w-full md:w-64"
+              />
+            }
+          />
           <DataTable.Content
             headerClassName="bg-muted/50"
             className="border-t border-b border-solid"

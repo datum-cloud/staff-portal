@@ -1,4 +1,4 @@
-import { CommandGroup, CommandItem } from '@/modules/shadcn/ui/command';
+import { CommandGroup, CommandItem } from '@datum-cloud/datum-ui/command';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
 import { LucideIcon } from 'lucide-react';

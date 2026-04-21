@@ -1,13 +1,13 @@
 import { getProjectDetailMetadata, useProjectDetailData } from '../shared';
 import type { Route } from './+types/secret';
-import { metricsCreateMutation } from '@/resources/request/client';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
+import { useProjectSecretMetricsQuery } from '@/resources/request/client';
 import { Secret } from '@/resources/schemas';
 import { metaObject } from '@/utils/helpers';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 
 export const handle = {
@@ -37,16 +37,7 @@ export default function Page() {
   const { project } = useProjectDetailData();
   const projectName = project?.metadata?.name ?? '';
 
-  const tableQuery = useQuery({
-    queryKey: ['projects', projectName, 'secrets', 'metrics'],
-    queryFn: () =>
-      metricsCreateMutation({
-        type: 'instant',
-        query: `datum_cloud_core_secret_info{resourcemanager_datumapis_com_project_name="${projectName}"}`,
-      }),
-    enabled: Boolean(projectName),
-    staleTime: 60 * 1000,
-  });
+  const tableQuery = useProjectSecretMetricsQuery(projectName);
 
   const rows = tableQuery.data?.data?.data?.result ?? [];
 
@@ -72,9 +63,11 @@ export default function Page() {
       }}>
       <Card className="m-4 py-4 shadow-none">
         <CardContent className="flex flex-col gap-2 px-4">
-          <div className="flex flex-wrap items-center gap-4">
-            <DataTable.Search placeholder={t`Search secrets...`} className="w-64 min-w-[12rem]" />
-          </div>
+          <DataTableToolbar
+            search={
+              <DataTable.Search placeholder={t`Search secrets...`} className="w-full md:w-64" />
+            }
+          />
           <DataTable.Content
             headerClassName="bg-muted/50"
             className="border-t border-b border-solid"

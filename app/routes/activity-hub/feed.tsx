@@ -1,10 +1,14 @@
-import { createActivityClientConfig } from '@/lib/activity-client';
+import { createActivityClientConfig } from '@/features/activity/lib/activity-client';
 import {
   parseActivityFilters,
   parseTimeRange,
   serializeActivityFilters,
-} from '@/lib/activity-filters';
-import { staffResourceLinkResolver, staffTenantLinkResolver } from '@/lib/activity-link-resolvers';
+} from '@/features/activity/lib/activity-filters';
+import {
+  staffResourceLinkResolver,
+  staffTenantLinkResolver,
+} from '@/features/activity/lib/activity-link-resolvers';
+import { activityRoutes } from '@/utils/config/routes.config';
 import {
   ActivityFeed,
   ActivityApiClient,
@@ -55,7 +59,7 @@ export default function ActivityFeedPage() {
 
   // Handle create policy click - navigate to policy creation
   const handleCreatePolicy = () => {
-    navigate('/activity/policies?create=true');
+    navigate(`${activityRoutes.policies.list()}?create=true`);
   };
 
   // Custom tenant renderer that uses programmatic navigation

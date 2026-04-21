@@ -1,4 +1,5 @@
 import { BadgeState } from '@/components/badge';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { getEmailCondition } from '@/features/email/email-utils';
 import { routes } from '@/utils/config/routes.config';
@@ -118,32 +119,38 @@ export default function EmailList({ queryKeyPrefix, fetchFn, searchPlaceholder }
       }}>
       <Card className="m-4 py-4 shadow-none">
         <CardContent className="flex flex-col gap-2 px-4">
-          <div className="flex flex-wrap items-center gap-4">
-            <DataTable.Search
-              placeholder={searchPlaceholder ?? t`Search email activity...`}
-              className="w-64 min-w-[12rem]"
-            />
-            <DataTable.SelectFilter
-              column="spec.priority"
-              label={t`Priority`}
-              placeholder={t`Filter by priority`}
-              options={[
-                { value: 'normal', label: t`Normal` },
-                { value: 'high', label: t`High` },
-                { value: 'low', label: t`Low` },
-              ]}
-            />
-            <DataTable.SelectFilter
-              column="deliveryStatus"
-              label={t`Status`}
-              placeholder={t`Filter by status`}
-              options={[
-                { value: 'True', label: t`Delivered` },
-                { value: 'False', label: t`Failed` },
-                { value: 'Unknown', label: t`Pending` },
-              ]}
-            />
-          </div>
+          <DataTableToolbar
+            search={
+              <DataTable.Search
+                placeholder={searchPlaceholder ?? t`Search email activity...`}
+                className="w-full md:w-64"
+              />
+            }
+            filters={
+              <>
+                <DataTable.SelectFilter
+                  column="spec.priority"
+                  label={t`Priority`}
+                  placeholder={t`Filter by priority`}
+                  options={[
+                    { value: 'normal', label: t`Normal` },
+                    { value: 'high', label: t`High` },
+                    { value: 'low', label: t`Low` },
+                  ]}
+                />
+                <DataTable.SelectFilter
+                  column="deliveryStatus"
+                  label={t`Status`}
+                  placeholder={t`Filter by status`}
+                  options={[
+                    { value: 'True', label: t`Delivered` },
+                    { value: 'False', label: t`Failed` },
+                    { value: 'Unknown', label: t`Pending` },
+                  ]}
+                />
+              </>
+            }
+          />
 
           <DataTable.ActiveFilters
             excludeFilters={['search']}

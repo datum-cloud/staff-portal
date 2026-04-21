@@ -1,5 +1,8 @@
 import { useUserDetailData } from '../../shared';
-import { createActivityClientConfig, getUserControlPlanePath } from '@/lib/activity-client';
+import {
+  createActivityClientConfig,
+  getUserControlPlanePath,
+} from '@/features/activity/lib/activity-client';
 import { AuditLogQueryComponent, ActivityApiClient } from '@datum-cloud/activity-ui';
 import { useMemo } from 'react';
 

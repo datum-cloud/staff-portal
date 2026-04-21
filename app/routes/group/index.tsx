@@ -1,7 +1,8 @@
 import type { Route } from './+types/index';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
-import { useGroupListQuery } from '@/resources/request/client/group.request';
+import { useGroupListQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
@@ -23,12 +24,13 @@ export default function Page() {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => {
         const groupName = row.original.metadata?.name ?? '';
-        const displayName = row.original.metadata?.namespace;
+        const displayName =
+          row.original.metadata?.annotations?.['kubernetes.io/display-name'] || groupName;
 
         return (
           <DisplayName
-            displayName={groupName}
-            name={displayName || groupName}
+            displayName={displayName}
+            name={groupName}
             to={`./${groupName}`}
           />
         );
@@ -53,14 +55,18 @@ export default function Page() {
         const q = search.trim().toLowerCase();
         if (!q) return true;
         const name = (row.metadata?.name ?? '').toLowerCase();
-        const ns = (row.metadata?.namespace ?? '').toLowerCase();
-        return name.includes(q) || ns.includes(q);
+        const displayName = (
+          row.metadata?.annotations?.['kubernetes.io/display-name'] ?? ''
+        ).toLowerCase();
+        return name.includes(q) || displayName.includes(q);
       }}>
       <Card className="m-4 py-4 shadow-none">
         <CardContent className="flex flex-col gap-2 px-4">
-          <div className="flex items-center gap-4">
-            <DataTable.Search placeholder={t`Search groups...`} className="w-64" />
-          </div>
+          <DataTableToolbar
+            search={
+              <DataTable.Search placeholder={t`Search groups...`} className="w-full md:w-64" />
+            }
+          />
 
           <DataTable.Content
             headerClassName="bg-muted/50"

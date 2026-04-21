@@ -1,7 +1,7 @@
 'use client';
 
-import { Calendar } from '@/modules/shadcn/ui/calendar';
-import { Card, CardContent } from '@/modules/shadcn/ui/card';
+import { Calendar } from '@datum-cloud/datum-ui/calendar';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { addDays } from 'date-fns';
 
 const start = new Date(2025, 5, 5);

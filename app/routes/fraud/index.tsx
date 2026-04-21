@@ -1,33 +1,35 @@
 import type { Route } from './+types/index';
 import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayId } from '@/components/display';
+import { useContactAllListQuery, useSearchUsersQuery } from '@/resources/request/client';
 import {
-  contactListQuery,
-  fraudEvaluationCreateMutation,
-  fraudEvaluationDeleteMutation,
-  searchUsersQuery,
+  useCreateFraudEvaluationMutation,
+  useDeleteFraudEvaluationMutation,
   useFraudEvaluationListQuery,
   useFraudPolicyListQuery,
 } from '@/resources/request/client';
-import type { FraudEvaluation } from '@/resources/types/fraud.types';
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
+import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import { Form } from '@datum-ui/form';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { useQuery } from '@tanstack/react-query';
+import type { ComMiloapisFraudV1Alpha1FraudEvaluation } from '@openapi/fraud.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { z } from 'zod';
+
+type FraudEvaluation = ComMiloapisFraudV1Alpha1FraudEvaluation;
 
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Fraud Evaluations`);
@@ -45,12 +47,10 @@ export default function Page() {
   const [showNewEval, setShowNewEval] = useState(false);
   const [selectedEval, setSelectedEval] = useState<FraudEvaluation | null>(null);
   const [userSearchQuery, setUserSearchQuery] = useState('');
+  const createEvaluationMutation = useCreateFraudEvaluationMutation();
+  const deleteEvaluationMutation = useDeleteFraudEvaluationMutation();
 
-  const contactsQuery = useQuery({
-    queryKey: ['fraud', 'contacts-all'],
-    queryFn: () => contactListQuery(),
-    staleTime: 5 * 60 * 1000,
-  });
+  const contactsQuery = useContactAllListQuery();
 
   const contactsByUser = useMemo(() => {
     const map = new Map<string, { email?: string; name?: string }>();
@@ -64,12 +64,7 @@ export default function Page() {
     return map;
   }, [contactsQuery.data]);
 
-  const { data: searchResults, isLoading: usersLoading } = useQuery({
-    queryKey: ['fraud', 'user-search', userSearchQuery],
-    queryFn: () => searchUsersQuery(userSearchQuery),
-    enabled: userSearchQuery.length >= 2,
-    staleTime: 30 * 1000,
-  });
+  const { data: searchResults, isLoading: usersLoading } = useSearchUsersQuery(userSearchQuery, 2);
 
   const userOptions = useMemo(() => {
     if (!searchResults) return [];
@@ -107,7 +102,7 @@ export default function Page() {
       cell: ({ row }) => {
         const name = row.original.metadata?.name ?? '';
         return (
-          <Link to={fraudRoutes.evaluationDetail(name)} className="text-primary hover:underline">
+          <Link to={fraudRoutes.evaluations.detail(name)} className="text-primary hover:underline">
             <DisplayId value={row.original.spec?.userRef?.name ?? ''} />
           </Link>
         );
@@ -119,8 +114,13 @@ export default function Page() {
       cell: ({ row }) => {
         const userId = row.original.spec?.userRef?.name;
         const email = userId ? contactsByUser.get(userId)?.email : undefined;
-        if (!email) return <span className="text-muted-foreground text-sm">-</span>;
-        return <span className="text-sm">{email}</span>;
+        if (!email)
+          return (
+            <Text size="sm" textColor="muted">
+              -
+            </Text>
+          );
+        return <Text size="sm">{email}</Text>;
       },
     }),
     columnHelper.accessor('status.phase', {
@@ -131,7 +131,12 @@ export default function Page() {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Score`} />,
       cell: ({ getValue, row }) => {
         const score = getValue();
-        if (!score) return <span className="text-muted-foreground text-sm">-</span>;
+        if (!score)
+          return (
+            <Text size="sm" textColor="muted">
+              -
+            </Text>
+          );
         const decision = row.original.status?.decision;
         const color =
           decision === 'DEACTIVATE'
@@ -139,15 +144,19 @@ export default function Page() {
             : decision === 'REVIEW'
               ? 'text-yellow-600 dark:text-yellow-400'
               : 'text-green-600 dark:text-green-400';
-        return <span className={`font-mono text-sm font-medium ${color}`}>{score}</span>;
+        return <Text className={`font-mono text-sm font-medium ${color}`}>{score}</Text>;
       },
     }),
     columnHelper.accessor('status.decision', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Decision`} />,
       cell: ({ getValue }) => {
         const decision = getValue();
-        if (!decision || decision === 'NONE')
-          return <span className="text-muted-foreground text-sm">None</span>;
+        if (!decision || decision === 'ACCEPTED')
+          return (
+            <Text size="sm" textColor="muted">
+              Accepted
+            </Text>
+          );
         return (
           <BadgeState state={decision === 'DEACTIVATE' ? 'error' : 'warning'} message={decision} />
         );
@@ -157,14 +166,13 @@ export default function Page() {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Enforcement`} />,
       cell: ({ getValue }) => {
         const action = getValue();
-        if (!action || action === 'NONE')
-          return <span className="text-muted-foreground text-sm">None</span>;
-        const stateMap: Record<string, string> = {
-          OBSERVED: 'info',
-          REVIEW_FLAGGED: 'warning',
-          DEACTIVATED: 'error',
-        };
-        return <BadgeState state={stateMap[action] ?? 'unknown'} message={action} />;
+        if (!action)
+          return (
+            <Text size="sm" textColor="muted">
+              None
+            </Text>
+          );
+        return <BadgeState state={action === 'OBSERVED' ? 'info' : 'active'} message={action} />;
       },
     }),
     columnHelper.accessor('status.lastEvaluationTime', {
@@ -205,7 +213,7 @@ export default function Page() {
         schema={newEvalSchema}
         defaultValues={{ user: '' }}
         onSubmit={async (data) => {
-          await fraudEvaluationCreateMutation({
+          await createEvaluationMutation.mutateAsync({
             apiVersion: 'fraud.miloapis.com/v1alpha1',
             kind: 'FraudEvaluation',
             metadata: {
@@ -216,18 +224,18 @@ export default function Page() {
               policyRef: { name: policyName ?? '' },
             },
           });
-          await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 1000));
           toast.success(t`Fraud evaluation started`);
         }}>
-        <Form.Autosearch
-          modal
-          field="user"
-          placeholder={t`Search by name or email...`}
-          options={userOptions}
-          isLoading={usersLoading}
-          onSearch={setUserSearch}
-          searchDebounceMs={500}
-        />
+        <Form.Field name="user">
+          <Form.Autosearch
+            modal
+            options={userOptions}
+            onSearch={setUserSearch}
+            loading={usersLoading}
+            placeholder={t`Search by name or email...`}
+            searchDebounceMs={500}
+          />
+        </Form.Field>
       </DialogForm>
 
       <DialogConfirm
@@ -239,8 +247,7 @@ export default function Page() {
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={async () => {
-          await fraudEvaluationDeleteMutation(selectedEval?.metadata?.name ?? '');
-          await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 1000));
+          await deleteEvaluationMutation.mutateAsync(selectedEval?.metadata?.name ?? '');
           setSelectedEval(null);
           toast.success(t`Evaluation deleted successfully`);
         }}
@@ -272,30 +279,39 @@ export default function Page() {
         }}>
         <Card className="m-4 py-4 shadow-none">
           <CardContent className="flex flex-col gap-2 px-4">
-            <div className="flex items-center gap-4">
-              <DataTable.Search placeholder={t`Search by email, name, or ID...`} className="w-64" />
-              <DataTable.SelectFilter
-                column="status.phase"
-                label={t`Phase`}
-                placeholder={t`Filter by phase`}
-                options={[
-                  { value: 'Completed', label: t`Completed` },
-                  { value: 'Running', label: t`Running` },
-                  { value: 'Pending', label: t`Pending` },
-                  { value: 'Error', label: t`Error` },
-                ]}
-              />
-              <DataTable.SelectFilter
-                column="status.decision"
-                label={t`Decision`}
-                placeholder={t`Filter by decision`}
-                options={[
-                  { value: 'NONE', label: t`None` },
-                  { value: 'REVIEW', label: t`Review` },
-                  { value: 'DEACTIVATE', label: t`Deactivate` },
-                ]}
-              />
-            </div>
+            <DataTableToolbar
+              search={
+                <DataTable.Search
+                  placeholder={t`Search by email, name, or ID...`}
+                  className="w-full md:w-64"
+                />
+              }
+              filters={
+                <>
+                  <DataTable.SelectFilter
+                    column="status.phase"
+                    label={t`Phase`}
+                    placeholder={t`Filter by phase`}
+                    options={[
+                      { value: 'Completed', label: t`Completed` },
+                      { value: 'Running', label: t`Running` },
+                      { value: 'Pending', label: t`Pending` },
+                      { value: 'Error', label: t`Error` },
+                    ]}
+                  />
+                  <DataTable.SelectFilter
+                    column="status.decision"
+                    label={t`Decision`}
+                    placeholder={t`Filter by decision`}
+                    options={[
+                      { value: 'ACCEPTED', label: t`Accepted` },
+                      { value: 'REVIEW', label: t`Review` },
+                      { value: 'DEACTIVATE', label: t`Deactivate` },
+                    ]}
+                  />
+                </>
+              }
+            />
 
             <DataTable.ActiveFilters
               excludeFilters={['search']}
