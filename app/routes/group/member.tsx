@@ -28,7 +28,7 @@ import {
 } from '@openapi/iam.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import z from 'zod';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
@@ -74,6 +74,11 @@ export default function Page() {
     }
     return map;
   }, [userListQueryResult.data]);
+
+  const userMapRef = useRef(userMap);
+  useEffect(() => {
+    userMapRef.current = userMap;
+  }, [userMap]);
 
   const [selectedGroupMembership, setSelectedGroupMembership] =
     useState<ComMiloapisIamV1Alpha1GroupMembership | null>(null);
@@ -202,10 +207,11 @@ export default function Page() {
         searchFn={(row, search) => {
           const q = search.trim().toLowerCase();
           if (!q) return true;
-          const name = (row.metadata?.name ?? '').toLowerCase();
-          const ns = (row.metadata?.namespace ?? '').toLowerCase();
-          const userRef = (row.spec?.userRef?.name ?? '').toLowerCase();
-          return name.includes(q) || ns.includes(q) || userRef.includes(q);
+          const userRefName = row.spec?.userRef?.name ?? '';
+          const user = userMapRef.current.get(userRefName);
+          const displayName = (user?.displayName ?? '').toLowerCase();
+          const email = (user?.email ?? '').toLowerCase();
+          return displayName.includes(q) || email.includes(q) || userRefName.toLowerCase().includes(q);
         }}>
         <Card className="m-4 py-4 shadow-none">
           <CardContent className="flex flex-col gap-2 px-4">
