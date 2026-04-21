@@ -1,8 +1,9 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../shared';
 import type { Route } from './+types/index';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
-import { orgProjectListQuery } from '@/resources/request/client';
+import { useOrgProjectListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
@@ -10,7 +11,6 @@ import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { ComMiloapisResourcemanagerV1Alpha1Project } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
-import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 
 export const handle = {
@@ -28,11 +28,7 @@ export default function Page() {
   const orgData = useOrganizationDetailData();
   const orgName = orgData.metadata?.name ?? '';
 
-  const tableQuery = useQuery({
-    queryKey: ['organizations', orgName, 'projects', 'list'],
-    queryFn: () => orgProjectListQuery(orgName),
-    enabled: !!orgName,
-  });
+  const tableQuery = useOrgProjectListQuery(orgName);
 
   const columns = [
     columnHelper.accessor('metadata.name', {
@@ -73,7 +69,11 @@ export default function Page() {
       }}>
       <Card className="m-4 py-4 shadow-none">
         <CardContent className="flex flex-col gap-2 px-4">
-          <DataTable.Search placeholder={t`Search projects...`} className="w-64" />
+          <DataTableToolbar
+            search={
+              <DataTable.Search placeholder={t`Search projects...`} className="w-full md:w-64" />
+            }
+          />
           <DataTable.Content
             headerClassName="bg-muted/50"
             className="border-t border-b border-solid"

@@ -4,8 +4,8 @@ import { z } from 'zod';
 
 // Activity-specific query parameters
 export const ActivityQueryParamsSchema = z.object({
-  start: z.number().optional(),
-  end: z.number().optional(),
+  start: z.union([z.number(), z.string()]).optional(),
+  end: z.union([z.number(), z.string()]).optional(),
   user: z.string().optional(),
   resourceType: z.string().optional(), // Resource type filter
   resourceId: z.string().optional(), // Resource ID filter

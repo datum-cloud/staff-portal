@@ -1,6 +1,6 @@
 import { DialogForm } from '@/components/dialog';
 import { useUserApproval } from '@/features/user';
-import { Form } from '@datum-ui/form';
+import { Form } from '@datum-cloud/datum-ui/form';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import z from 'zod';
@@ -37,12 +37,9 @@ export function UserRejectDialog({ open, onOpenChange, user, onSuccess }: UserRe
       }}
       schema={rejectSchema}
       defaultValues={{ reason: '' }}>
-      <Form.Input
-        field="reason"
-        label={t`Reason for rejection`}
-        placeholder={t`Enter reason for rejection...`}
-        required
-      />
+      <Form.Field name="reason" label={t`Reason for rejection`} required>
+        <Form.Input placeholder={t`Enter reason for rejection...`} />
+      </Form.Field>
     </DialogForm>
   );
 }

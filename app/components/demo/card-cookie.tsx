@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/modules/shadcn/ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
 import {
   Card,
   CardContent,
@@ -8,9 +8,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/modules/shadcn/ui/card';
-import { Label } from '@/modules/shadcn/ui/label';
-import { Switch } from '@/modules/shadcn/ui/switch';
+} from '@datum-cloud/datum-ui/card';
+import { Label } from '@datum-cloud/datum-ui/label';
+import { Switch } from '@datum-cloud/datum-ui/switch';
 
 export function CardsCookieSettings() {
   return (
@@ -40,7 +40,7 @@ export function CardsCookieSettings() {
         </div>
       </CardContent>
       <CardFooter>
-        <Button variant="outline" className="w-full">
+        <Button theme="outline" className="w-full">
           Save preferences
         </Button>
       </CardFooter>

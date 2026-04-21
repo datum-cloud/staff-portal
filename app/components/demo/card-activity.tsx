@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/modules/shadcn/ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
 import {
   Card,
   CardContent,
@@ -8,8 +8,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/modules/shadcn/ui/card';
-import { ChartConfig, ChartContainer } from '@/modules/shadcn/ui/chart';
+} from '@datum-cloud/datum-ui/card';
+import { ChartConfig, ChartContainer } from '@datum-cloud/datum-ui/chart';
 import { MinusIcon, PlusIcon } from 'lucide-react';
 import * as React from 'react';
 import { Bar, BarChart } from 'recharts';
@@ -79,7 +79,7 @@ export function CardsActivityGoal() {
       <CardContent className="flex flex-1 flex-col">
         <div className="flex items-center justify-center gap-4">
           <Button
-            variant="outline"
+            theme="outline"
             size="icon"
             className="size-7 rounded-full"
             onClick={() => onClick(-10)}
@@ -92,7 +92,7 @@ export function CardsActivityGoal() {
             <div className="text-muted-foreground text-xs uppercase">Calories/day</div>
           </div>
           <Button
-            variant="outline"
+            theme="outline"
             size="icon"
             className="size-7 rounded-full"
             onClick={() => onClick(10)}
@@ -110,7 +110,7 @@ export function CardsActivityGoal() {
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full" variant="secondary">
+        <Button className="w-full" type="secondary">
           Set Goal
         </Button>
       </CardFooter>

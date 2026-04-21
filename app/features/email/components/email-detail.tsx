@@ -5,10 +5,10 @@ import {
   getEmailCondition,
   normalizeBody,
 } from '@/features/email/email-utils';
-import { Card, CardContent } from '@/modules/shadcn/ui/card';
-import { Table, TableBody, TableCell, TableRow } from '@/modules/shadcn/ui/table';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/modules/shadcn/ui/tabs';
 import { startCase } from '@/utils/helpers';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { Table, TableBody, TableCell, TableRow } from '@datum-cloud/datum-ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@datum-cloud/datum-ui/tabs';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';

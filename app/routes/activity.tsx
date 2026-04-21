@@ -1,3 +1,4 @@
+import { activityRoutes } from '@/utils/config/routes.config';
 import { redirect } from 'react-router';
 
 /**
@@ -5,7 +6,7 @@ import { redirect } from 'react-router';
  * Legacy route preserved for backwards compatibility
  */
 export function loader() {
-  return redirect('/activity/feed');
+  return redirect(activityRoutes.feed());
 }
 
 export default function ActivityRedirect() {

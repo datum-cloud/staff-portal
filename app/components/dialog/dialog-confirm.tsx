@@ -1,14 +1,7 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/modules/shadcn/ui/dialog';
-import { Input } from '@/modules/shadcn/ui/input';
 import { logger } from '@/utils/logger';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Dialog } from '@datum-cloud/datum-ui/dialog';
+import { Input } from '@datum-cloud/datum-ui/input';
 import { Trans } from '@lingui/react/macro';
 import { useState } from 'react';
 
@@ -88,29 +81,28 @@ export default function DialogConfirm({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md" showCloseButton={false}>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
-        </DialogHeader>
+      <Dialog.Content className="sm:max-w-md">
+        <Dialog.Header title={title} description={description} />
 
-        {requireConfirmation && (
-          <div className="flex flex-col gap-2">
-            <label htmlFor="confirmation-input" className="text-sm font-medium">
-              <Trans>
-                Enter the word <strong>{confirmationText}</strong> to perform this action.
-              </Trans>
-            </label>
-            <Input
-              id="confirmation-input"
-              value={confirmationInput}
-              onChange={(e) => setConfirmationInput(e.target.value)}
-              disabled={isLoading}
-            />
-          </div>
-        )}
+        <Dialog.Body className="px-5">
+          {requireConfirmation && (
+            <div className="flex flex-col gap-2">
+              <label htmlFor="confirmation-input" className="text-sm font-medium">
+                <Trans>
+                  Enter the word <strong>{confirmationText}</strong> to perform this action.
+                </Trans>
+              </label>
+              <Input
+                id="confirmation-input"
+                value={confirmationInput}
+                onChange={(e) => setConfirmationInput(e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
+          )}
+        </Dialog.Body>
 
-        <DialogFooter className="gap-2">
+        <Dialog.Footer className="gap-2">
           <Button
             type="tertiary"
             theme="borderless"
@@ -128,8 +120,8 @@ export default function DialogConfirm({
             className="flex-1 sm:flex-none">
             <span>{confirmText}</span>
           </Button>
-        </DialogFooter>
-      </DialogContent>
+        </Dialog.Footer>
+      </Dialog.Content>
     </Dialog>
   );
 }
