@@ -67,8 +67,24 @@ function RawResponseDialog({
   );
 }
 
+type RiskScoreReason = { multiplier: number; reasons: { code: string; reason: string }[] };
+
+function parseRiskScoreReasons(raw: string): RiskScoreReason[] {
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed?.risk_score_reasons) ? parsed.risk_score_reasons : [];
+  } catch {
+    return [];
+  }
+}
+
 function ProviderResultRow({ result }: { result: ProviderResult }) {
   const [rawOpen, setRawOpen] = useState(false);
+
+  const riskReasons =
+    result.provider === 'maxmind' && result.rawResponse
+      ? parseRiskScoreReasons(result.rawResponse)
+      : [];
 
   return (
     <>
@@ -80,30 +96,48 @@ function ProviderResultRow({ result }: { result: ProviderResult }) {
           raw={result.rawResponse}
         />
       )}
-      <div className="border-border flex items-center justify-between border-b py-2 last:border-0">
-        <div className="flex items-center gap-3">
-          <Text size="sm" weight="medium">
-            {result.provider}
-          </Text>
-          {result.failurePolicyApplied && (
-            <BadgeState state="warning" message={result.failurePolicyApplied} />
-          )}
-          {result.error && <BadgeState state="error" message={t`Error`} tooltip={result.error} />}
+      <div className="border-border border-b py-2 last:border-0">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Text size="sm" weight="medium">
+              {result.provider}
+            </Text>
+            {result.failurePolicyApplied && (
+              <BadgeState state="warning" message={result.failurePolicyApplied} />
+            )}
+            {result.error && (
+              <BadgeState state="error" message={t`Error`} tooltip={result.error} />
+            )}
+          </div>
+          <div className="flex items-center gap-4">
+            {result.duration && (
+              <span className="text-muted-foreground flex items-center gap-1 text-xs">
+                <Clock className="h-3 w-3" />
+                {result.duration}
+              </span>
+            )}
+            <Text className="font-mono text-sm font-medium">{result.score}</Text>
+            {result.rawResponse && (
+              <Button size="small" theme="outline" onClick={() => setRawOpen(true)}>
+                <Trans>View Raw Results</Trans>
+              </Button>
+            )}
+          </div>
         </div>
-        <div className="flex items-center gap-4">
-          {result.duration && (
-            <span className="text-muted-foreground flex items-center gap-1 text-xs">
-              <Clock className="h-3 w-3" />
-              {result.duration}
-            </span>
-          )}
-          <Text className="font-mono text-sm font-medium">{result.score}</Text>
-          {result.rawResponse && (
-            <Button size="small" theme="outline" onClick={() => setRawOpen(true)}>
-              <Trans>View Raw Results</Trans>
-            </Button>
-          )}
-        </div>
+        {riskReasons.length > 0 && (
+          <ul className="mt-2 space-y-1 pl-1">
+            {riskReasons.map((r, i) =>
+              r.reasons.map((reason, j) => (
+                <li key={`${i}-${j}`} className="text-muted-foreground flex items-start gap-2 text-xs">
+                  <span className="text-foreground mt-0.5 font-mono font-medium shrink-0">
+                    {r.multiplier}x
+                  </span>
+                  <span>{reason.reason}</span>
+                </li>
+              ))
+            )}
+          </ul>
+        )}
       </div>
     </>
   );
