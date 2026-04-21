@@ -11,13 +11,12 @@ import { Trans } from '@lingui/react/macro';
 import { ArrowLeft, Clock, History, Layers, Mail, User } from 'lucide-react';
 import { Link } from 'react-router';
 
-function ScoreDisplay({ score }: { score?: string }) {
+function ScoreDisplay({ score, decision }: { score?: string; decision?: string }) {
   if (!score) return <Text textColor="muted">-</Text>;
-  const numScore = parseFloat(score);
   const color =
-    numScore >= 70
+    decision === 'DEACTIVATE'
       ? 'text-red-600 dark:text-red-400'
-      : numScore >= 30
+      : decision === 'REVIEW'
         ? 'text-yellow-600 dark:text-yellow-400'
         : 'text-green-600 dark:text-green-400';
   return (
@@ -251,7 +250,7 @@ export function EvaluationOverview({
             <Text size="xs" textColor="muted" className="mb-1 font-medium tracking-wide uppercase">
               <Trans>Score</Trans>
             </Text>
-            <ScoreDisplay score={evaluation.status?.compositeScore} />
+            <ScoreDisplay score={evaluation.status?.compositeScore} decision={evaluation.status?.decision} />
           </Col>
           <Col span={12} sm={8} lg={4}>
             <Text size="xs" textColor="muted" className="mb-1 font-medium tracking-wide uppercase">

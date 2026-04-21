@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:152
+#: app/features/fraud/detail/evaluation-sections.tsx:151
 msgid "(current)"
 msgstr ""
 
@@ -92,7 +92,7 @@ msgstr ""
 msgid "Account Identities"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:267
+#: app/routes/user/detail/index.tsx:349
 msgid "Account Management"
 msgstr ""
 
@@ -189,7 +189,7 @@ msgstr ""
 msgid "All evaluations are clear"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:136
+#: app/features/fraud/detail/evaluation-sections.tsx:135
 msgid "All Evaluations for this User"
 msgstr ""
 
@@ -219,7 +219,7 @@ msgid "API Group"
 msgstr ""
 
 #: app/routes/user/index.tsx:53
-#: app/routes/user/detail/index.tsx:184
+#: app/routes/user/detail/index.tsx:197
 msgid "Approve"
 msgstr ""
 
@@ -299,7 +299,7 @@ msgstr ""
 
 #. placeholder {0}: data.spec?.givenName ?? ''
 #. placeholder {1}: data.spec?.familyName ?? ''
-#: app/routes/user/detail/index.tsx:363
+#: app/routes/user/detail/index.tsx:445
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr ""
 
@@ -324,12 +324,12 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:191
+#: app/features/fraud/detail/evaluation-sections.tsx:190
 msgid "Back to evaluations"
 msgstr ""
 
 #: app/routes/user/index.tsx:173
-#: app/routes/user/detail/index.tsx:131
+#: app/routes/user/detail/index.tsx:144
 #: app/routes/profile/session.tsx:106
 #: app/routes/organization/detail/member.tsx:85
 #: app/routes/group/member.tsx:151
@@ -393,7 +393,7 @@ msgid "Configuration"
 msgstr ""
 
 #: app/routes/contact-group/detail/member.tsx:68
-#: app/features/fraud/detail/evaluation-sections.tsx:233
+#: app/features/fraud/detail/evaluation-sections.tsx:232
 msgid "Contact"
 msgstr ""
 
@@ -514,7 +514,7 @@ msgid "Create Policy"
 msgstr ""
 
 #: app/routes/user/index.tsx:121
-#: app/routes/user/detail/index.tsx:251
+#: app/routes/user/detail/index.tsx:264
 #: app/routes/project/index.tsx:49
 #: app/routes/project/detail/index.tsx:57
 #: app/routes/project/detail/export-policy/index.tsx:53
@@ -529,7 +529,7 @@ msgstr ""
 #: app/routes/organization/detail/project.tsx:50
 #: app/routes/organization/detail/index.tsx:54
 #: app/routes/group/member.tsx:116
-#: app/routes/group/index.tsx:35
+#: app/routes/group/index.tsx:41
 #: app/routes/fraud/providers/index.tsx:102
 #: app/routes/contact-group/index.tsx:89
 #: app/features/quota/components/quota-grant-list.tsx:114
@@ -567,8 +567,8 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:130
-#: app/routes/user/detail/index.tsx:351
+#: app/routes/user/detail/index.tsx:143
+#: app/routes/user/detail/index.tsx:433
 #: app/routes/fraud/index.tsx:309
 msgid "Deactivate"
 msgstr ""
@@ -577,31 +577,32 @@ msgstr ""
 msgid "Deactivate Threshold"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:128
-#: app/routes/user/detail/index.tsx:342
+#: app/routes/user/detail/index.tsx:141
+#: app/routes/user/detail/index.tsx:424
 msgid "Deactivate User"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:315
+#: app/routes/user/detail/index.tsx:397
 msgid "Deactivated At"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:307
+#: app/routes/user/detail/index.tsx:389
 msgid "Deactivated By"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:299
+#: app/routes/user/detail/index.tsx:381
 msgid "Deactivation Details"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:329
+#: app/routes/user/detail/index.tsx:411
 msgid "Deactivation Reason"
 msgstr ""
 
+#: app/routes/user/detail/index.tsx:305
 #: app/routes/fraud/index.tsx:151
 #: app/routes/fraud/index.tsx:304
 #: app/routes/fraud/index.tsx:320
-#: app/features/fraud/detail/evaluation-sections.tsx:264
+#: app/features/fraud/detail/evaluation-sections.tsx:263
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:150
 msgid "Decision"
 msgstr ""
@@ -710,8 +711,8 @@ msgstr ""
 msgid "Delete Session"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:360
-#: app/routes/user/detail/index.tsx:362
+#: app/routes/user/detail/index.tsx:442
+#: app/routes/user/detail/index.tsx:444
 msgid "Delete User"
 msgstr ""
 
@@ -815,7 +816,7 @@ msgid "Edit Quota"
 msgstr ""
 
 #: app/routes/user/index.tsx:211
-#: app/routes/user/detail/index.tsx:239
+#: app/routes/user/detail/index.tsx:252
 #: app/routes/fraud/index.tsx:113
 #: app/routes/contact-group/detail/member.tsx:203
 #: app/features/dashboard/components/pending-approvals-widget.tsx:131
@@ -857,7 +858,7 @@ msgid "Endpoint"
 msgstr ""
 
 #: app/routes/fraud/index.tsx:166
-#: app/features/fraud/detail/evaluation-sections.tsx:279
+#: app/features/fraud/detail/evaluation-sections.tsx:278
 msgid "Enforcement"
 msgstr ""
 
@@ -874,7 +875,7 @@ msgstr ""
 msgid "Enter note content..."
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:136
+#: app/routes/user/detail/index.tsx:149
 msgid "Enter reason for deactivation..."
 msgstr ""
 
@@ -893,12 +894,12 @@ msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr ""
 
 #: app/routes/fraud/index.tsx:299
-#: app/features/fraud/detail/evaluation-sections.tsx:40
+#: app/features/fraud/detail/evaluation-sections.tsx:39
 msgid "Error"
 msgstr ""
 
 #: app/routes/fraud/index.tsx:180
-#: app/features/fraud/detail/evaluation-sections.tsx:294
+#: app/features/fraud/detail/evaluation-sections.tsx:293
 msgid "Evaluated"
 msgstr ""
 
@@ -906,7 +907,7 @@ msgstr ""
 msgid "Evaluation deleted successfully"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:88
+#: app/features/fraud/detail/evaluation-sections.tsx:87
 msgid "Evaluation History"
 msgstr ""
 
@@ -914,7 +915,7 @@ msgstr ""
 msgid "Evaluation not found."
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:209
+#: app/features/fraud/detail/evaluation-sections.tsx:208
 msgid "Evaluation Overview"
 msgstr ""
 
@@ -1041,6 +1042,10 @@ msgstr ""
 msgid "Fraud Alerts"
 msgstr ""
 
+#: app/routes/user/detail/index.tsx:280
+msgid "Fraud Assessment"
+msgstr ""
+
 #: app/routes/fraud/detail/index.tsx:22
 msgid "Fraud Evaluation Detail"
 msgstr ""
@@ -1062,7 +1067,7 @@ msgstr ""
 msgid "Fraud Providers"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:231
+#: app/routes/user/detail/index.tsx:244
 msgid "Full Name"
 msgstr ""
 
@@ -1142,7 +1147,7 @@ msgid "HTML"
 msgstr ""
 
 #: app/routes/user/index.tsx:103
-#: app/routes/user/detail/index.tsx:222
+#: app/routes/user/detail/index.tsx:235
 msgid "ID"
 msgstr ""
 
@@ -1190,6 +1195,10 @@ msgstr ""
 msgid "Last 10 new users who joined Datum"
 msgstr ""
 
+#: app/routes/user/detail/index.tsx:320
+msgid "Last Evaluated"
+msgstr ""
+
 #: app/routes/contact-group/detail/member.tsx:99
 msgid "Last name"
 msgstr ""
@@ -1204,6 +1213,10 @@ msgstr ""
 #: app/features/profile/components/profile-form.tsx:16
 #: app/features/contact/components/contact-form.tsx:43
 msgid "Last name is required"
+msgstr ""
+
+#: app/routes/user/detail/index.tsx:283
+msgid "Latest fraud evaluation for this user"
 msgstr ""
 
 #: app/routes/fraud/providers/detail.tsx:153
@@ -1245,6 +1258,7 @@ msgstr ""
 msgid "Loading status..."
 msgstr ""
 
+#: app/routes/user/detail/index.tsx:289
 #: app/routes/auth/logout.tsx:36
 #: app/routes/auth/login.tsx:41
 #: app/routes/auth/callback.tsx:71
@@ -1297,7 +1311,7 @@ msgstr ""
 msgid "Manage projects"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:270
+#: app/routes/user/detail/index.tsx:352
 msgid "Manage user access and account status"
 msgstr ""
 
@@ -1344,7 +1358,7 @@ msgid "More options"
 msgstr ""
 
 #: app/routes/user/index.tsx:75
-#: app/routes/user/detail/index.tsx:210
+#: app/routes/user/detail/index.tsx:223
 msgid "Move to Pending"
 msgstr ""
 
@@ -1456,6 +1470,10 @@ msgstr ""
 msgid "No fraud alerts"
 msgstr ""
 
+#: app/routes/user/detail/index.tsx:339
+msgid "No fraud evaluations found for this user."
+msgstr ""
+
 #: app/routes/fraud/index.tsx:327
 msgid "No fraud evaluations found."
 msgstr ""
@@ -1472,7 +1490,7 @@ msgstr ""
 msgid "No grants found."
 msgstr ""
 
-#: app/routes/group/index.tsx:68
+#: app/routes/group/index.tsx:74
 #: app/routes/contact/detail/group.tsx:219
 msgid "No groups found."
 msgstr ""
@@ -1524,8 +1542,8 @@ msgstr ""
 msgid "No users yet"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:273
-#: app/features/fraud/detail/evaluation-sections.tsx:288
+#: app/features/fraud/detail/evaluation-sections.tsx:272
+#: app/features/fraud/detail/evaluation-sections.tsx:287
 msgid "None"
 msgstr ""
 
@@ -1625,7 +1643,7 @@ msgstr ""
 msgid "Permanently delete this project and all associated data"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:361
+#: app/routes/user/detail/index.tsx:443
 msgid "Permanently delete this user and all associated data"
 msgstr ""
 
@@ -1637,7 +1655,7 @@ msgstr ""
 #: app/routes/fraud/index.tsx:127
 #: app/routes/fraud/index.tsx:293
 #: app/routes/fraud/index.tsx:319
-#: app/features/fraud/detail/evaluation-sections.tsx:258
+#: app/features/fraud/detail/evaluation-sections.tsx:257
 msgid "Phase"
 msgstr ""
 
@@ -1655,7 +1673,7 @@ msgstr ""
 
 #. placeholder {0}: data.spec?.givenName ?? ''
 #. placeholder {1}: data.spec?.familyName ?? ''
-#: app/routes/user/detail/index.tsx:129
+#: app/routes/user/detail/index.tsx:142
 msgid "Please provide a reason for deactivating \"{0} {1}\"."
 msgstr ""
 
@@ -1802,19 +1820,19 @@ msgstr ""
 msgid "Quotas"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:281
+#: app/routes/user/detail/index.tsx:363
 msgid "Re-enable this user's access to the system. They will be able to sign in immediately."
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:292
+#: app/routes/user/detail/index.tsx:374
 msgid "Reactivate"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:279
+#: app/routes/user/detail/index.tsx:361
 msgid "Reactivate User"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:135
+#: app/routes/user/detail/index.tsx:148
 msgid "Reason for deactivation"
 msgstr ""
 
@@ -1839,12 +1857,12 @@ msgstr ""
 #: app/routes/user/index.tsx:115
 #: app/routes/user/index.tsx:274
 #: app/routes/user/index.tsx:288
-#: app/routes/user/detail/index.tsx:243
+#: app/routes/user/detail/index.tsx:256
 msgid "Registration Approval"
 msgstr ""
 
 #: app/routes/user/index.tsx:68
-#: app/routes/user/detail/index.tsx:191
+#: app/routes/user/detail/index.tsx:204
 #: app/features/user/components/user-reject-dialog.tsx:29
 msgid "Reject"
 msgstr ""
@@ -1936,8 +1954,9 @@ msgstr ""
 msgid "Schedule invitation to be sent at specific time"
 msgstr ""
 
+#: app/routes/user/detail/index.tsx:296
 #: app/routes/fraud/index.tsx:131
-#: app/features/fraud/detail/evaluation-sections.tsx:252
+#: app/features/fraud/detail/evaluation-sections.tsx:251
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:145
 msgid "Score"
 msgstr ""
@@ -1994,7 +2013,7 @@ msgstr ""
 msgid "Search grants..."
 msgstr ""
 
-#: app/routes/group/index.tsx:61
+#: app/routes/group/index.tsx:67
 #: app/routes/contact/detail/group.tsx:182
 #: app/routes/contact/detail/group.tsx:213
 msgid "Search groups..."
@@ -2107,7 +2126,7 @@ msgstr ""
 msgid "Sinks"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:66
+#: app/features/fraud/detail/evaluation-sections.tsx:65
 msgid "Skipped"
 msgstr ""
 
@@ -2128,7 +2147,7 @@ msgstr ""
 msgid "Stage Name"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:311
+#: app/features/fraud/detail/evaluation-sections.tsx:310
 msgid "Stage Results"
 msgstr ""
 
@@ -2146,7 +2165,7 @@ msgid "Start Time"
 msgstr ""
 
 #: app/routes/user/index.tsx:109
-#: app/routes/user/detail/index.tsx:247
+#: app/routes/user/detail/index.tsx:260
 #: app/routes/project/detail/export-policy/index.tsx:46
 #: app/routes/project/detail/export-policy/detail.tsx:75
 #: app/routes/project/detail/export-policy/detail.tsx:170
@@ -2194,7 +2213,7 @@ msgstr ""
 msgid "Template"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:344
+#: app/routes/user/detail/index.tsx:426
 msgid "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 msgstr ""
 
@@ -2280,7 +2299,7 @@ msgstr ""
 
 #: app/routes/fraud/index.tsx:101
 #: app/routes/contact-group/detail/member.tsx:108
-#: app/features/fraud/detail/evaluation-sections.tsx:216
+#: app/features/fraud/detail/evaluation-sections.tsx:215
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:140
 #: app/features/activity/components/activity-list.tsx:117
 #: app/features/activity/components/activity-list.tsx:392
@@ -2292,11 +2311,11 @@ msgstr ""
 msgid "User approved successfully"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:105
+#: app/routes/user/detail/index.tsx:118
 msgid "User deactivated successfully"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:91
+#: app/routes/user/detail/index.tsx:104
 msgid "User deleted successfully"
 msgstr ""
 
@@ -2320,7 +2339,7 @@ msgstr ""
 msgid "User moved to pending successfully"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:116
+#: app/routes/user/detail/index.tsx:129
 msgid "User reactivated successfully"
 msgstr ""
 
@@ -2378,12 +2397,16 @@ msgstr ""
 msgid "View contact groups"
 msgstr ""
 
+#: app/routes/user/detail/index.tsx:334
+msgid "View Evaluation"
+msgstr ""
+
 #: app/routes/project/detail/layout.tsx:183
 #: app/routes/organization/detail/layout.tsx:103
 msgid "View in Cloud Portal"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:164
+#: app/routes/user/detail/index.tsx:177
 msgid "View in Sentry"
 msgstr ""
 

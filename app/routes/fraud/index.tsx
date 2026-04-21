@@ -129,7 +129,7 @@ export default function Page() {
     }),
     columnHelper.accessor('status.compositeScore', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Score`} />,
-      cell: ({ getValue }) => {
+      cell: ({ getValue, row }) => {
         const score = getValue();
         if (!score)
           return (
@@ -137,11 +137,11 @@ export default function Page() {
               -
             </Text>
           );
-        const numScore = parseFloat(score);
+        const decision = row.original.status?.decision;
         const color =
-          numScore >= 70
+          decision === 'DEACTIVATE'
             ? 'text-red-600 dark:text-red-400'
-            : numScore >= 30
+            : decision === 'REVIEW'
               ? 'text-yellow-600 dark:text-yellow-400'
               : 'text-green-600 dark:text-green-400';
         return <Text className={`font-mono text-sm font-medium ${color}`}>{score}</Text>;
