@@ -3,12 +3,15 @@ import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DisplayId } from '@/components/display';
 import { fraudRoutes, userRoutes } from '@/utils/config/routes.config';
+import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
+import { Dialog } from '@datum-cloud/datum-ui/dialog';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { ArrowLeft, Clock, History, Layers, Mail, User } from 'lucide-react';
+import { useState } from 'react';
 import { Link } from 'react-router';
 
 function ScoreDisplay({ score, decision }: { score?: string; decision?: string }) {
@@ -26,28 +29,83 @@ function ScoreDisplay({ score, decision }: { score?: string; decision?: string }
   );
 }
 
-function ProviderResultRow({ result }: { result: ProviderResult }) {
+function RawResponseDialog({
+  open,
+  onOpenChange,
+  provider,
+  raw,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  provider: string;
+  raw: string;
+}) {
+  let formatted = raw;
+  try {
+    formatted = JSON.stringify(JSON.parse(raw), null, 2);
+  } catch {
+    // leave as-is if not valid JSON
+  }
+
   return (
-    <div className="border-border flex items-center justify-between border-b py-2 last:border-0">
-      <div className="flex items-center gap-3">
-        <Text size="sm" weight="medium">
-          {result.provider}
-        </Text>
-        {result.failurePolicyApplied && (
-          <BadgeState state="warning" message={result.failurePolicyApplied} />
-        )}
-        {result.error && <BadgeState state="error" message={t`Error`} tooltip={result.error} />}
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog.Content className="sm:max-w-2xl">
+        <Dialog.Header
+          title={t`Raw Results — ${provider}`}
+          description={t`Full response from the provider`}
+        />
+        <Dialog.Body className="px-5">
+          <pre className="bg-muted overflow-auto rounded-md p-4 text-xs">{formatted}</pre>
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Button type="tertiary" theme="borderless" onClick={() => onOpenChange(false)}>
+            <Trans>Close</Trans>
+          </Button>
+        </Dialog.Footer>
+      </Dialog.Content>
+    </Dialog>
+  );
+}
+
+function ProviderResultRow({ result }: { result: ProviderResult }) {
+  const [rawOpen, setRawOpen] = useState(false);
+
+  return (
+    <>
+      {result.rawResponse && (
+        <RawResponseDialog
+          open={rawOpen}
+          onOpenChange={setRawOpen}
+          provider={result.provider}
+          raw={result.rawResponse}
+        />
+      )}
+      <div className="border-border flex items-center justify-between border-b py-2 last:border-0">
+        <div className="flex items-center gap-3">
+          <Text size="sm" weight="medium">
+            {result.provider}
+          </Text>
+          {result.failurePolicyApplied && (
+            <BadgeState state="warning" message={result.failurePolicyApplied} />
+          )}
+          {result.error && <BadgeState state="error" message={t`Error`} tooltip={result.error} />}
+        </div>
+        <div className="flex items-center gap-4">
+          {result.duration && (
+            <span className="text-muted-foreground flex items-center gap-1 text-xs">
+              <Clock className="h-3 w-3" />
+              {result.duration}
+            </span>
+          )}
+          <Text className="font-mono text-sm font-medium">{result.score}</Text>
+          {result.rawResponse && (
+            <Button size="small" theme="outline" onClick={() => setRawOpen(true)}>
+              <Trans>View Raw Results</Trans>
+            </Button>
+          )}
+        </div>
       </div>
-      <div className="flex items-center gap-4">
-        {result.duration && (
-          <span className="text-muted-foreground flex items-center gap-1 text-xs">
-            <Clock className="h-3 w-3" />
-            {result.duration}
-          </span>
-        )}
-        <Text className="font-mono text-sm font-medium">{result.score}</Text>
-      </div>
-    </div>
+    </>
   );
 }
 
@@ -250,7 +308,10 @@ export function EvaluationOverview({
             <Text size="xs" textColor="muted" className="mb-1 font-medium tracking-wide uppercase">
               <Trans>Score</Trans>
             </Text>
-            <ScoreDisplay score={evaluation.status?.compositeScore} decision={evaluation.status?.decision} />
+            <ScoreDisplay
+              score={evaluation.status?.compositeScore}
+              decision={evaluation.status?.decision}
+            />
           </Col>
           <Col span={12} sm={8} lg={4}>
             <Text size="xs" textColor="muted" className="mb-1 font-medium tracking-wide uppercase">
