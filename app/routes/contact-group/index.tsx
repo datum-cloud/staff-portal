@@ -1,10 +1,16 @@
 import type { Route } from './+types/index';
 import AppActionBar from '@/components/app-actiobar';
 import { BadgeCondition, BadgeState } from '@/components/badge';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
-import { contactGroupDeleteMutation, contactGroupListQuery } from '@/resources/request/client';
+import {
+  contactGroupDeleteMutation,
+  contactGroupQueryKeys,
+  useContactGroupListQuery,
+  useDeleteContactGroupMutation,
+} from '@/resources/request/client';
 import { contactGroupRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -15,7 +21,7 @@ import { toast } from '@datum-cloud/datum-ui/toast';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { ComMiloapisNotificationV1Alpha1ContactGroup } from '@openapi/notification.miloapis.com/v1alpha1';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { EditIcon, PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
@@ -37,10 +43,8 @@ export default function Page() {
     ComMiloapisNotificationV1Alpha1ContactGroup[] | null
   >(null);
 
-  const tableQuery = useQuery({
-    queryKey: ['contact-groups', 'list'],
-    queryFn: () => contactGroupListQuery(),
-  });
+  const tableQuery = useContactGroupListQuery();
+  const deleteContactGroupMutation = useDeleteContactGroupMutation();
 
   const actions: ActionItem<ComMiloapisNotificationV1Alpha1ContactGroup>[] = [
     {
@@ -118,8 +122,7 @@ export default function Page() {
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={async () => {
-          await contactGroupDeleteMutation(selectedContactGroup?.metadata);
-          await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 1000));
+          await deleteContactGroupMutation.mutateAsync(selectedContactGroup?.metadata);
           setSelectedContactGroup(null);
           toast.success(t`Contact Group deleted successfully`);
         }}
@@ -154,7 +157,7 @@ export default function Page() {
               await contactGroupDeleteMutation(row.metadata);
             },
             onComplete: () => {
-              queryClient.invalidateQueries({ queryKey: ['contact-groups'] });
+              queryClient.invalidateQueries({ queryKey: contactGroupQueryKeys.all });
             },
             completionActions: (_result, { failed, items: summaryItems }) => [
               ...(failed > 0
@@ -209,26 +212,33 @@ export default function Page() {
         }}>
         <Card className="m-4 py-4 shadow-none">
           <CardContent className="flex flex-col gap-2 px-4">
-            <div className="flex flex-wrap items-center gap-2">
-              <DataTable.Search placeholder={t`Search contact groups...`} className="w-64" />
-              <DataTable.BulkActions>
-                {(selectedRows) =>
-                  selectedRows.length > 0 ? (
-                    <Button
-                      type="danger"
-                      theme="outline"
-                      icon={<Trash2Icon size={16} />}
-                      onClick={() =>
-                        setBulkDeleteRows(
-                          selectedRows as ComMiloapisNotificationV1Alpha1ContactGroup[]
-                        )
-                      }>
-                      <Trans>Delete {selectedRows.length} selected</Trans>
-                    </Button>
-                  ) : null
-                }
-              </DataTable.BulkActions>
-            </div>
+            <DataTableToolbar
+              search={
+                <DataTable.Search
+                  placeholder={t`Search contact groups...`}
+                  className="w-full md:w-64"
+                />
+              }
+              extras={
+                <DataTable.BulkActions>
+                  {(selectedRows) =>
+                    selectedRows.length > 0 ? (
+                      <Button
+                        type="danger"
+                        theme="outline"
+                        icon={<Trash2Icon size={16} />}
+                        onClick={() =>
+                          setBulkDeleteRows(
+                            selectedRows as ComMiloapisNotificationV1Alpha1ContactGroup[]
+                          )
+                        }>
+                        <Trans>Delete {selectedRows.length} selected</Trans>
+                      </Button>
+                    ) : null
+                  }
+                </DataTable.BulkActions>
+              }
+            />
             <DataTable.Content
               headerClassName="bg-muted/50"
               className="border-t border-b border-solid"

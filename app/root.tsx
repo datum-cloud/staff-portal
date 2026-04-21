@@ -12,6 +12,7 @@ import { useNonce } from '@/providers/nonce.provider';
 import styles from '@/styles/root.css?url';
 import { env } from '@/utils/config/env.server';
 import { localeCookie } from '@/utils/cookies';
+import { RHFAdapter } from '@datum-cloud/datum-ui/form/adapters/rhf';
 import { configureProgress, startProgress, stopProgress } from '@datum-cloud/datum-ui/nprogress';
 import { ThemeProvider, ThemeScript, useTheme } from '@datum-cloud/datum-ui/theme';
 import { Toaster } from '@datum-cloud/datum-ui/toast';
@@ -50,6 +51,9 @@ export async function loader({ request }: Route.LoaderArgs) {
         SENTRY_UI_URL: env.sentryUiUrl,
         VERSION: env.VERSION,
         AUTH_OIDC_ISSUER: env.AUTH_OIDC_ISSUER,
+        CLOUD_PORTAL_URL: env.CLOUD_PORTAL_URL,
+        CHATBOT_ENABLED: env.chatbotEnabled,
+        MCP_ENABLED: !!(env.mcpUrl && env.mcpApiKey),
       } satisfies PublicEnv,
     },
     { headers: { 'Set-Cookie': cookie } }
@@ -81,7 +85,7 @@ function App() {
         <Meta />
         <Links />
       </head>
-      <body className="bg-background theme-alpha overscroll-none font-sans antialiased">
+      <body className="bg-background overscroll-none font-sans antialiased">
         <Outlet />
 
         <Toaster
@@ -137,9 +141,11 @@ export default function AppWithProviders() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <NuqsAdapter>
-        <App />
-      </NuqsAdapter>
+      <RHFAdapter>
+        <NuqsAdapter>
+          <App />
+        </NuqsAdapter>
+      </RHFAdapter>
     </QueryClientProvider>
   );
 }
@@ -157,7 +163,7 @@ function ErrorLayout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="bg-background theme-alpha overscroll-none font-sans antialiased">
+      <body className="bg-background overscroll-none font-sans antialiased">
         <div className="flex min-h-screen items-center justify-center">{children}</div>
 
         <ScrollRestoration nonce={nonce} />

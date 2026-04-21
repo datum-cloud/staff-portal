@@ -1,0 +1,17 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: BackendTrafficPolicy
+metadata:
+  name: staff-portal
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: staff-portal
+  tcpKeepalive:
+    idleTime: 60s
+    interval: 15s
+    probes: 3
+  timeout:
+    http:
+      requestTimeout: '0s'
+      connectionIdleTimeout: 300s

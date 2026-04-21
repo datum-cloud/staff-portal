@@ -1,15 +1,17 @@
 import type { Route } from './+types/member';
 import { getGroupDetailMetadata, useGroupDetailData } from './shared';
 import AppActionBar from '@/components/app-actiobar';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
 import { useUserSearch } from '@/hooks';
 import { authenticator } from '@/modules/auth';
 import {
-  groupMembershipCreateMutation,
-  groupMembershipDeleteMutation,
+  useCreateGroupMembershipMutation,
+  useDeleteGroupMembershipMutation,
   useGroupMembershipListQuery,
+  useUserListQuery,
 } from '@/resources/request/client';
 import { groupDetailQuery } from '@/resources/request/server';
 import { userRoutes } from '@/utils/config/routes.config';
@@ -17,8 +19,8 @@ import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
+import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import { Form } from '@datum-ui/form';
 import { Trans, useLingui } from '@lingui/react/macro';
 import {
   ComMiloapisIamV1Alpha1Group,
@@ -26,7 +28,7 @@ import {
 } from '@openapi/iam.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import z from 'zod';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
@@ -54,6 +56,23 @@ export default function Page() {
   const group = useGroupDetailData();
   const groupName = group.metadata?.name ?? '';
   const tableQuery = useGroupMembershipListQuery(groupName);
+  const userListQueryResult = useUserListQuery({ limit: 500 });
+  const createMembershipMutation = useCreateGroupMembershipMutation();
+  const deleteMembershipMutation = useDeleteGroupMembershipMutation();
+
+  const userMap = useMemo(() => {
+    const map = new Map<string, { displayName: string; email: string }>();
+    for (const user of userListQueryResult.data?.items ?? []) {
+      const name = user.metadata?.name ?? '';
+      if (name) {
+        map.set(name, {
+          displayName: `${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''}`.trim() || name,
+          email: user.spec?.email ?? '',
+        });
+      }
+    }
+    return map;
+  }, [userListQueryResult.data]);
 
   const [selectedGroupMembership, setSelectedGroupMembership] =
     useState<ComMiloapisIamV1Alpha1GroupMembership | null>(null);
@@ -78,14 +97,16 @@ export default function Page() {
     columnHelper.accessor('metadata.name', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => {
-        const name = row.original.metadata?.name ?? '';
-        const displayName = row.original.metadata?.namespace;
+        const userRefName = row.original.spec?.userRef?.name ?? '';
+        const user = userMap.get(userRefName);
+        const displayName = user?.displayName || userRefName;
+        const email = user?.email ?? '';
 
         return (
           <DisplayName
-            displayName={name}
-            name={displayName || name}
-            to={userRoutes.detail(row.original.spec?.userRef?.name ?? '')}
+            displayName={displayName}
+            name={email || userRefName}
+            to={userRoutes.detail(userRefName)}
           />
         );
       },
@@ -130,8 +151,7 @@ export default function Page() {
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={async () => {
-          await groupMembershipDeleteMutation(selectedGroupMembership?.metadata);
-          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
+          await deleteMembershipMutation.mutateAsync(selectedGroupMembership?.metadata);
           setSelectedGroupMembership(null);
           toast.success(t`Member deleted successfully`);
         }}
@@ -145,11 +165,13 @@ export default function Page() {
         cancelText={t`Cancel`}
         onSubmit={async (formData) => {
           try {
-            await groupMembershipCreateMutation('milo-system', {
-              groupRef: { name: groupName, namespace: 'milo-system' },
-              userRef: { name: formData.name },
+            await createMembershipMutation.mutateAsync({
+              namespace: 'milo-system',
+              payload: {
+                groupRef: { name: groupName, namespace: 'milo-system' },
+                userRef: { name: formData.name },
+              },
             });
-            await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
             toast.success(t`Member added successfully`);
           } catch (error) {
             throw error;
@@ -157,15 +179,16 @@ export default function Page() {
         }}
         schema={addMemberSchema}
         defaultValues={{ name: '' }}>
-        <Form.Autosearch
-          modal
-          field="name"
-          placeholder={t`Enter the full email to search...`}
-          options={userOptions}
-          isLoading={usersLoading}
-          onSearch={setUserSearch}
-          searchDebounceMs={500}
-        />
+        <Form.Field name="name">
+          <Form.Autosearch
+            modal
+            options={userOptions}
+            loading={usersLoading}
+            onSearch={setUserSearch}
+            searchDebounceMs={500}
+            placeholder={t`Enter the full email to search...`}
+          />
+        </Form.Field>
       </DialogForm>
 
       <DataTable.Client
@@ -185,9 +208,11 @@ export default function Page() {
         }}>
         <Card className="m-4 py-4 shadow-none">
           <CardContent className="flex flex-col gap-2 px-4">
-            <div className="flex flex-wrap items-center gap-4">
-              <DataTable.Search placeholder={t`Search members...`} className="w-64 min-w-[12rem]" />
-            </div>
+            <DataTableToolbar
+              search={
+                <DataTable.Search placeholder={t`Search members...`} className="w-full md:w-64" />
+              }
+            />
 
             <DataTable.Content
               headerClassName="bg-muted/50"

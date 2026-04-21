@@ -5,8 +5,8 @@ import { Trans } from '@lingui/react/macro';
 import { Link, Outlet, useLocation } from 'react-router';
 
 const fraudTabs = [
-  { label: 'Evaluations', value: 'evaluations', to: fraudRoutes.evaluations() },
-  { label: 'Providers', value: 'providers', to: fraudRoutes.providers() },
+  { label: 'Evaluations', value: 'evaluations', to: fraudRoutes.evaluations.list() },
+  { label: 'Providers', value: 'providers', to: fraudRoutes.providers.list() },
   { label: 'Policy', value: 'policy', to: fraudRoutes.policy() },
 ];
 
@@ -38,7 +38,7 @@ export default function FraudLayout() {
         </Tabs>
       </AppNavigation>
 
-      <div className="min-h-0 flex-1 overflow-auto px-4 py-4">
+      <div className="min-h-0 flex-1 overflow-auto">
         <Outlet />
       </div>
     </div>

@@ -1,18 +1,23 @@
 import type { Route } from './+types/index';
 import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
 import { DisplayId, DisplayName } from '@/components/display';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
-import { userInviteMutation, useUserListQuery } from '@/resources/request/client';
+import {
+  useInvalidateUserList,
+  userInviteMutation,
+  useUserListQuery,
+} from '@/resources/request/client';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
+import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import { Form } from '@datum-ui/form';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
@@ -36,6 +41,7 @@ export default function Page() {
 
   const { approveUser, pendingUser } = useUserApproval();
   const tableQuery = useUserListQuery();
+  const invalidateUserList = useInvalidateUserList();
 
   const actions: ActionItem<ComMiloapisIamV1Alpha1User>[] = [
     {
@@ -51,7 +57,7 @@ export default function Page() {
         setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: true }));
         try {
           await approveUser(row, async () => {
-            await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
+            await invalidateUserList();
           });
         } finally {
           setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: false }));
@@ -73,7 +79,7 @@ export default function Page() {
         setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: true }));
         try {
           await pendingUser(row, async () => {
-            await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
+            await invalidateUserList();
           });
         } finally {
           setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: false }));
@@ -136,7 +142,7 @@ export default function Page() {
       familyName: z.string().nonempty(t`Last name is required`),
       email: z.email(t`Invalid email address`).nonempty(t`Email is required`),
       scheduleEnabled: z.boolean().optional(),
-      scheduleAt: z.date().optional(),
+      scheduleAt: z.coerce.date().optional(),
     })
     .refine(
       (data) => {
@@ -189,26 +195,35 @@ export default function Page() {
               },
             });
 
-            await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
+            await invalidateUserList();
             toast.success(t`User invited successfully`);
           } catch (error) {
             throw error; // Re-throw to keep dialog open
           }
         }}>
-        {(form) => (
-          <>
-            <Form.Input field="givenName" label={t`First Name`} required />
-            <Form.Input field="familyName" label={t`Last Name`} required />
-            <Form.Input field="email" label={t`Email`} required />
-            <Form.Switch
-              field="scheduleEnabled"
-              label={t`Schedule invitation to be sent at specific time`}
-            />
-            {form.watch('scheduleEnabled') && (
-              <Form.DateTimePicker modal field="scheduleAt" required />
-            )}
-          </>
-        )}
+        <>
+          <Form.Field name="givenName" label={t`First Name`} required>
+            <Form.Input placeholder={t`Enter first name`} />
+          </Form.Field>
+          <Form.Field name="familyName" label={t`Last Name`} required>
+            <Form.Input />
+          </Form.Field>
+          <Form.Field name="email" label={t`Email`} required>
+            <Form.Input />
+          </Form.Field>
+          <Form.Field name="scheduleEnabled">
+            <Form.Switch label={t`Schedule invitation to be sent at specific time`} />
+          </Form.Field>
+          <Form.When field="scheduleEnabled" is={true}>
+            <Form.Field name="scheduleAt" label={t`Schedule At`} required>
+              <Form.DateTimePicker
+                modal
+                placeholder={t`Pick date and time Test`}
+                showTimezoneIndicator
+              />
+            </Form.Field>
+          </Form.When>
+        </>
       </DialogForm>
 
       <UserRejectDialog
@@ -216,7 +231,7 @@ export default function Page() {
         onOpenChange={() => setSelectedUser(null)}
         user={selectedUser}
         onSuccess={async () => {
-          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
+          await invalidateUserList();
         }}
       />
 
@@ -249,19 +264,23 @@ export default function Page() {
         }}>
         <Card className="m-4 py-4 shadow-none">
           <CardContent className="flex flex-col gap-2 px-4">
-            <div className="flex items-center gap-4">
-              <DataTable.Search placeholder={t`Search users...`} className="w-64" />
-              <DataTable.SelectFilter
-                column="status.registrationApproval"
-                label={t`Registration Approval`}
-                placeholder={t`Filter by approval`}
-                options={[
-                  { value: 'Approved', label: t`Approved` },
-                  { value: 'Rejected', label: t`Rejected` },
-                  { value: 'Pending', label: t`Pending` },
-                ]}
-              />
-            </div>
+            <DataTableToolbar
+              search={
+                <DataTable.Search placeholder={t`Search users...`} className="w-full md:w-64" />
+              }
+              filters={
+                <DataTable.SelectFilter
+                  column="status.registrationApproval"
+                  label={t`Registration Approval`}
+                  placeholder={t`Filter by approval`}
+                  options={[
+                    { value: 'Approved', label: t`Approved` },
+                    { value: 'Rejected', label: t`Rejected` },
+                    { value: 'Pending', label: t`Pending` },
+                  ]}
+                />
+              }
+            />
 
             <DataTable.ActiveFilters
               excludeFilters={['search']}

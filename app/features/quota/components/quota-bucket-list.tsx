@@ -1,11 +1,11 @@
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
+import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
-import { Form } from '@datum-ui/form';
-import { t } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import {
   ComMiloapisQuotaV1Alpha1AllowanceBucket,
@@ -32,7 +32,7 @@ interface QuotaBucketListProps {
 const columnHelper = createColumnHelper<ComMiloapisQuotaV1Alpha1AllowanceBucket>();
 
 export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: QuotaBucketListProps) {
-  const { t: tMacro } = useLingui();
+  const { t } = useLingui();
   const [selected, setSelected] = useState<ComMiloapisQuotaV1Alpha1AllowanceBucket | null>(null);
 
   const tableQuery = useQuery({
@@ -42,16 +42,13 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
     staleTime: 60 * 1000,
   });
 
-  const actions: ActionItem<ComMiloapisQuotaV1Alpha1AllowanceBucket>[] = useMemo(
-    () => [
-      {
-        label: tMacro`Edit Quota`,
-        icon: PencilIcon,
-        onClick: (row) => setSelected(row),
-      },
-    ],
-    [tMacro]
-  );
+  const actions: ActionItem<ComMiloapisQuotaV1Alpha1AllowanceBucket>[] = [
+    {
+      label: t`Edit Quota`,
+      icon: PencilIcon,
+      onClick: (row) => setSelected(row),
+    },
+  ];
 
   const columns = useMemo(
     () => [
@@ -110,7 +107,7 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
         ),
       }),
     ],
-    [actions]
+    [actions, t]
   );
 
   const currentLimit = selected?.status?.limit ?? 0;
@@ -126,9 +123,9 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
       <DialogForm
         open={!!selected}
         onOpenChange={() => setSelected(null)}
-        title={tMacro`Edit Quota`}
-        submitText={tMacro`Update`}
-        cancelText={tMacro`Cancel`}
+        title={t`Edit Quota`}
+        submitText={t`Update`}
+        cancelText={t`Cancel`}
         onSubmit={async (formData) => {
           try {
             const amount = Math.max(0, formData.newLimit - currentLimit);
@@ -143,7 +140,7 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
               ],
             });
             await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 1000));
-            toast.success(tMacro`Quota updated successfully`);
+            toast.success(t`Quota updated successfully`);
           } catch (e) {
             throw e;
           }
@@ -152,15 +149,17 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
         defaultValues={{ newLimit: 0 }}>
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <Text className="text-muted-foreground">{tMacro`Resource Type:`}</Text>
+            <Text className="text-muted-foreground">{t`Resource Type:`}</Text>
             <Text>{selected?.spec.resourceType}</Text>
           </div>
           <div className="flex items-center gap-2">
-            <Text className="text-muted-foreground">{tMacro`Limit:`}</Text>
+            <Text className="text-muted-foreground">{t`Limit:`}</Text>
             <Text>{currentLimit}</Text>
           </div>
         </div>
-        <Form.Input field="newLimit" label={tMacro`New Limit`} required />
+        <Form.Field name="newLimit" label={t`New Limit`} required>
+          <Form.Input />
+        </Form.Field>
       </DialogForm>
 
       <DataTable.Client
@@ -177,12 +176,14 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
         }}>
         <Card className="m-4 py-4 shadow-none">
           <CardContent className="flex flex-col gap-2 px-4">
-            <div className="flex flex-wrap items-center gap-4">
-              <DataTable.Search
-                placeholder={t`Search by resource type...`}
-                className="w-64 min-w-[12rem]"
-              />
-            </div>
+            <DataTableToolbar
+              search={
+                <DataTable.Search
+                  placeholder={t`Search by resource type...`}
+                  className="w-full md:w-64"
+                />
+              }
+            />
             <DataTable.Content
               headerClassName="bg-muted/50"
               className="border-t border-b border-solid"

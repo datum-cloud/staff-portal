@@ -2,7 +2,10 @@
 export const userRoutes = {
   list: () => '/customers/users',
   detail: (userId: string) => `/customers/users/${userId}`,
-  activity: (userId: string) => `/customers/users/${userId}/activity`,
+  activity: {
+    root: (userId: string) => `/customers/users/${userId}/activity`,
+    auditLogs: (userId: string) => `/customers/users/${userId}/activity/audit-logs`,
+  },
   organization: (userId: string) => `/customers/users/${userId}/organizations`,
   contacts: (userId: string) => `/customers/users/${userId}/contacts`,
   emailActivity: (userId: string) => `/customers/users/${userId}/email-activity`,
@@ -14,7 +17,11 @@ export const orgRoutes = {
   detail: (orgName: string) => `/customers/organizations/${orgName}`,
   project: (orgName: string) => `/customers/organizations/${orgName}/projects`,
   member: (orgName: string) => `/customers/organizations/${orgName}/members`,
-  activity: (orgName: string) => `/customers/organizations/${orgName}/activity`,
+  activity: {
+    root: (orgName: string) => `/customers/organizations/${orgName}/activity`,
+    events: (orgName: string) => `/customers/organizations/${orgName}/activity/events`,
+    auditLogs: (orgName: string) => `/customers/organizations/${orgName}/activity/audit-logs`,
+  },
   quota: {
     usage: (orgName: string) => `/customers/organizations/${orgName}/quotas/usage`,
     grant: (orgName: string) => `/customers/organizations/${orgName}/quotas/grants`,
@@ -39,12 +46,16 @@ export const projectRoutes = {
     detail: (projectName: string, namespace: string, domainName: string) =>
       `/customers/projects/${projectName}/domains/${namespace}/${domainName}`,
   },
-  httpProxy: {
-    list: (projectName: string) => `/customers/projects/${projectName}/http-proxies`,
-    detail: (projectName: string, httpProxyName: string) =>
-      `/customers/projects/${projectName}/http-proxies/${httpProxyName}`,
+  edge: {
+    list: (projectName: string) => `/customers/projects/${projectName}/edges`,
+    detail: (projectName: string, edgeName: string) =>
+      `/customers/projects/${projectName}/edges/${edgeName}`,
   },
-  activity: (projectName: string) => `/customers/projects/${projectName}/activity`,
+  activity: {
+    root: (projectName: string) => `/customers/projects/${projectName}/activity`,
+    events: (projectName: string) => `/customers/projects/${projectName}/activity/events`,
+    auditLogs: (projectName: string) => `/customers/projects/${projectName}/activity/audit-logs`,
+  },
   exportPolicy: {
     list: (projectName: string) => `/customers/projects/${projectName}/export-policies`,
     detail: (projectName: string, exportPolicyName: string) =>
@@ -79,13 +90,30 @@ export const contactGroupRoutes = {
 
 // Fraud feature routes
 export const fraudRoutes = {
-  list: () => '/fraud',
-  evaluations: () => '/fraud',
-  providers: () => '/fraud/providers',
-  providerCreate: () => '/fraud/providers/create',
-  providerDetail: (name: string) => `/fraud/providers/${name}`,
+  root: () => '/fraud',
+  evaluations: {
+    list: () => '/fraud',
+    detail: (name: string) => `/fraud/${name}`,
+  },
+  providers: {
+    list: () => '/fraud/providers',
+    create: () => '/fraud/providers/create',
+    detail: (name: string) => `/fraud/providers/${name}`,
+  },
   policy: () => '/fraud/policy',
-  evaluationDetail: (name: string) => `/fraud/${name}`,
+} as const;
+
+// Activity feature routes
+export const activityRoutes = {
+  root: () => '/activity',
+  feed: () => '/activity/feed',
+  events: () => '/activity/events',
+  auditLogs: () => '/activity/audit-logs',
+  policies: {
+    list: () => '/activity/policies',
+    detail: (policyName: string) => `/activity/policies/${policyName}`,
+    create: () => '/activity/policies/new',
+  },
 } as const;
 
 // Profile feature routes
@@ -97,7 +125,6 @@ export const profileRoutes = {
 // Main routes object
 export const routes = {
   dashboard: () => '/',
-  activity: () => '/activity',
   emailActivity: () => '/email-activity',
   emailActivityDetail: (namespace: string, emailName: string) =>
     `/email-activity/${namespace}/${emailName}`,
@@ -116,4 +143,5 @@ export const routes = {
   profile: profileRoutes,
   contactGroups: contactGroupRoutes,
   fraud: fraudRoutes,
+  activity: activityRoutes,
 } as const;

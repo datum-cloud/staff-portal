@@ -1,8 +1,8 @@
 import { DateTime } from '@/components/date';
-import { cn } from '@/modules/shadcn/lib/utils';
-import { Badge } from '@/modules/shadcn/ui/badge';
 import { ControlPlaneStatus } from '@/resources/schemas';
+import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { CheckCircle, Clock, XCircle } from 'lucide-react';
 
 // Unified configuration for both modes
@@ -10,40 +10,34 @@ const StatusConfig = {
   // Multiple mode (individual conditions)
   True: {
     icon: CheckCircle,
-    variant: 'default' as const,
     className:
       'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800',
   },
   False: {
     icon: XCircle,
-    variant: 'destructive' as const,
     className:
       'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800',
   },
   Unknown: {
     icon: Clock,
-    variant: 'secondary' as const,
     className:
       'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/20 dark:text-gray-400 dark:border-gray-800',
   },
   // Control plane mode (summarized)
   [ControlPlaneStatus.Success]: {
     icon: CheckCircle,
-    variant: 'default' as const,
     className:
       'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800',
     label: 'Active',
   },
   [ControlPlaneStatus.Error]: {
     icon: XCircle,
-    variant: 'destructive' as const,
     className:
       'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800',
     label: 'Error',
   },
   [ControlPlaneStatus.Pending]: {
     icon: Clock,
-    variant: 'secondary' as const,
     className:
       'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/20 dark:text-gray-400 dark:border-gray-800',
     label: 'Pending',
@@ -127,7 +121,6 @@ const BadgeCondition = ({
 
     const badgeContent = (
       <Badge
-        variant={config.variant}
         className={cn(
           'inline-flex items-center gap-1 text-xs font-medium',
           config.className,
@@ -165,7 +158,6 @@ const BadgeCondition = ({
 
   const badgeContent = (
     <Badge
-      variant={config.variant}
       className={cn(
         'inline-flex items-center gap-1 text-xs font-medium',
         config.className,

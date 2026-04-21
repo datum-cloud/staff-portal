@@ -1,10 +1,10 @@
 'use client';
 
-import { cn } from '@/modules/shadcn/lib/utils';
-import { Button } from '@/modules/shadcn/ui/button';
-import { Calendar } from '@/modules/shadcn/ui/calendar';
-import { Input } from '@/modules/shadcn/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/modules/shadcn/ui/popover';
+import { Button } from '@datum-cloud/datum-ui/button';
+import { Calendar } from '@datum-cloud/datum-ui/calendar';
+import { Input } from '@datum-cloud/datum-ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { Trans } from '@lingui/react/macro';
 import {
   endOfDay,
@@ -228,7 +228,7 @@ export function DateRangePicker({
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
-            variant="outline"
+            theme="outline"
             className={cn(
               'relative w-[350px] justify-start pr-8 text-left font-normal',
               !value && 'text-muted-foreground'
@@ -238,7 +238,7 @@ export function DateRangePicker({
             {formatDisplayValue()}
             {value && showClearButton && (
               <Button
-                variant="ghost"
+                theme="borderless"
                 size="icon"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -300,9 +300,9 @@ export function DateRangePicker({
                     {resolvedPresets.map((preset) => (
                       <Button
                         key={preset.label}
-                        type="button"
-                        variant="ghost"
-                        size="sm"
+                        htmlType="button"
+                        theme="borderless"
+                        size="small"
                         className="w-full justify-start"
                         onClick={() => applyPreset(preset)}>
                         {preset.label}

@@ -1,7 +1,10 @@
 import { useOrganizationDetailData, getOrganizationDetailMetadata } from '../../shared';
 import type { Route } from './+types/index';
-import { createActivityClientConfig, getOrganizationControlPlanePath } from '@/lib/activity-client';
-import { staffResourceLinkResolver } from '@/lib/activity-link-resolvers';
+import {
+  createActivityClientConfig,
+  getOrganizationControlPlanePath,
+} from '@/features/activity/lib/activity-client';
+import { staffResourceLinkResolver } from '@/features/activity/lib/activity-link-resolvers';
 import { metaObject } from '@/utils/helpers';
 import { ActivityFeed, ActivityApiClient } from '@datum-cloud/activity-ui';
 import { Trans } from '@lingui/react/macro';

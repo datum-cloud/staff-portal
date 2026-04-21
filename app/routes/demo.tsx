@@ -2,7 +2,6 @@ import ButtonEnhancedDemo from '@/components/demo/button-enhanced-demo';
 import { FormDemo } from '@/components/demo/form-demo';
 import { logger } from '@/utils/logger';
 import { DataTable as DatumDataTable } from '@datum-cloud/datum-ui/data-table';
-import { DataTable, DataTableProvider } from '@datum-ui/data-table';
 import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { EditIcon, Trash2Icon } from 'lucide-react';
@@ -247,36 +246,20 @@ const actions = [
   },
 ];
 
+const columnsWithActions = [
+  ...columns,
+  columnHelper.display({
+    id: 'actions',
+    header: () => <div className="text-right">Actions</div>,
+    cell: ({ row }) => (
+      <div className="flex justify-end">
+        <DatumDataTable.RowActions row={row} actions={actions} />
+      </div>
+    ),
+  }),
+];
+
 export default function DemoPage() {
-  const [selectedRows, setSelectedRows] = useState<Record<string, boolean>>({});
-
-  // Mock query state
-  const mockQuery = {
-    data: { rows: demoData, cursor: undefined },
-    isLoading: false,
-    isError: false,
-  } as any;
-
-  const tableState = {
-    query: mockQuery,
-    limit: 10,
-    cursor: '',
-    sorting: [],
-    globalFilter: '',
-    columnVisibility: {},
-    columnPinning: {},
-    columnOrder: [],
-    rowSelection: selectedRows,
-    setLimit: () => {},
-    setCursor: () => {},
-    setSorting: () => {},
-    setGlobalFilter: () => {},
-    setColumnVisibility: () => {},
-    setColumnPinning: () => {},
-    setColumnOrder: () => {},
-    setRowSelection: setSelectedRows,
-  };
-
   return (
     <div className="space-y-8 p-6">
       <FormDemo />
@@ -296,11 +279,19 @@ export default function DemoPage() {
         <p className="mb-4 text-sm text-gray-500">
           Shows both selection checkbox and actions dropdown combined with the first column content.
         </p>
-        <DataTableProvider<DemoData> {...tableState} columns={columns} selectable actions={actions}>
-          <div className="overflow-hidden rounded-lg border">
-            <DataTable<DemoData> />
+        <DatumDataTable.Client
+          data={demoData}
+          columns={columnsWithActions}
+          pageSize={10}
+          getRowId={(r) => r.id}
+          enableRowSelection>
+          <div className="flex flex-col gap-4">
+            <div className="overflow-hidden rounded-lg border">
+              <DatumDataTable.Content />
+            </div>
+            <DatumDataTable.Pagination pageSizes={[5, 10, 20]} />
           </div>
-        </DataTableProvider>
+        </DatumDataTable.Client>
       </div>
 
       {/* Actions Only */}
@@ -309,15 +300,19 @@ export default function DemoPage() {
         <p className="mb-4 text-sm text-gray-500">
           Shows how it works with only actions (no selection).
         </p>
-        <DataTableProvider<DemoData>
-          {...tableState}
-          columns={columns}
-          selectable={false}
-          actions={actions}>
-          <div className="overflow-hidden rounded-lg border">
-            <DataTable<DemoData> />
+        <DatumDataTable.Client
+          data={demoData}
+          columns={columnsWithActions}
+          pageSize={10}
+          getRowId={(r) => r.id}
+          enableRowSelection={false}>
+          <div className="flex flex-col gap-4">
+            <div className="overflow-hidden rounded-lg border">
+              <DatumDataTable.Content />
+            </div>
+            <DatumDataTable.Pagination pageSizes={[5, 10, 20]} />
           </div>
-        </DataTableProvider>
+        </DatumDataTable.Client>
       </div>
 
       {/* Selection Only */}
@@ -326,11 +321,19 @@ export default function DemoPage() {
         <p className="mb-4 text-sm text-gray-500">
           Shows how it works with only selection (no actions).
         </p>
-        <DataTableProvider<DemoData> {...tableState} columns={columns} selectable actions={[]}>
-          <div className="overflow-hidden rounded-lg border">
-            <DataTable<DemoData> />
+        <DatumDataTable.Client
+          data={demoData}
+          columns={columns}
+          pageSize={10}
+          getRowId={(r) => r.id}
+          enableRowSelection>
+          <div className="flex flex-col gap-4">
+            <div className="overflow-hidden rounded-lg border">
+              <DatumDataTable.Content />
+            </div>
+            <DatumDataTable.Pagination pageSizes={[5, 10, 20]} />
           </div>
-        </DataTableProvider>
+        </DatumDataTable.Client>
       </div>
 
       {/* Client-Side Data Table Demos */}

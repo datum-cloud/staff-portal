@@ -1,6 +1,8 @@
-import { SidebarMenuComponent } from './sidebar-menu';
+import { type MenuItem, SidebarMenuComponent } from './sidebar-menu';
+import { SidebarMenuTabs } from './sidebar-menu-tabs';
 import AppActionBar from '@/components/app-actiobar';
-import { cn } from '@/modules/shadcn/lib/utils';
+import { useBreakpoint } from '@/hooks/use-breakpoint';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import * as React from 'react';
 
 interface SubLayoutProps extends React.ComponentProps<'div'> {
@@ -59,6 +61,9 @@ const SubLayoutComponent = React.memo(function SubLayout({
   children,
   ...props
 }: SubLayoutProps) {
+  const breakpoint = useBreakpoint();
+  const isCompact = breakpoint !== 'desktop';
+
   // Use useMemo to cache the slot detection
   const slots = React.useMemo(() => {
     let leftSidebar: React.ReactElement | null = null;
@@ -83,11 +88,30 @@ const SubLayoutComponent = React.memo(function SubLayout({
     return { leftSidebar, rightSidebar, content, actionBar };
   }, [children]);
 
+  // In compact mode, try to extract menuItems from the SidebarLeft > SidebarMenu
+  // subtree so we can render them as a horizontal tab bar instead.
+  const tabMenuItems = React.useMemo<MenuItem[] | null>(() => {
+    if (!isCompact || !slots.leftSidebar) return null;
+    let found: MenuItem[] | null = null;
+    const leftChildren = (slots.leftSidebar as React.ReactElement<SubLayoutSidebarProps>).props
+      .children;
+    React.Children.forEach(leftChildren, (child) => {
+      if (React.isValidElement(child) && child.type === SidebarMenuComponent) {
+        const props = child.props as { menuItems?: MenuItem[] };
+        if (props.menuItems) found = props.menuItems;
+      }
+    });
+    return found;
+  }, [isCompact, slots.leftSidebar]);
+
+  const showTabs = isCompact && tabMenuItems !== null;
+
   return (
     <>
       {slots.actionBar}
+      {showTabs && <SidebarMenuTabs menuItems={tabMenuItems!} />}
       <div className={cn('flex h-full w-full', className)} {...props}>
-        {slots.leftSidebar}
+        {!showTabs && slots.leftSidebar}
         {slots.content}
         {slots.rightSidebar}
       </div>

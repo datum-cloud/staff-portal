@@ -50,7 +50,7 @@ export default function Layout() {
     },
     {
       title: t`Activity`,
-      href: userRoutes.activity(data.metadata?.name ?? ''),
+      href: userRoutes.activity.root(data.metadata?.name ?? ''),
       icon: SquareActivity,
     },
   ];

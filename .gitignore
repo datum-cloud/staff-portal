@@ -2,7 +2,6 @@ node_modules
 
 /.cache
 /build
-.env
 .DS_Store
 .react-router/
 
@@ -15,3 +14,7 @@ cypress/results
 
 # OpenAPI temp files (not the generated code)
 .openapi-temp/
+
+# Local-only notes
+docs/local/
+config.bat

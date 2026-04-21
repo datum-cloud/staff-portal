@@ -1,6 +1,6 @@
 import { LogoIcon } from '@/components/logo/logo-icon';
-import { Button } from '@/modules/shadcn/ui/button';
-import { Card, CardContent } from '@/modules/shadcn/ui/card';
+import { Button } from '@datum-cloud/datum-ui/button';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { HomeIcon, RefreshCcwIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
@@ -34,7 +34,7 @@ const GenericError = ({ message, requestId }: { message: string; requestId?: str
         </div>
         <div className="flex items-center gap-2">
           <Link to={'/'}>
-            <Button size="sm">
+            <Button size="small">
               <HomeIcon className="size-4" />
               Back to Home
             </Button>

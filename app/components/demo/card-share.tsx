@@ -1,24 +1,24 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/modules/shadcn/ui/avatar';
-import { Button } from '@/modules/shadcn/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@datum-cloud/datum-ui/avatar';
+import { Button } from '@datum-cloud/datum-ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/modules/shadcn/ui/card';
-import { Input } from '@/modules/shadcn/ui/input';
-import { Label } from '@/modules/shadcn/ui/label';
+} from '@datum-cloud/datum-ui/card';
+import { Input } from '@datum-cloud/datum-ui/input';
+import { Label } from '@datum-cloud/datum-ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/modules/shadcn/ui/select';
-import { Separator } from '@/modules/shadcn/ui/separator';
+} from '@datum-cloud/datum-ui/select';
+import { Separator } from '@datum-cloud/datum-ui/separator';
 
 const people = [
   {
@@ -55,7 +55,7 @@ export function CardsShare() {
             Link
           </Label>
           <Input id="link" value="http://example.com/link/to/document" className="h-8" readOnly />
-          <Button size="sm" variant="outline" className="shadow-none">
+          <Button size="small" theme="outline" className="shadow-none">
             Copy Link
           </Button>
         </div>
@@ -76,7 +76,7 @@ export function CardsShare() {
                   </div>
                 </div>
                 <Select defaultValue="edit">
-                  <SelectTrigger className="ml-auto pr-2" aria-label="Edit" size="sm">
+                  <SelectTrigger className="ml-auto h-8 pr-2 text-sm" aria-label="Edit">
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
                   <SelectContent align="end">

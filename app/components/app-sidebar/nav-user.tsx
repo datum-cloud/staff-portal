@@ -1,6 +1,8 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/modules/shadcn/ui/avatar';
+import { useApp } from '@/providers/app.provider';
+import { routes } from '@/utils/config/routes.config';
+import { Avatar, AvatarFallback, AvatarImage } from '@datum-cloud/datum-ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,15 +11,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/modules/shadcn/ui/dropdown-menu';
+} from '@datum-cloud/datum-ui/dropdown';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@/modules/shadcn/ui/sidebar';
-import { useApp } from '@/providers/app.provider';
-import { routes } from '@/utils/config/routes.config';
+} from '@datum-cloud/datum-ui/sidebar';
 import { useLingui } from '@lingui/react/macro';
 import { Bell, ChevronsUpDown, LogOut, User } from 'lucide-react';
 import { useMemo } from 'react';

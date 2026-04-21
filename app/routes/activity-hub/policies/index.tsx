@@ -1,4 +1,5 @@
-import { createActivityClientConfig } from '@/lib/activity-client';
+import { createActivityClientConfig } from '@/features/activity/lib/activity-client';
+import { activityRoutes } from '@/utils/config/routes.config';
 import { PolicyList, ActivityApiClient } from '@datum-cloud/activity-ui';
 import { useNavigate } from 'react-router';
 
@@ -16,12 +17,12 @@ export default function PoliciesIndexPage() {
 
   // Handle edit policy - navigate to detail route
   const handleEditPolicy = (policyName: string) => {
-    navigate(`/activity/policies/${policyName}`);
+    navigate(activityRoutes.policies.detail(policyName));
   };
 
   // Handle create policy - navigate to detail route with "new" name
   const handleCreatePolicy = () => {
-    navigate('/activity/policies/new');
+    navigate(activityRoutes.policies.create());
   };
 
   return (

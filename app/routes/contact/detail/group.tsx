@@ -2,14 +2,15 @@ import { getContactDetailMetadata, useContactDetailData } from '../shared';
 import type { Route } from './+types/index';
 import AppActionBar from '@/components/app-actiobar';
 import { BadgeCondition, BadgeState } from '@/components/badge';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
 import { useContactGroupSearch } from '@/hooks';
 import {
-  contactGroupMembershipCreateMutation,
-  contactGroupMembershipDeleteMutation,
-  contactMembershipForContactListQuery,
+  useCreateContactGroupMembershipMutation,
+  useDeleteContactGroupMembershipMutation,
+  useContactGroupMembershipListQuery,
 } from '@/resources/request/client';
 import type { ContactMembershipWithContactGroup } from '@/resources/schemas';
 import { contactGroupRoutes } from '@/utils/config/routes.config';
@@ -17,10 +18,9 @@ import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
+import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import { Form } from '@datum-ui/form';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useMemo, useState } from 'react';
@@ -40,21 +40,20 @@ export default function Page() {
   const detail = useContactDetailData();
   const contactName = detail.contact?.metadata?.name ?? '';
 
-  const tableQuery = useQuery({
-    queryKey: ['contacts', contactName, 'groups', 'list'],
-    queryFn: () =>
-      contactMembershipForContactListQuery({
-        filters: { fieldSelector: `spec.contactRef.name=${contactName}` },
-      }),
-    enabled: !!contactName,
-  });
+  const tableQuery = useContactGroupMembershipListQuery(contactName);
 
   const items = tableQuery.data?.items ?? [];
   const [selectedGroup, setSelectedGroup] = useState<ContactMembershipWithContactGroup | null>(
     null
   );
   const [isAddGroup, setIsAddGroup] = useState(false);
-  const { options: contactGroupOptions, isLoading: contactGroupsLoading } = useContactGroupSearch();
+  const createMembershipMutation = useCreateContactGroupMembershipMutation();
+  const deleteMembershipMutation = useDeleteContactGroupMembershipMutation();
+  const {
+    options: contactGroupOptions,
+    isLoading: contactGroupsLoading,
+    setSearch: setContactGroupSearch,
+  } = useContactGroupSearch();
 
   const contactGroupFilteredOptions = useMemo(() => {
     return contactGroupOptions.filter((option) => {
@@ -130,14 +129,16 @@ export default function Page() {
 
   const handleAddGroup = async (formData: z.infer<typeof addGroupSchema>) => {
     const [name, namespace] = formData.name.split('|');
-    await contactGroupMembershipCreateMutation('default', {
-      contactGroupRef: { name, namespace },
-      contactRef: {
-        name: detail.contact?.metadata?.name ?? '',
-        namespace: detail.contact?.metadata?.namespace ?? 'default',
+    await createMembershipMutation.mutateAsync({
+      namespace: 'default',
+      payload: {
+        contactGroupRef: { name, namespace },
+        contactRef: {
+          name: detail.contact?.metadata?.name ?? '',
+          namespace: detail.contact?.metadata?.namespace ?? 'default',
+        },
       },
     });
-    await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 1000));
     toast.success(t`Group added successfully`);
   };
 
@@ -160,8 +161,7 @@ export default function Page() {
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={async () => {
-          await contactGroupMembershipDeleteMutation(selectedGroup?.metadata);
-          await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 2000));
+          await deleteMembershipMutation.mutateAsync(selectedGroup?.metadata);
           setSelectedGroup(null);
           toast.success(t`Group deleted successfully`);
         }}
@@ -175,14 +175,16 @@ export default function Page() {
         onSubmit={handleAddGroup}
         schema={addGroupSchema}
         defaultValues={{ name: '' }}>
-        <Form.Autocomplete
-          modal
-          field="name"
-          placeholder={t`Select group...`}
-          searchPlaceholder={t`Search groups...`}
-          options={contactGroupFilteredOptions}
-          isLoading={contactGroupsLoading}
-        />
+        <Form.Field name="name">
+          <Form.Autocomplete
+            modal
+            placeholder={t`Select group...`}
+            searchPlaceholder={t`Search groups...`}
+            options={contactGroupFilteredOptions}
+            loading={contactGroupsLoading}
+            onSearchChange={(query) => setContactGroupSearch(query)}
+          />
+        </Form.Field>
       </DialogForm>
       <DataTable.Client
         loading={tableQuery.isLoading}
@@ -206,7 +208,11 @@ export default function Page() {
         }}>
         <Card className="m-4 py-4 shadow-none">
           <CardContent className="flex flex-col gap-2 px-4">
-            <DataTable.Search placeholder={t`Search groups...`} className="w-64" />
+            <DataTableToolbar
+              search={
+                <DataTable.Search placeholder={t`Search groups...`} className="w-full md:w-64" />
+              }
+            />
             <DataTable.Content
               headerClassName="bg-muted/50"
               className="border-t border-b border-solid"

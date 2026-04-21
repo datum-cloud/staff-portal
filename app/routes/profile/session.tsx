@@ -1,8 +1,9 @@
 import type { Route } from './+types/session';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
 import { useApp } from '@/providers/app.provider';
-import { sessionDeleteMutation, useSessionListQuery } from '@/resources/request/client';
+import { useDeleteSessionMutation, useSessionListQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
@@ -30,6 +31,7 @@ export default function Page() {
   const { user } = useApp();
   const userId = user?.metadata?.name ?? '';
   const tableQuery = useSessionListQuery(userId);
+  const deleteSessionMutation = useDeleteSessionMutation();
 
   const [selectedSession, setSelectedSession] =
     useState<ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session | null>(null);
@@ -105,8 +107,10 @@ export default function Page() {
         variant="destructive"
         requireConfirmation
         onConfirm={async () => {
-          await sessionDeleteMutation(userId, selectedSession?.metadata?.name ?? '');
-          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
+          await deleteSessionMutation.mutateAsync({
+            userId,
+            sessionName: selectedSession?.metadata?.name ?? '',
+          });
           setSelectedSession(null);
           toast.success(tMacro`Session deleted successfully`);
         }}
@@ -128,12 +132,11 @@ export default function Page() {
         }}>
         <Card className="m-4 py-4 shadow-none">
           <CardContent className="flex flex-col gap-2 px-4">
-            <div className="flex flex-wrap items-center gap-4">
-              <DataTable.Search
-                placeholder={t`Search sessions...`}
-                className="w-64 min-w-[12rem]"
-              />
-            </div>
+            <DataTableToolbar
+              search={
+                <DataTable.Search placeholder={t`Search sessions...`} className="w-full md:w-64" />
+              }
+            />
             <DataTable.Content
               headerClassName="bg-muted/50"
               className="border-t border-b border-solid"
