@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 
 export const searchQueryKeys = {
   all: ['search'] as const,
+  unified: (query: string) => ['search', 'all', query] as const,
   users: {
     list: (query: string) => ['search', 'users', query] as const,
   },
@@ -18,12 +19,14 @@ export const searchQueryKeys = {
   },
 };
 
+const SEARCH_STALE_TIME = 30 * 1000;
+
 export const useSearchUsersQuery = (query: string, minLength: number = 2) => {
   return useQuery({
     queryKey: searchQueryKeys.users.list(query),
     queryFn: () => searchUsersQuery(query),
     enabled: query.length >= minLength,
-    staleTime: 30 * 1000,
+    staleTime: SEARCH_STALE_TIME,
   });
 };
 
@@ -32,7 +35,7 @@ export const useSearchOrganizationsQuery = (query: string, minLength: number = 3
     queryKey: searchQueryKeys.organizations.list(query),
     queryFn: () => searchOrganizationsQuery(query),
     enabled: query.length >= minLength,
-    staleTime: 30 * 1000,
+    staleTime: SEARCH_STALE_TIME,
   });
 };
 
@@ -41,6 +44,6 @@ export const useSearchProjectsQuery = (query: string, minLength: number = 3) => 
     queryKey: searchQueryKeys.projects.list(query),
     queryFn: () => searchProjectsQuery(query),
     enabled: query.length >= minLength,
-    staleTime: 30 * 1000,
+    staleTime: SEARCH_STALE_TIME,
   });
 };

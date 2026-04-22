@@ -4,6 +4,7 @@ import { SearchResults } from './search-results';
 import { useAppSearch } from './use-app-search';
 import { Input } from '@datum-cloud/datum-ui/input';
 import { cn } from '@datum-cloud/datum-ui/utils';
+import { useLingui } from '@lingui/react/macro';
 import { SearchIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -15,7 +16,8 @@ interface Props {
 
 function AppSearch({ className = '', placeholder }: Props) {
   const state = useAppSearch();
-  const { open, setOpen, search, setSearch, t } = state;
+  const { open, setOpen, search, setSearch } = state;
+  const { t } = useLingui();
   const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 420 });
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -64,7 +66,7 @@ function AppSearch({ className = '', placeholder }: Props) {
         <SearchIcon className="h-4 w-4 shrink-0 opacity-50" aria-hidden="true" />
         <Input
           ref={inputRef}
-          className="h-full min-w-0 flex-1 border-0 p-0 shadow-none focus-visible:ring-0"
+          className="h-full min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 shadow-none focus-visible:border-0 focus-visible:shadow-none focus-visible:ring-0"
           placeholder={placeholder ?? t`Search`}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
