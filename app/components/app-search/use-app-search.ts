@@ -81,11 +81,9 @@ export function useAppSearch() {
 
   const { users, organizations, projects, domains, dnsZones, contacts } = results ?? EMPTY;
 
-  const hasEntityResults =
-    users.length > 0 || organizations.length > 0 || projects.length > 0;
+  const hasEntityResults = users.length > 0 || organizations.length > 0 || projects.length > 0;
 
-  const hasResourceResults =
-    domains.length > 0 || dnsZones.length > 0 || contacts.length > 0;
+  const hasResourceResults = domains.length > 0 || dnsZones.length > 0 || contacts.length > 0;
 
   const hasResults = hasEntityResults || hasResourceResults;
 
