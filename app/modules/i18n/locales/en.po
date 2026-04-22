@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:209
+#: app/features/fraud/detail/evaluation-sections.tsx:243
 msgid "(current)"
 msgstr "(current)"
 
@@ -189,7 +189,7 @@ msgstr "AI Edge"
 msgid "All evaluations are clear"
 msgstr "All evaluations are clear"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:193
+#: app/features/fraud/detail/evaluation-sections.tsx:227
 msgid "All Evaluations for this User"
 msgstr "All Evaluations for this User"
 
@@ -324,7 +324,7 @@ msgstr "Available"
 msgid "Back"
 msgstr "Back"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:248
+#: app/features/fraud/detail/evaluation-sections.tsx:282
 msgid "Back to evaluations"
 msgstr "Back to evaluations"
 
@@ -397,7 +397,7 @@ msgid "Configuration"
 msgstr "Configuration"
 
 #: app/routes/contact-group/detail/member.tsx:68
-#: app/features/fraud/detail/evaluation-sections.tsx:290
+#: app/features/fraud/detail/evaluation-sections.tsx:324
 msgid "Contact"
 msgstr "Contact"
 
@@ -606,7 +606,7 @@ msgstr "Deactivation Reason"
 #: app/routes/fraud/index.tsx:151
 #: app/routes/fraud/index.tsx:304
 #: app/routes/fraud/index.tsx:320
-#: app/features/fraud/detail/evaluation-sections.tsx:324
+#: app/features/fraud/detail/evaluation-sections.tsx:358
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:150
 msgid "Decision"
 msgstr "Decision"
@@ -862,7 +862,7 @@ msgid "Endpoint"
 msgstr "Endpoint"
 
 #: app/routes/fraud/index.tsx:166
-#: app/features/fraud/detail/evaluation-sections.tsx:339
+#: app/features/fraud/detail/evaluation-sections.tsx:373
 msgid "Enforcement"
 msgstr "Enforcement"
 
@@ -898,12 +898,12 @@ msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr "Enter the word <0>{confirmationText}</0> to perform this action."
 
 #: app/routes/fraud/index.tsx:299
-#: app/features/fraud/detail/evaluation-sections.tsx:91
+#: app/features/fraud/detail/evaluation-sections.tsx:108
 msgid "Error"
 msgstr "Error"
 
 #: app/routes/fraud/index.tsx:180
-#: app/features/fraud/detail/evaluation-sections.tsx:354
+#: app/features/fraud/detail/evaluation-sections.tsx:388
 msgid "Evaluated"
 msgstr "Evaluated"
 
@@ -911,7 +911,7 @@ msgstr "Evaluated"
 msgid "Evaluation deleted successfully"
 msgstr "Evaluation deleted successfully"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:145
+#: app/features/fraud/detail/evaluation-sections.tsx:179
 msgid "Evaluation History"
 msgstr "Evaluation History"
 
@@ -919,7 +919,7 @@ msgstr "Evaluation History"
 msgid "Evaluation not found."
 msgstr "Evaluation not found."
 
-#: app/features/fraud/detail/evaluation-sections.tsx:266
+#: app/features/fraud/detail/evaluation-sections.tsx:300
 msgid "Evaluation Overview"
 msgstr "Evaluation Overview"
 
@@ -1550,8 +1550,8 @@ msgstr "No users found."
 msgid "No users yet"
 msgstr "No users yet"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:333
-#: app/features/fraud/detail/evaluation-sections.tsx:348
+#: app/features/fraud/detail/evaluation-sections.tsx:367
+#: app/features/fraud/detail/evaluation-sections.tsx:382
 msgid "None"
 msgstr "None"
 
@@ -1663,7 +1663,7 @@ msgstr "Personal"
 #: app/routes/fraud/index.tsx:127
 #: app/routes/fraud/index.tsx:293
 #: app/routes/fraud/index.tsx:319
-#: app/features/fraud/detail/evaluation-sections.tsx:318
+#: app/features/fraud/detail/evaluation-sections.tsx:352
 msgid "Phase"
 msgstr "Phase"
 
@@ -1968,7 +1968,7 @@ msgstr "Schedule invitation to be sent at specific time"
 
 #: app/routes/user/detail/index.tsx:296
 #: app/routes/fraud/index.tsx:131
-#: app/features/fraud/detail/evaluation-sections.tsx:309
+#: app/features/fraud/detail/evaluation-sections.tsx:343
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:145
 msgid "Score"
 msgstr "Score"
@@ -2138,7 +2138,7 @@ msgstr "Short-circuit Below"
 msgid "Sinks"
 msgstr "Sinks"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:123
+#: app/features/fraud/detail/evaluation-sections.tsx:157
 msgid "Skipped"
 msgstr "Skipped"
 
@@ -2159,7 +2159,7 @@ msgstr "Stage {0}"
 msgid "Stage Name"
 msgstr "Stage Name"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:371
+#: app/features/fraud/detail/evaluation-sections.tsx:405
 msgid "Stage Results"
 msgstr "Stage Results"
 
@@ -2311,7 +2311,7 @@ msgstr "Usage"
 
 #: app/routes/fraud/index.tsx:101
 #: app/routes/contact-group/detail/member.tsx:108
-#: app/features/fraud/detail/evaluation-sections.tsx:273
+#: app/features/fraud/detail/evaluation-sections.tsx:307
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:140
 #: app/features/activity/components/activity-list.tsx:117
 #: app/features/activity/components/activity-list.tsx:392
@@ -2422,7 +2422,7 @@ msgstr "View in Cloud Portal"
 msgid "View in Sentry"
 msgstr "View in Sentry"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:103
+#: app/features/fraud/detail/evaluation-sections.tsx:120
 msgid "View Raw Results"
 msgstr "View Raw Results"
 
