@@ -83,6 +83,10 @@ msgstr "500 - Server Error"
 msgid "Accepted"
 msgstr "Accepted"
 
+#: app/routes/error/unauthorized.tsx:17
+msgid "Access Denied"
+msgstr "Access Denied"
+
 #: app/routes/fraud/providers/detail.tsx:150
 #: app/routes/fraud/providers/create.tsx:116
 msgid "Account ID Key"
@@ -909,7 +913,7 @@ msgid "Entities"
 msgstr "Entities"
 
 #: app/routes/fraud/index.tsx:299
-#: app/features/fraud/detail/evaluation-sections.tsx:108
+#: app/features/fraud/detail/evaluation-sections.tsx:109
 msgid "Error"
 msgstr "Error"
 
@@ -2193,6 +2197,10 @@ msgstr "Short-circuit < {0}"
 msgid "Short-circuit Below"
 msgstr "Short-circuit Below"
 
+#: app/routes/error/unauthorized.tsx:27
+msgid "Sign Out"
+msgstr "Sign Out"
+
 #: app/routes/project/detail/export-policy/detail.tsx:150
 msgid "Sinks"
 msgstr "Sinks"
@@ -2486,7 +2494,7 @@ msgstr "View in Cloud Portal"
 msgid "View in Sentry"
 msgstr "View in Sentry"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:120
+#: app/features/fraud/detail/evaluation-sections.tsx:122
 msgid "View Raw Results"
 msgstr "View Raw Results"
 
@@ -2508,6 +2516,10 @@ msgstr "Warning"
 #: app/features/activity/components/activity-list.tsx:457
 msgid "Watch"
 msgstr "Watch"
+
+#: app/routes/error/unauthorized.tsx:20
+msgid "You don't have permission to access the Staff Portal. Please contact your administrator if you believe this is an error."
+msgstr "You don't have permission to access the Staff Portal. Please contact your administrator if you believe this is an error."
 
 #: app/routes/project/detail/dns/index.tsx:32
 msgid "Zone Name"

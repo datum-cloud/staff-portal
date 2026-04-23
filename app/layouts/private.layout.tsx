@@ -6,7 +6,9 @@ import { AssistantPanel, AssistantProvider } from '@/features/assistant';
 import { useEnv } from '@/hooks';
 import { authenticator } from '@/modules/auth';
 import { AppProvider } from '@/providers/app.provider';
+import { userGroupMembershipsQuery } from '@/resources/request/server/group.request';
 import { userDetailQuery } from '@/resources/request/server';
+import { env } from '@/utils/config/env.server';
 import { getLoginUrl, getRedirectToPath } from '@/utils/cookies';
 import { metaObject } from '@/utils/helpers';
 import { SidebarInset, SidebarProvider } from '@datum-cloud/datum-ui/sidebar';
@@ -29,7 +31,17 @@ export async function loader({ request }: Route.LoaderArgs) {
   }
 
   const session = await authenticator.getSession(request);
-  const user = await userDetailQuery(session?.accessToken ?? '', session?.sub ?? '');
+  const token = session?.accessToken ?? '';
+  const userId = session?.sub ?? '';
+
+  // Check staff group membership before allowing access
+  const memberships = await userGroupMembershipsQuery(token, userId);
+  const isStaff = memberships.some((m) => m.spec?.groupRef?.name === env.staffGroupName);
+  if (!isStaff) {
+    return redirect('/error/unauthorized');
+  }
+
+  const user = await userDetailQuery(token, userId);
 
   return data({ user });
 }

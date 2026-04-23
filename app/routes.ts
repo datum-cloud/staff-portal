@@ -162,6 +162,7 @@ export default [
   // Global routes
   route('logout', 'routes/auth/logout.tsx'),
   ...prefix('error', [
+    route('unauthorized', 'routes/error/unauthorized.tsx'),
     route('session-expired', 'routes/error/session-expired.tsx'),
     route('oauth-error', 'routes/error/oauth-error.tsx'),
   ]),
