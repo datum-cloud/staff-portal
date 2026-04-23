@@ -22,7 +22,7 @@ msgstr "(current)"
 msgid "{0} entries"
 msgstr "{0} entries"
 
-#: app/components/app-search/search-result-group.tsx:34
+#: app/components/app-search/search-result-group.tsx:42
 msgid "{heading}"
 msgstr "{heading}"
 
@@ -118,7 +118,7 @@ msgstr "Active Sessions"
 #: app/routes/organization/detail/layout.tsx:64
 #: app/routes/organization/detail/activity/index.tsx:14
 #: app/components/app-sidebar/index.tsx:147
-#: app/components/app-search/use-app-search.ts:43
+#: app/components/app-search/use-app-search.ts:48
 msgid "Activity"
 msgstr "Activity"
 
@@ -126,8 +126,8 @@ msgstr "Activity"
 msgid "Activity Feed"
 msgstr "Activity Feed"
 
-#: app/routes/group/member.tsx:142
-#: app/routes/group/member.tsx:165
+#: app/routes/group/member.tsx:141
+#: app/routes/group/member.tsx:164
 #: app/routes/contact-group/index.tsx:112
 #: app/routes/contact-group/detail/member.tsx:336
 #: app/routes/contact-group/detail/member.tsx:362
@@ -145,7 +145,7 @@ msgstr "Add a note"
 msgid "Add Group"
 msgstr "Add Group"
 
-#: app/routes/group/member.tsx:164
+#: app/routes/group/member.tsx:163
 #: app/routes/contact-group/detail/member.tsx:361
 msgid "Add Member"
 msgstr "Add Member"
@@ -256,7 +256,7 @@ msgid "Are you sure you want to delete group \"{0}\"? This action cannot be undo
 msgstr "Are you sure you want to delete group \"{0}\"? This action cannot be undone."
 
 #. placeholder {0}: selectedGroupMembership?.metadata?.name ?? ''
-#: app/routes/group/member.tsx:150
+#: app/routes/group/member.tsx:149
 msgid "Are you sure you want to delete member \"{0}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete member \"{0}\"? This action cannot be undone."
 
@@ -332,8 +332,8 @@ msgstr "Back to evaluations"
 #: app/routes/user/detail/index.tsx:144
 #: app/routes/profile/session.tsx:106
 #: app/routes/organization/detail/member.tsx:85
-#: app/routes/group/member.tsx:152
-#: app/routes/group/member.tsx:166
+#: app/routes/group/member.tsx:151
+#: app/routes/group/member.tsx:165
 #: app/routes/fraud/policy.tsx:97
 #: app/routes/fraud/index.tsx:212
 #: app/routes/fraud/index.tsx:247
@@ -368,6 +368,7 @@ msgid "Choose how the portal looks to you. Select a single theme, or sync with y
 msgstr "Choose how the portal looks to you. Select a single theme, or sync with your system."
 
 #: app/features/fraud/detail/evaluation-sections.tsx:62
+#: app/components/app-search/app-search-mobile.tsx:71
 msgid "Close"
 msgstr "Close"
 
@@ -454,6 +455,7 @@ msgstr "Contact updated successfully"
 #: app/routes/contact/index.tsx:14
 #: app/components/app-sidebar/index.tsx:119
 #: app/components/app-sidebar/index.tsx:125
+#: app/components/app-search/search-results.tsx:246
 msgid "Contacts"
 msgstr "Contacts"
 
@@ -532,8 +534,8 @@ msgstr "Create Policy"
 #: app/routes/organization/index.tsx:43
 #: app/routes/organization/detail/project.tsx:50
 #: app/routes/organization/detail/index.tsx:54
-#: app/routes/group/member.tsx:117
-#: app/routes/group/index.tsx:35
+#: app/routes/group/member.tsx:116
+#: app/routes/group/index.tsx:41
 #: app/routes/fraud/providers/index.tsx:102
 #: app/routes/contact-group/index.tsx:89
 #: app/features/quota/components/quota-grant-list.tsx:114
@@ -563,7 +565,7 @@ msgstr "Dark"
 
 #: app/routes/dashboard/index.tsx:28
 #: app/components/app-sidebar/index.tsx:93
-#: app/components/app-search/use-app-search.ts:28
+#: app/components/app-search/use-app-search.ts:33
 msgid "Dashboard"
 msgstr "Dashboard"
 
@@ -617,8 +619,8 @@ msgstr "Degraded"
 
 #: app/routes/profile/session.tsx:41
 #: app/routes/profile/session.tsx:105
-#: app/routes/group/member.tsx:90
-#: app/routes/group/member.tsx:151
+#: app/routes/group/member.tsx:89
+#: app/routes/group/member.tsx:150
 #: app/routes/fraud/policy.tsx:96
 #: app/routes/fraud/index.tsx:92
 #: app/routes/fraud/index.tsx:246
@@ -686,7 +688,7 @@ msgstr "Delete Evaluation"
 msgid "Delete Grant"
 msgstr "Delete Grant"
 
-#: app/routes/group/member.tsx:149
+#: app/routes/group/member.tsx:148
 #: app/routes/contact-group/detail/member.tsx:343
 #: app/routes/contact/detail/group.tsx:158
 msgid "Delete Member"
@@ -783,6 +785,10 @@ msgstr "DNS Records"
 msgid "DNS Zone"
 msgstr "DNS Zone"
 
+#: app/components/app-search/search-results.tsx:223
+msgid "DNS Zones"
+msgstr "DNS Zones"
+
 #: app/routes/project/detail/domain/index.tsx:30
 #: app/routes/project/detail/domain/detail.tsx:102
 #: app/features/activity/components/activity-list.tsx:390
@@ -796,6 +802,7 @@ msgstr "Domain verification is in progress. This may take a few minutes."
 
 #: app/routes/project/detail/layout.tsx:134
 #: app/routes/project/detail/domain/layout.tsx:5
+#: app/components/app-search/search-results.tsx:198
 msgid "Domains"
 msgstr "Domains"
 
@@ -887,7 +894,7 @@ msgstr "Enter reason for deactivation..."
 msgid "Enter reason for rejection..."
 msgstr "Enter reason for rejection..."
 
-#: app/routes/group/member.tsx:190
+#: app/routes/group/member.tsx:189
 #: app/routes/contact-group/detail/member.tsx:115
 #: app/features/contact/components/contact-form.tsx:199
 msgid "Enter the full email to search..."
@@ -896,6 +903,10 @@ msgstr "Enter the full email to search..."
 #: app/components/dialog/dialog-confirm.tsx:91
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr "Enter the word <0>{confirmationText}</0> to perform this action."
+
+#: app/components/app-search/search-results.tsx:134
+msgid "Entities"
+msgstr "Entities"
 
 #: app/routes/fraud/index.tsx:299
 #: app/features/fraud/detail/evaluation-sections.tsx:108
@@ -1088,7 +1099,7 @@ msgstr "General"
 msgid "Get"
 msgstr "Get"
 
-#: app/components/app-search/use-app-search.ts:28
+#: app/components/app-search/use-app-search.ts:33
 msgid "Go to dashboard"
 msgstr "Go to dashboard"
 
@@ -1307,7 +1318,7 @@ msgstr "Mail Lists"
 msgid "Manage"
 msgstr "Manage"
 
-#: app/components/app-search/use-app-search.ts:34
+#: app/components/app-search/use-app-search.ts:39
 msgid "Manage organizations"
 msgstr "Manage organizations"
 
@@ -1315,7 +1326,7 @@ msgstr "Manage organizations"
 msgid "Manage Policies"
 msgstr "Manage Policies"
 
-#: app/components/app-search/use-app-search.ts:40
+#: app/components/app-search/use-app-search.ts:45
 msgid "Manage projects"
 msgstr "Manage projects"
 
@@ -1323,7 +1334,7 @@ msgstr "Manage projects"
 msgid "Manage user access and account status"
 msgstr "Manage user access and account status"
 
-#: app/components/app-search/use-app-search.ts:29
+#: app/components/app-search/use-app-search.ts:34
 msgid "Manage users"
 msgstr "Manage users"
 
@@ -1336,12 +1347,12 @@ msgstr "Manually sync this description with the one in Loops (used for opt-in pa
 msgid "Member"
 msgstr "Member"
 
-#: app/routes/group/member.tsx:176
+#: app/routes/group/member.tsx:175
 #: app/routes/contact-group/detail/member.tsx:322
 msgid "Member added successfully"
 msgstr "Member added successfully"
 
-#: app/routes/group/member.tsx:157
+#: app/routes/group/member.tsx:156
 #: app/routes/contact-group/detail/member.tsx:351
 msgid "Member deleted successfully"
 msgstr "Member deleted successfully"
@@ -1391,7 +1402,7 @@ msgstr "My Profile"
 #: app/routes/organization/detail/project.tsx:35
 #: app/routes/organization/detail/member.tsx:103
 #: app/routes/organization/detail/index.tsx:46
-#: app/routes/group/member.tsx:99
+#: app/routes/group/member.tsx:98
 #: app/routes/group/index.tsx:24
 #: app/routes/fraud/providers/index.tsx:55
 #: app/routes/fraud/providers/create.tsx:88
@@ -1420,6 +1431,10 @@ msgstr "Namespace"
 #: app/components/app-toolbar/mobile-toolbar.tsx:78
 msgid "Navigate up"
 msgstr "Navigate up"
+
+#: app/components/app-search/search-results.tsx:87
+msgid "Navigation"
+msgstr "Navigation"
 
 #: app/routes/fraud/index.tsx:202
 msgid "New Evaluation"
@@ -1498,7 +1513,7 @@ msgstr "No fraud providers configured."
 msgid "No grants found."
 msgstr "No grants found."
 
-#: app/routes/group/index.tsx:68
+#: app/routes/group/index.tsx:74
 #: app/routes/contact/detail/group.tsx:219
 msgid "No groups found."
 msgstr "No groups found."
@@ -1508,7 +1523,7 @@ msgstr "No groups found."
 msgid "No members found."
 msgstr "No members found."
 
-#: app/routes/group/member.tsx:221
+#: app/routes/group/member.tsx:220
 msgid "No members in this group."
 msgstr "No members in this group."
 
@@ -1537,6 +1552,10 @@ msgstr "No quota buckets found."
 #: app/features/dashboard/components/quota-utilization-widget.tsx:98
 msgid "No quotas are above 70% utilization"
 msgstr "No quotas are above 70% utilization"
+
+#: app/components/app-search/search-results.tsx:122
+msgid "No results found."
+msgstr "No results found."
 
 #: app/routes/project/detail/secret.tsx:74
 msgid "No secrets found."
@@ -1584,6 +1603,10 @@ msgstr "Notifications"
 msgid "Once a contact is associated with a user, this association cannot be removed or changed later."
 msgstr "Once a contact is associated with a user, this association cannot be removed or changed later."
 
+#: app/components/app-search/app-search-mobile.tsx:40
+msgid "Open search"
+msgstr "Open search"
+
 #: app/routes/project/index.tsx:41
 #: app/routes/project/detail/index.tsx:49
 #: app/features/dashboard/components/quota-utilization-widget.tsx:146
@@ -1608,7 +1631,8 @@ msgstr "Organization Type"
 #: app/routes/organization/index.tsx:15
 #: app/routes/dashboard/index.tsx:67
 #: app/components/app-sidebar/index.tsx:109
-#: app/components/app-search/use-app-search.ts:31
+#: app/components/app-search/use-app-search.ts:36
+#: app/components/app-search/search-results.tsx:138
 msgid "Organizations"
 msgstr "Organizations"
 
@@ -1758,7 +1782,8 @@ msgstr "Project deleted successfully"
 #: app/routes/organization/detail/layout.tsx:59
 #: app/routes/dashboard/index.tsx:75
 #: app/components/app-sidebar/index.tsx:113
-#: app/components/app-search/use-app-search.ts:37
+#: app/components/app-search/use-app-search.ts:42
+#: app/components/app-search/search-results.tsx:153
 msgid "Projects"
 msgstr "Projects"
 
@@ -1916,6 +1941,10 @@ msgstr "Resource Type"
 msgid "Resource Type:"
 msgstr "Resource Type:"
 
+#: app/components/app-search/search-results.tsx:194
+msgid "Resources"
+msgstr "Resources"
+
 #: app/features/activity/components/activity-list.tsx:467
 #: app/features/activity/components/activity-list.tsx:520
 msgid "Response Code"
@@ -1973,6 +2002,12 @@ msgstr "Schedule invitation to be sent at specific time"
 msgid "Score"
 msgstr "Score"
 
+#: app/components/app-search/index.tsx:70
+#: app/components/app-search/app-search-mobile.tsx:55
+#: app/components/app-search/app-search-mobile.tsx:64
+msgid "Search"
+msgstr "Search"
+
 #: app/features/activity/components/activity-list.tsx:408
 msgid "Search activity..."
 msgstr "Search activity..."
@@ -2025,14 +2060,18 @@ msgstr "Search for an existing contact by email..."
 msgid "Search grants..."
 msgstr "Search grants..."
 
-#: app/routes/group/index.tsx:61
+#: app/routes/group/index.tsx:67
 #: app/routes/contact/detail/group.tsx:182
 #: app/routes/contact/detail/group.tsx:213
 msgid "Search groups..."
 msgstr "Search groups..."
 
+#: app/components/app-search/search-results.tsx:120
+msgid "Search is temporarily unavailable. Please try again."
+msgstr "Search is temporarily unavailable. Please try again."
+
 #: app/routes/organization/detail/member.tsx:168
-#: app/routes/group/member.tsx:214
+#: app/routes/group/member.tsx:213
 #: app/routes/contact-group/detail/member.tsx:410
 msgid "Search members..."
 msgstr "Search members..."
@@ -2059,9 +2098,17 @@ msgstr "Search secrets..."
 msgid "Search sessions..."
 msgstr "Search sessions..."
 
+#: app/components/app-search/app-search-mobile.tsx:56
+msgid "Search users, organizations, and projects"
+msgstr "Search users, organizations, and projects"
+
 #: app/routes/user/index.tsx:269
 msgid "Search users..."
 msgstr "Search users..."
+
+#: app/components/app-search/search-results.tsx:112
+msgid "Searching..."
+msgstr "Searching..."
 
 #: app/features/activity/components/activity-list.tsx:395
 #: app/features/activity/components/activity-list.tsx:494
@@ -2082,6 +2129,18 @@ msgstr "Secret Namespace"
 #: app/routes/project/detail/layout.tsx:144
 msgid "Secrets"
 msgstr "Secrets"
+
+#: app/components/app-search/search-results.tsx:270
+msgid "See all contacts"
+msgstr "See all contacts"
+
+#: app/components/app-search/search-results.tsx:240
+msgid "See all DNS zones"
+msgstr "See all DNS zones"
+
+#: app/components/app-search/search-results.tsx:217
+msgid "See all domains"
+msgstr "See all domains"
 
 #: app/routes/fraud/index.tsx:210
 msgid "Select a user to run a fraud evaluation against the current policy."
@@ -2274,6 +2333,10 @@ msgstr "TTL"
 msgid "Type"
 msgstr "Type"
 
+#: app/components/app-search/search-results.tsx:105
+msgid "Type at least 3 characters to search."
+msgstr "Type at least 3 characters to search."
+
 #: app/features/fraud/policy/policy-detail.tsx:164
 msgid "Unavailable"
 msgstr "Unavailable"
@@ -2363,7 +2426,8 @@ msgstr "User rejected successfully"
 #: app/routes/user/index.tsx:31
 #: app/routes/dashboard/index.tsx:59
 #: app/components/app-sidebar/index.tsx:105
-#: app/components/app-search/use-app-search.ts:29
+#: app/components/app-search/use-app-search.ts:34
+#: app/components/app-search/search-results.tsx:168
 msgid "Users"
 msgstr "Users"
 
@@ -2395,7 +2459,7 @@ msgstr "Verified"
 msgid "Version"
 msgstr "Version"
 
-#: app/components/app-search/use-app-search.ts:46
+#: app/components/app-search/use-app-search.ts:51
 msgid "View activity logs"
 msgstr "View activity logs"
 

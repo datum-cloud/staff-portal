@@ -1,8 +1,4 @@
-import {
-  searchOrganizationsQuery,
-  searchProjectsQuery,
-  searchUsersQuery,
-} from '@/resources/request/client';
+import { type GroupedSearchResults, searchAllQuery } from '@/resources/request/client';
 import { routes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
 import { useQuery } from '@tanstack/react-query';
@@ -16,6 +12,15 @@ export interface QuickLink {
   href: string;
   description: string;
 }
+
+const EMPTY: GroupedSearchResults = {
+  users: [],
+  organizations: [],
+  projects: [],
+  domains: [],
+  dnsZones: [],
+  contacts: [],
+};
 
 export function useAppSearch() {
   const [open, setOpen] = useState(false);
@@ -52,41 +57,17 @@ export function useAppSearch() {
     return () => clearTimeout(id);
   }, [search]);
 
-  const queryOptions = {
+  const {
+    data: results,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['search', 'all', debouncedSearch],
+    queryFn: () => searchAllQuery(debouncedSearch),
     enabled: open && debouncedSearch.length >= 3,
     staleTime: 30000,
     refetchOnWindowFocus: false,
     retry: false,
-  };
-
-  const {
-    data: userResults,
-    isLoading: usersLoading,
-    isError: usersError,
-  } = useQuery({
-    queryKey: ['search', 'users', debouncedSearch],
-    queryFn: () => searchUsersQuery(debouncedSearch),
-    ...queryOptions,
-  });
-
-  const {
-    data: orgResults,
-    isLoading: orgsLoading,
-    isError: orgsError,
-  } = useQuery({
-    queryKey: ['search', 'organizations', debouncedSearch],
-    queryFn: () => searchOrganizationsQuery(debouncedSearch),
-    ...queryOptions,
-  });
-
-  const {
-    data: projectResults,
-    isLoading: projectsLoading,
-    isError: projectsError,
-  } = useQuery({
-    queryKey: ['search', 'projects', debouncedSearch],
-    queryFn: () => searchProjectsQuery(debouncedSearch),
-    ...queryOptions,
   });
 
   const runCommand = useCallback(
@@ -98,13 +79,13 @@ export function useAppSearch() {
     [setOpen, setSearch]
   );
 
-  const isLoading = usersLoading || orgsLoading || projectsLoading;
-  const allError = usersError && orgsError && projectsError;
-  const someError = (usersError || orgsError || projectsError) && !allError;
-  const hasResults =
-    (userResults?.length ?? 0) > 0 ||
-    (orgResults?.length ?? 0) > 0 ||
-    (projectResults?.length ?? 0) > 0;
+  const { users, organizations, projects, domains, dnsZones, contacts } = results ?? EMPTY;
+
+  const hasEntityResults = users.length > 0 || organizations.length > 0 || projects.length > 0;
+
+  const hasResourceResults = domains.length > 0 || dnsZones.length > 0 || contacts.length > 0;
+
+  const hasResults = hasEntityResults || hasResourceResults;
 
   const getDisplayName = (item: {
     metadata?: { name?: string; annotations?: Record<string, string> };
@@ -116,16 +97,21 @@ export function useAppSearch() {
     search,
     setSearch,
     quickLinks,
-    userResults,
-    orgResults,
-    projectResults,
+    // Results
+    userResults: users,
+    orgResults: organizations,
+    projectResults: projects,
+    domainResults: domains,
+    dnsZoneResults: dnsZones,
+    contactResults: contacts,
+    // State
     isLoading,
-    allError: !!allError,
-    someError: !!someError,
+    isError,
     hasResults,
+    hasEntityResults,
+    hasResourceResults,
     runCommand,
     navigate,
     getDisplayName,
-    t,
   };
 }
