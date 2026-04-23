@@ -6,8 +6,8 @@ import { AssistantPanel, AssistantProvider } from '@/features/assistant';
 import { useEnv } from '@/hooks';
 import { authenticator } from '@/modules/auth';
 import { AppProvider } from '@/providers/app.provider';
-import { userGroupMembershipsQuery } from '@/resources/request/server/group.request';
 import { userDetailQuery } from '@/resources/request/server';
+import { userGroupMembershipsQuery } from '@/resources/request/server/group.request';
 import { env } from '@/utils/config/env.server';
 import { getLoginUrl, getRedirectToPath } from '@/utils/cookies';
 import { metaObject } from '@/utils/helpers';
@@ -34,9 +34,20 @@ export async function loader({ request }: Route.LoaderArgs) {
   const token = session?.accessToken ?? '';
   const userId = session?.sub ?? '';
 
-  // Check staff group membership before allowing access
-  const memberships = await userGroupMembershipsQuery(token, userId);
-  const isStaff = memberships.some((m) => m.spec?.groupRef?.name === env.staffGroupName);
+  // Check staff group membership before allowing access.
+  // 401/403 means the user lacks permission to list memberships — not staff.
+  // Other errors (network, 500) are re-thrown so they surface properly.
+  let isStaff = false;
+  try {
+    const memberships = await userGroupMembershipsQuery(token, userId);
+    isStaff = memberships.some((m) => m.spec?.groupRef?.name === env.staffGroupName);
+  } catch (error) {
+    if (error instanceof Response && (error.status === 401 || error.status === 403)) {
+      isStaff = false;
+    } else {
+      throw error;
+    }
+  }
   if (!isStaff) {
     return redirect('/error/unauthorized');
   }
