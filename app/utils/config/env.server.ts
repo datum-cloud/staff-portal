@@ -34,6 +34,9 @@ const envSchema = z.object({
   // MCP cluster tools
   MCP_URL: z.string().optional(),
   MCP_API_KEY: z.string().optional(),
+
+  // Staff access control
+  STAFF_GROUP_NAME: z.string().default('staff-users'),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -81,4 +84,5 @@ export const env = {
   sentryEnvironment: parsedEnv.SENTRY_ENV,
   mcpUrl: parsedEnv.MCP_URL,
   mcpApiKey: parsedEnv.MCP_API_KEY,
+  staffGroupName: parsedEnv.STAFF_GROUP_NAME,
 };

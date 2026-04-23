@@ -1,4 +1,7 @@
-import { readIamMiloapisComV1Alpha1NamespacedGroup } from '@openapi/iam.miloapis.com/v1alpha1';
+import {
+  listIamMiloapisComV1Alpha1GroupMembershipForAllNamespaces,
+  readIamMiloapisComV1Alpha1NamespacedGroup,
+} from '@openapi/iam.miloapis.com/v1alpha1';
 import { UnwrapProxyResponse } from '@openapi/shared/core/types.gen';
 
 export const groupDetailQuery = async (
@@ -16,4 +19,18 @@ export const groupDetailQuery = async (
     },
   });
   return response.data as UnwrapProxyResponse<typeof response.data>;
+};
+
+export const userGroupMembershipsQuery = async (token: string, userId: string) => {
+  const response = await listIamMiloapisComV1Alpha1GroupMembershipForAllNamespaces({
+    query: {
+      fieldSelector: `spec.userRef.name=${userId}`,
+    },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = response.data as unknown as UnwrapProxyResponse<typeof response.data>;
+  return data?.items ?? [];
 };
