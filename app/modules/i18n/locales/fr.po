@@ -83,10 +83,6 @@ msgstr ""
 msgid "Accepted"
 msgstr ""
 
-#: app/routes/error/unauthorized.tsx:17
-msgid "Access Denied"
-msgstr ""
-
 #: app/routes/fraud/providers/detail.tsx:150
 #: app/routes/fraud/providers/create.tsx:116
 msgid "Account ID Key"
@@ -2197,10 +2193,6 @@ msgstr ""
 msgid "Short-circuit Below"
 msgstr ""
 
-#: app/routes/error/unauthorized.tsx:27
-msgid "Sign Out"
-msgstr ""
-
 #: app/routes/project/detail/export-policy/detail.tsx:150
 msgid "Sinks"
 msgstr ""
@@ -2515,10 +2507,6 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:367
 #: app/features/activity/components/activity-list.tsx:457
 msgid "Watch"
-msgstr ""
-
-#: app/routes/error/unauthorized.tsx:20
-msgid "You don't have permission to access the Staff Portal. Please contact your administrator if you believe this is an error."
 msgstr ""
 
 #: app/routes/project/detail/dns/index.tsx:32

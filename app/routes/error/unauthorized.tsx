@@ -1,31 +1,41 @@
 import { LogoIcon } from '@/components/logo/logo-icon';
 import { Button } from '@datum-cloud/datum-ui/button';
-import { Text, Title } from '@datum-cloud/datum-ui/typography';
-import { Trans } from '@lingui/react/macro';
-import { ShieldX } from 'lucide-react';
-import { useNavigate } from 'react-router';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { LogOutIcon } from 'lucide-react';
+import { Link } from 'react-router';
+
+export const meta = () => {
+  return [
+    { title: 'Access Denied' },
+    { name: 'description', content: 'You do not have permission to access the Staff Portal.' },
+  ];
+};
 
 export default function UnauthorizedPage() {
-  const navigate = useNavigate();
-
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-6 p-4">
-      <LogoIcon width={40} />
-      <div className="flex flex-col items-center gap-2 text-center">
-        <ShieldX className="text-destructive h-10 w-10" />
-        <Title level={2}>
-          <Trans>Access Denied</Trans>
-        </Title>
-        <Text textColor="muted" className="max-w-md">
-          <Trans>
-            You don&apos;t have permission to access the Staff Portal. Please contact your
-            administrator if you believe this is an error.
-          </Trans>
-        </Text>
-      </div>
-      <Button theme="outline" onClick={() => navigate('/logout')}>
-        <Trans>Sign Out</Trans>
-      </Button>
+    <div className="flex h-screen w-screen items-center justify-center">
+      <Card className="w-1/2 overflow-hidden">
+        <CardContent className="flex min-h-[500px] flex-col items-center justify-center gap-6">
+          <LogoIcon width={64} className="mb-4" />
+
+          <div className="flex max-w-xl flex-col gap-2">
+            <p className="w-full text-center text-2xl font-bold">Access Denied</p>
+            <p className="text-muted-foreground text-center text-sm">
+              You don&apos;t have permission to access the Staff Portal. Please contact your
+              administrator if you believe this is an error.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Link to="/logout">
+              <Button size="small">
+                <LogOutIcon className="size-4" />
+                Sign Out
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
