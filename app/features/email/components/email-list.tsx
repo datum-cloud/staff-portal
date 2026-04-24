@@ -113,9 +113,9 @@ export default function EmailList({ queryKeyPrefix, fetchFn, searchPlaceholder }
       searchFn={(row, search) => {
         const q = search.trim().toLowerCase();
         if (!q) return true;
-        const a = (row.status?.emailAddress ?? '').toLowerCase();
-        const b = (row.spec?.recipient?.emailAddress ?? '').toLowerCase();
-        return a.includes(q) || b.includes(q);
+        return [row.status?.emailAddress, row.spec?.recipient?.emailAddress, row.status?.subject]
+          .map((v) => (v ?? '').toLowerCase())
+          .some((v) => v.includes(q));
       }}>
       <Card className="m-4 py-4 shadow-none">
         <CardContent className="flex flex-col gap-2 px-4">
