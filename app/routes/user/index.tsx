@@ -243,6 +243,8 @@ export default function Page() {
         getRowId={(row) => row.metadata?.name ?? ''}
         defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
         filterFns={{
+          'status.state': (cellValue, filterValue) =>
+            String(cellValue ?? '').toLowerCase() === String(filterValue ?? '').toLowerCase(),
           'status.registrationApproval': (cellValue, filterValue) =>
             String(cellValue ?? '').toLowerCase() === String(filterValue ?? '').toLowerCase(),
         }}
@@ -269,25 +271,44 @@ export default function Page() {
                 <DataTable.Search placeholder={t`Search users...`} className="w-full md:w-64" />
               }
               filters={
-                <DataTable.SelectFilter
-                  column="status.registrationApproval"
-                  label={t`Registration Approval`}
-                  placeholder={t`Filter by approval`}
-                  options={[
-                    { value: 'Approved', label: t`Approved` },
-                    { value: 'Rejected', label: t`Rejected` },
-                    { value: 'Pending', label: t`Pending` },
-                  ]}
-                />
+                <>
+                  <DataTable.SelectFilter
+                    column="status.state"
+                    label={t`Status`}
+                    placeholder={t`Filter by status`}
+                    options={[
+                      { value: 'Active', label: t`Active` },
+                      { value: 'Inactive', label: t`Inactive` },
+                    ]}
+                  />
+                  <DataTable.SelectFilter
+                    column="status.registrationApproval"
+                    label={t`Registration Approval`}
+                    placeholder={t`Filter by approval`}
+                    options={[
+                      { value: 'Approved', label: t`Approved` },
+                      { value: 'Rejected', label: t`Rejected` },
+                      { value: 'Pending', label: t`Pending` },
+                    ]}
+                  />
+                </>
               }
             />
 
             <DataTable.ActiveFilters
               excludeFilters={['search']}
               filterLabels={{
+                'status.state': t`Status`,
                 'status.registrationApproval': t`Registration Approval`,
               }}
               formatFilterValue={{
+                'status.state': (value: string) => {
+                  const labels: Record<string, string> = {
+                    Active: t`Active`,
+                    Inactive: t`Inactive`,
+                  };
+                  return labels[value] ?? String(value);
+                },
                 'status.registrationApproval': (value: string) => {
                   const labels: Record<string, string> = {
                     Approved: t`Approved`,

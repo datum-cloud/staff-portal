@@ -25,7 +25,7 @@ import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisFraudV1Alpha1FraudEvaluation } from '@openapi/fraud.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { z } from 'zod';
 
@@ -63,6 +63,12 @@ export default function Page() {
     }
     return map;
   }, [contactsQuery.data]);
+
+  // Keep a ref so the searchFn closure always reads the latest contacts
+  const contactsByUserRef = useRef(contactsByUser);
+  useEffect(() => {
+    contactsByUserRef.current = contactsByUser;
+  }, [contactsByUser]);
 
   const { data: searchResults, isLoading: usersLoading } = useSearchUsersQuery(userSearchQuery, 2);
 
@@ -258,6 +264,10 @@ export default function Page() {
         data={tableQuery.data?.items ?? []}
         columns={columns}
         pageSize={20}
+        filterFns={{
+          'status.enforcementAction': (cellValue, filterValue) =>
+            String(cellValue ?? '').toUpperCase() === String(filterValue ?? '').toUpperCase(),
+        }}
         getRowId={(row) => row.metadata?.name ?? ''}
         defaultSort={[{ id: 'lastEvaluationTime', desc: true }]}
         searchFn={(row, search) => {
@@ -266,7 +276,7 @@ export default function Page() {
           const userId = (row.spec?.userRef?.name ?? '').toLowerCase();
           const name = (row.metadata?.name ?? '').toLowerCase();
           const decision = (row.status?.decision ?? '').toLowerCase();
-          const contact = userId ? contactsByUser.get(row.spec?.userRef?.name ?? '') : undefined;
+          const contact = userId ? contactsByUserRef.current.get(row.spec?.userRef?.name ?? '') : undefined;
           const email = (contact?.email ?? '').toLowerCase();
           const contactName = (contact?.name ?? '').toLowerCase();
           return (
@@ -309,6 +319,15 @@ export default function Page() {
                       { value: 'DEACTIVATE', label: t`Deactivate` },
                     ]}
                   />
+                  <DataTable.SelectFilter
+                    column="status.enforcementAction"
+                    label={t`Enforcement`}
+                    placeholder={t`Filter by enforcement`}
+                    options={[
+                      { value: 'OBSERVED', label: t`Observed` },
+                      { value: 'ENFORCED', label: t`Enforced` },
+                    ]}
+                  />
                 </>
               }
             />
@@ -318,6 +337,7 @@ export default function Page() {
               filterLabels={{
                 'status.phase': t`Phase`,
                 'status.decision': t`Decision`,
+                'status.enforcementAction': t`Enforcement`,
               }}
             />
 

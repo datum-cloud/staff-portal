@@ -90,9 +90,18 @@ export default function Page() {
       searchFn={(row, search) => {
         const q = search.trim().toLowerCase();
         if (!q) return true;
-        const zone = (row.spec?.domainName ?? '').toLowerCase();
-        const desc = (row.metadata?.annotations?.['kubernetes.io/description'] ?? '').toLowerCase();
-        return zone.includes(q) || desc.includes(q);
+        const dnsHosts = (row.status?.domainRef?.status?.nameservers ?? [])
+          .flatMap((ns: { hostname?: string; ips?: Array<{ registrantName?: string }> }) => [
+            ns.hostname,
+            ...(ns.ips?.map((ip) => ip.registrantName) ?? []),
+          ])
+          .join(' ')
+          .toLowerCase();
+        return (
+          [row.spec?.domainName, row.metadata?.annotations?.['kubernetes.io/description']]
+            .map((v) => (v ?? '').toLowerCase())
+            .some((v) => v.includes(q)) || dnsHosts.includes(q)
+        );
       }}>
       <Card className="m-4 py-4 shadow-none">
         <CardContent className="flex flex-col gap-2 px-4">

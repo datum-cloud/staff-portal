@@ -148,6 +148,14 @@ export default function Page() {
       pageSize={20}
       getRowId={(row) => row.name}
       defaultSort={[]}
+      filterFns={{
+        invitationState: (cellValue, filterValue) =>
+          String(cellValue ?? '').toLowerCase() === String(filterValue ?? '').toLowerCase(),
+        roles: (cellValue, filterValue) => {
+          const roles = cellValue as Array<{ name?: string }> | undefined;
+          return roles?.some((r) => r.name === filterValue) ?? false;
+        },
+      }}
       searchFn={(row, search) => {
         const q = search.trim().toLowerCase();
         if (!q) return true;
@@ -167,6 +175,35 @@ export default function Page() {
             search={
               <DataTable.Search placeholder={tCore`Search members...`} className="w-full md:w-64" />
             }
+            filters={
+              <>
+                <DataTable.SelectFilter
+                  column="invitationState"
+                  label={tCore`Invitation`}
+                  placeholder={tCore`Filter by invitation`}
+                  options={[
+                    { value: 'Pending', label: tCore`Pending` },
+                    { value: 'Accepted', label: tCore`Accepted` },
+                  ]}
+                />
+                <DataTable.SelectFilter
+                  column="roles"
+                  label={tCore`Role`}
+                  placeholder={tCore`Filter by role`}
+                  options={[
+                    { value: 'admin', label: tCore`Admin` },
+                    { value: 'member', label: tCore`Member` },
+                  ]}
+                />
+              </>
+            }
+          />
+          <DataTable.ActiveFilters
+            excludeFilters={['search']}
+            filterLabels={{
+              invitationState: tCore`Invitation`,
+              roles: tCore`Role`,
+            }}
           />
           <DataTable.Content
             headerClassName="bg-muted/50"
