@@ -85,6 +85,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@eslint/compat": "^2.0.0",
     "@hey-api/client-axios": "^0.9.1",
     "@hey-api/openapi-ts": "^0.94.0",
     "@lingui/vite-plugin": "^5.3.1",
