@@ -1,3 +1,4 @@
+import { fixupPluginRules } from '@eslint/compat';
 import prettierConfig from './prettier.config.mjs';
 import eslintPluginJsxA11y from 'eslint-plugin-jsx-a11y';
 import eslintPluginPrettier from 'eslint-plugin-prettier';
@@ -22,10 +23,10 @@ export default [
     },
     plugins: {
       '@typescript-eslint': tseslint.plugin,
-      react: eslintPluginReact,
-      'react-hooks': eslintPluginReactHooks,
+      react: fixupPluginRules(eslintPluginReact),
+      'react-hooks': fixupPluginRules(eslintPluginReactHooks),
       // import: eslintPluginImport,
-      'jsx-a11y': eslintPluginJsxA11y,
+      'jsx-a11y': fixupPluginRules(eslintPluginJsxA11y),
       prettier: eslintPluginPrettier,
     },
     rules: {
