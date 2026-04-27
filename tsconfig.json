@@ -27,7 +27,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "rootDirs": [".", "./.react-router/types"],
-    "baseUrl": ".",
     "paths": {
       "@openapi/*": ["./app/resources/openapi/*"],
       "@/tests/*": ["./tests/*"],
