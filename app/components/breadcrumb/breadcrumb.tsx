@@ -103,7 +103,11 @@ function renderBreadcrumbItem(item: BreadcrumbItem, isLast: boolean): React.Reac
 
   // If it's the last item or not clickable, render as page
   if (isLast || !item.clickable || !item.path) {
-    return <BreadcrumbPage className={isLast ? 'max-w-[200px] truncate' : undefined}>{item.label}</BreadcrumbPage>;
+    return (
+      <BreadcrumbPage className={isLast ? 'max-w-[200px] truncate' : undefined}>
+        {item.label}
+      </BreadcrumbPage>
+    );
   }
 
   // Otherwise render as clickable link

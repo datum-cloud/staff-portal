@@ -66,7 +66,8 @@ export default function Page() {
       const name = user.metadata?.name ?? '';
       if (name) {
         map.set(name, {
-          displayName: `${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''}`.trim() || name,
+          displayName:
+            `${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''}`.trim() || name,
           email: user.spec?.email ?? '',
         });
       }
