@@ -276,7 +276,9 @@ export default function Page() {
           const userId = (row.spec?.userRef?.name ?? '').toLowerCase();
           const name = (row.metadata?.name ?? '').toLowerCase();
           const decision = (row.status?.decision ?? '').toLowerCase();
-          const contact = userId ? contactsByUserRef.current.get(row.spec?.userRef?.name ?? '') : undefined;
+          const contact = userId
+            ? contactsByUserRef.current.get(row.spec?.userRef?.name ?? '')
+            : undefined;
           const email = (contact?.email ?? '').toLowerCase();
           const contactName = (contact?.name ?? '').toLowerCase();
           return (

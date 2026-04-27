@@ -27,13 +27,7 @@ export default function Page() {
         const displayName =
           row.original.metadata?.annotations?.['kubernetes.io/display-name'] || groupName;
 
-        return (
-          <DisplayName
-            displayName={displayName}
-            name={groupName}
-            to={`./${groupName}`}
-          />
-        );
+        return <DisplayName displayName={displayName} name={groupName} to={`./${groupName}`} />;
       },
     }),
     columnHelper.accessor('metadata.creationTimestamp', {

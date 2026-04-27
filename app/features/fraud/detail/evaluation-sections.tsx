@@ -105,9 +105,7 @@ function ProviderResultRow({ result }: { result: ProviderResult }) {
             {result.failurePolicyApplied && (
               <BadgeState state="warning" message={result.failurePolicyApplied} />
             )}
-            {result.error && (
-              <BadgeState state="error" message={t`Error`} tooltip={result.error} />
-            )}
+            {result.error && <BadgeState state="error" message={t`Error`} tooltip={result.error} />}
           </div>
           <div className="flex items-center gap-4">
             {result.duration && (
@@ -128,8 +126,10 @@ function ProviderResultRow({ result }: { result: ProviderResult }) {
           <ul className="mt-2 space-y-1 pl-1">
             {riskReasons.map((r, i) =>
               r.reasons.map((reason, j) => (
-                <li key={`${i}-${j}`} className="text-muted-foreground flex items-start gap-2 text-xs">
-                  <span className="text-foreground mt-0.5 font-mono font-medium shrink-0">
+                <li
+                  key={`${i}-${j}`}
+                  className="text-muted-foreground flex items-start gap-2 text-xs">
+                  <span className="text-foreground mt-0.5 shrink-0 font-mono font-medium">
                     {r.multiplier}x
                   </span>
                   <span>{reason.reason}</span>
