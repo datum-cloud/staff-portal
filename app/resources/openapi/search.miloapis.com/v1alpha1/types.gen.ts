@@ -8,7 +8,7 @@ export type ClientOptions = {
 /**
  * APIResource specifies the name of a resource and whether it is namespaced.
  */
-export type ApiResourceV1MetaApisPkgApimachineryK8sIo = {
+export type IoK8sApimachineryPkgApisMetaV1ApiResource = {
   /**
    * categories is a list of the grouped resources this resource belongs to (e.g. 'all')
    */
@@ -54,7 +54,7 @@ export type ApiResourceV1MetaApisPkgApimachineryK8sIo = {
 /**
  * APIResourceList is a list of APIResource, it is used to expose the name of the resources supported in a specific group and version, and if the resource is namespaced.
  */
-export type ApiResourceListV1MetaApisPkgApimachineryK8sIo = {
+export type IoK8sApimachineryPkgApisMetaV1ApiResourceList = {
   /**
    * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
    */
@@ -70,17 +70,17 @@ export type ApiResourceListV1MetaApisPkgApimachineryK8sIo = {
   /**
    * resources contains the name of the resources and if they are namespaced.
    */
-  resources: Array<ApiResourceV1MetaApisPkgApimachineryK8sIo>;
+  resources: Array<IoK8sApimachineryPkgApisMetaV1ApiResource>;
 };
 
 /**
  * Condition contains details for one aspect of the current state of this API Resource.
  */
-export type ConditionV1MetaApisPkgApimachineryK8sIo = {
+export type IoK8sApimachineryPkgApisMetaV1Condition = {
   /**
    * lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
    */
-  lastTransitionTime: TimeV1MetaApisPkgApimachineryK8sIo;
+  lastTransitionTime: IoK8sApimachineryPkgApisMetaV1Time;
   /**
    * message is a human readable message indicating details about the transition. This may be an empty string.
    */
@@ -106,7 +106,7 @@ export type ConditionV1MetaApisPkgApimachineryK8sIo = {
 /**
  * DeleteOptions may be provided when deleting an API object.
  */
-export type DeleteOptionsV1MetaApisPkgApimachineryK8sIo = {
+export type IoK8sApimachineryPkgApisMetaV1DeleteOptions = {
   /**
    * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
    */
@@ -134,7 +134,7 @@ export type DeleteOptionsV1MetaApisPkgApimachineryK8sIo = {
   /**
    * Must be fulfilled before a deletion is carried out. If not possible, a 409 Conflict status will be returned.
    */
-  preconditions?: PreconditionsV1MetaApisPkgApimachineryK8sIo;
+  preconditions?: IoK8sApimachineryPkgApisMetaV1Preconditions;
   /**
    * Whether and how garbage collection will be performed. Either this field or OrphanDependents may be set, but not both. The default policy is decided by the existing finalizer set in the metadata.finalizers and the resource-specific default policy. Acceptable values are: 'Orphan' - orphan the dependents; 'Background' - allow the garbage collector to delete the dependents in the background; 'Foreground' - a cascading policy that deletes all dependents in the foreground.
    */
@@ -148,14 +148,14 @@ export type DeleteOptionsV1MetaApisPkgApimachineryK8sIo = {
  *
  * The exact format is defined in sigs.k8s.io/structured-merge-diff
  */
-export type FieldsV1V1MetaApisPkgApimachineryK8sIo = {
+export type IoK8sApimachineryPkgApisMetaV1FieldsV1 = {
   [key: string]: unknown;
 };
 
 /**
  * ListMeta describes metadata that synthetic resources must have, including lists and various status objects. A resource may have only one of {ObjectMeta, ListMeta}.
  */
-export type ListMetaV1MetaApisPkgApimachineryK8sIo = {
+export type IoK8sApimachineryPkgApisMetaV1ListMeta = {
   /**
    * continue may be set if the user set a limit on the number of items returned, and indicates that the server has more data available. The value is opaque and may be used to issue another request to the endpoint that served this list to retrieve the next set of available objects. Continuing a consistent list may not be possible if the server configuration has changed or more than a few minutes have passed. The resourceVersion field returned when using this continue value will be identical to the value in the first response, unless you have received this token from an error message.
    */
@@ -177,7 +177,7 @@ export type ListMetaV1MetaApisPkgApimachineryK8sIo = {
 /**
  * ManagedFieldsEntry is a workflow-id, a FieldSet and the group version of the resource that the fieldset applies to.
  */
-export type ManagedFieldsEntryV1MetaApisPkgApimachineryK8sIo = {
+export type IoK8sApimachineryPkgApisMetaV1ManagedFieldsEntry = {
   /**
    * APIVersion defines the version of this resource that this field set applies to. The format is "group/version" just like the top-level APIVersion field. It is necessary to track the version of a field set because it cannot be automatically converted.
    */
@@ -189,7 +189,7 @@ export type ManagedFieldsEntryV1MetaApisPkgApimachineryK8sIo = {
   /**
    * FieldsV1 holds the first JSON version format as described in the "FieldsV1" type.
    */
-  fieldsV1?: FieldsV1V1MetaApisPkgApimachineryK8sIo;
+  fieldsV1?: IoK8sApimachineryPkgApisMetaV1FieldsV1;
   /**
    * Manager is an identifier of the workflow managing these fields.
    */
@@ -205,13 +205,13 @@ export type ManagedFieldsEntryV1MetaApisPkgApimachineryK8sIo = {
   /**
    * Time is the timestamp of when the ManagedFields entry was added. The timestamp will also be updated if a field is added, the manager changes any of the owned fields value or removes a field. The timestamp does not update when a field is removed from the entry because another manager took it over.
    */
-  time?: TimeV1MetaApisPkgApimachineryK8sIo;
+  time?: IoK8sApimachineryPkgApisMetaV1Time;
 };
 
 /**
  * ObjectMeta is metadata that all persisted resources must have, which includes all objects users must create.
  */
-export type ObjectMetaV1MetaApisPkgApimachineryK8sIo = {
+export type IoK8sApimachineryPkgApisMetaV1ObjectMeta = {
   /**
    * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations
    */
@@ -223,7 +223,7 @@ export type ObjectMetaV1MetaApisPkgApimachineryK8sIo = {
    *
    * Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
    */
-  creationTimestamp?: TimeV1MetaApisPkgApimachineryK8sIo;
+  creationTimestamp?: IoK8sApimachineryPkgApisMetaV1Time;
   /**
    * Number of seconds allowed for this object to gracefully terminate before it will be removed from the system. Only set when deletionTimestamp is also set. May only be shortened. Read-only.
    */
@@ -233,7 +233,7 @@ export type ObjectMetaV1MetaApisPkgApimachineryK8sIo = {
    *
    * Populated by the system when a graceful deletion is requested. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
    */
-  deletionTimestamp?: TimeV1MetaApisPkgApimachineryK8sIo;
+  deletionTimestamp?: IoK8sApimachineryPkgApisMetaV1Time;
   /**
    * Must be empty before the object is deleted from the registry. Each entry is an identifier for the responsible component that will remove the entry from the list. If the deletionTimestamp of the object is non-nil, entries in this list can only be removed. Finalizers may be processed and removed in any order.  Order is NOT enforced because it introduces significant risk of stuck finalizers. finalizers is a shared field, any actor with permission can reorder it. If the finalizer list is processed in order, then this can lead to a situation in which the component responsible for the first finalizer in the list is waiting for a signal (field value, external system, or other) produced by a component responsible for a finalizer later in the list, resulting in a deadlock. Without enforced ordering finalizers are free to order amongst themselves and are not vulnerable to ordering changes in the list.
    */
@@ -259,7 +259,7 @@ export type ObjectMetaV1MetaApisPkgApimachineryK8sIo = {
   /**
    * ManagedFields maps workflow-id and version to the set of fields that are managed by that workflow. This is mostly for internal housekeeping, and users typically shouldn't need to set or understand this field. A workflow can be the user's name, a controller's name, or the name of a specific apply path like "ci-cd". The set of fields is always in the version that the workflow used when modifying the object.
    */
-  managedFields?: Array<ManagedFieldsEntryV1MetaApisPkgApimachineryK8sIo>;
+  managedFields?: Array<IoK8sApimachineryPkgApisMetaV1ManagedFieldsEntry>;
   /**
    * Name must be unique within a namespace. Is required when creating resources, although some resources may allow a client to request the generation of an appropriate name automatically. Name is primarily intended for creation idempotence and configuration definition. Cannot be updated. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names
    */
@@ -273,7 +273,7 @@ export type ObjectMetaV1MetaApisPkgApimachineryK8sIo = {
   /**
    * List of objects depended by this object. If ALL objects in the list have been deleted, this object will be garbage collected. If this object is managed by a controller, then an entry in this list will point to this controller, with the controller field set to true. There cannot be more than one managing controller.
    */
-  ownerReferences?: Array<OwnerReferenceV1MetaApisPkgApimachineryK8sIo>;
+  ownerReferences?: Array<IoK8sApimachineryPkgApisMetaV1OwnerReference>;
   /**
    * An opaque value that represents the internal version of this object that can be used by clients to determine when objects have changed. May be used for optimistic concurrency, change detection, and the watch operation on a resource or set of resources. Clients must treat these values as opaque and passed unmodified back to the server. They may only be valid for a particular resource or set of resources.
    *
@@ -295,7 +295,7 @@ export type ObjectMetaV1MetaApisPkgApimachineryK8sIo = {
 /**
  * OwnerReference contains enough information to let you identify an owning object. An owning object must be in the same namespace as the dependent, or be cluster-scoped, so there is no namespace field.
  */
-export type OwnerReferenceV1MetaApisPkgApimachineryK8sIo = {
+export type IoK8sApimachineryPkgApisMetaV1OwnerReference = {
   /**
    * API version of the referent.
    */
@@ -325,14 +325,14 @@ export type OwnerReferenceV1MetaApisPkgApimachineryK8sIo = {
 /**
  * Patch is provided to give a concrete name and type to the Kubernetes PATCH request body.
  */
-export type PatchV1MetaApisPkgApimachineryK8sIo = {
+export type IoK8sApimachineryPkgApisMetaV1Patch = {
   [key: string]: unknown;
 };
 
 /**
  * Preconditions must be fulfilled before an operation (update, delete, etc.) is carried out.
  */
-export type PreconditionsV1MetaApisPkgApimachineryK8sIo = {
+export type IoK8sApimachineryPkgApisMetaV1Preconditions = {
   /**
    * Specifies the target ResourceVersion
    */
@@ -341,6 +341,123 @@ export type PreconditionsV1MetaApisPkgApimachineryK8sIo = {
    * Specifies the target UID.
    */
   uid?: string;
+};
+
+/**
+ * Status is a return value for calls that don't return other objects.
+ */
+export type IoK8sApimachineryPkgApisMetaV1Status = {
+  /**
+   * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+   */
+  apiVersion?: string;
+  /**
+   * Suggested HTTP return code for this status, 0 if not set.
+   */
+  code?: number;
+  /**
+   * Extended data associated with the reason.  Each reason may define its own extended details. This field is optional and the data returned is not guaranteed to conform to any schema except that defined by the reason type.
+   */
+  details?: IoK8sApimachineryPkgApisMetaV1StatusDetails;
+  /**
+   * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind?: string;
+  /**
+   * A human-readable description of the status of this operation.
+   */
+  message?: string;
+  /**
+   * Standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  metadata?: IoK8sApimachineryPkgApisMetaV1ListMeta;
+  /**
+   * A machine-readable description of why this operation is in the "Failure" status. If this value is empty there is no information available. A Reason clarifies an HTTP status code but does not override it.
+   */
+  reason?: string;
+  /**
+   * Status of the operation. One of: "Success" or "Failure". More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+   */
+  status?: string;
+};
+
+/**
+ * StatusCause provides more information about an api.Status failure, including cases when multiple errors are encountered.
+ */
+export type IoK8sApimachineryPkgApisMetaV1StatusCause = {
+  /**
+   * The field of the resource that has caused this error, as named by its JSON serialization. May include dot and postfix notation for nested attributes. Arrays are zero-indexed.  Fields may appear more than once in an array of causes due to fields having multiple errors. Optional.
+   *
+   * Examples:
+   * "name" - the field "name" on the current resource
+   * "items[0].name" - the field "name" on the first array entry in "items"
+   */
+  field?: string;
+  /**
+   * A human-readable description of the cause of the error.  This field may be presented as-is to a reader.
+   */
+  message?: string;
+  /**
+   * A machine-readable description of the cause of the error. If this value is empty there is no information available.
+   */
+  reason?: string;
+};
+
+/**
+ * StatusDetails is a set of additional properties that MAY be set by the server to provide additional information about a response. The Reason field of a Status object defines what attributes will be set. Clients must ignore fields that do not match the defined type of each attribute, and should assume that any attribute may be empty, invalid, or under defined.
+ */
+export type IoK8sApimachineryPkgApisMetaV1StatusDetails = {
+  /**
+   * The Causes array includes more details associated with the StatusReason failure. Not all StatusReasons may provide detailed causes.
+   */
+  causes?: Array<IoK8sApimachineryPkgApisMetaV1StatusCause>;
+  /**
+   * The group attribute of the resource associated with the status StatusReason.
+   */
+  group?: string;
+  /**
+   * The kind attribute of the resource associated with the status StatusReason. On some operations may differ from the requested resource Kind. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind?: string;
+  /**
+   * The name attribute of the resource associated with the status StatusReason (when there is a single name which can be described).
+   */
+  name?: string;
+  /**
+   * If specified, the time in seconds before the operation should be retried. Some errors may indicate the client must take an alternate action - for those errors this field may indicate how long to wait before taking the alternate action.
+   */
+  retryAfterSeconds?: number;
+  /**
+   * UID of the resource. (when there is a single resource which can be described). More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
+   */
+  uid?: string;
+};
+
+/**
+ * Time is a wrapper around time.Time which supports correct marshaling to YAML and JSON.  Wrappers are provided for many of the factory methods that the time package offers.
+ */
+export type IoK8sApimachineryPkgApisMetaV1Time = string;
+
+/**
+ * Event represents a single event to a watched resource.
+ */
+export type IoK8sApimachineryPkgApisMetaV1WatchEvent = {
+  /**
+   * Object is:
+   * * If Type is Added or Modified: the new state of the object.
+   * * If Type is Deleted: the state of the object immediately before deletion.
+   * * If Type is Error: *Status is recommended; other types may make sense
+   * depending on context.
+   */
+  object: IoK8sApimachineryPkgRuntimeRawExtension;
+  type: string;
+};
+
+/**
+ * Unstructured represents a Kubernetes resource as an arbitrary JSON object.
+ */
+export type IoK8sApimachineryPkgApisMetaV1UnstructuredUnstructured = {
+  [key: string]: unknown;
 };
 
 /**
@@ -383,124 +500,7 @@ export type PreconditionsV1MetaApisPkgApimachineryK8sIo = {
  *
  * So what happens? Decode first uses json or yaml to unmarshal the serialized data into your external MyAPIObject. That causes the raw JSON to be stored, but not unpacked. The next step is to copy (using pkg/conversion) into the internal struct. The runtime package's DefaultScheme has conversion functions installed which will unpack the JSON stored in RawExtension, turning it into the correct object type, and storing it in the Object. (TODO: In the case where the object is of an unknown type, a runtime.Unknown object will be created and stored.)
  */
-export type RawExtensionRuntimePkgApimachineryK8sIo = {
-  [key: string]: unknown;
-};
-
-/**
- * Status is a return value for calls that don't return other objects.
- */
-export type StatusV1MetaApisPkgApimachineryK8sIo = {
-  /**
-   * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-   */
-  apiVersion?: string;
-  /**
-   * Suggested HTTP return code for this status, 0 if not set.
-   */
-  code?: number;
-  /**
-   * Extended data associated with the reason.  Each reason may define its own extended details. This field is optional and the data returned is not guaranteed to conform to any schema except that defined by the reason type.
-   */
-  details?: StatusDetailsV1MetaApisPkgApimachineryK8sIo;
-  /**
-   * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-   */
-  kind?: string;
-  /**
-   * A human-readable description of the status of this operation.
-   */
-  message?: string;
-  /**
-   * Standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-   */
-  metadata?: ListMetaV1MetaApisPkgApimachineryK8sIo;
-  /**
-   * A machine-readable description of why this operation is in the "Failure" status. If this value is empty there is no information available. A Reason clarifies an HTTP status code but does not override it.
-   */
-  reason?: string;
-  /**
-   * Status of the operation. One of: "Success" or "Failure". More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-   */
-  status?: string;
-};
-
-/**
- * StatusCause provides more information about an api.Status failure, including cases when multiple errors are encountered.
- */
-export type StatusCauseV1MetaApisPkgApimachineryK8sIo = {
-  /**
-   * The field of the resource that has caused this error, as named by its JSON serialization. May include dot and postfix notation for nested attributes. Arrays are zero-indexed.  Fields may appear more than once in an array of causes due to fields having multiple errors. Optional.
-   *
-   * Examples:
-   * "name" - the field "name" on the current resource
-   * "items[0].name" - the field "name" on the first array entry in "items"
-   */
-  field?: string;
-  /**
-   * A human-readable description of the cause of the error.  This field may be presented as-is to a reader.
-   */
-  message?: string;
-  /**
-   * A machine-readable description of the cause of the error. If this value is empty there is no information available.
-   */
-  reason?: string;
-};
-
-/**
- * StatusDetails is a set of additional properties that MAY be set by the server to provide additional information about a response. The Reason field of a Status object defines what attributes will be set. Clients must ignore fields that do not match the defined type of each attribute, and should assume that any attribute may be empty, invalid, or under defined.
- */
-export type StatusDetailsV1MetaApisPkgApimachineryK8sIo = {
-  /**
-   * The Causes array includes more details associated with the StatusReason failure. Not all StatusReasons may provide detailed causes.
-   */
-  causes?: Array<StatusCauseV1MetaApisPkgApimachineryK8sIo>;
-  /**
-   * The group attribute of the resource associated with the status StatusReason.
-   */
-  group?: string;
-  /**
-   * The kind attribute of the resource associated with the status StatusReason. On some operations may differ from the requested resource Kind. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-   */
-  kind?: string;
-  /**
-   * The name attribute of the resource associated with the status StatusReason (when there is a single name which can be described).
-   */
-  name?: string;
-  /**
-   * If specified, the time in seconds before the operation should be retried. Some errors may indicate the client must take an alternate action - for those errors this field may indicate how long to wait before taking the alternate action.
-   */
-  retryAfterSeconds?: number;
-  /**
-   * UID of the resource. (when there is a single resource which can be described). More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
-   */
-  uid?: string;
-};
-
-/**
- * Time is a wrapper around time.Time which supports correct marshaling to YAML and JSON.  Wrappers are provided for many of the factory methods that the time package offers.
- */
-export type TimeV1MetaApisPkgApimachineryK8sIo = string;
-
-/**
- * Event represents a single event to a watched resource.
- */
-export type WatchEventV1MetaApisPkgApimachineryK8sIo = {
-  /**
-   * Object is:
-   * * If Type is Added or Modified: the new state of the object.
-   * * If Type is Deleted: the state of the object immediately before deletion.
-   * * If Type is Error: *Status is recommended; other types may make sense
-   * depending on context.
-   */
-  object: RawExtensionRuntimePkgApimachineryK8sIo;
-  type: string;
-};
-
-/**
- * Unstructured represents a Kubernetes resource as an arbitrary JSON object.
- */
-export type IoK8sApimachineryPkgApisMetaV1UnstructuredUnstructured = {
+export type IoK8sApimachineryPkgRuntimeRawExtension = {
   [key: string]: unknown;
 };
 
@@ -544,7 +544,7 @@ export type NetMiloapisGoSearchPkgApisSearchV1Alpha1ResourceIndexPolicy = {
    * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
    */
   kind?: string;
-  metadata: ObjectMetaV1MetaApisPkgApimachineryK8sIo;
+  metadata: IoK8sApimachineryPkgApisMetaV1ObjectMeta;
   spec: NetMiloapisGoSearchPkgApisSearchV1Alpha1ResourceIndexPolicySpec;
   status?: NetMiloapisGoSearchPkgApisSearchV1Alpha1ResourceIndexPolicyStatus;
 };
@@ -562,7 +562,7 @@ export type NetMiloapisGoSearchPkgApisSearchV1Alpha1ResourceIndexPolicyList = {
    * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
    */
   kind?: string;
-  metadata?: ListMetaV1MetaApisPkgApimachineryK8sIo;
+  metadata?: IoK8sApimachineryPkgApisMetaV1ListMeta;
 };
 
 /**
@@ -597,7 +597,7 @@ export type NetMiloapisGoSearchPkgApisSearchV1Alpha1ResourceIndexPolicyStatus = 
   /**
    * Conditions represents the latest available observations of the policy's state.
    */
-  conditions?: Array<ConditionV1MetaApisPkgApimachineryK8sIo>;
+  conditions?: Array<IoK8sApimachineryPkgApisMetaV1Condition>;
   /**
    * CurrentGeneration is the most recent generation of the policy that the controller has successfully reconciled and triggered re-indexing for. Re-indexing is triggered whenever generation != CurrentGeneration, which covers both the first reconciliation and any subsequent spec changes.
    */
@@ -632,7 +632,7 @@ export type NetMiloapisGoSearchPkgApisSearchV1Alpha1ResourceSearchQuery = {
    * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
    */
   kind?: string;
-  metadata?: ObjectMetaV1MetaApisPkgApimachineryK8sIo;
+  metadata?: IoK8sApimachineryPkgApisMetaV1ObjectMeta;
   spec: NetMiloapisGoSearchPkgApisSearchV1Alpha1ResourceSearchQuerySpec;
   status?: NetMiloapisGoSearchPkgApisSearchV1Alpha1ResourceSearchQueryStatus;
 };
@@ -689,6 +689,10 @@ export type NetMiloapisGoSearchPkgApisSearchV1Alpha1SearchResult = {
    * Resource contains the actual Kubernetes resource.
    */
   resource: IoK8sApimachineryPkgApisMetaV1UnstructuredUnstructured;
+  /**
+   * Tenant identifies the tenant from which this result originates.
+   */
+  tenant?: NetMiloapisGoSearchPkgApisSearchV1Alpha1TenantInfo;
 };
 
 /**
@@ -709,6 +713,20 @@ export type NetMiloapisGoSearchPkgApisSearchV1Alpha1TargetResource = {
   version: string;
 };
 
+/**
+ * TenantInfo identifies the tenant from which a search result originates.
+ */
+export type NetMiloapisGoSearchPkgApisSearchV1Alpha1TenantInfo = {
+  /**
+   * Name is the tenant name. "platform" for the platform tenant, or the project name for project-scoped resources.
+   */
+  name?: string;
+  /**
+   * Type is the tenant type. One of "platform" or "project".
+   */
+  type?: string;
+};
+
 export type GetSearchMiloapisComV1Alpha1ApiResourcesData = {
   body?: never;
   path?: never;
@@ -720,14 +738,14 @@ export type GetSearchMiloapisComV1Alpha1ApiResourcesResponses = {
   /**
    * OK
    */
-  200: ProxyResponse<ApiResourceListV1MetaApisPkgApimachineryK8sIo>;
+  200: ProxyResponse<IoK8sApimachineryPkgApisMetaV1ApiResourceList>;
 };
 
 export type GetSearchMiloapisComV1Alpha1ApiResourcesResponse =
   GetSearchMiloapisComV1Alpha1ApiResourcesResponses[keyof GetSearchMiloapisComV1Alpha1ApiResourcesResponses]['data'];
 
 export type DeleteSearchMiloapisComV1Alpha1CollectionResourceIndexPolicyData = {
-  body?: DeleteOptionsV1MetaApisPkgApimachineryK8sIo;
+  body?: IoK8sApimachineryPkgApisMetaV1DeleteOptions;
   path?: never;
   query?: {
     /**
@@ -814,7 +832,7 @@ export type DeleteSearchMiloapisComV1Alpha1CollectionResourceIndexPolicyResponse
   /**
    * OK
    */
-  200: ProxyResponse<StatusV1MetaApisPkgApimachineryK8sIo>;
+  200: ProxyResponse<IoK8sApimachineryPkgApisMetaV1Status>;
 };
 
 export type DeleteSearchMiloapisComV1Alpha1CollectionResourceIndexPolicyResponse =
@@ -945,7 +963,7 @@ export type CreateSearchMiloapisComV1Alpha1ResourceIndexPolicyResponse =
   CreateSearchMiloapisComV1Alpha1ResourceIndexPolicyResponses[keyof CreateSearchMiloapisComV1Alpha1ResourceIndexPolicyResponses]['data'];
 
 export type DeleteSearchMiloapisComV1Alpha1ResourceIndexPolicyData = {
-  body?: DeleteOptionsV1MetaApisPkgApimachineryK8sIo;
+  body?: IoK8sApimachineryPkgApisMetaV1DeleteOptions;
   path: {
     /**
      * name of the ResourceIndexPolicy
@@ -985,11 +1003,11 @@ export type DeleteSearchMiloapisComV1Alpha1ResourceIndexPolicyResponses = {
   /**
    * OK
    */
-  200: ProxyResponse<StatusV1MetaApisPkgApimachineryK8sIo>;
+  200: ProxyResponse<IoK8sApimachineryPkgApisMetaV1Status>;
   /**
    * Accepted
    */
-  202: ProxyResponse<StatusV1MetaApisPkgApimachineryK8sIo>;
+  202: ProxyResponse<IoK8sApimachineryPkgApisMetaV1Status>;
 };
 
 export type DeleteSearchMiloapisComV1Alpha1ResourceIndexPolicyResponse =
@@ -1023,7 +1041,7 @@ export type ReadSearchMiloapisComV1Alpha1ResourceIndexPolicyResponse =
   ReadSearchMiloapisComV1Alpha1ResourceIndexPolicyResponses[keyof ReadSearchMiloapisComV1Alpha1ResourceIndexPolicyResponses]['data'];
 
 export type PatchSearchMiloapisComV1Alpha1ResourceIndexPolicyData = {
-  body: PatchV1MetaApisPkgApimachineryK8sIo;
+  body: IoK8sApimachineryPkgApisMetaV1Patch;
   path: {
     /**
      * name of the ResourceIndexPolicy
@@ -1113,7 +1131,7 @@ export type ReplaceSearchMiloapisComV1Alpha1ResourceIndexPolicyResponse =
   ReplaceSearchMiloapisComV1Alpha1ResourceIndexPolicyResponses[keyof ReplaceSearchMiloapisComV1Alpha1ResourceIndexPolicyResponses]['data'];
 
 export type DeleteSearchMiloapisComV1Alpha1ResourceIndexPolicyStatusData = {
-  body?: DeleteOptionsV1MetaApisPkgApimachineryK8sIo;
+  body?: IoK8sApimachineryPkgApisMetaV1DeleteOptions;
   path: {
     /**
      * name of the ResourceIndexPolicy
@@ -1153,11 +1171,11 @@ export type DeleteSearchMiloapisComV1Alpha1ResourceIndexPolicyStatusResponses = 
   /**
    * OK
    */
-  200: ProxyResponse<StatusV1MetaApisPkgApimachineryK8sIo>;
+  200: ProxyResponse<IoK8sApimachineryPkgApisMetaV1Status>;
   /**
    * Accepted
    */
-  202: ProxyResponse<StatusV1MetaApisPkgApimachineryK8sIo>;
+  202: ProxyResponse<IoK8sApimachineryPkgApisMetaV1Status>;
 };
 
 export type DeleteSearchMiloapisComV1Alpha1ResourceIndexPolicyStatusResponse =
@@ -1191,7 +1209,7 @@ export type ReadSearchMiloapisComV1Alpha1ResourceIndexPolicyStatusResponse =
   ReadSearchMiloapisComV1Alpha1ResourceIndexPolicyStatusResponses[keyof ReadSearchMiloapisComV1Alpha1ResourceIndexPolicyStatusResponses]['data'];
 
 export type PatchSearchMiloapisComV1Alpha1ResourceIndexPolicyStatusData = {
-  body: PatchV1MetaApisPkgApimachineryK8sIo;
+  body: IoK8sApimachineryPkgApisMetaV1Patch;
   path: {
     /**
      * name of the ResourceIndexPolicy
@@ -1445,7 +1463,7 @@ export type WatchSearchMiloapisComV1Alpha1ResourceIndexPolicyListResponses = {
   /**
    * OK
    */
-  200: ProxyResponse<WatchEventV1MetaApisPkgApimachineryK8sIo>;
+  200: ProxyResponse<IoK8sApimachineryPkgApisMetaV1WatchEvent>;
 };
 
 export type WatchSearchMiloapisComV1Alpha1ResourceIndexPolicyListResponse =
@@ -1532,7 +1550,7 @@ export type WatchSearchMiloapisComV1Alpha1ResourceIndexPolicyResponses = {
   /**
    * OK
    */
-  200: ProxyResponse<WatchEventV1MetaApisPkgApimachineryK8sIo>;
+  200: ProxyResponse<IoK8sApimachineryPkgApisMetaV1WatchEvent>;
 };
 
 export type WatchSearchMiloapisComV1Alpha1ResourceIndexPolicyResponse =
@@ -1619,7 +1637,7 @@ export type WatchSearchMiloapisComV1Alpha1ResourceIndexPolicyStatusResponses = {
   /**
    * OK
    */
-  200: ProxyResponse<WatchEventV1MetaApisPkgApimachineryK8sIo>;
+  200: ProxyResponse<IoK8sApimachineryPkgApisMetaV1WatchEvent>;
 };
 
 export type WatchSearchMiloapisComV1Alpha1ResourceIndexPolicyStatusResponse =
