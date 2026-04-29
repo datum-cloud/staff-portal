@@ -235,7 +235,6 @@ export class OtelProvider extends BaseProvider {
       url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT!,
       credentials: credentials.createInsecure(),
       timeoutMillis: parseInt(process.env.OTEL_EXPORTER_TIMEOUT || '10000'),
-      headers: {},
     });
 
     // Wrap the exporter with error handling
