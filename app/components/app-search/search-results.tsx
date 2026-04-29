@@ -1,6 +1,7 @@
 import { SearchResultGroup } from './search-result-group';
 import type { useAppSearch } from './use-app-search';
-import { contactRoutes, routes } from '@/utils/config/routes.config';
+import type { SearchResultItem } from '@/resources/request/client';
+import { contactRoutes, projectRoutes, routes } from '@/utils/config/routes.config';
 import {
   Command,
   CommandEmpty,
@@ -30,9 +31,7 @@ interface SearchResultsProps {
 
 function SeeAllLink({ to, label }: { to: string; label: string }) {
   return (
-    <Link
-      to={to}
-      className="text-primary hover:text-primary/80 block px-3 py-1.5 text-sm font-medium">
+    <Link to={to} className="text-primary hover:text-primary/80 block p-2 text-xs">
       {label} →
     </Link>
   );
@@ -78,6 +77,19 @@ export function SearchResults({ state, listClassName }: SearchResultsProps) {
     const ready = conditions.find((c) => c.type === 'Ready');
     return ready?.status === 'True' ? 'Active' : 'Pending';
   };
+
+  // Project name lives in `tenant.name` for project-scoped results.
+  // tenant.type case has been observed as both "project" and "Project".
+  const getProjectName = (item: { tenant?: { name?: string; type?: string } }): string =>
+    item.tenant?.type?.toLowerCase() === 'project' ? (item.tenant?.name ?? '') : '';
+
+  // Search response strips metadata.namespace; default to "default" to match
+  // server-side request modules (projectDnsDetailQuery / projectDomainDetailQuery).
+  const getNamespace = (metadata: { namespace?: string } | undefined): string =>
+    metadata?.namespace ?? 'default';
+
+  const getItemKey = <T extends { metadata?: { name?: string } }>(item: SearchResultItem<T>) =>
+    item.resource.metadata?.name ?? '';
 
   return (
     <Command shouldFilter={false}>
@@ -134,49 +146,56 @@ export function SearchResults({ state, listClassName }: SearchResultsProps) {
                       {t`Entities`}
                     </Text>
 
-                    <SearchResultGroup<ComMiloapisResourcemanagerV1Alpha1Organization>
+                    <SearchResultGroup<
+                      SearchResultItem<ComMiloapisResourcemanagerV1Alpha1Organization>
+                    >
                       heading={t`Organizations`}
                       items={orgResults || []}
                       icon={Building2}
-                      getValue={(org) =>
-                        `${org.metadata?.name ?? ''} ${getDisplayName(org)} ${org.metadata?.annotations?.['kubernetes.io/description'] ?? ''}`
+                      getKey={getItemKey}
+                      getValue={(item) =>
+                        `${item.resource.metadata?.name ?? ''} ${getDisplayName(item.resource)} ${item.resource.metadata?.annotations?.['kubernetes.io/description'] ?? ''}`
                       }
-                      getTitle={(org) => getDisplayName(org)}
-                      getSubtitle={(org) => org.metadata?.name ?? ''}
-                      onSelect={(org) =>
+                      getTitle={(item) => getDisplayName(item.resource)}
+                      getSubtitle={(item) => item.resource.metadata?.name ?? ''}
+                      onSelect={(item) =>
                         runCommand(() =>
-                          navigate(routes.organizations.detail(org.metadata?.name ?? ''))
+                          navigate(routes.organizations.detail(item.resource.metadata?.name ?? ''))
                         )
                       }
                     />
-                    <SearchResultGroup<ComMiloapisResourcemanagerV1Alpha1Project>
+                    <SearchResultGroup<SearchResultItem<ComMiloapisResourcemanagerV1Alpha1Project>>
                       heading={t`Projects`}
                       items={projectResults || []}
                       icon={FolderOpen}
-                      getValue={(project) =>
-                        `${project.metadata?.name ?? ''} ${getDisplayName(project)} ${project.metadata?.annotations?.['kubernetes.io/description'] ?? ''}`
+                      getKey={getItemKey}
+                      getValue={(item) =>
+                        `${item.resource.metadata?.name ?? ''} ${getDisplayName(item.resource)} ${item.resource.metadata?.annotations?.['kubernetes.io/description'] ?? ''}`
                       }
-                      getTitle={(project) => getDisplayName(project)}
-                      getSubtitle={(project) => project.metadata?.name ?? ''}
-                      onSelect={(project) =>
+                      getTitle={(item) => getDisplayName(item.resource)}
+                      getSubtitle={(item) => item.resource.metadata?.name ?? ''}
+                      onSelect={(item) =>
                         runCommand(() =>
-                          navigate(routes.projects.detail(project.metadata?.name ?? ''))
+                          navigate(routes.projects.detail(item.resource.metadata?.name ?? ''))
                         )
                       }
                     />
-                    <SearchResultGroup<ComMiloapisIamV1Alpha1User>
+                    <SearchResultGroup<SearchResultItem<ComMiloapisIamV1Alpha1User>>
                       heading={t`Users`}
                       items={userResults || []}
                       icon={Users}
-                      getValue={(user) =>
-                        `${user.metadata?.name ?? ''} ${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''} ${user.spec?.email ?? ''}`
+                      getKey={getItemKey}
+                      getValue={(item) =>
+                        `${item.resource.metadata?.name ?? ''} ${item.resource.spec?.givenName ?? ''} ${item.resource.spec?.familyName ?? ''} ${item.resource.spec?.email ?? ''}`
                       }
-                      getTitle={(user) =>
-                        `${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''}`.trim()
+                      getTitle={(item) =>
+                        `${item.resource.spec?.givenName ?? ''} ${item.resource.spec?.familyName ?? ''}`.trim()
                       }
-                      getSubtitle={(user) => user.spec?.email ?? ''}
-                      onSelect={(user) =>
-                        runCommand(() => navigate(routes.users.detail(user.metadata?.name ?? '')))
+                      getSubtitle={(item) => item.resource.spec?.email ?? ''}
+                      onSelect={(item) =>
+                        runCommand(() =>
+                          navigate(routes.users.detail(item.resource.metadata?.name ?? ''))
+                        )
                       }
                     />
                   </>
@@ -194,21 +213,33 @@ export function SearchResults({ state, listClassName }: SearchResultsProps) {
                       {t`Resources`}
                     </Text>
 
-                    <SearchResultGroup<ComDatumapisNetworkingV1AlphaDomain>
+                    <SearchResultGroup<SearchResultItem<ComDatumapisNetworkingV1AlphaDomain>>
                       heading={t`Domains`}
                       items={(domainResults || []).slice(0, 3)}
                       icon={Globe}
                       iconClassName="text-green-600"
-                      getValue={(d) => `${d.metadata?.name ?? ''} ${d.spec?.domainName ?? ''}`}
-                      getTitle={(d) => d.spec?.domainName ?? d.metadata?.name ?? ''}
-                      getSubtitle={(d) =>
-                        [getDomainStatus(d), getDomainRegistrar(d)].filter(Boolean).join(' \u2022 ')
+                      getKey={getItemKey}
+                      getValue={(item) =>
+                        `${item.resource.metadata?.name ?? ''} ${item.resource.spec?.domainName ?? ''}`
                       }
-                      onSelect={(d) =>
+                      getTitle={(item) =>
+                        item.resource.spec?.domainName ?? item.resource.metadata?.name ?? ''
+                      }
+                      getSubtitle={(item) =>
+                        [getDomainStatus(item.resource), getDomainRegistrar(item.resource)]
+                          .filter(Boolean)
+                          .join(' \u2022 ')
+                      }
+                      onSelect={(item) =>
                         runCommand(() => {
-                          const projectName = d.metadata?.namespace ?? '';
+                          const projectName = getProjectName(item);
+                          const namespace = getNamespace(item.resource.metadata);
                           navigate(
-                            `/customers/projects/${projectName}/domains/${d.metadata?.namespace ?? ''}/${d.metadata?.name ?? ''}`
+                            projectRoutes.domain.detail(
+                              projectName,
+                              namespace,
+                              item.resource.metadata?.name ?? ''
+                            )
                           );
                         })
                       }
@@ -219,19 +250,33 @@ export function SearchResults({ state, listClassName }: SearchResultsProps) {
                       }
                     />
 
-                    <SearchResultGroup<ComMiloapisNetworkingDnsV1Alpha1DnsZone>
+                    <SearchResultGroup<SearchResultItem<ComMiloapisNetworkingDnsV1Alpha1DnsZone>>
                       heading={t`DNS Zones`}
                       items={(dnsZoneResults || []).slice(0, 3)}
                       icon={Server}
                       iconClassName="text-blue-600"
-                      getValue={(z) => `${z.metadata?.name ?? ''} ${z.spec?.domainName ?? ''}`}
-                      getTitle={(z) => z.spec?.domainName ?? z.metadata?.name ?? ''}
-                      getSubtitle={(z) => [getDnsRecordCount(z), getDnsStatus(z)].join(' \u2022 ')}
-                      onSelect={(z) =>
+                      getKey={getItemKey}
+                      getValue={(item) =>
+                        `${item.resource.metadata?.name ?? ''} ${item.resource.spec?.domainName ?? ''}`
+                      }
+                      getTitle={(item) =>
+                        item.resource.spec?.domainName ?? item.resource.metadata?.name ?? ''
+                      }
+                      getSubtitle={(item) =>
+                        [getDnsRecordCount(item.resource), getDnsStatus(item.resource)].join(
+                          ' \u2022 '
+                        )
+                      }
+                      onSelect={(item) =>
                         runCommand(() => {
-                          const projectName = z.metadata?.namespace ?? '';
+                          const projectName = getProjectName(item);
+                          const namespace = getNamespace(item.resource.metadata);
                           navigate(
-                            `/customers/projects/${projectName}/dns/${z.metadata?.namespace ?? ''}/${z.metadata?.name ?? ''}`
+                            projectRoutes.dns.detail(
+                              projectName,
+                              namespace,
+                              item.resource.metadata?.name ?? ''
+                            )
                           );
                         })
                       }
@@ -242,25 +287,26 @@ export function SearchResults({ state, listClassName }: SearchResultsProps) {
                       }
                     />
 
-                    <SearchResultGroup<ComMiloapisNotificationV1Alpha1Contact>
+                    <SearchResultGroup<SearchResultItem<ComMiloapisNotificationV1Alpha1Contact>>
                       heading={t`Contacts`}
                       items={(contactResults || []).slice(0, 3)}
                       icon={Contact}
                       iconClassName="text-orange-600"
-                      getValue={(c) =>
-                        `${c.metadata?.name ?? ''} ${c.spec?.givenName ?? ''} ${c.spec?.familyName ?? ''} ${c.spec?.email ?? ''}`
+                      getKey={getItemKey}
+                      getValue={(item) =>
+                        `${item.resource.metadata?.name ?? ''} ${item.resource.spec?.givenName ?? ''} ${item.resource.spec?.familyName ?? ''} ${item.resource.spec?.email ?? ''}`
                       }
-                      getTitle={(c) =>
-                        `${c.spec?.givenName ?? ''} ${c.spec?.familyName ?? ''}`.trim() ||
-                        (c.metadata?.name ?? '')
+                      getTitle={(item) =>
+                        `${item.resource.spec?.givenName ?? ''} ${item.resource.spec?.familyName ?? ''}`.trim() ||
+                        (item.resource.metadata?.name ?? '')
                       }
-                      getSubtitle={(c) => c.spec?.email ?? ''}
-                      onSelect={(c) =>
+                      getSubtitle={(item) => item.resource.spec?.email ?? ''}
+                      onSelect={(item) =>
                         runCommand(() =>
                           navigate(
                             contactRoutes.detail(
-                              c.metadata?.namespace ?? '',
-                              c.metadata?.name ?? ''
+                              getNamespace(item.resource.metadata),
+                              item.resource.metadata?.name ?? ''
                             )
                           )
                         )

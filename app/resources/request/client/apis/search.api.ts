@@ -27,13 +27,25 @@ const ALL_TARGET_RESOURCES: NetMiloapisGoSearchPkgApisSearchV1Alpha1TargetResour
   // { group: 'notes.miloapis.com', version: 'v1alpha1', kind: 'Note' },
 ];
 
+/**
+ * A single grouped search result, paired with the tenant info from the
+ * upstream search index. `tenant.name` is the project name when
+ * `tenant.type` is "project" (case-insensitive — the API spec says lowercase
+ * but in practice "Project" has been observed). Use this to resolve project
+ * scope for project-scoped resources (DNS zones, domains).
+ */
+export interface SearchResultItem<T> {
+  resource: T;
+  tenant?: { name?: string; type?: string };
+}
+
 export interface GroupedSearchResults {
-  users: ComMiloapisIamV1Alpha1User[];
-  organizations: ComMiloapisResourcemanagerV1Alpha1Organization[];
-  projects: ComMiloapisResourcemanagerV1Alpha1Project[];
-  domains: ComDatumapisNetworkingV1AlphaDomain[];
-  dnsZones: ComMiloapisNetworkingDnsV1Alpha1DnsZone[];
-  contacts: ComMiloapisNotificationV1Alpha1Contact[];
+  users: SearchResultItem<ComMiloapisIamV1Alpha1User>[];
+  organizations: SearchResultItem<ComMiloapisResourcemanagerV1Alpha1Organization>[];
+  projects: SearchResultItem<ComMiloapisResourcemanagerV1Alpha1Project>[];
+  domains: SearchResultItem<ComDatumapisNetworkingV1AlphaDomain>[];
+  dnsZones: SearchResultItem<ComMiloapisNetworkingDnsV1Alpha1DnsZone>[];
+  contacts: SearchResultItem<ComMiloapisNotificationV1Alpha1Contact>[];
 }
 
 /**
@@ -75,37 +87,51 @@ export async function searchAllQuery(queryString: string): Promise<GroupedSearch
 
   for (const result of results) {
     const resource = result.resource as any;
+    const tenant = result.tenant;
     const apiVersion = (resource?.apiVersion as string) ?? '';
     const kind = ((resource?.kind as string) ?? '').toLowerCase();
 
     // Use apiVersion as primary discriminator, kind to disambiguate within same group
     if (apiVersion.startsWith('iam.miloapis.com/')) {
-      grouped.users.push(resource as ComMiloapisIamV1Alpha1User);
+      grouped.users.push({ resource: resource as ComMiloapisIamV1Alpha1User, tenant });
     } else if (apiVersion.startsWith('resourcemanager.miloapis.com/')) {
       if (kind === 'organization') {
-        grouped.organizations.push(resource as ComMiloapisResourcemanagerV1Alpha1Organization);
+        grouped.organizations.push({
+          resource: resource as ComMiloapisResourcemanagerV1Alpha1Organization,
+          tenant,
+        });
       } else {
-        grouped.projects.push(resource as ComMiloapisResourcemanagerV1Alpha1Project);
+        grouped.projects.push({
+          resource: resource as ComMiloapisResourcemanagerV1Alpha1Project,
+          tenant,
+        });
       }
     } else if (apiVersion.startsWith('networking.datumapis.com/')) {
-      grouped.domains.push(resource as ComDatumapisNetworkingV1AlphaDomain);
+      grouped.domains.push({ resource: resource as ComDatumapisNetworkingV1AlphaDomain, tenant });
     } else if (apiVersion.startsWith('dns.networking.miloapis.com/')) {
-      grouped.dnsZones.push(resource as ComMiloapisNetworkingDnsV1Alpha1DnsZone);
+      grouped.dnsZones.push({
+        resource: resource as ComMiloapisNetworkingDnsV1Alpha1DnsZone,
+        tenant,
+      });
     } else if (apiVersion.startsWith('notification.miloapis.com/')) {
-      grouped.contacts.push(resource as ComMiloapisNotificationV1Alpha1Contact);
+      grouped.contacts.push({
+        resource: resource as ComMiloapisNotificationV1Alpha1Contact,
+        tenant,
+      });
     }
   }
 
-  // Enrich users with full data where possible
+  // Enrich users with full data where possible — tenant is preserved.
   try {
     grouped.users = await Promise.all(
-      grouped.users.map(async (user) => {
-        const name = user.metadata?.name;
-        if (!name) return user;
+      grouped.users.map(async (item) => {
+        const name = item.resource.metadata?.name;
+        if (!name) return item;
         try {
-          return (await userGetQuery(name)) ?? user;
+          const enriched = await userGetQuery(name);
+          return enriched ? { ...item, resource: enriched } : item;
         } catch {
-          return user;
+          return item;
         }
       })
     );

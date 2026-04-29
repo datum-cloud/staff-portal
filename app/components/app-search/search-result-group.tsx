@@ -11,6 +11,7 @@ interface SearchResultGroupProps<T> {
   icon: LucideIcon;
   /** Optional color class for the icon (e.g. "text-green-600") */
   iconClassName?: string;
+  getKey: (item: T) => string;
   getValue: (item: T) => string;
   getTitle: (item: T) => string;
   getSubtitle: (item: T) => string;
@@ -20,11 +21,12 @@ interface SearchResultGroupProps<T> {
   footer?: ReactNode;
 }
 
-export const SearchResultGroup = <T extends { metadata?: { name?: string } }>({
+export const SearchResultGroup = <T,>({
   heading,
   items,
   icon,
   iconClassName,
+  getKey,
   getValue,
   getTitle,
   getSubtitle,
@@ -44,7 +46,7 @@ export const SearchResultGroup = <T extends { metadata?: { name?: string } }>({
         const Icon = icon;
         return (
           <CommandItem
-            key={item.metadata?.name ?? ''}
+            key={getKey(item)}
             value={getValue(item)}
             className="cursor-pointer"
             onSelect={() => onSelect(item)}>
