@@ -115,7 +115,7 @@
     "happy-dom": "^20.0.7",
     "lefthook": "^2.0.0",
     "postcss": "^8.5.3",
-    "prettier": "^3.5.3",
+    "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "start-server-and-test": "^3.0.0",
     "tailwindcss": "^4.1.6",
