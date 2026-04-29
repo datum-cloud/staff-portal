@@ -1,10 +1,12 @@
 import tailwindcss from '@tailwindcss/vite';
 import macrosPlugin from 'vite-plugin-babel-macros';
-import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  plugins: [tailwindcss(), tsconfigPaths(), macrosPlugin()],
+  resolve: {
+    tsconfigPaths: true,
+  },
+  plugins: [tailwindcss(), macrosPlugin()],
   test: {
     environment: 'happy-dom',
     setupFiles: ['./tests/setup/unit/global.mocks.tsx', './tests/setup/unit/vitest.setup.ts'],
