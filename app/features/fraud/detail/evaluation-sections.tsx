@@ -2,6 +2,7 @@ import type { FraudEvaluation, HistoryEntry, ProviderResult, StageResult } from 
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DisplayId } from '@/components/display';
+import { useEnv } from '@/hooks/use-env';
 import { fraudRoutes, userRoutes } from '@/utils/config/routes.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
@@ -10,7 +11,7 @@ import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ArrowLeft, Clock, History, Layers, Mail, User } from 'lucide-react';
+import { ArrowLeft, Clock, ExternalLink, History, Layers, Mail, User } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
 
@@ -78,13 +79,29 @@ function parseRiskScoreReasons(raw: string): RiskScoreReason[] {
   }
 }
 
+// MaxMind minFraud responses include an `id` UUID identifying the transaction.
+// We deep-link into the MaxMind portal using that id when MAXMIND_ACCOUNT_ID is
+// configured.
+function parseMaxmindTransactionID(raw: string): string | undefined {
+  try {
+    const parsed = JSON.parse(raw);
+    return typeof parsed?.id === 'string' ? parsed.id : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 function ProviderResultRow({ result }: { result: ProviderResult }) {
   const [rawOpen, setRawOpen] = useState(false);
+  const env = useEnv();
 
-  const riskReasons =
-    result.provider === 'maxmind' && result.rawResponse
-      ? parseRiskScoreReasons(result.rawResponse)
-      : [];
+  const isMaxmind = result.provider === 'maxmind' && !!result.rawResponse;
+  const riskReasons = isMaxmind ? parseRiskScoreReasons(result.rawResponse!) : [];
+  const maxmindTxID = isMaxmind ? parseMaxmindTransactionID(result.rawResponse!) : undefined;
+  const maxmindURL =
+    maxmindTxID && env?.MAXMIND_ACCOUNT_ID
+      ? `https://www.maxmind.com/en/accounts/${env.MAXMIND_ACCOUNT_ID}/minfraud-interactive/transactions/${maxmindTxID}`
+      : undefined;
 
   return (
     <>
@@ -115,6 +132,15 @@ function ProviderResultRow({ result }: { result: ProviderResult }) {
               </span>
             )}
             <Text className="font-mono text-sm font-medium">{result.score}</Text>
+            {maxmindURL && (
+              <Button
+                size="small"
+                theme="outline"
+                onClick={() => window.open(maxmindURL, '_blank', 'noopener,noreferrer')}>
+                <ExternalLink className="mr-1 h-3 w-3" />
+                <Trans>View on MaxMind</Trans>
+              </Button>
+            )}
             {result.rawResponse && (
               <Button size="small" theme="outline" onClick={() => setRawOpen(true)}>
                 <Trans>View Raw Results</Trans>

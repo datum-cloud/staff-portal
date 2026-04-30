@@ -54,6 +54,7 @@ export async function loader({ request }: Route.LoaderArgs) {
         CLOUD_PORTAL_URL: env.CLOUD_PORTAL_URL,
         CHATBOT_ENABLED: env.chatbotEnabled,
         MCP_ENABLED: !!(env.mcpUrl && env.mcpApiKey),
+        MAXMIND_ACCOUNT_ID: env.MAXMIND_ACCOUNT_ID,
       } satisfies PublicEnv,
     },
     { headers: { 'Set-Cookie': cookie } }
