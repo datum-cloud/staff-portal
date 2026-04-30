@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:243
+#: app/features/fraud/detail/evaluation-sections.tsx:269
 msgid "(current)"
 msgstr "(current)"
 
@@ -22,7 +22,7 @@ msgstr "(current)"
 msgid "{0} entries"
 msgstr "{0} entries"
 
-#: app/components/app-search/search-result-group.tsx:42
+#: app/components/app-search/search-result-group.tsx:44
 msgid "{heading}"
 msgstr "{heading}"
 
@@ -79,7 +79,7 @@ msgstr "409 - Conflict"
 msgid "500 - Server Error"
 msgstr "500 - Server Error"
 
-#: app/routes/fraud/index.tsx:317
+#: app/routes/fraud/index.tsx:319
 #: app/routes/organization/detail/member.tsx:186
 msgid "Accepted"
 msgstr "Accepted"
@@ -138,8 +138,8 @@ msgstr "Activity Feed"
 #: app/routes/contact/detail/group.tsx:152
 #: app/routes/contact/detail/group.tsx:173
 #: app/routes/contact/index.tsx:27
-#: app/routes/group/member.tsx:141
-#: app/routes/group/member.tsx:164
+#: app/routes/group/member.tsx:147
+#: app/routes/group/member.tsx:170
 msgid "Add"
 msgstr "Add"
 
@@ -152,7 +152,7 @@ msgid "Add Group"
 msgstr "Add Group"
 
 #: app/routes/contact-group/detail/member.tsx:361
-#: app/routes/group/member.tsx:163
+#: app/routes/group/member.tsx:169
 msgid "Add Member"
 msgstr "Add Member"
 
@@ -199,7 +199,7 @@ msgstr "AI Edge"
 msgid "All evaluations are clear"
 msgstr "All evaluations are clear"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:227
+#: app/features/fraud/detail/evaluation-sections.tsx:253
 msgid "All Evaluations for this User"
 msgstr "All Evaluations for this User"
 
@@ -266,7 +266,7 @@ msgid "Are you sure you want to delete group \"{0}\"? This action cannot be undo
 msgstr "Are you sure you want to delete group \"{0}\"? This action cannot be undone."
 
 #. placeholder {0}: selectedGroupMembership?.metadata?.name ?? ''
-#: app/routes/group/member.tsx:149
+#: app/routes/group/member.tsx:155
 msgid "Are you sure you want to delete member \"{0}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete member \"{0}\"? This action cannot be undone."
 
@@ -334,7 +334,7 @@ msgstr "Available"
 msgid "Back"
 msgstr "Back"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:282
+#: app/features/fraud/detail/evaluation-sections.tsx:308
 msgid "Back to evaluations"
 msgstr "Back to evaluations"
 
@@ -360,8 +360,8 @@ msgstr "Back to evaluations"
 #: app/routes/fraud/providers/detail.tsx:164
 #: app/routes/fraud/providers/detail.tsx:186
 #: app/routes/fraud/providers/index.tsx:133
-#: app/routes/group/member.tsx:151
-#: app/routes/group/member.tsx:165
+#: app/routes/group/member.tsx:157
+#: app/routes/group/member.tsx:171
 #: app/routes/organization/detail/member.tsx:85
 #: app/routes/profile/session.tsx:106
 #: app/routes/user/detail/index.tsx:144
@@ -378,7 +378,7 @@ msgid "Choose how the portal looks to you. Select a single theme, or sync with y
 msgstr "Choose how the portal looks to you. Select a single theme, or sync with your system."
 
 #: app/components/app-search/app-search-mobile.tsx:71
-#: app/features/fraud/detail/evaluation-sections.tsx:62
+#: app/features/fraud/detail/evaluation-sections.tsx:63
 msgid "Close"
 msgstr "Close"
 
@@ -398,7 +398,7 @@ msgstr "Cluster metrics unavailable"
 msgid "clusters healthy"
 msgstr "clusters healthy"
 
-#: app/routes/fraud/index.tsx:306
+#: app/routes/fraud/index.tsx:308
 msgid "Completed"
 msgstr "Completed"
 
@@ -407,7 +407,7 @@ msgstr "Completed"
 msgid "Configuration"
 msgstr "Configuration"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:324
+#: app/features/fraud/detail/evaluation-sections.tsx:350
 #: app/routes/contact-group/detail/member.tsx:68
 msgid "Contact"
 msgstr "Contact"
@@ -459,7 +459,7 @@ msgstr "Contact Information"
 msgid "Contact updated successfully"
 msgstr "Contact updated successfully"
 
-#: app/components/app-search/search-results.tsx:246
+#: app/components/app-search/search-results.tsx:291
 #: app/components/app-sidebar/index.tsx:119
 #: app/components/app-sidebar/index.tsx:125
 #: app/routes/contact/index.tsx:14
@@ -534,8 +534,8 @@ msgstr "Create Policy"
 #: app/features/quota/components/quota-grant-list.tsx:114
 #: app/routes/contact-group/index.tsx:89
 #: app/routes/fraud/providers/index.tsx:102
-#: app/routes/group/index.tsx:41
-#: app/routes/group/member.tsx:116
+#: app/routes/group/index.tsx:35
+#: app/routes/group/member.tsx:122
 #: app/routes/organization/detail/index.tsx:54
 #: app/routes/organization/detail/project.tsx:50
 #: app/routes/organization/index.tsx:43
@@ -583,7 +583,7 @@ msgstr "Dashboard"
 msgid "Date"
 msgstr "Date"
 
-#: app/routes/fraud/index.tsx:319
+#: app/routes/fraud/index.tsx:321
 #: app/routes/user/detail/index.tsx:143
 #: app/routes/user/detail/index.tsx:433
 msgid "Deactivate"
@@ -615,10 +615,10 @@ msgid "Deactivation Reason"
 msgstr "Deactivation Reason"
 
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:150
-#: app/features/fraud/detail/evaluation-sections.tsx:358
+#: app/features/fraud/detail/evaluation-sections.tsx:384
 #: app/routes/fraud/index.tsx:157
-#: app/routes/fraud/index.tsx:314
-#: app/routes/fraud/index.tsx:339
+#: app/routes/fraud/index.tsx:316
+#: app/routes/fraud/index.tsx:341
 #: app/routes/user/detail/index.tsx:305
 msgid "Decision"
 msgstr "Decision"
@@ -652,8 +652,8 @@ msgstr "Degraded"
 #: app/routes/fraud/providers/detail.tsx:185
 #: app/routes/fraud/providers/index.tsx:46
 #: app/routes/fraud/providers/index.tsx:132
-#: app/routes/group/member.tsx:89
-#: app/routes/group/member.tsx:150
+#: app/routes/group/member.tsx:95
+#: app/routes/group/member.tsx:156
 #: app/routes/profile/session.tsx:41
 #: app/routes/profile/session.tsx:105
 msgid "Delete"
@@ -700,7 +700,7 @@ msgstr "Delete Grant"
 
 #: app/routes/contact-group/detail/member.tsx:343
 #: app/routes/contact/detail/group.tsx:158
-#: app/routes/group/member.tsx:148
+#: app/routes/group/member.tsx:154
 msgid "Delete Member"
 msgstr "Delete Member"
 
@@ -795,7 +795,7 @@ msgstr "DNS Records"
 msgid "DNS Zone"
 msgstr "DNS Zone"
 
-#: app/components/app-search/search-results.tsx:223
+#: app/components/app-search/search-results.tsx:254
 msgid "DNS Zones"
 msgstr "DNS Zones"
 
@@ -810,7 +810,7 @@ msgstr "Domain"
 msgid "Domain verification is in progress. This may take a few minutes."
 msgstr "Domain verification is in progress. This may take a few minutes."
 
-#: app/components/app-search/search-results.tsx:198
+#: app/components/app-search/search-results.tsx:217
 #: app/routes/project/detail/domain/layout.tsx:5
 #: app/routes/project/detail/layout.tsx:134
 msgid "Domains"
@@ -878,14 +878,14 @@ msgstr "End Time"
 msgid "Endpoint"
 msgstr "Endpoint"
 
-#: app/routes/fraud/index.tsx:328
+#: app/routes/fraud/index.tsx:330
 msgid "Enforced"
 msgstr "Enforced"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:373
+#: app/features/fraud/detail/evaluation-sections.tsx:399
 #: app/routes/fraud/index.tsx:172
-#: app/routes/fraud/index.tsx:324
-#: app/routes/fraud/index.tsx:340
+#: app/routes/fraud/index.tsx:326
+#: app/routes/fraud/index.tsx:342
 msgid "Enforcement"
 msgstr "Enforcement"
 
@@ -912,7 +912,7 @@ msgstr "Enter reason for rejection..."
 
 #: app/features/contact/components/contact-form.tsx:199
 #: app/routes/contact-group/detail/member.tsx:115
-#: app/routes/group/member.tsx:189
+#: app/routes/group/member.tsx:195
 msgid "Enter the full email to search..."
 msgstr "Enter the full email to search..."
 
@@ -920,16 +920,16 @@ msgstr "Enter the full email to search..."
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr "Enter the word <0>{confirmationText}</0> to perform this action."
 
-#: app/components/app-search/search-results.tsx:134
+#: app/components/app-search/search-results.tsx:146
 msgid "Entities"
 msgstr "Entities"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:109
-#: app/routes/fraud/index.tsx:309
+#: app/features/fraud/detail/evaluation-sections.tsx:125
+#: app/routes/fraud/index.tsx:311
 msgid "Error"
 msgstr "Error"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:388
+#: app/features/fraud/detail/evaluation-sections.tsx:414
 #: app/routes/fraud/index.tsx:186
 msgid "Evaluated"
 msgstr "Evaluated"
@@ -938,7 +938,7 @@ msgstr "Evaluated"
 msgid "Evaluation deleted successfully"
 msgstr "Evaluation deleted successfully"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:179
+#: app/features/fraud/detail/evaluation-sections.tsx:205
 msgid "Evaluation History"
 msgstr "Evaluation History"
 
@@ -946,7 +946,7 @@ msgstr "Evaluation History"
 msgid "Evaluation not found."
 msgstr "Evaluation not found."
 
-#: app/features/fraud/detail/evaluation-sections.tsx:300
+#: app/features/fraud/detail/evaluation-sections.tsx:326
 msgid "Evaluation Overview"
 msgstr "Evaluation Overview"
 
@@ -1011,11 +1011,11 @@ msgstr "Failure Policy"
 msgid "Filter by approval"
 msgstr "Filter by approval"
 
-#: app/routes/fraud/index.tsx:315
+#: app/routes/fraud/index.tsx:317
 msgid "Filter by decision"
 msgstr "Filter by decision"
 
-#: app/routes/fraud/index.tsx:325
+#: app/routes/fraud/index.tsx:327
 msgid "Filter by enforcement"
 msgstr "Filter by enforcement"
 
@@ -1023,7 +1023,7 @@ msgstr "Filter by enforcement"
 msgid "Filter by invitation"
 msgstr "Filter by invitation"
 
-#: app/routes/fraud/index.tsx:304
+#: app/routes/fraud/index.tsx:306
 msgid "Filter by phase"
 msgstr "Filter by phase"
 
@@ -1115,7 +1115,7 @@ msgstr "Fraud Providers"
 msgid "Full Name"
 msgstr "Full Name"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:55
+#: app/features/fraud/detail/evaluation-sections.tsx:56
 msgid "Full response from the provider"
 msgstr "Full response from the provider"
 
@@ -1385,12 +1385,12 @@ msgid "Member"
 msgstr "Member"
 
 #: app/routes/contact-group/detail/member.tsx:322
-#: app/routes/group/member.tsx:175
+#: app/routes/group/member.tsx:181
 msgid "Member added successfully"
 msgstr "Member added successfully"
 
 #: app/routes/contact-group/detail/member.tsx:351
-#: app/routes/group/member.tsx:156
+#: app/routes/group/member.tsx:162
 msgid "Member deleted successfully"
 msgstr "Member deleted successfully"
 
@@ -1433,7 +1433,7 @@ msgstr "My Profile"
 #: app/routes/fraud/providers/create.tsx:88
 #: app/routes/fraud/providers/index.tsx:55
 #: app/routes/group/index.tsx:24
-#: app/routes/group/member.tsx:98
+#: app/routes/group/member.tsx:104
 #: app/routes/organization/detail/index.tsx:46
 #: app/routes/organization/detail/member.tsx:103
 #: app/routes/organization/detail/project.tsx:35
@@ -1469,7 +1469,7 @@ msgstr "Namespace"
 msgid "Navigate up"
 msgstr "Navigate up"
 
-#: app/components/app-search/search-results.tsx:87
+#: app/components/app-search/search-results.tsx:99
 msgid "Navigation"
 msgstr "Navigation"
 
@@ -1534,7 +1534,7 @@ msgstr "No fraud alerts"
 msgid "No fraud evaluations found for this user."
 msgstr "No fraud evaluations found for this user."
 
-#: app/routes/fraud/index.tsx:347
+#: app/routes/fraud/index.tsx:349
 msgid "No fraud evaluations found."
 msgstr "No fraud evaluations found."
 
@@ -1551,7 +1551,7 @@ msgid "No grants found."
 msgstr "No grants found."
 
 #: app/routes/contact/detail/group.tsx:219
-#: app/routes/group/index.tsx:74
+#: app/routes/group/index.tsx:68
 msgid "No groups found."
 msgstr "No groups found."
 
@@ -1560,7 +1560,7 @@ msgstr "No groups found."
 msgid "No members found."
 msgstr "No members found."
 
-#: app/routes/group/member.tsx:220
+#: app/routes/group/member.tsx:227
 msgid "No members in this group."
 msgstr "No members in this group."
 
@@ -1590,7 +1590,7 @@ msgstr "No quota buckets found."
 msgid "No quotas are above 70% utilization"
 msgstr "No quotas are above 70% utilization"
 
-#: app/components/app-search/search-results.tsx:122
+#: app/components/app-search/search-results.tsx:134
 msgid "No results found."
 msgstr "No results found."
 
@@ -1606,8 +1606,8 @@ msgstr "No users found."
 msgid "No users yet"
 msgstr "No users yet"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:367
-#: app/features/fraud/detail/evaluation-sections.tsx:382
+#: app/features/fraud/detail/evaluation-sections.tsx:393
+#: app/features/fraud/detail/evaluation-sections.tsx:408
 msgid "None"
 msgstr "None"
 
@@ -1636,7 +1636,7 @@ msgstr "Notes"
 msgid "Notifications"
 msgstr "Notifications"
 
-#: app/routes/fraud/index.tsx:327
+#: app/routes/fraud/index.tsx:329
 msgid "Observed"
 msgstr "Observed"
 
@@ -1665,7 +1665,7 @@ msgstr "Organization deleted successfully"
 msgid "Organization Type"
 msgstr "Organization Type"
 
-#: app/components/app-search/search-results.tsx:138
+#: app/components/app-search/search-results.tsx:152
 #: app/components/app-search/use-app-search.ts:36
 #: app/components/app-sidebar/index.tsx:109
 #: app/routes/dashboard/index.tsx:67
@@ -1694,7 +1694,7 @@ msgstr "Patch"
 
 #: app/features/email/components/email-list.tsx:148
 #: app/features/email/components/email-list.tsx:176
-#: app/routes/fraud/index.tsx:308
+#: app/routes/fraud/index.tsx:310
 #: app/routes/organization/detail/member.tsx:185
 #: app/routes/user/index.tsx:291
 #: app/routes/user/index.tsx:316
@@ -1726,10 +1726,10 @@ msgstr "Permanently delete this user and all associated data"
 msgid "Personal"
 msgstr "Personal"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:352
+#: app/features/fraud/detail/evaluation-sections.tsx:378
 #: app/routes/fraud/index.tsx:133
-#: app/routes/fraud/index.tsx:303
-#: app/routes/fraud/index.tsx:338
+#: app/routes/fraud/index.tsx:305
+#: app/routes/fraud/index.tsx:340
 msgid "Phase"
 msgstr "Phase"
 
@@ -1817,7 +1817,7 @@ msgstr "Project"
 msgid "Project deleted successfully"
 msgstr "Project deleted successfully"
 
-#: app/components/app-search/search-results.tsx:153
+#: app/components/app-search/search-results.tsx:168
 #: app/components/app-search/use-app-search.ts:42
 #: app/components/app-sidebar/index.tsx:113
 #: app/routes/dashboard/index.tsx:75
@@ -1895,7 +1895,7 @@ msgstr "Quota Utilization"
 msgid "Quotas"
 msgstr "Quotas"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:54
+#: app/features/fraud/detail/evaluation-sections.tsx:55
 msgid "Raw Results — {provider}"
 msgstr "Raw Results — {provider}"
 
@@ -1983,7 +1983,7 @@ msgstr "Resource Type"
 msgid "Resource Type:"
 msgstr "Resource Type:"
 
-#: app/components/app-search/search-results.tsx:194
+#: app/components/app-search/search-results.tsx:213
 msgid "Resources"
 msgstr "Resources"
 
@@ -1999,7 +1999,7 @@ msgstr "Response Code"
 msgid "Retry"
 msgstr "Retry"
 
-#: app/routes/fraud/index.tsx:318
+#: app/routes/fraud/index.tsx:320
 msgid "Review"
 msgstr "Review"
 
@@ -2019,7 +2019,7 @@ msgstr "Role"
 msgid "Run Evaluation"
 msgstr "Run Evaluation"
 
-#: app/routes/fraud/index.tsx:307
+#: app/routes/fraud/index.tsx:309
 msgid "Running"
 msgstr "Running"
 
@@ -2040,7 +2040,7 @@ msgid "Schedule invitation to be sent at specific time"
 msgstr "Schedule invitation to be sent at specific time"
 
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:145
-#: app/features/fraud/detail/evaluation-sections.tsx:343
+#: app/features/fraud/detail/evaluation-sections.tsx:369
 #: app/routes/fraud/index.tsx:137
 #: app/routes/user/detail/index.tsx:296
 msgid "Score"
@@ -2060,7 +2060,7 @@ msgstr "Search activity..."
 msgid "Search AI Edge..."
 msgstr "Search AI Edge..."
 
-#: app/routes/fraud/index.tsx:295
+#: app/routes/fraud/index.tsx:297
 msgid "Search by email, name, or ID..."
 msgstr "Search by email, name, or ID..."
 
@@ -2106,16 +2106,16 @@ msgstr "Search grants..."
 
 #: app/routes/contact/detail/group.tsx:182
 #: app/routes/contact/detail/group.tsx:213
-#: app/routes/group/index.tsx:67
+#: app/routes/group/index.tsx:61
 msgid "Search groups..."
 msgstr "Search groups..."
 
-#: app/components/app-search/search-results.tsx:120
+#: app/components/app-search/search-results.tsx:132
 msgid "Search is temporarily unavailable. Please try again."
 msgstr "Search is temporarily unavailable. Please try again."
 
 #: app/routes/contact-group/detail/member.tsx:410
-#: app/routes/group/member.tsx:213
+#: app/routes/group/member.tsx:220
 #: app/routes/organization/detail/member.tsx:176
 msgid "Search members..."
 msgstr "Search members..."
@@ -2150,7 +2150,7 @@ msgstr "Search users, organizations, and projects"
 msgid "Search users..."
 msgstr "Search users..."
 
-#: app/components/app-search/search-results.tsx:112
+#: app/components/app-search/search-results.tsx:124
 msgid "Searching..."
 msgstr "Searching..."
 
@@ -2174,15 +2174,15 @@ msgstr "Secret Namespace"
 msgid "Secrets"
 msgstr "Secrets"
 
-#: app/components/app-search/search-results.tsx:270
+#: app/components/app-search/search-results.tsx:316
 msgid "See all contacts"
 msgstr "See all contacts"
 
-#: app/components/app-search/search-results.tsx:240
+#: app/components/app-search/search-results.tsx:285
 msgid "See all DNS zones"
 msgstr "See all DNS zones"
 
-#: app/components/app-search/search-results.tsx:217
+#: app/components/app-search/search-results.tsx:248
 msgid "See all domains"
 msgstr "See all domains"
 
@@ -2241,7 +2241,7 @@ msgstr "Short-circuit Below"
 msgid "Sinks"
 msgstr "Sinks"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:157
+#: app/features/fraud/detail/evaluation-sections.tsx:183
 msgid "Skipped"
 msgstr "Skipped"
 
@@ -2262,7 +2262,7 @@ msgstr "Stage {0}"
 msgid "Stage Name"
 msgstr "Stage Name"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:405
+#: app/features/fraud/detail/evaluation-sections.tsx:431
 msgid "Stage Results"
 msgstr "Stage Results"
 
@@ -2379,7 +2379,7 @@ msgstr "TTL"
 msgid "Type"
 msgstr "Type"
 
-#: app/components/app-search/search-results.tsx:105
+#: app/components/app-search/search-results.tsx:117
 msgid "Type at least 3 characters to search."
 msgstr "Type at least 3 characters to search."
 
@@ -2422,7 +2422,7 @@ msgstr "Usage"
 #: app/features/activity/components/activity-list.tsx:392
 #: app/features/activity/components/activity-list.tsx:491
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:140
-#: app/features/fraud/detail/evaluation-sections.tsx:307
+#: app/features/fraud/detail/evaluation-sections.tsx:333
 #: app/routes/contact-group/detail/member.tsx:108
 #: app/routes/fraud/index.tsx:107
 msgid "User"
@@ -2468,7 +2468,7 @@ msgstr "User reactivated successfully"
 msgid "User rejected successfully"
 msgstr "User rejected successfully"
 
-#: app/components/app-search/search-results.tsx:168
+#: app/components/app-search/search-results.tsx:184
 #: app/components/app-search/use-app-search.ts:34
 #: app/components/app-sidebar/index.tsx:105
 #: app/routes/dashboard/index.tsx:59
@@ -2532,7 +2532,11 @@ msgstr "View in Cloud Portal"
 msgid "View in Sentry"
 msgstr "View in Sentry"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:122
+#: app/features/fraud/detail/evaluation-sections.tsx:141
+msgid "View on MaxMind"
+msgstr "View on MaxMind"
+
+#: app/features/fraud/detail/evaluation-sections.tsx:146
 msgid "View Raw Results"
 msgstr "View Raw Results"
 

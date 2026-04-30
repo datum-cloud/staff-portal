@@ -37,6 +37,10 @@ const envSchema = z.object({
 
   // Staff access control
   STAFF_GROUP_NAME: z.string().default('staff-users'),
+
+  // MaxMind minFraud account ID — used to deep-link from a fraud
+  // evaluation's maxmind provider step into the MaxMind portal.
+  MAXMIND_ACCOUNT_ID: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
