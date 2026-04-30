@@ -1,3 +1,10 @@
+/* eslint-disable react-hooks/refs, react-hooks/purity --
+ * Intentional pattern: `startedAt` and `duration` refs measure render-to-render
+ * elapsed time for the thinking indicator. Reading/writing refs during render
+ * is required to derive the display label without an extra re-render cycle.
+ * Date.now() during render is acceptable here because the component re-renders
+ * driven by the parent's `isStreaming` prop, not by Date itself.
+ */
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { Brain, ChevronDown } from 'lucide-react';
 import { useRef, useState } from 'react';

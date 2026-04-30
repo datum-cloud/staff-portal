@@ -1,3 +1,9 @@
+/* eslint-disable react-hooks/immutability --
+ * Chat panel mutates refs (`userScrolledUp.current`, `scrollRaf.current`,
+ * `htmlByUserMsgIndex.current`) in event handlers — the standard React
+ * pattern for managing scroll/animation state without re-renders. The
+ * compiler rule mis-classifies these as forbidden mutations.
+ */
 import { AssistantMessage, LoadingDots } from './assistant-message';
 import { ChatInput } from './chat-input';
 import { ChatSidebar } from './chat-sidebar';

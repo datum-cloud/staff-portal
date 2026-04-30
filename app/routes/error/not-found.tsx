@@ -4,8 +4,15 @@ import { createRequestLogger, logger } from '@/utils/logger';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { HomeIcon, RefreshCcwIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
+
+function isDebugEnvironment(): boolean {
+  if (typeof window === 'undefined') return false;
+  return Boolean(
+    window.ENV?.DEBUG || ['localhost', '127.0.0.1'].includes(window.location.hostname)
+  );
+}
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -37,11 +44,9 @@ export async function loader({ request, context }: Route.LoaderArgs) {
 export default function NotFound() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isDebug, setIsDebug] = useState(false);
+  const isDebug = isDebugEnvironment();
 
   useEffect(() => {
-    setIsDebug(window.ENV?.DEBUG || ['localhost', '127.0.0.1'].includes(window.location.hostname));
-
     // Log the 404 error using the existing logger
     logger.warn('Page not found', {
       url: location.pathname + location.search,

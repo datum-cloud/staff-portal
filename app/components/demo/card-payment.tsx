@@ -168,6 +168,10 @@ export function CardsPayments() {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  // TanStack Table's API (`useReactTable`, `getCoreRowModel()`, etc.) is the
+  // documented usage but isn't compiler-friendly. Suppress the new
+  // react-hooks/incompatible-library rule for this library's hook.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,

@@ -1,3 +1,8 @@
+/* eslint-disable react-hooks/immutability --
+ * `pollFrequency` is a self-recursive `requestAnimationFrame` callback and
+ * the cleanup `cancelAnimationFrame(rafRef.current)` pattern is the
+ * documented way to manage RAF in React. The compiler rule mis-flags this.
+ */
 import type { Editor } from '@tiptap/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
