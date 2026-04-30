@@ -1,18 +1,10 @@
 import { LogoIcon } from '@/components/logo/logo-icon';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
-import { HomeIcon, RefreshCcwIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { HomeIcon } from 'lucide-react';
+import { Link } from 'react-router';
 
 const GenericError = ({ message, requestId }: { message: string; requestId?: string }) => {
-  const navigate = useNavigate();
-  const [isDebug, setIsDebug] = useState(false);
-
-  useEffect(() => {
-    setIsDebug(window.ENV?.DEBUG || ['localhost', '127.0.0.1'].includes(window.location.hostname));
-  }, []);
-
   return (
     <Card className="w-1/2 overflow-hidden">
       <CardContent className="flex min-h-[500px] flex-col items-center justify-center gap-6">

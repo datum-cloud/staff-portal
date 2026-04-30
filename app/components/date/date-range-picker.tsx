@@ -123,7 +123,10 @@ export function DateRangePicker({
     return undefined;
   }, [presets, defaultPresets]);
 
-  // Initialize time inputs when date range changes
+  // Sync local time inputs with external value prop (controlled-by-prop pattern).
+  // setState in effect is intentional here: external `value` is the source of truth
+  // for time-range syncing and we mirror it into local input state on change.
+  /* eslint-disable react-hooks/set-state-in-effect */
   React.useEffect(() => {
     if (value?.from) {
       setStartTime(format(value.from, 'HH:mm'));
@@ -134,6 +137,7 @@ export function DateRangePicker({
     // If value changes externally, clear selected preset label (cannot infer which one was chosen)
     setSelectedPresetLabel(undefined);
   }, [value]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleDateSelect = (range: DateRange | undefined) => {
     if (!range) {

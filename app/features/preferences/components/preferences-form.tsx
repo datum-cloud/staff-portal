@@ -46,7 +46,7 @@ export function PreferencesForm() {
         setIsUpdatingTheme(false);
       }
     },
-    [user?.metadata?.name, setUser, setTheme, settings.theme, t]
+    [user, setUser, setTheme, settings.theme, t]
   );
 
   const handleTimezoneUpdate = useCallback(
@@ -68,7 +68,7 @@ export function PreferencesForm() {
         setIsUpdatingTimezone(false);
       }
     },
-    [user?.metadata?.name, setUser, t]
+    [user, setUser, t]
   );
 
   return (

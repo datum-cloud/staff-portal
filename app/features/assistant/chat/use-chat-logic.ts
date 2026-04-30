@@ -1,3 +1,10 @@
+/* eslint-disable react-hooks/refs, react-hooks/purity, react-hooks/set-state-in-effect --
+ * Chat logic intentionally mirrors state into refs to avoid stale closures
+ * inside the AI SDK's onFinish handler (captured once per stream).
+ * `currentChatIdRef` and `onFinishRef` mirror state, `useRef(Date.now())`
+ * captures session start time, and the one-time `setChatList(listChats())`
+ * effect bootstraps the chat history from localStorage.
+ */
 import { deleteChat, deriveTitle, listChats, saveChat, type StoredChat } from './chat-storage';
 import { useSpeechInput } from './use-speech-input';
 import { useChat } from '@ai-sdk/react';

@@ -41,6 +41,9 @@ export function SimpleTable<TData>({
 }: SimpleTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
+  // TanStack Table's API isn't compiler-friendly; the new
+  // react-hooks/incompatible-library rule flags it but the usage is correct.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable<TData>({
     data,
     columns,

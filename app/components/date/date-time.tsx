@@ -50,11 +50,16 @@ export const DateTime = ({
   // Hydration protection for relative dates (client-side only)
   const needsHydrationProtection = variant === 'relative' || variant === 'both';
 
+  // Hydration protection: defer client-only relative-date rendering until after
+  // mount to prevent SSR/CSR mismatch. setState in effect is the standard
+  // hydration-safe pattern for this case.
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (needsHydrationProtection && !disableHydrationProtection) {
       setMounted(true);
     }
   }, [needsHydrationProtection, disableHydrationProtection]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   if (!date) {
     return null;
