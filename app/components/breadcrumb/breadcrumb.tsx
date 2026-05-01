@@ -1,5 +1,6 @@
 import { useEnhancedBreadcrumbs } from './breadcrumb-provider';
 import {
+  BreadcrumbEllipsis,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
@@ -7,6 +8,12 @@ import {
   BreadcrumbSeparator,
   Breadcrumb as BreadcrumbUI,
 } from '@datum-cloud/datum-ui/breadcrumb';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@datum-cloud/datum-ui/dropdown';
 import { ChevronRight } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router';
@@ -56,6 +63,36 @@ export interface BreadcrumbProps extends BreadcrumbConfig {
  * - Custom separators
  * - Custom styling
  */
+/** When the chain is longer than this, collapse the middle into an ellipsis. */
+const COLLAPSE_AFTER = 3;
+
+type RenderEntry =
+  | { kind: 'item'; item: BreadcrumbItem; isLast: boolean }
+  | { kind: 'ellipsis'; collapsed: BreadcrumbItem[] };
+
+function buildRenderEntries(items: BreadcrumbItem[]): RenderEntry[] {
+  if (items.length <= COLLAPSE_AFTER) {
+    return items.map((item, idx) => ({
+      kind: 'item' as const,
+      item,
+      isLast: idx === items.length - 1,
+    }));
+  }
+
+  // Keep first + last two. Collapse everything between.
+  const first = items[0];
+  const secondLast = items[items.length - 2];
+  const last = items[items.length - 1];
+  const middle = items.slice(1, items.length - 2);
+
+  return [
+    { kind: 'item', item: first, isLast: false },
+    { kind: 'ellipsis', collapsed: middle },
+    { kind: 'item', item: secondLast, isLast: false },
+    { kind: 'item', item: last, isLast: true },
+  ];
+}
+
 export function Breadcrumb({
   items: customItems,
   showSeparators = true,
@@ -74,17 +111,42 @@ export function Breadcrumb({
     return null;
   }
 
+  const entries = buildRenderEntries(items);
+
   return (
     <BreadcrumbUI className={className}>
       <BreadcrumbList className={listClassName}>
-        {items.map((item, idx) => (
+        {entries.map((entry, idx) => (
           <React.Fragment key={idx}>
             {idx !== 0 && showSeparators && (
               <BreadcrumbSeparator className="hidden md:block">{separator}</BreadcrumbSeparator>
             )}
-            <BreadcrumbItem className={item.className}>
-              {renderBreadcrumbItem(item, idx === items.length - 1)}
-            </BreadcrumbItem>
+            {entry.kind === 'item' ? (
+              <BreadcrumbItem className={entry.item.className}>
+                {renderBreadcrumbItem(entry.item, entry.isLast)}
+              </BreadcrumbItem>
+            ) : (
+              <BreadcrumbItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    className="hover:bg-accent flex items-center rounded-sm px-1 transition-colors"
+                    aria-label="Show hidden breadcrumb items">
+                    <BreadcrumbEllipsis className="h-4 w-4" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="min-w-44">
+                    {entry.collapsed.map((hidden, hIdx) => (
+                      <DropdownMenuItem key={hIdx} asChild>
+                        {hidden.path && hidden.clickable !== false ? (
+                          <Link to={hidden.path}>{hidden.label}</Link>
+                        ) : (
+                          <span>{hidden.label}</span>
+                        )}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </BreadcrumbItem>
+            )}
           </React.Fragment>
         ))}
       </BreadcrumbList>
