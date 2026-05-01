@@ -30,7 +30,9 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 };
 
 export const handle = {
-  breadcrumb: (data: ComDatumapisNetworkingV1AlphaDomain) => <span>{data?.spec?.domainName}</span>,
+  breadcrumb: (loaderData: { data: ComDatumapisNetworkingV1AlphaDomain }) => (
+    <span>{loaderData?.data?.spec?.domainName}</span>
+  ),
 };
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
