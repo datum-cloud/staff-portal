@@ -36,7 +36,6 @@ export default function Page() {
       client={client}
       tenantRenderer={() => null}
       resourceLinkResolver={staffResourceLinkResolver}
-      compact={true}
       pageSize={50}
       className="bg-card border-border border"
     />
