@@ -16,6 +16,7 @@ interface DialogFormProps<TValues extends Record<string, unknown>> {
   schema: z.ZodType<TValues>;
   defaultValues?: TValues;
   children: ((form: NormalizedFormInstance) => ReactNode) | ReactNode;
+  contentClassName?: string;
 }
 
 export default function DialogForm<TValues extends Record<string, unknown>>({
@@ -30,6 +31,7 @@ export default function DialogForm<TValues extends Record<string, unknown>>({
   schema,
   defaultValues = {} as TValues,
   children,
+  contentClassName = 'sm:max-w-md',
 }: DialogFormProps<TValues>) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -61,7 +63,7 @@ export default function DialogForm<TValues extends Record<string, unknown>>({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <Dialog.Content className="sm:max-w-md">
+      <Dialog.Content className={contentClassName}>
         <Dialog.Header title={title} description={description} />
 
         <Form.Root

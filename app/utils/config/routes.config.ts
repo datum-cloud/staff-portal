@@ -103,6 +103,19 @@ export const fraudRoutes = {
   policy: () => '/fraud/policy',
 } as const;
 
+// Compliance feature routes
+export const complianceRoutes = {
+  root: () => '/compliance',
+  vendors: {
+    list: () => '/compliance/vendors',
+    detail: (name: string) => `/compliance/vendors/${name}`,
+  },
+  subprocessors: {
+    list: () => '/compliance/subprocessors',
+    detail: (name: string) => `/compliance/subprocessors/${name}`,
+  },
+} as const;
+
 // Activity feature routes
 export const activityRoutes = {
   root: () => '/activity',
@@ -143,5 +156,6 @@ export const routes = {
   profile: profileRoutes,
   contactGroups: contactGroupRoutes,
   fraud: fraudRoutes,
+  compliance: complianceRoutes,
   activity: activityRoutes,
 } as const;

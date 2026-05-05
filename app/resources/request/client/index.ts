@@ -26,3 +26,5 @@ export * from './apis/contact-group.api';
 export * from './queries/contact-group.queries';
 export * from './apis/fraud.api';
 export * from './queries/fraud.queries';
+export * from './apis/compliance.api';
+export * from './queries/compliance.queries';

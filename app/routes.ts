@@ -95,6 +95,19 @@ export default [
       route(':evalName', 'routes/fraud/detail/index.tsx'),
     ]),
 
+    // Compliance
+    route('compliance', 'routes/compliance/layout.tsx', [
+      index('routes/compliance/index.tsx'),
+      route('vendors', 'routes/compliance/vendors/layout.tsx', [
+        index('routes/compliance/vendors/index.tsx'),
+        route(':vendorName', 'routes/compliance/vendors/detail.tsx'),
+      ]),
+      route('subprocessors', 'routes/compliance/subprocessors/layout.tsx', [
+        index('routes/compliance/subprocessors/index.tsx'),
+        route(':subprocessorName', 'routes/compliance/subprocessors/detail.tsx'),
+      ]),
+    ]),
+
     // Activity Hub (old single-page activity kept for backward compatibility)
     route('activity-legacy', 'routes/activity.tsx'),
 

@@ -4,6 +4,7 @@ import { NavUser } from './nav-user';
 import { LogoIcon } from '@/components/logo/logo-icon';
 import { LogoText } from '@/components/logo/logo-text';
 import {
+  complianceRoutes,
   contactGroupRoutes,
   contactRoutes,
   fraudRoutes,
@@ -38,6 +39,7 @@ import { cn } from '@datum-cloud/datum-ui/utils';
 import { useLingui } from '@lingui/react/macro';
 import {
   ChevronRight,
+  ClipboardCheck,
   Contact,
   Home,
   LucideIcon,
@@ -154,6 +156,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       href: fraudRoutes.root(),
       icon: ShieldAlert,
       hasSubmenu: false,
+    },
+    {
+      title: t`Compliance`,
+      href: complianceRoutes.root(),
+      icon: ClipboardCheck,
+      hasSubmenu: true,
+      submenuItems: [
+        {
+          title: t`Vendors`,
+          href: complianceRoutes.vendors.list(),
+        },
+        {
+          title: t`Subprocessors`,
+          href: complianceRoutes.subprocessors.list(),
+        },
+      ],
     },
   ];
 
