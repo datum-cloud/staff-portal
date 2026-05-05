@@ -36,9 +36,9 @@ export function ActivityLayout({ basePath, tabs }: ActivityLayoutProps) {
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
-      <div className="shrink-0 border-b px-4 pt-3">
+      <div className="shrink-0 border-b px-4 py-3">
         <Tabs value={activeTab}>
-          <TabsList>
+          <TabsList className="bg-foreground/5">
             {resolvedTabs.map((tab) => (
               <TabsLinkTrigger key={tab.value} value={tab.value} href={tab.to} linkComponent={Link}>
                 {tab.label}

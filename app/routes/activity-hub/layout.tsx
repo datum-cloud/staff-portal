@@ -45,7 +45,7 @@ export default function ActivityLayout() {
       {/* Inject menu navigation into the app toolbar navigation slot */}
       <AppNavigation>
         <Tabs value={activeTab}>
-          <TabsList>
+          <TabsList className="bg-foreground/5">
             {activityTabs.map((tab) => (
               <TabsLinkTrigger key={tab.value} value={tab.value} href={tab.to} linkComponent={Link}>
                 {tab.label}
@@ -79,7 +79,7 @@ export default function ActivityLayout() {
 
       {/* Tab Content - flex-1 min-h-0 allows child to scroll within bounds */}
       <div className="min-h-0 flex-1 overflow-hidden px-4 py-4">
-        <div className="mx-auto flex h-full max-w-7xl flex-col">
+        <div className="mx-auto flex h-full flex-col">
           <Outlet />
         </div>
       </div>

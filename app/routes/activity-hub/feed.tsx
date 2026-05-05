@@ -109,7 +109,6 @@ export default function ActivityFeedPage() {
       tenantRenderer={renderTenant}
       onCreatePolicy={handleCreatePolicy}
       pageSize={50}
-      compact={true}
       className="bg-card border-border border"
     />
   );
