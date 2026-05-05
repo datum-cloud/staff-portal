@@ -51,7 +51,7 @@ class ZitadelStrategy extends OAuth2Strategy<IZitadelResponse> {
 }
 
 export async function createZitadelStrategy() {
-  const defaultScopes = ['openid', 'profile', 'email', 'phone', 'address', 'offline_access'];
+  const defaultScopes = ['openid', 'profile', 'email', 'offline_access'];
   const mergedScopes = Array.from(
     new Set([...(defaultScopes as string[]), ...((env.authOidcScopes as string[]) ?? [])])
   );
