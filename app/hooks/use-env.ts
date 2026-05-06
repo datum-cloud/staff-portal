@@ -15,6 +15,8 @@ export interface PublicEnv {
   CHATBOT_ENABLED?: boolean;
   MCP_ENABLED?: boolean;
   MAXMIND_ACCOUNT_ID?: string;
+  ONCALL_GROUP_NAME?: string;
+  STAFF_GROUP_NAME?: string;
 }
 
 export function useEnv(): PublicEnv | undefined {

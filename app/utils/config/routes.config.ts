@@ -103,6 +103,14 @@ export const fraudRoutes = {
   policy: () => '/fraud/policy',
 } as const;
 
+// Support feature routes
+export const supportRoutes = {
+  list: () => '/support',
+  detail: (ticketName: string) => `/support/${ticketName}`,
+  knowledgeBase: () => '/support/knowledge-base',
+  oncall: () => '/support/oncall',
+} as const;
+
 // Activity feature routes
 export const activityRoutes = {
   root: () => '/activity',
@@ -144,4 +152,5 @@ export const routes = {
   contactGroups: contactGroupRoutes,
   fraud: fraudRoutes,
   activity: activityRoutes,
+  support: supportRoutes,
 } as const;
