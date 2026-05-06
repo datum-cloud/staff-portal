@@ -268,4 +268,22 @@ api.post('/metrics', authMiddleware(), async (c) => {
 api.route('/assistant', assistantRoutes);
 api.route('/cluster', clusterRoutes);
 
+// Image upload: accept a multipart file, return a base64 data URL.
+// No external storage required for the demo — images are inlined in markdown.
+api.post('/uploads/image', authMiddleware(), async (c) => {
+  try {
+    const body = await c.req.parseBody();
+    const file = body['file'];
+    if (!file || typeof file === 'string') {
+      return c.json({ error: 'No file provided' }, 400);
+    }
+    const buf = await (file as File).arrayBuffer();
+    const b64 = Buffer.from(buf).toString('base64');
+    const mime = (file as File).type || 'image/png';
+    return c.json({ url: `data:${mime};base64,${b64}` });
+  } catch (err) {
+    return c.json({ error: 'Upload failed' }, 500);
+  }
+});
+
 export { api, API_BASENAME };
