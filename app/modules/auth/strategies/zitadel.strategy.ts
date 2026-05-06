@@ -86,7 +86,9 @@ export async function createZitadelStrategy() {
         accessToken: tokens.accessToken(),
         refreshToken: tokens.hasRefreshToken() ? tokens.refreshToken() : null,
         expiredAt: tokens.accessTokenExpiresAt(),
-        sub: user.sub,
+        // Dex encodes sub as a proto binary — use the name claim (the
+        // simple login name) so it matches Milo IAM User resource names.
+        sub: (user as any).name || user.preferred_username || user.sub,
       };
     }
   );
