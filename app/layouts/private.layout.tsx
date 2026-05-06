@@ -35,16 +35,23 @@ export async function loader({ request }: Route.LoaderArgs) {
   const userId = session?.sub ?? '';
 
   // Check staff group membership before allowing access.
-  // 401/403 means the user lacks permission to list memberships — not staff.
+  // 401 = token expired or from a different cluster → clear session and re-login.
+  // 403 = valid token but no list permission → user is not staff.
   // Other errors (network, 500) are re-thrown so they surface properly.
   let isStaff = false;
   try {
     const memberships = await userGroupMembershipsQuery(token, userId);
     isStaff = memberships.some((m) => m.spec?.groupRef?.name === env.staffGroupName);
   } catch (error) {
-    if (error instanceof Response && (error.status === 401 || error.status === 403)) {
+    if (error instanceof Response && error.status === 401) {
+      // Stale session (e.g. cluster was restarted). Redirect to logout so the
+      // user is sent back to the login page with a clean session rather than
+      // seeing a confusing "unauthorized" error page.
+      return redirect('/logout');
+    }
+    if (error instanceof Response && error.status === 403) {
       isStaff = false;
-    } else {
+    } else if (!(error instanceof Response)) {
       throw error;
     }
   }
