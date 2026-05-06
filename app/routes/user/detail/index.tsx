@@ -8,6 +8,7 @@ import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
 import { DialogForm } from '@/components/dialog';
 import { PageHeader } from '@/components/page-header';
+import { buildMaxmindRowGroups, extractMaxmindInsights } from '@/features/fraud';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
 import { useEnv } from '@/hooks';
 import { useApp } from '@/providers/app.provider';
@@ -35,11 +36,15 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import {
   CheckIcon,
   ExternalLinkIcon,
+  Globe,
+  Mail,
+  MapPin,
   RotateCcw,
   Shield,
   ShieldAlert,
   ShieldCheckIcon,
   ShieldXIcon,
+  UserIcon,
   XIcon,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -96,6 +101,8 @@ export default function Page() {
     data.metadata?.name ? { search: data.metadata.name } : undefined
   );
   const latestEval = fraudEvalData?.items?.[0];
+  const maxmindInsights = extractMaxmindInsights(latestEval);
+  const maxmindGroups = buildMaxmindRowGroups(maxmindInsights);
   const sentryIssuesUrl = getSentryIssuesUrl(env?.SENTRY_UI_URL, data?.metadata?.name ?? '');
 
   const handleDeleteUser = async () => {
@@ -227,120 +234,171 @@ export default function Page() {
           }
         />
 
-        <Card className="mt-4 shadow-none">
-          <CardContent>
-            <DescriptionList
-              items={[
-                {
-                  label: <Trans>ID</Trans>,
-                  value: (
-                    <div className="flex items-center gap-2">
-                      <Text>{data?.metadata?.name}</Text>
-                      <ButtonCopy value={data?.metadata?.name ?? ''} />
-                    </div>
-                  ),
-                },
-                {
-                  label: <Trans>Full Name</Trans>,
-                  value: (
-                    <Text>
-                      {data?.spec?.givenName} {data?.spec?.familyName}
-                    </Text>
-                  ),
-                },
-                {
-                  label: <Trans>Email</Trans>,
-                  value: <Text>{data?.spec?.email}</Text>,
-                },
-                {
-                  label: <Trans>Registration Approval</Trans>,
-                  value: <BadgeState state={data?.status?.registrationApproval ?? 'Unknown'} />,
-                },
-                {
-                  label: <Trans>Status</Trans>,
-                  value: <BadgeState state={data?.status?.state ?? 'Active'} />,
-                },
-                {
-                  label: <Trans>Created</Trans>,
-                  value: (
-                    <Text>
-                      <DateTime date={data?.metadata?.creationTimestamp} variant="both" />
-                    </Text>
-                  ),
-                },
-              ]}
-            />
-          </CardContent>
-        </Card>
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 md:[&>:last-child:nth-child(odd)]:col-span-2">
+          <Card className="shadow-none">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <UserIcon className="h-4 w-4" />
+                <Trans>User</Trans>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <DescriptionList
+                labelWidth="40%"
+                items={[
+                  {
+                    label: <Trans>ID</Trans>,
+                    value: (
+                      <div className="flex items-center gap-2">
+                        <Text>{data?.metadata?.name}</Text>
+                        <ButtonCopy value={data?.metadata?.name ?? ''} />
+                      </div>
+                    ),
+                  },
+                  {
+                    label: <Trans>Full Name</Trans>,
+                    value: (
+                      <Text>
+                        {data?.spec?.givenName} {data?.spec?.familyName}
+                      </Text>
+                    ),
+                  },
+                  {
+                    label: <Trans>Email</Trans>,
+                    value: <Text>{data?.spec?.email}</Text>,
+                  },
+                  {
+                    label: <Trans>Registration Approval</Trans>,
+                    value: <BadgeState state={data?.status?.registrationApproval ?? 'Unknown'} />,
+                  },
+                  {
+                    label: <Trans>Status</Trans>,
+                    value: <BadgeState state={data?.status?.state ?? 'Active'} />,
+                  },
+                  {
+                    label: <Trans>Created</Trans>,
+                    value: (
+                      <Text>
+                        <DateTime date={data?.metadata?.creationTimestamp} variant="both" />
+                      </Text>
+                    ),
+                  },
+                ]}
+              />
+            </CardContent>
+          </Card>
 
-        <Card className="mt-4 shadow-none">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ShieldAlert className="h-4 w-4" />
-              <Trans>Fraud Assessment</Trans>
-            </CardTitle>
-            <CardDescription>
-              <Trans>Latest fraud evaluation for this user</Trans>
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {isFraudLoading ? (
-              <Text textColor="muted" size="sm">
-                <Trans>Loading...</Trans>
-              </Text>
-            ) : latestEval ? (
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-6">
-                  <div className="flex flex-col gap-1">
-                    <Text textColor="muted" size="sm">
-                      <Trans>Score</Trans>
-                    </Text>
-                    <span
-                      className={`font-mono text-2xl font-bold ${getScoreColor(latestEval.status?.decision)}`}>
-                      {latestEval.status?.compositeScore ?? '-'}
-                    </span>
+          {maxmindGroups.network.length > 0 && (
+            <Card className="shadow-none">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Globe className="h-4 w-4" />
+                  <Trans>IP & Network</Trans>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <DescriptionList labelWidth="40%" items={maxmindGroups.network} />
+              </CardContent>
+            </Card>
+          )}
+
+          {maxmindGroups.location.length > 0 && (
+            <Card className="shadow-none">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  <Trans>Location</Trans>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <DescriptionList labelWidth="40%" items={maxmindGroups.location} />
+              </CardContent>
+            </Card>
+          )}
+
+          {maxmindGroups.email.length > 0 && (
+            <Card className="shadow-none">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Mail className="h-4 w-4" />
+                  <Trans>Email Domain</Trans>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <DescriptionList labelWidth="40%" items={maxmindGroups.email} />
+              </CardContent>
+            </Card>
+          )}
+
+          <Card className="shadow-none">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ShieldAlert className="h-4 w-4" />
+                <Trans>Fraud Assessment</Trans>
+              </CardTitle>
+              <CardDescription>
+                <Trans>Latest fraud evaluation for this user</Trans>
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isFraudLoading ? (
+                <Text textColor="muted" size="sm">
+                  <Trans>Loading...</Trans>
+                </Text>
+              ) : latestEval ? (
+                <div className="flex flex-wrap items-end justify-between gap-4">
+                  <div className="flex flex-wrap items-start gap-x-6 gap-y-3">
+                    <div className="flex flex-col gap-1">
+                      <Text textColor="muted" size="sm">
+                        <Trans>Score</Trans>
+                      </Text>
+                      <span
+                        className={`font-mono text-2xl font-bold ${getScoreColor(latestEval.status?.decision)}`}>
+                        {latestEval.status?.compositeScore ?? '-'}
+                      </span>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <Text textColor="muted" size="sm">
+                        <Trans>Decision</Trans>
+                      </Text>
+                      <BadgeState
+                        state={
+                          latestEval.status?.decision === 'DEACTIVATE'
+                            ? 'error'
+                            : latestEval.status?.decision === 'REVIEW'
+                              ? 'warning'
+                              : 'pending'
+                        }
+                        message={latestEval.status?.decision ?? 'NONE'}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <Text textColor="muted" size="sm">
+                        <Trans>Last Evaluated</Trans>
+                      </Text>
+                      <Text size="sm">
+                        <DateTime date={latestEval.status?.lastEvaluationTime} variant="both" />
+                      </Text>
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <Text textColor="muted" size="sm">
-                      <Trans>Decision</Trans>
-                    </Text>
-                    <BadgeState
-                      state={
-                        latestEval.status?.decision === 'DEACTIVATE'
-                          ? 'error'
-                          : latestEval.status?.decision === 'REVIEW'
-                            ? 'warning'
-                            : 'pending'
-                      }
-                      message={latestEval.status?.decision ?? 'NONE'}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <Text textColor="muted" size="sm">
-                      <Trans>Last Evaluated</Trans>
-                    </Text>
-                    <Text size="sm">
-                      <DateTime date={latestEval.status?.lastEvaluationTime} variant="both" />
-                    </Text>
-                  </div>
+                  <Button
+                    theme="outline"
+                    size="small"
+                    icon={<ExternalLinkIcon size={16} />}
+                    onClick={() =>
+                      navigate(fraudRoutes.evaluations.detail(latestEval.metadata?.name ?? ''))
+                    }>
+                    <Trans>View Evaluation</Trans>
+                  </Button>
                 </div>
-                <Button
-                  theme="outline"
-                  size="small"
-                  icon={<ExternalLinkIcon size={16} />}
-                  onClick={() =>
-                    navigate(fraudRoutes.evaluations.detail(latestEval.metadata?.name ?? ''))
-                  }>
-                  <Trans>View Evaluation</Trans>
-                </Button>
-              </div>
-            ) : (
-              <Text textColor="muted" size="sm">
-                <Trans>No fraud evaluations found for this user.</Trans>
-              </Text>
-            )}
-          </CardContent>
-        </Card>
+              ) : (
+                <Text textColor="muted" size="sm">
+                  <Trans>No fraud evaluations found for this user.</Trans>
+                </Text>
+              )}
+            </CardContent>
+          </Card>
+        </div>
 
         <Card className="mt-4 shadow-none">
           <CardHeader>
