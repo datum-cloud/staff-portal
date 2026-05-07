@@ -43,7 +43,8 @@ export default function Layout() {
     if (pathname.startsWith(orgRoutes.activity.root(orgName))) return `${base}/activity`;
     if (
       pathname.startsWith(orgRoutes.quota.usage(orgName)) ||
-      pathname.startsWith(orgRoutes.quota.grant(orgName))
+      pathname.startsWith(orgRoutes.quota.grant(orgName)) ||
+      pathname.startsWith(orgRoutes.quota.featureFlags(orgName))
     )
       return `${base}/quotas`;
     return base;
@@ -82,6 +83,10 @@ export default function Layout() {
         {
           title: t`Grants`,
           href: orgRoutes.quota.grant(orgName),
+        },
+        {
+          title: t`Feature Flags`,
+          href: orgRoutes.quota.featureFlags(orgName),
         },
       ],
     },
