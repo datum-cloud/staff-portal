@@ -41,6 +41,14 @@ const envSchema = z.object({
   // MaxMind minFraud account ID — used to deep-link from a fraud
   // evaluation's maxmind provider step into the MaxMind portal.
   MAXMIND_ACCOUNT_ID: z.string().optional(),
+
+  // Optional: Amberflo usage query (read path for usage metering chart)
+  //
+  // AMBERFLO_API_KEY: secret key for POST /usage/sparse — never sent to browser.
+  // AMBERFLO_BASE_URL: base URL for the Amberflo API, defaults to https://app.amberflo.io.
+  // Meter names are discovered automatically from platform MeterDefinition resources.
+  AMBERFLO_API_KEY: z.string().optional(),
+  AMBERFLO_BASE_URL: z.url().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -89,4 +97,6 @@ export const env = {
   mcpUrl: parsedEnv.MCP_URL,
   mcpApiKey: parsedEnv.MCP_API_KEY,
   staffGroupName: parsedEnv.STAFF_GROUP_NAME,
+  amberfloApiKey: parsedEnv.AMBERFLO_API_KEY,
+  amberfloBaseUrl: parsedEnv.AMBERFLO_BASE_URL ?? 'https://app.amberflo.io',
 };

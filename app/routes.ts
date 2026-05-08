@@ -80,6 +80,7 @@ export default [
             route('grants', 'routes/project/detail/quota/grant.tsx'),
           ]),
           route('secrets', 'routes/project/detail/secret.tsx'),
+          route('usage', 'routes/project/detail/usage/index.tsx'),
         ]),
       ]),
     ]),
