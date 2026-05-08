@@ -54,7 +54,7 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: Quota
     () => [
       {
         label: tMacro`Delete`,
-        icon: Trash2Icon,
+        icon: <Trash2Icon className="size-4" />,
         variant: 'destructive' as const,
         onClick: (row) => setSelectedGrant(row),
         disabled: (row) => {

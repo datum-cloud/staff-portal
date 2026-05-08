@@ -39,7 +39,7 @@ export default function Page() {
   const actions: ActionItem<ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session>[] = [
     {
       label: tMacro`Delete`,
-      icon: Trash2Icon,
+      icon: <Trash2Icon className="size-4" />,
       variant: 'destructive' as const,
       onClick: (row) => setSelectedSession(row),
     },

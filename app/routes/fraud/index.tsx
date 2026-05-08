@@ -96,7 +96,7 @@ export default function Page() {
   const actions: ActionItem<FraudEvaluation>[] = [
     {
       label: t`Delete`,
-      icon: Trash2Icon,
+      icon: <Trash2Icon className="size-4" />,
       variant: 'destructive' as const,
       onClick: (row) => setSelectedEval(row),
     },

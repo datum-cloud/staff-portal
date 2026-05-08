@@ -45,7 +45,7 @@ export default function Page() {
   const actions: ActionItem<TeamMember>[] = [
     {
       label: t`Resend`,
-      icon: MailIcon,
+      icon: <MailIcon className="size-4" />,
       hidden: (row) => row.invitationState !== 'Pending',
       onClick: async (row) => {
         if (row.createdAt) {
@@ -83,7 +83,7 @@ export default function Page() {
     },
     {
       label: t`Cancel`,
-      icon: CircleXIcon,
+      icon: <CircleXIcon className="size-4" />,
       variant: 'destructive' as const,
       hidden: (row) => row.invitationState !== 'Pending',
       onClick: async (row) => {
