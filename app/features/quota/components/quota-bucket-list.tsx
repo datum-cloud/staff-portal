@@ -45,7 +45,7 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
   const actions: ActionItem<ComMiloapisQuotaV1Alpha1AllowanceBucket>[] = [
     {
       label: t`Edit Quota`,
-      icon: PencilIcon,
+      icon: <PencilIcon className="size-4" />,
       onClick: (row) => setSelected(row),
     },
   ];

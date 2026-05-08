@@ -93,7 +93,7 @@ export default function Page() {
   const actions: ActionItem<ComMiloapisIamV1Alpha1GroupMembership>[] = [
     {
       label: t`Delete`,
-      icon: Trash2Icon,
+      icon: <Trash2Icon className="size-4" />,
       variant: 'destructive' as const,
       onClick: (row) => setSelectedGroupMembership(row),
     },
@@ -211,7 +211,9 @@ export default function Page() {
           const user = userMapRef.current.get(userRefName);
           const displayName = (user?.displayName ?? '').toLowerCase();
           const email = (user?.email ?? '').toLowerCase();
-          return displayName.includes(q) || email.includes(q) || userRefName.toLowerCase().includes(q);
+          return (
+            displayName.includes(q) || email.includes(q) || userRefName.toLowerCase().includes(q)
+          );
         }}>
         <Card className="m-4 py-4 shadow-none">
           <CardContent className="flex flex-col gap-2 px-4">

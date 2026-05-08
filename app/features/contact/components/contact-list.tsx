@@ -49,14 +49,14 @@ export function ContactList({
   const actions: ActionItem<ComMiloapisNotificationV1Alpha1Contact>[] = [
     {
       label: t`Edit`,
-      icon: EditIcon,
+      icon: <EditIcon className="size-4" />,
       onClick: (row) => {
         navigate(contactRoutes.detail(row.metadata?.namespace ?? '', row.metadata?.name ?? ''));
       },
     },
     {
       label: t`Delete`,
-      icon: Trash2Icon,
+      icon: <Trash2Icon className="size-4" />,
       variant: 'destructive' as const,
       onClick: (row) => setSelectedContact(row),
     },
