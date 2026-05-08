@@ -48,7 +48,15 @@ export default function Page() {
 
   const fraudCount = useResourceCount({
     queryKey: ['dashboard', 'kpi', 'fraud-evaluations'],
-    queryFn: () => listFraudEvaluations({ limit: 1 }),
+    queryFn: async () => {
+      try {
+        return await listFraudEvaluations({ limit: 1 });
+      } catch (err: any) {
+        const s = err?.response?.status ?? err?.status;
+        if (s === 404 || s === 503) return { items: [] };
+        throw err;
+      }
+    },
   });
 
   return (
