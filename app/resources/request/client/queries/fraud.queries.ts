@@ -37,10 +37,24 @@ export const fraudQueryKeys = {
   },
 };
 
+// Treat 404 as "service not deployed" and return empty lists so the
+// UI shows an empty-state rather than a "Resource not found" error.
+function notFoundAsEmpty<T>(fn: () => Promise<T>, empty: T) {
+  return async (): Promise<T> => {
+    try {
+      return await fn();
+    } catch (err: any) {
+      const status = err?.response?.status ?? err?.status ?? err?.code;
+      if (status === 404 || status === 503) return empty;
+      throw err;
+    }
+  };
+}
+
 export const useFraudPolicyListQuery = () => {
   return useQuery({
     queryKey: fraudQueryKeys.policies.all(),
-    queryFn: listFraudPolicies,
+    queryFn: notFoundAsEmpty(listFraudPolicies, { items: [] }),
     staleTime: 5 * 60 * 1000,
   });
 };
@@ -57,7 +71,7 @@ export const useFraudPolicyDetailQuery = (name: string) => {
 export const useFraudProviderListQuery = () => {
   return useQuery({
     queryKey: fraudQueryKeys.providers.all(),
-    queryFn: listFraudProviders,
+    queryFn: notFoundAsEmpty(listFraudProviders, { items: [] }),
     staleTime: 5 * 60 * 1000,
   });
 };
@@ -74,7 +88,7 @@ export const useFraudProviderDetailQuery = (name: string) => {
 export const useFraudEvaluationListQuery = (params?: ListQueryParams) => {
   return useQuery({
     queryKey: fraudQueryKeys.evaluations.list(params),
-    queryFn: () => listFraudEvaluations(params),
+    queryFn: notFoundAsEmpty(() => listFraudEvaluations(params), { items: [] }),
     staleTime: 5 * 60 * 1000,
   });
 };

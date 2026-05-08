@@ -141,7 +141,7 @@ export default function Page() {
 
       <DataTable.Client
         loading={tableQuery.isLoading}
-        data={tableQuery.data?.items ?? []}
+        data={tableQuery.isError ? [] : (tableQuery.data?.items ?? [])}
         columns={columns}
         pageSize={20}
         getRowId={(row) => row.metadata?.name ?? ''}

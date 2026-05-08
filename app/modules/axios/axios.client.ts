@@ -102,9 +102,12 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
     responseData: error.response?.data,
   });
 
-  // For all other errors, show toast with meaningful info
-  const title = errorInfo.requestId ? `Request ID: ${errorInfo.requestId}` : 'Error';
-  toast.error(title, { description: errorInfo.message });
+  // 404 = resource doesn't exist; let the component show an empty state instead
+  // of a global toast. This covers undeployed optional services (fraud, activity).
+  if (error.response?.status !== 404) {
+    const title = errorInfo.requestId ? `Request ID: ${errorInfo.requestId}` : 'Error';
+    toast.error(title, { description: errorInfo.message });
+  }
 
   return Promise.reject(error);
 };
