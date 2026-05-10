@@ -7,6 +7,7 @@ import { authMiddleware, getToken } from '@/server/middleware';
 import { createErrorResponse, createSuccessResponse } from '@/server/response';
 import { assistantRoutes } from '@/server/routes/assistant';
 import { clusterRoutes } from '@/server/routes/cluster';
+import { complianceRoutes } from '@/server/routes/compliance';
 import { env } from '@/utils/config/env.server';
 import { captureApiError, createRequestLogger } from '@/utils/logger';
 import { Hono } from 'hono';
@@ -44,6 +45,10 @@ const createSuccessResponseWithHeaders = (c: any, reqId: string, data: any, path
 api.get('/', async (c) => {
   return c.json({ message: 'Staff API' });
 });
+
+// Specific /api/internal/* routes that aren't a Milo proxy must be mounted
+// before the catch-all below; Hono matches in registration order.
+api.route('/internal/compliance', complianceRoutes);
 
 // Internal proxy route - catch-all for /api/internal/*
 api.all('/internal/*', authMiddleware(), async (c) => {

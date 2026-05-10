@@ -3,7 +3,11 @@ import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
-import { VendorFormDialog } from '@/features/compliance';
+import {
+  UploadContractDialog,
+  VendorFormDialog,
+  type VendorFormValues,
+} from '@/features/compliance';
 import {
   useDeleteVendorMutation,
   useVendorListQuery,
@@ -19,7 +23,7 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
-import { EditIcon, PlusCircleIcon, Trash2Icon } from 'lucide-react';
+import { EditIcon, FileUpIcon, PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
 
@@ -41,6 +45,10 @@ export default function Page() {
   const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
   const [editingVendor, setEditingVendor] = useState<Vendor | null>(null);
   const [showCreate, setShowCreate] = useState(false);
+  const [showUpload, setShowUpload] = useState(false);
+  const [prefilled, setPrefilled] = useState<{ values: VendorFormValues; key: string } | null>(
+    null
+  );
   const deleteVendorMutation = useDeleteVendorMutation();
 
   const actions: ActionItem<Vendor>[] = [
@@ -134,6 +142,12 @@ export default function Page() {
     <>
       <AppActionBar>
         <Button
+          type="secondary"
+          icon={<FileUpIcon size={16} />}
+          onClick={() => setShowUpload(true)}>
+          <Trans>Upload contract</Trans>
+        </Button>
+        <Button
           type="primary"
           icon={<PlusCircleIcon size={16} />}
           onClick={() => setShowCreate(true)}>
@@ -141,7 +155,25 @@ export default function Page() {
         </Button>
       </AppActionBar>
 
-      <VendorFormDialog open={showCreate} onOpenChange={setShowCreate} />
+      <UploadContractDialog
+        open={showUpload}
+        onOpenChange={setShowUpload}
+        onExtracted={(values, key) => {
+          setPrefilled({ values, key });
+          setShowCreate(true);
+        }}
+      />
+
+      <VendorFormDialog
+        key={prefilled?.key ?? 'create'}
+        open={showCreate}
+        onOpenChange={(open) => {
+          setShowCreate(open);
+          if (!open) setPrefilled(null);
+        }}
+        prefilledValues={prefilled?.values}
+        prefillKey={prefilled?.key}
+      />
 
       <VendorFormDialog
         key={editingVendor?.metadata?.name ?? 'edit'}
