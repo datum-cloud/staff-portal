@@ -19,19 +19,40 @@ interface VendorFormDialogProps {
   onOpenChange: (open: boolean) => void;
   /** When provided, the dialog runs in edit mode against this vendor. */
   vendor?: Vendor;
+  /**
+   * Optional prefill for create mode (e.g. extracted from a contract PDF).
+   * Ignored when `vendor` is provided.
+   */
+  prefilledValues?: VendorFormValues;
+  /**
+   * Stable identifier folded into the dialog's React key so the form
+   * remounts (and re-applies defaults) when an external prefill source
+   * changes — typically a hash of the source PDF or the import job id.
+   */
+  prefillKey?: string;
 }
 
-export function VendorFormDialog({ open, onOpenChange, vendor }: VendorFormDialogProps) {
+export function VendorFormDialog({
+  open,
+  onOpenChange,
+  vendor,
+  prefilledValues,
+  prefillKey,
+}: VendorFormDialogProps) {
   const navigate = useNavigate();
   const createVendorMutation = useCreateVendorMutation();
   const updateVendorMutation = useUpdateVendorMutation();
 
   const isEdit = !!vendor;
-  const defaultValues = vendor ? vendorToFormValues(vendor) : emptyVendorFormValues;
+  const defaultValues = vendor
+    ? vendorToFormValues(vendor)
+    : (prefilledValues ?? emptyVendorFormValues);
+
+  const dialogKey = vendor?.metadata?.name ?? prefillKey ?? 'new';
 
   return (
     <DialogForm
-      key={`${vendor?.metadata?.name ?? 'new'}-${open ? 'open' : 'closed'}`}
+      key={`${dialogKey}-${open ? 'open' : 'closed'}`}
       open={open}
       onOpenChange={onOpenChange}
       title={isEdit ? t`Edit Vendor` : t`New Vendor`}
