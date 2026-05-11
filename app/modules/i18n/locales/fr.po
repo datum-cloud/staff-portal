@@ -120,7 +120,7 @@ msgstr ""
 #: app/components/app-search/use-app-search.ts:48
 #: app/components/app-sidebar/index.tsx:147
 #: app/routes/organization/detail/activity/index.tsx:14
-#: app/routes/organization/detail/layout.tsx:64
+#: app/routes/organization/detail/layout.tsx:65
 #: app/routes/project/detail/activity/index.tsx:14
 #: app/routes/project/detail/layout.tsx:149
 #: app/routes/user/detail/activity/index.tsx:23
@@ -347,6 +347,7 @@ msgstr ""
 #: app/features/contact-group/components/contact-group-form.tsx:97
 #: app/features/contact/components/contact-form.tsx:217
 #: app/features/contact/components/contact-list.tsx:117
+#: app/features/feature-flags/components/feature-flag-list.tsx:252
 #: app/features/fraud/policy/policy-form.tsx:318
 #: app/features/quota/components/quota-bucket-list.tsx:128
 #: app/features/quota/components/quota-grant-list.tsx:138
@@ -765,6 +766,27 @@ msgstr ""
 msgid "Details"
 msgstr ""
 
+#: app/features/feature-flags/components/feature-flag-list.tsx:251
+msgid "Disable"
+msgstr ""
+
+#. placeholder {0}: pendingGrants.length
+#: app/features/feature-flags/components/feature-flag-list.tsx:248
+msgid "Disable \"{pendingFlag}\" for this organization? {0} resource grants will be deleted."
+msgstr ""
+
+#: app/features/feature-flags/components/feature-flag-list.tsx:249
+msgid "Disable \"{pendingFlag}\" for this organization? The associated resource grant will be deleted."
+msgstr ""
+
+#: app/features/feature-flags/components/feature-flag-list.tsx:243
+msgid "Disable feature flag"
+msgstr ""
+
+#: app/features/feature-flags/components/feature-flag-list.tsx:185
+msgid "Disable flag"
+msgstr ""
+
 #: app/features/contact-group/components/contact-group-form.tsx:63
 msgid "Display Name"
 msgstr ""
@@ -893,6 +915,26 @@ msgstr ""
 
 #: app/routes/user/index.tsx:143
 msgid "Email is required"
+msgstr ""
+
+#: app/features/feature-flags/components/feature-flag-list.tsx:251
+msgid "Enable"
+msgstr ""
+
+#: app/features/feature-flags/components/feature-flag-list.tsx:246
+msgid "Enable \"{pendingFlag}\" for this organization? A new resource grant will be created."
+msgstr ""
+
+#: app/features/feature-flags/components/feature-flag-list.tsx:243
+msgid "Enable feature flag"
+msgstr ""
+
+#: app/features/feature-flags/components/feature-flag-list.tsx:185
+msgid "Enable flag"
+msgstr ""
+
+#: app/features/feature-flags/components/feature-flag-list.tsx:144
+msgid "Enabled by"
 msgstr ""
 
 #: app/components/date/date-range-picker.tsx:284
@@ -1036,6 +1078,19 @@ msgstr ""
 msgid "Failure Policy"
 msgstr ""
 
+#: app/features/feature-flags/components/feature-flag-list.tsx:230
+msgid "Feature flag disabled"
+msgstr ""
+
+#: app/features/feature-flags/components/feature-flag-list.tsx:219
+msgid "Feature flag enabled"
+msgstr ""
+
+#: app/routes/organization/detail/layout.tsx:88
+#: app/routes/organization/detail/quota/feature-flags.tsx:16
+msgid "Feature Flags"
+msgstr ""
+
 #: app/routes/user/index.tsx:287
 msgid "Filter by approval"
 msgstr ""
@@ -1106,6 +1161,10 @@ msgstr ""
 msgid "First name is required"
 msgstr ""
 
+#: app/features/feature-flags/components/feature-flag-list.tsx:132
+msgid "Flag"
+msgstr ""
+
 #: app/components/app-sidebar/index.tsx:153
 #: app/routes/fraud/layout.tsx:21
 msgid "Fraud & Abuse"
@@ -1165,7 +1224,7 @@ msgstr ""
 msgid "Grant deleted successfully"
 msgstr ""
 
-#: app/routes/organization/detail/layout.tsx:83
+#: app/routes/organization/detail/layout.tsx:84
 #: app/routes/organization/detail/quota/grant.tsx:9
 #: app/routes/project/detail/layout.tsx:163
 #: app/routes/project/detail/quota/grant.tsx:12
@@ -1450,7 +1509,7 @@ msgstr ""
 
 #: app/routes/contact-group/detail/layout.tsx:39
 #: app/routes/contact-group/detail/member.tsx:34
-#: app/routes/organization/detail/layout.tsx:69
+#: app/routes/organization/detail/layout.tsx:70
 #: app/routes/organization/detail/member.tsx:25
 msgid "Members"
 msgstr ""
@@ -1584,6 +1643,10 @@ msgstr ""
 msgid "No export policies found."
 msgstr ""
 
+#: app/features/feature-flags/components/feature-flag-list.tsx:286
+msgid "No feature flags registered."
+msgstr ""
+
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:75
 msgid "No fraud alerts"
 msgstr ""
@@ -1602,6 +1665,10 @@ msgstr ""
 
 #: app/routes/fraud/providers/index.tsx:154
 msgid "No fraud providers configured."
+msgstr ""
+
+#: app/features/feature-flags/components/feature-flag-list.tsx:222
+msgid "No grants found to remove for this flag"
 msgstr ""
 
 #: app/features/quota/components/quota-grant-list.tsx:178
@@ -1735,7 +1802,7 @@ msgstr ""
 msgid "Organizations"
 msgstr ""
 
-#: app/routes/organization/detail/layout.tsx:54
+#: app/routes/organization/detail/layout.tsx:55
 #: app/routes/project/detail/layout.tsx:119
 #: app/routes/user/detail/layout.tsx:32
 msgid "Overview"
@@ -1883,7 +1950,7 @@ msgstr ""
 #: app/components/app-search/use-app-search.ts:42
 #: app/components/app-sidebar/index.tsx:113
 #: app/routes/dashboard/index.tsx:75
-#: app/routes/organization/detail/layout.tsx:59
+#: app/routes/organization/detail/layout.tsx:60
 #: app/routes/organization/detail/project.tsx:17
 #: app/routes/project/detail/layout.tsx:57
 #: app/routes/project/index.tsx:16
@@ -1950,7 +2017,7 @@ msgstr ""
 msgid "Quota Utilization"
 msgstr ""
 
-#: app/routes/organization/detail/layout.tsx:74
+#: app/routes/organization/detail/layout.tsx:75
 #: app/routes/organization/detail/quota/layout.tsx:5
 #: app/routes/project/detail/layout.tsx:154
 #: app/routes/project/detail/quota/layout.tsx:5
@@ -2124,6 +2191,10 @@ msgstr ""
 
 #: app/routes/fraud/index.tsx:297
 msgid "Search by email, name, or ID..."
+msgstr ""
+
+#: app/features/feature-flags/components/feature-flag-list.tsx:278
+msgid "Search by flag key or description..."
 msgstr ""
 
 #: app/routes/fraud/index.tsx:241
@@ -2420,6 +2491,10 @@ msgstr ""
 msgid "Timezone updated successfully"
 msgstr ""
 
+#: app/features/feature-flags/components/feature-flag-list.tsx:174
+msgid "Toggle"
+msgstr ""
+
 #. placeholder {0}: idx + 1
 #: app/features/fraud/policy/policy-form.tsx:190
 msgid "Trigger {0}"
@@ -2477,7 +2552,7 @@ msgstr ""
 
 #: app/features/dashboard/components/quota-utilization-widget.tsx:161
 #: app/features/quota/components/quota-bucket-list.tsx:61
-#: app/routes/organization/detail/layout.tsx:79
+#: app/routes/organization/detail/layout.tsx:80
 #: app/routes/organization/detail/quota/usage.tsx:9
 #: app/routes/project/detail/layout.tsx:159
 #: app/routes/project/detail/quota/usage.tsx:12
@@ -2594,7 +2669,7 @@ msgstr ""
 msgid "View Evaluation"
 msgstr ""
 
-#: app/routes/organization/detail/layout.tsx:103
+#: app/routes/organization/detail/layout.tsx:108
 #: app/routes/project/detail/layout.tsx:183
 msgid "View in Cloud Portal"
 msgstr ""
