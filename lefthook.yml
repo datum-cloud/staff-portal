@@ -3,12 +3,12 @@ pre-commit:
   commands:
     eslint:
       glob: '*.{js,jsx,ts,tsx}'
-      exclude: 'locales/*'
+      exclude: '**/locales/**'
       run: bunx eslint {staged_files} --fix
       auto_add: true
     prettier:
       glob: '*.{js,jsx,ts,tsx,json}'
-      exclude: 'locales/*'
+      exclude: '**/locales/**'
       run: bunx prettier --write {staged_files}
       auto_add: true
     i18n:
