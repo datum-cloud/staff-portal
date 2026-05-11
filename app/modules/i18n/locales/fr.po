@@ -895,7 +895,7 @@ msgstr ""
 msgid "Email is required"
 msgstr ""
 
-#: app/components/date/date-range-picker.tsx:285
+#: app/components/date/date-range-picker.tsx:284
 msgid "End Time"
 msgstr ""
 
@@ -1938,7 +1938,7 @@ msgstr ""
 msgid "Query"
 msgstr ""
 
-#: app/components/date/date-range-picker.tsx:300
+#: app/components/date/date-range-picker.tsx:299
 msgid "Quick ranges"
 msgstr ""
 
@@ -2337,7 +2337,7 @@ msgstr ""
 msgid "Standard"
 msgstr ""
 
-#: app/components/date/date-range-picker.tsx:274
+#: app/components/date/date-range-picker.tsx:273
 msgid "Start Time"
 msgstr ""
 
