@@ -42,6 +42,7 @@ export default [
             index('routes/organization/detail/quota/index.tsx'),
             route('usage', 'routes/organization/detail/quota/usage.tsx'),
             route('grants', 'routes/organization/detail/quota/grant.tsx'),
+            route('feature-flags', 'routes/organization/detail/quota/feature-flags.tsx'),
           ]),
         ]),
       ]),

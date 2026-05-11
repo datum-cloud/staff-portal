@@ -25,6 +25,7 @@ export const orgRoutes = {
   quota: {
     usage: (orgName: string) => `/customers/organizations/${orgName}/quotas/usage`,
     grant: (orgName: string) => `/customers/organizations/${orgName}/quotas/grants`,
+    featureFlags: (orgName: string) => `/customers/organizations/${orgName}/quotas/feature-flags`,
   },
 } as const;
 

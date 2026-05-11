@@ -7,6 +7,7 @@ import {
   listQuotaMiloapisComV1Alpha1NamespacedAllowanceBucket,
   listQuotaMiloapisComV1Alpha1NamespacedResourceClaim,
   listQuotaMiloapisComV1Alpha1NamespacedResourceGrant,
+  listQuotaMiloapisComV1Alpha1ResourceRegistration,
 } from '@openapi/quota.miloapis.com/v1alpha1';
 
 const MILO_SYSTEM_NAMESPACE = 'milo-system';
@@ -73,7 +74,8 @@ export const projectQuotaGrantListQuery = (
 export const quotaGrantCreateMutation = async (
   baseURL: string,
   namespace: string,
-  payload: ComMiloapisQuotaV1Alpha1ResourceGrant['spec']
+  payload: ComMiloapisQuotaV1Alpha1ResourceGrant['spec'],
+  annotations?: Record<string, string>
 ) => {
   const response = await createQuotaMiloapisComV1Alpha1NamespacedResourceGrant({
     baseURL,
@@ -84,6 +86,7 @@ export const quotaGrantCreateMutation = async (
       metadata: {
         generateName: 'resource-grant-',
         namespace,
+        ...(annotations && Object.keys(annotations).length > 0 ? { annotations } : {}),
       },
       spec: payload,
     },
@@ -94,9 +97,15 @@ export const quotaGrantCreateMutation = async (
 export const orgQuotaGrantCreateMutation = async (
   orgName: string,
   namespace: string,
-  payload: ComMiloapisQuotaV1Alpha1ResourceGrant['spec']
+  payload: ComMiloapisQuotaV1Alpha1ResourceGrant['spec'],
+  annotations?: Record<string, string>
 ) => {
-  return quotaGrantCreateMutation(getOrgControlPlaneBaseURL(orgName), namespace, payload);
+  return quotaGrantCreateMutation(
+    getOrgControlPlaneBaseURL(orgName),
+    namespace,
+    payload,
+    annotations
+  );
 };
 
 export const projectQuotaGrantCreateMutation = async (
@@ -183,6 +192,20 @@ export const projectQuotaBucketListQuery = (
     baseURL: getProjectControlPlaneBaseURL(projectName),
     fieldSelector: fieldSelectorParts.join(','),
   });
+};
+
+const FEATURE_FLAG_LABEL_SELECTOR = 'app.kubernetes.io/component=feature-flags';
+
+export const featureFlagRegistrationListQuery = async (params?: ListQueryParams) => {
+  const response = await listQuotaMiloapisComV1Alpha1ResourceRegistration({
+    baseURL: PROXY_URL,
+    query: {
+      ...(params?.limit && { limit: params.limit }),
+      ...(params?.cursor && { continue: params.cursor }),
+      labelSelector: FEATURE_FLAG_LABEL_SELECTOR,
+    },
+  });
+  return response.data.data;
 };
 
 export const quotaClaimListQuery = async (
