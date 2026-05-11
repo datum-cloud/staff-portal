@@ -260,7 +260,6 @@ export function DateRangePicker({
             <div className="flex items-start gap-4">
               <div className="min-w-[350px] flex-1">
                 <Calendar
-                  initialFocus
                   mode="range"
                   defaultMonth={value?.from}
                   selected={value}
