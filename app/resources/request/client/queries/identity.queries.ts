@@ -1,5 +1,6 @@
 import { identityListQuery, sessionListQuery } from '../apis/identity.api';
 import { sessionDeleteMutation } from '../apis/identity.api';
+import { listSessions, type ExtendedSession } from '@/modules/graphql/sessions';
 import { ListQueryParams } from '@/resources/schemas';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -17,6 +18,21 @@ export const useSessionListQuery = (userId: string, params?: ListQueryParams) =>
   return useQuery({
     queryKey: sessionQueryKeys.list(userId, params),
     queryFn: () => sessionListQuery(userId, params),
+    enabled: Boolean(userId),
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+/**
+ * Sessions enriched with parsed user-agent and geolocation, served by
+ * the graphql-gateway. Use this where you want browser/OS/city info;
+ * use {@link useSessionListQuery} for the raw K8s shape (which still
+ * carries `metadata.creationTimestamp`, `status.expiresAt`, etc.).
+ */
+export const useSessionListEnrichedQuery = (userId: string) => {
+  return useQuery<ExtendedSession[]>({
+    queryKey: ['sessions', 'enriched', userId] as const,
+    queryFn: () => listSessions(userId),
     enabled: Boolean(userId),
     staleTime: 5 * 60 * 1000,
   });
