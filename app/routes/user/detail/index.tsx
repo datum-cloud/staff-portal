@@ -10,6 +10,7 @@ import { DialogForm } from '@/components/dialog';
 import { PageHeader } from '@/components/page-header';
 import { buildMaxmindRowGroups, extractMaxmindInsights } from '@/features/fraud';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
+import { UserIdentityCard } from '@/features/user/components/user-identity-card';
 import { useEnv } from '@/hooks';
 import { useApp } from '@/providers/app.provider';
 import {
@@ -287,6 +288,8 @@ export default function Page() {
               />
             </CardContent>
           </Card>
+
+          <UserIdentityCard userId={data?.metadata?.name ?? ''} readOnly showSessions />
 
           {maxmindGroups.network.length > 0 && (
             <Card className="shadow-none">
