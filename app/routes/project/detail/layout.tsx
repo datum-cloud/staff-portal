@@ -17,7 +17,6 @@ import {
   ComMiloapisResourcemanagerV1Alpha1Project,
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import {
-  BarChart3,
   ChartSpline,
   CircleGauge,
   ExternalLink,
@@ -150,11 +149,6 @@ export default function Layout() {
       title: t`Activity`,
       href: projectRoutes.activity.root(projectName),
       icon: SquareActivity,
-    },
-    {
-      title: t`Usage`,
-      href: projectRoutes.usage(projectName),
-      icon: BarChart3,
     },
     {
       title: t`Quotas`,

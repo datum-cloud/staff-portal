@@ -44,6 +44,7 @@ export default [
             route('grants', 'routes/organization/detail/quota/grant.tsx'),
             route('feature-flags', 'routes/organization/detail/quota/feature-flags.tsx'),
           ]),
+          route('usage', 'routes/organization/detail/usage/index.tsx'),
         ]),
       ]),
 
@@ -80,7 +81,6 @@ export default [
             route('grants', 'routes/project/detail/quota/grant.tsx'),
           ]),
           route('secrets', 'routes/project/detail/secret.tsx'),
-          route('usage', 'routes/project/detail/usage/index.tsx'),
         ]),
       ]),
     ]),

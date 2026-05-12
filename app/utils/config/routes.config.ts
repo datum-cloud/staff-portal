@@ -27,6 +27,7 @@ export const orgRoutes = {
     grant: (orgName: string) => `/customers/organizations/${orgName}/quotas/grants`,
     featureFlags: (orgName: string) => `/customers/organizations/${orgName}/quotas/feature-flags`,
   },
+  usage: (orgName: string) => `/customers/organizations/${orgName}/usage`,
 } as const;
 
 // Projects feature routes
@@ -67,7 +68,6 @@ export const projectRoutes = {
     detail: (projectName: string, secretName: string) =>
       `/customers/projects/${projectName}/secrets/${secretName}`,
   },
-  usage: (projectName: string) => `/customers/projects/${projectName}/usage`,
 } as const;
 
 // Groups feature routes
