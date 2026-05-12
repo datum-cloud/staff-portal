@@ -89,11 +89,11 @@ msgstr ""
 msgid "Account ID Key"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:29
+#: app/features/user/components/user-identity-card.tsx:51
 msgid "Account Identities"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:407
+#: app/routes/user/detail/index.tsx:410
 msgid "Account Management"
 msgstr ""
 
@@ -112,6 +112,7 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
+#: app/features/user/components/user-identity-card.tsx:150
 #: app/routes/profile/layout.tsx:21
 #: app/routes/profile/session.tsx:20
 msgid "Active Sessions"
@@ -228,7 +229,7 @@ msgstr ""
 msgid "API Group"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:204
+#: app/routes/user/detail/index.tsx:205
 #: app/routes/user/index.tsx:53
 msgid "Approve"
 msgstr ""
@@ -309,7 +310,7 @@ msgstr ""
 
 #. placeholder {0}: data.spec?.givenName ?? ''
 #. placeholder {1}: data.spec?.familyName ?? ''
-#: app/routes/user/detail/index.tsx:503
+#: app/routes/user/detail/index.tsx:506
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr ""
 
@@ -369,12 +370,12 @@ msgstr ""
 #: app/routes/group/member.tsx:171
 #: app/routes/organization/detail/member.tsx:85
 #: app/routes/profile/session.tsx:106
-#: app/routes/user/detail/index.tsx:151
+#: app/routes/user/detail/index.tsx:152
 #: app/routes/user/index.tsx:173
 msgid "Cancel"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:78
+#: app/features/user/components/user-identity-card.tsx:101
 msgid "Change your Primary Email in GitHub (your primary email)"
 msgstr ""
 
@@ -549,13 +550,14 @@ msgstr ""
 #: app/features/contact/components/contact-list.tsx:95
 #: app/features/quota/components/quota-bucket-list.tsx:97
 #: app/features/quota/components/quota-grant-list.tsx:114
+#: app/features/user/components/user-identity-card.tsx:179
 #: app/routes/contact-group/index.tsx:89
 #: app/routes/fraud/providers/index.tsx:102
 #: app/routes/group/index.tsx:35
 #: app/routes/group/member.tsx:122
 #: app/routes/organization/detail/index.tsx:54
 #: app/routes/organization/detail/project.tsx:50
-#: app/routes/organization/index.tsx:43
+#: app/routes/organization/index.tsx:59
 #: app/routes/profile/session.tsx:73
 #: app/routes/project/detail/dns/index.tsx:72
 #: app/routes/project/detail/domain/detail.tsx:132
@@ -566,7 +568,7 @@ msgstr ""
 #: app/routes/project/detail/export-policy/index.tsx:53
 #: app/routes/project/detail/index.tsx:57
 #: app/routes/project/index.tsx:49
-#: app/routes/user/detail/index.tsx:279
+#: app/routes/user/detail/index.tsx:280
 #: app/routes/user/index.tsx:121
 msgid "Created"
 msgstr ""
@@ -601,8 +603,8 @@ msgid "Date"
 msgstr ""
 
 #: app/routes/fraud/index.tsx:321
-#: app/routes/user/detail/index.tsx:150
-#: app/routes/user/detail/index.tsx:491
+#: app/routes/user/detail/index.tsx:151
+#: app/routes/user/detail/index.tsx:494
 msgid "Deactivate"
 msgstr ""
 
@@ -610,24 +612,24 @@ msgstr ""
 msgid "Deactivate Threshold"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:148
-#: app/routes/user/detail/index.tsx:482
+#: app/routes/user/detail/index.tsx:149
+#: app/routes/user/detail/index.tsx:485
 msgid "Deactivate User"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:455
+#: app/routes/user/detail/index.tsx:458
 msgid "Deactivated At"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:447
+#: app/routes/user/detail/index.tsx:450
 msgid "Deactivated By"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:439
+#: app/routes/user/detail/index.tsx:442
 msgid "Deactivation Details"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:469
+#: app/routes/user/detail/index.tsx:472
 msgid "Deactivation Reason"
 msgstr ""
 
@@ -636,7 +638,7 @@ msgstr ""
 #: app/routes/fraud/index.tsx:157
 #: app/routes/fraud/index.tsx:316
 #: app/routes/fraud/index.tsx:341
-#: app/routes/user/detail/index.tsx:362
+#: app/routes/user/detail/index.tsx:365
 msgid "Decision"
 msgstr ""
 
@@ -744,8 +746,8 @@ msgstr ""
 msgid "Delete Session"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:500
-#: app/routes/user/detail/index.tsx:502
+#: app/routes/user/detail/index.tsx:503
+#: app/routes/user/detail/index.tsx:505
 msgid "Delete User"
 msgstr ""
 
@@ -884,7 +886,7 @@ msgstr ""
 #: app/features/dashboard/components/pending-approvals-widget.tsx:131
 #: app/routes/contact-group/detail/member.tsx:203
 #: app/routes/fraud/index.tsx:119
-#: app/routes/user/detail/index.tsx:267
+#: app/routes/user/detail/index.tsx:268
 #: app/routes/user/index.tsx:211
 msgid "Email"
 msgstr ""
@@ -897,11 +899,11 @@ msgstr ""
 msgid "Email Activity"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:68
+#: app/features/user/components/user-identity-card.tsx:91
 msgid "Email addresses for GitHub identities should be updated through GitHub"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:324
+#: app/routes/user/detail/index.tsx:327
 msgid "Email Domain"
 msgstr ""
 
@@ -973,7 +975,7 @@ msgstr ""
 msgid "Enter note content..."
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:156
+#: app/routes/user/detail/index.tsx:157
 msgid "Enter reason for deactivation..."
 msgstr ""
 
@@ -1128,10 +1130,6 @@ msgstr ""
 msgid "Filter by time range"
 msgstr ""
 
-#: app/routes/organization/index.tsx:86
-msgid "Filter by type"
-msgstr ""
-
 #: app/components/data-table-toolbar/index.tsx:89
 msgid "Filter options"
 msgstr ""
@@ -1174,7 +1172,7 @@ msgstr ""
 msgid "Fraud Alerts"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:337
+#: app/routes/user/detail/index.tsx:340
 msgid "Fraud Assessment"
 msgstr ""
 
@@ -1199,7 +1197,7 @@ msgstr ""
 msgid "Fraud Providers"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:259
+#: app/routes/user/detail/index.tsx:260
 msgid "Full Name"
 msgstr ""
 
@@ -1274,7 +1272,7 @@ msgstr ""
 msgid "Hostnames"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:100
+#: app/features/user/components/user-identity-card.tsx:123
 msgid "How to update your GitHub email"
 msgstr ""
 
@@ -1282,7 +1280,7 @@ msgstr ""
 msgid "HTML"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:250
+#: app/routes/user/detail/index.tsx:251
 #: app/routes/user/index.tsx:103
 msgid "ID"
 msgstr ""
@@ -1325,7 +1323,7 @@ msgstr ""
 msgid "IP"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:296
+#: app/routes/user/detail/index.tsx:299
 msgid "IP & Network"
 msgstr ""
 
@@ -1354,7 +1352,7 @@ msgstr ""
 msgid "Last 10 new users who joined Datum"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:377
+#: app/routes/user/detail/index.tsx:380
 msgid "Last Evaluated"
 msgstr ""
 
@@ -1374,7 +1372,7 @@ msgstr ""
 msgid "Last name is required"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:340
+#: app/routes/user/detail/index.tsx:343
 msgid "Latest fraud evaluation for this user"
 msgstr ""
 
@@ -1420,7 +1418,7 @@ msgstr ""
 #: app/routes/auth/callback.tsx:71
 #: app/routes/auth/login.tsx:41
 #: app/routes/auth/logout.tsx:36
-#: app/routes/user/detail/index.tsx:346
+#: app/routes/user/detail/index.tsx:349
 msgid "Loading..."
 msgstr ""
 
@@ -1429,15 +1427,15 @@ msgid "Local Time"
 msgstr ""
 
 #: app/features/fraud/detail/maxmind-rows.tsx:178
-#: app/routes/user/detail/index.tsx:310
+#: app/routes/user/detail/index.tsx:313
 msgid "Location"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:92
+#: app/features/user/components/user-identity-card.tsx:115
 msgid "Log back into Datum"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:86
+#: app/features/user/components/user-identity-card.tsx:109
 msgid "Log back into GitHub (with the new, desired email set as primary)"
 msgstr ""
 
@@ -1445,11 +1443,11 @@ msgstr ""
 msgid "Log out"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:75
+#: app/features/user/components/user-identity-card.tsx:98
 msgid "Log out of Datum"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:83
+#: app/features/user/components/user-identity-card.tsx:106
 msgid "Log out of GitHub"
 msgstr ""
 
@@ -1462,7 +1460,7 @@ msgstr ""
 msgid "Mail Lists"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:113
+#: app/features/user/components/user-identity-card.tsx:136
 #: app/routes/user/index.tsx:48
 msgid "Manage"
 msgstr ""
@@ -1479,7 +1477,7 @@ msgstr ""
 msgid "Manage projects"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:410
+#: app/routes/user/detail/index.tsx:413
 msgid "Manage user access and account status"
 msgstr ""
 
@@ -1526,7 +1524,7 @@ msgstr ""
 msgid "More options"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:230
+#: app/routes/user/detail/index.tsx:231
 #: app/routes/user/index.tsx:75
 msgid "Move to Pending"
 msgstr ""
@@ -1550,7 +1548,7 @@ msgstr ""
 #: app/routes/organization/detail/index.tsx:46
 #: app/routes/organization/detail/member.tsx:103
 #: app/routes/organization/detail/project.tsx:35
-#: app/routes/organization/index.tsx:25
+#: app/routes/organization/index.tsx:42
 #: app/routes/project/detail/dns/detail.tsx:110
 #: app/routes/project/detail/edge/detail.tsx:87
 #: app/routes/project/detail/edge/index.tsx:30
@@ -1602,6 +1600,7 @@ msgstr ""
 msgid "New Limit"
 msgstr ""
 
+#: app/features/user/components/user-identity-card.tsx:156
 #: app/routes/profile/session.tsx:143
 msgid "No active sessions."
 msgstr ""
@@ -1651,7 +1650,7 @@ msgstr ""
 msgid "No fraud alerts"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:396
+#: app/routes/user/detail/index.tsx:399
 msgid "No fraud evaluations found for this user."
 msgstr ""
 
@@ -1693,7 +1692,7 @@ msgstr ""
 msgid "No notes yet. Add the first note below."
 msgstr ""
 
-#: app/routes/organization/index.tsx:112
+#: app/routes/organization/index.tsx:73
 #: app/routes/user/detail/organization.tsx:91
 msgid "No organizations found."
 msgstr ""
@@ -1785,16 +1784,11 @@ msgstr ""
 msgid "Organization deleted successfully"
 msgstr ""
 
-#: app/routes/organization/index.tsx:85
-#: app/routes/organization/index.tsx:97
-msgid "Organization Type"
-msgstr ""
-
 #: app/components/app-search/search-results.tsx:152
 #: app/components/app-search/use-app-search.ts:36
 #: app/components/app-sidebar/index.tsx:109
 #: app/routes/dashboard/index.tsx:67
-#: app/routes/organization/index.tsx:15
+#: app/routes/organization/index.tsx:19
 #: app/routes/organization/layout.tsx:5
 #: app/routes/project/detail/layout.tsx:51
 #: app/routes/user/detail/layout.tsx:37
@@ -1842,13 +1836,8 @@ msgstr ""
 msgid "Permanently delete this project and all associated data"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:501
+#: app/routes/user/detail/index.tsx:504
 msgid "Permanently delete this user and all associated data"
-msgstr ""
-
-#: app/routes/organization/index.tsx:88
-#: app/routes/organization/index.tsx:101
-msgid "Personal"
 msgstr ""
 
 #: app/features/fraud/detail/evaluation-sections.tsx:378
@@ -1872,7 +1861,7 @@ msgstr ""
 
 #. placeholder {0}: data.spec?.givenName ?? ''
 #. placeholder {1}: data.spec?.familyName ?? ''
-#: app/routes/user/detail/index.tsx:149
+#: app/routes/user/detail/index.tsx:150
 msgid "Please provide a reason for deactivating \"{0} {1}\"."
 msgstr ""
 
@@ -2028,19 +2017,19 @@ msgstr ""
 msgid "Raw Results — {provider}"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:421
+#: app/routes/user/detail/index.tsx:424
 msgid "Re-enable this user's access to the system. They will be able to sign in immediately."
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:432
+#: app/routes/user/detail/index.tsx:435
 msgid "Reactivate"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:419
+#: app/routes/user/detail/index.tsx:422
 msgid "Reactivate User"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:155
+#: app/routes/user/detail/index.tsx:156
 msgid "Reason for deactivation"
 msgstr ""
 
@@ -2062,7 +2051,7 @@ msgstr ""
 msgid "Registrar"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:271
+#: app/routes/user/detail/index.tsx:272
 #: app/routes/user/index.tsx:115
 #: app/routes/user/index.tsx:286
 #: app/routes/user/index.tsx:302
@@ -2070,7 +2059,7 @@ msgid "Registration Approval"
 msgstr ""
 
 #: app/features/user/components/user-reject-dialog.tsx:29
-#: app/routes/user/detail/index.tsx:211
+#: app/routes/user/detail/index.tsx:212
 #: app/routes/user/index.tsx:68
 msgid "Reject"
 msgstr ""
@@ -2171,7 +2160,7 @@ msgstr ""
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:145
 #: app/features/fraud/detail/evaluation-sections.tsx:369
 #: app/routes/fraud/index.tsx:137
-#: app/routes/user/detail/index.tsx:353
+#: app/routes/user/detail/index.tsx:356
 msgid "Score"
 msgstr ""
 
@@ -2253,7 +2242,7 @@ msgstr ""
 msgid "Search members..."
 msgstr ""
 
-#: app/routes/organization/index.tsx:78
+#: app/routes/organization/index.tsx:72
 #: app/routes/user/detail/organization.tsx:83
 msgid "Search organizations..."
 msgstr ""
@@ -2403,11 +2392,6 @@ msgstr ""
 msgid "Stages"
 msgstr ""
 
-#: app/routes/organization/index.tsx:89
-#: app/routes/organization/index.tsx:102
-msgid "Standard"
-msgstr ""
-
 #: app/components/date/date-range-picker.tsx:273
 msgid "Start Time"
 msgstr ""
@@ -2430,7 +2414,7 @@ msgstr ""
 #: app/routes/project/detail/export-policy/detail.tsx:75
 #: app/routes/project/detail/export-policy/detail.tsx:170
 #: app/routes/project/detail/export-policy/index.tsx:46
-#: app/routes/user/detail/index.tsx:275
+#: app/routes/user/detail/index.tsx:276
 #: app/routes/user/index.tsx:109
 #: app/routes/user/index.tsx:277
 #: app/routes/user/index.tsx:301
@@ -2463,7 +2447,7 @@ msgstr ""
 msgid "Template"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:484
+#: app/routes/user/detail/index.tsx:487
 msgid "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 msgstr ""
 
@@ -2512,7 +2496,7 @@ msgstr ""
 #: app/features/fraud/policy/policy-form.tsx:203
 #: app/routes/fraud/providers/index.tsx:65
 #: app/routes/organization/detail/index.tsx:50
-#: app/routes/organization/index.tsx:38
+#: app/routes/organization/index.tsx:54
 #: app/routes/project/detail/dns/detail.tsx:95
 #: app/routes/project/detail/dns/detail.tsx:159
 #: app/routes/project/detail/export-policy/detail.tsx:164
@@ -2546,7 +2530,7 @@ msgstr ""
 msgid "Update your DNS provider with the provided record, or use the HTTP token method."
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:65
+#: app/features/user/components/user-identity-card.tsx:88
 msgid "Updating email addresses for GitHub identities"
 msgstr ""
 
@@ -2566,7 +2550,7 @@ msgstr ""
 #: app/features/fraud/detail/evaluation-sections.tsx:333
 #: app/routes/contact-group/detail/member.tsx:108
 #: app/routes/fraud/index.tsx:107
-#: app/routes/user/detail/index.tsx:242
+#: app/routes/user/detail/index.tsx:243
 msgid "User"
 msgstr ""
 
@@ -2574,11 +2558,11 @@ msgstr ""
 msgid "User approved successfully"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:125
+#: app/routes/user/detail/index.tsx:126
 msgid "User deactivated successfully"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:111
+#: app/routes/user/detail/index.tsx:112
 msgid "User deleted successfully"
 msgstr ""
 
@@ -2602,7 +2586,7 @@ msgstr ""
 msgid "User moved to pending successfully"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:136
+#: app/routes/user/detail/index.tsx:137
 msgid "User reactivated successfully"
 msgstr ""
 
@@ -2665,7 +2649,7 @@ msgstr ""
 msgid "View contact groups"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:391
+#: app/routes/user/detail/index.tsx:394
 msgid "View Evaluation"
 msgstr ""
 
@@ -2674,7 +2658,7 @@ msgstr ""
 msgid "View in Cloud Portal"
 msgstr ""
 
-#: app/routes/user/detail/index.tsx:184
+#: app/routes/user/detail/index.tsx:185
 msgid "View in Sentry"
 msgstr ""
 
