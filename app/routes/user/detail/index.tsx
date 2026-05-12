@@ -289,7 +289,12 @@ export default function Page() {
             </CardContent>
           </Card>
 
-          <UserIdentityCard userId={data?.metadata?.name ?? ''} readOnly showSessions />
+          <UserIdentityCard
+            userId={data?.metadata?.name ?? ''}
+            readOnly
+            showSessions
+            className="shadow-none"
+          />
 
           {maxmindGroups.network.length > 0 && (
             <Card className="shadow-none">

@@ -29,10 +29,12 @@ export const UserIdentityCard = ({
   userId,
   readOnly = false,
   showSessions = false,
+  className,
 }: {
   userId: string;
   readOnly?: boolean;
   showSessions?: boolean;
+  className?: string;
 }) => {
   const { data: identities, isLoading: isLoadingIdentities } = useIdentityListQuery(userId);
   const { data: sessionItems = [], isLoading: isLoadingSessions } = useSessionListEnrichedQuery(
@@ -44,7 +46,7 @@ export const UserIdentityCard = ({
   const env = useEnv();
 
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <FingerprintPattern className="h-4 w-4" />
