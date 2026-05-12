@@ -67,6 +67,7 @@ export const projectRoutes = {
     detail: (projectName: string, secretName: string) =>
       `/customers/projects/${projectName}/secrets/${secretName}`,
   },
+  usage: (projectName: string) => `/customers/projects/${projectName}/usage`,
 } as const;
 
 // Groups feature routes

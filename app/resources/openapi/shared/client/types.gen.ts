@@ -12,8 +12,7 @@ import type {
 } from 'axios';
 
 export interface Config<T extends ClientOptions = ClientOptions>
-  extends Omit<CreateAxiosDefaults, 'auth' | 'baseURL' | 'headers' | 'method'>,
-    CoreConfig {
+  extends Omit<CreateAxiosDefaults, 'auth' | 'baseURL' | 'headers' | 'method'>, CoreConfig {
   /**
    * Axios implementation. You can use this option to provide either an
    * `AxiosStatic` or an `AxiosInstance`.
@@ -49,7 +48,9 @@ export interface RequestOptions<
   TData = unknown,
   ThrowOnError extends boolean = boolean,
   Url extends string = string,
-> extends Config<{
+>
+  extends
+    Config<{
       throwOnError: ThrowOnError;
     }>,
     Pick<
