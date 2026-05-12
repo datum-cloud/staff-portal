@@ -1,5 +1,9 @@
 # Documentation Index
 
+## Operators
+
+- `operators/feature-flags.md` - toggle per-org feature flags and read the audit trail
+
 ## Engineering
 
 - `engineering/README.md` - entry point for architecture and implementation patterns
