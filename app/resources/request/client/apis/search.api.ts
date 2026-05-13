@@ -142,54 +142,6 @@ export async function searchAllQuery(queryString: string): Promise<GroupedSearch
   return grouped;
 }
 
-/**
- * Page returned by `searchResourcePageQuery`. `continue` is non-empty when
- * more results are available — pass it back as `cursor` for the next page.
- */
-export interface SearchResourcePage<T> {
-  items: T[];
-  continue?: string;
-}
-
-/**
- * Paginated single-kind search. Used by list pages backed by `<ResourceTable>`
- * when the user has typed a search query. Empty queries should use the
- * resource's own list endpoint, which owns natural ordering and proper
- * cursor pagination.
- */
-export const searchResourcePageQuery = async <T>(args: {
-  target: NetMiloapisGoSearchPkgApisSearchV1Alpha1TargetResource;
-  query: string;
-  limit: number;
-  cursor?: string;
-}): Promise<SearchResourcePage<T>> => {
-  const body: NetMiloapisGoSearchPkgApisSearchV1Alpha1ResourceSearchQuery = {
-    apiVersion: 'search.miloapis.com/v1alpha1',
-    kind: 'ResourceSearchQuery',
-    metadata: {
-      name: `query-${args.target.kind?.toLowerCase() ?? 'resource'}-${Date.now()}`,
-    },
-    spec: {
-      query: args.query,
-      limit: args.limit,
-      continue: args.cursor,
-      targetResources: [args.target],
-    },
-  };
-
-  const response = await createSearchMiloapisComV1Alpha1ResourceSearchQuery({
-    baseURL: PROXY_URL,
-    body,
-    headers: { 'Content-Type': 'application/json' },
-  });
-
-  const status = response.data?.data?.status;
-  return {
-    items: (status?.results ?? []).map((r) => r.resource as T),
-    continue: status?.continue || undefined,
-  };
-};
-
 // Legacy individual queries kept for backward compatibility (used by useSearchUsersQuery etc.)
 function buildQuery(
   queryString: string,
