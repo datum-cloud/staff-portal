@@ -1,14 +1,10 @@
-import { getProjectDetailMetadata } from '../../shared';
+import { getOrganizationDetailMetadata } from '../../shared';
 import type { Route } from './+types/index';
 import { authenticator } from '@/modules/auth';
 import { getOrgControlPlaneBaseURL } from '@/resources/request/client/apis/control-plane';
-import { projectDetailQuery } from '@/resources/request/server';
 import { env } from '@/utils/config/env.server';
 import { metaObject } from '@/utils/helpers';
-import {
-  listBillingMiloapisComV1Alpha1NamespacedBillingAccountBinding,
-  readBillingMiloapisComV1Alpha1NamespacedBillingAccount,
-} from '@openapi/billing.miloapis.com/v1alpha1';
+import { listBillingMiloapisComV1Alpha1NamespacedBillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
 import { UnwrapProxyResponse } from '@openapi/shared/core/types.gen';
 import { format } from 'date-fns';
 import { BarChart3 } from 'lucide-react';
@@ -28,8 +24,8 @@ export const handle = {
 };
 
 export const meta: Route.MetaFunction = ({ matches }) => {
-  const { projectName } = getProjectDetailMetadata(matches);
-  return metaObject(`Usage - ${projectName}`);
+  const { organizationName } = getOrganizationDetailMetadata(matches);
+  return metaObject(`Usage - ${organizationName}`);
 };
 
 interface MeterSeries {
@@ -39,7 +35,10 @@ interface MeterSeries {
 }
 
 interface MeterDefinition {
-  meterName: string;
+  // Amberflo meterApiName, which the amberflo-provider sets to the
+  // MeterDefinition's metadata.uid (not spec.meterName) for charset/length
+  // safety. See milo-os/amberflo-provider meterdefinition_controller.go.
+  meterApiName: string;
   displayName: string;
 }
 
@@ -56,15 +55,18 @@ async function listMeterDefinitions(token: string): Promise<MeterDefinition[]> {
     });
     if (!resp.ok) return [];
     const json = (await resp.json()) as {
-      items?: { spec?: { meterName?: string; displayName?: string } }[];
+      items?: {
+        metadata?: { uid?: string };
+        spec?: { meterName?: string; displayName?: string };
+      }[];
     };
     const items = json.items ?? [];
     return items
       .map((item) => ({
-        meterName: item.spec?.meterName ?? '',
+        meterApiName: item.metadata?.uid ?? '',
         displayName: item.spec?.displayName ?? item.spec?.meterName ?? '',
       }))
-      .filter((m) => m.meterName);
+      .filter((m) => m.meterApiName);
   } catch {
     return [];
   }
@@ -74,21 +76,11 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
   const session = await authenticator.getSession(request);
   const token = session?.accessToken ?? '';
 
-  // Resolve the org name via the parent layout's pre-fetched project data.
-  // We have projectName from params; we read the project to get its ownerRef.
-  const projectName = params.projectName;
-  if (!projectName) {
-    return data({ status: 'unconfigured' as const, meters: [] });
-  }
-
-  const project = await projectDetailQuery(token, projectName);
-  const orgName = project?.spec?.ownerRef?.name;
-
+  const orgName = params.orgName;
   if (!orgName) {
     return data({ status: 'unconfigured' as const, meters: [] });
   }
 
-  // Gate: if AMBERFLO_API_KEY is not configured, tell the operator rather than crash.
   const apiKey = env.amberfloApiKey;
   if (!apiKey) {
     return data({ status: 'unconfigured' as const, meters: [] });
@@ -97,11 +89,12 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
   const orgNamespace = `organization-${orgName}`;
   const orgBaseURL = getOrgControlPlaneBaseURL(orgName);
 
-  // List BillingAccountBindings in the org namespace, filtered by projectRef.name.
-  // 401/403 means staff principal lacks billing IAM grants — show a clear state.
-  let bindingsResp;
+  // List BillingAccounts in the org namespace. Every account in the org rolls
+  // up here since the Amberflo data only carries customerId (= account uid);
+  // there is no per-project dimension on submitted events today.
+  let accountsResp;
   try {
-    bindingsResp = await listBillingMiloapisComV1Alpha1NamespacedBillingAccountBinding({
+    accountsResp = await listBillingMiloapisComV1Alpha1NamespacedBillingAccount({
       baseURL: orgBaseURL,
       path: { namespace: orgNamespace },
       headers: {
@@ -116,88 +109,66 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
     throw err;
   }
 
-  const bindings = bindingsResp.data as unknown as UnwrapProxyResponse<typeof bindingsResp.data>;
-  const binding = bindings?.items?.find((b) => b.spec?.projectRef?.name === projectName);
+  const accounts = accountsResp.data as unknown as UnwrapProxyResponse<typeof accountsResp.data>;
+  const customerIds = (accounts?.items ?? [])
+    .map((a) => a.metadata?.uid)
+    .filter((uid): uid is string => !!uid);
 
-  if (!binding) {
+  if (customerIds.length === 0) {
     return data({ status: 'no-billing-account' as const, meters: [] });
   }
 
-  const billingAccountName = binding.spec?.billingAccountRef?.name;
-  if (!billingAccountName) {
-    return data({ status: 'no-billing-account' as const, meters: [] });
-  }
-
-  // Read the BillingAccount to get its uid (= Amberflo customerId).
-  let accountResp;
-  try {
-    accountResp = await readBillingMiloapisComV1Alpha1NamespacedBillingAccount({
-      baseURL: orgBaseURL,
-      path: { namespace: orgNamespace, name: billingAccountName },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  } catch (err: unknown) {
-    const status = (err as { response?: { status?: number } })?.response?.status;
-    if (status === 401 || status === 403) {
-      return data({ status: 'insufficient-permissions' as const, meters: [] });
-    }
-    throw err;
-  }
-
-  const account = accountResp.data as unknown as UnwrapProxyResponse<typeof accountResp.data>;
-  const customerId = account?.metadata?.uid;
-  if (!customerId) {
-    return data({ status: 'no-billing-account' as const, meters: [] });
-  }
-
-  // Discover meter definitions cluster-scoped from the billing API.
   const meterDefs = await listMeterDefinitions(token);
   if (meterDefs.length === 0) {
     return data({ status: 'no-meters' as const, meters: [] });
   }
 
-  // Fetch 30-day usage from Amberflo for each meter.
   const amberfloBaseUrl = env.amberfloBaseUrl;
   const nowSec = Math.floor(Date.now() / 1000);
   const startSec = nowSec - 30 * 24 * 3600;
 
   const meters = await Promise.all(
-    meterDefs.map(async ({ meterName, displayName }): Promise<MeterSeries> => {
+    meterDefs.map(async ({ meterApiName, displayName }): Promise<MeterSeries> => {
       try {
-        const resp = await fetch(`${amberfloBaseUrl}/usage/sparse`, {
+        const resp = await fetch(`${amberfloBaseUrl}/usage`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'x-api-key': apiKey,
           },
           body: JSON.stringify({
-            meterApiName: meterName,
+            meterApiName,
+            aggregation: 'sum',
+            timeGroupingInterval: 'day',
             timeRange: { startTimeInSeconds: startSec, endTimeInSeconds: nowSec },
-            filter: { customerId: [customerId] },
+            filter: { customerId: customerIds },
             groupBy: ['customerId'],
           }),
         });
 
         if (!resp.ok) {
-          return { meterApiName: meterName, label: displayName, values: [] };
+          return { meterApiName, label: displayName, values: [] };
         }
 
         const json = (await resp.json()) as {
           clientMeters?: { values?: { secondsSinceEpochUtc: number; value: number }[] }[];
         };
-        const raw = json.clientMeters?.[0]?.values ?? [];
-        return {
-          meterApiName: meterName,
-          label: displayName,
-          values: raw.map((v) => ({
-            timestamp: v.secondsSinceEpochUtc * 1000,
-            value: v.value,
-          })),
-        };
+        // Sum across all clientMeters (one per customerId group) per bucket.
+        const buckets = new Map<number, number>();
+        for (const cm of json.clientMeters ?? []) {
+          for (const v of cm.values ?? []) {
+            buckets.set(
+              v.secondsSinceEpochUtc,
+              (buckets.get(v.secondsSinceEpochUtc) ?? 0) + v.value
+            );
+          }
+        }
+        const values = [...buckets.entries()]
+          .sort(([a], [b]) => a - b)
+          .map(([ts, value]) => ({ timestamp: ts * 1000, value }));
+        return { meterApiName, label: displayName, values };
       } catch {
-        return { meterApiName: meterName, label: displayName, values: [] };
+        return { meterApiName, label: displayName, values: [] };
       }
     })
   );
@@ -278,8 +249,8 @@ export default function UsagePage() {
         };
       case 'no-billing-account':
         return {
-          title: 'No billing account linked',
-          body: 'This project does not have a billing account binding. A BillingAccountBinding must be created in the organization namespace before usage data is available.',
+          title: 'No billing account',
+          body: 'This organization does not have a billing account. Usage data is keyed to a billing account, so there is nothing to display.',
         };
       case 'no-meters':
         return {
@@ -290,7 +261,7 @@ export default function UsagePage() {
         if (result.meters.length === 0 || result.meters.every((m) => m.values.length === 0)) {
           return {
             title: 'No usage to display',
-            body: 'Usage data will appear here once this project starts consuming metered resources.',
+            body: 'Usage data will appear here once this organization starts consuming metered resources.',
           };
         }
         return null;

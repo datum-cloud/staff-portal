@@ -8,7 +8,15 @@ import { orgRoutes } from '@/utils/config/routes.config';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisResourcemanagerV1Alpha1Organization } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
-import { CircleGauge, ExternalLink, FileText, Folders, SquareActivity, Users } from 'lucide-react';
+import {
+  BarChart3,
+  CircleGauge,
+  ExternalLink,
+  FileText,
+  Folders,
+  SquareActivity,
+  Users,
+} from 'lucide-react';
 import { useMemo } from 'react';
 import { Outlet, useLoaderData, useLocation } from 'react-router';
 
@@ -70,6 +78,11 @@ export default function Layout() {
       title: t`Members`,
       href: orgRoutes.member(orgName),
       icon: Users,
+    },
+    {
+      title: t`Usage`,
+      href: orgRoutes.usage(orgName),
+      icon: BarChart3,
     },
     {
       title: t`Quotas`,
