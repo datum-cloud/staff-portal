@@ -4,7 +4,7 @@ pre-commit:
     eslint:
       glob: '*.{js,jsx,ts,tsx}'
       exclude: '**/locales/**'
-      run: bunx eslint {staged_files} --fix
+      run: bunx eslint --cache --cache-location node_modules/.cache/eslint/ {staged_files} --fix
       auto_add: true
     prettier:
       glob: '*.{js,jsx,ts,tsx,json}'
@@ -12,5 +12,11 @@ pre-commit:
       run: bunx prettier --write {staged_files}
       auto_add: true
     i18n:
+      glob: 'app/**/*.{ts,tsx}'
+      env:
+        # Lingui's CLI emits a TTY spinner that, under lefthook's piped capture,
+        # spams cursor-control escapes until the buffer fills and the process
+        # appears to hang at 100% CPU. CI=1 disables the spinner.
+        CI: '1'
       run: bunx lingui extract --clean && bunx lingui compile --typescript && git add app/modules/i18n/locales/
       auto_add: true
