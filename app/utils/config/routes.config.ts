@@ -90,6 +90,12 @@ export const contactGroupRoutes = {
   member: (contactGroupName: string) => `/contact-groups/${contactGroupName}/members`,
 } as const;
 
+// Domain feature routes (global view across all projects)
+export const domainRoutes = {
+  list: () => '/domains',
+  detail: (namespace: string, domainName: string) => `/domains/${namespace}/${domainName}`,
+} as const;
+
 // Fraud feature routes
 export const fraudRoutes = {
   root: () => '/fraud',
@@ -144,6 +150,7 @@ export const routes = {
   groups: groupRoutes,
   profile: profileRoutes,
   contactGroups: contactGroupRoutes,
+  domains: domainRoutes,
   fraud: fraudRoutes,
   activity: activityRoutes,
 } as const;

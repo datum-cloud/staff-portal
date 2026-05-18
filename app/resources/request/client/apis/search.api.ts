@@ -227,3 +227,39 @@ export const searchProjectsQuery = (
     buildQuery(queryString, targetResources, 'Project')
   );
 };
+
+/**
+ * List all Domains across every project via the search index. Preserves
+ * tenant info so callers can resolve the owning project per row.
+ */
+export async function searchDomainsListQuery(
+  queryString: string = ''
+): Promise<SearchResultItem<ComDatumapisNetworkingV1AlphaDomain>[]> {
+  const body: NetMiloapisGoSearchPkgApisSearchV1Alpha1ResourceSearchQuery = {
+    apiVersion: 'search.miloapis.com/v1alpha1',
+    kind: 'ResourceSearchQuery',
+    metadata: {
+      name: `query-domains-list-${Date.now()}`,
+    },
+    spec: {
+      query: queryString,
+      limit: 100,
+      targetResources: [{ group: 'networking.datumapis.com', version: 'v1alpha', kind: 'domain' }],
+    },
+  };
+
+  const response = await createSearchMiloapisComV1Alpha1ResourceSearchQuery({
+    baseURL: PROXY_URL,
+    body,
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  const results = (response.data?.data?.status?.results ?? [])
+    .slice()
+    .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0));
+
+  return results.map((result) => ({
+    resource: result.resource as ComDatumapisNetworkingV1AlphaDomain,
+    tenant: result.tenant,
+  }));
+}
