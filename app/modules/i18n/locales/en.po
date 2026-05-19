@@ -79,10 +79,6 @@ msgstr "409 - Conflict"
 msgid "500 - Server Error"
 msgstr "500 - Server Error"
 
-#: app/routes/domain/detail.tsx:28
-msgid "A global domain detail page is on the way. For now, open a domain from its project to see full details."
-msgstr "A global domain detail page is on the way. For now, open a domain from its project to see full details."
-
 #: app/routes/fraud/index.tsx:319
 #: app/routes/organization/detail/member.tsx:186
 msgid "Accepted"
@@ -412,10 +408,6 @@ msgstr "Cluster metrics unavailable"
 msgid "clusters healthy"
 msgstr "clusters healthy"
 
-#: app/routes/domain/detail.tsx:25
-msgid "Coming soon"
-msgstr "Coming soon"
-
 #: app/routes/fraud/index.tsx:308
 msgid "Completed"
 msgstr "Completed"
@@ -556,7 +548,7 @@ msgid "Create Policy"
 msgstr "Create Policy"
 
 #: app/features/contact/components/contact-list.tsx:95
-#: app/features/domain/components/domain-list.tsx:80
+#: app/features/domain/components/domain-list.tsx:111
 #: app/features/quota/components/quota-bucket-list.tsx:97
 #: app/features/quota/components/quota-grant-list.tsx:114
 #: app/features/user/components/user-identity-card.tsx:181
@@ -771,10 +763,6 @@ msgstr "Delivered"
 msgid "Description"
 msgstr "Description"
 
-#: app/routes/domain/detail.tsx:13
-msgid "Detail"
-msgstr "Detail"
-
 #: app/routes/contact-group/detail/layout.tsx:34
 #: app/routes/contact/detail/layout.tsx:45
 msgid "Details"
@@ -819,7 +807,7 @@ msgstr "DNS"
 msgid "DNS Host"
 msgstr "DNS Host"
 
-#: app/features/domain/components/domain-list.tsx:59
+#: app/features/domain/components/domain-list.tsx:90
 #: app/routes/project/detail/domain/detail.tsx:112
 msgid "DNS Providers"
 msgstr "DNS Providers"
@@ -853,10 +841,8 @@ msgstr "DNS Zones"
 
 #: app/features/activity/components/activity-list.tsx:390
 #: app/features/activity/components/activity-list.tsx:489
-#: app/features/domain/components/domain-list.tsx:40
+#: app/features/domain/components/domain-list.tsx:65
 #: app/features/fraud/detail/maxmind-rows.tsx:237
-#: app/routes/domain/detail.tsx:10
-#: app/routes/domain/detail.tsx:21
 #: app/routes/project/detail/domain/detail.tsx:104
 msgid "Domain"
 msgstr "Domain"
@@ -1052,7 +1038,7 @@ msgstr "Event"
 msgid "Events"
 msgstr "Events"
 
-#: app/features/domain/components/domain-list.tsx:64
+#: app/features/domain/components/domain-list.tsx:95
 #: app/routes/project/detail/domain/detail.tsx:118
 msgid "Expiration Date"
 msgstr "Expiration Date"
@@ -1651,7 +1637,7 @@ msgstr "No DNS records found."
 msgid "No DNS zones found."
 msgstr "No DNS zones found."
 
-#: app/features/domain/components/domain-list.tsx:116
+#: app/features/domain/components/domain-list.tsx:160
 msgid "No domains found."
 msgstr "No domains found."
 
@@ -1959,7 +1945,7 @@ msgstr "Profile updated successfully"
 
 #: app/features/activity/components/activity-list.tsx:391
 #: app/features/activity/components/activity-list.tsx:490
-#: app/features/domain/components/domain-list.tsx:47
+#: app/features/domain/components/domain-list.tsx:75
 msgid "Project"
 msgstr "Project"
 
@@ -2077,7 +2063,7 @@ msgstr "Recipient"
 msgid "Records"
 msgstr "Records"
 
-#: app/features/domain/components/domain-list.tsx:54
+#: app/features/domain/components/domain-list.tsx:85
 #: app/routes/project/detail/dns/detail.tsx:179
 #: app/routes/project/detail/domain/detail.tsx:108
 msgid "Registrar"
@@ -2238,7 +2224,8 @@ msgstr "Search contacts..."
 msgid "Search DNS zones..."
 msgstr "Search DNS zones..."
 
-#: app/features/domain/components/domain-list.tsx:108
+#: app/features/domain/components/domain-list.tsx:144
+#: app/features/domain/components/domain-list.tsx:151
 msgid "Search domains..."
 msgstr "Search domains..."
 
@@ -2434,7 +2421,7 @@ msgid "Start Time"
 msgstr "Start Time"
 
 #: app/features/contact/components/contact-list.tsx:88
-#: app/features/domain/components/domain-list.tsx:69
+#: app/features/domain/components/domain-list.tsx:100
 #: app/features/email/components/email-detail.tsx:57
 #: app/features/email/components/email-list.tsx:68
 #: app/features/email/components/email-list.tsx:143
@@ -2491,6 +2478,10 @@ msgstr "Temporarily prevent user from signing in. The user can be reactivated at
 #: app/features/activity/components/activity-list.tsx:134
 msgid "Tenant"
 msgstr "Tenant"
+
+#: app/features/domain/components/domain-list.tsx:166
+msgid "The list of domains is limited to 100 results at a time. Refine your search to surface other domains."
+msgstr "The list of domains is limited to 100 results at a time. Refine your search to surface other domains."
 
 #: app/features/domain/components/domain-status-probe.tsx:103
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."

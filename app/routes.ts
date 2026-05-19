@@ -113,10 +113,7 @@ export default [
     ]),
 
     // Domains (global view across all projects)
-    route('domains', 'routes/domain/layout.tsx', [
-      index('routes/domain/index.tsx'),
-      route(':namespace/:domainName', 'routes/domain/detail.tsx'),
-    ]),
+    route('domains', 'routes/domain/layout.tsx', [index('routes/domain/index.tsx')]),
 
     // Contacts
     route('contacts', 'routes/contact/layout.tsx', [

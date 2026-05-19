@@ -1,11 +1,11 @@
 import type { Route } from './+types/index';
 import { DomainList, type DomainRow } from '@/features/domain';
 import { searchDomainsListQuery } from '@/resources/request/client';
-import { domainRoutes, projectRoutes } from '@/utils/config/routes.config';
+import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { t } from '@lingui/core/macro';
-import { useQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { useEffect, useMemo, useState } from 'react';
 
 export const meta: Route.MetaFunction = () => metaObject(t`Domains`);
 
@@ -15,20 +15,33 @@ function getProjectName(tenant?: { name?: string; type?: string }): string {
   return tenant?.type?.toLowerCase() === 'project' ? (tenant?.name ?? '') : '';
 }
 
+const SEARCH_DEBOUNCE_MS = 300;
+
 export default function Page() {
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+
+  // Debounce keystrokes into the value used for the API call so we don't
+  // hit the search endpoint on every character.
+  useEffect(() => {
+    const id = setTimeout(() => setDebouncedSearch(search.trim()), SEARCH_DEBOUNCE_MS);
+    return () => clearTimeout(id);
+  }, [search]);
+
   const { data, isLoading } = useQuery({
-    queryKey: ['domains', 'search-list'],
-    queryFn: () => searchDomainsListQuery(''),
+    queryKey: ['domains', 'search-list', debouncedSearch],
+    queryFn: () => searchDomainsListQuery(debouncedSearch),
     staleTime: 30_000,
+    placeholderData: keepPreviousData,
   });
 
   const rows: DomainRow[] = useMemo(
     () =>
-      (data ?? []).map((item) => ({
+      (data?.items ?? []).map((item) => ({
         domain: item.resource,
         projectName: getProjectName(item.tenant),
       })),
-    [data]
+    [data?.items]
   );
 
   return (
@@ -36,15 +49,17 @@ export default function Page() {
       data={rows}
       loading={isLoading}
       showProjectColumn
+      hasMore={data?.hasMore ?? false}
+      controlledSearch={{ value: search, onChange: setSearch }}
       linkBuilder={(row) => {
-        // Prefer jumping into the existing project domain detail page when we
-        // know the project — falls back to the dummy global detail otherwise.
-        const namespace = row.domain.metadata?.namespace ?? '';
-        const name = row.domain.metadata?.name ?? '';
-        if (row.projectName) {
-          return projectRoutes.domain.detail(row.projectName, namespace, name);
-        }
-        return domainRoutes.detail(namespace, name);
+        // Defensive: if a result somehow lacks tenant info, render the row
+        // as plain text rather than linking nowhere.
+        if (!row.projectName) return null;
+        return projectRoutes.domain.detail(
+          row.projectName,
+          row.domain.metadata?.namespace ?? '',
+          row.domain.metadata?.name ?? ''
+        );
       }}
     />
   );

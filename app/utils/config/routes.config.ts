@@ -93,7 +93,6 @@ export const contactGroupRoutes = {
 // Domain feature routes (global view across all projects)
 export const domainRoutes = {
   list: () => '/domains',
-  detail: (namespace: string, domainName: string) => `/domains/${namespace}/${domainName}`,
 } as const;
 
 // Fraud feature routes
