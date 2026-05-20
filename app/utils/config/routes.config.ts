@@ -95,6 +95,11 @@ export const domainRoutes = {
   list: () => '/domains',
 } as const;
 
+// DNS zone feature routes (global view across all projects)
+export const dnsRoutes = {
+  list: () => '/dns',
+} as const;
+
 // Fraud feature routes
 export const fraudRoutes = {
   root: () => '/fraud',
@@ -150,6 +155,7 @@ export const routes = {
   profile: profileRoutes,
   contactGroups: contactGroupRoutes,
   domains: domainRoutes,
+  dns: dnsRoutes,
   fraud: fraudRoutes,
   activity: activityRoutes,
 } as const;

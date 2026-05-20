@@ -115,6 +115,9 @@ export default [
     // Domains (global view across all projects)
     route('domains', 'routes/domain/layout.tsx', [index('routes/domain/index.tsx')]),
 
+    // DNS zones (global view across all projects)
+    route('dns', 'routes/dns/layout.tsx', [index('routes/dns/index.tsx')]),
+
     // Contacts
     route('contacts', 'routes/contact/layout.tsx', [
       index('routes/contact/index.tsx'),

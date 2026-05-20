@@ -229,27 +229,28 @@ export const searchProjectsQuery = (
 };
 
 /**
- * List all Domains across every project via the search index. Preserves
- * tenant info so callers can resolve the owning project per row.
+ * List every resource of a single kind across all projects via the search
+ * index, preserving tenant info so callers can resolve the owning project
+ * per row.
  *
  * The search API caps a single response at 100 rows. `hasMore` is true when
  * the index has additional matches that this response didn't include — the
  * caller can use this to surface a "more results available" hint.
  */
-export async function searchDomainsListQuery(queryString: string = ''): Promise<{
-  items: SearchResultItem<ComDatumapisNetworkingV1AlphaDomain>[];
-  hasMore: boolean;
-}> {
+async function searchResourceList<T>(
+  target: NetMiloapisGoSearchPkgApisSearchV1Alpha1TargetResource,
+  queryString: string = ''
+): Promise<{ items: SearchResultItem<T>[]; hasMore: boolean }> {
   const body: NetMiloapisGoSearchPkgApisSearchV1Alpha1ResourceSearchQuery = {
     apiVersion: 'search.miloapis.com/v1alpha1',
     kind: 'ResourceSearchQuery',
     metadata: {
-      name: `query-domains-list-${Date.now()}`,
+      name: `query-${target.kind.toLowerCase()}-list-${Date.now()}`,
     },
     spec: {
       query: queryString,
       limit: 100,
-      targetResources: [{ group: 'networking.datumapis.com', version: 'v1alpha', kind: 'Domain' }],
+      targetResources: [target],
     },
   };
 
@@ -264,12 +265,23 @@ export async function searchDomainsListQuery(queryString: string = ''): Promise<
     .slice()
     .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0))
     .map((result) => ({
-      resource: result.resource as ComDatumapisNetworkingV1AlphaDomain,
+      resource: result.resource as T,
       tenant: result.tenant,
     }));
 
-  return {
-    items,
-    hasMore: Boolean(status?.continue),
-  };
+  return { items, hasMore: Boolean(status?.continue) };
 }
+
+/** List all Domains across every project via the search index. */
+export const searchDomainsListQuery = (queryString: string = '') =>
+  searchResourceList<ComDatumapisNetworkingV1AlphaDomain>(
+    { group: 'networking.datumapis.com', version: 'v1alpha', kind: 'Domain' },
+    queryString
+  );
+
+/** List all DNS zones across every project via the search index. */
+export const searchDnsZonesListQuery = (queryString: string = '') =>
+  searchResourceList<ComMiloapisNetworkingDnsV1Alpha1DnsZone>(
+    { group: 'dns.networking.miloapis.com', version: 'v1alpha1', kind: 'DNSZone' },
+    queryString
+  );
