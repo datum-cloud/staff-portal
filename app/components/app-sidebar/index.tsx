@@ -6,6 +6,7 @@ import { LogoText } from '@/components/logo/logo-text';
 import {
   contactGroupRoutes,
   contactRoutes,
+  dnsRoutes,
   domainRoutes,
   fraudRoutes,
   groupRoutes,
@@ -44,6 +45,7 @@ import {
   Home,
   LucideIcon,
   MailSearch,
+  Network,
   ShieldAlert,
   ShieldUser,
   SquareActivity,
@@ -121,6 +123,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       title: t`Domains`,
       href: domainRoutes.list(),
       icon: Globe,
+      hasSubmenu: false,
+    },
+    {
+      title: t`DNS Zones`,
+      href: dnsRoutes.list(),
+      icon: Network,
       hasSubmenu: false,
     },
     {
