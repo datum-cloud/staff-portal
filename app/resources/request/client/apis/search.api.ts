@@ -227,3 +227,49 @@ export const searchProjectsQuery = (
     buildQuery(queryString, targetResources, 'Project')
   );
 };
+
+/**
+ * List all Domains across every project via the search index. Preserves
+ * tenant info so callers can resolve the owning project per row.
+ *
+ * The search API caps a single response at 100 rows. `hasMore` is true when
+ * the index has additional matches that this response didn't include — the
+ * caller can use this to surface a "more results available" hint.
+ */
+export async function searchDomainsListQuery(queryString: string = ''): Promise<{
+  items: SearchResultItem<ComDatumapisNetworkingV1AlphaDomain>[];
+  hasMore: boolean;
+}> {
+  const body: NetMiloapisGoSearchPkgApisSearchV1Alpha1ResourceSearchQuery = {
+    apiVersion: 'search.miloapis.com/v1alpha1',
+    kind: 'ResourceSearchQuery',
+    metadata: {
+      name: `query-domains-list-${Date.now()}`,
+    },
+    spec: {
+      query: queryString,
+      limit: 100,
+      targetResources: [{ group: 'networking.datumapis.com', version: 'v1alpha', kind: 'Domain' }],
+    },
+  };
+
+  const response = await createSearchMiloapisComV1Alpha1ResourceSearchQuery({
+    baseURL: PROXY_URL,
+    body,
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  const status = response.data?.data?.status;
+  const items = (status?.results ?? [])
+    .slice()
+    .sort((a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0))
+    .map((result) => ({
+      resource: result.resource as ComDatumapisNetworkingV1AlphaDomain,
+      tenant: result.tenant,
+    }));
+
+  return {
+    items,
+    hasMore: Boolean(status?.continue),
+  };
+}

@@ -6,6 +6,7 @@ import { LogoText } from '@/components/logo/logo-text';
 import {
   contactGroupRoutes,
   contactRoutes,
+  domainRoutes,
   fraudRoutes,
   groupRoutes,
   orgRoutes,
@@ -39,6 +40,7 @@ import { useLingui } from '@lingui/react/macro';
 import {
   ChevronRight,
   Contact,
+  Globe,
   Home,
   LucideIcon,
   MailSearch,
@@ -114,6 +116,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           href: projectRoutes.list(),
         },
       ],
+    },
+    {
+      title: t`Domains`,
+      href: domainRoutes.list(),
+      icon: Globe,
+      hasSubmenu: false,
     },
     {
       title: t`Contacts`,
