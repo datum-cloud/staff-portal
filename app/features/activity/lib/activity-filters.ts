@@ -4,6 +4,26 @@ import type {
   TimeRange,
 } from '@datum-cloud/activity-ui';
 
+/**
+ * Every URL key that {@link serializeActivityFilters} may write. Consumers
+ * preserving unrelated params (e.g. `projects`) on filter changes should
+ * delete these keys when they're absent from the serializer's output, rather
+ * than hardcoding the list at the call site.
+ */
+export const ACTIVITY_FILTER_URL_KEYS = [
+  'start',
+  'end',
+  'streaming',
+  'changeSource',
+  'actorNames',
+  'resourceKinds',
+  'apiGroups',
+  'resourceNamespaces',
+  'resourceUid',
+  'resourceName',
+  'search',
+] as const;
+
 export function serializeActivityFilters(
   filters: Partial<ActivityFeedFilters>,
   timeRange: TimeRange,
@@ -94,4 +114,32 @@ export function parseTimeRange(searchParams: URLSearchParams) {
   const end = searchParams.get('end');
   if (!start) return undefined;
   return { start, end: end || undefined };
+}
+
+/**
+ * Parse the `projects` URL parameter into an array of project names.
+ * Silently truncates to `maxCount` (default 10) as defense-in-depth for deep
+ * links that exceed the selection cap. Strips whitespace-only entries and
+ * decodes each component.
+ */
+export function parseProjectsFilter(
+  searchParams: URLSearchParams,
+  maxCount: number = 10
+): string[] {
+  const raw = searchParams.get('projects') ?? '';
+  return raw
+    .split(',')
+    .map((s) => decodeURIComponent(s).trim())
+    .filter(Boolean)
+    .slice(0, maxCount);
+}
+
+/**
+ * Serialize the selected project names into a URL parameter string.
+ * Returns undefined when the list is empty so callers can decide whether to
+ * set or delete the key.
+ */
+export function serializeProjectsFilter(selected: string[]): string | undefined {
+  if (!selected.length) return undefined;
+  return selected.map(encodeURIComponent).join(',');
 }
