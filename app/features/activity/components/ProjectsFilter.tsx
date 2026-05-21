@@ -163,128 +163,124 @@ export function ProjectsFilter({
 
   return (
     <div className="flex flex-col items-start gap-2">
-        {/* Filter pill + dropdown */}
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            {isDisabled ? (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="inline-flex">{pillButton}</span>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {loading ? 'Loading projects…' : 'No projects in this organization'}
-                </TooltipContent>
-              </Tooltip>
+      {/* Filter pill + dropdown */}
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          {isDisabled ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="inline-flex">{pillButton}</span>
+              </TooltipTrigger>
+              <TooltipContent>
+                {loading ? 'Loading projects…' : 'No projects in this organization'}
+              </TooltipContent>
+            </Tooltip>
+          ) : (
+            pillButton
+          )}
+        </PopoverTrigger>
+
+        <PopoverContent
+          className="w-[280px] p-0"
+          align="start"
+          onOpenAutoFocus={(e) => e.preventDefault()}>
+          {/* Search input */}
+          <div className="border-border border-b p-2">
+            <Input
+              placeholder="Search projects…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="h-7 text-sm"
+              aria-label="Search projects"
+            />
+          </div>
+
+          {/* Scrollable checkbox list */}
+          <ul
+            role="listbox"
+            aria-multiselectable="true"
+            aria-label="Projects"
+            className="max-h-60 overflow-y-auto py-1">
+            {filteredProjects.length === 0 ? (
+              <li className="text-muted-foreground px-3 py-2 text-sm">No projects found</li>
             ) : (
-              pillButton
-            )}
-          </PopoverTrigger>
+              filteredProjects.map((project) => {
+                const name = project.metadata?.name ?? '';
+                const displayName = projectDisplayName(project);
+                const isChecked = selected.includes(name);
+                const isAtCap = selected.length >= maxSelection && !isChecked;
+                const color = projectColor(name);
 
-          <PopoverContent
-            className="w-[280px] p-0"
-            align="start"
-            onOpenAutoFocus={(e) => e.preventDefault()}>
-            {/* Search input */}
-            <div className="border-border border-b p-2">
-              <Input
-                placeholder="Search projects…"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="h-7 text-sm"
-                aria-label="Search projects"
-              />
-            </div>
+                return (
+                  <li
+                    key={name}
+                    role="option"
+                    aria-selected={isChecked}
+                    className={cn(
+                      'flex cursor-pointer items-start gap-2.5 px-3 py-2 text-sm',
+                      isAtCap ? 'cursor-not-allowed opacity-40' : 'hover:bg-muted/50'
+                    )}
+                    onClick={() => !isAtCap && handleToggle(name)}
+                    onKeyDown={(e) => {
+                      if ((e.key === 'Enter' || e.key === ' ') && !isAtCap) {
+                        e.preventDefault();
+                        handleToggle(name);
+                      }
+                    }}
+                    tabIndex={isAtCap ? -1 : 0}>
+                    {/* Color dot */}
+                    <span className="mt-0.5 shrink-0">
+                      <Badge type={color} theme="solid" className="h-2.5 w-2.5 rounded-full p-0" />
+                    </span>
 
-            {/* Scrollable checkbox list */}
-            <ul
-              role="listbox"
-              aria-multiselectable="true"
-              aria-label="Projects"
-              className="max-h-60 overflow-y-auto py-1">
-              {filteredProjects.length === 0 ? (
-                <li className="text-muted-foreground px-3 py-2 text-sm">No projects found</li>
-              ) : (
-                filteredProjects.map((project) => {
-                  const name = project.metadata?.name ?? '';
-                  const displayName = projectDisplayName(project);
-                  const isChecked = selected.includes(name);
-                  const isAtCap = selected.length >= maxSelection && !isChecked;
-                  const color = projectColor(name);
-
-                  return (
-                    <li
-                      key={name}
-                      role="option"
-                      aria-selected={isChecked}
-                      className={cn(
-                        'flex cursor-pointer items-start gap-2.5 px-3 py-2 text-sm',
-                        isAtCap ? 'cursor-not-allowed opacity-40' : 'hover:bg-muted/50'
+                    {/* Label */}
+                    <div className="flex min-w-0 flex-1 flex-col">
+                      <span className="truncate leading-snug font-medium">{displayName}</span>
+                      {displayName !== name && (
+                        <span className="text-muted-foreground truncate font-mono text-xs leading-snug">
+                          {name}
+                        </span>
                       )}
-                      onClick={() => !isAtCap && handleToggle(name)}
-                      onKeyDown={(e) => {
-                        if ((e.key === 'Enter' || e.key === ' ') && !isAtCap) {
-                          e.preventDefault();
-                          handleToggle(name);
-                        }
-                      }}
-                      tabIndex={isAtCap ? -1 : 0}>
-                      {/* Color dot */}
-                      <span className="mt-0.5 shrink-0">
-                        <Badge
-                          type={color}
-                          theme="solid"
-                          className="h-2.5 w-2.5 rounded-full p-0"
-                        />
-                      </span>
+                    </div>
 
-                      {/* Label */}
-                      <div className="flex min-w-0 flex-1 flex-col">
-                        <span className="truncate leading-snug font-medium">{displayName}</span>
-                        {displayName !== name && (
-                          <span className="text-muted-foreground truncate font-mono text-xs leading-snug">
-                            {name}
-                          </span>
-                        )}
-                      </div>
+                    <Checkbox
+                      checked={isChecked}
+                      disabled={isAtCap}
+                      onCheckedChange={() => !isAtCap && handleToggle(name)}
+                      aria-label={`Select ${displayName}`}
+                      className="mt-0.5 shrink-0"
+                      tabIndex={-1}
+                    />
+                  </li>
+                );
+              })
+            )}
+          </ul>
 
-                      <Checkbox
-                        checked={isChecked}
-                        disabled={isAtCap}
-                        onCheckedChange={() => !isAtCap && handleToggle(name)}
-                        aria-label={`Select ${displayName}`}
-                        className="mt-0.5 shrink-0"
-                        tabIndex={-1}
-                      />
-                    </li>
-                  );
-                })
-              )}
-            </ul>
-
-            {/* Footer */}
-            <div className="border-border flex items-center justify-between border-t px-3 py-2">
-              <div className="flex flex-col gap-0.5">
-                <button
-                  type="button"
-                  className={cn(
-                    'text-muted-foreground hover:text-foreground text-xs underline-offset-2 hover:underline',
-                    selected.length === 0 && 'pointer-events-none opacity-40'
-                  )}
-                  onClick={handleClearAll}
-                  disabled={selected.length === 0}
-                  aria-disabled={selected.length === 0}>
-                  Clear all
-                </button>
-                {selected.length >= maxSelection && (
-                  <span className="text-muted-foreground text-xs">
-                    Maximum {maxSelection} projects can be selected.
-                  </span>
+          {/* Footer */}
+          <div className="border-border flex items-center justify-between border-t px-3 py-2">
+            <div className="flex flex-col gap-0.5">
+              <button
+                type="button"
+                className={cn(
+                  'text-muted-foreground hover:text-foreground text-xs underline-offset-2 hover:underline',
+                  selected.length === 0 && 'pointer-events-none opacity-40'
                 )}
-              </div>
-              <span className="text-muted-foreground text-xs">{selected.length} selected</span>
+                onClick={handleClearAll}
+                disabled={selected.length === 0}
+                aria-disabled={selected.length === 0}>
+                Clear all
+              </button>
+              {selected.length >= maxSelection && (
+                <span className="text-muted-foreground text-xs">
+                  Maximum {maxSelection} projects can be selected.
+                </span>
+              )}
             </div>
-          </PopoverContent>
-        </Popover>
+            <span className="text-muted-foreground text-xs">{selected.length} selected</span>
+          </div>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }
