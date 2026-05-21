@@ -100,6 +100,11 @@ export const dnsRoutes = {
   list: () => '/dns',
 } as const;
 
+// AI Edge feature routes (global view across all projects)
+export const edgeRoutes = {
+  list: () => '/edges',
+} as const;
+
 // Fraud feature routes
 export const fraudRoutes = {
   root: () => '/fraud',
@@ -156,6 +161,7 @@ export const routes = {
   contactGroups: contactGroupRoutes,
   domains: domainRoutes,
   dns: dnsRoutes,
+  edges: edgeRoutes,
   fraud: fraudRoutes,
   activity: activityRoutes,
 } as const;
