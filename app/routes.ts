@@ -118,6 +118,9 @@ export default [
     // DNS zones (global view across all projects)
     route('dns', 'routes/dns/layout.tsx', [index('routes/dns/index.tsx')]),
 
+    // AI Edge (global view across all projects)
+    route('edges', 'routes/edge/layout.tsx', [index('routes/edge/index.tsx')]),
+
     // Contacts
     route('contacts', 'routes/contact/layout.tsx', [
       index('routes/contact/index.tsx'),
