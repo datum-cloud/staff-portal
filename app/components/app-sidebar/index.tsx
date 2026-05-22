@@ -8,6 +8,7 @@ import {
   contactRoutes,
   dnsRoutes,
   domainRoutes,
+  edgeRoutes,
   fraudRoutes,
   groupRoutes,
   orgRoutes,
@@ -41,6 +42,7 @@ import { useLingui } from '@lingui/react/macro';
 import {
   ChevronRight,
   Contact,
+  Gauge,
   Home,
   Layers,
   LucideIcon,
@@ -120,15 +122,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       ],
     },
     {
-      title: t`Domains`,
-      href: domainRoutes.list(),
-      icon: Layers,
+      title: t`AI Edge`,
+      href: edgeRoutes.list(),
+      icon: Gauge,
       hasSubmenu: false,
     },
     {
       title: t`DNS Zones`,
       href: dnsRoutes.list(),
       icon: Signpost,
+      hasSubmenu: false,
+    },
+    {
+      title: t`Domains`,
+      href: domainRoutes.list(),
+      icon: Layers,
       hasSubmenu: false,
     },
     {

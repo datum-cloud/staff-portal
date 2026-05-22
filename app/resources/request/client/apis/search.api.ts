@@ -2,7 +2,10 @@ import { userGetQuery } from './user.api';
 import { PROXY_URL } from '@/modules/axios/axios.client';
 import { ComMiloapisNetworkingDnsV1Alpha1DnsZone } from '@openapi/dns.networking.miloapis.com/v1alpha1';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
-import { ComDatumapisNetworkingV1AlphaDomain } from '@openapi/networking.datumapis.com/v1alpha';
+import {
+  ComDatumapisNetworkingV1AlphaDomain,
+  ComDatumapisNetworkingV1AlphaHttpProxy,
+} from '@openapi/networking.datumapis.com/v1alpha';
 import { ComMiloapisNotificationV1Alpha1Contact } from '@openapi/notification.miloapis.com/v1alpha1';
 import {
   ComMiloapisResourcemanagerV1Alpha1Organization,
@@ -283,5 +286,15 @@ export const searchDomainsListQuery = (queryString: string = '') =>
 export const searchDnsZonesListQuery = (queryString: string = '') =>
   searchResourceList<ComMiloapisNetworkingDnsV1Alpha1DnsZone>(
     { group: 'dns.networking.miloapis.com', version: 'v1alpha1', kind: 'DNSZone' },
+    queryString
+  );
+
+/**
+ * List all AI Edge resources (HTTPProxy) across every project via the search
+ * index. Surfaced in the UI as "AI Edge".
+ */
+export const searchEdgesListQuery = (queryString: string = '') =>
+  searchResourceList<ComDatumapisNetworkingV1AlphaHttpProxy>(
+    { group: 'networking.datumapis.com', version: 'v1alpha', kind: 'HTTPProxy' },
     queryString
   );
