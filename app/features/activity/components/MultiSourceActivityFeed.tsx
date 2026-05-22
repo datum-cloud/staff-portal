@@ -390,17 +390,28 @@ function MultiSourceView({
 
   const projectSlots = [slot0, slot1, slot2, slot3, slot4, slot5, slot6, slot7, slot8, slot9];
 
-  // Auto-load on mount
+  // Auto-load on mount + whenever a project slot's client changes (user added
+  // a project via the Projects filter, or swapped one for another in the same
+  // slot). We track the previous client per slot so a no-op rerender doesn't
+  // re-fetch, but a null→client / clientA→clientB transition does.
   const hasMountedRef = useRef(false);
+  const prevProjectClientsRef = useRef<Array<ActivityApiClient | null>>(
+    Array.from({ length: MAX_PROJECTS }, () => null)
+  );
   useEffect(() => {
-    if (hasMountedRef.current) return;
-    hasMountedRef.current = true;
-    orgFeed.refresh();
-    projectSlots.forEach((slot, i) => {
-      if (projectClients[i] !== null) slot.refresh();
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      orgFeed.refresh();
+    }
+    projectClients.forEach((client, i) => {
+      const prev = prevProjectClientsRef.current[i];
+      if (client !== null && client !== prev) {
+        projectSlots[i].refresh();
+      }
     });
+    prevProjectClientsRef.current = projectClients;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [projectClients]);
 
   // Wrap setFilters/setTimeRange so a user-initiated change in the filter bar
   // (a) updates the org source, (b) fans the same value out to all active
