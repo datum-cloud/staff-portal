@@ -148,7 +148,7 @@ export function ProjectsFilter({
       theme="outline"
       size="small"
       className={cn(
-        'h-9 gap-1.5 text-sm font-normal',
+        'h-7 gap-2 px-2 text-xs font-medium',
         isDisabled && 'cursor-not-allowed opacity-50'
       )}
       disabled={isDisabled}
