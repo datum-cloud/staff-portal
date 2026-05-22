@@ -120,7 +120,7 @@ msgstr "Active Sessions"
 
 #: app/components/app-search/use-app-search.ts:48
 #: app/components/app-sidebar/index.tsx:171
-#: app/routes/organization/detail/activity/index.tsx:14
+#: app/routes/organization/detail/activity/index.tsx:8
 #: app/routes/organization/detail/layout.tsx:73
 #: app/routes/project/detail/activity/index.tsx:14
 #: app/routes/project/detail/layout.tsx:149
@@ -1697,7 +1697,7 @@ msgstr "No groups found."
 msgid "No members found."
 msgstr "No members found."
 
-#: app/routes/group/member.tsx:227
+#: app/routes/group/member.tsx:229
 msgid "No members in this group."
 msgstr "No members in this group."
 
@@ -2264,7 +2264,7 @@ msgid "Search is temporarily unavailable. Please try again."
 msgstr "Search is temporarily unavailable. Please try again."
 
 #: app/routes/contact-group/detail/member.tsx:410
-#: app/routes/group/member.tsx:220
+#: app/routes/group/member.tsx:222
 #: app/routes/organization/detail/member.tsx:176
 msgid "Search members..."
 msgstr "Search members..."
