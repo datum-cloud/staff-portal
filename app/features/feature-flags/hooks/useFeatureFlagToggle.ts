@@ -17,6 +17,26 @@ import type {
  */
 export const FEATURE_FLAG_ENABLED_BY_ANNOTATION = 'staff-portal.miloapis.com/enabled-by';
 
+// Grants provisioned by the platform (via datum-cloud/infra) carry the
+// standard Kubernetes managed-by label. Operator-issued grants from the staff
+// portal don't, so this is enough to tell them apart.
+//
+// TODO(#448): pin the convention once the platform side confirms. Update the
+// set below if a different value lands.
+const PLATFORM_MANAGED_LABEL = 'app.kubernetes.io/managed-by';
+const PLATFORM_MANAGED_VALUES = new Set([
+  'milo',
+  'platform',
+  'feature-flag-operator',
+  'infra-controller',
+]);
+
+/** Whether a grant came from the platform (not an operator via this UI). */
+export function isPlatformManagedGrant(grant: ComMiloapisQuotaV1Alpha1ResourceGrant): boolean {
+  const value = grant.metadata?.labels?.[PLATFORM_MANAGED_LABEL];
+  return value ? PLATFORM_MANAGED_VALUES.has(value) : false;
+}
+
 /** Org-scoped resources live in the namespace `organization-<orgName>`. */
 function orgNamespaceOf(orgName: string): string {
   return `organization-${orgName}`;

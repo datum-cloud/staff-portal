@@ -1,6 +1,7 @@
 import {
   useFeatureFlagToggle,
   FEATURE_FLAG_ENABLED_BY_ANNOTATION,
+  isPlatformManagedGrant,
 } from '../hooks/useFeatureFlagToggle';
 import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
@@ -13,6 +14,7 @@ import {
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Switch } from '@datum-cloud/datum-ui/switch';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { useLingui } from '@lingui/react/macro';
 import type {
   ComMiloapisQuotaV1Alpha1ResourceGrant,
@@ -90,6 +92,17 @@ export function FeatureFlagList({ orgName }: FeatureFlagListProps) {
     return map;
   }, [grantsQuery.data, featureResourceTypes]);
 
+  // A flag is platform-managed when at least one platform-issued grant is
+  // enabling it — an operator removing their own grant wouldn't actually turn
+  // the flag off in that case, so the toggle becomes read-only.
+  const platformManagedByResourceType = useMemo(() => {
+    const set = new Set<string>();
+    for (const [resourceType, grants] of grantsByResourceType.entries()) {
+      if (grants.some(isPlatformManagedGrant)) set.add(resourceType);
+    }
+    return set;
+  }, [grantsByResourceType]);
+
   const columns = useMemo(
     () => [
       columnHelper.display({
@@ -108,7 +121,8 @@ export function FeatureFlagList({ orgName }: FeatureFlagListProps) {
         id: 'enabledBy',
         header: () => t`Enabled by`,
         cell: ({ row }) => {
-          const grants = grantsByResourceType.get(row.original.spec?.resourceType ?? '') ?? [];
+          const resourceType = row.original.spec?.resourceType ?? '';
+          const grants = grantsByResourceType.get(resourceType) ?? [];
           if (grants.length === 0) {
             return <span className="text-muted-foreground">—</span>;
           }
@@ -122,6 +136,11 @@ export function FeatureFlagList({ orgName }: FeatureFlagListProps) {
             )[0];
           const enabledBy = latest.metadata?.annotations?.[FEATURE_FLAG_ENABLED_BY_ANNOTATION];
           if (!enabledBy) {
+            // A platform-managed grant won't carry the operator annotation —
+            // surface that explicitly instead of an em-dash.
+            if (platformManagedByResourceType.has(resourceType)) {
+              return <span className="text-muted-foreground text-sm italic">{t`Platform`}</span>;
+            }
             return <span className="text-muted-foreground text-sm">—</span>;
           }
           return (
@@ -139,23 +158,46 @@ export function FeatureFlagList({ orgName }: FeatureFlagListProps) {
         id: 'toggle',
         header: () => <div className="text-right">{t`Toggle`}</div>,
         cell: ({ row }) => {
-          const available = bucketByResourceType.get(row.original.spec?.resourceType ?? '') ?? 0;
+          const resourceType = row.original.spec?.resourceType ?? '';
+          const available = bucketByResourceType.get(resourceType) ?? 0;
           const enabled = available > 0;
           const orgDataLoading = bucketsQuery.isLoading || grantsQuery.isLoading;
+          const platformManaged = platformManagedByResourceType.has(resourceType);
+
+          const switchEl = (
+            <Switch
+              checked={enabled}
+              disabled={orgDataLoading || platformManaged}
+              onCheckedChange={() => setPending({ registration: row.original, enable: !enabled })}
+              aria-label={enabled ? t`Disable flag` : t`Enable flag`}
+            />
+          );
+
           return (
             <div className="flex w-full justify-end">
-              <Switch
-                checked={enabled}
-                disabled={orgDataLoading}
-                onCheckedChange={() => setPending({ registration: row.original, enable: !enabled })}
-                aria-label={enabled ? t`Disable flag` : t`Enable flag`}
-              />
+              {platformManaged ? (
+                <Tooltip
+                  side="left"
+                  message={t`This flag is managed by the platform and can't be changed from here.`}>
+                  {/* Wrap so the tooltip still fires hover events on the disabled switch. */}
+                  <span tabIndex={0}>{switchEl}</span>
+                </Tooltip>
+              ) : (
+                switchEl
+              )}
             </div>
           );
         },
       }),
     ],
-    [t, bucketByResourceType, grantsByResourceType, bucketsQuery.isLoading, grantsQuery.isLoading]
+    [
+      t,
+      bucketByResourceType,
+      grantsByResourceType,
+      platformManagedByResourceType,
+      bucketsQuery.isLoading,
+      grantsQuery.isLoading,
+    ]
   );
 
   const pendingResourceType = pending?.registration.spec?.resourceType ?? '';
