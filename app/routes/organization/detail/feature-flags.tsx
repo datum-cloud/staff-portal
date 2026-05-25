@@ -1,4 +1,4 @@
-import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../../shared';
+import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../shared';
 import type { Route } from './+types/feature-flags';
 import { FeatureFlagList } from '@/features/feature-flags';
 import { metaObject } from '@/utils/helpers';

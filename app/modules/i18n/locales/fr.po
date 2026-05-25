@@ -1097,8 +1097,8 @@ msgstr ""
 msgid "Feature flag enabled"
 msgstr ""
 
-#: app/routes/organization/detail/layout.tsx:101
-#: app/routes/organization/detail/quota/feature-flags.tsx:8
+#: app/routes/organization/detail/feature-flags.tsx:8
+#: app/routes/organization/detail/layout.tsx:103
 msgid "Feature Flags"
 msgstr ""
 
@@ -2715,7 +2715,7 @@ msgstr ""
 msgid "View Evaluation"
 msgstr ""
 
-#: app/routes/organization/detail/layout.tsx:121
+#: app/routes/organization/detail/layout.tsx:122
 #: app/routes/project/detail/layout.tsx:183
 msgid "View in Cloud Portal"
 msgstr ""
