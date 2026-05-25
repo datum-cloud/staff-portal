@@ -17,4 +17,5 @@ cypress/results
 
 # Local-only notes
 docs/local/
-config.bat
+.env
+.env.local
