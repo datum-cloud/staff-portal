@@ -15,6 +15,7 @@ import {
   FileText,
   Flag,
   Folders,
+  Layers,
   SquareActivity,
   Users,
 } from 'lucide-react';
@@ -68,6 +69,11 @@ export default function Layout() {
       title: t`Projects`,
       href: orgRoutes.project(orgName),
       icon: Folders,
+    },
+    {
+      title: t`Domains`,
+      href: orgRoutes.domain(orgName),
+      icon: Layers,
     },
     {
       title: t`Activity`,
