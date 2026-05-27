@@ -22,6 +22,21 @@ msgstr ""
 msgid "{0} entries"
 msgstr ""
 
+#. placeholder {0}: filtered.length
+#. placeholder {1}: data?.items?.length ?? 0
+#: app/routes/service-catalog/index.tsx:185
+msgid "{0} of {1} services"
+msgstr ""
+
+#. placeholder {0}: filtered.length
+#: app/routes/service-catalog/index.tsx:183
+msgid "{0} services"
+msgstr ""
+
+#: app/routes/service-catalog/index.tsx:78
+msgid "{dependencyCount} dependencies"
+msgstr ""
+
 #: app/components/app-search/search-result-group.tsx:44
 msgid "{heading}"
 msgstr ""
@@ -84,6 +99,14 @@ msgstr ""
 msgid "Accepted"
 msgstr ""
 
+#: app/routes/service-catalog/detail/approvals.tsx:105
+msgid "Access denied — IAM role pending."
+msgstr ""
+
+#: app/routes/service-catalog/detail/consumers.tsx:243
+msgid "Access revoked"
+msgstr ""
+
 #: app/routes/fraud/providers/create.tsx:116
 #: app/routes/fraud/providers/detail.tsx:150
 msgid "Account ID Key"
@@ -112,6 +135,10 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
+#: app/routes/service-catalog/detail/overview.tsx:139
+msgid "Active Configuration"
+msgstr ""
+
 #: app/features/user/components/user-identity-card.tsx:152
 #: app/routes/profile/layout.tsx:21
 #: app/routes/profile/session.tsx:20
@@ -119,7 +146,7 @@ msgid "Active Sessions"
 msgstr ""
 
 #: app/components/app-search/use-app-search.ts:48
-#: app/components/app-sidebar/index.tsx:171
+#: app/components/app-sidebar/index.tsx:173
 #: app/routes/organization/detail/activity/index.tsx:8
 #: app/routes/organization/detail/layout.tsx:73
 #: app/routes/project/detail/activity/index.tsx:14
@@ -189,7 +216,7 @@ msgstr ""
 msgid "Age"
 msgstr ""
 
-#: app/components/app-sidebar/index.tsx:125
+#: app/components/app-sidebar/index.tsx:127
 #: app/features/activity/components/activity-list.tsx:389
 #: app/features/activity/components/activity-list.tsx:488
 #: app/routes/edge/index.tsx:10
@@ -227,14 +254,46 @@ msgstr ""
 msgid "Allocation"
 msgstr ""
 
+#: app/routes/service-catalog/index.tsx:175
+msgid "Any enablement"
+msgstr ""
+
+#: app/routes/service-catalog/index.tsx:163
+msgid "Any phase"
+msgstr ""
+
 #: app/features/activity/components/activity-list.tsx:505
 #: app/features/activity/components/activity-list.tsx:522
 msgid "API Group"
 msgstr ""
 
+#: app/routes/service-catalog/detail/consumers.tsx:80
+msgid "Approval"
+msgstr ""
+
+#: app/routes/service-catalog/detail/layout.tsx:157
+msgid "Approvals"
+msgstr ""
+
+#. placeholder {0}: params.name ?? ''
+#: app/routes/service-catalog/detail/approvals.tsx:23
+msgid "Approvals — {0}"
+msgstr ""
+
+#: app/routes/service-catalog/detail/approvals.tsx:81
+#: app/routes/service-catalog/detail/consumers.tsx:131
+#: app/routes/service-catalog/detail/use-approval-dialog.tsx:38
 #: app/routes/user/detail/index.tsx:205
 #: app/routes/user/index.tsx:53
 msgid "Approve"
+msgstr ""
+
+#: app/routes/service-catalog/detail/use-approval-dialog.tsx:32
+msgid "Approve Request"
+msgstr ""
+
+#: app/routes/service-catalog/detail/use-approval-dialog.tsx:35
+msgid "Approve this consumer's access request. Optionally add a note."
 msgstr ""
 
 #: app/routes/user/index.tsx:289
@@ -346,6 +405,10 @@ msgstr ""
 msgid "Back to evaluations"
 msgstr ""
 
+#: app/routes/service-catalog/index.tsx:56
+msgid "by"
+msgstr ""
+
 #: app/components/button/button-delete-action.tsx:43
 #: app/components/danger-zone-card/index.tsx:49
 #: app/features/contact-group/components/contact-group-form.tsx:97
@@ -373,6 +436,8 @@ msgstr ""
 #: app/routes/group/member.tsx:171
 #: app/routes/organization/detail/member.tsx:85
 #: app/routes/profile/session.tsx:106
+#: app/routes/service-catalog/detail/consumers.tsx:235
+#: app/routes/service-catalog/detail/use-approval-dialog.tsx:39
 #: app/routes/user/detail/index.tsx:152
 #: app/routes/user/index.tsx:173
 msgid "Cancel"
@@ -415,6 +480,10 @@ msgstr ""
 msgid "Completed"
 msgstr ""
 
+#: app/routes/service-catalog/detail/overview.tsx:303
+msgid "Conditions"
+msgstr ""
+
 #: app/routes/project/detail/export-policy/detail.tsx:173
 #: app/routes/project/detail/export-policy/detail.tsx:207
 msgid "Configuration"
@@ -422,6 +491,24 @@ msgstr ""
 
 #: app/features/fraud/detail/maxmind-rows.tsx:149
 msgid "Connection"
+msgstr ""
+
+#: app/routes/service-catalog/detail/consumers.tsx:110
+msgid "Consumer ID"
+msgstr ""
+
+#: app/routes/service-catalog/detail/approvals.tsx:49
+#: app/routes/service-catalog/detail/consumers.tsx:51
+msgid "Consumer Project"
+msgstr ""
+
+#: app/routes/service-catalog/detail/layout.tsx:150
+msgid "Consumers"
+msgstr ""
+
+#. placeholder {0}: params.name ?? ''
+#: app/routes/service-catalog/detail/consumers.tsx:29
+msgid "Consumers — {0}"
 msgstr ""
 
 #: app/features/fraud/detail/evaluation-sections.tsx:350
@@ -477,8 +564,8 @@ msgid "Contact updated successfully"
 msgstr ""
 
 #: app/components/app-search/search-results.tsx:291
-#: app/components/app-sidebar/index.tsx:143
-#: app/components/app-sidebar/index.tsx:149
+#: app/components/app-sidebar/index.tsx:145
+#: app/components/app-sidebar/index.tsx:151
 #: app/routes/contact/index.tsx:14
 #: app/routes/contact/layout.tsx:5
 #: app/routes/user/detail/contacts.tsx:9
@@ -581,7 +668,7 @@ msgstr ""
 msgid "Credentials Reference"
 msgstr ""
 
-#: app/components/app-sidebar/index.tsx:105
+#: app/components/app-sidebar/index.tsx:107
 #: app/routes/customers/layout.tsx:7
 #: app/routes/project/detail/layout.tsx:50
 msgid "Customers"
@@ -596,7 +683,7 @@ msgid "Dark"
 msgstr ""
 
 #: app/components/app-search/use-app-search.ts:33
-#: app/components/app-sidebar/index.tsx:99
+#: app/components/app-sidebar/index.tsx:101
 #: app/routes/dashboard/index.tsx:28
 msgid "Dashboard"
 msgstr ""
@@ -759,6 +846,28 @@ msgstr ""
 msgid "Delivered"
 msgstr ""
 
+#: app/routes/service-catalog/detail/approvals.tsx:88
+#: app/routes/service-catalog/detail/consumers.tsx:138
+#: app/routes/service-catalog/detail/use-approval-dialog.tsx:38
+msgid "Deny"
+msgstr ""
+
+#: app/routes/service-catalog/detail/use-approval-dialog.tsx:32
+msgid "Deny Request"
+msgstr ""
+
+#: app/routes/service-catalog/detail/use-approval-dialog.tsx:36
+msgid "Deny this consumer's access request. Optionally add a note."
+msgstr ""
+
+#: app/routes/service-catalog/detail/layout.tsx:228
+msgid "Dependencies:"
+msgstr ""
+
+#: app/routes/service-catalog/index.tsx:166
+msgid "Deprecated"
+msgstr ""
+
 #: app/features/contact-group/components/contact-group-form.tsx:80
 #: app/features/dns/components/dns-zone-list.tsx:138
 #: app/routes/organization/detail/index.tsx:42
@@ -768,6 +877,7 @@ msgstr ""
 
 #: app/routes/contact-group/detail/layout.tsx:34
 #: app/routes/contact/detail/layout.tsx:45
+#: app/routes/service-catalog/detail/overview.tsx:226
 msgid "Details"
 msgstr ""
 
@@ -793,6 +903,7 @@ msgid "Disable flag"
 msgstr ""
 
 #: app/features/contact-group/components/contact-group-form.tsx:63
+#: app/routes/service-catalog/detail/overview.tsx:238
 msgid "Display Name"
 msgstr ""
 
@@ -839,7 +950,7 @@ msgid "DNS Zone"
 msgstr ""
 
 #: app/components/app-search/search-results.tsx:254
-#: app/components/app-sidebar/index.tsx:131
+#: app/components/app-sidebar/index.tsx:133
 #: app/routes/dns/index.tsx:10
 #: app/routes/dns/layout.tsx:5
 msgid "DNS Zones"
@@ -862,12 +973,16 @@ msgid "Domain verification is in progress. This may take a few minutes."
 msgstr ""
 
 #: app/components/app-search/search-results.tsx:217
-#: app/components/app-sidebar/index.tsx:137
+#: app/components/app-sidebar/index.tsx:139
 #: app/routes/domain/index.tsx:10
 #: app/routes/domain/layout.tsx:5
 #: app/routes/project/detail/domain/layout.tsx:5
 #: app/routes/project/detail/layout.tsx:134
 msgid "Domains"
+msgstr ""
+
+#: app/routes/service-catalog/index.tsx:164
+msgid "Draft"
 msgstr ""
 
 #: app/features/contact/components/contact-list.tsx:51
@@ -900,7 +1015,7 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: app/components/app-sidebar/index.tsx:165
+#: app/components/app-sidebar/index.tsx:167
 #: app/routes/email-activity/index.tsx:12
 #: app/routes/email-activity/layout.tsx:5
 #: app/routes/user/detail/email-activity.tsx:9
@@ -946,6 +1061,11 @@ msgstr ""
 
 #: app/features/feature-flags/components/feature-flag-list.tsx:122
 msgid "Enabled by"
+msgstr ""
+
+#: app/routes/service-catalog/detail/overview.tsx:252
+#: app/routes/service-catalog/index.tsx:172
+msgid "Enablement"
 msgstr ""
 
 #: app/components/date/date-range-picker.tsx:284
@@ -1067,8 +1187,28 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
+#: app/routes/service-catalog/detail/approvals.tsx:117
+msgid "Failed to load approvals."
+msgstr ""
+
+#: app/routes/service-catalog/detail/consumers.tsx:200
+msgid "Failed to load consumers."
+msgstr ""
+
 #: app/features/dns/components/dns-record-status-probe.tsx:33
 msgid "Failed to load DNS record status"
+msgstr ""
+
+#: app/routes/service-catalog/index.tsx:136
+msgid "Failed to load service catalog."
+msgstr ""
+
+#: app/routes/service-catalog/detail/overview.tsx:91
+msgid "Failed to load service configurations."
+msgstr ""
+
+#: app/routes/service-catalog/detail/layout.tsx:116
+msgid "Failed to load service."
 msgstr ""
 
 #: app/features/domain/components/domain-status-probe.tsx:44
@@ -1176,7 +1316,7 @@ msgstr ""
 msgid "Flag"
 msgstr ""
 
-#: app/components/app-sidebar/index.tsx:177
+#: app/components/app-sidebar/index.tsx:185
 #: app/routes/fraud/layout.tsx:21
 msgid "Fraud & Abuse"
 msgstr ""
@@ -1216,6 +1356,12 @@ msgstr ""
 
 #: app/features/fraud/detail/evaluation-sections.tsx:56
 msgid "Full response from the provider"
+msgstr ""
+
+#: app/routes/service-catalog/detail/layout.tsx:202
+#: app/routes/service-catalog/detail/overview.tsx:259
+#: app/routes/service-catalog/index.tsx:177
+msgid "Gated by Provider"
 msgstr ""
 
 #: app/routes/project/detail/edge/detail.tsx:77
@@ -1259,8 +1405,8 @@ msgstr ""
 msgid "Group is required"
 msgstr ""
 
-#: app/components/app-sidebar/index.tsx:153
-#: app/components/app-sidebar/index.tsx:159
+#: app/components/app-sidebar/index.tsx:155
+#: app/components/app-sidebar/index.tsx:161
 #: app/routes/contact/detail/group.tsx:29
 #: app/routes/contact/detail/layout.tsx:53
 #: app/routes/group/index.tsx:14
@@ -1525,12 +1671,24 @@ msgstr ""
 msgid "Members"
 msgstr ""
 
+#: app/routes/service-catalog/detail/overview.tsx:329
+msgid "Message"
+msgstr ""
+
+#: app/routes/service-catalog/detail/overview.tsx:196
+msgid "Meters"
+msgstr ""
+
 #: app/routes/project/detail/layout.tsx:139
 msgid "Metrics"
 msgstr ""
 
 #: app/routes/project/detail/export-policy/detail.tsx:112
 msgid "MetricsQL"
+msgstr ""
+
+#: app/routes/service-catalog/detail/overview.tsx:172
+msgid "Monitored Resources"
 msgstr ""
 
 #: app/components/app-toolbar/mobile-toolbar.tsx:71
@@ -1613,6 +1771,10 @@ msgstr ""
 msgid "New Limit"
 msgstr ""
 
+#: app/routes/service-catalog/detail/overview.tsx:310
+msgid "No active configuration."
+msgstr ""
+
 #: app/features/user/components/user-identity-card.tsx:158
 #: app/routes/profile/session.tsx:143
 msgid "No active sessions."
@@ -1620,6 +1782,14 @@ msgstr ""
 
 #: app/features/edge/components/edge-list.tsx:123
 msgid "No AI Edge found."
+msgstr ""
+
+#: app/routes/service-catalog/detail/overview.tsx:308
+msgid "No conditions reported."
+msgstr ""
+
+#: app/routes/service-catalog/detail/consumers.tsx:259
+msgid "No consumers found."
 msgstr ""
 
 #: app/routes/contact-group/index.tsx:245
@@ -1633,6 +1803,10 @@ msgstr ""
 #: app/features/contact/components/contact-list.tsx:167
 #: app/routes/contact-group/detail/member.tsx:78
 msgid "No contacts found."
+msgstr ""
+
+#: app/routes/service-catalog/index.tsx:72
+msgid "No description"
 msgstr ""
 
 #: app/routes/project/detail/dns/detail.tsx:224
@@ -1710,6 +1884,10 @@ msgstr ""
 msgid "No organizations found."
 msgstr ""
 
+#: app/routes/service-catalog/detail/approvals.tsx:147
+msgid "No pending approval requests."
+msgstr ""
+
 #: app/features/dashboard/components/pending-approvals-widget.tsx:61
 msgid "No pending approvals"
 msgstr ""
@@ -1719,8 +1897,16 @@ msgstr ""
 msgid "No projects found."
 msgstr ""
 
+#: app/routes/service-catalog/detail/overview.tsx:163
+msgid "No Published configuration. Drafts are not fanned out to billing or quota."
+msgstr ""
+
 #: app/features/quota/components/quota-bucket-list.tsx:190
 msgid "No quota buckets found."
+msgstr ""
+
+#: app/routes/service-catalog/detail/overview.tsx:278
+msgid "No quota limits declared."
 msgstr ""
 
 #: app/features/dashboard/components/quota-utilization-widget.tsx:98
@@ -1736,6 +1922,18 @@ msgstr ""
 msgid "No secrets found."
 msgstr ""
 
+#: app/routes/service-catalog/detail/overview.tsx:161
+msgid "No service configurations have been registered yet."
+msgstr ""
+
+#: app/routes/service-catalog/index.tsx:203
+msgid "No services found."
+msgstr ""
+
+#: app/routes/service-catalog/index.tsx:203
+msgid "No services match the current filters."
+msgstr ""
+
 #: app/routes/user/index.tsx:326
 msgid "No users found."
 msgstr ""
@@ -1749,12 +1947,18 @@ msgstr ""
 msgid "None"
 msgstr ""
 
+#: app/routes/service-catalog/detail/overview.tsx:174
+#: app/routes/service-catalog/detail/overview.tsx:198
+msgid "None declared."
+msgstr ""
+
 #: app/features/email/components/email-list.tsx:136
 #: app/features/email/components/email-list.tsx:164
 msgid "Normal"
 msgstr ""
 
 #: app/features/domain/components/note-card.tsx:44
+#: app/routes/service-catalog/detail/use-approval-dialog.tsx:54
 msgid "Note"
 msgstr ""
 
@@ -1786,6 +1990,10 @@ msgstr ""
 msgid "Open search"
 msgstr ""
 
+#: app/routes/service-catalog/detail/use-approval-dialog.tsx:55
+msgid "Optional reviewer note..."
+msgstr ""
+
 #: app/features/activity/components/activity-list.tsx:399
 #: app/features/activity/components/activity-list.tsx:498
 #: app/features/dashboard/components/quota-utilization-widget.tsx:146
@@ -1805,7 +2013,7 @@ msgstr ""
 
 #: app/components/app-search/search-results.tsx:152
 #: app/components/app-search/use-app-search.ts:36
-#: app/components/app-sidebar/index.tsx:115
+#: app/components/app-sidebar/index.tsx:117
 #: app/routes/dashboard/index.tsx:67
 #: app/routes/organization/index.tsx:15
 #: app/routes/organization/layout.tsx:5
@@ -1817,12 +2025,23 @@ msgstr ""
 
 #: app/routes/organization/detail/layout.tsx:63
 #: app/routes/project/detail/layout.tsx:119
+#: app/routes/service-catalog/detail/layout.tsx:145
 #: app/routes/user/detail/layout.tsx:32
 msgid "Overview"
 msgstr ""
 
+#. placeholder {0}: params.name ?? ''
+#: app/routes/service-catalog/detail/overview.tsx:18
+msgid "Overview — {0}"
+msgstr ""
+
 #: app/features/dashboard/components/quota-utilization-widget.tsx:151
+#: app/routes/service-catalog/detail/overview.tsx:267
 msgid "Owner"
+msgstr ""
+
+#: app/routes/service-catalog/detail/layout.tsx:220
+msgid "Owner:"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:370
@@ -1847,6 +2066,10 @@ msgstr ""
 msgid "Pending Validation Checks:"
 msgstr ""
 
+#: app/routes/service-catalog/detail/overview.tsx:291
+msgid "per"
+msgstr ""
+
 #: app/routes/organization/detail/index.tsx:68
 msgid "Permanently delete this organization and all associated data"
 msgstr ""
@@ -1868,6 +2091,9 @@ msgstr ""
 #: app/routes/fraud/index.tsx:133
 #: app/routes/fraud/index.tsx:305
 #: app/routes/fraud/index.tsx:340
+#: app/routes/service-catalog/detail/consumers.tsx:68
+#: app/routes/service-catalog/detail/overview.tsx:244
+#: app/routes/service-catalog/index.tsx:160
 msgid "Phase"
 msgstr ""
 
@@ -1946,6 +2172,10 @@ msgstr ""
 msgid "Private"
 msgstr ""
 
+#: app/routes/service-catalog/index.tsx:61
+msgid "Private Beta"
+msgstr ""
+
 #: app/features/profile/components/profile-form.tsx:23
 msgid "Profile Information"
 msgstr ""
@@ -1968,7 +2198,7 @@ msgstr ""
 
 #: app/components/app-search/search-results.tsx:168
 #: app/components/app-search/use-app-search.ts:42
-#: app/components/app-sidebar/index.tsx:119
+#: app/components/app-sidebar/index.tsx:121
 #: app/routes/dashboard/index.tsx:75
 #: app/routes/organization/detail/layout.tsx:68
 #: app/routes/organization/detail/project.tsx:17
@@ -2021,12 +2251,21 @@ msgstr ""
 msgid "Public"
 msgstr ""
 
+#: app/routes/service-catalog/detail/overview.tsx:153
+#: app/routes/service-catalog/index.tsx:165
+msgid "Published"
+msgstr ""
+
 #: app/routes/project/detail/export-policy/detail.tsx:127
 msgid "Query"
 msgstr ""
 
 #: app/components/date/date-range-picker.tsx:299
 msgid "Quick ranges"
+msgstr ""
+
+#: app/routes/service-catalog/detail/overview.tsx:276
+msgid "Quota"
 msgstr ""
 
 #: app/features/quota/components/quota-bucket-list.tsx:143
@@ -2058,6 +2297,10 @@ msgstr ""
 
 #: app/routes/user/detail/index.tsx:427
 msgid "Reactivate User"
+msgstr ""
+
+#: app/routes/service-catalog/detail/overview.tsx:326
+msgid "Reason"
 msgstr ""
 
 #: app/routes/user/detail/index.tsx:156
@@ -2104,6 +2347,23 @@ msgstr ""
 msgid "Rejected"
 msgstr ""
 
+#: app/routes/service-catalog/detail/consumers.tsx:233
+msgid "Remove {revokeConsumerProject}'s access to {revokeEntitlementName}? They'll lose access immediately and all of their resources for this service will be permanently deleted. This cannot be undone."
+msgstr ""
+
+#: app/routes/service-catalog/detail/use-approval-dialog.tsx:51
+msgid "Request approved"
+msgstr ""
+
+#: app/routes/service-catalog/detail/use-approval-dialog.tsx:51
+msgid "Request denied"
+msgstr ""
+
+#: app/routes/service-catalog/detail/approvals.tsx:68
+#: app/routes/service-catalog/detail/consumers.tsx:105
+msgid "Requested at"
+msgstr ""
+
 #: app/features/fraud/policy/policy-detail.tsx:23
 #: app/features/fraud/policy/policy-form.tsx:298
 msgid "Required"
@@ -2141,10 +2401,19 @@ msgstr ""
 msgid "Response Code"
 msgstr ""
 
+#: app/routes/service-catalog/index.tsx:167
+msgid "Retired"
+msgstr ""
+
 #: app/features/dashboard/components/cluster-health-widget.tsx:50
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:92
 #: app/features/dashboard/components/pending-approvals-widget.tsx:78
 #: app/features/dashboard/components/quota-utilization-widget.tsx:112
+#: app/routes/service-catalog/detail/approvals.tsx:123
+#: app/routes/service-catalog/detail/consumers.tsx:210
+#: app/routes/service-catalog/detail/layout.tsx:125
+#: app/routes/service-catalog/detail/overview.tsx:101
+#: app/routes/service-catalog/index.tsx:142
 msgid "Retry"
 msgstr ""
 
@@ -2154,6 +2423,15 @@ msgstr ""
 
 #: app/features/fraud/policy/policy-form.tsx:283
 msgid "Review Threshold"
+msgstr ""
+
+#: app/routes/service-catalog/detail/consumers.tsx:152
+#: app/routes/service-catalog/detail/consumers.tsx:234
+msgid "Revoke"
+msgstr ""
+
+#: app/routes/service-catalog/detail/consumers.tsx:232
+msgid "Revoke access"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:394
@@ -2219,6 +2497,10 @@ msgstr ""
 
 #: app/routes/fraud/index.tsx:241
 msgid "Search by name or email..."
+msgstr ""
+
+#: app/routes/service-catalog/index.tsx:153
+msgid "Search by name, description, or owner..."
 msgstr ""
 
 #: app/features/quota/components/quota-bucket-list.tsx:182
@@ -2364,9 +2646,36 @@ msgstr ""
 msgid "Selected filters"
 msgstr ""
 
+#: app/routes/service-catalog/detail/overview.tsx:260
+#: app/routes/service-catalog/index.tsx:176
+msgid "Self Service"
+msgstr ""
+
 #: app/features/email/components/email-detail.tsx:81
 #: app/features/email/components/email-list.tsx:94
 msgid "Sent"
+msgstr ""
+
+#: app/components/app-sidebar/index.tsx:179
+#: app/routes/service-catalog/index.tsx:26
+#: app/routes/service-catalog/layout.tsx:5
+msgid "Service Catalog"
+msgstr ""
+
+#: app/routes/service-catalog/detail/layout.tsx:19
+msgid "Service Detail"
+msgstr ""
+
+#: app/routes/service-catalog/detail/overview.tsx:230
+msgid "Service Name"
+msgstr ""
+
+#: app/routes/service-catalog/detail/layout.tsx:116
+msgid "Service not found."
+msgstr ""
+
+#: app/routes/service-catalog/detail/layout.tsx:179
+msgid "Services"
 msgstr ""
 
 #: app/routes/profile/session.tsx:115
@@ -2455,6 +2764,7 @@ msgstr ""
 #: app/routes/project/detail/export-policy/detail.tsx:75
 #: app/routes/project/detail/export-policy/detail.tsx:170
 #: app/routes/project/detail/export-policy/index.tsx:46
+#: app/routes/service-catalog/detail/overview.tsx:323
 #: app/routes/user/detail/index.tsx:276
 #: app/routes/user/index.tsx:109
 #: app/routes/user/index.tsx:277
@@ -2496,6 +2806,10 @@ msgstr ""
 msgid "Tenant"
 msgstr ""
 
+#: app/routes/service-catalog/detail/approvals.tsx:108
+msgid "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
+msgstr ""
+
 #: app/components/search-resource-table/index.tsx:122
 msgid "The list is limited to 100 results at a time. Refine your search to surface other items."
 msgstr ""
@@ -2522,6 +2836,10 @@ msgstr ""
 
 #: app/features/domain/components/note-card.tsx:45
 msgid "This note will be permanently deleted and cannot be recovered."
+msgstr ""
+
+#: app/routes/service-catalog/detail/consumers.tsx:180
+msgid "This service has no producer project recorded, so consumers cannot be listed."
 msgstr ""
 
 #: app/features/fraud/policy/policy-detail.tsx:46
@@ -2561,6 +2879,7 @@ msgstr ""
 #: app/routes/project/detail/dns/detail.tsx:95
 #: app/routes/project/detail/dns/detail.tsx:159
 #: app/routes/project/detail/export-policy/detail.tsx:164
+#: app/routes/service-catalog/detail/overview.tsx:320
 #: app/routes/user/detail/organization.tsx:50
 msgid "Type"
 msgstr ""
@@ -2574,6 +2893,7 @@ msgid "Unavailable"
 msgstr ""
 
 #: app/features/domain/components/note-card.tsx:38
+#: app/routes/service-catalog/detail/consumers.tsx:74
 msgid "Unknown"
 msgstr ""
 
@@ -2589,6 +2909,10 @@ msgstr ""
 
 #: app/features/domain/components/domain-status-probe.tsx:95
 msgid "Update your DNS provider with the provided record, or use the HTTP token method."
+msgstr ""
+
+#: app/routes/service-catalog/detail/overview.tsx:332
+msgid "Updated"
 msgstr ""
 
 #: app/features/user/components/user-identity-card.tsx:90
@@ -2662,7 +2986,7 @@ msgstr ""
 
 #: app/components/app-search/search-results.tsx:184
 #: app/components/app-search/use-app-search.ts:34
-#: app/components/app-sidebar/index.tsx:111
+#: app/components/app-sidebar/index.tsx:113
 #: app/routes/dashboard/index.tsx:59
 #: app/routes/user/index.tsx:31
 #: app/routes/user/layout.tsx:5
@@ -2694,6 +3018,7 @@ msgid "Verified"
 msgstr ""
 
 #: app/routes/project/detail/secret.tsx:32
+#: app/routes/service-catalog/detail/overview.tsx:148
 msgid "Version"
 msgstr ""
 
@@ -2749,6 +3074,14 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:367
 #: app/features/activity/components/activity-list.tsx:457
 msgid "Watch"
+msgstr ""
+
+#: app/routes/service-catalog/detail/consumers.tsx:198
+msgid "You do not have permission to view consumers in the producer project."
+msgstr ""
+
+#: app/routes/service-catalog/detail/overview.tsx:89
+msgid "You do not have permission to view service configurations."
 msgstr ""
 
 #: app/features/dns/components/dns-zone-list.tsx:69

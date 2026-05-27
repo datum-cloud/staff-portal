@@ -15,6 +15,13 @@ interface DialogFormProps<TValues extends Record<string, unknown>> {
   onCancel?: () => void;
   schema: z.ZodType<TValues>;
   defaultValues?: TValues;
+  /**
+   * When true (default), the submit button is disabled until the form has been
+   * modified from its defaults. Set to false for confirmation-style dialogs
+   * where submitting with no changes is a valid action (e.g. approving with
+   * no optional note).
+   */
+  requireDirty?: boolean;
   children: ((form: NormalizedFormInstance) => ReactNode) | ReactNode;
 }
 
@@ -29,6 +36,7 @@ export default function DialogForm<TValues extends Record<string, unknown>>({
   onCancel,
   schema,
   defaultValues = {} as TValues,
+  requireDirty = true,
   children,
 }: DialogFormProps<TValues>) {
   const [isLoading, setIsLoading] = useState(false);
@@ -92,7 +100,7 @@ export default function DialogForm<TValues extends Record<string, unknown>>({
                     theme="solid"
                     htmlType="submit"
                     loading={isBusy}
-                    disabled={!isDirty || !isValid || isBusy}
+                    disabled={(requireDirty && !isDirty) || !isValid || isBusy}
                     className="flex-1 sm:flex-none">
                     <span>{submitText}</span>
                   </Button>

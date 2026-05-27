@@ -105,6 +105,16 @@ export const edgeRoutes = {
   list: () => '/edges',
 } as const;
 
+// Service Catalog routes
+export const serviceCatalogRoutes = {
+  root: () => '/catalog',
+  list: () => '/catalog',
+  detail: (name: string) => `/catalog/${name}`,
+  overview: (name: string) => `/catalog/${name}/overview`,
+  consumers: (name: string) => `/catalog/${name}/consumers`,
+  approvals: (name: string) => `/catalog/${name}/approvals`,
+} as const;
+
 // Fraud feature routes
 export const fraudRoutes = {
   root: () => '/fraud',
@@ -164,4 +174,5 @@ export const routes = {
   edges: edgeRoutes,
   fraud: fraudRoutes,
   activity: activityRoutes,
+  serviceCatalog: serviceCatalogRoutes,
 } as const;

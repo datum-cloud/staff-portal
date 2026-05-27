@@ -85,6 +85,17 @@ export default [
       ]),
     ]),
 
+    // Service Catalog
+    route('catalog', 'routes/service-catalog/layout.tsx', [
+      index('routes/service-catalog/index.tsx'),
+      route(':name', 'routes/service-catalog/detail/layout.tsx', [
+        index('routes/service-catalog/detail/index.tsx'),
+        route('overview', 'routes/service-catalog/detail/overview.tsx'),
+        route('consumers', 'routes/service-catalog/detail/consumers.tsx'),
+        route('approvals', 'routes/service-catalog/detail/approvals.tsx'),
+      ]),
+    ]),
+
     // Fraud & Abuse
     route('fraud', 'routes/fraud/layout.tsx', [
       index('routes/fraud/index.tsx'),
