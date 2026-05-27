@@ -351,7 +351,7 @@ msgstr "Back to evaluations"
 #: app/features/contact-group/components/contact-group-form.tsx:97
 #: app/features/contact/components/contact-form.tsx:217
 #: app/features/contact/components/contact-list.tsx:117
-#: app/features/feature-flags/components/feature-flag-list.tsx:252
+#: app/features/feature-flags/components/feature-flag-list.tsx:228
 #: app/features/fraud/policy/policy-form.tsx:318
 #: app/features/quota/components/quota-bucket-list.tsx:128
 #: app/features/quota/components/quota-grant-list.tsx:138
@@ -771,24 +771,24 @@ msgstr "Description"
 msgid "Details"
 msgstr "Details"
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:251
+#: app/features/feature-flags/components/feature-flag-list.tsx:227
 msgid "Disable"
 msgstr "Disable"
 
 #. placeholder {0}: pendingGrants.length
-#: app/features/feature-flags/components/feature-flag-list.tsx:248
+#: app/features/feature-flags/components/feature-flag-list.tsx:224
 msgid "Disable \"{pendingFlag}\" for this organization? {0} resource grants will be deleted."
 msgstr "Disable \"{pendingFlag}\" for this organization? {0} resource grants will be deleted."
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:249
+#: app/features/feature-flags/components/feature-flag-list.tsx:225
 msgid "Disable \"{pendingFlag}\" for this organization? The associated resource grant will be deleted."
 msgstr "Disable \"{pendingFlag}\" for this organization? The associated resource grant will be deleted."
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:243
+#: app/features/feature-flags/components/feature-flag-list.tsx:219
 msgid "Disable feature flag"
 msgstr "Disable feature flag"
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:185
+#: app/features/feature-flags/components/feature-flag-list.tsx:172
 msgid "Disable flag"
 msgstr "Disable flag"
 
@@ -928,23 +928,23 @@ msgstr "Email HTML preview"
 msgid "Email is required"
 msgstr "Email is required"
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:251
+#: app/features/feature-flags/components/feature-flag-list.tsx:227
 msgid "Enable"
 msgstr "Enable"
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:246
+#: app/features/feature-flags/components/feature-flag-list.tsx:222
 msgid "Enable \"{pendingFlag}\" for this organization? A new resource grant will be created."
 msgstr "Enable \"{pendingFlag}\" for this organization? A new resource grant will be created."
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:243
+#: app/features/feature-flags/components/feature-flag-list.tsx:219
 msgid "Enable feature flag"
 msgstr "Enable feature flag"
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:185
+#: app/features/feature-flags/components/feature-flag-list.tsx:172
 msgid "Enable flag"
 msgstr "Enable flag"
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:144
+#: app/features/feature-flags/components/feature-flag-list.tsx:122
 msgid "Enabled by"
 msgstr "Enabled by"
 
@@ -1089,16 +1089,16 @@ msgstr "Failed to update timezone"
 msgid "Failure Policy"
 msgstr "Failure Policy"
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:230
+#: app/features/feature-flags/hooks/useFeatureFlagToggle.ts:103
 msgid "Feature flag disabled"
 msgstr "Feature flag disabled"
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:219
+#: app/features/feature-flags/hooks/useFeatureFlagToggle.ts:86
 msgid "Feature flag enabled"
 msgstr "Feature flag enabled"
 
-#: app/routes/organization/detail/layout.tsx:101
-#: app/routes/organization/detail/quota/feature-flags.tsx:16
+#: app/routes/organization/detail/feature-flags.tsx:8
+#: app/routes/organization/detail/layout.tsx:103
 msgid "Feature Flags"
 msgstr "Feature Flags"
 
@@ -1172,7 +1172,7 @@ msgstr "First Name"
 msgid "First name is required"
 msgstr "First name is required"
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:132
+#: app/features/feature-flags/components/feature-flag-list.tsx:110
 msgid "Flag"
 msgstr "Flag"
 
@@ -1655,7 +1655,7 @@ msgstr "No email activity found."
 msgid "No export policies found."
 msgstr "No export policies found."
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:286
+#: app/features/feature-flags/components/feature-flag-list.tsx:262
 msgid "No feature flags registered."
 msgstr "No feature flags registered."
 
@@ -1679,7 +1679,7 @@ msgstr "No fraud policy configured."
 msgid "No fraud providers configured."
 msgstr "No fraud providers configured."
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:222
+#: app/features/feature-flags/hooks/useFeatureFlagToggle.ts:91
 msgid "No grants found to remove for this flag"
 msgstr "No grants found to remove for this flag"
 
@@ -1882,6 +1882,10 @@ msgstr "Pipeline Stages"
 #: app/features/email/components/email-detail.tsx:120
 msgid "Plain Text"
 msgstr "Plain Text"
+
+#: app/features/feature-flags/components/feature-flag-list.tsx:142
+msgid "Platform"
+msgstr "Platform"
 
 #. placeholder {0}: data.spec?.givenName ?? ''
 #. placeholder {1}: data.spec?.familyName ?? ''
@@ -2209,7 +2213,7 @@ msgstr "Search AI Edge..."
 msgid "Search by email, name, or ID..."
 msgstr "Search by email, name, or ID..."
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:278
+#: app/features/feature-flags/components/feature-flag-list.tsx:254
 msgid "Search by flag key or description..."
 msgstr "Search by flag key or description..."
 
@@ -2512,6 +2516,10 @@ msgstr "The list of domains is limited to 100 results at a time. Refine your sea
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 msgstr "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 
+#: app/features/feature-flags/components/feature-flag-list.tsx:181
+msgid "This flag is managed by the platform and can't be changed from here."
+msgstr "This flag is managed by the platform and can't be changed from here."
+
 #: app/features/domain/components/note-card.tsx:45
 msgid "This note will be permanently deleted and cannot be recovered."
 msgstr "This note will be permanently deleted and cannot be recovered."
@@ -2528,7 +2536,7 @@ msgstr "Timezone"
 msgid "Timezone updated successfully"
 msgstr "Timezone updated successfully"
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:174
+#: app/features/feature-flags/components/feature-flag-list.tsx:159
 msgid "Toggle"
 msgstr "Toggle"
 
@@ -2707,7 +2715,7 @@ msgstr "View contact groups"
 msgid "View Evaluation"
 msgstr "View Evaluation"
 
-#: app/routes/organization/detail/layout.tsx:121
+#: app/routes/organization/detail/layout.tsx:122
 #: app/routes/project/detail/layout.tsx:183
 msgid "View in Cloud Portal"
 msgstr "View in Cloud Portal"

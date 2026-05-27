@@ -1,19 +1,25 @@
+import {
+  useFeatureFlagToggle,
+  FEATURE_FLAG_ENABLED_BY_ANNOTATION,
+  isPlatformManagedGrant,
+} from '../hooks/useFeatureFlagToggle';
 import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
+import {
+  useFeatureFlagRegistrationListQuery,
+  useOrgQuotaBucketListQuery,
+  useOrgQuotaGrantListQuery,
+} from '@/resources/request/client';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Switch } from '@datum-cloud/datum-ui/switch';
-import { toast } from '@datum-cloud/datum-ui/toast';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { useLingui } from '@lingui/react/macro';
-import {
-  ComMiloapisQuotaV1Alpha1AllowanceBucketList,
+import type {
   ComMiloapisQuotaV1Alpha1ResourceGrant,
-  ComMiloapisQuotaV1Alpha1ResourceGrantList,
   ComMiloapisQuotaV1Alpha1ResourceRegistration,
-  ComMiloapisQuotaV1Alpha1ResourceRegistrationList,
 } from '@openapi/quota.miloapis.com/v1alpha1';
-import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
 
@@ -29,24 +35,6 @@ function displayName(reg: ComMiloapisQuotaV1Alpha1ResourceRegistration) {
   );
 }
 
-const ENABLED_BY_ANNOTATION = 'staff-portal.miloapis.com/enabled-by';
-
-interface FeatureFlagListProps {
-  orgName: string;
-  orgNamespace: string;
-  currentUserEmail: string;
-  queryKeyPrefix: string[];
-  fetchRegistrationsFn: () => Promise<ComMiloapisQuotaV1Alpha1ResourceRegistrationList>;
-  fetchBucketsFn: () => Promise<ComMiloapisQuotaV1Alpha1AllowanceBucketList>;
-  fetchGrantsFn: () => Promise<ComMiloapisQuotaV1Alpha1ResourceGrantList>;
-  createGrantFn: (
-    namespace: string,
-    payload: ComMiloapisQuotaV1Alpha1ResourceGrant['spec'],
-    annotations?: Record<string, string>
-  ) => Promise<ComMiloapisQuotaV1Alpha1ResourceGrant>;
-  deleteGrantFn: (name: string, namespace: string) => Promise<unknown>;
-}
-
 const columnHelper = createColumnHelper<ComMiloapisQuotaV1Alpha1ResourceRegistration>();
 
 type PendingToggle = {
@@ -54,44 +42,21 @@ type PendingToggle = {
   enable: boolean;
 };
 
-export function FeatureFlagList({
-  orgName,
-  orgNamespace,
-  currentUserEmail,
-  queryKeyPrefix,
-  fetchRegistrationsFn,
-  fetchBucketsFn,
-  fetchGrantsFn,
-  createGrantFn,
-  deleteGrantFn,
-}: FeatureFlagListProps) {
+export interface FeatureFlagListProps {
+  orgName: string;
+}
+
+export function FeatureFlagList({ orgName }: FeatureFlagListProps) {
   const { t } = useLingui();
   const [pending, setPending] = useState<PendingToggle | null>(null);
 
-  const registrationsQuery = useQuery({
-    queryKey: [...queryKeyPrefix, 'registrations'],
-    queryFn: fetchRegistrationsFn,
-    staleTime: 60 * 1000,
-  });
+  const registrationsQuery = useFeatureFlagRegistrationListQuery();
+  const bucketsQuery = useOrgQuotaBucketListQuery(orgName);
+  const grantsQuery = useOrgQuotaGrantListQuery(orgName);
+  const { toggle, isPending: toggleIsPending } = useFeatureFlagToggle(orgName);
 
-  const bucketsQuery = useQuery({
-    queryKey: [...queryKeyPrefix, 'buckets'],
-    queryFn: fetchBucketsFn,
-    enabled: !!orgName,
-    staleTime: 60 * 1000,
-  });
-
-  const grantsQuery = useQuery({
-    queryKey: [...queryKeyPrefix, 'grants'],
-    queryFn: fetchGrantsFn,
-    enabled: !!orgName,
-    staleTime: 60 * 1000,
-  });
-
-  const refetchOrgData = async () => {
-    await Promise.all([bucketsQuery.refetch(), grantsQuery.refetch()]);
-  };
-
+  // Aggregate available counts per resource type. A flag is "enabled" when
+  // any bucket for that type reports `status.available > 0`.
   const bucketByResourceType = useMemo(() => {
     const map = new Map<string, number>();
     for (const bucket of bucketsQuery.data?.items ?? []) {
@@ -112,6 +77,8 @@ export function FeatureFlagList({
     [registrationsQuery.data]
   );
 
+  // Group grants by the resource type they enable, scoped to feature-flag
+  // registrations only — the same org may hold unrelated quota grants.
   const grantsByResourceType = useMemo(() => {
     const map = new Map<string, ComMiloapisQuotaV1Alpha1ResourceGrant[]>();
     for (const grant of grantsQuery.data?.items ?? []) {
@@ -124,6 +91,17 @@ export function FeatureFlagList({
     }
     return map;
   }, [grantsQuery.data, featureResourceTypes]);
+
+  // A flag is platform-managed when at least one platform-issued grant is
+  // enabling it — an operator removing their own grant wouldn't actually turn
+  // the flag off in that case, so the toggle becomes read-only.
+  const platformManagedByResourceType = useMemo(() => {
+    const set = new Set<string>();
+    for (const [resourceType, grants] of grantsByResourceType.entries()) {
+      if (grants.some(isPlatformManagedGrant)) set.add(resourceType);
+    }
+    return set;
+  }, [grantsByResourceType]);
 
   const columns = useMemo(
     () => [
@@ -143,10 +121,12 @@ export function FeatureFlagList({
         id: 'enabledBy',
         header: () => t`Enabled by`,
         cell: ({ row }) => {
-          const grants = grantsByResourceType.get(row.original.spec?.resourceType ?? '') ?? [];
+          const resourceType = row.original.spec?.resourceType ?? '';
+          const grants = grantsByResourceType.get(resourceType) ?? [];
           if (grants.length === 0) {
             return <span className="text-muted-foreground">—</span>;
           }
+          // Multiple grants can enable the same flag; show the most recent.
           const latest = grants
             .slice()
             .sort((a, b) =>
@@ -154,8 +134,13 @@ export function FeatureFlagList({
                 a.metadata?.creationTimestamp ?? ''
               )
             )[0];
-          const enabledBy = latest.metadata?.annotations?.[ENABLED_BY_ANNOTATION];
+          const enabledBy = latest.metadata?.annotations?.[FEATURE_FLAG_ENABLED_BY_ANNOTATION];
           if (!enabledBy) {
+            // A platform-managed grant won't carry the operator annotation —
+            // surface that explicitly instead of an em-dash.
+            if (platformManagedByResourceType.has(resourceType)) {
+              return <span className="text-muted-foreground text-sm italic">{t`Platform`}</span>;
+            }
             return <span className="text-muted-foreground text-sm">—</span>;
           }
           return (
@@ -173,23 +158,46 @@ export function FeatureFlagList({
         id: 'toggle',
         header: () => <div className="text-right">{t`Toggle`}</div>,
         cell: ({ row }) => {
-          const available = bucketByResourceType.get(row.original.spec?.resourceType ?? '') ?? 0;
+          const resourceType = row.original.spec?.resourceType ?? '';
+          const available = bucketByResourceType.get(resourceType) ?? 0;
           const enabled = available > 0;
           const orgDataLoading = bucketsQuery.isLoading || grantsQuery.isLoading;
+          const platformManaged = platformManagedByResourceType.has(resourceType);
+
+          const switchEl = (
+            <Switch
+              checked={enabled}
+              disabled={orgDataLoading || platformManaged}
+              onCheckedChange={() => setPending({ registration: row.original, enable: !enabled })}
+              aria-label={enabled ? t`Disable flag` : t`Enable flag`}
+            />
+          );
+
           return (
             <div className="flex w-full justify-end">
-              <Switch
-                checked={enabled}
-                disabled={orgDataLoading}
-                onCheckedChange={() => setPending({ registration: row.original, enable: !enabled })}
-                aria-label={enabled ? t`Disable flag` : t`Enable flag`}
-              />
+              {platformManaged ? (
+                <Tooltip
+                  side="left"
+                  message={t`This flag is managed by the platform and can't be changed from here.`}>
+                  {/* Wrap so the tooltip still fires hover events on the disabled switch. */}
+                  <span tabIndex={0}>{switchEl}</span>
+                </Tooltip>
+              ) : (
+                switchEl
+              )}
             </div>
           );
         },
       }),
     ],
-    [t, bucketByResourceType, grantsByResourceType, bucketsQuery.isLoading, grantsQuery.isLoading]
+    [
+      t,
+      bucketByResourceType,
+      grantsByResourceType,
+      platformManagedByResourceType,
+      bucketsQuery.isLoading,
+      grantsQuery.isLoading,
+    ]
   );
 
   const pendingResourceType = pending?.registration.spec?.resourceType ?? '';
@@ -198,39 +206,7 @@ export function FeatureFlagList({
 
   const handleConfirm = async () => {
     if (!pending) return;
-    const resourceType = pending.registration.spec?.resourceType ?? '';
-    const consumerType = pending.registration.spec?.consumerType;
-    if (pending.enable) {
-      const annotations = currentUserEmail
-        ? { [ENABLED_BY_ANNOTATION]: currentUserEmail }
-        : undefined;
-      await createGrantFn(
-        orgNamespace,
-        {
-          consumerRef: {
-            apiGroup: consumerType?.apiGroup ?? 'resourcemanager.miloapis.com',
-            kind: (consumerType?.kind as 'Organization' | 'Project') ?? 'Organization',
-            name: orgName,
-          },
-          allowances: [{ resourceType, buckets: [{ amount: 1 }] }],
-        },
-        annotations
-      );
-      toast.success(t`Feature flag enabled`);
-    } else {
-      if (pendingGrants.length === 0) {
-        toast.error(t`No grants found to remove for this flag`);
-        throw new Error('No grants to remove');
-      }
-      await Promise.all(
-        pendingGrants.map((g) =>
-          deleteGrantFn(g.metadata?.name ?? '', g.metadata?.namespace ?? orgNamespace)
-        )
-      );
-      toast.success(t`Feature flag disabled`);
-    }
-    await new Promise((r) => setTimeout(r, 1000));
-    await refetchOrgData();
+    await toggle(pending.registration, pending.enable, pendingGrants);
   };
 
   return (
@@ -238,7 +214,7 @@ export function FeatureFlagList({
       <DialogConfirm
         open={!!pending}
         onOpenChange={(open) => {
-          if (!open) setPending(null);
+          if (!open && !toggleIsPending) setPending(null);
         }}
         title={pending?.enable ? t`Enable feature flag` : t`Disable feature flag`}
         description={
