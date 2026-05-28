@@ -121,7 +121,7 @@ msgstr ""
 #: app/components/app-search/use-app-search.ts:48
 #: app/components/app-sidebar/index.tsx:171
 #: app/routes/organization/detail/activity/index.tsx:8
-#: app/routes/organization/detail/layout.tsx:79
+#: app/routes/organization/detail/layout.tsx:85
 #: app/routes/project/detail/activity/index.tsx:14
 #: app/routes/project/detail/layout.tsx:149
 #: app/routes/user/detail/activity/index.tsx:23
@@ -800,6 +800,8 @@ msgstr ""
 msgid "Display name is required"
 msgstr ""
 
+#: app/routes/organization/detail/dns.tsx:9
+#: app/routes/organization/detail/layout.tsx:80
 #: app/routes/project/detail/dns/layout.tsx:5
 #: app/routes/project/detail/layout.tsx:129
 msgid "DNS"
@@ -866,7 +868,7 @@ msgstr ""
 #: app/routes/domain/index.tsx:10
 #: app/routes/domain/layout.tsx:5
 #: app/routes/organization/detail/domain.tsx:9
-#: app/routes/organization/detail/layout.tsx:74
+#: app/routes/organization/detail/layout.tsx:75
 #: app/routes/project/detail/domain/layout.tsx:5
 #: app/routes/project/detail/layout.tsx:134
 msgid "Domains"
@@ -1100,7 +1102,7 @@ msgid "Feature flag enabled"
 msgstr ""
 
 #: app/routes/organization/detail/feature-flags.tsx:8
-#: app/routes/organization/detail/layout.tsx:109
+#: app/routes/organization/detail/layout.tsx:115
 msgid "Feature Flags"
 msgstr ""
 
@@ -1237,7 +1239,7 @@ msgstr ""
 msgid "Grant deleted successfully"
 msgstr ""
 
-#: app/routes/organization/detail/layout.tsx:103
+#: app/routes/organization/detail/layout.tsx:109
 #: app/routes/organization/detail/quota/grant.tsx:9
 #: app/routes/project/detail/layout.tsx:163
 #: app/routes/project/detail/quota/grant.tsx:12
@@ -1522,7 +1524,7 @@ msgstr ""
 
 #: app/routes/contact-group/detail/layout.tsx:39
 #: app/routes/contact-group/detail/member.tsx:34
-#: app/routes/organization/detail/layout.tsx:84
+#: app/routes/organization/detail/layout.tsx:90
 #: app/routes/organization/detail/member.tsx:25
 msgid "Members"
 msgstr ""
@@ -1817,7 +1819,7 @@ msgstr ""
 msgid "Organizations"
 msgstr ""
 
-#: app/routes/organization/detail/layout.tsx:64
+#: app/routes/organization/detail/layout.tsx:65
 #: app/routes/project/detail/layout.tsx:119
 #: app/routes/user/detail/layout.tsx:32
 msgid "Overview"
@@ -1972,7 +1974,7 @@ msgstr ""
 #: app/components/app-search/use-app-search.ts:42
 #: app/components/app-sidebar/index.tsx:119
 #: app/routes/dashboard/index.tsx:75
-#: app/routes/organization/detail/layout.tsx:69
+#: app/routes/organization/detail/layout.tsx:70
 #: app/routes/organization/detail/project.tsx:17
 #: app/routes/project/detail/layout.tsx:57
 #: app/routes/project/index.tsx:16
@@ -2039,7 +2041,7 @@ msgstr ""
 msgid "Quota Utilization"
 msgstr ""
 
-#: app/routes/organization/detail/layout.tsx:94
+#: app/routes/organization/detail/layout.tsx:100
 #: app/routes/organization/detail/quota/layout.tsx:5
 #: app/routes/project/detail/layout.tsx:154
 #: app/routes/project/detail/quota/layout.tsx:5
@@ -2599,8 +2601,8 @@ msgstr ""
 
 #: app/features/dashboard/components/quota-utilization-widget.tsx:161
 #: app/features/quota/components/quota-bucket-list.tsx:61
-#: app/routes/organization/detail/layout.tsx:89
-#: app/routes/organization/detail/layout.tsx:99
+#: app/routes/organization/detail/layout.tsx:95
+#: app/routes/organization/detail/layout.tsx:105
 #: app/routes/organization/detail/quota/usage.tsx:9
 #: app/routes/project/detail/layout.tsx:159
 #: app/routes/project/detail/quota/usage.tsx:12
@@ -2717,7 +2719,7 @@ msgstr ""
 msgid "View Evaluation"
 msgstr ""
 
-#: app/routes/organization/detail/layout.tsx:128
+#: app/routes/organization/detail/layout.tsx:134
 #: app/routes/project/detail/layout.tsx:183
 msgid "View in Cloud Portal"
 msgstr ""

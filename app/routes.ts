@@ -34,6 +34,7 @@ export default [
           route('members', 'routes/organization/detail/member.tsx'),
           route('projects', 'routes/organization/detail/project.tsx'),
           route('domains', 'routes/organization/detail/domain.tsx'),
+          route('dns', 'routes/organization/detail/dns.tsx'),
           route('activity', 'routes/organization/detail/activity/layout.tsx', [
             index('routes/organization/detail/activity/index.tsx'),
             route('events', 'routes/organization/detail/activity/events.tsx'),
