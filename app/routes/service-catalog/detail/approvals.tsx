@@ -1,6 +1,6 @@
 import type { Route } from './+types/approvals';
-import { useApprovalDialog } from './use-approval-dialog';
 import { DateTime } from '@/components/date';
+import { useApprovalDialog } from '@/features/service-catalog';
 import {
   useServiceConsumersInProjectQuery,
   useServiceDetailQuery,

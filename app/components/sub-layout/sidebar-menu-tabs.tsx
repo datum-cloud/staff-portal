@@ -1,6 +1,7 @@
 import type { MenuItem } from './sidebar-menu';
 import { pickMostSpecificHref } from './use-active-path';
 import { cn } from '@datum-cloud/datum-ui/utils';
+import * as React from 'react';
 import { NavLink, useLocation } from 'react-router';
 
 interface SidebarMenuTabsProps {
@@ -11,6 +12,7 @@ interface SidebarMenuTabsProps {
 interface FlatTab {
   title: string;
   href: string;
+  badge?: React.ReactNode;
 }
 
 function flattenMenu(items: MenuItem[]): FlatTab[] {
@@ -18,7 +20,7 @@ function flattenMenu(items: MenuItem[]): FlatTab[] {
     if (item.hasSubmenu && item.submenuItems) {
       return item.submenuItems.map((sub) => ({ title: sub.title, href: sub.href }));
     }
-    return item.href ? [{ title: item.title, href: item.href }] : [];
+    return item.href ? [{ title: item.title, href: item.href, badge: item.badge }] : [];
   });
 }
 
@@ -56,7 +58,10 @@ export function SidebarMenuTabs({ menuItems, className }: SidebarMenuTabsProps) 
                   ? 'border-primary text-foreground'
                   : 'text-muted-foreground hover:text-foreground border-transparent'
               )}>
-              {tab.title}
+              <span className="inline-flex items-center gap-2">
+                {tab.title}
+                {tab.badge}
+              </span>
             </NavLink>
           );
         })}

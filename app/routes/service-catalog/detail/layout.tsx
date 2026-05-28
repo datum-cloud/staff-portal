@@ -1,6 +1,7 @@
 import type { Route } from './+types/layout';
 import { BadgeState } from '@/components/badge';
 import { PageHeader } from '@/components/page-header';
+import { SubLayout } from '@/components/sub-layout';
 import {
   useServiceConsumersInProjectQuery,
   useServiceDetailQuery,
@@ -9,11 +10,10 @@ import { serviceCatalogRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { Text } from '@datum-cloud/datum-ui/typography';
-import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ArrowLeft } from 'lucide-react';
-import { Link, NavLink, Outlet, useLocation, useParams } from 'react-router';
+import { CheckSquare, FileText, Users } from 'lucide-react';
+import { Link, Outlet, useParams } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ params }) => {
   return metaObject(params.name ?? t`Service Detail`);
@@ -28,41 +28,7 @@ export const handle = {
   breadcrumb: () => <ServiceNameBreadcrumb />,
 };
 
-function useActiveTab(name: string) {
-  const { pathname } = useLocation();
-  if (pathname.startsWith(serviceCatalogRoutes.approvals(name))) return 'approvals';
-  if (pathname.startsWith(serviceCatalogRoutes.consumers(name))) return 'consumers';
-  return 'overview';
-}
-
-function SideNavItem({
-  to,
-  active,
-  children,
-  badge,
-}: {
-  to: string;
-  active: boolean;
-  children: React.ReactNode;
-  badge?: React.ReactNode;
-}) {
-  return (
-    <NavLink
-      to={to}
-      end={false}
-      className={cn(
-        'flex items-center justify-between rounded-md px-3 py-1.5 text-sm transition-colors',
-        active
-          ? 'bg-muted text-foreground font-medium'
-          : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
-      )}>
-      <span>{children}</span>
-      {badge}
-    </NavLink>
-  );
-}
-
-function PendingApprovalsCount({
+function PendingApprovalsBadge({
   producerProject,
   serviceName,
   canonicalName,
@@ -89,45 +55,40 @@ export default function ServiceDetailLayout() {
   const { name } = useParams<{ name: string }>();
   const serviceName = name ?? '';
   const { data: service, isLoading, error, refetch } = useServiceDetailQuery(serviceName);
-  const activeTab = useActiveTab(serviceName);
 
   if (isLoading) {
     return (
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <Card className="m-4 shadow-none">
-          <CardContent className="py-8">
-            <div className="animate-pulse space-y-3">
-              <div className="bg-muted h-6 w-48 rounded" />
-              <div className="bg-muted h-4 w-32 rounded" />
-              <div className="bg-muted h-4 w-96 rounded" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <Card className="m-4 shadow-none">
+        <CardContent className="py-8">
+          <div className="animate-pulse space-y-3">
+            <div className="bg-muted h-6 w-48 rounded" />
+            <div className="bg-muted h-4 w-32 rounded" />
+            <div className="bg-muted h-4 w-96 rounded" />
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
   if (error || !service) {
     return (
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <Card className="m-4 shadow-none">
-          <CardContent className="flex flex-col items-center justify-center gap-3 py-12">
-            <Text size="sm" textColor="muted">
-              {error ? <Trans>Failed to load service.</Trans> : <Trans>Service not found.</Trans>}
+      <Card className="m-4 shadow-none">
+        <CardContent className="flex flex-col items-center justify-center gap-3 py-12">
+          <Text size="sm" textColor="muted">
+            {error ? <Trans>Failed to load service.</Trans> : <Trans>Service not found.</Trans>}
+          </Text>
+          {error && (
+            <Text size="sm" textColor="muted" className="font-mono text-xs">
+              {error instanceof Error ? error.message : String(error)}
             </Text>
-            {error && (
-              <Text size="sm" textColor="muted" className="font-mono text-xs">
-                {error instanceof Error ? error.message : String(error)}
-              </Text>
-            )}
-            {error && (
-              <button onClick={() => refetch()} className="text-primary text-sm hover:underline">
-                <Trans>Retry</Trans>
-              </button>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+          )}
+          {error && (
+            <button onClick={() => refetch()} className="text-primary text-sm hover:underline">
+              <Trans>Retry</Trans>
+            </button>
+          )}
+        </CardContent>
+      </Card>
     );
   }
 
@@ -140,25 +101,25 @@ export default function ServiceDetailLayout() {
   const dependencies = spec?.dependencies ?? [];
   const isGated = spec?.enablementPolicy?.mode === 'GatedByProvider';
 
-  const tabs = [
+  const menuItems = [
     {
-      label: t`Overview`,
-      value: 'overview',
-      to: serviceCatalogRoutes.overview(serviceName),
+      title: t`Overview`,
+      href: serviceCatalogRoutes.overview(serviceName),
+      icon: FileText,
     },
     {
-      label: t`Consumers`,
-      value: 'consumers',
-      to: serviceCatalogRoutes.consumers(serviceName),
+      title: t`Consumers`,
+      href: serviceCatalogRoutes.consumers(serviceName),
+      icon: Users,
     },
     ...(isGated
       ? [
           {
-            label: t`Approvals`,
-            value: 'approvals',
-            to: serviceCatalogRoutes.approvals(serviceName),
+            title: t`Approvals`,
+            href: serviceCatalogRoutes.approvals(serviceName),
+            icon: CheckSquare,
             badge: (
-              <PendingApprovalsCount
+              <PendingApprovalsBadge
                 producerProject={ownerProject}
                 serviceName={serviceName}
                 canonicalName={canonicalName}
@@ -170,28 +131,11 @@ export default function ServiceDetailLayout() {
   ];
 
   return (
-    <div className="flex flex-1 overflow-hidden">
-      <aside className="bg-muted/20 flex w-56 shrink-0 flex-col gap-3 overflow-y-auto border-r px-3 py-4">
-        <Link
-          to={serviceCatalogRoutes.list()}
-          className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 px-3 text-xs">
-          <ArrowLeft className="h-3 w-3" />
-          <Trans>Services</Trans>
-        </Link>
-        <nav className="flex flex-col gap-0.5">
-          {tabs.map((tab) => (
-            <SideNavItem
-              key={tab.value}
-              to={tab.to}
-              active={activeTab === tab.value}
-              badge={'badge' in tab ? tab.badge : undefined}>
-              {tab.label}
-            </SideNavItem>
-          ))}
-        </nav>
-      </aside>
-
-      <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
+    <SubLayout>
+      <SubLayout.SidebarLeft>
+        <SubLayout.SidebarMenu menuItems={menuItems} />
+      </SubLayout.SidebarLeft>
+      <SubLayout.Content>
         <div className="border-b px-4 pt-4 pb-4">
           <PageHeader
             className="mb-3"
@@ -239,10 +183,8 @@ export default function ServiceDetailLayout() {
           )}
         </div>
 
-        <div className="min-h-0 flex-1">
-          <Outlet />
-        </div>
-      </div>
-    </div>
+        <Outlet />
+      </SubLayout.Content>
+    </SubLayout>
   );
 }

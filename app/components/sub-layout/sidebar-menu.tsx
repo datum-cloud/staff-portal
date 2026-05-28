@@ -15,6 +15,7 @@ import {
 } from '@datum-cloud/datum-ui/sidebar';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { ChevronRight, LucideIcon } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { NavLink, useLocation } from 'react-router';
 
 export interface SubMenuItem {
@@ -28,6 +29,7 @@ export interface MenuItem {
   href?: string;
   hasSubmenu?: boolean;
   submenuItems?: SubMenuItem[];
+  badge?: ReactNode;
 }
 
 interface SidebarMenuProps {
@@ -122,6 +124,7 @@ export function SidebarMenuComponent({ menuItems, className }: SidebarMenuProps)
                   <NavLink to={item.href ?? '#'}>
                     {item.icon && <item.icon />}
                     <span>{item.title}</span>
+                    {item.badge && <span className="ml-auto">{item.badge}</span>}
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>

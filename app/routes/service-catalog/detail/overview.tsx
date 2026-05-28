@@ -1,6 +1,7 @@
 import type { Route } from './+types/overview';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
+import { SimpleTable } from '@/components/simple-table';
 import {
   useServiceConfigurationsByServiceQuery,
   useServiceDetailQuery,
@@ -11,6 +12,7 @@ import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { createColumnHelper } from '@tanstack/react-table';
 import { useMemo } from 'react';
 import { useParams } from 'react-router';
 
@@ -58,6 +60,45 @@ function EmptyPanelBody({ message }: { message: React.ReactNode }) {
     </Text>
   );
 }
+
+type ConditionRow = NonNullable<NonNullable<ServiceConfiguration['status']>['conditions']>[number];
+
+const conditionColumnHelper = createColumnHelper<ConditionRow>();
+
+const conditionColumns = [
+  conditionColumnHelper.accessor('type', {
+    header: () => <Trans>Type</Trans>,
+    cell: (info) => <span className="font-mono text-xs">{info.getValue()}</span>,
+  }),
+  conditionColumnHelper.accessor('status', {
+    header: () => <Trans>Status</Trans>,
+    cell: (info) => {
+      const status = info.getValue();
+      return (
+        <BadgeState
+          state={status === 'True' ? 'active' : status === 'False' ? 'error' : 'pending'}
+          message={status}
+        />
+      );
+    },
+  }),
+  conditionColumnHelper.accessor('reason', {
+    header: () => <Trans>Reason</Trans>,
+    cell: (info) => <span className="font-mono text-xs">{info.getValue()}</span>,
+  }),
+  conditionColumnHelper.accessor('message', {
+    header: () => <Trans>Message</Trans>,
+    cell: (info) => info.getValue(),
+  }),
+  conditionColumnHelper.accessor('lastTransitionTime', {
+    header: () => <Trans>Updated</Trans>,
+    cell: (info) => (
+      <span className="text-muted-foreground text-xs">
+        <DateTime date={info.getValue()} variant="relative" addSuffix />
+      </span>
+    ),
+  }),
+];
 
 export default function ServiceOverviewPage() {
   const { name } = useParams<{ name: string }>();
@@ -312,53 +353,11 @@ export default function ServiceOverviewPage() {
             }
           />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-muted-foreground text-left text-xs tracking-wide uppercase">
-                  <th className="pr-4 pb-2 font-medium">
-                    <Trans>Type</Trans>
-                  </th>
-                  <th className="pr-4 pb-2 font-medium">
-                    <Trans>Status</Trans>
-                  </th>
-                  <th className="pr-4 pb-2 font-medium">
-                    <Trans>Reason</Trans>
-                  </th>
-                  <th className="pr-4 pb-2 font-medium">
-                    <Trans>Message</Trans>
-                  </th>
-                  <th className="pb-2 font-medium">
-                    <Trans>Updated</Trans>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y">
-                {conditions.map((c) => (
-                  <tr key={c.type} className="align-top">
-                    <td className="py-2 pr-4 font-mono text-xs">{c.type}</td>
-                    <td className="py-2 pr-4">
-                      <BadgeState
-                        state={
-                          c.status === 'True'
-                            ? 'active'
-                            : c.status === 'False'
-                              ? 'error'
-                              : 'pending'
-                        }
-                        message={c.status}
-                      />
-                    </td>
-                    <td className="py-2 pr-4 font-mono text-xs">{c.reason}</td>
-                    <td className="py-2 pr-4">{c.message}</td>
-                    <td className="text-muted-foreground py-2 text-xs">
-                      <DateTime date={c.lastTransitionTime} variant="relative" addSuffix />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <SimpleTable<ConditionRow>
+            columns={conditionColumns}
+            data={conditions}
+            getRowId={(row) => row.type}
+          />
         )}
       </Panel>
     </div>

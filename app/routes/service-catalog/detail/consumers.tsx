@@ -1,9 +1,9 @@
 import type { Route } from './+types/consumers';
 import { humanizePhase } from './phase';
-import { useApprovalDialog } from './use-approval-dialog';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
+import { useApprovalDialog } from '@/features/service-catalog';
 import {
   useRevokeServiceEntitlementMutation,
   useServiceConsumersInProjectQuery,
