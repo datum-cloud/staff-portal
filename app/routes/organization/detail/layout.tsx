@@ -16,6 +16,7 @@ import {
   Flag,
   Folders,
   Layers,
+  Signpost,
   SquareActivity,
   Users,
 } from 'lucide-react';
@@ -74,6 +75,11 @@ export default function Layout() {
       title: t`Domains`,
       href: orgRoutes.domain(orgName),
       icon: Layers,
+    },
+    {
+      title: t`DNS`,
+      href: orgRoutes.dns(orgName),
+      icon: Signpost,
     },
     {
       title: t`Activity`,
