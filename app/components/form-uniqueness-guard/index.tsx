@@ -69,7 +69,12 @@ export function FormUniquenessGuard<T, A extends unknown[] = []>({
 }: FormUniquenessGuardProps<T, A>) {
   const value = Form.useWatch(field);
   const stringValue = typeof value === 'string' ? value : '';
-  const { isChecking, existing } = useExists(stringValue, ...((existsArgs ?? []) as A));
+  // Skip the lookup until the user actually modifies the field. Avoids a
+  // pointless round-trip on edit forms where the field is prefilled with
+  // the record's own value.
+  const { field: fieldState } = Form.useField(field);
+  const effectiveValue = fieldState.isDirty ? stringValue : '';
+  const { isChecking, existing } = useExists(effectiveValue, ...((existsArgs ?? []) as A));
 
   const ctx = Form.useFormContext();
   const rhf = ctx.form.raw as UseFormReturn;
