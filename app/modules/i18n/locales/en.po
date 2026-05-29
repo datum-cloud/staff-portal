@@ -94,6 +94,10 @@ msgstr "409 - Conflict"
 msgid "500 - Server Error"
 msgstr "500 - Server Error"
 
+#: app/features/contact/components/contact-form.tsx:138
+msgid "A contact with this email already exists."
+msgstr "A contact with this email already exists."
+
 #: app/routes/fraud/index.tsx:319
 #: app/routes/organization/detail/member.tsx:186
 msgid "Accepted"
@@ -382,12 +386,12 @@ msgstr "Are you sure you want to delete user \"{0} {1}\"? This action cannot be 
 msgid "ASN"
 msgstr "ASN"
 
-#: app/features/contact/components/contact-form.tsx:190
+#: app/features/contact/components/contact-form.tsx:217
 #: app/routes/contact-group/detail/member.tsx:104
 msgid "Associate with User"
 msgstr "Associate with User"
 
-#: app/features/contact/components/contact-form.tsx:134
+#: app/features/contact/components/contact-form.tsx:161
 msgid "Associated with User: "
 msgstr "Associated with User: "
 
@@ -414,7 +418,7 @@ msgstr "by"
 #: app/components/button/button-delete-action.tsx:43
 #: app/components/danger-zone-card/index.tsx:49
 #: app/features/contact-group/components/contact-group-form.tsx:97
-#: app/features/contact/components/contact-form.tsx:217
+#: app/features/contact/components/contact-form.tsx:244
 #: app/features/contact/components/contact-list.tsx:117
 #: app/features/feature-flags/components/feature-flag-list.tsx:228
 #: app/features/fraud/policy/policy-form.tsx:318
@@ -522,7 +526,7 @@ msgstr "Contact"
 msgid "Contact created and added to the group"
 msgstr "Contact created and added to the group"
 
-#: app/features/contact/components/contact-form.tsx:102
+#: app/features/contact/components/contact-form.tsx:106
 msgid "Contact created successfully"
 msgstr "Contact created successfully"
 
@@ -561,7 +565,7 @@ msgstr "Contact Groups - Create"
 msgid "Contact Information"
 msgstr "Contact Information"
 
-#: app/features/contact/components/contact-form.tsx:69
+#: app/features/contact/components/contact-form.tsx:73
 msgid "Contact updated successfully"
 msgstr "Contact updated successfully"
 
@@ -614,7 +618,7 @@ msgstr "Could not query cluster health metrics"
 #: app/features/activity/components/activity-list.tsx:368
 #: app/features/activity/components/activity-list.tsx:458
 #: app/features/contact-group/components/contact-group-form.tsx:103
-#: app/features/contact/components/contact-form.tsx:223
+#: app/features/contact/components/contact-form.tsx:250
 #: app/features/fraud/policy/policy-form.tsx:321
 #: app/routes/contact-group/create.tsx:14
 #: app/routes/contact/create.tsx:14
@@ -1011,7 +1015,7 @@ msgstr "Edit Fraud Provider"
 msgid "Edit Quota"
 msgstr "Edit Quota"
 
-#: app/features/contact/components/contact-form.tsx:127
+#: app/features/contact/components/contact-form.tsx:131
 #: app/features/contact/components/contact-list.tsx:84
 #: app/features/dashboard/components/pending-approvals-widget.tsx:131
 #: app/routes/contact-group/detail/member.tsx:203
@@ -1118,7 +1122,7 @@ msgstr "Enter reason for deactivation..."
 msgid "Enter reason for rejection..."
 msgstr "Enter reason for rejection..."
 
-#: app/features/contact/components/contact-form.tsx:199
+#: app/features/contact/components/contact-form.tsx:226
 #: app/routes/contact-group/detail/member.tsx:115
 #: app/routes/group/member.tsx:195
 msgid "Enter the full email to search..."
@@ -1306,13 +1310,13 @@ msgstr "Fingerprint ID"
 msgid "First name"
 msgstr "First name"
 
-#: app/features/contact/components/contact-form.tsx:121
+#: app/features/contact/components/contact-form.tsx:125
 #: app/features/profile/components/profile-form.tsx:46
 #: app/routes/user/index.tsx:205
 msgid "First Name"
 msgstr "First Name"
 
-#: app/features/contact/components/contact-form.tsx:42
+#: app/features/contact/components/contact-form.tsx:46
 #: app/features/profile/components/profile-form.tsx:15
 #: app/routes/user/index.tsx:141
 msgid "First name is required"
@@ -1455,7 +1459,7 @@ msgstr "ID"
 msgid "Inactive"
 msgstr "Inactive"
 
-#: app/features/contact/components/contact-form.tsx:44
+#: app/features/contact/components/contact-form.tsx:48
 #: app/routes/user/index.tsx:143
 msgid "Invalid email address"
 msgstr "Invalid email address"
@@ -1525,13 +1529,13 @@ msgstr "Last Evaluated"
 msgid "Last name"
 msgstr "Last name"
 
-#: app/features/contact/components/contact-form.tsx:124
+#: app/features/contact/components/contact-form.tsx:128
 #: app/features/profile/components/profile-form.tsx:49
 #: app/routes/user/index.tsx:208
 msgid "Last Name"
 msgstr "Last Name"
 
-#: app/features/contact/components/contact-form.tsx:43
+#: app/features/contact/components/contact-form.tsx:47
 #: app/features/profile/components/profile-form.tsx:16
 #: app/routes/user/index.tsx:142
 msgid "Last name is required"
@@ -1563,7 +1567,7 @@ msgstr "List"
 msgid "Loading evaluation..."
 msgstr "Loading evaluation..."
 
-#: app/features/contact/components/contact-form.tsx:151
+#: app/features/contact/components/contact-form.tsx:178
 msgid "Loading mail lists..."
 msgstr "Loading mail lists..."
 
@@ -1621,7 +1625,7 @@ msgstr "Log out of GitHub"
 msgid "Low"
 msgstr "Low"
 
-#: app/features/contact/components/contact-form.tsx:154
+#: app/features/contact/components/contact-form.tsx:181
 msgid "Mail Lists"
 msgstr "Mail Lists"
 
@@ -1988,7 +1992,7 @@ msgstr "Notifications"
 msgid "Observed"
 msgstr "Observed"
 
-#: app/features/contact/components/contact-form.tsx:205
+#: app/features/contact/components/contact-form.tsx:232
 msgid "Once a contact is associated with a user, this association cannot be removed or changed later."
 msgstr "Once a contact is associated with a user, this association cannot be removed or changed later."
 
@@ -2779,7 +2783,7 @@ msgstr "Status"
 msgid "Subject"
 msgstr "Subject"
 
-#: app/features/contact/components/contact-form.tsx:57
+#: app/features/contact/components/contact-form.tsx:61
 #: app/routes/contact-group/detail/member.tsx:273
 msgid "Subject is required when user association is enabled"
 msgstr "Subject is required when user association is enabled"
@@ -2831,6 +2835,10 @@ msgstr "The list of domains is limited to 100 results at a time. Refine your sea
 #: app/features/domain/components/domain-status-probe.tsx:103
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 msgstr "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
+
+#: app/features/contact/components/contact-form.tsx:147
+msgid "This email is already used by <0>{displayName}</0>."
+msgstr "This email is already used by <0>{displayName}</0>."
 
 #: app/features/feature-flags/components/feature-flag-list.tsx:181
 msgid "This flag is managed by the platform and can't be changed from here."
@@ -2902,7 +2910,7 @@ msgstr "Unknown"
 #: app/features/activity/components/activity-list.tsx:369
 #: app/features/activity/components/activity-list.tsx:459
 #: app/features/contact-group/components/contact-group-form.tsx:103
-#: app/features/contact/components/contact-form.tsx:223
+#: app/features/contact/components/contact-form.tsx:250
 #: app/features/fraud/policy/policy-form.tsx:321
 #: app/features/quota/components/quota-bucket-list.tsx:127
 #: app/routes/fraud/providers/detail.tsx:170
@@ -3069,7 +3077,7 @@ msgstr "Visibility"
 msgid "Waiting Since"
 msgstr "Waiting Since"
 
-#: app/features/contact/components/contact-form.tsx:204
+#: app/features/contact/components/contact-form.tsx:231
 msgid "Warning"
 msgstr "Warning"
 

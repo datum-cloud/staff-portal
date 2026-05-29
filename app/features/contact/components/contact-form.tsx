@@ -1,3 +1,5 @@
+import { useContactEmailExists } from '../hooks/useContactEmailExists';
+import { FormUniquenessGuard } from '@/components/form-uniqueness-guard';
 import { useUserSearch } from '@/hooks';
 import {
   contactCreateMutation,
@@ -36,6 +38,8 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
   } = useUserSearch();
 
   const { data: contactGroups, isLoading: contactGroupsLoading } = useContactGroupListQuery();
+
+  const [emailIsDuplicate, setEmailIsDuplicate] = React.useState(false);
 
   const contactSchema = z
     .object({
@@ -127,6 +131,29 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
           <Form.Field name="email" label={t`Email`} required>
             <Form.Input />
           </Form.Field>
+          <FormUniquenessGuard<ComMiloapisNotificationV1Alpha1Contact, [string | undefined]>
+            field="email"
+            useExists={useContactEmailExists}
+            existsArgs={[contact?.metadata?.name]}
+            message={t`A contact with this email already exists.`}
+            onChange={setEmailIsDuplicate}
+            renderHint={(existing) => {
+              const namespace = existing.metadata?.namespace ?? '';
+              const name = existing.metadata?.name ?? '';
+              const displayName =
+                [existing.spec?.givenName, existing.spec?.familyName].filter(Boolean).join(' ') ||
+                name;
+              return (
+                <Trans>
+                  This email is already used by{' '}
+                  <Link to={contactRoutes.detail(namespace, name)} className="underline">
+                    {displayName}
+                  </Link>
+                  .
+                </Trans>
+              );
+            }}
+          />
 
           {user && (
             <div className="flex items-center gap-2">
@@ -218,7 +245,7 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
             </Button>
             <Button
               htmlType="submit"
-              disabled={!isDirty || !isValid || isSubmitting}
+              disabled={!isDirty || !isValid || isSubmitting || emailIsDuplicate}
               loading={isSubmitting}>
               {contact ? t`Update` : t`Create`}
             </Button>
