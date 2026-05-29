@@ -41,10 +41,10 @@ function ServiceCard({ service }: { service: Service }) {
   return (
     <Link
       to={serviceCatalogRoutes.detail(name)}
-      className="hover:border-primary/40 group block rounded-lg border bg-card transition-colors">
+      className="hover:border-primary/40 group bg-card block rounded-lg border transition-colors">
       <div className="flex h-full flex-col gap-3 p-4">
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border bg-muted/40">
+          <div className="bg-muted/40 flex h-10 w-10 shrink-0 items-center justify-center rounded-md border">
             <Package className="text-muted-foreground h-5 w-5" />
           </div>
           <div className="flex min-w-0 flex-1 flex-col gap-0.5">
@@ -85,7 +85,7 @@ function ServiceCard({ service }: { service: Service }) {
 
 function CardSkeleton() {
   return (
-    <div className="rounded-lg border bg-card p-4">
+    <div className="bg-card rounded-lg border p-4">
       <div className="animate-pulse space-y-3">
         <div className="bg-muted h-5 w-3/4 rounded" />
         <div className="bg-muted h-3 w-1/2 rounded" />
@@ -200,7 +200,11 @@ export default function ServiceCatalogPage() {
         <Card className="shadow-none">
           <CardContent className="flex flex-col items-center justify-center gap-2 py-12">
             <Text size="sm" textColor="muted">
-              {data?.items?.length ? <Trans>No services match the current filters.</Trans> : <Trans>No services found.</Trans>}
+              {data?.items?.length ? (
+                <Trans>No services match the current filters.</Trans>
+              ) : (
+                <Trans>No services found.</Trans>
+              )}
             </Text>
           </CardContent>
         </Card>
