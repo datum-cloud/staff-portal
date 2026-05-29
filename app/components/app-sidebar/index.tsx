@@ -14,6 +14,7 @@ import {
   orgRoutes,
   projectRoutes,
   routes,
+  serviceCatalogRoutes,
   userRoutes,
 } from '@/utils/config/routes.config';
 import {
@@ -51,6 +52,7 @@ import {
   ShieldUser,
   Signpost,
   SquareActivity,
+  Store,
   Users,
 } from 'lucide-react';
 import * as React from 'react';
@@ -171,6 +173,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       title: t`Activity`,
       href: routes.activity.root(),
       icon: SquareActivity,
+      hasSubmenu: false,
+    },
+    {
+      title: t`Service Catalog`,
+      href: serviceCatalogRoutes.list(),
+      icon: Store,
       hasSubmenu: false,
     },
     {
