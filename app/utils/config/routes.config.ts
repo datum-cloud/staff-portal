@@ -18,6 +18,7 @@ export const orgRoutes = {
   project: (orgName: string) => `/customers/organizations/${orgName}/projects`,
   member: (orgName: string) => `/customers/organizations/${orgName}/members`,
   domain: (orgName: string) => `/customers/organizations/${orgName}/domains`,
+  edge: (orgName: string) => `/customers/organizations/${orgName}/edges`,
   dns: (orgName: string) => `/customers/organizations/${orgName}/dns`,
   activity: {
     root: (orgName: string) => `/customers/organizations/${orgName}/activity`,

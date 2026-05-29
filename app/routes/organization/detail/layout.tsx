@@ -15,6 +15,7 @@ import {
   FileText,
   Flag,
   Folders,
+  Gauge,
   Layers,
   Signpost,
   SquareActivity,
@@ -72,14 +73,19 @@ export default function Layout() {
       icon: Folders,
     },
     {
-      title: t`Domains`,
-      href: orgRoutes.domain(orgName),
-      icon: Layers,
+      title: t`AI Edge`,
+      href: orgRoutes.edge(orgName),
+      icon: Gauge,
     },
     {
       title: t`DNS`,
       href: orgRoutes.dns(orgName),
       icon: Signpost,
+    },
+    {
+      title: t`Domains`,
+      href: orgRoutes.domain(orgName),
+      icon: Layers,
     },
     {
       title: t`Activity`,
