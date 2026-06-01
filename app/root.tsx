@@ -6,7 +6,6 @@ import { FaviconLinks } from '@/components/misc/favicon-links';
 import type { PublicEnv } from '@/hooks';
 import { loadCatalog, useLocale } from '@/modules/i18n/lingui';
 import { linguiServer } from '@/modules/i18n/lingui.server';
-import MarkerIoEmbed from '@/modules/markerio';
 import { queryClient } from '@/modules/tanstack/query';
 import { useNonce } from '@/providers/nonce.provider';
 import styles from '@/styles/root.css?url';
@@ -101,8 +100,6 @@ function App() {
             } as React.CSSProperties
           }
         />
-
-        <MarkerIoEmbed nonce={nonce} />
 
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />

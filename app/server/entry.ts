@@ -43,12 +43,11 @@ app.use(
         "'self'",
         ...(env.isDev ? ['ws:'] : []),
         env.API_URL,
-        'https://*.marker.io',
         'https://*.sentry.io',
         'https://*.datum.net',
       ],
       fontSrc: ["'self'", "'unsafe-inline'", 'https://*.jsdelivr.net'],
-      frameSrc: ["'self'", 'https://*.marker.io', 'https://*.sentry.io', 'https://*.datum.net'],
+      frameSrc: ["'self'", 'https://*.sentry.io', 'https://*.datum.net'],
       // Allow HTTPS images for email previews (Resend, Loops, and other email providers)
       imgSrc: ["'self'", 'data:', 'https:'],
       // Allow all script types with nonce
