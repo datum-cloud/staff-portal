@@ -9,34 +9,44 @@ import { Hono } from 'hono';
 
 export const clusterRoutes = new Hono<{ Variables: EnvVariables }>();
 
+interface CertDetail {
+  name: string;
+  namespace: string | null;
+  issuer: string | null;
+  expiryDays: number;
+}
+
 const CLUSTER_FILTERS = {
   production: 'cluster!="", cluster!~".*lab.*|.*control-plane.*"',
   staging: 'cluster!="", cluster!~".*lab.*"',
 } as const;
 
-const REGION_NAMES: Record<string, string> = {
-  'ae-north-1': 'UAE North',
-  'au-east-1': 'Australia East',
-  'br-east-1': 'Brazil East',
-  'ca-east-1': 'Canada East',
-  'cl-central-1': 'Chile Central',
-  'de-central-1': 'Germany Central',
-  'gb-south-1': 'UK South',
-  'in-west-1': 'India West',
-  'jp-east-1': 'Japan East',
-  'nl-west-1': 'Netherlands West',
-  'sg-central-1': 'Singapore Central',
-  'us-central-1': 'US Central',
-  'us-east-1': 'US East 1',
-  'us-east-2': 'US East 2',
-  'us-west-1': 'US West',
-  'za-central-1': 'South Africa Central',
-};
+// Cluster names follow the `<iso-country-code>-<locality>-<index>` convention
+// (e.g. `us-east-1`). We derive a display label from those parts rather than
+// maintaining a hand-written lookup. The trailing index is only shown when a
+// country/locality has more than one cluster, to keep single-cluster labels tidy.
+function buildRegionLabels(names: Iterable<string>): Map<string, string> {
+  const parsed = new Map<string, { country: string; locality: string; index: string }>();
+  const localityCount = new Map<string, number>();
 
-function regionFromClusterName(name: string): string | undefined {
-  const match = name.match(/^([a-z]{2}-[a-z]+-\d+)/);
-  if (!match) return undefined;
-  return REGION_NAMES[match[1]];
+  for (const name of names) {
+    const match = name.match(/^([a-z]{2})-([a-z]+)-(\d+)/);
+    if (!match) continue;
+    const [, country, locality, index] = match;
+    parsed.set(name, { country, locality, index });
+    const key = `${country}-${locality}`;
+    localityCount.set(key, (localityCount.get(key) ?? 0) + 1);
+  }
+
+  const labels = new Map<string, string>();
+  for (const [name, p] of parsed) {
+    const country = p.country.toUpperCase();
+    const locality = p.locality.charAt(0).toUpperCase() + p.locality.slice(1);
+    const showIndex = (localityCount.get(`${p.country}-${p.locality}`) ?? 0) > 1;
+    labels.set(name, showIndex ? `${country} ${locality} ${p.index}` : `${country} ${locality}`);
+  }
+
+  return labels;
 }
 
 function buildHealthQueries(f: string) {
@@ -47,7 +57,7 @@ function buildHealthQueries(f: string) {
     diskPressure: `max by (cluster) (kube_node_status_condition{condition="DiskPressure", status="true", ${f}} == 1)`,
     pidPressure: `max by (cluster) (kube_node_status_condition{condition="PIDPressure", status="true", ${f}} == 1)`,
     requestRate: `sum by (cluster) (rate(envoy_cluster_upstream_rq_total{${f}}[5m]))`,
-    certExpiryDays: `min by (cluster) ((certmanager_certificate_expiration_timestamp_seconds{${f}} - time()) / 86400 > 0)`,
+    certExpiry: `(certmanager_certificate_expiration_timestamp_seconds{${f}} - time()) / 86400 > 0`,
     restartingContainers: `count by (cluster) (kube_pod_container_status_restarts_total{${f}} > 5)`,
   };
 }
@@ -109,7 +119,7 @@ clusterRoutes.post('/health', authMiddleware(), async (c) => {
       runVmQuery(client, queries.diskPressure),
       runVmQuery(client, queries.pidPressure),
       runVmQuery(client, queries.requestRate),
-      runVmQuery(client, queries.certExpiryDays),
+      runVmQuery(client, queries.certExpiry),
       runVmQuery(client, queries.restartingContainers),
     ]);
 
@@ -133,24 +143,55 @@ clusterRoutes.post('/health', authMiddleware(), async (c) => {
       return set;
     };
 
+    // Per-certificate expiry, grouped by cluster and sorted soonest-first so the
+    // dashboard can surface which specific certs are approaching expiry.
+    const certLookup = (results: any[]) => {
+      const map = new Map<string, CertDetail[]>();
+      for (const r of results) {
+        const m = r.metric ?? {};
+        const cluster = m.cluster;
+        if (!cluster) continue;
+        const expiryDays = Math.round(parseFloat(r.value?.[1] ?? '0'));
+        const issuerName = m.issuer_name ?? m.issuer ?? null;
+        const issuer = issuerName
+          ? `${issuerName}${m.issuer_kind ? ` (${m.issuer_kind})` : ''}`
+          : null;
+        const detail: CertDetail = {
+          name: m.name ?? m.certificate ?? 'unknown',
+          namespace: m.namespace ?? null,
+          issuer,
+          expiryDays,
+        };
+        const list = map.get(cluster) ?? [];
+        list.push(detail);
+        map.set(cluster, list);
+      }
+      for (const list of map.values()) {
+        list.sort((a, b) => a.expiryDays - b.expiryDays);
+      }
+      return map;
+    };
+
     const nodeReadyMap = valueLookup(nodeReadyResults);
     const gatewayMap = valueLookup(gatewayResults);
     const memPressure = pressureLookup(memoryResults);
     const dskPressure = pressureLookup(diskResults);
     const pidPress = pressureLookup(pidResults);
     const requestRateMap = valueLookup(requestRateResults);
-    const certExpiryMap = valueLookup(certExpiryResults);
+    const certsByCluster = certLookup(certExpiryResults);
     const restartMap = valueLookup(restartResults);
 
     const allClusterNames = new Set([...nodeReadyMap.keys(), ...gatewayMap.keys()]);
+    const regionLabels = buildRegionLabels(allClusterNames);
 
     const clusters = Array.from(allClusterNames)
       .map((name) => {
         const nodesReady = nodeReadyMap.get(name) === 1;
         const gatewayHealthy = gatewayMap.has(name) ? gatewayMap.get(name) === 1 : null;
+        const certs = certsByCluster.get(name) ?? [];
         return {
           name,
-          region: regionFromClusterName(name),
+          region: regionLabels.get(name),
           nodesReady,
           gatewayHealthy,
           memoryPressure: memPressure.has(name),
@@ -159,7 +200,8 @@ clusterRoutes.post('/health', authMiddleware(), async (c) => {
           requestRate: requestRateMap.has(name)
             ? Math.round(requestRateMap.get(name)! * 100) / 100
             : null,
-          certExpiryDays: certExpiryMap.has(name) ? Math.round(certExpiryMap.get(name)!) : null,
+          certExpiryDays: certs.length > 0 ? certs[0].expiryDays : null,
+          certs: certs.slice(0, 8),
           restartingContainers: restartMap.get(name) ?? 0,
         };
       })

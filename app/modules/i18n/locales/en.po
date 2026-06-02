@@ -449,6 +449,10 @@ msgstr "by"
 msgid "Cancel"
 msgstr "Cancel"
 
+#: app/features/dashboard/components/cluster-health-widget.tsx:112
+msgid "Certificates nearing expiry"
+msgstr "Certificates nearing expiry"
+
 #: app/features/user/components/user-identity-card.tsx:103
 msgid "Change your Primary Email in GitHub (your primary email)"
 msgstr "Change your Primary Email in GitHub (your primary email)"
@@ -466,11 +470,11 @@ msgstr "Classification"
 msgid "Close"
 msgstr "Close"
 
-#: app/features/dashboard/components/cluster-health-widget.tsx:190
+#: app/features/dashboard/components/cluster-health-widget.tsx:222
 msgid "Cluster Health"
 msgstr "Cluster Health"
 
-#: app/features/dashboard/components/cluster-health-widget.tsx:205
+#: app/features/dashboard/components/cluster-health-widget.tsx:237
 msgid "cluster healthy"
 msgstr "cluster healthy"
 
@@ -478,7 +482,7 @@ msgstr "cluster healthy"
 msgid "Cluster metrics unavailable"
 msgstr "Cluster metrics unavailable"
 
-#: app/features/dashboard/components/cluster-health-widget.tsx:207
+#: app/features/dashboard/components/cluster-health-widget.tsx:239
 msgid "clusters healthy"
 msgstr "clusters healthy"
 
