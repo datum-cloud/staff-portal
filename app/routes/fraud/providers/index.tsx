@@ -39,12 +39,12 @@ export default function Page() {
   const actions: ActionItem<FraudProvider>[] = [
     {
       label: t`Edit`,
-      icon: EditIcon,
+      icon: <EditIcon className="size-4" />,
       onClick: (row) => navigate(fraudRoutes.providers.detail(row.metadata?.name ?? '')),
     },
     {
       label: t`Delete`,
-      icon: Trash2Icon,
+      icon: <Trash2Icon className="size-4" />,
       variant: 'destructive' as const,
       onClick: (row) => setSelectedProvider(row),
     },
