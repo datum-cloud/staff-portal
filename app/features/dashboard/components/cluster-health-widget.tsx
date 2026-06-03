@@ -105,6 +105,40 @@ function MetricChip({
   );
 }
 
+function CertTooltip({ cluster }: { cluster: ClusterEntry }) {
+  return (
+    <div className="flex flex-col gap-1.5 text-left">
+      <span className="font-medium">
+        <Trans>Certificates nearing expiry</Trans>
+      </span>
+      <div className="flex flex-col gap-1">
+        {cluster.certs.map((cert) => (
+          <div key={`${cert.namespace}/${cert.name}`} className="flex flex-col leading-tight">
+            <span className="font-medium">
+              {cert.namespace ? `${cert.namespace}/` : ''}
+              {cert.name}
+              <span className="ml-1 font-normal opacity-80">· {cert.expiryDays}d</span>
+            </span>
+            {cert.issuer && <span className="opacity-70">issuer: {cert.issuer}</span>}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CertChip({ cluster, warn }: { cluster: ClusterEntry; warn: boolean }) {
+  const color = warn ? 'text-amber-600 dark:text-amber-400' : 'text-muted-foreground';
+  return (
+    <Tooltip side="top" contentClassName="max-w-xs" message={<CertTooltip cluster={cluster} />}>
+      <span className={`inline-flex items-center gap-0.5 ${color}`}>
+        <ShieldAlert className="h-3 w-3" />
+        <span className="text-[10px] leading-none font-medium">{cluster.certExpiryDays}d</span>
+      </span>
+    </Tooltip>
+  );
+}
+
 function ClusterCell({ cluster }: { cluster: ClusterEntry }) {
   const healthy = isClusterHealthy(cluster);
   const hasCritical = !cluster.nodesReady || cluster.gatewayHealthy === false;
@@ -131,6 +165,9 @@ function ClusterCell({ cluster }: { cluster: ClusterEntry }) {
       </div>
       <div className="min-w-0 flex-1">
         <p className="truncate text-xs font-medium">{cluster.region ?? cluster.name}</p>
+        {cluster.region && (
+          <p className="text-muted-foreground truncate text-[10px] leading-tight">{cluster.name}</p>
+        )}
         <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
           {cluster.requestRate !== null && (
             <MetricChip
@@ -139,13 +176,8 @@ function ClusterCell({ cluster }: { cluster: ClusterEntry }) {
               tooltip="Envoy request rate (req/s)"
             />
           )}
-          {cluster.certExpiryDays !== null && (
-            <MetricChip
-              icon={ShieldAlert}
-              value={`${cluster.certExpiryDays}d`}
-              warn={certWarn}
-              tooltip={`Certificate expires in ${cluster.certExpiryDays} days`}
-            />
+          {cluster.certExpiryDays !== null && cluster.certs.length > 0 && (
+            <CertChip cluster={cluster} warn={certWarn} />
           )}
           {cluster.restartingContainers > 0 && (
             <MetricChip

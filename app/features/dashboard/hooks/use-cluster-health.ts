@@ -1,6 +1,13 @@
 import { httpClient } from '@/modules/axios/axios.client';
 import { useQuery } from '@tanstack/react-query';
 
+export interface CertDetail {
+  name: string;
+  namespace: string | null;
+  issuer: string | null;
+  expiryDays: number;
+}
+
 export interface ClusterEntry {
   name: string;
   region?: string;
@@ -11,6 +18,7 @@ export interface ClusterEntry {
   pidPressure: boolean;
   requestRate: number | null;
   certExpiryDays: number | null;
+  certs: CertDetail[];
   restartingContainers: number;
 }
 
