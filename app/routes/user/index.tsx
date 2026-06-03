@@ -46,12 +46,12 @@ export default function Page() {
   const actions: ActionItem<ComMiloapisIamV1Alpha1User>[] = [
     {
       label: t`Manage`,
-      icon: EditIcon,
+      icon: <EditIcon className="size-4" />,
       onClick: (row) => navigate(userRoutes.detail(row.metadata?.name ?? '')),
     },
     {
       label: t`Approve`,
-      icon: CheckIcon,
+      icon: <CheckIcon className="size-4" />,
       hidden: (row) => row.status?.registrationApproval !== 'Pending',
       onClick: async (row) => {
         setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: true }));
@@ -66,14 +66,14 @@ export default function Page() {
     },
     {
       label: t`Reject`,
-      icon: XIcon,
+      icon: <XIcon className="size-4" />,
       variant: 'destructive' as const,
       hidden: (row) => row.status?.registrationApproval !== 'Pending',
       onClick: (row) => setSelectedUser(row),
     },
     {
       label: t`Move to Pending`,
-      icon: RotateCcwIcon,
+      icon: <RotateCcwIcon className="size-4" />,
       hidden: (row) => row.status?.registrationApproval === 'Pending',
       onClick: async (row) => {
         setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: true }));

@@ -93,7 +93,7 @@ export default function Page() {
   const actions: ActionItem<ComMiloapisIamV1Alpha1GroupMembership>[] = [
     {
       label: t`Delete`,
-      icon: Trash2Icon,
+      icon: <Trash2Icon className="size-4" />,
       variant: 'destructive' as const,
       onClick: (row) => setSelectedGroupMembership(row),
     },
