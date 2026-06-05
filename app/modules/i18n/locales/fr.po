@@ -420,7 +420,7 @@ msgstr ""
 #: app/features/contact-group/components/contact-group-form.tsx:97
 #: app/features/contact/components/contact-form.tsx:244
 #: app/features/contact/components/contact-list.tsx:117
-#: app/features/feature-flags/components/feature-flag-list.tsx:228
+#: app/features/feature-flags/components/feature-flag-list.tsx:230
 #: app/features/fraud/policy/policy-form.tsx:318
 #: app/features/quota/components/quota-bucket-list.tsx:128
 #: app/features/quota/components/quota-grant-list.tsx:138
@@ -891,24 +891,24 @@ msgstr ""
 msgid "Details"
 msgstr ""
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:227
+#: app/features/feature-flags/components/feature-flag-list.tsx:229
 msgid "Disable"
 msgstr ""
 
 #. placeholder {0}: pendingGrants.length
-#: app/features/feature-flags/components/feature-flag-list.tsx:224
+#: app/features/feature-flags/components/feature-flag-list.tsx:226
 msgid "Disable \"{pendingFlag}\" for this organization? {0} resource grants will be deleted."
 msgstr ""
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:225
+#: app/features/feature-flags/components/feature-flag-list.tsx:227
 msgid "Disable \"{pendingFlag}\" for this organization? The associated resource grant will be deleted."
 msgstr ""
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:219
+#: app/features/feature-flags/components/feature-flag-list.tsx:221
 msgid "Disable feature flag"
 msgstr ""
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:172
+#: app/features/feature-flags/components/feature-flag-list.tsx:174
 msgid "Disable flag"
 msgstr ""
 
@@ -1057,23 +1057,23 @@ msgstr ""
 msgid "Email is required"
 msgstr ""
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:227
+#: app/features/feature-flags/components/feature-flag-list.tsx:229
 msgid "Enable"
 msgstr ""
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:222
+#: app/features/feature-flags/components/feature-flag-list.tsx:224
 msgid "Enable \"{pendingFlag}\" for this organization? A new resource grant will be created."
 msgstr ""
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:219
+#: app/features/feature-flags/components/feature-flag-list.tsx:221
 msgid "Enable feature flag"
 msgstr ""
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:172
+#: app/features/feature-flags/components/feature-flag-list.tsx:174
 msgid "Enable flag"
 msgstr ""
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:122
+#: app/features/feature-flags/components/feature-flag-list.tsx:124
 msgid "Enabled by"
 msgstr ""
 
@@ -1843,7 +1843,7 @@ msgstr ""
 msgid "No export policies found."
 msgstr ""
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:262
+#: app/features/feature-flags/components/feature-flag-list.tsx:264
 msgid "No feature flags registered."
 msgstr ""
 
@@ -2123,7 +2123,7 @@ msgstr ""
 msgid "Plain Text"
 msgstr ""
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:142
+#: app/features/feature-flags/components/feature-flag-list.tsx:144
 msgid "Platform"
 msgstr ""
 
@@ -2505,7 +2505,7 @@ msgstr ""
 msgid "Search by email, name, or ID..."
 msgstr ""
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:254
+#: app/features/feature-flags/components/feature-flag-list.tsx:256
 msgid "Search by flag key or description..."
 msgstr ""
 
@@ -2844,7 +2844,7 @@ msgstr ""
 msgid "This email is already used by <0>{displayName}</0>."
 msgstr ""
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:181
+#: app/features/feature-flags/components/feature-flag-list.tsx:183
 msgid "This flag is managed by the platform and can't be changed from here."
 msgstr ""
 
@@ -2868,7 +2868,7 @@ msgstr ""
 msgid "Timezone updated successfully"
 msgstr ""
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:159
+#: app/features/feature-flags/components/feature-flag-list.tsx:161
 msgid "Toggle"
 msgstr ""
 

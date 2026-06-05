@@ -109,10 +109,12 @@ export function FeatureFlagList({ orgName }: FeatureFlagListProps) {
         id: 'name',
         header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Flag`} />,
         cell: ({ row }) => (
-          <div className="flex flex-col">
+          <div className="flex max-w-5xl flex-col">
             <span className="text-sm font-medium">{displayName(row.original)}</span>
             {row.original.spec?.description && (
-              <span className="text-muted-foreground text-xs">{row.original.spec.description}</span>
+              <span className="text-muted-foreground text-xs break-words whitespace-normal">
+                {row.original.spec.description}
+              </span>
             )}
           </div>
         ),
