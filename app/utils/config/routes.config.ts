@@ -113,7 +113,6 @@ export const serviceCatalogRoutes = {
   root: () => '/catalog',
   list: () => '/catalog',
   detail: (name: string) => `/catalog/${name}`,
-  overview: (name: string) => `/catalog/${name}/overview`,
   consumers: (name: string) => `/catalog/${name}/consumers`,
   approvals: (name: string) => `/catalog/${name}/approvals`,
 } as const;

@@ -52,9 +52,9 @@ describe('BadgeState', () => {
       expect(screen.getByTestId('badge')).toHaveTextContent('Inactive');
     });
 
-    test('normalizes state casing', () => {
-      render(<BadgeState state="AcTiVe" />);
-      expect(screen.getByTestId('badge')).toHaveTextContent('Active');
+    test('splits CamelCase API states into words', () => {
+      render(<BadgeState state="PendingApproval" />);
+      expect(screen.getByTestId('badge')).toHaveTextContent('Pending Approval');
     });
 
     test('applies base classes on badge', () => {

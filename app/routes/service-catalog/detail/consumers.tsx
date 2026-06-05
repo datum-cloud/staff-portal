@@ -1,48 +1,76 @@
+import { getServiceDetailMetadata, useServiceDetailData } from '../shared';
 import type { Route } from './+types/consumers';
-import { humanizePhase } from './phase';
 import { BadgeState } from '@/components/badge';
+import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
-import { useApprovalDialog } from '@/features/service-catalog';
+import { MessageCard } from '@/components/message-card';
+import { consumerMatchesService, useApprovalDialog } from '@/features/service-catalog';
 import {
   useRevokeServiceEntitlementMutation,
   useServiceConsumersInProjectQuery,
-  useServiceDetailQuery,
 } from '@/resources/request/client';
+import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
-import { DataTable } from '@datum-cloud/datum-ui/data-table';
+import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
-import { t } from '@lingui/core/macro';
-import { Trans } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import type { ComMiloapisServicesV1Alpha1ServiceConsumer } from '@openapi/services.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { CheckCircle, Trash2, XCircle } from 'lucide-react';
 import { useState } from 'react';
-import { useParams } from 'react-router';
+import { Link } from 'react-router';
 
 type ServiceConsumer = ComMiloapisServicesV1Alpha1ServiceConsumer;
 
-export const meta: Route.MetaFunction = ({ params }) => {
-  return metaObject(t`Consumers — ${params.name ?? ''}`);
+export const handle = {
+  breadcrumb: () => <Trans>Consumers</Trans>,
+};
+
+export const meta: Route.MetaFunction = ({ matches }) => {
+  const { displayName } = getServiceDetailMetadata(matches);
+  return metaObject(`Consumers - ${displayName}`);
 };
 
 const columnHelper = createColumnHelper<ServiceConsumer>();
 
 export default function ConsumersPage() {
-  const { name } = useParams<{ name: string }>();
-  const serviceName = name ?? '';
-  const { data: service } = useServiceDetailQuery(serviceName);
-  const producerProject = service?.spec?.owner?.producerProjectRef?.name;
-  const canonicalName = service?.spec?.serviceName;
+  const { t } = useLingui();
+  const service = useServiceDetailData();
+  const serviceName = service.metadata?.name ?? '';
+  const producerProject = service.spec?.owner?.producerProjectRef?.name;
+  const canonicalName = service.spec?.serviceName;
 
   const { openDialog, dialog } = useApprovalDialog(producerProject ?? '');
   const revokeMutation = useRevokeServiceEntitlementMutation(producerProject ?? '');
   const [revokeTarget, setRevokeTarget] = useState<ServiceConsumer | null>(null);
 
-  const { data, isLoading, error, refetch } = useServiceConsumersInProjectQuery(producerProject);
+  const { data, isLoading, error } = useServiceConsumersInProjectQuery(producerProject);
+
+  const actions: ActionItem<ServiceConsumer>[] = [
+    {
+      label: t`Approve`,
+      icon: <CheckCircle className="size-4" />,
+      hidden: (row) => !(row.status?.phase === 'PendingApproval' && !row.spec?.approval),
+      onClick: (row) => openDialog(row, 'Approved'),
+    },
+    {
+      label: t`Deny`,
+      icon: <XCircle className="size-4" />,
+      variant: 'destructive' as const,
+      hidden: (row) => !(row.status?.phase === 'PendingApproval' && !row.spec?.approval),
+      onClick: (row) => openDialog(row, 'Denied'),
+    },
+    {
+      label: t`Revoke`,
+      icon: <Trash2 className="size-4" />,
+      variant: 'destructive' as const,
+      hidden: (row) => row.status?.phase !== 'Active',
+      onClick: (row) => setRevokeTarget(row),
+    },
+  ];
 
   const columns = [
     columnHelper.accessor((row) => row.spec?.consumerProjectRef?.name ?? '', {
@@ -53,9 +81,11 @@ export default function ConsumersPage() {
       cell: ({ getValue }) => {
         const project = getValue();
         return project ? (
-          <Text size="sm" className="font-mono">
+          <Link
+            to={projectRoutes.detail(project)}
+            className="text-primary font-mono text-sm hover:underline">
             {project}
-          </Text>
+          </Link>
         ) : (
           <Text size="sm" textColor="muted">
             —
@@ -69,7 +99,7 @@ export default function ConsumersPage() {
       cell: ({ getValue }) => {
         const phase = getValue();
         return phase ? (
-          <BadgeState state={phase} message={humanizePhase(phase)} />
+          <BadgeState state={phase} />
         ) : (
           <BadgeState state="pending" message={t`Unknown`} />
         );
@@ -117,101 +147,36 @@ export default function ConsumersPage() {
     columnHelper.display({
       id: 'actions',
       header: () => <div className="text-right" />,
-      cell: ({ row }) => {
-        const phase = row.original.status?.phase;
-        const hasApprovalDecision = !!row.original.spec?.approval;
-        if (phase === 'PendingApproval' && !hasApprovalDecision) {
-          return (
-            <div className="flex w-full justify-end gap-2">
-              <Button
-                size="small"
-                type="primary"
-                icon={<CheckCircle size={14} />}
-                onClick={() => openDialog(row.original, 'Approved')}>
-                <Trans>Approve</Trans>
-              </Button>
-              <Button
-                size="small"
-                type="danger"
-                icon={<XCircle size={14} />}
-                onClick={() => openDialog(row.original, 'Denied')}>
-                <Trans>Deny</Trans>
-              </Button>
-            </div>
-          );
-        }
-        if (phase === 'Active') {
-          return (
-            <div className="flex w-full justify-end">
-              <Button
-                size="small"
-                type="danger"
-                theme="outline"
-                icon={<Trash2 size={14} />}
-                onClick={() => setRevokeTarget(row.original)}>
-                <Trans>Revoke</Trans>
-              </Button>
-            </div>
-          );
-        }
-        return <div />;
-      },
+      cell: ({ row }) => (
+        <div className="flex w-full justify-end">
+          <DataTable.RowActions row={row} actions={actions} />
+        </div>
+      ),
     }),
   ];
 
-  // The controller writes spec.serviceRef.name as either the Service's
-  // metadata.name or its canonical spec.serviceName depending on age/version,
-  // so match against both.
-  const items = (data?.items ?? []).filter((c) => {
-    const ref = c.spec?.serviceRef?.name;
-    return ref === serviceName || (canonicalName && ref === canonicalName);
-  });
-
-  if (!service) {
-    // Service detail is still loading or errored; layout handles those states.
-    return null;
-  }
+  const items = (data?.items ?? []).filter((c) =>
+    consumerMatchesService(c, serviceName, canonicalName)
+  );
 
   if (!producerProject) {
     return (
-      <Card className="m-4 shadow-none">
-        <CardContent className="flex flex-col items-center justify-center gap-3 py-12">
-          <Text size="sm" textColor="muted">
-            <Trans>
-              This service has no producer project recorded, so consumers cannot be listed.
-            </Trans>
-          </Text>
-        </CardContent>
-      </Card>
+      <MessageCard
+        message={
+          <Trans>
+            This service has no producer project recorded, so consumers cannot be listed.
+          </Trans>
+        }
+      />
     );
   }
 
   if (error) {
-    const is403 =
-      error instanceof Error &&
-      (error.message.includes('403') || error.message.includes('Forbidden'));
     return (
-      <Card className="m-4 shadow-none">
-        <CardContent className="flex flex-col items-center justify-center gap-3 py-12">
-          <Text size="sm" textColor="muted">
-            {is403 ? (
-              <Trans>You do not have permission to view consumers in the producer project.</Trans>
-            ) : (
-              <Trans>Failed to load consumers.</Trans>
-            )}
-          </Text>
-          {!is403 && (
-            <Text size="sm" textColor="muted" className="font-mono text-xs">
-              {error instanceof Error ? error.message : String(error)}
-            </Text>
-          )}
-          {!is403 && (
-            <button onClick={() => refetch()} className="text-primary text-sm hover:underline">
-              <Trans>Retry</Trans>
-            </button>
-          )}
-        </CardContent>
-      </Card>
+      <MessageCard
+        message={<Trans>Failed to load consumers.</Trans>}
+        detail={error instanceof Error ? error.message : String(error)}
+      />
     );
   }
 
@@ -248,11 +213,50 @@ export default function ConsumersPage() {
         loading={isLoading}
         data={items}
         columns={columns}
-        pageSize={25}
         getRowId={(row) => row.metadata?.name ?? ''}
-        defaultSort={[{ id: 'createdAt', desc: true }]}>
+        defaultSort={[{ id: 'createdAt', desc: true }]}
+        filterFns={{
+          phase: (cellValue, filterValue) =>
+            String(cellValue ?? '').toLowerCase() === String(filterValue ?? '').toLowerCase(),
+        }}
+        searchFn={(row, search) => {
+          const q = search.trim().toLowerCase();
+          if (!q) return true;
+          return [
+            row.spec?.consumerProjectRef?.name,
+            row.metadata?.name,
+            row.spec?.approval?.message,
+          ]
+            .map((s) => (s ?? '').toLowerCase())
+            .some((s) => s.includes(q));
+        }}>
         <Card className="m-4 py-4 shadow-none">
           <CardContent className="flex flex-col gap-2 px-4">
+            <DataTableToolbar
+              search={
+                <DataTable.Search
+                  placeholder={t`Search by project, ID, or note...`}
+                  className="w-full md:w-64"
+                />
+              }
+              filters={
+                <DataTable.SelectFilter
+                  column="phase"
+                  label={t`Phase`}
+                  placeholder={t`Filter by phase`}
+                  options={[
+                    { value: 'PendingApproval', label: t`Pending Approval` },
+                    { value: 'Active', label: t`Active` },
+                    { value: 'Declined', label: t`Declined` },
+                    { value: 'Inactive', label: t`Inactive` },
+                  ]}
+                />
+              }
+            />
+            <DataTable.ActiveFilters
+              excludeFilters={['search']}
+              filterLabels={{ phase: t`Phase` }}
+            />
             <DataTable.Content
               headerClassName="bg-muted/50"
               className="border-t border-b border-solid"
