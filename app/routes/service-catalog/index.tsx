@@ -153,10 +153,10 @@ export default function ServiceCatalogPage() {
           placeholder={t`Search by name, description, or owner...`}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="h-9 w-full md:w-72"
+          className="w-full md:w-72"
         />
         <Select value={phaseFilter} onValueChange={setPhaseFilter}>
-          <SelectTrigger className="h-9 w-40">
+          <SelectTrigger className="w-40">
             <SelectValue placeholder={t`Phase`} />
           </SelectTrigger>
           <SelectContent>
@@ -168,7 +168,7 @@ export default function ServiceCatalogPage() {
           </SelectContent>
         </Select>
         <Select value={enablementFilter} onValueChange={setEnablementFilter}>
-          <SelectTrigger className="h-9 w-48">
+          <SelectTrigger className="w-48">
             <SelectValue placeholder={t`Enablement`} />
           </SelectTrigger>
           <SelectContent>

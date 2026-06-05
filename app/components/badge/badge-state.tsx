@@ -182,14 +182,17 @@ type Props = {
 };
 
 const BadgeState = ({ state, message, noColor, tooltip, icon, className, loading }: Props) => {
-  const normalizedState = String(state ?? '').toLowerCase();
+  const rawState = String(state ?? '');
+  const normalizedState = rawState.toLowerCase();
   const config = StateConfig[normalizedState as State] || DefaultConfig;
   const IconComponent = icon || config.icon;
 
   if (!normalizedState && !message) return null;
 
-  // Use custom message if provided, otherwise fall back to titleCase state
-  const displayText = message || startCase(normalizedState);
+  // Use custom message if provided, otherwise pass the original (non-lowercased)
+  // state to startCase so CamelCase API values like "PendingApproval" split into
+  // "Pending Approval" instead of collapsing to "Pendingapproval".
+  const displayText = message || startCase(rawState);
   const badgeContent = (
     <Badge
       theme={noColor ? 'outline' : undefined}
@@ -208,7 +211,7 @@ const BadgeState = ({ state, message, noColor, tooltip, icon, className, loading
 
   if (tooltip) {
     return (
-      <Tooltip message={startCase(tooltip || normalizedState)}>
+      <Tooltip message={startCase(tooltip || displayText)}>
         <div className="inline-flex cursor-help">{badgeContent}</div>
       </Tooltip>
     );

@@ -103,11 +103,11 @@ msgstr "A contact with this email already exists."
 msgid "Accepted"
 msgstr "Accepted"
 
-#: app/routes/service-catalog/detail/approvals.tsx:105
+#: app/routes/service-catalog/detail/approvals.tsx:117
 msgid "Access denied — IAM role pending."
 msgstr "Access denied — IAM role pending."
 
-#: app/routes/service-catalog/detail/consumers.tsx:243
+#: app/routes/service-catalog/detail/consumers.tsx:208
 msgid "Access revoked"
 msgstr "Access revoked"
 
@@ -134,12 +134,13 @@ msgstr "Action"
 msgid "Actions"
 msgstr "Actions"
 
+#: app/routes/service-catalog/detail/consumers.tsx:249
 #: app/routes/user/index.tsx:280
 #: app/routes/user/index.tsx:307
 msgid "Active"
 msgstr "Active"
 
-#: app/routes/service-catalog/detail/overview.tsx:180
+#: app/features/service-catalog/components/active-configuration-summary.tsx:16
 msgid "Active Configuration"
 msgstr "Active Configuration"
 
@@ -273,32 +274,28 @@ msgstr "Any phase"
 msgid "API Group"
 msgstr "API Group"
 
-#: app/routes/service-catalog/detail/consumers.tsx:80
+#: app/routes/service-catalog/detail/consumers.tsx:110
 msgid "Approval"
 msgstr "Approval"
 
-#: app/routes/service-catalog/detail/layout.tsx:118
+#: app/routes/service-catalog/detail/approvals.tsx:22
+#: app/routes/service-catalog/detail/layout.tsx:48
 msgid "Approvals"
 msgstr "Approvals"
 
-#. placeholder {0}: params.name ?? ''
-#: app/routes/service-catalog/detail/approvals.tsx:23
-msgid "Approvals — {0}"
-msgstr "Approvals — {0}"
-
-#: app/features/service-catalog/use-approval-dialog.tsx:38
-#: app/routes/service-catalog/detail/approvals.tsx:81
-#: app/routes/service-catalog/detail/consumers.tsx:131
+#: app/features/service-catalog/hooks/useApprovalDialog.tsx:38
+#: app/routes/service-catalog/detail/approvals.tsx:51
+#: app/routes/service-catalog/detail/consumers.tsx:54
 #: app/routes/user/detail/index.tsx:205
 #: app/routes/user/index.tsx:53
 msgid "Approve"
 msgstr "Approve"
 
-#: app/features/service-catalog/use-approval-dialog.tsx:32
+#: app/features/service-catalog/hooks/useApprovalDialog.tsx:32
 msgid "Approve Request"
 msgstr "Approve Request"
 
-#: app/features/service-catalog/use-approval-dialog.tsx:35
+#: app/features/service-catalog/hooks/useApprovalDialog.tsx:35
 msgid "Approve this consumer's access request. Optionally add a note."
 msgstr "Approve this consumer's access request. Optionally add a note."
 
@@ -424,7 +421,7 @@ msgstr "by"
 #: app/features/fraud/policy/policy-form.tsx:318
 #: app/features/quota/components/quota-bucket-list.tsx:128
 #: app/features/quota/components/quota-grant-list.tsx:138
-#: app/features/service-catalog/use-approval-dialog.tsx:39
+#: app/features/service-catalog/hooks/useApprovalDialog.tsx:39
 #: app/features/user/components/user-reject-dialog.tsx:30
 #: app/routes/contact-group/detail/member.tsx:346
 #: app/routes/contact-group/detail/member.tsx:363
@@ -443,7 +440,7 @@ msgstr "by"
 #: app/routes/group/member.tsx:171
 #: app/routes/organization/detail/member.tsx:85
 #: app/routes/profile/session.tsx:106
-#: app/routes/service-catalog/detail/consumers.tsx:235
+#: app/routes/service-catalog/detail/consumers.tsx:200
 #: app/routes/user/detail/index.tsx:152
 #: app/routes/user/index.tsx:173
 msgid "Cancel"
@@ -490,7 +487,7 @@ msgstr "clusters healthy"
 msgid "Completed"
 msgstr "Completed"
 
-#: app/routes/service-catalog/detail/overview.tsx:344
+#: app/features/service-catalog/components/conditions-card.tsx:64
 msgid "Conditions"
 msgstr "Conditions"
 
@@ -503,23 +500,20 @@ msgstr "Configuration"
 msgid "Connection"
 msgstr "Connection"
 
-#: app/routes/service-catalog/detail/consumers.tsx:110
+#: app/routes/service-catalog/detail/approvals.tsx:86
+#: app/routes/service-catalog/detail/consumers.tsx:140
 msgid "Consumer ID"
 msgstr "Consumer ID"
 
-#: app/routes/service-catalog/detail/approvals.tsx:49
-#: app/routes/service-catalog/detail/consumers.tsx:51
+#: app/routes/service-catalog/detail/approvals.tsx:67
+#: app/routes/service-catalog/detail/consumers.tsx:79
 msgid "Consumer Project"
 msgstr "Consumer Project"
 
-#: app/routes/service-catalog/detail/layout.tsx:111
+#: app/routes/service-catalog/detail/consumers.tsx:29
+#: app/routes/service-catalog/detail/layout.tsx:41
 msgid "Consumers"
 msgstr "Consumers"
-
-#. placeholder {0}: params.name ?? ''
-#: app/routes/service-catalog/detail/consumers.tsx:29
-msgid "Consumers — {0}"
-msgstr "Consumers — {0}"
 
 #: app/features/fraud/detail/evaluation-sections.tsx:350
 #: app/routes/contact-group/detail/member.tsx:68
@@ -742,6 +736,10 @@ msgstr "Deactivation Reason"
 msgid "Decision"
 msgstr "Decision"
 
+#: app/routes/service-catalog/detail/consumers.tsx:250
+msgid "Declined"
+msgstr "Declined"
+
 #: app/features/fraud/policy/policy-detail.tsx:168
 msgid "Degraded"
 msgstr "Degraded"
@@ -856,21 +854,21 @@ msgstr "Delete User"
 msgid "Delivered"
 msgstr "Delivered"
 
-#: app/features/service-catalog/use-approval-dialog.tsx:38
-#: app/routes/service-catalog/detail/approvals.tsx:88
-#: app/routes/service-catalog/detail/consumers.tsx:138
+#: app/features/service-catalog/hooks/useApprovalDialog.tsx:38
+#: app/routes/service-catalog/detail/approvals.tsx:56
+#: app/routes/service-catalog/detail/consumers.tsx:60
 msgid "Deny"
 msgstr "Deny"
 
-#: app/features/service-catalog/use-approval-dialog.tsx:32
+#: app/features/service-catalog/hooks/useApprovalDialog.tsx:32
 msgid "Deny Request"
 msgstr "Deny Request"
 
-#: app/features/service-catalog/use-approval-dialog.tsx:36
+#: app/features/service-catalog/hooks/useApprovalDialog.tsx:36
 msgid "Deny this consumer's access request. Optionally add a note."
 msgstr "Deny this consumer's access request. Optionally add a note."
 
-#: app/routes/service-catalog/detail/layout.tsx:172
+#: app/routes/service-catalog/detail/index.tsx:129
 msgid "Dependencies:"
 msgstr "Dependencies:"
 
@@ -885,9 +883,9 @@ msgstr "Deprecated"
 msgid "Description"
 msgstr "Description"
 
+#: app/features/service-catalog/components/details-card.tsx:22
 #: app/routes/contact-group/detail/layout.tsx:34
 #: app/routes/contact/detail/layout.tsx:45
-#: app/routes/service-catalog/detail/overview.tsx:267
 msgid "Details"
 msgstr "Details"
 
@@ -913,7 +911,7 @@ msgid "Disable flag"
 msgstr "Disable flag"
 
 #: app/features/contact-group/components/contact-group-form.tsx:63
-#: app/routes/service-catalog/detail/overview.tsx:279
+#: app/features/service-catalog/components/details-card.tsx:37
 msgid "Display Name"
 msgstr "Display Name"
 
@@ -1077,7 +1075,7 @@ msgstr "Enable flag"
 msgid "Enabled by"
 msgstr "Enabled by"
 
-#: app/routes/service-catalog/detail/overview.tsx:293
+#: app/features/service-catalog/components/details-card.tsx:49
 #: app/routes/service-catalog/index.tsx:172
 msgid "Enablement"
 msgstr "Enablement"
@@ -1201,11 +1199,11 @@ msgstr "Export Policy"
 msgid "Failed"
 msgstr "Failed"
 
-#: app/routes/service-catalog/detail/approvals.tsx:117
+#: app/routes/service-catalog/detail/approvals.tsx:119
 msgid "Failed to load approvals."
 msgstr "Failed to load approvals."
 
-#: app/routes/service-catalog/detail/consumers.tsx:200
+#: app/routes/service-catalog/detail/consumers.tsx:177
 msgid "Failed to load consumers."
 msgstr "Failed to load consumers."
 
@@ -1217,13 +1215,9 @@ msgstr "Failed to load DNS record status"
 msgid "Failed to load service catalog."
 msgstr "Failed to load service catalog."
 
-#: app/routes/service-catalog/detail/overview.tsx:132
+#: app/routes/service-catalog/detail/index.tsx:71
 msgid "Failed to load service configurations."
 msgstr "Failed to load service configurations."
-
-#: app/routes/service-catalog/detail/layout.tsx:78
-msgid "Failed to load service."
-msgstr "Failed to load service."
 
 #: app/features/domain/components/domain-status-probe.tsx:44
 msgid "Failed to load status"
@@ -1273,6 +1267,7 @@ msgid "Filter by invitation"
 msgstr "Filter by invitation"
 
 #: app/routes/fraud/index.tsx:306
+#: app/routes/service-catalog/detail/consumers.tsx:246
 msgid "Filter by phase"
 msgstr "Filter by phase"
 
@@ -1372,8 +1367,8 @@ msgstr "Full Name"
 msgid "Full response from the provider"
 msgstr "Full response from the provider"
 
-#: app/routes/service-catalog/detail/layout.tsx:146
-#: app/routes/service-catalog/detail/overview.tsx:300
+#: app/features/service-catalog/components/details-card.tsx:54
+#: app/routes/service-catalog/detail/index.tsx:103
 #: app/routes/service-catalog/index.tsx:177
 msgid "Gated by Provider"
 msgstr "Gated by Provider"
@@ -1458,6 +1453,7 @@ msgstr "HTML"
 msgid "ID"
 msgstr "ID"
 
+#: app/routes/service-catalog/detail/consumers.tsx:251
 #: app/routes/user/index.tsx:281
 #: app/routes/user/index.tsx:308
 msgid "Inactive"
@@ -1685,11 +1681,11 @@ msgstr "Member deleted successfully"
 msgid "Members"
 msgstr "Members"
 
-#: app/routes/service-catalog/detail/overview.tsx:90
+#: app/features/service-catalog/components/conditions-card.tsx:39
 msgid "Message"
 msgstr "Message"
 
-#: app/routes/service-catalog/detail/overview.tsx:237
+#: app/features/service-catalog/components/meters-card.tsx:24
 msgid "Meters"
 msgstr "Meters"
 
@@ -1701,7 +1697,7 @@ msgstr "Metrics"
 msgid "MetricsQL"
 msgstr "MetricsQL"
 
-#: app/routes/service-catalog/detail/overview.tsx:213
+#: app/features/service-catalog/components/monitored-resources-card.tsx:23
 msgid "Monitored Resources"
 msgstr "Monitored Resources"
 
@@ -1785,7 +1781,7 @@ msgstr "New Fraud Evaluation"
 msgid "New Limit"
 msgstr "New Limit"
 
-#: app/routes/service-catalog/detail/overview.tsx:351
+#: app/features/service-catalog/components/conditions-card.tsx:83
 msgid "No active configuration."
 msgstr "No active configuration."
 
@@ -1798,11 +1794,11 @@ msgstr "No active sessions."
 msgid "No AI Edge found."
 msgstr "No AI Edge found."
 
-#: app/routes/service-catalog/detail/overview.tsx:349
+#: app/features/service-catalog/components/conditions-card.tsx:81
 msgid "No conditions reported."
 msgstr "No conditions reported."
 
-#: app/routes/service-catalog/detail/consumers.tsx:259
+#: app/routes/service-catalog/detail/consumers.tsx:263
 msgid "No consumers found."
 msgstr "No consumers found."
 
@@ -1898,7 +1894,7 @@ msgstr "No notes yet. Add the first note below."
 msgid "No organizations found."
 msgstr "No organizations found."
 
-#: app/routes/service-catalog/detail/approvals.tsx:147
+#: app/routes/service-catalog/detail/approvals.tsx:174
 msgid "No pending approval requests."
 msgstr "No pending approval requests."
 
@@ -1911,7 +1907,7 @@ msgstr "No pending approvals"
 msgid "No projects found."
 msgstr "No projects found."
 
-#: app/routes/service-catalog/detail/overview.tsx:204
+#: app/features/service-catalog/components/active-configuration-summary.tsx:46
 msgid "No Published configuration. Drafts are not fanned out to billing or quota."
 msgstr "No Published configuration. Drafts are not fanned out to billing or quota."
 
@@ -1919,7 +1915,7 @@ msgstr "No Published configuration. Drafts are not fanned out to billing or quot
 msgid "No quota buckets found."
 msgstr "No quota buckets found."
 
-#: app/routes/service-catalog/detail/overview.tsx:319
+#: app/features/service-catalog/components/quota-limits-card.tsx:33
 msgid "No quota limits declared."
 msgstr "No quota limits declared."
 
@@ -1936,7 +1932,7 @@ msgstr "No results found."
 msgid "No secrets found."
 msgstr "No secrets found."
 
-#: app/routes/service-catalog/detail/overview.tsx:202
+#: app/features/service-catalog/components/active-configuration-summary.tsx:44
 msgid "No service configurations have been registered yet."
 msgstr "No service configurations have been registered yet."
 
@@ -1961,8 +1957,8 @@ msgstr "No users yet"
 msgid "None"
 msgstr "None"
 
-#: app/routes/service-catalog/detail/overview.tsx:215
-#: app/routes/service-catalog/detail/overview.tsx:239
+#: app/features/service-catalog/components/meters-card.tsx:32
+#: app/features/service-catalog/components/monitored-resources-card.tsx:31
 msgid "None declared."
 msgstr "None declared."
 
@@ -1972,7 +1968,7 @@ msgid "Normal"
 msgstr "Normal"
 
 #: app/features/domain/components/note-card.tsx:44
-#: app/features/service-catalog/use-approval-dialog.tsx:54
+#: app/features/service-catalog/hooks/useApprovalDialog.tsx:54
 msgid "Note"
 msgstr "Note"
 
@@ -2004,7 +2000,7 @@ msgstr "Once a contact is associated with a user, this association cannot be rem
 msgid "Open search"
 msgstr "Open search"
 
-#: app/features/service-catalog/use-approval-dialog.tsx:55
+#: app/features/service-catalog/hooks/useApprovalDialog.tsx:55
 msgid "Optional reviewer note..."
 msgstr "Optional reviewer note..."
 
@@ -2039,22 +2035,17 @@ msgstr "Organizations"
 
 #: app/routes/organization/detail/layout.tsx:66
 #: app/routes/project/detail/layout.tsx:119
-#: app/routes/service-catalog/detail/layout.tsx:106
+#: app/routes/service-catalog/detail/layout.tsx:36
 #: app/routes/user/detail/layout.tsx:32
 msgid "Overview"
 msgstr "Overview"
 
-#. placeholder {0}: params.name ?? ''
-#: app/routes/service-catalog/detail/overview.tsx:20
-msgid "Overview — {0}"
-msgstr "Overview — {0}"
-
 #: app/features/dashboard/components/quota-utilization-widget.tsx:151
-#: app/routes/service-catalog/detail/overview.tsx:308
+#: app/features/service-catalog/components/details-card.tsx:60
 msgid "Owner"
 msgstr "Owner"
 
-#: app/routes/service-catalog/detail/layout.tsx:164
+#: app/routes/service-catalog/detail/index.tsx:121
 msgid "Owner:"
 msgstr "Owner:"
 
@@ -2072,6 +2063,10 @@ msgstr "Patch"
 msgid "Pending"
 msgstr "Pending"
 
+#: app/routes/service-catalog/detail/consumers.tsx:248
+msgid "Pending Approval"
+msgstr "Pending Approval"
+
 #: app/features/dashboard/components/pending-approvals-widget.tsx:95
 msgid "Pending Approvals"
 msgstr "Pending Approvals"
@@ -2080,7 +2075,7 @@ msgstr "Pending Approvals"
 msgid "Pending Validation Checks:"
 msgstr "Pending Validation Checks:"
 
-#: app/routes/service-catalog/detail/overview.tsx:332
+#: app/features/service-catalog/components/quota-limits-card.tsx:47
 msgid "per"
 msgstr "per"
 
@@ -2102,11 +2097,13 @@ msgid "Personal"
 msgstr "Personal"
 
 #: app/features/fraud/detail/evaluation-sections.tsx:378
+#: app/features/service-catalog/components/details-card.tsx:43
 #: app/routes/fraud/index.tsx:133
 #: app/routes/fraud/index.tsx:305
 #: app/routes/fraud/index.tsx:340
-#: app/routes/service-catalog/detail/consumers.tsx:68
-#: app/routes/service-catalog/detail/overview.tsx:285
+#: app/routes/service-catalog/detail/consumers.tsx:98
+#: app/routes/service-catalog/detail/consumers.tsx:245
+#: app/routes/service-catalog/detail/consumers.tsx:258
 #: app/routes/service-catalog/index.tsx:160
 msgid "Phase"
 msgstr "Phase"
@@ -2265,7 +2262,7 @@ msgstr "Providers (comma-separated)"
 msgid "Public"
 msgstr "Public"
 
-#: app/routes/service-catalog/detail/overview.tsx:194
+#: app/features/service-catalog/components/active-configuration-summary.tsx:36
 #: app/routes/service-catalog/index.tsx:165
 msgid "Published"
 msgstr "Published"
@@ -2278,7 +2275,7 @@ msgstr "Query"
 msgid "Quick ranges"
 msgstr "Quick ranges"
 
-#: app/routes/service-catalog/detail/overview.tsx:317
+#: app/features/service-catalog/components/quota-limits-card.tsx:25
 msgid "Quota"
 msgstr "Quota"
 
@@ -2313,7 +2310,7 @@ msgstr "Reactivate"
 msgid "Reactivate User"
 msgstr "Reactivate User"
 
-#: app/routes/service-catalog/detail/overview.tsx:86
+#: app/features/service-catalog/components/conditions-card.tsx:35
 msgid "Reason"
 msgstr "Reason"
 
@@ -2361,20 +2358,20 @@ msgstr "Reject User"
 msgid "Rejected"
 msgstr "Rejected"
 
-#: app/routes/service-catalog/detail/consumers.tsx:233
+#: app/routes/service-catalog/detail/consumers.tsx:198
 msgid "Remove {revokeConsumerProject}'s access to {revokeEntitlementName}? They'll lose access immediately and all of their resources for this service will be permanently deleted. This cannot be undone."
 msgstr "Remove {revokeConsumerProject}'s access to {revokeEntitlementName}? They'll lose access immediately and all of their resources for this service will be permanently deleted. This cannot be undone."
 
-#: app/features/service-catalog/use-approval-dialog.tsx:51
+#: app/features/service-catalog/hooks/useApprovalDialog.tsx:51
 msgid "Request approved"
 msgstr "Request approved"
 
-#: app/features/service-catalog/use-approval-dialog.tsx:51
+#: app/features/service-catalog/hooks/useApprovalDialog.tsx:51
 msgid "Request denied"
 msgstr "Request denied"
 
-#: app/routes/service-catalog/detail/approvals.tsx:68
-#: app/routes/service-catalog/detail/consumers.tsx:105
+#: app/routes/service-catalog/detail/approvals.tsx:95
+#: app/routes/service-catalog/detail/consumers.tsx:135
 msgid "Requested at"
 msgstr "Requested at"
 
@@ -2423,10 +2420,8 @@ msgstr "Retired"
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:92
 #: app/features/dashboard/components/pending-approvals-widget.tsx:78
 #: app/features/dashboard/components/quota-utilization-widget.tsx:112
-#: app/routes/service-catalog/detail/approvals.tsx:123
-#: app/routes/service-catalog/detail/consumers.tsx:210
-#: app/routes/service-catalog/detail/layout.tsx:87
-#: app/routes/service-catalog/detail/overview.tsx:142
+#: app/routes/service-catalog/detail/approvals.tsx:137
+#: app/routes/service-catalog/detail/index.tsx:78
 #: app/routes/service-catalog/index.tsx:142
 msgid "Retry"
 msgstr "Retry"
@@ -2439,12 +2434,12 @@ msgstr "Review"
 msgid "Review Threshold"
 msgstr "Review Threshold"
 
-#: app/routes/service-catalog/detail/consumers.tsx:152
-#: app/routes/service-catalog/detail/consumers.tsx:234
+#: app/routes/service-catalog/detail/consumers.tsx:67
+#: app/routes/service-catalog/detail/consumers.tsx:199
 msgid "Revoke"
 msgstr "Revoke"
 
-#: app/routes/service-catalog/detail/consumers.tsx:232
+#: app/routes/service-catalog/detail/consumers.tsx:197
 msgid "Revoke access"
 msgstr "Revoke access"
 
@@ -2516,6 +2511,14 @@ msgstr "Search by name or email..."
 #: app/routes/service-catalog/index.tsx:153
 msgid "Search by name, description, or owner..."
 msgstr "Search by name, description, or owner..."
+
+#: app/routes/service-catalog/detail/approvals.tsx:166
+msgid "Search by project or ID..."
+msgstr "Search by project or ID..."
+
+#: app/routes/service-catalog/detail/consumers.tsx:238
+msgid "Search by project, ID, or note..."
+msgstr "Search by project, ID, or note..."
 
 #: app/features/quota/components/quota-bucket-list.tsx:182
 msgid "Search by resource type..."
@@ -2660,7 +2663,7 @@ msgstr "Select visibility..."
 msgid "Selected filters"
 msgstr "Selected filters"
 
-#: app/routes/service-catalog/detail/overview.tsx:301
+#: app/features/service-catalog/components/details-card.tsx:54
 #: app/routes/service-catalog/index.tsx:176
 msgid "Self Service"
 msgstr "Self Service"
@@ -2676,17 +2679,9 @@ msgstr "Sent"
 msgid "Service Catalog"
 msgstr "Service Catalog"
 
-#: app/routes/service-catalog/detail/layout.tsx:19
-msgid "Service Detail"
-msgstr "Service Detail"
-
-#: app/routes/service-catalog/detail/overview.tsx:271
+#: app/features/service-catalog/components/details-card.tsx:29
 msgid "Service Name"
 msgstr "Service Name"
-
-#: app/routes/service-catalog/detail/layout.tsx:78
-msgid "Service not found."
-msgstr "Service not found."
 
 #: app/routes/profile/session.tsx:115
 msgid "Session deleted successfully"
@@ -2765,6 +2760,7 @@ msgstr "Start Time"
 #: app/features/email/components/email-list.tsx:159
 #: app/features/fraud/policy/policy-detail.tsx:158
 #: app/features/quota/components/quota-grant-list.tsx:107
+#: app/features/service-catalog/components/conditions-card.tsx:23
 #: app/routes/contact-group/detail/member.tsx:208
 #: app/routes/contact-group/index.tsx:82
 #: app/routes/contact/detail/group.tsx:102
@@ -2774,7 +2770,6 @@ msgstr "Start Time"
 #: app/routes/project/detail/export-policy/detail.tsx:75
 #: app/routes/project/detail/export-policy/detail.tsx:170
 #: app/routes/project/detail/export-policy/index.tsx:46
-#: app/routes/service-catalog/detail/overview.tsx:74
 #: app/routes/user/detail/index.tsx:276
 #: app/routes/user/index.tsx:109
 #: app/routes/user/index.tsx:277
@@ -2816,7 +2811,7 @@ msgstr "Temporarily prevent user from signing in. The user can be reactivated at
 msgid "Tenant"
 msgstr "Tenant"
 
-#: app/routes/service-catalog/detail/approvals.tsx:108
+#: app/routes/service-catalog/detail/approvals.tsx:124
 msgid "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 msgstr "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 
@@ -2852,7 +2847,7 @@ msgstr "This flag is managed by the platform and can't be changed from here."
 msgid "This note will be permanently deleted and cannot be recovered."
 msgstr "This note will be permanently deleted and cannot be recovered."
 
-#: app/routes/service-catalog/detail/consumers.tsx:180
+#: app/routes/service-catalog/detail/consumers.tsx:166
 msgid "This service has no producer project recorded, so consumers cannot be listed."
 msgstr "This service has no producer project recorded, so consumers cannot be listed."
 
@@ -2887,13 +2882,13 @@ msgid "TTL"
 msgstr "TTL"
 
 #: app/features/fraud/policy/policy-form.tsx:203
+#: app/features/service-catalog/components/conditions-card.tsx:19
 #: app/routes/fraud/providers/index.tsx:65
 #: app/routes/organization/detail/index.tsx:50
 #: app/routes/organization/index.tsx:38
 #: app/routes/project/detail/dns/detail.tsx:95
 #: app/routes/project/detail/dns/detail.tsx:159
 #: app/routes/project/detail/export-policy/detail.tsx:164
-#: app/routes/service-catalog/detail/overview.tsx:70
 #: app/routes/user/detail/organization.tsx:50
 msgid "Type"
 msgstr "Type"
@@ -2907,7 +2902,7 @@ msgid "Unavailable"
 msgstr "Unavailable"
 
 #: app/features/domain/components/note-card.tsx:38
-#: app/routes/service-catalog/detail/consumers.tsx:74
+#: app/routes/service-catalog/detail/consumers.tsx:104
 msgid "Unknown"
 msgstr "Unknown"
 
@@ -2925,7 +2920,7 @@ msgstr "Update"
 msgid "Update your DNS provider with the provided record, or use the HTTP token method."
 msgstr "Update your DNS provider with the provided record, or use the HTTP token method."
 
-#: app/routes/service-catalog/detail/overview.tsx:94
+#: app/features/service-catalog/components/conditions-card.tsx:43
 msgid "Updated"
 msgstr "Updated"
 
@@ -3031,8 +3026,8 @@ msgstr "Verification in progress..."
 msgid "Verified"
 msgstr "Verified"
 
+#: app/features/service-catalog/components/active-configuration-summary.tsx:31
 #: app/routes/project/detail/secret.tsx:32
-#: app/routes/service-catalog/detail/overview.tsx:189
 msgid "Version"
 msgstr "Version"
 
@@ -3090,11 +3085,7 @@ msgstr "Warning"
 msgid "Watch"
 msgstr "Watch"
 
-#: app/routes/service-catalog/detail/consumers.tsx:198
-msgid "You do not have permission to view consumers in the producer project."
-msgstr "You do not have permission to view consumers in the producer project."
-
-#: app/routes/service-catalog/detail/overview.tsx:130
+#: app/routes/service-catalog/detail/index.tsx:69
 msgid "You do not have permission to view service configurations."
 msgstr "You do not have permission to view service configurations."
 
