@@ -19,6 +19,12 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { z } from 'zod';
 
+export const handle = {
+  breadcrumb: ({ params }: { params: { providerName: string } }) => (
+    <span>{params.providerName}</span>
+  ),
+};
+
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Edit Fraud Provider`);
 };

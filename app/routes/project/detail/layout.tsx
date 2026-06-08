@@ -147,8 +147,13 @@ export default function Layout() {
     },
     {
       title: t`Activity`,
-      href: projectRoutes.activity.root(projectName),
       icon: SquareActivity,
+      hasSubmenu: true,
+      submenuItems: [
+        { title: t`Feed`, href: projectRoutes.activity.root(projectName) },
+        { title: t`Events`, href: projectRoutes.activity.events(projectName) },
+        { title: t`Audit Logs`, href: projectRoutes.activity.auditLogs(projectName) },
+      ],
     },
     {
       title: t`Quotas`,

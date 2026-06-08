@@ -89,8 +89,13 @@ export default function Layout() {
     },
     {
       title: t`Activity`,
-      href: orgRoutes.activity.root(orgName),
       icon: SquareActivity,
+      hasSubmenu: true,
+      submenuItems: [
+        { title: t`Feed`, href: orgRoutes.activity.root(orgName) },
+        { title: t`Events`, href: orgRoutes.activity.events(orgName) },
+        { title: t`Audit Logs`, href: orgRoutes.activity.auditLogs(orgName) },
+      ],
     },
     {
       title: t`Members`,

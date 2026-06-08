@@ -1,19 +1,10 @@
-import { useUserDetailData } from '../../shared';
-import { ActivityLayout } from '@/components/activity-layout';
-import { userRoutes } from '@/utils/config/routes.config';
+import { Trans } from '@lingui/react/macro';
+import { Outlet } from 'react-router';
 
-export default function UserActivityLayout() {
-  const data = useUserDetailData();
-  const userId = data.metadata?.name ?? '';
-  const basePath = userRoutes.activity.root(userId);
+export const handle = {
+  breadcrumb: () => <Trans>Activity</Trans>,
+};
 
-  return (
-    <ActivityLayout
-      basePath={basePath}
-      tabs={[
-        { label: 'Activity Feed', value: 'feed', to: basePath },
-        { label: 'Audit Logs', value: 'audit-logs', to: userRoutes.activity.auditLogs(userId) },
-      ]}
-    />
-  );
+export default function Layout() {
+  return <Outlet />;
 }

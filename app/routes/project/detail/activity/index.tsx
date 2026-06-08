@@ -11,7 +11,7 @@ import { Trans } from '@lingui/react/macro';
 import { useMemo } from 'react';
 
 export const handle = {
-  breadcrumb: () => <Trans>Activity</Trans>,
+  breadcrumb: () => <Trans>Feed</Trans>,
 };
 
 export const meta: Route.MetaFunction = ({ matches }) => {
@@ -30,12 +30,14 @@ export default function Page() {
   );
 
   return (
-    <ActivityFeed
-      client={client}
-      tenantRenderer={() => null}
-      resourceLinkResolver={staffResourceLinkResolver}
-      pageSize={50}
-      className="bg-card border-border border"
-    />
+    <div className="p-4">
+      <ActivityFeed
+        client={client}
+        tenantRenderer={() => null}
+        resourceLinkResolver={staffResourceLinkResolver}
+        pageSize={50}
+        className="shadow-none"
+      />
+    </div>
   );
 }
