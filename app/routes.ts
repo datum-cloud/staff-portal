@@ -166,6 +166,16 @@ export default [
       route(':namespace/:emailName', 'routes/email-activity/detail.tsx'),
     ]),
 
+    // Finance
+    route('finance', 'routes/finance/layout.tsx', [
+      route('billing-accounts', 'routes/finance/billing-account/layout.tsx', [
+        index('routes/finance/billing-account/index.tsx'),
+        route(':orgName/:accountName', 'routes/finance/billing-account/detail/layout.tsx', [
+          index('routes/finance/billing-account/detail/index.tsx'),
+        ]),
+      ]),
+    ]),
+
     // Profile
     route('profile', 'routes/profile/layout.tsx', [
       index('routes/profile/index.tsx'),

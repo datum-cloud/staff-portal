@@ -9,6 +9,7 @@ import {
   dnsRoutes,
   domainRoutes,
   edgeRoutes,
+  financeRoutes,
   fraudRoutes,
   groupRoutes,
   orgRoutes,
@@ -43,6 +44,7 @@ import { useLingui } from '@lingui/react/macro';
 import {
   ChevronRight,
   Contact,
+  CreditCard,
   Gauge,
   Home,
   Layers,
@@ -168,6 +170,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       href: routes.emailActivity(),
       icon: MailSearch,
       hasSubmenu: false,
+    },
+    {
+      title: t`Finance`,
+      href: financeRoutes.billingAccounts.list(),
+      icon: CreditCard,
+      hasSubmenu: true,
+      submenuItems: [
+        {
+          title: t`Billing Accounts`,
+          href: financeRoutes.billingAccounts.list(),
+        },
+      ],
     },
     {
       title: t`Activity`,

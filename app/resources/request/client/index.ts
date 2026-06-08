@@ -28,3 +28,5 @@ export * from './apis/fraud.api';
 export * from './queries/fraud.queries';
 export * from './apis/service-catalog.api';
 export * from './queries/service-catalog.queries';
+export * from './apis/billing.api';
+export * from './queries/billing.queries';

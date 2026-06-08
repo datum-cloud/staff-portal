@@ -6,3 +6,4 @@ export * from './contact.request';
 export * from './group.request';
 export * from './contact-group.request';
 export * from './service-catalog.request';
+export * from './billing.request';
