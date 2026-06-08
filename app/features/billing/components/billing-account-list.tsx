@@ -63,11 +63,7 @@ export function BillingAccountList() {
         if (!orgName) return <Text>—</Text>;
         const orgDisplayName = orgDisplayNames.get(orgName) ?? orgName;
         return (
-          <DisplayName
-            displayName={orgDisplayName}
-            name={orgName}
-            to={orgRoutes.detail(orgName)}
-          />
+          <DisplayName displayName={orgDisplayName} name={orgName} to={orgRoutes.detail(orgName)} />
         );
       },
     }),

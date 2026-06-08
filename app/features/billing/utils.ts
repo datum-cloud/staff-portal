@@ -9,9 +9,7 @@ export const BILLING_ACCOUNT_DISPLAY_NAME_ANNOTATION = 'kubernetes.io/display-na
 export const getOrganizationDisplayName = (org: {
   metadata?: { name?: string; annotations?: Record<string, string> };
 }): string =>
-  org.metadata?.annotations?.[BILLING_ACCOUNT_DISPLAY_NAME_ANNOTATION] ??
-  org.metadata?.name ??
-  '';
+  org.metadata?.annotations?.[BILLING_ACCOUNT_DISPLAY_NAME_ANNOTATION] ?? org.metadata?.name ?? '';
 
 export const buildOrganizationNamespace = (orgName: string) => `organization-${orgName}`;
 
