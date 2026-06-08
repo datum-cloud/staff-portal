@@ -1,3 +1,4 @@
+import type { Route } from './+types/feed';
 import { createActivityClientConfig } from '@/features/activity/lib/activity-client';
 import {
   parseActivityFilters,
@@ -9,6 +10,7 @@ import {
   staffTenantLinkResolver,
 } from '@/features/activity/lib/activity-link-resolvers';
 import { activityRoutes } from '@/utils/config/routes.config';
+import { metaObject } from '@/utils/helpers';
 import {
   ActivityFeed,
   ActivityApiClient,
@@ -17,8 +19,16 @@ import {
   type TimeRange,
   type Tenant,
 } from '@datum-cloud/activity-ui';
+import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 import { useCallback, useMemo } from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
+
+export const handle = {
+  breadcrumb: () => <Trans>Feed</Trans>,
+};
+
+export const meta: Route.MetaFunction = () => metaObject(t`Feed`);
 
 // Create client with proxy URL - no loader needed
 const clientConfig = createActivityClientConfig();
@@ -98,18 +108,20 @@ export default function ActivityFeedPage() {
   );
 
   return (
-    <ActivityFeed
-      client={client}
-      initialFilters={initialFilters}
-      initialTimeRange={initialTimeRange}
-      onFiltersChange={handleFiltersChange}
-      showFilters={true}
-      enableStreaming={streamingEnabled}
-      resourceLinkResolver={staffResourceLinkResolver}
-      tenantRenderer={renderTenant}
-      onCreatePolicy={handleCreatePolicy}
-      pageSize={50}
-      className="bg-card border-border border"
-    />
+    <div className="p-4">
+      <ActivityFeed
+        client={client}
+        initialFilters={initialFilters}
+        initialTimeRange={initialTimeRange}
+        onFiltersChange={handleFiltersChange}
+        showFilters={true}
+        enableStreaming={streamingEnabled}
+        resourceLinkResolver={staffResourceLinkResolver}
+        tenantRenderer={renderTenant}
+        onCreatePolicy={handleCreatePolicy}
+        pageSize={50}
+        className="shadow-none"
+      />
+    </div>
   );
 }

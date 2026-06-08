@@ -1,17 +1,27 @@
+import type { Route } from './+types/events';
 import { createActivityClientConfig } from '@/features/activity/lib/activity-client';
 import {
   parseEventFilters,
   parseTimeRange,
   serializeEventFilters,
 } from '@/features/activity/lib/activity-filters';
+import { metaObject } from '@/utils/helpers';
 import {
   EventsFeed,
   ActivityApiClient,
   type EventsFeedFilterState,
   type TimeRange,
 } from '@datum-cloud/activity-ui';
+import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 import { useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router';
+
+export const handle = {
+  breadcrumb: () => <Trans>Events</Trans>,
+};
+
+export const meta: Route.MetaFunction = () => metaObject(t`Events`);
 
 // Create client with proxy URL - no loader needed
 const clientConfig = createActivityClientConfig();
@@ -53,16 +63,18 @@ export default function EventsPage() {
   const componentKey = searchParams.toString();
 
   return (
-    <EventsFeed
-      key={componentKey}
-      client={client}
-      initialFilters={initialFilters}
-      initialTimeRange={initialTimeRange}
-      onFiltersChange={handleFiltersChange}
-      showFilters={true}
-      enableStreaming={streamingEnabled}
-      pageSize={50}
-      className="bg-card border-border border"
-    />
+    <div className="p-4">
+      <EventsFeed
+        key={componentKey}
+        client={client}
+        initialFilters={initialFilters}
+        initialTimeRange={initialTimeRange}
+        onFiltersChange={handleFiltersChange}
+        showFilters={true}
+        enableStreaming={streamingEnabled}
+        pageSize={50}
+        className="shadow-none"
+      />
+    </div>
   );
 }

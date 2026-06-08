@@ -31,6 +31,10 @@ import { z } from 'zod';
 
 type FraudEvaluation = ComMiloapisFraudV1Alpha1FraudEvaluation;
 
+export const handle = {
+  breadcrumb: () => <Trans>Evaluations</Trans>,
+};
+
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Fraud Evaluations`);
 };

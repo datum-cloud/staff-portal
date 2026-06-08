@@ -20,7 +20,7 @@ interface MobileToolbarProps {
 }
 
 export function MobileToolbar({ scrolled }: MobileToolbarProps) {
-  const { actions, navigation } = useApp();
+  const { actions } = useApp();
   const items = useEnhancedBreadcrumbs();
   const navigate = useNavigate();
   const { t } = useLingui();
@@ -98,13 +98,6 @@ export function MobileToolbar({ scrolled }: MobileToolbarProps) {
           </DropdownMenu>
         )}
       </div>
-
-      {/* Row 2 — navigation (tabs etc.) */}
-      {navigation && (
-        <div className="flex items-center gap-2 overflow-x-auto border-t px-2 py-2 [&>*]:shrink-0">
-          {navigation}
-        </div>
-      )}
     </div>
   );
 }

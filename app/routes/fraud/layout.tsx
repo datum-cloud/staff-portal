@@ -1,46 +1,42 @@
-import AppNavigation from '@/components/app-navigation';
+import { SubLayout } from '@/components/sub-layout';
 import { fraudRoutes } from '@/utils/config/routes.config';
-import { Tabs, TabsList, TabsLinkTrigger } from '@datum-cloud/datum-ui/tabs';
-import { Trans } from '@lingui/react/macro';
-import { Link, Outlet, useLocation } from 'react-router';
-
-const fraudTabs = [
-  { label: 'Evaluations', value: 'evaluations', to: fraudRoutes.evaluations.list() },
-  { label: 'Providers', value: 'providers', to: fraudRoutes.providers.list() },
-  { label: 'Policy', value: 'policy', to: fraudRoutes.policy() },
-];
-
-function useActiveTab() {
-  const { pathname } = useLocation();
-  if (pathname.startsWith('/fraud/providers')) return 'providers';
-  if (pathname.startsWith('/fraud/policy')) return 'policy';
-  return 'evaluations';
-}
+import { Trans, useLingui } from '@lingui/react/macro';
+import { FileText, ShieldAlert, Truck } from 'lucide-react';
+import { Outlet } from 'react-router';
 
 export const handle = {
-  breadcrumb: () => <Trans>Fraud & Abuse</Trans>,
+  breadcrumb: () => <Trans>Fraud &amp; Abuse</Trans>,
 };
 
 export default function FraudLayout() {
-  const activeTab = useActiveTab();
+  const { t } = useLingui();
+
+  const menuItems = [
+    {
+      title: t`Evaluations`,
+      href: fraudRoutes.evaluations.list(),
+      icon: ShieldAlert,
+    },
+    {
+      title: t`Providers`,
+      href: fraudRoutes.providers.list(),
+      icon: Truck,
+    },
+    {
+      title: t`Policy`,
+      href: fraudRoutes.policy(),
+      icon: FileText,
+    },
+  ];
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden">
-      <AppNavigation>
-        <Tabs value={activeTab}>
-          <TabsList>
-            {fraudTabs.map((tab) => (
-              <TabsLinkTrigger key={tab.value} value={tab.value} href={tab.to} linkComponent={Link}>
-                {tab.label}
-              </TabsLinkTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
-      </AppNavigation>
-
-      <div className="min-h-0 flex-1 overflow-auto">
+    <SubLayout>
+      <SubLayout.SidebarLeft>
+        <SubLayout.SidebarMenu menuItems={menuItems} />
+      </SubLayout.SidebarLeft>
+      <SubLayout.Content>
         <Outlet />
-      </div>
-    </div>
+      </SubLayout.Content>
+    </SubLayout>
   );
 }

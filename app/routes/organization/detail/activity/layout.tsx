@@ -1,10 +1,10 @@
-import { useOrganizationDetailData } from '../../shared';
-import { ActivityLayout } from '@/components/activity-layout';
-import { orgRoutes } from '@/utils/config/routes.config';
+import { Trans } from '@lingui/react/macro';
+import { Outlet } from 'react-router';
 
-export default function OrganizationActivityLayout() {
-  const data = useOrganizationDetailData();
-  const organizationName = data.metadata?.name ?? '';
+export const handle = {
+  breadcrumb: () => <Trans>Activity</Trans>,
+};
 
-  return <ActivityLayout basePath={orgRoutes.activity.root(organizationName)} />;
+export default function Layout() {
+  return <Outlet />;
 }

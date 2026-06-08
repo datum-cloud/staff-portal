@@ -12,6 +12,10 @@ import { Trans } from '@lingui/react/macro';
 import { useNavigate } from 'react-router';
 import { z } from 'zod';
 
+export const handle = {
+  breadcrumb: () => <Trans>Create</Trans>,
+};
+
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Create Fraud Provider`);
 };

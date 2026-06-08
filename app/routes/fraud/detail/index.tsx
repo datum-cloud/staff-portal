@@ -18,6 +18,17 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { useParams } from 'react-router';
 
+function EvaluationBreadcrumb() {
+  const { evalName } = useParams<{ evalName: string }>();
+  return <span>{evalName ?? ''}</span>;
+}
+
+export const handle = {
+  // The breadcrumb is called with `match.data`, not params. Use a small
+  // component so we can read the param via the router.
+  breadcrumb: () => <EvaluationBreadcrumb />,
+};
+
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Fraud Evaluation Detail`);
 };
