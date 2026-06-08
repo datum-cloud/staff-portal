@@ -10,10 +10,16 @@ import { useParams, useNavigate } from 'react-router';
 
 const clientConfig = createActivityClientConfig();
 
+function PolicyBreadcrumb() {
+  const { policyName } = useParams<{ policyName: string }>();
+  return <span>{policyName === 'new' ? t`New Policy` : (policyName ?? '')}</span>;
+}
+
 export const handle = {
-  breadcrumb: ({ params }: { params: { policyName: string } }) => (
-    <span>{params.policyName === 'new' ? t`New Policy` : params.policyName}</span>
-  ),
+  // The breadcrumb is called with `match.data` (route loader data), so we
+  // can't read params from there. Use a small component that reads them
+  // via the router instead.
+  breadcrumb: () => <PolicyBreadcrumb />,
 };
 
 export const meta: Route.MetaFunction = ({ params }) =>
