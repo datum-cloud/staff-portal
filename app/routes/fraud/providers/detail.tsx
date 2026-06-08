@@ -19,10 +19,15 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { z } from 'zod';
 
+function ProviderBreadcrumb() {
+  const { providerName } = useParams<{ providerName: string }>();
+  return <span>{providerName ?? ''}</span>;
+}
+
 export const handle = {
-  breadcrumb: ({ params }: { params: { providerName: string } }) => (
-    <span>{params.providerName}</span>
-  ),
+  // The breadcrumb is called with `match.data`, not params. Use a small
+  // component so we can read the param via the router.
+  breadcrumb: () => <ProviderBreadcrumb />,
 };
 
 export const meta: Route.MetaFunction = () => {

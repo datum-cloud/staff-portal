@@ -112,7 +112,7 @@ msgid "Access revoked"
 msgstr ""
 
 #: app/routes/fraud/providers/create.tsx:120
-#: app/routes/fraud/providers/detail.tsx:156
+#: app/routes/fraud/providers/detail.tsx:161
 msgid "Account ID Key"
 msgstr ""
 
@@ -351,7 +351,7 @@ msgstr ""
 
 #. placeholder {0}: provider.metadata?.name ?? ''
 #. placeholder {0}: selectedProvider?.metadata?.name ?? ''
-#: app/routes/fraud/providers/detail.tsx:190
+#: app/routes/fraud/providers/detail.tsx:195
 #: app/routes/fraud/providers/index.tsx:131
 msgid "Are you sure you want to delete provider \"{0}\"? This action cannot be undone."
 msgstr ""
@@ -441,8 +441,8 @@ msgstr ""
 #: app/routes/fraud/index.tsx:257
 #: app/routes/fraud/policy.tsx:101
 #: app/routes/fraud/providers/create.tsx:134
-#: app/routes/fraud/providers/detail.tsx:170
-#: app/routes/fraud/providers/detail.tsx:192
+#: app/routes/fraud/providers/detail.tsx:175
+#: app/routes/fraud/providers/detail.tsx:197
 #: app/routes/fraud/providers/index.tsx:133
 #: app/routes/group/member.tsx:157
 #: app/routes/group/member.tsx:171
@@ -677,7 +677,7 @@ msgid "Created"
 msgstr ""
 
 #: app/routes/fraud/providers/create.tsx:111
-#: app/routes/fraud/providers/detail.tsx:147
+#: app/routes/fraud/providers/detail.tsx:152
 msgid "Credentials Reference"
 msgstr ""
 
@@ -774,8 +774,8 @@ msgstr ""
 #: app/routes/fraud/index.tsx:102
 #: app/routes/fraud/index.tsx:256
 #: app/routes/fraud/policy.tsx:100
-#: app/routes/fraud/providers/detail.tsx:111
-#: app/routes/fraud/providers/detail.tsx:191
+#: app/routes/fraud/providers/detail.tsx:116
+#: app/routes/fraud/providers/detail.tsx:196
 #: app/routes/fraud/providers/index.tsx:46
 #: app/routes/fraud/providers/index.tsx:132
 #: app/routes/group/member.tsx:95
@@ -844,7 +844,7 @@ msgstr ""
 msgid "Delete Project"
 msgstr ""
 
-#: app/routes/fraud/providers/detail.tsx:189
+#: app/routes/fraud/providers/detail.tsx:194
 #: app/routes/fraud/providers/index.tsx:130
 msgid "Delete Provider"
 msgstr ""
@@ -1017,7 +1017,7 @@ msgstr ""
 msgid "Edit Fraud Policy"
 msgstr ""
 
-#: app/routes/fraud/providers/detail.tsx:29
+#: app/routes/fraud/providers/detail.tsx:34
 msgid "Edit Fraud Provider"
 msgstr ""
 
@@ -1095,7 +1095,7 @@ msgstr ""
 
 #: app/features/edge/components/edge-list.tsx:85
 #: app/routes/fraud/providers/create.tsx:106
-#: app/routes/fraud/providers/detail.tsx:142
+#: app/routes/fraud/providers/detail.tsx:147
 #: app/routes/fraud/providers/index.tsx:76
 #: app/routes/project/detail/edge/detail.tsx:97
 msgid "Endpoint"
@@ -1165,7 +1165,7 @@ msgstr ""
 msgid "Evaluation History"
 msgstr ""
 
-#: app/routes/fraud/detail/index.tsx:72
+#: app/routes/fraud/detail/index.tsx:79
 msgid "Evaluation not found."
 msgstr ""
 
@@ -1254,7 +1254,7 @@ msgid "Failed to update timezone"
 msgstr ""
 
 #: app/routes/fraud/providers/create.tsx:100
-#: app/routes/fraud/providers/detail.tsx:136
+#: app/routes/fraud/providers/detail.tsx:141
 #: app/routes/fraud/providers/index.tsx:69
 msgid "Failure Policy"
 msgstr ""
@@ -1372,7 +1372,7 @@ msgstr ""
 msgid "Fraud Assessment"
 msgstr ""
 
-#: app/routes/fraud/detail/index.tsx:26
+#: app/routes/fraud/detail/index.tsx:33
 msgid "Fraud Evaluation Detail"
 msgstr ""
 
@@ -1580,7 +1580,7 @@ msgid "Latest fraud evaluation for this user"
 msgstr ""
 
 #: app/routes/fraud/providers/create.tsx:123
-#: app/routes/fraud/providers/detail.tsx:159
+#: app/routes/fraud/providers/detail.tsx:164
 msgid "License Key Key"
 msgstr ""
 
@@ -1597,7 +1597,7 @@ msgstr ""
 msgid "List"
 msgstr ""
 
-#: app/routes/fraud/detail/index.tsx:60
+#: app/routes/fraud/detail/index.tsx:67
 msgid "Loading evaluation..."
 msgstr ""
 
@@ -1609,7 +1609,7 @@ msgstr ""
 msgid "Loading policy..."
 msgstr ""
 
-#: app/routes/fraud/providers/detail.tsx:58
+#: app/routes/fraud/providers/detail.tsx:63
 msgid "Loading provider..."
 msgstr ""
 
@@ -1812,7 +1812,7 @@ msgid "New Limit"
 msgstr ""
 
 #: app/routes/activity-hub/policies/detail.tsx:15
-#: app/routes/activity-hub/policies/detail.tsx:20
+#: app/routes/activity-hub/policies/detail.tsx:26
 msgid "New Policy"
 msgstr ""
 
@@ -2186,7 +2186,7 @@ msgstr ""
 msgid "Policies"
 msgstr ""
 
-#: app/routes/activity-hub/policies/detail.tsx:20
+#: app/routes/activity-hub/policies/detail.tsx:26
 #: app/routes/fraud/layout.tsx:26
 #: app/routes/fraud/policy.tsx:16
 msgid "Policy"
@@ -2270,7 +2270,7 @@ msgstr ""
 msgid "Provider created successfully"
 msgstr ""
 
-#: app/routes/fraud/providers/detail.tsx:196
+#: app/routes/fraud/providers/detail.tsx:201
 #: app/routes/fraud/providers/index.tsx:138
 msgid "Provider deleted successfully"
 msgstr ""
@@ -2284,16 +2284,16 @@ msgstr ""
 msgid "Provider ID cannot be changed after the contact group is created."
 msgstr ""
 
-#: app/routes/fraud/providers/detail.tsx:70
+#: app/routes/fraud/providers/detail.tsx:75
 msgid "Provider not found."
 msgstr ""
 
 #: app/routes/fraud/providers/create.tsx:95
-#: app/routes/fraud/providers/detail.tsx:131
+#: app/routes/fraud/providers/detail.tsx:136
 msgid "Provider Type"
 msgstr ""
 
-#: app/routes/fraud/providers/detail.tsx:96
+#: app/routes/fraud/providers/detail.tsx:101
 msgid "Provider updated successfully"
 msgstr ""
 
@@ -2666,12 +2666,12 @@ msgid "Secret"
 msgstr ""
 
 #: app/routes/fraud/providers/create.tsx:114
-#: app/routes/fraud/providers/detail.tsx:150
+#: app/routes/fraud/providers/detail.tsx:155
 msgid "Secret Name"
 msgstr ""
 
 #: app/routes/fraud/providers/create.tsx:117
-#: app/routes/fraud/providers/detail.tsx:153
+#: app/routes/fraud/providers/detail.tsx:158
 msgid "Secret Namespace"
 msgstr ""
 
@@ -2961,7 +2961,7 @@ msgstr ""
 #: app/features/contact/components/contact-form.tsx:250
 #: app/features/fraud/policy/policy-form.tsx:321
 #: app/features/quota/components/quota-bucket-list.tsx:127
-#: app/routes/fraud/providers/detail.tsx:176
+#: app/routes/fraud/providers/detail.tsx:181
 msgid "Update"
 msgstr ""
 
