@@ -18,6 +18,10 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { useParams } from 'react-router';
 
+export const handle = {
+  breadcrumb: ({ params }: { params: { evalName: string } }) => <span>{params.evalName}</span>,
+};
+
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Fraud Evaluation Detail`);
 };

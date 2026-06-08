@@ -6,7 +6,7 @@ import { cn } from '@datum-cloud/datum-ui/utils';
 import { useEffect, useState } from 'react';
 
 const AppToolbar = () => {
-  const { actions, navigation } = useApp();
+  const { actions } = useApp();
   const [scrolled, setScrolled] = useState(false);
   const breakpoint = useBreakpoint();
   const isMobile = breakpoint === 'mobile';
@@ -29,7 +29,6 @@ const AppToolbar = () => {
       )}>
       <div className="flex min-w-0 items-center gap-4 overflow-hidden">
         <Breadcrumb />
-        {navigation}
       </div>
 
       <div className="flex items-center gap-2">{actions}</div>

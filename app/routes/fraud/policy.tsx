@@ -12,6 +12,10 @@ import { Trans } from '@lingui/react/macro';
 import { AlertTriangle, PlusCircleIcon } from 'lucide-react';
 import { useState } from 'react';
 
+export const handle = {
+  breadcrumb: () => <Trans>Policy</Trans>,
+};
+
 export const meta: Route.MetaFunction = () => metaObject(t`Fraud Policy`);
 
 export default function Page() {

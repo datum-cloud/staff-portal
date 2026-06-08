@@ -69,7 +69,14 @@ import {
 import { TooltipProvider } from '@datum-cloud/activity-ui';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card } from '@datum-cloud/datum-ui/card';
-import { Table, TableBody, TableHead, TableHeader, TableRow } from '@datum-cloud/datum-ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@datum-cloud/datum-ui/table';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import type { ComMiloapisResourcemanagerV1Alpha1Project } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { useMemo, useCallback, useEffect, useRef } from 'react';
@@ -523,11 +530,17 @@ function MultiSourceView({
   }, [selectedProjects, projectClients]);
 
   return (
+    // Activity-ui's lower-level building blocks (ActivityFeedItem,
+    // ActivityFeedFiltersBar) use Radix's primitive Tooltip composition
+    // which requires a TooltipProvider ancestor. The high-level
+    // <ActivityFeed> wraps its own; when we compose the pieces ourselves
+    // we have to provide one too. Drop this once we mount a global
+    // TooltipProvider in root.tsx.
     <TooltipProvider delayDuration={200}>
-      <div className={cn('flex flex-col gap-2 px-2', className)}>
-        {/* Filter row: library filter bar with Projects pill injected via
-            extraFilters slot — appears inline after "Add Filters", before the
-            time range. */}
+      {/* Single Card wrapping filters + list + load more — mirrors the
+          activity-ui ActivityFeed chrome so the global and per-resource
+          feeds look identical. */}
+      <Card className={cn('flex flex-1 flex-col gap-3 overflow-hidden p-3 shadow-none', className)}>
         <ActivityFeedFiltersBar
           client={orgClient}
           filters={orgFeed.filters}
@@ -540,74 +553,70 @@ function MultiSourceView({
               selected={selectedProjects}
               onChange={onProjectsChange}
               loading={projectListLoading}
-              maxSelection={10}
+              maxSelection={MAX_PROJECTS}
             />
           }
         />
 
-        {/* Per-source error banners */}
         {errors.map((err, i) => (
           <ApiErrorAlert
             key={sourceLabels[i] ?? i}
             error={err}
             onRetry={() => activeSources[i]?.refresh()}
-            className="mb-1"
           />
         ))}
 
-        {/* Merged table */}
-        <Card className="border-border bg-card flex flex-1 flex-col gap-0 overflow-hidden border p-3">
-          <div className="flex-1 overflow-y-auto">
-            <Table>
-              <TableHeader>
+        <div className="flex-1 overflow-y-auto rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted hover:bg-muted">
+                <TableHead className="w-10">Actor</TableHead>
+                <TableHead>Summary</TableHead>
+                <TableHead className="whitespace-nowrap">Tenant</TableHead>
+                <TableHead className="whitespace-nowrap">When</TableHead>
+                <TableHead className="w-10" />
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading && mergedActivities.length === 0 ? (
+                Array.from({ length: 8 }).map((_, i) => (
+                  <ActivityFeedItemSkeleton key={i} isLast={i === 7} />
+                ))
+              ) : mergedActivities.length === 0 ? (
                 <TableRow>
-                  <TableHead className="w-10">Actor</TableHead>
-                  <TableHead>Summary</TableHead>
-                  <TableHead className="whitespace-nowrap">Tenant</TableHead>
-                  <TableHead className="whitespace-nowrap">When</TableHead>
-                  <TableHead className="w-10" />
+                  <TableCell
+                    colSpan={5}
+                    className="text-muted-foreground py-10 text-center text-sm">
+                    No activity found for the selected sources.
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading && mergedActivities.length === 0 ? (
-                  Array.from({ length: 8 }).map((_, i) => (
-                    <ActivityFeedItemSkeleton key={i} isLast={i === 7} />
-                  ))
-                ) : mergedActivities.length === 0 ? (
-                  <TableRow>
-                    <td colSpan={5} className="text-muted-foreground py-10 text-center text-sm">
-                      No activity found for the selected sources.
-                    </td>
-                  </TableRow>
-                ) : (
-                  mergedActivities.map((activity) => (
-                    <ActivityFeedItem
-                      key={activity.metadata?.uid ?? activity.metadata?.name}
-                      activity={activity}
-                      resourceLinkResolver={resourceLinkResolver}
-                      tenantRenderer={tenantRenderer}
-                    />
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
+              ) : (
+                mergedActivities.map((activity) => (
+                  <ActivityFeedItem
+                    key={activity.metadata?.uid ?? activity.metadata?.name}
+                    activity={activity}
+                    resourceLinkResolver={resourceLinkResolver}
+                    tenantRenderer={tenantRenderer}
+                  />
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
 
-          {/* Load more footer */}
-          {hasMore && (
-            <div className="border-border flex justify-center border-t pt-3 pb-1">
-              <Button
-                type="secondary"
-                theme="outline"
-                size="small"
-                onClick={handleLoadMore}
-                disabled={isLoading}>
-                {isLoading ? 'Loading…' : 'Load more'}
-              </Button>
-            </div>
-          )}
-        </Card>
-      </div>
+        {hasMore && (
+          <div className="flex justify-center pt-1">
+            <Button
+              type="secondary"
+              theme="outline"
+              size="small"
+              onClick={handleLoadMore}
+              disabled={isLoading}>
+              {isLoading ? 'Loading…' : 'Load more'}
+            </Button>
+          </div>
+        )}
+      </Card>
     </TooltipProvider>
   );
 }

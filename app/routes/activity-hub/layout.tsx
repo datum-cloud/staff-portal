@@ -1,35 +1,47 @@
 import AppActionBar from '@/components/app-actiobar';
-import AppNavigation from '@/components/app-navigation';
+import { SubLayout } from '@/components/sub-layout';
 import { activityRoutes } from '@/utils/config/routes.config';
 import { Button } from '@datum-cloud/datum-ui/button';
-import { Tabs, TabsList, TabsLinkTrigger } from '@datum-cloud/datum-ui/tabs';
 import { t } from '@lingui/core/macro';
-import { Share2, Check } from 'lucide-react';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { Check, FileSearch, ListChecks, ScrollText, Share2, SquareActivity } from 'lucide-react';
 import { useState } from 'react';
-import { Link, Outlet, useLocation } from 'react-router';
+import { Outlet } from 'react-router';
 
-function useActiveTab() {
-  const { pathname } = useLocation();
-  if (pathname.startsWith(activityRoutes.policies.list())) return 'policies';
-  if (pathname.startsWith(activityRoutes.auditLogs())) return 'audit-logs';
-  if (pathname.startsWith(activityRoutes.events())) return 'events';
-  return 'feed';
-}
+export const handle = {
+  breadcrumb: () => <Trans>Activity</Trans>,
+};
 
 /**
- * Activity hub layout with horizontal tab navigation
+ * Activity hub layout with vertical sub-navigation.
  */
 export default function ActivityLayout() {
-  const activeTab = useActiveTab();
+  const { t: tLingui } = useLingui();
   const [copied, setCopied] = useState(false);
-  const activityTabs = [
-    { label: t`Activity Feed`, value: 'feed', to: activityRoutes.feed() },
-    { label: t`Events`, value: 'events', to: activityRoutes.events() },
-    { label: t`Audit Logs`, value: 'audit-logs', to: activityRoutes.auditLogs() },
-    { label: t`Manage Policies`, value: 'policies', to: activityRoutes.policies.list() },
+
+  const menuItems = [
+    {
+      title: tLingui`Feed`,
+      href: activityRoutes.feed(),
+      icon: SquareActivity,
+    },
+    {
+      title: tLingui`Events`,
+      href: activityRoutes.events(),
+      icon: FileSearch,
+    },
+    {
+      title: tLingui`Audit Logs`,
+      href: activityRoutes.auditLogs(),
+      icon: ScrollText,
+    },
+    {
+      title: tLingui`Policies`,
+      href: activityRoutes.policies.list(),
+      icon: ListChecks,
+    },
   ];
 
-  // Handle share button click - copy current URL to clipboard
   const handleShare = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
@@ -41,21 +53,7 @@ export default function ActivityLayout() {
   };
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden">
-      {/* Inject menu navigation into the app toolbar navigation slot */}
-      <AppNavigation>
-        <Tabs value={activeTab}>
-          <TabsList className="bg-foreground/5">
-            {activityTabs.map((tab) => (
-              <TabsLinkTrigger key={tab.value} value={tab.value} href={tab.to} linkComponent={Link}>
-                {tab.label}
-              </TabsLinkTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
-      </AppNavigation>
-
-      {/* Inject share button into the app toolbar actions slot */}
+    <SubLayout>
       <AppActionBar>
         <Button
           type="secondary"
@@ -76,13 +74,12 @@ export default function ActivityLayout() {
           )}
         </Button>
       </AppActionBar>
-
-      {/* Tab Content - flex-1 min-h-0 allows child to scroll within bounds */}
-      <div className="min-h-0 flex-1 overflow-hidden px-4 py-4">
-        <div className="mx-auto flex h-full flex-col">
-          <Outlet />
-        </div>
-      </div>
-    </div>
+      <SubLayout.SidebarLeft>
+        <SubLayout.SidebarMenu menuItems={menuItems} />
+      </SubLayout.SidebarLeft>
+      <SubLayout.Content>
+        <Outlet />
+      </SubLayout.Content>
+    </SubLayout>
   );
 }

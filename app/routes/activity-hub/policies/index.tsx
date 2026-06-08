@@ -1,37 +1,40 @@
+import type { Route } from './+types/index';
 import { createActivityClientConfig } from '@/features/activity/lib/activity-client';
 import { activityRoutes } from '@/utils/config/routes.config';
+import { metaObject } from '@/utils/helpers';
 import { PolicyList, ActivityApiClient } from '@datum-cloud/activity-ui';
+import { t } from '@lingui/core/macro';
 import { useNavigate } from 'react-router';
 
-// Create client with proxy URL - no loader needed
 const clientConfig = createActivityClientConfig();
 
+export const meta: Route.MetaFunction = () => metaObject(t`Policies`);
+
 /**
- * Manage Policies Tab - Policy List View
+ * Policies tab — list view.
  */
 export default function PoliciesIndexPage() {
   const navigate = useNavigate();
 
-  // Initialize client in browser with proxy URL
   const client = new ActivityApiClient(clientConfig);
 
-  // Handle edit policy - navigate to detail route
   const handleEditPolicy = (policyName: string) => {
     navigate(activityRoutes.policies.detail(policyName));
   };
 
-  // Handle create policy - navigate to detail route with "new" name
   const handleCreatePolicy = () => {
     navigate(activityRoutes.policies.create());
   };
 
   return (
-    <PolicyList
-      client={client}
-      onEditPolicy={handleEditPolicy}
-      onCreatePolicy={handleCreatePolicy}
-      groupByApiGroup={true}
-      className="bg-card border-border border"
-    />
+    <div className="p-4">
+      <PolicyList
+        client={client}
+        onEditPolicy={handleEditPolicy}
+        onCreatePolicy={handleCreatePolicy}
+        groupByApiGroup={true}
+        className="shadow-none"
+      />
+    </div>
   );
 }

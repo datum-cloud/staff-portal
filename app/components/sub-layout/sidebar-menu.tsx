@@ -83,38 +83,46 @@ export function SidebarMenuComponent({ menuItems, className }: SidebarMenuProps)
         {menuItems.map((item, index) => (
           <SidebarMenu key={index}>
             {item.hasSubmenu ? (
-              <Collapsible
-                asChild
-                defaultOpen={item.submenuItems?.some((subItem) => checkActive(subItem.href))}
-                className="group/collapsible">
-                <SidebarMenuItem>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton
-                      tooltip={item.title}
-                      className="text-muted-foreground! hover:bg-accent! hover:text-foreground! data-[active=true]:bg-accent data-[active=true]:text-foreground!">
-                      {item.icon && <item.icon />}
-                      <span>{item.title}</span>
-                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      {item.submenuItems?.map((subItem, subIndex) => (
-                        <SidebarMenuSubItem key={subIndex}>
-                          <SidebarMenuSubButton
-                            asChild
-                            isActive={checkActive(subItem.href)}
-                            className="text-muted-foreground! hover:bg-accent hover:text-foreground! data-[active=true]:bg-accent data-[active=true]:text-foreground!">
-                            <NavLink to={subItem.href}>
-                              <span>{subItem.title}</span>
-                            </NavLink>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </SidebarMenuItem>
-              </Collapsible>
+              (() => {
+                // Pick the single most specific submenu match so siblings
+                // sharing a path prefix (e.g. /activity vs /activity/events)
+                // don't all light up at once.
+                const activeSubHref = pickMostSpecificHref(
+                  location.pathname,
+                  item.submenuItems?.map((s) => s.href) ?? []
+                );
+                return (
+                  <Collapsible asChild defaultOpen={!!activeSubHref} className="group/collapsible">
+                    <SidebarMenuItem>
+                      <CollapsibleTrigger asChild>
+                        <SidebarMenuButton
+                          tooltip={item.title}
+                          className="text-muted-foreground! hover:bg-accent! hover:text-foreground! data-[active=true]:bg-accent data-[active=true]:text-foreground!">
+                          {item.icon && <item.icon />}
+                          <span>{item.title}</span>
+                          <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                        </SidebarMenuButton>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {item.submenuItems?.map((subItem, subIndex) => (
+                            <SidebarMenuSubItem key={subIndex}>
+                              <SidebarMenuSubButton
+                                asChild
+                                isActive={subItem.href === activeSubHref}
+                                className="text-muted-foreground! hover:bg-accent hover:text-foreground! data-[active=true]:bg-accent data-[active=true]:text-foreground!">
+                                <NavLink to={subItem.href}>
+                                  <span>{subItem.title}</span>
+                                </NavLink>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          ))}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    </SidebarMenuItem>
+                  </Collapsible>
+                );
+              })()
             ) : (
               <SidebarMenuItem>
                 <SidebarMenuButton

@@ -1,15 +1,24 @@
+import type { Route } from './+types/audit-logs';
 import { createActivityClientConfig } from '@/features/activity/lib/activity-client';
+import { metaObject } from '@/utils/helpers';
 import { AuditLogQueryComponent, ActivityApiClient } from '@datum-cloud/activity-ui';
+import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 
-// Create client with proxy URL - no loader needed
 const clientConfig = createActivityClientConfig();
 
-/**
- * Audit Logs Tab
- */
+export const handle = {
+  breadcrumb: () => <Trans>Audit Logs</Trans>,
+};
+
+export const meta: Route.MetaFunction = () => metaObject(t`Audit Logs`);
+
 export default function AuditLogsPage() {
-  // Initialize client in browser with proxy URL
   const client = new ActivityApiClient(clientConfig);
 
-  return <AuditLogQueryComponent client={client} className="bg-card border-border border" />;
+  return (
+    <div className="p-4">
+      <AuditLogQueryComponent client={client} className="shadow-none" />
+    </div>
+  );
 }

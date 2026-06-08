@@ -50,8 +50,12 @@ export default function Layout() {
     },
     {
       title: t`Activity`,
-      href: userRoutes.activity.root(data.metadata?.name ?? ''),
       icon: SquareActivity,
+      hasSubmenu: true,
+      submenuItems: [
+        { title: t`Feed`, href: userRoutes.activity.root(data.metadata?.name ?? '') },
+        { title: t`Audit Logs`, href: userRoutes.activity.auditLogs(data.metadata?.name ?? '') },
+      ],
     },
   ];
 
