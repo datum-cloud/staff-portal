@@ -1,5 +1,5 @@
 import { DialogForm } from '@/components/dialog';
-import { useDecideServiceConsumerMutation, type ServiceConsumer } from '@/resources/request/client';
+import { useDecideServiceConsumerMutation } from '@/resources/request/client';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { t } from '@lingui/core/macro';
@@ -14,12 +14,12 @@ const schema = z.object({
 
 export function useApprovalDialog(producerProject: string) {
   const decideMutation = useDecideServiceConsumerMutation(producerProject);
-  const [pending, setPending] = useState<{ consumer: ServiceConsumer; decision: Decision } | null>(
-    null
-  );
+  const [pending, setPending] = useState<{ consumerName: string; decision: Decision } | null>(null);
 
-  const openDialog = (consumer: ServiceConsumer, decision: Decision) =>
-    setPending({ consumer, decision });
+  // Takes the consumer's name (metadata.name) so callers can drive the dialog
+  // from either the raw k8s shape or the gateway-enriched flat shape.
+  const openDialog = (consumerName: string, decision: Decision) =>
+    setPending({ consumerName, decision });
 
   const isApproving = pending?.decision === 'Approved';
 
@@ -42,9 +42,8 @@ export function useApprovalDialog(producerProject: string) {
       requireDirty={false}
       onSubmit={async (formData) => {
         if (!pending) return;
-        const consumerName = pending.consumer.metadata?.name ?? '';
         await decideMutation.mutateAsync({
-          consumerName,
+          consumerName: pending.consumerName,
           decision: pending.decision,
           message: formData.message || undefined,
         });

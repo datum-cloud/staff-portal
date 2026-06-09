@@ -5,11 +5,11 @@ import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
 import { MessageCard } from '@/components/message-card';
-import { consumerMatchesService, useApprovalDialog } from '@/features/service-catalog';
+import { useApprovalDialog } from '@/features/service-catalog';
+import type { EnrichedServiceConsumer } from '@/modules/graphql/service-consumers';
 import {
-  useProjectDisplayNamesQuery,
   useRevokeServiceEntitlementMutation,
-  useServiceConsumersInProjectQuery,
+  useServiceConsumersEnrichedQuery,
 } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
@@ -18,13 +18,12 @@ import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
-import type { ComMiloapisServicesV1Alpha1ServiceConsumer } from '@openapi/services.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { CheckCircle, Trash2, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
 
-type ServiceConsumer = ComMiloapisServicesV1Alpha1ServiceConsumer;
+type ServiceConsumer = EnrichedServiceConsumer;
 
 export const handle = {
   breadcrumb: () => <Trans>Consumers</Trans>,
@@ -48,72 +47,61 @@ export default function ConsumersPage() {
   const revokeMutation = useRevokeServiceEntitlementMutation(producerProject ?? '');
   const [revokeTarget, setRevokeTarget] = useState<ServiceConsumer | null>(null);
 
-  const { data, isLoading, error } = useServiceConsumersInProjectQuery(producerProject);
-
-  const items = (data?.items ?? []).filter((c) =>
-    consumerMatchesService(c, serviceName, canonicalName)
-  );
-
-  const { displayNames } = useProjectDisplayNamesQuery(
-    items.map((c) => c.spec?.consumerProjectRef?.name ?? '')
-  );
+  const { data, isLoading, error } = useServiceConsumersEnrichedQuery(producerProject);
 
   const actions: ActionItem<ServiceConsumer>[] = [
     {
       label: t`Approve`,
       icon: <CheckCircle className="size-4" />,
-      hidden: (row) => !(row.status?.phase === 'PendingApproval' && !row.spec?.approval),
-      onClick: (row) => openDialog(row, 'Approved'),
+      hidden: (row) => !(row.phase === 'PendingApproval' && !row.approvalDecision),
+      onClick: (row) => openDialog(row.name, 'Approved'),
     },
     {
       label: t`Deny`,
       icon: <XCircle className="size-4" />,
       variant: 'destructive' as const,
-      hidden: (row) => !(row.status?.phase === 'PendingApproval' && !row.spec?.approval),
-      onClick: (row) => openDialog(row, 'Denied'),
+      hidden: (row) => !(row.phase === 'PendingApproval' && !row.approvalDecision),
+      onClick: (row) => openDialog(row.name, 'Denied'),
     },
     {
       label: t`Revoke`,
       icon: <Trash2 className="size-4" />,
       variant: 'destructive' as const,
-      hidden: (row) => row.status?.phase !== 'Active',
+      hidden: (row) => row.phase !== 'Active',
       onClick: (row) => setRevokeTarget(row),
     },
   ];
 
   const columns = [
-    columnHelper.accessor((row) => row.spec?.consumerProjectRef?.name ?? '', {
+    columnHelper.accessor((row) => row.consumerProject.displayName, {
       id: 'project',
       header: ({ column }) => (
         <DataTable.ColumnHeader column={column} title={t`Consumer Project`} />
       ),
-      cell: ({ getValue }) => {
-        const project = getValue();
-        if (!project) {
+      cell: ({ row }) => {
+        const { name, displayName } = row.original.consumerProject;
+        if (!name) {
           return (
             <Text size="sm" textColor="muted">
               —
             </Text>
           );
         }
-        const displayName = displayNames[project] ?? project;
         return (
           <div className="flex flex-col">
-            <Link
-              to={projectRoutes.detail(project)}
-              className="text-primary text-sm hover:underline">
+            <Link to={projectRoutes.detail(name)} className="text-primary text-sm hover:underline">
               {displayName}
             </Link>
-            {displayName !== project && (
+            {displayName !== name && (
               <Text size="xs" textColor="muted" className="font-mono">
-                {project}
+                {name}
               </Text>
             )}
           </div>
         );
       },
     }),
-    columnHelper.accessor((row) => row.status?.phase ?? '', {
+    columnHelper.accessor((row) => row.phase ?? '', {
       id: 'phase',
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Phase`} />,
       cell: ({ getValue }) => {
@@ -125,12 +113,12 @@ export default function ConsumersPage() {
         );
       },
     }),
-    columnHelper.accessor((row) => row.spec?.approval?.decision ?? '', {
+    columnHelper.accessor((row) => row.approvalDecision ?? '', {
       id: 'approval',
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Approval`} />,
       cell: ({ getValue, row }) => {
         const decision = getValue();
-        const message = row.original.spec?.approval?.message;
+        const message = row.original.approvalMessage;
         if (!decision) {
           return (
             <Text size="sm" textColor="muted">
@@ -150,12 +138,12 @@ export default function ConsumersPage() {
         );
       },
     }),
-    columnHelper.accessor((row) => row.metadata?.creationTimestamp ?? '', {
+    columnHelper.accessor((row) => row.requestedAt ?? '', {
       id: 'createdAt',
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Requested at`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} variant="relative" addSuffix />,
     }),
-    columnHelper.accessor((row) => row.metadata?.name ?? '', {
+    columnHelper.accessor((row) => row.name, {
       id: 'name',
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Consumer ID`} />,
       cell: ({ getValue }) => (
@@ -174,6 +162,10 @@ export default function ConsumersPage() {
       ),
     }),
   ];
+
+  const items = (data ?? []).filter(
+    (c) => c.serviceName === serviceName || (!!canonicalName && c.serviceName === canonicalName)
+  );
 
   if (!producerProject) {
     return (
@@ -196,10 +188,10 @@ export default function ConsumersPage() {
     );
   }
 
-  const revokeConsumerProject = revokeTarget?.spec?.consumerProjectRef?.name ?? '';
+  const revokeConsumerProject = revokeTarget?.consumerProject.name ?? '';
   // The ServiceEntitlement in the consumer project is conventionally named
-  // after the Service's metadata.name; the consumer's spec.serviceRef.name
-  // may be either form, so prefer this page's URL param.
+  // after the Service's metadata.name; the consumer's serviceName may be
+  // either form, so prefer this page's URL param.
   const revokeEntitlementName = serviceName;
 
   return (
@@ -229,7 +221,7 @@ export default function ConsumersPage() {
         loading={isLoading}
         data={items}
         columns={columns}
-        getRowId={(row) => row.metadata?.name ?? ''}
+        getRowId={(row) => row.name}
         defaultSort={[{ id: 'createdAt', desc: true }]}
         filterFns={{
           phase: (cellValue, filterValue) =>
@@ -238,12 +230,11 @@ export default function ConsumersPage() {
         searchFn={(row, search) => {
           const q = search.trim().toLowerCase();
           if (!q) return true;
-          const consumerProject = row.spec?.consumerProjectRef?.name ?? '';
           return [
-            consumerProject,
-            displayNames[consumerProject],
-            row.metadata?.name,
-            row.spec?.approval?.message,
+            row.consumerProject.name,
+            row.consumerProject.displayName,
+            row.name,
+            row.approvalMessage,
           ]
             .map((s) => (s ?? '').toLowerCase())
             .some((s) => s.includes(q));

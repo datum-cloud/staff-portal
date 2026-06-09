@@ -7,6 +7,7 @@ import {
   listServices,
   type ApprovalDecision,
 } from '../apis/service-catalog.api';
+import { listServiceConsumers } from '@/modules/graphql/service-consumers';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export const serviceCatalogQueryKeys = {
@@ -21,6 +22,10 @@ export const serviceCatalogQueryKeys = {
   },
   consumers: {
     inProject: (project: string) => ['service-catalog', 'consumers', 'project', project] as const,
+    // Gateway-enriched variant (adds consumer project display names), used by
+    // the Consumers table. Keyed separately from the raw REST list so both can
+    // coexist; mutations below invalidate both.
+    enriched: (project: string) => ['service-catalog', 'consumers', 'enriched', project] as const,
   },
 };
 
@@ -60,6 +65,18 @@ export const useServiceConsumersInProjectQuery = (projectName: string | undefine
   });
 };
 
+// Gateway-enriched consumer list (includes each consumer project's display
+// name). Used by the Consumers table; resolved server-side in one round trip.
+export const useServiceConsumersEnrichedQuery = (projectName: string | undefined) => {
+  const project = projectName ?? '';
+  return useQuery({
+    queryKey: serviceCatalogQueryKeys.consumers.enriched(project),
+    queryFn: () => listServiceConsumers(project),
+    enabled: !!project,
+    staleTime: 30 * 1000,
+  });
+};
+
 export const useRevokeServiceEntitlementMutation = (producerProject: string) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -71,9 +88,14 @@ export const useRevokeServiceEntitlementMutation = (producerProject: string) => 
       entitlementName: string;
     }) => deleteServiceEntitlement(consumerProject, entitlementName),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: serviceCatalogQueryKeys.consumers.inProject(producerProject),
-      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: serviceCatalogQueryKeys.consumers.inProject(producerProject),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: serviceCatalogQueryKeys.consumers.enriched(producerProject),
+        }),
+      ]);
     },
   });
 };
@@ -91,9 +113,14 @@ export const useDecideServiceConsumerMutation = (projectName: string) => {
       message?: string;
     }) => decideServiceConsumer(projectName, consumerName, decision, message),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: serviceCatalogQueryKeys.consumers.inProject(projectName),
-      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: serviceCatalogQueryKeys.consumers.inProject(projectName),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: serviceCatalogQueryKeys.consumers.enriched(projectName),
+        }),
+      ]);
     },
   });
 };

@@ -50,13 +50,13 @@ export default function ApprovalsPage() {
     {
       label: t`Approve`,
       icon: <CheckCircle className="size-4" />,
-      onClick: (row) => openDialog(row, 'Approved'),
+      onClick: (row) => openDialog(row.metadata?.name ?? '', 'Approved'),
     },
     {
       label: t`Deny`,
       icon: <XCircle className="size-4" />,
       variant: 'destructive' as const,
-      onClick: (row) => openDialog(row, 'Denied'),
+      onClick: (row) => openDialog(row.metadata?.name ?? '', 'Denied'),
     },
   ];
 
