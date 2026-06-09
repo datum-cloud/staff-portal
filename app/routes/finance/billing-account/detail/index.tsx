@@ -2,11 +2,13 @@ import { getBillingAccountDetailMetadata, useBillingAccountDetailData } from '..
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
+import { DisplayName } from '@/components/display';
 import { PageHeader } from '@/components/page-header';
 import {
   formatBillingAddress,
   getActiveBindingsForAccount,
   getBillingAccountDisplayName,
+  getOrganizationDisplayName,
   isDefaultPaymentMethod,
 } from '@/features/billing/utils';
 import { useEnv } from '@/hooks';
@@ -15,6 +17,7 @@ import { metaObject } from '@/utils/helpers';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
+import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
@@ -33,7 +36,8 @@ const paymentMethodColumnHelper = createColumnHelper<ComMiloapisBillingV1Alpha1P
 const bindingColumnHelper = createColumnHelper<ComMiloapisBillingV1Alpha1BillingAccountBinding>();
 
 export default function Page() {
-  const { account, bindings, paymentMethods, orgName } = useBillingAccountDetailData();
+  const { account, bindings, paymentMethods, orgName, organization } =
+    useBillingAccountDetailData();
   const env = useEnv();
 
   if (!account) {
@@ -147,110 +151,130 @@ export default function Page() {
         </div>
       </div>
 
-      <Card className="shadow-none">
-        <CardHeader>
-          <CardTitle>
-            <Trans>Account overview</Trans>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <DescriptionList
-            items={[
-              {
-                label: <Trans>Resource name</Trans>,
-                value: <Text>{account.metadata?.name}</Text>,
-              },
-              {
-                label: <Trans>Phase</Trans>,
-                value: <BadgeState state={account.status?.phase ?? 'Unknown'} />,
-              },
-              {
-                label: <Trans>Currency</Trans>,
-                value: <Text>{account.spec?.currencyCode ?? '—'}</Text>,
-              },
-              {
-                label: <Trans>Invoice frequency</Trans>,
-                value: <Text>{paymentTerms?.invoiceFrequency ?? '—'}</Text>,
-              },
-              {
-                label: <Trans>Net days</Trans>,
-                value: <Text>{paymentTerms?.netDays ?? '—'}</Text>,
-              },
-              {
-                label: <Trans>Invoice day of month</Trans>,
-                value: <Text>{paymentTerms?.invoiceDayOfMonth ?? '—'}</Text>,
-              },
-              {
-                label: <Trans>Linked projects</Trans>,
-                value: <Text>{account.status?.linkedProjectsCount ?? 0}</Text>,
-              },
-              {
-                label: <Trans>Created</Trans>,
-                value: <DateTime date={account.metadata?.creationTimestamp} variant="both" />,
-              },
-            ]}
-          />
-        </CardContent>
-      </Card>
+      <Row type="flex" gutter={[16, 16]}>
+        <Col span={24} lg={12}>
+          <Card className="h-full shadow-none">
+            <CardHeader>
+              <CardTitle>
+                <Trans>Account overview</Trans>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <DescriptionList
+                items={[
+                  {
+                    label: <Trans>Organization</Trans>,
+                    value: orgName ? (
+                      <DisplayName
+                        displayName={
+                          organization ? getOrganizationDisplayName(organization) : orgName
+                        }
+                        name={orgName}
+                        to={orgRoutes.detail(orgName)}
+                      />
+                    ) : (
+                      <Text>—</Text>
+                    ),
+                  },
+                  {
+                    label: <Trans>Resource name</Trans>,
+                    value: <Text>{account.metadata?.name}</Text>,
+                  },
+                  {
+                    label: <Trans>Phase</Trans>,
+                    value: <BadgeState state={account.status?.phase ?? 'Unknown'} />,
+                  },
+                  {
+                    label: <Trans>Currency</Trans>,
+                    value: <Text>{account.spec?.currencyCode ?? '—'}</Text>,
+                  },
+                  {
+                    label: <Trans>Invoice frequency</Trans>,
+                    value: <Text>{paymentTerms?.invoiceFrequency ?? '—'}</Text>,
+                  },
+                  {
+                    label: <Trans>Net days</Trans>,
+                    value: <Text>{paymentTerms?.netDays ?? '—'}</Text>,
+                  },
+                  {
+                    label: <Trans>Invoice day of month</Trans>,
+                    value: <Text>{paymentTerms?.invoiceDayOfMonth ?? '—'}</Text>,
+                  },
+                  {
+                    label: <Trans>Linked projects</Trans>,
+                    value: <Text>{account.status?.linkedProjectsCount ?? 0}</Text>,
+                  },
+                  {
+                    label: <Trans>Created</Trans>,
+                    value: <DateTime date={account.metadata?.creationTimestamp} variant="both" />,
+                  },
+                ]}
+              />
+            </CardContent>
+          </Card>
+        </Col>
 
-      <Card className="shadow-none">
-        <CardHeader>
-          <CardTitle>
-            <Trans>Contact & address</Trans>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <DescriptionList
-            items={[
-              {
-                label: <Trans>Contact name</Trans>,
-                value: <Text>{contactInfo?.name ?? '—'}</Text>,
-              },
-              {
-                label: <Trans>Business name</Trans>,
-                value: <Text>{contactInfo?.businessName ?? '—'}</Text>,
-              },
-              {
-                label: <Trans>Primary email</Trans>,
-                value: <Text>{contactInfo?.email ?? '—'}</Text>,
-              },
-              {
-                label: <Trans>Invoice recipients</Trans>,
-                value: (
-                  <Text>
-                    {contactInfo?.invoiceEmails?.length
-                      ? contactInfo.invoiceEmails.join(', ')
-                      : '—'}
-                  </Text>
-                ),
-              },
-              {
-                label: <Trans>Billing address</Trans>,
-                value: (
-                  <Text className="whitespace-pre-line">
-                    {formatBillingAddress(contactInfo?.address) || '—'}
-                  </Text>
-                ),
-              },
-              {
-                label: <Trans>Tax IDs</Trans>,
-                value: (
-                  <Text>
-                    {account.spec?.taxIds?.length
-                      ? account.spec.taxIds
-                          .map(
-                            (taxId: { type?: string; value?: string }) =>
-                              `${taxId.type}: ${taxId.value}`
-                          )
-                          .join(', ')
-                      : '—'}
-                  </Text>
-                ),
-              },
-            ]}
-          />
-        </CardContent>
-      </Card>
+        <Col span={24} lg={12}>
+          <Card className="h-full shadow-none">
+            <CardHeader>
+              <CardTitle>
+                <Trans>Contact & address</Trans>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <DescriptionList
+                items={[
+                  {
+                    label: <Trans>Contact name</Trans>,
+                    value: <Text>{contactInfo?.name ?? '—'}</Text>,
+                  },
+                  {
+                    label: <Trans>Business name</Trans>,
+                    value: <Text>{contactInfo?.businessName ?? '—'}</Text>,
+                  },
+                  {
+                    label: <Trans>Primary email</Trans>,
+                    value: <Text>{contactInfo?.email ?? '—'}</Text>,
+                  },
+                  {
+                    label: <Trans>Invoice recipients</Trans>,
+                    value: (
+                      <Text>
+                        {contactInfo?.invoiceEmails?.length
+                          ? contactInfo.invoiceEmails.join(', ')
+                          : '—'}
+                      </Text>
+                    ),
+                  },
+                  {
+                    label: <Trans>Billing address</Trans>,
+                    value: (
+                      <Text className="whitespace-pre-line">
+                        {formatBillingAddress(contactInfo?.address) || '—'}
+                      </Text>
+                    ),
+                  },
+                  {
+                    label: <Trans>Tax IDs</Trans>,
+                    value: (
+                      <Text>
+                        {account.spec?.taxIds?.length
+                          ? account.spec.taxIds
+                              .map(
+                                (taxId: { type?: string; value?: string }) =>
+                                  `${taxId.type}: ${taxId.value}`
+                              )
+                              .join(', ')
+                          : '—'}
+                      </Text>
+                    ),
+                  },
+                ]}
+              />
+            </CardContent>
+          </Card>
+        </Col>
+      </Row>
 
       <Card className="shadow-none">
         <CardHeader>

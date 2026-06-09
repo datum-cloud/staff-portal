@@ -1,4 +1,5 @@
 import { buildOrganizationNamespace } from '@/features/billing/utils';
+import { orgDetailQuery } from '@/resources/request/server/organization.request';
 import { env } from '@/utils/config/env.server';
 import {
   listBillingMiloapisComV1Alpha1NamespacedBillingAccountBinding,
@@ -60,11 +61,12 @@ export const billingAccountDetailBundleRequest = async (
   orgName: string,
   accountName: string
 ) => {
-  const [account, bindings, paymentMethods] = await Promise.all([
+  const [account, bindings, paymentMethods, organization] = await Promise.all([
     billingAccountDetailRequest(token, orgName, accountName),
     billingAccountBindingsForOrgRequest(token, orgName),
     paymentMethodsForOrgRequest(token, orgName),
+    orgDetailQuery(token, orgName).catch(() => undefined),
   ]);
 
-  return { account, bindings, paymentMethods, orgName };
+  return { account, bindings, paymentMethods, orgName, organization };
 };
