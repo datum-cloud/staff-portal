@@ -7,6 +7,7 @@ import { DialogConfirm } from '@/components/dialog';
 import { MessageCard } from '@/components/message-card';
 import { consumerMatchesService, useApprovalDialog } from '@/features/service-catalog';
 import {
+  useProjectDisplayNamesQuery,
   useRevokeServiceEntitlementMutation,
   useServiceConsumersInProjectQuery,
 } from '@/resources/request/client';
@@ -49,6 +50,14 @@ export default function ConsumersPage() {
 
   const { data, isLoading, error } = useServiceConsumersInProjectQuery(producerProject);
 
+  const items = (data?.items ?? []).filter((c) =>
+    consumerMatchesService(c, serviceName, canonicalName)
+  );
+
+  const { displayNames } = useProjectDisplayNamesQuery(
+    items.map((c) => c.spec?.consumerProjectRef?.name ?? '')
+  );
+
   const actions: ActionItem<ServiceConsumer>[] = [
     {
       label: t`Approve`,
@@ -80,16 +89,27 @@ export default function ConsumersPage() {
       ),
       cell: ({ getValue }) => {
         const project = getValue();
-        return project ? (
-          <Link
-            to={projectRoutes.detail(project)}
-            className="text-primary font-mono text-sm hover:underline">
-            {project}
-          </Link>
-        ) : (
-          <Text size="sm" textColor="muted">
-            —
-          </Text>
+        if (!project) {
+          return (
+            <Text size="sm" textColor="muted">
+              —
+            </Text>
+          );
+        }
+        const displayName = displayNames[project] ?? project;
+        return (
+          <div className="flex flex-col">
+            <Link
+              to={projectRoutes.detail(project)}
+              className="text-primary text-sm hover:underline">
+              {displayName}
+            </Link>
+            {displayName !== project && (
+              <Text size="xs" textColor="muted" className="font-mono">
+                {project}
+              </Text>
+            )}
+          </div>
         );
       },
     }),
@@ -155,10 +175,6 @@ export default function ConsumersPage() {
     }),
   ];
 
-  const items = (data?.items ?? []).filter((c) =>
-    consumerMatchesService(c, serviceName, canonicalName)
-  );
-
   if (!producerProject) {
     return (
       <MessageCard
@@ -222,8 +238,10 @@ export default function ConsumersPage() {
         searchFn={(row, search) => {
           const q = search.trim().toLowerCase();
           if (!q) return true;
+          const consumerProject = row.spec?.consumerProjectRef?.name ?? '';
           return [
-            row.spec?.consumerProjectRef?.name,
+            consumerProject,
+            displayNames[consumerProject],
             row.metadata?.name,
             row.spec?.approval?.message,
           ]

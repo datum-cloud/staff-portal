@@ -14,6 +14,7 @@ import {
 import {
   deleteResourcemanagerMiloapisComV1Alpha1Project,
   listResourcemanagerMiloapisComV1Alpha1Project,
+  readResourcemanagerMiloapisComV1Alpha1Project,
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { listTelemetryMiloapisComV1Alpha1ExportPolicyForAllNamespaces } from '@openapi/telemetry.miloapis.com/v1alpha1';
 
@@ -26,6 +27,14 @@ export const projectListQuery = async (params?: ListQueryParams) => {
     },
   });
   return response.data.data;
+};
+
+export const projectQuery = async (projectName: string) => {
+  if (!projectName) return null;
+  const response = await readResourcemanagerMiloapisComV1Alpha1Project({
+    path: { name: projectName },
+  });
+  return response.data.data ?? null;
 };
 
 export const projectEdgeListQuery = async (projectName: string, params?: ListQueryParams) => {
