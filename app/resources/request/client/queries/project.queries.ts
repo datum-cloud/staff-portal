@@ -5,13 +5,15 @@ import {
   projectExportPolicyListQuery,
   projectEdgeListQuery,
   projectListQuery,
+  projectQuery,
 } from '../apis/project.api';
 import { ListQueryParams } from '@/resources/schemas';
-import { useQuery } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 
 export const projectQueryKeys = {
   all: ['projects'] as const,
   list: (params?: ListQueryParams) => ['projects', 'list', params] as const,
+  detail: (projectName: string) => ['projects', 'detail', projectName] as const,
   domains: {
     all: (projectName: string) => ['projects', projectName, 'domains'] as const,
     list: (projectName: string, params?: ListQueryParams) =>
@@ -55,6 +57,35 @@ export const useProjectListQuery = (params?: ListQueryParams) => {
     queryFn: () => projectListQuery(params),
     staleTime: 5 * 60 * 1000,
   });
+};
+
+/**
+ * Fetches the given projects by name and returns a map of project name to its
+ * human-readable display name (the `kubernetes.io/description` annotation),
+ * falling back to the project name when no annotation is present.
+ */
+export const useProjectDisplayNamesQuery = (projectNames: string[]) => {
+  const uniqueNames = Array.from(new Set(projectNames.filter(Boolean)));
+
+  const queries = useQueries({
+    queries: uniqueNames.map((name) => ({
+      queryKey: projectQueryKeys.detail(name),
+      queryFn: () => projectQuery(name),
+      enabled: !!name,
+      staleTime: 5 * 60 * 1000,
+    })),
+  });
+
+  const displayNames: Record<string, string> = {};
+  uniqueNames.forEach((name, index) => {
+    const project = queries[index]?.data;
+    displayNames[name] = project?.metadata?.annotations?.['kubernetes.io/description'] || name;
+  });
+
+  return {
+    displayNames,
+    isLoading: queries.some((q) => q.isLoading),
+  };
 };
 
 export const useProjectDomainListQuery = (projectName: string, params?: ListQueryParams) => {
