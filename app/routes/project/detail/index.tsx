@@ -1,16 +1,23 @@
 import { getProjectDetailMetadata, useProjectDetailData } from '../shared';
 import type { Route } from './+types/index';
+import { BadgeState } from '@/components/badge';
 import { DangerZoneCard } from '@/components/danger-zone-card';
 import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
 import { PageHeader } from '@/components/page-header';
-import { projectDeleteMutation } from '@/resources/request/client';
-import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
+import { getActiveProjectBinding, getBillingAccountDisplayName } from '@/features/billing/utils';
+import {
+  useBillingAccountBindingListForOrgQuery,
+  useBillingAccountListForOrgQuery,
+  projectDeleteMutation,
+} from '@/resources/request/client';
+import { financeRoutes, orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
@@ -22,6 +29,40 @@ export default function Page() {
   const { project, organization } = useProjectDetailData();
   const { t } = useLingui();
   const navigate = useNavigate();
+  const orgName = organization?.metadata?.name ?? '';
+  const projectName = project?.metadata?.name ?? '';
+
+  const { data: bindingsData } = useBillingAccountBindingListForOrgQuery(orgName);
+  const { data: accountsData } = useBillingAccountListForOrgQuery(orgName);
+
+  const billingValue = useMemo(() => {
+    const bindings = bindingsData?.items ?? [];
+    const accounts = accountsData?.items ?? [];
+    const activeBinding = getActiveProjectBinding(bindings, projectName);
+    const accountName = activeBinding?.spec?.billingAccountRef?.name ?? '';
+    const account = accounts.find((item) => item.metadata?.name === accountName);
+
+    if (account) {
+      return (
+        <Link
+          to={financeRoutes.billingAccounts.detail(orgName, account.metadata?.name ?? '')}
+          className="inline-flex items-center gap-2 hover:underline">
+          {getBillingAccountDisplayName(account)}
+          <BadgeState state={account.status?.phase ?? 'Unknown'} />
+        </Link>
+      );
+    }
+
+    if (accountName) {
+      return (
+        <span>
+          {accountName} <Trans>(cross-org)</Trans>
+        </span>
+      );
+    }
+
+    return t`No billing account assigned`;
+  }, [accountsData?.items, bindingsData?.items, orgName, projectName, t]);
 
   const handleDeleteProject = async () => {
     await projectDeleteMutation(project?.metadata?.name ?? '');
@@ -52,6 +93,10 @@ export default function Page() {
                     {organization?.metadata?.annotations?.['kubernetes.io/display-name']}
                   </Link>
                 ),
+              },
+              {
+                label: <Trans>Billing account</Trans>,
+                value: billingValue,
               },
               {
                 label: <Trans>Created</Trans>,

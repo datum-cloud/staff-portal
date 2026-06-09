@@ -145,6 +145,15 @@ export const activityRoutes = {
   },
 } as const;
 
+// Finance feature routes
+export const financeRoutes = {
+  billingAccounts: {
+    list: () => '/finance/billing-accounts',
+    detail: (orgName: string, accountName: string) =>
+      `/finance/billing-accounts/${orgName}/${accountName}`,
+  },
+} as const;
+
 // Profile feature routes
 export const profileRoutes = {
   settings: () => '/profile/settings',
@@ -177,4 +186,5 @@ export const routes = {
   fraud: fraudRoutes,
   activity: activityRoutes,
   serviceCatalog: serviceCatalogRoutes,
+  finance: financeRoutes,
 } as const;

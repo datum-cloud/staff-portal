@@ -5,6 +5,7 @@ import { DangerZoneCard } from '@/components/danger-zone-card';
 import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
 import { PageHeader } from '@/components/page-header';
+import { OrgBillingAccountsCard } from '@/features/billing';
 import { orgDeleteMutation } from '@/resources/request/client';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
@@ -62,6 +63,8 @@ export default function Page() {
           />
         </CardContent>
       </Card>
+
+      <OrgBillingAccountsCard orgName={data.metadata?.name ?? ''} />
 
       <DangerZoneCard
         deleteTitle={t`Delete Organization`}

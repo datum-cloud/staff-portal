@@ -42,6 +42,18 @@ const STATIC_SYSTEM_PROMPT = [
   'List and inspect fraud evaluations and policies.',
   'Use when investigating suspicious accounts or checking detection rules.',
   '',
+  '### Billing tools',
+  'Read-only tools for billing accounts and payment methods across the platform.',
+  'Billing vs quotas vs metrics vs activity:',
+  '- `listProjectQuotas` = resource allowance buckets (how many domains, connectors, etc. a project may create)',
+  '- `queryPrometheus` / `queryPrometheusRange` = live traffic and performance telemetry',
+  '- `queryActivityLogs` = audit trail of who changed what',
+  'Call `listBillingAccounts` when the operator asks about billing accounts or funding — omit orgName for platform-wide, or pass orgName to scope to one org.',
+  'Call `getBillingAccount` for a specific account’s contact info, linked projects, and default payment method.',
+  'Call `getProjectBillingBinding` when the operator asks which billing account funds a project.',
+  'Call `listPaymentMethods` when the operator asks about cards or payment methods on file.',
+  'Billing tools are read-only in the staff portal — link to Finance billing account pages for full detail.',
+  '',
   '### Metrics tools',
   'Run PromQL queries against the platform Prometheus for traffic, error, and performance data.',
   'Use `queryPrometheus` for instant queries and `queryPrometheusRange` for time-series.',
@@ -106,7 +118,8 @@ export function buildSystemPrompt(clientOs?: string): SystemModelMessage[] {
     '- Activity: /activity',
     '- Fraud & Abuse: /fraud',
     '- Contacts: /contacts',
-    '- Email Activity: /email-activity'
+    '- Email Activity: /email-activity',
+    '- Billing Accounts: /finance/billing-accounts'
   );
 
   return [
