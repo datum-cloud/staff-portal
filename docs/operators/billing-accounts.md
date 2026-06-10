@@ -5,7 +5,7 @@ stand up billing attribution for an organization: create the
 `BillingAccount`, bind the org's projects to it, and verify that usage is
 flowing. It assumes you already have staff portal access and a working
 `kubectl` against the milo control plane (the staff portal does not yet
-have a UI to *create* billing accounts — it only displays them and their
+have a UI to _create_ billing accounts — it only displays them and their
 usage).
 
 > **Important:** Today this work only **attributes** usage to an account.
@@ -23,11 +23,11 @@ usage).
 
 ## Where things live
 
-| Resource | Where | API group |
-|---|---|---|
-| `BillingAccount` | `organization-<orgname>` namespace | `billing.miloapis.com/v1alpha1` |
-| `BillingAccountBinding` | `organization-<orgname>` namespace | `billing.miloapis.com/v1alpha1` |
-| Usage view | Staff portal → **Organization → Usage** | (Amberflo, read-through) |
+| Resource                | Where                                   | API group                       |
+| ----------------------- | --------------------------------------- | ------------------------------- |
+| `BillingAccount`        | `organization-<orgname>` namespace      | `billing.miloapis.com/v1alpha1` |
+| `BillingAccountBinding` | `organization-<orgname>` namespace      | `billing.miloapis.com/v1alpha1` |
+| Usage view              | Staff portal → **Organization → Usage** | (Amberflo, read-through)        |
 
 `BillingAccount` and `BillingAccountBinding` are both org-scoped. There is
 no global "all billing accounts" view.
@@ -143,14 +143,14 @@ showing daily totals for the last 30 days summed across every
 
 What the page tells you, depending on what it shows:
 
-| The page shows | What it means | Next step |
-|---|---|---|
-| Charts with values | Metering is working end-to-end for at least one meter. | Nothing — this is success. |
-| Page says **no billing account** | The org has no `BillingAccount` yet, or your token can't list them. | Re-check §1. If the account exists, this is an RBAC issue — see the runbook. |
-| Page says **no meters** | No `MeterDefinition` is registered at all. | This is a platform-level state, not org-specific. Engineering issue. |
-| Page renders but every meter is flat | Either no service is emitting yet, the project isn't bound (§2), the meter isn't `Published`, or events are stuck in quarantine. | Hand to engineering with the org name, account name, and meter; they'll work the [usage-metering runbook](https://github.com/datum-cloud/billing/blob/main/docs/runbooks/usage-metering.md). |
-| Page says **unconfigured** | The staff portal deployment doesn't have an Amberflo API key set. | SRE config issue, not org-specific. |
-| Page says **insufficient permissions** | Your staff role can't list `BillingAccount` in this org. | Ask your manager to raise your role, or check that the platform admin role binding is in place. |
+| The page shows                         | What it means                                                                                                                    | Next step                                                                                                                                                                                    |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Charts with values                     | Metering is working end-to-end for at least one meter.                                                                           | Nothing — this is success.                                                                                                                                                                   |
+| Page says **no billing account**       | The org has no `BillingAccount` yet, or your token can't list them.                                                              | Re-check §1. If the account exists, this is an RBAC issue — see the runbook.                                                                                                                 |
+| Page says **no meters**                | No `MeterDefinition` is registered at all.                                                                                       | This is a platform-level state, not org-specific. Engineering issue.                                                                                                                         |
+| Page renders but every meter is flat   | Either no service is emitting yet, the project isn't bound (§2), the meter isn't `Published`, or events are stuck in quarantine. | Hand to engineering with the org name, account name, and meter; they'll work the [usage-metering runbook](https://github.com/datum-cloud/billing/blob/main/docs/runbooks/usage-metering.md). |
+| Page says **unconfigured**             | The staff portal deployment doesn't have an Amberflo API key set.                                                                | SRE config issue, not org-specific.                                                                                                                                                          |
+| Page says **insufficient permissions** | Your staff role can't list `BillingAccount` in this org.                                                                         | Ask your manager to raise your role, or check that the platform admin role binding is in place.                                                                                              |
 
 The chart is summed across all `BillingAccount`s in the org. If the org
 has multiple accounts and you need a per-account breakdown, that's a
