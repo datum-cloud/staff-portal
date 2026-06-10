@@ -13,6 +13,10 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: app/routes/project/detail/index.tsx:59
+msgid "(cross-org)"
+msgstr ""
+
 #: app/features/fraud/detail/evaluation-sections.tsx:269
 msgid "(current)"
 msgstr ""
@@ -47,6 +51,10 @@ msgstr ""
 
 #: app/routes/project/detail/export-policy/index.tsx:42
 msgid "# of Sources"
+msgstr ""
+
+#: app/features/quota/components/quota-bucket-list.tsx:165
+msgid "% Used"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:375
@@ -107,7 +115,7 @@ msgstr ""
 msgid "Access denied — IAM role pending."
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:208
+#: app/routes/service-catalog/detail/consumers.tsx:224
 msgid "Access revoked"
 msgstr ""
 
@@ -124,6 +132,10 @@ msgstr ""
 msgid "Account Management"
 msgstr ""
 
+#: app/routes/finance/billing-account/detail/index.tsx:159
+msgid "Account overview"
+msgstr ""
+
 #: app/features/activity/components/activity-list.tsx:196
 msgid "Action"
 msgstr ""
@@ -134,7 +146,7 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:249
+#: app/routes/service-catalog/detail/consumers.tsx:267
 #: app/routes/user/index.tsx:280
 #: app/routes/user/index.tsx:307
 msgid "Active"
@@ -151,10 +163,10 @@ msgid "Active Sessions"
 msgstr ""
 
 #: app/components/app-search/use-app-search.ts:48
-#: app/components/app-sidebar/index.tsx:173
+#: app/components/app-sidebar/index.tsx:187
 #: app/routes/activity-hub/layout.tsx:12
 #: app/routes/organization/detail/activity/layout.tsx:5
-#: app/routes/organization/detail/layout.tsx:91
+#: app/routes/organization/detail/layout.tsx:101
 #: app/routes/project/detail/activity/layout.tsx:5
 #: app/routes/project/detail/layout.tsx:149
 #: app/routes/user/detail/activity/layout.tsx:5
@@ -218,7 +230,7 @@ msgstr ""
 msgid "Age"
 msgstr ""
 
-#: app/components/app-sidebar/index.tsx:127
+#: app/components/app-sidebar/index.tsx:129
 #: app/features/activity/components/activity-list.tsx:389
 #: app/features/activity/components/activity-list.tsx:488
 #: app/routes/edge/index.tsx:10
@@ -228,6 +240,10 @@ msgstr ""
 #: app/routes/project/detail/edge/layout.tsx:5
 #: app/routes/project/detail/layout.tsx:124
 msgid "AI Edge"
+msgstr ""
+
+#: app/routes/finance/billing-account/detail/index.tsx:149
+msgid "All billing accounts"
 msgstr ""
 
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:78
@@ -254,7 +270,7 @@ msgstr ""
 msgid "All write operations"
 msgstr ""
 
-#: app/features/quota/components/quota-grant-list.tsx:94
+#: app/features/quota/components/quota-grant-list.tsx:150
 msgid "Allocation"
 msgstr ""
 
@@ -271,7 +287,7 @@ msgstr ""
 msgid "API Group"
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:110
+#: app/routes/service-catalog/detail/consumers.tsx:130
 msgid "Approval"
 msgstr ""
 
@@ -282,7 +298,7 @@ msgstr ""
 
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:38
 #: app/routes/service-catalog/detail/approvals.tsx:51
-#: app/routes/service-catalog/detail/consumers.tsx:54
+#: app/routes/service-catalog/detail/consumers.tsx:63
 #: app/routes/user/detail/index.tsx:205
 #: app/routes/user/index.tsx:53
 msgid "Approve"
@@ -319,7 +335,7 @@ msgid "Are you sure you want to delete contact \"{0}\"? This action cannot be un
 msgstr ""
 
 #. placeholder {0}: selectedGrant?.metadata?.name
-#: app/features/quota/components/quota-grant-list.tsx:136
+#: app/features/quota/components/quota-grant-list.tsx:206
 msgid "Are you sure you want to delete grant \"{0}\"? This action cannot be undone."
 msgstr ""
 
@@ -339,13 +355,13 @@ msgstr ""
 
 #. placeholder {0}: data.metadata?.annotations?.['kubernetes.io/display-name'] ?? ''
 #. placeholder {1}: data.metadata?.name ?? ''
-#: app/routes/organization/detail/index.tsx:70
+#: app/routes/organization/detail/index.tsx:73
 msgid "Are you sure you want to delete organization \"{0} ({1})\"? This action cannot be undone."
 msgstr ""
 
 #. placeholder {0}: project?.metadata?.annotations?.['kubernetes.io/description']
 #. placeholder {1}: project?.metadata?.name ?? ''
-#: app/routes/project/detail/index.tsx:73
+#: app/routes/project/detail/index.tsx:118
 msgid "Are you sure you want to delete project \"{0} ({1})\"? This action cannot be undone."
 msgstr ""
 
@@ -394,7 +410,7 @@ msgstr ""
 #: app/routes/activity-hub/layout.tsx:34
 #: app/routes/organization/detail/activity/audit-logs.tsx:14
 #: app/routes/organization/detail/activity/audit-logs.tsx:17
-#: app/routes/organization/detail/layout.tsx:97
+#: app/routes/organization/detail/layout.tsx:107
 #: app/routes/project/detail/activity/audit-logs.tsx:14
 #: app/routes/project/detail/activity/audit-logs.tsx:17
 #: app/routes/project/detail/layout.tsx:155
@@ -416,6 +432,34 @@ msgstr ""
 msgid "Back to evaluations"
 msgstr ""
 
+#: app/routes/project/detail/index.tsx:98
+msgid "Billing account"
+msgstr ""
+
+#: app/routes/finance/billing-account/detail/index.tsx:32
+#: app/routes/finance/billing-account/detail/index.tsx:46
+msgid "Billing Account"
+msgstr ""
+
+#: app/routes/finance/billing-account/detail/index.tsx:50
+msgid "Billing account not found or you do not have permission to view it."
+msgstr ""
+
+#: app/components/app-sidebar/index.tsx:181
+#: app/features/billing/components/org-billing-accounts-card.tsx:56
+#: app/routes/finance/billing-account/index.tsx:6
+#: app/routes/finance/billing-account/layout.tsx:5
+msgid "Billing Accounts"
+msgstr ""
+
+#: app/routes/finance/billing-account/detail/index.tsx:250
+msgid "Billing address"
+msgstr ""
+
+#: app/routes/finance/billing-account/detail/index.tsx:232
+msgid "Business name"
+msgstr ""
+
 #: app/routes/service-catalog/index.tsx:56
 msgid "by"
 msgstr ""
@@ -427,8 +471,8 @@ msgstr ""
 #: app/features/contact/components/contact-list.tsx:117
 #: app/features/feature-flags/components/feature-flag-list.tsx:230
 #: app/features/fraud/policy/policy-form.tsx:318
-#: app/features/quota/components/quota-bucket-list.tsx:128
-#: app/features/quota/components/quota-grant-list.tsx:138
+#: app/features/quota/components/quota-bucket-list.tsx:212
+#: app/features/quota/components/quota-grant-list.tsx:208
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:39
 #: app/features/user/components/user-reject-dialog.tsx:30
 #: app/routes/contact-group/detail/member.tsx:346
@@ -448,10 +492,14 @@ msgstr ""
 #: app/routes/group/member.tsx:171
 #: app/routes/organization/detail/member.tsx:85
 #: app/routes/profile/session.tsx:106
-#: app/routes/service-catalog/detail/consumers.tsx:200
+#: app/routes/service-catalog/detail/consumers.tsx:216
 #: app/routes/user/detail/index.tsx:152
 #: app/routes/user/index.tsx:173
 msgid "Cancel"
+msgstr ""
+
+#: app/routes/finance/billing-account/detail/index.tsx:72
+msgid "Card"
 msgstr ""
 
 #: app/features/dashboard/components/cluster-health-widget.tsx:112
@@ -509,16 +557,16 @@ msgid "Connection"
 msgstr ""
 
 #: app/routes/service-catalog/detail/approvals.tsx:86
-#: app/routes/service-catalog/detail/consumers.tsx:140
+#: app/routes/service-catalog/detail/consumers.tsx:160
 msgid "Consumer ID"
 msgstr ""
 
 #: app/routes/service-catalog/detail/approvals.tsx:67
-#: app/routes/service-catalog/detail/consumers.tsx:79
+#: app/routes/service-catalog/detail/consumers.tsx:88
 msgid "Consumer Project"
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:29
+#: app/routes/service-catalog/detail/consumers.tsx:30
 #: app/routes/service-catalog/detail/layout.tsx:41
 msgid "Consumers"
 msgstr ""
@@ -526,6 +574,10 @@ msgstr ""
 #: app/features/fraud/detail/evaluation-sections.tsx:350
 #: app/routes/contact-group/detail/member.tsx:68
 msgid "Contact"
+msgstr ""
+
+#: app/routes/finance/billing-account/detail/index.tsx:221
+msgid "Contact & address"
 msgstr ""
 
 #: app/routes/contact-group/detail/member.tsx:321
@@ -538,6 +590,10 @@ msgstr ""
 
 #: app/features/contact/components/contact-list.tsx:124
 msgid "Contact deleted successfully"
+msgstr ""
+
+#: app/features/billing/components/billing-account-list.tsx:87
+msgid "Contact email"
 msgstr ""
 
 #: app/features/contact-group/components/contact-group-form.tsx:46
@@ -571,13 +627,17 @@ msgstr ""
 msgid "Contact Information"
 msgstr ""
 
+#: app/routes/finance/billing-account/detail/index.tsx:228
+msgid "Contact name"
+msgstr ""
+
 #: app/features/contact/components/contact-form.tsx:73
 msgid "Contact updated successfully"
 msgstr ""
 
 #: app/components/app-search/search-results.tsx:291
-#: app/components/app-sidebar/index.tsx:145
-#: app/components/app-sidebar/index.tsx:151
+#: app/components/app-sidebar/index.tsx:147
+#: app/components/app-sidebar/index.tsx:153
 #: app/routes/contact/index.tsx:14
 #: app/routes/contact/layout.tsx:5
 #: app/routes/user/detail/contacts.tsx:9
@@ -650,18 +710,19 @@ msgstr ""
 msgid "Create Policy"
 msgstr ""
 
+#: app/features/billing/components/billing-account-list.tsx:92
 #: app/features/contact/components/contact-list.tsx:95
 #: app/features/dns/components/dns-zone-list.tsx:131
 #: app/features/domain/components/domain-list.tsx:106
 #: app/features/edge/components/edge-list.tsx:107
-#: app/features/quota/components/quota-bucket-list.tsx:97
-#: app/features/quota/components/quota-grant-list.tsx:114
+#: app/features/quota/components/quota-grant-list.tsx:175
 #: app/features/user/components/user-identity-card.tsx:181
 #: app/routes/contact-group/index.tsx:89
+#: app/routes/finance/billing-account/detail/index.tsx:208
 #: app/routes/fraud/providers/index.tsx:102
 #: app/routes/group/index.tsx:35
 #: app/routes/group/member.tsx:122
-#: app/routes/organization/detail/index.tsx:54
+#: app/routes/organization/detail/index.tsx:55
 #: app/routes/organization/detail/project.tsx:50
 #: app/routes/organization/index.tsx:43
 #: app/routes/profile/session.tsx:73
@@ -669,7 +730,7 @@ msgstr ""
 #: app/routes/project/detail/edge/detail.tsx:123
 #: app/routes/project/detail/export-policy/detail.tsx:83
 #: app/routes/project/detail/export-policy/index.tsx:53
-#: app/routes/project/detail/index.tsx:57
+#: app/routes/project/detail/index.tsx:102
 #: app/routes/project/index.tsx:49
 #: app/routes/user/detail/index.tsx:280
 #: app/routes/user/index.tsx:121
@@ -681,7 +742,12 @@ msgstr ""
 msgid "Credentials Reference"
 msgstr ""
 
-#: app/components/app-sidebar/index.tsx:107
+#: app/features/billing/components/billing-account-list.tsx:77
+#: app/routes/finance/billing-account/detail/index.tsx:188
+msgid "Currency"
+msgstr ""
+
+#: app/components/app-sidebar/index.tsx:109
 #: app/routes/customers/layout.tsx:7
 #: app/routes/project/detail/layout.tsx:50
 msgid "Customers"
@@ -696,7 +762,7 @@ msgid "Dark"
 msgstr ""
 
 #: app/components/app-search/use-app-search.ts:33
-#: app/components/app-sidebar/index.tsx:101
+#: app/components/app-sidebar/index.tsx:103
 #: app/routes/dashboard/index.tsx:28
 msgid "Dashboard"
 msgstr ""
@@ -745,8 +811,12 @@ msgstr ""
 msgid "Decision"
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:250
+#: app/routes/service-catalog/detail/consumers.tsx:268
 msgid "Declined"
+msgstr ""
+
+#: app/routes/finance/billing-account/detail/index.tsx:92
+msgid "Default"
 msgstr ""
 
 #: app/features/fraud/policy/policy-detail.tsx:168
@@ -762,8 +832,8 @@ msgstr ""
 #: app/features/contact/components/contact-list.tsx:58
 #: app/features/contact/components/contact-list.tsx:116
 #: app/features/fraud/policy/policy-detail.tsx:100
-#: app/features/quota/components/quota-grant-list.tsx:56
-#: app/features/quota/components/quota-grant-list.tsx:137
+#: app/features/quota/components/quota-grant-list.tsx:186
+#: app/features/quota/components/quota-grant-list.tsx:207
 #: app/routes/contact-group/detail/member.tsx:163
 #: app/routes/contact-group/detail/member.tsx:345
 #: app/routes/contact-group/index.tsx:56
@@ -820,7 +890,7 @@ msgstr ""
 msgid "Delete Evaluation"
 msgstr ""
 
-#: app/features/quota/components/quota-grant-list.tsx:135
+#: app/features/quota/components/quota-grant-list.tsx:205
 msgid "Delete Grant"
 msgstr ""
 
@@ -830,8 +900,8 @@ msgstr ""
 msgid "Delete Member"
 msgstr ""
 
-#: app/routes/organization/detail/index.tsx:67
-#: app/routes/organization/detail/index.tsx:69
+#: app/routes/organization/detail/index.tsx:70
+#: app/routes/organization/detail/index.tsx:72
 msgid "Delete Organization"
 msgstr ""
 
@@ -839,8 +909,8 @@ msgstr ""
 msgid "Delete Policy"
 msgstr ""
 
-#: app/routes/project/detail/index.tsx:70
-#: app/routes/project/detail/index.tsx:72
+#: app/routes/project/detail/index.tsx:115
+#: app/routes/project/detail/index.tsx:117
 msgid "Delete Project"
 msgstr ""
 
@@ -865,7 +935,7 @@ msgstr ""
 
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:38
 #: app/routes/service-catalog/detail/approvals.tsx:56
-#: app/routes/service-catalog/detail/consumers.tsx:60
+#: app/routes/service-catalog/detail/consumers.tsx:69
 msgid "Deny"
 msgstr ""
 
@@ -887,8 +957,8 @@ msgstr ""
 
 #: app/features/contact-group/components/contact-group-form.tsx:80
 #: app/features/dns/components/dns-zone-list.tsx:138
-#: app/routes/organization/detail/index.tsx:42
-#: app/routes/project/detail/index.tsx:41
+#: app/routes/organization/detail/index.tsx:43
+#: app/routes/project/detail/index.tsx:82
 msgid "Description"
 msgstr ""
 
@@ -917,6 +987,11 @@ msgstr ""
 
 #: app/features/feature-flags/components/feature-flag-list.tsx:174
 msgid "Disable flag"
+msgstr ""
+
+#: app/features/billing/components/billing-account-list.tsx:39
+#: app/features/billing/components/org-billing-accounts-card.tsx:28
+msgid "Display name"
 msgstr ""
 
 #: app/features/contact-group/components/contact-group-form.tsx:63
@@ -969,7 +1044,7 @@ msgid "DNS Zone"
 msgstr ""
 
 #: app/components/app-search/search-results.tsx:254
-#: app/components/app-sidebar/index.tsx:133
+#: app/components/app-sidebar/index.tsx:135
 #: app/routes/dns/index.tsx:10
 #: app/routes/dns/layout.tsx:5
 msgid "DNS Zones"
@@ -992,7 +1067,7 @@ msgid "Domain verification is in progress. This may take a few minutes."
 msgstr ""
 
 #: app/components/app-search/search-results.tsx:217
-#: app/components/app-sidebar/index.tsx:139
+#: app/components/app-sidebar/index.tsx:141
 #: app/routes/domain/index.tsx:10
 #: app/routes/domain/layout.tsx:5
 #: app/routes/organization/detail/domain.tsx:9
@@ -1021,8 +1096,8 @@ msgstr ""
 msgid "Edit Fraud Provider"
 msgstr ""
 
-#: app/features/quota/components/quota-bucket-list.tsx:47
-#: app/features/quota/components/quota-bucket-list.tsx:126
+#: app/features/quota/components/quota-bucket-list.tsx:191
+#: app/features/quota/components/quota-bucket-list.tsx:210
 msgid "Edit Quota"
 msgstr ""
 
@@ -1036,7 +1111,7 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: app/components/app-sidebar/index.tsx:167
+#: app/components/app-sidebar/index.tsx:169
 #: app/routes/email-activity/index.tsx:12
 #: app/routes/email-activity/layout.tsx:5
 #: app/routes/user/detail/email-activity.tsx:9
@@ -1152,6 +1227,10 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
+#: app/routes/finance/billing-account/detail/index.tsx:114
+msgid "Established"
+msgstr ""
+
 #: app/features/fraud/detail/evaluation-sections.tsx:414
 #: app/routes/fraud/index.tsx:190
 msgid "Evaluated"
@@ -1191,7 +1270,7 @@ msgstr ""
 #: app/routes/activity-hub/layout.tsx:29
 #: app/routes/organization/detail/activity/events.tsx:14
 #: app/routes/organization/detail/activity/events.tsx:17
-#: app/routes/organization/detail/layout.tsx:96
+#: app/routes/organization/detail/layout.tsx:106
 #: app/routes/project/detail/activity/events.tsx:14
 #: app/routes/project/detail/activity/events.tsx:17
 #: app/routes/project/detail/layout.tsx:154
@@ -1225,7 +1304,7 @@ msgstr ""
 msgid "Failed to load approvals."
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:177
+#: app/routes/service-catalog/detail/consumers.tsx:193
 msgid "Failed to load consumers."
 msgstr ""
 
@@ -1276,7 +1355,7 @@ msgstr ""
 #: app/routes/activity-hub/feed.tsx:31
 #: app/routes/activity-hub/layout.tsx:24
 #: app/routes/organization/detail/activity/index.tsx:8
-#: app/routes/organization/detail/layout.tsx:95
+#: app/routes/organization/detail/layout.tsx:105
 #: app/routes/project/detail/activity/index.tsx:14
 #: app/routes/project/detail/layout.tsx:153
 #: app/routes/user/detail/activity/index.tsx:23
@@ -1301,7 +1380,7 @@ msgid "Filter by invitation"
 msgstr ""
 
 #: app/routes/fraud/index.tsx:310
-#: app/routes/service-catalog/detail/consumers.tsx:246
+#: app/routes/service-catalog/detail/consumers.tsx:264
 msgid "Filter by phase"
 msgstr ""
 
@@ -1335,6 +1414,11 @@ msgstr ""
 msgid "Filters"
 msgstr ""
 
+#: app/components/app-sidebar/index.tsx:175
+#: app/routes/finance/layout.tsx:5
+msgid "Finance"
+msgstr ""
+
 #: app/routes/profile/session.tsx:65
 msgid "Fingerprint ID"
 msgstr ""
@@ -1359,7 +1443,7 @@ msgstr ""
 msgid "Flag"
 msgstr ""
 
-#: app/components/app-sidebar/index.tsx:185
+#: app/components/app-sidebar/index.tsx:199
 #: app/routes/fraud/layout.tsx:8
 msgid "Fraud & Abuse"
 msgstr ""
@@ -1420,7 +1504,11 @@ msgstr ""
 msgid "Go to dashboard"
 msgstr ""
 
-#: app/features/quota/components/quota-grant-list.tsx:148
+#: app/features/quota/components/quota-grant-list.tsx:135
+msgid "Grant"
+msgstr ""
+
+#: app/features/quota/components/quota-grant-list.tsx:218
 msgid "Grant deleted successfully"
 msgstr ""
 
@@ -1448,8 +1536,8 @@ msgstr ""
 msgid "Group is required"
 msgstr ""
 
-#: app/components/app-sidebar/index.tsx:155
-#: app/components/app-sidebar/index.tsx:161
+#: app/components/app-sidebar/index.tsx:157
+#: app/components/app-sidebar/index.tsx:163
 #: app/routes/contact/detail/group.tsx:29
 #: app/routes/contact/detail/layout.tsx:53
 #: app/routes/group/index.tsx:14
@@ -1487,7 +1575,7 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:251
+#: app/routes/service-catalog/detail/consumers.tsx:269
 #: app/routes/user/index.tsx:281
 #: app/routes/user/index.tsx:308
 msgid "Inactive"
@@ -1520,6 +1608,18 @@ msgstr ""
 #: app/routes/user/index.tsx:164
 #: app/routes/user/index.tsx:171
 msgid "Invite User"
+msgstr ""
+
+#: app/routes/finance/billing-account/detail/index.tsx:200
+msgid "Invoice day of month"
+msgstr ""
+
+#: app/routes/finance/billing-account/detail/index.tsx:192
+msgid "Invoice frequency"
+msgstr ""
+
+#: app/routes/finance/billing-account/detail/index.tsx:240
+msgid "Invoice recipients"
 msgstr ""
 
 #: app/routes/profile/session.tsx:58
@@ -1588,13 +1688,24 @@ msgstr ""
 msgid "Light"
 msgstr ""
 
-#: app/features/quota/components/quota-bucket-list.tsx:156
+#: app/features/quota/components/quota-bucket-list.tsx:236
 msgid "Limit:"
+msgstr ""
+
+#: app/features/billing/components/billing-account-list.tsx:82
+#: app/features/billing/components/org-billing-accounts-card.tsx:47
+#: app/routes/finance/billing-account/detail/index.tsx:204
+#: app/routes/finance/billing-account/detail/index.tsx:309
+msgid "Linked projects"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:366
 #: app/features/activity/components/activity-list.tsx:456
 msgid "List"
+msgstr ""
+
+#: app/features/billing/components/org-billing-accounts-card.tsx:62
+msgid "Loading billing accounts..."
 msgstr ""
 
 #: app/routes/fraud/detail/index.tsx:67
@@ -1706,7 +1817,7 @@ msgstr ""
 
 #: app/routes/contact-group/detail/layout.tsx:39
 #: app/routes/contact-group/detail/member.tsx:34
-#: app/routes/organization/detail/layout.tsx:101
+#: app/routes/organization/detail/layout.tsx:91
 #: app/routes/organization/detail/member.tsx:25
 msgid "Members"
 msgstr ""
@@ -1745,19 +1856,20 @@ msgstr ""
 msgid "My Profile"
 msgstr ""
 
+#: app/features/billing/components/billing-account-list.tsx:55
 #: app/features/contact/components/contact-list.tsx:67
 #: app/features/dashboard/components/pending-approvals-widget.tsx:126
 #: app/features/edge/components/edge-list.tsx:65
 #: app/features/fraud/policy/policy-form.tsx:153
-#: app/features/quota/components/quota-grant-list.tsx:75
 #: app/routes/contact-group/detail/member.tsx:182
 #: app/routes/contact-group/index.tsx:65
 #: app/routes/contact/detail/group.tsx:84
+#: app/routes/finance/billing-account/detail/index.tsx:67
 #: app/routes/fraud/providers/create.tsx:92
 #: app/routes/fraud/providers/index.tsx:55
 #: app/routes/group/index.tsx:24
 #: app/routes/group/member.tsx:104
-#: app/routes/organization/detail/index.tsx:46
+#: app/routes/organization/detail/index.tsx:47
 #: app/routes/organization/detail/member.tsx:103
 #: app/routes/organization/detail/project.tsx:35
 #: app/routes/organization/index.tsx:25
@@ -1767,7 +1879,7 @@ msgstr ""
 #: app/routes/project/detail/export-policy/detail.tsx:109
 #: app/routes/project/detail/export-policy/detail.tsx:161
 #: app/routes/project/detail/export-policy/index.tsx:30
-#: app/routes/project/detail/index.tsx:45
+#: app/routes/project/detail/index.tsx:86
 #: app/routes/project/detail/secret.tsx:26
 #: app/routes/project/index.tsx:26
 #: app/routes/user/detail/organization.tsx:36
@@ -1795,6 +1907,10 @@ msgstr ""
 msgid "Navigation"
 msgstr ""
 
+#: app/routes/finance/billing-account/detail/index.tsx:196
+msgid "Net days"
+msgstr ""
+
 #: app/features/fraud/detail/maxmind-rows.tsx:120
 msgid "Network"
 msgstr ""
@@ -1807,13 +1923,17 @@ msgstr ""
 msgid "New Fraud Evaluation"
 msgstr ""
 
-#: app/features/quota/components/quota-bucket-list.tsx:160
+#: app/features/quota/components/quota-bucket-list.tsx:240
 msgid "New Limit"
 msgstr ""
 
 #: app/routes/activity-hub/policies/detail.tsx:15
 #: app/routes/activity-hub/policies/detail.tsx:26
 msgid "New Policy"
+msgstr ""
+
+#: app/routes/finance/billing-account/detail/index.tsx:94
+msgid "No"
 msgstr ""
 
 #: app/features/service-catalog/components/conditions-card.tsx:83
@@ -1829,11 +1949,24 @@ msgstr ""
 msgid "No AI Edge found."
 msgstr ""
 
+#: app/routes/project/detail/index.tsx:64
+msgid "No billing account assigned"
+msgstr ""
+
+#: app/features/billing/components/org-billing-accounts-card.tsx:66
+#: app/features/billing/components/org-billing-accounts-card.tsx:77
+msgid "No billing accounts"
+msgstr ""
+
+#: app/features/billing/components/billing-account-list.tsx:136
+msgid "No billing accounts found"
+msgstr ""
+
 #: app/features/service-catalog/components/conditions-card.tsx:81
 msgid "No conditions reported."
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:263
+#: app/routes/service-catalog/detail/consumers.tsx:281
 msgid "No consumers found."
 msgstr ""
 
@@ -1902,13 +2035,18 @@ msgstr ""
 msgid "No grants found to remove for this flag"
 msgstr ""
 
-#: app/features/quota/components/quota-grant-list.tsx:178
+#: app/features/quota/components/quota-grant-list.tsx:245
 msgid "No grants found."
 msgstr ""
 
 #: app/routes/contact/detail/group.tsx:219
 #: app/routes/group/index.tsx:68
 msgid "No groups found."
+msgstr ""
+
+#: app/routes/finance/billing-account/detail/index.tsx:315
+#: app/routes/finance/billing-account/detail/index.tsx:326
+msgid "No linked projects"
 msgstr ""
 
 #: app/routes/contact-group/detail/member.tsx:416
@@ -1929,6 +2067,11 @@ msgstr ""
 msgid "No organizations found."
 msgstr ""
 
+#: app/routes/finance/billing-account/detail/index.tsx:288
+#: app/routes/finance/billing-account/detail/index.tsx:299
+msgid "No payment methods"
+msgstr ""
+
 #: app/routes/service-catalog/detail/approvals.tsx:174
 msgid "No pending approval requests."
 msgstr ""
@@ -1946,7 +2089,7 @@ msgstr ""
 msgid "No Published configuration. Drafts are not fanned out to billing or quota."
 msgstr ""
 
-#: app/features/quota/components/quota-bucket-list.tsx:190
+#: app/features/quota/components/quota-bucket-list.tsx:265
 msgid "No quota buckets found."
 msgstr ""
 
@@ -2031,6 +2174,10 @@ msgstr ""
 msgid "Once a contact is associated with a user, this association cannot be removed or changed later."
 msgstr ""
 
+#: app/routes/finance/billing-account/detail/index.tsx:145
+msgid "Open in Cloud Portal"
+msgstr ""
+
 #: app/components/app-search/app-search-mobile.tsx:40
 msgid "Open search"
 msgstr ""
@@ -2041,13 +2188,15 @@ msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:399
 #: app/features/activity/components/activity-list.tsx:498
+#: app/features/billing/components/billing-account-list.tsx:60
 #: app/features/dashboard/components/quota-utilization-widget.tsx:146
-#: app/routes/project/detail/index.tsx:49
+#: app/routes/finance/billing-account/detail/index.tsx:166
+#: app/routes/project/detail/index.tsx:90
 #: app/routes/project/index.tsx:41
 msgid "Organization"
 msgstr ""
 
-#: app/routes/organization/detail/index.tsx:30
+#: app/routes/organization/detail/index.tsx:31
 msgid "Organization deleted successfully"
 msgstr ""
 
@@ -2058,7 +2207,7 @@ msgstr ""
 
 #: app/components/app-search/search-results.tsx:152
 #: app/components/app-search/use-app-search.ts:36
-#: app/components/app-sidebar/index.tsx:117
+#: app/components/app-sidebar/index.tsx:119
 #: app/routes/dashboard/index.tsx:67
 #: app/routes/organization/index.tsx:15
 #: app/routes/organization/layout.tsx:5
@@ -2089,6 +2238,10 @@ msgstr ""
 msgid "Patch"
 msgstr ""
 
+#: app/routes/finance/billing-account/detail/index.tsx:282
+msgid "Payment methods"
+msgstr ""
+
 #: app/features/email/components/email-list.tsx:148
 #: app/features/email/components/email-list.tsx:176
 #: app/routes/fraud/index.tsx:314
@@ -2098,7 +2251,7 @@ msgstr ""
 msgid "Pending"
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:248
+#: app/routes/service-catalog/detail/consumers.tsx:266
 msgid "Pending Approval"
 msgstr ""
 
@@ -2114,11 +2267,11 @@ msgstr ""
 msgid "per"
 msgstr ""
 
-#: app/routes/organization/detail/index.tsx:68
+#: app/routes/organization/detail/index.tsx:71
 msgid "Permanently delete this organization and all associated data"
 msgstr ""
 
-#: app/routes/project/detail/index.tsx:71
+#: app/routes/project/detail/index.tsx:116
 msgid "Permanently delete this project and all associated data"
 msgstr ""
 
@@ -2131,14 +2284,19 @@ msgstr ""
 msgid "Personal"
 msgstr ""
 
+#: app/features/billing/components/billing-account-list.tsx:72
+#: app/features/billing/components/org-billing-accounts-card.tsx:42
 #: app/features/fraud/detail/evaluation-sections.tsx:378
 #: app/features/service-catalog/components/details-card.tsx:43
+#: app/routes/finance/billing-account/detail/index.tsx:87
+#: app/routes/finance/billing-account/detail/index.tsx:121
+#: app/routes/finance/billing-account/detail/index.tsx:184
 #: app/routes/fraud/index.tsx:137
 #: app/routes/fraud/index.tsx:309
 #: app/routes/fraud/index.tsx:344
-#: app/routes/service-catalog/detail/consumers.tsx:98
-#: app/routes/service-catalog/detail/consumers.tsx:245
-#: app/routes/service-catalog/detail/consumers.tsx:258
+#: app/routes/service-catalog/detail/consumers.tsx:118
+#: app/routes/service-catalog/detail/consumers.tsx:263
+#: app/routes/service-catalog/detail/consumers.tsx:276
 #: app/routes/service-catalog/index.tsx:160
 msgid "Phase"
 msgstr ""
@@ -2216,6 +2374,10 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
+#: app/routes/finance/billing-account/detail/index.tsx:236
+msgid "Primary email"
+msgstr ""
+
 #: app/features/email/components/email-detail.tsx:93
 #: app/features/email/components/email-list.tsx:133
 #: app/features/email/components/email-list.tsx:158
@@ -2247,16 +2409,17 @@ msgstr ""
 #: app/features/dns/components/dns-zone-list.tsx:98
 #: app/features/domain/components/domain-list.tsx:70
 #: app/features/edge/components/edge-list.tsx:75
+#: app/routes/finance/billing-account/detail/index.tsx:101
 msgid "Project"
 msgstr ""
 
-#: app/routes/project/detail/index.tsx:29
+#: app/routes/project/detail/index.tsx:70
 msgid "Project deleted successfully"
 msgstr ""
 
 #: app/components/app-search/search-results.tsx:168
 #: app/components/app-search/use-app-search.ts:42
-#: app/components/app-sidebar/index.tsx:121
+#: app/components/app-sidebar/index.tsx:123
 #: app/routes/dashboard/index.tsx:75
 #: app/routes/organization/detail/layout.tsx:71
 #: app/routes/organization/detail/project.tsx:17
@@ -2328,7 +2491,7 @@ msgstr ""
 msgid "Quota"
 msgstr ""
 
-#: app/features/quota/components/quota-bucket-list.tsx:143
+#: app/features/quota/components/quota-bucket-list.tsx:226
 msgid "Quota updated successfully"
 msgstr ""
 
@@ -2407,7 +2570,7 @@ msgstr ""
 msgid "Rejected"
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:198
+#: app/routes/service-catalog/detail/consumers.tsx:214
 msgid "Remove {revokeConsumerProject}'s access to {revokeEntitlementName}? They'll lose access immediately and all of their resources for this service will be permanently deleted. This cannot be undone."
 msgstr ""
 
@@ -2420,7 +2583,7 @@ msgid "Request denied"
 msgstr ""
 
 #: app/routes/service-catalog/detail/approvals.tsx:95
-#: app/routes/service-catalog/detail/consumers.tsx:135
+#: app/routes/service-catalog/detail/consumers.tsx:155
 msgid "Requested at"
 msgstr ""
 
@@ -2434,7 +2597,13 @@ msgid "Resend"
 msgstr ""
 
 #: app/features/dashboard/components/quota-utilization-widget.tsx:156
+#: app/features/quota/components/quota-bucket-list.tsx:128
+#: app/features/quota/components/quota-grant-list.tsx:117
 msgid "Resource"
+msgstr ""
+
+#: app/routes/finance/billing-account/detail/index.tsx:180
+msgid "Resource name"
 msgstr ""
 
 #: app/routes/project/detail/domain/detail.tsx:92
@@ -2443,12 +2612,10 @@ msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:483
 #: app/features/activity/components/activity-list.tsx:521
-#: app/features/quota/components/quota-bucket-list.tsx:56
-#: app/features/quota/components/quota-grant-list.tsx:80
 msgid "Resource Type"
 msgstr ""
 
-#: app/features/quota/components/quota-bucket-list.tsx:152
+#: app/features/quota/components/quota-bucket-list.tsx:232
 msgid "Resource Type:"
 msgstr ""
 
@@ -2483,12 +2650,12 @@ msgstr ""
 msgid "Review Threshold"
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:67
-#: app/routes/service-catalog/detail/consumers.tsx:199
+#: app/routes/service-catalog/detail/consumers.tsx:76
+#: app/routes/service-catalog/detail/consumers.tsx:215
 msgid "Revoke"
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:197
+#: app/routes/service-catalog/detail/consumers.tsx:213
 msgid "Revoke access"
 msgstr ""
 
@@ -2545,6 +2712,10 @@ msgstr ""
 msgid "Search AI Edge..."
 msgstr ""
 
+#: app/features/billing/components/billing-account-list.tsx:128
+msgid "Search billing accounts..."
+msgstr ""
+
 #: app/routes/fraud/index.tsx:301
 msgid "Search by email, name, or ID..."
 msgstr ""
@@ -2565,12 +2736,8 @@ msgstr ""
 msgid "Search by project or ID..."
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:238
+#: app/routes/service-catalog/detail/consumers.tsx:256
 msgid "Search by project, ID, or note..."
-msgstr ""
-
-#: app/features/quota/components/quota-bucket-list.tsx:182
-msgid "Search by resource type..."
 msgstr ""
 
 #: app/routes/contact-group/index.tsx:218
@@ -2601,7 +2768,7 @@ msgstr ""
 msgid "Search for an existing contact by email..."
 msgstr ""
 
-#: app/features/quota/components/quota-grant-list.tsx:172
+#: app/features/quota/components/quota-grant-list.tsx:231
 msgid "Search grants..."
 msgstr ""
 
@@ -2629,6 +2796,10 @@ msgstr ""
 #: app/routes/organization/detail/project.tsx:74
 #: app/routes/project/index.tsx:76
 msgid "Search projects..."
+msgstr ""
+
+#: app/features/quota/components/quota-bucket-list.tsx:254
+msgid "Search quotas..."
 msgstr ""
 
 #: app/routes/project/detail/dns/detail.tsx:216
@@ -2722,7 +2893,7 @@ msgstr ""
 msgid "Sent"
 msgstr ""
 
-#: app/components/app-sidebar/index.tsx:179
+#: app/components/app-sidebar/index.tsx:193
 #: app/routes/service-catalog/index.tsx:26
 #: app/routes/service-catalog/layout.tsx:5
 msgid "Service Catalog"
@@ -2808,7 +2979,7 @@ msgstr ""
 #: app/features/email/components/email-list.tsx:143
 #: app/features/email/components/email-list.tsx:159
 #: app/features/fraud/policy/policy-detail.tsx:158
-#: app/features/quota/components/quota-grant-list.tsx:107
+#: app/features/quota/components/quota-grant-list.tsx:161
 #: app/features/service-catalog/components/conditions-card.tsx:23
 #: app/routes/contact-group/detail/member.tsx:208
 #: app/routes/contact-group/index.tsx:82
@@ -2846,6 +3017,10 @@ msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:208
 msgid "Target"
+msgstr ""
+
+#: app/routes/finance/billing-account/detail/index.tsx:258
+msgid "Tax IDs"
 msgstr ""
 
 #: app/features/email/components/email-detail.tsx:71
@@ -2896,7 +3071,7 @@ msgstr ""
 msgid "This note will be permanently deleted and cannot be recovered."
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:166
+#: app/routes/service-catalog/detail/consumers.tsx:182
 msgid "This service has no producer project recorded, so consumers cannot be listed."
 msgstr ""
 
@@ -2933,7 +3108,7 @@ msgstr ""
 #: app/features/fraud/policy/policy-form.tsx:203
 #: app/features/service-catalog/components/conditions-card.tsx:19
 #: app/routes/fraud/providers/index.tsx:65
-#: app/routes/organization/detail/index.tsx:50
+#: app/routes/organization/detail/index.tsx:51
 #: app/routes/organization/index.tsx:38
 #: app/routes/project/detail/dns/detail.tsx:95
 #: app/routes/project/detail/dns/detail.tsx:159
@@ -2951,7 +3126,7 @@ msgid "Unavailable"
 msgstr ""
 
 #: app/features/domain/components/note-card.tsx:38
-#: app/routes/service-catalog/detail/consumers.tsx:104
+#: app/routes/service-catalog/detail/consumers.tsx:124
 msgid "Unknown"
 msgstr ""
 
@@ -2960,7 +3135,7 @@ msgstr ""
 #: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:250
 #: app/features/fraud/policy/policy-form.tsx:321
-#: app/features/quota/components/quota-bucket-list.tsx:127
+#: app/features/quota/components/quota-bucket-list.tsx:211
 #: app/routes/fraud/providers/detail.tsx:181
 msgid "Update"
 msgstr ""
@@ -2978,8 +3153,8 @@ msgid "Updating email addresses for GitHub identities"
 msgstr ""
 
 #: app/features/dashboard/components/quota-utilization-widget.tsx:161
-#: app/features/quota/components/quota-bucket-list.tsx:61
-#: app/routes/organization/detail/layout.tsx:106
+#: app/features/quota/components/quota-bucket-list.tsx:151
+#: app/routes/organization/detail/layout.tsx:96
 #: app/routes/organization/detail/layout.tsx:116
 #: app/routes/organization/detail/quota/usage.tsx:9
 #: app/routes/project/detail/layout.tsx:164
@@ -3044,7 +3219,7 @@ msgstr ""
 
 #: app/components/app-search/search-results.tsx:184
 #: app/components/app-search/use-app-search.ts:34
-#: app/components/app-sidebar/index.tsx:113
+#: app/components/app-sidebar/index.tsx:115
 #: app/routes/dashboard/index.tsx:59
 #: app/routes/user/index.tsx:31
 #: app/routes/user/layout.tsx:5
@@ -3090,6 +3265,10 @@ msgstr ""
 msgid "View All"
 msgstr ""
 
+#: app/features/billing/components/org-billing-accounts-card.tsx:86
+msgid "View all billing accounts"
+msgstr ""
+
 #: app/routes/contact-group/index.tsx:187
 msgid "View contact groups"
 msgstr ""
@@ -3109,6 +3288,10 @@ msgstr ""
 
 #: app/features/fraud/detail/evaluation-sections.tsx:141
 msgid "View on MaxMind"
+msgstr ""
+
+#: app/routes/finance/billing-account/detail/index.tsx:133
+msgid "View organization"
 msgstr ""
 
 #: app/features/fraud/detail/evaluation-sections.tsx:146
@@ -3132,6 +3315,10 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:367
 #: app/features/activity/components/activity-list.tsx:457
 msgid "Watch"
+msgstr ""
+
+#: app/routes/finance/billing-account/detail/index.tsx:94
+msgid "Yes"
 msgstr ""
 
 #: app/routes/service-catalog/detail/index.tsx:69
