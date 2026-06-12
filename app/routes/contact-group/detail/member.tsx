@@ -318,7 +318,7 @@ export default function Page() {
 
       toast.success(
         formData.create_new
-          ? t`Contact created and added to the group`
+          ? t`Contact created and added to the list`
           : t`Member added successfully`
       );
     } catch (error) {

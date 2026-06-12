@@ -115,7 +115,7 @@ msgstr ""
 msgid "Access denied — IAM role pending."
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:224
+#: app/routes/service-catalog/detail/consumers.tsx:216
 msgid "Access revoked"
 msgstr ""
 
@@ -146,7 +146,7 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:267
+#: app/routes/service-catalog/detail/consumers.tsx:258
 #: app/routes/user/index.tsx:280
 #: app/routes/user/index.tsx:307
 msgid "Active"
@@ -189,10 +189,6 @@ msgstr ""
 msgid "Add a note"
 msgstr ""
 
-#: app/routes/contact/detail/group.tsx:172
-msgid "Add Group"
-msgstr ""
-
 #: app/routes/contact-group/detail/member.tsx:361
 #: app/routes/group/member.tsx:169
 msgid "Add Member"
@@ -208,6 +204,10 @@ msgstr ""
 
 #: app/features/fraud/policy/policy-form.tsx:249
 msgid "Add Stage"
+msgstr ""
+
+#: app/routes/contact/detail/group.tsx:172
+msgid "Add to List"
 msgstr ""
 
 #: app/features/fraud/policy/policy-form.tsx:182
@@ -287,7 +287,7 @@ msgstr ""
 msgid "API Group"
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:130
+#: app/routes/service-catalog/detail/consumers.tsx:118
 msgid "Approval"
 msgstr ""
 
@@ -298,7 +298,7 @@ msgstr ""
 
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:38
 #: app/routes/service-catalog/detail/approvals.tsx:51
-#: app/routes/service-catalog/detail/consumers.tsx:63
+#: app/routes/service-catalog/detail/consumers.tsx:54
 #: app/routes/user/detail/index.tsx:205
 #: app/routes/user/index.tsx:53
 msgid "Approve"
@@ -324,13 +324,11 @@ msgstr ""
 
 #. placeholder {0}: bulkDeleteRows?.length ?? 0
 #: app/routes/contact-group/index.tsx:138
-msgid "Are you sure you want to delete {0} contact groups? This action cannot be undone."
+msgid "Are you sure you want to delete {0} lists? This action cannot be undone."
 msgstr ""
 
 #. placeholder {0}: selectedContact?.metadata?.name ?? ''
-#. placeholder {0}: selectedContactGroup?.spec?.displayName ?? ''
 #: app/features/contact/components/contact-list.tsx:115
-#: app/routes/contact-group/index.tsx:120
 msgid "Are you sure you want to delete contact \"{0}\"? This action cannot be undone."
 msgstr ""
 
@@ -339,9 +337,9 @@ msgstr ""
 msgid "Are you sure you want to delete grant \"{0}\"? This action cannot be undone."
 msgstr ""
 
-#. placeholder {0}: selectedGroup?.contactGroup?.spec?.displayName ?? ''
-#: app/routes/contact/detail/group.tsx:159
-msgid "Are you sure you want to delete group \"{0}\"? This action cannot be undone."
+#. placeholder {0}: selectedContactGroup?.spec?.displayName ?? ''
+#: app/routes/contact-group/index.tsx:120
+msgid "Are you sure you want to delete list \"{0}\"? This action cannot be undone."
 msgstr ""
 
 #. placeholder {0}: selectedGroupMembership?.metadata?.name ?? ''
@@ -390,6 +388,11 @@ msgstr ""
 #. placeholder {1}: data.spec?.familyName ?? ''
 #: app/routes/user/detail/index.tsx:511
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
+msgstr ""
+
+#. placeholder {0}: selectedGroup?.contactGroup?.spec?.displayName ?? ''
+#: app/routes/contact/detail/group.tsx:159
+msgid "Are you sure you want to remove this contact from the list \"{0}\"? This action cannot be undone."
 msgstr ""
 
 #: app/features/fraud/detail/maxmind-rows.tsx:135
@@ -466,7 +469,7 @@ msgstr ""
 
 #: app/components/button/button-delete-action.tsx:43
 #: app/components/danger-zone-card/index.tsx:49
-#: app/features/contact-group/components/contact-group-form.tsx:97
+#: app/features/contact-group/components/contact-group-form.tsx:95
 #: app/features/contact/components/contact-form.tsx:244
 #: app/features/contact/components/contact-list.tsx:117
 #: app/features/feature-flags/components/feature-flag-list.tsx:230
@@ -492,7 +495,7 @@ msgstr ""
 #: app/routes/group/member.tsx:171
 #: app/routes/organization/detail/member.tsx:85
 #: app/routes/profile/session.tsx:106
-#: app/routes/service-catalog/detail/consumers.tsx:216
+#: app/routes/service-catalog/detail/consumers.tsx:208
 #: app/routes/user/detail/index.tsx:152
 #: app/routes/user/index.tsx:173
 msgid "Cancel"
@@ -557,16 +560,16 @@ msgid "Connection"
 msgstr ""
 
 #: app/routes/service-catalog/detail/approvals.tsx:86
-#: app/routes/service-catalog/detail/consumers.tsx:160
+#: app/routes/service-catalog/detail/consumers.tsx:148
 msgid "Consumer ID"
 msgstr ""
 
 #: app/routes/service-catalog/detail/approvals.tsx:67
-#: app/routes/service-catalog/detail/consumers.tsx:88
+#: app/routes/service-catalog/detail/consumers.tsx:79
 msgid "Consumer Project"
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:30
+#: app/routes/service-catalog/detail/consumers.tsx:29
 #: app/routes/service-catalog/detail/layout.tsx:41
 msgid "Consumers"
 msgstr ""
@@ -581,7 +584,7 @@ msgid "Contact & address"
 msgstr ""
 
 #: app/routes/contact-group/detail/member.tsx:321
-msgid "Contact created and added to the group"
+msgid "Contact created and added to the list"
 msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:106
@@ -594,32 +597,6 @@ msgstr ""
 
 #: app/features/billing/components/billing-account-list.tsx:87
 msgid "Contact email"
-msgstr ""
-
-#: app/features/contact-group/components/contact-group-form.tsx:46
-msgid "Contact group created successfully"
-msgstr ""
-
-#: app/routes/contact-group/index.tsx:127
-msgid "Contact Group deleted successfully"
-msgstr ""
-
-#: app/routes/contact-group/create.tsx:25
-#: app/routes/contact-group/detail/index.tsx:24
-msgid "Contact Group Information"
-msgstr ""
-
-#: app/features/contact-group/components/contact-group-form.tsx:36
-msgid "Contact group updated successfully"
-msgstr ""
-
-#: app/routes/contact-group/index.tsx:31
-#: app/routes/contact-group/layout.tsx:5
-msgid "Contact Groups"
-msgstr ""
-
-#: app/routes/contact-group/create.tsx:10
-msgid "Contact Groups - Create"
 msgstr ""
 
 #: app/routes/contact/create.tsx:25
@@ -683,7 +660,7 @@ msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:368
 #: app/features/activity/components/activity-list.tsx:458
-#: app/features/contact-group/components/contact-group-form.tsx:103
+#: app/features/contact-group/components/contact-group-form.tsx:101
 #: app/features/contact/components/contact-form.tsx:250
 #: app/features/fraud/policy/policy-form.tsx:321
 #: app/routes/contact-group/create.tsx:14
@@ -811,7 +788,7 @@ msgstr ""
 msgid "Decision"
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:268
+#: app/routes/service-catalog/detail/consumers.tsx:259
 msgid "Declined"
 msgstr ""
 
@@ -856,12 +833,12 @@ msgid "Delete"
 msgstr ""
 
 #. placeholder {0}: taskRows.length
-#: app/routes/contact-group/index.tsx:149
-msgid "Delete {0} contact groups"
+#: app/routes/contact-group/index.tsx:147
+msgid "Delete {0} lists"
 msgstr ""
 
 #. placeholder {0}: selectedRows.length
-#: app/routes/contact-group/index.tsx:235
+#: app/routes/contact-group/index.tsx:230
 msgid "Delete {0} selected"
 msgstr ""
 
@@ -874,16 +851,7 @@ msgid "Delete Collection"
 msgstr ""
 
 #: app/features/contact/components/contact-list.tsx:114
-#: app/routes/contact-group/index.tsx:119
 msgid "Delete Contact"
-msgstr ""
-
-#: app/routes/contact-group/index.tsx:148
-msgid "Delete contact group"
-msgstr ""
-
-#: app/routes/contact-group/index.tsx:134
-msgid "Delete contact groups"
 msgstr ""
 
 #: app/routes/fraud/index.tsx:254
@@ -894,8 +862,19 @@ msgstr ""
 msgid "Delete Grant"
 msgstr ""
 
+#: app/routes/contact-group/index.tsx:147
+msgid "Delete list"
+msgstr ""
+
+#: app/routes/contact-group/index.tsx:119
+msgid "Delete List"
+msgstr ""
+
+#: app/routes/contact-group/index.tsx:134
+msgid "Delete lists"
+msgstr ""
+
 #: app/routes/contact-group/detail/member.tsx:343
-#: app/routes/contact/detail/group.tsx:158
 #: app/routes/group/member.tsx:154
 msgid "Delete Member"
 msgstr ""
@@ -935,7 +914,7 @@ msgstr ""
 
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:38
 #: app/routes/service-catalog/detail/approvals.tsx:56
-#: app/routes/service-catalog/detail/consumers.tsx:69
+#: app/routes/service-catalog/detail/consumers.tsx:60
 msgid "Deny"
 msgstr ""
 
@@ -955,7 +934,7 @@ msgstr ""
 msgid "Deprecated"
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:80
+#: app/features/contact-group/components/contact-group-form.tsx:78
 #: app/features/dns/components/dns-zone-list.tsx:138
 #: app/routes/organization/detail/index.tsx:43
 #: app/routes/project/detail/index.tsx:82
@@ -1304,7 +1283,7 @@ msgstr ""
 msgid "Failed to load approvals."
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:193
+#: app/routes/service-catalog/detail/consumers.tsx:185
 msgid "Failed to load consumers."
 msgstr ""
 
@@ -1380,7 +1359,7 @@ msgid "Filter by invitation"
 msgstr ""
 
 #: app/routes/fraud/index.tsx:310
-#: app/routes/service-catalog/detail/consumers.tsx:264
+#: app/routes/service-catalog/detail/consumers.tsx:255
 msgid "Filter by phase"
 msgstr ""
 
@@ -1524,22 +1503,7 @@ msgstr ""
 msgid "Group"
 msgstr ""
 
-#: app/routes/contact/detail/group.tsx:142
-msgid "Group added successfully"
-msgstr ""
-
-#: app/routes/contact/detail/group.tsx:166
-msgid "Group deleted successfully"
-msgstr ""
-
-#: app/routes/contact/detail/group.tsx:128
-msgid "Group is required"
-msgstr ""
-
-#: app/components/app-sidebar/index.tsx:157
 #: app/components/app-sidebar/index.tsx:163
-#: app/routes/contact/detail/group.tsx:29
-#: app/routes/contact/detail/layout.tsx:53
 #: app/routes/group/index.tsx:14
 #: app/routes/group/layout.tsx:5
 msgid "Groups"
@@ -1575,7 +1539,7 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:269
+#: app/routes/service-catalog/detail/consumers.tsx:260
 #: app/routes/user/index.tsx:281
 #: app/routes/user/index.tsx:308
 msgid "Inactive"
@@ -1704,6 +1668,43 @@ msgstr ""
 msgid "List"
 msgstr ""
 
+#: app/routes/contact/detail/group.tsx:142
+msgid "List added successfully"
+msgstr ""
+
+#: app/features/contact-group/components/contact-group-form.tsx:46
+msgid "List created successfully"
+msgstr ""
+
+#: app/routes/contact-group/index.tsx:127
+msgid "List deleted successfully"
+msgstr ""
+
+#: app/routes/contact-group/create.tsx:25
+#: app/routes/contact-group/detail/index.tsx:24
+msgid "List Information"
+msgstr ""
+
+#: app/routes/contact/detail/group.tsx:128
+msgid "List is required"
+msgstr ""
+
+#: app/features/contact-group/components/contact-group-form.tsx:36
+msgid "List updated successfully"
+msgstr ""
+
+#: app/components/app-sidebar/index.tsx:157
+#: app/routes/contact-group/index.tsx:31
+#: app/routes/contact-group/layout.tsx:5
+#: app/routes/contact/detail/group.tsx:29
+#: app/routes/contact/detail/layout.tsx:53
+msgid "Lists"
+msgstr ""
+
+#: app/routes/contact-group/create.tsx:10
+msgid "Lists - Create"
+msgstr ""
+
 #: app/features/billing/components/org-billing-accounts-card.tsx:62
 msgid "Loading billing accounts..."
 msgstr ""
@@ -1795,7 +1796,7 @@ msgstr ""
 msgid "Manage users"
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:81
+#: app/features/contact-group/components/contact-group-form.tsx:79
 msgid "Manually sync this description with the one in Loops (used for opt-in pages)."
 msgstr ""
 
@@ -1966,12 +1967,8 @@ msgstr ""
 msgid "No conditions reported."
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:281
+#: app/routes/service-catalog/detail/consumers.tsx:272
 msgid "No consumers found."
-msgstr ""
-
-#: app/routes/contact-group/index.tsx:245
-msgid "No contact groups found."
 msgstr ""
 
 #: app/routes/contact-group/detail/member.tsx:77
@@ -2047,6 +2044,10 @@ msgstr ""
 #: app/routes/finance/billing-account/detail/index.tsx:315
 #: app/routes/finance/billing-account/detail/index.tsx:326
 msgid "No linked projects"
+msgstr ""
+
+#: app/routes/contact-group/index.tsx:240
+msgid "No lists found."
 msgstr ""
 
 #: app/routes/contact-group/detail/member.tsx:416
@@ -2146,7 +2147,7 @@ msgid "Normal"
 msgstr ""
 
 #: app/features/domain/components/note-card.tsx:44
-#: app/features/service-catalog/hooks/useApprovalDialog.tsx:54
+#: app/features/service-catalog/hooks/useApprovalDialog.tsx:53
 msgid "Note"
 msgstr ""
 
@@ -2182,7 +2183,7 @@ msgstr ""
 msgid "Open search"
 msgstr ""
 
-#: app/features/service-catalog/hooks/useApprovalDialog.tsx:55
+#: app/features/service-catalog/hooks/useApprovalDialog.tsx:54
 msgid "Optional reviewer note..."
 msgstr ""
 
@@ -2251,7 +2252,7 @@ msgstr ""
 msgid "Pending"
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:266
+#: app/routes/service-catalog/detail/consumers.tsx:257
 msgid "Pending Approval"
 msgstr ""
 
@@ -2294,9 +2295,9 @@ msgstr ""
 #: app/routes/fraud/index.tsx:137
 #: app/routes/fraud/index.tsx:309
 #: app/routes/fraud/index.tsx:344
-#: app/routes/service-catalog/detail/consumers.tsx:118
-#: app/routes/service-catalog/detail/consumers.tsx:263
-#: app/routes/service-catalog/detail/consumers.tsx:276
+#: app/routes/service-catalog/detail/consumers.tsx:106
+#: app/routes/service-catalog/detail/consumers.tsx:254
+#: app/routes/service-catalog/detail/consumers.tsx:267
 #: app/routes/service-catalog/index.tsx:160
 msgid "Phase"
 msgstr ""
@@ -2388,7 +2389,7 @@ msgstr ""
 msgid "Priority of mail servers defined by MX records. Lowest value = highest priority."
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:88
+#: app/features/contact-group/components/contact-group-form.tsx:86
 msgid "Private"
 msgstr ""
 
@@ -2443,8 +2444,8 @@ msgstr ""
 msgid "Provider ID"
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:72
-msgid "Provider ID cannot be changed after the contact group is created."
+#: app/features/contact-group/components/contact-group-form.tsx:71
+msgid "Provider ID cannot be changed after the list is created."
 msgstr ""
 
 #: app/routes/fraud/providers/detail.tsx:75
@@ -2470,7 +2471,7 @@ msgstr ""
 msgid "Providers (comma-separated)"
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:87
+#: app/features/contact-group/components/contact-group-form.tsx:85
 msgid "Public"
 msgstr ""
 
@@ -2570,20 +2571,28 @@ msgstr ""
 msgid "Rejected"
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:214
+#: app/routes/service-catalog/detail/consumers.tsx:206
 msgid "Remove {revokeConsumerProject}'s access to {revokeEntitlementName}? They'll lose access immediately and all of their resources for this service will be permanently deleted. This cannot be undone."
 msgstr ""
 
-#: app/features/service-catalog/hooks/useApprovalDialog.tsx:51
+#: app/routes/contact/detail/group.tsx:158
+msgid "Remove from List"
+msgstr ""
+
+#: app/routes/contact/detail/group.tsx:166
+msgid "Removed from list successfully"
+msgstr ""
+
+#: app/features/service-catalog/hooks/useApprovalDialog.tsx:50
 msgid "Request approved"
 msgstr ""
 
-#: app/features/service-catalog/hooks/useApprovalDialog.tsx:51
+#: app/features/service-catalog/hooks/useApprovalDialog.tsx:50
 msgid "Request denied"
 msgstr ""
 
 #: app/routes/service-catalog/detail/approvals.tsx:95
-#: app/routes/service-catalog/detail/consumers.tsx:155
+#: app/routes/service-catalog/detail/consumers.tsx:143
 msgid "Requested at"
 msgstr ""
 
@@ -2650,12 +2659,12 @@ msgstr ""
 msgid "Review Threshold"
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:76
-#: app/routes/service-catalog/detail/consumers.tsx:215
+#: app/routes/service-catalog/detail/consumers.tsx:67
+#: app/routes/service-catalog/detail/consumers.tsx:207
 msgid "Revoke"
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:213
+#: app/routes/service-catalog/detail/consumers.tsx:205
 msgid "Revoke access"
 msgstr ""
 
@@ -2736,12 +2745,8 @@ msgstr ""
 msgid "Search by project or ID..."
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:256
+#: app/routes/service-catalog/detail/consumers.tsx:247
 msgid "Search by project, ID, or note..."
-msgstr ""
-
-#: app/routes/contact-group/index.tsx:218
-msgid "Search contact groups..."
 msgstr ""
 
 #: app/features/contact/components/contact-list.tsx:158
@@ -2772,14 +2777,18 @@ msgstr ""
 msgid "Search grants..."
 msgstr ""
 
-#: app/routes/contact/detail/group.tsx:182
-#: app/routes/contact/detail/group.tsx:213
 #: app/routes/group/index.tsx:61
 msgid "Search groups..."
 msgstr ""
 
 #: app/components/app-search/search-results.tsx:132
 msgid "Search is temporarily unavailable. Please try again."
+msgstr ""
+
+#: app/routes/contact-group/index.tsx:215
+#: app/routes/contact/detail/group.tsx:182
+#: app/routes/contact/detail/group.tsx:213
+msgid "Search lists..."
 msgstr ""
 
 #: app/routes/contact-group/detail/member.tsx:410
@@ -2868,14 +2877,14 @@ msgid "Select a user to run a fraud evaluation against the current policy."
 msgstr ""
 
 #: app/routes/contact/detail/group.tsx:181
-msgid "Select group..."
+msgid "Select list..."
 msgstr ""
 
 #: app/features/preferences/components/preferences-form.tsx:86
 msgid "Select timezone..."
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:86
+#: app/features/contact-group/components/contact-group-form.tsx:84
 msgid "Select visibility..."
 msgstr ""
 
@@ -3007,7 +3016,7 @@ msgstr ""
 msgid "Subject is required when user association is enabled"
 msgstr ""
 
-#: app/routes/contact-group/index.tsx:166
+#: app/routes/contact-group/index.tsx:164
 msgid "Summary"
 msgstr ""
 
@@ -3071,7 +3080,7 @@ msgstr ""
 msgid "This note will be permanently deleted and cannot be recovered."
 msgstr ""
 
-#: app/routes/service-catalog/detail/consumers.tsx:182
+#: app/routes/service-catalog/detail/consumers.tsx:174
 msgid "This service has no producer project recorded, so consumers cannot be listed."
 msgstr ""
 
@@ -3126,13 +3135,13 @@ msgid "Unavailable"
 msgstr ""
 
 #: app/features/domain/components/note-card.tsx:38
-#: app/routes/service-catalog/detail/consumers.tsx:124
+#: app/routes/service-catalog/detail/consumers.tsx:112
 msgid "Unknown"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:369
 #: app/features/activity/components/activity-list.tsx:459
-#: app/features/contact-group/components/contact-group-form.tsx:103
+#: app/features/contact-group/components/contact-group-form.tsx:101
 #: app/features/contact/components/contact-form.tsx:250
 #: app/features/fraud/policy/policy-form.tsx:321
 #: app/features/quota/components/quota-bucket-list.tsx:211
@@ -3269,10 +3278,6 @@ msgstr ""
 msgid "View all billing accounts"
 msgstr ""
 
-#: app/routes/contact-group/index.tsx:187
-msgid "View contact groups"
-msgstr ""
-
 #: app/routes/user/detail/index.tsx:399
 msgid "View Evaluation"
 msgstr ""
@@ -3284,6 +3289,10 @@ msgstr ""
 
 #: app/routes/user/detail/index.tsx:185
 msgid "View in Sentry"
+msgstr ""
+
+#: app/routes/contact-group/index.tsx:185
+msgid "View lists"
 msgstr ""
 
 #: app/features/fraud/detail/evaluation-sections.tsx:141
@@ -3298,7 +3307,7 @@ msgstr ""
 msgid "View Raw Results"
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:85
+#: app/features/contact-group/components/contact-group-form.tsx:83
 #: app/routes/contact-group/index.tsx:78
 #: app/routes/contact/detail/group.tsx:95
 msgid "Visibility"

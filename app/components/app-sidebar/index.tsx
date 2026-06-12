@@ -154,7 +154,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           href: contactRoutes.list(),
         },
         {
-          title: t`Groups`,
+          title: t`Lists`,
           href: contactGroupRoutes.list(),
         },
       ],

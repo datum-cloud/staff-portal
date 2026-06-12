@@ -28,7 +28,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
-  return metaObject(t`Contact Groups`);
+  return metaObject(t`Lists`);
 };
 
 const columnHelper = createColumnHelper<ComMiloapisNotificationV1Alpha1ContactGroup>();
@@ -116,26 +116,26 @@ export default function Page() {
       <DialogConfirm
         open={!!selectedContactGroup}
         onOpenChange={() => setSelectedContactGroup(null)}
-        title={t`Delete Contact`}
-        description={t`Are you sure you want to delete contact "${selectedContactGroup?.spec?.displayName ?? ''}"? This action cannot be undone.`}
+        title={t`Delete List`}
+        description={t`Are you sure you want to delete list "${selectedContactGroup?.spec?.displayName ?? ''}"? This action cannot be undone.`}
         confirmText={t`Delete`}
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={async () => {
           await deleteContactGroupMutation.mutateAsync(selectedContactGroup?.metadata);
           setSelectedContactGroup(null);
-          toast.success(t`Contact Group deleted successfully`);
+          toast.success(t`List deleted successfully`);
         }}
       />
 
       <DialogConfirm
         open={bulkDeleteRows !== null && bulkDeleteRows.length > 0}
         onOpenChange={(open) => !open && setBulkDeleteRows(null)}
-        title={t`Delete contact groups`}
+        title={t`Delete lists`}
         description={
           bulkDeleteRows?.length === 1
             ? t`Are you sure you want to delete "${bulkDeleteRows[0]?.spec?.displayName ?? bulkDeleteRows[0]?.metadata?.name ?? ''}"? This action cannot be undone.`
-            : t`Are you sure you want to delete ${bulkDeleteRows?.length ?? 0} contact groups? This action cannot be undone.`
+            : t`Are you sure you want to delete ${bulkDeleteRows?.length ?? 0} lists? This action cannot be undone.`
         }
         confirmText={t`Delete`}
         cancelText={t`Cancel`}
@@ -144,9 +144,7 @@ export default function Page() {
           const taskRows = bulkDeleteRows ?? [];
           setBulkDeleteRows(null);
           const taskTitle =
-            taskRows.length === 1
-              ? t`Delete contact group`
-              : t`Delete ${taskRows.length} contact groups`;
+            taskRows.length === 1 ? t`Delete list` : t`Delete ${taskRows.length} lists`;
           enqueue({
             title: taskTitle,
             icon: <Trash2Icon className="size-4" />,
@@ -184,7 +182,7 @@ export default function Page() {
                   ]
                 : []),
               {
-                children: t`View contact groups`,
+                children: t`View lists`,
                 type: 'primary' as const,
                 theme: 'outline' as const,
                 size: 'small' as const,
@@ -214,10 +212,7 @@ export default function Page() {
           <CardContent className="flex flex-col gap-2 px-4">
             <DataTableToolbar
               search={
-                <DataTable.Search
-                  placeholder={t`Search contact groups...`}
-                  className="w-full md:w-64"
-                />
+                <DataTable.Search placeholder={t`Search lists...`} className="w-full md:w-64" />
               }
               extras={
                 <DataTable.BulkActions>
@@ -242,7 +237,7 @@ export default function Page() {
             <DataTable.Content
               headerClassName="bg-muted/50"
               className="border-t border-b border-solid"
-              emptyMessage={t`No contact groups found.`}
+              emptyMessage={t`No lists found.`}
             />
             <DataTable.Pagination className="pb-0" />
           </CardContent>

@@ -26,11 +26,11 @@ import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import z from 'zod';
 
-export const handle = { breadcrumb: () => <Trans>Groups</Trans> };
+export const handle = { breadcrumb: () => <Trans>Lists</Trans> };
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const { contactName } = getContactDetailMetadata(matches);
-  return metaObject(`Groups - ${contactName}`);
+  return metaObject(`Lists - ${contactName}`);
 };
 
 const columnHelper = createColumnHelper<ContactMembershipWithContactGroup>();
@@ -125,7 +125,7 @@ export default function Page() {
     }),
   ];
 
-  const addGroupSchema = z.object({ name: z.string().nonempty(t`Group is required`) });
+  const addGroupSchema = z.object({ name: z.string().nonempty(t`List is required`) });
 
   const handleAddGroup = async (formData: z.infer<typeof addGroupSchema>) => {
     const [name, namespace] = formData.name.split('|');
@@ -139,7 +139,7 @@ export default function Page() {
         },
       },
     });
-    toast.success(t`Group added successfully`);
+    toast.success(t`List added successfully`);
   };
 
   return (
@@ -155,21 +155,21 @@ export default function Page() {
       <DialogConfirm
         open={!!selectedGroup}
         onOpenChange={() => setSelectedGroup(null)}
-        title={t`Delete Member`}
-        description={t`Are you sure you want to delete group "${selectedGroup?.contactGroup?.spec?.displayName ?? ''}"? This action cannot be undone.`}
+        title={t`Remove from List`}
+        description={t`Are you sure you want to remove this contact from the list "${selectedGroup?.contactGroup?.spec?.displayName ?? ''}"? This action cannot be undone.`}
         confirmText={t`Delete`}
         cancelText={t`Cancel`}
         variant="destructive"
         onConfirm={async () => {
           await deleteMembershipMutation.mutateAsync(selectedGroup?.metadata);
           setSelectedGroup(null);
-          toast.success(t`Group deleted successfully`);
+          toast.success(t`Removed from list successfully`);
         }}
       />
       <DialogForm
         open={isAddGroup}
         onOpenChange={() => setIsAddGroup(false)}
-        title={t`Add Group`}
+        title={t`Add to List`}
         submitText={t`Add`}
         cancelText={t`Cancel`}
         onSubmit={handleAddGroup}
@@ -178,8 +178,8 @@ export default function Page() {
         <Form.Field name="name">
           <Form.Autocomplete
             modal
-            placeholder={t`Select group...`}
-            searchPlaceholder={t`Search groups...`}
+            placeholder={t`Select list...`}
+            searchPlaceholder={t`Search lists...`}
             options={contactGroupFilteredOptions}
             loading={contactGroupsLoading}
             onSearchChange={(query) => setContactGroupSearch(query)}
@@ -210,7 +210,7 @@ export default function Page() {
           <CardContent className="flex flex-col gap-2 px-4">
             <DataTableToolbar
               search={
-                <DataTable.Search placeholder={t`Search groups...`} className="w-full md:w-64" />
+                <DataTable.Search placeholder={t`Search lists...`} className="w-full md:w-64" />
               }
             />
             <DataTable.Content
