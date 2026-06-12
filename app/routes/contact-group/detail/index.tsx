@@ -21,7 +21,7 @@ export default function Page() {
           <Card>
             <CardHeader>
               <CardTitle>
-                <Trans>Contact Group Information</Trans>
+                <Trans>List Information</Trans>
               </CardTitle>
             </CardHeader>
             <CardContent>

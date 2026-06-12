@@ -33,7 +33,7 @@ export const ContactGroupForm: React.FC<Props> = ({ contactGroup }) => {
 
     if (contactGroup) {
       await contactGroupUpdateMutation(contactGroup.metadata, baseSpec);
-      toast.success(t`Contact group updated successfully`);
+      toast.success(t`List updated successfully`);
     } else {
       const spec: ComMiloapisNotificationV1Alpha1ContactGroup['spec'] = {
         ...baseSpec,
@@ -43,7 +43,7 @@ export const ContactGroupForm: React.FC<Props> = ({ contactGroup }) => {
       };
       const data = await contactGroupCreateMutation('default', spec);
       navigate(contactGroupRoutes.detail(data.metadata?.name ?? ''));
-      toast.success(t`Contact group created successfully`);
+      toast.success(t`List created successfully`);
     }
   };
 
@@ -68,9 +68,7 @@ export const ContactGroupForm: React.FC<Props> = ({ contactGroup }) => {
             name="provider_id"
             label={t`Provider ID`}
             description={
-              contactGroup
-                ? t`Provider ID cannot be changed after the contact group is created.`
-                : undefined
+              contactGroup ? t`Provider ID cannot be changed after the list is created.` : undefined
             }>
             <Form.Input disabled={!!contactGroup} />
           </Form.Field>

@@ -50,7 +50,7 @@ export default function Layout() {
       icon: InfoIcon,
     },
     {
-      title: t`Groups`,
+      title: t`Lists`,
       href: contactRoutes.group(
         data?.contact?.metadata?.namespace ?? '',
         data?.contact?.metadata?.name ?? ''
