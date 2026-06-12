@@ -6,6 +6,7 @@ import {
   orgQuotaGrantListQuery,
   projectQuotaBucketListQuery,
   projectQuotaGrantListQuery,
+  resourceRegistrationListQuery,
 } from '../apis/quota.api';
 import { ListQueryParams } from '@/resources/schemas';
 import type { ComMiloapisQuotaV1Alpha1ResourceGrant } from '@openapi/quota.miloapis.com/v1alpha1';
@@ -42,6 +43,10 @@ export const quotaQueryKeys = {
       list: (params?: ListQueryParams) =>
         ['quota', 'feature-flags', 'registrations', 'list', params] as const,
     },
+  },
+  registrations: {
+    all: ['quota', 'registrations'] as const,
+    list: (params?: ListQueryParams) => ['quota', 'registrations', 'list', params] as const,
   },
 };
 
@@ -90,6 +95,16 @@ export const useFeatureFlagRegistrationListQuery = (params?: ListQueryParams) =>
     queryKey: quotaQueryKeys.featureFlags.registrations.list(params),
     queryFn: () => featureFlagRegistrationListQuery(params),
     staleTime: 60 * 1000,
+  });
+};
+
+// All ResourceRegistrations (cluster-scoped, platform-root). The Quotas page
+// joins these to AllowanceBuckets by resourceType for display names + grouping.
+export const useResourceRegistrationListQuery = (params?: ListQueryParams) => {
+  return useQuery({
+    queryKey: quotaQueryKeys.registrations.list(params),
+    queryFn: () => resourceRegistrationListQuery(params),
+    staleTime: 5 * 60 * 1000,
   });
 };
 

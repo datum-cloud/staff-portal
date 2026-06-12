@@ -1,9 +1,12 @@
-import { DataTableToolbar } from '@/components/data-table-toolbar';
-import { DateTime } from '@/components/date';
+import { groupQuotas, type QuotaRow } from '../lib/quotas-grouping';
+import { resolveResourceDisplayName, resolveServiceDisplayName } from '../lib/service-catalog';
 import { DialogForm } from '@/components/dialog';
+import { useResourceRegistrationListQuery } from '@/resources/request/client';
+import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
-import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
+import { ActionItem } from '@datum-cloud/datum-ui/data-table';
 import { Form } from '@datum-cloud/datum-ui/form';
+import { GroupedTable, type GroupedTableGroup } from '@datum-cloud/datum-ui/grouped-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
@@ -11,9 +14,10 @@ import {
   ComMiloapisQuotaV1Alpha1AllowanceBucket,
   ComMiloapisQuotaV1Alpha1AllowanceBucketList,
   ComMiloapisQuotaV1Alpha1ResourceGrant,
+  ComMiloapisQuotaV1Alpha1ResourceRegistration,
 } from '@openapi/quota.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
-import { createColumnHelper } from '@tanstack/react-table';
+import { type ColumnDef } from '@tanstack/react-table';
 import { PencilIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import z from 'zod';
@@ -29,7 +33,25 @@ interface QuotaBucketListProps {
   ) => Promise<ComMiloapisQuotaV1Alpha1ResourceGrant>;
 }
 
-const columnHelper = createColumnHelper<ComMiloapisQuotaV1Alpha1AllowanceBucket>();
+/** Internal row: the grouping fields joined to the underlying bucket. */
+interface QuotaTableRow extends QuotaRow {
+  bucket: ComMiloapisQuotaV1Alpha1AllowanceBucket;
+  description?: string;
+}
+
+function usage(bucket: ComMiloapisQuotaV1Alpha1AllowanceBucket) {
+  const used = bucket.status?.allocated ?? 0;
+  const total = bucket.status?.limit ?? 0;
+  const percentage = total > 0 ? Math.round((used / total) * 100) : 0;
+  return { used, total, percentage };
+}
+
+function barColor(percentage: number, total: number) {
+  if (total === 0) return 'bg-gray-400';
+  if (percentage <= 70) return 'bg-green-500';
+  if (percentage <= 90) return 'bg-yellow-500';
+  return 'bg-red-500';
+}
 
 export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: QuotaBucketListProps) {
   const { t } = useLingui();
@@ -42,73 +64,135 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
     staleTime: 60 * 1000,
   });
 
-  const actions: ActionItem<ComMiloapisQuotaV1Alpha1AllowanceBucket>[] = [
-    {
-      label: t`Edit Quota`,
-      icon: <PencilIcon className="size-4" />,
-      onClick: (row) => setSelected(row),
-    },
-  ];
+  const registrationsQuery = useResourceRegistrationListQuery();
 
-  const columns = useMemo(
+  // resourceType -> registration, for display name / description / owner lookup.
+  const registrations = useMemo(() => {
+    const map = new Map<string, ComMiloapisQuotaV1Alpha1ResourceRegistration>();
+    for (const reg of registrationsQuery.data?.items ?? []) {
+      if (reg.spec?.resourceType) map.set(reg.spec.resourceType, reg);
+    }
+    return map;
+  }, [registrationsQuery.data]);
+
+  const rows = useMemo<QuotaTableRow[]>(() => {
+    return (tableQuery.data?.items ?? [])
+      .filter((bucket) => {
+        const reg = registrations.get(bucket.spec?.resourceType ?? '');
+        // Feature-type registrations are visibility flags with no countable
+        // usage — they belong on the Feature Flags page, not here. (Codegen
+        // narrows spec.type to Entity|Allocation, so compare as a string.)
+        return String(reg?.spec?.type ?? '') !== 'Feature';
+      })
+      .map((bucket) => {
+        const resourceType = bucket.spec?.resourceType ?? '';
+        const reg = registrations.get(resourceType);
+        const annotations = reg?.metadata?.annotations ?? {};
+        const labels = reg?.metadata?.labels ?? {};
+        // Two ownership labels exist in the wild: `services.miloapis.com/owner`
+        // (hand-authored on network/dns/core/notes/resourcemanager registrations)
+        // and `services.miloapis.com/service` (set by the service-catalog
+        // ServiceConfiguration controller on compute/billing). Prefer owner,
+        // fall back to service.
+        const owner =
+          labels['services.miloapis.com/owner'] ?? labels['services.miloapis.com/service'];
+        return {
+          resourceType,
+          displayName: resolveResourceDisplayName(
+            annotations['kubernetes.io/display-name'],
+            resourceType
+          ),
+          description: annotations['kubernetes.io/description'] ?? reg?.spec?.description,
+          group: resolveServiceDisplayName(owner, resourceType),
+          percentage: usage(bucket).percentage,
+          bucket,
+        };
+      });
+  }, [tableQuery.data, registrations]);
+
+  const groups = useMemo<GroupedTableGroup<QuotaTableRow>[]>(
+    () =>
+      groupQuotas(rows).map((g) => ({
+        id: g.group,
+        title: g.group,
+        meta: <Badge type="secondary">{g.items.length}</Badge>,
+        rows: g.items,
+      })),
+    [rows]
+  );
+
+  const columns = useMemo<ColumnDef<QuotaTableRow, unknown>[]>(
     () => [
-      columnHelper.accessor('spec.resourceType', {
-        header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Resource Type`} />,
-        cell: ({ getValue }) => getValue(),
-      }),
-      columnHelper.accessor('status', {
+      {
+        id: 'resource',
+        header: t`Resource`,
+        accessorFn: (row) => row.displayName,
+        size: 320,
+        cell: ({ row }) => (
+          <div>
+            <Text size="sm" className="block font-medium">
+              {row.original.displayName}
+            </Text>
+            {row.original.description && (
+              <Text size="xs" textColor="muted" className="mt-0.5 block">
+                {row.original.description}
+              </Text>
+            )}
+            {row.original.resourceType !== row.original.displayName && (
+              <Text size="xs" textColor="muted" className="mt-0.5 block font-mono">
+                {row.original.resourceType}
+              </Text>
+            )}
+          </div>
+        ),
+      },
+      {
         id: 'usage',
-        header: () => t`Usage`,
-        cell: ({ getValue }) => {
-          const status = getValue();
-          if (!status) return <Text className="text-muted-foreground">-</Text>;
-          const { allocated = 0, limit: lim = 0 } = status;
-          const used = allocated;
-          const total = lim;
-          const pct = total > 0 ? Math.round((used / total) * 100) : 0;
-          const bar =
-            total === 0
-              ? 'bg-gray-400'
-              : pct <= 70
-                ? 'bg-green-500'
-                : pct <= 90
-                  ? 'bg-yellow-500'
-                  : 'bg-red-500';
+        header: t`Usage`,
+        accessorFn: (row) => usage(row.bucket).used,
+        size: 120,
+        cell: ({ row }) => {
+          const { used, total } = usage(row.original.bucket);
           return (
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-2">
-                <Text className="text-sm font-medium">
-                  {used} / {total}
-                </Text>
-                <Text className="text-muted-foreground text-xs">({pct}%)</Text>
-              </div>
-              <div className="bg-muted h-2 w-full rounded-full">
+            <Text size="sm" className="font-mono whitespace-nowrap">
+              {used} / {total}
+            </Text>
+          );
+        },
+      },
+      {
+        id: 'percent',
+        header: t`% Used`,
+        accessorFn: (row) => row.percentage,
+        size: 220,
+        cell: ({ row }) => {
+          const { total, percentage } = usage(row.original.bucket);
+          return (
+            <div className="flex items-center gap-3">
+              <div className="bg-muted h-2 flex-1 rounded-full">
                 <div
-                  className={`${bar} h-2 rounded-full transition-all`}
-                  style={{ width: `${Math.min(pct, 100)}%` }}
+                  className={`${barColor(percentage, total)} h-2 rounded-full transition-all`}
+                  style={{ width: `${Math.min(percentage, 100)}%` }}
                 />
               </div>
+              <Text size="xs" textColor="muted" className="font-medium whitespace-nowrap">
+                {percentage}%
+              </Text>
             </div>
           );
         },
-      }),
-      columnHelper.accessor('metadata.creationTimestamp', {
-        id: 'metadata.creationTimestamp',
-        header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
-        cell: ({ getValue }) => <DateTime date={getValue()} />,
-      }),
-      columnHelper.display({
-        id: 'actions',
-        header: () => <div className="text-right" />,
-        cell: ({ row }) => (
-          <div className="flex w-full justify-end">
-            <DataTable.RowActions row={row} actions={actions} />
-          </div>
-        ),
-      }),
+      },
     ],
-    [actions, t]
+    [t]
   );
+
+  const rowActions = (): ActionItem<QuotaTableRow>[] => [
+    {
+      label: t`Edit Quota`,
+      icon: <PencilIcon className="size-4" />,
+      onClick: (row) => setSelected(row.bucket),
+    },
+  ];
 
   const currentLimit = selected?.status?.limit ?? 0;
   const increaseSchema = z.object({
@@ -127,23 +211,19 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
         submitText={t`Update`}
         cancelText={t`Cancel`}
         onSubmit={async (formData) => {
-          try {
-            const amount = Math.max(0, formData.newLimit - currentLimit);
-            await createGrantFn(selected?.metadata?.namespace ?? '', {
-              consumerRef: {
-                apiGroup: selected?.spec.consumerRef.apiGroup ?? '',
-                kind: selected?.spec.consumerRef.kind as 'Organization' | 'Project',
-                name: selected?.spec.consumerRef.name ?? '',
-              },
-              allowances: [
-                { resourceType: selected?.spec.resourceType ?? '', buckets: [{ amount }] },
-              ],
-            });
-            await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 1000));
-            toast.success(t`Quota updated successfully`);
-          } catch (e) {
-            throw e;
-          }
+          const amount = Math.max(0, formData.newLimit - currentLimit);
+          await createGrantFn(selected?.metadata?.namespace ?? '', {
+            consumerRef: {
+              apiGroup: selected?.spec.consumerRef.apiGroup ?? '',
+              kind: selected?.spec.consumerRef.kind as 'Organization' | 'Project',
+              name: selected?.spec.consumerRef.name ?? '',
+            },
+            allowances: [
+              { resourceType: selected?.spec.resourceType ?? '', buckets: [{ amount }] },
+            ],
+          });
+          await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 1000));
+          toast.success(t`Quota updated successfully`);
         }}
         schema={increaseSchema}
         defaultValues={{ newLimit: 0 }}>
@@ -162,37 +242,30 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
         </Form.Field>
       </DialogForm>
 
-      <DataTable.Client
-        loading={tableQuery.isLoading}
-        data={tableQuery.data?.items ?? []}
-        columns={columns}
-        pageSize={20}
-        getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
-        defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
-        searchFn={(row, search) => {
-          const q = search.trim().toLowerCase();
-          if (!q) return true;
-          return (row.spec?.resourceType ?? '').toLowerCase().includes(q);
-        }}>
-        <Card className="m-4 py-4 shadow-none">
-          <CardContent className="flex flex-col gap-2 px-4">
-            <DataTableToolbar
-              search={
-                <DataTable.Search
-                  placeholder={t`Search by resource type...`}
-                  className="w-full md:w-64"
-                />
-              }
-            />
-            <DataTable.Content
-              headerClassName="bg-muted/50"
-              className="border-t border-b border-solid"
-              emptyMessage={t`No quota buckets found.`}
-            />
-            <DataTable.Pagination className="pb-0" />
-          </CardContent>
-        </Card>
-      </DataTable.Client>
+      <Card className="m-4 py-4 shadow-none">
+        <CardContent className="px-4">
+          <GroupedTable<QuotaTableRow>
+            columns={columns}
+            groups={groups}
+            isLoading={tableQuery.isLoading}
+            defaultExpanded="all"
+            enableSorting
+            enableSearch
+            searchPlaceholder={t`Search quotas...`}
+            toolbarClassName="w-full md:w-64"
+            searchFn={(row, query) => {
+              const q = query.toLowerCase();
+              return (
+                row.displayName.toLowerCase().includes(q) ||
+                row.resourceType.toLowerCase().includes(q)
+              );
+            }}
+            getRowId={(row) => row.resourceType}
+            rowActions={rowActions}
+            empty={t`No quota buckets found.`}
+          />
+        </CardContent>
+      </Card>
     </>
   );
 }

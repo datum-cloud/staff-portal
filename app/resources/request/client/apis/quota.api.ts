@@ -208,6 +208,22 @@ export const featureFlagRegistrationListQuery = async (params?: ListQueryParams)
   return response.data.data;
 };
 
+// All ResourceRegistrations (no feature-flag filter). ResourceRegistration is
+// cluster-scoped with a Platform parent-context, so it is served only at the
+// platform API root — a scoped org/project query returns an empty list. The
+// Quotas page joins these to the scoped AllowanceBuckets by resourceType to
+// resolve display names, descriptions, and the owning service.
+export const resourceRegistrationListQuery = async (params?: ListQueryParams) => {
+  const response = await listQuotaMiloapisComV1Alpha1ResourceRegistration({
+    baseURL: PROXY_URL,
+    query: {
+      ...(params?.limit && { limit: params.limit }),
+      ...(params?.cursor && { continue: params.cursor }),
+    },
+  });
+  return response.data.data;
+};
+
 export const quotaClaimListQuery = async (
   namespace: string,
   params?: ListQueryParams & { fieldSelector?: string; labelSelector?: string; baseURL?: string }
