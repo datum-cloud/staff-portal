@@ -501,7 +501,7 @@ msgstr "by"
 msgid "Cancel"
 msgstr "Cancel"
 
-#: app/routes/project/detail/edge/detail.tsx:241
+#: app/routes/project/detail/edge/detail.tsx:240
 msgid "Canonical Address"
 msgstr "Canonical Address"
 
@@ -554,7 +554,7 @@ msgstr "Completed"
 msgid "Conditions"
 msgstr "Conditions"
 
-#: app/routes/project/detail/edge/detail.tsx:344
+#: app/routes/project/detail/edge/detail.tsx:345
 #: app/routes/project/detail/export-policy/detail.tsx:173
 #: app/routes/project/detail/export-policy/detail.tsx:207
 msgid "Configuration"
@@ -709,7 +709,7 @@ msgstr "Create Policy"
 #: app/routes/organization/index.tsx:43
 #: app/routes/profile/session.tsx:73
 #: app/routes/project/detail/domain/detail.tsx:132
-#: app/routes/project/detail/edge/detail.tsx:252
+#: app/routes/project/detail/edge/detail.tsx:251
 #: app/routes/project/detail/export-policy/detail.tsx:83
 #: app/routes/project/detail/export-policy/index.tsx:53
 #: app/routes/project/detail/index.tsx:102
@@ -1065,7 +1065,7 @@ msgstr "Domains"
 msgid "Draft"
 msgstr "Draft"
 
-#: app/routes/project/detail/edge/detail.tsx:218
+#: app/routes/project/detail/edge/detail.tsx:217
 msgid "Edge ID"
 msgstr "Edge ID"
 
@@ -1160,7 +1160,7 @@ msgstr "End Time"
 #: app/routes/fraud/providers/create.tsx:106
 #: app/routes/fraud/providers/detail.tsx:147
 #: app/routes/fraud/providers/index.tsx:76
-#: app/routes/project/detail/edge/detail.tsx:192
+#: app/routes/project/detail/edge/detail.tsx:191
 msgid "Endpoint"
 msgstr "Endpoint"
 
@@ -1479,7 +1479,7 @@ msgstr "Full response from the provider"
 msgid "Gated by Provider"
 msgstr "Gated by Provider"
 
-#: app/routes/project/detail/edge/detail.tsx:172
+#: app/routes/project/detail/edge/detail.tsx:171
 msgid "General"
 msgstr "General"
 
@@ -1531,7 +1531,7 @@ msgstr "History Retention"
 msgid "History Retention (max entries)"
 msgstr "History Retention (max entries)"
 
-#: app/routes/project/detail/edge/detail.tsx:270
+#: app/routes/project/detail/edge/detail.tsx:269
 msgid "Hostnames & Routing"
 msgstr "Hostnames & Routing"
 
@@ -1632,7 +1632,7 @@ msgstr "Last 10 new users who joined Datum"
 msgid "Last Evaluated"
 msgstr "Last Evaluated"
 
-#: app/routes/project/detail/edge/detail.tsx:228
+#: app/routes/project/detail/edge/detail.tsx:227
 msgid "Last Modified"
 msgstr "Last Modified"
 
@@ -1888,7 +1888,7 @@ msgstr "My Profile"
 #: app/routes/organization/detail/project.tsx:35
 #: app/routes/organization/index.tsx:25
 #: app/routes/project/detail/dns/detail.tsx:110
-#: app/routes/project/detail/edge/detail.tsx:182
+#: app/routes/project/detail/edge/detail.tsx:181
 #: app/routes/project/detail/export-policy/detail.tsx:63
 #: app/routes/project/detail/export-policy/detail.tsx:109
 #: app/routes/project/detail/export-policy/detail.tsx:161
@@ -3008,7 +3008,7 @@ msgstr "Start Time"
 #: app/routes/contact/detail/group.tsx:102
 #: app/routes/fraud/providers/index.tsx:85
 #: app/routes/project/detail/domain/detail.tsx:122
-#: app/routes/project/detail/edge/detail.tsx:206
+#: app/routes/project/detail/edge/detail.tsx:205
 #: app/routes/project/detail/export-policy/detail.tsx:75
 #: app/routes/project/detail/export-policy/detail.tsx:170
 #: app/routes/project/detail/export-policy/index.tsx:46

@@ -22,9 +22,18 @@ async function fetchMetricCard(
     body: JSON.stringify({ type: 'card', query, metricFormat }),
   });
 
-  const data: StaffPortalAPIResponse<MetricCardData> = await response.json();
+  if (!response.ok) {
+    throw new PrometheusError('Metrics request failed', 'network', response.status);
+  }
 
-  if (!response.ok || data.code !== 'API_REQUEST_SUCCESS') {
+  let data: StaffPortalAPIResponse<MetricCardData>;
+  try {
+    data = await response.json();
+  } catch {
+    throw new PrometheusError('Invalid response from metrics API', 'network', response.status);
+  }
+
+  if (data.code !== 'API_REQUEST_SUCCESS') {
     throw new PrometheusError(data.error || 'Metrics request failed', 'network', response.status);
   }
 

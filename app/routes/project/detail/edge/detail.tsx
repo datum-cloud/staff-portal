@@ -3,8 +3,7 @@ import { BadgeCondition, BadgeState } from '@/components/badge';
 import { ButtonCopy } from '@/components/button';
 import { DateTime } from '@/components/date';
 import { authenticator } from '@/modules/auth';
-import { MetricCard } from '@/modules/metrics';
-import { buildPrometheusLabelSelector, buildHistogramQuantileQuery } from '@/modules/metrics';
+import { MetricCard, buildPrometheusLabelSelector, buildHistogramQuantileQuery } from '@/modules/metrics';
 import { projectEdgeDetailQuery } from '@/resources/request/server';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
@@ -100,7 +99,7 @@ export default function Page() {
     return endpoints.size;
   }, [data?.spec?.rules]);
 
-  const firstRuleForHostname = useMemo(() => {
+  const firstRule = useMemo(() => {
     const rules = data?.spec?.rules ?? [];
     // Return first rule that has at least one backend with an endpoint
     return rules.find((rule) => (rule.backends ?? []).some((b) => b.endpoint));
@@ -149,7 +148,7 @@ export default function Page() {
         />
         <MetricCard
           title="Error Rate"
-          query={`sum(rate(envoy_vhost_vcluster_upstream_rq{resourcemanager_datumapis_com_project_name="${projectName ?? ''}",gateway_name="${edgeName}",gateway_namespace="default",envoy_response_code=~"5.*"}[5m])) / sum(rate(envoy_vhost_vcluster_upstream_rq${selector}[5m]))`}
+          query={`sum(rate(envoy_vhost_vcluster_upstream_rq${buildPrometheusLabelSelector({ baseLabels, customLabels: { envoy_response_code: '=~"5.*"' } })}[5m])) / sum(rate(envoy_vhost_vcluster_upstream_rq${selector}[5m]))`}
           metricFormat="percent"
           icon={AlertCircle}
         />
@@ -282,7 +281,7 @@ export default function Page() {
               <div className="flex flex-col gap-2">
                 {hostnames?.map((val) => {
                   const routeLabel = (() => {
-                    const rule = firstRuleForHostname;
+                    const rule = firstRule;
                     if (!rule) return null;
                     const path = (rule as any).matches?.[0]?.path;
                     const backend = (rule.backends ?? []).find((b) => b.endpoint);
@@ -325,7 +324,9 @@ export default function Page() {
                           {tlsBadge}
                         </div>
                         {routeLabel && (
-                          <code className="text-muted-foreground truncate text-xs">{routeLabel}</code>
+                          <code className="text-muted-foreground truncate text-xs">
+                            {routeLabel}
+                          </code>
                         )}
                       </div>
                       <ButtonCopy value={val.hostname} />

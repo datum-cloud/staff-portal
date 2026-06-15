@@ -43,13 +43,17 @@ export interface PrometheusQueryBuilderOptions {
  * // Result: {resourcemanager_datumapis_com_project_name="project123",gateway_name="proxy456",label_topology_kubernetes_io_region!="",environment="production",label_topology_kubernetes_io_region=~"us-east-1|us-west-2"}
  * ```
  */
+function escapePromQLLabelValue(value: string): string {
+  return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
 export function buildPrometheusLabelSelector(options: PrometheusQueryBuilderOptions): string {
   const { baseLabels, filters = [], customLabels = {} } = options;
   const allLabels: string[] = [];
 
   // Add base labels
   Object.entries(baseLabels).forEach(([key, value]) => {
-    allLabels.push(`${key}="${value}"`);
+    allLabels.push(`${key}="${escapePromQLLabelValue(value)}"`);
   });
 
   // Add custom labels (support raw operators)
@@ -58,7 +62,7 @@ export function buildPrometheusLabelSelector(options: PrometheusQueryBuilderOpti
     if (value.match(/^[!~=]/)) {
       allLabels.push(`${key}${value}`);
     } else {
-      allLabels.push(`${key}="${value}"`);
+      allLabels.push(`${key}="${escapePromQLLabelValue(value)}"`);
     }
   });
 
@@ -187,7 +191,7 @@ export function buildHistogramQuantileQuery(options: {
     baseLabels,
     filters,
     customLabels,
-    groupBy = [],
+    groupBy = ['le'],
     aggregation = 'sum',
   } = options;
 
