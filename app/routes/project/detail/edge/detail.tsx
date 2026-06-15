@@ -3,6 +3,8 @@ import { BadgeCondition, BadgeState } from '@/components/badge';
 import { ButtonCopy } from '@/components/button';
 import { DateTime } from '@/components/date';
 import { authenticator } from '@/modules/auth';
+import { MetricCard } from '@/modules/metrics';
+import { buildPrometheusLabelSelector, buildHistogramQuantileQuery } from '@/modules/metrics';
 import { projectEdgeDetailQuery } from '@/resources/request/server';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
@@ -12,6 +14,7 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { ComDatumapisNetworkingV1AlphaHttpProxy } from '@openapi/networking.datumapis.com/v1alpha';
 import { dump } from 'js-yaml';
+import { Activity, AlertCircle, Clock, TrendingUp } from 'lucide-react';
 import { lazy, Suspense, useMemo } from 'react';
 import { useLoaderData, useParams } from 'react-router';
 
@@ -119,8 +122,49 @@ export default function Page() {
     );
   }, [data]);
 
+  const edgeName = data?.metadata?.name ?? '';
+
+  const baseLabels = {
+    resourcemanager_datumapis_com_project_name: projectName ?? '',
+    gateway_name: edgeName,
+    gateway_namespace: 'default',
+  };
+
+  const selector = buildPrometheusLabelSelector({ baseLabels });
+
   return (
     <div className="m-4 flex flex-col gap-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <MetricCard
+          title="Request Rate"
+          query={`sum(rate(envoy_vhost_vcluster_upstream_rq${selector}[5m]))`}
+          metricFormat="requestsPerSecond"
+          icon={Activity}
+        />
+        <MetricCard
+          title="Total Requests (1h)"
+          query={`sum(increase(envoy_vhost_vcluster_upstream_rq${selector}[1h]))`}
+          metricFormat="short-number"
+          icon={TrendingUp}
+        />
+        <MetricCard
+          title="Error Rate"
+          query={`sum(rate(envoy_vhost_vcluster_upstream_rq{resourcemanager_datumapis_com_project_name="${projectName ?? ''}",gateway_name="${edgeName}",gateway_namespace="default",envoy_response_code=~"5.*"}[5m])) / sum(rate(envoy_vhost_vcluster_upstream_rq${selector}[5m]))`}
+          metricFormat="percent"
+          icon={AlertCircle}
+        />
+        <MetricCard
+          title="P95 Latency"
+          query={buildHistogramQuantileQuery({
+            quantile: 0.95,
+            metric: 'envoy_vhost_vcluster_upstream_rq_time_bucket',
+            timeWindow: '5m',
+            baseLabels,
+          })}
+          metricFormat="milliseconds-auto"
+          icon={Clock}
+        />
+      </div>
       <div className="grid grid-cols-2 gap-4">
         <Card className="shadow-none">
           <CardHeader>
@@ -266,9 +310,9 @@ export default function Page() {
                   return (
                     <div
                       key={val.hostname}
-                      className="border-input bg-background flex items-center justify-between gap-2 rounded-md border p-2">
-                      <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2">
+                      className="border-input bg-background flex min-w-0 items-center justify-between gap-2 rounded-md border p-2">
+                      <div className="flex min-w-0 flex-col gap-1">
+                        <div className="flex min-w-0 items-center gap-2">
                           <Tooltip message={val.valid ? 'Valid' : val.message}>
                             <div className="inline-flex cursor-help">
                               <BadgeState
@@ -277,11 +321,11 @@ export default function Page() {
                               />
                             </div>
                           </Tooltip>
-                          <span className="text-sm font-medium">{val.hostname}</span>
+                          <span className="truncate text-sm font-medium">{val.hostname}</span>
                           {tlsBadge}
                         </div>
                         {routeLabel && (
-                          <code className="text-muted-foreground text-xs">{routeLabel}</code>
+                          <code className="text-muted-foreground truncate text-xs">{routeLabel}</code>
                         )}
                       </div>
                       <ButtonCopy value={val.hostname} />
