@@ -501,6 +501,10 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: app/routes/project/detail/edge/detail.tsx:197
+msgid "Canonical Address"
+msgstr ""
+
 #: app/routes/finance/billing-account/detail/index.tsx:72
 msgid "Card"
 msgstr ""
@@ -550,6 +554,7 @@ msgstr ""
 msgid "Conditions"
 msgstr ""
 
+#: app/routes/project/detail/edge/detail.tsx:300
 #: app/routes/project/detail/export-policy/detail.tsx:173
 #: app/routes/project/detail/export-policy/detail.tsx:207
 msgid "Configuration"
@@ -704,7 +709,7 @@ msgstr ""
 #: app/routes/organization/index.tsx:43
 #: app/routes/profile/session.tsx:73
 #: app/routes/project/detail/domain/detail.tsx:132
-#: app/routes/project/detail/edge/detail.tsx:123
+#: app/routes/project/detail/edge/detail.tsx:208
 #: app/routes/project/detail/export-policy/detail.tsx:83
 #: app/routes/project/detail/export-policy/index.tsx:53
 #: app/routes/project/detail/index.tsx:102
@@ -1060,6 +1065,10 @@ msgstr ""
 msgid "Draft"
 msgstr ""
 
+#: app/routes/project/detail/edge/detail.tsx:174
+msgid "Edge ID"
+msgstr ""
+
 #: app/features/contact/components/contact-list.tsx:51
 #: app/features/fraud/policy/policy-detail.tsx:93
 #: app/routes/contact-group/index.tsx:51
@@ -1151,7 +1160,7 @@ msgstr ""
 #: app/routes/fraud/providers/create.tsx:106
 #: app/routes/fraud/providers/detail.tsx:147
 #: app/routes/fraud/providers/index.tsx:76
-#: app/routes/project/detail/edge/detail.tsx:97
+#: app/routes/project/detail/edge/detail.tsx:148
 msgid "Endpoint"
 msgstr ""
 
@@ -1470,7 +1479,7 @@ msgstr ""
 msgid "Gated by Provider"
 msgstr ""
 
-#: app/routes/project/detail/edge/detail.tsx:77
+#: app/routes/project/detail/edge/detail.tsx:128
 msgid "General"
 msgstr ""
 
@@ -1522,8 +1531,8 @@ msgstr ""
 msgid "History Retention (max entries)"
 msgstr ""
 
-#: app/routes/project/detail/edge/detail.tsx:140
-msgid "Hostnames"
+#: app/routes/project/detail/edge/detail.tsx:226
+msgid "Hostnames & Routing"
 msgstr ""
 
 #: app/features/user/components/user-identity-card.tsx:125
@@ -1621,6 +1630,10 @@ msgstr ""
 
 #: app/routes/user/detail/index.tsx:385
 msgid "Last Evaluated"
+msgstr ""
+
+#: app/routes/project/detail/edge/detail.tsx:184
+msgid "Last Modified"
 msgstr ""
 
 #: app/routes/contact-group/detail/member.tsx:99
@@ -1875,7 +1888,7 @@ msgstr ""
 #: app/routes/organization/detail/project.tsx:35
 #: app/routes/organization/index.tsx:25
 #: app/routes/project/detail/dns/detail.tsx:110
-#: app/routes/project/detail/edge/detail.tsx:87
+#: app/routes/project/detail/edge/detail.tsx:138
 #: app/routes/project/detail/export-policy/detail.tsx:63
 #: app/routes/project/detail/export-policy/detail.tsx:109
 #: app/routes/project/detail/export-policy/detail.tsx:161
@@ -2995,7 +3008,7 @@ msgstr ""
 #: app/routes/contact/detail/group.tsx:102
 #: app/routes/fraud/providers/index.tsx:85
 #: app/routes/project/detail/domain/detail.tsx:122
-#: app/routes/project/detail/edge/detail.tsx:111
+#: app/routes/project/detail/edge/detail.tsx:162
 #: app/routes/project/detail/export-policy/detail.tsx:75
 #: app/routes/project/detail/export-policy/detail.tsx:170
 #: app/routes/project/detail/export-policy/index.tsx:46
