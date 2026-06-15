@@ -11,9 +11,9 @@ import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { ComDatumapisNetworkingV1AlphaHttpProxy } from '@openapi/networking.datumapis.com/v1alpha';
+import { dump } from 'js-yaml';
 import { lazy, Suspense, useMemo } from 'react';
 import { useLoaderData, useParams } from 'react-router';
-import { dump } from 'js-yaml';
 
 const MonacoEditor = lazy(() => import('@monaco-editor/react'));
 
@@ -74,9 +74,7 @@ export default function Page() {
   }, [data?.status, data?.spec]);
 
   const lastModified = useMemo(() => {
-    const managedFields = (data as any)?.metadata?.managedFields as
-      | { time?: string }[]
-      | undefined;
+    const managedFields = (data as any)?.metadata?.managedFields as { time?: string }[] | undefined;
     if (!managedFields?.length) return undefined;
     const times = managedFields
       .map((f) => f.time)
@@ -124,176 +122,176 @@ export default function Page() {
   return (
     <div className="m-4 flex flex-col gap-4">
       <div className="grid grid-cols-2 gap-4">
-      <Card className="shadow-none">
-        <CardHeader>
-          <CardTitle>
-            <Trans>General</Trans>
-          </CardTitle>
-        </CardHeader>
+        <Card className="shadow-none">
+          <CardHeader>
+            <CardTitle>
+              <Trans>General</Trans>
+            </CardTitle>
+          </CardHeader>
 
-        <CardContent>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Name</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  <Text>{data?.metadata?.name}</Text>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Endpoint</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  <Text>
-                    {data?.spec?.rules.map(
-                      (rule) => rule.backends?.map((backend) => backend.endpoint).join(', ') ?? ''
-                    )}
-                  </Text>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Status</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  <Text>
-                    <BadgeCondition status={data?.status} multiple={false} showMessage />
-                  </Text>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Edge ID</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  <Text>{data?.metadata?.uid}</Text>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Last Modified</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  <Text>
-                    <DateTime date={lastModified} variant="both" />
-                  </Text>
-                </TableCell>
-              </TableRow>
-              {canonicalAddress && (
+          <CardContent>
+            <Table>
+              <TableBody>
                 <TableRow>
                   <TableCell width="25%">
                     <Text textColor="muted">
-                      <Trans>Canonical Address</Trans>
+                      <Trans>Name</Trans>
                     </Text>
                   </TableCell>
                   <TableCell>
-                    <Text>{canonicalAddress}</Text>
+                    <Text>{data?.metadata?.name}</Text>
                   </TableCell>
                 </TableRow>
-              )}
-              <TableRow>
-                <TableCell width="25%">
-                  <Text textColor="muted">
-                    <Trans>Created</Trans>
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  <Text>
-                    <DateTime date={data?.metadata?.creationTimestamp} variant="both" />
-                  </Text>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
-      <Card className="shadow-none">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>
-              <Trans>Hostnames &amp; Routing</Trans>
-            </CardTitle>
-            {routeCount > 0 && (
-              <Text textColor="muted" className="text-sm">
-                {routeCount} {routeCount === 1 ? 'route' : 'routes'}
-              </Text>
-            )}
-          </div>
-        </CardHeader>
-
-        <CardContent>
-          {(hostnames ?? [])?.length > 0 && (
-            <div className="flex flex-col gap-2">
-              {hostnames?.map((val) => {
-                const routeLabel = (() => {
-                  const rule = firstRuleForHostname;
-                  if (!rule) return null;
-                  const path = (rule as any).matches?.[0]?.path;
-                  const backend = (rule.backends ?? []).find((b) => b.endpoint);
-                  if (!backend?.endpoint) return null;
-                  const pathValue = path?.value ?? '/';
-                  const isExact = path?.type === 'Exact';
-                  return `${pathValue}${isExact ? '' : '*'} → ${backend.endpoint}`;
-                })();
-
-                const hostnameStatus = hostnameStatuses?.find((s) => s.hostname === val.hostname);
-                const certCondition = hostnameStatus?.conditions?.find(
-                  (c) => c.type === 'CertificateReady'
-                );
-                const tlsBadge = (() => {
-                  if (!certCondition) return null;
-                  if (certCondition.status === 'True') {
-                    return <BadgeState state="success" message="TLS" className="text-xs" />;
-                  }
-                  if (certCondition.status === 'False') {
-                    return <BadgeState state="error" message="TLS" className="text-xs" />;
-                  }
-                  return null;
-                })();
-
-                return (
-                  <div
-                    key={val.hostname}
-                    className="border-input bg-background flex items-center justify-between gap-2 rounded-md border p-2">
-                    <div className="flex flex-col gap-1">
-                      <div className="flex items-center gap-2">
-                        <Tooltip message={val.valid ? 'Valid' : val.message}>
-                          <div className="inline-flex cursor-help">
-                            <BadgeState
-                              state={val.valid ? 'success' : 'error'}
-                              message={val.valid ? 'HTTP/HTTPS' : 'Invalid'}
-                            />
-                          </div>
-                        </Tooltip>
-                        <span className="text-sm font-medium">{val.hostname}</span>
-                        {tlsBadge}
-                      </div>
-                      {routeLabel && (
-                        <code className="text-muted-foreground text-xs">{routeLabel}</code>
+                <TableRow>
+                  <TableCell width="25%">
+                    <Text textColor="muted">
+                      <Trans>Endpoint</Trans>
+                    </Text>
+                  </TableCell>
+                  <TableCell>
+                    <Text>
+                      {data?.spec?.rules.map(
+                        (rule) => rule.backends?.map((backend) => backend.endpoint).join(', ') ?? ''
                       )}
-                    </div>
-                    <ButtonCopy value={val.hostname} />
-                  </div>
-                );
-              })}
+                    </Text>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell width="25%">
+                    <Text textColor="muted">
+                      <Trans>Status</Trans>
+                    </Text>
+                  </TableCell>
+                  <TableCell>
+                    <Text>
+                      <BadgeCondition status={data?.status} multiple={false} showMessage />
+                    </Text>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell width="25%">
+                    <Text textColor="muted">
+                      <Trans>Edge ID</Trans>
+                    </Text>
+                  </TableCell>
+                  <TableCell>
+                    <Text>{data?.metadata?.uid}</Text>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell width="25%">
+                    <Text textColor="muted">
+                      <Trans>Last Modified</Trans>
+                    </Text>
+                  </TableCell>
+                  <TableCell>
+                    <Text>
+                      <DateTime date={lastModified} variant="both" />
+                    </Text>
+                  </TableCell>
+                </TableRow>
+                {canonicalAddress && (
+                  <TableRow>
+                    <TableCell width="25%">
+                      <Text textColor="muted">
+                        <Trans>Canonical Address</Trans>
+                      </Text>
+                    </TableCell>
+                    <TableCell>
+                      <Text>{canonicalAddress}</Text>
+                    </TableCell>
+                  </TableRow>
+                )}
+                <TableRow>
+                  <TableCell width="25%">
+                    <Text textColor="muted">
+                      <Trans>Created</Trans>
+                    </Text>
+                  </TableCell>
+                  <TableCell>
+                    <Text>
+                      <DateTime date={data?.metadata?.creationTimestamp} variant="both" />
+                    </Text>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-none">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>
+                <Trans>Hostnames &amp; Routing</Trans>
+              </CardTitle>
+              {routeCount > 0 && (
+                <Text textColor="muted" className="text-sm">
+                  {routeCount} {routeCount === 1 ? 'route' : 'routes'}
+                </Text>
+              )}
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </CardHeader>
+
+          <CardContent>
+            {(hostnames ?? [])?.length > 0 && (
+              <div className="flex flex-col gap-2">
+                {hostnames?.map((val) => {
+                  const routeLabel = (() => {
+                    const rule = firstRuleForHostname;
+                    if (!rule) return null;
+                    const path = (rule as any).matches?.[0]?.path;
+                    const backend = (rule.backends ?? []).find((b) => b.endpoint);
+                    if (!backend?.endpoint) return null;
+                    const pathValue = path?.value ?? '/';
+                    const isExact = path?.type === 'Exact';
+                    return `${pathValue}${isExact ? '' : '*'} → ${backend.endpoint}`;
+                  })();
+
+                  const hostnameStatus = hostnameStatuses?.find((s) => s.hostname === val.hostname);
+                  const certCondition = hostnameStatus?.conditions?.find(
+                    (c) => c.type === 'CertificateReady'
+                  );
+                  const tlsBadge = (() => {
+                    if (!certCondition) return null;
+                    if (certCondition.status === 'True') {
+                      return <BadgeState state="success" message="TLS" className="text-xs" />;
+                    }
+                    if (certCondition.status === 'False') {
+                      return <BadgeState state="error" message="TLS" className="text-xs" />;
+                    }
+                    return null;
+                  })();
+
+                  return (
+                    <div
+                      key={val.hostname}
+                      className="border-input bg-background flex items-center justify-between gap-2 rounded-md border p-2">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                          <Tooltip message={val.valid ? 'Valid' : val.message}>
+                            <div className="inline-flex cursor-help">
+                              <BadgeState
+                                state={val.valid ? 'success' : 'error'}
+                                message={val.valid ? 'HTTP/HTTPS' : 'Invalid'}
+                              />
+                            </div>
+                          </Tooltip>
+                          <span className="text-sm font-medium">{val.hostname}</span>
+                          {tlsBadge}
+                        </div>
+                        {routeLabel && (
+                          <code className="text-muted-foreground text-xs">{routeLabel}</code>
+                        )}
+                      </div>
+                      <ButtonCopy value={val.hostname} />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
 
       <Card className="shadow-none">
@@ -311,7 +309,7 @@ export default function Page() {
           <ButtonCopy value={yamlConfig} tooltipText="Copy YAML" />
         </CardHeader>
         <CardContent className="p-0">
-          <Suspense fallback={<div className="h-[500px] animate-pulse rounded-md bg-muted" />}>
+          <Suspense fallback={<div className="bg-muted h-[500px] animate-pulse rounded-md" />}>
             <MonacoEditor
               height="500px"
               language="yaml"
