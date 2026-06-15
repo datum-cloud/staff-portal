@@ -49,13 +49,18 @@ export function DescriptionList({ items, labelWidth = '25%', className }: Descri
               className={cn(
                 'text-muted-foreground text-sm',
                 'pt-3 pb-1',
-                'md:pt-3 md:pr-4 md:pb-3',
+                'md:flex md:items-center md:py-3 md:pr-4',
                 !isLast && 'md:border-b'
               )}>
               {item.label}
             </dt>
             {/* Value: owns the row divider on mobile so there's only one line per pair. */}
-            <dd className={cn('pb-3', 'md:pt-3 md:pb-3', !isLast && 'border-b md:border-b')}>
+            <dd
+              className={cn(
+                'm-0 pb-3 text-sm',
+                'md:flex md:items-center md:py-3',
+                !isLast && 'border-b md:border-b'
+              )}>
               {item.value}
             </dd>
           </Fragment>

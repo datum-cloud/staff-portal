@@ -1,8 +1,17 @@
+import {
+  getBasicAuthState,
+  getParanoiaLevels,
+  getTrafficProtectionMode,
+  parseHtpasswdUsernames,
+  toHttpProxy,
+  type EdgeDetailBundle,
+} from '@/features/edge/lib';
 import { env } from '@/utils/config/env.server';
 import { readDnsNetworkingMiloapisComV1Alpha1NamespacedDnsZone } from '@openapi/dns.networking.miloapis.com/v1alpha1';
 import {
   readNetworkingDatumapisComV1AlphaNamespacedDomain,
   readNetworkingDatumapisComV1AlphaNamespacedHttpProxy,
+  readNetworkingDatumapisComV1AlphaNamespacedTrafficProtectionPolicy,
 } from '@openapi/networking.datumapis.com/v1alpha';
 import { listNotesMiloapisComV1Alpha1NamespacedNote } from '@openapi/notes.miloapis.com/v1alpha1';
 import { readResourcemanagerMiloapisComV1Alpha1Project } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
@@ -38,6 +47,82 @@ export const projectEdgeDetailQuery = async (
     },
   });
   return response.data as unknown as UnwrapProxyResponse<typeof response.data>;
+};
+
+const projectControlPlaneBaseUrl = (projectName: string) =>
+  `${env.API_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`;
+
+async function fetchControlPlaneJson<T>(
+  token: string,
+  projectName: string,
+  path: string
+): Promise<T | null> {
+  const response = await fetch(`${projectControlPlaneBaseUrl(projectName)}${path}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+    },
+  });
+
+  if (response.status === 404) return null;
+  if (!response.ok) {
+    throw new Response(`Control plane request failed: ${response.status}`, {
+      status: response.status,
+    });
+  }
+
+  return (await response.json()) as T;
+}
+
+export const projectEdgeDetailBundleQuery = async (
+  token: string,
+  projectName: string,
+  edgeName: string,
+  namespace: string = 'default'
+): Promise<EdgeDetailBundle> => {
+  const baseURL = projectControlPlaneBaseUrl(projectName);
+  const headers = { Authorization: `Bearer ${token}` };
+
+  const [proxyResponse, wafResponse, securityPolicy, basicAuthSecret] = await Promise.all([
+    readNetworkingDatumapisComV1AlphaNamespacedHttpProxy({
+      baseURL,
+      path: { namespace, name: edgeName },
+      headers,
+    }),
+    readNetworkingDatumapisComV1AlphaNamespacedTrafficProtectionPolicy({
+      baseURL,
+      path: { namespace, name: edgeName },
+      headers,
+    }).catch(() => null),
+    fetchControlPlaneJson<unknown>(
+      token,
+      projectName,
+      `/apis/gateway.envoyproxy.io/v1alpha1/namespaces/${namespace}/securitypolicies/${edgeName}`
+    ),
+    fetchControlPlaneJson<unknown>(
+      token,
+      projectName,
+      `/api/v1/namespaces/${namespace}/secrets/${edgeName}-basic-auth`
+    ),
+  ]);
+
+  const raw = proxyResponse.data as unknown as UnwrapProxyResponse<typeof proxyResponse.data>;
+  const wafData = wafResponse?.data as unknown as
+    | UnwrapProxyResponse<NonNullable<typeof wafResponse>['data']>
+    | undefined;
+
+  const usernames = parseHtpasswdUsernames(basicAuthSecret);
+  const basicAuth = getBasicAuthState(securityPolicy, usernames);
+  const trafficProtectionMode = getTrafficProtectionMode(wafData ?? null);
+  const paranoiaLevels = getParanoiaLevels(wafData ?? null);
+
+  const proxy = toHttpProxy(raw, {
+    ...(trafficProtectionMode !== undefined && { trafficProtectionMode }),
+    ...(paranoiaLevels !== undefined && { paranoiaLevels }),
+    basicAuth,
+  });
+
+  return { raw, proxy };
 };
 
 export const projectExportPolicyDetailQuery = async (
