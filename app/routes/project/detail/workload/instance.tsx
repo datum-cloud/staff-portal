@@ -5,6 +5,7 @@ import { DateTime } from '@/components/date';
 import { PageHeader } from '@/components/page-header';
 import { authenticator } from '@/modules/auth';
 import { toInstance, instanceStatusToBadgeStatus, type Instance } from '@/resources/instances';
+import type { InstanceCondition } from '@/resources/instances';
 import { projectInstanceDetailQuery } from '@/resources/request/server';
 import { metaObject } from '@/utils/helpers';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
@@ -24,12 +25,9 @@ import {
 } from 'lucide-react';
 import { useMemo } from 'react';
 import { useLoaderData } from 'react-router';
-import type { InstanceCondition } from '@/resources/instances';
 
 export const handle = {
-  breadcrumb: (data: { instance: Instance }) => (
-    <span>{data?.instance?.name ?? 'Instance'}</span>
-  ),
+  breadcrumb: (data: { instance: Instance }) => <span>{data?.instance?.name ?? 'Instance'}</span>,
 };
 
 export const meta: Route.MetaFunction = () => {
@@ -130,11 +128,7 @@ export default function InstanceDetailPage() {
           />
         )}
         {instance.image && (
-          <StatCard
-            icon={<BoxIcon className="size-4" />}
-            label="Image"
-            value={instance.image}
-          />
+          <StatCard icon={<BoxIcon className="size-4" />} label="Image" value={instance.image} />
         )}
       </div>
 
@@ -156,7 +150,7 @@ export default function InstanceDetailPage() {
                   </span>
                   <div className="bg-muted/50 flex items-center gap-2 rounded-lg px-3 py-2.5">
                     <LinkIcon className="text-muted-foreground size-3.5 shrink-0" />
-                    <span className="text-primary min-w-0 flex-1 break-all text-sm font-mono">
+                    <span className="text-primary min-w-0 flex-1 font-mono text-sm break-all">
                       {instance.externalIP}
                     </span>
                     <ButtonCopy
@@ -274,7 +268,11 @@ export default function InstanceDetailPage() {
           <CardTitle className="text-base font-semibold">
             <Trans>YAML</Trans>
           </CardTitle>
-          <ButtonCopy value={yaml} successMessage="YAML copied to clipboard" tooltipText="Copy YAML" />
+          <ButtonCopy
+            value={yaml}
+            successMessage="YAML copied to clipboard"
+            tooltipText="Copy YAML"
+          />
         </CardHeader>
         <CardContent>
           <CodeEditor value={yaml} language={'yaml' as EditorLanguage} readOnly minHeight="400px" />

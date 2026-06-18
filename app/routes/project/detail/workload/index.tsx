@@ -23,10 +23,7 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const session = await authenticator.getSession(request);
-  const raw = await projectWorkloadListQuery(
-    session?.accessToken ?? '',
-    params.projectName ?? ''
-  );
+  const raw = await projectWorkloadListQuery(session?.accessToken ?? '', params.projectName ?? '');
   const items = toWorkloadList((raw as any)?.items ?? []).items;
   return { workloads: items };
 };
@@ -118,10 +115,7 @@ export default function Page() {
         <CardContent className="flex flex-col gap-2 px-4">
           <DataTableToolbar
             search={
-              <DataTable.Search
-                placeholder={t`Search workloads...`}
-                className="w-full md:w-64"
-              />
+              <DataTable.Search placeholder={t`Search workloads...`} className="w-full md:w-64" />
             }
           />
           <DataTable.Content

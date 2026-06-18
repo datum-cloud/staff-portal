@@ -227,7 +227,7 @@ msgid "Admin"
 msgstr ""
 
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:155
-#: app/routes/project/detail/workload/index.tsx:90
+#: app/routes/project/detail/workload/index.tsx:87
 msgid "Age"
 msgstr ""
 
@@ -555,19 +555,19 @@ msgstr ""
 msgid "Completing ACME challenge with the certificate authority"
 msgstr ""
 
-#: app/routes/project/detail/workload/detail/index.tsx:336
+#: app/routes/project/detail/workload/detail/index.tsx:338
 msgid "Compute Quota"
 msgstr ""
 
 #: app/features/service-catalog/components/conditions-card.tsx:64
-#: app/routes/project/detail/workload/detail/index.tsx:284
+#: app/routes/project/detail/workload/detail/index.tsx:286
 msgid "Conditions"
 msgstr ""
 
 #: app/features/edge/components/detail/edge-config-card.tsx:83
 #: app/routes/project/detail/export-policy/detail.tsx:173
 #: app/routes/project/detail/export-policy/detail.tsx:207
-#: app/routes/project/detail/workload/detail/index.tsx:216
+#: app/routes/project/detail/workload/detail/index.tsx:218
 msgid "Configuration"
 msgstr ""
 
@@ -650,7 +650,7 @@ msgstr ""
 msgid "Contacts - Create"
 msgstr ""
 
-#: app/routes/project/detail/workload/detail/index.tsx:238
+#: app/routes/project/detail/workload/detail/index.tsx:240
 msgid "Container image"
 msgstr ""
 
@@ -736,8 +736,8 @@ msgstr ""
 #: app/routes/project/detail/export-policy/detail.tsx:83
 #: app/routes/project/detail/export-policy/index.tsx:53
 #: app/routes/project/detail/index.tsx:102
-#: app/routes/project/detail/workload/detail/index.tsx:268
-#: app/routes/project/detail/workload/instance.tsx:259
+#: app/routes/project/detail/workload/detail/index.tsx:270
+#: app/routes/project/detail/workload/instance.tsx:253
 #: app/routes/project/index.tsx:49
 #: app/routes/user/detail/index.tsx:280
 #: app/routes/user/index.tsx:121
@@ -1559,11 +1559,11 @@ msgstr ""
 msgid "Groups"
 msgstr ""
 
-#: app/routes/project/detail/workload/index.tsx:66
+#: app/routes/project/detail/workload/index.tsx:63
 msgid "Health"
 msgstr ""
 
-#: app/routes/project/detail/workload/instance.tsx:199
+#: app/routes/project/detail/workload/instance.tsx:193
 msgid "Health Conditions"
 msgstr ""
 
@@ -1605,8 +1605,8 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
-#: app/routes/project/detail/workload/index.tsx:55
-#: app/routes/project/detail/workload/instance.tsx:234
+#: app/routes/project/detail/workload/index.tsx:52
+#: app/routes/project/detail/workload/instance.tsx:228
 msgid "Image"
 msgstr ""
 
@@ -1616,7 +1616,7 @@ msgstr ""
 msgid "Inactive"
 msgstr ""
 
-#: app/routes/project/detail/workload/detail/index.tsx:381
+#: app/routes/project/detail/workload/detail/index.tsx:393
 msgid "Instances"
 msgstr ""
 
@@ -1718,7 +1718,7 @@ msgstr ""
 msgid "Last name is required"
 msgstr ""
 
-#: app/routes/project/detail/workload/detail/index.tsx:304
+#: app/routes/project/detail/workload/detail/index.tsx:306
 msgid "Last Transition"
 msgstr ""
 
@@ -1907,7 +1907,7 @@ msgid "Members"
 msgstr ""
 
 #: app/features/service-catalog/components/conditions-card.tsx:39
-#: app/routes/project/detail/workload/detail/index.tsx:301
+#: app/routes/project/detail/workload/detail/index.tsx:303
 msgid "Message"
 msgstr ""
 
@@ -1965,7 +1965,7 @@ msgstr ""
 #: app/routes/project/detail/export-policy/index.tsx:30
 #: app/routes/project/detail/index.tsx:86
 #: app/routes/project/detail/secret.tsx:26
-#: app/routes/project/detail/workload/index.tsx:45
+#: app/routes/project/detail/workload/index.tsx:42
 #: app/routes/project/index.tsx:26
 #: app/routes/user/detail/organization.tsx:36
 #: app/routes/user/index.tsx:93
@@ -1997,7 +1997,7 @@ msgid "Net days"
 msgstr ""
 
 #: app/features/fraud/detail/maxmind-rows.tsx:120
-#: app/routes/project/detail/workload/instance.tsx:148
+#: app/routes/project/detail/workload/instance.tsx:142
 msgid "Network"
 msgstr ""
 
@@ -2224,7 +2224,7 @@ msgstr ""
 msgid "No users yet"
 msgstr ""
 
-#: app/routes/project/detail/workload/index.tsx:130
+#: app/routes/project/detail/workload/index.tsx:124
 msgid "No workloads found."
 msgstr ""
 
@@ -2411,11 +2411,11 @@ msgstr ""
 msgid "Pipeline Stages"
 msgstr ""
 
-#: app/routes/project/detail/workload/instance.tsx:252
+#: app/routes/project/detail/workload/instance.tsx:246
 msgid "Placement"
 msgstr ""
 
-#: app/routes/project/detail/workload/index.tsx:78
+#: app/routes/project/detail/workload/index.tsx:75
 msgid "Placements"
 msgstr ""
 
@@ -2476,7 +2476,7 @@ msgstr ""
 msgid "Portal Preferences"
 msgstr ""
 
-#: app/routes/project/detail/workload/instance.tsx:244
+#: app/routes/project/detail/workload/instance.tsx:238
 msgid "Ports"
 msgstr ""
 
@@ -2644,12 +2644,12 @@ msgstr ""
 msgid "Reactivate User"
 msgstr ""
 
-#: app/routes/project/detail/workload/index.tsx:74
+#: app/routes/project/detail/workload/index.tsx:71
 msgid "Ready"
 msgstr ""
 
 #: app/features/service-catalog/components/conditions-card.tsx:35
-#: app/routes/project/detail/workload/detail/index.tsx:298
+#: app/routes/project/detail/workload/detail/index.tsx:300
 msgid "Reason"
 msgstr ""
 
@@ -2669,7 +2669,7 @@ msgstr ""
 msgid "Records"
 msgstr ""
 
-#: app/routes/project/detail/workload/detail/index.tsx:246
+#: app/routes/project/detail/workload/detail/index.tsx:248
 msgid "Regions"
 msgstr ""
 
@@ -2713,7 +2713,7 @@ msgstr ""
 msgid "Removed from list successfully"
 msgstr ""
 
-#: app/routes/project/detail/workload/detail/index.tsx:261
+#: app/routes/project/detail/workload/detail/index.tsx:263
 msgid "Replicas"
 msgstr ""
 
@@ -2750,7 +2750,7 @@ msgid "Resource"
 msgstr ""
 
 #: app/routes/finance/billing-account/detail/index.tsx:180
-#: app/routes/project/detail/workload/detail/index.tsx:223
+#: app/routes/project/detail/workload/detail/index.tsx:225
 msgid "Resource name"
 msgstr ""
 
@@ -2773,7 +2773,7 @@ msgid "Resource:"
 msgstr ""
 
 #: app/components/app-search/search-results.tsx:213
-#: app/routes/project/detail/workload/detail/index.tsx:254
+#: app/routes/project/detail/workload/detail/index.tsx:256
 msgid "Resources"
 msgstr ""
 
@@ -2829,8 +2829,8 @@ msgstr ""
 msgid "Running"
 msgstr ""
 
-#: app/routes/project/detail/workload/detail/index.tsx:230
-#: app/routes/project/detail/workload/instance.tsx:226
+#: app/routes/project/detail/workload/detail/index.tsx:232
+#: app/routes/project/detail/workload/instance.tsx:220
 msgid "Runtime"
 msgstr ""
 
@@ -2981,7 +2981,7 @@ msgstr ""
 msgid "Search users..."
 msgstr ""
 
-#: app/routes/project/detail/workload/index.tsx:122
+#: app/routes/project/detail/workload/index.tsx:118
 msgid "Search workloads..."
 msgstr ""
 
@@ -3157,7 +3157,7 @@ msgstr ""
 #: app/routes/project/detail/export-policy/detail.tsx:75
 #: app/routes/project/detail/export-policy/detail.tsx:170
 #: app/routes/project/detail/export-policy/index.tsx:46
-#: app/routes/project/detail/workload/detail/index.tsx:295
+#: app/routes/project/detail/workload/detail/index.tsx:297
 #: app/routes/user/detail/index.tsx:276
 #: app/routes/user/index.tsx:109
 #: app/routes/user/index.tsx:277
@@ -3315,7 +3315,7 @@ msgstr ""
 #: app/routes/project/detail/dns/detail.tsx:95
 #: app/routes/project/detail/dns/detail.tsx:159
 #: app/routes/project/detail/export-policy/detail.tsx:164
-#: app/routes/project/detail/workload/detail/index.tsx:292
+#: app/routes/project/detail/workload/detail/index.tsx:294
 #: app/routes/user/detail/organization.tsx:50
 msgid "Type"
 msgstr ""
@@ -3505,7 +3505,7 @@ msgstr ""
 msgid "View organization"
 msgstr ""
 
-#: app/routes/project/detail/workload/detail/index.tsx:341
+#: app/routes/project/detail/workload/detail/index.tsx:343
 msgid "View quotas →"
 msgstr ""
 
@@ -3537,14 +3537,14 @@ msgid "Watch"
 msgstr ""
 
 #: app/routes/project/detail/layout.tsx:145
-#: app/routes/project/detail/workload/index.tsx:98
+#: app/routes/project/detail/workload/index.tsx:95
 #: app/routes/project/detail/workload/layout.tsx:5
 msgid "Workloads"
 msgstr ""
 
 #: app/features/edge/components/detail/edge-yaml-card.tsx:20
-#: app/routes/project/detail/workload/detail/index.tsx:437
-#: app/routes/project/detail/workload/instance.tsx:275
+#: app/routes/project/detail/workload/detail/index.tsx:451
+#: app/routes/project/detail/workload/instance.tsx:269
 msgid "YAML"
 msgstr ""
 

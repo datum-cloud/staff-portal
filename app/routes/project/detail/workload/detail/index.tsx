@@ -6,8 +6,8 @@ import { DateTime } from '@/components/date';
 import { PageHeader } from '@/components/page-header';
 import { authenticator } from '@/modules/auth';
 import { toInstanceList, instanceStatusToBadgeStatus } from '@/resources/instances';
-import { projectWorkloadDetailQuery, projectInstanceListQuery } from '@/resources/request/server';
 import { useProjectQuotaBucketListQuery } from '@/resources/request/client';
+import { projectWorkloadDetailQuery, projectInstanceListQuery } from '@/resources/request/server';
 import { toWorkload, workloadHealthToBadgeStatus, type Workload } from '@/resources/workloads';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
@@ -29,9 +29,7 @@ import { useMemo } from 'react';
 import { Link, useLoaderData, useParams } from 'react-router';
 
 export const handle = {
-  breadcrumb: (data: { workload: Workload }) => (
-    <span>{data?.workload?.name ?? 'Workload'}</span>
-  ),
+  breadcrumb: (data: { workload: Workload }) => <span>{data?.workload?.name ?? 'Workload'}</span>,
 };
 
 export const meta: Route.MetaFunction = ({ matches }) => {
@@ -131,8 +129,12 @@ export default function WorkloadDetailPage() {
         total = (limit / 1000).toFixed(1).replace(/\.0$/, '');
       } else if (resourceType === 'compute.datumapis.com/memory') {
         label = 'Memory';
-        used = allocated >= 1024 ? `${(allocated / 1024).toFixed(1).replace(/\.0$/, '')} GiB` : `${allocated} MiB`;
-        total = limit >= 1024 ? `${(limit / 1024).toFixed(1).replace(/\.0$/, '')} GiB` : `${limit} MiB`;
+        used =
+          allocated >= 1024
+            ? `${(allocated / 1024).toFixed(1).replace(/\.0$/, '')} GiB`
+            : `${allocated} MiB`;
+        total =
+          limit >= 1024 ? `${(limit / 1024).toFixed(1).replace(/\.0$/, '')} GiB` : `${limit} MiB`;
       } else {
         label = 'Instances';
         used = String(allocated);
@@ -284,7 +286,7 @@ export default function WorkloadDetailPage() {
               <Trans>Conditions</Trans>
             </CardTitle>
           </CardHeader>
-          <CardContent className="px-5 pb-5 pt-0">
+          <CardContent className="px-5 pt-0 pb-5">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -341,34 +343,44 @@ export default function WorkloadDetailPage() {
               <Trans>View quotas →</Trans>
             </Link>
           </CardHeader>
-          <CardContent className="px-5 pb-5 pt-0">
+          <CardContent className="px-5 pt-0 pb-5">
             <div className="flex flex-col gap-3">
-              {computeQuota.filter((q) => q.hasData).map((q) => (
-                <div key={q.label} className="flex items-center gap-3">
-                  <span className="text-muted-foreground w-20 shrink-0 text-xs font-medium">
-                    {q.label}
-                  </span>
-                  <div className="bg-muted h-2 flex-1 rounded-full">
-                    <div
+              {computeQuota
+                .filter((q) => q.hasData)
+                .map((q) => (
+                  <div key={q.label} className="flex items-center gap-3">
+                    <span className="text-muted-foreground w-20 shrink-0 text-xs font-medium">
+                      {q.label}
+                    </span>
+                    <div className="bg-muted h-2 flex-1 rounded-full">
+                      <div
+                        className={cn(
+                          'h-2 rounded-full transition-all',
+                          q.pct <= 70
+                            ? 'bg-green-500'
+                            : q.pct <= 90
+                              ? 'bg-yellow-500'
+                              : 'bg-red-500'
+                        )}
+                        style={{ width: `${Math.min(q.pct, 100)}%` }}
+                      />
+                    </div>
+                    <span className="text-muted-foreground w-28 shrink-0 text-right text-xs tabular-nums">
+                      {q.used} / {q.total}
+                    </span>
+                    <span
                       className={cn(
-                        'h-2 rounded-full transition-all',
-                        q.pct <= 70 ? 'bg-green-500' : q.pct <= 90 ? 'bg-yellow-500' : 'bg-red-500'
-                      )}
-                      style={{ width: `${Math.min(q.pct, 100)}%` }}
-                    />
+                        'w-10 shrink-0 text-right text-xs font-medium tabular-nums',
+                        q.pct <= 70
+                          ? 'text-green-600'
+                          : q.pct <= 90
+                            ? 'text-yellow-600'
+                            : 'text-red-600'
+                      )}>
+                      {q.pct}%
+                    </span>
                   </div>
-                  <span className="text-muted-foreground w-28 shrink-0 text-right text-xs tabular-nums">
-                    {q.used} / {q.total}
-                  </span>
-                  <span
-                    className={cn(
-                      'w-10 shrink-0 text-right text-xs font-medium tabular-nums',
-                      q.pct <= 70 ? 'text-green-600' : q.pct <= 90 ? 'text-yellow-600' : 'text-red-600'
-                    )}>
-                    {q.pct}%
-                  </span>
-                </div>
-              ))}
+                ))}
             </div>
           </CardContent>
         </Card>
@@ -381,7 +393,7 @@ export default function WorkloadDetailPage() {
             <Trans>Instances</Trans>
           </CardTitle>
         </CardHeader>
-        <CardContent className="px-5 pb-5 pt-0">
+        <CardContent className="px-5 pt-0 pb-5">
           {instances.length === 0 ? (
             <p className="text-muted-foreground py-4 text-sm">No instances running.</p>
           ) : (
@@ -418,7 +430,9 @@ export default function WorkloadDetailPage() {
                     </TableCell>
                     <TableCell>{instance.city ?? '—'}</TableCell>
                     <TableCell>{instance.placement ?? '—'}</TableCell>
-                    <TableCell className="font-mono text-xs">{instance.instanceType ?? '—'}</TableCell>
+                    <TableCell className="font-mono text-xs">
+                      {instance.instanceType ?? '—'}
+                    </TableCell>
                     <TableCell>
                       <DateTime date={instance.createdAt} />
                     </TableCell>
@@ -436,7 +450,11 @@ export default function WorkloadDetailPage() {
           <CardTitle className="text-base font-semibold">
             <Trans>YAML</Trans>
           </CardTitle>
-          <ButtonCopy value={yaml} successMessage="YAML copied to clipboard" tooltipText="Copy YAML" />
+          <ButtonCopy
+            value={yaml}
+            successMessage="YAML copied to clipboard"
+            tooltipText="Copy YAML"
+          />
         </CardHeader>
         <CardContent>
           <CodeEditor value={yaml} language={'yaml' as EditorLanguage} readOnly minHeight="400px" />
