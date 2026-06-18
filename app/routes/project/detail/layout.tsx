@@ -17,6 +17,7 @@ import {
   ComMiloapisResourcemanagerV1Alpha1Project,
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import {
+  Boxes,
   ChartSpline,
   CircleGauge,
   ExternalLink,
@@ -96,6 +97,9 @@ export default function Layout() {
     if (params.dnsName) return `${base}/dns-zones/${params.dnsName}`;
     if (params.domainName) return `${base}/domains/${params.domainName}`;
     if (params.exportPolicyName) return `${base}/export-policies/${params.exportPolicyName}`;
+    if (params.instanceName)
+      return `${base}/compute/workloads/${params.workloadName}/instances/${params.instanceName}`;
+    if (params.workloadName) return `${base}/compute/workloads/${params.workloadName}`;
 
     // Sub-resource list pages
     if (pathname.startsWith(projectRoutes.edge.list(projectName))) return `${base}/edge`;
@@ -103,6 +107,8 @@ export default function Layout() {
     if (pathname.startsWith(projectRoutes.domain.list(projectName))) return `${base}/domains`;
     if (pathname.startsWith(projectRoutes.exportPolicy.list(projectName)))
       return `${base}/export-policies`;
+    if (pathname.startsWith(projectRoutes.workload.list(projectName)))
+      return `${base}/compute/workloads`;
     if (pathname.startsWith(projectRoutes.secret.list(projectName))) return `${base}/secrets`;
     if (pathname.startsWith(projectRoutes.activity.root(projectName))) return `${base}/activity`;
     if (
@@ -134,6 +140,11 @@ export default function Layout() {
       title: t`Domains`,
       href: projectRoutes.domain.list(projectName),
       icon: Layers,
+    },
+    {
+      title: t`Workloads`,
+      href: projectRoutes.workload.list(projectName),
+      icon: Boxes,
     },
     {
       title: t`Metrics`,

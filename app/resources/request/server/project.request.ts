@@ -7,6 +7,12 @@ import {
   type EdgeDetailBundle,
 } from '@/features/edge/lib';
 import { env } from '@/utils/config/env.server';
+import {
+  listComputeDatumapisComV1AlphaNamespacedInstance,
+  listComputeDatumapisComV1AlphaNamespacedWorkload,
+  readComputeDatumapisComV1AlphaNamespacedInstance,
+  readComputeDatumapisComV1AlphaNamespacedWorkload,
+} from '@openapi/compute.datumapis.com/v1alpha';
 import { readDnsNetworkingMiloapisComV1Alpha1NamespacedDnsZone } from '@openapi/dns.networking.miloapis.com/v1alpha1';
 import {
   readNetworkingDatumapisComV1AlphaNamespacedDomain,
@@ -199,6 +205,62 @@ export const projectDomainNotesQuery = async (
     headers: {
       Authorization: `Bearer ${token}`,
     },
+  });
+  return response.data as unknown as UnwrapProxyResponse<typeof response.data>;
+};
+
+export const projectWorkloadListQuery = async (
+  token: string,
+  projectName: string,
+  namespace: string = 'default'
+) => {
+  const response = await listComputeDatumapisComV1AlphaNamespacedWorkload({
+    baseURL: `${env.API_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    path: { namespace },
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data as unknown as UnwrapProxyResponse<typeof response.data>;
+};
+
+export const projectWorkloadDetailQuery = async (
+  token: string,
+  projectName: string,
+  workloadName: string,
+  namespace: string = 'default'
+) => {
+  const response = await readComputeDatumapisComV1AlphaNamespacedWorkload({
+    baseURL: `${env.API_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    path: { namespace, name: workloadName },
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data as unknown as UnwrapProxyResponse<typeof response.data>;
+};
+
+export const projectInstanceListQuery = async (
+  token: string,
+  projectName: string,
+  workloadName: string,
+  namespace: string = 'default'
+) => {
+  const response = await listComputeDatumapisComV1AlphaNamespacedInstance({
+    baseURL: `${env.API_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    path: { namespace },
+    query: { labelSelector: `compute.datumapis.com/workload-name=${workloadName}` },
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data as unknown as UnwrapProxyResponse<typeof response.data>;
+};
+
+export const projectInstanceDetailQuery = async (
+  token: string,
+  projectName: string,
+  instanceName: string,
+  namespace: string = 'default'
+) => {
+  const response = await readComputeDatumapisComV1AlphaNamespacedInstance({
+    baseURL: `${env.API_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    path: { namespace, name: instanceName },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return response.data as unknown as UnwrapProxyResponse<typeof response.data>;
 };

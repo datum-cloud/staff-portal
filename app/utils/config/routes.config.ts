@@ -71,6 +71,13 @@ export const projectRoutes = {
     detail: (projectName: string, secretName: string) =>
       `/customers/projects/${projectName}/secrets/${secretName}`,
   },
+  workload: {
+    list: (projectName: string) => `/customers/projects/${projectName}/workloads`,
+    detail: (projectName: string, workloadName: string) =>
+      `/customers/projects/${projectName}/workloads/${workloadName}`,
+    instance: (projectName: string, workloadName: string, instanceName: string) =>
+      `/customers/projects/${projectName}/workloads/${workloadName}/instances/${instanceName}`,
+  },
 } as const;
 
 // Groups feature routes

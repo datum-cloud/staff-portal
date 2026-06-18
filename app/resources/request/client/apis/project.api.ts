@@ -1,6 +1,8 @@
 import { PROXY_URL } from '@/modules/axios/axios.client';
 import { ListQueryParams } from '@/resources/schemas';
+import { toWorkloadList } from '@/resources/workloads';
 import { flattenManagedRecordSets } from '@/utils/helpers';
+import { listComputeDatumapisComV1AlphaNamespacedWorkload } from '@openapi/compute.datumapis.com/v1alpha';
 import {
   listDnsNetworkingMiloapisComV1Alpha1DnsZoneForAllNamespaces,
   listDnsNetworkingMiloapisComV1Alpha1NamespacedDnsRecordSet,
@@ -131,4 +133,16 @@ export const projectDeleteMutation = (projectName: string) => {
       name: projectName,
     },
   });
+};
+
+export const projectWorkloadListQuery = async (
+  projectName: string,
+  namespace: string = 'default'
+) => {
+  const response = await listComputeDatumapisComV1AlphaNamespacedWorkload({
+    baseURL: `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+    path: { namespace },
+  });
+  const data = response.data.data;
+  return toWorkloadList(data?.items ?? []).items;
 };

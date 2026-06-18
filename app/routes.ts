@@ -78,6 +78,14 @@ export default [
             index('routes/project/detail/edge/index.tsx'),
             route(':edgeName', 'routes/project/detail/edge/detail.tsx'),
           ]),
+          route('workloads', 'routes/project/detail/workload/layout.tsx', [
+            index('routes/project/detail/workload/index.tsx'),
+            route(':workloadName', 'routes/project/detail/workload/detail/index.tsx'),
+            route(
+              ':workloadName/instances/:instanceName',
+              'routes/project/detail/workload/instance.tsx'
+            ),
+          ]),
           route('quotas', 'routes/project/detail/quota/layout.tsx', [
             index('routes/project/detail/quota/index.tsx'),
             route('usage', 'routes/project/detail/quota/usage.tsx'),
