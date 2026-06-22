@@ -1,15 +1,13 @@
 import { buildScopedPath, buildProxyPath } from './endpoints';
+import { REQUEST_CONTEXT_STORE_KEY } from './context-key';
 import type { GqlScope } from './types';
 import { createClient, cacheExchange, fetchExchange } from '@urql/core';
 import type { Client as UrqlClient, SSRExchange } from '@urql/core';
 
-// Set by request-context middleware (same key as app/modules/axios/request-context.ts)
-const REQUEST_CONTEXT_KEY = '__request_context_store__';
-
 function getRequestContext() {
   if (typeof window !== 'undefined') return undefined;
   try {
-    const store = (globalThis as any)[REQUEST_CONTEXT_KEY];
+    const store = (globalThis as any)[REQUEST_CONTEXT_STORE_KEY];
     if (store && typeof store.getStore === 'function') {
       return store.getStore();
     }

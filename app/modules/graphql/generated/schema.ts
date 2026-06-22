@@ -1,8 +1,8 @@
 export type Scalars = {
     ID: string,
     String: string,
-    Boolean: boolean,
     Int: number,
+    Boolean: boolean,
 }
 
 export interface Query {
@@ -11,7 +11,7 @@ export interface Query {
      * consumer project's human-readable display name (the
      * kubernetes.io/description annotation on the Project, falling back to the
      * project name).
-     *
+     * 
      * Authorization uses the caller's bearer token for both the consumer list
      * (in the producer project's control plane) and the per-project lookups (at
      * the core resourcemanager API). A list failure returns an empty list; a
@@ -20,7 +20,7 @@ export interface Query {
     serviceConsumers: ServiceConsumer[]
     /**
      * Returns sessions for the authenticated caller by default.
-     *
+     * 
      * When userID is provided and differs from the caller, the request is
      * forwarded to milo with a status.userUID field selector. milo authorizes
      * the cross-user lookup via SubjectAccessReview against
@@ -170,7 +170,7 @@ export interface QueryRequest{
      * consumer project's human-readable display name (the
      * kubernetes.io/description annotation on the Project, falling back to the
      * project name).
-     *
+     * 
      * Authorization uses the caller's bearer token for both the consumer list
      * (in the producer project's control plane) and the per-project lookups (at
      * the core resourcemanager API). A list failure returns an empty list; a
@@ -179,7 +179,7 @@ export interface QueryRequest{
     serviceConsumers?: [{producerProject: Scalars['ID']},ServiceConsumerRequest]
     /**
      * Returns sessions for the authenticated caller by default.
-     *
+     * 
      * When userID is provided and differs from the caller, the request is
      * forwarded to milo with a status.userUID field selector. milo authorizes
      * the cross-user lookup via SubjectAccessReview against
@@ -192,12 +192,12 @@ export interface QueryRequest{
      * Contact data for each membership. Resolves all contacts in parallel.
      * fieldSelector supports standard Kubernetes field selectors.
      */
-    contactGroupMembershipsWithContacts?: [{fieldSelector?: (Scalars['String'] | null), limit?: (Scalars['Int'] | null), cursor?: (Scalars['String'] | null)},EnrichedContactGroupMembershipListRequest] | EnrichedContactGroupMembershipListRequest
+    contactGroupMembershipsWithContacts?: [{fieldSelector?: (Scalars['String'] | null),limit?: (Scalars['Int'] | null),cursor?: (Scalars['String'] | null)},EnrichedContactGroupMembershipListRequest] | EnrichedContactGroupMembershipListRequest
     /**
      * Lists ContactGroupMemberships across all namespaces, enriched with full
      * ContactGroup data for each membership. Resolves all contact groups in parallel.
      */
-    contactMembershipsWithGroups?: [{fieldSelector?: (Scalars['String'] | null), limit?: (Scalars['Int'] | null), cursor?: (Scalars['String'] | null)},EnrichedContactMembershipListRequest] | EnrichedContactMembershipListRequest
+    contactMembershipsWithGroups?: [{fieldSelector?: (Scalars['String'] | null),limit?: (Scalars['Int'] | null),cursor?: (Scalars['String'] | null)},EnrichedContactMembershipListRequest] | EnrichedContactMembershipListRequest
     /**
      * Batch-fetches User summaries by name. Fetches run in parallel; individual
      * lookup failures return null for that entry (filtered from the result).

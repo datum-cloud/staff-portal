@@ -1,5 +1,5 @@
 import { authenticator } from '@/modules/auth';
-import { withRequestContext } from '@/modules/axios/axios.server';
+import { withRequestContext, getRequestContext } from '@/modules/axios/axios.server';
 import { Context, Next } from 'hono';
 import { createMiddleware } from 'hono/factory';
 import type { AppLoadContext } from 'react-router';
@@ -20,6 +20,8 @@ export function requestContextMiddleware() {
 
     // Read the session token directly from the cookie (same as authMiddleware does).
     // authMiddleware is per-route and hasn't run yet, so we cannot use c.get('token').
+    // NOTE: if authMiddleware ever gains token-refresh logic, this independent read
+    // will hold a pre-rotation token — both reads would need to be unified at that point.
     const session = await authenticator.getSession(c.req.raw).catch(() => null);
 
     return withRequestContext(
@@ -42,15 +44,16 @@ export function requestContextMiddleware() {
  */
 export function withRequestContextWrapper<T extends (...args: any[]) => any>(loader: T): T {
   return ((...args: Parameters<T>) => {
-    // Extract context from the first argument (assuming it's a loader args object)
     const loaderArgs = args[0] as { context?: AppLoadContext };
     const requestId = loaderArgs?.context?.requestId;
 
     if (requestId) {
-      return withRequestContext({ requestId }, () => loader(...args));
+      // Carry through token/userId/userAgent already set by requestContextMiddleware
+      // so server-side GraphQL calls inside the loader are authenticated.
+      const existing = getRequestContext() ?? {};
+      return withRequestContext({ ...existing, requestId }, () => loader(...args));
     }
 
-    // If no request ID, just call the original loader
     return loader(...args);
   }) as T;
 }

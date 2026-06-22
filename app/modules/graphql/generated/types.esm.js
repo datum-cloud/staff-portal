@@ -1,14 +1,14 @@
 export default {
     "scalars": [
         1,
+        2,
         3,
-        8,
-        9
+        17
     ],
     "types": {
         "Query": {
             "serviceConsumers": [
-                7,
+                8,
                 {
                     "producerProject": [
                         1,
@@ -17,7 +17,7 @@ export default {
                 }
             ],
             "sessions": [
-                5,
+                6,
                 {
                     "userID": [
                         1
@@ -25,196 +25,223 @@ export default {
                 }
             ],
             "contactGroupMembershipsWithContacts": [
-                13,
+                14,
                 {
                     "fieldSelector": [
-                        3
+                        2
                     ],
                     "limit": [
-                        9
+                        3
                     ],
                     "cursor": [
-                        3
+                        2
                     ]
                 }
             ],
             "contactMembershipsWithGroups": [
-                16,
+                15,
                 {
                     "fieldSelector": [
-                        3
+                        2
                     ],
                     "limit": [
-                        9
+                        3
                     ],
                     "cursor": [
-                        3
+                        2
                     ]
                 }
             ],
             "userSummaries": [
-                17,
+                16,
                 {
                     "names": [
-                        3,
+                        2,
                         "[String!]!"
                     ]
                 }
             ],
             "__typename": [
-                3
+                2
             ]
         },
         "ID": {},
+        "String": {},
+        "Int": {},
         "ParsedUserAgent": {
             "browser": [
-                3
+                2
             ],
             "os": [
-                3
+                2
             ],
             "formatted": [
-                3
+                2
             ],
             "__typename": [
-                3
+                2
             ]
         },
-        "String": {},
         "GeoLocation": {
             "city": [
-                3
+                2
             ],
             "country": [
-                3
+                2
             ],
             "countryCode": [
-                3
+                2
             ],
             "formatted": [
-                3
+                2
             ],
             "__typename": [
-                3
+                2
             ]
         },
         "ExtendedSession": {
             "id": [
-                3
-            ],
-            "userUID": [
-                3
-            ],
-            "provider": [
-                3
-            ],
-            "ipAddress": [
-                3
-            ],
-            "fingerprintID": [
-                3
-            ],
-            "createdAt": [
-                3
-            ],
-            "lastUpdatedAt": [
-                3
-            ],
-            "userAgent": [
                 2
             ],
-            "location": [
+            "userUID": [
+                2
+            ],
+            "provider": [
+                2
+            ],
+            "ipAddress": [
+                2
+            ],
+            "fingerprintID": [
+                2
+            ],
+            "createdAt": [
+                2
+            ],
+            "lastUpdatedAt": [
+                2
+            ],
+            "userAgent": [
                 4
             ],
+            "location": [
+                5
+            ],
             "__typename": [
-                3
+                2
             ]
         },
         "ConsumerProject": {
             "name": [
-                3
+                2
             ],
             "displayName": [
-                3
+                2
             ],
             "__typename": [
-                3
+                2
             ]
         },
         "ServiceConsumer": {
             "name": [
-                3
+                2
             ],
             "serviceName": [
-                3
+                2
             ],
             "phase": [
-                3
+                2
             ],
             "approvalDecision": [
-                3
+                2
             ],
             "approvalMessage": [
-                3
+                2
             ],
             "requestedAt": [
-                3
+                2
             ],
             "consumerProject": [
-                6
+                7
             ],
             "__typename": [
-                3
+                2
             ]
         },
-        "Boolean": {},
-        "Int": {},
         "ContactRef": {
             "name": [
-                3
+                2
             ],
             "namespace": [
-                3
+                2
             ],
             "__typename": [
-                3
+                2
             ]
         },
         "EnrichedContact": {
             "name": [
-                3
+                2
             ],
             "namespace": [
-                3
+                2
             ],
             "email": [
-                3
+                2
             ],
             "givenName": [
-                3
+                2
             ],
             "familyName": [
-                3
+                2
             ],
             "displayName": [
-                3
+                2
             ],
             "__typename": [
-                3
+                2
+            ]
+        },
+        "EnrichedContactGroup": {
+            "name": [
+                2
+            ],
+            "namespace": [
+                2
+            ],
+            "displayName": [
+                2
+            ],
+            "__typename": [
+                2
             ]
         },
         "ContactGroupMembershipEnriched": {
             "name": [
-                3
+                2
             ],
             "contactRef": [
-                10
+                9
             ],
             "contact": [
+                10
+            ],
+            "__typename": [
+                2
+            ]
+        },
+        "ContactMembershipEnriched": {
+            "name": [
+                2
+            ],
+            "contactGroupRef": [
+                9
+            ],
+            "contactGroup": [
                 11
             ],
             "__typename": [
-                3
+                2
             ]
         },
         "EnrichedContactGroupMembershipList": {
@@ -222,67 +249,40 @@ export default {
                 12
             ],
             "continue": [
-                3
+                2
             ],
             "__typename": [
-                3
-            ]
-        },
-        "EnrichedContactGroup": {
-            "name": [
-                3
-            ],
-            "namespace": [
-                3
-            ],
-            "displayName": [
-                3
-            ],
-            "__typename": [
-                3
-            ]
-        },
-        "ContactMembershipEnriched": {
-            "name": [
-                3
-            ],
-            "contactGroupRef": [
-                10
-            ],
-            "contactGroup": [
-                14
-            ],
-            "__typename": [
-                3
+                2
             ]
         },
         "EnrichedContactMembershipList": {
             "items": [
-                15
+                13
             ],
             "continue": [
-                3
+                2
             ],
             "__typename": [
-                3
+                2
             ]
         },
         "UserSummary": {
             "name": [
-                3
+                2
             ],
             "email": [
-                3
+                2
             ],
             "givenName": [
-                3
+                2
             ],
             "familyName": [
-                3
+                2
             ],
             "__typename": [
-                3
+                2
             ]
-        }
+        },
+        "Boolean": {}
     }
 }

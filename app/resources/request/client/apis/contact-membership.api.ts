@@ -11,10 +11,11 @@ import {
 } from '@/resources/schemas';
 import { mapApiError } from '@/utils/errors/error-mapper';
 
+const client = createGqlClient({ type: 'global' });
+
 export const contactMembershipForGroupListQuery = async (
   params?: ListQueryParams<{ fieldSelector?: string }>
 ): Promise<ContactGroupMembershipListWithContacts> => {
-  const client = createGqlClient({ type: 'global' });
   const op = generateQueryOp({
     contactGroupMembershipsWithContacts: [
       {
@@ -73,7 +74,6 @@ export const contactMembershipForGroupListQuery = async (
 export const contactMembershipForContactListQuery = async (
   params?: ListQueryParams<{ fieldSelector?: string }>
 ): Promise<ContactMembershipListWithContactGroups> => {
-  const client = createGqlClient({ type: 'global' });
   const op = generateQueryOp({
     contactMembershipsWithGroups: [
       {

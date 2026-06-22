@@ -1,7 +1,7 @@
+import { PROXY_URL } from '@/modules/axios/axios.client';
 import { createGqlClient } from '@/modules/graphql/client';
 import { generateQueryOp } from '@/modules/graphql/generated';
 import type { UserSummary } from '@/modules/graphql/generated/schema';
-import { PROXY_URL } from '@/modules/axios/axios.client';
 import { ComMiloapisNetworkingDnsV1Alpha1DnsZone } from '@openapi/dns.networking.miloapis.com/v1alpha1';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import {
@@ -142,7 +142,7 @@ export async function searchAllQuery(queryString: string): Promise<GroupedSearch
       });
       const result = await client.query(op.query, op.variables).toPromise();
       const summaryMap = new Map(
-        (result.data?.userSummaries as UserSummary[] ?? []).map((u: UserSummary) => [u.name, u])
+        ((result.data?.userSummaries as UserSummary[]) ?? []).map((u: UserSummary) => [u.name, u])
       );
 
       grouped.users = grouped.users.map((item) => {
@@ -227,14 +227,11 @@ export const searchUsersQuery = async (
 
     const client = createGqlClient({ type: 'global' });
     const op = generateQueryOp({
-      userSummaries: [
-        { names },
-        { name: true, email: true, givenName: true, familyName: true },
-      ],
+      userSummaries: [{ names }, { name: true, email: true, givenName: true, familyName: true }],
     });
     const result = await client.query(op.query, op.variables).toPromise();
     const summaryMap = new Map(
-      (result.data?.userSummaries as UserSummary[] ?? []).map((u: UserSummary) => [u.name, u])
+      ((result.data?.userSummaries as UserSummary[]) ?? []).map((u: UserSummary) => [u.name, u])
     );
 
     return results.map((user) => {

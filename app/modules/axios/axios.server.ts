@@ -26,8 +26,18 @@ interface RequestContextStore {
   userAgent?: string;
 }
 
-// AsyncLocalStorage to store request context
-const requestContext = new AsyncLocalStorage<RequestContextStore>();
+import { REQUEST_CONTEXT_STORE_KEY } from '@/modules/graphql/context-key';
+
+// Use globalThis so the same AsyncLocalStorage instance is shared across
+// modules (axios, GraphQL client, etc.) even after Vite module reloads.
+const STORE_KEY = REQUEST_CONTEXT_STORE_KEY;
+
+function getStore(): AsyncLocalStorage<RequestContextStore> {
+  if (!(globalThis as any)[STORE_KEY]) {
+    (globalThis as any)[STORE_KEY] = new AsyncLocalStorage<RequestContextStore>();
+  }
+  return (globalThis as any)[STORE_KEY];
+}
 
 // Helper to get current request ID
 function getCurrentRequestId(): string | undefined {
@@ -36,12 +46,12 @@ function getCurrentRequestId(): string | undefined {
 
 // Helper to get the full request context (used by GraphQL client)
 export function getRequestContext(): RequestContextStore | undefined {
-  return requestContext.getStore();
+  return getStore().getStore();
 }
 
 // Helper to run code with request context
 export function withRequestContext<T>(ctx: RequestContextStore, fn: () => T): T {
-  return requestContext.run(ctx, fn);
+  return getStore().run(ctx, fn);
 }
 
 export const http = Axios.create({
