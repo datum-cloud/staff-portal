@@ -1,4 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"]
+  "extends": ["config:recommended"],
+  "packageRules": [
+    {
+      "description": "Pin Vite to v7: React Router and Cypress component testing do not yet support Vite 8",
+      "matchPackageNames": ["vite"],
+      "allowedVersions": "<8"
+    }
+  ]
 }

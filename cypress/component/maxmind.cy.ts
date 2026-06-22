@@ -2,9 +2,8 @@ import {
   extractMaxmindInsights,
   getMaxmindTransactionId,
   parseMaxmindRawResponse,
-} from './maxmind';
-import type { FraudEvaluation } from './types';
-import { describe, expect, test } from 'vitest';
+} from '@/features/fraud/detail/maxmind';
+import type { FraudEvaluation } from '@/features/fraud/detail/types';
 
 const SAMPLE_RAW = JSON.stringify({
   email: {
@@ -72,36 +71,36 @@ function buildEvaluation(
 }
 
 describe('parseMaxmindRawResponse', () => {
-  test('returns null for undefined input', () => {
-    expect(parseMaxmindRawResponse(undefined)).toBeNull();
+  it('returns null for undefined input', () => {
+    expect(parseMaxmindRawResponse(undefined)).to.be.null;
   });
 
-  test('returns null for invalid JSON instead of throwing', () => {
-    expect(parseMaxmindRawResponse('{not json')).toBeNull();
+  it('returns null for invalid JSON instead of throwing', () => {
+    expect(parseMaxmindRawResponse('{not json')).to.be.null;
   });
 
-  test('parses a valid response into a typed shape', () => {
+  it('parses a valid response into a typed shape', () => {
     const parsed = parseMaxmindRawResponse(SAMPLE_RAW);
-    expect(parsed?.id).toBe('6f55918d-3935-4525-a900-3ac3cd5201eb');
-    expect(parsed?.ip_address?.traits?.ip_address).toBe('162.233.226.65');
-    expect(parsed?.email?.domain?.classification).toBe('business');
+    expect(parsed?.id).to.equal('6f55918d-3935-4525-a900-3ac3cd5201eb');
+    expect(parsed?.ip_address?.traits?.ip_address).to.equal('162.233.226.65');
+    expect(parsed?.email?.domain?.classification).to.equal('business');
   });
 
-  test('returns null for non-object JSON (e.g. a bare string)', () => {
-    expect(parseMaxmindRawResponse('"hello"')).toBeNull();
+  it('returns null for non-object JSON (e.g. a bare string)', () => {
+    expect(parseMaxmindRawResponse('"hello"')).to.be.null;
   });
 });
 
 describe('extractMaxmindInsights', () => {
-  test('returns null when evaluation is undefined', () => {
-    expect(extractMaxmindInsights(undefined)).toBeNull();
+  it('returns null when evaluation is undefined', () => {
+    expect(extractMaxmindInsights(undefined)).to.be.null;
   });
 
-  test('returns null when evaluation has no stage results', () => {
-    expect(extractMaxmindInsights(buildEvaluation([]))).toBeNull();
+  it('returns null when evaluation has no stage results', () => {
+    expect(extractMaxmindInsights(buildEvaluation([]))).to.be.null;
   });
 
-  test('extracts the maxmind raw response when present', () => {
+  it('extracts the maxmind raw response when present', () => {
     const evaluation = buildEvaluation([
       {
         name: 'identity',
@@ -110,11 +109,11 @@ describe('extractMaxmindInsights', () => {
       },
     ]);
     const insights = extractMaxmindInsights(evaluation);
-    expect(insights?.ip_address?.traits?.isp).toBe('AT&T Internet');
-    expect(insights?.email?.first_seen).toBe('2025-12-04');
+    expect(insights?.ip_address?.traits?.isp).to.equal('AT&T Internet');
+    expect(insights?.email?.first_seen).to.equal('2025-12-04');
   });
 
-  test('skips maxmind results that errored', () => {
+  it('skips maxmind results that errored', () => {
     const evaluation = buildEvaluation([
       {
         name: 'identity',
@@ -124,10 +123,10 @@ describe('extractMaxmindInsights', () => {
         ],
       },
     ]);
-    expect(extractMaxmindInsights(evaluation)).toBeNull();
+    expect(extractMaxmindInsights(evaluation)).to.be.null;
   });
 
-  test('skips maxmind results that fell back to a failure policy', () => {
+  it('skips maxmind results that fell back to a failure policy', () => {
     const evaluation = buildEvaluation([
       {
         name: 'identity',
@@ -142,10 +141,10 @@ describe('extractMaxmindInsights', () => {
         ],
       },
     ]);
-    expect(extractMaxmindInsights(evaluation)).toBeNull();
+    expect(extractMaxmindInsights(evaluation)).to.be.null;
   });
 
-  test('skips skipped stages and ignores non-maxmind providers', () => {
+  it('skips skipped stages and ignores non-maxmind providers', () => {
     const evaluation = buildEvaluation([
       {
         name: 'pre-check',
@@ -162,10 +161,10 @@ describe('extractMaxmindInsights', () => {
       },
     ]);
     const insights = extractMaxmindInsights(evaluation);
-    expect(insights?.id).toBe('6f55918d-3935-4525-a900-3ac3cd5201eb');
+    expect(insights?.id).to.equal('6f55918d-3935-4525-a900-3ac3cd5201eb');
   });
 
-  test('returns the latest maxmind result when more than one is present', () => {
+  it('returns the latest maxmind result when more than one is present', () => {
     const evaluation = buildEvaluation([
       {
         name: 'first',
@@ -197,17 +196,17 @@ describe('extractMaxmindInsights', () => {
       },
     ]);
     const insights = extractMaxmindInsights(evaluation);
-    expect(insights?.id).toBe('newer');
-    expect(insights?.ip_address?.traits?.isp).toBe('New ISP');
+    expect(insights?.id).to.equal('newer');
+    expect(insights?.ip_address?.traits?.isp).to.equal('New ISP');
   });
 });
 
 describe('getMaxmindTransactionId', () => {
-  test('returns the id from insights', () => {
-    expect(getMaxmindTransactionId({ id: 'tx-1' })).toBe('tx-1');
+  it('returns the id from insights', () => {
+    expect(getMaxmindTransactionId({ id: 'tx-1' })).to.equal('tx-1');
   });
 
-  test('returns undefined for null insights', () => {
-    expect(getMaxmindTransactionId(null)).toBeUndefined();
+  it('returns undefined for null insights', () => {
+    expect(getMaxmindTransactionId(null)).to.be.undefined;
   });
 });

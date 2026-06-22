@@ -141,11 +141,11 @@ jobs:
           path: build
           key: build-v1-${{ github.sha }}
 
-  test:
+  unit-tests:
     needs: build
-    name: Tests
+    name: Unit Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     if: ${{ !failure() && !cancelled() }}
     steps:
       - name: Checkout
@@ -179,41 +179,133 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: bun install --frozen-lockfile
 
-      - name: Run Unit Tests
-        id: unit
-        run: NODE_ENV=development bun run test:unit:prod
-
       - name: Setup Cypress
-        run: |
-          echo "Installing Cypress..."
-          bunx cypress install
-          echo "Verifying Cypress installation..."
-          bunx cypress verify
+        run: bunx cypress install && bunx cypress verify
 
-      - name: Setup E2E Environment
-        run: |
-          echo "CYPRESS_BASE_URL=${CYPRESS_BASE_URL}" > .env
-          echo "NODE_ENV=${NODE_ENV}" >> .env
+      # Unit tests run as Cypress component tests (cypress/component/**).
+      # No app/back-end server is needed — the Cypress component runner builds
+      # each spec with Vite.
+      - name: Run Unit (Component) Tests
+        id: unit
+        env:
+          NODE_ENV: test
+          CYPRESS: 'true'
+        run: bun run test:unit:prod
 
-      # - name: Run E2E Tests
-      #   id: e2e
-      #   run: bun run test:e2e:prod
-
-      - name: Upload Test Artifacts
+      - name: Upload Unit Test Artifacts
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: test-artifacts-${{ github.run_id }}
+          name: unit-test-artifacts-${{ github.run_id }}
           path: |
             cypress/videos
             cypress/screenshots
-            cypress/results
           retention-days: 7
           compression-level: 9
           if-no-files-found: warn
 
+  e2e-smoke:
+    needs: build
+    name: E2E Smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Requires repo secrets to be configured (SESSION_SECRET, ACCESS_TOKEN for a
+    # staff user, SUB, API_URL, GRAPHQL_URL, AUTH_OIDC_ISSUER, AUTH_OIDC_CLIENT_ID).
+    # Intentionally NOT part of the required `status` gate yet — add it to
+    # `status.needs` once the secrets above are set so it becomes blocking.
+    if: ${{ !failure() && !cancelled() }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Restore Dependencies Cache
+        uses: actions/cache@v5
+        with:
+          path: |
+            ${{ env.BUN_CACHE }}
+            **/node_modules
+          key: ${{ runner.os }}-deps-v1-${{ hashFiles('**/bun.lockb', '**/package.json') }}
+
+      - name: Restore Build Cache
+        uses: actions/cache@v5
+        with:
+          path: build
+          key: build-v1-${{ github.sha }}
+
+      - name: Install Dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: bun install --frozen-lockfile
+
+      # Write a single .env consumed by all later steps: Bun auto-loads it for
+      # `bun run start`, and cypress.config.ts loads it via dotenv (for the
+      # signSessionCookie task + ACCESS_TOKEN/SUB). This is the single source of
+      # truth for test secrets — the Run Smoke Tests step only overrides NODE_ENV,
+      # which the global `env: NODE_ENV: production` would otherwise pin.
+      - name: Setup E2E Environment
+        env:
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          SUB: ${{ secrets.SUB }}
+          API_URL: ${{ secrets.API_URL }}
+          GRAPHQL_URL: ${{ secrets.GRAPHQL_URL }}
+          AUTH_OIDC_ISSUER: ${{ secrets.AUTH_OIDC_ISSUER }}
+          AUTH_OIDC_CLIENT_ID: ${{ secrets.AUTH_OIDC_CLIENT_ID }}
+        run: |
+          cat > .env << EOF
+          NODE_ENV=test
+          CYPRESS=true
+          APP_URL=http://localhost:3000
+          API_URL=$API_URL
+          GRAPHQL_URL=$GRAPHQL_URL
+          AUTH_OIDC_ISSUER=$AUTH_OIDC_ISSUER
+          AUTH_OIDC_CLIENT_ID=$AUTH_OIDC_CLIENT_ID
+          SESSION_SECRET=$SESSION_SECRET
+          ACCESS_TOKEN=$ACCESS_TOKEN
+          SUB=$SUB
+          VERSION=ci-e2e
+          LOG_LEVEL=warn
+          CYPRESS_BASE_URL=http://localhost:3000
+          EOF
+
+      - name: Setup Cypress
+        run: bunx cypress install && bunx cypress verify
+
+      - name: Run Smoke Tests
+        # NODE_ENV must be set here: the global `env: NODE_ENV: production` is
+        # already in process.env, and dotenv/Bun won't override an existing var,
+        # so the .env value would be ignored without this. Everything else comes
+        # from .env above.
+        env:
+          NODE_ENV: test
+          CYPRESS: 'true'
+        run: >-
+          bunx start-server-and-test
+          'bun run start' http://localhost:3000/_healthz
+          'bunx cypress run --spec "cypress/e2e/smoke/**" --config-file cypress.config.ts'
+
+      - name: Upload E2E Smoke Artifacts
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-smoke-artifacts-${{ github.run_id }}
+          path: |
+            cypress/videos
+            cypress/screenshots
+          retention-days: 7
+          if-no-files-found: warn
+
   status:
-    needs: [setup, code-quality, build, test]
+    needs: [setup, code-quality, build, unit-tests]
     name: Final Status
     runs-on: ubuntu-latest
     if: always()

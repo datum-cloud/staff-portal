@@ -1,5 +1,4 @@
-import { groupQuotas, type QuotaRow } from './quotas-grouping';
-import { describe, expect, it } from 'vitest';
+import { groupQuotas, type QuotaRow } from '@/features/quota/lib/quotas-grouping';
 
 const row = (partial: Partial<QuotaRow>): QuotaRow => ({
   resourceType: 'x/y',
@@ -16,7 +15,7 @@ describe('groupQuotas', () => {
       row({ group: 'Networking', displayName: 'HTTP Proxies' }),
       row({ group: 'DNS', displayName: 'DNS Zones' }),
     ]);
-    expect(groups.map((g) => g.group)).toEqual(['DNS', 'Networking', 'Other']);
+    expect(groups.map((g) => g.group)).to.deep.equal(['DNS', 'Networking', 'Other']);
   });
 
   it('orders items within a group by percentage desc, then display name', () => {
@@ -24,6 +23,9 @@ describe('groupQuotas', () => {
       row({ group: 'DNS', displayName: 'DNS Zones', percentage: 16 }),
       row({ group: 'DNS', displayName: 'DNS Record Sets', percentage: 80 }),
     ]);
-    expect(groups[0].items.map((i) => i.displayName)).toEqual(['DNS Record Sets', 'DNS Zones']);
+    expect(groups[0].items.map((i) => i.displayName)).to.deep.equal([
+      'DNS Record Sets',
+      'DNS Zones',
+    ]);
   });
 });

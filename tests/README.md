@@ -1,242 +1,71 @@
-# Testing Strategy & Best Practices
+# Testing Strategy
 
-## 🎯 **Testing Philosophy**
+Staff Portal uses **Cypress** for both unit and end-to-end testing (mirroring the
+cloud-portal setup). There is no Vitest.
 
-### **Ultra-Minimal Mocking Strategy**
+## Layout
 
-#### ✅ **Mock Only API Calls (Per Test File)**
-
-- **API calls that make network requests** - Mock in each test file with specific responses
-- **Everything else renders normally** - No component mocking unless you encounter real problems
-
-#### ✅ **Render Everything Else**
-
-- **All UI Components** - `@datum-ui/*`, `@/modules/shadcn/ui/*`, `@/components/*`
-- **Icons** - `lucide-react`
-- **Router hooks** - Test with real behavior
-- **Route configurations** - Just static objects
-- **Internal utilities** - Test their actual behavior
-
-### **Why This Approach?**
-
-1. **Real UI Testing** - Test actual component behavior and styling
-2. **Better Coverage** - Catch real integration issues
-3. **Less Maintenance** - No need to update mocks when components change
-4. **Faster Development** - Less mock setup per test
-5. **Production-like Testing** - Components work exactly like in production
-
-## 🛠 **Test Setup**
-
-### **Global Setup (tests/setup/unit/)**
-
-- **`global.mocks.tsx`** - Global mocks (router hooks, logger)
-- **`vitest.setup.ts`** - Initializes Lingui with real translations
-- **`test.utils.tsx`** - Custom render with providers (QueryClient + I18n)
-
-**Minimal global mocks!** Only mock what actually causes problems in tests.
-
-### **Test Fixtures (tests/fixtures/)**
-
-- **`activity-list.ts`** - Reusable API response data for tests
-- **Centralized test data** - No more inline mock data
-- **Type-safe fixtures** - Matches real API response structure
-
-### **Using the Test Utils**
-
-```tsx
-// ✅ Good - Use the custom render with alias
-import { render, screen, waitFor } from '@/tests/setup/unit/test.utils';
-
-// ❌ Bad - Don't import from @testing-library/react directly
-import { render } from '@testing-library/react';
+```
+cypress/
+  support/
+    e2e.ts                — login (signed _session cookie) + global e2e hooks
+    component.tsx         — cy.mount / cy.mountRemixRoute with app providers
+    remixStub.tsx         — React Router v7 RouterProvider stub for route components
+    component-index.html
+  component/              — unit + component tests (*.cy.ts logic, *.cy.tsx UI)
+  e2e/
+    smoke/                — fast render/read checks, run on every PR
+tests/
+  fixtures/               — shared test data (e.g. activity-list.ts)
 ```
 
-## 📝 **Test Structure**
+## Unit / component tests (`cypress/component/**`)
 
-### **Simple Test Pattern**
+Run with the Cypress **component** runner (Vite-bundled, real browser):
 
-```tsx
-import { MyComponent } from './my-component';
-import * as api from '@/resources/request/client';
-import { render, screen } from '@/tests/setup/unit/test.utils';
-import { expect, test, describe, vi } from 'vitest';
-
-// Mock ONLY the API call for this test
-vi.mock('@/resources/request/client', () => ({
-  someApiCall: vi.fn(),
-}));
-
-const mockApiCall = vi.mocked(api.someApiCall);
-
-describe('MyComponent', () => {
-  test('renders correctly', () => {
-    mockApiCall.mockResolvedValue({ data: [] });
-
-    render(<MyComponent />);
-
-    expect(screen.getByText('Expected Text')).toBeInTheDocument();
-  });
-});
+```bash
+bun run test:unit          # interactive (cypress open --component)
+bun run test:unit:prod     # headless (CI)
 ```
 
-## 🎯 **The Golden Rule**
+Two flavours:
 
-### **Mock ONLY API Calls, Render Everything Else**
+- **Logic specs** (`*.cy.ts`) — import a util/module and assert with Chai
+  (`expect(x).to.equal(...)`). Examples: `error-parser`, `service-catalog`,
+  `maxmind`, `quotas-grouping`, `string-helper`.
+- **Component specs** (`*.cy.tsx`) — `cy.mount(<Component />)` and assert on the
+  real rendered DOM. Examples: `badge-state`, `button-delete-action`,
+  `danger-zone-card`, `recent-users-widget`.
 
-```tsx
-// ✅ DO THIS - Mock only API calls per test file
-import * as api from '@/resources/request/client';
-const mockApiCall = vi.fn();
-vi.mocked(api.someApiCall).mockImplementation(mockApiCall);
+### Golden rule: render real components, don't mock modules
 
-// ❌ DON'T DO THIS - Don't mock components
-vi.mock('@/modules/shadcn/ui/card', () => ({ ... }));
-vi.mock('@datum-ui/button', () => ({ ... }));
-vi.mock('lucide-react', () => ({ ... }));
-vi.mock('@/components/date', () => ({ ... }));
+Cypress component tests cannot use `vi.mock`. Render the real UI and assert on
+behaviour. When a component needs API data, seed the React Query cache instead of
+mocking the request module (see `recent-users-widget.cy.tsx`, which calls
+`queryClient.setQueryData([...], fixture)` with `staleTime: Infinity`).
+
+The `cy.mount` command wraps the subject in the same providers the app uses
+(Lingui i18n + TanStack Query + Router), so components behave like production.
+
+## E2E tests (`cypress/e2e/smoke/**`)
+
+Hit a **real backend** with a **real signed staff session** — nothing is mocked.
+
+```bash
+bun run test:e2e           # start dev server + run e2e
+bun run test:e2e:prod      # start prod build + run e2e
+bun run test:e2e:debug     # start prod build + cypress open
 ```
 
-### **Why This Works Better**
+`cy.login()` builds and signs a `_session` cookie the same way the app does
+(`app/utils/cookies/session.ts`) via the `signSessionCookie` Node task, then caches
+it across specs. The session user **must belong to the staff group**, otherwise the
+private layout redirects to `/login`.
 
-1. **Real Behavior** - Components work exactly like production
-2. **Less Maintenance** - No mock updates when components change
-3. **Better Coverage** - Catch real styling and integration issues
-4. **Faster Development** - Minimal setup per test
+Required env / CI secrets: `SESSION_SECRET`, `ACCESS_TOKEN` (staff user), `SUB`,
+`API_URL`, `GRAPHQL_URL`, `AUTH_OIDC_ISSUER`, `AUTH_OIDC_CLIENT_ID`, `VERSION`.
 
-## 🎨 **Component Testing Strategy**
+## Fixtures (`tests/fixtures/`)
 
-### **1. Test Behavior, Not Implementation**
-
-```tsx
-// ✅ Good - Test what the user sees
-expect(screen.getByText('User Name')).toBeInTheDocument();
-
-// ❌ Bad - Test implementation details
-expect(screen.getByTestId('user-name')).toBeInTheDocument();
-```
-
-### **2. Test User Interactions**
-
-```tsx
-test('handles user click', async () => {
-  render(<MyComponent />);
-
-  await user.click(screen.getByRole('button'));
-
-  expect(screen.getByText('Clicked!')).toBeInTheDocument();
-});
-```
-
-### **3. Test Loading States**
-
-```tsx
-test('shows loading state', () => {
-  mockApiCall.mockImplementation(() => new Promise(() => {}));
-
-  render(<MyComponent />);
-
-  expect(screen.getByText('Loading...')).toBeInTheDocument();
-});
-```
-
-## 🔧 **Common Patterns**
-
-### **API Mocking**
-
-```tsx
-import * as api from '@/resources/request/client';
-
-// Mock the module
-vi.mock('@/resources/request/client', () => ({
-  someApiCall: vi.fn(),
-}));
-
-const mockApiCall = vi.mocked(api.someApiCall);
-
-// In your test
-mockApiCall.mockResolvedValue({ data: mockData });
-```
-
-### **Using Test Fixtures**
-
-```tsx
-import { activityListFixture } from '@/tests/fixtures/activity-list';
-
-// Use fixtures for consistent test data
-mockApiCall.mockResolvedValue(activityListFixture.withUsers);
-```
-
-### **Router Mocking**
-
-```tsx
-// Already handled globally, but if you need specific behavior:
-import { useNavigate } from 'react-router';
-
-const mockNavigate = vi.fn();
-vi.mocked(useNavigate).mockReturnValue(mockNavigate);
-```
-
-### **Testing Async Components**
-
-```tsx
-test('loads data asynchronously', async () => {
-  mockApiCall.mockResolvedValue({ data: mockData });
-
-  render(<MyComponent />);
-
-  await waitFor(() => {
-    expect(screen.getByText('Loaded Data')).toBeInTheDocument();
-  });
-});
-```
-
-## 📊 **Benefits of This Approach**
-
-1. **Realistic Testing** - Components behave like they do in production
-2. **Less Maintenance** - No need to update mocks when UI changes
-3. **Better Coverage** - Catch real styling and behavior issues
-4. **Faster Development** - Less setup per test file
-5. **Cleaner Tests** - Focus on behavior, not implementation
-6. **Reusable Fixtures** - Consistent test data across all tests
-7. **Type Safety** - Fixtures match real API response structure
-
-## 🚀 **Quick Start**
-
-1. **Create a new test file**
-2. **Import from test-utils** (not @testing-library/react)
-3. **Mock only external APIs** (not UI components)
-4. **Use test fixtures** for consistent data
-5. **Test user-visible behavior**
-6. **Use real components** for better coverage
-
-## 🧪 **Test Organization**
-
-### **Group Tests by Scenario**
-
-```tsx
-describe('MyComponent', () => {
-  describe('Success scenarios', () => {
-    test('should render loading state', () => {
-      /* ... */
-    });
-    test('should render data when available', () => {
-      /* ... */
-    });
-  });
-
-  describe('Failure scenarios', () => {
-    test('should handle API error gracefully', () => {
-      /* ... */
-    });
-    test('should handle malformed data', () => {
-      /* ... */
-    });
-  });
-});
-```
-
-### **Standardized Test Descriptions**
-
-- Use "should [action]" pattern
-- Be descriptive and clear
-- Group related scenarios together
+Reusable, type-safe test data shared across specs (e.g. `activity-list.ts`).
+Imported via the `@/tests/*` path alias.
