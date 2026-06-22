@@ -11,8 +11,7 @@ import macrosPlugin from 'vite-plugin-babel-macros';
 
 // When running under Cypress (component tests) we cannot use the React Router
 // dev plugin: it boots the app's Hono server inside Cypress's Vite dev server,
-// which crashes on server-only imports. Instead we swap in @vitejs/plugin-react
-// and resolve the path aliases ourselves (normally provided by reactRouter()).
+// which crashes on server-only imports. Instead we swap in @vitejs/plugin-react.
 const isCypress = !!process.env.CYPRESS;
 const fromRoot = (p: string) => fileURLToPath(new URL(p, import.meta.url));
 
@@ -21,17 +20,15 @@ export default defineConfig((config) => {
 
   return {
     resolve: {
-      tsconfigPaths: true,
+      // Resolve the tsconfig `paths` aliases explicitly. (Vite 8's native
+      // `resolve.tsconfigPaths` handled this, but we pin Vite to 7 for Cypress
+      // compatibility, so map them here for all builds — order: longest first.)
       alias: {
+        '@openapi': fromRoot('./app/resources/openapi'),
+        '@/tests': fromRoot('./tests'),
+        '@': fromRoot('./app'),
         ...(isProduction && {
           'react-dom/server': 'react-dom/server.node',
-        }),
-        // reactRouter() resolves tsconfig paths during the normal build; under
-        // Cypress it's absent, so map the aliases explicitly (longest first).
-        ...(isCypress && {
-          '@openapi': fromRoot('./app/resources/openapi'),
-          '@/tests': fromRoot('./tests'),
-          '@': fromRoot('./app'),
         }),
       },
     },
