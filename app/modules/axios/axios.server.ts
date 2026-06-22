@@ -19,17 +19,29 @@ import Axios, {
 } from 'axios';
 import { z } from 'zod';
 
+interface RequestContextStore {
+  requestId?: string;
+  token?: string;
+  userId?: string;
+  userAgent?: string;
+}
+
 // AsyncLocalStorage to store request context
-const requestContext = new AsyncLocalStorage<{ requestId?: string }>();
+const requestContext = new AsyncLocalStorage<RequestContextStore>();
 
 // Helper to get current request ID
 function getCurrentRequestId(): string | undefined {
-  return requestContext.getStore()?.requestId;
+  return getRequestContext()?.requestId;
+}
+
+// Helper to get the full request context (used by GraphQL client)
+export function getRequestContext(): RequestContextStore | undefined {
+  return requestContext.getStore();
 }
 
 // Helper to run code with request context
-export function withRequestContext<T>(requestId: string, fn: () => T): T {
-  return requestContext.run({ requestId }, fn);
+export function withRequestContext<T>(ctx: RequestContextStore, fn: () => T): T {
+  return requestContext.run(ctx, fn);
 }
 
 export const http = Axios.create({

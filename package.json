@@ -21,9 +21,12 @@
     "test:e2e:prod": "start-server-and-test 'bun run start' http://localhost:3000 'bunx cypress run --quiet'",
     "test:e2e:debug": "start-server-and-test 'bun run start' http://localhost:3000 'bunx cypress open'",
     "openapi:list": "bun scripts/openapi-list.ts",
-    "openapi:generate": "bun scripts/openapi.ts"
+    "openapi:generate": "bun scripts/openapi.ts",
+    "graphql": "bun run scripts/graphql.ts"
   },
   "dependencies": {
+    "@gqlts/runtime": "^3.3.0",
+    "@urql/core": "^6.0.1",
     "@ai-sdk/anthropic": "^3.0.68",
     "@ai-sdk/react": "^3.0.158",
     "@datum-cloud/activity-ui": "0.5.1",
@@ -82,9 +85,13 @@
     "sonner": "^2.0.7",
     "streamdown": "^2.5.0",
     "tailwind-variants": "^3.0.0",
+    "graphql": "^16.13.2",
+    "urql": "^5.0.2",
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@gqlts/cli": "^3.3.0",
+    "@inquirer/prompts": "^8.4.2",
     "@eslint/compat": "^2.0.0",
     "@hey-api/client-axios": "^0.9.1",
     "@hey-api/openapi-ts": "^0.98.0",

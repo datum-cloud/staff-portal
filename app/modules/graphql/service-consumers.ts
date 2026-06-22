@@ -1,4 +1,7 @@
-import { gqlRequest } from './client';
+import { createGqlClient } from './client';
+import { generateQueryOp } from './generated';
+import type { ServiceConsumer } from './generated/schema';
+import { mapApiError } from '@/utils/errors/error-mapper';
 
 export interface EnrichedConsumerProject {
   /** The project's machine name (metadata.name). */
@@ -31,23 +34,6 @@ export interface EnrichedServiceConsumer {
   consumerProject: EnrichedConsumerProject;
 }
 
-const SERVICE_CONSUMERS_QUERY = /* GraphQL */ `
-  query ServiceConsumers($producerProject: ID!) {
-    serviceConsumers(producerProject: $producerProject) {
-      name
-      serviceName
-      phase
-      approvalDecision
-      approvalMessage
-      requestedAt
-      consumerProject {
-        name
-        displayName
-      }
-    }
-  }
-`;
-
 /**
  * Lists the ServiceConsumers in a producer project, enriched with each
  * consumer project's display name. Resolved server-side by the gateway in a
@@ -56,14 +42,40 @@ const SERVICE_CONSUMERS_QUERY = /* GraphQL */ `
  *
  * The gateway degrades gracefully: a list failure yields an empty array, and
  * a per-project lookup failure falls back to the raw project name. Genuine
- * transport/proxy failures still throw via {@link gqlRequest}.
+ * transport/proxy failures still throw via mapApiError.
  */
 export async function listServiceConsumers(
   producerProject: string
 ): Promise<EnrichedServiceConsumer[]> {
-  const data = await gqlRequest<{ serviceConsumers: EnrichedServiceConsumer[] }>(
-    SERVICE_CONSUMERS_QUERY,
-    { producerProject }
-  );
-  return data.serviceConsumers;
+  const client = createGqlClient({ type: 'global' });
+  const op = generateQueryOp({
+    serviceConsumers: [
+      { producerProject },
+      {
+        name: true,
+        serviceName: true,
+        phase: true,
+        approvalDecision: true,
+        approvalMessage: true,
+        requestedAt: true,
+        consumerProject: { name: true, displayName: true },
+      },
+    ],
+  });
+
+  const result = await client.query(op.query, op.variables).toPromise();
+  if (result.error) throw mapApiError(result.error);
+
+  return (result.data?.serviceConsumers ?? []).map((c: ServiceConsumer) => ({
+    name: c.name,
+    serviceName: c.serviceName ?? null,
+    phase: c.phase ?? null,
+    approvalDecision: c.approvalDecision ?? null,
+    approvalMessage: c.approvalMessage ?? null,
+    requestedAt: c.requestedAt ?? null,
+    consumerProject: {
+      name: c.consumerProject.name,
+      displayName: c.consumerProject.displayName,
+    },
+  }));
 }
