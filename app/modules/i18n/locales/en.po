@@ -721,7 +721,7 @@ msgstr "Create Policy"
 #: app/routes/organization/detail/project.tsx:50
 #: app/routes/organization/index.tsx:43
 #: app/routes/profile/session.tsx:73
-#: app/routes/project/detail/domain/detail.tsx:132
+#: app/routes/project/detail/domain/detail.tsx:136
 #: app/routes/project/detail/export-policy/detail.tsx:83
 #: app/routes/project/detail/export-policy/index.tsx:53
 #: app/routes/project/detail/index.tsx:102
@@ -1021,7 +1021,7 @@ msgid "DNS Host"
 msgstr "DNS Host"
 
 #: app/features/domain/components/domain-list.tsx:85
-#: app/routes/project/detail/domain/detail.tsx:112
+#: app/routes/project/detail/domain/detail.tsx:116
 msgid "DNS Providers"
 msgstr "DNS Providers"
 
@@ -1067,7 +1067,7 @@ msgstr "DNS Zones"
 #: app/features/activity/components/activity-list.tsx:489
 #: app/features/domain/components/domain-list.tsx:60
 #: app/features/fraud/detail/maxmind-rows.tsx:237
-#: app/routes/project/detail/domain/detail.tsx:104
+#: app/routes/project/detail/domain/detail.tsx:108
 msgid "Domain"
 msgstr "Domain"
 
@@ -1290,7 +1290,7 @@ msgid "Events"
 msgstr "Events"
 
 #: app/features/domain/components/domain-list.tsx:90
-#: app/routes/project/detail/domain/detail.tsx:118
+#: app/routes/project/detail/domain/detail.tsx:122
 msgid "Expiration Date"
 msgstr "Expiration Date"
 
@@ -1942,7 +1942,7 @@ msgstr "Nameservers"
 
 #: app/features/activity/components/activity-list.tsx:398
 #: app/features/activity/components/activity-list.tsx:497
-#: app/routes/project/detail/domain/detail.tsx:100
+#: app/routes/project/detail/domain/detail.tsx:104
 #: app/routes/project/detail/export-policy/detail.tsx:71
 #: app/routes/project/detail/secret.tsx:29
 msgid "Namespace"
@@ -2215,7 +2215,7 @@ msgstr "Note added"
 msgid "Note deleted"
 msgstr "Note deleted"
 
-#: app/routes/project/detail/domain/detail.tsx:147
+#: app/routes/project/detail/domain/detail.tsx:151
 msgid "Notes"
 msgstr "Notes"
 
@@ -2613,7 +2613,7 @@ msgstr "Records"
 
 #: app/features/domain/components/domain-list.tsx:80
 #: app/routes/project/detail/dns/detail.tsx:179
-#: app/routes/project/detail/domain/detail.tsx:108
+#: app/routes/project/detail/domain/detail.tsx:112
 msgid "Registrar"
 msgstr "Registrar"
 
@@ -2688,7 +2688,7 @@ msgid "Resource name"
 msgstr "Resource name"
 
 #: app/features/edge/components/detail/edge-general-card.tsx:40
-#: app/routes/project/detail/domain/detail.tsx:92
+#: app/routes/project/detail/domain/detail.tsx:96
 msgid "Resource Name"
 msgstr "Resource Name"
 
@@ -3076,7 +3076,7 @@ msgstr "Start Time"
 #: app/routes/contact-group/index.tsx:82
 #: app/routes/contact/detail/group.tsx:102
 #: app/routes/fraud/providers/index.tsx:85
-#: app/routes/project/detail/domain/detail.tsx:122
+#: app/routes/project/detail/domain/detail.tsx:126
 #: app/routes/project/detail/export-policy/detail.tsx:75
 #: app/routes/project/detail/export-policy/detail.tsx:170
 #: app/routes/project/detail/export-policy/index.tsx:46

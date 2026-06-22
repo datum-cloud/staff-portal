@@ -4,7 +4,7 @@ type Query {
   consumer project's human-readable display name (the
   kubernetes.io/description annotation on the Project, falling back to the
   project name).
-  
+
   Authorization uses the caller's bearer token for both the consumer list
   (in the producer project's control plane) and the per-project lookups (at
   the core resourcemanager API). A list failure returns an empty list; a
@@ -14,7 +14,7 @@ type Query {
 
   """
   Returns sessions for the authenticated caller by default.
-  
+
   When userID is provided and differs from the caller, the request is
   forwarded to milo with a status.userUID field selector. milo authorizes
   the cross-user lookup via SubjectAccessReview against
@@ -22,6 +22,25 @@ type Query {
   an empty list (the underlying 403 is logged).
   """
   sessions(userID: ID): [ExtendedSession!]!
+
+  """
+  Lists ContactGroupMemberships across all namespaces, enriched with full
+  Contact data for each membership. Resolves all contacts in parallel.
+  fieldSelector supports standard Kubernetes field selectors.
+  """
+  contactGroupMembershipsWithContacts(fieldSelector: String, limit: Int, cursor: String): EnrichedContactGroupMembershipList!
+
+  """
+  Lists ContactGroupMemberships across all namespaces, enriched with full
+  ContactGroup data for each membership. Resolves all contact groups in parallel.
+  """
+  contactMembershipsWithGroups(fieldSelector: String, limit: Int, cursor: String): EnrichedContactMembershipList!
+
+  """
+  Batch-fetches User summaries by name. Fetches run in parallel; individual
+  lookup failures return null for that entry (filtered from the result).
+  """
+  userSummaries(names: [String!]!): [UserSummary!]!
 }
 
 type ParsedUserAgent {
@@ -82,4 +101,59 @@ type ServiceConsumer {
 
   """The consuming project, enriched with its display name."""
   consumerProject: ConsumerProject!
+}
+
+type ContactRef {
+  name: String!
+  namespace: String!
+}
+
+type EnrichedContact {
+  name: String!
+  namespace: String!
+  email: String
+  givenName: String
+  familyName: String
+  displayName: String
+}
+
+type EnrichedContactGroup {
+  name: String!
+  namespace: String!
+  displayName: String
+}
+
+type ContactGroupMembershipEnriched {
+  """metadata.name of the ContactGroupMembership resource."""
+  name: String!
+  contactRef: ContactRef!
+  """Full Contact data, null if lookup failed."""
+  contact: EnrichedContact
+}
+
+type ContactMembershipEnriched {
+  """metadata.name of the ContactGroupMembership resource."""
+  name: String!
+  contactGroupRef: ContactRef!
+  """Full ContactGroup data, null if lookup failed."""
+  contactGroup: EnrichedContactGroup
+}
+
+type EnrichedContactGroupMembershipList {
+  items: [ContactGroupMembershipEnriched!]!
+  """Kubernetes continue token for pagination."""
+  continue: String
+}
+
+type EnrichedContactMembershipList {
+  items: [ContactMembershipEnriched!]!
+  continue: String
+}
+
+type UserSummary {
+  """metadata.name of the User resource."""
+  name: String!
+  email: String
+  givenName: String
+  familyName: String
 }

@@ -1,4 +1,6 @@
-import { userGetQuery } from './user.api';
+import { createGqlClient } from '@/modules/graphql/client';
+import { generateQueryOp } from '@/modules/graphql/generated';
+import type { UserSummary } from '@/modules/graphql/generated/schema';
 import { PROXY_URL } from '@/modules/axios/axios.client';
 import { ComMiloapisNetworkingDnsV1Alpha1DnsZone } from '@openapi/dns.networking.miloapis.com/v1alpha1';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
@@ -126,18 +128,42 @@ export async function searchAllQuery(queryString: string): Promise<GroupedSearch
 
   // Enrich users with full data where possible — tenant is preserved.
   try {
-    grouped.users = await Promise.all(
-      grouped.users.map(async (item) => {
+    const userNames = grouped.users
+      .map((item) => item.resource.metadata?.name)
+      .filter((name): name is string => !!name);
+
+    if (userNames.length > 0) {
+      const client = createGqlClient({ type: 'global' });
+      const op = generateQueryOp({
+        userSummaries: [
+          { names: userNames },
+          { name: true, email: true, givenName: true, familyName: true },
+        ],
+      });
+      const result = await client.query(op.query, op.variables).toPromise();
+      const summaryMap = new Map(
+        (result.data?.userSummaries as UserSummary[] ?? []).map((u: UserSummary) => [u.name, u])
+      );
+
+      grouped.users = grouped.users.map((item) => {
         const name = item.resource.metadata?.name;
         if (!name) return item;
-        try {
-          const enriched = await userGetQuery(name);
-          return enriched ? { ...item, resource: enriched } : item;
-        } catch {
-          return item;
-        }
-      })
-    );
+        const summary = summaryMap.get(name);
+        if (!summary) return item;
+        return {
+          ...item,
+          resource: {
+            ...item.resource,
+            spec: {
+              ...item.resource.spec,
+              ...(summary.email != null && { email: summary.email }),
+              ...(summary.givenName != null && { givenName: summary.givenName }),
+              ...(summary.familyName != null && { familyName: summary.familyName }),
+            },
+          },
+        } as typeof item;
+      });
+    }
   } catch {
     // keep partial results
   }
@@ -193,17 +219,39 @@ export const searchUsersQuery = async (
   );
 
   try {
-    return await Promise.all(
-      results.map(async (user) => {
-        const name = user.metadata?.name;
-        if (!name) return user;
-        try {
-          return (await userGetQuery(name)) ?? user;
-        } catch {
-          return user;
-        }
-      })
+    const names = results
+      .map((user) => user.metadata?.name)
+      .filter((name): name is string => !!name);
+
+    if (names.length === 0) return results;
+
+    const client = createGqlClient({ type: 'global' });
+    const op = generateQueryOp({
+      userSummaries: [
+        { names },
+        { name: true, email: true, givenName: true, familyName: true },
+      ],
+    });
+    const result = await client.query(op.query, op.variables).toPromise();
+    const summaryMap = new Map(
+      (result.data?.userSummaries as UserSummary[] ?? []).map((u: UserSummary) => [u.name, u])
     );
+
+    return results.map((user) => {
+      const name = user.metadata?.name;
+      if (!name) return user;
+      const summary = summaryMap.get(name);
+      if (!summary) return user;
+      return {
+        ...user,
+        spec: {
+          ...user.spec,
+          ...(summary.email != null && { email: summary.email }),
+          ...(summary.givenName != null && { givenName: summary.givenName }),
+          ...(summary.familyName != null && { familyName: summary.familyName }),
+        },
+      } as ComMiloapisIamV1Alpha1User;
+    });
   } catch {
     return results;
   }
