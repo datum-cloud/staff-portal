@@ -1,6 +1,5 @@
 import { buildScopedPath, buildProxyPath } from './endpoints';
 import type { GqlScope } from './types';
-import { env } from '@/utils/config/env.server';
 import { createClient, cacheExchange, fetchExchange } from '@urql/core';
 import type { Client as UrqlClient, SSRExchange } from '@urql/core';
 
@@ -58,7 +57,7 @@ export function createGqlClient(scope: GqlScope, ssr?: SSRExchange): UrqlClient 
       resolvedScope = { type: 'user', userId: ctx.userId };
     }
 
-    const url = `${env.GRAPHQL_URL}${buildScopedPath(resolvedScope)}`;
+    const url = `${process.env.GRAPHQL_URL}${buildScopedPath(resolvedScope)}`;
 
     return createClient({
       url,
