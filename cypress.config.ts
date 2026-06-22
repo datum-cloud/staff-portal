@@ -1,4 +1,5 @@
 import { defineConfig } from 'cypress';
+import vitePreprocessor from 'cypress-vite';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -23,6 +24,10 @@ export default defineConfig({
     screenshotOnRunFailure: true,
     experimentalStudio: true,
     setupNodeEvents(on, config) {
+      // Bundle e2e specs with Vite (not Cypress's default webpack/ts-loader,
+      // which errors on TypeScript 6's deprecated `downlevelIteration`).
+      on('file:preprocessor', vitePreprocessor());
+
       on('task', {
         log(message) {
           console.log(message);
