@@ -1,0 +1,328 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+  release:
+    types: ['published']
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
+  BUN_CACHE: ~/.bun/install/cache
+  BUN_VERSION: 1.3.14
+  NODE_VERSION: '22' # Required by Lingui v6 (uses node:fs globSync)
+
+jobs:
+  # ─── Quality ────────────────────────────────────────────────
+  install:
+    name: Install Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with: { bun-version: '${{ env.BUN_VERSION }}' }
+      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        id: cache-deps
+        with:
+          path: |
+            ${{ env.BUN_CACHE }}
+            **/node_modules
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/bun.lock', '**/bun.lockb', '**/package.json') }}
+      - if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: bun install --frozen-lockfile
+
+  lint:
+    name: Lint & Format
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with: { bun-version: '${{ env.BUN_VERSION }}' }
+      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        with:
+          path: |
+            ${{ env.BUN_CACHE }}
+            **/node_modules
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/bun.lock', '**/bun.lockb', '**/package.json') }}
+      - run: bun run lint && bun run format:check
+
+  typecheck:
+    name: Type Check
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with: { bun-version: '${{ env.BUN_VERSION }}' }
+      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        with:
+          path: |
+            ${{ env.BUN_CACHE }}
+            **/node_modules
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/bun.lock', '**/bun.lockb', '**/package.json') }}
+      - run: bun run typecheck
+
+  build:
+    name: Build
+    needs: [lint, typecheck]
+    runs-on: ubuntu-latest
+    if: ${{ !failure() && !cancelled() }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with: { bun-version: '${{ env.BUN_VERSION }}' }
+      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        with:
+          path: |
+            ${{ env.BUN_CACHE }}
+            **/node_modules
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/bun.lock', '**/bun.lockb', '**/package.json') }}
+      - run: bun run build
+      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        with:
+          path: build
+          key: build-${{ github.sha }}
+
+  # ─── Tests ──────────────────────────────────────────────────
+  unit-tests:
+    name: Unit Tests
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ !failure() && !cancelled() }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with: { bun-version: '${{ env.BUN_VERSION }}' }
+      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        with:
+          path: |
+            ${{ env.BUN_CACHE }}
+            **/node_modules
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/bun.lock', '**/bun.lockb', '**/package.json') }}
+      - run: bunx cypress install && bunx cypress verify
+      - run: bun run test:unit:prod
+        env:
+          NODE_ENV: test
+          CYPRESS: 'true'
+
+  e2e-smoke:
+    name: E2E Smoke
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: ${{ !failure() && !cancelled() }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with: { bun-version: '${{ env.BUN_VERSION }}' }
+      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        with:
+          path: |
+            ${{ env.BUN_CACHE }}
+            **/node_modules
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/bun.lock', '**/bun.lockb', '**/package.json') }}
+      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        with:
+          path: build
+          key: build-${{ github.sha }}
+      # Single .env consumed by all later steps: Bun auto-loads it for
+      # `bun run start`, and cypress.config.ts loads it via dotenv (for the
+      # signSessionCookie task + ACCESS_TOKEN/SUB). VERSION is required by
+      # app/utils/config/env.server.ts; APP_URL/CYPRESS_BASE_URL run locally.
+      - name: Setup Environment
+        env:
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          SUB: ${{ secrets.SUB }}
+          API_URL: ${{ secrets.API_URL }}
+          GRAPHQL_URL: ${{ secrets.GRAPHQL_URL }}
+          AUTH_OIDC_ISSUER: ${{ secrets.AUTH_OIDC_ISSUER }}
+          AUTH_OIDC_CLIENT_ID: ${{ secrets.AUTH_OIDC_CLIENT_ID }}
+        run: |
+          cat > .env << EOF
+          NODE_ENV=test
+          CYPRESS=true
+          APP_URL=http://localhost:3000
+          API_URL=$API_URL
+          GRAPHQL_URL=$GRAPHQL_URL
+          AUTH_OIDC_ISSUER=$AUTH_OIDC_ISSUER
+          AUTH_OIDC_CLIENT_ID=$AUTH_OIDC_CLIENT_ID
+          SESSION_SECRET=$SESSION_SECRET
+          ACCESS_TOKEN=$ACCESS_TOKEN
+          SUB=$SUB
+          VERSION=ci-e2e
+          LOG_LEVEL=warn
+          CYPRESS_BASE_URL=http://localhost:3000
+          EOF
+      - run: bunx cypress install && bunx cypress verify
+      - name: Run Smoke Tests
+        # NODE_ENV must be set here: the global build runs with the default and
+        # dotenv won't override an already-set var, so pin it for the server + cypress.
+        env:
+          NODE_ENV: test
+          CYPRESS: 'true'
+        run: >-
+          bunx start-server-and-test
+          'bun run start' http://localhost:3000/_healthz
+          'bunx cypress run --spec "cypress/e2e/smoke/**" --config-file cypress.config.ts'
+      - if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: e2e-smoke-artifacts-${{ github.run_id }}
+          path: |
+            cypress/videos
+            cypress/screenshots
+          retention-days: 7
+          if-no-files-found: warn
+
+  # ─── Status Gate ────────────────────────────────────────────
+  status-check:
+    name: Final Status Check
+    # e2e-smoke is intentionally excluded until the repo secrets it needs
+    # (SESSION_SECRET, ACCESS_TOKEN, SUB, API_URL, GRAPHQL_URL, AUTH_OIDC_*)
+    # are configured. Add `e2e-smoke` here to make it blocking afterwards.
+    needs: [install, lint, typecheck, build, unit-tests]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Workflow Status
+        run: |
+          if [[ "${{ contains(needs.*.result, 'failure') }}" == "true" ]]; then
+            echo "❌ One or more jobs failed"
+            exit 1
+          elif [[ "${{ contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+            echo "⚠️ One or more jobs were cancelled"
+            exit 1
+          else
+            echo "✅ All jobs passed"
+          fi
+
+  # ─── Publish (only after all checks pass) ──────────────────
+  publish-container-image:
+    name: Publish Container Image
+    needs: [status-check]
+    if: ${{ !failure() && !cancelled() }}
+    permissions:
+      id-token: write
+      contents: read
+      packages: write
+      attestations: write
+    uses: datum-cloud/actions/.github/workflows/publish-docker.yaml@v1.15.0
+    with:
+      image-name: staff-portal
+    secrets: inherit
+
+  publish-kustomize-bundles:
+    name: Publish Kustomize Bundles
+    needs: [publish-container-image]
+    if: ${{ !failure() && !cancelled() }}
+    permissions:
+      id-token: write
+      contents: read
+      packages: write
+    uses: datum-cloud/actions/.github/workflows/publish-kustomize-bundle.yaml@v1.15.0
+    with:
+      bundle-name: ghcr.io/datum-cloud/staff-portal-kustomize
+      bundle-path: config
+      image-overlays: config/base
+      image-name: ghcr.io/datum-cloud/staff-portal
+    secrets: inherit
+
+  # ─── PR Comment ─────────────────────────────────────────────
+  pr-comment:
+    name: PR Test Summary
+    needs: [unit-tests, e2e-smoke]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+      actions: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - name: Build test summary
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        with:
+          script: |
+            const fs = require('fs');
+            const runId = context.runId;
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`;
+
+            const { data: jobs } = await github.rest.actions.listJobsForWorkflowRun({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: runId,
+            });
+
+            const testJobs = jobs.jobs.filter(j =>
+              j.name === 'Unit Tests' || j.name.startsWith('E2E')
+            );
+
+            const statusEmoji = (conclusion) => {
+              if (!conclusion || conclusion === 'skipped') return '⏭️';
+              if (conclusion === 'success') return '✅';
+              if (conclusion === 'failure') return '❌';
+              if (conclusion === 'cancelled') return '🚫';
+              return '❓';
+            };
+
+            let table = '| Job | Status |\n|-----|--------|\n';
+            for (const job of testJobs.sort((a, b) => a.name.localeCompare(b.name))) {
+              table += `| ${job.name} | ${statusEmoji(job.conclusion)} ${job.conclusion || 'pending'} |\n`;
+            }
+
+            const { data: artifacts } = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: runId,
+            });
+
+            let body = `## 🧪 Test Summary\n\n${table}\n\n`;
+            body += `[View workflow run](${runUrl})`;
+            body += `\n\n### 📎 Artifacts\n\n`;
+            if (artifacts.artifacts.length > 0) {
+              body += `Videos and screenshots from failed E2E tests:\n\n`;
+              for (const a of artifacts.artifacts) {
+                body += `- **${a.name}** – [Download](${runUrl})\n`;
+              }
+            } else {
+              body += `No artifacts (all tests passed).\n`;
+            }
+
+            fs.writeFileSync('pr-summary.md', body);
+
+      - uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: pr-summary.md
+          edit-mode: replace
