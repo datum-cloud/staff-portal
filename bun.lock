@@ -10,7 +10,7 @@
         "@datum-cloud/activity-ui": "0.5.1",
         "@datum-cloud/datum-ui": "1.2.0",
         "@epic-web/client-hints": "^1.3.5",
-        "@gqlts/runtime": "^3.3.0",
+        "@gqlts/runtime": "3.4.2",
         "@hono/prometheus": "^1.0.1",
         "@hookform/resolvers": "^5.2.2",
         "@lingui/core": "^6.0.0",
@@ -71,7 +71,7 @@
       },
       "devDependencies": {
         "@eslint/compat": "^2.0.0",
-        "@gqlts/cli": "^3.3.0",
+        "@gqlts/cli": "3.4.2",
         "@hey-api/client-axios": "^0.9.1",
         "@hey-api/openapi-ts": "^0.98.0",
         "@inquirer/prompts": "^8.4.2",
