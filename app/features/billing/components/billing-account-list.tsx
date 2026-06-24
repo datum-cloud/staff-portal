@@ -1,8 +1,4 @@
-import {
-  getBillingAccountDisplayName,
-  getOrganizationDisplayName,
-  orgNameFromNamespace,
-} from '../utils';
+import { getBillingAccountDisplayName, orgNameFromNamespace } from '../utils';
 import { BadgeState } from '@/components/badge';
 import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
@@ -26,9 +22,7 @@ export function BillingAccountList() {
   const orgDisplayNames = useMemo(() => {
     const map = new Map<string, string>();
     for (const org of orgQuery.data?.items ?? []) {
-      const name = org.metadata?.name;
-      if (!name) continue;
-      map.set(name, getOrganizationDisplayName(org));
+      map.set(org.name, org.displayName || org.name);
     }
     return map;
   }, [orgQuery.data?.items]);

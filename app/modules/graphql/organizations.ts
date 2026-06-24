@@ -1,0 +1,120 @@
+import { createGqlClient } from './client';
+import { mapApiError } from '@/utils/errors/error-mapper';
+
+export interface GqlOrganization {
+  name: string;
+  displayName: string;
+  type: string;
+  createdAt: string | null;
+  state: string | null;
+}
+
+export interface GqlOrganizationList {
+  items: GqlOrganization[];
+  continueToken: string | null;
+}
+
+export interface GqlProject {
+  name: string;
+  displayName: string;
+  organizationName: string;
+  createdAt: string | null;
+  state: string | null;
+}
+
+export interface GqlProjectList {
+  items: GqlProject[];
+  continueToken: string | null;
+}
+
+export interface GqlOrgMember {
+  name: string;
+  givenName: string | null;
+  familyName: string | null;
+  email: string;
+  roles: string[];
+  type: 'member' | 'invitation';
+  invitationState: string | null;
+  createdAt: string | null;
+}
+
+const ORGANIZATIONS_QUERY = `
+  query Organizations($limit: Int, $cursor: String, $search: String) {
+    organizations(limit: $limit, cursor: $cursor, search: $search) {
+      items { name displayName type createdAt state }
+      continueToken
+    }
+  }
+`;
+
+const ORGANIZATION_QUERY = `
+  query Organization($name: String!) {
+    organization(name: $name) {
+      name displayName type createdAt state
+    }
+  }
+`;
+
+const ORG_PROJECTS_QUERY = `
+  query OrgProjects($orgName: String!, $limit: Int, $cursor: String) {
+    organizationProjects(orgName: $orgName, limit: $limit, cursor: $cursor) {
+      items { name displayName organizationName createdAt state }
+      continueToken
+    }
+  }
+`;
+
+const ORG_MEMBERS_QUERY = `
+  query OrgMembers($orgName: String!) {
+    organizationMembers(orgName: $orgName) {
+      name givenName familyName email roles type invitationState createdAt
+    }
+  }
+`;
+
+export async function listOrganizations(params?: {
+  limit?: number;
+  cursor?: string;
+  search?: string;
+}): Promise<GqlOrganizationList> {
+  const client = createGqlClient({ type: 'global' });
+  const result = await client
+    .query(ORGANIZATIONS_QUERY, {
+      limit: params?.limit ?? null,
+      cursor: params?.cursor ?? null,
+      search: params?.search ?? null,
+    })
+    .toPromise();
+  if (result.error) throw mapApiError(result.error);
+  return result.data?.organizations ?? { items: [], continueToken: null };
+}
+
+export async function getOrganization(name: string): Promise<GqlOrganization | null> {
+  const client = createGqlClient({ type: 'global' });
+  const result = await client.query(ORGANIZATION_QUERY, { name }).toPromise();
+  if (result.error) throw mapApiError(result.error);
+  return result.data?.organization ?? null;
+}
+
+export async function listOrgProjects(
+  orgName: string,
+  params?: { limit?: number; cursor?: string }
+): Promise<GqlProjectList> {
+  const client = createGqlClient({ type: 'global' });
+  const result = await client
+    .query(ORG_PROJECTS_QUERY, {
+      orgName,
+      limit: params?.limit ?? null,
+      cursor: params?.cursor ?? null,
+    })
+    .toPromise();
+  if (result.error) throw mapApiError(result.error);
+  return result.data?.organizationProjects ?? { items: [], continueToken: null };
+}
+
+export async function listOrgMembers(orgName: string): Promise<GqlOrgMember[]> {
+  const client = createGqlClient({ type: 'global' });
+  const result = await client.query(ORG_MEMBERS_QUERY, { orgName }).toPromise();
+  if (result.error) throw mapApiError(result.error);
+  return result.data?.organizationMembers ?? [];
+}

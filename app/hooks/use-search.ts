@@ -53,9 +53,8 @@ export function useOrganizationSearch() {
     if (!data?.items) return [];
     return data.items
       .map((org) => ({
-        value: org.metadata?.name ?? '',
-        label:
-          org.metadata?.annotations?.['kubernetes.io/display-name'] || (org.metadata?.name ?? ''),
+        value: org.name,
+        label: org.displayName || org.name,
       }))
       .sort((a, b) => a.label?.localeCompare(b.label ?? '') ?? 0);
   }, [data]);
@@ -79,10 +78,8 @@ export function useProjectSearch() {
     if (!data?.items) return [];
     return data.items
       .map((project) => ({
-        value: project.metadata?.name ?? '',
-        label:
-          project.metadata?.annotations?.['kubernetes.io/description'] ||
-          (project.metadata?.name ?? ''),
+        value: project.name,
+        label: project.displayName || project.name,
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [data]);

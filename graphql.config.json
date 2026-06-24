@@ -5,7 +5,13 @@
     "sessions",
     "contactGroupMembershipsWithContacts",
     "contactMembershipsWithGroups",
-    "userSummaries"
+    "userSummaries",
+    "organizations",
+    "organization",
+    "organizationProjects",
+    "organizationMembers",
+    "projects",
+    "project"
   ],
   "mutations": []
 }
