@@ -1,5 +1,5 @@
-import { buildScopedPath, buildProxyPath } from './endpoints';
 import { REQUEST_CONTEXT_STORE_KEY } from './context-key';
+import { buildScopedPath, buildProxyPath } from './endpoints';
 import type { GqlScope } from './types';
 import { createClient, cacheExchange, fetchExchange } from '@urql/core';
 import type { Client as UrqlClient, SSRExchange } from '@urql/core';

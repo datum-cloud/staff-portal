@@ -1,4 +1,5 @@
 import { AxiosCurlLibrary } from './axios-curl';
+import { REQUEST_CONTEXT_STORE_KEY } from '@/modules/graphql/context-key';
 import { env } from '@/utils/config/env.server';
 import {
   AuthenticationError,
@@ -25,8 +26,6 @@ interface RequestContextStore {
   userId?: string;
   userAgent?: string;
 }
-
-import { REQUEST_CONTEXT_STORE_KEY } from '@/modules/graphql/context-key';
 
 // Use globalThis so the same AsyncLocalStorage instance is shared across
 // modules (axios, GraphQL client, etc.) even after Vite module reloads.
