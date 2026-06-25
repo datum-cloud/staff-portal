@@ -1,46 +1,72 @@
-import { contactGroupDetailQuery } from './contact-group.api';
-import { contactDetailQuery } from './contact.api';
+import { createGqlClient } from '@/modules/graphql/client';
+import { generateQueryOp } from '@/modules/graphql/generated';
+import type {
+  ContactGroupMembershipEnriched,
+  ContactMembershipEnriched,
+} from '@/modules/graphql/generated/schema';
 import {
   ContactGroupMembershipListWithContacts,
   ContactMembershipListWithContactGroups,
   ListQueryParams,
 } from '@/resources/schemas';
-import { listNotificationMiloapisComV1Alpha1ContactGroupMembershipForAllNamespaces } from '@openapi/notification.miloapis.com/v1alpha1';
+import { mapApiError } from '@/utils/errors/error-mapper';
+
+const client = createGqlClient({ type: 'global' });
 
 export const contactMembershipForGroupListQuery = async (
   params?: ListQueryParams<{ fieldSelector?: string }>
 ): Promise<ContactGroupMembershipListWithContacts> => {
-  const response = await listNotificationMiloapisComV1Alpha1ContactGroupMembershipForAllNamespaces({
-    query: {
-      limit: params?.limit,
-      continue: params?.cursor,
-      ...(params?.filters?.fieldSelector && { fieldSelector: params.filters.fieldSelector }),
-    },
+  const op = generateQueryOp({
+    contactGroupMembershipsWithContacts: [
+      {
+        ...(params?.filters?.fieldSelector && { fieldSelector: params.filters.fieldSelector }),
+        ...(params?.limit && { limit: params.limit }),
+        ...(params?.cursor && { cursor: params.cursor }),
+      },
+      {
+        continue: true,
+        items: {
+          name: true,
+          contactRef: { name: true, namespace: true },
+          contact: {
+            name: true,
+            namespace: true,
+            email: true,
+            givenName: true,
+            familyName: true,
+            displayName: true,
+          },
+        },
+      },
+    ],
   });
-  const data = response.data.data;
-  const items = data.items ?? [];
-  const contacts = await Promise.all(
-    items.map((m) =>
-      contactDetailQuery(m.spec?.contactRef?.name ?? '', m.spec?.contactRef?.namespace ?? 'default')
-    )
-  );
-
-  const contactsByName = contacts.reduce<Record<string, (typeof contacts)[number] | undefined>>(
-    (acc, contact) => {
-      const name = contact?.metadata?.name;
-      if (name) {
-        acc[name] = contact;
-      }
-      return acc;
-    },
-    {}
-  );
+  const result = await client.query(op.query, op.variables).toPromise();
+  if (result.error) throw mapApiError(result.error);
+  const data = result.data?.contactGroupMembershipsWithContacts;
 
   return {
-    ...data,
-    items: items.map((m) => ({
-      ...m,
-      contact: contactsByName[m.spec?.contactRef?.name ?? ''],
+    metadata: { continue: data?.continue ?? undefined },
+    items: (data?.items ?? []).map((item: ContactGroupMembershipEnriched) => ({
+      metadata: { name: item.name },
+      spec: {
+        contactRef: {
+          name: item.contactRef.name,
+          namespace: item.contactRef.namespace,
+        },
+      },
+      contact: item.contact
+        ? {
+            metadata: {
+              name: item.contact.name,
+              namespace: item.contact.namespace,
+            },
+            spec: {
+              email: item.contact.email ?? undefined,
+              givenName: item.contact.givenName ?? undefined,
+              familyName: item.contact.familyName ?? undefined,
+            },
+          }
+        : undefined,
     })),
   };
 };
@@ -48,39 +74,52 @@ export const contactMembershipForGroupListQuery = async (
 export const contactMembershipForContactListQuery = async (
   params?: ListQueryParams<{ fieldSelector?: string }>
 ): Promise<ContactMembershipListWithContactGroups> => {
-  const response = await listNotificationMiloapisComV1Alpha1ContactGroupMembershipForAllNamespaces({
-    query: {
-      limit: params?.limit,
-      continue: params?.cursor,
-      ...(params?.filters?.fieldSelector && { fieldSelector: params.filters.fieldSelector }),
-    },
+  const op = generateQueryOp({
+    contactMembershipsWithGroups: [
+      {
+        ...(params?.filters?.fieldSelector && { fieldSelector: params.filters.fieldSelector }),
+        ...(params?.limit && { limit: params.limit }),
+        ...(params?.cursor && { cursor: params.cursor }),
+      },
+      {
+        continue: true,
+        items: {
+          name: true,
+          contactGroupRef: { name: true, namespace: true },
+          contactGroup: {
+            name: true,
+            namespace: true,
+            displayName: true,
+          },
+        },
+      },
+    ],
   });
-  const data = response.data.data;
-  const items = data.items ?? [];
-  const contactGroups = await Promise.all(
-    items.map((m) =>
-      contactGroupDetailQuery(
-        m.spec?.contactGroupRef?.name ?? '',
-        m.spec?.contactGroupRef?.namespace ?? 'default'
-      )
-    )
-  );
-
-  const contactGroupsByName = contactGroups.reduce<
-    Record<string, (typeof contactGroups)[number] | undefined>
-  >((acc, contactGroup) => {
-    const name = contactGroup?.metadata?.name;
-    if (name) {
-      acc[name] = contactGroup;
-    }
-    return acc;
-  }, {});
+  const result = await client.query(op.query, op.variables).toPromise();
+  if (result.error) throw mapApiError(result.error);
+  const data = result.data?.contactMembershipsWithGroups;
 
   return {
-    ...data,
-    items: items.map((m) => ({
-      ...m,
-      contactGroup: contactGroupsByName[m.spec?.contactGroupRef?.name ?? ''],
+    metadata: { continue: data?.continue ?? undefined },
+    items: (data?.items ?? []).map((item: ContactMembershipEnriched) => ({
+      metadata: { name: item.name },
+      spec: {
+        contactGroupRef: {
+          name: item.contactGroupRef.name,
+          namespace: item.contactGroupRef.namespace,
+        },
+      },
+      contactGroup: item.contactGroup
+        ? {
+            metadata: {
+              name: item.contactGroup.name,
+              namespace: item.contactGroup.namespace,
+            },
+            spec: {
+              displayName: item.contactGroup.displayName ?? undefined,
+            },
+          }
+        : undefined,
     })),
   };
 };

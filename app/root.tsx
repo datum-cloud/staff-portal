@@ -4,6 +4,7 @@ import GenericError from '@/components/error/generic';
 import { ClientHintCheck } from '@/components/misc/client-hints';
 import { FaviconLinks } from '@/components/misc/favicon-links';
 import type { PublicEnv } from '@/hooks';
+import { GraphQLProvider } from '@/modules/graphql/provider';
 import { loadCatalog, useLocale } from '@/modules/i18n/lingui';
 import { linguiServer } from '@/modules/i18n/lingui.server';
 import { queryClient } from '@/modules/tanstack/query';
@@ -18,6 +19,7 @@ import { Toaster } from '@datum-cloud/datum-ui/toast';
 import { i18n } from '@lingui/core';
 import * as Sentry from '@sentry/react-router';
 import { QueryClientProvider } from '@tanstack/react-query';
+import type { SSRData } from '@urql/core';
 import clsx from 'clsx';
 import { NuqsAdapter } from 'nuqs/adapters/react-router/v7';
 import { useEffect, useMemo } from 'react';
@@ -30,6 +32,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useMatches,
   useNavigation,
   useRouteError,
 } from 'react-router';
@@ -124,6 +127,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function AppWithProviders() {
   const navigation = useNavigation();
+  const matches = useMatches();
+
+  const urqlState = useMemo<SSRData>(() => {
+    return matches.reduce<SSRData>((acc, match) => {
+      const state = (match.data as Record<string, unknown> | null)?.urqlState;
+      if (state && typeof state === 'object') {
+        return { ...acc, ...(state as SSRData) };
+      }
+      return acc;
+    }, {});
+  }, [matches]);
 
   useEffect(() => {
     configureProgress();
@@ -139,11 +153,13 @@ export default function AppWithProviders() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <RHFAdapter>
-        <NuqsAdapter>
-          <App />
-        </NuqsAdapter>
-      </RHFAdapter>
+      <GraphQLProvider scope={{ type: 'global' }} urqlState={urqlState}>
+        <RHFAdapter>
+          <NuqsAdapter>
+            <App />
+          </NuqsAdapter>
+        </RHFAdapter>
+      </GraphQLProvider>
     </QueryClientProvider>
   );
 }

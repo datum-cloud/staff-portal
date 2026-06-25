@@ -1,8 +1,17 @@
-import { orgListQuery, orgMemberListQuery, orgProjectListQuery } from '../apis/organization.api';
 import { orgInvitationCreateMutation, orgInvitationDeleteMutation } from '../apis/organization.api';
+import {
+  listOrganizations,
+  listOrgMembers,
+  listOrgProjects,
+  type GqlOrganization,
+  type GqlOrgMember,
+  type GqlProject,
+} from '@/modules/graphql/organizations';
 import { ListQueryParams } from '@/resources/schemas';
 import type { ComMiloapisIamV1Alpha1UserInvitation } from '@openapi/iam.miloapis.com/v1alpha1';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+export type { GqlOrganization, GqlOrgMember, GqlProject };
 
 export const organizationQueryKeys = {
   all: ['organizations'] as const,
@@ -22,7 +31,7 @@ export const organizationQueryKeys = {
 export const useOrgListQuery = (params?: ListQueryParams) => {
   return useQuery({
     queryKey: organizationQueryKeys.list(params),
-    queryFn: () => orgListQuery(params),
+    queryFn: () => listOrganizations(params),
     staleTime: 5 * 60 * 1000,
   });
 };
@@ -30,7 +39,7 @@ export const useOrgListQuery = (params?: ListQueryParams) => {
 export const useOrgProjectListQuery = (orgName: string, params?: ListQueryParams) => {
   return useQuery({
     queryKey: organizationQueryKeys.projects.list(orgName, params),
-    queryFn: () => orgProjectListQuery(orgName, params),
+    queryFn: () => listOrgProjects(orgName, params),
     enabled: !!orgName,
   });
 };
@@ -38,7 +47,7 @@ export const useOrgProjectListQuery = (orgName: string, params?: ListQueryParams
 export const useOrgMemberListQuery = (orgName: string, params?: ListQueryParams) => {
   return useQuery({
     queryKey: organizationQueryKeys.members.list(orgName, params),
-    queryFn: () => orgMemberListQuery(orgName, params),
+    queryFn: () => listOrgMembers(orgName),
     enabled: !!orgName,
   });
 };

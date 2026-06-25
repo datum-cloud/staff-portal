@@ -612,7 +612,7 @@ msgstr "Contact created successfully"
 msgid "Contact deleted successfully"
 msgstr "Contact deleted successfully"
 
-#: app/features/billing/components/billing-account-list.tsx:87
+#: app/features/billing/components/billing-account-list.tsx:81
 msgid "Contact email"
 msgstr "Contact email"
 
@@ -704,7 +704,7 @@ msgstr "Create Fraud Provider"
 msgid "Create Policy"
 msgstr "Create Policy"
 
-#: app/features/billing/components/billing-account-list.tsx:92
+#: app/features/billing/components/billing-account-list.tsx:86
 #: app/features/contact/components/contact-list.tsx:95
 #: app/features/dns/components/dns-zone-list.tsx:131
 #: app/features/domain/components/domain-list.tsx:106
@@ -718,14 +718,14 @@ msgstr "Create Policy"
 #: app/routes/group/index.tsx:35
 #: app/routes/group/member.tsx:122
 #: app/routes/organization/detail/index.tsx:55
-#: app/routes/organization/detail/project.tsx:50
-#: app/routes/organization/index.tsx:43
+#: app/routes/organization/detail/project.tsx:45
+#: app/routes/organization/index.tsx:40
 #: app/routes/profile/session.tsx:73
-#: app/routes/project/detail/domain/detail.tsx:132
+#: app/routes/project/detail/domain/detail.tsx:141
 #: app/routes/project/detail/export-policy/detail.tsx:83
 #: app/routes/project/detail/export-policy/index.tsx:53
 #: app/routes/project/detail/index.tsx:102
-#: app/routes/project/index.tsx:49
+#: app/routes/project/index.tsx:43
 #: app/routes/user/detail/index.tsx:280
 #: app/routes/user/index.tsx:121
 msgid "Created"
@@ -736,7 +736,7 @@ msgstr "Created"
 msgid "Credentials Reference"
 msgstr "Credentials Reference"
 
-#: app/features/billing/components/billing-account-list.tsx:77
+#: app/features/billing/components/billing-account-list.tsx:71
 #: app/routes/finance/billing-account/detail/index.tsx:188
 msgid "Currency"
 msgstr "Currency"
@@ -993,7 +993,7 @@ msgstr "Disable feature flag"
 msgid "Disable flag"
 msgstr "Disable flag"
 
-#: app/features/billing/components/billing-account-list.tsx:39
+#: app/features/billing/components/billing-account-list.tsx:33
 #: app/features/billing/components/org-billing-accounts-card.tsx:28
 msgid "Display name"
 msgstr "Display name"
@@ -1021,7 +1021,7 @@ msgid "DNS Host"
 msgstr "DNS Host"
 
 #: app/features/domain/components/domain-list.tsx:85
-#: app/routes/project/detail/domain/detail.tsx:112
+#: app/routes/project/detail/domain/detail.tsx:121
 msgid "DNS Providers"
 msgstr "DNS Providers"
 
@@ -1067,7 +1067,7 @@ msgstr "DNS Zones"
 #: app/features/activity/components/activity-list.tsx:489
 #: app/features/domain/components/domain-list.tsx:60
 #: app/features/fraud/detail/maxmind-rows.tsx:237
-#: app/routes/project/detail/domain/detail.tsx:104
+#: app/routes/project/detail/domain/detail.tsx:113
 msgid "Domain"
 msgstr "Domain"
 
@@ -1290,7 +1290,7 @@ msgid "Events"
 msgstr "Events"
 
 #: app/features/domain/components/domain-list.tsx:90
-#: app/routes/project/detail/domain/detail.tsx:118
+#: app/routes/project/detail/domain/detail.tsx:127
 msgid "Expiration Date"
 msgstr "Expiration Date"
 
@@ -1413,7 +1413,7 @@ msgstr "Filter by status"
 msgid "Filter by time range"
 msgstr "Filter by time range"
 
-#: app/routes/organization/index.tsx:86
+#: app/routes/organization/index.tsx:79
 msgid "Filter by type"
 msgstr "Filter by type"
 
@@ -1705,7 +1705,7 @@ msgstr "Light"
 msgid "Limit:"
 msgstr "Limit:"
 
-#: app/features/billing/components/billing-account-list.tsx:82
+#: app/features/billing/components/billing-account-list.tsx:76
 #: app/features/billing/components/org-billing-accounts-card.tsx:47
 #: app/routes/finance/billing-account/detail/index.tsx:204
 #: app/routes/finance/billing-account/detail/index.tsx:309
@@ -1906,7 +1906,7 @@ msgstr "Move to Pending"
 msgid "My Profile"
 msgstr "My Profile"
 
-#: app/features/billing/components/billing-account-list.tsx:55
+#: app/features/billing/components/billing-account-list.tsx:49
 #: app/features/contact/components/contact-list.tsx:67
 #: app/features/dashboard/components/pending-approvals-widget.tsx:126
 #: app/features/edge/components/edge-list.tsx:65
@@ -1921,8 +1921,8 @@ msgstr "My Profile"
 #: app/routes/group/member.tsx:104
 #: app/routes/organization/detail/index.tsx:47
 #: app/routes/organization/detail/member.tsx:103
-#: app/routes/organization/detail/project.tsx:35
-#: app/routes/organization/index.tsx:25
+#: app/routes/organization/detail/project.tsx:34
+#: app/routes/organization/index.tsx:24
 #: app/routes/project/detail/dns/detail.tsx:110
 #: app/routes/project/detail/export-policy/detail.tsx:63
 #: app/routes/project/detail/export-policy/detail.tsx:109
@@ -1930,7 +1930,7 @@ msgstr "My Profile"
 #: app/routes/project/detail/export-policy/index.tsx:30
 #: app/routes/project/detail/index.tsx:86
 #: app/routes/project/detail/secret.tsx:26
-#: app/routes/project/index.tsx:26
+#: app/routes/project/index.tsx:25
 #: app/routes/user/detail/organization.tsx:36
 #: app/routes/user/index.tsx:93
 msgid "Name"
@@ -1942,7 +1942,7 @@ msgstr "Nameservers"
 
 #: app/features/activity/components/activity-list.tsx:398
 #: app/features/activity/components/activity-list.tsx:497
-#: app/routes/project/detail/domain/detail.tsx:100
+#: app/routes/project/detail/domain/detail.tsx:109
 #: app/routes/project/detail/export-policy/detail.tsx:71
 #: app/routes/project/detail/secret.tsx:29
 msgid "Namespace"
@@ -2007,7 +2007,7 @@ msgstr "No billing account assigned"
 msgid "No billing accounts"
 msgstr "No billing accounts"
 
-#: app/features/billing/components/billing-account-list.tsx:136
+#: app/features/billing/components/billing-account-list.tsx:130
 msgid "No billing accounts found"
 msgstr "No billing accounts found"
 
@@ -2115,7 +2115,7 @@ msgstr "No members in this group."
 msgid "No notes yet. Add the first note below."
 msgstr "No notes yet. Add the first note below."
 
-#: app/routes/organization/index.tsx:112
+#: app/routes/organization/index.tsx:105
 #: app/routes/user/detail/organization.tsx:91
 msgid "No organizations found."
 msgstr "No organizations found."
@@ -2137,8 +2137,8 @@ msgstr "No pending approval requests."
 msgid "No pending approvals"
 msgstr "No pending approvals"
 
-#: app/routes/organization/detail/project.tsx:80
-#: app/routes/project/index.tsx:83
+#: app/routes/organization/detail/project.tsx:73
+#: app/routes/project/index.tsx:76
 msgid "No projects found."
 msgstr "No projects found."
 
@@ -2215,7 +2215,7 @@ msgstr "Note added"
 msgid "Note deleted"
 msgstr "Note deleted"
 
-#: app/routes/project/detail/domain/detail.tsx:147
+#: app/routes/project/detail/domain/detail.tsx:156
 msgid "Notes"
 msgstr "Notes"
 
@@ -2245,11 +2245,11 @@ msgstr "Optional reviewer note..."
 
 #: app/features/activity/components/activity-list.tsx:399
 #: app/features/activity/components/activity-list.tsx:498
-#: app/features/billing/components/billing-account-list.tsx:60
+#: app/features/billing/components/billing-account-list.tsx:54
 #: app/features/dashboard/components/quota-utilization-widget.tsx:146
 #: app/routes/finance/billing-account/detail/index.tsx:166
 #: app/routes/project/detail/index.tsx:90
-#: app/routes/project/index.tsx:41
+#: app/routes/project/index.tsx:35
 msgid "Organization"
 msgstr "Organization"
 
@@ -2257,8 +2257,8 @@ msgstr "Organization"
 msgid "Organization deleted successfully"
 msgstr "Organization deleted successfully"
 
-#: app/routes/organization/index.tsx:85
-#: app/routes/organization/index.tsx:97
+#: app/routes/organization/index.tsx:78
+#: app/routes/organization/index.tsx:90
 msgid "Organization Type"
 msgstr "Organization Type"
 
@@ -2266,7 +2266,7 @@ msgstr "Organization Type"
 #: app/components/app-search/use-app-search.ts:36
 #: app/components/app-sidebar/index.tsx:119
 #: app/routes/dashboard/index.tsx:67
-#: app/routes/organization/index.tsx:15
+#: app/routes/organization/index.tsx:14
 #: app/routes/organization/layout.tsx:5
 #: app/routes/project/detail/layout.tsx:51
 #: app/routes/user/detail/layout.tsx:37
@@ -2340,12 +2340,12 @@ msgstr "Permanently delete this project and all associated data"
 msgid "Permanently delete this user and all associated data"
 msgstr "Permanently delete this user and all associated data"
 
-#: app/routes/organization/index.tsx:88
-#: app/routes/organization/index.tsx:101
+#: app/routes/organization/index.tsx:81
+#: app/routes/organization/index.tsx:94
 msgid "Personal"
 msgstr "Personal"
 
-#: app/features/billing/components/billing-account-list.tsx:72
+#: app/features/billing/components/billing-account-list.tsx:66
 #: app/features/billing/components/org-billing-accounts-card.tsx:42
 #: app/features/fraud/detail/evaluation-sections.tsx:378
 #: app/features/service-catalog/components/details-card.tsx:43
@@ -2487,9 +2487,9 @@ msgstr "Project deleted successfully"
 #: app/components/app-sidebar/index.tsx:123
 #: app/routes/dashboard/index.tsx:75
 #: app/routes/organization/detail/layout.tsx:71
-#: app/routes/organization/detail/project.tsx:17
+#: app/routes/organization/detail/project.tsx:16
 #: app/routes/project/detail/layout.tsx:57
-#: app/routes/project/index.tsx:16
+#: app/routes/project/index.tsx:15
 #: app/routes/project/layout.tsx:5
 msgid "Projects"
 msgstr "Projects"
@@ -2613,7 +2613,7 @@ msgstr "Records"
 
 #: app/features/domain/components/domain-list.tsx:80
 #: app/routes/project/detail/dns/detail.tsx:179
-#: app/routes/project/detail/domain/detail.tsx:108
+#: app/routes/project/detail/domain/detail.tsx:117
 msgid "Registrar"
 msgstr "Registrar"
 
@@ -2688,7 +2688,7 @@ msgid "Resource name"
 msgstr "Resource name"
 
 #: app/features/edge/components/detail/edge-general-card.tsx:40
-#: app/routes/project/detail/domain/detail.tsx:92
+#: app/routes/project/detail/domain/detail.tsx:101
 msgid "Resource Name"
 msgstr "Resource Name"
 
@@ -2798,7 +2798,7 @@ msgstr "Search activity..."
 msgid "Search AI Edge..."
 msgstr "Search AI Edge..."
 
-#: app/features/billing/components/billing-account-list.tsx:128
+#: app/features/billing/components/billing-account-list.tsx:122
 msgid "Search billing accounts..."
 msgstr "Search billing accounts..."
 
@@ -2874,13 +2874,13 @@ msgstr "Search lists..."
 msgid "Search members..."
 msgstr "Search members..."
 
-#: app/routes/organization/index.tsx:78
+#: app/routes/organization/index.tsx:71
 #: app/routes/user/detail/organization.tsx:83
 msgid "Search organizations..."
 msgstr "Search organizations..."
 
-#: app/routes/organization/detail/project.tsx:74
-#: app/routes/project/index.tsx:76
+#: app/routes/organization/detail/project.tsx:67
+#: app/routes/project/index.tsx:69
 msgid "Search projects..."
 msgstr "Search projects..."
 
@@ -3052,8 +3052,8 @@ msgstr "Stage Results"
 msgid "Stages"
 msgstr "Stages"
 
-#: app/routes/organization/index.tsx:89
-#: app/routes/organization/index.tsx:102
+#: app/routes/organization/index.tsx:82
+#: app/routes/organization/index.tsx:95
 msgid "Standard"
 msgstr "Standard"
 
@@ -3076,7 +3076,7 @@ msgstr "Start Time"
 #: app/routes/contact-group/index.tsx:82
 #: app/routes/contact/detail/group.tsx:102
 #: app/routes/fraud/providers/index.tsx:85
-#: app/routes/project/detail/domain/detail.tsx:122
+#: app/routes/project/detail/domain/detail.tsx:131
 #: app/routes/project/detail/export-policy/detail.tsx:75
 #: app/routes/project/detail/export-policy/detail.tsx:170
 #: app/routes/project/detail/export-policy/index.tsx:46
@@ -3233,7 +3233,7 @@ msgstr "TTL"
 #: app/features/service-catalog/components/conditions-card.tsx:19
 #: app/routes/fraud/providers/index.tsx:65
 #: app/routes/organization/detail/index.tsx:51
-#: app/routes/organization/index.tsx:38
+#: app/routes/organization/index.tsx:35
 #: app/routes/project/detail/dns/detail.tsx:95
 #: app/routes/project/detail/dns/detail.tsx:159
 #: app/routes/project/detail/export-policy/detail.tsx:164

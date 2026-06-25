@@ -1,42 +1,76 @@
+import { REQUEST_CONTEXT_STORE_KEY } from './context-key';
+import { buildScopedPath, buildProxyPath } from './endpoints';
+import type { GqlScope } from './types';
+import { createClient, cacheExchange, fetchExchange } from '@urql/core';
+import type { Client as UrqlClient, SSRExchange } from '@urql/core';
+
+function getRequestContext() {
+  if (typeof window !== 'undefined') return undefined;
+  try {
+    const store = (globalThis as any)[REQUEST_CONTEXT_STORE_KEY];
+    if (store && typeof store.getStore === 'function') {
+      return store.getStore();
+    }
+  } catch {
+    // Ignore errors
+  }
+  return undefined;
+}
+
 /**
- * Minimal browser-side GraphQL client for the staff portal.
- *
- * Talks to the Hono `/api/graphql` proxy which forwards to the
- * graphql-gateway with the caller's bearer token. Returns the parsed
- * `data` field or throws on transport / GraphQL errors.
- *
- * We deliberately skip a full client (urql/apollo) and codegen: staff
- * portal only consumes one enrichment query today. If more queries
- * land, lift the cloud-portal pattern at that point.
+ * Wraps native fetch with Authorization and X-Request-ID headers
+ * sourced from AsyncLocalStorage (same data as the axios.server interceptor).
  */
-
-const GRAPHQL_PROXY_URL = '/api/graphql';
-
-interface GraphQLResponse<T> {
-  data?: T;
-  errors?: Array<{ message: string }>;
+function buildAuthFetch(token?: string, requestId?: string, userAgent?: string): typeof fetch {
+  return ((input: RequestInfo | URL, init: RequestInit = {}) =>
+    fetch(input as any, {
+      ...init,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(init.headers ?? {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(requestId ? { 'X-Request-ID': requestId } : {}),
+        ...(userAgent ? { 'User-Agent': userAgent } : {}),
+      },
+    })) as typeof fetch;
 }
 
-export async function gqlRequest<T>(
-  query: string,
-  variables?: Record<string, unknown>
-): Promise<T> {
-  const response = await fetch(GRAPHQL_PROXY_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query, variables }),
+/**
+ * Creates a URQL client scoped to the given GqlScope.
+ *
+ * - Server: direct to GRAPHQL_URL with auth from AsyncLocalStorage
+ * - Client: through /api/graphql proxy (session cookie auth, handled by Hono)
+ *
+ * Pass an ssrExchange instance to participate in SSR→CSR cache hydration.
+ */
+export function createGqlClient(scope: GqlScope, ssr?: SSRExchange): UrqlClient {
+  const isServer = typeof window === 'undefined';
+
+  if (isServer) {
+    const ctx = getRequestContext();
+
+    // Resolve 'me' to actual userId from AsyncLocalStorage context
+    let resolvedScope = scope;
+    if (scope.type === 'user' && scope.userId === 'me' && ctx?.userId) {
+      resolvedScope = { type: 'user', userId: ctx.userId };
+    }
+
+    const url = `${process.env.GRAPHQL_URL}${buildScopedPath(resolvedScope)}`;
+
+    return createClient({
+      url,
+      preferGetMethod: false, // @urql/core@6 defaults to GET; backend requires POST
+      exchanges: [cacheExchange, ...(ssr ? [ssr] : []), fetchExchange],
+      fetch: buildAuthFetch(ctx?.token, ctx?.requestId, ctx?.userAgent),
+    });
+  }
+
+  // Client-side: Hono proxy at /api/graphql handles auth via session cookie
+  return createClient({
+    url: buildProxyPath(scope),
+    preferGetMethod: false, // @urql/core@6 defaults to GET; backend requires POST
+    exchanges: [cacheExchange, ...(ssr ? [ssr] : []), fetchExchange],
   });
-
-  if (!response.ok) {
-    throw new Error(`GraphQL request failed: ${response.status} ${response.statusText}`);
-  }
-
-  const body = (await response.json()) as GraphQLResponse<T>;
-  if (body.errors?.length) {
-    throw new Error(body.errors.map((e) => e.message).join('; '));
-  }
-  if (body.data === undefined) {
-    throw new Error('GraphQL response missing data');
-  }
-  return body.data;
 }
+
+export type { GqlScope } from './types';

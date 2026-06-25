@@ -11,11 +11,10 @@ import {
   NotesList,
 } from '@/features/domain';
 import { authenticator } from '@/modules/auth';
-import {
-  projectDomainDetailQuery,
-  projectDomainNotesQuery,
-  userDetailQuery,
-} from '@/resources/request/server';
+import { createGqlClient } from '@/modules/graphql/client';
+import { generateQueryOp } from '@/modules/graphql/generated';
+import type { UserSummary } from '@/modules/graphql/generated/schema';
+import { projectDomainDetailQuery, projectDomainNotesQuery } from '@/resources/request/server';
 import { useProjectDetailData } from '@/routes/project/shared';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
@@ -59,18 +58,28 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
     ),
   ];
 
-  const userEmails = Object.fromEntries(
-    await Promise.all(
-      creatorIds.map(async (id) => {
-        try {
-          const user = await userDetailQuery(session?.accessToken ?? '', id);
-          return [id, user?.spec?.email ?? id] as [string, string];
-        } catch {
-          return [id, id] as [string, string];
-        }
+  let userEmails: Record<string, string> = {};
+  if (creatorIds.length > 0) {
+    const client = createGqlClient({ type: 'global' });
+    const op = generateQueryOp({
+      userSummaries: [
+        { names: creatorIds },
+        { name: true, email: true, givenName: true, familyName: true },
+      ],
+    });
+    const result = await client.query(op.query, op.variables).toPromise();
+    const users: UserSummary[] = result.data?.userSummaries ?? [];
+    userEmails = Object.fromEntries(
+      users.map((u) => {
+        const fullName = [u.givenName, u.familyName].filter(Boolean).join(' ');
+        return [u.name, fullName || u.email || u.name];
       })
-    )
-  );
+    );
+    // Fallback for any ids not returned
+    for (const id of creatorIds) {
+      if (!userEmails[id]) userEmails[id] = id;
+    }
+  }
 
   return { data, notes, userEmails };
 };

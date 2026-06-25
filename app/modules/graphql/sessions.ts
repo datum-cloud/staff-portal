@@ -1,4 +1,7 @@
-import { gqlRequest } from './client';
+import { createGqlClient } from './client';
+import { generateQueryOp } from './generated';
+import type { ExtendedSession as GeneratedExtendedSession } from './generated/schema';
+import { mapApiError } from '@/utils/errors/error-mapper';
 
 export interface ExtendedSession {
   id: string;
@@ -21,31 +24,6 @@ export interface ExtendedSession {
   } | null;
 }
 
-const SESSIONS_QUERY = /* GraphQL */ `
-  query Sessions($userID: ID) {
-    sessions(userID: $userID) {
-      id
-      userUID
-      provider
-      ipAddress
-      fingerprintID
-      createdAt
-      lastUpdatedAt
-      userAgent {
-        browser
-        os
-        formatted
-      }
-      location {
-        city
-        country
-        countryCode
-        formatted
-      }
-    }
-  }
-`;
-
 /**
  * Lists sessions enriched with parsed user-agent and geolocation.
  *
@@ -57,8 +35,49 @@ const SESSIONS_QUERY = /* GraphQL */ `
  * permission get an empty list (the underlying 403 is logged).
  */
 export async function listSessions(userID?: string): Promise<ExtendedSession[]> {
-  const data = await gqlRequest<{ sessions: ExtendedSession[] }>(SESSIONS_QUERY, {
-    userID: userID ?? null,
+  const client = createGqlClient({ type: 'global' });
+  const op = generateQueryOp({
+    sessions: [
+      { userID: userID ?? null },
+      {
+        id: true,
+        userUID: true,
+        provider: true,
+        ipAddress: true,
+        fingerprintID: true,
+        createdAt: true,
+        lastUpdatedAt: true,
+        userAgent: { browser: true, os: true, formatted: true },
+        location: { city: true, country: true, countryCode: true, formatted: true },
+      },
+    ],
   });
-  return data.sessions;
+
+  const result = await client.query(op.query, op.variables).toPromise();
+  if (result.error) throw mapApiError(result.error);
+
+  return (result.data?.sessions ?? []).map((s: GeneratedExtendedSession) => ({
+    id: s.id,
+    userUID: s.userUID,
+    provider: s.provider,
+    ipAddress: s.ipAddress ?? null,
+    fingerprintID: s.fingerprintID ?? null,
+    createdAt: s.createdAt,
+    lastUpdatedAt: s.lastUpdatedAt ?? null,
+    userAgent: s.userAgent
+      ? {
+          browser: s.userAgent.browser ?? null,
+          os: s.userAgent.os ?? null,
+          formatted: s.userAgent.formatted,
+        }
+      : null,
+    location: s.location
+      ? {
+          city: s.location.city ?? null,
+          country: s.location.country ?? null,
+          countryCode: s.location.countryCode ?? null,
+          formatted: s.location.formatted,
+        }
+      : null,
+  }));
 }
