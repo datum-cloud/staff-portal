@@ -4,7 +4,6 @@ import { BadgeState } from '@/components/badge';
 import { DangerZoneCard } from '@/components/danger-zone-card';
 import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
-import { PageHeader } from '@/components/page-header';
 import { OrgBillingAccountsCard } from '@/features/billing';
 import { orgDeleteMutation } from '@/resources/request/client';
 import { orgRoutes } from '@/utils/config/routes.config';
@@ -33,9 +32,7 @@ export default function Page() {
 
   return (
     <div className="m-4 flex flex-col gap-1">
-      <PageHeader title={data?.metadata?.annotations?.['kubernetes.io/display-name']} />
-
-      <Card className="mt-4 shadow-none">
+      <Card className="shadow-none">
         <CardContent>
           <DescriptionList
             items={[

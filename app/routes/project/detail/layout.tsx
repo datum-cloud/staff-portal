@@ -1,13 +1,13 @@
 import type { Route } from './+types/layout';
-import AppActionBar from '@/components/app-actiobar';
 import {
   createClickableBreadcrumbItem,
   createStaticBreadcrumbItem,
   type BreadcrumbItem,
 } from '@/components/breadcrumb';
-import { SubLayout } from '@/components/sub-layout';
+import { EntityHeader, EntityTabNav, type EntityTab } from '@/features/milo';
 import { useEnv } from '@/hooks';
 import { authenticator } from '@/modules/auth';
+import { useApp } from '@/providers/app.provider';
 import { orgDetailQuery, projectDetailQuery } from '@/resources/request/server';
 import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
@@ -22,6 +22,7 @@ import {
   ExternalLink,
   FileLock,
   FileText,
+  Folders,
   Gauge,
   Layers,
   Signpost,
@@ -84,8 +85,10 @@ export default function Layout() {
   const env = useEnv();
   const { pathname } = useLocation();
   const params = useParams();
+  const { actions } = useApp();
 
   const projectName = project?.metadata?.name ?? '';
+  const displayName = project?.metadata?.annotations?.['kubernetes.io/description'] || projectName;
 
   const cloudProjectUrl = useMemo(() => {
     if (!env?.CLOUD_PORTAL_URL || !projectName) return null;
@@ -114,89 +117,94 @@ export default function Layout() {
     return base;
   }, [env, projectName, params, pathname]);
 
-  const menuItems = [
+  const quotasBase = `${projectRoutes.detail(projectName)}/quotas`;
+
+  const tabs: EntityTab[] = [
     {
-      title: t`Overview`,
+      label: t`Overview`,
       href: projectRoutes.detail(projectName),
-      icon: FileText,
+      icon: <FileText className="size-4" />,
+      end: true,
     },
     {
-      title: t`AI Edge`,
+      label: t`AI Edge`,
       href: projectRoutes.edge.list(projectName),
-      icon: Gauge,
+      icon: <Gauge className="size-4" />,
     },
     {
-      title: t`DNS`,
+      label: t`DNS`,
       href: projectRoutes.dns.list(projectName),
-      icon: Signpost,
+      icon: <Signpost className="size-4" />,
     },
     {
-      title: t`Domains`,
+      label: t`Domains`,
       href: projectRoutes.domain.list(projectName),
-      icon: Layers,
+      icon: <Layers className="size-4" />,
     },
     {
-      title: t`Metrics`,
+      label: t`Metrics`,
       href: projectRoutes.exportPolicy.list(projectName),
-      icon: ChartSpline,
+      icon: <ChartSpline className="size-4" />,
     },
     {
-      title: t`Secrets`,
+      label: t`Secrets`,
       href: projectRoutes.secret.list(projectName),
-      icon: FileLock,
+      icon: <FileLock className="size-4" />,
     },
     {
-      title: t`Activity`,
-      icon: SquareActivity,
-      hasSubmenu: true,
-      submenuItems: [
-        { title: t`Feed`, href: projectRoutes.activity.root(projectName) },
-        { title: t`Events`, href: projectRoutes.activity.events(projectName) },
-        { title: t`Audit Logs`, href: projectRoutes.activity.auditLogs(projectName) },
+      label: t`Activity`,
+      icon: <SquareActivity className="size-4" />,
+      match: projectRoutes.activity.root(projectName),
+      children: [
+        { label: t`Feed`, href: projectRoutes.activity.root(projectName) },
+        { label: t`Events`, href: projectRoutes.activity.events(projectName) },
+        { label: t`Audit Logs`, href: projectRoutes.activity.auditLogs(projectName) },
       ],
     },
     {
-      title: t`Quotas`,
-      icon: CircleGauge,
-      hasSubmenu: true,
-      submenuItems: [
-        {
-          title: t`Usage`,
-          href: `${projectRoutes.quota.usage(projectName)}`,
-        },
-        {
-          title: t`Grants`,
-          href: projectRoutes.quota.grant(projectName),
-        },
+      label: t`Quotas`,
+      icon: <CircleGauge className="size-4" />,
+      match: quotasBase,
+      children: [
+        { label: t`Usage`, href: projectRoutes.quota.usage(projectName) },
+        { label: t`Grants`, href: projectRoutes.quota.grant(projectName) },
       ],
     },
   ];
 
   return (
-    <>
-      {cloudProjectUrl && (
-        <AppActionBar key={cloudProjectUrl}>
-          <LinkButton
-            href={cloudProjectUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            type="secondary"
-            theme="outline"
-            size="small"
-            icon={<ExternalLink size={12} />}
-            iconPosition="right">
-            <Trans>View in Cloud Portal</Trans>
-          </LinkButton>
-        </AppActionBar>
-      )}
-      <SubLayout>
-        <SubLayout.SidebarLeft>
-          <SubLayout.SidebarMenu menuItems={menuItems} />
-        </SubLayout.SidebarLeft>
-        <SubLayout.Content>
-          <Outlet />
-        </SubLayout.Content>
-      </SubLayout>
-    </>
+    <div className="flex flex-col">
+      <div className="px-4 pt-4">
+        <EntityHeader
+          icon={
+            <div className="bg-muted flex size-10 items-center justify-center rounded-md">
+              <Folders className="size-5" />
+            </div>
+          }
+          name={displayName}
+          subtitle={projectName}
+          actions={
+            <>
+              {cloudProjectUrl && (
+                <LinkButton
+                  href={cloudProjectUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  type="secondary"
+                  theme="outline"
+                  size="small"
+                  icon={<ExternalLink size={12} />}
+                  iconPosition="right">
+                  <Trans>View in Cloud Portal</Trans>
+                </LinkButton>
+              )}
+              {actions}
+            </>
+          }
+        />
+      </div>
+      <EntityTabNav tabs={tabs} />
+      <Outlet />
+    </div>
   );
 }

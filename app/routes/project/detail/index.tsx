@@ -4,7 +4,6 @@ import { BadgeState } from '@/components/badge';
 import { DangerZoneCard } from '@/components/danger-zone-card';
 import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
-import { PageHeader } from '@/components/page-header';
 import { getActiveProjectBinding, getBillingAccountDisplayName } from '@/features/billing/utils';
 import {
   useBillingAccountBindingListForOrgQuery,
@@ -72,9 +71,7 @@ export default function Page() {
 
   return (
     <div className="m-4 flex flex-col gap-1">
-      <PageHeader title={project?.metadata?.annotations?.['kubernetes.io/description']} />
-
-      <Card className="mt-4 shadow-none">
+      <Card className="shadow-none">
         <CardContent>
           <DescriptionList
             items={[
