@@ -50,6 +50,7 @@ import {
   serializeProjectsFilter,
 } from '@/features/activity/lib/activity-filters';
 import { staffResourceLinkResolver } from '@/features/activity/lib/activity-link-resolvers';
+import type { GqlProject } from '@/modules/graphql/organizations';
 import { useOrgProjectListQuery } from '@/resources/request/client';
 import {
   ActivityApiClient,
@@ -78,7 +79,6 @@ import {
   TableRow,
 } from '@datum-cloud/datum-ui/table';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import type { GqlProject } from '@/modules/graphql/organizations';
 import { useMemo, useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router';
 

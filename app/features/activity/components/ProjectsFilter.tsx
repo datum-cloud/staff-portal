@@ -1,3 +1,4 @@
+import type { GqlProject } from '@/modules/graphql/organizations';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@datum-cloud/activity-ui';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -5,7 +6,6 @@ import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
 import { Input } from '@datum-cloud/datum-ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import type { GqlProject } from '@/modules/graphql/organizations';
 import { Layers, ChevronDown } from 'lucide-react';
 import { useState, useMemo, useCallback } from 'react';
 

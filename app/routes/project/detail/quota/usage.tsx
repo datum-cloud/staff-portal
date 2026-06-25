@@ -1,10 +1,8 @@
 import { getProjectDetailMetadata, useProjectDetailData } from '../../shared';
 import type { Route } from './+types/usage';
 import { QuotaBucketList } from '@/features/quota';
-import {
-  projectQuotaBucketListQuery,
-  projectQuotaGrantCreateMutation,
-} from '@/resources/request/client';
+import { listProjectQuotaBuckets } from '@/modules/graphql/quota';
+import { projectQuotaGrantCreateMutation } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 
@@ -23,7 +21,7 @@ export default function Page() {
   return (
     <QuotaBucketList
       queryKeyPrefix={['projects', project?.metadata?.name ?? '', 'buckets']}
-      fetchFn={(params) => projectQuotaBucketListQuery(project?.metadata?.name ?? '', params)}
+      fetchFn={() => listProjectQuotaBuckets(project?.metadata?.name ?? '')}
       createGrantFn={(namespace, payload) =>
         projectQuotaGrantCreateMutation(project?.metadata?.name ?? '', namespace, payload)
       }
