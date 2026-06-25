@@ -1,8 +1,9 @@
 import { type RouteConfig, index, layout, prefix, route } from '@react-router/dev/routes';
 
 export default [
-  // Protected routes with auth
-  layout('layouts/private.layout.tsx', [
+  // Protected routes with auth.
+  // Shell switch: 'layouts/private.layout.tsx' = legacy, 'layouts/milo.layout.tsx' = new Milo shell.
+  layout('layouts/milo.layout.tsx', [
     index('routes/dashboard/index.tsx'),
 
     // Customers

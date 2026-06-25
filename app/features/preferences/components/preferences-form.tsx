@@ -1,3 +1,4 @@
+import { useThemePreference } from '../hooks/use-theme-preference';
 import { ThemePreview } from './theme-preview';
 import { SelectTimezone } from '@/components/select/timezone';
 import { useApp } from '@/providers/app.provider';
@@ -5,7 +6,6 @@ import { userUpdatePreferencesMutation } from '@/resources/request/client';
 import type { Theme } from '@datum-cloud/datum-ui';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
-import { useTheme } from '@datum-cloud/datum-ui/theme';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -20,34 +20,9 @@ const THEME_OPTIONS: readonly { readonly value: Theme; readonly label: string }[
 export function PreferencesForm() {
   const { user, setUser, settings } = useApp();
   const { t } = useLingui();
-  const { setTheme } = useTheme();
-  const [isUpdatingTheme, setIsUpdatingTheme] = useState(false);
+  const { isUpdating: isUpdatingTheme, setThemePreference: handleThemeUpdate } =
+    useThemePreference();
   const [isUpdatingTimezone, setIsUpdatingTimezone] = useState(false);
-
-  const handleThemeUpdate = useCallback(
-    async (theme: Theme) => {
-      // Optimistically apply theme immediately for instant feedback
-      setTheme(theme);
-      setIsUpdatingTheme(true);
-
-      try {
-        const updatedUser = await userUpdatePreferencesMutation(user?.metadata?.name || '', {
-          annotations: {
-            'preferences/theme': theme,
-          },
-        });
-
-        setUser(updatedUser);
-      } catch (error) {
-        // Revert theme on error - AppProvider will sync settings.theme
-        setTheme(settings.theme);
-        toast.error(t`Failed to update theme`);
-      } finally {
-        setIsUpdatingTheme(false);
-      }
-    },
-    [user, setUser, setTheme, settings.theme, t]
-  );
 
   const handleTimezoneUpdate = useCallback(
     async (timezone: string) => {

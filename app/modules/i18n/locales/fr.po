@@ -132,6 +132,10 @@ msgstr ""
 msgid "Account Management"
 msgstr ""
 
+#: app/features/milo/components/navbar/milo-user-menu.tsx:48
+msgid "Account menu"
+msgstr ""
+
 #: app/routes/finance/billing-account/detail/index.tsx:159
 msgid "Account overview"
 msgstr ""
@@ -517,12 +521,16 @@ msgstr ""
 msgid "Change your Primary Email in GitHub (your primary email)"
 msgstr ""
 
-#: app/features/preferences/components/preferences-form.tsx:96
+#: app/features/preferences/components/preferences-form.tsx:71
 msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
 msgstr ""
 
 #: app/features/fraud/detail/maxmind-rows.tsx:244
 msgid "Classification"
+msgstr ""
+
+#: app/features/milo/components/page/rich-filter-panel.tsx:35
+msgid "Clear all"
 msgstr ""
 
 #: app/components/app-search/app-search-mobile.tsx:71
@@ -544,6 +552,14 @@ msgstr ""
 
 #: app/features/dashboard/components/cluster-health-widget.tsx:239
 msgid "clusters healthy"
+msgstr ""
+
+#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:70
+msgid "Collapse"
+msgstr ""
+
+#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:67
+msgid "Collapse sidebar"
 msgstr ""
 
 #: app/routes/fraud/index.tsx:312
@@ -1289,6 +1305,10 @@ msgstr ""
 msgid "Events"
 msgstr ""
 
+#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:67
+msgid "Expand sidebar"
+msgstr ""
+
 #: app/features/domain/components/domain-list.tsx:90
 #: app/routes/project/detail/domain/detail.tsx:127
 msgid "Expiration Date"
@@ -1336,11 +1356,11 @@ msgstr ""
 msgid "Failed to load status"
 msgstr ""
 
-#: app/features/preferences/components/preferences-form.tsx:44
+#: app/features/preferences/hooks/use-theme-preference.ts:35
 msgid "Failed to update theme"
 msgstr ""
 
-#: app/features/preferences/components/preferences-form.tsx:66
+#: app/features/preferences/components/preferences-form.tsx:41
 msgid "Failed to update timezone"
 msgstr ""
 
@@ -1423,6 +1443,7 @@ msgstr ""
 
 #: app/components/data-table-toolbar/index.tsx:74
 #: app/components/data-table-toolbar/index.tsx:92
+#: app/features/milo/components/page/rich-filter-panel.tsx:30
 msgid "Filters"
 msgstr ""
 
@@ -1557,6 +1578,10 @@ msgstr ""
 
 #: app/features/fraud/policy/policy-form.tsx:163
 msgid "History Retention (max entries)"
+msgstr ""
+
+#: app/features/milo/components/navbar/milo-navbar.tsx:26
+msgid "Home"
 msgstr ""
 
 #: app/features/edge/components/detail/edge-config-card.tsx:21
@@ -1804,6 +1829,7 @@ msgid "Log back into GitHub (with the new, desired email set as primary)"
 msgstr ""
 
 #: app/components/app-sidebar/nav-user.tsx:95
+#: app/features/milo/components/navbar/milo-user-menu.tsx:81
 msgid "Log out"
 msgstr ""
 
@@ -1872,6 +1898,10 @@ msgstr ""
 msgid "Members"
 msgstr ""
 
+#: app/features/milo/components/navbar/milo-mobile-menu.tsx:45
+msgid "Menu"
+msgstr ""
+
 #: app/features/service-catalog/components/conditions-card.tsx:39
 msgid "Message"
 msgstr ""
@@ -1902,6 +1932,7 @@ msgid "Move to Pending"
 msgstr ""
 
 #: app/components/app-sidebar/nav-user.tsx:85
+#: app/features/milo/components/navbar/milo-user-menu.tsx:71
 #: app/routes/profile/layout.tsx:8
 msgid "My Profile"
 msgstr ""
@@ -2220,6 +2251,7 @@ msgid "Notes"
 msgstr ""
 
 #: app/components/app-sidebar/nav-user.tsx:89
+#: app/features/milo/components/navbar/milo-user-menu.tsx:75
 msgid "Notifications"
 msgstr ""
 
@@ -2233,6 +2265,10 @@ msgstr ""
 
 #: app/routes/finance/billing-account/detail/index.tsx:145
 msgid "Open in Cloud Portal"
+msgstr ""
+
+#: app/features/milo/components/navbar/milo-mobile-menu.tsx:36
+msgid "Open menu"
 msgstr ""
 
 #: app/components/app-search/app-search-mobile.tsx:40
@@ -2297,6 +2333,10 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:370
 #: app/features/activity/components/activity-list.tsx:460
 msgid "Patch"
+msgstr ""
+
+#: app/features/milo/components/navbar/milo-assistant-trigger.tsx:15
+msgid "Patch AI"
 msgstr ""
 
 #: app/routes/finance/billing-account/detail/index.tsx:282
@@ -2423,7 +2463,7 @@ msgstr ""
 msgid "Policy updated successfully"
 msgstr ""
 
-#: app/features/preferences/components/preferences-form.tsx:78
+#: app/features/preferences/components/preferences-form.tsx:53
 msgid "Portal Preferences"
 msgstr ""
 
@@ -2787,6 +2827,7 @@ msgstr ""
 #: app/components/app-search/app-search-mobile.tsx:55
 #: app/components/app-search/app-search-mobile.tsx:64
 #: app/components/app-search/index.tsx:70
+#: app/features/milo/components/navbar/milo-search.tsx:48
 msgid "Search"
 msgstr ""
 
@@ -2901,6 +2942,7 @@ msgid "Search sessions..."
 msgstr ""
 
 #: app/components/app-search/app-search-mobile.tsx:56
+#: app/features/milo/components/navbar/milo-search.tsx:66
 msgid "Search users, organizations, and projects"
 msgstr ""
 
@@ -2957,7 +2999,7 @@ msgstr ""
 msgid "Select list..."
 msgstr ""
 
-#: app/features/preferences/components/preferences-form.tsx:86
+#: app/features/preferences/components/preferences-form.tsx:61
 msgid "Select timezone..."
 msgstr ""
 
@@ -3101,6 +3143,14 @@ msgstr ""
 msgid "Summary"
 msgstr ""
 
+#: app/features/milo/components/navbar/milo-theme-toggle.tsx:20
+msgid "Switch to dark theme"
+msgstr ""
+
+#: app/features/milo/components/navbar/milo-theme-toggle.tsx:20
+msgid "Switch to light theme"
+msgstr ""
+
 #: app/components/theme-switcher/index.tsx:47
 #: app/features/edge/components/detail/edge-hostnames-card.tsx:181
 msgid "System"
@@ -3182,7 +3232,7 @@ msgstr ""
 msgid "Timezone"
 msgstr ""
 
-#: app/features/preferences/components/preferences-form.tsx:64
+#: app/features/preferences/components/preferences-form.tsx:39
 msgid "Timezone updated successfully"
 msgstr ""
 
@@ -3213,6 +3263,10 @@ msgstr ""
 
 #: app/features/feature-flags/components/feature-flag-list.tsx:161
 msgid "Toggle"
+msgstr ""
+
+#: app/features/milo/components/navbar/milo-theme-toggle.tsx:18
+msgid "Toggle theme"
 msgstr ""
 
 #. placeholder {0}: idx + 1
