@@ -34,6 +34,16 @@ export async function loader({ request }: Route.LoaderArgs) {
   const token = session?.accessToken ?? '';
   const userId = session?.sub ?? '';
 
+  // E2E (Cypress) authenticates as a CI service account, which is not a human
+  // staff user: it can't be a member of the staff group and has no User record,
+  // so the staff-group gate and userDetailQuery below don't apply. CYPRESS is
+  // never set in real environments. Child route loaders still fetch real data
+  // with the session token (which carries the staff roles), so pages are still
+  // exercised against the live API.
+  if (env.isCypress) {
+    return data({ user: null });
+  }
+
   // Check staff group membership before allowing access.
   // 401/403 means the user lacks permission to list memberships — not staff.
   // Other errors (network, 500) are re-thrown so they surface properly.
