@@ -4,67 +4,19 @@ import AppToolbar from '@/components/app-toolbar';
 import AppTopbar from '@/components/app-topbar';
 import { AssistantPanel, AssistantProvider } from '@/features/assistant';
 import { useEnv } from '@/hooks';
-import { authenticator } from '@/modules/auth';
+import { requireStaffUser } from '@/modules/auth/require-staff.server';
 import { AppProvider } from '@/providers/app.provider';
-import { userDetailQuery } from '@/resources/request/server';
-import { userGroupMembershipsQuery } from '@/resources/request/server/group.request';
-import { env } from '@/utils/config/env.server';
-import { getLoginUrl, getRedirectToPath } from '@/utils/cookies';
 import { metaObject } from '@/utils/helpers';
 import { SidebarInset, SidebarProvider } from '@datum-cloud/datum-ui/sidebar';
 import { TaskQueueProvider } from '@datum-cloud/datum-ui/task-queue';
-import { data, Outlet, redirect, useLoaderData } from 'react-router';
+import { data, Outlet, useLoaderData } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
   return metaObject('Dashboard');
 };
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const isAuthenticated = await authenticator.isAuthenticated(request);
-  if (!isAuthenticated) {
-    return redirect(getLoginUrl(getRedirectToPath(request.url)));
-  }
-
-  const isValid = await authenticator.isValidSession(request);
-  if (!isValid) {
-    return redirect('/logout');
-  }
-
-  const session = await authenticator.getSession(request);
-  const token = session?.accessToken ?? '';
-  const userId = session?.sub ?? '';
-
-  // E2E (Cypress) authenticates as a CI service account, which is not a human
-  // staff user: it can't be a member of the staff group and has no User record,
-  // so the staff-group gate and userDetailQuery below don't apply. CYPRESS is
-  // never set in real environments. Child route loaders still fetch real data
-  // with the session token (which carries the staff roles), so pages are still
-  // exercised against the live API.
-  if (env.isCypress) {
-    return data({ user: null });
-  }
-
-  // Check staff group membership before allowing access.
-  // 401/403 means the user lacks permission to list memberships — not staff.
-  // Other errors (network, 500) are re-thrown so they surface properly.
-  let isStaff = false;
-  try {
-    const memberships = await userGroupMembershipsQuery(token, userId);
-    isStaff = memberships.some((m) => m.spec?.groupRef?.name === env.staffGroupName);
-  } catch (error) {
-    if (error instanceof Response && (error.status === 401 || error.status === 403)) {
-      isStaff = false;
-    } else {
-      throw error;
-    }
-  }
-  if (!isStaff) {
-    return redirect('/error/unauthorized');
-  }
-
-  const user = await userDetailQuery(token, userId);
-
-  return data({ user });
+  return data(await requireStaffUser(request));
 }
 
 export default function PrivateLayout() {
