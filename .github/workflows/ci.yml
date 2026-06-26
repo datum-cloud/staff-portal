@@ -234,10 +234,10 @@ jobs:
   # ─── Status Gate ────────────────────────────────────────────
   status-check:
     name: Final Status Check
-    # e2e-smoke is intentionally excluded until the repo secrets it needs
-    # (DATUM_SA_CREDENTIALS, SESSION_SECRET, API_URL, GRAPHQL_URL, AUTH_OIDC_*)
-    # are configured. Add `e2e-smoke` here to make it blocking afterwards.
-    needs: [install, lint, typecheck, build, unit-tests]
+    # Gates publish: every check must pass, including e2e-smoke (matches
+    # cloud-portal). Requires the e2e secrets (DATUM_SA_CREDENTIALS,
+    # SESSION_SECRET, API_URL, GRAPHQL_URL, AUTH_OIDC_*) to be configured.
+    needs: [install, lint, typecheck, build, unit-tests, e2e-smoke]
     if: always()
     runs-on: ubuntu-latest
     steps:
