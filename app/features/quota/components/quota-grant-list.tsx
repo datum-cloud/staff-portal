@@ -1,60 +1,35 @@
 import { groupQuotas, type QuotaRow } from '../lib/quotas-grouping';
-import { resolveResourceDisplayName, resolveServiceDisplayName } from '../lib/service-catalog';
 import { BadgeCondition } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
-import { useResourceRegistrationListQuery } from '@/resources/request/client';
+import { type GqlQuotaGrant, type GqlQuotaGrantList } from '@/modules/graphql/quota';
 import { Badge } from '@datum-cloud/datum-ui/badge';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem } from '@datum-cloud/datum-ui/data-table';
 import { GroupedTable, type GroupedTableGroup } from '@datum-cloud/datum-ui/grouped-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
-import {
-  ComMiloapisQuotaV1Alpha1ResourceGrant,
-  ComMiloapisQuotaV1Alpha1ResourceGrantList,
-  ComMiloapisQuotaV1Alpha1ResourceRegistration,
-} from '@openapi/quota.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
 import { type ColumnDef } from '@tanstack/react-table';
-import { Trash2Icon } from 'lucide-react';
+import { InfoIcon, Trash2Icon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 interface QuotaGrantListProps {
   queryKeyPrefix: string[];
-  fetchFn: (params?: Record<string, unknown>) => Promise<ComMiloapisQuotaV1Alpha1ResourceGrantList>;
+  fetchFn: (params?: Record<string, unknown>) => Promise<GqlQuotaGrantList>;
   deleteGrantFn: (name: string, namespace: string) => Promise<unknown>;
 }
 
-/**
- * Internal row: a single (grant × resourceType) pair. A grant that allows
- * multiple resourceTypes is flattened into one row per type so the table can
- * group by owning service and show friendly names, the same as the Usage tab.
- * Deletes still operate on the parent grant.
- */
 interface QuotaGrantRow extends QuotaRow {
-  grant: ComMiloapisQuotaV1Alpha1ResourceGrant;
+  grant: GqlQuotaGrant;
   allocation: number;
-}
-
-/** Sum every bucket amount per resourceType within a single grant. */
-function allocationByResourceType(
-  allowances: ComMiloapisQuotaV1Alpha1ResourceGrant['spec']['allowances'] | undefined
-): Array<[string, number]> {
-  const totals = new Map<string, number>();
-  for (const allowance of allowances ?? []) {
-    const sum = (allowance.buckets ?? []).reduce((acc, b) => acc + (b?.amount ?? 0), 0);
-    totals.set(allowance.resourceType, (totals.get(allowance.resourceType) ?? 0) + sum);
-  }
-  return Array.from(totals.entries());
 }
 
 export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: QuotaGrantListProps) {
   const { t } = useLingui();
-  const [selectedGrant, setSelectedGrant] = useState<ComMiloapisQuotaV1Alpha1ResourceGrant | null>(
-    null
-  );
+  const [selectedGrant, setSelectedGrant] = useState<GqlQuotaGrant | null>(null);
 
   const tableQuery = useQuery({
     queryKey: [...queryKeyPrefix, 'list'],
@@ -63,41 +38,18 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: Quota
     staleTime: 60 * 1000,
   });
 
-  const registrationsQuery = useResourceRegistrationListQuery();
-
-  // resourceType -> registration, for display name / description / owner lookup.
-  const registrations = useMemo(() => {
-    const map = new Map<string, ComMiloapisQuotaV1Alpha1ResourceRegistration>();
-    for (const reg of registrationsQuery.data?.items ?? []) {
-      if (reg.spec?.resourceType) map.set(reg.spec.resourceType, reg);
-    }
-    return map;
-  }, [registrationsQuery.data]);
-
   const rows = useMemo<QuotaGrantRow[]>(() => {
     return (tableQuery.data?.items ?? []).flatMap((grant) =>
-      allocationByResourceType(grant.spec?.allowances).map(([resourceType, allocation]) => {
-        const reg = registrations.get(resourceType);
-        const annotations = reg?.metadata?.annotations ?? {};
-        const labels = reg?.metadata?.labels ?? {};
-        // Prefer the hand-authored owner label, fall back to the catalog-managed
-        // service label (compute/billing). Mirrors the Usage tab resolution.
-        const owner =
-          labels['services.miloapis.com/owner'] ?? labels['services.miloapis.com/service'];
-        return {
-          resourceType,
-          displayName: resolveResourceDisplayName(
-            annotations['kubernetes.io/display-name'],
-            resourceType
-          ),
-          group: resolveServiceDisplayName(owner, resourceType),
-          percentage: 0,
-          allocation,
-          grant,
-        };
-      })
+      grant.allowances.map((allowance) => ({
+        resourceType: allowance.resourceType,
+        displayName: allowance.displayName,
+        group: allowance.serviceDisplayName,
+        percentage: 0,
+        allocation: allowance.amount,
+        grant,
+      }))
     );
-  }, [tableQuery.data, registrations]);
+  }, [tableQuery.data]);
 
   const groups = useMemo<GroupedTableGroup<QuotaGrantRow>[]>(
     () =>
@@ -118,14 +70,14 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: Quota
         accessorFn: (row) => row.displayName,
         size: 300,
         cell: ({ row }) => (
-          <div>
-            <Text size="sm" className="block font-medium">
+          <div className="flex items-center gap-1.5">
+            <Text size="xs" className="font-medium">
               {row.original.displayName}
             </Text>
             {row.original.resourceType !== row.original.displayName && (
-              <Text size="xs" textColor="muted" className="mt-0.5 block font-mono">
-                {row.original.resourceType}
-              </Text>
+              <Tooltip message={row.original.resourceType}>
+                <InfoIcon className="size-3 shrink-0 text-muted-foreground opacity-60" />
+              </Tooltip>
             )}
           </div>
         ),
@@ -133,15 +85,15 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: Quota
       {
         id: 'grant',
         header: t`Grant`,
-        accessorFn: (row) => row.grant.metadata?.name,
+        accessorFn: (row) => row.grant.name,
         size: 220,
         cell: ({ row }) => (
           <Text
             size="sm"
             textColor="muted"
             className="truncate"
-            title={row.original.grant.metadata?.name}>
-            {row.original.grant.metadata?.name}
+            title={row.original.grant.name}>
+            {row.original.grant.name}
           </Text>
         ),
       },
@@ -159,11 +111,17 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: Quota
       {
         id: 'status',
         header: t`Status`,
-        accessorFn: (row) => row.grant.status,
+        accessorFn: (row) => row.grant.conditions,
         size: 160,
         cell: ({ row }) => (
           <BadgeCondition
-            status={row.original.grant.status}
+            status={{
+              conditions: row.original.grant.conditions.map((c) => ({
+                type: c.type,
+                status: c.status,
+                message: c.message ?? undefined,
+              })),
+            }}
             multiple={false}
             showMessage
             className="text-xs"
@@ -173,9 +131,9 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: Quota
       {
         id: 'created',
         header: t`Created`,
-        accessorFn: (row) => row.grant.metadata?.creationTimestamp,
+        accessorFn: (row) => row.grant.createdAt,
         size: 160,
-        cell: ({ row }) => <DateTime date={row.original.grant.metadata?.creationTimestamp} />,
+        cell: ({ row }) => <DateTime date={row.original.grant.createdAt ?? undefined} />,
       },
     ],
     [t]
@@ -188,11 +146,11 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: Quota
       variant: 'destructive' as const,
       onClick: (row) => setSelectedGrant(row.grant),
       disabled: (row) => {
-        const isInactive = row.grant.status?.conditions?.some(
+        const isInactive = row.grant.conditions.some(
           (c) => c.type === 'Active' && c.status === 'False'
         );
         if (isInactive) return true;
-        return row.grant.metadata?.labels?.['quota.miloapis.com/auto-created'] === 'true';
+        return row.grant.autoCreated;
       },
     },
   ];
@@ -203,16 +161,13 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: Quota
         open={!!selectedGrant}
         onOpenChange={() => setSelectedGrant(null)}
         title={t`Delete Grant`}
-        description={t`Are you sure you want to delete grant "${selectedGrant?.metadata?.name}"? This action cannot be undone.`}
+        description={t`Are you sure you want to delete grant "${selectedGrant?.name}"? This action cannot be undone.`}
         confirmText={t`Delete`}
         cancelText={t`Cancel`}
         variant="destructive"
         requireConfirmation
         onConfirm={async () => {
-          await deleteGrantFn(
-            selectedGrant?.metadata?.name ?? '',
-            selectedGrant?.metadata?.namespace ?? ''
-          );
+          await deleteGrantFn(selectedGrant?.name ?? '', selectedGrant?.namespace ?? '');
           await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
           setSelectedGrant(null);
           toast.success(t`Grant deleted successfully`);
@@ -235,12 +190,10 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: Quota
               return (
                 row.displayName.toLowerCase().includes(q) ||
                 row.resourceType.toLowerCase().includes(q) ||
-                (row.grant.metadata?.name ?? '').toLowerCase().includes(q)
+                row.grant.name.toLowerCase().includes(q)
               );
             }}
-            getRowId={(row) =>
-              `${row.grant.metadata?.namespace ?? ''}/${row.grant.metadata?.name ?? ''}/${row.resourceType}`
-            }
+            getRowId={(row) => `${row.grant.namespace}/${row.grant.name}/${row.resourceType}`}
             rowActions={rowActions}
             empty={t`No grants found.`}
           />
