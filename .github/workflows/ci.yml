@@ -289,7 +289,9 @@ jobs:
     name: PR Test Summary
     needs: [unit-tests, e2e-smoke]
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    # always() so the summary + artifact links post even when a test job fails
+    # (without it, a failed `needs` job would skip this comment job).
+    if: ${{ always() && github.event_name == 'pull_request' }}
     permissions:
       contents: read
       pull-requests: write

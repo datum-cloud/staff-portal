@@ -1,11 +1,12 @@
 import type { Route } from './+types/layout';
-import { SubLayout } from '@/components/sub-layout';
+import { EntityHeader, EntityTabNav, type EntityTab } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
+import { useApp } from '@/providers/app.provider';
 import { contactGroupDetailQuery } from '@/resources/request/server';
 import { contactGroupRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisNotificationV1Alpha1ContactGroup } from '@openapi/notification.miloapis.com/v1alpha1';
-import { InfoIcon, Users } from 'lucide-react';
+import { InfoIcon, Layers, Users } from 'lucide-react';
 import { Outlet, useLoaderData } from 'react-router';
 
 export const handle = {
@@ -28,28 +29,40 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 export default function Layout() {
   const { t } = useLingui();
   const data = useLoaderData<typeof loader>();
+  const { actions } = useApp();
 
-  const menuItems = [
+  const name = data?.metadata?.name ?? '';
+  const displayName = data?.spec?.displayName || name;
+
+  const tabs: EntityTab[] = [
     {
-      title: t`Details`,
-      href: contactGroupRoutes.detail(data?.metadata?.name ?? ''),
+      label: t`Details`,
+      href: contactGroupRoutes.detail(name),
       icon: InfoIcon,
+      end: true,
     },
     {
-      title: t`Members`,
-      href: contactGroupRoutes.member(data?.metadata?.name ?? ''),
+      label: t`Members`,
+      href: contactGroupRoutes.member(name),
       icon: Users,
     },
   ];
 
   return (
-    <SubLayout>
-      <SubLayout.SidebarLeft>
-        <SubLayout.SidebarMenu menuItems={menuItems} />
-      </SubLayout.SidebarLeft>
-      <SubLayout.Content>
-        <Outlet />
-      </SubLayout.Content>
-    </SubLayout>
+    <div className="flex flex-col">
+      <div className="px-4 pt-4">
+        <EntityHeader
+          icon={
+            <div className="bg-muted flex size-10 items-center justify-center rounded-md">
+              <Layers className="size-5" />
+            </div>
+          }
+          name={displayName}
+          actions={actions}
+        />
+      </div>
+      <EntityTabNav tabs={tabs} />
+      <Outlet />
+    </div>
   );
 }

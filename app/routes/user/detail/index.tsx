@@ -1,13 +1,13 @@
 import { getUserDetailMetadata, useUserDetailData } from '../shared';
 import type { Route } from './+types/index';
 import { ActionCard } from '@/components/action-card';
+import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
 import { ButtonCopy } from '@/components/button';
 import { DangerZoneCard } from '@/components/danger-zone-card';
 import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
 import { DialogForm } from '@/components/dialog';
-import { PageHeader } from '@/components/page-header';
 import { buildMaxmindRowGroups, extractMaxmindInsights } from '@/features/fraud';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
 import { UserIdentityCard } from '@/features/user/components/user-identity-card';
@@ -168,74 +168,70 @@ export default function Page() {
       />
 
       <div className="m-4 flex flex-col gap-1">
-        <PageHeader
-          title={`${data?.spec?.givenName ?? ''} ${data?.spec?.familyName ?? ''}`}
-          description={data?.spec?.email}
-          actions={
-            <>
-              {sentryIssuesUrl && (
-                <LinkButton
-                  href={sentryIssuesUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  theme="outline"
-                  size="small"
-                  icon={<ExternalLinkIcon size={16} />}
-                  iconPosition="right">
-                  <Trans>View in Sentry</Trans>
-                </LinkButton>
-              )}
-              {data?.status?.registrationApproval === 'Pending' ? (
-                <>
-                  <Button
-                    theme="outline"
-                    size="small"
-                    icon={<CheckIcon size={16} />}
-                    loading={isApproving}
-                    onClick={async () => {
-                      setIsApproving(true);
-                      try {
-                        await approveUser(data, async () => {
-                          revalidate();
-                        });
-                      } finally {
-                        setIsApproving(false);
-                      }
-                    }}>
-                    <Trans>Approve</Trans>
-                  </Button>
-                  <Button
-                    theme="outline"
-                    size="small"
-                    icon={<XIcon size={16} />}
-                    onClick={() => setRejectDialogOpen(true)}>
-                    <Trans>Reject</Trans>
-                  </Button>
-                </>
-              ) : (
+        <AppActionBar>
+          <>
+            {sentryIssuesUrl && (
+              <LinkButton
+                href={sentryIssuesUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                theme="outline"
+                size="small"
+                icon={<ExternalLinkIcon size={16} />}
+                iconPosition="right">
+                <Trans>View in Sentry</Trans>
+              </LinkButton>
+            )}
+            {data?.status?.registrationApproval === 'Pending' ? (
+              <>
                 <Button
                   theme="outline"
                   size="small"
-                  icon={<RotateCcw size={16} />}
-                  loading={isMovingToPending}
+                  icon={<CheckIcon size={16} />}
+                  loading={isApproving}
                   onClick={async () => {
-                    setIsMovingToPending(true);
+                    setIsApproving(true);
                     try {
-                      await pendingUser(data, async () => {
+                      await approveUser(data, async () => {
                         revalidate();
                       });
                     } finally {
-                      setIsMovingToPending(false);
+                      setIsApproving(false);
                     }
                   }}>
-                  <Trans>Move to Pending</Trans>
+                  <Trans>Approve</Trans>
                 </Button>
-              )}
-            </>
-          }
-        />
+                <Button
+                  theme="outline"
+                  size="small"
+                  icon={<XIcon size={16} />}
+                  onClick={() => setRejectDialogOpen(true)}>
+                  <Trans>Reject</Trans>
+                </Button>
+              </>
+            ) : (
+              <Button
+                theme="outline"
+                size="small"
+                icon={<RotateCcw size={16} />}
+                loading={isMovingToPending}
+                onClick={async () => {
+                  setIsMovingToPending(true);
+                  try {
+                    await pendingUser(data, async () => {
+                      revalidate();
+                    });
+                  } finally {
+                    setIsMovingToPending(false);
+                  }
+                }}>
+                <Trans>Move to Pending</Trans>
+              </Button>
+            )}
+          </>
+        </AppActionBar>
 
-        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 md:[&>:last-child:nth-child(odd)]:col-span-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:[&>:last-child:nth-child(odd)]:col-span-2">
           <Card className="shadow-none">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">

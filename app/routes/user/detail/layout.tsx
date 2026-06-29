@@ -1,8 +1,10 @@
 import type { Route } from './+types/layout';
-import { SubLayout } from '@/components/sub-layout';
+import { EntityHeader, EntityTabNav, type EntityTab } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
+import { useApp } from '@/providers/app.provider';
 import { userDetailQuery } from '@/resources/request/server';
 import { userRoutes } from '@/utils/config/routes.config';
+import { Avatar, AvatarFallback } from '@datum-cloud/datum-ui/avatar';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import { Building2, Contact, FileText, MailSearch, SquareActivity } from 'lucide-react';
@@ -26,47 +28,63 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 export default function Layout() {
   const { t } = useLingui();
   const data = useLoaderData<typeof loader>();
+  const { actions } = useApp();
 
-  const menuItems = [
+  const userId = data.metadata?.name ?? '';
+  const fullName = `${data.spec?.givenName ?? ''} ${data.spec?.familyName ?? ''}`.trim();
+  const initials =
+    fullName
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .substring(0, 2)
+      .toUpperCase() || '?';
+
+  const tabs: EntityTab[] = [
     {
-      title: t`Overview`,
-      href: userRoutes.detail(data.metadata?.name ?? ''),
+      label: t`Overview`,
+      href: userRoutes.detail(userId),
       icon: FileText,
+      end: true,
     },
     {
-      title: t`Organizations`,
-      href: userRoutes.organization(data.metadata?.name ?? ''),
+      label: t`Organizations`,
+      href: userRoutes.organization(userId),
       icon: Building2,
     },
+    { label: t`Contacts`, href: userRoutes.contacts(userId), icon: Contact },
     {
-      title: t`Contacts`,
-      href: userRoutes.contacts(data.metadata?.name ?? ''),
-      icon: Contact,
-    },
-    {
-      title: t`Email Activity`,
-      href: userRoutes.emailActivity(data.metadata?.name ?? ''),
+      label: t`Email Activity`,
+      href: userRoutes.emailActivity(userId),
       icon: MailSearch,
     },
     {
-      title: t`Activity`,
+      label: t`Activity`,
       icon: SquareActivity,
-      hasSubmenu: true,
-      submenuItems: [
-        { title: t`Feed`, href: userRoutes.activity.root(data.metadata?.name ?? '') },
-        { title: t`Audit Logs`, href: userRoutes.activity.auditLogs(data.metadata?.name ?? '') },
+      match: userRoutes.activity.root(userId),
+      children: [
+        { label: t`Feed`, href: userRoutes.activity.root(userId) },
+        { label: t`Audit Logs`, href: userRoutes.activity.auditLogs(userId) },
       ],
     },
   ];
 
   return (
-    <SubLayout>
-      <SubLayout.SidebarLeft>
-        <SubLayout.SidebarMenu menuItems={menuItems} />
-      </SubLayout.SidebarLeft>
-      <SubLayout.Content>
-        <Outlet />
-      </SubLayout.Content>
-    </SubLayout>
+    <div className="flex flex-col">
+      <div className="px-4 pt-4">
+        <EntityHeader
+          icon={
+            <Avatar className="size-10 rounded-md">
+              <AvatarFallback className="rounded-md">{initials}</AvatarFallback>
+            </Avatar>
+          }
+          name={fullName || userId}
+          subtitle={data.spec?.email}
+          actions={actions}
+        />
+      </div>
+      <EntityTabNav tabs={tabs} />
+      <Outlet />
+    </div>
   );
 }
