@@ -3,6 +3,7 @@ import { useActiveNav } from '../../lib/use-active-section';
 import { miloIconButtonClass } from './milo-icon-button';
 import { LogoIcon } from '@/components/logo/logo-icon';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Icon } from '@datum-cloud/datum-ui/icons';
 import {
   Sheet,
   SheetContent,
@@ -35,7 +36,7 @@ export function MiloMobileMenu({ className }: { className?: string }) {
           size="icon"
           aria-label={t`Open menu`}
           className={cn(miloIconButtonClass, className)}>
-          <Menu />
+          <Icon icon={Menu} />
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="w-72 p-0">
@@ -47,7 +48,6 @@ export function MiloMobileMenu({ className }: { className?: string }) {
         </SheetHeader>
         <nav className="flex flex-col gap-1 p-2">
           {NAV_SECTIONS.map((section) => {
-            const Icon = section.icon;
             const isActive = active?.id === section.id;
             return (
               <NavLink
@@ -60,7 +60,7 @@ export function MiloMobileMenu({ className }: { className?: string }) {
                     ? 'bg-card border-border text-primary'
                     : 'text-foreground hover:bg-card hover:border-border hover:text-primary'
                 )}>
-                <Icon className="size-4 shrink-0" />
+                <Icon icon={section.icon} className="shrink-0" />
                 {section.label}
               </NavLink>
             );

@@ -60,13 +60,13 @@ export default function Layout() {
     {
       label: t`Details`,
       href: contactRoutes.detail(namespace, contactName),
-      icon: <InfoIcon className="size-4" />,
+      icon: InfoIcon,
       end: true,
     },
     {
       label: t`Lists`,
       href: contactRoutes.group(namespace, contactName),
-      icon: <BookUser className="size-4" />,
+      icon: BookUser,
     },
   ];
 

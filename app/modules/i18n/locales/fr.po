@@ -132,7 +132,7 @@ msgstr ""
 msgid "Account Management"
 msgstr ""
 
-#: app/features/milo/components/navbar/milo-user-menu.tsx:48
+#: app/features/milo/components/navbar/milo-user-menu.tsx:49
 msgid "Account menu"
 msgstr ""
 
@@ -1829,7 +1829,7 @@ msgid "Log back into GitHub (with the new, desired email set as primary)"
 msgstr ""
 
 #: app/components/app-sidebar/nav-user.tsx:95
-#: app/features/milo/components/navbar/milo-user-menu.tsx:81
+#: app/features/milo/components/navbar/milo-user-menu.tsx:82
 msgid "Log out"
 msgstr ""
 
@@ -1898,7 +1898,7 @@ msgstr ""
 msgid "Members"
 msgstr ""
 
-#: app/features/milo/components/navbar/milo-mobile-menu.tsx:45
+#: app/features/milo/components/navbar/milo-mobile-menu.tsx:46
 msgid "Menu"
 msgstr ""
 
@@ -1932,7 +1932,7 @@ msgid "Move to Pending"
 msgstr ""
 
 #: app/components/app-sidebar/nav-user.tsx:85
-#: app/features/milo/components/navbar/milo-user-menu.tsx:71
+#: app/features/milo/components/navbar/milo-user-menu.tsx:72
 #: app/routes/profile/layout.tsx:8
 msgid "My Profile"
 msgstr ""
@@ -2251,7 +2251,7 @@ msgid "Notes"
 msgstr ""
 
 #: app/components/app-sidebar/nav-user.tsx:89
-#: app/features/milo/components/navbar/milo-user-menu.tsx:75
+#: app/features/milo/components/navbar/milo-user-menu.tsx:76
 msgid "Notifications"
 msgstr ""
 
@@ -2267,7 +2267,7 @@ msgstr ""
 msgid "Open in Cloud Portal"
 msgstr ""
 
-#: app/features/milo/components/navbar/milo-mobile-menu.tsx:36
+#: app/features/milo/components/navbar/milo-mobile-menu.tsx:37
 msgid "Open menu"
 msgstr ""
 
@@ -2827,7 +2827,7 @@ msgstr ""
 #: app/components/app-search/app-search-mobile.tsx:55
 #: app/components/app-search/app-search-mobile.tsx:64
 #: app/components/app-search/index.tsx:70
-#: app/features/milo/components/navbar/milo-search.tsx:48
+#: app/features/milo/components/navbar/milo-search.tsx:49
 msgid "Search"
 msgstr ""
 
@@ -2942,7 +2942,7 @@ msgid "Search sessions..."
 msgstr ""
 
 #: app/components/app-search/app-search-mobile.tsx:56
-#: app/features/milo/components/navbar/milo-search.tsx:66
+#: app/features/milo/components/navbar/milo-search.tsx:67
 msgid "Search users, organizations, and projects"
 msgstr ""
 

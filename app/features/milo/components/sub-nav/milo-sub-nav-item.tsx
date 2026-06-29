@@ -1,5 +1,6 @@
 import { type NavSubItem } from '../../lib/nav-config';
 import { Badge } from '@datum-cloud/datum-ui/badge';
+import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
@@ -16,8 +17,6 @@ interface MiloSubNavItemProps {
  * icon + label + count badge when expanded. NavLink keeps navigation client-side.
  */
 export function MiloSubNavItem({ item, active, collapsed }: MiloSubNavItemProps) {
-  const Icon = item.icon;
-
   const link = (
     <NavLink
       to={item.href}
@@ -29,7 +28,7 @@ export function MiloSubNavItem({ item, active, collapsed }: MiloSubNavItemProps)
         collapsed ? 'size-9 justify-center' : 'gap-2 px-2 py-1.5',
         active ? 'bg-card text-primary' : 'text-foreground hover:bg-card hover:text-primary'
       )}>
-      {Icon && <Icon className="size-4 shrink-0" />}
+      {item.icon && <Icon icon={item.icon} className="shrink-0" />}
       {!collapsed && (
         <>
           <Text size="sm" weight="medium" className="flex-1 truncate">

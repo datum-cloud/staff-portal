@@ -5,9 +5,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@datum-cloud/datum-ui/dropdown';
+import { Icon } from '@datum-cloud/datum-ui/icons';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import { ChevronDown } from 'lucide-react';
-import { type ReactNode } from 'react';
+import { ChevronDown, type LucideIcon } from 'lucide-react';
 import { NavLink, useLocation, useNavigate } from 'react-router';
 
 export interface EntityTabChild {
@@ -17,7 +17,7 @@ export interface EntityTabChild {
 
 export interface EntityTab {
   label: string;
-  icon?: ReactNode;
+  icon?: LucideIcon;
   /** Direct-link tab. Mutually exclusive with `children`. */
   href?: string;
   /** Exact match (for the index/Overview tab). */
@@ -62,7 +62,7 @@ export function EntityTabNav({ tabs }: EntityTabNavProps) {
             return (
               <DropdownMenu key={tab.label}>
                 <DropdownMenuTrigger className={cn(tabBase, active ? tabActive : tabIdle)}>
-                  {tab.icon}
+                  {tab.icon && <Icon icon={tab.icon} />}
                   {tab.label}
                   <ChevronDown className="size-3.5" />
                 </DropdownMenuTrigger>
@@ -83,7 +83,7 @@ export function EntityTabNav({ tabs }: EntityTabNavProps) {
               to={tab.href ?? '#'}
               end={tab.end}
               className={({ isActive }) => cn(tabBase, isActive ? tabActive : tabIdle)}>
-              {tab.icon}
+              {tab.icon && <Icon icon={tab.icon} />}
               {tab.label}
             </NavLink>
           );

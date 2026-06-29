@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@datum-cloud/datum-ui/dropdown';
+import { Icon } from '@datum-cloud/datum-ui/icons';
 import { useLingui } from '@lingui/react/macro';
 import { Bell, ChevronDown, LogOut, User } from 'lucide-react';
 import { useMemo } from 'react';
@@ -50,7 +51,7 @@ export function MiloUserMenu() {
         <Avatar className="size-7 rounded-full">
           <AvatarFallback className="rounded-full text-xs">{initials}</AvatarFallback>
         </Avatar>
-        <ChevronDown className="text-foreground size-4" />
+        <Icon icon={ChevronDown} className="text-foreground" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="min-w-56 rounded-md" side="bottom" align="end" sideOffset={8}>
         <DropdownMenuLabel className="p-0 font-normal">

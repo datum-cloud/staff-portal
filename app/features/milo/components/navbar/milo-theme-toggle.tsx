@@ -15,10 +15,10 @@ export function MiloThemeToggle() {
   const isDark = resolvedTheme === 'dark';
 
   return (
-    <ClientOnly fallback={<MiloIconButton label={t`Toggle theme`} icon={<Sun />} />}>
+    <ClientOnly fallback={<MiloIconButton label={t`Toggle theme`} icon={Sun} />}>
       <MiloIconButton
         label={isDark ? t`Switch to light theme` : t`Switch to dark theme`}
-        icon={isDark ? <Sun /> : <Moon />}
+        icon={isDark ? Sun : Moon}
         onClick={() => !isUpdating && setThemePreference(isDark ? 'light' : 'dark')}
       />
     </ClientOnly>

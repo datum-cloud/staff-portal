@@ -44,23 +44,23 @@ export default function Layout() {
     {
       label: t`Overview`,
       href: userRoutes.detail(userId),
-      icon: <FileText className="size-4" />,
+      icon: FileText,
       end: true,
     },
     {
       label: t`Organizations`,
       href: userRoutes.organization(userId),
-      icon: <Building2 className="size-4" />,
+      icon: Building2,
     },
-    { label: t`Contacts`, href: userRoutes.contacts(userId), icon: <Contact className="size-4" /> },
+    { label: t`Contacts`, href: userRoutes.contacts(userId), icon: Contact },
     {
       label: t`Email Activity`,
       href: userRoutes.emailActivity(userId),
-      icon: <MailSearch className="size-4" />,
+      icon: MailSearch,
     },
     {
       label: t`Activity`,
-      icon: <SquareActivity className="size-4" />,
+      icon: SquareActivity,
       match: userRoutes.activity.root(userId),
       children: [
         { label: t`Feed`, href: userRoutes.activity.root(userId) },

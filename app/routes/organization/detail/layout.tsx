@@ -70,18 +70,18 @@ export default function Layout() {
     {
       label: t`Overview`,
       href: orgRoutes.detail(orgName),
-      icon: <FileText className="size-4" />,
+      icon: FileText,
       end: true,
     },
-    { label: t`Projects`, href: orgRoutes.project(orgName), icon: <Folders className="size-4" /> },
-    { label: t`AI Edge`, href: orgRoutes.edge(orgName), icon: <Gauge className="size-4" /> },
-    { label: t`DNS`, href: orgRoutes.dns(orgName), icon: <Signpost className="size-4" /> },
-    { label: t`Domains`, href: orgRoutes.domain(orgName), icon: <Layers className="size-4" /> },
-    { label: t`Members`, href: orgRoutes.member(orgName), icon: <Users className="size-4" /> },
-    { label: t`Usage`, href: orgRoutes.usage(orgName), icon: <BarChart3 className="size-4" /> },
+    { label: t`Projects`, href: orgRoutes.project(orgName), icon: Folders },
+    { label: t`AI Edge`, href: orgRoutes.edge(orgName), icon: Gauge },
+    { label: t`DNS`, href: orgRoutes.dns(orgName), icon: Signpost },
+    { label: t`Domains`, href: orgRoutes.domain(orgName), icon: Layers },
+    { label: t`Members`, href: orgRoutes.member(orgName), icon: Users },
+    { label: t`Usage`, href: orgRoutes.usage(orgName), icon: BarChart3 },
     {
       label: t`Activity`,
-      icon: <SquareActivity className="size-4" />,
+      icon: SquareActivity,
       match: orgRoutes.activity.root(orgName),
       children: [
         { label: t`Feed`, href: orgRoutes.activity.root(orgName) },
@@ -91,7 +91,7 @@ export default function Layout() {
     },
     {
       label: t`Quotas`,
-      icon: <CircleGauge className="size-4" />,
+      icon: CircleGauge,
       match: quotasBase,
       children: [
         { label: t`Usage`, href: orgRoutes.quota.usage(orgName) },
@@ -101,7 +101,7 @@ export default function Layout() {
     {
       label: t`Feature Flags`,
       href: orgRoutes.featureFlags(orgName),
-      icon: <Flag className="size-4" />,
+      icon: Flag,
     },
   ];
 

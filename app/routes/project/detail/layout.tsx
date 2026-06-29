@@ -123,37 +123,37 @@ export default function Layout() {
     {
       label: t`Overview`,
       href: projectRoutes.detail(projectName),
-      icon: <FileText className="size-4" />,
+      icon: FileText,
       end: true,
     },
     {
       label: t`AI Edge`,
       href: projectRoutes.edge.list(projectName),
-      icon: <Gauge className="size-4" />,
+      icon: Gauge,
     },
     {
       label: t`DNS`,
       href: projectRoutes.dns.list(projectName),
-      icon: <Signpost className="size-4" />,
+      icon: Signpost,
     },
     {
       label: t`Domains`,
       href: projectRoutes.domain.list(projectName),
-      icon: <Layers className="size-4" />,
+      icon: Layers,
     },
     {
       label: t`Metrics`,
       href: projectRoutes.exportPolicy.list(projectName),
-      icon: <ChartSpline className="size-4" />,
+      icon: ChartSpline,
     },
     {
       label: t`Secrets`,
       href: projectRoutes.secret.list(projectName),
-      icon: <FileLock className="size-4" />,
+      icon: FileLock,
     },
     {
       label: t`Activity`,
-      icon: <SquareActivity className="size-4" />,
+      icon: SquareActivity,
       match: projectRoutes.activity.root(projectName),
       children: [
         { label: t`Feed`, href: projectRoutes.activity.root(projectName) },
@@ -163,7 +163,7 @@ export default function Layout() {
     },
     {
       label: t`Quotas`,
-      icon: <CircleGauge className="size-4" />,
+      icon: CircleGauge,
       match: quotasBase,
       children: [
         { label: t`Usage`, href: projectRoutes.quota.usage(projectName) },

@@ -38,13 +38,13 @@ export default function Layout() {
     {
       label: t`Details`,
       href: contactGroupRoutes.detail(name),
-      icon: <InfoIcon className="size-4" />,
+      icon: InfoIcon,
       end: true,
     },
     {
       label: t`Members`,
       href: contactGroupRoutes.member(name),
-      icon: <Users className="size-4" />,
+      icon: Users,
     },
   ];
 

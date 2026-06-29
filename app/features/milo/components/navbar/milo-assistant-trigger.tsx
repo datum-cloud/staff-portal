@@ -12,5 +12,5 @@ export function MiloAssistantTrigger() {
   const { t } = useLingui();
   const { isOpen, toggle } = useAssistant();
 
-  return <MiloIconButton label={t`Patch AI`} icon={<Brain />} active={isOpen} onClick={toggle} />;
+  return <MiloIconButton label={t`Patch AI`} icon={Brain} active={isOpen} onClick={toggle} />;
 }
