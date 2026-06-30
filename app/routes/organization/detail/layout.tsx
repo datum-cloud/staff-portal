@@ -1,8 +1,7 @@
 import type { Route } from './+types/layout';
-import { EntityHeader, EntityTabNav, type EntityTab } from '@/features/milo';
+import { DetailShell, type EntityTab } from '@/features/milo';
 import { useEnv } from '@/hooks';
 import { authenticator } from '@/modules/auth';
-import { useApp } from '@/providers/app.provider';
 import { orgDetailQuery } from '@/resources/request/server';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
@@ -23,7 +22,7 @@ import {
   Users,
 } from 'lucide-react';
 import { useMemo } from 'react';
-import { Outlet, useLoaderData, useLocation } from 'react-router';
+import { useLoaderData, useLocation } from 'react-router';
 
 export const handle = {
   breadcrumb: (data: ComMiloapisResourcemanagerV1Alpha1Organization) => {
@@ -45,7 +44,6 @@ export default function Layout() {
   const data = useLoaderData<typeof loader>();
   const env = useEnv();
   const { pathname } = useLocation();
-  const { actions } = useApp();
 
   const orgName = data?.metadata?.name ?? '';
   const displayName = data?.metadata?.annotations?.['kubernetes.io/display-name'] || orgName;
@@ -106,38 +104,30 @@ export default function Layout() {
   ];
 
   return (
-    <div className="flex flex-col">
-      <div className="px-4 pt-4">
-        <EntityHeader
-          icon={
-            <div className="bg-muted flex size-10 items-center justify-center rounded-md">
-              <Building2 className="size-5" />
-            </div>
-          }
-          name={displayName}
-          subtitle={orgName}
-          actions={
-            <>
-              {cloudOrgUrl && (
-                <LinkButton
-                  href={cloudOrgUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  type="secondary"
-                  theme="outline"
-                  size="small"
-                  icon={<ExternalLink size={12} />}
-                  iconPosition="right">
-                  <Trans>View in Cloud Portal</Trans>
-                </LinkButton>
-              )}
-              {actions}
-            </>
-          }
-        />
-      </div>
-      <EntityTabNav tabs={tabs} />
-      <Outlet />
-    </div>
+    <DetailShell
+      icon={
+        <div className="bg-muted flex size-10 items-center justify-center rounded-md">
+          <Building2 className="size-5" />
+        </div>
+      }
+      name={displayName}
+      subtitle={orgName}
+      actions={
+        cloudOrgUrl && (
+          <LinkButton
+            href={cloudOrgUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            type="secondary"
+            theme="outline"
+            size="small"
+            icon={<ExternalLink size={12} />}
+            iconPosition="right">
+            <Trans>View in Cloud Portal</Trans>
+          </LinkButton>
+        )
+      }
+      tabs={tabs}
+    />
   );
 }

@@ -1,8 +1,8 @@
 import type { Route } from './+types/index';
-import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
+import { ListPage, ListTable } from '@/features/milo';
 import {
   useDeleteFraudProviderMutation,
   useFraudProviderListQuery,
@@ -10,7 +10,6 @@ import {
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
@@ -115,15 +114,6 @@ export default function Page() {
 
   return (
     <>
-      <AppActionBar>
-        <Button
-          type="primary"
-          icon={<PlusCircleIcon size={16} />}
-          onClick={() => navigate(fraudRoutes.providers.create())}>
-          <Trans>Add Provider</Trans>
-        </Button>
-      </AppActionBar>
-
       <DialogConfirm
         open={!!selectedProvider}
         onOpenChange={() => setSelectedProvider(null)}
@@ -139,24 +129,33 @@ export default function Page() {
         }}
       />
 
-      <DataTable.Client
-        loading={tableQuery.isLoading}
-        data={tableQuery.data?.items ?? []}
-        columns={columns}
-        pageSize={20}
-        getRowId={(row) => row.metadata?.name ?? ''}
-        defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}>
-        <Card className="m-4 py-4 shadow-none">
-          <CardContent className="flex flex-col gap-2 px-4">
-            <DataTable.Content
-              headerClassName="bg-muted/50"
-              className="border-t border-b border-solid"
-              emptyMessage={t`No fraud providers configured.`}
-            />
-            <DataTable.Pagination className="pb-0" />
-          </CardContent>
-        </Card>
-      </DataTable.Client>
+      <ListPage>
+        <ListTable
+          loading={tableQuery.isLoading}
+          data={tableQuery.data?.items ?? []}
+          columns={columns}
+          pageSize={20}
+          getRowId={(row) => row.metadata?.name ?? ''}
+          defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+          searchPlaceholder={t`Search providers...`}
+          emptyMessage={t`No fraud providers configured.`}
+          actions={
+            <Button
+              type="primary"
+              icon={<PlusCircleIcon size={16} />}
+              onClick={() => navigate(fraudRoutes.providers.create())}>
+              <Trans>Add Provider</Trans>
+            </Button>
+          }
+          searchFn={(row, search) => {
+            const q = search.trim().toLowerCase();
+            if (!q) return true;
+            return [row.metadata?.name, row.spec?.type, row.spec?.config?.endpoint]
+              .map((s) => (s ?? '').toLowerCase())
+              .some((s) => s.includes(q));
+          }}
+        />
+      </ListPage>
     </>
   );
 }

@@ -1,10 +1,9 @@
 import { getProjectDetailMetadata, useProjectDetailData } from '../shared';
 import type { Route } from './+types/secret';
-import { DataTableToolbar } from '@/components/data-table-toolbar';
+import { ListTable } from '@/features/milo';
 import { useProjectSecretMetricsQuery } from '@/resources/request/client';
 import { Secret } from '@/resources/schemas';
 import { metaObject } from '@/utils/helpers';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
@@ -42,7 +41,7 @@ export default function Page() {
   const rows = tableQuery.data?.data?.data?.result ?? [];
 
   return (
-    <DataTable.Client
+    <ListTable
       loading={tableQuery.isLoading}
       data={rows}
       columns={columns}
@@ -50,6 +49,9 @@ export default function Page() {
       getRowId={(row) =>
         `${row.metric.resource_namespace}/${row.metric.resource_name}/${row.metric.resource_version}/${row.value[1]}`
       }
+      searchPlaceholder={t`Search secrets...`}
+      emptyMessage={t`No secrets found.`}
+      inset="tab"
       searchFn={(row, search) => {
         const q = search.trim().toLowerCase();
         if (!q) return true;
@@ -60,22 +62,7 @@ export default function Page() {
         ]
           .map((v) => v.toLowerCase())
           .some((v) => v.includes(q));
-      }}>
-      <Card className="m-4 py-4 shadow-none">
-        <CardContent className="flex flex-col gap-2 px-4">
-          <DataTableToolbar
-            search={
-              <DataTable.Search placeholder={t`Search secrets...`} className="w-full md:w-64" />
-            }
-          />
-          <DataTable.Content
-            headerClassName="bg-muted/50"
-            className="border-t border-b border-solid"
-            emptyMessage={t`No secrets found.`}
-          />
-          <DataTable.Pagination className="pb-0" />
-        </CardContent>
-      </Card>
-    </DataTable.Client>
+      }}
+    />
   );
 }

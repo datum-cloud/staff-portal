@@ -1,10 +1,9 @@
 import type { Route } from './+types/index';
-import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
-import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayId } from '@/components/display';
+import { ListPage, ListTable } from '@/features/milo';
 import { useContactAllListQuery, useSearchUsersQuery } from '@/resources/request/client';
 import {
   useCreateFraudEvaluationMutation,
@@ -15,7 +14,6 @@ import {
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
@@ -203,16 +201,6 @@ export default function Page() {
 
   return (
     <>
-      <AppActionBar>
-        <Button
-          type="primary"
-          icon={<PlusCircleIcon size={16} />}
-          disabled={policyLoaded && !policyName}
-          onClick={() => setShowNewEval(true)}>
-          <Trans>New Evaluation</Trans>
-        </Button>
-      </AppActionBar>
-
       <DialogForm
         open={showNewEval}
         onOpenChange={setShowNewEval}
@@ -263,99 +251,75 @@ export default function Page() {
         }}
       />
 
-      <DataTable.Client
-        loading={tableQuery.isLoading}
-        data={tableQuery.data?.items ?? []}
-        columns={columns}
-        pageSize={20}
-        filterFns={{
-          'status.enforcementAction': (cellValue, filterValue) =>
-            String(cellValue ?? '').toUpperCase() === String(filterValue ?? '').toUpperCase(),
-        }}
-        getRowId={(row) => row.metadata?.name ?? ''}
-        defaultSort={[{ id: 'lastEvaluationTime', desc: true }]}
-        searchFn={(row, search) => {
-          const q = search.trim().toLowerCase();
-          if (!q) return true;
-          const userId = (row.spec?.userRef?.name ?? '').toLowerCase();
-          const name = (row.metadata?.name ?? '').toLowerCase();
-          const decision = (row.status?.decision ?? '').toLowerCase();
-          const contact = userId
-            ? contactsByUserRef.current.get(row.spec?.userRef?.name ?? '')
-            : undefined;
-          const email = (contact?.email ?? '').toLowerCase();
-          const contactName = (contact?.name ?? '').toLowerCase();
-          return (
-            userId.includes(q) ||
-            name.includes(q) ||
-            decision.includes(q) ||
-            email.includes(q) ||
-            contactName.includes(q)
-          );
-        }}>
-        <Card className="m-4 py-4 shadow-none">
-          <CardContent className="flex flex-col gap-2 px-4">
-            <DataTableToolbar
-              search={
-                <DataTable.Search
-                  placeholder={t`Search by email, name, or ID...`}
-                  className="w-full md:w-64"
-                />
-              }
-              filters={
-                <>
-                  <DataTable.SelectFilter
-                    column="status.phase"
-                    label={t`Phase`}
-                    placeholder={t`Filter by phase`}
-                    options={[
-                      { value: 'Completed', label: t`Completed` },
-                      { value: 'Running', label: t`Running` },
-                      { value: 'Pending', label: t`Pending` },
-                      { value: 'Error', label: t`Error` },
-                    ]}
-                  />
-                  <DataTable.SelectFilter
-                    column="status.decision"
-                    label={t`Decision`}
-                    placeholder={t`Filter by decision`}
-                    options={[
-                      { value: 'ACCEPTED', label: t`Accepted` },
-                      { value: 'REVIEW', label: t`Review` },
-                      { value: 'DEACTIVATE', label: t`Deactivate` },
-                    ]}
-                  />
-                  <DataTable.SelectFilter
-                    column="status.enforcementAction"
-                    label={t`Enforcement`}
-                    placeholder={t`Filter by enforcement`}
-                    options={[
-                      { value: 'OBSERVED', label: t`Observed` },
-                      { value: 'ENFORCED', label: t`Enforced` },
-                    ]}
-                  />
-                </>
-              }
-            />
-
-            <DataTable.ActiveFilters
-              excludeFilters={['search']}
-              filterLabels={{
-                'status.phase': t`Phase`,
-                'status.decision': t`Decision`,
-                'status.enforcementAction': t`Enforcement`,
-              }}
-            />
-
-            <DataTable.Content
-              headerClassName="bg-muted/50"
-              className="border-t border-b border-solid"
-              emptyMessage={t`No fraud evaluations found.`}
-            />
-            <DataTable.Pagination className="pb-0" />
-          </CardContent>
-        </Card>
-      </DataTable.Client>
+      <ListPage>
+        <ListTable
+          loading={tableQuery.isLoading}
+          data={tableQuery.data?.items ?? []}
+          columns={columns}
+          pageSize={20}
+          actions={
+            <Button
+              type="primary"
+              icon={<PlusCircleIcon size={16} />}
+              disabled={policyLoaded && !policyName}
+              onClick={() => setShowNewEval(true)}>
+              <Trans>New Evaluation</Trans>
+            </Button>
+          }
+          getRowId={(row) => row.metadata?.name ?? ''}
+          defaultSort={[{ id: 'lastEvaluationTime', desc: true }]}
+          searchPlaceholder={t`Search by email, name, or ID...`}
+          emptyMessage={t`No fraud evaluations found.`}
+          filters={[
+            {
+              column: 'status.phase',
+              label: t`Phase`,
+              options: [
+                { value: 'Completed', label: t`Completed` },
+                { value: 'Running', label: t`Running` },
+                { value: 'Pending', label: t`Pending` },
+                { value: 'Error', label: t`Error` },
+              ],
+            },
+            {
+              column: 'status.decision',
+              label: t`Decision`,
+              options: [
+                { value: 'ACCEPTED', label: t`Accepted` },
+                { value: 'REVIEW', label: t`Review` },
+                { value: 'DEACTIVATE', label: t`Deactivate` },
+              ],
+            },
+            {
+              column: 'status.enforcementAction',
+              label: t`Enforcement`,
+              options: [
+                { value: 'OBSERVED', label: t`Observed` },
+                { value: 'ENFORCED', label: t`Enforced` },
+              ],
+            },
+          ]}
+          searchFn={(row, search) => {
+            const q = search.trim().toLowerCase();
+            if (!q) return true;
+            const userId = (row.spec?.userRef?.name ?? '').toLowerCase();
+            const name = (row.metadata?.name ?? '').toLowerCase();
+            const decision = (row.status?.decision ?? '').toLowerCase();
+            const contact = userId
+              ? contactsByUserRef.current.get(row.spec?.userRef?.name ?? '')
+              : undefined;
+            const email = (contact?.email ?? '').toLowerCase();
+            const contactName = (contact?.name ?? '').toLowerCase();
+            return (
+              userId.includes(q) ||
+              name.includes(q) ||
+              decision.includes(q) ||
+              email.includes(q) ||
+              contactName.includes(q)
+            );
+          }}
+        />
+      </ListPage>
     </>
   );
 }

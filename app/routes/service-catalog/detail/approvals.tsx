@@ -1,13 +1,12 @@
 import { getServiceDetailMetadata, useServiceDetailData } from '../shared';
 import type { Route } from './+types/approvals';
-import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { MessageCard } from '@/components/message-card';
+import { ListTable } from '@/features/milo';
 import { consumerMatchesService, useApprovalDialog } from '@/features/service-catalog';
 import { useServiceConsumersInProjectQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -145,38 +144,23 @@ export default function ApprovalsPage() {
   return (
     <>
       {dialog}
-      <DataTable.Client
+      <ListTable
         loading={isLoading}
         data={items}
         columns={columns}
         getRowId={(row) => row.metadata?.name ?? ''}
         defaultSort={[{ id: 'requestedAt', desc: false }]}
+        searchPlaceholder={t`Search by project or ID...`}
+        emptyMessage={t`No pending approval requests.`}
+        inset="tab"
         searchFn={(row, search) => {
           const q = search.trim().toLowerCase();
           if (!q) return true;
           return [row.spec?.consumerProjectRef?.name, row.metadata?.name]
             .map((s) => (s ?? '').toLowerCase())
             .some((s) => s.includes(q));
-        }}>
-        <Card className="m-4 py-4 shadow-none">
-          <CardContent className="flex flex-col gap-2 px-4">
-            <DataTableToolbar
-              search={
-                <DataTable.Search
-                  placeholder={t`Search by project or ID...`}
-                  className="w-full md:w-64"
-                />
-              }
-            />
-            <DataTable.Content
-              headerClassName="bg-muted/50"
-              className="border-t border-b border-solid"
-              emptyMessage={t`No pending approval requests.`}
-            />
-            <DataTable.Pagination className="pb-0" />
-          </CardContent>
-        </Card>
-      </DataTable.Client>
+        }}
+      />
     </>
   );
 }

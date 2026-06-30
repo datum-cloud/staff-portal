@@ -197,14 +197,14 @@ const BadgeState = ({ state, message, noColor, tooltip, icon, className, loading
     <Badge
       theme={noColor ? 'outline' : undefined}
       className={cn(
-        'inline-flex items-center gap-1 text-xs font-medium',
+        'inline-flex items-center gap-1 px-2 py-0 text-xs font-medium',
         noColor
           ? 'border-gray-200 text-gray-700 dark:border-gray-700 dark:text-gray-300'
           : config.className,
         className
       )}>
-      {IconComponent ? <IconComponent className="h-3 w-3" /> : null}
-      {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
+      {IconComponent ? <IconComponent className="h-2.5 w-2.5" /> : null}
+      {loading ? <Loader2 className="h-2.5 w-2.5 animate-spin" /> : null}
       {displayText}
     </Badge>
   );

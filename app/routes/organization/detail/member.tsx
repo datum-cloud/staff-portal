@@ -1,8 +1,8 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../shared';
 import type { Route } from './+types/member';
 import { BadgeState } from '@/components/badge';
-import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DisplayName } from '@/components/display';
+import { ListTable } from '@/features/milo';
 import {
   type GqlOrgMember,
   useOrgInvitationCreateMutation,
@@ -11,7 +11,6 @@ import {
 } from '@/resources/request/client';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { t as tCore } from '@lingui/core/macro';
@@ -141,19 +140,42 @@ export default function Page() {
   const members = tableQuery.data ?? [];
 
   return (
-    <DataTable.Client
+    <ListTable
       loading={tableQuery.isLoading}
       data={members}
       columns={columns}
       pageSize={20}
       getRowId={(row) => row.name}
       defaultSort={[]}
+      searchPlaceholder={tCore`Search members...`}
+      emptyMessage={tCore`No members found.`}
+      filterLayout="inline"
+      inset="tab"
+      filters={[
+        {
+          column: 'invitationState',
+          label: tCore`Invitation`,
+          options: [
+            { value: 'Pending', label: <BadgeState state="Pending" /> },
+            { value: 'Accepted', label: <BadgeState state="Accepted" /> },
+          ],
+        },
+        {
+          column: 'roles',
+          label: tCore`Role`,
+          options: [
+            { value: 'admin', label: tCore`Admin` },
+            { value: 'member', label: tCore`Member` },
+          ],
+        },
+      ]}
       filterFns={{
-        invitationState: (cellValue, filterValue) =>
-          String(cellValue ?? '').toLowerCase() === String(filterValue ?? '').toLowerCase(),
+        // `roles` is an array; a row matches if it holds any selected role.
         roles: (cellValue, filterValue) => {
           const roles = cellValue as string[] | undefined;
-          return roles?.some((r) => r === filterValue) ?? false;
+          const selected = filterValue as string[] | undefined;
+          if (!selected?.length) return true;
+          return roles?.some((r) => selected.includes(r)) ?? false;
         },
       }}
       searchFn={(row, search) => {
@@ -168,51 +190,7 @@ export default function Page() {
         ]
           .map((s) => (s ?? '').toLowerCase())
           .some((s) => s.includes(q));
-      }}>
-      <Card className="m-4 py-4 shadow-none">
-        <CardContent className="flex flex-col gap-2 px-4">
-          <DataTableToolbar
-            search={
-              <DataTable.Search placeholder={tCore`Search members...`} className="w-full md:w-64" />
-            }
-            filters={
-              <>
-                <DataTable.SelectFilter
-                  column="invitationState"
-                  label={tCore`Invitation`}
-                  placeholder={tCore`Filter by invitation`}
-                  options={[
-                    { value: 'Pending', label: tCore`Pending` },
-                    { value: 'Accepted', label: tCore`Accepted` },
-                  ]}
-                />
-                <DataTable.SelectFilter
-                  column="roles"
-                  label={tCore`Role`}
-                  placeholder={tCore`Filter by role`}
-                  options={[
-                    { value: 'admin', label: tCore`Admin` },
-                    { value: 'member', label: tCore`Member` },
-                  ]}
-                />
-              </>
-            }
-          />
-          <DataTable.ActiveFilters
-            excludeFilters={['search']}
-            filterLabels={{
-              invitationState: tCore`Invitation`,
-              roles: tCore`Role`,
-            }}
-          />
-          <DataTable.Content
-            headerClassName="bg-muted/50"
-            className="border-t border-b border-solid"
-            emptyMessage={tCore`No members found.`}
-          />
-          <DataTable.Pagination className="pb-0" />
-        </CardContent>
-      </Card>
-    </DataTable.Client>
+      }}
+    />
   );
 }

@@ -1,5 +1,6 @@
 import type { Route } from './+types/index';
 import { EmailList } from '@/features/email';
+import { ListPage } from '@/features/milo';
 import { emailListQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
@@ -13,5 +14,9 @@ export const handle = {
 };
 
 export default function Page() {
-  return <EmailList queryKeyPrefix="emails" fetchFn={() => emailListQuery('milo-system', {})} />;
+  return (
+    <ListPage>
+      <EmailList queryKeyPrefix="emails" fetchFn={() => emailListQuery('milo-system', {})} />
+    </ListPage>
+  );
 }

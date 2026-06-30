@@ -4,10 +4,9 @@ import {
   createStaticBreadcrumbItem,
   type BreadcrumbItem,
 } from '@/components/breadcrumb';
-import { EntityHeader, EntityTabNav, type EntityTab } from '@/features/milo';
+import { DetailShell, type EntityTab } from '@/features/milo';
 import { useEnv } from '@/hooks';
 import { authenticator } from '@/modules/auth';
-import { useApp } from '@/providers/app.provider';
 import { orgDetailQuery, projectDetailQuery } from '@/resources/request/server';
 import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
@@ -29,7 +28,7 @@ import {
   SquareActivity,
 } from 'lucide-react';
 import { useMemo } from 'react';
-import { Outlet, useLoaderData, useLocation, useParams } from 'react-router';
+import { useLoaderData, useLocation, useParams } from 'react-router';
 
 export const handle = {
   customBreadcrumb: {
@@ -85,7 +84,6 @@ export default function Layout() {
   const env = useEnv();
   const { pathname } = useLocation();
   const params = useParams();
-  const { actions } = useApp();
 
   const projectName = project?.metadata?.name ?? '';
   const displayName = project?.metadata?.annotations?.['kubernetes.io/description'] || projectName;
@@ -173,38 +171,30 @@ export default function Layout() {
   ];
 
   return (
-    <div className="flex flex-col">
-      <div className="px-4 pt-4">
-        <EntityHeader
-          icon={
-            <div className="bg-muted flex size-10 items-center justify-center rounded-md">
-              <Folders className="size-5" />
-            </div>
-          }
-          name={displayName}
-          subtitle={projectName}
-          actions={
-            <>
-              {cloudProjectUrl && (
-                <LinkButton
-                  href={cloudProjectUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  type="secondary"
-                  theme="outline"
-                  size="small"
-                  icon={<ExternalLink size={12} />}
-                  iconPosition="right">
-                  <Trans>View in Cloud Portal</Trans>
-                </LinkButton>
-              )}
-              {actions}
-            </>
-          }
-        />
-      </div>
-      <EntityTabNav tabs={tabs} />
-      <Outlet />
-    </div>
+    <DetailShell
+      icon={
+        <div className="bg-muted flex size-10 items-center justify-center rounded-md">
+          <Folders className="size-5" />
+        </div>
+      }
+      name={displayName}
+      subtitle={projectName}
+      actions={
+        cloudProjectUrl && (
+          <LinkButton
+            href={cloudProjectUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            type="secondary"
+            theme="outline"
+            size="small"
+            icon={<ExternalLink size={12} />}
+            iconPosition="right">
+            <Trans>View in Cloud Portal</Trans>
+          </LinkButton>
+        )
+      }
+      tabs={tabs}
+    />
   );
 }

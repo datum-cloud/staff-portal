@@ -1,12 +1,11 @@
 import { getProjectDetailMetadata, useProjectDetailData } from '../../shared';
 import type { Route } from './+types/index';
 import { BadgeCondition } from '@/components/badge';
-import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
+import { ListTable } from '@/features/milo';
 import { useProjectExportPolicyListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { ComMiloapisTelemetryV1Alpha1ExportPolicy } from '@openapi/telemetry.miloapis.com/v1alpha1';
@@ -56,36 +55,21 @@ export default function Page() {
   ];
 
   return (
-    <DataTable.Client
+    <ListTable
       loading={tableQuery.isLoading}
       data={tableQuery.data?.items ?? []}
       columns={columns}
       pageSize={20}
       getRowId={(row) => row.metadata?.name ?? ''}
       defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+      searchPlaceholder={t`Search export policies...`}
+      emptyMessage={t`No export policies found.`}
+      inset="tab"
       searchFn={(row, search) => {
         const q = search.trim().toLowerCase();
         if (!q) return true;
         return (row.metadata?.name ?? '').toLowerCase().includes(q);
-      }}>
-      <Card className="m-4 py-4 shadow-none">
-        <CardContent className="flex flex-col gap-2 px-4">
-          <DataTableToolbar
-            search={
-              <DataTable.Search
-                placeholder={t`Search export policies...`}
-                className="w-full md:w-64"
-              />
-            }
-          />
-          <DataTable.Content
-            headerClassName="bg-muted/50"
-            className="border-t border-b border-solid"
-            emptyMessage={t`No export policies found.`}
-          />
-          <DataTable.Pagination className="pb-0" />
-        </CardContent>
-      </Card>
-    </DataTable.Client>
+      }}
+    />
   );
 }

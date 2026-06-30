@@ -1,10 +1,10 @@
 import type { Route } from './+types/detail';
 import { BadgeState } from '@/components/badge';
 import { Chip } from '@/components/chip';
-import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { PageHeader } from '@/components/page-header';
 import { SimpleTable } from '@/components/simple-table';
 import { DnsRecordStatusProbe } from '@/features/dns';
+import { ListTable } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
 import { useProjectDnsRecordListQuery } from '@/resources/request/client';
 import { projectDnsDetailQuery, projectDomainDetailQuery } from '@/resources/request/server';
@@ -185,49 +185,28 @@ export default function Page() {
     <div className="m-4 flex flex-col gap-1">
       <PageHeader title={dns?.spec?.domainName} />
 
-      <Card className="mt-4 shadow-none">
-        <CardHeader>
-          <CardTitle>
-            <Trans>DNS Records</Trans>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <DataTable.Client
-            loading={tableQuery.isLoading}
-            data={tableQuery.data ?? []}
-            columns={dnsRecordColumns}
-            pageSize={25}
-            getRowId={(row) =>
-              row.recordSetId ??
-              `${row.recordSetName ?? ''}-${row.type}-${row.name}-${row.value}-${row.dnsZoneId}`
-            }
-            defaultSort={[{ id: 'name', desc: false }]}
-            searchFn={(row, search) => {
-              const q = search.trim().toLowerCase();
-              if (!q) return true;
-              return [row.type, row.name, row.value]
-                .map((v) => (v ?? '').toLowerCase())
-                .some((v) => v.includes(q));
-            }}>
-            <div className="flex flex-col gap-2 pt-2">
-              <DataTableToolbar
-                search={
-                  <DataTable.Search
-                    placeholder={t`Search records...`}
-                    className="w-full max-w-md"
-                  />
-                }
-              />
-              <DataTable.Content
-                headerClassName="bg-muted/50"
-                className="border-t border-b border-solid"
-                emptyMessage={t`No DNS records found.`}
-              />
-              <DataTable.Pagination className="pb-0" />
-            </div>
-          </DataTable.Client>
-        </CardContent>
-      </Card>
+      <ListTable
+        title={<Trans>DNS Records</Trans>}
+        loading={tableQuery.isLoading}
+        data={tableQuery.data ?? []}
+        columns={dnsRecordColumns}
+        pageSize={25}
+        getRowId={(row) =>
+          row.recordSetId ??
+          `${row.recordSetName ?? ''}-${row.type}-${row.name}-${row.value}-${row.dnsZoneId}`
+        }
+        defaultSort={[{ id: 'name', desc: false }]}
+        searchPlaceholder={t`Search records...`}
+        emptyMessage={t`No DNS records found.`}
+        inset="tab"
+        searchFn={(row, search) => {
+          const q = search.trim().toLowerCase();
+          if (!q) return true;
+          return [row.type, row.name, row.value]
+            .map((v) => (v ?? '').toLowerCase())
+            .some((v) => v.includes(q));
+        }}
+      />
 
       <Card className="mt-4 shadow-none">
         <CardHeader>

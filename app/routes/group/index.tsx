@@ -1,10 +1,9 @@
 import type { Route } from './+types/index';
-import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
+import { ListPage, ListTable } from '@/features/milo';
 import { useGroupListQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { ComMiloapisIamV1Alpha1Group } from '@openapi/iam.miloapis.com/v1alpha1';
@@ -38,38 +37,26 @@ export default function Page() {
   ];
 
   return (
-    <DataTable.Client
-      loading={tableQuery.isLoading}
-      data={tableQuery.data?.items ?? []}
-      columns={columns}
-      pageSize={20}
-      getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
-      defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
-      searchFn={(row, search) => {
-        const q = search.trim().toLowerCase();
-        if (!q) return true;
-        const name = (row.metadata?.name ?? '').toLowerCase();
-        const displayName = (
-          row.metadata?.annotations?.['kubernetes.io/display-name'] ?? ''
-        ).toLowerCase();
-        return name.includes(q) || displayName.includes(q);
-      }}>
-      <Card className="m-4 py-4 shadow-none">
-        <CardContent className="flex flex-col gap-2 px-4">
-          <DataTableToolbar
-            search={
-              <DataTable.Search placeholder={t`Search groups...`} className="w-full md:w-64" />
-            }
-          />
-
-          <DataTable.Content
-            headerClassName="bg-muted/50"
-            className="border-t border-b border-solid"
-            emptyMessage={t`No groups found.`}
-          />
-          <DataTable.Pagination className="pb-0" />
-        </CardContent>
-      </Card>
-    </DataTable.Client>
+    <ListPage>
+      <ListTable
+        loading={tableQuery.isLoading}
+        data={tableQuery.data?.items ?? []}
+        columns={columns}
+        pageSize={20}
+        getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
+        defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+        searchPlaceholder={t`Search groups...`}
+        emptyMessage={t`No groups found.`}
+        searchFn={(row, search) => {
+          const q = search.trim().toLowerCase();
+          if (!q) return true;
+          const name = (row.metadata?.name ?? '').toLowerCase();
+          const displayName = (
+            row.metadata?.annotations?.['kubernetes.io/display-name'] ?? ''
+          ).toLowerCase();
+          return name.includes(q) || displayName.includes(q);
+        }}
+      />
+    </ListPage>
   );
 }

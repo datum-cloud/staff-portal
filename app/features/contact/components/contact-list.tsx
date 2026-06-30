@@ -1,11 +1,10 @@
 import { BadgeCondition } from '@/components/badge';
-import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
+import { ListTable } from '@/features/milo';
 import { contactDeleteMutation } from '@/resources/request/client';
 import { contactRoutes } from '@/utils/config/routes.config';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { t } from '@lingui/core/macro';
@@ -16,7 +15,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { EditIcon, Trash2Icon } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 
 const columnHelper = createColumnHelper<ComMiloapisNotificationV1Alpha1Contact>();
@@ -25,6 +24,8 @@ export interface ContactListProps {
   queryKeyPrefix: string | string[];
   fetchFn: () => Promise<ComMiloapisNotificationV1Alpha1ContactList>;
   searchPlaceholder?: string;
+  /** Primary CTA shown in the table's action bar (e.g. "Add"). */
+  actions?: ReactNode;
 }
 
 function listQueryKey(prefix: string | string[]) {
@@ -35,6 +36,7 @@ export function ContactList({
   queryKeyPrefix,
   fetchFn,
   searchPlaceholder = undefined,
+  actions: headerActions,
 }: ContactListProps) {
   const navigate = useNavigate();
   const [selectedContact, setSelectedContact] =
@@ -125,13 +127,16 @@ export function ContactList({
         }}
       />
 
-      <DataTable.Client
+      <ListTable
         loading={tableQuery.isLoading}
         data={tableQuery.data?.items ?? []}
         columns={columns}
         pageSize={20}
         getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
         defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+        actions={headerActions}
+        searchPlaceholder={searchPlaceholder ?? t`Search contacts...`}
+        emptyMessage={t`No contacts found.`}
         searchFn={(row, search) => {
           const q = search.trim().toLowerCase();
           if (!q) return true;
@@ -149,27 +154,8 @@ export function ContactList({
             email.includes(q) ||
             full.includes(q)
           );
-        }}>
-        <Card className="m-4 py-4 shadow-none">
-          <CardContent className="flex flex-col gap-2 px-4">
-            <DataTableToolbar
-              search={
-                <DataTable.Search
-                  placeholder={searchPlaceholder ?? t`Search contacts...`}
-                  className="w-full md:w-64"
-                />
-              }
-            />
-
-            <DataTable.Content
-              headerClassName="bg-muted/50"
-              className="border-t border-b border-solid"
-              emptyMessage={t`No contacts found.`}
-            />
-            <DataTable.Pagination className="pb-0" />
-          </CardContent>
-        </Card>
-      </DataTable.Client>
+        }}
+      />
     </>
   );
 }

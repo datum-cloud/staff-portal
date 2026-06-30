@@ -16,6 +16,7 @@ import {
 import {
   Contact,
   CreditCard,
+  FileText,
   Folders,
   Gauge,
   Layers,
@@ -25,6 +26,7 @@ import {
   Signpost,
   SquareActivity,
   Store,
+  Truck,
   Users,
 } from 'lucide-react';
 
@@ -138,5 +140,23 @@ export const NAV_SECTIONS: NavSection[] = [
   { id: 'groups', label: 'Groups', icon: ShieldUser, href: groupRoutes.list() },
   { id: 'activity', label: 'Activity', icon: SquareActivity, href: activityRoutes.root() },
   { id: 'catalog', label: 'Service Catalog', icon: Store, href: serviceCatalogRoutes.list() },
-  { id: 'fraud', label: 'Fraud & Abuse', icon: ShieldAlert, href: fraudRoutes.root() },
+  {
+    id: 'fraud',
+    label: 'Fraud & Abuse',
+    icon: ShieldAlert,
+    href: fraudRoutes.root(),
+    match: '/fraud',
+    subNav: {
+      defaultCollapsed: true,
+      groups: [
+        {
+          items: [
+            { label: 'Evaluations', href: fraudRoutes.evaluations.list(), icon: ShieldAlert },
+            { label: 'Providers', href: fraudRoutes.providers.list(), icon: Truck },
+            { label: 'Policy', href: fraudRoutes.policy(), icon: FileText },
+          ],
+        },
+      ],
+    },
+  },
 ];

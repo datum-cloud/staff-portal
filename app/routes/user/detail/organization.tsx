@@ -1,13 +1,12 @@
 import type { Route } from './+types/organization';
 import { BadgeState } from '@/components/badge';
-import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
+import { ListTable } from '@/features/milo';
 import { useUserOrganizationListQuery } from '@/resources/request/client';
 import { getUserDetailMetadata, useUserDetailData } from '@/routes/user/shared';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
@@ -60,13 +59,16 @@ export default function Page() {
   const rows = tableQuery.data?.items ?? [];
 
   return (
-    <DataTable.Client
+    <ListTable
       loading={tableQuery.isLoading}
       data={rows}
       columns={columns}
       pageSize={20}
       getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
       defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+      searchPlaceholder={t`Search organizations...`}
+      emptyMessage={t`No organizations found.`}
+      inset="tab"
       searchFn={(row, search) => {
         const q = search.trim().toLowerCase();
         if (!q) return true;
@@ -74,25 +76,7 @@ export default function Page() {
         const display = (row.status?.organization?.displayName ?? '').toLowerCase();
         const type = (row.status?.organization?.type ?? '').toLowerCase();
         return name.includes(q) || display.includes(q) || type.includes(q);
-      }}>
-      <Card className="m-4 py-4 shadow-none">
-        <CardContent className="flex flex-col gap-2 px-4">
-          <DataTableToolbar
-            search={
-              <DataTable.Search
-                placeholder={t`Search organizations...`}
-                className="w-full md:w-64"
-              />
-            }
-          />
-          <DataTable.Content
-            headerClassName="bg-muted/50"
-            className="border-t border-b border-solid"
-            emptyMessage={t`No organizations found.`}
-          />
-          <DataTable.Pagination className="pb-0" />
-        </CardContent>
-      </Card>
-    </DataTable.Client>
+      }}
+    />
   );
 }

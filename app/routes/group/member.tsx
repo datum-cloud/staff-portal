@@ -1,10 +1,10 @@
 import type { Route } from './+types/member';
 import { getGroupDetailMetadata, useGroupDetailData } from './shared';
 import AppActionBar from '@/components/app-actiobar';
-import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
+import { ListTable } from '@/features/milo';
 import { useUserSearch } from '@/hooks';
 import { authenticator } from '@/modules/auth';
 import {
@@ -17,7 +17,6 @@ import { groupDetailQuery } from '@/resources/request/server';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
@@ -197,13 +196,16 @@ export default function Page() {
         </Form.Field>
       </DialogForm>
 
-      <DataTable.Client
+      <ListTable
         loading={tableQuery.isLoading}
         data={tableQuery.data?.items ?? []}
         columns={columns}
         pageSize={20}
         getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
         defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+        searchPlaceholder={t`Search members...`}
+        emptyMessage={t`No members in this group.`}
+        inset="tab"
         searchFn={(row, search) => {
           const q = search.trim().toLowerCase();
           if (!q) return true;
@@ -214,24 +216,8 @@ export default function Page() {
           return (
             displayName.includes(q) || email.includes(q) || userRefName.toLowerCase().includes(q)
           );
-        }}>
-        <Card className="m-4 py-4 shadow-none">
-          <CardContent className="flex flex-col gap-2 px-4">
-            <DataTableToolbar
-              search={
-                <DataTable.Search placeholder={t`Search members...`} className="w-full md:w-64" />
-              }
-            />
-
-            <DataTable.Content
-              headerClassName="bg-muted/50"
-              className="border-t border-b border-solid"
-              emptyMessage={t`No members in this group.`}
-            />
-            <DataTable.Pagination className="pb-0" />
-          </CardContent>
-        </Card>
-      </DataTable.Client>
+        }}
+      />
     </>
   );
 }

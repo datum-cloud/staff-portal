@@ -1,6 +1,6 @@
 import type { Route } from './+types/index';
-import AppActionBar from '@/components/app-actiobar';
 import { ContactList } from '@/features/contact';
+import { ListPage } from '@/features/milo';
 import { contactListQuery } from '@/resources/request/client';
 import { contactRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
@@ -18,16 +18,19 @@ export default function Page() {
   const navigate = useNavigate();
 
   return (
-    <>
-      <AppActionBar>
-        <Button
-          type="primary"
-          icon={<PlusCircleIcon size={16} />}
-          onClick={() => navigate(contactRoutes.create())}>
-          <Trans>Add</Trans>
-        </Button>
-      </AppActionBar>
-      <ContactList queryKeyPrefix="contacts" fetchFn={() => contactListQuery()} />
-    </>
+    <ListPage>
+      <ContactList
+        queryKeyPrefix="contacts"
+        fetchFn={() => contactListQuery()}
+        actions={
+          <Button
+            type="primary"
+            icon={<PlusCircleIcon size={16} />}
+            onClick={() => navigate(contactRoutes.create())}>
+            <Trans>Add</Trans>
+          </Button>
+        }
+      />
+    </ListPage>
   );
 }

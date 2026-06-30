@@ -1,5 +1,6 @@
 import type { Route } from './+types/index';
 import { DomainList, type DomainRow } from '@/features/domain';
+import { ListPage } from '@/features/milo';
 import { searchDomainsListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
@@ -45,22 +46,24 @@ export default function Page() {
   );
 
   return (
-    <DomainList
-      data={rows}
-      loading={isLoading}
-      showProjectColumn
-      hasMore={data?.hasMore ?? false}
-      controlledSearch={{ value: search, onChange: setSearch }}
-      linkBuilder={(row) => {
-        // Defensive: if a result somehow lacks tenant info, render the row
-        // as plain text rather than linking nowhere.
-        if (!row.projectName) return null;
-        return projectRoutes.domain.detail(
-          row.projectName,
-          row.domain.metadata?.namespace ?? '',
-          row.domain.metadata?.name ?? ''
-        );
-      }}
-    />
+    <ListPage>
+      <DomainList
+        data={rows}
+        loading={isLoading}
+        showProjectColumn
+        hasMore={data?.hasMore ?? false}
+        controlledSearch={{ value: search, onChange: setSearch }}
+        linkBuilder={(row) => {
+          // Defensive: if a result somehow lacks tenant info, render the row
+          // as plain text rather than linking nowhere.
+          if (!row.projectName) return null;
+          return projectRoutes.domain.detail(
+            row.projectName,
+            row.domain.metadata?.namespace ?? '',
+            row.domain.metadata?.name ?? ''
+          );
+        }}
+      />
+    </ListPage>
   );
 }

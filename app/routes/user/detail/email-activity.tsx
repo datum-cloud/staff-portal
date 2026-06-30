@@ -21,6 +21,7 @@ export default function Page() {
     <EmailList
       queryKeyPrefix={['users', data.metadata?.name ?? '', 'email-activity']}
       fetchFn={() => userEmailListQuery(data.metadata?.name ?? '', data.spec?.email ?? '')}
+      variant="tab"
     />
   );
 }

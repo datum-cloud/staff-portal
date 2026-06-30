@@ -1,10 +1,9 @@
 import type { Route } from './+types/index';
-import AppActionBar from '@/components/app-actiobar';
 import { BadgeCondition, BadgeState } from '@/components/badge';
-import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
+import { ListPage, ListTable } from '@/features/milo';
 import {
   contactGroupDeleteMutation,
   contactGroupQueryKeys,
@@ -14,7 +13,6 @@ import {
 import { contactGroupRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { useTaskQueue } from '@datum-cloud/datum-ui/task-queue';
 import { toast } from '@datum-cloud/datum-ui/toast';
@@ -100,19 +98,8 @@ export default function Page() {
     }),
   ];
 
-  const rows = tableQuery.data?.items ?? [];
-
   return (
     <>
-      <AppActionBar>
-        <Button
-          type="primary"
-          icon={<PlusCircleIcon size={16} />}
-          onClick={() => navigate(contactGroupRoutes.create())}>
-          <Trans>Add</Trans>
-        </Button>
-      </AppActionBar>
-
       <DialogConfirm
         open={!!selectedContactGroup}
         onOpenChange={() => setSelectedContactGroup(null)}
@@ -193,56 +180,48 @@ export default function Page() {
         }}
       />
 
-      <DataTable.Client
-        loading={tableQuery.isLoading}
-        data={rows}
-        columns={columns}
-        pageSize={20}
-        getRowId={(row) => row.metadata?.name ?? ''}
-        enableRowSelection
-        defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
-        searchFn={(row, search) => {
-          const q = search.trim().toLowerCase();
-          if (!q) return true;
-          return [row.metadata?.name, row.spec?.displayName, row.spec?.visibility]
-            .map((s) => (s ?? '').toLowerCase())
-            .some((s) => s.includes(q));
-        }}>
-        <Card className="m-4 py-4 shadow-none">
-          <CardContent className="flex flex-col gap-2 px-4">
-            <DataTableToolbar
-              search={
-                <DataTable.Search placeholder={t`Search lists...`} className="w-full md:w-64" />
-              }
-              extras={
-                <DataTable.BulkActions>
-                  {(selectedRows) =>
-                    selectedRows.length > 0 ? (
-                      <Button
-                        type="danger"
-                        theme="outline"
-                        icon={<Trash2Icon size={16} />}
-                        onClick={() =>
-                          setBulkDeleteRows(
-                            selectedRows as ComMiloapisNotificationV1Alpha1ContactGroup[]
-                          )
-                        }>
-                        <Trans>Delete {selectedRows.length} selected</Trans>
-                      </Button>
-                    ) : null
-                  }
-                </DataTable.BulkActions>
-              }
-            />
-            <DataTable.Content
-              headerClassName="bg-muted/50"
-              className="border-t border-b border-solid"
-              emptyMessage={t`No lists found.`}
-            />
-            <DataTable.Pagination className="pb-0" />
-          </CardContent>
-        </Card>
-      </DataTable.Client>
+      <ListPage>
+        <ListTable
+          loading={tableQuery.isLoading}
+          data={tableQuery.data?.items ?? []}
+          columns={columns}
+          pageSize={20}
+          enableRowSelection
+          actions={
+            <Button
+              type="primary"
+              icon={<PlusCircleIcon size={16} />}
+              onClick={() => navigate(contactGroupRoutes.create())}>
+              <Trans>Add</Trans>
+            </Button>
+          }
+          bulkActions={(selectedRows) =>
+            selectedRows.length > 0 ? (
+              <Button
+                type="danger"
+                theme="outline"
+                size="small"
+                icon={<Trash2Icon size={16} />}
+                onClick={() =>
+                  setBulkDeleteRows(selectedRows as ComMiloapisNotificationV1Alpha1ContactGroup[])
+                }>
+                <Trans>Delete {selectedRows.length} selected</Trans>
+              </Button>
+            ) : null
+          }
+          getRowId={(row) => row.metadata?.name ?? ''}
+          defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+          searchPlaceholder={t`Search lists...`}
+          emptyMessage={t`No lists found.`}
+          searchFn={(row, search) => {
+            const q = search.trim().toLowerCase();
+            if (!q) return true;
+            return [row.metadata?.name, row.spec?.displayName, row.spec?.visibility]
+              .map((s) => (s ?? '').toLowerCase())
+              .some((s) => s.includes(q));
+          }}
+        />
+      </ListPage>
     </>
   );
 }

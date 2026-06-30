@@ -1,10 +1,9 @@
 import type { Route } from './+types/index';
-import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
-import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
 import { DisplayId, DisplayName } from '@/components/display';
+import { ListPage, ListTable } from '@/features/milo';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
 import {
   useInvalidateUserList,
@@ -14,7 +13,6 @@ import {
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
@@ -123,7 +121,7 @@ export default function Page() {
     }),
     columnHelper.display({
       id: 'actions',
-      header: () => <div className="text-right" />,
+      header: () => null,
       cell: ({ row }) => (
         <div className="flex w-full justify-end">
           <DataTable.RowActions
@@ -159,12 +157,6 @@ export default function Page() {
 
   return (
     <>
-      <AppActionBar>
-        <Button icon={<UserPlus size={16} />} onClick={() => setInviteDialogOpen(true)}>
-          <Trans>Invite User</Trans>
-        </Button>
-      </AppActionBar>
-
       <DialogForm
         open={inviteDialogOpen}
         onOpenChange={setInviteDialogOpen}
@@ -235,100 +227,58 @@ export default function Page() {
         }}
       />
 
-      <DataTable.Client
-        loading={tableQuery.isLoading}
-        data={tableQuery.data?.items ?? []}
-        columns={columns}
-        pageSize={20}
-        getRowId={(row) => row.metadata?.name ?? ''}
-        defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
-        filterFns={{
-          'status.state': (cellValue, filterValue) =>
-            String(cellValue ?? '').toLowerCase() === String(filterValue ?? '').toLowerCase(),
-          'status.registrationApproval': (cellValue, filterValue) =>
-            String(cellValue ?? '').toLowerCase() === String(filterValue ?? '').toLowerCase(),
-        }}
-        searchFn={(row, search) => {
-          const q = search.trim().toLowerCase();
-          if (!q) return true;
+      <ListPage>
+        <ListTable
+          loading={tableQuery.isLoading}
+          data={tableQuery.data?.items ?? []}
+          columns={columns}
+          pageSize={20}
+          actions={
+            <Button icon={<UserPlus size={16} />} onClick={() => setInviteDialogOpen(true)}>
+              <Trans>Invite User</Trans>
+            </Button>
+          }
+          getRowId={(row) => row.metadata?.name ?? ''}
+          defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+          searchPlaceholder={t`Search users...`}
+          emptyMessage={t`No users found.`}
+          filters={[
+            {
+              column: 'status.registrationApproval',
+              label: t`Registration`,
+              options: [
+                { value: 'Pending', label: <BadgeState state="Pending" /> },
+                { value: 'Approved', label: <BadgeState state="Approved" /> },
+                { value: 'Rejected', label: <BadgeState state="Rejected" /> },
+              ],
+            },
+            {
+              column: 'status.state',
+              label: t`Status`,
+              options: [
+                { value: 'Active', label: <BadgeState state="Active" /> },
+                { value: 'Inactive', label: <BadgeState state="Inactive" /> },
+              ],
+            },
+          ]}
+          searchFn={(row, search) => {
+            const q = search.trim().toLowerCase();
+            if (!q) return true;
 
-          const fields = [
-            row.spec?.email,
-            row.spec?.givenName,
-            row.spec?.familyName,
-            row.metadata?.name,
-            `${row.spec?.givenName ?? ''} ${row.spec?.familyName ?? ''}`.trim(),
-          ];
+            const fields = [
+              row.spec?.email,
+              row.spec?.givenName,
+              row.spec?.familyName,
+              row.metadata?.name,
+              `${row.spec?.givenName ?? ''} ${row.spec?.familyName ?? ''}`.trim(),
+            ];
 
-          return fields
-            .map((value) => (value ?? '').toLowerCase())
-            .some((value) => value.includes(q));
-        }}>
-        <Card className="m-4 py-4 shadow-none">
-          <CardContent className="flex flex-col gap-2 px-4">
-            <DataTableToolbar
-              search={
-                <DataTable.Search placeholder={t`Search users...`} className="w-full md:w-64" />
-              }
-              filters={
-                <>
-                  <DataTable.SelectFilter
-                    column="status.state"
-                    label={t`Status`}
-                    placeholder={t`Filter by status`}
-                    options={[
-                      { value: 'Active', label: t`Active` },
-                      { value: 'Inactive', label: t`Inactive` },
-                    ]}
-                  />
-                  <DataTable.SelectFilter
-                    column="status.registrationApproval"
-                    label={t`Registration Approval`}
-                    placeholder={t`Filter by approval`}
-                    options={[
-                      { value: 'Approved', label: t`Approved` },
-                      { value: 'Rejected', label: t`Rejected` },
-                      { value: 'Pending', label: t`Pending` },
-                    ]}
-                  />
-                </>
-              }
-            />
-
-            <DataTable.ActiveFilters
-              excludeFilters={['search']}
-              filterLabels={{
-                'status.state': t`Status`,
-                'status.registrationApproval': t`Registration Approval`,
-              }}
-              formatFilterValue={{
-                'status.state': (value: string) => {
-                  const labels: Record<string, string> = {
-                    Active: t`Active`,
-                    Inactive: t`Inactive`,
-                  };
-                  return labels[value] ?? String(value);
-                },
-                'status.registrationApproval': (value: string) => {
-                  const labels: Record<string, string> = {
-                    Approved: t`Approved`,
-                    Rejected: t`Rejected`,
-                    Pending: t`Pending`,
-                  };
-                  return labels[value] ?? String(value);
-                },
-              }}
-            />
-
-            <DataTable.Content
-              headerClassName="bg-muted/50"
-              className="border-t border-b border-solid"
-              emptyMessage={t`No users found.`}
-            />
-            <DataTable.Pagination className="pb-0" />
-          </CardContent>
-        </Card>
-      </DataTable.Client>
+            return fields
+              .map((value) => (value ?? '').toLowerCase())
+              .some((value) => value.includes(q));
+          }}
+        />
+      </ListPage>
     </>
   );
 }

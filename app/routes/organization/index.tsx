@@ -1,14 +1,14 @@
 import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
-import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
+import { ListPage, ListTable } from '@/features/milo';
 import { type GqlOrganization, useOrgListQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { createColumnHelper } from '@tanstack/react-table';
+import { Building2, User } from 'lucide-react';
 
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Organizations`);
@@ -43,70 +43,36 @@ export default function Page() {
   ];
 
   return (
-    <DataTable.Client
-      loading={tableQuery.isLoading}
-      data={tableQuery.data?.items ?? []}
-      columns={columns}
-      pageSize={20}
-      getRowId={(row) => row.name}
-      defaultSort={[{ id: 'createdAt', desc: true }]}
-      filterFns={{
-        type: (cellValue, filterValue) =>
-          String(cellValue ?? '').toLowerCase() === String(filterValue ?? '').toLowerCase(),
-      }}
-      searchFn={(row, search) => {
-        const q = search.trim().toLowerCase();
-        if (!q) return true;
-        return (
-          row.name.toLowerCase().includes(q) ||
-          row.displayName.toLowerCase().includes(q) ||
-          row.type.toLowerCase().includes(q)
-        );
-      }}>
-      <Card className="m-4 py-4 shadow-none">
-        <CardContent className="flex flex-col gap-2 px-4">
-          <DataTableToolbar
-            search={
-              <DataTable.Search
-                placeholder={t`Search organizations...`}
-                className="w-full md:w-64"
-              />
-            }
-            filters={
-              <DataTable.SelectFilter
-                column="type"
-                label={t`Organization Type`}
-                placeholder={t`Filter by type`}
-                options={[
-                  { value: 'Personal', label: t`Personal` },
-                  { value: 'Standard', label: t`Standard` },
-                ]}
-              />
-            }
-          />
-
-          <DataTable.ActiveFilters
-            excludeFilters={['search']}
-            filterLabels={{ type: t`Organization Type` }}
-            formatFilterValue={{
-              type: (value: string) => {
-                const labels: Record<string, string> = {
-                  Personal: t`Personal`,
-                  Standard: t`Standard`,
-                };
-                return labels[value] ?? String(value);
-              },
-            }}
-          />
-
-          <DataTable.Content
-            headerClassName="bg-muted/50"
-            className="border-t border-b border-solid"
-            emptyMessage={t`No organizations found.`}
-          />
-          <DataTable.Pagination className="pb-0" />
-        </CardContent>
-      </Card>
-    </DataTable.Client>
+    <ListPage>
+      <ListTable
+        loading={tableQuery.isLoading}
+        data={tableQuery.data?.items ?? []}
+        columns={columns}
+        pageSize={20}
+        getRowId={(row) => row.name}
+        defaultSort={[{ id: 'createdAt', desc: true }]}
+        searchPlaceholder={t`Search organizations...`}
+        emptyMessage={t`No organizations found.`}
+        filters={[
+          {
+            column: 'type',
+            label: t`Type`,
+            options: [
+              { value: 'Personal', label: t`Personal`, icon: <User /> },
+              { value: 'Standard', label: t`Standard`, icon: <Building2 /> },
+            ],
+          },
+        ]}
+        searchFn={(row, search) => {
+          const q = search.trim().toLowerCase();
+          if (!q) return true;
+          return (
+            row.name.toLowerCase().includes(q) ||
+            row.displayName.toLowerCase().includes(q) ||
+            row.type.toLowerCase().includes(q)
+          );
+        }}
+      />
+    </ListPage>
   );
 }

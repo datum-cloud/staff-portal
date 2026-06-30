@@ -2,10 +2,10 @@ import { getContactDetailMetadata, useContactDetailData } from '../shared';
 import type { Route } from './+types/index';
 import AppActionBar from '@/components/app-actiobar';
 import { BadgeCondition, BadgeState } from '@/components/badge';
-import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
+import { ListTable } from '@/features/milo';
 import { useContactGroupSearch } from '@/hooks';
 import {
   useCreateContactGroupMembershipMutation,
@@ -16,7 +16,6 @@ import type { ContactMembershipWithContactGroup } from '@/resources/schemas';
 import { contactGroupRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
@@ -42,7 +41,7 @@ export default function Page() {
 
   const tableQuery = useContactGroupMembershipListQuery(contactName);
 
-  const items = tableQuery.data?.items ?? [];
+  const items = useMemo(() => tableQuery.data?.items ?? [], [tableQuery.data?.items]);
   const [selectedGroup, setSelectedGroup] = useState<ContactMembershipWithContactGroup | null>(
     null
   );
@@ -152,6 +151,7 @@ export default function Page() {
           <Trans>Add</Trans>
         </Button>
       </AppActionBar>
+
       <DialogConfirm
         open={!!selectedGroup}
         onOpenChange={() => setSelectedGroup(null)}
@@ -186,13 +186,16 @@ export default function Page() {
           />
         </Form.Field>
       </DialogForm>
-      <DataTable.Client
+      <ListTable
         loading={tableQuery.isLoading}
         data={items}
         columns={columns}
         pageSize={20}
         getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
         defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+        searchPlaceholder={t`Search lists...`}
+        emptyMessage={t`No groups found.`}
+        inset="tab"
         searchFn={(row, search) => {
           const q = search.trim().toLowerCase();
           if (!q) return true;
@@ -205,23 +208,8 @@ export default function Page() {
           ]
             .map((s) => (s ?? '').toLowerCase())
             .some((s) => s.includes(q));
-        }}>
-        <Card className="m-4 py-4 shadow-none">
-          <CardContent className="flex flex-col gap-2 px-4">
-            <DataTableToolbar
-              search={
-                <DataTable.Search placeholder={t`Search lists...`} className="w-full md:w-64" />
-              }
-            />
-            <DataTable.Content
-              headerClassName="bg-muted/50"
-              className="border-t border-b border-solid"
-              emptyMessage={t`No groups found.`}
-            />
-            <DataTable.Pagination className="pb-0" />
-          </CardContent>
-        </Card>
-      </DataTable.Client>
+        }}
+      />
     </>
   );
 }

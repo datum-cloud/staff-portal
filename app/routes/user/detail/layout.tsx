@@ -1,14 +1,13 @@
 import type { Route } from './+types/layout';
-import { EntityHeader, EntityTabNav, type EntityTab } from '@/features/milo';
+import { DetailShell, type EntityTab } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
-import { useApp } from '@/providers/app.provider';
 import { userDetailQuery } from '@/resources/request/server';
 import { userRoutes } from '@/utils/config/routes.config';
 import { Avatar, AvatarFallback } from '@datum-cloud/datum-ui/avatar';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import { Building2, Contact, FileText, MailSearch, SquareActivity } from 'lucide-react';
-import { Outlet, useLoaderData } from 'react-router';
+import { useLoaderData } from 'react-router';
 
 export const handle = {
   breadcrumb: (data: ComMiloapisIamV1Alpha1User) => (
@@ -28,7 +27,6 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 export default function Layout() {
   const { t } = useLingui();
   const data = useLoaderData<typeof loader>();
-  const { actions } = useApp();
 
   const userId = data.metadata?.name ?? '';
   const fullName = `${data.spec?.givenName ?? ''} ${data.spec?.familyName ?? ''}`.trim();
@@ -70,21 +68,15 @@ export default function Layout() {
   ];
 
   return (
-    <div className="flex flex-col">
-      <div className="px-4 pt-4">
-        <EntityHeader
-          icon={
-            <Avatar className="size-10 rounded-md">
-              <AvatarFallback className="rounded-md">{initials}</AvatarFallback>
-            </Avatar>
-          }
-          name={fullName || userId}
-          subtitle={data.spec?.email}
-          actions={actions}
-        />
-      </div>
-      <EntityTabNav tabs={tabs} />
-      <Outlet />
-    </div>
+    <DetailShell
+      icon={
+        <Avatar className="size-10 rounded-md">
+          <AvatarFallback className="rounded-md">{initials}</AvatarFallback>
+        </Avatar>
+      }
+      name={fullName || userId}
+      subtitle={data.spec?.email}
+      tabs={tabs}
+    />
   );
 }

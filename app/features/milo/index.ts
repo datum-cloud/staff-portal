@@ -13,8 +13,15 @@ export { PlainPage } from './components/page/plain-page';
 export { DetailPage } from './components/page/detail-page';
 export { EntityHeader } from './components/page/entity-header';
 export { EntityTabNav, type EntityTab } from './components/page/entity-tab-nav';
+export { DetailShell } from './components/page/detail-shell';
 export {
-  RichFilterPanel,
-  RichFilterSection,
-  RichFilterOption,
+  FilterPanel,
+  CheckboxFilterGroup,
+  InlineFilterBar,
+  MobileFilterButton,
+  multiSelectFilterFn,
 } from './components/page/rich-filter-panel';
+export type { FilterGroupConfig, FilterOption } from './components/page/rich-filter-panel';
+
+// List table (styled datum-ui DataTable wrapper)
+export { ListTable } from './components/page/list-table';

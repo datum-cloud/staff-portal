@@ -1,10 +1,10 @@
 import { getServiceDetailMetadata, useServiceDetailData } from '../shared';
 import type { Route } from './+types/consumers';
 import { BadgeState } from '@/components/badge';
-import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
 import { MessageCard } from '@/components/message-card';
+import { ListTable } from '@/features/milo';
 import { useApprovalDialog } from '@/features/service-catalog';
 import type { EnrichedServiceConsumer } from '@/modules/graphql/service-consumers';
 import {
@@ -13,7 +13,6 @@ import {
 } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
@@ -217,16 +216,28 @@ export default function ConsumersPage() {
           setRevokeTarget(null);
         }}
       />
-      <DataTable.Client
+      <ListTable
         loading={isLoading}
         data={items}
         columns={columns}
         getRowId={(row) => row.name}
         defaultSort={[{ id: 'createdAt', desc: true }]}
-        filterFns={{
-          phase: (cellValue, filterValue) =>
-            String(cellValue ?? '').toLowerCase() === String(filterValue ?? '').toLowerCase(),
-        }}
+        searchPlaceholder={t`Search by project, ID, or note...`}
+        emptyMessage={t`No consumers found.`}
+        filterLayout="inline"
+        inset="tab"
+        filters={[
+          {
+            column: 'phase',
+            label: t`Phase`,
+            options: [
+              { value: 'PendingApproval', label: t`Pending Approval` },
+              { value: 'Active', label: t`Active` },
+              { value: 'Declined', label: t`Declined` },
+              { value: 'Inactive', label: t`Inactive` },
+            ],
+          },
+        ]}
         searchFn={(row, search) => {
           const q = search.trim().toLowerCase();
           if (!q) return true;
@@ -238,43 +249,8 @@ export default function ConsumersPage() {
           ]
             .map((s) => (s ?? '').toLowerCase())
             .some((s) => s.includes(q));
-        }}>
-        <Card className="m-4 py-4 shadow-none">
-          <CardContent className="flex flex-col gap-2 px-4">
-            <DataTableToolbar
-              search={
-                <DataTable.Search
-                  placeholder={t`Search by project, ID, or note...`}
-                  className="w-full md:w-64"
-                />
-              }
-              filters={
-                <DataTable.SelectFilter
-                  column="phase"
-                  label={t`Phase`}
-                  placeholder={t`Filter by phase`}
-                  options={[
-                    { value: 'PendingApproval', label: t`Pending Approval` },
-                    { value: 'Active', label: t`Active` },
-                    { value: 'Declined', label: t`Declined` },
-                    { value: 'Inactive', label: t`Inactive` },
-                  ]}
-                />
-              }
-            />
-            <DataTable.ActiveFilters
-              excludeFilters={['search']}
-              filterLabels={{ phase: t`Phase` }}
-            />
-            <DataTable.Content
-              headerClassName="bg-muted/50"
-              className="border-t border-b border-solid"
-              emptyMessage={t`No consumers found.`}
-            />
-            <DataTable.Pagination className="pb-0" />
-          </CardContent>
-        </Card>
-      </DataTable.Client>
+        }}
+      />
     </>
   );
 }
