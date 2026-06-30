@@ -3,59 +3,53 @@ import { BadgeState } from '@/components/badge';
 import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
-import { useOrgListQuery } from '@/resources/request/client';
+import { type GqlOrganization, useOrgListQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
-import type { ComMiloapisResourcemanagerV1Alpha1Organization } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Organizations`);
 };
 
-const columnHelper = createColumnHelper<ComMiloapisResourcemanagerV1Alpha1Organization>();
+const columnHelper = createColumnHelper<GqlOrganization>();
 
 export default function Page() {
   const tableQuery = useOrgListQuery();
 
   const columns = [
-    columnHelper.accessor('metadata.name', {
+    columnHelper.accessor('name', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
-      cell: ({ row }) => {
-        const orgName = row.original.metadata?.name ?? '';
-        const displayName =
-          row.original.metadata?.annotations?.['kubernetes.io/display-name'] ?? '';
-
-        return (
-          <DisplayName displayName={displayName || orgName} name={orgName} to={`./${orgName}`} />
-        );
-      },
+      cell: ({ row }) => (
+        <DisplayName
+          displayName={row.original.displayName || row.original.name}
+          name={row.original.name}
+          to={`./${row.original.name}`}
+        />
+      ),
     }),
-    columnHelper.accessor('spec.type', {
+    columnHelper.accessor('type', {
       id: 'type',
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Type`} />,
       cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Organization'} />,
     }),
-    columnHelper.accessor('metadata.creationTimestamp', {
-      id: 'metadata.creationTimestamp',
+    columnHelper.accessor('createdAt', {
+      id: 'createdAt',
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
-      cell: ({ getValue }) => <DateTime date={getValue()} />,
+      cell: ({ getValue }) => <DateTime date={getValue() ?? undefined} />,
     }),
   ];
-
-  const items = tableQuery.data?.items ?? [];
-  const data = items.map((row) => ({ ...row, type: row.spec?.type }));
 
   return (
     <DataTable.Client
       loading={tableQuery.isLoading}
-      data={data}
+      data={tableQuery.data?.items ?? []}
       columns={columns}
       pageSize={20}
-      getRowId={(row) => row.metadata?.name ?? ''}
-      defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+      getRowId={(row) => row.name}
+      defaultSort={[{ id: 'createdAt', desc: true }]}
       filterFns={{
         type: (cellValue, filterValue) =>
           String(cellValue ?? '').toLowerCase() === String(filterValue ?? '').toLowerCase(),
@@ -63,12 +57,11 @@ export default function Page() {
       searchFn={(row, search) => {
         const q = search.trim().toLowerCase();
         if (!q) return true;
-        const name = (row.metadata?.name ?? '').toLowerCase();
-        const display = (
-          row.metadata?.annotations?.['kubernetes.io/display-name'] ?? ''
-        ).toLowerCase();
-        const type = (row.spec?.type ?? '').toLowerCase();
-        return name.includes(q) || display.includes(q) || type.includes(q);
+        return (
+          row.name.toLowerCase().includes(q) ||
+          row.displayName.toLowerCase().includes(q) ||
+          row.type.toLowerCase().includes(q)
+        );
       }}>
       <Card className="m-4 py-4 shadow-none">
         <CardContent className="flex flex-col gap-2 px-4">

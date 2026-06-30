@@ -1,7 +1,8 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../../shared';
 import type { Route } from './+types/grant';
 import { QuotaGrantList } from '@/features/quota';
-import { orgQuotaGrantDeleteMutation, orgQuotaGrantListQuery } from '@/resources/request/client';
+import { listOrgQuotaGrants } from '@/modules/graphql/quota';
+import { orgQuotaGrantDeleteMutation } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 
@@ -20,7 +21,7 @@ export default function Page() {
   return (
     <QuotaGrantList
       queryKeyPrefix={['organizations', data.metadata?.name ?? '', 'grants']}
-      fetchFn={(params) => orgQuotaGrantListQuery(data.metadata?.name ?? '', params)}
+      fetchFn={() => listOrgQuotaGrants(data.metadata?.name ?? '')}
       deleteGrantFn={(name, namespace) =>
         orgQuotaGrantDeleteMutation(data.metadata?.name ?? '', name, namespace)
       }

@@ -1,0 +1,17 @@
+{
+  "url": "https://graphql.staging.env.datum.net/graphql",
+  "queries": [
+    "serviceConsumers",
+    "sessions",
+    "contactGroupMembershipsWithContacts",
+    "contactMembershipsWithGroups",
+    "userSummaries",
+    "organizations",
+    "organization",
+    "organizationProjects",
+    "organizationMembers",
+    "projects",
+    "project"
+  ],
+  "mutations": []
+}

@@ -17,6 +17,8 @@ graphqlRoutes.all('/', authMiddleware(), async (c) => {
   const controller = new AbortController();
   c.req.raw.signal?.addEventListener('abort', () => controller.abort());
 
+  const browserUA = c.req.header('User-Agent');
+
   try {
     const response = await fetch(`${env.GRAPHQL_URL}/graphql`, {
       method: c.req.method,
@@ -24,6 +26,9 @@ graphqlRoutes.all('/', authMiddleware(), async (c) => {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
         'X-Request-ID': c.get('requestId') ?? '',
+        ...(c.req.header('sentry-trace') ? { 'sentry-trace': c.req.header('sentry-trace')! } : {}),
+        ...(c.req.header('baggage') ? { baggage: c.req.header('baggage')! } : {}),
+        ...(browserUA ? { 'User-Agent': browserUA } : {}),
       },
       body: c.req.method !== 'GET' ? await c.req.text() : undefined,
       signal: controller.signal,
@@ -35,6 +40,7 @@ graphqlRoutes.all('/', authMiddleware(), async (c) => {
     if (error instanceof Error && error.name === 'AbortError') {
       return new Response(null, { status: 499 });
     }
+    console.error('[graphql-proxy] Error:', error);
     return c.json({ error: error instanceof Error ? error.message : 'Proxy error' }, 502);
   }
 });

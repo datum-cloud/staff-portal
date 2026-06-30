@@ -4,9 +4,9 @@ import {
   projectDomainListQuery,
   projectExportPolicyListQuery,
   projectEdgeListQuery,
-  projectListQuery,
   projectWorkloadListQuery,
 } from '../apis/project.api';
+import { listProjects } from '@/modules/graphql/projects';
 import { ListQueryParams } from '@/resources/schemas';
 import { useQuery } from '@tanstack/react-query';
 
@@ -57,7 +57,7 @@ export const useProjectDnsRecordListQuery = (
 export const useProjectListQuery = (params?: ListQueryParams) => {
   return useQuery({
     queryKey: projectQueryKeys.list(params),
-    queryFn: () => projectListQuery(params),
+    queryFn: () => listProjects(params),
     staleTime: 5 * 60 * 1000,
   });
 };

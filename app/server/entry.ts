@@ -1,7 +1,6 @@
 import { api, API_BASENAME } from './routes/api';
 import { authenticator, initializeAuthenticator } from '@/modules/auth';
 import { bunAdapter } from '@/server/adapter/bun';
-import { nodeAdapter } from '@/server/adapter/node';
 import { EnvVariables } from '@/server/iface';
 import { honoLoggerMiddleware, requestContextMiddleware } from '@/server/middleware';
 import { env } from '@/utils/config/env.server';
@@ -77,26 +76,13 @@ app.get('/.well-known/appspecific/com.chrome.devtools.json', (c) => {
   return c.json({ message: 'DevTools configuration served!' });
 });
 
-export default await (async () => {
-  // Initialize authenticator strategies (non-blocking)
-  initializeAuthenticator(authenticator).catch((error) => {
-    logger.error('Authenticator initialization failed', { error: error.message });
-  });
+// Initialize authenticator strategies (non-blocking)
+initializeAuthenticator(authenticator).catch((error) => {
+  logger.error('Authenticator initialization failed', { error: error.message });
+});
 
-  // Force Node runtime for Cypress
-  if (env.isCypress) {
-    process.env.RUNTIME = 'node';
-  }
-
-  // Always use Node for Cypress
-  if (env.isCypress || process.env.RUNTIME === 'node') {
-    return await nodeAdapter(app);
-  }
-
-  // Only try Bun if we're not in Cypress and not explicitly set to Node
-  try {
-    return await bunAdapter(app);
-  } catch {
-    return await nodeAdapter(app);
-  }
-})();
+// React Router SSR — always use the Bun adapter, matching cloud-portal. The
+// adapter returns a passive server object that observability/start.js serves
+// exactly once. Must `await` so the default export exposes `.fetch`/`.port`
+// (otherwise start.js skips Bun.serve).
+export default await bunAdapter(app);

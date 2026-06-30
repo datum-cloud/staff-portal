@@ -50,6 +50,7 @@ import {
   serializeProjectsFilter,
 } from '@/features/activity/lib/activity-filters';
 import { staffResourceLinkResolver } from '@/features/activity/lib/activity-link-resolvers';
+import type { GqlProject } from '@/modules/graphql/organizations';
 import { useOrgProjectListQuery } from '@/resources/request/client';
 import {
   ActivityApiClient,
@@ -78,7 +79,6 @@ import {
   TableRow,
 } from '@datum-cloud/datum-ui/table';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import type { ComMiloapisResourcemanagerV1Alpha1Project } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { useMemo, useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router';
 
@@ -193,7 +193,7 @@ export function MultiSourceActivityFeed({
     if (projectListQuery.isLoading) return;
     hasAutoSelectedRef.current = true;
     if (selectedProjects.length > 0) return;
-    const firstName = projectItems[0]?.metadata?.name;
+    const firstName = projectItems[0]?.name;
     if (!firstName) return;
     const serialized = serializeProjectsFilter([firstName]);
     if (!serialized) return;
@@ -219,7 +219,7 @@ export function MultiSourceActivityFeed({
     if (projectListQuery.isLoading || hasRewrittenRef.current) return;
     if (selectedProjects.length === 0) return;
 
-    const validNames = new Set(projectItems.map((p) => p.metadata?.name).filter(Boolean));
+    const validNames = new Set(projectItems.map((p) => p.name).filter(Boolean));
     const valid = selectedProjects.filter((n) => validNames.has(n));
 
     if (valid.length !== selectedProjects.length) {
@@ -328,7 +328,7 @@ interface MultiSourceViewProps {
   orgClient: ActivityApiClient;
   projectClients: Array<ActivityApiClient | null>;
   selectedProjects: string[];
-  projectItems: ComMiloapisResourcemanagerV1Alpha1Project[];
+  projectItems: GqlProject[];
   projectListLoading: boolean;
   resourceLinkResolver?: ResourceLinkResolver;
   tenantRenderer?: TenantRenderer;

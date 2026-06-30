@@ -1,7 +1,8 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../../shared';
 import type { Route } from './+types/usage';
 import { QuotaBucketList } from '@/features/quota';
-import { orgQuotaBucketListQuery, orgQuotaGrantCreateMutation } from '@/resources/request/client';
+import { listOrgQuotaBuckets } from '@/modules/graphql/quota';
+import { orgQuotaGrantCreateMutation } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 
@@ -20,7 +21,7 @@ export default function Page() {
   return (
     <QuotaBucketList
       queryKeyPrefix={['organizations', data.metadata?.name ?? '', 'buckets']}
-      fetchFn={(params) => orgQuotaBucketListQuery(data.metadata?.name ?? '', params)}
+      fetchFn={() => listOrgQuotaBuckets(data.metadata?.name ?? '')}
       createGrantFn={(namespace, payload) =>
         orgQuotaGrantCreateMutation(data.metadata?.name ?? '', namespace, payload)
       }

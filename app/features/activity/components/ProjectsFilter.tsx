@@ -1,3 +1,4 @@
+import type { GqlProject } from '@/modules/graphql/organizations';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@datum-cloud/activity-ui';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -5,7 +6,6 @@ import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
 import { Input } from '@datum-cloud/datum-ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import type { ComMiloapisResourcemanagerV1Alpha1Project } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { Layers, ChevronDown } from 'lucide-react';
 import { useState, useMemo, useCallback } from 'react';
 
@@ -64,15 +64,13 @@ export function projectColor(
 }
 
 /** Derive display name consistent with the display-name convention used in search and dashboards. */
-export function projectDisplayName(project: ComMiloapisResourcemanagerV1Alpha1Project): string {
-  return (
-    project.metadata?.annotations?.['kubernetes.io/display-name'] || project.metadata?.name || ''
-  );
+export function projectDisplayName(project: GqlProject): string {
+  return project.displayName || project.name;
 }
 
 export interface ProjectsFilterProps {
   /** Full project list from useOrgProjectListQuery */
-  projects: ComMiloapisResourcemanagerV1Alpha1Project[];
+  projects: GqlProject[];
   /** Currently selected project metadata.names */
   selected: string[];
   /** Called with the next selected list when user toggles a project or clears all */
@@ -107,7 +105,7 @@ export function ProjectsFilter({
       const nameB = projectDisplayName(b).toLowerCase();
       if (nameA < nameB) return -1;
       if (nameA > nameB) return 1;
-      return (a.metadata?.name ?? '').localeCompare(b.metadata?.name ?? '');
+      return a.name.localeCompare(b.name);
     });
   }, [projects]);
 
@@ -115,9 +113,7 @@ export function ProjectsFilter({
     if (!search.trim()) return sortedProjects;
     const q = search.trim().toLowerCase();
     return sortedProjects.filter(
-      (p) =>
-        projectDisplayName(p).toLowerCase().includes(q) ||
-        (p.metadata?.name ?? '').toLowerCase().includes(q)
+      (p) => projectDisplayName(p).toLowerCase().includes(q) || p.name.toLowerCase().includes(q)
     );
   }, [sortedProjects, search]);
 
@@ -205,7 +201,7 @@ export function ProjectsFilter({
               <li className="text-muted-foreground px-3 py-2 text-sm">No projects found</li>
             ) : (
               filteredProjects.map((project) => {
-                const name = project.metadata?.name ?? '';
+                const name = project.name;
                 const displayName = projectDisplayName(project);
                 const isChecked = selected.includes(name);
                 const isAtCap = selected.length >= maxSelection && !isChecked;

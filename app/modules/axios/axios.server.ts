@@ -1,4 +1,5 @@
 import { AxiosCurlLibrary } from './axios-curl';
+import { REQUEST_CONTEXT_STORE_KEY } from '@/modules/graphql/context-key';
 import { env } from '@/utils/config/env.server';
 import {
   AuthenticationError,
@@ -19,17 +20,37 @@ import Axios, {
 } from 'axios';
 import { z } from 'zod';
 
-// AsyncLocalStorage to store request context
-const requestContext = new AsyncLocalStorage<{ requestId?: string }>();
+interface RequestContextStore {
+  requestId?: string;
+  token?: string;
+  userId?: string;
+  userAgent?: string;
+}
+
+// Use globalThis so the same AsyncLocalStorage instance is shared across
+// modules (axios, GraphQL client, etc.) even after Vite module reloads.
+const STORE_KEY = REQUEST_CONTEXT_STORE_KEY;
+
+function getStore(): AsyncLocalStorage<RequestContextStore> {
+  if (!(globalThis as any)[STORE_KEY]) {
+    (globalThis as any)[STORE_KEY] = new AsyncLocalStorage<RequestContextStore>();
+  }
+  return (globalThis as any)[STORE_KEY];
+}
 
 // Helper to get current request ID
 function getCurrentRequestId(): string | undefined {
-  return requestContext.getStore()?.requestId;
+  return getRequestContext()?.requestId;
+}
+
+// Helper to get the full request context (used by GraphQL client)
+export function getRequestContext(): RequestContextStore | undefined {
+  return getStore().getStore();
 }
 
 // Helper to run code with request context
-export function withRequestContext<T>(requestId: string, fn: () => T): T {
-  return requestContext.run({ requestId }, fn);
+export function withRequestContext<T>(ctx: RequestContextStore, fn: () => T): T {
+  return getStore().run(ctx, fn);
 }
 
 export const http = Axios.create({

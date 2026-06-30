@@ -4,11 +4,11 @@ import { BadgeState } from '@/components/badge';
 import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DisplayName } from '@/components/display';
 import {
+  type GqlOrgMember,
   useOrgInvitationCreateMutation,
   useOrgInvitationDeleteMutation,
   useOrgMemberListQuery,
 } from '@/resources/request/client';
-import { TeamMember } from '@/resources/schemas';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
@@ -30,7 +30,7 @@ export const meta: Route.MetaFunction = ({ matches }) => {
   return metaObject(`Members - ${organizationName}`);
 };
 
-const columnHelper = createColumnHelper<TeamMember>();
+const columnHelper = createColumnHelper<GqlOrgMember>();
 
 export default function Page() {
   const { t } = useLingui();
@@ -42,7 +42,7 @@ export default function Page() {
 
   const tableQuery = useOrgMemberListQuery(orgName);
 
-  const actions: ActionItem<TeamMember>[] = [
+  const actions: ActionItem<GqlOrgMember>[] = [
     {
       label: t`Resend`,
       icon: <MailIcon className="size-4" />,
@@ -67,11 +67,11 @@ export default function Page() {
             orgName,
             payload: {
               email: row.email,
-              familyName: row.familyName,
-              givenName: row.givenName,
+              familyName: row.familyName ?? undefined,
+              givenName: row.givenName ?? undefined,
               expirationDate: formatRFC3339(addHours(new Date(), 24)),
               organizationRef: { name: orgName },
-              roles: row?.roles ?? [],
+              roles: (row.roles ?? []).map((name: string) => ({ name })),
               state: 'Pending',
             },
           });
@@ -121,7 +121,7 @@ export default function Page() {
     }),
     columnHelper.accessor('roles', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={tCore`Role`} />,
-      cell: ({ getValue }) => <BadgeState state={getValue()?.[0]?.name ?? ''} />,
+      cell: ({ getValue }) => <BadgeState state={getValue()?.[0] ?? ''} />,
     }),
     columnHelper.display({
       id: 'actions',
@@ -152,8 +152,8 @@ export default function Page() {
         invitationState: (cellValue, filterValue) =>
           String(cellValue ?? '').toLowerCase() === String(filterValue ?? '').toLowerCase(),
         roles: (cellValue, filterValue) => {
-          const roles = cellValue as Array<{ name?: string }> | undefined;
-          return roles?.some((r) => r.name === filterValue) ?? false;
+          const roles = cellValue as string[] | undefined;
+          return roles?.some((r) => r === filterValue) ?? false;
         },
       }}
       searchFn={(row, search) => {

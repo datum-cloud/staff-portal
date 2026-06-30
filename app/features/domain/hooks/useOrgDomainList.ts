@@ -24,10 +24,7 @@ export function useOrgDomainList(orgName: string): {
   const projectsQuery = useOrgProjectListQuery(orgName);
 
   const projectNames = useMemo(
-    () =>
-      (projectsQuery.data?.items ?? [])
-        .map((project) => project.metadata?.name ?? '')
-        .filter((name): name is string => !!name),
+    () => (projectsQuery.data?.items ?? []).map((project) => project.name).filter(Boolean),
     [projectsQuery.data]
   );
 
