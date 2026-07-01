@@ -5,7 +5,7 @@ import { contactGroupDetailQuery } from '@/resources/request/server';
 import { contactGroupRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisNotificationV1Alpha1ContactGroup } from '@openapi/notification.miloapis.com/v1alpha1';
-import { InfoIcon, Layers, Users } from 'lucide-react';
+import { BookUser, InfoIcon, Users } from 'lucide-react';
 import { useLoaderData } from 'react-router';
 
 export const handle = {
@@ -50,7 +50,7 @@ export default function Layout() {
     <DetailShell
       icon={
         <div className="bg-muted flex size-10 items-center justify-center rounded-md">
-          <Layers className="size-5" />
+          <BookUser className="size-5" />
         </div>
       }
       name={displayName}

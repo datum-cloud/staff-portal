@@ -12,14 +12,17 @@ import {
   userRoutes,
 } from '@/utils/config/routes.config';
 import {
-  Boxes,
+  BookUser,
+  Building2,
   Cog,
   Contact,
   CreditCard,
   Folders,
+  LayoutDashboard,
   type LucideIcon,
   Mail,
   Megaphone,
+  ReceiptText,
   Shield,
   ShieldUser,
   SquareActivity,
@@ -84,7 +87,7 @@ export const NAV_SECTIONS: NavSection[] = [
       groups: [
         {
           items: [
-            { label: 'Organizations', href: orgRoutes.list(), icon: Users },
+            { label: 'Organizations', href: orgRoutes.list(), icon: Building2 },
             { label: 'Projects', href: projectRoutes.list(), icon: Folders },
             // One "Resources" entry → a tabbed page (AI Edge / DNS / Domains),
             // all nested under /customers/resources.
@@ -92,9 +95,9 @@ export const NAV_SECTIONS: NavSection[] = [
               label: 'Resources',
               href: resourceRoutes.root(),
               match: resourceRoutes.root(),
-              icon: Boxes,
+              icon: LayoutDashboard,
             },
-            { label: 'Users', href: userRoutes.list(), icon: Contact },
+            { label: 'Users', href: userRoutes.list(), icon: Users },
           ],
         },
       ],
@@ -112,7 +115,7 @@ export const NAV_SECTIONS: NavSection[] = [
         {
           items: [
             { label: 'Contacts', href: contactRoutes.list(), icon: Contact },
-            { label: 'Contact Groups', href: contactGroupRoutes.list(), icon: Users },
+            { label: 'Contact Groups', href: contactGroupRoutes.list(), icon: BookUser },
           ],
         },
       ],
@@ -132,7 +135,7 @@ export const NAV_SECTIONS: NavSection[] = [
             {
               label: 'Billing Accounts',
               href: financeRoutes.billingAccounts.list(),
-              icon: CreditCard,
+              icon: ReceiptText,
             },
           ],
         },
