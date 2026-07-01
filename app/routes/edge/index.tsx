@@ -1,7 +1,5 @@
 import type { Route } from './+types/index';
-import { ResourceTabs } from '@/components/resource-tabs';
 import { EdgeList, type EdgeRow } from '@/features/edge';
-import { ListPage } from '@/features/milo';
 import { searchEdgesListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
@@ -47,20 +45,18 @@ export default function Page() {
   );
 
   return (
-    <ListPage tabs={<ResourceTabs />}>
-      <EdgeList
-        data={rows}
-        loading={isLoading}
-        showProjectColumn
-        hasMore={data?.hasMore ?? false}
-        controlledSearch={{ value: search, onChange: setSearch }}
-        linkBuilder={(row) => {
-          // Defensive: if a result somehow lacks tenant info, render the row
-          // as plain text rather than linking nowhere.
-          if (!row.projectName) return null;
-          return projectRoutes.edge.detail(row.projectName, row.edge.metadata?.name ?? '');
-        }}
-      />
-    </ListPage>
+    <EdgeList
+      data={rows}
+      loading={isLoading}
+      showProjectColumn
+      hasMore={data?.hasMore ?? false}
+      controlledSearch={{ value: search, onChange: setSearch }}
+      linkBuilder={(row) => {
+        // Defensive: if a result somehow lacks tenant info, render the row
+        // as plain text rather than linking nowhere.
+        if (!row.projectName) return null;
+        return projectRoutes.edge.detail(row.projectName, row.edge.metadata?.name ?? '');
+      }}
+    />
   );
 }

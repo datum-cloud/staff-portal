@@ -1,7 +1,5 @@
 import type { Route } from './+types/index';
-import { ResourceTabs } from '@/components/resource-tabs';
 import { DnsZoneList, type DnsZoneRow } from '@/features/dns';
-import { ListPage } from '@/features/milo';
 import { searchDnsZonesListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
@@ -47,24 +45,22 @@ export default function Page() {
   );
 
   return (
-    <ListPage tabs={<ResourceTabs />}>
-      <DnsZoneList
-        data={rows}
-        loading={isLoading}
-        showProjectColumn
-        hasMore={data?.hasMore ?? false}
-        controlledSearch={{ value: search, onChange: setSearch }}
-        linkBuilder={(row) => {
-          // Defensive: if a result somehow lacks tenant info, render the row
-          // as plain text rather than linking nowhere.
-          if (!row.projectName) return null;
-          return projectRoutes.dns.detail(
-            row.projectName,
-            row.dnsZone.metadata?.namespace ?? '',
-            row.dnsZone.metadata?.name ?? ''
-          );
-        }}
-      />
-    </ListPage>
+    <DnsZoneList
+      data={rows}
+      loading={isLoading}
+      showProjectColumn
+      hasMore={data?.hasMore ?? false}
+      controlledSearch={{ value: search, onChange: setSearch }}
+      linkBuilder={(row) => {
+        // Defensive: if a result somehow lacks tenant info, render the row
+        // as plain text rather than linking nowhere.
+        if (!row.projectName) return null;
+        return projectRoutes.dns.detail(
+          row.projectName,
+          row.dnsZone.metadata?.namespace ?? '',
+          row.dnsZone.metadata?.name ?? ''
+        );
+      }}
+    />
   );
 }

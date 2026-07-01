@@ -232,15 +232,15 @@ msgid "Age"
 msgstr ""
 
 #: app/components/app-sidebar/index.tsx:129
-#: app/components/resource-tabs/index.tsx:19
 #: app/features/activity/components/activity-list.tsx:389
 #: app/features/activity/components/activity-list.tsx:488
-#: app/routes/edge/index.tsx:12
+#: app/routes/edge/index.tsx:10
 #: app/routes/edge/layout.tsx:5
 #: app/routes/organization/detail/edge.tsx:9
 #: app/routes/organization/detail/layout.tsx:75
 #: app/routes/project/detail/edge/layout.tsx:5
 #: app/routes/project/detail/layout.tsx:128
+#: app/routes/resources/layout.tsx:22
 msgid "AI Edge"
 msgstr ""
 
@@ -1022,11 +1022,11 @@ msgstr ""
 msgid "Display name is required"
 msgstr ""
 
-#: app/components/resource-tabs/index.tsx:20
 #: app/routes/organization/detail/dns.tsx:9
 #: app/routes/organization/detail/layout.tsx:76
 #: app/routes/project/detail/dns/layout.tsx:5
 #: app/routes/project/detail/layout.tsx:133
+#: app/routes/resources/layout.tsx:23
 msgid "DNS"
 msgstr ""
 
@@ -1073,7 +1073,7 @@ msgstr ""
 
 #: app/components/app-search/search-results.tsx:254
 #: app/components/app-sidebar/index.tsx:135
-#: app/routes/dns/index.tsx:12
+#: app/routes/dns/index.tsx:10
 #: app/routes/dns/layout.tsx:5
 msgid "DNS Zones"
 msgstr ""
@@ -1096,13 +1096,13 @@ msgstr ""
 
 #: app/components/app-search/search-results.tsx:217
 #: app/components/app-sidebar/index.tsx:141
-#: app/components/resource-tabs/index.tsx:21
-#: app/routes/domain/index.tsx:12
+#: app/routes/domain/index.tsx:10
 #: app/routes/domain/layout.tsx:5
 #: app/routes/organization/detail/domain.tsx:9
 #: app/routes/organization/detail/layout.tsx:77
 #: app/routes/project/detail/domain/layout.tsx:5
 #: app/routes/project/detail/layout.tsx:138
+#: app/routes/resources/layout.tsx:24
 msgid "Domains"
 msgstr ""
 
@@ -2696,6 +2696,7 @@ msgid "Resource:"
 msgstr ""
 
 #: app/components/app-search/search-results.tsx:213
+#: app/routes/resources/layout.tsx:10
 msgid "Resources"
 msgstr ""
 

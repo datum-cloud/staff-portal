@@ -87,6 +87,14 @@ export default [
           route('secrets', 'routes/project/detail/secret.tsx'),
         ]),
       ]),
+
+      // Resources (Customers → Resources): AI Edge / DNS / Domains tabs.
+      route('resources', 'routes/resources/layout.tsx', [
+        index('routes/resources/index.tsx'),
+        route('edges', 'routes/edge/layout.tsx', [index('routes/edge/index.tsx')]),
+        route('dns', 'routes/dns/layout.tsx', [index('routes/dns/index.tsx')]),
+        route('domains', 'routes/domain/layout.tsx', [index('routes/domain/index.tsx')]),
+      ]),
     ]),
 
     // Service Catalog
@@ -125,15 +133,6 @@ export default [
         route(':policyName', 'routes/activity-hub/policies/detail.tsx'),
       ]),
     ]),
-
-    // Domains (global view across all projects)
-    route('domains', 'routes/domain/layout.tsx', [index('routes/domain/index.tsx')]),
-
-    // DNS zones (global view across all projects)
-    route('dns', 'routes/dns/layout.tsx', [index('routes/dns/index.tsx')]),
-
-    // AI Edge (global view across all projects)
-    route('edges', 'routes/edge/layout.tsx', [index('routes/edge/index.tsx')]),
 
     // Contacts
     route('contacts', 'routes/contact/layout.tsx', [

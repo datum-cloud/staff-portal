@@ -1,13 +1,11 @@
 import {
   activityRoutes,
   contactRoutes,
-  dnsRoutes,
-  domainRoutes,
-  edgeRoutes,
   financeRoutes,
   groupRoutes,
   orgRoutes,
   projectRoutes,
+  resourceRoutes,
   serviceCatalogRoutes,
   userRoutes,
 } from '@/utils/config/routes.config';
@@ -85,12 +83,12 @@ export const NAV_SECTIONS: NavSection[] = [
           items: [
             { label: 'Organizations', href: orgRoutes.list(), icon: Users },
             { label: 'Projects', href: projectRoutes.list(), icon: Folders },
-            // One "Resources" entry → a tabbed page (AI Edge / DNS / Domains);
-            // matches all three tab paths so it stays active across them.
+            // One "Resources" entry → a tabbed page (AI Edge / DNS / Domains),
+            // all nested under /customers/resources.
             {
               label: 'Resources',
-              href: edgeRoutes.list(),
-              match: [edgeRoutes.list(), dnsRoutes.list(), domainRoutes.list()],
+              href: resourceRoutes.root(),
+              match: resourceRoutes.root(),
               icon: Boxes,
             },
             { label: 'Users', href: userRoutes.list(), icon: Contact },

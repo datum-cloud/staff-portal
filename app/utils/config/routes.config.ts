@@ -93,19 +93,24 @@ export const contactGroupRoutes = {
   member: (contactGroupName: string) => `/contact-groups/${contactGroupName}/members`,
 } as const;
 
+// Customers → Resources tabs (global views across all projects).
+export const resourceRoutes = {
+  root: () => '/customers/resources',
+} as const;
+
 // Domain feature routes (global view across all projects)
 export const domainRoutes = {
-  list: () => '/domains',
+  list: () => '/customers/resources/domains',
 } as const;
 
 // DNS zone feature routes (global view across all projects)
 export const dnsRoutes = {
-  list: () => '/dns',
+  list: () => '/customers/resources/dns',
 } as const;
 
 // AI Edge feature routes (global view across all projects)
 export const edgeRoutes = {
-  list: () => '/edges',
+  list: () => '/customers/resources/edges',
 } as const;
 
 // Service Catalog routes
