@@ -2,6 +2,7 @@
 
 import { SearchResults } from './search-results';
 import { useAppSearch } from './use-app-search';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Input } from '@datum-cloud/datum-ui/input';
 import {
@@ -14,7 +15,6 @@ import {
 } from '@datum-cloud/datum-ui/sheet';
 import { useLingui } from '@lingui/react/macro';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
-import { SearchIcon, X } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
 function AppSearchMobile() {
@@ -39,7 +39,7 @@ function AppSearchMobile() {
         size="icon"
         aria-label={t`Open search`}
         onClick={() => setOpen(true)}>
-        <SearchIcon className="h-4 w-4" />
+        <ACTION_ICONS.search className="h-4 w-4" />
       </Button>
 
       <Sheet
@@ -69,7 +69,7 @@ function AppSearchMobile() {
             />
             <SheetClose asChild>
               <Button htmlType="button" theme="borderless" size="icon" aria-label={t`Close`}>
-                <X className="h-4 w-4" />
+                <ACTION_ICONS.close className="h-4 w-4" />
               </Button>
             </SheetClose>
           </SheetHeader>

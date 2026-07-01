@@ -1,5 +1,6 @@
 'use client';
 
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import {
   Command,
@@ -11,7 +12,7 @@ import {
 } from '@datum-cloud/datum-ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import { Check, ChevronsUpDown } from 'lucide-react';
+import { ChevronsUpDown } from 'lucide-react';
 import * as React from 'react';
 
 export interface SelectOption {
@@ -84,7 +85,7 @@ export function SelectAutocomplete({
                     setOpen(false);
                   }}>
                   {option.label}
-                  <Check
+                  <ACTION_ICONS.check
                     className={cn(
                       'ml-auto h-4 w-4',
                       value === option.value ? 'opacity-100' : 'opacity-0'

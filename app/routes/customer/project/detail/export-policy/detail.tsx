@@ -6,6 +6,7 @@ import { DisplayText } from '@/components/display';
 import { PageHeader } from '@/components/page-header';
 import { authenticator } from '@/modules/auth';
 import { projectExportPolicyDetailQuery } from '@/resources/request/server';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
@@ -22,7 +23,7 @@ import {
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { ComMiloapisTelemetryV1Alpha1ExportPolicy } from '@openapi/telemetry.miloapis.com/v1alpha1';
-import { CodeIcon, SettingsIcon } from 'lucide-react';
+import { CodeIcon } from 'lucide-react';
 import { useLoaderData } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
@@ -203,7 +204,7 @@ export default function Page() {
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button theme="outline" size="small">
-                          <SettingsIcon className="size-4" />
+                          <ACTION_ICONS.settings className="size-4" />
                           <Trans>Configuration</Trans>
                         </Button>
                       </PopoverTrigger>

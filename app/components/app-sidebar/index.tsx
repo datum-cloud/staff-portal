@@ -3,6 +3,7 @@
 import { NavUser } from './nav-user';
 import { LogoIcon } from '@/components/logo/logo-icon';
 import { LogoText } from '@/components/logo/logo-text';
+import { ENTITY_ICONS } from '@/utils/config/icons.config';
 import {
   contactGroupRoutes,
   contactRoutes,
@@ -49,7 +50,6 @@ import {
   Home,
   Layers,
   LucideIcon,
-  MailSearch,
   ShieldAlert,
   ShieldUser,
   Signpost,
@@ -168,7 +168,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     {
       title: t`Email Activity`,
       href: routes.emailActivity(),
-      icon: MailSearch,
+      icon: ENTITY_ICONS.emailActivity,
       hasSubmenu: false,
     },
     {

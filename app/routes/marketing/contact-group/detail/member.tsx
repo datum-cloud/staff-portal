@@ -17,6 +17,7 @@ import {
   ContactGroupMembershipListWithContacts,
   ContactGroupMembershipWithContact,
 } from '@/resources/schemas';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { contactRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -25,7 +26,6 @@ import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
-import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import z from 'zod';
 
@@ -160,7 +160,7 @@ export default function Page() {
   const actions: ActionItem<ContactGroupMembershipWithContact>[] = [
     {
       label: t`Delete`,
-      icon: <Trash2Icon className="size-4" />,
+      icon: <ACTION_ICONS.delete className="size-4" />,
       variant: 'destructive' as const,
       onClick: (row) => setSelectedMembership(row),
     },
@@ -330,7 +330,7 @@ export default function Page() {
       <AppActionBar>
         <Button
           type="primary"
-          icon={<PlusCircleIcon size={16} />}
+          icon={<ACTION_ICONS.add size={16} />}
           onClick={() => setIsAddMember(true)}>
           <Trans>Add</Trans>
         </Button>

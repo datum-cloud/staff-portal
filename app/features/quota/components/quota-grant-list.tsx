@@ -3,17 +3,17 @@ import { BadgeCondition } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
 import { type GqlQuotaGrant, type GqlQuotaGrantList } from '@/modules/graphql/quota';
+import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { Badge } from '@datum-cloud/datum-ui/badge';
-import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem } from '@datum-cloud/datum-ui/data-table';
 import { GroupedTable, type GroupedTableGroup } from '@datum-cloud/datum-ui/grouped-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
 import { useQuery } from '@tanstack/react-query';
 import { type ColumnDef } from '@tanstack/react-table';
-import { InfoIcon, Trash2Icon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 interface QuotaGrantListProps {
@@ -76,7 +76,7 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: Quota
             </Text>
             {row.original.resourceType !== row.original.displayName && (
               <Tooltip message={row.original.resourceType}>
-                <InfoIcon className="size-3 shrink-0 text-muted-foreground opacity-60" />
+                <STATUS_ICONS.info className="text-muted-foreground size-3 shrink-0 opacity-60" />
               </Tooltip>
             )}
           </div>
@@ -88,11 +88,7 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: Quota
         accessorFn: (row) => row.grant.name,
         size: 220,
         cell: ({ row }) => (
-          <Text
-            size="sm"
-            textColor="muted"
-            className="truncate"
-            title={row.original.grant.name}>
+          <Text size="sm" textColor="muted" className="truncate" title={row.original.grant.name}>
             {row.original.grant.name}
           </Text>
         ),
@@ -142,7 +138,7 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: Quota
   const rowActions = (): ActionItem<QuotaGrantRow>[] => [
     {
       label: t`Delete`,
-      icon: <Trash2Icon className="size-4" />,
+      icon: <ACTION_ICONS.delete className="size-4" />,
       variant: 'destructive' as const,
       onClick: (row) => setSelectedGrant(row.grant),
       disabled: (row) => {

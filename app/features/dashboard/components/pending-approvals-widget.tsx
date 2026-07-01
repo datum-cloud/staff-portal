@@ -1,5 +1,6 @@
 import { usePendingApprovalsWidget } from '../hooks/use-pending-approvals-widget';
 import { DateTime } from '@/components/date';
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { userRoutes } from '@/utils/config/routes.config';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -15,7 +16,7 @@ import {
 } from '@datum-cloud/datum-ui/table';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
-import { AlertCircle, ArrowRight, UserCheck } from 'lucide-react';
+import { ArrowRight, UserCheck } from 'lucide-react';
 import { useNavigate } from 'react-router';
 
 function LoadingSkeleton() {
@@ -70,7 +71,7 @@ function EmptyState() {
 function ErrorState({ onRetry }: { onRetry: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center py-6 text-center">
-      <AlertCircle className="text-muted-foreground mb-3 h-8 w-8" />
+      <STATUS_ICONS.alert className="text-muted-foreground mb-3 h-8 w-8" />
       <Title level={5} className="mb-1">
         <Trans>Could not load pending approvals</Trans>
       </Title>

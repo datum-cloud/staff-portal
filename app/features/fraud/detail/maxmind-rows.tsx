@@ -3,11 +3,11 @@ import { BadgeState } from '@/components/badge';
 import { ButtonCopy } from '@/components/button';
 import { DateTime } from '@/components/date';
 import type { DescriptionListItem } from '@/components/description-list';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { Trans } from '@lingui/react/macro';
-import { ExternalLinkIcon } from 'lucide-react';
 
 function ipRiskColor(score: number | undefined): string {
   if (score == null) return '';
@@ -199,7 +199,7 @@ export function buildMaxmindRowGroups(insights: MaxmindInsights | null): Maxmind
             theme="outline"
             type="secondary"
             size="xs"
-            icon={<ExternalLinkIcon size={14} />}
+            icon={<ACTION_ICONS.externalLink size={14} />}
             iconPosition="right">
             {location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}
           </LinkButton>

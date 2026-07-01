@@ -4,6 +4,7 @@ import { DialogConfirm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
 import { ListTable } from '@/features/milo';
 import { contactDeleteMutation } from '@/resources/request/client';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { contactRoutes } from '@/utils/config/routes.config';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
@@ -14,7 +15,6 @@ import {
 } from '@openapi/notification.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
-import { EditIcon, Trash2Icon } from 'lucide-react';
 import { useMemo, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -51,14 +51,14 @@ export function ContactList({
   const actions: ActionItem<ComMiloapisNotificationV1Alpha1Contact>[] = [
     {
       label: t`Edit`,
-      icon: <EditIcon className="size-4" />,
+      icon: <ACTION_ICONS.edit className="size-4" />,
       onClick: (row) => {
         navigate(contactRoutes.detail(row.metadata?.namespace ?? '', row.metadata?.name ?? ''));
       },
     },
     {
       label: t`Delete`,
-      icon: <Trash2Icon className="size-4" />,
+      icon: <ACTION_ICONS.delete className="size-4" />,
       variant: 'destructive' as const,
       onClick: (row) => setSelectedContact(row),
     },

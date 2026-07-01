@@ -1,20 +1,21 @@
 import { DateTime } from '@/components/date';
 import { ControlPlaneStatus } from '@/resources/schemas';
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import { CheckCircle, Clock, XCircle } from 'lucide-react';
+import { Clock } from 'lucide-react';
 
 // Unified configuration for both modes
 const StatusConfig = {
   // Multiple mode (individual conditions)
   True: {
-    icon: CheckCircle,
+    icon: STATUS_ICONS.success,
     className:
       'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800',
   },
   False: {
-    icon: XCircle,
+    icon: STATUS_ICONS.error,
     className:
       'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800',
   },
@@ -25,13 +26,13 @@ const StatusConfig = {
   },
   // Control plane mode (summarized)
   [ControlPlaneStatus.Success]: {
-    icon: CheckCircle,
+    icon: STATUS_ICONS.success,
     className:
       'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800',
     label: 'Active',
   },
   [ControlPlaneStatus.Error]: {
-    icon: XCircle,
+    icon: STATUS_ICONS.error,
     className:
       'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800',
     label: 'Error',

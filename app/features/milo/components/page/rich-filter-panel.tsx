@@ -1,3 +1,4 @@
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { useDataTableFilters } from '@datum-cloud/datum-ui/data-table';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
@@ -6,7 +7,7 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { useLingui } from '@lingui/react/macro';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
-import { Check, ChevronDown, ListFilter, SlidersHorizontal } from 'lucide-react';
+import { ChevronDown, SlidersHorizontal } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 
 /**
@@ -42,7 +43,7 @@ export function FilterPanel({ children }: FilterPanelProps) {
     <div className="flex flex-col">
       <div className="border-border flex items-center justify-between border-b px-4 py-3">
         <div className="text-foreground flex items-center gap-2">
-          <ListFilter className="size-4" />
+          <ACTION_ICONS.filter className="size-4" />
           <Text size="sm" weight="medium">{t`Filters`}</Text>
         </div>
         {activeCount > 0 && (
@@ -186,7 +187,7 @@ export function CheckboxFilterGroup({ column, label, options }: CheckboxFilterCo
                   <span className="flex shrink-0 items-center [&_svg]:size-4">{option.icon}</span>
                 )}
                 <span className="min-w-0 flex-1 truncate">{option.label}</span>
-                {checked && <Check className="text-primary size-4 shrink-0" />}
+                {checked && <ACTION_ICONS.check className="text-primary size-4 shrink-0" />}
               </button>
             );
           })}
@@ -209,7 +210,7 @@ export function InlineFilterBar({ filters }: { filters: FilterGroupConfig[] }) {
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <ListFilter className="text-muted-foreground size-4" />
+      <ACTION_ICONS.filter className="text-muted-foreground size-4" />
       {filters.map((f) => (
         <InlineFilter key={f.column} {...f} />
       ))}
@@ -277,7 +278,7 @@ function InlineFilter({ column, label, options }: FilterGroupConfig) {
                   <span className="flex shrink-0 items-center [&_svg]:size-4">{option.icon}</span>
                 )}
                 <span className="min-w-0 flex-1 truncate">{option.label}</span>
-                {checked && <Check className="text-primary size-4 shrink-0" />}
+                {checked && <ACTION_ICONS.check className="text-primary size-4 shrink-0" />}
               </button>
             );
           })}
@@ -323,7 +324,7 @@ export function MobileFilterButton({ filters }: { filters: FilterGroupConfig[] }
           {/* Custom header (not FilterPanel's) with pr-12 so "Clear all" clears the Sheet's close X. */}
           <div className="border-border flex items-center justify-between border-b py-3 pr-12 pl-4">
             <div className="text-foreground flex items-center gap-2">
-              <ListFilter className="size-4" />
+              <ACTION_ICONS.filter className="size-4" />
               <Text size="sm" weight="medium">{t`Filters`}</Text>
             </div>
             {activeCount > 0 && (

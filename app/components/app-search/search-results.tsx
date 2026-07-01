@@ -1,6 +1,7 @@
 import { SearchResultGroup } from './search-result-group';
 import type { useAppSearch } from './use-app-search';
 import type { SearchResultItem } from '@/resources/request/client';
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { contactRoutes, projectRoutes, routes } from '@/utils/config/routes.config';
 import {
   Command,
@@ -19,7 +20,7 @@ import {
   ComMiloapisResourcemanagerV1Alpha1Organization,
   ComMiloapisResourcemanagerV1Alpha1Project,
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
-import { Building2, Contact, FolderOpen, Globe, Loader2, Server, Users } from 'lucide-react';
+import { Building2, Contact, FolderOpen, Globe, Server, Users } from 'lucide-react';
 import { Link } from 'react-router';
 
 type SearchState = ReturnType<typeof useAppSearch>;
@@ -120,7 +121,7 @@ export function SearchResults({ state, listClassName }: SearchResultsProps) {
         {/* Loading */}
         {search && search.length >= 3 && isLoading && (
           <CommandEmpty>
-            <Loader2 className="mx-auto mb-1 h-4 w-4 animate-spin opacity-50" />
+            <STATUS_ICONS.loading className="mx-auto mb-1 h-4 w-4 animate-spin opacity-50" />
             <Text size="sm">{t`Searching...`}</Text>
           </CommandEmpty>
         )}

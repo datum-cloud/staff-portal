@@ -4,6 +4,7 @@ import { DialogConfirm } from '@/components/dialog';
 import { ListTable } from '@/features/milo';
 import { useApp } from '@/providers/app.provider';
 import { useDeleteSessionMutation, useSessionListQuery } from '@/resources/request/client';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { metaObject } from '@/utils/helpers';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
@@ -12,7 +13,6 @@ import { t } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session } from '@openapi/identity.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
-import { Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 
 export const handle = {
@@ -38,7 +38,7 @@ export default function Page() {
   const actions: ActionItem<ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session>[] = [
     {
       label: tMacro`Delete`,
-      icon: <Trash2Icon className="size-4" />,
+      icon: <ACTION_ICONS.delete className="size-4" />,
       variant: 'destructive' as const,
       onClick: (row) => setSelectedSession(row),
     },

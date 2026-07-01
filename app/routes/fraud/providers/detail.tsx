@@ -5,6 +5,7 @@ import {
   useFraudProviderDetailQuery,
   useUpdateFraudProviderMutation,
 } from '@/resources/request/client';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -14,7 +15,6 @@ import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { z } from 'zod';
@@ -111,7 +111,7 @@ export default function Page() {
               <Button
                 type="danger"
                 theme="outline"
-                icon={<Trash2Icon size={16} />}
+                icon={<ACTION_ICONS.delete size={16} />}
                 onClick={() => setShowDelete(true)}>
                 <Trans>Delete</Trans>
               </Button>

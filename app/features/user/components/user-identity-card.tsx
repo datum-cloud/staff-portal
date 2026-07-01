@@ -5,18 +5,13 @@ import GitHubIcon from '@/components/icon/github';
 import GoogleIcon from '@/components/icon/google';
 import { useEnv } from '@/hooks';
 import { useIdentityListQuery, useSessionListEnrichedQuery } from '@/resources/request/client';
+import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
-import {
-  CircleAlertIcon,
-  ExternalLinkIcon,
-  FingerprintPattern,
-  GlobeIcon,
-  MailIcon,
-} from 'lucide-react';
+import { FingerprintPattern, GlobeIcon, MailIcon } from 'lucide-react';
 import { ComponentType, SVGProps } from 'react';
 
 const PROVIDERS: Record<string, { label: string; Icon: ComponentType<SVGProps<SVGSVGElement>> }> = {
@@ -120,7 +115,7 @@ export const UserIdentityCard = ({
                               </div>
                             }>
                             <div className="pointer flex cursor-pointer items-center gap-2.5">
-                              <CircleAlertIcon size={12} className="text-primary" />
+                              <STATUS_ICONS.alert size={12} className="text-primary" />
                               <span className="text-primary text-xs underline">
                                 <Trans>How to update your GitHub email</Trans>
                               </span>
@@ -133,7 +128,7 @@ export const UserIdentityCard = ({
                           rel="noopener noreferrer"
                           theme="outline"
                           size="small"
-                          icon={<ExternalLinkIcon size={12} />}
+                          icon={<ACTION_ICONS.externalLink size={12} />}
                           iconPosition="right">
                           <Trans>Manage</Trans>
                         </LinkButton>

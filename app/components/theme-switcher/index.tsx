@@ -1,3 +1,4 @@
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import {
   DropdownMenu,
@@ -8,7 +9,7 @@ import {
 import { useTheme } from '@datum-cloud/datum-ui/theme';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { Trans } from '@lingui/react/macro';
-import { CheckIcon, MoonIcon, SunIcon, MonitorIcon } from 'lucide-react';
+import { MoonIcon, SunIcon, MonitorIcon } from 'lucide-react';
 import { useEffect } from 'react';
 
 function ThemeSwitcher() {
@@ -35,17 +36,17 @@ function ThemeSwitcher() {
         <DropdownMenuItem onClick={() => setTheme('light')}>
           <SunIcon size={14} className="mr-2" />
           <Trans>Light</Trans>
-          <CheckIcon size={14} className={cn('ml-auto', theme !== 'light' && 'hidden')} />
+          <ACTION_ICONS.check size={14} className={cn('ml-auto', theme !== 'light' && 'hidden')} />
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('dark')}>
           <MoonIcon size={14} className="mr-2" />
           <Trans>Dark</Trans>
-          <CheckIcon size={14} className={cn('ml-auto', theme !== 'dark' && 'hidden')} />
+          <ACTION_ICONS.check size={14} className={cn('ml-auto', theme !== 'dark' && 'hidden')} />
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('system')}>
           <MonitorIcon size={14} className="mr-2" />
           <Trans>System</Trans>
-          <CheckIcon size={14} className={cn('ml-auto', theme !== 'system' && 'hidden')} />
+          <ACTION_ICONS.check size={14} className={cn('ml-auto', theme !== 'system' && 'hidden')} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

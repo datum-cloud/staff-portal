@@ -2,6 +2,7 @@ import type { Route } from './+types/policy';
 import { DialogConfirm } from '@/components/dialog';
 import { PolicyDetail, PolicyForm } from '@/features/fraud';
 import { useDeleteFraudPolicyMutation, useFraudPolicyListQuery } from '@/resources/request/client';
+import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
@@ -9,7 +10,6 @@ import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { AlertTriangle, PlusCircleIcon } from 'lucide-react';
 import { useState } from 'react';
 
 export const handle = {
@@ -55,13 +55,13 @@ export default function Page() {
     return (
       <Card className="m-4 shadow-none">
         <CardContent className="flex flex-col items-center justify-center gap-3 py-12">
-          <AlertTriangle className="text-muted-foreground h-8 w-8" />
+          <STATUS_ICONS.warning className="text-muted-foreground h-8 w-8" />
           <Text size="sm" textColor="muted">
             <Trans>No fraud policy configured.</Trans>
           </Text>
           <Button
             type="primary"
-            icon={<PlusCircleIcon size={16} />}
+            icon={<ACTION_ICONS.add size={16} />}
             onClick={() => setCreating(true)}>
             <Trans>Create Policy</Trans>
           </Button>

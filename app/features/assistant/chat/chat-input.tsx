@@ -1,9 +1,10 @@
 import { Equalizer } from './equalizer';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import type { Editor } from '@tiptap/react';
 import { EditorContent } from '@tiptap/react';
-import { Mic, MicOff, RotateCw, SendHorizonal, Square } from 'lucide-react';
+import { Mic, MicOff, RotateCw, Square } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 
 interface ChatInputProps {
@@ -85,7 +86,7 @@ export function ChatInput({
               onClick={onSend}
               aria-label="Send message"
               className="text-muted-foreground hover:text-foreground mr-1.5 mb-1.5 shrink-0 rounded p-1.5 transition-colors">
-              <SendHorizonal className="text-primary size-4" />
+              <ACTION_ICONS.send className="text-primary size-4" />
             </button>
           </Tooltip>
         ) : (

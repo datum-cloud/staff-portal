@@ -11,6 +11,7 @@ import {
   useFraudEvaluationListQuery,
   useFraudPolicyListQuery,
 } from '@/resources/request/client';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -22,7 +23,6 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisFraudV1Alpha1FraudEvaluation } from '@openapi/fraud.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
-import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { z } from 'zod';
@@ -98,7 +98,7 @@ export default function Page() {
   const actions: ActionItem<FraudEvaluation>[] = [
     {
       label: t`Delete`,
-      icon: <Trash2Icon className="size-4" />,
+      icon: <ACTION_ICONS.delete className="size-4" />,
       variant: 'destructive' as const,
       onClick: (row) => setSelectedEval(row),
     },
@@ -260,7 +260,7 @@ export default function Page() {
           actions={
             <Button
               type="primary"
-              icon={<PlusCircleIcon size={16} />}
+              icon={<ACTION_ICONS.add size={16} />}
               disabled={policyLoaded && !policyName}
               onClick={() => setShowNewEval(true)}>
               <Trans>New Evaluation</Trans>

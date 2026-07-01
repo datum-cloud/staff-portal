@@ -10,6 +10,7 @@ import {
   userInviteMutation,
   useUserListQuery,
 } from '@/resources/request/client';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -20,7 +21,6 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
-import { CheckIcon, EditIcon, RotateCcwIcon, UserPlus, XIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { z } from 'zod';
@@ -44,12 +44,12 @@ export default function Page() {
   const actions: ActionItem<ComMiloapisIamV1Alpha1User>[] = [
     {
       label: t`Manage`,
-      icon: <EditIcon className="size-4" />,
+      icon: <ACTION_ICONS.edit className="size-4" />,
       onClick: (row) => navigate(userRoutes.detail(row.metadata?.name ?? '')),
     },
     {
       label: t`Approve`,
-      icon: <CheckIcon className="size-4" />,
+      icon: <ACTION_ICONS.check className="size-4" />,
       hidden: (row) => row.status?.registrationApproval !== 'Pending',
       onClick: async (row) => {
         setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: true }));
@@ -64,14 +64,14 @@ export default function Page() {
     },
     {
       label: t`Reject`,
-      icon: <XIcon className="size-4" />,
+      icon: <ACTION_ICONS.close className="size-4" />,
       variant: 'destructive' as const,
       hidden: (row) => row.status?.registrationApproval !== 'Pending',
       onClick: (row) => setSelectedUser(row),
     },
     {
       label: t`Move to Pending`,
-      icon: <RotateCcwIcon className="size-4" />,
+      icon: <ACTION_ICONS.reset className="size-4" />,
       hidden: (row) => row.status?.registrationApproval === 'Pending',
       onClick: async (row) => {
         setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: true }));
@@ -234,7 +234,9 @@ export default function Page() {
           columns={columns}
           pageSize={20}
           actions={
-            <Button icon={<UserPlus size={16} />} onClick={() => setInviteDialogOpen(true)}>
+            <Button
+              icon={<ACTION_ICONS.invite size={16} />}
+              onClick={() => setInviteDialogOpen(true)}>
               <Trans>Invite User</Trans>
             </Button>
           }

@@ -1,10 +1,11 @@
 import AppActionBar from '@/components/app-actiobar';
 import { SubLayout } from '@/components/sub-layout';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { activityRoutes } from '@/utils/config/routes.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { t } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Check, FileSearch, ListChecks, ScrollText, Share2, SquareActivity } from 'lucide-react';
+import { FileSearch, ListChecks, ScrollText, SquareActivity } from 'lucide-react';
 import { useState } from 'react';
 import { Outlet } from 'react-router';
 
@@ -63,12 +64,12 @@ export default function ActivityLayout() {
           title={t`Copy shareable link with current filters`}>
           {copied ? (
             <>
-              <Check className="mr-2 h-4 w-4" />
+              <ACTION_ICONS.check className="mr-2 h-4 w-4" />
               {t`Copied!`}
             </>
           ) : (
             <>
-              <Share2 className="mr-2 h-4 w-4" />
+              <ACTION_ICONS.share className="mr-2 h-4 w-4" />
               {t`Share`}
             </>
           )}

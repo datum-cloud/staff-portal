@@ -12,6 +12,7 @@ import {
   isDefaultPaymentMethod,
 } from '@/features/billing/utils';
 import { useEnv } from '@/hooks';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { financeRoutes, orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
@@ -24,7 +25,6 @@ import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1BillingAccountBinding } from '@openapi/billing.miloapis.com/v1alpha1';
 import type { ComMiloapisBillingV1Alpha1PaymentMethod } from '@openapi/billing.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
-import { ExternalLink } from 'lucide-react';
 import { Link, type MetaFunction } from 'react-router';
 
 export const meta: MetaFunction = ({ matches }) => {
@@ -140,7 +140,7 @@ export default function Page() {
               href={cloudPortalUrl}
               target="_blank"
               rel="noreferrer"
-              icon={<ExternalLink className="size-4" />}
+              icon={<ACTION_ICONS.externalLink className="size-4" />}
               iconPosition="right">
               <Trans>Open in Cloud Portal</Trans>
             </LinkButton>

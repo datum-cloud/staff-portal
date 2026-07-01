@@ -1,23 +1,13 @@
 import { useClusterHealth } from '../hooks/use-cluster-health';
 import type { ClusterEntry } from '../hooks/use-cluster-health';
+import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
-import {
-  AlertCircle,
-  CheckCircle2,
-  Cpu,
-  Globe,
-  HardDrive,
-  MemoryStick,
-  RefreshCw,
-  ShieldAlert,
-  XCircle,
-  Zap,
-} from 'lucide-react';
+import { Cpu, Globe, HardDrive, MemoryStick, ShieldAlert, Zap } from 'lucide-react';
 
 function LoadingSkeleton() {
   return (
@@ -39,7 +29,7 @@ function LoadingSkeleton() {
 function ErrorState({ onRetry }: { onRetry: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center py-6 text-center">
-      <AlertCircle className="text-muted-foreground mb-3 h-8 w-8" />
+      <STATUS_ICONS.alert className="text-muted-foreground mb-3 h-8 w-8" />
       <Title level={5} className="mb-1">
         <Trans>Cluster metrics unavailable</Trans>
       </Title>
@@ -156,11 +146,11 @@ function ClusterCell({ cluster }: { cluster: ClusterEntry }) {
     <div className={cls}>
       <div className="pt-0.5">
         {healthy ? (
-          <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-green-600 dark:text-green-400" />
+          <STATUS_ICONS.success className="h-3.5 w-3.5 shrink-0 text-green-600 dark:text-green-400" />
         ) : hasCritical ? (
-          <XCircle className="h-3.5 w-3.5 shrink-0 text-red-600 dark:text-red-400" />
+          <STATUS_ICONS.error className="h-3.5 w-3.5 shrink-0 text-red-600 dark:text-red-400" />
         ) : (
-          <AlertCircle className="h-3.5 w-3.5 shrink-0 text-amber-600 dark:text-amber-400" />
+          <STATUS_ICONS.alert className="h-3.5 w-3.5 shrink-0 text-amber-600 dark:text-amber-400" />
         )}
       </div>
       <div className="min-w-0 flex-1">
@@ -181,7 +171,7 @@ function ClusterCell({ cluster }: { cluster: ClusterEntry }) {
           )}
           {cluster.restartingContainers > 0 && (
             <MetricChip
-              icon={RefreshCw}
+              icon={ACTION_ICONS.refresh}
               value={`${cluster.restartingContainers}`}
               warn
               tooltip={`${cluster.restartingContainers} container(s) with >5 restarts`}
@@ -227,9 +217,9 @@ export function ClusterHealthWidget() {
 
               <div className="flex items-center gap-2">
                 {allHealthy ? (
-                  <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  <STATUS_ICONS.success className="h-4 w-4 text-green-600 dark:text-green-400" />
                 ) : (
-                  <XCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
+                  <STATUS_ICONS.error className="h-4 w-4 text-red-600 dark:text-red-400" />
                 )}
                 <Text size="sm" className="font-medium">
                   {summary.healthy}/{summary.total}{' '}

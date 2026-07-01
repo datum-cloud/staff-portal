@@ -1,7 +1,8 @@
 import { SubLayout } from '@/components/sub-layout';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { profileRoutes } from '@/utils/config/routes.config';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { KeyIcon, SettingsIcon } from 'lucide-react';
+import { KeyIcon } from 'lucide-react';
 import { Outlet } from 'react-router';
 
 export const handle = {
@@ -15,7 +16,7 @@ export default function Layout() {
     {
       title: t`Settings`,
       href: profileRoutes.settings(),
-      icon: SettingsIcon,
+      icon: ACTION_ICONS.settings,
     },
     {
       title: t`Active Sessions`,

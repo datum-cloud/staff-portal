@@ -20,6 +20,7 @@ import {
   userDeleteMutation,
   userReactivateMutation,
 } from '@/resources/request/client';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes, userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
@@ -35,18 +36,14 @@ import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import {
-  CheckIcon,
-  ExternalLinkIcon,
   Globe,
   Mail,
   MapPin,
-  RotateCcw,
   Shield,
   ShieldAlert,
   ShieldCheckIcon,
   ShieldXIcon,
   UserIcon,
-  XIcon,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useRevalidator } from 'react-router';
@@ -177,7 +174,7 @@ export default function Page() {
                 rel="noopener noreferrer"
                 theme="outline"
                 size="small"
-                icon={<ExternalLinkIcon size={16} />}
+                icon={<ACTION_ICONS.externalLink size={16} />}
                 iconPosition="right">
                 <Trans>View in Sentry</Trans>
               </LinkButton>
@@ -187,7 +184,7 @@ export default function Page() {
                 <Button
                   theme="outline"
                   size="small"
-                  icon={<CheckIcon size={16} />}
+                  icon={<ACTION_ICONS.check size={16} />}
                   loading={isApproving}
                   onClick={async () => {
                     setIsApproving(true);
@@ -204,7 +201,7 @@ export default function Page() {
                 <Button
                   theme="outline"
                   size="small"
-                  icon={<XIcon size={16} />}
+                  icon={<ACTION_ICONS.close size={16} />}
                   onClick={() => setRejectDialogOpen(true)}>
                   <Trans>Reject</Trans>
                 </Button>
@@ -213,7 +210,7 @@ export default function Page() {
               <Button
                 theme="outline"
                 size="small"
-                icon={<RotateCcw size={16} />}
+                icon={<ACTION_ICONS.reset size={16} />}
                 loading={isMovingToPending}
                 onClick={async () => {
                   setIsMovingToPending(true);
@@ -388,7 +385,7 @@ export default function Page() {
                   <Button
                     theme="outline"
                     size="small"
-                    icon={<ExternalLinkIcon size={16} />}
+                    icon={<ACTION_ICONS.externalLink size={16} />}
                     onClick={() =>
                       navigate(fraudRoutes.evaluations.detail(latestEval.metadata?.name ?? ''))
                     }>

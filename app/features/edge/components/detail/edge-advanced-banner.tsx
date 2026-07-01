@@ -1,11 +1,11 @@
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { Alert, AlertDescription } from '@datum-cloud/datum-ui/alert';
 import { Trans } from '@lingui/react/macro';
-import { Info } from 'lucide-react';
 
 export function EdgeAdvancedBanner() {
   return (
     <Alert variant="info">
-      <Info className="size-4" />
+      <STATUS_ICONS.info className="size-4" />
       <AlertDescription>
         <p>
           <Trans>

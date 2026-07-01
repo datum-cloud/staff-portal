@@ -7,6 +7,7 @@ import {
   useDeleteFraudProviderMutation,
   useFraudProviderListQuery,
 } from '@/resources/request/client';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -17,7 +18,6 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisFraudV1Alpha1FraudProvider } from '@openapi/fraud.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
-import { EditIcon, PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 
@@ -38,12 +38,12 @@ export default function Page() {
   const actions: ActionItem<FraudProvider>[] = [
     {
       label: t`Edit`,
-      icon: <EditIcon className="size-4" />,
+      icon: <ACTION_ICONS.edit className="size-4" />,
       onClick: (row) => navigate(fraudRoutes.providers.detail(row.metadata?.name ?? '')),
     },
     {
       label: t`Delete`,
-      icon: <Trash2Icon className="size-4" />,
+      icon: <ACTION_ICONS.delete className="size-4" />,
       variant: 'destructive' as const,
       onClick: (row) => setSelectedProvider(row),
     },
@@ -142,7 +142,7 @@ export default function Page() {
           actions={
             <Button
               type="primary"
-              icon={<PlusCircleIcon size={16} />}
+              icon={<ACTION_ICONS.add size={16} />}
               onClick={() => navigate(fraudRoutes.providers.create())}>
               <Trans>Add Provider</Trans>
             </Button>

@@ -1,8 +1,8 @@
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { startCase } from '@/utils/helpers';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import { Loader2 } from 'lucide-react';
 import * as React from 'react';
 
 type BadgeStateIcon = React.ElementType<{ className?: string }>;
@@ -204,7 +204,7 @@ const BadgeState = ({ state, message, noColor, tooltip, icon, className, loading
         className
       )}>
       {IconComponent ? <IconComponent className="h-2.5 w-2.5" /> : null}
-      {loading ? <Loader2 className="h-2.5 w-2.5 animate-spin" /> : null}
+      {loading ? <STATUS_ICONS.loading className="h-2.5 w-2.5 animate-spin" /> : null}
       {displayText}
     </Badge>
   );

@@ -1,9 +1,10 @@
 import type { Route } from './+types/not-found';
 import { LogoIcon } from '@/components/logo/logo-icon';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { createRequestLogger, logger } from '@/utils/logger';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
-import { HomeIcon, RefreshCcwIcon } from 'lucide-react';
+import { HomeIcon } from 'lucide-react';
 import { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 
@@ -85,7 +86,7 @@ export default function NotFound() {
               </Button>
             </Link>
             <Button type="secondary" size="small" onClick={() => navigate(-1)}>
-              <RefreshCcwIcon className="size-4" />
+              <ACTION_ICONS.refresh className="size-4" />
               Go Back
             </Button>
           </div>

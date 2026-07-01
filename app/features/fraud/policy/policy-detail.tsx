@@ -1,12 +1,13 @@
 import type { FraudPolicy, Stage } from './types';
 import { BadgeState } from '@/components/badge';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ArrowRightLeft, Edit2Icon, Eye, Layers, Shield, Trash2Icon, Zap } from 'lucide-react';
+import { Layers, Shield, Zap } from 'lucide-react';
 
 function StageCard({ stage, index }: { stage: Stage; index: number }) {
   return (
@@ -88,14 +89,14 @@ export function PolicyDetail({
               <Button
                 type="tertiary"
                 theme="outline"
-                icon={<Edit2Icon size={16} />}
+                icon={<ACTION_ICONS.edit size={16} />}
                 onClick={onEdit}>
                 <Trans>Edit</Trans>
               </Button>
               <Button
                 type="danger"
                 theme="outline"
-                icon={<Trash2Icon size={16} />}
+                icon={<ACTION_ICONS.delete size={16} />}
                 onClick={onDelete}>
                 <Trans>Delete</Trans>
               </Button>
@@ -113,7 +114,7 @@ export function PolicyDetail({
               </Text>
               <div className="flex items-center gap-2">
                 {policy.spec.enforcement.mode === 'OBSERVE' ? (
-                  <Eye className="text-muted-foreground h-4 w-4" />
+                  <ACTION_ICONS.view className="text-muted-foreground h-4 w-4" />
                 ) : (
                   <Zap className="h-4 w-4 text-yellow-500" />
                 )}
@@ -199,7 +200,7 @@ export function PolicyDetail({
 
       <div>
         <Title level={6} className="mb-3 flex items-center gap-2">
-          <ArrowRightLeft className="h-4 w-4" />
+          <ACTION_ICONS.transfer className="h-4 w-4" />
           <Trans>Evaluation Pipeline</Trans>
         </Title>
         <div className="space-y-3">

@@ -11,6 +11,7 @@ import {
   useRevokeServiceEntitlementMutation,
   useServiceConsumersEnrichedQuery,
 } from '@/resources/request/client';
+import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
@@ -18,7 +19,6 @@ import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
-import { CheckCircle, Trash2, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
 
@@ -51,20 +51,20 @@ export default function ConsumersPage() {
   const actions: ActionItem<ServiceConsumer>[] = [
     {
       label: t`Approve`,
-      icon: <CheckCircle className="size-4" />,
+      icon: <STATUS_ICONS.success className="size-4" />,
       hidden: (row) => !(row.phase === 'PendingApproval' && !row.approvalDecision),
       onClick: (row) => openDialog(row.name, 'Approved'),
     },
     {
       label: t`Deny`,
-      icon: <XCircle className="size-4" />,
+      icon: <STATUS_ICONS.error className="size-4" />,
       variant: 'destructive' as const,
       hidden: (row) => !(row.phase === 'PendingApproval' && !row.approvalDecision),
       onClick: (row) => openDialog(row.name, 'Denied'),
     },
     {
       label: t`Revoke`,
-      icon: <Trash2 className="size-4" />,
+      icon: <ACTION_ICONS.delete className="size-4" />,
       variant: 'destructive' as const,
       hidden: (row) => row.phase !== 'Active',
       onClick: (row) => setRevokeTarget(row),

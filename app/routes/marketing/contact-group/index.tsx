@@ -10,6 +10,7 @@ import {
   useContactGroupListQuery,
   useDeleteContactGroupMutation,
 } from '@/resources/request/client';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { contactGroupRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -21,7 +22,6 @@ import { Trans } from '@lingui/react/macro';
 import { ComMiloapisNotificationV1Alpha1ContactGroup } from '@openapi/notification.miloapis.com/v1alpha1';
 import { useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
-import { EditIcon, PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -47,12 +47,12 @@ export default function Page() {
   const actions: ActionItem<ComMiloapisNotificationV1Alpha1ContactGroup>[] = [
     {
       label: t`Edit`,
-      icon: <EditIcon className="size-4" />,
+      icon: <ACTION_ICONS.edit className="size-4" />,
       onClick: (row) => navigate(contactGroupRoutes.detail(row.metadata?.name ?? '')),
     },
     {
       label: t`Delete`,
-      icon: <Trash2Icon className="size-4" />,
+      icon: <ACTION_ICONS.delete className="size-4" />,
       variant: 'destructive' as const,
       onClick: (row) => setSelectedContactGroup(row),
     },
@@ -136,7 +136,7 @@ export default function Page() {
               : t`Delete ${taskRows.length} contact groups`;
           enqueue({
             title: taskTitle,
-            icon: <Trash2Icon className="size-4" />,
+            icon: <ACTION_ICONS.delete className="size-4" />,
             items: taskRows,
             itemConcurrency: 3,
             getItemId: (row) => row.metadata?.name ?? '',
@@ -192,7 +192,7 @@ export default function Page() {
           actions={
             <Button
               type="primary"
-              icon={<PlusCircleIcon size={16} />}
+              icon={<ACTION_ICONS.add size={16} />}
               onClick={() => navigate(contactGroupRoutes.create())}>
               <Trans>Add</Trans>
             </Button>
@@ -203,7 +203,7 @@ export default function Page() {
                 type="danger"
                 theme="outline"
                 size="small"
-                icon={<Trash2Icon size={16} />}
+                icon={<ACTION_ICONS.delete size={16} />}
                 onClick={() =>
                   setBulkDeleteRows(selectedRows as ComMiloapisNotificationV1Alpha1ContactGroup[])
                 }>

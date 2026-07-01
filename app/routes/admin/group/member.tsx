@@ -14,6 +14,7 @@ import {
   useUserListQuery,
 } from '@/resources/request/client';
 import { groupDetailQuery } from '@/resources/request/server';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -26,7 +27,6 @@ import {
   ComMiloapisIamV1Alpha1GroupMembership,
 } from '@openapi/iam.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
-import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import z from 'zod';
 
@@ -92,7 +92,7 @@ export default function Page() {
   const actions: ActionItem<ComMiloapisIamV1Alpha1GroupMembership>[] = [
     {
       label: t`Delete`,
-      icon: <Trash2Icon className="size-4" />,
+      icon: <ACTION_ICONS.delete className="size-4" />,
       variant: 'destructive' as const,
       onClick: (row) => setSelectedGroupMembership(row),
     },
@@ -141,7 +141,7 @@ export default function Page() {
       <AppActionBar>
         <Button
           type="primary"
-          icon={<PlusCircleIcon size={16} />}
+          icon={<ACTION_ICONS.add size={16} />}
           onClick={() => setIsAddMember(true)}>
           <Trans>Add</Trans>
         </Button>

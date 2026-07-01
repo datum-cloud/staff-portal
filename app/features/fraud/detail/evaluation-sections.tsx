@@ -3,6 +3,7 @@ import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DisplayId } from '@/components/display';
 import { useEnv } from '@/hooks/use-env';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes, userRoutes } from '@/utils/config/routes.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
@@ -11,7 +12,7 @@ import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ArrowLeft, Clock, ExternalLink, History, Layers, Mail, User } from 'lucide-react';
+import { ArrowLeft, Clock, History, Layers, Mail, User } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
 
@@ -137,7 +138,7 @@ function ProviderResultRow({ result }: { result: ProviderResult }) {
                 size="small"
                 theme="outline"
                 onClick={() => window.open(maxmindURL, '_blank', 'noopener,noreferrer')}>
-                <ExternalLink className="mr-1 h-3 w-3" />
+                <ACTION_ICONS.externalLink className="mr-1 h-3 w-3" />
                 <Trans>View on MaxMind</Trans>
               </Button>
             )}

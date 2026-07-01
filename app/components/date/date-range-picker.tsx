@@ -1,5 +1,6 @@
 'use client';
 
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Calendar } from '@datum-cloud/datum-ui/calendar';
 import { Input } from '@datum-cloud/datum-ui/input';
@@ -20,7 +21,7 @@ import {
   subHours,
   subMinutes,
 } from 'date-fns';
-import { CalendarIcon, X } from 'lucide-react';
+import { CalendarIcon } from 'lucide-react';
 import * as React from 'react';
 import { DateRange } from 'react-day-picker';
 
@@ -250,7 +251,7 @@ export function DateRangePicker({
                 }}
                 disabled={disabled}
                 className="absolute right-1 h-6 w-6">
-                <X className="h-3 w-3" />
+                <ACTION_ICONS.close className="h-3 w-3" />
               </Button>
             )}
           </Button>

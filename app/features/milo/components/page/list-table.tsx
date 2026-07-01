@@ -8,6 +8,7 @@ import {
   type FilterGroupConfig,
 } from './rich-filter-panel';
 import { useBreakpoint } from '@/hooks/use-breakpoint';
+import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import type { SelectionColumnOptions } from '@datum-cloud/datum-ui/data-table';
@@ -17,7 +18,7 @@ import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { useLingui } from '@lingui/react/macro';
 import type { ColumnDef } from '@tanstack/react-table';
-import { ChevronLeft, Info, SearchIcon } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { useMemo, useState, type ReactNode } from 'react';
 
 /** Externally-controlled search (server-side): the input is driven by the caller, client filtering is off. */
@@ -195,7 +196,7 @@ export function ListTable<TData>({
           <div className={containerClass}>
             <div className="flex shrink-0 items-center gap-1 border-b pr-2">
               <div className="relative min-w-0 flex-1">
-                <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+                <ACTION_ICONS.search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
                 {controlledSearch ? (
                   <Input
                     placeholder={searchPlaceholder}
@@ -237,7 +238,7 @@ export function ListTable<TData>({
                   theme="borderless"
                   size="icon"
                   className="mt-4 size-7 hover:bg-transparent"
-                  icon={<Info className="size-4" />}
+                  icon={<STATUS_ICONS.info className="size-4" />}
                 />
               </Tooltip>
             )}

@@ -2,10 +2,10 @@
 
 import { SearchResults } from './search-results';
 import { useAppSearch } from './use-app-search';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Input } from '@datum-cloud/datum-ui/input';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { useLingui } from '@lingui/react/macro';
-import { SearchIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -63,7 +63,7 @@ function AppSearch({ className = '', placeholder }: Props) {
   return (
     <div ref={containerRef} className={cn('relative', className)}>
       <div className="bg-muted/25 hover:bg-muted/50 text-muted-foreground flex h-8 w-full items-center gap-1.5 rounded-md border px-2 md:w-40 lg:w-56 xl:w-64">
-        <SearchIcon className="h-4 w-4 shrink-0 opacity-50" aria-hidden="true" />
+        <ACTION_ICONS.search className="h-4 w-4 shrink-0 opacity-50" aria-hidden="true" />
         <Input
           ref={inputRef}
           className="h-full min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 shadow-none focus-visible:border-0 focus-visible:shadow-none focus-visible:ring-0"

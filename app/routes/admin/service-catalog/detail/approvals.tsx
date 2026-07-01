@@ -5,6 +5,7 @@ import { MessageCard } from '@/components/message-card';
 import { ListTable } from '@/features/milo';
 import { consumerMatchesService, useApprovalDialog } from '@/features/service-catalog';
 import { useServiceConsumersInProjectQuery } from '@/resources/request/client';
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
@@ -12,7 +13,6 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import type { ComMiloapisServicesV1Alpha1ServiceConsumer } from '@openapi/services.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
-import { CheckCircle, XCircle } from 'lucide-react';
 import { Link } from 'react-router';
 
 type ServiceConsumer = ComMiloapisServicesV1Alpha1ServiceConsumer;
@@ -48,12 +48,12 @@ export default function ApprovalsPage() {
   const actions: ActionItem<ServiceConsumer>[] = [
     {
       label: t`Approve`,
-      icon: <CheckCircle className="size-4" />,
+      icon: <STATUS_ICONS.success className="size-4" />,
       onClick: (row) => openDialog(row.metadata?.name ?? '', 'Approved'),
     },
     {
       label: t`Deny`,
-      icon: <XCircle className="size-4" />,
+      icon: <STATUS_ICONS.error className="size-4" />,
       variant: 'destructive' as const,
       onClick: (row) => openDialog(row.metadata?.name ?? '', 'Denied'),
     },

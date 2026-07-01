@@ -9,6 +9,7 @@ import {
   useOrgInvitationDeleteMutation,
   useOrgMemberListQuery,
 } from '@/resources/request/client';
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
@@ -17,7 +18,7 @@ import { t as tCore } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 import { addHours, differenceInMinutes, formatRFC3339 } from 'date-fns';
-import { CircleXIcon, MailIcon } from 'lucide-react';
+import { MailIcon } from 'lucide-react';
 import { useState } from 'react';
 
 export const handle = {
@@ -82,7 +83,7 @@ export default function Page() {
     },
     {
       label: t`Cancel`,
-      icon: <CircleXIcon className="size-4" />,
+      icon: <STATUS_ICONS.error className="size-4" />,
       variant: 'destructive' as const,
       hidden: (row) => row.invitationState !== 'Pending',
       onClick: async (row) => {

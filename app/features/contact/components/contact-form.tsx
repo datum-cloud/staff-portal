@@ -7,6 +7,7 @@ import {
   contactUpdateMutation,
   useContactGroupListQuery,
 } from '@/resources/request/client';
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { contactRoutes, userRoutes } from '@/utils/config/routes.config';
 import { Alert, AlertDescription, AlertTitle } from '@datum-cloud/datum-ui/alert';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -17,7 +18,6 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import { ComMiloapisNotificationV1Alpha1Contact } from '@openapi/notification.miloapis.com/v1alpha1';
-import { Loader2 } from 'lucide-react';
 import * as React from 'react';
 import { Link, useNavigate } from 'react-router';
 import z from 'zod';
@@ -174,7 +174,7 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
             <>
               {contactGroupsLoading ? (
                 <div className="flex items-center py-2">
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <STATUS_ICONS.loading className="mr-2 h-4 w-4 animate-spin" />
                   <Text>{t`Loading mail lists...`}</Text>
                 </div>
               ) : (

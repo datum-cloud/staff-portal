@@ -1,7 +1,7 @@
 import { LogoIcon } from '@/components/logo/logo-icon';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
-import { LogOutIcon } from 'lucide-react';
 import { Link } from 'react-router';
 
 export const meta = () => {
@@ -29,7 +29,7 @@ export default function UnauthorizedPage() {
           <div className="flex items-center gap-2">
             <Link to="/logout">
               <Button size="small">
-                <LogOutIcon className="size-4" />
+                <ACTION_ICONS.logout className="size-4" />
                 Sign Out
               </Button>
             </Link>

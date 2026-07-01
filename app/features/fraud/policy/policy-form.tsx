@@ -4,6 +4,7 @@ import {
   useFraudProviderListQuery,
   useUpdateFraudPolicyMutation,
 } from '@/resources/request/client';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Form } from '@datum-cloud/datum-ui/form';
@@ -12,7 +13,6 @@ import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { PlusCircleIcon, XIcon } from 'lucide-react';
 import { z } from 'zod';
 
 const stageSchema = z.object({
@@ -176,7 +176,7 @@ export function PolicyForm({
                           type="tertiary"
                           theme="outline"
                           size="small"
-                          icon={<PlusCircleIcon size={14} />}
+                          icon={<ACTION_ICONS.add size={14} />}
                           htmlType="button"
                           onClick={() => append({ type: 'Event', event: '' })}>
                           <Trans>Add Trigger</Trans>
@@ -193,7 +193,7 @@ export function PolicyForm({
                               type="tertiary"
                               theme="borderless"
                               size="small"
-                              icon={<XIcon size={14} />}
+                              icon={<ACTION_ICONS.close size={14} />}
                               htmlType="button"
                               onClick={() => remove(idx)}
                             />
@@ -234,7 +234,7 @@ export function PolicyForm({
                           type="tertiary"
                           theme="outline"
                           size="small"
-                          icon={<PlusCircleIcon size={14} />}
+                          icon={<ACTION_ICONS.add size={14} />}
                           htmlType="button"
                           onClick={() =>
                             append({
@@ -261,7 +261,7 @@ export function PolicyForm({
                                 type="tertiary"
                                 theme="borderless"
                                 size="small"
-                                icon={<XIcon size={14} />}
+                                icon={<ACTION_ICONS.close size={14} />}
                                 htmlType="button"
                                 onClick={() => remove(idx)}
                               />
