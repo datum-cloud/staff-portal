@@ -2,10 +2,11 @@ import type { Route } from './+types/layout';
 import { DetailShell, type EntityTab } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
 import { contactGroupDetailQuery } from '@/resources/request/server';
+import { ENTITY_ICONS } from '@/utils/config/icons.config';
 import { contactGroupRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisNotificationV1Alpha1ContactGroup } from '@openapi/notification.miloapis.com/v1alpha1';
-import { BookUser, InfoIcon, Users } from 'lucide-react';
+import { InfoIcon, Users } from 'lucide-react';
 import { useLoaderData } from 'react-router';
 
 export const handle = {
@@ -50,7 +51,7 @@ export default function Layout() {
     <DetailShell
       icon={
         <div className="bg-muted flex size-10 items-center justify-center rounded-md">
-          <BookUser className="size-5" />
+          <ENTITY_ICONS.contactGroup className="size-5" />
         </div>
       }
       name={displayName}

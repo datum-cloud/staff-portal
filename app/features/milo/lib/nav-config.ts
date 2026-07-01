@@ -1,3 +1,4 @@
+import { ENTITY_ICONS, SECTION_ICONS } from '@/utils/config/icons.config';
 import {
   activityRoutes,
   contactGroupRoutes,
@@ -11,24 +12,7 @@ import {
   serviceCatalogRoutes,
   userRoutes,
 } from '@/utils/config/routes.config';
-import {
-  BookUser,
-  Building2,
-  Cog,
-  Contact,
-  CreditCard,
-  Folders,
-  LayoutDashboard,
-  type LucideIcon,
-  Mail,
-  Megaphone,
-  ReceiptText,
-  Shield,
-  ShieldUser,
-  SquareActivity,
-  Store,
-  Users,
-} from 'lucide-react';
+import { type LucideIcon } from 'lucide-react';
 
 /**
  * Single source of truth for the Milo shell navigation.
@@ -79,7 +63,7 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     id: 'customers',
     label: 'Customers',
-    icon: Users,
+    icon: SECTION_ICONS.customers,
     href: orgRoutes.list(),
     match: '/customers',
     subNav: {
@@ -87,17 +71,17 @@ export const NAV_SECTIONS: NavSection[] = [
       groups: [
         {
           items: [
-            { label: 'Organizations', href: orgRoutes.list(), icon: Building2 },
-            { label: 'Projects', href: projectRoutes.list(), icon: Folders },
+            { label: 'Organizations', href: orgRoutes.list(), icon: ENTITY_ICONS.organization },
+            { label: 'Projects', href: projectRoutes.list(), icon: ENTITY_ICONS.project },
             // One "Resources" entry → a tabbed page (AI Edge / DNS / Domains),
             // all nested under /customers/resources.
             {
               label: 'Resources',
               href: resourceRoutes.root(),
               match: resourceRoutes.root(),
-              icon: LayoutDashboard,
+              icon: ENTITY_ICONS.resource,
             },
-            { label: 'Users', href: userRoutes.list(), icon: Users },
+            { label: 'Users', href: userRoutes.list(), icon: ENTITY_ICONS.user },
           ],
         },
       ],
@@ -106,7 +90,7 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     id: 'marketing',
     label: 'Marketing',
-    icon: Megaphone,
+    icon: SECTION_ICONS.marketing,
     href: contactRoutes.list(),
     match: '/marketing',
     subNav: {
@@ -114,8 +98,12 @@ export const NAV_SECTIONS: NavSection[] = [
       groups: [
         {
           items: [
-            { label: 'Contacts', href: contactRoutes.list(), icon: Contact },
-            { label: 'Contact Groups', href: contactGroupRoutes.list(), icon: BookUser },
+            { label: 'Contacts', href: contactRoutes.list(), icon: ENTITY_ICONS.contact },
+            {
+              label: 'Contact Groups',
+              href: contactGroupRoutes.list(),
+              icon: ENTITY_ICONS.contactGroup,
+            },
           ],
         },
       ],
@@ -124,7 +112,7 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     id: 'finance',
     label: 'Finance',
-    icon: CreditCard,
+    icon: SECTION_ICONS.finance,
     href: financeRoutes.billingAccounts.list(),
     match: '/finance',
     subNav: {
@@ -135,7 +123,7 @@ export const NAV_SECTIONS: NavSection[] = [
             {
               label: 'Billing Accounts',
               href: financeRoutes.billingAccounts.list(),
-              icon: ReceiptText,
+              icon: ENTITY_ICONS.billingAccount,
             },
           ],
         },
@@ -145,7 +133,7 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     id: 'operations',
     label: 'Operations',
-    icon: Cog,
+    icon: SECTION_ICONS.operations,
     href: activityRoutes.root(),
     match: '/operations',
     subNav: {
@@ -153,8 +141,12 @@ export const NAV_SECTIONS: NavSection[] = [
       groups: [
         {
           items: [
-            { label: 'Activity', href: activityRoutes.root(), icon: SquareActivity },
-            { label: 'Email Activity', href: routes.emailActivity(), icon: Mail },
+            { label: 'Activity', href: activityRoutes.root(), icon: ENTITY_ICONS.activity },
+            {
+              label: 'Email Activity',
+              href: routes.emailActivity(),
+              icon: ENTITY_ICONS.emailActivity,
+            },
           ],
         },
       ],
@@ -163,7 +155,7 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     id: 'admin',
     label: 'Admin',
-    icon: Shield,
+    icon: SECTION_ICONS.admin,
     href: groupRoutes.list(),
     match: '/admin',
     subNav: {
@@ -171,8 +163,12 @@ export const NAV_SECTIONS: NavSection[] = [
       groups: [
         {
           items: [
-            { label: 'Groups', href: groupRoutes.list(), icon: ShieldUser },
-            { label: 'Service Catalog', href: serviceCatalogRoutes.list(), icon: Store },
+            { label: 'Groups', href: groupRoutes.list(), icon: ENTITY_ICONS.group },
+            {
+              label: 'Service Catalog',
+              href: serviceCatalogRoutes.list(),
+              icon: ENTITY_ICONS.serviceCatalog,
+            },
           ],
         },
       ],

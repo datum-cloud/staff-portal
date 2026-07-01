@@ -1,7 +1,7 @@
 import { HEADER_STACK_H, TabStrip, type EntityTab } from '@/features/milo';
+import { ENTITY_ICONS } from '@/utils/config/icons.config';
 import { dnsRoutes, domainRoutes, edgeRoutes } from '@/utils/config/routes.config';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Gauge, Layers, Signpost } from 'lucide-react';
 import { Outlet } from 'react-router';
 
 export const handle = {
@@ -17,9 +17,9 @@ export default function ResourcesLayout() {
   const { t } = useLingui();
 
   const tabs: EntityTab[] = [
-    { label: t`AI Edge`, href: edgeRoutes.list(), icon: Gauge },
-    { label: t`DNS`, href: dnsRoutes.list(), icon: Signpost },
-    { label: t`Domains`, href: domainRoutes.list(), icon: Layers },
+    { label: t`AI Edge`, href: edgeRoutes.list(), icon: ENTITY_ICONS.edge },
+    { label: t`DNS`, href: dnsRoutes.list(), icon: ENTITY_ICONS.dns },
+    { label: t`Domains`, href: domainRoutes.list(), icon: ENTITY_ICONS.domain },
   ];
 
   return (

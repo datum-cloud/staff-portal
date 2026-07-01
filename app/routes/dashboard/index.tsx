@@ -15,10 +15,10 @@ import {
   projectListQuery,
   userListQuery,
 } from '@/resources/request/client';
+import { ENTITY_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes, orgRoutes, projectRoutes, userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
-import { Building2, FolderOpen, ShieldAlert, Users } from 'lucide-react';
 
 export const meta: Route.MetaFunction = () => {
   return metaObject('Dashboard');
@@ -57,7 +57,7 @@ export default function Page() {
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <KpiCounterCard
           label={<Trans>Users</Trans>}
-          icon={<Users size={16} />}
+          icon={<ENTITY_ICONS.user size={16} />}
           count={userCount.count}
           isLoading={userCount.isLoading}
           isError={userCount.isError}
@@ -65,7 +65,7 @@ export default function Page() {
         />
         <KpiCounterCard
           label={<Trans>Organizations</Trans>}
-          icon={<Building2 size={16} />}
+          icon={<ENTITY_ICONS.organization size={16} />}
           count={orgCount.count}
           isLoading={orgCount.isLoading}
           isError={orgCount.isError}
@@ -73,7 +73,7 @@ export default function Page() {
         />
         <KpiCounterCard
           label={<Trans>Projects</Trans>}
-          icon={<FolderOpen size={16} />}
+          icon={<ENTITY_ICONS.project size={16} />}
           count={projectCount.count}
           isLoading={projectCount.isLoading}
           isError={projectCount.isError}
@@ -81,7 +81,7 @@ export default function Page() {
         />
         <KpiCounterCard
           label={<Trans>Fraud Evaluations</Trans>}
-          icon={<ShieldAlert size={16} />}
+          icon={<ENTITY_ICONS.fraud size={16} />}
           count={fraudCount.count}
           isLoading={fraudCount.isLoading}
           isError={fraudCount.isError}

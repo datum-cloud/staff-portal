@@ -3,13 +3,13 @@ import { DetailShell, type EntityTab } from '@/features/milo';
 import { useEnv } from '@/hooks';
 import { authenticator } from '@/modules/auth';
 import { orgDetailQuery } from '@/resources/request/server';
+import { ENTITY_ICONS } from '@/utils/config/icons.config';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisResourcemanagerV1Alpha1Organization } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import {
   BarChart3,
-  Building2,
   CircleGauge,
   ExternalLink,
   FileText,
@@ -107,7 +107,7 @@ export default function Layout() {
     <DetailShell
       icon={
         <div className="bg-muted flex size-10 items-center justify-center rounded-md">
-          <Building2 className="size-5" />
+          <ENTITY_ICONS.organization className="size-5" />
         </div>
       }
       name={displayName}

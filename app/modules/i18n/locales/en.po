@@ -163,7 +163,7 @@ msgstr "Active Configuration"
 msgid "Active Sessions"
 msgstr "Active Sessions"
 
-#: app/components/app-search/use-app-search.ts:48
+#: app/components/app-search/use-app-search.ts:54
 #: app/components/app-sidebar/index.tsx:187
 #: app/routes/customer/organization/detail/activity/layout.tsx:5
 #: app/routes/customer/organization/detail/layout.tsx:81
@@ -813,7 +813,7 @@ msgstr "Danger Zone"
 msgid "Dark"
 msgstr "Dark"
 
-#: app/components/app-search/use-app-search.ts:33
+#: app/components/app-search/use-app-search.ts:34
 #: app/components/app-sidebar/index.tsx:103
 #: app/routes/dashboard/index.tsx:28
 msgid "Dashboard"
@@ -1019,7 +1019,7 @@ msgid "Description"
 msgstr "Description"
 
 #: app/features/service-catalog/components/details-card.tsx:22
-#: app/routes/marketing/contact-group/detail/layout.tsx:37
+#: app/routes/marketing/contact-group/detail/layout.tsx:38
 #: app/routes/marketing/contact/detail/layout.tsx:59
 msgid "Details"
 msgstr "Details"
@@ -1544,7 +1544,7 @@ msgstr "General"
 msgid "Get"
 msgstr "Get"
 
-#: app/components/app-search/use-app-search.ts:33
+#: app/components/app-search/use-app-search.ts:34
 msgid "Go to dashboard"
 msgstr "Go to dashboard"
 
@@ -1825,11 +1825,11 @@ msgstr "Mail Lists"
 msgid "Manage"
 msgstr "Manage"
 
-#: app/components/app-search/use-app-search.ts:39
+#: app/components/app-search/use-app-search.ts:45
 msgid "Manage organizations"
 msgstr "Manage organizations"
 
-#: app/components/app-search/use-app-search.ts:45
+#: app/components/app-search/use-app-search.ts:51
 msgid "Manage projects"
 msgstr "Manage projects"
 
@@ -1837,7 +1837,7 @@ msgstr "Manage projects"
 msgid "Manage user access and account status"
 msgstr "Manage user access and account status"
 
-#: app/components/app-search/use-app-search.ts:34
+#: app/components/app-search/use-app-search.ts:39
 msgid "Manage users"
 msgstr "Manage users"
 
@@ -1867,7 +1867,7 @@ msgstr "Member deleted successfully"
 
 #: app/routes/customer/organization/detail/layout.tsx:78
 #: app/routes/customer/organization/detail/member.tsx:24
-#: app/routes/marketing/contact-group/detail/layout.tsx:43
+#: app/routes/marketing/contact-group/detail/layout.tsx:44
 #: app/routes/marketing/contact-group/detail/member.tsx:33
 msgid "Members"
 msgstr "Members"
@@ -2270,7 +2270,7 @@ msgid "Organization deleted successfully"
 msgstr "Organization deleted successfully"
 
 #: app/components/app-search/search-results.tsx:152
-#: app/components/app-search/use-app-search.ts:36
+#: app/components/app-search/use-app-search.ts:42
 #: app/components/app-sidebar/index.tsx:119
 #: app/routes/customer/organization/index.tsx:14
 #: app/routes/customer/organization/layout.tsx:5
@@ -2485,7 +2485,7 @@ msgid "Project deleted successfully"
 msgstr "Project deleted successfully"
 
 #: app/components/app-search/search-results.tsx:168
-#: app/components/app-search/use-app-search.ts:42
+#: app/components/app-search/use-app-search.ts:48
 #: app/components/app-sidebar/index.tsx:123
 #: app/routes/customer/organization/detail/layout.tsx:74
 #: app/routes/customer/organization/detail/project.tsx:15
@@ -3368,7 +3368,7 @@ msgid "User Type"
 msgstr "User Type"
 
 #: app/components/app-search/search-results.tsx:184
-#: app/components/app-search/use-app-search.ts:34
+#: app/components/app-search/use-app-search.ts:36
 #: app/components/app-sidebar/index.tsx:115
 #: app/routes/customer/user/index.tsx:29
 #: app/routes/customer/user/layout.tsx:5
@@ -3409,7 +3409,7 @@ msgstr "Verifying hostname"
 msgid "Version"
 msgstr "Version"
 
-#: app/components/app-search/use-app-search.ts:51
+#: app/components/app-search/use-app-search.ts:57
 msgid "View activity logs"
 msgstr "View activity logs"
 
