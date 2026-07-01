@@ -142,15 +142,13 @@ export default [
           route('groups', 'routes/marketing/contact/detail/group.tsx'),
         ]),
       ]),
-    ]),
-
-    // Contact Groups
-    route('contact-groups', 'routes/contact-group/layout.tsx', [
-      index('routes/contact-group/index.tsx'),
-      route('create', 'routes/contact-group/create.tsx'),
-      route(':contactGroupName', 'routes/contact-group/detail/layout.tsx', [
-        index('routes/contact-group/detail/index.tsx'),
-        route('members', 'routes/contact-group/detail/member.tsx'),
+      route('contact-groups', 'routes/marketing/contact-group/layout.tsx', [
+        index('routes/marketing/contact-group/index.tsx'),
+        route('create', 'routes/marketing/contact-group/create.tsx'),
+        route(':contactGroupName', 'routes/marketing/contact-group/detail/layout.tsx', [
+          index('routes/marketing/contact-group/detail/index.tsx'),
+          route('members', 'routes/marketing/contact-group/detail/member.tsx'),
+        ]),
       ]),
     ]),
 

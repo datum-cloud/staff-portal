@@ -89,10 +89,10 @@ export const contactRoutes = {
 } as const;
 
 export const contactGroupRoutes = {
-  list: () => '/contact-groups',
-  create: () => '/contact-groups/create',
-  detail: (contactGroupName: string) => `/contact-groups/${contactGroupName}`,
-  member: (contactGroupName: string) => `/contact-groups/${contactGroupName}/members`,
+  list: () => '/marketing/contact-groups',
+  create: () => '/marketing/contact-groups/create',
+  detail: (contactGroupName: string) => `/marketing/contact-groups/${contactGroupName}`,
+  member: (contactGroupName: string) => `/marketing/contact-groups/${contactGroupName}/members`,
 } as const;
 
 // Customers → Resources tabs (global views across all projects).

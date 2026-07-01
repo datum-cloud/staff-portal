@@ -62,7 +62,7 @@ export default function Layout() {
       end: true,
     },
     {
-      label: t`Lists`,
+      label: t`Contact Groups`,
       href: contactRoutes.group(namespace, contactName),
       icon: BookUser,
     },

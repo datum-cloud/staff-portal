@@ -1,5 +1,6 @@
 import {
   activityRoutes,
+  contactGroupRoutes,
   contactRoutes,
   financeRoutes,
   groupRoutes,
@@ -105,7 +106,14 @@ export const NAV_SECTIONS: NavSection[] = [
     match: '/marketing',
     subNav: {
       defaultCollapsed: true,
-      groups: [{ items: [{ label: 'Contacts', href: contactRoutes.list(), icon: Contact }] }],
+      groups: [
+        {
+          items: [
+            { label: 'Contacts', href: contactRoutes.list(), icon: Contact },
+            { label: 'Contact Groups', href: contactGroupRoutes.list(), icon: Users },
+          ],
+        },
+      ],
     },
   },
   {
@@ -160,5 +168,5 @@ export const NAV_SECTIONS: NavSection[] = [
       ],
     },
   },
-  // Hidden for now (routes still work by URL): Fraud & Abuse, Lists (contact groups).
+  // Hidden for now (routes still work by URL): Fraud & Abuse.
 ];

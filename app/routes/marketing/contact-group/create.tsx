@@ -7,7 +7,7 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 export const meta: Route.MetaFunction = () => {
-  return metaObject(t`Lists - Create`);
+  return metaObject(t`Contact Groups - Create`);
 };
 
 export const handle = {
@@ -22,7 +22,7 @@ export default function Page() {
           <Card>
             <CardHeader>
               <CardTitle>
-                <Trans>List Information</Trans>
+                <Trans>Contact Group Information</Trans>
               </CardTitle>
             </CardHeader>
             <CardContent>

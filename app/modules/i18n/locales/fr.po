@@ -177,9 +177,9 @@ msgstr ""
 
 #: app/routes/admin/group/member.tsx:146
 #: app/routes/admin/group/member.tsx:169
-#: app/routes/contact-group/detail/member.tsx:335
-#: app/routes/contact-group/detail/member.tsx:361
-#: app/routes/contact-group/index.tsx:195
+#: app/routes/marketing/contact-group/detail/member.tsx:335
+#: app/routes/marketing/contact-group/detail/member.tsx:361
+#: app/routes/marketing/contact-group/index.tsx:197
 #: app/routes/marketing/contact/detail/group.tsx:151
 #: app/routes/marketing/contact/detail/group.tsx:173
 #: app/routes/marketing/contact/index.tsx:30
@@ -191,7 +191,7 @@ msgid "Add a note"
 msgstr ""
 
 #: app/routes/admin/group/member.tsx:168
-#: app/routes/contact-group/detail/member.tsx:360
+#: app/routes/marketing/contact-group/detail/member.tsx:360
 msgid "Add Member"
 msgstr ""
 
@@ -208,14 +208,14 @@ msgid "Add Stage"
 msgstr ""
 
 #: app/routes/marketing/contact/detail/group.tsx:172
-msgid "Add to List"
+msgid "Add to Contact Group"
 msgstr ""
 
 #: app/features/fraud/policy/policy-form.tsx:182
 msgid "Add Trigger"
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:223
+#: app/routes/marketing/contact-group/detail/member.tsx:223
 msgid "Added"
 msgstr ""
 
@@ -316,13 +316,13 @@ msgid "Approve this consumer's access request. Optionally add a note."
 msgstr ""
 
 #. placeholder {0}: bulkDeleteRows[0]?.spec?.displayName ?? bulkDeleteRows[0]?.metadata?.name ?? ''
-#: app/routes/contact-group/index.tsx:124
+#: app/routes/marketing/contact-group/index.tsx:124
 msgid "Are you sure you want to delete \"{0}\"? This action cannot be undone."
 msgstr ""
 
 #. placeholder {0}: bulkDeleteRows?.length ?? 0
-#: app/routes/contact-group/index.tsx:125
-msgid "Are you sure you want to delete {0} lists? This action cannot be undone."
+#: app/routes/marketing/contact-group/index.tsx:125
+msgid "Are you sure you want to delete {0} contact groups? This action cannot be undone."
 msgstr ""
 
 #. placeholder {0}: selectedContact?.metadata?.name ?? ''
@@ -330,14 +330,14 @@ msgstr ""
 msgid "Are you sure you want to delete contact \"{0}\"? This action cannot be undone."
 msgstr ""
 
+#. placeholder {0}: selectedContactGroup?.spec?.displayName ?? ''
+#: app/routes/marketing/contact-group/index.tsx:107
+msgid "Are you sure you want to delete contact group \"{0}\"? This action cannot be undone."
+msgstr ""
+
 #. placeholder {0}: selectedGrant?.name
 #: app/features/quota/components/quota-grant-list.tsx:164
 msgid "Are you sure you want to delete grant \"{0}\"? This action cannot be undone."
-msgstr ""
-
-#. placeholder {0}: selectedContactGroup?.spec?.displayName ?? ''
-#: app/routes/contact-group/index.tsx:107
-msgid "Are you sure you want to delete list \"{0}\"? This action cannot be undone."
 msgstr ""
 
 #. placeholder {0}: selectedGroupMembership?.metadata?.name ?? ''
@@ -345,7 +345,7 @@ msgstr ""
 msgid "Are you sure you want to delete member \"{0}\"? This action cannot be undone."
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:343
+#: app/routes/marketing/contact-group/detail/member.tsx:343
 msgid "Are you sure you want to delete member \"{deleteMemberDisplayName}\"? This action cannot be undone."
 msgstr ""
 
@@ -390,7 +390,7 @@ msgstr ""
 
 #. placeholder {0}: selectedGroup?.contactGroup?.spec?.displayName ?? ''
 #: app/routes/marketing/contact/detail/group.tsx:159
-msgid "Are you sure you want to remove this contact from the list \"{0}\"? This action cannot be undone."
+msgid "Are you sure you want to remove this contact from the contact group \"{0}\"? This action cannot be undone."
 msgstr ""
 
 #: app/features/fraud/detail/maxmind-rows.tsx:135
@@ -398,7 +398,7 @@ msgid "ASN"
 msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:217
-#: app/routes/contact-group/detail/member.tsx:103
+#: app/routes/marketing/contact-group/detail/member.tsx:103
 msgid "Associate with User"
 msgstr ""
 
@@ -471,7 +471,7 @@ msgstr ""
 
 #: app/components/button/button-delete-action.tsx:43
 #: app/components/danger-zone-card/index.tsx:49
-#: app/features/contact-group/components/contact-group-form.tsx:95
+#: app/features/contact-group/components/contact-group-form.tsx:97
 #: app/features/contact/components/contact-form.tsx:244
 #: app/features/contact/components/contact-list.tsx:119
 #: app/features/feature-flags/components/feature-flag-list.tsx:229
@@ -483,10 +483,6 @@ msgstr ""
 #: app/routes/admin/group/member.tsx:156
 #: app/routes/admin/group/member.tsx:170
 #: app/routes/admin/service-catalog/detail/consumers.tsx:207
-#: app/routes/contact-group/detail/member.tsx:345
-#: app/routes/contact-group/detail/member.tsx:362
-#: app/routes/contact-group/index.tsx:109
-#: app/routes/contact-group/index.tsx:128
 #: app/routes/customer/organization/detail/member.tsx:84
 #: app/routes/customer/user/detail/index.tsx:152
 #: app/routes/customer/user/index.tsx:165
@@ -497,6 +493,10 @@ msgstr ""
 #: app/routes/fraud/providers/detail.tsx:175
 #: app/routes/fraud/providers/detail.tsx:197
 #: app/routes/fraud/providers/index.tsx:123
+#: app/routes/marketing/contact-group/detail/member.tsx:345
+#: app/routes/marketing/contact-group/detail/member.tsx:362
+#: app/routes/marketing/contact-group/index.tsx:109
+#: app/routes/marketing/contact-group/index.tsx:128
 #: app/routes/marketing/contact/detail/group.tsx:161
 #: app/routes/marketing/contact/detail/group.tsx:174
 #: app/routes/profile/session.tsx:105
@@ -609,7 +609,7 @@ msgid "Consumers"
 msgstr ""
 
 #: app/features/fraud/detail/evaluation-sections.tsx:350
-#: app/routes/contact-group/detail/member.tsx:67
+#: app/routes/marketing/contact-group/detail/member.tsx:67
 msgid "Contact"
 msgstr ""
 
@@ -617,8 +617,8 @@ msgstr ""
 msgid "Contact & address"
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:320
-msgid "Contact created and added to the list"
+#: app/routes/marketing/contact-group/detail/member.tsx:320
+msgid "Contact created and added to the contact group"
 msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:106
@@ -631,6 +631,43 @@ msgstr ""
 
 #: app/features/billing/components/billing-account-list.tsx:80
 msgid "Contact email"
+msgstr ""
+
+#: app/routes/marketing/contact/detail/group.tsx:141
+msgid "Contact group added successfully"
+msgstr ""
+
+#: app/features/contact-group/components/contact-group-form.tsx:46
+msgid "Contact group created successfully"
+msgstr ""
+
+#: app/routes/marketing/contact-group/index.tsx:114
+msgid "Contact group deleted successfully"
+msgstr ""
+
+#: app/routes/marketing/contact-group/create.tsx:25
+#: app/routes/marketing/contact-group/detail/index.tsx:24
+msgid "Contact Group Information"
+msgstr ""
+
+#: app/routes/marketing/contact/detail/group.tsx:127
+msgid "Contact group is required"
+msgstr ""
+
+#: app/features/contact-group/components/contact-group-form.tsx:36
+msgid "Contact group updated successfully"
+msgstr ""
+
+#: app/components/app-sidebar/index.tsx:157
+#: app/routes/marketing/contact-group/index.tsx:29
+#: app/routes/marketing/contact-group/layout.tsx:5
+#: app/routes/marketing/contact/detail/group.tsx:28
+#: app/routes/marketing/contact/detail/layout.tsx:65
+msgid "Contact Groups"
+msgstr ""
+
+#: app/routes/marketing/contact-group/create.tsx:10
+msgid "Contact Groups - Create"
 msgstr ""
 
 #: app/routes/marketing/contact/create.tsx:25
@@ -694,17 +731,17 @@ msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:368
 #: app/features/activity/components/activity-list.tsx:458
-#: app/features/contact-group/components/contact-group-form.tsx:101
+#: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:250
 #: app/features/fraud/policy/policy-form.tsx:321
-#: app/routes/contact-group/create.tsx:14
 #: app/routes/fraud/providers/create.tsx:16
 #: app/routes/fraud/providers/create.tsx:140
+#: app/routes/marketing/contact-group/create.tsx:14
 #: app/routes/marketing/contact/create.tsx:14
 msgid "Create"
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:90
+#: app/routes/marketing/contact-group/detail/member.tsx:90
 msgid "Create a new contact with this email"
 msgstr ""
 
@@ -731,7 +768,6 @@ msgstr ""
 #: app/features/user/components/user-identity-card.tsx:181
 #: app/routes/admin/group/index.tsx:34
 #: app/routes/admin/group/member.tsx:121
-#: app/routes/contact-group/index.tsx:87
 #: app/routes/customer/organization/detail/index.tsx:52
 #: app/routes/customer/organization/detail/project.tsx:44
 #: app/routes/customer/organization/index.tsx:40
@@ -744,6 +780,7 @@ msgstr ""
 #: app/routes/customer/user/index.tsx:119
 #: app/routes/finance/billing-account/detail/index.tsx:208
 #: app/routes/fraud/providers/index.tsx:101
+#: app/routes/marketing/contact-group/index.tsx:87
 #: app/routes/profile/session.tsx:72
 msgid "Created"
 msgstr ""
@@ -854,11 +891,6 @@ msgstr ""
 #: app/features/quota/components/quota-grant-list.tsx:165
 #: app/routes/admin/group/member.tsx:94
 #: app/routes/admin/group/member.tsx:155
-#: app/routes/contact-group/detail/member.tsx:162
-#: app/routes/contact-group/detail/member.tsx:344
-#: app/routes/contact-group/index.tsx:54
-#: app/routes/contact-group/index.tsx:108
-#: app/routes/contact-group/index.tsx:127
 #: app/routes/fraud/index.tsx:100
 #: app/routes/fraud/index.tsx:244
 #: app/routes/fraud/policy.tsx:100
@@ -866,6 +898,11 @@ msgstr ""
 #: app/routes/fraud/providers/detail.tsx:196
 #: app/routes/fraud/providers/index.tsx:45
 #: app/routes/fraud/providers/index.tsx:122
+#: app/routes/marketing/contact-group/detail/member.tsx:162
+#: app/routes/marketing/contact-group/detail/member.tsx:344
+#: app/routes/marketing/contact-group/index.tsx:54
+#: app/routes/marketing/contact-group/index.tsx:108
+#: app/routes/marketing/contact-group/index.tsx:127
 #: app/routes/marketing/contact/detail/group.tsx:71
 #: app/routes/marketing/contact/detail/group.tsx:160
 #: app/routes/profile/session.tsx:40
@@ -874,12 +911,12 @@ msgid "Delete"
 msgstr ""
 
 #. placeholder {0}: taskRows.length
-#: app/routes/contact-group/index.tsx:134
-msgid "Delete {0} lists"
+#: app/routes/marketing/contact-group/index.tsx:136
+msgid "Delete {0} contact groups"
 msgstr ""
 
 #. placeholder {0}: selectedRows.length
-#: app/routes/contact-group/index.tsx:208
+#: app/routes/marketing/contact-group/index.tsx:210
 msgid "Delete {0} selected"
 msgstr ""
 
@@ -895,6 +932,18 @@ msgstr ""
 msgid "Delete Contact"
 msgstr ""
 
+#: app/routes/marketing/contact-group/index.tsx:135
+msgid "Delete contact group"
+msgstr ""
+
+#: app/routes/marketing/contact-group/index.tsx:106
+msgid "Delete Contact Group"
+msgstr ""
+
+#: app/routes/marketing/contact-group/index.tsx:121
+msgid "Delete contact groups"
+msgstr ""
+
 #: app/routes/fraud/index.tsx:242
 msgid "Delete Evaluation"
 msgstr ""
@@ -903,20 +952,8 @@ msgstr ""
 msgid "Delete Grant"
 msgstr ""
 
-#: app/routes/contact-group/index.tsx:134
-msgid "Delete list"
-msgstr ""
-
-#: app/routes/contact-group/index.tsx:106
-msgid "Delete List"
-msgstr ""
-
-#: app/routes/contact-group/index.tsx:121
-msgid "Delete lists"
-msgstr ""
-
 #: app/routes/admin/group/member.tsx:153
-#: app/routes/contact-group/detail/member.tsx:342
+#: app/routes/marketing/contact-group/detail/member.tsx:342
 msgid "Delete Member"
 msgstr ""
 
@@ -974,7 +1011,7 @@ msgstr ""
 msgid "Deprecated"
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:78
+#: app/features/contact-group/components/contact-group-form.tsx:80
 #: app/features/dns/components/dns-zone-list.tsx:138
 #: app/routes/customer/organization/detail/index.tsx:40
 #: app/routes/customer/project/detail/index.tsx:79
@@ -982,7 +1019,7 @@ msgid "Description"
 msgstr ""
 
 #: app/features/service-catalog/components/details-card.tsx:22
-#: app/routes/contact-group/detail/layout.tsx:37
+#: app/routes/marketing/contact-group/detail/layout.tsx:37
 #: app/routes/marketing/contact/detail/layout.tsx:59
 msgid "Details"
 msgstr ""
@@ -1113,8 +1150,8 @@ msgstr ""
 
 #: app/features/contact/components/contact-list.tsx:53
 #: app/features/fraud/policy/policy-detail.tsx:93
-#: app/routes/contact-group/index.tsx:49
 #: app/routes/fraud/providers/index.tsx:40
+#: app/routes/marketing/contact-group/index.tsx:49
 msgid "Edit"
 msgstr ""
 
@@ -1134,10 +1171,10 @@ msgstr ""
 #: app/features/contact/components/contact-form.tsx:131
 #: app/features/contact/components/contact-list.tsx:86
 #: app/features/dashboard/components/pending-approvals-widget.tsx:131
-#: app/routes/contact-group/detail/member.tsx:202
 #: app/routes/customer/user/detail/index.tsx:264
 #: app/routes/customer/user/index.tsx:203
 #: app/routes/fraud/index.tsx:121
+#: app/routes/marketing/contact-group/detail/member.tsx:202
 msgid "Email"
 msgstr ""
 
@@ -1238,7 +1275,7 @@ msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:226
 #: app/routes/admin/group/member.tsx:194
-#: app/routes/contact-group/detail/member.tsx:114
+#: app/routes/marketing/contact-group/detail/member.tsx:114
 msgid "Enter the full email to search..."
 msgstr ""
 
@@ -1427,7 +1464,7 @@ msgstr ""
 msgid "Fingerprint ID"
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:95
+#: app/routes/marketing/contact-group/detail/member.tsx:95
 msgid "First name"
 msgstr ""
 
@@ -1669,7 +1706,7 @@ msgstr ""
 msgid "Last Evaluated"
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:98
+#: app/routes/marketing/contact-group/detail/member.tsx:98
 msgid "Last name"
 msgstr ""
 
@@ -1712,43 +1749,6 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:366
 #: app/features/activity/components/activity-list.tsx:456
 msgid "List"
-msgstr ""
-
-#: app/routes/marketing/contact/detail/group.tsx:141
-msgid "List added successfully"
-msgstr ""
-
-#: app/features/contact-group/components/contact-group-form.tsx:46
-msgid "List created successfully"
-msgstr ""
-
-#: app/routes/contact-group/index.tsx:114
-msgid "List deleted successfully"
-msgstr ""
-
-#: app/routes/contact-group/create.tsx:25
-#: app/routes/contact-group/detail/index.tsx:24
-msgid "List Information"
-msgstr ""
-
-#: app/routes/marketing/contact/detail/group.tsx:127
-msgid "List is required"
-msgstr ""
-
-#: app/features/contact-group/components/contact-group-form.tsx:36
-msgid "List updated successfully"
-msgstr ""
-
-#: app/components/app-sidebar/index.tsx:157
-#: app/routes/contact-group/index.tsx:29
-#: app/routes/contact-group/layout.tsx:5
-#: app/routes/marketing/contact/detail/group.tsx:28
-#: app/routes/marketing/contact/detail/layout.tsx:65
-msgid "Lists"
-msgstr ""
-
-#: app/routes/contact-group/create.tsx:10
-msgid "Lists - Create"
 msgstr ""
 
 #: app/features/billing/components/org-billing-accounts-card.tsx:62
@@ -1842,7 +1842,7 @@ msgstr ""
 msgid "Manage users"
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:79
+#: app/features/contact-group/components/contact-group-form.tsx:81
 msgid "Manually sync this description with the one in Loops (used for opt-in pages)."
 msgstr ""
 
@@ -1857,19 +1857,19 @@ msgid "Member"
 msgstr ""
 
 #: app/routes/admin/group/member.tsx:180
-#: app/routes/contact-group/detail/member.tsx:321
+#: app/routes/marketing/contact-group/detail/member.tsx:321
 msgid "Member added successfully"
 msgstr ""
 
 #: app/routes/admin/group/member.tsx:161
-#: app/routes/contact-group/detail/member.tsx:350
+#: app/routes/marketing/contact-group/detail/member.tsx:350
 msgid "Member deleted successfully"
 msgstr ""
 
-#: app/routes/contact-group/detail/layout.tsx:43
-#: app/routes/contact-group/detail/member.tsx:33
 #: app/routes/customer/organization/detail/layout.tsx:78
 #: app/routes/customer/organization/detail/member.tsx:24
+#: app/routes/marketing/contact-group/detail/layout.tsx:43
+#: app/routes/marketing/contact-group/detail/member.tsx:33
 msgid "Members"
 msgstr ""
 
@@ -1919,8 +1919,6 @@ msgstr ""
 #: app/features/fraud/policy/policy-form.tsx:153
 #: app/routes/admin/group/index.tsx:23
 #: app/routes/admin/group/member.tsx:103
-#: app/routes/contact-group/detail/member.tsx:181
-#: app/routes/contact-group/index.tsx:63
 #: app/routes/customer/organization/detail/index.tsx:44
 #: app/routes/customer/organization/detail/member.tsx:102
 #: app/routes/customer/organization/detail/project.tsx:33
@@ -1938,6 +1936,8 @@ msgstr ""
 #: app/routes/finance/billing-account/detail/index.tsx:67
 #: app/routes/fraud/providers/create.tsx:92
 #: app/routes/fraud/providers/index.tsx:54
+#: app/routes/marketing/contact-group/detail/member.tsx:181
+#: app/routes/marketing/contact-group/index.tsx:63
 #: app/routes/marketing/contact/detail/group.tsx:83
 msgid "Name"
 msgstr ""
@@ -2025,12 +2025,17 @@ msgstr ""
 msgid "No consumers found."
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:76
+#: app/routes/marketing/contact-group/index.tsx:217
+#: app/routes/marketing/contact/detail/group.tsx:197
+msgid "No contact groups found."
+msgstr ""
+
+#: app/routes/marketing/contact-group/detail/member.tsx:76
 msgid "No contacts found with this email. You can create a new contact below."
 msgstr ""
 
 #: app/features/contact/components/contact-list.tsx:139
-#: app/routes/contact-group/detail/member.tsx:77
+#: app/routes/marketing/contact-group/detail/member.tsx:77
 msgid "No contacts found."
 msgstr ""
 
@@ -2091,7 +2096,6 @@ msgid "No grants found."
 msgstr ""
 
 #: app/routes/admin/group/index.tsx:49
-#: app/routes/marketing/contact/detail/group.tsx:197
 msgid "No groups found."
 msgstr ""
 
@@ -2104,12 +2108,8 @@ msgstr ""
 msgid "No linked projects"
 msgstr ""
 
-#: app/routes/contact-group/index.tsx:215
-msgid "No lists found."
-msgstr ""
-
-#: app/routes/contact-group/detail/member.tsx:392
 #: app/routes/customer/organization/detail/member.tsx:151
+#: app/routes/marketing/contact-group/detail/member.tsx:392
 msgid "No members found."
 msgstr ""
 
@@ -2395,7 +2395,7 @@ msgstr ""
 msgid "Please provide a reason for rejecting \"{0} {1}\"."
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:262
+#: app/routes/marketing/contact-group/detail/member.tsx:262
 msgid "Please select an existing contact or provide details to create a new one"
 msgstr ""
 
@@ -2452,7 +2452,7 @@ msgstr ""
 msgid "Priority of mail servers defined by MX records. Lowest value = highest priority."
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:86
+#: app/features/contact-group/components/contact-group-form.tsx:88
 msgid "Private"
 msgstr ""
 
@@ -2515,8 +2515,8 @@ msgstr ""
 msgid "Provider ID"
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:71
-msgid "Provider ID cannot be changed after the list is created."
+#: app/features/contact-group/components/contact-group-form.tsx:72
+msgid "Provider ID cannot be changed after the contact group is created."
 msgstr ""
 
 #: app/routes/fraud/providers/detail.tsx:75
@@ -2541,7 +2541,7 @@ msgstr ""
 msgid "Providers (comma-separated)"
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:85
+#: app/features/contact-group/components/contact-group-form.tsx:87
 msgid "Public"
 msgstr ""
 
@@ -2643,11 +2643,11 @@ msgid "Remove {revokeConsumerProject}'s access to {revokeEntitlementName}? They'
 msgstr ""
 
 #: app/routes/marketing/contact/detail/group.tsx:158
-msgid "Remove from List"
+msgid "Remove from Contact Group"
 msgstr ""
 
 #: app/routes/marketing/contact/detail/group.tsx:166
-msgid "Removed from list successfully"
+msgid "Removed from contact group successfully"
 msgstr ""
 
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:50
@@ -2834,6 +2834,12 @@ msgstr ""
 msgid "Search by project, ID, or note..."
 msgstr ""
 
+#: app/routes/marketing/contact-group/index.tsx:216
+#: app/routes/marketing/contact/detail/group.tsx:182
+#: app/routes/marketing/contact/detail/group.tsx:196
+msgid "Search contact groups..."
+msgstr ""
+
 #: app/features/contact/components/contact-list.tsx:138
 msgid "Search contacts..."
 msgstr ""
@@ -2854,7 +2860,7 @@ msgstr ""
 msgid "Search export policies..."
 msgstr ""
 
-#: app/routes/contact-group/detail/member.tsx:73
+#: app/routes/marketing/contact-group/detail/member.tsx:73
 msgid "Search for an existing contact by email..."
 msgstr ""
 
@@ -2870,15 +2876,9 @@ msgstr ""
 msgid "Search is temporarily unavailable. Please try again."
 msgstr ""
 
-#: app/routes/contact-group/index.tsx:214
-#: app/routes/marketing/contact/detail/group.tsx:182
-#: app/routes/marketing/contact/detail/group.tsx:196
-msgid "Search lists..."
-msgstr ""
-
 #: app/routes/admin/group/member.tsx:206
-#: app/routes/contact-group/detail/member.tsx:391
 #: app/routes/customer/organization/detail/member.tsx:150
+#: app/routes/marketing/contact-group/detail/member.tsx:391
 msgid "Search members..."
 msgstr ""
 
@@ -2962,14 +2962,14 @@ msgid "Select a user to run a fraud evaluation against the current policy."
 msgstr ""
 
 #: app/routes/marketing/contact/detail/group.tsx:181
-msgid "Select list..."
+msgid "Select contact group..."
 msgstr ""
 
 #: app/features/preferences/components/preferences-form.tsx:61
 msgid "Select timezone..."
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:84
+#: app/features/contact-group/components/contact-group-form.tsx:86
 msgid "Select visibility..."
 msgstr ""
 
@@ -3083,8 +3083,6 @@ msgstr ""
 #: app/features/fraud/policy/policy-detail.tsx:158
 #: app/features/quota/components/quota-grant-list.tsx:113
 #: app/features/service-catalog/components/conditions-card.tsx:23
-#: app/routes/contact-group/detail/member.tsx:207
-#: app/routes/contact-group/index.tsx:80
 #: app/routes/customer/project/detail/domain/detail.tsx:131
 #: app/routes/customer/project/detail/export-policy/detail.tsx:75
 #: app/routes/customer/project/detail/export-policy/detail.tsx:170
@@ -3093,6 +3091,8 @@ msgstr ""
 #: app/routes/customer/user/index.tsx:107
 #: app/routes/customer/user/index.tsx:257
 #: app/routes/fraud/providers/index.tsx:84
+#: app/routes/marketing/contact-group/detail/member.tsx:207
+#: app/routes/marketing/contact-group/index.tsx:80
 #: app/routes/marketing/contact/detail/group.tsx:101
 msgid "Status"
 msgstr ""
@@ -3103,11 +3103,11 @@ msgid "Subject"
 msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:61
-#: app/routes/contact-group/detail/member.tsx:272
+#: app/routes/marketing/contact-group/detail/member.tsx:272
 msgid "Subject is required when user association is enabled"
 msgstr ""
 
-#: app/routes/contact-group/index.tsx:151
+#: app/routes/marketing/contact-group/index.tsx:153
 msgid "Summary"
 msgstr ""
 
@@ -3283,7 +3283,7 @@ msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:369
 #: app/features/activity/components/activity-list.tsx:459
-#: app/features/contact-group/components/contact-group-form.tsx:101
+#: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:250
 #: app/features/fraud/policy/policy-form.tsx:321
 #: app/features/quota/components/quota-bucket-list.tsx:170
@@ -3318,9 +3318,9 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:491
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:140
 #: app/features/fraud/detail/evaluation-sections.tsx:333
-#: app/routes/contact-group/detail/member.tsx:107
 #: app/routes/customer/user/detail/index.tsx:239
 #: app/routes/fraud/index.tsx:109
+#: app/routes/marketing/contact-group/detail/member.tsx:107
 msgid "User"
 msgstr ""
 
@@ -3424,6 +3424,10 @@ msgstr ""
 msgid "View all billing accounts"
 msgstr ""
 
+#: app/routes/marketing/contact-group/index.tsx:174
+msgid "View contact groups"
+msgstr ""
+
 #: app/routes/customer/user/detail/index.tsx:395
 msgid "View Evaluation"
 msgstr ""
@@ -3435,10 +3439,6 @@ msgstr ""
 
 #: app/routes/customer/user/detail/index.tsx:182
 msgid "View in Sentry"
-msgstr ""
-
-#: app/routes/contact-group/index.tsx:172
-msgid "View lists"
 msgstr ""
 
 #: app/features/fraud/detail/evaluation-sections.tsx:141
@@ -3453,8 +3453,8 @@ msgstr ""
 msgid "View Raw Results"
 msgstr ""
 
-#: app/features/contact-group/components/contact-group-form.tsx:83
-#: app/routes/contact-group/index.tsx:76
+#: app/features/contact-group/components/contact-group-form.tsx:85
+#: app/routes/marketing/contact-group/index.tsx:76
 #: app/routes/marketing/contact/detail/group.tsx:94
 msgid "Visibility"
 msgstr ""
