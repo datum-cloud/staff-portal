@@ -15,7 +15,7 @@ import { createGqlClient } from '@/modules/graphql/client';
 import { generateQueryOp } from '@/modules/graphql/generated';
 import type { UserSummary } from '@/modules/graphql/generated/schema';
 import { projectDomainDetailQuery, projectDomainNotesQuery } from '@/resources/request/server';
-import { useProjectDetailData } from '@/routes/project/shared';
+import { useProjectDetailData } from '@/routes/customer/project/shared';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Text } from '@datum-cloud/datum-ui/typography';

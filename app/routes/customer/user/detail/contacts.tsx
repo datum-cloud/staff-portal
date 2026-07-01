@@ -1,7 +1,7 @@
 import type { Route } from './+types/contacts';
 import { ContactList } from '@/features/contact';
 import { contactListQuery } from '@/resources/request/client';
-import { getUserDetailMetadata, useUserDetailData } from '@/routes/user/shared';
+import { getUserDetailMetadata, useUserDetailData } from '@/routes/customer/user/shared';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 

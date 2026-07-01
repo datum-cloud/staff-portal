@@ -1,7 +1,7 @@
 import type { Route } from './+types/email-activity';
 import { EmailList } from '@/features/email';
 import { userEmailListQuery } from '@/resources/request/client';
-import { getUserDetailMetadata, useUserDetailData } from '@/routes/user/shared';
+import { getUserDetailMetadata, useUserDetailData } from '@/routes/customer/user/shared';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 

@@ -9,7 +9,7 @@ import { authenticator } from '@/modules/auth';
 import { useProjectDnsRecordListQuery } from '@/resources/request/client';
 import { projectDnsDetailQuery, projectDomainDetailQuery } from '@/resources/request/server';
 import { DNSRecordFlattened } from '@/resources/schemas';
-import { useProjectDetailData } from '@/routes/project/shared';
+import { useProjectDetailData } from '@/routes/customer/project/shared';
 import { extractDataFromMatches, formatTTL, metaObject } from '@/utils/helpers';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';

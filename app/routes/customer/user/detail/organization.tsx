@@ -4,7 +4,7 @@ import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
 import { ListTable } from '@/features/milo';
 import { useUserOrganizationListQuery } from '@/resources/request/client';
-import { getUserDetailMetadata, useUserDetailData } from '@/routes/user/shared';
+import { getUserDetailMetadata, useUserDetailData } from '@/routes/customer/user/shared';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';

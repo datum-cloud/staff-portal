@@ -7,93 +7,93 @@ export default [
     index('routes/dashboard/index.tsx'),
 
     // Customers
-    route('customers', 'routes/customers/layout.tsx', [
-      index('routes/customers/index.tsx'),
+    route('customers', 'routes/customer/layout.tsx', [
+      index('routes/customer/index.tsx'),
 
       // Users
-      route('users', 'routes/user/layout.tsx', [
-        index('routes/user/index.tsx'),
+      route('users', 'routes/customer/user/layout.tsx', [
+        index('routes/customer/user/index.tsx'),
 
-        route(':userId', 'routes/user/detail/layout.tsx', [
-          index('routes/user/detail/index.tsx'),
-          route('organizations', 'routes/user/detail/organization.tsx'),
-          route('contacts', 'routes/user/detail/contacts.tsx'),
-          route('activity', 'routes/user/detail/activity/layout.tsx', [
-            index('routes/user/detail/activity/index.tsx'),
-            route('audit-logs', 'routes/user/detail/activity/audit-logs.tsx'),
+        route(':userId', 'routes/customer/user/detail/layout.tsx', [
+          index('routes/customer/user/detail/index.tsx'),
+          route('organizations', 'routes/customer/user/detail/organization.tsx'),
+          route('contacts', 'routes/customer/user/detail/contacts.tsx'),
+          route('activity', 'routes/customer/user/detail/activity/layout.tsx', [
+            index('routes/customer/user/detail/activity/index.tsx'),
+            route('audit-logs', 'routes/customer/user/detail/activity/audit-logs.tsx'),
           ]),
-          route('email-activity', 'routes/user/detail/email-activity.tsx'),
+          route('email-activity', 'routes/customer/user/detail/email-activity.tsx'),
         ]),
       ]),
 
       // Organizations
-      route('organizations', 'routes/organization/layout.tsx', [
-        index('routes/organization/index.tsx'),
+      route('organizations', 'routes/customer/organization/layout.tsx', [
+        index('routes/customer/organization/index.tsx'),
 
-        route(':orgName', 'routes/organization/detail/layout.tsx', [
-          index('routes/organization/detail/index.tsx'),
-          route('members', 'routes/organization/detail/member.tsx'),
-          route('projects', 'routes/organization/detail/project.tsx'),
-          route('domains', 'routes/organization/detail/domain.tsx'),
-          route('edges', 'routes/organization/detail/edge.tsx'),
-          route('dns', 'routes/organization/detail/dns.tsx'),
-          route('activity', 'routes/organization/detail/activity/layout.tsx', [
-            index('routes/organization/detail/activity/index.tsx'),
-            route('events', 'routes/organization/detail/activity/events.tsx'),
-            route('audit-logs', 'routes/organization/detail/activity/audit-logs.tsx'),
+        route(':orgName', 'routes/customer/organization/detail/layout.tsx', [
+          index('routes/customer/organization/detail/index.tsx'),
+          route('members', 'routes/customer/organization/detail/member.tsx'),
+          route('projects', 'routes/customer/organization/detail/project.tsx'),
+          route('domains', 'routes/customer/organization/detail/domain.tsx'),
+          route('edges', 'routes/customer/organization/detail/edge.tsx'),
+          route('dns', 'routes/customer/organization/detail/dns.tsx'),
+          route('activity', 'routes/customer/organization/detail/activity/layout.tsx', [
+            index('routes/customer/organization/detail/activity/index.tsx'),
+            route('events', 'routes/customer/organization/detail/activity/events.tsx'),
+            route('audit-logs', 'routes/customer/organization/detail/activity/audit-logs.tsx'),
           ]),
-          route('quotas', 'routes/organization/detail/quota/layout.tsx', [
-            index('routes/organization/detail/quota/index.tsx'),
-            route('usage', 'routes/organization/detail/quota/usage.tsx'),
-            route('grants', 'routes/organization/detail/quota/grant.tsx'),
+          route('quotas', 'routes/customer/organization/detail/quota/layout.tsx', [
+            index('routes/customer/organization/detail/quota/index.tsx'),
+            route('usage', 'routes/customer/organization/detail/quota/usage.tsx'),
+            route('grants', 'routes/customer/organization/detail/quota/grant.tsx'),
           ]),
-          route('feature-flags', 'routes/organization/detail/feature-flags.tsx'),
-          route('usage', 'routes/organization/detail/usage/index.tsx'),
+          route('feature-flags', 'routes/customer/organization/detail/feature-flags.tsx'),
+          route('usage', 'routes/customer/organization/detail/usage/index.tsx'),
         ]),
       ]),
 
       // Projects
-      route('projects', 'routes/project/layout.tsx', [
-        index('routes/project/index.tsx'),
+      route('projects', 'routes/customer/project/layout.tsx', [
+        index('routes/customer/project/index.tsx'),
 
-        route(':projectName', 'routes/project/detail/layout.tsx', [
-          index('routes/project/detail/index.tsx'),
-          route('activity', 'routes/project/detail/activity/layout.tsx', [
-            index('routes/project/detail/activity/index.tsx'),
-            route('events', 'routes/project/detail/activity/events.tsx'),
-            route('audit-logs', 'routes/project/detail/activity/audit-logs.tsx'),
+        route(':projectName', 'routes/customer/project/detail/layout.tsx', [
+          index('routes/customer/project/detail/index.tsx'),
+          route('activity', 'routes/customer/project/detail/activity/layout.tsx', [
+            index('routes/customer/project/detail/activity/index.tsx'),
+            route('events', 'routes/customer/project/detail/activity/events.tsx'),
+            route('audit-logs', 'routes/customer/project/detail/activity/audit-logs.tsx'),
           ]),
-          route('export-policies', 'routes/project/detail/export-policy/layout.tsx', [
-            index('routes/project/detail/export-policy/index.tsx'),
-            route(':exportPolicyName', 'routes/project/detail/export-policy/detail.tsx'),
+          route('export-policies', 'routes/customer/project/detail/export-policy/layout.tsx', [
+            index('routes/customer/project/detail/export-policy/index.tsx'),
+            route(':exportPolicyName', 'routes/customer/project/detail/export-policy/detail.tsx'),
           ]),
-          route('dns', 'routes/project/detail/dns/layout.tsx', [
-            index('routes/project/detail/dns/index.tsx'),
-            route(':namespace/:dnsName', 'routes/project/detail/dns/detail.tsx'),
+          route('dns', 'routes/customer/project/detail/dns/layout.tsx', [
+            index('routes/customer/project/detail/dns/index.tsx'),
+            route(':namespace/:dnsName', 'routes/customer/project/detail/dns/detail.tsx'),
           ]),
-          route('domains', 'routes/project/detail/domain/layout.tsx', [
-            index('routes/project/detail/domain/index.tsx'),
-            route(':namespace/:domainName', 'routes/project/detail/domain/detail.tsx'),
+          route('domains', 'routes/customer/project/detail/domain/layout.tsx', [
+            index('routes/customer/project/detail/domain/index.tsx'),
+            route(':namespace/:domainName', 'routes/customer/project/detail/domain/detail.tsx'),
           ]),
-          route('edges', 'routes/project/detail/edge/layout.tsx', [
-            index('routes/project/detail/edge/index.tsx'),
-            route(':edgeName', 'routes/project/detail/edge/detail.tsx'),
+          route('edges', 'routes/customer/project/detail/edge/layout.tsx', [
+            index('routes/customer/project/detail/edge/index.tsx'),
+            route(':edgeName', 'routes/customer/project/detail/edge/detail.tsx'),
           ]),
-          route('quotas', 'routes/project/detail/quota/layout.tsx', [
-            index('routes/project/detail/quota/index.tsx'),
-            route('usage', 'routes/project/detail/quota/usage.tsx'),
-            route('grants', 'routes/project/detail/quota/grant.tsx'),
+          route('quotas', 'routes/customer/project/detail/quota/layout.tsx', [
+            index('routes/customer/project/detail/quota/index.tsx'),
+            route('usage', 'routes/customer/project/detail/quota/usage.tsx'),
+            route('grants', 'routes/customer/project/detail/quota/grant.tsx'),
           ]),
-          route('secrets', 'routes/project/detail/secret.tsx'),
+          route('secrets', 'routes/customer/project/detail/secret.tsx'),
         ]),
       ]),
 
       // Resources (Customers → Resources): AI Edge / DNS / Domains tabs.
-      route('resources', 'routes/resources/layout.tsx', [
-        index('routes/resources/index.tsx'),
-        route('edges', 'routes/edge/layout.tsx', [index('routes/edge/index.tsx')]),
-        route('dns', 'routes/dns/layout.tsx', [index('routes/dns/index.tsx')]),
-        route('domains', 'routes/domain/layout.tsx', [index('routes/domain/index.tsx')]),
+      route('resources', 'routes/customer/resource/layout.tsx', [
+        index('routes/customer/resource/index.tsx'),
+        route('edges', 'routes/customer/resource/edge/layout.tsx', [index('routes/customer/resource/edge/index.tsx')]),
+        route('dns', 'routes/customer/resource/dns/layout.tsx', [index('routes/customer/resource/dns/index.tsx')]),
+        route('domains', 'routes/customer/resource/domain/layout.tsx', [index('routes/customer/resource/domain/index.tsx')]),
       ]),
     ]),
 
