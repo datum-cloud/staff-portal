@@ -170,9 +170,9 @@ export const profileRoutes = {
 // Main routes object
 export const routes = {
   dashboard: () => '/',
-  emailActivity: () => '/email-activity',
+  emailActivity: () => '/operations/email-activity',
   emailActivityDetail: (namespace: string, emailName: string) =>
-    `/email-activity/${namespace}/${emailName}`,
+    `/operations/email-activity/${namespace}/${emailName}`,
   login: () => '/login',
   logout: () => '/logout',
   authCallback: () => '/auth/callback',

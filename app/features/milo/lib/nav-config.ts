@@ -7,6 +7,7 @@ import {
   orgRoutes,
   projectRoutes,
   resourceRoutes,
+  routes,
   serviceCatalogRoutes,
   userRoutes,
 } from '@/utils/config/routes.config';
@@ -17,6 +18,7 @@ import {
   CreditCard,
   Folders,
   type LucideIcon,
+  Mail,
   Megaphone,
   Shield,
   ShieldUser,
@@ -146,7 +148,12 @@ export const NAV_SECTIONS: NavSection[] = [
     subNav: {
       defaultCollapsed: true,
       groups: [
-        { items: [{ label: 'Activity', href: activityRoutes.root(), icon: SquareActivity }] },
+        {
+          items: [
+            { label: 'Activity', href: activityRoutes.root(), icon: SquareActivity },
+            { label: 'Email Activity', href: routes.emailActivity(), icon: Mail },
+          ],
+        },
       ],
     },
   },

@@ -1181,8 +1181,7 @@ msgstr ""
 #: app/components/app-sidebar/index.tsx:169
 #: app/routes/customer/user/detail/email-activity.tsx:9
 #: app/routes/customer/user/detail/layout.tsx:55
-#: app/routes/email-activity/index.tsx:13
-#: app/routes/email-activity/layout.tsx:5
+#: app/routes/operation/email-activity/layout.tsx:5
 msgid "Email Activity"
 msgstr ""
 

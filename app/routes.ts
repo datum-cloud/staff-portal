@@ -130,6 +130,10 @@ export default [
           route(':policyName', 'routes/operation/activity/policies/detail.tsx'),
         ]),
       ]),
+      route('email-activity', 'routes/operation/email-activity/layout.tsx', [
+        index('routes/operation/email-activity/index.tsx'),
+        route(':namespace/:emailName', 'routes/operation/email-activity/detail.tsx'),
+      ]),
     ]),
 
     // Marketing
@@ -166,12 +170,6 @@ export default [
           route('approvals', 'routes/admin/service-catalog/detail/approvals.tsx'),
         ]),
       ]),
-    ]),
-
-    // Email Activity
-    route('email-activity', 'routes/email-activity/layout.tsx', [
-      index('routes/email-activity/index.tsx'),
-      route(':namespace/:emailName', 'routes/email-activity/detail.tsx'),
     ]),
 
     // Finance
