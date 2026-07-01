@@ -241,7 +241,7 @@ msgstr ""
 #: app/routes/customer/project/detail/layout.tsx:128
 #: app/routes/customer/resource/edge/index.tsx:10
 #: app/routes/customer/resource/edge/layout.tsx:5
-#: app/routes/customer/resource/layout.tsx:22
+#: app/routes/customer/resource/layout.tsx:20
 msgid "AI Edge"
 msgstr ""
 
@@ -1027,7 +1027,7 @@ msgstr ""
 #: app/routes/customer/organization/detail/layout.tsx:76
 #: app/routes/customer/project/detail/dns/layout.tsx:5
 #: app/routes/customer/project/detail/layout.tsx:133
-#: app/routes/customer/resource/layout.tsx:23
+#: app/routes/customer/resource/layout.tsx:21
 msgid "DNS"
 msgstr ""
 
@@ -1103,7 +1103,7 @@ msgstr ""
 #: app/routes/customer/project/detail/layout.tsx:138
 #: app/routes/customer/resource/domain/index.tsx:10
 #: app/routes/customer/resource/domain/layout.tsx:5
-#: app/routes/customer/resource/layout.tsx:24
+#: app/routes/customer/resource/layout.tsx:22
 msgid "Domains"
 msgstr ""
 
@@ -2705,7 +2705,7 @@ msgid "Resource:"
 msgstr ""
 
 #: app/components/app-search/search-results.tsx:213
-#: app/routes/customer/resource/layout.tsx:10
+#: app/routes/customer/resource/layout.tsx:8
 msgid "Resources"
 msgstr ""
 
