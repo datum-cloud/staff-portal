@@ -1,4 +1,5 @@
 import { datumGet } from './api-helpers';
+import { fraudRoutes } from '@/utils/config/routes.config';
 import { tool } from 'ai';
 import { z } from 'zod';
 
@@ -56,7 +57,7 @@ export function createFraudTools({ accessToken }: FraudToolDeps) {
                   phase: e.status?.phase,
                   enforcementAction: e.status?.enforcementAction,
                   lastEvaluationTime: e.status?.lastEvaluationTime,
-                  url: `/fraud/${encodeURIComponent(e.metadata?.name)}`,
+                  url: fraudRoutes.evaluations.detail(encodeURIComponent(e.metadata?.name)),
                 };
               })
             : [],
@@ -83,7 +84,7 @@ export function createFraudTools({ accessToken }: FraudToolDeps) {
           ...result,
           userId,
           email: userId ? emailMap.get(userId) : undefined,
-          url: `/fraud/${encodeURIComponent(name)}`,
+          url: fraudRoutes.evaluations.detail(encodeURIComponent(name)),
         };
       },
     }),
@@ -105,7 +106,7 @@ export function createFraudTools({ accessToken }: FraudToolDeps) {
             ? items.map((p: any) => ({
                 name: p.metadata?.name,
                 spec: p.spec,
-                url: '/fraud/policy',
+                url: fraudRoutes.policy(),
               }))
             : [],
         };

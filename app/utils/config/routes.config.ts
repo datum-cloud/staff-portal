@@ -152,6 +152,21 @@ export const emailActivityRoutes = {
     `/operations/email-activity/${namespace}/${emailName}`,
 } as const;
 
+// Operations → Fraud & Abuse
+export const fraudRoutes = {
+  root: () => '/operations/fraud',
+  evaluations: {
+    list: () => '/operations/fraud',
+    detail: (name: string) => `/operations/fraud/${name}`,
+  },
+  providers: {
+    list: () => '/operations/fraud/providers',
+    create: () => '/operations/fraud/providers/create',
+    detail: (name: string) => `/operations/fraud/providers/${name}`,
+  },
+  policy: () => '/operations/fraud/policy',
+} as const;
+
 // ───────────────────────────────── Admin (/admin) ─────────────────────────────────
 
 // Admin → Groups
@@ -166,23 +181,6 @@ export const serviceCatalogRoutes = {
   detail: (name: string) => `/admin/service-catalog/${name}`,
   consumers: (name: string) => `/admin/service-catalog/${name}/consumers`,
   approvals: (name: string) => `/admin/service-catalog/${name}/approvals`,
-} as const;
-
-// ───────────────────────────────── Not in the menu (hidden) ─────────────────────────────────
-
-// Fraud & Abuse — routes work by URL but the nav entry is hidden for now.
-export const fraudRoutes = {
-  root: () => '/fraud',
-  evaluations: {
-    list: () => '/fraud',
-    detail: (name: string) => `/fraud/${name}`,
-  },
-  providers: {
-    list: () => '/fraud/providers',
-    create: () => '/fraud/providers/create',
-    detail: (name: string) => `/fraud/providers/${name}`,
-  },
-  policy: () => '/fraud/policy',
 } as const;
 
 // ───────────────────────────────── Account (/profile) ─────────────────────────────────

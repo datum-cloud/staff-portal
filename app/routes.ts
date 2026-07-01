@@ -103,18 +103,6 @@ export default [
       ]),
     ]),
 
-    // Fraud & Abuse
-    route('fraud', 'routes/fraud/layout.tsx', [
-      index('routes/fraud/index.tsx'),
-      route('providers', 'routes/fraud/providers/layout.tsx', [
-        index('routes/fraud/providers/index.tsx'),
-        route('create', 'routes/fraud/providers/create.tsx'),
-        route(':providerName', 'routes/fraud/providers/detail.tsx'),
-      ]),
-      route('policy', 'routes/fraud/policy.tsx'),
-      route(':evalName', 'routes/fraud/detail/index.tsx'),
-    ]),
-
     // Activity Hub (old single-page activity kept for backward compatibility)
     route('activity-legacy', 'routes/activity.tsx'),
 
@@ -133,6 +121,16 @@ export default [
       route('email-activity', 'routes/operation/email-activity/layout.tsx', [
         index('routes/operation/email-activity/index.tsx'),
         route(':namespace/:emailName', 'routes/operation/email-activity/detail.tsx'),
+      ]),
+      route('fraud', 'routes/operation/fraud/layout.tsx', [
+        index('routes/operation/fraud/index.tsx'),
+        route('providers', 'routes/operation/fraud/providers/layout.tsx', [
+          index('routes/operation/fraud/providers/index.tsx'),
+          route('create', 'routes/operation/fraud/providers/create.tsx'),
+          route(':providerName', 'routes/operation/fraud/providers/detail.tsx'),
+        ]),
+        route('policy', 'routes/operation/fraud/policy.tsx'),
+        route(':evalName', 'routes/operation/fraud/detail/index.tsx'),
       ]),
     ]),
 

@@ -4,6 +4,7 @@ import {
   contactGroupRoutes,
   contactRoutes,
   financeRoutes,
+  fraudRoutes,
   groupRoutes,
   orgRoutes,
   projectRoutes,
@@ -147,6 +148,7 @@ export const NAV_SECTIONS: NavSection[] = [
               href: routes.emailActivity(),
               icon: ENTITY_ICONS.emailActivity,
             },
+            { label: 'Fraud & Abuse', href: fraudRoutes.root(), icon: ENTITY_ICONS.fraud },
           ],
         },
       ],
@@ -174,5 +176,4 @@ export const NAV_SECTIONS: NavSection[] = [
       ],
     },
   },
-  // Hidden for now (routes still work by URL): Fraud & Abuse.
 ];
