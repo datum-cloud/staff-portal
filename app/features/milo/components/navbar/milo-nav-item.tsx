@@ -56,7 +56,11 @@ export function MiloNavItem({ section, active }: MiloNavItemProps) {
       <PopoverContent
         align="start"
         sideOffset={6}
+        // Hover-driven menu: don't let Radix move focus into the panel on open
+        // or back onto the trigger on close (the returned focus flashes the nav
+        // link's focus outline, which looks like a stray border on mouse-leave).
         onOpenAutoFocus={(e) => e.preventDefault()}
+        onCloseAutoFocus={(e) => e.preventDefault()}
         onMouseEnter={openNow}
         onMouseLeave={closeSoon}
         className="w-52 p-1">
