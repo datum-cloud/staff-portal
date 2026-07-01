@@ -41,8 +41,11 @@ const containerClass =
 const contentClassName = 'min-h-0 flex-1 overflow-auto [&>div]:overflow-visible';
 
 // Sticky on <th> (not <thead>) for cross-browser support; translucent + blur frosts rows underneath.
+// Note: no `uppercase` here — Tailwind Preflight resets text-transform on the
+// <button> that sortable headers render, so it would only hit raw-string
+// headers, making them inconsistent (UPPERCASE) with sortable ones.
 const headerCellClassName =
-  'sticky top-0 z-10 h-9 border-b border-border bg-background/50 backdrop-blur-sm px-3 text-xs font-medium uppercase tracking-wide text-muted-foreground';
+  'sticky top-0 z-10 h-9 border-b border-border bg-background/50 backdrop-blur-sm px-3 text-xs font-medium tracking-wide text-muted-foreground';
 const rowClassName = 'hover:bg-muted/30';
 // py-1 keeps rows compact; multi-line cells (stacked endpoints/chips) grow with
 // a little breathing room. The row-actions trigger sits in every row, so shrink
