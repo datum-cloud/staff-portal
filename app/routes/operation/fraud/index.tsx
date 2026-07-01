@@ -13,7 +13,7 @@ import {
 } from '@/resources/request/client';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes } from '@/utils/config/routes.config';
-import { metaObject } from '@/utils/helpers';
+import { metaObject, startCase } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Form } from '@datum-cloud/datum-ui/form';
@@ -166,7 +166,10 @@ export default function Page() {
             </Text>
           );
         return (
-          <BadgeState state={decision === 'DEACTIVATE' ? 'error' : 'warning'} message={decision} />
+          <BadgeState
+            state={decision === 'DEACTIVATE' ? 'error' : 'warning'}
+            message={startCase(decision)}
+          />
         );
       },
     }),
@@ -180,7 +183,12 @@ export default function Page() {
               None
             </Text>
           );
-        return <BadgeState state={action === 'OBSERVED' ? 'info' : 'active'} message={action} />;
+        return (
+          <BadgeState
+            state={action === 'OBSERVED' ? 'info' : 'active'}
+            message={startCase(action)}
+          />
+        );
       },
     }),
     columnHelper.accessor('status.lastEvaluationTime', {

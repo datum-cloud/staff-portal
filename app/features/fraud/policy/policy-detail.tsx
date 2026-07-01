@@ -1,6 +1,7 @@
 import type { FraudPolicy, Stage } from './types';
 import { BadgeState } from '@/components/badge';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
+import { startCase } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
@@ -120,7 +121,7 @@ export function PolicyDetail({
                 )}
                 <BadgeState
                   state={policy.spec.enforcement.mode === 'OBSERVE' ? 'info' : 'warning'}
-                  message={policy.spec.enforcement.mode}
+                  message={startCase(policy.spec.enforcement.mode)}
                 />
               </div>
             </Col>

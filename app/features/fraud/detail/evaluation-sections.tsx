@@ -5,6 +5,7 @@ import { DisplayId } from '@/components/display';
 import { useEnv } from '@/hooks/use-env';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes, userRoutes } from '@/utils/config/routes.config';
+import { startCase } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Dialog } from '@datum-cloud/datum-ui/dialog';
@@ -221,7 +222,7 @@ function HistoryTable({ entries }: { entries: HistoryEntry[] }) {
                         ? 'warning'
                         : 'active'
                   }
-                  message={entry.decision}
+                  message={startCase(entry.decision ?? '')}
                 />
                 {entry.trigger && (
                   <Text size="xs" textColor="muted">
@@ -286,7 +287,7 @@ export function UserEvaluationsTable({
                   {evaluation.status?.decision && evaluation.status.decision !== 'ACCEPTED' && (
                     <BadgeState
                       state={evaluation.status.decision === 'DEACTIVATE' ? 'error' : 'warning'}
-                      message={evaluation.status.decision}
+                      message={startCase(evaluation.status.decision ?? '')}
                     />
                   )}
                   <DateTime date={evaluation.status?.lastEvaluationTime} />
@@ -387,7 +388,7 @@ export function EvaluationOverview({
             {evaluation.status?.decision && evaluation.status.decision !== 'ACCEPTED' ? (
               <BadgeState
                 state={evaluation.status.decision === 'DEACTIVATE' ? 'error' : 'warning'}
-                message={evaluation.status.decision}
+                message={startCase(evaluation.status.decision ?? '')}
               />
             ) : (
               <Text size="sm" textColor="muted">
@@ -402,7 +403,7 @@ export function EvaluationOverview({
             {evaluation.status?.enforcementAction ? (
               <BadgeState
                 state={evaluation.status.enforcementAction === 'OBSERVED' ? 'info' : 'active'}
-                message={evaluation.status.enforcementAction}
+                message={startCase(evaluation.status.enforcementAction ?? '')}
               />
             ) : (
               <Text size="sm" textColor="muted">

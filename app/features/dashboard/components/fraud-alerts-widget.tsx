@@ -3,6 +3,7 @@ import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes } from '@/utils/config/routes.config';
+import { startCase } from '@/utils/helpers';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader } from '@datum-cloud/datum-ui/card';
@@ -178,7 +179,7 @@ export function FraudAlertsWidget() {
                     <TableCell>
                       <BadgeState
                         state={alert.decision === 'DEACTIVATE' ? 'error' : 'warning'}
-                        message={alert.decision}
+                        message={startCase(alert.decision ?? '')}
                       />
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
