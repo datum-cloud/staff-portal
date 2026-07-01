@@ -1,3 +1,4 @@
+import { tabActive, tabBase, tabIdle, tabStripClass } from '@/features/milo';
 import { dnsRoutes, domainRoutes, edgeRoutes } from '@/utils/config/routes.config';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { cn } from '@datum-cloud/datum-ui/utils';
@@ -9,6 +10,7 @@ import { NavLink } from 'react-router';
  * Tab bar for the Customers → Resources page: AI Edge / DNS / Domains. The three
  * global lists live at separate paths (`/edges`, `/dns`, `/domains`); each renders
  * this bar (via `<ListPage tabs>`) so they read as one tabbed "Resources" view.
+ * Reuses the detail-page (`EntityTabNav`) segmented style so tabs look consistent.
  */
 export function ResourceTabs() {
   const { t } = useLingui();
@@ -20,17 +22,12 @@ export function ResourceTabs() {
   ];
 
   return (
-    <nav className="flex items-center gap-1 py-2">
+    <nav className={tabStripClass}>
       {tabs.map((tab) => (
         <NavLink
           key={tab.href}
           to={tab.href}
-          className={({ isActive }) =>
-            cn(
-              'flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-              isActive ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted/60'
-            )
-          }>
+          className={({ isActive }) => cn(tabBase, isActive ? tabActive : tabIdle)}>
           <Icon icon={tab.icon} className="shrink-0" />
           {tab.label}
         </NavLink>

@@ -18,7 +18,7 @@ export function ListPage({ children, tabs }: ListPageProps) {
     <div
       className="bg-card flex flex-col overflow-hidden"
       style={{ height: `calc(100svh - ${HEADER_STACK_H}px)` }}>
-      {tabs && <div className="border-border shrink-0 border-b px-6">{tabs}</div>}
+      {tabs && <div className="shrink-0 px-6 pt-4 pb-1">{tabs}</div>}
       {children}
     </div>
   );

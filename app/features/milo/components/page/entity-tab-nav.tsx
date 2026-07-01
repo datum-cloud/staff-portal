@@ -34,10 +34,12 @@ interface EntityTabNavProps {
 
 // Segmented control: a grey strip (on the nav container) with a white active
 // pill + primary text/icon; idle tabs are foreground text. Mirrors the design.
-const tabBase =
+// Exported so other tab bars (e.g. Resources) share one style.
+export const tabStripClass = 'bg-border/50 flex items-center gap-1 overflow-x-auto rounded-lg p-1';
+export const tabBase =
   'flex items-center gap-2 rounded-md px-4 py-2 text-sm font-normal whitespace-nowrap transition-colors';
-const tabActive = 'bg-card text-primary';
-const tabIdle = 'text-foreground hover:bg-card/60 hover:text-primary';
+export const tabActive = 'bg-card text-primary';
+export const tabIdle = 'text-foreground hover:bg-card/60 hover:text-primary';
 
 /**
  * Horizontal pill tab nav for entity detail pages (#777), replacing the legacy
@@ -54,7 +56,7 @@ export function EntityTabNav({ tabs }: EntityTabNavProps) {
     // just below the navbar + context bar; the wrapper carries the background so
     // content doesn't show through behind the pinned bar.
     <div className="bg-background sticky z-10 px-4 py-3" style={{ top: HEADER_STACK_H }}>
-      <nav className="bg-border/50 flex items-center gap-1 overflow-x-auto rounded-lg p-1">
+      <nav className={tabStripClass}>
         {tabs.map((tab) => {
           if (tab.children?.length) {
             const prefix = tab.match ?? tab.children[0].href;

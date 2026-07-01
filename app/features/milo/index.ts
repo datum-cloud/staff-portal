@@ -12,7 +12,14 @@ export { ListPage } from './components/page/list-page';
 export { PlainPage } from './components/page/plain-page';
 export { DetailPage } from './components/page/detail-page';
 export { EntityHeader } from './components/page/entity-header';
-export { EntityTabNav, type EntityTab } from './components/page/entity-tab-nav';
+export {
+  EntityTabNav,
+  tabStripClass,
+  tabBase,
+  tabActive,
+  tabIdle,
+  type EntityTab,
+} from './components/page/entity-tab-nav';
 export { DetailShell } from './components/page/detail-shell';
 export {
   FilterPanel,

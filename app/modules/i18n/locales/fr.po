@@ -232,7 +232,7 @@ msgid "Age"
 msgstr ""
 
 #: app/components/app-sidebar/index.tsx:129
-#: app/components/resource-tabs/index.tsx:17
+#: app/components/resource-tabs/index.tsx:19
 #: app/features/activity/components/activity-list.tsx:389
 #: app/features/activity/components/activity-list.tsx:488
 #: app/routes/edge/index.tsx:12
@@ -1022,7 +1022,7 @@ msgstr ""
 msgid "Display name is required"
 msgstr ""
 
-#: app/components/resource-tabs/index.tsx:18
+#: app/components/resource-tabs/index.tsx:20
 #: app/routes/organization/detail/dns.tsx:9
 #: app/routes/organization/detail/layout.tsx:76
 #: app/routes/project/detail/dns/layout.tsx:5
@@ -1096,7 +1096,7 @@ msgstr ""
 
 #: app/components/app-search/search-results.tsx:217
 #: app/components/app-sidebar/index.tsx:141
-#: app/components/resource-tabs/index.tsx:19
+#: app/components/resource-tabs/index.tsx:21
 #: app/routes/domain/index.tsx:12
 #: app/routes/domain/layout.tsx:5
 #: app/routes/organization/detail/domain.tsx:9
