@@ -8,6 +8,7 @@ import { DetailShell, type EntityTab } from '@/features/milo';
 import { useEnv } from '@/hooks';
 import { authenticator } from '@/modules/auth';
 import { orgDetailQuery, projectDetailQuery } from '@/resources/request/server';
+import { ACTION_ICONS, ENTITY_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
 import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -15,18 +16,6 @@ import {
   ComMiloapisResourcemanagerV1Alpha1Organization,
   ComMiloapisResourcemanagerV1Alpha1Project,
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
-import {
-  ChartSpline,
-  CircleGauge,
-  ExternalLink,
-  FileLock,
-  FileText,
-  Folders,
-  Gauge,
-  Layers,
-  Signpost,
-  SquareActivity,
-} from 'lucide-react';
 import { useMemo } from 'react';
 import { useLoaderData, useLocation, useParams } from 'react-router';
 
@@ -121,37 +110,37 @@ export default function Layout() {
     {
       label: t`Overview`,
       href: projectRoutes.detail(projectName),
-      icon: FileText,
+      icon: TAB_ICONS.overview,
       end: true,
     },
     {
       label: t`AI Edge`,
       href: projectRoutes.edge.list(projectName),
-      icon: Gauge,
+      icon: ENTITY_ICONS.edge,
     },
     {
       label: t`DNS`,
       href: projectRoutes.dns.list(projectName),
-      icon: Signpost,
+      icon: ENTITY_ICONS.dns,
     },
     {
       label: t`Domains`,
       href: projectRoutes.domain.list(projectName),
-      icon: Layers,
+      icon: ENTITY_ICONS.domain,
     },
     {
       label: t`Metrics`,
       href: projectRoutes.exportPolicy.list(projectName),
-      icon: ChartSpline,
+      icon: TAB_ICONS.metrics,
     },
     {
       label: t`Secrets`,
       href: projectRoutes.secret.list(projectName),
-      icon: FileLock,
+      icon: TAB_ICONS.secrets,
     },
     {
       label: t`Activity`,
-      icon: SquareActivity,
+      icon: ENTITY_ICONS.activity,
       match: projectRoutes.activity.root(projectName),
       children: [
         { label: t`Feed`, href: projectRoutes.activity.root(projectName) },
@@ -161,7 +150,7 @@ export default function Layout() {
     },
     {
       label: t`Quotas`,
-      icon: CircleGauge,
+      icon: TAB_ICONS.quotas,
       match: quotasBase,
       children: [
         { label: t`Usage`, href: projectRoutes.quota.usage(projectName) },
@@ -174,7 +163,7 @@ export default function Layout() {
     <DetailShell
       icon={
         <div className="bg-muted flex size-10 items-center justify-center rounded-md">
-          <Folders className="size-5" />
+          <ENTITY_ICONS.project className="size-5" />
         </div>
       }
       name={displayName}
@@ -188,7 +177,7 @@ export default function Layout() {
             type="secondary"
             theme="outline"
             size="small"
-            icon={<ExternalLink size={12} />}
+            icon={<ACTION_ICONS.externalLink size={12} />}
             iconPosition="right">
             <Trans>View in Cloud Portal</Trans>
           </LinkButton>

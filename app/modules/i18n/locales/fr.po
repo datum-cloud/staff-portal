@@ -166,9 +166,9 @@ msgstr ""
 #: app/components/app-search/use-app-search.ts:54
 #: app/components/app-sidebar/index.tsx:187
 #: app/routes/customer/organization/detail/activity/layout.tsx:5
-#: app/routes/customer/organization/detail/layout.tsx:81
+#: app/routes/customer/organization/detail/layout.tsx:68
 #: app/routes/customer/project/detail/activity/layout.tsx:5
-#: app/routes/customer/project/detail/layout.tsx:153
+#: app/routes/customer/project/detail/layout.tsx:142
 #: app/routes/customer/user/detail/activity/layout.tsx:5
 #: app/routes/customer/user/detail/layout.tsx:60
 #: app/routes/operation/activity/layout.tsx:12
@@ -236,9 +236,9 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:389
 #: app/features/activity/components/activity-list.tsx:488
 #: app/routes/customer/organization/detail/edge.tsx:9
-#: app/routes/customer/organization/detail/layout.tsx:75
+#: app/routes/customer/organization/detail/layout.tsx:62
 #: app/routes/customer/project/detail/edge/layout.tsx:5
-#: app/routes/customer/project/detail/layout.tsx:128
+#: app/routes/customer/project/detail/layout.tsx:117
 #: app/routes/customer/resource/edge/index.tsx:10
 #: app/routes/customer/resource/edge/layout.tsx:5
 #: app/routes/customer/resource/layout.tsx:20
@@ -408,10 +408,10 @@ msgstr ""
 
 #: app/routes/customer/organization/detail/activity/audit-logs.tsx:14
 #: app/routes/customer/organization/detail/activity/audit-logs.tsx:17
-#: app/routes/customer/organization/detail/layout.tsx:87
+#: app/routes/customer/organization/detail/layout.tsx:74
 #: app/routes/customer/project/detail/activity/audit-logs.tsx:14
 #: app/routes/customer/project/detail/activity/audit-logs.tsx:17
-#: app/routes/customer/project/detail/layout.tsx:159
+#: app/routes/customer/project/detail/layout.tsx:148
 #: app/routes/customer/user/detail/activity/audit-logs.tsx:14
 #: app/routes/customer/user/detail/activity/audit-logs.tsx:17
 #: app/routes/customer/user/detail/layout.tsx:65
@@ -801,7 +801,7 @@ msgstr ""
 
 #: app/components/app-sidebar/index.tsx:109
 #: app/routes/customer/layout.tsx:7
-#: app/routes/customer/project/detail/layout.tsx:50
+#: app/routes/customer/project/detail/layout.tsx:39
 msgid "Customers"
 msgstr ""
 
@@ -1019,7 +1019,7 @@ msgid "Description"
 msgstr ""
 
 #: app/features/service-catalog/components/details-card.tsx:22
-#: app/routes/marketing/contact-group/detail/layout.tsx:38
+#: app/routes/marketing/contact-group/detail/layout.tsx:37
 #: app/routes/marketing/contact/detail/layout.tsx:59
 msgid "Details"
 msgstr ""
@@ -1061,9 +1061,9 @@ msgid "Display name is required"
 msgstr ""
 
 #: app/routes/customer/organization/detail/dns.tsx:9
-#: app/routes/customer/organization/detail/layout.tsx:76
+#: app/routes/customer/organization/detail/layout.tsx:63
 #: app/routes/customer/project/detail/dns/layout.tsx:5
-#: app/routes/customer/project/detail/layout.tsx:133
+#: app/routes/customer/project/detail/layout.tsx:122
 #: app/routes/customer/resource/layout.tsx:21
 msgid "DNS"
 msgstr ""
@@ -1135,9 +1135,9 @@ msgstr ""
 #: app/components/app-search/search-results.tsx:217
 #: app/components/app-sidebar/index.tsx:141
 #: app/routes/customer/organization/detail/domain.tsx:9
-#: app/routes/customer/organization/detail/layout.tsx:77
+#: app/routes/customer/organization/detail/layout.tsx:64
 #: app/routes/customer/project/detail/domain/layout.tsx:5
-#: app/routes/customer/project/detail/layout.tsx:138
+#: app/routes/customer/project/detail/layout.tsx:127
 #: app/routes/customer/resource/domain/index.tsx:10
 #: app/routes/customer/resource/domain/layout.tsx:5
 #: app/routes/customer/resource/layout.tsx:22
@@ -1330,10 +1330,10 @@ msgstr ""
 
 #: app/routes/customer/organization/detail/activity/events.tsx:14
 #: app/routes/customer/organization/detail/activity/events.tsx:17
-#: app/routes/customer/organization/detail/layout.tsx:86
+#: app/routes/customer/organization/detail/layout.tsx:73
 #: app/routes/customer/project/detail/activity/events.tsx:14
 #: app/routes/customer/project/detail/activity/events.tsx:17
-#: app/routes/customer/project/detail/layout.tsx:158
+#: app/routes/customer/project/detail/layout.tsx:147
 #: app/routes/operation/activity/events.tsx:21
 #: app/routes/operation/activity/events.tsx:24
 #: app/routes/operation/activity/layout.tsx:29
@@ -1417,14 +1417,14 @@ msgid "Feature flag enabled"
 msgstr ""
 
 #: app/routes/customer/organization/detail/feature-flags.tsx:8
-#: app/routes/customer/organization/detail/layout.tsx:100
+#: app/routes/customer/organization/detail/layout.tsx:87
 msgid "Feature Flags"
 msgstr ""
 
 #: app/routes/customer/organization/detail/activity/index.tsx:8
-#: app/routes/customer/organization/detail/layout.tsx:85
+#: app/routes/customer/organization/detail/layout.tsx:72
 #: app/routes/customer/project/detail/activity/index.tsx:14
-#: app/routes/customer/project/detail/layout.tsx:157
+#: app/routes/customer/project/detail/layout.tsx:146
 #: app/routes/customer/user/detail/activity/index.tsx:23
 #: app/routes/customer/user/detail/layout.tsx:64
 #: app/routes/operation/activity/feed.tsx:28
@@ -1556,9 +1556,9 @@ msgstr ""
 msgid "Grant deleted successfully"
 msgstr ""
 
-#: app/routes/customer/organization/detail/layout.tsx:96
+#: app/routes/customer/organization/detail/layout.tsx:83
 #: app/routes/customer/organization/detail/quota/grant.tsx:10
-#: app/routes/customer/project/detail/layout.tsx:168
+#: app/routes/customer/project/detail/layout.tsx:157
 #: app/routes/customer/project/detail/quota/grant.tsx:10
 msgid "Grants"
 msgstr ""
@@ -1865,9 +1865,9 @@ msgstr ""
 msgid "Member deleted successfully"
 msgstr ""
 
-#: app/routes/customer/organization/detail/layout.tsx:78
+#: app/routes/customer/organization/detail/layout.tsx:65
 #: app/routes/customer/organization/detail/member.tsx:24
-#: app/routes/marketing/contact-group/detail/layout.tsx:44
+#: app/routes/marketing/contact-group/detail/layout.tsx:43
 #: app/routes/marketing/contact-group/detail/member.tsx:33
 msgid "Members"
 msgstr ""
@@ -1884,7 +1884,7 @@ msgstr ""
 msgid "Meters"
 msgstr ""
 
-#: app/routes/customer/project/detail/layout.tsx:143
+#: app/routes/customer/project/detail/layout.tsx:132
 msgid "Metrics"
 msgstr ""
 
@@ -2274,7 +2274,7 @@ msgstr ""
 #: app/components/app-sidebar/index.tsx:119
 #: app/routes/customer/organization/index.tsx:14
 #: app/routes/customer/organization/layout.tsx:5
-#: app/routes/customer/project/detail/layout.tsx:51
+#: app/routes/customer/project/detail/layout.tsx:40
 #: app/routes/customer/user/detail/layout.tsx:49
 #: app/routes/customer/user/detail/organization.tsx:19
 #: app/routes/dashboard/index.tsx:67
@@ -2286,8 +2286,8 @@ msgid "Origin"
 msgstr ""
 
 #: app/routes/admin/service-catalog/detail/layout.tsx:36
-#: app/routes/customer/organization/detail/layout.tsx:69
-#: app/routes/customer/project/detail/layout.tsx:122
+#: app/routes/customer/organization/detail/layout.tsx:56
+#: app/routes/customer/project/detail/layout.tsx:111
 #: app/routes/customer/user/detail/layout.tsx:43
 msgid "Overview"
 msgstr ""
@@ -2487,9 +2487,9 @@ msgstr ""
 #: app/components/app-search/search-results.tsx:168
 #: app/components/app-search/use-app-search.ts:48
 #: app/components/app-sidebar/index.tsx:123
-#: app/routes/customer/organization/detail/layout.tsx:74
+#: app/routes/customer/organization/detail/layout.tsx:61
 #: app/routes/customer/organization/detail/project.tsx:15
-#: app/routes/customer/project/detail/layout.tsx:57
+#: app/routes/customer/project/detail/layout.tsx:46
 #: app/routes/customer/project/index.tsx:14
 #: app/routes/customer/project/layout.tsx:5
 #: app/routes/dashboard/index.tsx:75
@@ -2569,9 +2569,9 @@ msgstr ""
 msgid "Quota Utilization"
 msgstr ""
 
-#: app/routes/customer/organization/detail/layout.tsx:91
+#: app/routes/customer/organization/detail/layout.tsx:78
 #: app/routes/customer/organization/detail/quota/layout.tsx:5
-#: app/routes/customer/project/detail/layout.tsx:163
+#: app/routes/customer/project/detail/layout.tsx:152
 #: app/routes/customer/project/detail/quota/layout.tsx:5
 msgid "Quotas"
 msgstr ""
@@ -2939,7 +2939,7 @@ msgstr ""
 msgid "Secret Namespace"
 msgstr ""
 
-#: app/routes/customer/project/detail/layout.tsx:148
+#: app/routes/customer/project/detail/layout.tsx:137
 #: app/routes/customer/project/detail/secret.tsx:13
 msgid "Secrets"
 msgstr ""
@@ -3304,10 +3304,10 @@ msgstr ""
 
 #: app/features/dashboard/components/quota-utilization-widget.tsx:161
 #: app/features/quota/components/quota-bucket-list.tsx:110
-#: app/routes/customer/organization/detail/layout.tsx:79
-#: app/routes/customer/organization/detail/layout.tsx:95
+#: app/routes/customer/organization/detail/layout.tsx:66
+#: app/routes/customer/organization/detail/layout.tsx:82
 #: app/routes/customer/organization/detail/quota/usage.tsx:10
-#: app/routes/customer/project/detail/layout.tsx:167
+#: app/routes/customer/project/detail/layout.tsx:156
 #: app/routes/customer/project/detail/quota/usage.tsx:10
 msgid "Usage"
 msgstr ""
@@ -3431,8 +3431,8 @@ msgstr ""
 msgid "View Evaluation"
 msgstr ""
 
-#: app/routes/customer/organization/detail/layout.tsx:126
-#: app/routes/customer/project/detail/layout.tsx:193
+#: app/routes/customer/organization/detail/layout.tsx:113
+#: app/routes/customer/project/detail/layout.tsx:182
 msgid "View in Cloud Portal"
 msgstr ""
 

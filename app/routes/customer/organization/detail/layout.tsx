@@ -3,24 +3,11 @@ import { DetailShell, type EntityTab } from '@/features/milo';
 import { useEnv } from '@/hooks';
 import { authenticator } from '@/modules/auth';
 import { orgDetailQuery } from '@/resources/request/server';
-import { ENTITY_ICONS } from '@/utils/config/icons.config';
+import { ACTION_ICONS, ENTITY_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisResourcemanagerV1Alpha1Organization } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
-import {
-  BarChart3,
-  CircleGauge,
-  ExternalLink,
-  FileText,
-  Flag,
-  Folders,
-  Gauge,
-  Layers,
-  Signpost,
-  SquareActivity,
-  Users,
-} from 'lucide-react';
 import { useMemo } from 'react';
 import { useLoaderData, useLocation } from 'react-router';
 
@@ -68,18 +55,18 @@ export default function Layout() {
     {
       label: t`Overview`,
       href: orgRoutes.detail(orgName),
-      icon: FileText,
+      icon: TAB_ICONS.overview,
       end: true,
     },
-    { label: t`Projects`, href: orgRoutes.project(orgName), icon: Folders },
-    { label: t`AI Edge`, href: orgRoutes.edge(orgName), icon: Gauge },
-    { label: t`DNS`, href: orgRoutes.dns(orgName), icon: Signpost },
-    { label: t`Domains`, href: orgRoutes.domain(orgName), icon: Layers },
-    { label: t`Members`, href: orgRoutes.member(orgName), icon: Users },
-    { label: t`Usage`, href: orgRoutes.usage(orgName), icon: BarChart3 },
+    { label: t`Projects`, href: orgRoutes.project(orgName), icon: ENTITY_ICONS.project },
+    { label: t`AI Edge`, href: orgRoutes.edge(orgName), icon: ENTITY_ICONS.edge },
+    { label: t`DNS`, href: orgRoutes.dns(orgName), icon: ENTITY_ICONS.dns },
+    { label: t`Domains`, href: orgRoutes.domain(orgName), icon: ENTITY_ICONS.domain },
+    { label: t`Members`, href: orgRoutes.member(orgName), icon: ENTITY_ICONS.user },
+    { label: t`Usage`, href: orgRoutes.usage(orgName), icon: TAB_ICONS.usage },
     {
       label: t`Activity`,
-      icon: SquareActivity,
+      icon: ENTITY_ICONS.activity,
       match: orgRoutes.activity.root(orgName),
       children: [
         { label: t`Feed`, href: orgRoutes.activity.root(orgName) },
@@ -89,7 +76,7 @@ export default function Layout() {
     },
     {
       label: t`Quotas`,
-      icon: CircleGauge,
+      icon: TAB_ICONS.quotas,
       match: quotasBase,
       children: [
         { label: t`Usage`, href: orgRoutes.quota.usage(orgName) },
@@ -99,7 +86,7 @@ export default function Layout() {
     {
       label: t`Feature Flags`,
       href: orgRoutes.featureFlags(orgName),
-      icon: Flag,
+      icon: TAB_ICONS.featureFlags,
     },
   ];
 
@@ -121,7 +108,7 @@ export default function Layout() {
             type="secondary"
             theme="outline"
             size="small"
-            icon={<ExternalLink size={12} />}
+            icon={<ACTION_ICONS.externalLink size={12} />}
             iconPosition="right">
             <Trans>View in Cloud Portal</Trans>
           </LinkButton>

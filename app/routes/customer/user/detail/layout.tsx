@@ -2,11 +2,11 @@ import type { Route } from './+types/layout';
 import { DetailShell, type EntityTab } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
 import { userDetailQuery } from '@/resources/request/server';
+import { ENTITY_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
 import { userRoutes } from '@/utils/config/routes.config';
 import { Avatar, AvatarFallback } from '@datum-cloud/datum-ui/avatar';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
-import { Building2, Contact, FileText, MailSearch, SquareActivity } from 'lucide-react';
 import { useLoaderData } from 'react-router';
 
 export const handle = {
@@ -42,23 +42,23 @@ export default function Layout() {
     {
       label: t`Overview`,
       href: userRoutes.detail(userId),
-      icon: FileText,
+      icon: TAB_ICONS.overview,
       end: true,
     },
     {
       label: t`Organizations`,
       href: userRoutes.organization(userId),
-      icon: Building2,
+      icon: ENTITY_ICONS.organization,
     },
-    { label: t`Contacts`, href: userRoutes.contacts(userId), icon: Contact },
+    { label: t`Contacts`, href: userRoutes.contacts(userId), icon: ENTITY_ICONS.contact },
     {
       label: t`Email Activity`,
       href: userRoutes.emailActivity(userId),
-      icon: MailSearch,
+      icon: ENTITY_ICONS.emailActivity,
     },
     {
       label: t`Activity`,
-      icon: SquareActivity,
+      icon: ENTITY_ICONS.activity,
       match: userRoutes.activity.root(userId),
       children: [
         { label: t`Feed`, href: userRoutes.activity.root(userId) },

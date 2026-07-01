@@ -3,11 +3,11 @@ import { DetailShell, type EntityTab } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
 import { contactDetailQuery, userDetailQuery } from '@/resources/request/server';
 import { ContactDetailLoaderData } from '@/routes/marketing/contact/shared';
+import { ENTITY_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
 import { contactRoutes } from '@/utils/config/routes.config';
 import { Avatar, AvatarFallback } from '@datum-cloud/datum-ui/avatar';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
-import { BookUser, InfoIcon } from 'lucide-react';
 import { useLoaderData } from 'react-router';
 
 export const handle = {
@@ -58,13 +58,13 @@ export default function Layout() {
     {
       label: t`Details`,
       href: contactRoutes.detail(namespace, contactName),
-      icon: InfoIcon,
+      icon: TAB_ICONS.overview,
       end: true,
     },
     {
       label: t`Contact Groups`,
       href: contactRoutes.group(namespace, contactName),
-      icon: BookUser,
+      icon: ENTITY_ICONS.contactGroup,
     },
   ];
 

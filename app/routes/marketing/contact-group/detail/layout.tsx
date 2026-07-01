@@ -2,11 +2,10 @@ import type { Route } from './+types/layout';
 import { DetailShell, type EntityTab } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
 import { contactGroupDetailQuery } from '@/resources/request/server';
-import { ENTITY_ICONS } from '@/utils/config/icons.config';
+import { ENTITY_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
 import { contactGroupRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisNotificationV1Alpha1ContactGroup } from '@openapi/notification.miloapis.com/v1alpha1';
-import { InfoIcon, Users } from 'lucide-react';
 import { useLoaderData } from 'react-router';
 
 export const handle = {
@@ -37,13 +36,13 @@ export default function Layout() {
     {
       label: t`Details`,
       href: contactGroupRoutes.detail(name),
-      icon: InfoIcon,
+      icon: TAB_ICONS.overview,
       end: true,
     },
     {
       label: t`Members`,
       href: contactGroupRoutes.member(name),
-      icon: Users,
+      icon: ENTITY_ICONS.user,
     },
   ];
 
