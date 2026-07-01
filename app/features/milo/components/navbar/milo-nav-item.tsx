@@ -1,5 +1,9 @@
 import { type NavSection } from '../../lib/nav-config';
+import { Icon } from '@datum-cloud/datum-ui/icons';
+import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
+import { useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router';
 
 interface MiloNavItemProps {
@@ -7,16 +11,80 @@ interface MiloNavItemProps {
   active: boolean;
 }
 
-/** One top-level section in the global navbar's horizontal main menu. */
+/**
+ * One top-level section in the global navbar. Clicking navigates to the section;
+ * hovering opens a dropdown of its sub-items (mirrors the left sub-nav rail). The
+ * dropdown uses a Popover (portaled) so it isn't clipped by the nav's horizontal
+ * overflow scroll.
+ */
 export function MiloNavItem({ section, active }: MiloNavItemProps) {
-  return (
+  const hasDropdown = (section.subNav?.groups.length ?? 0) > 0;
+  const [open, setOpen] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const openNow = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setOpen(true);
+  };
+  // Small delay so the pointer can travel from the trigger to the panel (and
+  // across the sideOffset gap) without the dropdown closing.
+  const closeSoon = () => {
+    closeTimer.current = setTimeout(() => setOpen(false), 120);
+  };
+
+  useEffect(() => () => void (closeTimer.current && clearTimeout(closeTimer.current)), []);
+
+  const link = (
     <NavLink
       to={section.href}
+      onMouseEnter={hasDropdown ? openNow : undefined}
+      onMouseLeave={hasDropdown ? closeSoon : undefined}
+      onClick={() => setOpen(false)}
       className={cn(
-        'rounded-md border border-transparent px-2 py-0.5 whitespace-nowrap transition-colors',
-        active ? 'bg-card text-primary' : 'text-foreground hover:bg-card hover:text-primary'
+        'flex items-center rounded-md border border-transparent px-2 py-0.5 whitespace-nowrap transition-colors',
+        active || open ? 'bg-card text-primary' : 'text-foreground hover:bg-card hover:text-primary'
       )}>
       <span className="text-sm font-medium">{section.label}</span>
     </NavLink>
+  );
+
+  if (!hasDropdown) return link;
+
+  return (
+    <Popover open={open} onOpenChange={setOpen} modal={false}>
+      <PopoverTrigger asChild>{link}</PopoverTrigger>
+      <PopoverContent
+        align="start"
+        sideOffset={6}
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        onMouseEnter={openNow}
+        onMouseLeave={closeSoon}
+        className="w-52 p-1">
+        {section.subNav?.groups.map((group, gi) => (
+          <div key={group.label ?? gi} className="flex flex-col">
+            {group.label && (
+              <Text size="xs" textColor="muted" className="px-2 py-1 tracking-wide uppercase">
+                {group.label}
+              </Text>
+            )}
+            {group.items.map((item) => (
+              <NavLink
+                key={item.href}
+                to={item.href}
+                onClick={() => setOpen(false)}
+                className={({ isActive }) =>
+                  cn(
+                    'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors',
+                    isActive ? 'bg-muted text-primary' : 'text-foreground hover:bg-muted'
+                  )
+                }>
+                {item.icon && <Icon icon={item.icon} className="text-muted-foreground shrink-0" />}
+                <span className="truncate">{item.label}</span>
+              </NavLink>
+            ))}
+          </div>
+        ))}
+      </PopoverContent>
+    </Popover>
   );
 }

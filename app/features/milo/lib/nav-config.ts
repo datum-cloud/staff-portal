@@ -1,12 +1,10 @@
 import {
   activityRoutes,
-  contactGroupRoutes,
   contactRoutes,
   dnsRoutes,
   domainRoutes,
   edgeRoutes,
   financeRoutes,
-  fraudRoutes,
   groupRoutes,
   orgRoutes,
   projectRoutes,
@@ -14,19 +12,19 @@ import {
   userRoutes,
 } from '@/utils/config/routes.config';
 import {
+  Cog,
   Contact,
   CreditCard,
-  FileText,
   Folders,
   Gauge,
   Layers,
   type LucideIcon,
-  ShieldAlert,
+  Megaphone,
+  Shield,
   ShieldUser,
   Signpost,
   SquareActivity,
   Store,
-  Truck,
   Users,
 } from 'lucide-react';
 
@@ -89,6 +87,11 @@ export const NAV_SECTIONS: NavSection[] = [
           items: [
             { label: 'Organizations', href: orgRoutes.list(), icon: Users },
             { label: 'Projects', href: projectRoutes.list(), icon: Folders },
+            // Interim: AI Edge / DNS / Domains will consolidate into a tabbed
+            // "Resources" page (a follow-up build); listed individually for now.
+            { label: 'AI Edge', href: edgeRoutes.list(), icon: Gauge },
+            { label: 'DNS', href: dnsRoutes.list(), icon: Signpost },
+            { label: 'Domains', href: domainRoutes.list(), icon: Layers },
             { label: 'Users', href: userRoutes.list(), icon: Contact },
           ],
         },
@@ -96,21 +99,14 @@ export const NAV_SECTIONS: NavSection[] = [
     },
   },
   {
-    id: 'contacts',
-    label: 'Contacts',
-    icon: Contact,
+    id: 'marketing',
+    label: 'Marketing',
+    icon: Megaphone,
     href: contactRoutes.list(),
     match: '/contacts',
     subNav: {
       defaultCollapsed: true,
-      groups: [
-        {
-          items: [
-            { label: 'Contacts', href: contactRoutes.list(), icon: Contact },
-            { label: 'Lists', href: contactGroupRoutes.list(), icon: Layers },
-          ],
-        },
-      ],
+      groups: [{ items: [{ label: 'Contacts', href: contactRoutes.list(), icon: Contact }] }],
     },
   },
   {
@@ -134,29 +130,35 @@ export const NAV_SECTIONS: NavSection[] = [
       ],
     },
   },
-  { id: 'edge', label: 'AI Edge', icon: Gauge, href: edgeRoutes.list() },
-  { id: 'dns', label: 'DNS', icon: Signpost, href: dnsRoutes.list() },
-  { id: 'domains', label: 'Domains', icon: Layers, href: domainRoutes.list() },
-  { id: 'groups', label: 'Groups', icon: ShieldUser, href: groupRoutes.list() },
-  { id: 'activity', label: 'Activity', icon: SquareActivity, href: activityRoutes.root() },
-  { id: 'catalog', label: 'Service Catalog', icon: Store, href: serviceCatalogRoutes.list() },
   {
-    id: 'fraud',
-    label: 'Fraud & Abuse',
-    icon: ShieldAlert,
-    href: fraudRoutes.root(),
-    match: '/fraud',
+    id: 'operations',
+    label: 'Operations',
+    icon: Cog,
+    href: activityRoutes.root(),
+    match: '/activity',
+    subNav: {
+      defaultCollapsed: true,
+      groups: [
+        { items: [{ label: 'Activity', href: activityRoutes.root(), icon: SquareActivity }] },
+      ],
+    },
+  },
+  {
+    id: 'admin',
+    label: 'Admin',
+    icon: Shield,
+    href: groupRoutes.list(),
     subNav: {
       defaultCollapsed: true,
       groups: [
         {
           items: [
-            { label: 'Evaluations', href: fraudRoutes.evaluations.list(), icon: ShieldAlert },
-            { label: 'Providers', href: fraudRoutes.providers.list(), icon: Truck },
-            { label: 'Policy', href: fraudRoutes.policy(), icon: FileText },
+            { label: 'Groups', href: groupRoutes.list(), icon: ShieldUser },
+            { label: 'Service Catalog', href: serviceCatalogRoutes.list(), icon: Store },
           ],
         },
       ],
     },
   },
+  // Hidden for now (routes still work by URL): Fraud & Abuse, Lists (contact groups).
 ];
