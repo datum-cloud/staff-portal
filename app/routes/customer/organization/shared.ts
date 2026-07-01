@@ -8,15 +8,12 @@ export type OrganizationDetailLoaderData = Awaited<ReturnType<typeof loader>>;
 
 // Export a typed hook for other files to use
 export function useOrganizationDetailData() {
-  return useRouteLoaderData('routes/organization/detail/layout') as OrganizationDetailLoaderData;
+  return useRouteLoaderData('organization-detail') as OrganizationDetailLoaderData;
 }
 
 // Helper function to extract organization metadata for meta functions
 export function getOrganizationDetailMetadata(matches: any[]) {
-  const data = extractDataFromMatches<OrganizationDetailLoaderData>(
-    matches,
-    'routes/organization/detail/layout'
-  );
+  const data = extractDataFromMatches<OrganizationDetailLoaderData>(matches, 'organization-detail');
   return {
     organization: data,
     organizationName:

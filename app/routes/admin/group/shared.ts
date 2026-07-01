@@ -8,12 +8,12 @@ export type GroupDetailLoaderData = Awaited<ReturnType<typeof loader>>;
 
 // Export a typed hook for other files to use
 export function useGroupDetailData() {
-  return useRouteLoaderData('routes/group/member') as GroupDetailLoaderData;
+  return useRouteLoaderData('group-detail') as GroupDetailLoaderData;
 }
 
 // Helper function to extract organization metadata for meta functions
 export function getGroupDetailMetadata(matches: any[]) {
-  const data = extractDataFromMatches<GroupDetailLoaderData>(matches, 'routes/group/member');
+  const data = extractDataFromMatches<GroupDetailLoaderData>(matches, 'group-detail');
   return {
     group: data,
     groupName: data?.metadata?.name || '',

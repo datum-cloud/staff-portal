@@ -14,7 +14,7 @@ export default [
       route('users', 'routes/customer/user/layout.tsx', [
         index('routes/customer/user/index.tsx'),
 
-        route(':userId', 'routes/customer/user/detail/layout.tsx', [
+        route(':userId', 'routes/customer/user/detail/layout.tsx', { id: 'user-detail' }, [
           index('routes/customer/user/detail/index.tsx'),
           route('organizations', 'routes/customer/user/detail/organization.tsx'),
           route('contacts', 'routes/customer/user/detail/contacts.tsx'),
@@ -30,62 +30,72 @@ export default [
       route('organizations', 'routes/customer/organization/layout.tsx', [
         index('routes/customer/organization/index.tsx'),
 
-        route(':orgName', 'routes/customer/organization/detail/layout.tsx', [
-          index('routes/customer/organization/detail/index.tsx'),
-          route('members', 'routes/customer/organization/detail/member.tsx'),
-          route('projects', 'routes/customer/organization/detail/project.tsx'),
-          route('domains', 'routes/customer/organization/detail/domain.tsx'),
-          route('edges', 'routes/customer/organization/detail/edge.tsx'),
-          route('dns', 'routes/customer/organization/detail/dns.tsx'),
-          route('activity', 'routes/customer/organization/detail/activity/layout.tsx', [
-            index('routes/customer/organization/detail/activity/index.tsx'),
-            route('events', 'routes/customer/organization/detail/activity/events.tsx'),
-            route('audit-logs', 'routes/customer/organization/detail/activity/audit-logs.tsx'),
-          ]),
-          route('quotas', 'routes/customer/organization/detail/quota/layout.tsx', [
-            index('routes/customer/organization/detail/quota/index.tsx'),
-            route('usage', 'routes/customer/organization/detail/quota/usage.tsx'),
-            route('grants', 'routes/customer/organization/detail/quota/grant.tsx'),
-          ]),
-          route('feature-flags', 'routes/customer/organization/detail/feature-flags.tsx'),
-          route('usage', 'routes/customer/organization/detail/usage/index.tsx'),
-        ]),
+        route(
+          ':orgName',
+          'routes/customer/organization/detail/layout.tsx',
+          { id: 'organization-detail' },
+          [
+            index('routes/customer/organization/detail/index.tsx'),
+            route('members', 'routes/customer/organization/detail/member.tsx'),
+            route('projects', 'routes/customer/organization/detail/project.tsx'),
+            route('domains', 'routes/customer/organization/detail/domain.tsx'),
+            route('edges', 'routes/customer/organization/detail/edge.tsx'),
+            route('dns', 'routes/customer/organization/detail/dns.tsx'),
+            route('activity', 'routes/customer/organization/detail/activity/layout.tsx', [
+              index('routes/customer/organization/detail/activity/index.tsx'),
+              route('events', 'routes/customer/organization/detail/activity/events.tsx'),
+              route('audit-logs', 'routes/customer/organization/detail/activity/audit-logs.tsx'),
+            ]),
+            route('quotas', 'routes/customer/organization/detail/quota/layout.tsx', [
+              index('routes/customer/organization/detail/quota/index.tsx'),
+              route('usage', 'routes/customer/organization/detail/quota/usage.tsx'),
+              route('grants', 'routes/customer/organization/detail/quota/grant.tsx'),
+            ]),
+            route('feature-flags', 'routes/customer/organization/detail/feature-flags.tsx'),
+            route('usage', 'routes/customer/organization/detail/usage/index.tsx'),
+          ]
+        ),
       ]),
 
       // Projects
       route('projects', 'routes/customer/project/layout.tsx', [
         index('routes/customer/project/index.tsx'),
 
-        route(':projectName', 'routes/customer/project/detail/layout.tsx', [
-          index('routes/customer/project/detail/index.tsx'),
-          route('activity', 'routes/customer/project/detail/activity/layout.tsx', [
-            index('routes/customer/project/detail/activity/index.tsx'),
-            route('events', 'routes/customer/project/detail/activity/events.tsx'),
-            route('audit-logs', 'routes/customer/project/detail/activity/audit-logs.tsx'),
-          ]),
-          route('export-policies', 'routes/customer/project/detail/export-policy/layout.tsx', [
-            index('routes/customer/project/detail/export-policy/index.tsx'),
-            route(':exportPolicyName', 'routes/customer/project/detail/export-policy/detail.tsx'),
-          ]),
-          route('dns', 'routes/customer/project/detail/dns/layout.tsx', [
-            index('routes/customer/project/detail/dns/index.tsx'),
-            route(':namespace/:dnsName', 'routes/customer/project/detail/dns/detail.tsx'),
-          ]),
-          route('domains', 'routes/customer/project/detail/domain/layout.tsx', [
-            index('routes/customer/project/detail/domain/index.tsx'),
-            route(':namespace/:domainName', 'routes/customer/project/detail/domain/detail.tsx'),
-          ]),
-          route('edges', 'routes/customer/project/detail/edge/layout.tsx', [
-            index('routes/customer/project/detail/edge/index.tsx'),
-            route(':edgeName', 'routes/customer/project/detail/edge/detail.tsx'),
-          ]),
-          route('quotas', 'routes/customer/project/detail/quota/layout.tsx', [
-            index('routes/customer/project/detail/quota/index.tsx'),
-            route('usage', 'routes/customer/project/detail/quota/usage.tsx'),
-            route('grants', 'routes/customer/project/detail/quota/grant.tsx'),
-          ]),
-          route('secrets', 'routes/customer/project/detail/secret.tsx'),
-        ]),
+        route(
+          ':projectName',
+          'routes/customer/project/detail/layout.tsx',
+          { id: 'project-detail' },
+          [
+            index('routes/customer/project/detail/index.tsx'),
+            route('activity', 'routes/customer/project/detail/activity/layout.tsx', [
+              index('routes/customer/project/detail/activity/index.tsx'),
+              route('events', 'routes/customer/project/detail/activity/events.tsx'),
+              route('audit-logs', 'routes/customer/project/detail/activity/audit-logs.tsx'),
+            ]),
+            route('export-policies', 'routes/customer/project/detail/export-policy/layout.tsx', [
+              index('routes/customer/project/detail/export-policy/index.tsx'),
+              route(':exportPolicyName', 'routes/customer/project/detail/export-policy/detail.tsx'),
+            ]),
+            route('dns', 'routes/customer/project/detail/dns/layout.tsx', [
+              index('routes/customer/project/detail/dns/index.tsx'),
+              route(':namespace/:dnsName', 'routes/customer/project/detail/dns/detail.tsx'),
+            ]),
+            route('domains', 'routes/customer/project/detail/domain/layout.tsx', [
+              index('routes/customer/project/detail/domain/index.tsx'),
+              route(':namespace/:domainName', 'routes/customer/project/detail/domain/detail.tsx'),
+            ]),
+            route('edges', 'routes/customer/project/detail/edge/layout.tsx', [
+              index('routes/customer/project/detail/edge/index.tsx'),
+              route(':edgeName', 'routes/customer/project/detail/edge/detail.tsx'),
+            ]),
+            route('quotas', 'routes/customer/project/detail/quota/layout.tsx', [
+              index('routes/customer/project/detail/quota/index.tsx'),
+              route('usage', 'routes/customer/project/detail/quota/usage.tsx'),
+              route('grants', 'routes/customer/project/detail/quota/grant.tsx'),
+            ]),
+            route('secrets', 'routes/customer/project/detail/secret.tsx'),
+          ]
+        ),
       ]),
 
       // Resources (Customers → Resources): AI Edge / DNS / Domains tabs.
@@ -139,18 +149,28 @@ export default [
       route('contacts', 'routes/marketing/contact/layout.tsx', [
         index('routes/marketing/contact/index.tsx'),
         route('create', 'routes/marketing/contact/create.tsx'),
-        route(':namespace/:contactName', 'routes/marketing/contact/detail/layout.tsx', [
-          index('routes/marketing/contact/detail/index.tsx'),
-          route('groups', 'routes/marketing/contact/detail/group.tsx'),
-        ]),
+        route(
+          ':namespace/:contactName',
+          'routes/marketing/contact/detail/layout.tsx',
+          { id: 'contact-detail' },
+          [
+            index('routes/marketing/contact/detail/index.tsx'),
+            route('groups', 'routes/marketing/contact/detail/group.tsx'),
+          ]
+        ),
       ]),
       route('contact-groups', 'routes/marketing/contact-group/layout.tsx', [
         index('routes/marketing/contact-group/index.tsx'),
         route('create', 'routes/marketing/contact-group/create.tsx'),
-        route(':contactGroupName', 'routes/marketing/contact-group/detail/layout.tsx', [
-          index('routes/marketing/contact-group/detail/index.tsx'),
-          route('members', 'routes/marketing/contact-group/detail/member.tsx'),
-        ]),
+        route(
+          ':contactGroupName',
+          'routes/marketing/contact-group/detail/layout.tsx',
+          { id: 'contact-group-detail' },
+          [
+            index('routes/marketing/contact-group/detail/index.tsx'),
+            route('members', 'routes/marketing/contact-group/detail/member.tsx'),
+          ]
+        ),
       ]),
     ]),
 
@@ -158,15 +178,20 @@ export default [
     route('admin', 'routes/admin/layout.tsx', [
       route('groups', 'routes/admin/group/layout.tsx', [
         index('routes/admin/group/index.tsx'),
-        route(':groupName', 'routes/admin/group/member.tsx'),
+        route(':groupName', 'routes/admin/group/member.tsx', { id: 'group-detail' }),
       ]),
       route('service-catalog', 'routes/admin/service-catalog/layout.tsx', [
         index('routes/admin/service-catalog/index.tsx'),
-        route(':name', 'routes/admin/service-catalog/detail/layout.tsx', [
-          index('routes/admin/service-catalog/detail/index.tsx'),
-          route('consumers', 'routes/admin/service-catalog/detail/consumers.tsx'),
-          route('approvals', 'routes/admin/service-catalog/detail/approvals.tsx'),
-        ]),
+        route(
+          ':name',
+          'routes/admin/service-catalog/detail/layout.tsx',
+          { id: 'service-catalog-detail' },
+          [
+            index('routes/admin/service-catalog/detail/index.tsx'),
+            route('consumers', 'routes/admin/service-catalog/detail/consumers.tsx'),
+            route('approvals', 'routes/admin/service-catalog/detail/approvals.tsx'),
+          ]
+        ),
       ]),
     ]),
 
@@ -174,9 +199,12 @@ export default [
     route('finance', 'routes/finance/layout.tsx', [
       route('billing-accounts', 'routes/finance/billing-account/layout.tsx', [
         index('routes/finance/billing-account/index.tsx'),
-        route(':orgName/:accountName', 'routes/finance/billing-account/detail/layout.tsx', [
-          index('routes/finance/billing-account/detail/index.tsx'),
-        ]),
+        route(
+          ':orgName/:accountName',
+          'routes/finance/billing-account/detail/layout.tsx',
+          { id: 'billing-account-detail' },
+          [index('routes/finance/billing-account/detail/index.tsx')]
+        ),
       ]),
     ]),
 

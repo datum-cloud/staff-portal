@@ -8,15 +8,12 @@ export type ServiceDetailLoaderData = Awaited<ReturnType<typeof loader>>;
 
 // Export a typed hook for other files to use
 export function useServiceDetailData() {
-  return useRouteLoaderData('routes/service-catalog/detail/layout') as ServiceDetailLoaderData;
+  return useRouteLoaderData('service-catalog-detail') as ServiceDetailLoaderData;
 }
 
 // Helper function to extract service metadata for meta functions
 export function getServiceDetailMetadata(matches: any[]) {
-  const data = extractDataFromMatches<ServiceDetailLoaderData>(
-    matches,
-    'routes/service-catalog/detail/layout'
-  );
+  const data = extractDataFromMatches<ServiceDetailLoaderData>(matches, 'service-catalog-detail');
   return {
     service: data,
     displayName: data?.spec?.displayName ?? data?.metadata?.name ?? '',

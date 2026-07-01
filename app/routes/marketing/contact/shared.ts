@@ -8,15 +8,12 @@ export type ContactDetailLoaderData = Awaited<ReturnType<typeof loader>>;
 
 // Export a typed hook for other files to use
 export function useContactDetailData() {
-  return useRouteLoaderData('routes/contact/detail/layout') as ContactDetailLoaderData;
+  return useRouteLoaderData('contact-detail') as ContactDetailLoaderData;
 }
 
 // Helper function to extract organization metadata for meta functions
 export function getContactDetailMetadata(matches: any[]) {
-  const data = extractDataFromMatches<ContactDetailLoaderData>(
-    matches,
-    'routes/contact/detail/layout'
-  );
+  const data = extractDataFromMatches<ContactDetailLoaderData>(matches, 'contact-detail');
   return {
     contact: data?.contact,
     user: data?.user,

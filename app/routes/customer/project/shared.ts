@@ -8,15 +8,12 @@ export type ProjectDetailLoaderData = Awaited<ReturnType<typeof loader>>;
 
 // Export a typed hook for other files to use
 export function useProjectDetailData() {
-  return useRouteLoaderData('routes/project/detail/layout') as ProjectDetailLoaderData;
+  return useRouteLoaderData('project-detail') as ProjectDetailLoaderData;
 }
 
 // Helper function to extract project metadata for meta functions
 export function getProjectDetailMetadata(matches: any[]) {
-  const data = extractDataFromMatches<ProjectDetailLoaderData>(
-    matches,
-    'routes/project/detail/layout'
-  );
+  const data = extractDataFromMatches<ProjectDetailLoaderData>(matches, 'project-detail');
   return {
     project: data?.project,
     organization: data?.organization,

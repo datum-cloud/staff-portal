@@ -8,16 +8,14 @@ export type ContactGroupDetailLoaderData = Awaited<ReturnType<typeof loader>>;
 
 // Export a typed hook for other files to use
 export function useContactGroupDetailData() {
-  return useRouteLoaderData(
-    'routes/marketing/contact-group/detail/layout'
-  ) as ContactGroupDetailLoaderData;
+  return useRouteLoaderData('contact-group-detail') as ContactGroupDetailLoaderData;
 }
 
 // Helper function to extract contact group metadata for meta functions
 export function getContactGroupDetailMetadata(matches: any[]) {
   const data = extractDataFromMatches<ContactGroupDetailLoaderData>(
     matches,
-    'routes/marketing/contact-group/detail/layout'
+    'contact-group-detail'
   );
   return {
     contactGroup: data,

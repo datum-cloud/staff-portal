@@ -8,12 +8,12 @@ export type UserDetailLoaderData = Awaited<ReturnType<typeof loader>>;
 
 // Export a typed hook for other files to use
 export function useUserDetailData() {
-  return useRouteLoaderData('routes/user/detail/layout') as UserDetailLoaderData;
+  return useRouteLoaderData('user-detail') as UserDetailLoaderData;
 }
 
 // Helper function to extract user metadata for meta functions
 export function getUserDetailMetadata(matches: any[]) {
-  const data = extractDataFromMatches<UserDetailLoaderData>(matches, 'routes/user/detail/layout');
+  const data = extractDataFromMatches<UserDetailLoaderData>(matches, 'user-detail');
   return {
     user: data,
     userName: data ? `${data?.spec?.givenName ?? ''} ${data?.spec?.familyName ?? ''}` : '',
