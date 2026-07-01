@@ -1,4 +1,5 @@
 import type { Route } from './+types/index';
+import { ResourceTabs } from '@/components/resource-tabs';
 import { DomainList, type DomainRow } from '@/features/domain';
 import { ListPage } from '@/features/milo';
 import { searchDomainsListQuery } from '@/resources/request/client';
@@ -46,7 +47,7 @@ export default function Page() {
   );
 
   return (
-    <ListPage>
+    <ListPage tabs={<ResourceTabs />}>
       <DomainList
         data={rows}
         loading={isLoading}

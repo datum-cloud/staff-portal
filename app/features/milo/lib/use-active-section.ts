@@ -2,15 +2,18 @@ import { NAV_SECTIONS, type NavSection, type NavSubItem } from './nav-config';
 import { useMemo } from 'react';
 import { useLocation } from 'react-router';
 
-/** Match length of a path prefix against the current pathname (0 = no match). */
-function matchLength(pathname: string, prefix: string): number {
+/** Match length of a path prefix (or the best of several) against the pathname (0 = no match). */
+function matchLength(pathname: string, prefix: string | string[]): number {
+  if (Array.isArray(prefix)) {
+    return prefix.reduce((best, p) => Math.max(best, matchLength(pathname, p)), 0);
+  }
   if (pathname === prefix) return prefix.length;
   if (pathname.startsWith(prefix.endsWith('/') ? prefix : `${prefix}/`)) return prefix.length;
   return 0;
 }
 
 /** Pick the entry whose `match`/`href` prefix matches the pathname most specifically. */
-function bestMatch<T extends { href: string; match?: string }>(
+function bestMatch<T extends { href: string; match?: string | string[] }>(
   pathname: string,
   entries: T[]
 ): T | undefined {

@@ -1,4 +1,5 @@
 import type { Route } from './+types/index';
+import { ResourceTabs } from '@/components/resource-tabs';
 import { DnsZoneList, type DnsZoneRow } from '@/features/dns';
 import { ListPage } from '@/features/milo';
 import { searchDnsZonesListQuery } from '@/resources/request/client';
@@ -46,7 +47,7 @@ export default function Page() {
   );
 
   return (
-    <ListPage>
+    <ListPage tabs={<ResourceTabs />}>
       <DnsZoneList
         data={rows}
         loading={isLoading}

@@ -1,4 +1,5 @@
 import type { Route } from './+types/index';
+import { ResourceTabs } from '@/components/resource-tabs';
 import { EdgeList, type EdgeRow } from '@/features/edge';
 import { ListPage } from '@/features/milo';
 import { searchEdgesListQuery } from '@/resources/request/client';
@@ -46,7 +47,7 @@ export default function Page() {
   );
 
   return (
-    <ListPage>
+    <ListPage tabs={<ResourceTabs />}>
       <EdgeList
         data={rows}
         loading={isLoading}

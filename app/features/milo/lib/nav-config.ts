@@ -12,17 +12,15 @@ import {
   userRoutes,
 } from '@/utils/config/routes.config';
 import {
+  Boxes,
   Cog,
   Contact,
   CreditCard,
   Folders,
-  Gauge,
-  Layers,
   type LucideIcon,
   Megaphone,
   Shield,
   ShieldUser,
-  Signpost,
   SquareActivity,
   Store,
   Users,
@@ -43,8 +41,8 @@ export interface NavSubItem {
   label: string;
   href: string;
   icon?: LucideIcon;
-  /** Longest-prefix match for active detection; defaults to `href`. */
-  match?: string;
+  /** Prefix(es) for active detection; defaults to `href`. Array ⇒ active if any matches (e.g. Resources spanning /edges, /dns, /domains). */
+  match?: string | string[];
   /** Optional count badge (shown when the rail is expanded). */
   count?: number;
 }
@@ -87,11 +85,14 @@ export const NAV_SECTIONS: NavSection[] = [
           items: [
             { label: 'Organizations', href: orgRoutes.list(), icon: Users },
             { label: 'Projects', href: projectRoutes.list(), icon: Folders },
-            // Interim: AI Edge / DNS / Domains will consolidate into a tabbed
-            // "Resources" page (a follow-up build); listed individually for now.
-            { label: 'AI Edge', href: edgeRoutes.list(), icon: Gauge },
-            { label: 'DNS', href: dnsRoutes.list(), icon: Signpost },
-            { label: 'Domains', href: domainRoutes.list(), icon: Layers },
+            // One "Resources" entry → a tabbed page (AI Edge / DNS / Domains);
+            // matches all three tab paths so it stays active across them.
+            {
+              label: 'Resources',
+              href: edgeRoutes.list(),
+              match: [edgeRoutes.list(), dnsRoutes.list(), domainRoutes.list()],
+              icon: Boxes,
+            },
             { label: 'Users', href: userRoutes.list(), icon: Contact },
           ],
         },
