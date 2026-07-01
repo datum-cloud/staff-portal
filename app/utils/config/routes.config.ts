@@ -75,15 +75,17 @@ export const projectRoutes = {
 
 // Groups feature routes
 export const groupRoutes = {
-  list: () => '/groups',
+  list: () => '/admin/groups',
 } as const;
 
 // Contacts feature routes
 export const contactRoutes = {
-  list: () => '/contacts',
-  create: () => '/contacts/create',
-  detail: (namespace: string, contactName: string) => `/contacts/${namespace}/${contactName}`,
-  group: (namespace: string, contactName: string) => `/contacts/${namespace}/${contactName}/groups`,
+  list: () => '/marketing/contacts',
+  create: () => '/marketing/contacts/create',
+  detail: (namespace: string, contactName: string) =>
+    `/marketing/contacts/${namespace}/${contactName}`,
+  group: (namespace: string, contactName: string) =>
+    `/marketing/contacts/${namespace}/${contactName}/groups`,
 } as const;
 
 export const contactGroupRoutes = {
@@ -115,11 +117,11 @@ export const edgeRoutes = {
 
 // Service Catalog routes
 export const serviceCatalogRoutes = {
-  root: () => '/catalog',
-  list: () => '/catalog',
-  detail: (name: string) => `/catalog/${name}`,
-  consumers: (name: string) => `/catalog/${name}/consumers`,
-  approvals: (name: string) => `/catalog/${name}/approvals`,
+  root: () => '/admin/service-catalog',
+  list: () => '/admin/service-catalog',
+  detail: (name: string) => `/admin/service-catalog/${name}`,
+  consumers: (name: string) => `/admin/service-catalog/${name}/consumers`,
+  approvals: (name: string) => `/admin/service-catalog/${name}/approvals`,
 } as const;
 
 // Fraud feature routes
@@ -139,14 +141,14 @@ export const fraudRoutes = {
 
 // Activity feature routes
 export const activityRoutes = {
-  root: () => '/activity',
-  feed: () => '/activity/feed',
-  events: () => '/activity/events',
-  auditLogs: () => '/activity/audit-logs',
+  root: () => '/operations/activity',
+  feed: () => '/operations/activity/feed',
+  events: () => '/operations/activity/events',
+  auditLogs: () => '/operations/activity/audit-logs',
   policies: {
-    list: () => '/activity/policies',
-    detail: (policyName: string) => `/activity/policies/${policyName}`,
-    create: () => '/activity/policies/new',
+    list: () => '/operations/activity/policies',
+    detail: (policyName: string) => `/operations/activity/policies/${policyName}`,
+    create: () => '/operations/activity/policies/new',
   },
 } as const;
 

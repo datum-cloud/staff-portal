@@ -102,7 +102,7 @@ export const NAV_SECTIONS: NavSection[] = [
     label: 'Marketing',
     icon: Megaphone,
     href: contactRoutes.list(),
-    match: '/contacts',
+    match: '/marketing',
     subNav: {
       defaultCollapsed: true,
       groups: [{ items: [{ label: 'Contacts', href: contactRoutes.list(), icon: Contact }] }],
@@ -134,7 +134,7 @@ export const NAV_SECTIONS: NavSection[] = [
     label: 'Operations',
     icon: Cog,
     href: activityRoutes.root(),
-    match: '/activity',
+    match: '/operations',
     subNav: {
       defaultCollapsed: true,
       groups: [
@@ -147,6 +147,7 @@ export const NAV_SECTIONS: NavSection[] = [
     label: 'Admin',
     icon: Shield,
     href: groupRoutes.list(),
+    match: '/admin',
     subNav: {
       defaultCollapsed: true,
       groups: [

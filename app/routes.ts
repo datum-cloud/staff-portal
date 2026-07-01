@@ -91,19 +91,15 @@ export default [
       // Resources (Customers → Resources): AI Edge / DNS / Domains tabs.
       route('resources', 'routes/customer/resource/layout.tsx', [
         index('routes/customer/resource/index.tsx'),
-        route('edges', 'routes/customer/resource/edge/layout.tsx', [index('routes/customer/resource/edge/index.tsx')]),
-        route('dns', 'routes/customer/resource/dns/layout.tsx', [index('routes/customer/resource/dns/index.tsx')]),
-        route('domains', 'routes/customer/resource/domain/layout.tsx', [index('routes/customer/resource/domain/index.tsx')]),
-      ]),
-    ]),
-
-    // Service Catalog
-    route('catalog', 'routes/service-catalog/layout.tsx', [
-      index('routes/service-catalog/index.tsx'),
-      route(':name', 'routes/service-catalog/detail/layout.tsx', [
-        index('routes/service-catalog/detail/index.tsx'),
-        route('consumers', 'routes/service-catalog/detail/consumers.tsx'),
-        route('approvals', 'routes/service-catalog/detail/approvals.tsx'),
+        route('edges', 'routes/customer/resource/edge/layout.tsx', [
+          index('routes/customer/resource/edge/index.tsx'),
+        ]),
+        route('dns', 'routes/customer/resource/dns/layout.tsx', [
+          index('routes/customer/resource/dns/index.tsx'),
+        ]),
+        route('domains', 'routes/customer/resource/domain/layout.tsx', [
+          index('routes/customer/resource/domain/index.tsx'),
+        ]),
       ]),
     ]),
 
@@ -122,25 +118,29 @@ export default [
     // Activity Hub (old single-page activity kept for backward compatibility)
     route('activity-legacy', 'routes/activity.tsx'),
 
-    // Activity Hub (new tabbed interface)
-    route('activity', 'routes/activity-hub/layout.tsx', [
-      index('routes/activity-hub/index.tsx'),
-      route('feed', 'routes/activity-hub/feed.tsx'),
-      route('events', 'routes/activity-hub/events.tsx'),
-      route('audit-logs', 'routes/activity-hub/audit-logs.tsx'),
-      route('policies', 'routes/activity-hub/policies/layout.tsx', [
-        index('routes/activity-hub/policies/index.tsx'),
-        route(':policyName', 'routes/activity-hub/policies/detail.tsx'),
+    // Operations
+    route('operations', 'routes/operation/layout.tsx', [
+      route('activity', 'routes/operation/activity/layout.tsx', [
+        index('routes/operation/activity/index.tsx'),
+        route('feed', 'routes/operation/activity/feed.tsx'),
+        route('events', 'routes/operation/activity/events.tsx'),
+        route('audit-logs', 'routes/operation/activity/audit-logs.tsx'),
+        route('policies', 'routes/operation/activity/policies/layout.tsx', [
+          index('routes/operation/activity/policies/index.tsx'),
+          route(':policyName', 'routes/operation/activity/policies/detail.tsx'),
+        ]),
       ]),
     ]),
 
-    // Contacts
-    route('contacts', 'routes/contact/layout.tsx', [
-      index('routes/contact/index.tsx'),
-      route('create', 'routes/contact/create.tsx'),
-      route(':namespace/:contactName', 'routes/contact/detail/layout.tsx', [
-        index('routes/contact/detail/index.tsx'),
-        route('groups', 'routes/contact/detail/group.tsx'),
+    // Marketing
+    route('marketing', 'routes/marketing/layout.tsx', [
+      route('contacts', 'routes/marketing/contact/layout.tsx', [
+        index('routes/marketing/contact/index.tsx'),
+        route('create', 'routes/marketing/contact/create.tsx'),
+        route(':namespace/:contactName', 'routes/marketing/contact/detail/layout.tsx', [
+          index('routes/marketing/contact/detail/index.tsx'),
+          route('groups', 'routes/marketing/contact/detail/group.tsx'),
+        ]),
       ]),
     ]),
 
@@ -154,10 +154,20 @@ export default [
       ]),
     ]),
 
-    // Groups
-    route('groups', 'routes/group/layout.tsx', [
-      index('routes/group/index.tsx'),
-      route(':groupName', 'routes/group/member.tsx'),
+    // Admin
+    route('admin', 'routes/admin/layout.tsx', [
+      route('groups', 'routes/admin/group/layout.tsx', [
+        index('routes/admin/group/index.tsx'),
+        route(':groupName', 'routes/admin/group/member.tsx'),
+      ]),
+      route('service-catalog', 'routes/admin/service-catalog/layout.tsx', [
+        index('routes/admin/service-catalog/index.tsx'),
+        route(':name', 'routes/admin/service-catalog/detail/layout.tsx', [
+          index('routes/admin/service-catalog/detail/index.tsx'),
+          route('consumers', 'routes/admin/service-catalog/detail/consumers.tsx'),
+          route('approvals', 'routes/admin/service-catalog/detail/approvals.tsx'),
+        ]),
+      ]),
     ]),
 
     // Email Activity

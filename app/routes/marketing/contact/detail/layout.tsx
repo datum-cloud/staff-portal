@@ -2,7 +2,7 @@ import type { Route } from './+types/layout';
 import { DetailShell, type EntityTab } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
 import { contactDetailQuery, userDetailQuery } from '@/resources/request/server';
-import { ContactDetailLoaderData } from '@/routes/contact/shared';
+import { ContactDetailLoaderData } from '@/routes/marketing/contact/shared';
 import { contactRoutes } from '@/utils/config/routes.config';
 import { Avatar, AvatarFallback } from '@datum-cloud/datum-ui/avatar';
 import { useLingui } from '@lingui/react/macro';
