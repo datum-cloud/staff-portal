@@ -1,6 +1,7 @@
 import { DateTime } from '@/components/date';
 import { ControlPlaneStatus } from '@/resources/schemas';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
+import { startCase } from '@/utils/helpers';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { cn } from '@datum-cloud/datum-ui/utils';
@@ -118,7 +119,8 @@ const BadgeCondition = ({
     const { status: controlStatus, message } = getControlPlaneStatus(status);
     const config = StatusConfig[controlStatus];
     const IconComponent = config.icon;
-    const displayLabel = customLabel || config.label;
+    // startCase to match BadgeState — one consistent casing for all status text.
+    const displayLabel = startCase(customLabel || config.label);
 
     const badgeContent = (
       <Badge
@@ -155,7 +157,7 @@ const BadgeCondition = ({
   const config =
     StatusConfig[condition.status as keyof typeof StatusConfig] || StatusConfig.Unknown;
   const IconComponent = config.icon;
-  const displayLabel = customLabel || condition.type;
+  const displayLabel = startCase(customLabel || condition.type);
 
   const badgeContent = (
     <Badge

@@ -17,12 +17,12 @@ msgstr ""
 msgid "(cross-org)"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:270
+#: app/features/fraud/detail/evaluation-sections.tsx:271
 msgid "(current)"
 msgstr ""
 
 #. placeholder {0}: policy.spec.historyRetention?.maxEntries ?? 50
-#: app/features/fraud/policy/policy-detail.tsx:150
+#: app/features/fraud/policy/policy-detail.tsx:151
 msgid "{0} entries"
 msgstr ""
 
@@ -106,7 +106,7 @@ msgstr ""
 msgid "A contact with this email already exists."
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:288
+#: app/routes/operation/fraud/index.tsx:296
 msgid "Accepted"
 msgstr ""
 
@@ -228,7 +228,7 @@ msgstr ""
 msgid "Admin"
 msgstr ""
 
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:156
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:157
 msgid "Age"
 msgstr ""
 
@@ -249,11 +249,11 @@ msgstr ""
 msgid "All billing accounts"
 msgstr ""
 
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:79
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:80
 msgid "All evaluations are clear"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:254
+#: app/features/fraud/detail/evaluation-sections.tsx:255
 msgid "All Evaluations for this User"
 msgstr ""
 
@@ -378,7 +378,7 @@ msgstr ""
 msgid "Are you sure you want to delete the fraud policy \"{0}\"? This will disable all fraud evaluation."
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:243
+#: app/routes/operation/fraud/index.tsx:251
 msgid "Are you sure you want to delete this fraud evaluation? This action cannot be undone."
 msgstr ""
 
@@ -421,7 +421,7 @@ msgstr ""
 msgid "Audit Logs"
 msgstr ""
 
-#: app/features/fraud/policy/policy-detail.tsx:165
+#: app/features/fraud/policy/policy-detail.tsx:166
 msgid "Available"
 msgstr ""
 
@@ -429,11 +429,11 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:309
+#: app/features/fraud/detail/evaluation-sections.tsx:310
 msgid "Back to evaluations"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-config-card.tsx:46
+#: app/features/edge/components/detail/edge-config-card.tsx:43
 msgid "Basic Authentication"
 msgstr ""
 
@@ -492,8 +492,8 @@ msgstr ""
 #: app/routes/marketing/contact-group/index.tsx:128
 #: app/routes/marketing/contact/detail/group.tsx:161
 #: app/routes/marketing/contact/detail/group.tsx:174
-#: app/routes/operation/fraud/index.tsx:210
-#: app/routes/operation/fraud/index.tsx:245
+#: app/routes/operation/fraud/index.tsx:218
+#: app/routes/operation/fraud/index.tsx:253
 #: app/routes/operation/fraud/policy.tsx:101
 #: app/routes/operation/fraud/providers/create.tsx:134
 #: app/routes/operation/fraud/providers/detail.tsx:175
@@ -534,7 +534,7 @@ msgid "Clear all"
 msgstr ""
 
 #: app/components/app-search/app-search-mobile.tsx:71
-#: app/features/fraud/detail/evaluation-sections.tsx:64
+#: app/features/fraud/detail/evaluation-sections.tsx:65
 msgid "Close"
 msgstr ""
 
@@ -563,7 +563,7 @@ msgstr ""
 msgid "Collapse sidebar"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:278
+#: app/routes/operation/fraud/index.tsx:286
 msgid "Completed"
 msgstr ""
 
@@ -575,7 +575,7 @@ msgstr ""
 msgid "Conditions"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-config-card.tsx:83
+#: app/features/edge/components/detail/edge-config-card.tsx:84
 #: app/routes/customer/project/detail/export-policy/detail.tsx:174
 #: app/routes/customer/project/detail/export-policy/detail.tsx:208
 msgid "Configuration"
@@ -589,7 +589,7 @@ msgstr ""
 msgid "Connection"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-config-card.tsx:58
+#: app/features/edge/components/detail/edge-config-card.tsx:59
 msgid "Connector"
 msgstr ""
 
@@ -608,7 +608,7 @@ msgstr ""
 msgid "Consumers"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:351
+#: app/features/fraud/detail/evaluation-sections.tsx:352
 #: app/routes/marketing/contact-group/detail/member.tsx:67
 msgid "Contact"
 msgstr ""
@@ -713,7 +713,7 @@ msgstr ""
 msgid "Copy shareable link with current filters"
 msgstr ""
 
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:90
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:91
 msgid "Could not load fraud alerts"
 msgstr ""
 
@@ -825,7 +825,7 @@ msgstr ""
 
 #: app/routes/customer/user/detail/index.tsx:148
 #: app/routes/customer/user/detail/index.tsx:492
-#: app/routes/operation/fraud/index.tsx:290
+#: app/routes/operation/fraud/index.tsx:298
 msgid "Deactivate"
 msgstr ""
 
@@ -854,11 +854,11 @@ msgstr ""
 msgid "Deactivation Reason"
 msgstr ""
 
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:151
-#: app/features/fraud/detail/evaluation-sections.tsx:385
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:152
+#: app/features/fraud/detail/evaluation-sections.tsx:386
 #: app/routes/customer/user/detail/index.tsx:363
 #: app/routes/operation/fraud/index.tsx:159
-#: app/routes/operation/fraud/index.tsx:286
+#: app/routes/operation/fraud/index.tsx:294
 msgid "Decision"
 msgstr ""
 
@@ -874,7 +874,7 @@ msgstr ""
 msgid "Default Hostname"
 msgstr ""
 
-#: app/features/fraud/policy/policy-detail.tsx:169
+#: app/features/fraud/policy/policy-detail.tsx:170
 msgid "Degraded"
 msgstr ""
 
@@ -886,7 +886,7 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:461
 #: app/features/contact/components/contact-list.tsx:60
 #: app/features/contact/components/contact-list.tsx:118
-#: app/features/fraud/policy/policy-detail.tsx:101
+#: app/features/fraud/policy/policy-detail.tsx:102
 #: app/features/quota/components/quota-grant-list.tsx:140
 #: app/features/quota/components/quota-grant-list.tsx:161
 #: app/routes/admin/group/member.tsx:94
@@ -899,7 +899,7 @@ msgstr ""
 #: app/routes/marketing/contact/detail/group.tsx:71
 #: app/routes/marketing/contact/detail/group.tsx:160
 #: app/routes/operation/fraud/index.tsx:100
-#: app/routes/operation/fraud/index.tsx:244
+#: app/routes/operation/fraud/index.tsx:252
 #: app/routes/operation/fraud/policy.tsx:100
 #: app/routes/operation/fraud/providers/detail.tsx:116
 #: app/routes/operation/fraud/providers/detail.tsx:196
@@ -944,7 +944,7 @@ msgstr ""
 msgid "Delete contact groups"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:242
+#: app/routes/operation/fraud/index.tsx:250
 msgid "Delete Evaluation"
 msgstr ""
 
@@ -1051,7 +1051,7 @@ msgid "Display name"
 msgstr ""
 
 #: app/features/contact-group/components/contact-group-form.tsx:63
-#: app/features/edge/components/detail/edge-config-card.tsx:13
+#: app/features/edge/components/detail/edge-config-card.tsx:12
 #: app/features/service-catalog/components/details-card.tsx:37
 msgid "Display Name"
 msgstr ""
@@ -1149,7 +1149,7 @@ msgid "Draft"
 msgstr ""
 
 #: app/features/contact/components/contact-list.tsx:53
-#: app/features/fraud/policy/policy-detail.tsx:94
+#: app/features/fraud/policy/policy-detail.tsx:95
 #: app/routes/marketing/contact-group/index.tsx:49
 #: app/routes/operation/fraud/providers/index.tsx:40
 msgid "Edit"
@@ -1241,17 +1241,17 @@ msgstr ""
 msgid "Endpoint"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:298
+#: app/routes/operation/fraud/index.tsx:306
 msgid "Enforced"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:400
-#: app/routes/operation/fraud/index.tsx:174
-#: app/routes/operation/fraud/index.tsx:295
+#: app/features/fraud/detail/evaluation-sections.tsx:401
+#: app/routes/operation/fraud/index.tsx:177
+#: app/routes/operation/fraud/index.tsx:303
 msgid "Enforcement"
 msgstr ""
 
-#: app/features/fraud/policy/policy-detail.tsx:113
+#: app/features/fraud/policy/policy-detail.tsx:114
 #: app/features/fraud/policy/policy-form.tsx:157
 msgid "Enforcement Mode"
 msgstr ""
@@ -1286,8 +1286,8 @@ msgstr ""
 msgid "Entities"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:126
-#: app/routes/operation/fraud/index.tsx:281
+#: app/features/fraud/detail/evaluation-sections.tsx:127
+#: app/routes/operation/fraud/index.tsx:289
 msgid "Error"
 msgstr ""
 
@@ -1295,16 +1295,16 @@ msgstr ""
 msgid "Established"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:415
-#: app/routes/operation/fraud/index.tsx:188
+#: app/features/fraud/detail/evaluation-sections.tsx:416
+#: app/routes/operation/fraud/index.tsx:196
 msgid "Evaluated"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:250
+#: app/routes/operation/fraud/index.tsx:258
 msgid "Evaluation deleted successfully"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:206
+#: app/features/fraud/detail/evaluation-sections.tsx:207
 msgid "Evaluation History"
 msgstr ""
 
@@ -1312,11 +1312,11 @@ msgstr ""
 msgid "Evaluation not found."
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:327
+#: app/features/fraud/detail/evaluation-sections.tsx:328
 msgid "Evaluation Overview"
 msgstr ""
 
-#: app/features/fraud/policy/policy-detail.tsx:204
+#: app/features/fraud/policy/policy-detail.tsx:205
 msgid "Evaluation Pipeline"
 msgstr ""
 
@@ -1483,7 +1483,7 @@ msgstr ""
 msgid "Flag"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-config-card.tsx:37
+#: app/features/edge/components/detail/edge-config-card.tsx:34
 msgid "Force HTTPS"
 msgstr ""
 
@@ -1492,7 +1492,7 @@ msgstr ""
 msgid "Fraud & Abuse"
 msgstr ""
 
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:110
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:111
 msgid "Fraud Alerts"
 msgstr ""
 
@@ -1504,7 +1504,7 @@ msgstr ""
 msgid "Fraud Evaluation Detail"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:225
+#: app/routes/operation/fraud/index.tsx:233
 msgid "Fraud evaluation started"
 msgstr ""
 
@@ -1525,7 +1525,7 @@ msgstr ""
 msgid "Full Name"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:57
+#: app/features/fraud/detail/evaluation-sections.tsx:58
 msgid "Full response from the provider"
 msgstr ""
 
@@ -1583,7 +1583,7 @@ msgstr ""
 msgid "High"
 msgstr ""
 
-#: app/features/fraud/policy/policy-detail.tsx:146
+#: app/features/fraud/policy/policy-detail.tsx:147
 msgid "History Retention"
 msgstr ""
 
@@ -1595,7 +1595,7 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-config-card.tsx:21
+#: app/features/edge/components/detail/edge-config-card.tsx:20
 msgid "Host Header"
 msgstr ""
 
@@ -1969,11 +1969,11 @@ msgstr ""
 msgid "Network"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:266
+#: app/routes/operation/fraud/index.tsx:274
 msgid "New Evaluation"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:207
+#: app/routes/operation/fraud/index.tsx:215
 msgid "New Fraud Evaluation"
 msgstr ""
 
@@ -2066,7 +2066,7 @@ msgstr ""
 msgid "No feature flags registered."
 msgstr ""
 
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:76
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:77
 msgid "No fraud alerts"
 msgstr ""
 
@@ -2074,7 +2074,7 @@ msgstr ""
 msgid "No fraud evaluations found for this user."
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:272
+#: app/routes/operation/fraud/index.tsx:280
 msgid "No fraud evaluations found."
 msgstr ""
 
@@ -2191,8 +2191,8 @@ msgstr ""
 msgid "No users yet"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:394
-#: app/features/fraud/detail/evaluation-sections.tsx:409
+#: app/features/fraud/detail/evaluation-sections.tsx:395
+#: app/features/fraud/detail/evaluation-sections.tsx:410
 msgid "None"
 msgstr ""
 
@@ -2227,7 +2227,7 @@ msgstr ""
 msgid "Notifications"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:297
+#: app/routes/operation/fraud/index.tsx:305
 msgid "Observed"
 msgstr ""
 
@@ -2315,7 +2315,7 @@ msgid "Payment methods"
 msgstr ""
 
 #: app/features/email/components/email-list.tsx:133
-#: app/routes/operation/fraud/index.tsx:280
+#: app/routes/operation/fraud/index.tsx:288
 msgid "Pending"
 msgstr ""
 
@@ -2353,7 +2353,7 @@ msgstr ""
 
 #: app/features/billing/components/billing-account-list.tsx:65
 #: app/features/billing/components/org-billing-accounts-card.tsx:42
-#: app/features/fraud/detail/evaluation-sections.tsx:379
+#: app/features/fraud/detail/evaluation-sections.tsx:380
 #: app/features/service-catalog/components/details-card.tsx:43
 #: app/routes/admin/service-catalog/detail/consumers.tsx:105
 #: app/routes/admin/service-catalog/detail/consumers.tsx:232
@@ -2362,7 +2362,7 @@ msgstr ""
 #: app/routes/finance/billing-account/detail/index.tsx:121
 #: app/routes/finance/billing-account/detail/index.tsx:184
 #: app/routes/operation/fraud/index.tsx:135
-#: app/routes/operation/fraud/index.tsx:276
+#: app/routes/operation/fraud/index.tsx:284
 msgid "Phase"
 msgstr ""
 
@@ -2496,7 +2496,7 @@ msgstr ""
 msgid "Projects"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-config-card.tsx:29
+#: app/features/edge/components/detail/edge-config-card.tsx:28
 msgid "Protection"
 msgstr ""
 
@@ -2531,7 +2531,7 @@ msgstr ""
 msgid "Provider updated successfully"
 msgstr ""
 
-#: app/features/fraud/policy/policy-detail.tsx:37
+#: app/features/fraud/policy/policy-detail.tsx:38
 #: app/routes/operation/fraud/providers/layout.tsx:5
 msgid "Providers"
 msgstr ""
@@ -2576,7 +2576,7 @@ msgstr ""
 msgid "Quotas"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:56
+#: app/features/fraud/detail/evaluation-sections.tsx:57
 msgid "Raw Results — {provider}"
 msgstr ""
 
@@ -2666,7 +2666,7 @@ msgstr ""
 msgid "Requesting a TLS certificate from the certificate authority"
 msgstr ""
 
-#: app/features/fraud/policy/policy-detail.tsx:24
+#: app/features/fraud/policy/policy-detail.tsx:25
 #: app/features/fraud/policy/policy-form.tsx:298
 msgid "Required"
 msgstr ""
@@ -2718,7 +2718,7 @@ msgid "Retired"
 msgstr ""
 
 #: app/features/dashboard/components/cluster-health-widget.tsx:40
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:93
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:94
 #: app/features/dashboard/components/pending-approvals-widget.tsx:79
 #: app/features/dashboard/components/quota-utilization-widget.tsx:113
 #: app/routes/admin/service-catalog/detail/approvals.tsx:136
@@ -2727,7 +2727,7 @@ msgstr ""
 msgid "Retry"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:289
+#: app/routes/operation/fraud/index.tsx:297
 msgid "Review"
 msgstr ""
 
@@ -2751,11 +2751,11 @@ msgstr ""
 msgid "Role"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:209
+#: app/routes/operation/fraud/index.tsx:217
 msgid "Run Evaluation"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:279
+#: app/routes/operation/fraud/index.tsx:287
 msgid "Running"
 msgstr ""
 
@@ -2775,8 +2775,8 @@ msgstr ""
 msgid "Schedule invitation to be sent at specific time"
 msgstr ""
 
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:146
-#: app/features/fraud/detail/evaluation-sections.tsx:370
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:147
+#: app/features/fraud/detail/evaluation-sections.tsx:371
 #: app/routes/customer/user/detail/index.tsx:354
 #: app/routes/operation/fraud/index.tsx:139
 msgid "Score"
@@ -2809,7 +2809,7 @@ msgstr ""
 msgid "Search billing accounts..."
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:271
+#: app/routes/operation/fraud/index.tsx:279
 msgid "Search by email, name, or ID..."
 msgstr ""
 
@@ -2817,7 +2817,7 @@ msgstr ""
 msgid "Search by flag key or description..."
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:233
+#: app/routes/operation/fraud/index.tsx:241
 msgid "Search by name or email..."
 msgstr ""
 
@@ -2956,7 +2956,7 @@ msgstr ""
 msgid "See all domains"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:208
+#: app/routes/operation/fraud/index.tsx:216
 msgid "Select a user to run a fraud evaluation against the current policy."
 msgstr ""
 
@@ -3014,7 +3014,7 @@ msgid "Share"
 msgstr ""
 
 #. placeholder {0}: stage.shortCircuit.skipWhenBelow
-#: app/features/fraud/policy/policy-detail.tsx:28
+#: app/features/fraud/policy/policy-detail.tsx:29
 msgid "Short-circuit < {0}"
 msgstr ""
 
@@ -3031,7 +3031,7 @@ msgstr ""
 msgid "Sinks"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:184
+#: app/features/fraud/detail/evaluation-sections.tsx:185
 msgid "Skipped"
 msgstr ""
 
@@ -3056,11 +3056,11 @@ msgstr ""
 msgid "Stage Name"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:432
+#: app/features/fraud/detail/evaluation-sections.tsx:433
 msgid "Stage Results"
 msgstr ""
 
-#: app/features/fraud/policy/policy-detail.tsx:132
+#: app/features/fraud/policy/policy-detail.tsx:133
 msgid "Stages"
 msgstr ""
 
@@ -3079,7 +3079,7 @@ msgstr ""
 #: app/features/email/components/email-detail.tsx:57
 #: app/features/email/components/email-list.tsx:74
 #: app/features/email/components/email-list.tsx:129
-#: app/features/fraud/policy/policy-detail.tsx:159
+#: app/features/fraud/policy/policy-detail.tsx:160
 #: app/features/quota/components/quota-grant-list.tsx:109
 #: app/features/service-catalog/components/conditions-card.tsx:23
 #: app/routes/customer/project/detail/domain/detail.tsx:131
@@ -3191,7 +3191,7 @@ msgstr ""
 msgid "This service has no producer project recorded, so consumers cannot be listed."
 msgstr ""
 
-#: app/features/fraud/policy/policy-detail.tsx:47
+#: app/features/fraud/policy/policy-detail.tsx:48
 msgid "Thresholds"
 msgstr ""
 
@@ -3219,7 +3219,7 @@ msgstr ""
 msgid "TLS Failed"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-config-card.tsx:67
+#: app/features/edge/components/detail/edge-config-card.tsx:68
 #: app/features/edge/components/detail/edge-hostnames-card.tsx:170
 msgid "TLS Hostname"
 msgstr ""
@@ -3241,7 +3241,7 @@ msgstr ""
 msgid "Trigger {0}"
 msgstr ""
 
-#: app/features/fraud/policy/policy-detail.tsx:182
+#: app/features/fraud/policy/policy-detail.tsx:183
 #: app/features/fraud/policy/policy-form.tsx:173
 msgid "Triggers"
 msgstr ""
@@ -3267,7 +3267,7 @@ msgstr ""
 msgid "Type at least 3 characters to search."
 msgstr ""
 
-#: app/features/fraud/policy/policy-detail.tsx:165
+#: app/features/fraud/policy/policy-detail.tsx:166
 msgid "Unavailable"
 msgstr ""
 
@@ -3315,8 +3315,8 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:117
 #: app/features/activity/components/activity-list.tsx:392
 #: app/features/activity/components/activity-list.tsx:491
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:141
-#: app/features/fraud/detail/evaluation-sections.tsx:334
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:142
+#: app/features/fraud/detail/evaluation-sections.tsx:335
 #: app/routes/customer/user/detail/index.tsx:236
 #: app/routes/marketing/contact-group/detail/member.tsx:107
 #: app/routes/operation/fraud/index.tsx:109
@@ -3413,7 +3413,7 @@ msgstr ""
 msgid "View activity logs"
 msgstr ""
 
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:123
+#: app/features/dashboard/components/fraud-alerts-widget.tsx:124
 #: app/features/dashboard/components/pending-approvals-widget.tsx:109
 #: app/features/dashboard/components/recent-users-widget.tsx:102
 msgid "View All"
@@ -3440,7 +3440,7 @@ msgstr ""
 msgid "View in Sentry"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:142
+#: app/features/fraud/detail/evaluation-sections.tsx:143
 msgid "View on MaxMind"
 msgstr ""
 
@@ -3448,7 +3448,7 @@ msgstr ""
 msgid "View organization"
 msgstr ""
 
-#: app/features/fraud/detail/evaluation-sections.tsx:147
+#: app/features/fraud/detail/evaluation-sections.tsx:148
 msgid "View Raw Results"
 msgstr ""
 
