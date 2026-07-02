@@ -15,7 +15,7 @@ interface EntityTabNavProps {
  */
 export function EntityTabNav({ tabs }: EntityTabNavProps) {
   return (
-    <div className="bg-background sticky z-10 px-4 py-3" style={{ top: HEADER_STACK_H }}>
+    <div className="bg-background sticky z-20 px-4 py-3" style={{ top: HEADER_STACK_H }}>
       <TabStrip tabs={tabs} />
     </div>
   );

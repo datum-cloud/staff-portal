@@ -35,24 +35,46 @@ const itemClass =
 const activeClass = 'bg-card text-primary';
 const idleClass = 'text-foreground hover:bg-card/60 hover:text-primary';
 
+/** The path a tab represents: its `match`, else `href`, else its first child. */
+function tabKey(tab: EntityTab): string {
+  return tab.match ?? tab.href ?? tab.children?.[0]?.href ?? '';
+}
+
+/** `end` tabs match their key exactly; others match the key or any sub-path. */
+function tabMatches(pathname: string, tab: EntityTab): boolean {
+  const key = tabKey(tab);
+  if (!key) return false;
+  if (tab.end) return pathname === key;
+  return pathname === key || pathname.startsWith(key + '/');
+}
+
 /**
  * Segmented pill tab strip. Direct tabs are `NavLink`s; tabs with `children`
  * open a dropdown (so sections with sub-routes stay in one row). Used by detail
  * pages (`EntityTabNav`) and the Resources page.
+ *
+ * Active tab = longest matching prefix, so a root tab (e.g. Fraud's Evaluations
+ * at the section root) stays active on its detail pages without also lighting up
+ * more-specific sibling tabs (Providers/Policy).
  */
 export function TabStrip({ tabs, className }: { tabs: EntityTab[]; className?: string }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
+  const activeKey = tabs
+    .filter((tab) => tabMatches(pathname, tab))
+    .map(tabKey)
+    .sort((a, b) => b.length - a.length)[0];
+  const isActive = (tab: EntityTab) => activeKey != null && tabKey(tab) === activeKey;
+
   return (
     <nav className={cn(stripClass, className)}>
       {tabs.map((tab) => {
         if (tab.children?.length) {
-          const prefix = tab.match ?? tab.children[0].href;
-          const active = pathname.startsWith(prefix);
           return (
             <DropdownMenu key={tab.label}>
-              <DropdownMenuTrigger className={cn(itemClass, active ? activeClass : idleClass)}>
+              <DropdownMenuTrigger
+                className={cn(itemClass, isActive(tab) ? activeClass : idleClass)}>
                 {tab.icon && <Icon icon={tab.icon} />}
                 {tab.label}
                 <ChevronDown className="size-3.5" />
@@ -72,8 +94,7 @@ export function TabStrip({ tabs, className }: { tabs: EntityTab[]; className?: s
           <NavLink
             key={tab.href}
             to={tab.href ?? '#'}
-            end={tab.end}
-            className={({ isActive }) => cn(itemClass, isActive ? activeClass : idleClass)}>
+            className={cn(itemClass, isActive(tab) ? activeClass : idleClass)}>
             {tab.icon && <Icon icon={tab.icon} />}
             {tab.label}
           </NavLink>
