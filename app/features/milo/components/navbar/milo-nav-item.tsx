@@ -3,6 +3,7 @@ import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
+import { ChevronDown } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router';
 
@@ -45,6 +46,11 @@ export function MiloNavItem({ section, active }: MiloNavItemProps) {
         active || open ? 'bg-card text-primary' : 'text-foreground hover:bg-card hover:text-primary'
       )}>
       <span className="text-sm font-medium">{section.label}</span>
+      {hasDropdown && (
+        <ChevronDown
+          className={cn('ml-1 size-3.5 opacity-60 transition-transform', open && 'rotate-180')}
+        />
+      )}
     </NavLink>
   );
 
@@ -63,11 +69,14 @@ export function MiloNavItem({ section, active }: MiloNavItemProps) {
         onCloseAutoFocus={(e) => e.preventDefault()}
         onMouseEnter={openNow}
         onMouseLeave={closeSoon}
-        className="w-52 p-1">
+        // Dark panel in both themes: foreground (midnight-fjord) in light, a
+        // raised popover navy in dark. Content is white since it always sits on
+        // a dark surface.
+        className="bg-foreground dark:bg-popover w-52 border-white/10 p-1 text-white">
         {section.subNav?.groups.map((group, gi) => (
           <div key={group.label ?? gi} className="flex flex-col">
             {group.label && (
-              <Text size="xs" textColor="muted" className="px-2 py-1 tracking-wide uppercase">
+              <Text size="xs" className="px-2 py-1 tracking-wide text-white/45 uppercase">
                 {group.label}
               </Text>
             )}
@@ -79,10 +88,12 @@ export function MiloNavItem({ section, active }: MiloNavItemProps) {
                 className={({ isActive }) =>
                   cn(
                     'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors',
-                    isActive ? 'bg-muted text-primary' : 'text-foreground hover:bg-muted'
+                    isActive
+                      ? 'bg-white/15 font-medium text-white'
+                      : 'text-white/80 hover:bg-white/10 hover:text-white'
                   )
                 }>
-                {item.icon && <Icon icon={item.icon} className="text-muted-foreground shrink-0" />}
+                {item.icon && <Icon icon={item.icon} className="shrink-0 text-white/60" />}
                 <span className="truncate">{item.label}</span>
               </NavLink>
             ))}
