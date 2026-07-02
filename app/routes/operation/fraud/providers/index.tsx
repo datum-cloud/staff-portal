@@ -1,8 +1,9 @@
 import type { Route } from './+types/index';
+import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
-import { ListPage, ListTable } from '@/features/milo';
+import { ListTable } from '@/features/milo';
 import {
   useDeleteFraudProviderMutation,
   useFraudProviderListQuery,
@@ -114,6 +115,15 @@ export default function Page() {
 
   return (
     <>
+      <AppActionBar>
+        <Button
+          type="primary"
+          icon={<ACTION_ICONS.add size={16} />}
+          onClick={() => navigate(fraudRoutes.providers.create())}>
+          <Trans>Add Provider</Trans>
+        </Button>
+      </AppActionBar>
+
       <DialogConfirm
         open={!!selectedProvider}
         onOpenChange={() => setSelectedProvider(null)}
@@ -129,33 +139,24 @@ export default function Page() {
         }}
       />
 
-      <ListPage>
-        <ListTable
-          loading={tableQuery.isLoading}
-          data={tableQuery.data?.items ?? []}
-          columns={columns}
-          pageSize={20}
-          getRowId={(row) => row.metadata?.name ?? ''}
-          defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
-          searchPlaceholder={t`Search providers...`}
-          emptyMessage={t`No fraud providers configured.`}
-          actions={
-            <Button
-              type="primary"
-              icon={<ACTION_ICONS.add size={16} />}
-              onClick={() => navigate(fraudRoutes.providers.create())}>
-              <Trans>Add Provider</Trans>
-            </Button>
-          }
-          searchFn={(row, search) => {
-            const q = search.trim().toLowerCase();
-            if (!q) return true;
-            return [row.metadata?.name, row.spec?.type, row.spec?.config?.endpoint]
-              .map((s) => (s ?? '').toLowerCase())
-              .some((s) => s.includes(q));
-          }}
-        />
-      </ListPage>
+      <ListTable
+        inset="tab"
+        loading={tableQuery.isLoading}
+        data={tableQuery.data?.items ?? []}
+        columns={columns}
+        pageSize={20}
+        getRowId={(row) => row.metadata?.name ?? ''}
+        defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+        searchPlaceholder={t`Search providers...`}
+        emptyMessage={t`No fraud providers configured.`}
+        searchFn={(row, search) => {
+          const q = search.trim().toLowerCase();
+          if (!q) return true;
+          return [row.metadata?.name, row.spec?.type, row.spec?.config?.endpoint]
+            .map((s) => (s ?? '').toLowerCase())
+            .some((s) => s.includes(q));
+        }}
+      />
     </>
   );
 }

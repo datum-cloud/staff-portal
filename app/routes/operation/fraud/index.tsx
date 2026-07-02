@@ -1,9 +1,10 @@
 import type { Route } from './+types/index';
+import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayId } from '@/components/display';
-import { ListPage, ListTable } from '@/features/milo';
+import { ListTable } from '@/features/milo';
 import { useContactAllListQuery, useSearchUsersQuery } from '@/resources/request/client';
 import {
   useCreateFraudEvaluationMutation,
@@ -209,6 +210,16 @@ export default function Page() {
 
   return (
     <>
+      <AppActionBar>
+        <Button
+          type="primary"
+          icon={<ACTION_ICONS.add size={16} />}
+          disabled={policyLoaded && !policyName}
+          onClick={() => setShowNewEval(true)}>
+          <Trans>New Evaluation</Trans>
+        </Button>
+      </AppActionBar>
+
       <DialogForm
         open={showNewEval}
         onOpenChange={setShowNewEval}
@@ -259,75 +270,66 @@ export default function Page() {
         }}
       />
 
-      <ListPage>
-        <ListTable
-          loading={tableQuery.isLoading}
-          data={tableQuery.data?.items ?? []}
-          columns={columns}
-          pageSize={20}
-          actions={
-            <Button
-              type="primary"
-              icon={<ACTION_ICONS.add size={16} />}
-              disabled={policyLoaded && !policyName}
-              onClick={() => setShowNewEval(true)}>
-              <Trans>New Evaluation</Trans>
-            </Button>
-          }
-          getRowId={(row) => row.metadata?.name ?? ''}
-          defaultSort={[{ id: 'lastEvaluationTime', desc: true }]}
-          searchPlaceholder={t`Search by email, name, or ID...`}
-          emptyMessage={t`No fraud evaluations found.`}
-          filters={[
-            {
-              column: 'status.phase',
-              label: t`Phase`,
-              options: [
-                { value: 'Completed', label: t`Completed` },
-                { value: 'Running', label: t`Running` },
-                { value: 'Pending', label: t`Pending` },
-                { value: 'Error', label: t`Error` },
-              ],
-            },
-            {
-              column: 'status.decision',
-              label: t`Decision`,
-              options: [
-                { value: 'ACCEPTED', label: t`Accepted` },
-                { value: 'REVIEW', label: t`Review` },
-                { value: 'DEACTIVATE', label: t`Deactivate` },
-              ],
-            },
-            {
-              column: 'status.enforcementAction',
-              label: t`Enforcement`,
-              options: [
-                { value: 'OBSERVED', label: t`Observed` },
-                { value: 'ENFORCED', label: t`Enforced` },
-              ],
-            },
-          ]}
-          searchFn={(row, search) => {
-            const q = search.trim().toLowerCase();
-            if (!q) return true;
-            const userId = (row.spec?.userRef?.name ?? '').toLowerCase();
-            const name = (row.metadata?.name ?? '').toLowerCase();
-            const decision = (row.status?.decision ?? '').toLowerCase();
-            const contact = userId
-              ? contactsByUserRef.current.get(row.spec?.userRef?.name ?? '')
-              : undefined;
-            const email = (contact?.email ?? '').toLowerCase();
-            const contactName = (contact?.name ?? '').toLowerCase();
-            return (
-              userId.includes(q) ||
-              name.includes(q) ||
-              decision.includes(q) ||
-              email.includes(q) ||
-              contactName.includes(q)
-            );
-          }}
-        />
-      </ListPage>
+      <ListTable
+        inset="tab"
+        filterLayout="inline"
+        loading={tableQuery.isLoading}
+        data={tableQuery.data?.items ?? []}
+        columns={columns}
+        pageSize={20}
+        getRowId={(row) => row.metadata?.name ?? ''}
+        defaultSort={[{ id: 'lastEvaluationTime', desc: true }]}
+        searchPlaceholder={t`Search by email, name, or ID...`}
+        emptyMessage={t`No fraud evaluations found.`}
+        filters={[
+          {
+            column: 'status.phase',
+            label: t`Phase`,
+            options: [
+              { value: 'Completed', label: t`Completed` },
+              { value: 'Running', label: t`Running` },
+              { value: 'Pending', label: t`Pending` },
+              { value: 'Error', label: t`Error` },
+            ],
+          },
+          {
+            column: 'status.decision',
+            label: t`Decision`,
+            options: [
+              { value: 'ACCEPTED', label: t`Accepted` },
+              { value: 'REVIEW', label: t`Review` },
+              { value: 'DEACTIVATE', label: t`Deactivate` },
+            ],
+          },
+          {
+            column: 'status.enforcementAction',
+            label: t`Enforcement`,
+            options: [
+              { value: 'OBSERVED', label: t`Observed` },
+              { value: 'ENFORCED', label: t`Enforced` },
+            ],
+          },
+        ]}
+        searchFn={(row, search) => {
+          const q = search.trim().toLowerCase();
+          if (!q) return true;
+          const userId = (row.spec?.userRef?.name ?? '').toLowerCase();
+          const name = (row.metadata?.name ?? '').toLowerCase();
+          const decision = (row.status?.decision ?? '').toLowerCase();
+          const contact = userId
+            ? contactsByUserRef.current.get(row.spec?.userRef?.name ?? '')
+            : undefined;
+          const email = (contact?.email ?? '').toLowerCase();
+          const contactName = (contact?.name ?? '').toLowerCase();
+          return (
+            userId.includes(q) ||
+            name.includes(q) ||
+            decision.includes(q) ||
+            email.includes(q) ||
+            contactName.includes(q)
+          );
+        }}
+      />
     </>
   );
 }
