@@ -1,4 +1,4 @@
-import { HEADER_STACK_H, TabStrip, type EntityTab } from '@/features/milo';
+import { EntityTabNav, type EntityTab } from '@/features/milo';
 import { ENTITY_ICONS } from '@/utils/config/icons.config';
 import { dnsRoutes, domainRoutes, edgeRoutes } from '@/utils/config/routes.config';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -9,9 +9,9 @@ export const handle = {
 };
 
 /**
- * Customers → Resources: one page with an AI Edge / DNS / Domains tab bar. The
- * three global lists (their own routes) render into the content area below.
- * Reuses the shared `TabStrip` so tabs look consistent with detail pages.
+ * Customers → Resources: AI Edge / DNS / Domains tabs. Same tab bar as fraud/
+ * detail pages, but no EntityHeader — there's no section-level action to host.
+ * The three global lists (their own routes) render into the content below.
  */
 export default function ResourcesLayout() {
   const { t } = useLingui();
@@ -23,15 +23,9 @@ export default function ResourcesLayout() {
   ];
 
   return (
-    <div
-      className="bg-card flex flex-col overflow-hidden"
-      style={{ height: `calc(100svh - ${HEADER_STACK_H}px)` }}>
-      <div className="shrink-0 px-6 pt-4 pb-1">
-        <TabStrip tabs={tabs} />
-      </div>
-      <div className="flex min-h-0 flex-1 flex-col">
-        <Outlet />
-      </div>
+    <div className="flex flex-col">
+      <EntityTabNav tabs={tabs} />
+      <Outlet />
     </div>
   );
 }

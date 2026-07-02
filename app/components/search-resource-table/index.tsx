@@ -70,6 +70,7 @@ export function SearchResourceTable<TData>({
 }: SearchResourceTableProps<TData>) {
   return (
     <ListTable
+      inset="tab"
       loading={loading}
       data={data}
       columns={columns}
