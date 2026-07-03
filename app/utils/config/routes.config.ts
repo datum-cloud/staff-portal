@@ -1,4 +1,10 @@
-// Users feature routes
+// Central route builders. Grouped to mirror the Milo nav (nav-config.ts):
+// Customers · Marketing · Finance · Operations · Admin, then not-in-menu +
+// account + root/auth. Keep each object's paths under its section's base URL.
+
+// ───────────────────────────────── Customers (/customers) ─────────────────────────────────
+
+// Customers → Users
 export const userRoutes = {
   list: () => '/customers/users',
   detail: (userId: string) => `/customers/users/${userId}`,
@@ -11,7 +17,7 @@ export const userRoutes = {
   emailActivity: (userId: string) => `/customers/users/${userId}/email-activity`,
 } as const;
 
-// Organizations feature routes
+// Customers → Organizations
 export const orgRoutes = {
   list: () => '/customers/organizations',
   detail: (orgName: string) => `/customers/organizations/${orgName}`,
@@ -33,7 +39,7 @@ export const orgRoutes = {
   usage: (orgName: string) => `/customers/organizations/${orgName}/usage`,
 } as const;
 
-// Projects feature routes
+// Customers → Projects
 export const projectRoutes = {
   list: () => '/customers/projects',
   detail: (projectName: string) => `/customers/projects/${projectName}`,
@@ -73,79 +79,49 @@ export const projectRoutes = {
   },
 } as const;
 
-// Groups feature routes
-export const groupRoutes = {
-  list: () => '/groups',
+// Customers → Resources: a tabbed page of global views across all projects.
+export const resourceRoutes = {
+  root: () => '/customers/resources',
 } as const;
 
-// Contacts feature routes
-export const contactRoutes = {
-  list: () => '/contacts',
-  create: () => '/contacts/create',
-  detail: (namespace: string, contactName: string) => `/contacts/${namespace}/${contactName}`,
-  group: (namespace: string, contactName: string) => `/contacts/${namespace}/${contactName}/groups`,
-} as const;
-
-export const contactGroupRoutes = {
-  list: () => '/contact-groups',
-  create: () => '/contact-groups/create',
-  detail: (contactGroupName: string) => `/contact-groups/${contactGroupName}`,
-  member: (contactGroupName: string) => `/contact-groups/${contactGroupName}/members`,
-} as const;
-
-// Domain feature routes (global view across all projects)
-export const domainRoutes = {
-  list: () => '/domains',
-} as const;
-
-// DNS zone feature routes (global view across all projects)
-export const dnsRoutes = {
-  list: () => '/dns',
-} as const;
-
-// AI Edge feature routes (global view across all projects)
+// Resources tab: AI Edge (global view across all projects)
 export const edgeRoutes = {
-  list: () => '/edges',
+  list: () => '/customers/resources/edges',
 } as const;
 
-// Service Catalog routes
-export const serviceCatalogRoutes = {
-  root: () => '/catalog',
-  list: () => '/catalog',
-  detail: (name: string) => `/catalog/${name}`,
-  consumers: (name: string) => `/catalog/${name}/consumers`,
-  approvals: (name: string) => `/catalog/${name}/approvals`,
+// Resources tab: DNS zones (global view across all projects)
+export const dnsRoutes = {
+  list: () => '/customers/resources/dns',
 } as const;
 
-// Fraud feature routes
-export const fraudRoutes = {
-  root: () => '/fraud',
-  evaluations: {
-    list: () => '/fraud',
-    detail: (name: string) => `/fraud/${name}`,
-  },
-  providers: {
-    list: () => '/fraud/providers',
-    create: () => '/fraud/providers/create',
-    detail: (name: string) => `/fraud/providers/${name}`,
-  },
-  policy: () => '/fraud/policy',
+// Resources tab: Domains (global view across all projects)
+export const domainRoutes = {
+  list: () => '/customers/resources/domains',
 } as const;
 
-// Activity feature routes
-export const activityRoutes = {
-  root: () => '/activity',
-  feed: () => '/activity/feed',
-  events: () => '/activity/events',
-  auditLogs: () => '/activity/audit-logs',
-  policies: {
-    list: () => '/activity/policies',
-    detail: (policyName: string) => `/activity/policies/${policyName}`,
-    create: () => '/activity/policies/new',
-  },
+// ───────────────────────────────── Marketing (/marketing) ─────────────────────────────────
+
+// Marketing → Contacts
+export const contactRoutes = {
+  list: () => '/marketing/contacts',
+  create: () => '/marketing/contacts/create',
+  detail: (namespace: string, contactName: string) =>
+    `/marketing/contacts/${namespace}/${contactName}`,
+  group: (namespace: string, contactName: string) =>
+    `/marketing/contacts/${namespace}/${contactName}/groups`,
 } as const;
 
-// Finance feature routes
+// Marketing → Contact Groups
+export const contactGroupRoutes = {
+  list: () => '/marketing/contact-groups',
+  create: () => '/marketing/contact-groups/create',
+  detail: (contactGroupName: string) => `/marketing/contact-groups/${contactGroupName}`,
+  member: (contactGroupName: string) => `/marketing/contact-groups/${contactGroupName}/members`,
+} as const;
+
+// ───────────────────────────────── Finance (/finance) ─────────────────────────────────
+
+// Finance → Billing Accounts
 export const financeRoutes = {
   billingAccounts: {
     list: () => '/finance/billing-accounts',
@@ -154,37 +130,107 @@ export const financeRoutes = {
   },
 } as const;
 
-// Profile feature routes
+// ───────────────────────────────── Operations (/operations) ─────────────────────────────────
+
+// Operations → Activity
+export const activityRoutes = {
+  root: () => '/operations/activity',
+  feed: () => '/operations/activity/feed',
+  events: () => '/operations/activity/events',
+  auditLogs: () => '/operations/activity/audit-logs',
+  policies: {
+    list: () => '/operations/activity/policies',
+    detail: (policyName: string) => `/operations/activity/policies/${policyName}`,
+    create: () => '/operations/activity/policies/new',
+  },
+} as const;
+
+// Operations → Email Activity
+export const emailActivityRoutes = {
+  list: () => '/operations/email-activity',
+  detail: (namespace: string, emailName: string) =>
+    `/operations/email-activity/${namespace}/${emailName}`,
+} as const;
+
+// Operations → Fraud & Abuse
+export const fraudRoutes = {
+  root: () => '/operations/fraud',
+  evaluations: {
+    list: () => '/operations/fraud',
+    detail: (name: string) => `/operations/fraud/${name}`,
+  },
+  providers: {
+    list: () => '/operations/fraud/providers',
+    create: () => '/operations/fraud/providers/create',
+    detail: (name: string) => `/operations/fraud/providers/${name}`,
+  },
+  policy: () => '/operations/fraud/policy',
+} as const;
+
+// ───────────────────────────────── Admin (/admin) ─────────────────────────────────
+
+// Admin → Groups
+export const groupRoutes = {
+  list: () => '/admin/groups',
+} as const;
+
+// Admin → Service Catalog
+export const serviceCatalogRoutes = {
+  root: () => '/admin/service-catalog',
+  list: () => '/admin/service-catalog',
+  detail: (name: string) => `/admin/service-catalog/${name}`,
+  consumers: (name: string) => `/admin/service-catalog/${name}/consumers`,
+  approvals: (name: string) => `/admin/service-catalog/${name}/approvals`,
+} as const;
+
+// ───────────────────────────────── Account (/profile) ─────────────────────────────────
+
 export const profileRoutes = {
   settings: () => '/profile/settings',
   sessions: () => '/profile/sessions',
 } as const;
 
-// Main routes object
+// ───────────────────────────────── Aggregate + root/auth ─────────────────────────────────
+
+// Single entry point; the nested keys mirror the sections above. Prefer the
+// named `*Routes` exports in code — this object is handy for generic lookups.
 export const routes = {
+  // Root & auth
   dashboard: () => '/',
-  emailActivity: () => '/email-activity',
-  emailActivityDetail: (namespace: string, emailName: string) =>
-    `/email-activity/${namespace}/${emailName}`,
   login: () => '/login',
   logout: () => '/logout',
   authCallback: () => '/auth/callback',
-
   sessionExpired: () => '/error/session-expired',
   oauthError: () => '/error/oauth-error',
 
+  // Customers
   users: userRoutes,
   organizations: orgRoutes,
   projects: projectRoutes,
-  contacts: contactRoutes,
-  groups: groupRoutes,
-  profile: profileRoutes,
-  contactGroups: contactGroupRoutes,
-  domains: domainRoutes,
-  dns: dnsRoutes,
+  resources: resourceRoutes,
   edges: edgeRoutes,
-  fraud: fraudRoutes,
-  activity: activityRoutes,
-  serviceCatalog: serviceCatalogRoutes,
+  dns: dnsRoutes,
+  domains: domainRoutes,
+
+  // Marketing
+  contacts: contactRoutes,
+  contactGroups: contactGroupRoutes,
+
+  // Finance
   finance: financeRoutes,
+
+  // Operations
+  activity: activityRoutes,
+  emailActivity: emailActivityRoutes.list,
+  emailActivityDetail: emailActivityRoutes.detail,
+
+  // Admin
+  groups: groupRoutes,
+  serviceCatalog: serviceCatalogRoutes,
+
+  // Not in the menu
+  fraud: fraudRoutes,
+
+  // Account
+  profile: profileRoutes,
 } as const;

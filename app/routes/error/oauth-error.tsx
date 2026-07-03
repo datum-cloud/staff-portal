@@ -1,8 +1,9 @@
 import type { Route } from './+types/oauth-error';
 import { LogoIcon } from '@/components/logo/logo-icon';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
-import { HomeIcon, RefreshCcwIcon } from 'lucide-react';
+import { HomeIcon } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
@@ -55,7 +56,7 @@ export default function OAuthError() {
             </Link>
             <Link to="/login">
               <Button type="secondary" size="small">
-                <RefreshCcwIcon className="size-4" />
+                <ACTION_ICONS.refresh className="size-4" />
                 Try Again
               </Button>
             </Link>

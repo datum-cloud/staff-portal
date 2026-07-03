@@ -1,8 +1,8 @@
 import DialogConfirm from '@/components/dialog/dialog-confirm';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 
 interface ButtonDeleteActionProps {
@@ -52,7 +52,7 @@ export default function ButtonDeleteAction({
           size="icon"
           onClick={() => setDeleteDialogOpen(true)}
           {...buttonProps}>
-          <Trash2Icon size={16} />
+          <ACTION_ICONS.delete size={16} />
         </Button>
       </Tooltip>
     </>

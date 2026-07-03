@@ -1,6 +1,7 @@
 'use client';
 
 import { useApp } from '@/providers/app.provider';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { routes } from '@/utils/config/routes.config';
 import { Avatar, AvatarFallback, AvatarImage } from '@datum-cloud/datum-ui/avatar';
 import {
@@ -19,7 +20,7 @@ import {
   useSidebar,
 } from '@datum-cloud/datum-ui/sidebar';
 import { useLingui } from '@lingui/react/macro';
-import { Bell, ChevronsUpDown, LogOut, User } from 'lucide-react';
+import { Bell, ChevronsUpDown, User } from 'lucide-react';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -91,7 +92,7 @@ export function NavUser() {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => navigate('/logout')}>
-              <LogOut />
+              <ACTION_ICONS.logout />
               {t`Log out`}
             </DropdownMenuItem>
           </DropdownMenuContent>

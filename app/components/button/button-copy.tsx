@@ -1,7 +1,7 @@
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
-import { Copy } from 'lucide-react';
 
 interface ButtonCopyProps {
   value: string;
@@ -52,7 +52,7 @@ function ButtonCopy({
         size="icon"
         onClick={handleCopy}
         className={size === 'sm' ? 'h-6 w-6' : 'h-8 w-8'}>
-        <Copy className={size === 'sm' ? 'h-4 w-4' : 'h-4 w-4'} />
+        <ACTION_ICONS.copy className={size === 'sm' ? 'h-4 w-4' : 'h-4 w-4'} />
       </Button>
     </Tooltip>
   );

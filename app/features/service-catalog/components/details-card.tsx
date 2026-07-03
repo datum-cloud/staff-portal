@@ -1,10 +1,10 @@
 import { BadgeState } from '@/components/badge';
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisServicesV1Alpha1Service } from '@openapi/services.miloapis.com/v1alpha1';
-import { Info } from 'lucide-react';
 
 interface Props {
   service: ComMiloapisServicesV1Alpha1Service;
@@ -18,7 +18,7 @@ export function DetailsCard({ service }: Props) {
     <Card className="h-full shadow-none">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Info className="h-4 w-4" />
+          <STATUS_ICONS.info className="h-4 w-4" />
           <Trans>Details</Trans>
         </CardTitle>
       </CardHeader>

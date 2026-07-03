@@ -1,6 +1,7 @@
 'use client';
 
 import { useApp } from '@/providers/app.provider';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { routes } from '@/utils/config/routes.config';
 import { Avatar, AvatarFallback } from '@datum-cloud/datum-ui/avatar';
 import {
@@ -14,7 +15,7 @@ import {
 } from '@datum-cloud/datum-ui/dropdown';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { useLingui } from '@lingui/react/macro';
-import { Bell, ChevronDown, LogOut, User } from 'lucide-react';
+import { Bell, ChevronDown, User } from 'lucide-react';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -78,7 +79,7 @@ export function MiloUserMenu() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => navigate('/logout')}>
-          <LogOut />
+          <ACTION_ICONS.logout />
           {t`Log out`}
         </DropdownMenuItem>
       </DropdownMenuContent>

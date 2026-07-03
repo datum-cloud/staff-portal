@@ -1,19 +1,19 @@
 import { groupQuotas, type QuotaRow } from '../lib/quotas-grouping';
 import { DialogForm } from '@/components/dialog';
 import { type GqlQuotaBucket, type GqlQuotaBucketList } from '@/modules/graphql/quota';
+import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem } from '@datum-cloud/datum-ui/data-table';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { GroupedTable, type GroupedTableGroup } from '@datum-cloud/datum-ui/grouped-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
-import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { ComMiloapisQuotaV1Alpha1ResourceGrant } from '@openapi/quota.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
 import { type ColumnDef } from '@tanstack/react-table';
-import { InfoIcon, PencilIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import z from 'zod';
 
@@ -93,12 +93,12 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
               </Text>
               {row.original.resourceType !== row.original.displayName && (
                 <Tooltip message={row.original.resourceType}>
-                  <InfoIcon className="size-3 shrink-0 text-muted-foreground opacity-60" />
+                  <STATUS_ICONS.info className="text-muted-foreground size-3 shrink-0 opacity-60" />
                 </Tooltip>
               )}
             </div>
             {row.original.description && (
-              <Text size="xs" textColor="muted" className="mt-0.5 block line-clamp-2">
+              <Text size="xs" textColor="muted" className="mt-0.5 line-clamp-2 block">
                 {row.original.description}
               </Text>
             )}
@@ -148,7 +148,7 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
   const rowActions = (): ActionItem<QuotaTableRow>[] => [
     {
       label: t`Edit Quota`,
-      icon: <PencilIcon className="size-4" />,
+      icon: <ACTION_ICONS.edit className="size-4" />,
       onClick: (row) => setSelected(row.bucket),
     },
   ];
@@ -177,9 +177,7 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: Quot
               kind: selected?.consumerKind as 'Organization' | 'Project',
               name: selected?.consumerName ?? '',
             },
-            allowances: [
-              { resourceType: selected?.resourceType ?? '', buckets: [{ amount }] },
-            ],
+            allowances: [{ resourceType: selected?.resourceType ?? '', buckets: [{ amount }] }],
           });
           await new Promise((r) => setTimeout(() => r(tableQuery.refetch()), 1000));
           toast.success(t`Quota updated successfully`);

@@ -1,12 +1,12 @@
 import { miloIconButtonClass } from './milo-icon-button';
 import { SearchResults } from '@/components/app-search/search-results';
 import { useAppSearch } from '@/components/app-search/use-app-search';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Input } from '@datum-cloud/datum-ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
 import { useLingui } from '@lingui/react/macro';
-import { SearchIcon } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
 /**
@@ -48,7 +48,7 @@ export function MiloSearch() {
           size="icon"
           aria-label={t`Search`}
           className={miloIconButtonClass}>
-          <Icon icon={SearchIcon} />
+          <Icon icon={ACTION_ICONS.search} />
         </Button>
       </PopoverTrigger>
       <PopoverContent

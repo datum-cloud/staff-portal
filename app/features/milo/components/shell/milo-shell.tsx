@@ -24,7 +24,7 @@ export function MiloShell() {
       <MiloContextBar />
       <div className="flex flex-1">
         {section?.subNav && <MiloSubNav subNav={section.subNav} activeItem={subItem} />}
-        <main className="min-w-0 flex-1">
+        <main className="flex min-w-0 flex-1 flex-col">
           <Outlet />
         </main>
       </div>

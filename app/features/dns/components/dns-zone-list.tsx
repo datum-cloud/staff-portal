@@ -2,13 +2,13 @@ import { DnsHostChips } from './dns-host-chips';
 import { BadgeProgrammingError } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { SearchResourceTable, type ControlledSearch } from '@/components/search-resource-table';
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { transformControlPlaneStatus } from '@/utils/helpers';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { ComMiloapisNetworkingDnsV1Alpha1DnsZone } from '@openapi/dns.networking.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
-import { Loader2Icon } from 'lucide-react';
 import { Link } from 'react-router';
 
 export interface DnsZoneRow {
@@ -113,7 +113,7 @@ export function DnsZoneList({
         // there is nothing to wait for: fall through to the empty state.
         if (!nameservers) {
           return row.original.dnsZone.status ? (
-            <Loader2Icon className="text-muted-foreground size-4 animate-spin" />
+            <STATUS_ICONS.loading className="text-muted-foreground size-4 animate-spin" />
           ) : (
             <DnsHostChips data={[]} maxVisible={2} />
           );

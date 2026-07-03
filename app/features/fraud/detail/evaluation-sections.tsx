@@ -3,7 +3,9 @@ import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DisplayId } from '@/components/display';
 import { useEnv } from '@/hooks/use-env';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes, userRoutes } from '@/utils/config/routes.config';
+import { startCase } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Dialog } from '@datum-cloud/datum-ui/dialog';
@@ -11,7 +13,7 @@ import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ArrowLeft, Clock, ExternalLink, History, Layers, Mail, User } from 'lucide-react';
+import { ArrowLeft, Clock, History, Layers, Mail, User } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
 
@@ -137,7 +139,7 @@ function ProviderResultRow({ result }: { result: ProviderResult }) {
                 size="small"
                 theme="outline"
                 onClick={() => window.open(maxmindURL, '_blank', 'noopener,noreferrer')}>
-                <ExternalLink className="mr-1 h-3 w-3" />
+                <ACTION_ICONS.externalLink className="mr-1 h-3 w-3" />
                 <Trans>View on MaxMind</Trans>
               </Button>
             )}
@@ -220,7 +222,7 @@ function HistoryTable({ entries }: { entries: HistoryEntry[] }) {
                         ? 'warning'
                         : 'active'
                   }
-                  message={entry.decision}
+                  message={startCase(entry.decision ?? '')}
                 />
                 {entry.trigger && (
                   <Text size="xs" textColor="muted">
@@ -285,7 +287,7 @@ export function UserEvaluationsTable({
                   {evaluation.status?.decision && evaluation.status.decision !== 'ACCEPTED' && (
                     <BadgeState
                       state={evaluation.status.decision === 'DEACTIVATE' ? 'error' : 'warning'}
-                      message={evaluation.status.decision}
+                      message={startCase(evaluation.status.decision ?? '')}
                     />
                   )}
                   <DateTime date={evaluation.status?.lastEvaluationTime} />
@@ -386,7 +388,7 @@ export function EvaluationOverview({
             {evaluation.status?.decision && evaluation.status.decision !== 'ACCEPTED' ? (
               <BadgeState
                 state={evaluation.status.decision === 'DEACTIVATE' ? 'error' : 'warning'}
-                message={evaluation.status.decision}
+                message={startCase(evaluation.status.decision ?? '')}
               />
             ) : (
               <Text size="sm" textColor="muted">
@@ -401,7 +403,7 @@ export function EvaluationOverview({
             {evaluation.status?.enforcementAction ? (
               <BadgeState
                 state={evaluation.status.enforcementAction === 'OBSERVED' ? 'info' : 'active'}
-                message={evaluation.status.enforcementAction}
+                message={startCase(evaluation.status.enforcementAction ?? '')}
               />
             ) : (
               <Text size="sm" textColor="muted">

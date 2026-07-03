@@ -1,5 +1,6 @@
 import { ActionCard } from '@/components/action-card';
 import { DialogConfirm } from '@/components/dialog';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import {
   Card,
@@ -9,7 +10,6 @@ import {
   CardTitle,
 } from '@datum-cloud/datum-ui/card';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 
 interface DangerZoneCardProps {
@@ -55,7 +55,7 @@ export function DangerZoneCard({
       <Card className={`border-destructive/20 mt-4 shadow-none ${className || ''}`}>
         <CardHeader>
           <CardTitle className="text-destructive flex items-center gap-2">
-            <Trash2Icon className="h-4 w-4" />
+            <ACTION_ICONS.delete className="h-4 w-4" />
             <Trans>Danger Zone</Trans>
           </CardTitle>
           <CardDescription>

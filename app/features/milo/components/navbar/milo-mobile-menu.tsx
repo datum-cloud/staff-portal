@@ -46,23 +46,41 @@ export function MiloMobileMenu({ className }: { className?: string }) {
             {t`Menu`}
           </SheetTitle>
         </SheetHeader>
-        <nav className="flex flex-col gap-1 p-2">
+        <nav className="flex flex-col gap-4 overflow-y-auto p-3">
           {NAV_SECTIONS.map((section) => {
-            const isActive = active?.id === section.id;
+            const items = section.subNav?.groups.flatMap((g) => g.items) ?? [];
             return (
-              <NavLink
-                key={section.id}
-                to={section.href}
-                onClick={() => setOpen(false)}
-                className={cn(
-                  'flex items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm font-medium transition-colors',
-                  isActive
-                    ? 'bg-card border-border text-primary'
-                    : 'text-foreground hover:bg-card hover:border-border hover:text-primary'
-                )}>
-                <Icon icon={section.icon} className="shrink-0" />
-                {section.label}
-              </NavLink>
+              <div key={section.id} className="flex flex-col gap-0.5">
+                {/* Section header — navigates to the section's default page. */}
+                <NavLink
+                  to={section.href}
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    'flex items-center gap-2 px-3 py-1.5 text-sm font-semibold transition-colors',
+                    active?.id === section.id ? 'text-primary' : 'text-foreground'
+                  )}>
+                  <Icon icon={section.icon} className="shrink-0" />
+                  {section.label}
+                </NavLink>
+                {/* Sub-items (parity with the desktop dropdown / left rail). */}
+                {items.map((item) => (
+                  <NavLink
+                    key={item.href}
+                    to={item.href}
+                    onClick={() => setOpen(false)}
+                    className={({ isActive }) =>
+                      cn(
+                        'flex items-center gap-2 rounded-md py-1.5 pr-3 pl-9 text-sm transition-colors',
+                        isActive
+                          ? 'bg-card text-primary'
+                          : 'text-muted-foreground hover:bg-card hover:text-primary'
+                      )
+                    }>
+                    {item.icon && <Icon icon={item.icon} className="shrink-0" />}
+                    {item.label}
+                  </NavLink>
+                ))}
+              </div>
             );
           })}
         </nav>

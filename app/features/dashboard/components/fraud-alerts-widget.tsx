@@ -1,7 +1,9 @@
 import { useFraudAlertsWidget } from '../hooks/use-fraud-alerts-widget';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes } from '@/utils/config/routes.config';
+import { startCase } from '@/utils/helpers';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader } from '@datum-cloud/datum-ui/card';
@@ -16,7 +18,7 @@ import {
 } from '@datum-cloud/datum-ui/table';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
-import { AlertCircle, ArrowRight, ShieldAlert, ShieldCheck } from 'lucide-react';
+import { ArrowRight, ShieldAlert, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router';
 
 function getScoreColorClass(score: number | undefined): string {
@@ -84,7 +86,7 @@ function EmptyState() {
 function ErrorState({ onRetry }: { onRetry: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center py-6 text-center">
-      <AlertCircle className="text-muted-foreground mb-3 h-8 w-8" />
+      <STATUS_ICONS.alert className="text-muted-foreground mb-3 h-8 w-8" />
       <Title level={5} className="mb-1">
         <Trans>Could not load fraud alerts</Trans>
       </Title>
@@ -177,7 +179,7 @@ export function FraudAlertsWidget() {
                     <TableCell>
                       <BadgeState
                         state={alert.decision === 'DEACTIVATE' ? 'error' : 'warning'}
-                        message={alert.decision}
+                        message={startCase(alert.decision ?? '')}
                       />
                     </TableCell>
                     <TableCell className="hidden md:table-cell">

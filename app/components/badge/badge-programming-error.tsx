@@ -1,5 +1,5 @@
 import BadgeStatus from './badge-state';
-import { TriangleAlertIcon } from 'lucide-react';
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 
 /**
  * Common programming error reasons from K8s Programmed condition
@@ -91,7 +91,7 @@ const BadgeProgrammingError = ({
       state="error"
       message="Error"
       tooltip={statusMessage || `Programming failed: ${programmedReason}`}
-      icon={TriangleAlertIcon}
+      icon={STATUS_ICONS.warning}
       className={className}
     />
   );

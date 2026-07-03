@@ -4,12 +4,13 @@ import {
   getCertificateReadyDisplay,
   type HttpProxy,
 } from '@/features/edge/lib';
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Loader2, Lock } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { useMemo } from 'react';
 
 type HostnameRow = {
@@ -34,7 +35,7 @@ function PendingStatus({ label, tooltip }: { label: string; tooltip: string }) {
   return (
     <Tooltip message={tooltip}>
       <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-600 dark:text-amber-400">
-        <Loader2 className="size-3 shrink-0 animate-spin" aria-hidden />
+        <STATUS_ICONS.loading className="size-3 shrink-0 animate-spin" aria-hidden />
         {label}
       </span>
     </Tooltip>

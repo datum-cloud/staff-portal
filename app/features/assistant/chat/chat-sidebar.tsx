@@ -1,9 +1,10 @@
 import { formatRelativeTime, type StoredChat } from './chat-storage';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { isTextUIPart } from 'ai';
-import { DownloadIcon, MessageSquarePlus, TrashIcon } from 'lucide-react';
+import { MessageSquarePlus } from 'lucide-react';
 
 function downloadChat(chat: StoredChat) {
   const lines = chat.messages.map((msg) => {
@@ -92,7 +93,7 @@ export function ChatSidebar({
                   onClick={(e) => onDeleteChat(e, chat.id)}
                   aria-label="Delete chat"
                   className="text-muted-foreground/40 hover:text-destructive shrink-0 rounded p-0.5 transition-colors">
-                  <TrashIcon className="size-3" />
+                  <ACTION_ICONS.delete className="size-3" />
                 </span>
               </span>
               <span className="flex items-center gap-1">
@@ -108,7 +109,7 @@ export function ChatSidebar({
                     }}
                     aria-label="Download chat as Markdown"
                     className="text-muted-foreground/40 hover:text-foreground shrink-0 rounded p-0.5 transition-colors">
-                    <DownloadIcon className="size-3" />
+                    <ACTION_ICONS.download className="size-3" />
                   </span>
                 </Tooltip>
               </span>

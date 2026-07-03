@@ -1,32 +1,19 @@
+import { ENTITY_ICONS, SECTION_ICONS } from '@/utils/config/icons.config';
 import {
   activityRoutes,
   contactGroupRoutes,
   contactRoutes,
-  dnsRoutes,
-  domainRoutes,
-  edgeRoutes,
   financeRoutes,
   fraudRoutes,
   groupRoutes,
   orgRoutes,
   projectRoutes,
+  resourceRoutes,
+  routes,
   serviceCatalogRoutes,
   userRoutes,
 } from '@/utils/config/routes.config';
-import {
-  Contact,
-  CreditCard,
-  Folders,
-  Gauge,
-  Layers,
-  type LucideIcon,
-  ShieldAlert,
-  ShieldUser,
-  Signpost,
-  SquareActivity,
-  Store,
-  Users,
-} from 'lucide-react';
+import { type LucideIcon } from 'lucide-react';
 
 /**
  * Single source of truth for the Milo shell navigation.
@@ -43,8 +30,8 @@ export interface NavSubItem {
   label: string;
   href: string;
   icon?: LucideIcon;
-  /** Longest-prefix match for active detection; defaults to `href`. */
-  match?: string;
+  /** Prefix(es) for active detection; defaults to `href`. Array ⇒ active if any matches (e.g. Resources spanning /edges, /dns, /domains). */
+  match?: string | string[];
   /** Optional count badge (shown when the rail is expanded). */
   count?: number;
 }
@@ -77,7 +64,7 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     id: 'customers',
     label: 'Customers',
-    icon: Users,
+    icon: SECTION_ICONS.customers,
     href: orgRoutes.list(),
     match: '/customers',
     subNav: {
@@ -85,27 +72,39 @@ export const NAV_SECTIONS: NavSection[] = [
       groups: [
         {
           items: [
-            { label: 'Organizations', href: orgRoutes.list(), icon: Users },
-            { label: 'Projects', href: projectRoutes.list(), icon: Folders },
-            { label: 'Users', href: userRoutes.list(), icon: Contact },
+            { label: 'Organizations', href: orgRoutes.list(), icon: ENTITY_ICONS.organization },
+            { label: 'Projects', href: projectRoutes.list(), icon: ENTITY_ICONS.project },
+            // One "Resources" entry → a tabbed page (AI Edge / DNS / Domains),
+            // all nested under /customers/resources.
+            {
+              label: 'Resources',
+              href: resourceRoutes.root(),
+              match: resourceRoutes.root(),
+              icon: ENTITY_ICONS.resource,
+            },
+            { label: 'Users', href: userRoutes.list(), icon: ENTITY_ICONS.user },
           ],
         },
       ],
     },
   },
   {
-    id: 'contacts',
-    label: 'Contacts',
-    icon: Contact,
+    id: 'marketing',
+    label: 'Marketing',
+    icon: SECTION_ICONS.marketing,
     href: contactRoutes.list(),
-    match: '/contacts',
+    match: '/marketing',
     subNav: {
       defaultCollapsed: true,
       groups: [
         {
           items: [
-            { label: 'Contacts', href: contactRoutes.list(), icon: Contact },
-            { label: 'Lists', href: contactGroupRoutes.list(), icon: Layers },
+            { label: 'Contacts', href: contactRoutes.list(), icon: ENTITY_ICONS.contact },
+            {
+              label: 'Contact Groups',
+              href: contactGroupRoutes.list(),
+              icon: ENTITY_ICONS.contactGroup,
+            },
           ],
         },
       ],
@@ -114,7 +113,7 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     id: 'finance',
     label: 'Finance',
-    icon: CreditCard,
+    icon: SECTION_ICONS.finance,
     href: financeRoutes.billingAccounts.list(),
     match: '/finance',
     subNav: {
@@ -125,18 +124,56 @@ export const NAV_SECTIONS: NavSection[] = [
             {
               label: 'Billing Accounts',
               href: financeRoutes.billingAccounts.list(),
-              icon: CreditCard,
+              icon: ENTITY_ICONS.billingAccount,
             },
           ],
         },
       ],
     },
   },
-  { id: 'edge', label: 'AI Edge', icon: Gauge, href: edgeRoutes.list() },
-  { id: 'dns', label: 'DNS', icon: Signpost, href: dnsRoutes.list() },
-  { id: 'domains', label: 'Domains', icon: Layers, href: domainRoutes.list() },
-  { id: 'groups', label: 'Groups', icon: ShieldUser, href: groupRoutes.list() },
-  { id: 'activity', label: 'Activity', icon: SquareActivity, href: activityRoutes.root() },
-  { id: 'catalog', label: 'Service Catalog', icon: Store, href: serviceCatalogRoutes.list() },
-  { id: 'fraud', label: 'Fraud & Abuse', icon: ShieldAlert, href: fraudRoutes.root() },
+  {
+    id: 'operations',
+    label: 'Operations',
+    icon: SECTION_ICONS.operations,
+    href: activityRoutes.root(),
+    match: '/operations',
+    subNav: {
+      defaultCollapsed: true,
+      groups: [
+        {
+          items: [
+            { label: 'Activity', href: activityRoutes.root(), icon: ENTITY_ICONS.activity },
+            {
+              label: 'Email Activity',
+              href: routes.emailActivity(),
+              icon: ENTITY_ICONS.emailActivity,
+            },
+            { label: 'Fraud & Abuse', href: fraudRoutes.root(), icon: ENTITY_ICONS.fraud },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    id: 'admin',
+    label: 'Admin',
+    icon: SECTION_ICONS.admin,
+    href: groupRoutes.list(),
+    match: '/admin',
+    subNav: {
+      defaultCollapsed: true,
+      groups: [
+        {
+          items: [
+            { label: 'Groups', href: groupRoutes.list(), icon: ENTITY_ICONS.group },
+            {
+              label: 'Service Catalog',
+              href: serviceCatalogRoutes.list(),
+              icon: ENTITY_ICONS.serviceCatalog,
+            },
+          ],
+        },
+      ],
+    },
+  },
 ];

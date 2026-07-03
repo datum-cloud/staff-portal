@@ -1,6 +1,6 @@
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { Alert, AlertDescription } from '@datum-cloud/datum-ui/alert';
 import { Form } from '@datum-cloud/datum-ui/form';
-import { Info, Loader2 } from 'lucide-react';
 import { useEffect, type ReactNode } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
@@ -104,7 +104,7 @@ export function FormUniquenessGuard<T, A extends unknown[] = []>({
   if (existing && renderHint) {
     return (
       <Alert variant="warning" className="mt-2">
-        <Info size={16} className="mt-1" />
+        <STATUS_ICONS.info size={16} className="mt-1" />
         <AlertDescription>
           <div className="mt-1">{renderHint(existing)}</div>
         </AlertDescription>
@@ -115,7 +115,7 @@ export function FormUniquenessGuard<T, A extends unknown[] = []>({
   if (isChecking) {
     return (
       <div className="relative h-0" aria-hidden>
-        <Loader2 className="text-muted-foreground absolute -top-12 right-3 size-6 animate-spin" />
+        <STATUS_ICONS.loading className="text-muted-foreground absolute -top-12 right-3 size-6 animate-spin" />
       </div>
     );
   }

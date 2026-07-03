@@ -1,8 +1,9 @@
 import { type GroupedSearchResults, searchAllQuery } from '@/resources/request/client';
+import { ENTITY_ICONS } from '@/utils/config/icons.config';
 import { routes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
 import { useQuery } from '@tanstack/react-query';
-import { Activity, Building2, FolderOpen, Home, LucideIcon, Users } from 'lucide-react';
+import { Home, LucideIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -31,22 +32,27 @@ export function useAppSearch() {
 
   const quickLinks: QuickLink[] = [
     { title: t`Dashboard`, icon: Home, href: routes.dashboard(), description: t`Go to dashboard` },
-    { title: t`Users`, icon: Users, href: routes.users.list(), description: t`Manage users` },
+    {
+      title: t`Users`,
+      icon: ENTITY_ICONS.user,
+      href: routes.users.list(),
+      description: t`Manage users`,
+    },
     {
       title: t`Organizations`,
-      icon: Building2,
+      icon: ENTITY_ICONS.organization,
       href: routes.organizations.list(),
       description: t`Manage organizations`,
     },
     {
       title: t`Projects`,
-      icon: FolderOpen,
+      icon: ENTITY_ICONS.project,
       href: routes.projects.list(),
       description: t`Manage projects`,
     },
     {
       title: t`Activity`,
-      icon: Activity,
+      icon: ENTITY_ICONS.activity,
       href: routes.activity.root(),
       description: t`View activity logs`,
     },

@@ -3,15 +3,14 @@ import {
   FEATURE_FLAG_ENABLED_BY_ANNOTATION,
   isPlatformManagedGrant,
 } from '../hooks/useFeatureFlagToggle';
-import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
+import { ListTable } from '@/features/milo';
 import {
   useFeatureFlagRegistrationListQuery,
   useOrgQuotaBucketListQuery,
   useOrgQuotaGrantListQuery,
 } from '@/resources/request/client';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Switch } from '@datum-cloud/datum-ui/switch';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
@@ -232,13 +231,16 @@ export function FeatureFlagList({ orgName }: FeatureFlagListProps) {
         onConfirm={handleConfirm}
       />
 
-      <DataTable.Client
+      <ListTable
         loading={registrationsQuery.isLoading}
         data={registrationsQuery.data?.items ?? []}
         columns={columns}
         pageSize={20}
         getRowId={(row) => row.metadata?.name ?? ''}
         defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+        searchPlaceholder={t`Search by flag key or description...`}
+        emptyMessage={t`No feature flags registered.`}
+        inset="tab"
         searchFn={(row, search) => {
           const q = search.trim().toLowerCase();
           if (!q) return true;
@@ -247,26 +249,8 @@ export function FeatureFlagList({ orgName }: FeatureFlagListProps) {
             (row.spec?.resourceType ?? '').toLowerCase().includes(q) ||
             (row.spec?.description ?? '').toLowerCase().includes(q)
           );
-        }}>
-        <Card className="m-4 py-4 shadow-none">
-          <CardContent className="flex flex-col gap-2 px-4">
-            <DataTableToolbar
-              search={
-                <DataTable.Search
-                  placeholder={t`Search by flag key or description...`}
-                  className="w-full md:w-64"
-                />
-              }
-            />
-            <DataTable.Content
-              headerClassName="bg-muted/50"
-              className="border-t border-b border-solid"
-              emptyMessage={t`No feature flags registered.`}
-            />
-            <DataTable.Pagination className="pb-0" />
-          </CardContent>
-        </Card>
-      </DataTable.Client>
+        }}
+      />
     </>
   );
 }

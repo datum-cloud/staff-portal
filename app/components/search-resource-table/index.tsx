@@ -1,12 +1,5 @@
-import { DataTableToolbar } from '@/components/data-table-toolbar';
-import { Button } from '@datum-cloud/datum-ui/button';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
-import { DataTable } from '@datum-cloud/datum-ui/data-table';
-import { Input } from '@datum-cloud/datum-ui/input';
-import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
-import { t } from '@lingui/core/macro';
+import { ListTable } from '@/features/milo';
 import type { ColumnDef, SortingState } from '@tanstack/react-table';
-import { Info } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 export interface ControlledSearch {
@@ -43,22 +36,21 @@ export interface SearchResourceTableProps<TData> {
   hasMoreMessage?: string;
   searchPlaceholder?: string;
   emptyMessage?: ReactNode;
-  /** Optional filter controls rendered in the toolbar. */
+  /** Optional filter controls rendered above the table. */
   filters?: ReactNode;
-  /** Optional extra slot rendered at the end of the toolbar row. */
+  /** Optional extra slot rendered above the table, after the filters. */
   toolbarExtras?: ReactNode;
 }
 
 /**
- * Shared shell for resource list tables — a `DataTable.Client` wrapped in the
- * standard Card layout with a search toolbar, content area and pagination.
+ * Shared shell for resource list tables — now a thin wrapper over the Milo
+ * `ListTable` (compact card, sticky header, filter sidebar, compact pagination).
  *
  * Supports two search modes:
- * - uncontrolled: a `<DataTable.Search />` filters the in-memory `data` via
- *   `searchFn` (the default for project-scoped lists).
- * - controlled: pass `controlledSearch` and the input becomes controlled —
- *   the caller is expected to refetch with the query (used by global,
- *   search-API-backed views). `hasMore` then surfaces a "more results" hint.
+ * - uncontrolled: the built-in search filters the in-memory `data` via `searchFn`.
+ * - controlled: pass `controlledSearch` and the input becomes controlled — the
+ *   caller refetches with the query (used by global, search-API-backed views).
+ *   `hasMore` then surfaces a "more results" hint by the pagination.
  */
 export function SearchResourceTable<TData>({
   data,
@@ -77,63 +69,28 @@ export function SearchResourceTable<TData>({
   toolbarExtras,
 }: SearchResourceTableProps<TData>) {
   return (
-    <DataTable.Client
+    <ListTable
+      inset="tab"
       loading={loading}
       data={data}
       columns={columns}
       pageSize={pageSize}
       getRowId={getRowId}
       defaultSort={defaultSort}
-      // In controlled mode the caller already filtered server-side, so keep
-      // every row. Otherwise defer to the caller-supplied predicate.
-      searchFn={controlledSearch ? () => true : searchFn}>
-      <Card className="m-4 py-4 shadow-none">
-        <CardContent className="flex flex-col gap-2 px-4">
-          <DataTableToolbar
-            search={
-              controlledSearch ? (
-                <Input
-                  placeholder={searchPlaceholder ?? t`Search...`}
-                  value={controlledSearch.value}
-                  onChange={(e) => controlledSearch.onChange(e.target.value)}
-                  className="w-full md:w-64"
-                />
-              ) : (
-                <DataTable.Search
-                  placeholder={searchPlaceholder ?? t`Search...`}
-                  className="w-full md:w-64"
-                />
-              )
-            }
-            filters={filters}
-            extras={toolbarExtras}
-          />
-          <DataTable.Content
-            headerClassName="bg-muted/50"
-            className="border-t border-b border-solid"
-            emptyMessage={emptyMessage ?? t`No results found.`}
-          />
-          <div className="flex items-center px-2">
-            {hasMore && (
-              <Tooltip
-                side="right"
-                message={
-                  hasMoreMessage ??
-                  t`The list is limited to 100 results at a time. Refine your search to surface other items.`
-                }>
-                <Button
-                  className="mt-4 hover:bg-transparent"
-                  type="warning"
-                  theme="borderless"
-                  size="icon"
-                  icon={<Info className="size-4" />}
-                />
-              </Tooltip>
-            )}
-            <DataTable.Pagination className="flex-1 pb-0" />
+      searchFn={searchFn}
+      controlledSearch={controlledSearch}
+      hasMore={hasMore}
+      hasMoreMessage={hasMoreMessage}
+      searchPlaceholder={searchPlaceholder}
+      emptyMessage={emptyMessage}
+      toolbar={
+        filters || toolbarExtras ? (
+          <div className="flex items-center gap-2 px-3 py-2">
+            {filters}
+            {toolbarExtras}
           </div>
-        </CardContent>
-      </Card>
-    </DataTable.Client>
+        ) : undefined
+      }
+    />
   );
 }

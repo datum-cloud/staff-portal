@@ -1,6 +1,6 @@
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import type { Theme } from '@datum-cloud/datum-ui/theme';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import { Check } from 'lucide-react';
 
 const SkeletonPreview = ({ variant }: { variant: 'dark' | 'light' }) => {
   const bar100 = variant === 'dark' ? 'bg-slate-700' : 'bg-slate-300';
@@ -66,7 +66,7 @@ export const ThemePreview = ({
 
         {selected && (
           <div className="absolute top-2 right-2 rounded-full border border-gray-500 bg-gray-400 p-1 text-gray-800">
-            <Check className="size-3" />
+            <ACTION_ICONS.check className="size-3" />
           </div>
         )}
       </div>

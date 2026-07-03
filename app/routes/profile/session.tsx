@@ -1,11 +1,11 @@
 import type { Route } from './+types/session';
-import { DataTableToolbar } from '@/components/data-table-toolbar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
+import { ListTable } from '@/features/milo';
 import { useApp } from '@/providers/app.provider';
 import { useDeleteSessionMutation, useSessionListQuery } from '@/resources/request/client';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { metaObject } from '@/utils/helpers';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
@@ -13,7 +13,6 @@ import { t } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session } from '@openapi/identity.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
-import { Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 
 export const handle = {
@@ -39,7 +38,7 @@ export default function Page() {
   const actions: ActionItem<ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session>[] = [
     {
       label: tMacro`Delete`,
-      icon: <Trash2Icon className="size-4" />,
+      icon: <ACTION_ICONS.delete className="size-4" />,
       variant: 'destructive' as const,
       onClick: (row) => setSelectedSession(row),
     },
@@ -116,36 +115,24 @@ export default function Page() {
         }}
       />
 
-      <DataTable.Client
+      <ListTable
         loading={tableQuery.isLoading}
         data={tableQuery.data?.items ?? []}
         columns={columns}
         pageSize={20}
         getRowId={(row) => row.metadata?.name ?? ''}
         defaultSort={[{ id: 'status.createdAt', desc: true }]}
+        searchPlaceholder={t`Search sessions...`}
+        emptyMessage={t`No active sessions.`}
+        inset="tab"
         searchFn={(row, search) => {
           const q = search.trim().toLowerCase();
           if (!q) return true;
           return [row.metadata?.name, row.status?.ip, row.status?.fingerprintID]
             .map((v) => (v ?? '').toLowerCase())
             .some((v) => v.includes(q));
-        }}>
-        <Card className="m-4 py-4 shadow-none">
-          <CardContent className="flex flex-col gap-2 px-4">
-            <DataTableToolbar
-              search={
-                <DataTable.Search placeholder={t`Search sessions...`} className="w-full md:w-64" />
-              }
-            />
-            <DataTable.Content
-              headerClassName="bg-muted/50"
-              className="border-t border-b border-solid"
-              emptyMessage={t`No active sessions.`}
-            />
-            <DataTable.Pagination className="pb-0" />
-          </CardContent>
-        </Card>
-      </DataTable.Client>
+        }}
+      />
     </>
   );
 }
