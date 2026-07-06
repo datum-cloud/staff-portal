@@ -14,9 +14,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@datum-cloud/datum-ui/dropdown';
-import { ChevronRight } from 'lucide-react';
+import { Check, ChevronDown, ChevronRight } from 'lucide-react';
 import React from 'react';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
+
+/** A destination in a segment switcher dropdown (e.g. Users / Organizations / Projects). */
+export interface BreadcrumbSwitcherOption {
+  label: React.ReactNode;
+  path: string;
+}
 
 export interface BreadcrumbItem {
   /** The display text for the breadcrumb */
@@ -31,6 +37,8 @@ export interface BreadcrumbItem {
   className?: string;
   /** Additional data for the breadcrumb item */
   data?: any;
+  /** Render this segment as a dropdown that switches to sibling sections. */
+  switcher?: BreadcrumbSwitcherOption[];
 }
 
 export interface BreadcrumbConfig {
@@ -157,7 +165,47 @@ export function Breadcrumb({
 /**
  * Render a single breadcrumb item
  */
+/**
+ * A breadcrumb segment rendered as a dropdown that jumps between sibling
+ * sections (e.g. Customers → Users / Organizations / Projects). The option
+ * matching the current route is checked.
+ */
+function BreadcrumbSwitcher({ item }: { item: BreadcrumbItem }) {
+  const { pathname } = useLocation();
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger className="hover:bg-accent hover:text-foreground flex items-center gap-0.5 rounded-sm px-1 transition-colors">
+        {item.label}
+        <ChevronDown className="size-3 opacity-60" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="start"
+        className="min-w-40"
+        // Don't restore focus to the trigger on close — the returned focus shows
+        // its focus-visible outline, which reads as a stray border after a click.
+        onCloseAutoFocus={(e) => e.preventDefault()}>
+        {item.switcher?.map((opt) => {
+          const active = pathname === opt.path || pathname.startsWith(opt.path + '/');
+          return (
+            <DropdownMenuItem key={opt.path} asChild>
+              <Link to={opt.path} className="flex items-center justify-between gap-6">
+                {opt.label}
+                {active && <Check className="size-3.5" />}
+              </Link>
+            </DropdownMenuItem>
+          );
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 function renderBreadcrumbItem(item: BreadcrumbItem, isLast: boolean): React.ReactNode {
+  // Segment switcher: a dropdown to sibling sections (regardless of position).
+  if (item.switcher?.length) {
+    return <BreadcrumbSwitcher item={item} />;
+  }
+
   // If custom link is provided, use it
   if (item.link) {
     return item.link;
