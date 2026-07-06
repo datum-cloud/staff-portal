@@ -1,13 +1,14 @@
 import type { Route } from './+types/layout';
-import { SubLayout } from '@/components/sub-layout';
+import { DetailShell, type EntityTab } from '@/features/milo';
 import { PendingApprovalsBadge } from '@/features/service-catalog';
 import { authenticator } from '@/modules/auth';
 import { serviceDetailQuery } from '@/resources/request/server';
+import { ENTITY_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
 import { serviceCatalogRoutes } from '@/utils/config/routes.config';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisServicesV1Alpha1Service } from '@openapi/services.miloapis.com/v1alpha1';
-import { CheckSquare, FileText, Users } from 'lucide-react';
-import { Outlet, useLoaderData } from 'react-router';
+import { CheckSquare, Users } from 'lucide-react';
+import { useLoaderData } from 'react-router';
 
 export const handle = {
   breadcrumb: (data: ComMiloapisServicesV1Alpha1Service) => {
@@ -31,21 +32,22 @@ export default function ServiceDetailLayout() {
   const ownerProject = service.spec?.owner?.producerProjectRef?.name;
   const isGated = service.spec?.enablementPolicy?.mode === 'GatedByProvider';
 
-  const menuItems = [
+  const tabs: EntityTab[] = [
     {
-      title: t`Overview`,
+      label: t`Overview`,
       href: serviceCatalogRoutes.detail(serviceName),
-      icon: FileText,
+      icon: TAB_ICONS.overview,
+      end: true,
     },
     {
-      title: t`Consumers`,
+      label: t`Consumers`,
       href: serviceCatalogRoutes.consumers(serviceName),
       icon: Users,
     },
     ...(isGated
       ? [
           {
-            title: t`Approvals`,
+            label: t`Approvals`,
             href: serviceCatalogRoutes.approvals(serviceName),
             icon: CheckSquare,
             badge: (
@@ -61,13 +63,15 @@ export default function ServiceDetailLayout() {
   ];
 
   return (
-    <SubLayout>
-      <SubLayout.SidebarLeft>
-        <SubLayout.SidebarMenu menuItems={menuItems} />
-      </SubLayout.SidebarLeft>
-      <SubLayout.Content>
-        <Outlet />
-      </SubLayout.Content>
-    </SubLayout>
+    <DetailShell
+      icon={
+        <div className="bg-muted flex size-10 items-center justify-center rounded-md">
+          <ENTITY_ICONS.serviceCatalog className="size-5" />
+        </div>
+      }
+      name={service.spec?.displayName || serviceName}
+      subtitle={canonicalName}
+      tabs={tabs}
+    />
   );
 }
