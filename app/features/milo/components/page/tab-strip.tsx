@@ -7,6 +7,7 @@ import {
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { ChevronDown, type LucideIcon } from 'lucide-react';
+import { type ReactNode } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router';
 
 export interface EntityTabChild {
@@ -25,6 +26,8 @@ export interface EntityTab {
   children?: EntityTabChild[];
   /** Active-detection prefix for dropdown tabs (defaults to first child href). */
   match?: string;
+  /** Optional trailing adornment (e.g. a count/pending badge). */
+  badge?: ReactNode;
 }
 
 // Segmented control: a grey strip with a white active pill + primary text/icon;
@@ -97,6 +100,7 @@ export function TabStrip({ tabs, className }: { tabs: EntityTab[]; className?: s
             className={cn(itemClass, isActive(tab) ? activeClass : idleClass)}>
             {tab.icon && <Icon icon={tab.icon} />}
             {tab.label}
+            {tab.badge}
           </NavLink>
         );
       })}

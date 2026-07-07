@@ -295,7 +295,7 @@ msgid "Approval"
 msgstr "Approval"
 
 #: app/routes/admin/service-catalog/detail/approvals.tsx:21
-#: app/routes/admin/service-catalog/detail/layout.tsx:48
+#: app/routes/admin/service-catalog/detail/layout.tsx:50
 msgid "Approvals"
 msgstr "Approvals"
 
@@ -604,7 +604,7 @@ msgid "Consumer Project"
 msgstr "Consumer Project"
 
 #: app/routes/admin/service-catalog/detail/consumers.tsx:28
-#: app/routes/admin/service-catalog/detail/layout.tsx:41
+#: app/routes/admin/service-catalog/detail/layout.tsx:43
 msgid "Consumers"
 msgstr "Consumers"
 
@@ -2274,8 +2274,9 @@ msgstr "Organization deleted successfully"
 #: app/components/app-search/search-results.tsx:153
 #: app/components/app-search/use-app-search.ts:42
 #: app/components/app-sidebar/index.tsx:119
+#: app/routes/customer/breadcrumb-switchers.tsx:7
 #: app/routes/customer/organization/index.tsx:14
-#: app/routes/customer/organization/layout.tsx:5
+#: app/routes/customer/organization/layout.tsx:8
 #: app/routes/customer/project/detail/layout.tsx:40
 #: app/routes/customer/user/detail/layout.tsx:49
 #: app/routes/customer/user/detail/organization.tsx:19
@@ -2287,7 +2288,7 @@ msgstr "Organizations"
 msgid "Origin"
 msgstr "Origin"
 
-#: app/routes/admin/service-catalog/detail/layout.tsx:36
+#: app/routes/admin/service-catalog/detail/layout.tsx:37
 #: app/routes/customer/organization/detail/layout.tsx:56
 #: app/routes/customer/project/detail/layout.tsx:111
 #: app/routes/customer/user/detail/layout.tsx:43
@@ -2490,11 +2491,12 @@ msgstr "Project deleted successfully"
 #: app/components/app-search/search-results.tsx:169
 #: app/components/app-search/use-app-search.ts:48
 #: app/components/app-sidebar/index.tsx:123
+#: app/routes/customer/breadcrumb-switchers.tsx:8
 #: app/routes/customer/organization/detail/layout.tsx:61
 #: app/routes/customer/organization/detail/project.tsx:15
 #: app/routes/customer/project/detail/layout.tsx:46
 #: app/routes/customer/project/index.tsx:14
-#: app/routes/customer/project/layout.tsx:5
+#: app/routes/customer/project/layout.tsx:8
 #: app/routes/dashboard/index.tsx:75
 msgid "Projects"
 msgstr "Projects"
@@ -3374,8 +3376,9 @@ msgstr "User Type"
 #: app/components/app-search/search-results.tsx:185
 #: app/components/app-search/use-app-search.ts:36
 #: app/components/app-sidebar/index.tsx:115
+#: app/routes/customer/breadcrumb-switchers.tsx:6
 #: app/routes/customer/user/index.tsx:29
-#: app/routes/customer/user/layout.tsx:5
+#: app/routes/customer/user/layout.tsx:8
 #: app/routes/dashboard/index.tsx:59
 msgid "Users"
 msgstr "Users"
@@ -3490,6 +3493,10 @@ msgstr "Yes"
 #: app/routes/admin/service-catalog/detail/index.tsx:69
 msgid "You do not have permission to view service configurations."
 msgstr "You do not have permission to view service configurations."
+
+#: app/features/milo/components/context-bar/milo-context-bar.tsx:14
+msgid "You're here:"
+msgstr "You're here:"
 
 #: app/features/dns/components/dns-zone-list.tsx:69
 msgid "Zone Name"
