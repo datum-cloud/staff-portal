@@ -6,9 +6,9 @@ import { DisplayId, DisplayText } from '@/components/display';
 import { DATE_RANGE_OPTIONS, ListPage, ListTable } from '@/features/milo';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
 import {
+  useAllUsersQuery,
   useInvalidateUserList,
   userInviteMutation,
-  useUserListQuery,
 } from '@/resources/request/client';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { userRoutes } from '@/utils/config/routes.config';
@@ -120,7 +120,7 @@ export default function Page() {
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
 
   const { approveUser, pendingUser } = useUserApproval();
-  const tableQuery = useUserListQuery();
+  const tableQuery = useAllUsersQuery();
   const users = useMemo(() => tableQuery.data?.items ?? [], [tableQuery.data]);
   const invalidateUserList = useInvalidateUserList();
 
@@ -327,6 +327,8 @@ export default function Page() {
           }
           getRowId={(row) => row.metadata?.name ?? ''}
           defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+          hasMore={tableQuery.data?.hasMore ?? false}
+          hasMoreMessage={t`Limited to 10,000 users. Refine your search to surface others.`}
           searchPlaceholder={t`Search users...`}
           emptyMessage={t`No users found.`}
           toolbar={<UsersGrowthChart users={users} />}

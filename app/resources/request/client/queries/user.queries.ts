@@ -1,11 +1,12 @@
 import { userOrgListQuery } from '../apis/membership.api';
-import { userDeactivationQuery, userGetQuery, userListQuery } from '../apis/user.api';
+import { listAllUsers, userDeactivationQuery, userGetQuery, userListQuery } from '../apis/user.api';
 import { ListQueryParams } from '@/resources/schemas';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 export const userQueryKeys = {
   all: ['users'] as const,
   list: (params?: ListQueryParams) => ['users', 'list', params] as const,
+  listAll: ['users', 'list-all'] as const,
   detail: (userId: string) => ['users', 'detail', userId] as const,
   deactivation: (userId: string) => ['users', 'deactivation', userId] as const,
   organizations: {
@@ -34,6 +35,15 @@ export const useUserListQuery = (params?: ListQueryParams) => {
   return useQuery({
     queryKey: userQueryKeys.list(params),
     queryFn: () => userListQuery(params),
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+/** Full user list (walks the `continue` cursor) — for views needing a true total. */
+export const useAllUsersQuery = () => {
+  return useQuery({
+    queryKey: userQueryKeys.listAll,
+    queryFn: () => listAllUsers(),
     staleTime: 5 * 60 * 1000,
   });
 };
