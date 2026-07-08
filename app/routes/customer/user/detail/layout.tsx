@@ -1,10 +1,10 @@
 import type { Route } from './+types/layout';
+import { UserAvatar } from '@/components/user-avatar';
 import { DetailShell, type EntityTab } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
 import { userDetailQuery } from '@/resources/request/server';
 import { ENTITY_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
 import { userRoutes } from '@/utils/config/routes.config';
-import { Avatar, AvatarFallback } from '@datum-cloud/datum-ui/avatar';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import { useLoaderData } from 'react-router';
@@ -30,13 +30,6 @@ export default function Layout() {
 
   const userId = data.metadata?.name ?? '';
   const fullName = `${data.spec?.givenName ?? ''} ${data.spec?.familyName ?? ''}`.trim();
-  const initials =
-    fullName
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .substring(0, 2)
-      .toUpperCase() || '?';
 
   const tabs: EntityTab[] = [
     {
@@ -70,9 +63,12 @@ export default function Layout() {
   return (
     <DetailShell
       icon={
-        <Avatar className="size-10 rounded-md">
-          <AvatarFallback className="rounded-md">{initials}</AvatarFallback>
-        </Avatar>
+        <UserAvatar
+          name={fullName || userId}
+          avatarUrl={data.status?.avatarUrl}
+          className="size-10 rounded-md"
+          fallbackClassName="rounded-md"
+        />
       }
       name={fullName || userId}
       subtitle={data.spec?.email}

@@ -2,7 +2,8 @@ import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
-import { DisplayId, DisplayText } from '@/components/display';
+import { DisplayId, DisplayName, DisplayText } from '@/components/display';
+import { UserAvatar } from '@/components/user-avatar';
 import { DATE_RANGE_OPTIONS, ListPage, ListTable } from '@/features/milo';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
 import {
@@ -23,7 +24,7 @@ import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { z } from 'zod';
 
@@ -176,8 +177,19 @@ export default function Page() {
         const userName = row.original.metadata?.name ?? '';
         const displayName =
           `${row.original.spec?.givenName ?? ''} ${row.original.spec?.familyName ?? ''}`.trim();
+        const email = row.original.spec?.email ?? '';
 
-        return <Link to={`./${userName}`}>{displayName}</Link>;
+        return (
+          <div className="flex items-center gap-2.5">
+            <UserAvatar
+              name={displayName || email}
+              avatarUrl={row.original.status?.avatarUrl}
+              className="size-7 shrink-0 rounded-md"
+              fallbackClassName="rounded-md text-xs"
+            />
+            <DisplayName displayName={displayName} name={email} to={`./${userName}`} />
+          </div>
+        );
       },
     }),
     columnHelper.accessor('spec.email', {

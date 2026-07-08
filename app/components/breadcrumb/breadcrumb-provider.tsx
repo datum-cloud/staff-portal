@@ -1,4 +1,4 @@
-import { type BreadcrumbItem } from './index';
+import { type BreadcrumbItem, type BreadcrumbSwitcherOption } from './index';
 import { useLocation, useMatches } from 'react-router';
 
 /**
@@ -17,6 +17,8 @@ export interface BreadcrumbOptions {
   className?: string;
   /** Additional data for the breadcrumb item */
   data?: any;
+  /** Render this segment as a dropdown that switches to sibling sections. */
+  switcher?: BreadcrumbSwitcherOption[];
 }
 
 /**

@@ -4,6 +4,7 @@ export {
   createStaticBreadcrumbItem,
   createClickableBreadcrumbItem,
   type BreadcrumbItem,
+  type BreadcrumbSwitcherOption,
   type BreadcrumbConfig,
   type BreadcrumbProps,
 } from './breadcrumb';

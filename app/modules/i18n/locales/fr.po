@@ -131,7 +131,7 @@ msgstr ""
 msgid "Account Management"
 msgstr ""
 
-#: app/features/milo/components/navbar/milo-user-menu.tsx:50
+#: app/features/milo/components/navbar/milo-user-menu.tsx:41
 msgid "Account menu"
 msgstr ""
 
@@ -170,7 +170,7 @@ msgstr ""
 #: app/routes/customer/project/detail/activity/layout.tsx:5
 #: app/routes/customer/project/detail/layout.tsx:142
 #: app/routes/customer/user/detail/activity/layout.tsx:5
-#: app/routes/customer/user/detail/layout.tsx:60
+#: app/routes/customer/user/detail/layout.tsx:53
 #: app/routes/operation/activity/layout.tsx:13
 msgid "Activity"
 msgstr ""
@@ -296,7 +296,7 @@ msgid "Approval"
 msgstr ""
 
 #: app/routes/admin/service-catalog/detail/approvals.tsx:21
-#: app/routes/admin/service-catalog/detail/layout.tsx:48
+#: app/routes/admin/service-catalog/detail/layout.tsx:50
 msgid "Approvals"
 msgstr ""
 
@@ -304,7 +304,7 @@ msgstr ""
 #: app/routes/admin/service-catalog/detail/approvals.tsx:50
 #: app/routes/admin/service-catalog/detail/consumers.tsx:53
 #: app/routes/customer/user/detail/index.tsx:199
-#: app/routes/customer/user/index.tsx:134
+#: app/routes/customer/user/index.tsx:135
 msgid "Approve"
 msgstr ""
 
@@ -415,7 +415,7 @@ msgstr ""
 #: app/routes/customer/project/detail/layout.tsx:148
 #: app/routes/customer/user/detail/activity/audit-logs.tsx:14
 #: app/routes/customer/user/detail/activity/audit-logs.tsx:17
-#: app/routes/customer/user/detail/layout.tsx:65
+#: app/routes/customer/user/detail/layout.tsx:58
 #: app/routes/operation/activity/audit-logs.tsx:11
 #: app/routes/operation/activity/audit-logs.tsx:14
 #: app/routes/operation/activity/layout.tsx:35
@@ -486,7 +486,7 @@ msgstr ""
 #: app/routes/admin/service-catalog/detail/consumers.tsx:207
 #: app/routes/customer/organization/detail/member.tsx:85
 #: app/routes/customer/user/detail/index.tsx:149
-#: app/routes/customer/user/index.tsx:250
+#: app/routes/customer/user/index.tsx:262
 #: app/routes/marketing/contact-group/detail/member.tsx:345
 #: app/routes/marketing/contact-group/detail/member.tsx:362
 #: app/routes/marketing/contact-group/index.tsx:109
@@ -605,7 +605,7 @@ msgid "Consumer Project"
 msgstr ""
 
 #: app/routes/admin/service-catalog/detail/consumers.tsx:28
-#: app/routes/admin/service-catalog/detail/layout.tsx:41
+#: app/routes/admin/service-catalog/detail/layout.tsx:43
 msgid "Consumers"
 msgstr ""
 
@@ -688,7 +688,7 @@ msgstr ""
 #: app/components/app-sidebar/index.tsx:147
 #: app/components/app-sidebar/index.tsx:153
 #: app/routes/customer/user/detail/contacts.tsx:9
-#: app/routes/customer/user/detail/layout.tsx:53
+#: app/routes/customer/user/detail/layout.tsx:46
 #: app/routes/marketing/contact/index.tsx:14
 #: app/routes/marketing/contact/layout.tsx:5
 msgid "Contacts"
@@ -782,8 +782,8 @@ msgstr ""
 #: app/routes/customer/resource/index.tsx:202
 #: app/routes/customer/resource/index.tsx:239
 #: app/routes/customer/user/detail/index.tsx:273
-#: app/routes/customer/user/index.tsx:204
-#: app/routes/customer/user/index.tsx:355
+#: app/routes/customer/user/index.tsx:216
+#: app/routes/customer/user/index.tsx:367
 #: app/routes/finance/billing-account/detail/index.tsx:208
 #: app/routes/marketing/contact-group/index.tsx:87
 #: app/routes/operation/fraud/providers/index.tsx:102
@@ -1188,8 +1188,8 @@ msgstr ""
 #: app/features/contact/components/contact-list.tsx:86
 #: app/features/dashboard/components/pending-approvals-widget.tsx:132
 #: app/routes/customer/user/detail/index.tsx:261
-#: app/routes/customer/user/index.tsx:184
-#: app/routes/customer/user/index.tsx:288
+#: app/routes/customer/user/index.tsx:196
+#: app/routes/customer/user/index.tsx:300
 #: app/routes/marketing/contact-group/detail/member.tsx:202
 #: app/routes/operation/fraud/index.tsx:122
 msgid "Email"
@@ -1197,7 +1197,7 @@ msgstr ""
 
 #: app/components/app-sidebar/index.tsx:169
 #: app/routes/customer/user/detail/email-activity.tsx:9
-#: app/routes/customer/user/detail/layout.tsx:55
+#: app/routes/customer/user/detail/layout.tsx:48
 #: app/routes/operation/email-activity/layout.tsx:5
 msgid "Email Activity"
 msgstr ""
@@ -1218,7 +1218,7 @@ msgstr ""
 msgid "Email HTML preview"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:226
+#: app/routes/customer/user/index.tsx:238
 msgid "Email is required"
 msgstr ""
 
@@ -1273,7 +1273,7 @@ msgstr ""
 msgid "Enforcement Mode"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:283
+#: app/routes/customer/user/index.tsx:295
 msgid "Enter first name"
 msgstr ""
 
@@ -1444,7 +1444,7 @@ msgstr ""
 #: app/routes/customer/project/detail/activity/index.tsx:14
 #: app/routes/customer/project/detail/layout.tsx:146
 #: app/routes/customer/user/detail/activity/index.tsx:23
-#: app/routes/customer/user/detail/layout.tsx:64
+#: app/routes/customer/user/detail/layout.tsx:57
 #: app/routes/operation/activity/feed.tsx:28
 #: app/routes/operation/activity/feed.tsx:31
 #: app/routes/operation/activity/layout.tsx:25
@@ -1487,13 +1487,13 @@ msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:125
 #: app/features/profile/components/profile-form.tsx:46
-#: app/routes/customer/user/index.tsx:282
+#: app/routes/customer/user/index.tsx:294
 msgid "First Name"
 msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:46
 #: app/features/profile/components/profile-form.tsx:15
-#: app/routes/customer/user/index.tsx:224
+#: app/routes/customer/user/index.tsx:236
 msgid "First name is required"
 msgstr ""
 
@@ -1637,7 +1637,7 @@ msgstr ""
 #: app/routes/customer/organization/index.tsx:115
 #: app/routes/customer/project/index.tsx:123
 #: app/routes/customer/user/detail/index.tsx:244
-#: app/routes/customer/user/index.tsx:188
+#: app/routes/customer/user/index.tsx:200
 msgid "ID"
 msgstr ""
 
@@ -1646,7 +1646,7 @@ msgid "Inactive"
 msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:48
-#: app/routes/customer/user/index.tsx:226
+#: app/routes/customer/user/index.tsx:238
 msgid "Invalid email address"
 msgstr ""
 
@@ -1664,12 +1664,12 @@ msgstr ""
 msgid "Invitation resend successfully"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:249
+#: app/routes/customer/user/index.tsx:261
 msgid "Invite"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:248
-#: app/routes/customer/user/index.tsx:325
+#: app/routes/customer/user/index.tsx:260
+#: app/routes/customer/user/index.tsx:337
 msgid "Invite User"
 msgstr ""
 
@@ -1718,7 +1718,7 @@ msgstr ""
 msgid "Joined"
 msgstr ""
 
-#: app/features/dashboard/components/recent-users-widget.tsx:107
+#: app/features/dashboard/components/recent-users-widget.tsx:109
 msgid "Last 10 new users who joined Datum"
 msgstr ""
 
@@ -1732,13 +1732,13 @@ msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:128
 #: app/features/profile/components/profile-form.tsx:49
-#: app/routes/customer/user/index.tsx:285
+#: app/routes/customer/user/index.tsx:297
 msgid "Last Name"
 msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:47
 #: app/features/profile/components/profile-form.tsx:16
-#: app/routes/customer/user/index.tsx:225
+#: app/routes/customer/user/index.tsx:237
 msgid "Last name is required"
 msgstr ""
 
@@ -1767,7 +1767,7 @@ msgstr ""
 msgid "Limited to 10,000 projects. Refine your search to surface others."
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:331
+#: app/routes/customer/user/index.tsx:343
 msgid "Limited to 10,000 users. Refine your search to surface others."
 msgstr ""
 
@@ -1833,7 +1833,7 @@ msgid "Log back into GitHub (with the new, desired email set as primary)"
 msgstr ""
 
 #: app/components/app-sidebar/nav-user.tsx:96
-#: app/features/milo/components/navbar/milo-user-menu.tsx:83
+#: app/features/milo/components/navbar/milo-user-menu.tsx:80
 msgid "Log out"
 msgstr ""
 
@@ -1854,7 +1854,7 @@ msgid "Mail Lists"
 msgstr ""
 
 #: app/features/user/components/user-identity-card.tsx:133
-#: app/routes/customer/user/index.tsx:129
+#: app/routes/customer/user/index.tsx:130
 msgid "Manage"
 msgstr ""
 
@@ -1934,12 +1934,12 @@ msgid "More options"
 msgstr ""
 
 #: app/routes/customer/user/detail/index.tsx:225
-#: app/routes/customer/user/index.tsx:156
+#: app/routes/customer/user/index.tsx:157
 msgid "Move to Pending"
 msgstr ""
 
 #: app/components/app-sidebar/nav-user.tsx:86
-#: app/features/milo/components/navbar/milo-user-menu.tsx:73
+#: app/features/milo/components/navbar/milo-user-menu.tsx:70
 #: app/routes/profile/layout.tsx:9
 msgid "My Profile"
 msgstr ""
@@ -1965,7 +1965,7 @@ msgstr ""
 #: app/routes/customer/project/index.tsx:116
 #: app/routes/customer/resource/index.tsx:169
 #: app/routes/customer/user/detail/organization.tsx:35
-#: app/routes/customer/user/index.tsx:174
+#: app/routes/customer/user/index.tsx:175
 #: app/routes/finance/billing-account/detail/index.tsx:67
 #: app/routes/marketing/contact-group/detail/member.tsx:181
 #: app/routes/marketing/contact-group/index.tsx:63
@@ -2221,11 +2221,11 @@ msgstr ""
 msgid "No services match the current filters."
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:333
+#: app/routes/customer/user/index.tsx:345
 msgid "No users found."
 msgstr ""
 
-#: app/features/dashboard/components/recent-users-widget.tsx:56
+#: app/features/dashboard/components/recent-users-widget.tsx:58
 msgid "No users yet"
 msgstr ""
 
@@ -2245,7 +2245,7 @@ msgstr ""
 
 #: app/routes/customer/organization/index.tsx:73
 #: app/routes/customer/project/index.tsx:73
-#: app/routes/customer/user/index.tsx:87
+#: app/routes/customer/user/index.tsx:88
 msgid "Not enough data yet to show a trend."
 msgstr ""
 
@@ -2267,7 +2267,7 @@ msgid "Notes"
 msgstr ""
 
 #: app/components/app-sidebar/nav-user.tsx:90
-#: app/features/milo/components/navbar/milo-user-menu.tsx:77
+#: app/features/milo/components/navbar/milo-user-menu.tsx:74
 msgid "Notifications"
 msgstr ""
 
@@ -2317,10 +2317,11 @@ msgstr ""
 #: app/components/app-search/search-results.tsx:153
 #: app/components/app-search/use-app-search.ts:42
 #: app/components/app-sidebar/index.tsx:119
+#: app/routes/customer/breadcrumb-switchers.tsx:7
 #: app/routes/customer/organization/index.tsx:17
-#: app/routes/customer/organization/layout.tsx:5
+#: app/routes/customer/organization/layout.tsx:8
 #: app/routes/customer/project/detail/layout.tsx:40
-#: app/routes/customer/user/detail/layout.tsx:49
+#: app/routes/customer/user/detail/layout.tsx:42
 #: app/routes/customer/user/detail/organization.tsx:19
 #: app/routes/dashboard/index.tsx:67
 msgid "Organizations"
@@ -2330,10 +2331,10 @@ msgstr ""
 msgid "Origin"
 msgstr ""
 
-#: app/routes/admin/service-catalog/detail/layout.tsx:36
+#: app/routes/admin/service-catalog/detail/layout.tsx:37
 #: app/routes/customer/organization/detail/layout.tsx:56
 #: app/routes/customer/project/detail/layout.tsx:111
-#: app/routes/customer/user/detail/layout.tsx:43
+#: app/routes/customer/user/detail/layout.tsx:36
 msgid "Overview"
 msgstr ""
 
@@ -2411,7 +2412,7 @@ msgstr ""
 msgid "Phase"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:298
+#: app/routes/customer/user/index.tsx:310
 msgid "Pick date and time Test"
 msgstr ""
 
@@ -2535,11 +2536,12 @@ msgstr ""
 #: app/components/app-search/search-results.tsx:169
 #: app/components/app-search/use-app-search.ts:48
 #: app/components/app-sidebar/index.tsx:123
+#: app/routes/customer/breadcrumb-switchers.tsx:8
 #: app/routes/customer/organization/detail/layout.tsx:61
 #: app/routes/customer/organization/detail/project.tsx:15
 #: app/routes/customer/project/detail/layout.tsx:46
 #: app/routes/customer/project/index.tsx:17
-#: app/routes/customer/project/layout.tsx:5
+#: app/routes/customer/project/layout.tsx:8
 #: app/routes/dashboard/index.tsx:75
 msgid "Projects"
 msgstr ""
@@ -2667,8 +2669,8 @@ msgstr ""
 msgid "Registrar"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:199
-#: app/routes/customer/user/index.tsx:338
+#: app/routes/customer/user/index.tsx:211
+#: app/routes/customer/user/index.tsx:350
 msgid "Registration"
 msgstr ""
 
@@ -2678,7 +2680,7 @@ msgstr ""
 
 #: app/features/user/components/user-reject-dialog.tsx:29
 #: app/routes/customer/user/detail/index.tsx:206
-#: app/routes/customer/user/index.tsx:149
+#: app/routes/customer/user/index.tsx:150
 msgid "Reject"
 msgstr ""
 
@@ -2813,15 +2815,15 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:295
+#: app/routes/customer/user/index.tsx:307
 msgid "Schedule At"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:238
+#: app/routes/customer/user/index.tsx:250
 msgid "Schedule date and time is required"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:292
+#: app/routes/customer/user/index.tsx:304
 msgid "Schedule invitation to be sent at specific time"
 msgstr ""
 
@@ -2970,7 +2972,7 @@ msgstr ""
 msgid "Search users, organizations, and projects"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:332
+#: app/routes/customer/user/index.tsx:344
 msgid "Search users..."
 msgstr ""
 
@@ -3141,8 +3143,8 @@ msgstr ""
 #: app/routes/customer/project/detail/export-policy/detail.tsx:171
 #: app/routes/customer/project/detail/export-policy/index.tsx:45
 #: app/routes/customer/user/detail/index.tsx:269
-#: app/routes/customer/user/index.tsx:194
-#: app/routes/customer/user/index.tsx:347
+#: app/routes/customer/user/index.tsx:206
+#: app/routes/customer/user/index.tsx:359
 #: app/routes/marketing/contact-group/detail/member.tsx:207
 #: app/routes/marketing/contact-group/index.tsx:80
 #: app/routes/marketing/contact/detail/group.tsx:101
@@ -3292,7 +3294,7 @@ msgstr ""
 
 #: app/routes/customer/organization/index.tsx:86
 #: app/routes/customer/project/index.tsx:86
-#: app/routes/customer/user/index.tsx:100
+#: app/routes/customer/user/index.tsx:101
 msgid "Total"
 msgstr ""
 
@@ -3304,7 +3306,7 @@ msgstr ""
 msgid "Total projects"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:81
+#: app/routes/customer/user/index.tsx:82
 msgid "Total users"
 msgstr ""
 
@@ -3408,7 +3410,7 @@ msgstr ""
 msgid "User deleted successfully"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:276
+#: app/routes/customer/user/index.tsx:288
 msgid "User invited successfully"
 msgstr ""
 
@@ -3443,13 +3445,14 @@ msgstr ""
 #: app/components/app-search/search-results.tsx:185
 #: app/components/app-search/use-app-search.ts:36
 #: app/components/app-sidebar/index.tsx:115
-#: app/routes/customer/user/index.tsx:31
-#: app/routes/customer/user/layout.tsx:5
+#: app/routes/customer/breadcrumb-switchers.tsx:6
+#: app/routes/customer/user/index.tsx:32
+#: app/routes/customer/user/layout.tsx:8
 #: app/routes/dashboard/index.tsx:59
 msgid "Users"
 msgstr ""
 
-#: app/features/dashboard/components/recent-users-widget.tsx:59
+#: app/features/dashboard/components/recent-users-widget.tsx:61
 msgid "Users will appear here once they join Datum"
 msgstr ""
 
@@ -3488,7 +3491,7 @@ msgstr ""
 
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:124
 #: app/features/dashboard/components/pending-approvals-widget.tsx:109
-#: app/features/dashboard/components/recent-users-widget.tsx:102
+#: app/features/dashboard/components/recent-users-widget.tsx:104
 msgid "View All"
 msgstr ""
 
@@ -3558,6 +3561,10 @@ msgstr ""
 
 #: app/routes/admin/service-catalog/detail/index.tsx:69
 msgid "You do not have permission to view service configurations."
+msgstr ""
+
+#: app/features/milo/components/context-bar/milo-context-bar.tsx:14
+msgid "You're here:"
 msgstr ""
 
 #: app/features/dns/components/dns-zone-list.tsx:69
