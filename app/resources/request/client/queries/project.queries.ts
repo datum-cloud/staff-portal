@@ -4,14 +4,16 @@ import {
   projectDomainListQuery,
   projectExportPolicyListQuery,
   projectEdgeListQuery,
+  projectWorkloadListQuery,
 } from '../apis/project.api';
-import { listProjects } from '@/modules/graphql/projects';
+import { listAllProjects, listProjects } from '@/modules/graphql/projects';
 import { ListQueryParams } from '@/resources/schemas';
 import { useQuery } from '@tanstack/react-query';
 
 export const projectQueryKeys = {
   all: ['projects'] as const,
   list: (params?: ListQueryParams) => ['projects', 'list', params] as const,
+  listAll: (search?: string) => ['projects', 'list-all', search ?? ''] as const,
   domains: {
     all: (projectName: string) => ['projects', projectName, 'domains'] as const,
     list: (projectName: string, params?: ListQueryParams) =>
@@ -34,6 +36,10 @@ export const projectQueryKeys = {
     records: (projectName: string, dnsName: string, namespace: string = 'default') =>
       ['projects', projectName, 'dns', dnsName, 'records', namespace] as const,
   },
+  workloads: {
+    all: (projectName: string) => ['projects', projectName, 'workloads'] as const,
+    list: (projectName: string) => ['projects', projectName, 'workloads', 'list'] as const,
+  },
 };
 
 export const useProjectDnsRecordListQuery = (
@@ -53,6 +59,15 @@ export const useProjectListQuery = (params?: ListQueryParams) => {
   return useQuery({
     queryKey: projectQueryKeys.list(params),
     queryFn: () => listProjects(params),
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+/** Full cross-org project list (walks continueToken) — for views needing a true total. */
+export const useAllProjectsQuery = (search: string = '') => {
+  return useQuery({
+    queryKey: projectQueryKeys.listAll(search),
+    queryFn: () => listAllProjects(search),
     staleTime: 5 * 60 * 1000,
   });
 };
@@ -88,6 +103,15 @@ export const useProjectDnsListQuery = (projectName: string, params?: ListQueryPa
   return useQuery({
     queryKey: projectQueryKeys.dns.list(projectName, params),
     queryFn: () => projectDnsListQuery(projectName, params),
+    enabled: Boolean(projectName),
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useProjectWorkloadListQuery = (projectName: string) => {
+  return useQuery({
+    queryKey: projectQueryKeys.workloads.list(projectName),
+    queryFn: () => projectWorkloadListQuery(projectName),
     enabled: Boolean(projectName),
     staleTime: 5 * 60 * 1000,
   });

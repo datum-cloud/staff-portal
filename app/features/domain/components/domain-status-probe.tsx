@@ -4,6 +4,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from '@datum-cloud/datu
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { useLingui } from '@lingui/react/macro';
+import { ComDatumapisNetworkingV1AlphaDomain } from '@openapi/networking.datumapis.com/v1alpha';
 
 // Map condition type to friendly title
 function getConditionTitle(conditionType: string): string {
@@ -23,25 +24,40 @@ export function DomainStatusProbe({
   projectName,
   domainName,
   namespace,
+  variant,
+  initialStatus,
 }: {
   projectName: string;
   domainName: string;
   namespace: string;
+  /** Forwarded to the underlying `BadgeState` — `'dot'` for dense tables. */
+  variant?: 'pill' | 'dot';
+  /**
+   * Status already fetched elsewhere (e.g. from a list/search response) —
+   * skips this component's own live lookup entirely once it's Success/Error,
+   * and seeds it while still Pending. Passing this matters when the row's
+   * project/namespace/name identity might be slightly stale (e.g. a search
+   * index result) — without it, every row fires its own live probe against
+   * the control plane on mount and then every `refetchIntervalMs`, which is
+   * both wasteful and can 404 if that copy has drifted.
+   */
+  initialStatus?: ComDatumapisNetworkingV1AlphaDomain['status'];
 }) {
   const { t } = useLingui();
   const { data, isLoading, error } = useDomainStatus(projectName, domainName, namespace, {
     enabled: Boolean(domainName),
     refetchIntervalMs: 10000,
+    initialDomainStatus: initialStatus,
   });
 
   if (!domainName) return null;
 
   if (isLoading) {
-    return <BadgeState state="pending" message={t`Loading status...`} loading />;
+    return <BadgeState variant={variant} state="pending" message={t`Loading status...`} loading />;
   }
 
   if (error) {
-    return <BadgeState state="error" message={t`Failed to load status`} />;
+    return <BadgeState variant={variant} state="error" message={t`Failed to load status`} />;
   }
 
   const status = data?.status;
@@ -74,7 +90,7 @@ export function DomainStatusProbe({
             'inline-flex cursor-pointer items-center gap-1',
             isActive ? 'pointer-events-none' : ''
           )}>
-          <BadgeState state={badgeState} message={message} loading={!isActive} />
+          <BadgeState variant={variant} state={badgeState} message={message} loading={!isActive} />
         </span>
       </HoverCardTrigger>
       <HoverCardContent

@@ -89,6 +89,34 @@ export async function listOrganizations(params?: {
   return result.data?.organizations ?? { items: [], continueToken: null };
 }
 
+const ALL_ORGANIZATIONS_PAGE_LIMIT = 100;
+// Safety net against a runaway walk — mirrors listAllProjects' pattern.
+const ALL_ORGANIZATIONS_MAX_PAGES = 100;
+
+/**
+ * Walks `continueToken` to fetch every organization matching `search`, rather
+ * than a single page. `listOrganizations`/`useOrgListQuery` intentionally stay
+ * single-page (the org-picker typeahead in useOrganizationSearch wants a
+ * capped, fast lookup) — this is for views that need a true total (the
+ * Organizations list table, growth charts) where a hidden page limit would
+ * silently under-count.
+ */
+export async function listAllOrganizations(
+  search: string = ''
+): Promise<{ items: GqlOrganization[]; hasMore: boolean }> {
+  const items: GqlOrganization[] = [];
+  let cursor: string | undefined;
+
+  for (let page = 0; page < ALL_ORGANIZATIONS_MAX_PAGES; page++) {
+    const result = await listOrganizations({ limit: ALL_ORGANIZATIONS_PAGE_LIMIT, cursor, search });
+    items.push(...result.items);
+    cursor = result.continueToken ?? undefined;
+    if (!cursor) return { items, hasMore: false };
+  }
+
+  return { items, hasMore: Boolean(cursor) };
+}
+
 export async function getOrganization(name: string): Promise<GqlOrganization | null> {
   const client = createGqlClient({ type: 'global' });
   const result = await client.query(ORGANIZATION_QUERY, { name }).toPromise();

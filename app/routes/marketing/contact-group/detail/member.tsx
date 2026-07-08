@@ -385,7 +385,7 @@ export default function Page() {
         loading={tableQuery.isLoading}
         data={items}
         columns={columns}
-        pageSize={20}
+        pageSize={50}
         getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
         defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
         searchPlaceholder={t`Search members...`}

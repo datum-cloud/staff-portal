@@ -179,9 +179,37 @@ type Props = {
   icon?: BadgeStateIcon;
   className?: string;
   loading?: boolean;
+  /** `pill` (default) is the full colored badge; `dot` is a compact colored dot + plain text, for dense tables. */
+  variant?: 'pill' | 'dot';
 };
 
-const BadgeState = ({ state, message, noColor, tooltip, icon, className, loading }: Props) => {
+// Reuses each state's `bg-*` color as a solid dot instead of the full pill background/border.
+const DOT_CLASS_BY_BG: Record<string, string> = {
+  'bg-green-100': 'bg-green-500',
+  'bg-red-100': 'bg-red-500',
+  'bg-blue-100': 'bg-blue-500',
+  'bg-cyan-100': 'bg-cyan-500',
+  'bg-amber-100': 'bg-amber-500',
+  'bg-yellow-100': 'bg-yellow-500',
+  'bg-gray-100': 'bg-gray-400',
+  'bg-violet-100': 'bg-violet-500',
+};
+
+function dotClassName(config: BadgeStateConfigEntry): string {
+  const bgToken = config.className.split(' ').find((c) => c in DOT_CLASS_BY_BG);
+  return bgToken ? DOT_CLASS_BY_BG[bgToken] : 'bg-gray-400';
+}
+
+const BadgeState = ({
+  state,
+  message,
+  noColor,
+  tooltip,
+  icon,
+  className,
+  loading,
+  variant = 'pill',
+}: Props) => {
   const rawState = String(state ?? '');
   const normalizedState = rawState.toLowerCase();
   const config = StateConfig[normalizedState as State] || DefaultConfig;
@@ -193,21 +221,32 @@ const BadgeState = ({ state, message, noColor, tooltip, icon, className, loading
   // state to startCase so CamelCase API values like "PendingApproval" split into
   // "Pending Approval" instead of collapsing to "Pendingapproval".
   const displayText = message || startCase(rawState);
-  const badgeContent = (
-    <Badge
-      theme={noColor ? 'outline' : undefined}
-      className={cn(
-        'inline-flex items-center gap-1 px-2 py-0 text-xs font-medium',
-        noColor
-          ? 'border-gray-200 text-gray-700 dark:border-gray-700 dark:text-gray-300'
-          : config.className,
-        className
-      )}>
-      {IconComponent ? <IconComponent className="h-2.5 w-2.5" /> : null}
-      {loading ? <STATUS_ICONS.loading className="h-2.5 w-2.5 animate-spin" /> : null}
-      {displayText}
-    </Badge>
-  );
+
+  const badgeContent =
+    variant === 'dot' ? (
+      <span className={cn('text-foreground inline-flex items-center gap-1.5 text-sm', className)}>
+        {loading ? (
+          <STATUS_ICONS.loading className="text-muted-foreground size-3 shrink-0 animate-spin" />
+        ) : (
+          <span className={cn('size-1.5 shrink-0 rounded-full', dotClassName(config))} />
+        )}
+        {displayText}
+      </span>
+    ) : (
+      <Badge
+        theme={noColor ? 'outline' : undefined}
+        className={cn(
+          'inline-flex items-center gap-1 px-2 py-0 text-xs font-medium',
+          noColor
+            ? 'border-gray-200 text-gray-700 dark:border-gray-700 dark:text-gray-300'
+            : config.className,
+          className
+        )}>
+        {IconComponent ? <IconComponent className="h-2.5 w-2.5" /> : null}
+        {loading ? <STATUS_ICONS.loading className="h-2.5 w-2.5 animate-spin" /> : null}
+        {displayText}
+      </Badge>
+    );
 
   if (tooltip) {
     return (

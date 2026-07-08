@@ -47,6 +47,7 @@ function ButtonCopy({
   return (
     <Tooltip message={tooltipText}>
       <Button
+        data-slot="button-copy"
         type={buttonProps.type}
         theme={buttonProps.theme}
         size="icon"

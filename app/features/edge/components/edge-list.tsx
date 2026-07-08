@@ -118,7 +118,7 @@ export function EdgeList({
       defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
       controlledSearch={controlledSearch}
       hasMore={hasMore}
-      hasMoreMessage={t`The list of AI Edge resources is limited to 100 results at a time. Refine your search to surface other resources.`}
+      hasMoreMessage={t`The list of AI Edge resources is limited to 2,000 results at a time. Refine your search to surface other resources.`}
       searchPlaceholder={searchPlaceholder ?? t`Search AI Edge...`}
       emptyMessage={emptyMessage ?? t`No AI Edge found.`}
       searchFn={(row, search) => {

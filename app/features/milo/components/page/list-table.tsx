@@ -45,13 +45,25 @@ const contentClassName = 'min-h-0 flex-1 overflow-auto [&>div]:overflow-visible'
 // <button> that sortable headers render, so it would only hit raw-string
 // headers, making them inconsistent (UPPERCASE) with sortable ones.
 const headerCellClassName =
-  'sticky top-0 z-10 h-9 border-b border-border bg-background/50 backdrop-blur-sm px-3 text-xs font-medium tracking-wide text-muted-foreground';
+  'sticky top-0 z-10 h-8 border-b border-border bg-background/50 backdrop-blur-sm px-3 text-xs font-medium tracking-wide text-muted-foreground';
 const rowClassName = 'hover:bg-muted/30';
-// py-1 keeps rows compact; multi-line cells (stacked endpoints/chips) grow with
-// a little breathing room. The row-actions trigger sits in every row, so shrink
-// it (h-7) — otherwise its default size sets the height of the whole table.
+// py-0.5 keeps rows compact; multi-line cells (stacked endpoints/chips) grow with
+// a little breathing room. The row-actions trigger and copy button both sit in
+// many rows (ID columns), so shrink them — otherwise their default size sets
+// the height of the whole table (rows with a copy button were ~6px taller
+// than rows without one, e.g. Resources vs Users).
 const cellClassName =
-  'border-b border-border px-3 py-1 text-sm [&_[data-slot=dt-row-actions]]:!size-7 [&_[data-slot=dt-row-actions]]:!p-0';
+  'border-b border-border px-3 py-0.5 text-sm [&_[data-slot=dt-row-actions]]:!size-7 [&_[data-slot=dt-row-actions]]:!p-0 [&_[data-slot=button-copy]]:!size-5';
+
+/** Resolves a dot-path (e.g. `status.registrationApproval`) against a plain object. */
+function getByPath(obj: unknown, path: string): unknown {
+  return path
+    .split('.')
+    .reduce<unknown>(
+      (acc, key) => (acc && typeof acc === 'object' ? (acc as any)[key] : undefined),
+      obj
+    );
+}
 
 const searchClassName =
   'h-10 border-0 bg-transparent pl-9 shadow-none focus-visible:shadow-none focus-visible:ring-0';
@@ -134,6 +146,26 @@ export function ListTable<TData>({
     [filters, filterFns]
   );
 
+  // Per-option counts (e.g. "Approved (98)"), tallied from the full dataset via
+  // each group's own matcher — so it works for exact-match checkboxes *and*
+  // range-style filters (e.g. "Created: Last 7 days") alike. Sidebar only,
+  // since inline/mobile variants render outside this data scope.
+  const filterCounts = useMemo(() => {
+    if (!sidebarMode || !filters?.length) return undefined;
+    const counts: Record<string, Record<string, number>> = {};
+    for (const group of filters) {
+      const matcher = mergedFilterFns[group.column];
+      const tally: Record<string, number> = {};
+      for (const option of group.options) {
+        tally[option.value] = options.data.filter((row) =>
+          matcher(getByPath(row, group.column), [option.value])
+        ).length;
+      }
+      counts[group.column] = tally;
+    }
+    return counts;
+  }, [sidebarMode, filters, options.data, mergedFilterFns]);
+
   return (
     // [sidebar | right column]; sidebar is inside DataTable.Client so its filters resolve.
     <DataTable.Client
@@ -141,6 +173,8 @@ export function ListTable<TData>({
       filterFns={mergedFilterFns}
       // Controlled (server) search already filtered `data`, so keep every row.
       searchFn={controlledSearch ? () => true : searchFn}
+      // Rows are denser now, so show more per page by default when a route doesn't pick one.
+      pageSize={50}
       {...options}>
       {showSidebar && (
         // Animate width (like the left nav) rather than mount/unmount; inner
@@ -151,7 +185,7 @@ export function ListTable<TData>({
           <div style={{ width: FILTER_W }} className="h-full overflow-y-auto pb-4">
             <FilterPanel>
               {filters?.map((f) => (
-                <FilterGroup key={f.column} {...f} />
+                <FilterGroup key={f.column} {...f} counts={filterCounts?.[f.column]} />
               ))}
             </FilterPanel>
           </div>
@@ -234,7 +268,7 @@ export function ListTable<TData>({
                 side="right"
                 message={
                   hasMoreMessage ??
-                  t`The list is limited to 100 results at a time. Refine your search to surface other items.`
+                  t`The list is limited to 2,000 results at a time. Refine your search to surface other items.`
                 }>
                 <Button
                   type="warning"

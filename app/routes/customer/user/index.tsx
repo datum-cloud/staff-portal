@@ -2,8 +2,8 @@ import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
-import { DisplayId, DisplayName } from '@/components/display';
-import { ListPage, ListTable } from '@/features/milo';
+import { DisplayId, DisplayText } from '@/components/display';
+import { DATE_RANGE_OPTIONS, ListPage, ListTable } from '@/features/milo';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
 import {
   useInvalidateUserList,
@@ -21,8 +21,10 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
-import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { format } from 'date-fns';
+import { useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router';
+import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { z } from 'zod';
 
 export const meta: Route.MetaFunction = () => {
@@ -30,6 +32,86 @@ export const meta: Route.MetaFunction = () => {
 };
 
 const columnHelper = createColumnHelper<ComMiloapisIamV1Alpha1User>();
+
+interface GrowthPoint {
+  month: string;
+  cumulative: number;
+}
+
+/** Buckets users by creation month into a running total, for the growth chart. */
+function buildGrowthSeries(users: ComMiloapisIamV1Alpha1User[]): GrowthPoint[] {
+  const created = users
+    .map((u) => (u.metadata?.creationTimestamp ? new Date(u.metadata.creationTimestamp) : null))
+    .filter((d): d is Date => d !== null && !Number.isNaN(d.getTime()))
+    .sort((a, b) => a.getTime() - b.getTime());
+
+  if (created.length === 0) return [];
+
+  const points: GrowthPoint[] = [];
+  let cumulative = 0;
+  let index = 0;
+  const cursor = new Date(created[0].getFullYear(), created[0].getMonth(), 1);
+  const end = new Date();
+
+  while (cursor <= end) {
+    const monthEnd = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
+    while (index < created.length && created[index] < monthEnd) {
+      cumulative++;
+      index++;
+    }
+    points.push({ month: format(cursor, 'MMM yyyy'), cumulative });
+    cursor.setMonth(cursor.getMonth() + 1);
+  }
+
+  return points;
+}
+
+/**
+ * Cumulative-growth strip — rendered via `ListTable`'s `toolbar` slot, so it
+ * sits in the table's own right-hand column rather than spanning over the
+ * filter sidebar. Mirrors the Projects/Organizations pages' growth charts.
+ */
+function UsersGrowthChart({ users }: { users: ComMiloapisIamV1Alpha1User[] }) {
+  const growthData = useMemo(() => buildGrowthSeries(users), [users]);
+  const hasTrend = growthData.length >= 2;
+
+  return (
+    <div className="flex shrink-0 items-center gap-6 border-b px-4 py-3">
+      <div className="shrink-0">
+        <h2 className="text-muted-foreground text-sm font-medium">{t`Total users`}</h2>
+        <span className="text-2xl font-semibold tabular-nums">{users.length}</span>
+      </div>
+      <div className="min-w-0 flex-1">
+        {!hasTrend ? (
+          <div className="text-muted-foreground flex h-16 items-center text-sm">
+            {t`Not enough data yet to show a trend.`}
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height={64}>
+            <LineChart data={growthData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+              <XAxis
+                dataKey="month"
+                tickLine={false}
+                axisLine={false}
+                tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
+                minTickGap={24}
+              />
+              <YAxis hide domain={['dataMin', 'dataMax']} />
+              <Tooltip labelFormatter={(month) => month} formatter={(value) => [value, t`Total`]} />
+              <Line
+                type="monotone"
+                dataKey="cumulative"
+                stroke="var(--primary)"
+                dot={false}
+                strokeWidth={2}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default function Page() {
   const navigate = useNavigate();
@@ -39,6 +121,7 @@ export default function Page() {
 
   const { approveUser, pendingUser } = useUserApproval();
   const tableQuery = useUserListQuery();
+  const users = useMemo(() => tableQuery.data?.items ?? [], [tableQuery.data]);
   const invalidateUserList = useInvalidateUserList();
 
   const actions: ActionItem<ComMiloapisIamV1Alpha1User>[] = [
@@ -91,11 +174,15 @@ export default function Page() {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => {
         const userName = row.original.metadata?.name ?? '';
-        const displayName = `${row.original.spec?.givenName ?? ''} ${row.original.spec?.familyName ?? ''}`;
-        const email = row.original.spec?.email ?? '';
+        const displayName =
+          `${row.original.spec?.givenName ?? ''} ${row.original.spec?.familyName ?? ''}`.trim();
 
-        return <DisplayName displayName={displayName} name={email} to={`./${userName}`} />;
+        return <Link to={`./${userName}`}>{displayName}</Link>;
       },
+    }),
+    columnHelper.accessor('spec.email', {
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Email`} />,
+      cell: ({ getValue }) => <DisplayText value={getValue() ?? ''} />,
     }),
     columnHelper.accessor('metadata.name', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`ID`} />,
@@ -105,14 +192,12 @@ export default function Page() {
     }),
     columnHelper.accessor('status.state', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Status`} />,
-      cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Active'} />,
+      cell: ({ getValue }) => <BadgeState variant="dot" state={getValue() ?? 'Active'} />,
     }),
     columnHelper.accessor('status.registrationApproval', {
       id: 'registrationApproval',
-      header: ({ column }) => (
-        <DataTable.ColumnHeader column={column} title={t`Registration Approval`} />
-      ),
-      cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Unknown'} />,
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Registration`} />,
+      cell: ({ getValue }) => <BadgeState variant="dot" state={getValue() ?? 'Unknown'} />,
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'metadata.creationTimestamp',
@@ -230,9 +315,9 @@ export default function Page() {
       <ListPage>
         <ListTable
           loading={tableQuery.isLoading}
-          data={tableQuery.data?.items ?? []}
+          data={users}
           columns={columns}
-          pageSize={20}
+          pageSize={50}
           actions={
             <Button
               icon={<ACTION_ICONS.invite size={16} />}
@@ -244,6 +329,7 @@ export default function Page() {
           defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
           searchPlaceholder={t`Search users...`}
           emptyMessage={t`No users found.`}
+          toolbar={<UsersGrowthChart users={users} />}
           filters={[
             {
               column: 'status.registrationApproval',
@@ -261,6 +347,12 @@ export default function Page() {
                 { value: 'Active', label: <BadgeState state="Active" /> },
                 { value: 'Inactive', label: <BadgeState state="Inactive" /> },
               ],
+            },
+            {
+              column: 'metadata.creationTimestamp',
+              label: t`Created`,
+              type: 'dateRange',
+              options: DATE_RANGE_OPTIONS,
             },
           ]}
           searchFn={(row, search) => {

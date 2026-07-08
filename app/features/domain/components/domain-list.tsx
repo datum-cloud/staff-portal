@@ -98,6 +98,7 @@ export function DomainList({
           projectName={row.original.projectName}
           domainName={row.original.domain.metadata?.name ?? ''}
           namespace={row.original.domain.metadata?.namespace ?? ''}
+          initialStatus={row.original.domain.status}
         />
       ),
     }),
@@ -119,7 +120,7 @@ export function DomainList({
       defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
       controlledSearch={controlledSearch}
       hasMore={hasMore}
-      hasMoreMessage={t`The list of domains is limited to 100 results at a time. Refine your search to surface other domains.`}
+      hasMoreMessage={t`The list of domains is limited to 2,000 results at a time. Refine your search to surface other domains.`}
       searchPlaceholder={searchPlaceholder ?? t`Search domains...`}
       emptyMessage={emptyMessage ?? t`No domains found.`}
       searchFn={(row, search) => {

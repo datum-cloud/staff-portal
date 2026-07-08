@@ -276,19 +276,20 @@ export const searchProjectsQuery = (
   );
 };
 
+const SEARCH_PAGE_LIMIT = 100;
+// Safety ceiling, not a product limit: stops an unbounded search index from
+// making the page fetch forever. At 100/page this is 20 requests / 2000 rows
+// per resource kind — comfortably past any real dataset we expect today.
+const SEARCH_MAX_PAGES = 20;
+
 /**
- * List every resource of a single kind across all projects via the search
- * index, preserving tenant info so callers can resolve the owning project
- * per row.
- *
- * The search API caps a single response at 100 rows. `hasMore` is true when
- * the index has additional matches that this response didn't include — the
- * caller can use this to surface a "more results available" hint.
+ * Fetches one page of a single resource kind from the search index.
  */
-async function searchResourceList<T>(
+async function searchResourcePage<T>(
   target: NetMiloapisGoSearchPkgApisSearchV1Alpha1TargetResource,
-  queryString: string = ''
-): Promise<{ items: SearchResultItem<T>[]; hasMore: boolean }> {
+  queryString: string,
+  cursor?: string
+): Promise<{ items: SearchResultItem<T>[]; continue?: string }> {
   const body: NetMiloapisGoSearchPkgApisSearchV1Alpha1ResourceSearchQuery = {
     apiVersion: 'search.miloapis.com/v1alpha1',
     kind: 'ResourceSearchQuery',
@@ -297,8 +298,9 @@ async function searchResourceList<T>(
     },
     spec: {
       query: queryString,
-      limit: 100,
+      limit: SEARCH_PAGE_LIMIT,
       targetResources: [target],
+      ...(cursor && { continue: cursor }),
     },
   };
 
@@ -317,7 +319,34 @@ async function searchResourceList<T>(
       tenant: result.tenant,
     }));
 
-  return { items, hasMore: Boolean(status?.continue) };
+  return { items, continue: status?.continue };
+}
+
+/**
+ * List every resource of a single kind across all projects via the search
+ * index, preserving tenant info so callers can resolve the owning project
+ * per row.
+ *
+ * A single search response caps at 100 rows, so this walks `status.continue`
+ * to fetch every page rather than silently dropping anything past the first
+ * 100 — up to `SEARCH_MAX_PAGES` as a runaway-query safety net. `hasMore` is
+ * true only if that safety net was hit while more pages were still available.
+ */
+async function searchResourceList<T>(
+  target: NetMiloapisGoSearchPkgApisSearchV1Alpha1TargetResource,
+  queryString: string = ''
+): Promise<{ items: SearchResultItem<T>[]; hasMore: boolean }> {
+  const items: SearchResultItem<T>[] = [];
+  let cursor: string | undefined;
+
+  for (let page = 0; page < SEARCH_MAX_PAGES; page++) {
+    const result = await searchResourcePage<T>(target, queryString, cursor);
+    items.push(...result.items);
+    cursor = result.continue;
+    if (!cursor) return { items, hasMore: false };
+  }
+
+  return { items, hasMore: Boolean(cursor) };
 }
 
 /** List all Domains across every project via the search index. */
