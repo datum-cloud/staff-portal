@@ -4,7 +4,6 @@ import {
   projectDomainListQuery,
   projectExportPolicyListQuery,
   projectEdgeListQuery,
-  projectWorkloadListQuery,
 } from '../apis/project.api';
 import { listAllProjects, listProjects } from '@/modules/graphql/projects';
 import { ListQueryParams } from '@/resources/schemas';
@@ -35,10 +34,6 @@ export const projectQueryKeys = {
       ['projects', projectName, 'dns', 'list', params] as const,
     records: (projectName: string, dnsName: string, namespace: string = 'default') =>
       ['projects', projectName, 'dns', dnsName, 'records', namespace] as const,
-  },
-  workloads: {
-    all: (projectName: string) => ['projects', projectName, 'workloads'] as const,
-    list: (projectName: string) => ['projects', projectName, 'workloads', 'list'] as const,
   },
 };
 
@@ -103,15 +98,6 @@ export const useProjectDnsListQuery = (projectName: string, params?: ListQueryPa
   return useQuery({
     queryKey: projectQueryKeys.dns.list(projectName, params),
     queryFn: () => projectDnsListQuery(projectName, params),
-    enabled: Boolean(projectName),
-    staleTime: 5 * 60 * 1000,
-  });
-};
-
-export const useProjectWorkloadListQuery = (projectName: string) => {
-  return useQuery({
-    queryKey: projectQueryKeys.workloads.list(projectName),
-    queryFn: () => projectWorkloadListQuery(projectName),
     enabled: Boolean(projectName),
     staleTime: 5 * 60 * 1000,
   });
