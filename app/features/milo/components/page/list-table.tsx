@@ -146,15 +146,31 @@ export function ListTable<TData>({
     [filters, filterFns]
   );
 
+  // Structural signature of `filters` (column/type/option values) — routes pass
+  // a fresh `filters={[...]}` array literal every render, so depending on that
+  // reference (or on `mergedFilterFns`, which is built from it) would defeat
+  // the memo below on every re-render instead of only when a filter's shape
+  // actually changes.
+  const filterSignature = useMemo(
+    () =>
+      (filters ?? [])
+        .map(
+          (f) => `${f.column}:${f.type ?? 'checkbox'}:${f.options.map((o) => o.value).join(',')}`
+        )
+        .join('|'),
+    [filters]
+  );
+
   // Per-option counts (e.g. "Approved (98)"), tallied from the full dataset via
   // each group's own matcher — so it works for exact-match checkboxes *and*
   // range-style filters (e.g. "Created: Last 7 days") alike. Sidebar only,
   // since inline/mobile variants render outside this data scope.
   const filterCounts = useMemo(() => {
     if (!sidebarMode || !filters?.length) return undefined;
+    const autoFilterFns = buildFilterFns(filters);
     const counts: Record<string, Record<string, number>> = {};
     for (const group of filters) {
-      const matcher = mergedFilterFns[group.column];
+      const matcher = filterFns?.[group.column] ?? autoFilterFns[group.column];
       const tally: Record<string, number> = {};
       for (const option of group.options) {
         tally[option.value] = options.data.filter((row) =>
@@ -164,7 +180,9 @@ export function ListTable<TData>({
       counts[group.column] = tally;
     }
     return counts;
-  }, [sidebarMode, filters, options.data, mergedFilterFns]);
+    // filterSignature stands in for `filters`'/`filterFns`'s content — see comment above.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sidebarMode, filterSignature, options.data]);
 
   return (
     // [sidebar | right column]; sidebar is inside DataTable.Client so its filters resolve.
