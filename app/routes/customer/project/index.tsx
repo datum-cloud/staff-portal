@@ -152,9 +152,7 @@ export default function Page() {
         hasMoreMessage={t`Limited to 10,000 projects. Refine your search to surface others.`}
         toolbar={<ProjectsGrowthChart projects={projects} />}
         filters={[
-          ...(organizationOptions.length > 0
-            ? [{ column: 'organizationName', label: t`Organization`, options: organizationOptions }]
-            : []),
+          { column: 'organizationName', label: t`Organization`, options: organizationOptions },
           {
             column: 'createdAt',
             label: t`Created`,
