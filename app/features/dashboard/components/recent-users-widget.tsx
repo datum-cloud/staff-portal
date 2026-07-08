@@ -1,8 +1,8 @@
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
+import { UserAvatar } from '@/components/user-avatar';
 import { activityListQuery } from '@/resources/request/client';
 import { userRoutes } from '@/utils/config/routes.config';
-import { Avatar, AvatarFallback } from '@datum-cloud/datum-ui/avatar';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardDescription, CardHeader } from '@datum-cloud/datum-ui/card';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
@@ -19,14 +19,16 @@ function UserItem({ log }: { log: IoK8sApiserverPkgApisAuditV1Event }) {
   if (!userData?.spec) return null;
 
   const { givenName, familyName } = userData?.spec ?? {};
-  const initials = `${givenName?.charAt(0) || ''}${familyName?.charAt(0) || ''}`;
   const fullName = `${givenName || ''} ${familyName || ''}`.trim();
 
   return (
     <div key={log.user?.username} className="flex items-center gap-3 rounded-md border p-2">
-      <Avatar className="h-8 w-8">
-        <AvatarFallback className="text-xs font-medium">{initials || '?'}</AvatarFallback>
-      </Avatar>
+      <UserAvatar
+        name={fullName}
+        avatarUrl={userData?.status?.avatarUrl}
+        className="h-8 w-8"
+        fallbackClassName="text-xs font-medium"
+      />
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between">
           <div className="min-w-0 flex-1">

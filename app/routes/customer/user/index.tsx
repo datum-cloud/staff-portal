@@ -3,6 +3,7 @@ import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
 import { DisplayId, DisplayName } from '@/components/display';
+import { UserAvatar } from '@/components/user-avatar';
 import { ListPage, ListTable } from '@/features/milo';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
 import {
@@ -91,10 +92,21 @@ export default function Page() {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => {
         const userName = row.original.metadata?.name ?? '';
-        const displayName = `${row.original.spec?.givenName ?? ''} ${row.original.spec?.familyName ?? ''}`;
+        const displayName =
+          `${row.original.spec?.givenName ?? ''} ${row.original.spec?.familyName ?? ''}`.trim();
         const email = row.original.spec?.email ?? '';
 
-        return <DisplayName displayName={displayName} name={email} to={`./${userName}`} />;
+        return (
+          <div className="flex items-center gap-2.5">
+            <UserAvatar
+              name={displayName || email}
+              avatarUrl={row.original.status?.avatarUrl}
+              className="size-7 shrink-0 rounded-md"
+              fallbackClassName="rounded-md text-xs"
+            />
+            <DisplayName displayName={displayName} name={email} to={`./${userName}`} />
+          </div>
+        );
       },
     }),
     columnHelper.accessor('metadata.name', {
