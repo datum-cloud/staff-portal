@@ -25,6 +25,7 @@ export {
   DATE_RANGE_OPTIONS,
 } from './components/page/rich-filter-panel';
 export type { FilterGroupConfig, FilterOption } from './components/page/rich-filter-panel';
+export { ListGrowthChart } from './components/page/list-growth-chart';
 
 // List table (styled datum-ui DataTable wrapper)
 export { ListTable } from './components/page/list-table';
