@@ -99,6 +99,28 @@ export const domainRoutes = {
   list: () => '/customers/resources/domains',
 } as const;
 
+// Customers → Billing Accounts
+export const billingAccountRoutes = {
+  list: () => '/customers/billing-accounts',
+  detail: (orgName: string, accountName: string) =>
+    `/customers/billing-accounts/${orgName}/${accountName}`,
+} as const;
+
+// Customers → Fraud & Abuse
+export const fraudRoutes = {
+  root: () => '/customers/fraud',
+  evaluations: {
+    list: () => '/customers/fraud',
+    detail: (name: string) => `/customers/fraud/${name}`,
+  },
+  providers: {
+    list: () => '/customers/fraud/providers',
+    create: () => '/customers/fraud/providers/create',
+    detail: (name: string) => `/customers/fraud/providers/${name}`,
+  },
+  policy: () => '/customers/fraud/policy',
+} as const;
+
 // ───────────────────────────────── Marketing (/marketing) ─────────────────────────────────
 
 // Marketing → Contacts
@@ -117,17 +139,6 @@ export const contactGroupRoutes = {
   create: () => '/marketing/contact-groups/create',
   detail: (contactGroupName: string) => `/marketing/contact-groups/${contactGroupName}`,
   member: (contactGroupName: string) => `/marketing/contact-groups/${contactGroupName}/members`,
-} as const;
-
-// ───────────────────────────────── Finance (/finance) ─────────────────────────────────
-
-// Finance → Billing Accounts
-export const financeRoutes = {
-  billingAccounts: {
-    list: () => '/finance/billing-accounts',
-    detail: (orgName: string, accountName: string) =>
-      `/finance/billing-accounts/${orgName}/${accountName}`,
-  },
 } as const;
 
 // ───────────────────────────────── Operations (/operations) ─────────────────────────────────
@@ -150,21 +161,6 @@ export const emailActivityRoutes = {
   list: () => '/operations/email-activity',
   detail: (namespace: string, emailName: string) =>
     `/operations/email-activity/${namespace}/${emailName}`,
-} as const;
-
-// Operations → Fraud & Abuse
-export const fraudRoutes = {
-  root: () => '/operations/fraud',
-  evaluations: {
-    list: () => '/operations/fraud',
-    detail: (name: string) => `/operations/fraud/${name}`,
-  },
-  providers: {
-    list: () => '/operations/fraud/providers',
-    create: () => '/operations/fraud/providers/create',
-    detail: (name: string) => `/operations/fraud/providers/${name}`,
-  },
-  policy: () => '/operations/fraud/policy',
 } as const;
 
 // ───────────────────────────────── Admin (/admin) ─────────────────────────────────
@@ -211,13 +207,12 @@ export const routes = {
   edges: edgeRoutes,
   dns: dnsRoutes,
   domains: domainRoutes,
+  billingAccounts: billingAccountRoutes,
+  fraud: fraudRoutes,
 
   // Marketing
   contacts: contactRoutes,
   contactGroups: contactGroupRoutes,
-
-  // Finance
-  finance: financeRoutes,
 
   // Operations
   activity: activityRoutes,
@@ -227,9 +222,6 @@ export const routes = {
   // Admin
   groups: groupRoutes,
   serviceCatalog: serviceCatalogRoutes,
-
-  // Not in the menu
-  fraud: fraudRoutes,
 
   // Account
   profile: profileRoutes,
