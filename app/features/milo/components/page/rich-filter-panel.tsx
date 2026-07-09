@@ -2,7 +2,9 @@ import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
 import { useDataTableFilters } from '@datum-cloud/datum-ui/data-table';
+import { Label } from '@datum-cloud/datum-ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
+import { RadioGroup, RadioGroupItem } from '@datum-cloud/datum-ui/radio-group';
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@datum-cloud/datum-ui/sheet';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
@@ -188,22 +190,26 @@ export function CheckboxFilterGroup({
   if (options.length === 0 && selected.length === 0) return null;
 
   const toggle = (value: string) => {
-    // dateRange buckets are cumulative ranges ("Last 7 days" ⊇ "Last 24 hours"),
-    // not independent categories — multi-selecting them ORs their row sets
-    // together, so checking "Last 24 hours" while "Last 90 days" is already
-    // checked still shows 90-day-old rows, which reads as "the filter is
-    // broken." Treat this group as single-select instead: picking a bucket
-    // replaces whatever was selected; re-picking the active one clears it.
-    if (type === 'dateRange') {
-      if (selected.length === 1 && selected[0] === value) clearFilter(column);
-      else setFilter(column, [value]);
-      return;
-    }
     const next = selected.includes(value)
       ? selected.filter((v) => v !== value)
       : [...selected, value];
     if (next.length) setFilter(column, next);
     else clearFilter(column);
+  };
+
+  const optionRow = (option: FilterOption) => {
+    const count = counts?.[option.value];
+    return (
+      <>
+        {option.icon && (
+          <span className="flex shrink-0 items-center [&_svg]:size-4">{option.icon}</span>
+        )}
+        <span className="min-w-0 flex-1 truncate">{option.label}</span>
+        {typeof count === 'number' && (
+          <span className="text-muted-foreground shrink-0 text-xs tabular-nums">{count}</span>
+        )}
+      </>
+    );
   };
 
   return (
@@ -243,11 +249,35 @@ export function CheckboxFilterGroup({
         </button>
       </div>
 
-      {open && (
+      {open && type === 'dateRange' && (
+        // dateRange buckets are cumulative ranges ("Last 7 days" ⊇ "Last 24
+        // hours"), not independent categories — multi-selecting them ORs their
+        // row sets together, so checking "Last 24 hours" while "Last 90 days"
+        // is already checked still shows 90-day-old rows, which reads as "the
+        // filter is broken." Render as radios so the UI itself communicates
+        // single-select, rather than checkboxes that let you pick many.
+        <RadioGroup
+          value={selected[0] ?? ''}
+          onValueChange={(value) => setFilter(column, [value])}
+          className="-mx-2 flex max-h-60 flex-col gap-0 overflow-y-auto">
+          {options.map((option) => (
+            <Label
+              key={option.value}
+              className={cn(
+                'hover:bg-card hover:text-foreground flex items-center gap-2 rounded-md px-2 py-1 text-sm font-normal transition-all',
+                selected.includes(option.value) ? 'text-foreground' : 'text-muted-foreground'
+              )}>
+              <RadioGroupItem value={option.value} className="shrink-0" />
+              {optionRow(option)}
+            </Label>
+          ))}
+        </RadioGroup>
+      )}
+
+      {open && type !== 'dateRange' && (
         <div className="-mx-2 flex max-h-60 flex-col overflow-y-auto">
           {options.map((option) => {
             const checked = selected.includes(option.value);
-            const count = counts?.[option.value];
             return (
               <button
                 key={option.value}
@@ -259,15 +289,7 @@ export function CheckboxFilterGroup({
                   checked ? 'text-foreground' : 'text-muted-foreground'
                 )}>
                 <Checkbox checked={checked} className="pointer-events-none shrink-0" />
-                {option.icon && (
-                  <span className="flex shrink-0 items-center [&_svg]:size-4">{option.icon}</span>
-                )}
-                <span className="min-w-0 flex-1 truncate">{option.label}</span>
-                {typeof count === 'number' && (
-                  <span className="text-muted-foreground shrink-0 text-xs tabular-nums">
-                    {count}
-                  </span>
-                )}
+                {optionRow(option)}
               </button>
             );
           })}
