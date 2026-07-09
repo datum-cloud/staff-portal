@@ -106,7 +106,7 @@ msgstr ""
 msgid "A contact with this email already exists."
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:299
+#: app/routes/customer/fraud/index.tsx:299
 msgid "Accepted"
 msgstr ""
 
@@ -118,8 +118,8 @@ msgstr ""
 msgid "Access revoked"
 msgstr ""
 
-#: app/routes/operation/fraud/providers/create.tsx:120
-#: app/routes/operation/fraud/providers/detail.tsx:161
+#: app/routes/customer/fraud/providers/create.tsx:120
+#: app/routes/customer/fraud/providers/detail.tsx:161
 msgid "Account ID Key"
 msgstr ""
 
@@ -135,7 +135,7 @@ msgstr ""
 msgid "Account menu"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:159
+#: app/routes/customer/billing-account/detail/index.tsx:159
 msgid "Account overview"
 msgstr ""
 
@@ -199,7 +199,7 @@ msgstr ""
 msgid "Add Note"
 msgstr ""
 
-#: app/routes/operation/fraud/providers/index.tsx:123
+#: app/routes/customer/fraud/providers/index.tsx:123
 msgid "Add Provider"
 msgstr ""
 
@@ -245,7 +245,7 @@ msgstr ""
 msgid "AI Edge"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:149
+#: app/routes/customer/billing-account/detail/index.tsx:149
 msgid "All billing accounts"
 msgstr ""
 
@@ -363,8 +363,8 @@ msgstr ""
 
 #. placeholder {0}: provider.metadata?.name ?? ''
 #. placeholder {0}: selectedProvider?.metadata?.name ?? ''
-#: app/routes/operation/fraud/providers/detail.tsx:195
-#: app/routes/operation/fraud/providers/index.tsx:131
+#: app/routes/customer/fraud/providers/detail.tsx:195
+#: app/routes/customer/fraud/providers/index.tsx:131
 msgid "Are you sure you want to delete provider \"{0}\"? This action cannot be undone."
 msgstr ""
 
@@ -374,11 +374,11 @@ msgid "Are you sure you want to delete session \"{0}\"? This action cannot be un
 msgstr ""
 
 #. placeholder {0}: policy.metadata?.name ?? ''
-#: app/routes/operation/fraud/policy.tsx:99
+#: app/routes/customer/fraud/policy.tsx:99
 msgid "Are you sure you want to delete the fraud policy \"{0}\"? This will disable all fraud evaluation."
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:262
+#: app/routes/customer/fraud/index.tsx:262
 msgid "Are you sure you want to delete this fraud evaluation? This action cannot be undone."
 msgstr ""
 
@@ -441,27 +441,27 @@ msgstr ""
 msgid "Billing account"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:32
-#: app/routes/finance/billing-account/detail/index.tsx:46
+#: app/routes/customer/billing-account/detail/index.tsx:32
+#: app/routes/customer/billing-account/detail/index.tsx:46
 msgid "Billing Account"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:50
+#: app/routes/customer/billing-account/detail/index.tsx:50
 msgid "Billing account not found or you do not have permission to view it."
 msgstr ""
 
 #: app/components/app-sidebar/index.tsx:181
 #: app/features/billing/components/org-billing-accounts-card.tsx:56
-#: app/routes/finance/billing-account/index.tsx:7
-#: app/routes/finance/billing-account/layout.tsx:5
+#: app/routes/customer/billing-account/index.tsx:7
+#: app/routes/customer/billing-account/layout.tsx:5
 msgid "Billing Accounts"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:250
+#: app/routes/customer/billing-account/detail/index.tsx:250
 msgid "Billing address"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:232
+#: app/routes/customer/billing-account/detail/index.tsx:232
 msgid "Business name"
 msgstr ""
 
@@ -483,6 +483,13 @@ msgstr ""
 #: app/routes/admin/group/member.tsx:156
 #: app/routes/admin/group/member.tsx:170
 #: app/routes/admin/service-catalog/detail/consumers.tsx:207
+#: app/routes/customer/fraud/index.tsx:229
+#: app/routes/customer/fraud/index.tsx:264
+#: app/routes/customer/fraud/policy.tsx:101
+#: app/routes/customer/fraud/providers/create.tsx:134
+#: app/routes/customer/fraud/providers/detail.tsx:175
+#: app/routes/customer/fraud/providers/detail.tsx:197
+#: app/routes/customer/fraud/providers/index.tsx:133
 #: app/routes/customer/organization/detail/member.tsx:85
 #: app/routes/customer/user/detail/index.tsx:149
 #: app/routes/customer/user/index.tsx:177
@@ -492,18 +499,11 @@ msgstr ""
 #: app/routes/marketing/contact-group/index.tsx:128
 #: app/routes/marketing/contact/detail/group.tsx:161
 #: app/routes/marketing/contact/detail/group.tsx:174
-#: app/routes/operation/fraud/index.tsx:229
-#: app/routes/operation/fraud/index.tsx:264
-#: app/routes/operation/fraud/policy.tsx:101
-#: app/routes/operation/fraud/providers/create.tsx:134
-#: app/routes/operation/fraud/providers/detail.tsx:175
-#: app/routes/operation/fraud/providers/detail.tsx:197
-#: app/routes/operation/fraud/providers/index.tsx:133
 #: app/routes/profile/session.tsx:105
 msgid "Cancel"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:72
+#: app/routes/customer/billing-account/detail/index.tsx:72
 msgid "Card"
 msgstr ""
 
@@ -563,7 +563,7 @@ msgstr ""
 msgid "Collapse sidebar"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:289
+#: app/routes/customer/fraud/index.tsx:289
 msgid "Completed"
 msgstr ""
 
@@ -613,7 +613,7 @@ msgstr ""
 msgid "Contact"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:221
+#: app/routes/customer/billing-account/detail/index.tsx:221
 msgid "Contact & address"
 msgstr ""
 
@@ -675,7 +675,7 @@ msgstr ""
 msgid "Contact Information"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:228
+#: app/routes/customer/billing-account/detail/index.tsx:228
 msgid "Contact name"
 msgstr ""
 
@@ -734,10 +734,10 @@ msgstr ""
 #: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:250
 #: app/features/fraud/policy/policy-form.tsx:321
+#: app/routes/customer/fraud/providers/create.tsx:16
+#: app/routes/customer/fraud/providers/create.tsx:140
 #: app/routes/marketing/contact-group/create.tsx:14
 #: app/routes/marketing/contact/create.tsx:14
-#: app/routes/operation/fraud/providers/create.tsx:16
-#: app/routes/operation/fraud/providers/create.tsx:140
 msgid "Create"
 msgstr ""
 
@@ -749,12 +749,12 @@ msgstr ""
 msgid "Create Fraud Policy"
 msgstr ""
 
-#: app/routes/operation/fraud/providers/create.tsx:20
-#: app/routes/operation/fraud/providers/create.tsx:72
+#: app/routes/customer/fraud/providers/create.tsx:20
+#: app/routes/customer/fraud/providers/create.tsx:72
 msgid "Create Fraud Provider"
 msgstr ""
 
-#: app/routes/operation/fraud/policy.tsx:66
+#: app/routes/customer/fraud/policy.tsx:66
 msgid "Create Policy"
 msgstr ""
 
@@ -768,6 +768,8 @@ msgstr ""
 #: app/features/user/components/user-identity-card.tsx:176
 #: app/routes/admin/group/index.tsx:34
 #: app/routes/admin/group/member.tsx:121
+#: app/routes/customer/billing-account/detail/index.tsx:208
+#: app/routes/customer/fraud/providers/index.tsx:102
 #: app/routes/customer/organization/detail/index.tsx:52
 #: app/routes/customer/organization/detail/project.tsx:44
 #: app/routes/customer/organization/index.tsx:40
@@ -778,20 +780,18 @@ msgstr ""
 #: app/routes/customer/project/index.tsx:42
 #: app/routes/customer/user/detail/index.tsx:273
 #: app/routes/customer/user/index.tsx:131
-#: app/routes/finance/billing-account/detail/index.tsx:208
 #: app/routes/marketing/contact-group/index.tsx:87
-#: app/routes/operation/fraud/providers/index.tsx:102
 #: app/routes/profile/session.tsx:72
 msgid "Created"
 msgstr ""
 
-#: app/routes/operation/fraud/providers/create.tsx:111
-#: app/routes/operation/fraud/providers/detail.tsx:152
+#: app/routes/customer/fraud/providers/create.tsx:111
+#: app/routes/customer/fraud/providers/detail.tsx:152
 msgid "Credentials Reference"
 msgstr ""
 
 #: app/features/billing/components/billing-account-list.tsx:70
-#: app/routes/finance/billing-account/detail/index.tsx:188
+#: app/routes/customer/billing-account/detail/index.tsx:188
 msgid "Currency"
 msgstr ""
 
@@ -823,9 +823,9 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
+#: app/routes/customer/fraud/index.tsx:301
 #: app/routes/customer/user/detail/index.tsx:148
 #: app/routes/customer/user/detail/index.tsx:492
-#: app/routes/operation/fraud/index.tsx:301
 msgid "Deactivate"
 msgstr ""
 
@@ -856,9 +856,9 @@ msgstr ""
 
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:152
 #: app/features/fraud/detail/evaluation-sections.tsx:386
+#: app/routes/customer/fraud/index.tsx:160
+#: app/routes/customer/fraud/index.tsx:297
 #: app/routes/customer/user/detail/index.tsx:363
-#: app/routes/operation/fraud/index.tsx:160
-#: app/routes/operation/fraud/index.tsx:297
 msgid "Decision"
 msgstr ""
 
@@ -866,7 +866,7 @@ msgstr ""
 msgid "Declined"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:92
+#: app/routes/customer/billing-account/detail/index.tsx:92
 msgid "Default"
 msgstr ""
 
@@ -891,6 +891,13 @@ msgstr ""
 #: app/features/quota/components/quota-grant-list.tsx:161
 #: app/routes/admin/group/member.tsx:94
 #: app/routes/admin/group/member.tsx:155
+#: app/routes/customer/fraud/index.tsx:101
+#: app/routes/customer/fraud/index.tsx:263
+#: app/routes/customer/fraud/policy.tsx:100
+#: app/routes/customer/fraud/providers/detail.tsx:116
+#: app/routes/customer/fraud/providers/detail.tsx:196
+#: app/routes/customer/fraud/providers/index.tsx:46
+#: app/routes/customer/fraud/providers/index.tsx:132
 #: app/routes/marketing/contact-group/detail/member.tsx:162
 #: app/routes/marketing/contact-group/detail/member.tsx:344
 #: app/routes/marketing/contact-group/index.tsx:54
@@ -898,13 +905,6 @@ msgstr ""
 #: app/routes/marketing/contact-group/index.tsx:127
 #: app/routes/marketing/contact/detail/group.tsx:71
 #: app/routes/marketing/contact/detail/group.tsx:160
-#: app/routes/operation/fraud/index.tsx:101
-#: app/routes/operation/fraud/index.tsx:263
-#: app/routes/operation/fraud/policy.tsx:100
-#: app/routes/operation/fraud/providers/detail.tsx:116
-#: app/routes/operation/fraud/providers/detail.tsx:196
-#: app/routes/operation/fraud/providers/index.tsx:46
-#: app/routes/operation/fraud/providers/index.tsx:132
 #: app/routes/profile/session.tsx:40
 #: app/routes/profile/session.tsx:104
 msgid "Delete"
@@ -944,7 +944,7 @@ msgstr ""
 msgid "Delete contact groups"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:261
+#: app/routes/customer/fraud/index.tsx:261
 msgid "Delete Evaluation"
 msgstr ""
 
@@ -962,7 +962,7 @@ msgstr ""
 msgid "Delete Organization"
 msgstr ""
 
-#: app/routes/operation/fraud/policy.tsx:98
+#: app/routes/customer/fraud/policy.tsx:98
 msgid "Delete Policy"
 msgstr ""
 
@@ -971,8 +971,8 @@ msgstr ""
 msgid "Delete Project"
 msgstr ""
 
-#: app/routes/operation/fraud/providers/detail.tsx:194
-#: app/routes/operation/fraud/providers/index.tsx:130
+#: app/routes/customer/fraud/providers/detail.tsx:194
+#: app/routes/customer/fraud/providers/index.tsx:130
 msgid "Delete Provider"
 msgstr ""
 
@@ -1150,8 +1150,8 @@ msgstr ""
 
 #: app/features/contact/components/contact-list.tsx:53
 #: app/features/fraud/policy/policy-detail.tsx:95
+#: app/routes/customer/fraud/providers/index.tsx:41
 #: app/routes/marketing/contact-group/index.tsx:49
-#: app/routes/operation/fraud/providers/index.tsx:41
 msgid "Edit"
 msgstr ""
 
@@ -1159,7 +1159,7 @@ msgstr ""
 msgid "Edit Fraud Policy"
 msgstr ""
 
-#: app/routes/operation/fraud/providers/detail.tsx:34
+#: app/routes/customer/fraud/providers/detail.tsx:34
 msgid "Edit Fraud Provider"
 msgstr ""
 
@@ -1171,10 +1171,10 @@ msgstr ""
 #: app/features/contact/components/contact-form.tsx:131
 #: app/features/contact/components/contact-list.tsx:86
 #: app/features/dashboard/components/pending-approvals-widget.tsx:132
+#: app/routes/customer/fraud/index.tsx:122
 #: app/routes/customer/user/detail/index.tsx:261
 #: app/routes/customer/user/index.tsx:215
 #: app/routes/marketing/contact-group/detail/member.tsx:202
-#: app/routes/operation/fraud/index.tsx:122
 msgid "Email"
 msgstr ""
 
@@ -1235,19 +1235,19 @@ msgid "End Time"
 msgstr ""
 
 #: app/features/edge/components/edge-list.tsx:85
-#: app/routes/operation/fraud/providers/create.tsx:106
-#: app/routes/operation/fraud/providers/detail.tsx:147
-#: app/routes/operation/fraud/providers/index.tsx:76
+#: app/routes/customer/fraud/providers/create.tsx:106
+#: app/routes/customer/fraud/providers/detail.tsx:147
+#: app/routes/customer/fraud/providers/index.tsx:76
 msgid "Endpoint"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:309
+#: app/routes/customer/fraud/index.tsx:309
 msgid "Enforced"
 msgstr ""
 
 #: app/features/fraud/detail/evaluation-sections.tsx:401
-#: app/routes/operation/fraud/index.tsx:178
-#: app/routes/operation/fraud/index.tsx:306
+#: app/routes/customer/fraud/index.tsx:178
+#: app/routes/customer/fraud/index.tsx:306
 msgid "Enforcement"
 msgstr ""
 
@@ -1287,20 +1287,20 @@ msgid "Entities"
 msgstr ""
 
 #: app/features/fraud/detail/evaluation-sections.tsx:127
-#: app/routes/operation/fraud/index.tsx:292
+#: app/routes/customer/fraud/index.tsx:292
 msgid "Error"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:114
+#: app/routes/customer/billing-account/detail/index.tsx:114
 msgid "Established"
 msgstr ""
 
 #: app/features/fraud/detail/evaluation-sections.tsx:416
-#: app/routes/operation/fraud/index.tsx:197
+#: app/routes/customer/fraud/index.tsx:197
 msgid "Evaluated"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:269
+#: app/routes/customer/fraud/index.tsx:269
 msgid "Evaluation deleted successfully"
 msgstr ""
 
@@ -1308,7 +1308,7 @@ msgstr ""
 msgid "Evaluation History"
 msgstr ""
 
-#: app/routes/operation/fraud/detail/index.tsx:79
+#: app/routes/customer/fraud/detail/index.tsx:79
 msgid "Evaluation not found."
 msgstr ""
 
@@ -1320,8 +1320,8 @@ msgstr ""
 msgid "Evaluation Pipeline"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:34
-#: app/routes/operation/fraud/layout.tsx:21
+#: app/routes/customer/fraud/index.tsx:34
+#: app/routes/customer/fraud/layout.tsx:21
 msgid "Evaluations"
 msgstr ""
 
@@ -1403,9 +1403,9 @@ msgstr ""
 msgid "Failed to update timezone"
 msgstr ""
 
-#: app/routes/operation/fraud/providers/create.tsx:100
-#: app/routes/operation/fraud/providers/detail.tsx:141
-#: app/routes/operation/fraud/providers/index.tsx:69
+#: app/routes/customer/fraud/providers/create.tsx:100
+#: app/routes/customer/fraud/providers/detail.tsx:141
+#: app/routes/customer/fraud/providers/index.tsx:69
 msgid "Failure Policy"
 msgstr ""
 
@@ -1456,7 +1456,6 @@ msgid "Filters"
 msgstr ""
 
 #: app/components/app-sidebar/index.tsx:175
-#: app/routes/finance/layout.tsx:5
 msgid "Finance"
 msgstr ""
 
@@ -1489,8 +1488,8 @@ msgid "Force HTTPS"
 msgstr ""
 
 #: app/components/app-sidebar/index.tsx:199
-#: app/routes/operation/fraud/layout.tsx:8
-#: app/routes/operation/fraud/layout.tsx:33
+#: app/routes/customer/fraud/layout.tsx:8
+#: app/routes/customer/fraud/layout.tsx:33
 msgid "Fraud & Abuse"
 msgstr ""
 
@@ -1502,24 +1501,24 @@ msgstr ""
 msgid "Fraud Assessment"
 msgstr ""
 
-#: app/routes/operation/fraud/detail/index.tsx:33
+#: app/routes/customer/fraud/detail/index.tsx:33
 msgid "Fraud Evaluation Detail"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:244
+#: app/routes/customer/fraud/index.tsx:244
 msgid "Fraud evaluation started"
 msgstr ""
 
+#: app/routes/customer/fraud/index.tsx:38
 #: app/routes/dashboard/index.tsx:83
-#: app/routes/operation/fraud/index.tsx:38
 msgid "Fraud Evaluations"
 msgstr ""
 
-#: app/routes/operation/fraud/policy.tsx:19
+#: app/routes/customer/fraud/policy.tsx:19
 msgid "Fraud Policy"
 msgstr ""
 
-#: app/routes/operation/fraud/providers/index.tsx:28
+#: app/routes/customer/fraud/providers/index.tsx:28
 msgid "Fraud Providers"
 msgstr ""
 
@@ -1654,15 +1653,15 @@ msgstr ""
 msgid "Invite User"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:200
+#: app/routes/customer/billing-account/detail/index.tsx:200
 msgid "Invoice day of month"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:192
+#: app/routes/customer/billing-account/detail/index.tsx:192
 msgid "Invoice frequency"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:240
+#: app/routes/customer/billing-account/detail/index.tsx:240
 msgid "Invoice recipients"
 msgstr ""
 
@@ -1727,8 +1726,8 @@ msgstr ""
 msgid "Latest fraud evaluation for this user"
 msgstr ""
 
-#: app/routes/operation/fraud/providers/create.tsx:123
-#: app/routes/operation/fraud/providers/detail.tsx:164
+#: app/routes/customer/fraud/providers/create.tsx:123
+#: app/routes/customer/fraud/providers/detail.tsx:164
 msgid "License Key Key"
 msgstr ""
 
@@ -1742,8 +1741,8 @@ msgstr ""
 
 #: app/features/billing/components/billing-account-list.tsx:75
 #: app/features/billing/components/org-billing-accounts-card.tsx:47
-#: app/routes/finance/billing-account/detail/index.tsx:204
-#: app/routes/finance/billing-account/detail/index.tsx:309
+#: app/routes/customer/billing-account/detail/index.tsx:204
+#: app/routes/customer/billing-account/detail/index.tsx:309
 msgid "Linked projects"
 msgstr ""
 
@@ -1756,7 +1755,7 @@ msgstr ""
 msgid "Loading billing accounts..."
 msgstr ""
 
-#: app/routes/operation/fraud/detail/index.tsx:67
+#: app/routes/customer/fraud/detail/index.tsx:67
 msgid "Loading evaluation..."
 msgstr ""
 
@@ -1764,11 +1763,11 @@ msgstr ""
 msgid "Loading mail lists..."
 msgstr ""
 
-#: app/routes/operation/fraud/policy.tsx:35
+#: app/routes/customer/fraud/policy.tsx:35
 msgid "Loading policy..."
 msgstr ""
 
-#: app/routes/operation/fraud/providers/detail.tsx:63
+#: app/routes/customer/fraud/providers/detail.tsx:63
 msgid "Loading provider..."
 msgstr ""
 
@@ -1920,6 +1919,9 @@ msgstr ""
 #: app/features/fraud/policy/policy-form.tsx:153
 #: app/routes/admin/group/index.tsx:23
 #: app/routes/admin/group/member.tsx:103
+#: app/routes/customer/billing-account/detail/index.tsx:67
+#: app/routes/customer/fraud/providers/create.tsx:92
+#: app/routes/customer/fraud/providers/index.tsx:55
 #: app/routes/customer/organization/detail/index.tsx:44
 #: app/routes/customer/organization/detail/member.tsx:103
 #: app/routes/customer/organization/detail/project.tsx:33
@@ -1934,12 +1936,9 @@ msgstr ""
 #: app/routes/customer/project/index.tsx:24
 #: app/routes/customer/user/detail/organization.tsx:35
 #: app/routes/customer/user/index.tsx:92
-#: app/routes/finance/billing-account/detail/index.tsx:67
 #: app/routes/marketing/contact-group/detail/member.tsx:181
 #: app/routes/marketing/contact-group/index.tsx:63
 #: app/routes/marketing/contact/detail/group.tsx:83
-#: app/routes/operation/fraud/providers/create.tsx:92
-#: app/routes/operation/fraud/providers/index.tsx:55
 msgid "Name"
 msgstr ""
 
@@ -1963,7 +1962,7 @@ msgstr ""
 msgid "Navigation"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:196
+#: app/routes/customer/billing-account/detail/index.tsx:196
 msgid "Net days"
 msgstr ""
 
@@ -1971,11 +1970,11 @@ msgstr ""
 msgid "Network"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:219
+#: app/routes/customer/fraud/index.tsx:219
 msgid "New Evaluation"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:226
+#: app/routes/customer/fraud/index.tsx:226
 msgid "New Fraud Evaluation"
 msgstr ""
 
@@ -1988,7 +1987,7 @@ msgstr ""
 msgid "New Policy"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:94
+#: app/routes/customer/billing-account/detail/index.tsx:94
 msgid "No"
 msgstr ""
 
@@ -2076,15 +2075,15 @@ msgstr ""
 msgid "No fraud evaluations found for this user."
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:283
+#: app/routes/customer/fraud/index.tsx:283
 msgid "No fraud evaluations found."
 msgstr ""
 
-#: app/routes/operation/fraud/policy.tsx:60
+#: app/routes/customer/fraud/policy.tsx:60
 msgid "No fraud policy configured."
 msgstr ""
 
-#: app/routes/operation/fraud/providers/index.tsx:151
+#: app/routes/customer/fraud/providers/index.tsx:151
 msgid "No fraud providers configured."
 msgstr ""
 
@@ -2104,8 +2103,8 @@ msgstr ""
 msgid "No hostnames configured"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:315
-#: app/routes/finance/billing-account/detail/index.tsx:326
+#: app/routes/customer/billing-account/detail/index.tsx:315
+#: app/routes/customer/billing-account/detail/index.tsx:326
 msgid "No linked projects"
 msgstr ""
 
@@ -2131,8 +2130,8 @@ msgstr ""
 msgid "No origins configured"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:288
-#: app/routes/finance/billing-account/detail/index.tsx:299
+#: app/routes/customer/billing-account/detail/index.tsx:288
+#: app/routes/customer/billing-account/detail/index.tsx:299
 msgid "No payment methods"
 msgstr ""
 
@@ -2229,7 +2228,7 @@ msgstr ""
 msgid "Notifications"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:308
+#: app/routes/customer/fraud/index.tsx:308
 msgid "Observed"
 msgstr ""
 
@@ -2237,7 +2236,7 @@ msgstr ""
 msgid "Once a contact is associated with a user, this association cannot be removed or changed later."
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:145
+#: app/routes/customer/billing-account/detail/index.tsx:145
 msgid "Open in Cloud Portal"
 msgstr ""
 
@@ -2261,9 +2260,9 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:498
 #: app/features/billing/components/billing-account-list.tsx:53
 #: app/features/dashboard/components/quota-utilization-widget.tsx:147
+#: app/routes/customer/billing-account/detail/index.tsx:166
 #: app/routes/customer/project/detail/index.tsx:87
 #: app/routes/customer/project/index.tsx:34
-#: app/routes/finance/billing-account/detail/index.tsx:166
 msgid "Organization"
 msgstr ""
 
@@ -2313,12 +2312,12 @@ msgstr ""
 msgid "Patch AI"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:282
+#: app/routes/customer/billing-account/detail/index.tsx:282
 msgid "Payment methods"
 msgstr ""
 
 #: app/features/email/components/email-list.tsx:133
-#: app/routes/operation/fraud/index.tsx:291
+#: app/routes/customer/fraud/index.tsx:291
 msgid "Pending"
 msgstr ""
 
@@ -2361,11 +2360,11 @@ msgstr ""
 #: app/routes/admin/service-catalog/detail/consumers.tsx:105
 #: app/routes/admin/service-catalog/detail/consumers.tsx:232
 #: app/routes/admin/service-catalog/index.tsx:160
-#: app/routes/finance/billing-account/detail/index.tsx:87
-#: app/routes/finance/billing-account/detail/index.tsx:121
-#: app/routes/finance/billing-account/detail/index.tsx:184
-#: app/routes/operation/fraud/index.tsx:136
-#: app/routes/operation/fraud/index.tsx:287
+#: app/routes/customer/billing-account/detail/index.tsx:87
+#: app/routes/customer/billing-account/detail/index.tsx:121
+#: app/routes/customer/billing-account/detail/index.tsx:184
+#: app/routes/customer/fraud/index.tsx:136
+#: app/routes/customer/fraud/index.tsx:287
 msgid "Phase"
 msgstr ""
 
@@ -2412,9 +2411,9 @@ msgstr ""
 msgid "Policies"
 msgstr ""
 
+#: app/routes/customer/fraud/layout.tsx:23
+#: app/routes/customer/fraud/policy.tsx:16
 #: app/routes/operation/activity/policies/detail.tsx:26
-#: app/routes/operation/fraud/layout.tsx:23
-#: app/routes/operation/fraud/policy.tsx:16
 msgid "Policy"
 msgstr ""
 
@@ -2422,7 +2421,7 @@ msgstr ""
 msgid "Policy created successfully"
 msgstr ""
 
-#: app/routes/operation/fraud/policy.tsx:107
+#: app/routes/customer/fraud/policy.tsx:107
 msgid "Policy deleted successfully"
 msgstr ""
 
@@ -2442,7 +2441,7 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:236
+#: app/routes/customer/billing-account/detail/index.tsx:236
 msgid "Primary email"
 msgstr ""
 
@@ -2480,7 +2479,7 @@ msgstr ""
 #: app/features/dns/components/dns-zone-list.tsx:98
 #: app/features/domain/components/domain-list.tsx:70
 #: app/features/edge/components/edge-list.tsx:75
-#: app/routes/finance/billing-account/detail/index.tsx:101
+#: app/routes/customer/billing-account/detail/index.tsx:101
 msgid "Project"
 msgstr ""
 
@@ -2505,12 +2504,12 @@ msgstr ""
 msgid "Protection"
 msgstr ""
 
-#: app/routes/operation/fraud/providers/create.tsx:62
+#: app/routes/customer/fraud/providers/create.tsx:62
 msgid "Provider created successfully"
 msgstr ""
 
-#: app/routes/operation/fraud/providers/detail.tsx:201
-#: app/routes/operation/fraud/providers/index.tsx:138
+#: app/routes/customer/fraud/providers/detail.tsx:201
+#: app/routes/customer/fraud/providers/index.tsx:138
 msgid "Provider deleted successfully"
 msgstr ""
 
@@ -2523,22 +2522,22 @@ msgstr ""
 msgid "Provider ID cannot be changed after the contact group is created."
 msgstr ""
 
-#: app/routes/operation/fraud/providers/detail.tsx:75
+#: app/routes/customer/fraud/providers/detail.tsx:75
 msgid "Provider not found."
 msgstr ""
 
-#: app/routes/operation/fraud/providers/create.tsx:95
-#: app/routes/operation/fraud/providers/detail.tsx:136
+#: app/routes/customer/fraud/providers/create.tsx:95
+#: app/routes/customer/fraud/providers/detail.tsx:136
 msgid "Provider Type"
 msgstr ""
 
-#: app/routes/operation/fraud/providers/detail.tsx:101
+#: app/routes/customer/fraud/providers/detail.tsx:101
 msgid "Provider updated successfully"
 msgstr ""
 
 #: app/features/fraud/policy/policy-detail.tsx:38
-#: app/routes/operation/fraud/layout.tsx:22
-#: app/routes/operation/fraud/providers/layout.tsx:5
+#: app/routes/customer/fraud/layout.tsx:22
+#: app/routes/customer/fraud/providers/layout.tsx:5
 msgid "Providers"
 msgstr ""
 
@@ -2687,7 +2686,7 @@ msgstr ""
 msgid "Resource"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:180
+#: app/routes/customer/billing-account/detail/index.tsx:180
 msgid "Resource name"
 msgstr ""
 
@@ -2733,7 +2732,7 @@ msgstr ""
 msgid "Retry"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:300
+#: app/routes/customer/fraud/index.tsx:300
 msgid "Review"
 msgstr ""
 
@@ -2757,11 +2756,11 @@ msgstr ""
 msgid "Role"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:228
+#: app/routes/customer/fraud/index.tsx:228
 msgid "Run Evaluation"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:290
+#: app/routes/customer/fraud/index.tsx:290
 msgid "Running"
 msgstr ""
 
@@ -2783,8 +2782,8 @@ msgstr ""
 
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:147
 #: app/features/fraud/detail/evaluation-sections.tsx:371
+#: app/routes/customer/fraud/index.tsx:140
 #: app/routes/customer/user/detail/index.tsx:354
-#: app/routes/operation/fraud/index.tsx:140
 msgid "Score"
 msgstr ""
 
@@ -2815,7 +2814,7 @@ msgstr ""
 msgid "Search billing accounts..."
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:282
+#: app/routes/customer/fraud/index.tsx:282
 msgid "Search by email, name, or ID..."
 msgstr ""
 
@@ -2823,7 +2822,7 @@ msgstr ""
 msgid "Search by flag key or description..."
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:252
+#: app/routes/customer/fraud/index.tsx:252
 msgid "Search by name or email..."
 msgstr ""
 
@@ -2897,7 +2896,7 @@ msgstr ""
 msgid "Search projects..."
 msgstr ""
 
-#: app/routes/operation/fraud/providers/index.tsx:150
+#: app/routes/customer/fraud/providers/index.tsx:150
 msgid "Search providers..."
 msgstr ""
 
@@ -2935,13 +2934,13 @@ msgstr ""
 msgid "Secret"
 msgstr ""
 
-#: app/routes/operation/fraud/providers/create.tsx:114
-#: app/routes/operation/fraud/providers/detail.tsx:155
+#: app/routes/customer/fraud/providers/create.tsx:114
+#: app/routes/customer/fraud/providers/detail.tsx:155
 msgid "Secret Name"
 msgstr ""
 
-#: app/routes/operation/fraud/providers/create.tsx:117
-#: app/routes/operation/fraud/providers/detail.tsx:158
+#: app/routes/customer/fraud/providers/create.tsx:117
+#: app/routes/customer/fraud/providers/detail.tsx:158
 msgid "Secret Namespace"
 msgstr ""
 
@@ -2962,7 +2961,7 @@ msgstr ""
 msgid "See all domains"
 msgstr ""
 
-#: app/routes/operation/fraud/index.tsx:227
+#: app/routes/customer/fraud/index.tsx:227
 msgid "Select a user to run a fraud evaluation against the current policy."
 msgstr ""
 
@@ -3088,6 +3087,7 @@ msgstr ""
 #: app/features/fraud/policy/policy-detail.tsx:160
 #: app/features/quota/components/quota-grant-list.tsx:109
 #: app/features/service-catalog/components/conditions-card.tsx:23
+#: app/routes/customer/fraud/providers/index.tsx:85
 #: app/routes/customer/project/detail/domain/detail.tsx:131
 #: app/routes/customer/project/detail/export-policy/detail.tsx:76
 #: app/routes/customer/project/detail/export-policy/detail.tsx:171
@@ -3098,7 +3098,6 @@ msgstr ""
 #: app/routes/marketing/contact-group/detail/member.tsx:207
 #: app/routes/marketing/contact-group/index.tsx:80
 #: app/routes/marketing/contact/detail/group.tsx:101
-#: app/routes/operation/fraud/providers/index.tsx:85
 msgid "Status"
 msgstr ""
 
@@ -3133,7 +3132,7 @@ msgstr ""
 msgid "Target"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:258
+#: app/routes/customer/billing-account/detail/index.tsx:258
 msgid "Tax IDs"
 msgstr ""
 
@@ -3258,6 +3257,7 @@ msgstr ""
 
 #: app/features/fraud/policy/policy-form.tsx:203
 #: app/features/service-catalog/components/conditions-card.tsx:19
+#: app/routes/customer/fraud/providers/index.tsx:65
 #: app/routes/customer/organization/detail/index.tsx:48
 #: app/routes/customer/organization/index.tsx:35
 #: app/routes/customer/organization/index.tsx:59
@@ -3265,7 +3265,6 @@ msgstr ""
 #: app/routes/customer/project/detail/dns/detail.tsx:159
 #: app/routes/customer/project/detail/export-policy/detail.tsx:165
 #: app/routes/customer/user/detail/organization.tsx:49
-#: app/routes/operation/fraud/providers/index.tsx:65
 msgid "Type"
 msgstr ""
 
@@ -3292,7 +3291,7 @@ msgstr ""
 #: app/features/contact/components/contact-form.tsx:250
 #: app/features/fraud/policy/policy-form.tsx:321
 #: app/features/quota/components/quota-bucket-list.tsx:170
-#: app/routes/operation/fraud/providers/detail.tsx:181
+#: app/routes/customer/fraud/providers/detail.tsx:181
 msgid "Update"
 msgstr ""
 
@@ -3323,9 +3322,9 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:491
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:142
 #: app/features/fraud/detail/evaluation-sections.tsx:335
+#: app/routes/customer/fraud/index.tsx:110
 #: app/routes/customer/user/detail/index.tsx:236
 #: app/routes/marketing/contact-group/detail/member.tsx:107
-#: app/routes/operation/fraud/index.tsx:110
 msgid "User"
 msgstr ""
 
@@ -3426,7 +3425,7 @@ msgstr ""
 msgid "View All"
 msgstr ""
 
-#: app/features/billing/components/org-billing-accounts-card.tsx:86
+#: app/features/billing/components/org-billing-accounts-card.tsx:84
 msgid "View all billing accounts"
 msgstr ""
 
@@ -3451,7 +3450,7 @@ msgstr ""
 msgid "View on MaxMind"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:133
+#: app/routes/customer/billing-account/detail/index.tsx:133
 msgid "View organization"
 msgstr ""
 
@@ -3486,7 +3485,7 @@ msgstr ""
 msgid "YAML"
 msgstr ""
 
-#: app/routes/finance/billing-account/detail/index.tsx:94
+#: app/routes/customer/billing-account/detail/index.tsx:94
 msgid "Yes"
 msgstr ""
 

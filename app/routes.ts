@@ -111,6 +111,29 @@ export default [
           index('routes/customer/resource/domain/index.tsx'),
         ]),
       ]),
+
+      // Billing Accounts (moved from Finance)
+      route('billing-accounts', 'routes/customer/billing-account/layout.tsx', [
+        index('routes/customer/billing-account/index.tsx'),
+        route(
+          ':orgName/:accountName',
+          'routes/customer/billing-account/detail/layout.tsx',
+          { id: 'billing-account-detail' },
+          [index('routes/customer/billing-account/detail/index.tsx')]
+        ),
+      ]),
+
+      // Fraud & Abuse (moved from Operations)
+      route('fraud', 'routes/customer/fraud/layout.tsx', [
+        index('routes/customer/fraud/index.tsx'),
+        route('providers', 'routes/customer/fraud/providers/layout.tsx', [
+          index('routes/customer/fraud/providers/index.tsx'),
+          route('create', 'routes/customer/fraud/providers/create.tsx'),
+          route(':providerName', 'routes/customer/fraud/providers/detail.tsx'),
+        ]),
+        route('policy', 'routes/customer/fraud/policy.tsx'),
+        route(':evalName', 'routes/customer/fraud/detail/index.tsx'),
+      ]),
     ]),
 
     // Activity Hub (old single-page activity kept for backward compatibility)
@@ -131,16 +154,6 @@ export default [
       route('email-activity', 'routes/operation/email-activity/layout.tsx', [
         index('routes/operation/email-activity/index.tsx'),
         route(':namespace/:emailName', 'routes/operation/email-activity/detail.tsx'),
-      ]),
-      route('fraud', 'routes/operation/fraud/layout.tsx', [
-        index('routes/operation/fraud/index.tsx'),
-        route('providers', 'routes/operation/fraud/providers/layout.tsx', [
-          index('routes/operation/fraud/providers/index.tsx'),
-          route('create', 'routes/operation/fraud/providers/create.tsx'),
-          route(':providerName', 'routes/operation/fraud/providers/detail.tsx'),
-        ]),
-        route('policy', 'routes/operation/fraud/policy.tsx'),
-        route(':evalName', 'routes/operation/fraud/detail/index.tsx'),
       ]),
     ]),
 
@@ -191,19 +204,6 @@ export default [
             route('consumers', 'routes/admin/service-catalog/detail/consumers.tsx'),
             route('approvals', 'routes/admin/service-catalog/detail/approvals.tsx'),
           ]
-        ),
-      ]),
-    ]),
-
-    // Finance
-    route('finance', 'routes/finance/layout.tsx', [
-      route('billing-accounts', 'routes/finance/billing-account/layout.tsx', [
-        index('routes/finance/billing-account/index.tsx'),
-        route(
-          ':orgName/:accountName',
-          'routes/finance/billing-account/detail/layout.tsx',
-          { id: 'billing-account-detail' },
-          [index('routes/finance/billing-account/detail/index.tsx')]
         ),
       ]),
     ]),

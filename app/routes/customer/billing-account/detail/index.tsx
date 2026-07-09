@@ -13,7 +13,7 @@ import {
 } from '@/features/billing/utils';
 import { useEnv } from '@/hooks';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
-import { financeRoutes, orgRoutes, projectRoutes } from '@/utils/config/routes.config';
+import { billingAccountRoutes, orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
@@ -145,7 +145,7 @@ export default function Page() {
               <Trans>Open in Cloud Portal</Trans>
             </LinkButton>
           ) : null}
-          <LinkButton type="secondary" theme="outline" href={financeRoutes.billingAccounts.list()}>
+          <LinkButton type="secondary" theme="outline" href={billingAccountRoutes.list()}>
             <Trans>All billing accounts</Trans>
           </LinkButton>
         </div>

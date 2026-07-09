@@ -10,7 +10,7 @@ import {
   dnsRoutes,
   domainRoutes,
   edgeRoutes,
-  financeRoutes,
+  billingAccountRoutes,
   fraudRoutes,
   groupRoutes,
   orgRoutes,
@@ -173,13 +173,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     },
     {
       title: t`Finance`,
-      href: financeRoutes.billingAccounts.list(),
+      href: billingAccountRoutes.list(),
       icon: CreditCard,
       hasSubmenu: true,
       submenuItems: [
         {
           title: t`Billing Accounts`,
-          href: financeRoutes.billingAccounts.list(),
+          href: billingAccountRoutes.list(),
         },
       ],
     },
