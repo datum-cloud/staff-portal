@@ -1,9 +1,9 @@
 import { ENTITY_ICONS, SECTION_ICONS } from '@/utils/config/icons.config';
 import {
   activityRoutes,
+  billingAccountRoutes,
   contactGroupRoutes,
   contactRoutes,
-  financeRoutes,
   fraudRoutes,
   groupRoutes,
   orgRoutes,
@@ -83,6 +83,12 @@ export const NAV_SECTIONS: NavSection[] = [
               icon: ENTITY_ICONS.resource,
             },
             { label: 'Users', href: userRoutes.list(), icon: ENTITY_ICONS.user },
+            {
+              label: 'Billing Accounts',
+              href: billingAccountRoutes.list(),
+              icon: ENTITY_ICONS.billingAccount,
+            },
+            { label: 'Fraud & Abuse', href: fraudRoutes.root(), icon: ENTITY_ICONS.fraud },
           ],
         },
       ],
@@ -111,27 +117,6 @@ export const NAV_SECTIONS: NavSection[] = [
     },
   },
   {
-    id: 'finance',
-    label: 'Finance',
-    icon: SECTION_ICONS.finance,
-    href: financeRoutes.billingAccounts.list(),
-    match: '/finance',
-    subNav: {
-      defaultCollapsed: true,
-      groups: [
-        {
-          items: [
-            {
-              label: 'Billing Accounts',
-              href: financeRoutes.billingAccounts.list(),
-              icon: ENTITY_ICONS.billingAccount,
-            },
-          ],
-        },
-      ],
-    },
-  },
-  {
     id: 'operations',
     label: 'Operations',
     icon: SECTION_ICONS.operations,
@@ -148,7 +133,6 @@ export const NAV_SECTIONS: NavSection[] = [
               href: routes.emailActivity(),
               icon: ENTITY_ICONS.emailActivity,
             },
-            { label: 'Fraud & Abuse', href: fraudRoutes.root(), icon: ENTITY_ICONS.fraud },
           ],
         },
       ],

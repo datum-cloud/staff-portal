@@ -7,7 +7,7 @@ import {
   isDefaultPaymentMethod,
   orgNameFromNamespace,
 } from '@/features/billing/utils';
-import { financeRoutes } from '@/utils/config/routes.config';
+import { billingAccountRoutes } from '@/utils/config/routes.config';
 import type {
   ComMiloapisBillingV1Alpha1BillingAccount,
   ComMiloapisBillingV1Alpha1BillingAccountBinding,
@@ -62,7 +62,7 @@ function sanitizeBillingAccountSummary(
     currencyCode: account.spec?.currencyCode ?? 'USD',
     defaultPaymentMethodName: account.spec?.defaultPaymentMethodRef?.name ?? null,
     linkedProjectCount,
-    url: financeRoutes.billingAccounts.detail(orgName, name),
+    url: billingAccountRoutes.detail(orgName, name),
   };
 }
 
@@ -88,8 +88,8 @@ function sanitizePaymentMethod(
         }
       : null,
     url: billingAccountName
-      ? financeRoutes.billingAccounts.detail(orgName, billingAccountName)
-      : financeRoutes.billingAccounts.list(),
+      ? billingAccountRoutes.detail(orgName, billingAccountName)
+      : billingAccountRoutes.list(),
   };
 }
 
@@ -160,7 +160,7 @@ export function createBillingTools({ accessToken }: BillingToolDeps) {
                 name
               )
             ),
-            url: financeRoutes.billingAccounts.list(),
+            url: billingAccountRoutes.list(),
           };
         }
 
@@ -179,7 +179,7 @@ export function createBillingTools({ accessToken }: BillingToolDeps) {
             const accountOrgName = orgNameFromNamespace(account.metadata?.namespace);
             return sanitizeBillingAccountSummary(account, 0, accountOrgName);
           }),
-          url: financeRoutes.billingAccounts.list(),
+          url: billingAccountRoutes.list(),
         };
       },
     }),
@@ -325,7 +325,7 @@ export function createBillingTools({ accessToken }: BillingToolDeps) {
           billingAccountDisplayName: getBillingAccountDisplayName(account),
           billingAccountPhase: account.status?.phase ?? 'Provisioning',
           billingAccountReady: isBillingAccountReady(account),
-          billingAccountUrl: financeRoutes.billingAccounts.detail(orgName, billingAccountName),
+          billingAccountUrl: billingAccountRoutes.detail(orgName, billingAccountName),
           projectUrl: `/customers/projects/${encodeURIComponent(name)}`,
         };
       },
@@ -382,8 +382,8 @@ export function createBillingTools({ accessToken }: BillingToolDeps) {
             )
           ),
           url: billingAccountName
-            ? financeRoutes.billingAccounts.detail(name, billingAccountName)
-            : financeRoutes.billingAccounts.list(),
+            ? billingAccountRoutes.detail(name, billingAccountName)
+            : billingAccountRoutes.list(),
         };
       },
     }),

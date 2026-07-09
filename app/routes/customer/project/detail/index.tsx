@@ -10,7 +10,7 @@ import {
   useBillingAccountListForOrgQuery,
   projectDeleteMutation,
 } from '@/resources/request/client';
-import { financeRoutes, orgRoutes, projectRoutes } from '@/utils/config/routes.config';
+import { billingAccountRoutes, orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { toast } from '@datum-cloud/datum-ui/toast';
@@ -44,7 +44,7 @@ export default function Page() {
     if (account) {
       return (
         <Link
-          to={financeRoutes.billingAccounts.detail(orgName, account.metadata?.name ?? '')}
+          to={billingAccountRoutes.detail(orgName, account.metadata?.name ?? '')}
           className="inline-flex items-center gap-2 hover:underline">
           {getBillingAccountDisplayName(account)}
           <BadgeState state={account.status?.phase ?? 'Unknown'} />

@@ -4,7 +4,7 @@ import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
 import { ListTable } from '@/features/milo';
 import { useBillingAccountListQuery, useOrgListQuery } from '@/resources/request/client';
-import { financeRoutes, orgRoutes } from '@/utils/config/routes.config';
+import { billingAccountRoutes, orgRoutes } from '@/utils/config/routes.config';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
@@ -39,7 +39,7 @@ export function BillingAccountList() {
           <DisplayName
             displayName={displayName}
             name={accountName}
-            to={financeRoutes.billingAccounts.detail(orgName, accountName)}
+            to={billingAccountRoutes.detail(orgName, accountName)}
           />
         );
       },

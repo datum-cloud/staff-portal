@@ -2,7 +2,7 @@ import { getBillingAccountDisplayName } from '../utils';
 import { BadgeState } from '@/components/badge';
 import { DisplayName } from '@/components/display';
 import { useBillingAccountListForOrgQuery } from '@/resources/request/client';
-import { financeRoutes } from '@/utils/config/routes.config';
+import { billingAccountRoutes } from '@/utils/config/routes.config';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Text } from '@datum-cloud/datum-ui/typography';
@@ -32,7 +32,7 @@ export function OrgBillingAccountsCard({ orgName }: OrgBillingAccountsCardProps)
           <DisplayName
             displayName={getBillingAccountDisplayName(row.original)}
             name={accountName}
-            to={financeRoutes.billingAccounts.detail(orgName, accountName)}
+            to={billingAccountRoutes.detail(orgName, accountName)}
           />
         );
       },
@@ -80,9 +80,7 @@ export function OrgBillingAccountsCard({ orgName }: OrgBillingAccountsCardProps)
         )}
       </CardContent>
       <CardFooter className="justify-end">
-        <Link
-          to={financeRoutes.billingAccounts.list()}
-          className="text-primary text-sm hover:underline">
+        <Link to={billingAccountRoutes.list()} className="text-primary text-sm hover:underline">
           <Trans>View all billing accounts</Trans>
         </Link>
       </CardFooter>
