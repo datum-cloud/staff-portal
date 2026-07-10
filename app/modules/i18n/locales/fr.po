@@ -1592,8 +1592,8 @@ msgstr ""
 msgid "Groups"
 msgstr ""
 
-#: app/features/milo/components/page/list-table.tsx:219
-#: app/features/milo/components/page/list-table.tsx:223
+#: app/features/milo/components/page/list-table.tsx:221
+#: app/features/milo/components/page/list-table.tsx:225
 msgid "Hide filters"
 msgstr ""
 
@@ -3075,8 +3075,8 @@ msgstr ""
 msgid "Short-circuit Below"
 msgstr ""
 
-#: app/features/milo/components/page/list-table.tsx:219
-#: app/features/milo/components/page/list-table.tsx:223
+#: app/features/milo/components/page/list-table.tsx:221
+#: app/features/milo/components/page/list-table.tsx:225
 msgid "Show filters"
 msgstr ""
 
@@ -3200,7 +3200,7 @@ msgstr ""
 msgid "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 msgstr ""
 
-#: app/features/milo/components/page/list-table.tsx:289
+#: app/features/milo/components/page/list-table.tsx:291
 msgid "The list is limited to 2,000 results at a time. Refine your search to surface other items."
 msgstr ""
 
