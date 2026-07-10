@@ -276,7 +276,7 @@ export default function Page() {
         loading={tableQuery.isLoading}
         data={tableQuery.data?.items ?? []}
         columns={columns}
-        pageSize={20}
+        pageSize={50}
         getRowId={(row) => row.metadata?.name ?? ''}
         defaultSort={[{ id: 'lastEvaluationTime', desc: true }]}
         searchPlaceholder={t`Search by email, name, or ID...`}

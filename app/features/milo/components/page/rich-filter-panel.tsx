@@ -1,7 +1,10 @@
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
 import { useDataTableFilters } from '@datum-cloud/datum-ui/data-table';
+import { Label } from '@datum-cloud/datum-ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
+import { RadioGroup, RadioGroupItem } from '@datum-cloud/datum-ui/radio-group';
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@datum-cloud/datum-ui/sheet';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
@@ -23,6 +26,40 @@ export const multiSelectFilterFn: FilterFn = (cellValue, filterValue) => {
   const selected = filterValue as unknown[] | undefined;
   if (!selected?.length) return true;
   return selected.map(String).includes(String(cellValue ?? ''));
+};
+
+// Cumulative "created within" windows (in days since now) for
+// dateRangeFilterFn — each wider window is a superset of the narrower ones,
+// so e.g. "Last 30 days" can never show fewer rows than "Last 24 hours".
+// (Non-overlapping bins were tried first and confusingly could show "Today: 9,
+// This month: 0" — a row created today doesn't fall in a 7-30-day-old bin.)
+const DATE_BUCKET_MAX_DAYS: Record<string, number> = {
+  today: 1,
+  week: 7,
+  month: 30,
+  quarter: 90,
+};
+
+/** Ready-made options for a "Created" style {@link DateRangeFilterConfig}. */
+export const DATE_RANGE_OPTIONS: FilterOption[] = [
+  { value: 'today', label: 'Last 24 hours' },
+  { value: 'week', label: 'Last 7 days' },
+  { value: 'month', label: 'Last 30 days' },
+  { value: 'quarter', label: 'Last 90 days' },
+  { value: 'older', label: 'Older than 90 days' },
+];
+
+/** Bucket matcher: pairs a timestamp column with {@link DATE_RANGE_OPTIONS}-style values. */
+export const dateRangeFilterFn: FilterFn = (cellValue, filterValue) => {
+  const selected = filterValue as string[] | undefined;
+  if (!selected?.length) return true;
+  if (!cellValue) return false;
+  const ageDays = (Date.now() - new Date(cellValue as string).getTime()) / 86_400_000;
+  return selected.some((bucket) => {
+    if (bucket === 'older') return ageDays >= 90;
+    const maxDays = DATE_BUCKET_MAX_DAYS[bucket];
+    return maxDays !== undefined && ageDays < maxDays;
+  });
 };
 
 const isActive = (value: unknown): boolean =>
@@ -86,19 +123,27 @@ export interface CheckboxFilterConfig extends BaseFilterGroup {
   options: FilterOption[];
 }
 
+/** Same checkbox UI, but matched via {@link dateRangeFilterFn} age buckets — pair with `DATE_RANGE_OPTIONS`. */
+export interface DateRangeFilterConfig extends BaseFilterGroup {
+  type: 'dateRange';
+  options: FilterOption[];
+}
+
 /**
  * A filter group, discriminated by `type` (default `checkbox`). To add a type:
  * (1) add a `*FilterConfig` member to this union, (2) register its matcher in
- * {@link FILTER_MATCHERS}, (3) add a case to {@link FilterGroup}. Routes and
- * `ListTable` stay untouched.
+ * {@link FILTER_MATCHERS}, (3) add a case to {@link FilterGroup} if it needs a
+ * different renderer (checkbox-shaped types can reuse `CheckboxFilterGroup`).
+ * Routes and `ListTable` stay untouched.
  */
-export type FilterGroupConfig = CheckboxFilterConfig;
+export type FilterGroupConfig = CheckboxFilterConfig | DateRangeFilterConfig;
 
 type FilterType = NonNullable<FilterGroupConfig['type']>;
 
 /** type → row matcher. Exhaustive Record, so adding a type forces a matcher here. */
 const FILTER_MATCHERS: Record<FilterType, FilterFn> = {
   checkbox: multiSelectFilterFn,
+  dateRange: dateRangeFilterFn,
 };
 
 /** Column → matcher map for `DataTable.Client.filterFns`, derived from the configs. */
@@ -106,17 +151,28 @@ export function buildFilterFns(filters: FilterGroupConfig[]): Record<string, Fil
   return Object.fromEntries(filters.map((f) => [f.column, FILTER_MATCHERS[f.type ?? 'checkbox']]));
 }
 
-/** Renders the group component matching a config's `type`. */
-export function FilterGroup(config: FilterGroupConfig) {
+/** Renders the group component matching a config's `type`. Both types render as checkboxes today — only the matcher differs. */
+export function FilterGroup(config: FilterGroupConfig & { counts?: Record<string, number> }) {
   switch (config.type ?? 'checkbox') {
     case 'checkbox':
+    case 'dateRange':
     default:
       return <CheckboxFilterGroup {...config} />;
   }
 }
 
 /** One collapsible filter group: a label + multi-select checkboxes wired to one column. */
-export function CheckboxFilterGroup({ column, label, options }: CheckboxFilterConfig) {
+export function CheckboxFilterGroup({
+  column,
+  label,
+  options,
+  counts,
+  type = 'checkbox',
+}: BaseFilterGroup & {
+  options: FilterOption[];
+  counts?: Record<string, number>;
+  type?: FilterType;
+}) {
   'use no memo';
   const { t } = useLingui();
   const { filters, setFilter, clearFilter } = useDataTableFilters();
@@ -124,12 +180,36 @@ export function CheckboxFilterGroup({ column, label, options }: CheckboxFilterCo
 
   const selected = (filters[column] as string[] | undefined) ?? [];
 
+  // Nothing to show — most often a group whose options load asynchronously
+  // (e.g. derived from a search response). Still keep it in the caller's
+  // `filters` array from the start rather than adding it once loaded: datum-ui's
+  // DataTable.Client registers each column's filter matcher once, on mount,
+  // and never re-registers it, so a group added later would render checkboxes
+  // that silently do nothing. Guard on `selected` too, so an already-applied
+  // filter doesn't visually vanish if `options` empties out on a refetch.
+  if (options.length === 0 && selected.length === 0) return null;
+
   const toggle = (value: string) => {
     const next = selected.includes(value)
       ? selected.filter((v) => v !== value)
       : [...selected, value];
     if (next.length) setFilter(column, next);
     else clearFilter(column);
+  };
+
+  const optionRow = (option: FilterOption) => {
+    const count = counts?.[option.value];
+    return (
+      <>
+        {option.icon && (
+          <span className="flex shrink-0 items-center [&_svg]:size-4">{option.icon}</span>
+        )}
+        <span className="min-w-0 flex-1 truncate">{option.label}</span>
+        {typeof count === 'number' && (
+          <span className="text-muted-foreground shrink-0 text-xs tabular-nums">{count}</span>
+        )}
+      </>
+    );
   };
 
   return (
@@ -169,8 +249,33 @@ export function CheckboxFilterGroup({ column, label, options }: CheckboxFilterCo
         </button>
       </div>
 
-      {open && (
-        <div className="-mx-2 flex flex-col">
+      {open && type === 'dateRange' && (
+        // dateRange buckets are cumulative ranges ("Last 7 days" ⊇ "Last 24
+        // hours"), not independent categories — multi-selecting them ORs their
+        // row sets together, so checking "Last 24 hours" while "Last 90 days"
+        // is already checked still shows 90-day-old rows, which reads as "the
+        // filter is broken." Render as radios so the UI itself communicates
+        // single-select, rather than checkboxes that let you pick many.
+        <RadioGroup
+          value={selected[0] ?? ''}
+          onValueChange={(value) => setFilter(column, [value])}
+          className="-mx-2 flex max-h-60 flex-col gap-0 overflow-y-auto">
+          {options.map((option) => (
+            <Label
+              key={option.value}
+              className={cn(
+                'hover:bg-card hover:text-foreground flex items-center gap-2 rounded-md px-2 py-1 text-sm font-normal transition-all',
+                selected.includes(option.value) ? 'text-foreground' : 'text-muted-foreground'
+              )}>
+              <RadioGroupItem value={option.value} className="shrink-0" />
+              {optionRow(option)}
+            </Label>
+          ))}
+        </RadioGroup>
+      )}
+
+      {open && type !== 'dateRange' && (
+        <div className="-mx-2 flex max-h-60 flex-col overflow-y-auto">
           {options.map((option) => {
             const checked = selected.includes(option.value);
             return (
@@ -180,14 +285,11 @@ export function CheckboxFilterGroup({ column, label, options }: CheckboxFilterCo
                 onClick={() => toggle(option.value)}
                 aria-pressed={checked}
                 className={cn(
-                  'hover:bg-card hover:text-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-all',
-                  checked ? 'bg-card text-foreground' : 'text-muted-foreground'
+                  'hover:bg-card hover:text-foreground flex items-center gap-2 rounded-md px-2 py-1 text-left text-sm transition-all',
+                  checked ? 'text-foreground' : 'text-muted-foreground'
                 )}>
-                {option.icon && (
-                  <span className="flex shrink-0 items-center [&_svg]:size-4">{option.icon}</span>
-                )}
-                <span className="min-w-0 flex-1 truncate">{option.label}</span>
-                {checked && <ACTION_ICONS.check className="text-primary size-4 shrink-0" />}
+                <Checkbox checked={checked} className="pointer-events-none shrink-0" />
+                {optionRow(option)}
               </button>
             );
           })}
@@ -274,11 +376,11 @@ function InlineFilter({ column, label, options }: FilterGroupConfig) {
                   'hover:bg-muted flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors',
                   checked ? 'text-foreground' : 'text-muted-foreground'
                 )}>
+                <Checkbox checked={checked} className="pointer-events-none shrink-0" />
                 {option.icon && (
                   <span className="flex shrink-0 items-center [&_svg]:size-4">{option.icon}</span>
                 )}
                 <span className="min-w-0 flex-1 truncate">{option.label}</span>
-                {checked && <ACTION_ICONS.check className="text-primary size-4 shrink-0" />}
               </button>
             );
           })}

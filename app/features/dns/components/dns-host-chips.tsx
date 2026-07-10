@@ -1,4 +1,4 @@
-import { Chip } from '@/components/chip';
+import { Chip, type ChipSize } from '@/components/chip';
 import { ComMiloapisNetworkingDnsV1Alpha1DnsZone } from '@openapi/dns.networking.miloapis.com/v1alpha1';
 
 // Extract nameserver type from OpenAPI generated type
@@ -50,6 +50,7 @@ export interface DnsHostChipsProps {
   maxVisible?: number;
   wrap?: boolean;
   emptyText?: string;
+  size?: ChipSize;
 }
 
 /**
@@ -61,10 +62,19 @@ export const DnsHostChips = ({
   maxVisible = 2,
   wrap = false,
   emptyText = '-',
+  size,
 }: DnsHostChipsProps) => {
   const registrantNames = extractRegistrantNames(data);
 
   if (registrantNames.length === 0) return <>{emptyText}</>;
 
-  return <Chip items={registrantNames} maxVisible={maxVisible} variant="outline" wrap={wrap} />;
+  return (
+    <Chip
+      items={registrantNames}
+      maxVisible={maxVisible}
+      variant="outline"
+      wrap={wrap}
+      size={size}
+    />
+  );
 };

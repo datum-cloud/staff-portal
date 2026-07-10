@@ -2,14 +2,14 @@ import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
-import { DisplayId, DisplayName } from '@/components/display';
+import { DisplayId, DisplayName, DisplayText } from '@/components/display';
 import { UserAvatar } from '@/components/user-avatar';
-import { ListPage, ListTable } from '@/features/milo';
+import { DATE_RANGE_OPTIONS, ListGrowthChart, ListPage, ListTable } from '@/features/milo';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
 import {
+  useAllUsersQuery,
   useInvalidateUserList,
   userInviteMutation,
-  useUserListQuery,
 } from '@/resources/request/client';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { userRoutes } from '@/utils/config/routes.config';
@@ -22,7 +22,7 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { z } from 'zod';
 
@@ -32,6 +32,8 @@ export const meta: Route.MetaFunction = () => {
 
 const columnHelper = createColumnHelper<ComMiloapisIamV1Alpha1User>();
 
+const getUserCreatedAt = (user: ComMiloapisIamV1Alpha1User) => user.metadata?.creationTimestamp;
+
 export default function Page() {
   const navigate = useNavigate();
   const [selectedUser, setSelectedUser] = useState<ComMiloapisIamV1Alpha1User | null>(null);
@@ -39,7 +41,8 @@ export default function Page() {
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
 
   const { approveUser, pendingUser } = useUserApproval();
-  const tableQuery = useUserListQuery();
+  const tableQuery = useAllUsersQuery();
+  const users = useMemo(() => tableQuery.data?.items ?? [], [tableQuery.data]);
   const invalidateUserList = useInvalidateUserList();
 
   const actions: ActionItem<ComMiloapisIamV1Alpha1User>[] = [
@@ -109,6 +112,10 @@ export default function Page() {
         );
       },
     }),
+    columnHelper.accessor('spec.email', {
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Email`} />,
+      cell: ({ getValue }) => <DisplayText value={getValue() ?? ''} />,
+    }),
     columnHelper.accessor('metadata.name', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`ID`} />,
       cell: ({ getValue }) => {
@@ -117,14 +124,12 @@ export default function Page() {
     }),
     columnHelper.accessor('status.state', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Status`} />,
-      cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Active'} />,
+      cell: ({ getValue }) => <BadgeState variant="dot" state={getValue() ?? 'Active'} />,
     }),
     columnHelper.accessor('status.registrationApproval', {
       id: 'registrationApproval',
-      header: ({ column }) => (
-        <DataTable.ColumnHeader column={column} title={t`Registration Approval`} />
-      ),
-      cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Unknown'} />,
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Registration`} />,
+      cell: ({ getValue }) => <BadgeState variant="dot" state={getValue() ?? 'Unknown'} />,
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'metadata.creationTimestamp',
@@ -242,9 +247,9 @@ export default function Page() {
       <ListPage>
         <ListTable
           loading={tableQuery.isLoading}
-          data={tableQuery.data?.items ?? []}
+          data={users}
           columns={columns}
-          pageSize={20}
+          pageSize={50}
           actions={
             <Button
               icon={<ACTION_ICONS.invite size={16} />}
@@ -254,8 +259,13 @@ export default function Page() {
           }
           getRowId={(row) => row.metadata?.name ?? ''}
           defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+          hasMore={tableQuery.data?.hasMore ?? false}
+          hasMoreMessage={t`Limited to 10,000 users. Refine your search to surface others.`}
           searchPlaceholder={t`Search users...`}
           emptyMessage={t`No users found.`}
+          toolbar={
+            <ListGrowthChart items={users} getCreatedAt={getUserCreatedAt} title={t`Total users`} />
+          }
           filters={[
             {
               column: 'status.registrationApproval',
@@ -273,6 +283,12 @@ export default function Page() {
                 { value: 'Active', label: <BadgeState state="Active" /> },
                 { value: 'Inactive', label: <BadgeState state="Inactive" /> },
               ],
+            },
+            {
+              column: 'metadata.creationTimestamp',
+              label: t`Created`,
+              type: 'dateRange',
+              options: DATE_RANGE_OPTIONS,
             },
           ]}
           searchFn={(row, search) => {

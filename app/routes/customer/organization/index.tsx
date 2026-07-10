@@ -1,14 +1,15 @@
 import type { Route } from './+types/index';
-import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
-import { DisplayName } from '@/components/display';
-import { ListPage, ListTable } from '@/features/milo';
-import { type GqlOrganization, useOrgListQuery } from '@/resources/request/client';
+import { DisplayId } from '@/components/display';
+import { DATE_RANGE_OPTIONS, ListGrowthChart, ListPage, ListTable } from '@/features/milo';
+import { type GqlOrganization, useAllOrganizationsQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Building2, User } from 'lucide-react';
+import { useMemo } from 'react';
+import { Link } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Organizations`);
@@ -16,24 +17,23 @@ export const meta: Route.MetaFunction = () => {
 
 const columnHelper = createColumnHelper<GqlOrganization>();
 
+const getOrgCreatedAt = (org: GqlOrganization) => org.createdAt;
+
 export default function Page() {
-  const tableQuery = useOrgListQuery();
+  const tableQuery = useAllOrganizationsQuery();
+  const orgs = useMemo(() => tableQuery.data?.items ?? [], [tableQuery.data]);
 
   const columns = [
     columnHelper.accessor('name', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => (
-        <DisplayName
-          displayName={row.original.displayName || row.original.name}
-          name={row.original.name}
-          to={`./${row.original.name}`}
-        />
+        <Link to={`./${row.original.name}`}>{row.original.displayName || row.original.name}</Link>
       ),
     }),
-    columnHelper.accessor('type', {
-      id: 'type',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Type`} />,
-      cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Organization'} />,
+    columnHelper.accessor('name', {
+      id: 'id',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`ID`} />,
+      cell: ({ getValue }) => <DisplayId value={getValue() ?? ''} />,
     }),
     columnHelper.accessor('createdAt', {
       id: 'createdAt',
@@ -46,13 +46,22 @@ export default function Page() {
     <ListPage>
       <ListTable
         loading={tableQuery.isLoading}
-        data={tableQuery.data?.items ?? []}
+        data={orgs}
         columns={columns}
-        pageSize={20}
+        pageSize={50}
         getRowId={(row) => row.name}
         defaultSort={[{ id: 'createdAt', desc: true }]}
         searchPlaceholder={t`Search organizations...`}
         emptyMessage={t`No organizations found.`}
+        hasMore={tableQuery.data?.hasMore ?? false}
+        hasMoreMessage={t`Limited to 10,000 organizations. Refine your search to surface others.`}
+        toolbar={
+          <ListGrowthChart
+            items={orgs}
+            getCreatedAt={getOrgCreatedAt}
+            title={t`Total organizations`}
+          />
+        }
         filters={[
           {
             column: 'type',
@@ -61,6 +70,12 @@ export default function Page() {
               { value: 'Personal', label: t`Personal`, icon: <User /> },
               { value: 'Standard', label: t`Standard`, icon: <Building2 /> },
             ],
+          },
+          {
+            column: 'createdAt',
+            label: t`Created`,
+            type: 'dateRange',
+            options: DATE_RANGE_OPTIONS,
           },
         ]}
         searchFn={(row, search) => {

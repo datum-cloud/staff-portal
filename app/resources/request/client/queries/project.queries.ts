@@ -5,13 +5,14 @@ import {
   projectExportPolicyListQuery,
   projectEdgeListQuery,
 } from '../apis/project.api';
-import { listProjects } from '@/modules/graphql/projects';
+import { listAllProjects, listProjects } from '@/modules/graphql/projects';
 import { ListQueryParams } from '@/resources/schemas';
 import { useQuery } from '@tanstack/react-query';
 
 export const projectQueryKeys = {
   all: ['projects'] as const,
   list: (params?: ListQueryParams) => ['projects', 'list', params] as const,
+  listAll: (search?: string) => ['projects', 'list-all', search ?? ''] as const,
   domains: {
     all: (projectName: string) => ['projects', projectName, 'domains'] as const,
     list: (projectName: string, params?: ListQueryParams) =>
@@ -53,6 +54,15 @@ export const useProjectListQuery = (params?: ListQueryParams) => {
   return useQuery({
     queryKey: projectQueryKeys.list(params),
     queryFn: () => listProjects(params),
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+/** Full cross-org project list (walks continueToken) — for views needing a true total. */
+export const useAllProjectsQuery = (search: string = '') => {
+  return useQuery({
+    queryKey: projectQueryKeys.listAll(search),
+    queryFn: () => listAllProjects(search),
     staleTime: 5 * 60 * 1000,
   });
 };

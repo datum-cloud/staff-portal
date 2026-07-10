@@ -45,7 +45,7 @@ export default function Page() {
       loading={tableQuery.isLoading}
       data={rows}
       columns={columns}
-      pageSize={20}
+      pageSize={50}
       getRowId={(row) =>
         `${row.metric.resource_namespace}/${row.metric.resource_name}/${row.metric.resource_version}/${row.value[1]}`
       }

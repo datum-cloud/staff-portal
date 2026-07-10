@@ -145,7 +145,7 @@ export default function Page() {
       loading={tableQuery.isLoading}
       data={members}
       columns={columns}
-      pageSize={20}
+      pageSize={50}
       getRowId={(row) => row.name}
       defaultSort={[]}
       searchPlaceholder={tCore`Search members...`}

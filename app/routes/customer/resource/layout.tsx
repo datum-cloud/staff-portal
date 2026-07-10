@@ -1,7 +1,4 @@
-import { EntityTabNav, type EntityTab } from '@/features/milo';
-import { ENTITY_ICONS } from '@/utils/config/icons.config';
-import { dnsRoutes, domainRoutes, edgeRoutes } from '@/utils/config/routes.config';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import { Outlet } from 'react-router';
 
 export const handle = {
@@ -9,23 +6,10 @@ export const handle = {
 };
 
 /**
- * Customers → Resources: AI Edge / DNS / Domains tabs. Same tab bar as fraud/
- * detail pages, but no EntityHeader — there's no section-level action to host.
- * The three global lists (their own routes) render into the content below.
+ * Customers → Resources: a single merged list of AI Edge / DNS / Domains
+ * resources across all projects, with Type as a sidebar filter rather than a
+ * tab bar — see `index.tsx`.
  */
 export default function ResourcesLayout() {
-  const { t } = useLingui();
-
-  const tabs: EntityTab[] = [
-    { label: t`AI Edge`, href: edgeRoutes.list(), icon: ENTITY_ICONS.edge },
-    { label: t`DNS`, href: dnsRoutes.list(), icon: ENTITY_ICONS.dns },
-    { label: t`Domains`, href: domainRoutes.list(), icon: ENTITY_ICONS.domain },
-  ];
-
-  return (
-    <div className="flex flex-col">
-      <EntityTabNav tabs={tabs} />
-      <Outlet />
-    </div>
-  );
+  return <Outlet />;
 }

@@ -1,13 +1,14 @@
 import type { Route } from './+types/index';
 import { DateTime } from '@/components/date';
-import { DisplayName } from '@/components/display';
-import { ListPage, ListTable } from '@/features/milo';
-import { type GqlProject, useProjectListQuery } from '@/resources/request/client';
+import { DisplayId } from '@/components/display';
+import { DATE_RANGE_OPTIONS, ListGrowthChart, ListPage, ListTable } from '@/features/milo';
+import { type GqlProject, useAllProjectsQuery } from '@/resources/request/client';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { createColumnHelper } from '@tanstack/react-table';
+import { useMemo } from 'react';
 import { Link } from 'react-router';
 
 export const meta: Route.MetaFunction = () => {
@@ -16,19 +17,31 @@ export const meta: Route.MetaFunction = () => {
 
 const columnHelper = createColumnHelper<GqlProject>();
 
+const getProjectCreatedAt = (project: GqlProject) => project.createdAt;
+
 export default function Page() {
-  const tableQuery = useProjectListQuery();
+  const tableQuery = useAllProjectsQuery();
+  const projects = useMemo(() => tableQuery.data?.items ?? [], [tableQuery.data]);
+
+  // Backend gives no fixed org list here — offer whatever orgs actually show up.
+  const organizationOptions = useMemo(() => {
+    const names = new Set(projects.map((p) => p.organizationName).filter((v): v is string => !!v));
+    return Array.from(names)
+      .sort()
+      .map((value) => ({ value, label: value }));
+  }, [projects]);
 
   const columns = [
     columnHelper.accessor('name', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => (
-        <DisplayName
-          displayName={row.original.displayName || row.original.name}
-          name={row.original.name}
-          to={`./${row.original.name}`}
-        />
+        <Link to={`./${row.original.name}`}>{row.original.displayName || row.original.name}</Link>
       ),
+    }),
+    columnHelper.accessor('name', {
+      id: 'id',
+      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`ID`} />,
+      cell: ({ getValue }) => <DisplayId value={getValue() ?? ''} />,
     }),
     columnHelper.accessor('organizationName', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Organization`} />,
@@ -48,13 +61,31 @@ export default function Page() {
     <ListPage>
       <ListTable
         loading={tableQuery.isLoading}
-        data={tableQuery.data?.items ?? []}
+        data={projects}
         columns={columns}
-        pageSize={20}
+        pageSize={50}
         getRowId={(row) => row.name}
         defaultSort={[{ id: 'createdAt', desc: true }]}
         searchPlaceholder={t`Search projects...`}
         emptyMessage={t`No projects found.`}
+        hasMore={tableQuery.data?.hasMore ?? false}
+        hasMoreMessage={t`Limited to 10,000 projects. Refine your search to surface others.`}
+        toolbar={
+          <ListGrowthChart
+            items={projects}
+            getCreatedAt={getProjectCreatedAt}
+            title={t`Total projects`}
+          />
+        }
+        filters={[
+          { column: 'organizationName', label: t`Organization`, options: organizationOptions },
+          {
+            column: 'createdAt',
+            label: t`Created`,
+            type: 'dateRange' as const,
+            options: DATE_RANGE_OPTIONS,
+          },
+        ]}
         searchFn={(row, search) => {
           const q = search.trim().toLowerCase();
           if (!q) return true;

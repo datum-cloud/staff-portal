@@ -36,13 +36,13 @@ export const NameDisplay = ({
   withCopy = false,
 }: NameDisplayProps) => {
   return (
-    <div className={`flex flex-col ${className}`}>
+    <div className={`flex flex-col leading-tight ${className}`}>
       <div>
         <Link to={to}>{displayName}</Link>
       </div>
       <div className="flex items-center space-x-2">
         {name && (
-          <Text size="sm" textColor="muted">
+          <Text size="sm" textColor="muted" className="leading-tight">
             {name}
           </Text>
         )}

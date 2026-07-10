@@ -1,5 +1,6 @@
 import { orgInvitationCreateMutation, orgInvitationDeleteMutation } from '../apis/organization.api';
 import {
+  listAllOrganizations,
   listOrganizations,
   listOrgMembers,
   listOrgProjects,
@@ -16,6 +17,7 @@ export type { GqlOrganization, GqlOrgMember, GqlProject };
 export const organizationQueryKeys = {
   all: ['organizations'] as const,
   list: (params?: ListQueryParams) => ['organizations', 'list', params] as const,
+  listAll: (search?: string) => ['organizations', 'list-all', search ?? ''] as const,
   projects: {
     all: (orgName: string) => ['organizations', orgName, 'projects'] as const,
     list: (orgName: string, params?: ListQueryParams) =>
@@ -32,6 +34,15 @@ export const useOrgListQuery = (params?: ListQueryParams) => {
   return useQuery({
     queryKey: organizationQueryKeys.list(params),
     queryFn: () => listOrganizations(params),
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+/** Full organization list (walks continueToken) — for views needing a true total. */
+export const useAllOrganizationsQuery = (search: string = '') => {
+  return useQuery({
+    queryKey: organizationQueryKeys.listAll(search),
+    queryFn: () => listAllOrganizations(search),
     staleTime: 5 * 60 * 1000,
   });
 };

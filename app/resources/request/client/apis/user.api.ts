@@ -54,6 +54,33 @@ export const userListQuery = async (params?: ListQueryParams) => {
   return response.data.data;
 };
 
+const ALL_USERS_PAGE_LIMIT = 100;
+// Safety net against a runaway walk — mirrors listAllProjects'/listAllOrganizations' pattern.
+const ALL_USERS_MAX_PAGES = 100;
+
+/**
+ * Walks `continue` to fetch every user, rather than a single page —
+ * `userListQuery` intentionally stays single-page for the table's normal
+ * paged view. This is for views that need a true total (the Users list
+ * table, growth chart) where a hidden page limit would silently under-count.
+ */
+export const listAllUsers = async (): Promise<{
+  items: ComMiloapisIamV1Alpha1User[];
+  hasMore: boolean;
+}> => {
+  const items: ComMiloapisIamV1Alpha1User[] = [];
+  let cursor: string | undefined;
+
+  for (let page = 0; page < ALL_USERS_MAX_PAGES; page++) {
+    const result = await userListQuery({ limit: ALL_USERS_PAGE_LIMIT, cursor });
+    items.push(...(result?.items ?? []));
+    cursor = result?.metadata?.continue || undefined;
+    if (!cursor) return { items, hasMore: false };
+  }
+
+  return { items, hasMore: true };
+};
+
 export const userFindApprovalQuery = async (userId: string) => {
   const response = await listIamMiloapisComV1Alpha1PlatformAccessApproval({
     query: {

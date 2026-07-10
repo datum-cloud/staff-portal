@@ -152,7 +152,7 @@ export function DnsZoneList({
       defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
       controlledSearch={controlledSearch}
       hasMore={hasMore}
-      hasMoreMessage={t`The list of DNS zones is limited to 100 results at a time. Refine your search to surface other zones.`}
+      hasMoreMessage={t`The list of DNS zones is limited to 2,000 results at a time. Refine your search to surface other zones.`}
       searchPlaceholder={searchPlaceholder ?? t`Search DNS zones...`}
       emptyMessage={emptyMessage ?? t`No DNS zones found.`}
       searchFn={(row, search) => {
