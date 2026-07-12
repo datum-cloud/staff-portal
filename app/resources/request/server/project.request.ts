@@ -64,7 +64,11 @@ async function fetchControlPlaneJson<T>(
     },
   });
 
-  if (response.status === 404) return null;
+  // 404: the resource doesn't exist. 403: the viewer isn't allowed to read
+  // it (e.g. staff users can't read customer Secrets). Both are expected for
+  // these optional enrichment fetches, so render the page without them
+  // instead of failing the whole loader.
+  if (response.status === 404 || response.status === 403) return null;
   if (!response.ok) {
     throw new Response(`Control plane request failed: ${response.status}`, {
       status: response.status,
