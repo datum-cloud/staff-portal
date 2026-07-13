@@ -7,8 +7,8 @@ interface NameDisplayProps {
   displayName: string;
   /** The ID/name to show as subtext */
   name?: string;
-  /** The route to navigate to */
-  to: string;
+  /** The route to navigate to. Omit to render the display name as plain text (non-clickable). */
+  to?: string;
   /** Optional className for the container */
   className?: string;
   /** Whether to show the copy button */
@@ -37,9 +37,7 @@ export const NameDisplay = ({
 }: NameDisplayProps) => {
   return (
     <div className={`flex flex-col leading-tight ${className}`}>
-      <div>
-        <Link to={to}>{displayName}</Link>
-      </div>
+      <div>{to ? <Link to={to}>{displayName}</Link> : displayName}</div>
       <div className="flex items-center space-x-2">
         {name && (
           <Text size="sm" textColor="muted" className="leading-tight">

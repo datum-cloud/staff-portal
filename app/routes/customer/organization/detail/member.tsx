@@ -102,14 +102,14 @@ export default function Page() {
     columnHelper.accessor('givenName', {
       header: ({ column }) => <DataTable.ColumnHeader column={column} title={tCore`Name`} />,
       cell: ({ row }) => {
-        const userName = row.original.name;
         const displayName = `${row.original.givenName} ${row.original.familyName}`;
         const email = row.original.email;
+        const userName = row.original.userName;
         return (
           <DisplayName
             displayName={displayName}
-            name={email || userName}
-            to={userRoutes.detail(userName)}
+            name={email || row.original.name}
+            to={userName ? userRoutes.detail(userName) : undefined}
           />
         );
       },
