@@ -23,9 +23,9 @@ export const EFFORT_OPTIONS: EffortOption[] = [
 export const DEFAULT_MODEL_ID = MODEL_OPTIONS[0].id;
 export const DEFAULT_EFFORT_ID: EffortId = 'high';
 
-/** Suggestion starters shown on the empty/new-chat state (per the Figma). */
+/** Suggestion starters shown on the empty/new-chat state (staff-oriented). */
 export const SUGGESTIONS = [
-  'Research a customer',
-  'Analyze performance',
-  'Design a campaign',
+  'Are there any unresolved Sentry errors?',
+  "How's our infrastructure looking?",
+  'Show me the latest 10 new users',
 ] as const;
