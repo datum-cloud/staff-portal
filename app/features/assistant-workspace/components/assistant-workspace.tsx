@@ -56,7 +56,7 @@ export function AssistantWorkspace({ config, userName }: AssistantWorkspaceProps
     <PromptCard
       editor={editor}
       isReady={isReady}
-      canRetry={isReady && messages.some((m) => m.role === 'user')}
+      canRetry={status === 'error'}
       onSend={handleSendClick}
       onStop={stop}
       onRetry={handleRetry}
