@@ -36,6 +36,8 @@ export interface GqlOrgMember {
   type: 'member' | 'invitation';
   invitationState: string | null;
   createdAt: string | null;
+  /** The member's user resource name. Null for invitations, which have no user yet. */
+  userName: string | null;
 }
 
 const ORGANIZATIONS_QUERY = `
@@ -67,7 +69,7 @@ const ORG_PROJECTS_QUERY = `
 const ORG_MEMBERS_QUERY = `
   query OrgMembers($orgName: String!) {
     organizationMembers(orgName: $orgName) {
-      name givenName familyName email roles type invitationState createdAt
+      name givenName familyName email roles type invitationState createdAt userName
     }
   }
 `;
