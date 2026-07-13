@@ -1,8 +1,29 @@
 'use client';
 
-import type { AssistantConfig } from './types';
+import type { AssistantConfig, LinkRenderProps } from './types';
 import { Brain } from 'lucide-react';
 import { createContext, useContext, type ReactNode } from 'react';
+import { Link } from 'react-router';
+
+/**
+ * Generic link renderer: internal routes use React Router, everything else is
+ * an external link. Hosts can wrap this to add their own affordances (e.g.
+ * staff prepends a Sentry icon for sentry.io links).
+ */
+export function defaultRenderLink({ href, children }: LinkRenderProps): ReactNode {
+  if (href?.startsWith('/')) {
+    return (
+      <Link className="underline" to={href}>
+        {children}
+      </Link>
+    );
+  }
+  return (
+    <a href={href} className="underline" target="_blank" rel="noopener noreferrer">
+      {children}
+    </a>
+  );
+}
 
 /**
  * Neutral fallback so leaf components render without a host having wired a full
@@ -15,6 +36,7 @@ export const DEFAULT_ASSISTANT_CONFIG: AssistantConfig = {
   showReasoning: true,
   modelSelector: false,
   toolLabels: {},
+  renderLink: defaultRenderLink,
 };
 
 const AssistantConfigContext = createContext<AssistantConfig>(DEFAULT_ASSISTANT_CONFIG);

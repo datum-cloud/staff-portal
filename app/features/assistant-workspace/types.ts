@@ -21,6 +21,12 @@ export interface Turn {
   text: string;
 }
 
+/** Props passed to a `renderLink` implementation (a link in the assistant's markdown). */
+export interface LinkRenderProps {
+  href?: string;
+  children?: ReactNode;
+}
+
 export interface ModelSelectorConfig {
   models: ModelOption[];
   efforts: EffortOption[];
@@ -46,6 +52,8 @@ export interface AssistantConfig {
   modelSelector: ModelSelectorConfig | false;
   /** Tool name → progress label ("Searching users…"). Host-specific tool set. */
   toolLabels: Record<string, string>;
+  /** Renders links inside the assistant's markdown (internal routes, external, host-specific icons). */
+  renderLink: (props: LinkRenderProps) => ReactNode;
   /** Override the per-message action toolbar (defaults to copy + download). */
   messageActions?: (msg: UIMessage) => ReactNode;
 }
