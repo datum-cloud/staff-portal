@@ -1,0 +1,63 @@
+import type { UIMessage } from 'ai';
+import type { LucideIcon } from 'lucide-react';
+import type { ReactNode } from 'react';
+
+export type EffortId = 'low' | 'medium' | 'high';
+
+export interface ModelOption {
+  /** Stable id sent to the server; must match the allowlist in server/routes/assistant.ts. */
+  id: string;
+  label: string;
+}
+
+export interface EffortOption {
+  id: EffortId;
+  label: string;
+}
+
+/** One submitted prompt — the unit tracked by the right-edge turn rail. */
+export interface Turn {
+  id: string;
+  text: string;
+}
+
+export interface ModelSelectorConfig {
+  models: ModelOption[];
+  efforts: EffortOption[];
+  defaultModelId: string;
+  defaultEffortId: EffortId;
+}
+
+/**
+ * Everything that differs between host apps (staff vs cloud). Supplied once at
+ * the workspace root and read by leaf components via `useAssistantConfig()`, so
+ * the presentational pieces stay generic and shell-agnostic.
+ */
+export interface AssistantConfig {
+  /** Greeting line on the empty state, e.g. "Hey there, Jacob". */
+  greeting: (name?: string) => string;
+  /** Glyph above the greeting. */
+  greetingIcon: LucideIcon;
+  /** Starter prompts on the empty state. */
+  suggestions: string[];
+  /** Whether to render the assistant's reasoning ("thinking") blocks. */
+  showReasoning: boolean;
+  /** Model + effort picker config, or `false` to hide the control. */
+  modelSelector: ModelSelectorConfig | false;
+  /** Tool name → progress label ("Searching users…"). Host-specific tool set. */
+  toolLabels: Record<string, string>;
+  /** Override the per-message action toolbar (defaults to copy + download). */
+  messageActions?: (msg: UIMessage) => ReactNode;
+}
+
+/** A locally-persisted chat (localStorage). */
+export interface StoredChat {
+  id: string;
+  title: string;
+  messages: UIMessage[];
+  userHtml?: string[];
+  model?: string;
+  effort?: EffortId;
+  createdAt: number;
+  updatedAt: number;
+}
