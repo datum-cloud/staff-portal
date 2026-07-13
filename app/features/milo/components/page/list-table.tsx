@@ -129,13 +129,15 @@ export function ListTable<TData>({
   ...options
 }: ListTableProps<TData>) {
   const { t } = useLingui();
-  const isMobile = useBreakpoint() === 'mobile';
+  // Tablet (e.g. a phone in landscape) is just as cramped as mobile once the
+  // nav rail + a 240px inline sidebar are both on screen, so treat anything
+  // below desktop the same way: swap the sidebar for a Sheet trigger.
+  const isCompact = useBreakpoint() !== 'desktop';
   const showHeader = title != null || actions != null || bulkActions != null;
   const hasFilters = (filters?.length ?? 0) > 0;
   const sidebarMode = hasFilters && filterLayout === 'sidebar';
-  // Below `md`, the sidebar would crowd the table — swap it for a Sheet trigger.
-  const showSidebar = sidebarMode && !isMobile;
-  const showMobileFilter = sidebarMode && isMobile;
+  const showSidebar = sidebarMode && !isCompact;
+  const showMobileFilter = sidebarMode && isCompact;
   const hasInlineFilters = hasFilters && filterLayout === 'inline';
   const insetX = inset === 'tab' ? 'px-4' : 'px-6';
   const [filtersCollapsed, setFiltersCollapsed] = useState(false);
