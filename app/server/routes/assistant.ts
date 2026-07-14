@@ -13,14 +13,12 @@ const MAX_MESSAGES = 50;
 
 /**
  * Allowlist for client-selected models (the prompt card's model picker). The
- * client sends a short id; we map it to a real model here so an arbitrary
- * client string can never reach the provider. Unknown/absent ids fall back to
- * the env-configured default.
+ * client sends a real model string; we only honor it if it's in this set, so an
+ * arbitrary client value can never reach the provider. Anything else falls back
+ * to the env-configured default. Keep in sync with MODEL_OPTIONS on the client.
  */
-const MODEL_ALLOWLIST: Record<string, string> = {
-  'sonnet-4-6': 'claude-sonnet-4-6',
-  'haiku-4-5': 'claude-haiku-4-5-20251001',
-};
+const ALLOWED_MODELS = new Set(['claude-sonnet-4-6', 'claude-haiku-4-5']);
+const DEFAULT_MODEL = 'claude-sonnet-4-6';
 
 /** Effort → extended-thinking token budget. */
 const EFFORT_BUDGETS = { low: 4000, medium: 10000, high: 20000 } as const;
@@ -83,9 +81,9 @@ assistantRoutes.post('/', authMiddleware(), async (c) => {
   try {
     const anthropic = createAnthropic({ apiKey: env.anthropicApiKey });
     const model =
-      (requestedModel && MODEL_ALLOWLIST[requestedModel]) ??
-      env.anthropicModel ??
-      'claude-sonnet-4-6';
+      (requestedModel && ALLOWED_MODELS.has(requestedModel) && requestedModel) ||
+      env.anthropicModel ||
+      DEFAULT_MODEL;
     const thinkingBudget = resolveEffortBudget(requestedEffort);
 
     const result = streamText({

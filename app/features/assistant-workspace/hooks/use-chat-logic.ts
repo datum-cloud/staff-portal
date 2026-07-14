@@ -7,10 +7,16 @@
  * `handleDeleteChat` keep explicit `useCallback` deps (the stable `setChatList`
  * setter is intentionally omitted) which the React Compiler can't preserve.
  */
-import { DEFAULT_EFFORT_ID, DEFAULT_MODEL_ID, MODEL_SELECTOR_ENABLED } from '../constants';
+import {
+  DEFAULT_EFFORT_ID,
+  DEFAULT_MODEL_ID,
+  MODEL_OPTIONS,
+  MODEL_SELECTOR_ENABLED,
+} from '../constants';
 import { deleteChat, deriveTitle, listChats, sanitizeUserHtml, saveChat } from '../lib';
 import type { EffortId, StoredChat } from '../types';
 import { useSpeechInput } from './use-speech-input';
+import { useEnv } from '@/hooks';
 import { useChat } from '@ai-sdk/react';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -37,9 +43,15 @@ export function useChatLogic() {
   const chatCreatedAtRef = useRef(Date.now());
   const [chatList, setChatList] = useState<StoredChat[]>([]);
 
-  // Selected model + effort (the prompt card's "Sonnet 4.5 · High" control).
-  // Mirrored into refs so the memoized transport reads the latest value.
-  const [modelId, setModelId] = useState<string>(DEFAULT_MODEL_ID);
+  // Selected model + effort (the prompt card's "Sonnet 4.6 · High" control).
+  // Mirrored into refs so the memoized transport reads the latest value. The
+  // initial model honors the ANTHROPIC_MODEL env when it matches an option.
+  const env = useEnv();
+  const [modelId, setModelId] = useState<string>(() =>
+    env?.ANTHROPIC_MODEL && MODEL_OPTIONS.some((m) => m.id === env.ANTHROPIC_MODEL)
+      ? env.ANTHROPIC_MODEL
+      : DEFAULT_MODEL_ID
+  );
   const [effortId, setEffortId] = useState<EffortId>(DEFAULT_EFFORT_ID);
   const modelIdRef = useRef(modelId);
   modelIdRef.current = modelId;

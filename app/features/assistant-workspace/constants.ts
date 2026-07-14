@@ -9,9 +9,12 @@ import type { EffortId, EffortOption, ModelOption } from './types';
 
 export const MODEL_SELECTOR_ENABLED = true;
 
+// `id` is the real Anthropic model string sent to the server (validated there
+// against the same allowlist), so "select X → send X" is guaranteed and the
+// `ANTHROPIC_MODEL` env value can match an option directly.
 export const MODEL_OPTIONS: ModelOption[] = [
-  { id: 'sonnet-4-6', label: 'Sonnet 4.5' },
-  { id: 'haiku-4-5', label: 'Haiku 4.5' },
+  { id: 'claude-sonnet-4-6', label: 'Sonnet 4.6' },
+  { id: 'claude-haiku-4-5', label: 'Haiku 4.5' },
 ];
 
 export const EFFORT_OPTIONS: EffortOption[] = [
