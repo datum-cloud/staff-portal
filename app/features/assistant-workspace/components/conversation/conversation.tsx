@@ -32,7 +32,7 @@ export function Conversation({
   footer,
 }: ConversationProps) {
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const { turns, activeTurnId, setScrollEl, updateActiveTurn, scrollToTurn } = useTurnRail(
+  const { turns, activeTurnId, setScrollEl, handleScroll, scrollToTurn } = useTurnRail(
     messages,
     containerRef,
     userScrolledUpRef
@@ -43,13 +43,7 @@ export function Conversation({
     <div className="relative flex min-h-0 flex-1 flex-col">
       <div
         ref={setScrollEl}
-        onScroll={(e) => {
-          const el = e.currentTarget;
-          const scrolledUp = el.scrollHeight - el.scrollTop - el.clientHeight > 50;
-          userScrolledUpRef.current = scrolledUp;
-          setShowScrollButton(scrolledUp);
-          updateActiveTurn(el);
-        }}
+        onScroll={(e) => setShowScrollButton(handleScroll(e.currentTarget))}
         className="flex-1 overflow-y-auto scroll-smooth">
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-6">
           {messages.map((msg, msgIdx) => {

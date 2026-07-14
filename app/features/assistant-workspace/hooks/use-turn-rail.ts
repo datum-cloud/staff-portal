@@ -15,6 +15,9 @@ export function useTurnRail(
 ) {
   const [activeTurn, setActiveTurn] = useState<string | null>(null);
   const scrollElRef = useRef<HTMLDivElement | null>(null);
+  // While a click-to-jump is animating, ignore scroll-position tracking so the
+  // auto-scroll observer can't yank the view back to the bottom mid-jump.
+  const programmaticUntilRef = useRef(0);
 
   const turns = useMemo<Turn[]>(
     () =>
@@ -35,7 +38,7 @@ export function useTurnRail(
     [containerRef]
   );
 
-  const updateActiveTurn = (el: HTMLDivElement) => {
+  const refineActiveTurn = (el: HTMLDivElement) => {
     // A turn near the end can't scroll to the top (nothing below it), so when
     // we're at the bottom just mark the last turn active.
     if (el.scrollHeight - el.scrollTop - el.clientHeight < 8) {
@@ -51,6 +54,20 @@ export function useTurnRail(
     if (active) setActiveTurn(active);
   };
 
+  /** Handle a scroll event. Returns whether the user is scrolled up (for the button). */
+  const handleScroll = (el: HTMLDivElement): boolean => {
+    const scrolledUp = el.scrollHeight - el.scrollTop - el.clientHeight > 50;
+    if (Date.now() < programmaticUntilRef.current) {
+      // Mid-jump: keep auto-scroll suppressed and don't override the active turn
+      // set by scrollToTurn.
+      userScrolledUpRef.current = true;
+      return scrolledUp;
+    }
+    userScrolledUpRef.current = scrolledUp;
+    refineActiveTurn(el);
+    return scrolledUp;
+  };
+
   const scrollToTurn = (id: string) => {
     const container = scrollElRef.current;
     const target = container?.querySelector<HTMLElement>(`[data-turn-id="${id}"]`);
@@ -59,10 +76,11 @@ export function useTurnRail(
       target.getBoundingClientRect().top -
       container.getBoundingClientRect().top +
       container.scrollTop;
+    programmaticUntilRef.current = Date.now() + 700;
     userScrolledUpRef.current = true;
-    setActiveTurn(id); // optimistic; a scroll refines it
-    container.scrollTo({ top: top - 16, behavior: 'smooth' });
+    setActiveTurn(id);
+    container.scrollTo({ top: Math.max(0, top - 16), behavior: 'smooth' });
   };
 
-  return { turns, activeTurnId, setScrollEl, updateActiveTurn, scrollToTurn };
+  return { turns, activeTurnId, setScrollEl, handleScroll, scrollToTurn };
 }
