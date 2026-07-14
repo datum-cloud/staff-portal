@@ -3,7 +3,7 @@
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import { MessagesSquare, MessageSquarePlus } from 'lucide-react';
+import { MessagesSquare, Plus } from 'lucide-react';
 
 interface ChatRailProps {
   historyOpen: boolean;
@@ -20,8 +20,14 @@ export function ChatRail({ historyOpen, onNewChat, onToggleHistory }: ChatRailPr
   return (
     <div className="bg-background flex w-12 shrink-0 flex-col items-center gap-1 border-r py-3">
       <Tooltip message="New chat" side="right">
-        <button type="button" aria-label="New chat" onClick={onNewChat} className={iconClass}>
-          <Icon icon={MessageSquarePlus} />
+        <button
+          type="button"
+          aria-label="New chat"
+          onClick={onNewChat}
+          className={cn(iconClass, 'group')}>
+          <span className="bg-foreground text-background group-hover:bg-primary flex size-4 items-center justify-center rounded-full transition-colors">
+            <Plus className="size-3" strokeWidth={2.5} />
+          </span>
         </button>
       </Tooltip>
       <Tooltip message="Chats" side="right">
