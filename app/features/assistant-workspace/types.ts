@@ -1,5 +1,4 @@
 import type { UIMessage } from 'ai';
-import type { LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 export type EffortId = 'low' | 'medium' | 'high';
@@ -42,8 +41,6 @@ export interface ModelSelectorConfig {
 export interface AssistantConfig {
   /** Greeting line on the empty state, e.g. "Hey there, Jacob". */
   greeting: (name?: string) => string;
-  /** Glyph above the greeting. */
-  greetingIcon: LucideIcon;
   /** Starter prompts on the empty state. */
   suggestions: string[];
   /** Whether to render the assistant's reasoning ("thinking") blocks. */

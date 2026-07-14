@@ -14,7 +14,6 @@ import {
   SUGGESTIONS,
 } from './constants';
 import type { AssistantConfig } from './types';
-import { Brain } from 'lucide-react';
 
 /** Tool name → progress label shown while a staff tool call is running. */
 export const STAFF_TOOL_LABELS: Record<string, string> = {
@@ -60,7 +59,6 @@ export const STAFF_TOOL_LABELS: Record<string, string> = {
 
 export const STAFF_ASSISTANT_CONFIG: AssistantConfig = {
   greeting: (name) => `Hey there${name ? `, ${name}` : ''}`,
-  greetingIcon: Brain,
   suggestions: [...SUGGESTIONS],
   showReasoning: true,
   modelSelector: MODEL_SELECTOR_ENABLED

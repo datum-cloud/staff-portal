@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 @import '@datum-cloud/datum-ui/styles';
+/* Datum's Canela Text title font — enables the `font-title` utility. */
+@import '@datum-cloud/datum-ui/styles/canela';
 
 /* Optional — only if you use these components */
 @import '@datum-cloud/datum-ui/grid';

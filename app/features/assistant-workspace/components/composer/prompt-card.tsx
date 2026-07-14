@@ -51,7 +51,7 @@ export function PromptCard({
   return (
     <div
       className={cn(
-        'bg-card ring-border focus-within:ring-primary/60 rounded-2xl p-3 shadow-sm ring-1 transition-shadow',
+        'bg-card border-primary/30 rounded-2xl border p-3 shadow-sm transition-shadow',
         className
       )}>
       <EditorContent editor={editor} className="max-h-52 min-h-9 overflow-y-auto px-1 py-1" />

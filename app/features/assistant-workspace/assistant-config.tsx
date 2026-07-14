@@ -1,7 +1,6 @@
 'use client';
 
 import type { AssistantConfig, LinkRenderProps } from './types';
-import { Brain } from 'lucide-react';
 import { createContext, useContext, type ReactNode } from 'react';
 import { Link } from 'react-router';
 
@@ -31,7 +30,6 @@ export function defaultRenderLink({ href, children }: LinkRenderProps): ReactNod
  */
 export const DEFAULT_ASSISTANT_CONFIG: AssistantConfig = {
   greeting: (name) => `Hey there${name ? `, ${name}` : ''}`,
-  greetingIcon: Brain,
   suggestions: [],
   showReasoning: true,
   modelSelector: false,
