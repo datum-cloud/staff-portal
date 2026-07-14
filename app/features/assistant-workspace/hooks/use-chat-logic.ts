@@ -186,6 +186,10 @@ export function useChatLogic() {
         orderedList: false,
         listItem: false,
         horizontalRule: false,
+        // tiptap v3's StarterKit bundles Link (autolink + openOnClick); in a
+        // plain-text prompt input that turns a pasted email into a clickable
+        // mailto that fires the mail client. Disable it entirely.
+        link: false,
       }),
       Placeholder.configure({ placeholder: 'What are you trying to do today?' }),
     ],
