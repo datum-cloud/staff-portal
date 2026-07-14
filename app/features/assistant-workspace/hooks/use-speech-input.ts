@@ -3,8 +3,30 @@
  * the cleanup `cancelAnimationFrame(rafRef.current)` pattern is the
  * documented way to manage RAF in React. The compiler rule mis-flags this.
  */
+import { toast } from '@datum-cloud/datum-ui/toast';
 import type { Editor } from '@tiptap/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+
+/** Map a SpeechRecognition/getUserMedia error code to a user message (null = don't surface). */
+function speechErrorMessage(code: string): string | null {
+  switch (code) {
+    case 'not-allowed':
+    case 'service-not-allowed':
+    case 'NotAllowedError':
+    case 'SecurityError':
+      return 'Microphone access is blocked. Enable it in your browser settings to use dictation.';
+    case 'audio-capture':
+    case 'NotFoundError':
+      return 'No microphone was found.';
+    case 'network':
+      return "Dictation isn't available — the speech service is unreachable in this browser.";
+    case 'no-speech':
+    case 'aborted':
+      return null; // benign — no toast
+    default:
+      return 'Dictation failed. Please try again.';
+  }
+}
 
 interface SpeechRecognitionEvent extends Event {
   readonly resultIndex: number;
@@ -123,7 +145,9 @@ export function useSpeechInput(editor: Editor | null) {
       }
     };
 
-    recognition.onerror = () => {
+    recognition.onerror = (event: Event) => {
+      const message = speechErrorMessage((event as { error?: string }).error ?? '');
+      if (message) toast.error(message);
       setIsListening(false);
       stopAudio();
     };
@@ -154,7 +178,10 @@ export function useSpeechInput(editor: Editor | null) {
       recognition.start();
       setIsListening(true);
       rafRef.current = requestAnimationFrame(pollFrequency);
-    } catch {
+    } catch (err) {
+      const code = err instanceof DOMException ? err.name : '';
+      toast.error(speechErrorMessage(code) ?? 'Could not access the microphone.');
+      setIsListening(false);
       stopAudio();
     }
   }, [editor, pollFrequency, stopAudio]);
