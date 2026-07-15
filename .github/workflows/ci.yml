@@ -165,8 +165,10 @@ jobs:
           API_URL: ${{ secrets.API_URL }}
         run: |
           set -euo pipefail
-          # Install datumctl
-          curl -fsSL https://github.com/datum-cloud/datumctl/releases/latest/download/datumctl_Linux_x86_64.tar.gz \
+          # Install datumctl. Pinned to v0.17.2 — v0.17.3+ (datumctl#239) gates
+          # login on org onboarding and hard-exits for the org-less CI service
+          # account. Revert to /latest once that's resolved upstream.
+          curl -fsSL https://github.com/datum-cloud/datumctl/releases/download/v0.17.2/datumctl_Linux_x86_64.tar.gz \
             | tar -xz datumctl
           sudo install -m 0755 datumctl /usr/local/bin/datumctl
           # Write the service-account credentials JSON
