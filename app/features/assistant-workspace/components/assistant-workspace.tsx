@@ -9,7 +9,7 @@ import { Conversation } from './conversation';
 import { EmptyState } from './empty-state';
 import { ChatRail, HistoryPanel } from './sidebar';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
-import { MessageSquarePlus, PanelLeft } from 'lucide-react';
+import { PanelLeft } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 
 interface AssistantWorkspaceProps {
@@ -106,15 +106,6 @@ export function AssistantWorkspace({ config, userName }: AssistantWorkspaceProps
                   {title}
                 </span>
                 <div className="flex items-center gap-1">
-                  <Tooltip message="New chat" side="bottom">
-                    <button
-                      type="button"
-                      aria-label="New chat"
-                      onClick={startNewChat}
-                      className="text-muted-foreground hover:text-foreground hover:bg-accent rounded-md p-1.5 transition-colors">
-                      <MessageSquarePlus className="size-4" />
-                    </button>
-                  </Tooltip>
                   <Tooltip message={historyOpen ? 'Close sidebar' : 'Open sidebar'} side="bottom">
                     <button
                       type="button"
