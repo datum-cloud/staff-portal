@@ -12,18 +12,29 @@ const AssistantWorkspace = lazy(() =>
   import('./assistant-workspace').then((m) => ({ default: m.AssistantWorkspace }))
 );
 
+// Mirrors the workspace's empty state (a fresh chat), which is what the panel
+// always opens into: the w-12 icon rail + a centered greeting, composer, and
+// suggestion rows. Keeps the layout from jumping when the lazy chunk resolves.
 function WorkspaceSkeleton() {
   return (
-    <div className="flex h-full">
-      <div className="bg-background hidden w-12 shrink-0 border-r sm:block" />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex-1 space-y-4 p-4">
-          <Skeleton className="ml-auto h-10 w-3/5 rounded-2xl" />
-          <Skeleton className="h-16 w-4/5 rounded-xl" />
-          <Skeleton className="ml-auto h-10 w-2/5 rounded-2xl" />
+    <div className="bg-background flex h-full w-full overflow-hidden">
+      <div className="flex w-12 shrink-0 flex-col items-center gap-1 border-r py-3">
+        <Skeleton className="size-9 rounded-md" />
+        <Skeleton className="size-9 rounded-md" />
+      </div>
+
+      <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center px-4 py-8">
+        <div className="mb-8 flex flex-col items-center">
+          <Skeleton className="mb-4 size-16 rounded-full" />
+          <Skeleton className="h-8 w-64 rounded-lg" />
         </div>
-        <div className="px-4 pb-4">
-          <Skeleton className="mx-auto h-20 w-full max-w-3xl rounded-2xl" />
+
+        <Skeleton className="h-24 w-full rounded-2xl" />
+
+        <div className="mt-4 flex flex-col gap-1">
+          <Skeleton className="h-12 w-full rounded-xl" />
+          <Skeleton className="h-12 w-full rounded-xl" />
+          <Skeleton className="h-12 w-full rounded-xl" />
         </div>
       </div>
     </div>
