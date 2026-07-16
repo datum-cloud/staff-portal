@@ -398,6 +398,10 @@ msgstr ""
 msgid "ASN"
 msgstr ""
 
+#: app/routes/dashboard/index.tsx:14
+msgid "Assistant"
+msgstr ""
+
 #: app/features/contact/components/contact-form.tsx:217
 #: app/routes/marketing/contact-group/detail/member.tsx:103
 msgid "Associate with User"
@@ -821,7 +825,6 @@ msgstr ""
 
 #: app/components/app-search/use-app-search.ts:34
 #: app/components/app-sidebar/index.tsx:103
-#: app/routes/dashboard/index.tsx:28
 msgid "Dashboard"
 msgstr ""
 
@@ -1527,7 +1530,7 @@ msgid "Fraud evaluation started"
 msgstr ""
 
 #: app/routes/customer/fraud/index.tsx:38
-#: app/routes/dashboard/index.tsx:83
+#: app/routes/dashboard/overview.tsx:83
 msgid "Fraud Evaluations"
 msgstr ""
 
@@ -2320,7 +2323,7 @@ msgstr ""
 #: app/routes/customer/project/detail/layout.tsx:40
 #: app/routes/customer/user/detail/layout.tsx:42
 #: app/routes/customer/user/detail/organization.tsx:19
-#: app/routes/dashboard/index.tsx:67
+#: app/routes/dashboard/overview.tsx:67
 msgid "Organizations"
 msgstr ""
 
@@ -2332,6 +2335,7 @@ msgstr ""
 #: app/routes/customer/organization/detail/layout.tsx:56
 #: app/routes/customer/project/detail/layout.tsx:111
 #: app/routes/customer/user/detail/layout.tsx:36
+#: app/routes/dashboard/overview.tsx:28
 msgid "Overview"
 msgstr ""
 
@@ -2539,7 +2543,7 @@ msgstr ""
 #: app/routes/customer/project/detail/layout.tsx:46
 #: app/routes/customer/project/index.tsx:15
 #: app/routes/customer/project/layout.tsx:8
-#: app/routes/dashboard/index.tsx:75
+#: app/routes/dashboard/overview.tsx:75
 msgid "Projects"
 msgstr ""
 
@@ -3443,7 +3447,7 @@ msgstr ""
 #: app/routes/customer/breadcrumb-switchers.tsx:6
 #: app/routes/customer/user/index.tsx:30
 #: app/routes/customer/user/layout.tsx:8
-#: app/routes/dashboard/index.tsx:59
+#: app/routes/dashboard/overview.tsx:59
 msgid "Users"
 msgstr ""
 

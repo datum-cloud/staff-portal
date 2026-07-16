@@ -11,6 +11,25 @@ export const assistantRoutes = new Hono<{ Variables: EnvVariables }>();
 
 const MAX_MESSAGES = 50;
 
+/**
+ * Allowlist for client-selected models (the prompt card's model picker). The
+ * client sends a real model string; we only honor it if it's in this set, so an
+ * arbitrary client value can never reach the provider. Anything else falls back
+ * to the env-configured default. Keep in sync with MODEL_OPTIONS on the client.
+ */
+const ALLOWED_MODELS = new Set(['claude-sonnet-4-6', 'claude-haiku-4-5']);
+const DEFAULT_MODEL = 'claude-sonnet-4-6';
+
+/** Effort → extended-thinking token budget. */
+const EFFORT_BUDGETS = { low: 4000, medium: 10000, high: 20000 } as const;
+const DEFAULT_THINKING_BUDGET = 10000;
+
+function resolveEffortBudget(effort: unknown): number {
+  return typeof effort === 'string' && effort in EFFORT_BUDGETS
+    ? EFFORT_BUDGETS[effort as keyof typeof EFFORT_BUDGETS]
+    : DEFAULT_THINKING_BUDGET;
+}
+
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 20;
@@ -36,9 +55,16 @@ assistantRoutes.post('/', authMiddleware(), async (c) => {
   const userId = getUserId(c);
 
   const body = await c.req.json();
-  const { messages, clientOs } = body as {
+  const {
+    messages,
+    clientOs,
+    model: requestedModel,
+    effort: requestedEffort,
+  } = body as {
     messages: UIMessage[];
     clientOs?: string;
+    model?: string;
+    effort?: string;
   };
 
   const lastUserMessage = messages.findLast((m) => m.role === 'user');
@@ -54,19 +80,25 @@ assistantRoutes.post('/', authMiddleware(), async (c) => {
 
   try {
     const anthropic = createAnthropic({ apiKey: env.anthropicApiKey });
-    const model = env.anthropicModel ?? 'claude-sonnet-4-6';
+    const model =
+      (requestedModel && ALLOWED_MODELS.has(requestedModel) && requestedModel) ||
+      env.anthropicModel ||
+      DEFAULT_MODEL;
+    const thinkingBudget = resolveEffortBudget(requestedEffort);
 
     const result = streamText({
       model: anthropic(model),
       system: buildSystemPrompt(clientOs),
       messages: await convertToModelMessages(messages.slice(-MAX_MESSAGES)),
-      maxOutputTokens: 4096,
+      // Anthropic requires max_tokens > thinking budget; keep headroom for the
+      // reply on top of whatever budget the selected effort maps to.
+      maxOutputTokens: thinkingBudget + 4096,
       experimental_transform: smoothStream({ chunking: 'word', delayInMs: 40 }),
       providerOptions: {
         anthropic: {
           thinking: {
             type: 'enabled',
-            budgetTokens: 10000,
+            budgetTokens: thinkingBudget,
           },
           metadata: { user_id: userId },
         },

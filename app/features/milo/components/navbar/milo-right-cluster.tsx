@@ -7,8 +7,11 @@ import { useEnv } from '@/hooks';
 
 /**
  * Right side of the navbar: a row of uniform icon-button actions (search,
- * theme), the assistant + task-queue, and the user avatar menu. All share the
+ * theme), the assistant, task-queue, and the user avatar menu. All share the
  * MiloIconButton style so the cluster reads as one consistent set.
+ *
+ * The assistant trigger opens the global slide-up chat (the same workspace as
+ * the `/` dashboard) so people can chat from any page.
  */
 export function MiloRightCluster() {
   const env = useEnv();

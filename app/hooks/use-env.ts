@@ -13,6 +13,8 @@ export interface PublicEnv {
   AUTH_OIDC_ISSUER?: string;
   CLOUD_PORTAL_URL?: string;
   CHATBOT_ENABLED?: boolean;
+  /** Configured default model (e.g. `claude-haiku-4-5`); seeds the picker's default. */
+  ANTHROPIC_MODEL?: string;
   MCP_ENABLED?: boolean;
   MAXMIND_ACCOUNT_ID?: string;
 }
