@@ -1,5 +1,5 @@
+import { STAFF_ASSISTANT_CONFIG } from '../staff-config';
 import { useAssistant } from './assistant-context';
-import { STAFF_ASSISTANT_CONFIG } from '@/features/assistant-workspace/staff-config';
 import { useApp } from '@/providers/app.provider';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { AnimatePresence, motion } from 'motion/react';
@@ -9,7 +9,7 @@ import { lazy, Suspense, useState } from 'react';
 // anywhere without navigating to the dashboard. Lazy so its bundle only loads
 // on first open.
 const AssistantWorkspace = lazy(() =>
-  import('@/features/assistant-workspace').then((m) => ({ default: m.AssistantWorkspace }))
+  import('./assistant-workspace').then((m) => ({ default: m.AssistantWorkspace }))
 );
 
 function WorkspaceSkeleton() {

@@ -1,5 +1,5 @@
 import { MiloIconButton } from './milo-icon-button';
-import { useAssistant } from '@/features/assistant/assistant-context';
+import { useAssistant } from '@/features/assistant';
 import { useLingui } from '@lingui/react/macro';
 import { Brain } from 'lucide-react';
 

@@ -1,7 +1,7 @@
 'use client';
 
-import { useChatLogic } from './hooks';
-import { deriveTitle } from './lib';
+import { useChatLogic } from '../hooks';
+import { deriveTitle } from '../lib';
 import {
   AssistantWorkspace as SharedAssistantWorkspace,
   type AssistantConfig,
