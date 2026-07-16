@@ -24,7 +24,7 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1BillingAccountBinding } from '@openapi/billing.miloapis.com/v1alpha1';
 import type { ComMiloapisBillingV1Alpha1PaymentMethod } from '@openapi/billing.miloapis.com/v1alpha1';
-import { createColumnHelper } from '@tanstack/react-table';
+import { createColumnHelper, type ColumnDef } from '@tanstack/react-table';
 import { Link, type MetaFunction } from 'react-router';
 
 export const meta: MetaFunction = ({ matches }) => {
@@ -290,7 +290,12 @@ export default function Page() {
           ) : (
             <DataTable.Client
               data={paymentMethods}
-              columns={paymentMethodColumns}
+              columns={
+                paymentMethodColumns as ColumnDef<
+                  ComMiloapisBillingV1Alpha1PaymentMethod,
+                  unknown
+                >[]
+              }
               pageSize={10}
               getRowId={(row) => row.metadata?.name ?? ''}>
               <DataTable.Content
@@ -317,7 +322,12 @@ export default function Page() {
           ) : (
             <DataTable.Client
               data={activeBindings}
-              columns={bindingColumns}
+              columns={
+                bindingColumns as ColumnDef<
+                  ComMiloapisBillingV1Alpha1BillingAccountBinding,
+                  unknown
+                >[]
+              }
               pageSize={10}
               getRowId={(row) => row.metadata?.name ?? ''}>
               <DataTable.Content

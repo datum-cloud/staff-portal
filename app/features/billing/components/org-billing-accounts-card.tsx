@@ -9,7 +9,7 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
-import { createColumnHelper } from '@tanstack/react-table';
+import { createColumnHelper, type ColumnDef } from '@tanstack/react-table';
 import { Link } from 'react-router';
 
 const columnHelper = createColumnHelper<ComMiloapisBillingV1Alpha1BillingAccount>();
@@ -68,7 +68,7 @@ export function OrgBillingAccountsCard({ orgName }: OrgBillingAccountsCardProps)
         ) : (
           <DataTable.Client
             data={accounts}
-            columns={columns}
+            columns={columns as ColumnDef<ComMiloapisBillingV1Alpha1BillingAccount, unknown>[]}
             pageSize={5}
             getRowId={(row) => row.metadata?.name ?? ''}>
             <DataTable.Content

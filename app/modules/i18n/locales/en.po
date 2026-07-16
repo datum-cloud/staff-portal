@@ -1595,8 +1595,8 @@ msgstr "Group"
 msgid "Groups"
 msgstr "Groups"
 
-#: app/features/milo/components/page/list-table.tsx:221
-#: app/features/milo/components/page/list-table.tsx:225
+#: app/features/milo/components/page/list-table.tsx:224
+#: app/features/milo/components/page/list-table.tsx:228
 msgid "Hide filters"
 msgstr "Hide filters"
 
@@ -1776,7 +1776,7 @@ msgstr "Limited to 10,000 users. Refine your search to surface others."
 #: app/features/billing/components/billing-account-list.tsx:75
 #: app/features/billing/components/org-billing-accounts-card.tsx:47
 #: app/routes/customer/billing-account/detail/index.tsx:204
-#: app/routes/customer/billing-account/detail/index.tsx:309
+#: app/routes/customer/billing-account/detail/index.tsx:314
 msgid "Linked projects"
 msgstr "Linked projects"
 
@@ -2138,8 +2138,8 @@ msgstr "No groups found."
 msgid "No hostnames configured"
 msgstr "No hostnames configured"
 
-#: app/routes/customer/billing-account/detail/index.tsx:315
-#: app/routes/customer/billing-account/detail/index.tsx:326
+#: app/routes/customer/billing-account/detail/index.tsx:320
+#: app/routes/customer/billing-account/detail/index.tsx:336
 msgid "No linked projects"
 msgstr "No linked projects"
 
@@ -2166,7 +2166,7 @@ msgid "No origins configured"
 msgstr "No origins configured"
 
 #: app/routes/customer/billing-account/detail/index.tsx:288
-#: app/routes/customer/billing-account/detail/index.tsx:299
+#: app/routes/customer/billing-account/detail/index.tsx:304
 msgid "No payment methods"
 msgstr "No payment methods"
 
@@ -3079,8 +3079,8 @@ msgstr "Short-circuit < {0}"
 msgid "Short-circuit Below"
 msgstr "Short-circuit Below"
 
-#: app/features/milo/components/page/list-table.tsx:221
-#: app/features/milo/components/page/list-table.tsx:225
+#: app/features/milo/components/page/list-table.tsx:224
+#: app/features/milo/components/page/list-table.tsx:228
 msgid "Show filters"
 msgstr "Show filters"
 
@@ -3204,7 +3204,7 @@ msgstr "Tenant"
 msgid "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 msgstr "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 
-#: app/features/milo/components/page/list-table.tsx:291
+#: app/features/milo/components/page/list-table.tsx:294
 msgid "The list is limited to 2,000 results at a time. Refine your search to surface other items."
 msgstr "The list is limited to 2,000 results at a time. Refine your search to surface other items."
 

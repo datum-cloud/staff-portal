@@ -13,11 +13,12 @@ import {
   MODEL_OPTIONS,
   MODEL_SELECTOR_ENABLED,
 } from '../constants';
-import { deleteChat, deriveTitle, listChats, sanitizeUserHtml, saveChat } from '../lib';
+import { deleteChat, deriveTitle, listChats, saveChat } from '../lib';
 import type { EffortId, StoredChat } from '../types';
 import { useSpeechInput } from './use-speech-input';
 import { useEnv } from '@/hooks';
 import { useChat } from '@ai-sdk/react';
+import { sanitizeUserHtml } from '@datum-cloud/datum-ui/assistant';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import Placeholder from '@tiptap/extension-placeholder';
 import { useEditor } from '@tiptap/react';

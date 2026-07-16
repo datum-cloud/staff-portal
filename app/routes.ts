@@ -218,7 +218,6 @@ export default [
       route('sessions', 'routes/profile/session.tsx'),
     ]),
 
-    route('demo', 'routes/demo.tsx'),
     route('test-sentry', 'routes/test-sentry.tsx'),
   ]),
 

@@ -103,7 +103,7 @@ interface ListTableProps<TData> {
   /** Horizontal inset: `page` (px-6, main lists) or `tab` (px-4, aligns with a detail page's EntityHeader). Default `page`. */
   readonly inset?: 'page' | 'tab';
   /** Enable row-selection checkboxes (forwarded to DataTable). Pair with `bulkActions`. */
-  readonly enableRowSelection?: boolean | SelectionColumnOptions;
+  readonly enableRowSelection?: boolean | SelectionColumnOptions<TData>;
   /** Bulk-action bar shown above the table; receives the selected rows. Render `null` when none selected. */
   readonly bulkActions?: (selectedRows: TData[]) => ReactNode;
   /** Optional slot between the search bar and the table (active-filter chips, etc.). */
@@ -195,7 +195,10 @@ export function ListTable<TData>({
       searchFn={controlledSearch ? () => true : searchFn}
       // Rows are denser now, so show more per page by default when a route doesn't pick one.
       pageSize={50}
-      {...options}>
+      {...options}
+      // columnHelper yields ColumnDef<TData, any>; DataTable.Client now wants
+      // <TData, unknown> — a type-identity narrowing that's safe at runtime.
+      columns={options.columns as ColumnDef<TData, unknown>[]}>
       {showSidebar && (
         // Animate width (like the left nav) rather than mount/unmount; inner
         // stays FILTER_W wide so content doesn't reflow while it slides.
