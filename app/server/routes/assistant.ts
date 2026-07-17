@@ -67,7 +67,7 @@ assistantRoutes.post('/', authMiddleware(), async (c) => {
     effort?: string;
   };
 
-  const lastUserMessage = messages.findLast((m) => m.role === 'user');
+  const lastUserMessage = messages.filter((m) => m.role === 'user').at(-1);
   const userMessage = lastUserMessage?.parts
     ?.filter((p): p is { type: 'text'; text: string } => p.type === 'text')
     .map((p) => p.text)

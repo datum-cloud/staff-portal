@@ -1,56 +1,30 @@
-/* eslint-disable react-hooks/refs, react-hooks/purity, react-hooks/set-state-in-effect --
+/* eslint-disable react-hooks/refs, react-hooks/purity, react-hooks/set-state-in-effect, react-hooks/preserve-manual-memoization --
  * Chat logic intentionally mirrors state into refs to avoid stale closures
  * inside the AI SDK's onFinish handler (captured once per stream).
  * `currentChatIdRef` and `onFinishRef` mirror state, `useRef(Date.now())`
  * captures session start time, and the one-time `setChatList(listChats())`
- * effect bootstraps the chat history from localStorage.
+ * effect bootstraps the chat history from localStorage. `refreshChatList` /
+ * `handleDeleteChat` keep explicit `useCallback` deps (the stable `setChatList`
+ * setter is intentionally omitted) which the React Compiler can't preserve.
  */
-import { deleteChat, deriveTitle, listChats, saveChat, type StoredChat } from './chat-storage';
+import {
+  DEFAULT_EFFORT_ID,
+  DEFAULT_MODEL_ID,
+  MODEL_OPTIONS,
+  MODEL_SELECTOR_ENABLED,
+} from '../constants';
+import { deleteChat, deriveTitle, listChats, saveChat } from '../lib';
+import type { EffortId, StoredChat } from '../types';
 import { useSpeechInput } from './use-speech-input';
+import { useEnv } from '@/hooks';
 import { useChat } from '@ai-sdk/react';
+import { sanitizeUserHtml } from '@datum-cloud/datum-ui/assistant';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import Placeholder from '@tiptap/extension-placeholder';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { DefaultChatTransport } from 'ai';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
-const HTML_ESCAPE_MAP: Record<string, string> = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-  '"': '&quot;',
-  "'": '&#39;',
-};
-
-function escapeHtml(s: string): string {
-  return s.replace(/[&<>"']/g, (c) => HTML_ESCAPE_MAP[c]!);
-}
-
-const ALLOWED_TAGS = new Set(['p', 'strong', 'em', 'u', 's', 'br']);
-
-export function sanitizeUserHtml(raw: string): string {
-  const doc = new DOMParser().parseFromString(raw, 'text/html');
-
-  function walk(node: Node): string {
-    if (node.nodeType === Node.TEXT_NODE) {
-      return escapeHtml(node.textContent ?? '');
-    }
-    if (node.nodeType !== Node.ELEMENT_NODE) return '';
-
-    const el = node as Element;
-    const tag = el.tagName.toLowerCase();
-    const children = Array.from(el.childNodes).map(walk).join('');
-
-    if (ALLOWED_TAGS.has(tag)) {
-      return tag === 'br' ? '<br>' : `<${tag}>${children}</${tag}>`;
-    }
-    return children;
-  }
-
-  const result = Array.from(doc.body.childNodes).map(walk).join('');
-  return result.startsWith('<p>') ? result : `<p>${result}</p>`;
-}
 
 function detectOs(): 'macos' | 'windows' | 'linux' | 'unknown' {
   const ua = navigator.userAgent;
@@ -69,6 +43,21 @@ export function useChatLogic() {
 
   const chatCreatedAtRef = useRef(Date.now());
   const [chatList, setChatList] = useState<StoredChat[]>([]);
+
+  // Selected model + effort (the prompt card's "Sonnet 4.6 · High" control).
+  // Mirrored into refs so the memoized transport reads the latest value. The
+  // initial model honors the ANTHROPIC_MODEL env when it matches an option.
+  const env = useEnv();
+  const [modelId, setModelId] = useState<string>(() =>
+    env?.ANTHROPIC_MODEL && MODEL_OPTIONS.some((m) => m.id === env.ANTHROPIC_MODEL)
+      ? env.ANTHROPIC_MODEL
+      : DEFAULT_MODEL_ID
+  );
+  const [effortId, setEffortId] = useState<EffortId>(DEFAULT_EFFORT_ID);
+  const modelIdRef = useRef(modelId);
+  modelIdRef.current = modelId;
+  const effortIdRef = useRef(effortId);
+  effortIdRef.current = effortId;
 
   useEffect(() => {
     setChatList(listChats());
@@ -110,6 +99,8 @@ export function useChatLogic() {
       title: deriveTitle(toSave),
       messages: toSave,
       userHtml: [...htmlByUserMsgIndex.current],
+      model: modelIdRef.current,
+      effort: effortIdRef.current,
       createdAt: chatCreatedAtRef.current,
       updatedAt: Date.now(),
     });
@@ -124,6 +115,11 @@ export function useChatLogic() {
           body: {
             id,
             messages: messages.filter((m) => m.role !== 'system'),
+            // Only send an override when the selector is exposed; otherwise the
+            // server uses its default model/effort.
+            ...(MODEL_SELECTOR_ENABLED
+              ? { model: modelIdRef.current, effort: effortIdRef.current }
+              : {}),
             ...body,
             clientOs: detectOs(),
           },
@@ -151,6 +147,8 @@ export function useChatLogic() {
     (chat: StoredChat) => {
       setCurrentChatId(chat.id);
       chatCreatedAtRef.current = chat.createdAt;
+      if (chat.model) setModelId(chat.model);
+      if (chat.effort) setEffortId(chat.effort);
       htmlByUserMsgIndex.current = chat.userHtml
         ? chat.userHtml.map(sanitizeUserHtml)
         : chat.messages
@@ -176,6 +174,9 @@ export function useChatLogic() {
   );
 
   const editor = useEditor({
+    // This route renders on the server (unlike the lazy-loaded slide-up), so
+    // tiptap must not render immediately or SSR/client markup will mismatch.
+    immediatelyRender: false,
     extensions: [
       StarterKit.configure({
         heading: false,
@@ -186,14 +187,18 @@ export function useChatLogic() {
         orderedList: false,
         listItem: false,
         horizontalRule: false,
+        // tiptap v3's StarterKit bundles Link (autolink + openOnClick); in a
+        // plain-text prompt input that turns a pasted email into a clickable
+        // mailto that fires the mail client. Disable it entirely.
+        link: false,
       }),
-      Placeholder.configure({ placeholder: 'Ask about customers, infra, errors…' }),
+      Placeholder.configure({ placeholder: 'What are you trying to do today?' }),
     ],
     editorProps: {
       attributes: {
         class: cn(
           'prose prose-sm dark:prose-invert max-w-none',
-          'px-3 py-2 text-sm focus:outline-none',
+          'px-1 py-1 text-sm focus:outline-none',
           '[&_p]:my-0.5'
         ),
       },
@@ -232,6 +237,16 @@ export function useChatLogic() {
     }
   };
 
+  const sendSuggestion = useCallback(
+    (suggestion: string) => {
+      if (!isReady) return;
+      clearError();
+      htmlByUserMsgIndex.current.push(`<p>${suggestion}</p>`);
+      void sendMessage({ text: suggestion });
+    },
+    [isReady, clearError, sendMessage]
+  );
+
   const handleRetry = useCallback(() => {
     const lastUserMsg = [...messages].reverse().find((m) => m.role === 'user');
     if (!lastUserMsg) return;
@@ -252,7 +267,7 @@ export function useChatLogic() {
     });
   }, [messages, setMessages, clearError, sendMessage]);
 
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   return {
     messages,
@@ -273,9 +288,14 @@ export function useChatLogic() {
     userScrolledUp,
     editor,
     handleSendClick,
+    sendSuggestion,
     handleRetry,
-    sidebarOpen,
-    setSidebarOpen,
+    historyOpen,
+    setHistoryOpen,
     speech,
+    modelId,
+    setModelId,
+    effortId,
+    setEffortId,
   };
 }

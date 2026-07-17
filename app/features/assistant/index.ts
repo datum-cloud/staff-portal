@@ -1,3 +1,4 @@
-export { AssistantProvider } from './assistant-context';
-export { AssistantPanel } from './assistant-panel';
-export { AssistantTrigger } from './assistant-trigger';
+export * from './components';
+export { STAFF_ASSISTANT_CONFIG } from './staff-config';
+export type { AssistantConfig } from './types';
+export { AssistantConfigProvider, useAssistantConfig } from '@datum-cloud/datum-ui/assistant';

@@ -4,7 +4,6 @@
  * cloud-portal will supply its own equivalent (different suggestions, tool
  * labels, model list, etc.).
  */
-import { defaultRenderLink } from './assistant-config';
 import {
   DEFAULT_EFFORT_ID,
   DEFAULT_MODEL_ID,
@@ -14,6 +13,7 @@ import {
   SUGGESTIONS,
 } from './constants';
 import type { AssistantConfig } from './types';
+import { defaultRenderLink } from '@datum-cloud/datum-ui/assistant';
 
 /** Tool name → progress label shown while a staff tool call is running. */
 export const STAFF_TOOL_LABELS: Record<string, string> = {
