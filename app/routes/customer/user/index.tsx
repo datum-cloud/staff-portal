@@ -1,10 +1,16 @@
 import type { Route } from './+types/index';
-import { BadgeState } from '@/components/badge';
+import { AppBadge, CustomerStatus } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
 import { DisplayId, DisplayName, DisplayText } from '@/components/display';
 import { UserAvatar } from '@/components/user-avatar';
-import { DATE_RANGE_OPTIONS, ListGrowthChart, ListPage, ListTable } from '@/features/milo';
+import {
+  DATE_RANGE_OPTIONS,
+  ListGrowthChart,
+  ListPage,
+  ListTable,
+  ListColumnHeader,
+} from '@/features/milo';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
 import {
   useAllUsersQuery,
@@ -92,7 +98,7 @@ export default function Page() {
 
   const columns = [
     columnHelper.accessor('spec.givenName', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => {
         const userName = row.original.metadata?.name ?? '';
         const displayName =
@@ -113,27 +119,27 @@ export default function Page() {
       },
     }),
     columnHelper.accessor('spec.email', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Email`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Email`} />,
       cell: ({ getValue }) => <DisplayText value={getValue() ?? ''} />,
     }),
     columnHelper.accessor('metadata.name', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`ID`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
       cell: ({ getValue }) => {
         return <DisplayId value={getValue() ?? ''} />;
       },
     }),
     columnHelper.accessor('status.state', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Status`} />,
-      cell: ({ getValue }) => <BadgeState variant="dot" state={getValue() ?? 'Active'} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
+      cell: ({ getValue }) => <CustomerStatus status={getValue() ?? 'Active'} />,
     }),
     columnHelper.accessor('status.registrationApproval', {
       id: 'registrationApproval',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Registration`} />,
-      cell: ({ getValue }) => <BadgeState variant="dot" state={getValue() ?? 'Unknown'} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Registration`} />,
+      cell: ({ getValue }) => <AppBadge status={getValue() ?? 'Pending'} />,
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'metadata.creationTimestamp',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Created`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
     columnHelper.display({
@@ -271,17 +277,17 @@ export default function Page() {
               column: 'status.registrationApproval',
               label: t`Registration`,
               options: [
-                { value: 'Pending', label: <BadgeState state="Pending" /> },
-                { value: 'Approved', label: <BadgeState state="Approved" /> },
-                { value: 'Rejected', label: <BadgeState state="Rejected" /> },
+                { value: 'Pending', label: <AppBadge status="pending" /> },
+                { value: 'Approved', label: <AppBadge status="approved" /> },
+                { value: 'Rejected', label: <AppBadge status="rejected" /> },
               ],
             },
             {
               column: 'status.state',
               label: t`Status`,
               options: [
-                { value: 'Active', label: <BadgeState state="Active" /> },
-                { value: 'Inactive', label: <BadgeState state="Inactive" /> },
+                { value: 'Active', label: <CustomerStatus status="active" /> },
+                { value: 'Inactive', label: <CustomerStatus status="inactive" /> },
               ],
             },
             {

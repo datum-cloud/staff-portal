@@ -4,7 +4,7 @@ import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
 import { MessageCard } from '@/components/message-card';
-import { ListTable } from '@/features/milo';
+import { ListColumnHeader, ListTable } from '@/features/milo';
 import { useApprovalDialog } from '@/features/service-catalog';
 import type { EnrichedServiceConsumer } from '@/modules/graphql/service-consumers';
 import {
@@ -74,9 +74,7 @@ export default function ConsumersPage() {
   const columns = [
     columnHelper.accessor((row) => row.consumerProject.displayName, {
       id: 'project',
-      header: ({ column }) => (
-        <DataTable.ColumnHeader column={column} title={t`Consumer Project`} />
-      ),
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Consumer Project`} />,
       cell: ({ row }) => {
         const { name, displayName } = row.original.consumerProject;
         if (!name) {
@@ -102,7 +100,7 @@ export default function ConsumersPage() {
     }),
     columnHelper.accessor((row) => row.phase ?? '', {
       id: 'phase',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Phase`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Phase`} />,
       cell: ({ getValue }) => {
         const phase = getValue();
         return phase ? (
@@ -114,7 +112,7 @@ export default function ConsumersPage() {
     }),
     columnHelper.accessor((row) => row.approvalDecision ?? '', {
       id: 'approval',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Approval`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Approval`} />,
       cell: ({ getValue, row }) => {
         const decision = getValue();
         const message = row.original.approvalMessage;
@@ -139,12 +137,12 @@ export default function ConsumersPage() {
     }),
     columnHelper.accessor((row) => row.requestedAt ?? '', {
       id: 'createdAt',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Requested at`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Requested at`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} variant="relative" addSuffix />,
     }),
     columnHelper.accessor((row) => row.name, {
       id: 'name',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Consumer ID`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Consumer ID`} />,
       cell: ({ getValue }) => (
         <Text size="xs" textColor="muted" className="font-mono">
           {getValue()}

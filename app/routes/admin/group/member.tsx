@@ -4,7 +4,7 @@ import AppActionBar from '@/components/app-actiobar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
-import { ListTable } from '@/features/milo';
+import { ListColumnHeader, ListTable } from '@/features/milo';
 import { useUserSearch } from '@/hooks';
 import { authenticator } from '@/modules/auth';
 import {
@@ -100,7 +100,7 @@ export default function Page() {
 
   const columns = [
     columnHelper.accessor('metadata.name', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => {
         const userRefName = row.original.spec?.userRef?.name ?? '';
         const user = userMap.get(userRefName);
@@ -118,7 +118,7 @@ export default function Page() {
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'metadata.creationTimestamp',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Created`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
     columnHelper.display({

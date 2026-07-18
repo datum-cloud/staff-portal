@@ -3,7 +3,7 @@ import { BadgeCondition, BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
-import { ListPage, ListTable } from '@/features/milo';
+import { ListPage, ListTable, ListColumnHeader } from '@/features/milo';
 import {
   contactGroupDeleteMutation,
   contactGroupQueryKeys,
@@ -60,7 +60,7 @@ export default function Page() {
 
   const columns = [
     columnHelper.accessor('metadata.name', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => {
         const contactGroupName = row.original.metadata?.name ?? '';
         return (
@@ -73,18 +73,18 @@ export default function Page() {
       },
     }),
     columnHelper.accessor('spec.visibility', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Visibility`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Visibility`} />,
       cell: ({ getValue }) => <BadgeState state={getValue() ?? 'public'} />,
     }),
     columnHelper.accessor('status', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Status`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
       cell: ({ getValue }) => (
         <BadgeCondition status={getValue()} multiple={false} showMessage className="text-xs" />
       ),
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'metadata.creationTimestamp',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Created`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
     columnHelper.display({

@@ -57,7 +57,7 @@ export function ListGrowthChart<T>({ items, getCreatedAt, title }: ListGrowthCha
   const hasTrend = growthData.length >= 2;
 
   return (
-    <div className="flex shrink-0 items-center gap-6 border-b px-4 py-3">
+    <div className="border-border flex shrink-0 items-center gap-6 border-b px-4 py-3">
       <div className="shrink-0">
         <h2 className="text-muted-foreground text-sm font-medium">{title}</h2>
         <span className="text-2xl font-semibold tabular-nums">{items.length}</span>

@@ -28,6 +28,24 @@ export const getBillingAccountDisplayName = (
   account.metadata?.name ??
   'Unnamed billing account';
 
+/** Prefer human label; fall back to the k8s resource name. */
+export const getPaymentMethodDisplayName = (
+  method: ComMiloapisBillingV1Alpha1PaymentMethod
+): string => method.spec?.displayName?.trim() || method.metadata?.name || 'Unnamed payment method';
+
+/**
+ * Resource name to show as muted subtext under a display name.
+ * Returns undefined when it would duplicate the primary label.
+ */
+export const getResourceNameSubtext = (
+  displayName: string,
+  resourceName: string | undefined
+): string | undefined => {
+  const name = resourceName?.trim();
+  if (!name || name === displayName) return undefined;
+  return name;
+};
+
 export const isDefaultPaymentMethod = (
   method: ComMiloapisBillingV1Alpha1PaymentMethod,
   account: ComMiloapisBillingV1Alpha1BillingAccount | undefined

@@ -1,11 +1,11 @@
 import type { Route } from './+types/policy';
 import { DialogConfirm } from '@/components/dialog';
 import { PolicyDetail, PolicyForm } from '@/features/fraud';
+import { SectionCard } from '@/features/milo';
 import { useDeleteFraudPolicyMutation, useFraudPolicyListQuery } from '@/resources/request/client';
 import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
@@ -29,13 +29,11 @@ export default function Page() {
 
   if (policyQuery.isLoading) {
     return (
-      <Card className="m-4 shadow-none">
-        <CardContent className="flex items-center justify-center py-12">
-          <Text size="sm" textColor="muted">
-            <Trans>Loading policy...</Trans>
-          </Text>
-        </CardContent>
-      </Card>
+      <SectionCard className="m-4" contentClassName="flex items-center justify-center py-12">
+        <Text size="sm" textColor="muted">
+          <Trans>Loading policy...</Trans>
+        </Text>
+      </SectionCard>
     );
   }
 
@@ -53,20 +51,20 @@ export default function Page() {
     }
 
     return (
-      <Card className="m-4 shadow-none">
-        <CardContent className="flex flex-col items-center justify-center gap-3 py-12">
-          <STATUS_ICONS.warning className="text-muted-foreground h-8 w-8" />
-          <Text size="sm" textColor="muted">
-            <Trans>No fraud policy configured.</Trans>
-          </Text>
-          <Button
-            type="primary"
-            icon={<ACTION_ICONS.add size={16} />}
-            onClick={() => setCreating(true)}>
-            <Trans>Create Policy</Trans>
-          </Button>
-        </CardContent>
-      </Card>
+      <SectionCard
+        className="m-4"
+        contentClassName="flex flex-col items-center justify-center gap-3 py-12">
+        <STATUS_ICONS.warning className="text-muted-foreground h-8 w-8" />
+        <Text size="sm" textColor="muted">
+          <Trans>No fraud policy configured.</Trans>
+        </Text>
+        <Button
+          type="primary"
+          icon={<ACTION_ICONS.add size={16} />}
+          onClick={() => setCreating(true)}>
+          <Trans>Create Policy</Trans>
+        </Button>
+      </SectionCard>
     );
   }
 

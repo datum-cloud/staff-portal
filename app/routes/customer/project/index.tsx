@@ -1,7 +1,13 @@
 import type { Route } from './+types/index';
 import { DateTime } from '@/components/date';
 import { DisplayId } from '@/components/display';
-import { DATE_RANGE_OPTIONS, ListGrowthChart, ListPage, ListTable } from '@/features/milo';
+import {
+  DATE_RANGE_OPTIONS,
+  ListGrowthChart,
+  ListPage,
+  ListTable,
+  ListColumnHeader,
+} from '@/features/milo';
 import { type GqlProject, useAllProjectsQuery } from '@/resources/request/client';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
@@ -33,18 +39,18 @@ export default function Page() {
 
   const columns = [
     columnHelper.accessor('name', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => (
         <Link to={`./${row.original.name}`}>{row.original.displayName || row.original.name}</Link>
       ),
     }),
     columnHelper.accessor('name', {
       id: 'id',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`ID`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
       cell: ({ getValue }) => <DisplayId value={getValue() ?? ''} />,
     }),
     columnHelper.accessor('organizationName', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Organization`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Organization`} />,
       cell: ({ getValue }) => {
         const name = getValue() ?? '';
         return <Link to={orgRoutes.detail(name)}>{name}</Link>;
@@ -52,7 +58,7 @@ export default function Page() {
     }),
     columnHelper.accessor('createdAt', {
       id: 'createdAt',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Created`} />,
       cell: ({ getValue }) => <DateTime date={getValue() ?? undefined} />,
     }),
   ];

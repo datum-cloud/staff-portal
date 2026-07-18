@@ -19,7 +19,7 @@ interface MiloNavItemProps {
  * overflow scroll.
  */
 export function MiloNavItem({ section, active }: MiloNavItemProps) {
-  const hasDropdown = (section.subNav?.groups.length ?? 0) > 0;
+  const hasDropdown = section.navbarDropdown !== false && (section.subNav?.groups.length ?? 0) > 0;
   const [open, setOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -42,7 +42,7 @@ export function MiloNavItem({ section, active }: MiloNavItemProps) {
       onMouseLeave={hasDropdown ? closeSoon : undefined}
       onClick={() => setOpen(false)}
       className={cn(
-        'flex items-center rounded-md border border-transparent px-2 py-0.5 whitespace-nowrap transition-colors',
+        'flex items-center rounded-[3px] border border-transparent px-2 py-1.5 whitespace-nowrap transition-colors',
         active || open ? 'bg-card text-primary' : 'text-foreground hover:bg-card hover:text-primary'
       )}>
       <span className="text-sm font-medium">{section.label}</span>

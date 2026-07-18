@@ -58,6 +58,11 @@ export interface NavSection {
   match?: string;
   /** Present ⇒ left sub-nav rail shows; absent ⇒ direct link, no rail. */
   subNav?: NavSubNav;
+  /**
+   * When false, the top navbar item is a plain link (no hover dropdown), even
+   * if `subNav` is present for the left rail. Defaults to true.
+   */
+  navbarDropdown?: boolean;
 }
 
 export const NAV_SECTIONS: NavSection[] = [
@@ -67,6 +72,8 @@ export const NAV_SECTIONS: NavSection[] = [
     icon: SECTION_ICONS.customers,
     href: orgRoutes.list(),
     match: '/customers',
+    // Top nav goes straight to Organizations; children live in the left rail.
+    navbarDropdown: false,
     subNav: {
       defaultCollapsed: true,
       groups: [

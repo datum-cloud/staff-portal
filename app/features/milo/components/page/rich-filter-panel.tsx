@@ -6,6 +6,7 @@ import { Label } from '@datum-cloud/datum-ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
 import { RadioGroup, RadioGroupItem } from '@datum-cloud/datum-ui/radio-group';
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@datum-cloud/datum-ui/sheet';
+import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { useLingui } from '@lingui/react/macro';
@@ -161,6 +162,42 @@ export function FilterGroup(config: FilterGroupConfig & { counts?: Record<string
   }
 }
 
+/** Placeholder for one filter group while list data (and option counts) load. */
+export function FilterGroupSkeleton({
+  label,
+  optionCount = 3,
+}: {
+  label?: ReactNode;
+  optionCount?: number;
+}) {
+  const rows = Math.min(Math.max(optionCount, 2), 6);
+  return (
+    <div
+      className="border-border flex flex-col gap-2 border-b px-4 py-3"
+      data-slot="filter-group-skeleton"
+      aria-hidden>
+      <div className="flex h-5 items-center">
+        {label != null ? (
+          <Text size="sm" weight="medium">
+            {label}
+          </Text>
+        ) : (
+          <Skeleton className="h-3.5 w-20" />
+        )}
+      </div>
+      <div className="flex flex-col gap-1">
+        {Array.from({ length: rows }, (_, i) => (
+          <div key={i} className="flex items-center gap-2 px-2 py-1">
+            <Skeleton className="size-4 shrink-0 rounded-sm" />
+            <Skeleton className={cn('h-3.5 flex-1', i % 2 === 0 ? 'max-w-[70%]' : 'max-w-[55%]')} />
+            <Skeleton className="h-3 w-5 shrink-0" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /** One collapsible filter group: a label + multi-select checkboxes wired to one column. */
 export function CheckboxFilterGroup({
   column,
@@ -304,7 +341,13 @@ export function CheckboxFilterGroup({
  * and auto-wired matchers as the sidebar {@link FilterPanel} — only the
  * presentation differs (a row of popover dropdowns instead of a left rail).
  */
-export function InlineFilterBar({ filters }: { filters: FilterGroupConfig[] }) {
+export function InlineFilterBar({
+  filters,
+  loading = false,
+}: {
+  filters: FilterGroupConfig[];
+  loading?: boolean;
+}) {
   'use no memo';
   const { t } = useLingui();
   const { filters: active, clearAllFilters } = useDataTableFilters();
@@ -313,10 +356,12 @@ export function InlineFilterBar({ filters }: { filters: FilterGroupConfig[] }) {
   return (
     <div className="flex flex-wrap items-center gap-2">
       <ACTION_ICONS.filter className="text-muted-foreground size-4" />
-      {filters.map((f) => (
-        <InlineFilter key={f.column} {...f} />
-      ))}
-      {activeCount > 0 && (
+      {loading
+        ? filters.map((f) => (
+            <Skeleton key={f.column} className="h-8 w-24 rounded-md" aria-hidden />
+          ))
+        : filters.map((f) => <InlineFilter key={f.column} {...f} />)}
+      {!loading && activeCount > 0 && (
         <button
           type="button"
           onClick={clearAllFilters}
@@ -395,7 +440,13 @@ function InlineFilter({ column, label, options }: FilterGroupConfig) {
  * that opens the same {@link FilterPanel} in a bottom Sheet — so the table keeps
  * full width on small screens. `<ListTable>` swaps to this below the `md` tier.
  */
-export function MobileFilterButton({ filters }: { filters: FilterGroupConfig[] }) {
+export function MobileFilterButton({
+  filters,
+  loading = false,
+}: {
+  filters: FilterGroupConfig[];
+  loading?: boolean;
+}) {
   'use no memo';
   const { t } = useLingui();
   const { filters: active, clearAllFilters } = useDataTableFilters();
@@ -411,9 +462,10 @@ export function MobileFilterButton({ filters }: { filters: FilterGroupConfig[] }
         size="icon"
         aria-label={t`Filters`}
         className="relative size-8 shrink-0"
+        disabled={loading}
         onClick={() => setOpen(true)}>
         <SlidersHorizontal className="size-4" />
-        {activeCount > 0 && (
+        {!loading && activeCount > 0 && (
           <span className="bg-primary ring-card absolute top-1 right-1 size-2 rounded-full ring-2" />
         )}
       </Button>
@@ -439,9 +491,15 @@ export function MobileFilterButton({ filters }: { filters: FilterGroupConfig[] }
             )}
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto">
-            {filters.map((f) => (
-              <FilterGroup key={f.column} {...f} />
-            ))}
+            {loading
+              ? filters.map((f) => (
+                  <FilterGroupSkeleton
+                    key={f.column}
+                    label={f.label}
+                    optionCount={f.options.length}
+                  />
+                ))
+              : filters.map((f) => <FilterGroup key={f.column} {...f} />)}
           </div>
         </SheetContent>
       </Sheet>

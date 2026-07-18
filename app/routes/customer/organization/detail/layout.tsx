@@ -1,7 +1,9 @@
 import type { Route } from './+types/layout';
+import { CustomerStatus } from '@/components/badge';
 import { DetailShell, type EntityTab } from '@/features/milo';
 import { useEnv } from '@/hooks';
 import { authenticator } from '@/modules/auth';
+import { useOrganizationQuery } from '@/resources/request/client';
 import { orgDetailQuery } from '@/resources/request/server';
 import { ACTION_ICONS, ENTITY_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
 import { orgRoutes } from '@/utils/config/routes.config';
@@ -33,7 +35,17 @@ export default function Layout() {
   const { pathname } = useLocation();
 
   const orgName = data?.metadata?.name ?? '';
-  const displayName = data?.metadata?.annotations?.['kubernetes.io/display-name'] || orgName;
+  const k8sDisplayName = data?.metadata?.annotations?.['kubernetes.io/display-name'] || orgName;
+
+  const { data: gqlOrg } = useOrganizationQuery(orgName);
+  const companyName = gqlOrg?.contactInfo?.businessName?.trim() || null;
+  const gqlDisplayName = gqlOrg?.displayName?.trim() || null;
+  const headerTitle = companyName || gqlDisplayName || k8sDisplayName;
+  const headerSubtitle = companyName
+    ? [gqlDisplayName && gqlDisplayName !== companyName ? gqlDisplayName : null, orgName]
+        .filter(Boolean)
+        .join(' · ')
+    : orgName;
 
   const cloudOrgUrl = useMemo(() => {
     if (!env?.CLOUD_PORTAL_URL || !orgName) return null;
@@ -59,9 +71,16 @@ export default function Layout() {
       end: true,
     },
     { label: t`Projects`, href: orgRoutes.project(orgName), icon: ENTITY_ICONS.project },
-    { label: t`AI Edge`, href: orgRoutes.edge(orgName), icon: ENTITY_ICONS.edge },
-    { label: t`DNS`, href: orgRoutes.dns(orgName), icon: ENTITY_ICONS.dns },
-    { label: t`Domains`, href: orgRoutes.domain(orgName), icon: ENTITY_ICONS.domain },
+    {
+      label: t`Resources`,
+      icon: ENTITY_ICONS.resource,
+      match: [orgRoutes.edge(orgName), orgRoutes.dns(orgName), orgRoutes.domain(orgName)],
+      children: [
+        { label: t`AI Edge`, href: orgRoutes.edge(orgName) },
+        { label: t`DNS`, href: orgRoutes.dns(orgName) },
+        { label: t`Domains`, href: orgRoutes.domain(orgName) },
+      ],
+    },
     { label: t`Members`, href: orgRoutes.member(orgName), icon: ENTITY_ICONS.user },
     { label: t`Usage`, href: orgRoutes.usage(orgName), icon: TAB_ICONS.usage },
     {
@@ -97,8 +116,24 @@ export default function Layout() {
           <ENTITY_ICONS.organization className="size-5" />
         </div>
       }
-      name={displayName}
-      subtitle={orgName}
+      name={
+        <span className="flex flex-wrap items-center gap-2">
+          <span>{headerTitle}</span>
+          {gqlOrg && (
+            <CustomerStatus
+              status={gqlOrg.onboardingStatus}
+              tooltip={
+                gqlOrg.onboardingComplete
+                  ? t`Fully onboarded`
+                  : (gqlOrg.onboardingMessage ??
+                    gqlOrg.onboardingReason ??
+                    t`Onboarding incomplete`)
+              }
+            />
+          )}
+        </span>
+      }
+      subtitle={headerSubtitle}
       actions={
         cloudOrgUrl && (
           <LinkButton

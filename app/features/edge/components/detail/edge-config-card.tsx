@@ -1,7 +1,7 @@
 import { BadgeState } from '@/components/badge';
 import { DescriptionList } from '@/components/description-list';
 import { formatWafProtectionDisplay, type HttpProxy } from '@/features/edge/lib';
-import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
+import { SectionCard } from '@/features/milo';
 import { Trans } from '@lingui/react/macro';
 import { useMemo } from 'react';
 
@@ -78,15 +78,8 @@ export function EdgeConfigCard({ proxy }: { proxy: HttpProxy }) {
   );
 
   return (
-    <Card className="shadow-none">
-      <CardHeader>
-        <CardTitle>
-          <Trans>Configuration</Trans>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <DescriptionList items={items} />
-      </CardContent>
-    </Card>
+    <SectionCard title={<Trans>Configuration</Trans>}>
+      <DescriptionList items={items} />
+    </SectionCard>
   );
 }

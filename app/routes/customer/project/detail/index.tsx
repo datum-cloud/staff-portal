@@ -4,7 +4,14 @@ import { BadgeState } from '@/components/badge';
 import { DangerZoneCard } from '@/components/danger-zone-card';
 import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
-import { getActiveProjectBinding, getBillingAccountDisplayName } from '@/features/billing/utils';
+import { DisplayName } from '@/components/display';
+import {
+  getActiveProjectBinding,
+  getBillingAccountDisplayName,
+  getOrganizationDisplayName,
+  getResourceNameSubtext,
+} from '@/features/billing/utils';
+import { SectionCard } from '@/features/milo';
 import {
   useBillingAccountBindingListForOrgQuery,
   useBillingAccountListForOrgQuery,
@@ -12,12 +19,11 @@ import {
 } from '@/resources/request/client';
 import { billingAccountRoutes, orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useMemo } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const { projectName } = getProjectDetailMetadata(matches);
@@ -42,13 +48,17 @@ export default function Page() {
     const account = accounts.find((item) => item.metadata?.name === accountName);
 
     if (account) {
+      const accountDisplayName = getBillingAccountDisplayName(account);
+      const accountResourceName = account.metadata?.name ?? accountName;
       return (
-        <Link
-          to={billingAccountRoutes.detail(orgName, account.metadata?.name ?? '')}
-          className="inline-flex items-center gap-2 hover:underline">
-          {getBillingAccountDisplayName(account)}
+        <div className="inline-flex items-center gap-2">
+          <DisplayName
+            displayName={accountDisplayName}
+            name={getResourceNameSubtext(accountDisplayName, accountResourceName)}
+            to={billingAccountRoutes.detail(orgName, accountResourceName)}
+          />
           <BadgeState state={account.status?.phase ?? 'Unknown'} />
-        </Link>
+        </div>
       );
     }
 
@@ -70,43 +80,48 @@ export default function Page() {
   };
 
   return (
-    <div className="m-4 flex flex-col gap-1">
-      <Card className="shadow-none">
-        <CardContent>
-          <DescriptionList
-            items={[
-              {
-                label: <Trans>Description</Trans>,
-                value: <Text>{project?.metadata?.annotations?.['kubernetes.io/description']}</Text>,
-              },
-              {
-                label: <Trans>Name</Trans>,
-                value: <Text>{project?.metadata?.name}</Text>,
-              },
-              {
-                label: <Trans>Organization</Trans>,
-                value: (
-                  <Link to={orgRoutes.detail(organization?.metadata?.name ?? '')}>
-                    {organization?.metadata?.annotations?.['kubernetes.io/display-name']}
-                  </Link>
-                ),
-              },
-              {
-                label: <Trans>Billing account</Trans>,
-                value: billingValue,
-              },
-              {
-                label: <Trans>Created</Trans>,
-                value: (
-                  <Text>
-                    <DateTime date={project?.metadata?.creationTimestamp} variant="both" />
-                  </Text>
-                ),
-              },
-            ]}
-          />
-        </CardContent>
-      </Card>
+    <div className="m-4 flex flex-col gap-4">
+      <SectionCard>
+        <DescriptionList
+          items={[
+            {
+              label: <Trans>Description</Trans>,
+              value: <Text>{project?.metadata?.annotations?.['kubernetes.io/description']}</Text>,
+            },
+            {
+              label: <Trans>Name</Trans>,
+              value: <Text>{project?.metadata?.name}</Text>,
+            },
+            {
+              label: <Trans>Organization</Trans>,
+              value: (() => {
+                const name = organization?.metadata?.name ?? '';
+                if (!name) return <Text>—</Text>;
+                const orgDisplayName = getOrganizationDisplayName(organization) || name;
+                return (
+                  <DisplayName
+                    displayName={orgDisplayName}
+                    name={getResourceNameSubtext(orgDisplayName, name)}
+                    to={orgRoutes.detail(name)}
+                  />
+                );
+              })(),
+            },
+            {
+              label: <Trans>Billing account</Trans>,
+              value: billingValue,
+            },
+            {
+              label: <Trans>Created</Trans>,
+              value: (
+                <Text>
+                  <DateTime date={project?.metadata?.creationTimestamp} variant="both" />
+                </Text>
+              ),
+            },
+          ]}
+        />
+      </SectionCard>
 
       <DangerZoneCard
         deleteTitle={t`Delete Project`}

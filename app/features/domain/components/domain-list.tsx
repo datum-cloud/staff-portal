@@ -3,6 +3,7 @@ import { DomainExpiration } from './domain-expiration';
 import { DomainStatusProbe } from './domain-status-probe';
 import { DateTime } from '@/components/date';
 import { SearchResourceTable, type ControlledSearch } from '@/components/search-resource-table';
+import { ListColumnHeader } from '@/features/milo';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
@@ -57,7 +58,7 @@ export function DomainList({
   const columns = [
     columnHelper.accessor((row) => row.domain.spec?.domainName ?? '', {
       id: 'domain',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Domain`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Domain`} />,
       cell: ({ getValue, row }) => {
         const to = linkBuilder(row.original);
         return to ? <Link to={to}>{getValue()}</Link> : <span>{getValue()}</span>;
@@ -67,7 +68,7 @@ export function DomainList({
       ? [
           columnHelper.accessor((row) => row.projectName, {
             id: 'project',
-            header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Project`} />,
+            header: ({ column }) => <ListColumnHeader column={column} title={t`Project`} />,
             cell: ({ getValue }) => {
               const project = getValue();
               return project ? <Link to={projectRoutes.detail(project)}>{project}</Link> : '—';
@@ -77,17 +78,17 @@ export function DomainList({
       : []),
     columnHelper.accessor((row) => row.domain.status?.registration?.registrar?.name ?? '', {
       id: 'registrar',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Registrar`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Registrar`} />,
       cell: ({ getValue }) => getValue() || '—',
     }),
     columnHelper.accessor((row) => row.domain.status?.nameservers, {
       id: 'nameservers',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`DNS Providers`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`DNS Providers`} />,
       cell: ({ getValue }) => <DomainDnsProviders nameservers={getValue() ?? []} maxVisible={2} />,
     }),
     columnHelper.accessor((row) => row.domain.status?.registration?.expiresAt, {
       id: 'expiration',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Expiration Date`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Expiration Date`} />,
       cell: ({ getValue }) => <DomainExpiration expiresAt={getValue()} />,
     }),
     columnHelper.display({
@@ -104,7 +105,7 @@ export function DomainList({
     }),
     columnHelper.accessor((row) => row.domain.metadata?.creationTimestamp, {
       id: 'metadata.creationTimestamp',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Created`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
   ];

@@ -5,7 +5,7 @@ import { BadgeCondition } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
-import { ListTable } from '@/features/milo';
+import { ListColumnHeader, ListTable } from '@/features/milo';
 import { useContactSearch, useUserSearch } from '@/hooks';
 import {
   contactCreateMutation,
@@ -178,7 +178,7 @@ export default function Page() {
       },
       {
         id: 'name',
-        header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+        header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
         cell: ({ row }) => {
           const contact = row.original.contact;
           const contactNamespace =
@@ -199,12 +199,12 @@ export default function Page() {
     ),
     columnHelper.accessor((row) => row.contact?.spec?.email ?? '—', {
       id: 'email',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Email`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Email`} />,
       cell: ({ row }) => row.original.contact?.spec?.email ?? '—',
     }),
     columnHelper.accessor((row) => row.contact?.status ?? null, {
       id: 'status',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Status`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
       cell: ({ row }) => {
         const contact = row.original.contact;
         if (!contact?.status) return '—';
@@ -220,7 +220,7 @@ export default function Page() {
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'metadata.creationTimestamp',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Added`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Added`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
     columnHelper.display({

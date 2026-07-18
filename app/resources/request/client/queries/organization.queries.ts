@@ -1,5 +1,6 @@
 import { orgInvitationCreateMutation, orgInvitationDeleteMutation } from '../apis/organization.api';
 import {
+  getOrganization,
   listAllOrganizations,
   listOrganizations,
   listOrgMembers,
@@ -18,6 +19,7 @@ export const organizationQueryKeys = {
   all: ['organizations'] as const,
   list: (params?: ListQueryParams) => ['organizations', 'list', params] as const,
   listAll: (search?: string) => ['organizations', 'list-all', search ?? ''] as const,
+  detail: (orgName: string) => ['organizations', orgName, 'detail'] as const,
   projects: {
     all: (orgName: string) => ['organizations', orgName, 'projects'] as const,
     list: (orgName: string, params?: ListQueryParams) =>
@@ -28,6 +30,16 @@ export const organizationQueryKeys = {
     list: (orgName: string, params?: ListQueryParams) =>
       ['organizations', orgName, 'members', 'list', params] as const,
   },
+};
+
+/** GraphQL-enriched org (company, onboarding, counts) for detail Overview / header. */
+export const useOrganizationQuery = (orgName: string) => {
+  return useQuery({
+    queryKey: organizationQueryKeys.detail(orgName),
+    queryFn: () => getOrganization(orgName),
+    enabled: !!orgName,
+    staleTime: 60 * 1000,
+  });
 };
 
 export const useOrgListQuery = (params?: ListQueryParams) => {

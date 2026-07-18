@@ -39,7 +39,7 @@ export function MiloUserMenu() {
     <DropdownMenu>
       <DropdownMenuTrigger
         aria-label={t`Account menu`}
-        className="bg-card border-border focus-visible:ring-ring hover:bg-foreground/5 flex items-center gap-1 rounded-full border p-0.5 pr-1.5 transition-colors outline-none focus-visible:ring-2">
+        className="bg-card focus-visible:ring-ring hover:bg-foreground/5 flex items-center gap-1 rounded-full p-0.5 pr-1.5 transition-colors outline-none focus-visible:ring-2">
         <UserAvatar
           name={fullName}
           avatarUrl={avatarUrl}

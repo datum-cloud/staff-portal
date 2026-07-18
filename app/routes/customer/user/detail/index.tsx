@@ -9,6 +9,7 @@ import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
 import { DialogForm } from '@/components/dialog';
 import { buildMaxmindRowGroups, extractMaxmindInsights } from '@/features/fraud';
+import { SectionCard } from '@/features/milo';
 import { UserRejectDialog, useUserApproval } from '@/features/user';
 import { UserIdentityCard } from '@/features/user/components/user-identity-card';
 import { useEnv } from '@/hooks';
@@ -24,13 +25,6 @@ import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes, userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@datum-cloud/datum-ui/card';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
@@ -229,58 +223,56 @@ export default function Page() {
         </AppActionBar>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:[&>:last-child:nth-child(odd)]:col-span-2">
-          <Card className="shadow-none">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+          <SectionCard
+            title={
+              <span className="flex items-center gap-2">
                 <UserIcon className="h-4 w-4" />
                 <Trans>User</Trans>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <DescriptionList
-                labelWidth="40%"
-                items={[
-                  {
-                    label: <Trans>ID</Trans>,
-                    value: (
-                      <div className="flex items-center gap-2">
-                        <Text>{data?.metadata?.name}</Text>
-                        <ButtonCopy value={data?.metadata?.name ?? ''} />
-                      </div>
-                    ),
-                  },
-                  {
-                    label: <Trans>Full Name</Trans>,
-                    value: (
-                      <Text>
-                        {data?.spec?.givenName} {data?.spec?.familyName}
-                      </Text>
-                    ),
-                  },
-                  {
-                    label: <Trans>Email</Trans>,
-                    value: <Text>{data?.spec?.email}</Text>,
-                  },
-                  {
-                    label: <Trans>Registration Approval</Trans>,
-                    value: <BadgeState state={data?.status?.registrationApproval ?? 'Unknown'} />,
-                  },
-                  {
-                    label: <Trans>Status</Trans>,
-                    value: <BadgeState state={data?.status?.state ?? 'Active'} />,
-                  },
-                  {
-                    label: <Trans>Created</Trans>,
-                    value: (
-                      <Text>
-                        <DateTime date={data?.metadata?.creationTimestamp} variant="both" />
-                      </Text>
-                    ),
-                  },
-                ]}
-              />
-            </CardContent>
-          </Card>
+              </span>
+            }>
+            <DescriptionList
+              labelWidth="40%"
+              items={[
+                {
+                  label: <Trans>ID</Trans>,
+                  value: (
+                    <div className="flex items-center gap-2">
+                      <Text>{data?.metadata?.name}</Text>
+                      <ButtonCopy value={data?.metadata?.name ?? ''} />
+                    </div>
+                  ),
+                },
+                {
+                  label: <Trans>Full Name</Trans>,
+                  value: (
+                    <Text>
+                      {data?.spec?.givenName} {data?.spec?.familyName}
+                    </Text>
+                  ),
+                },
+                {
+                  label: <Trans>Email</Trans>,
+                  value: <Text>{data?.spec?.email}</Text>,
+                },
+                {
+                  label: <Trans>Registration Approval</Trans>,
+                  value: <BadgeState state={data?.status?.registrationApproval ?? 'Unknown'} />,
+                },
+                {
+                  label: <Trans>Status</Trans>,
+                  value: <BadgeState state={data?.status?.state ?? 'Active'} />,
+                },
+                {
+                  label: <Trans>Created</Trans>,
+                  value: (
+                    <Text>
+                      <DateTime date={data?.metadata?.creationTimestamp} variant="both" />
+                    </Text>
+                  ),
+                },
+              ]}
+            />
+          </SectionCard>
 
           <UserIdentityCard
             userId={data?.metadata?.name ?? ''}
@@ -290,212 +282,199 @@ export default function Page() {
           />
 
           {maxmindGroups.network.length > 0 && (
-            <Card className="shadow-none">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+            <SectionCard
+              title={
+                <span className="flex items-center gap-2">
                   <Globe className="h-4 w-4" />
                   <Trans>IP & Network</Trans>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <DescriptionList labelWidth="40%" items={maxmindGroups.network} />
-              </CardContent>
-            </Card>
+                </span>
+              }>
+              <DescriptionList labelWidth="40%" items={maxmindGroups.network} />
+            </SectionCard>
           )}
 
           {maxmindGroups.location.length > 0 && (
-            <Card className="shadow-none">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+            <SectionCard
+              title={
+                <span className="flex items-center gap-2">
                   <MapPin className="h-4 w-4" />
                   <Trans>Location</Trans>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <DescriptionList labelWidth="40%" items={maxmindGroups.location} />
-              </CardContent>
-            </Card>
+                </span>
+              }>
+              <DescriptionList labelWidth="40%" items={maxmindGroups.location} />
+            </SectionCard>
           )}
 
           {maxmindGroups.email.length > 0 && (
-            <Card className="shadow-none">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+            <SectionCard
+              title={
+                <span className="flex items-center gap-2">
                   <Mail className="h-4 w-4" />
                   <Trans>Email Domain</Trans>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <DescriptionList labelWidth="40%" items={maxmindGroups.email} />
-              </CardContent>
-            </Card>
+                </span>
+              }>
+              <DescriptionList labelWidth="40%" items={maxmindGroups.email} />
+            </SectionCard>
           )}
 
-          <Card className="shadow-none">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+          <SectionCard
+            title={
+              <span className="flex items-center gap-2">
                 <ShieldAlert className="h-4 w-4" />
                 <Trans>Fraud Assessment</Trans>
-              </CardTitle>
-              <CardDescription>
-                <Trans>Latest fraud evaluation for this user</Trans>
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {isFraudLoading ? (
-                <Text textColor="muted" size="sm">
-                  <Trans>Loading...</Trans>
-                </Text>
-              ) : latestEval ? (
-                <div className="flex flex-wrap items-end justify-between gap-4">
-                  <div className="flex flex-wrap items-start gap-x-6 gap-y-3">
-                    <div className="flex flex-col gap-1">
-                      <Text textColor="muted" size="sm">
-                        <Trans>Score</Trans>
-                      </Text>
-                      <span
-                        className={`font-mono text-2xl font-bold ${getScoreColor(latestEval.status?.decision)}`}>
-                        {latestEval.status?.compositeScore ?? '-'}
-                      </span>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <Text textColor="muted" size="sm">
-                        <Trans>Decision</Trans>
-                      </Text>
-                      <BadgeState
-                        state={
-                          latestEval.status?.decision === 'DEACTIVATE'
-                            ? 'error'
-                            : latestEval.status?.decision === 'REVIEW'
-                              ? 'warning'
-                              : 'pending'
-                        }
-                        message={latestEval.status?.decision ?? 'NONE'}
-                      />
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <Text textColor="muted" size="sm">
-                        <Trans>Last Evaluated</Trans>
-                      </Text>
-                      <Text size="sm">
-                        <DateTime date={latestEval.status?.lastEvaluationTime} variant="both" />
-                      </Text>
-                    </div>
+              </span>
+            }
+            description={<Trans>Latest fraud evaluation for this user</Trans>}>
+            {isFraudLoading ? (
+              <Text textColor="muted" size="sm">
+                <Trans>Loading...</Trans>
+              </Text>
+            ) : latestEval ? (
+              <div className="flex flex-wrap items-end justify-between gap-4">
+                <div className="flex flex-wrap items-start gap-x-6 gap-y-3">
+                  <div className="flex flex-col gap-1">
+                    <Text textColor="muted" size="sm">
+                      <Trans>Score</Trans>
+                    </Text>
+                    <span
+                      className={`font-mono text-2xl font-bold ${getScoreColor(latestEval.status?.decision)}`}>
+                      {latestEval.status?.compositeScore ?? '-'}
+                    </span>
                   </div>
-                  <Button
-                    theme="outline"
-                    size="small"
-                    icon={<ACTION_ICONS.externalLink size={16} />}
-                    onClick={() =>
-                      navigate(fraudRoutes.evaluations.detail(latestEval.metadata?.name ?? ''))
-                    }>
-                    <Trans>View Evaluation</Trans>
-                  </Button>
+                  <div className="flex flex-col gap-1">
+                    <Text textColor="muted" size="sm">
+                      <Trans>Decision</Trans>
+                    </Text>
+                    <BadgeState
+                      state={
+                        latestEval.status?.decision === 'DEACTIVATE'
+                          ? 'error'
+                          : latestEval.status?.decision === 'REVIEW'
+                            ? 'warning'
+                            : 'pending'
+                      }
+                      message={latestEval.status?.decision ?? 'NONE'}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <Text textColor="muted" size="sm">
+                      <Trans>Last Evaluated</Trans>
+                    </Text>
+                    <Text size="sm">
+                      <DateTime date={latestEval.status?.lastEvaluationTime} variant="both" />
+                    </Text>
+                  </div>
                 </div>
-              ) : (
-                <Text textColor="muted" size="sm">
-                  <Trans>No fraud evaluations found for this user.</Trans>
-                </Text>
-              )}
-            </CardContent>
-          </Card>
+                <Button
+                  theme="outline"
+                  size="small"
+                  icon={<ACTION_ICONS.externalLink size={16} />}
+                  onClick={() =>
+                    navigate(fraudRoutes.evaluations.detail(latestEval.metadata?.name ?? ''))
+                  }>
+                  <Trans>View Evaluation</Trans>
+                </Button>
+              </div>
+            ) : (
+              <Text textColor="muted" size="sm">
+                <Trans>No fraud evaluations found for this user.</Trans>
+              </Text>
+            )}
+          </SectionCard>
         </div>
 
-        <Card className="mt-4 shadow-none">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+        <SectionCard
+          className="mt-4"
+          title={
+            <span className="flex items-center gap-2">
               <Shield className="h-4 w-4" />
               <Trans>Account Management</Trans>
-            </CardTitle>
-            <CardDescription>
-              <Trans>Manage user access and account status</Trans>
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {data?.status?.state === 'Inactive' ? (
-              <>
-                <ActionCard
-                  variant="success"
-                  icon={ShieldCheckIcon}
-                  title={<Trans>Reactivate User</Trans>}
-                  description={
-                    <Trans>
-                      Re-enable this user&apos;s access to the system. They will be able to sign in
-                      immediately.
-                    </Trans>
-                  }
-                  action={
-                    <Button
-                      type="success"
-                      size="small"
-                      loading={isReactivating}
-                      onClick={() => handleReactivateUser()}>
-                      <Trans>Reactivate</Trans>
-                    </Button>
-                  }
-                />
-
-                <div className="bg-muted/40 mt-3 rounded-md border p-3">
-                  <Text size="sm" weight="medium" className="mb-2 block">
-                    <Trans>Deactivation Details</Trans>
-                  </Text>
-                  <DescriptionList
-                    labelWidth="40%"
-                    items={[
-                      {
-                        label: (
-                          <Text textColor="muted" size="sm">
-                            <Trans>Deactivated By</Trans>
-                          </Text>
-                        ),
-                        value: <Text size="sm">{deactivationData?.data?.spec?.deactivatedBy}</Text>,
-                      },
-                      {
-                        label: (
-                          <Text textColor="muted" size="sm">
-                            <Trans>Deactivated At</Trans>
-                          </Text>
-                        ),
-                        value: (
-                          <Text size="sm">
-                            <DateTime
-                              date={deactivationData?.data?.metadata?.creationTimestamp ?? ''}
-                            />
-                          </Text>
-                        ),
-                      },
-                      {
-                        label: (
-                          <Text textColor="muted" size="sm">
-                            <Trans>Deactivation Reason</Trans>
-                          </Text>
-                        ),
-                        value: <Text size="sm">{deactivationData?.data?.spec?.reason}</Text>,
-                      },
-                    ]}
-                  />
-                </div>
-              </>
-            ) : (
+            </span>
+          }
+          description={<Trans>Manage user access and account status</Trans>}>
+          {data?.status?.state === 'Inactive' ? (
+            <>
               <ActionCard
-                variant="warning"
-                icon={ShieldXIcon}
-                title={<Trans>Deactivate User</Trans>}
+                variant="success"
+                icon={ShieldCheckIcon}
+                title={<Trans>Reactivate User</Trans>}
                 description={
                   <Trans>
-                    Temporarily prevent user from signing in. The user can be reactivated at any
-                    time and all data will remain intact.
+                    Re-enable this user&apos;s access to the system. They will be able to sign in
+                    immediately.
                   </Trans>
                 }
                 action={
-                  <Button type="warning" size="small" onClick={() => setDeactivateDialogOpen(true)}>
-                    <Trans>Deactivate</Trans>
+                  <Button
+                    type="success"
+                    size="small"
+                    loading={isReactivating}
+                    onClick={() => handleReactivateUser()}>
+                    <Trans>Reactivate</Trans>
                   </Button>
                 }
               />
-            )}
-          </CardContent>
-        </Card>
+
+              <div className="bg-muted/40 mt-3 rounded-md border p-3">
+                <Text size="sm" weight="medium" className="mb-2 block">
+                  <Trans>Deactivation Details</Trans>
+                </Text>
+                <DescriptionList
+                  labelWidth="40%"
+                  items={[
+                    {
+                      label: (
+                        <Text textColor="muted" size="sm">
+                          <Trans>Deactivated By</Trans>
+                        </Text>
+                      ),
+                      value: <Text size="sm">{deactivationData?.data?.spec?.deactivatedBy}</Text>,
+                    },
+                    {
+                      label: (
+                        <Text textColor="muted" size="sm">
+                          <Trans>Deactivated At</Trans>
+                        </Text>
+                      ),
+                      value: (
+                        <Text size="sm">
+                          <DateTime
+                            date={deactivationData?.data?.metadata?.creationTimestamp ?? ''}
+                          />
+                        </Text>
+                      ),
+                    },
+                    {
+                      label: (
+                        <Text textColor="muted" size="sm">
+                          <Trans>Deactivation Reason</Trans>
+                        </Text>
+                      ),
+                      value: <Text size="sm">{deactivationData?.data?.spec?.reason}</Text>,
+                    },
+                  ]}
+                />
+              </div>
+            </>
+          ) : (
+            <ActionCard
+              variant="warning"
+              icon={ShieldXIcon}
+              title={<Trans>Deactivate User</Trans>}
+              description={
+                <Trans>
+                  Temporarily prevent user from signing in. The user can be reactivated at any time
+                  and all data will remain intact.
+                </Trans>
+              }
+              action={
+                <Button type="warning" size="small" onClick={() => setDeactivateDialogOpen(true)}>
+                  <Trans>Deactivate</Trans>
+                </Button>
+              }
+            />
+          )}
+        </SectionCard>
 
         <DangerZoneCard
           deleteTitle={t`Delete User`}

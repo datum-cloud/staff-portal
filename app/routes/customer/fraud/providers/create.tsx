@@ -1,9 +1,9 @@
 import type { Route } from './+types/create';
+import { SectionCard } from '@/features/milo';
 import { useCreateFraudProviderMutation } from '@/resources/request/client';
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
@@ -66,85 +66,78 @@ export default function Page() {
   return (
     <div className="m-4">
       <div className="mx-auto max-w-2xl">
-        <Card className="shadow-none">
-          <CardHeader>
-            <CardTitle>
-              <Trans>Create Fraud Provider</Trans>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Form.Root
-              className="space-y-4"
-              schema={providerSchema}
-              defaultValues={{
-                name: '',
-                type: 'maxmind',
-                failurePolicy: 'FailOpen',
-                endpoint: '',
-                credentialsRefName: '',
-                credentialsRefNamespace: '',
-                accountIDKey: '',
-                licenseKeyKey: '',
-              }}
-              onSubmit={handleSubmit}>
-              {({ isSubmitting, isDirty, isValid }) => (
-                <>
-                  <Form.Field name="name" label={t`Name`} required>
-                    <Form.Input />
-                  </Form.Field>
-                  <Form.Field name="type" label={t`Provider Type`} required>
-                    <Form.Select>
-                      <Form.SelectItem value="maxmind">MaxMind</Form.SelectItem>
-                    </Form.Select>
-                  </Form.Field>
-                  <Form.Field name="failurePolicy" label={t`Failure Policy`} required>
-                    <Form.Select>
-                      <Form.SelectItem value="FailOpen">Fail Open</Form.SelectItem>
-                      <Form.SelectItem value="FailClosed">Fail Closed</Form.SelectItem>
-                    </Form.Select>
-                  </Form.Field>
-                  <Form.Field name="endpoint" label={t`Endpoint`}>
-                    <Form.Input />
-                  </Form.Field>
-                  <div className="border-t pt-4">
-                    <Text size="sm" weight="medium" className="mb-3">
-                      <Trans>Credentials Reference</Trans>
-                    </Text>
-                    <div className="space-y-4">
-                      <Form.Field name="credentialsRefName" label={t`Secret Name`}>
-                        <Form.Input />
-                      </Form.Field>
-                      <Form.Field name="credentialsRefNamespace" label={t`Secret Namespace`}>
-                        <Form.Input />
-                      </Form.Field>
-                      <Form.Field name="accountIDKey" label={t`Account ID Key`}>
-                        <Form.Input />
-                      </Form.Field>
-                      <Form.Field name="licenseKeyKey" label={t`License Key Key`}>
-                        <Form.Input />
-                      </Form.Field>
-                    </div>
+        <SectionCard title={<Trans>Create Fraud Provider</Trans>}>
+          <Form.Root
+            className="space-y-4"
+            schema={providerSchema}
+            defaultValues={{
+              name: '',
+              type: 'maxmind',
+              failurePolicy: 'FailOpen',
+              endpoint: '',
+              credentialsRefName: '',
+              credentialsRefNamespace: '',
+              accountIDKey: '',
+              licenseKeyKey: '',
+            }}
+            onSubmit={handleSubmit}>
+            {({ isSubmitting, isDirty, isValid }) => (
+              <>
+                <Form.Field name="name" label={t`Name`} required>
+                  <Form.Input />
+                </Form.Field>
+                <Form.Field name="type" label={t`Provider Type`} required>
+                  <Form.Select>
+                    <Form.SelectItem value="maxmind">MaxMind</Form.SelectItem>
+                  </Form.Select>
+                </Form.Field>
+                <Form.Field name="failurePolicy" label={t`Failure Policy`} required>
+                  <Form.Select>
+                    <Form.SelectItem value="FailOpen">Fail Open</Form.SelectItem>
+                    <Form.SelectItem value="FailClosed">Fail Closed</Form.SelectItem>
+                  </Form.Select>
+                </Form.Field>
+                <Form.Field name="endpoint" label={t`Endpoint`}>
+                  <Form.Input />
+                </Form.Field>
+                <div className="border-t pt-4">
+                  <Text size="sm" weight="medium" className="mb-3">
+                    <Trans>Credentials Reference</Trans>
+                  </Text>
+                  <div className="space-y-4">
+                    <Form.Field name="credentialsRefName" label={t`Secret Name`}>
+                      <Form.Input />
+                    </Form.Field>
+                    <Form.Field name="credentialsRefNamespace" label={t`Secret Namespace`}>
+                      <Form.Input />
+                    </Form.Field>
+                    <Form.Field name="accountIDKey" label={t`Account ID Key`}>
+                      <Form.Input />
+                    </Form.Field>
+                    <Form.Field name="licenseKeyKey" label={t`License Key Key`}>
+                      <Form.Input />
+                    </Form.Field>
                   </div>
-                  <div className="flex justify-end gap-2 pt-4">
-                    <Button
-                      type="tertiary"
-                      theme="borderless"
-                      htmlType="button"
-                      onClick={() => navigate(fraudRoutes.providers.list())}>
-                      {t`Cancel`}
-                    </Button>
-                    <Button
-                      htmlType="submit"
-                      disabled={!isDirty || !isValid || isSubmitting}
-                      loading={isSubmitting}>
-                      <Trans>Create</Trans>
-                    </Button>
-                  </div>
-                </>
-              )}
-            </Form.Root>
-          </CardContent>
-        </Card>
+                </div>
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button
+                    type="tertiary"
+                    theme="borderless"
+                    htmlType="button"
+                    onClick={() => navigate(fraudRoutes.providers.list())}>
+                    {t`Cancel`}
+                  </Button>
+                  <Button
+                    htmlType="submit"
+                    disabled={!isDirty || !isValid || isSubmitting}
+                    loading={isSubmitting}>
+                    <Trans>Create</Trans>
+                  </Button>
+                </div>
+              </>
+            )}
+          </Form.Root>
+        </SectionCard>
       </div>
     </div>
   );

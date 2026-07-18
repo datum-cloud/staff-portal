@@ -2,11 +2,10 @@ import { getProjectDetailMetadata, useProjectDetailData } from '../../shared';
 import type { Route } from './+types/index';
 import { BadgeCondition } from '@/components/badge';
 import { DateTime } from '@/components/date';
-import { ListTable } from '@/features/milo';
+import { ListColumnHeader, ListTable } from '@/features/milo';
 import { useProjectExportPolicyListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { ComMiloapisTelemetryV1Alpha1ExportPolicy } from '@openapi/telemetry.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -26,7 +25,7 @@ export default function Page() {
 
   const columns = [
     columnHelper.accessor('metadata.name', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ getValue }) => (
         <Link to={projectRoutes.exportPolicy.detail(projectName, getValue() ?? '')}>
           {getValue()}
@@ -34,11 +33,11 @@ export default function Page() {
       ),
     }),
     columnHelper.accessor('spec.sinks', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`# of Sinks`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`# of Sinks`} />,
       cell: ({ getValue }) => getValue().length,
     }),
     columnHelper.accessor('spec.sources', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`# of Sources`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`# of Sources`} />,
       cell: ({ getValue }) => getValue().length,
     }),
     columnHelper.accessor('status', {
@@ -49,7 +48,7 @@ export default function Page() {
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'metadata.creationTimestamp',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Created`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
   ];

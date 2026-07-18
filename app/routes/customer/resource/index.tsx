@@ -2,7 +2,7 @@ import type { Route } from './+types/index';
 import { DateTime } from '@/components/date';
 import { DnsHostChips } from '@/features/dns';
 import { DomainDnsProviders } from '@/features/domain';
-import { DATE_RANGE_OPTIONS, ListPage, ListTable } from '@/features/milo';
+import { DATE_RANGE_OPTIONS, ListPage, ListTable, ListColumnHeader } from '@/features/milo';
 import {
   searchDnsZonesListQuery,
   searchDomainsListQuery,
@@ -166,13 +166,13 @@ export default function Page() {
 
   const columns = [
     columnHelper.accessor('name', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ getValue, row }) =>
         row.original.to ? <Link to={row.original.to}>{getValue()}</Link> : getValue(),
     }),
     columnHelper.accessor('type', {
       id: 'type',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Type`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Type`} />,
       cell: ({ getValue }) => {
         const type = getValue();
         const Icon = ENTITY_ICONS[type];
@@ -186,7 +186,7 @@ export default function Page() {
     }),
     columnHelper.accessor('projectName', {
       id: 'projectName',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Project`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Project`} />,
       cell: ({ getValue }) => {
         const project = getValue();
         return project ? <Link to={projectRoutes.detail(project)}>{project}</Link> : '—';
@@ -199,7 +199,7 @@ export default function Page() {
     }),
     columnHelper.accessor('createdAt', {
       id: 'createdAt',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Created`} />,
       cell: ({ getValue }) => <DateTime date={getValue() ?? undefined} />,
     }),
   ];

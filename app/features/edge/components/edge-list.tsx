@@ -1,6 +1,7 @@
 import { BadgeCondition } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { SearchResourceTable, type ControlledSearch } from '@/components/search-resource-table';
+import { ListColumnHeader } from '@/features/milo';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
@@ -62,7 +63,7 @@ export function EdgeList({
   const columns = [
     columnHelper.accessor((row) => row.edge.metadata?.name ?? '', {
       id: 'name',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ getValue, row }) => {
         const to = linkBuilder(row.original);
         return to ? <Link to={to}>{getValue()}</Link> : <span>{getValue()}</span>;
@@ -72,7 +73,7 @@ export function EdgeList({
       ? [
           columnHelper.accessor((row) => row.projectName, {
             id: 'project',
-            header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Project`} />,
+            header: ({ column }) => <ListColumnHeader column={column} title={t`Project`} />,
             cell: ({ getValue }) => {
               const project = getValue();
               return project ? <Link to={projectRoutes.detail(project)}>{project}</Link> : '—';
@@ -104,7 +105,7 @@ export function EdgeList({
     }),
     columnHelper.accessor((row) => row.edge.metadata?.creationTimestamp, {
       id: 'metadata.creationTimestamp',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Created`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
   ];

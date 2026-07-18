@@ -9,14 +9,27 @@ import {
   getActiveBindingsForAccount,
   getBillingAccountDisplayName,
   getOrganizationDisplayName,
+  getPaymentMethodDisplayName,
+  getResourceNameSubtext,
   isDefaultPaymentMethod,
 } from '@/features/billing/utils';
+import {
+  EMBEDDED_TABLE_BODY_CLASS,
+  EMBEDDED_TABLE_CELL_CLASS,
+  EMBEDDED_TABLE_HEADER_CELL_CLASS,
+  LIST_TABLE_HEADER_CLASS,
+  LIST_TABLE_HEADER_ROW_CLASS,
+  LIST_TABLE_ROW_CLASS,
+  ListColumnHeader,
+  SectionCard,
+  TableCard,
+} from '@/features/milo';
 import { useEnv } from '@/hooks';
+import { useOrgProjectListQuery } from '@/resources/request/client';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { billingAccountRoutes, orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { Text } from '@datum-cloud/datum-ui/typography';
@@ -25,7 +38,8 @@ import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1BillingAccountBinding } from '@openapi/billing.miloapis.com/v1alpha1';
 import type { ComMiloapisBillingV1Alpha1PaymentMethod } from '@openapi/billing.miloapis.com/v1alpha1';
 import { createColumnHelper, type ColumnDef } from '@tanstack/react-table';
-import { Link, type MetaFunction } from 'react-router';
+import { useMemo } from 'react';
+import { type MetaFunction } from 'react-router';
 
 export const meta: MetaFunction = ({ matches }) => {
   const { displayName } = getBillingAccountDetailMetadata(matches);
@@ -39,18 +53,25 @@ export default function Page() {
   const { account, bindings, paymentMethods, orgName, organization } =
     useBillingAccountDetailData();
   const env = useEnv();
+  const projectsQuery = useOrgProjectListQuery(orgName);
+
+  const projectDisplayNames = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const project of projectsQuery.data?.items ?? []) {
+      map.set(project.name, project.displayName || project.name);
+    }
+    return map;
+  }, [projectsQuery.data?.items]);
 
   if (!account) {
     return (
       <div className="m-4">
         <PageHeader title={t`Billing Account`} />
-        <Card className="mt-4 shadow-none">
-          <CardContent className="py-6">
-            <Text>
-              <Trans>Billing account not found or you do not have permission to view it.</Trans>
-            </Text>
-          </CardContent>
-        </Card>
+        <SectionCard className="mt-4" contentClassName="py-6">
+          <Text>
+            <Trans>Billing account not found or you do not have permission to view it.</Trans>
+          </Text>
+        </SectionCard>
       </div>
     );
   }
@@ -61,15 +82,28 @@ export default function Page() {
   const activeBindings = getActiveBindingsForAccount(bindings, account.metadata?.name ?? '');
   const cloudPortalUrl =
     env?.CLOUD_PORTAL_URL && orgName ? `${env.CLOUD_PORTAL_URL}/org/${orgName}/billing` : null;
+  const orgDisplayName = organization ? getOrganizationDisplayName(organization) : orgName;
 
   const paymentMethodColumns = [
-    paymentMethodColumnHelper.accessor('metadata.name', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
-      cell: ({ getValue }) => <Text>{getValue()}</Text>,
+    paymentMethodColumnHelper.display({
+      id: 'displayName',
+      enableSorting: false,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
+      cell: ({ row }) => {
+        const methodDisplayName = getPaymentMethodDisplayName(row.original);
+        const methodName = row.original.metadata?.name ?? '';
+        return (
+          <DisplayName
+            displayName={methodDisplayName}
+            name={getResourceNameSubtext(methodDisplayName, methodName)}
+          />
+        );
+      },
     }),
     paymentMethodColumnHelper.display({
       id: 'card',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Card`} />,
+      enableSorting: false,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Card`} />,
       cell: ({ row }) => {
         const card = row.original.status?.details?.card;
         if (!card) return <Text>—</Text>;
@@ -84,12 +118,13 @@ export default function Page() {
     }),
     paymentMethodColumnHelper.accessor('status.phase', {
       id: 'phase',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Phase`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
       cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Unknown'} />,
     }),
     paymentMethodColumnHelper.display({
       id: 'default',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Default`} />,
+      enableSorting: false,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Default`} />,
       cell: ({ row }) => (
         <Text>{isDefaultPaymentMethod(row.original, account) ? t`Yes` : t`No`}</Text>
       ),
@@ -97,28 +132,34 @@ export default function Page() {
   ];
 
   const bindingColumns = [
-    bindingColumnHelper.accessor('spec.projectRef.name', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Project`} />,
-      cell: ({ getValue }) => {
-        const projectName = getValue() ?? '';
+    bindingColumnHelper.display({
+      id: 'project',
+      enableSorting: false,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Project`} />,
+      cell: ({ row }) => {
+        const projectName = row.original.spec?.projectRef?.name ?? '';
         if (!projectName) return <Text>—</Text>;
+        const projectDisplayName = projectDisplayNames.get(projectName) ?? projectName;
         return (
-          <Link to={projectRoutes.detail(projectName)} className="text-primary hover:underline">
-            {projectName}
-          </Link>
+          <DisplayName
+            displayName={projectDisplayName}
+            name={getResourceNameSubtext(projectDisplayName, projectName)}
+            to={projectRoutes.detail(projectName)}
+          />
         );
       },
     }),
     bindingColumnHelper.display({
       id: 'establishedAt',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Established`} />,
+      enableSorting: false,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Established`} />,
       cell: ({ row }) => (
         <DateTime date={row.original.status?.billingResponsibility?.establishedAt} />
       ),
     }),
     bindingColumnHelper.accessor('status.phase', {
       id: 'phase',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Phase`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
       cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Unknown'} />,
     }),
   ];
@@ -153,192 +194,167 @@ export default function Page() {
 
       <Row type="flex" gutter={[16, 16]}>
         <Col span={24} lg={12}>
-          <Card className="h-full shadow-none">
-            <CardHeader>
-              <CardTitle>
-                <Trans>Account overview</Trans>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <DescriptionList
-                items={[
-                  {
-                    label: <Trans>Organization</Trans>,
-                    value: orgName ? (
-                      <DisplayName
-                        displayName={
-                          organization ? getOrganizationDisplayName(organization) : orgName
-                        }
-                        name={orgName}
-                        to={orgRoutes.detail(orgName)}
-                      />
-                    ) : (
-                      <Text>—</Text>
-                    ),
-                  },
-                  {
-                    label: <Trans>Resource name</Trans>,
-                    value: <Text>{account.metadata?.name}</Text>,
-                  },
-                  {
-                    label: <Trans>Phase</Trans>,
-                    value: <BadgeState state={account.status?.phase ?? 'Unknown'} />,
-                  },
-                  {
-                    label: <Trans>Currency</Trans>,
-                    value: <Text>{account.spec?.currencyCode ?? '—'}</Text>,
-                  },
-                  {
-                    label: <Trans>Invoice frequency</Trans>,
-                    value: <Text>{paymentTerms?.invoiceFrequency ?? '—'}</Text>,
-                  },
-                  {
-                    label: <Trans>Net days</Trans>,
-                    value: <Text>{paymentTerms?.netDays ?? '—'}</Text>,
-                  },
-                  {
-                    label: <Trans>Invoice day of month</Trans>,
-                    value: <Text>{paymentTerms?.invoiceDayOfMonth ?? '—'}</Text>,
-                  },
-                  {
-                    label: <Trans>Linked projects</Trans>,
-                    value: <Text>{account.status?.linkedProjectsCount ?? 0}</Text>,
-                  },
-                  {
-                    label: <Trans>Created</Trans>,
-                    value: <DateTime date={account.metadata?.creationTimestamp} variant="both" />,
-                  },
-                ]}
-              />
-            </CardContent>
-          </Card>
+          <SectionCard className="h-full" title={<Trans>Account overview</Trans>}>
+            <DescriptionList
+              items={[
+                {
+                  label: <Trans>Organization</Trans>,
+                  value: orgName ? (
+                    <DisplayName
+                      displayName={orgDisplayName || orgName}
+                      name={getResourceNameSubtext(orgDisplayName || orgName, orgName)}
+                      to={orgRoutes.detail(orgName)}
+                    />
+                  ) : (
+                    <Text>—</Text>
+                  ),
+                },
+                {
+                  label: <Trans>Resource name</Trans>,
+                  value: <Text>{account.metadata?.name}</Text>,
+                },
+                {
+                  label: <Trans>Status</Trans>,
+                  value: <BadgeState state={account.status?.phase ?? 'Unknown'} />,
+                },
+                {
+                  label: <Trans>Currency</Trans>,
+                  value: <Text>{account.spec?.currencyCode ?? '—'}</Text>,
+                },
+                {
+                  label: <Trans>Invoice frequency</Trans>,
+                  value: <Text>{paymentTerms?.invoiceFrequency ?? '—'}</Text>,
+                },
+                {
+                  label: <Trans>Net days</Trans>,
+                  value: <Text>{paymentTerms?.netDays ?? '—'}</Text>,
+                },
+                {
+                  label: <Trans>Invoice day of month</Trans>,
+                  value: <Text>{paymentTerms?.invoiceDayOfMonth ?? '—'}</Text>,
+                },
+                {
+                  label: <Trans>Linked projects</Trans>,
+                  value: <Text>{account.status?.linkedProjectsCount ?? 0}</Text>,
+                },
+                {
+                  label: <Trans>Created</Trans>,
+                  value: <DateTime date={account.metadata?.creationTimestamp} variant="both" />,
+                },
+              ]}
+            />
+          </SectionCard>
         </Col>
 
         <Col span={24} lg={12}>
-          <Card className="h-full shadow-none">
-            <CardHeader>
-              <CardTitle>
-                <Trans>Contact & address</Trans>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <DescriptionList
-                items={[
-                  {
-                    label: <Trans>Contact name</Trans>,
-                    value: <Text>{contactInfo?.name ?? '—'}</Text>,
-                  },
-                  {
-                    label: <Trans>Business name</Trans>,
-                    value: <Text>{contactInfo?.businessName ?? '—'}</Text>,
-                  },
-                  {
-                    label: <Trans>Primary email</Trans>,
-                    value: <Text>{contactInfo?.email ?? '—'}</Text>,
-                  },
-                  {
-                    label: <Trans>Invoice recipients</Trans>,
-                    value: (
-                      <Text>
-                        {contactInfo?.invoiceEmails?.length
-                          ? contactInfo.invoiceEmails.join(', ')
-                          : '—'}
-                      </Text>
-                    ),
-                  },
-                  {
-                    label: <Trans>Billing address</Trans>,
-                    value: (
-                      <Text className="whitespace-pre-line">
-                        {formatBillingAddress(contactInfo?.address) || '—'}
-                      </Text>
-                    ),
-                  },
-                  {
-                    label: <Trans>Tax IDs</Trans>,
-                    value: (
-                      <Text>
-                        {account.spec?.taxIds?.length
-                          ? account.spec.taxIds
-                              .map(
-                                (taxId: { type?: string; value?: string }) =>
-                                  `${taxId.type}: ${taxId.value}`
-                              )
-                              .join(', ')
-                          : '—'}
-                      </Text>
-                    ),
-                  },
-                ]}
-              />
-            </CardContent>
-          </Card>
+          <SectionCard className="h-full" title={<Trans>Contact & address</Trans>}>
+            <DescriptionList
+              items={[
+                {
+                  label: <Trans>Contact name</Trans>,
+                  value: <Text>{contactInfo?.name ?? '—'}</Text>,
+                },
+                {
+                  label: <Trans>Business name</Trans>,
+                  value: <Text>{contactInfo?.businessName ?? '—'}</Text>,
+                },
+                {
+                  label: <Trans>Primary email</Trans>,
+                  value: <Text>{contactInfo?.email ?? '—'}</Text>,
+                },
+                {
+                  label: <Trans>Invoice recipients</Trans>,
+                  value: (
+                    <Text>
+                      {contactInfo?.invoiceEmails?.length
+                        ? contactInfo.invoiceEmails.join(', ')
+                        : '—'}
+                    </Text>
+                  ),
+                },
+                {
+                  label: <Trans>Billing address</Trans>,
+                  value: (
+                    <Text className="whitespace-pre-line">
+                      {formatBillingAddress(contactInfo?.address) || '—'}
+                    </Text>
+                  ),
+                },
+                {
+                  label: <Trans>Tax IDs</Trans>,
+                  value: (
+                    <Text>
+                      {account.spec?.taxIds?.length
+                        ? account.spec.taxIds
+                            .map(
+                              (taxId: { type?: string; value?: string }) =>
+                                `${taxId.type}: ${taxId.value}`
+                            )
+                            .join(', ')
+                        : '—'}
+                    </Text>
+                  ),
+                },
+              ]}
+            />
+          </SectionCard>
         </Col>
       </Row>
 
-      <Card className="shadow-none">
-        <CardHeader>
-          <CardTitle>
-            <Trans>Payment methods</Trans>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {paymentMethods.length === 0 ? (
-            <Text>
-              <Trans>No payment methods</Trans>
-            </Text>
-          ) : (
-            <DataTable.Client
-              data={paymentMethods}
-              columns={
-                paymentMethodColumns as ColumnDef<
-                  ComMiloapisBillingV1Alpha1PaymentMethod,
-                  unknown
-                >[]
-              }
-              pageSize={10}
-              getRowId={(row) => row.metadata?.name ?? ''}>
-              <DataTable.Content
-                headerClassName="bg-muted/50"
-                className="border-t border-b border-solid"
-                emptyMessage={t`No payment methods`}
-              />
-            </DataTable.Client>
-          )}
-        </CardContent>
-      </Card>
+      <TableCard title={<Trans>Payment methods</Trans>}>
+        {paymentMethods.length === 0 ? (
+          <Text className="text-muted-foreground px-4 py-6">
+            <Trans>No payment methods</Trans>
+          </Text>
+        ) : (
+          <DataTable.Client
+            data={paymentMethods}
+            columns={
+              paymentMethodColumns as ColumnDef<ComMiloapisBillingV1Alpha1PaymentMethod, unknown>[]
+            }
+            pageSize={10}
+            getRowId={(row) => row.metadata?.name ?? ''}>
+            <DataTable.Content
+              headerClassName={LIST_TABLE_HEADER_CLASS}
+              headerRowClassName={LIST_TABLE_HEADER_ROW_CLASS}
+              headerCellClassName={EMBEDDED_TABLE_HEADER_CELL_CLASS}
+              bodyClassName={EMBEDDED_TABLE_BODY_CLASS}
+              rowClassName={LIST_TABLE_ROW_CLASS}
+              cellClassName={EMBEDDED_TABLE_CELL_CLASS}
+              emptyMessage={t`No payment methods`}
+            />
+          </DataTable.Client>
+        )}
+      </TableCard>
 
-      <Card className="shadow-none">
-        <CardHeader>
-          <CardTitle>
-            <Trans>Linked projects</Trans>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {activeBindings.length === 0 ? (
-            <Text>
-              <Trans>No linked projects</Trans>
-            </Text>
-          ) : (
-            <DataTable.Client
-              data={activeBindings}
-              columns={
-                bindingColumns as ColumnDef<
-                  ComMiloapisBillingV1Alpha1BillingAccountBinding,
-                  unknown
-                >[]
-              }
-              pageSize={10}
-              getRowId={(row) => row.metadata?.name ?? ''}>
-              <DataTable.Content
-                headerClassName="bg-muted/50"
-                className="border-t border-b border-solid"
-                emptyMessage={t`No linked projects`}
-              />
-            </DataTable.Client>
-          )}
-        </CardContent>
-      </Card>
+      <TableCard title={<Trans>Linked projects</Trans>}>
+        {activeBindings.length === 0 ? (
+          <Text className="text-muted-foreground px-4 py-6">
+            <Trans>No linked projects</Trans>
+          </Text>
+        ) : (
+          <DataTable.Client
+            data={activeBindings}
+            columns={
+              bindingColumns as ColumnDef<
+                ComMiloapisBillingV1Alpha1BillingAccountBinding,
+                unknown
+              >[]
+            }
+            pageSize={10}
+            getRowId={(row) => row.metadata?.name ?? ''}>
+            <DataTable.Content
+              headerClassName={LIST_TABLE_HEADER_CLASS}
+              headerRowClassName={LIST_TABLE_HEADER_ROW_CLASS}
+              headerCellClassName={EMBEDDED_TABLE_HEADER_CELL_CLASS}
+              bodyClassName={EMBEDDED_TABLE_BODY_CLASS}
+              rowClassName={LIST_TABLE_ROW_CLASS}
+              cellClassName={EMBEDDED_TABLE_CELL_CLASS}
+              emptyMessage={t`No linked projects`}
+            />
+          </DataTable.Client>
+        )}
+      </TableCard>
     </div>
   );
 }

@@ -1,5 +1,7 @@
+import { SECTION_CARD_CHROME } from '@/features/milo';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { Link } from 'react-router';
 
 export interface KpiCounterCardProps {
@@ -22,8 +24,12 @@ export function KpiCounterCard({
   return (
     <Link
       to={href}
-      className="focus-visible:ring-ring block rounded-lg focus:outline-none focus-visible:ring-2">
-      <Card className="hover:bg-muted/50 h-full cursor-pointer gap-0 py-0 transition-colors">
+      className="focus-visible:ring-ring block rounded-xl focus:outline-none focus-visible:ring-2">
+      <Card
+        className={cn(
+          SECTION_CARD_CHROME,
+          'hover:bg-muted/50 h-full cursor-pointer gap-0 py-0 transition-colors'
+        )}>
         <CardContent className="flex flex-col gap-1 p-2.5">
           <div className="text-muted-foreground flex items-center gap-1.5">
             <span className="h-3.5 w-3.5 [&>svg]:h-3.5 [&>svg]:w-3.5">{icon}</span>

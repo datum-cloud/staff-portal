@@ -3,7 +3,7 @@ import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
-import { ListTable } from '@/features/milo';
+import { ListTable, ListColumnHeader } from '@/features/milo';
 import {
   useDeleteFraudProviderMutation,
   useFraudProviderListQuery,
@@ -52,7 +52,7 @@ export default function Page() {
 
   const columns = [
     columnHelper.accessor('metadata.name', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ getValue }) => (
         <Link
           to={fraudRoutes.providers.detail(getValue() ?? '')}
@@ -62,18 +62,18 @@ export default function Page() {
       ),
     }),
     columnHelper.accessor('spec.type', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Type`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Type`} />,
       cell: ({ getValue }) => <BadgeState state="info" message={getValue() ?? 'unknown'} />,
     }),
     columnHelper.accessor('spec.failurePolicy', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Failure Policy`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Failure Policy`} />,
       cell: ({ getValue }) => {
         const policy = getValue() ?? 'FailOpen';
         return <BadgeState state={policy === 'FailClosed' ? 'warning' : 'info'} message={policy} />;
       },
     }),
     columnHelper.accessor('spec.config.endpoint', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Endpoint`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Endpoint`} />,
       cell: ({ getValue }) => (
         <Text size="sm" textColor="muted" className="max-w-xs truncate">
           {getValue() ?? 'default'}
@@ -82,7 +82,7 @@ export default function Page() {
     }),
     columnHelper.display({
       id: 'status',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Status`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
       cell: ({ row }) => {
         const conditions = row.original.status?.conditions ?? [];
         const available = conditions.find((c) => c.type === 'Available');
@@ -99,7 +99,7 @@ export default function Page() {
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'metadata.creationTimestamp',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Created`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
     columnHelper.display({

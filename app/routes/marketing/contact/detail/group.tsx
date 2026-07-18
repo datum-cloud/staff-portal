@@ -5,7 +5,7 @@ import { BadgeCondition, BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
-import { ListTable } from '@/features/milo';
+import { ListColumnHeader, ListTable } from '@/features/milo';
 import { useContactGroupSearch } from '@/hooks';
 import {
   useCreateContactGroupMembershipMutation,
@@ -80,7 +80,7 @@ export default function Page() {
       (row) => row.contactGroup?.spec?.displayName ?? row.contactGroup?.metadata?.name ?? '',
       {
         id: 'name',
-        header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+        header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
         cell: ({ row }) => {
           const cg = row.original.contactGroup;
           const n = cg?.metadata?.name ?? '';
@@ -91,14 +91,14 @@ export default function Page() {
     ),
     columnHelper.accessor((row) => row.contactGroup?.spec?.visibility ?? 'public', {
       id: 'visibility',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Visibility`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Visibility`} />,
       cell: ({ row }) => (
         <BadgeState state={row.original.contactGroup?.spec?.visibility ?? 'public'} />
       ),
     }),
     columnHelper.accessor((row) => row.contactGroup?.status ?? null, {
       id: 'status',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Status`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
       cell: ({ row }) => (
         <BadgeCondition
           status={row.original.contactGroup?.status ?? null}
@@ -110,7 +110,7 @@ export default function Page() {
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'metadata.creationTimestamp',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Joined`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Joined`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
     columnHelper.display({

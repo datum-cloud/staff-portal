@@ -1,10 +1,9 @@
 import { getProjectDetailMetadata, useProjectDetailData } from '../shared';
 import type { Route } from './+types/secret';
-import { ListTable } from '@/features/milo';
+import { ListColumnHeader, ListTable } from '@/features/milo';
 import { useProjectSecretMetricsQuery } from '@/resources/request/client';
 import { Secret } from '@/resources/schemas';
 import { metaObject } from '@/utils/helpers';
-import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -22,13 +21,13 @@ const columnHelper = createColumnHelper<Secret>();
 
 const columns = [
   columnHelper.accessor('metric.resource_name', {
-    header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+    header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
   }),
   columnHelper.accessor('metric.resource_namespace', {
-    header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Namespace`} />,
+    header: ({ column }) => <ListColumnHeader column={column} title={t`Namespace`} />,
   }),
   columnHelper.accessor('metric.resource_version', {
-    header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Version`} />,
+    header: ({ column }) => <ListColumnHeader column={column} title={t`Version`} />,
   }),
 ];
 

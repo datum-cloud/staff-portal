@@ -1,9 +1,9 @@
 import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
+import { SectionCard } from '@/features/milo';
 import { useServiceListQuery } from '@/resources/request/client';
 import { serviceCatalogRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { Input } from '@datum-cloud/datum-ui/input';
 import {
   Select,
@@ -130,19 +130,19 @@ export default function ServiceCatalogPage() {
 
   if (error) {
     return (
-      <Card className="m-4 shadow-none">
-        <CardContent className="flex flex-col items-center justify-center gap-3 py-12">
-          <Text size="sm" textColor="muted">
-            <Trans>Failed to load service catalog.</Trans>
-          </Text>
-          <Text size="sm" textColor="muted" className="font-mono text-xs">
-            {error instanceof Error ? error.message : String(error)}
-          </Text>
-          <button onClick={() => refetch()} className="text-primary text-sm hover:underline">
-            <Trans>Retry</Trans>
-          </button>
-        </CardContent>
-      </Card>
+      <SectionCard
+        className="m-4"
+        contentClassName="flex flex-col items-center justify-center gap-3 py-12">
+        <Text size="sm" textColor="muted">
+          <Trans>Failed to load service catalog.</Trans>
+        </Text>
+        <Text size="sm" textColor="muted" className="font-mono text-xs">
+          {error instanceof Error ? error.message : String(error)}
+        </Text>
+        <button onClick={() => refetch()} className="text-primary text-sm hover:underline">
+          <Trans>Retry</Trans>
+        </button>
+      </SectionCard>
     );
   }
 
@@ -197,17 +197,15 @@ export default function ServiceCatalogPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <Card className="shadow-none">
-          <CardContent className="flex flex-col items-center justify-center gap-2 py-12">
-            <Text size="sm" textColor="muted">
-              {data?.items?.length ? (
-                <Trans>No services match the current filters.</Trans>
-              ) : (
-                <Trans>No services found.</Trans>
-              )}
-            </Text>
-          </CardContent>
-        </Card>
+        <SectionCard contentClassName="flex flex-col items-center justify-center gap-2 py-12">
+          <Text size="sm" textColor="muted">
+            {data?.items?.length ? (
+              <Trans>No services match the current filters.</Trans>
+            ) : (
+              <Trans>No services found.</Trans>
+            )}
+          </Text>
+        </SectionCard>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filtered.map((s) => (

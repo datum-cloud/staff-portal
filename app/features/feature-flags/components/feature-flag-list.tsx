@@ -5,7 +5,7 @@ import {
 } from '../hooks/useFeatureFlagToggle';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
-import { ListTable } from '@/features/milo';
+import { ListTable, ListColumnHeader } from '@/features/milo';
 import {
   useFeatureFlagRegistrationListQuery,
   useOrgQuotaBucketListQuery,
@@ -106,7 +106,7 @@ export function FeatureFlagList({ orgName }: FeatureFlagListProps) {
     () => [
       columnHelper.display({
         id: 'name',
-        header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Flag`} />,
+        header: ({ column }) => <ListColumnHeader column={column} title={t`Flag`} />,
         cell: ({ row }) => (
           <div className="flex max-w-5xl flex-col">
             <span className="text-sm font-medium">{displayName(row.original)}</span>

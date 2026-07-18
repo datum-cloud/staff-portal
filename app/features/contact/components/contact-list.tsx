@@ -2,7 +2,7 @@ import { BadgeCondition } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
-import { ListTable } from '@/features/milo';
+import { ListTable, ListColumnHeader } from '@/features/milo';
 import { contactDeleteMutation } from '@/resources/request/client';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { contactRoutes } from '@/utils/config/routes.config';
@@ -66,7 +66,7 @@ export function ContactList({
 
   const columns = [
     columnHelper.accessor('metadata.name', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => {
         const contactName = row.original.metadata?.name ?? '';
         const displayName = [row.original.spec?.givenName, row.original.spec?.familyName]
@@ -83,18 +83,18 @@ export function ContactList({
       },
     }),
     columnHelper.accessor('spec.email', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Email`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Email`} />,
       cell: ({ getValue }) => getValue(),
     }),
     columnHelper.accessor('status', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Status`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
       cell: ({ getValue }) => (
         <BadgeCondition status={getValue()} multiple={false} showMessage className="text-xs" />
       ),
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'metadata.creationTimestamp',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Created`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
     columnHelper.display({

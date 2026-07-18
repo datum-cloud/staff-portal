@@ -4,7 +4,7 @@ import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayId } from '@/components/display';
-import { ListTable } from '@/features/milo';
+import { ListTable, ListColumnHeader } from '@/features/milo';
 import { useContactAllListQuery, useSearchUsersQuery } from '@/resources/request/client';
 import {
   useCreateFraudEvaluationMutation,
@@ -107,7 +107,7 @@ export default function Page() {
 
   const columns = [
     columnHelper.accessor('spec.userRef.name', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`User`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`User`} />,
       cell: ({ row }) => {
         const name = row.original.metadata?.name ?? '';
         return (
@@ -119,7 +119,7 @@ export default function Page() {
     }),
     columnHelper.display({
       id: 'email',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Email`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Email`} />,
       cell: ({ row }) => {
         const userId = row.original.spec?.userRef?.name;
         const email = userId ? contactsByUser.get(userId)?.email : undefined;
@@ -133,11 +133,11 @@ export default function Page() {
       },
     }),
     columnHelper.accessor('status.phase', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Phase`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Phase`} />,
       cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Pending'} />,
     }),
     columnHelper.accessor('status.compositeScore', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Score`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Score`} />,
       cell: ({ getValue, row }) => {
         const score = getValue();
         if (!score)
@@ -157,7 +157,7 @@ export default function Page() {
       },
     }),
     columnHelper.accessor('status.decision', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Decision`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Decision`} />,
       cell: ({ getValue }) => {
         const decision = getValue();
         if (!decision || decision === 'ACCEPTED')
@@ -175,7 +175,7 @@ export default function Page() {
       },
     }),
     columnHelper.accessor('status.enforcementAction', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Enforcement`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Enforcement`} />,
       cell: ({ getValue }) => {
         const action = getValue();
         if (!action)
@@ -194,7 +194,7 @@ export default function Page() {
     }),
     columnHelper.accessor('status.lastEvaluationTime', {
       id: 'lastEvaluationTime',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Evaluated`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Evaluated`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
     columnHelper.display({

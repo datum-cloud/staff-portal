@@ -29,3 +29,21 @@ export { ListGrowthChart } from './components/page/list-growth-chart';
 
 // List table (styled datum-ui DataTable wrapper)
 export { ListTable } from './components/page/list-table';
+export { ListColumnHeader } from './components/page/list-column-header';
+export { ListPagination } from './components/page/list-pagination';
+
+// Section / table cards (Figma overview chrome)
+export { SectionCard } from './components/page/section-card';
+export { TableCard } from './components/page/table-card';
+export {
+  SECTION_CARD_CHROME,
+  LIST_TABLE_HEADER_CLASS,
+  LIST_TABLE_HEADER_ROW_CLASS,
+  LIST_TABLE_HEADER_CELL_CLASS,
+  EMBEDDED_TABLE_HEADER_CELL_CLASS,
+  LIST_TABLE_ROW_CLASS,
+  LIST_TABLE_CELL_CLASS,
+  LIST_TABLE_BODY_CLASS,
+  EMBEDDED_TABLE_CELL_CLASS,
+  EMBEDDED_TABLE_BODY_CLASS,
+} from './lib/card-chrome';

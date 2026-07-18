@@ -24,8 +24,11 @@ export interface EntityTab {
   end?: boolean;
   /** Dropdown tab: the sub-routes shown on click. */
   children?: EntityTabChild[];
-  /** Active-detection prefix for dropdown tabs (defaults to first child href). */
-  match?: string;
+  /**
+   * Active-detection prefix(es) for dropdown tabs (defaults to first child href).
+   * Use an array when children live under sibling path segments (e.g. edges/dns/domains).
+   */
+  match?: string | string[];
   /** Optional trailing adornment (e.g. a count/pending badge). */
   badge?: ReactNode;
 }
@@ -38,17 +41,34 @@ const itemClass =
 const activeClass = 'bg-card text-primary';
 const idleClass = 'text-foreground hover:bg-card/60 hover:text-primary';
 
-/** The path a tab represents: its `match`, else `href`, else its first child. */
-function tabKey(tab: EntityTab): string {
-  return tab.match ?? tab.href ?? tab.children?.[0]?.href ?? '';
+/** Path prefixes used for active detection. */
+function matchPrefixes(tab: EntityTab): string[] {
+  if (tab.match != null) {
+    return Array.isArray(tab.match) ? tab.match : [tab.match];
+  }
+  if (tab.href) return [tab.href];
+  if (tab.children?.[0]?.href) return [tab.children[0].href];
+  return [];
 }
 
-/** `end` tabs match their key exactly; others match the key or any sub-path. */
-function tabMatches(pathname: string, tab: EntityTab): boolean {
-  const key = tabKey(tab);
-  if (!key) return false;
-  if (tab.end) return pathname === key;
-  return pathname === key || pathname.startsWith(key + '/');
+/** Stable identity for comparing which tab won the active-prefix contest. */
+function tabKey(tab: EntityTab): string {
+  const prefixes = matchPrefixes(tab);
+  return prefixes.join('\0');
+}
+
+/** Longest matching prefix for this tab, or null if none match. */
+function bestPrefixForTab(pathname: string, tab: EntityTab): string | null {
+  const prefixes = matchPrefixes(tab);
+  if (prefixes.length === 0) return null;
+
+  let best: string | null = null;
+  for (const key of prefixes) {
+    const matches = tab.end ? pathname === key : pathname === key || pathname.startsWith(key + '/');
+    if (!matches) continue;
+    if (best == null || key.length > best.length) best = key;
+  }
+  return best;
 }
 
 /**
@@ -65,9 +85,12 @@ export function TabStrip({ tabs, className }: { tabs: EntityTab[]; className?: s
   const navigate = useNavigate();
 
   const activeKey = tabs
-    .filter((tab) => tabMatches(pathname, tab))
-    .map(tabKey)
-    .sort((a, b) => b.length - a.length)[0];
+    .map((tab) => {
+      const prefix = bestPrefixForTab(pathname, tab);
+      return prefix == null ? null : { key: tabKey(tab), prefix };
+    })
+    .filter((entry): entry is { key: string; prefix: string } => entry != null)
+    .sort((a, b) => b.prefix.length - a.prefix.length)[0]?.key;
   const isActive = (tab: EntityTab) => activeKey != null && tabKey(tab) === activeKey;
 
   return (
