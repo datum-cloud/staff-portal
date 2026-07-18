@@ -37,10 +37,12 @@ export default function Page() {
     columnHelper.accessor((row) => row.contactInfo?.businessName ?? '', {
       id: 'company',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Company`} />,
-      cell: ({ getValue }) => {
+      cell: ({ getValue, row }) => {
         const company = getValue();
         return company ? (
-          <span className="truncate">{company}</span>
+          <Link to={`./${row.original.name}`} className="truncate block">
+            {company}
+          </Link>
         ) : (
           <span className="text-muted-foreground">——</span>
         );

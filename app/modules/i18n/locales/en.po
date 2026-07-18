@@ -157,7 +157,7 @@ msgstr "Active"
 msgid "Active Configuration"
 msgstr "Active Configuration"
 
-#: app/routes/customer/organization/index.tsx:134
+#: app/routes/customer/organization/index.tsx:136
 msgid "Active organizations"
 msgstr "Active organizations"
 
@@ -580,7 +580,7 @@ msgid "Collapse sidebar"
 msgstr "Collapse sidebar"
 
 #: app/routes/customer/organization/index.tsx:39
-#: app/routes/customer/organization/index.tsx:142
+#: app/routes/customer/organization/index.tsx:144
 msgid "Company"
 msgstr "Company"
 
@@ -816,8 +816,8 @@ msgstr "Create Policy"
 #: app/routes/customer/billing-account/detail/index.tsx:241
 #: app/routes/customer/fraud/providers/index.tsx:102
 #: app/routes/customer/organization/detail/project.tsx:43
-#: app/routes/customer/organization/index.tsx:62
-#: app/routes/customer/organization/index.tsx:156
+#: app/routes/customer/organization/index.tsx:64
+#: app/routes/customer/organization/index.tsx:158
 #: app/routes/customer/project/detail/domain/detail.tsx:138
 #: app/routes/customer/project/detail/export-policy/detail.tsx:83
 #: app/routes/customer/project/detail/export-policy/index.tsx:51
@@ -1603,7 +1603,7 @@ msgid "Full response from the provider"
 msgstr "Full response from the provider"
 
 #: app/routes/customer/organization/detail/layout.tsx:127
-#: app/routes/customer/organization/index.tsx:106
+#: app/routes/customer/organization/index.tsx:108
 msgid "Fully onboarded"
 msgstr "Fully onboarded"
 
@@ -1693,7 +1693,7 @@ msgstr "How to update your GitHub email"
 msgid "HTML"
 msgstr "HTML"
 
-#: app/routes/customer/organization/index.tsx:57
+#: app/routes/customer/organization/index.tsx:59
 #: app/routes/customer/project/index.tsx:49
 #: app/routes/customer/user/detail/index.tsx:237
 #: app/routes/customer/user/index.tsx:126
@@ -1708,7 +1708,7 @@ msgstr "In Progress"
 msgid "Inactive"
 msgstr "Inactive"
 
-#: app/routes/customer/organization/index.tsx:143
+#: app/routes/customer/organization/index.tsx:145
 msgid "Individual"
 msgstr "Individual"
 
@@ -1826,7 +1826,7 @@ msgstr "Light"
 msgid "Limit:"
 msgstr "Limit:"
 
-#: app/routes/customer/organization/index.tsx:129
+#: app/routes/customer/organization/index.tsx:131
 msgid "Limited to 10,000 organizations. Refine your search to surface others."
 msgstr "Limited to 10,000 organizations. Refine your search to surface others."
 
@@ -1980,7 +1980,7 @@ msgstr "Member deleted successfully"
 #: app/features/organization/components/org-members-preview-card.tsx:74
 #: app/routes/customer/organization/detail/layout.tsx:84
 #: app/routes/customer/organization/detail/member.tsx:25
-#: app/routes/customer/organization/index.tsx:80
+#: app/routes/customer/organization/index.tsx:82
 #: app/routes/marketing/contact-group/detail/layout.tsx:43
 #: app/routes/marketing/contact-group/detail/member.tsx:33
 msgid "Members"
@@ -2039,7 +2039,7 @@ msgstr "My Profile"
 #: app/routes/customer/fraud/providers/index.tsx:55
 #: app/routes/customer/organization/detail/member.tsx:103
 #: app/routes/customer/organization/detail/project.tsx:32
-#: app/routes/customer/organization/index.tsx:50
+#: app/routes/customer/organization/index.tsx:52
 #: app/routes/customer/project/detail/dns/detail.tsx:108
 #: app/routes/customer/project/detail/export-policy/detail.tsx:63
 #: app/routes/customer/project/detail/export-policy/detail.tsx:108
@@ -2253,7 +2253,7 @@ msgstr "No members in this group."
 msgid "No notes yet. Add the first note below."
 msgstr "No notes yet. Add the first note below."
 
-#: app/routes/customer/organization/index.tsx:127
+#: app/routes/customer/organization/index.tsx:129
 #: app/routes/customer/user/detail/organization.tsx:69
 msgid "No organizations found."
 msgstr "No organizations found."
@@ -2385,7 +2385,7 @@ msgid "Onboarding"
 msgstr "Onboarding"
 
 #: app/routes/customer/organization/detail/layout.tsx:130
-#: app/routes/customer/organization/index.tsx:109
+#: app/routes/customer/organization/index.tsx:111
 msgid "Onboarding incomplete"
 msgstr "Onboarding incomplete"
 
@@ -2428,7 +2428,7 @@ msgstr "Organization"
 msgid "Organization deleted successfully"
 msgstr "Organization deleted successfully"
 
-#: app/routes/customer/organization/index.tsx:123
+#: app/routes/customer/organization/index.tsx:125
 msgid "organizations"
 msgstr "organizations"
 
@@ -2659,7 +2659,7 @@ msgstr "Project deleted successfully"
 #: app/routes/customer/breadcrumb-switchers.tsx:8
 #: app/routes/customer/organization/detail/layout.tsx:73
 #: app/routes/customer/organization/detail/project.tsx:14
-#: app/routes/customer/organization/index.tsx:67
+#: app/routes/customer/organization/index.tsx:69
 #: app/routes/customer/project/detail/layout.tsx:46
 #: app/routes/customer/project/index.tsx:21
 #: app/routes/customer/project/layout.tsx:8
@@ -3069,7 +3069,7 @@ msgstr "Search is temporarily unavailable. Please try again."
 msgid "Search members..."
 msgstr "Search members..."
 
-#: app/routes/customer/organization/index.tsx:126
+#: app/routes/customer/organization/index.tsx:128
 #: app/routes/customer/user/detail/organization.tsx:68
 msgid "Search organizations..."
 msgstr "Search organizations..."
@@ -3281,8 +3281,8 @@ msgstr "Start Time"
 #: app/routes/customer/billing-account/detail/index.tsx:162
 #: app/routes/customer/billing-account/detail/index.tsx:217
 #: app/routes/customer/fraud/providers/index.tsx:85
-#: app/routes/customer/organization/index.tsx:100
-#: app/routes/customer/organization/index.tsx:148
+#: app/routes/customer/organization/index.tsx:102
+#: app/routes/customer/organization/index.tsx:150
 #: app/routes/customer/project/detail/domain/detail.tsx:128
 #: app/routes/customer/project/detail/export-policy/detail.tsx:75
 #: app/routes/customer/project/detail/export-policy/detail.tsx:168
@@ -3471,7 +3471,7 @@ msgstr "TTL"
 #: app/features/organization/components/org-details-card.tsx:59
 #: app/features/service-catalog/components/conditions-card.tsx:19
 #: app/routes/customer/fraud/providers/index.tsx:65
-#: app/routes/customer/organization/index.tsx:140
+#: app/routes/customer/organization/index.tsx:142
 #: app/routes/customer/project/detail/dns/detail.tsx:93
 #: app/routes/customer/project/detail/dns/detail.tsx:157
 #: app/routes/customer/project/detail/export-policy/detail.tsx:162
