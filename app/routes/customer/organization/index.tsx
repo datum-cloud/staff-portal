@@ -40,7 +40,7 @@ export default function Page() {
       cell: ({ getValue, row }) => {
         const company = getValue();
         return company ? (
-          <Link to={`./${row.original.name}`} className="truncate block">
+          <Link to={`./${row.original.name}`} className="block truncate">
             {company}
           </Link>
         ) : (
