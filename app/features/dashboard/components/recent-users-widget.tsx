@@ -1,7 +1,7 @@
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
 import { UserAvatar } from '@/components/user-avatar';
-import { SectionCard } from '@/features/milo';
+import { SectionCard } from '@/features/milo/components/page/section-card';
 import { activityListQuery } from '@/resources/request/client';
 import { userRoutes } from '@/utils/config/routes.config';
 import { Button } from '@datum-cloud/datum-ui/button';

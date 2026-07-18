@@ -1,6 +1,6 @@
 import { ActionCard } from '@/components/action-card';
 import { DialogConfirm } from '@/components/dialog';
-import { SectionCard } from '@/features/milo';
+import { SectionCard } from '@/features/milo/components/page/section-card';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Trans, useLingui } from '@lingui/react/macro';
