@@ -17,12 +17,13 @@ import { MemoryRouter, MemoryRouterProps, Route, Routes } from 'react-router';
 
 // Shiki (pulled in via datum-ui assistant) reads process.env in the browser.
 // Cypress component tests do not define process, so stub a minimal one.
-if (typeof globalThis.process === 'undefined') {
-  (
-    globalThis as typeof globalThis & { process: { env: Record<string, string | undefined> } }
-  ).process = { env: {} };
-} else if (!globalThis.process.env) {
-  globalThis.process.env = {};
+const processGlobal = globalThis as unknown as {
+  process?: { env?: Record<string, string | undefined> };
+};
+if (!processGlobal.process) {
+  processGlobal.process = { env: {} };
+} else if (!processGlobal.process.env) {
+  processGlobal.process.env = {};
 }
 
 // Activate Lingui once with real English translations.
