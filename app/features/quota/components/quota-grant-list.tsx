@@ -2,10 +2,10 @@ import { groupQuotas, type QuotaRow } from '../lib/quotas-grouping';
 import { BadgeCondition } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
+import { TableCard } from '@/features/milo';
 import { type GqlQuotaGrant, type GqlQuotaGrantList } from '@/modules/graphql/quota';
 import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { Badge } from '@datum-cloud/datum-ui/badge';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { ActionItem } from '@datum-cloud/datum-ui/data-table';
 import { GroupedTable, type GroupedTableGroup } from '@datum-cloud/datum-ui/grouped-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
@@ -170,31 +170,29 @@ export function QuotaGrantList({ queryKeyPrefix, fetchFn, deleteGrantFn }: Quota
         }}
       />
 
-      <Card className="m-4 py-4 shadow-none">
-        <CardContent className="px-4">
-          <GroupedTable<QuotaGrantRow>
-            columns={columns}
-            groups={groups}
-            isLoading={tableQuery.isLoading}
-            defaultExpanded="all"
-            enableSorting
-            enableSearch
-            searchPlaceholder={t`Search grants...`}
-            toolbarClassName="w-full md:w-64"
-            searchFn={(row, query) => {
-              const q = query.toLowerCase();
-              return (
-                row.displayName.toLowerCase().includes(q) ||
-                row.resourceType.toLowerCase().includes(q) ||
-                row.grant.name.toLowerCase().includes(q)
-              );
-            }}
-            getRowId={(row) => `${row.grant.namespace}/${row.grant.name}/${row.resourceType}`}
-            rowActions={rowActions}
-            empty={t`No grants found.`}
-          />
-        </CardContent>
-      </Card>
+      <TableCard className="m-4" framed={false} contentClassName="px-0">
+        <GroupedTable<QuotaGrantRow>
+          columns={columns}
+          groups={groups}
+          isLoading={tableQuery.isLoading}
+          defaultExpanded="all"
+          enableSorting
+          enableSearch
+          searchPlaceholder={t`Search grants...`}
+          toolbarClassName="w-full md:w-64"
+          searchFn={(row, query) => {
+            const q = query.toLowerCase();
+            return (
+              row.displayName.toLowerCase().includes(q) ||
+              row.resourceType.toLowerCase().includes(q) ||
+              row.grant.name.toLowerCase().includes(q)
+            );
+          }}
+          getRowId={(row) => `${row.grant.namespace}/${row.grant.name}/${row.resourceType}`}
+          rowActions={rowActions}
+          empty={t`No grants found.`}
+        />
+      </TableCard>
     </>
   );
 }

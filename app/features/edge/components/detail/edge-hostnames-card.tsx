@@ -4,8 +4,8 @@ import {
   getCertificateReadyDisplay,
   type HttpProxy,
 } from '@/features/edge/lib';
+import { SectionCard } from '@/features/milo';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
-import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
@@ -155,72 +155,65 @@ export function EdgeHostnamesCard({ proxy }: { proxy: HttpProxy }) {
   );
 
   return (
-    <Card className="shadow-none">
-      <CardHeader>
-        <CardTitle>
-          <Trans>Hostnames</Trans>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        {proxy.tlsHostname && (
-          <div className="border-input bg-background flex items-center gap-2 rounded-md border p-2.5">
-            <Lock className="text-muted-foreground size-3.5 shrink-0 self-start" />
-            <div className="flex min-w-0 flex-col">
-              <span className="text-muted-foreground text-[11px] font-medium">
-                <Trans>TLS Hostname</Trans>
-              </span>
-              <Tooltip message={proxy.tlsHostname}>
-                <span className="truncate text-sm font-medium">{proxy.tlsHostname}</span>
-              </Tooltip>
-            </div>
+    <SectionCard title={<Trans>Hostnames</Trans>} contentClassName="flex flex-col gap-4">
+      {proxy.tlsHostname && (
+        <div className="border-input bg-background flex items-center gap-2 rounded-md border p-2.5">
+          <Lock className="text-muted-foreground size-3.5 shrink-0 self-start" />
+          <div className="flex min-w-0 flex-col">
+            <span className="text-muted-foreground text-[11px] font-medium">
+              <Trans>TLS Hostname</Trans>
+            </span>
+            <Tooltip message={proxy.tlsHostname}>
+              <span className="truncate text-sm font-medium">{proxy.tlsHostname}</span>
+            </Tooltip>
           </div>
-        )}
+        </div>
+      )}
 
-        {defaultHostnames.length > 0 && (
-          <div className="flex flex-col gap-2">
-            <Text textColor="muted" className="text-xs font-medium uppercase">
-              <Trans>System</Trans>
-            </Text>
-            {defaultHostnames.map((hostname) => (
-              <div
-                key={hostname}
-                className="border-input bg-background flex items-center justify-between gap-2 rounded-md border p-2">
-                <Tooltip message={hostname}>
-                  <span className="min-w-0 truncate text-sm font-medium">{hostname}</span>
-                </Tooltip>
-                <ButtonCopy value={hostname} />
-              </div>
-            ))}
-          </div>
-        )}
-
-        {hostnames.length > 0 ? (
-          <div className="flex flex-col gap-2">
-            {defaultHostnames.length > 0 && (
-              <Text textColor="muted" className="text-xs font-medium uppercase">
-                <Trans>Custom</Trans>
-              </Text>
-            )}
-            {hostnames.map((val) => (
-              <div
-                key={val.hostname}
-                className="border-input bg-background flex flex-col gap-1.5 rounded-md border p-2.5">
-                <div className="flex min-w-0 items-center justify-between gap-2">
-                  <Tooltip message={val.hostname}>
-                    <span className="min-w-0 truncate text-sm font-medium">{val.hostname}</span>
-                  </Tooltip>
-                  <ButtonCopy value={val.hostname} />
-                </div>
-                <HostnameProvisioningStatus val={val} />
-              </div>
-            ))}
-          </div>
-        ) : defaultHostnames.length === 0 ? (
-          <Text textColor="muted" className="text-sm">
-            <Trans>No hostnames configured</Trans>
+      {defaultHostnames.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <Text textColor="muted" className="text-xs font-medium uppercase">
+            <Trans>System</Trans>
           </Text>
-        ) : null}
-      </CardContent>
-    </Card>
+          {defaultHostnames.map((hostname) => (
+            <div
+              key={hostname}
+              className="border-input bg-background flex items-center justify-between gap-2 rounded-md border p-2">
+              <Tooltip message={hostname}>
+                <span className="min-w-0 truncate text-sm font-medium">{hostname}</span>
+              </Tooltip>
+              <ButtonCopy value={hostname} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {hostnames.length > 0 ? (
+        <div className="flex flex-col gap-2">
+          {defaultHostnames.length > 0 && (
+            <Text textColor="muted" className="text-xs font-medium uppercase">
+              <Trans>Custom</Trans>
+            </Text>
+          )}
+          {hostnames.map((val) => (
+            <div
+              key={val.hostname}
+              className="border-input bg-background flex flex-col gap-1.5 rounded-md border p-2.5">
+              <div className="flex min-w-0 items-center justify-between gap-2">
+                <Tooltip message={val.hostname}>
+                  <span className="min-w-0 truncate text-sm font-medium">{val.hostname}</span>
+                </Tooltip>
+                <ButtonCopy value={val.hostname} />
+              </div>
+              <HostnameProvisioningStatus val={val} />
+            </div>
+          ))}
+        </div>
+      ) : defaultHostnames.length === 0 ? (
+        <Text textColor="muted" className="text-sm">
+          <Trans>No hostnames configured</Trans>
+        </Text>
+      ) : null}
+    </SectionCard>
   );
 }

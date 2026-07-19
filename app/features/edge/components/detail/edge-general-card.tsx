@@ -7,7 +7,7 @@ import {
   getCertificatesReadyDisplay,
   type HttpProxy,
 } from '@/features/edge/lib';
-import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
+import { SectionCard } from '@/features/milo';
 import { Trans } from '@lingui/react/macro';
 import { useMemo } from 'react';
 
@@ -53,15 +53,8 @@ export function EdgeGeneralCard({ proxy }: { proxy: HttpProxy }) {
   }, [proxy, hostname]);
 
   return (
-    <Card className="shadow-none">
-      <CardHeader>
-        <CardTitle>
-          <Trans>General</Trans>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <DescriptionList items={items} />
-      </CardContent>
-    </Card>
+    <SectionCard title={<Trans>General</Trans>}>
+      <DescriptionList items={items} />
+    </SectionCard>
   );
 }

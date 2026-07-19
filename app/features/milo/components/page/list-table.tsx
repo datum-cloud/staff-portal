@@ -1,7 +1,18 @@
+import {
+  LIST_TABLE_BODY_CLASS,
+  LIST_TABLE_CELL_CLASS,
+  LIST_TABLE_HEADER_CELL_CLASS,
+  LIST_TABLE_HEADER_CLASS,
+  LIST_TABLE_HEADER_ROW_CLASS,
+  LIST_TABLE_ROW_CLASS,
+  SECTION_CARD_CHROME,
+} from '../../lib/card-chrome';
 import { FILTER_W } from '../../lib/dimensions';
+import { ListPagination } from './list-pagination';
 import {
   buildFilterFns,
   FilterGroup,
+  FilterGroupSkeleton,
   FilterPanel,
   InlineFilterBar,
   MobileFilterButton,
@@ -13,6 +24,7 @@ import { Button } from '@datum-cloud/datum-ui/button';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import type { SelectionColumnOptions } from '@datum-cloud/datum-ui/data-table';
 import { Input } from '@datum-cloud/datum-ui/input';
+import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
@@ -20,6 +32,42 @@ import { useLingui } from '@lingui/react/macro';
 import type { ColumnDef } from '@tanstack/react-table';
 import { ChevronLeft } from 'lucide-react';
 import { useMemo, useState, type ReactNode } from 'react';
+
+/** Skeleton rows while list data loads — capped so pageSize=100 doesn't paint 100 placeholders. */
+const LOADING_SKELETON_ROWS = 8;
+
+function ListTableBodySkeleton({ columnCount }: { columnCount: number }) {
+  const cols = Math.max(columnCount, 1);
+  return (
+    <div className="min-h-0 flex-1 overflow-hidden" data-slot="dt-loading" aria-busy="true">
+      <div
+        className={cn(
+          'flex h-9 items-center border-b border-[#efefed] bg-[#fbfbfa] px-4',
+          'dark:border-border dark:bg-muted'
+        )}>
+        {Array.from({ length: cols }, (_, i) => (
+          <div key={i} className="min-w-0 flex-1 px-2 first:pl-0 last:pr-0">
+            <Skeleton className="h-2.5 w-16" />
+          </div>
+        ))}
+      </div>
+      {Array.from({ length: LOADING_SKELETON_ROWS }, (_, row) => (
+        <div
+          key={row}
+          className="border-border flex h-10 items-center border-b px-4"
+          data-slot="dt-skeleton-row">
+          {Array.from({ length: cols }, (_, col) => (
+            <div key={col} className="min-w-0 flex-1 px-2 first:pl-0 last:pr-0">
+              <Skeleton
+                className={cn('h-4', col % 3 === 0 ? 'w-3/4' : col % 3 === 1 ? 'w-1/2' : 'w-2/3')}
+              />
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 /** Externally-controlled search (server-side): the input is driven by the caller, client filtering is off. */
 export interface ControlledSearch {
@@ -33,27 +81,18 @@ export interface ControlledSearch {
  * Routes declare what table they want; density/layout lives here.
  */
 
-const containerClass =
-  'border-border bg-card flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border';
+const containerClass = cn(SECTION_CARD_CHROME, 'flex min-h-0 flex-1 flex-col overflow-hidden');
 
 // [&>div]:overflow-visible neutralizes shadcn <Table>'s inner overflow-x wrapper
 // so the sticky <th> resolves to this scroll container, not that wrapper.
 const contentClassName = 'min-h-0 flex-1 overflow-auto [&>div]:overflow-visible';
 
-// Sticky on <th> (not <thead>) for cross-browser support; translucent + blur frosts rows underneath.
-// Note: no `uppercase` here — Tailwind Preflight resets text-transform on the
-// <button> that sortable headers render, so it would only hit raw-string
-// headers, making them inconsistent (UPPERCASE) with sortable ones.
-const headerCellClassName =
-  'sticky top-0 z-10 h-8 border-b border-border bg-background/50 backdrop-blur-sm px-3 text-xs font-medium tracking-wide text-muted-foreground';
-const rowClassName = 'hover:bg-muted/30';
-// py-0.5 keeps rows compact; multi-line cells (stacked endpoints/chips) grow with
-// a little breathing room. The row-actions trigger and copy button both sit in
-// many rows (ID columns), so shrink them — otherwise their default size sets
-// the height of the whole table (rows with a copy button were ~6px taller
-// than rows without one, e.g. Resources vs Users).
-const cellClassName =
-  'border-b border-border px-3 py-0.5 text-sm [&_[data-slot=dt-row-actions]]:!size-7 [&_[data-slot=dt-row-actions]]:!p-0 [&_[data-slot=button-copy]]:!size-5';
+const headerClassName = LIST_TABLE_HEADER_CLASS;
+const headerRowClassName = LIST_TABLE_HEADER_ROW_CLASS;
+const headerCellClassName = LIST_TABLE_HEADER_CELL_CLASS;
+const bodyClassName = LIST_TABLE_BODY_CLASS;
+const rowClassName = LIST_TABLE_ROW_CLASS;
+const cellClassName = LIST_TABLE_CELL_CLASS;
 
 /** Resolves a dot-path (e.g. `status.registrationApproval`) against a plain object. */
 function getByPath(obj: unknown, path: string): unknown {
@@ -68,16 +107,14 @@ function getByPath(obj: unknown, path: string): unknown {
 const searchClassName =
   'h-10 border-0 bg-transparent pl-9 shadow-none focus-visible:shadow-none focus-visible:ring-0';
 
-// Shrink the rows-per-page trigger (data-slot, baked-in min-h-10/py-2) to match the h-8 buttons.
-const paginationClass =
-  'shrink-0 gap-2 p-0 mt-4 [&_[data-slot=select-trigger]]:!h-8 [&_[data-slot=select-trigger]]:!min-h-0 [&_[data-slot=select-trigger]]:!py-0 [&_[data-slot=select-trigger]]:gap-1 [&_[data-slot=select-trigger]]:px-2 [&_[data-slot=select-trigger]]:text-xs';
-
 interface ListTableProps<TData> {
   readonly data: TData[];
   // columnHelper produces ColumnDef<TData, any>; `unknown` would be too strict for callers.
   readonly columns: ColumnDef<TData, any>[];
   readonly loading?: boolean;
   readonly pageSize?: number;
+  /** Shown in the footer range: `1-100 of N {resourceLabel}`. */
+  readonly resourceLabel?: string;
   readonly getRowId?: (row: TData) => string;
   readonly defaultSort?: React.ComponentProps<typeof DataTable.Client<TData>>['defaultSort'];
   readonly searchFn?: (row: TData, search: string) => boolean;
@@ -126,6 +163,8 @@ export function ListTable<TData>({
   controlledSearch,
   hasMore = false,
   hasMoreMessage,
+  resourceLabel,
+  loading = false,
   ...options
 }: ListTableProps<TData>) {
   const { t } = useLingui();
@@ -193,8 +232,9 @@ export function ListTable<TData>({
       filterFns={mergedFilterFns}
       // Controlled (server) search already filtered `data`, so keep every row.
       searchFn={controlledSearch ? () => true : searchFn}
-      // Rows are denser now, so show more per page by default when a route doesn't pick one.
-      pageSize={50}
+      // Figma org-list footer defaults to 100; denser rows support a larger page.
+      pageSize={100}
+      loading={loading}
       {...options}
       // columnHelper yields ColumnDef<TData, any>; DataTable.Client now wants
       // <TData, unknown> — a type-identity narrowing that's safe at runtime.
@@ -202,14 +242,27 @@ export function ListTable<TData>({
       {showSidebar && (
         // Animate width (like the left nav) rather than mount/unmount; inner
         // stays FILTER_W wide so content doesn't reflow while it slides.
+        // Drop border-r when collapsed so it doesn't stack with the sub-nav's
+        // border into a thick double line.
         <aside
           style={{ width: filtersCollapsed ? 0 : FILTER_W }}
-          className="bg-background shrink-0 overflow-hidden border-r transition-[width]">
+          className={cn(
+            'bg-background shrink-0 overflow-hidden transition-[width]',
+            !filtersCollapsed && 'border-r'
+          )}>
           <div style={{ width: FILTER_W }} className="h-full overflow-y-auto pb-4">
             <FilterPanel>
-              {filters?.map((f) => (
-                <FilterGroup key={f.column} {...f} counts={filterCounts?.[f.column]} />
-              ))}
+              {loading
+                ? filters?.map((f) => (
+                    <FilterGroupSkeleton
+                      key={f.column}
+                      label={f.label}
+                      optionCount={f.options.length}
+                    />
+                  ))
+                : filters?.map((f) => (
+                    <FilterGroup key={f.column} {...f} counts={filterCounts?.[f.column]} />
+                  ))}
             </FilterPanel>
           </div>
         </aside>
@@ -218,15 +271,17 @@ export function ListTable<TData>({
         // Collapse toggle straddling the divider; flips to › when collapsed. The
         // absolute positioning lives on this wrapper (Tooltip wraps the button in
         // its own `relative` span, which would otherwise be the offset parent).
+        // When collapsed, sit on the sub-nav border (half outside) — ListPage
+        // allows overflow so the overhang isn't clipped.
         <div
-          style={{ left: filtersCollapsed ? 8 : FILTER_W - 11 }}
+          style={{ left: filtersCollapsed ? -12 : FILTER_W - 12 }}
           className="absolute top-8 z-20 transition-[left]">
           <Tooltip message={filtersCollapsed ? t`Show filters` : t`Hide filters`} side="right">
             <button
               type="button"
               onClick={() => setFiltersCollapsed((c) => !c)}
               aria-label={filtersCollapsed ? t`Show filters` : t`Hide filters`}
-              className="border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground flex size-[25px] items-center justify-center rounded-full border shadow-sm transition-[color,background-color]">
+              className="border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground flex size-[25px] items-center justify-center rounded-full border transition-[color,background-color]">
               <ChevronLeft className={cn('size-3.5', filtersCollapsed && 'rotate-180')} />
             </button>
           </Tooltip>
@@ -269,24 +324,31 @@ export function ListTable<TData>({
                 )}
               </div>
               {/* Mobile: filters move into a Sheet so the table keeps full width. */}
-              {showMobileFilter && <MobileFilterButton filters={filters ?? []} />}
+              {showMobileFilter && <MobileFilterButton filters={filters ?? []} loading={loading} />}
             </div>
             {hasInlineFilters && (
               <div className="shrink-0 border-b px-3 py-2">
-                <InlineFilterBar filters={filters ?? []} />
+                <InlineFilterBar filters={filters ?? []} loading={loading} />
               </div>
             )}
             {toolbar}
-            <DataTable.Content
-              className={contentClassName}
-              headerCellClassName={headerCellClassName}
-              rowClassName={rowClassName}
-              cellClassName={cellClassName}
-              emptyMessage={emptyMessage}
-            />
+            {loading ? (
+              <ListTableBodySkeleton columnCount={options.columns.length} />
+            ) : (
+              <DataTable.Content
+                className={contentClassName}
+                headerClassName={headerClassName}
+                headerRowClassName={headerRowClassName}
+                headerCellClassName={headerCellClassName}
+                bodyClassName={bodyClassName}
+                rowClassName={rowClassName}
+                cellClassName={cellClassName}
+                emptyMessage={emptyMessage}
+              />
+            )}
           </div>
-          <div className="flex shrink-0 items-center gap-2">
-            {hasMore && (
+          <div className="mt-4 flex shrink-0 items-center gap-2">
+            {hasMore && !loading && (
               <Tooltip
                 side="right"
                 message={
@@ -297,12 +359,19 @@ export function ListTable<TData>({
                   type="warning"
                   theme="borderless"
                   size="icon"
-                  className="mt-4 size-7 hover:bg-transparent"
+                  className="size-7 hover:bg-transparent"
                   icon={<STATUS_ICONS.info className="size-4" />}
                 />
               </Tooltip>
             )}
-            <DataTable.Pagination className={cn(paginationClass, 'flex-1')} />
+            {loading ? (
+              <div className="flex h-7 w-full items-center justify-between gap-3">
+                <Skeleton className="h-7 w-[158px]" />
+                <Skeleton className="h-7 w-[180px]" />
+              </div>
+            ) : (
+              <ListPagination className="min-w-0 flex-1" resourceLabel={resourceLabel} />
+            )}
           </div>
         </div>
       </div>

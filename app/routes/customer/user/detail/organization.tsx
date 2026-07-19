@@ -2,12 +2,11 @@ import type { Route } from './+types/organization';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
-import { ListTable } from '@/features/milo';
+import { ListColumnHeader, ListTable } from '@/features/milo';
 import { useUserOrganizationListQuery } from '@/resources/request/client';
 import { getUserDetailMetadata, useUserDetailData } from '@/routes/customer/user/shared';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { ComMiloapisResourcemanagerV1Alpha1OrganizationMembership } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
@@ -32,7 +31,7 @@ export default function Page() {
 
   const columns = [
     columnHelper.accessor('spec.organizationRef.name', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => {
         const orgName = row.original.spec?.organizationRef?.name ?? '';
         const displayName = row.original.status?.organization?.displayName;
@@ -46,12 +45,12 @@ export default function Page() {
       },
     }),
     columnHelper.accessor('status.organization.type', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Type`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Type`} />,
       cell: ({ getValue }) => <BadgeState state={getValue() ?? ''} />,
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'metadata.creationTimestamp',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Joined`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Joined`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
   ];

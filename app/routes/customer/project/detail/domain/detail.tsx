@@ -10,6 +10,7 @@ import {
   DomainStatusProbe,
   NotesList,
 } from '@/features/domain';
+import { SectionCard } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
 import { createGqlClient } from '@/modules/graphql/client';
 import { generateQueryOp } from '@/modules/graphql/generated';
@@ -17,7 +18,6 @@ import type { UserSummary } from '@/modules/graphql/generated/schema';
 import { projectDomainDetailQuery, projectDomainNotesQuery } from '@/resources/request/server';
 import { useProjectDetailData } from '@/routes/customer/project/shared';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
-import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { ComDatumapisNetworkingV1AlphaDomain } from '@openapi/networking.datumapis.com/v1alpha';
@@ -93,85 +93,77 @@ export default function Page() {
     <div className="m-4 flex flex-col gap-1">
       <PageHeader title={data?.spec?.domainName} />
 
-      <Card className="mt-4 shadow-none">
-        <CardContent>
-          <DescriptionList
-            items={[
-              {
-                label: <Trans>Resource Name</Trans>,
-                value: (
-                  <Text>
-                    <DisplayText value={data?.metadata?.name ?? ''} withCopy />
-                  </Text>
-                ),
-              },
-              {
-                label: <Trans>Namespace</Trans>,
-                value: <Text>{data?.metadata?.namespace ?? ''}</Text>,
-              },
-              {
-                label: <Trans>Domain</Trans>,
-                value: <Text>{data?.spec?.domainName}</Text>,
-              },
-              {
-                label: <Trans>Registrar</Trans>,
-                value: <Text>{data?.status?.registration?.registrar?.name}</Text>,
-              },
-              {
-                label: <Trans>DNS Providers</Trans>,
-                value: (
-                  <DomainDnsProviders nameservers={data?.status?.nameservers} maxVisible={2} />
-                ),
-              },
-              {
-                label: <Trans>Expiration Date</Trans>,
-                value: <DomainExpiration expiresAt={data?.status?.registration?.expiresAt} />,
-              },
-              {
-                label: <Trans>Status</Trans>,
-                value: (
-                  <DomainStatusProbe
-                    projectName={project.metadata?.name ?? ''}
-                    domainName={data?.metadata?.name ?? ''}
-                    namespace={data?.metadata?.namespace ?? ''}
-                  />
-                ),
-              },
-              {
-                label: <Trans>Created</Trans>,
-                value: (
-                  <Text>
-                    <DateTime date={data?.metadata?.creationTimestamp} variant="both" />
-                  </Text>
-                ),
-              },
-            ]}
-          />
-        </CardContent>
-      </Card>
+      <SectionCard className="mt-4">
+        <DescriptionList
+          items={[
+            {
+              label: <Trans>Resource Name</Trans>,
+              value: (
+                <Text>
+                  <DisplayText value={data?.metadata?.name ?? ''} withCopy />
+                </Text>
+              ),
+            },
+            {
+              label: <Trans>Namespace</Trans>,
+              value: <Text>{data?.metadata?.namespace ?? ''}</Text>,
+            },
+            {
+              label: <Trans>Domain</Trans>,
+              value: <Text>{data?.spec?.domainName}</Text>,
+            },
+            {
+              label: <Trans>Registrar</Trans>,
+              value: <Text>{data?.status?.registration?.registrar?.name}</Text>,
+            },
+            {
+              label: <Trans>DNS Providers</Trans>,
+              value: <DomainDnsProviders nameservers={data?.status?.nameservers} maxVisible={2} />,
+            },
+            {
+              label: <Trans>Expiration Date</Trans>,
+              value: <DomainExpiration expiresAt={data?.status?.registration?.expiresAt} />,
+            },
+            {
+              label: <Trans>Status</Trans>,
+              value: (
+                <DomainStatusProbe
+                  projectName={project.metadata?.name ?? ''}
+                  domainName={data?.metadata?.name ?? ''}
+                  namespace={data?.metadata?.namespace ?? ''}
+                />
+              ),
+            },
+            {
+              label: <Trans>Created</Trans>,
+              value: (
+                <Text>
+                  <DateTime date={data?.metadata?.creationTimestamp} variant="both" />
+                </Text>
+              ),
+            },
+          ]}
+        />
+      </SectionCard>
 
-      <Card className="mt-4 shadow-none">
-        <CardHeader>
-          <CardTitle>
-            <Trans>Notes</Trans>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-3">
-          <NotesList
-            notes={notes}
-            projectName={project.metadata?.name ?? ''}
-            namespace={data?.metadata?.namespace ?? ''}
-            userEmails={userEmails}
-            onNoteDeleted={revalidate}
-          />
-          <CreateNoteForm
-            projectName={project.metadata?.name ?? ''}
-            namespace={data?.metadata?.namespace ?? ''}
-            domainName={data?.metadata?.name ?? ''}
-            onCreated={revalidate}
-          />
-        </CardContent>
-      </Card>
+      <SectionCard
+        className="mt-4"
+        title={<Trans>Notes</Trans>}
+        contentClassName="flex flex-col gap-3">
+        <NotesList
+          notes={notes}
+          projectName={project.metadata?.name ?? ''}
+          namespace={data?.metadata?.namespace ?? ''}
+          userEmails={userEmails}
+          onNoteDeleted={revalidate}
+        />
+        <CreateNoteForm
+          projectName={project.metadata?.name ?? ''}
+          namespace={data?.metadata?.namespace ?? ''}
+          domainName={data?.metadata?.name ?? ''}
+          onCreated={revalidate}
+        />
+      </SectionCard>
     </div>
   );
 }

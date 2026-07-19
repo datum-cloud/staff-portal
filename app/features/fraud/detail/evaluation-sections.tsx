@@ -2,12 +2,12 @@ import type { FraudEvaluation, HistoryEntry, ProviderResult, StageResult } from 
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DisplayId } from '@/components/display';
+import { SectionCard } from '@/features/milo';
 import { useEnv } from '@/hooks/use-env';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes, userRoutes } from '@/utils/config/routes.config';
 import { startCase } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Dialog } from '@datum-cloud/datum-ui/dialog';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
@@ -173,26 +173,21 @@ function ProviderResultRow({ result }: { result: ProviderResult }) {
 
 function StageResultCard({ result, index }: { result: StageResult; index: number }) {
   return (
-    <Card className="shadow-none">
-      <CardHeader className="pb-2">
-        <CardTitle className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-2">
-            <span className="bg-muted flex h-5 w-5 items-center justify-center rounded-full text-xs">
-              {index + 1}
-            </span>
-            {result.name}
-          </div>
-          {result.skipped && <BadgeState state="pending" message={t`Skipped`} />}
-        </CardTitle>
-      </CardHeader>
-      {!result.skipped && result.providerResults && (
-        <CardContent className="pt-0">
-          {result.providerResults.map((pr, i) => (
-            <ProviderResultRow key={i} result={pr} />
-          ))}
-        </CardContent>
-      )}
-    </Card>
+    <SectionCard
+      title={
+        <span className="flex items-center gap-2 text-sm">
+          <span className="bg-muted flex h-5 w-5 items-center justify-center rounded-full text-xs">
+            {index + 1}
+          </span>
+          {result.name}
+        </span>
+      }
+      action={result.skipped ? <BadgeState state="pending" message={t`Skipped`} /> : undefined}
+      contentClassName={!result.skipped && result.providerResults ? 'pt-0' : undefined}>
+      {!result.skipped && result.providerResults
+        ? result.providerResults.map((pr, i) => <ProviderResultRow key={i} result={pr} />)
+        : null}
+    </SectionCard>
   );
 }
 
@@ -200,41 +195,39 @@ function HistoryTable({ entries }: { entries: HistoryEntry[] }) {
   if (!entries.length) return null;
 
   return (
-    <Card className="shadow-none">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-base">
+    <SectionCard
+      title={
+        <span className="flex items-center gap-2 text-base">
           <History className="h-4 w-4" />
           <Trans>Evaluation History</Trans>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="divide-border divide-y">
-          {entries.map((entry, i) => (
-            <div key={i} className="flex items-center justify-between py-2">
-              <DateTime date={entry.timestamp} />
-              <div className="flex items-center gap-3">
-                <Text className="font-mono text-sm">{entry.compositeScore}</Text>
-                <BadgeState
-                  state={
-                    entry.decision === 'DEACTIVATE'
-                      ? 'error'
-                      : entry.decision === 'REVIEW'
-                        ? 'warning'
-                        : 'active'
-                  }
-                  message={startCase(entry.decision ?? '')}
-                />
-                {entry.trigger && (
-                  <Text size="xs" textColor="muted">
-                    {entry.trigger}
-                  </Text>
-                )}
-              </div>
+        </span>
+      }>
+      <div className="divide-border divide-y">
+        {entries.map((entry, i) => (
+          <div key={i} className="flex items-center justify-between py-2">
+            <DateTime date={entry.timestamp} />
+            <div className="flex items-center gap-3">
+              <Text className="font-mono text-sm">{entry.compositeScore}</Text>
+              <BadgeState
+                state={
+                  entry.decision === 'DEACTIVATE'
+                    ? 'error'
+                    : entry.decision === 'REVIEW'
+                      ? 'warning'
+                      : 'active'
+                }
+                message={startCase(entry.decision ?? '')}
+              />
+              {entry.trigger && (
+                <Text size="xs" textColor="muted">
+                  {entry.trigger}
+                </Text>
+              )}
             </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+          </div>
+        ))}
+      </div>
+    </SectionCard>
   );
 }
 
@@ -248,56 +241,54 @@ export function UserEvaluationsTable({
   if (evaluations.length <= 1) return null;
 
   return (
-    <Card className="shadow-none">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-base">
+    <SectionCard
+      title={
+        <span className="flex items-center gap-2 text-base">
           <History className="h-4 w-4" />
           <Trans>All Evaluations for this User</Trans>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="divide-border divide-y">
-          {evaluations.map((evaluation) => {
-            const isCurrent = evaluation.metadata?.name === currentName;
-            return (
-              <div
-                key={evaluation.metadata?.name}
-                className={`flex items-center justify-between py-2 ${isCurrent ? 'bg-muted/50 -mx-2 rounded px-2' : ''}`}>
-                <div className="flex items-center gap-2">
-                  {isCurrent ? (
-                    <Text size="sm" weight="medium">
-                      {evaluation.metadata?.name}{' '}
-                      <Text as="span" size="xs" textColor="muted">
-                        {t`(current)`}
-                      </Text>
+        </span>
+      }>
+      <div className="divide-border divide-y">
+        {evaluations.map((evaluation) => {
+          const isCurrent = evaluation.metadata?.name === currentName;
+          return (
+            <div
+              key={evaluation.metadata?.name}
+              className={`flex items-center justify-between py-2 ${isCurrent ? 'bg-muted/50 -mx-2 rounded px-2' : ''}`}>
+              <div className="flex items-center gap-2">
+                {isCurrent ? (
+                  <Text size="sm" weight="medium">
+                    {evaluation.metadata?.name}{' '}
+                    <Text as="span" size="xs" textColor="muted">
+                      {t`(current)`}
                     </Text>
-                  ) : (
-                    <Link
-                      to={fraudRoutes.evaluations.detail(evaluation.metadata?.name ?? '')}
-                      className="text-primary text-sm font-medium hover:underline">
-                      {evaluation.metadata?.name}
-                    </Link>
-                  )}
-                </div>
-                <div className="flex items-center gap-3">
-                  <BadgeState state={evaluation.status?.phase ?? 'Pending'} />
-                  {evaluation.status?.compositeScore && (
-                    <Text className="font-mono text-sm">{evaluation.status.compositeScore}</Text>
-                  )}
-                  {evaluation.status?.decision && evaluation.status.decision !== 'ACCEPTED' && (
-                    <BadgeState
-                      state={evaluation.status.decision === 'DEACTIVATE' ? 'error' : 'warning'}
-                      message={startCase(evaluation.status.decision ?? '')}
-                    />
-                  )}
-                  <DateTime date={evaluation.status?.lastEvaluationTime} />
-                </div>
+                  </Text>
+                ) : (
+                  <Link
+                    to={fraudRoutes.evaluations.detail(evaluation.metadata?.name ?? '')}
+                    className="text-primary text-sm font-medium hover:underline">
+                    {evaluation.metadata?.name}
+                  </Link>
+                )}
               </div>
-            );
-          })}
-        </div>
-      </CardContent>
-    </Card>
+              <div className="flex items-center gap-3">
+                <BadgeState state={evaluation.status?.phase ?? 'Pending'} />
+                {evaluation.status?.compositeScore && (
+                  <Text className="font-mono text-sm">{evaluation.status.compositeScore}</Text>
+                )}
+                {evaluation.status?.decision && evaluation.status.decision !== 'ACCEPTED' && (
+                  <BadgeState
+                    state={evaluation.status.decision === 'DEACTIVATE' ? 'error' : 'warning'}
+                    message={startCase(evaluation.status.decision ?? '')}
+                  />
+                )}
+                <DateTime date={evaluation.status?.lastEvaluationTime} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </SectionCard>
   );
 }
 
@@ -322,104 +313,94 @@ export function EvaluationOverview({
   userEmail?: string;
 }) {
   return (
-    <Card className="shadow-none">
-      <CardHeader>
-        <CardTitle className="text-base">
-          <Trans>Evaluation Overview</Trans>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Row gutter={[24, 24]}>
+    <SectionCard title={<Trans>Evaluation Overview</Trans>}>
+      <Row gutter={[24, 24]}>
+        <Col span={12} sm={8} lg={4}>
+          <Text size="xs" textColor="muted" className="mb-1 font-medium tracking-wide uppercase">
+            <Trans>User</Trans>
+          </Text>
+          <Link
+            to={userRoutes.detail(evaluation.spec.userRef.name)}
+            className="text-primary hover:underline">
+            <div className="flex items-center gap-1">
+              <User className="h-3 w-3" />
+              <DisplayId value={evaluation.spec.userRef.name} />
+            </div>
+          </Link>
+        </Col>
+        {(contactName || userEmail) && (
           <Col span={12} sm={8} lg={4}>
             <Text size="xs" textColor="muted" className="mb-1 font-medium tracking-wide uppercase">
-              <Trans>User</Trans>
+              <Trans>Contact</Trans>
             </Text>
-            <Link
-              to={userRoutes.detail(evaluation.spec.userRef.name)}
-              className="text-primary hover:underline">
-              <div className="flex items-center gap-1">
-                <User className="h-3 w-3" />
-                <DisplayId value={evaluation.spec.userRef.name} />
-              </div>
-            </Link>
+            <div className="space-y-0.5">
+              {contactName && (
+                <Text size="sm" weight="medium">
+                  {contactName}
+                </Text>
+              )}
+              {userEmail && (
+                <Text size="sm" textColor="muted" className="flex items-center gap-1">
+                  <Mail className="h-3 w-3" />
+                  {userEmail}
+                </Text>
+              )}
+            </div>
           </Col>
-          {(contactName || userEmail) && (
-            <Col span={12} sm={8} lg={4}>
-              <Text
-                size="xs"
-                textColor="muted"
-                className="mb-1 font-medium tracking-wide uppercase">
-                <Trans>Contact</Trans>
-              </Text>
-              <div className="space-y-0.5">
-                {contactName && (
-                  <Text size="sm" weight="medium">
-                    {contactName}
-                  </Text>
-                )}
-                {userEmail && (
-                  <Text size="sm" textColor="muted" className="flex items-center gap-1">
-                    <Mail className="h-3 w-3" />
-                    {userEmail}
-                  </Text>
-                )}
-              </div>
-            </Col>
-          )}
-          <Col span={12} sm={8} lg={4}>
-            <Text size="xs" textColor="muted" className="mb-1 font-medium tracking-wide uppercase">
-              <Trans>Score</Trans>
-            </Text>
-            <ScoreDisplay
-              score={evaluation.status?.compositeScore}
-              decision={evaluation.status?.decision}
+        )}
+        <Col span={12} sm={8} lg={4}>
+          <Text size="xs" textColor="muted" className="mb-1 font-medium tracking-wide uppercase">
+            <Trans>Score</Trans>
+          </Text>
+          <ScoreDisplay
+            score={evaluation.status?.compositeScore}
+            decision={evaluation.status?.decision}
+          />
+        </Col>
+        <Col span={12} sm={8} lg={4}>
+          <Text size="xs" textColor="muted" className="mb-1 font-medium tracking-wide uppercase">
+            <Trans>Phase</Trans>
+          </Text>
+          <BadgeState state={evaluation.status?.phase ?? 'Pending'} />
+        </Col>
+        <Col span={12} sm={8} lg={4}>
+          <Text size="xs" textColor="muted" className="mb-1 font-medium tracking-wide uppercase">
+            <Trans>Decision</Trans>
+          </Text>
+          {evaluation.status?.decision && evaluation.status.decision !== 'ACCEPTED' ? (
+            <BadgeState
+              state={evaluation.status.decision === 'DEACTIVATE' ? 'error' : 'warning'}
+              message={startCase(evaluation.status.decision ?? '')}
             />
-          </Col>
-          <Col span={12} sm={8} lg={4}>
-            <Text size="xs" textColor="muted" className="mb-1 font-medium tracking-wide uppercase">
-              <Trans>Phase</Trans>
+          ) : (
+            <Text size="sm" textColor="muted">
+              {t`None`}
             </Text>
-            <BadgeState state={evaluation.status?.phase ?? 'Pending'} />
-          </Col>
-          <Col span={12} sm={8} lg={4}>
-            <Text size="xs" textColor="muted" className="mb-1 font-medium tracking-wide uppercase">
-              <Trans>Decision</Trans>
+          )}
+        </Col>
+        <Col span={12} sm={8} lg={4}>
+          <Text size="xs" textColor="muted" className="mb-1 font-medium tracking-wide uppercase">
+            <Trans>Enforcement</Trans>
+          </Text>
+          {evaluation.status?.enforcementAction ? (
+            <BadgeState
+              state={evaluation.status.enforcementAction === 'OBSERVED' ? 'info' : 'active'}
+              message={startCase(evaluation.status.enforcementAction ?? '')}
+            />
+          ) : (
+            <Text size="sm" textColor="muted">
+              {t`None`}
             </Text>
-            {evaluation.status?.decision && evaluation.status.decision !== 'ACCEPTED' ? (
-              <BadgeState
-                state={evaluation.status.decision === 'DEACTIVATE' ? 'error' : 'warning'}
-                message={startCase(evaluation.status.decision ?? '')}
-              />
-            ) : (
-              <Text size="sm" textColor="muted">
-                {t`None`}
-              </Text>
-            )}
-          </Col>
-          <Col span={12} sm={8} lg={4}>
-            <Text size="xs" textColor="muted" className="mb-1 font-medium tracking-wide uppercase">
-              <Trans>Enforcement</Trans>
-            </Text>
-            {evaluation.status?.enforcementAction ? (
-              <BadgeState
-                state={evaluation.status.enforcementAction === 'OBSERVED' ? 'info' : 'active'}
-                message={startCase(evaluation.status.enforcementAction ?? '')}
-              />
-            ) : (
-              <Text size="sm" textColor="muted">
-                {t`None`}
-              </Text>
-            )}
-          </Col>
-          <Col span={12} sm={8} lg={4}>
-            <Text size="xs" textColor="muted" className="mb-1 font-medium tracking-wide uppercase">
-              <Trans>Evaluated</Trans>
-            </Text>
-            <DateTime date={evaluation.status?.lastEvaluationTime} />
-          </Col>
-        </Row>
-      </CardContent>
-    </Card>
+          )}
+        </Col>
+        <Col span={12} sm={8} lg={4}>
+          <Text size="xs" textColor="muted" className="mb-1 font-medium tracking-wide uppercase">
+            <Trans>Evaluated</Trans>
+          </Text>
+          <DateTime date={evaluation.status?.lastEvaluationTime} />
+        </Col>
+      </Row>
+    </SectionCard>
   );
 }
 

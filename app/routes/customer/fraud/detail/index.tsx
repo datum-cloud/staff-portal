@@ -6,13 +6,13 @@ import {
   StageResultsSection,
   UserEvaluationsTable,
 } from '@/features/fraud';
+import { SectionCard } from '@/features/milo';
 import { useContactBySubjectUserQuery, useUserDetailQuery } from '@/resources/request/client';
 import {
   useFraudEvaluationDetailQuery,
   useFraudEvaluationListQuery,
 } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
@@ -61,25 +61,21 @@ export default function Page() {
 
   if (evalQuery.isLoading) {
     return (
-      <Card className="m-4 shadow-none">
-        <CardContent className="flex items-center justify-center py-12">
-          <Text size="sm" textColor="muted">
-            <Trans>Loading evaluation...</Trans>
-          </Text>
-        </CardContent>
-      </Card>
+      <SectionCard className="m-4" contentClassName="flex items-center justify-center py-12">
+        <Text size="sm" textColor="muted">
+          <Trans>Loading evaluation...</Trans>
+        </Text>
+      </SectionCard>
     );
   }
 
   if (!evaluation) {
     return (
-      <Card className="m-4 shadow-none">
-        <CardContent className="flex items-center justify-center py-12">
-          <Text size="sm" textColor="muted">
-            <Trans>Evaluation not found.</Trans>
-          </Text>
-        </CardContent>
-      </Card>
+      <SectionCard className="m-4" contentClassName="flex items-center justify-center py-12">
+        <Text size="sm" textColor="muted">
+          <Trans>Evaluation not found.</Trans>
+        </Text>
+      </SectionCard>
     );
   }
 

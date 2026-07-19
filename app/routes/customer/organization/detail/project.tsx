@@ -2,11 +2,10 @@ import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../sha
 import type { Route } from './+types/index';
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
-import { ListTable } from '@/features/milo';
+import { ListColumnHeader, ListTable } from '@/features/milo';
 import { type GqlProject, useOrgProjectListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -30,7 +29,7 @@ export default function Page() {
 
   const columns = [
     columnHelper.accessor('name', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => (
         <DisplayName
           displayName={row.original.displayName || row.original.name}
@@ -41,7 +40,7 @@ export default function Page() {
     }),
     columnHelper.accessor('createdAt', {
       id: 'createdAt',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Created`} />,
       cell: ({ getValue }) => <DateTime date={getValue() ?? undefined} />,
     }),
   ];

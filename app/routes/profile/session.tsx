@@ -1,7 +1,7 @@
 import type { Route } from './+types/session';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
-import { ListTable } from '@/features/milo';
+import { ListColumnHeader, ListTable } from '@/features/milo';
 import { useApp } from '@/providers/app.provider';
 import { useDeleteSessionMutation, useSessionListQuery } from '@/resources/request/client';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
@@ -47,21 +47,21 @@ export default function Page() {
   const columns = [
     columnHelper.accessor('metadata.name', {
       id: 'metadata.name',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Session ID`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Session ID`} />,
       cell: ({ getValue }) => {
         const value = getValue();
         return value ? <Text>{value}</Text> : <Text className="text-muted-foreground">—</Text>;
       },
     }),
     columnHelper.accessor('status.ip', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`IP`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`IP`} />,
       cell: ({ getValue }) => {
         const value = getValue();
         return value ? <Text>{value}</Text> : <Text className="text-muted-foreground">—</Text>;
       },
     }),
     columnHelper.accessor('status.fingerprintID', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Fingerprint ID`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Fingerprint ID`} />,
       cell: ({ getValue }) => {
         const value = getValue();
         return value ? <Text>{value}</Text> : <Text className="text-muted-foreground">—</Text>;
@@ -69,7 +69,7 @@ export default function Page() {
     }),
     columnHelper.accessor('status.createdAt', {
       id: 'status.createdAt',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Created`} />,
       cell: ({ getValue }) => {
         if (!getValue()) return <Text className="text-muted-foreground">—</Text>;
         return <DateTime date={getValue()} />;
@@ -77,7 +77,7 @@ export default function Page() {
     }),
     columnHelper.accessor('status.expiresAt', {
       id: 'status.expiresAt',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Expires`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Expires`} />,
       cell: ({ getValue }) => {
         if (!getValue()) return <Text className="text-muted-foreground">—</Text>;
         return <DateTime date={getValue() ?? ''} />;

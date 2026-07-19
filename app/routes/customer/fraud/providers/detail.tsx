@@ -1,5 +1,6 @@
 import type { Route } from './+types/detail';
 import { DialogConfirm } from '@/components/dialog';
+import { SectionCard } from '@/features/milo';
 import {
   useDeleteFraudProviderMutation,
   useFraudProviderDetailQuery,
@@ -9,7 +10,6 @@ import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
@@ -57,25 +57,21 @@ export default function Page() {
 
   if (providerQuery.isLoading) {
     return (
-      <Card className="m-4 shadow-none">
-        <CardContent className="flex items-center justify-center py-12">
-          <Text size="sm" textColor="muted">
-            <Trans>Loading provider...</Trans>
-          </Text>
-        </CardContent>
-      </Card>
+      <SectionCard className="m-4" contentClassName="flex items-center justify-center py-12">
+        <Text size="sm" textColor="muted">
+          <Trans>Loading provider...</Trans>
+        </Text>
+      </SectionCard>
     );
   }
 
   if (!provider) {
     return (
-      <Card className="m-4 shadow-none">
-        <CardContent className="flex items-center justify-center py-12">
-          <Text size="sm" textColor="muted">
-            <Trans>Provider not found.</Trans>
-          </Text>
-        </CardContent>
-      </Card>
+      <SectionCard className="m-4" contentClassName="flex items-center justify-center py-12">
+        <Text size="sm" textColor="muted">
+          <Trans>Provider not found.</Trans>
+        </Text>
+      </SectionCard>
     );
   }
 
@@ -104,88 +100,84 @@ export default function Page() {
   return (
     <div className="m-4">
       <div className="mx-auto max-w-2xl">
-        <Card className="shadow-none">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>{provider.metadata?.name}</CardTitle>
-              <Button
-                type="danger"
-                theme="outline"
-                icon={<ACTION_ICONS.delete size={16} />}
-                onClick={() => setShowDelete(true)}>
-                <Trans>Delete</Trans>
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <Form.Root
-              className="space-y-4"
-              schema={providerSchema}
-              defaultValues={{
-                type: provider.spec.type,
-                failurePolicy: provider.spec.failurePolicy ?? 'FailOpen',
-                endpoint: provider.spec.config?.endpoint ?? '',
-                credentialsRefName: provider.spec.config?.credentialsRef?.name ?? '',
-                credentialsRefNamespace: provider.spec.config?.credentialsRef?.namespace ?? '',
-                accountIDKey: provider.spec.config?.credentialsRef?.accountIDKey ?? '',
-                licenseKeyKey: provider.spec.config?.credentialsRef?.licenseKeyKey ?? '',
-              }}
-              onSubmit={handleSubmit}>
-              {({ isSubmitting, isDirty, isValid }) => (
-                <>
-                  <Form.Field name="type" label={t`Provider Type`} required>
-                    <Form.Select>
-                      <Form.SelectItem value="maxmind">MaxMind</Form.SelectItem>
-                    </Form.Select>
-                  </Form.Field>
-                  <Form.Field name="failurePolicy" label={t`Failure Policy`} required>
-                    <Form.Select>
-                      <Form.SelectItem value="FailOpen">Fail Open</Form.SelectItem>
-                      <Form.SelectItem value="FailClosed">Fail Closed</Form.SelectItem>
-                    </Form.Select>
-                  </Form.Field>
-                  <Form.Field name="endpoint" label={t`Endpoint`}>
-                    <Form.Input />
-                  </Form.Field>
-                  <div className="border-t pt-4">
-                    <Text size="sm" weight="medium" className="mb-3">
-                      <Trans>Credentials Reference</Trans>
-                    </Text>
-                    <div className="space-y-4">
-                      <Form.Field name="credentialsRefName" label={t`Secret Name`}>
-                        <Form.Input />
-                      </Form.Field>
-                      <Form.Field name="credentialsRefNamespace" label={t`Secret Namespace`}>
-                        <Form.Input />
-                      </Form.Field>
-                      <Form.Field name="accountIDKey" label={t`Account ID Key`}>
-                        <Form.Input />
-                      </Form.Field>
-                      <Form.Field name="licenseKeyKey" label={t`License Key Key`}>
-                        <Form.Input />
-                      </Form.Field>
-                    </div>
+        <SectionCard
+          title={provider.metadata?.name}
+          action={
+            <Button
+              type="danger"
+              theme="outline"
+              icon={<ACTION_ICONS.delete size={16} />}
+              onClick={() => setShowDelete(true)}>
+              <Trans>Delete</Trans>
+            </Button>
+          }>
+          <Form.Root
+            className="space-y-4"
+            schema={providerSchema}
+            defaultValues={{
+              type: provider.spec.type,
+              failurePolicy: provider.spec.failurePolicy ?? 'FailOpen',
+              endpoint: provider.spec.config?.endpoint ?? '',
+              credentialsRefName: provider.spec.config?.credentialsRef?.name ?? '',
+              credentialsRefNamespace: provider.spec.config?.credentialsRef?.namespace ?? '',
+              accountIDKey: provider.spec.config?.credentialsRef?.accountIDKey ?? '',
+              licenseKeyKey: provider.spec.config?.credentialsRef?.licenseKeyKey ?? '',
+            }}
+            onSubmit={handleSubmit}>
+            {({ isSubmitting, isDirty, isValid }) => (
+              <>
+                <Form.Field name="type" label={t`Provider Type`} required>
+                  <Form.Select>
+                    <Form.SelectItem value="maxmind">MaxMind</Form.SelectItem>
+                  </Form.Select>
+                </Form.Field>
+                <Form.Field name="failurePolicy" label={t`Failure Policy`} required>
+                  <Form.Select>
+                    <Form.SelectItem value="FailOpen">Fail Open</Form.SelectItem>
+                    <Form.SelectItem value="FailClosed">Fail Closed</Form.SelectItem>
+                  </Form.Select>
+                </Form.Field>
+                <Form.Field name="endpoint" label={t`Endpoint`}>
+                  <Form.Input />
+                </Form.Field>
+                <div className="border-t pt-4">
+                  <Text size="sm" weight="medium" className="mb-3">
+                    <Trans>Credentials Reference</Trans>
+                  </Text>
+                  <div className="space-y-4">
+                    <Form.Field name="credentialsRefName" label={t`Secret Name`}>
+                      <Form.Input />
+                    </Form.Field>
+                    <Form.Field name="credentialsRefNamespace" label={t`Secret Namespace`}>
+                      <Form.Input />
+                    </Form.Field>
+                    <Form.Field name="accountIDKey" label={t`Account ID Key`}>
+                      <Form.Input />
+                    </Form.Field>
+                    <Form.Field name="licenseKeyKey" label={t`License Key Key`}>
+                      <Form.Input />
+                    </Form.Field>
                   </div>
-                  <div className="flex justify-end gap-2 pt-4">
-                    <Button
-                      type="tertiary"
-                      theme="borderless"
-                      htmlType="button"
-                      onClick={() => navigate(fraudRoutes.providers.list())}>
-                      {t`Cancel`}
-                    </Button>
-                    <Button
-                      htmlType="submit"
-                      disabled={!isDirty || !isValid || isSubmitting}
-                      loading={isSubmitting}>
-                      <Trans>Update</Trans>
-                    </Button>
-                  </div>
-                </>
-              )}
-            </Form.Root>
-          </CardContent>
-        </Card>
+                </div>
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button
+                    type="tertiary"
+                    theme="borderless"
+                    htmlType="button"
+                    onClick={() => navigate(fraudRoutes.providers.list())}>
+                    {t`Cancel`}
+                  </Button>
+                  <Button
+                    htmlType="submit"
+                    disabled={!isDirty || !isValid || isSubmitting}
+                    loading={isSubmitting}>
+                    <Trans>Update</Trans>
+                  </Button>
+                </div>
+              </>
+            )}
+          </Form.Root>
+        </SectionCard>
       </div>
 
       <DialogConfirm

@@ -1,8 +1,12 @@
-import { getBillingAccountDisplayName, orgNameFromNamespace } from '../utils';
+import {
+  getBillingAccountDisplayName,
+  getResourceNameSubtext,
+  orgNameFromNamespace,
+} from '../utils';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
-import { ListTable } from '@/features/milo';
+import { ListTable, ListColumnHeader } from '@/features/milo';
 import { useBillingAccountListQuery, useOrgListQuery } from '@/resources/request/client';
 import { billingAccountRoutes, orgRoutes } from '@/utils/config/routes.config';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
@@ -29,7 +33,7 @@ export function BillingAccountList() {
   const columns = [
     columnHelper.display({
       id: 'displayName',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Display name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => {
         const orgName = orgNameFromNamespace(row.original.metadata?.namespace);
         const accountName = row.original.metadata?.name ?? '';
@@ -38,51 +42,51 @@ export function BillingAccountList() {
         return (
           <DisplayName
             displayName={displayName}
-            name={accountName}
+            name={getResourceNameSubtext(displayName, accountName)}
             to={billingAccountRoutes.detail(orgName, accountName)}
           />
         );
       },
     }),
-    columnHelper.accessor('metadata.name', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
-      cell: ({ getValue }) => <Text>{getValue()}</Text>,
-    }),
     columnHelper.display({
       id: 'organization',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Organization`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Organization`} />,
       cell: ({ row }) => {
         const orgName = orgNameFromNamespace(row.original.metadata?.namespace);
         if (!orgName) return <Text>—</Text>;
         const orgDisplayName = orgDisplayNames.get(orgName) ?? orgName;
         return (
-          <DisplayName displayName={orgDisplayName} name={orgName} to={orgRoutes.detail(orgName)} />
+          <DisplayName
+            displayName={orgDisplayName}
+            name={getResourceNameSubtext(orgDisplayName, orgName)}
+            to={orgRoutes.detail(orgName)}
+          />
         );
       },
     }),
     columnHelper.accessor('status.phase', {
       id: 'phase',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Phase`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
       cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Unknown'} />,
     }),
     columnHelper.accessor('spec.currencyCode', {
       id: 'currencyCode',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Currency`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Currency`} />,
       cell: ({ getValue }) => <Text>{getValue() ?? '—'}</Text>,
     }),
     columnHelper.accessor('status.linkedProjectsCount', {
       id: 'linkedProjectsCount',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Linked projects`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Linked projects`} />,
       cell: ({ getValue }) => <Text>{getValue() ?? 0}</Text>,
     }),
     columnHelper.accessor('spec.contactInfo.email', {
       id: 'contactEmail',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Contact email`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Contact email`} />,
       cell: ({ getValue }) => <Text>{getValue() ?? '—'}</Text>,
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'created',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Created`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
   ];

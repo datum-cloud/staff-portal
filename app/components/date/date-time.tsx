@@ -74,7 +74,7 @@ export const DateTime = ({
 
   // Show loading state during hydration
   if (needsHydrationProtection && !disableHydrationProtection && !mounted) {
-    return <span className={className}>...</span>;
+    return <span className={cn('text-sm', className)}>...</span>;
   }
 
   // Prepare formatter options
@@ -86,11 +86,13 @@ export const DateTime = ({
     addSuffix,
   };
 
-  // Format content based on variant
+  // Format content based on variant. `detailed` uses the friendly absolute
+  // format in the cell; the tooltip still shows UTC / timezone / relative.
   let content: string;
   switch (variant) {
     case 'detailed':
-      content = formatTimezoneDate(parsedDate, timeZone);
+    case 'absolute':
+      content = formatAbsoluteDate(parsedDate, formatterOptions);
       break;
     case 'relative':
       content = formatRelativeDate(parsedDate, formatterOptions);
@@ -98,7 +100,6 @@ export const DateTime = ({
     case 'both':
       content = formatCombinedDate(parsedDate, formatterOptions, separator);
       break;
-    case 'absolute':
     default:
       content = formatAbsoluteDate(parsedDate, formatterOptions);
       break;
@@ -106,9 +107,11 @@ export const DateTime = ({
 
   // Determine tooltip behavior
   const shouldShowTooltip = determineTooltipVisibility(tooltip, showTooltip);
+  // Match surrounding table/body text — mono made long absolute dates feel oversized.
+  const textClass = cn('text-sm', className);
 
   if (!shouldShowTooltip || disableTimezone) {
-    return <span className={cn(className)}>{content}</span>;
+    return <span className={textClass}>{content}</span>;
   }
 
   // Determine tooltip content
@@ -122,7 +125,7 @@ export const DateTime = ({
 
   return (
     <Tooltip message={tooltipContent}>
-      <span className={cn('cursor-pointer', className)}>{content}</span>
+      <span className={cn('cursor-pointer', textClass)}>{content}</span>
     </Tooltip>
   );
 };

@@ -1,7 +1,7 @@
 import type { Route } from './+types/index';
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
-import { ListPage, ListTable } from '@/features/milo';
+import { ListPage, ListTable, ListColumnHeader } from '@/features/milo';
 import { useGroupListQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
@@ -20,7 +20,7 @@ export default function Page() {
 
   const columns = [
     columnHelper.accessor('metadata.name', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => {
         const groupName = row.original.metadata?.name ?? '';
         const displayName =
@@ -31,7 +31,7 @@ export default function Page() {
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'metadata.creationTimestamp',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Created`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
   ];

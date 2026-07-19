@@ -1,17 +1,24 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../shared';
 import type { Route } from './+types/index';
-import { BadgeState } from '@/components/badge';
 import { DangerZoneCard } from '@/components/danger-zone-card';
-import { DateTime } from '@/components/date';
-import { DescriptionList } from '@/components/description-list';
 import { OrgBillingAccountsCard } from '@/features/billing';
-import { orgDeleteMutation } from '@/resources/request/client';
+import {
+  OrgContactCard,
+  OrgDetailsCard,
+  OrgMembersPreviewCard,
+  OrgOnboardingCard,
+  OrgUsageCard,
+} from '@/features/organization';
+import {
+  orgDeleteMutation,
+  useBillingAccountListForOrgQuery,
+  useOrganizationQuery,
+  useOrgMemberListQuery,
+} from '@/resources/request/client';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import { Text } from '@datum-cloud/datum-ui/typography';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { useNavigate } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
@@ -21,55 +28,73 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 
 export default function Page() {
   const { t } = useLingui();
-  const data = useOrganizationDetailData();
+  const k8sOrg = useOrganizationDetailData();
   const navigate = useNavigate();
+  const orgName = k8sOrg.metadata?.name ?? '';
+
+  const orgQuery = useOrganizationQuery(orgName);
+  const membersQuery = useOrgMemberListQuery(orgName);
+  const billingQuery = useBillingAccountListForOrgQuery(orgName);
+
+  const gqlOrg = orgQuery.data ?? undefined;
+  const billingAccounts = billingQuery.data?.items ?? [];
 
   const handleDeleteOrganization = async () => {
-    await orgDeleteMutation(data.metadata?.name ?? '');
+    await orgDeleteMutation(orgName);
     navigate(orgRoutes.list());
     toast.success(t`Organization deleted successfully`);
   };
 
+  const displayNameForDelete =
+    gqlOrg?.contactInfo?.businessName ||
+    gqlOrg?.displayName ||
+    k8sOrg?.metadata?.annotations?.['kubernetes.io/display-name'] ||
+    orgName;
+
   return (
-    <div className="m-4 flex flex-col gap-1">
-      <Card className="shadow-none">
-        <CardContent>
-          <DescriptionList
-            items={[
-              {
-                label: <Trans>Description</Trans>,
-                value: <Text>{data?.metadata?.annotations?.['kubernetes.io/display-name']}</Text>,
-              },
-              {
-                label: <Trans>Name</Trans>,
-                value: <Text>{data?.metadata?.name}</Text>,
-              },
-              {
-                label: <Trans>Type</Trans>,
-                value: <BadgeState state={data?.spec?.type ?? 'Organization'} />,
-              },
-              {
-                label: <Trans>Created</Trans>,
-                value: (
-                  <Text>
-                    <DateTime date={data?.metadata?.creationTimestamp} variant="both" />
-                  </Text>
-                ),
-              },
-            ]}
-          />
-        </CardContent>
-      </Card>
-
-      <OrgBillingAccountsCard orgName={data.metadata?.name ?? ''} />
-
-      <DangerZoneCard
-        deleteTitle={t`Delete Organization`}
-        deleteDescription={t`Permanently delete this organization and all associated data`}
-        dialogTitle={t`Delete Organization`}
-        dialogDescription={t`Are you sure you want to delete organization "${data.metadata?.annotations?.['kubernetes.io/display-name'] ?? ''} (${data.metadata?.name ?? ''})"? This action cannot be undone.`}
-        onConfirm={handleDeleteOrganization}
+    <div className="m-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <OrgOnboardingCard
+        className="h-full"
+        org={gqlOrg}
+        hasBillingAccount={billingAccounts.length > 0}
+        isLoading={orgQuery.isPending}
       />
+
+      <OrgUsageCard className="h-full" orgName={orgName} />
+
+      <OrgDetailsCard
+        className="h-full"
+        org={gqlOrg}
+        k8sOrg={k8sOrg}
+        isLoading={orgQuery.isPending}
+      />
+
+      <OrgContactCard
+        className="h-full"
+        org={gqlOrg}
+        k8sOrg={k8sOrg}
+        billingAccounts={billingAccounts}
+        isLoading={orgQuery.isPending || billingQuery.isPending}
+      />
+
+      <OrgMembersPreviewCard
+        className="h-full"
+        orgName={orgName}
+        members={membersQuery.data ?? []}
+        isLoading={membersQuery.isPending}
+      />
+
+      <OrgBillingAccountsCard className="mt-0 h-full" orgName={orgName} />
+
+      <div className="lg:col-span-2">
+        <DangerZoneCard
+          deleteTitle={t`Delete Organization`}
+          deleteDescription={t`Permanently delete this organization and all associated data`}
+          dialogTitle={t`Delete Organization`}
+          dialogDescription={t`Are you sure you want to delete organization "${displayNameForDelete} (${orgName})"? This action cannot be undone.`}
+          onConfirm={handleDeleteOrganization}
+        />
+      </div>
     </div>
   );
 }

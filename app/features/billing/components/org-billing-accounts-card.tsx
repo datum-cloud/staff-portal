@@ -1,11 +1,21 @@
-import { getBillingAccountDisplayName } from '../utils';
+import { getBillingAccountDisplayName, getResourceNameSubtext } from '../utils';
 import { BadgeState } from '@/components/badge';
 import { DisplayName } from '@/components/display';
+import {
+  EMBEDDED_TABLE_BODY_CLASS,
+  EMBEDDED_TABLE_CELL_CLASS,
+  EMBEDDED_TABLE_HEADER_CELL_CLASS,
+  LIST_TABLE_HEADER_CLASS,
+  LIST_TABLE_HEADER_ROW_CLASS,
+  LIST_TABLE_ROW_CLASS,
+  ListColumnHeader,
+  TableCard,
+} from '@/features/milo';
 import { useBillingAccountListForOrgQuery } from '@/resources/request/client';
 import { billingAccountRoutes } from '@/utils/config/routes.config';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Text } from '@datum-cloud/datum-ui/typography';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
@@ -16,22 +26,25 @@ const columnHelper = createColumnHelper<ComMiloapisBillingV1Alpha1BillingAccount
 
 interface OrgBillingAccountsCardProps {
   orgName: string;
+  className?: string;
 }
 
-export function OrgBillingAccountsCard({ orgName }: OrgBillingAccountsCardProps) {
+export function OrgBillingAccountsCard({ orgName, className }: OrgBillingAccountsCardProps) {
   const { data, isLoading } = useBillingAccountListForOrgQuery(orgName);
   const accounts = data?.items ?? [];
 
   const columns = [
     columnHelper.display({
       id: 'displayName',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Display name`} />,
+      enableSorting: false,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => {
         const accountName = row.original.metadata?.name ?? '';
+        const displayName = getBillingAccountDisplayName(row.original);
         return (
           <DisplayName
-            displayName={getBillingAccountDisplayName(row.original)}
-            name={accountName}
+            displayName={displayName}
+            name={getResourceNameSubtext(displayName, accountName)}
             to={billingAccountRoutes.detail(orgName, accountName)}
           />
         );
@@ -39,51 +52,52 @@ export function OrgBillingAccountsCard({ orgName }: OrgBillingAccountsCardProps)
     }),
     columnHelper.accessor('status.phase', {
       id: 'phase',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Phase`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
       cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Unknown'} />,
     }),
     columnHelper.accessor('status.linkedProjectsCount', {
       id: 'linkedProjectsCount',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Linked projects`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Linked projects`} />,
       cell: ({ getValue }) => <Text>{getValue() ?? 0}</Text>,
     }),
   ];
 
   return (
-    <Card className="mt-4 shadow-none">
-      <CardHeader>
-        <CardTitle>
-          <Trans>Billing Accounts</Trans>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        {isLoading ? (
-          <Text>
-            <Trans>Loading billing accounts...</Trans>
-          </Text>
-        ) : accounts.length === 0 ? (
-          <Text>
-            <Trans>No billing accounts</Trans>
-          </Text>
-        ) : (
-          <DataTable.Client
-            data={accounts}
-            columns={columns as ColumnDef<ComMiloapisBillingV1Alpha1BillingAccount, unknown>[]}
-            pageSize={5}
-            getRowId={(row) => row.metadata?.name ?? ''}>
-            <DataTable.Content
-              headerClassName="bg-muted/50"
-              className="border-t border-b border-solid"
-              emptyMessage={t`No billing accounts`}
-            />
-          </DataTable.Client>
-        )}
-      </CardContent>
-      <CardFooter className="justify-end">
-        <Link to={billingAccountRoutes.list()} className="text-primary text-sm hover:underline">
-          <Trans>View all billing accounts</Trans>
+    <TableCard
+      className={cn('mt-4', className)}
+      title={<Trans>Billing Accounts</Trans>}
+      action={
+        <Link
+          to={billingAccountRoutes.list()}
+          className="text-muted-foreground hover:text-foreground text-sm">
+          <Trans>View all</Trans>
         </Link>
-      </CardFooter>
-    </Card>
+      }>
+      {isLoading ? (
+        <Text className="text-muted-foreground px-4 py-6">
+          <Trans>Loading billing accounts...</Trans>
+        </Text>
+      ) : accounts.length === 0 ? (
+        <Text className="text-muted-foreground px-4 py-6">
+          <Trans>No billing accounts</Trans>
+        </Text>
+      ) : (
+        <DataTable.Client
+          data={accounts}
+          columns={columns as ColumnDef<ComMiloapisBillingV1Alpha1BillingAccount, unknown>[]}
+          pageSize={5}
+          getRowId={(row) => row.metadata?.name ?? ''}>
+          <DataTable.Content
+            headerClassName={LIST_TABLE_HEADER_CLASS}
+            headerRowClassName={LIST_TABLE_HEADER_ROW_CLASS}
+            headerCellClassName={EMBEDDED_TABLE_HEADER_CELL_CLASS}
+            bodyClassName={EMBEDDED_TABLE_BODY_CLASS}
+            rowClassName={LIST_TABLE_ROW_CLASS}
+            cellClassName={EMBEDDED_TABLE_CELL_CLASS}
+            emptyMessage={t`No billing accounts`}
+          />
+        </DataTable.Client>
+      )}
+    </TableCard>
   );
 }

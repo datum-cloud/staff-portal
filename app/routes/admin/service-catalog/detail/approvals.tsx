@@ -2,7 +2,7 @@ import { getServiceDetailMetadata, useServiceDetailData } from '../shared';
 import type { Route } from './+types/approvals';
 import { DateTime } from '@/components/date';
 import { MessageCard } from '@/components/message-card';
-import { ListTable } from '@/features/milo';
+import { ListColumnHeader, ListTable } from '@/features/milo';
 import { consumerMatchesService, useApprovalDialog } from '@/features/service-catalog';
 import { useServiceConsumersInProjectQuery } from '@/resources/request/client';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
@@ -62,9 +62,7 @@ export default function ApprovalsPage() {
   const columns = [
     columnHelper.accessor((row) => row.spec?.consumerProjectRef?.name ?? '', {
       id: 'project',
-      header: ({ column }) => (
-        <DataTable.ColumnHeader column={column} title={t`Consumer Project`} />
-      ),
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Consumer Project`} />,
       cell: ({ getValue }) => {
         const project = getValue();
         return project ? (
@@ -82,7 +80,7 @@ export default function ApprovalsPage() {
     }),
     columnHelper.accessor((row) => row.metadata?.name ?? '', {
       id: 'name',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Consumer ID`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Consumer ID`} />,
       cell: ({ getValue }) => (
         <Text size="xs" textColor="muted" className="font-mono">
           {getValue()}
@@ -91,7 +89,7 @@ export default function ApprovalsPage() {
     }),
     columnHelper.accessor((row) => row.metadata?.creationTimestamp ?? '', {
       id: 'requestedAt',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Requested at`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Requested at`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} variant="relative" addSuffix />,
     }),
     columnHelper.display({

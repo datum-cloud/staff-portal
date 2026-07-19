@@ -25,11 +25,31 @@ export type ComMiloapisResourcemanagerV1Alpha1Organization = {
   /**
    * OrganizationSpec defines the desired state of Organization
    */
-  spec: {
+  spec?: {
     /**
-     * The type of organization.
+     * ContactInfo describes who the organization is and how to reach them.
+     * Email and name are required for onboarding to complete.
      */
-    type: 'Personal' | 'Standard';
+    contactInfo?: {
+      address?: {
+        city?: string;
+        country: string;
+        line1?: string;
+        line2?: string;
+        postalCode?: string;
+        region?: string;
+      };
+      /**
+       * BusinessName is the optional legal entity or company name.
+       */
+      businessName?: string;
+      email: string;
+      name: string;
+    };
+    /**
+     * The type of organization. Deprecated when UnifiedOrganizations is enabled.
+     */
+    type?: 'Personal' | 'Standard';
   };
   /**
    * OrganizationStatus defines the observed state of Organization
@@ -37,7 +57,7 @@ export type ComMiloapisResourcemanagerV1Alpha1Organization = {
   status?: {
     /**
      * Conditions represents the observations of an organization's current state.
-     * Known condition types are: "Ready"
+     * Known condition types are: "Ready", "OnboardingComplete"
      */
     conditions?: Array<{
       /**

@@ -250,7 +250,7 @@ const BadgeState = ({
 
   if (tooltip) {
     return (
-      <Tooltip message={startCase(tooltip || displayText)}>
+      <Tooltip message={tooltip}>
         <div className="inline-flex cursor-help">{badgeContent}</div>
       </Tooltip>
     );

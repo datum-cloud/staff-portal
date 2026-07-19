@@ -1,14 +1,8 @@
 import { ActionCard } from '@/components/action-card';
 import { DialogConfirm } from '@/components/dialog';
+import { SectionCard } from '@/features/milo/components/page/section-card';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@datum-cloud/datum-ui/card';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
@@ -52,29 +46,26 @@ export function DangerZoneCard({
         requireConfirmation
       />
 
-      <Card className={`border-destructive/20 mt-4 shadow-none ${className || ''}`}>
-        <CardHeader>
-          <CardTitle className="text-destructive flex items-center gap-2">
+      <SectionCard
+        className={`border-destructive/20 mt-4 ${className || ''}`}
+        title={
+          <span className="text-destructive flex items-center gap-2">
             <ACTION_ICONS.delete className="h-4 w-4" />
             <Trans>Danger Zone</Trans>
-          </CardTitle>
-          <CardDescription>
-            <Trans>Irreversible and destructive actions</Trans>
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ActionCard
-            variant="destructive"
-            title={deleteTitle}
-            description={deleteDescription}
-            action={
-              <Button type="danger" size="small" onClick={() => setDeleteDialogOpen(true)}>
-                <Trans>Delete</Trans>
-              </Button>
-            }
-          />
-        </CardContent>
-      </Card>
+          </span>
+        }
+        description={<Trans>Irreversible and destructive actions</Trans>}>
+        <ActionCard
+          variant="destructive"
+          title={deleteTitle}
+          description={deleteDescription}
+          action={
+            <Button type="danger" size="small" onClick={() => setDeleteDialogOpen(true)}>
+              <Trans>Delete</Trans>
+            </Button>
+          }
+        />
+      </SectionCard>
     </>
   );
 }

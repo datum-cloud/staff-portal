@@ -4,15 +4,13 @@ import { Chip } from '@/components/chip';
 import { PageHeader } from '@/components/page-header';
 import { SimpleTable } from '@/components/simple-table';
 import { DnsRecordStatusProbe } from '@/features/dns';
-import { ListTable } from '@/features/milo';
+import { ListColumnHeader, ListTable, SectionCard } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
 import { useProjectDnsRecordListQuery } from '@/resources/request/client';
 import { projectDnsDetailQuery, projectDomainDetailQuery } from '@/resources/request/server';
 import { DNSRecordFlattened } from '@/resources/schemas';
 import { useProjectDetailData } from '@/routes/customer/project/shared';
 import { extractDataFromMatches, formatTTL, metaObject } from '@/utils/helpers';
-import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
-import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -92,7 +90,7 @@ export default function Page() {
 
   const dnsRecordColumns = [
     dnsRecordColumnHelper.accessor('type', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Type`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Type`} />,
       cell: ({ getValue, row }) => (
         <div className="flex items-center gap-2">
           <BadgeState state={getValue()} message={getValue()?.toUpperCase() ?? ''} />
@@ -107,11 +105,11 @@ export default function Page() {
       size: 50,
     }),
     dnsRecordColumnHelper.accessor('name', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       size: 50,
     }),
     dnsRecordColumnHelper.accessor('value', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Content`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Content`} />,
       cell: ({ row }) => {
         const { type, value } = row.original;
         const content = () => {
@@ -147,7 +145,7 @@ export default function Page() {
       },
     }),
     dnsRecordColumnHelper.accessor('ttl', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`TTL`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`TTL`} />,
       size: 50,
       cell: ({ getValue }) => formatTTL(getValue()),
     }),
@@ -208,20 +206,13 @@ export default function Page() {
         }}
       />
 
-      <Card className="mt-4 shadow-none">
-        <CardHeader>
-          <CardTitle>
-            <Trans>Nameservers</Trans>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <SimpleTable<NameserverRow>
-            getRowId={(row) => row?.hostname ?? ''}
-            columns={nameserverColumns}
-            data={nameserverData}
-          />
-        </CardContent>
-      </Card>
+      <SectionCard className="mt-4" title={<Trans>Nameservers</Trans>}>
+        <SimpleTable<NameserverRow>
+          getRowId={(row) => row?.hostname ?? ''}
+          columns={nameserverColumns}
+          data={nameserverData}
+        />
+      </SectionCard>
     </div>
   );
 }

@@ -15,6 +15,17 @@ import { mount, MountOptions, MountReturn } from 'cypress/react';
 import React, { ReactNode } from 'react';
 import { MemoryRouter, MemoryRouterProps, Route, Routes } from 'react-router';
 
+// Shiki (pulled in via datum-ui assistant) reads process.env in the browser.
+// Cypress component tests do not define process, so stub a minimal one.
+const processGlobal = globalThis as unknown as {
+  process?: { env?: Record<string, string | undefined> };
+};
+if (!processGlobal.process) {
+  processGlobal.process = { env: {} };
+} else if (!processGlobal.process.env) {
+  processGlobal.process.env = {};
+}
+
 // Activate Lingui once with real English translations.
 i18n.loadAndActivate({ locale: 'en', messages });
 

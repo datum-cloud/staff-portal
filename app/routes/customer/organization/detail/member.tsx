@@ -2,7 +2,7 @@ import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../sha
 import type { Route } from './+types/member';
 import { BadgeState } from '@/components/badge';
 import { DisplayName } from '@/components/display';
-import { ListTable } from '@/features/milo';
+import { ListColumnHeader, ListTable } from '@/features/milo';
 import {
   type GqlOrgMember,
   useOrgInvitationCreateMutation,
@@ -100,7 +100,7 @@ export default function Page() {
 
   const columns = [
     columnHelper.accessor('givenName', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={tCore`Name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={tCore`Name`} />,
       cell: ({ row }) => {
         const displayName = `${row.original.givenName} ${row.original.familyName}`;
         const email = row.original.email;
@@ -120,7 +120,7 @@ export default function Page() {
       enableSorting: false,
     }),
     columnHelper.accessor('roles', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={tCore`Role`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={tCore`Role`} />,
       cell: ({ getValue }) => <BadgeState state={getValue()?.[0] ?? ''} />,
     }),
     columnHelper.display({

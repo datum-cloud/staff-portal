@@ -1,7 +1,7 @@
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { getEmailCondition } from '@/features/email/email-utils';
-import { ListTable } from '@/features/milo';
+import { ListTable, ListColumnHeader } from '@/features/milo';
 import { routes } from '@/utils/config/routes.config';
 import { startCase } from '@/utils/helpers';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
@@ -59,7 +59,7 @@ export default function EmailList({
 
   const columns = [
     columnHelper.accessor('status.emailAddress', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Recipient`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Recipient`} />,
       cell: ({ row, getValue }) => (
         <Link
           to={routes.emailActivityDetail(
@@ -71,7 +71,7 @@ export default function EmailList({
       ),
     }),
     columnHelper.accessor('status', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Status`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
       cell: ({ row }) => {
         const condition = getEmailCondition(row.original);
         return (
@@ -83,7 +83,7 @@ export default function EmailList({
       },
     }),
     columnHelper.accessor('status.subject', {
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Subject`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Subject`} />,
       cell: ({ getValue }) => {
         const subject = getValue();
         return subject ? (
@@ -97,7 +97,7 @@ export default function EmailList({
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'metadata.creationTimestamp',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Sent`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Sent`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
   ];

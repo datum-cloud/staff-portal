@@ -2,6 +2,7 @@ import { DnsHostChips } from './dns-host-chips';
 import { BadgeProgrammingError } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { SearchResourceTable, type ControlledSearch } from '@/components/search-resource-table';
+import { ListColumnHeader } from '@/features/milo';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { transformControlPlaneStatus } from '@/utils/helpers';
@@ -66,7 +67,7 @@ export function DnsZoneList({
   const columns = [
     columnHelper.accessor((row) => row.dnsZone.spec?.domainName ?? '', {
       id: 'domain',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Zone Name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Zone Name`} />,
       cell: ({ getValue, row }) => {
         const to = linkBuilder(row.original);
         const status = transformControlPlaneStatus(row.original.dnsZone.status, {
@@ -95,7 +96,7 @@ export function DnsZoneList({
       ? [
           columnHelper.accessor((row) => row.projectName, {
             id: 'project',
-            header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Project`} />,
+            header: ({ column }) => <ListColumnHeader column={column} title={t`Project`} />,
             cell: ({ getValue }) => {
               const project = getValue();
               return project ? <Link to={projectRoutes.detail(project)}>{project}</Link> : '—';
@@ -105,7 +106,8 @@ export function DnsZoneList({
       : []),
     columnHelper.accessor((row) => row.dnsZone.status?.domainRef?.status?.nameservers, {
       id: 'nameservers',
-      header: () => t`DNS Host`,
+      enableSorting: false,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`DNS Host`} />,
       cell: ({ getValue, row }) => {
         const nameservers = getValue();
         // A zone with a `status` but no resolved nameservers yet is still
@@ -123,19 +125,19 @@ export function DnsZoneList({
     }),
     columnHelper.accessor((row) => row.dnsZone.status?.recordCount, {
       id: 'recordCount',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Records`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Records`} />,
       cell: ({ getValue }) => getValue() ?? '—',
     }),
     columnHelper.accessor((row) => row.dnsZone.metadata?.creationTimestamp, {
       id: 'metadata.creationTimestamp',
-      header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Created`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Created`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} />,
     }),
     columnHelper.accessor(
       (row) => row.dnsZone.metadata?.annotations?.['kubernetes.io/description'],
       {
         id: 'description',
-        header: ({ column }) => <DataTable.ColumnHeader column={column} title={t`Description`} />,
+        header: ({ column }) => <ListColumnHeader column={column} title={t`Description`} />,
         cell: ({ getValue }) => getValue() ?? '—',
       }
     ),

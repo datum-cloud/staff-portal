@@ -14,7 +14,10 @@ interface ListPageProps {
 export function ListPage({ children }: ListPageProps) {
   return (
     <div
-      className="bg-card flex flex-col overflow-hidden"
+      // Overflow stays visible so the filter show/hide control can sit on the
+      // sub-nav border (half outside) when the filter rail is collapsed.
+      // Height is pinned below; ListTable owns its own scroll regions.
+      className="bg-card flex flex-col overflow-visible"
       style={{ height: `calc(100svh - ${HEADER_STACK_H}px)` }}>
       {children}
     </div>
