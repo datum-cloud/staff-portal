@@ -2,6 +2,7 @@ import { buildOrganizationNamespace } from '@/features/billing/utils';
 import { PROXY_URL } from '@/modules/axios/axios.client';
 import { ListQueryParams } from '@/resources/schemas';
 import {
+  listBillingMiloapisComV1Alpha1BillingAccountBindingForAllNamespaces,
   listBillingMiloapisComV1Alpha1BillingAccountForAllNamespaces,
   listBillingMiloapisComV1Alpha1NamespacedBillingAccount,
   listBillingMiloapisComV1Alpha1NamespacedBillingAccountBinding,
@@ -53,6 +54,20 @@ export const billingAccountDetailQuery = async (orgName: string, accountName: st
     path: { namespace, name: accountName },
   });
   return response.data?.data;
+};
+
+export const billingAccountBindingListQuery = async (params?: ListQueryParams) => {
+  const response = await listBillingMiloapisComV1Alpha1BillingAccountBindingForAllNamespaces({
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
+    },
+  });
+  const data = response.data?.data;
+  return {
+    ...(data ?? { items: [] }),
+    items: filterNotDeleting(data?.items ?? []),
+  };
 };
 
 export const billingAccountBindingListForOrgQuery = async (

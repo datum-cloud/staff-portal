@@ -11,6 +11,7 @@ import { FILTER_W } from '../../lib/dimensions';
 import { ListPagination } from './list-pagination';
 import {
   buildFilterFns,
+  computeFacetCounts,
   FilterGroup,
   FilterGroupSkeleton,
   FilterPanel,
@@ -21,7 +22,11 @@ import {
 import { useBreakpoint } from '@/hooks/use-breakpoint';
 import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
-import { DataTable } from '@datum-cloud/datum-ui/data-table';
+import {
+  DataTable,
+  useDataTableFilters,
+  useDataTableSearch,
+} from '@datum-cloud/datum-ui/data-table';
 import type { SelectionColumnOptions } from '@datum-cloud/datum-ui/data-table';
 import { Input } from '@datum-cloud/datum-ui/input';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
@@ -94,18 +99,70 @@ const bodyClassName = LIST_TABLE_BODY_CLASS;
 const rowClassName = LIST_TABLE_ROW_CLASS;
 const cellClassName = LIST_TABLE_CELL_CLASS;
 
-/** Resolves a dot-path (e.g. `status.registrationApproval`) against a plain object. */
-function getByPath(obj: unknown, path: string): unknown {
-  return path
-    .split('.')
-    .reduce<unknown>(
-      (acc, key) => (acc && typeof acc === 'object' ? (acc as any)[key] : undefined),
-      obj
-    );
-}
-
 const searchClassName =
   'h-10 border-0 bg-transparent pl-9 shadow-none focus-visible:shadow-none focus-visible:ring-0';
+
+/**
+ * Lives inside `<DataTable.Client>` so it can read active filters/search and
+ * recompute facet counts when selection changes (Amazon-style: each group's
+ * counts reflect every *other* active filter).
+ */
+function SidebarFilterGroups<TData>({
+  filters,
+  filterFns,
+  data,
+  loading,
+  searchFn,
+  applyClientSearch,
+}: {
+  filters: FilterGroupConfig[];
+  filterFns?: Record<string, (cellValue: unknown, filterValue: unknown) => boolean>;
+  data: TData[];
+  loading: boolean;
+  searchFn?: (row: TData, search: string) => boolean;
+  /** False when search is server-driven (`controlledSearch`) — `data` is already scoped. */
+  applyClientSearch: boolean;
+}) {
+  const { filters: activeFilters } = useDataTableFilters();
+  const { search } = useDataTableSearch();
+
+  const filterSignature = useMemo(
+    () =>
+      filters
+        .map(
+          (f) => `${f.column}:${f.type ?? 'checkbox'}:${f.options.map((o) => o.value).join(',')}`
+        )
+        .join('|'),
+    [filters]
+  );
+
+  const matchers = useMemo(
+    () => ({ ...buildFilterFns(filters), ...filterFns }),
+    // filterSignature stands in for `filters` content — see ListTable comment.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [filterSignature, filterFns]
+  );
+
+  const facetCounts = useMemo(
+    () =>
+      computeFacetCounts(data, filters, activeFilters, matchers, {
+        search: applyClientSearch ? search : '',
+        searchFn: applyClientSearch ? searchFn : undefined,
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [data, filterSignature, activeFilters, matchers, applyClientSearch, search, searchFn]
+  );
+
+  return (
+    <FilterPanel>
+      {loading
+        ? filters.map((f) => (
+            <FilterGroupSkeleton key={f.column} label={f.label} optionCount={f.options.length} />
+          ))
+        : filters.map((f) => <FilterGroup key={f.column} {...f} counts={facetCounts[f.column]} />)}
+    </FilterPanel>
+  );
+}
 
 interface ListTableProps<TData> {
   readonly data: TData[];
@@ -187,44 +244,6 @@ export function ListTable<TData>({
     [filters, filterFns]
   );
 
-  // Structural signature of `filters` (column/type/option values) — routes pass
-  // a fresh `filters={[...]}` array literal every render, so depending on that
-  // reference (or on `mergedFilterFns`, which is built from it) would defeat
-  // the memo below on every re-render instead of only when a filter's shape
-  // actually changes.
-  const filterSignature = useMemo(
-    () =>
-      (filters ?? [])
-        .map(
-          (f) => `${f.column}:${f.type ?? 'checkbox'}:${f.options.map((o) => o.value).join(',')}`
-        )
-        .join('|'),
-    [filters]
-  );
-
-  // Per-option counts (e.g. "Approved (98)"), tallied from the full dataset via
-  // each group's own matcher — so it works for exact-match checkboxes *and*
-  // range-style filters (e.g. "Created: Last 7 days") alike. Sidebar only,
-  // since inline/mobile variants render outside this data scope.
-  const filterCounts = useMemo(() => {
-    if (!sidebarMode || !filters?.length) return undefined;
-    const autoFilterFns = buildFilterFns(filters);
-    const counts: Record<string, Record<string, number>> = {};
-    for (const group of filters) {
-      const matcher = filterFns?.[group.column] ?? autoFilterFns[group.column];
-      const tally: Record<string, number> = {};
-      for (const option of group.options) {
-        tally[option.value] = options.data.filter((row) =>
-          matcher(getByPath(row, group.column), [option.value])
-        ).length;
-      }
-      counts[group.column] = tally;
-    }
-    return counts;
-    // filterSignature stands in for `filters`'/`filterFns`'s content — see comment above.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sidebarMode, filterSignature, options.data]);
-
   return (
     // [sidebar | right column]; sidebar is inside DataTable.Client so its filters resolve.
     <DataTable.Client
@@ -251,19 +270,14 @@ export function ListTable<TData>({
             !filtersCollapsed && 'border-r'
           )}>
           <div style={{ width: FILTER_W }} className="h-full overflow-y-auto pb-4">
-            <FilterPanel>
-              {loading
-                ? filters?.map((f) => (
-                    <FilterGroupSkeleton
-                      key={f.column}
-                      label={f.label}
-                      optionCount={f.options.length}
-                    />
-                  ))
-                : filters?.map((f) => (
-                    <FilterGroup key={f.column} {...f} counts={filterCounts?.[f.column]} />
-                  ))}
-            </FilterPanel>
+            <SidebarFilterGroups
+              filters={filters ?? []}
+              filterFns={filterFns}
+              data={options.data}
+              loading={loading}
+              searchFn={searchFn}
+              applyClientSearch={!controlledSearch}
+            />
           </div>
         </aside>
       )}

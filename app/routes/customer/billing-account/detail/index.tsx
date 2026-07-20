@@ -2,7 +2,7 @@ import { getBillingAccountDetailMetadata, useBillingAccountDetailData } from '..
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
-import { DisplayName } from '@/components/display';
+import { DisplayId, DisplayName } from '@/components/display';
 import { PageHeader } from '@/components/page-header';
 import {
   formatBillingAddress,
@@ -10,7 +10,6 @@ import {
   getBillingAccountDisplayName,
   getOrganizationDisplayName,
   getPaymentMethodDisplayName,
-  getResourceNameSubtext,
   isDefaultPaymentMethod,
 } from '@/features/billing/utils';
 import {
@@ -89,16 +88,13 @@ export default function Page() {
       id: 'displayName',
       enableSorting: false,
       header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
-      cell: ({ row }) => {
-        const methodDisplayName = getPaymentMethodDisplayName(row.original);
-        const methodName = row.original.metadata?.name ?? '';
-        return (
-          <DisplayName
-            displayName={methodDisplayName}
-            name={getResourceNameSubtext(methodDisplayName, methodName)}
-          />
-        );
-      },
+      cell: ({ row }) => <DisplayName displayName={getPaymentMethodDisplayName(row.original)} />,
+    }),
+    paymentMethodColumnHelper.accessor((row) => row.metadata?.name ?? '', {
+      id: 'id',
+      enableSorting: false,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
+      cell: ({ getValue }) => <DisplayId value={getValue()} />,
     }),
     paymentMethodColumnHelper.display({
       id: 'card',
@@ -141,12 +137,17 @@ export default function Page() {
         if (!projectName) return <Text>—</Text>;
         const projectDisplayName = projectDisplayNames.get(projectName) ?? projectName;
         return (
-          <DisplayName
-            displayName={projectDisplayName}
-            name={getResourceNameSubtext(projectDisplayName, projectName)}
-            to={projectRoutes.detail(projectName)}
-          />
+          <DisplayName displayName={projectDisplayName} to={projectRoutes.detail(projectName)} />
         );
+      },
+    }),
+    bindingColumnHelper.accessor((row) => row.spec?.projectRef?.name ?? '', {
+      id: 'id',
+      enableSorting: false,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
+      cell: ({ getValue }) => {
+        const projectName = getValue();
+        return projectName ? <DisplayId value={projectName} /> : <Text>—</Text>;
       },
     }),
     bindingColumnHelper.display({
@@ -202,7 +203,6 @@ export default function Page() {
                   value: orgName ? (
                     <DisplayName
                       displayName={orgDisplayName || orgName}
-                      name={getResourceNameSubtext(orgDisplayName || orgName, orgName)}
                       to={orgRoutes.detail(orgName)}
                     />
                   ) : (
@@ -255,7 +255,7 @@ export default function Page() {
                   value: <Text>{contactInfo?.name ?? '—'}</Text>,
                 },
                 {
-                  label: <Trans>Business name</Trans>,
+                  label: <Trans>Company</Trans>,
                   value: <Text>{contactInfo?.businessName ?? '—'}</Text>,
                 },
                 {

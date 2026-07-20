@@ -1,10 +1,12 @@
+import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { t } from '@lingui/core/macro';
 import { format } from 'date-fns';
-import { useMemo } from 'react';
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { useId, useMemo } from 'react';
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 interface GrowthPoint {
   month: string;
+  label: string;
   cumulative: number;
 }
 
@@ -29,11 +31,46 @@ function buildGrowthSeries(createdAts: (string | null | undefined)[]): GrowthPoi
       cumulative++;
       index++;
     }
-    points.push({ month: format(cursor, 'MMM yyyy'), cumulative });
+    points.push({
+      month: format(cursor, 'MMM yyyy'),
+      label: format(cursor, "MMM ''yy"),
+      cumulative,
+    });
     cursor.setMonth(cursor.getMonth() + 1);
   }
 
   return points;
+}
+
+function ListGrowthChartSkeleton({ title }: { title: string }) {
+  return (
+    <div className="border-border flex shrink-0 items-center gap-6 border-b px-4 py-3">
+      <div className="shrink-0">
+        <h2 className="text-muted-foreground text-sm font-medium">{title}</h2>
+        <Skeleton className="mt-1 h-7 w-10" />
+      </div>
+      <div className="flex h-16 min-w-0 flex-1 items-center">
+        <Skeleton className="h-8 w-full max-w-md" />
+      </div>
+    </div>
+  );
+}
+
+function GrowthTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: Array<{ payload: GrowthPoint }>;
+}) {
+  if (!active || !payload?.[0]) return null;
+  const point = payload[0].payload;
+  return (
+    <div className="bg-popover text-popover-foreground rounded-md border px-2.5 py-1.5 text-xs shadow-sm">
+      <div className="text-muted-foreground">{point.month}</div>
+      <div className="font-medium tabular-nums">{point.cumulative}</div>
+    </div>
+  );
 }
 
 export interface ListGrowthChartProps<T> {
@@ -42,6 +79,8 @@ export interface ListGrowthChartProps<T> {
   getCreatedAt: (item: T) => string | null | undefined;
   /** e.g. "Total organizations" */
   title: string;
+  /** When true, shows skeletons instead of a misleading empty/zero state. */
+  loading?: boolean;
 }
 
 /**
@@ -49,12 +88,27 @@ export interface ListGrowthChartProps<T> {
  * sits in the table's own right-hand column rather than spanning over the
  * filter sidebar. Shared by the Organizations/Projects/Users list pages.
  */
-export function ListGrowthChart<T>({ items, getCreatedAt, title }: ListGrowthChartProps<T>) {
+export function ListGrowthChart<T>({
+  items,
+  getCreatedAt,
+  title,
+  loading = false,
+}: ListGrowthChartProps<T>) {
+  // useId() can include colons; strip them so the SVG gradient url() resolves.
+  const fillId = `growth-fill-${useId().replace(/:/g, '')}`;
   const growthData = useMemo(
     () => buildGrowthSeries(items.map(getCreatedAt)),
     [items, getCreatedAt]
   );
   const hasTrend = growthData.length >= 2;
+  const endpointTicks = useMemo(
+    () => (hasTrend ? [growthData[0].month, growthData[growthData.length - 1].month] : []),
+    [growthData, hasTrend]
+  );
+
+  if (loading) {
+    return <ListGrowthChartSkeleton title={title} />;
+  }
 
   return (
     <div className="border-border flex shrink-0 items-center gap-6 border-b px-4 py-3">
@@ -69,24 +123,44 @@ export function ListGrowthChart<T>({ items, getCreatedAt, title }: ListGrowthCha
           </div>
         ) : (
           <ResponsiveContainer width="100%" height={64}>
-            <LineChart data={growthData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+            <AreaChart data={growthData} margin={{ top: 6, right: 4, left: 4, bottom: 0 }}>
+              <defs>
+                <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--primary)" stopOpacity={0.18} />
+                  <stop offset="100%" stopColor="var(--primary)" stopOpacity={0} />
+                </linearGradient>
+              </defs>
               <XAxis
                 dataKey="month"
+                ticks={endpointTicks}
+                tickFormatter={(value) => {
+                  if (value === growthData[0].month) return growthData[0].label;
+                  if (value === growthData[growthData.length - 1].month) {
+                    return growthData[growthData.length - 1].label;
+                  }
+                  return '';
+                }}
                 tickLine={false}
                 axisLine={false}
-                tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
-                minTickGap={24}
+                tick={{ fill: 'var(--muted-foreground)', fontSize: 10 }}
+                dy={2}
               />
-              <YAxis hide domain={['dataMin', 'dataMax']} />
-              <Tooltip labelFormatter={(month) => month} formatter={(value) => [value, t`Total`]} />
-              <Line
+              <YAxis hide domain={[0, 'dataMax']} />
+              <Tooltip
+                content={<GrowthTooltip />}
+                cursor={{ stroke: 'var(--border)', strokeDasharray: '3 3' }}
+              />
+              <Area
                 type="monotone"
                 dataKey="cumulative"
                 stroke="var(--primary)"
+                strokeWidth={1.75}
+                fill={`url(#${fillId})`}
+                activeDot={{ r: 3.5, strokeWidth: 0 }}
                 dot={false}
-                strokeWidth={2}
+                isAnimationActive={false}
               />
-            </LineChart>
+            </AreaChart>
           </ResponsiveContainer>
         )}
       </div>

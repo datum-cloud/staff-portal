@@ -7,11 +7,11 @@ import {
   searchDnsZonesListQuery,
   searchDomainsListQuery,
   searchEdgesListQuery,
+  useAllProjectsQuery,
 } from '@/resources/request/client';
 import { ENTITY_ICONS } from '@/utils/config/icons.config';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -27,6 +27,7 @@ interface ResourceRow {
   uid: string;
   name: string;
   projectName: string;
+  projectDisplayName: string;
   createdAt: string | null;
   detail: ReactNode;
   to: string | null;
@@ -58,6 +59,15 @@ export default function Page() {
     return () => clearTimeout(id);
   }, [search]);
 
+  const projectsQuery = useAllProjectsQuery();
+  const projectLabels = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const project of projectsQuery.data?.items ?? []) {
+      map.set(project.name, project.displayName || project.name);
+    }
+    return map;
+  }, [projectsQuery.data]);
+
   const edgeQuery = useQuery({
     queryKey: ['edges', 'search-list', debouncedSearch],
     queryFn: () => searchEdgesListQuery(debouncedSearch),
@@ -78,6 +88,9 @@ export default function Page() {
   });
 
   const rows: ResourceRow[] = useMemo(() => {
+    const labelFor = (projectName: string) =>
+      projectName ? (projectLabels.get(projectName) ?? projectName) : '';
+
     const edgeRows: ResourceRow[] = (edgeQuery.data?.items ?? []).map(({ resource, tenant }) => {
       const projectName = getProjectName(tenant);
       const endpoints = (resource.spec?.rules ?? []).flatMap(
@@ -88,6 +101,7 @@ export default function Page() {
         uid: resource.metadata?.uid ?? `edge/${projectName}/${resource.metadata?.name ?? ''}`,
         name: resource.metadata?.name ?? '',
         projectName,
+        projectDisplayName: labelFor(projectName),
         createdAt: resource.metadata?.creationTimestamp ?? null,
         detail: endpoints.length > 0 ? endpoints.join(', ') : '—',
         to: projectName
@@ -104,6 +118,7 @@ export default function Page() {
         uid: resource.metadata?.uid ?? `dns/${projectName}/${resource.metadata?.name ?? ''}`,
         name: resource.spec?.domainName ?? resource.metadata?.name ?? '',
         projectName,
+        projectDisplayName: labelFor(projectName),
         createdAt: resource.metadata?.creationTimestamp ?? null,
         detail: <DnsHostChips data={nameservers} maxVisible={2} size="sm" />,
         to: projectName
@@ -124,6 +139,7 @@ export default function Page() {
           uid: resource.metadata?.uid ?? `domain/${projectName}/${resource.metadata?.name ?? ''}`,
           name: resource.spec?.domainName ?? resource.metadata?.name ?? '',
           projectName,
+          projectDisplayName: labelFor(projectName),
           createdAt: resource.metadata?.creationTimestamp ?? null,
           detail: (
             <DomainDnsProviders
@@ -153,16 +169,42 @@ export default function Page() {
       seen.add(key);
       return true;
     });
-  }, [edgeQuery.data, dnsQuery.data, domainQuery.data]);
+  }, [edgeQuery.data, dnsQuery.data, domainQuery.data, projectLabels]);
 
-  // Backend gives no fixed list for any of these — offer whatever actually
-  // shows up in the current result set, same pattern as Projects' Organization filter.
+  // Projects present in the current result set first (by frequency), then the
+  // rest of the catalog — searchable so high-cardinality stays usable.
   const projectOptions = useMemo(() => {
-    const names = new Set(rows.map((r) => r.projectName).filter(Boolean));
-    return Array.from(names)
-      .sort()
-      .map((value) => ({ value, label: value }));
-  }, [rows]);
+    const counts = new Map<string, number>();
+    for (const row of rows) {
+      if (!row.projectName) continue;
+      counts.set(row.projectName, (counts.get(row.projectName) ?? 0) + 1);
+    }
+
+    const byValue = new Map<string, { value: string; label: string; searchText: string }>();
+    for (const project of projectsQuery.data?.items ?? []) {
+      const label = project.displayName || project.name;
+      byValue.set(project.name, {
+        value: project.name,
+        label,
+        searchText: `${label} ${project.name}`,
+      });
+    }
+    // Rows can reference a project before the catalog finishes loading.
+    for (const name of counts.keys()) {
+      if (byValue.has(name)) continue;
+      const label = projectLabels.get(name) ?? name;
+      byValue.set(name, {
+        value: name,
+        label,
+        searchText: `${label} ${name}`,
+      });
+    }
+
+    return Array.from(byValue.values()).sort(
+      (a, b) =>
+        (counts.get(b.value) ?? 0) - (counts.get(a.value) ?? 0) || a.label.localeCompare(b.label)
+    );
+  }, [rows, projectsQuery.data, projectLabels]);
 
   const columns = [
     columnHelper.accessor('name', {
@@ -184,12 +226,19 @@ export default function Page() {
         );
       },
     }),
+    // Column id stays `projectName` so the sidebar filter matches the row's
+    // project id; the cell shows the friendlier display name.
     columnHelper.accessor('projectName', {
       id: 'projectName',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Project`} />,
-      cell: ({ getValue }) => {
-        const project = getValue();
-        return project ? <Link to={projectRoutes.detail(project)}>{project}</Link> : '—';
+      cell: ({ row }) => {
+        const project = row.original.projectName;
+        const displayName = row.original.projectDisplayName;
+        return project ? (
+          <Link to={projectRoutes.detail(project)}>{displayName || project}</Link>
+        ) : (
+          '—'
+        );
       },
     }),
     columnHelper.accessor('detail', {
@@ -233,7 +282,15 @@ export default function Page() {
               { value: 'domain', label: t`Domain`, icon: <ENTITY_ICONS.domain /> },
             ],
           },
-          { column: 'projectName', label: t`Project`, options: projectOptions },
+          {
+            type: 'searchable',
+            column: 'projectName',
+            label: t`Project`,
+            options: projectOptions,
+            searchPlaceholder: t`Search projects…`,
+            emptyHint: t`Type to filter by project name.`,
+            pageSize: 8,
+          },
           {
             column: 'createdAt',
             label: t`Created`,

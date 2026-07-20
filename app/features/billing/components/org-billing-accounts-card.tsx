@@ -1,6 +1,6 @@
-import { getBillingAccountDisplayName, getResourceNameSubtext } from '../utils';
+import { getBillingAccountDisplayName } from '../utils';
 import { BadgeState } from '@/components/badge';
-import { DisplayName } from '@/components/display';
+import { DisplayId, DisplayName } from '@/components/display';
 import {
   EMBEDDED_TABLE_BODY_CLASS,
   EMBEDDED_TABLE_CELL_CLASS,
@@ -40,15 +40,19 @@ export function OrgBillingAccountsCard({ orgName, className }: OrgBillingAccount
       header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => {
         const accountName = row.original.metadata?.name ?? '';
-        const displayName = getBillingAccountDisplayName(row.original);
         return (
           <DisplayName
-            displayName={displayName}
-            name={getResourceNameSubtext(displayName, accountName)}
+            displayName={getBillingAccountDisplayName(row.original)}
             to={billingAccountRoutes.detail(orgName, accountName)}
           />
         );
       },
+    }),
+    columnHelper.accessor((row) => row.metadata?.name ?? '', {
+      id: 'id',
+      enableSorting: false,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
+      cell: ({ getValue }) => <DisplayId value={getValue()} />,
     }),
     columnHelper.accessor('status.phase', {
       id: 'phase',

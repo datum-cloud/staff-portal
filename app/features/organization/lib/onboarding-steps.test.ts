@@ -17,6 +17,8 @@ function org(partial: Partial<GqlOrganization>): GqlOrganization {
     onboardingMessage: null,
     memberCount: 0,
     memberAvatars: [],
+    memberIds: [],
+    memberSummaries: [],
     projectCount: 0,
     hasMoreProjects: false,
     ...partial,

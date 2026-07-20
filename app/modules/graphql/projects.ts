@@ -5,7 +5,7 @@ import { mapApiError } from '@/utils/errors/error-mapper';
 const PROJECTS_QUERY = `
   query Projects($limit: Int, $cursor: String, $search: String) {
     projects(limit: $limit, cursor: $cursor, search: $search) {
-      items { name displayName organizationName createdAt state }
+      items { name displayName organizationName organizationDisplayName organizationBusinessName hasActiveBillingAccount billingAccountName createdAt state }
       continueToken
     }
   }
@@ -14,7 +14,7 @@ const PROJECTS_QUERY = `
 const PROJECT_QUERY = `
   query Project($name: String!) {
     project(name: $name) {
-      name displayName organizationName createdAt state
+      name displayName organizationName organizationDisplayName organizationBusinessName hasActiveBillingAccount billingAccountName createdAt state
     }
   }
 `;
