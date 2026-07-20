@@ -3,6 +3,7 @@ import { CustomerStatus } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DisplayId } from '@/components/display';
 import {
+  arrayIncludesAnyFilterFn,
   DATE_RANGE_OPTIONS,
   ListGrowthChart,
   ListPage,
@@ -32,6 +33,36 @@ export default function Page() {
   const tableQuery = useAllOrganizationsQuery();
   const orgs = useMemo(() => tableQuery.data?.items ?? [], [tableQuery.data]);
   const activeOrgs = useMemo(() => orgs.filter((org) => org.onboardingComplete), [orgs]);
+
+  // Unique members across loaded orgs, sorted by how many orgs they appear in.
+  const memberOptions = useMemo(() => {
+    const counts = new Map<string, number>();
+    const meta = new Map<string, { label: string; searchText: string }>();
+    for (const org of orgs) {
+      const seenInOrg = new Set<string>();
+      for (const member of org.memberSummaries ?? []) {
+        if (seenInOrg.has(member.id)) continue;
+        seenInOrg.add(member.id);
+        counts.set(member.id, (counts.get(member.id) ?? 0) + 1);
+        if (!meta.has(member.id)) {
+          meta.set(member.id, { label: member.label, searchText: member.searchText });
+        }
+      }
+    }
+    return Array.from(counts.entries())
+      .sort(
+        (a, b) =>
+          b[1] - a[1] || (meta.get(a[0])?.label ?? '').localeCompare(meta.get(b[0])?.label ?? '')
+      )
+      .map(([value]) => {
+        const info = meta.get(value);
+        return {
+          value,
+          label: info?.label ?? value,
+          searchText: info?.searchText ?? value,
+        };
+      });
+  }, [orgs]);
 
   const columns = [
     columnHelper.accessor((row) => row.contactInfo?.businessName ?? '', {
@@ -129,11 +160,13 @@ export default function Page() {
         emptyMessage={t`No organizations found.`}
         hasMore={tableQuery.data?.hasMore ?? false}
         hasMoreMessage={t`Limited to 10,000 organizations. Refine your search to surface others.`}
+        filterFns={{ memberIds: arrayIncludesAnyFilterFn }}
         toolbar={
           <ListGrowthChart
             items={activeOrgs}
             getCreatedAt={getOrgCreatedAt}
             title={t`Active organizations`}
+            loading={tableQuery.isPending}
           />
         }
         filters={[
@@ -154,6 +187,15 @@ export default function Page() {
             ],
           },
           {
+            type: 'searchable',
+            column: 'memberIds',
+            label: t`Members`,
+            options: memberOptions,
+            searchPlaceholder: t`Search members…`,
+            emptyHint: t`Type to filter by member name or email.`,
+            pageSize: 8,
+          },
+          {
             column: 'createdAt',
             label: t`Created`,
             type: 'dateRange',
@@ -169,7 +211,13 @@ export default function Page() {
             row.type.toLowerCase().includes(q) ||
             (row.contactInfo?.businessName?.toLowerCase().includes(q) ?? false) ||
             (row.contactInfo?.email?.toLowerCase().includes(q) ?? false) ||
-            (row.contactInfo?.name?.toLowerCase().includes(q) ?? false)
+            (row.contactInfo?.name?.toLowerCase().includes(q) ?? false) ||
+            (row.memberSummaries ?? []).some(
+              (member) =>
+                member.label.toLowerCase().includes(q) ||
+                member.searchText.toLowerCase().includes(q) ||
+                member.id.toLowerCase().includes(q)
+            )
           );
         }}
       />

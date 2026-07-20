@@ -1,26 +1,25 @@
-import { getOrganizationDetailMetadata } from '../../shared';
+import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../../shared';
 import type { Route } from './+types/index';
-import { authenticator } from '@/modules/auth';
-import { getOrgControlPlaneBaseURL } from '@/resources/request/client/apis/control-plane';
-import { env } from '@/utils/config/env.server';
-import { metaObject } from '@/utils/helpers';
-import { listBillingMiloapisComV1Alpha1NamespacedBillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
-import { UnwrapProxyResponse } from '@openapi/shared/core/types.gen';
-import { format } from 'date-fns';
-import { BarChart3 } from 'lucide-react';
-import { data, useLoaderData } from 'react-router';
 import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
+  MeterCard,
+  toUsageView,
+  UsageDashboardSkeleton,
+  UsageSummaryTable,
+  UsageToolbar,
+  type UsageProjectOption,
+} from '@/features/organization/usage';
+import { useOrgProjectListQuery, useOrgUsageDashboardQuery } from '@/resources/request/client';
+import { metaObject } from '@/utils/helpers';
+import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { Icon } from '@datum-cloud/datum-ui/icons';
+import { cn } from '@datum-cloud/datum-ui/utils';
+import { Trans } from '@lingui/react/macro';
+import { BarChart3Icon } from 'lucide-react';
+import { useMemo } from 'react';
+import { useSearchParams } from 'react-router';
 
 export const handle = {
-  breadcrumb: () => 'Usage',
+  breadcrumb: () => <Trans>Usage</Trans>,
 };
 
 export const meta: Route.MetaFunction = ({ matches }) => {
@@ -28,260 +27,220 @@ export const meta: Route.MetaFunction = ({ matches }) => {
   return metaObject(`Usage - ${organizationName}`);
 };
 
-interface MeterSeries {
-  meterApiName: string;
-  label: string;
-  values: { timestamp: number; value: number }[];
+function resolveProjectSelection(
+  projectParam: string | null,
+  projects: UsageProjectOption[]
+): string {
+  if (!projectParam || projectParam === 'all') return 'all';
+  return projects.some((project) => project.name === projectParam) ? projectParam : 'all';
 }
 
-interface MeterDefinition {
-  // Amberflo meterApiName, which the amberflo-provider sets to the
-  // MeterDefinition's metadata.uid (not spec.meterName) for charset/length
-  // safety. See milo-os/amberflo-provider meterdefinition_controller.go.
-  meterApiName: string;
-  displayName: string;
+function resolveCycleSelection(cycleParam: string | null): 'current' | 'previous' {
+  return cycleParam === 'previous' ? 'previous' : 'current';
 }
 
-async function listMeterDefinitions(token: string): Promise<MeterDefinition[]> {
-  // MeterDefinitions are cluster-scoped and granted to system:authenticated.
-  // Fall back to an empty list on any error so the page shows 'no-meters'.
-  try {
-    const url = `${env.API_URL}/apis/billing.miloapis.com/v1alpha1/meterdefinitions`;
-    const resp = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
-      },
-    });
-    if (!resp.ok) return [];
-    const json = (await resp.json()) as {
-      items?: {
-        metadata?: { uid?: string };
-        spec?: { meterName?: string; displayName?: string };
-      }[];
-    };
-    const items = json.items ?? [];
-    return items
-      .map((item) => ({
-        meterApiName: item.metadata?.uid ?? '',
-        displayName: item.spec?.displayName ?? item.spec?.meterName ?? '',
-      }))
-      .filter((m) => m.meterApiName);
-  } catch {
-    return [];
-  }
-}
-
-export const loader = async ({ request, params }: Route.LoaderArgs) => {
-  const session = await authenticator.getSession(request);
-  const token = session?.accessToken ?? '';
-
-  const orgName = params.orgName;
-  if (!orgName) {
-    return data({ status: 'unconfigured' as const, meters: [] });
-  }
-
-  const apiKey = env.amberfloApiKey;
-  if (!apiKey) {
-    return data({ status: 'unconfigured' as const, meters: [] });
-  }
-
-  const orgNamespace = `organization-${orgName}`;
-  const orgBaseURL = getOrgControlPlaneBaseURL(orgName);
-
-  // List BillingAccounts in the org namespace. Every account in the org rolls
-  // up here since the Amberflo data only carries customerId (= account uid);
-  // there is no per-project dimension on submitted events today.
-  let accountsResp;
-  try {
-    accountsResp = await listBillingMiloapisComV1Alpha1NamespacedBillingAccount({
-      baseURL: orgBaseURL,
-      path: { namespace: orgNamespace },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  } catch (err: unknown) {
-    const status = (err as { response?: { status?: number } })?.response?.status;
-    if (status === 401 || status === 403) {
-      return data({ status: 'insufficient-permissions' as const, meters: [] });
-    }
-    throw err;
-  }
-
-  const accounts = accountsResp.data as unknown as UnwrapProxyResponse<typeof accountsResp.data>;
-  const customerIds = (accounts?.items ?? [])
-    .map((a) => a.metadata?.uid)
-    .filter((uid): uid is string => !!uid);
-
-  if (customerIds.length === 0) {
-    return data({ status: 'no-billing-account' as const, meters: [] });
-  }
-
-  const meterDefs = await listMeterDefinitions(token);
-  if (meterDefs.length === 0) {
-    return data({ status: 'no-meters' as const, meters: [] });
-  }
-
-  const amberfloBaseUrl = env.amberfloBaseUrl;
-  const nowSec = Math.floor(Date.now() / 1000);
-  const startSec = nowSec - 30 * 24 * 3600;
-
-  const meters = await Promise.all(
-    meterDefs.map(async ({ meterApiName, displayName }): Promise<MeterSeries> => {
-      try {
-        const resp = await fetch(`${amberfloBaseUrl}/usage`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': apiKey,
-          },
-          body: JSON.stringify({
-            meterApiName,
-            aggregation: 'sum',
-            timeGroupingInterval: 'day',
-            timeRange: { startTimeInSeconds: startSec, endTimeInSeconds: nowSec },
-            filter: { customerId: customerIds },
-            groupBy: ['customerId'],
-          }),
-        });
-
-        if (!resp.ok) {
-          return { meterApiName, label: displayName, values: [] };
-        }
-
-        const json = (await resp.json()) as {
-          clientMeters?: { values?: { secondsSinceEpochUtc: number; value: number }[] }[];
-        };
-        // Sum across all clientMeters (one per customerId group) per bucket.
-        const buckets = new Map<number, number>();
-        for (const cm of json.clientMeters ?? []) {
-          for (const v of cm.values ?? []) {
-            buckets.set(
-              v.secondsSinceEpochUtc,
-              (buckets.get(v.secondsSinceEpochUtc) ?? 0) + v.value
-            );
-          }
-        }
-        const values = [...buckets.entries()]
-          .sort(([a], [b]) => a - b)
-          .map(([ts, value]) => ({ timestamp: ts * 1000, value }));
-        return { meterApiName, label: displayName, values };
-      } catch {
-        return { meterApiName, label: displayName, values: [] };
-      }
-    })
+/**
+ * Two-column section layout — title + copy on the left, content on the right.
+ */
+const Section = ({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description: string;
+  children: React.ReactNode;
+}) => {
+  return (
+    <section className="border-border grid min-w-0 grid-cols-1 gap-6 border-b py-8 last:border-b-0 last:pb-0 md:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] md:gap-10 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-12">
+      <div className="flex min-w-0 flex-col gap-2">
+        <h2 className="text-foreground text-base font-medium">{title}</h2>
+        <p className="text-muted-foreground text-sm leading-relaxed">{description}</p>
+      </div>
+      <div className="flex min-w-0 flex-col gap-4">{children}</div>
+    </section>
   );
-
-  return data({ status: 'ok' as const, meters });
 };
 
-function MeterChart({ meter }: { meter: MeterSeries }) {
-  const hasData = meter.values.length > 0;
-
+function EmptyState({ title, body }: { title: string; body: React.ReactNode }) {
   return (
-    <div className="bg-card text-card-foreground rounded-lg border shadow-sm">
-      <div className="flex flex-col space-y-1.5 p-6 pb-3">
-        <h3 className="text-base leading-none font-semibold tracking-tight">{meter.label}</h3>
-        <p className="text-muted-foreground text-sm">Last 30 days</p>
-      </div>
-      <div className="p-6 pt-0">
-        {!hasData ? (
-          <div className="text-muted-foreground flex h-40 items-center justify-center text-sm">
-            No usage in last 30 days
-          </div>
-        ) : (
-          <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={meter.values} margin={{ top: 4, right: 16, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                dataKey="timestamp"
-                type="number"
-                scale="time"
-                domain={['dataMin', 'dataMax']}
-                tickFormatter={(ts: number) => format(new Date(ts), 'MMM d')}
-                tickLine={false}
-                axisLine={false}
-                tick={{ fill: 'var(--foreground)', fontSize: 11 }}
-              />
-              <YAxis
-                tickLine={false}
-                axisLine={false}
-                width={55}
-                tick={{ fill: 'var(--foreground)', fontSize: 11 }}
-              />
-              <Tooltip
-                labelFormatter={(ts) => format(new Date(ts as number), 'MMM d, yyyy HH:mm')}
-              />
-              <Line
-                type="monotone"
-                dataKey="value"
-                stroke="var(--primary)"
-                dot={false}
-                strokeWidth={2}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        )}
-      </div>
+    <div className="flex flex-col items-center justify-center gap-3 py-24 text-center">
+      <Icon icon={BarChart3Icon} className="text-muted-foreground size-10" />
+      <p className="text-lg font-medium">{title}</p>
+      <p className="text-muted-foreground max-w-sm text-sm">{body}</p>
     </div>
   );
 }
 
-export default function UsagePage() {
-  const result = useLoaderData<typeof loader>();
+export default function OrgUsagePage() {
+  const orgData = useOrganizationDetailData();
+  const orgName = orgData.metadata?.name ?? '';
+  const [searchParams] = useSearchParams();
 
-  const emptyState = (() => {
-    switch (result.status) {
-      case 'unconfigured':
-        return {
-          title: 'Usage data not available',
-          body: (
+  const projectsQuery = useOrgProjectListQuery(orgName);
+
+  const projects: UsageProjectOption[] = useMemo(
+    () =>
+      (projectsQuery.data?.items ?? []).map((project) => ({
+        name: project.name,
+        displayName: project.displayName || project.name,
+      })),
+    [projectsQuery.data?.items]
+  );
+
+  const selectedProject = resolveProjectSelection(searchParams.get('project'), projects);
+  const selectedBillingCycle = resolveCycleSelection(searchParams.get('cycle'));
+
+  const {
+    data: dashboard,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+  } = useOrgUsageDashboardQuery(orgName, selectedProject, selectedBillingCycle, {
+    enabled: !!orgName,
+  });
+
+  const result = dashboard?.usage;
+  const billingCycles = dashboard?.billingCycles ?? [];
+  const isRefetching = isFetching && !isLoading;
+
+  const selectedProjectLabel =
+    selectedProject === 'all'
+      ? null
+      : (projects.find((project) => project.name === selectedProject)?.displayName ??
+        selectedProject);
+
+  const scopeDescription =
+    selectedProjectLabel != null
+      ? `Usage for the ${selectedProjectLabel} project in the selected billing period.`
+      : 'Usage across all projects in this organization for the selected billing period.';
+
+  const dashboardKey = `${selectedProject}-${selectedBillingCycle}`;
+  const toolbarLoading = projectsQuery.isLoading || (isLoading && billingCycles.length === 0);
+
+  if (isError) {
+    return (
+      <div className="m-4 flex min-w-0 flex-col gap-6">
+        <EmptyState
+          title="Usage data not available"
+          body={error?.message ?? 'Something went wrong while loading usage data.'}
+        />
+      </div>
+    );
+  }
+
+  if (isLoading && !result) {
+    return (
+      <div className="m-4 flex min-w-0 flex-col gap-6">
+        <UsageToolbar
+          projects={projects}
+          billingCycles={billingCycles}
+          isPlaceholder={toolbarLoading}
+        />
+        <UsageDashboardSkeleton scopeDescription={scopeDescription} />
+      </div>
+    );
+  }
+
+  if (!result) {
+    return null;
+  }
+
+  if (result.status === 'unconfigured') {
+    return (
+      <div className="m-4 flex min-w-0 flex-col gap-6">
+        <EmptyState
+          title="Usage data not available"
+          body={
             <>
-              Configure <code>AMBERFLO_API_KEY</code> to enable this view.
+              Configure{' '}
+              <code className="bg-muted rounded px-1 py-0.5 text-xs">AMBERFLO_API_KEY</code> on the
+              staff-portal server to enable this dashboard.
             </>
-          ),
-        };
-      case 'insufficient-permissions':
-        return {
-          title: 'Usage data not available',
-          body: 'Billing permissions are still being provisioned for this organization. Check back soon or contact the platform team if this persists.',
-        };
-      case 'no-billing-account':
-        return {
-          title: 'No billing account',
-          body: 'This organization does not have a billing account. Usage data is keyed to a billing account, so there is nothing to display.',
-        };
-      case 'no-meters':
-        return {
-          title: 'No meters configured',
-          body: 'No MeterDefinitions were found. Verify that the billing meter pipeline is running and that meters have been configured for this environment.',
-        };
-      case 'ok':
-        if (result.meters.length === 0 || result.meters.every((m) => m.values.length === 0)) {
-          return {
-            title: 'No usage to display',
-            body: 'Usage data will appear here once this organization starts consuming metered resources.',
-          };
-        }
-        return null;
-    }
-  })();
+          }
+        />
+      </div>
+    );
+  }
+
+  if (result.status === 'insufficient-permissions') {
+    return (
+      <div className="m-4 flex min-w-0 flex-col gap-6">
+        <EmptyState
+          title="Usage data not available"
+          body="Billing permissions are still being provisioned for this organization. Check back soon or contact the platform team if this persists."
+        />
+      </div>
+    );
+  }
+
+  if (result.status === 'no-billing-account') {
+    return (
+      <div className="m-4 flex min-w-0 flex-col gap-6">
+        <UsageToolbar projects={projects} billingCycles={billingCycles} isLoading={isRefetching} />
+        <EmptyState
+          title="No billing account linked"
+          body={
+            selectedProjectLabel
+              ? `"${selectedProjectLabel}" does not have a billing account binding. Assign one from the organization's billing accounts to start tracking usage.`
+              : `This organization does not have a billing account. Usage data is keyed to a billing account, so there is nothing to display.`
+          }
+        />
+      </div>
+    );
+  }
+
+  const view = toUsageView(result, projects);
+
+  if (!view) {
+    return (
+      <div className="m-4 flex min-w-0 flex-col gap-6">
+        <UsageToolbar projects={projects} billingCycles={billingCycles} isLoading={isRefetching} />
+        <EmptyState
+          title="No usage to display"
+          body={
+            selectedProjectLabel
+              ? `Usage data will appear here once "${selectedProjectLabel}" starts consuming resources.`
+              : 'Usage data will appear here once this organization starts consuming resources.'
+          }
+        />
+      </div>
+    );
+  }
 
   return (
-    <div className="m-4 flex flex-col gap-4">
-      {emptyState ? (
-        <div className="flex flex-col items-center justify-center gap-3 py-24 text-center">
-          <BarChart3 className="text-muted-foreground h-10 w-10" aria-hidden="true" />
-          <p className="text-lg font-medium">{emptyState.title}</p>
-          <p className="text-muted-foreground max-w-sm text-sm">{emptyState.body}</p>
-        </div>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2">
-          {result.status === 'ok' &&
-            result.meters.map((meter) => <MeterChart key={meter.meterApiName} meter={meter} />)}
-        </div>
-      )}
+    <div className="m-4 flex min-w-0 flex-col gap-6">
+      <UsageToolbar projects={projects} billingCycles={billingCycles} isLoading={isRefetching} />
+
+      <div
+        key={dashboardKey}
+        className={cn(
+          'border-border min-w-0 border-t',
+          isRefetching && 'opacity-60 transition-opacity'
+        )}>
+        <Section
+          title="Usage summary"
+          description={`${scopeDescription} Your plan includes a set allowance for each metered service.`}>
+          <UsageSummaryTable rows={view.summaryRows} />
+        </Section>
+
+        {view.groups.map((group) => (
+          <Section key={group.id} title={group.title} description={scopeDescription}>
+            {group.meters.length === 0 ? (
+              <Card className="shadow-none">
+                <CardContent className="text-muted-foreground py-12 text-center text-sm">
+                  No meters defined yet for this group.
+                </CardContent>
+              </Card>
+            ) : (
+              group.meters.map((meter) => (
+                <MeterCard key={`${dashboardKey}-${meter.apiName}`} meter={meter} />
+              ))
+            )}
+          </Section>
+        ))}
+      </div>
     </div>
   );
 }

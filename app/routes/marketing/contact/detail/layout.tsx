@@ -71,8 +71,8 @@ export default function Layout() {
   return (
     <DetailShell
       icon={
-        <Avatar className="size-10 rounded-md">
-          <AvatarFallback className="rounded-md">{initials}</AvatarFallback>
+        <Avatar className="size-10 rounded-xl">
+          <AvatarFallback className="rounded-xl">{initials}</AvatarFallback>
         </Avatar>
       }
       name={displayName}

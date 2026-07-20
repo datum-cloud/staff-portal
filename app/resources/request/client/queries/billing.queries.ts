@@ -1,5 +1,6 @@
 import {
   billingAccountBindingListForOrgQuery,
+  billingAccountBindingListQuery,
   billingAccountDetailQuery,
   billingAccountListForOrgQuery,
   billingAccountListQuery,
@@ -15,6 +16,7 @@ export const billingQueryKeys = {
   detail: (orgName: string, accountName: string) =>
     ['billing-accounts', 'detail', orgName, accountName] as const,
   bindings: (orgName: string) => ['billing-accounts', 'bindings', orgName] as const,
+  bindingsAll: ['billing-accounts', 'bindings', 'all'] as const,
   paymentMethods: (orgName: string) => ['billing-accounts', 'payment-methods', orgName] as const,
 };
 
@@ -38,6 +40,14 @@ export const useBillingAccountDetailQuery = (orgName: string, accountName: strin
     queryKey: billingQueryKeys.detail(orgName, accountName),
     queryFn: () => billingAccountDetailQuery(orgName, accountName),
     enabled: !!orgName && !!accountName,
+    staleTime: 5 * 60 * 1000,
+  });
+
+/** Cluster-wide bindings — used to attach project ids to billing account list rows. */
+export const useBillingAccountBindingListQuery = () =>
+  useQuery({
+    queryKey: billingQueryKeys.bindingsAll,
+    queryFn: () => billingAccountBindingListQuery({ limit: 500 }),
     staleTime: 5 * 60 * 1000,
   });
 

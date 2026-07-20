@@ -21,6 +21,7 @@ export {
   InlineFilterBar,
   MobileFilterButton,
   multiSelectFilterFn,
+  arrayIncludesAnyFilterFn,
   dateRangeFilterFn,
   DATE_RANGE_OPTIONS,
 } from './components/page/rich-filter-panel';

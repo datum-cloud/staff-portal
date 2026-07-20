@@ -3,6 +3,8 @@ import { AppBadge, CustomerStatus } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
 import { DisplayId, DisplayName, DisplayText } from '@/components/display';
+import GitHubIcon from '@/components/icon/github';
+import GoogleIcon from '@/components/icon/google';
 import { UserAvatar } from '@/components/user-avatar';
 import {
   DATE_RANGE_OPTIONS,
@@ -24,16 +26,27 @@ import { Button } from '@datum-cloud/datum-ui/button';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
-import { useMemo, useState } from 'react';
+import { MailIcon, type LucideIcon } from 'lucide-react';
+import { useMemo, useState, type ComponentType, type SVGProps } from 'react';
 import { useNavigate } from 'react-router';
 import { z } from 'zod';
 
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Users`);
+};
+
+const LOGIN_PROVIDERS: Record<
+  string,
+  { label: string; Icon: ComponentType<SVGProps<SVGSVGElement>> | LucideIcon }
+> = {
+  google: { label: 'Google', Icon: GoogleIcon },
+  github: { label: 'GitHub', Icon: GitHubIcon },
+  email: { label: 'Email', Icon: MailIcon },
 };
 
 const columnHelper = createColumnHelper<ComMiloapisIamV1Alpha1User>();
@@ -110,17 +123,31 @@ export default function Page() {
             <UserAvatar
               name={displayName || email}
               avatarUrl={row.original.status?.avatarUrl}
-              className="size-7 shrink-0 rounded-md"
-              fallbackClassName="rounded-md text-xs"
+              className="size-7 shrink-0"
+              fallbackClassName="text-xs"
             />
-            <DisplayName displayName={displayName} name={email} to={`./${userName}`} />
+            <DisplayName displayName={displayName || email} to={`./${userName}`} />
           </div>
         );
       },
     }),
     columnHelper.accessor('spec.email', {
       header: ({ column }) => <ListColumnHeader column={column} title={t`Email`} />,
-      cell: ({ getValue }) => <DisplayText value={getValue() ?? ''} />,
+      cell: ({ getValue, row }) => {
+        const email = getValue() ?? '';
+        const provider = row.original.status?.lastLoginProvider?.toLowerCase() ?? '';
+        const providerMeta = LOGIN_PROVIDERS[provider];
+        return (
+          <div className="flex min-w-0 items-center gap-2">
+            {providerMeta ? (
+              <Tooltip message={t`Last signed in with ${providerMeta.label}`}>
+                <providerMeta.Icon className="text-muted-foreground size-3.5 shrink-0" />
+              </Tooltip>
+            ) : null}
+            <DisplayText value={email} />
+          </div>
+        );
+      },
     }),
     columnHelper.accessor('metadata.name', {
       header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
@@ -270,7 +297,12 @@ export default function Page() {
           searchPlaceholder={t`Search users...`}
           emptyMessage={t`No users found.`}
           toolbar={
-            <ListGrowthChart items={users} getCreatedAt={getUserCreatedAt} title={t`Total users`} />
+            <ListGrowthChart
+              items={users}
+              getCreatedAt={getUserCreatedAt}
+              title={t`Total users`}
+              loading={tableQuery.isLoading}
+            />
           }
           filters={[
             {
@@ -307,6 +339,7 @@ export default function Page() {
               row.spec?.familyName,
               row.metadata?.name,
               `${row.spec?.givenName ?? ''} ${row.spec?.familyName ?? ''}`.trim(),
+              row.status?.lastLoginProvider,
             ];
 
             return fields

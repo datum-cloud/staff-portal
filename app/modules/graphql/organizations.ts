@@ -30,6 +30,13 @@ export interface GqlOrganization {
   memberCount: number;
   /** Avatars for the members column (`AvatarStack`: name + optional image URL). */
   memberAvatars: Array<{ name: string; image: string }>;
+  /**
+   * Stable member ids for the Members sidebar filter (email → userName →
+   * membership name). Matched via {@link arrayIncludesAnyFilterFn}.
+   */
+  memberIds: string[];
+  /** Unique members for filter option labels / search text. */
+  memberSummaries: Array<{ id: string; label: string; searchText: string }>;
   /** Projects on the first page (limit 100). More may exist when hasMoreProjects. */
   projectCount: number;
   hasMoreProjects: boolean;
@@ -44,6 +51,14 @@ export interface GqlProject {
   name: string;
   displayName: string;
   organizationName: string;
+  /** Owning org display name from the gateway; falls back to organizationName. */
+  organizationDisplayName: string;
+  /** Owning org company / legal name; null when unset. */
+  organizationBusinessName: string | null;
+  /** True when bound to a billing account that has a default payment method. */
+  hasActiveBillingAccount: boolean;
+  /** Bound billing account name when hasActiveBillingAccount is true. */
+  billingAccountName: string | null;
   createdAt: string | null;
   state: string | null;
 }
@@ -83,6 +98,7 @@ type GqlOrganizationFields = {
     givenName?: string | null;
     familyName?: string | null;
     email?: string | null;
+    userName?: string | null;
     avatarUrl?: string | null;
   }> | null;
   projects?: { items?: Array<{ name: string }> | null; continueToken?: string | null } | null;
@@ -98,11 +114,24 @@ function memberDisplayName(member: {
   return fullName || member.email?.trim() || member.name;
 }
 
+/** Prefer email (stable across invites/users), then userName, then membership name. */
+function memberFilterId(member: {
+  name: string;
+  email?: string | null;
+  userName?: string | null;
+}): string {
+  const email = member.email?.trim().toLowerCase();
+  if (email) return email;
+  const userName = member.userName?.trim();
+  if (userName) return userName;
+  return member.name;
+}
+
 const ORG_FIELDS = `
   name displayName type createdAt state
   contactInfo { businessName name email }
   onboardingComplete onboardingReason onboardingMessage
-  members { name givenName familyName email avatarUrl }
+  members { name givenName familyName email userName avatarUrl }
   projects(limit: 100) { items { name } continueToken }
 `;
 
@@ -126,7 +155,7 @@ const ORGANIZATION_QUERY = `
 const ORG_PROJECTS_QUERY = `
   query OrgProjects($orgName: String!, $limit: Int, $cursor: String) {
     organizationProjects(orgName: $orgName, limit: $limit, cursor: $cursor) {
-      items { name displayName organizationName createdAt state }
+      items { name displayName organizationName organizationDisplayName organizationBusinessName hasActiveBillingAccount billingAccountName createdAt state }
       continueToken
     }
   }
@@ -147,6 +176,16 @@ export function mapGqlOrganization(org: GqlOrganizationFields): GqlOrganization 
 
   const projectItems = org.projects?.items ?? [];
   const members = org.members ?? [];
+  const memberSummaries = members.map((member) => {
+    const id = memberFilterId(member);
+    const label = memberDisplayName(member);
+    const email = member.email?.trim() ?? '';
+    return {
+      id,
+      label,
+      searchText: [label, email, member.userName, member.name].filter(Boolean).join(' '),
+    };
+  });
 
   return {
     name: org.name,
@@ -171,6 +210,8 @@ export function mapGqlOrganization(org: GqlOrganizationFields): GqlOrganization 
       name: memberDisplayName(member),
       image: member.avatarUrl ?? '',
     })),
+    memberIds: memberSummaries.map((member) => member.id),
+    memberSummaries,
     projectCount: projectItems.length,
     hasMoreProjects: Boolean(org.projects?.continueToken),
   };

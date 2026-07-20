@@ -66,8 +66,7 @@ export default function Layout() {
         <UserAvatar
           name={fullName || userId}
           avatarUrl={data.status?.avatarUrl}
-          className="size-10 rounded-md"
-          fallbackClassName="rounded-md"
+          className="size-10"
         />
       }
       name={fullName || userId}

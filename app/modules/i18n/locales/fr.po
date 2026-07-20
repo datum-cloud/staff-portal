@@ -135,7 +135,7 @@ msgstr ""
 msgid "Account menu"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:197
+#: app/routes/customer/billing-account/detail/index.tsx:198
 msgid "Account overview"
 msgstr ""
 
@@ -153,11 +153,15 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
+#: app/routes/customer/project/index.tsx:119
+msgid "Active billing account with a payment method"
+msgstr ""
+
 #: app/features/service-catalog/components/active-configuration-summary.tsx:16
 msgid "Active Configuration"
 msgstr ""
 
-#: app/routes/customer/organization/index.tsx:136
+#: app/routes/customer/organization/index.tsx:168
 msgid "Active organizations"
 msgstr ""
 
@@ -249,12 +253,12 @@ msgstr ""
 #: app/routes/customer/project/detail/layout.tsx:117
 #: app/routes/customer/resource/edge/index.tsx:10
 #: app/routes/customer/resource/edge/layout.tsx:5
-#: app/routes/customer/resource/index.tsx:48
-#: app/routes/customer/resource/index.tsx:231
+#: app/routes/customer/resource/index.tsx:49
+#: app/routes/customer/resource/index.tsx:280
 msgid "AI Edge"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:190
+#: app/routes/customer/billing-account/detail/index.tsx:191
 msgid "All billing accounts"
 msgstr ""
 
@@ -312,7 +316,7 @@ msgstr ""
 #: app/routes/admin/service-catalog/detail/approvals.tsx:50
 #: app/routes/admin/service-catalog/detail/consumers.tsx:53
 #: app/routes/customer/user/detail/index.tsx:193
-#: app/routes/customer/user/index.tsx:61
+#: app/routes/customer/user/index.tsx:74
 msgid "Approve"
 msgstr ""
 
@@ -448,22 +452,27 @@ msgstr ""
 msgid "Basic Authentication"
 msgstr ""
 
+#: app/routes/customer/project/index.tsx:109
+#: app/routes/customer/project/index.tsx:176
+msgid "Billing"
+msgstr ""
+
 #: app/features/organization/components/org-onboarding-card.tsx:63
 #: app/routes/customer/project/detail/index.tsx:111
 msgid "Billing account"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:46
-#: app/routes/customer/billing-account/detail/index.tsx:69
+#: app/routes/customer/billing-account/detail/index.tsx:45
+#: app/routes/customer/billing-account/detail/index.tsx:68
 msgid "Billing Account"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:72
+#: app/routes/customer/billing-account/detail/index.tsx:71
 msgid "Billing account not found or you do not have permission to view it."
 msgstr ""
 
 #: app/components/app-sidebar/index.tsx:181
-#: app/features/billing/components/org-billing-accounts-card.tsx:68
+#: app/features/billing/components/org-billing-accounts-card.tsx:72
 #: app/routes/customer/billing-account/index.tsx:7
 #: app/routes/customer/billing-account/layout.tsx:5
 msgid "Billing Accounts"
@@ -475,10 +484,6 @@ msgstr ""
 
 #: app/features/organization/components/org-usage-card.tsx:78
 msgid "Billing permissions are still being provisioned for this organization."
-msgstr ""
-
-#: app/routes/customer/billing-account/detail/index.tsx:258
-msgid "Business name"
 msgstr ""
 
 #: app/routes/admin/service-catalog/index.tsx:56
@@ -508,7 +513,7 @@ msgstr ""
 #: app/routes/customer/fraud/providers/index.tsx:133
 #: app/routes/customer/organization/detail/member.tsx:85
 #: app/routes/customer/user/detail/index.tsx:143
-#: app/routes/customer/user/index.tsx:188
+#: app/routes/customer/user/index.tsx:215
 #: app/routes/marketing/contact-group/detail/member.tsx:345
 #: app/routes/marketing/contact-group/detail/member.tsx:362
 #: app/routes/marketing/contact-group/index.tsx:109
@@ -519,7 +524,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:106
+#: app/routes/customer/billing-account/detail/index.tsx:102
 msgid "Card"
 msgstr ""
 
@@ -539,13 +544,14 @@ msgstr ""
 msgid "Classification"
 msgstr ""
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:96
-#: app/features/milo/components/page/rich-filter-panel.tsx:272
+#: app/features/milo/components/page/rich-filter-panel.tsx:202
+#: app/features/milo/components/page/rich-filter-panel.tsx:470
+#: app/features/milo/components/page/rich-filter-panel.tsx:609
 msgid "Clear"
 msgstr ""
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:369
-#: app/features/milo/components/page/rich-filter-panel.tsx:489
+#: app/features/milo/components/page/rich-filter-panel.tsx:706
+#: app/features/milo/components/page/rich-filter-panel.tsx:859
 msgid "Clear all"
 msgstr ""
 
@@ -570,7 +576,8 @@ msgstr ""
 msgid "clusters healthy"
 msgstr ""
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:279
+#: app/features/milo/components/page/rich-filter-panel.tsx:477
+#: app/features/milo/components/page/rich-filter-panel.tsx:616
 #: app/features/milo/components/sub-nav/milo-sub-nav.tsx:70
 msgid "Collapse"
 msgstr ""
@@ -579,8 +586,11 @@ msgstr ""
 msgid "Collapse sidebar"
 msgstr ""
 
-#: app/routes/customer/organization/index.tsx:39
-#: app/routes/customer/organization/index.tsx:144
+#: app/features/billing/components/billing-account-list.tsx:181
+#: app/routes/customer/billing-account/detail/index.tsx:258
+#: app/routes/customer/organization/index.tsx:70
+#: app/routes/customer/organization/index.tsx:177
+#: app/routes/customer/project/index.tsx:85
 msgid "Company"
 msgstr ""
 
@@ -664,7 +674,7 @@ msgstr ""
 msgid "Contact details"
 msgstr ""
 
-#: app/features/billing/components/billing-account-list.tsx:84
+#: app/features/billing/components/billing-account-list.tsx:218
 msgid "Contact email"
 msgstr ""
 
@@ -802,7 +812,8 @@ msgstr ""
 msgid "Create Policy"
 msgstr ""
 
-#: app/features/billing/components/billing-account-list.tsx:89
+#: app/features/billing/components/billing-account-list.tsx:223
+#: app/features/billing/components/billing-account-list.tsx:269
 #: app/features/contact/components/contact-list.tsx:97
 #: app/features/dns/components/dns-zone-list.tsx:133
 #: app/features/domain/components/domain-list.tsx:108
@@ -816,19 +827,19 @@ msgstr ""
 #: app/routes/customer/billing-account/detail/index.tsx:241
 #: app/routes/customer/fraud/providers/index.tsx:102
 #: app/routes/customer/organization/detail/project.tsx:43
-#: app/routes/customer/organization/index.tsx:64
-#: app/routes/customer/organization/index.tsx:158
+#: app/routes/customer/organization/index.tsx:95
+#: app/routes/customer/organization/index.tsx:200
 #: app/routes/customer/project/detail/domain/detail.tsx:138
 #: app/routes/customer/project/detail/export-policy/detail.tsx:83
 #: app/routes/customer/project/detail/export-policy/index.tsx:51
 #: app/routes/customer/project/detail/index.tsx:115
-#: app/routes/customer/project/index.tsx:61
-#: app/routes/customer/project/index.tsx:90
-#: app/routes/customer/resource/index.tsx:202
-#: app/routes/customer/resource/index.tsx:239
+#: app/routes/customer/project/index.tsx:136
+#: app/routes/customer/project/index.tsx:184
+#: app/routes/customer/resource/index.tsx:251
+#: app/routes/customer/resource/index.tsx:296
 #: app/routes/customer/user/detail/index.tsx:266
-#: app/routes/customer/user/index.tsx:142
-#: app/routes/customer/user/index.tsx:295
+#: app/routes/customer/user/index.tsx:169
+#: app/routes/customer/user/index.tsx:327
 #: app/routes/marketing/contact-group/index.tsx:87
 #: app/routes/profile/session.tsx:72
 msgid "Created"
@@ -839,7 +850,8 @@ msgstr ""
 msgid "Credentials Reference"
 msgstr ""
 
-#: app/features/billing/components/billing-account-list.tsx:74
+#: app/features/billing/components/billing-account-list.tsx:208
+#: app/features/billing/components/billing-account-list.tsx:264
 #: app/routes/customer/billing-account/detail/index.tsx:221
 msgid "Currency"
 msgstr ""
@@ -923,7 +935,7 @@ msgstr ""
 msgid "Declined"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:127
+#: app/routes/customer/billing-account/detail/index.tsx:123
 msgid "Default"
 msgstr ""
 
@@ -1074,7 +1086,7 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: app/routes/customer/resource/index.tsx:197
+#: app/routes/customer/resource/index.tsx:246
 msgid "Detail"
 msgstr ""
 
@@ -1124,8 +1136,8 @@ msgstr ""
 #: app/routes/customer/organization/detail/layout.tsx:80
 #: app/routes/customer/project/detail/dns/layout.tsx:5
 #: app/routes/customer/project/detail/layout.tsx:122
-#: app/routes/customer/resource/index.tsx:49
-#: app/routes/customer/resource/index.tsx:232
+#: app/routes/customer/resource/index.tsx:50
+#: app/routes/customer/resource/index.tsx:281
 msgid "DNS"
 msgstr ""
 
@@ -1182,8 +1194,8 @@ msgstr ""
 #: app/features/domain/components/domain-list.tsx:61
 #: app/features/fraud/detail/maxmind-rows.tsx:237
 #: app/routes/customer/project/detail/domain/detail.tsx:112
-#: app/routes/customer/resource/index.tsx:50
-#: app/routes/customer/resource/index.tsx:233
+#: app/routes/customer/resource/index.tsx:51
+#: app/routes/customer/resource/index.tsx:282
 msgid "Domain"
 msgstr ""
 
@@ -1210,7 +1222,7 @@ msgstr ""
 msgid "Draft"
 msgstr ""
 
-#: app/routes/customer/resource/index.tsx:225
+#: app/routes/customer/resource/index.tsx:274
 msgid "Each resource type is limited to 2,000 results at a time. Refine your search to surface other resources."
 msgstr ""
 
@@ -1240,8 +1252,8 @@ msgstr ""
 #: app/features/organization/components/org-contact-card.tsx:69
 #: app/routes/customer/fraud/index.tsx:122
 #: app/routes/customer/user/detail/index.tsx:254
-#: app/routes/customer/user/index.tsx:122
-#: app/routes/customer/user/index.tsx:226
+#: app/routes/customer/user/index.tsx:135
+#: app/routes/customer/user/index.tsx:253
 #: app/routes/marketing/contact-group/detail/member.tsx:202
 msgid "Email"
 msgstr ""
@@ -1269,7 +1281,7 @@ msgstr ""
 msgid "Email HTML preview"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:164
+#: app/routes/customer/user/index.tsx:191
 msgid "Email is required"
 msgstr ""
 
@@ -1324,7 +1336,7 @@ msgstr ""
 msgid "Enforcement Mode"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:221
+#: app/routes/customer/user/index.tsx:248
 msgid "Enter first name"
 msgstr ""
 
@@ -1363,7 +1375,7 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:155
+#: app/routes/customer/billing-account/detail/index.tsx:156
 msgid "Established"
 msgstr ""
 
@@ -1413,7 +1425,8 @@ msgstr ""
 msgid "Events"
 msgstr ""
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:279
+#: app/features/milo/components/page/rich-filter-panel.tsx:477
+#: app/features/milo/components/page/rich-filter-panel.tsx:616
 msgid "Expand"
 msgstr ""
 
@@ -1514,16 +1527,16 @@ msgstr ""
 msgid "Filter options"
 msgstr ""
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:476
+#: app/features/milo/components/page/rich-filter-panel.tsx:846
 msgid "Filter the list"
 msgstr ""
 
 #: app/components/data-table-toolbar/index.tsx:74
 #: app/components/data-table-toolbar/index.tsx:92
-#: app/features/milo/components/page/rich-filter-panel.tsx:85
-#: app/features/milo/components/page/rich-filter-panel.tsx:463
-#: app/features/milo/components/page/rich-filter-panel.tsx:475
-#: app/features/milo/components/page/rich-filter-panel.tsx:482
+#: app/features/milo/components/page/rich-filter-panel.tsx:191
+#: app/features/milo/components/page/rich-filter-panel.tsx:833
+#: app/features/milo/components/page/rich-filter-panel.tsx:845
+#: app/features/milo/components/page/rich-filter-panel.tsx:852
 msgid "Filters"
 msgstr ""
 
@@ -1541,13 +1554,13 @@ msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:125
 #: app/features/profile/components/profile-form.tsx:46
-#: app/routes/customer/user/index.tsx:220
+#: app/routes/customer/user/index.tsx:247
 msgid "First Name"
 msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:46
 #: app/features/profile/components/profile-form.tsx:15
-#: app/routes/customer/user/index.tsx:162
+#: app/routes/customer/user/index.tsx:189
 msgid "First name is required"
 msgstr ""
 
@@ -1603,7 +1616,7 @@ msgid "Full response from the provider"
 msgstr ""
 
 #: app/routes/customer/organization/detail/layout.tsx:127
-#: app/routes/customer/organization/index.tsx:108
+#: app/routes/customer/organization/index.tsx:139
 msgid "Fully onboarded"
 msgstr ""
 
@@ -1652,8 +1665,8 @@ msgstr ""
 msgid "Groups"
 msgstr ""
 
-#: app/features/milo/components/page/list-table.tsx:279
-#: app/features/milo/components/page/list-table.tsx:283
+#: app/features/milo/components/page/list-table.tsx:293
+#: app/features/milo/components/page/list-table.tsx:297
 msgid "Hide filters"
 msgstr ""
 
@@ -1693,10 +1706,14 @@ msgstr ""
 msgid "HTML"
 msgstr ""
 
-#: app/routes/customer/organization/index.tsx:59
-#: app/routes/customer/project/index.tsx:49
+#: app/features/billing/components/billing-account-list.tsx:176
+#: app/features/billing/components/org-billing-accounts-card.tsx:54
+#: app/routes/customer/billing-account/detail/index.tsx:96
+#: app/routes/customer/billing-account/detail/index.tsx:147
+#: app/routes/customer/organization/index.tsx:90
+#: app/routes/customer/project/index.tsx:80
 #: app/routes/customer/user/detail/index.tsx:237
-#: app/routes/customer/user/index.tsx:126
+#: app/routes/customer/user/index.tsx:153
 msgid "ID"
 msgstr ""
 
@@ -1708,12 +1725,12 @@ msgstr ""
 msgid "Inactive"
 msgstr ""
 
-#: app/routes/customer/organization/index.tsx:145
+#: app/routes/customer/organization/index.tsx:178
 msgid "Individual"
 msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:48
-#: app/routes/customer/user/index.tsx:164
+#: app/routes/customer/user/index.tsx:191
 msgid "Invalid email address"
 msgstr ""
 
@@ -1731,12 +1748,12 @@ msgstr ""
 msgid "Invitation resend successfully"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:187
+#: app/routes/customer/user/index.tsx:214
 msgid "Invite"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:186
-#: app/routes/customer/user/index.tsx:263
+#: app/routes/customer/user/index.tsx:213
+#: app/routes/customer/user/index.tsx:290
 msgid "Invite User"
 msgstr ""
 
@@ -1799,14 +1816,19 @@ msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:128
 #: app/features/profile/components/profile-form.tsx:49
-#: app/routes/customer/user/index.tsx:223
+#: app/routes/customer/user/index.tsx:250
 msgid "Last Name"
 msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:47
 #: app/features/profile/components/profile-form.tsx:16
-#: app/routes/customer/user/index.tsx:163
+#: app/routes/customer/user/index.tsx:190
 msgid "Last name is required"
+msgstr ""
+
+#. placeholder {0}: providerMeta.label
+#: app/routes/customer/user/index.tsx:143
+msgid "Last signed in with {0}"
 msgstr ""
 
 #: app/routes/customer/user/detail/index.tsx:327
@@ -1826,20 +1848,20 @@ msgstr ""
 msgid "Limit:"
 msgstr ""
 
-#: app/routes/customer/organization/index.tsx:131
+#: app/routes/customer/organization/index.tsx:162
 msgid "Limited to 10,000 organizations. Refine your search to surface others."
 msgstr ""
 
-#: app/routes/customer/project/index.tsx:78
+#: app/routes/customer/project/index.tsx:153
 msgid "Limited to 10,000 projects. Refine your search to surface others."
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:269
+#: app/routes/customer/user/index.tsx:296
 msgid "Limited to 10,000 users. Refine your search to surface others."
 msgstr ""
 
-#: app/features/billing/components/billing-account-list.tsx:79
-#: app/features/billing/components/org-billing-accounts-card.tsx:60
+#: app/features/billing/components/billing-account-list.tsx:213
+#: app/features/billing/components/org-billing-accounts-card.tsx:64
 #: app/routes/customer/billing-account/detail/index.tsx:237
 #: app/routes/customer/billing-account/detail/index.tsx:330
 msgid "Linked projects"
@@ -1850,7 +1872,7 @@ msgstr ""
 msgid "List"
 msgstr ""
 
-#: app/features/billing/components/org-billing-accounts-card.tsx:78
+#: app/features/billing/components/org-billing-accounts-card.tsx:82
 msgid "Loading billing accounts..."
 msgstr ""
 
@@ -1933,7 +1955,7 @@ msgid "Mail Lists"
 msgstr ""
 
 #: app/features/user/components/user-identity-card.tsx:133
-#: app/routes/customer/user/index.tsx:56
+#: app/routes/customer/user/index.tsx:69
 msgid "Manage"
 msgstr ""
 
@@ -1980,7 +2002,8 @@ msgstr ""
 #: app/features/organization/components/org-members-preview-card.tsx:74
 #: app/routes/customer/organization/detail/layout.tsx:84
 #: app/routes/customer/organization/detail/member.tsx:25
-#: app/routes/customer/organization/index.tsx:82
+#: app/routes/customer/organization/index.tsx:113
+#: app/routes/customer/organization/index.tsx:192
 #: app/routes/marketing/contact-group/detail/layout.tsx:43
 #: app/routes/marketing/contact-group/detail/member.tsx:33
 msgid "Members"
@@ -2015,7 +2038,7 @@ msgid "More options"
 msgstr ""
 
 #: app/routes/customer/user/detail/index.tsx:219
-#: app/routes/customer/user/index.tsx:83
+#: app/routes/customer/user/index.tsx:96
 msgid "Move to Pending"
 msgstr ""
 
@@ -2025,7 +2048,7 @@ msgstr ""
 msgid "My Profile"
 msgstr ""
 
-#: app/features/billing/components/billing-account-list.tsx:36
+#: app/features/billing/components/billing-account-list.tsx:161
 #: app/features/billing/components/org-billing-accounts-card.tsx:40
 #: app/features/contact/components/contact-list.tsx:69
 #: app/features/dashboard/components/pending-approvals-widget.tsx:134
@@ -2034,12 +2057,12 @@ msgstr ""
 #: app/features/organization/components/org-members-preview-card.tsx:40
 #: app/routes/admin/group/index.tsx:23
 #: app/routes/admin/group/member.tsx:103
-#: app/routes/customer/billing-account/detail/index.tsx:91
+#: app/routes/customer/billing-account/detail/index.tsx:90
 #: app/routes/customer/fraud/providers/create.tsx:86
 #: app/routes/customer/fraud/providers/index.tsx:55
 #: app/routes/customer/organization/detail/member.tsx:103
 #: app/routes/customer/organization/detail/project.tsx:32
-#: app/routes/customer/organization/index.tsx:52
+#: app/routes/customer/organization/index.tsx:83
 #: app/routes/customer/project/detail/dns/detail.tsx:108
 #: app/routes/customer/project/detail/export-policy/detail.tsx:63
 #: app/routes/customer/project/detail/export-policy/detail.tsx:108
@@ -2047,10 +2070,10 @@ msgstr ""
 #: app/routes/customer/project/detail/export-policy/index.tsx:28
 #: app/routes/customer/project/detail/index.tsx:92
 #: app/routes/customer/project/detail/secret.tsx:24
-#: app/routes/customer/project/index.tsx:42
-#: app/routes/customer/resource/index.tsx:169
+#: app/routes/customer/project/index.tsx:73
+#: app/routes/customer/resource/index.tsx:211
 #: app/routes/customer/user/detail/organization.tsx:34
-#: app/routes/customer/user/index.tsx:101
+#: app/routes/customer/user/index.tsx:114
 #: app/routes/marketing/contact-group/detail/member.tsx:181
 #: app/routes/marketing/contact-group/index.tsx:63
 #: app/routes/marketing/contact/detail/group.tsx:83
@@ -2106,8 +2129,12 @@ msgstr ""
 msgid "Next page"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:129
+#: app/routes/customer/billing-account/detail/index.tsx:125
 msgid "No"
+msgstr ""
+
+#: app/routes/customer/project/index.tsx:120
+msgid "No active billing account with a payment method"
 msgstr ""
 
 #: app/features/service-catalog/components/conditions-card.tsx:82
@@ -2131,12 +2158,12 @@ msgstr ""
 msgid "No billing account assigned"
 msgstr ""
 
-#: app/features/billing/components/org-billing-accounts-card.tsx:82
-#: app/features/billing/components/org-billing-accounts-card.tsx:97
+#: app/features/billing/components/org-billing-accounts-card.tsx:86
+#: app/features/billing/components/org-billing-accounts-card.tsx:101
 msgid "No billing accounts"
 msgstr ""
 
-#: app/features/billing/components/billing-account-list.tsx:105
+#: app/features/billing/components/billing-account-list.tsx:237
 msgid "No billing accounts found"
 msgstr ""
 
@@ -2235,6 +2262,10 @@ msgstr ""
 msgid "No linked projects"
 msgstr ""
 
+#: app/features/milo/components/page/rich-filter-panel.tsx:523
+msgid "No matches."
+msgstr ""
+
 #: app/features/organization/components/org-members-preview-card.tsx:88
 #: app/features/organization/components/org-members-preview-card.tsx:103
 msgid "No members"
@@ -2253,7 +2284,7 @@ msgstr ""
 msgid "No notes yet. Add the first note below."
 msgstr ""
 
-#: app/routes/customer/organization/index.tsx:129
+#: app/routes/customer/organization/index.tsx:160
 #: app/routes/customer/user/detail/organization.tsx:69
 msgid "No organizations found."
 msgstr ""
@@ -2276,7 +2307,7 @@ msgid "No pending approvals"
 msgstr ""
 
 #: app/routes/customer/organization/detail/project.tsx:58
-#: app/routes/customer/project/index.tsx:76
+#: app/routes/customer/project/index.tsx:151
 msgid "No projects found."
 msgstr ""
 
@@ -2296,7 +2327,7 @@ msgstr ""
 msgid "No quotas are above 70% utilization"
 msgstr ""
 
-#: app/routes/customer/resource/index.tsx:222
+#: app/routes/customer/resource/index.tsx:271
 msgid "No resources found."
 msgstr ""
 
@@ -2324,7 +2355,7 @@ msgstr ""
 msgid "No usage to display"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:271
+#: app/routes/customer/user/index.tsx:298
 msgid "No users found."
 msgstr ""
 
@@ -2346,7 +2377,7 @@ msgstr ""
 msgid "Normal"
 msgstr ""
 
-#: app/features/milo/components/page/list-growth-chart.tsx:68
+#: app/features/milo/components/page/list-growth-chart.tsx:122
 msgid "Not enough data yet to show a trend."
 msgstr ""
 
@@ -2385,7 +2416,7 @@ msgid "Onboarding"
 msgstr ""
 
 #: app/routes/customer/organization/detail/layout.tsx:130
-#: app/routes/customer/organization/index.tsx:111
+#: app/routes/customer/organization/index.tsx:142
 msgid "Onboarding incomplete"
 msgstr ""
 
@@ -2393,7 +2424,7 @@ msgstr ""
 msgid "Once a contact is associated with a user, this association cannot be removed or changed later."
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:186
+#: app/routes/customer/billing-account/detail/index.tsx:187
 msgid "Open in Cloud Portal"
 msgstr ""
 
@@ -2415,12 +2446,13 @@ msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:399
 #: app/features/activity/components/activity-list.tsx:498
-#: app/features/billing/components/billing-account-list.tsx:53
+#: app/features/billing/components/billing-account-list.tsx:189
+#: app/features/billing/components/billing-account-list.tsx:243
 #: app/features/dashboard/components/quota-utilization-widget.tsx:147
-#: app/routes/customer/billing-account/detail/index.tsx:201
+#: app/routes/customer/billing-account/detail/index.tsx:202
 #: app/routes/customer/project/detail/index.tsx:96
-#: app/routes/customer/project/index.tsx:53
-#: app/routes/customer/project/index.tsx:87
+#: app/routes/customer/project/index.tsx:100
+#: app/routes/customer/project/index.tsx:166
 msgid "Organization"
 msgstr ""
 
@@ -2428,7 +2460,7 @@ msgstr ""
 msgid "Organization deleted successfully"
 msgstr ""
 
-#: app/routes/customer/organization/index.tsx:125
+#: app/routes/customer/organization/index.tsx:156
 msgid "organizations"
 msgstr ""
 
@@ -2436,7 +2468,7 @@ msgstr ""
 #: app/components/app-search/use-app-search.ts:42
 #: app/components/app-sidebar/index.tsx:119
 #: app/routes/customer/breadcrumb-switchers.tsx:7
-#: app/routes/customer/organization/index.tsx:24
+#: app/routes/customer/organization/index.tsx:25
 #: app/routes/customer/organization/layout.tsx:8
 #: app/routes/customer/project/detail/layout.tsx:40
 #: app/routes/customer/user/detail/layout.tsx:42
@@ -2527,7 +2559,7 @@ msgstr ""
 msgid "Phase"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:236
+#: app/routes/customer/user/index.tsx:263
 msgid "Pick date and time Test"
 msgstr ""
 
@@ -2639,12 +2671,13 @@ msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:391
 #: app/features/activity/components/activity-list.tsx:490
+#: app/features/billing/components/billing-account-list.tsx:254
 #: app/features/dns/components/dns-zone-list.tsx:99
 #: app/features/domain/components/domain-list.tsx:71
 #: app/features/edge/components/edge-list.tsx:76
-#: app/routes/customer/billing-account/detail/index.tsx:138
-#: app/routes/customer/resource/index.tsx:189
-#: app/routes/customer/resource/index.tsx:236
+#: app/routes/customer/billing-account/detail/index.tsx:134
+#: app/routes/customer/resource/index.tsx:233
+#: app/routes/customer/resource/index.tsx:288
 msgid "Project"
 msgstr ""
 
@@ -2659,9 +2692,9 @@ msgstr ""
 #: app/routes/customer/breadcrumb-switchers.tsx:8
 #: app/routes/customer/organization/detail/layout.tsx:73
 #: app/routes/customer/organization/detail/project.tsx:14
-#: app/routes/customer/organization/index.tsx:69
+#: app/routes/customer/organization/index.tsx:100
 #: app/routes/customer/project/detail/layout.tsx:46
-#: app/routes/customer/project/index.tsx:21
+#: app/routes/customer/project/index.tsx:23
 #: app/routes/customer/project/layout.tsx:8
 #: app/routes/dashboard/overview.tsx:75
 msgid "Projects"
@@ -2798,8 +2831,8 @@ msgstr ""
 msgid "Registrar"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:137
-#: app/routes/customer/user/index.tsx:278
+#: app/routes/customer/user/index.tsx:164
+#: app/routes/customer/user/index.tsx:310
 msgid "Registration"
 msgstr ""
 
@@ -2809,7 +2842,7 @@ msgstr ""
 
 #: app/features/user/components/user-reject-dialog.tsx:29
 #: app/routes/customer/user/detail/index.tsx:200
-#: app/routes/customer/user/index.tsx:76
+#: app/routes/customer/user/index.tsx:89
 msgid "Reject"
 msgstr ""
 
@@ -2951,15 +2984,15 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:233
+#: app/routes/customer/user/index.tsx:260
 msgid "Schedule At"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:176
+#: app/routes/customer/user/index.tsx:203
 msgid "Schedule date and time is required"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:230
+#: app/routes/customer/user/index.tsx:257
 msgid "Schedule invitation to be sent at specific time"
 msgstr ""
 
@@ -2993,7 +3026,7 @@ msgstr ""
 msgid "Search AI Edge..."
 msgstr ""
 
-#: app/features/billing/components/billing-account-list.tsx:104
+#: app/features/billing/components/billing-account-list.tsx:236
 msgid "Search billing accounts..."
 msgstr ""
 
@@ -3069,14 +3102,28 @@ msgstr ""
 msgid "Search members..."
 msgstr ""
 
-#: app/routes/customer/organization/index.tsx:128
+#: app/routes/customer/organization/index.tsx:194
+msgid "Search members…"
+msgstr ""
+
+#: app/routes/customer/organization/index.tsx:159
 #: app/routes/customer/user/detail/organization.tsx:68
 msgid "Search organizations..."
 msgstr ""
 
+#: app/features/billing/components/billing-account-list.tsx:245
+#: app/routes/customer/project/index.tsx:168
+msgid "Search organizations…"
+msgstr ""
+
 #: app/routes/customer/organization/detail/project.tsx:57
-#: app/routes/customer/project/index.tsx:75
+#: app/routes/customer/project/index.tsx:150
 msgid "Search projects..."
+msgstr ""
+
+#: app/features/billing/components/billing-account-list.tsx:256
+#: app/routes/customer/resource/index.tsx:290
+msgid "Search projects…"
 msgstr ""
 
 #: app/routes/customer/fraud/providers/index.tsx:150
@@ -3091,7 +3138,7 @@ msgstr ""
 msgid "Search records..."
 msgstr ""
 
-#: app/routes/customer/resource/index.tsx:221
+#: app/routes/customer/resource/index.tsx:270
 msgid "Search resources..."
 msgstr ""
 
@@ -3108,12 +3155,20 @@ msgstr ""
 msgid "Search users, organizations, and projects"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:270
+#: app/routes/customer/user/index.tsx:297
 msgid "Search users..."
+msgstr ""
+
+#: app/features/milo/components/page/rich-filter-panel.tsx:494
+msgid "Search…"
 msgstr ""
 
 #: app/components/app-search/search-results.tsx:125
 msgid "Searching..."
+msgstr ""
+
+#: app/features/milo/components/page/rich-filter-panel.tsx:519
+msgid "Searching…"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:395
@@ -3214,9 +3269,13 @@ msgstr ""
 msgid "Short-circuit Below"
 msgstr ""
 
-#: app/features/milo/components/page/list-table.tsx:279
-#: app/features/milo/components/page/list-table.tsx:283
+#: app/features/milo/components/page/list-table.tsx:293
+#: app/features/milo/components/page/list-table.tsx:297
 msgid "Show filters"
+msgstr ""
+
+#: app/features/milo/components/page/rich-filter-panel.tsx:544
+msgid "Show more"
 msgstr ""
 
 #: app/routes/customer/project/detail/export-policy/detail.tsx:149
@@ -3264,8 +3323,8 @@ msgstr ""
 msgid "Start Time"
 msgstr ""
 
-#: app/features/billing/components/billing-account-list.tsx:69
-#: app/features/billing/components/org-billing-accounts-card.tsx:55
+#: app/features/billing/components/billing-account-list.tsx:203
+#: app/features/billing/components/org-billing-accounts-card.tsx:59
 #: app/features/contact/components/contact-list.tsx:90
 #: app/features/domain/components/domain-list.tsx:96
 #: app/features/edge/components/detail/edge-general-card.tsx:23
@@ -3277,19 +3336,19 @@ msgstr ""
 #: app/features/organization/components/org-members-preview-card.tsx:58
 #: app/features/quota/components/quota-grant-list.tsx:109
 #: app/features/service-catalog/components/conditions-card.tsx:23
-#: app/routes/customer/billing-account/detail/index.tsx:121
-#: app/routes/customer/billing-account/detail/index.tsx:162
+#: app/routes/customer/billing-account/detail/index.tsx:117
+#: app/routes/customer/billing-account/detail/index.tsx:163
 #: app/routes/customer/billing-account/detail/index.tsx:217
 #: app/routes/customer/fraud/providers/index.tsx:85
-#: app/routes/customer/organization/index.tsx:102
-#: app/routes/customer/organization/index.tsx:150
+#: app/routes/customer/organization/index.tsx:133
+#: app/routes/customer/organization/index.tsx:183
 #: app/routes/customer/project/detail/domain/detail.tsx:128
 #: app/routes/customer/project/detail/export-policy/detail.tsx:75
 #: app/routes/customer/project/detail/export-policy/detail.tsx:168
 #: app/routes/customer/project/detail/export-policy/index.tsx:44
 #: app/routes/customer/user/detail/index.tsx:262
-#: app/routes/customer/user/index.tsx:132
-#: app/routes/customer/user/index.tsx:287
+#: app/routes/customer/user/index.tsx:159
+#: app/routes/customer/user/index.tsx:319
 #: app/routes/marketing/contact-group/detail/member.tsx:207
 #: app/routes/marketing/contact-group/index.tsx:80
 #: app/routes/marketing/contact/detail/group.tsx:101
@@ -3352,7 +3411,7 @@ msgstr ""
 msgid "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 msgstr ""
 
-#: app/features/milo/components/page/list-table.tsx:356
+#: app/features/milo/components/page/list-table.tsx:370
 msgid "The list is limited to 2,000 results at a time. Refine your search to surface other items."
 msgstr ""
 
@@ -3441,15 +3500,11 @@ msgstr ""
 msgid "Toggle theme"
 msgstr ""
 
-#: app/features/milo/components/page/list-growth-chart.tsx:81
-msgid "Total"
-msgstr ""
-
-#: app/routes/customer/project/index.tsx:83
+#: app/routes/customer/project/index.tsx:158
 msgid "Total projects"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:273
+#: app/routes/customer/user/index.tsx:303
 msgid "Total users"
 msgstr ""
 
@@ -3471,18 +3526,39 @@ msgstr ""
 #: app/features/organization/components/org-details-card.tsx:59
 #: app/features/service-catalog/components/conditions-card.tsx:19
 #: app/routes/customer/fraud/providers/index.tsx:65
-#: app/routes/customer/organization/index.tsx:142
+#: app/routes/customer/organization/index.tsx:175
 #: app/routes/customer/project/detail/dns/detail.tsx:93
 #: app/routes/customer/project/detail/dns/detail.tsx:157
 #: app/routes/customer/project/detail/export-policy/detail.tsx:162
-#: app/routes/customer/resource/index.tsx:175
-#: app/routes/customer/resource/index.tsx:229
+#: app/routes/customer/resource/index.tsx:217
+#: app/routes/customer/resource/index.tsx:278
 #: app/routes/customer/user/detail/organization.tsx:48
 msgid "Type"
 msgstr ""
 
+#: app/features/billing/components/billing-account-list.tsx:246
+#: app/routes/customer/project/index.tsx:169
+msgid "Type at least 2 characters to search all organizations."
+msgstr ""
+
+#: app/features/billing/components/billing-account-list.tsx:257
+msgid "Type at least 2 characters to search all projects."
+msgstr ""
+
 #: app/components/app-search/search-results.tsx:118
 msgid "Type at least 3 characters to search."
+msgstr ""
+
+#: app/routes/customer/organization/index.tsx:195
+msgid "Type to filter by member name or email."
+msgstr ""
+
+#: app/routes/customer/resource/index.tsx:291
+msgid "Type to filter by project name."
+msgstr ""
+
+#: app/features/milo/components/page/rich-filter-panel.tsx:514
+msgid "Type to search."
 msgstr ""
 
 #: app/features/fraud/policy/policy-detail.tsx:152
@@ -3526,6 +3602,7 @@ msgstr ""
 #: app/routes/customer/organization/detail/layout.tsx:85
 #: app/routes/customer/organization/detail/layout.tsx:101
 #: app/routes/customer/organization/detail/quota/usage.tsx:10
+#: app/routes/customer/organization/detail/usage/index.tsx:22
 #: app/routes/customer/project/detail/layout.tsx:156
 #: app/routes/customer/project/detail/quota/usage.tsx:10
 msgid "Usage"
@@ -3567,7 +3644,7 @@ msgstr ""
 msgid "User deleted successfully"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:214
+#: app/routes/customer/user/index.tsx:241
 msgid "User invited successfully"
 msgstr ""
 
@@ -3603,7 +3680,7 @@ msgstr ""
 #: app/components/app-search/use-app-search.ts:36
 #: app/components/app-sidebar/index.tsx:115
 #: app/routes/customer/breadcrumb-switchers.tsx:6
-#: app/routes/customer/user/index.tsx:36
+#: app/routes/customer/user/index.tsx:40
 #: app/routes/customer/user/layout.tsx:8
 #: app/routes/dashboard/overview.tsx:59
 msgid "Users"
@@ -3646,7 +3723,7 @@ msgstr ""
 msgid "View activity logs"
 msgstr ""
 
-#: app/features/billing/components/org-billing-accounts-card.tsx:73
+#: app/features/billing/components/org-billing-accounts-card.tsx:77
 #: app/features/organization/components/org-members-preview-card.tsx:79
 #: app/features/organization/components/org-usage-card.tsx:59
 msgid "View all"
@@ -3679,7 +3756,7 @@ msgstr ""
 msgid "View on MaxMind"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:174
+#: app/routes/customer/billing-account/detail/index.tsx:175
 msgid "View organization"
 msgstr ""
 
@@ -3714,7 +3791,7 @@ msgstr ""
 msgid "YAML"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:129
+#: app/routes/customer/billing-account/detail/index.tsx:125
 msgid "Yes"
 msgstr ""
 

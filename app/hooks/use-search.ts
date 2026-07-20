@@ -1,10 +1,11 @@
+import { listOrganizations } from '@/modules/graphql/organizations';
+import { listProjects } from '@/modules/graphql/projects';
 import {
   useContactGroupListQuery,
   useContactListQuery,
-  useOrgListQuery,
-  useProjectListQuery,
   userListQuery,
-  useUserListQuery,
+  organizationQueryKeys,
+  projectQueryKeys,
 } from '@/resources/request/client';
 import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
@@ -41,54 +42,81 @@ export function useUserSearch() {
   return { options, isLoading, setSearch };
 }
 
-export function useOrganizationSearch() {
+export function useOrganizationSearch(minChars = 2) {
+  // SearchableFilterGroup already debounces onSearchChange; keep this as the
+  // query that actually hits the network (no second debounce).
   const [searchQuery, setSearchQuery] = React.useState('');
+  const trimmed = searchQuery.trim();
+  const enabled = trimmed.length >= minChars;
 
-  const { data: data, isLoading } = useOrgListQuery({
-    limit: 50,
-    ...(searchQuery && { search: searchQuery }),
+  const { data, isFetching, isLoading } = useQuery({
+    queryKey: organizationQueryKeys.list({ limit: 50, search: trimmed }),
+    queryFn: () => listOrganizations({ limit: 50, search: trimmed }),
+    enabled,
+    staleTime: 5 * 60 * 1000,
   });
 
   const options = React.useMemo(() => {
-    if (!data?.items) return [];
+    if (!enabled || !data?.items) return [];
     return data.items
-      .map((org) => ({
-        value: org.name,
-        label: org.displayName || org.name,
-      }))
-      .sort((a, b) => a.label?.localeCompare(b.label ?? '') ?? 0);
-  }, [data]);
+      .map((org) => {
+        const label = org.contactInfo?.businessName || org.displayName || org.name;
+        return {
+          value: org.name,
+          label,
+          searchText: [org.contactInfo?.businessName, org.displayName, org.name]
+            .filter(Boolean)
+            .join(' '),
+        };
+      })
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [data, enabled]);
 
   const setSearch = React.useCallback((query: string) => {
     setSearchQuery(query);
   }, []);
 
-  return { options, isLoading, setSearch };
+  return {
+    options,
+    isLoading: enabled && (isLoading || isFetching),
+    setSearch,
+  };
 }
 
-export function useProjectSearch() {
+export function useProjectSearch(minChars = 2) {
+  // SearchableFilterGroup debounces onSearchChange; this is the query that hits
+  // the network (no second debounce).
   const [searchQuery, setSearchQuery] = React.useState('');
+  const trimmed = searchQuery.trim();
+  const enabled = trimmed.length >= minChars;
 
-  const { data: data, isLoading } = useProjectListQuery({
-    limit: 50,
-    ...(searchQuery && { search: searchQuery }),
+  const { data, isFetching, isLoading } = useQuery({
+    queryKey: projectQueryKeys.list({ limit: 50, search: trimmed }),
+    queryFn: () => listProjects({ limit: 50, search: trimmed }),
+    enabled,
+    staleTime: 5 * 60 * 1000,
   });
 
   const options = React.useMemo(() => {
-    if (!data?.items) return [];
+    if (!enabled || !data?.items) return [];
     return data.items
       .map((project) => ({
         value: project.name,
         label: project.displayName || project.name,
+        searchText: [project.displayName, project.name].filter(Boolean).join(' '),
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
-  }, [data]);
+  }, [data, enabled]);
 
   const setSearch = React.useCallback((query: string) => {
     setSearchQuery(query);
   }, []);
 
-  return { options, isLoading, setSearch };
+  return {
+    options,
+    isLoading: enabled && (isLoading || isFetching),
+    setSearch,
+  };
 }
 
 export function useContactSearch() {
