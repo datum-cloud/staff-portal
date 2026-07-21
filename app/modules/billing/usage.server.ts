@@ -12,10 +12,7 @@ import type {
   UsageFetchResult,
   UsageGroup,
 } from './usage.types';
-import {
-  getOrgControlPlaneBaseURL,
-  getProjectControlPlaneBaseURL,
-} from '@/resources/request/client/apis/control-plane';
+import { getOrgControlPlaneBaseURL } from '@/resources/request/client/apis/control-plane';
 import { env } from '@/utils/config/env.server';
 import { logger } from '@/utils/logger';
 import {
@@ -23,11 +20,9 @@ import {
   listBillingMiloapisComV1Alpha1NamespacedBillingAccountBinding,
   readBillingMiloapisComV1Alpha1NamespacedBillingAccount,
 } from '@openapi/billing.miloapis.com/v1alpha1';
-import { listQuotaMiloapisComV1Alpha1NamespacedAllowanceBucket } from '@openapi/quota.miloapis.com/v1alpha1';
 import type { UnwrapProxyResponse } from '@openapi/shared/core/types.gen';
 
 const DEFAULT_DAYS = 30;
-const MILO_SYSTEM_NAMESPACE = 'milo-system';
 const MAX_BREAKDOWN_DIMENSIONS = 3;
 /** Platform dimension injected by the billing pipeline (not on MeterDefinition). */
 const PROJECT_BREAKDOWN_DIMENSION = 'project_name';
@@ -389,90 +384,6 @@ async function fetchUsageForCustomerIds({
   );
 }
 
-function toQuotaNumber(value: unknown): number | undefined {
-  if (typeof value === 'bigint') return Number(value);
-  if (typeof value === 'number') return value;
-  if (typeof value === 'string' && value.trim() !== '') {
-    const parsed = Number(value);
-    return Number.isNaN(parsed) ? undefined : parsed;
-  }
-  return undefined;
-}
-
-const normalizeJoinKey = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, '');
-
-interface QuotaBucket {
-  resourceType: string;
-  allocated?: number;
-  limit?: number;
-}
-
-async function listAllowanceBuckets(
-  orgName: string,
-  token: string,
-  projectId?: string
-): Promise<QuotaBucket[]> {
-  try {
-    if (projectId) {
-      const resp = await listQuotaMiloapisComV1Alpha1NamespacedAllowanceBucket({
-        baseURL: getProjectControlPlaneBaseURL(projectId),
-        path: { namespace: MILO_SYSTEM_NAMESPACE },
-        query: {
-          fieldSelector: `spec.consumerRef.kind=Project,spec.consumerRef.name=${projectId}`,
-        },
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = resp.data as unknown as UnwrapProxyResponse<typeof resp.data>;
-      return (data?.items ?? []).map((item) => ({
-        resourceType: item.spec?.resourceType ?? '',
-        allocated: toQuotaNumber(item.status?.allocated),
-        limit: toQuotaNumber(item.status?.limit),
-      }));
-    }
-
-    const resp = await listQuotaMiloapisComV1Alpha1NamespacedAllowanceBucket({
-      baseURL: getOrgControlPlaneBaseURL(orgName),
-      path: { namespace: orgNamespace(orgName) },
-      query: {
-        fieldSelector: `spec.consumerRef.kind=Organization,spec.consumerRef.name=${orgName}`,
-      },
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = resp.data as unknown as UnwrapProxyResponse<typeof resp.data>;
-    return (data?.items ?? []).map((item) => ({
-      resourceType: item.spec?.resourceType ?? '',
-      allocated: toQuotaNumber(item.status?.allocated),
-      limit: toQuotaNumber(item.status?.limit),
-    }));
-  } catch {
-    return [];
-  }
-}
-
-function matchBucketForMeter(meter: MeterSeries, buckets: QuotaBucket[]): QuotaBucket | undefined {
-  const haystacks = [meter.meterName ?? meter.meterApiName, ...(meter.dimensions ?? [])].map(
-    normalizeJoinKey
-  );
-  return buckets.find((bucket) => {
-    const needle = normalizeJoinKey(bucket.resourceType);
-    if (!needle) return false;
-    return haystacks.some((h) => h.includes(needle) || needle.includes(h));
-  });
-}
-
-function attachQuotaLimits(meters: MeterSeries[], buckets: QuotaBucket[]): MeterSeries[] {
-  if (buckets.length === 0) return meters;
-  return meters.map((meter) => {
-    const bucket = matchBucketForMeter(meter, buckets);
-    if (!bucket) return meter;
-    return {
-      ...meter,
-      ...(bucket.limit !== undefined ? { limit: bucket.limit } : {}),
-      ...(bucket.allocated !== undefined ? { used: bucket.allocated } : {}),
-    };
-  });
-}
-
 function buildUsageGroups(meters: MeterSeries[]): UsageGroup[] {
   const byId = new Map<string, UsageGroup>();
   for (const meter of meters) {
@@ -561,6 +472,8 @@ async function fetchOrgUsage(
     }
   }
 
+  // Amberflo series only — do not join AllowanceBucket limits onto usage meters.
+  // Resource quotas live on the Quotas surfaces; usage has no billing caps yet.
   const meters = await fetchUsageForCustomerIds({
     customerIds,
     days,
@@ -568,12 +481,10 @@ async function fetchOrgUsage(
     projectId,
     token,
   });
-  const buckets = await listAllowanceBuckets(orgName, token, projectId);
-  const enriched = attachQuotaLimits(meters, buckets);
   return {
     status: 'ok',
-    meters: enriched,
-    groups: buildUsageGroups(enriched),
+    meters,
+    groups: buildUsageGroups(meters),
     days: resolvedDays,
     projectId,
   };

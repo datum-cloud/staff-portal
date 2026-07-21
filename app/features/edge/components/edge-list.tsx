@@ -1,9 +1,10 @@
-import { BadgeCondition } from '@/components/badge';
+import { BadgeState } from '@/components/badge';
+import { Chip } from '@/components/chip';
 import { DateTime } from '@/components/date';
+import { DisplayId } from '@/components/display';
 import { SearchResourceTable, type ControlledSearch } from '@/components/search-resource-table';
 import { ListColumnHeader } from '@/features/milo';
 import { projectRoutes } from '@/utils/config/routes.config';
-import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { ComDatumapisNetworkingV1AlphaHttpProxy } from '@openapi/networking.datumapis.com/v1alpha';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -50,6 +51,42 @@ function endpoints(edge: ComDatumapisNetworkingV1AlphaHttpProxy): string[] {
   );
 }
 
+/** Human-readable name from annotations; falls back to resource name. */
+function edgeDisplayName(edge: ComDatumapisNetworkingV1AlphaHttpProxy): string {
+  const annotations = edge.metadata?.annotations ?? {};
+  return (
+    annotations['app.kubernetes.io/name']?.trim() ||
+    annotations['kubernetes.io/display-name']?.trim() ||
+    edge.metadata?.name ||
+    ''
+  );
+}
+
+/** Spec + status hostnames, de-duplicated, for display and search. */
+function edgeHostnames(edge: ComDatumapisNetworkingV1AlphaHttpProxy): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const hostname of [...(edge.spec?.hostnames ?? []), ...(edge.status?.hostnames ?? [])]) {
+    const value = hostname?.trim();
+    if (!value || seen.has(value)) continue;
+    seen.add(value);
+    out.push(value);
+  }
+  return out;
+}
+
+function edgeStatus(edge: ComDatumapisNetworkingV1AlphaHttpProxy): {
+  state: string;
+  tooltip?: string;
+} {
+  const condition = edge.status?.conditions?.[0];
+  if (!condition) return { state: 'pending' };
+  return {
+    state: condition.status === 'True' ? 'active' : 'pending',
+    tooltip: condition.message || undefined,
+  };
+}
+
 export function EdgeList({
   data,
   loading,
@@ -61,13 +98,19 @@ export function EdgeList({
   hasMore = false,
 }: EdgeListProps) {
   const columns = [
-    columnHelper.accessor((row) => row.edge.metadata?.name ?? '', {
-      id: 'name',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
+    columnHelper.accessor((row) => edgeDisplayName(row.edge), {
+      id: 'displayName',
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Display Name`} />,
       cell: ({ getValue, row }) => {
         const to = linkBuilder(row.original);
-        return to ? <Link to={to}>{getValue()}</Link> : <span>{getValue()}</span>;
+        const label = getValue();
+        return to ? <Link to={to}>{label}</Link> : <span>{label}</span>;
       },
+    }),
+    columnHelper.accessor((row) => row.edge.metadata?.name ?? '', {
+      id: 'id',
+      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
+      cell: ({ getValue }) => <DisplayId value={getValue()} />,
     }),
     ...(showProjectColumn
       ? [
@@ -81,6 +124,16 @@ export function EdgeList({
           }),
         ]
       : []),
+    columnHelper.accessor((row) => edgeHostnames(row.edge), {
+      id: 'hostnames',
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Hostnames`} />,
+      enableSorting: false,
+      cell: ({ getValue }) => {
+        const list = getValue();
+        if (list.length === 0) return <span className="text-muted-foreground">——</span>;
+        return <Chip items={list} maxVisible={2} variant="outline" size="sm" />;
+      },
+    }),
     columnHelper.accessor((row) => endpoints(row.edge), {
       id: 'endpoint',
       header: () => t`Endpoint`,
@@ -99,9 +152,10 @@ export function EdgeList({
     columnHelper.accessor((row) => row.edge.status, {
       id: 'status',
       header: () => t`Status`,
-      cell: ({ getValue }) => (
-        <BadgeCondition status={getValue()} multiple={false} showMessage className="text-xs" />
-      ),
+      cell: ({ row }) => {
+        const { state, tooltip } = edgeStatus(row.original.edge);
+        return <BadgeState state={state} tooltip={tooltip} />;
+      },
     }),
     columnHelper.accessor((row) => row.edge.metadata?.creationTimestamp, {
       id: 'metadata.creationTimestamp',
@@ -126,9 +180,17 @@ export function EdgeList({
         const q = search.trim().toLowerCase();
         if (!q) return true;
         const name = (row.edge.metadata?.name ?? '').toLowerCase();
+        const displayName = edgeDisplayName(row.edge).toLowerCase();
         const project = row.projectName.toLowerCase();
         const endpointText = endpoints(row.edge).join(' ').toLowerCase();
-        return name.includes(q) || project.includes(q) || endpointText.includes(q);
+        const hostnameText = edgeHostnames(row.edge).join(' ').toLowerCase();
+        return (
+          name.includes(q) ||
+          displayName.includes(q) ||
+          project.includes(q) ||
+          endpointText.includes(q) ||
+          hostnameText.includes(q)
+        );
       }}
     />
   );

@@ -1,7 +1,7 @@
 import { BadgeCondition } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
-import { DisplayName } from '@/components/display';
+import { DisplayId, DisplayName } from '@/components/display';
 import { ListTable, ListColumnHeader } from '@/features/milo';
 import { contactDeleteMutation } from '@/resources/request/client';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
@@ -65,23 +65,30 @@ export function ContactList({
   ];
 
   const columns = [
-    columnHelper.accessor('metadata.name', {
-      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
-      cell: ({ row }) => {
-        const contactName = row.original.metadata?.name ?? '';
-        const displayName = [row.original.spec?.givenName, row.original.spec?.familyName]
-          .filter(Boolean)
-          .join(' ');
-
-        return (
-          <DisplayName
-            displayName={displayName || contactName}
-            name={contactName}
-            to={contactRoutes.detail(row.original.metadata?.namespace ?? '', contactName)}
-          />
-        );
-      },
+    columnHelper.accessor((row) => row.metadata?.name ?? '', {
+      id: 'id',
+      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
+      cell: ({ getValue }) => <DisplayId value={getValue()} />,
     }),
+    columnHelper.accessor(
+      (row) =>
+        [row.spec?.givenName, row.spec?.familyName].filter(Boolean).join(' ') ||
+        row.metadata?.name ||
+        '',
+      {
+        id: 'name',
+        header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
+        cell: ({ getValue, row }) => {
+          const contactName = row.original.metadata?.name ?? '';
+          return (
+            <DisplayName
+              displayName={getValue()}
+              to={contactRoutes.detail(row.original.metadata?.namespace ?? '', contactName)}
+            />
+          );
+        },
+      }
+    ),
     columnHelper.accessor('spec.email', {
       header: ({ column }) => <ListColumnHeader column={column} title={t`Email`} />,
       cell: ({ getValue }) => getValue(),

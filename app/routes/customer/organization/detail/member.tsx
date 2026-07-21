@@ -1,7 +1,7 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../shared';
 import type { Route } from './+types/member';
 import { BadgeState } from '@/components/badge';
-import { DisplayName } from '@/components/display';
+import { DisplayName, DisplayText } from '@/components/display';
 import { ListColumnHeader, ListTable } from '@/features/milo';
 import {
   type GqlOrgMember,
@@ -102,17 +102,22 @@ export default function Page() {
     columnHelper.accessor('givenName', {
       header: ({ column }) => <ListColumnHeader column={column} title={tCore`Name`} />,
       cell: ({ row }) => {
-        const displayName = `${row.original.givenName} ${row.original.familyName}`;
-        const email = row.original.email;
+        const displayName =
+          `${row.original.givenName} ${row.original.familyName}`.trim() ||
+          row.original.email ||
+          row.original.name;
         const userName = row.original.userName;
         return (
           <DisplayName
             displayName={displayName}
-            name={email || row.original.name}
             to={userName ? userRoutes.detail(userName) : undefined}
           />
         );
       },
+    }),
+    columnHelper.accessor('email', {
+      header: ({ column }) => <ListColumnHeader column={column} title={tCore`Email`} />,
+      cell: ({ getValue }) => <DisplayText value={getValue() ?? ''} />,
     }),
     columnHelper.accessor('invitationState', {
       header: () => '',
