@@ -18,7 +18,8 @@ export type { GqlOrganization, GqlOrgMember, GqlProject };
 export const organizationQueryKeys = {
   all: ['organizations'] as const,
   list: (params?: ListQueryParams) => ['organizations', 'list', params] as const,
-  listAll: (search?: string) => ['organizations', 'list-all', 'v2-members', search ?? ''] as const,
+  listAll: (search?: string) =>
+    ['organizations', 'list-all', 'v3-no-nested', search ?? ''] as const,
   detail: (orgName: string) => ['organizations', orgName, 'detail'] as const,
   projects: {
     all: (orgName: string) => ['organizations', orgName, 'projects'] as const,

@@ -46,11 +46,16 @@ export function OrgMembersPreviewCard({ orgName, members, isLoading, className }
         return (
           <DisplayName
             displayName={displayName}
-            name={row.original.email || undefined}
             to={row.original.userName ? userRoutes.detail(row.original.userName) : undefined}
           />
         );
       },
+    }),
+    columnHelper.accessor('email', {
+      id: 'email',
+      enableSorting: false,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Email`} />,
+      cell: ({ getValue }) => getValue() || '—',
     }),
     columnHelper.accessor('invitationState', {
       id: 'status',

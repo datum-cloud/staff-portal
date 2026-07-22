@@ -26,18 +26,7 @@ export interface GqlOrganization {
   entityType: 'Company' | 'Individual';
   onboardingReason: string | null;
   onboardingMessage: string | null;
-  /** Members + invitations returned by the gateway for this org. */
-  memberCount: number;
-  /** Avatars for the members column (`AvatarStack`: name + optional image URL). */
-  memberAvatars: Array<{ name: string; image: string }>;
-  /**
-   * Stable member ids for the Members sidebar filter (email → userName →
-   * membership name). Matched via {@link arrayIncludesAnyFilterFn}.
-   */
-  memberIds: string[];
-  /** Unique members for filter option labels / search text. */
-  memberSummaries: Array<{ id: string; label: string; searchText: string }>;
-  /** Projects on the first page (limit 100). More may exist when hasMoreProjects. */
+  /** Projects on the first page (limit 100). Only populated on detail queries. */
   projectCount: number;
   hasMoreProjects: boolean;
 }
@@ -93,52 +82,28 @@ type GqlOrganizationFields = {
   onboardingComplete: boolean;
   onboardingReason: string | null;
   onboardingMessage: string | null;
-  members?: Array<{
-    name: string;
-    givenName?: string | null;
-    familyName?: string | null;
-    email?: string | null;
-    userName?: string | null;
-    avatarUrl?: string | null;
-  }> | null;
   projects?: { items?: Array<{ name: string }> | null; continueToken?: string | null } | null;
 };
 
-function memberDisplayName(member: {
-  givenName?: string | null;
-  familyName?: string | null;
-  email?: string | null;
-  name: string;
-}): string {
-  const fullName = [member.givenName, member.familyName].filter(Boolean).join(' ').trim();
-  return fullName || member.email?.trim() || member.name;
-}
-
-/** Prefer email (stable across invites/users), then userName, then membership name. */
-function memberFilterId(member: {
-  name: string;
-  email?: string | null;
-  userName?: string | null;
-}): string {
-  const email = member.email?.trim().toLowerCase();
-  if (email) return email;
-  const userName = member.userName?.trim();
-  if (userName) return userName;
-  return member.name;
-}
-
-const ORG_FIELDS = `
+const ORG_CORE_FIELDS = `
   name displayName type createdAt state
   contactInfo { businessName name email }
   onboardingComplete onboardingReason onboardingMessage
-  members { name givenName familyName email userName avatarUrl }
+`;
+
+/** List queries omit nested projects — that field fans out one control-plane
+ *  (plus billing enrichment) call per org and dominates list latency. */
+const ORG_LIST_FIELDS = ORG_CORE_FIELDS;
+
+const ORG_DETAIL_FIELDS = `
+  ${ORG_CORE_FIELDS}
   projects(limit: 100) { items { name } continueToken }
 `;
 
 const ORGANIZATIONS_QUERY = `
   query Organizations($limit: Int, $cursor: String, $search: String) {
     organizations(limit: $limit, cursor: $cursor, search: $search) {
-      items { ${ORG_FIELDS} }
+      items { ${ORG_LIST_FIELDS} }
       continueToken
     }
   }
@@ -147,7 +112,7 @@ const ORGANIZATIONS_QUERY = `
 const ORGANIZATION_QUERY = `
   query Organization($name: String!) {
     organization(name: $name) {
-      ${ORG_FIELDS}
+      ${ORG_DETAIL_FIELDS}
     }
   }
 `;
@@ -175,17 +140,6 @@ export function mapGqlOrganization(org: GqlOrganizationFields): GqlOrganization 
   const onboardingComplete = org.onboardingComplete === true;
 
   const projectItems = org.projects?.items ?? [];
-  const members = org.members ?? [];
-  const memberSummaries = members.map((member) => {
-    const id = memberFilterId(member);
-    const label = memberDisplayName(member);
-    const email = member.email?.trim() ?? '';
-    return {
-      id,
-      label,
-      searchText: [label, email, member.userName, member.name].filter(Boolean).join(' '),
-    };
-  });
 
   return {
     name: org.name,
@@ -205,13 +159,6 @@ export function mapGqlOrganization(org: GqlOrganizationFields): GqlOrganization 
     entityType: businessName ? 'Company' : 'Individual',
     onboardingReason: org.onboardingReason ?? null,
     onboardingMessage: org.onboardingMessage ?? null,
-    memberCount: members.length,
-    memberAvatars: members.map((member) => ({
-      name: memberDisplayName(member),
-      image: member.avatarUrl ?? '',
-    })),
-    memberIds: memberSummaries.map((member) => member.id),
-    memberSummaries,
     projectCount: projectItems.length,
     hasMoreProjects: Boolean(org.projects?.continueToken),
   };

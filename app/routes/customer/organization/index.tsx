@@ -4,7 +4,6 @@ import { DateTime } from '@/components/date';
 import { DisplayId } from '@/components/display';
 import { orgNameFromNamespace } from '@/features/billing/utils';
 import {
-  arrayIncludesAnyFilterFn,
   DATE_RANGE_OPTIONS,
   ListGrowthChart,
   ListPage,
@@ -16,9 +15,8 @@ import {
   useAllOrganizationsQuery,
   useBillingAccountListQuery,
 } from '@/resources/request/client';
-import { billingAccountRoutes, orgRoutes } from '@/utils/config/routes.config';
+import { billingAccountRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { AvatarStack } from '@datum-cloud/datum-ui/avatar-stack';
 import { t } from '@lingui/core/macro';
 import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -93,36 +91,6 @@ export default function Page() {
     [orgs, contactsByOrg]
   );
 
-  // Unique members across loaded orgs, sorted by how many orgs they appear in.
-  const memberOptions = useMemo(() => {
-    const counts = new Map<string, number>();
-    const meta = new Map<string, { label: string; searchText: string }>();
-    for (const org of orgs) {
-      const seenInOrg = new Set<string>();
-      for (const member of org.memberSummaries ?? []) {
-        if (seenInOrg.has(member.id)) continue;
-        seenInOrg.add(member.id);
-        counts.set(member.id, (counts.get(member.id) ?? 0) + 1);
-        if (!meta.has(member.id)) {
-          meta.set(member.id, { label: member.label, searchText: member.searchText });
-        }
-      }
-    }
-    return Array.from(counts.entries())
-      .sort(
-        (a, b) =>
-          b[1] - a[1] || (meta.get(a[0])?.label ?? '').localeCompare(meta.get(b[0])?.label ?? '')
-      )
-      .map(([value]) => {
-        const info = meta.get(value);
-        return {
-          value,
-          label: info?.label ?? value,
-          searchText: info?.searchText ?? value,
-        };
-      });
-  }, [orgs]);
-
   const columns = [
     columnHelper.accessor('name', {
       id: 'id',
@@ -172,39 +140,6 @@ export default function Page() {
         );
       },
     }),
-    columnHelper.accessor('projectCount', {
-      id: 'projectCount',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`Projects`} />,
-      cell: ({ row }) => {
-        const count = row.original.projectCount;
-        const label = row.original.hasMoreProjects ? `${count}+` : String(count);
-        return (
-          <Link to={orgRoutes.project(row.original.name)} className="tabular-nums">
-            {label}
-          </Link>
-        );
-      },
-    }),
-    columnHelper.accessor('memberCount', {
-      id: 'memberCount',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`Members`} />,
-      cell: ({ row }) => {
-        const avatars = row.original.memberAvatars;
-        if (avatars.length === 0) {
-          return <span className="text-muted-foreground">——</span>;
-        }
-        return (
-          <Link to={orgRoutes.member(row.original.name)} className="inline-flex">
-            <AvatarStack
-              avatars={avatars}
-              maxAvatarsAmount={4}
-              spacing="md"
-              avatarClassName="size-6 text-[10px] rounded-xl"
-            />
-          </Link>
-        );
-      },
-    }),
     columnHelper.accessor('onboardingStatus', {
       id: 'onboardingStatus',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
@@ -242,7 +177,6 @@ export default function Page() {
         emptyMessage={t`No organizations found.`}
         hasMore={tableQuery.data?.hasMore ?? false}
         hasMoreMessage={t`Limited to 10,000 organizations. Refine your search to surface others.`}
-        filterFns={{ memberIds: arrayIncludesAnyFilterFn }}
         toolbar={
           <ListGrowthChart
             items={activeOrgs}
@@ -269,15 +203,6 @@ export default function Page() {
             ],
           },
           {
-            type: 'searchable',
-            column: 'memberIds',
-            label: t`Members`,
-            options: memberOptions,
-            searchPlaceholder: t`Search members…`,
-            emptyHint: t`Type to filter by member name or email.`,
-            pageSize: 8,
-          },
-          {
             column: 'createdAt',
             label: t`Created`,
             type: 'dateRange',
@@ -294,12 +219,6 @@ export default function Page() {
             (row.contactInfo?.businessName?.toLowerCase().includes(q) ?? false) ||
             (row.contactInfo?.email?.toLowerCase().includes(q) ?? false) ||
             (row.contactInfo?.name?.toLowerCase().includes(q) ?? false) ||
-            (row.memberSummaries ?? []).some(
-              (member) =>
-                member.label.toLowerCase().includes(q) ||
-                member.searchText.toLowerCase().includes(q) ||
-                member.id.toLowerCase().includes(q)
-            ) ||
             row.billingContacts.some(
               (contact) =>
                 contact.email.toLowerCase().includes(q) || contact.name.toLowerCase().includes(q)
