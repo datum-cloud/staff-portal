@@ -32,7 +32,13 @@ export const createClient = (config: Config = {}): Client => {
     return getConfig();
   };
 
-  const beforeRequest = async (options: RequestOptions) => {
+  const beforeRequest = async <
+    TData = unknown,
+    ThrowOnError extends boolean = boolean,
+    Url extends string = string,
+  >(
+    options: RequestOptions<TData, ThrowOnError, Url>
+  ) => {
     const opts = {
       ..._config,
       ...options,
@@ -41,10 +47,7 @@ export const createClient = (config: Config = {}): Client => {
     };
 
     if (opts.security) {
-      await setAuthParams({
-        ...opts,
-        security: opts.security,
-      });
+      await setAuthParams(opts);
     }
 
     if (opts.requestValidator) {
@@ -62,7 +65,6 @@ export const createClient = (config: Config = {}): Client => {
 
   // @ts-expect-error
   const request: Client['request'] = async (options) => {
-    // @ts-expect-error
     const { opts, url } = await beforeRequest(options);
     try {
       // assign Axios here for consistency with fetch
@@ -116,14 +118,18 @@ export const createClient = (config: Config = {}): Client => {
       body: opts.body as BodyInit | null | undefined,
       headers: opts.headers as Record<string, string>,
       method,
+      serializedBody: getValidRequestBody(opts) as BodyInit | null | undefined,
       // @ts-expect-error
       signal: opts.signal,
       url,
     });
   };
 
+  const _buildUrl: Client['buildUrl'] = (options) =>
+    buildUrl({ axios: instance, ..._config, ...options });
+
   return {
-    buildUrl,
+    buildUrl: _buildUrl,
     connect: makeMethodFn('CONNECT'),
     delete: makeMethodFn('DELETE'),
     get: makeMethodFn('GET'),
