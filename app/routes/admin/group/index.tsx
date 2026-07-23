@@ -1,10 +1,9 @@
 import type { Route } from './+types/index';
 import { DateTime } from '@/components/date';
-import { DisplayName } from '@/components/display';
+import { DisplayId, DisplayName } from '@/components/display';
 import { ListPage, ListTable, ListColumnHeader } from '@/features/milo';
 import { useGroupListQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
-import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { ComMiloapisIamV1Alpha1Group } from '@openapi/iam.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -19,16 +18,23 @@ export default function Page() {
   const tableQuery = useGroupListQuery();
 
   const columns = [
-    columnHelper.accessor('metadata.name', {
-      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
-      cell: ({ row }) => {
-        const groupName = row.original.metadata?.name ?? '';
-        const displayName =
-          row.original.metadata?.annotations?.['kubernetes.io/display-name'] || groupName;
-
-        return <DisplayName displayName={displayName} name={groupName} to={`./${groupName}`} />;
-      },
+    columnHelper.accessor((row) => row.metadata?.name ?? '', {
+      id: 'id',
+      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
+      cell: ({ getValue }) => <DisplayId value={getValue()} />,
     }),
+    columnHelper.accessor(
+      (row) =>
+        row.metadata?.annotations?.['kubernetes.io/display-name'] || row.metadata?.name || '',
+      {
+        id: 'name',
+        header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
+        cell: ({ getValue, row }) => {
+          const groupName = row.original.metadata?.name ?? '';
+          return <DisplayName displayName={getValue()} to={`./${groupName}`} />;
+        },
+      }
+    ),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'metadata.creationTimestamp',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Created`} />,

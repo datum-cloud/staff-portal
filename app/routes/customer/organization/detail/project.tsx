@@ -1,7 +1,7 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../shared';
 import type { Route } from './+types/index';
 import { DateTime } from '@/components/date';
-import { DisplayName } from '@/components/display';
+import { DisplayId } from '@/components/display';
 import { ListColumnHeader, ListTable } from '@/features/milo';
 import { type GqlProject, useOrgProjectListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
@@ -9,6 +9,7 @@ import { metaObject } from '@/utils/helpers';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { createColumnHelper } from '@tanstack/react-table';
+import { Link } from 'react-router';
 
 export const handle = {
   breadcrumb: () => <Trans>Projects</Trans>,
@@ -31,12 +32,15 @@ export default function Page() {
     columnHelper.accessor('name', {
       header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => (
-        <DisplayName
-          displayName={row.original.displayName || row.original.name}
-          name={row.original.name}
-          to={projectRoutes.detail(row.original.name)}
-        />
+        <Link to={projectRoutes.detail(row.original.name)}>
+          {row.original.displayName || row.original.name}
+        </Link>
       ),
+    }),
+    columnHelper.accessor('name', {
+      id: 'id',
+      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
+      cell: ({ getValue }) => <DisplayId value={getValue() ?? ''} />,
     }),
     columnHelper.accessor('createdAt', {
       id: 'createdAt',

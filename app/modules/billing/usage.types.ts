@@ -35,9 +35,12 @@ export interface MeterSeries {
   groupId?: string;
   /** Human-readable group title, e.g. `Compute`. */
   groupTitle?: string;
-  /** Quota ceiling for the period, when a matching AllowanceBucket exists. */
+  /**
+   * Optional usage ceiling for the period. Unused today — billing has no
+   * usage caps; resource quotas live on AllowanceBucket / Quotas UI.
+   */
   limit?: number;
-  /** Allocated/consumed amount from the matching AllowanceBucket. */
+  /** Optional pre-aggregated used amount; otherwise sum of `values`. */
   used?: number;
   /** Per-dimension grouped series, fetched when the meter declares dimensions. */
   breakdowns?: MeterDimensionBreakdown[];

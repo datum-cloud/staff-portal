@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: app/routes/customer/project/detail/index.tsx:68
+#: app/features/project/components/project-billing-card.tsx:69
 msgid "(cross-org)"
 msgstr "(cross-org)"
 
@@ -118,6 +118,10 @@ msgstr "Access denied — IAM role pending."
 msgid "Access revoked"
 msgstr "Access revoked"
 
+#: app/features/project/components/project-billing-card.tsx:49
+msgid "Account"
+msgstr "Account"
+
 #: app/routes/customer/fraud/providers/create.tsx:114
 #: app/routes/customer/fraud/providers/detail.tsx:154
 msgid "Account ID Key"
@@ -161,7 +165,7 @@ msgstr "Active billing account with a payment method"
 msgid "Active Configuration"
 msgstr "Active Configuration"
 
-#: app/routes/customer/organization/index.tsx:168
+#: app/routes/customer/organization/index.tsx:184
 msgid "Active organizations"
 msgstr "Active organizations"
 
@@ -236,7 +240,7 @@ msgid "Address"
 msgstr "Address"
 
 #: app/routes/admin/layout.tsx:7
-#: app/routes/customer/organization/detail/member.tsx:168
+#: app/routes/customer/organization/detail/member.tsx:173
 msgid "Admin"
 msgstr "Admin"
 
@@ -247,6 +251,7 @@ msgstr "Age"
 #: app/components/app-sidebar/index.tsx:129
 #: app/features/activity/components/activity-list.tsx:389
 #: app/features/activity/components/activity-list.tsx:488
+#: app/features/project/components/project-resources-card.tsx:62
 #: app/routes/customer/organization/detail/edge.tsx:9
 #: app/routes/customer/organization/detail/layout.tsx:79
 #: app/routes/customer/project/detail/edge/layout.tsx:5
@@ -339,7 +344,7 @@ msgid "Are you sure you want to delete {0} contact groups? This action cannot be
 msgstr "Are you sure you want to delete {0} contact groups? This action cannot be undone."
 
 #. placeholder {0}: selectedContact?.metadata?.name ?? ''
-#: app/features/contact/components/contact-list.tsx:117
+#: app/features/contact/components/contact-list.tsx:124
 msgid "Are you sure you want to delete contact \"{0}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete contact \"{0}\"? This action cannot be undone."
 
@@ -366,11 +371,9 @@ msgstr "Are you sure you want to delete member \"{deleteMemberDisplayName}\"? Th
 msgid "Are you sure you want to delete organization \"{displayNameForDelete} ({orgName})\"? This action cannot be undone."
 msgstr "Are you sure you want to delete organization \"{displayNameForDelete} ({orgName})\"? This action cannot be undone."
 
-#. placeholder {0}: project?.metadata?.annotations?.['kubernetes.io/description']
-#. placeholder {1}: project?.metadata?.name ?? ''
-#: app/routes/customer/project/detail/index.tsx:130
-msgid "Are you sure you want to delete project \"{0} ({1})\"? This action cannot be undone."
-msgstr "Are you sure you want to delete project \"{0} ({1})\"? This action cannot be undone."
+#: app/routes/customer/project/detail/index.tsx:53
+msgid "Are you sure you want to delete project \"{displayNameForDelete} ({projectName})\"? This action cannot be undone."
+msgstr "Are you sure you want to delete project \"{displayNameForDelete} ({projectName})\"? This action cannot be undone."
 
 #. placeholder {0}: provider.metadata?.name ?? ''
 #. placeholder {0}: selectedProvider?.metadata?.name ?? ''
@@ -407,6 +410,10 @@ msgstr "Are you sure you want to remove this contact from the contact group \"{0
 #: app/features/fraud/detail/maxmind-rows.tsx:135
 msgid "ASN"
 msgstr "ASN"
+
+#: app/features/project/components/project-usage-card.tsx:118
+msgid "Assign a billing account to this project to track usage."
+msgstr "Assign a billing account to this project to track usage."
 
 #: app/routes/dashboard/index.tsx:14
 msgid "Assistant"
@@ -452,13 +459,13 @@ msgstr "Back to evaluations"
 msgid "Basic Authentication"
 msgstr "Basic Authentication"
 
+#: app/features/project/components/project-billing-card.tsx:38
 #: app/routes/customer/project/index.tsx:109
 #: app/routes/customer/project/index.tsx:176
 msgid "Billing"
 msgstr "Billing"
 
 #: app/features/organization/components/org-onboarding-card.tsx:63
-#: app/routes/customer/project/detail/index.tsx:111
 msgid "Billing account"
 msgstr "Billing account"
 
@@ -482,7 +489,12 @@ msgstr "Billing Accounts"
 msgid "Billing address"
 msgstr "Billing address"
 
+#: app/routes/customer/organization/index.tsx:123
+msgid "Billing Contact"
+msgstr "Billing Contact"
+
 #: app/features/organization/components/org-usage-card.tsx:78
+#: app/features/project/components/project-usage-card.tsx:112
 msgid "Billing permissions are still being provisioned for this organization."
 msgstr "Billing permissions are still being provisioned for this organization."
 
@@ -494,7 +506,7 @@ msgstr "by"
 #: app/components/danger-zone-card/index.tsx:43
 #: app/features/contact-group/components/contact-group-form.tsx:97
 #: app/features/contact/components/contact-form.tsx:244
-#: app/features/contact/components/contact-list.tsx:119
+#: app/features/contact/components/contact-list.tsx:126
 #: app/features/feature-flags/components/feature-flag-list.tsx:229
 #: app/features/fraud/policy/policy-form.tsx:314
 #: app/features/quota/components/quota-bucket-list.tsx:171
@@ -587,9 +599,9 @@ msgid "Collapse sidebar"
 msgstr "Collapse sidebar"
 
 #: app/features/billing/components/billing-account-list.tsx:181
+#: app/features/project/components/project-organization-card.tsx:34
 #: app/routes/customer/billing-account/detail/index.tsx:258
-#: app/routes/customer/organization/index.tsx:70
-#: app/routes/customer/organization/index.tsx:177
+#: app/routes/customer/organization/index.tsx:193
 #: app/routes/customer/project/index.tsx:85
 msgid "Company"
 msgstr "Company"
@@ -601,6 +613,10 @@ msgstr "Company / legal name"
 #: app/features/organization/components/org-details-card.tsx:43
 msgid "Company name"
 msgstr "Company name"
+
+#: app/routes/customer/organization/index.tsx:109
+msgid "Company Name"
+msgstr "Company Name"
 
 #: app/features/organization/components/org-onboarding-card.tsx:76
 #: app/routes/customer/fraud/index.tsx:289
@@ -665,7 +681,7 @@ msgstr "Contact created and added to the contact group"
 msgid "Contact created successfully"
 msgstr "Contact created successfully"
 
-#: app/features/contact/components/contact-list.tsx:126
+#: app/features/contact/components/contact-list.tsx:133
 msgid "Contact deleted successfully"
 msgstr "Contact deleted successfully"
 
@@ -771,13 +787,22 @@ msgstr "Could not load pending approvals"
 msgid "Could not load quota data"
 msgstr "Could not load quota data"
 
+#: app/features/project/components/project-quotas-card.tsx:77
+msgid "Could not load quotas"
+msgstr "Could not load quotas"
+
 #: app/features/organization/components/org-usage-card.tsx:66
+#: app/features/project/components/project-usage-card.tsx:100
 msgid "Could not load usage"
 msgstr "Could not load usage"
 
 #: app/features/dashboard/components/cluster-health-widget.tsx:37
 msgid "Could not query cluster health metrics"
 msgstr "Could not query cluster health metrics"
+
+#: app/features/project/components/project-resources-card.tsx:59
+msgid "Counts for resources in this project"
+msgstr "Counts for resources in this project"
 
 #: app/features/activity/components/activity-list.tsx:368
 #: app/features/activity/components/activity-list.tsx:458
@@ -814,25 +839,25 @@ msgstr "Create Policy"
 
 #: app/features/billing/components/billing-account-list.tsx:223
 #: app/features/billing/components/billing-account-list.tsx:269
-#: app/features/contact/components/contact-list.tsx:97
+#: app/features/contact/components/contact-list.tsx:104
 #: app/features/dns/components/dns-zone-list.tsx:133
 #: app/features/domain/components/domain-list.tsx:108
 #: app/features/edge/components/detail/edge-general-card.tsx:49
-#: app/features/edge/components/edge-list.tsx:108
+#: app/features/edge/components/edge-list.tsx:162
 #: app/features/organization/components/org-details-card.tsx:63
+#: app/features/project/components/project-details-card.tsx:44
 #: app/features/quota/components/quota-grant-list.tsx:129
 #: app/features/user/components/user-identity-card.tsx:176
-#: app/routes/admin/group/index.tsx:34
+#: app/routes/admin/group/index.tsx:40
 #: app/routes/admin/group/member.tsx:121
 #: app/routes/customer/billing-account/detail/index.tsx:241
 #: app/routes/customer/fraud/providers/index.tsx:102
-#: app/routes/customer/organization/detail/project.tsx:43
-#: app/routes/customer/organization/index.tsx:95
-#: app/routes/customer/organization/index.tsx:200
+#: app/routes/customer/organization/detail/project.tsx:47
+#: app/routes/customer/organization/index.tsx:161
+#: app/routes/customer/organization/index.tsx:207
 #: app/routes/customer/project/detail/domain/detail.tsx:138
 #: app/routes/customer/project/detail/export-policy/detail.tsx:83
 #: app/routes/customer/project/detail/export-policy/index.tsx:51
-#: app/routes/customer/project/detail/index.tsx:115
 #: app/routes/customer/project/index.tsx:136
 #: app/routes/customer/project/index.tsx:184
 #: app/routes/customer/resource/index.tsx:251
@@ -857,6 +882,7 @@ msgid "Currency"
 msgstr "Currency"
 
 #: app/features/organization/components/org-usage-card.tsx:47
+#: app/features/project/components/project-usage-card.tsx:83
 msgid "Current billing cycle"
 msgstr "Current billing cycle"
 
@@ -864,6 +890,10 @@ msgstr "Current billing cycle"
 #: app/features/organization/components/org-usage-card.tsx:45
 msgid "Current billing cycle ({0})"
 msgstr "Current billing cycle ({0})"
+
+#: app/features/project/components/project-usage-card.tsx:81
+msgid "Current billing cycle for this project"
+msgstr "Current billing cycle for this project"
 
 #: app/features/edge/components/detail/edge-hostnames-card.tsx:195
 msgid "Custom"
@@ -954,7 +984,7 @@ msgstr "Degraded"
 #: app/features/activity/components/activity-list.tsx:371
 #: app/features/activity/components/activity-list.tsx:461
 #: app/features/contact/components/contact-list.tsx:60
-#: app/features/contact/components/contact-list.tsx:118
+#: app/features/contact/components/contact-list.tsx:125
 #: app/features/fraud/policy/policy-detail.tsx:102
 #: app/features/quota/components/quota-grant-list.tsx:140
 #: app/features/quota/components/quota-grant-list.tsx:161
@@ -997,7 +1027,7 @@ msgstr "Delete {itemType}"
 msgid "Delete Collection"
 msgstr "Delete Collection"
 
-#: app/features/contact/components/contact-list.tsx:116
+#: app/features/contact/components/contact-list.tsx:123
 msgid "Delete Contact"
 msgstr "Delete Contact"
 
@@ -1035,8 +1065,8 @@ msgstr "Delete Organization"
 msgid "Delete Policy"
 msgstr "Delete Policy"
 
-#: app/routes/customer/project/detail/index.tsx:127
-#: app/routes/customer/project/detail/index.tsx:129
+#: app/routes/customer/project/detail/index.tsx:50
+#: app/routes/customer/project/detail/index.tsx:52
 msgid "Delete Project"
 msgstr "Delete Project"
 
@@ -1082,7 +1112,6 @@ msgstr "Deprecated"
 
 #: app/features/contact-group/components/contact-group-form.tsx:80
 #: app/features/dns/components/dns-zone-list.tsx:140
-#: app/routes/customer/project/detail/index.tsx:88
 msgid "Description"
 msgstr "Description"
 
@@ -1091,6 +1120,7 @@ msgid "Detail"
 msgstr "Detail"
 
 #: app/features/organization/components/org-details-card.tsx:34
+#: app/features/project/components/project-details-card.tsx:28
 #: app/features/service-catalog/components/details-card.tsx:23
 #: app/routes/marketing/contact-group/detail/layout.tsx:37
 #: app/routes/marketing/contact/detail/layout.tsx:59
@@ -1119,11 +1149,14 @@ msgid "Disable flag"
 msgstr "Disable flag"
 
 #: app/features/organization/components/org-details-card.tsx:47
+#: app/features/project/components/project-details-card.tsx:32
+#: app/features/project/components/project-organization-card.tsx:44
 msgid "Display name"
 msgstr "Display name"
 
 #: app/features/contact-group/components/contact-group-form.tsx:63
 #: app/features/edge/components/detail/edge-config-card.tsx:12
+#: app/features/edge/components/edge-list.tsx:103
 #: app/features/service-catalog/components/details-card.tsx:37
 msgid "Display Name"
 msgstr "Display Name"
@@ -1132,6 +1165,7 @@ msgstr "Display Name"
 msgid "Display name is required"
 msgstr "Display name is required"
 
+#: app/features/project/components/project-resources-card.tsx:68
 #: app/routes/customer/organization/detail/dns.tsx:9
 #: app/routes/customer/organization/detail/layout.tsx:80
 #: app/routes/customer/project/detail/dns/layout.tsx:5
@@ -1209,6 +1243,7 @@ msgstr "Domain verification is in progress. This may take a few minutes."
 
 #: app/components/app-search/search-results.tsx:218
 #: app/components/app-sidebar/index.tsx:141
+#: app/features/project/components/project-resources-card.tsx:74
 #: app/routes/customer/organization/detail/domain.tsx:9
 #: app/routes/customer/organization/detail/layout.tsx:81
 #: app/routes/customer/project/detail/domain/layout.tsx:5
@@ -1247,10 +1282,12 @@ msgid "Edit Quota"
 msgstr "Edit Quota"
 
 #: app/features/contact/components/contact-form.tsx:131
-#: app/features/contact/components/contact-list.tsx:86
+#: app/features/contact/components/contact-list.tsx:93
 #: app/features/dashboard/components/pending-approvals-widget.tsx:137
 #: app/features/organization/components/org-contact-card.tsx:69
+#: app/features/organization/components/org-members-preview-card.tsx:57
 #: app/routes/customer/fraud/index.tsx:122
+#: app/routes/customer/organization/detail/member.tsx:119
 #: app/routes/customer/user/detail/index.tsx:254
 #: app/routes/customer/user/index.tsx:135
 #: app/routes/customer/user/index.tsx:253
@@ -1314,7 +1351,7 @@ msgstr "Enablement"
 msgid "End Time"
 msgstr "End Time"
 
-#: app/features/edge/components/edge-list.tsx:86
+#: app/features/edge/components/edge-list.tsx:139
 #: app/routes/customer/fraud/providers/create.tsx:100
 #: app/routes/customer/fraud/providers/detail.tsx:140
 #: app/routes/customer/fraud/providers/index.tsx:76
@@ -1616,7 +1653,7 @@ msgid "Full response from the provider"
 msgstr "Full response from the provider"
 
 #: app/routes/customer/organization/detail/layout.tsx:127
-#: app/routes/customer/organization/index.tsx:139
+#: app/routes/customer/organization/index.tsx:151
 msgid "Fully onboarded"
 msgstr "Fully onboarded"
 
@@ -1660,7 +1697,7 @@ msgid "Group"
 msgstr "Group"
 
 #: app/components/app-sidebar/index.tsx:163
-#: app/routes/admin/group/index.tsx:13
+#: app/routes/admin/group/index.tsx:12
 #: app/routes/admin/group/layout.tsx:5
 msgid "Groups"
 msgstr "Groups"
@@ -1673,6 +1710,10 @@ msgstr "Hide filters"
 #: app/features/email/components/email-list.tsx:123
 msgid "High"
 msgstr "High"
+
+#: app/features/project/components/project-quotas-card.tsx:65
+msgid "Highest utilization in this project"
+msgstr "Highest utilization in this project"
 
 #: app/features/fraud/policy/policy-detail.tsx:136
 msgid "History Retention"
@@ -1695,6 +1736,7 @@ msgid "Hostname Verified"
 msgstr "Hostname Verified"
 
 #: app/features/edge/components/detail/edge-hostnames-card.tsx:158
+#: app/features/edge/components/edge-list.tsx:129
 msgid "Hostnames"
 msgstr "Hostnames"
 
@@ -1708,12 +1750,19 @@ msgstr "HTML"
 
 #: app/features/billing/components/billing-account-list.tsx:176
 #: app/features/billing/components/org-billing-accounts-card.tsx:54
+#: app/features/contact/components/contact-list.tsx:70
+#: app/features/edge/components/edge-list.tsx:112
+#: app/features/project/components/project-billing-card.tsx:58
+#: app/features/project/components/project-organization-card.tsx:48
+#: app/routes/admin/group/index.tsx:23
 #: app/routes/customer/billing-account/detail/index.tsx:96
 #: app/routes/customer/billing-account/detail/index.tsx:147
-#: app/routes/customer/organization/index.tsx:90
+#: app/routes/customer/organization/detail/project.tsx:42
+#: app/routes/customer/organization/index.tsx:97
 #: app/routes/customer/project/index.tsx:80
 #: app/routes/customer/user/detail/index.tsx:237
 #: app/routes/customer/user/index.tsx:153
+#: app/routes/marketing/contact-group/index.tsx:64
 msgid "ID"
 msgstr "ID"
 
@@ -1725,7 +1774,7 @@ msgstr "In Progress"
 msgid "Inactive"
 msgstr "Inactive"
 
-#: app/routes/customer/organization/index.tsx:178
+#: app/routes/customer/organization/index.tsx:194
 msgid "Individual"
 msgstr "Individual"
 
@@ -1736,7 +1785,7 @@ msgstr "Invalid email address"
 
 #: app/features/activity/components/activity-list.tsx:396
 #: app/features/activity/components/activity-list.tsx:495
-#: app/routes/customer/organization/detail/member.tsx:158
+#: app/routes/customer/organization/detail/member.tsx:163
 msgid "Invitation"
 msgstr "Invitation"
 
@@ -1848,7 +1897,7 @@ msgstr "Light"
 msgid "Limit:"
 msgstr "Limit:"
 
-#: app/routes/customer/organization/index.tsx:162
+#: app/routes/customer/organization/index.tsx:179
 msgid "Limited to 10,000 organizations. Refine your search to surface others."
 msgstr "Limited to 10,000 organizations. Refine your search to surface others."
 
@@ -1892,7 +1941,7 @@ msgstr "Loading evaluation..."
 msgid "Loading mail lists..."
 msgstr "Loading mail lists..."
 
-#: app/features/organization/components/org-members-preview-card.tsx:84
+#: app/features/organization/components/org-members-preview-card.tsx:89
 msgid "Loading members…"
 msgstr "Loading members…"
 
@@ -1985,7 +2034,7 @@ msgstr "Marketing"
 
 #: app/features/activity/components/activity-list.tsx:397
 #: app/features/activity/components/activity-list.tsx:496
-#: app/routes/customer/organization/detail/member.tsx:169
+#: app/routes/customer/organization/detail/member.tsx:174
 msgid "Member"
 msgstr "Member"
 
@@ -1999,11 +2048,9 @@ msgstr "Member added successfully"
 msgid "Member deleted successfully"
 msgstr "Member deleted successfully"
 
-#: app/features/organization/components/org-members-preview-card.tsx:74
+#: app/features/organization/components/org-members-preview-card.tsx:79
 #: app/routes/customer/organization/detail/layout.tsx:84
 #: app/routes/customer/organization/detail/member.tsx:25
-#: app/routes/customer/organization/index.tsx:113
-#: app/routes/customer/organization/index.tsx:192
 #: app/routes/marketing/contact-group/detail/layout.tsx:43
 #: app/routes/marketing/contact-group/detail/member.tsx:33
 msgid "Members"
@@ -2050,32 +2097,29 @@ msgstr "My Profile"
 
 #: app/features/billing/components/billing-account-list.tsx:161
 #: app/features/billing/components/org-billing-accounts-card.tsx:40
-#: app/features/contact/components/contact-list.tsx:69
+#: app/features/contact/components/contact-list.tsx:80
 #: app/features/dashboard/components/pending-approvals-widget.tsx:134
-#: app/features/edge/components/edge-list.tsx:66
 #: app/features/fraud/policy/policy-form.tsx:149
 #: app/features/organization/components/org-members-preview-card.tsx:40
-#: app/routes/admin/group/index.tsx:23
+#: app/routes/admin/group/index.tsx:31
 #: app/routes/admin/group/member.tsx:103
 #: app/routes/customer/billing-account/detail/index.tsx:90
 #: app/routes/customer/fraud/providers/create.tsx:86
 #: app/routes/customer/fraud/providers/index.tsx:55
 #: app/routes/customer/organization/detail/member.tsx:103
-#: app/routes/customer/organization/detail/project.tsx:32
-#: app/routes/customer/organization/index.tsx:83
+#: app/routes/customer/organization/detail/project.tsx:33
 #: app/routes/customer/project/detail/dns/detail.tsx:108
 #: app/routes/customer/project/detail/export-policy/detail.tsx:63
 #: app/routes/customer/project/detail/export-policy/detail.tsx:108
 #: app/routes/customer/project/detail/export-policy/detail.tsx:159
 #: app/routes/customer/project/detail/export-policy/index.tsx:28
-#: app/routes/customer/project/detail/index.tsx:92
 #: app/routes/customer/project/detail/secret.tsx:24
 #: app/routes/customer/project/index.tsx:73
 #: app/routes/customer/resource/index.tsx:211
 #: app/routes/customer/user/detail/organization.tsx:34
 #: app/routes/customer/user/index.tsx:114
 #: app/routes/marketing/contact-group/detail/member.tsx:181
-#: app/routes/marketing/contact-group/index.tsx:63
+#: app/routes/marketing/contact-group/index.tsx:69
 #: app/routes/marketing/contact/detail/group.tsx:83
 msgid "Name"
 msgstr "Name"
@@ -2146,15 +2190,16 @@ msgstr "No active configuration."
 msgid "No active sessions."
 msgstr "No active sessions."
 
-#: app/features/edge/components/edge-list.tsx:124
+#: app/features/edge/components/edge-list.tsx:178
 msgid "No AI Edge found."
 msgstr "No AI Edge found."
 
 #: app/features/organization/components/org-usage-card.tsx:83
+#: app/features/project/components/project-usage-card.tsx:117
 msgid "No billing account"
 msgstr "No billing account"
 
-#: app/routes/customer/project/detail/index.tsx:73
+#: app/features/project/components/project-billing-card.tsx:73
 msgid "No billing account assigned"
 msgstr "No billing account assigned"
 
@@ -2188,7 +2233,7 @@ msgstr "No contact groups found."
 msgid "No contacts found with this email. You can create a new contact below."
 msgstr "No contacts found with this email. You can create a new contact below."
 
-#: app/features/contact/components/contact-list.tsx:139
+#: app/features/contact/components/contact-list.tsx:146
 #: app/routes/marketing/contact-group/detail/member.tsx:77
 msgid "No contacts found."
 msgstr "No contacts found."
@@ -2249,7 +2294,7 @@ msgstr "No grants found to remove for this flag"
 msgid "No grants found."
 msgstr "No grants found."
 
-#: app/routes/admin/group/index.tsx:49
+#: app/routes/admin/group/index.tsx:55
 msgid "No groups found."
 msgstr "No groups found."
 
@@ -2266,12 +2311,12 @@ msgstr "No linked projects"
 msgid "No matches."
 msgstr "No matches."
 
-#: app/features/organization/components/org-members-preview-card.tsx:88
-#: app/features/organization/components/org-members-preview-card.tsx:103
+#: app/features/organization/components/org-members-preview-card.tsx:93
+#: app/features/organization/components/org-members-preview-card.tsx:108
 msgid "No members"
 msgstr "No members"
 
-#: app/routes/customer/organization/detail/member.tsx:152
+#: app/routes/customer/organization/detail/member.tsx:157
 #: app/routes/marketing/contact-group/detail/member.tsx:392
 msgid "No members found."
 msgstr "No members found."
@@ -2284,7 +2329,11 @@ msgstr "No members in this group."
 msgid "No notes yet. Add the first note below."
 msgstr "No notes yet. Add the first note below."
 
-#: app/routes/customer/organization/index.tsx:160
+#: app/features/project/components/project-organization-card.tsx:28
+msgid "No organization linked"
+msgstr "No organization linked"
+
+#: app/routes/customer/organization/index.tsx:177
 #: app/routes/customer/user/detail/organization.tsx:69
 msgid "No organizations found."
 msgstr "No organizations found."
@@ -2306,7 +2355,7 @@ msgstr "No pending approval requests."
 msgid "No pending approvals"
 msgstr "No pending approvals"
 
-#: app/routes/customer/organization/detail/project.tsx:58
+#: app/routes/customer/organization/detail/project.tsx:62
 #: app/routes/customer/project/index.tsx:151
 msgid "No projects found."
 msgstr "No projects found."
@@ -2322,6 +2371,10 @@ msgstr "No quota buckets found."
 #: app/features/service-catalog/components/quota-limits-card.tsx:33
 msgid "No quota limits declared."
 msgstr "No quota limits declared."
+
+#: app/features/project/components/project-quotas-card.tsx:82
+msgid "No quotas"
+msgstr "No quotas"
 
 #: app/features/dashboard/components/quota-utilization-widget.tsx:99
 msgid "No quotas are above 70% utilization"
@@ -2352,6 +2405,7 @@ msgid "No services match the current filters."
 msgstr "No services match the current filters."
 
 #: app/features/organization/components/org-usage-card.tsx:88
+#: app/features/project/components/project-usage-card.tsx:122
 msgid "No usage to display"
 msgstr "No usage to display"
 
@@ -2416,7 +2470,7 @@ msgid "Onboarding"
 msgstr "Onboarding"
 
 #: app/routes/customer/organization/detail/layout.tsx:130
-#: app/routes/customer/organization/index.tsx:142
+#: app/routes/customer/organization/index.tsx:154
 msgid "Onboarding incomplete"
 msgstr "Onboarding incomplete"
 
@@ -2449,8 +2503,8 @@ msgstr "Optional reviewer note..."
 #: app/features/billing/components/billing-account-list.tsx:189
 #: app/features/billing/components/billing-account-list.tsx:243
 #: app/features/dashboard/components/quota-utilization-widget.tsx:147
+#: app/features/project/components/project-organization-card.tsx:25
 #: app/routes/customer/billing-account/detail/index.tsx:202
-#: app/routes/customer/project/detail/index.tsx:96
 #: app/routes/customer/project/index.tsx:100
 #: app/routes/customer/project/index.tsx:166
 msgid "Organization"
@@ -2460,7 +2514,11 @@ msgstr "Organization"
 msgid "Organization deleted successfully"
 msgstr "Organization deleted successfully"
 
-#: app/routes/customer/organization/index.tsx:156
+#: app/routes/customer/organization/index.tsx:102
+msgid "Organization Name"
+msgstr "Organization Name"
+
+#: app/routes/customer/organization/index.tsx:173
 msgid "organizations"
 msgstr "organizations"
 
@@ -2468,7 +2526,7 @@ msgstr "organizations"
 #: app/components/app-search/use-app-search.ts:42
 #: app/components/app-sidebar/index.tsx:119
 #: app/routes/customer/breadcrumb-switchers.tsx:7
-#: app/routes/customer/organization/index.tsx:25
+#: app/routes/customer/organization/index.tsx:28
 #: app/routes/customer/organization/layout.tsx:8
 #: app/routes/customer/project/detail/layout.tsx:40
 #: app/routes/customer/user/detail/layout.tsx:42
@@ -2541,7 +2599,7 @@ msgstr "per"
 msgid "Permanently delete this organization and all associated data"
 msgstr "Permanently delete this organization and all associated data"
 
-#: app/routes/customer/project/detail/index.tsx:128
+#: app/routes/customer/project/detail/index.tsx:51
 msgid "Permanently delete this project and all associated data"
 msgstr "Permanently delete this project and all associated data"
 
@@ -2674,14 +2732,14 @@ msgstr "Programming DNS records for this hostname"
 #: app/features/billing/components/billing-account-list.tsx:254
 #: app/features/dns/components/dns-zone-list.tsx:99
 #: app/features/domain/components/domain-list.tsx:71
-#: app/features/edge/components/edge-list.tsx:76
+#: app/features/edge/components/edge-list.tsx:119
 #: app/routes/customer/billing-account/detail/index.tsx:134
 #: app/routes/customer/resource/index.tsx:233
 #: app/routes/customer/resource/index.tsx:288
 msgid "Project"
 msgstr "Project"
 
-#: app/routes/customer/project/detail/index.tsx:79
+#: app/routes/customer/project/detail/index.tsx:36
 msgid "Project deleted successfully"
 msgstr "Project deleted successfully"
 
@@ -2691,8 +2749,7 @@ msgstr "Project deleted successfully"
 #: app/features/organization/components/org-details-card.tsx:71
 #: app/routes/customer/breadcrumb-switchers.tsx:8
 #: app/routes/customer/organization/detail/layout.tsx:73
-#: app/routes/customer/organization/detail/project.tsx:14
-#: app/routes/customer/organization/index.tsx:100
+#: app/routes/customer/organization/detail/project.tsx:15
 #: app/routes/customer/project/detail/layout.tsx:46
 #: app/routes/customer/project/index.tsx:23
 #: app/routes/customer/project/layout.tsx:8
@@ -2766,6 +2823,10 @@ msgstr "Quick ranges"
 msgid "Quota"
 msgstr "Quota"
 
+#: app/features/project/components/project-quotas-card.tsx:83
+msgid "Quota buckets will appear here once resources are granted."
+msgstr "Quota buckets will appear here once resources are granted."
+
 #: app/features/quota/components/quota-bucket-list.tsx:183
 msgid "Quota updated successfully"
 msgstr "Quota updated successfully"
@@ -2774,6 +2835,7 @@ msgstr "Quota updated successfully"
 msgid "Quota Utilization"
 msgstr "Quota Utilization"
 
+#: app/features/project/components/project-quotas-card.tsx:64
 #: app/routes/customer/organization/detail/layout.tsx:97
 #: app/routes/customer/organization/detail/quota/layout.tsx:5
 #: app/routes/customer/project/detail/layout.tsx:152
@@ -2895,6 +2957,7 @@ msgid "Resource"
 msgstr "Resource"
 
 #: app/features/organization/components/org-details-card.tsx:51
+#: app/features/project/components/project-details-card.tsx:36
 #: app/routes/customer/billing-account/detail/index.tsx:213
 msgid "Resource name"
 msgstr "Resource name"
@@ -2918,6 +2981,7 @@ msgid "Resource:"
 msgstr "Resource:"
 
 #: app/components/app-search/search-results.tsx:214
+#: app/features/project/components/project-resources-card.tsx:58
 #: app/routes/customer/organization/detail/layout.tsx:75
 #: app/routes/customer/resource/index.tsx:21
 #: app/routes/customer/resource/layout.tsx:5
@@ -2962,9 +3026,9 @@ msgstr "Revoke access"
 
 #: app/features/activity/components/activity-list.tsx:394
 #: app/features/activity/components/activity-list.tsx:493
-#: app/features/organization/components/org-members-preview-card.tsx:66
-#: app/routes/customer/organization/detail/member.tsx:123
-#: app/routes/customer/organization/detail/member.tsx:166
+#: app/features/organization/components/org-members-preview-card.tsx:71
+#: app/routes/customer/organization/detail/member.tsx:128
+#: app/routes/customer/organization/detail/member.tsx:171
 msgid "Role"
 msgstr "Role"
 
@@ -3022,7 +3086,7 @@ msgstr "Search"
 msgid "Search activity..."
 msgstr "Search activity..."
 
-#: app/features/edge/components/edge-list.tsx:123
+#: app/features/edge/components/edge-list.tsx:177
 msgid "Search AI Edge..."
 msgstr "Search AI Edge..."
 
@@ -3060,7 +3124,7 @@ msgstr "Search by project, ID, or note..."
 msgid "Search contact groups..."
 msgstr "Search contact groups..."
 
-#: app/features/contact/components/contact-list.tsx:138
+#: app/features/contact/components/contact-list.tsx:145
 msgid "Search contacts..."
 msgstr "Search contacts..."
 
@@ -3088,7 +3152,7 @@ msgstr "Search for an existing contact by email..."
 msgid "Search grants..."
 msgstr "Search grants..."
 
-#: app/routes/admin/group/index.tsx:48
+#: app/routes/admin/group/index.tsx:54
 msgid "Search groups..."
 msgstr "Search groups..."
 
@@ -3097,16 +3161,12 @@ msgid "Search is temporarily unavailable. Please try again."
 msgstr "Search is temporarily unavailable. Please try again."
 
 #: app/routes/admin/group/member.tsx:206
-#: app/routes/customer/organization/detail/member.tsx:151
+#: app/routes/customer/organization/detail/member.tsx:156
 #: app/routes/marketing/contact-group/detail/member.tsx:391
 msgid "Search members..."
 msgstr "Search members..."
 
-#: app/routes/customer/organization/index.tsx:194
-msgid "Search members…"
-msgstr "Search members…"
-
-#: app/routes/customer/organization/index.tsx:159
+#: app/routes/customer/organization/index.tsx:176
 #: app/routes/customer/user/detail/organization.tsx:68
 msgid "Search organizations..."
 msgstr "Search organizations..."
@@ -3116,7 +3176,7 @@ msgstr "Search organizations..."
 msgid "Search organizations…"
 msgstr "Search organizations…"
 
-#: app/routes/customer/organization/detail/project.tsx:57
+#: app/routes/customer/organization/detail/project.tsx:61
 #: app/routes/customer/project/index.tsx:150
 msgid "Search projects..."
 msgstr "Search projects..."
@@ -3290,7 +3350,12 @@ msgstr "Skipped"
 msgid "Solving ACME challenge"
 msgstr "Solving ACME challenge"
 
+#: app/features/project/components/project-quotas-card.tsx:78
+msgid "Something went wrong while loading quota data."
+msgstr "Something went wrong while loading quota data."
+
 #: app/features/organization/components/org-usage-card.tsx:67
+#: app/features/project/components/project-usage-card.tsx:101
 msgid "Something went wrong while loading usage data."
 msgstr "Something went wrong while loading usage data."
 
@@ -3325,23 +3390,25 @@ msgstr "Start Time"
 
 #: app/features/billing/components/billing-account-list.tsx:203
 #: app/features/billing/components/org-billing-accounts-card.tsx:59
-#: app/features/contact/components/contact-list.tsx:90
+#: app/features/contact/components/contact-list.tsx:97
 #: app/features/domain/components/domain-list.tsx:96
 #: app/features/edge/components/detail/edge-general-card.tsx:23
-#: app/features/edge/components/edge-list.tsx:101
+#: app/features/edge/components/edge-list.tsx:154
 #: app/features/email/components/email-detail.tsx:56
 #: app/features/email/components/email-list.tsx:74
 #: app/features/email/components/email-list.tsx:129
 #: app/features/fraud/policy/policy-detail.tsx:146
-#: app/features/organization/components/org-members-preview-card.tsx:58
+#: app/features/organization/components/org-members-preview-card.tsx:63
+#: app/features/project/components/project-billing-card.tsx:62
+#: app/features/project/components/project-details-card.tsx:40
 #: app/features/quota/components/quota-grant-list.tsx:109
 #: app/features/service-catalog/components/conditions-card.tsx:23
 #: app/routes/customer/billing-account/detail/index.tsx:117
 #: app/routes/customer/billing-account/detail/index.tsx:163
 #: app/routes/customer/billing-account/detail/index.tsx:217
 #: app/routes/customer/fraud/providers/index.tsx:85
-#: app/routes/customer/organization/index.tsx:133
-#: app/routes/customer/organization/index.tsx:183
+#: app/routes/customer/organization/index.tsx:145
+#: app/routes/customer/organization/index.tsx:199
 #: app/routes/customer/project/detail/domain/detail.tsx:128
 #: app/routes/customer/project/detail/export-policy/detail.tsx:75
 #: app/routes/customer/project/detail/export-policy/detail.tsx:168
@@ -3415,7 +3482,7 @@ msgstr "The <0>services.miloapis.com-approver</0> role has not yet been provisio
 msgid "The list is limited to 2,000 results at a time. Refine your search to surface other items."
 msgstr "The list is limited to 2,000 results at a time. Refine your search to surface other items."
 
-#: app/features/edge/components/edge-list.tsx:122
+#: app/features/edge/components/edge-list.tsx:176
 msgid "The list of AI Edge resources is limited to 2,000 results at a time. Refine your search to surface other resources."
 msgstr "The list of AI Edge resources is limited to 2,000 results at a time. Refine your search to surface other resources."
 
@@ -3526,7 +3593,7 @@ msgstr "TTL"
 #: app/features/organization/components/org-details-card.tsx:59
 #: app/features/service-catalog/components/conditions-card.tsx:19
 #: app/routes/customer/fraud/providers/index.tsx:65
-#: app/routes/customer/organization/index.tsx:175
+#: app/routes/customer/organization/index.tsx:191
 #: app/routes/customer/project/detail/dns/detail.tsx:93
 #: app/routes/customer/project/detail/dns/detail.tsx:157
 #: app/routes/customer/project/detail/export-policy/detail.tsx:162
@@ -3548,10 +3615,6 @@ msgstr "Type at least 2 characters to search all projects."
 #: app/components/app-search/search-results.tsx:118
 msgid "Type at least 3 characters to search."
 msgstr "Type at least 3 characters to search."
-
-#: app/routes/customer/organization/index.tsx:195
-msgid "Type to filter by member name or email."
-msgstr "Type to filter by member name or email."
 
 #: app/routes/customer/resource/index.tsx:291
 msgid "Type to filter by project name."
@@ -3598,6 +3661,7 @@ msgstr "Updating email addresses for GitHub identities"
 
 #: app/features/dashboard/components/quota-utilization-widget.tsx:162
 #: app/features/organization/components/org-usage-card.tsx:53
+#: app/features/project/components/project-usage-card.tsx:89
 #: app/features/quota/components/quota-bucket-list.tsx:110
 #: app/routes/customer/organization/detail/layout.tsx:85
 #: app/routes/customer/organization/detail/layout.tsx:101
@@ -3610,16 +3674,23 @@ msgstr "Usage"
 
 #: app/features/organization/components/org-usage-card.tsx:71
 #: app/features/organization/components/org-usage-card.tsx:76
+#: app/features/project/components/project-usage-card.tsx:105
+#: app/features/project/components/project-usage-card.tsx:110
 msgid "Usage data not available"
 msgstr "Usage data not available"
 
 #: app/features/organization/components/org-usage-card.tsx:72
+#: app/features/project/components/project-usage-card.tsx:106
 msgid "Usage metering is not configured for this environment."
 msgstr "Usage metering is not configured for this environment."
 
 #: app/features/organization/components/org-usage-card.tsx:90
 msgid "Usage will appear here once this organization starts consuming metered resources."
 msgstr "Usage will appear here once this organization starts consuming metered resources."
+
+#: app/features/project/components/project-usage-card.tsx:124
+msgid "Usage will appear here once this project starts consuming metered resources."
+msgstr "Usage will appear here once this project starts consuming metered resources."
 
 #: app/features/activity/components/activity-list.tsx:117
 #: app/features/activity/components/activity-list.tsx:392
@@ -3724,8 +3795,10 @@ msgid "View activity logs"
 msgstr "View activity logs"
 
 #: app/features/billing/components/org-billing-accounts-card.tsx:77
-#: app/features/organization/components/org-members-preview-card.tsx:79
+#: app/features/organization/components/org-members-preview-card.tsx:84
 #: app/features/organization/components/org-usage-card.tsx:59
+#: app/features/project/components/project-quotas-card.tsx:70
+#: app/features/project/components/project-usage-card.tsx:93
 msgid "View all"
 msgstr "View all"
 

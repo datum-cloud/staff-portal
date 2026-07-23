@@ -2,7 +2,7 @@ import type { Route } from './+types/index';
 import { BadgeCondition, BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
-import { DisplayName } from '@/components/display';
+import { DisplayId, DisplayName } from '@/components/display';
 import { ListPage, ListTable, ListColumnHeader } from '@/features/milo';
 import {
   contactGroupDeleteMutation,
@@ -59,17 +59,17 @@ export default function Page() {
   ];
 
   const columns = [
-    columnHelper.accessor('metadata.name', {
+    columnHelper.accessor((row) => row.metadata?.name ?? '', {
+      id: 'id',
+      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
+      cell: ({ getValue }) => <DisplayId value={getValue()} />,
+    }),
+    columnHelper.accessor((row) => row.spec?.displayName ?? row.metadata?.name ?? '', {
+      id: 'name',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
-      cell: ({ row }) => {
+      cell: ({ getValue, row }) => {
         const contactGroupName = row.original.metadata?.name ?? '';
-        return (
-          <DisplayName
-            displayName={row.original.spec?.displayName ?? ''}
-            name={contactGroupName}
-            to={`./${contactGroupName}`}
-          />
-        );
+        return <DisplayName displayName={getValue()} to={`./${contactGroupName}`} />;
       },
     }),
     columnHelper.accessor('spec.visibility', {
