@@ -6,7 +6,6 @@ import { ButtonCopy } from '@/components/button';
 import { DangerZoneCard } from '@/components/danger-zone-card';
 import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
-import { DialogForm } from '@/components/dialog';
 import { buildMaxmindRowGroups, extractMaxmindInsights } from '@/features/fraud';
 import { SectionCard } from '@/features/milo';
 import {
@@ -26,7 +25,6 @@ import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes, userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
-import { Form } from '@datum-cloud/datum-ui/form';
 import {
   Select,
   SelectContent,
@@ -34,6 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@datum-cloud/datum-ui/select';
+import { Textarea } from '@datum-cloud/datum-ui/textarea';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -41,7 +40,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Globe, Loader2, Mail, MapPin, Shield, ShieldAlert, UserIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useRevalidator } from 'react-router';
-import { z } from 'zod';
 
 function getScoreColor(decision?: string) {
   if (decision === 'DEACTIVATE') return 'text-red-600 dark:text-red-400';
@@ -63,10 +61,7 @@ function getSentryIssuesUrl(baseUrl: string | undefined, userId: string): string
 // Moving to these states requires an explanatory reason (written to spec.reason);
 // Approved/Pending apply directly.
 const STATES_REQUIRING_REASON: PlatformAccessState[] = ['Suspended', 'Rejected'];
-
-const reasonSchema = z.object({
-  reason: z.string().min(5, 'Reason must be at least 5 characters'),
-});
+const REASON_MIN_LENGTH = 5;
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const { userName } = getUserDetailMetadata(matches);
@@ -81,8 +76,8 @@ export default function Page() {
   const data = useUserDetailData();
   const userId = data.metadata?.name ?? '';
 
-  const [reasonDialogOpen, setReasonDialogOpen] = useState(false);
   const [pendingState, setPendingState] = useState<PlatformAccessState | null>(null);
+  const [reason, setReason] = useState('');
   const [isUpdatingAccess, setIsUpdatingAccess] = useState(false);
 
   const { data: platformAccess, isLoading: isPlatformAccessLoading } =
@@ -118,47 +113,42 @@ export default function Page() {
     }
   };
 
-  // Picking a state either opens the reason dialog (Suspend/Reject) or applies directly.
-  // The Select stays bound to the server's `currentState`, so cancelling reverts on its own.
+  // Suspend/Reject capture a reason inline rather than in a modal: a Radix dialog
+  // opened from the Select's onValueChange leaves `pointer-events: none` stuck on
+  // <body> after it closes, freezing the dropdown until a refresh. The Select stays
+  // bound to the server's `currentState`, so the pending choice is tracked here and
+  // the dropdown reverts on its own if cancelled.
   const handleStateSelect = (value: string) => {
     const next = value as PlatformAccessState;
     if (next === currentState) return;
 
     if (STATES_REQUIRING_REASON.includes(next)) {
       setPendingState(next);
-      setReasonDialogOpen(true);
+      setReason('');
       return;
     }
 
     void applyState(next);
   };
 
-  const handleReasonSubmit = async (formData: z.infer<typeof reasonSchema>) => {
-    if (!pendingState) return;
+  const confirmPendingState = async () => {
+    if (!pendingState || reason.trim().length < REASON_MIN_LENGTH) return;
     try {
-      await applyState(pendingState, formData.reason);
-    } catch (error) {
-      throw error; // Re-throw to keep the dialog open on failure
+      await applyState(pendingState, reason.trim());
+      setPendingState(null);
+      setReason('');
+    } catch {
+      // Keep the inline form open so the entered reason isn't lost on a failed request.
     }
+  };
+
+  const cancelPendingState = () => {
+    setPendingState(null);
+    setReason('');
   };
 
   return (
     <>
-      <DialogForm
-        open={reasonDialogOpen}
-        onOpenChange={setReasonDialogOpen}
-        title={t`Set access to ${pendingState ?? ''}`}
-        description={t`Please provide a reason for setting "${data.spec?.givenName ?? ''} ${data.spec?.familyName ?? ''}" to ${pendingState ?? ''}.`}
-        submitText={t`Confirm`}
-        cancelText={t`Cancel`}
-        onSubmit={handleReasonSubmit}
-        schema={reasonSchema}
-        defaultValues={{ reason: '' }}>
-        <Form.Field name="reason" label={t`Reason`} required>
-          <Form.Input placeholder={t`Enter a reason...`} />
-        </Form.Field>
-      </DialogForm>
-
       <div className="m-4 flex flex-col gap-1">
         <AppActionBar>
           <>
@@ -368,7 +358,7 @@ export default function Page() {
                   <Select
                     value={currentState}
                     onValueChange={handleStateSelect}
-                    disabled={isUpdatingAccess}>
+                    disabled={isUpdatingAccess || pendingState !== null}>
                     <SelectTrigger className="w-44">
                       <SelectValue placeholder={t`Select state`} />
                     </SelectTrigger>
@@ -383,16 +373,54 @@ export default function Page() {
                 </div>
               </div>
 
-              {platformAccess.spec?.reason && (
-                <div className="bg-muted/40 rounded-md border p-3">
-                  <Text size="sm" weight="medium" className="mb-1 block">
-                    <Trans>Reason</Trans>
+              {/* Inline reason capture when moving to Suspended/Rejected */}
+              {pendingState && (
+                <div className="flex flex-col gap-2 rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-900/20">
+                  <Text size="sm" weight="medium">
+                    <Trans>Reason for setting access to {pendingState}</Trans>
                   </Text>
-                  <Text textColor="muted" size="sm">
-                    {platformAccess.spec.reason}
-                  </Text>
+                  <Textarea
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                    placeholder={t`Enter a reason (at least ${REASON_MIN_LENGTH} characters)...`}
+                    rows={3}
+                    autoFocus
+                    disabled={isUpdatingAccess}
+                  />
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      type="tertiary"
+                      theme="borderless"
+                      size="small"
+                      onClick={cancelPendingState}
+                      disabled={isUpdatingAccess}>
+                      <Trans>Cancel</Trans>
+                    </Button>
+                    <Button
+                      type="primary"
+                      size="small"
+                      loading={isUpdatingAccess}
+                      disabled={reason.trim().length < REASON_MIN_LENGTH}
+                      onClick={confirmPendingState}>
+                      <Trans>Confirm</Trans>
+                    </Button>
+                  </div>
                 </div>
               )}
+
+              {/* Read-only reason — only meaningful while Suspended or Rejected */}
+              {!pendingState &&
+                (currentState === 'Suspended' || currentState === 'Rejected') &&
+                platformAccess.spec?.reason && (
+                  <div className="bg-muted/40 rounded-md border p-3">
+                    <Text size="sm" weight="medium" className="mb-1 block">
+                      <Trans>Reason</Trans>
+                    </Text>
+                    <Text textColor="muted" size="sm">
+                      {platformAccess.spec.reason}
+                    </Text>
+                  </div>
+                )}
             </div>
           ) : (
             <Text textColor="muted" size="sm">
