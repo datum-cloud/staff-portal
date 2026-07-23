@@ -118,6 +118,10 @@ msgstr "Access denied — IAM role pending."
 msgid "Access revoked"
 msgstr "Access revoked"
 
+#: app/routes/customer/user/detail/index.tsx:213
+msgid "Access State"
+msgstr "Access State"
+
 #: app/features/project/components/project-billing-card.tsx:49
 msgid "Account"
 msgstr "Account"
@@ -131,7 +135,7 @@ msgstr "Account ID Key"
 msgid "Account Identities"
 msgstr "Account Identities"
 
-#: app/routes/customer/user/detail/index.tsx:391
+#: app/routes/customer/user/detail/index.tsx:342
 msgid "Account Management"
 msgstr "Account Management"
 
@@ -320,7 +324,6 @@ msgstr "Approvals"
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:38
 #: app/routes/admin/service-catalog/detail/approvals.tsx:50
 #: app/routes/admin/service-catalog/detail/consumers.tsx:53
-#: app/routes/customer/user/detail/index.tsx:193
 #: app/routes/customer/user/index.tsx:74
 msgid "Approve"
 msgstr "Approve"
@@ -398,7 +401,7 @@ msgstr "Are you sure you want to delete this fraud evaluation? This action canno
 
 #. placeholder {0}: data.spec?.givenName ?? ''
 #. placeholder {1}: data.spec?.familyName ?? ''
-#: app/routes/customer/user/detail/index.tsx:483
+#: app/routes/customer/user/detail/index.tsx:408
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 
@@ -524,7 +527,7 @@ msgstr "by"
 #: app/routes/customer/fraud/providers/detail.tsx:189
 #: app/routes/customer/fraud/providers/index.tsx:133
 #: app/routes/customer/organization/detail/member.tsx:85
-#: app/routes/customer/user/detail/index.tsx:143
+#: app/routes/customer/user/detail/index.tsx:153
 #: app/routes/customer/user/index.tsx:215
 #: app/routes/marketing/contact-group/detail/member.tsx:345
 #: app/routes/marketing/contact-group/detail/member.tsx:362
@@ -640,6 +643,10 @@ msgstr "Configuration"
 #: app/features/edge/components/detail/edge-hostnames-card.tsx:79
 msgid "Configuring DNS"
 msgstr "Configuring DNS"
+
+#: app/routes/customer/user/detail/index.tsx:152
+msgid "Confirm"
+msgstr "Confirm"
 
 #: app/features/fraud/detail/maxmind-rows.tsx:149
 msgid "Connection"
@@ -763,6 +770,10 @@ msgstr "Contacts - Create"
 msgid "Content"
 msgstr "Content"
 
+#: app/routes/customer/user/detail/index.tsx:358
+msgid "Controls whether this user can sign in and access the platform. Suspending or rejecting requires a reason."
+msgstr "Controls whether this user can sign in and access the platform. Suspending or rejecting requires a reason."
+
 #: app/features/fraud/detail/maxmind-rows.tsx:192
 msgid "Coordinates"
 msgstr "Coordinates"
@@ -862,7 +873,7 @@ msgstr "Create Policy"
 #: app/routes/customer/project/index.tsx:184
 #: app/routes/customer/resource/index.tsx:251
 #: app/routes/customer/resource/index.tsx:296
-#: app/routes/customer/user/detail/index.tsx:266
+#: app/routes/customer/user/detail/index.tsx:217
 #: app/routes/customer/user/index.tsx:169
 #: app/routes/customer/user/index.tsx:327
 #: app/routes/marketing/contact-group/index.tsx:87
@@ -923,8 +934,6 @@ msgid "Date"
 msgstr "Date"
 
 #: app/routes/customer/fraud/index.tsx:301
-#: app/routes/customer/user/detail/index.tsx:142
-#: app/routes/customer/user/detail/index.tsx:472
 msgid "Deactivate"
 msgstr "Deactivate"
 
@@ -932,32 +941,11 @@ msgstr "Deactivate"
 msgid "Deactivate Threshold"
 msgstr "Deactivate Threshold"
 
-#: app/routes/customer/user/detail/index.tsx:140
-#: app/routes/customer/user/detail/index.tsx:463
-msgid "Deactivate User"
-msgstr "Deactivate User"
-
-#: app/routes/customer/user/detail/index.tsx:436
-msgid "Deactivated At"
-msgstr "Deactivated At"
-
-#: app/routes/customer/user/detail/index.tsx:428
-msgid "Deactivated By"
-msgstr "Deactivated By"
-
-#: app/routes/customer/user/detail/index.tsx:420
-msgid "Deactivation Details"
-msgstr "Deactivation Details"
-
-#: app/routes/customer/user/detail/index.tsx:450
-msgid "Deactivation Reason"
-msgstr "Deactivation Reason"
-
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:152
 #: app/features/fraud/detail/evaluation-sections.tsx:368
 #: app/routes/customer/fraud/index.tsx:160
 #: app/routes/customer/fraud/index.tsx:297
-#: app/routes/customer/user/detail/index.tsx:346
+#: app/routes/customer/user/detail/index.tsx:297
 msgid "Decision"
 msgstr "Decision"
 
@@ -1079,8 +1067,8 @@ msgstr "Delete Provider"
 msgid "Delete Session"
 msgstr "Delete Session"
 
-#: app/routes/customer/user/detail/index.tsx:480
-#: app/routes/customer/user/detail/index.tsx:482
+#: app/routes/customer/user/detail/index.tsx:405
+#: app/routes/customer/user/detail/index.tsx:407
 msgid "Delete User"
 msgstr "Delete User"
 
@@ -1288,7 +1276,7 @@ msgstr "Edit Quota"
 #: app/features/organization/components/org-members-preview-card.tsx:57
 #: app/routes/customer/fraud/index.tsx:122
 #: app/routes/customer/organization/detail/member.tsx:119
-#: app/routes/customer/user/detail/index.tsx:254
+#: app/routes/customer/user/detail/index.tsx:209
 #: app/routes/customer/user/index.tsx:135
 #: app/routes/customer/user/index.tsx:253
 #: app/routes/marketing/contact-group/detail/member.tsx:202
@@ -1306,7 +1294,7 @@ msgstr "Email Activity"
 msgid "Email addresses for GitHub identities should be updated through GitHub"
 msgstr "Email addresses for GitHub identities should be updated through GitHub"
 
-#: app/routes/customer/user/detail/index.tsx:313
+#: app/routes/customer/user/detail/index.tsx:264
 msgid "Email Domain"
 msgstr "Email Domain"
 
@@ -1373,6 +1361,10 @@ msgstr "Enforcement"
 msgid "Enforcement Mode"
 msgstr "Enforcement Mode"
 
+#: app/routes/customer/user/detail/index.tsx:158
+msgid "Enter a reason..."
+msgstr "Enter a reason..."
+
 #: app/routes/customer/user/index.tsx:248
 msgid "Enter first name"
 msgstr "Enter first name"
@@ -1380,10 +1372,6 @@ msgstr "Enter first name"
 #: app/features/domain/components/create-note-form.tsx:52
 msgid "Enter note content..."
 msgstr "Enter note content..."
-
-#: app/routes/customer/user/detail/index.tsx:148
-msgid "Enter reason for deactivation..."
-msgstr "Enter reason for deactivation..."
 
 #: app/features/user/components/user-reject-dialog.tsx:41
 msgid "Enter reason for rejection..."
@@ -1619,7 +1607,7 @@ msgstr "Fraud & Abuse"
 msgid "Fraud Alerts"
 msgstr "Fraud Alerts"
 
-#: app/routes/customer/user/detail/index.tsx:324
+#: app/routes/customer/user/detail/index.tsx:275
 msgid "Fraud Assessment"
 msgstr "Fraud Assessment"
 
@@ -1644,7 +1632,7 @@ msgstr "Fraud Policy"
 msgid "Fraud Providers"
 msgstr "Fraud Providers"
 
-#: app/routes/customer/user/detail/index.tsx:246
+#: app/routes/customer/user/detail/index.tsx:201
 msgid "Full Name"
 msgstr "Full Name"
 
@@ -1760,7 +1748,7 @@ msgstr "HTML"
 #: app/routes/customer/organization/detail/project.tsx:42
 #: app/routes/customer/organization/index.tsx:97
 #: app/routes/customer/project/index.tsx:80
-#: app/routes/customer/user/detail/index.tsx:237
+#: app/routes/customer/user/detail/index.tsx:192
 #: app/routes/customer/user/index.tsx:153
 #: app/routes/marketing/contact-group/index.tsx:64
 msgid "ID"
@@ -1822,7 +1810,7 @@ msgstr "Invoice recipients"
 msgid "IP"
 msgstr "IP"
 
-#: app/routes/customer/user/detail/index.tsx:289
+#: app/routes/customer/user/detail/index.tsx:240
 msgid "IP & Network"
 msgstr "IP & Network"
 
@@ -1855,7 +1843,7 @@ msgstr "Joined"
 msgid "Last 10 new users who joined Datum"
 msgstr "Last 10 new users who joined Datum"
 
-#: app/routes/customer/user/detail/index.tsx:361
+#: app/routes/customer/user/detail/index.tsx:312
 msgid "Last Evaluated"
 msgstr "Last Evaluated"
 
@@ -1880,7 +1868,7 @@ msgstr "Last name is required"
 msgid "Last signed in with {0}"
 msgstr "Last signed in with {0}"
 
-#: app/routes/customer/user/detail/index.tsx:327
+#: app/routes/customer/user/detail/index.tsx:278
 msgid "Latest fraud evaluation for this user"
 msgstr "Latest fraud evaluation for this user"
 
@@ -1961,7 +1949,8 @@ msgstr "Loading status..."
 #: app/routes/auth/callback.tsx:71
 #: app/routes/auth/login.tsx:41
 #: app/routes/auth/logout.tsx:36
-#: app/routes/customer/user/detail/index.tsx:330
+#: app/routes/customer/user/detail/index.tsx:281
+#: app/routes/customer/user/detail/index.tsx:348
 msgid "Loading..."
 msgstr "Loading..."
 
@@ -1970,7 +1959,7 @@ msgid "Local Time"
 msgstr "Local Time"
 
 #: app/features/fraud/detail/maxmind-rows.tsx:178
-#: app/routes/customer/user/detail/index.tsx:301
+#: app/routes/customer/user/detail/index.tsx:252
 msgid "Location"
 msgstr "Location"
 
@@ -2016,9 +2005,9 @@ msgstr "Manage organizations"
 msgid "Manage projects"
 msgstr "Manage projects"
 
-#: app/routes/customer/user/detail/index.tsx:394
-msgid "Manage user access and account status"
-msgstr "Manage user access and account status"
+#: app/routes/customer/user/detail/index.tsx:345
+msgid "Manage this user's platform access state"
+msgstr "Manage this user's platform access state"
 
 #: app/components/app-search/use-app-search.ts:39
 msgid "Manage users"
@@ -2084,7 +2073,6 @@ msgstr "Monitored Resources"
 msgid "More options"
 msgstr "More options"
 
-#: app/routes/customer/user/detail/index.tsx:219
 #: app/routes/customer/user/index.tsx:96
 msgid "Move to Pending"
 msgstr "Move to Pending"
@@ -2270,7 +2258,7 @@ msgstr "No feature flags registered."
 msgid "No fraud alerts"
 msgstr "No fraud alerts"
 
-#: app/routes/customer/user/detail/index.tsx:380
+#: app/routes/customer/user/detail/index.tsx:331
 msgid "No fraud evaluations found for this user."
 msgstr "No fraud evaluations found for this user."
 
@@ -2354,6 +2342,14 @@ msgstr "No pending approval requests."
 #: app/features/dashboard/components/pending-approvals-widget.tsx:63
 msgid "No pending approvals"
 msgstr "No pending approvals"
+
+#: app/routes/customer/user/detail/index.tsx:399
+msgid "No platform access record exists for this user yet."
+msgstr "No platform access record exists for this user yet."
+
+#: app/features/user/hooks/useUserPlatformAccess.ts:38
+msgid "No platform access record found for this user"
+msgstr "No platform access record found for this user"
 
 #: app/routes/customer/organization/detail/project.tsx:62
 #: app/routes/customer/project/index.tsx:151
@@ -2603,7 +2599,7 @@ msgstr "Permanently delete this organization and all associated data"
 msgid "Permanently delete this project and all associated data"
 msgstr "Permanently delete this project and all associated data"
 
-#: app/routes/customer/user/detail/index.tsx:481
+#: app/routes/customer/user/detail/index.tsx:406
 msgid "Permanently delete this user and all associated data"
 msgstr "Permanently delete this user and all associated data"
 
@@ -2633,17 +2629,26 @@ msgstr "Plain Text"
 msgid "Platform"
 msgstr "Platform"
 
-#. placeholder {0}: data.spec?.givenName ?? ''
-#. placeholder {1}: data.spec?.familyName ?? ''
-#: app/routes/customer/user/detail/index.tsx:141
-msgid "Please provide a reason for deactivating \"{0} {1}\"."
-msgstr "Please provide a reason for deactivating \"{0} {1}\"."
+#: app/routes/customer/user/detail/index.tsx:355
+msgid "Platform Access State"
+msgstr "Platform Access State"
+
+#: app/features/user/hooks/useUserPlatformAccess.ts:45
+msgid "Platform access updated to {state}"
+msgstr "Platform access updated to {state}"
 
 #. placeholder {0}: user?.spec?.givenName ?? ''
 #. placeholder {1}: user?.spec?.familyName ?? ''
 #: app/features/user/components/user-reject-dialog.tsx:28
 msgid "Please provide a reason for rejecting \"{0} {1}\"."
 msgstr "Please provide a reason for rejecting \"{0} {1}\"."
+
+#. placeholder {0}: data.spec?.givenName ?? ''
+#. placeholder {1}: data.spec?.familyName ?? ''
+#. placeholder {2}: pendingState ?? ''
+#: app/routes/customer/user/detail/index.tsx:151
+msgid "Please provide a reason for setting \"{0} {1}\" to {2}."
+msgstr "Please provide a reason for setting \"{0} {1}\" to {2}."
 
 #: app/routes/marketing/contact-group/detail/member.tsx:262
 msgid "Please select an existing contact or provide details to create a new one"
@@ -2847,29 +2852,15 @@ msgstr "Quotas"
 msgid "Raw Results — {provider}"
 msgstr "Raw Results — {provider}"
 
-#: app/routes/customer/user/detail/index.tsx:402
-msgid "Re-enable this user's access to the system. They will be able to sign in immediately."
-msgstr "Re-enable this user's access to the system. They will be able to sign in immediately."
-
-#: app/routes/customer/user/detail/index.tsx:413
-msgid "Reactivate"
-msgstr "Reactivate"
-
-#: app/routes/customer/user/detail/index.tsx:400
-msgid "Reactivate User"
-msgstr "Reactivate User"
-
 #: app/features/organization/components/org-onboarding-card.tsx:65
 msgid "Ready"
 msgstr "Ready"
 
 #: app/features/service-catalog/components/conditions-card.tsx:35
+#: app/routes/customer/user/detail/index.tsx:157
+#: app/routes/customer/user/detail/index.tsx:389
 msgid "Reason"
 msgstr "Reason"
-
-#: app/routes/customer/user/detail/index.tsx:147
-msgid "Reason for deactivation"
-msgstr "Reason for deactivation"
 
 #: app/features/user/components/user-reject-dialog.tsx:40
 msgid "Reason for rejection"
@@ -2898,12 +2889,7 @@ msgstr "Registrar"
 msgid "Registration"
 msgstr "Registration"
 
-#: app/routes/customer/user/detail/index.tsx:258
-msgid "Registration Approval"
-msgstr "Registration Approval"
-
 #: app/features/user/components/user-reject-dialog.tsx:29
-#: app/routes/customer/user/detail/index.tsx:200
 #: app/routes/customer/user/index.tsx:89
 msgid "Reject"
 msgstr "Reject"
@@ -3063,7 +3049,7 @@ msgstr "Schedule invitation to be sent at specific time"
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:147
 #: app/features/fraud/detail/evaluation-sections.tsx:353
 #: app/routes/customer/fraud/index.tsx:140
-#: app/routes/customer/user/detail/index.tsx:337
+#: app/routes/customer/user/detail/index.tsx:288
 msgid "Score"
 msgstr "Score"
 
@@ -3271,6 +3257,10 @@ msgstr "Select a user to run a fraud evaluation against the current policy."
 msgid "Select contact group..."
 msgstr "Select contact group..."
 
+#: app/routes/customer/user/detail/index.tsx:373
+msgid "Select state"
+msgstr "Select state"
+
 #: app/features/preferences/components/preferences-form.tsx:61
 msgid "Select timezone..."
 msgstr "Select timezone..."
@@ -3310,6 +3300,11 @@ msgstr "Session deleted successfully"
 #: app/routes/profile/session.tsx:50
 msgid "Session ID"
 msgstr "Session ID"
+
+#. placeholder {0}: pendingState ?? ''
+#: app/routes/customer/user/detail/index.tsx:150
+msgid "Set access to {0}"
+msgstr "Set access to {0}"
 
 #: app/routes/profile/layout.tsx:17
 #: app/routes/profile/setting.tsx:15
@@ -3413,7 +3408,6 @@ msgstr "Start Time"
 #: app/routes/customer/project/detail/export-policy/detail.tsx:75
 #: app/routes/customer/project/detail/export-policy/detail.tsx:168
 #: app/routes/customer/project/detail/export-policy/index.tsx:44
-#: app/routes/customer/user/detail/index.tsx:262
 #: app/routes/customer/user/index.tsx:159
 #: app/routes/customer/user/index.tsx:319
 #: app/routes/marketing/contact-group/detail/member.tsx:207
@@ -3465,10 +3459,6 @@ msgstr "Tax IDs"
 #: app/features/email/components/email-detail.tsx:70
 msgid "Template"
 msgstr "Template"
-
-#: app/routes/customer/user/detail/index.tsx:465
-msgid "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
-msgstr "Temporarily prevent user from signing in. The user can be reactivated at any time and all data will remain intact."
 
 #: app/features/activity/components/activity-list.tsx:134
 msgid "Tenant"
@@ -3698,7 +3688,7 @@ msgstr "Usage will appear here once this project starts consuming metered resour
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:142
 #: app/features/fraud/detail/evaluation-sections.tsx:320
 #: app/routes/customer/fraud/index.tsx:110
-#: app/routes/customer/user/detail/index.tsx:230
+#: app/routes/customer/user/detail/index.tsx:185
 #: app/routes/marketing/contact-group/detail/member.tsx:107
 msgid "User"
 msgstr "User"
@@ -3707,11 +3697,7 @@ msgstr "User"
 msgid "User approved successfully"
 msgstr "User approved successfully"
 
-#: app/routes/customer/user/detail/index.tsx:117
-msgid "User deactivated successfully"
-msgstr "User deactivated successfully"
-
-#: app/routes/customer/user/detail/index.tsx:103
+#: app/routes/customer/user/detail/index.tsx:106
 msgid "User deleted successfully"
 msgstr "User deleted successfully"
 
@@ -3734,10 +3720,6 @@ msgstr "User is not rejected"
 #: app/features/user/hooks/useUserApproval.ts:77
 msgid "User moved to pending successfully"
 msgstr "User moved to pending successfully"
-
-#: app/routes/customer/user/detail/index.tsx:128
-msgid "User reactivated successfully"
-msgstr "User reactivated successfully"
 
 #: app/features/user/hooks/useUserApproval.ts:51
 msgid "User rejected successfully"
@@ -3812,7 +3794,7 @@ msgstr "View All"
 msgid "View contact groups"
 msgstr "View contact groups"
 
-#: app/routes/customer/user/detail/index.tsx:375
+#: app/routes/customer/user/detail/index.tsx:326
 msgid "View Evaluation"
 msgstr "View Evaluation"
 
@@ -3821,7 +3803,7 @@ msgstr "View Evaluation"
 msgid "View in Cloud Portal"
 msgstr "View in Cloud Portal"
 
-#: app/routes/customer/user/detail/index.tsx:173
+#: app/routes/customer/user/detail/index.tsx:174
 msgid "View in Sentry"
 msgstr "View in Sentry"
 

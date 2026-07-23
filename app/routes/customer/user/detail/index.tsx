@@ -1,6 +1,5 @@
 import { getUserDetailMetadata, useUserDetailData } from '../shared';
 import type { Route } from './+types/index';
-import { ActionCard } from '@/components/action-card';
 import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
 import { ButtonCopy } from '@/components/button';
@@ -10,35 +9,36 @@ import { DescriptionList } from '@/components/description-list';
 import { DialogForm } from '@/components/dialog';
 import { buildMaxmindRowGroups, extractMaxmindInsights } from '@/features/fraud';
 import { SectionCard } from '@/features/milo';
-import { UserRejectDialog, useUserApproval } from '@/features/user';
+import {
+  PLATFORM_ACCESS_STATES,
+  PlatformAccessState,
+  useUserPlatformAccess,
+} from '@/features/user';
 import { UserIdentityCard } from '@/features/user/components/user-identity-card';
 import { useEnv } from '@/hooks';
-import { useApp } from '@/providers/app.provider';
 import {
   useFraudEvaluationListQuery,
-  useUserDeactivationQuery,
-  userDeactivateMutation,
+  usePlatformAccessQuery,
   userDeleteMutation,
-  userReactivateMutation,
+  userQueryKeys,
 } from '@/resources/request/client';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes, userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
 import { Form } from '@datum-cloud/datum-ui/form';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@datum-cloud/datum-ui/select';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
-import {
-  Globe,
-  Mail,
-  MapPin,
-  Shield,
-  ShieldAlert,
-  ShieldCheckIcon,
-  ShieldXIcon,
-  UserIcon,
-} from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
+import { Globe, Loader2, Mail, MapPin, Shield, ShieldAlert, UserIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useRevalidator } from 'react-router';
 import { z } from 'zod';
@@ -60,7 +60,11 @@ function getSentryIssuesUrl(baseUrl: string | undefined, userId: string): string
   return `${baseUrl}/organizations/sentry/issues/?${params.toString()}`;
 }
 
-const deactivateSchema = z.object({
+// Moving to these states requires an explanatory reason (written to spec.reason);
+// Approved/Pending apply directly.
+const STATES_REQUIRING_REASON: PlatformAccessState[] = ['Suspended', 'Rejected'];
+
+const reasonSchema = z.object({
   reason: z.string().min(5, 'Reason must be at least 5 characters'),
 });
 
@@ -70,23 +74,22 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 };
 
 export default function Page() {
-  const { user } = useApp();
   const { t } = useLingui();
   const navigate = useNavigate();
   const { revalidate } = useRevalidator();
+  const queryClient = useQueryClient();
   const data = useUserDetailData();
-  const [deactivateDialogOpen, setDeactivateDialogOpen] = useState(false);
-  const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
-  const [isReactivating, setIsReactivating] = useState(false);
-  const [isApproving, setIsApproving] = useState(false);
-  const [isMovingToPending, setIsMovingToPending] = useState(false);
+  const userId = data.metadata?.name ?? '';
 
-  const { data: deactivationData } = useUserDeactivationQuery(
-    data.metadata?.name ?? '',
-    data.status?.state
-  );
+  const [reasonDialogOpen, setReasonDialogOpen] = useState(false);
+  const [pendingState, setPendingState] = useState<PlatformAccessState | null>(null);
+  const [isUpdatingAccess, setIsUpdatingAccess] = useState(false);
 
-  const { approveUser, pendingUser } = useUserApproval();
+  const { data: platformAccess, isLoading: isPlatformAccessLoading } =
+    usePlatformAccessQuery(userId);
+  const currentState = platformAccess?.spec?.state as PlatformAccessState | undefined;
+
+  const { setState } = useUserPlatformAccess();
   const env = useEnv();
 
   const { data: fraudEvalData, isLoading: isFraudLoading } = useFraudEvaluationListQuery(
@@ -103,60 +106,58 @@ export default function Page() {
     toast.success(t`User deleted successfully`);
   };
 
-  const handleDeactivateUser = async (formData: z.infer<typeof deactivateSchema>) => {
+  const applyState = async (state: PlatformAccessState, reason?: string) => {
+    setIsUpdatingAccess(true);
     try {
-      await userDeactivateMutation({
-        reason: formData.reason,
-        deactivatedBy: user?.metadata?.name ?? '',
-        description: '',
-        userRef: {
-          name: data.metadata?.name ?? '',
-        },
+      await setState(data, state, reason, async () => {
+        await queryClient.invalidateQueries({ queryKey: userQueryKeys.platformAccess(userId) });
+        revalidate();
       });
-      await new Promise((resolve) => setTimeout(() => resolve(revalidate()), 1000));
-      toast.success(t`User deactivated successfully`);
-    } catch (error) {
-      throw error; // Re-throw to keep dialog open
+    } finally {
+      setIsUpdatingAccess(false);
     }
   };
 
-  const handleReactivateUser = async () => {
-    setIsReactivating(true);
+  // Picking a state either opens the reason dialog (Suspend/Reject) or applies directly.
+  // The Select stays bound to the server's `currentState`, so cancelling reverts on its own.
+  const handleStateSelect = (value: string) => {
+    const next = value as PlatformAccessState;
+    if (next === currentState) return;
+
+    if (STATES_REQUIRING_REASON.includes(next)) {
+      setPendingState(next);
+      setReasonDialogOpen(true);
+      return;
+    }
+
+    void applyState(next);
+  };
+
+  const handleReasonSubmit = async (formData: z.infer<typeof reasonSchema>) => {
+    if (!pendingState) return;
     try {
-      await userReactivateMutation(deactivationData?.data?.metadata?.name ?? '');
-      await new Promise((resolve) => setTimeout(() => resolve(revalidate()), 1000));
-      toast.success(t`User reactivated successfully`);
-      setIsReactivating(false);
-    } catch {
-      setIsReactivating(false);
+      await applyState(pendingState, formData.reason);
+    } catch (error) {
+      throw error; // Re-throw to keep the dialog open on failure
     }
   };
 
   return (
     <>
       <DialogForm
-        open={deactivateDialogOpen}
-        onOpenChange={setDeactivateDialogOpen}
-        title={t`Deactivate User`}
-        description={t`Please provide a reason for deactivating "${data.spec?.givenName ?? ''} ${data.spec?.familyName ?? ''}".`}
-        submitText={t`Deactivate`}
+        open={reasonDialogOpen}
+        onOpenChange={setReasonDialogOpen}
+        title={t`Set access to ${pendingState ?? ''}`}
+        description={t`Please provide a reason for setting "${data.spec?.givenName ?? ''} ${data.spec?.familyName ?? ''}" to ${pendingState ?? ''}.`}
+        submitText={t`Confirm`}
         cancelText={t`Cancel`}
-        onSubmit={handleDeactivateUser}
-        schema={deactivateSchema}
+        onSubmit={handleReasonSubmit}
+        schema={reasonSchema}
         defaultValues={{ reason: '' }}>
-        <Form.Field name="reason" label={t`Reason for deactivation`} required>
-          <Form.Input placeholder={t`Enter reason for deactivation...`} />
+        <Form.Field name="reason" label={t`Reason`} required>
+          <Form.Input placeholder={t`Enter a reason...`} />
         </Form.Field>
       </DialogForm>
-
-      <UserRejectDialog
-        open={rejectDialogOpen}
-        onOpenChange={setRejectDialogOpen}
-        user={data}
-        onSuccess={async () => {
-          revalidate();
-        }}
-      />
 
       <div className="m-4 flex flex-col gap-1">
         <AppActionBar>
@@ -172,52 +173,6 @@ export default function Page() {
                 iconPosition="right">
                 <Trans>View in Sentry</Trans>
               </LinkButton>
-            )}
-            {data?.status?.registrationApproval === 'Pending' ? (
-              <>
-                <Button
-                  theme="outline"
-                  size="small"
-                  icon={<ACTION_ICONS.check size={16} />}
-                  loading={isApproving}
-                  onClick={async () => {
-                    setIsApproving(true);
-                    try {
-                      await approveUser(data, async () => {
-                        revalidate();
-                      });
-                    } finally {
-                      setIsApproving(false);
-                    }
-                  }}>
-                  <Trans>Approve</Trans>
-                </Button>
-                <Button
-                  theme="outline"
-                  size="small"
-                  icon={<ACTION_ICONS.close size={16} />}
-                  onClick={() => setRejectDialogOpen(true)}>
-                  <Trans>Reject</Trans>
-                </Button>
-              </>
-            ) : (
-              <Button
-                theme="outline"
-                size="small"
-                icon={<ACTION_ICONS.reset size={16} />}
-                loading={isMovingToPending}
-                onClick={async () => {
-                  setIsMovingToPending(true);
-                  try {
-                    await pendingUser(data, async () => {
-                      revalidate();
-                    });
-                  } finally {
-                    setIsMovingToPending(false);
-                  }
-                }}>
-                <Trans>Move to Pending</Trans>
-              </Button>
             )}
           </>
         </AppActionBar>
@@ -255,12 +210,8 @@ export default function Page() {
                   value: <Text>{data?.spec?.email}</Text>,
                 },
                 {
-                  label: <Trans>Registration Approval</Trans>,
-                  value: <BadgeState state={data?.status?.registrationApproval ?? 'Unknown'} />,
-                },
-                {
-                  label: <Trans>Status</Trans>,
-                  value: <BadgeState state={data?.status?.state ?? 'Active'} />,
+                  label: <Trans>Access State</Trans>,
+                  value: <BadgeState state={currentState ?? 'Unknown'} />,
                 },
                 {
                   label: <Trans>Created</Trans>,
@@ -391,88 +342,62 @@ export default function Page() {
               <Trans>Account Management</Trans>
             </span>
           }
-          description={<Trans>Manage user access and account status</Trans>}>
-          {data?.status?.state === 'Inactive' ? (
-            <>
-              <ActionCard
-                variant="success"
-                icon={ShieldCheckIcon}
-                title={<Trans>Reactivate User</Trans>}
-                description={
-                  <Trans>
-                    Re-enable this user&apos;s access to the system. They will be able to sign in
-                    immediately.
-                  </Trans>
-                }
-                action={
-                  <Button
-                    type="success"
-                    size="small"
-                    loading={isReactivating}
-                    onClick={() => handleReactivateUser()}>
-                    <Trans>Reactivate</Trans>
-                  </Button>
-                }
-              />
-
-              <div className="bg-muted/40 mt-3 rounded-md border p-3">
-                <Text size="sm" weight="medium" className="mb-2 block">
-                  <Trans>Deactivation Details</Trans>
-                </Text>
-                <DescriptionList
-                  labelWidth="40%"
-                  items={[
-                    {
-                      label: (
-                        <Text textColor="muted" size="sm">
-                          <Trans>Deactivated By</Trans>
-                        </Text>
-                      ),
-                      value: <Text size="sm">{deactivationData?.data?.spec?.deactivatedBy}</Text>,
-                    },
-                    {
-                      label: (
-                        <Text textColor="muted" size="sm">
-                          <Trans>Deactivated At</Trans>
-                        </Text>
-                      ),
-                      value: (
-                        <Text size="sm">
-                          <DateTime
-                            date={deactivationData?.data?.metadata?.creationTimestamp ?? ''}
-                          />
-                        </Text>
-                      ),
-                    },
-                    {
-                      label: (
-                        <Text textColor="muted" size="sm">
-                          <Trans>Deactivation Reason</Trans>
-                        </Text>
-                      ),
-                      value: <Text size="sm">{deactivationData?.data?.spec?.reason}</Text>,
-                    },
-                  ]}
-                />
+          description={<Trans>Manage this user&apos;s platform access state</Trans>}>
+          {isPlatformAccessLoading ? (
+            <Text textColor="muted" size="sm">
+              <Trans>Loading...</Trans>
+            </Text>
+          ) : platformAccess ? (
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-col gap-1">
+                  <Text size="sm" weight="medium">
+                    <Trans>Platform Access State</Trans>
+                  </Text>
+                  <Text textColor="muted" size="sm">
+                    <Trans>
+                      Controls whether this user can sign in and access the platform. Suspending or
+                      rejecting requires a reason.
+                    </Trans>
+                  </Text>
+                </div>
+                <div className="flex items-center gap-2">
+                  {isUpdatingAccess && (
+                    <Loader2 className="text-muted-foreground size-4 animate-spin" />
+                  )}
+                  <Select
+                    value={currentState}
+                    onValueChange={handleStateSelect}
+                    disabled={isUpdatingAccess}>
+                    <SelectTrigger className="w-44">
+                      <SelectValue placeholder={t`Select state`} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PLATFORM_ACCESS_STATES.map((state) => (
+                        <SelectItem key={state} value={state}>
+                          {state}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-            </>
+
+              {platformAccess.spec?.reason && (
+                <div className="bg-muted/40 rounded-md border p-3">
+                  <Text size="sm" weight="medium" className="mb-1 block">
+                    <Trans>Reason</Trans>
+                  </Text>
+                  <Text textColor="muted" size="sm">
+                    {platformAccess.spec.reason}
+                  </Text>
+                </div>
+              )}
+            </div>
           ) : (
-            <ActionCard
-              variant="warning"
-              icon={ShieldXIcon}
-              title={<Trans>Deactivate User</Trans>}
-              description={
-                <Trans>
-                  Temporarily prevent user from signing in. The user can be reactivated at any time
-                  and all data will remain intact.
-                </Trans>
-              }
-              action={
-                <Button type="warning" size="small" onClick={() => setDeactivateDialogOpen(true)}>
-                  <Trans>Deactivate</Trans>
-                </Button>
-              }
-            />
+            <Text textColor="muted" size="sm">
+              <Trans>No platform access record exists for this user yet.</Trans>
+            </Text>
           )}
         </SectionCard>
 
