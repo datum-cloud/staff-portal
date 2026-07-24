@@ -1,5 +1,5 @@
 import { DialogForm } from '@/components/dialog';
-import { useUserApproval } from '@/features/user';
+import { useUserPlatformAccess } from '@/features/user';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
@@ -18,7 +18,7 @@ const rejectSchema = z.object({
 
 export function UserRejectDialog({ open, onOpenChange, user, onSuccess }: UserRejectDialogProps) {
   const { t } = useLingui();
-  const { rejectUser } = useUserApproval();
+  const { setState } = useUserPlatformAccess();
 
   return (
     <DialogForm
@@ -30,7 +30,12 @@ export function UserRejectDialog({ open, onOpenChange, user, onSuccess }: UserRe
       cancelText={t`Cancel`}
       onSubmit={async (formData: z.infer<typeof rejectSchema>) => {
         try {
-          await rejectUser(user as ComMiloapisIamV1Alpha1User, formData.reason, onSuccess);
+          await setState(
+            user as ComMiloapisIamV1Alpha1User,
+            'Rejected',
+            formData.reason,
+            onSuccess
+          );
         } catch (error) {
           throw error; // Re-throw to keep dialog open
         }

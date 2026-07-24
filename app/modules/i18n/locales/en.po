@@ -1373,7 +1373,7 @@ msgstr "Enter first name"
 msgid "Enter note content..."
 msgstr "Enter note content..."
 
-#: app/features/user/components/user-reject-dialog.tsx:41
+#: app/features/user/components/user-reject-dialog.tsx:46
 msgid "Enter reason for rejection..."
 msgstr "Enter reason for rejection..."
 
@@ -2854,7 +2854,7 @@ msgstr "Ready"
 msgid "Reason"
 msgstr "Reason"
 
-#: app/features/user/components/user-reject-dialog.tsx:40
+#: app/features/user/components/user-reject-dialog.tsx:45
 msgid "Reason for rejection"
 msgstr "Reason for rejection"
 
@@ -3684,10 +3684,6 @@ msgstr "Usage will appear here once this project starts consuming metered resour
 msgid "User"
 msgstr "User"
 
-#: app/features/user/hooks/useUserApproval.ts:31
-msgid "User approved successfully"
-msgstr "User approved successfully"
-
 #: app/routes/customer/user/detail/index.tsx:101
 msgid "User deleted successfully"
 msgstr "User deleted successfully"
@@ -3695,26 +3691,6 @@ msgstr "User deleted successfully"
 #: app/routes/customer/user/index.tsx:241
 msgid "User invited successfully"
 msgstr "User invited successfully"
-
-#: app/features/user/hooks/useUserApproval.ts:58
-msgid "User is not approved"
-msgstr "User is not approved"
-
-#: app/features/user/hooks/useUserApproval.ts:72
-msgid "User is not approved or rejected"
-msgstr "User is not approved or rejected"
-
-#: app/features/user/hooks/useUserApproval.ts:66
-msgid "User is not rejected"
-msgstr "User is not rejected"
-
-#: app/features/user/hooks/useUserApproval.ts:77
-msgid "User moved to pending successfully"
-msgstr "User moved to pending successfully"
-
-#: app/features/user/hooks/useUserApproval.ts:51
-msgid "User rejected successfully"
-msgstr "User rejected successfully"
 
 #: app/features/fraud/detail/maxmind-rows.tsx:156
 msgid "User Type"

@@ -2,15 +2,9 @@ import { ListQueryParams } from '@/resources/schemas';
 import {
   ComMiloapisIamV1Alpha1PlatformAccess,
   ComMiloapisIamV1Alpha1User,
-  createIamMiloapisComV1Alpha1PlatformAccessApproval,
-  createIamMiloapisComV1Alpha1PlatformAccessRejection,
   createIamMiloapisComV1Alpha1PlatformInvitation,
-  deleteIamMiloapisComV1Alpha1PlatformAccessApproval,
-  deleteIamMiloapisComV1Alpha1PlatformAccessRejection,
   deleteIamMiloapisComV1Alpha1User,
   listIamMiloapisComV1Alpha1PlatformAccess,
-  listIamMiloapisComV1Alpha1PlatformAccessApproval,
-  listIamMiloapisComV1Alpha1PlatformAccessRejection,
   listIamMiloapisComV1Alpha1User,
   patchIamMiloapisComV1Alpha1PlatformAccess,
   patchIamMiloapisComV1Alpha1User,
@@ -80,28 +74,6 @@ export const listAllUsers = async (): Promise<{
   return { items, hasMore: true };
 };
 
-export const userFindApprovalQuery = async (userId: string) => {
-  const response = await listIamMiloapisComV1Alpha1PlatformAccessApproval({
-    query: {
-      limit: 1,
-      fieldSelector: `spec.subjectRef.userRef.name=${userId}`,
-    },
-  });
-
-  return response.data.data?.items?.[0] ?? null;
-};
-
-export const userFindRejectionQuery = async (userId: string) => {
-  const response = await listIamMiloapisComV1Alpha1PlatformAccessRejection({
-    query: {
-      limit: 1,
-      fieldSelector: `spec.subjectRef.name=${userId}`,
-    },
-  });
-
-  return response.data.data?.items?.[0] ?? null;
-};
-
 export const userUpdateMutation = async (
   userId: string,
   payload: Partial<ComMiloapisIamV1Alpha1User['spec']>
@@ -153,32 +125,6 @@ export const userInviteMutation = async (payload: any) => {
     body: payload,
   });
   return response.data.data;
-};
-
-export const userApproveMutation = async (payload: any) => {
-  const response = await createIamMiloapisComV1Alpha1PlatformAccessApproval({
-    body: payload,
-  });
-  return response.data.data;
-};
-
-export const userDeleteApprovalMutation = async (approvalName: string) => {
-  return deleteIamMiloapisComV1Alpha1PlatformAccessApproval({
-    path: { name: approvalName },
-  });
-};
-
-export const userRejectMutation = async (payload: any) => {
-  const response = await createIamMiloapisComV1Alpha1PlatformAccessRejection({
-    body: payload,
-  });
-  return response.data.data;
-};
-
-export const userDeleteRejectionMutation = async (rejectionName: string) => {
-  return deleteIamMiloapisComV1Alpha1PlatformAccessRejection({
-    path: { name: rejectionName },
-  });
 };
 
 /** The four platform-access states a user can be in (from `PlatformAccess.spec.state`). */
