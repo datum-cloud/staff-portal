@@ -165,6 +165,35 @@ async function wrapResponseTypes(resourceDir: string, sharedDir: string) {
   log(`  ✓ Wrapped response types with ProxyResponse (client-side)`);
 }
 
+/**
+ * Normalize the generated `ClientOptions.baseURL` type to plain `string`.
+ *
+ * Kubernetes OpenAPI specs declare no `servers`, so hey-api derives the client
+ * baseURL type from the input spec's directory — our `.openapi-temp` temp dir —
+ * emitting `baseURL: `${string}://.openapi-temp` | (string & {})`. That leaks the
+ * codegen temp path into the type. The real base is always supplied per-request
+ * at runtime (env.API_URL / the /api proxy), so the type should just be `string`.
+ */
+async function cleanBaseUrlType(resourceDir: string) {
+  const { readFile, writeFile } = await import('fs/promises');
+  const typesFile = path.join(resourceDir, 'types.gen.ts');
+
+  if (!fs.existsSync(typesFile)) {
+    return;
+  }
+
+  const content = await readFile(typesFile, 'utf8');
+  const cleaned = content.replace(
+    /`\$\{string\}:\/\/\.openapi-temp[^`]*`\s*\|\s*\(string & \{\}\)/g,
+    'string'
+  );
+
+  if (cleaned !== content) {
+    await writeFile(typesFile, cleaned, 'utf8');
+    log(`  ✓ Normalized ClientOptions baseURL type (stripped temp path)`);
+  }
+}
+
 async function generateClientForSpec(specFile: string, outDir: string) {
   await ensureDir(outDir);
 
@@ -174,6 +203,9 @@ async function generateClientForSpec(specFile: string, outDir: string) {
     -c @hey-api/client-axios`.quiet();
 
   log(`Generated client at ${outDir}`);
+
+  // Strip the codegen temp path that hey-api bakes into the baseURL type
+  await cleanBaseUrlType(outDir);
 
   // Wrap response types with proxy structure (for client-side)
   const sharedDir = path.join(path.dirname(path.dirname(outDir)), 'shared');
@@ -404,11 +436,14 @@ async function setClientThrowOnErrorDefault(sharedDir: string) {
 
   let content = await readFile(clientGenFile, 'utf8');
 
-  // Change createConfig<any>() to createConfig<any>({ throwOnError: true })
-  // Pattern: createClient(createConfig<any>())
-  // Replace with: createClient(createConfig<any>({ throwOnError: true }))
+  // Normalize the client config to `{ throwOnError: true }`, replacing whatever
+  // createConfig was generated with. Newer @hey-api/openapi-ts emits a config
+  // pre-populated from the input path (e.g. `{ baseURL: '.openapi-temp' }`),
+  // which both leaks the codegen temp dir as a runtime baseURL and, since the
+  // old empty-args pattern no longer matched, dropped throwOnError entirely.
+  // The app sets baseURL per-request, so we always reset to just throwOnError.
   const modified = content.replace(
-    /createClient\(createConfig<any>\(\)\)/g,
+    /createClient\(\s*createConfig<any>\([\s\S]*?\)\s*\)/,
     'createClient(\n  createConfig<any>({\n    throwOnError: true,\n  })\n)'
   );
 

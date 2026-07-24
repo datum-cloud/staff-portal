@@ -1,5 +1,10 @@
 import { userOrgListQuery } from '../apis/membership.api';
-import { listAllUsers, userDeactivationQuery, userGetQuery, userListQuery } from '../apis/user.api';
+import {
+  listAllUsers,
+  platformAccessFindQuery,
+  userGetQuery,
+  userListQuery,
+} from '../apis/user.api';
 import { ListQueryParams } from '@/resources/schemas';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -8,7 +13,7 @@ export const userQueryKeys = {
   list: (params?: ListQueryParams) => ['users', 'list', params] as const,
   listAll: ['users', 'list-all'] as const,
   detail: (userId: string) => ['users', 'detail', userId] as const,
-  deactivation: (userId: string) => ['users', 'deactivation', userId] as const,
+  platformAccess: (userId: string) => ['users', 'platform-access', userId] as const,
   organizations: {
     all: (userId: string) => ['users', userId, 'organizations'] as const,
     list: (userId: string) => ['users', userId, 'organizations', 'list'] as const,
@@ -23,11 +28,15 @@ export const useUserDetailQuery = (userId: string) => {
   });
 };
 
-export const useUserDeactivationQuery = (userId: string, state?: string) => {
+/**
+ * The user's PlatformAccess resource — the source of truth for their access state
+ * (Pending/Approved/Rejected/Suspended). Returns null if none exists yet.
+ */
+export const usePlatformAccessQuery = (userId: string) => {
   return useQuery({
-    queryKey: userQueryKeys.deactivation(userId),
-    queryFn: () => userDeactivationQuery(userId),
-    enabled: !!userId && state === 'Inactive',
+    queryKey: userQueryKeys.platformAccess(userId),
+    queryFn: () => platformAccessFindQuery(userId),
+    enabled: !!userId,
   });
 };
 

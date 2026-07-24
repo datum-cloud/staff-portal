@@ -1,19 +1,18 @@
 import { ListQueryParams } from '@/resources/schemas';
 import {
+  ComMiloapisIamV1Alpha1PlatformAccess,
   ComMiloapisIamV1Alpha1User,
-  ComMiloapisIamV1Alpha1UserDeactivation,
   createIamMiloapisComV1Alpha1PlatformAccessApproval,
   createIamMiloapisComV1Alpha1PlatformAccessRejection,
   createIamMiloapisComV1Alpha1PlatformInvitation,
-  createIamMiloapisComV1Alpha1UserDeactivation,
   deleteIamMiloapisComV1Alpha1PlatformAccessApproval,
   deleteIamMiloapisComV1Alpha1PlatformAccessRejection,
   deleteIamMiloapisComV1Alpha1User,
-  deleteIamMiloapisComV1Alpha1UserDeactivation,
+  listIamMiloapisComV1Alpha1PlatformAccess,
   listIamMiloapisComV1Alpha1PlatformAccessApproval,
   listIamMiloapisComV1Alpha1PlatformAccessRejection,
   listIamMiloapisComV1Alpha1User,
-  listIamMiloapisComV1Alpha1UserDeactivation,
+  patchIamMiloapisComV1Alpha1PlatformAccess,
   patchIamMiloapisComV1Alpha1User,
   readIamMiloapisComV1Alpha1User,
 } from '@openapi/iam.miloapis.com/v1alpha1';
@@ -182,26 +181,51 @@ export const userDeleteRejectionMutation = async (rejectionName: string) => {
   });
 };
 
-export const userDeactivateMutation = async (
-  payload: ComMiloapisIamV1Alpha1UserDeactivation['spec']
-) => {
-  const response = await createIamMiloapisComV1Alpha1UserDeactivation({
-    body: {
-      apiVersion: 'iam.miloapis.com/v1alpha1',
-      kind: 'UserDeactivation',
-      metadata: {
-        generateName: 'user-deactivation-',
-      },
-      spec: payload,
+/** The four platform-access states a user can be in (from `PlatformAccess.spec.state`). */
+export type PlatformAccessState = 'Pending' | 'Approved' | 'Rejected' | 'Suspended';
+
+/**
+ * Finds the single PlatformAccess resource governing a user's access, or null if
+ * none exists yet. PlatformAccess replaces UserDeactivation/PlatformAccessApproval/
+ * Rejection — there is at most one per user, matched by `spec.userRef.name`.
+ */
+export const platformAccessFindQuery = async (userId: string) => {
+  const response = await listIamMiloapisComV1Alpha1PlatformAccess({
+    query: {
+      limit: 1,
+      fieldSelector: `spec.userRef.name=${userId}`,
     },
   });
-  return response.data.data;
+
+  return response.data.data?.items?.[0] ?? null;
 };
 
-export const userReactivateMutation = async (userId: string) => {
-  return deleteIamMiloapisComV1Alpha1UserDeactivation({
-    path: { name: userId },
+/**
+ * Patches a user's PlatformAccess to a new state (and optional reason). This is the
+ * single mutation for suspend/reactivate/approve/reject — the backend derives the
+ * user's effective access from `spec.state`.
+ */
+export const platformAccessSetStateMutation = async (
+  name: string,
+  state: PlatformAccessState,
+  reason?: string
+) => {
+  const response = await patchIamMiloapisComV1Alpha1PlatformAccess({
+    path: { name },
+    query: {
+      fieldManager: 'datum-staff-portal',
+    },
+    headers: {
+      'Content-Type': 'application/merge-patch+json',
+    },
+    body: {
+      spec: {
+        state,
+        ...(reason ? { reason } : {}),
+      },
+    } as Partial<ComMiloapisIamV1Alpha1PlatformAccess>,
   });
+  return response.data.data;
 };
 
 export const userEmailListQuery = async (
@@ -229,16 +253,4 @@ export const userEmailListQuery = async (
     ...listByEmail.data.data,
     items: [...(listByEmail.data.data?.items ?? []), ...(listByUser.data.data?.items ?? [])],
   };
-};
-
-export const userDeactivationQuery = async (userId: string) => {
-  const response = await listIamMiloapisComV1Alpha1UserDeactivation({
-    query: {
-      limit: 1,
-      fieldSelector: `spec.userRef.name=${userId}`,
-    },
-  });
-
-  const data = response.data.data?.items?.[0] ?? null;
-  return { ...response, data };
 };
