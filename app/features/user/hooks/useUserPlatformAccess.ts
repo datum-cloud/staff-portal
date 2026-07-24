@@ -20,8 +20,8 @@ export const PLATFORM_ACCESS_STATES: PlatformAccessState[] = [
 /**
  * Writes a user's platform-access state via the single PlatformAccess resource,
  * replacing the old create/delete UserDeactivation + PlatformAccessApproval/Rejection
- * flows. Mirrors {@link useUserApproval}'s shape: each action locates the resource,
- * mutates it, toasts, then calls the caller's `onSuccess` (to revalidate/refetch).
+ * flows. Each action locates the resource, mutates its `spec.state`, toasts, then
+ * calls the caller's `onSuccess` (to revalidate/refetch).
  */
 export function useUserPlatformAccess() {
   const { t } = useLingui();

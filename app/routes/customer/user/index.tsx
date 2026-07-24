@@ -13,7 +13,7 @@ import {
   ListTable,
   ListColumnHeader,
 } from '@/features/milo';
-import { UserRejectDialog, useUserApproval } from '@/features/user';
+import { UserRejectDialog, useUserPlatformAccess } from '@/features/user';
 import {
   useAllUsersQuery,
   useInvalidateUserList,
@@ -59,7 +59,7 @@ export default function Page() {
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
 
-  const { approveUser, pendingUser } = useUserApproval();
+  const { setState } = useUserPlatformAccess();
   const tableQuery = useAllUsersQuery();
   const users = useMemo(() => tableQuery.data?.items ?? [], [tableQuery.data]);
   const invalidateUserList = useInvalidateUserList();
@@ -77,7 +77,7 @@ export default function Page() {
       onClick: async (row) => {
         setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: true }));
         try {
-          await approveUser(row, async () => {
+          await setState(row, 'Approved', undefined, async () => {
             await invalidateUserList();
           });
         } finally {
@@ -99,7 +99,7 @@ export default function Page() {
       onClick: async (row) => {
         setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: true }));
         try {
-          await pendingUser(row, async () => {
+          await setState(row, 'Pending', undefined, async () => {
             await invalidateUserList();
           });
         } finally {

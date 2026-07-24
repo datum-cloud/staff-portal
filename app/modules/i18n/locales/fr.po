@@ -1373,7 +1373,7 @@ msgstr ""
 msgid "Enter note content..."
 msgstr ""
 
-#: app/features/user/components/user-reject-dialog.tsx:41
+#: app/features/user/components/user-reject-dialog.tsx:46
 msgid "Enter reason for rejection..."
 msgstr ""
 
@@ -2854,7 +2854,7 @@ msgstr ""
 msgid "Reason"
 msgstr ""
 
-#: app/features/user/components/user-reject-dialog.tsx:40
+#: app/features/user/components/user-reject-dialog.tsx:45
 msgid "Reason for rejection"
 msgstr ""
 
@@ -3684,36 +3684,12 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: app/features/user/hooks/useUserApproval.ts:31
-msgid "User approved successfully"
-msgstr ""
-
 #: app/routes/customer/user/detail/index.tsx:101
 msgid "User deleted successfully"
 msgstr ""
 
 #: app/routes/customer/user/index.tsx:241
 msgid "User invited successfully"
-msgstr ""
-
-#: app/features/user/hooks/useUserApproval.ts:58
-msgid "User is not approved"
-msgstr ""
-
-#: app/features/user/hooks/useUserApproval.ts:72
-msgid "User is not approved or rejected"
-msgstr ""
-
-#: app/features/user/hooks/useUserApproval.ts:66
-msgid "User is not rejected"
-msgstr ""
-
-#: app/features/user/hooks/useUserApproval.ts:77
-msgid "User moved to pending successfully"
-msgstr ""
-
-#: app/features/user/hooks/useUserApproval.ts:51
-msgid "User rejected successfully"
 msgstr ""
 
 #: app/features/fraud/detail/maxmind-rows.tsx:156
