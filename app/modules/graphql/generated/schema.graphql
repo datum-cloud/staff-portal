@@ -4,7 +4,7 @@ type Query {
   consumer project's human-readable display name (the
   kubernetes.io/description annotation on the Project, falling back to the
   project name).
-  
+
   Authorization uses the caller's bearer token for both the consumer list
   (in the producer project's control plane) and the per-project lookups (at
   the core resourcemanager API). A list failure returns an empty list; a
@@ -14,7 +14,7 @@ type Query {
 
   """
   Returns sessions for the authenticated caller by default.
-  
+
   When userID is provided and differs from the caller, the request is
   forwarded to milo with a status.userUID field selector. milo authorizes
   the cross-user lookup via SubjectAccessReview against
@@ -28,19 +28,61 @@ type Query {
   Contact data for each membership. Resolves all contacts in parallel.
   fieldSelector supports standard Kubernetes field selectors.
   """
-  contactGroupMembershipsWithContacts(fieldSelector: String, limit: Int, cursor: String): EnrichedContactGroupMembershipList!
+  contactGroupMembershipsWithContacts(
+    namespace: String
+    fieldSelector: String
+    limit: Int
+    cursor: String
+  ): EnrichedContactGroupMembershipList!
 
   """
-  Lists ContactGroupMemberships across all namespaces, enriched with full
+  Lists ContactGroupMemberships in the given namespace, enriched with full
   ContactGroup data for each membership. Resolves all contact groups in parallel.
   """
-  contactMembershipsWithGroups(fieldSelector: String, limit: Int, cursor: String): EnrichedContactMembershipList!
+  contactMembershipsWithGroups(
+    namespace: String
+    fieldSelector: String
+    limit: Int
+    cursor: String
+  ): EnrichedContactMembershipList!
 
   """
   Batch-fetches User summaries by name. Fetches run in parallel; individual
   lookup failures return null for that entry (filtered from the result).
   """
   userSummaries(names: [String!]!): [UserSummary!]!
+
+  """
+  Lists all organizations the caller can access. When `search` is set, matches
+  substring against name, displayName, company, and contact fields (walks
+  upstream pages until `limit` matches).
+  """
+  organizations(limit: Int, cursor: String, search: String): OrganizationList!
+
+  """
+  Returns a single organization by name.
+  """
+  organization(name: String!): Organization
+
+  """
+  Lists projects in an organization via its control plane.
+  """
+  organizationProjects(orgName: String!, limit: Int, cursor: String): ProjectList!
+
+  """
+  Lists members and pending invitations for an organization.
+  """
+  organizationMembers(orgName: String!): [OrgMember!]!
+
+  """
+  Lists all projects the caller can access.
+  """
+  projects(limit: Int, cursor: String, search: String): ProjectList!
+
+  """
+  Returns a single project by name.
+  """
+  project(name: String!): Project
 }
 
 type ParsedUserAgent {
@@ -69,17 +111,21 @@ type ExtendedSession {
 }
 
 type ConsumerProject {
-  """The project's machine name (metadata.name)."""
+  """
+  The project's machine name (metadata.name).
+  """
   name: String!
 
   """
-  Human-readable name from the kubernetes.io/description annotation, falling back to name.
+  Human-readable name from the kubernetes.io/display-name annotation, falling back to kubernetes.io/description, then name.
   """
   displayName: String!
 }
 
 type ServiceConsumer {
-  """The ServiceConsumer's name (metadata.name)."""
+  """
+  The ServiceConsumer's name (metadata.name).
+  """
   name: String!
 
   """
@@ -87,19 +133,29 @@ type ServiceConsumer {
   """
   serviceName: String
 
-  """Lifecycle phase (status.phase), e.g. Active, PendingApproval."""
+  """
+  Lifecycle phase (status.phase), e.g. Active, PendingApproval.
+  """
   phase: String
 
-  """Approval decision (spec.approval.decision), e.g. Approved, Denied."""
+  """
+  Approval decision (spec.approval.decision), e.g. Approved, Denied.
+  """
   approvalDecision: String
 
-  """Optional approval note (spec.approval.message)."""
+  """
+  Optional approval note (spec.approval.message).
+  """
   approvalMessage: String
 
-  """When the consumer was requested (metadata.creationTimestamp)."""
+  """
+  When the consumer was requested (metadata.creationTimestamp).
+  """
   requestedAt: String
 
-  """The consuming project, enriched with its display name."""
+  """
+  The consuming project, enriched with its display name.
+  """
   consumerProject: ConsumerProject!
 }
 
@@ -117,34 +173,75 @@ type EnrichedContact {
   displayName: String
 }
 
+"""
+A single Kubernetes-style status condition on a ContactGroup.
+"""
+type ContactGroupCondition {
+  type: String!
+  status: String!
+  reason: String
+  message: String
+  lastTransitionTime: String
+  observedGeneration: Int
+}
+
+type EnrichedContactGroupStatus {
+  conditions: [ContactGroupCondition!]
+}
+
 type EnrichedContactGroup {
   name: String!
   namespace: String!
   displayName: String
+
+  """
+  Whether the group allows opt-in/opt-out membership: 'public' or 'private'.
+  """
+  visibility: String
+
+  """
+  Observed status of the ContactGroup (Ready condition, provider sync).
+  """
+  status: EnrichedContactGroupStatus
 }
 
 type ContactGroupMembershipEnriched {
-  """metadata.name of the ContactGroupMembership resource."""
+  """
+  metadata.name of the ContactGroupMembership resource.
+  """
   name: String!
   contactRef: ContactRef!
 
-  """Full Contact data, null if lookup failed."""
+  """
+  Full Contact data, null if lookup failed.
+  """
   contact: EnrichedContact
 }
 
 type ContactMembershipEnriched {
-  """metadata.name of the ContactGroupMembership resource."""
+  """
+  metadata.name of the ContactGroupMembership resource.
+  """
   name: String!
+
+  """
+  When the contact joined the group (membership metadata.creationTimestamp).
+  """
+  creationTimestamp: String
   contactGroupRef: ContactRef!
 
-  """Full ContactGroup data, null if lookup failed."""
+  """
+  Full ContactGroup data, null if lookup failed.
+  """
   contactGroup: EnrichedContactGroup
 }
 
 type EnrichedContactGroupMembershipList {
   items: [ContactGroupMembershipEnriched!]!
 
-  """Kubernetes continue token for pagination."""
+  """
+  Kubernetes continue token for pagination.
+  """
   continue: String
 }
 
@@ -154,9 +251,174 @@ type EnrichedContactMembershipList {
 }
 
 type UserSummary {
-  """metadata.name of the User resource."""
+  """
+  metadata.name of the User resource.
+  """
   name: String!
   email: String
   givenName: String
   familyName: String
+}
+
+type OrgContactInfo {
+  """
+  Legal / company name from spec.contactInfo.businessName.
+  """
+  businessName: String
+
+  """
+  Primary contact name from spec.contactInfo.name.
+  """
+  name: String
+
+  """
+  Primary contact email from spec.contactInfo.email.
+  """
+  email: String
+}
+
+type Organization {
+  """
+  metadata.name — the stable organization ID.
+  """
+  name: String!
+
+  """
+  Human-readable name from the kubernetes.io/display-name annotation, falling back to name.
+  """
+  displayName: String!
+
+  """
+  Organization type: Personal or Standard.
+  """
+  type: String!
+  createdAt: String
+
+  """
+  Status of the Ready condition.
+  """
+  state: String
+
+  """
+  Contact details from spec.contactInfo.
+  """
+  contactInfo: OrgContactInfo
+
+  """
+  True when the OnboardingComplete condition status is True.
+  """
+  onboardingComplete: Boolean!
+
+  """
+  Reason from the OnboardingComplete condition.
+  """
+  onboardingReason: String
+
+  """
+  Human-readable message from the OnboardingComplete condition.
+  """
+  onboardingMessage: String
+
+  """
+  Members and pending invitations for this organization.
+  """
+  members: [OrgMember!]!
+
+  """
+  Projects owned by this organization (via its control plane).
+  """
+  projects(limit: Int, cursor: String): ProjectList!
+}
+
+type OrganizationList {
+  items: [Organization!]!
+
+  """
+  Pagination cursor — pass as cursor on the next call to continue listing.
+  """
+  continueToken: String
+}
+
+type Project {
+  """
+  metadata.name — the stable project ID.
+  """
+  name: String!
+
+  """
+  Human-readable name from the kubernetes.io/display-name annotation, falling back to kubernetes.io/description, then name.
+  """
+  displayName: String!
+
+  """
+  Name of the owning organization.
+  """
+  organizationName: String!
+
+  """
+  Owning organization's display name (kubernetes.io/display-name), falling back to organizationName.
+  """
+  organizationDisplayName: String!
+
+  """
+  Owning organization's company / legal name from contactInfo.businessName.
+  """
+  organizationBusinessName: String
+
+  """
+  True when the project has an Active billing-account binding to an account with a default payment method.
+  """
+  hasActiveBillingAccount: Boolean!
+
+  """
+  Bound billing account name when hasActiveBillingAccount is true.
+  """
+  billingAccountName: String
+  createdAt: String
+
+  """
+  Status of the Ready condition.
+  """
+  state: String
+}
+
+type ProjectList {
+  items: [Project!]!
+
+  """
+  Pagination cursor — pass as cursor on the next call to continue listing.
+  """
+  continueToken: String
+}
+
+type OrgMember {
+  """
+  Resource name of the membership or invitation.
+  """
+  name: String!
+  givenName: String
+  familyName: String
+  email: String!
+  roles: [String!]!
+
+  """
+  member or invitation
+  """
+  type: String!
+
+  """
+  Only set for invitations: Pending, Accepted, Declined.
+  """
+  invitationState: String
+  createdAt: String
+
+  """
+  The member's user resource name. Null for invitations, which have no user yet.
+  """
+  userName: String
+
+  """
+  Avatar URL from the membership user status. Null for invitations.
+  """
+  avatarUrl: String
 }

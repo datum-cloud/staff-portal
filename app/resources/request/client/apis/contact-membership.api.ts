@@ -85,11 +85,23 @@ export const contactMembershipForContactListQuery = async (
         continue: true,
         items: {
           name: true,
+          creationTimestamp: true,
           contactGroupRef: { name: true, namespace: true },
           contactGroup: {
             name: true,
             namespace: true,
             displayName: true,
+            visibility: true,
+            status: {
+              conditions: {
+                type: true,
+                status: true,
+                reason: true,
+                message: true,
+                lastTransitionTime: true,
+                observedGeneration: true,
+              },
+            },
           },
         },
       },
@@ -102,7 +114,7 @@ export const contactMembershipForContactListQuery = async (
   return {
     metadata: { continue: data?.continue ?? undefined },
     items: (data?.items ?? []).map((item: ContactMembershipEnriched) => ({
-      metadata: { name: item.name },
+      metadata: { name: item.name, creationTimestamp: item.creationTimestamp ?? undefined },
       spec: {
         contactGroupRef: {
           name: item.contactGroupRef.name,
@@ -117,7 +129,20 @@ export const contactMembershipForContactListQuery = async (
             },
             spec: {
               displayName: item.contactGroup.displayName ?? undefined,
+              visibility: item.contactGroup.visibility as 'public' | 'private' | undefined,
             },
+            status: item.contactGroup.status
+              ? {
+                  conditions: (item.contactGroup.status.conditions ?? []).map((c) => ({
+                    type: c.type,
+                    status: c.status as 'True' | 'False' | 'Unknown',
+                    reason: c.reason ?? '',
+                    message: c.message ?? '',
+                    lastTransitionTime: c.lastTransitionTime ?? '',
+                    observedGeneration: c.observedGeneration ?? undefined,
+                  })),
+                }
+              : undefined,
           }
         : undefined,
     })),

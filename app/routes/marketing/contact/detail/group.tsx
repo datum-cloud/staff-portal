@@ -89,12 +89,10 @@ export default function Page() {
         },
       }
     ),
-    columnHelper.accessor((row) => row.contactGroup?.spec?.visibility ?? 'public', {
+    columnHelper.accessor((row) => row.contactGroup?.spec?.visibility ?? '', {
       id: 'visibility',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Visibility`} />,
-      cell: ({ row }) => (
-        <BadgeState state={row.original.contactGroup?.spec?.visibility ?? 'public'} />
-      ),
+      cell: ({ row }) => <BadgeState state={row.original.contactGroup?.spec?.visibility ?? ''} />,
     }),
     columnHelper.accessor((row) => row.contactGroup?.status ?? null, {
       id: 'status',
