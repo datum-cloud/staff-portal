@@ -35,7 +35,7 @@ export interface Query {
    */
   contactGroupMembershipsWithContacts: EnrichedContactGroupMembershipList;
   /**
-   * Lists ContactGroupMemberships across all namespaces, enriched with full
+   * Lists ContactGroupMemberships in the given namespace, enriched with full
    * ContactGroup data for each membership. Resolves all contact groups in parallel.
    */
   contactMembershipsWithGroups: EnrichedContactMembershipList;
@@ -44,6 +44,22 @@ export interface Query {
    * lookup failures return null for that entry (filtered from the result).
    */
   userSummaries: UserSummary[];
+  /**
+   * Lists all organizations the caller can access. When `search` is set, matches
+   * substring against name, displayName, company, and contact fields (walks
+   * upstream pages until `limit` matches).
+   */
+  organizations: OrganizationList;
+  /** Returns a single organization by name. */
+  organization?: Organization;
+  /** Lists projects in an organization via its control plane. */
+  organizationProjects: ProjectList;
+  /** Lists members and pending invitations for an organization. */
+  organizationMembers: OrgMember[];
+  /** Lists all projects the caller can access. */
+  projects: ProjectList;
+  /** Returns a single project by name. */
+  project?: Project;
   __typename: 'Query';
 }
 
@@ -78,7 +94,7 @@ export interface ExtendedSession {
 export interface ConsumerProject {
   /** The project's machine name (metadata.name). */
   name: Scalars['String'];
-  /** Human-readable name from the kubernetes.io/description annotation, falling back to name. */
+  /** Human-readable name from the kubernetes.io/display-name annotation, falling back to kubernetes.io/description, then name. */
   displayName: Scalars['String'];
   __typename: 'ConsumerProject';
 }
@@ -117,10 +133,30 @@ export interface EnrichedContact {
   __typename: 'EnrichedContact';
 }
 
+/** A single Kubernetes-style status condition on a ContactGroup. */
+export interface ContactGroupCondition {
+  type: Scalars['String'];
+  status: Scalars['String'];
+  reason?: Scalars['String'];
+  message?: Scalars['String'];
+  lastTransitionTime?: Scalars['String'];
+  observedGeneration?: Scalars['Int'];
+  __typename: 'ContactGroupCondition';
+}
+
+export interface EnrichedContactGroupStatus {
+  conditions?: ContactGroupCondition[];
+  __typename: 'EnrichedContactGroupStatus';
+}
+
 export interface EnrichedContactGroup {
   name: Scalars['String'];
   namespace: Scalars['String'];
   displayName?: Scalars['String'];
+  /** Whether the group allows opt-in/opt-out membership: 'public' or 'private'. */
+  visibility?: Scalars['String'];
+  /** Observed status of the ContactGroup (Ready condition, provider sync). */
+  status?: EnrichedContactGroupStatus;
   __typename: 'EnrichedContactGroup';
 }
 
@@ -136,6 +172,8 @@ export interface ContactGroupMembershipEnriched {
 export interface ContactMembershipEnriched {
   /** metadata.name of the ContactGroupMembership resource. */
   name: Scalars['String'];
+  /** When the contact joined the group (membership metadata.creationTimestamp). */
+  creationTimestamp?: Scalars['String'];
   contactGroupRef: ContactRef;
   /** Full ContactGroup data, null if lookup failed. */
   contactGroup?: EnrichedContactGroup;
@@ -162,6 +200,95 @@ export interface UserSummary {
   givenName?: Scalars['String'];
   familyName?: Scalars['String'];
   __typename: 'UserSummary';
+}
+
+export interface OrgContactInfo {
+  /** Legal / company name from spec.contactInfo.businessName. */
+  businessName?: Scalars['String'];
+  /** Primary contact name from spec.contactInfo.name. */
+  name?: Scalars['String'];
+  /** Primary contact email from spec.contactInfo.email. */
+  email?: Scalars['String'];
+  __typename: 'OrgContactInfo';
+}
+
+export interface Organization {
+  /** metadata.name — the stable organization ID. */
+  name: Scalars['String'];
+  /** Human-readable name from the kubernetes.io/display-name annotation, falling back to name. */
+  displayName: Scalars['String'];
+  /** Organization type: Personal or Standard. */
+  type: Scalars['String'];
+  createdAt?: Scalars['String'];
+  /** Status of the Ready condition. */
+  state?: Scalars['String'];
+  /** Contact details from spec.contactInfo. */
+  contactInfo?: OrgContactInfo;
+  /** True when the OnboardingComplete condition status is True. */
+  onboardingComplete: Scalars['Boolean'];
+  /** Reason from the OnboardingComplete condition. */
+  onboardingReason?: Scalars['String'];
+  /** Human-readable message from the OnboardingComplete condition. */
+  onboardingMessage?: Scalars['String'];
+  /** Members and pending invitations for this organization. */
+  members: OrgMember[];
+  /** Projects owned by this organization (via its control plane). */
+  projects: ProjectList;
+  __typename: 'Organization';
+}
+
+export interface OrganizationList {
+  items: Organization[];
+  /** Pagination cursor — pass as cursor on the next call to continue listing. */
+  continueToken?: Scalars['String'];
+  __typename: 'OrganizationList';
+}
+
+export interface Project {
+  /** metadata.name — the stable project ID. */
+  name: Scalars['String'];
+  /** Human-readable name from the kubernetes.io/display-name annotation, falling back to kubernetes.io/description, then name. */
+  displayName: Scalars['String'];
+  /** Name of the owning organization. */
+  organizationName: Scalars['String'];
+  /** Owning organization's display name (kubernetes.io/display-name), falling back to organizationName. */
+  organizationDisplayName: Scalars['String'];
+  /** Owning organization's company / legal name from contactInfo.businessName. */
+  organizationBusinessName?: Scalars['String'];
+  /** True when the project has an Active billing-account binding to an account with a default payment method. */
+  hasActiveBillingAccount: Scalars['Boolean'];
+  /** Bound billing account name when hasActiveBillingAccount is true. */
+  billingAccountName?: Scalars['String'];
+  createdAt?: Scalars['String'];
+  /** Status of the Ready condition. */
+  state?: Scalars['String'];
+  __typename: 'Project';
+}
+
+export interface ProjectList {
+  items: Project[];
+  /** Pagination cursor — pass as cursor on the next call to continue listing. */
+  continueToken?: Scalars['String'];
+  __typename: 'ProjectList';
+}
+
+export interface OrgMember {
+  /** Resource name of the membership or invitation. */
+  name: Scalars['String'];
+  givenName?: Scalars['String'];
+  familyName?: Scalars['String'];
+  email: Scalars['String'];
+  roles: Scalars['String'][];
+  /** member or invitation */
+  type: Scalars['String'];
+  /** Only set for invitations: Pending, Accepted, Declined. */
+  invitationState?: Scalars['String'];
+  createdAt?: Scalars['String'];
+  /** The member's user resource name. Null for invitations, which have no user yet. */
+  userName?: Scalars['String'];
+  /** Avatar URL from the membership user status. Null for invitations. */
+  avatarUrl?: Scalars['String'];
+  __typename: 'OrgMember';
 }
 
 export interface QueryRequest {
@@ -195,6 +322,7 @@ export interface QueryRequest {
   contactGroupMembershipsWithContacts?:
     | [
         {
+          namespace?: Scalars['String'] | null;
           fieldSelector?: Scalars['String'] | null;
           limit?: Scalars['Int'] | null;
           cursor?: Scalars['String'] | null;
@@ -203,12 +331,13 @@ export interface QueryRequest {
       ]
     | EnrichedContactGroupMembershipListRequest;
   /**
-   * Lists ContactGroupMemberships across all namespaces, enriched with full
+   * Lists ContactGroupMemberships in the given namespace, enriched with full
    * ContactGroup data for each membership. Resolves all contact groups in parallel.
    */
   contactMembershipsWithGroups?:
     | [
         {
+          namespace?: Scalars['String'] | null;
           fieldSelector?: Scalars['String'] | null;
           limit?: Scalars['Int'] | null;
           cursor?: Scalars['String'] | null;
@@ -221,6 +350,47 @@ export interface QueryRequest {
    * lookup failures return null for that entry (filtered from the result).
    */
   userSummaries?: [{ names: Scalars['String'][] }, UserSummaryRequest];
+  /**
+   * Lists all organizations the caller can access. When `search` is set, matches
+   * substring against name, displayName, company, and contact fields (walks
+   * upstream pages until `limit` matches).
+   */
+  organizations?:
+    | [
+        {
+          limit?: Scalars['Int'] | null;
+          cursor?: Scalars['String'] | null;
+          search?: Scalars['String'] | null;
+        },
+        OrganizationListRequest,
+      ]
+    | OrganizationListRequest;
+  /** Returns a single organization by name. */
+  organization?: [{ name: Scalars['String'] }, OrganizationRequest];
+  /** Lists projects in an organization via its control plane. */
+  organizationProjects?: [
+    {
+      orgName: Scalars['String'];
+      limit?: Scalars['Int'] | null;
+      cursor?: Scalars['String'] | null;
+    },
+    ProjectListRequest,
+  ];
+  /** Lists members and pending invitations for an organization. */
+  organizationMembers?: [{ orgName: Scalars['String'] }, OrgMemberRequest];
+  /** Lists all projects the caller can access. */
+  projects?:
+    | [
+        {
+          limit?: Scalars['Int'] | null;
+          cursor?: Scalars['String'] | null;
+          search?: Scalars['String'] | null;
+        },
+        ProjectListRequest,
+      ]
+    | ProjectListRequest;
+  /** Returns a single project by name. */
+  project?: [{ name: Scalars['String'] }, ProjectRequest];
   __typename?: boolean | number;
   __scalar?: boolean | number;
   __alias?: {
@@ -271,7 +441,7 @@ export interface ExtendedSessionRequest {
 export interface ConsumerProjectRequest {
   /** The project's machine name (metadata.name). */
   name?: boolean | number;
-  /** Human-readable name from the kubernetes.io/description annotation, falling back to name. */
+  /** Human-readable name from the kubernetes.io/display-name annotation, falling back to kubernetes.io/description, then name. */
   displayName?: boolean | number;
   __typename?: boolean | number;
   __scalar?: boolean | number;
@@ -326,10 +496,38 @@ export interface EnrichedContactRequest {
   };
 }
 
+/** A single Kubernetes-style status condition on a ContactGroup. */
+export interface ContactGroupConditionRequest {
+  type?: boolean | number;
+  status?: boolean | number;
+  reason?: boolean | number;
+  message?: boolean | number;
+  lastTransitionTime?: boolean | number;
+  observedGeneration?: boolean | number;
+  __typename?: boolean | number;
+  __scalar?: boolean | number;
+  __alias?: {
+    [alias: string]: ContactGroupConditionRequest;
+  };
+}
+
+export interface EnrichedContactGroupStatusRequest {
+  conditions?: ContactGroupConditionRequest;
+  __typename?: boolean | number;
+  __scalar?: boolean | number;
+  __alias?: {
+    [alias: string]: EnrichedContactGroupStatusRequest;
+  };
+}
+
 export interface EnrichedContactGroupRequest {
   name?: boolean | number;
   namespace?: boolean | number;
   displayName?: boolean | number;
+  /** Whether the group allows opt-in/opt-out membership: 'public' or 'private'. */
+  visibility?: boolean | number;
+  /** Observed status of the ContactGroup (Ready condition, provider sync). */
+  status?: EnrichedContactGroupStatusRequest;
   __typename?: boolean | number;
   __scalar?: boolean | number;
   __alias?: {
@@ -353,6 +551,8 @@ export interface ContactGroupMembershipEnrichedRequest {
 export interface ContactMembershipEnrichedRequest {
   /** metadata.name of the ContactGroupMembership resource. */
   name?: boolean | number;
+  /** When the contact joined the group (membership metadata.creationTimestamp). */
+  creationTimestamp?: boolean | number;
   contactGroupRef?: ContactRefRequest;
   /** Full ContactGroup data, null if lookup failed. */
   contactGroup?: EnrichedContactGroupRequest;
@@ -394,6 +594,121 @@ export interface UserSummaryRequest {
   __scalar?: boolean | number;
   __alias?: {
     [alias: string]: UserSummaryRequest;
+  };
+}
+
+export interface OrgContactInfoRequest {
+  /** Legal / company name from spec.contactInfo.businessName. */
+  businessName?: boolean | number;
+  /** Primary contact name from spec.contactInfo.name. */
+  name?: boolean | number;
+  /** Primary contact email from spec.contactInfo.email. */
+  email?: boolean | number;
+  __typename?: boolean | number;
+  __scalar?: boolean | number;
+  __alias?: {
+    [alias: string]: OrgContactInfoRequest;
+  };
+}
+
+export interface OrganizationRequest {
+  /** metadata.name — the stable organization ID. */
+  name?: boolean | number;
+  /** Human-readable name from the kubernetes.io/display-name annotation, falling back to name. */
+  displayName?: boolean | number;
+  /** Organization type: Personal or Standard. */
+  type?: boolean | number;
+  createdAt?: boolean | number;
+  /** Status of the Ready condition. */
+  state?: boolean | number;
+  /** Contact details from spec.contactInfo. */
+  contactInfo?: OrgContactInfoRequest;
+  /** True when the OnboardingComplete condition status is True. */
+  onboardingComplete?: boolean | number;
+  /** Reason from the OnboardingComplete condition. */
+  onboardingReason?: boolean | number;
+  /** Human-readable message from the OnboardingComplete condition. */
+  onboardingMessage?: boolean | number;
+  /** Members and pending invitations for this organization. */
+  members?: OrgMemberRequest;
+  /** Projects owned by this organization (via its control plane). */
+  projects?:
+    | [{ limit?: Scalars['Int'] | null; cursor?: Scalars['String'] | null }, ProjectListRequest]
+    | ProjectListRequest;
+  __typename?: boolean | number;
+  __scalar?: boolean | number;
+  __alias?: {
+    [alias: string]: OrganizationRequest;
+  };
+}
+
+export interface OrganizationListRequest {
+  items?: OrganizationRequest;
+  /** Pagination cursor — pass as cursor on the next call to continue listing. */
+  continueToken?: boolean | number;
+  __typename?: boolean | number;
+  __scalar?: boolean | number;
+  __alias?: {
+    [alias: string]: OrganizationListRequest;
+  };
+}
+
+export interface ProjectRequest {
+  /** metadata.name — the stable project ID. */
+  name?: boolean | number;
+  /** Human-readable name from the kubernetes.io/display-name annotation, falling back to kubernetes.io/description, then name. */
+  displayName?: boolean | number;
+  /** Name of the owning organization. */
+  organizationName?: boolean | number;
+  /** Owning organization's display name (kubernetes.io/display-name), falling back to organizationName. */
+  organizationDisplayName?: boolean | number;
+  /** Owning organization's company / legal name from contactInfo.businessName. */
+  organizationBusinessName?: boolean | number;
+  /** True when the project has an Active billing-account binding to an account with a default payment method. */
+  hasActiveBillingAccount?: boolean | number;
+  /** Bound billing account name when hasActiveBillingAccount is true. */
+  billingAccountName?: boolean | number;
+  createdAt?: boolean | number;
+  /** Status of the Ready condition. */
+  state?: boolean | number;
+  __typename?: boolean | number;
+  __scalar?: boolean | number;
+  __alias?: {
+    [alias: string]: ProjectRequest;
+  };
+}
+
+export interface ProjectListRequest {
+  items?: ProjectRequest;
+  /** Pagination cursor — pass as cursor on the next call to continue listing. */
+  continueToken?: boolean | number;
+  __typename?: boolean | number;
+  __scalar?: boolean | number;
+  __alias?: {
+    [alias: string]: ProjectListRequest;
+  };
+}
+
+export interface OrgMemberRequest {
+  /** Resource name of the membership or invitation. */
+  name?: boolean | number;
+  givenName?: boolean | number;
+  familyName?: boolean | number;
+  email?: boolean | number;
+  roles?: boolean | number;
+  /** member or invitation */
+  type?: boolean | number;
+  /** Only set for invitations: Pending, Accepted, Declined. */
+  invitationState?: boolean | number;
+  createdAt?: boolean | number;
+  /** The member's user resource name. Null for invitations, which have no user yet. */
+  userName?: boolean | number;
+  /** Avatar URL from the membership user status. Null for invitations. */
+  avatarUrl?: boolean | number;
+  __typename?: boolean | number;
+  __scalar?: boolean | number;
+  __alias?: {
+    [alias: string]: OrgMemberRequest;
   };
 }
 
@@ -445,6 +760,22 @@ export const isEnrichedContact = (obj?: { __typename?: any } | null): obj is Enr
   return EnrichedContact_possibleTypes.includes(obj.__typename);
 };
 
+const ContactGroupCondition_possibleTypes: string[] = ['ContactGroupCondition'];
+export const isContactGroupCondition = (
+  obj?: { __typename?: any } | null
+): obj is ContactGroupCondition => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isContactGroupCondition"');
+  return ContactGroupCondition_possibleTypes.includes(obj.__typename);
+};
+
+const EnrichedContactGroupStatus_possibleTypes: string[] = ['EnrichedContactGroupStatus'];
+export const isEnrichedContactGroupStatus = (
+  obj?: { __typename?: any } | null
+): obj is EnrichedContactGroupStatus => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isEnrichedContactGroupStatus"');
+  return EnrichedContactGroupStatus_possibleTypes.includes(obj.__typename);
+};
+
 const EnrichedContactGroup_possibleTypes: string[] = ['EnrichedContactGroup'];
 export const isEnrichedContactGroup = (
   obj?: { __typename?: any } | null
@@ -494,4 +825,40 @@ const UserSummary_possibleTypes: string[] = ['UserSummary'];
 export const isUserSummary = (obj?: { __typename?: any } | null): obj is UserSummary => {
   if (!obj?.__typename) throw new Error('__typename is missing in "isUserSummary"');
   return UserSummary_possibleTypes.includes(obj.__typename);
+};
+
+const OrgContactInfo_possibleTypes: string[] = ['OrgContactInfo'];
+export const isOrgContactInfo = (obj?: { __typename?: any } | null): obj is OrgContactInfo => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isOrgContactInfo"');
+  return OrgContactInfo_possibleTypes.includes(obj.__typename);
+};
+
+const Organization_possibleTypes: string[] = ['Organization'];
+export const isOrganization = (obj?: { __typename?: any } | null): obj is Organization => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isOrganization"');
+  return Organization_possibleTypes.includes(obj.__typename);
+};
+
+const OrganizationList_possibleTypes: string[] = ['OrganizationList'];
+export const isOrganizationList = (obj?: { __typename?: any } | null): obj is OrganizationList => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isOrganizationList"');
+  return OrganizationList_possibleTypes.includes(obj.__typename);
+};
+
+const Project_possibleTypes: string[] = ['Project'];
+export const isProject = (obj?: { __typename?: any } | null): obj is Project => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isProject"');
+  return Project_possibleTypes.includes(obj.__typename);
+};
+
+const ProjectList_possibleTypes: string[] = ['ProjectList'];
+export const isProjectList = (obj?: { __typename?: any } | null): obj is ProjectList => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isProjectList"');
+  return ProjectList_possibleTypes.includes(obj.__typename);
+};
+
+const OrgMember_possibleTypes: string[] = ['OrgMember'];
+export const isOrgMember = (obj?: { __typename?: any } | null): obj is OrgMember => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isOrgMember"');
+  return OrgMember_possibleTypes.includes(obj.__typename);
 };

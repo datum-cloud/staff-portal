@@ -46,6 +46,20 @@ export var isEnrichedContact = function (obj) {
   return EnrichedContact_possibleTypes.includes(obj.__typename);
 };
 
+var ContactGroupCondition_possibleTypes = ['ContactGroupCondition'];
+export var isContactGroupCondition = function (obj) {
+  if (!obj || !obj.__typename)
+    throw new Error('__typename is missing in "isContactGroupCondition"');
+  return ContactGroupCondition_possibleTypes.includes(obj.__typename);
+};
+
+var EnrichedContactGroupStatus_possibleTypes = ['EnrichedContactGroupStatus'];
+export var isEnrichedContactGroupStatus = function (obj) {
+  if (!obj || !obj.__typename)
+    throw new Error('__typename is missing in "isEnrichedContactGroupStatus"');
+  return EnrichedContactGroupStatus_possibleTypes.includes(obj.__typename);
+};
+
 var EnrichedContactGroup_possibleTypes = ['EnrichedContactGroup'];
 export var isEnrichedContactGroup = function (obj) {
   if (!obj || !obj.__typename) throw new Error('__typename is missing in "isEnrichedContactGroup"');
@@ -84,4 +98,40 @@ var UserSummary_possibleTypes = ['UserSummary'];
 export var isUserSummary = function (obj) {
   if (!obj || !obj.__typename) throw new Error('__typename is missing in "isUserSummary"');
   return UserSummary_possibleTypes.includes(obj.__typename);
+};
+
+var OrgContactInfo_possibleTypes = ['OrgContactInfo'];
+export var isOrgContactInfo = function (obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isOrgContactInfo"');
+  return OrgContactInfo_possibleTypes.includes(obj.__typename);
+};
+
+var Organization_possibleTypes = ['Organization'];
+export var isOrganization = function (obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isOrganization"');
+  return Organization_possibleTypes.includes(obj.__typename);
+};
+
+var OrganizationList_possibleTypes = ['OrganizationList'];
+export var isOrganizationList = function (obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isOrganizationList"');
+  return OrganizationList_possibleTypes.includes(obj.__typename);
+};
+
+var Project_possibleTypes = ['Project'];
+export var isProject = function (obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isProject"');
+  return Project_possibleTypes.includes(obj.__typename);
+};
+
+var ProjectList_possibleTypes = ['ProjectList'];
+export var isProjectList = function (obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isProjectList"');
+  return ProjectList_possibleTypes.includes(obj.__typename);
+};
+
+var OrgMember_possibleTypes = ['OrgMember'];
+export var isOrgMember = function (obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isOrgMember"');
+  return OrgMember_possibleTypes.includes(obj.__typename);
 };
