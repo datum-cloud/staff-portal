@@ -8,9 +8,14 @@ import {
   formatBillingAddress,
   getActiveBindingsForAccount,
   getBillingAccountDisplayName,
+  getInvoicesForAccount,
   getOrganizationDisplayName,
   getPaymentMethodDisplayName,
+  invoiceMatchesSearch,
   isDefaultPaymentMethod,
+  toPastInvoiceRow,
+  type PastInvoiceRow,
+  type PastInvoiceStatus,
 } from '@/features/billing/utils';
 import {
   EMBEDDED_TABLE_BODY_CLASS,
@@ -28,16 +33,17 @@ import { useOrgProjectListQuery } from '@/resources/request/client';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { billingAccountRoutes, orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { LinkButton } from '@datum-cloud/datum-ui/button';
+import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
+import { Input } from '@datum-cloud/datum-ui/input';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1BillingAccountBinding } from '@openapi/billing.miloapis.com/v1alpha1';
 import type { ComMiloapisBillingV1Alpha1PaymentMethod } from '@openapi/billing.miloapis.com/v1alpha1';
 import { createColumnHelper, type ColumnDef } from '@tanstack/react-table';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { type MetaFunction } from 'react-router';
 
 export const meta: MetaFunction = ({ matches }) => {
@@ -47,12 +53,21 @@ export const meta: MetaFunction = ({ matches }) => {
 
 const paymentMethodColumnHelper = createColumnHelper<ComMiloapisBillingV1Alpha1PaymentMethod>();
 const bindingColumnHelper = createColumnHelper<ComMiloapisBillingV1Alpha1BillingAccountBinding>();
+const invoiceColumnHelper = createColumnHelper<PastInvoiceRow>();
+
+const invoiceStatusBadgeState: Record<PastInvoiceStatus, string> = {
+  paid: 'success',
+  open: 'warning',
+  pastDue: 'error',
+  void: 'pending',
+};
 
 export default function Page() {
-  const { account, bindings, paymentMethods, orgName, organization } =
+  const { account, bindings, paymentMethods, invoices, orgName, organization } =
     useBillingAccountDetailData();
   const env = useEnv();
   const projectsQuery = useOrgProjectListQuery(orgName);
+  const [invoiceSearch, setInvoiceSearch] = useState('');
 
   const projectDisplayNames = useMemo(() => {
     const map = new Map<string, string>();
@@ -61,6 +76,28 @@ export default function Page() {
     }
     return map;
   }, [projectsQuery.data?.items]);
+
+  const accountName = account?.metadata?.name;
+  const pastInvoices = useMemo(() => {
+    if (!accountName) return [];
+    return getInvoicesForAccount(invoices ?? [], accountName)
+      .map(toPastInvoiceRow)
+      .sort((a, b) => {
+        const aTime = Date.parse(a.dateSortKey);
+        const bTime = Date.parse(b.dateSortKey);
+        if (Number.isNaN(aTime) && Number.isNaN(bTime)) return 0;
+        if (Number.isNaN(aTime)) return 1;
+        if (Number.isNaN(bTime)) return -1;
+        return bTime - aTime;
+      });
+  }, [accountName, invoices]);
+
+  const filteredInvoices = useMemo(
+    () => pastInvoices.filter((invoice) => invoiceMatchesSearch(invoice, invoiceSearch)),
+    [pastInvoices, invoiceSearch]
+  );
+
+  const hasInvoiceSearch = invoiceSearch.trim().length > 0;
 
   if (!account) {
     return (
@@ -162,6 +199,73 @@ export default function Page() {
       id: 'phase',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
       cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Unknown'} />,
+    }),
+  ];
+
+  const invoiceColumns = [
+    invoiceColumnHelper.accessor('date', {
+      id: 'date',
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Date`} />,
+      sortingFn: (a, b) => {
+        const aTime = Date.parse(a.original.dateSortKey);
+        const bTime = Date.parse(b.original.dateSortKey);
+        if (Number.isNaN(aTime) && Number.isNaN(bTime)) return 0;
+        if (Number.isNaN(aTime)) return 1;
+        if (Number.isNaN(bTime)) return -1;
+        return aTime - bTime;
+      },
+      cell: ({ getValue }) => <Text>{getValue()}</Text>,
+    }),
+    invoiceColumnHelper.accessor('amount', {
+      id: 'amount',
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Amount`} />,
+      sortingFn: (a, b) => a.original.amountSortKey - b.original.amountSortKey,
+      cell: ({ getValue }) => <Text>{getValue()}</Text>,
+    }),
+    invoiceColumnHelper.accessor('invoiceNumber', {
+      id: 'invoiceNumber',
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Invoice`} />,
+      cell: ({ getValue }) => <DisplayId value={getValue()} />,
+    }),
+    invoiceColumnHelper.accessor('status', {
+      id: 'status',
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
+      cell: ({ row }) => (
+        <BadgeState
+          state={invoiceStatusBadgeState[row.original.status]}
+          message={row.original.statusLabel}
+        />
+      ),
+    }),
+    invoiceColumnHelper.display({
+      id: 'download',
+      enableSorting: false,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Download`} />,
+      cell: ({ row }) => {
+        const url = row.original.downloadUrl;
+        if (!url) {
+          return (
+            <Button type="secondary" theme="borderless" size="small" disabled>
+              <ACTION_ICONS.download className="size-4" />
+              <span className="sr-only">
+                <Trans>Download unavailable</Trans>
+              </span>
+            </Button>
+          );
+        }
+        return (
+          <Button
+            type="secondary"
+            theme="borderless"
+            size="small"
+            icon={<ACTION_ICONS.download className="size-4" />}
+            onClick={() => window.open(url, '_blank', 'noopener,noreferrer')}>
+            <span className="sr-only">
+              <Trans>Download invoice</Trans>
+            </span>
+          </Button>
+        );
+      },
     }),
   ];
 
@@ -322,6 +426,46 @@ export default function Page() {
               rowClassName={LIST_TABLE_ROW_CLASS}
               cellClassName={EMBEDDED_TABLE_CELL_CLASS}
               emptyMessage={t`No payment methods`}
+            />
+          </DataTable.Client>
+        )}
+      </TableCard>
+
+      <TableCard
+        title={<Trans>Past invoices</Trans>}
+        action={
+          pastInvoices.length > 0 ? (
+            <Input
+              value={invoiceSearch}
+              onChange={(event) => setInvoiceSearch(event.target.value)}
+              placeholder={t`Search invoices`}
+              className="h-9 w-56"
+              aria-label={t`Search invoices`}
+            />
+          ) : undefined
+        }>
+        {pastInvoices.length === 0 ? (
+          <Text className="text-muted-foreground px-4 py-6">
+            <Trans>No invoices yet</Trans>
+          </Text>
+        ) : filteredInvoices.length === 0 && hasInvoiceSearch ? (
+          <Text className="text-muted-foreground px-4 py-6">
+            <Trans>No invoices match your search</Trans>
+          </Text>
+        ) : (
+          <DataTable.Client
+            data={filteredInvoices}
+            columns={invoiceColumns as ColumnDef<PastInvoiceRow, unknown>[]}
+            pageSize={10}
+            getRowId={(row) => row.id}>
+            <DataTable.Content
+              headerClassName={LIST_TABLE_HEADER_CLASS}
+              headerRowClassName={LIST_TABLE_HEADER_ROW_CLASS}
+              headerCellClassName={EMBEDDED_TABLE_HEADER_CELL_CLASS}
+              bodyClassName={EMBEDDED_TABLE_BODY_CLASS}
+              rowClassName={LIST_TABLE_ROW_CLASS}
+              cellClassName={EMBEDDED_TABLE_CELL_CLASS}
+              emptyMessage={t`No invoices`}
             />
           </DataTable.Client>
         )}

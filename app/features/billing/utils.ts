@@ -1,8 +1,116 @@
 import type {
   ComMiloapisBillingV1Alpha1BillingAccount,
   ComMiloapisBillingV1Alpha1BillingAccountBinding,
+  ComMiloapisBillingV1Alpha1Invoice,
   ComMiloapisBillingV1Alpha1PaymentMethod,
 } from '@openapi/billing.miloapis.com/v1alpha1';
+
+export type Invoice = ComMiloapisBillingV1Alpha1Invoice;
+export type InvoicePhase = NonNullable<NonNullable<Invoice['status']>['phase']>;
+
+/** UI status values mapped from Invoice.status.phase for the past-invoices table. */
+export type PastInvoiceStatus = 'paid' | 'open' | 'pastDue' | 'void';
+
+/** Row shape rendered by the past-invoices table. */
+export type PastInvoiceRow = {
+  id: string;
+  date: string;
+  /** ISO period end — used for sorting. */
+  dateSortKey: string;
+  amount: string;
+  /** Numeric amount for sorting. */
+  amountSortKey: number;
+  invoiceNumber: string;
+  status: PastInvoiceStatus;
+  statusLabel: string;
+  phase: InvoicePhase | 'Open';
+  downloadUrl?: string;
+};
+
+const phaseToStatus: Record<InvoicePhase, PastInvoiceStatus> = {
+  Paid: 'paid',
+  Open: 'open',
+  PastDue: 'pastDue',
+  Void: 'void',
+};
+
+const statusLabels: Record<PastInvoiceStatus, string> = {
+  paid: 'Paid',
+  open: 'Open',
+  pastDue: 'Past due',
+  void: 'Void',
+};
+
+const formatInvoiceAmount = (
+  total: string | undefined,
+  currencyCode: string | undefined
+): { display: string; sortKey: number } => {
+  const amount = Number.parseFloat(total ?? '');
+  if (Number.isNaN(amount)) {
+    return { display: total ?? '—', sortKey: 0 };
+  }
+  try {
+    return {
+      display: new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: currencyCode ?? 'USD',
+      }).format(amount),
+      sortKey: amount,
+    };
+  } catch {
+    return { display: `${total} ${currencyCode ?? ''}`.trim(), sortKey: amount };
+  }
+};
+
+const formatInvoiceDate = (iso: string | undefined): string => {
+  if (!iso) return '—';
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso;
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+};
+
+/**
+ * Project an Invoice CRD onto the row shape the past-invoices table renders.
+ * Missing phase (provider still projecting) collapses to `open`.
+ */
+export const toPastInvoiceRow = (invoice: Invoice): PastInvoiceRow => {
+  const name = invoice.metadata?.name ?? '';
+  const phase = invoice.status?.phase;
+  const status = phase ? phaseToStatus[phase] : 'open';
+  const periodEnd = invoice.spec?.period?.end ?? '';
+  const { display: amount, sortKey: amountSortKey } = formatInvoiceAmount(
+    invoice.status?.total,
+    invoice.status?.currencyCode
+  );
+  return {
+    id: name,
+    invoiceNumber: name,
+    date: formatInvoiceDate(periodEnd),
+    dateSortKey: periodEnd,
+    amount,
+    amountSortKey,
+    status,
+    statusLabel: statusLabels[status],
+    phase: phase ?? 'Open',
+    downloadUrl: invoice.status?.documentUri,
+  };
+};
+
+export const getInvoicesForAccount = (invoices: Invoice[], accountName: string): Invoice[] =>
+  invoices.filter((invoice) => invoice.spec?.billingAccountRef?.name === accountName);
+
+export const invoiceMatchesSearch = (row: PastInvoiceRow, query: string): boolean => {
+  const q = query.trim().toLowerCase();
+  if (!q) return true;
+  return (
+    row.date.toLowerCase().includes(q) ||
+    row.amount.toLowerCase().includes(q) ||
+    row.invoiceNumber.toLowerCase().includes(q) ||
+    row.status.toLowerCase().includes(q) ||
+    row.statusLabel.toLowerCase().includes(q) ||
+    row.phase.toLowerCase().includes(q)
+  );
+};
 
 export const BILLING_ACCOUNT_DISPLAY_NAME_ANNOTATION = 'kubernetes.io/display-name';
 

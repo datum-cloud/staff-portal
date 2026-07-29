@@ -16,7 +16,14 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const accountName = params.accountName ?? '';
 
   if (!orgName || !accountName) {
-    return { account: null, bindings: [], paymentMethods: [], orgName, organization: undefined };
+    return {
+      account: null,
+      bindings: [],
+      paymentMethods: [],
+      invoices: [],
+      orgName,
+      organization: undefined,
+    };
   }
 
   try {
@@ -26,7 +33,14 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       accountName
     );
   } catch {
-    return { account: null, bindings: [], paymentMethods: [], orgName, organization: undefined };
+    return {
+      account: null,
+      bindings: [],
+      paymentMethods: [],
+      invoices: [],
+      orgName,
+      organization: undefined,
+    };
   }
 };
 
