@@ -221,7 +221,7 @@ export interface FilterOption {
 }
 
 interface BaseFilterGroup {
-  /** Dot-path filter key (e.g. `status.registrationApproval`). `<ListTable filters>` auto-wires its matcher. */
+  /** Dot-path filter key (e.g. `status.platformAccess`). `<ListTable filters>` auto-wires its matcher. */
   column: string;
   label: string;
 }

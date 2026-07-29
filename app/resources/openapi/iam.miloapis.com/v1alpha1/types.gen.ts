@@ -1343,17 +1343,10 @@ export type ComMiloapisIamV1Alpha1User = {
     lastLoginProvider?: ('github' | 'google' | 'passkey' | 'email') &
       ('github' | 'google' | 'passkey' | 'email');
     /**
-     * RegistrationApproval represents the administrator’s decision on the user’s registration request.
-     * States:
-     * - Pending:  The user is awaiting review by an administrator.
-     * - Approved: The user registration has been approved.
-     * - Rejected: The user registration has been rejected.
-     * The User resource is always created regardless of this value, but the
-     * ability for the person to sign into the platform and access resources is
-     * governed by this status: only *Approved* users are granted access, while
-     * *Pending* and *Rejected* users are prevented for interacting with resources.
+     * PlatformAccess represents the user's access state on the platform.
      */
-    registrationApproval?: 'Pending' | 'Approved' | 'Rejected';
+    platformAccess?: ('Pending' | 'Approved' | 'Rejected' | 'Suspended') &
+      ('Pending' | 'Approved' | 'Rejected' | 'Suspended');
     /**
      * State represents the current activation state of the user account from the
      * auth provider. This field is managed exclusively by the UserDeactivation CRD

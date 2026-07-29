@@ -9,7 +9,14 @@ import { cn } from '@datum-cloud/datum-ui/utils';
  * @see https://www.figma.com/design/bBEQ8YeTP4SngNl5EkkQdH/Datum---Master-Design-File?node-id=13458-52788
  * @see https://www.figma.com/design/bBEQ8YeTP4SngNl5EkkQdH/Datum---Master-Design-File?node-id=13458-52789
  */
-export type AppBadgeValue = 'open' | 'closed' | 'in-progress' | 'pending' | 'approved' | 'rejected';
+export type AppBadgeValue =
+  | 'open'
+  | 'closed'
+  | 'in-progress'
+  | 'pending'
+  | 'approved'
+  | 'rejected'
+  | 'suspended';
 
 type Props = {
   status: AppBadgeValue | string;
@@ -51,6 +58,11 @@ const BADGE_STYLES: Record<AppBadgeValue, { label: string; className: string }> 
     className:
       'bg-[rgba(68,110,61,0.2)] text-[#446e3d] dark:bg-[rgba(143,188,136,0.18)] dark:text-[#8fbc88]',
   },
+  // Suspended — amber, distinct from pending's soft orange
+  suspended: {
+    label: 'Suspended',
+    className: 'bg-[rgba(217,164,65,0.2)] text-[#a67c1a] dark:text-[#e0b866]',
+  },
 };
 
 const ALIASES: Record<string, AppBadgeValue> = {
@@ -62,6 +74,7 @@ const ALIASES: Record<string, AppBadgeValue> = {
   approved: 'approved',
   rejected: 'rejected',
   declined: 'rejected',
+  suspended: 'suspended',
 };
 
 function normalizeStatus(status: string): AppBadgeValue {
