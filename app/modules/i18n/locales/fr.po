@@ -119,6 +119,8 @@ msgid "Access revoked"
 msgstr ""
 
 #: app/routes/customer/user/detail/index.tsx:203
+#: app/routes/customer/user/index.tsx:160
+#: app/routes/customer/user/index.tsx:306
 msgid "Access State"
 msgstr ""
 
@@ -196,8 +198,8 @@ msgstr ""
 #: app/routes/marketing/contact-group/detail/member.tsx:335
 #: app/routes/marketing/contact-group/detail/member.tsx:361
 #: app/routes/marketing/contact-group/index.tsx:197
-#: app/routes/marketing/contact/detail/group.tsx:151
-#: app/routes/marketing/contact/detail/group.tsx:173
+#: app/routes/marketing/contact/detail/group.tsx:149
+#: app/routes/marketing/contact/detail/group.tsx:171
 #: app/routes/marketing/contact/index.tsx:30
 msgid "Add"
 msgstr ""
@@ -223,7 +225,7 @@ msgstr ""
 msgid "Add Stage"
 msgstr ""
 
-#: app/routes/marketing/contact/detail/group.tsx:172
+#: app/routes/marketing/contact/detail/group.tsx:170
 msgid "Add to Contact Group"
 msgstr ""
 
@@ -406,7 +408,7 @@ msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be u
 msgstr ""
 
 #. placeholder {0}: selectedGroup?.contactGroup?.spec?.displayName ?? ''
-#: app/routes/marketing/contact/detail/group.tsx:159
+#: app/routes/marketing/contact/detail/group.tsx:157
 msgid "Are you sure you want to remove this contact from the contact group \"{0}\"? This action cannot be undone."
 msgstr ""
 
@@ -528,13 +530,13 @@ msgstr ""
 #: app/routes/customer/fraud/providers/index.tsx:133
 #: app/routes/customer/organization/detail/member.tsx:85
 #: app/routes/customer/user/detail/index.tsx:397
-#: app/routes/customer/user/index.tsx:215
+#: app/routes/customer/user/index.tsx:211
 #: app/routes/marketing/contact-group/detail/member.tsx:345
 #: app/routes/marketing/contact-group/detail/member.tsx:362
 #: app/routes/marketing/contact-group/index.tsx:109
 #: app/routes/marketing/contact-group/index.tsx:128
-#: app/routes/marketing/contact/detail/group.tsx:161
-#: app/routes/marketing/contact/detail/group.tsx:174
+#: app/routes/marketing/contact/detail/group.tsx:159
+#: app/routes/marketing/contact/detail/group.tsx:172
 #: app/routes/profile/session.tsx:105
 msgid "Cancel"
 msgstr ""
@@ -701,7 +703,7 @@ msgstr ""
 msgid "Contact email"
 msgstr ""
 
-#: app/routes/marketing/contact/detail/group.tsx:141
+#: app/routes/marketing/contact/detail/group.tsx:139
 msgid "Contact group added successfully"
 msgstr ""
 
@@ -718,7 +720,7 @@ msgstr ""
 msgid "Contact Group Information"
 msgstr ""
 
-#: app/routes/marketing/contact/detail/group.tsx:127
+#: app/routes/marketing/contact/detail/group.tsx:125
 msgid "Contact group is required"
 msgstr ""
 
@@ -874,8 +876,8 @@ msgstr ""
 #: app/routes/customer/resource/index.tsx:251
 #: app/routes/customer/resource/index.tsx:296
 #: app/routes/customer/user/detail/index.tsx:207
-#: app/routes/customer/user/index.tsx:169
-#: app/routes/customer/user/index.tsx:327
+#: app/routes/customer/user/index.tsx:165
+#: app/routes/customer/user/index.tsx:316
 #: app/routes/marketing/contact-group/index.tsx:87
 #: app/routes/profile/session.tsx:72
 msgid "Created"
@@ -991,7 +993,7 @@ msgstr ""
 #: app/routes/marketing/contact-group/index.tsx:108
 #: app/routes/marketing/contact-group/index.tsx:127
 #: app/routes/marketing/contact/detail/group.tsx:71
-#: app/routes/marketing/contact/detail/group.tsx:160
+#: app/routes/marketing/contact/detail/group.tsx:158
 #: app/routes/profile/session.tsx:40
 #: app/routes/profile/session.tsx:104
 msgid "Delete"
@@ -1278,7 +1280,7 @@ msgstr ""
 #: app/routes/customer/organization/detail/member.tsx:119
 #: app/routes/customer/user/detail/index.tsx:199
 #: app/routes/customer/user/index.tsx:135
-#: app/routes/customer/user/index.tsx:253
+#: app/routes/customer/user/index.tsx:249
 #: app/routes/marketing/contact-group/detail/member.tsx:202
 msgid "Email"
 msgstr ""
@@ -1306,7 +1308,7 @@ msgstr ""
 msgid "Email HTML preview"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:191
+#: app/routes/customer/user/index.tsx:187
 msgid "Email is required"
 msgstr ""
 
@@ -1365,7 +1367,7 @@ msgstr ""
 msgid "Enter a reason (at least {REASON_MIN_LENGTH} characters)..."
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:248
+#: app/routes/customer/user/index.tsx:244
 msgid "Enter first name"
 msgstr ""
 
@@ -1579,13 +1581,13 @@ msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:125
 #: app/features/profile/components/profile-form.tsx:46
-#: app/routes/customer/user/index.tsx:247
+#: app/routes/customer/user/index.tsx:243
 msgid "First Name"
 msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:46
 #: app/features/profile/components/profile-form.tsx:15
-#: app/routes/customer/user/index.tsx:189
+#: app/routes/customer/user/index.tsx:185
 msgid "First name is required"
 msgstr ""
 
@@ -1767,7 +1769,7 @@ msgid "Individual"
 msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:48
-#: app/routes/customer/user/index.tsx:191
+#: app/routes/customer/user/index.tsx:187
 msgid "Invalid email address"
 msgstr ""
 
@@ -1785,12 +1787,12 @@ msgstr ""
 msgid "Invitation resend successfully"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:214
+#: app/routes/customer/user/index.tsx:210
 msgid "Invite"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:213
-#: app/routes/customer/user/index.tsx:290
+#: app/routes/customer/user/index.tsx:209
+#: app/routes/customer/user/index.tsx:286
 msgid "Invite User"
 msgstr ""
 
@@ -1835,7 +1837,7 @@ msgid "Issuing TLS certificate"
 msgstr ""
 
 #: app/routes/customer/user/detail/organization.tsx:53
-#: app/routes/marketing/contact/detail/group.tsx:113
+#: app/routes/marketing/contact/detail/group.tsx:111
 msgid "Joined"
 msgstr ""
 
@@ -1853,13 +1855,13 @@ msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:128
 #: app/features/profile/components/profile-form.tsx:49
-#: app/routes/customer/user/index.tsx:250
+#: app/routes/customer/user/index.tsx:246
 msgid "Last Name"
 msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:47
 #: app/features/profile/components/profile-form.tsx:16
-#: app/routes/customer/user/index.tsx:190
+#: app/routes/customer/user/index.tsx:186
 msgid "Last name is required"
 msgstr ""
 
@@ -1893,7 +1895,7 @@ msgstr ""
 msgid "Limited to 10,000 projects. Refine your search to surface others."
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:296
+#: app/routes/customer/user/index.tsx:292
 msgid "Limited to 10,000 users. Refine your search to surface others."
 msgstr ""
 
@@ -2213,7 +2215,7 @@ msgid "No contact details on file. Onboarding may be waiting on this step."
 msgstr ""
 
 #: app/routes/marketing/contact-group/index.tsx:217
-#: app/routes/marketing/contact/detail/group.tsx:197
+#: app/routes/marketing/contact/detail/group.tsx:195
 msgid "No contact groups found."
 msgstr ""
 
@@ -2405,7 +2407,7 @@ msgstr ""
 msgid "No usage to display"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:298
+#: app/routes/customer/user/index.tsx:294
 msgid "No users found."
 msgstr ""
 
@@ -2613,7 +2615,7 @@ msgstr ""
 msgid "Phase"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:263
+#: app/routes/customer/user/index.tsx:259
 msgid "Pick date and time Test"
 msgstr ""
 
@@ -2880,11 +2882,6 @@ msgstr ""
 msgid "Registrar"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:164
-#: app/routes/customer/user/index.tsx:310
-msgid "Registration"
-msgstr ""
-
 #: app/features/user/components/user-reject-dialog.tsx:29
 #: app/routes/customer/user/index.tsx:89
 msgid "Reject"
@@ -2898,11 +2895,11 @@ msgstr ""
 msgid "Remove {revokeConsumerProject}'s access to {revokeEntitlementName}? They'll lose access immediately and all of their resources for this service will be permanently deleted. This cannot be undone."
 msgstr ""
 
-#: app/routes/marketing/contact/detail/group.tsx:158
+#: app/routes/marketing/contact/detail/group.tsx:156
 msgid "Remove from Contact Group"
 msgstr ""
 
-#: app/routes/marketing/contact/detail/group.tsx:166
+#: app/routes/marketing/contact/detail/group.tsx:164
 msgid "Removed from contact group successfully"
 msgstr ""
 
@@ -3030,15 +3027,15 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:260
+#: app/routes/customer/user/index.tsx:256
 msgid "Schedule At"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:203
+#: app/routes/customer/user/index.tsx:199
 msgid "Schedule date and time is required"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:257
+#: app/routes/customer/user/index.tsx:253
 msgid "Schedule invitation to be sent at specific time"
 msgstr ""
 
@@ -3101,8 +3098,8 @@ msgid "Search by project, ID, or note..."
 msgstr ""
 
 #: app/routes/marketing/contact-group/index.tsx:216
-#: app/routes/marketing/contact/detail/group.tsx:182
-#: app/routes/marketing/contact/detail/group.tsx:196
+#: app/routes/marketing/contact/detail/group.tsx:180
+#: app/routes/marketing/contact/detail/group.tsx:194
 msgid "Search contact groups..."
 msgstr ""
 
@@ -3197,7 +3194,7 @@ msgstr ""
 msgid "Search users, organizations, and projects"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:297
+#: app/routes/customer/user/index.tsx:293
 msgid "Search users..."
 msgstr ""
 
@@ -3249,7 +3246,7 @@ msgstr ""
 msgid "Select a user to run a fraud evaluation against the current policy."
 msgstr ""
 
-#: app/routes/marketing/contact/detail/group.tsx:181
+#: app/routes/marketing/contact/detail/group.tsx:179
 msgid "Select contact group..."
 msgstr ""
 
@@ -3399,11 +3396,9 @@ msgstr ""
 #: app/routes/customer/project/detail/export-policy/detail.tsx:75
 #: app/routes/customer/project/detail/export-policy/detail.tsx:168
 #: app/routes/customer/project/detail/export-policy/index.tsx:44
-#: app/routes/customer/user/index.tsx:159
-#: app/routes/customer/user/index.tsx:319
 #: app/routes/marketing/contact-group/detail/member.tsx:207
 #: app/routes/marketing/contact-group/index.tsx:80
-#: app/routes/marketing/contact/detail/group.tsx:101
+#: app/routes/marketing/contact/detail/group.tsx:99
 msgid "Status"
 msgstr ""
 
@@ -3552,7 +3547,7 @@ msgstr ""
 msgid "Total projects"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:303
+#: app/routes/customer/user/index.tsx:299
 msgid "Total users"
 msgstr ""
 
@@ -3688,7 +3683,7 @@ msgstr ""
 msgid "User deleted successfully"
 msgstr ""
 
-#: app/routes/customer/user/index.tsx:241
+#: app/routes/customer/user/index.tsx:237
 msgid "User invited successfully"
 msgstr ""
 

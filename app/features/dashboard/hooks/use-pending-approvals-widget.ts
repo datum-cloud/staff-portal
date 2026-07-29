@@ -21,7 +21,7 @@ interface UsePendingApprovalsWidgetResult {
 export function usePendingApprovalsWidget(): UsePendingApprovalsWidgetResult {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['dashboard', 'pending-approvals'],
-    queryFn: () => userListQuery({ filters: { registrationApproval: 'Pending' }, limit: 5 }),
+    queryFn: () => userListQuery({ filters: { platformAccess: 'Pending' }, limit: 5 }),
     refetchInterval: 60_000,
     staleTime: 30 * 1000,
   });

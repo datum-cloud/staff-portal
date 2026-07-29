@@ -32,7 +32,7 @@ export function createCustomerTools({ accessToken }: CustomerToolDeps) {
                 email: u.spec?.email,
                 givenName: u.spec?.givenName,
                 familyName: u.spec?.familyName,
-                registrationApproval: u.status?.registrationApproval,
+                platformAccess: u.status?.platformAccess,
                 url: `/customers/users/${encodeURIComponent(u.metadata?.name)}`,
               }))
             : [],
@@ -98,26 +98,22 @@ export function createCustomerTools({ accessToken }: CustomerToolDeps) {
     listUsers: tool({
       description:
         'List platform users with optional filters.' +
-        ' Use this to browse users or filter by approval status.' +
+        ' Use this to browse users or filter by platform access state.' +
         ' WARNING: This returns users in arbitrary order — it does NOT sort by creation date.' +
         ' For "newest" / "most recent" / "latest" users, use `queryActivityLogs` instead with verb="create" and resourceType="users".',
       inputSchema: z.object({
         limit: z.number().int().min(1).max(50).default(20).describe('Max results to return'),
-        registrationApproval: z
+        platformAccess: z
           .string()
           .optional()
-          .describe('Filter by approval status (e.g. "approved", "pending")'),
+          .describe(
+            'Filter by platform access state (e.g. "Approved", "Pending", "Suspended", "Rejected")'
+          ),
       }),
-      execute: async ({
-        limit,
-        registrationApproval,
-      }: {
-        limit: number;
-        registrationApproval?: string;
-      }) => {
+      execute: async ({ limit, platformAccess }: { limit: number; platformAccess?: string }) => {
         const params = new URLSearchParams({ limit: String(limit) });
-        if (registrationApproval) {
-          params.set('fieldSelector', `status.registrationApproval=${registrationApproval}`);
+        if (platformAccess) {
+          params.set('fieldSelector', `status.platformAccess=${platformAccess}`);
         }
         const result = await datumGet(
           `/apis/iam.miloapis.com/v1alpha1/users?${params}`,
@@ -133,7 +129,7 @@ export function createCustomerTools({ accessToken }: CustomerToolDeps) {
                 givenName: u.spec?.givenName,
                 familyName: u.spec?.familyName,
                 createdAt: u.metadata?.creationTimestamp,
-                registrationApproval: u.status?.registrationApproval,
+                platformAccess: u.status?.platformAccess,
                 url: `/customers/users/${encodeURIComponent(u.metadata?.name)}`,
               }))
             : [],

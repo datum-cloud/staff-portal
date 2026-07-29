@@ -1,5 +1,5 @@
 import type { Route } from './+types/index';
-import { AppBadge, CustomerStatus } from '@/components/badge';
+import { AppBadge } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
 import { DisplayId, DisplayName, DisplayText } from '@/components/display';
@@ -73,7 +73,7 @@ export default function Page() {
     {
       label: t`Approve`,
       icon: <ACTION_ICONS.check className="size-4" />,
-      hidden: (row) => row.status?.registrationApproval !== 'Pending',
+      hidden: (row) => row.status?.platformAccess !== 'Pending',
       onClick: async (row) => {
         setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: true }));
         try {
@@ -89,13 +89,13 @@ export default function Page() {
       label: t`Reject`,
       icon: <ACTION_ICONS.close className="size-4" />,
       variant: 'destructive' as const,
-      hidden: (row) => row.status?.registrationApproval !== 'Pending',
+      hidden: (row) => row.status?.platformAccess !== 'Pending',
       onClick: (row) => setSelectedUser(row),
     },
     {
       label: t`Move to Pending`,
       icon: <ACTION_ICONS.reset className="size-4" />,
-      hidden: (row) => row.status?.registrationApproval === 'Pending',
+      hidden: (row) => row.status?.platformAccess === 'Pending',
       onClick: async (row) => {
         setLoadingStates((prev) => ({ ...prev, [row.metadata?.name ?? '']: true }));
         try {
@@ -155,13 +155,9 @@ export default function Page() {
         return <DisplayId value={getValue() ?? ''} />;
       },
     }),
-    columnHelper.accessor('status.state', {
-      header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
-      cell: ({ getValue }) => <CustomerStatus status={getValue() ?? 'Active'} />,
-    }),
-    columnHelper.accessor('status.registrationApproval', {
-      id: 'registrationApproval',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`Registration`} />,
+    columnHelper.accessor('status.platformAccess', {
+      id: 'platformAccess',
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Access State`} />,
       cell: ({ getValue }) => <AppBadge status={getValue() ?? 'Pending'} />,
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
@@ -306,20 +302,13 @@ export default function Page() {
           }
           filters={[
             {
-              column: 'status.registrationApproval',
-              label: t`Registration`,
+              column: 'status.platformAccess',
+              label: t`Access State`,
               options: [
                 { value: 'Pending', label: <AppBadge status="pending" /> },
                 { value: 'Approved', label: <AppBadge status="approved" /> },
+                { value: 'Suspended', label: <AppBadge status="suspended" /> },
                 { value: 'Rejected', label: <AppBadge status="rejected" /> },
-              ],
-            },
-            {
-              column: 'status.state',
-              label: t`Status`,
-              options: [
-                { value: 'Active', label: <CustomerStatus status="active" /> },
-                { value: 'Inactive', label: <CustomerStatus status="inactive" /> },
               ],
             },
             {

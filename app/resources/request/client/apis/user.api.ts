@@ -26,8 +26,8 @@ export const userListQuery = async (params?: ListQueryParams) => {
     fieldSelectors['spec.email'] = params.search;
   }
 
-  if (params?.filters?.registrationApproval) {
-    fieldSelectors['status.registrationApproval'] = params.filters.registrationApproval;
+  if (params?.filters?.platformAccess) {
+    fieldSelectors['status.platformAccess'] = params.filters.platformAccess;
   }
 
   const fieldSelectorString =

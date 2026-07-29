@@ -158,7 +158,6 @@ export {
   replaceIamMiloapisComV1Alpha1UserPreferenceStatus,
   replaceIamMiloapisComV1Alpha1UserStatus,
 } from './sdk.gen';
-
 export type {
   ClientOptions,
   ComMiloapisIamV1Alpha1Group,
