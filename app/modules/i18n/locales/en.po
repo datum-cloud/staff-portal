@@ -553,6 +553,11 @@ msgstr "Card"
 msgid "Certificates nearing expiry"
 msgstr "Certificates nearing expiry"
 
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:170
+#: app/routes/operation/chainsaw-tests.tsx:11
+msgid "Chainsaw Tests"
+msgstr "Chainsaw Tests"
+
 #: app/features/user/components/user-identity-card.tsx:98
 msgid "Change your Primary Email in GitHub (your primary email)"
 msgstr "Change your Primary Email in GitHub (your primary email)"
@@ -560,6 +565,10 @@ msgstr "Change your Primary Email in GitHub (your primary email)"
 #: app/features/preferences/components/preferences-form.tsx:71
 msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
 msgstr "Choose how the portal looks to you. Select a single theme, or sync with your system."
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:185
+msgid "CI runs"
+msgstr "CI runs"
 
 #: app/features/fraud/detail/maxmind-rows.tsx:244
 msgid "Classification"
@@ -807,6 +816,10 @@ msgstr "Could not load quota data"
 #: app/features/project/components/project-quotas-card.tsx:77
 msgid "Could not load quotas"
 msgstr "Could not load quotas"
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:90
+msgid "Could not load test results"
+msgstr "Could not load test results"
 
 #: app/features/organization/components/org-usage-card.tsx:66
 #: app/features/project/components/project-usage-card.tsx:100
@@ -1532,6 +1545,10 @@ msgstr "Failed to update theme"
 msgid "Failed to update timezone"
 msgstr "Failed to update timezone"
 
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:153
+msgid "Failing"
+msgstr "Failing"
+
 #: app/routes/customer/fraud/providers/create.tsx:94
 #: app/routes/customer/fraud/providers/detail.tsx:134
 #: app/routes/customer/fraud/providers/index.tsx:69
@@ -1682,6 +1699,10 @@ msgstr "Get"
 #: app/components/app-search/use-app-search.ts:34
 msgid "Go to dashboard"
 msgstr "Go to dashboard"
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:262
+msgid "Grafana"
+msgstr "Grafana"
 
 #: app/features/quota/components/quota-grant-list.tsx:87
 msgid "Grant"
@@ -1866,6 +1887,14 @@ msgstr "Joined"
 msgid "Last 10 new users who joined Datum"
 msgstr "Last 10 new users who joined Datum"
 
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:214
+msgid "Last 3 days"
+msgstr "Last 3 days"
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:173
+msgid "Last 3 days · tests expected to pass every run"
+msgstr "Last 3 days · tests expected to pass every run"
+
 #: app/routes/customer/user/detail/index.tsx:302
 msgid "Last Evaluated"
 msgstr "Last Evaluated"
@@ -1890,6 +1919,10 @@ msgstr "Last name is required"
 #: app/routes/customer/user/index.tsx:143
 msgid "Last signed in with {0}"
 msgstr "Last signed in with {0}"
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:219
+msgid "Latest"
+msgstr "Latest"
 
 #: app/routes/customer/user/detail/index.tsx:268
 msgid "Latest fraud evaluation for this user"
@@ -1926,6 +1959,10 @@ msgstr "Limited to 10,000 users. Refine your search to surface others."
 #: app/routes/customer/billing-account/detail/index.tsx:474
 msgid "Linked projects"
 msgstr "Linked projects"
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:224
+msgid "Links"
+msgstr "Links"
 
 #: app/features/activity/components/activity-list.tsx:366
 #: app/features/activity/components/activity-list.tsx:456
@@ -2419,6 +2456,10 @@ msgstr "No resources found."
 msgid "No results found."
 msgstr "No results found."
 
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:121
+msgid "No runs"
+msgstr "No runs"
+
 #: app/routes/customer/project/detail/secret.tsx:52
 msgid "No secrets found."
 msgstr "No secrets found."
@@ -2434,6 +2475,10 @@ msgstr "No services found."
 #: app/routes/admin/service-catalog/index.tsx:203
 msgid "No services match the current filters."
 msgstr "No services match the current filters."
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:73
+msgid "No stable tests labeled yet"
+msgstr "No stable tests labeled yet"
 
 #: app/features/organization/components/org-usage-card.tsx:88
 #: app/features/project/components/project-usage-card.tsx:122
@@ -2586,6 +2631,10 @@ msgstr "Owner"
 #: app/routes/admin/service-catalog/detail/index.tsx:121
 msgid "Owner:"
 msgstr "Owner:"
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:146
+msgid "Passing"
+msgstr "Passing"
 
 #: app/routes/customer/billing-account/detail/index.tsx:435
 msgid "Past invoices"
@@ -3013,6 +3062,7 @@ msgstr "Response Code"
 msgid "Retired"
 msgstr "Retired"
 
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:93
 #: app/features/dashboard/components/cluster-health-widget.tsx:40
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:94
 #: app/features/dashboard/components/pending-approvals-widget.tsx:80
@@ -3460,6 +3510,10 @@ msgstr "Subject"
 msgid "Subject is required when user association is enabled"
 msgstr "Subject is required when user association is enabled"
 
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:209
+msgid "Suite"
+msgstr "Suite"
+
 #: app/routes/marketing/contact-group/index.tsx:153
 msgid "Summary"
 msgstr "Summary"
@@ -3492,6 +3546,18 @@ msgstr "Template"
 #: app/features/activity/components/activity-list.tsx:134
 msgid "Tenant"
 msgstr "Tenant"
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:204
+msgid "Test"
+msgstr "Test"
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:272
+msgid "Test docs"
+msgstr "Test docs"
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:76
+msgid "Tests show up here once tagged metadata.labels.stability: stable in their chainsaw-test.yaml"
+msgstr "Tests show up here once tagged metadata.labels.stability: stable in their chainsaw-test.yaml"
 
 #: app/routes/admin/service-catalog/detail/approvals.tsx:121
 msgid "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
@@ -3647,6 +3713,7 @@ msgstr "Type to search."
 msgid "Unavailable"
 msgstr "Unavailable"
 
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:138
 #: app/features/domain/components/note-card.tsx:38
 #: app/routes/admin/service-catalog/detail/consumers.tsx:109
 msgid "Unknown"

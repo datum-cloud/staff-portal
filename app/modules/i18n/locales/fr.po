@@ -553,12 +553,21 @@ msgstr ""
 msgid "Certificates nearing expiry"
 msgstr ""
 
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:170
+#: app/routes/operation/chainsaw-tests.tsx:11
+msgid "Chainsaw Tests"
+msgstr ""
+
 #: app/features/user/components/user-identity-card.tsx:98
 msgid "Change your Primary Email in GitHub (your primary email)"
 msgstr ""
 
 #: app/features/preferences/components/preferences-form.tsx:71
 msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
+msgstr ""
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:185
+msgid "CI runs"
 msgstr ""
 
 #: app/features/fraud/detail/maxmind-rows.tsx:244
@@ -806,6 +815,10 @@ msgstr ""
 
 #: app/features/project/components/project-quotas-card.tsx:77
 msgid "Could not load quotas"
+msgstr ""
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:90
+msgid "Could not load test results"
 msgstr ""
 
 #: app/features/organization/components/org-usage-card.tsx:66
@@ -1532,6 +1545,10 @@ msgstr ""
 msgid "Failed to update timezone"
 msgstr ""
 
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:153
+msgid "Failing"
+msgstr ""
+
 #: app/routes/customer/fraud/providers/create.tsx:94
 #: app/routes/customer/fraud/providers/detail.tsx:134
 #: app/routes/customer/fraud/providers/index.tsx:69
@@ -1681,6 +1698,10 @@ msgstr ""
 
 #: app/components/app-search/use-app-search.ts:34
 msgid "Go to dashboard"
+msgstr ""
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:262
+msgid "Grafana"
 msgstr ""
 
 #: app/features/quota/components/quota-grant-list.tsx:87
@@ -1866,6 +1887,14 @@ msgstr ""
 msgid "Last 10 new users who joined Datum"
 msgstr ""
 
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:214
+msgid "Last 3 days"
+msgstr ""
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:173
+msgid "Last 3 days · tests expected to pass every run"
+msgstr ""
+
 #: app/routes/customer/user/detail/index.tsx:302
 msgid "Last Evaluated"
 msgstr ""
@@ -1889,6 +1918,10 @@ msgstr ""
 #. placeholder {0}: providerMeta.label
 #: app/routes/customer/user/index.tsx:143
 msgid "Last signed in with {0}"
+msgstr ""
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:219
+msgid "Latest"
 msgstr ""
 
 #: app/routes/customer/user/detail/index.tsx:268
@@ -1925,6 +1958,10 @@ msgstr ""
 #: app/routes/customer/billing-account/detail/index.tsx:341
 #: app/routes/customer/billing-account/detail/index.tsx:474
 msgid "Linked projects"
+msgstr ""
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:224
+msgid "Links"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:366
@@ -2419,6 +2456,10 @@ msgstr ""
 msgid "No results found."
 msgstr ""
 
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:121
+msgid "No runs"
+msgstr ""
+
 #: app/routes/customer/project/detail/secret.tsx:52
 msgid "No secrets found."
 msgstr ""
@@ -2433,6 +2474,10 @@ msgstr ""
 
 #: app/routes/admin/service-catalog/index.tsx:203
 msgid "No services match the current filters."
+msgstr ""
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:73
+msgid "No stable tests labeled yet"
 msgstr ""
 
 #: app/features/organization/components/org-usage-card.tsx:88
@@ -2585,6 +2630,10 @@ msgstr ""
 
 #: app/routes/admin/service-catalog/detail/index.tsx:121
 msgid "Owner:"
+msgstr ""
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:146
+msgid "Passing"
 msgstr ""
 
 #: app/routes/customer/billing-account/detail/index.tsx:435
@@ -3013,6 +3062,7 @@ msgstr ""
 msgid "Retired"
 msgstr ""
 
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:93
 #: app/features/dashboard/components/cluster-health-widget.tsx:40
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:94
 #: app/features/dashboard/components/pending-approvals-widget.tsx:80
@@ -3460,6 +3510,10 @@ msgstr ""
 msgid "Subject is required when user association is enabled"
 msgstr ""
 
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:209
+msgid "Suite"
+msgstr ""
+
 #: app/routes/marketing/contact-group/index.tsx:153
 msgid "Summary"
 msgstr ""
@@ -3491,6 +3545,18 @@ msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:134
 msgid "Tenant"
+msgstr ""
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:204
+msgid "Test"
+msgstr ""
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:272
+msgid "Test docs"
+msgstr ""
+
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:76
+msgid "Tests show up here once tagged metadata.labels.stability: stable in their chainsaw-test.yaml"
 msgstr ""
 
 #: app/routes/admin/service-catalog/detail/approvals.tsx:121
@@ -3647,6 +3713,7 @@ msgstr ""
 msgid "Unavailable"
 msgstr ""
 
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:138
 #: app/features/domain/components/note-card.tsx:38
 #: app/routes/admin/service-catalog/detail/consumers.tsx:109
 msgid "Unknown"
