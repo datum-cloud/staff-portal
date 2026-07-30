@@ -6,6 +6,7 @@ import { logApiError, logApiSuccess } from '@/server/logger';
 import { authMiddleware, getToken } from '@/server/middleware';
 import { createErrorResponse, createSuccessResponse } from '@/server/response';
 import { assistantRoutes } from '@/server/routes/assistant';
+import { chainsawTestsRoutes } from '@/server/routes/chainsaw-tests';
 import { clusterRoutes } from '@/server/routes/cluster';
 import { graphqlRoutes } from '@/server/routes/graphql';
 import { usageRoutes } from '@/server/routes/usage';
@@ -268,6 +269,7 @@ api.post('/metrics', authMiddleware(), async (c) => {
 });
 
 api.route('/assistant', assistantRoutes);
+api.route('/chainsaw-tests', chainsawTestsRoutes);
 api.route('/cluster', clusterRoutes);
 api.route('/graphql', graphqlRoutes);
 api.route('/usage', usageRoutes);

@@ -2,6 +2,7 @@ import { ENTITY_ICONS, SECTION_ICONS } from '@/utils/config/icons.config';
 import {
   activityRoutes,
   billingAccountRoutes,
+  chainsawTestRoutes,
   contactGroupRoutes,
   contactRoutes,
   fraudRoutes,
@@ -139,6 +140,11 @@ export const NAV_SECTIONS: NavSection[] = [
               label: 'Email Activity',
               href: routes.emailActivity(),
               icon: ENTITY_ICONS.emailActivity,
+            },
+            {
+              label: 'Chainsaw Tests',
+              href: chainsawTestRoutes.list(),
+              icon: ENTITY_ICONS.chainsawTest,
             },
           ],
         },

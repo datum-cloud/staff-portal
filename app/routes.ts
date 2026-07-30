@@ -144,6 +144,7 @@ export default [
 
     // Operations
     route('operations', 'routes/operation/layout.tsx', [
+      route('chainsaw-tests', 'routes/operation/chainsaw-tests.tsx'),
       route('activity', 'routes/operation/activity/layout.tsx', [
         index('routes/operation/activity/index.tsx'),
         route('feed', 'routes/operation/activity/feed.tsx'),
