@@ -41,10 +41,7 @@ export default function Page() {
   const paymentMethodsQuery = usePaymentMethodListForOrgQuery(orgName);
 
   const gqlOrg = orgQuery.data ?? undefined;
-  const billingAccounts = useMemo(
-    () => billingQuery.data?.items ?? [],
-    [billingQuery.data?.items]
-  );
+  const billingAccounts = useMemo(() => billingQuery.data?.items ?? [], [billingQuery.data?.items]);
   const paymentMethods = useMemo(
     () => paymentMethodsQuery.data?.items ?? [],
     [paymentMethodsQuery.data?.items]
