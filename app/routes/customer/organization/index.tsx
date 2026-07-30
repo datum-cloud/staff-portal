@@ -2,7 +2,12 @@ import type { Route } from './+types/index';
 import { CustomerStatus } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DisplayId } from '@/components/display';
-import { orgNameFromNamespace } from '@/features/billing/utils';
+import {
+  billingAccountHasCriticalPaymentFailure,
+  formatPaymentMethodFailureTooltip,
+  getCriticalFailedPaymentMethod,
+  orgNameFromNamespace,
+} from '@/features/billing/utils';
 import {
   DATE_RANGE_OPTIONS,
   ListGrowthChart,
@@ -14,11 +19,15 @@ import {
   type GqlOrganization,
   useAllOrganizationsQuery,
   useBillingAccountListQuery,
+  usePaymentMethodListQuery,
 } from '@/resources/request/client';
 import { billingAccountRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { t } from '@lingui/core/macro';
-import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
+import type {
+  ComMiloapisBillingV1Alpha1BillingAccount,
+  ComMiloapisBillingV1Alpha1PaymentMethod,
+} from '@openapi/billing.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Building2, User } from 'lucide-react';
 import { useMemo } from 'react';
@@ -34,8 +43,12 @@ type BillingContact = {
   accountName: string;
 };
 
+type OrgDisplayStatus = 'Active' | 'Inactive' | 'Failed';
+
 type OrgRow = GqlOrganization & {
   billingContacts: BillingContact[];
+  displayStatus: OrgDisplayStatus;
+  statusTooltip: string;
 };
 
 const columnHelper = createColumnHelper<OrgRow>();
@@ -52,11 +65,39 @@ function contactFromAccount(
   return { name, email, accountName };
 }
 
+function orgPaymentFailureTooltip(
+  accounts: ComMiloapisBillingV1Alpha1BillingAccount[],
+  paymentMethods: ComMiloapisBillingV1Alpha1PaymentMethod[]
+): string {
+  for (const account of accounts) {
+    const failed = getCriticalFailedPaymentMethod(account, paymentMethods);
+    if (failed) return formatPaymentMethodFailureTooltip(failed);
+  }
+  return t`Provider error`;
+}
+
 export default function Page() {
   const tableQuery = useAllOrganizationsQuery();
   const billingQuery = useBillingAccountListQuery({ limit: 500 });
+  const paymentMethodsQuery = usePaymentMethodListQuery();
   const orgs = useMemo(() => tableQuery.data?.items ?? [], [tableQuery.data]);
   const activeOrgs = useMemo(() => orgs.filter((org) => org.onboardingComplete), [orgs]);
+  const paymentMethods = useMemo(
+    () => paymentMethodsQuery.data?.items ?? [],
+    [paymentMethodsQuery.data?.items]
+  );
+
+  const accountsByOrg = useMemo(() => {
+    const map = new Map<string, ComMiloapisBillingV1Alpha1BillingAccount[]>();
+    for (const account of billingQuery.data?.items ?? []) {
+      const orgName = orgNameFromNamespace(account.metadata?.namespace);
+      if (!orgName) continue;
+      const existing = map.get(orgName) ?? [];
+      existing.push(account);
+      map.set(orgName, existing);
+    }
+    return map;
+  }, [billingQuery.data?.items]);
 
   const contactsByOrg = useMemo(() => {
     const map = new Map<string, BillingContact[]>();
@@ -77,18 +118,33 @@ export default function Page() {
         continue;
       }
       existing.push(contact);
-      map.set(orgName, existing);
     }
     return map;
   }, [billingQuery.data?.items]);
 
   const rows = useMemo<OrgRow[]>(
     () =>
-      orgs.map((org) => ({
-        ...org,
-        billingContacts: contactsByOrg.get(org.name) ?? [],
-      })),
-    [orgs, contactsByOrg]
+      orgs.map((org) => {
+        const orgAccounts = accountsByOrg.get(org.name) ?? [];
+        const hasPaymentFailure = orgAccounts.some((account) =>
+          billingAccountHasCriticalPaymentFailure(account, paymentMethods)
+        );
+        const onboardingTooltip = org.onboardingComplete
+          ? t`Fully onboarded`
+          : (org.onboardingMessage ?? org.onboardingReason ?? t`Onboarding incomplete`);
+
+        return {
+          ...org,
+          billingContacts: contactsByOrg.get(org.name) ?? [],
+          displayStatus: hasPaymentFailure
+            ? 'Failed'
+            : ((org.onboardingStatus as OrgDisplayStatus) ?? 'Inactive'),
+          statusTooltip: hasPaymentFailure
+            ? orgPaymentFailureTooltip(orgAccounts, paymentMethods)
+            : onboardingTooltip,
+        };
+      }),
+    [orgs, contactsByOrg, accountsByOrg, paymentMethods]
   );
 
   const columns = [
@@ -140,20 +196,11 @@ export default function Page() {
         );
       },
     }),
-    columnHelper.accessor('onboardingStatus', {
-      id: 'onboardingStatus',
+    columnHelper.accessor('displayStatus', {
+      id: 'displayStatus',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
       cell: ({ row }) => (
-        <CustomerStatus
-          status={row.original.onboardingStatus}
-          tooltip={
-            row.original.onboardingComplete
-              ? t`Fully onboarded`
-              : (row.original.onboardingMessage ??
-                row.original.onboardingReason ??
-                t`Onboarding incomplete`)
-          }
-        />
+        <CustomerStatus status={row.original.displayStatus} tooltip={row.original.statusTooltip} />
       ),
     }),
     columnHelper.accessor('createdAt', {
@@ -166,7 +213,7 @@ export default function Page() {
   return (
     <ListPage>
       <ListTable
-        loading={tableQuery.isPending || billingQuery.isPending}
+        loading={tableQuery.isPending || billingQuery.isPending || paymentMethodsQuery.isPending}
         data={rows}
         columns={columns}
         pageSize={100}
@@ -195,11 +242,21 @@ export default function Page() {
             ],
           },
           {
-            column: 'onboardingStatus',
+            column: 'displayStatus',
             label: t`Status`,
             options: [
               { value: 'Active', label: <CustomerStatus status="active" /> },
               { value: 'Inactive', label: <CustomerStatus status="inactive" /> },
+              {
+                value: 'Failed',
+                label: (
+                  <CustomerStatus
+                    status="failed"
+                    label="Payment Failed"
+                    className="w-auto px-1.5"
+                  />
+                ),
+              },
             ],
           },
           {

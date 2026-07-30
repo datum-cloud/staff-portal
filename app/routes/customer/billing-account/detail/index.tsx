@@ -8,6 +8,7 @@ import {
   formatBillingAddress,
   getActiveBindingsForAccount,
   getBillingAccountDisplayName,
+  getBillingAccountDisplayStatus,
   getInvoicesForAccount,
   getOrganizationDisplayName,
   getPaymentMethodDisplayName,
@@ -116,6 +117,7 @@ export default function Page() {
   const contactInfo = account.spec?.contactInfo;
   const paymentTerms = account.spec?.paymentTerms;
   const activeBindings = getActiveBindingsForAccount(bindings, account.metadata?.name ?? '');
+  const accountDisplayStatus = getBillingAccountDisplayStatus(account, paymentMethods);
   const cloudPortalUrl =
     env?.CLOUD_PORTAL_URL && orgName ? `${env.CLOUD_PORTAL_URL}/org/${orgName}/billing` : null;
   const orgDisplayName = organization ? getOrganizationDisplayName(organization) : orgName;
@@ -319,7 +321,12 @@ export default function Page() {
                 },
                 {
                   label: <Trans>Status</Trans>,
-                  value: <BadgeState state={account.status?.phase ?? 'Unknown'} />,
+                  value: (
+                    <BadgeState
+                      state={accountDisplayStatus.state}
+                      tooltip={accountDisplayStatus.tooltip}
+                    />
+                  ),
                 },
                 {
                   label: <Trans>Currency</Trans>,

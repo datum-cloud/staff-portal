@@ -1,4 +1,4 @@
-import { getBillingAccountDisplayName } from '../utils';
+import { getBillingAccountDisplayName, getBillingAccountDisplayStatus } from '../utils';
 import { BadgeState } from '@/components/badge';
 import { DisplayId, DisplayName } from '@/components/display';
 import {
@@ -11,7 +11,10 @@ import {
   ListColumnHeader,
   TableCard,
 } from '@/features/milo';
-import { useBillingAccountListForOrgQuery } from '@/resources/request/client';
+import {
+  useBillingAccountListForOrgQuery,
+  usePaymentMethodListForOrgQuery,
+} from '@/resources/request/client';
 import { billingAccountRoutes } from '@/utils/config/routes.config';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Text } from '@datum-cloud/datum-ui/typography';
@@ -20,6 +23,7 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
 import { createColumnHelper, type ColumnDef } from '@tanstack/react-table';
+import { useMemo } from 'react';
 import { Link } from 'react-router';
 
 const columnHelper = createColumnHelper<ComMiloapisBillingV1Alpha1BillingAccount>();
@@ -31,40 +35,48 @@ interface OrgBillingAccountsCardProps {
 
 export function OrgBillingAccountsCard({ orgName, className }: OrgBillingAccountsCardProps) {
   const { data, isLoading } = useBillingAccountListForOrgQuery(orgName);
+  const paymentMethodsQuery = usePaymentMethodListForOrgQuery(orgName);
   const accounts = data?.items ?? [];
+  const paymentMethods = paymentMethodsQuery.data?.items ?? [];
 
-  const columns = [
-    columnHelper.display({
-      id: 'displayName',
-      enableSorting: false,
-      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
-      cell: ({ row }) => {
-        const accountName = row.original.metadata?.name ?? '';
-        return (
-          <DisplayName
-            displayName={getBillingAccountDisplayName(row.original)}
-            to={billingAccountRoutes.detail(orgName, accountName)}
-          />
-        );
-      },
-    }),
-    columnHelper.accessor((row) => row.metadata?.name ?? '', {
-      id: 'id',
-      enableSorting: false,
-      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
-      cell: ({ getValue }) => <DisplayId value={getValue()} />,
-    }),
-    columnHelper.accessor('status.phase', {
-      id: 'phase',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
-      cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Unknown'} />,
-    }),
-    columnHelper.accessor('status.linkedProjectsCount', {
-      id: 'linkedProjectsCount',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`Linked projects`} />,
-      cell: ({ getValue }) => <Text>{getValue() ?? 0}</Text>,
-    }),
-  ];
+  const columns = useMemo(
+    () => [
+      columnHelper.display({
+        id: 'displayName',
+        enableSorting: false,
+        header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
+        cell: ({ row }) => {
+          const accountName = row.original.metadata?.name ?? '';
+          return (
+            <DisplayName
+              displayName={getBillingAccountDisplayName(row.original)}
+              to={billingAccountRoutes.detail(orgName, accountName)}
+            />
+          );
+        },
+      }),
+      columnHelper.accessor((row) => row.metadata?.name ?? '', {
+        id: 'id',
+        enableSorting: false,
+        header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
+        cell: ({ getValue }) => <DisplayId value={getValue()} />,
+      }),
+      columnHelper.accessor('status.phase', {
+        id: 'phase',
+        header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
+        cell: ({ row }) => {
+          const { state, tooltip } = getBillingAccountDisplayStatus(row.original, paymentMethods);
+          return <BadgeState state={state} tooltip={tooltip} />;
+        },
+      }),
+      columnHelper.accessor('status.linkedProjectsCount', {
+        id: 'linkedProjectsCount',
+        header: ({ column }) => <ListColumnHeader column={column} title={t`Linked projects`} />,
+        cell: ({ getValue }) => <Text>{getValue() ?? 0}</Text>,
+      }),
+    ],
+    [orgName, paymentMethods]
+  );
 
   return (
     <TableCard
