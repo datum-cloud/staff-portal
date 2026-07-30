@@ -20,6 +20,7 @@ import {
   FileLock,
   FileText,
   Flag,
+  FlaskConical,
   Folders,
   Gauge,
   Info,
@@ -85,6 +86,7 @@ export const ENTITY_ICONS = {
   billingAccount: ReceiptText,
   // Operations
   activity: SquareActivity,
+  chainsawTest: FlaskConical,
   emailActivity: Mail,
   // Admin
   group: ShieldUser,
