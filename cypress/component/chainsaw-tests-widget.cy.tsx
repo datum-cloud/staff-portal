@@ -38,9 +38,7 @@ describe('ChainsawTestsWidget', () => {
     mountWithData(chainsawTestsFixture.allPassing);
     cy.contains('dns-setup').should('be.visible');
     cy.contains('Passing').should('be.visible');
-    cy.contains('a', 'Grafana')
-      .should('have.attr', 'href')
-      .and('include', 'var-test=dns-setup');
+    cy.contains('a', 'Grafana').should('have.attr', 'href').and('include', 'var-test=dns-setup');
     cy.contains('a', 'Test docs')
       .should('have.attr', 'href')
       .and('include', 'tests/construct/networking/dns-setup/README.md');
