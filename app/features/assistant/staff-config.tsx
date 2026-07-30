@@ -3,16 +3,17 @@
  * stays in staff-portal when the presentational pieces move to datum-ui —
  * cloud-portal will supply its own equivalent (different suggestions, tool
  * labels, model list, etc.).
+ *
+ * Model options are filled in at runtime from the AI gateway catalog
+ * (`buildStaffAssistantConfig`).
  */
 import {
   DEFAULT_EFFORT_ID,
-  DEFAULT_MODEL_ID,
   EFFORT_OPTIONS,
-  MODEL_OPTIONS,
   MODEL_SELECTOR_ENABLED,
   SUGGESTIONS,
 } from './constants';
-import type { AssistantConfig } from './types';
+import type { AssistantConfig, ModelOption } from './types';
 import { defaultRenderLink } from '@datum-cloud/datum-ui/assistant';
 
 /** Tool name → progress label shown while a staff tool call is running. */
@@ -57,31 +58,6 @@ export const STAFF_TOOL_LABELS: Record<string, string> = {
   getDesktopAppInfo: 'Getting app info…',
 };
 
-export const STAFF_ASSISTANT_CONFIG: AssistantConfig = {
-  greeting: (name) => `Hey there${name ? `, ${name}` : ''}`,
-  suggestions: [...SUGGESTIONS],
-  showReasoning: true,
-  modelSelector: MODEL_SELECTOR_ENABLED
-    ? {
-        models: MODEL_OPTIONS,
-        efforts: EFFORT_OPTIONS,
-        defaultModelId: DEFAULT_MODEL_ID,
-        defaultEffortId: DEFAULT_EFFORT_ID,
-      }
-    : false,
-  toolLabels: STAFF_TOOL_LABELS,
-  // Reuse the generic renderer, prepending a Sentry glyph for sentry.io links.
-  renderLink: (props) => {
-    if (!props.href?.includes('sentry')) return defaultRenderLink(props);
-    return (
-      <span className="inline-flex items-center gap-1">
-        <SentryIcon />
-        {defaultRenderLink(props)}
-      </span>
-    );
-  },
-};
-
 function SentryIcon() {
   return (
     <svg
@@ -93,3 +69,34 @@ function SentryIcon() {
     </svg>
   );
 }
+
+export function buildStaffAssistantConfig(models: ModelOption[] = []): AssistantConfig {
+  const defaultModelId = models[0]?.id ?? '';
+  return {
+    greeting: (name) => `Hey there${name ? `, ${name}` : ''}`,
+    suggestions: [...SUGGESTIONS],
+    showReasoning: true,
+    modelSelector: MODEL_SELECTOR_ENABLED
+      ? {
+          models,
+          efforts: EFFORT_OPTIONS,
+          defaultModelId,
+          defaultEffortId: DEFAULT_EFFORT_ID,
+        }
+      : false,
+    toolLabels: STAFF_TOOL_LABELS,
+    // Reuse the generic renderer, prepending a Sentry glyph for sentry.io links.
+    renderLink: (props) => {
+      if (!props.href?.includes('sentry')) return defaultRenderLink(props);
+      return (
+        <span className="inline-flex items-center gap-1">
+          <SentryIcon />
+          {defaultRenderLink(props)}
+        </span>
+      );
+    },
+  };
+}
+
+/** Static config with an empty model list; prefer `buildStaffAssistantConfig` once models load. */
+export const STAFF_ASSISTANT_CONFIG = buildStaffAssistantConfig();

@@ -1,11 +1,14 @@
 'use client';
 
 import { useChatLogic } from '../hooks';
+import { useAssistantModels } from '../hooks/use-assistant-models';
 import { deriveTitle } from '../lib';
+import { buildStaffAssistantConfig } from '../staff-config';
 import {
   AssistantWorkspace as SharedAssistantWorkspace,
   type AssistantConfig,
 } from '@datum-cloud/datum-ui/assistant';
+import { useMemo } from 'react';
 
 interface AssistantWorkspaceProps {
   /** Host-specific configuration (copy, suggestions, tool labels, models, …). */
@@ -22,6 +25,26 @@ interface AssistantWorkspaceProps {
  * equivalent wrapper.
  */
 export function AssistantWorkspace({ config, userName }: AssistantWorkspaceProps) {
+  const { models } = useAssistantModels();
+  const staffConfig = useMemo(() => buildStaffAssistantConfig(models), [models]);
+  const mergedConfig = useMemo((): Partial<AssistantConfig> => {
+    if (config?.modelSelector === false) {
+      return { ...staffConfig, ...config, modelSelector: false };
+    }
+    if (staffConfig.modelSelector === false) {
+      return { ...staffConfig, ...config, modelSelector: false };
+    }
+    return {
+      ...staffConfig,
+      ...config,
+      modelSelector: {
+        ...staffConfig.modelSelector,
+        ...(typeof config?.modelSelector === 'object' ? config.modelSelector : {}),
+        models,
+      },
+    };
+  }, [staffConfig, config, models]);
+
   const {
     messages,
     status,
@@ -48,7 +71,7 @@ export function AssistantWorkspace({ config, userName }: AssistantWorkspaceProps
     setModelId,
     effortId,
     setEffortId,
-  } = useChatLogic();
+  } = useChatLogic(models);
 
   const hasMessages = messages.length > 0;
   const currentChat = chatList.find((c) => c.id === currentChatId);
@@ -56,7 +79,7 @@ export function AssistantWorkspace({ config, userName }: AssistantWorkspaceProps
 
   return (
     <SharedAssistantWorkspace
-      config={config}
+      config={mergedConfig}
       userName={userName}
       title={title}
       messages={messages}
