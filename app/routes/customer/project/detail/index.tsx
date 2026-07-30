@@ -7,6 +7,7 @@ import {
   ProjectOrganizationCard,
   ProjectQuotasCard,
   ProjectResourcesCard,
+  ProjectSuspensionCard,
   ProjectUsageCard,
 } from '@/features/project';
 import { projectDeleteMutation } from '@/resources/request/client';
@@ -44,6 +45,10 @@ export default function Page() {
       <ProjectResourcesCard className="h-full" projectName={projectName} />
       <ProjectQuotasCard className="h-full" projectName={projectName} />
       <ProjectUsageCard className="h-full" orgName={orgName} projectName={projectName} />
+
+      <div className="lg:col-span-2">
+        <ProjectSuspensionCard project={project} />
+      </div>
 
       <div className="lg:col-span-2">
         <DangerZoneCard
