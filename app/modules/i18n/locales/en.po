@@ -376,7 +376,7 @@ msgstr "Are you sure you want to delete member \"{0}\"? This action cannot be un
 msgid "Are you sure you want to delete member \"{deleteMemberDisplayName}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete member \"{deleteMemberDisplayName}\"? This action cannot be undone."
 
-#: app/routes/customer/organization/detail/index.tsx:116
+#: app/routes/customer/organization/detail/index.tsx:119
 msgid "Are you sure you want to delete organization \"{displayNameForDelete} ({orgName})\"? This action cannot be undone."
 msgstr "Are you sure you want to delete organization \"{displayNameForDelete} ({orgName})\"? This action cannot be undone."
 
@@ -488,7 +488,7 @@ msgid "Billing account not found or you do not have permission to view it."
 msgstr "Billing account not found or you do not have permission to view it."
 
 #: app/components/app-sidebar/index.tsx:181
-#: app/features/billing/components/org-billing-accounts-card.tsx:84
+#: app/features/billing/components/org-billing-accounts-card.tsx:87
 #: app/routes/customer/billing-account/index.tsx:7
 #: app/routes/customer/billing-account/layout.tsx:5
 msgid "Billing Accounts"
@@ -1051,8 +1051,8 @@ msgstr "Delete Grant"
 msgid "Delete Member"
 msgstr "Delete Member"
 
-#: app/routes/customer/organization/detail/index.tsx:113
-#: app/routes/customer/organization/detail/index.tsx:115
+#: app/routes/customer/organization/detail/index.tsx:116
+#: app/routes/customer/organization/detail/index.tsx:118
 msgid "Delete Organization"
 msgstr "Delete Organization"
 
@@ -1757,7 +1757,7 @@ msgid "HTML"
 msgstr "HTML"
 
 #: app/features/billing/components/billing-account-list.tsx:184
-#: app/features/billing/components/org-billing-accounts-card.tsx:61
+#: app/features/billing/components/org-billing-accounts-card.tsx:64
 #: app/features/contact/components/contact-list.tsx:70
 #: app/features/edge/components/edge-list.tsx:112
 #: app/features/project/components/project-billing-card.tsx:58
@@ -1922,7 +1922,7 @@ msgid "Limited to 10,000 users. Refine your search to surface others."
 msgstr "Limited to 10,000 users. Refine your search to surface others."
 
 #: app/features/billing/components/billing-account-list.tsx:224
-#: app/features/billing/components/org-billing-accounts-card.tsx:74
+#: app/features/billing/components/org-billing-accounts-card.tsx:77
 #: app/routes/customer/billing-account/detail/index.tsx:348
 #: app/routes/customer/billing-account/detail/index.tsx:481
 msgid "Linked projects"
@@ -1933,7 +1933,7 @@ msgstr "Linked projects"
 msgid "List"
 msgstr "List"
 
-#: app/features/billing/components/org-billing-accounts-card.tsx:94
+#: app/features/billing/components/org-billing-accounts-card.tsx:97
 msgid "Loading billing accounts..."
 msgstr "Loading billing accounts..."
 
@@ -2108,7 +2108,7 @@ msgid "My Profile"
 msgstr "My Profile"
 
 #: app/features/billing/components/billing-account-list.tsx:169
-#: app/features/billing/components/org-billing-accounts-card.tsx:47
+#: app/features/billing/components/org-billing-accounts-card.tsx:50
 #: app/features/contact/components/contact-list.tsx:80
 #: app/features/dashboard/components/pending-approvals-widget.tsx:134
 #: app/features/fraud/policy/policy-form.tsx:149
@@ -2215,8 +2215,8 @@ msgstr "No billing account"
 msgid "No billing account assigned"
 msgstr "No billing account assigned"
 
-#: app/features/billing/components/org-billing-accounts-card.tsx:98
-#: app/features/billing/components/org-billing-accounts-card.tsx:113
+#: app/features/billing/components/org-billing-accounts-card.tsx:101
+#: app/features/billing/components/org-billing-accounts-card.tsx:116
 msgid "No billing accounts"
 msgstr "No billing accounts"
 
@@ -2542,7 +2542,7 @@ msgstr "Optional reviewer note..."
 msgid "Organization"
 msgstr "Organization"
 
-#: app/routes/customer/organization/detail/index.tsx:66
+#: app/routes/customer/organization/detail/index.tsx:69
 msgid "Organization deleted successfully"
 msgstr "Organization deleted successfully"
 
@@ -2631,7 +2631,7 @@ msgstr "Pending Validation Checks:"
 msgid "per"
 msgstr "per"
 
-#: app/routes/customer/organization/detail/index.tsx:114
+#: app/routes/customer/organization/detail/index.tsx:117
 msgid "Permanently delete this organization and all associated data"
 msgstr "Permanently delete this organization and all associated data"
 
@@ -3419,7 +3419,7 @@ msgid "Start Time"
 msgstr "Start Time"
 
 #: app/features/billing/components/billing-account-list.tsx:211
-#: app/features/billing/components/org-billing-accounts-card.tsx:66
+#: app/features/billing/components/org-billing-accounts-card.tsx:69
 #: app/features/contact/components/contact-list.tsx:97
 #: app/features/domain/components/domain-list.tsx:96
 #: app/features/edge/components/detail/edge-general-card.tsx:23
@@ -3786,7 +3786,7 @@ msgstr "Version"
 msgid "View activity logs"
 msgstr "View activity logs"
 
-#: app/features/billing/components/org-billing-accounts-card.tsx:89
+#: app/features/billing/components/org-billing-accounts-card.tsx:92
 #: app/features/organization/components/org-members-preview-card.tsx:84
 #: app/features/organization/components/org-usage-card.tsx:59
 #: app/features/project/components/project-quotas-card.tsx:70

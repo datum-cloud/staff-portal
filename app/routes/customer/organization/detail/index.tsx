@@ -41,8 +41,14 @@ export default function Page() {
   const paymentMethodsQuery = usePaymentMethodListForOrgQuery(orgName);
 
   const gqlOrg = orgQuery.data ?? undefined;
-  const billingAccounts = billingQuery.data?.items ?? [];
-  const paymentMethods = paymentMethodsQuery.data?.items ?? [];
+  const billingAccounts = useMemo(
+    () => billingQuery.data?.items ?? [],
+    [billingQuery.data?.items]
+  );
+  const paymentMethods = useMemo(
+    () => paymentMethodsQuery.data?.items ?? [],
+    [paymentMethodsQuery.data?.items]
+  );
 
   /** Sole PM on a billing account is Failed — no other methods to fall back on. */
   const paymentMethodFailed = useMemo(

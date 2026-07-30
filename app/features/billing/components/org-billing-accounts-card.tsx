@@ -37,7 +37,10 @@ export function OrgBillingAccountsCard({ orgName, className }: OrgBillingAccount
   const { data, isLoading } = useBillingAccountListForOrgQuery(orgName);
   const paymentMethodsQuery = usePaymentMethodListForOrgQuery(orgName);
   const accounts = data?.items ?? [];
-  const paymentMethods = paymentMethodsQuery.data?.items ?? [];
+  const paymentMethods = useMemo(
+    () => paymentMethodsQuery.data?.items ?? [],
+    [paymentMethodsQuery.data?.items]
+  );
 
   const columns = useMemo(
     () => [
