@@ -30,7 +30,14 @@ function detectOs(): 'macos' | 'windows' | 'linux' | 'unknown' {
 }
 
 function pickDefaultModelId(models: ModelOption[], preferred?: string): string {
-  if (preferred && models.some((m) => m.id === preferred)) return preferred;
+  if (preferred) {
+    if (models.some((m) => m.id === preferred)) return preferred;
+    // Legacy Anthropic ids → openai-claude-* failover aliases from the gateway.
+    if (preferred.startsWith('claude-')) {
+      const failover = `openai-${preferred}`;
+      if (models.some((m) => m.id === failover)) return failover;
+    }
+  }
   return models[0]?.id ?? '';
 }
 
@@ -57,14 +64,18 @@ export function useChatLogic(models: ModelOption[] = []) {
   const effortIdRef = useRef(effortId);
   effortIdRef.current = effortId;
 
-  // When the gateway catalog loads (or changes), keep the selection valid.
+  // When the gateway catalog loads (or changes), keep the selection valid —
+  // including remapping legacy Anthropic ids onto openai-claude-* failover aliases.
   useEffect(() => {
     if (models.length === 0) return;
-    setModelId((prev) =>
-      prev && models.some((m) => m.id === prev)
-        ? prev
-        : pickDefaultModelId(models, env?.AI_GATEWAY_MODEL)
-    );
+    setModelId((prev) => {
+      if (prev && models.some((m) => m.id === prev)) return prev;
+      if (prev?.startsWith('claude-')) {
+        const failover = `openai-${prev}`;
+        if (models.some((m) => m.id === failover)) return failover;
+      }
+      return pickDefaultModelId(models, env?.AI_GATEWAY_MODEL);
+    });
   }, [models, env?.AI_GATEWAY_MODEL]);
 
   useEffect(() => {

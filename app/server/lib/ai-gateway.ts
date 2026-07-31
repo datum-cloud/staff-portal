@@ -71,11 +71,45 @@ export function createGatewayLanguageModel(
   return createOpenAiGatewayProvider().chatModel(modelId);
 }
 
+/** Strip gateway failover prefix so labels read as "Claude Sonnet 5", not "Openai Claude…". */
 function humanizeModelId(id: string): string {
   return id
+    .replace(/^openai-/, '')
     .replace(/^claude-/, 'Claude ')
     .replace(/-/g, ' ')
     .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/** Native Anthropic id covered by an `openai-claude-*` failover alias (or the same id on /v1). */
+function coveredAnthropicId(openaiId: string): string | undefined {
+  if (openaiId.startsWith('openai-claude-')) return openaiId.slice('openai-'.length);
+  if (openaiId.startsWith('claude-')) return openaiId;
+  return undefined;
+}
+
+/**
+ * Map a client/env model id onto the catalog, preferring failover aliases.
+ * `claude-sonnet-5` → `openai-claude-sonnet-5` when the latter exists.
+ */
+function resolveCatalogModel(
+  requested: string | undefined,
+  byId: Map<string, GatewayModelOption>
+): GatewayModelOption | undefined {
+  if (!requested) return undefined;
+  const direct = byId.get(requested);
+  if (direct) return direct;
+
+  if (requested.startsWith('claude-')) {
+    const failover = byId.get(`openai-${requested}`);
+    if (failover) return failover;
+  }
+
+  if (requested.startsWith('openai-claude-')) {
+    const native = byId.get(requested.slice('openai-'.length));
+    if (native) return native;
+  }
+
+  return undefined;
 }
 
 function normalizeModels(
@@ -118,9 +152,9 @@ async function fetchModelsJson(
 /**
  * Merge OpenAI-compatible + Anthropic discovery catalogs.
  *
- * - Models listed on `/v1/models` use the OpenAI protocol (even if also on Anthropic).
- * - Models only on `/anthropic/v1/models` use the Anthropic Messages protocol.
- * - Anthropic-only entries are listed first so Claude models appear ahead of Qwen.
+ * Prefer `/v1` failover aliases (`openai-claude-*`) over native Anthropic
+ * `claude-*` ids — those aliases retry onto Qwen when Anthropic is unhealthy.
+ * Anthropic-only models (no failover alias) stay on the Messages protocol.
  */
 export async function fetchGatewayModels(options?: {
   force?: boolean;
@@ -151,27 +185,34 @@ export async function fetchGatewayModels(options?: {
     );
   }
 
-  const openaiIds = new Set(openaiModels.map((m) => m.id));
-  const openaiById = new Map(openaiModels.map((m) => [m.id, m]));
+  const anthropicById = new Map(anthropicModels.map((m) => [m.id, m]));
   const merged: GatewayModelOption[] = [];
   const seen = new Set<string>();
+  const coveredAnthropic = new Set<string>();
 
-  // Anthropic discovery first (Claude catalog), but route via OpenAI if /v1 lists them.
-  for (const m of anthropicModels) {
-    const protocol: GatewayProtocol = openaiIds.has(m.id) ? 'openai' : 'anthropic';
-    const openaiLabel = openaiById.get(m.id)?.label;
+  // OpenAI catalog first — includes failover-capable Claude aliases.
+  for (const m of openaiModels) {
+    const nativeId = coveredAnthropicId(m.id);
+    if (nativeId) coveredAnthropic.add(nativeId);
+
+    const anthropicLabel = nativeId ? anthropicById.get(nativeId)?.label : undefined;
     merged.push({
       id: m.id,
-      // Prefer curated Anthropic display_name when present.
-      label: m.label || openaiLabel || humanizeModelId(m.id),
-      protocol,
+      label: anthropicLabel || m.label || humanizeModelId(m.id),
+      protocol: 'openai',
     });
     seen.add(m.id);
   }
 
-  for (const m of openaiModels) {
-    if (seen.has(m.id)) continue;
-    merged.push({ id: m.id, label: m.label, protocol: 'openai' });
+  // Anthropic-only models that have no openai-claude-* (or same-id) failover twin.
+  for (const m of anthropicModels) {
+    if (coveredAnthropic.has(m.id) || seen.has(m.id)) continue;
+    merged.push({
+      id: m.id,
+      label: m.label || humanizeModelId(m.id),
+      protocol: 'anthropic',
+    });
+    seen.add(m.id);
   }
 
   modelsCache = { models: merged, expiresAt: now + MODELS_CACHE_TTL_MS };
@@ -181,22 +222,20 @@ export async function fetchGatewayModels(options?: {
 /** Honor a client-requested model only if it appears in the merged gateway catalog. */
 export async function resolveGatewayModel(requested?: string): Promise<GatewayModelOption> {
   let models = await fetchGatewayModels();
-  const byId = new Map(models.map((m) => [m.id, m]));
+  let byId = new Map(models.map((m) => [m.id, m]));
 
-  if (requested && !byId.has(requested)) {
+  let match = resolveCatalogModel(requested, byId);
+  if (requested && !match) {
     models = await fetchGatewayModels({ force: true });
-    byId.clear();
-    for (const m of models) byId.set(m.id, m);
+    byId = new Map(models.map((m) => [m.id, m]));
+    match = resolveCatalogModel(requested, byId);
   }
 
-  if (requested) {
-    const match = byId.get(requested);
-    if (match) return match;
-  }
-  if (env.aiGatewayModel) {
-    const preferred = byId.get(env.aiGatewayModel);
-    if (preferred) return preferred;
-  }
+  if (match) return match;
+
+  const preferred = resolveCatalogModel(env.aiGatewayModel, byId);
+  if (preferred) return preferred;
+
   if (models[0]) return models[0];
   throw new Error('No models available from AI gateway');
 }
