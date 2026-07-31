@@ -57,4 +57,33 @@ describe('buildOnboardingSteps', () => {
     });
     expect(result.steps.find((s) => s.id === 'contact')?.state).toBe('current');
   });
+
+  it('marks payment as failed when the sole payment method failed', () => {
+    const result = buildOnboardingSteps({
+      org: org({
+        contactInfo: { businessName: 'Acme', name: 'Ada', email: 'a@acme.test' },
+        entityType: 'Company',
+        onboardingReason: 'PaymentMethodMissing',
+        onboardingMessage:
+          'Organization billing account does not have a ready default payment method',
+      }),
+      hasBillingAccount: true,
+      paymentMethodFailed: true,
+    });
+    expect(result.steps.find((s) => s.id === 'payment')?.state).toBe('failed');
+    expect(result.steps.find((s) => s.id === 'billing')?.state).toBe('complete');
+    expect(result.steps.find((s) => s.id === 'complete')?.state).toBe('upcoming');
+  });
+
+  it('keeps payment in progress when paymentMethodFailed is false', () => {
+    const result = buildOnboardingSteps({
+      org: org({
+        contactInfo: { businessName: 'Acme', name: 'Ada', email: 'a@acme.test' },
+        onboardingReason: 'PaymentMethodMissing',
+      }),
+      hasBillingAccount: true,
+      paymentMethodFailed: false,
+    });
+    expect(result.steps.find((s) => s.id === 'payment')?.state).toBe('current');
+  });
 });

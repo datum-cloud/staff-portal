@@ -7,6 +7,7 @@ import {
   listBillingMiloapisComV1Alpha1NamespacedBillingAccount,
   listBillingMiloapisComV1Alpha1NamespacedBillingAccountBinding,
   listBillingMiloapisComV1Alpha1NamespacedPaymentMethod,
+  listBillingMiloapisComV1Alpha1PaymentMethodForAllNamespaces,
   readBillingMiloapisComV1Alpha1NamespacedBillingAccount,
 } from '@openapi/billing.miloapis.com/v1alpha1';
 
@@ -95,6 +96,21 @@ export const paymentMethodListForOrgQuery = async (orgName: string, params?: Lis
   const response = await listBillingMiloapisComV1Alpha1NamespacedPaymentMethod({
     baseURL: getClientOrgControlPlaneBaseURL(orgName),
     path: { namespace },
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
+    },
+  });
+  const data = response.data?.data;
+  return {
+    ...(data ?? { items: [] }),
+    items: filterNotDeleting(data?.items ?? []),
+  };
+};
+
+/** Cluster-wide payment methods — used to surface Failed status on billing/org lists. */
+export const paymentMethodListQuery = async (params?: ListQueryParams) => {
+  const response = await listBillingMiloapisComV1Alpha1PaymentMethodForAllNamespaces({
     query: {
       limit: params?.limit,
       continue: params?.cursor,

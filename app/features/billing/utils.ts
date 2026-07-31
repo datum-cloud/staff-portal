@@ -159,6 +159,82 @@ export const isDefaultPaymentMethod = (
   account: ComMiloapisBillingV1Alpha1BillingAccount | undefined
 ): boolean => account?.spec?.defaultPaymentMethodRef?.name === method.metadata?.name;
 
+export const getPaymentMethodsForAccount = (
+  methods: ComMiloapisBillingV1Alpha1PaymentMethod[],
+  accountName: string,
+  namespace?: string
+): ComMiloapisBillingV1Alpha1PaymentMethod[] =>
+  methods.filter((method) => {
+    if (method.spec?.billingAccountRef?.name !== accountName) return false;
+    if (namespace && method.metadata?.namespace && method.metadata.namespace !== namespace) {
+      return false;
+    }
+    return true;
+  });
+
+/**
+ * Formats payment-method failure for Status tooltips.
+ * Prefers the human-readable failureMessage from the provider.
+ */
+export const formatPaymentMethodFailureTooltip = (
+  method: ComMiloapisBillingV1Alpha1PaymentMethod
+): string => {
+  const message =
+    method.status?.failureMessage?.trim() || method.status?.failureReason?.trim() || '';
+  return message ? `Provider error: ${message}` : 'Provider error';
+};
+
+/**
+ * Critical payment failure: the sole PM is Failed, or (with multiple PMs) the default is Failed.
+ * Non-default failures when other PMs exist are not critical.
+ */
+export const getCriticalFailedPaymentMethod = (
+  account: ComMiloapisBillingV1Alpha1BillingAccount,
+  paymentMethods: ComMiloapisBillingV1Alpha1PaymentMethod[]
+): ComMiloapisBillingV1Alpha1PaymentMethod | undefined => {
+  const accountName = account.metadata?.name;
+  if (!accountName) return undefined;
+
+  const methods = getPaymentMethodsForAccount(
+    paymentMethods,
+    accountName,
+    account.metadata?.namespace
+  );
+  if (methods.length === 0) return undefined;
+
+  if (methods.length === 1) {
+    return methods[0].status?.phase === 'Failed' ? methods[0] : undefined;
+  }
+
+  const defaultMethod = methods.find((method) => isDefaultPaymentMethod(method, account));
+  return defaultMethod?.status?.phase === 'Failed' ? defaultMethod : undefined;
+};
+
+export const billingAccountHasCriticalPaymentFailure = (
+  account: ComMiloapisBillingV1Alpha1BillingAccount,
+  paymentMethods: ComMiloapisBillingV1Alpha1PaymentMethod[]
+): boolean => Boolean(getCriticalFailedPaymentMethod(account, paymentMethods));
+
+export type BillingAccountDisplayStatus = {
+  state: string;
+  tooltip?: string;
+};
+
+/** Prefer Failed when payment failure is critical; otherwise the account phase. */
+export const getBillingAccountDisplayStatus = (
+  account: ComMiloapisBillingV1Alpha1BillingAccount,
+  paymentMethods: ComMiloapisBillingV1Alpha1PaymentMethod[]
+): BillingAccountDisplayStatus => {
+  const failedMethod = getCriticalFailedPaymentMethod(account, paymentMethods);
+  if (failedMethod) {
+    return {
+      state: 'Failed',
+      tooltip: formatPaymentMethodFailureTooltip(failedMethod),
+    };
+  }
+  return { state: account.status?.phase ?? 'Unknown' };
+};
+
 export const getActiveProjectBinding = (
   bindings: ComMiloapisBillingV1Alpha1BillingAccountBinding[],
   projectName: string
