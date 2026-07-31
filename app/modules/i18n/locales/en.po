@@ -217,7 +217,7 @@ msgstr "Activity"
 msgid "Add"
 msgstr "Add"
 
-#: app/features/domain/components/create-note-form.tsx:45
+#: app/features/notes/components/notes-card.tsx:137
 msgid "Add a note"
 msgstr "Add a note"
 
@@ -226,7 +226,7 @@ msgstr "Add a note"
 msgid "Add Member"
 msgstr "Add Member"
 
-#: app/features/domain/components/create-note-form.tsx:64
+#: app/features/notes/components/notes-card.tsx:156
 msgid "Add Note"
 msgstr "Add Note"
 
@@ -254,7 +254,7 @@ msgstr "Add Trigger"
 msgid "Added"
 msgstr "Added"
 
-#: app/features/domain/components/note-card.tsx:38
+#: app/features/notes/components/notes-card.tsx:117
 msgid "Added by"
 msgstr "Added by"
 
@@ -542,6 +542,10 @@ msgstr "Billing Contact"
 #: app/features/project/components/project-usage-card.tsx:112
 msgid "Billing permissions are still being provisioned for this organization."
 msgstr "Billing permissions are still being provisioned for this organization."
+
+#: app/features/contact/components/contact-organizations-card.tsx:59
+msgid "Business name"
+msgstr "Business name"
 
 #: app/routes/admin/service-catalog/index.tsx:56
 msgid "by"
@@ -831,7 +835,7 @@ msgid "Contact Groups - Create"
 msgstr "Contact Groups - Create"
 
 #: app/routes/marketing/contact/create.tsx:25
-#: app/routes/marketing/contact/detail/index.tsx:24
+#: app/routes/marketing/contact/detail/index.tsx:22
 msgid "Contact Information"
 msgstr "Contact Information"
 
@@ -979,7 +983,7 @@ msgstr "Create Policy"
 #: app/routes/customer/organization/detail/project.tsx:65
 #: app/routes/customer/organization/index.tsx:208
 #: app/routes/customer/organization/index.tsx:264
-#: app/routes/customer/project/detail/domain/detail.tsx:138
+#: app/routes/customer/project/detail/domain/detail.tsx:92
 #: app/routes/customer/project/detail/export-policy/detail.tsx:83
 #: app/routes/customer/project/detail/export-policy/index.tsx:51
 #: app/routes/customer/project/index.tsx:160
@@ -1317,7 +1321,7 @@ msgid "DNS Host"
 msgstr "DNS Host"
 
 #: app/features/domain/components/domain-list.tsx:86
-#: app/routes/customer/project/detail/domain/detail.tsx:120
+#: app/routes/customer/project/detail/domain/detail.tsx:74
 msgid "DNS Providers"
 msgstr "DNS Providers"
 
@@ -1363,7 +1367,7 @@ msgstr "DNS Zones"
 #: app/features/activity/components/activity-list.tsx:489
 #: app/features/domain/components/domain-list.tsx:61
 #: app/features/fraud/detail/maxmind-rows.tsx:237
-#: app/routes/customer/project/detail/domain/detail.tsx:112
+#: app/routes/customer/project/detail/domain/detail.tsx:66
 #: app/routes/customer/resource/index.tsx:144
 #: app/routes/customer/resource/index.tsx:399
 msgid "Domain"
@@ -1546,7 +1550,7 @@ msgstr "Enter a reason (at least {REASON_MIN_LENGTH} characters)..."
 msgid "Enter first name"
 msgstr "Enter first name"
 
-#: app/features/domain/components/create-note-form.tsx:52
+#: app/features/notes/components/notes-card.tsx:144
 msgid "Enter note content..."
 msgstr "Enter note content..."
 
@@ -1637,7 +1641,7 @@ msgid "Expand sidebar"
 msgstr "Expand sidebar"
 
 #: app/features/domain/components/domain-list.tsx:91
-#: app/routes/customer/project/detail/domain/detail.tsx:124
+#: app/routes/customer/project/detail/domain/detail.tsx:78
 msgid "Expiration Date"
 msgstr "Expiration Date"
 
@@ -2075,6 +2079,7 @@ msgstr "ISP"
 msgid "Issuing TLS certificate"
 msgstr "Issuing TLS certificate"
 
+#: app/features/contact/components/contact-organizations-card.tsx:65
 #: app/routes/customer/user/detail/organization.tsx:53
 #: app/routes/marketing/contact/detail/group.tsx:111
 msgid "Joined"
@@ -2223,6 +2228,8 @@ msgstr "Loading status..."
 msgid "Loading..."
 msgstr "Loading..."
 
+#: app/features/contact/components/contact-organizations-card.tsx:41
+#: app/features/notes/components/notes-card.tsx:99
 #: app/features/project/components/project-suspension-card.tsx:127
 #: app/features/service-catalog/components/charges-card.tsx:118
 #: app/routes/admin/offer/detail.tsx:209
@@ -2402,7 +2409,7 @@ msgstr "Nameservers"
 
 #: app/features/activity/components/activity-list.tsx:398
 #: app/features/activity/components/activity-list.tsx:497
-#: app/routes/customer/project/detail/domain/detail.tsx:108
+#: app/routes/customer/project/detail/domain/detail.tsx:62
 #: app/routes/customer/project/detail/export-policy/detail.tsx:71
 #: app/routes/customer/project/detail/secret.tsx:27
 msgid "Namespace"
@@ -2630,7 +2637,7 @@ msgstr "No members found."
 msgid "No members in this group."
 msgstr "No members in this group."
 
-#: app/features/domain/components/notes-list.tsx:30
+#: app/features/notes/components/notes-card.tsx:103
 msgid "No notes yet. Add the first note below."
 msgstr "No notes yet. Add the first note below."
 
@@ -2772,21 +2779,21 @@ msgstr "Normal"
 msgid "Not enough data yet to show a trend."
 msgstr "Not enough data yet to show a trend."
 
-#: app/features/domain/components/note-card.tsx:44
+#: app/features/notes/components/notes-card.tsx:123
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:53
 msgid "Note"
 msgstr "Note"
 
-#: app/features/domain/components/create-note-form.tsx:33
+#: app/features/notes/components/notes-card.tsx:74
 msgid "Note added"
 msgstr "Note added"
 
-#: app/features/domain/components/note-card.tsx:26
+#: app/features/notes/components/notes-card.tsx:87
 msgid "Note deleted"
 msgstr "Note deleted"
 
+#: app/features/notes/components/notes-card.tsx:95
 #: app/features/project/components/project-suspension-card.tsx:191
-#: app/routes/customer/project/detail/domain/detail.tsx:151
 msgid "Notes"
 msgstr "Notes"
 
@@ -2875,6 +2882,7 @@ msgstr "Optional reviewer note..."
 #: app/features/activity/components/activity-list.tsx:498
 #: app/features/billing/components/billing-account-list.tsx:197
 #: app/features/billing/components/billing-account-list.tsx:254
+#: app/features/contact/components/contact-organizations-card.tsx:53
 #: app/features/dashboard/components/quota-utilization-widget.tsx:147
 #: app/features/project/components/project-organization-card.tsx:25
 #: app/routes/customer/billing-account/detail/index.tsx:309
@@ -2898,6 +2906,7 @@ msgstr "organizations"
 #: app/components/app-search/search-results.tsx:153
 #: app/components/app-search/use-app-search.ts:42
 #: app/components/app-sidebar/index.tsx:119
+#: app/features/contact/components/contact-organizations-card.tsx:31
 #: app/routes/customer/breadcrumb-switchers.tsx:7
 #: app/routes/customer/organization/index.tsx:37
 #: app/routes/customer/organization/layout.tsx:8
@@ -3324,7 +3333,7 @@ msgstr "Records"
 
 #: app/features/domain/components/domain-list.tsx:81
 #: app/routes/customer/project/detail/dns/detail.tsx:177
-#: app/routes/customer/project/detail/domain/detail.tsx:116
+#: app/routes/customer/project/detail/domain/detail.tsx:70
 msgid "Registrar"
 msgstr "Registrar"
 
@@ -3397,7 +3406,7 @@ msgid "Resource name"
 msgstr "Resource name"
 
 #: app/features/edge/components/detail/edge-general-card.tsx:40
-#: app/routes/customer/project/detail/domain/detail.tsx:100
+#: app/routes/customer/project/detail/domain/detail.tsx:54
 msgid "Resource Name"
 msgstr "Resource Name"
 
@@ -3461,6 +3470,7 @@ msgstr "Revoke access"
 
 #: app/features/activity/components/activity-list.tsx:394
 #: app/features/activity/components/activity-list.tsx:493
+#: app/features/contact/components/contact-organizations-card.tsx:56
 #: app/features/organization/components/org-members-preview-card.tsx:71
 #: app/routes/customer/organization/detail/member.tsx:128
 #: app/routes/customer/organization/detail/member.tsx:171
@@ -3917,7 +3927,7 @@ msgstr "Start Time"
 #: app/routes/customer/organization/detail/project.tsx:81
 #: app/routes/customer/organization/index.tsx:201
 #: app/routes/customer/organization/index.tsx:246
-#: app/routes/customer/project/detail/domain/detail.tsx:128
+#: app/routes/customer/project/detail/domain/detail.tsx:82
 #: app/routes/customer/project/detail/export-policy/detail.tsx:75
 #: app/routes/customer/project/detail/export-policy/detail.tsx:168
 #: app/routes/customer/project/detail/export-policy/index.tsx:44
@@ -4064,6 +4074,10 @@ msgstr "These items are checked every few minutes. If you've already made change
 msgid "This Application Load Balancer has advanced configuration that cannot be represented in the simplified overview fields. See the YAML section below for the full resource definition including routing rules, filters, and matches."
 msgstr "This Application Load Balancer has advanced configuration that cannot be represented in the simplified overview fields. See the YAML section below for the full resource definition including routing rules, filters, and matches."
 
+#: app/features/contact/components/contact-organizations-card.tsx:34
+msgid "This contact isn't linked to a platform user, so organization memberships aren't available."
+msgstr "This contact isn't linked to a platform user, so organization memberships aren't available."
+
 #: app/features/contact/components/contact-form.tsx:147
 msgid "This email is already used by <0>{displayName}</0>."
 msgstr "This email is already used by <0>{displayName}</0>."
@@ -4076,7 +4090,7 @@ msgstr "This flag is managed by the platform and can't be changed from here."
 msgid "This hostname has been verified by Datum"
 msgstr "This hostname has been verified by Datum"
 
-#: app/features/domain/components/note-card.tsx:45
+#: app/features/notes/components/notes-card.tsx:124
 msgid "This note will be permanently deleted and cannot be recovered."
 msgstr "This note will be permanently deleted and cannot be recovered."
 
@@ -4095,6 +4109,10 @@ msgstr "This service does not have a published ServiceConfiguration yet. Prices 
 #: app/routes/admin/service-catalog/detail/consumers.tsx:171
 msgid "This service has no producer project recorded, so consumers cannot be listed."
 msgstr "This service has no producer project recorded, so consumers cannot be listed."
+
+#: app/features/contact/components/contact-organizations-card.tsx:45
+msgid "This user isn't a member of any organizations."
+msgstr "This user isn't a member of any organizations."
 
 #: app/features/fraud/policy/policy-detail.tsx:48
 msgid "Thresholds"
@@ -4172,6 +4190,7 @@ msgid "TTL"
 msgstr "TTL"
 
 #: app/features/billing/components/offer-included-pricing-list.tsx:119
+#: app/features/contact/components/contact-organizations-card.tsx:62
 #: app/features/fraud/policy/policy-form.tsx:199
 #: app/features/organization/components/org-details-card.tsx:59
 #: app/features/service-catalog/components/conditions-card.tsx:19
@@ -4213,7 +4232,7 @@ msgid "Unavailable"
 msgstr "Unavailable"
 
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:136
-#: app/features/domain/components/note-card.tsx:38
+#: app/features/notes/components/notes-card.tsx:109
 #: app/routes/admin/service-catalog/detail/consumers.tsx:109
 msgid "Unknown"
 msgstr "Unknown"
