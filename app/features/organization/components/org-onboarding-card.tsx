@@ -19,6 +19,7 @@ import {
   CreditCard,
   Ellipsis,
   UserRound,
+  X,
   type LucideIcon,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
@@ -75,6 +76,7 @@ const STEP_ICONS: Record<OnboardingStepId, LucideIcon> = {
 const STATUS_LABEL: Record<OnboardingStepState, ReactNode> = {
   complete: <Trans>Completed</Trans>,
   current: <Trans>In Progress</Trans>,
+  failed: <Trans>Failed</Trans>,
   upcoming: <Trans>Pending</Trans>,
 };
 
@@ -82,9 +84,11 @@ function StepIcon({ id, state }: { id: OnboardingStepId; state: OnboardingStepSt
   const stepIcon =
     state === 'complete'
       ? Check
-      : state === 'upcoming' && id === 'complete'
-        ? Ellipsis
-        : STEP_ICONS[id];
+      : state === 'failed'
+        ? X
+        : state === 'upcoming' && id === 'complete'
+          ? Ellipsis
+          : STEP_ICONS[id];
 
   return (
     <span
@@ -93,16 +97,29 @@ function StepIcon({ id, state }: { id: OnboardingStepId; state: OnboardingStepSt
         state === 'complete' && 'border-btn-success bg-btn-success text-btn-success-foreground',
         state === 'current' &&
           'border-badge-info bg-badge-info text-badge-info-foreground ring-badge-info/20 ring-4',
+        state === 'failed' &&
+          'border-destructive bg-destructive text-destructive-foreground ring-destructive/20 ring-4',
         state === 'upcoming' && 'border-border bg-muted text-muted-foreground'
       )}
       aria-hidden>
-      <Icon icon={stepIcon} size={20} strokeWidth={state === 'complete' ? 2.5 : 2} />
+      <Icon
+        icon={stepIcon}
+        size={20}
+        strokeWidth={state === 'complete' || state === 'failed' ? 2.5 : 2}
+      />
     </span>
   );
 }
 
 function StatusPill({ state }: { state: OnboardingStepState }) {
-  const type = state === 'complete' ? 'success' : state === 'current' ? 'info' : 'muted';
+  const type =
+    state === 'complete'
+      ? 'success'
+      : state === 'current'
+        ? 'info'
+        : state === 'failed'
+          ? 'danger'
+          : 'muted';
   const theme = state === 'upcoming' ? 'solid' : 'light';
 
   return (
@@ -119,10 +136,12 @@ function StepConnector({
   isLast,
   lineComplete,
   linePartial,
+  lineFailed,
 }: {
   isLast: boolean;
   lineComplete: boolean;
   linePartial: boolean;
+  lineFailed: boolean;
 }) {
   if (isLast) return null;
 
@@ -130,20 +149,18 @@ function StepConnector({
     'rounded-full transition-[height,width] duration-300',
     lineComplete && 'bg-btn-success',
     linePartial && 'bg-badge-info',
-    !lineComplete && !linePartial && 'bg-transparent'
+    lineFailed && 'bg-destructive',
+    !lineComplete && !linePartial && !lineFailed && 'bg-transparent'
   );
+
+  const fillAmount = lineComplete ? '100%' : linePartial || lineFailed ? '50%' : '0%';
 
   return (
     <>
       {/* Mobile: vertical line under the icon */}
       <div className="absolute top-10 bottom-0 left-5 w-0.5 -translate-x-1/2 md:hidden" aria-hidden>
         <div className="bg-stepper-line h-full w-full rounded-full" />
-        <div
-          className={cn('absolute inset-x-0 top-0', fillClass)}
-          style={{
-            height: lineComplete ? '100%' : linePartial ? '50%' : '0%',
-          }}
-        />
+        <div className={cn('absolute inset-x-0 top-0', fillClass)} style={{ height: fillAmount }} />
       </div>
 
       {/* Desktop: horizontal line between icons */}
@@ -151,12 +168,7 @@ function StepConnector({
         className="absolute top-5 right-[calc(-50%+1.25rem)] left-[calc(50%+1.25rem)] hidden h-0.5 md:block"
         aria-hidden>
         <div className="bg-stepper-line h-full w-full rounded-full" />
-        <div
-          className={cn('absolute inset-y-0 left-0', fillClass)}
-          style={{
-            width: lineComplete ? '100%' : linePartial ? '50%' : '0%',
-          }}
-        />
+        <div className={cn('absolute inset-y-0 left-0', fillClass)} style={{ width: fillAmount }} />
       </div>
     </>
   );
@@ -165,13 +177,26 @@ function StepConnector({
 type Props = {
   org: GqlOrganization | null | undefined;
   hasBillingAccount: boolean;
+  /** Sole payment method on a billing account is Failed. */
+  paymentMethodFailed?: boolean;
   isLoading?: boolean;
   className?: string;
 };
 
-export function OrgOnboardingCard({ org, hasBillingAccount, isLoading, className }: Props) {
-  const { steps, waitingMessage } = buildOnboardingSteps({ org, hasBillingAccount });
+export function OrgOnboardingCard({
+  org,
+  hasBillingAccount,
+  paymentMethodFailed = false,
+  isLoading,
+  className,
+}: Props) {
+  const { steps, waitingMessage } = buildOnboardingSteps({
+    org,
+    hasBillingAccount,
+    paymentMethodFailed,
+  });
   const isActive = org?.onboardingComplete === true;
+  const headerStatus = paymentMethodFailed && !isActive ? 'failed' : org?.onboardingStatus;
 
   return (
     <SectionCard
@@ -182,7 +207,7 @@ export function OrgOnboardingCard({ org, hasBillingAccount, isLoading, className
           <Skeleton className="h-4 w-[54px] rounded-[3px]" />
         ) : org ? (
           <CustomerStatus
-            status={org.onboardingStatus}
+            status={headerStatus ?? 'inactive'}
             tooltip={isActive ? undefined : (waitingMessage ?? org.onboardingReason ?? undefined)}
           />
         ) : null
@@ -202,6 +227,7 @@ export function OrgOnboardingCard({ org, hasBillingAccount, isLoading, className
               const isLast = index === steps.length - 1;
               const lineComplete = step.state === 'complete';
               const linePartial = step.state === 'current';
+              const lineFailed = step.state === 'failed';
 
               return (
                 <li
@@ -214,6 +240,7 @@ export function OrgOnboardingCard({ org, hasBillingAccount, isLoading, className
                     isLast={isLast}
                     lineComplete={lineComplete}
                     linePartial={linePartial}
+                    lineFailed={lineFailed}
                   />
 
                   <StepIcon id={step.id} state={step.state} />
@@ -239,7 +266,8 @@ export function OrgOnboardingCard({ org, hasBillingAccount, isLoading, className
                       weight="medium"
                       className={cn(
                         'mt-0.5 leading-snug md:mt-1 md:text-center',
-                        step.state === 'upcoming' && 'text-muted-foreground'
+                        step.state === 'upcoming' && 'text-muted-foreground',
+                        step.state === 'failed' && 'text-destructive'
                       )}>
                       {STEP_TITLES[step.id]}
                     </Text>

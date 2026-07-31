@@ -5,6 +5,7 @@ import {
   billingAccountListForOrgQuery,
   billingAccountListQuery,
   paymentMethodListForOrgQuery,
+  paymentMethodListQuery,
 } from '../apis/billing.api';
 import { ListQueryParams } from '@/resources/schemas';
 import { useQuery } from '@tanstack/react-query';
@@ -18,6 +19,7 @@ export const billingQueryKeys = {
   bindings: (orgName: string) => ['billing-accounts', 'bindings', orgName] as const,
   bindingsAll: ['billing-accounts', 'bindings', 'all'] as const,
   paymentMethods: (orgName: string) => ['billing-accounts', 'payment-methods', orgName] as const,
+  paymentMethodsAll: ['billing-accounts', 'payment-methods', 'all'] as const,
 };
 
 export const useBillingAccountListQuery = (params?: ListQueryParams) =>
@@ -64,5 +66,13 @@ export const usePaymentMethodListForOrgQuery = (orgName: string) =>
     queryKey: billingQueryKeys.paymentMethods(orgName),
     queryFn: () => paymentMethodListForOrgQuery(orgName),
     enabled: !!orgName,
+    staleTime: 5 * 60 * 1000,
+  });
+
+/** Cluster-wide payment methods — used to attach Failed status on list views. */
+export const usePaymentMethodListQuery = () =>
+  useQuery({
+    queryKey: billingQueryKeys.paymentMethodsAll,
+    queryFn: () => paymentMethodListQuery({ limit: 500 }),
     staleTime: 5 * 60 * 1000,
   });

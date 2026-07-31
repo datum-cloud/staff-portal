@@ -11,7 +11,7 @@ import { cn } from '@datum-cloud/datum-ui/utils';
  *
  * @see https://www.figma.com/design/bBEQ8YeTP4SngNl5EkkQdH/Datum---Master-Design-File?node-id=14534-63363
  */
-export type CustomerStatusValue = 'active' | 'inactive' | 'flagged' | 'fraud';
+export type CustomerStatusValue = 'active' | 'inactive' | 'flagged' | 'fraud' | 'failed';
 
 type Props = {
   status: CustomerStatusValue | string;
@@ -39,6 +39,10 @@ const STATUS_STYLES: Record<CustomerStatusValue, { label: string; className: str
   },
   fraud: {
     label: 'Fraud',
+    className: 'bg-[#ecdfde] text-[#b84848] dark:bg-[rgba(194,128,128,0.2)] dark:text-[#d47878]',
+  },
+  failed: {
+    label: 'Failed',
     className: 'bg-[#ecdfde] text-[#b84848] dark:bg-[rgba(194,128,128,0.2)] dark:text-[#d47878]',
   },
 };

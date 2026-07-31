@@ -1,4 +1,8 @@
-import { getBillingAccountDisplayName, orgNameFromNamespace } from '../utils';
+import {
+  getBillingAccountDisplayName,
+  getBillingAccountDisplayStatus,
+  orgNameFromNamespace,
+} from '../utils';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DisplayId, DisplayName } from '@/components/display';
@@ -13,6 +17,7 @@ import {
   useBillingAccountBindingListQuery,
   useBillingAccountListQuery,
   useOrgListQuery,
+  usePaymentMethodListQuery,
 } from '@/resources/request/client';
 import { billingAccountRoutes, orgRoutes } from '@/utils/config/routes.config';
 import { Text } from '@datum-cloud/datum-ui/typography';
@@ -36,9 +41,12 @@ function accountKey(namespace: string | undefined, name: string | undefined): st
 export function BillingAccountList() {
   const tableQuery = useBillingAccountListQuery();
   const bindingsQuery = useBillingAccountBindingListQuery();
+  const paymentMethodsQuery = usePaymentMethodListQuery();
   const orgQuery = useOrgListQuery({ limit: 500 });
   const orgSearch = useOrganizationSearch();
   const projectSearch = useProjectSearch();
+
+  const paymentMethods = paymentMethodsQuery.data?.items ?? [];
 
   const orgLabels = useMemo(() => {
     const map = new Map<string, string>();
@@ -201,7 +209,10 @@ export function BillingAccountList() {
     columnHelper.accessor('status.phase', {
       id: 'phase',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
-      cell: ({ getValue }) => <BadgeState state={getValue() ?? 'Unknown'} />,
+      cell: ({ row }) => {
+        const { state, tooltip } = getBillingAccountDisplayStatus(row.original, paymentMethods);
+        return <BadgeState state={state} tooltip={tooltip} />;
+      },
     }),
     columnHelper.accessor('spec.currencyCode', {
       id: 'currencyCode',

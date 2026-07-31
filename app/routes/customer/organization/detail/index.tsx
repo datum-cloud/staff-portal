@@ -2,6 +2,7 @@ import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../sha
 import type { Route } from './+types/index';
 import { DangerZoneCard } from '@/components/danger-zone-card';
 import { OrgBillingAccountsCard } from '@/features/billing';
+import { getPaymentMethodsForAccount } from '@/features/billing/utils';
 import {
   OrgContactCard,
   OrgDetailsCard,
@@ -14,11 +15,13 @@ import {
   useBillingAccountListForOrgQuery,
   useOrganizationQuery,
   useOrgMemberListQuery,
+  usePaymentMethodListForOrgQuery,
 } from '@/resources/request/client';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { useLingui } from '@lingui/react/macro';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
@@ -35,9 +38,30 @@ export default function Page() {
   const orgQuery = useOrganizationQuery(orgName);
   const membersQuery = useOrgMemberListQuery(orgName);
   const billingQuery = useBillingAccountListForOrgQuery(orgName);
+  const paymentMethodsQuery = usePaymentMethodListForOrgQuery(orgName);
 
   const gqlOrg = orgQuery.data ?? undefined;
-  const billingAccounts = billingQuery.data?.items ?? [];
+  const billingAccounts = useMemo(() => billingQuery.data?.items ?? [], [billingQuery.data?.items]);
+  const paymentMethods = useMemo(
+    () => paymentMethodsQuery.data?.items ?? [],
+    [paymentMethodsQuery.data?.items]
+  );
+
+  /** Sole PM on a billing account is Failed — no other methods to fall back on. */
+  const paymentMethodFailed = useMemo(
+    () =>
+      billingAccounts.some((account) => {
+        const accountName = account.metadata?.name;
+        if (!accountName) return false;
+        const methods = getPaymentMethodsForAccount(
+          paymentMethods,
+          accountName,
+          account.metadata?.namespace
+        );
+        return methods.length === 1 && methods[0].status?.phase === 'Failed';
+      }),
+    [billingAccounts, paymentMethods]
+  );
 
   const handleDeleteOrganization = async () => {
     await orgDeleteMutation(orgName);
@@ -57,6 +81,7 @@ export default function Page() {
         className="h-full"
         org={gqlOrg}
         hasBillingAccount={billingAccounts.length > 0}
+        paymentMethodFailed={paymentMethodFailed}
         isLoading={orgQuery.isPending}
       />
 

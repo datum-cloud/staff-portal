@@ -78,6 +78,11 @@ const StateConfig = {
     className:
       'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800',
   },
+  failed: {
+    icon: null,
+    className:
+      'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800',
+  },
   warning: {
     icon: null,
     className:
