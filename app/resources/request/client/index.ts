@@ -5,6 +5,7 @@ export * from './queries/metrics.queries';
 export * from './apis/email.api';
 export * from './apis/contact-membership.api';
 export * from './apis/note.api';
+export * from './queries/note.queries';
 export * from './apis/search.api';
 export * from './queries/search.queries';
 

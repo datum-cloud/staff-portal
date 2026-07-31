@@ -1,9 +1,9 @@
 import { getContactDetailMetadata, useContactDetailData } from '../shared';
 import type { Route } from './+types/index';
-import { ContactForm } from '@/features/contact';
+import { ContactForm, ContactOrganizationsCard } from '@/features/contact';
+import { SectionCard } from '@/features/milo';
+import { NotesCard } from '@/features/notes';
 import { metaObject } from '@/utils/helpers';
-import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
-import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { Trans } from '@lingui/react/macro';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
@@ -13,23 +13,26 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 
 export default function Page() {
   const data = useContactDetailData();
+  const namespace = data?.contact?.metadata?.namespace ?? 'default';
+  const contactName = data?.contact?.metadata?.name ?? '';
+  const userId = data?.user?.metadata?.name ?? '';
 
   return (
-    <div className="m-4">
-      <Row className="mb-4">
-        <Col xs={24} md={{ span: 12, offset: 6 }}>
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                <Trans>Contact Information</Trans>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ContactForm contact={data?.contact} user={data?.user} />
-            </CardContent>
-          </Card>
-        </Col>
-      </Row>
+    <div className="m-4 flex flex-col gap-4">
+      <SectionCard title={<Trans>Contact Information</Trans>}>
+        <ContactForm contact={data?.contact} user={data?.user} />
+      </SectionCard>
+
+      <ContactOrganizationsCard userId={userId} />
+
+      <NotesCard
+        subject={{
+          apiGroup: 'notification.miloapis.com',
+          kind: 'Contact',
+          name: contactName,
+          namespace,
+        }}
+      />
     </div>
   );
 }
