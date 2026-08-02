@@ -3,6 +3,7 @@ import {
   SUSPENSION_REASONS,
   useProjectSuspension,
 } from '../hooks/useProjectSuspension';
+import { ActionCard } from '@/components/action-card';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
@@ -12,14 +13,13 @@ import { projectQueryKeys, useProjectSuspensionsQuery } from '@/resources/reques
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { Text } from '@datum-cloud/datum-ui/typography';
-import { cn } from '@datum-cloud/datum-ui/utils';
 import { Trans, useLingui } from '@lingui/react/macro';
 import type {
   ComMiloapisResourcemanagerV1Alpha1Project,
   ComMiloapisResourcemanagerV1Alpha1ProjectSuspension,
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { useQueryClient } from '@tanstack/react-query';
-import { ShieldAlert } from 'lucide-react';
+import { Shield, ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
 import { z } from 'zod';
 
@@ -110,16 +110,16 @@ export function ProjectSuspensionCard({ project, className }: Props) {
       </DialogForm>
 
       <SectionCard
-        className={cn(className)}
+        className={className}
         title={
           <span className="flex items-center gap-2">
-            <ShieldAlert className="h-4 w-4" />
+            <Shield className="h-4 w-4" />
             <Trans>Trust &amp; Safety</Trans>
           </span>
         }
         description={
           <Trans>
-            Suspend or reinstate this project. Suspension is reversible — data is never deleted.
+            Suspend or reinstate this project. Suspension is reversible - data is never deleted.
           </Trans>
         }>
         {isLoading ? (
@@ -127,26 +127,43 @@ export function ProjectSuspensionCard({ project, className }: Props) {
             <Trans>Loading…</Trans>
           </Text>
         ) : (
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <Text size="sm" weight="medium">
-                  <Trans>Status</Trans>
-                </Text>
-                <BadgeState state={isSuspended ? 'Suspended' : 'Active'} />
-              </div>
-              {!isSuspended && (
+          <div className="flex flex-col gap-3">
+            <ActionCard
+              variant="warning"
+              icon={ShieldAlert}
+              title={
+                isSuspended ? <Trans>Project suspended</Trans> : <Trans>Suspend Project</Trans>
+              }
+              description={
+                isSuspended ? (
+                  active.length > 1 ? (
+                    <Trans>
+                      {active.length} active suspensions — the project stays suspended until all are
+                      lifted. Instances and served traffic are paused; data is preserved.
+                    </Trans>
+                  ) : (
+                    <Trans>
+                      Instances and served traffic are paused; data is preserved. Lift the
+                      suspension below to restore the project.
+                    </Trans>
+                  )
+                ) : (
+                  <Trans>
+                    Temporarily pause this project&apos;s instances and served traffic without
+                    deleting any data. It can be reinstated at any time.
+                  </Trans>
+                )
+              }
+              action={
                 <Button type="warning" size="small" onClick={() => setSuspendOpen(true)}>
-                  <Trans>Suspend Project</Trans>
+                  <Trans>Suspend</Trans>
                 </Button>
-              )}
-            </div>
+              }
+            />
 
             {active.map((s) => (
-              <div
-                key={s.metadata?.name}
-                className="flex flex-col gap-2 rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-900/20">
-                <div className="flex items-center justify-between gap-2">
+              <div key={s.metadata?.name} className="bg-muted/40 rounded-md border p-3">
+                <div className="mb-2 flex items-center justify-between gap-2">
                   <BadgeState state={s.spec?.reason ?? 'Unknown'} />
                   <Button
                     type="tertiary"
