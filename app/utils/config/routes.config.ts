@@ -156,6 +156,11 @@ export const activityRoutes = {
   },
 } as const;
 
+// Operations → Chainsaw Tests
+export const chainsawTestRoutes = {
+  list: () => '/operations/chainsaw-tests',
+} as const;
+
 // Operations → Email Activity
 export const emailActivityRoutes = {
   list: () => '/operations/email-activity',
@@ -216,6 +221,7 @@ export const routes = {
 
   // Operations
   activity: activityRoutes,
+  chainsawTests: chainsawTestRoutes,
   emailActivity: emailActivityRoutes.list,
   emailActivityDetail: emailActivityRoutes.detail,
 

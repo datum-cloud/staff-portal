@@ -2,7 +2,7 @@ import type { GqlOrganization } from '@/modules/graphql/organizations';
 
 export type OnboardingStepId = 'contact' | 'billing' | 'payment' | 'complete';
 
-export type OnboardingStepState = 'complete' | 'current' | 'upcoming';
+export type OnboardingStepState = 'complete' | 'current' | 'failed' | 'upcoming';
 
 export type OnboardingStep = {
   id: OnboardingStepId;
@@ -33,12 +33,17 @@ function hasContactDetails(org: GqlOrganization | null | undefined): boolean {
  * Builds a 4-step onboarding timeline from GraphQL org fields + whether a
  * billing account exists. Reasons we know about (e.g. PaymentMethodMissing)
  * pin the “current” step; otherwise we infer from available data.
+ *
+ * When `paymentMethodFailed` is true (sole PM on the account is Failed), the
+ * payment step renders as `failed` instead of `current`.
  */
 export function buildOnboardingSteps(input: {
   org: GqlOrganization | null | undefined;
   hasBillingAccount: boolean;
+  /** Sole payment method on a billing account is Failed. */
+  paymentMethodFailed?: boolean;
 }): OnboardingStepsResult {
-  const { org, hasBillingAccount } = input;
+  const { org, hasBillingAccount, paymentMethodFailed = false } = input;
   const complete = org?.onboardingComplete === true;
   const reason = org?.onboardingReason ?? null;
   const message = org?.onboardingMessage ?? null;
@@ -70,7 +75,10 @@ export function buildOnboardingSteps(input: {
   const steps: OnboardingStep[] = order.map((id, index) => {
     if (id === 'complete') return { id, state: 'upcoming' };
     if (index < currentIndex) return { id, state: 'complete' };
-    if (index === currentIndex) return { id, state: 'current' };
+    if (index === currentIndex) {
+      if (id === 'payment' && paymentMethodFailed) return { id, state: 'failed' };
+      return { id, state: 'current' };
+    }
     return { id, state: 'upcoming' };
   });
 
@@ -84,11 +92,13 @@ export function buildOnboardingSteps(input: {
 
   const waitingMessage =
     message?.trim() ||
-    (reason === 'PaymentMethodMissing'
-      ? 'Waiting for a ready default payment method on the billing account.'
-      : reason
-        ? reason
-        : 'Onboarding is incomplete.');
+    (paymentMethodFailed
+      ? 'Default payment method failed. Add a working payment method to continue.'
+      : reason === 'PaymentMethodMissing'
+        ? 'Waiting for a ready default payment method on the billing account.'
+        : reason
+          ? reason
+          : 'Onboarding is incomplete.');
 
   return { steps, waitingMessage };
 }
