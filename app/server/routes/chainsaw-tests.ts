@@ -30,9 +30,7 @@ interface ChainsawTestRow {
 }
 
 function grafanaHost(environment: string): string {
-  return environment === 'staging'
-    ? 'grafana.staging.env.datum.net'
-    : 'grafana.prod.env.datum.net';
+  return environment === 'staging' ? 'grafana.staging.env.datum.net' : 'grafana.prod.env.datum.net';
 }
 
 function grafanaUrlFor(suite: string, test: string, environment: string): string {
