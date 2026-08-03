@@ -1,5 +1,6 @@
 import type { Route } from './+types/callback';
 import { authenticator } from '@/modules/auth';
+import { requestIdContext } from '@/server/context';
 import {
   getRedirectDestination,
   redirectToCookie,
@@ -57,11 +58,13 @@ export async function loader({ request, context }: Route.LoaderArgs) {
       cookies: request.headers.get('Cookie') || 'none',
     });
 
+    const requestId = context.get(requestIdContext);
+
     if (message.includes('Missing state on cookie')) {
-      return redirect(`/error/oauth-error?error=missing_state&request_id=${context.requestId}`);
+      return redirect(`/error/oauth-error?error=missing_state&request_id=${requestId}`);
     }
 
-    return redirect(`/error/oauth-error?error=oauth_failed&request_id=${context.requestId}`);
+    return redirect(`/error/oauth-error?error=oauth_failed&request_id=${requestId}`);
   }
 }
 

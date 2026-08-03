@@ -61,7 +61,7 @@ export function useCustomBreadcrumbs(): BreadcrumbItem[] | null {
         const params = extractRouteParams(location.pathname, match.pathname);
 
         // Generate custom breadcrumb items
-        const customItems = handle.customBreadcrumb.generateItems(params, match.data);
+        const customItems = handle.customBreadcrumb.generateItems(params, match.loaderData);
 
         const replaceStrategy = handle.customBreadcrumb.replace;
 
@@ -167,7 +167,7 @@ function insertCustomBreadcrumbs(
   for (const match of matches) {
     if (match.handle?.breadcrumb) {
       const breadcrumb = match.handle.breadcrumb;
-      const label = typeof breadcrumb === 'function' ? breadcrumb(match.data) : breadcrumb;
+      const label = typeof breadcrumb === 'function' ? breadcrumb(match.loaderData) : breadcrumb;
 
       // If this is the current match with custom breadcrumbs, use the custom items
       if (match === currentMatch) {
@@ -199,7 +199,7 @@ function generateAutoBreadcrumbs(matches: any[]): BreadcrumbItem[] {
  * Create breadcrumb item from handle, supporting options format
  */
 function createBreadcrumbItemFromHandle(breadcrumb: any, match: any): BreadcrumbItem {
-  const label = typeof breadcrumb === 'function' ? breadcrumb(match.data) : breadcrumb;
+  const label = typeof breadcrumb === 'function' ? breadcrumb(match.loaderData) : breadcrumb;
 
   // Check if the label is an object with options
   if (typeof label === 'object' && label !== null && 'label' in label) {
@@ -208,7 +208,7 @@ function createBreadcrumbItemFromHandle(breadcrumb: any, match: any): Breadcrumb
       path: label.clickable !== false ? match.pathname : undefined,
       clickable: label.clickable !== false,
       className: label.className,
-      data: match.data,
+      data: match.loaderData,
       ...label,
     };
   }
@@ -217,7 +217,7 @@ function createBreadcrumbItemFromHandle(breadcrumb: any, match: any): Breadcrumb
     label,
     path: match.pathname,
     clickable: true,
-    data: match.data,
+    data: match.loaderData,
   };
 }
 
