@@ -126,7 +126,6 @@ export function buildSystemPrompt(clientOs?: string): SystemModelMessage[] {
     {
       role: 'system',
       content: STATIC_SYSTEM_PROMPT,
-      providerOptions: { anthropic: { cacheControl: { type: 'ephemeral' } } },
     },
     {
       role: 'system',

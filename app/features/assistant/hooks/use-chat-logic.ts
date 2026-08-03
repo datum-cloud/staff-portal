@@ -7,14 +7,9 @@
  * `handleDeleteChat` keep explicit `useCallback` deps (the stable `setChatList`
  * setter is intentionally omitted) which the React Compiler can't preserve.
  */
-import {
-  DEFAULT_EFFORT_ID,
-  DEFAULT_MODEL_ID,
-  MODEL_OPTIONS,
-  MODEL_SELECTOR_ENABLED,
-} from '../constants';
+import { DEFAULT_EFFORT_ID, MODEL_SELECTOR_ENABLED } from '../constants';
 import { deleteChat, deriveTitle, listChats, saveChat } from '../lib';
-import type { EffortId, StoredChat } from '../types';
+import type { EffortId, ModelOption, StoredChat } from '../types';
 import { useSpeechInput } from './use-speech-input';
 import { useEnv } from '@/hooks';
 import { useChat } from '@ai-sdk/react';
@@ -34,7 +29,19 @@ function detectOs(): 'macos' | 'windows' | 'linux' | 'unknown' {
   return 'unknown';
 }
 
-export function useChatLogic() {
+function pickDefaultModelId(models: ModelOption[], preferred?: string): string {
+  if (preferred) {
+    if (models.some((m) => m.id === preferred)) return preferred;
+    // Legacy Anthropic ids → openai-claude-* failover aliases from the gateway.
+    if (preferred.startsWith('claude-')) {
+      const failover = `openai-${preferred}`;
+      if (models.some((m) => m.id === failover)) return failover;
+    }
+  }
+  return models[0]?.id ?? '';
+}
+
+export function useChatLogic(models: ModelOption[] = []) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const [currentChatId, setCurrentChatId] = useState<string>(() => crypto.randomUUID());
@@ -46,18 +53,30 @@ export function useChatLogic() {
 
   // Selected model + effort (the prompt card's "Sonnet 4.6 · High" control).
   // Mirrored into refs so the memoized transport reads the latest value. The
-  // initial model honors the ANTHROPIC_MODEL env when it matches an option.
+  // initial model honors AI_GATEWAY_MODEL when it appears in the gateway catalog.
   const env = useEnv();
   const [modelId, setModelId] = useState<string>(() =>
-    env?.ANTHROPIC_MODEL && MODEL_OPTIONS.some((m) => m.id === env.ANTHROPIC_MODEL)
-      ? env.ANTHROPIC_MODEL
-      : DEFAULT_MODEL_ID
+    pickDefaultModelId(models, env?.AI_GATEWAY_MODEL)
   );
   const [effortId, setEffortId] = useState<EffortId>(DEFAULT_EFFORT_ID);
   const modelIdRef = useRef(modelId);
   modelIdRef.current = modelId;
   const effortIdRef = useRef(effortId);
   effortIdRef.current = effortId;
+
+  // When the gateway catalog loads (or changes), keep the selection valid —
+  // including remapping legacy Anthropic ids onto openai-claude-* failover aliases.
+  useEffect(() => {
+    if (models.length === 0) return;
+    setModelId((prev) => {
+      if (prev && models.some((m) => m.id === prev)) return prev;
+      if (prev?.startsWith('claude-')) {
+        const failover = `openai-${prev}`;
+        if (models.some((m) => m.id === failover)) return failover;
+      }
+      return pickDefaultModelId(models, env?.AI_GATEWAY_MODEL);
+    });
+  }, [models, env?.AI_GATEWAY_MODEL]);
 
   useEffect(() => {
     setChatList(listChats());

@@ -97,9 +97,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
 }
 
 function RunTick({ run }: { run: ChainsawTestRun }) {
-  const color = run.passed
-    ? 'bg-green-500 dark:bg-green-400'
-    : 'bg-red-500 dark:bg-red-400';
+  const color = run.passed ? 'bg-green-500 dark:bg-green-400' : 'bg-red-500 dark:bg-red-400';
   return (
     <Tooltip
       side="top"
