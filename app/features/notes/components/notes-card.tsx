@@ -1,5 +1,6 @@
 import ButtonDeleteAction from '@/components/button/button-delete-action';
 import { DateTime } from '@/components/date';
+import { EmptyState } from '@/components/empty-state';
 import { SectionCard } from '@/features/milo';
 import {
   noteCreateMutation,
@@ -11,15 +12,30 @@ import {
   type NoteSubjectRef,
 } from '@/resources/request/client';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Textarea } from '@datum-cloud/datum-ui/textarea';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import type { ComMiloapisNotesV1Alpha1Note } from '@openapi/notes.miloapis.com/v1alpha1';
 import { useQueryClient } from '@tanstack/react-query';
+import { StickyNote } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 const MAX_LENGTH = 1000;
+
+function NotesListSkeleton() {
+  return (
+    <div className="flex flex-col gap-3" aria-busy="true">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div key={i} className="flex flex-col gap-1.5">
+          <Skeleton className="h-3.5 w-full max-w-md" />
+          <Skeleton className="h-3 w-40" />
+        </div>
+      ))}
+    </div>
+  );
+}
 
 type Props = {
   /** The resource the notes are attached to (written to `spec.subjectRef`). */
@@ -95,13 +111,14 @@ export function NotesCard({ subject, scope = { kind: 'core' }, className }: Prop
     <SectionCard className={className} title={<Trans>Notes</Trans>}>
       <div className="flex flex-col gap-4">
         {isLoading ? (
-          <Text textColor="muted">
-            <Trans>Loading…</Trans>
-          </Text>
+          <NotesListSkeleton />
         ) : notes.length === 0 ? (
-          <Text textColor="muted">
-            <Trans>No notes yet. Add the first note below.</Trans>
-          </Text>
+          <EmptyState
+            size="sm"
+            icon={StickyNote}
+            title={<Trans>No notes yet</Trans>}
+            description={<Trans>Add the first note below to start tracking context.</Trans>}
+          />
         ) : (
           <div className="divide-y">
             {notes.map((note) => {
