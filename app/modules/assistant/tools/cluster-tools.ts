@@ -1,16 +1,124 @@
 import { callMcpTool } from './mcp-client';
 import { tool } from 'ai';
+import { loadAll } from 'js-yaml';
 import { z } from 'zod';
+
+const FLUX_KINDS: Array<{ kind: string; apiVersion: string }> = [
+  { kind: 'Kustomization', apiVersion: 'kustomize.toolkit.fluxcd.io/v1' },
+  { kind: 'HelmRelease', apiVersion: 'helm.toolkit.fluxcd.io/v2' },
+  { kind: 'GitRepository', apiVersion: 'source.toolkit.fluxcd.io/v1' },
+  { kind: 'OCIRepository', apiVersion: 'source.toolkit.fluxcd.io/v1' },
+];
+
+const FLUX_KIND_LIMIT = 100;
+
+interface FluxResourceSummary {
+  kind: string;
+  name: string;
+  namespace: string;
+  ready: boolean | null;
+  reason?: string;
+  message?: string;
+}
+
+function extractResourceText(content: unknown): string | null {
+  if (!Array.isArray(content)) return null;
+  const textItem = content.find(
+    (item) => typeof item === 'object' && item !== null && (item as any).type === 'text'
+  );
+  return textItem ? (textItem as any).text : null;
+}
+
+function summarizeResource(kind: string, doc: any): FluxResourceSummary {
+  const conditions = doc?.status?.conditions ?? [];
+  const readyCondition = conditions.find((c: any) => c.type === 'Ready');
+  return {
+    kind,
+    name: doc?.metadata?.name ?? 'unknown',
+    namespace: doc?.metadata?.namespace ?? 'unknown',
+    ready: readyCondition ? readyCondition.status === 'True' : null,
+    reason: readyCondition?.reason,
+    message: readyCondition?.message,
+  };
+}
+
+async function getFluxKindStatus(
+  kind: string,
+  apiVersion: string,
+  namespace?: string
+): Promise<{ resources: FluxResourceSummary[]; error?: string; truncated?: boolean }> {
+  const args: Record<string, unknown> = { apiVersion, kind, limit: FLUX_KIND_LIMIT };
+  if (namespace) args.namespace = namespace;
+
+  const result = await callMcpTool('flux-mcp-server__get_kubernetes_resources', args);
+
+  if (result && typeof result === 'object' && 'error' in result) {
+    return { resources: [], error: (result as { error: string }).error };
+  }
+
+  const text = extractResourceText(result?.content);
+  if (!text) return { resources: [] };
+
+  if (result?.isError) {
+    if (text.includes('No resources found')) return { resources: [] };
+    return { resources: [], error: text };
+  }
+
+  try {
+    const docs = (loadAll(text) as any[]).filter(Boolean);
+    return {
+      resources: docs.map((doc) => summarizeResource(kind, doc)),
+      truncated: docs.length >= FLUX_KIND_LIMIT,
+    };
+  } catch (err) {
+    return {
+      resources: [],
+      error: `Failed to parse ${kind} resources: ${err instanceof Error ? err.message : 'unknown'}`,
+    };
+  }
+}
 
 export function createClusterTools() {
   return {
     getFluxStatus: tool({
       description:
-        'Get the Flux GitOps installation status for the cluster.' +
-        ' Call this to check if Flux is healthy and what version is running.',
-      inputSchema: z.object({}),
-      execute: async () => {
-        return callMcpTool('flux-mcp-server__get_flux_instance', {});
+        'Get Flux GitOps reconciliation status for the cluster: Kustomizations, HelmReleases,' +
+        ' GitRepositories, and OCIRepositories, with a ready/not-ready summary.' +
+        ' Call this to check if Flux is healthy and what is failing to reconcile.',
+      inputSchema: z.object({
+        namespace: z
+          .string()
+          .optional()
+          .describe('Namespace to filter by (omit to check the whole cluster)'),
+      }),
+      execute: async ({ namespace }: { namespace?: string }) => {
+        const results = await Promise.all(
+          FLUX_KINDS.map(({ kind, apiVersion }) => getFluxKindStatus(kind, apiVersion, namespace))
+        );
+
+        const errors = results
+          .map((r, i) => (r.error ? `${FLUX_KINDS[i].kind}: ${r.error}` : null))
+          .filter((e): e is string => e !== null);
+
+        const truncatedKinds = results
+          .map((r, i) => (r.truncated ? FLUX_KINDS[i].kind : null))
+          .filter((k): k is string => k !== null);
+
+        const resources = results.flatMap((r) => r.resources);
+        const notReady = resources.filter((r) => r.ready === false);
+        const unknown = resources.filter((r) => r.ready === null);
+
+        return {
+          summary: `${resources.length - notReady.length}/${resources.length} Flux resources ready`,
+          notReady,
+          ...(unknown.length ? { unknownReadyState: unknown } : {}),
+          ...(errors.length ? { errors } : {}),
+          ...(truncatedKinds.length
+            ? {
+                warning: `Hit the ${FLUX_KIND_LIMIT}-resource limit for: ${truncatedKinds.join(', ')} — pass a namespace to narrow the results.`,
+              }
+            : {}),
+        };
       },
     }),
 
