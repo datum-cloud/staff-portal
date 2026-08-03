@@ -66,7 +66,7 @@
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
     "dotenv": "^17.0.0",
-    "graphql": "^16.0.0",
+    "graphql": "^17.0.0",
     "hono": "^4.7.9",
     "intl-parse-accept-language": "^1.0.0",
     "isbot": "^5.1.27",
@@ -137,6 +137,6 @@
   "overrides": {
     "react-is": "^19.0.0-rc-69d4b800-20241021",
     "form-data": "^4.0.6",
-    "graphql": "16.14.2"
+    "graphql": "17.0.2"
   }
 }
