@@ -52,19 +52,18 @@ export function useChatLogic(models: ModelOption[] = []) {
   const [chatList, setChatList] = useState<StoredChat[]>([]);
 
   // Selected model + effort (the prompt card's "Sonnet 4.6 · High" control).
-  // Mirrored into refs so the memoized transport reads the latest value. The
-  // initial model honors AI_GATEWAY_MODEL when it appears in the gateway catalog.
+  // Mirrored into refs so the memoized transport reads the latest value. Prefer
+  // AI_GATEWAY_MODEL; fall back to ANTHROPIC_MODEL for direct-Anthropic deploys.
   const env = useEnv();
-  const [modelId, setModelId] = useState<string>(() =>
-    pickDefaultModelId(models, env?.AI_GATEWAY_MODEL)
-  );
+  const preferredModel = env?.AI_GATEWAY_MODEL || env?.ANTHROPIC_MODEL;
+  const [modelId, setModelId] = useState<string>(() => pickDefaultModelId(models, preferredModel));
   const [effortId, setEffortId] = useState<EffortId>(DEFAULT_EFFORT_ID);
   const modelIdRef = useRef(modelId);
   modelIdRef.current = modelId;
   const effortIdRef = useRef(effortId);
   effortIdRef.current = effortId;
 
-  // When the gateway catalog loads (or changes), keep the selection valid —
+  // When the catalog loads (or changes), keep the selection valid —
   // including remapping legacy Anthropic ids onto openai-claude-* failover aliases.
   useEffect(() => {
     if (models.length === 0) return;
@@ -74,9 +73,9 @@ export function useChatLogic(models: ModelOption[] = []) {
         const failover = `openai-${prev}`;
         if (models.some((m) => m.id === failover)) return failover;
       }
-      return pickDefaultModelId(models, env?.AI_GATEWAY_MODEL);
+      return pickDefaultModelId(models, preferredModel);
     });
-  }, [models, env?.AI_GATEWAY_MODEL]);
+  }, [models, preferredModel]);
 
   useEffect(() => {
     setChatList(listChats());

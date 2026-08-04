@@ -5,7 +5,8 @@
  * picker in the prompt card. Flip to `false` to hide the control entirely — the
  * client then sends no override and the server falls back to its default model.
  *
- * Model options themselves come from GET /api/assistant/models (gateway catalog).
+ * Model options themselves come from GET /api/assistant/models (gateway
+ * catalog, or the direct-Anthropic allowlist when the gateway is unset).
  */
 import type { EffortId, EffortOption } from './types';
 

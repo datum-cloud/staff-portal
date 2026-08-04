@@ -4,11 +4,13 @@ import {
   createGatewayLanguageModel,
   fetchGatewayModels,
   isAiGatewayConfigured,
+  isAssistantConfigured,
   resolveGatewayModel,
 } from '@/server/lib/ai-gateway';
 import { authMiddleware, getToken, getUserId } from '@/server/middleware';
 import { env } from '@/utils/config/env.server';
 import { logger } from '@/utils/logger';
+import { createAnthropic } from '@ai-sdk/anthropic';
 import {
   APICallError,
   convertToModelMessages,
@@ -22,6 +24,17 @@ import { Hono } from 'hono';
 export const assistantRoutes = new Hono<{ Variables: EnvVariables }>();
 
 const MAX_MESSAGES = 50;
+
+/**
+ * Direct Anthropic allowlist (prod / local without gateway). Keep labels in
+ * sync with what GET /models returns on the Anthropic path.
+ */
+const DIRECT_ANTHROPIC_MODELS: Array<{ id: string; label: string }> = [
+  { id: 'claude-sonnet-4-6', label: 'Sonnet 4.6' },
+  { id: 'claude-haiku-4-5', label: 'Haiku 4.5' },
+];
+const ALLOWED_DIRECT_MODELS = new Set(DIRECT_ANTHROPIC_MODELS.map((m) => m.id));
+const DEFAULT_DIRECT_MODEL = DIRECT_ANTHROPIC_MODELS[0].id;
 
 /** Effort → Anthropic extended-thinking token budget (Claude 4.x `enabled` thinking). */
 const EFFORT_BUDGETS = { low: 4000, medium: 10000, high: 20000 } as const;
@@ -96,9 +109,21 @@ function checkRateLimit(userId: string): boolean {
   return true;
 }
 
+function resolveDirectAnthropicModel(requested?: string): string {
+  if (requested && ALLOWED_DIRECT_MODELS.has(requested)) return requested;
+  if (env.anthropicModel && ALLOWED_DIRECT_MODELS.has(env.anthropicModel)) {
+    return env.anthropicModel;
+  }
+  return DEFAULT_DIRECT_MODEL;
+}
+
 assistantRoutes.get('/models', authMiddleware(), async (c) => {
-  if (!env.chatbotEnabled || !isAiGatewayConfigured()) {
+  if (!env.chatbotEnabled || !isAssistantConfigured()) {
     return c.json({ error: 'AI assistant is not configured' }, 503);
+  }
+
+  if (!isAiGatewayConfigured()) {
+    return c.json({ models: [...DIRECT_ANTHROPIC_MODELS] });
   }
 
   try {
@@ -117,7 +142,7 @@ assistantRoutes.get('/models', authMiddleware(), async (c) => {
 });
 
 assistantRoutes.post('/', authMiddleware(), async (c) => {
-  if (!env.chatbotEnabled || !isAiGatewayConfigured()) {
+  if (!env.chatbotEnabled || !isAssistantConfigured()) {
     return c.json({ error: 'AI assistant is not configured' }, 503);
   }
 
@@ -149,74 +174,26 @@ assistantRoutes.post('/', authMiddleware(), async (c) => {
   }
 
   try {
-    const selected = await resolveGatewayModel(requestedModel);
-    const languageModel = createGatewayLanguageModel(selected.id, selected.protocol);
-
-    const thinkingBudget = resolveEffortBudget(requestedEffort);
-    const reasoningEffort = resolveReasoningEffort(requestedEffort);
-    const adaptive = selected.protocol === 'anthropic' && usesAdaptiveThinking(selected.id);
-
-    const result = streamText({
-      model: languageModel,
-      system: buildSystemPrompt(clientOs),
-      messages: await convertToModelMessages(messages.slice(-MAX_MESSAGES)),
-      // Anthropic requires max_tokens > thinking budget when extended thinking is on.
-      maxOutputTokens:
-        selected.protocol === 'anthropic' && !adaptive ? thinkingBudget + 4096 : 8192,
-      experimental_transform: smoothStream({ chunking: 'word', delayInMs: 40 }),
-      providerOptions:
-        selected.protocol === 'anthropic'
-          ? {
-              anthropic: {
-                thinking: adaptive
-                  ? { type: 'adaptive' as const, display: 'summarized' as const }
-                  : { type: 'enabled' as const, budgetTokens: thinkingBudget },
-                ...(adaptive ? { effort: reasoningEffort as 'low' | 'medium' | 'high' } : {}),
-                metadata: { userId },
-              },
-            }
-          : {
-              // Provider name is `datum-ai-gateway` → camelCase key `datumAiGateway`.
-              datumAiGateway: {
-                reasoningEffort,
-                user: userId,
-              },
-            },
-      stopWhen: stepCountIs(10),
-      tools: createAssistantTools({ accessToken: token }),
-    });
-
-    result.response.then(undefined, (err: unknown) => {
-      logger.error('assistant stream failed', {
+    if (isAiGatewayConfigured()) {
+      return await streamViaGateway({
+        messages,
+        clientOs,
+        requestedModel,
+        requestedEffort,
+        token,
         userId,
-        model: selected.id,
-        protocol: selected.protocol,
         userMessage,
-        error: formatAssistantError(err),
-        stack: err instanceof Error ? err.stack : undefined,
       });
-    });
+    }
 
-    result.usage.then(
-      (usage) => {
-        logger.info('assistant request completed', {
-          userId,
-          model: selected.id,
-          protocol: selected.protocol,
-          userMessage,
-          inputTokens: usage.inputTokens,
-          outputTokens: usage.outputTokens,
-          totalTokens: usage.totalTokens,
-        });
-      },
-      () => {}
-    );
-
-    return result.toUIMessageStreamResponse({
-      sendReasoning: true,
-      // SDK defaults to "An error occurred." to avoid leaking details; staff
-      // operators need the real provider message when debugging the gateway.
-      onError: formatAssistantError,
+    return await streamViaAnthropic({
+      messages,
+      clientOs,
+      requestedModel,
+      requestedEffort,
+      token,
+      userId,
+      userMessage,
     });
   } catch (err) {
     const message = formatAssistantError(err);
@@ -229,3 +206,154 @@ assistantRoutes.post('/', authMiddleware(), async (c) => {
     return c.json({ error: message }, 500);
   }
 });
+
+async function streamViaGateway(args: {
+  messages: UIMessage[];
+  clientOs?: string;
+  requestedModel?: string;
+  requestedEffort?: string;
+  token: string;
+  userId: string;
+  userMessage?: string;
+}) {
+  const { messages, clientOs, requestedModel, requestedEffort, token, userId, userMessage } = args;
+
+  const selected = await resolveGatewayModel(requestedModel);
+  const languageModel = createGatewayLanguageModel(selected.id, selected.protocol);
+
+  const thinkingBudget = resolveEffortBudget(requestedEffort);
+  const reasoningEffort = resolveReasoningEffort(requestedEffort);
+  const adaptive = selected.protocol === 'anthropic' && usesAdaptiveThinking(selected.id);
+
+  const result = streamText({
+    model: languageModel,
+    system: buildSystemPrompt(clientOs),
+    messages: await convertToModelMessages(messages.slice(-MAX_MESSAGES)),
+    // Anthropic requires max_tokens > thinking budget when extended thinking is on.
+    maxOutputTokens: selected.protocol === 'anthropic' && !adaptive ? thinkingBudget + 4096 : 8192,
+    experimental_transform: smoothStream({ chunking: 'word', delayInMs: 40 }),
+    providerOptions:
+      selected.protocol === 'anthropic'
+        ? {
+            anthropic: {
+              thinking: adaptive
+                ? { type: 'adaptive' as const, display: 'summarized' as const }
+                : { type: 'enabled' as const, budgetTokens: thinkingBudget },
+              ...(adaptive ? { effort: reasoningEffort as 'low' | 'medium' | 'high' } : {}),
+              metadata: { userId },
+            },
+          }
+        : {
+            // Provider name is `datum-ai-gateway` → camelCase key `datumAiGateway`.
+            datumAiGateway: {
+              reasoningEffort,
+              user: userId,
+            },
+          },
+    stopWhen: stepCountIs(10),
+    tools: createAssistantTools({ accessToken: token }),
+  });
+
+  result.response.then(undefined, (err: unknown) => {
+    logger.error('assistant stream failed', {
+      userId,
+      model: selected.id,
+      protocol: selected.protocol,
+      userMessage,
+      error: formatAssistantError(err),
+      stack: err instanceof Error ? err.stack : undefined,
+    });
+  });
+
+  result.usage.then(
+    (usage) => {
+      logger.info('assistant request completed', {
+        userId,
+        model: selected.id,
+        protocol: selected.protocol,
+        userMessage,
+        inputTokens: usage.inputTokens,
+        outputTokens: usage.outputTokens,
+        totalTokens: usage.totalTokens,
+      });
+    },
+    () => {}
+  );
+
+  return result.toUIMessageStreamResponse({
+    sendReasoning: true,
+    onError: formatAssistantError,
+  });
+}
+
+async function streamViaAnthropic(args: {
+  messages: UIMessage[];
+  clientOs?: string;
+  requestedModel?: string;
+  requestedEffort?: string;
+  token: string;
+  userId: string;
+  userMessage?: string;
+}) {
+  const { messages, clientOs, requestedModel, requestedEffort, token, userId, userMessage } = args;
+
+  if (!env.anthropicApiKey) {
+    throw new Error('Anthropic API key is not configured');
+  }
+
+  const anthropic = createAnthropic({ apiKey: env.anthropicApiKey });
+  const modelId = resolveDirectAnthropicModel(requestedModel);
+  const thinkingBudget = resolveEffortBudget(requestedEffort);
+  const reasoningEffort = resolveReasoningEffort(requestedEffort);
+  const adaptive = usesAdaptiveThinking(modelId);
+
+  const result = streamText({
+    model: anthropic(modelId),
+    system: buildSystemPrompt(clientOs),
+    messages: await convertToModelMessages(messages.slice(-MAX_MESSAGES)),
+    maxOutputTokens: adaptive ? 8192 : thinkingBudget + 4096,
+    experimental_transform: smoothStream({ chunking: 'word', delayInMs: 40 }),
+    providerOptions: {
+      anthropic: {
+        thinking: adaptive
+          ? { type: 'adaptive' as const, display: 'summarized' as const }
+          : { type: 'enabled' as const, budgetTokens: thinkingBudget },
+        ...(adaptive ? { effort: reasoningEffort as 'low' | 'medium' | 'high' } : {}),
+        metadata: { userId },
+      },
+    },
+    stopWhen: stepCountIs(10),
+    tools: createAssistantTools({ accessToken: token }),
+  });
+
+  result.response.then(undefined, (err: unknown) => {
+    logger.error('assistant stream failed', {
+      userId,
+      model: modelId,
+      protocol: 'anthropic-direct',
+      userMessage,
+      error: formatAssistantError(err),
+      stack: err instanceof Error ? err.stack : undefined,
+    });
+  });
+
+  result.usage.then(
+    (usage) => {
+      logger.info('assistant request completed', {
+        userId,
+        model: modelId,
+        protocol: 'anthropic-direct',
+        userMessage,
+        inputTokens: usage.inputTokens,
+        outputTokens: usage.outputTokens,
+        totalTokens: usage.totalTokens,
+      });
+    },
+    () => {}
+  );
+
+  return result.toUIMessageStreamResponse({
+    sendReasoning: true,
+    onError: formatAssistantError,
+  });
+}
