@@ -3,24 +3,34 @@ import { DateTime } from '@/components/date';
 import { DnsHostChips } from '@/features/dns';
 import { DomainDnsProviders } from '@/features/domain';
 import { DATE_RANGE_OPTIONS, ListPage, ListTable, ListColumnHeader } from '@/features/milo';
+import { resolvePluginIcon } from '@/modules/plugins/client/icon-map';
+import { getResourceExtensions } from '@/modules/plugins/client/match-extension';
+import { usePlugins } from '@/modules/plugins/client/use-plugins';
 import {
   searchDnsZonesListQuery,
   searchDomainsListQuery,
   searchEdgesListQuery,
+  searchResourceList,
   useAllProjectsQuery,
 } from '@/resources/request/client';
 import { ENTITY_ICONS } from '@/utils/config/icons.config';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { t } from '@lingui/core/macro';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQueries, useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
+import type { LucideIcon } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Link } from 'react-router';
 
 export const meta: Route.MetaFunction = () => metaObject(t`Resources`);
 
-type ResourceType = 'edge' | 'dns' | 'domain';
+/**
+ * Open-ended: `edge`/`dns`/`domain` are native, everything else can be
+ * contributed at runtime by a `portal.resource/platform` plugin extension
+ * (see `app/modules/plugins/`) — there's no fixed set to enumerate here.
+ */
+type ResourceType = string;
 
 interface ResourceRow {
   type: ResourceType;
@@ -33,24 +43,30 @@ interface ResourceRow {
   to: string | null;
 }
 
+/** Shape every K8s-style resource shares, regardless of kind. */
+interface RawK8sResource {
+  metadata?: { uid?: string; name?: string; namespace?: string; creationTimestamp?: string };
+  [key: string]: unknown;
+}
+
 // `tenant.name` carries the project name when `tenant.type` is "project"
 // (case has been observed as both lowercase and capitalized).
 function getProjectName(tenant?: { name?: string; type?: string }): string {
   return tenant?.type?.toLowerCase() === 'project' ? (tenant?.name ?? '') : '';
 }
 
+/** Dot-path lookup for a plugin-declared `nameField` (e.g. "spec.domainName"). */
+function getByPath(obj: unknown, path: string): unknown {
+  return path.split('.').reduce<unknown>((acc, key) => {
+    if (acc && typeof acc === 'object') return (acc as Record<string, unknown>)[key];
+    return undefined;
+  }, obj);
+}
+
 const SEARCH_DEBOUNCE_MS = 300;
 const columnHelper = createColumnHelper<ResourceRow>();
 
 export default function Page() {
-  // Computed at render time, not module scope — the `t` macro needs a locale
-  // already active, which isn't guaranteed yet at import time (SSR especially).
-  const typeLabel: Record<ResourceType, string> = {
-    edge: t`AI Edge`,
-    dns: t`DNS`,
-    domain: t`Domain`,
-  };
-
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
@@ -86,6 +102,43 @@ export default function Page() {
     staleTime: 30_000,
     placeholderData: keepPreviousData,
   });
+
+  // Resource types contributed by installed plugins (`portal.resource/platform`
+  // — see app/modules/plugins/). One dynamic search query per contributed
+  // type, since the set isn't known until plugins are loaded (same fan-out
+  // shape as useOrgEdgeList's per-project queries).
+  const { data: plugins = [] } = usePlugins();
+  const resourceExtensions = useMemo(
+    () => plugins.flatMap((p) => getResourceExtensions(p.manifest)),
+    [plugins]
+  );
+  const pluginQueries = useQueries({
+    queries: resourceExtensions.map((ext) => ({
+      queryKey: ['plugin-resource', ext.properties.type, debouncedSearch],
+      queryFn: () =>
+        searchResourceList<RawK8sResource>(ext.properties.searchTarget, debouncedSearch),
+      staleTime: 30_000,
+      placeholderData: keepPreviousData,
+    })),
+  });
+
+  // Type -> {label, icon}, merging the three native types with whatever
+  // plugins have contributed. Icons for plugin types are resolved by NAME
+  // (never plugin code) via resolvePluginIcon, same rule as nav icons.
+  const typeMeta = useMemo(() => {
+    const map: Record<string, { label: string; icon: LucideIcon }> = {
+      edge: { label: t`AI Edge`, icon: ENTITY_ICONS.edge },
+      dns: { label: t`DNS`, icon: ENTITY_ICONS.dns },
+      domain: { label: t`Domain`, icon: ENTITY_ICONS.domain },
+    };
+    for (const ext of resourceExtensions) {
+      map[ext.properties.type] = {
+        label: ext.properties.label,
+        icon: resolvePluginIcon(ext.properties.icon),
+      };
+    }
+    return map;
+  }, [resourceExtensions]);
 
   const rows: ResourceRow[] = useMemo(() => {
     const labelFor = (projectName: string) =>
@@ -159,17 +212,50 @@ export default function Page() {
       }
     );
 
+    // Plugin-contributed types: the host runs the search (trusted, scoped to
+    // the viewing user's own credentials) and renders the row itself — no
+    // plugin code executes to produce this. Detail is intentionally blank; see
+    // the ResourcePlatformExtension design note in app/modules/plugins/types.ts.
+    const pluginRows: ResourceRow[] = resourceExtensions.flatMap((ext, index) => {
+      const items = pluginQueries[index]?.data?.items ?? [];
+      return items.map(({ resource, tenant }) => {
+        const projectName = getProjectName(tenant);
+        const nameField = ext.properties.nameField ?? 'metadata.name';
+        const name = String(getByPath(resource, nameField) ?? resource.metadata?.name ?? '');
+        return {
+          type: ext.properties.type,
+          uid: resource.metadata?.uid ?? `${ext.properties.type}/${projectName}/${name}`,
+          name,
+          projectName,
+          projectDisplayName: labelFor(projectName),
+          createdAt: resource.metadata?.creationTimestamp ?? null,
+          detail: '—',
+          // No staff-portal-internal detail route for a plugin-contributed
+          // type — the Project column link is enough to get an operator to
+          // the right place.
+          to: null,
+        };
+      });
+    });
+
     // The search index has occasionally returned the same resource twice
     // (e.g. a DNS zone re-indexed under a stale doc) — dedupe by uid so a
     // backend duplicate can't produce two React rows with the same key.
     const seen = new Set<string>();
-    return [...edgeRows, ...dnsRows, ...domainRows].filter((row) => {
+    return [...edgeRows, ...dnsRows, ...domainRows, ...pluginRows].filter((row) => {
       const key = `${row.type}/${row.uid}`;
       if (seen.has(key)) return false;
       seen.add(key);
       return true;
     });
-  }, [edgeQuery.data, dnsQuery.data, domainQuery.data, projectLabels]);
+  }, [
+    edgeQuery.data,
+    dnsQuery.data,
+    domainQuery.data,
+    pluginQueries,
+    resourceExtensions,
+    projectLabels,
+  ]);
 
   // Projects present in the current result set first (by frequency), then the
   // rest of the catalog — searchable so high-cardinality stays usable.
@@ -217,11 +303,12 @@ export default function Page() {
       header: ({ column }) => <ListColumnHeader column={column} title={t`Type`} />,
       cell: ({ getValue }) => {
         const type = getValue();
-        const Icon = ENTITY_ICONS[type];
+        const meta = typeMeta[type];
+        const Icon = meta?.icon ?? resolvePluginIcon();
         return (
           <div className="flex items-center gap-1.5">
             <Icon className="text-muted-foreground size-4" />
-            {typeLabel[type]}
+            {meta?.label ?? type}
           </div>
         );
       },
@@ -253,9 +340,16 @@ export default function Page() {
     }),
   ];
 
-  const isLoading = edgeQuery.isLoading || dnsQuery.isLoading || domainQuery.isLoading;
+  const isLoading =
+    edgeQuery.isLoading ||
+    dnsQuery.isLoading ||
+    domainQuery.isLoading ||
+    pluginQueries.some((q) => q.isLoading);
   const hasMore = Boolean(
-    edgeQuery.data?.hasMore || dnsQuery.data?.hasMore || domainQuery.data?.hasMore
+    edgeQuery.data?.hasMore ||
+    dnsQuery.data?.hasMore ||
+    domainQuery.data?.hasMore ||
+    pluginQueries.some((q) => q.data?.hasMore)
   );
 
   return (
@@ -280,6 +374,10 @@ export default function Page() {
               { value: 'edge', label: t`AI Edge`, icon: <ENTITY_ICONS.edge /> },
               { value: 'dns', label: t`DNS`, icon: <ENTITY_ICONS.dns /> },
               { value: 'domain', label: t`Domain`, icon: <ENTITY_ICONS.domain /> },
+              ...resourceExtensions.map((ext) => {
+                const Icon = resolvePluginIcon(ext.properties.icon);
+                return { value: ext.properties.type, label: ext.properties.label, icon: <Icon /> };
+              }),
             ],
           },
           {

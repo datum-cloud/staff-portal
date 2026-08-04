@@ -264,8 +264,8 @@ msgstr ""
 #: app/routes/customer/project/detail/layout.tsx:117
 #: app/routes/customer/resource/edge/index.tsx:10
 #: app/routes/customer/resource/edge/layout.tsx:5
-#: app/routes/customer/resource/index.tsx:49
-#: app/routes/customer/resource/index.tsx:280
+#: app/routes/customer/resource/index.tsx:130
+#: app/routes/customer/resource/index.tsx:374
 msgid "AI Edge"
 msgstr ""
 
@@ -553,7 +553,7 @@ msgstr ""
 msgid "Certificates nearing expiry"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:170
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:168
 #: app/routes/operation/chainsaw-tests.tsx:11
 msgid "Chainsaw Tests"
 msgstr ""
@@ -566,7 +566,7 @@ msgstr ""
 msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:185
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:183
 msgid "CI runs"
 msgstr ""
 
@@ -890,8 +890,8 @@ msgstr ""
 #: app/routes/customer/project/detail/export-policy/index.tsx:51
 #: app/routes/customer/project/index.tsx:136
 #: app/routes/customer/project/index.tsx:184
-#: app/routes/customer/resource/index.tsx:251
-#: app/routes/customer/resource/index.tsx:296
+#: app/routes/customer/resource/index.tsx:338
+#: app/routes/customer/resource/index.tsx:394
 #: app/routes/customer/user/detail/index.tsx:207
 #: app/routes/customer/user/index.tsx:165
 #: app/routes/customer/user/index.tsx:316
@@ -1123,7 +1123,7 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: app/routes/customer/resource/index.tsx:246
+#: app/routes/customer/resource/index.tsx:333
 msgid "Detail"
 msgstr ""
 
@@ -1178,8 +1178,8 @@ msgstr ""
 #: app/routes/customer/organization/detail/layout.tsx:80
 #: app/routes/customer/project/detail/dns/layout.tsx:5
 #: app/routes/customer/project/detail/layout.tsx:122
-#: app/routes/customer/resource/index.tsx:50
-#: app/routes/customer/resource/index.tsx:281
+#: app/routes/customer/resource/index.tsx:131
+#: app/routes/customer/resource/index.tsx:375
 msgid "DNS"
 msgstr ""
 
@@ -1236,8 +1236,8 @@ msgstr ""
 #: app/features/domain/components/domain-list.tsx:61
 #: app/features/fraud/detail/maxmind-rows.tsx:237
 #: app/routes/customer/project/detail/domain/detail.tsx:112
-#: app/routes/customer/resource/index.tsx:51
-#: app/routes/customer/resource/index.tsx:282
+#: app/routes/customer/resource/index.tsx:132
+#: app/routes/customer/resource/index.tsx:376
 msgid "Domain"
 msgstr ""
 
@@ -1277,7 +1277,7 @@ msgstr ""
 msgid "Draft"
 msgstr ""
 
-#: app/routes/customer/resource/index.tsx:274
+#: app/routes/customer/resource/index.tsx:368
 msgid "Each resource type is limited to 2,000 results at a time. Refine your search to surface other resources."
 msgstr ""
 
@@ -1546,7 +1546,7 @@ msgstr ""
 msgid "Failed to update timezone"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:153
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:151
 msgid "Failing"
 msgstr ""
 
@@ -1701,7 +1701,7 @@ msgstr ""
 msgid "Go to dashboard"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:262
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:260
 msgid "Grafana"
 msgstr ""
 
@@ -1888,11 +1888,11 @@ msgstr ""
 msgid "Last 10 new users who joined Datum"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:214
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:212
 msgid "Last 3 days"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:173
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:171
 msgid "Last 3 days · tests expected to pass every run"
 msgstr ""
 
@@ -1921,7 +1921,7 @@ msgstr ""
 msgid "Last signed in with {0}"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:219
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:217
 msgid "Latest"
 msgstr ""
 
@@ -1961,7 +1961,7 @@ msgstr ""
 msgid "Linked projects"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:224
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:222
 msgid "Links"
 msgstr ""
 
@@ -2164,7 +2164,7 @@ msgstr ""
 #: app/routes/customer/project/detail/export-policy/index.tsx:28
 #: app/routes/customer/project/detail/secret.tsx:24
 #: app/routes/customer/project/index.tsx:73
-#: app/routes/customer/resource/index.tsx:211
+#: app/routes/customer/resource/index.tsx:297
 #: app/routes/customer/user/detail/organization.tsx:34
 #: app/routes/customer/user/index.tsx:114
 #: app/routes/marketing/contact-group/detail/member.tsx:181
@@ -2449,7 +2449,7 @@ msgstr ""
 msgid "No quotas are above 70% utilization"
 msgstr ""
 
-#: app/routes/customer/resource/index.tsx:271
+#: app/routes/customer/resource/index.tsx:365
 msgid "No resources found."
 msgstr ""
 
@@ -2457,7 +2457,7 @@ msgstr ""
 msgid "No results found."
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:121
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:119
 msgid "No runs"
 msgstr ""
 
@@ -2633,7 +2633,7 @@ msgstr ""
 msgid "Owner:"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:146
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:144
 msgid "Passing"
 msgstr ""
 
@@ -2821,8 +2821,8 @@ msgstr ""
 #: app/features/domain/components/domain-list.tsx:71
 #: app/features/edge/components/edge-list.tsx:119
 #: app/routes/customer/billing-account/detail/index.tsx:173
-#: app/routes/customer/resource/index.tsx:233
-#: app/routes/customer/resource/index.tsx:288
+#: app/routes/customer/resource/index.tsx:320
+#: app/routes/customer/resource/index.tsx:386
 msgid "Project"
 msgstr ""
 
@@ -3053,7 +3053,7 @@ msgstr ""
 #: app/components/app-search/search-results.tsx:214
 #: app/features/project/components/project-resources-card.tsx:58
 #: app/routes/customer/organization/detail/layout.tsx:75
-#: app/routes/customer/resource/index.tsx:21
+#: app/routes/customer/resource/index.tsx:26
 #: app/routes/customer/resource/layout.tsx:5
 msgid "Resources"
 msgstr ""
@@ -3258,7 +3258,7 @@ msgid "Search projects..."
 msgstr ""
 
 #: app/features/billing/components/billing-account-list.tsx:267
-#: app/routes/customer/resource/index.tsx:290
+#: app/routes/customer/resource/index.tsx:388
 msgid "Search projects…"
 msgstr ""
 
@@ -3274,7 +3274,7 @@ msgstr ""
 msgid "Search records..."
 msgstr ""
 
-#: app/routes/customer/resource/index.tsx:270
+#: app/routes/customer/resource/index.tsx:364
 msgid "Search resources..."
 msgstr ""
 
@@ -3515,7 +3515,7 @@ msgstr ""
 msgid "Subject is required when user association is enabled"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:209
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:207
 msgid "Suite"
 msgstr ""
 
@@ -3552,11 +3552,11 @@ msgstr ""
 msgid "Tenant"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:204
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:202
 msgid "Test"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:272
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:270
 msgid "Test docs"
 msgstr ""
 
@@ -3687,8 +3687,8 @@ msgstr ""
 #: app/routes/customer/project/detail/dns/detail.tsx:93
 #: app/routes/customer/project/detail/dns/detail.tsx:157
 #: app/routes/customer/project/detail/export-policy/detail.tsx:162
-#: app/routes/customer/resource/index.tsx:217
-#: app/routes/customer/resource/index.tsx:278
+#: app/routes/customer/resource/index.tsx:303
+#: app/routes/customer/resource/index.tsx:372
 #: app/routes/customer/user/detail/organization.tsx:48
 msgid "Type"
 msgstr ""
@@ -3706,7 +3706,7 @@ msgstr ""
 msgid "Type at least 3 characters to search."
 msgstr ""
 
-#: app/routes/customer/resource/index.tsx:291
+#: app/routes/customer/resource/index.tsx:389
 msgid "Type to filter by project name."
 msgstr ""
 
@@ -3718,7 +3718,7 @@ msgstr ""
 msgid "Unavailable"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:138
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:136
 #: app/features/domain/components/note-card.tsx:38
 #: app/routes/admin/service-catalog/detail/consumers.tsx:109
 msgid "Unknown"
