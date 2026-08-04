@@ -21,12 +21,15 @@ const envSchema = z.object({
   SENTRY_ENV: z.string().optional(),
   SENTRY_DSN: z.string().optional(),
 
-  // Chatbot / AI assistant (Datum internal AI gateway)
+  // Chatbot / AI assistant — prefer AI gateway; fall back to direct Anthropic
+  // (prod still uses ANTHROPIC_* until the gateway is released there).
   CHATBOT_ENABLED: z.string().optional(),
   AI_GATEWAY_URL: z.url().optional(),
   AI_GATEWAY_TOKEN: z.string().optional(),
   AI_GATEWAY_TOKEN_FILE: z.string().optional(),
   AI_GATEWAY_MODEL: z.string().optional(),
+  ANTHROPIC_API_KEY: z.string().optional(),
+  ANTHROPIC_MODEL: z.string().optional(),
 
   // Sentry API (for chatbot tools)
   SENTRY_API_URL: z.string().optional(),
@@ -90,6 +93,8 @@ export const env = {
   aiGatewayToken: parsedEnv.AI_GATEWAY_TOKEN,
   aiGatewayTokenFile: parsedEnv.AI_GATEWAY_TOKEN_FILE,
   aiGatewayModel: parsedEnv.AI_GATEWAY_MODEL,
+  anthropicApiKey: parsedEnv.ANTHROPIC_API_KEY,
+  anthropicModel: parsedEnv.ANTHROPIC_MODEL,
   sentryApiUrl: parsedEnv.SENTRY_API_URL,
   sentryApiToken: parsedEnv.SENTRY_API_TOKEN,
   sentryOrganization: parsedEnv.SENTRY_ORGANIZATION ?? 'sentry',

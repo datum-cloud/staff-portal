@@ -13,8 +13,10 @@ export interface PublicEnv {
   AUTH_OIDC_ISSUER?: string;
   CLOUD_PORTAL_URL?: string;
   CHATBOT_ENABLED?: boolean;
-  /** Configured default model id; seeds the picker's default when present in the gateway catalog. */
+  /** Gateway default model id when present in the catalog. */
   AI_GATEWAY_MODEL?: string;
+  /** Direct Anthropic default (prod fallback until gateway ships there). */
+  ANTHROPIC_MODEL?: string;
   MCP_ENABLED?: boolean;
   MAXMIND_ACCOUNT_ID?: string;
 }

@@ -32,6 +32,11 @@ export function isAiGatewayConfigured(): boolean {
   return Boolean(env.aiGatewayUrl && getAiGatewayToken());
 }
 
+/** Gateway preferred; direct Anthropic API key is the prod fallback. */
+export function isAssistantConfigured(): boolean {
+  return isAiGatewayConfigured() || Boolean(env.anthropicApiKey?.trim());
+}
+
 function requireGatewayAuth(): { token: string; baseUrl: string } {
   const token = getAiGatewayToken();
   const baseUrl = env.aiGatewayUrl?.replace(/\/$/, '');
