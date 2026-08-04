@@ -173,9 +173,9 @@ export function EdgeList({
       defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
       controlledSearch={controlledSearch}
       hasMore={hasMore}
-      hasMoreMessage={t`The list of AI Edge resources is limited to 2,000 results at a time. Refine your search to surface other resources.`}
-      searchPlaceholder={searchPlaceholder ?? t`Search AI Edge...`}
-      emptyMessage={emptyMessage ?? t`No AI Edge found.`}
+      hasMoreMessage={t`The list of Application Load Balancer resources is limited to 2,000 results at a time. Refine your search to surface other resources.`}
+      searchPlaceholder={searchPlaceholder ?? t`Search Application Load Balancer...`}
+      emptyMessage={emptyMessage ?? t`No Application Load Balancer found.`}
       searchFn={(row, search) => {
         const q = search.trim().toLowerCase();
         if (!q) return true;

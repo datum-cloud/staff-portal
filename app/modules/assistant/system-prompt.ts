@@ -29,7 +29,7 @@ const STATIC_SYSTEM_PROMPT = [
   '- Use `listOrgMembers` to see who is in an org',
   '',
   '### Resource tools',
-  'Inspect customer project resources: domains, DNS zones, AI Edge / HTTP proxies, export policies, and quotas.',
+  'Inspect customer project resources: domains, DNS zones, Application Load Balancer / HTTP proxies, export policies, and quotas.',
   'These require a `projectName` parameter — ask the operator or look it up first.',
   '',
   '### Activity / audit tools',

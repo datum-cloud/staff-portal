@@ -7,7 +7,7 @@ import { t } from '@lingui/core/macro';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 
-export const meta: Route.MetaFunction = () => metaObject(t`AI Edge`);
+export const meta: Route.MetaFunction = () => metaObject(t`Application Load Balancer`);
 
 // `tenant.name` carries the project name when `tenant.type` is "project"
 // (case has been observed as both lowercase and capitalized).

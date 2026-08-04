@@ -68,7 +68,7 @@ export function createResourceTools({ accessToken }: ResourceToolDeps) {
 
     listProjectEdge: tool({
       description:
-        'List all AI Edge / HTTP proxy resources in a project.' +
+        'List all Application Load Balancer / HTTP proxy resources in a project.' +
         ' Call this when the operator asks about edge gateways or HTTP proxies.',
       inputSchema: z.object({
         projectName: z.string().describe('The project resource name'),

@@ -30,7 +30,7 @@ export const STAFF_TOOL_LABELS: Record<string, string> = {
   listUserOrganizations: 'Loading user organizations…',
   listProjectDomains: 'Loading domains…',
   listProjectDnsZones: 'Loading DNS zones…',
-  listProjectEdge: 'Loading AI edge resources…',
+  listProjectEdge: 'Loading Application Load Balancer resources…',
   listProjectExportPolicies: 'Loading export policies…',
   listProjectQuotas: 'Loading quotas…',
   queryActivityLogs: 'Loading activity logs…',

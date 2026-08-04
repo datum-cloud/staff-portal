@@ -38,9 +38,9 @@ describe('parseK8sMessage', () => {
     expect(parseK8sMessage('contact already exists')).to.equal('contact already exists');
   });
 
-  it('uses AI Edge label for httpproxies', () => {
+  it('uses Application Load Balancer label for httpproxies', () => {
     expect(parseK8sMessage('httpproxies.networking.miloapis.com "edge-1" not found')).to.equal(
-      'AI Edge "edge-1" not found'
+      'Application Load Balancer "edge-1" not found'
     );
   });
 });

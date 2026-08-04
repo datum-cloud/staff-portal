@@ -46,7 +46,7 @@ export default function Page() {
   // Computed at render time, not module scope — the `t` macro needs a locale
   // already active, which isn't guaranteed yet at import time (SSR especially).
   const typeLabel: Record<ResourceType, string> = {
-    edge: t`AI Edge`,
+    edge: t`Application Load Balancer`,
     dns: t`DNS`,
     domain: t`Domain`,
   };
@@ -277,7 +277,7 @@ export default function Page() {
             column: 'type',
             label: t`Type`,
             options: [
-              { value: 'edge', label: t`AI Edge`, icon: <ENTITY_ICONS.edge /> },
+              { value: 'edge', label: t`Application Load Balancer`, icon: <ENTITY_ICONS.edge /> },
               { value: 'dns', label: t`DNS`, icon: <ENTITY_ICONS.dns /> },
               { value: 'domain', label: t`Domain`, icon: <ENTITY_ICONS.domain /> },
             ],
