@@ -21,6 +21,11 @@ msgstr ""
 msgid "(current)"
 msgstr ""
 
+#. placeholder {0}: active.length
+#: app/features/project/components/project-suspension-card.tsx:140
+msgid "{0} active suspensions — the project stays suspended until all are lifted. Instances and served traffic are paused; data is preserved."
+msgstr ""
+
 #. placeholder {0}: policy.spec.historyRetention?.maxEntries ?? 50
 #: app/features/fraud/policy/policy-detail.tsx:140
 msgid "{0} entries"
@@ -380,7 +385,7 @@ msgstr ""
 msgid "Are you sure you want to delete organization \"{displayNameForDelete} ({orgName})\"? This action cannot be undone."
 msgstr ""
 
-#: app/routes/customer/project/detail/index.tsx:53
+#: app/routes/customer/project/detail/index.tsx:58
 msgid "Are you sure you want to delete project \"{displayNameForDelete} ({projectName})\"? This action cannot be undone."
 msgstr ""
 
@@ -518,6 +523,7 @@ msgstr ""
 #: app/features/contact/components/contact-list.tsx:126
 #: app/features/feature-flags/components/feature-flag-list.tsx:229
 #: app/features/fraud/policy/policy-form.tsx:314
+#: app/features/project/components/project-suspension-card.tsx:84
 #: app/features/quota/components/quota-bucket-list.tsx:171
 #: app/features/quota/components/quota-grant-list.tsx:162
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:39
@@ -549,11 +555,15 @@ msgstr ""
 msgid "Card"
 msgstr ""
 
+#: app/features/project/components/project-suspension-card.tsx:108
+msgid "Case notes, report IDs, context…"
+msgstr ""
+
 #: app/features/dashboard/components/cluster-health-widget.tsx:102
 msgid "Certificates nearing expiry"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:170
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:168
 #: app/routes/operation/chainsaw-tests.tsx:11
 msgid "Chainsaw Tests"
 msgstr ""
@@ -566,7 +576,7 @@ msgstr ""
 msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:185
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:183
 msgid "CI runs"
 msgstr ""
 
@@ -1073,8 +1083,8 @@ msgstr ""
 msgid "Delete Policy"
 msgstr ""
 
-#: app/routes/customer/project/detail/index.tsx:50
-#: app/routes/customer/project/detail/index.tsx:52
+#: app/routes/customer/project/detail/index.tsx:55
+#: app/routes/customer/project/detail/index.tsx:57
 msgid "Delete Project"
 msgstr ""
 
@@ -1546,7 +1556,7 @@ msgstr ""
 msgid "Failed to update timezone"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:153
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:151
 msgid "Failing"
 msgstr ""
 
@@ -1701,7 +1711,7 @@ msgstr ""
 msgid "Go to dashboard"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:262
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:260
 msgid "Grafana"
 msgstr ""
 
@@ -1742,6 +1752,10 @@ msgstr ""
 
 #: app/features/project/components/project-quotas-card.tsx:65
 msgid "Highest utilization in this project"
+msgstr ""
+
+#: app/features/project/components/project-suspension-card.tsx:212
+msgid "History"
 msgstr ""
 
 #: app/features/fraud/policy/policy-detail.tsx:136
@@ -1805,6 +1819,10 @@ msgstr ""
 
 #: app/routes/customer/organization/index.tsx:241
 msgid "Individual"
+msgstr ""
+
+#: app/features/project/components/project-suspension-card.tsx:145
+msgid "Instances and served traffic are paused; data is preserved. Lift the suspension below to restore the project."
 msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:48
@@ -1888,11 +1906,11 @@ msgstr ""
 msgid "Last 10 new users who joined Datum"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:214
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:212
 msgid "Last 3 days"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:173
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:171
 msgid "Last 3 days · tests expected to pass every run"
 msgstr ""
 
@@ -1921,7 +1939,7 @@ msgstr ""
 msgid "Last signed in with {0}"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:219
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:217
 msgid "Latest"
 msgstr ""
 
@@ -1932,6 +1950,14 @@ msgstr ""
 #: app/routes/customer/fraud/providers/create.tsx:117
 #: app/routes/customer/fraud/providers/detail.tsx:157
 msgid "License Key Key"
+msgstr ""
+
+#: app/features/project/components/project-suspension-card.tsx:174
+msgid "Lift"
+msgstr ""
+
+#: app/features/project/components/project-suspension-card.tsx:220
+msgid "Lifted"
 msgstr ""
 
 #: app/components/theme-switcher/index.tsx:38
@@ -1961,7 +1987,7 @@ msgstr ""
 msgid "Linked projects"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:224
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:222
 msgid "Links"
 msgstr ""
 
@@ -2013,6 +2039,10 @@ msgstr ""
 #: app/routes/customer/user/detail/index.tsx:271
 #: app/routes/customer/user/detail/index.tsx:338
 msgid "Loading..."
+msgstr ""
+
+#: app/features/project/components/project-suspension-card.tsx:127
+msgid "Loading…"
 msgstr ""
 
 #: app/features/fraud/detail/maxmind-rows.tsx:219
@@ -2457,7 +2487,7 @@ msgstr ""
 msgid "No results found."
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:121
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:119
 msgid "No runs"
 msgstr ""
 
@@ -2525,8 +2555,13 @@ msgstr ""
 msgid "Note deleted"
 msgstr ""
 
+#: app/features/project/components/project-suspension-card.tsx:191
 #: app/routes/customer/project/detail/domain/detail.tsx:151
 msgid "Notes"
+msgstr ""
+
+#: app/features/project/components/project-suspension-card.tsx:107
+msgid "Notes (operator-facing)"
 msgstr ""
 
 #: app/components/app-sidebar/nav-user.tsx:90
@@ -2633,7 +2668,7 @@ msgstr ""
 msgid "Owner:"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:146
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:144
 msgid "Passing"
 msgstr ""
 
@@ -2648,6 +2683,10 @@ msgstr ""
 
 #: app/features/milo/components/navbar/milo-assistant-trigger.tsx:15
 msgid "Patch AI"
+msgstr ""
+
+#: app/features/project/components/project-suspension-card.tsx:82
+msgid "Pause this project and everything it is running. Data is preserved and the project can be reinstated at any time."
 msgstr ""
 
 #: app/features/organization/components/org-onboarding-card.tsx:65
@@ -2684,7 +2723,7 @@ msgstr ""
 msgid "Permanently delete this organization and all associated data"
 msgstr ""
 
-#: app/routes/customer/project/detail/index.tsx:51
+#: app/routes/customer/project/detail/index.tsx:56
 msgid "Permanently delete this project and all associated data"
 msgstr ""
 
@@ -2826,8 +2865,13 @@ msgstr ""
 msgid "Project"
 msgstr ""
 
-#: app/routes/customer/project/detail/index.tsx:36
+#: app/routes/customer/project/detail/index.tsx:37
 msgid "Project deleted successfully"
+msgstr ""
+
+#: app/features/project/components/project-suspension-card.tsx:135
+#: app/features/project/hooks/useProjectSuspension.ts:62
+msgid "Project suspended"
 msgstr ""
 
 #: app/components/app-search/search-results.tsx:169
@@ -2942,6 +2986,7 @@ msgstr ""
 msgid "Ready"
 msgstr ""
 
+#: app/features/project/components/project-suspension-card.tsx:89
 #: app/features/service-catalog/components/conditions-card.tsx:35
 #: app/routes/customer/user/detail/index.tsx:417
 msgid "Reason"
@@ -2971,6 +3016,11 @@ msgstr ""
 #: app/routes/customer/project/detail/dns/detail.tsx:177
 #: app/routes/customer/project/detail/domain/detail.tsx:116
 msgid "Registrar"
+msgstr ""
+
+#: app/features/project/components/project-suspension-card.tsx:98
+#: app/features/project/components/project-suspension-card.tsx:181
+msgid "Reinstate authority"
 msgstr ""
 
 #: app/features/user/components/user-reject-dialog.tsx:29
@@ -3005,6 +3055,10 @@ msgstr ""
 #: app/routes/admin/service-catalog/detail/approvals.tsx:92
 #: app/routes/admin/service-catalog/detail/consumers.tsx:140
 msgid "Requested at"
+msgstr ""
+
+#: app/features/project/components/project-suspension-card.tsx:185
+msgid "Requested by"
 msgstr ""
 
 #: app/features/edge/components/detail/edge-hostnames-card.tsx:111
@@ -3515,12 +3569,34 @@ msgstr ""
 msgid "Subject is required when user association is enabled"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:209
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:207
 msgid "Suite"
 msgstr ""
 
 #: app/routes/marketing/contact-group/index.tsx:153
 msgid "Summary"
+msgstr ""
+
+#: app/features/project/components/project-suspension-card.tsx:83
+#: app/features/project/components/project-suspension-card.tsx:159
+msgid "Suspend"
+msgstr ""
+
+#: app/features/project/components/project-suspension-card.tsx:121
+msgid "Suspend or reinstate this project. Suspension is reversible - data is never deleted."
+msgstr ""
+
+#: app/features/project/components/project-suspension-card.tsx:81
+#: app/features/project/components/project-suspension-card.tsx:135
+msgid "Suspend Project"
+msgstr ""
+
+#: app/features/project/components/project-suspension-card.tsx:197
+msgid "Suspended at"
+msgstr ""
+
+#: app/features/project/hooks/useProjectSuspension.ts:71
+msgid "Suspension lifted"
 msgstr ""
 
 #: app/features/milo/components/navbar/milo-theme-toggle.tsx:20
@@ -3548,15 +3624,19 @@ msgstr ""
 msgid "Template"
 msgstr ""
 
+#: app/features/project/components/project-suspension-card.tsx:151
+msgid "Temporarily pause this project's instances and served traffic without deleting any data. It can be reinstated at any time."
+msgstr ""
+
 #: app/features/activity/components/activity-list.tsx:134
 msgid "Tenant"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:204
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:202
 msgid "Test"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:272
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:270
 msgid "Test docs"
 msgstr ""
 
@@ -3675,6 +3755,10 @@ msgstr ""
 msgid "Triggers"
 msgstr ""
 
+#: app/features/project/components/project-suspension-card.tsx:117
+msgid "Trust & Safety"
+msgstr ""
+
 #: app/routes/customer/project/detail/dns/detail.tsx:148
 msgid "TTL"
 msgstr ""
@@ -3718,7 +3802,7 @@ msgstr ""
 msgid "Unavailable"
 msgstr ""
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:138
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:136
 #: app/features/domain/components/note-card.tsx:38
 #: app/routes/admin/service-catalog/detail/consumers.tsx:109
 msgid "Unknown"
