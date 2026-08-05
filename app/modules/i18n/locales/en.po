@@ -553,7 +553,7 @@ msgstr "Card"
 msgid "Certificates nearing expiry"
 msgstr "Certificates nearing expiry"
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:170
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:168
 #: app/routes/operation/chainsaw-tests.tsx:11
 msgid "Chainsaw Tests"
 msgstr "Chainsaw Tests"
@@ -566,7 +566,7 @@ msgstr "Change your Primary Email in GitHub (your primary email)"
 msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
 msgstr "Choose how the portal looks to you. Select a single theme, or sync with your system."
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:185
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:183
 msgid "CI runs"
 msgstr "CI runs"
 
@@ -1546,7 +1546,7 @@ msgstr "Failed to update theme"
 msgid "Failed to update timezone"
 msgstr "Failed to update timezone"
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:153
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:151
 msgid "Failing"
 msgstr "Failing"
 
@@ -1701,7 +1701,7 @@ msgstr "Get"
 msgid "Go to dashboard"
 msgstr "Go to dashboard"
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:262
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:260
 msgid "Grafana"
 msgstr "Grafana"
 
@@ -1888,11 +1888,11 @@ msgstr "Joined"
 msgid "Last 10 new users who joined Datum"
 msgstr "Last 10 new users who joined Datum"
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:214
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:212
 msgid "Last 3 days"
 msgstr "Last 3 days"
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:173
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:171
 msgid "Last 3 days · tests expected to pass every run"
 msgstr "Last 3 days · tests expected to pass every run"
 
@@ -1921,7 +1921,7 @@ msgstr "Last name is required"
 msgid "Last signed in with {0}"
 msgstr "Last signed in with {0}"
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:219
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:217
 msgid "Latest"
 msgstr "Latest"
 
@@ -1961,7 +1961,7 @@ msgstr "Limited to 10,000 users. Refine your search to surface others."
 msgid "Linked projects"
 msgstr "Linked projects"
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:224
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:222
 msgid "Links"
 msgstr "Links"
 
@@ -2457,7 +2457,7 @@ msgstr "No resources found."
 msgid "No results found."
 msgstr "No results found."
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:121
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:119
 msgid "No runs"
 msgstr "No runs"
 
@@ -2633,7 +2633,7 @@ msgstr "Owner"
 msgid "Owner:"
 msgstr "Owner:"
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:146
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:144
 msgid "Passing"
 msgstr "Passing"
 
@@ -3515,7 +3515,7 @@ msgstr "Subject"
 msgid "Subject is required when user association is enabled"
 msgstr "Subject is required when user association is enabled"
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:209
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:207
 msgid "Suite"
 msgstr "Suite"
 
@@ -3552,11 +3552,11 @@ msgstr "Template"
 msgid "Tenant"
 msgstr "Tenant"
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:204
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:202
 msgid "Test"
 msgstr "Test"
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:272
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:270
 msgid "Test docs"
 msgstr "Test docs"
 
@@ -3718,7 +3718,7 @@ msgstr "Type to search."
 msgid "Unavailable"
 msgstr "Unavailable"
 
-#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:138
+#: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:136
 #: app/features/domain/components/note-card.tsx:38
 #: app/routes/admin/service-catalog/detail/consumers.tsx:109
 msgid "Unknown"
