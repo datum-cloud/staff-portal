@@ -4,6 +4,7 @@ import {
   projectDomainListQuery,
   projectExportPolicyListQuery,
   projectEdgeListQuery,
+  projectSuspensionListQuery,
 } from '../apis/project.api';
 import { listAllProjects, listProjects } from '@/modules/graphql/projects';
 import { ListQueryParams } from '@/resources/schemas';
@@ -35,6 +36,16 @@ export const projectQueryKeys = {
     records: (projectName: string, dnsName: string, namespace: string = 'default') =>
       ['projects', projectName, 'dns', dnsName, 'records', namespace] as const,
   },
+  suspensions: (projectName: string) => ['projects', projectName, 'suspensions'] as const,
+};
+
+/** All ProjectSuspensions (active + lifted) governing a project — for the suspension panel. */
+export const useProjectSuspensionsQuery = (projectName: string) => {
+  return useQuery({
+    queryKey: projectQueryKeys.suspensions(projectName),
+    queryFn: () => projectSuspensionListQuery(projectName),
+    enabled: !!projectName,
+  });
 };
 
 export const useProjectDnsRecordListQuery = (

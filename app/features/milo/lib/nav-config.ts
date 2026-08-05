@@ -31,7 +31,7 @@ export interface NavSubItem {
   label: string;
   href: string;
   icon?: LucideIcon;
-  /** Prefix(es) for active detection; defaults to `href`. Array ⇒ active if any matches (e.g. Resources spanning /edges, /dns, /domains). */
+  /** Prefix(es) for active detection; defaults to `href`. Array ⇒ active if any matches (e.g. Resources spanning /albs, /dns, /domains). */
   match?: string | string[];
   /** Optional count badge (shown when the rail is expanded). */
   count?: number;
@@ -82,7 +82,7 @@ export const NAV_SECTIONS: NavSection[] = [
           items: [
             { label: 'Organizations', href: orgRoutes.list(), icon: ENTITY_ICONS.organization },
             { label: 'Projects', href: projectRoutes.list(), icon: ENTITY_ICONS.project },
-            // One "Resources" entry → a tabbed page (AI Edge / DNS / Domains),
+            // One "Resources" entry → a tabbed page (ALB / DNS / Domains),
             // all nested under /customers/resources.
             {
               label: 'Resources',

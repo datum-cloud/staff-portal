@@ -126,7 +126,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       ],
     },
     {
-      title: t`AI Edge`,
+      title: t`ALB`,
       href: edgeRoutes.list(),
       icon: Gauge,
       hasSubmenu: false,

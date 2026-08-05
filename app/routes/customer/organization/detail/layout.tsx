@@ -76,7 +76,7 @@ export default function Layout() {
       icon: ENTITY_ICONS.resource,
       match: [orgRoutes.edge(orgName), orgRoutes.dns(orgName), orgRoutes.domain(orgName)],
       children: [
-        { label: t`AI Edge`, href: orgRoutes.edge(orgName) },
+        { label: t`ALB`, href: orgRoutes.edge(orgName) },
         { label: t`DNS`, href: orgRoutes.dns(orgName) },
         { label: t`Domains`, href: orgRoutes.domain(orgName) },
       ],

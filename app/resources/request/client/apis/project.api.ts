@@ -12,8 +12,12 @@ import {
   readNetworkingDatumapisComV1AlphaNamespacedDomainStatus,
 } from '@openapi/networking.datumapis.com/v1alpha';
 import {
+  ComMiloapisResourcemanagerV1Alpha1ProjectSuspension,
+  createResourcemanagerMiloapisComV1Alpha1ProjectSuspension,
   deleteResourcemanagerMiloapisComV1Alpha1Project,
+  deleteResourcemanagerMiloapisComV1Alpha1ProjectSuspension,
   listResourcemanagerMiloapisComV1Alpha1Project,
+  listResourcemanagerMiloapisComV1Alpha1ProjectSuspension,
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { listTelemetryMiloapisComV1Alpha1ExportPolicyForAllNamespaces } from '@openapi/telemetry.miloapis.com/v1alpha1';
 
@@ -130,5 +134,42 @@ export const projectDeleteMutation = (projectName: string) => {
     path: {
       name: projectName,
     },
+  });
+};
+
+/**
+ * Lists every ProjectSuspension governing a project — active and lifted — for the
+ * suspension panel + audit history. A project can carry more than one at a time
+ * (e.g. Fraud + Billing); it stays suspended while any is Active.
+ */
+export const projectSuspensionListQuery = async (projectName: string) => {
+  const response = await listResourcemanagerMiloapisComV1Alpha1ProjectSuspension({
+    query: {
+      fieldSelector: `spec.projectRef.name=${projectName}`,
+    },
+  });
+  return response.data.data?.items ?? [];
+};
+
+/** Suspends a project by creating a ProjectSuspension (its presence derives the Suspended state). */
+export const projectSuspendMutation = async (
+  payload: ComMiloapisResourcemanagerV1Alpha1ProjectSuspension['spec']
+) => {
+  const response = await createResourcemanagerMiloapisComV1Alpha1ProjectSuspension({
+    query: { fieldManager: 'datum-staff-portal' },
+    body: {
+      apiVersion: 'resourcemanager.miloapis.com/v1alpha1',
+      kind: 'ProjectSuspension',
+      metadata: { generateName: 'suspension-' },
+      spec: payload,
+    },
+  });
+  return response.data.data;
+};
+
+/** Lifts a suspension by deleting the ProjectSuspension resource (per its reinstateAuthority). */
+export const projectLiftSuspensionMutation = (name: string) => {
+  return deleteResourcemanagerMiloapisComV1Alpha1ProjectSuspension({
+    path: { name },
   });
 };

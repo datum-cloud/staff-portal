@@ -127,7 +127,7 @@ export default function Page() {
   // (never plugin code) via resolvePluginIcon, same rule as nav icons.
   const typeMeta = useMemo(() => {
     const map: Record<string, { label: string; icon: LucideIcon }> = {
-      edge: { label: t`AI Edge`, icon: ENTITY_ICONS.edge },
+      edge: { label: t`Application Load Balancer`, icon: ENTITY_ICONS.edge },
       dns: { label: t`DNS`, icon: ENTITY_ICONS.dns },
       domain: { label: t`Domain`, icon: ENTITY_ICONS.domain },
     };
@@ -371,7 +371,7 @@ export default function Page() {
             column: 'type',
             label: t`Type`,
             options: [
-              { value: 'edge', label: t`AI Edge`, icon: <ENTITY_ICONS.edge /> },
+              { value: 'edge', label: t`Application Load Balancer`, icon: <ENTITY_ICONS.edge /> },
               { value: 'dns', label: t`DNS`, icon: <ENTITY_ICONS.dns /> },
               { value: 'domain', label: t`Domain`, icon: <ENTITY_ICONS.domain /> },
               ...resourceExtensions.map((ext) => {

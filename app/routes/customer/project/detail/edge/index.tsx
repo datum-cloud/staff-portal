@@ -8,7 +8,7 @@ import { useMemo } from 'react';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const { projectName } = getProjectDetailMetadata(matches);
-  return metaObject(`AI Edge - ${projectName}`);
+  return metaObject(`Application Load Balancer - ${projectName}`);
 };
 
 export default function Page() {

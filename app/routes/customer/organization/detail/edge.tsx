@@ -6,12 +6,12 @@ import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 
 export const handle = {
-  breadcrumb: () => <Trans>AI Edge</Trans>,
+  breadcrumb: () => <Trans>ALB</Trans>,
 };
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const { organizationName } = getOrganizationDetailMetadata(matches);
-  return metaObject(`AI Edge - ${organizationName}`);
+  return metaObject(`Application Load Balancer - ${organizationName}`);
 };
 
 export default function Page() {

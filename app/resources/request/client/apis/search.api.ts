@@ -370,8 +370,8 @@ export const searchDnsZonesListQuery = (queryString: string = '') =>
   );
 
 /**
- * List all AI Edge resources (HTTPProxy) across every project via the search
- * index. Surfaced in the UI as "AI Edge".
+ * List all Application Load Balancer resources (HTTPProxy) across every project via the search
+ * index. Surfaced in the UI as "Application Load Balancer".
  */
 export const searchEdgesListQuery = (queryString: string = '') =>
   searchResourceList<ComDatumapisNetworkingV1AlphaHttpProxy>(

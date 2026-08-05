@@ -59,7 +59,7 @@ export function ProjectResourcesCard({ projectName, className }: Props) {
       description={<Trans>Counts for resources in this project</Trans>}>
       <div className="divide-border divide-y">
         <CountRow
-          label={<Trans>AI Edge</Trans>}
+          label={<Trans>Application Load Balancer</Trans>}
           count={edgeCount}
           to={projectRoutes.edge.list(projectName)}
           isLoading={edgesQuery.isPending}

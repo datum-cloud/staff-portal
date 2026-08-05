@@ -42,7 +42,13 @@ export default [
             route('members', 'routes/customer/organization/detail/member.tsx'),
             route('projects', 'routes/customer/organization/detail/project.tsx'),
             route('domains', 'routes/customer/organization/detail/domain.tsx'),
-            route('edges', 'routes/customer/organization/detail/edge.tsx'),
+            route('albs', 'routes/customer/organization/detail/edge.tsx'),
+            route('edges/*', 'routes/customer/organization/detail/edges-legacy-redirect.tsx', {
+              id: 'org-edges-legacy-splat',
+            }),
+            route('edges', 'routes/customer/organization/detail/edges-legacy-redirect.tsx', {
+              id: 'org-edges-legacy',
+            }),
             route('dns', 'routes/customer/organization/detail/dns.tsx'),
             route('activity', 'routes/customer/organization/detail/activity/layout.tsx', [
               index('routes/customer/organization/detail/activity/index.tsx'),
@@ -87,10 +93,16 @@ export default [
               index('routes/customer/project/detail/domain/index.tsx'),
               route(':namespace/:domainName', 'routes/customer/project/detail/domain/detail.tsx'),
             ]),
-            route('edges', 'routes/customer/project/detail/edge/layout.tsx', [
+            route('albs', 'routes/customer/project/detail/edge/layout.tsx', [
               index('routes/customer/project/detail/edge/index.tsx'),
               route(':edgeName', 'routes/customer/project/detail/edge/detail.tsx'),
             ]),
+            route('edges/*', 'routes/customer/project/detail/edges-legacy-redirect.tsx', {
+              id: 'project-edges-legacy-splat',
+            }),
+            route('edges', 'routes/customer/project/detail/edges-legacy-redirect.tsx', {
+              id: 'project-edges-legacy',
+            }),
             route('quotas', 'routes/customer/project/detail/quota/layout.tsx', [
               index('routes/customer/project/detail/quota/index.tsx'),
               route('usage', 'routes/customer/project/detail/quota/usage.tsx'),
@@ -101,12 +113,18 @@ export default [
         ),
       ]),
 
-      // Resources (Customers → Resources): AI Edge / DNS / Domains tabs.
+      // Resources (Customers → Resources): ALB / DNS / Domains tabs.
       route('resources', 'routes/customer/resource/layout.tsx', [
         index('routes/customer/resource/index.tsx'),
-        route('edges', 'routes/customer/resource/edge/layout.tsx', [
+        route('albs', 'routes/customer/resource/edge/layout.tsx', [
           index('routes/customer/resource/edge/index.tsx'),
         ]),
+        route('edges/*', 'routes/customer/resource/edges-legacy-redirect.tsx', {
+          id: 'resource-edges-legacy-splat',
+        }),
+        route('edges', 'routes/customer/resource/edges-legacy-redirect.tsx', {
+          id: 'resource-edges-legacy',
+        }),
         route('dns', 'routes/customer/resource/dns/layout.tsx', [
           index('routes/customer/resource/dns/index.tsx'),
         ]),
