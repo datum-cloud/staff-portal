@@ -1,8 +1,9 @@
 import { authenticator } from '@/modules/auth';
 import { withRequestContext, getRequestContext } from '@/modules/axios/axios.server';
+import { requestIdContext } from '@/server/context';
 import { Context, Next } from 'hono';
 import { createMiddleware } from 'hono/factory';
-import type { AppLoadContext } from 'react-router';
+import type { RouterContextProvider } from 'react-router';
 
 /**
  * Hono middleware that automatically sets up request context for the entire request lifecycle.
@@ -44,8 +45,8 @@ export function requestContextMiddleware() {
  */
 export function withRequestContextWrapper<T extends (...args: any[]) => any>(loader: T): T {
   return ((...args: Parameters<T>) => {
-    const loaderArgs = args[0] as { context?: AppLoadContext };
-    const requestId = loaderArgs?.context?.requestId;
+    const loaderArgs = args[0] as { context?: RouterContextProvider };
+    const requestId = loaderArgs?.context?.get(requestIdContext);
 
     if (requestId) {
       // Carry through token/userId/userAgent already set by requestContextMiddleware

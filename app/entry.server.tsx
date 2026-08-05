@@ -2,6 +2,7 @@ import { http } from '@/modules/axios/axios.server';
 import { loadCatalog } from '@/modules/i18n/lingui';
 import { linguiServer } from '@/modules/i18n/lingui.server';
 import { NonceProvider } from '@/providers/nonce.provider';
+import { cspNonceContext, requestIdContext } from '@/server/context';
 import { logger } from '@/utils/logger';
 import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
@@ -11,7 +12,7 @@ import * as Sentry from '@sentry/react-router';
 import { isbot } from 'isbot';
 import { PassThrough } from 'node:stream';
 import { renderToPipeableStream } from 'react-dom/server';
-import type { AppLoadContext, EntryContext } from 'react-router';
+import type { EntryContext, RouterContextProvider } from 'react-router';
 import { ServerRouter } from 'react-router';
 
 // Configure default client for server-side
@@ -35,10 +36,11 @@ async function handleRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   routerContext: EntryContext,
-  loadContext: AppLoadContext
+  loadContext: RouterContextProvider
 ) {
   let userAgent = request.headers.get('user-agent');
-  const requestId = loadContext.requestId;
+  const requestId = loadContext.get(requestIdContext);
+  const cspNonce = loadContext.get(cspNonceContext);
   const callbackName = isBot(userAgent) || routerContext.isSpaMode ? 'onAllReady' : 'onShellReady';
 
   const locale = await linguiServer.getLocale(request);
@@ -47,13 +49,13 @@ async function handleRequest(
   return new Promise((resolve, reject) => {
     let shellRendered = false;
     const { pipe, abort } = renderToPipeableStream(
-      <NonceProvider value={loadContext.cspNonce}>
+      <NonceProvider value={cspNonce}>
         <I18nProvider i18n={i18n}>
-          <ServerRouter nonce={loadContext.cspNonce} context={routerContext} url={request.url} />
+          <ServerRouter nonce={cspNonce} context={routerContext} url={request.url} />
         </I18nProvider>
       </NonceProvider>,
       {
-        nonce: loadContext.cspNonce,
+        nonce: cspNonce,
         [callbackName]() {
           shellRendered = true;
           const body = new PassThrough();

@@ -1,5 +1,6 @@
 import type { Route } from './+types/not-found';
 import { LogoIcon } from '@/components/logo/logo-icon';
+import { requestIdContext } from '@/server/context';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { createRequestLogger, logger } from '@/utils/logger';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -27,7 +28,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   const reqLogger = createRequestLogger({
     get: (key: string) => request.headers.get(key) || undefined,
   });
-  const requestId = context.requestId;
+  const requestId = context.get(requestIdContext);
 
   // Log the 404 error on the server side
   reqLogger.warn('Page not found', {

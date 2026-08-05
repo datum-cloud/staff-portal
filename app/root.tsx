@@ -133,7 +133,7 @@ export default function AppWithProviders() {
 
   const urqlState = useMemo<SSRData>(() => {
     return matches.reduce<SSRData>((acc, match) => {
-      const state = (match.data as Record<string, unknown> | null)?.urqlState;
+      const state = (match.loaderData as Record<string, unknown> | null)?.urqlState;
       if (state && typeof state === 'object') {
         return { ...acc, ...(state as SSRData) };
       }

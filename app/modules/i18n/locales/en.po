@@ -2033,7 +2033,7 @@ msgstr "Loading provider..."
 msgid "Loading status..."
 msgstr "Loading status..."
 
-#: app/routes/auth/callback.tsx:71
+#: app/routes/auth/callback.tsx:74
 #: app/routes/auth/login.tsx:41
 #: app/routes/auth/logout.tsx:36
 #: app/routes/customer/user/detail/index.tsx:271
