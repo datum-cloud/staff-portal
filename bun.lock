@@ -44,7 +44,7 @@
         "date-fns": "^4.1.0",
         "date-fns-tz": "^3.2.0",
         "dotenv": "^17.0.0",
-        "graphql": "^16.0.0",
+        "graphql": "^17.0.0",
         "hono": "^4.7.9",
         "intl-parse-accept-language": "^1.0.0",
         "isbot": "^5.1.27",
@@ -116,7 +116,7 @@
   },
   "overrides": {
     "form-data": "^4.0.6",
-    "graphql": "16.14.2",
+    "graphql": "17.0.2",
     "react-is": "^19.0.0-rc-69d4b800-20241021",
   },
   "packages": {
@@ -1940,7 +1940,7 @@
 
     "graceful-fs": ["graceful-fs@4.2.11", "", {}, "sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ=="],
 
-    "graphql": ["graphql@16.14.2", "", {}, "sha512-Chq1s4CY7jmh8gO2qvLIJyfCDIN+EHLFW/9iShnp1z8FjBQMoodWP1kDC36VAMXXIvAjj4ARa7ntfAV2BrjsbA=="],
+    "graphql": ["graphql@17.0.2", "", {}, "sha512-FRWbddMxfkjiB7z+aQDWIR+E34xo9I8c9mtK2RPv8PmMzKRvrdsreHL/Ui/TmwHJfhHChEtsFPyMHKI+xuarQQ=="],
 
     "graphql-ws": ["graphql-ws@6.0.8", "", { "peerDependencies": { "@fastify/websocket": "^10 || ^11", "crossws": "~0.3", "graphql": "^15.10.1 || ^16", "ws": "^8" }, "optionalPeers": ["@fastify/websocket", "crossws", "ws"] }, "sha512-m3EOaNsUBXwAnkBWbzPfe0Nq8pXUfxsWnolC54sru3FzHvhTZL0Ouf/BoQsaGAXqM+YPerXOJ47BUnmgmoupCw=="],
 
