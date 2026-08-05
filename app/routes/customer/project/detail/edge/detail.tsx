@@ -19,7 +19,7 @@ import { useLoaderData } from 'react-router';
 export const meta: Route.MetaFunction = ({ matches }) => {
   const data = extractDataFromMatches<EdgeDetailBundle>(matches);
   const title = data?.proxy?.chosenName || data?.proxy?.name;
-  return metaObject(`AI Edge - ${title}`);
+  return metaObject(`Application Load Balancer - ${title}`);
 };
 
 export const handle = {

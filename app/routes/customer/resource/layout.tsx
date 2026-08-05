@@ -6,7 +6,7 @@ export const handle = {
 };
 
 /**
- * Customers → Resources: a single merged list of AI Edge / DNS / Domains
+ * Customers → Resources: a single merged list of ALB / DNS / Domains
  * resources across all projects, with Type as a sidebar filter rather than a
  * tab bar — see `index.tsx`.
  */

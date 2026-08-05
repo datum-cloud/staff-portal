@@ -24,7 +24,7 @@ export const orgRoutes = {
   project: (orgName: string) => `/customers/organizations/${orgName}/projects`,
   member: (orgName: string) => `/customers/organizations/${orgName}/members`,
   domain: (orgName: string) => `/customers/organizations/${orgName}/domains`,
-  edge: (orgName: string) => `/customers/organizations/${orgName}/edges`,
+  edge: (orgName: string) => `/customers/organizations/${orgName}/albs`,
   dns: (orgName: string) => `/customers/organizations/${orgName}/dns`,
   activity: {
     root: (orgName: string) => `/customers/organizations/${orgName}/activity`,
@@ -58,9 +58,9 @@ export const projectRoutes = {
       `/customers/projects/${projectName}/domains/${namespace}/${domainName}`,
   },
   edge: {
-    list: (projectName: string) => `/customers/projects/${projectName}/edges`,
+    list: (projectName: string) => `/customers/projects/${projectName}/albs`,
     detail: (projectName: string, edgeName: string) =>
-      `/customers/projects/${projectName}/edges/${edgeName}`,
+      `/customers/projects/${projectName}/albs/${edgeName}`,
   },
   activity: {
     root: (projectName: string) => `/customers/projects/${projectName}/activity`,
@@ -84,9 +84,9 @@ export const resourceRoutes = {
   root: () => '/customers/resources',
 } as const;
 
-// Resources tab: AI Edge (global view across all projects)
+// Resources tab: Application Load Balancer (global view across all projects)
 export const edgeRoutes = {
-  list: () => '/customers/resources/edges',
+  list: () => '/customers/resources/albs',
 } as const;
 
 // Resources tab: DNS zones (global view across all projects)

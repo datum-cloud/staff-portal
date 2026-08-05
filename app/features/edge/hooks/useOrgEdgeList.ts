@@ -8,7 +8,7 @@ import { useQueries } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
 /**
- * Aggregate the AI Edges under every project an organization owns.
+ * Aggregate the Application Load Balancers under every project an organization owns.
  *
  * Per #490: the search index doesn't carry org tenancy yet (only project),
  * so we resolve this client-side — list the org's projects, then fan out

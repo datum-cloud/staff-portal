@@ -82,13 +82,13 @@ export default function Layout() {
     const base = `${env.CLOUD_PORTAL_URL}/project/${projectName}`;
 
     // Sub-resource detail pages (param present = on a specific resource detail)
-    if (params.edgeName) return `${base}/edge/${params.edgeName}`;
+    if (params.edgeName) return `${base}/alb/${params.edgeName}`;
     if (params.dnsName) return `${base}/dns-zones/${params.dnsName}`;
     if (params.domainName) return `${base}/domains/${params.domainName}`;
     if (params.exportPolicyName) return `${base}/export-policies/${params.exportPolicyName}`;
 
     // Sub-resource list pages
-    if (pathname.startsWith(projectRoutes.edge.list(projectName))) return `${base}/edge`;
+    if (pathname.startsWith(projectRoutes.edge.list(projectName))) return `${base}/alb`;
     if (pathname.startsWith(projectRoutes.dns.list(projectName))) return `${base}/dns-zones`;
     if (pathname.startsWith(projectRoutes.domain.list(projectName))) return `${base}/domains`;
     if (pathname.startsWith(projectRoutes.exportPolicy.list(projectName)))
@@ -114,7 +114,7 @@ export default function Layout() {
       end: true,
     },
     {
-      label: t`AI Edge`,
+      label: t`ALB`,
       href: projectRoutes.edge.list(projectName),
       icon: ENTITY_ICONS.edge,
     },
