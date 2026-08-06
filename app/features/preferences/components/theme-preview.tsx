@@ -45,7 +45,17 @@ export const ThemePreview = ({
     disabled && 'opacity-50 cursor-not-allowed'
   );
   return (
-    <div className="relative" data-testid={`theme-${value}`}>
+    // A <label> (not an invisible overlay input) is the click target: label→input
+    // activation is native and fires reliably in Safari, which does not deliver
+    // clicks to a zero-opacity radio the way Chrome/FF/Edge do. cursor-pointer is
+    // also required for iOS Safari to dispatch the click at all.
+    <label
+      className={cn(
+        'relative block rounded',
+        'has-[:focus-visible]:ring-primary has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2',
+        disabled ? 'cursor-not-allowed' : 'cursor-pointer'
+      )}
+      data-testid={`theme-${value}`}>
       <div className={containerClass} data-selected={selected}>
         {value === 'system' ? (
           <>
@@ -77,8 +87,8 @@ export const ThemePreview = ({
         checked={selected}
         disabled={disabled}
         onChange={() => !disabled && onSelect(value)}
-        className="absolute inset-0 cursor-pointer opacity-0 disabled:cursor-not-allowed"
+        className="sr-only"
       />
-    </div>
+    </label>
   );
 };
