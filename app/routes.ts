@@ -213,7 +213,10 @@ export default [
     route('admin', 'routes/admin/layout.tsx', [
       route('groups', 'routes/admin/group/layout.tsx', [
         index('routes/admin/group/index.tsx'),
-        route(':groupName', 'routes/admin/group/member.tsx', { id: 'group-detail' }),
+        route(':groupName', 'routes/admin/group/detail/layout.tsx', { id: 'group-detail' }, [
+          index('routes/admin/group/detail/index.tsx'),
+          route('members', 'routes/admin/group/detail/member.tsx'),
+        ]),
       ]),
       route('service-catalog', 'routes/admin/service-catalog/layout.tsx', [
         index('routes/admin/service-catalog/index.tsx'),

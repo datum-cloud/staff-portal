@@ -198,8 +198,8 @@ msgstr "Active Sessions"
 msgid "Activity"
 msgstr "Activity"
 
-#: app/routes/admin/group/member.tsx:146
-#: app/routes/admin/group/member.tsx:169
+#: app/routes/admin/group/detail/member.tsx:132
+#: app/routes/admin/group/detail/member.tsx:155
 #: app/routes/marketing/contact-group/detail/member.tsx:335
 #: app/routes/marketing/contact-group/detail/member.tsx:361
 #: app/routes/marketing/contact-group/index.tsx:197
@@ -213,7 +213,7 @@ msgstr "Add"
 msgid "Add a note"
 msgstr "Add a note"
 
-#: app/routes/admin/group/member.tsx:168
+#: app/routes/admin/group/detail/member.tsx:154
 #: app/routes/marketing/contact-group/detail/member.tsx:360
 msgid "Add Member"
 msgstr "Add Member"
@@ -376,7 +376,7 @@ msgid "Are you sure you want to delete grant \"{0}\"? This action cannot be undo
 msgstr "Are you sure you want to delete grant \"{0}\"? This action cannot be undone."
 
 #. placeholder {0}: selectedGroupMembership?.metadata?.name ?? ''
-#: app/routes/admin/group/member.tsx:154
+#: app/routes/admin/group/detail/member.tsx:140
 msgid "Are you sure you want to delete member \"{0}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete member \"{0}\"? This action cannot be undone."
 
@@ -531,8 +531,8 @@ msgstr "by"
 #: app/features/quota/components/quota-grant-list.tsx:162
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:39
 #: app/features/user/components/user-reject-dialog.tsx:30
-#: app/routes/admin/group/member.tsx:156
-#: app/routes/admin/group/member.tsx:170
+#: app/routes/admin/group/detail/member.tsx:142
+#: app/routes/admin/group/detail/member.tsx:156
 #: app/routes/admin/service-catalog/detail/consumers.tsx:205
 #: app/routes/customer/fraud/index.tsx:229
 #: app/routes/customer/fraud/index.tsx:264
@@ -891,8 +891,9 @@ msgstr "Create Policy"
 #: app/features/project/components/project-details-card.tsx:44
 #: app/features/quota/components/quota-grant-list.tsx:129
 #: app/features/user/components/user-identity-card.tsx:176
+#: app/routes/admin/group/detail/index.tsx:41
+#: app/routes/admin/group/detail/member.tsx:107
 #: app/routes/admin/group/index.tsx:40
-#: app/routes/admin/group/member.tsx:121
 #: app/routes/customer/billing-account/detail/index.tsx:352
 #: app/routes/customer/fraud/providers/index.tsx:102
 #: app/routes/customer/organization/detail/project.tsx:47
@@ -1009,8 +1010,8 @@ msgstr "Degraded"
 #: app/features/fraud/policy/policy-detail.tsx:102
 #: app/features/quota/components/quota-grant-list.tsx:140
 #: app/features/quota/components/quota-grant-list.tsx:161
-#: app/routes/admin/group/member.tsx:94
-#: app/routes/admin/group/member.tsx:155
+#: app/routes/admin/group/detail/member.tsx:80
+#: app/routes/admin/group/detail/member.tsx:141
 #: app/routes/customer/fraud/index.tsx:101
 #: app/routes/customer/fraud/index.tsx:263
 #: app/routes/customer/fraud/policy.tsx:98
@@ -1072,7 +1073,7 @@ msgstr "Delete Evaluation"
 msgid "Delete Grant"
 msgstr "Delete Grant"
 
-#: app/routes/admin/group/member.tsx:153
+#: app/routes/admin/group/detail/member.tsx:139
 #: app/routes/marketing/contact-group/detail/member.tsx:342
 msgid "Delete Member"
 msgstr "Delete Member"
@@ -1133,6 +1134,7 @@ msgstr "Deprecated"
 
 #: app/features/contact-group/components/contact-group-form.tsx:80
 #: app/features/dns/components/dns-zone-list.tsx:140
+#: app/routes/admin/group/detail/index.tsx:32
 msgid "Description"
 msgstr "Description"
 
@@ -1423,7 +1425,7 @@ msgid "Enter reason for rejection..."
 msgstr "Enter reason for rejection..."
 
 #: app/features/contact/components/contact-form.tsx:226
-#: app/routes/admin/group/member.tsx:194
+#: app/routes/admin/group/detail/member.tsx:180
 #: app/routes/marketing/contact-group/detail/member.tsx:114
 msgid "Enter the full email to search..."
 msgstr "Enter the full email to search..."
@@ -1738,6 +1740,10 @@ msgstr "Grants"
 msgid "Group"
 msgstr "Group"
 
+#: app/routes/admin/group/detail/index.tsx:51
+msgid "Group Information"
+msgstr "Group Information"
+
 #: app/components/app-sidebar/index.tsx:163
 #: app/routes/admin/group/index.tsx:12
 #: app/routes/admin/group/layout.tsx:5
@@ -1800,6 +1806,7 @@ msgstr "HTML"
 #: app/features/edge/components/edge-list.tsx:112
 #: app/features/project/components/project-billing-card.tsx:58
 #: app/features/project/components/project-organization-card.tsx:48
+#: app/routes/admin/group/detail/index.tsx:29
 #: app/routes/admin/group/index.tsx:23
 #: app/routes/customer/billing-account/detail/index.tsx:135
 #: app/routes/customer/billing-account/detail/index.tsx:186
@@ -2121,17 +2128,19 @@ msgstr "Marketing"
 msgid "Member"
 msgstr "Member"
 
-#: app/routes/admin/group/member.tsx:180
+#: app/routes/admin/group/detail/member.tsx:166
 #: app/routes/marketing/contact-group/detail/member.tsx:321
 msgid "Member added successfully"
 msgstr "Member added successfully"
 
-#: app/routes/admin/group/member.tsx:161
+#: app/routes/admin/group/detail/member.tsx:147
 #: app/routes/marketing/contact-group/detail/member.tsx:350
 msgid "Member deleted successfully"
 msgstr "Member deleted successfully"
 
 #: app/features/organization/components/org-members-preview-card.tsx:79
+#: app/routes/admin/group/detail/layout.tsx:41
+#: app/routes/admin/group/detail/member.tsx:34
 #: app/routes/customer/organization/detail/layout.tsx:84
 #: app/routes/customer/organization/detail/member.tsx:25
 #: app/routes/marketing/contact-group/detail/layout.tsx:43
@@ -2183,8 +2192,9 @@ msgstr "My Profile"
 #: app/features/dashboard/components/pending-approvals-widget.tsx:134
 #: app/features/fraud/policy/policy-form.tsx:149
 #: app/features/organization/components/org-members-preview-card.tsx:40
+#: app/routes/admin/group/detail/index.tsx:27
+#: app/routes/admin/group/detail/member.tsx:89
 #: app/routes/admin/group/index.tsx:31
-#: app/routes/admin/group/member.tsx:103
 #: app/routes/customer/billing-account/detail/index.tsx:129
 #: app/routes/customer/fraud/providers/create.tsx:86
 #: app/routes/customer/fraud/providers/index.tsx:55
@@ -2415,7 +2425,7 @@ msgstr "No members"
 msgid "No members found."
 msgstr "No members found."
 
-#: app/routes/admin/group/member.tsx:207
+#: app/routes/admin/group/detail/member.tsx:193
 msgid "No members in this group."
 msgstr "No members in this group."
 
@@ -2654,6 +2664,8 @@ msgstr "Organizations"
 msgid "Origin"
 msgstr "Origin"
 
+#: app/routes/admin/group/detail/index.tsx:17
+#: app/routes/admin/group/detail/layout.tsx:35
 #: app/routes/admin/service-catalog/detail/layout.tsx:37
 #: app/routes/customer/organization/detail/layout.tsx:68
 #: app/routes/customer/project/detail/layout.tsx:111
@@ -3293,7 +3305,7 @@ msgstr "Search invoices"
 msgid "Search is temporarily unavailable. Please try again."
 msgstr "Search is temporarily unavailable. Please try again."
 
-#: app/routes/admin/group/member.tsx:206
+#: app/routes/admin/group/detail/member.tsx:192
 #: app/routes/customer/organization/detail/member.tsx:156
 #: app/routes/marketing/contact-group/detail/member.tsx:391
 msgid "Search members..."
@@ -3540,6 +3552,7 @@ msgstr "Start Time"
 #: app/features/project/components/project-details-card.tsx:40
 #: app/features/quota/components/quota-grant-list.tsx:109
 #: app/features/service-catalog/components/conditions-card.tsx:23
+#: app/routes/admin/group/detail/index.tsx:34
 #: app/routes/customer/billing-account/detail/index.tsx:156
 #: app/routes/customer/billing-account/detail/index.tsx:202
 #: app/routes/customer/billing-account/detail/index.tsx:234
