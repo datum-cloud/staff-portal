@@ -173,6 +173,8 @@ export const emailActivityRoutes = {
 // Admin → Groups
 export const groupRoutes = {
   list: () => '/admin/groups',
+  detail: (groupName: string) => `/admin/groups/${groupName}`,
+  member: (groupName: string) => `/admin/groups/${groupName}/members`,
 } as const;
 
 // Admin → Service Catalog

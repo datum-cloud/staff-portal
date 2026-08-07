@@ -1,19 +1,17 @@
+import { getGroupDetailMetadata, useGroupDetailData } from '../shared';
 import type { Route } from './+types/member';
-import { getGroupDetailMetadata, useGroupDetailData } from './shared';
 import AppActionBar from '@/components/app-actiobar';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
 import { ListColumnHeader, ListTable } from '@/features/milo';
 import { useUserSearch } from '@/hooks';
-import { authenticator } from '@/modules/auth';
 import {
   useCreateGroupMembershipMutation,
   useDeleteGroupMembershipMutation,
   useGroupMembershipListQuery,
   useUserListQuery,
 } from '@/resources/request/client';
-import { groupDetailQuery } from '@/resources/request/server';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
@@ -22,10 +20,7 @@ import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Trans, useLingui } from '@lingui/react/macro';
-import {
-  ComMiloapisIamV1Alpha1Group,
-  ComMiloapisIamV1Alpha1GroupMembership,
-} from '@openapi/iam.miloapis.com/v1alpha1';
+import { ComMiloapisIamV1Alpha1GroupMembership } from '@openapi/iam.miloapis.com/v1alpha1';
 import { createColumnHelper } from '@tanstack/react-table';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import z from 'zod';
@@ -36,16 +31,7 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 };
 
 export const handle = {
-  breadcrumb: (data: ComMiloapisIamV1Alpha1Group) => {
-    return <span>{data.metadata?.name ?? ''}</span>;
-  },
-};
-
-export const loader = async ({ params, request }: Route.LoaderArgs) => {
-  const session = await authenticator.getSession(request);
-  const data = await groupDetailQuery(session?.accessToken ?? '', params?.groupName ?? '');
-
-  return data;
+  breadcrumb: () => <Trans>Members</Trans>,
 };
 
 const columnHelper = createColumnHelper<ComMiloapisIamV1Alpha1GroupMembership>();

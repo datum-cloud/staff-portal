@@ -1,5 +1,5 @@
 // Import the loader from the layout file
-import { loader } from './member';
+import { loader } from './detail/layout';
 import { extractDataFromMatches } from '@/utils/helpers';
 import { useRouteLoaderData } from 'react-router';
 
