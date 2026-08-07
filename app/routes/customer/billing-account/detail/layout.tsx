@@ -21,6 +21,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       bindings: [],
       paymentMethods: [],
       invoices: [],
+      billingEntitlement: null,
       orgName,
       organization: undefined,
     };
@@ -38,6 +39,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       bindings: [],
       paymentMethods: [],
       invoices: [],
+      billingEntitlement: null,
       orgName,
       organization: undefined,
     };

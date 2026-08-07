@@ -49,6 +49,7 @@ import {
   Signpost,
   SquareActivity,
   SquarePen,
+  Tag,
   Trash2,
   UserPlus,
   Users,
@@ -91,6 +92,7 @@ export const ENTITY_ICONS = {
   // Admin
   group: ShieldUser,
   serviceCatalog: Newspaper,
+  offer: Tag,
   // Resources (global views across all projects)
   edge: Gauge,
   dns: Signpost,

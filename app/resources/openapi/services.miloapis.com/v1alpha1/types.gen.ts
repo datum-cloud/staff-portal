@@ -222,6 +222,13 @@ export type ComMiloapisServicesV1Alpha1ServiceConfiguration = {
    */
   spec?: {
     /**
+     * DefaultOffer is the Offer name applied to new BillingAccounts.
+     * Typically set only on the billing.miloapis.com ServiceConfiguration.
+     * When set, the referenced Offer must exist, have launchStage GA, and
+     * carry a non-empty servicePricings snapshot.
+     */
+    defaultOffer?: string;
+    /**
      * Billing declares routing from metrics to monitored resource types.
      * Fans out into MeterDefinition billing CRDs.
      */

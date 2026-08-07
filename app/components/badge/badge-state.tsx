@@ -125,6 +125,11 @@ const StateConfig = {
     className:
       'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800',
   },
+  default: {
+    icon: null,
+    className:
+      'bg-violet-100 text-violet-800 border-violet-200 dark:bg-violet-900/20 dark:text-violet-400 dark:border-violet-800',
+  },
   unknown: {
     icon: null,
     className:

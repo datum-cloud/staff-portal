@@ -1,3 +1,4 @@
+import { BILLING_SERVICE_CONFIGURATION_NAME } from '@/features/billing/utils';
 import { PROXY_URL } from '@/modules/axios/axios.client';
 import {
   deleteServicesMiloapisComV1Alpha1ServiceEntitlement,
@@ -6,6 +7,8 @@ import {
   listServicesMiloapisComV1Alpha1ServiceConsumer,
   patchServicesMiloapisComV1Alpha1ServiceConsumer,
   readServicesMiloapisComV1Alpha1Service,
+  readServicesMiloapisComV1Alpha1ServiceConfiguration,
+  replaceServicesMiloapisComV1Alpha1ServiceConfiguration,
   type ComMiloapisServicesV1Alpha1Service,
   type ComMiloapisServicesV1Alpha1ServiceConfiguration,
   type ComMiloapisServicesV1Alpha1ServiceConfigurationList,
@@ -43,6 +46,52 @@ export const listServiceConfigurationsForService = async (
 ): Promise<ServiceConfigurationList | null> => {
   const response = await listServicesMiloapisComV1Alpha1ServiceConfiguration();
   return response.data.data ?? null;
+};
+
+export const getBillingServiceConfiguration = async (): Promise<ServiceConfiguration | null> => {
+  const response = await readServicesMiloapisComV1Alpha1ServiceConfiguration({
+    path: { name: BILLING_SERVICE_CONFIGURATION_NAME },
+  });
+  return response.data.data ?? null;
+};
+
+/** Offer name used as the platform default for new / unentitled BillingAccounts. */
+export const getBillingDefaultOffer = async (): Promise<string> => {
+  const sc = await getBillingServiceConfiguration();
+  return sc?.spec?.defaultOffer?.trim() ?? '';
+};
+
+/**
+ * Sets ServiceConfiguration.spec.defaultOffer on billing-miloapis-com.
+ * Uses replace (update) because services.miloapis.com-admin grants update,
+ * not patch. The Offer must be GA with a non-empty servicePricings snapshot.
+ */
+export const setBillingDefaultOffer = async (offerName: string) => {
+  const current = await getBillingServiceConfiguration();
+  if (!current?.metadata?.name || !current.spec) {
+    throw new Error('Billing ServiceConfiguration not found');
+  }
+
+  const response = await replaceServicesMiloapisComV1Alpha1ServiceConfiguration({
+    path: { name: BILLING_SERVICE_CONFIGURATION_NAME },
+    body: {
+      apiVersion: current.apiVersion ?? 'services.miloapis.com/v1alpha1',
+      kind: current.kind ?? 'ServiceConfiguration',
+      metadata: {
+        name: current.metadata.name,
+        ...(current.metadata.resourceVersion
+          ? { resourceVersion: current.metadata.resourceVersion }
+          : {}),
+        ...(current.metadata.labels ? { labels: current.metadata.labels } : {}),
+        ...(current.metadata.annotations ? { annotations: current.metadata.annotations } : {}),
+      },
+      spec: {
+        ...current.spec,
+        defaultOffer: offerName,
+      },
+    },
+  });
+  return response.data.data;
 };
 
 // ServiceConsumer lives in the producer project's control plane (the project

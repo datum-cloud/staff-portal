@@ -121,6 +121,31 @@ export const getOrganizationDisplayName = (org: {
 
 export const buildOrganizationNamespace = (orgName: string) => `organization-${orgName}`;
 
+/** Well-known annotation for human-readable Offer names. */
+export const OFFER_DISPLAY_NAME_ANNOTATION = 'kubernetes.io/display-name';
+
+/** Namespace where ChargeFanOut emits ServicePricing objects. */
+export const DEFAULT_SERVICE_PRICING_NAMESPACE = 'milo-system';
+
+export const getOfferDisplayName = (offer: {
+  metadata?: { name?: string; annotations?: Record<string, string> };
+}): string =>
+  offer.metadata?.annotations?.[OFFER_DISPLAY_NAME_ANNOTATION] || offer.metadata?.name || '';
+
+export type ChargeType = 'Usage' | 'OneTime' | 'Recurring';
+
+export const CHARGE_TYPES: ChargeType[] = ['Usage', 'OneTime', 'Recurring'];
+
+/** Display label for API charge types (e.g. OneTime → "One Time"). */
+export const formatChargeType = (chargeType: string): string =>
+  chargeType.replace(/([a-z])([A-Z])/g, '$1 $2');
+
+export const formatChargeTypes = (chargeTypes: string[]): string =>
+  chargeTypes.map(formatChargeType).join(', ');
+
+/** metadata.name of the billing.miloapis.com Service / ServiceConfiguration. */
+export const BILLING_SERVICE_CONFIGURATION_NAME = 'billing-miloapis-com';
+
 export const orgNameFromNamespace = (namespace?: string): string => {
   if (!namespace) return '';
   const prefix = 'organization-';

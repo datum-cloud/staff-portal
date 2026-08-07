@@ -186,6 +186,14 @@ export const serviceCatalogRoutes = {
   approvals: (name: string) => `/admin/service-catalog/${name}/approvals`,
 } as const;
 
+// Admin → Offers (sibling of Service Catalog)
+export const offerRoutes = {
+  root: () => '/admin/offers',
+  list: () => '/admin/offers',
+  create: () => '/admin/offers/create',
+  detail: (name: string) => `/admin/offers/${name}`,
+} as const;
+
 // ───────────────────────────────── Account (/profile) ─────────────────────────────────
 
 export const profileRoutes = {
@@ -230,6 +238,7 @@ export const routes = {
   // Admin
   groups: groupRoutes,
   serviceCatalog: serviceCatalogRoutes,
+  offers: offerRoutes,
 
   // Account
   profile: profileRoutes,

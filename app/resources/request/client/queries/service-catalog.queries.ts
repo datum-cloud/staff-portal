@@ -1,10 +1,12 @@
 import {
   decideServiceConsumer,
   deleteServiceEntitlement,
+  getBillingDefaultOffer,
   getService,
   listServiceConfigurationsForService,
   listServiceConsumersInProject,
   listServices,
+  setBillingDefaultOffer,
   type ApprovalDecision,
 } from '../apis/service-catalog.api';
 import { listServiceConsumers } from '@/modules/graphql/service-consumers';
@@ -20,6 +22,7 @@ export const serviceCatalogQueryKeys = {
     forService: (name: string) =>
       ['service-catalog', 'configurations', 'forService', name] as const,
   },
+  billingDefaultOffer: ['service-catalog', 'billing-default-offer'] as const,
   consumers: {
     inProject: (project: string) => ['service-catalog', 'consumers', 'project', project] as const,
     // Gateway-enriched variant (adds consumer project display names), used by
@@ -52,6 +55,26 @@ export const useServiceConfigurationsByServiceQuery = (serviceName: string) => {
     queryFn: () => listServiceConfigurationsForService(serviceName),
     enabled: !!serviceName,
     staleTime: 60 * 1000,
+  });
+};
+
+export const useBillingDefaultOfferQuery = () => {
+  return useQuery({
+    queryKey: serviceCatalogQueryKeys.billingDefaultOffer,
+    queryFn: getBillingDefaultOffer,
+    staleTime: 60 * 1000,
+  });
+};
+
+export const useSetBillingDefaultOfferMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (offerName: string) => setBillingDefaultOffer(offerName),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: serviceCatalogQueryKeys.billingDefaultOffer,
+      });
+    },
   });
 };
 

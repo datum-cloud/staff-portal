@@ -231,6 +231,11 @@ export default [
           ]
         ),
       ]),
+      route('offers', 'routes/admin/offer/layout.tsx', [
+        index('routes/admin/offer/index.tsx'),
+        route('create', 'routes/admin/offer/create.tsx'),
+        route(':offerName', 'routes/admin/offer/detail.tsx', { id: 'offer-detail' }),
+      ]),
     ]),
 
     // Profile

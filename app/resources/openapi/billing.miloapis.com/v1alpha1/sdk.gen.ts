@@ -20,12 +20,21 @@ import type {
   CreateBillingMiloapisComV1Alpha1NamespacedBillingAccountData,
   CreateBillingMiloapisComV1Alpha1NamespacedBillingAccountErrors,
   CreateBillingMiloapisComV1Alpha1NamespacedBillingAccountResponses,
+  CreateBillingMiloapisComV1Alpha1NamespacedBillingEntitlementData,
+  CreateBillingMiloapisComV1Alpha1NamespacedBillingEntitlementErrors,
+  CreateBillingMiloapisComV1Alpha1NamespacedBillingEntitlementResponses,
   CreateBillingMiloapisComV1Alpha1NamespacedInvoiceData,
   CreateBillingMiloapisComV1Alpha1NamespacedInvoiceErrors,
   CreateBillingMiloapisComV1Alpha1NamespacedInvoiceResponses,
   CreateBillingMiloapisComV1Alpha1NamespacedPaymentMethodData,
   CreateBillingMiloapisComV1Alpha1NamespacedPaymentMethodErrors,
   CreateBillingMiloapisComV1Alpha1NamespacedPaymentMethodResponses,
+  CreateBillingMiloapisComV1Alpha1NamespacedServicePricingData,
+  CreateBillingMiloapisComV1Alpha1NamespacedServicePricingErrors,
+  CreateBillingMiloapisComV1Alpha1NamespacedServicePricingResponses,
+  CreateBillingMiloapisComV1Alpha1OfferData,
+  CreateBillingMiloapisComV1Alpha1OfferErrors,
+  CreateBillingMiloapisComV1Alpha1OfferResponses,
   CreateBillingMiloapisComV1Alpha1PaymentMethodClassData,
   CreateBillingMiloapisComV1Alpha1PaymentMethodClassErrors,
   CreateBillingMiloapisComV1Alpha1PaymentMethodClassResponses,
@@ -41,12 +50,21 @@ import type {
   DeleteBillingMiloapisComV1Alpha1CollectionNamespacedBillingAccountData,
   DeleteBillingMiloapisComV1Alpha1CollectionNamespacedBillingAccountErrors,
   DeleteBillingMiloapisComV1Alpha1CollectionNamespacedBillingAccountResponses,
+  DeleteBillingMiloapisComV1Alpha1CollectionNamespacedBillingEntitlementData,
+  DeleteBillingMiloapisComV1Alpha1CollectionNamespacedBillingEntitlementErrors,
+  DeleteBillingMiloapisComV1Alpha1CollectionNamespacedBillingEntitlementResponses,
   DeleteBillingMiloapisComV1Alpha1CollectionNamespacedInvoiceData,
   DeleteBillingMiloapisComV1Alpha1CollectionNamespacedInvoiceErrors,
   DeleteBillingMiloapisComV1Alpha1CollectionNamespacedInvoiceResponses,
   DeleteBillingMiloapisComV1Alpha1CollectionNamespacedPaymentMethodData,
   DeleteBillingMiloapisComV1Alpha1CollectionNamespacedPaymentMethodErrors,
   DeleteBillingMiloapisComV1Alpha1CollectionNamespacedPaymentMethodResponses,
+  DeleteBillingMiloapisComV1Alpha1CollectionNamespacedServicePricingData,
+  DeleteBillingMiloapisComV1Alpha1CollectionNamespacedServicePricingErrors,
+  DeleteBillingMiloapisComV1Alpha1CollectionNamespacedServicePricingResponses,
+  DeleteBillingMiloapisComV1Alpha1CollectionOfferData,
+  DeleteBillingMiloapisComV1Alpha1CollectionOfferErrors,
+  DeleteBillingMiloapisComV1Alpha1CollectionOfferResponses,
   DeleteBillingMiloapisComV1Alpha1CollectionPaymentMethodClassData,
   DeleteBillingMiloapisComV1Alpha1CollectionPaymentMethodClassErrors,
   DeleteBillingMiloapisComV1Alpha1CollectionPaymentMethodClassResponses,
@@ -62,12 +80,21 @@ import type {
   DeleteBillingMiloapisComV1Alpha1NamespacedBillingAccountData,
   DeleteBillingMiloapisComV1Alpha1NamespacedBillingAccountErrors,
   DeleteBillingMiloapisComV1Alpha1NamespacedBillingAccountResponses,
+  DeleteBillingMiloapisComV1Alpha1NamespacedBillingEntitlementData,
+  DeleteBillingMiloapisComV1Alpha1NamespacedBillingEntitlementErrors,
+  DeleteBillingMiloapisComV1Alpha1NamespacedBillingEntitlementResponses,
   DeleteBillingMiloapisComV1Alpha1NamespacedInvoiceData,
   DeleteBillingMiloapisComV1Alpha1NamespacedInvoiceErrors,
   DeleteBillingMiloapisComV1Alpha1NamespacedInvoiceResponses,
   DeleteBillingMiloapisComV1Alpha1NamespacedPaymentMethodData,
   DeleteBillingMiloapisComV1Alpha1NamespacedPaymentMethodErrors,
   DeleteBillingMiloapisComV1Alpha1NamespacedPaymentMethodResponses,
+  DeleteBillingMiloapisComV1Alpha1NamespacedServicePricingData,
+  DeleteBillingMiloapisComV1Alpha1NamespacedServicePricingErrors,
+  DeleteBillingMiloapisComV1Alpha1NamespacedServicePricingResponses,
+  DeleteBillingMiloapisComV1Alpha1OfferData,
+  DeleteBillingMiloapisComV1Alpha1OfferErrors,
+  DeleteBillingMiloapisComV1Alpha1OfferResponses,
   DeleteBillingMiloapisComV1Alpha1PaymentMethodClassData,
   DeleteBillingMiloapisComV1Alpha1PaymentMethodClassErrors,
   DeleteBillingMiloapisComV1Alpha1PaymentMethodClassResponses,
@@ -77,6 +104,9 @@ import type {
   ListBillingMiloapisComV1Alpha1BillingAccountForAllNamespacesData,
   ListBillingMiloapisComV1Alpha1BillingAccountForAllNamespacesErrors,
   ListBillingMiloapisComV1Alpha1BillingAccountForAllNamespacesResponses,
+  ListBillingMiloapisComV1Alpha1BillingEntitlementForAllNamespacesData,
+  ListBillingMiloapisComV1Alpha1BillingEntitlementForAllNamespacesErrors,
+  ListBillingMiloapisComV1Alpha1BillingEntitlementForAllNamespacesResponses,
   ListBillingMiloapisComV1Alpha1InvoiceForAllNamespacesData,
   ListBillingMiloapisComV1Alpha1InvoiceForAllNamespacesErrors,
   ListBillingMiloapisComV1Alpha1InvoiceForAllNamespacesResponses,
@@ -92,18 +122,30 @@ import type {
   ListBillingMiloapisComV1Alpha1NamespacedBillingAccountData,
   ListBillingMiloapisComV1Alpha1NamespacedBillingAccountErrors,
   ListBillingMiloapisComV1Alpha1NamespacedBillingAccountResponses,
+  ListBillingMiloapisComV1Alpha1NamespacedBillingEntitlementData,
+  ListBillingMiloapisComV1Alpha1NamespacedBillingEntitlementErrors,
+  ListBillingMiloapisComV1Alpha1NamespacedBillingEntitlementResponses,
   ListBillingMiloapisComV1Alpha1NamespacedInvoiceData,
   ListBillingMiloapisComV1Alpha1NamespacedInvoiceErrors,
   ListBillingMiloapisComV1Alpha1NamespacedInvoiceResponses,
   ListBillingMiloapisComV1Alpha1NamespacedPaymentMethodData,
   ListBillingMiloapisComV1Alpha1NamespacedPaymentMethodErrors,
   ListBillingMiloapisComV1Alpha1NamespacedPaymentMethodResponses,
+  ListBillingMiloapisComV1Alpha1NamespacedServicePricingData,
+  ListBillingMiloapisComV1Alpha1NamespacedServicePricingErrors,
+  ListBillingMiloapisComV1Alpha1NamespacedServicePricingResponses,
+  ListBillingMiloapisComV1Alpha1OfferData,
+  ListBillingMiloapisComV1Alpha1OfferErrors,
+  ListBillingMiloapisComV1Alpha1OfferResponses,
   ListBillingMiloapisComV1Alpha1PaymentMethodClassData,
   ListBillingMiloapisComV1Alpha1PaymentMethodClassErrors,
   ListBillingMiloapisComV1Alpha1PaymentMethodClassResponses,
   ListBillingMiloapisComV1Alpha1PaymentMethodForAllNamespacesData,
   ListBillingMiloapisComV1Alpha1PaymentMethodForAllNamespacesErrors,
   ListBillingMiloapisComV1Alpha1PaymentMethodForAllNamespacesResponses,
+  ListBillingMiloapisComV1Alpha1ServicePricingForAllNamespacesData,
+  ListBillingMiloapisComV1Alpha1ServicePricingForAllNamespacesErrors,
+  ListBillingMiloapisComV1Alpha1ServicePricingForAllNamespacesResponses,
   PatchBillingMiloapisComV1Alpha1MeterDefinitionData,
   PatchBillingMiloapisComV1Alpha1MeterDefinitionErrors,
   PatchBillingMiloapisComV1Alpha1MeterDefinitionResponses,
@@ -128,6 +170,12 @@ import type {
   PatchBillingMiloapisComV1Alpha1NamespacedBillingAccountStatusData,
   PatchBillingMiloapisComV1Alpha1NamespacedBillingAccountStatusErrors,
   PatchBillingMiloapisComV1Alpha1NamespacedBillingAccountStatusResponses,
+  PatchBillingMiloapisComV1Alpha1NamespacedBillingEntitlementData,
+  PatchBillingMiloapisComV1Alpha1NamespacedBillingEntitlementErrors,
+  PatchBillingMiloapisComV1Alpha1NamespacedBillingEntitlementResponses,
+  PatchBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusData,
+  PatchBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusErrors,
+  PatchBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusResponses,
   PatchBillingMiloapisComV1Alpha1NamespacedInvoiceData,
   PatchBillingMiloapisComV1Alpha1NamespacedInvoiceErrors,
   PatchBillingMiloapisComV1Alpha1NamespacedInvoiceResponses,
@@ -140,6 +188,18 @@ import type {
   PatchBillingMiloapisComV1Alpha1NamespacedPaymentMethodStatusData,
   PatchBillingMiloapisComV1Alpha1NamespacedPaymentMethodStatusErrors,
   PatchBillingMiloapisComV1Alpha1NamespacedPaymentMethodStatusResponses,
+  PatchBillingMiloapisComV1Alpha1NamespacedServicePricingData,
+  PatchBillingMiloapisComV1Alpha1NamespacedServicePricingErrors,
+  PatchBillingMiloapisComV1Alpha1NamespacedServicePricingResponses,
+  PatchBillingMiloapisComV1Alpha1NamespacedServicePricingStatusData,
+  PatchBillingMiloapisComV1Alpha1NamespacedServicePricingStatusErrors,
+  PatchBillingMiloapisComV1Alpha1NamespacedServicePricingStatusResponses,
+  PatchBillingMiloapisComV1Alpha1OfferData,
+  PatchBillingMiloapisComV1Alpha1OfferErrors,
+  PatchBillingMiloapisComV1Alpha1OfferResponses,
+  PatchBillingMiloapisComV1Alpha1OfferStatusData,
+  PatchBillingMiloapisComV1Alpha1OfferStatusErrors,
+  PatchBillingMiloapisComV1Alpha1OfferStatusResponses,
   PatchBillingMiloapisComV1Alpha1PaymentMethodClassData,
   PatchBillingMiloapisComV1Alpha1PaymentMethodClassErrors,
   PatchBillingMiloapisComV1Alpha1PaymentMethodClassResponses,
@@ -170,6 +230,12 @@ import type {
   ReadBillingMiloapisComV1Alpha1NamespacedBillingAccountStatusData,
   ReadBillingMiloapisComV1Alpha1NamespacedBillingAccountStatusErrors,
   ReadBillingMiloapisComV1Alpha1NamespacedBillingAccountStatusResponses,
+  ReadBillingMiloapisComV1Alpha1NamespacedBillingEntitlementData,
+  ReadBillingMiloapisComV1Alpha1NamespacedBillingEntitlementErrors,
+  ReadBillingMiloapisComV1Alpha1NamespacedBillingEntitlementResponses,
+  ReadBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusData,
+  ReadBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusErrors,
+  ReadBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusResponses,
   ReadBillingMiloapisComV1Alpha1NamespacedInvoiceData,
   ReadBillingMiloapisComV1Alpha1NamespacedInvoiceErrors,
   ReadBillingMiloapisComV1Alpha1NamespacedInvoiceResponses,
@@ -182,6 +248,18 @@ import type {
   ReadBillingMiloapisComV1Alpha1NamespacedPaymentMethodStatusData,
   ReadBillingMiloapisComV1Alpha1NamespacedPaymentMethodStatusErrors,
   ReadBillingMiloapisComV1Alpha1NamespacedPaymentMethodStatusResponses,
+  ReadBillingMiloapisComV1Alpha1NamespacedServicePricingData,
+  ReadBillingMiloapisComV1Alpha1NamespacedServicePricingErrors,
+  ReadBillingMiloapisComV1Alpha1NamespacedServicePricingResponses,
+  ReadBillingMiloapisComV1Alpha1NamespacedServicePricingStatusData,
+  ReadBillingMiloapisComV1Alpha1NamespacedServicePricingStatusErrors,
+  ReadBillingMiloapisComV1Alpha1NamespacedServicePricingStatusResponses,
+  ReadBillingMiloapisComV1Alpha1OfferData,
+  ReadBillingMiloapisComV1Alpha1OfferErrors,
+  ReadBillingMiloapisComV1Alpha1OfferResponses,
+  ReadBillingMiloapisComV1Alpha1OfferStatusData,
+  ReadBillingMiloapisComV1Alpha1OfferStatusErrors,
+  ReadBillingMiloapisComV1Alpha1OfferStatusResponses,
   ReadBillingMiloapisComV1Alpha1PaymentMethodClassData,
   ReadBillingMiloapisComV1Alpha1PaymentMethodClassErrors,
   ReadBillingMiloapisComV1Alpha1PaymentMethodClassResponses,
@@ -212,6 +290,12 @@ import type {
   ReplaceBillingMiloapisComV1Alpha1NamespacedBillingAccountStatusData,
   ReplaceBillingMiloapisComV1Alpha1NamespacedBillingAccountStatusErrors,
   ReplaceBillingMiloapisComV1Alpha1NamespacedBillingAccountStatusResponses,
+  ReplaceBillingMiloapisComV1Alpha1NamespacedBillingEntitlementData,
+  ReplaceBillingMiloapisComV1Alpha1NamespacedBillingEntitlementErrors,
+  ReplaceBillingMiloapisComV1Alpha1NamespacedBillingEntitlementResponses,
+  ReplaceBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusData,
+  ReplaceBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusErrors,
+  ReplaceBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusResponses,
   ReplaceBillingMiloapisComV1Alpha1NamespacedInvoiceData,
   ReplaceBillingMiloapisComV1Alpha1NamespacedInvoiceErrors,
   ReplaceBillingMiloapisComV1Alpha1NamespacedInvoiceResponses,
@@ -224,6 +308,18 @@ import type {
   ReplaceBillingMiloapisComV1Alpha1NamespacedPaymentMethodStatusData,
   ReplaceBillingMiloapisComV1Alpha1NamespacedPaymentMethodStatusErrors,
   ReplaceBillingMiloapisComV1Alpha1NamespacedPaymentMethodStatusResponses,
+  ReplaceBillingMiloapisComV1Alpha1NamespacedServicePricingData,
+  ReplaceBillingMiloapisComV1Alpha1NamespacedServicePricingErrors,
+  ReplaceBillingMiloapisComV1Alpha1NamespacedServicePricingResponses,
+  ReplaceBillingMiloapisComV1Alpha1NamespacedServicePricingStatusData,
+  ReplaceBillingMiloapisComV1Alpha1NamespacedServicePricingStatusErrors,
+  ReplaceBillingMiloapisComV1Alpha1NamespacedServicePricingStatusResponses,
+  ReplaceBillingMiloapisComV1Alpha1OfferData,
+  ReplaceBillingMiloapisComV1Alpha1OfferErrors,
+  ReplaceBillingMiloapisComV1Alpha1OfferResponses,
+  ReplaceBillingMiloapisComV1Alpha1OfferStatusData,
+  ReplaceBillingMiloapisComV1Alpha1OfferStatusErrors,
+  ReplaceBillingMiloapisComV1Alpha1OfferStatusResponses,
   ReplaceBillingMiloapisComV1Alpha1PaymentMethodClassData,
   ReplaceBillingMiloapisComV1Alpha1PaymentMethodClassErrors,
   ReplaceBillingMiloapisComV1Alpha1PaymentMethodClassResponses,
@@ -294,6 +390,31 @@ export const listBillingMiloapisComV1Alpha1BillingAccountForAllNamespaces = <
   >({
     responseType: 'json',
     url: '/apis/billing.miloapis.com/v1alpha1/billingaccounts',
+    ...options,
+  });
+
+/**
+ * list objects of kind BillingEntitlement
+ */
+export const listBillingMiloapisComV1Alpha1BillingEntitlementForAllNamespaces = <
+  ThrowOnError extends boolean = true,
+>(
+  options?: Options<
+    ListBillingMiloapisComV1Alpha1BillingEntitlementForAllNamespacesData,
+    ThrowOnError
+  >
+): RequestResult<
+  ListBillingMiloapisComV1Alpha1BillingEntitlementForAllNamespacesResponses,
+  ListBillingMiloapisComV1Alpha1BillingEntitlementForAllNamespacesErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    ListBillingMiloapisComV1Alpha1BillingEntitlementForAllNamespacesResponses,
+    ListBillingMiloapisComV1Alpha1BillingEntitlementForAllNamespacesErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/billingentitlements',
     ...options,
   });
 
@@ -1320,6 +1441,262 @@ export const replaceBillingMiloapisComV1Alpha1NamespacedBillingAccountStatus = <
   });
 
 /**
+ * delete collection of BillingEntitlement
+ */
+export const deleteBillingMiloapisComV1Alpha1CollectionNamespacedBillingEntitlement = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<
+    DeleteBillingMiloapisComV1Alpha1CollectionNamespacedBillingEntitlementData,
+    ThrowOnError
+  >
+): RequestResult<
+  DeleteBillingMiloapisComV1Alpha1CollectionNamespacedBillingEntitlementResponses,
+  DeleteBillingMiloapisComV1Alpha1CollectionNamespacedBillingEntitlementErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).delete<
+    DeleteBillingMiloapisComV1Alpha1CollectionNamespacedBillingEntitlementResponses,
+    DeleteBillingMiloapisComV1Alpha1CollectionNamespacedBillingEntitlementErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/billingentitlements',
+    ...options,
+  });
+
+/**
+ * list objects of kind BillingEntitlement
+ */
+export const listBillingMiloapisComV1Alpha1NamespacedBillingEntitlement = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<ListBillingMiloapisComV1Alpha1NamespacedBillingEntitlementData, ThrowOnError>
+): RequestResult<
+  ListBillingMiloapisComV1Alpha1NamespacedBillingEntitlementResponses,
+  ListBillingMiloapisComV1Alpha1NamespacedBillingEntitlementErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    ListBillingMiloapisComV1Alpha1NamespacedBillingEntitlementResponses,
+    ListBillingMiloapisComV1Alpha1NamespacedBillingEntitlementErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/billingentitlements',
+    ...options,
+  });
+
+/**
+ * create a BillingEntitlement
+ */
+export const createBillingMiloapisComV1Alpha1NamespacedBillingEntitlement = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<CreateBillingMiloapisComV1Alpha1NamespacedBillingEntitlementData, ThrowOnError>
+): RequestResult<
+  CreateBillingMiloapisComV1Alpha1NamespacedBillingEntitlementResponses,
+  CreateBillingMiloapisComV1Alpha1NamespacedBillingEntitlementErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).post<
+    CreateBillingMiloapisComV1Alpha1NamespacedBillingEntitlementResponses,
+    CreateBillingMiloapisComV1Alpha1NamespacedBillingEntitlementErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/billingentitlements',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * delete a BillingEntitlement
+ */
+export const deleteBillingMiloapisComV1Alpha1NamespacedBillingEntitlement = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<DeleteBillingMiloapisComV1Alpha1NamespacedBillingEntitlementData, ThrowOnError>
+): RequestResult<
+  DeleteBillingMiloapisComV1Alpha1NamespacedBillingEntitlementResponses,
+  DeleteBillingMiloapisComV1Alpha1NamespacedBillingEntitlementErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).delete<
+    DeleteBillingMiloapisComV1Alpha1NamespacedBillingEntitlementResponses,
+    DeleteBillingMiloapisComV1Alpha1NamespacedBillingEntitlementErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/billingentitlements/{name}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * read the specified BillingEntitlement
+ */
+export const readBillingMiloapisComV1Alpha1NamespacedBillingEntitlement = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<ReadBillingMiloapisComV1Alpha1NamespacedBillingEntitlementData, ThrowOnError>
+): RequestResult<
+  ReadBillingMiloapisComV1Alpha1NamespacedBillingEntitlementResponses,
+  ReadBillingMiloapisComV1Alpha1NamespacedBillingEntitlementErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    ReadBillingMiloapisComV1Alpha1NamespacedBillingEntitlementResponses,
+    ReadBillingMiloapisComV1Alpha1NamespacedBillingEntitlementErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/billingentitlements/{name}',
+    ...options,
+  });
+
+/**
+ * partially update the specified BillingEntitlement
+ */
+export const patchBillingMiloapisComV1Alpha1NamespacedBillingEntitlement = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<PatchBillingMiloapisComV1Alpha1NamespacedBillingEntitlementData, ThrowOnError>
+): RequestResult<
+  PatchBillingMiloapisComV1Alpha1NamespacedBillingEntitlementResponses,
+  PatchBillingMiloapisComV1Alpha1NamespacedBillingEntitlementErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).patch<
+    PatchBillingMiloapisComV1Alpha1NamespacedBillingEntitlementResponses,
+    PatchBillingMiloapisComV1Alpha1NamespacedBillingEntitlementErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/billingentitlements/{name}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json-patch+json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * replace the specified BillingEntitlement
+ */
+export const replaceBillingMiloapisComV1Alpha1NamespacedBillingEntitlement = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<ReplaceBillingMiloapisComV1Alpha1NamespacedBillingEntitlementData, ThrowOnError>
+): RequestResult<
+  ReplaceBillingMiloapisComV1Alpha1NamespacedBillingEntitlementResponses,
+  ReplaceBillingMiloapisComV1Alpha1NamespacedBillingEntitlementErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).put<
+    ReplaceBillingMiloapisComV1Alpha1NamespacedBillingEntitlementResponses,
+    ReplaceBillingMiloapisComV1Alpha1NamespacedBillingEntitlementErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/billingentitlements/{name}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * read status of the specified BillingEntitlement
+ */
+export const readBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatus = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<
+    ReadBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusData,
+    ThrowOnError
+  >
+): RequestResult<
+  ReadBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusResponses,
+  ReadBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    ReadBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusResponses,
+    ReadBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/billingentitlements/{name}/status',
+    ...options,
+  });
+
+/**
+ * partially update status of the specified BillingEntitlement
+ */
+export const patchBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatus = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<
+    PatchBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusData,
+    ThrowOnError
+  >
+): RequestResult<
+  PatchBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusResponses,
+  PatchBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).patch<
+    PatchBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusResponses,
+    PatchBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/billingentitlements/{name}/status',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json-patch+json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * replace status of the specified BillingEntitlement
+ */
+export const replaceBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatus = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<
+    ReplaceBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusData,
+    ThrowOnError
+  >
+): RequestResult<
+  ReplaceBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusResponses,
+  ReplaceBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).put<
+    ReplaceBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusResponses,
+    ReplaceBillingMiloapisComV1Alpha1NamespacedBillingEntitlementStatusErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/billingentitlements/{name}/status',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
  * delete collection of Invoice
  */
 export const deleteBillingMiloapisComV1Alpha1CollectionNamespacedInvoice = <
@@ -1811,6 +2188,482 @@ export const replaceBillingMiloapisComV1Alpha1NamespacedPaymentMethodStatus = <
   });
 
 /**
+ * delete collection of ServicePricing
+ */
+export const deleteBillingMiloapisComV1Alpha1CollectionNamespacedServicePricing = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<
+    DeleteBillingMiloapisComV1Alpha1CollectionNamespacedServicePricingData,
+    ThrowOnError
+  >
+): RequestResult<
+  DeleteBillingMiloapisComV1Alpha1CollectionNamespacedServicePricingResponses,
+  DeleteBillingMiloapisComV1Alpha1CollectionNamespacedServicePricingErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).delete<
+    DeleteBillingMiloapisComV1Alpha1CollectionNamespacedServicePricingResponses,
+    DeleteBillingMiloapisComV1Alpha1CollectionNamespacedServicePricingErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/servicepricings',
+    ...options,
+  });
+
+/**
+ * list objects of kind ServicePricing
+ */
+export const listBillingMiloapisComV1Alpha1NamespacedServicePricing = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<ListBillingMiloapisComV1Alpha1NamespacedServicePricingData, ThrowOnError>
+): RequestResult<
+  ListBillingMiloapisComV1Alpha1NamespacedServicePricingResponses,
+  ListBillingMiloapisComV1Alpha1NamespacedServicePricingErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    ListBillingMiloapisComV1Alpha1NamespacedServicePricingResponses,
+    ListBillingMiloapisComV1Alpha1NamespacedServicePricingErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/servicepricings',
+    ...options,
+  });
+
+/**
+ * create a ServicePricing
+ */
+export const createBillingMiloapisComV1Alpha1NamespacedServicePricing = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<CreateBillingMiloapisComV1Alpha1NamespacedServicePricingData, ThrowOnError>
+): RequestResult<
+  CreateBillingMiloapisComV1Alpha1NamespacedServicePricingResponses,
+  CreateBillingMiloapisComV1Alpha1NamespacedServicePricingErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).post<
+    CreateBillingMiloapisComV1Alpha1NamespacedServicePricingResponses,
+    CreateBillingMiloapisComV1Alpha1NamespacedServicePricingErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/servicepricings',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * delete a ServicePricing
+ */
+export const deleteBillingMiloapisComV1Alpha1NamespacedServicePricing = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<DeleteBillingMiloapisComV1Alpha1NamespacedServicePricingData, ThrowOnError>
+): RequestResult<
+  DeleteBillingMiloapisComV1Alpha1NamespacedServicePricingResponses,
+  DeleteBillingMiloapisComV1Alpha1NamespacedServicePricingErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).delete<
+    DeleteBillingMiloapisComV1Alpha1NamespacedServicePricingResponses,
+    DeleteBillingMiloapisComV1Alpha1NamespacedServicePricingErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/servicepricings/{name}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * read the specified ServicePricing
+ */
+export const readBillingMiloapisComV1Alpha1NamespacedServicePricing = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<ReadBillingMiloapisComV1Alpha1NamespacedServicePricingData, ThrowOnError>
+): RequestResult<
+  ReadBillingMiloapisComV1Alpha1NamespacedServicePricingResponses,
+  ReadBillingMiloapisComV1Alpha1NamespacedServicePricingErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    ReadBillingMiloapisComV1Alpha1NamespacedServicePricingResponses,
+    ReadBillingMiloapisComV1Alpha1NamespacedServicePricingErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/servicepricings/{name}',
+    ...options,
+  });
+
+/**
+ * partially update the specified ServicePricing
+ */
+export const patchBillingMiloapisComV1Alpha1NamespacedServicePricing = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<PatchBillingMiloapisComV1Alpha1NamespacedServicePricingData, ThrowOnError>
+): RequestResult<
+  PatchBillingMiloapisComV1Alpha1NamespacedServicePricingResponses,
+  PatchBillingMiloapisComV1Alpha1NamespacedServicePricingErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).patch<
+    PatchBillingMiloapisComV1Alpha1NamespacedServicePricingResponses,
+    PatchBillingMiloapisComV1Alpha1NamespacedServicePricingErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/servicepricings/{name}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json-patch+json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * replace the specified ServicePricing
+ */
+export const replaceBillingMiloapisComV1Alpha1NamespacedServicePricing = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<ReplaceBillingMiloapisComV1Alpha1NamespacedServicePricingData, ThrowOnError>
+): RequestResult<
+  ReplaceBillingMiloapisComV1Alpha1NamespacedServicePricingResponses,
+  ReplaceBillingMiloapisComV1Alpha1NamespacedServicePricingErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).put<
+    ReplaceBillingMiloapisComV1Alpha1NamespacedServicePricingResponses,
+    ReplaceBillingMiloapisComV1Alpha1NamespacedServicePricingErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/servicepricings/{name}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * read status of the specified ServicePricing
+ */
+export const readBillingMiloapisComV1Alpha1NamespacedServicePricingStatus = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<ReadBillingMiloapisComV1Alpha1NamespacedServicePricingStatusData, ThrowOnError>
+): RequestResult<
+  ReadBillingMiloapisComV1Alpha1NamespacedServicePricingStatusResponses,
+  ReadBillingMiloapisComV1Alpha1NamespacedServicePricingStatusErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    ReadBillingMiloapisComV1Alpha1NamespacedServicePricingStatusResponses,
+    ReadBillingMiloapisComV1Alpha1NamespacedServicePricingStatusErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/servicepricings/{name}/status',
+    ...options,
+  });
+
+/**
+ * partially update status of the specified ServicePricing
+ */
+export const patchBillingMiloapisComV1Alpha1NamespacedServicePricingStatus = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<PatchBillingMiloapisComV1Alpha1NamespacedServicePricingStatusData, ThrowOnError>
+): RequestResult<
+  PatchBillingMiloapisComV1Alpha1NamespacedServicePricingStatusResponses,
+  PatchBillingMiloapisComV1Alpha1NamespacedServicePricingStatusErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).patch<
+    PatchBillingMiloapisComV1Alpha1NamespacedServicePricingStatusResponses,
+    PatchBillingMiloapisComV1Alpha1NamespacedServicePricingStatusErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/servicepricings/{name}/status',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json-patch+json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * replace status of the specified ServicePricing
+ */
+export const replaceBillingMiloapisComV1Alpha1NamespacedServicePricingStatus = <
+  ThrowOnError extends boolean = true,
+>(
+  options: Options<
+    ReplaceBillingMiloapisComV1Alpha1NamespacedServicePricingStatusData,
+    ThrowOnError
+  >
+): RequestResult<
+  ReplaceBillingMiloapisComV1Alpha1NamespacedServicePricingStatusResponses,
+  ReplaceBillingMiloapisComV1Alpha1NamespacedServicePricingStatusErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).put<
+    ReplaceBillingMiloapisComV1Alpha1NamespacedServicePricingStatusResponses,
+    ReplaceBillingMiloapisComV1Alpha1NamespacedServicePricingStatusErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/namespaces/{namespace}/servicepricings/{name}/status',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * delete collection of Offer
+ */
+export const deleteBillingMiloapisComV1Alpha1CollectionOffer = <
+  ThrowOnError extends boolean = true,
+>(
+  options?: Options<DeleteBillingMiloapisComV1Alpha1CollectionOfferData, ThrowOnError>
+): RequestResult<
+  DeleteBillingMiloapisComV1Alpha1CollectionOfferResponses,
+  DeleteBillingMiloapisComV1Alpha1CollectionOfferErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).delete<
+    DeleteBillingMiloapisComV1Alpha1CollectionOfferResponses,
+    DeleteBillingMiloapisComV1Alpha1CollectionOfferErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/offers',
+    ...options,
+  });
+
+/**
+ * list objects of kind Offer
+ */
+export const listBillingMiloapisComV1Alpha1Offer = <ThrowOnError extends boolean = true>(
+  options?: Options<ListBillingMiloapisComV1Alpha1OfferData, ThrowOnError>
+): RequestResult<
+  ListBillingMiloapisComV1Alpha1OfferResponses,
+  ListBillingMiloapisComV1Alpha1OfferErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    ListBillingMiloapisComV1Alpha1OfferResponses,
+    ListBillingMiloapisComV1Alpha1OfferErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/offers',
+    ...options,
+  });
+
+/**
+ * create an Offer
+ */
+export const createBillingMiloapisComV1Alpha1Offer = <ThrowOnError extends boolean = true>(
+  options: Options<CreateBillingMiloapisComV1Alpha1OfferData, ThrowOnError>
+): RequestResult<
+  CreateBillingMiloapisComV1Alpha1OfferResponses,
+  CreateBillingMiloapisComV1Alpha1OfferErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).post<
+    CreateBillingMiloapisComV1Alpha1OfferResponses,
+    CreateBillingMiloapisComV1Alpha1OfferErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/offers',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * delete an Offer
+ */
+export const deleteBillingMiloapisComV1Alpha1Offer = <ThrowOnError extends boolean = true>(
+  options: Options<DeleteBillingMiloapisComV1Alpha1OfferData, ThrowOnError>
+): RequestResult<
+  DeleteBillingMiloapisComV1Alpha1OfferResponses,
+  DeleteBillingMiloapisComV1Alpha1OfferErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).delete<
+    DeleteBillingMiloapisComV1Alpha1OfferResponses,
+    DeleteBillingMiloapisComV1Alpha1OfferErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/offers/{name}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * read the specified Offer
+ */
+export const readBillingMiloapisComV1Alpha1Offer = <ThrowOnError extends boolean = true>(
+  options: Options<ReadBillingMiloapisComV1Alpha1OfferData, ThrowOnError>
+): RequestResult<
+  ReadBillingMiloapisComV1Alpha1OfferResponses,
+  ReadBillingMiloapisComV1Alpha1OfferErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    ReadBillingMiloapisComV1Alpha1OfferResponses,
+    ReadBillingMiloapisComV1Alpha1OfferErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/offers/{name}',
+    ...options,
+  });
+
+/**
+ * partially update the specified Offer
+ */
+export const patchBillingMiloapisComV1Alpha1Offer = <ThrowOnError extends boolean = true>(
+  options: Options<PatchBillingMiloapisComV1Alpha1OfferData, ThrowOnError>
+): RequestResult<
+  PatchBillingMiloapisComV1Alpha1OfferResponses,
+  PatchBillingMiloapisComV1Alpha1OfferErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).patch<
+    PatchBillingMiloapisComV1Alpha1OfferResponses,
+    PatchBillingMiloapisComV1Alpha1OfferErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/offers/{name}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json-patch+json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * replace the specified Offer
+ */
+export const replaceBillingMiloapisComV1Alpha1Offer = <ThrowOnError extends boolean = true>(
+  options: Options<ReplaceBillingMiloapisComV1Alpha1OfferData, ThrowOnError>
+): RequestResult<
+  ReplaceBillingMiloapisComV1Alpha1OfferResponses,
+  ReplaceBillingMiloapisComV1Alpha1OfferErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).put<
+    ReplaceBillingMiloapisComV1Alpha1OfferResponses,
+    ReplaceBillingMiloapisComV1Alpha1OfferErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/offers/{name}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * read status of the specified Offer
+ */
+export const readBillingMiloapisComV1Alpha1OfferStatus = <ThrowOnError extends boolean = true>(
+  options: Options<ReadBillingMiloapisComV1Alpha1OfferStatusData, ThrowOnError>
+): RequestResult<
+  ReadBillingMiloapisComV1Alpha1OfferStatusResponses,
+  ReadBillingMiloapisComV1Alpha1OfferStatusErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    ReadBillingMiloapisComV1Alpha1OfferStatusResponses,
+    ReadBillingMiloapisComV1Alpha1OfferStatusErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/offers/{name}/status',
+    ...options,
+  });
+
+/**
+ * partially update status of the specified Offer
+ */
+export const patchBillingMiloapisComV1Alpha1OfferStatus = <ThrowOnError extends boolean = true>(
+  options: Options<PatchBillingMiloapisComV1Alpha1OfferStatusData, ThrowOnError>
+): RequestResult<
+  PatchBillingMiloapisComV1Alpha1OfferStatusResponses,
+  PatchBillingMiloapisComV1Alpha1OfferStatusErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).patch<
+    PatchBillingMiloapisComV1Alpha1OfferStatusResponses,
+    PatchBillingMiloapisComV1Alpha1OfferStatusErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/offers/{name}/status',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json-patch+json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * replace status of the specified Offer
+ */
+export const replaceBillingMiloapisComV1Alpha1OfferStatus = <ThrowOnError extends boolean = true>(
+  options: Options<ReplaceBillingMiloapisComV1Alpha1OfferStatusData, ThrowOnError>
+): RequestResult<
+  ReplaceBillingMiloapisComV1Alpha1OfferStatusResponses,
+  ReplaceBillingMiloapisComV1Alpha1OfferStatusErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).put<
+    ReplaceBillingMiloapisComV1Alpha1OfferStatusResponses,
+    ReplaceBillingMiloapisComV1Alpha1OfferStatusErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/offers/{name}/status',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
  * delete collection of PaymentMethodClass
  */
 export const deleteBillingMiloapisComV1Alpha1CollectionPaymentMethodClass = <
@@ -2073,5 +2926,27 @@ export const listBillingMiloapisComV1Alpha1PaymentMethodForAllNamespaces = <
   >({
     responseType: 'json',
     url: '/apis/billing.miloapis.com/v1alpha1/paymentmethods',
+    ...options,
+  });
+
+/**
+ * list objects of kind ServicePricing
+ */
+export const listBillingMiloapisComV1Alpha1ServicePricingForAllNamespaces = <
+  ThrowOnError extends boolean = true,
+>(
+  options?: Options<ListBillingMiloapisComV1Alpha1ServicePricingForAllNamespacesData, ThrowOnError>
+): RequestResult<
+  ListBillingMiloapisComV1Alpha1ServicePricingForAllNamespacesResponses,
+  ListBillingMiloapisComV1Alpha1ServicePricingForAllNamespacesErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    ListBillingMiloapisComV1Alpha1ServicePricingForAllNamespacesResponses,
+    ListBillingMiloapisComV1Alpha1ServicePricingForAllNamespacesErrors,
+    ThrowOnError
+  >({
+    responseType: 'json',
+    url: '/apis/billing.miloapis.com/v1alpha1/servicepricings',
     ...options,
   });
