@@ -52,7 +52,7 @@ export function ListPagination({ className, pageSizes = LIST_PAGE_SIZES, resourc
           <SelectTrigger
             className={cn(
               'border-border text-muted-foreground h-7 w-[4.5rem] gap-1.5 rounded-md px-2.5 py-0',
-              'text-xs font-normal shadow-none'
+              'min-h-0 text-xs font-normal shadow-none'
             )}>
             <SelectValue placeholder={String(pageSize)} />
           </SelectTrigger>
