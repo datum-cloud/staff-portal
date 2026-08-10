@@ -21,7 +21,7 @@ export default function Page() {
     columnHelper.accessor((row) => row.metadata?.name ?? '', {
       id: 'id',
       header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
-      cell: ({ getValue }) => <DisplayId value={getValue()} />,
+      cell: ({ getValue }) => <DisplayId value={getValue()} truncate="fit" />,
     }),
     columnHelper.accessor(
       (row) =>
