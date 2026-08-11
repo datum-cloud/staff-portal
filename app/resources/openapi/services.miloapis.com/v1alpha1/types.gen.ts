@@ -178,6 +178,56 @@ export type ComMiloapisServicesV1Alpha1Service = {
 };
 
 /**
+ * ServiceChargeSpec declares a Usage, OneTime, or Recurring charge for a
+ * service. Fans out to a ServicePricing with the matching chargeType.
+ */
+export type ComMiloapisServicesV1Alpha1ServiceCharge = {
+  /**
+   * Name uniquely identifies this charge within the ServiceConfiguration
+   * and must be prefixed with the Service's canonical serviceName.
+   */
+  name: string;
+  /**
+   * ChargeType is Usage, OneTime, or Recurring.
+   */
+  chargeType: 'Usage' | 'OneTime' | 'Recurring';
+  /**
+   * DisplayName is a human-readable label for invoices and portals.
+   */
+  displayName?: string;
+  /**
+   * Currency is the ISO 4217 currency code. USD only in v1.
+   */
+  currency?: string;
+  /**
+   * Usage holds Usage-specific options. Required when chargeType is Usage.
+   */
+  usage?: {
+    metricRef: string;
+    pricingUnit: string;
+    rates: Array<{
+      match?: { dimension: string; value: string };
+      flat?: string;
+      tiered?: Array<{ upTo?: string; rate: string }>;
+    }>;
+  };
+  /**
+   * OneTime holds OneTime-specific options. Required when chargeType is OneTime.
+   */
+  oneTime?: {
+    amount: string;
+    trigger: 'BillingAccountActivation';
+  };
+  /**
+   * Recurring holds Recurring-specific options. Required when chargeType is Recurring.
+   */
+  recurring?: {
+    amount: string;
+    interval: 'monthly';
+  };
+};
+
+/**
  * ServiceConfiguration is the Schema for the serviceconfigurations API.
  * It is the single provider-facing document that declares everything a
  * service contributes to Milo beyond its identity record. metadata.name
@@ -229,6 +279,11 @@ export type ComMiloapisServicesV1Alpha1ServiceConfiguration = {
      */
     defaultOffer?: string;
     /**
+     * Charges declares Usage, OneTime, and Recurring commercial terms.
+     * ChargeFanOut emits one ServicePricing per entry into milo-system.
+     */
+    charges?: Array<ComMiloapisServicesV1Alpha1ServiceCharge>;
+    /**
      * Billing declares routing from metrics to monitored resource types.
      * Fans out into MeterDefinition billing CRDs.
      */
@@ -263,6 +318,13 @@ export type ComMiloapisServicesV1Alpha1ServiceConfiguration = {
        * DisplayName is a human-readable label shown in portals and invoices.
        */
       displayName?: string;
+      /**
+       * Dimensions is an ordered list of attribute keys that downstream
+       * systems may group, filter, or price by (e.g. "model", "region",
+       * "tier"). Each key must be declared here for a producer to attach it
+       * to a usage event.
+       */
+      dimensions?: Array<string>;
       /**
        * Kind is the metric kind. Immutable once Published.
        */

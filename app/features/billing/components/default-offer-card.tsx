@@ -25,7 +25,7 @@ export function DefaultOfferCard({ offerName, canSetAsDefault }: DefaultOfferCar
   const handleSetDefault = async () => {
     if (
       !window.confirm(
-        t`Set "${offerName}" as the default Offer? New billing accounts (and existing accounts with no BillingEntitlement) will be entitled to it automatically. Accounts that already have an entitlement are not migrated.`
+        t`Set "${offerName}" as the platform default Offer? New billing accounts and existing accounts with no BillingEntitlement are entitled automatically. Accounts that already have a BillingEntitlement are not migrated.`
       )
     ) {
       return;

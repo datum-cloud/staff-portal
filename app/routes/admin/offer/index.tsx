@@ -36,15 +36,14 @@ export default function Page() {
       header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ getValue, row }) => {
         const offerName = row.original.metadata?.name ?? '';
-        return (
-          <div className="flex items-center gap-2">
-            <DisplayName displayName={getValue()} to={offerRoutes.detail(offerName)} />
-            {defaultOfferName && offerName === defaultOfferName ? (
-              <BadgeState state="Default" />
-            ) : null}
-          </div>
-        );
+        return <DisplayName displayName={getValue()} to={offerRoutes.detail(offerName)} />;
       },
+    }),
+    columnHelper.accessor((row) => (row.metadata?.name ?? '') === defaultOfferName, {
+      id: 'isDefault',
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Default`} />,
+      cell: ({ getValue }) =>
+        getValue() && defaultOfferName ? <BadgeState state="Default" /> : '—',
     }),
     columnHelper.accessor((row) => row.spec?.launchStage ?? '', {
       id: 'launchStage',
