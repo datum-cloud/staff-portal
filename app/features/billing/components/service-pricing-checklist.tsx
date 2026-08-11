@@ -7,6 +7,7 @@ import {
   resolveServicePricingCatalogService,
   summarizeServicePricing,
 } from '@/features/billing/utils';
+import { useServiceListQuery } from '@/resources/request/client';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { serviceCatalogRoutes } from '@/utils/config/routes.config';
 import { Alert, AlertDescription, AlertTitle } from '@datum-cloud/datum-ui/alert';
@@ -18,7 +19,6 @@ import type { ComMiloapisBillingV1Alpha1ServicePricing } from '@openapi/billing.
 import { ArrowRight, Tag } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router';
-import { useServiceListQuery } from '@/resources/request/client';
 
 function ServicePricingListSkeleton({ rows = 5 }: { rows?: number }) {
   return (
@@ -147,9 +147,7 @@ export function ServicePricingChecklist({
         const catalogService = resolveServicePricingCatalogService(pricing, servicesByRef);
         const subtext = getServicePricingSubtext(pricing, displayName);
         return (
-          <label
-            key={name}
-            className="hover:bg-muted/50 flex items-start gap-3 rounded-md p-2">
+          <label key={name} className="hover:bg-muted/50 flex items-start gap-3 rounded-md p-2">
             <Checkbox
               className="mt-0.5 shrink-0"
               checked={selectedNames.includes(name)}
@@ -173,10 +171,7 @@ export function ServicePricingChecklist({
                     {catalogService.displayName}
                   </Link>
                   {catalogService.canonicalName ? (
-                    <span className="font-mono text-[11px]">
-                      {' '}
-                      · {catalogService.canonicalName}
-                    </span>
+                    <span className="font-mono text-[11px]"> · {catalogService.canonicalName}</span>
                   ) : null}
                 </p>
               ) : null}

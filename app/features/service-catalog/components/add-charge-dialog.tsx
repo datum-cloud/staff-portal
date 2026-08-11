@@ -298,8 +298,7 @@ function RateRowFields({
     (Form.useWatch(`${rateFieldName}.matchDimension`) as string | undefined) ?? '';
   const hasDeclaredDimensions = availableDimensions.length > 0;
   const isMeterWide =
-    !normalizeMatchDimension(matchDimension) ||
-    (!hasDeclaredDimensions && !matchDimension.trim());
+    !normalizeMatchDimension(matchDimension) || (!hasDeclaredDimensions && !matchDimension.trim());
 
   return (
     <div className="bg-muted/20 space-y-4 rounded-lg border p-4">
@@ -542,7 +541,9 @@ function ChargeFormFields({
                           across the whole meter.
                         </Trans>
                       ) : (
-                        <Trans>Add a row per price variant, or leave matching empty for one price.</Trans>
+                        <Trans>
+                          Add a row per price variant, or leave matching empty for one price.
+                        </Trans>
                       )}
                     </p>
                   </div>

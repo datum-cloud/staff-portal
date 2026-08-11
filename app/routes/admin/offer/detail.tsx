@@ -239,7 +239,10 @@ export default function Page() {
   const snapshotPending = isGA && !offer.status?.publishedAt && snapshots.length === 0;
 
   const overviewItems = [
-    { label: t`ID`, value: <span className="font-mono text-xs">{offer.metadata?.name ?? '—'}</span> },
+    {
+      label: t`ID`,
+      value: <span className="font-mono text-xs">{offer.metadata?.name ?? '—'}</span>,
+    },
     {
       label: t`Display name`,
       value: (
@@ -347,10 +350,7 @@ export default function Page() {
                 <Trans>Publish</Trans>
               </Button>
             ) : (
-              <DefaultOfferHeaderActions
-                offerName={offerName}
-                canSetAsDefault={canSetAsDefault}
-              />
+              <DefaultOfferHeaderActions offerName={offerName} canSetAsDefault={canSetAsDefault} />
             )}
           </div>
         }

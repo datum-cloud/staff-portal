@@ -1,6 +1,6 @@
+import { DialogConfirm } from '@/components/dialog';
 import { getOfferDisplayName, formatLaunchStage } from '@/features/billing/utils';
 import { SectionCard } from '@/features/milo';
-import { DialogConfirm } from '@/components/dialog';
 import {
   useOfferDetailQuery,
   useOfferListQuery,
@@ -133,10 +133,7 @@ export function OfferSwitcherCard({
                   })}
                 </SelectContent>
               </Select>
-              <Button
-                type="primary"
-                disabled={!selectedOffer}
-                onClick={handleSwitchClick}>
+              <Button type="primary" disabled={!selectedOffer} onClick={handleSwitchClick}>
                 <Trans>Switch</Trans>
               </Button>
             </div>

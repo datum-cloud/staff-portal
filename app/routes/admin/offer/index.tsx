@@ -2,7 +2,11 @@ import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DisplayId, DisplayName } from '@/components/display';
-import { formatChargeTypes, formatLaunchStage, getOfferDisplayName } from '@/features/billing/utils';
+import {
+  formatChargeTypes,
+  formatLaunchStage,
+  getOfferDisplayName,
+} from '@/features/billing/utils';
 import { ListColumnHeader, ListPage, ListTable } from '@/features/milo';
 import { useBillingDefaultOfferQuery, useOfferListQuery } from '@/resources/request/client';
 import { ACTION_ICONS } from '@/utils/config/icons.config';

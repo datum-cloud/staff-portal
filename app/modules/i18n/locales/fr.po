@@ -662,8 +662,8 @@ msgstr ""
 
 #: app/routes/admin/offer/create.tsx:113
 #: app/routes/admin/offer/detail.tsx:119
-#: app/routes/admin/offer/detail.tsx:269
-#: app/routes/admin/offer/index.tsx:62
+#: app/routes/admin/offer/detail.tsx:272
+#: app/routes/admin/offer/index.tsx:66
 msgid "Charge types"
 msgstr ""
 
@@ -994,7 +994,7 @@ msgid "Create Fraud Provider"
 msgstr ""
 
 #: app/routes/admin/offer/create.tsx:29
-#: app/routes/admin/offer/index.tsx:96
+#: app/routes/admin/offer/index.tsx:100
 msgid "Create Offer"
 msgstr ""
 
@@ -1016,8 +1016,8 @@ msgstr ""
 #: app/routes/admin/group/detail/index.tsx:41
 #: app/routes/admin/group/detail/member.tsx:107
 #: app/routes/admin/group/index.tsx:40
-#: app/routes/admin/offer/detail.tsx:277
-#: app/routes/admin/offer/index.tsx:75
+#: app/routes/admin/offer/detail.tsx:280
+#: app/routes/admin/offer/index.tsx:79
 #: app/routes/customer/billing-account/detail/index.tsx:353
 #: app/routes/customer/fraud/providers/index.tsx:102
 #: app/routes/customer/organization/detail/project.tsx:47
@@ -1115,7 +1115,7 @@ msgstr ""
 msgid "Declined"
 msgstr ""
 
-#: app/routes/admin/offer/index.tsx:44
+#: app/routes/admin/offer/index.tsx:48
 #: app/routes/customer/billing-account/detail/index.tsx:163
 msgid "Default"
 msgstr ""
@@ -1314,7 +1314,7 @@ msgstr ""
 #: app/features/service-catalog/components/add-charge-dialog.tsx:517
 #: app/features/service-catalog/components/add-charge-dialog.tsx:592
 #: app/routes/admin/offer/create.tsx:107
-#: app/routes/admin/offer/detail.tsx:244
+#: app/routes/admin/offer/detail.tsx:247
 #: app/routes/admin/offer/detail.tsx:436
 msgid "Display name"
 msgstr ""
@@ -1456,7 +1456,7 @@ msgstr ""
 
 #: app/features/contact/components/contact-list.tsx:53
 #: app/features/fraud/policy/policy-detail.tsx:95
-#: app/routes/admin/offer/detail.tsx:254
+#: app/routes/admin/offer/detail.tsx:257
 #: app/routes/customer/fraud/providers/index.tsx:41
 #: app/routes/marketing/contact-group/index.tsx:49
 msgid "Edit"
@@ -2018,8 +2018,8 @@ msgstr ""
 #: app/routes/admin/group/detail/index.tsx:29
 #: app/routes/admin/group/index.tsx:23
 #: app/routes/admin/offer/create.tsx:104
-#: app/routes/admin/offer/detail.tsx:242
-#: app/routes/admin/offer/index.tsx:31
+#: app/routes/admin/offer/detail.tsx:243
+#: app/routes/admin/offer/index.tsx:35
 #: app/routes/customer/billing-account/detail/index.tsx:136
 #: app/routes/customer/billing-account/detail/index.tsx:187
 #: app/routes/customer/organization/detail/project.tsx:42
@@ -2039,8 +2039,8 @@ msgstr ""
 msgid "Inactive"
 msgstr ""
 
-#: app/routes/admin/offer/detail.tsx:273
-#: app/routes/admin/offer/detail.tsx:321
+#: app/routes/admin/offer/detail.tsx:276
+#: app/routes/admin/offer/detail.tsx:324
 #: app/routes/admin/offer/detail.tsx:390
 msgid "Included charges"
 msgstr ""
@@ -2179,7 +2179,7 @@ msgstr ""
 msgid "Latest fraud evaluation for this user"
 msgstr ""
 
-#: app/routes/admin/offer/detail.tsx:261
+#: app/routes/admin/offer/detail.tsx:264
 msgid "Launch stage"
 msgstr ""
 
@@ -2280,7 +2280,7 @@ msgstr ""
 #: app/features/project/components/project-suspension-card.tsx:127
 #: app/features/service-catalog/components/charges-card.tsx:122
 #: app/routes/admin/offer/detail.tsx:209
-#: app/routes/admin/offer/detail.tsx:309
+#: app/routes/admin/offer/detail.tsx:312
 msgid "Loading…"
 msgstr ""
 
@@ -2432,7 +2432,7 @@ msgstr ""
 #: app/routes/admin/group/detail/index.tsx:27
 #: app/routes/admin/group/detail/member.tsx:89
 #: app/routes/admin/group/index.tsx:31
-#: app/routes/admin/offer/index.tsx:36
+#: app/routes/admin/offer/index.tsx:40
 #: app/routes/customer/billing-account/detail/index.tsx:130
 #: app/routes/customer/fraud/providers/create.tsx:86
 #: app/routes/customer/fraud/providers/index.tsx:55
@@ -2508,11 +2508,11 @@ msgid "No"
 msgstr ""
 
 #. placeholder {0}: defaultOffer.currentDefault
-#: app/routes/admin/offer/detail.tsx:315
+#: app/routes/admin/offer/detail.tsx:318
 msgid "No — current default is {0}"
 msgstr ""
 
-#: app/routes/admin/offer/detail.tsx:316
+#: app/routes/admin/offer/detail.tsx:319
 msgid "No — none configured"
 msgstr ""
 
@@ -2692,7 +2692,7 @@ msgstr ""
 msgid "No notes yet. Add the first note below."
 msgstr ""
 
-#: app/routes/admin/offer/index.tsx:90
+#: app/routes/admin/offer/index.tsx:94
 msgid "No offers found."
 msgstr ""
 
@@ -2891,7 +2891,7 @@ msgstr ""
 msgid "Offer switched"
 msgstr ""
 
-#: app/routes/admin/offer/index.tsx:18
+#: app/routes/admin/offer/index.tsx:22
 #: app/routes/admin/offer/layout.tsx:5
 msgid "Offers"
 msgstr ""
@@ -3041,7 +3041,7 @@ msgstr ""
 msgid "Pending Approvals"
 msgstr ""
 
-#: app/routes/admin/offer/detail.tsx:290
+#: app/routes/admin/offer/detail.tsx:293
 msgid "Pending snapshot"
 msgstr ""
 
@@ -3099,7 +3099,7 @@ msgstr ""
 msgid "Platform access updated to {state}"
 msgstr ""
 
-#: app/routes/admin/offer/detail.tsx:307
+#: app/routes/admin/offer/detail.tsx:310
 msgid "Platform default"
 msgstr ""
 
@@ -3293,7 +3293,7 @@ msgstr ""
 msgid "Public"
 msgstr ""
 
-#: app/routes/admin/offer/detail.tsx:347
+#: app/routes/admin/offer/detail.tsx:350
 #: app/routes/admin/offer/detail.tsx:420
 msgid "Publish"
 msgstr ""
@@ -3307,12 +3307,12 @@ msgid "Publish to GA before this Offer can be set as the platform default for ne
 msgstr ""
 
 #: app/features/service-catalog/components/active-configuration-summary.tsx:36
-#: app/routes/admin/offer/index.tsx:67
+#: app/routes/admin/offer/index.tsx:71
 #: app/routes/admin/service-catalog/index.tsx:165
 msgid "Published"
 msgstr ""
 
-#: app/routes/admin/offer/detail.tsx:285
+#: app/routes/admin/offer/detail.tsx:288
 msgid "Published at"
 msgstr ""
 
@@ -3701,7 +3701,7 @@ msgstr ""
 msgid "Search members..."
 msgstr ""
 
-#: app/routes/admin/offer/index.tsx:89
+#: app/routes/admin/offer/index.tsx:93
 msgid "Search offers..."
 msgstr ""
 
@@ -3959,7 +3959,7 @@ msgstr ""
 msgid "Sources"
 msgstr ""
 
-#: app/routes/admin/offer/index.tsx:50
+#: app/routes/admin/offer/index.tsx:54
 msgid "Stage"
 msgstr ""
 
@@ -4000,8 +4000,8 @@ msgstr ""
 #: app/features/quota/components/quota-grant-list.tsx:109
 #: app/features/service-catalog/components/conditions-card.tsx:23
 #: app/routes/admin/group/detail/index.tsx:34
-#: app/routes/admin/offer/detail.tsx:300
-#: app/routes/admin/offer/detail.tsx:321
+#: app/routes/admin/offer/detail.tsx:303
+#: app/routes/admin/offer/detail.tsx:324
 #: app/routes/customer/billing-account/detail/index.tsx:157
 #: app/routes/customer/billing-account/detail/index.tsx:203
 #: app/routes/customer/billing-account/detail/index.tsx:235
@@ -4295,7 +4295,7 @@ msgid "Type to search."
 msgstr ""
 
 #: app/features/fraud/policy/policy-detail.tsx:152
-#: app/routes/admin/offer/detail.tsx:311
+#: app/routes/admin/offer/detail.tsx:314
 msgid "Unavailable"
 msgstr ""
 
@@ -4525,7 +4525,7 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: app/routes/admin/offer/detail.tsx:313
+#: app/routes/admin/offer/detail.tsx:316
 msgid "Yes — new accounts use this Offer"
 msgstr ""
 

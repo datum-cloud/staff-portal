@@ -31,7 +31,9 @@ type OfferIncludedPricingListProps = {
   variant?: 'list' | 'table';
 };
 
-function snapshotAsPricing(snapshot: OfferPricingSnapshot): ComMiloapisBillingV1Alpha1ServicePricing {
+function snapshotAsPricing(
+  snapshot: OfferPricingSnapshot
+): ComMiloapisBillingV1Alpha1ServicePricing {
   return {
     metadata: { name: snapshot.name },
     spec: snapshot.spec,
@@ -74,7 +76,9 @@ function IncludedPricingRow({
         </p>
       ) : null}
       {subtext ? (
-        <p className="text-muted-foreground mt-0.5 font-mono text-[11px] leading-relaxed">{subtext}</p>
+        <p className="text-muted-foreground mt-0.5 font-mono text-[11px] leading-relaxed">
+          {subtext}
+        </p>
       ) : null}
       {!summary && !catalogService && !subtext && name ? (
         <p className="text-muted-foreground mt-0.5 font-mono text-[11px]">{name}</p>
@@ -140,7 +144,9 @@ function IncludedPricingTable({
                 <td className="px-3 py-2 align-top">
                   <div className="font-medium">{displayName}</div>
                   {subtext ? (
-                    <div className="text-muted-foreground mt-0.5 font-mono text-[11px]">{subtext}</div>
+                    <div className="text-muted-foreground mt-0.5 font-mono text-[11px]">
+                      {subtext}
+                    </div>
                   ) : null}
                 </td>
                 <td className="px-3 py-2 align-top">

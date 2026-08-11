@@ -45,8 +45,8 @@ export function ChargesList({ charges, isPublished, hasPublishedConfiguration }:
         </AlertTitle>
         <AlertDescription>
           <Trans>
-            This service is not ready for pricing yet. Once its configuration is published, you
-            can add usage-based, one-time, or recurring prices here.
+            This service is not ready for pricing yet. Once its configuration is published, you can
+            add usage-based, one-time, or recurring prices here.
           </Trans>
         </AlertDescription>
       </Alert>
