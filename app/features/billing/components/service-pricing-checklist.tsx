@@ -1,12 +1,24 @@
-import { formatChargeType } from '@/features/billing/utils';
+import { BadgeState } from '@/components/badge';
+import {
+  formatChargeType,
+  getServicePricingDisplayName,
+  getServicePricingSubtext,
+  indexServicesByRef,
+  resolveServicePricingCatalogService,
+  summarizeServicePricing,
+} from '@/features/billing/utils';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
+import { serviceCatalogRoutes } from '@/utils/config/routes.config';
 import { Alert, AlertDescription, AlertTitle } from '@datum-cloud/datum-ui/alert';
+import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
-import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1ServicePricing } from '@openapi/billing.miloapis.com/v1alpha1';
-import { Tag } from 'lucide-react';
+import { ArrowRight, Tag } from 'lucide-react';
+import { useMemo } from 'react';
+import { Link } from 'react-router';
+import { useServiceListQuery } from '@/resources/request/client';
 
 function ServicePricingListSkeleton({ rows = 5 }: { rows?: number }) {
   return (
@@ -29,21 +41,43 @@ function ServicePricingListSkeleton({ rows = 5 }: { rows?: number }) {
 
 function ServicePricingEmptyState() {
   return (
-    <div className="bg-muted/40 flex flex-col items-center gap-2 rounded-md border border-dashed px-4 py-8 text-center">
-      <div className="bg-background flex size-10 items-center justify-center rounded-full border">
-        <Tag className="text-muted-foreground size-4" />
+    <div className="bg-muted/30 flex flex-col items-center gap-4 rounded-md border border-dashed px-6 py-8 text-center">
+      <div className="bg-background flex size-11 items-center justify-center rounded-full border shadow-sm">
+        <Tag className="text-muted-foreground size-5" />
       </div>
-      <div className="space-y-1">
-        <Text size="sm" weight="medium">
-          <Trans>No service pricings yet</Trans>
-        </Text>
-        <Text size="sm" textColor="muted" className="max-w-sm">
+
+      <div className="flex max-w-md flex-col gap-2">
+        <p className="text-sm font-medium">
+          <Trans>No prices available yet</Trans>
+        </p>
+        <p className="text-muted-foreground text-sm leading-relaxed">
           <Trans>
-            Nothing found in milo-system. Add charges to a ServiceConfiguration so ChargeFanOut can
-            emit ServicePricing objects, then refresh this page.
+            Offers bundle prices from across your services. Add prices in Service Catalog first,
+            then return here to select which ones to include.
           </Trans>
-        </Text>
+        </p>
       </div>
+
+      <ol className="text-muted-foreground max-w-md list-decimal space-y-1.5 pl-5 text-left text-sm leading-relaxed">
+        <li>
+          <Trans>Open a service in Service Catalog and add prices.</Trans>
+        </li>
+        <li>
+          <Trans>Give it a moment to sync, then refresh this page.</Trans>
+        </li>
+        <li>
+          <Trans>Select the prices to include in your Offer.</Trans>
+        </li>
+      </ol>
+
+      <LinkButton
+        type="secondary"
+        theme="outline"
+        size="small"
+        href={serviceCatalogRoutes.list()}
+        icon={<ArrowRight size={14} />}>
+        <Trans>Go to Service Catalog</Trans>
+      </LinkButton>
     </div>
   );
 }
@@ -85,6 +119,12 @@ export function ServicePricingChecklist({
   isError,
   errorMessage,
 }: ServicePricingChecklistProps) {
+  const servicesQuery = useServiceListQuery();
+  const servicesByRef = useMemo(
+    () => indexServicesByRef(servicesQuery.data?.items ?? []),
+    [servicesQuery.data?.items]
+  );
+
   if (isLoading) {
     return <ServicePricingListSkeleton />;
   }
@@ -102,21 +142,50 @@ export function ServicePricingChecklist({
       {pricings.map((pricing) => {
         const name = pricing.metadata?.name ?? '';
         const chargeType = pricing.spec?.chargeType ?? '';
+        const displayName = getServicePricingDisplayName(pricing);
+        const summary = summarizeServicePricing(pricing);
+        const catalogService = resolveServicePricingCatalogService(pricing, servicesByRef);
+        const subtext = getServicePricingSubtext(pricing, displayName);
         return (
           <label
             key={name}
-            className="hover:bg-muted/50 flex items-start gap-2 rounded-sm p-1 text-sm">
+            className="hover:bg-muted/50 flex items-start gap-3 rounded-md p-2">
             <Checkbox
-              className="mt-0.5"
+              className="mt-0.5 shrink-0"
               checked={selectedNames.includes(name)}
               onCheckedChange={(next) => onToggle(name, Boolean(next))}
             />
-            <span className="min-w-0">
-              <span className="font-medium">{name}</span>
-              {chargeType ? (
-                <span className="text-muted-foreground"> · {formatChargeType(chargeType)}</span>
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-sm font-medium">{displayName}</span>
+                {chargeType ? <BadgeState state={formatChargeType(chargeType)} /> : null}
+              </div>
+              {summary ? (
+                <p className="text-muted-foreground mt-0.5 text-xs leading-relaxed">{summary}</p>
               ) : null}
-            </span>
+              {catalogService ? (
+                <p className="text-muted-foreground mt-0.5 text-xs leading-relaxed">
+                  <Trans>From</Trans>{' '}
+                  <Link
+                    to={serviceCatalogRoutes.detail(catalogService.catalogName)}
+                    className="text-primary font-medium hover:underline"
+                    onClick={(event) => event.stopPropagation()}>
+                    {catalogService.displayName}
+                  </Link>
+                  {catalogService.canonicalName ? (
+                    <span className="font-mono text-[11px]">
+                      {' '}
+                      · {catalogService.canonicalName}
+                    </span>
+                  ) : null}
+                </p>
+              ) : null}
+              {subtext ? (
+                <p className="text-muted-foreground mt-0.5 font-mono text-[11px] leading-relaxed">
+                  {subtext}
+                </p>
+              ) : null}
+            </div>
           </label>
         );
       })}

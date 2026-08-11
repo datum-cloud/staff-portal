@@ -2,7 +2,7 @@ import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DisplayId, DisplayName } from '@/components/display';
-import { formatChargeTypes, getOfferDisplayName } from '@/features/billing/utils';
+import { formatChargeTypes, formatLaunchStage, getOfferDisplayName } from '@/features/billing/utils';
 import { ListColumnHeader, ListPage, ListTable } from '@/features/milo';
 import { useBillingDefaultOfferQuery, useOfferListQuery } from '@/resources/request/client';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
@@ -48,7 +48,14 @@ export default function Page() {
     columnHelper.accessor((row) => row.spec?.launchStage ?? '', {
       id: 'launchStage',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Stage`} />,
-      cell: ({ getValue }) => <BadgeState state={getValue() || 'Unknown'} />,
+      cell: ({ getValue }) => {
+        const stage = getValue();
+        return stage ? (
+          <BadgeState state={stage} message={formatLaunchStage(stage)} />
+        ) : (
+          <BadgeState state="Unknown" />
+        );
+      },
     }),
     columnHelper.accessor((row) => formatChargeTypes(row.spec?.chargeTypes ?? []), {
       id: 'chargeTypes',

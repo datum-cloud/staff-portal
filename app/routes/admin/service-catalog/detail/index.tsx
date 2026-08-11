@@ -154,6 +154,20 @@ export default function Page() {
         isLoading={isLoading}
       />
 
+      <ChargesCard
+        charges={charges}
+        isLoading={isLoading}
+        isPublished={isPublishedConfig}
+        hasPublishedConfiguration={!!configurationName}
+        action={
+          configurationName ? (
+            <Button type="primary" onClick={() => setAddChargeOpen(true)}>
+              <Trans>Add charge</Trans>
+            </Button>
+          ) : undefined
+        }
+      />
+
       <Row type="flex" gutter={[16, 16]}>
         <Col span={24} md={12}>
           <MonitoredResourcesCard
@@ -163,20 +177,6 @@ export default function Page() {
         </Col>
         <Col span={24} md={12}>
           <MetersCard metrics={metrics} isLoading={isLoading} />
-        </Col>
-        <Col span={24}>
-          <ChargesCard
-            charges={charges}
-            isLoading={isLoading}
-            isPublished={isPublishedConfig}
-            action={
-              configurationName ? (
-                <Button type="secondary" theme="outline" onClick={() => setAddChargeOpen(true)}>
-                  <Trans>Add charge</Trans>
-                </Button>
-              ) : undefined
-            }
-          />
         </Col>
         <Col span={24} md={12}>
           <DetailsCard service={service} />

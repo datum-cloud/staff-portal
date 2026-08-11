@@ -119,7 +119,7 @@ msgstr "Accepted"
 msgid "Access denied — IAM role pending."
 msgstr "Access denied — IAM role pending."
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:554
+#: app/features/service-catalog/components/add-charge-dialog.tsx:593
 msgid "Access fee"
 msgstr "Access fee"
 
@@ -146,7 +146,7 @@ msgstr "Account ID Key"
 msgid "Account Identities"
 msgstr "Account Identities"
 
-#: app/features/billing/components/offer-switcher-card.tsx:62
+#: app/features/billing/components/offer-switcher-card.tsx:64
 msgid "Account is already on that Offer"
 msgstr "Account is already on that Offer"
 
@@ -184,7 +184,7 @@ msgstr "Active billing account with a payment method"
 msgid "Active Configuration"
 msgstr "Active Configuration"
 
-#: app/features/billing/components/offer-switcher-card.tsx:85
+#: app/features/billing/components/offer-switcher-card.tsx:86
 msgid "Active Offer"
 msgstr "Active Offer"
 
@@ -225,13 +225,29 @@ msgstr "Add"
 msgid "Add a note"
 msgstr "Add a note"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:368
+#: app/features/service-catalog/components/add-charge-dialog.tsx:544
+msgid "Add a row per price variant, or leave matching empty for one price."
+msgstr "Add a row per price variant, or leave matching empty for one price."
+
+#: app/features/service-catalog/components/add-charge-dialog.tsx:539
+msgid "Add a row per price variant. Leave Applies to as “All usage” for one price across the whole meter."
+msgstr "Add a row per price variant. Leave Applies to as “All usage” for one price across the whole meter."
+
+#: app/features/service-catalog/components/add-charge-dialog.tsx:534
+msgid "Add a row per price variant. When matching on a dimension, set a price for every value (use other as a catch-all)."
+msgstr "Add a row per price variant. When matching on a dimension, set a price for every value (use other as a catch-all)."
+
+#: app/features/service-catalog/components/add-charge-dialog.tsx:645
+msgid "Add a usage-based, one-time, or recurring price. Usage prices can vary by region, tier, or other dimensions, with flat or tiered rates."
+msgstr "Add a usage-based, one-time, or recurring price. Usage prices can vary by region, tier, or other dimensions, with flat or tiered rates."
+
+#: app/features/service-catalog/components/add-charge-dialog.tsx:392
 msgid "Add band"
 msgstr "Add band"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:604
-#: app/features/service-catalog/components/add-charge-dialog.tsx:657
-#: app/routes/admin/service-catalog/detail/index.tsx:175
+#: app/features/service-catalog/components/add-charge-dialog.tsx:644
+#: app/features/service-catalog/components/add-charge-dialog.tsx:698
+#: app/routes/admin/service-catalog/detail/index.tsx:165
 msgid "Add charge"
 msgstr "Add charge"
 
@@ -244,15 +260,11 @@ msgstr "Add Member"
 msgid "Add Note"
 msgstr "Add Note"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:499
-msgid "Add one row per dimension value (for example region or tier). When using matches, price every value explicitly — use a sentinel like other for fallbacks."
-msgstr "Add one row per dimension value (for example region or tier). When using matches, price every value explicitly — use a sentinel like other for fallbacks."
-
 #: app/routes/customer/fraud/providers/index.tsx:123
 msgid "Add Provider"
 msgstr "Add Provider"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:523
+#: app/features/service-catalog/components/add-charge-dialog.tsx:568
 msgid "Add rate"
 msgstr "Add rate"
 
@@ -285,9 +297,9 @@ msgstr "Address"
 msgid "Admin"
 msgstr "Admin"
 
-#: app/routes/admin/offer/detail.tsx:275
-msgid "After publish, only the display-name annotation can change. Rate changes need a new Offer."
-msgstr "After publish, only the display-name annotation can change. Rate changes need a new Offer."
+#: app/routes/admin/offer/detail.tsx:430
+msgid "After publish, only the display name can change. Rate changes need a new Offer."
+msgstr "After publish, only the display name can change. Rate changes need a new Offer."
 
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:157
 msgid "Age"
@@ -326,6 +338,10 @@ msgstr "All read operations"
 msgid "All registrations are up to date"
 msgstr "All registrations are up to date"
 
+#: app/features/service-catalog/components/add-charge-dialog.tsx:327
+msgid "All usage (no filter)"
+msgstr "All usage (no filter)"
+
 #: app/features/activity/components/activity-list.tsx:440
 msgid "All write operations"
 msgstr "All write operations"
@@ -338,7 +354,7 @@ msgstr "Allocation"
 msgid "Amount"
 msgstr "Amount"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:556
+#: app/features/service-catalog/components/add-charge-dialog.tsx:595
 msgid "Amount (USD)"
 msgstr "Amount (USD)"
 
@@ -355,10 +371,6 @@ msgstr "Any phase"
 msgid "API Group"
 msgstr "API Group"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:605
-msgid "Append a Usage, OneTime, or Recurring charge. Usage rates can vary by dimension (region, tier, model) and support flat or graduated tiers. ChargeFanOut writes ServicePricing into milo-system for Offers."
-msgstr "Append a Usage, OneTime, or Recurring charge. Usage rates can vary by dimension (region, tier, model) and support flat or graduated tiers. ChargeFanOut writes ServicePricing into milo-system for Offers."
-
 #: app/features/activity/components/activity-list.tsx:389
 #: app/features/activity/components/activity-list.tsx:488
 #: app/features/project/components/project-resources-card.tsx:62
@@ -367,6 +379,10 @@ msgstr "Append a Usage, OneTime, or Recurring charge. Usage rates can vary by di
 #: app/routes/customer/resource/index.tsx:280
 msgid "Application Load Balancer"
 msgstr "Application Load Balancer"
+
+#: app/features/service-catalog/components/add-charge-dialog.tsx:323
+msgid "Applies to"
+msgstr "Applies to"
 
 #: app/routes/admin/service-catalog/detail/consumers.tsx:115
 msgid "Approval"
@@ -514,7 +530,7 @@ msgstr "Back"
 msgid "Back to evaluations"
 msgstr "Back to evaluations"
 
-#: app/routes/admin/offer/detail.tsx:213
+#: app/routes/admin/offer/detail.tsx:226
 msgid "Back to Offers"
 msgstr "Back to Offers"
 
@@ -567,6 +583,8 @@ msgstr "by"
 
 #: app/components/button/button-delete-action.tsx:43
 #: app/components/danger-zone-card/index.tsx:43
+#: app/features/billing/components/default-offer-card.tsx:59
+#: app/features/billing/components/offer-switcher-card.tsx:150
 #: app/features/contact-group/components/contact-group-form.tsx:97
 #: app/features/contact/components/contact-form.tsx:244
 #: app/features/contact/components/contact-list.tsx:126
@@ -575,12 +593,14 @@ msgstr "by"
 #: app/features/project/components/project-suspension-card.tsx:84
 #: app/features/quota/components/quota-bucket-list.tsx:171
 #: app/features/quota/components/quota-grant-list.tsx:162
-#: app/features/service-catalog/components/add-charge-dialog.tsx:651
+#: app/features/service-catalog/components/add-charge-dialog.tsx:692
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:39
 #: app/features/user/components/user-reject-dialog.tsx:30
 #: app/routes/admin/group/detail/member.tsx:142
 #: app/routes/admin/group/detail/member.tsx:156
 #: app/routes/admin/offer/create.tsx:150
+#: app/routes/admin/offer/detail.tsx:421
+#: app/routes/admin/offer/detail.tsx:434
 #: app/routes/admin/service-catalog/detail/consumers.tsx:205
 #: app/routes/customer/fraud/index.tsx:229
 #: app/routes/customer/fraud/index.tsx:264
@@ -623,35 +643,35 @@ msgstr "Chainsaw Tests"
 msgid "Change your Primary Email in GitHub (your primary email)"
 msgstr "Change your Primary Email in GitHub (your primary email)"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:631
+#: app/features/billing/components/offer-included-pricing-list.tsx:116
+msgid "Charge"
+msgstr "Charge"
+
+#: app/features/service-catalog/components/add-charge-dialog.tsx:672
 msgid "Charge added"
 msgstr "Charge added"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:480
-#: app/features/service-catalog/components/add-charge-dialog.tsx:544
+#: app/features/service-catalog/components/add-charge-dialog.tsx:514
+#: app/features/service-catalog/components/add-charge-dialog.tsx:589
 msgid "Charge name"
 msgstr "Charge name"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:433
+#: app/features/service-catalog/components/add-charge-dialog.tsx:467
 msgid "Charge type"
 msgstr "Charge type"
 
 #: app/routes/admin/offer/create.tsx:113
-#: app/routes/admin/offer/detail.tsx:108
-#: app/routes/admin/offer/detail.tsx:257
-#: app/routes/admin/offer/index.tsx:55
+#: app/routes/admin/offer/detail.tsx:119
+#: app/routes/admin/offer/detail.tsx:269
+#: app/routes/admin/offer/index.tsx:62
 msgid "Charge types"
 msgstr "Charge types"
 
-#: app/routes/admin/offer/detail.tsx:74
+#: app/routes/admin/offer/detail.tsx:84
 msgid "Charge types and ServicePricings are required"
 msgstr "Charge types and ServicePricings are required"
 
-#: app/features/service-catalog/components/charges-card.tsx:86
-msgid "Charges"
-msgstr "Charges"
-
-#: app/features/billing/components/service-pricing-checklist.tsx:60
+#: app/features/billing/components/service-pricing-checklist.tsx:94
 msgid "Check that you have permission to list ServicePricings, then try again. If IAM was just updated, wait a minute for PolicyBindings to reconcile."
 msgstr "Check that you have permission to list ServicePricings, then try again. If IAM was just updated, wait a minute for PolicyBindings to reconcile."
 
@@ -910,7 +930,7 @@ msgstr "Could not load quota data"
 msgid "Could not load quotas"
 msgstr "Could not load quotas"
 
-#: app/features/billing/components/service-pricing-checklist.tsx:56
+#: app/features/billing/components/service-pricing-checklist.tsx:90
 msgid "Could not load service pricings"
 msgstr "Could not load service pricings"
 
@@ -927,15 +947,11 @@ msgstr "Could not load usage"
 msgid "Could not query cluster health metrics"
 msgstr "Could not query cluster health metrics"
 
-#: app/features/billing/components/default-offer-card.tsx:49
-msgid "Could not read the billing ServiceConfiguration default. Check that you can get serviceconfigurations."
-msgstr "Could not read the billing ServiceConfiguration default. Check that you can get serviceconfigurations."
-
 #: app/features/project/components/project-resources-card.tsx:59
 msgid "Counts for resources in this project"
 msgstr "Counts for resources in this project"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:484
+#: app/features/service-catalog/components/add-charge-dialog.tsx:518
 msgid "CPU allocated"
 msgstr "CPU allocated"
 
@@ -978,7 +994,7 @@ msgid "Create Fraud Provider"
 msgstr "Create Fraud Provider"
 
 #: app/routes/admin/offer/create.tsx:29
-#: app/routes/admin/offer/index.tsx:89
+#: app/routes/admin/offer/index.tsx:96
 msgid "Create Offer"
 msgstr "Create Offer"
 
@@ -1000,7 +1016,8 @@ msgstr "Create Policy"
 #: app/routes/admin/group/detail/index.tsx:41
 #: app/routes/admin/group/detail/member.tsx:107
 #: app/routes/admin/group/index.tsx:40
-#: app/routes/admin/offer/index.tsx:68
+#: app/routes/admin/offer/detail.tsx:277
+#: app/routes/admin/offer/index.tsx:75
 #: app/routes/customer/billing-account/detail/index.tsx:353
 #: app/routes/customer/fraud/providers/index.tsx:102
 #: app/routes/customer/organization/detail/project.tsx:47
@@ -1046,11 +1063,7 @@ msgstr "Current billing cycle ({0})"
 msgid "Current billing cycle for this project"
 msgstr "Current billing cycle for this project"
 
-#: app/features/billing/components/default-offer-card.tsx:63
-msgid "Current default is {currentDefault}. Setting this Offer replaces that default for accounts that do not yet have an entitlement."
-msgstr "Current default is {currentDefault}. Setting this Offer replaces that default for accounts that do not yet have an entitlement."
-
-#: app/features/billing/components/offer-switcher-card.tsx:97
+#: app/features/billing/components/offer-switcher-card.tsx:98
 msgid "Current Offer"
 msgstr "Current Offer"
 
@@ -1111,7 +1124,7 @@ msgstr "Default"
 msgid "Default Hostname"
 msgstr "Default Hostname"
 
-#: app/features/billing/components/default-offer-card.tsx:35
+#: app/features/billing/components/default-offer-card.tsx:63
 msgid "Default Offer updated"
 msgstr "Default Offer updated"
 
@@ -1270,9 +1283,9 @@ msgstr "Detail"
 msgid "Details"
 msgstr "Details"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:324
-msgid "Dimensions come from the selected meter. Leave as meter-wide for a single rate, or match a value per row. For a fallback price, prefer an explicit value such as other (not an unmatched catch-all)."
-msgstr "Dimensions come from the selected meter. Leave as meter-wide for a single rate, or match a value per row. For a fallback price, prefer an explicit value such as other (not an unmatched catch-all)."
+#: app/features/service-catalog/components/add-charge-dialog.tsx:345
+msgid "Dimension (optional)"
+msgstr "Dimension (optional)"
 
 #: app/features/feature-flags/components/feature-flag-list.tsx:228
 msgid "Disable"
@@ -1298,12 +1311,11 @@ msgstr "Disable flag"
 #: app/features/organization/components/org-details-card.tsx:47
 #: app/features/project/components/project-details-card.tsx:32
 #: app/features/project/components/project-organization-card.tsx:44
-#: app/features/service-catalog/components/add-charge-dialog.tsx:483
-#: app/features/service-catalog/components/add-charge-dialog.tsx:553
+#: app/features/service-catalog/components/add-charge-dialog.tsx:517
+#: app/features/service-catalog/components/add-charge-dialog.tsx:592
 #: app/routes/admin/offer/create.tsx:107
-#: app/routes/admin/offer/detail.tsx:254
-#: app/routes/admin/offer/detail.tsx:273
-#: app/routes/admin/offer/detail.tsx:287
+#: app/routes/admin/offer/detail.tsx:244
+#: app/routes/admin/offer/detail.tsx:436
 msgid "Display name"
 msgstr "Display name"
 
@@ -1318,7 +1330,7 @@ msgstr "Display Name"
 msgid "Display name is required"
 msgstr "Display name is required"
 
-#: app/routes/admin/offer/detail.tsx:184
+#: app/routes/admin/offer/detail.tsx:196
 msgid "Display name updated"
 msgstr "Display name updated"
 
@@ -1426,7 +1438,7 @@ msgstr "Download unavailable"
 msgid "Draft"
 msgstr "Draft"
 
-#: app/routes/admin/offer/detail.tsx:95
+#: app/routes/admin/offer/detail.tsx:105
 msgid "Draft configuration"
 msgstr "Draft configuration"
 
@@ -1434,7 +1446,7 @@ msgstr "Draft configuration"
 msgid "Draft Offer created"
 msgstr "Draft Offer created"
 
-#: app/routes/admin/offer/detail.tsx:87
+#: app/routes/admin/offer/detail.tsx:97
 msgid "Draft Offer updated"
 msgstr "Draft Offer updated"
 
@@ -1444,10 +1456,15 @@ msgstr "Each resource type is limited to 2,000 results at a time. Refine your se
 
 #: app/features/contact/components/contact-list.tsx:53
 #: app/features/fraud/policy/policy-detail.tsx:95
+#: app/routes/admin/offer/detail.tsx:254
 #: app/routes/customer/fraud/providers/index.tsx:41
 #: app/routes/marketing/contact-group/index.tsx:49
 msgid "Edit"
 msgstr "Edit"
+
+#: app/routes/admin/offer/detail.tsx:429
+msgid "Edit display name"
+msgstr "Edit display name"
 
 #: app/features/fraud/policy/policy-form.tsx:140
 msgid "Edit Fraud Policy"
@@ -1502,10 +1519,6 @@ msgstr "Email HTML preview"
 #: app/routes/customer/user/index.tsx:187
 msgid "Email is required"
 msgstr "Email is required"
-
-#: app/routes/admin/offer/detail.tsx:338
-msgid "Empty while Draft. The controller fills this on publish."
-msgstr "Empty while Draft. The controller fills this on publish."
 
 #: app/features/feature-flags/components/feature-flag-list.tsx:228
 msgid "Enable"
@@ -1647,10 +1660,6 @@ msgstr "Event"
 msgid "Events"
 msgstr "Events"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:372
-msgid "Every band except the last needs an exclusive upTo. The last band is open-ended."
-msgstr "Every band except the last needs an exclusive upTo. The last band is open-ended."
-
 #: app/features/milo/components/page/rich-filter-panel.tsx:477
 #: app/features/milo/components/page/rich-filter-panel.tsx:616
 msgid "Expand"
@@ -1683,7 +1692,7 @@ msgstr "Export Policy"
 msgid "Failed"
 msgstr "Failed"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:634
+#: app/features/service-catalog/components/add-charge-dialog.tsx:675
 msgid "Failed to add charge"
 msgstr "Failed to add charge"
 
@@ -1715,11 +1724,11 @@ msgstr "Failed to load service configurations."
 msgid "Failed to load status"
 msgstr "Failed to load status"
 
-#: app/routes/admin/offer/detail.tsx:174
+#: app/routes/admin/offer/detail.tsx:185
 msgid "Failed to publish Offer"
 msgstr "Failed to publish Offer"
 
-#: app/features/billing/components/default-offer-card.tsx:37
+#: app/features/billing/components/default-offer-card.tsx:65
 msgid "Failed to set default Offer"
 msgstr "Failed to set default Offer"
 
@@ -1727,11 +1736,11 @@ msgstr "Failed to set default Offer"
 msgid "Failed to switch Offer"
 msgstr "Failed to switch Offer"
 
-#: app/routes/admin/offer/detail.tsx:186
+#: app/routes/admin/offer/detail.tsx:198
 msgid "Failed to update display name"
 msgstr "Failed to update display name"
 
-#: app/routes/admin/offer/detail.tsx:89
+#: app/routes/admin/offer/detail.tsx:99
 msgid "Failed to update Offer"
 msgstr "Failed to update Offer"
 
@@ -1827,13 +1836,10 @@ msgstr "First name is required"
 msgid "Flag"
 msgstr "Flag"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:339
+#: app/features/service-catalog/components/add-charge-dialog.tsx:358
+#: app/features/service-catalog/components/add-charge-dialog.tsx:370
 msgid "Flat"
 msgstr "Flat"
-
-#: app/features/service-catalog/components/add-charge-dialog.tsx:345
-msgid "Flat rate (USD)"
-msgstr "Flat rate (USD)"
 
 #: app/features/edge/components/detail/edge-config-card.tsx:34
 msgid "Force HTTPS"
@@ -1874,6 +1880,11 @@ msgstr "Fraud Policy"
 msgid "Fraud Providers"
 msgstr "Fraud Providers"
 
+#: app/features/billing/components/offer-included-pricing-list.tsx:67
+#: app/features/billing/components/service-pricing-checklist.tsx:166
+msgid "From"
+msgstr "From"
+
 #: app/routes/customer/user/detail/index.tsx:191
 msgid "Full Name"
 msgstr "Full Name"
@@ -1902,9 +1913,17 @@ msgstr "General"
 msgid "Get"
 msgstr "Get"
 
+#: app/features/billing/components/service-pricing-checklist.tsx:66
+msgid "Give it a moment to sync, then refresh this page."
+msgstr "Give it a moment to sync, then refresh this page."
+
 #: app/components/app-search/use-app-search.ts:34
 msgid "Go to dashboard"
 msgstr "Go to dashboard"
+
+#: app/features/billing/components/service-pricing-checklist.tsx:79
+msgid "Go to Service Catalog"
+msgstr "Go to Service Catalog"
 
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:260
 msgid "Grafana"
@@ -1999,7 +2018,7 @@ msgstr "HTML"
 #: app/routes/admin/group/detail/index.tsx:29
 #: app/routes/admin/group/index.tsx:23
 #: app/routes/admin/offer/create.tsx:104
-#: app/routes/admin/offer/detail.tsx:253
+#: app/routes/admin/offer/detail.tsx:242
 #: app/routes/admin/offer/index.tsx:31
 #: app/routes/customer/billing-account/detail/index.tsx:136
 #: app/routes/customer/billing-account/detail/index.tsx:187
@@ -2020,6 +2039,12 @@ msgstr "In Progress"
 msgid "Inactive"
 msgstr "Inactive"
 
+#: app/routes/admin/offer/detail.tsx:273
+#: app/routes/admin/offer/detail.tsx:321
+#: app/routes/admin/offer/detail.tsx:390
+msgid "Included charges"
+msgstr "Included charges"
+
 #: app/routes/customer/organization/index.tsx:241
 msgid "Individual"
 msgstr "Individual"
@@ -2028,7 +2053,7 @@ msgstr "Individual"
 msgid "Instances and served traffic are paused; data is preserved. Lift the suspension below to restore the project."
 msgstr "Instances and served traffic are paused; data is preserved. Lift the suspension below to restore the project."
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:563
+#: app/features/service-catalog/components/add-charge-dialog.tsx:602
 msgid "Interval is fixed to monthly."
 msgstr "Interval is fixed to monthly."
 
@@ -2154,7 +2179,7 @@ msgstr "Latest"
 msgid "Latest fraud evaluation for this user"
 msgstr "Latest fraud evaluation for this user"
 
-#: app/routes/admin/offer/detail.tsx:255
+#: app/routes/admin/offer/detail.tsx:261
 msgid "Launch stage"
 msgstr "Launch stage"
 
@@ -2215,10 +2240,6 @@ msgstr "Loading billing accounts..."
 msgid "Loading contact details…"
 msgstr "Loading contact details…"
 
-#: app/features/billing/components/default-offer-card.tsx:45
-msgid "Loading default Offer…"
-msgstr "Loading default Offer…"
-
 #: app/features/organization/components/org-details-card.tsx:37
 msgid "Loading details…"
 msgstr "Loading details…"
@@ -2257,8 +2278,9 @@ msgid "Loading..."
 msgstr "Loading..."
 
 #: app/features/project/components/project-suspension-card.tsx:127
-#: app/features/service-catalog/components/charges-card.tsx:92
-#: app/routes/admin/offer/detail.tsx:196
+#: app/features/service-catalog/components/charges-card.tsx:122
+#: app/routes/admin/offer/detail.tsx:209
+#: app/routes/admin/offer/detail.tsx:309
 msgid "Loading…"
 msgstr "Loading…"
 
@@ -2329,14 +2351,6 @@ msgstr "Manually sync this description with the one in Loops (used for opt-in pa
 msgid "Marketing"
 msgstr "Marketing"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:294
-msgid "Match dimension"
-msgstr "Match dimension"
-
-#: app/features/service-catalog/components/add-charge-dialog.tsx:312
-msgid "Match value"
-msgstr "Match value"
-
 #: app/features/activity/components/activity-list.tsx:397
 #: app/features/activity/components/activity-list.tsx:496
 #: app/routes/customer/organization/detail/member.tsx:174
@@ -2371,13 +2385,17 @@ msgstr "Menu"
 msgid "Message"
 msgstr "Message"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:445
+#: app/features/service-catalog/components/add-charge-dialog.tsx:479
 msgid "Meter"
 msgstr "Meter"
 
 #: app/features/service-catalog/components/meters-card.tsx:25
 msgid "Meters"
 msgstr "Meters"
+
+#: app/features/billing/components/offer-included-pricing-list.tsx:128
+msgid "Metric"
+msgstr "Metric"
 
 #: app/routes/customer/project/detail/layout.tsx:132
 msgid "Metrics"
@@ -2489,6 +2507,15 @@ msgstr "Next page"
 msgid "No"
 msgstr "No"
 
+#. placeholder {0}: defaultOffer.currentDefault
+#: app/routes/admin/offer/detail.tsx:315
+msgid "No — current default is {0}"
+msgstr "No — current default is {0}"
+
+#: app/routes/admin/offer/detail.tsx:316
+msgid "No — none configured"
+msgstr "No — none configured"
+
 #: app/routes/customer/project/index.tsx:120
 msgid "No active billing account with a payment method"
 msgstr "No active billing account with a payment method"
@@ -2524,13 +2551,13 @@ msgstr "No billing accounts"
 msgid "No billing accounts found"
 msgstr "No billing accounts found"
 
-#: app/features/billing/components/offer-switcher-card.tsx:88
+#: app/features/billing/components/offer-switcher-card.tsx:89
 msgid "No BillingEntitlement found for this account. New accounts pick up the default Offer automatically when catalog defaults are configured."
 msgstr "No BillingEntitlement found for this account. New accounts pick up the default Offer automatically when catalog defaults are configured."
 
-#: app/features/service-catalog/components/charges-card.tsx:41
-msgid "No charges yet. Add Usage, OneTime, or Recurring prices — ChargeFanOut creates ServicePricing objects in milo-system for Offers to pick up."
-msgstr "No charges yet. Add Usage, OneTime, or Recurring prices — ChargeFanOut creates ServicePricing objects in milo-system for Offers to pick up."
+#: app/features/billing/components/offer-included-pricing-list.tsx:231
+msgid "No charges included in this Offer."
+msgstr "No charges included in this Offer."
 
 #: app/features/service-catalog/components/conditions-card.tsx:80
 msgid "No conditions reported."
@@ -2657,7 +2684,7 @@ msgstr "No members found."
 msgid "No members in this group."
 msgstr "No members in this group."
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:449
+#: app/features/service-catalog/components/add-charge-dialog.tsx:483
 msgid "No meters on this configuration"
 msgstr "No meters on this configuration"
 
@@ -2665,7 +2692,7 @@ msgstr "No meters on this configuration"
 msgid "No notes yet. Add the first note below."
 msgstr "No notes yet. Add the first note below."
 
-#: app/routes/admin/offer/index.tsx:83
+#: app/routes/admin/offer/index.tsx:90
 msgid "No offers found."
 msgstr "No offers found."
 
@@ -2703,9 +2730,13 @@ msgstr "No platform access record exists for this user yet."
 msgid "No platform access record found for this user"
 msgstr "No platform access record found for this user"
 
-#: app/features/billing/components/default-offer-card.tsx:68
-msgid "No platform default is configured yet. Set a GA Offer here so new billing accounts are entitled automatically."
-msgstr "No platform default is configured yet. Set a GA Offer here so new billing accounts are entitled automatically."
+#: app/features/billing/components/service-pricing-checklist.tsx:51
+msgid "No prices available yet"
+msgstr "No prices available yet"
+
+#: app/features/service-catalog/components/charges-card.tsx:59
+msgid "No prices yet. Click Add charge to set usage-based, one-time, or recurring prices. Once saved, they will be available when you create Offers."
+msgstr "No prices yet. Click Add charge to set usage-based, one-time, or recurring prices. Once saved, they will be available when you create Offers."
 
 #: app/routes/customer/organization/detail/project.tsx:62
 #: app/routes/customer/project/index.tsx:151
@@ -2732,10 +2763,6 @@ msgstr "No quotas"
 msgid "No quotas are above 70% utilization"
 msgstr "No quotas are above 70% utilization"
 
-#: app/routes/admin/offer/detail.tsx:318
-msgid "No refs."
-msgstr "No refs."
-
 #: app/routes/customer/resource/index.tsx:271
 msgid "No resources found."
 msgstr "No resources found."
@@ -2755,10 +2782,6 @@ msgstr "No secrets found."
 #: app/features/service-catalog/components/active-configuration-summary.tsx:44
 msgid "No service configurations have been registered yet."
 msgstr "No service configurations have been registered yet."
-
-#: app/features/billing/components/service-pricing-checklist.tsx:38
-msgid "No service pricings yet"
-msgstr "No service pricings yet"
 
 #: app/routes/admin/service-catalog/index.tsx:205
 msgid "No services found."
@@ -2790,16 +2813,12 @@ msgstr "No users yet"
 msgid "None"
 msgstr "None"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:299
-msgid "None (meter-wide rate)"
-msgstr "None (meter-wide rate)"
-
 #: app/features/service-catalog/components/meters-card.tsx:32
 #: app/features/service-catalog/components/monitored-resources-card.tsx:31
 msgid "None declared."
 msgstr "None declared."
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:473
+#: app/features/service-catalog/components/add-charge-dialog.tsx:507
 msgid "None declared. Usage events cannot carry priced labels on this meter."
 msgstr "None declared. Usage events cannot carry priced labels on this meter."
 
@@ -2810,6 +2829,10 @@ msgstr "Normal"
 #: app/features/milo/components/page/list-growth-chart.tsx:122
 msgid "Not enough data yet to show a trend."
 msgstr "Not enough data yet to show a trend."
+
+#: app/features/service-catalog/components/charges-card.tsx:44
+msgid "Not ready for pricing yet"
+msgstr "Not ready for pricing yet"
 
 #: app/features/domain/components/note-card.tsx:44
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:53
@@ -2833,10 +2856,6 @@ msgstr "Notes"
 msgid "Notes (operator-facing)"
 msgstr "Notes (operator-facing)"
 
-#: app/features/billing/components/service-pricing-checklist.tsx:41
-msgid "Nothing found in milo-system. Add charges to a ServiceConfiguration so ChargeFanOut can emit ServicePricing objects, then refresh this page."
-msgstr "Nothing found in milo-system. Add charges to a ServiceConfiguration so ChargeFanOut can emit ServicePricing objects, then refresh this page."
-
 #: app/components/app-sidebar/nav-user.tsx:90
 #: app/features/milo/components/navbar/milo-user-menu.tsx:74
 msgid "Notifications"
@@ -2850,17 +2869,21 @@ msgstr "Observed"
 msgid "of"
 msgstr "of"
 
-#: app/routes/admin/offer/detail.tsx:42
-#: app/routes/admin/offer/detail.tsx:193
+#: app/routes/admin/offer/detail.tsx:52
 #: app/routes/admin/offer/detail.tsx:206
+#: app/routes/admin/offer/detail.tsx:219
 msgid "Offer"
 msgstr "Offer"
 
-#: app/routes/admin/offer/detail.tsx:209
+#: app/routes/admin/offer/detail.tsx:382
+msgid "Offer details"
+msgstr "Offer details"
+
+#: app/routes/admin/offer/detail.tsx:222
 msgid "Offer not found or you do not have permission to view it."
 msgstr "Offer not found or you do not have permission to view it."
 
-#: app/routes/admin/offer/detail.tsx:172
+#: app/routes/admin/offer/detail.tsx:183
 msgid "Offer published"
 msgstr "Offer published"
 
@@ -2872,6 +2895,10 @@ msgstr "Offer switched"
 #: app/routes/admin/offer/layout.tsx:5
 msgid "Offers"
 msgstr "Offers"
+
+#: app/features/billing/components/service-pricing-checklist.tsx:54
+msgid "Offers bundle prices from across your services. Add prices in Service Catalog first, then return here to select which ones to include."
+msgstr "Offers bundle prices from across your services. Add prices in Service Catalog first, then return here to select which ones to include."
 
 #: app/features/organization/components/org-onboarding-card.tsx:204
 msgid "Onboarding"
@@ -2885,6 +2912,10 @@ msgstr "Onboarding incomplete"
 #: app/features/contact/components/contact-form.tsx:232
 msgid "Once a contact is associated with a user, this association cannot be removed or changed later."
 msgstr "Once a contact is associated with a user, this association cannot be removed or changed later."
+
+#: app/features/billing/components/service-pricing-checklist.tsx:63
+msgid "Open a service in Service Catalog and add prices."
+msgstr "Open a service in Service Catalog and add prices."
 
 #: app/routes/customer/billing-account/detail/index.tsx:294
 msgid "Open in Cloud Portal"
@@ -2949,7 +2980,7 @@ msgstr "Origin"
 
 #: app/routes/admin/group/detail/index.tsx:17
 #: app/routes/admin/group/detail/layout.tsx:35
-#: app/routes/admin/offer/detail.tsx:250
+#: app/routes/admin/offer/detail.tsx:361
 #: app/routes/admin/service-catalog/detail/layout.tsx:37
 #: app/routes/customer/organization/detail/layout.tsx:68
 #: app/routes/customer/project/detail/layout.tsx:111
@@ -3010,6 +3041,10 @@ msgstr "Pending Approval"
 msgid "Pending Approvals"
 msgstr "Pending Approvals"
 
+#: app/routes/admin/offer/detail.tsx:290
+msgid "Pending snapshot"
+msgstr "Pending snapshot"
+
 #: app/features/domain/components/domain-status-probe.tsx:101
 msgid "Pending Validation Checks:"
 msgstr "Pending Validation Checks:"
@@ -3064,7 +3099,7 @@ msgstr "Platform Access State"
 msgid "Platform access updated to {state}"
 msgstr "Platform access updated to {state}"
 
-#: app/features/billing/components/default-offer-card.tsx:42
+#: app/routes/admin/offer/detail.tsx:307
 msgid "Platform default"
 msgstr "Platform default"
 
@@ -3123,11 +3158,17 @@ msgstr "Preview"
 msgid "Previous page"
 msgstr "Previous page"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:337
+#: app/features/service-catalog/components/charges-card.tsx:116
+msgid "Prices for this service"
+msgstr "Prices for this service"
+
+#: app/features/service-catalog/components/add-charge-dialog.tsx:356
+#: app/features/service-catalog/components/add-charge-dialog.tsx:368
+#: app/features/service-catalog/components/charges-card.tsx:111
 msgid "Pricing"
 msgstr "Pricing"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:486
+#: app/features/service-catalog/components/add-charge-dialog.tsx:520
 msgid "Pricing unit"
 msgstr "Pricing unit"
 
@@ -3252,29 +3293,30 @@ msgstr "Providers (comma-separated)"
 msgid "Public"
 msgstr "Public"
 
-#: app/routes/admin/offer/detail.tsx:244
+#: app/routes/admin/offer/detail.tsx:347
+#: app/routes/admin/offer/detail.tsx:420
 msgid "Publish"
 msgstr "Publish"
 
-#: app/features/billing/components/default-offer-card.tsx:90
-msgid "Publish this Offer (GA with a pricing snapshot) before setting it as default."
-msgstr "Publish this Offer (GA with a pricing snapshot) before setting it as default."
+#: app/routes/admin/offer/detail.tsx:418
+msgid "Publish Offer"
+msgstr "Publish Offer"
+
+#: app/routes/admin/offer/detail.tsx:364
+msgid "Publish to GA before this Offer can be set as the platform default for new billing accounts."
+msgstr "Publish to GA before this Offer can be set as the platform default for new billing accounts."
 
 #: app/features/service-catalog/components/active-configuration-summary.tsx:36
-#: app/routes/admin/offer/index.tsx:60
+#: app/routes/admin/offer/index.tsx:67
 #: app/routes/admin/service-catalog/index.tsx:165
 msgid "Published"
 msgstr "Published"
 
-#: app/routes/admin/offer/detail.tsx:261
+#: app/routes/admin/offer/detail.tsx:285
 msgid "Published at"
 msgstr "Published at"
 
-#: app/routes/admin/offer/detail.tsx:335
-msgid "Published snapshot"
-msgstr "Published snapshot"
-
-#: app/routes/admin/offer/detail.tsx:165
+#: app/routes/admin/offer/detail.tsx:419
 msgid "Publishing snapshots rates into this Offer. After GA the rates are immutable; create a new Offer version to change pricing."
 msgstr "Publishing snapshots rates into this Offer. After GA the rates are immutable; create a new Offer version to change pricing."
 
@@ -3310,16 +3352,21 @@ msgstr "Quota Utilization"
 msgid "Quotas"
 msgstr "Quotas"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:388
+#: app/features/billing/components/offer-included-pricing-list.tsx:122
+msgid "Rate"
+msgstr "Rate"
+
+#: app/features/service-catalog/components/add-charge-dialog.tsx:362
+#: app/features/service-catalog/components/add-charge-dialog.tsx:407
 msgid "Rate (USD)"
 msgstr "Rate (USD)"
 
 #. placeholder {0}: index + 1
-#: app/features/service-catalog/components/add-charge-dialog.tsx:279
+#: app/features/service-catalog/components/add-charge-dialog.tsx:307
 msgid "Rate {0}"
 msgstr "Rate {0}"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:463
+#: app/features/service-catalog/components/add-charge-dialog.tsx:497
 msgid "Rateable dimensions on this meter:"
 msgstr "Rateable dimensions on this meter:"
 
@@ -3327,7 +3374,7 @@ msgstr "Rateable dimensions on this meter:"
 msgid "Rateable dimensions:"
 msgstr "Rateable dimensions:"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:496
+#: app/features/service-catalog/components/add-charge-dialog.tsx:530
 msgid "Rates"
 msgstr "Rates"
 
@@ -3523,11 +3570,11 @@ msgid "Running"
 msgstr "Running"
 
 #: app/features/profile/components/profile-form.tsx:58
-#: app/routes/admin/offer/detail.tsx:294
+#: app/routes/admin/offer/detail.tsx:433
 msgid "Save"
 msgstr "Save"
 
-#: app/routes/admin/offer/detail.tsx:102
+#: app/routes/admin/offer/detail.tsx:112
 msgid "Save draft"
 msgstr "Save draft"
 
@@ -3654,7 +3701,7 @@ msgstr "Search is temporarily unavailable. Please try again."
 msgid "Search members..."
 msgstr "Search members..."
 
-#: app/routes/admin/offer/index.tsx:82
+#: app/routes/admin/offer/index.tsx:89
 msgid "Search offers..."
 msgstr "Search offers..."
 
@@ -3755,7 +3802,7 @@ msgstr "See all DNS zones"
 msgid "See all domains"
 msgstr "See all domains"
 
-#: app/features/billing/components/offer-switcher-card.tsx:122
+#: app/features/billing/components/offer-switcher-card.tsx:123
 msgid "Select a GA Offer"
 msgstr "Select a GA Offer"
 
@@ -3779,6 +3826,10 @@ msgstr "Select contact group..."
 msgid "Select state"
 msgstr "Select state"
 
+#: app/features/billing/components/service-pricing-checklist.tsx:69
+msgid "Select the prices to include in your Offer."
+msgstr "Select the prices to include in your Offer."
+
 #: app/features/preferences/components/preferences-form.tsx:61
 msgid "Select timezone..."
 msgstr "Select timezone..."
@@ -3801,6 +3852,10 @@ msgstr "Self Service"
 msgid "Sent"
 msgstr "Sent"
 
+#: app/features/billing/components/offer-included-pricing-list.tsx:125
+msgid "Service"
+msgstr "Service"
+
 #: app/components/app-sidebar/index.tsx:193
 #: app/routes/admin/service-catalog/index.tsx:26
 #: app/routes/admin/service-catalog/layout.tsx:5
@@ -3811,8 +3866,7 @@ msgstr "Service Catalog"
 msgid "Service Name"
 msgstr "Service Name"
 
-#: app/routes/admin/offer/detail.tsx:128
-#: app/routes/admin/offer/detail.tsx:315
+#: app/routes/admin/offer/detail.tsx:139
 msgid "Service pricing refs"
 msgstr "Service pricing refs"
 
@@ -3828,20 +3882,25 @@ msgstr "Session deleted successfully"
 msgid "Session ID"
 msgstr "Session ID"
 
-#: app/features/billing/components/default-offer-card.tsx:28
+#: app/features/billing/components/default-offer-card.tsx:57
 msgid "Set \"{offerName}\" as the platform default Offer? New billing accounts and existing accounts with no BillingEntitlement are entitled automatically. Accounts that already have a BillingEntitlement are not migrated."
 msgstr "Set \"{offerName}\" as the platform default Offer? New billing accounts and existing accounts with no BillingEntitlement are entitled automatically. Accounts that already have a BillingEntitlement are not migrated."
 
-#: app/features/billing/components/default-offer-card.tsx:85
+#: app/features/billing/components/default-offer-card.tsx:51
+#: app/features/billing/components/default-offer-card.tsx:58
 msgid "Set as default"
 msgstr "Set as default"
+
+#: app/features/billing/components/default-offer-card.tsx:56
+msgid "Set platform default"
+msgstr "Set platform default"
 
 #: app/routes/profile/layout.tsx:17
 #: app/routes/profile/setting.tsx:15
 msgid "Settings"
 msgstr "Settings"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:554
+#: app/features/service-catalog/components/add-charge-dialog.tsx:593
 msgid "Setup fee"
 msgstr "Setup fee"
 
@@ -3874,6 +3933,10 @@ msgstr "Sinks"
 #: app/features/fraud/detail/evaluation-sections.tsx:185
 msgid "Skipped"
 msgstr "Skipped"
+
+#: app/routes/admin/offer/detail.tsx:399
+msgid "Snapshot not written yet — controller may still be reconciling."
+msgstr "Snapshot not written yet — controller may still be reconciling."
 
 #: app/features/edge/components/detail/edge-hostnames-card.tsx:100
 msgid "Solving ACME challenge"
@@ -3937,6 +4000,8 @@ msgstr "Start Time"
 #: app/features/quota/components/quota-grant-list.tsx:109
 #: app/features/service-catalog/components/conditions-card.tsx:23
 #: app/routes/admin/group/detail/index.tsx:34
+#: app/routes/admin/offer/detail.tsx:300
+#: app/routes/admin/offer/detail.tsx:321
 #: app/routes/customer/billing-account/detail/index.tsx:157
 #: app/routes/customer/billing-account/detail/index.tsx:203
 #: app/routes/customer/billing-account/detail/index.tsx:235
@@ -3999,11 +4064,16 @@ msgstr "Suspended at"
 msgid "Suspension lifted"
 msgstr "Suspension lifted"
 
-#: app/features/billing/components/offer-switcher-card.tsx:140
+#: app/features/billing/components/offer-switcher-card.tsx:137
+#: app/features/billing/components/offer-switcher-card.tsx:149
 msgid "Switch"
 msgstr "Switch"
 
-#: app/features/billing/components/offer-switcher-card.tsx:67
+#: app/features/billing/components/offer-switcher-card.tsx:147
+msgid "Switch Offer"
+msgstr "Switch Offer"
+
+#: app/features/billing/components/offer-switcher-card.tsx:148
 msgid "Switch this billing account to Offer \"{selectedOffer}\"? Amberflo Customer-Plan and quota grants will update on reconcile."
 msgstr "Switch this billing account to Offer \"{selectedOffer}\"? Amberflo Customer-Plan and quota grants will update on reconcile."
 
@@ -4015,7 +4085,7 @@ msgstr "Switch to dark theme"
 msgid "Switch to light theme"
 msgstr "Switch to light theme"
 
-#: app/features/billing/components/offer-switcher-card.tsx:117
+#: app/features/billing/components/offer-switcher-card.tsx:118
 msgid "Switch to published Offer"
 msgstr "Switch to published Offer"
 
@@ -4060,10 +4130,6 @@ msgstr "Tests show up here once tagged metadata.labels.stability: stable in thei
 msgid "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 msgstr "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:318
-msgid "The current billing backend cannot sync an unmatched catch-all beside matched rates. Price every value explicitly — use a sentinel the meter emits for fallbacks (e.g. other)."
-msgstr "The current billing backend cannot sync an unmatched catch-all beside matched rates. Price every value explicitly — use a sentinel the meter emits for fallbacks (e.g. other)."
-
 #: app/features/milo/components/page/list-table.tsx:370
 msgid "The list is limited to 2,000 results at a time. Refine your search to surface other items."
 msgstr "The list is limited to 2,000 results at a time. Refine your search to surface other items."
@@ -4100,31 +4166,24 @@ msgstr "This flag is managed by the platform and can't be changed from here."
 msgid "This hostname has been verified by Datum"
 msgstr "This hostname has been verified by Datum"
 
-#: app/features/billing/components/default-offer-card.tsx:76
-msgid "This is the default Offer"
-msgstr "This is the default Offer"
-
-#: app/features/service-catalog/components/add-charge-dialog.tsx:330
-msgid "This meter declares no dimensions, so matching is free-text. Leave both empty for a meter-wide rate. If any row matches a dimension, every row must match explicitly."
-msgstr "This meter declares no dimensions, so matching is free-text. Leave both empty for a meter-wide rate. If any row matches a dimension, every row must match explicitly."
-
 #: app/features/domain/components/note-card.tsx:45
 msgid "This note will be permanently deleted and cannot be recovered."
 msgstr "This note will be permanently deleted and cannot be recovered."
-
-#: app/features/billing/components/default-offer-card.tsx:58
-msgid "This Offer is the platform default. New accounts and accounts without a BillingEntitlement pick it up automatically."
-msgstr "This Offer is the platform default. New accounts and accounts without a BillingEntitlement pick it up automatically."
 
 #: app/routes/admin/service-catalog/detail/consumers.tsx:171
 msgid "This service has no producer project recorded, so consumers cannot be listed."
 msgstr "This service has no producer project recorded, so consumers cannot be listed."
 
+#: app/features/service-catalog/components/charges-card.tsx:47
+msgid "This service is not ready for pricing yet. Once its configuration is published, you can add usage-based, one-time, or recurring prices here."
+msgstr "This service is not ready for pricing yet. Once its configuration is published, you can add usage-based, one-time, or recurring prices here."
+
 #: app/features/fraud/policy/policy-detail.tsx:48
 msgid "Thresholds"
 msgstr "Thresholds"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:340
+#: app/features/service-catalog/components/add-charge-dialog.tsx:359
+#: app/features/service-catalog/components/add-charge-dialog.tsx:371
 msgid "Tiered (graduated)"
 msgstr "Tiered (graduated)"
 
@@ -4182,7 +4241,7 @@ msgstr "Total users"
 msgid "Trigger {0}"
 msgstr "Trigger {0}"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:561
+#: app/features/service-catalog/components/add-charge-dialog.tsx:600
 msgid "Trigger is fixed to BillingAccountActivation."
 msgstr "Trigger is fixed to BillingAccountActivation."
 
@@ -4199,6 +4258,7 @@ msgstr "Trust & Safety"
 msgid "TTL"
 msgstr "TTL"
 
+#: app/features/billing/components/offer-included-pricing-list.tsx:119
 #: app/features/fraud/policy/policy-form.tsx:199
 #: app/features/organization/components/org-details-card.tsx:59
 #: app/features/service-catalog/components/conditions-card.tsx:19
@@ -4235,6 +4295,7 @@ msgid "Type to search."
 msgstr "Type to search."
 
 #: app/features/fraud/policy/policy-detail.tsx:152
+#: app/routes/admin/offer/detail.tsx:311
 msgid "Unavailable"
 msgstr "Unavailable"
 
@@ -4248,11 +4309,11 @@ msgstr "Unknown"
 msgid "Unverified"
 msgstr "Unverified"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:384
+#: app/features/service-catalog/components/add-charge-dialog.tsx:403
 msgid "Up to"
 msgstr "Up to"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:384
+#: app/features/service-catalog/components/add-charge-dialog.tsx:403
 msgid "Up to (open-ended)"
 msgstr "Up to (open-ended)"
 
@@ -4356,9 +4417,14 @@ msgstr "Utilization"
 msgid "Validating"
 msgstr "Validating"
 
+#: app/features/service-catalog/components/add-charge-dialog.tsx:338
 #: app/routes/customer/project/detail/dns/detail.tsx:161
 msgid "Value"
 msgstr "Value"
+
+#: app/features/service-catalog/components/add-charge-dialog.tsx:348
+msgid "Value (optional)"
+msgstr "Value (optional)"
 
 #: app/features/domain/components/domain-status-probe.tsx:83
 msgid "Verification in progress..."
@@ -4430,7 +4496,7 @@ msgstr "View Raw Results"
 msgid "Visibility"
 msgstr "Visibility"
 
-#: app/features/service-catalog/components/add-charge-dialog.tsx:354
+#: app/features/service-catalog/components/add-charge-dialog.tsx:379
 msgid "Volume bands"
 msgstr "Volume bands"
 
@@ -4458,6 +4524,10 @@ msgstr "YAML"
 #: app/routes/customer/billing-account/detail/index.tsx:165
 msgid "Yes"
 msgstr "Yes"
+
+#: app/routes/admin/offer/detail.tsx:313
+msgid "Yes — new accounts use this Offer"
+msgstr "Yes — new accounts use this Offer"
 
 #: app/routes/admin/service-catalog/detail/index.tsx:73
 msgid "You do not have permission to view service configurations."

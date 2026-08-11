@@ -1,6 +1,7 @@
 import { BadgeState } from '@/components/badge';
 import { formatChargeType } from '@/features/billing/utils';
 import { SectionCard } from '@/features/milo';
+import { Alert, AlertDescription, AlertTitle } from '@datum-cloud/datum-ui/alert';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisServicesV1Alpha1ServiceCharge } from '@openapi/services.miloapis.com/v1alpha1';
@@ -32,15 +33,32 @@ function summarizeCharge(charge: ComMiloapisServicesV1Alpha1ServiceCharge): stri
 type ChargesListProps = {
   charges: ComMiloapisServicesV1Alpha1ServiceCharge[];
   isPublished?: boolean;
+  hasPublishedConfiguration?: boolean;
 };
 
-export function ChargesList({ charges, isPublished }: ChargesListProps) {
+export function ChargesList({ charges, isPublished, hasPublishedConfiguration }: ChargesListProps) {
+  if (!hasPublishedConfiguration) {
+    return (
+      <Alert>
+        <AlertTitle>
+          <Trans>Not ready for pricing yet</Trans>
+        </AlertTitle>
+        <AlertDescription>
+          <Trans>
+            This service is not ready for pricing yet. Once its configuration is published, you
+            can add usage-based, one-time, or recurring prices here.
+          </Trans>
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
   if (charges.length === 0) {
     return (
       <Text size="sm" textColor="muted" className="italic">
         <Trans>
-          No charges yet. Add Usage, OneTime, or Recurring prices — ChargeFanOut creates
-          ServicePricing objects in milo-system for Offers to pick up.
+          No prices yet. Click Add charge to set usage-based, one-time, or recurring prices. Once
+          saved, they will be available when you create Offers.
         </Trans>
       </Text>
     );
@@ -73,18 +91,30 @@ type ChargesCardProps = {
   charges: ComMiloapisServicesV1Alpha1ServiceCharge[];
   isLoading?: boolean;
   isPublished?: boolean;
+  hasPublishedConfiguration?: boolean;
   action?: ReactNode;
 };
 
-export function ChargesCard({ charges, isLoading, isPublished, action }: ChargesCardProps) {
+export function ChargesCard({
+  charges,
+  isLoading,
+  isPublished,
+  hasPublishedConfiguration = false,
+  action,
+}: ChargesCardProps) {
   return (
     <SectionCard
       className="h-full"
       title={
         <span className="flex items-center gap-2">
           <Tag className="h-4 w-4" />
-          <Trans>Charges</Trans>
+          <Trans>Pricing</Trans>
         </span>
+      }
+      description={
+        <Text size="sm" textColor="muted">
+          <Trans>Prices for this service</Trans>
+        </Text>
       }
       action={action}>
       {isLoading ? (
@@ -92,7 +122,11 @@ export function ChargesCard({ charges, isLoading, isPublished, action }: Charges
           <Trans>Loading…</Trans>
         </Text>
       ) : (
-        <ChargesList charges={charges} isPublished={isPublished} />
+        <ChargesList
+          charges={charges}
+          isPublished={isPublished}
+          hasPublishedConfiguration={hasPublishedConfiguration}
+        />
       )}
     </SectionCard>
   );

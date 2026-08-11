@@ -13,7 +13,8 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisServicesV1Alpha1ServiceConfiguration } from '@openapi/services.miloapis.com/v1alpha1';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
 
 const decimalSchema = z
@@ -244,6 +245,29 @@ type Metric = NonNullable<
   NonNullable<ComMiloapisServicesV1Alpha1ServiceConfiguration['spec']>['metrics']
 >[number];
 
+function suggestUsageChargeName(metricRef: string | undefined): string {
+  return metricRef?.trim() ?? '';
+}
+
+function suggestFixedChargeName(
+  serviceCanonicalName: string,
+  chargeType: 'OneTime' | 'Recurring'
+): string {
+  const suffix = chargeType === 'OneTime' ? 'setup-fee' : 'access-fee';
+  return `${serviceCanonicalName}/${suffix}`;
+}
+
+function suggestChargeName(
+  chargeType: ChargeFormValues['chargeType'],
+  serviceCanonicalName: string,
+  metricRef: string | undefined
+): string {
+  if (chargeType === 'Usage') {
+    return suggestUsageChargeName(metricRef);
+  }
+  return suggestFixedChargeName(serviceCanonicalName, chargeType);
+}
+
 type AddChargeDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -270,10 +294,15 @@ function RateRowFields({
   requireExplicitMatch: boolean;
 }) {
   const mode = (Form.useWatch(`${rateFieldName}.mode`) as 'flat' | 'tiered' | undefined) ?? 'flat';
+  const matchDimension =
+    (Form.useWatch(`${rateFieldName}.matchDimension`) as string | undefined) ?? '';
   const hasDeclaredDimensions = availableDimensions.length > 0;
+  const isMeterWide =
+    !normalizeMatchDimension(matchDimension) ||
+    (!hasDeclaredDimensions && !matchDimension.trim());
 
   return (
-    <div className="space-y-3 rounded-lg border p-3">
+    <div className="bg-muted/20 space-y-4 rounded-lg border p-4">
       <div className="flex items-center justify-between gap-2">
         <Text size="sm" weight="medium">
           <Trans>Rate {index + 1}</Trans>
@@ -290,13 +319,13 @@ function RateRowFields({
         ) : null}
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2">
-        <Form.Field name={`${rateFieldName}.matchDimension`} label={t`Match dimension`}>
-          {hasDeclaredDimensions ? (
+      {hasDeclaredDimensions ? (
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Form.Field name={`${rateFieldName}.matchDimension`} label={t`Applies to`}>
             <Form.Select>
               {!requireExplicitMatch ? (
                 <Form.SelectItem value={NO_MATCH_DIMENSION}>
-                  {t`None (meter-wide rate)`}
+                  {t`All usage (no filter)`}
                 </Form.SelectItem>
               ) : null}
               {availableDimensions.map((dimension) => (
@@ -305,106 +334,98 @@ function RateRowFields({
                 </Form.SelectItem>
               ))}
             </Form.Select>
-          ) : (
+          </Form.Field>
+          {!isMeterWide ? (
+            <Form.Field name={`${rateFieldName}.matchValue`} label={t`Value`}>
+              <Form.Input placeholder={requireExplicitMatch ? 'other' : 'us-central1'} />
+            </Form.Field>
+          ) : null}
+        </div>
+      ) : (
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Form.Field name={`${rateFieldName}.matchDimension`} label={t`Dimension (optional)`}>
             <Form.Input placeholder="region" />
-          )}
-        </Form.Field>
-        <Form.Field name={`${rateFieldName}.matchValue`} label={t`Match value`}>
-          <Form.Input placeholder={requireExplicitMatch ? 'other' : 'us-central1'} />
-        </Form.Field>
-      </div>
-      <Text size="xs" textColor="muted">
-        {requireExplicitMatch ? (
-          <Trans>
-            The current billing backend cannot sync an unmatched catch-all beside matched rates.
-            Price every value explicitly — use a sentinel the meter emits for fallbacks (e.g.
-            other).
-          </Trans>
-        ) : hasDeclaredDimensions ? (
-          <Trans>
-            Dimensions come from the selected meter. Leave as meter-wide for a single rate, or match
-            a value per row. For a fallback price, prefer an explicit value such as other (not an
-            unmatched catch-all).
-          </Trans>
-        ) : (
-          <Trans>
-            This meter declares no dimensions, so matching is free-text. Leave both empty for a
-            meter-wide rate. If any row matches a dimension, every row must match explicitly.
-          </Trans>
-        )}
-      </Text>
-
-      <Form.Field name={`${rateFieldName}.mode`} label={t`Pricing`} required>
-        <Form.Select>
-          <Form.SelectItem value="flat">{t`Flat`}</Form.SelectItem>
-          <Form.SelectItem value="tiered">{t`Tiered (graduated)`}</Form.SelectItem>
-        </Form.Select>
-      </Form.Field>
+          </Form.Field>
+          <Form.Field name={`${rateFieldName}.matchValue`} label={t`Value (optional)`}>
+            <Form.Input placeholder="us-central1" />
+          </Form.Field>
+        </div>
+      )}
 
       {mode === 'flat' ? (
-        <Form.Field name={`${rateFieldName}.flat`} label={t`Flat rate (USD)`} required>
-          <Form.Input placeholder="0.025" />
-        </Form.Field>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Form.Field name={`${rateFieldName}.mode`} label={t`Pricing`} required>
+            <Form.Select>
+              <Form.SelectItem value="flat">{t`Flat`}</Form.SelectItem>
+              <Form.SelectItem value="tiered">{t`Tiered (graduated)`}</Form.SelectItem>
+            </Form.Select>
+          </Form.Field>
+          <Form.Field name={`${rateFieldName}.flat`} label={t`Rate (USD)`} required>
+            <Form.Input placeholder="0.000001" />
+          </Form.Field>
+        </div>
       ) : (
-        <Form.FieldArray name={`${rateFieldName}.bands`}>
-          {({ fields, append, remove, move }) => (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between gap-2">
-                <Text size="sm" weight="medium">
-                  <Trans>Volume bands</Trans>
-                </Text>
-                <Button
-                  type="tertiary"
-                  theme="outline"
-                  size="small"
-                  icon={<ACTION_ICONS.add size={14} />}
-                  htmlType="button"
-                  onClick={() => {
-                    const openEndedIndex = fields.length - 1;
-                    append({ upTo: '10000', rate: '0' });
-                    // Keep the open-ended band last.
-                    move(openEndedIndex + 1, openEndedIndex);
-                  }}>
-                  <Trans>Add band</Trans>
-                </Button>
-              </div>
-              <Text size="xs" textColor="muted">
-                <Trans>
-                  Every band except the last needs an exclusive upTo. The last band is open-ended.
-                </Trans>
-              </Text>
-              {fields.map((bandField, bandIndex) => {
-                const isLast = bandIndex === fields.length - 1;
-                return (
-                  <div
-                    key={bandField.key}
-                    className="grid gap-3 rounded-md border border-dashed p-3 sm:grid-cols-[1fr_1fr_auto]">
-                    <Form.Field
-                      name={`${bandField.name}.upTo`}
-                      label={isLast ? t`Up to (open-ended)` : t`Up to`}
-                      required={!isLast}>
-                      <Form.Input placeholder={isLast ? '' : '1000'} disabled={isLast} />
-                    </Form.Field>
-                    <Form.Field name={`${bandField.name}.rate`} label={t`Rate (USD)`} required>
-                      <Form.Input placeholder="0" />
-                    </Form.Field>
-                    <div className="flex items-end">
-                      <Button
-                        type="tertiary"
-                        theme="borderless"
-                        size="small"
-                        icon={<ACTION_ICONS.close size={14} />}
-                        htmlType="button"
-                        disabled={fields.length <= 2 || isLast}
-                        onClick={() => remove(bandIndex)}
-                      />
+        <>
+          <Form.Field name={`${rateFieldName}.mode`} label={t`Pricing`} required>
+            <Form.Select>
+              <Form.SelectItem value="flat">{t`Flat`}</Form.SelectItem>
+              <Form.SelectItem value="tiered">{t`Tiered (graduated)`}</Form.SelectItem>
+            </Form.Select>
+          </Form.Field>
+          <Form.FieldArray name={`${rateFieldName}.bands`}>
+            {({ fields, append, remove, move }) => (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <Text size="sm" weight="medium">
+                    <Trans>Volume bands</Trans>
+                  </Text>
+                  <Button
+                    type="tertiary"
+                    theme="outline"
+                    size="small"
+                    icon={<ACTION_ICONS.add size={14} />}
+                    htmlType="button"
+                    onClick={() => {
+                      const openEndedIndex = fields.length - 1;
+                      append({ upTo: '10000', rate: '0' });
+                      move(openEndedIndex + 1, openEndedIndex);
+                    }}>
+                    <Trans>Add band</Trans>
+                  </Button>
+                </div>
+                {fields.map((bandField, bandIndex) => {
+                  const isLast = bandIndex === fields.length - 1;
+                  return (
+                    <div
+                      key={bandField.key}
+                      className="bg-background grid gap-3 rounded-md border p-3 sm:grid-cols-[1fr_1fr_auto]">
+                      <Form.Field
+                        name={`${bandField.name}.upTo`}
+                        label={isLast ? t`Up to (open-ended)` : t`Up to`}
+                        required={!isLast}>
+                        <Form.Input placeholder={isLast ? '' : '1000000'} disabled={isLast} />
+                      </Form.Field>
+                      <Form.Field name={`${bandField.name}.rate`} label={t`Rate (USD)`} required>
+                        <Form.Input placeholder="0" />
+                      </Form.Field>
+                      <div className="flex items-end pb-1">
+                        <Button
+                          type="tertiary"
+                          theme="borderless"
+                          size="small"
+                          icon={<ACTION_ICONS.close size={14} />}
+                          htmlType="button"
+                          disabled={fields.length <= 2 || isLast}
+                          onClick={() => remove(bandIndex)}
+                        />
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </Form.FieldArray>
+                  );
+                })}
+              </div>
+            )}
+          </Form.FieldArray>
+        </>
       )}
     </div>
   );
@@ -419,6 +440,8 @@ function ChargeFormFields({
 }) {
   const chargeType = (Form.useWatch('chargeType') as ChargeFormValues['chargeType']) ?? 'Usage';
   const metricRef = Form.useWatch('metricRef') as string | undefined;
+  const { form } = Form.useFormContext();
+  const lastSuggestedName = useRef('');
   const watchedRates = (Form.useWatch('rates') as ChargeFormValues['rates']) ?? [];
   const selectedMetric = metrics.find((metric) => metric.name === metricRef);
   const availableDimensions = selectedMetric?.dimensions ?? [];
@@ -427,6 +450,18 @@ function ChargeFormFields({
     (rate) => !!normalizeMatchDimension(rate.matchDimension)
   );
   const firstDimension = availableDimensions[0];
+
+  useEffect(() => {
+    const suggested = suggestChargeName(chargeType, serviceCanonicalName, metricRef);
+    if (!suggested) return;
+
+    const rhf = form.raw as UseFormReturn<ChargeFormValues>;
+    const current = (rhf.getValues('name') ?? '').trim();
+    if (current && current !== lastSuggestedName.current) return;
+
+    rhf.setValue('name', suggested, { shouldDirty: true, shouldValidate: true });
+    lastSuggestedName.current = suggested;
+  }, [chargeType, form, metricRef, serviceCanonicalName]);
 
   return (
     <>
@@ -478,7 +513,7 @@ function ChargeFormFields({
             </div>
           ) : null}
           <Form.Field name="name" label={t`Charge name`} required>
-            <Form.Input placeholder={metricRef || `${serviceCanonicalName}/example`} />
+            <Form.Input />
           </Form.Field>
           <Form.Field name="displayName" label={t`Display name`}>
             <Form.Input placeholder={t`CPU allocated`} />
@@ -490,23 +525,32 @@ function ChargeFormFields({
           <Form.FieldArray name="rates">
             {({ fields, append, remove }) => (
               <div className="space-y-3 border-t pt-4">
-                <div className="flex items-center justify-between gap-2">
-                  <div>
-                    <Text size="sm" weight="semibold">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold">
                       <Trans>Rates</Trans>
-                    </Text>
-                    <Text size="xs" textColor="muted">
-                      <Trans>
-                        Add one row per dimension value (for example region or tier). When using
-                        matches, price every value explicitly — use a sentinel like other for
-                        fallbacks.
-                      </Trans>
-                    </Text>
+                    </p>
+                    <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
+                      {requireExplicitMatch ? (
+                        <Trans>
+                          Add a row per price variant. When matching on a dimension, set a price for
+                          every value (use other as a catch-all).
+                        </Trans>
+                      ) : hasDeclaredDimensions ? (
+                        <Trans>
+                          Add a row per price variant. Leave Applies to as “All usage” for one price
+                          across the whole meter.
+                        </Trans>
+                      ) : (
+                        <Trans>Add a row per price variant, or leave matching empty for one price.</Trans>
+                      )}
+                    </p>
                   </div>
                   <Button
                     type="tertiary"
                     theme="outline"
                     size="small"
+                    className="shrink-0"
                     icon={<ACTION_ICONS.add size={14} />}
                     htmlType="button"
                     onClick={() => {
@@ -542,13 +586,7 @@ function ChargeFormFields({
       ) : (
         <>
           <Form.Field name="name" label={t`Charge name`} required>
-            <Form.Input
-              placeholder={
-                chargeType === 'OneTime'
-                  ? `${serviceCanonicalName}/setup-fee`
-                  : `${serviceCanonicalName}/access-fee`
-              }
-            />
+            <Form.Input />
           </Form.Field>
           <Form.Field name="displayName" label={t`Display name`}>
             <Form.Input placeholder={chargeType === 'OneTime' ? t`Setup fee` : t`Access fee`} />
@@ -582,11 +620,12 @@ export function AddChargeDialog({
 
   const defaultMeterWideDimension =
     (metrics[0]?.dimensions?.length ?? 0) > 0 ? NO_MATCH_DIMENSION : '';
+  const defaultMeter = metrics[0]?.name ?? '';
   const defaultValues: ChargeFormValues = {
     chargeType: 'Usage',
-    name: '',
+    name: suggestUsageChargeName(defaultMeter),
     displayName: '',
-    metricRef: metrics[0]?.name ?? '',
+    metricRef: defaultMeter,
     pricingUnit: '',
     // Start meter-wide; authors opt into dimension matches per row.
     rates: [emptyFlatRate(defaultMeterWideDimension)],
@@ -602,12 +641,13 @@ export function AddChargeDialog({
       <Dialog.Content className="sm:max-w-2xl">
         <Dialog.Header
           title={t`Add charge`}
-          description={t`Append a Usage, OneTime, or Recurring charge. Usage rates can vary by dimension (region, tier, model) and support flat or graduated tiers. ChargeFanOut writes ServicePricing into milo-system for Offers.`}
+          description={t`Add a usage-based, one-time, or recurring price. Usage prices can vary by region, tier, or other dimensions, with flat or tiered rates.`}
         />
         <Form.Root
+          key={open ? configurationName : 'closed'}
           schema={chargeFormSchema}
           defaultValues={defaultValues}
-          className="space-y-4"
+          className="flex min-h-0 flex-1 flex-col overflow-hidden"
           onSubmit={async (values) => {
             setIsSubmitting(true);
             try {
@@ -638,10 +678,10 @@ export function AddChargeDialog({
           }}>
           {({ isDirty, isValid }) => (
             <>
-              <Dialog.Body className="max-h-[70vh] space-y-4 overflow-y-auto px-5">
+              <Dialog.Body className="space-y-4 px-5">
                 <ChargeFormFields serviceCanonicalName={serviceCanonicalName} metrics={metrics} />
               </Dialog.Body>
-              <Dialog.Footer className="gap-2">
+              <Dialog.Footer className="shrink-0 gap-2">
                 <Button
                   type="tertiary"
                   theme="borderless"

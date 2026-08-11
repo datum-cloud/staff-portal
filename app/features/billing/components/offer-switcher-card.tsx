@@ -1,5 +1,6 @@
-import { getOfferDisplayName } from '@/features/billing/utils';
+import { getOfferDisplayName, formatLaunchStage } from '@/features/billing/utils';
 import { SectionCard } from '@/features/milo';
+import { DialogConfirm } from '@/components/dialog';
 import {
   useOfferDetailQuery,
   useOfferListQuery,
@@ -51,24 +52,23 @@ export function OfferSwitcherCard({
   );
 
   const [selectedOffer, setSelectedOffer] = useState('');
+  const [switchConfirmOpen, setSwitchConfirmOpen] = useState(false);
 
   const activeDisplayName = activeOfferQuery.data
     ? getOfferDisplayName(activeOfferQuery.data)
     : activeOfferName;
 
-  const handleSwitch = async () => {
+  const handleSwitchClick = () => {
     if (!entitlementName || !selectedOffer) return;
     if (selectedOffer === activeOfferName) {
       toast.success(t`Account is already on that Offer`);
       return;
     }
-    if (
-      !window.confirm(
-        t`Switch this billing account to Offer "${selectedOffer}"? Amberflo Customer-Plan and quota grants will update on reconcile.`
-      )
-    ) {
-      return;
-    }
+    setSwitchConfirmOpen(true);
+  };
+
+  const handleSwitchConfirm = async () => {
+    if (!entitlementName || !selectedOffer) return;
     try {
       await switchMutation.mutateAsync({
         entitlementName,
@@ -78,6 +78,7 @@ export function OfferSwitcherCard({
       setSelectedOffer('');
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t`Failed to switch Offer`);
+      throw err;
     }
   };
 
@@ -106,7 +107,7 @@ export function OfferSwitcherCard({
               )}
               {activeOfferQuery.data?.spec?.launchStage ? (
                 <Text size="sm" className="text-muted-foreground mt-1">
-                  {activeOfferQuery.data.spec.launchStage}
+                  {formatLaunchStage(activeOfferQuery.data.spec.launchStage)}
                 </Text>
               ) : null}
             </div>
@@ -134,15 +135,24 @@ export function OfferSwitcherCard({
               </Select>
               <Button
                 type="primary"
-                disabled={!selectedOffer || switchMutation.isPending}
-                loading={switchMutation.isPending}
-                onClick={handleSwitch}>
+                disabled={!selectedOffer}
+                onClick={handleSwitchClick}>
                 <Trans>Switch</Trans>
               </Button>
             </div>
           </div>
         </div>
       )}
+
+      <DialogConfirm
+        open={switchConfirmOpen}
+        onOpenChange={setSwitchConfirmOpen}
+        title={t`Switch Offer`}
+        description={t`Switch this billing account to Offer "${selectedOffer}"? Amberflo Customer-Plan and quota grants will update on reconcile.`}
+        confirmText={t`Switch`}
+        cancelText={t`Cancel`}
+        onConfirm={handleSwitchConfirm}
+      />
     </SectionCard>
   );
 }

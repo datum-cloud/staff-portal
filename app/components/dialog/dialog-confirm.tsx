@@ -84,8 +84,8 @@ export default function DialogConfirm({
       <Dialog.Content className="sm:max-w-md">
         <Dialog.Header title={title} description={description} />
 
-        <Dialog.Body className="px-5">
-          {requireConfirmation && (
+        {requireConfirmation ? (
+          <Dialog.Body className="px-5 pt-0 pb-0">
             <div className="flex flex-col gap-2">
               <label htmlFor="confirmation-input" className="text-sm font-medium">
                 <Trans>
@@ -99,8 +99,8 @@ export default function DialogConfirm({
                 disabled={isLoading}
               />
             </div>
-          )}
-        </Dialog.Body>
+          </Dialog.Body>
+        ) : null}
 
         <Dialog.Footer className="gap-2">
           <Button
