@@ -321,8 +321,8 @@ msgstr "API Group"
 #: app/features/activity/components/activity-list.tsx:488
 #: app/features/project/components/project-resources-card.tsx:62
 #: app/routes/customer/resource/edge/index.tsx:10
-#: app/routes/customer/resource/index.tsx:49
-#: app/routes/customer/resource/index.tsx:280
+#: app/routes/customer/resource/index.tsx:130
+#: app/routes/customer/resource/index.tsx:374
 msgid "Application Load Balancer"
 msgstr "Application Load Balancer"
 
@@ -904,8 +904,8 @@ msgstr "Create Policy"
 #: app/routes/customer/project/detail/export-policy/index.tsx:51
 #: app/routes/customer/project/index.tsx:136
 #: app/routes/customer/project/index.tsx:184
-#: app/routes/customer/resource/index.tsx:251
-#: app/routes/customer/resource/index.tsx:296
+#: app/routes/customer/resource/index.tsx:338
+#: app/routes/customer/resource/index.tsx:394
 #: app/routes/customer/user/detail/index.tsx:207
 #: app/routes/customer/user/index.tsx:165
 #: app/routes/customer/user/index.tsx:316
@@ -1138,7 +1138,7 @@ msgstr "Deprecated"
 msgid "Description"
 msgstr "Description"
 
-#: app/routes/customer/resource/index.tsx:246
+#: app/routes/customer/resource/index.tsx:333
 msgid "Detail"
 msgstr "Detail"
 
@@ -1193,8 +1193,8 @@ msgstr "Display name is required"
 #: app/routes/customer/organization/detail/layout.tsx:80
 #: app/routes/customer/project/detail/dns/layout.tsx:5
 #: app/routes/customer/project/detail/layout.tsx:122
-#: app/routes/customer/resource/index.tsx:50
-#: app/routes/customer/resource/index.tsx:281
+#: app/routes/customer/resource/index.tsx:131
+#: app/routes/customer/resource/index.tsx:375
 msgid "DNS"
 msgstr "DNS"
 
@@ -1251,8 +1251,8 @@ msgstr "DNS Zones"
 #: app/features/domain/components/domain-list.tsx:61
 #: app/features/fraud/detail/maxmind-rows.tsx:237
 #: app/routes/customer/project/detail/domain/detail.tsx:112
-#: app/routes/customer/resource/index.tsx:51
-#: app/routes/customer/resource/index.tsx:282
+#: app/routes/customer/resource/index.tsx:132
+#: app/routes/customer/resource/index.tsx:376
 msgid "Domain"
 msgstr "Domain"
 
@@ -1292,7 +1292,7 @@ msgstr "Download unavailable"
 msgid "Draft"
 msgstr "Draft"
 
-#: app/routes/customer/resource/index.tsx:274
+#: app/routes/customer/resource/index.tsx:368
 msgid "Each resource type is limited to 2,000 results at a time. Refine your search to surface other resources."
 msgstr "Each resource type is limited to 2,000 results at a time. Refine your search to surface other resources."
 
@@ -2207,7 +2207,7 @@ msgstr "My Profile"
 #: app/routes/customer/project/detail/export-policy/index.tsx:28
 #: app/routes/customer/project/detail/secret.tsx:24
 #: app/routes/customer/project/index.tsx:73
-#: app/routes/customer/resource/index.tsx:211
+#: app/routes/customer/resource/index.tsx:297
 #: app/routes/customer/user/detail/organization.tsx:34
 #: app/routes/customer/user/index.tsx:114
 #: app/routes/marketing/contact-group/detail/member.tsx:181
@@ -2492,7 +2492,7 @@ msgstr "No quotas"
 msgid "No quotas are above 70% utilization"
 msgstr "No quotas are above 70% utilization"
 
-#: app/routes/customer/resource/index.tsx:271
+#: app/routes/customer/resource/index.tsx:365
 msgid "No resources found."
 msgstr "No resources found."
 
@@ -2875,8 +2875,8 @@ msgstr "Programming DNS records for this hostname"
 #: app/features/domain/components/domain-list.tsx:71
 #: app/features/edge/components/edge-list.tsx:119
 #: app/routes/customer/billing-account/detail/index.tsx:173
-#: app/routes/customer/resource/index.tsx:233
-#: app/routes/customer/resource/index.tsx:288
+#: app/routes/customer/resource/index.tsx:320
+#: app/routes/customer/resource/index.tsx:386
 msgid "Project"
 msgstr "Project"
 
@@ -3122,7 +3122,7 @@ msgstr "Resource:"
 #: app/components/app-search/search-results.tsx:214
 #: app/features/project/components/project-resources-card.tsx:58
 #: app/routes/customer/organization/detail/layout.tsx:75
-#: app/routes/customer/resource/index.tsx:21
+#: app/routes/customer/resource/index.tsx:26
 #: app/routes/customer/resource/layout.tsx:5
 msgid "Resources"
 msgstr "Resources"
@@ -3327,7 +3327,7 @@ msgid "Search projects..."
 msgstr "Search projects..."
 
 #: app/features/billing/components/billing-account-list.tsx:267
-#: app/routes/customer/resource/index.tsx:290
+#: app/routes/customer/resource/index.tsx:388
 msgid "Search projects…"
 msgstr "Search projects…"
 
@@ -3343,7 +3343,7 @@ msgstr "Search quotas..."
 msgid "Search records..."
 msgstr "Search records..."
 
-#: app/routes/customer/resource/index.tsx:270
+#: app/routes/customer/resource/index.tsx:364
 msgid "Search resources..."
 msgstr "Search resources..."
 
@@ -3787,8 +3787,8 @@ msgstr "TTL"
 #: app/routes/customer/project/detail/dns/detail.tsx:93
 #: app/routes/customer/project/detail/dns/detail.tsx:157
 #: app/routes/customer/project/detail/export-policy/detail.tsx:162
-#: app/routes/customer/resource/index.tsx:217
-#: app/routes/customer/resource/index.tsx:278
+#: app/routes/customer/resource/index.tsx:303
+#: app/routes/customer/resource/index.tsx:372
 #: app/routes/customer/user/detail/organization.tsx:48
 msgid "Type"
 msgstr "Type"
@@ -3806,7 +3806,7 @@ msgstr "Type at least 2 characters to search all projects."
 msgid "Type at least 3 characters to search."
 msgstr "Type at least 3 characters to search."
 
-#: app/routes/customer/resource/index.tsx:291
+#: app/routes/customer/resource/index.tsx:389
 msgid "Type to filter by project name."
 msgstr "Type to filter by project name."
 

@@ -55,6 +55,13 @@ const envSchema = z.object({
   // Meter names are discovered automatically from platform MeterDefinition resources.
   AMBERFLO_API_KEY: z.string().optional(),
   AMBERFLO_BASE_URL: z.url().optional(),
+
+  // Portal plugin system (see app/modules/plugins/) — dev-only static
+  // registry source. "<slug>=<url>,…" for quick UI iteration, or a JSON array
+  // of spec-shaped entries for richer options. Both are hard-disabled outside
+  // NODE_ENV=development.
+  PORTAL_PLUGINS: z.string().optional(),
+  PORTAL_PLUGINS_JSON: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

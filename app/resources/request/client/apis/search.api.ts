@@ -331,8 +331,14 @@ async function searchResourcePage<T>(
  * to fetch every page rather than silently dropping anything past the first
  * 100 — up to `SEARCH_MAX_PAGES` as a runaway-query safety net. `hasMore` is
  * true only if that safety net was hit while more pages were still available.
+ *
+ * Exported (not just used internally by the named `searchXListQuery` wrappers
+ * below) so `app/routes/customer/resource/index.tsx` can call it directly for
+ * a resource type declared by a `portal.resource/platform` plugin extension
+ * (see `app/modules/plugins/`) — the target GVK isn't known at build time for
+ * those, so there's no fixed wrapper to add per plugin-contributed type.
  */
-async function searchResourceList<T>(
+export async function searchResourceList<T>(
   target: NetMiloapisGoSearchPkgApisSearchV1Alpha1TargetResource,
   queryString: string = ''
 ): Promise<{ items: SearchResultItem<T>[]; hasMore: boolean }> {
