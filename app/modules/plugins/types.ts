@@ -14,10 +14,16 @@
  *   platform-wide mount. Add a `.../project`-equivalent pair later if a
  *   staff-portal plugin ever needs one.
  * - No `portal.card/*` extension type yet — no home-page-card use case here.
- * - No `PortalPlugin` CRD / `portal.miloapis.com` constants, and
- *   `PluginRegistrySource` only has `'static'` — staff-portal has no
- *   production (CRD-watched) discovery path in v1. See `server/index.ts`.
  */
+
+// ═══════════════════════════════════════════════════════════
+// CRD identity (portal.miloapis.com/v1alpha1, cluster-scoped)
+// ═══════════════════════════════════════════════════════════
+
+export const PROVIDER_PORTAL_PLUGIN_GROUP = 'portal.miloapis.com';
+export const PROVIDER_PORTAL_PLUGIN_VERSION = 'v1alpha1';
+/** Plural resource name used in the Kubernetes REST path. */
+export const PROVIDER_PORTAL_PLUGIN_PLURAL = 'providerportalplugins';
 
 /** Default manifest path appended to `assets.baseURL` when none is declared. */
 export const DEFAULT_MANIFEST_PATH = '/plugin-manifest.json';
@@ -34,12 +40,13 @@ export const HOST_SDK_VERSION = '1.0.0';
 // ═══════════════════════════════════════════════════════════
 
 /**
- * Where a registry entry originated. Only `static` exists today (synthesized
- * from `PORTAL_PLUGINS`, dev only). A CRD-watched or otherwise dynamically
- * discovered production source would add a variant here, following
- * cloud-portal's `'kubeconfig' | 'platform'` precedent.
+ * Where a registry entry originated.
+ * - `static`   — synthesized from `PORTAL_PLUGINS` (dev only).
+ * - `platform` — watched from `ProviderPortalPlugin` on the platform control
+ *   plane (production). No `kubeconfig` (dev-only kwok) source exists here —
+ *   staff-portal never had one to begin with, unlike cloud-portal.
  */
-export type PluginRegistrySource = 'static';
+export type PluginRegistrySource = 'static' | 'platform';
 
 // ═══════════════════════════════════════════════════════════
 // PortalPlugin spec

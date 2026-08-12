@@ -1,17 +1,18 @@
 /**
  * Server-side plugin registry singleton + wiring.
  *
- * Ported from cloud-portal, trimmed: only the `static` (dev, `PORTAL_PLUGINS`)
- * source is wired up. cloud-portal's `kubeconfig` source and its production
- * `platform` (CRD-watched) source are intentionally out of scope — staff-portal
- * has no `PortalPlugin` CRD / `ServiceConfiguration.spec.userInterface`
- * equivalent today. Loaders and routes read the registry through
- * {@link getPlugins} / {@link getPlugin}.
+ * Ported from cloud-portal. Two sources: `static` (dev, `PORTAL_PLUGINS`) and
+ * `platform` (production, watches `ProviderPortalPlugin` on milo's control
+ * plane). Loaders and routes read the registry through {@link getPlugins} /
+ * {@link getPlugin}.
  */
 import type { PluginRegistryEntry } from '../types';
+import { KubeClient, parseKubeconfig, resolveKubeContext } from './kubeconfig';
+import { PlatformSource } from './platform-source';
 import { PluginRegistry } from './registry';
 import { StaticSource } from './static-source';
 import { env } from '@/utils/config/env.server';
+import { readFileSync } from 'node:fs';
 
 // Re-export the sanitizer on the server accessor surface (alongside
 // getPlugin/getPlugins) so a server loader can project a getPlugin(slug) result
@@ -34,9 +35,10 @@ export function getPlugin(slug: string): PluginRegistryEntry | undefined {
 let initialized = false;
 
 /**
- * Wires the registry's static source. Idempotent. Hard-disabled outside
+ * Wires the registry's sources. Idempotent. `static` is hard-disabled outside
  * development — it is a plugin-loading vector and must never populate the
- * registry in production.
+ * registry in production. `platform` is the opposite: not dev-gated at all,
+ * since it's the real production discovery path.
  */
 export function initPluginRegistry(): void {
   if (initialized) return;
@@ -49,8 +51,20 @@ export function initPluginRegistry(): void {
           'ignored outside NODE_ENV=development'
       );
     }
-    return;
+  } else {
+    void new StaticSource(pluginRegistry).start();
   }
 
-  void new StaticSource(pluginRegistry).start();
+  const platformKubeconfigPath = env.PLATFORM_REGISTRY_KUBECONFIG;
+  if (platformKubeconfigPath) {
+    try {
+      const config = parseKubeconfig(readFileSync(platformKubeconfigPath, 'utf8'));
+      const context = resolveKubeContext(config);
+      const client = new KubeClient(context);
+      new PlatformSource(pluginRegistry, client).start();
+      console.info(`[plugins] platform source watching ${context.server}`);
+    } catch (err) {
+      console.error(`[plugins] failed to start platform source: ${String(err)}`);
+    }
+  }
 }

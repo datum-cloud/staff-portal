@@ -62,6 +62,12 @@ const envSchema = z.object({
   // NODE_ENV=development.
   PORTAL_PLUGINS: z.string().optional(),
   PORTAL_PLUGINS_JSON: z.string().optional(),
+
+  // Portal plugin system — platform registry source. Path to a kubeconfig
+  // (mounted from a cert-manager CSI volume) used to watch ProviderPortalPlugin
+  // on milo's control plane at boot. Meant for real deployments — no
+  // NODE_ENV gating, unlike the dev-only vars above.
+  PLATFORM_REGISTRY_KUBECONFIG: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

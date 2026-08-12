@@ -1,8 +1,8 @@
 import { apiRequest } from '@/modules/axios/axios.server';
 import { LokiActivityLogsService, QueryParams } from '@/modules/loki/server';
-import { PrometheusService } from '@/modules/prometheus';
 import { initPluginRegistry } from '@/modules/plugins/server';
 import { pluginsRoutes } from '@/modules/plugins/server/routes';
+import { PrometheusService } from '@/modules/prometheus';
 import { EnvVariables } from '@/server/iface';
 import { logApiError, logApiSuccess } from '@/server/logger';
 import { authMiddleware, getToken } from '@/server/middleware';

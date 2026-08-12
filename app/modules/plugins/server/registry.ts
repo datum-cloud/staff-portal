@@ -1,14 +1,13 @@
 /**
- * In-memory plugin registry. Ported from cloud-portal, trimmed to a single
- * source: `static` (see `types.ts` — no `kubeconfig`/`platform` source exists
- * in staff-portal v1). The per-source partitioning and precedence machinery
- * is kept anyway so adding a second source later is additive, not a rewrite.
+ * In-memory plugin registry. Ported from cloud-portal. Precedence: `static`
+ * (dev-override) beats `platform` (the real, CRD-watched source) on slug
+ * collision — matches cloud-portal's precedent.
  */
 import type { PluginRegistryEntry, PluginRegistrySource, PortalPluginSpec } from '../types';
 import { isReady, resolveManifest, type ResolveManifestOptions } from './manifest-pipeline';
 
 /** Highest precedence first. */
-const SOURCE_PRECEDENCE: PluginRegistrySource[] = ['static'];
+const SOURCE_PRECEDENCE: PluginRegistrySource[] = ['static', 'platform'];
 
 export interface PluginRegistryOptions {
   /** Injectable for tests; forwarded to the manifest pipeline. */

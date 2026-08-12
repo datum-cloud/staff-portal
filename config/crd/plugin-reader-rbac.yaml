@@ -1,0 +1,40 @@
+# Grants the provider-portal-plugin-reader credential (see
+# infra/apps/staff-portal/staging/patch-deployment.yaml's CSI volume) read-only
+# access to ProviderPortalPlugin on milo's control plane. Bound to a
+# dedicated group rather than system:masters — this credential is mounted
+# into the live, internet-facing staff-portal app pod, not just wielded by
+# Flux, so it carries only what platform-source.ts actually needs. Mirrors
+# cloud-portal's config/crd/plugin-reader-rbac.yaml.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: provider-portal-plugin-reader
+rules:
+  - apiGroups:
+      - portal.miloapis.com
+    resources:
+      - providerportalplugins
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - portal.miloapis.com
+    resources:
+      - providerportalplugins/status
+    verbs:
+      - get
+      - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: provider-portal-plugin-reader
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: provider-portal-plugin-reader
+subjects:
+  - kind: Group
+    name: datum:provider-portal-plugin-reader
+    apiGroup: rbac.authorization.k8s.io
