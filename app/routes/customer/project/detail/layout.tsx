@@ -7,6 +7,8 @@ import {
 import { DetailShell, type EntityTab } from '@/features/milo';
 import { useEnv } from '@/hooks';
 import { authenticator } from '@/modules/auth';
+import { usePlugins } from '@/modules/plugins/client/use-plugins';
+import { findWorkloadListPluginSlug } from '@/modules/plugins/client/workload-plugin';
 import { orgDetailQuery, projectDetailQuery } from '@/resources/request/server';
 import { ACTION_ICONS, ENTITY_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
 import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
@@ -16,6 +18,7 @@ import {
   ComMiloapisResourcemanagerV1Alpha1Organization,
   ComMiloapisResourcemanagerV1Alpha1Project,
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
+import { Boxes } from 'lucide-react';
 import { useMemo } from 'react';
 import { useLoaderData, useLocation, useParams } from 'react-router';
 
@@ -77,6 +80,13 @@ export default function Layout() {
   const projectName = project?.metadata?.name ?? '';
   const displayName = project?.metadata?.annotations?.['kubernetes.io/description'] || projectName;
 
+  // Nav tabs for plugin-contributed project pages are additive and
+  // best-effort: if no installed plugin serves a Workloads list page,
+  // `workloadPluginSlug` stays null and the tab is simply omitted rather
+  // than linking to a dead end.
+  const { data: plugins = [] } = usePlugins();
+  const workloadPluginSlug = useMemo(() => findWorkloadListPluginSlug(plugins), [plugins]);
+
   const cloudProjectUrl = useMemo(() => {
     if (!env?.CLOUD_PORTAL_URL || !projectName) return null;
     const base = `${env.CLOUD_PORTAL_URL}/project/${projectName}`;
@@ -128,6 +138,21 @@ export default function Layout() {
       href: projectRoutes.domain.list(projectName),
       icon: ENTITY_ICONS.domain,
     },
+    ...(workloadPluginSlug
+      ? [
+          {
+            label: t`Compute`,
+            icon: Boxes,
+            match: projectRoutes.plugin.mount(projectName, workloadPluginSlug),
+            children: [
+              {
+                label: t`Workloads`,
+                href: projectRoutes.plugin.mount(projectName, workloadPluginSlug),
+              },
+            ],
+          },
+        ]
+      : []),
     {
       label: t`Metrics`,
       href: projectRoutes.exportPolicy.list(projectName),

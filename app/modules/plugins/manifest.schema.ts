@@ -1,11 +1,12 @@
 /**
  * Zod validation for `plugin-manifest.json`. Ported from cloud-portal, with
- * `portal.nav/project` / `portal.page/project` / `portal.card/project-home`
- * replaced by staff-portal's platform-scoped pair (see `types.ts`).
+ * `portal.nav/project` / `portal.card/project-home` dropped (see `types.ts`);
+ * `portal.page/project` itself is kept, unchanged in shape from cloud-portal's
+ * version.
  *
  * Contract rules enforced here:
- * - Known extension types (`portal.nav/platform`, `portal.page/platform`) are
- *   strictly validated.
+ * - Known extension types (`portal.nav/platform`, `portal.page/platform`,
+ *   `portal.page/project`) are strictly validated.
  * - Unknown extension types are *tolerated*, not fatal: they parse through a
  *   permissive shape and are reported so the caller can record a status note.
  * - Every `$codeRef` on a known extension must reference a declared
@@ -14,6 +15,7 @@
 import {
   EXTENSION_NAV_PLATFORM,
   EXTENSION_PAGE_PLATFORM,
+  EXTENSION_PAGE_PROJECT,
   EXTENSION_RESOURCE_PLATFORM,
   KNOWN_EXTENSION_TYPES,
   type PluginManifest,
@@ -57,6 +59,15 @@ const pagePlatformExtensionSchema = z.object({
   requirements: requirementsSchema,
 });
 
+const pageProjectExtensionSchema = z.object({
+  type: z.literal(EXTENSION_PAGE_PROJECT),
+  properties: z.object({
+    path: z.string(),
+    component: codeRefSchema,
+  }),
+  requirements: requirementsSchema,
+});
+
 const resourcePlatformExtensionSchema = z.object({
   type: z.literal(EXTENSION_RESOURCE_PLATFORM),
   properties: z.object({
@@ -93,6 +104,7 @@ const unknownExtensionSchema = z.object({
 const extensionSchema = z.union([
   navPlatformExtensionSchema,
   pagePlatformExtensionSchema,
+  pageProjectExtensionSchema,
   resourcePlatformExtensionSchema,
   unknownExtensionSchema,
 ]);
