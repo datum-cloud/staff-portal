@@ -77,6 +77,15 @@ export const projectRoutes = {
     detail: (projectName: string, secretName: string) =>
       `/customers/projects/${projectName}/secrets/${secretName}`,
   },
+  // Project-scoped plugin mount (`portal.page/project` extensions) — see
+  // app/routes/customer/project/detail/plugins.tsx. `splat` is whatever path
+  // the plugin's own page extension declared (e.g. a resource name).
+  plugin: {
+    mount: (projectName: string, slug: string) =>
+      `/customers/projects/${projectName}/plugins/${slug}`,
+    page: (projectName: string, slug: string, splat: string) =>
+      `/customers/projects/${projectName}/plugins/${slug}/${splat}`,
+  },
 } as const;
 
 // Customers → Resources: a tabbed page of global views across all projects.

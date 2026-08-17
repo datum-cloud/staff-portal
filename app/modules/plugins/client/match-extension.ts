@@ -1,14 +1,16 @@
 /**
  * Pure extension selection + path matching — CLIENT-SAFE, no React, no side
- * effects. Ported from cloud-portal, adapted for the platform-scoped
- * extension types (`portal.nav/platform` / `portal.page/platform` /
- * `portal.resource/platform` — see `types.ts`); no card extension exists yet.
+ * effects. Ported from cloud-portal, adapted for staff-portal's extension
+ * types (`portal.nav/platform` / `portal.page/platform` /
+ * `portal.resource/platform` / `portal.page/project` — see `types.ts`); no
+ * card extension exists yet.
  *
  * A plugin mount receives a splat (`*`) path relative to its mount root and
- * must decide which `portal.page/platform` extension renders. Matching, param
- * extraction, and specificity ranking are delegated to react-router's own
- * matcher (`matchRoutes`) so plugin paths resolve with exactly the same
- * semantics as host routes — `:params` and nested segments included.
+ * must decide which `portal.page/platform` or `portal.page/project`
+ * extension renders. Matching, param extraction, and specificity ranking are
+ * delegated to react-router's own matcher (`matchRoutes`) so plugin paths
+ * resolve with exactly the same semantics as host routes — `:params` and
+ * nested segments included.
  *
  * `portal.resource/platform` extensions don't need path matching at all — the
  * host reads the flat list directly (see `getResourceExtensions`, used by
@@ -18,9 +20,11 @@
 import {
   EXTENSION_NAV_PLATFORM,
   EXTENSION_PAGE_PLATFORM,
+  EXTENSION_PAGE_PROJECT,
   EXTENSION_RESOURCE_PLATFORM,
   type NavPlatformExtension,
   type PagePlatformExtension,
+  type PageProjectExtension,
   type PluginExtension,
   type PublicPlugin,
   type ResourcePlatformExtension,
@@ -41,6 +45,12 @@ export interface PageMatch {
   params: Record<string, string | undefined>;
 }
 
+/** Result of matching a splat path against the plugin's project-page extensions. */
+export interface ProjectPageMatch {
+  page: PageProjectExtension;
+  params: Record<string, string | undefined>;
+}
+
 // The manifest is schema-validated server-side before it reaches the browser
 // (see app/modules/plugins/manifest.schema.ts), so these guards only narrow the
 // discriminated union — they are not defending against malformed data.
@@ -53,10 +63,18 @@ function isNavExtension(ext: PluginExtension): ext is NavPlatformExtension {
 function isResourceExtension(ext: PluginExtension): ext is ResourcePlatformExtension {
   return ext.type === EXTENSION_RESOURCE_PLATFORM;
 }
+function isProjectPageExtension(ext: PluginExtension): ext is PageProjectExtension {
+  return ext.type === EXTENSION_PAGE_PROJECT;
+}
 
 /** Extract the `portal.page/platform` extensions from a manifest. */
 export function getPageExtensions(manifest: ClientPluginManifest): PagePlatformExtension[] {
   return manifest.extensions.filter(isPageExtension);
+}
+
+/** Extract the `portal.page/project` extensions from a manifest. */
+export function getProjectPageExtensions(manifest: ClientPluginManifest): PageProjectExtension[] {
+  return manifest.extensions.filter(isProjectPageExtension);
 }
 
 /** Extract the `portal.nav/platform` extensions, sorted by `order` then title. */
@@ -107,6 +125,21 @@ function normalizeSplat(splat: string): string {
  * originating extension.
  */
 export function matchPluginPage(pages: PagePlatformExtension[], splat: string): PageMatch | null {
+  return matchPages(pages, splat);
+}
+
+/** Same matching semantics as {@link matchPluginPage}, for `portal.page/project` extensions. */
+export function matchPluginProjectPage(
+  pages: PageProjectExtension[],
+  splat: string
+): ProjectPageMatch | null {
+  return matchPages(pages, splat);
+}
+
+function matchPages<T extends { properties: { path: string } }>(
+  pages: T[],
+  splat: string
+): { page: T; params: Record<string, string | undefined> } | null {
   if (pages.length === 0) return null;
 
   const routes: RouteObject[] = pages.map((page, index) => ({

@@ -8,11 +8,12 @@
  * it is safe to import from anywhere.
  *
  * Differences from cloud-portal's version (see the plan for why):
- * - Extensions are `portal.nav/platform` / `portal.page/platform`, not
- *   `.../project` — staff-portal's first plugin (Workloads) has no
- *   project/org resource-context param to nest under; it's a flat,
- *   platform-wide mount. Add a `.../project`-equivalent pair later if a
- *   staff-portal plugin ever needs one.
+ * - `portal.nav/platform` / `portal.page/platform` are flat, platform-wide
+ *   extensions — no project/org resource-context param. `portal.page/project`
+ *   (added for compute's Workload detail view) is the project-scoped
+ *   counterpart, mounted under `/customers/projects/:projectName/plugins/…`
+ *   so `useParams()` inside a plugin page resolves `projectName` from the
+ *   ancestor route match (same react-router singleton, no extra plumbing).
  * - No `portal.card/*` extension type yet — no home-page-card use case here.
  */
 
@@ -96,12 +97,14 @@ export interface PortalPluginSpec {
 export const EXTENSION_NAV_PLATFORM = 'portal.nav/platform';
 export const EXTENSION_PAGE_PLATFORM = 'portal.page/platform';
 export const EXTENSION_RESOURCE_PLATFORM = 'portal.resource/platform';
+export const EXTENSION_PAGE_PROJECT = 'portal.page/project';
 
 /** The v1 extension types the host recognizes and renders. */
 export const KNOWN_EXTENSION_TYPES = [
   EXTENSION_NAV_PLATFORM,
   EXTENSION_PAGE_PLATFORM,
   EXTENSION_RESOURCE_PLATFORM,
+  EXTENSION_PAGE_PROJECT,
 ] as const;
 
 export type KnownExtensionType = (typeof KNOWN_EXTENSION_TYPES)[number];
@@ -189,6 +192,24 @@ export interface ResourcePlatformExtension {
 }
 
 /**
+ * `portal.page/project` — routed page under a project-scoped plugin mount
+ * (`/customers/projects/:projectName/plugins/:slug/*`). Same shape as
+ * `portal.page/platform`; the only difference is which mount route renders
+ * it, which is what gives plugin code access to the ambient `projectName`.
+ */
+export interface PageProjectProperties {
+  /** Path relative to the mount point; supports params and nesting. */
+  path: string;
+  component: CodeRef;
+}
+
+export interface PageProjectExtension {
+  type: typeof EXTENSION_PAGE_PROJECT;
+  properties: PageProjectProperties;
+  requirements?: PluginExtensionRequirements;
+}
+
+/**
  * An extension type the host does not recognize. Tolerated, not fatal: the
  * registry records it and excludes it from rendering. The `{type, properties,
  * requirements}` envelope keeps growth additive.
@@ -202,7 +223,8 @@ export interface UnknownExtension {
 export type KnownPluginExtension =
   | NavPlatformExtension
   | PagePlatformExtension
-  | ResourcePlatformExtension;
+  | ResourcePlatformExtension
+  | PageProjectExtension;
 
 export type PluginExtension = KnownPluginExtension | UnknownExtension;
 

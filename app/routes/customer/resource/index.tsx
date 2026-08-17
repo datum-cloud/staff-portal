@@ -6,6 +6,8 @@ import { DATE_RANGE_OPTIONS, ListPage, ListTable, ListColumnHeader } from '@/fea
 import { resolvePluginIcon } from '@/modules/plugins/client/icon-map';
 import { getResourceExtensions } from '@/modules/plugins/client/match-extension';
 import { usePlugins } from '@/modules/plugins/client/use-plugins';
+import { WORKLOAD_RESOURCE_TYPE } from '@/modules/plugins/client/workload-plugin';
+import type { ResourcePlatformExtension } from '@/modules/plugins/types';
 import {
   searchDnsZonesListQuery,
   searchDomainsListQuery,
@@ -107,9 +109,19 @@ export default function Page() {
   // — see app/modules/plugins/). One dynamic search query per contributed
   // type, since the set isn't known until plugins are loaded (same fan-out
   // shape as useOrgEdgeList's per-project queries).
+  //
+  // `slug` is carried alongside each extension (not just its `properties`)
+  // because it's the plugin's *registered* slug — the one that actually
+  // resolves through the plugin mount (`getPlugin(slug)`) — which can differ
+  // from any name baked into the manifest. A dev registering the plugin as
+  // `PORTAL_PLUGINS=compute=http://localhost:5199` gets slug "compute", not
+  // "workloads", even though the manifest's `type`/`id` stay the same.
   const { data: plugins = [] } = usePlugins();
-  const resourceExtensions = useMemo(
-    () => plugins.flatMap((p) => getResourceExtensions(p.manifest)),
+  const resourceExtensions: (ResourcePlatformExtension & { slug: string })[] = useMemo(
+    () =>
+      plugins.flatMap((p) =>
+        getResourceExtensions(p.manifest).map((ext) => ({ ...ext, slug: p.slug }))
+      ),
     [plugins]
   );
   const pluginQueries = useQueries({
@@ -230,10 +242,21 @@ export default function Page() {
           projectDisplayName: labelFor(projectName),
           createdAt: resource.metadata?.creationTimestamp ?? null,
           detail: '—',
-          // No staff-portal-internal detail route for a plugin-contributed
-          // type — the Project column link is enough to get an operator to
-          // the right place.
-          to: null,
+          // Only "workload" has a real detail page today — compute's own
+          // plugin (`ui/provider`), rendered through the project-scoped
+          // plugin mount (see routes.config.ts's `projectRoutes.plugin.page`).
+          // Every other plugin-contributed type stays a dead end on the Name
+          // cell until it declares its own detail page; the Project column
+          // link is enough to get an operator to the right place until then.
+          // `ext.slug` (not a hardcoded literal) — the mount resolves plugins
+          // by their actual registered slug, which is registry config, not a
+          // manifest constant. `name` is encoded since it's a plugin-declared
+          // `nameField` value (see above) — arbitrary resource data, not
+          // guaranteed to be URL-path-safe.
+          to:
+            projectName && ext.properties.type === WORKLOAD_RESOURCE_TYPE
+              ? projectRoutes.plugin.page(projectName, ext.slug, encodeURIComponent(name))
+              : null,
         };
       });
     });
