@@ -11,12 +11,11 @@ import { useServiceListQuery } from '@/resources/request/client';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { serviceCatalogRoutes } from '@/utils/config/routes.config';
 import { Alert, AlertDescription, AlertTitle } from '@datum-cloud/datum-ui/alert';
-import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1ServicePricing } from '@openapi/billing.miloapis.com/v1alpha1';
-import { ArrowRight, Tag } from 'lucide-react';
+import { Tag } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router';
 
@@ -52,32 +51,26 @@ function ServicePricingEmptyState() {
         </p>
         <p className="text-muted-foreground text-sm leading-relaxed">
           <Trans>
-            Offers bundle prices from across your services. Add prices in Service Catalog first,
-            then return here to select which ones to include.
+            Offers bundle prices that already exist as ServicePricings. Define charges in git on
+            ServiceConfiguration spec.charges, publish the configuration, then refresh to select
+            them here.
           </Trans>
         </p>
       </div>
 
       <ol className="text-muted-foreground max-w-md list-decimal space-y-1.5 pl-5 text-left text-sm leading-relaxed">
         <li>
-          <Trans>Open a service in Service Catalog and add prices.</Trans>
+          <Trans>
+            Add or update spec.charges in your infra repo and publish the configuration.
+          </Trans>
         </li>
         <li>
-          <Trans>Give it a moment to sync, then refresh this page.</Trans>
+          <Trans>Wait for charge fan-out, then refresh this page.</Trans>
         </li>
         <li>
-          <Trans>Select the prices to include in your Offer.</Trans>
+          <Trans>Select the ServicePricings to include in your Offer.</Trans>
         </li>
       </ol>
-
-      <LinkButton
-        type="secondary"
-        theme="outline"
-        size="small"
-        href={serviceCatalogRoutes.list()}
-        icon={<ArrowRight size={14} />}>
-        <Trans>Go to Service Catalog</Trans>
-      </LinkButton>
     </div>
   );
 }

@@ -1,5 +1,4 @@
 export * from './components/active-configuration-summary';
-export * from './components/add-charge-dialog';
 export * from './components/card-row-skeleton';
 export * from './components/charges-card';
 export * from './components/conditions-card';

@@ -6,7 +6,6 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisServicesV1Alpha1ServiceCharge } from '@openapi/services.miloapis.com/v1alpha1';
 import { Tag } from 'lucide-react';
-import type { ReactNode } from 'react';
 
 function summarizeCharge(charge: ComMiloapisServicesV1Alpha1ServiceCharge): string {
   if (charge.chargeType === 'Usage' && charge.usage) {
@@ -41,12 +40,12 @@ export function ChargesList({ charges, isPublished, hasPublishedConfiguration }:
     return (
       <Alert>
         <AlertTitle>
-          <Trans>Not ready for pricing yet</Trans>
+          <Trans>No published configuration</Trans>
         </AlertTitle>
         <AlertDescription>
           <Trans>
-            This service is not ready for pricing yet. Once its configuration is published, you can
-            add usage-based, one-time, or recurring prices here.
+            This service does not have a published ServiceConfiguration yet. Prices are defined in
+            git on spec.charges and appear here after the configuration is published.
           </Trans>
         </AlertDescription>
       </Alert>
@@ -57,8 +56,8 @@ export function ChargesList({ charges, isPublished, hasPublishedConfiguration }:
     return (
       <Text size="sm" textColor="muted" className="italic">
         <Trans>
-          No prices yet. Click Add charge to set usage-based, one-time, or recurring prices. Once
-          saved, they will be available when you create Offers.
+          No charges on this configuration. Add spec.charges in git, publish the
+          ServiceConfiguration, and they will show up here.
         </Trans>
       </Text>
     );
@@ -92,7 +91,6 @@ type ChargesCardProps = {
   isLoading?: boolean;
   isPublished?: boolean;
   hasPublishedConfiguration?: boolean;
-  action?: ReactNode;
 };
 
 export function ChargesCard({
@@ -100,7 +98,6 @@ export function ChargesCard({
   isLoading,
   isPublished,
   hasPublishedConfiguration = false,
-  action,
 }: ChargesCardProps) {
   return (
     <SectionCard
@@ -113,10 +110,9 @@ export function ChargesCard({
       }
       description={
         <Text size="sm" textColor="muted">
-          <Trans>Prices for this service</Trans>
+          <Trans>Read-only. Prices are authored in git on ServiceConfiguration spec.charges.</Trans>
         </Text>
-      }
-      action={action}>
+      }>
       {isLoading ? (
         <Text size="sm" textColor="muted">
           <Trans>Loading…</Trans>

@@ -1,5 +1,4 @@
 import {
-  appendChargesToServiceConfiguration,
   decideServiceConsumer,
   deleteServiceEntitlement,
   getBillingDefaultOffer,
@@ -9,7 +8,6 @@ import {
   listServices,
   setBillingDefaultOffer,
   type ApprovalDecision,
-  type ServiceCharge,
 } from '../apis/service-catalog.api';
 import { listServiceConsumers } from '@/modules/graphql/service-consumers';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -75,24 +73,6 @@ export const useSetBillingDefaultOfferMutation = () => {
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: serviceCatalogQueryKeys.billingDefaultOffer,
-      });
-    },
-  });
-};
-
-export const useAppendChargesToServiceConfigurationMutation = (serviceName: string) => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({
-      configurationName,
-      charges,
-    }: {
-      configurationName: string;
-      charges: ServiceCharge[];
-    }) => appendChargesToServiceConfiguration(configurationName, charges),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: serviceCatalogQueryKeys.configurations.forService(serviceName),
       });
     },
   });

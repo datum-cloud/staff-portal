@@ -5,7 +5,6 @@ import { MessageCard } from '@/components/message-card';
 import { PageHeader } from '@/components/page-header';
 import {
   ActiveConfigurationSummary,
-  AddChargeDialog,
   ChargesCard,
   ConditionsCard,
   DetailsCard,
@@ -19,12 +18,11 @@ import {
 } from '@/resources/request/client';
 import { serviceCatalogRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { Button } from '@datum-cloud/datum-ui/button';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Link } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
@@ -47,7 +45,6 @@ function pickActiveConfiguration(
 export default function Page() {
   const service = useServiceDetailData();
   const serviceName = service.metadata?.name ?? '';
-  const [addChargeOpen, setAddChargeOpen] = useState(false);
 
   const {
     data: configList,
@@ -159,13 +156,6 @@ export default function Page() {
         isLoading={isLoading}
         isPublished={isPublishedConfig}
         hasPublishedConfiguration={!!configurationName}
-        action={
-          configurationName ? (
-            <Button type="primary" onClick={() => setAddChargeOpen(true)}>
-              <Trans>Add charge</Trans>
-            </Button>
-          ) : undefined
-        }
       />
 
       <Row type="flex" gutter={[16, 16]}>
@@ -191,17 +181,6 @@ export default function Page() {
         hasActiveConfiguration={!!active}
         isLoading={isLoading}
       />
-
-      {configurationName ? (
-        <AddChargeDialog
-          open={addChargeOpen}
-          onOpenChange={setAddChargeOpen}
-          serviceName={serviceName}
-          configurationName={configurationName}
-          serviceCanonicalName={canonicalName}
-          metrics={metrics}
-        />
-      ) : null}
     </div>
   );
 }

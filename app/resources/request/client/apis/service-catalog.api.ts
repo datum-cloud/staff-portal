@@ -88,41 +88,6 @@ export const setBillingDefaultOffer = async (offerName: string) => {
   return response.data.data;
 };
 
-/**
- * Appends charges to a ServiceConfiguration. JSON merge-patch replaces arrays,
- * so the full charges list (existing + new) is sent. Existing Published charges
- * must be left unchanged (admission).
- */
-export const appendChargesToServiceConfiguration = async (
-  configurationName: string,
-  chargesToAdd: ServiceCharge[]
-) => {
-  const current = await getServiceConfiguration(configurationName);
-  if (!current?.metadata?.name) {
-    throw new Error(`ServiceConfiguration ${configurationName} not found`);
-  }
-
-  const existing = current.spec?.charges ?? [];
-  const existingNames = new Set(existing.map((c) => c.name));
-  for (const charge of chargesToAdd) {
-    if (existingNames.has(charge.name)) {
-      throw new Error(`Charge "${charge.name}" already exists on this configuration`);
-    }
-  }
-
-  const response = await patchServicesMiloapisComV1Alpha1ServiceConfiguration({
-    path: { name: configurationName },
-    query: { fieldManager: FIELD_MANAGER },
-    headers: { 'Content-Type': 'application/merge-patch+json' },
-    body: {
-      spec: {
-        charges: [...existing, ...chargesToAdd],
-      },
-    },
-  });
-  return response.data.data;
-};
-
 // ServiceConsumer lives in the producer project's control plane (the project
 // that owns the Service), not at the platform level. Callers must pass the
 // producer project name so we can scope the request via the control-plane
