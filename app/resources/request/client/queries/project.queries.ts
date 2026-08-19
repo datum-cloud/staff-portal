@@ -5,6 +5,7 @@ import {
   projectExportPolicyListQuery,
   projectEdgeListQuery,
   projectGetQuery,
+  projectSuspensionForProjectListQuery,
   projectSuspensionListQuery,
 } from '../apis/project.api';
 import { isProjectDeleting } from '@/features/project/lib/project-deletion';
@@ -41,14 +42,24 @@ export const projectQueryKeys = {
       ['projects', projectName, 'dns', dnsName, 'records', namespace] as const,
   },
   suspensions: (projectName: string) => ['projects', projectName, 'suspensions'] as const,
+  suspensionsAll: () => ['projects', 'suspensions', 'all'] as const,
 };
 
 /** All ProjectSuspensions (active + lifted) governing a project — for the suspension panel. */
 export const useProjectSuspensionsQuery = (projectName: string) => {
   return useQuery({
     queryKey: projectQueryKeys.suspensions(projectName),
-    queryFn: () => projectSuspensionListQuery(projectName),
+    queryFn: () => projectSuspensionForProjectListQuery(projectName),
     enabled: !!projectName,
+  });
+};
+
+/** Every ProjectSuspension across all projects — for the operator suspended-projects view. */
+export const useAllProjectSuspensionsQuery = () => {
+  return useQuery({
+    queryKey: projectQueryKeys.suspensionsAll(),
+    queryFn: () => projectSuspensionListQuery(),
+    staleTime: 60 * 1000,
   });
 };
 

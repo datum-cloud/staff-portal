@@ -158,6 +158,16 @@ export function computeFacetCounts<T>(
           if (matchesDateBucket(ageDays, option.value)) tally[option.value]++;
         }
       }
+    } else if (group.type === 'multi') {
+      // Multi-value cell (string[]): count each contained value once per row.
+      for (const row of base) {
+        const cell = getByPath(row, group.column);
+        if (!Array.isArray(cell)) continue;
+        for (const v of cell) {
+          const key = String(v);
+          if (key in tally) tally[key]++;
+        }
+      }
     } else {
       // Exact-match checkboxes: one pass, key by stringified cell value.
       for (const row of base) {
@@ -267,10 +277,20 @@ export interface SearchableFilterConfig extends BaseFilterGroup {
  * different renderer (checkbox-shaped types can reuse `CheckboxFilterGroup`).
  * Routes and `ListTable` stay untouched.
  */
+/**
+ * Multi-value column: the cell is a `string[]` (e.g. a grouped row's reasons),
+ * matched when it contains any selected value. Same checkbox UI as `checkbox`.
+ */
+export interface MultiFilterConfig extends BaseFilterGroup {
+  type: 'multi';
+  options: FilterOption[];
+}
+
 export type FilterGroupConfig =
   | CheckboxFilterConfig
   | DateRangeFilterConfig
-  | SearchableFilterConfig;
+  | SearchableFilterConfig
+  | MultiFilterConfig;
 
 type FilterType = NonNullable<FilterGroupConfig['type']>;
 
@@ -279,6 +299,7 @@ const FILTER_MATCHERS: Record<FilterType, FilterFn> = {
   checkbox: multiSelectFilterFn,
   dateRange: dateRangeFilterFn,
   searchable: multiSelectFilterFn,
+  multi: arrayIncludesAnyFilterFn,
 };
 
 /** Column → matcher map for `DataTable.Client.filterFns`, derived from the configs. */

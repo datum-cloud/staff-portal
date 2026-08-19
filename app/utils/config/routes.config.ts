@@ -130,6 +130,14 @@ export const fraudRoutes = {
   policy: () => '/customers/fraud/policy',
 } as const;
 
+// Customers → Suspended Projects. Detail is keyed by the ProjectSuspension's
+// metadata.name (unique per suspension), not the project name.
+export const suspendedProjectRoutes = {
+  list: () => '/customers/suspended-projects',
+  detail: (name: string) => `/customers/suspended-projects/${name}`,
+  emailActivity: (name: string) => `/customers/suspended-projects/${name}/email-activity`,
+} as const;
+
 // ───────────────────────────────── Marketing (/marketing) ─────────────────────────────────
 
 // Marketing → Contacts
@@ -243,6 +251,7 @@ export const routes = {
   domains: domainRoutes,
   billingAccounts: billingAccountRoutes,
   fraud: fraudRoutes,
+  suspendedProjects: suspendedProjectRoutes,
 
   // Marketing
   contacts: contactRoutes,

@@ -159,12 +159,22 @@ export const projectDeleteMutation = (projectName: string) => {
  * suspension panel + audit history. A project can carry more than one at a time
  * (e.g. Fraud + Billing); it stays suspended while any is Active.
  */
-export const projectSuspensionListQuery = async (projectName: string) => {
+export const projectSuspensionForProjectListQuery = async (projectName: string) => {
   const response = await listResourcemanagerMiloapisComV1Alpha1ProjectSuspension({
     query: {
       fieldSelector: `spec.projectRef.name=${projectName}`,
     },
   });
+  return response.data.data?.items ?? [];
+};
+
+/**
+ * Lists every ProjectSuspension across all projects (ProjectSuspension is
+ * cluster-scoped) — for the operator-wide suspended-projects view. Callers
+ * filter to `status.phase === 'Active'` since phase is not a selectable field.
+ */
+export const projectSuspensionListQuery = async () => {
+  const response = await listResourcemanagerMiloapisComV1Alpha1ProjectSuspension({});
   return response.data.data?.items ?? [];
 };
 

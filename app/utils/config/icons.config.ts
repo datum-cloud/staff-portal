@@ -2,6 +2,7 @@ import {
   AlertCircle,
   AlertTriangle,
   ArrowRightLeft,
+  Ban,
   BarChart3,
   BookUser,
   Building2,
@@ -97,6 +98,7 @@ export const ENTITY_ICONS = {
   edge: Gauge,
   dns: Signpost,
   domain: Layers,
+  suspendedProject: Ban,
   // Not in the menu
   fraud: ShieldAlert,
 } satisfies Record<string, LucideIcon>;

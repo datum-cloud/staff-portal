@@ -14,7 +14,10 @@ import {
   readNetworkingDatumapisComV1AlphaNamespacedTrafficProtectionPolicy,
 } from '@openapi/networking.datumapis.com/v1alpha';
 import { listNotesMiloapisComV1Alpha1NamespacedNote } from '@openapi/notes.miloapis.com/v1alpha1';
-import { readResourcemanagerMiloapisComV1Alpha1Project } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
+import {
+  readResourcemanagerMiloapisComV1Alpha1Project,
+  readResourcemanagerMiloapisComV1Alpha1ProjectSuspension,
+} from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { UnwrapProxyResponse } from '@openapi/shared/core/types.gen';
 import { readTelemetryMiloapisComV1Alpha1NamespacedExportPolicy } from '@openapi/telemetry.miloapis.com/v1alpha1';
 
@@ -22,6 +25,19 @@ export const projectDetailQuery = async (token: string, projectName: string) => 
   const response = await readResourcemanagerMiloapisComV1Alpha1Project({
     path: {
       name: projectName,
+    },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data as unknown as UnwrapProxyResponse<typeof response.data>;
+};
+
+/** Reads a single ProjectSuspension by name (cluster-scoped) — for the suspended-project detail. */
+export const projectSuspensionDetailQuery = async (token: string, name: string) => {
+  const response = await readResourcemanagerMiloapisComV1Alpha1ProjectSuspension({
+    path: {
+      name,
     },
     headers: {
       Authorization: `Bearer ${token}`,

@@ -12,6 +12,7 @@ import {
   resourceRoutes,
   routes,
   serviceCatalogRoutes,
+  suspendedProjectRoutes,
   userRoutes,
 } from '@/utils/config/routes.config';
 import { type LucideIcon } from 'lucide-react';
@@ -97,6 +98,11 @@ export const NAV_SECTIONS: NavSection[] = [
               icon: ENTITY_ICONS.billingAccount,
             },
             { label: 'Fraud & Abuse', href: fraudRoutes.root(), icon: ENTITY_ICONS.fraud },
+            {
+              label: 'Suspended Projects',
+              href: suspendedProjectRoutes.list(),
+              icon: ENTITY_ICONS.suspendedProject,
+            },
           ],
         },
       ],
