@@ -23,11 +23,12 @@ export function createActivityTools({ accessToken }: ActivityToolDeps) {
     queryActivityLogs: tool({
       description:
         'Query platform audit logs as a compact activity timeline (newest first).' +
-        ' Defaults to human write operations (create/update/patch/delete) and excludes system: service accounts and get/list/watch noise.' +
+        ' Defaults to human write operations (create/update/patch/delete) and excludes system: service accounts, get/list/watch, and Cloud Portal RBAC probes (SelfSubjectAccessReview / token reviews).' +
         ' If hasMore is true, pass the returned cursor to fetch the next page — never treat a truncated page as complete.' +
         ' If a named user or event is missing, retry with hoursBack 72 then 168. Use 48 for "yesterday".' +
         ' User account creates are often performed by a service account — do not set user when looking for new accounts; use verb="create" and resourceType="users".' +
-        ' Set includeReads or includeSystem only when the operator asks for reads, controllers, or all activity.',
+        ' For "what did they do / accomplish / get up to", keep the default writes-only filter — do not set includeReads.' +
+        ' Set includeReads or includeSystem only when the operator explicitly asks what they viewed, listed, or for controllers and all activity.',
       inputSchema: z.object({
         hoursBack: z
           .number()
