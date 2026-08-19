@@ -22,7 +22,7 @@ msgid "(current)"
 msgstr ""
 
 #. placeholder {0}: active.length
-#: app/features/project/components/project-suspension-card.tsx:140
+#: app/features/project/components/project-suspension-card.tsx:149
 msgid "{0} active suspensions — the project stays suspended until all are lifted. Instances and served traffic are paused; data is preserved."
 msgstr ""
 
@@ -565,7 +565,7 @@ msgstr ""
 #: app/features/contact/components/contact-list.tsx:126
 #: app/features/feature-flags/components/feature-flag-list.tsx:229
 #: app/features/fraud/policy/policy-form.tsx:314
-#: app/features/project/components/project-suspension-card.tsx:84
+#: app/features/project/components/project-suspension-card.tsx:85
 #: app/features/quota/components/quota-bucket-list.tsx:171
 #: app/features/quota/components/quota-grant-list.tsx:162
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:39
@@ -600,7 +600,7 @@ msgstr ""
 msgid "Card"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:108
+#: app/features/project/components/project-suspension-card.tsx:109
 msgid "Case notes, report IDs, context…"
 msgstr ""
 
@@ -1945,7 +1945,7 @@ msgstr ""
 msgid "Highest utilization in this project"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:212
+#: app/features/project/components/project-suspension-card.tsx:221
 msgid "History"
 msgstr ""
 
@@ -2022,7 +2022,7 @@ msgstr ""
 msgid "Individual"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:145
+#: app/features/project/components/project-suspension-card.tsx:154
 msgid "Instances and served traffic are paused; data is preserved. Lift the suspension below to restore the project."
 msgstr ""
 
@@ -2157,7 +2157,7 @@ msgstr ""
 msgid "License Key Key"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:174
+#: app/features/project/components/project-suspension-card.tsx:183
 msgid "Lift"
 msgstr ""
 
@@ -2166,7 +2166,7 @@ msgstr ""
 msgid "Lift authority"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:220
+#: app/features/project/components/project-suspension-card.tsx:229
 msgid "Lifted"
 msgstr ""
 
@@ -2251,7 +2251,6 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:127
 #: app/features/service-catalog/components/charges-card.tsx:118
 #: app/routes/admin/offer/detail.tsx:209
 #: app/routes/admin/offer/detail.tsx:323
@@ -2817,12 +2816,12 @@ msgstr ""
 msgid "Note deleted"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:191
+#: app/features/project/components/project-suspension-card.tsx:200
 #: app/routes/customer/project/detail/domain/detail.tsx:151
 msgid "Notes"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:107
+#: app/features/project/components/project-suspension-card.tsx:108
 msgid "Notes (operator-facing)"
 msgstr ""
 
@@ -2987,7 +2986,7 @@ msgstr ""
 msgid "Patch AI"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:82
+#: app/features/project/components/project-suspension-card.tsx:83
 msgid "Pause this project and everything it is running. Data is preserved and the project can be reinstated at any time."
 msgstr ""
 
@@ -3184,7 +3183,7 @@ msgstr ""
 msgid "Project deleted"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:135
+#: app/features/project/components/project-suspension-card.tsx:144
 #: app/features/project/hooks/useProjectSuspension.ts:62
 msgid "Project suspended"
 msgstr ""
@@ -3335,7 +3334,7 @@ msgstr ""
 msgid "Ready"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:89
+#: app/features/project/components/project-suspension-card.tsx:90
 #: app/features/service-catalog/components/conditions-card.tsx:35
 #: app/routes/customer/suspended-project/index.tsx:66
 #: app/routes/customer/suspended-project/index.tsx:98
@@ -3369,8 +3368,8 @@ msgstr ""
 msgid "Registrar"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:98
-#: app/features/project/components/project-suspension-card.tsx:181
+#: app/features/project/components/project-suspension-card.tsx:99
+#: app/features/project/components/project-suspension-card.tsx:190
 msgid "Reinstate authority"
 msgstr ""
 
@@ -3408,7 +3407,7 @@ msgstr ""
 msgid "Requested at"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:185
+#: app/features/project/components/project-suspension-card.tsx:194
 msgid "Requested by"
 msgstr ""
 
@@ -3997,17 +3996,17 @@ msgstr ""
 msgid "Summary"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:83
-#: app/features/project/components/project-suspension-card.tsx:159
+#: app/features/project/components/project-suspension-card.tsx:84
+#: app/features/project/components/project-suspension-card.tsx:168
 msgid "Suspend"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:121
+#: app/features/project/components/project-suspension-card.tsx:122
 msgid "Suspend or reinstate this project. Suspension is reversible - data is never deleted."
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:81
-#: app/features/project/components/project-suspension-card.tsx:135
+#: app/features/project/components/project-suspension-card.tsx:82
+#: app/features/project/components/project-suspension-card.tsx:144
 msgid "Suspend Project"
 msgstr ""
 
@@ -4016,7 +4015,7 @@ msgstr ""
 msgid "Suspended"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:197
+#: app/features/project/components/project-suspension-card.tsx:206
 msgid "Suspended at"
 msgstr ""
 
@@ -4071,7 +4070,7 @@ msgstr ""
 msgid "Template"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:151
+#: app/features/project/components/project-suspension-card.tsx:160
 msgid "Temporarily pause this project's instances and served traffic without deleting any data. It can be reinstated at any time."
 msgstr ""
 
@@ -4218,7 +4217,7 @@ msgstr ""
 msgid "Triggers"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:117
+#: app/features/project/components/project-suspension-card.tsx:118
 msgid "Trust & Safety"
 msgstr ""
 
