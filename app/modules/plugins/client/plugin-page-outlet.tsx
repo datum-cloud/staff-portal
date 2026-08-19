@@ -96,14 +96,16 @@ export function PluginPageOutlet({
   );
 
   return (
-    <div className="relative flex flex-1 flex-col">
+    <div className={`relative flex flex-1 flex-col ${plugin.devMode ? 'pt-9' : ''}`}>
       {plugin.devMode && (
-        // Absolutely positioned rather than its own row: a dedicated row adds
-        // a whole extra block of vertical space above the plugin's own
-        // top padding. Floating it in the corner keeps it visually level
-        // with whatever the plugin renders first (its breadcrumb/header),
-        // without the plugin needing to know this badge exists.
-        <div className="absolute top-4 right-4 z-10">
+        // A small reserved strip (`pt-9`) rather than overlaying directly on
+        // top of the plugin's own first element: plugins commonly render a
+        // bordered Card flush with their own top padding, which the badge
+        // would otherwise sit on top of/inside. Reserving just enough height
+        // for the badge itself keeps it floating clear of whatever the
+        // plugin renders, without the plugin needing to know this badge
+        // exists.
+        <div className="absolute top-2 right-4 z-10">
           <DevPluginBadge />
         </div>
       )}

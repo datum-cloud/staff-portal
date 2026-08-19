@@ -1,4 +1,5 @@
 import { NAV_SECTIONS, type NavSection, type NavSubItem } from './nav-config';
+import { usePluginNavItems } from './use-plugin-nav-items';
 import { useMemo } from 'react';
 import { useLocation } from 'react-router';
 
@@ -35,6 +36,36 @@ export interface ActiveNav {
 }
 
 /**
+ * The full navbar section list: the static `NAV_SECTIONS` with any
+ * plugin-contributed nav items (discovered at runtime via `usePlugins()`)
+ * appended to the Operations section's sub-nav. Every platform-wide plugin
+ * lands under Operations rather than minting its own top-level section, so
+ * the navbar stays bounded regardless of plugin count. The one place both
+ * regions (`MiloMainNav`, `MiloMobileMenu`) and `useActiveNav` read the
+ * section list from, so plugin nav entries stay in sync everywhere.
+ */
+export function useNavSections(): NavSection[] {
+  const pluginItems = usePluginNavItems();
+
+  return useMemo(() => {
+    if (pluginItems.length === 0) return NAV_SECTIONS;
+
+    return NAV_SECTIONS.map((section) => {
+      if (section.id !== 'operations' || !section.subNav) return section;
+
+      const [firstGroup, ...restGroups] = section.subNav.groups;
+      return {
+        ...section,
+        subNav: {
+          ...section.subNav,
+          groups: [{ ...firstGroup, items: [...firstGroup.items, ...pluginItems] }, ...restGroups],
+        },
+      };
+    });
+  }, [pluginItems]);
+}
+
+/**
  * Resolve which top section and sub-item are active from the current URL.
  * The single brain the shell regions read from — navbar highlights `section`,
  * the sub-nav rail highlights `subItem`, the context bar builds its segments
@@ -42,6 +73,7 @@ export interface ActiveNav {
  */
 export function useActiveNav(): ActiveNav {
   const { pathname } = useLocation();
+  const sections = useNavSections();
 
   return useMemo(() => {
     // A section is active when the URL matches the section's own prefix OR any of
@@ -50,7 +82,7 @@ export function useActiveNav(): ActiveNav {
     // both, and pick the strongest.
     let activeSection: NavSection | undefined;
     let bestLen = 0;
-    for (const section of NAV_SECTIONS) {
+    for (const section of sections) {
       const items = section.subNav?.groups.flatMap((g) => g.items) ?? [];
       const len = Math.max(
         matchLength(pathname, section.match ?? section.href),
@@ -67,5 +99,5 @@ export function useActiveNav(): ActiveNav {
     const items = activeSection.subNav.groups.flatMap((g) => g.items);
     const subItem = bestMatch(pathname, items);
     return { section: activeSection, subItem };
-  }, [pathname]);
+  }, [pathname, sections]);
 }

@@ -202,6 +202,16 @@ export const profileRoutes = {
   sessions: () => '/profile/sessions',
 } as const;
 
+// ───────────────────────────────── Plugins (/plugins) ─────────────────────────────────
+
+// Platform-wide plugin mount (`portal.page/platform` extensions) — see
+// app/routes/plugins.tsx. `splat` is whatever path the plugin's own page
+// extension declared.
+export const pluginRoutes = {
+  mount: (slug: string) => `/plugins/${slug}`,
+  page: (slug: string, splat: string) => `/plugins/${slug}/${splat}`,
+} as const;
+
 // ───────────────────────────────── Aggregate + root/auth ─────────────────────────────────
 
 // Single entry point; the nested keys mirror the sections above. Prefer the
@@ -242,4 +252,7 @@ export const routes = {
 
   // Account
   profile: profileRoutes,
+
+  // Plugins
+  plugins: pluginRoutes,
 } as const;
