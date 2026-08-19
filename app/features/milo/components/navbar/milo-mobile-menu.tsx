@@ -1,5 +1,4 @@
-import { NAV_SECTIONS } from '../../lib/nav-config';
-import { useActiveNav } from '../../lib/use-active-section';
+import { useActiveNav, useNavSections } from '../../lib/use-active-section';
 import { miloIconButtonClass } from './milo-icon-button';
 import { LogoIcon } from '@/components/logo/logo-icon';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -23,6 +22,7 @@ import { NavLink } from 'react-router';
  */
 export function MiloMobileMenu({ className }: { className?: string }) {
   const { t } = useLingui();
+  const sections = useNavSections();
   const { section: active } = useActiveNav();
   const [open, setOpen] = useState(false);
 
@@ -47,7 +47,7 @@ export function MiloMobileMenu({ className }: { className?: string }) {
           </SheetTitle>
         </SheetHeader>
         <nav className="flex flex-col gap-4 overflow-y-auto p-3">
-          {NAV_SECTIONS.map((section) => {
+          {sections.map((section) => {
             const items = section.subNav?.groups.flatMap((g) => g.items) ?? [];
             return (
               <div key={section.id} className="flex flex-col gap-0.5">

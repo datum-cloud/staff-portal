@@ -26,6 +26,7 @@ import reactQueryPkg from '@tanstack/react-query/package.json';
 import type { ComponentType } from 'react';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import * as ReactDOMClient from 'react-dom/client';
 import * as ReactRouter from 'react-router';
 import reactRouterPkg from 'react-router/package.json';
 
@@ -68,6 +69,17 @@ function hostShared() {
     'react-dom': {
       version: ReactDOM.version,
       lib: () => ReactDOM,
+      shareConfig: { singleton: true, requiredVersion: false as const, eager: true },
+    },
+    // React 19 splits `createRoot`/`hydrateRoot` into this subpath. A plugin
+    // whose remote entry references `react-dom/client` (even only from its own
+    // standalone preview harness — MF's build-time scan doesn't distinguish)
+    // needs the host to bridge it explicitly; without an entry here, MF has
+    // nothing to bridge the plugin's `react-dom/client` import against and
+    // fails at container load, before any exposed component renders.
+    'react-dom/client': {
+      version: ReactDOM.version,
+      lib: () => ReactDOMClient,
       shareConfig: { singleton: true, requiredVersion: false as const, eager: true },
     },
     'react-router': {

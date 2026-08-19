@@ -242,6 +242,11 @@ export default [
     ]),
 
     route('test-sentry', 'routes/test-sentry.tsx'),
+
+    // Platform-wide plugin mount (`portal.page/platform` extensions) — see
+    // app/routes/plugins.tsx. Sibling to the project-scoped mount at
+    // customers/projects/:projectName/plugins/:slug/*.
+    route('plugins/:slug/*', 'routes/plugins.tsx'),
   ]),
 
   // Public routes without auth

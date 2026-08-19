@@ -1,5 +1,4 @@
-import { NAV_SECTIONS } from '../../lib/nav-config';
-import { useActiveNav } from '../../lib/use-active-section';
+import { useActiveNav, useNavSections } from '../../lib/use-active-section';
 import { MiloNavItem } from './milo-nav-item';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { useLingui } from '@lingui/react/macro';
@@ -14,6 +13,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  */
 export function MiloMainNav() {
   const { t } = useLingui();
+  const sections = useNavSections();
   const { section: activeSection } = useActiveNav();
   const activeHref = activeSection?.href;
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -75,7 +75,7 @@ export function MiloMainNav() {
       <div
         ref={scrollRef}
         className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {NAV_SECTIONS.map((section) => (
+        {sections.map((section) => (
           <MiloNavItem
             key={section.id}
             section={section}
