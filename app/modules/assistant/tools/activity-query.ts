@@ -18,6 +18,9 @@ const RESOURCE_LABELS: Record<string, string> = {
   organizations: 'Organization',
   dnszonediscoveries: 'DNS zone discovery',
   exportpolicies: 'Export policy',
+  billingaccounts: 'Billing account',
+  paymentmethods: 'Payment method',
+  billingaccountbindings: 'Billing binding',
 };
 
 const RESOURCE_URLS: Record<string, (name: string) => string> = {
@@ -57,7 +60,11 @@ export function escapeCelString(value: string): string {
 }
 
 export function buildActivityFilter(input: ActivityFilterInput): string {
-  const conditions: string[] = [`objectRef.apiGroup != 'activity.miloapis.com'`];
+  const conditions: string[] = [
+    `objectRef.apiGroup != 'activity.miloapis.com'`,
+    `objectRef.apiGroup != 'authorization.k8s.io'`,
+    `objectRef.apiGroup != 'authentication.k8s.io'`,
+  ];
 
   if (!input.includeReads && !input.verb) {
     conditions.push(`verb in [${WRITE_VERBS.map((v) => `'${v}'`).join(', ')}]`);

@@ -15,6 +15,8 @@ describe('buildActivityFilter', () => {
   it('defaults to human write operations', () => {
     const filter = buildActivityFilter({});
     expect(filter).toContain("objectRef.apiGroup != 'activity.miloapis.com'");
+    expect(filter).toContain("objectRef.apiGroup != 'authorization.k8s.io'");
+    expect(filter).toContain("objectRef.apiGroup != 'authentication.k8s.io'");
     expect(filter).toContain("verb in ['create', 'update', 'patch', 'delete', 'deletecollection']");
     expect(filter).toContain("user.username.startsWith('system:') == false");
   });
@@ -23,6 +25,8 @@ describe('buildActivityFilter', () => {
     const filter = buildActivityFilter({ includeReads: true });
     expect(filter).not.toContain('verb in [');
     expect(filter).toContain("user.username.startsWith('system:') == false");
+    expect(filter).toContain("objectRef.apiGroup != 'authorization.k8s.io'");
+    expect(filter).toContain("objectRef.apiGroup != 'authentication.k8s.io'");
   });
 
   it('drops the system-actor clause when includeSystem is true', () => {
@@ -124,5 +128,26 @@ describe('shapeAuditEvent', () => {
     expect(shaped.resource).toBe('DNS zone');
     expect(shaped.hostname).toBe('caol.io');
     expect(shaped.url).toBeUndefined();
+  });
+
+  it('humanizes billing resource types', () => {
+    expect(
+      shapeAuditEvent({
+        verb: 'create',
+        objectRef: { resource: 'billingaccounts', name: 'ba-1' },
+      }).resource
+    ).toBe('Billing account');
+    expect(
+      shapeAuditEvent({
+        verb: 'create',
+        objectRef: { resource: 'paymentmethods', name: 'pm-1' },
+      }).resource
+    ).toBe('Payment method');
+    expect(
+      shapeAuditEvent({
+        verb: 'create',
+        objectRef: { resource: 'billingaccountbindings', name: 'bab-1' },
+      }).resource
+    ).toBe('Billing binding');
   });
 });
