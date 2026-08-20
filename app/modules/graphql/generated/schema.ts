@@ -262,6 +262,10 @@ export interface Project {
   createdAt?: Scalars['String'];
   /** Status of the Ready condition. */
   state?: Scalars['String'];
+  /** metadata.deletionTimestamp — set while the project is terminating. */
+  deletionTimestamp?: Scalars['String'];
+  /** Unparsed ResourceCleanup condition message naming what deletion is waiting on. */
+  resourceCleanupMessage?: Scalars['String'];
   __typename: 'Project';
 }
 
@@ -671,6 +675,10 @@ export interface ProjectRequest {
   createdAt?: boolean | number;
   /** Status of the Ready condition. */
   state?: boolean | number;
+  /** metadata.deletionTimestamp — set while the project is terminating. */
+  deletionTimestamp?: boolean | number;
+  /** Unparsed ResourceCleanup condition message naming what deletion is waiting on. */
+  resourceCleanupMessage?: boolean | number;
   __typename?: boolean | number;
   __scalar?: boolean | number;
   __alias?: {

@@ -1,5 +1,6 @@
 // Import the loader from the layout file
 import { loader } from './detail/layout';
+import { useLiveProject } from '@/resources/request/client';
 import { extractDataFromMatches } from '@/utils/helpers';
 import { useRouteLoaderData } from 'react-router';
 
@@ -8,7 +9,9 @@ export type ProjectDetailLoaderData = Awaited<ReturnType<typeof loader>>;
 
 // Export a typed hook for other files to use
 export function useProjectDetailData() {
-  return useRouteLoaderData('project-detail') as ProjectDetailLoaderData;
+  const data = useRouteLoaderData('project-detail') as ProjectDetailLoaderData;
+  const { project } = useLiveProject(data.project);
+  return { ...data, project: project ?? data.project };
 }
 
 // Helper function to extract project metadata for meta functions

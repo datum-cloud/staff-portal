@@ -9,11 +9,17 @@ import {
   ListTable,
   ListColumnHeader,
 } from '@/features/milo';
+import {
+  ProjectCleanupMessage,
+  ProjectDeletingFor,
+  ProjectPhaseBadge,
+  projectPhaseFilter,
+} from '@/features/project';
+import { type ProjectPhase, withProjectPhase } from '@/features/project/lib/project-deletion';
 import { useOrganizationSearch } from '@/hooks/use-search';
 import { type GqlProject, useAllProjectsQuery } from '@/resources/request/client';
 import { billingAccountRoutes, orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
-import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { createColumnHelper } from '@tanstack/react-table';
 import { useMemo } from 'react';
@@ -23,13 +29,18 @@ export const meta: Route.MetaFunction = () => {
   return metaObject(t`Projects`);
 };
 
-const columnHelper = createColumnHelper<GqlProject>();
+type ProjectListRow = GqlProject & { phase: ProjectPhase };
+
+const columnHelper = createColumnHelper<ProjectListRow>();
 
 const getProjectCreatedAt = (project: GqlProject) => project.createdAt;
 
 export default function Page() {
   const tableQuery = useAllProjectsQuery();
-  const projects = useMemo(() => tableQuery.data?.items ?? [], [tableQuery.data]);
+  const projects = useMemo(
+    () => (tableQuery.data?.items ?? []).map(withProjectPhase),
+    [tableQuery.data]
+  );
   const orgSearch = useOrganizationSearch();
 
   // Seed from orgs present on loaded projects (sorted by count). When the user
@@ -79,6 +90,19 @@ export default function Page() {
       id: 'id',
       header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
       cell: ({ getValue }) => <DisplayId value={getValue() ?? ''} />,
+    }),
+    columnHelper.accessor('phase', {
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
+      cell: ({ getValue }) => <ProjectPhaseBadge phase={getValue()} />,
+    }),
+    columnHelper.accessor('deletionTimestamp', {
+      id: 'deletingFor',
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Deleting for`} />,
+      cell: ({ getValue }) => <ProjectDeletingFor deletionTimestamp={getValue()} />,
+    }),
+    columnHelper.accessor('resourceCleanupMessage', {
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Waiting on`} />,
+      cell: ({ getValue }) => <ProjectCleanupMessage message={getValue()} />,
     }),
     columnHelper.accessor('organizationBusinessName', {
       id: 'organizationBusinessName',
@@ -179,6 +203,7 @@ export default function Page() {
               { value: 'false', label: <BadgeState state="no" /> },
             ],
           },
+          projectPhaseFilter(t`Status`),
           {
             column: 'createdAt',
             label: t`Created`,
@@ -195,7 +220,8 @@ export default function Page() {
             (row.organizationName ?? '').toLowerCase().includes(q) ||
             (row.organizationDisplayName ?? '').toLowerCase().includes(q) ||
             (row.organizationBusinessName?.toLowerCase().includes(q) ?? false) ||
-            (row.billingAccountName?.toLowerCase().includes(q) ?? false)
+            (row.billingAccountName?.toLowerCase().includes(q) ?? false) ||
+            (row.resourceCleanupMessage?.toLowerCase().includes(q) ?? false)
           );
         }}
       />
