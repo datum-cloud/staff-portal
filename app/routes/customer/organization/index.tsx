@@ -23,12 +23,12 @@ import {
 } from '@/resources/request/client';
 import { billingAccountRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { createColumnHelper } from '@/utils/table';
 import { t } from '@lingui/core/macro';
 import type {
   ComMiloapisBillingV1Alpha1BillingAccount,
   ComMiloapisBillingV1Alpha1PaymentMethod,
 } from '@openapi/billing.miloapis.com/v1alpha1';
-import { createColumnHelper } from '@tanstack/react-table';
 import { Building2, User } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router';

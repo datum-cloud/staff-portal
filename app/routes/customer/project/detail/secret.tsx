@@ -4,9 +4,9 @@ import { ListColumnHeader, ListTable } from '@/features/milo';
 import { useProjectSecretMetricsQuery } from '@/resources/request/client';
 import { Secret } from '@/resources/schemas';
 import { metaObject } from '@/utils/helpers';
+import { createColumnHelper } from '@/utils/table';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { createColumnHelper } from '@tanstack/react-table';
 
 export const handle = {
   breadcrumb: () => <Trans>Secrets</Trans>,

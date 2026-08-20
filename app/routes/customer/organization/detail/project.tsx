@@ -8,9 +8,9 @@ import { type ProjectPhase, withProjectPhase } from '@/features/project/lib/proj
 import { type GqlProject, useOrgProjectListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { createColumnHelper } from '@/utils/table';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { createColumnHelper } from '@tanstack/react-table';
 import { useMemo } from 'react';
 import { Link } from 'react-router';
 

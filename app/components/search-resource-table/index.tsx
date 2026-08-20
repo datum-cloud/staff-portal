@@ -1,5 +1,6 @@
 import { ListTable } from '@/features/milo';
-import type { ColumnDef, SortingState } from '@tanstack/react-table';
+import type { ColumnDef, RowData } from '@/utils/table';
+import type { SortingState } from '@tanstack/react-table';
 import type { ReactNode } from 'react';
 
 export interface ControlledSearch {
@@ -7,7 +8,7 @@ export interface ControlledSearch {
   onChange: (value: string) => void;
 }
 
-export interface SearchResourceTableProps<TData> {
+export interface SearchResourceTableProps<TData extends RowData> {
   data: TData[];
   loading?: boolean;
   columns: ColumnDef<TData, any>[];
@@ -52,7 +53,7 @@ export interface SearchResourceTableProps<TData> {
  *   caller refetches with the query (used by global, search-API-backed views).
  *   `hasMore` then surfaces a "more results" hint by the pagination.
  */
-export function SearchResourceTable<TData>({
+export function SearchResourceTable<TData extends RowData>({
   data,
   loading = false,
   columns,

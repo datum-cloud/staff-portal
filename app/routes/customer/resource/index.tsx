@@ -18,9 +18,9 @@ import {
 import { ENTITY_ICONS } from '@/utils/config/icons.config';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { createColumnHelper } from '@/utils/table';
 import { t } from '@lingui/core/macro';
 import { keepPreviousData, useQueries, useQuery } from '@tanstack/react-query';
-import { createColumnHelper } from '@tanstack/react-table';
 import type { LucideIcon } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Link } from 'react-router';

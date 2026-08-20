@@ -20,8 +20,8 @@ import { useOrganizationSearch } from '@/hooks/use-search';
 import { type GqlProject, useAllProjectsQuery } from '@/resources/request/client';
 import { billingAccountRoutes, orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { createColumnHelper } from '@/utils/table';
 import { t } from '@lingui/core/macro';
-import { createColumnHelper } from '@tanstack/react-table';
 import { useMemo } from 'react';
 import { Link } from 'react-router';
 

@@ -21,6 +21,7 @@ import {
 } from './rich-filter-panel';
 import { useBreakpoint } from '@/hooks/use-breakpoint';
 import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
+import type { ColumnDef, RowData } from '@/utils/table';
 import { Button } from '@datum-cloud/datum-ui/button';
 import {
   DataTable,
@@ -34,7 +35,6 @@ import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { useLingui } from '@lingui/react/macro';
-import type { ColumnDef } from '@tanstack/react-table';
 import { ChevronLeft } from 'lucide-react';
 import { useMemo, useState, type ReactNode } from 'react';
 
@@ -107,7 +107,7 @@ const searchClassName =
  * recompute facet counts when selection changes (Amazon-style: each group's
  * counts reflect every *other* active filter).
  */
-function SidebarFilterGroups<TData>({
+function SidebarFilterGroups<TData extends RowData>({
   filters,
   filterFns,
   data,
@@ -164,7 +164,7 @@ function SidebarFilterGroups<TData>({
   );
 }
 
-interface ListTableProps<TData> {
+interface ListTableProps<TData extends RowData> {
   readonly data: TData[];
   // columnHelper produces ColumnDef<TData, any>; `unknown` would be too strict for callers.
   readonly columns: ColumnDef<TData, any>[];
@@ -204,7 +204,7 @@ interface ListTableProps<TData> {
   readonly toolbar?: ReactNode;
 }
 
-export function ListTable<TData>({
+export function ListTable<TData extends RowData>({
   title,
   count,
   actions,

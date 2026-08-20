@@ -5,10 +5,10 @@ import { DateTime } from '@/components/date';
 import { SearchResourceTable, type ControlledSearch } from '@/components/search-resource-table';
 import { ListColumnHeader } from '@/features/milo';
 import { projectRoutes } from '@/utils/config/routes.config';
+import { createColumnHelper } from '@/utils/table';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { ComDatumapisNetworkingV1AlphaDomain } from '@openapi/networking.datumapis.com/v1alpha';
-import { createColumnHelper } from '@tanstack/react-table';
 import { Link } from 'react-router';
 
 export interface DomainRow {

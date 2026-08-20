@@ -4,6 +4,7 @@ import { getEmailCondition } from '@/features/email/email-utils';
 import { ListTable, ListColumnHeader } from '@/features/milo';
 import { routes } from '@/utils/config/routes.config';
 import { startCase } from '@/utils/helpers';
+import { createColumnHelper } from '@/utils/table';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
@@ -12,7 +13,6 @@ import {
   ComMiloapisNotificationV1Alpha1EmailList,
 } from '@openapi/notification.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
-import { createColumnHelper } from '@tanstack/react-table';
 import { useMemo } from 'react';
 import { Link } from 'react-router';
 

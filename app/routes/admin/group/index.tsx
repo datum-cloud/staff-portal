@@ -4,9 +4,9 @@ import { DisplayId, DisplayName } from '@/components/display';
 import { ListPage, ListTable, ListColumnHeader } from '@/features/milo';
 import { useGroupListQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
+import { createColumnHelper } from '@/utils/table';
 import { t } from '@lingui/core/macro';
 import { ComMiloapisIamV1Alpha1Group } from '@openapi/iam.miloapis.com/v1alpha1';
-import { createColumnHelper } from '@tanstack/react-table';
 
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Groups`);

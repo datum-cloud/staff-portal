@@ -9,9 +9,9 @@ export function EdgeAdvancedBanner() {
       <AlertDescription>
         <p>
           <Trans>
-            This Application Load Balancer has advanced configuration that cannot be represented in the simplified
-            overview fields. See the YAML section below for the full resource definition including
-            routing rules, filters, and matches.
+            This Application Load Balancer has advanced configuration that cannot be represented in
+            the simplified overview fields. See the YAML section below for the full resource
+            definition including routing rules, filters, and matches.
           </Trans>
         </p>
       </AlertDescription>

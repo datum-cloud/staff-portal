@@ -1,8 +1,9 @@
+import type { DataTableFeatures } from '@datum-cloud/datum-ui/data-table';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import type { Column } from '@tanstack/react-table';
+import type { Column, RowData } from '@tanstack/react-table';
 
-type Props<TData, TValue> = {
-  column: Column<TData, TValue>;
+type Props<TData extends RowData, TValue> = {
+  column: Column<DataTableFeatures, TData, TValue>;
   title: string;
   className?: string;
 };
@@ -54,7 +55,7 @@ function SortIcon({ sorted }: { sorted: false | 'asc' | 'desc' }) {
  *
  * @see https://www.figma.com/design/bBEQ8YeTP4SngNl5EkkQdH/Datum---Master-Design-File?node-id=14438-59986
  */
-export function ListColumnHeader<TData, TValue>({
+export function ListColumnHeader<TData extends RowData, TValue>({
   column,
   title,
   className,

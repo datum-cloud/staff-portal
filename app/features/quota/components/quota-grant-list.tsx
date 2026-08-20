@@ -5,6 +5,7 @@ import { DialogConfirm } from '@/components/dialog';
 import { TableCard } from '@/features/milo';
 import { type GqlQuotaGrant, type GqlQuotaGrantList } from '@/modules/graphql/quota';
 import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
+import { type ColumnDef } from '@/utils/table';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { ActionItem } from '@datum-cloud/datum-ui/data-table';
 import { GroupedTable, type GroupedTableGroup } from '@datum-cloud/datum-ui/grouped-table';
@@ -13,7 +14,6 @@ import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
 import { useQuery } from '@tanstack/react-query';
-import { type ColumnDef } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
 
 interface QuotaGrantListProps {
