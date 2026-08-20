@@ -1,26 +1,30 @@
 import type { Route } from './+types/layout';
+import { BadgeState } from '@/components/badge';
 import {
   createClickableBreadcrumbItem,
   createStaticBreadcrumbItem,
   type BreadcrumbItem,
 } from '@/components/breadcrumb';
 import { DetailShell, type EntityTab } from '@/features/milo';
+import { isProjectDeleting } from '@/features/project/lib/project-deletion';
 import { useEnv } from '@/hooks';
 import { authenticator } from '@/modules/auth';
 import { usePlugins } from '@/modules/plugins/client/use-plugins';
 import { findWorkloadListPluginSlug } from '@/modules/plugins/client/workload-plugin';
+import { useLiveProject } from '@/resources/request/client';
 import { orgDetailQuery, projectDetailQuery } from '@/resources/request/server';
 import { ACTION_ICONS, ENTITY_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
 import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
+import { toast } from '@datum-cloud/datum-ui/toast';
 import { Trans, useLingui } from '@lingui/react/macro';
 import {
   ComMiloapisResourcemanagerV1Alpha1Organization,
   ComMiloapisResourcemanagerV1Alpha1Project,
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { Boxes } from 'lucide-react';
-import { useMemo } from 'react';
-import { useLoaderData, useLocation, useParams } from 'react-router';
+import { useEffect, useMemo } from 'react';
+import { useLoaderData, useLocation, useNavigate, useParams } from 'react-router';
 
 export const handle = {
   customBreadcrumb: {
@@ -72,13 +76,26 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 
 export default function Layout() {
   const { t } = useLingui();
-  const { project } = useLoaderData<typeof loader>();
+  const loaderData = useLoaderData<typeof loader>();
+  const { project, isGone } = useLiveProject(loaderData.project);
+  const organization = loaderData.organization;
   const env = useEnv();
   const { pathname } = useLocation();
   const params = useParams();
+  const navigate = useNavigate();
 
-  const projectName = project?.metadata?.name ?? '';
+  const projectName = project?.metadata?.name ?? loaderData.project?.metadata?.name ?? '';
   const displayName = project?.metadata?.annotations?.['kubernetes.io/description'] || projectName;
+  const orgName = organization?.metadata?.name ?? '';
+  const deleting = isProjectDeleting(project);
+
+  useEffect(() => {
+    if (!isGone || !orgName) return;
+    toast.success(t`Project deleted`, {
+      description: t`Cleanup finished and the project is no longer available.`,
+    });
+    navigate(orgRoutes.project(orgName));
+  }, [isGone, orgName, navigate, t]);
 
   // Nav tabs for plugin-contributed project pages are additive and
   // best-effort: if no installed plugin serves a Workloads list page,
@@ -191,7 +208,12 @@ export default function Layout() {
           <ENTITY_ICONS.project className="size-5" />
         </div>
       }
-      name={displayName}
+      name={
+        <span className="flex flex-wrap items-center gap-2">
+          <span>{displayName}</span>
+          {deleting && <BadgeState state="deleting" loading />}
+        </span>
+      }
       subtitle={projectName}
       actions={
         cloudProjectUrl && (

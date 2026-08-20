@@ -1,11 +1,11 @@
 import { createGqlClient } from './client';
-import type { GqlProject, GqlProjectList } from './organizations';
+import { GQL_PROJECT_FIELDS, type GqlProject, type GqlProjectList } from './organizations';
 import { mapApiError } from '@/utils/errors/error-mapper';
 
 const PROJECTS_QUERY = `
   query Projects($limit: Int, $cursor: String, $search: String) {
     projects(limit: $limit, cursor: $cursor, search: $search) {
-      items { name displayName organizationName organizationDisplayName organizationBusinessName hasActiveBillingAccount billingAccountName createdAt state }
+      items { ${GQL_PROJECT_FIELDS} }
       continueToken
     }
   }
@@ -14,7 +14,7 @@ const PROJECTS_QUERY = `
 const PROJECT_QUERY = `
   query Project($name: String!) {
     project(name: $name) {
-      name displayName organizationName organizationDisplayName organizationBusinessName hasActiveBillingAccount billingAccountName createdAt state
+      ${GQL_PROJECT_FIELDS}
     }
   }
 `;

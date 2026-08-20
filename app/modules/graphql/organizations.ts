@@ -50,6 +50,10 @@ export interface GqlProject {
   billingAccountName: string | null;
   createdAt: string | null;
   state: string | null;
+  /** Set while the project is terminating. */
+  deletionTimestamp: string | null;
+  /** Unparsed ResourceCleanup condition message. */
+  resourceCleanupMessage: string | null;
 }
 
 export interface GqlProjectList {
@@ -95,6 +99,11 @@ const ORG_CORE_FIELDS = `
  *  (plus billing enrichment) call per org and dominates list latency. */
 const ORG_LIST_FIELDS = ORG_CORE_FIELDS;
 
+export const GQL_PROJECT_FIELDS = `
+  name displayName organizationName organizationDisplayName organizationBusinessName
+  hasActiveBillingAccount billingAccountName createdAt state deletionTimestamp resourceCleanupMessage
+`;
+
 const ORG_DETAIL_FIELDS = `
   ${ORG_CORE_FIELDS}
   projects(limit: 100) { items { name } continueToken }
@@ -120,7 +129,7 @@ const ORGANIZATION_QUERY = `
 const ORG_PROJECTS_QUERY = `
   query OrgProjects($orgName: String!, $limit: Int, $cursor: String) {
     organizationProjects(orgName: $orgName, limit: $limit, cursor: $cursor) {
-      items { name displayName organizationName organizationDisplayName organizationBusinessName hasActiveBillingAccount billingAccountName createdAt state }
+      items { ${GQL_PROJECT_FIELDS} }
       continueToken
     }
   }

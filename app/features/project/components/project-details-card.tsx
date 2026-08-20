@@ -3,6 +3,7 @@ import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
 import { DisplayText } from '@/components/display';
 import { SectionCard } from '@/features/milo';
+import { getProjectPhase, isProjectDeleting } from '@/features/project/lib/project-deletion';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { Trans } from '@lingui/react/macro';
@@ -18,11 +19,9 @@ export function ProjectDetailsCard({ project, className }: Props) {
   const displayName =
     project?.metadata?.annotations?.['kubernetes.io/description']?.trim() || resourceName;
   const createdAt = project?.metadata?.creationTimestamp;
-  const phase = (() => {
-    const ready = project?.status?.conditions?.find((c) => c.type === 'Ready');
-    if (!ready) return null;
-    return ready.status === 'True' ? 'Ready' : 'Pending';
-  })();
+  const deleting = isProjectDeleting(project);
+  const deletingSince = project?.metadata?.deletionTimestamp;
+  const phase = getProjectPhase(project);
 
   return (
     <SectionCard className={cn(className)} title={<Trans>Details</Trans>}>
@@ -38,7 +37,16 @@ export function ProjectDetailsCard({ project, className }: Props) {
           },
           {
             label: <Trans>Status</Trans>,
-            value: phase ? <BadgeState state={phase} /> : <Text>—</Text>,
+            value: <BadgeState state={phase} loading={deleting} />,
+          },
+          {
+            label: <Trans>Deleting since</Trans>,
+            hidden: !deleting,
+            value: (
+              <Text>
+                <DateTime date={deletingSince} variant="both" />
+              </Text>
+            ),
           },
           {
             label: <Trans>Created</Trans>,

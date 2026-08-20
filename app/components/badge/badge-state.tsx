@@ -98,6 +98,11 @@ const StateConfig = {
     className:
       'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/20 dark:text-gray-400 dark:border-gray-800',
   },
+  deleting: {
+    icon: null,
+    className:
+      'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800',
+  },
   // Registration approval states
   approved: {
     icon: null,
