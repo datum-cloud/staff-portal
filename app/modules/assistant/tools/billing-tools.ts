@@ -1,4 +1,5 @@
 import { datumGet } from './api-helpers';
+import { projectDisplayName } from './display-name';
 import {
   buildOrganizationNamespace,
   getActiveBindingsForAccount,
@@ -319,7 +320,7 @@ export function createBillingTools({ accessToken }: BillingToolDeps) {
         return {
           status: 'ok' as const,
           projectName: name,
-          projectDisplayName: project.metadata?.annotations?.['kubernetes.io/display-name'] ?? name,
+          projectDisplayName: projectDisplayName(project.metadata) || name,
           orgName,
           billingAccountName,
           billingAccountDisplayName: getBillingAccountDisplayName(account),
