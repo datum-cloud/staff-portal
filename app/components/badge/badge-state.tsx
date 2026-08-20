@@ -223,7 +223,8 @@ const DOT_CLASS_BY_TYPE: Partial<Record<NonNullable<BadgeProps['type']>, string>
 };
 
 function dotClassName(config: BadgeStateConfigEntry): string {
-  if (config.type && DOT_CLASS_BY_TYPE[config.type]) return DOT_CLASS_BY_TYPE[config.type];
+  const fromType = config.type ? DOT_CLASS_BY_TYPE[config.type] : undefined;
+  if (fromType) return fromType;
   const bgToken = config.className.split(' ').find((c) => c in DOT_CLASS_BY_BG);
   return bgToken ? DOT_CLASS_BY_BG[bgToken] : 'bg-gray-400';
 }
