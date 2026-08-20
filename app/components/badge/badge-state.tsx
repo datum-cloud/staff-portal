@@ -1,6 +1,6 @@
 import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { startCase } from '@/utils/helpers';
-import { Badge } from '@datum-cloud/datum-ui/badge';
+import { Badge, type BadgeProps } from '@datum-cloud/datum-ui/badge';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import * as React from 'react';
@@ -9,6 +9,8 @@ type BadgeStateIcon = React.ElementType<{ className?: string }>;
 type BadgeStateConfigEntry = {
   icon: BadgeStateIcon | null;
   className: string;
+  type?: BadgeProps['type'];
+  theme?: BadgeProps['theme'];
 };
 
 const StateConfig = {
@@ -100,8 +102,9 @@ const StateConfig = {
   },
   deleting: {
     icon: null,
-    className:
-      'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800',
+    type: 'warning',
+    theme: 'light',
+    className: '',
   },
   // Registration approval states
   approved: {
@@ -211,7 +214,16 @@ const DOT_CLASS_BY_BG: Record<string, string> = {
   'bg-violet-100': 'bg-violet-500',
 };
 
+const DOT_CLASS_BY_TYPE: Partial<Record<NonNullable<BadgeProps['type']>, string>> = {
+  warning: 'bg-badge-warning',
+  success: 'bg-badge-success',
+  danger: 'bg-badge-danger',
+  info: 'bg-badge-info',
+  muted: 'bg-badge-muted',
+};
+
 function dotClassName(config: BadgeStateConfigEntry): string {
+  if (config.type && DOT_CLASS_BY_TYPE[config.type]) return DOT_CLASS_BY_TYPE[config.type];
   const bgToken = config.className.split(' ').find((c) => c in DOT_CLASS_BY_BG);
   return bgToken ? DOT_CLASS_BY_BG[bgToken] : 'bg-gray-400';
 }
@@ -250,7 +262,8 @@ const BadgeState = ({
       </span>
     ) : (
       <Badge
-        theme={noColor ? 'outline' : undefined}
+        type={noColor ? undefined : config.type}
+        theme={noColor ? 'outline' : config.theme}
         className={cn(
           'inline-flex items-center gap-1 px-2 py-0 text-xs font-medium',
           noColor
