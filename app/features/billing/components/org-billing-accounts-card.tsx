@@ -16,13 +16,13 @@ import {
   usePaymentMethodListForOrgQuery,
 } from '@/resources/request/client';
 import { billingAccountRoutes } from '@/utils/config/routes.config';
+import { createColumnHelper, type ColumnDef } from '@/utils/table';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
-import { createColumnHelper, type ColumnDef } from '@tanstack/react-table';
 import { useMemo } from 'react';
 import { Link } from 'react-router';
 

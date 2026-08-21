@@ -6,10 +6,10 @@ import { ListColumnHeader } from '@/features/milo';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { transformControlPlaneStatus } from '@/utils/helpers';
+import { createColumnHelper } from '@/utils/table';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
 import { ComMiloapisNetworkingDnsV1Alpha1DnsZone } from '@openapi/dns.networking.miloapis.com/v1alpha1';
-import { createColumnHelper } from '@tanstack/react-table';
 import { Link } from 'react-router';
 
 export interface DnsZoneRow {

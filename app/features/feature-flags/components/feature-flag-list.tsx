@@ -11,6 +11,7 @@ import {
   useOrgQuotaBucketListQuery,
   useOrgQuotaGrantListQuery,
 } from '@/resources/request/client';
+import { createColumnHelper } from '@/utils/table';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Switch } from '@datum-cloud/datum-ui/switch';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
@@ -19,7 +20,6 @@ import type {
   ComMiloapisQuotaV1Alpha1ResourceGrant,
   ComMiloapisQuotaV1Alpha1ResourceRegistration,
 } from '@openapi/quota.miloapis.com/v1alpha1';
-import { createColumnHelper } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
 
 function flagKey(resourceType: string | undefined) {

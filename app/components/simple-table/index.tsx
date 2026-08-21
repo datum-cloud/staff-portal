@@ -1,3 +1,5 @@
+import { type ColumnDef, type RowData } from '@/utils/table';
+import { dataTableFeatures } from '@datum-cloud/datum-ui/data-table';
 import {
   Table,
   TableBody,
@@ -7,18 +9,11 @@ import {
   TableRow,
 } from '@datum-cloud/datum-ui/table';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  SortingState,
-  useReactTable,
-} from '@tanstack/react-table';
+import { flexRender, type SortingState, useTable } from '@tanstack/react-table';
 import type * as React from 'react';
 import { useState } from 'react';
 
-export interface SimpleTableProps<TData> extends React.ComponentProps<'div'> {
+export interface SimpleTableProps<TData extends RowData> extends React.ComponentProps<'div'> {
   columns: ColumnDef<TData, any>[];
   data: TData[];
   enableSorting?: boolean;
@@ -30,7 +25,7 @@ export interface SimpleTableProps<TData> extends React.ComponentProps<'div'> {
  * Static TanStack table (no DataTable store). Used for small in-card lists
  * where full DataTable.Client is unnecessary (e.g. DNS nameservers).
  */
-export function SimpleTable<TData>({
+export function SimpleTable<TData extends RowData>({
   columns,
   data,
   enableSorting = false,
@@ -41,14 +36,16 @@ export function SimpleTable<TData>({
 }: SimpleTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
+  // react-table v9: row models are baked into the feature set (createSortedRowModel,
+  // etc.), so we pass datum-ui's shared `dataTableFeatures` instead of the old
+  // getCoreRowModel/getSortedRowModel options.
   // TanStack Table's API isn't compiler-friendly; the new
   // react-hooks/incompatible-library rule flags it but the usage is correct.
-  // eslint-disable-next-line react-hooks/incompatible-library
-  const table = useReactTable<TData>({
+
+  const table = useTable({
+    features: dataTableFeatures,
     data,
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: enableSorting ? getSortedRowModel() : undefined,
     enableSorting,
     onSortingChange: enableSorting ? setSorting : undefined,
     state: {

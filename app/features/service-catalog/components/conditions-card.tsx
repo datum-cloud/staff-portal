@@ -2,10 +2,10 @@ import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { SimpleTable } from '@/components/simple-table';
 import { SectionCard } from '@/features/milo';
+import { createColumnHelper } from '@/utils/table';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisServicesV1Alpha1ServiceConfiguration } from '@openapi/services.miloapis.com/v1alpha1';
-import { createColumnHelper } from '@tanstack/react-table';
 import { ListChecks } from 'lucide-react';
 
 type Condition = NonNullable<

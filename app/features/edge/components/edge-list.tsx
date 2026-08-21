@@ -5,9 +5,9 @@ import { DisplayId } from '@/components/display';
 import { SearchResourceTable, type ControlledSearch } from '@/components/search-resource-table';
 import { ListColumnHeader } from '@/features/milo';
 import { projectRoutes } from '@/utils/config/routes.config';
+import { createColumnHelper } from '@/utils/table';
 import { t } from '@lingui/core/macro';
 import { ComDatumapisNetworkingV1AlphaHttpProxy } from '@openapi/networking.datumapis.com/v1alpha';
-import { createColumnHelper } from '@tanstack/react-table';
 import { Link } from 'react-router';
 
 export interface EdgeRow {
