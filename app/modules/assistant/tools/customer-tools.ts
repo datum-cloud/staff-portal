@@ -1,4 +1,5 @@
 import { datumGet } from './api-helpers';
+import { projectDisplayName } from './display-name';
 import { tool } from 'ai';
 import { z } from 'zod';
 
@@ -86,7 +87,7 @@ export function createCustomerTools({ accessToken }: CustomerToolDeps) {
           results: Array.isArray(items)
             ? items.slice(0, 20).map((p: any) => ({
                 name: p.metadata?.name,
-                displayName: p.metadata?.annotations?.['kubernetes.io/display-name'],
+                displayName: projectDisplayName(p.metadata),
                 url: `/customers/projects/${encodeURIComponent(p.metadata?.name)}`,
               }))
             : [],
