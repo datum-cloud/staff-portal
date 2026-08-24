@@ -28,8 +28,6 @@ const DEFAULT_DAYS = 30;
 const MAX_BREAKDOWN_DIMENSIONS = 3;
 /** Platform dimension injected by the billing pipeline (not on MeterDefinition). */
 const PROJECT_BREAKDOWN_DIMENSION = 'project_name';
-/** Internal Gateway labels — not useful as staff-facing usage breakdown tabs. */
-const HIDDEN_BREAKDOWN_DIMENSIONS = new Set(['gateway', 'gateway_namespace']);
 
 export interface UsageTimeRange {
   startSec: number;
@@ -348,9 +346,7 @@ async function fetchUsageForCustomerIds({
       };
 
       try {
-        const dims = (def.dimensions ?? [])
-          .filter((dimension) => !HIDDEN_BREAKDOWN_DIMENSIONS.has(dimension))
-          .slice(0, MAX_BREAKDOWN_DIMENSIONS);
+        const dims = (def.dimensions ?? []).slice(0, MAX_BREAKDOWN_DIMENSIONS);
         const [values, meterBreakdowns, projectBreakdown] = await Promise.all([
           fetchAggregateSeries(queryArgs),
           Promise.all(
