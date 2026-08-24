@@ -3,7 +3,7 @@ import { Button } from '@datum-cloud/datum-ui/button';
 import { Dialog } from '@datum-cloud/datum-ui/dialog';
 import { Input } from '@datum-cloud/datum-ui/input';
 import { Trans } from '@lingui/react/macro';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 interface DialogConfirmProps {
   open: boolean;
@@ -17,6 +17,7 @@ interface DialogConfirmProps {
   onCancel?: () => void;
   requireConfirmation?: boolean;
   confirmationText?: string;
+  children?: ReactNode;
 }
 
 export default function DialogConfirm({
@@ -31,6 +32,7 @@ export default function DialogConfirm({
   onCancel,
   requireConfirmation = false,
   confirmationText = 'DELETE',
+  children,
 }: DialogConfirmProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [confirmationInput, setConfirmationInput] = useState('');
@@ -84,21 +86,24 @@ export default function DialogConfirm({
       <Dialog.Content className="sm:max-w-md">
         <Dialog.Header title={title} description={description} />
 
-        {requireConfirmation ? (
-          <Dialog.Body className="px-5 pt-0 pb-0">
-            <div className="flex flex-col gap-2">
-              <label htmlFor="confirmation-input" className="text-sm font-medium">
-                <Trans>
-                  Enter the word <strong>{confirmationText}</strong> to perform this action.
-                </Trans>
-              </label>
-              <Input
-                id="confirmation-input"
-                value={confirmationInput}
-                onChange={(e) => setConfirmationInput(e.target.value)}
-                disabled={isLoading}
-              />
-            </div>
+        {requireConfirmation || children ? (
+          <Dialog.Body className="flex flex-col gap-3 px-5 pt-0 pb-4">
+            {requireConfirmation ? (
+              <div className="flex flex-col gap-2">
+                <label htmlFor="confirmation-input" className="text-sm font-medium">
+                  <Trans>
+                    Enter the word <strong>{confirmationText}</strong> to perform this action.
+                  </Trans>
+                </label>
+                <Input
+                  id="confirmation-input"
+                  value={confirmationInput}
+                  onChange={(e) => setConfirmationInput(e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
+            ) : null}
+            {children}
           </Dialog.Body>
         ) : null}
 

@@ -316,6 +316,14 @@ msgstr ""
 msgid "Allocation"
 msgstr ""
 
+#: app/features/billing/components/default-offer-card.tsx:100
+msgid "Also move accounts currently on \"{currentDefault}\" to this Offer"
+msgstr ""
+
+#: app/features/billing/components/default-offer-card.tsx:101
+msgid "Also move accounts currently on the previous default to this Offer"
+msgstr ""
+
 #: app/routes/customer/billing-account/detail/index.tsx:224
 msgid "Amount"
 msgstr ""
@@ -541,7 +549,7 @@ msgstr ""
 
 #: app/components/button/button-delete-action.tsx:43
 #: app/components/danger-zone-card/index.tsx:43
-#: app/features/billing/components/default-offer-card.tsx:59
+#: app/features/billing/components/default-offer-card.tsx:77
 #: app/features/billing/components/offer-switcher-card.tsx:150
 #: app/features/contact-group/components/contact-group-form.tsx:97
 #: app/features/contact/components/contact-form.tsx:244
@@ -1064,8 +1072,12 @@ msgstr ""
 msgid "Default Hostname"
 msgstr ""
 
-#: app/features/billing/components/default-offer-card.tsx:63
+#: app/features/billing/components/default-offer-card.tsx:84
 msgid "Default Offer updated"
+msgstr ""
+
+#: app/features/billing/components/default-offer-card.tsx:83
+msgid "Default Offer updated; accounts on the previous default will be migrated"
 msgstr ""
 
 #: app/features/fraud/policy/policy-detail.tsx:155
@@ -1527,7 +1539,7 @@ msgstr ""
 msgid "Enter the full email to search..."
 msgstr ""
 
-#: app/components/dialog/dialog-confirm.tsx:91
+#: app/components/dialog/dialog-confirm.tsx:94
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr ""
 
@@ -1658,7 +1670,7 @@ msgstr ""
 msgid "Failed to publish Offer"
 msgstr ""
 
-#: app/features/billing/components/default-offer-card.tsx:65
+#: app/features/billing/components/default-offer-card.tsx:87
 msgid "Failed to set default Offer"
 msgstr ""
 
@@ -3755,16 +3767,16 @@ msgstr ""
 msgid "Session ID"
 msgstr ""
 
-#: app/features/billing/components/default-offer-card.tsx:57
-msgid "Set \"{offerName}\" as the platform default Offer? New billing accounts and existing accounts with no BillingEntitlement are entitled automatically. Accounts that already have a BillingEntitlement are not migrated."
+#: app/features/billing/components/default-offer-card.tsx:75
+msgid "Set \"{offerName}\" as the platform default Offer? New billing accounts and existing accounts with no BillingEntitlement are entitled automatically."
 msgstr ""
 
-#: app/features/billing/components/default-offer-card.tsx:51
-#: app/features/billing/components/default-offer-card.tsx:58
+#: app/features/billing/components/default-offer-card.tsx:64
+#: app/features/billing/components/default-offer-card.tsx:76
 msgid "Set as default"
 msgstr ""
 
-#: app/features/billing/components/default-offer-card.tsx:56
+#: app/features/billing/components/default-offer-card.tsx:74
 msgid "Set platform default"
 msgstr ""
 

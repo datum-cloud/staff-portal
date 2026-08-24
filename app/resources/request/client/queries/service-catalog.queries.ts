@@ -69,7 +69,8 @@ export const useBillingDefaultOfferQuery = () => {
 export const useSetBillingDefaultOfferMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (offerName: string) => setBillingDefaultOffer(offerName),
+    mutationFn: (input: { offerName: string; migrateFromOffer?: string | null }) =>
+      setBillingDefaultOffer(input.offerName, { migrateFromOffer: input.migrateFromOffer }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: serviceCatalogQueryKeys.billingDefaultOffer,
