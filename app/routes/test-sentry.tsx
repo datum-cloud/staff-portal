@@ -1,10 +1,20 @@
-import type { Route } from './+types/test-sentry';
 import * as Sentry from '@sentry/react-router';
 import { useState } from 'react';
-import { Form, useActionData, useLoaderData } from 'react-router';
+import { Form } from 'react-router';
+
+// This is a manual Sentry smoke-test harness. It intentionally fires test
+// events, so it must never be reachable in production. `process.env.NODE_ENV`
+// is inlined at build time and this loader is server-only, so the page 404s in
+// production without leaking server config into the client bundle.
+export async function loader() {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Response('Not Found', { status: 404 });
+  }
+  return null;
+}
 
 // Uncomment one of these to test server-side errors:
-// export async function loader() {
+// export async function serverErrorLoader() {
 //   throw new Error("Test server error from loader");
 // }
 

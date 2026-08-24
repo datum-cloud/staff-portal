@@ -9,9 +9,12 @@ interceptors, or Sentry wiring.
 ## 1. The error model — `app/utils/errors/`
 
 - **`base.ts` → `AppError`** — an `Error` subclass carrying `statusCode`,
-  `code`, and `requestId`, plus `toResponse()` which serializes
+  `code`, `requestId`, and two reporting-intent fields: `expected` (a handled
+  failure vs. a bug — defaults to `true` for 4xx) and `level` (`warning` for
+  4xx, `error` otherwise). `toResponse()` serializes
   `{ message, error: name, requestId }` into a JSON `Response`
-  (`status = statusCode`, `statusText = code`).
+  (`status = statusCode`, `statusText = code`). All subclasses inherit the
+  derived intent, so a 403/404/422 is `expected` and stays out of Sentry.
 - **`http.ts`** — `HttpError`, `BadRequestError` (400), `NotFoundError` (404),
   `ValidationError` (422), `ConflictError` (409).
 - **`auth.ts`** — `TokenError` (401), `AuthenticationError` (401,
@@ -48,7 +51,9 @@ interceptors, or Sentry wiring.
   request context.
 - Response-error interceptor logs the failure, calls `captureApiError`, then a
   `switch (status)` **throws a typed `AppError`** (`AuthenticationError` /
-  `AuthorizationError` / `NotFoundError` / `ValidationError` / `HttpError`).
+  `AuthorizationError` / `NotFoundError` / `ValidationError` / `HttpError`). The
+  401 branch has a fallback throw so an unrecognized 401 shape can't fall
+  through into the 403 case.
 
 **Server (Hono) request handling**
 - No global `app.onError`; each middleware/route wraps in try/catch and calls
@@ -88,19 +93,39 @@ DSN + `SENTRY_ENV` per overlay in `datum-cloud/infra`
 **Two init sites** (a change to Sentry behavior usually has to touch both):
 - **Client** — `app/entry.client.tsx`: `dsn`/`environment`/`release`,
   `sendDefaultPii: true`, React-Router tracing + replay integrations,
-  `tracesSampleRate` 0.1 (prod) / 1.0 (else), replay 0.1 / on-error 1.0. No
-  `beforeSend`.
+  `tracesSampleRate` 0.1 (prod) / 1.0 (else), replay 0.1 / on-error 1.0, and
+  the shared `beforeSend` policy (below).
 - **Server** — `observability/providers/sentry.ts`, a `SentryProvider extends
   BaseProvider` started at boot by `observability/start.js` /
-  `dev-start.js` (**not** `entry.server.tsx`). Includes a circuit-breaker
-  `beforeSend` (drops events while open; otherwise passes them through
-  unchanged) and Sentry self-error detection so the observability layer swallows
-  Sentry's own failures.
+  `dev-start.js` (**not** `entry.server.tsx`). Its `beforeSend` is a
+  circuit-breaker (drops events while open) **wrapping** the same shared policy,
+  plus Sentry self-error detection so the observability layer swallows Sentry's
+  own failures.
+
+**Shared reporting policy — `app/modules/sentry/`.** One `beforeSend` factory
+(`createBeforeSend()`) runs on every outgoing event at **both** init sites, so
+filtering/scrubbing/grouping stay identical client and server:
+- **Filter** (`report-policy.ts`) — drops known browser/deploy noise
+  (`ResizeObserver` loops, non-Error rejections, dynamic-import/chunk load
+  failures via `IGNORE_ERROR_MESSAGES`), and as a backstop drops any **expected**
+  `AppError` (see below) that reaches the boundary or a loader.
+- **Scrub** (`scrub.ts`) — redacts secret/token-shaped keys and `Bearer`/JWT
+  strings from `request` headers/cookies/body, `extra`, and `contexts`. User
+  identity (id/email/name) is **kept on purpose** — this is an internal admin
+  tool and knowing *who* hit an error matters; only credentials are stripped.
+- **Group** (`fingerprint.ts`) — fingerprints API events by
+  `method + normalized-route + status` (ids in the path collapse to `:id`), so
+  one failing endpoint is one issue instead of many.
 
 **Capture path — `app/utils/logger/sentry.ts`** (the main one):
 - `captureApiError(error, { url, method, status, requestId, responseData })` —
-  adds a breadcrumb, sets `error.*` tags, and `Sentry.captureException(error, …)`
-  with `responseData` in `extra`. Called from both axios interceptors.
+  always records a breadcrumb, but only **reports** unexpected failures (5xx and
+  network/timeout errors); handled 4xx are logged + shown to the user, not sent
+  to Sentry (`shouldReportApiError`). When it does report, it uses an isolated
+  `Sentry.withScope` so the `error.*` tags never leak onto later events, sets the
+  level (5xx → `error`, else `warning`), applies the API fingerprint, and puts a
+  **scrubbed** `responseData` in `extra`. Called from both axios interceptors and
+  the GraphQL proxy.
 - `setSentryUser(user)` / `clearSentryUser()` — sets `Sentry.setUser` plus a
   `user.*` tag per field and a `user` context; wired to user-state changes in
   `app/providers/app.provider.tsx`.
@@ -147,24 +172,27 @@ issues. This is unrelated to how the app *reports* errors.
 
 ---
 
-## 6. Known limitations & caveats
+## 6. Caveats & deliberate choices
 
-Worth knowing when working in this area (all current, factual):
+Worth knowing when working in this area:
 
-- **No PII/secret scrubbing.** `sendDefaultPii: true` on both inits;
-  `setSentryUser` sends email + ~10 user fields as tags/context;
-  `captureApiError` puts raw `responseData` into Sentry `extra`.
-- **`beforeSend` does no filtering.** The server one is a circuit breaker only;
-  the client has none. Every caught 4xx and bot 405 reaches the shared project.
-- **`captureApiError` sets `error.*` tags on the global scope** (via
-  `Sentry.setTag`, not `withScope`), so they can bleed onto later events.
-- **No fingerprinting / report-gating / `ignoreErrors` / `denyUrls`.**
-- **`axios.server.ts` 401 handling can fall through to 403** — the 401 branch
-  has sub-cases without a `break`.
-- **GraphQL proxy errors** (`app/server/routes/graphql.ts`) `console.error` and
-  return 502/499, bypassing Sentry and the structured logger.
-- **`/test-sentry`** (`app/routes/test-sentry.tsx`, registered in `routes.ts`)
-  ships in production builds.
+- **User identity is sent on purpose.** `sendDefaultPii: true` on both inits and
+  `setSentryUser` send id/email/name so staff can see *who* hit an error. The
+  scrubber strips credentials/tokens, **not** identity. Revisit this stance if
+  the portal ever handles third-party end-user PII.
+- **Session Replay records the DOM** (`replaysSessionSampleRate: 0.1`,
+  on-error 1.0). Sentry's default input masking applies, but sensitive data
+  rendered as plain text can still be captured — mask deliberately when adding
+  such views.
+- **Handled `RouteErrorResponse`s are not reported** — 404s and thrown
+  `Response`s skip Sentry by design (they're expected). A genuinely broken
+  thrown `Response` therefore won't surface as an issue.
+- **API fingerprinting only applies to `captureApiError` events.** Errors caught
+  elsewhere (unhandled exceptions, boundary captures) group by Sentry's default
+  stack-based grouping.
+- **One shared Sentry project (2) for all envs**, separated only by
+  `SENTRY_ENV`; there is no per-env project isolation. Filter by environment in
+  Sentry.
 
 ---
 
@@ -173,13 +201,14 @@ Worth knowing when working in this area (all current, factual):
 | Area | Files |
 |------|-------|
 | Error model | `app/utils/errors/{base,http,auth,error-mapper,error-parser}.ts` |
+| Reporting policy (filter/scrub/fingerprint) | `app/modules/sentry/{before-send,report-policy,scrub,fingerprint}.ts` |
 | Client init | `app/entry.client.tsx` |
 | Server init + resilience | `observability/providers/sentry.ts`, started by `observability/{start,dev-start}.js` |
 | Capture path / Sentry helpers | `app/utils/logger/sentry.ts` |
 | Structured logging | `app/utils/logger/`, `app/server/logger.ts` |
 | Error boundary | `app/root.tsx` |
 | Axios | `app/modules/axios/{axios.client,axios.server}.ts` |
-| GraphQL errors | `app/modules/graphql/errors.ts`; proxy: `app/server/routes/graphql.ts` |
+| GraphQL errors | `app/modules/graphql/errors.ts`; proxy (reports via logger + Sentry): `app/server/routes/graphql.ts` |
 | Build / config / env | `app/utils/config/sentry.config.ts`, `vite.config.ts`, `react-router.config.ts`, `app/utils/config/env.server.ts` |
 | Infra (DSN + `SENTRY_ENV`) | `datum-cloud/infra` → `apps/staff-portal/<env>/patch-deployment.yaml` |
 | Chatbot Sentry tool | `app/modules/assistant/tools/sentry-tools.ts` |

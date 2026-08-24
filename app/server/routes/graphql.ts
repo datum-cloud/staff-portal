@@ -1,6 +1,7 @@
 import { EnvVariables } from '@/server/iface';
 import { authMiddleware, getToken } from '@/server/middleware';
 import { env } from '@/utils/config/env.server';
+import { captureApiError, logger } from '@/utils/logger';
 import { Hono } from 'hono';
 
 /**
@@ -40,7 +41,25 @@ graphqlRoutes.all('/', authMiddleware(), async (c) => {
     if (error instanceof Error && error.name === 'AbortError') {
       return new Response(null, { status: 499 });
     }
-    console.error('[graphql-proxy] Error:', error);
-    return c.json({ error: error instanceof Error ? error.message : 'Proxy error' }, 502);
+
+    const requestId = c.get('requestId') ?? undefined;
+    const err = error instanceof Error ? error : new Error('GraphQL proxy error');
+
+    // Route through the structured logger + Sentry like the axios interceptors,
+    // instead of a bare console.error that never reaches observability.
+    logger.error('GraphQL proxy error', {
+      requestId,
+      url: `${env.GRAPHQL_URL}/graphql`,
+      method: c.req.method,
+      error: err.message,
+    });
+    captureApiError(err, {
+      url: `${env.GRAPHQL_URL}/graphql`,
+      method: c.req.method,
+      status: 502,
+      requestId,
+    });
+
+    return c.json({ error: err.message, requestId }, 502);
   }
 });

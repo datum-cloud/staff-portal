@@ -1,5 +1,6 @@
 import { httpClient } from '@/modules/axios/axios.client';
 import { loadCatalog } from '@/modules/i18n/lingui';
+import { createBeforeSend } from '@/modules/sentry';
 import { logger } from '@/utils/logger';
 import { i18n } from '@lingui/core';
 import { detect, fromHtmlTag } from '@lingui/detect-locale';
@@ -36,6 +37,10 @@ Sentry.init({
 
   // Enable logs to be sent to Sentry
   enableLogs: true,
+
+  // Shared reporting policy: drop handled/noise events, scrub secrets, group
+  // API errors. Same handler runs on the server (observability/providers/sentry).
+  beforeSend: createBeforeSend(),
 
   tracesSampleRate: env?.NODE_ENV === 'production' ? 0.1 : 1.0, // Capture transactions
 

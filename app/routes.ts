@@ -241,6 +241,7 @@ export default [
       route('sessions', 'routes/profile/session.tsx'),
     ]),
 
+    // Sentry smoke-test harness — its loader 404s in production (see the route).
     route('test-sentry', 'routes/test-sentry.tsx'),
 
     // Platform-wide plugin mount (`portal.page/platform` extensions) — see
