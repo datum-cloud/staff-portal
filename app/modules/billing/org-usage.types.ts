@@ -13,7 +13,7 @@ export interface OrgUsageMeterSummary {
   used: number;
   /** 0 when no matching AllowanceBucket / unlimited. */
   limit: number;
-  /** Period spend from Amberflo usage-cost, when priced. */
+  /** Period spend estimated from catalog Offer rates × usage. */
   spend?: number;
 }
 
@@ -24,9 +24,11 @@ export interface OrgUsageSummary {
   /** Full picker-style label. */
   cycleLabel: string;
   meters: OrgUsageMeterSummary[];
-  /** Total period spend across meters (Amberflo usage-cost). */
+  /** Total period spend (catalog estimate). */
   totalSpend?: number;
   /** ISO 4217 currency for spend fields. */
   currencyCode?: string;
+  /** Offer used for spend estimates. */
+  pricingOfferName?: string;
   message?: string;
 }

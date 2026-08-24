@@ -70,7 +70,6 @@ function toUsageMeter(
     currencyCode,
     tabs,
     series: meter.values,
-    costSeries: meter.costSeries,
     breakdowns,
   };
 }

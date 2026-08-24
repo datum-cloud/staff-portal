@@ -3,7 +3,8 @@ import {
   selectBillingCycleWindow,
   type PaymentTermsInput,
 } from './billing-cycle';
-import { enrichMeterUnitRates, fetchUsageCosts } from './usage-cost.server';
+import { loadCatalogUsagePricing } from './usage-pricing.server';
+import { enrichMetersWithCatalogSpend } from './usage-spend';
 import type {
   MeterBreakdownSeries,
   MeterDefinition,
@@ -27,6 +28,8 @@ const DEFAULT_DAYS = 30;
 const MAX_BREAKDOWN_DIMENSIONS = 3;
 /** Platform dimension injected by the billing pipeline (not on MeterDefinition). */
 const PROJECT_BREAKDOWN_DIMENSION = 'project_name';
+/** Internal Gateway labels — not useful as staff-facing usage breakdown tabs. */
+const HIDDEN_BREAKDOWN_DIMENSIONS = new Set(['gateway', 'gateway_namespace']);
 
 export interface UsageTimeRange {
   startSec: number;
@@ -57,12 +60,7 @@ function authStatusFromError(err: unknown): number | undefined {
   return (err as { response?: { status?: number } })?.response?.status;
 }
 
-/**
- * Billing account whose `paymentTerms` drive the cycle picker. Project
- * scope uses the bound account; org scope uses the first Ready account
- * (falling back to the first account when none are Ready yet).
- */
-async function resolveBillingAccountForUsageScope(
+export async function resolveBillingAccountForUsageScope(
   orgName: string,
   token: string,
   projectId: string | 'all'
@@ -350,7 +348,9 @@ async function fetchUsageForCustomerIds({
       };
 
       try {
-        const dims = (def.dimensions ?? []).slice(0, MAX_BREAKDOWN_DIMENSIONS);
+        const dims = (def.dimensions ?? [])
+          .filter((dimension) => !HIDDEN_BREAKDOWN_DIMENSIONS.has(dimension))
+          .slice(0, MAX_BREAKDOWN_DIMENSIONS);
         const [values, meterBreakdowns, projectBreakdown] = await Promise.all([
           fetchAggregateSeries(queryArgs),
           Promise.all(
@@ -423,7 +423,11 @@ async function resolveProjectCustomerId(
   return { status: 'ok', customerId: account.uid };
 }
 
-async function fetchOrgUsage(
+export function meterPeriodUsed(meter: MeterSeries): number {
+  return meter.used ?? meter.values.reduce((acc, point) => acc + point.value, 0);
+}
+
+export async function fetchOrgUsage(
   orgName: string,
   token: string,
   options: { days?: number; range?: UsageTimeRange; projectId?: string } = {}
@@ -475,54 +479,39 @@ async function fetchOrgUsage(
 
   const { startSec, endSec: nowSec } = resolveQueryTimeRange(days, range);
 
-  const [meters, costs] = await Promise.all([
-    fetchUsageForCustomerIds({
-      customerIds,
-      days,
-      range,
-      projectId,
-      token,
-    }),
-    fetchUsageCosts({
-      customerIds,
-      startSec,
-      endSec: nowSec,
-      projectId,
-    }),
-  ]);
-
-  const rateCustomerId = customerIds[0];
-  const metersWithCost = meters.map((meter) => {
-    const cost = costs.byMeter.get(meter.meterApiName);
-    if (!cost) return meter;
-    const unitRate =
-      cost.unitRate ??
-      (cost.meteredUnits > 0 && cost.spend > 0 ? cost.spend / cost.meteredUnits : undefined);
-    return {
-      ...meter,
-      spend: cost.spend,
-      unitRate,
-      costSeries: cost.costSeries,
-    };
+  const meters = await fetchUsageForCustomerIds({
+    customerIds,
+    days,
+    range,
+    projectId,
+    token,
   });
 
-  const metersNeedingRates = metersWithCost
-    .filter((meter) => {
-      if (meter.unitRate !== undefined) return false;
-      const used = meter.used ?? meter.values.reduce((total, point) => total + point.value, 0);
-      return used > 0 || (meter.spend ?? 0) > 0;
-    })
-    .map((meter) => meter.meterApiName);
+  const scopedAccount = await resolveBillingAccountForUsageScope(
+    orgName,
+    token,
+    projectId ?? 'all'
+  ).catch(() => null);
 
-  if (rateCustomerId && metersNeedingRates.length > 0) {
-    await enrichMeterUnitRates(costs.byMeter, metersNeedingRates, rateCustomerId);
-    for (const meter of metersWithCost) {
-      const enriched = costs.byMeter.get(meter.meterApiName);
-      if (enriched?.unitRate !== undefined && meter.unitRate === undefined) {
-        meter.unitRate = enriched.unitRate;
-      }
-    }
-  }
+  const meterDefs = await listMeterDefinitions(token);
+  const catalogPricing = await loadCatalogUsagePricing(orgName, token, {
+    billingAccountName: scopedAccount?.name,
+    meterDefs,
+  });
+
+  const {
+    meters: metersWithCost,
+    totalSpend,
+    currencyCode,
+    offerName,
+  } = enrichMetersWithCatalogSpend(
+    meters,
+    catalogPricing.byMetric,
+    catalogPricing.meterNameByApiName,
+    catalogPricing.offerName
+  );
+
+  const hasPricing = catalogPricing.byMetric.size > 0;
 
   return {
     status: 'ok',
@@ -530,8 +519,9 @@ async function fetchOrgUsage(
     groups: buildUsageGroups(metersWithCost),
     days: resolvedDays,
     projectId,
-    totalSpend: costs.totalSpend,
-    currencyCode: costs.currencyCode,
+    totalSpend: hasPricing ? totalSpend : undefined,
+    currencyCode,
+    pricingOfferName: offerName,
   };
 }
 

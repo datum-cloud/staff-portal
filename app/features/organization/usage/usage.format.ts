@@ -68,9 +68,11 @@ export function formatCurrency(amount: number | undefined, currencyCode = 'USD')
 export function formatUnitRate(
   unitRate: number | undefined,
   unit: MeterUnit,
-  currencyCode = 'USD'
+  currencyCode = 'USD',
+  pricingUnit?: string
 ): string {
-  if (unitRate === undefined || Number.isNaN(unitRate)) return '—';
-  const unitLabel = unit === 'bytes' ? 'byte' : unit === 'duration' ? 'second' : 'unit';
+  if (unitRate === undefined || Number.isNaN(unitRate) || unitRate <= 0) return '—';
+  const unitLabel =
+    pricingUnit?.trim() || (unit === 'bytes' ? 'byte' : unit === 'duration' ? 'second' : 'unit');
   return `${formatCurrency(unitRate, currencyCode)} / ${unitLabel}`;
 }

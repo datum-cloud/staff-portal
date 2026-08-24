@@ -64,7 +64,7 @@ export function UsageDashboardSkeleton({ scopeDescription }: { scopeDescription:
     <div className="border-border min-w-0 border-t">
       <UsageSectionSkeleton
         title="Usage summary"
-        description={`${scopeDescription} Rates and spend come from Amberflo based on the customer's active offer.`}>
+        description={`${scopeDescription} Rates and spend are estimated from the assigned Offer when pricing is available.`}>
         <UsageSummaryTableSkeleton />
       </UsageSectionSkeleton>
 

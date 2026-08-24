@@ -89,7 +89,7 @@ export function OrgUsageCard({ orgName, className }: Props) {
             </Trans>
           }
         />
-      ) : summary?.status === 'no-meters' || meters.length === 0 ? (
+      ) : summary?.status !== 'ok' || meters.length === 0 ? (
         <EmptyMessage
           title={<Trans>No usage to display</Trans>}
           body={

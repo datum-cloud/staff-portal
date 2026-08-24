@@ -14,16 +14,15 @@ export interface UsageMeter {
   unit: MeterUnit;
   used: number;
   limit: number;
-  /** Period spend from Amberflo (billing currency). */
+  /** Period spend estimated from catalog Offer rates × usage. */
   spend?: number;
-  /** Unit rate from Amberflo pricing. */
+  /** Unit rate from the active Offer, when available. */
   unitRate?: number;
   /** ISO 4217 currency for spend/rate display. */
   currencyCode?: string;
   /** Breakdown tabs shown above the chart. The first entry is the default. */
   tabs: string[];
   series: MeterPoint[];
-  costSeries?: MeterPoint[];
   breakdowns?: MeterDimensionBreakdown[];
 }
 

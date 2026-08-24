@@ -156,7 +156,9 @@ export default function OrgUsagePage() {
       : 'Metered consumption and spend across all projects in this organization for the selected billing period.';
 
   const costDescription =
-    "Rates and spend come from Amberflo based on the customer's active offer.";
+    result?.pricingOfferName != null
+      ? `Rates and spend are estimated from Offer "${result.pricingOfferName}" (catalog rates × usage).`
+      : 'Rates and spend are estimated from the assigned Offer when pricing is available.';
 
   const dashboardKey = `${selectedProject}-${selectedBillingCycle}`;
   const toolbarLoading = projectsQuery.isLoading || (isLoading && billingCycles.length === 0);
