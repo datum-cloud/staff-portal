@@ -35,7 +35,11 @@ function projectDisplayName(
   return projects?.find((project) => project.name === projectName)?.displayName ?? projectName;
 }
 
-function toUsageMeter(meter: MeterSeries, projects?: UsageProjectOption[]): UsageMeter {
+function toUsageMeter(
+  meter: MeterSeries,
+  projects?: UsageProjectOption[],
+  currencyCode = 'USD'
+): UsageMeter {
   const unit = ucumToMeterUnit(meter.unit);
   const used = meter.used ?? sumSeries(meter.values);
   const limit = meter.limit ?? 0;
@@ -61,8 +65,12 @@ function toUsageMeter(meter: MeterSeries, projects?: UsageProjectOption[]): Usag
     unit,
     used,
     limit,
+    spend: meter.spend,
+    unitRate: meter.unitRate,
+    currencyCode,
     tabs,
     series: meter.values,
+    costSeries: meter.costSeries,
     breakdowns,
   };
 }
@@ -70,6 +78,8 @@ function toUsageMeter(meter: MeterSeries, projects?: UsageProjectOption[]): Usag
 export interface UsageView {
   groups: UsageGroupSection[];
   summaryRows: UsageSummaryRow[];
+  totalSpend?: number;
+  currencyCode?: string;
 }
 
 /** Build the dashboard view from live loader data. */
@@ -79,6 +89,7 @@ export function toUsageView(
 ): UsageView | null {
   if (!result.groups?.length) return null;
 
+  const currencyCode = result.currencyCode ?? 'USD';
   const meterByName = new Map(result.meters.map((m) => [m.meterApiName, m]));
 
   const groups: UsageGroupSection[] = result.groups
@@ -86,11 +97,11 @@ export function toUsageView(
       const meters = group.meterApiNames
         .map((name) => meterByName.get(name))
         .filter((m): m is MeterSeries => Boolean(m))
-        .map((meter) => toUsageMeter(meter, projects));
+        .map((meter) => toUsageMeter(meter, projects, currencyCode));
       return {
         id: group.id,
         title: group.title,
-        description: `Usage for the ${group.title} service across this organization, aggregated for the current period.`,
+        description: `Metered consumption and spend for ${group.title} in the selected billing period.`,
         meters,
       };
     })
@@ -107,6 +118,9 @@ export function toUsageView(
         unit: meter.unit,
         used: meter.used,
         limit: meter.limit,
+        spend: meter.spend,
+        unitRate: meter.unitRate,
+        currencyCode: meter.currencyCode,
         series: meter.series,
         groupId: group.id,
         group: resolvedGroup === OTHER_GROUP ? group.title : resolvedGroup,
@@ -114,5 +128,10 @@ export function toUsageView(
     })
   );
 
-  return { groups, summaryRows };
+  return {
+    groups,
+    summaryRows,
+    totalSpend: result.totalSpend,
+    currencyCode,
+  };
 }

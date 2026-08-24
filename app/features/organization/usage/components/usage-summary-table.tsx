@@ -1,5 +1,5 @@
 import { groupUsageSummaryRows } from '../usage-summary-grouping';
-import { formatUsagePair } from '../usage.format';
+import { formatCurrency, formatUnitRate, formatUsagePair } from '../usage.format';
 import type { UsageSummaryRow } from '../usage.types';
 import { UsageSparkline } from './usage-sparkline';
 import { ListColumnHeader } from '@/features/milo';
@@ -80,6 +80,28 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
         cell: ({ row }) => (
           <span className="text-muted-foreground block text-right text-sm whitespace-nowrap tabular-nums">
             {formatUsagePair(row.original.unit, row.original.used, row.original.limit)}
+          </span>
+        ),
+      },
+      {
+        id: 'rate',
+        header: 'Rate',
+        enableSorting: false,
+        size: 128,
+        cell: ({ row }) => (
+          <span className="text-muted-foreground block text-right text-sm whitespace-nowrap tabular-nums">
+            {formatUnitRate(row.original.unitRate, row.original.unit, row.original.currencyCode)}
+          </span>
+        ),
+      },
+      {
+        id: 'spend',
+        header: 'Spend',
+        enableSorting: false,
+        size: 112,
+        cell: ({ row }) => (
+          <span className="text-foreground block text-right text-sm font-medium whitespace-nowrap tabular-nums">
+            {formatCurrency(row.original.spend, row.original.currencyCode)}
           </span>
         ),
       },
@@ -190,4 +212,6 @@ export const usageSummaryTableColumns: ColumnDef<UsageSummaryRow, unknown>[] = [
   { id: 'product', header: 'Product', size: 256 },
   { id: 'trend', header: 'Trend', size: 192 },
   { id: 'usage', header: 'Usage', size: 144 },
+  { id: 'rate', header: 'Rate', size: 128 },
+  { id: 'spend', header: 'Spend', size: 112 },
 ];

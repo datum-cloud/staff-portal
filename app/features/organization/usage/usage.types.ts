@@ -14,9 +14,16 @@ export interface UsageMeter {
   unit: MeterUnit;
   used: number;
   limit: number;
+  /** Period spend from Amberflo (billing currency). */
+  spend?: number;
+  /** Unit rate from Amberflo pricing. */
+  unitRate?: number;
+  /** ISO 4217 currency for spend/rate display. */
+  currencyCode?: string;
   /** Breakdown tabs shown above the chart. The first entry is the default. */
   tabs: string[];
   series: MeterPoint[];
+  costSeries?: MeterPoint[];
   breakdowns?: MeterDimensionBreakdown[];
 }
 
@@ -33,6 +40,9 @@ export interface UsageSummaryRow {
   unit: MeterUnit;
   used: number;
   limit: number;
+  spend?: number;
+  unitRate?: number;
+  currencyCode?: string;
   /** Daily aggregate series for inline spark charts. */
   series: MeterPoint[];
   /** Human-readable service group, e.g. `Compute`, `AI Assistant`. */

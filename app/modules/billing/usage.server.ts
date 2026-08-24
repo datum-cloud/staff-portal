@@ -3,6 +3,7 @@ import {
   selectBillingCycleWindow,
   type PaymentTermsInput,
 } from './billing-cycle';
+import { enrichMeterUnitRates, fetchUsageCosts } from './usage-cost.server';
 import type {
   MeterBreakdownSeries,
   MeterDefinition,
@@ -472,21 +473,65 @@ async function fetchOrgUsage(
     }
   }
 
-  // Amberflo series only — do not join AllowanceBucket limits onto usage meters.
-  // Resource quotas live on the Quotas surfaces; usage has no billing caps yet.
-  const meters = await fetchUsageForCustomerIds({
-    customerIds,
-    days,
-    range,
-    projectId,
-    token,
+  const { startSec, endSec: nowSec } = resolveQueryTimeRange(days, range);
+
+  const [meters, costs] = await Promise.all([
+    fetchUsageForCustomerIds({
+      customerIds,
+      days,
+      range,
+      projectId,
+      token,
+    }),
+    fetchUsageCosts({
+      customerIds,
+      startSec,
+      endSec: nowSec,
+      projectId,
+    }),
+  ]);
+
+  const rateCustomerId = customerIds[0];
+  const metersWithCost = meters.map((meter) => {
+    const cost = costs.byMeter.get(meter.meterApiName);
+    if (!cost) return meter;
+    const unitRate =
+      cost.unitRate ??
+      (cost.meteredUnits > 0 && cost.spend > 0 ? cost.spend / cost.meteredUnits : undefined);
+    return {
+      ...meter,
+      spend: cost.spend,
+      unitRate,
+      costSeries: cost.costSeries,
+    };
   });
+
+  const metersNeedingRates = metersWithCost
+    .filter((meter) => {
+      if (meter.unitRate !== undefined) return false;
+      const used = meter.used ?? meter.values.reduce((total, point) => total + point.value, 0);
+      return used > 0 || (meter.spend ?? 0) > 0;
+    })
+    .map((meter) => meter.meterApiName);
+
+  if (rateCustomerId && metersNeedingRates.length > 0) {
+    await enrichMeterUnitRates(costs.byMeter, metersNeedingRates, rateCustomerId);
+    for (const meter of metersWithCost) {
+      const enriched = costs.byMeter.get(meter.meterApiName);
+      if (enriched?.unitRate !== undefined && meter.unitRate === undefined) {
+        meter.unitRate = enriched.unitRate;
+      }
+    }
+  }
+
   return {
     status: 'ok',
-    meters,
-    groups: buildUsageGroups(meters),
+    meters: metersWithCost,
+    groups: buildUsageGroups(metersWithCost),
     days: resolvedDays,
     projectId,
+    totalSpend: costs.totalSpend,
+    currencyCode: costs.currencyCode,
   };
 }
 

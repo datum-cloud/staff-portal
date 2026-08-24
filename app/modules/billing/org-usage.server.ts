@@ -4,6 +4,7 @@ import {
   type PaymentTermsInput,
 } from './billing-cycle';
 import type { OrgUsageMeterSummary, OrgUsageStatus, OrgUsageSummary } from './org-usage.types';
+import { fetchUsageCosts } from './usage-cost.server';
 import { getOrgControlPlaneBaseURL } from '@/resources/request/client/apis/control-plane';
 import { env } from '@/utils/config/env.server';
 import { listBillingMiloapisComV1Alpha1NamespacedBillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
@@ -181,9 +182,8 @@ export async function loadOrgUsageSummary(
     return emptySummary('no-meters', cycle, 'No MeterDefinitions were found for this environment.');
   }
 
-  // Amberflo series only — no AllowanceBucket limits (resource quotas ≠ usage caps).
-  const meters: OrgUsageMeterSummary[] = (
-    await Promise.all(
+  const [meterResults, costs] = await Promise.all([
+    Promise.all(
       meterDefs.map(async (def): Promise<OrgUsageMeterSummary> => {
         const series = await fetchMeterSeries({
           meterApiName: def.meterApiName,
@@ -199,8 +199,19 @@ export async function loadOrgUsageSummary(
           limit: 0,
         };
       })
-    )
-  )
+    ),
+    fetchUsageCosts({
+      customerIds,
+      startSec: cycle.startSec,
+      endSec: cycle.endSec,
+    }),
+  ]);
+
+  const meters: OrgUsageMeterSummary[] = meterResults
+    .map((meter) => {
+      const spend = costs.byMeter.get(meter.meterApiName)?.spend;
+      return spend === undefined ? meter : { ...meter, spend };
+    })
     .filter((m) => m.used > 0)
     .sort((a, b) => b.used - a.used);
 
@@ -209,5 +220,7 @@ export async function loadOrgUsageSummary(
     cycleLabel: cycle.label,
     cycleRangeLabel: cycle.rangeLabel,
     meters,
+    totalSpend: costs.totalSpend,
+    currencyCode: costs.currencyCode,
   };
 }

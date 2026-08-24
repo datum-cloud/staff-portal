@@ -49,3 +49,28 @@ export function formatUsagePair(unit: MeterUnit, used: number, limit: number): s
   if (limit <= 0) return formatByUnit(unit, used);
   return `${formatByUnit(unit, used)} / ${formatByUnit(unit, limit)}`;
 }
+
+export function formatCurrency(amount: number | undefined, currencyCode = 'USD'): string {
+  if (amount === undefined || Number.isNaN(amount)) return '—';
+  try {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currencyCode,
+      minimumFractionDigits: amount >= 1 ? 2 : 4,
+      maximumFractionDigits: amount >= 1 ? 2 : 6,
+    }).format(amount);
+  } catch {
+    return `${amount.toFixed(4)} ${currencyCode}`;
+  }
+}
+
+/** e.g. `$0.000003 / token` */
+export function formatUnitRate(
+  unitRate: number | undefined,
+  unit: MeterUnit,
+  currencyCode = 'USD'
+): string {
+  if (unitRate === undefined || Number.isNaN(unitRate)) return '—';
+  const unitLabel = unit === 'bytes' ? 'byte' : unit === 'duration' ? 'second' : 'unit';
+  return `${formatCurrency(unitRate, currencyCode)} / ${unitLabel}`;
+}

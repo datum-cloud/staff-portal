@@ -301,7 +301,13 @@ export default function Page() {
   if (conditions.length > 0) {
     overviewItems.push({
       label: t`Status`,
-      value: <BadgeCondition status={offer.status} multiple />,
+      value: (
+        <div className="flex flex-wrap gap-1">
+          {conditions.map((condition) => (
+            <BadgeCondition key={condition.type} condition={condition} multiple showMessage />
+          ))}
+        </div>
+      ),
     });
   }
 

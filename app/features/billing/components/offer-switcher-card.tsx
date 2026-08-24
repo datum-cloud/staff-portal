@@ -1,3 +1,4 @@
+import { BadgeState } from '@/components/badge';
 import { DialogConfirm } from '@/components/dialog';
 import { getOfferDisplayName, formatLaunchStage } from '@/features/billing/utils';
 import { SectionCard } from '@/features/milo';
@@ -54,6 +55,12 @@ export function OfferSwitcherCard({
   const [selectedOffer, setSelectedOffer] = useState('');
   const [switchConfirmOpen, setSwitchConfirmOpen] = useState(false);
 
+  const activeLaunchStage = activeOfferQuery.data?.spec?.launchStage ?? '';
+  const switchableOffers = useMemo(
+    () => gaOffers.filter((offer) => offer.metadata?.name !== activeOfferName),
+    [gaOffers, activeOfferName]
+  );
+
   const activeDisplayName = activeOfferQuery.data
     ? getOfferDisplayName(activeOfferQuery.data)
     : activeOfferName;
@@ -97,46 +104,62 @@ export function OfferSwitcherCard({
             <Text size="sm" className="text-muted-foreground">
               <Trans>Current Offer</Trans>
             </Text>
-            <div className="mt-1">
-              {activeOfferName ? (
-                <Link to={offerRoutes.detail(activeOfferName)} className="font-medium underline">
-                  {activeDisplayName || activeOfferName}
-                </Link>
-              ) : (
-                <Text>—</Text>
-              )}
-              {activeOfferQuery.data?.spec?.launchStage ? (
-                <Text size="sm" className="text-muted-foreground mt-1">
-                  {formatLaunchStage(activeOfferQuery.data.spec.launchStage)}
+            {activeOfferName ? (
+              <div className="mt-1.5 space-y-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Link to={offerRoutes.detail(activeOfferName)} className="font-medium underline">
+                    {activeDisplayName || activeOfferName}
+                  </Link>
+                  {activeLaunchStage ? (
+                    <BadgeState
+                      state={activeLaunchStage}
+                      message={formatLaunchStage(activeLaunchStage)}
+                    />
+                  ) : null}
+                </div>
+                <Text size="sm" className="text-muted-foreground font-mono text-xs">
+                  {activeOfferName}
                 </Text>
-              ) : null}
-            </div>
+              </div>
+            ) : (
+              <Text className="mt-1">—</Text>
+            )}
           </div>
 
-          <div className="space-y-2">
-            <Text size="sm" weight="medium">
+          <div className="flex flex-col gap-2 border-t pt-4">
+            <Text size="sm" weight="medium" className="block">
               <Trans>Switch to published Offer</Trans>
             </Text>
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-              <Select value={selectedOffer || undefined} onValueChange={setSelectedOffer}>
-                <SelectTrigger className="min-w-[220px] flex-1">
-                  <SelectValue placeholder={t`Select a GA Offer`} />
-                </SelectTrigger>
-                <SelectContent>
-                  {gaOffers.map((offer) => {
-                    const name = offer.metadata?.name ?? '';
-                    return (
-                      <SelectItem key={name} value={name}>
-                        {getOfferDisplayName(offer)} ({name})
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-              <Button type="primary" disabled={!selectedOffer} onClick={handleSwitchClick}>
-                <Trans>Switch</Trans>
-              </Button>
-            </div>
+            {switchableOffers.length === 0 ? (
+              <Text size="sm" className="text-muted-foreground block">
+                <Trans>No other published Offers are available to switch to.</Trans>
+              </Text>
+            ) : (
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                <Select value={selectedOffer || undefined} onValueChange={setSelectedOffer}>
+                  <SelectTrigger className="w-full sm:max-w-md">
+                    <SelectValue placeholder={t`Select a GA Offer`} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {switchableOffers.map((offer) => {
+                      const name = offer.metadata?.name ?? '';
+                      return (
+                        <SelectItem key={name} value={name}>
+                          {getOfferDisplayName(offer)} ({name})
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+                <Button
+                  type="primary"
+                  className="sm:w-auto"
+                  disabled={!selectedOffer}
+                  onClick={handleSwitchClick}>
+                  <Trans>Switch</Trans>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       )}

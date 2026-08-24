@@ -6,8 +6,10 @@ import {
   UsageDashboardSkeleton,
   UsageSummaryTable,
   UsageToolbar,
+  type UsageBillingCycleOption,
   type UsageProjectOption,
 } from '@/features/organization/usage';
+import { formatCurrency } from '@/features/organization/usage/usage.format';
 import { useOrgProjectListQuery, useOrgUsageDashboardQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
@@ -72,6 +74,43 @@ function EmptyState({ title, body }: { title: string; body: React.ReactNode }) {
   );
 }
 
+function UsagePageHeader({
+  projects,
+  billingCycles,
+  isLoading,
+  isPlaceholder,
+  totalSpend,
+  currencyCode,
+}: {
+  projects: UsageProjectOption[];
+  billingCycles: UsageBillingCycleOption[];
+  isLoading?: boolean;
+  isPlaceholder?: boolean;
+  totalSpend?: number;
+  currencyCode?: string;
+}) {
+  return (
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+      <div className="min-w-0 flex-1">
+        <UsageToolbar
+          projects={projects}
+          billingCycles={billingCycles}
+          isLoading={isLoading}
+          isPlaceholder={isPlaceholder}
+        />
+      </div>
+      {totalSpend !== undefined ? (
+        <div className="shrink-0 text-left lg:text-right">
+          <p className="text-muted-foreground text-xs">Total spend this period</p>
+          <p className="text-foreground text-xl font-semibold tabular-nums sm:text-2xl">
+            {formatCurrency(totalSpend, currencyCode)}
+          </p>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 export default function OrgUsagePage() {
   const orgData = useOrganizationDetailData();
   const orgName = orgData.metadata?.name ?? '';
@@ -113,11 +152,16 @@ export default function OrgUsagePage() {
 
   const scopeDescription =
     selectedProjectLabel != null
-      ? `Usage for the ${selectedProjectLabel} project in the selected billing period.`
-      : 'Usage across all projects in this organization for the selected billing period.';
+      ? `Metered consumption and spend for the ${selectedProjectLabel} project in the selected billing period.`
+      : 'Metered consumption and spend across all projects in this organization for the selected billing period.';
+
+  const costDescription =
+    "Rates and spend come from Amberflo based on the customer's active offer.";
 
   const dashboardKey = `${selectedProject}-${selectedBillingCycle}`;
   const toolbarLoading = projectsQuery.isLoading || (isLoading && billingCycles.length === 0);
+  const periodSpend = result?.status === 'ok' ? result.totalSpend : undefined;
+  const periodCurrency = result?.status === 'ok' ? result.currencyCode : undefined;
 
   if (isError) {
     return (
@@ -133,7 +177,7 @@ export default function OrgUsagePage() {
   if (isLoading && !result) {
     return (
       <div className="m-4 flex min-w-0 flex-col gap-6">
-        <UsageToolbar
+        <UsagePageHeader
           projects={projects}
           billingCycles={billingCycles}
           isPlaceholder={toolbarLoading}
@@ -178,7 +222,11 @@ export default function OrgUsagePage() {
   if (result.status === 'no-billing-account') {
     return (
       <div className="m-4 flex min-w-0 flex-col gap-6">
-        <UsageToolbar projects={projects} billingCycles={billingCycles} isLoading={isRefetching} />
+        <UsagePageHeader
+          projects={projects}
+          billingCycles={billingCycles}
+          isLoading={isRefetching}
+        />
         <EmptyState
           title="No billing account linked"
           body={
@@ -196,7 +244,13 @@ export default function OrgUsagePage() {
   if (!view) {
     return (
       <div className="m-4 flex min-w-0 flex-col gap-6">
-        <UsageToolbar projects={projects} billingCycles={billingCycles} isLoading={isRefetching} />
+        <UsagePageHeader
+          projects={projects}
+          billingCycles={billingCycles}
+          isLoading={isRefetching}
+          totalSpend={periodSpend}
+          currencyCode={periodCurrency}
+        />
         <EmptyState
           title="No usage to display"
           body={
@@ -211,7 +265,13 @@ export default function OrgUsagePage() {
 
   return (
     <div className="m-4 flex min-w-0 flex-col gap-6">
-      <UsageToolbar projects={projects} billingCycles={billingCycles} isLoading={isRefetching} />
+      <UsagePageHeader
+        projects={projects}
+        billingCycles={billingCycles}
+        isLoading={isRefetching}
+        totalSpend={periodSpend}
+        currencyCode={periodCurrency}
+      />
 
       <div
         key={dashboardKey}
@@ -219,9 +279,7 @@ export default function OrgUsagePage() {
           'border-border min-w-0 border-t',
           isRefetching && 'opacity-60 transition-opacity'
         )}>
-        <Section
-          title="Usage summary"
-          description={`${scopeDescription} Your plan includes a set allowance for each metered service.`}>
+        <Section title="Usage summary" description={`${scopeDescription} ${costDescription}`}>
           <UsageSummaryTable rows={view.summaryRows} />
         </Section>
 

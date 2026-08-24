@@ -42,6 +42,12 @@ export interface MeterSeries {
   limit?: number;
   /** Optional pre-aggregated used amount; otherwise sum of `values`. */
   used?: number;
+  /** Period spend from Amberflo usage-cost (billing currency). */
+  spend?: number;
+  /** Current unit rate from Amberflo pricing, when available. */
+  unitRate?: number;
+  /** Daily spend series from Amberflo usage-cost. */
+  costSeries?: MeterPoint[];
   /** Per-dimension grouped series, fetched when the meter declares dimensions. */
   breakdowns?: MeterDimensionBreakdown[];
 }
@@ -81,6 +87,10 @@ export interface UsageFetchResult {
   message?: string;
   /** When set, usage is scoped to a single project's billing binding. */
   projectId?: string;
+  /** Total period spend across all meters (Amberflo usage-cost). */
+  totalSpend?: number;
+  /** ISO 4217 currency for spend fields. */
+  currencyCode?: string;
 }
 
 export interface UsageBillingCycleOption {
