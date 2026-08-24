@@ -13,6 +13,7 @@ This section documents the implementation patterns used in `staff-portal`, inclu
 2. `02-pages-and-routes.md`
 3. `03-components-ui.md`
 4. `04-data-and-requests.md`
+5. `05-error-handling-and-reporting.md` — error model, error flow, and Sentry reporting
 
 ## Quick Mental Model
 
