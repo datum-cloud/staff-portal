@@ -73,8 +73,13 @@ export const getBillingDefaultOffer = async (): Promise<string> => {
 /**
  * Sets ServiceConfiguration.spec.defaultOffer on billing-miloapis-com via
  * merge-patch so staff-portal only owns that field (Flux keeps metrics/quota).
+ * Pass migrateFromOffer to opt into moving accounts still on the previous
+ * default; pass null (the default) so a stale one-shot cannot fire.
  */
-export const setBillingDefaultOffer = async (offerName: string) => {
+export const setBillingDefaultOffer = async (
+  offerName: string,
+  options?: { migrateFromOffer?: string | null }
+) => {
   const response = await patchServicesMiloapisComV1Alpha1ServiceConfiguration({
     path: { name: BILLING_SERVICE_CONFIGURATION_NAME },
     query: { fieldManager: FIELD_MANAGER },
@@ -82,6 +87,7 @@ export const setBillingDefaultOffer = async (offerName: string) => {
     body: {
       spec: {
         defaultOffer: offerName,
+        migrateFromOffer: options?.migrateFromOffer ?? null,
       },
     },
   });

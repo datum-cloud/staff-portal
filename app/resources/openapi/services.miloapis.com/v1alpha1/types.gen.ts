@@ -279,6 +279,14 @@ export type ComMiloapisServicesV1Alpha1ServiceConfiguration = {
      */
     defaultOffer?: string;
     /**
+     * MigrateFromOffer is a one-shot. When set with defaultOffer, the
+     * billing-entitlement-defaults controller patches every
+     * BillingEntitlement whose offerRef equals this name to defaultOffer,
+     * then clears this field. Entitlements pointing at any other Offer
+     * are left unchanged. The named Offer does not need to still exist.
+     */
+    migrateFromOffer?: string | null;
+    /**
      * Charges declares Usage, OneTime, and Recurring commercial terms.
      * ChargeFanOut emits one ServicePricing per entry into milo-system.
      */
