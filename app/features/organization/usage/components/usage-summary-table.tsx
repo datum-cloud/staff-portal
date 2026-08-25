@@ -2,7 +2,11 @@ import { groupUsageSummaryRows } from '../usage-summary-grouping';
 import { formatCurrency, formatUnitRate, formatUsagePair } from '../usage.format';
 import type { UsageSummaryRow } from '../usage.types';
 import { UsageSparkline } from './usage-sparkline';
-import { ListColumnHeader } from '@/features/milo';
+import {
+  EMBEDDED_TABLE_HEADER_CELL_CLASS,
+  LIST_TABLE_HEADER_ROW_CLASS,
+  ListColumnHeader,
+} from '@/features/milo';
 import { QuotaIndicator } from '@/features/organization/components/quota-ring';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -61,7 +65,7 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
       },
       {
         id: 'trend',
-        header: 'Trend',
+        header: ({ column }) => <ListColumnHeader column={column} title="Trend" />,
         enableSorting: false,
         size: 192,
         cell: ({ row }) => (
@@ -74,7 +78,7 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
       },
       {
         id: 'usage',
-        header: 'Usage',
+        header: ({ column }) => <ListColumnHeader column={column} title="Usage" />,
         enableSorting: false,
         size: 144,
         cell: ({ row }) => (
@@ -85,7 +89,7 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
       },
       {
         id: 'rate',
-        header: 'Rate',
+        header: ({ column }) => <ListColumnHeader column={column} title="Rate" />,
         enableSorting: false,
         size: 128,
         cell: ({ row }) => (
@@ -96,7 +100,7 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
       },
       {
         id: 'spend',
-        header: 'Spend',
+        header: ({ column }) => <ListColumnHeader column={column} title="Spend" />,
         enableSorting: false,
         size: 112,
         cell: ({ row }) => (
@@ -162,9 +166,9 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
           onExpandedChange={setExpandedGroups}
           getRowId={(row) => row.apiName}
           className="usage-summary-grouped-table [&>div:last-child]:rounded-none [&>div:last-child]:border-0"
-          tableClassName="[&_th:not(:last-child)]:border-r [&_th]:border-border [&_td:first-child]:pl-4 [&_td:last-child]:pr-4 [&_th:first-child]:pl-4 [&_th:last-child]:pr-4 sm:[&_td:first-child]:pl-5 sm:[&_td:last-child]:pr-5 sm:[&_th:first-child]:pl-5 sm:[&_th:last-child]:pr-5"
-          headerRowClassName="bg-background hover:bg-background border-b border-border"
-          headerCellClassName="text-foreground text-xs font-medium"
+          tableClassName="[&_td:first-child]:pl-4 [&_td:last-child]:pr-4 sm:[&_td:first-child]:pl-5 sm:[&_td:last-child]:pr-5"
+          headerRowClassName={LIST_TABLE_HEADER_ROW_CLASS}
+          headerCellClassName={EMBEDDED_TABLE_HEADER_CELL_CLASS}
           bodyClassName={cn(
             '[&_tr:first-child]:border-t [&_tr]:border-border',
             canExpand ? '[&_tr:last-child]:border-b' : '[&_tr:last-child]:border-b-0'
