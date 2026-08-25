@@ -42,6 +42,12 @@ export interface MeterSeries {
   limit?: number;
   /** Optional pre-aggregated used amount; otherwise sum of `values`. */
   used?: number;
+  /** Period spend estimated from catalog Offer rates × usage. */
+  spend?: number;
+  /** Unit rate from the active Offer, when available. */
+  unitRate?: number;
+  /** Billing pricing unit label from the Offer, e.g. `token`, `request`, `GB`. */
+  pricingUnit?: string;
   /** Per-dimension grouped series, fetched when the meter declares dimensions. */
   breakdowns?: MeterDimensionBreakdown[];
 }
@@ -81,6 +87,12 @@ export interface UsageFetchResult {
   message?: string;
   /** When set, usage is scoped to a single project's billing binding. */
   projectId?: string;
+  /** Total period spend across meters (catalog estimate). */
+  totalSpend?: number;
+  /** ISO 4217 currency for spend fields. */
+  currencyCode?: string;
+  /** Offer whose snapshotted rates were used for spend estimates. */
+  pricingOfferName?: string;
 }
 
 export interface UsageBillingCycleOption {

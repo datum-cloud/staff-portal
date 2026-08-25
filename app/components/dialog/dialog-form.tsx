@@ -76,12 +76,12 @@ export default function DialogForm<TValues extends Record<string, unknown>>({
           schema={schema}
           defaultValues={defaultValues}
           onSubmit={handleSubmit}
-          className="space-y-4">
+          className="flex flex-col">
           {({ form, isSubmitting, isDirty, isValid }) => {
             const isBusy = isLoading || isSubmitting;
             return (
               <>
-                <Dialog.Body className="space-y-4 px-5">
+                <Dialog.Body className="space-y-4 px-5 pt-0 pb-0">
                   {typeof children === 'function' ? children(form) : children}
                 </Dialog.Body>
 

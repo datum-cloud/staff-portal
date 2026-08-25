@@ -142,6 +142,10 @@ msgstr ""
 msgid "Account Identities"
 msgstr ""
 
+#: app/features/billing/components/offer-switcher-card.tsx:71
+msgid "Account is already on that Offer"
+msgstr ""
+
 #: app/routes/customer/user/detail/index.tsx:332
 msgid "Account Management"
 msgstr ""
@@ -150,7 +154,7 @@ msgstr ""
 msgid "Account menu"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:304
+#: app/routes/customer/billing-account/detail/index.tsx:305
 msgid "Account overview"
 msgstr ""
 
@@ -174,6 +178,10 @@ msgstr ""
 
 #: app/features/service-catalog/components/active-configuration-summary.tsx:16
 msgid "Active Configuration"
+msgstr ""
+
+#: app/features/billing/components/offer-switcher-card.tsx:93
+msgid "Active Offer"
 msgstr ""
 
 #: app/routes/customer/organization/index.tsx:231
@@ -222,6 +230,10 @@ msgstr ""
 msgid "Add Note"
 msgstr ""
 
+#: app/features/billing/components/service-pricing-checklist.tsx:63
+msgid "Add or update spec.charges in your infra repo and publish the configuration."
+msgstr ""
+
 #: app/routes/customer/fraud/providers/index.tsx:123
 msgid "Add Provider"
 msgstr ""
@@ -255,6 +267,10 @@ msgstr ""
 msgid "Admin"
 msgstr ""
 
+#: app/routes/admin/offer/detail.tsx:441
+msgid "After publish, only the display name can change. Rate changes need a new Offer."
+msgstr ""
+
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:157
 msgid "Age"
 msgstr ""
@@ -268,7 +284,7 @@ msgstr ""
 msgid "ALB"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:297
+#: app/routes/customer/billing-account/detail/index.tsx:298
 msgid "All billing accounts"
 msgstr ""
 
@@ -300,7 +316,15 @@ msgstr ""
 msgid "Allocation"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:223
+#: app/features/billing/components/default-offer-card.tsx:100
+msgid "Also move accounts currently on \"{currentDefault}\" to this Offer"
+msgstr ""
+
+#: app/features/billing/components/default-offer-card.tsx:101
+msgid "Also move accounts currently on the previous default to this Offer"
+msgstr ""
+
+#: app/routes/customer/billing-account/detail/index.tsx:224
 msgid "Amount"
 msgstr ""
 
@@ -472,6 +496,10 @@ msgstr ""
 msgid "Back to evaluations"
 msgstr ""
 
+#: app/routes/admin/offer/detail.tsx:226
+msgid "Back to Offers"
+msgstr ""
+
 #: app/features/edge/components/detail/edge-config-card.tsx:43
 msgid "Basic Authentication"
 msgstr ""
@@ -486,12 +514,12 @@ msgstr ""
 msgid "Billing account"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:52
-#: app/routes/customer/billing-account/detail/index.tsx:106
+#: app/routes/customer/billing-account/detail/index.tsx:53
+#: app/routes/customer/billing-account/detail/index.tsx:107
 msgid "Billing Account"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:109
+#: app/routes/customer/billing-account/detail/index.tsx:110
 msgid "Billing account not found or you do not have permission to view it."
 msgstr ""
 
@@ -502,7 +530,7 @@ msgstr ""
 msgid "Billing Accounts"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:387
+#: app/routes/customer/billing-account/detail/index.tsx:388
 msgid "Billing address"
 msgstr ""
 
@@ -510,7 +538,7 @@ msgstr ""
 msgid "Billing Contact"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:78
+#: app/features/organization/components/org-usage-card.tsx:79
 #: app/features/project/components/project-usage-card.tsx:112
 msgid "Billing permissions are still being provisioned for this organization."
 msgstr ""
@@ -521,6 +549,8 @@ msgstr ""
 
 #: app/components/button/button-delete-action.tsx:43
 #: app/components/danger-zone-card/index.tsx:43
+#: app/features/billing/components/default-offer-card.tsx:77
+#: app/features/billing/components/offer-switcher-card.tsx:173
 #: app/features/contact-group/components/contact-group-form.tsx:97
 #: app/features/contact/components/contact-form.tsx:244
 #: app/features/contact/components/contact-list.tsx:126
@@ -533,6 +563,9 @@ msgstr ""
 #: app/features/user/components/user-reject-dialog.tsx:30
 #: app/routes/admin/group/detail/member.tsx:142
 #: app/routes/admin/group/detail/member.tsx:156
+#: app/routes/admin/offer/create.tsx:158
+#: app/routes/admin/offer/detail.tsx:432
+#: app/routes/admin/offer/detail.tsx:445
 #: app/routes/admin/service-catalog/detail/consumers.tsx:205
 #: app/routes/customer/fraud/index.tsx:229
 #: app/routes/customer/fraud/index.tsx:264
@@ -554,7 +587,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:141
+#: app/routes/customer/billing-account/detail/index.tsx:142
 msgid "Card"
 msgstr ""
 
@@ -573,6 +606,25 @@ msgstr ""
 
 #: app/features/user/components/user-identity-card.tsx:98
 msgid "Change your Primary Email in GitHub (your primary email)"
+msgstr ""
+
+#: app/features/billing/components/offer-included-pricing-list.tsx:116
+msgid "Charge"
+msgstr ""
+
+#: app/routes/admin/offer/create.tsx:115
+#: app/routes/admin/offer/detail.tsx:119
+#: app/routes/admin/offer/detail.tsx:272
+#: app/routes/admin/offer/index.tsx:66
+msgid "Charge types"
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:84
+msgid "Charge types and ServicePricings are required"
+msgstr ""
+
+#: app/features/billing/components/service-pricing-checklist.tsx:87
+msgid "Check that you have permission to list ServicePricings, then try again. If IAM was just updated, wait a minute for PolicyBindings to reconcile."
 msgstr ""
 
 #: app/features/preferences/components/preferences-form.tsx:71
@@ -639,7 +691,7 @@ msgstr ""
 
 #: app/features/billing/components/billing-account-list.tsx:189
 #: app/features/project/components/project-organization-card.tsx:34
-#: app/routes/customer/billing-account/detail/index.tsx:369
+#: app/routes/customer/billing-account/detail/index.tsx:370
 #: app/routes/customer/organization/index.tsx:240
 #: app/routes/customer/project/index.tsx:109
 msgid "Company"
@@ -716,7 +768,7 @@ msgstr ""
 msgid "Contact"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:361
+#: app/routes/customer/billing-account/detail/index.tsx:362
 msgid "Contact & address"
 msgstr ""
 
@@ -784,7 +836,7 @@ msgid "Contact Information"
 msgstr ""
 
 #: app/features/organization/components/org-contact-card.tsx:65
-#: app/routes/customer/billing-account/detail/index.tsx:365
+#: app/routes/customer/billing-account/detail/index.tsx:366
 msgid "Contact name"
 msgstr ""
 
@@ -842,11 +894,15 @@ msgstr ""
 msgid "Could not load quotas"
 msgstr ""
 
+#: app/features/billing/components/service-pricing-checklist.tsx:83
+msgid "Could not load service pricings"
+msgstr ""
+
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:90
 msgid "Could not load test results"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:66
+#: app/features/organization/components/org-usage-card.tsx:67
 #: app/features/project/components/project-usage-card.tsx:100
 msgid "Could not load usage"
 msgstr ""
@@ -864,6 +920,7 @@ msgstr ""
 #: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:250
 #: app/features/fraud/policy/policy-form.tsx:317
+#: app/routes/admin/offer/create.tsx:25
 #: app/routes/customer/fraud/providers/create.tsx:16
 #: app/routes/customer/fraud/providers/create.tsx:134
 #: app/routes/marketing/contact-group/create.tsx:14
@@ -871,12 +928,16 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:84
-msgid "Create a billing account to start tracking usage."
-msgstr ""
-
 #: app/routes/marketing/contact-group/detail/member.tsx:90
 msgid "Create a new contact with this email"
+msgstr ""
+
+#: app/routes/admin/offer/create.tsx:170
+msgid "Create draft"
+msgstr ""
+
+#: app/routes/admin/offer/create.tsx:93
+msgid "Create Draft Offer"
 msgstr ""
 
 #: app/features/fraud/policy/policy-form.tsx:140
@@ -886,6 +947,11 @@ msgstr ""
 #: app/routes/customer/fraud/providers/create.tsx:20
 #: app/routes/customer/fraud/providers/create.tsx:69
 msgid "Create Fraud Provider"
+msgstr ""
+
+#: app/routes/admin/offer/create.tsx:29
+#: app/routes/admin/offer/index.tsx:100
+msgid "Create Offer"
 msgstr ""
 
 #: app/routes/customer/fraud/policy.tsx:65
@@ -906,7 +972,9 @@ msgstr ""
 #: app/routes/admin/group/detail/index.tsx:41
 #: app/routes/admin/group/detail/member.tsx:107
 #: app/routes/admin/group/index.tsx:40
-#: app/routes/customer/billing-account/detail/index.tsx:352
+#: app/routes/admin/offer/detail.tsx:280
+#: app/routes/admin/offer/index.tsx:79
+#: app/routes/customer/billing-account/detail/index.tsx:353
 #: app/routes/customer/fraud/providers/index.tsx:102
 #: app/routes/customer/organization/detail/project.tsx:65
 #: app/routes/customer/organization/index.tsx:208
@@ -933,22 +1001,26 @@ msgstr ""
 
 #: app/features/billing/components/billing-account-list.tsx:219
 #: app/features/billing/components/billing-account-list.tsx:275
-#: app/routes/customer/billing-account/detail/index.tsx:332
+#: app/routes/customer/billing-account/detail/index.tsx:333
 msgid "Currency"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:47
+#: app/features/organization/components/org-usage-card.tsx:48
 #: app/features/project/components/project-usage-card.tsx:83
 msgid "Current billing cycle"
 msgstr ""
 
 #. placeholder {0}: summary.cycleRangeLabel
-#: app/features/organization/components/org-usage-card.tsx:45
+#: app/features/organization/components/org-usage-card.tsx:46
 msgid "Current billing cycle ({0})"
 msgstr ""
 
 #: app/features/project/components/project-usage-card.tsx:81
 msgid "Current billing cycle for this project"
+msgstr ""
+
+#: app/features/billing/components/offer-switcher-card.tsx:105
+msgid "Current Offer"
 msgstr ""
 
 #: app/features/edge/components/detail/edge-hostnames-card.tsx:195
@@ -975,7 +1047,7 @@ msgid "Dashboard"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:217
-#: app/routes/customer/billing-account/detail/index.tsx:210
+#: app/routes/customer/billing-account/detail/index.tsx:211
 msgid "Date"
 msgstr ""
 
@@ -999,12 +1071,21 @@ msgstr ""
 msgid "Declined"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:162
+#: app/routes/admin/offer/index.tsx:48
+#: app/routes/customer/billing-account/detail/index.tsx:163
 msgid "Default"
 msgstr ""
 
 #: app/features/edge/components/detail/edge-general-card.tsx:44
 msgid "Default Hostname"
+msgstr ""
+
+#: app/features/billing/components/default-offer-card.tsx:84
+msgid "Default Offer updated"
+msgstr ""
+
+#: app/features/billing/components/default-offer-card.tsx:83
+msgid "Default Offer updated; accounts on the previous default will be migrated"
 msgstr ""
 
 #: app/features/fraud/policy/policy-detail.tsx:155
@@ -1149,7 +1230,7 @@ msgstr ""
 msgid "Deny this consumer's access request. Optionally add a note."
 msgstr ""
 
-#: app/routes/admin/service-catalog/detail/index.tsx:129
+#: app/routes/admin/service-catalog/detail/index.tsx:134
 msgid "Dependencies:"
 msgstr ""
 
@@ -1199,6 +1280,9 @@ msgstr ""
 #: app/features/organization/components/org-details-card.tsx:47
 #: app/features/project/components/project-details-card.tsx:31
 #: app/features/project/components/project-organization-card.tsx:44
+#: app/routes/admin/offer/create.tsx:109
+#: app/routes/admin/offer/detail.tsx:247
+#: app/routes/admin/offer/detail.tsx:447
 msgid "Display name"
 msgstr ""
 
@@ -1211,6 +1295,10 @@ msgstr ""
 
 #: app/features/contact-group/components/contact-group-form.tsx:21
 msgid "Display name is required"
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:196
+msgid "Display name updated"
 msgstr ""
 
 #: app/features/project/components/project-resources-card.tsx:68
@@ -1301,20 +1389,32 @@ msgstr ""
 msgid "Domains"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:245
+#: app/routes/customer/billing-account/detail/index.tsx:246
 msgid "Download"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:266
+#: app/routes/customer/billing-account/detail/index.tsx:267
 msgid "Download invoice"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:253
+#: app/routes/customer/billing-account/detail/index.tsx:254
 msgid "Download unavailable"
 msgstr ""
 
 #: app/routes/admin/service-catalog/index.tsx:164
 msgid "Draft"
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:105
+msgid "Draft configuration"
+msgstr ""
+
+#: app/routes/admin/offer/create.tsx:70
+msgid "Draft Offer created"
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:97
+msgid "Draft Offer updated"
 msgstr ""
 
 #: app/routes/customer/resource/index.tsx:391
@@ -1323,9 +1423,14 @@ msgstr ""
 
 #: app/features/contact/components/contact-list.tsx:53
 #: app/features/fraud/policy/policy-detail.tsx:95
+#: app/routes/admin/offer/detail.tsx:257
 #: app/routes/customer/fraud/providers/index.tsx:41
 #: app/routes/marketing/contact-group/index.tsx:49
 msgid "Edit"
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:440
+msgid "Edit display name"
 msgstr ""
 
 #: app/features/fraud/policy/policy-form.tsx:140
@@ -1455,7 +1560,7 @@ msgstr ""
 msgid "Enter the full email to search..."
 msgstr ""
 
-#: app/components/dialog/dialog-confirm.tsx:91
+#: app/components/dialog/dialog-confirm.tsx:94
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr ""
 
@@ -1472,7 +1577,7 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:195
+#: app/routes/customer/billing-account/detail/index.tsx:196
 msgid "Established"
 msgstr ""
 
@@ -1554,6 +1659,10 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
+#: app/routes/admin/offer/create.tsx:73
+msgid "Failed to create Offer"
+msgstr ""
+
 #: app/routes/admin/service-catalog/detail/approvals.tsx:116
 msgid "Failed to load approvals."
 msgstr ""
@@ -1570,12 +1679,32 @@ msgstr ""
 msgid "Failed to load service catalog."
 msgstr ""
 
-#: app/routes/admin/service-catalog/detail/index.tsx:71
+#: app/routes/admin/service-catalog/detail/index.tsx:72
 msgid "Failed to load service configurations."
 msgstr ""
 
 #: app/features/domain/components/domain-status-probe.tsx:60
 msgid "Failed to load status"
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:185
+msgid "Failed to publish Offer"
+msgstr ""
+
+#: app/features/billing/components/default-offer-card.tsx:87
+msgid "Failed to set default Offer"
+msgstr ""
+
+#: app/features/billing/components/offer-switcher-card.tsx:87
+msgid "Failed to switch Offer"
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:198
+msgid "Failed to update display name"
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:99
+msgid "Failed to update Offer"
 msgstr ""
 
 #: app/features/preferences/hooks/use-theme-preference.ts:35
@@ -1709,6 +1838,11 @@ msgstr ""
 msgid "Fraud Providers"
 msgstr ""
 
+#: app/features/billing/components/offer-included-pricing-list.tsx:67
+#: app/features/billing/components/service-pricing-checklist.tsx:159
+msgid "From"
+msgstr ""
+
 #: app/routes/customer/user/detail/index.tsx:191
 msgid "Full Name"
 msgstr ""
@@ -1723,7 +1857,7 @@ msgid "Fully onboarded"
 msgstr ""
 
 #: app/features/service-catalog/components/details-card.tsx:54
-#: app/routes/admin/service-catalog/detail/index.tsx:103
+#: app/routes/admin/service-catalog/detail/index.tsx:108
 #: app/routes/admin/service-catalog/index.tsx:177
 msgid "Gated by Provider"
 msgstr ""
@@ -1833,8 +1967,11 @@ msgstr ""
 #: app/features/project/components/project-organization-card.tsx:48
 #: app/routes/admin/group/detail/index.tsx:29
 #: app/routes/admin/group/index.tsx:23
-#: app/routes/customer/billing-account/detail/index.tsx:135
-#: app/routes/customer/billing-account/detail/index.tsx:186
+#: app/routes/admin/offer/create.tsx:106
+#: app/routes/admin/offer/detail.tsx:243
+#: app/routes/admin/offer/index.tsx:35
+#: app/routes/customer/billing-account/detail/index.tsx:136
+#: app/routes/customer/billing-account/detail/index.tsx:187
 #: app/routes/customer/organization/detail/project.tsx:51
 #: app/routes/customer/organization/index.tsx:153
 #: app/routes/customer/project/index.tsx:91
@@ -1850,6 +1987,12 @@ msgstr ""
 
 #: app/routes/admin/service-catalog/detail/consumers.tsx:235
 msgid "Inactive"
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:276
+#: app/routes/admin/offer/detail.tsx:335
+#: app/routes/admin/offer/detail.tsx:401
+msgid "Included charges"
 msgstr ""
 
 #: app/routes/customer/organization/index.tsx:241
@@ -1888,19 +2031,19 @@ msgstr ""
 msgid "Invite User"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:229
+#: app/routes/customer/billing-account/detail/index.tsx:230
 msgid "Invoice"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:344
+#: app/routes/customer/billing-account/detail/index.tsx:345
 msgid "Invoice day of month"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:336
+#: app/routes/customer/billing-account/detail/index.tsx:337
 msgid "Invoice frequency"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:377
+#: app/routes/customer/billing-account/detail/index.tsx:378
 msgid "Invoice recipients"
 msgstr ""
 
@@ -1982,6 +2125,10 @@ msgstr ""
 msgid "Latest fraud evaluation for this user"
 msgstr ""
 
+#: app/routes/admin/offer/detail.tsx:264
+msgid "Launch stage"
+msgstr ""
+
 #: app/routes/customer/fraud/providers/create.tsx:117
 #: app/routes/customer/fraud/providers/detail.tsx:157
 msgid "License Key Key"
@@ -2017,8 +2164,8 @@ msgstr ""
 
 #: app/features/billing/components/billing-account-list.tsx:224
 #: app/features/billing/components/org-billing-accounts-card.tsx:77
-#: app/routes/customer/billing-account/detail/index.tsx:348
-#: app/routes/customer/billing-account/detail/index.tsx:481
+#: app/routes/customer/billing-account/detail/index.tsx:349
+#: app/routes/customer/billing-account/detail/index.tsx:488
 msgid "Linked projects"
 msgstr ""
 
@@ -2077,6 +2224,9 @@ msgid "Loading..."
 msgstr ""
 
 #: app/features/project/components/project-suspension-card.tsx:127
+#: app/features/service-catalog/components/charges-card.tsx:118
+#: app/routes/admin/offer/detail.tsx:209
+#: app/routes/admin/offer/detail.tsx:323
 msgid "Loading…"
 msgstr ""
 
@@ -2185,6 +2335,10 @@ msgstr ""
 msgid "Meters"
 msgstr ""
 
+#: app/features/billing/components/offer-included-pricing-list.tsx:128
+msgid "Metric"
+msgstr ""
+
 #: app/routes/customer/project/detail/layout.tsx:174
 msgid "Metrics"
 msgstr ""
@@ -2220,7 +2374,8 @@ msgstr ""
 #: app/routes/admin/group/detail/index.tsx:27
 #: app/routes/admin/group/detail/member.tsx:89
 #: app/routes/admin/group/index.tsx:31
-#: app/routes/customer/billing-account/detail/index.tsx:129
+#: app/routes/admin/offer/index.tsx:40
+#: app/routes/customer/billing-account/detail/index.tsx:130
 #: app/routes/customer/fraud/providers/create.tsx:86
 #: app/routes/customer/fraud/providers/index.tsx:55
 #: app/routes/customer/organization/detail/member.tsx:103
@@ -2261,7 +2416,7 @@ msgstr ""
 msgid "Navigation"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:340
+#: app/routes/customer/billing-account/detail/index.tsx:341
 msgid "Net days"
 msgstr ""
 
@@ -2290,8 +2445,17 @@ msgstr ""
 msgid "Next page"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:164
+#: app/routes/customer/billing-account/detail/index.tsx:165
 msgid "No"
+msgstr ""
+
+#. placeholder {0}: defaultOffer.currentDefault
+#: app/routes/admin/offer/detail.tsx:329
+msgid "No — current default is {0}"
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:330
+msgid "No — none configured"
 msgstr ""
 
 #: app/routes/customer/project/index.tsx:144
@@ -2311,7 +2475,7 @@ msgstr ""
 msgid "No Application Load Balancer found."
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:83
+#: app/features/organization/components/org-usage-card.tsx:84
 #: app/features/project/components/project-usage-card.tsx:117
 msgid "No billing account"
 msgstr ""
@@ -2327,6 +2491,18 @@ msgstr ""
 
 #: app/features/billing/components/billing-account-list.tsx:248
 msgid "No billing accounts found"
+msgstr ""
+
+#: app/features/billing/components/offer-switcher-card.tsx:96
+msgid "No BillingEntitlement found for this account. New accounts pick up the default Offer automatically when catalog defaults are configured."
+msgstr ""
+
+#: app/features/billing/components/offer-included-pricing-list.tsx:231
+msgid "No charges included in this Offer."
+msgstr ""
+
+#: app/features/service-catalog/components/charges-card.tsx:58
+msgid "No charges on this configuration. Add spec.charges in git, publish the ServiceConfiguration, and they will show up here."
 msgstr ""
 
 #: app/features/service-catalog/components/conditions-card.tsx:80
@@ -2419,20 +2595,20 @@ msgstr ""
 msgid "No hostnames configured"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:475
+#: app/routes/customer/billing-account/detail/index.tsx:482
 msgid "No invoices"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:460
+#: app/routes/customer/billing-account/detail/index.tsx:467
 msgid "No invoices match your search"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:456
+#: app/routes/customer/billing-account/detail/index.tsx:463
 msgid "No invoices yet"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:484
-#: app/routes/customer/billing-account/detail/index.tsx:504
+#: app/routes/customer/billing-account/detail/index.tsx:491
+#: app/routes/customer/billing-account/detail/index.tsx:511
 msgid "No linked projects"
 msgstr ""
 
@@ -2458,6 +2634,10 @@ msgstr ""
 msgid "No notes yet. Add the first note below."
 msgstr ""
 
+#: app/routes/admin/offer/index.tsx:94
+msgid "No offers found."
+msgstr ""
+
 #: app/features/project/components/project-organization-card.tsx:28
 msgid "No organization linked"
 msgstr ""
@@ -2471,8 +2651,12 @@ msgstr ""
 msgid "No origins configured"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:418
-#: app/routes/customer/billing-account/detail/index.tsx:435
+#: app/features/billing/components/offer-switcher-card.tsx:135
+msgid "No other published Offers are available to switch to."
+msgstr ""
+
+#: app/routes/customer/billing-account/detail/index.tsx:425
+#: app/routes/customer/billing-account/detail/index.tsx:442
 msgid "No payment methods"
 msgstr ""
 
@@ -2492,9 +2676,17 @@ msgstr ""
 msgid "No platform access record found for this user"
 msgstr ""
 
+#: app/features/billing/components/service-pricing-checklist.tsx:50
+msgid "No prices available yet"
+msgstr ""
+
 #: app/routes/customer/organization/detail/project.tsx:80
 #: app/routes/customer/project/index.tsx:175
 msgid "No projects found."
+msgstr ""
+
+#: app/features/service-catalog/components/charges-card.tsx:43
+msgid "No published configuration"
 msgstr ""
 
 #: app/features/service-catalog/components/active-configuration-summary.tsx:46
@@ -2549,7 +2741,7 @@ msgstr ""
 msgid "No stable tests labeled yet"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:88
+#: app/features/organization/components/org-usage-card.tsx:94
 #: app/features/project/components/project-usage-card.tsx:122
 msgid "No usage to display"
 msgstr ""
@@ -2615,6 +2807,37 @@ msgstr ""
 msgid "of"
 msgstr ""
 
+#: app/routes/admin/offer/detail.tsx:52
+#: app/routes/admin/offer/detail.tsx:206
+#: app/routes/admin/offer/detail.tsx:219
+msgid "Offer"
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:393
+msgid "Offer details"
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:222
+msgid "Offer not found or you do not have permission to view it."
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:183
+msgid "Offer published"
+msgstr ""
+
+#: app/features/billing/components/offer-switcher-card.tsx:84
+msgid "Offer switched"
+msgstr ""
+
+#: app/routes/admin/offer/index.tsx:22
+#: app/routes/admin/offer/layout.tsx:5
+msgid "Offers"
+msgstr ""
+
+#: app/features/billing/components/service-pricing-checklist.tsx:53
+msgid "Offers bundle prices that already exist as ServicePricings. Define charges in git on ServiceConfiguration spec.charges, publish the configuration, then refresh to select them here."
+msgstr ""
+
 #: app/features/organization/components/org-onboarding-card.tsx:204
 msgid "Onboarding"
 msgstr ""
@@ -2628,7 +2851,7 @@ msgstr ""
 msgid "Once a contact is associated with a user, this association cannot be removed or changed later."
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:293
+#: app/routes/customer/billing-account/detail/index.tsx:294
 msgid "Open in Cloud Portal"
 msgstr ""
 
@@ -2654,7 +2877,7 @@ msgstr ""
 #: app/features/billing/components/billing-account-list.tsx:254
 #: app/features/dashboard/components/quota-utilization-widget.tsx:147
 #: app/features/project/components/project-organization-card.tsx:25
-#: app/routes/customer/billing-account/detail/index.tsx:308
+#: app/routes/customer/billing-account/detail/index.tsx:309
 #: app/routes/customer/project/index.tsx:124
 #: app/routes/customer/project/index.tsx:190
 msgid "Organization"
@@ -2691,6 +2914,7 @@ msgstr ""
 
 #: app/routes/admin/group/detail/index.tsx:17
 #: app/routes/admin/group/detail/layout.tsx:35
+#: app/routes/admin/offer/detail.tsx:372
 #: app/routes/admin/service-catalog/detail/layout.tsx:37
 #: app/routes/customer/organization/detail/layout.tsx:68
 #: app/routes/customer/project/detail/layout.tsx:138
@@ -2704,7 +2928,7 @@ msgstr ""
 msgid "Owner"
 msgstr ""
 
-#: app/routes/admin/service-catalog/detail/index.tsx:121
+#: app/routes/admin/service-catalog/detail/index.tsx:126
 msgid "Owner:"
 msgstr ""
 
@@ -2712,7 +2936,7 @@ msgstr ""
 msgid "Passing"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:442
+#: app/routes/customer/billing-account/detail/index.tsx:449
 msgid "Past invoices"
 msgstr ""
 
@@ -2733,7 +2957,7 @@ msgstr ""
 msgid "Payment method"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:415
+#: app/routes/customer/billing-account/detail/index.tsx:422
 msgid "Payment methods"
 msgstr ""
 
@@ -2749,6 +2973,10 @@ msgstr ""
 
 #: app/features/dashboard/components/pending-approvals-widget.tsx:97
 msgid "Pending Approvals"
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:298
+msgid "Pending snapshot"
 msgstr ""
 
 #: app/features/domain/components/domain-status-probe.tsx:101
@@ -2803,6 +3031,10 @@ msgstr ""
 
 #: app/features/user/hooks/useUserPlatformAccess.ts:45
 msgid "Platform access updated to {state}"
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:321
+msgid "Platform default"
 msgstr ""
 
 #. placeholder {0}: user?.spec?.givenName ?? ''
@@ -2860,7 +3092,11 @@ msgstr ""
 msgid "Previous page"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:373
+#: app/features/service-catalog/components/charges-card.tsx:108
+msgid "Pricing"
+msgstr ""
+
+#: app/routes/customer/billing-account/detail/index.tsx:374
 msgid "Primary email"
 msgstr ""
 
@@ -2899,7 +3135,7 @@ msgstr ""
 #: app/features/dns/components/dns-zone-list.tsx:99
 #: app/features/domain/components/domain-list.tsx:71
 #: app/features/edge/components/edge-list.tsx:119
-#: app/routes/customer/billing-account/detail/index.tsx:173
+#: app/routes/customer/billing-account/detail/index.tsx:174
 #: app/routes/customer/resource/index.tsx:343
 #: app/routes/customer/resource/index.tsx:409
 msgid "Project"
@@ -2981,9 +3217,31 @@ msgstr ""
 msgid "Public"
 msgstr ""
 
+#: app/routes/admin/offer/detail.tsx:361
+#: app/routes/admin/offer/detail.tsx:431
+msgid "Publish"
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:429
+msgid "Publish Offer"
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:375
+msgid "Publish to GA before this Offer can be set as the platform default for new billing accounts."
+msgstr ""
+
 #: app/features/service-catalog/components/active-configuration-summary.tsx:36
+#: app/routes/admin/offer/index.tsx:71
 #: app/routes/admin/service-catalog/index.tsx:165
 msgid "Published"
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:293
+msgid "Published at"
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:430
+msgid "Publishing snapshots rates into this Offer. After GA the rates are immutable; create a new Offer version to change pricing."
 msgstr ""
 
 #: app/routes/customer/project/detail/export-policy/detail.tsx:126
@@ -3018,8 +3276,20 @@ msgstr ""
 msgid "Quotas"
 msgstr ""
 
+#: app/features/billing/components/offer-included-pricing-list.tsx:122
+msgid "Rate"
+msgstr ""
+
+#: app/features/service-catalog/components/meters-card.tsx:52
+msgid "Rateable dimensions:"
+msgstr ""
+
 #: app/features/fraud/detail/evaluation-sections.tsx:57
 msgid "Raw Results — {provider}"
+msgstr ""
+
+#: app/features/service-catalog/components/charges-card.tsx:113
+msgid "Read-only. Prices are authored in git on ServiceConfiguration spec.charges."
 msgstr ""
 
 #: app/features/organization/components/org-onboarding-card.tsx:66
@@ -3122,7 +3392,7 @@ msgstr ""
 
 #: app/features/organization/components/org-details-card.tsx:51
 #: app/features/project/components/project-details-card.tsx:35
-#: app/routes/customer/billing-account/detail/index.tsx:319
+#: app/routes/customer/billing-account/detail/index.tsx:320
 msgid "Resource name"
 msgstr ""
 
@@ -3167,7 +3437,7 @@ msgstr ""
 #: app/features/dashboard/components/pending-approvals-widget.tsx:80
 #: app/features/dashboard/components/quota-utilization-widget.tsx:113
 #: app/routes/admin/service-catalog/detail/approvals.tsx:134
-#: app/routes/admin/service-catalog/detail/index.tsx:78
+#: app/routes/admin/service-catalog/detail/index.tsx:79
 #: app/routes/admin/service-catalog/index.tsx:143
 msgid "Retry"
 msgstr ""
@@ -3210,7 +3480,12 @@ msgid "Running"
 msgstr ""
 
 #: app/features/profile/components/profile-form.tsx:58
+#: app/routes/admin/offer/detail.tsx:444
 msgid "Save"
+msgstr ""
+
+#: app/routes/admin/offer/detail.tsx:112
+msgid "Save draft"
 msgstr ""
 
 #: app/routes/customer/user/index.tsx:256
@@ -3321,8 +3596,8 @@ msgstr ""
 msgid "Search groups..."
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:448
-#: app/routes/customer/billing-account/detail/index.tsx:450
+#: app/routes/customer/billing-account/detail/index.tsx:455
+#: app/routes/customer/billing-account/detail/index.tsx:457
 msgid "Search invoices"
 msgstr ""
 
@@ -3334,6 +3609,10 @@ msgstr ""
 #: app/routes/customer/organization/detail/member.tsx:156
 #: app/routes/marketing/contact-group/detail/member.tsx:391
 msgid "Search members..."
+msgstr ""
+
+#: app/routes/admin/offer/index.tsx:93
+msgid "Search offers..."
 msgstr ""
 
 #: app/routes/customer/organization/index.tsx:223
@@ -3433,8 +3712,20 @@ msgstr ""
 msgid "See all domains"
 msgstr ""
 
+#: app/features/billing/components/offer-switcher-card.tsx:141
+msgid "Select a GA Offer"
+msgstr ""
+
 #: app/routes/customer/fraud/index.tsx:227
 msgid "Select a user to run a fraud evaluation against the current policy."
+msgstr ""
+
+#: app/routes/admin/offer/create.tsx:53
+msgid "Select at least one charge type"
+msgstr ""
+
+#: app/routes/admin/offer/create.tsx:57
+msgid "Select at least one ServicePricing"
 msgstr ""
 
 #: app/routes/marketing/contact/detail/group.tsx:179
@@ -3443,6 +3734,10 @@ msgstr ""
 
 #: app/routes/customer/user/detail/index.tsx:363
 msgid "Select state"
+msgstr ""
+
+#: app/features/billing/components/service-pricing-checklist.tsx:71
+msgid "Select the ServicePricings to include in your Offer."
 msgstr ""
 
 #: app/features/preferences/components/preferences-form.tsx:61
@@ -3467,6 +3762,10 @@ msgstr ""
 msgid "Sent"
 msgstr ""
 
+#: app/features/billing/components/offer-included-pricing-list.tsx:125
+msgid "Service"
+msgstr ""
+
 #: app/components/app-sidebar/index.tsx:193
 #: app/routes/admin/service-catalog/index.tsx:26
 #: app/routes/admin/service-catalog/layout.tsx:5
@@ -3477,12 +3776,33 @@ msgstr ""
 msgid "Service Name"
 msgstr ""
 
+#: app/routes/admin/offer/detail.tsx:139
+msgid "Service pricing refs"
+msgstr ""
+
+#: app/routes/admin/offer/create.tsx:135
+msgid "Service pricings"
+msgstr ""
+
 #: app/routes/profile/session.tsx:114
 msgid "Session deleted successfully"
 msgstr ""
 
 #: app/routes/profile/session.tsx:50
 msgid "Session ID"
+msgstr ""
+
+#: app/features/billing/components/default-offer-card.tsx:75
+msgid "Set \"{offerName}\" as the platform default Offer? New billing accounts and existing accounts with no BillingEntitlement are entitled automatically."
+msgstr ""
+
+#: app/features/billing/components/default-offer-card.tsx:64
+#: app/features/billing/components/default-offer-card.tsx:76
+msgid "Set as default"
+msgstr ""
+
+#: app/features/billing/components/default-offer-card.tsx:74
+msgid "Set platform default"
 msgstr ""
 
 #: app/routes/profile/layout.tsx:17
@@ -3520,6 +3840,10 @@ msgstr ""
 msgid "Skipped"
 msgstr ""
 
+#: app/routes/admin/offer/detail.tsx:410
+msgid "Snapshot not written yet — controller may still be reconciling."
+msgstr ""
+
 #: app/features/edge/components/detail/edge-hostnames-card.tsx:100
 msgid "Solving ACME challenge"
 msgstr ""
@@ -3528,7 +3852,7 @@ msgstr ""
 msgid "Something went wrong while loading quota data."
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:67
+#: app/features/organization/components/org-usage-card.tsx:68
 #: app/features/project/components/project-usage-card.tsx:101
 msgid "Something went wrong while loading usage data."
 msgstr ""
@@ -3539,6 +3863,10 @@ msgstr ""
 
 #: app/routes/customer/project/detail/export-policy/detail.tsx:98
 msgid "Sources"
+msgstr ""
+
+#: app/routes/admin/offer/index.tsx:54
+msgid "Stage"
 msgstr ""
 
 #. placeholder {0}: idx + 1
@@ -3578,10 +3906,12 @@ msgstr ""
 #: app/features/quota/components/quota-grant-list.tsx:109
 #: app/features/service-catalog/components/conditions-card.tsx:23
 #: app/routes/admin/group/detail/index.tsx:34
-#: app/routes/customer/billing-account/detail/index.tsx:156
-#: app/routes/customer/billing-account/detail/index.tsx:202
-#: app/routes/customer/billing-account/detail/index.tsx:234
-#: app/routes/customer/billing-account/detail/index.tsx:323
+#: app/routes/admin/offer/detail.tsx:308
+#: app/routes/admin/offer/detail.tsx:335
+#: app/routes/customer/billing-account/detail/index.tsx:157
+#: app/routes/customer/billing-account/detail/index.tsx:203
+#: app/routes/customer/billing-account/detail/index.tsx:235
+#: app/routes/customer/billing-account/detail/index.tsx:324
 #: app/routes/customer/fraud/providers/index.tsx:85
 #: app/routes/customer/organization/detail/project.tsx:55
 #: app/routes/customer/organization/detail/project.tsx:81
@@ -3644,12 +3974,29 @@ msgstr ""
 msgid "Suspension lifted"
 msgstr ""
 
+#: app/features/billing/components/offer-switcher-card.tsx:159
+#: app/features/billing/components/offer-switcher-card.tsx:172
+msgid "Switch"
+msgstr ""
+
+#: app/features/billing/components/offer-switcher-card.tsx:170
+msgid "Switch Offer"
+msgstr ""
+
+#: app/features/billing/components/offer-switcher-card.tsx:171
+msgid "Switch this billing account to Offer \"{selectedOffer}\"? Amberflo Customer-Plan and quota grants will update on reconcile."
+msgstr ""
+
 #: app/features/milo/components/navbar/milo-theme-toggle.tsx:20
 msgid "Switch to dark theme"
 msgstr ""
 
 #: app/features/milo/components/navbar/milo-theme-toggle.tsx:20
 msgid "Switch to light theme"
+msgstr ""
+
+#: app/features/billing/components/offer-switcher-card.tsx:131
+msgid "Switch to published Offer"
 msgstr ""
 
 #: app/components/theme-switcher/index.tsx:48
@@ -3661,7 +4008,7 @@ msgstr ""
 msgid "Target"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:395
+#: app/routes/customer/billing-account/detail/index.tsx:396
 msgid "Tax IDs"
 msgstr ""
 
@@ -3733,8 +4080,16 @@ msgstr ""
 msgid "This note will be permanently deleted and cannot be recovered."
 msgstr ""
 
+#: app/features/organization/components/org-usage-card.tsx:86
+msgid "This organization does not have a billing account. Usage and spend data require a linked billing account."
+msgstr ""
+
 #: app/features/project/components/project-deletion-banner.tsx:25
 msgid "This project is being deleted"
+msgstr ""
+
+#: app/features/service-catalog/components/charges-card.tsx:46
+msgid "This service does not have a published ServiceConfiguration yet. Prices are defined in git on spec.charges and appear here after the configuration is published."
 msgstr ""
 
 #: app/routes/admin/service-catalog/detail/consumers.tsx:171
@@ -3790,6 +4145,10 @@ msgstr ""
 msgid "Total projects"
 msgstr ""
 
+#: app/features/organization/components/org-usage-card.tsx:106
+msgid "Total spend"
+msgstr ""
+
 #: app/routes/customer/user/index.tsx:299
 msgid "Total users"
 msgstr ""
@@ -3812,6 +4171,7 @@ msgstr ""
 msgid "TTL"
 msgstr ""
 
+#: app/features/billing/components/offer-included-pricing-list.tsx:119
 #: app/features/fraud/policy/policy-form.tsx:199
 #: app/features/organization/components/org-details-card.tsx:59
 #: app/features/service-catalog/components/conditions-card.tsx:19
@@ -3848,6 +4208,7 @@ msgid "Type to search."
 msgstr ""
 
 #: app/features/fraud/policy/policy-detail.tsx:152
+#: app/routes/admin/offer/detail.tsx:325
 msgid "Unavailable"
 msgstr ""
 
@@ -3884,31 +4245,31 @@ msgid "Updating email addresses for GitHub identities"
 msgstr ""
 
 #: app/features/dashboard/components/quota-utilization-widget.tsx:162
-#: app/features/organization/components/org-usage-card.tsx:53
+#: app/features/organization/components/org-usage-card.tsx:54
 #: app/features/project/components/project-usage-card.tsx:89
 #: app/features/quota/components/quota-bucket-list.tsx:110
 #: app/routes/customer/organization/detail/layout.tsx:85
 #: app/routes/customer/organization/detail/layout.tsx:101
 #: app/routes/customer/organization/detail/quota/usage.tsx:10
-#: app/routes/customer/organization/detail/usage/index.tsx:22
+#: app/routes/customer/organization/detail/usage/index.tsx:24
 #: app/routes/customer/project/detail/layout.tsx:198
 #: app/routes/customer/project/detail/quota/usage.tsx:10
 msgid "Usage"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:71
-#: app/features/organization/components/org-usage-card.tsx:76
+#: app/features/organization/components/org-usage-card.tsx:72
+#: app/features/organization/components/org-usage-card.tsx:77
 #: app/features/project/components/project-usage-card.tsx:105
 #: app/features/project/components/project-usage-card.tsx:110
 msgid "Usage data not available"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:72
+#: app/features/organization/components/org-usage-card.tsx:73
 #: app/features/project/components/project-usage-card.tsx:106
 msgid "Usage metering is not configured for this environment."
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:90
+#: app/features/organization/components/org-usage-card.tsx:96
 msgid "Usage will appear here once this organization starts consuming metered resources."
 msgstr ""
 
@@ -3988,7 +4349,7 @@ msgstr ""
 
 #: app/features/billing/components/org-billing-accounts-card.tsx:92
 #: app/features/organization/components/org-members-preview-card.tsx:84
-#: app/features/organization/components/org-usage-card.tsx:59
+#: app/features/organization/components/org-usage-card.tsx:60
 #: app/features/project/components/project-quotas-card.tsx:70
 #: app/features/project/components/project-usage-card.tsx:93
 msgid "View all"
@@ -4021,7 +4382,7 @@ msgstr ""
 msgid "View on MaxMind"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:281
+#: app/routes/customer/billing-account/detail/index.tsx:282
 msgid "View organization"
 msgstr ""
 
@@ -4033,6 +4394,10 @@ msgstr ""
 #: app/routes/marketing/contact-group/index.tsx:76
 #: app/routes/marketing/contact/detail/group.tsx:94
 msgid "Visibility"
+msgstr ""
+
+#: app/features/billing/components/service-pricing-checklist.tsx:68
+msgid "Wait for charge fan-out, then refresh this page."
 msgstr ""
 
 #: app/features/edge/components/detail/edge-hostnames-card.tsx:65
@@ -4064,11 +4429,15 @@ msgstr ""
 msgid "YAML"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:164
+#: app/routes/customer/billing-account/detail/index.tsx:165
 msgid "Yes"
 msgstr ""
 
-#: app/routes/admin/service-catalog/detail/index.tsx:69
+#: app/routes/admin/offer/detail.tsx:327
+msgid "Yes — new accounts use this Offer"
+msgstr ""
+
+#: app/routes/admin/service-catalog/detail/index.tsx:70
 msgid "You do not have permission to view service configurations."
 msgstr ""
 

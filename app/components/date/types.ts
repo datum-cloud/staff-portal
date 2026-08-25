@@ -1,6 +1,6 @@
 export type DateTimeVariant = 'absolute' | 'relative' | 'both' | 'detailed';
 
-export type TooltipMode = boolean | 'auto' | 'timezone' | 'alternate';
+export type TooltipMode = boolean | 'auto' | 'timezone' | 'alternate' | 'detailed';
 
 export interface DateTimeProps {
   /** The date to format - can be a Date object or ISO string */
@@ -20,6 +20,7 @@ export interface DateTimeProps {
    * - 'auto': intelligent default based on variant
    * - 'timezone': show timezone info
    * - 'alternate': show opposite format
+   * - 'detailed': UTC, local, relative, and timestamp breakdown
    */
   tooltip?: TooltipMode;
 

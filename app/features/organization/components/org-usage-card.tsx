@@ -1,6 +1,7 @@
 import { formatUsagePair, ucumToMeterUnit } from '../lib/usage-format';
 import { QuotaIndicator } from './quota-ring';
 import { SectionCard } from '@/features/milo';
+import { formatCurrency } from '@/features/organization/usage/usage.format';
 import { useOrgUsageSummaryQuery } from '@/resources/request/client/queries/usage.queries';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { Icon } from '@datum-cloud/datum-ui/icons';
@@ -81,9 +82,14 @@ export function OrgUsageCard({ orgName, className }: Props) {
       ) : summary?.status === 'no-billing-account' ? (
         <EmptyMessage
           title={<Trans>No billing account</Trans>}
-          body={<Trans>Create a billing account to start tracking usage.</Trans>}
+          body={
+            <Trans>
+              This organization does not have a billing account. Usage and spend data require a
+              linked billing account.
+            </Trans>
+          }
         />
-      ) : summary?.status === 'no-meters' || meters.length === 0 ? (
+      ) : summary?.status !== 'ok' || meters.length === 0 ? (
         <EmptyMessage
           title={<Trans>No usage to display</Trans>}
           body={
@@ -93,29 +99,45 @@ export function OrgUsageCard({ orgName, className }: Props) {
           }
         />
       ) : (
-        <ul className={cn(LIST_MAX_HEIGHT, 'divide-border -mx-1 divide-y overflow-y-auto px-1')}>
-          {meters.map((meter) => {
-            const unit = ucumToMeterUnit(meter.unit);
-            return (
-              <li
-                key={meter.meterApiName}
-                className="flex items-center gap-2 py-1.5 first:pt-0 last:pb-0">
-                <QuotaIndicator used={meter.used} limit={meter.limit} />
-                <div className="min-w-0 flex-1 overflow-hidden">
-                  <Tooltip message={meter.label}>
-                    <span className="block truncate text-sm">{meter.label}</span>
-                  </Tooltip>
-                </div>
-                <Text
-                  size="sm"
-                  textColor="muted"
-                  className="shrink-0 whitespace-nowrap tabular-nums">
-                  {formatUsagePair(unit, meter.used, meter.limit)}
-                </Text>
-              </li>
-            );
-          })}
-        </ul>
+        <>
+          {summary.totalSpend !== undefined ? (
+            <div className="border-border mb-3 flex items-baseline justify-between gap-3 border-b pb-3">
+              <Text size="sm" textColor="muted">
+                <Trans>Total spend</Trans>
+              </Text>
+              <Text size="sm" weight="medium" className="tabular-nums">
+                {formatCurrency(summary.totalSpend, summary.currencyCode)}
+              </Text>
+            </div>
+          ) : null}
+          <ul className={cn(LIST_MAX_HEIGHT, 'divide-border -mx-1 divide-y overflow-y-auto px-1')}>
+            {meters.map((meter) => {
+              const unit = ucumToMeterUnit(meter.unit);
+              return (
+                <li
+                  key={meter.meterApiName}
+                  className="flex items-center gap-2 py-1.5 first:pt-0 last:pb-0">
+                  <QuotaIndicator used={meter.used} limit={meter.limit} />
+                  <div className="min-w-0 flex-1 overflow-hidden">
+                    <Tooltip message={meter.label}>
+                      <span className="block truncate text-sm">{meter.label}</span>
+                    </Tooltip>
+                  </div>
+                  <div className="flex shrink-0 flex-col items-end gap-0.5">
+                    <Text size="sm" textColor="muted" className="whitespace-nowrap tabular-nums">
+                      {formatUsagePair(unit, meter.used, meter.limit)}
+                    </Text>
+                    {meter.spend !== undefined ? (
+                      <Text size="xs" className="text-foreground whitespace-nowrap tabular-nums">
+                        {formatCurrency(meter.spend, summary.currencyCode)}
+                      </Text>
+                    ) : null}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </>
       )}
     </SectionCard>
   );

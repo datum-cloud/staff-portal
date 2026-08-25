@@ -1,110 +1,14 @@
-import {
-  buildBillingCycleWindows,
-  selectBillingCycleWindow,
-  type PaymentTermsInput,
-} from './billing-cycle';
+import { buildBillingCycleWindows, selectBillingCycleWindow } from './billing-cycle';
 import type { OrgUsageMeterSummary, OrgUsageStatus, OrgUsageSummary } from './org-usage.types';
-import { getOrgControlPlaneBaseURL } from '@/resources/request/client/apis/control-plane';
+import { fetchOrgUsage, meterPeriodUsed, resolveBillingAccountForUsageScope } from './usage.server';
 import { env } from '@/utils/config/env.server';
-import { listBillingMiloapisComV1Alpha1NamespacedBillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
-import type { UnwrapProxyResponse } from '@openapi/shared/core/types.gen';
 
-interface MeterDefinition {
-  meterApiName: string;
-  meterName: string;
-  displayName: string;
-  unit?: string;
+function isAuthStatus(status: number | undefined): boolean {
+  return status === 401 || status === 403;
 }
 
-interface MeterPoint {
-  timestamp: number;
-  value: number;
-}
-
-async function listMeterDefinitions(token: string): Promise<MeterDefinition[]> {
-  try {
-    const url = `${env.API_URL}/apis/billing.miloapis.com/v1alpha1/meterdefinitions`;
-    const resp = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
-      },
-    });
-    if (!resp.ok) return [];
-    const json = (await resp.json()) as {
-      items?: {
-        metadata?: { uid?: string };
-        spec?: {
-          meterName?: string;
-          displayName?: string;
-          measurement?: { unit?: string };
-        };
-      }[];
-    };
-    return (json.items ?? [])
-      .map((item) => ({
-        meterApiName: item.metadata?.uid ?? '',
-        meterName: item.spec?.meterName ?? '',
-        displayName: item.spec?.displayName ?? item.spec?.meterName ?? '',
-        unit: item.spec?.measurement?.unit,
-      }))
-      .filter((m) => m.meterApiName);
-  } catch {
-    return [];
-  }
-}
-
-async function fetchMeterSeries(args: {
-  meterApiName: string;
-  customerIds: string[];
-  startSec: number;
-  endSec: number;
-}): Promise<MeterPoint[]> {
-  const apiKey = env.amberfloApiKey;
-  if (!apiKey) return [];
-
-  try {
-    const resp = await fetch(`${env.amberfloBaseUrl}/usage`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-      },
-      body: JSON.stringify({
-        meterApiName: args.meterApiName,
-        aggregation: 'sum',
-        timeGroupingInterval: 'day',
-        timeRange: {
-          startTimeInSeconds: args.startSec,
-          endTimeInSeconds: args.endSec,
-        },
-        filter: { customerId: args.customerIds },
-        groupBy: ['customerId'],
-      }),
-    });
-    if (!resp.ok) return [];
-
-    const json = (await resp.json()) as {
-      clientMeters?: { values?: { secondsSinceEpochUtc: number; value: number }[] }[];
-    };
-    const buckets = new Map<number, number>();
-    for (const cm of json.clientMeters ?? []) {
-      for (const v of cm.values ?? []) {
-        buckets.set(v.secondsSinceEpochUtc, (buckets.get(v.secondsSinceEpochUtc) ?? 0) + v.value);
-      }
-    }
-    const points = [...buckets.entries()]
-      .sort(([a], [b]) => a - b)
-      .map(([ts, value]) => ({ timestamp: ts * 1000, value }));
-    if (points.length > 0 && points.every((p) => p.value === 0)) return [];
-    return points;
-  } catch {
-    return [];
-  }
-}
-
-function sumSeries(values: MeterPoint[]): number {
-  return values.reduce((acc, point) => acc + point.value, 0);
+function authStatusFromError(err: unknown): number | undefined {
+  return (err as { response?: { status?: number } })?.response?.status;
 }
 
 function emptySummary(
@@ -121,9 +25,15 @@ function emptySummary(
   };
 }
 
+function mapUsageStatus(
+  status: 'unconfigured' | 'insufficient-permissions' | 'no-billing-account'
+): OrgUsageStatus {
+  return status;
+}
+
 /**
  * Current billing-cycle usage summary for an org overview card.
- * Amberflo credentials stay server-side.
+ * Uses the same usage fetch and catalog spend pipeline as the usage page.
  */
 export async function loadOrgUsageSummary(
   orgName: string,
@@ -136,72 +46,61 @@ export async function loadOrgUsageSummary(
     return emptySummary('unconfigured', fallbackCycle, 'Usage metering is not configured.');
   }
 
-  const orgNamespace = `organization-${orgName}`;
-  const orgBaseURL = getOrgControlPlaneBaseURL(orgName);
-
-  let accountsResp;
-  try {
-    accountsResp = await listBillingMiloapisComV1Alpha1NamespacedBillingAccount({
-      baseURL: orgBaseURL,
-      path: { namespace: orgNamespace },
-      headers: { Authorization: `Bearer ${token}` },
-    });
-  } catch (err: unknown) {
-    const status = (err as { response?: { status?: number } })?.response?.status;
-    if (status === 401 || status === 403) {
-      return emptySummary(
-        'insufficient-permissions',
-        fallbackCycle,
-        'Billing permissions are still being provisioned for this organization.'
-      );
+  const scopedBillingAccount = await resolveBillingAccountForUsageScope(
+    orgName,
+    token,
+    'all'
+  ).catch((err) => {
+    if (isAuthStatus(authStatusFromError(err))) {
+      return 'auth' as const;
     }
     throw err;
-  }
+  });
 
-  const accounts = accountsResp.data as unknown as UnwrapProxyResponse<typeof accountsResp.data>;
-  const items = accounts?.items ?? [];
-  const ready = items.find((a) => a.status?.phase === 'Ready') ?? items[0] ?? undefined;
-  const customerIds = items
-    .map((a) => a.metadata?.uid)
-    .filter((uid): uid is string => Boolean(uid));
-
-  if (customerIds.length === 0) {
+  if (scopedBillingAccount === 'auth') {
     return emptySummary(
-      'no-billing-account',
+      'insufficient-permissions',
       fallbackCycle,
-      'This organization does not have a billing account.'
+      'Billing permissions are still being provisioned for this organization.'
     );
   }
 
-  const paymentTerms = ready?.spec?.paymentTerms as PaymentTermsInput | undefined;
-  const cycle = selectBillingCycleWindow(buildBillingCycleWindows(paymentTerms), cycleParam);
+  const cycleWindows = buildBillingCycleWindows(scopedBillingAccount?.paymentTerms);
+  const cycle = selectBillingCycleWindow(cycleWindows, cycleParam);
 
-  const meterDefs = await listMeterDefinitions(token);
-  if (meterDefs.length === 0) {
+  const usage = await fetchOrgUsage(orgName, token, {
+    range: { startSec: cycle.startSec, endSec: cycle.endSec },
+  });
+
+  if (usage.status !== 'ok') {
+    const message =
+      usage.status === 'unconfigured'
+        ? 'Usage metering is not configured.'
+        : usage.status === 'insufficient-permissions'
+          ? 'Billing permissions are still being provisioned for this organization.'
+          : 'This organization does not have a billing account.';
+    return emptySummary(mapUsageStatus(usage.status), cycle, message);
+  }
+
+  if (usage.meters.length === 0) {
     return emptySummary('no-meters', cycle, 'No MeterDefinitions were found for this environment.');
   }
 
-  // Amberflo series only — no AllowanceBucket limits (resource quotas ≠ usage caps).
-  const meters: OrgUsageMeterSummary[] = (
-    await Promise.all(
-      meterDefs.map(async (def): Promise<OrgUsageMeterSummary> => {
-        const series = await fetchMeterSeries({
-          meterApiName: def.meterApiName,
-          customerIds,
-          startSec: cycle.startSec,
-          endSec: cycle.endSec,
-        });
-        return {
-          meterApiName: def.meterApiName,
-          label: def.displayName,
-          unit: def.unit,
-          used: sumSeries(series),
-          limit: 0,
-        };
-      })
-    )
-  )
-    .filter((m) => m.used > 0)
+  const meters: OrgUsageMeterSummary[] = usage.meters
+    .map((meter) => {
+      const summary: OrgUsageMeterSummary = {
+        meterApiName: meter.meterApiName,
+        label: meter.label,
+        unit: meter.unit,
+        used: meterPeriodUsed(meter),
+        limit: 0,
+      };
+      if (meter.spend !== undefined) {
+        summary.spend = meter.spend;
+      }
+      return summary;
+    })
+    .filter((meter) => meter.used > 0)
     .sort((a, b) => b.used - a.used);
 
   return {
@@ -209,5 +108,8 @@ export async function loadOrgUsageSummary(
     cycleLabel: cycle.label,
     cycleRangeLabel: cycle.rangeLabel,
     meters,
+    totalSpend: usage.totalSpend,
+    currencyCode: usage.currencyCode,
+    pricingOfferName: usage.pricingOfferName,
   };
 }

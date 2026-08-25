@@ -5,6 +5,7 @@ import { MessageCard } from '@/components/message-card';
 import { PageHeader } from '@/components/page-header';
 import {
   ActiveConfigurationSummary,
+  ChargesCard,
   ConditionsCard,
   DetailsCard,
   MetersCard,
@@ -91,6 +92,10 @@ export default function Page() {
   const description = spec?.description;
   const dependencies = spec?.dependencies ?? [];
   const isGated = spec?.enablementPolicy?.mode === 'GatedByProvider';
+  const configurationName = active?.metadata?.name ?? '';
+  const isPublishedConfig = active?.spec?.phase === 'Published';
+  const charges = active?.spec?.charges ?? [];
+  const metrics = active?.spec?.metrics ?? [];
 
   return (
     <div className="flex flex-col gap-6 p-4">
@@ -146,6 +151,13 @@ export default function Page() {
         isLoading={isLoading}
       />
 
+      <ChargesCard
+        charges={charges}
+        isLoading={isLoading}
+        isPublished={isPublishedConfig}
+        hasPublishedConfiguration={!!configurationName}
+      />
+
       <Row type="flex" gutter={[16, 16]}>
         <Col span={24} md={12}>
           <MonitoredResourcesCard
@@ -154,7 +166,7 @@ export default function Page() {
           />
         </Col>
         <Col span={24} md={12}>
-          <MetersCard metrics={active?.spec?.metrics ?? []} isLoading={isLoading} />
+          <MetersCard metrics={metrics} isLoading={isLoading} />
         </Col>
         <Col span={24} md={12}>
           <DetailsCard service={service} />

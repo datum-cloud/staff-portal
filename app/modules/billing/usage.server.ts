@@ -3,6 +3,8 @@ import {
   selectBillingCycleWindow,
   type PaymentTermsInput,
 } from './billing-cycle';
+import { loadCatalogUsagePricing } from './usage-pricing.server';
+import { enrichMetersWithCatalogSpend } from './usage-spend';
 import type {
   MeterBreakdownSeries,
   MeterDefinition,
@@ -56,12 +58,7 @@ function authStatusFromError(err: unknown): number | undefined {
   return (err as { response?: { status?: number } })?.response?.status;
 }
 
-/**
- * Billing account whose `paymentTerms` drive the cycle picker. Project
- * scope uses the bound account; org scope uses the first Ready account
- * (falling back to the first account when none are Ready yet).
- */
-async function resolveBillingAccountForUsageScope(
+export async function resolveBillingAccountForUsageScope(
   orgName: string,
   token: string,
   projectId: string | 'all'
@@ -422,7 +419,11 @@ async function resolveProjectCustomerId(
   return { status: 'ok', customerId: account.uid };
 }
 
-async function fetchOrgUsage(
+export function meterPeriodUsed(meter: MeterSeries): number {
+  return meter.used ?? meter.values.reduce((acc, point) => acc + point.value, 0);
+}
+
+export async function fetchOrgUsage(
   orgName: string,
   token: string,
   options: { days?: number; range?: UsageTimeRange; projectId?: string } = {}
@@ -472,8 +473,8 @@ async function fetchOrgUsage(
     }
   }
 
-  // Amberflo series only — do not join AllowanceBucket limits onto usage meters.
-  // Resource quotas live on the Quotas surfaces; usage has no billing caps yet.
+  const { startSec, endSec: nowSec } = resolveQueryTimeRange(days, range);
+
   const meters = await fetchUsageForCustomerIds({
     customerIds,
     days,
@@ -481,12 +482,40 @@ async function fetchOrgUsage(
     projectId,
     token,
   });
+
+  const scopedAccount = await resolveBillingAccountForUsageScope(
+    orgName,
+    token,
+    projectId ?? 'all'
+  ).catch(() => null);
+
+  const meterDefs = await listMeterDefinitions(token);
+  const catalogPricing = await loadCatalogUsagePricing(orgName, token, {
+    billingAccountName: scopedAccount?.name,
+    meterDefs,
+  });
+
+  const {
+    meters: metersWithCost,
+    totalSpend,
+    currencyCode,
+    offerName,
+  } = enrichMetersWithCatalogSpend(
+    meters,
+    catalogPricing.byMetric,
+    catalogPricing.meterNameByApiName,
+    catalogPricing.offerName
+  );
+
   return {
     status: 'ok',
-    meters,
-    groups: buildUsageGroups(meters),
+    meters: metersWithCost,
+    groups: buildUsageGroups(metersWithCost),
     days: resolvedDays,
     projectId,
+    totalSpend,
+    currencyCode,
+    pricingOfferName: offerName,
   };
 }
 

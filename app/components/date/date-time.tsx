@@ -122,13 +122,56 @@ export const DateTime = ({
     formatterOptions,
     timeZone
   );
+  const detailedTooltip = isDetailedTooltipContent(variant, tooltip);
 
   return (
-    <Tooltip message={tooltipContent}>
+    <Tooltip
+      message={tooltipContent}
+      contentClassName={
+        detailedTooltip ? 'min-w-[15rem] text-left text-wrap whitespace-normal' : undefined
+      }>
       <span className={cn('cursor-pointer', textClass)}>{content}</span>
     </Tooltip>
   );
 };
+
+function isDetailedTooltipContent(
+  variant: DateTimeProps['variant'],
+  tooltip: DateTimeProps['tooltip']
+): boolean {
+  return (
+    variant === 'detailed' ||
+    tooltip === 'detailed' ||
+    ((tooltip === 'auto' || tooltip === true) && variant === 'both')
+  );
+}
+
+function renderDetailedTooltip(date: Date, options: FormatterOptions, timeZone: string) {
+  const utcTime = formatUTCDate(date);
+  const timezoneTime = formatTimezoneDate(date, timeZone);
+  const relativeTime = formatRelativeDate(date, options);
+  const timestamp = getTimestamp(date);
+
+  const rows = [
+    { label: 'UTC', value: utcTime },
+    { label: timeZone.replace('_', ' '), value: timezoneTime },
+    { label: 'Relative', value: relativeTime },
+    { label: 'Timestamp', value: timestamp },
+  ];
+
+  // Tooltip content is wrapped in a <span> by datum-ui — keep markup phrasing-safe.
+  return (
+    <>
+      {rows.map((row) => (
+        <span key={row.label} className="block leading-5">
+          <span className="font-medium">{row.label}</span>
+          <span className="opacity-70"> · </span>
+          <span>{row.value}</span>
+        </span>
+      ))}
+    </>
+  );
+}
 
 /**
  * Determines if tooltip should be shown
@@ -160,31 +203,9 @@ function getTooltipContent(
   options: FormatterOptions,
   timeZone: string
 ): React.ReactNode {
-  // Detailed variant - show all time formats
-  if (variant === 'detailed') {
-    const utcTime = formatUTCDate(date);
-    const timezoneTime = formatTimezoneDate(date, timeZone);
-    const relativeTime = formatRelativeDate(date, options);
-    const timestamp = getTimestamp(date);
-
-    const rows = [
-      { label: 'UTC', value: utcTime },
-      { label: timeZone.replace('_', ' '), value: timezoneTime },
-      { label: 'Relative', value: relativeTime },
-      { label: 'Timestamp', value: timestamp },
-    ];
-
-    return (
-      <div className="space-y-2 text-xs">
-        {rows.map((row) => (
-          <div key={row.label} className="flex items-center justify-between gap-2">
-            <span className="font-medium">{row.label}</span>
-            <span className="mx-1 flex-1 border-b border-dotted border-current/50" />
-            <span className="text-right">{row.value}</span>
-          </div>
-        ))}
-      </div>
-    );
+  // Detailed variant — show all time formats
+  if (variant === 'detailed' || tooltip === 'detailed') {
+    return renderDetailedTooltip(date, options, timeZone);
   }
 
   // Explicit timezone mode
@@ -214,9 +235,11 @@ function getTooltipContent(
         return formatAbsoluteDate(date, options);
 
       case 'both':
+        // Combined display already includes relative time — show full breakdown.
+        return renderDetailedTooltip(date, options, timeZone);
       case 'absolute':
       default:
-        // Show timezone info for absolute dates
+        // Show timezone info for absolute-only dates
         return (
           <p>
             {timeZone.replace('_', ' ')}&nbsp; ({getTimezoneAbbreviation(date, timeZone)})

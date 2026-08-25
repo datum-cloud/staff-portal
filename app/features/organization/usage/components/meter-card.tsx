@@ -1,4 +1,4 @@
-import { formatByUnit, formatUsagePair } from '../usage.format';
+import { formatByUnit, formatCurrency, formatUnitRate, formatUsagePair } from '../usage.format';
 import type { MeterPoint, UsageMeter } from '../usage.types';
 import { humanizeDimension } from '../usage.view';
 import { QuotaIndicator } from '@/features/organization/components/quota-ring';
@@ -82,11 +82,31 @@ export function MeterCard({ meter }: MeterCardProps) {
             <p className="text-muted-foreground text-sm leading-relaxed">{meter.description}</p>
           ) : null}
         </div>
-        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+        <div className="flex shrink-0 flex-col items-end gap-1 sm:gap-1.5">
           <span className="text-foreground text-right text-sm font-medium tabular-nums">
             {formatUsagePair(meter.unit, meter.used, meter.limit)}
           </span>
-          <QuotaIndicator used={meter.used} limit={meter.limit} size={24} />
+          <div className="flex items-center gap-2 sm:gap-3">
+            {(meter.spend ?? 0) > 0 || meter.unitRate !== undefined ? (
+              <span className="text-muted-foreground text-right text-xs tabular-nums">
+                {formatUnitRate(
+                  meter.unitRate,
+                  meter.unit,
+                  meter.currencyCode,
+                  meter.pricingUnit
+                )}
+                {(meter.spend ?? 0) > 0 ? (
+                  <>
+                    {' · '}
+                    <span className="text-foreground font-medium">
+                      {formatCurrency(meter.spend, meter.currencyCode)} spent
+                    </span>
+                  </>
+                ) : null}
+              </span>
+            ) : null}
+            <QuotaIndicator used={meter.used} limit={meter.limit} size={24} />
+          </div>
         </div>
       </CardHeader>
 

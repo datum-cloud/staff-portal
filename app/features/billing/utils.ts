@@ -3,7 +3,9 @@ import type {
   ComMiloapisBillingV1Alpha1BillingAccountBinding,
   ComMiloapisBillingV1Alpha1Invoice,
   ComMiloapisBillingV1Alpha1PaymentMethod,
+  ComMiloapisBillingV1Alpha1ServicePricing,
 } from '@openapi/billing.miloapis.com/v1alpha1';
+import type { ComMiloapisServicesV1Alpha1Service } from '@openapi/services.miloapis.com/v1alpha1';
 
 export type Invoice = ComMiloapisBillingV1Alpha1Invoice;
 export type InvoicePhase = NonNullable<NonNullable<Invoice['status']>['phase']>;
@@ -120,6 +122,163 @@ export const getOrganizationDisplayName = (org: {
   org.metadata?.annotations?.[BILLING_ACCOUNT_DISPLAY_NAME_ANNOTATION] ?? org.metadata?.name ?? '';
 
 export const buildOrganizationNamespace = (orgName: string) => `organization-${orgName}`;
+
+/** Well-known annotation for human-readable Offer names. */
+export const OFFER_DISPLAY_NAME_ANNOTATION = 'kubernetes.io/display-name';
+
+/** Namespace where ChargeFanOut emits ServicePricing objects. */
+export const DEFAULT_SERVICE_PRICING_NAMESPACE = 'milo-system';
+
+export const getOfferDisplayName = (offer: {
+  metadata?: { name?: string; annotations?: Record<string, string> };
+}): string =>
+  offer.metadata?.annotations?.[OFFER_DISPLAY_NAME_ANNOTATION] || offer.metadata?.name || '';
+
+export type ChargeType = 'Usage' | 'OneTime' | 'Recurring';
+
+export const CHARGE_TYPES: ChargeType[] = ['Usage', 'OneTime', 'Recurring'];
+
+/** Human-readable launch stage labels (GA must stay uppercase). */
+export const formatLaunchStage = (stage: string): string => {
+  if (stage === 'GA') return 'GA';
+  if (stage === 'Draft') return 'Draft';
+  return stage;
+};
+
+/** Display label for API charge types (e.g. OneTime → "One Time"). */
+export const formatChargeType = (chargeType: string): string =>
+  chargeType.replace(/([a-z])([A-Z])/g, '$1 $2');
+
+export const formatChargeTypes = (chargeTypes: string[]): string =>
+  chargeTypes.map(formatChargeType).join(', ');
+
+function humanizeSlug(slug: string): string {
+  return slug
+    .split(/[-./]/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
+/** Primary label for a ServicePricing in staff UI. */
+export const getServicePricingDisplayName = (
+  pricing: ComMiloapisBillingV1Alpha1ServicePricing
+): string => {
+  const fromSpec = pricing.spec?.displayName?.trim();
+  if (fromSpec) return fromSpec;
+
+  const metric = pricing.spec?.metric?.trim();
+  if (metric) {
+    const shortMetric = metric.split('/').pop();
+    if (shortMetric) return humanizeSlug(shortMetric);
+  }
+
+  const resourceName = pricing.metadata?.name ?? '';
+  const chargeSlug = resourceName.includes('--')
+    ? (resourceName.split('--').pop() ?? resourceName)
+    : resourceName;
+  return humanizeSlug(chargeSlug);
+};
+
+/** Short price summary for checklist rows (e.g. "$0.000001 / request"). */
+export const summarizeServicePricing = (
+  pricing: ComMiloapisBillingV1Alpha1ServicePricing
+): string | undefined => {
+  const spec = pricing.spec;
+  if (!spec) return undefined;
+
+  if (spec.chargeType === 'OneTime' && spec.amount) {
+    return `$${spec.amount} · one-time`;
+  }
+  if (spec.chargeType === 'Recurring' && spec.amount) {
+    return `$${spec.amount} / month`;
+  }
+
+  const unit = spec.pricingUnit?.trim();
+  const rates = spec.rates ?? [];
+  if (rates.length === 0) {
+    return unit ? `Per ${unit}` : undefined;
+  }
+
+  const parts = rates
+    .map((rate) => {
+      const match = rate.match ? `${rate.match.dimension}=${rate.match.value}` : null;
+      let price: string | null = null;
+      if (rate.flat) {
+        price = unit ? `$${rate.flat} / ${unit}` : `$${rate.flat}`;
+      } else if (rate.tiered?.length) {
+        const last = rate.tiered[rate.tiered.length - 1];
+        price = unit
+          ? `$${last.rate} / ${unit} (${rate.tiered.length} tiers)`
+          : `${rate.tiered.length} tiers`;
+      }
+      if (!price) return null;
+      return match ? `${match}: ${price}` : price;
+    })
+    .filter((part): part is string => Boolean(part));
+
+  if (parts.length === 0) return unit ? `Per ${unit}` : undefined;
+  if (parts.length <= 2) return parts.join(' · ');
+  return `${parts[0]} · +${parts.length - 1} more`;
+};
+
+/** Muted secondary line: internal resource id when it differs from the display label. */
+export const getServicePricingSubtext = (
+  pricing: ComMiloapisBillingV1Alpha1ServicePricing,
+  displayName: string
+): string | undefined => getResourceNameSubtext(displayName, pricing.metadata?.name);
+
+export type ServicePricingCatalogService = {
+  /** Human-readable Service Catalog name (e.g. Network Services). */
+  displayName: string;
+  /** metadata.name for linking into Service Catalog. */
+  catalogName: string;
+  /** Canonical serviceName when useful as secondary context. */
+  canonicalName?: string;
+};
+
+/** Index services by metadata.name and spec.serviceName for pricing joins. */
+export const indexServicesByRef = (
+  services: ComMiloapisServicesV1Alpha1Service[]
+): Map<string, ComMiloapisServicesV1Alpha1Service> => {
+  const map = new Map<string, ComMiloapisServicesV1Alpha1Service>();
+  for (const service of services) {
+    const catalogName = service.metadata?.name?.trim();
+    const canonicalName = service.spec?.serviceName?.trim();
+    if (catalogName) map.set(catalogName, service);
+    if (canonicalName) map.set(canonicalName, service);
+  }
+  return map;
+};
+
+export const resolveServicePricingCatalogService = (
+  pricing: ComMiloapisBillingV1Alpha1ServicePricing,
+  servicesByRef: Map<string, ComMiloapisServicesV1Alpha1Service>
+): ServicePricingCatalogService | undefined => {
+  const serviceRef = pricing.spec?.serviceRef?.trim();
+  if (!serviceRef) return undefined;
+
+  const service = servicesByRef.get(serviceRef);
+  if (!service) {
+    return {
+      displayName: humanizeSlug(serviceRef.split('.')[0] ?? serviceRef),
+      catalogName: serviceRef,
+      canonicalName: serviceRef,
+    };
+  }
+
+  const catalogName = service.metadata?.name?.trim() ?? serviceRef;
+  const displayName = service.spec?.displayName?.trim() || catalogName;
+  const canonicalName = service.spec?.serviceName?.trim();
+  return {
+    displayName,
+    catalogName,
+    canonicalName: canonicalName && canonicalName !== displayName ? canonicalName : undefined,
+  };
+};
+
+/** metadata.name of the billing.miloapis.com Service / ServiceConfiguration. */
+export const BILLING_SERVICE_CONFIGURATION_NAME = 'billing-miloapis-com';
 
 export const orgNameFromNamespace = (namespace?: string): string => {
   if (!namespace) return '';

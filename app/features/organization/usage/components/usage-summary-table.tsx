@@ -1,8 +1,12 @@
 import { groupUsageSummaryRows } from '../usage-summary-grouping';
-import { formatUsagePair } from '../usage.format';
+import { formatCurrency, formatUnitRate, formatUsagePair } from '../usage.format';
 import type { UsageSummaryRow } from '../usage.types';
 import { UsageSparkline } from './usage-sparkline';
-import { ListColumnHeader } from '@/features/milo';
+import {
+  EMBEDDED_TABLE_HEADER_CELL_CLASS,
+  LIST_TABLE_HEADER_ROW_CLASS,
+  ListColumnHeader,
+} from '@/features/milo';
 import { QuotaIndicator } from '@/features/organization/components/quota-ring';
 import type { ColumnDef } from '@/utils/table';
 import { Badge } from '@datum-cloud/datum-ui/badge';
@@ -61,7 +65,7 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
       },
       {
         id: 'trend',
-        header: 'Trend',
+        header: ({ column }) => <ListColumnHeader column={column} title="Trend" />,
         enableSorting: false,
         size: 192,
         cell: ({ row }) => (
@@ -74,12 +78,39 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
       },
       {
         id: 'usage',
-        header: 'Usage',
+        header: ({ column }) => <ListColumnHeader column={column} title="Usage" />,
         enableSorting: false,
         size: 144,
         cell: ({ row }) => (
           <span className="text-muted-foreground block text-right text-sm whitespace-nowrap tabular-nums">
             {formatUsagePair(row.original.unit, row.original.used, row.original.limit)}
+          </span>
+        ),
+      },
+      {
+        id: 'rate',
+        header: ({ column }) => <ListColumnHeader column={column} title="Rate" />,
+        enableSorting: false,
+        size: 128,
+        cell: ({ row }) => (
+          <span className="text-muted-foreground block text-right text-sm whitespace-nowrap tabular-nums">
+            {formatUnitRate(
+              row.original.unitRate,
+              row.original.unit,
+              row.original.currencyCode,
+              row.original.pricingUnit
+            )}
+          </span>
+        ),
+      },
+      {
+        id: 'spend',
+        header: ({ column }) => <ListColumnHeader column={column} title="Spend" />,
+        enableSorting: false,
+        size: 112,
+        cell: ({ row }) => (
+          <span className="text-foreground block text-right text-sm font-medium whitespace-nowrap tabular-nums">
+            {formatCurrency(row.original.spend, row.original.currencyCode)}
           </span>
         ),
       },
@@ -140,9 +171,9 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
           onExpandedChange={setExpandedGroups}
           getRowId={(row) => row.apiName}
           className="usage-summary-grouped-table [&>div:last-child]:rounded-none [&>div:last-child]:border-0"
-          tableClassName="[&_th:not(:last-child)]:border-r [&_th]:border-border [&_td:first-child]:pl-4 [&_td:last-child]:pr-4 [&_th:first-child]:pl-4 [&_th:last-child]:pr-4 sm:[&_td:first-child]:pl-5 sm:[&_td:last-child]:pr-5 sm:[&_th:first-child]:pl-5 sm:[&_th:last-child]:pr-5"
-          headerRowClassName="bg-background hover:bg-background border-b border-border"
-          headerCellClassName="text-foreground text-xs font-medium"
+          tableClassName="[&_td:first-child]:pl-4 [&_td:last-child]:pr-4 sm:[&_td:first-child]:pl-5 sm:[&_td:last-child]:pr-5"
+          headerRowClassName={LIST_TABLE_HEADER_ROW_CLASS}
+          headerCellClassName={EMBEDDED_TABLE_HEADER_CELL_CLASS}
           bodyClassName={cn(
             '[&_tr:first-child]:border-t [&_tr]:border-border',
             canExpand ? '[&_tr:last-child]:border-b' : '[&_tr:last-child]:border-b-0'
@@ -190,4 +221,6 @@ export const usageSummaryTableColumns: ColumnDef<UsageSummaryRow, unknown>[] = [
   { id: 'product', header: 'Product', size: 256 },
   { id: 'trend', header: 'Trend', size: 192 },
   { id: 'usage', header: 'Usage', size: 144 },
+  { id: 'rate', header: 'Rate', size: 128 },
+  { id: 'spend', header: 'Spend', size: 112 },
 ];

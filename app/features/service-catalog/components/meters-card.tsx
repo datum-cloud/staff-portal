@@ -47,6 +47,12 @@ export function MetersCard({ metrics, isLoading }: Props) {
               <Text size="xs" textColor="muted" className="font-mono">
                 {m.name}
               </Text>
+              {m.dimensions && m.dimensions.length > 0 ? (
+                <Text size="xs" textColor="muted">
+                  <Trans>Rateable dimensions:</Trans>{' '}
+                  <span className="font-mono">{m.dimensions.join(', ')}</span>
+                </Text>
+              ) : null}
               {m.description && (
                 <Text size="xs" textColor="muted">
                   {m.description}

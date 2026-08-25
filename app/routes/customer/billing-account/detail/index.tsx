@@ -4,6 +4,7 @@ import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
 import { DisplayId, DisplayName } from '@/components/display';
 import { PageHeader } from '@/components/page-header';
+import { OfferSwitcherCard } from '@/features/billing';
 import {
   formatBillingAddress,
   getActiveBindingsForAccount,
@@ -64,7 +65,7 @@ const invoiceStatusBadgeState: Record<PastInvoiceStatus, string> = {
 };
 
 export default function Page() {
-  const { account, bindings, paymentMethods, invoices, orgName, organization } =
+  const { account, bindings, paymentMethods, invoices, billingEntitlement, orgName, organization } =
     useBillingAccountDetailData();
   const env = useEnv();
   const projectsQuery = useOrgProjectListQuery(orgName);
@@ -411,6 +412,12 @@ export default function Page() {
           </SectionCard>
         </Col>
       </Row>
+
+      <OfferSwitcherCard
+        orgName={orgName}
+        accountName={account.metadata?.name ?? ''}
+        billingEntitlement={billingEntitlement ?? null}
+      />
 
       <TableCard title={<Trans>Payment methods</Trans>}>
         {paymentMethods.length === 0 ? (

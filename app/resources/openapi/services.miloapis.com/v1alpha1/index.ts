@@ -48,6 +48,7 @@ export type {
   ComMiloapisServicesV1Alpha1Service,
   ComMiloapisServicesV1Alpha1ServiceConfiguration,
   ComMiloapisServicesV1Alpha1ServiceConfigurationList,
+  ComMiloapisServicesV1Alpha1ServiceCharge,
   ComMiloapisServicesV1Alpha1ServiceConsumer,
   ComMiloapisServicesV1Alpha1ServiceConsumerList,
   ComMiloapisServicesV1Alpha1ServiceEntitlement,

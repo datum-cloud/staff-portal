@@ -1,5 +1,6 @@
 export * from './components/active-configuration-summary';
 export * from './components/card-row-skeleton';
+export * from './components/charges-card';
 export * from './components/conditions-card';
 export * from './components/details-card';
 export * from './components/meters-card';

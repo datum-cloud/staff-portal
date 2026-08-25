@@ -64,13 +64,13 @@ export function UsageDashboardSkeleton({ scopeDescription }: { scopeDescription:
     <div className="border-border min-w-0 border-t">
       <UsageSectionSkeleton
         title="Usage summary"
-        description={`${scopeDescription} Your plan includes a set allowance for each metered service.`}>
+        description={`${scopeDescription} Rates and spend are estimated from the assigned Offer when pricing is available.`}>
         <UsageSummaryTableSkeleton />
       </UsageSectionSkeleton>
 
       <UsageSectionSkeleton
         title="Services"
-        description={`${scopeDescription} Usage for services across this organization, aggregated for the current period.`}>
+        description={`${scopeDescription} Per-meter breakdown for the selected billing period.`}>
         <MeterCardSkeleton />
         <MeterCardSkeleton />
       </UsageSectionSkeleton>
