@@ -122,13 +122,29 @@ export const DateTime = ({
     formatterOptions,
     timeZone
   );
+  const detailedTooltip = isDetailedTooltipContent(variant, tooltip);
 
   return (
-    <Tooltip message={tooltipContent}>
+    <Tooltip
+      message={tooltipContent}
+      contentClassName={
+        detailedTooltip ? 'min-w-[15rem] text-left text-wrap whitespace-normal' : undefined
+      }>
       <span className={cn('cursor-pointer', textClass)}>{content}</span>
     </Tooltip>
   );
 };
+
+function isDetailedTooltipContent(
+  variant: DateTimeProps['variant'],
+  tooltip: DateTimeProps['tooltip']
+): boolean {
+  return (
+    variant === 'detailed' ||
+    tooltip === 'detailed' ||
+    ((tooltip === 'auto' || tooltip === true) && variant === 'both')
+  );
+}
 
 function renderDetailedTooltip(date: Date, options: FormatterOptions, timeZone: string) {
   const utcTime = formatUTCDate(date);
@@ -143,16 +159,17 @@ function renderDetailedTooltip(date: Date, options: FormatterOptions, timeZone: 
     { label: 'Timestamp', value: timestamp },
   ];
 
+  // Tooltip content is wrapped in a <span> by datum-ui — keep markup phrasing-safe.
   return (
-    <div className="space-y-2 text-xs">
+    <>
       {rows.map((row) => (
-        <div key={row.label} className="flex items-center justify-between gap-2">
+        <span key={row.label} className="block leading-5">
           <span className="font-medium">{row.label}</span>
-          <span className="mx-1 flex-1 border-b border-dotted border-current/50" />
-          <span className="text-right">{row.value}</span>
-        </div>
+          <span className="opacity-70"> · </span>
+          <span>{row.value}</span>
+        </span>
       ))}
-    </div>
+    </>
   );
 }
 

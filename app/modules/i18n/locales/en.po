@@ -267,7 +267,7 @@ msgstr "Address"
 msgid "Admin"
 msgstr "Admin"
 
-#: app/routes/admin/offer/detail.tsx:436
+#: app/routes/admin/offer/detail.tsx:441
 msgid "After publish, only the display name can change. Rate changes need a new Offer."
 msgstr "After publish, only the display name can change. Rate changes need a new Offer."
 
@@ -564,8 +564,8 @@ msgstr "by"
 #: app/routes/admin/group/detail/member.tsx:142
 #: app/routes/admin/group/detail/member.tsx:156
 #: app/routes/admin/offer/create.tsx:158
-#: app/routes/admin/offer/detail.tsx:427
-#: app/routes/admin/offer/detail.tsx:440
+#: app/routes/admin/offer/detail.tsx:432
+#: app/routes/admin/offer/detail.tsx:445
 #: app/routes/admin/service-catalog/detail/consumers.tsx:205
 #: app/routes/customer/fraud/index.tsx:229
 #: app/routes/customer/fraud/index.tsx:264
@@ -1257,7 +1257,7 @@ msgstr "Disable flag"
 #: app/features/project/components/project-organization-card.tsx:44
 #: app/routes/admin/offer/create.tsx:109
 #: app/routes/admin/offer/detail.tsx:247
-#: app/routes/admin/offer/detail.tsx:442
+#: app/routes/admin/offer/detail.tsx:447
 msgid "Display name"
 msgstr "Display name"
 
@@ -1404,7 +1404,7 @@ msgstr "Each resource type is limited to 2,000 results at a time. Refine your se
 msgid "Edit"
 msgstr "Edit"
 
-#: app/routes/admin/offer/detail.tsx:435
+#: app/routes/admin/offer/detail.tsx:440
 msgid "Edit display name"
 msgstr "Edit display name"
 
@@ -1965,8 +1965,8 @@ msgid "Inactive"
 msgstr "Inactive"
 
 #: app/routes/admin/offer/detail.tsx:276
-#: app/routes/admin/offer/detail.tsx:330
-#: app/routes/admin/offer/detail.tsx:396
+#: app/routes/admin/offer/detail.tsx:335
+#: app/routes/admin/offer/detail.tsx:401
 msgid "Included charges"
 msgstr "Included charges"
 
@@ -2201,7 +2201,7 @@ msgstr "Loading..."
 #: app/features/project/components/project-suspension-card.tsx:127
 #: app/features/service-catalog/components/charges-card.tsx:118
 #: app/routes/admin/offer/detail.tsx:209
-#: app/routes/admin/offer/detail.tsx:318
+#: app/routes/admin/offer/detail.tsx:323
 msgid "Loading…"
 msgstr "Loading…"
 
@@ -2425,11 +2425,11 @@ msgid "No"
 msgstr "No"
 
 #. placeholder {0}: defaultOffer.currentDefault
-#: app/routes/admin/offer/detail.tsx:324
+#: app/routes/admin/offer/detail.tsx:329
 msgid "No — current default is {0}"
 msgstr "No — current default is {0}"
 
-#: app/routes/admin/offer/detail.tsx:325
+#: app/routes/admin/offer/detail.tsx:330
 msgid "No — none configured"
 msgstr "No — none configured"
 
@@ -2788,7 +2788,7 @@ msgstr "of"
 msgid "Offer"
 msgstr "Offer"
 
-#: app/routes/admin/offer/detail.tsx:388
+#: app/routes/admin/offer/detail.tsx:393
 msgid "Offer details"
 msgstr "Offer details"
 
@@ -2889,7 +2889,7 @@ msgstr "Origin"
 
 #: app/routes/admin/group/detail/index.tsx:17
 #: app/routes/admin/group/detail/layout.tsx:35
-#: app/routes/admin/offer/detail.tsx:367
+#: app/routes/admin/offer/detail.tsx:372
 #: app/routes/admin/service-catalog/detail/layout.tsx:37
 #: app/routes/customer/organization/detail/layout.tsx:68
 #: app/routes/customer/project/detail/layout.tsx:111
@@ -2950,7 +2950,7 @@ msgstr "Pending Approval"
 msgid "Pending Approvals"
 msgstr "Pending Approvals"
 
-#: app/routes/admin/offer/detail.tsx:293
+#: app/routes/admin/offer/detail.tsx:298
 msgid "Pending snapshot"
 msgstr "Pending snapshot"
 
@@ -3008,7 +3008,7 @@ msgstr "Platform Access State"
 msgid "Platform access updated to {state}"
 msgstr "Platform access updated to {state}"
 
-#: app/routes/admin/offer/detail.tsx:316
+#: app/routes/admin/offer/detail.tsx:321
 msgid "Platform default"
 msgstr "Platform default"
 
@@ -3192,16 +3192,16 @@ msgstr "Providers (comma-separated)"
 msgid "Public"
 msgstr "Public"
 
-#: app/routes/admin/offer/detail.tsx:356
-#: app/routes/admin/offer/detail.tsx:426
+#: app/routes/admin/offer/detail.tsx:361
+#: app/routes/admin/offer/detail.tsx:431
 msgid "Publish"
 msgstr "Publish"
 
-#: app/routes/admin/offer/detail.tsx:424
+#: app/routes/admin/offer/detail.tsx:429
 msgid "Publish Offer"
 msgstr "Publish Offer"
 
-#: app/routes/admin/offer/detail.tsx:370
+#: app/routes/admin/offer/detail.tsx:375
 msgid "Publish to GA before this Offer can be set as the platform default for new billing accounts."
 msgstr "Publish to GA before this Offer can be set as the platform default for new billing accounts."
 
@@ -3211,11 +3211,11 @@ msgstr "Publish to GA before this Offer can be set as the platform default for n
 msgid "Published"
 msgstr "Published"
 
-#: app/routes/admin/offer/detail.tsx:288
+#: app/routes/admin/offer/detail.tsx:293
 msgid "Published at"
 msgstr "Published at"
 
-#: app/routes/admin/offer/detail.tsx:425
+#: app/routes/admin/offer/detail.tsx:430
 msgid "Publishing snapshots rates into this Offer. After GA the rates are immutable; create a new Offer version to change pricing."
 msgstr "Publishing snapshots rates into this Offer. After GA the rates are immutable; create a new Offer version to change pricing."
 
@@ -3455,7 +3455,7 @@ msgid "Running"
 msgstr "Running"
 
 #: app/features/profile/components/profile-form.tsx:58
-#: app/routes/admin/offer/detail.tsx:439
+#: app/routes/admin/offer/detail.tsx:444
 msgid "Save"
 msgstr "Save"
 
@@ -3815,7 +3815,7 @@ msgstr "Sinks"
 msgid "Skipped"
 msgstr "Skipped"
 
-#: app/routes/admin/offer/detail.tsx:405
+#: app/routes/admin/offer/detail.tsx:410
 msgid "Snapshot not written yet — controller may still be reconciling."
 msgstr "Snapshot not written yet — controller may still be reconciling."
 
@@ -3881,8 +3881,8 @@ msgstr "Start Time"
 #: app/features/quota/components/quota-grant-list.tsx:109
 #: app/features/service-catalog/components/conditions-card.tsx:23
 #: app/routes/admin/group/detail/index.tsx:34
-#: app/routes/admin/offer/detail.tsx:303
-#: app/routes/admin/offer/detail.tsx:330
+#: app/routes/admin/offer/detail.tsx:308
+#: app/routes/admin/offer/detail.tsx:335
 #: app/routes/customer/billing-account/detail/index.tsx:157
 #: app/routes/customer/billing-account/detail/index.tsx:203
 #: app/routes/customer/billing-account/detail/index.tsx:235
@@ -4175,7 +4175,7 @@ msgid "Type to search."
 msgstr "Type to search."
 
 #: app/features/fraud/policy/policy-detail.tsx:152
-#: app/routes/admin/offer/detail.tsx:320
+#: app/routes/admin/offer/detail.tsx:325
 msgid "Unavailable"
 msgstr "Unavailable"
 
@@ -4392,7 +4392,7 @@ msgstr "YAML"
 msgid "Yes"
 msgstr "Yes"
 
-#: app/routes/admin/offer/detail.tsx:322
+#: app/routes/admin/offer/detail.tsx:327
 msgid "Yes — new accounts use this Offer"
 msgstr "Yes — new accounts use this Offer"
 

@@ -279,7 +279,12 @@ export default function Page() {
     {
       label: t`Created`,
       value: offer.metadata?.creationTimestamp ? (
-        <DateTime date={offer.metadata.creationTimestamp} variant="both" addSuffix />
+        <DateTime
+          date={offer.metadata.creationTimestamp}
+          variant="both"
+          addSuffix
+          tooltip="detailed"
+        />
       ) : (
         '—'
       ),
@@ -287,7 +292,7 @@ export default function Page() {
     {
       label: t`Published at`,
       value: offer.status?.publishedAt ? (
-        <DateTime date={offer.status.publishedAt} variant="both" addSuffix />
+        <DateTime date={offer.status.publishedAt} variant="both" addSuffix tooltip="detailed" />
       ) : snapshotPending ? (
         <span className="text-muted-foreground text-xs">
           <Trans>Pending snapshot</Trans>
