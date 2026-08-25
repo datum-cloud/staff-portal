@@ -94,7 +94,12 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
         size: 128,
         cell: ({ row }) => (
           <span className="text-muted-foreground block text-right text-sm whitespace-nowrap tabular-nums">
-            {formatUnitRate(row.original.unitRate, row.original.unit, row.original.currencyCode)}
+            {formatUnitRate(
+              row.original.unitRate,
+              row.original.unit,
+              row.original.currencyCode,
+              row.original.pricingUnit
+            )}
           </span>
         ),
       },

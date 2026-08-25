@@ -89,7 +89,12 @@ export function MeterCard({ meter }: MeterCardProps) {
           <div className="flex items-center gap-2 sm:gap-3">
             {(meter.spend ?? 0) > 0 || meter.unitRate !== undefined ? (
               <span className="text-muted-foreground text-right text-xs tabular-nums">
-                {formatUnitRate(meter.unitRate, meter.unit, meter.currencyCode)}
+                {formatUnitRate(
+                  meter.unitRate,
+                  meter.unit,
+                  meter.currencyCode,
+                  meter.pricingUnit
+                )}
                 {(meter.spend ?? 0) > 0 ? (
                   <>
                     {' · '}

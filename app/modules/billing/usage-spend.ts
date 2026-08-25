@@ -259,6 +259,7 @@ export function enrichMetersWithCatalogSpend(
       ...meter,
       spend: computed.spend,
       unitRate: computed.unitRate,
+      pricingUnit: pricing?.pricingUnit,
     };
   });
 

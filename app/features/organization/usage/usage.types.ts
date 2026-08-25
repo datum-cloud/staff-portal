@@ -18,6 +18,8 @@ export interface UsageMeter {
   spend?: number;
   /** Unit rate from the active Offer, when available. */
   unitRate?: number;
+  /** Billing pricing unit label from the Offer, e.g. `token`, `request`, `GB`. */
+  pricingUnit?: string;
   /** ISO 4217 currency for spend/rate display. */
   currencyCode?: string;
   /** Breakdown tabs shown above the chart. The first entry is the default. */
@@ -41,6 +43,8 @@ export interface UsageSummaryRow {
   limit: number;
   spend?: number;
   unitRate?: number;
+  /** Billing pricing unit label from the Offer, e.g. `token`, `request`, `GB`. */
+  pricingUnit?: string;
   currencyCode?: string;
   /** Daily aggregate series for inline spark charts. */
   series: MeterPoint[];

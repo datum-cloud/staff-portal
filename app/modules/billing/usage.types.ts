@@ -46,6 +46,8 @@ export interface MeterSeries {
   spend?: number;
   /** Unit rate from the active Offer, when available. */
   unitRate?: number;
+  /** Billing pricing unit label from the Offer, e.g. `token`, `request`, `GB`. */
+  pricingUnit?: string;
   /** Per-dimension grouped series, fetched when the meter declares dimensions. */
   breakdowns?: MeterDimensionBreakdown[];
 }
