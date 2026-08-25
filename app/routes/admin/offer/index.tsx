@@ -16,7 +16,7 @@ import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1Offer } from '@openapi/billing.miloapis.com/v1alpha1';
-import { createColumnHelper } from '@tanstack/react-table';
+import { createColumnHelper } from '@/utils/table';
 
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Offers`);
