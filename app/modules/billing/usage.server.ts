@@ -507,15 +507,13 @@ export async function fetchOrgUsage(
     catalogPricing.offerName
   );
 
-  const hasPricing = catalogPricing.byMetric.size > 0;
-
   return {
     status: 'ok',
     meters: metersWithCost,
     groups: buildUsageGroups(metersWithCost),
     days: resolvedDays,
     projectId,
-    totalSpend: hasPricing ? totalSpend : undefined,
+    totalSpend,
     currencyCode,
     pricingOfferName: offerName,
   };

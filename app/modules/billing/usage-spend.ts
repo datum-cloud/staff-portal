@@ -133,7 +133,7 @@ export function flatRatePerMeterUnit(
 ): number {
   const oneUnit = usageToPricingUnits(1, meterUnit, pricingUnit);
   if (oneUnit <= 0) return flatPerPricingUnit;
-  return flatPerPricingUnit / oneUnit;
+  return flatPerPricingUnit * oneUnit;
 }
 
 function sumPoints(values: { value: number }[]): number {
@@ -245,8 +245,14 @@ export function enrichMetersWithCatalogSpend(
   pricingByMetric: Map<string, CatalogMeterPricing>,
   meterNameByApiName: Map<string, string>,
   offerName?: string
-): { meters: MeterSeries[]; totalSpend: number; currencyCode: string; offerName?: string } {
+): {
+  meters: MeterSeries[];
+  totalSpend?: number;
+  currencyCode: string;
+  offerName?: string;
+} {
   let totalSpend = 0;
+  let anySpendComputed = false;
   let currencyCode = 'USD';
 
   const enriched = meters.map((meter) => {
@@ -254,7 +260,10 @@ export function enrichMetersWithCatalogSpend(
     const pricing = metric ? pricingByMetric.get(metric) : undefined;
     if (pricing?.currency) currencyCode = pricing.currency;
     const computed = computeMeterSpend(meter, pricing);
-    if (computed.spend !== undefined) totalSpend += computed.spend;
+    if (computed.spend !== undefined) {
+      totalSpend += computed.spend;
+      anySpendComputed = true;
+    }
     return {
       ...meter,
       spend: computed.spend,
@@ -265,7 +274,7 @@ export function enrichMetersWithCatalogSpend(
 
   return {
     meters: enriched,
-    totalSpend,
+    totalSpend: anySpendComputed ? totalSpend : undefined,
     currencyCode,
     offerName,
   };
