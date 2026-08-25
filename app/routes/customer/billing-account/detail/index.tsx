@@ -35,6 +35,7 @@ import { useOrgProjectListQuery } from '@/resources/request/client';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { billingAccountRoutes, orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { createColumnHelper, type ColumnDef } from '@/utils/table';
 import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
@@ -44,7 +45,6 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1BillingAccountBinding } from '@openapi/billing.miloapis.com/v1alpha1';
 import type { ComMiloapisBillingV1Alpha1PaymentMethod } from '@openapi/billing.miloapis.com/v1alpha1';
-import { createColumnHelper, type ColumnDef } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
 import { type MetaFunction } from 'react-router';
 
@@ -209,7 +209,7 @@ export default function Page() {
     invoiceColumnHelper.accessor('date', {
       id: 'date',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Date`} />,
-      sortingFn: (a, b) => {
+      sortFn: (a, b) => {
         const aTime = Date.parse(a.original.dateSortKey);
         const bTime = Date.parse(b.original.dateSortKey);
         if (Number.isNaN(aTime) && Number.isNaN(bTime)) return 0;
@@ -222,7 +222,7 @@ export default function Page() {
     invoiceColumnHelper.accessor('amount', {
       id: 'amount',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Amount`} />,
-      sortingFn: (a, b) => a.original.amountSortKey - b.original.amountSortKey,
+      sortFn: (a, b) => a.original.amountSortKey - b.original.amountSortKey,
       cell: ({ getValue }) => <Text>{getValue()}</Text>,
     }),
     invoiceColumnHelper.accessor('invoiceNumber', {

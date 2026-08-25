@@ -1,3 +1,6 @@
+import { normalizeEndpoint } from '@/modules/sentry/fingerprint';
+import { shouldReportApiError } from '@/modules/sentry/report-policy';
+import { scrubValue } from '@/modules/sentry/scrub';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import * as Sentry from '@sentry/react';
 
@@ -112,7 +115,15 @@ export function setSentryContext(name: string, context: Record<string, any> | nu
 }
 
 /**
- * Capture API request errors with proper context and categorization
+ * Capture API request errors with proper context and categorization.
+ *
+ * A breadcrumb is always recorded (cheap context for a later real error), but
+ * the exception is only sent to Sentry for *unexpected* failures — 5xx and
+ * network errors. Handled 4xx responses are logged and shown to the user
+ * elsewhere; they are not application bugs, so they stay out of Sentry.
+ *
+ * Tags, level, fingerprint, and the (scrubbed) response body are applied on an
+ * isolated `withScope`, so they never leak onto unrelated later events.
  */
 export function captureApiError(
   error: Error,
@@ -137,26 +148,31 @@ export function captureApiError(
     }
   );
 
-  // Set tags for better filtering in Sentry
-  setSentryTag('error.type', 'api_request');
-  setSentryTag('error.status', context.status?.toString() || 'unknown');
-  setSentryTag('error.endpoint', context.url || 'unknown');
-  setSentryTag('error.method', context.method || 'unknown');
-  if (context.requestId) {
-    setSentryTag('error.request_id', context.requestId);
-  }
+  // Handled 4xx failures are surfaced + logged elsewhere; keep them out of Sentry.
+  if (!shouldReportApiError(context.status)) return;
 
-  // Capture the error with additional context
-  Sentry.captureException(error, {
-    tags: {
-      'error.type': 'api_request',
-      'error.status': context.status?.toString() || 'unknown',
-      'error.endpoint': context.url || 'unknown',
-      'error.method': context.method || 'unknown',
-    },
-    extra: {
-      requestId: context.requestId,
-      responseData: context.responseData,
-    },
+  const status = context.status;
+
+  Sentry.withScope((scope) => {
+    scope.setTag('error.type', 'api_request');
+    scope.setTag('error.status', status?.toString() || 'unknown');
+    scope.setTag('error.endpoint', context.url || 'unknown');
+    scope.setTag('error.method', context.method || 'unknown');
+    if (context.requestId) scope.setTag('error.request_id', context.requestId);
+
+    scope.setLevel(status && status >= 500 ? 'error' : 'warning');
+    scope.setFingerprint([
+      'api',
+      context.method || 'unknown',
+      normalizeEndpoint(context.url),
+      status?.toString() || 'unknown',
+    ]);
+
+    scope.setExtra('requestId', context.requestId);
+    if (context.responseData !== undefined) {
+      scope.setExtra('responseData', scrubValue(context.responseData));
+    }
+
+    Sentry.captureException(error);
   });
 }

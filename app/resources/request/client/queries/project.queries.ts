@@ -4,14 +4,18 @@ import {
   projectDomainListQuery,
   projectExportPolicyListQuery,
   projectEdgeListQuery,
+  projectGetQuery,
   projectSuspensionListQuery,
 } from '../apis/project.api';
+import { isProjectDeleting } from '@/features/project/lib/project-deletion';
 import { listAllProjects, listProjects } from '@/modules/graphql/projects';
 import { ListQueryParams } from '@/resources/schemas';
+import type { ComMiloapisResourcemanagerV1Alpha1Project } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
 
 export const projectQueryKeys = {
   all: ['projects'] as const,
+  detail: (projectName: string) => ['projects', projectName, 'detail'] as const,
   list: (params?: ListQueryParams) => ['projects', 'list', params] as const,
   listAll: (search?: string) => ['projects', 'list-all', search ?? ''] as const,
   domains: {
@@ -59,6 +63,29 @@ export const useProjectDnsRecordListQuery = (
     enabled: Boolean(projectName && dnsName),
     staleTime: 60 * 1000,
   });
+};
+
+const PROJECT_DELETION_POLL_MS = 10_000;
+
+/** Live project object; polls while the project is terminating. `null` data means gone. */
+export const useLiveProject = (initial: ComMiloapisResourcemanagerV1Alpha1Project | undefined) => {
+  const projectName = initial?.metadata?.name ?? '';
+  const query = useQuery({
+    queryKey: projectQueryKeys.detail(projectName),
+    queryFn: () => projectGetQuery(projectName),
+    enabled: Boolean(projectName),
+    initialData: initial,
+    refetchInterval: (query) => {
+      const current = query.state.data;
+      if (!current) return false;
+      return isProjectDeleting(current) ? PROJECT_DELETION_POLL_MS : false;
+    },
+  });
+
+  return {
+    project: query.data === null ? undefined : (query.data ?? initial),
+    isGone: query.data === null,
+  };
 };
 
 export const useProjectListQuery = (params?: ListQueryParams) => {

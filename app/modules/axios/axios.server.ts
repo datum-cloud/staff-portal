@@ -180,6 +180,12 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
         );
         throw authError.toResponse();
       }
+      // A 401 that matches neither known shape must not fall through to 403.
+      const authError = new AuthenticationError(
+        data?.message ?? 'Authentication failed',
+        requestId
+      );
+      throw authError.toResponse();
     }
     case 403: {
       const data = error.response?.data as { message: string; reason: string };

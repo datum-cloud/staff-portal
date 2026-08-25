@@ -1,5 +1,7 @@
 import { apiRequest } from '@/modules/axios/axios.server';
 import { LokiActivityLogsService, QueryParams } from '@/modules/loki/server';
+import { initPluginRegistry } from '@/modules/plugins/server';
+import { pluginsRoutes } from '@/modules/plugins/server/routes';
 import { PrometheusService } from '@/modules/prometheus';
 import { EnvVariables } from '@/server/iface';
 import { logApiError, logApiSuccess } from '@/server/logger';
@@ -273,5 +275,10 @@ api.route('/chainsaw-tests', chainsawTestsRoutes);
 api.route('/cluster', clusterRoutes);
 api.route('/graphql', graphqlRoutes);
 api.route('/usage', usageRoutes);
+api.route('/plugins', pluginsRoutes);
+
+// Dev-only static plugin registry (see app/modules/plugins/server/index.ts) —
+// idempotent, hard-disabled outside NODE_ENV=development.
+initPluginRegistry();
 
 export { api, API_BASENAME };

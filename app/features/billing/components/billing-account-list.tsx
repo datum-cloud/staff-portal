@@ -20,10 +20,10 @@ import {
   usePaymentMethodListQuery,
 } from '@/resources/request/client';
 import { billingAccountRoutes, orgRoutes } from '@/utils/config/routes.config';
+import { createColumnHelper } from '@/utils/table';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
-import { createColumnHelper } from '@tanstack/react-table';
 import { useMemo } from 'react';
 import { Link } from 'react-router';
 

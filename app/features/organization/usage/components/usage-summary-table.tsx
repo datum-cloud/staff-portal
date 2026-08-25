@@ -8,6 +8,7 @@ import {
   ListColumnHeader,
 } from '@/features/milo';
 import { QuotaIndicator } from '@/features/organization/components/quota-ring';
+import type { ColumnDef } from '@/utils/table';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardFooter } from '@datum-cloud/datum-ui/card';
@@ -15,7 +16,6 @@ import { GroupedTable } from '@datum-cloud/datum-ui/grouped-table';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import type { ColumnDef } from '@tanstack/react-table';
 import { ChevronDownIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 

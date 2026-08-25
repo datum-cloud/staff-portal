@@ -6,9 +6,9 @@ import { ListColumnHeader, ListTable } from '@/features/milo';
 import { useProjectExportPolicyListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { createColumnHelper } from '@/utils/table';
 import { t } from '@lingui/core/macro';
 import { ComMiloapisTelemetryV1Alpha1ExportPolicy } from '@openapi/telemetry.miloapis.com/v1alpha1';
-import { createColumnHelper } from '@tanstack/react-table';
 import { Link } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {

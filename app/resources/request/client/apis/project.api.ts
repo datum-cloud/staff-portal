@@ -18,6 +18,8 @@ import {
   deleteResourcemanagerMiloapisComV1Alpha1ProjectSuspension,
   listResourcemanagerMiloapisComV1Alpha1Project,
   listResourcemanagerMiloapisComV1Alpha1ProjectSuspension,
+  readResourcemanagerMiloapisComV1Alpha1Project,
+  type ComMiloapisResourcemanagerV1Alpha1Project,
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { listTelemetryMiloapisComV1Alpha1ExportPolicyForAllNamespaces } from '@openapi/telemetry.miloapis.com/v1alpha1';
 
@@ -126,6 +128,21 @@ export const projectDomainStatusQuery = async (
       name: domainName,
     },
   });
+  return response.data.data;
+};
+
+export const projectGetQuery = async (
+  projectName: string
+): Promise<ComMiloapisResourcemanagerV1Alpha1Project | null> => {
+  const response = await readResourcemanagerMiloapisComV1Alpha1Project({
+    path: {
+      name: projectName,
+    },
+    // Treat 404 as success so the axios error interceptor does not toast
+    // when cleanup finishes and the project disappears.
+    validateStatus: (status) => (status >= 200 && status < 300) || status === 404,
+  });
+  if (response.status === 404) return null;
   return response.data.data;
 };
 

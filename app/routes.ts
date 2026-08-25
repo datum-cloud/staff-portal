@@ -109,6 +109,7 @@ export default [
               route('grants', 'routes/customer/project/detail/quota/grant.tsx'),
             ]),
             route('secrets', 'routes/customer/project/detail/secret.tsx'),
+            route('plugins/:slug/*', 'routes/customer/project/detail/plugins.tsx'),
           ]
         ),
       ]),
@@ -245,7 +246,13 @@ export default [
       route('sessions', 'routes/profile/session.tsx'),
     ]),
 
+    // Sentry smoke-test harness — its loader 404s in production (see the route).
     route('test-sentry', 'routes/test-sentry.tsx'),
+
+    // Platform-wide plugin mount (`portal.page/platform` extensions) — see
+    // app/routes/plugins.tsx. Sibling to the project-scoped mount at
+    // customers/projects/:projectName/plugins/:slug/*.
+    route('plugins/:slug/*', 'routes/plugins.tsx'),
   ]),
 
   // Public routes without auth

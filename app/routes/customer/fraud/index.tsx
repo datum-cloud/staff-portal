@@ -15,6 +15,7 @@ import {
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes } from '@/utils/config/routes.config';
 import { metaObject, startCase } from '@/utils/helpers';
+import { createColumnHelper } from '@/utils/table';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Form } from '@datum-cloud/datum-ui/form';
@@ -23,7 +24,6 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisFraudV1Alpha1FraudEvaluation } from '@openapi/fraud.miloapis.com/v1alpha1';
-import { createColumnHelper } from '@tanstack/react-table';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { z } from 'zod';

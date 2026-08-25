@@ -8,11 +8,11 @@ import { useServiceConsumersInProjectQuery } from '@/resources/request/client';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { createColumnHelper } from '@/utils/table';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import type { ComMiloapisServicesV1Alpha1ServiceConsumer } from '@openapi/services.miloapis.com/v1alpha1';
-import { createColumnHelper } from '@tanstack/react-table';
 import { Link } from 'react-router';
 
 type ServiceConsumer = ComMiloapisServicesV1Alpha1ServiceConsumer;

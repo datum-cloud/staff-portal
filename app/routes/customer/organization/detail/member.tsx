@@ -12,11 +12,11 @@ import {
 import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { createColumnHelper } from '@/utils/table';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { t as tCore } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { createColumnHelper } from '@tanstack/react-table';
 import { addHours, differenceInMinutes, formatRFC3339 } from 'date-fns';
 import { MailIcon } from 'lucide-react';
 import { useState } from 'react';

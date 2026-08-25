@@ -3,6 +3,7 @@ import { DateRangePicker, DateTime } from '@/components/date';
 import { useApp } from '@/providers/app.provider';
 import { activityListQuery } from '@/resources/request/client';
 import { ActivityListResponse, ActivityLogEntry, ActivityQueryParams } from '@/resources/schemas';
+import { createColumnHelper } from '@/utils/table';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Button } from '@datum-cloud/datum-ui/button';
 import {
@@ -14,7 +15,6 @@ import {
 } from '@datum-cloud/datum-ui/data-table';
 import type { FilterValue, ServerFetchArgs, StateAdapter } from '@datum-cloud/datum-ui/data-table';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { createColumnHelper } from '@tanstack/react-table';
 import {
   endOfDay,
   endOfMonth,

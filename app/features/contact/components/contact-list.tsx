@@ -6,6 +6,7 @@ import { ListTable, ListColumnHeader } from '@/features/milo';
 import { contactDeleteMutation } from '@/resources/request/client';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { contactRoutes } from '@/utils/config/routes.config';
+import { createColumnHelper } from '@/utils/table';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { t } from '@lingui/core/macro';
@@ -14,7 +15,6 @@ import {
   type ComMiloapisNotificationV1Alpha1ContactList,
 } from '@openapi/notification.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
-import { createColumnHelper } from '@tanstack/react-table';
 import { useMemo, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 

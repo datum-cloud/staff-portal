@@ -265,7 +265,7 @@ jobs:
       contents: read
       packages: write
       attestations: write
-    uses: datum-cloud/actions/.github/workflows/publish-docker.yaml@v1.20.0
+    uses: datum-cloud/actions/.github/workflows/publish-docker.yaml@v1.21.0
     with:
       image-name: staff-portal
     secrets: inherit
@@ -278,7 +278,7 @@ jobs:
       id-token: write
       contents: read
       packages: write
-    uses: datum-cloud/actions/.github/workflows/publish-kustomize-bundle.yaml@v1.20.0
+    uses: datum-cloud/actions/.github/workflows/publish-kustomize-bundle.yaml@v1.21.0
     with:
       bundle-name: ghcr.io/datum-cloud/staff-portal-kustomize
       bundle-path: config
@@ -289,6 +289,10 @@ jobs:
   # ─── PR Comment ─────────────────────────────────────────────
   pr-comment:
     name: PR Test Summary
+    # Depends on every test job it reports on, so their conclusions are final
+    # when this job snapshots them via the API. Otherwise it could fire while a
+    # job is still running and render it as "pending" (masking a later failure).
+    # Staff has no regression shards yet — unit-tests + e2e-smoke are the full set.
     needs: [unit-tests, e2e-smoke]
     runs-on: ubuntu-latest
     # always() so the summary + artifact links post even when a test job fails
@@ -318,35 +322,54 @@ jobs:
               j.name === 'Unit Tests' || j.name.startsWith('E2E')
             );
 
+            // A job that hasn't finished has a null `conclusion` (distinct from
+            // "skipped"). With this job depending on every test job it reports
+            // on, null should not occur — but label it honestly if it ever does,
+            // rather than collapsing it into the "skipped" emoji.
             const statusEmoji = (conclusion) => {
-              if (!conclusion || conclusion === 'skipped') return '⏭️';
               if (conclusion === 'success') return '✅';
               if (conclusion === 'failure') return '❌';
               if (conclusion === 'cancelled') return '🚫';
+              if (conclusion === 'skipped') return '⏭️';
+              if (!conclusion) return '⏳';
               return '❓';
             };
 
             let table = '| Job | Status |\n|-----|--------|\n';
             for (const job of testJobs.sort((a, b) => a.name.localeCompare(b.name))) {
-              table += `| ${job.name} | ${statusEmoji(job.conclusion)} ${job.conclusion || 'pending'} |\n`;
+              table += `| ${job.name} | ${statusEmoji(job.conclusion)} ${job.conclusion || 'in progress'} |\n`;
             }
-
-            const { data: artifacts } = await github.rest.actions.listWorkflowRunArtifacts({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              run_id: runId,
-            });
 
             let body = `## 🧪 Test Summary\n\n${table}\n\n`;
             body += `[View workflow run](${runUrl})`;
-            body += `\n\n### 📎 Artifacts\n\n`;
-            if (artifacts.artifacts.length > 0) {
-              body += `Videos and screenshots from failed E2E tests:\n\n`;
-              for (const a of artifacts.artifacts) {
-                body += `- **${a.name}** – [Download](${runUrl})\n`;
+
+            // Only surface debugging artifacts when a test actually failed. On a
+            // green run the coverage/build artifacts still exist, so listing
+            // them here would wrongly imply a failure. E2E failure artifacts are
+            // named `e2e-*` (see the upload steps); coverage/build are not.
+            const anyFailed = testJobs.some(j => j.conclusion === 'failure');
+            if (anyFailed) {
+              const { data: artifacts } = await github.rest.actions.listWorkflowRunArtifacts({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                run_id: runId,
+              });
+              // Dedupe by name: re-running a failed job uploads its artifact
+              // again under the same name (the name carries run_id but not the
+              // run attempt), so the API can return two records for one job.
+              const e2eArtifacts = [
+                ...new Map(
+                  artifacts.artifacts
+                    .filter(a => a.name.startsWith('e2e-'))
+                    .map(a => [a.name, a])
+                ).values(),
+              ];
+              if (e2eArtifacts.length > 0) {
+                body += `\n\n### 📎 Failure artifacts\n\nVideos and screenshots from failed E2E tests:\n\n`;
+                for (const a of e2eArtifacts) {
+                  body += `- **${a.name}** – [Download](${runUrl})\n`;
+                }
               }
-            } else {
-              body += `No artifacts (all tests passed).\n`;
             }
 
             fs.writeFileSync('pr-summary.md', body);

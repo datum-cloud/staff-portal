@@ -55,6 +55,19 @@ const envSchema = z.object({
   // Meter names are discovered automatically from platform MeterDefinition resources.
   AMBERFLO_API_KEY: z.string().optional(),
   AMBERFLO_BASE_URL: z.url().optional(),
+
+  // Portal plugin system (see app/modules/plugins/) — dev-only static
+  // registry source. "<slug>=<url>,…" for quick UI iteration, or a JSON array
+  // of spec-shaped entries for richer options. Both are hard-disabled outside
+  // NODE_ENV=development.
+  PORTAL_PLUGINS: z.string().optional(),
+  PORTAL_PLUGINS_JSON: z.string().optional(),
+
+  // Portal plugin system — platform registry source. Path to a kubeconfig
+  // (mounted from a cert-manager CSI volume) used to watch ProviderPortalPlugin
+  // on milo's control plane at boot. Meant for real deployments — no
+  // NODE_ENV gating, unlike the dev-only vars above.
+  PLATFORM_REGISTRY_KUBECONFIG: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

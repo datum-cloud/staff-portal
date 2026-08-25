@@ -22,6 +22,7 @@ import {
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { createColumnHelper } from '@/utils/table';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Form } from '@datum-cloud/datum-ui/form';
@@ -30,7 +31,6 @@ import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
-import { createColumnHelper } from '@tanstack/react-table';
 import { MailIcon, type LucideIcon } from 'lucide-react';
 import { useMemo, useState, type ComponentType, type SVGProps } from 'react';
 import { useNavigate } from 'react-router';

@@ -12,12 +12,12 @@ import {
 } from '@/features/milo';
 import type { GqlOrgMember } from '@/modules/graphql/organizations';
 import { orgRoutes, userRoutes } from '@/utils/config/routes.config';
+import { createColumnHelper, type ColumnDef } from '@/utils/table';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { createColumnHelper, type ColumnDef } from '@tanstack/react-table';
 import { Link } from 'react-router';
 
 const PREVIEW_LIMIT = 8;

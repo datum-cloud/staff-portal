@@ -3,12 +3,15 @@ import type { Route } from './+types/index';
 import { DateTime } from '@/components/date';
 import { DisplayId } from '@/components/display';
 import { ListColumnHeader, ListTable } from '@/features/milo';
+import { ProjectDeletingFor, ProjectPhaseBadge, projectPhaseFilter } from '@/features/project';
+import { type ProjectPhase, withProjectPhase } from '@/features/project/lib/project-deletion';
 import { type GqlProject, useOrgProjectListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { createColumnHelper } from '@/utils/table';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { createColumnHelper } from '@tanstack/react-table';
+import { useMemo } from 'react';
 import { Link } from 'react-router';
 
 export const handle = {
@@ -20,13 +23,19 @@ export const meta: Route.MetaFunction = ({ matches }) => {
   return metaObject(`Projects - ${organizationName}`);
 };
 
-const columnHelper = createColumnHelper<GqlProject>();
+type ProjectListRow = GqlProject & { phase: ProjectPhase };
+
+const columnHelper = createColumnHelper<ProjectListRow>();
 
 export default function Page() {
   const orgData = useOrganizationDetailData();
   const orgName = orgData.metadata?.name ?? '';
 
   const tableQuery = useOrgProjectListQuery(orgName);
+  const projects = useMemo(
+    () => (tableQuery.data?.items ?? []).map(withProjectPhase),
+    [tableQuery.data]
+  );
 
   const columns = [
     columnHelper.accessor('name', {
@@ -42,6 +51,15 @@ export default function Page() {
       header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
       cell: ({ getValue }) => <DisplayId value={getValue() ?? ''} />,
     }),
+    columnHelper.accessor('phase', {
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
+      cell: ({ getValue }) => <ProjectPhaseBadge phase={getValue()} />,
+    }),
+    columnHelper.accessor('deletionTimestamp', {
+      id: 'deletingFor',
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Deleting for`} />,
+      cell: ({ getValue }) => <ProjectDeletingFor deletionTimestamp={getValue()} />,
+    }),
     columnHelper.accessor('createdAt', {
       id: 'createdAt',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Created`} />,
@@ -52,7 +70,7 @@ export default function Page() {
   return (
     <ListTable
       loading={tableQuery.isLoading}
-      data={tableQuery.data?.items ?? []}
+      data={projects}
       columns={columns}
       pageSize={50}
       getRowId={(row) => row.name}
@@ -60,6 +78,7 @@ export default function Page() {
       inset="tab"
       searchPlaceholder={t`Search projects...`}
       emptyMessage={t`No projects found.`}
+      filters={[projectPhaseFilter(t`Status`)]}
       searchFn={(row, search) => {
         const q = search.trim().toLowerCase();
         if (!q) return true;

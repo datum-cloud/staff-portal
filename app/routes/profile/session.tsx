@@ -6,13 +6,13 @@ import { useApp } from '@/providers/app.provider';
 import { useDeleteSessionMutation, useSessionListQuery } from '@/resources/request/client';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { metaObject } from '@/utils/helpers';
+import { createColumnHelper } from '@/utils/table';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session } from '@openapi/identity.miloapis.com/v1alpha1';
-import { createColumnHelper } from '@tanstack/react-table';
 import { useState } from 'react';
 
 export const handle = {

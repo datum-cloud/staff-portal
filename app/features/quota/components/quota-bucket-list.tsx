@@ -3,6 +3,7 @@ import { DialogForm } from '@/components/dialog';
 import { TableCard } from '@/features/milo';
 import { type GqlQuotaBucket, type GqlQuotaBucketList } from '@/modules/graphql/quota';
 import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
+import { type ColumnDef } from '@/utils/table';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { ActionItem } from '@datum-cloud/datum-ui/data-table';
 import { Form } from '@datum-cloud/datum-ui/form';
@@ -13,7 +14,6 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisQuotaV1Alpha1ResourceGrant } from '@openapi/quota.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
-import { type ColumnDef } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
 import z from 'zod';
 
