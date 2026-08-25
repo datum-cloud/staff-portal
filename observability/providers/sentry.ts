@@ -1,3 +1,4 @@
+import { createBeforeSend } from '../../app/modules/sentry';
 import { BaseProvider } from './base';
 import * as Sentry from '@sentry/react-router';
 
@@ -17,6 +18,10 @@ export class SentryProvider extends BaseProvider {
   private exportErrorCount = 0;
   private readonly MAX_ERRORS = 5;
   private readonly CIRCUIT_BREAKER_TIMEOUT = 30000; // 30 seconds
+
+  // Shared reporting policy (filter + scrub + fingerprint), identical to the
+  // browser client. Wrapped below by the circuit breaker.
+  private readonly reportingPolicy = createBeforeSend();
 
   // Sentry-specific error patterns
   private readonly errorPatterns = [
@@ -130,7 +135,8 @@ export class SentryProvider extends BaseProvider {
       }
 
       try {
-        return event;
+        // Apply the shared filter/scrub/fingerprint policy before sending.
+        return this.reportingPolicy(event, hint);
       } catch (error) {
         this.handleBeforeSendError(error);
         return null;
