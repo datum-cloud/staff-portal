@@ -6,8 +6,8 @@ import { ListColumnHeader, ListPage, ListTable } from '@/features/milo';
 import { useAllProjectSuspensionsQuery } from '@/resources/request/client';
 import { suspendedProjectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { createColumnHelper } from '@/utils/table';
 import { t } from '@lingui/core/macro';
-import { createColumnHelper } from '@tanstack/react-table';
 import { useMemo } from 'react';
 
 export const meta: Route.MetaFunction = () => {
