@@ -170,8 +170,9 @@ export const projectSuspensionForProjectListQuery = async (projectName: string) 
 
 /**
  * Lists every ProjectSuspension across all projects (ProjectSuspension is
- * cluster-scoped) — for the operator-wide suspended-projects view. Callers
- * filter to `status.phase === 'Active'` since phase is not a selectable field.
+ * cluster-scoped) — joined into the Projects list so a suspended project shows
+ * a `Suspended` status. Callers filter to `status.phase === 'Active'` since
+ * phase is not a selectable field.
  */
 export const projectSuspensionListQuery = async () => {
   const response = await listResourcemanagerMiloapisComV1Alpha1ProjectSuspension({});

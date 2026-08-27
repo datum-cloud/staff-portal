@@ -6,7 +6,7 @@ import {
   type BreadcrumbItem,
 } from '@/components/breadcrumb';
 import { DetailShell, type EntityTab } from '@/features/milo';
-import { isProjectDeleting } from '@/features/project/lib/project-deletion';
+import { isProjectDeleting } from '@/features/project/lib/project-phase';
 import { useEnv } from '@/hooks';
 import { authenticator } from '@/modules/auth';
 import { usePlugins } from '@/modules/plugins/client/use-plugins';
@@ -179,6 +179,11 @@ export default function Layout() {
       label: t`Secrets`,
       href: projectRoutes.secret.list(projectName),
       icon: TAB_ICONS.secrets,
+    },
+    {
+      label: t`Email Activity`,
+      href: projectRoutes.emailActivity(projectName),
+      icon: ENTITY_ICONS.emailActivity,
     },
     {
       label: t`Activity`,

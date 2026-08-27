@@ -8,7 +8,7 @@ import {
   projectSuspensionForProjectListQuery,
   projectSuspensionListQuery,
 } from '../apis/project.api';
-import { isProjectDeleting } from '@/features/project/lib/project-deletion';
+import { isProjectDeleting } from '@/features/project/lib/project-phase';
 import { listAllProjects, listProjects } from '@/modules/graphql/projects';
 import { ListQueryParams } from '@/resources/schemas';
 import type { ComMiloapisResourcemanagerV1Alpha1Project } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
@@ -54,7 +54,7 @@ export const useProjectSuspensionsQuery = (projectName: string) => {
   });
 };
 
-/** Every ProjectSuspension across all projects — for the operator suspended-projects view. */
+/** Every ProjectSuspension across all projects — joined into the Projects list for the Suspended status. */
 export const useAllProjectSuspensionsQuery = () => {
   return useQuery({
     queryKey: projectQueryKeys.suspensionsAll(),

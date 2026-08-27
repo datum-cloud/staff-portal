@@ -43,6 +43,7 @@ export const orgRoutes = {
 export const projectRoutes = {
   list: () => '/customers/projects',
   detail: (projectName: string) => `/customers/projects/${projectName}`,
+  emailActivity: (projectName: string) => `/customers/projects/${projectName}/email-activity`,
   quota: {
     usage: (projectName: string) => `/customers/projects/${projectName}/quotas/usage`,
     grant: (projectName: string) => `/customers/projects/${projectName}/quotas/grants`,
@@ -128,14 +129,6 @@ export const fraudRoutes = {
     detail: (name: string) => `/customers/fraud/providers/${name}`,
   },
   policy: () => '/customers/fraud/policy',
-} as const;
-
-// Customers → Suspended Projects. Detail is keyed by the ProjectSuspension's
-// metadata.name (unique per suspension), not the project name.
-export const suspendedProjectRoutes = {
-  list: () => '/customers/suspended-projects',
-  detail: (name: string) => `/customers/suspended-projects/${name}`,
-  emailActivity: (name: string) => `/customers/suspended-projects/${name}/email-activity`,
 } as const;
 
 // ───────────────────────────────── Marketing (/marketing) ─────────────────────────────────
@@ -251,7 +244,6 @@ export const routes = {
   domains: domainRoutes,
   billingAccounts: billingAccountRoutes,
   fraud: fraudRoutes,
-  suspendedProjects: suspendedProjectRoutes,
 
   // Marketing
   contacts: contactRoutes,

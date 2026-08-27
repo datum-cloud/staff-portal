@@ -1,7 +1,7 @@
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import type { FilterGroupConfig } from '@/features/milo';
-import type { ProjectPhase } from '@/features/project/lib/project-deletion';
+import type { ProjectPhase } from '@/features/project/lib/project-phase';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 
 export function ProjectPhaseBadge({ phase }: { phase: ProjectPhase }) {
@@ -36,6 +36,7 @@ export function projectPhaseFilter(label: string): FilterGroupConfig {
     label,
     options: [
       { value: 'Deleting', label: <BadgeState state="deleting" /> },
+      { value: 'Suspended', label: <BadgeState state="Suspended" /> },
       { value: 'Ready', label: <BadgeState state="Ready" /> },
       { value: 'Pending', label: <BadgeState state="Pending" /> },
     ],

@@ -1,6 +1,6 @@
 export const PROJECT_RESOURCE_CLEANUP = 'ResourceCleanup';
 
-export type ProjectPhase = 'Deleting' | 'Ready' | 'Pending';
+export type ProjectPhase = 'Deleting' | 'Suspended' | 'Ready' | 'Pending';
 
 type ConditionLike = {
   type?: string;
@@ -37,8 +37,18 @@ export function getResourceCleanupMessage(
   return fromCondition || null;
 }
 
-export function getProjectPhase(project: ProjectDeletionSource | null | undefined): ProjectPhase {
+/**
+ * Suspension lives on a separate `ProjectSuspension` resource, not on the
+ * project object, so callers that know a project is suspended pass it in.
+ * Precedence: a project actively being deleted shows `Deleting` even if it also
+ * carries a suspension (deletion is the more terminal, actionable state).
+ */
+export function getProjectPhase(
+  project: ProjectDeletionSource | null | undefined,
+  opts?: { suspended?: boolean }
+): ProjectPhase {
   if (isProjectDeleting(project)) return 'Deleting';
+  if (opts?.suspended) return 'Suspended';
 
   if (project?.state === 'True') return 'Ready';
   const ready = project?.status?.conditions?.find((condition) => condition.type === 'Ready');
@@ -48,7 +58,8 @@ export function getProjectPhase(project: ProjectDeletionSource | null | undefine
 }
 
 export function withProjectPhase<T extends ProjectDeletionSource>(
-  project: T
+  project: T,
+  opts?: { suspended?: boolean }
 ): T & { phase: ProjectPhase } {
-  return { ...project, phase: getProjectPhase(project) };
+  return { ...project, phase: getProjectPhase(project, opts) };
 }

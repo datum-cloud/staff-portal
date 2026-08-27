@@ -109,6 +109,7 @@ export default [
               route('grants', 'routes/customer/project/detail/quota/grant.tsx'),
             ]),
             route('secrets', 'routes/customer/project/detail/secret.tsx'),
+            route('email-activity', 'routes/customer/project/detail/email-activity.tsx'),
             route('plugins/:slug/*', 'routes/customer/project/detail/plugins.tsx'),
           ]
         ),
@@ -155,20 +156,6 @@ export default [
         ]),
         route('policy', 'routes/customer/fraud/policy.tsx'),
         route(':evalName', 'routes/customer/fraud/detail/index.tsx'),
-      ]),
-
-      // Suspended Projects (operator view — #623)
-      route('suspended-projects', 'routes/customer/suspended-project/layout.tsx', [
-        index('routes/customer/suspended-project/index.tsx'),
-        route(
-          ':projectName',
-          'routes/customer/suspended-project/detail/layout.tsx',
-          { id: 'suspended-project-detail' },
-          [
-            index('routes/customer/suspended-project/detail/index.tsx'),
-            route('email-activity', 'routes/customer/suspended-project/detail/email-activity.tsx'),
-          ]
-        ),
       ]),
     ]),
 

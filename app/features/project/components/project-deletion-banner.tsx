@@ -2,7 +2,7 @@ import { DateTime } from '@/components/date';
 import {
   getResourceCleanupMessage,
   isProjectDeleting,
-} from '@/features/project/lib/project-deletion';
+} from '@/features/project/lib/project-phase';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { Alert, AlertDescription, AlertTitle } from '@datum-cloud/datum-ui/alert';
 import { Trans } from '@lingui/react/macro';

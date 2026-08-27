@@ -3,7 +3,7 @@ import {
   getResourceCleanupMessage,
   isProjectDeleting,
   withProjectPhase,
-} from './project-deletion';
+} from './project-phase';
 import { describe, expect, it } from 'bun:test';
 
 describe('isProjectDeleting', () => {
