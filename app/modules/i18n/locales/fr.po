@@ -355,7 +355,7 @@ msgid "Approval"
 msgstr ""
 
 #: app/routes/admin/service-catalog/detail/approvals.tsx:21
-#: app/routes/admin/service-catalog/detail/layout.tsx:50
+#: app/routes/admin/service-catalog/detail/layout.tsx:74
 msgid "Approvals"
 msgstr ""
 
@@ -759,7 +759,7 @@ msgid "Consumer Project"
 msgstr ""
 
 #: app/routes/admin/service-catalog/detail/consumers.tsx:28
-#: app/routes/admin/service-catalog/detail/layout.tsx:43
+#: app/routes/admin/service-catalog/detail/layout.tsx:67
 msgid "Consumers"
 msgstr ""
 
@@ -1230,7 +1230,7 @@ msgstr ""
 msgid "Deny this consumer's access request. Optionally add a note."
 msgstr ""
 
-#: app/routes/admin/service-catalog/detail/index.tsx:134
+#: app/routes/admin/service-catalog/detail/index.tsx:169
 msgid "Dependencies:"
 msgstr ""
 
@@ -1679,7 +1679,7 @@ msgstr ""
 msgid "Failed to load service catalog."
 msgstr ""
 
-#: app/routes/admin/service-catalog/detail/index.tsx:72
+#: app/routes/admin/service-catalog/detail/index.tsx:107
 msgid "Failed to load service configurations."
 msgstr ""
 
@@ -1857,7 +1857,7 @@ msgid "Fully onboarded"
 msgstr ""
 
 #: app/features/service-catalog/components/details-card.tsx:54
-#: app/routes/admin/service-catalog/detail/index.tsx:108
+#: app/routes/admin/service-catalog/detail/index.tsx:143
 #: app/routes/admin/service-catalog/index.tsx:177
 msgid "Gated by Provider"
 msgstr ""
@@ -2915,7 +2915,7 @@ msgstr ""
 #: app/routes/admin/group/detail/index.tsx:17
 #: app/routes/admin/group/detail/layout.tsx:35
 #: app/routes/admin/offer/detail.tsx:372
-#: app/routes/admin/service-catalog/detail/layout.tsx:37
+#: app/routes/admin/service-catalog/detail/layout.tsx:61
 #: app/routes/customer/organization/detail/layout.tsx:68
 #: app/routes/customer/project/detail/layout.tsx:138
 #: app/routes/customer/user/detail/layout.tsx:36
@@ -2928,7 +2928,7 @@ msgstr ""
 msgid "Owner"
 msgstr ""
 
-#: app/routes/admin/service-catalog/detail/index.tsx:126
+#: app/routes/admin/service-catalog/detail/index.tsx:161
 msgid "Owner:"
 msgstr ""
 
@@ -3437,7 +3437,7 @@ msgstr ""
 #: app/features/dashboard/components/pending-approvals-widget.tsx:80
 #: app/features/dashboard/components/quota-utilization-widget.tsx:113
 #: app/routes/admin/service-catalog/detail/approvals.tsx:134
-#: app/routes/admin/service-catalog/detail/index.tsx:79
+#: app/routes/admin/service-catalog/detail/index.tsx:114
 #: app/routes/admin/service-catalog/index.tsx:143
 msgid "Retry"
 msgstr ""
@@ -4437,7 +4437,7 @@ msgstr ""
 msgid "Yes — new accounts use this Offer"
 msgstr ""
 
-#: app/routes/admin/service-catalog/detail/index.tsx:70
+#: app/routes/admin/service-catalog/detail/index.tsx:105
 msgid "You do not have permission to view service configurations."
 msgstr ""
 

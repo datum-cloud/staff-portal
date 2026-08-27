@@ -92,6 +92,10 @@ export function specFromProviderPortalPlugin(
     contentSecurityPolicy: Array.isArray(s.contentSecurityPolicy)
       ? s.contentSecurityPolicy
       : undefined,
+    serviceRef:
+      typeof s.serviceRef?.name === 'string' && s.serviceRef.name
+        ? { name: s.serviceRef.name }
+        : undefined,
   };
 }
 

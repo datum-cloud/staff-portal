@@ -229,6 +229,7 @@ export default [
             index('routes/admin/service-catalog/detail/index.tsx'),
             route('consumers', 'routes/admin/service-catalog/detail/consumers.tsx'),
             route('approvals', 'routes/admin/service-catalog/detail/approvals.tsx'),
+            route('plugins/:slug/*', 'routes/admin/service-catalog/detail/plugins.tsx'),
           ]
         ),
       ]),

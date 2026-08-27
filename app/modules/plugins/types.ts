@@ -88,6 +88,15 @@ export interface PortalPluginSpec {
   visibility: PluginVisibility;
   /** Rarely needed; assets are same-origin proxied. */
   contentSecurityPolicy?: string[];
+  /**
+   * The `Service` (services.miloapis.com) this plugin belongs to, e.g.
+   * `{ name: "compute" }`. Set by service-catalog's `ServiceConfiguration`
+   * fan-out from the same `spec.serviceRef.name` it already resolves the
+   * `Service` from. Anchors `portal.page/service` extensions to the right
+   * `/admin/service-catalog/:name` detail page. Absent for plugins that
+   * predate this field or have no service-scoped pages.
+   */
+  serviceRef?: { name: string };
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -98,6 +107,7 @@ export const EXTENSION_NAV_PLATFORM = 'portal.nav/platform';
 export const EXTENSION_PAGE_PLATFORM = 'portal.page/platform';
 export const EXTENSION_RESOURCE_PLATFORM = 'portal.resource/platform';
 export const EXTENSION_PAGE_PROJECT = 'portal.page/project';
+export const EXTENSION_PAGE_SERVICE = 'portal.page/service';
 
 /** The v1 extension types the host recognizes and renders. */
 export const KNOWN_EXTENSION_TYPES = [
@@ -105,6 +115,7 @@ export const KNOWN_EXTENSION_TYPES = [
   EXTENSION_PAGE_PLATFORM,
   EXTENSION_RESOURCE_PLATFORM,
   EXTENSION_PAGE_PROJECT,
+  EXTENSION_PAGE_SERVICE,
 ] as const;
 
 export type KnownExtensionType = (typeof KNOWN_EXTENSION_TYPES)[number];
@@ -210,6 +221,35 @@ export interface PageProjectExtension {
 }
 
 /**
+ * `portal.page/service` — a tab rendered on the plugin's own `Service`'s
+ * detail page (`/admin/service-catalog/:name/plugins/:slug/*`), alongside the
+ * host's own Overview/Consumers/Approvals tabs. Requires the plugin's
+ * `PortalPluginSpec.serviceRef` to match the `:name` in the URL — a plugin
+ * with no `serviceRef` never renders one of these regardless of what its
+ * manifest declares, since there'd be no service detail page to anchor it to.
+ *
+ * `path: ""` is reserved: instead of adding a tab, that extension *replaces*
+ * the host's own built-in Overview content (still at `/admin/service-catalog/:name`,
+ * not the plugin mount route) — see `ServiceOverviewOverride` on the client
+ * and the Overview route's loader. At most one such extension is honored per
+ * service; if more than one plugin declares `path: ""` for the same service,
+ * the host picks one arbitrarily rather than erroring.
+ */
+export interface PageServiceProperties {
+  /** Tab label shown on the service detail page. */
+  label: string;
+  /** Path relative to the mount point; supports params and nesting. */
+  path: string;
+  component: CodeRef;
+}
+
+export interface PageServiceExtension {
+  type: typeof EXTENSION_PAGE_SERVICE;
+  properties: PageServiceProperties;
+  requirements?: PluginExtensionRequirements;
+}
+
+/**
  * An extension type the host does not recognize. Tolerated, not fatal: the
  * registry records it and excludes it from rendering. The `{type, properties,
  * requirements}` envelope keeps growth additive.
@@ -224,7 +264,8 @@ export type KnownPluginExtension =
   | NavPlatformExtension
   | PagePlatformExtension
   | ResourcePlatformExtension
-  | PageProjectExtension;
+  | PageProjectExtension
+  | PageServiceExtension;
 
 export type PluginExtension = KnownPluginExtension | UnknownExtension;
 

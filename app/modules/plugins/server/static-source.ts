@@ -6,7 +6,10 @@
  *   iteration.
  * - `PORTAL_PLUGINS_JSON=[…]` — a spec-shaped array, for when a dev plugin
  *   needs richer options the simple syntax doesn't expose (a custom
- *   `manifestPath`, `caBundle`, or `visibility` overrides). JSON entries take
+ *   `manifestPath`, `caBundle`, `visibility` overrides, or — notably —
+ *   `serviceRef`, needed to see a `portal.page/service` tab locally: the
+ *   simple `PORTAL_PLUGINS` syntax has no way to set it, so a plugin loaded
+ *   that way will never match `getPluginsForService()`). JSON entries take
  *   precedence over the simple syntax on slug collision.
  *
  * Synthesized entries run the identical manifest pipeline as any future
@@ -115,6 +118,14 @@ const portalPluginJsonEntrySchema = z.object({
       featureFlag: z.string().optional(),
     })
     .optional(),
+  // Matches ProviderPortalPlugin.spec.serviceRef (see types.ts) — set this to
+  // exercise a `portal.page/service` tab against
+  // /admin/service-catalog/:name locally.
+  serviceRef: z
+    .object({
+      name: z.string().min(1),
+    })
+    .optional(),
 });
 
 const portalPluginsJsonSchema = z.array(portalPluginJsonEntrySchema);
@@ -141,6 +152,7 @@ function jsonEntryToSpec(entry: PortalPluginJsonEntry): PortalPluginSpec {
       entitlement: entry.visibility?.entitlement ?? 'None',
       featureFlag: entry.visibility?.featureFlag,
     },
+    serviceRef: entry.serviceRef,
   };
 }
 

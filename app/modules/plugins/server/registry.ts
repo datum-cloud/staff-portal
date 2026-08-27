@@ -91,6 +91,15 @@ export class PluginRegistry {
     return entry && isReady(entry.status) ? entry : undefined;
   }
 
+  /**
+   * Servable plugins whose `spec.serviceRef.name` matches `serviceName` —
+   * the plugins eligible to contribute `portal.page/service` tabs to that
+   * service's `/admin/service-catalog/:name` detail page.
+   */
+  getPluginsForService(serviceName: string): PluginRegistryEntry[] {
+    return this.getPlugins().filter((entry) => entry.spec.serviceRef?.name === serviceName);
+  }
+
   private resolveMerged(slug: string): PluginRegistryEntry | undefined {
     for (const source of SOURCE_PRECEDENCE) {
       const entry = this.sourceMap(source).get(slug);
