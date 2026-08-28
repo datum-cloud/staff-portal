@@ -3,17 +3,36 @@ import { loader } from './detail/layout';
 import { extractDataFromMatches } from '@/utils/helpers';
 import { useRouteLoaderData } from 'react-router';
 
-// Export the loader type for other files to use
-export type ServiceDetailLoaderData = Awaited<ReturnType<typeof loader>>;
+// Full loader return type, for other files that need more than `.service`.
+type ServiceDetailRouteData = Awaited<ReturnType<typeof loader>>;
 
-// Export a typed hook for other files to use
+// Export the loader type for other files to use
+export type ServiceDetailLoaderData = ServiceDetailRouteData['service'];
+
+// Export a typed hook for other files to use. The layout loader also returns
+// `plugins` (for the tab strip and the Overview override — see `usePlugins`
+// below), but every other consumer of this route's data only ever wanted the
+// `Service` resource itself, so this unwraps `.service` to keep those call
+// sites unchanged.
 export function useServiceDetailData() {
-  return useRouteLoaderData('service-catalog-detail') as ServiceDetailLoaderData;
+  const data = useRouteLoaderData('service-catalog-detail') as ServiceDetailRouteData;
+  return data.service;
+}
+
+// Every Ready plugin whose `serviceRef` matches this Service — see
+// `app/routes/admin/service-catalog/detail/index.tsx`'s Overview-override
+// check and `layout.tsx`'s tab strip.
+export function usePlugins() {
+  const data = useRouteLoaderData('service-catalog-detail') as ServiceDetailRouteData;
+  return data.plugins;
 }
 
 // Helper function to extract service metadata for meta functions
 export function getServiceDetailMetadata(matches: any[]) {
-  const data = extractDataFromMatches<ServiceDetailLoaderData>(matches, 'service-catalog-detail');
+  const data = extractDataFromMatches<{ service: ServiceDetailLoaderData }>(
+    matches,
+    'service-catalog-detail'
+  )?.service;
   return {
     service: data,
     displayName: data?.spec?.displayName ?? data?.metadata?.name ?? '',

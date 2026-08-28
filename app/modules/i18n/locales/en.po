@@ -355,7 +355,7 @@ msgid "Approval"
 msgstr "Approval"
 
 #: app/routes/admin/service-catalog/detail/approvals.tsx:21
-#: app/routes/admin/service-catalog/detail/layout.tsx:50
+#: app/routes/admin/service-catalog/detail/layout.tsx:74
 msgid "Approvals"
 msgstr "Approvals"
 
@@ -759,7 +759,7 @@ msgid "Consumer Project"
 msgstr "Consumer Project"
 
 #: app/routes/admin/service-catalog/detail/consumers.tsx:28
-#: app/routes/admin/service-catalog/detail/layout.tsx:43
+#: app/routes/admin/service-catalog/detail/layout.tsx:67
 msgid "Consumers"
 msgstr "Consumers"
 
@@ -1230,7 +1230,7 @@ msgstr "Deny Request"
 msgid "Deny this consumer's access request. Optionally add a note."
 msgstr "Deny this consumer's access request. Optionally add a note."
 
-#: app/routes/admin/service-catalog/detail/index.tsx:134
+#: app/routes/admin/service-catalog/detail/index.tsx:169
 msgid "Dependencies:"
 msgstr "Dependencies:"
 
@@ -1679,7 +1679,7 @@ msgstr "Failed to load DNS record status"
 msgid "Failed to load service catalog."
 msgstr "Failed to load service catalog."
 
-#: app/routes/admin/service-catalog/detail/index.tsx:72
+#: app/routes/admin/service-catalog/detail/index.tsx:107
 msgid "Failed to load service configurations."
 msgstr "Failed to load service configurations."
 
@@ -1857,7 +1857,7 @@ msgid "Fully onboarded"
 msgstr "Fully onboarded"
 
 #: app/features/service-catalog/components/details-card.tsx:54
-#: app/routes/admin/service-catalog/detail/index.tsx:108
+#: app/routes/admin/service-catalog/detail/index.tsx:143
 #: app/routes/admin/service-catalog/index.tsx:177
 msgid "Gated by Provider"
 msgstr "Gated by Provider"
@@ -2915,7 +2915,7 @@ msgstr "Origin"
 #: app/routes/admin/group/detail/index.tsx:17
 #: app/routes/admin/group/detail/layout.tsx:35
 #: app/routes/admin/offer/detail.tsx:372
-#: app/routes/admin/service-catalog/detail/layout.tsx:37
+#: app/routes/admin/service-catalog/detail/layout.tsx:61
 #: app/routes/customer/organization/detail/layout.tsx:68
 #: app/routes/customer/project/detail/layout.tsx:138
 #: app/routes/customer/user/detail/layout.tsx:36
@@ -2928,7 +2928,7 @@ msgstr "Overview"
 msgid "Owner"
 msgstr "Owner"
 
-#: app/routes/admin/service-catalog/detail/index.tsx:126
+#: app/routes/admin/service-catalog/detail/index.tsx:161
 msgid "Owner:"
 msgstr "Owner:"
 
@@ -3437,7 +3437,7 @@ msgstr "Retired"
 #: app/features/dashboard/components/pending-approvals-widget.tsx:80
 #: app/features/dashboard/components/quota-utilization-widget.tsx:113
 #: app/routes/admin/service-catalog/detail/approvals.tsx:134
-#: app/routes/admin/service-catalog/detail/index.tsx:79
+#: app/routes/admin/service-catalog/detail/index.tsx:114
 #: app/routes/admin/service-catalog/index.tsx:143
 msgid "Retry"
 msgstr "Retry"
@@ -4437,7 +4437,7 @@ msgstr "Yes"
 msgid "Yes — new accounts use this Offer"
 msgstr "Yes — new accounts use this Offer"
 
-#: app/routes/admin/service-catalog/detail/index.tsx:70
+#: app/routes/admin/service-catalog/detail/index.tsx:105
 msgid "You do not have permission to view service configurations."
 msgstr "You do not have permission to view service configurations."
 

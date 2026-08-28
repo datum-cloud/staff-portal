@@ -32,6 +32,11 @@ export function getPlugin(slug: string): PluginRegistryEntry | undefined {
   return pluginRegistry.getPlugin(slug);
 }
 
+/** Servable plugins whose `spec.serviceRef.name` matches `serviceName`. */
+export function getPluginsForService(serviceName: string): PluginRegistryEntry[] {
+  return pluginRegistry.getPluginsForService(serviceName);
+}
+
 let initialized = false;
 
 /**

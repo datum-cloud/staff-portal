@@ -116,6 +116,20 @@ spec:
                         fronting baseURL. Omit when the origin's certificate is
                         trusted by the system CA store, or the origin is plain
                         HTTP (e.g. local dev sources).
+                serviceRef:
+                  type: object
+                  description: |-
+                    The Service (services.miloapis.com) this plugin belongs
+                    to. Set from the same ServiceConfiguration.spec.serviceRef
+                    the fan-out already resolves the Service from. Anchors
+                    this plugin's portal.page/service extensions to the
+                    matching /admin/service-catalog/:name detail page.
+                  properties:
+                    name:
+                      type: string
+                      minLength: 1
+                  required:
+                    - name
             status:
               type: object
               description: Observed state, written by the portal server.

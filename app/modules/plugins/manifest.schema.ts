@@ -16,6 +16,7 @@ import {
   EXTENSION_NAV_PLATFORM,
   EXTENSION_PAGE_PLATFORM,
   EXTENSION_PAGE_PROJECT,
+  EXTENSION_PAGE_SERVICE,
   EXTENSION_RESOURCE_PLATFORM,
   KNOWN_EXTENSION_TYPES,
   type PluginManifest,
@@ -68,6 +69,16 @@ const pageProjectExtensionSchema = z.object({
   requirements: requirementsSchema,
 });
 
+const pageServiceExtensionSchema = z.object({
+  type: z.literal(EXTENSION_PAGE_SERVICE),
+  properties: z.object({
+    label: z.string().min(1),
+    path: z.string(),
+    component: codeRefSchema,
+  }),
+  requirements: requirementsSchema,
+});
+
 const resourcePlatformExtensionSchema = z.object({
   type: z.literal(EXTENSION_RESOURCE_PLATFORM),
   properties: z.object({
@@ -105,6 +116,7 @@ const extensionSchema = z.union([
   navPlatformExtensionSchema,
   pagePlatformExtensionSchema,
   pageProjectExtensionSchema,
+  pageServiceExtensionSchema,
   resourcePlatformExtensionSchema,
   unknownExtensionSchema,
 ]);

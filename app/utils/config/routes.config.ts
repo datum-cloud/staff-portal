@@ -193,6 +193,14 @@ export const serviceCatalogRoutes = {
   detail: (name: string) => `/admin/service-catalog/${name}`,
   consumers: (name: string) => `/admin/service-catalog/${name}/consumers`,
   approvals: (name: string) => `/admin/service-catalog/${name}/approvals`,
+  // Service-scoped plugin mount (`portal.page/service` extensions) — see
+  // app/routes/admin/service-catalog/detail/plugins.tsx. `splat` is whatever
+  // path the plugin's own page extension declared.
+  plugin: {
+    mount: (name: string, slug: string) => `/admin/service-catalog/${name}/plugins/${slug}`,
+    page: (name: string, slug: string, splat: string) =>
+      `/admin/service-catalog/${name}/plugins/${slug}/${splat}`,
+  },
 } as const;
 
 // Admin → Offers (sibling of Service Catalog)

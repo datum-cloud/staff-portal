@@ -21,10 +21,12 @@ import {
   EXTENSION_NAV_PLATFORM,
   EXTENSION_PAGE_PLATFORM,
   EXTENSION_PAGE_PROJECT,
+  EXTENSION_PAGE_SERVICE,
   EXTENSION_RESOURCE_PLATFORM,
   type NavPlatformExtension,
   type PagePlatformExtension,
   type PageProjectExtension,
+  type PageServiceExtension,
   type PluginExtension,
   type PublicPlugin,
   type ResourcePlatformExtension,
@@ -51,6 +53,12 @@ export interface ProjectPageMatch {
   params: Record<string, string | undefined>;
 }
 
+/** Result of matching a splat path against the plugin's service-page extensions. */
+export interface ServicePageMatch {
+  page: PageServiceExtension;
+  params: Record<string, string | undefined>;
+}
+
 // The manifest is schema-validated server-side before it reaches the browser
 // (see app/modules/plugins/manifest.schema.ts), so these guards only narrow the
 // discriminated union — they are not defending against malformed data.
@@ -66,6 +74,9 @@ function isResourceExtension(ext: PluginExtension): ext is ResourcePlatformExten
 function isProjectPageExtension(ext: PluginExtension): ext is PageProjectExtension {
   return ext.type === EXTENSION_PAGE_PROJECT;
 }
+function isServicePageExtension(ext: PluginExtension): ext is PageServiceExtension {
+  return ext.type === EXTENSION_PAGE_SERVICE;
+}
 
 /** Extract the `portal.page/platform` extensions from a manifest. */
 export function getPageExtensions(manifest: ClientPluginManifest): PagePlatformExtension[] {
@@ -75,6 +86,11 @@ export function getPageExtensions(manifest: ClientPluginManifest): PagePlatformE
 /** Extract the `portal.page/project` extensions from a manifest. */
 export function getProjectPageExtensions(manifest: ClientPluginManifest): PageProjectExtension[] {
   return manifest.extensions.filter(isProjectPageExtension);
+}
+
+/** Extract the `portal.page/service` extensions from a manifest. */
+export function getServicePageExtensions(manifest: ClientPluginManifest): PageServiceExtension[] {
+  return manifest.extensions.filter(isServicePageExtension);
 }
 
 /** Extract the `portal.nav/platform` extensions, sorted by `order` then title. */
@@ -108,6 +124,20 @@ export function normalizePagePath(path: string): string {
   return path.replace(/^\/+/, '').replace(/\/+$/, '');
 }
 
+/**
+ * Whether a `portal.page/service` extension is the reserved Overview
+ * override (see the `path: ""` convention on `PageServiceExtension` in
+ * `../types.ts`). Normalizes first so a plugin declaring `path: "/"` is
+ * treated identically to `path: ""` — the same as `normalizePagePath` +
+ * `matchRoutes` already treat them for actual route matching. Every call
+ * site that special-cases the override (the tab strip, the mount outlet,
+ * the Overview route's own lookup) should go through this rather than a raw
+ * `path === ''` check, so they can't silently disagree on edge cases.
+ */
+export function isOverviewOverrideExtension(ext: PageServiceExtension): boolean {
+  return normalizePagePath(ext.properties.path) === '';
+}
+
 /** Normalize the incoming splat into an absolute pathname for matching. */
 function normalizeSplat(splat: string): string {
   const trimmed = splat.replace(/^\/+/, '').replace(/\/+$/, '');
@@ -133,6 +163,14 @@ export function matchPluginProjectPage(
   pages: PageProjectExtension[],
   splat: string
 ): ProjectPageMatch | null {
+  return matchPages(pages, splat);
+}
+
+/** Same matching semantics as {@link matchPluginPage}, for `portal.page/service` extensions. */
+export function matchPluginServicePage(
+  pages: PageServiceExtension[],
+  splat: string
+): ServicePageMatch | null {
   return matchPages(pages, splat);
 }
 
