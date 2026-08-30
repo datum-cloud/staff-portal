@@ -1,3 +1,4 @@
+import { amberfloMeterApiName } from './amberflo-meter-api-name';
 import {
   buildBillingCycleWindows,
   selectBillingCycleWindow,
@@ -140,7 +141,7 @@ async function listMeterDefinitions(token: string): Promise<MeterDefinition[]> {
     if (!resp.ok) return [];
     const json = (await resp.json()) as {
       items?: {
-        metadata?: { uid?: string };
+        metadata?: { name?: string };
         spec?: {
           meterName?: string;
           displayName?: string;
@@ -152,7 +153,7 @@ async function listMeterDefinitions(token: string): Promise<MeterDefinition[]> {
     };
     return (json.items ?? [])
       .map((item) => ({
-        meterApiName: item.metadata?.uid ?? '',
+        meterApiName: amberfloMeterApiName(item.metadata?.name ?? ''),
         meterName: item.spec?.meterName ?? '',
         displayName: item.spec?.displayName ?? item.spec?.meterName ?? '',
         description: item.spec?.description?.trim() || undefined,
