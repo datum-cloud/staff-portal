@@ -3,25 +3,17 @@ import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
 import { DisplayText } from '@/components/display';
 import { PageHeader } from '@/components/page-header';
-import {
-  CreateNoteForm,
-  DomainDnsProviders,
-  DomainExpiration,
-  DomainStatusProbe,
-  NotesList,
-} from '@/features/domain';
+import { DomainDnsProviders, DomainExpiration, DomainStatusProbe } from '@/features/domain';
 import { SectionCard } from '@/features/milo';
+import { NotesCard } from '@/features/notes';
 import { authenticator } from '@/modules/auth';
-import { createGqlClient } from '@/modules/graphql/client';
-import { generateQueryOp } from '@/modules/graphql/generated';
-import type { UserSummary } from '@/modules/graphql/generated/schema';
-import { projectDomainDetailQuery, projectDomainNotesQuery } from '@/resources/request/server';
+import { projectDomainDetailQuery } from '@/resources/request/server';
 import { useProjectDetailData } from '@/routes/customer/project/shared';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { ComDatumapisNetworkingV1AlphaDomain } from '@openapi/networking.datumapis.com/v1alpha';
-import { useLoaderData, useRevalidator } from 'react-router';
+import { useLoaderData } from 'react-router';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const data = extractDataFromMatches<ComDatumapisNetworkingV1AlphaDomain>(matches);
@@ -37,57 +29,19 @@ export const handle = {
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const session = await authenticator.getSession(request);
 
-  const [data, notes] = await Promise.all([
-    projectDomainDetailQuery(
-      session?.accessToken ?? '',
-      params?.projectName ?? '',
-      params?.domainName ?? '',
-      params?.namespace as string
-    ),
-    projectDomainNotesQuery(
-      session?.accessToken ?? '',
-      params?.projectName ?? '',
-      params?.domainName ?? '',
-      params?.namespace as string
-    ).catch(() => null),
-  ]);
+  const data = await projectDomainDetailQuery(
+    session?.accessToken ?? '',
+    params?.projectName ?? '',
+    params?.domainName ?? '',
+    params?.namespace as string
+  );
 
-  const creatorIds = [
-    ...new Set(
-      (notes?.items ?? []).map((n) => n.spec?.creatorRef?.name).filter((id): id is string => !!id)
-    ),
-  ];
-
-  let userEmails: Record<string, string> = {};
-  if (creatorIds.length > 0) {
-    const client = createGqlClient({ type: 'global' });
-    const op = generateQueryOp({
-      userSummaries: [
-        { names: creatorIds },
-        { name: true, email: true, givenName: true, familyName: true },
-      ],
-    });
-    const result = await client.query(op.query, op.variables).toPromise();
-    const users: UserSummary[] = result.data?.userSummaries ?? [];
-    userEmails = Object.fromEntries(
-      users.map((u) => {
-        const fullName = [u.givenName, u.familyName].filter(Boolean).join(' ');
-        return [u.name, fullName || u.email || u.name];
-      })
-    );
-    // Fallback for any ids not returned
-    for (const id of creatorIds) {
-      if (!userEmails[id]) userEmails[id] = id;
-    }
-  }
-
-  return { data, notes, userEmails };
+  return { data };
 };
 
 export default function Page() {
   const { project } = useProjectDetailData();
-  const { data, notes, userEmails } = useLoaderData<typeof loader>();
-  const { revalidate } = useRevalidator();
+  const { data } = useLoaderData<typeof loader>();
 
   return (
     <div className="m-4 flex flex-col gap-1">
@@ -146,24 +100,16 @@ export default function Page() {
         />
       </SectionCard>
 
-      <SectionCard
+      <NotesCard
         className="mt-4"
-        title={<Trans>Notes</Trans>}
-        contentClassName="flex flex-col gap-3">
-        <NotesList
-          notes={notes}
-          projectName={project.metadata?.name ?? ''}
-          namespace={data?.metadata?.namespace ?? ''}
-          userEmails={userEmails}
-          onNoteDeleted={revalidate}
-        />
-        <CreateNoteForm
-          projectName={project.metadata?.name ?? ''}
-          namespace={data?.metadata?.namespace ?? ''}
-          domainName={data?.metadata?.name ?? ''}
-          onCreated={revalidate}
-        />
-      </SectionCard>
+        subject={{
+          apiGroup: 'networking.datumapis.com',
+          kind: 'Domain',
+          name: data?.metadata?.name ?? '',
+          namespace: data?.metadata?.namespace ?? '',
+        }}
+        scope={{ kind: 'project', projectName: project.metadata?.name ?? '' }}
+      />
     </div>
   );
 }

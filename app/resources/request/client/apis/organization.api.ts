@@ -11,7 +11,34 @@ import {
   listResourcemanagerMiloapisComV1Alpha1NamespacedOrganizationMembership,
   listResourcemanagerMiloapisComV1Alpha1Organization,
   listResourcemanagerMiloapisComV1Alpha1Project,
+  readResourcemanagerMiloapisComV1Alpha1Organization,
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
+
+/**
+ * Reads the business name for each org (from Organization.spec.contactInfo) and
+ * returns a name → businessName map. Org memberships only cache displayName/type,
+ * so this fills in business name for the contact's organizations view. Missing or
+ * failed reads are simply omitted from the map.
+ */
+export const organizationBusinessNamesQuery = async (
+  orgNames: string[]
+): Promise<Record<string, string>> => {
+  const unique = [...new Set(orgNames.filter(Boolean))];
+  const entries = await Promise.all(
+    unique.map(async (name) => {
+      try {
+        const response = await readResourcemanagerMiloapisComV1Alpha1Organization({
+          path: { name },
+        });
+        const businessName = response.data.data?.spec?.contactInfo?.businessName;
+        return businessName ? ([name, businessName] as const) : null;
+      } catch {
+        return null;
+      }
+    })
+  );
+  return Object.fromEntries(entries.filter((e): e is readonly [string, string] => e !== null));
+};
 
 export const orgListQuery = async (params?: ListQueryParams) => {
   const response = await listResourcemanagerMiloapisComV1Alpha1Organization({

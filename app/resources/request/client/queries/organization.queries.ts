@@ -1,4 +1,8 @@
-import { orgInvitationCreateMutation, orgInvitationDeleteMutation } from '../apis/organization.api';
+import {
+  orgInvitationCreateMutation,
+  orgInvitationDeleteMutation,
+  organizationBusinessNamesQuery,
+} from '../apis/organization.api';
 import {
   getOrganization,
   listAllOrganizations,
@@ -31,6 +35,18 @@ export const organizationQueryKeys = {
     list: (orgName: string, params?: ListQueryParams) =>
       ['organizations', orgName, 'members', 'list', params] as const,
   },
+  businessNames: (orgNames: string[]) =>
+    ['organizations', 'business-names', [...orgNames].sort()] as const,
+};
+
+/** Resolves business names for a set of orgs (not cached on the membership status). */
+export const useOrganizationBusinessNamesQuery = (orgNames: string[]) => {
+  return useQuery({
+    queryKey: organizationQueryKeys.businessNames(orgNames),
+    queryFn: () => organizationBusinessNamesQuery(orgNames),
+    enabled: orgNames.length > 0,
+    staleTime: 5 * 60 * 1000,
+  });
 };
 
 /** GraphQL-enriched org (company, onboarding, counts) for detail Overview / header. */
