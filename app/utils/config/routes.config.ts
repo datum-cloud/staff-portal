@@ -43,6 +43,7 @@ export const orgRoutes = {
 export const projectRoutes = {
   list: () => '/customers/projects',
   detail: (projectName: string) => `/customers/projects/${projectName}`,
+  emailActivity: (projectName: string) => `/customers/projects/${projectName}/email-activity`,
   quota: {
     usage: (projectName: string) => `/customers/projects/${projectName}/quotas/usage`,
     grant: (projectName: string) => `/customers/projects/${projectName}/quotas/grants`,

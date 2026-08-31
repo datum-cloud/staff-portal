@@ -109,6 +109,7 @@ export default [
               route('grants', 'routes/customer/project/detail/quota/grant.tsx'),
             ]),
             route('secrets', 'routes/customer/project/detail/secret.tsx'),
+            route('email-activity', 'routes/customer/project/detail/email-activity.tsx'),
             route('plugins/:slug/*', 'routes/customer/project/detail/plugins.tsx'),
           ]
         ),

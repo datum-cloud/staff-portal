@@ -4,8 +4,12 @@ import { DateTime } from '@/components/date';
 import { DisplayId } from '@/components/display';
 import { ListColumnHeader, ListTable } from '@/features/milo';
 import { ProjectDeletingFor, ProjectPhaseBadge, projectPhaseFilter } from '@/features/project';
-import { type ProjectPhase, withProjectPhase } from '@/features/project/lib/project-deletion';
-import { type GqlProject, useOrgProjectListQuery } from '@/resources/request/client';
+import { type ProjectPhase, withProjectPhase } from '@/features/project/lib/project-phase';
+import {
+  type GqlProject,
+  useAllProjectSuspensionsQuery,
+  useOrgProjectListQuery,
+} from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { createColumnHelper } from '@/utils/table';
@@ -32,9 +36,25 @@ export default function Page() {
   const orgName = orgData.metadata?.name ?? '';
 
   const tableQuery = useOrgProjectListQuery(orgName);
+
+  // Suspension lives on a separate resource; join by project name so a suspended
+  // project surfaces as a `Suspended` status here too.
+  const suspensionsQuery = useAllProjectSuspensionsQuery();
+  const suspendedProjectNames = useMemo(() => {
+    const set = new Set<string>();
+    for (const suspension of suspensionsQuery.data ?? []) {
+      const name = suspension.spec?.projectRef?.name;
+      if (name) set.add(name);
+    }
+    return set;
+  }, [suspensionsQuery.data]);
+
   const projects = useMemo(
-    () => (tableQuery.data?.items ?? []).map(withProjectPhase),
-    [tableQuery.data]
+    () =>
+      (tableQuery.data?.items ?? []).map((project) =>
+        withProjectPhase(project, { suspended: suspendedProjectNames.has(project.name) })
+      ),
+    [tableQuery.data, suspendedProjectNames]
   );
 
   const columns = [

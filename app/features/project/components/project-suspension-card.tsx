@@ -12,6 +12,7 @@ import { SectionCard } from '@/features/milo';
 import { projectQueryKeys, useProjectSuspensionsQuery } from '@/resources/request/client';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Form } from '@datum-cloud/datum-ui/form';
+import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import type {
@@ -123,9 +124,17 @@ export function ProjectSuspensionCard({ project, className }: Props) {
           </Trans>
         }>
         {isLoading ? (
-          <Text textColor="muted" size="sm">
-            <Trans>Loading…</Trans>
-          </Text>
+          <div className="rounded-lg border p-4" aria-busy="true">
+            <div className="flex items-start gap-3">
+              <Skeleton className="size-8 shrink-0 rounded-md" />
+              <div className="flex flex-1 flex-col gap-2">
+                <Skeleton className="h-4 w-40" />
+                <Skeleton className="h-3 w-full max-w-md" />
+                <Skeleton className="h-3 w-2/3" />
+              </div>
+              <Skeleton className="h-8 w-20 shrink-0 rounded-md" />
+            </div>
+          </div>
         ) : (
           <div className="flex flex-col gap-3">
             <ActionCard

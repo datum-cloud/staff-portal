@@ -22,7 +22,7 @@ msgid "(current)"
 msgstr ""
 
 #. placeholder {0}: active.length
-#: app/features/project/components/project-suspension-card.tsx:140
+#: app/features/project/components/project-suspension-card.tsx:149
 msgid "{0} active suspensions — the project stays suspended until all are lifted. Instances and served traffic are paused; data is preserved."
 msgstr ""
 
@@ -172,7 +172,7 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-#: app/routes/customer/project/index.tsx:143
+#: app/routes/customer/project/index.tsx:163
 msgid "Active billing account with a payment method"
 msgstr ""
 
@@ -199,7 +199,7 @@ msgstr ""
 #: app/routes/customer/organization/detail/activity/layout.tsx:5
 #: app/routes/customer/organization/detail/layout.tsx:87
 #: app/routes/customer/project/detail/activity/layout.tsx:5
-#: app/routes/customer/project/detail/layout.tsx:184
+#: app/routes/customer/project/detail/layout.tsx:189
 #: app/routes/customer/user/detail/activity/layout.tsx:5
 #: app/routes/customer/user/detail/layout.tsx:53
 #: app/routes/operation/activity/layout.tsx:13
@@ -474,7 +474,7 @@ msgstr ""
 #: app/routes/customer/organization/detail/layout.tsx:93
 #: app/routes/customer/project/detail/activity/audit-logs.tsx:14
 #: app/routes/customer/project/detail/activity/audit-logs.tsx:17
-#: app/routes/customer/project/detail/layout.tsx:190
+#: app/routes/customer/project/detail/layout.tsx:195
 #: app/routes/customer/user/detail/activity/audit-logs.tsx:14
 #: app/routes/customer/user/detail/activity/audit-logs.tsx:17
 #: app/routes/customer/user/detail/layout.tsx:58
@@ -505,8 +505,8 @@ msgid "Basic Authentication"
 msgstr ""
 
 #: app/features/project/components/project-billing-card.tsx:38
-#: app/routes/customer/project/index.tsx:133
-#: app/routes/customer/project/index.tsx:200
+#: app/routes/customer/project/index.tsx:153
+#: app/routes/customer/project/index.tsx:220
 msgid "Billing"
 msgstr ""
 
@@ -556,7 +556,7 @@ msgstr ""
 #: app/features/contact/components/contact-list.tsx:126
 #: app/features/feature-flags/components/feature-flag-list.tsx:229
 #: app/features/fraud/policy/policy-form.tsx:314
-#: app/features/project/components/project-suspension-card.tsx:84
+#: app/features/project/components/project-suspension-card.tsx:85
 #: app/features/quota/components/quota-bucket-list.tsx:171
 #: app/features/quota/components/quota-grant-list.tsx:162
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:39
@@ -591,7 +591,7 @@ msgstr ""
 msgid "Card"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:108
+#: app/features/project/components/project-suspension-card.tsx:109
 msgid "Case notes, report IDs, context…"
 msgstr ""
 
@@ -643,7 +643,7 @@ msgstr ""
 msgid "Cleanup finished and the project is no longer available."
 msgstr ""
 
-#: app/features/project/components/project-deletion-banner.tsx:40
+#: app/features/project/components/project-deletion-banner.tsx:37
 msgid "Cleanup is in progress. No named blockers yet."
 msgstr ""
 
@@ -693,7 +693,7 @@ msgstr ""
 #: app/features/project/components/project-organization-card.tsx:34
 #: app/routes/customer/billing-account/detail/index.tsx:370
 #: app/routes/customer/organization/index.tsx:240
-#: app/routes/customer/project/index.tsx:109
+#: app/routes/customer/project/index.tsx:129
 msgid "Company"
 msgstr ""
 
@@ -976,14 +976,14 @@ msgstr ""
 #: app/routes/admin/offer/index.tsx:79
 #: app/routes/customer/billing-account/detail/index.tsx:353
 #: app/routes/customer/fraud/providers/index.tsx:102
-#: app/routes/customer/organization/detail/project.tsx:65
+#: app/routes/customer/organization/detail/project.tsx:85
 #: app/routes/customer/organization/index.tsx:208
 #: app/routes/customer/organization/index.tsx:264
 #: app/routes/customer/project/detail/domain/detail.tsx:138
 #: app/routes/customer/project/detail/export-policy/detail.tsx:83
 #: app/routes/customer/project/detail/export-policy/index.tsx:51
-#: app/routes/customer/project/index.tsx:160
-#: app/routes/customer/project/index.tsx:209
+#: app/routes/customer/project/index.tsx:180
+#: app/routes/customer/project/index.tsx:229
 #: app/routes/customer/resource/index.tsx:361
 #: app/routes/customer/resource/index.tsx:417
 #: app/routes/customer/user/detail/index.tsx:207
@@ -1199,8 +1199,8 @@ msgstr ""
 msgid "Delete User"
 msgstr ""
 
-#: app/routes/customer/organization/detail/project.tsx:60
-#: app/routes/customer/project/index.tsx:100
+#: app/routes/customer/organization/detail/project.tsx:80
+#: app/routes/customer/project/index.tsx:120
 msgid "Deleting for"
 msgstr ""
 
@@ -1461,6 +1461,8 @@ msgid "Email"
 msgstr ""
 
 #: app/components/app-sidebar/index.tsx:169
+#: app/routes/customer/project/detail/email-activity.tsx:8
+#: app/routes/customer/project/detail/layout.tsx:184
 #: app/routes/customer/user/detail/email-activity.tsx:9
 #: app/routes/customer/user/detail/layout.tsx:48
 #: app/routes/operation/email-activity/layout.tsx:5
@@ -1620,7 +1622,7 @@ msgstr ""
 #: app/routes/customer/organization/detail/layout.tsx:92
 #: app/routes/customer/project/detail/activity/events.tsx:14
 #: app/routes/customer/project/detail/activity/events.tsx:17
-#: app/routes/customer/project/detail/layout.tsx:189
+#: app/routes/customer/project/detail/layout.tsx:194
 #: app/routes/operation/activity/events.tsx:21
 #: app/routes/operation/activity/events.tsx:24
 #: app/routes/operation/activity/layout.tsx:30
@@ -1741,7 +1743,7 @@ msgstr ""
 #: app/routes/customer/organization/detail/activity/index.tsx:8
 #: app/routes/customer/organization/detail/layout.tsx:91
 #: app/routes/customer/project/detail/activity/index.tsx:14
-#: app/routes/customer/project/detail/layout.tsx:188
+#: app/routes/customer/project/detail/layout.tsx:193
 #: app/routes/customer/user/detail/activity/index.tsx:23
 #: app/routes/customer/user/detail/layout.tsx:57
 #: app/routes/operation/activity/feed.tsx:28
@@ -1889,7 +1891,7 @@ msgstr ""
 
 #: app/routes/customer/organization/detail/layout.tsx:102
 #: app/routes/customer/organization/detail/quota/grant.tsx:10
-#: app/routes/customer/project/detail/layout.tsx:199
+#: app/routes/customer/project/detail/layout.tsx:204
 #: app/routes/customer/project/detail/quota/grant.tsx:10
 msgid "Grants"
 msgstr ""
@@ -1922,7 +1924,7 @@ msgstr ""
 msgid "Highest utilization in this project"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:212
+#: app/features/project/components/project-suspension-card.tsx:221
 msgid "History"
 msgstr ""
 
@@ -1972,9 +1974,9 @@ msgstr ""
 #: app/routes/admin/offer/index.tsx:35
 #: app/routes/customer/billing-account/detail/index.tsx:136
 #: app/routes/customer/billing-account/detail/index.tsx:187
-#: app/routes/customer/organization/detail/project.tsx:51
+#: app/routes/customer/organization/detail/project.tsx:71
 #: app/routes/customer/organization/index.tsx:153
-#: app/routes/customer/project/index.tsx:91
+#: app/routes/customer/project/index.tsx:111
 #: app/routes/customer/user/detail/index.tsx:182
 #: app/routes/customer/user/index.tsx:153
 #: app/routes/marketing/contact-group/index.tsx:64
@@ -1999,7 +2001,7 @@ msgstr ""
 msgid "Individual"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:145
+#: app/features/project/components/project-suspension-card.tsx:154
 msgid "Instances and served traffic are paused; data is preserved. Lift the suspension below to restore the project."
 msgstr ""
 
@@ -2134,11 +2136,11 @@ msgstr ""
 msgid "License Key Key"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:174
+#: app/features/project/components/project-suspension-card.tsx:183
 msgid "Lift"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:220
+#: app/features/project/components/project-suspension-card.tsx:229
 msgid "Lifted"
 msgstr ""
 
@@ -2154,7 +2156,7 @@ msgstr ""
 msgid "Limited to 10,000 organizations. Refine your search to surface others."
 msgstr ""
 
-#: app/routes/customer/project/index.tsx:177
+#: app/routes/customer/project/index.tsx:197
 msgid "Limited to 10,000 projects. Refine your search to surface others."
 msgstr ""
 
@@ -2223,7 +2225,6 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:127
 #: app/features/service-catalog/components/charges-card.tsx:118
 #: app/routes/admin/offer/detail.tsx:209
 #: app/routes/admin/offer/detail.tsx:323
@@ -2379,14 +2380,14 @@ msgstr ""
 #: app/routes/customer/fraud/providers/create.tsx:86
 #: app/routes/customer/fraud/providers/index.tsx:55
 #: app/routes/customer/organization/detail/member.tsx:103
-#: app/routes/customer/organization/detail/project.tsx:42
+#: app/routes/customer/organization/detail/project.tsx:62
 #: app/routes/customer/project/detail/dns/detail.tsx:108
 #: app/routes/customer/project/detail/export-policy/detail.tsx:63
 #: app/routes/customer/project/detail/export-policy/detail.tsx:108
 #: app/routes/customer/project/detail/export-policy/detail.tsx:159
 #: app/routes/customer/project/detail/export-policy/index.tsx:28
 #: app/routes/customer/project/detail/secret.tsx:24
-#: app/routes/customer/project/index.tsx:84
+#: app/routes/customer/project/index.tsx:104
 #: app/routes/customer/resource/index.tsx:320
 #: app/routes/customer/user/detail/organization.tsx:34
 #: app/routes/customer/user/index.tsx:114
@@ -2458,7 +2459,7 @@ msgstr ""
 msgid "No — none configured"
 msgstr ""
 
-#: app/routes/customer/project/index.tsx:144
+#: app/routes/customer/project/index.tsx:164
 msgid "No active billing account with a payment method"
 msgstr ""
 
@@ -2680,8 +2681,8 @@ msgstr ""
 msgid "No prices available yet"
 msgstr ""
 
-#: app/routes/customer/organization/detail/project.tsx:80
-#: app/routes/customer/project/index.tsx:175
+#: app/routes/customer/organization/detail/project.tsx:100
+#: app/routes/customer/project/index.tsx:195
 msgid "No projects found."
 msgstr ""
 
@@ -2785,12 +2786,12 @@ msgstr ""
 msgid "Note deleted"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:191
+#: app/features/project/components/project-suspension-card.tsx:200
 #: app/routes/customer/project/detail/domain/detail.tsx:151
 msgid "Notes"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:107
+#: app/features/project/components/project-suspension-card.tsx:108
 msgid "Notes (operator-facing)"
 msgstr ""
 
@@ -2878,8 +2879,8 @@ msgstr ""
 #: app/features/dashboard/components/quota-utilization-widget.tsx:147
 #: app/features/project/components/project-organization-card.tsx:25
 #: app/routes/customer/billing-account/detail/index.tsx:309
-#: app/routes/customer/project/index.tsx:124
-#: app/routes/customer/project/index.tsx:190
+#: app/routes/customer/project/index.tsx:144
+#: app/routes/customer/project/index.tsx:210
 msgid "Organization"
 msgstr ""
 
@@ -2949,7 +2950,7 @@ msgstr ""
 msgid "Patch AI"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:82
+#: app/features/project/components/project-suspension-card.tsx:83
 msgid "Pause this project and everything it is running. Data is preserved and the project can be reinstated at any time."
 msgstr ""
 
@@ -3145,7 +3146,7 @@ msgstr ""
 msgid "Project deleted"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:135
+#: app/features/project/components/project-suspension-card.tsx:144
 #: app/features/project/hooks/useProjectSuspension.ts:62
 msgid "Project suspended"
 msgstr ""
@@ -3156,9 +3157,9 @@ msgstr ""
 #: app/features/organization/components/org-details-card.tsx:71
 #: app/routes/customer/breadcrumb-switchers.tsx:8
 #: app/routes/customer/organization/detail/layout.tsx:73
-#: app/routes/customer/organization/detail/project.tsx:18
+#: app/routes/customer/organization/detail/project.tsx:22
 #: app/routes/customer/project/detail/layout.tsx:53
-#: app/routes/customer/project/index.tsx:29
+#: app/routes/customer/project/index.tsx:33
 #: app/routes/customer/project/layout.tsx:8
 #: app/routes/dashboard/overview.tsx:75
 msgid "Projects"
@@ -3271,7 +3272,7 @@ msgstr ""
 #: app/features/project/components/project-quotas-card.tsx:64
 #: app/routes/customer/organization/detail/layout.tsx:97
 #: app/routes/customer/organization/detail/quota/layout.tsx:5
-#: app/routes/customer/project/detail/layout.tsx:194
+#: app/routes/customer/project/detail/layout.tsx:199
 #: app/routes/customer/project/detail/quota/layout.tsx:5
 msgid "Quotas"
 msgstr ""
@@ -3296,7 +3297,7 @@ msgstr ""
 msgid "Ready"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:89
+#: app/features/project/components/project-suspension-card.tsx:90
 #: app/features/service-catalog/components/conditions-card.tsx:35
 #: app/routes/customer/user/detail/index.tsx:417
 msgid "Reason"
@@ -3328,8 +3329,8 @@ msgstr ""
 msgid "Registrar"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:98
-#: app/features/project/components/project-suspension-card.tsx:181
+#: app/features/project/components/project-suspension-card.tsx:99
+#: app/features/project/components/project-suspension-card.tsx:190
 msgid "Reinstate authority"
 msgstr ""
 
@@ -3367,7 +3368,7 @@ msgstr ""
 msgid "Requested at"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:185
+#: app/features/project/components/project-suspension-card.tsx:194
 msgid "Requested by"
 msgstr ""
 
@@ -3621,12 +3622,12 @@ msgid "Search organizations..."
 msgstr ""
 
 #: app/features/billing/components/billing-account-list.tsx:256
-#: app/routes/customer/project/index.tsx:192
+#: app/routes/customer/project/index.tsx:212
 msgid "Search organizations…"
 msgstr ""
 
-#: app/routes/customer/organization/detail/project.tsx:79
-#: app/routes/customer/project/index.tsx:174
+#: app/routes/customer/organization/detail/project.tsx:99
+#: app/routes/customer/project/index.tsx:194
 msgid "Search projects..."
 msgstr ""
 
@@ -3913,16 +3914,16 @@ msgstr ""
 #: app/routes/customer/billing-account/detail/index.tsx:235
 #: app/routes/customer/billing-account/detail/index.tsx:324
 #: app/routes/customer/fraud/providers/index.tsx:85
-#: app/routes/customer/organization/detail/project.tsx:55
-#: app/routes/customer/organization/detail/project.tsx:81
+#: app/routes/customer/organization/detail/project.tsx:75
+#: app/routes/customer/organization/detail/project.tsx:101
 #: app/routes/customer/organization/index.tsx:201
 #: app/routes/customer/organization/index.tsx:246
 #: app/routes/customer/project/detail/domain/detail.tsx:128
 #: app/routes/customer/project/detail/export-policy/detail.tsx:75
 #: app/routes/customer/project/detail/export-policy/detail.tsx:168
 #: app/routes/customer/project/detail/export-policy/index.tsx:44
-#: app/routes/customer/project/index.tsx:95
-#: app/routes/customer/project/index.tsx:206
+#: app/routes/customer/project/index.tsx:115
+#: app/routes/customer/project/index.tsx:226
 #: app/routes/marketing/contact-group/detail/member.tsx:207
 #: app/routes/marketing/contact-group/index.tsx:80
 #: app/routes/marketing/contact/detail/group.tsx:99
@@ -3952,21 +3953,21 @@ msgstr ""
 msgid "Summary"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:83
-#: app/features/project/components/project-suspension-card.tsx:159
+#: app/features/project/components/project-suspension-card.tsx:84
+#: app/features/project/components/project-suspension-card.tsx:168
 msgid "Suspend"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:121
+#: app/features/project/components/project-suspension-card.tsx:122
 msgid "Suspend or reinstate this project. Suspension is reversible - data is never deleted."
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:81
-#: app/features/project/components/project-suspension-card.tsx:135
+#: app/features/project/components/project-suspension-card.tsx:82
+#: app/features/project/components/project-suspension-card.tsx:144
 msgid "Suspend Project"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:197
+#: app/features/project/components/project-suspension-card.tsx:206
 msgid "Suspended at"
 msgstr ""
 
@@ -4016,7 +4017,7 @@ msgstr ""
 msgid "Template"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:151
+#: app/features/project/components/project-suspension-card.tsx:160
 msgid "Temporarily pause this project's instances and served traffic without deleting any data. It can be reinstated at any time."
 msgstr ""
 
@@ -4084,7 +4085,7 @@ msgstr ""
 msgid "This organization does not have a billing account. Usage and spend data require a linked billing account."
 msgstr ""
 
-#: app/features/project/components/project-deletion-banner.tsx:25
+#: app/features/project/components/project-deletion-banner.tsx:22
 msgid "This project is being deleted"
 msgstr ""
 
@@ -4141,7 +4142,7 @@ msgstr ""
 msgid "Toggle theme"
 msgstr ""
 
-#: app/routes/customer/project/index.tsx:182
+#: app/routes/customer/project/index.tsx:202
 msgid "Total projects"
 msgstr ""
 
@@ -4163,7 +4164,7 @@ msgstr ""
 msgid "Triggers"
 msgstr ""
 
-#: app/features/project/components/project-suspension-card.tsx:117
+#: app/features/project/components/project-suspension-card.tsx:118
 msgid "Trust & Safety"
 msgstr ""
 
@@ -4187,7 +4188,7 @@ msgid "Type"
 msgstr ""
 
 #: app/features/billing/components/billing-account-list.tsx:257
-#: app/routes/customer/project/index.tsx:193
+#: app/routes/customer/project/index.tsx:213
 msgid "Type at least 2 characters to search all organizations."
 msgstr ""
 
@@ -4252,7 +4253,7 @@ msgstr ""
 #: app/routes/customer/organization/detail/layout.tsx:101
 #: app/routes/customer/organization/detail/quota/usage.tsx:10
 #: app/routes/customer/organization/detail/usage/index.tsx:24
-#: app/routes/customer/project/detail/layout.tsx:198
+#: app/routes/customer/project/detail/layout.tsx:203
 #: app/routes/customer/project/detail/quota/usage.tsx:10
 msgid "Usage"
 msgstr ""
@@ -4370,7 +4371,7 @@ msgid "View Evaluation"
 msgstr ""
 
 #: app/routes/customer/organization/detail/layout.tsx:148
-#: app/routes/customer/project/detail/layout.tsx:229
+#: app/routes/customer/project/detail/layout.tsx:234
 msgid "View in Cloud Portal"
 msgstr ""
 
@@ -4404,7 +4405,7 @@ msgstr ""
 msgid "Waiting for hostname ownership verification to complete"
 msgstr ""
 
-#: app/routes/customer/project/index.tsx:104
+#: app/routes/customer/project/index.tsx:124
 msgid "Waiting on"
 msgstr ""
 

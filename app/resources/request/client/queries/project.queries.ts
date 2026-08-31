@@ -5,9 +5,10 @@ import {
   projectExportPolicyListQuery,
   projectEdgeListQuery,
   projectGetQuery,
+  projectSuspensionForProjectListQuery,
   projectSuspensionListQuery,
 } from '../apis/project.api';
-import { isProjectDeleting } from '@/features/project/lib/project-deletion';
+import { isProjectDeleting } from '@/features/project/lib/project-phase';
 import { listAllProjects, listProjects } from '@/modules/graphql/projects';
 import { ListQueryParams } from '@/resources/schemas';
 import type { ComMiloapisResourcemanagerV1Alpha1Project } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
@@ -41,14 +42,24 @@ export const projectQueryKeys = {
       ['projects', projectName, 'dns', dnsName, 'records', namespace] as const,
   },
   suspensions: (projectName: string) => ['projects', projectName, 'suspensions'] as const,
+  suspensionsAll: () => ['projects', 'suspensions', 'all'] as const,
 };
 
 /** All ProjectSuspensions (active + lifted) governing a project — for the suspension panel. */
 export const useProjectSuspensionsQuery = (projectName: string) => {
   return useQuery({
     queryKey: projectQueryKeys.suspensions(projectName),
-    queryFn: () => projectSuspensionListQuery(projectName),
+    queryFn: () => projectSuspensionForProjectListQuery(projectName),
     enabled: !!projectName,
+  });
+};
+
+/** Every ProjectSuspension across all projects — joined into the Projects list for the Suspended status. */
+export const useAllProjectSuspensionsQuery = () => {
+  return useQuery({
+    queryKey: projectQueryKeys.suspensionsAll(),
+    queryFn: () => projectSuspensionListQuery(),
+    staleTime: 60 * 1000,
   });
 };
 

@@ -15,9 +15,13 @@ import {
   ProjectPhaseBadge,
   projectPhaseFilter,
 } from '@/features/project';
-import { type ProjectPhase, withProjectPhase } from '@/features/project/lib/project-deletion';
+import { type ProjectPhase, withProjectPhase } from '@/features/project/lib/project-phase';
 import { useOrganizationSearch } from '@/hooks/use-search';
-import { type GqlProject, useAllProjectsQuery } from '@/resources/request/client';
+import {
+  type GqlProject,
+  useAllProjectsQuery,
+  useAllProjectSuspensionsQuery,
+} from '@/resources/request/client';
 import { billingAccountRoutes, orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { createColumnHelper } from '@/utils/table';
@@ -37,9 +41,25 @@ const getProjectCreatedAt = (project: GqlProject) => project.createdAt;
 
 export default function Page() {
   const tableQuery = useAllProjectsQuery();
+
+  // Suspension lives on a separate resource; join by project name so a suspended
+  // project surfaces as a `Suspended` status (see withProjectPhase precedence).
+  const suspensionsQuery = useAllProjectSuspensionsQuery();
+  const suspendedProjectNames = useMemo(() => {
+    const set = new Set<string>();
+    for (const suspension of suspensionsQuery.data ?? []) {
+      const name = suspension.spec?.projectRef?.name;
+      if (name) set.add(name);
+    }
+    return set;
+  }, [suspensionsQuery.data]);
+
   const projects = useMemo(
-    () => (tableQuery.data?.items ?? []).map(withProjectPhase),
-    [tableQuery.data]
+    () =>
+      (tableQuery.data?.items ?? []).map((project) =>
+        withProjectPhase(project, { suspended: suspendedProjectNames.has(project.name) })
+      ),
+    [tableQuery.data, suspendedProjectNames]
   );
   const orgSearch = useOrganizationSearch();
 

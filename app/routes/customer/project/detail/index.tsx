@@ -11,7 +11,7 @@ import {
   ProjectSuspensionCard,
   ProjectUsageCard,
 } from '@/features/project';
-import { isProjectDeleting } from '@/features/project/lib/project-deletion';
+import { isProjectDeleting } from '@/features/project/lib/project-phase';
 import { projectDeleteMutation, projectQueryKeys } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { toast } from '@datum-cloud/datum-ui/toast';
