@@ -61,7 +61,7 @@
         "react-dom": "^19.2.3",
         "react-hook-form": "^7.72.0",
         "react-router": "^7.12.0",
-        "react-router-hono-server": "^3.0.0",
+        "react-router-hono-server": "^4.0.0",
         "recharts": "^3.0.0",
         "remix-auth": "^4.2.0",
         "remix-auth-oauth2": "^3.4.1",
@@ -379,11 +379,9 @@
 
     "@hono/node-server": ["@hono/node-server@1.19.13", "", { "peerDependencies": { "hono": "^4" } }, "sha512-TsQLe4i2gvoTtrHje625ngThGBySOgSK3Xo2XRYOdqGN1teR8+I7vchQC46uLJi8OF62YTYA3AhSpumtkhsaKQ=="],
 
-    "@hono/node-ws": ["@hono/node-ws@1.3.1", "", { "dependencies": { "ws": "^8.17.0" }, "peerDependencies": { "@hono/node-server": "^1.19.11", "hono": "^4.6.0" } }, "sha512-vo/MwCnpJAVHBkGzWjCJ28wF45fYHAfbPZcH2rodZODHtch2GHA94KtMfusmVycTUtsLAsaNsHhtY6P8X3RQsA=="],
-
     "@hono/prometheus": ["@hono/prometheus@1.0.1", "", { "peerDependencies": { "hono": ">=3.*", "prom-client": "^15.0.0" } }, "sha512-PjMbjAppCgbvRP2aLxqJc1XJLxfmg4dLsS5R5ITt7qCf9Ab/xSRul/LHNVvYK2/ECi3BOPprSnlSizksBJmXBQ=="],
 
-    "@hono/vite-dev-server": ["@hono/vite-dev-server@0.26.0", "", { "dependencies": { "@hono/node-server": "^1.19.11", "minimatch": "^9.0.3" }, "peerDependencies": { "hono": "*", "miniflare": "*", "wrangler": "*" }, "optionalPeers": ["miniflare", "wrangler"] }, "sha512-DYHht1lge/SRGd1dpOgwhS6DpamSaDtxAOlwl2RkcYyLFy769DZPEX6CeRaUzeDNgClO9JAuT83VptxB5mH5jA=="],
+    "@hono/vite-dev-server": ["@hono/vite-dev-server@0.26.1", "", { "dependencies": { "@hono/node-server": "^1.19.11", "minimatch": "^9.0.3" }, "peerDependencies": { "hono": "*", "miniflare": "*", "wrangler": "*" }, "optionalPeers": ["miniflare", "wrangler"] }, "sha512-OlcWoXjNogKiJhVwV/ftMK87UcsJmIBfmImSdI4e8to/ZdwNHrW9ddKw2OGHjXI5/uS2RaZr+2y+l8T9VFbCmw=="],
 
     "@hookform/resolvers": ["@hookform/resolvers@5.2.2", "", { "dependencies": { "@standard-schema/utils": "^0.3.0" }, "peerDependencies": { "react-hook-form": "^7.55.0" } }, "sha512-A/IxlMLShx3KjV/HeTcTfaMxdwy690+L/ZADoeaTltLx+CVuzkeVIPuybK3jrRfw7YZnmdKsVVHAlEPIAEUNlA=="],
 
@@ -2675,7 +2673,7 @@
 
     "react-router": ["react-router@7.12.0", "", { "dependencies": { "cookie": "^1.0.1", "set-cookie-parser": "^2.6.0" }, "peerDependencies": { "react": ">=18", "react-dom": ">=18" }, "optionalPeers": ["react-dom"] }, "sha512-kTPDYPFzDVGIIGNLS5VJykK0HfHLY5MF3b+xj0/tTyNYL1gF1qs7u67Z9jEhQk2sQ98SUaHxlG31g1JtF7IfVw=="],
 
-    "react-router-hono-server": ["react-router-hono-server@3.0.0", "", { "dependencies": { "@drizzle-team/brocli": "0.12.0", "@hono/node-server": "2.0.6", "@hono/node-ws": "1.3.1", "@hono/vite-dev-server": "0.26.0" }, "peerDependencies": { "@cloudflare/workers-types": "^4.20260621.1", "@react-router/dev": "^8.0.1", "@types/react": "^19.2.17", "hono": "^4.12.26", "miniflare": "^4.20260617.1", "react-router": "^8.0.1", "vite": ">=8.0.16", "wrangler": "^4.103.0" }, "optionalPeers": ["@cloudflare/workers-types", "miniflare", "wrangler"], "bin": { "react-router-hono-server": "dist/cli.js" } }, "sha512-OafaXerK9pSi9WTINmL9QzK6AlCJfVD36eiHHar/x2PaN/vRWA4XvLbKKarXUZMi05srLTyRnWieYzCY+aY9ew=="],
+    "react-router-hono-server": ["react-router-hono-server@4.1.2", "", { "dependencies": { "@drizzle-team/brocli": "0.12.0", "@hono/node-server": "2.1.1", "@hono/vite-dev-server": "0.26.1" }, "peerDependencies": { "@react-router/dev": "^8.3.0", "@types/ws": "^8.18.1", "hono": "^4.13.2", "react": "^19.2.8", "react-dom": "^19.2.8", "react-router": "^8.3.0", "vite": ">=8.2.1", "ws": "^8.21.3" }, "optionalPeers": ["@types/ws", "ws"], "bin": { "react-router-hono-server": "dist/cli.js" } }, "sha512-5MI6bOgS6bDrj/eEI7xDpHbS6+oAVSon6Vt/Jrn7lEQKdD/M72zxkHvXRgvCvdroISgGB/UwBZJ2uvPL9T9edw=="],
 
     "react-style-singleton": ["react-style-singleton@2.2.3", "", { "dependencies": { "get-nonce": "^1.0.0", "tslib": "^2.0.0" }, "peerDependencies": { "@types/react": "*", "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc" }, "optionalPeers": ["@types/react"] }, "sha512-b6jSvxvVnyptAiLjbkWLE/lOnR4lfTtDAl+eUC7RZy+QQWc6wRzIV2CE6xBuMmDxc2qIihtDCZD5NPOFl7fRBQ=="],
 
@@ -3591,7 +3589,7 @@
 
     "pseudolocale/commander": ["commander@10.0.1", "", {}, "sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug=="],
 
-    "react-router-hono-server/@hono/node-server": ["@hono/node-server@2.0.6", "", { "peerDependencies": { "hono": "^4" } }, "sha512-7DeRlKG57JDBNZ5Qj2jwVdgwQy4b0tLubRLl3zCf91/rCf9i7p1V5FtW/yWibm1uUHE493ts9ZXH/7g/LQWl+g=="],
+    "react-router-hono-server/@hono/node-server": ["@hono/node-server@2.1.1", "", { "peerDependencies": { "hono": "^4" } }, "sha512-ELuehkj5VCBdgEw9zs+ivkKwyzzUCSQuE96YmiPvn1ECBoZCczbFXJLeEGMTYjphP6gydh4pHMqEYPVMYUVgQg=="],
 
     "request-progress/throttleit": ["throttleit@1.0.1", "", {}, "sha512-vDZpf9Chs9mAdfY046mcPt8fg5QSZr37hEH4TXYBnDF+izxgrbRGUAAaBvIk/fJm9aOFCGFd1EsNg5AZCbnQCQ=="],
 
