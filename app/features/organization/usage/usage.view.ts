@@ -9,7 +9,6 @@ import type {
   UsageProjectOption,
   UsageSummaryRow,
 } from './usage.types';
-import { OTHER_GROUP, resolveServiceDisplayName } from '@/features/quota/lib/service-catalog';
 import type { MeterSeries, UsageFetchResult } from '@/modules/billing/usage.types';
 
 function sumSeries(values: { value: number }[]): number {
@@ -110,23 +109,20 @@ export function toUsageView(
   if (groups.length === 0) return null;
 
   const summaryRows: UsageSummaryRow[] = groups.flatMap((group) =>
-    group.meters.map((meter) => {
-      const resolvedGroup = resolveServiceDisplayName(group.id, meter.apiName);
-      return {
-        apiName: meter.apiName,
-        label: meter.label,
-        unit: meter.unit,
-        used: meter.used,
-        limit: meter.limit,
-        spend: meter.spend,
-        unitRate: meter.unitRate,
-        pricingUnit: meter.pricingUnit,
-        currencyCode: meter.currencyCode,
-        series: meter.series,
-        groupId: group.id,
-        group: resolvedGroup === OTHER_GROUP ? group.title : resolvedGroup,
-      };
-    })
+    group.meters.map((meter) => ({
+      apiName: meter.apiName,
+      label: meter.label,
+      unit: meter.unit,
+      used: meter.used,
+      limit: meter.limit,
+      spend: meter.spend,
+      unitRate: meter.unitRate,
+      pricingUnit: meter.pricingUnit,
+      currencyCode: meter.currencyCode,
+      series: meter.series,
+      groupId: group.id,
+      group: group.title,
+    }))
   );
 
   return {

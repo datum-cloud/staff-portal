@@ -1,8 +1,19 @@
 import {
+  catalogServiceDisplayName,
   OTHER_GROUP,
   resolveResourceDisplayName,
   resolveServiceDisplayName,
 } from '@/features/quota/lib/service-catalog';
+
+describe('catalogServiceDisplayName', () => {
+  it('returns the catalog title for DNS', () => {
+    expect(catalogServiceDisplayName('dns.networking.miloapis.com')).to.equal('DNS');
+  });
+
+  it('returns undefined when the service is not in the map', () => {
+    expect(catalogServiceDisplayName('assistant.miloapis.com')).to.equal(undefined);
+  });
+});
 
 describe('resolveServiceDisplayName', () => {
   it('uses the owner reference when present', () => {
