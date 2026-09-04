@@ -4,6 +4,7 @@ import {
   selectBillingCycleWindow,
   type PaymentTermsInput,
 } from './billing-cycle';
+import { resolveMeterGroup } from './usage-groups';
 import { loadCatalogUsagePricing } from './usage-pricing.server';
 import { enrichMetersWithCatalogSpend } from './usage-spend';
 import type {
@@ -168,29 +169,6 @@ async function listMeterDefinitions(token: string): Promise<MeterDefinition[]> {
   }
 }
 
-/**
- * Reverse-DNS service domain that owns a meter, e.g.
- * `assistant.miloapis.com/conversation/input-tokens` → `assistant.miloapis.com`.
- */
-function serviceDomainFromMeterName(meterName: string): string {
-  const slash = meterName.indexOf('/');
-  return slash > 0 ? meterName.slice(0, slash) : meterName;
-}
-
-/** `compute.miloapis.com` → `Compute`; `ai-gateway.x` → `Ai Gateway`. */
-function humanizeServiceGroup(domain: string): string {
-  const label = domain.split('.')[0] ?? domain;
-  return label
-    .replace(/[-_]+/g, ' ')
-    .replace(/\b\w/g, (c) => c.toUpperCase())
-    .trim();
-}
-
-function resolveMeterGroup(def: MeterDefinition): { id: string; title: string } {
-  const domain = serviceDomainFromMeterName(def.meterName);
-  return { id: domain, title: humanizeServiceGroup(domain) };
-}
-
 interface SparseClientMeter {
   values?: { secondsSinceEpochUtc: number; value: number }[];
   group?: { groupInfo?: Record<string, string> };
@@ -322,7 +300,7 @@ async function fetchUsageForCustomerIds({
 
   return Promise.all(
     meterDefs.map(async (def): Promise<MeterSeries> => {
-      const group = resolveMeterGroup(def);
+      const group = resolveMeterGroup(def.meterName);
       const base: MeterSeries = {
         meterApiName: def.meterApiName,
         meterName: def.meterName,

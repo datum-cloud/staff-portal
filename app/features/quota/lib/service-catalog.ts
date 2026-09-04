@@ -22,6 +22,11 @@ const SERVICE_DISPLAY_NAMES: Record<string, string> = {
   'billing.miloapis.com': 'Billing',
 };
 
+/** Catalog display name for a service domain, when known. */
+export function catalogServiceDisplayName(serviceName: string): string | undefined {
+  return SERVICE_DISPLAY_NAMES[serviceName];
+}
+
 /**
  * INTERIM resourceType → row display name, for registrations the server emits
  * without a `kubernetes.io/display-name` annotation. The milo service-catalog
