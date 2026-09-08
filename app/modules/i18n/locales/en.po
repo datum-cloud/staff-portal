@@ -692,6 +692,7 @@ msgstr "Collapse sidebar"
 #: app/features/billing/components/billing-account-list.tsx:184
 #: app/features/project/components/project-organization-card.tsx:34
 #: app/routes/customer/billing-account/detail/index.tsx:355
+#: app/routes/customer/organization/index.tsx:159
 #: app/routes/customer/organization/index.tsx:234
 #: app/routes/customer/project/index.tsx:123
 msgid "Company"
@@ -704,10 +705,6 @@ msgstr "Company / legal name"
 #: app/features/organization/components/org-details-card.tsx:43
 msgid "Company name"
 msgstr "Company name"
-
-#: app/routes/customer/organization/index.tsx:159
-msgid "Company Name"
-msgstr "Company Name"
 
 #: app/features/organization/components/org-onboarding-card.tsx:77
 #: app/routes/customer/fraud/index.tsx:290
@@ -2368,6 +2365,7 @@ msgstr "My Profile"
 #: app/routes/customer/fraud/providers/index.tsx:55
 #: app/routes/customer/organization/detail/member.tsx:103
 #: app/routes/customer/organization/detail/project.tsx:61
+#: app/routes/customer/organization/index.tsx:152
 #: app/routes/customer/project/detail/dns/detail.tsx:107
 #: app/routes/customer/project/detail/export-policy/detail.tsx:63
 #: app/routes/customer/project/detail/export-policy/detail.tsx:108
@@ -2878,10 +2876,6 @@ msgstr "Organization"
 #: app/routes/customer/organization/detail/index.tsx:69
 msgid "Organization deleted successfully"
 msgstr "Organization deleted successfully"
-
-#: app/routes/customer/organization/index.tsx:152
-msgid "Organization Name"
-msgstr "Organization Name"
 
 #: app/routes/customer/organization/index.tsx:214
 msgid "organizations"

@@ -112,7 +112,7 @@ export default function Page() {
         const userId = row.original.spec?.userRef?.name ?? '';
         const contact = contactsByUser.get(userId);
         return (
-          <Link to={fraudRoutes.evaluations.detail(name)} className="text-primary hover:underline">
+          <Link to={fraudRoutes.evaluations.detail(name)}>
             {contact?.name || contact?.email || userId}
           </Link>
         );
