@@ -149,14 +149,14 @@ export default function Page() {
   const columns = [
     columnHelper.accessor('name', {
       id: 'organizationName',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`Organization Name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => (
         <Link to={`./${row.original.name}`}>{row.original.displayName || row.original.name}</Link>
       ),
     }),
     columnHelper.accessor((row) => row.contactInfo?.businessName ?? '', {
       id: 'company',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`Company Name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Company`} />,
       cell: ({ getValue, row }) => {
         const company = getValue();
         return company ? (
