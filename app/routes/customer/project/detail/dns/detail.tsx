@@ -2,7 +2,6 @@ import type { Route } from './+types/detail';
 import { BadgeState } from '@/components/badge';
 import { Chip } from '@/components/chip';
 import { PageHeader } from '@/components/page-header';
-import { SimpleTable } from '@/components/simple-table';
 import { DnsRecordStatusProbe } from '@/features/dns';
 import { ListColumnHeader, ListTable, SectionCard } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
@@ -183,34 +182,55 @@ export default function Page() {
     <div className="m-4 flex flex-col gap-1">
       <PageHeader title={dns?.spec?.domainName} />
 
-      <ListTable
-        title={<Trans>DNS Records</Trans>}
-        loading={tableQuery.isLoading}
-        data={tableQuery.data ?? []}
-        columns={dnsRecordColumns}
-        pageSize={25}
-        getRowId={(row) =>
-          row.recordSetId ??
-          `${row.recordSetName ?? ''}-${row.type}-${row.name}-${row.value}-${row.dnsZoneId}`
-        }
-        defaultSort={[{ id: 'name', desc: false }]}
-        searchPlaceholder={t`Search records...`}
-        emptyMessage={t`No DNS records found.`}
-        inset="tab"
-        searchFn={(row, search) => {
-          const q = search.trim().toLowerCase();
-          if (!q) return true;
-          return [row.type, row.name, row.value]
-            .map((v) => (v ?? '').toLowerCase())
-            .some((v) => v.includes(q));
-        }}
-      />
+      {/* Both tables use ListTable inside a padding-free SectionCard (title on the
+          table, inset governs spacing) so DNS Records and Nameservers read the
+          same. ListTable also gives search + paging for zones with many records. */}
+      <SectionCard className="mt-4" contentClassName="p-0">
+        <ListTable
+          title={<Trans>DNS Records</Trans>}
+          loading={tableQuery.isLoading}
+          data={tableQuery.data ?? []}
+          columns={dnsRecordColumns}
+          // Must be one of ListPagination's LIST_PAGE_SIZES ([10,20,50,100]) —
+          // an off-list value leaves the "Rows per page" select blank.
+          pageSize={20}
+          // A record *set* flattens into one row per value, all sharing the set's
+          // uid — so keying on recordSetId alone collides and rows duplicate on
+          // sort. Use the full composite (includes value) for a per-row unique id.
+          getRowId={(row) =>
+            `${row.recordSetId ?? row.recordSetName ?? ''}-${row.type}-${row.name}-${row.value}-${row.dnsZoneId}`
+          }
+          defaultSort={[{ id: 'name', desc: false }]}
+          searchPlaceholder={t`Search records...`}
+          emptyMessage={t`No DNS records found.`}
+          inset="tab"
+          searchFn={(row, search) => {
+            const q = search.trim().toLowerCase();
+            if (!q) return true;
+            return [row.type, row.name, row.value]
+              .map((v) => (v ?? '').toLowerCase())
+              .some((v) => v.includes(q));
+          }}
+        />
+      </SectionCard>
 
-      <SectionCard className="mt-4" title={<Trans>Nameservers</Trans>}>
-        <SimpleTable<NameserverRow>
-          getRowId={(row) => row?.hostname ?? ''}
-          columns={nameserverColumns}
+      <SectionCard className="mt-4" contentClassName="p-0">
+        <ListTable
+          title={<Trans>Nameservers</Trans>}
           data={nameserverData}
+          columns={nameserverColumns}
+          pageSize={20}
+          getRowId={(row) => row?.hostname ?? ''}
+          searchPlaceholder={t`Search nameservers...`}
+          emptyMessage={t`No nameservers found.`}
+          inset="tab"
+          searchFn={(row, search) => {
+            const q = search.trim().toLowerCase();
+            if (!q) return true;
+            return [row.hostname, row.registrarName]
+              .map((v) => (v ?? '').toLowerCase())
+              .some((v) => v.includes(q));
+          }}
         />
       </SectionCard>
     </div>

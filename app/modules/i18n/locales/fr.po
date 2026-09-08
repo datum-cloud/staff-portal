@@ -858,7 +858,7 @@ msgstr ""
 msgid "Contacts - Create"
 msgstr ""
 
-#: app/routes/customer/project/detail/dns/detail.tsx:112
+#: app/routes/customer/project/detail/dns/detail.tsx:111
 msgid "Content"
 msgstr ""
 
@@ -1312,7 +1312,7 @@ msgid "DNS"
 msgstr ""
 
 #: app/features/dns/components/dns-zone-list.tsx:110
-#: app/routes/customer/project/detail/dns/detail.tsx:164
+#: app/routes/customer/project/detail/dns/detail.tsx:163
 msgid "DNS Host"
 msgstr ""
 
@@ -1339,7 +1339,7 @@ msgstr ""
 msgid "DNS Record Set"
 msgstr ""
 
-#: app/routes/customer/project/detail/dns/detail.tsx:187
+#: app/routes/customer/project/detail/dns/detail.tsx:190
 msgid "DNS Records"
 msgstr ""
 
@@ -2381,7 +2381,7 @@ msgstr ""
 #: app/routes/customer/fraud/providers/index.tsx:55
 #: app/routes/customer/organization/detail/member.tsx:103
 #: app/routes/customer/organization/detail/project.tsx:62
-#: app/routes/customer/project/detail/dns/detail.tsx:108
+#: app/routes/customer/project/detail/dns/detail.tsx:107
 #: app/routes/customer/project/detail/export-policy/detail.tsx:63
 #: app/routes/customer/project/detail/export-policy/detail.tsx:108
 #: app/routes/customer/project/detail/export-policy/detail.tsx:159
@@ -2397,7 +2397,7 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: app/routes/customer/project/detail/dns/detail.tsx:209
+#: app/routes/customer/project/detail/dns/detail.tsx:219
 msgid "Nameservers"
 msgstr ""
 
@@ -2536,7 +2536,7 @@ msgstr ""
 msgid "No description"
 msgstr ""
 
-#: app/routes/customer/project/detail/dns/detail.tsx:198
+#: app/routes/customer/project/detail/dns/detail.tsx:205
 msgid "No DNS records found."
 msgstr ""
 
@@ -2629,6 +2629,10 @@ msgstr ""
 
 #: app/routes/admin/group/detail/member.tsx:193
 msgid "No members in this group."
+msgstr ""
+
+#: app/routes/customer/project/detail/dns/detail.tsx:225
+msgid "No nameservers found."
 msgstr ""
 
 #: app/features/domain/components/notes-list.tsx:30
@@ -3106,7 +3110,7 @@ msgstr ""
 msgid "Priority"
 msgstr ""
 
-#: app/routes/customer/project/detail/dns/detail.tsx:124
+#: app/routes/customer/project/detail/dns/detail.tsx:123
 msgid "Priority of mail servers defined by MX records. Lowest value = highest priority."
 msgstr ""
 
@@ -3324,7 +3328,7 @@ msgid "Records"
 msgstr ""
 
 #: app/features/domain/components/domain-list.tsx:81
-#: app/routes/customer/project/detail/dns/detail.tsx:177
+#: app/routes/customer/project/detail/dns/detail.tsx:176
 #: app/routes/customer/project/detail/domain/detail.tsx:116
 msgid "Registrar"
 msgstr ""
@@ -3612,6 +3616,10 @@ msgstr ""
 msgid "Search members..."
 msgstr ""
 
+#: app/routes/customer/project/detail/dns/detail.tsx:224
+msgid "Search nameservers..."
+msgstr ""
+
 #: app/routes/admin/offer/index.tsx:93
 msgid "Search offers..."
 msgstr ""
@@ -3644,7 +3652,7 @@ msgstr ""
 msgid "Search quotas..."
 msgstr ""
 
-#: app/routes/customer/project/detail/dns/detail.tsx:197
+#: app/routes/customer/project/detail/dns/detail.tsx:204
 msgid "Search records..."
 msgstr ""
 
@@ -4168,7 +4176,7 @@ msgstr ""
 msgid "Trust & Safety"
 msgstr ""
 
-#: app/routes/customer/project/detail/dns/detail.tsx:148
+#: app/routes/customer/project/detail/dns/detail.tsx:147
 msgid "TTL"
 msgstr ""
 
@@ -4178,8 +4186,8 @@ msgstr ""
 #: app/features/service-catalog/components/conditions-card.tsx:19
 #: app/routes/customer/fraud/providers/index.tsx:65
 #: app/routes/customer/organization/index.tsx:238
-#: app/routes/customer/project/detail/dns/detail.tsx:93
-#: app/routes/customer/project/detail/dns/detail.tsx:157
+#: app/routes/customer/project/detail/dns/detail.tsx:92
+#: app/routes/customer/project/detail/dns/detail.tsx:156
 #: app/routes/customer/project/detail/export-policy/detail.tsx:162
 #: app/routes/customer/resource/index.tsx:326
 #: app/routes/customer/resource/index.tsx:395
@@ -4323,7 +4331,7 @@ msgstr ""
 msgid "Validating"
 msgstr ""
 
-#: app/routes/customer/project/detail/dns/detail.tsx:161
+#: app/routes/customer/project/detail/dns/detail.tsx:160
 msgid "Value"
 msgstr ""
 
