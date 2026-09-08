@@ -202,7 +202,8 @@ msgstr "Active Sessions"
 #: app/routes/customer/project/detail/layout.tsx:189
 #: app/routes/customer/user/detail/activity/layout.tsx:5
 #: app/routes/customer/user/detail/layout.tsx:53
-#: app/routes/operation/activity/layout.tsx:13
+#: app/routes/operation/activity/layout.tsx:12
+#: app/routes/operation/activity/layout.tsx:69
 msgid "Activity"
 msgstr "Activity"
 
@@ -480,7 +481,7 @@ msgstr "Associated with User: "
 #: app/routes/customer/user/detail/layout.tsx:58
 #: app/routes/operation/activity/audit-logs.tsx:11
 #: app/routes/operation/activity/audit-logs.tsx:14
-#: app/routes/operation/activity/layout.tsx:35
+#: app/routes/operation/activity/layout.tsx:27
 msgid "Audit Logs"
 msgstr "Audit Logs"
 
@@ -870,11 +871,11 @@ msgstr "Controls whether this user can sign in and access the platform. Suspendi
 msgid "Coordinates"
 msgstr "Coordinates"
 
-#: app/routes/operation/activity/layout.tsx:68
+#: app/routes/operation/activity/layout.tsx:53
 msgid "Copied!"
 msgstr "Copied!"
 
-#: app/routes/operation/activity/layout.tsx:64
+#: app/routes/operation/activity/layout.tsx:49
 msgid "Copy shareable link with current filters"
 msgstr "Copy shareable link with current filters"
 
@@ -1625,7 +1626,7 @@ msgstr "Event"
 #: app/routes/customer/project/detail/layout.tsx:194
 #: app/routes/operation/activity/events.tsx:21
 #: app/routes/operation/activity/events.tsx:24
-#: app/routes/operation/activity/layout.tsx:30
+#: app/routes/operation/activity/layout.tsx:26
 msgid "Events"
 msgstr "Events"
 
@@ -3057,7 +3058,7 @@ msgstr "Please select an existing contact or provide details to create a new one
 msgid "Please wait {remainingMinutes} more minute{0} before resending this invitation"
 msgstr "Please wait {remainingMinutes} more minute{0} before resending this invitation"
 
-#: app/routes/operation/activity/layout.tsx:40
+#: app/routes/operation/activity/layout.tsx:28
 #: app/routes/operation/activity/policies/index.tsx:11
 #: app/routes/operation/activity/policies/layout.tsx:5
 msgid "Policies"
@@ -3819,7 +3820,7 @@ msgstr "Set platform default"
 msgid "Settings"
 msgstr "Settings"
 
-#: app/routes/operation/activity/layout.tsx:73
+#: app/routes/operation/activity/layout.tsx:58
 msgid "Share"
 msgstr "Share"
 
