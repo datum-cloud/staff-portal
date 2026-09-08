@@ -1,6 +1,6 @@
 import { getBillingAccountDisplayName, getBillingAccountDisplayStatus } from '../utils';
 import { BadgeState } from '@/components/badge';
-import { DisplayId, DisplayName } from '@/components/display';
+import { DisplayName } from '@/components/display';
 import {
   EMBEDDED_TABLE_BODY_CLASS,
   EMBEDDED_TABLE_CELL_CLASS,
@@ -57,12 +57,6 @@ export function OrgBillingAccountsCard({ orgName, className }: OrgBillingAccount
             />
           );
         },
-      }),
-      columnHelper.accessor((row) => row.metadata?.name ?? '', {
-        id: 'id',
-        enableSorting: false,
-        header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
-        cell: ({ getValue }) => <DisplayId value={getValue()} />,
       }),
       columnHelper.accessor('status.phase', {
         id: 'phase',

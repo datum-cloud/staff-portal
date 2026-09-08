@@ -130,12 +130,6 @@ export default function Page() {
       header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => <DisplayName displayName={getPaymentMethodDisplayName(row.original)} />,
     }),
-    paymentMethodColumnHelper.accessor((row) => row.metadata?.name ?? '', {
-      id: 'id',
-      enableSorting: false,
-      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
-      cell: ({ getValue }) => <DisplayId value={getValue()} />,
-    }),
     paymentMethodColumnHelper.display({
       id: 'card',
       enableSorting: false,
@@ -179,15 +173,6 @@ export default function Page() {
         return (
           <DisplayName displayName={projectDisplayName} to={projectRoutes.detail(projectName)} />
         );
-      },
-    }),
-    bindingColumnHelper.accessor((row) => row.spec?.projectRef?.name ?? '', {
-      id: 'id',
-      enableSorting: false,
-      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
-      cell: ({ getValue }) => {
-        const projectName = getValue();
-        return projectName ? <DisplayId value={projectName} /> : <Text>—</Text>;
       },
     }),
     bindingColumnHelper.display({

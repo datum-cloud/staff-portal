@@ -2,7 +2,7 @@ import type { Route } from './+types/index';
 import { AppBadge } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
-import { DisplayId, DisplayName, DisplayText } from '@/components/display';
+import { DisplayName, DisplayText } from '@/components/display';
 import GitHubIcon from '@/components/icon/github';
 import GoogleIcon from '@/components/icon/google';
 import { UserAvatar } from '@/components/user-avatar';
@@ -147,12 +147,6 @@ export default function Page() {
             <DisplayText value={email} />
           </div>
         );
-      },
-    }),
-    columnHelper.accessor('metadata.name', {
-      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
-      cell: ({ getValue }) => {
-        return <DisplayId value={getValue() ?? ''} />;
       },
     }),
     columnHelper.accessor('status.platformAccess', {

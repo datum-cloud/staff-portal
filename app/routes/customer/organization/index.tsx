@@ -1,7 +1,6 @@
 import type { Route } from './+types/index';
 import { CustomerStatus } from '@/components/badge';
 import { DateTime } from '@/components/date';
-import { DisplayId } from '@/components/display';
 import {
   billingAccountHasCriticalPaymentFailure,
   formatPaymentMethodFailureTooltip,
@@ -149,20 +148,15 @@ export default function Page() {
 
   const columns = [
     columnHelper.accessor('name', {
-      id: 'id',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
-      cell: ({ getValue }) => <DisplayId value={getValue() ?? ''} />,
-    }),
-    columnHelper.accessor('name', {
       id: 'organizationName',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`Organization Name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
       cell: ({ row }) => (
         <Link to={`./${row.original.name}`}>{row.original.displayName || row.original.name}</Link>
       ),
     }),
     columnHelper.accessor((row) => row.contactInfo?.businessName ?? '', {
       id: 'company',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`Company Name`} />,
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Company`} />,
       cell: ({ getValue, row }) => {
         const company = getValue();
         return company ? (

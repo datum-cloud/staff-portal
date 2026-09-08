@@ -1,7 +1,6 @@
 import { BadgeState } from '@/components/badge';
 import { Chip } from '@/components/chip';
 import { DateTime } from '@/components/date';
-import { DisplayId } from '@/components/display';
 import { SearchResourceTable, type ControlledSearch } from '@/components/search-resource-table';
 import { ListColumnHeader } from '@/features/milo';
 import { projectRoutes } from '@/utils/config/routes.config';
@@ -106,11 +105,6 @@ export function EdgeList({
         const label = getValue();
         return to ? <Link to={to}>{label}</Link> : <span>{label}</span>;
       },
-    }),
-    columnHelper.accessor((row) => row.edge.metadata?.name ?? '', {
-      id: 'id',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
-      cell: ({ getValue }) => <DisplayId value={getValue()} />,
     }),
     ...(showProjectColumn
       ? [
