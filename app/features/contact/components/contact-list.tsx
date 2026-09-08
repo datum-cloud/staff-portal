@@ -1,7 +1,7 @@
 import { BadgeCondition } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
-import { DisplayId, DisplayName } from '@/components/display';
+import { DisplayName } from '@/components/display';
 import { ListTable, ListColumnHeader } from '@/features/milo';
 import { contactDeleteMutation } from '@/resources/request/client';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
@@ -65,11 +65,6 @@ export function ContactList({
   ];
 
   const columns = [
-    columnHelper.accessor((row) => row.metadata?.name ?? '', {
-      id: 'id',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
-      cell: ({ getValue }) => <DisplayId value={getValue()} />,
-    }),
     columnHelper.accessor(
       (row) =>
         [row.spec?.givenName, row.spec?.familyName].filter(Boolean).join(' ') ||

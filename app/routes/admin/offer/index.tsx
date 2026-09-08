@@ -1,7 +1,7 @@
 import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
-import { DisplayId, DisplayName } from '@/components/display';
+import { DisplayName } from '@/components/display';
 import {
   formatChargeTypes,
   formatLaunchStage,
@@ -12,11 +12,11 @@ import { useBillingDefaultOfferQuery, useOfferListQuery } from '@/resources/requ
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { offerRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
+import { createColumnHelper } from '@/utils/table';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1Offer } from '@openapi/billing.miloapis.com/v1alpha1';
-import { createColumnHelper } from '@/utils/table';
 
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Offers`);
@@ -30,11 +30,6 @@ export default function Page() {
   const defaultOfferName = defaultOfferQuery.data ?? '';
 
   const columns = [
-    columnHelper.accessor((row) => row.metadata?.name ?? '', {
-      id: 'id',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
-      cell: ({ getValue }) => <DisplayId value={getValue()} />,
-    }),
     columnHelper.accessor((row) => getOfferDisplayName(row), {
       id: 'name',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,

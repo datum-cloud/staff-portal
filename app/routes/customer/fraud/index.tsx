@@ -3,7 +3,6 @@ import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
-import { DisplayId } from '@/components/display';
 import { ListTable, ListColumnHeader } from '@/features/milo';
 import { useContactAllListQuery, useSearchUsersQuery } from '@/resources/request/client';
 import {
@@ -110,9 +109,11 @@ export default function Page() {
       header: ({ column }) => <ListColumnHeader column={column} title={t`User`} />,
       cell: ({ row }) => {
         const name = row.original.metadata?.name ?? '';
+        const userId = row.original.spec?.userRef?.name ?? '';
+        const contact = contactsByUser.get(userId);
         return (
           <Link to={fraudRoutes.evaluations.detail(name)} className="text-primary hover:underline">
-            <DisplayId value={row.original.spec?.userRef?.name ?? ''} />
+            {contact?.name || contact?.email || userId}
           </Link>
         );
       },

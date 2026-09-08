@@ -1,6 +1,6 @@
 import type { Route } from './+types/index';
 import { DateTime } from '@/components/date';
-import { DisplayId, DisplayName } from '@/components/display';
+import { DisplayName } from '@/components/display';
 import { ListPage, ListTable, ListColumnHeader } from '@/features/milo';
 import { useGroupListQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
@@ -18,11 +18,6 @@ export default function Page() {
   const tableQuery = useGroupListQuery();
 
   const columns = [
-    columnHelper.accessor((row) => row.metadata?.name ?? '', {
-      id: 'id',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
-      cell: ({ getValue }) => <DisplayId value={getValue()} truncate="fit" />,
-    }),
     columnHelper.accessor(
       (row) =>
         row.metadata?.annotations?.['kubernetes.io/display-name'] || row.metadata?.name || '',

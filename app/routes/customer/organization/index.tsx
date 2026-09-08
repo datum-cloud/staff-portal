@@ -1,7 +1,6 @@
 import type { Route } from './+types/index';
 import { CustomerStatus } from '@/components/badge';
 import { DateTime } from '@/components/date';
-import { DisplayId } from '@/components/display';
 import {
   billingAccountHasCriticalPaymentFailure,
   formatPaymentMethodFailureTooltip,
@@ -148,11 +147,6 @@ export default function Page() {
   );
 
   const columns = [
-    columnHelper.accessor('name', {
-      id: 'id',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
-      cell: ({ getValue }) => <DisplayId value={getValue() ?? ''} />,
-    }),
     columnHelper.accessor('name', {
       id: 'organizationName',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Organization Name`} />,

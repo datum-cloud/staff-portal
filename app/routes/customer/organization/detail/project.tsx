@@ -1,7 +1,6 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../shared';
 import type { Route } from './+types/index';
 import { DateTime } from '@/components/date';
-import { DisplayId } from '@/components/display';
 import { ListColumnHeader, ListTable } from '@/features/milo';
 import { ProjectDeletingFor, ProjectPhaseBadge, projectPhaseFilter } from '@/features/project';
 import { type ProjectPhase, withProjectPhase } from '@/features/project/lib/project-phase';
@@ -65,11 +64,6 @@ export default function Page() {
           {row.original.displayName || row.original.name}
         </Link>
       ),
-    }),
-    columnHelper.accessor('name', {
-      id: 'id',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
-      cell: ({ getValue }) => <DisplayId value={getValue() ?? ''} />,
     }),
     columnHelper.accessor('phase', {
       header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,

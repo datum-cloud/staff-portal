@@ -5,7 +5,7 @@ import {
 } from '../utils';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
-import { DisplayId, DisplayName } from '@/components/display';
+import { DisplayName } from '@/components/display';
 import {
   arrayIncludesAnyFilterFn,
   DATE_RANGE_OPTIONS,
@@ -178,11 +178,6 @@ export function BillingAccountList() {
           />
         );
       },
-    }),
-    columnHelper.accessor((row) => row.metadata?.name ?? '', {
-      id: 'id',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`ID`} />,
-      cell: ({ getValue }) => <DisplayId value={getValue()} />,
     }),
     columnHelper.accessor((row) => row.spec?.contactInfo?.businessName ?? '', {
       id: 'businessName',
