@@ -93,6 +93,7 @@ export default function Page() {
       searchPlaceholder={t`Search projects...`}
       emptyMessage={t`No projects found.`}
       filters={[projectPhaseFilter(t`Status`)]}
+      filterLayout="inline"
       searchFn={(row, search) => {
         const q = search.trim().toLowerCase();
         if (!q) return true;
