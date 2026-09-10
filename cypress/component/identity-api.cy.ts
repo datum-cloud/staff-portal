@@ -120,7 +120,10 @@ describe('identity API — passkey recovery', () => {
         expect(url.searchParams.get('labelSelector')).to.equal(
           'identity.miloapis.com/user=u1,identity.miloapis.com/recovery-requested-by=support'
         );
-        expect(url.searchParams.get('limit')).to.equal('20');
+        // Raised well above the 20 the history card can meaningfully show, because the
+        // limit is applied server-side before the client sorts by time — a low cap would
+        // hand us an arbitrary subset.
+        expect(url.searchParams.get('limit')).to.equal('200');
       });
     });
   });

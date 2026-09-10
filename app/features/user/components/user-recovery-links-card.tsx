@@ -29,6 +29,10 @@ export const UserRecoveryLinksCard = ({
     (b.metadata?.creationTimestamp ?? '').localeCompare(a.metadata?.creationTimestamp ?? '')
   );
 
+  // The server hit its limit and is offering a continuation token, so this sort ran over a
+  // subset. Say so rather than presenting a truncated list as the whole history.
+  const isTruncated = Boolean(data?.metadata?.continue);
+
   return (
     <SectionCard
       className={className}
@@ -49,6 +53,11 @@ export const UserRecoveryLinksCard = ({
         </Text>
       ) : (
         <div className="divide-stepper-line flex flex-col divide-y">
+          {isTruncated && (
+            <Text textColor="muted" size="sm" className="pb-2">
+              <Trans>Showing the most recent {sent.length}; older links exist.</Trans>
+            </Text>
+          )}
           {sent.map((email) => (
             <div
               key={email.metadata?.name}

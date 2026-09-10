@@ -22,8 +22,14 @@ export const RECOVERY_REQUESTED_BY_LABEL = 'identity.miloapis.com/recovery-reque
 export const RECOVERY_REQUESTER_ANNOTATION = 'identity.miloapis.com/recovery-requester';
 export const RECOVERY_REASON_ANNOTATION = 'identity.miloapis.com/recovery-reason';
 
-/** How many past recovery links the history card shows. */
-export const RECOVERY_EMAIL_HISTORY_LIMIT = 20;
+/**
+ * How many recovery Emails to ask for. The limit is applied server-side, before the history
+ * card sorts by creationTimestamp — and a Kubernetes list is not time-ordered, so a low cap
+ * would hand back an arbitrary subset that then sorts only within itself. Set high enough
+ * that truncation is rare; when it does happen the response carries `metadata.continue` and
+ * the card says so.
+ */
+export const RECOVERY_EMAIL_HISTORY_LIMIT = 200;
 
 // Cross-user lookups are gated server-side by a SAR against milo on
 // `get iam.miloapis.com/users/<userId>`. When userId equals the caller's

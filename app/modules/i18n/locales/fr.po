@@ -2173,7 +2173,7 @@ msgstr ""
 msgid "Links"
 msgstr ""
 
-#: app/features/user/components/user-recovery-links-card.tsx:41
+#: app/features/user/components/user-recovery-links-card.tsx:45
 msgid "Links support has emailed to this user's verified address"
 msgstr ""
 
@@ -2219,7 +2219,7 @@ msgstr ""
 msgid "Loading status..."
 msgstr ""
 
-#: app/features/user/components/user-recovery-links-card.tsx:44
+#: app/features/user/components/user-recovery-links-card.tsx:48
 #: app/routes/auth/callback.tsx:71
 #: app/routes/auth/login.tsx:41
 #: app/routes/auth/logout.tsx:36
@@ -2718,7 +2718,7 @@ msgstr ""
 msgid "No quotas are above 70% utilization"
 msgstr ""
 
-#: app/features/user/components/user-recovery-links-card.tsx:48
+#: app/features/user/components/user-recovery-links-card.tsx:52
 msgid "No recovery links have been sent to this user."
 msgstr ""
 
@@ -2949,7 +2949,7 @@ msgstr ""
 msgid "Passkey Recovery"
 msgstr ""
 
-#: app/features/user/components/user-recovery-links-card.tsx:38
+#: app/features/user/components/user-recovery-links-card.tsx:42
 msgid "Passkey Recovery Links"
 msgstr ""
 
@@ -3818,7 +3818,7 @@ msgid "Sent"
 msgstr ""
 
 #. placeholder {0}: email.metadata?.annotations?.[RECOVERY_REQUESTER_ANNOTATION] ?? '—'
-#: app/features/user/components/user-recovery-links-card.tsx:58
+#: app/features/user/components/user-recovery-links-card.tsx:67
 msgid "Sent by {0}"
 msgstr ""
 
@@ -3890,6 +3890,11 @@ msgstr ""
 
 #: app/features/milo/components/page/rich-filter-panel.tsx:544
 msgid "Show more"
+msgstr ""
+
+#. placeholder {0}: sent.length
+#: app/features/user/components/user-recovery-links-card.tsx:58
+msgid "Showing the most recent {0}; older links exist."
 msgstr ""
 
 #: app/routes/customer/project/detail/export-policy/detail.tsx:149

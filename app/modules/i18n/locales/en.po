@@ -2173,7 +2173,7 @@ msgstr "Linked projects"
 msgid "Links"
 msgstr "Links"
 
-#: app/features/user/components/user-recovery-links-card.tsx:41
+#: app/features/user/components/user-recovery-links-card.tsx:45
 msgid "Links support has emailed to this user's verified address"
 msgstr "Links support has emailed to this user's verified address"
 
@@ -2219,7 +2219,7 @@ msgstr "Loading provider..."
 msgid "Loading status..."
 msgstr "Loading status..."
 
-#: app/features/user/components/user-recovery-links-card.tsx:44
+#: app/features/user/components/user-recovery-links-card.tsx:48
 #: app/routes/auth/callback.tsx:71
 #: app/routes/auth/login.tsx:41
 #: app/routes/auth/logout.tsx:36
@@ -2718,7 +2718,7 @@ msgstr "No quotas"
 msgid "No quotas are above 70% utilization"
 msgstr "No quotas are above 70% utilization"
 
-#: app/features/user/components/user-recovery-links-card.tsx:48
+#: app/features/user/components/user-recovery-links-card.tsx:52
 msgid "No recovery links have been sent to this user."
 msgstr "No recovery links have been sent to this user."
 
@@ -2949,7 +2949,7 @@ msgstr "Passing"
 msgid "Passkey Recovery"
 msgstr "Passkey Recovery"
 
-#: app/features/user/components/user-recovery-links-card.tsx:38
+#: app/features/user/components/user-recovery-links-card.tsx:42
 msgid "Passkey Recovery Links"
 msgstr "Passkey Recovery Links"
 
@@ -3818,7 +3818,7 @@ msgid "Sent"
 msgstr "Sent"
 
 #. placeholder {0}: email.metadata?.annotations?.[RECOVERY_REQUESTER_ANNOTATION] ?? '—'
-#: app/features/user/components/user-recovery-links-card.tsx:58
+#: app/features/user/components/user-recovery-links-card.tsx:67
 msgid "Sent by {0}"
 msgstr "Sent by {0}"
 
@@ -3891,6 +3891,11 @@ msgstr "Show filters"
 #: app/features/milo/components/page/rich-filter-panel.tsx:544
 msgid "Show more"
 msgstr "Show more"
+
+#. placeholder {0}: sent.length
+#: app/features/user/components/user-recovery-links-card.tsx:58
+msgid "Showing the most recent {0}; older links exist."
+msgstr "Showing the most recent {0}; older links exist."
 
 #: app/routes/customer/project/detail/export-policy/detail.tsx:149
 msgid "Sinks"

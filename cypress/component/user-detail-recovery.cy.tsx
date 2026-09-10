@@ -186,6 +186,41 @@ describe('Account recovery on the user detail page', () => {
       cy.get('[data-slot="section-card"]').should('not.contain.text', 'Code');
     });
 
+    it('warns that the list is truncated when the server says there is more', () => {
+      cy.intercept('GET', '**/emails*', {
+        statusCode: 200,
+        body: {
+          code: 'OK',
+          path: '/x',
+          data: {
+            items: [
+              recoveryEmail('account-recovery-aaa', 'staff-1', 'ticket 42', '2026-09-09T08:00:00Z'),
+            ],
+            metadata: { continue: 'opaque-token' },
+          },
+        },
+      }).as('listEmails');
+
+      mountInDataRouter(<UserRecoveryLinksCard userId="u1" />);
+      cy.wait('@listEmails');
+      cy.contains('Showing the most recent 1').should('be.visible');
+      cy.contains('older links exist').should('be.visible');
+    });
+
+    it('says nothing about truncation when the server returned everything', () => {
+      cy.intercept(
+        'GET',
+        '**/emails*',
+        proxyList([
+          recoveryEmail('account-recovery-aaa', 'staff-1', 'ticket 42', '2026-09-09T08:00:00Z'),
+        ])
+      ).as('listEmails');
+
+      mountInDataRouter(<UserRecoveryLinksCard userId="u1" />);
+      cy.wait('@listEmails');
+      cy.contains('older links exist').should('not.exist');
+    });
+
     it('shows an empty state when no link has been sent', () => {
       cy.intercept('GET', '**/emails*', proxyList([])).as('listEmails');
       mountInDataRouter(<UserRecoveryLinksCard userId="u1" />);
