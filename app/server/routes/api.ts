@@ -4,6 +4,7 @@ import { initPluginRegistry } from '@/modules/plugins/server';
 import { pluginsRoutes } from '@/modules/plugins/server/routes';
 import { PrometheusService } from '@/modules/prometheus';
 import { EnvVariables } from '@/server/iface';
+import { isWatchRequest, proxyWatch } from '@/server/lib/watch';
 import { logApiError, logApiSuccess } from '@/server/logger';
 import { authMiddleware, getToken } from '@/server/middleware';
 import { createErrorResponse, createSuccessResponse } from '@/server/response';
@@ -103,6 +104,30 @@ api.all('/internal/*', authMiddleware(), async (c) => {
       requestBody = await c.req.text();
     }
 
+    // A watch never completes, so it is piped straight to the client: buffering it
+    // would grow without bound, and the JSON envelope would break the newline
+    // delimited events the client reads.
+    if (isWatchRequest(searchParams.watch)) {
+      const watchResponse = await proxyWatch({
+        url: `${env.API_URL}/${fullTargetUrl}`,
+        method: c.req.method,
+        headers,
+        requestId: reqId,
+        signal: c.req.raw.signal,
+        body: requestBody,
+      });
+
+      logApiSuccess(reqLogger, {
+        path,
+        method: c.req.method,
+        duration: Math.round(performance.now() - startTime),
+        userAgent: requestContext.userAgent,
+        ip: requestContext.ip,
+      });
+
+      return watchResponse;
+    }
+
     // Forward the request to the actual API
     const response = await apiRequest({
       method: c.req.method,
@@ -124,6 +149,10 @@ api.all('/internal/*', authMiddleware(), async (c) => {
 
     return createSuccessResponseWithHeaders(c, reqId, response, path);
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      return new Response(null, { status: 499 });
+    }
+
     const duration = Math.round(performance.now() - startTime);
 
     // Use typed error logging
