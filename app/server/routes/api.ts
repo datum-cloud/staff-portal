@@ -4,6 +4,7 @@ import { initPluginRegistry } from '@/modules/plugins/server';
 import { pluginsRoutes } from '@/modules/plugins/server/routes';
 import { PrometheusService } from '@/modules/prometheus';
 import { EnvVariables } from '@/server/iface';
+import { isWatchRequest } from '@/server/lib/watch';
 import { logApiError, logApiSuccess } from '@/server/logger';
 import { authMiddleware, getToken } from '@/server/middleware';
 import { createErrorResponse, createSuccessResponse } from '@/server/response';
@@ -101,6 +102,36 @@ api.all('/internal/*', authMiddleware(), async (c) => {
     let requestBody: string | undefined;
     if (c.req.method !== 'GET' && c.req.method !== 'HEAD') {
       requestBody = await c.req.text();
+    }
+
+    // A watch never completes, so it is piped straight to the client: buffering it
+    // would grow without bound, and the JSON envelope would break the newline
+    // delimited events the client reads.
+    if (isWatchRequest(searchParams.watch)) {
+      const upstream = await fetch(`${env.API_URL}/${fullTargetUrl}`, {
+        method: c.req.method,
+        headers,
+        signal: c.req.raw.signal,
+        ...(requestBody && { body: requestBody }),
+      });
+
+      logApiSuccess(reqLogger, {
+        path,
+        method: c.req.method,
+        duration: Math.round(performance.now() - startTime),
+        userAgent: requestContext.userAgent,
+        ip: requestContext.ip,
+      });
+
+      return new Response(upstream.body, {
+        status: upstream.status,
+        headers: {
+          'Content-Type': upstream.headers.get('Content-Type') ?? 'application/json',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0',
+        },
+      });
     }
 
     // Forward the request to the actual API
