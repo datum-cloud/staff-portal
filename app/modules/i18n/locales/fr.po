@@ -565,7 +565,7 @@ msgstr ""
 #: app/features/quota/components/quota-bucket-list.tsx:171
 #: app/features/quota/components/quota-grant-list.tsx:162
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:39
-#: app/features/user/components/user-recovery-link-dialog.tsx:54
+#: app/features/user/components/user-recovery-link-dialog.tsx:61
 #: app/features/user/components/user-reject-dialog.tsx:30
 #: app/routes/admin/group/detail/member.tsx:142
 #: app/routes/admin/group/detail/member.tsx:156
@@ -3315,7 +3315,7 @@ msgstr ""
 
 #: app/features/project/components/project-suspension-card.tsx:90
 #: app/features/service-catalog/components/conditions-card.tsx:35
-#: app/features/user/components/user-recovery-link-dialog.tsx:76
+#: app/features/user/components/user-recovery-link-dialog.tsx:83
 #: app/routes/customer/user/detail/index.tsx:446
 msgid "Reason"
 msgstr ""
@@ -3328,6 +3328,10 @@ msgstr ""
 msgid "Reason for setting access to {pendingState}"
 msgstr ""
 
+#: app/features/user/components/user-recovery-link-dialog.tsx:44
+msgid "Reason must be at least {REASON_MIN_LENGTH} characters"
+msgstr ""
+
 #: app/features/dashboard/components/recent-users-widget.tsx:98
 msgid "Recent Users"
 msgstr ""
@@ -3336,7 +3340,7 @@ msgstr ""
 msgid "Recipient"
 msgstr ""
 
-#: app/features/user/components/user-recovery-link-dialog.tsx:77
+#: app/features/user/components/user-recovery-link-dialog.tsx:84
 msgid "Recorded on the audit record alongside your name."
 msgstr ""
 
@@ -3791,16 +3795,16 @@ msgstr ""
 msgid "Self Service"
 msgstr ""
 
-#: app/features/user/components/user-recovery-link-dialog.tsx:53
+#: app/features/user/components/user-recovery-link-dialog.tsx:60
 msgid "Send link"
 msgstr ""
 
-#: app/features/user/components/user-recovery-link-dialog.tsx:51
+#: app/features/user/components/user-recovery-link-dialog.tsx:58
 #: app/routes/customer/user/detail/index.tsx:486
 msgid "Send passkey recovery link"
 msgstr ""
 
-#: app/features/user/components/user-recovery-link-dialog.tsx:62
+#: app/features/user/components/user-recovery-link-dialog.tsx:69
 msgid "Sending the recovery link failed."
 msgstr ""
 
@@ -4124,7 +4128,7 @@ msgstr ""
 msgid "This email is already used by <0>{displayName}</0>."
 msgstr ""
 
-#: app/features/user/components/user-recovery-link-dialog.tsx:52
+#: app/features/user/components/user-recovery-link-dialog.tsx:59
 msgid "This emails a one-time passkey setup link to the verified address on file for \"{name}\". It expires in about an hour and cannot be recalled."
 msgstr ""
 
@@ -4160,7 +4164,7 @@ msgstr ""
 msgid "Thresholds"
 msgstr ""
 
-#: app/features/user/components/user-recovery-link-dialog.tsx:79
+#: app/features/user/components/user-recovery-link-dialog.tsx:86
 msgid "Ticket reference, or why the user needs this..."
 msgstr ""
 

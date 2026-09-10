@@ -1,5 +1,6 @@
 import { UserRecoveryLinkDialog } from '@/features/user';
 import { httpClient } from '@/modules/axios/axios.client';
+import { messages } from '@/modules/i18n/locales/en';
 import { AppProvider } from '@/providers/app.provider';
 import { RHFAdapter } from '@datum-cloud/datum-ui/form/adapters/rhf';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
@@ -71,6 +72,22 @@ describe('UserRecoveryLinkDialog', () => {
       mountDialog();
       cy.get('[role="dialog"]').find('input, textarea').first().type('ticket 42');
       cy.contains('button', 'Send link').should('not.be.disabled');
+    });
+
+    it('shows the minimum-length message while the reason is too short', () => {
+      mountDialog();
+      cy.get('[role="dialog"]').find('input, textarea').first().type('abc');
+      cy.get('[role="dialog"]').should('contain.text', 'Reason must be at least 5 characters');
+    });
+
+    it('carries that message in the translation catalog like every other string', () => {
+      // The message is rendered verbatim by datum-ui's RHF adapter, so a raw template
+      // literal would reach a French-locale user in English. Being in the catalog is the
+      // only thing that proves it went through the `t` macro.
+      const inCatalog = Object.values(messages).some((entry) =>
+        JSON.stringify(entry).includes('Reason must be at least')
+      );
+      expect(inCatalog, 'minimum-length message is in the compiled en catalog').to.equal(true);
     });
   });
 

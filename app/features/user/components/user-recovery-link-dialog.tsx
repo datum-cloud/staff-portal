@@ -4,7 +4,7 @@ import { Alert, AlertDescription } from '@datum-cloud/datum-ui/alert';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import z from 'zod';
 
 interface UserRecoveryLinkDialogProps {
@@ -16,12 +16,6 @@ interface UserRecoveryLinkDialogProps {
 
 // Matches the reason floor the platform-access actions use; the reason is the audit record.
 const REASON_MIN_LENGTH = 5;
-
-const recoveryLinkSchema = z.object({
-  reason: z
-    .string()
-    .min(REASON_MIN_LENGTH, `Reason must be at least ${REASON_MIN_LENGTH} characters`),
-});
 
 /**
  * The support-side half of Phase C account recovery: mails a one-time passkey setup link
@@ -38,6 +32,19 @@ export function UserRecoveryLinkDialog({
   const { t } = useLingui();
   const { sendRecoveryLink } = usePasskeyRecovery();
   const [error, setError] = useState<string | null>(null);
+
+  // Built here rather than at module scope because the validation message is user-facing:
+  // datum-ui's form renders it verbatim, so it has to come from `t` like every other
+  // string. Same pattern as the contact-group form.
+  const recoveryLinkSchema = useMemo(
+    () =>
+      z.object({
+        reason: z
+          .string()
+          .min(REASON_MIN_LENGTH, t`Reason must be at least ${REASON_MIN_LENGTH} characters`),
+      }),
+    [t]
+  );
 
   const name = `${user?.spec?.givenName ?? ''} ${user?.spec?.familyName ?? ''}`.trim();
 
