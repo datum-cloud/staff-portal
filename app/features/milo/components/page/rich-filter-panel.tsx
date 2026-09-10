@@ -314,14 +314,14 @@ export function FilterGroupSkeleton({
             {label}
           </Text>
         ) : (
-          <Skeleton className="h-3.5 w-20" />
+          <Skeleton className="h-3 w-20" />
         )}
       </div>
       <div className="flex flex-col gap-1">
         {Array.from({ length: rows }, (_, i) => (
           <div key={i} className="flex items-center gap-2 px-2 py-1">
             <Skeleton className="size-4 shrink-0 rounded-sm" />
-            <Skeleton className={cn('h-3.5 flex-1', i % 2 === 0 ? 'max-w-[70%]' : 'max-w-[55%]')} />
+            <Skeleton className={cn('h-3 flex-1', i % 2 === 0 ? 'max-w-[70%]' : 'max-w-[55%]')} />
             <Skeleton className="h-3 w-5 shrink-0" />
           </div>
         ))}
