@@ -9,14 +9,19 @@ import { DescriptionList } from '@/components/description-list';
 import { buildMaxmindRowGroups, extractMaxmindInsights } from '@/features/fraud';
 import { SectionCard } from '@/features/milo';
 import {
+  emailVerificationState,
   PLATFORM_ACCESS_STATES,
   PlatformAccessState,
+  UserIdentityCard,
+  UserRecoveryLinkDialog,
+  UserRecoveryLinksCard,
   useUserPlatformAccess,
 } from '@/features/user';
-import { UserIdentityCard } from '@/features/user/components/user-identity-card';
 import { useEnv } from '@/hooks';
 import {
+  identityQueryKeys,
   useFraudEvaluationListQuery,
+  usePasskeyListQuery,
   usePlatformAccessQuery,
   userDeleteMutation,
   userQueryKeys,
@@ -34,10 +39,20 @@ import {
 } from '@datum-cloud/datum-ui/select';
 import { Textarea } from '@datum-cloud/datum-ui/textarea';
 import { toast } from '@datum-cloud/datum-ui/toast';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useQueryClient } from '@tanstack/react-query';
-import { Globe, Loader2, Mail, MapPin, Shield, ShieldAlert, UserIcon } from 'lucide-react';
+import {
+  Globe,
+  KeyRound,
+  Loader2,
+  Mail,
+  MapPin,
+  Shield,
+  ShieldAlert,
+  UserIcon,
+} from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useRevalidator } from 'react-router';
 
@@ -79,6 +94,14 @@ export default function Page() {
   const [pendingState, setPendingState] = useState<PlatformAccessState | null>(null);
   const [reason, setReason] = useState('');
   const [isUpdatingAccess, setIsUpdatingAccess] = useState(false);
+  const [recoveryDialogOpen, setRecoveryDialogOpen] = useState(false);
+
+  // An unverified address cannot receive a link — the server rejects the create — so the
+  // action is disabled rather than letting support discover that in an error. A state milo
+  // has not synced yet is not a yes either: it stays disabled until the provider says so.
+  const emailVerification = emailVerificationState(data);
+  const emailVerified = emailVerification === 'Verified';
+  const { data: passkeys } = usePasskeyListQuery(userId);
 
   const { data: platformAccess, isLoading: isPlatformAccessLoading } =
     usePlatformAccessQuery(userId);
@@ -99,6 +122,11 @@ export default function Page() {
     await userDeleteMutation(data.metadata?.name ?? '');
     navigate(userRoutes.list());
     toast.success(t`User deleted successfully`);
+  };
+
+  const refreshRecoveryLinks = async () => {
+    await queryClient.invalidateQueries({ queryKey: identityQueryKeys.recoveryEmails(userId) });
+    revalidate();
   };
 
   const applyState = async (state: PlatformAccessState, reason?: string) => {
@@ -220,6 +248,8 @@ export default function Page() {
             readOnly
             showSessions
             className="shadow-none"
+            passkeyCount={passkeys ? passkeys.items.length : undefined}
+            emailVerification={emailVerification}
           />
 
           {maxmindGroups.network.length > 0 && (
@@ -333,101 +363,144 @@ export default function Page() {
             </span>
           }
           description={<Trans>Manage this user&apos;s platform access state</Trans>}>
-          {isPlatformAccessLoading ? (
-            <Text textColor="muted" size="sm">
-              <Trans>Loading...</Trans>
-            </Text>
-          ) : platformAccess ? (
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex flex-col gap-1">
-                  <Text size="sm" weight="medium">
-                    <Trans>Platform Access State</Trans>
-                  </Text>
-                  <Text textColor="muted" size="sm">
-                    <Trans>
-                      Controls whether this user can sign in and access the platform. Suspending or
-                      rejecting requires a reason.
-                    </Trans>
-                  </Text>
-                </div>
-                <div className="flex items-center gap-2">
-                  {isUpdatingAccess && (
-                    <Loader2 className="text-muted-foreground size-4 animate-spin" />
-                  )}
-                  <Select
-                    value={currentState}
-                    onValueChange={handleStateSelect}
-                    disabled={isUpdatingAccess || pendingState !== null}>
-                    <SelectTrigger className="w-44">
-                      <SelectValue placeholder={t`Select state`} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {PLATFORM_ACCESS_STATES.map((state) => (
-                        <SelectItem key={state} value={state}>
-                          {state}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* Inline reason capture when moving to Suspended/Rejected */}
-              {pendingState && (
-                <div className="flex flex-col gap-2 rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-900/20">
-                  <Text size="sm" weight="medium">
-                    <Trans>Reason for setting access to {pendingState}</Trans>
-                  </Text>
-                  <Textarea
-                    value={reason}
-                    onChange={(e) => setReason(e.target.value)}
-                    placeholder={t`Enter a reason (at least ${REASON_MIN_LENGTH} characters)...`}
-                    rows={3}
-                    autoFocus
-                    disabled={isUpdatingAccess}
-                  />
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      type="tertiary"
-                      theme="borderless"
-                      size="small"
-                      onClick={cancelPendingState}
-                      disabled={isUpdatingAccess}>
-                      <Trans>Cancel</Trans>
-                    </Button>
-                    <Button
-                      type="primary"
-                      size="small"
-                      loading={isUpdatingAccess}
-                      disabled={reason.trim().length < REASON_MIN_LENGTH}
-                      onClick={confirmPendingState}>
-                      <Trans>Confirm</Trans>
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              {/* Read-only reason — only meaningful while Suspended or Rejected */}
-              {!pendingState &&
-                (currentState === 'Suspended' || currentState === 'Rejected') &&
-                platformAccess.spec?.reason && (
-                  <div className="bg-muted/40 rounded-md border p-3">
-                    <Text size="sm" weight="medium" className="mb-1 block">
-                      <Trans>Reason</Trans>
+          <div className="flex flex-col gap-4">
+            {isPlatformAccessLoading ? (
+              <Text textColor="muted" size="sm">
+                <Trans>Loading...</Trans>
+              </Text>
+            ) : platformAccess ? (
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex flex-col gap-1">
+                    <Text size="sm" weight="medium">
+                      <Trans>Platform Access State</Trans>
                     </Text>
                     <Text textColor="muted" size="sm">
-                      {platformAccess.spec.reason}
+                      <Trans>
+                        Controls whether this user can sign in and access the platform. Suspending
+                        or rejecting requires a reason.
+                      </Trans>
                     </Text>
                   </div>
+                  <div className="flex items-center gap-2">
+                    {isUpdatingAccess && (
+                      <Loader2 className="text-muted-foreground size-4 animate-spin" />
+                    )}
+                    <Select
+                      value={currentState}
+                      onValueChange={handleStateSelect}
+                      disabled={isUpdatingAccess || pendingState !== null}>
+                      <SelectTrigger className="w-44">
+                        <SelectValue placeholder={t`Select state`} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {PLATFORM_ACCESS_STATES.map((state) => (
+                          <SelectItem key={state} value={state}>
+                            {state}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Inline reason capture when moving to Suspended/Rejected */}
+                {pendingState && (
+                  <div className="flex flex-col gap-2 rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-900/20">
+                    <Text size="sm" weight="medium">
+                      <Trans>Reason for setting access to {pendingState}</Trans>
+                    </Text>
+                    <Textarea
+                      value={reason}
+                      onChange={(e) => setReason(e.target.value)}
+                      placeholder={t`Enter a reason (at least ${REASON_MIN_LENGTH} characters)...`}
+                      rows={3}
+                      autoFocus
+                      disabled={isUpdatingAccess}
+                    />
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        type="tertiary"
+                        theme="borderless"
+                        size="small"
+                        onClick={cancelPendingState}
+                        disabled={isUpdatingAccess}>
+                        <Trans>Cancel</Trans>
+                      </Button>
+                      <Button
+                        type="primary"
+                        size="small"
+                        loading={isUpdatingAccess}
+                        disabled={reason.trim().length < REASON_MIN_LENGTH}
+                        onClick={confirmPendingState}>
+                        <Trans>Confirm</Trans>
+                      </Button>
+                    </div>
+                  </div>
                 )}
+
+                {/* Read-only reason — only meaningful while Suspended or Rejected */}
+                {!pendingState &&
+                  (currentState === 'Suspended' || currentState === 'Rejected') &&
+                  platformAccess.spec?.reason && (
+                    <div className="bg-muted/40 rounded-md border p-3">
+                      <Text size="sm" weight="medium" className="mb-1 block">
+                        <Trans>Reason</Trans>
+                      </Text>
+                      <Text textColor="muted" size="sm">
+                        {platformAccess.spec.reason}
+                      </Text>
+                    </div>
+                  )}
+              </div>
+            ) : (
+              <Text textColor="muted" size="sm">
+                <Trans>No platform access record exists for this user yet.</Trans>
+              </Text>
+            )}
+
+            {/* Phase C account recovery, beside the other admin action. Inert until infra
+                flips RECOVERY_LINKS_ENABLED and the PolicyBinding exists; both answers come
+                back as a message in the dialog rather than a silent failure. */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-4">
+              <div className="flex flex-col gap-1">
+                <Text size="sm" weight="medium">
+                  <Trans>Passkey Recovery</Trans>
+                </Text>
+                <Text textColor="muted" size="sm">
+                  <Trans>
+                    Emails a one-time passkey setup link to the verified address on file. It expires
+                    in about an hour and cannot be recalled.
+                  </Trans>
+                </Text>
+              </div>
+              <Tooltip
+                message={t`Email not verified — ask the user to sign up again to get a fresh verification link`}
+                hidden={emailVerified}
+                delayDuration={0}>
+                <span className="inline-flex">
+                  <Button
+                    theme="outline"
+                    size="small"
+                    icon={<KeyRound size={16} />}
+                    disabled={!emailVerified}
+                    onClick={() => setRecoveryDialogOpen(true)}>
+                    <Trans>Send passkey recovery link</Trans>
+                  </Button>
+                </span>
+              </Tooltip>
             </div>
-          ) : (
-            <Text textColor="muted" size="sm">
-              <Trans>No platform access record exists for this user yet.</Trans>
-            </Text>
-          )}
+          </div>
         </SectionCard>
+
+        <UserRecoveryLinksCard userId={userId} className="mt-4" />
+
+        <UserRecoveryLinkDialog
+          open={recoveryDialogOpen}
+          user={data}
+          onOpenChange={setRecoveryDialogOpen}
+          onSuccess={refreshRecoveryLinks}
+        />
 
         <DangerZoneCard
           deleteTitle={t`Delete User`}
