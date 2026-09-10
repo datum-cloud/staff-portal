@@ -155,6 +155,10 @@ api.all('/internal/*', authMiddleware(), async (c) => {
 
     return createSuccessResponseWithHeaders(c, reqId, response, path);
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      return new Response(null, { status: 499 });
+    }
+
     const duration = Math.round(performance.now() - startTime);
 
     // Use typed error logging
