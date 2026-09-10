@@ -1,11 +1,11 @@
-import { isEmailVerified, UserIdentityCard, UserRecoveryLinksCard } from '@/features/user';
+import { emailVerificationState, UserIdentityCard, UserRecoveryLinksCard } from '@/features/user';
 import { httpClient } from '@/modules/axios/axios.client';
 import { AppProvider } from '@/providers/app.provider';
 import UserDetailPage from '@/routes/customer/user/detail/index';
 import { RHFAdapter } from '@datum-cloud/datum-ui/form/adapters/rhf';
 import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
-import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
+import { UserWithEmailVerification } from '@openapi/iam.miloapis.com/v1alpha1/pending-phase-c';
 import { client } from '@openapi/shared/client.gen';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { mount } from 'cypress/react';
@@ -38,22 +38,11 @@ const mountInDataRouter = (node: ReactNode, staffUserName = 'staff-1') => {
   );
 };
 
-const verifiedUser = (verified: boolean): ComMiloapisIamV1Alpha1User => ({
+// Omit the argument for the user milo has not synced yet — the field is simply absent.
+const userWith = (emailVerification?: 'Verified' | 'Unverified'): UserWithEmailVerification => ({
   metadata: { name: 'u1', creationTimestamp: '2026-09-01T10:00:00Z' },
   spec: { email: 'ada@example.com', givenName: 'Ada', familyName: 'Lovelace' },
-  status: {
-    conditions: verified
-      ? [
-          {
-            type: 'EmailVerified',
-            status: 'True',
-            reason: 'VerifiedByAuthProvider',
-            message: '',
-            lastTransitionTime: '2026-09-01T10:00:00Z',
-          },
-        ]
-      : [],
-  },
+  status: emailVerification ? { emailVerification } : {},
 });
 
 const proxyList = (items: unknown[]) => ({
@@ -74,50 +63,36 @@ const recoveryEmail = (name: string, requester: string, reason: string, when: st
 });
 
 describe('Account recovery on the user detail page', () => {
-  describe('isEmailVerified', () => {
-    it('is true only when the EmailVerified condition reads True', () => {
-      expect(isEmailVerified(verifiedUser(true))).to.equal(true);
+  describe('emailVerificationState', () => {
+    it('reads Verified from status.emailVerification', () => {
+      expect(emailVerificationState(userWith('Verified'))).to.equal('Verified');
     });
 
-    it('is false when the condition is absent — an older user nobody has swept yet', () => {
-      expect(isEmailVerified(verifiedUser(false))).to.equal(false);
-      expect(isEmailVerified({})).to.equal(false);
+    it('reads Unverified from status.emailVerification', () => {
+      expect(emailVerificationState(userWith('Unverified'))).to.equal('Unverified');
     });
 
-    it('is false when the condition reads False', () => {
+    it('is NotSynced when the field is absent — the provider has not written one yet', () => {
+      expect(emailVerificationState(userWith())).to.equal('NotSynced');
+      expect(emailVerificationState({})).to.equal('NotSynced');
+    });
+
+    it('ignores the retired EmailVerified condition', () => {
       expect(
-        isEmailVerified({
+        emailVerificationState({
           status: {
             conditions: [
               {
                 type: 'EmailVerified',
-                status: 'False',
-                reason: 'NotVerified',
-                message: '',
-                lastTransitionTime: '2026-09-01T10:00:00Z',
-              },
-            ],
-          },
-        })
-      ).to.equal(false);
-    });
-
-    it('ignores other conditions that happen to read True', () => {
-      expect(
-        isEmailVerified({
-          status: {
-            conditions: [
-              {
-                type: 'Ready',
                 status: 'True',
-                reason: 'Ready',
+                reason: 'VerifiedByAuthProvider',
                 message: '',
                 lastTransitionTime: '2026-09-01T10:00:00Z',
               },
             ],
           },
         })
-      ).to.equal(false);
+      ).to.equal('NotSynced');
     });
   });
 
@@ -127,21 +102,34 @@ describe('Account recovery on the user detail page', () => {
     });
 
     it('shows the passkey count and a Verified badge', () => {
-      mountInDataRouter(<UserIdentityCard userId="u1" readOnly passkeyCount={2} emailVerified />);
+      mountInDataRouter(
+        <UserIdentityCard userId="u1" readOnly passkeyCount={2} emailVerification="Verified" />
+      );
       cy.contains('2 passkeys').should('be.visible');
       cy.contains('Verified').should('be.visible');
     });
 
-    it('says Unverified when the condition is not True', () => {
+    it('says Unverified when the field reads Unverified', () => {
       mountInDataRouter(
-        <UserIdentityCard userId="u1" readOnly passkeyCount={0} emailVerified={false} />
+        <UserIdentityCard userId="u1" readOnly passkeyCount={0} emailVerification="Unverified" />
       );
       cy.contains('Unverified').should('be.visible');
       cy.contains('0 passkeys').should('be.visible');
     });
 
+    it('says Not synced when milo has not written the field yet', () => {
+      mountInDataRouter(
+        <UserIdentityCard userId="u1" readOnly passkeyCount={0} emailVerification="NotSynced" />
+      );
+      cy.contains('Not synced').should('be.visible');
+      // The distinction is the point: support must not read this as "never verified".
+      cy.contains('Unverified').should('not.exist');
+    });
+
     it('renders "1 passkey" in the singular', () => {
-      mountInDataRouter(<UserIdentityCard userId="u1" readOnly passkeyCount={1} emailVerified />);
+      mountInDataRouter(
+        <UserIdentityCard userId="u1" readOnly passkeyCount={1} emailVerification="Verified" />
+      );
       cy.contains('1 passkey').should('be.visible');
     });
 
@@ -149,6 +137,7 @@ describe('Account recovery on the user detail page', () => {
       mountInDataRouter(<UserIdentityCard userId="u1" readOnly />);
       cy.contains('passkey').should('not.exist');
       cy.contains('Unverified').should('not.exist');
+      cy.contains('Not synced').should('not.exist');
     });
   });
 
@@ -230,7 +219,7 @@ describe('Account recovery on the user detail page', () => {
   });
 
   describe('The action on the page', () => {
-    const mountPage = (verified: boolean) => {
+    const mountPage = (emailVerification?: 'Verified' | 'Unverified') => {
       cy.intercept('GET', '**/useridentities*', proxyList([]));
       cy.intercept('GET', '**/passkeys*', proxyList([{ metadata: { name: 'pk-1' } }]));
       cy.intercept('GET', '**/emails*', proxyList([]));
@@ -252,7 +241,7 @@ describe('Account recovery on the user detail page', () => {
               {
                 id: 'user-detail',
                 index: true,
-                loader: () => verifiedUser(verified),
+                loader: () => userWith(emailVerification),
                 element: <UserDetailPage />,
               },
             ],
@@ -275,13 +264,13 @@ describe('Account recovery on the user detail page', () => {
     };
 
     it('offers the action and opens the reason dialog', () => {
-      mountPage(true);
+      mountPage('Verified');
       cy.contains('button', 'Send passkey recovery link').should('not.be.disabled').click();
       cy.get('[role="dialog"]').should('contain.text', 'cannot be recalled');
     });
 
     it('disables the action for an unverified address and says why', () => {
-      mountPage(false);
+      mountPage('Unverified');
       cy.contains('button', 'Send passkey recovery link').should('be.disabled');
       // Radix opens on pointer events, and a disabled button swallows them — the tooltip
       // trigger is the span wrapping it, which is why the hover goes there.
@@ -292,14 +281,20 @@ describe('Account recovery on the user detail page', () => {
       cy.contains('Email not verified').should('exist');
     });
 
+    it('disables the action while the field is unsynced, and says so on the badge', () => {
+      mountPage();
+      cy.contains('Not synced').should('be.visible');
+      cy.contains('button', 'Send passkey recovery link').should('be.disabled');
+    });
+
     it('shows the passkey count and verified badge read from the live queries', () => {
-      mountPage(true);
+      mountPage('Verified');
       cy.contains('1 passkey').should('be.visible');
       cy.contains('Verified').should('be.visible');
     });
 
     it('shows the links-sent history card', () => {
-      mountPage(true);
+      mountPage('Verified');
       cy.contains('No recovery links have been sent').should('be.visible');
     });
   });

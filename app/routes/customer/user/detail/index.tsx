@@ -9,7 +9,7 @@ import { DescriptionList } from '@/components/description-list';
 import { buildMaxmindRowGroups, extractMaxmindInsights } from '@/features/fraud';
 import { SectionCard } from '@/features/milo';
 import {
-  isEmailVerified,
+  emailVerificationState,
   PLATFORM_ACCESS_STATES,
   PlatformAccessState,
   UserIdentityCard,
@@ -97,8 +97,10 @@ export default function Page() {
   const [recoveryDialogOpen, setRecoveryDialogOpen] = useState(false);
 
   // An unverified address cannot receive a link — the server rejects the create — so the
-  // action is disabled rather than letting support discover that in an error.
-  const emailVerified = isEmailVerified(data);
+  // action is disabled rather than letting support discover that in an error. A state milo
+  // has not synced yet is not a yes either: it stays disabled until the provider says so.
+  const emailVerification = emailVerificationState(data);
+  const emailVerified = emailVerification === 'Verified';
   const { data: passkeys } = usePasskeyListQuery(userId);
 
   const { data: platformAccess, isLoading: isPlatformAccessLoading } =
@@ -247,7 +249,7 @@ export default function Page() {
             showSessions
             className="shadow-none"
             passkeyCount={passkeys ? passkeys.items.length : undefined}
-            emailVerified={emailVerified}
+            emailVerification={emailVerification}
           />
 
           {maxmindGroups.network.length > 0 && (

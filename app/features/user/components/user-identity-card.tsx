@@ -12,22 +12,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Plural, Trans, useLingui } from '@lingui/react/macro';
-import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
+import { UserWithEmailVerification } from '@openapi/iam.miloapis.com/v1alpha1/pending-phase-c';
 import { FingerprintPattern, GlobeIcon, KeyRound, MailIcon } from 'lucide-react';
 import { ComponentType, SVGProps } from 'react';
 
 /**
- * The condition zitadel-provider writes from Zitadel's email events and reconciles on every
- * sweep (passkey Phase C / C11). Absent means "nobody has looked yet", which for every
- * decision that depends on it reads the same as not verified.
+ * The three answers support needs from milo's two-valued `status.emailVerification`
+ * (passkey Phase C / C11). `NotSynced` is the absent field: zitadel-provider has not
+ * written one yet, which is not the same as an address nobody ever verified. Only
+ * `Verified` may send a recovery link.
  */
-const EMAIL_VERIFIED_CONDITION = 'EmailVerified';
+export type EmailVerificationState = 'Verified' | 'Unverified' | 'NotSynced';
 
-/** Whether the auth provider has confirmed this user's email address. */
-export const isEmailVerified = (user: ComMiloapisIamV1Alpha1User): boolean =>
-  user.status?.conditions?.some(
-    (condition) => condition.type === EMAIL_VERIFIED_CONDITION && condition.status === 'True'
-  ) ?? false;
+/** What the auth provider says about this user's email address, and whether it has said. */
+export const emailVerificationState = (user: UserWithEmailVerification): EmailVerificationState =>
+  user.status?.emailVerification ?? 'NotSynced';
 
 const PROVIDERS: Record<string, { label: string; Icon: ComponentType<SVGProps<SVGSVGElement>> }> = {
   email: { label: 'Email', Icon: MailIcon },
@@ -41,7 +40,7 @@ export const UserIdentityCard = ({
   showSessions = false,
   className,
   passkeyCount,
-  emailVerified,
+  emailVerification,
 }: {
   userId: string;
   readOnly?: boolean;
@@ -49,10 +48,20 @@ export const UserIdentityCard = ({
   className?: string;
   /** Enrolled passkeys. Omit when the caller could not read them — the row is then hidden. */
   passkeyCount?: number;
-  /** From the EmailVerified condition; see {@link isEmailVerified}. */
-  emailVerified?: boolean;
+  /**
+   * From `status.emailVerification`; see {@link emailVerificationState}. Omit when the
+   * caller could not read it — the badge is then hidden.
+   */
+  emailVerification?: EmailVerificationState;
 }) => {
   const { t } = useLingui();
+  // "Not synced" is deliberately its own badge rather than a second way of saying
+  // Unverified — support reads it as "ask again later", not "this address never passed".
+  const badges: Record<EmailVerificationState, { state: string; message: string }> = {
+    Verified: { state: 'true', message: t`Verified` },
+    Unverified: { state: 'false', message: t`Unverified` },
+    NotSynced: { state: 'unknown', message: t`Not synced` },
+  };
   const { data: identities, isLoading: isLoadingIdentities } = useIdentityListQuery(userId);
   const { data: sessionItems = [], isLoading: isLoadingSessions } = useSessionListEnrichedQuery(
     showSessions ? userId : ''
@@ -74,7 +83,7 @@ export const UserIdentityCard = ({
         {/* What support needs before sending a recovery link: how many passkeys this account
             has, and whether its address is verified at all (an unverified one gets a
             rejection, not a link). */}
-        {(passkeyCount !== undefined || emailVerified !== undefined) && (
+        {(passkeyCount !== undefined || emailVerification !== undefined) && (
           <div className="mb-4 flex flex-wrap items-center gap-x-6 gap-y-2">
             {passkeyCount !== undefined && (
               <span className="flex items-center gap-2">
@@ -84,13 +93,10 @@ export const UserIdentityCard = ({
                 </Text>
               </span>
             )}
-            {emailVerified !== undefined && (
+            {emailVerification !== undefined && (
               <span className="flex items-center gap-2">
                 <MailIcon className="text-muted-foreground size-3.5" />
-                <BadgeState
-                  state={emailVerified ? 'true' : 'false'}
-                  message={emailVerified ? t`Verified` : t`Unverified`}
-                />
+                <BadgeState {...badges[emailVerification]} />
               </span>
             )}
           </div>
