@@ -1,5 +1,6 @@
 import { IdentityItem } from './identity-item';
 import { IdentityItemSkeleton } from './identity-item-skeleton';
+import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import GitHubIcon from '@/components/icon/github';
 import GoogleIcon from '@/components/icon/google';
@@ -10,9 +11,23 @@ import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
-import { Trans } from '@lingui/react/macro';
-import { FingerprintPattern, GlobeIcon, MailIcon } from 'lucide-react';
+import { Plural, Trans, useLingui } from '@lingui/react/macro';
+import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
+import { FingerprintPattern, GlobeIcon, KeyRound, MailIcon } from 'lucide-react';
 import { ComponentType, SVGProps } from 'react';
+
+/**
+ * The condition zitadel-provider writes from Zitadel's email events and reconciles on every
+ * sweep (passkey Phase C / C11). Absent means "nobody has looked yet", which for every
+ * decision that depends on it reads the same as not verified.
+ */
+const EMAIL_VERIFIED_CONDITION = 'EmailVerified';
+
+/** Whether the auth provider has confirmed this user's email address. */
+export const isEmailVerified = (user: ComMiloapisIamV1Alpha1User): boolean =>
+  user.status?.conditions?.some(
+    (condition) => condition.type === EMAIL_VERIFIED_CONDITION && condition.status === 'True'
+  ) ?? false;
 
 const PROVIDERS: Record<string, { label: string; Icon: ComponentType<SVGProps<SVGSVGElement>> }> = {
   email: { label: 'Email', Icon: MailIcon },
@@ -25,12 +40,19 @@ export const UserIdentityCard = ({
   readOnly = false,
   showSessions = false,
   className,
+  passkeyCount,
+  emailVerified,
 }: {
   userId: string;
   readOnly?: boolean;
   showSessions?: boolean;
   className?: string;
+  /** Enrolled passkeys. Omit when the caller could not read them — the row is then hidden. */
+  passkeyCount?: number;
+  /** From the EmailVerified condition; see {@link isEmailVerified}. */
+  emailVerified?: boolean;
 }) => {
+  const { t } = useLingui();
   const { data: identities, isLoading: isLoadingIdentities } = useIdentityListQuery(userId);
   const { data: sessionItems = [], isLoading: isLoadingSessions } = useSessionListEnrichedQuery(
     showSessions ? userId : ''
@@ -49,6 +71,31 @@ export const UserIdentityCard = ({
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {/* What support needs before sending a recovery link: how many passkeys this account
+            has, and whether its address is verified at all (an unverified one gets a
+            rejection, not a link). */}
+        {(passkeyCount !== undefined || emailVerified !== undefined) && (
+          <div className="mb-4 flex flex-wrap items-center gap-x-6 gap-y-2">
+            {passkeyCount !== undefined && (
+              <span className="flex items-center gap-2">
+                <KeyRound className="text-muted-foreground size-3.5" />
+                <Text size="sm">
+                  <Plural value={passkeyCount} one="# passkey" other="# passkeys" />
+                </Text>
+              </span>
+            )}
+            {emailVerified !== undefined && (
+              <span className="flex items-center gap-2">
+                <MailIcon className="text-muted-foreground size-3.5" />
+                <BadgeState
+                  state={emailVerified ? 'true' : 'false'}
+                  message={emailVerified ? t`Verified` : t`Unverified`}
+                />
+              </span>
+            )}
+          </div>
+        )}
+
         {isLoadingIdentities ? (
           <IdentityItemSkeleton count={1} showActions />
         ) : (
