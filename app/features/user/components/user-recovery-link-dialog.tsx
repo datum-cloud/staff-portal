@@ -39,8 +39,11 @@ export function UserRecoveryLinkDialog({
   const recoveryLinkSchema = useMemo(
     () =>
       z.object({
+        // Trim first: the server rejects a whitespace-only reason (it TrimSpaces before the
+        // required check), so accepting one here would only move the refusal later.
         reason: z
           .string()
+          .trim()
           .min(REASON_MIN_LENGTH, t`Reason must be at least ${REASON_MIN_LENGTH} characters`),
       }),
     [t]

@@ -80,6 +80,13 @@ describe('UserRecoveryLinkDialog', () => {
       cy.get('[role="dialog"]').should('contain.text', 'Reason must be at least 5 characters');
     });
 
+    it('rejects a whitespace-only reason, which is what the server would reject anyway', () => {
+      mountDialog();
+      cy.get('[role="dialog"]').find('input, textarea').first().type('      ');
+      cy.contains('button', 'Send link').should('be.disabled');
+      cy.get('[role="dialog"]').should('contain.text', 'Reason must be at least 5 characters');
+    });
+
     it('carries that message in the translation catalog like every other string', () => {
       // The message is rendered verbatim by datum-ui's RHF adapter, so a raw template
       // literal would reach a French-locale user in English. Being in the catalog is the
