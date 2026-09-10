@@ -731,7 +731,7 @@ function InlineFilter(config: FilterGroupConfig) {
             )}>
             <span>{label}</span>
             {selected.length > 0 && (
-              <span className="bg-primary/15 text-primary flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[11px] font-medium">
+              <span className="bg-primary/15 text-primary flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-xs font-medium">
                 {selected.length}
               </span>
             )}
@@ -773,7 +773,7 @@ function InlineFilter(config: FilterGroupConfig) {
           )}>
           <span>{label}</span>
           {selected.length > 0 && (
-            <span className="bg-primary/15 text-primary flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[11px] font-medium">
+            <span className="bg-primary/15 text-primary flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-xs font-medium">
               {selected.length}
             </span>
           )}
