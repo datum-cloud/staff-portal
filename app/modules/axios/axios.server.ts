@@ -53,9 +53,12 @@ export function withRequestContext<T>(ctx: RequestContextStore, fn: () => T): T 
   return getStore().run(ctx, fn);
 }
 
+const MAX_RESPONSE_BYTES = 32 * 1024 * 1024;
+
 export const http = Axios.create({
   timeout: 55 * 1000,
   baseURL: env.API_URL,
+  maxContentLength: MAX_RESPONSE_BYTES,
 });
 
 function defaultLogCallback(curlResult: any, err: any) {
