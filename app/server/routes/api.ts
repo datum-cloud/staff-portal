@@ -4,7 +4,7 @@ import { initPluginRegistry } from '@/modules/plugins/server';
 import { pluginsRoutes } from '@/modules/plugins/server/routes';
 import { PrometheusService } from '@/modules/prometheus';
 import { EnvVariables } from '@/server/iface';
-import { isWatchRequest } from '@/server/lib/watch';
+import { isWatchRequest, proxyWatch } from '@/server/lib/watch';
 import { logApiError, logApiSuccess } from '@/server/logger';
 import { authMiddleware, getToken } from '@/server/middleware';
 import { createErrorResponse, createSuccessResponse } from '@/server/response';
@@ -108,11 +108,13 @@ api.all('/internal/*', authMiddleware(), async (c) => {
     // would grow without bound, and the JSON envelope would break the newline
     // delimited events the client reads.
     if (isWatchRequest(searchParams.watch)) {
-      const upstream = await fetch(`${env.API_URL}/${fullTargetUrl}`, {
+      const watchResponse = await proxyWatch({
+        url: `${env.API_URL}/${fullTargetUrl}`,
         method: c.req.method,
-        headers: { ...headers, 'X-Request-ID': reqId ?? '' },
+        headers,
+        requestId: reqId,
         signal: c.req.raw.signal,
-        ...(requestBody && { body: requestBody }),
+        body: requestBody,
       });
 
       logApiSuccess(reqLogger, {
@@ -123,15 +125,7 @@ api.all('/internal/*', authMiddleware(), async (c) => {
         ip: requestContext.ip,
       });
 
-      return new Response(upstream.body, {
-        status: upstream.status,
-        headers: {
-          'Content-Type': upstream.headers.get('Content-Type') ?? 'application/json',
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          Pragma: 'no-cache',
-          Expires: '0',
-        },
-      });
+      return watchResponse;
     }
 
     // Forward the request to the actual API
