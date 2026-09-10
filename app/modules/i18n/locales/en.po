@@ -3348,11 +3348,11 @@ msgstr "Recorded on the audit record alongside your name."
 msgid "Records"
 msgstr "Records"
 
-#: app/features/user/hooks/usePasskeyRecovery.ts:57
+#: app/features/user/hooks/usePasskeyRecovery.ts:65
 msgid "Recovery link sent to the user's verified email address"
 msgstr "Recovery link sent to the user's verified email address"
 
-#: app/features/user/hooks/usePasskeyRecovery.ts:64
+#: app/features/user/hooks/usePasskeyRecovery.ts:72
 msgid "Recovery links are unavailable right now. Nothing was sent."
 msgstr "Recovery links are unavailable right now. Nothing was sent."
 
@@ -3808,7 +3808,7 @@ msgstr "Send passkey recovery link"
 msgid "Sending the recovery link failed."
 msgstr "Sending the recovery link failed."
 
-#: app/features/user/hooks/usePasskeyRecovery.ts:74
+#: app/features/user/hooks/usePasskeyRecovery.ts:82
 msgid "Sending the recovery link failed. Nothing was sent."
 msgstr "Sending the recovery link failed. Nothing was sent."
 
@@ -4512,7 +4512,7 @@ msgstr "Yes"
 msgid "Yes — new accounts use this Offer"
 msgstr "Yes — new accounts use this Offer"
 
-#: app/features/user/hooks/usePasskeyRecovery.ts:69
+#: app/features/user/hooks/usePasskeyRecovery.ts:77
 msgid "You are not authorized to send a recovery link for this user. Nothing was sent."
 msgstr "You are not authorized to send a recovery link for this user. Nothing was sent."
 
