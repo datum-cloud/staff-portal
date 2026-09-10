@@ -110,7 +110,7 @@ api.all('/internal/*', authMiddleware(), async (c) => {
     if (isWatchRequest(searchParams.watch)) {
       const upstream = await fetch(`${env.API_URL}/${fullTargetUrl}`, {
         method: c.req.method,
-        headers,
+        headers: { ...headers, 'X-Request-ID': reqId ?? '' },
         signal: c.req.raw.signal,
         ...(requestBody && { body: requestBody }),
       });
