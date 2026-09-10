@@ -561,6 +561,7 @@ msgstr ""
 #: app/features/quota/components/quota-bucket-list.tsx:171
 #: app/features/quota/components/quota-grant-list.tsx:162
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:39
+#: app/features/user/components/user-recovery-link-dialog.tsx:54
 #: app/features/user/components/user-reject-dialog.tsx:30
 #: app/routes/admin/group/detail/member.tsx:142
 #: app/routes/admin/group/detail/member.tsx:156
@@ -3285,6 +3286,7 @@ msgstr ""
 
 #: app/features/project/components/project-suspension-card.tsx:90
 #: app/features/service-catalog/components/conditions-card.tsx:35
+#: app/features/user/components/user-recovery-link-dialog.tsx:76
 #: app/routes/customer/user/detail/index.tsx:417
 msgid "Reason"
 msgstr ""
@@ -3305,8 +3307,20 @@ msgstr ""
 msgid "Recipient"
 msgstr ""
 
+#: app/features/user/components/user-recovery-link-dialog.tsx:77
+msgid "Recorded on the audit record alongside your name."
+msgstr ""
+
 #: app/features/dns/components/dns-zone-list.tsx:128
 msgid "Records"
+msgstr ""
+
+#: app/features/user/hooks/usePasskeyRecovery.ts:51
+msgid "Recovery link sent to the user's verified email address"
+msgstr ""
+
+#: app/features/user/hooks/usePasskeyRecovery.ts:58
+msgid "Recovery links are disabled right now. Nothing was sent — ask the infrastructure team to switch them on."
 msgstr ""
 
 #: app/features/domain/components/domain-list.tsx:81
@@ -3748,6 +3762,22 @@ msgstr ""
 msgid "Self Service"
 msgstr ""
 
+#: app/features/user/components/user-recovery-link-dialog.tsx:53
+msgid "Send link"
+msgstr ""
+
+#: app/features/user/components/user-recovery-link-dialog.tsx:51
+msgid "Send passkey recovery link"
+msgstr ""
+
+#: app/features/user/components/user-recovery-link-dialog.tsx:62
+msgid "Sending the recovery link failed."
+msgstr ""
+
+#: app/features/user/hooks/usePasskeyRecovery.ts:68
+msgid "Sending the recovery link failed. Nothing was sent."
+msgstr ""
+
 #: app/features/email/components/email-detail.tsx:80
 #: app/features/email/components/email-list.tsx:100
 msgid "Sent"
@@ -4059,6 +4089,10 @@ msgstr ""
 msgid "This email is already used by <0>{displayName}</0>."
 msgstr ""
 
+#: app/features/user/components/user-recovery-link-dialog.tsx:52
+msgid "This emails a one-time passkey setup link to the verified address on file for \"{name}\". It expires in about an hour and cannot be recalled."
+msgstr ""
+
 #: app/features/feature-flags/components/feature-flag-list.tsx:182
 msgid "This flag is managed by the platform and can't be changed from here."
 msgstr ""
@@ -4089,6 +4123,10 @@ msgstr ""
 
 #: app/features/fraud/policy/policy-detail.tsx:48
 msgid "Thresholds"
+msgstr ""
+
+#: app/features/user/components/user-recovery-link-dialog.tsx:79
+msgid "Ticket reference, or why the user needs this..."
 msgstr ""
 
 #: app/features/fraud/detail/maxmind-rows.tsx:212
@@ -4426,6 +4464,10 @@ msgstr ""
 
 #: app/routes/admin/offer/detail.tsx:327
 msgid "Yes — new accounts use this Offer"
+msgstr ""
+
+#: app/features/user/hooks/usePasskeyRecovery.ts:63
+msgid "You are not authorized to send a recovery link for this user. Nothing was sent."
 msgstr ""
 
 #: app/routes/admin/service-catalog/detail/index.tsx:105
