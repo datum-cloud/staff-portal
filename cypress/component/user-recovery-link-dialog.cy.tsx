@@ -132,10 +132,31 @@ describe('UserRecoveryLinkDialog', () => {
       cy.wait('@createLink');
     };
 
-    it('renders a plain explanation when recovery links are disabled (503)', () => {
+    // The apiserver returns 503 from two unrelated places — the feature flag being off, and
+    // Zitadel being unreachable — so a single hardcoded explanation is wrong half the time.
+    it('says the links are disabled when that is what the server said (503)', () => {
       interceptCreate(503, 'recovery links are disabled (--recovery-links-enabled=false)');
       submit();
-      cy.get('[role="dialog"]').should('contain.text', 'Recovery links are disabled');
+      cy.get('[role="dialog"]').should('contain.text', 'recovery links are disabled');
+      cy.get('[role="dialog"]').should('not.contain.text', 'zitadel unavailable');
+      cy.get('@onOpenChange').should('not.have.been.calledWith', false);
+    });
+
+    it('says the provider is unavailable when that is what the server said (503)', () => {
+      interceptCreate(503, 'zitadel unavailable');
+      submit();
+      cy.get('[role="dialog"]').should('contain.text', 'zitadel unavailable');
+      cy.get('[role="dialog"]').should('not.contain.text', 'recovery links are disabled');
+      cy.get('@onOpenChange').should('not.have.been.calledWith', false);
+    });
+
+    it('falls back to its own words when a 503 carries no message', () => {
+      cy.intercept('POST', '**/passkeyregistrationlinks*', {
+        statusCode: 503,
+        body: { requestId: 'req-1', code: 'API_REQUEST_FAILED', path: '/x' },
+      }).as('createLink');
+      submit();
+      cy.get('[role="dialog"]').should('contain.text', 'Recovery links are unavailable');
       cy.get('@onOpenChange').should('not.have.been.calledWith', false);
     });
 

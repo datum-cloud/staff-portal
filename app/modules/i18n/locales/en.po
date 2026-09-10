@@ -3348,13 +3348,13 @@ msgstr "Recorded on the audit record alongside your name."
 msgid "Records"
 msgstr "Records"
 
-#: app/features/user/hooks/usePasskeyRecovery.ts:51
+#: app/features/user/hooks/usePasskeyRecovery.ts:57
 msgid "Recovery link sent to the user's verified email address"
 msgstr "Recovery link sent to the user's verified email address"
 
-#: app/features/user/hooks/usePasskeyRecovery.ts:58
-msgid "Recovery links are disabled right now. Nothing was sent — ask the infrastructure team to switch them on."
-msgstr "Recovery links are disabled right now. Nothing was sent — ask the infrastructure team to switch them on."
+#: app/features/user/hooks/usePasskeyRecovery.ts:64
+msgid "Recovery links are unavailable right now. Nothing was sent."
+msgstr "Recovery links are unavailable right now. Nothing was sent."
 
 #: app/features/domain/components/domain-list.tsx:81
 #: app/routes/customer/project/detail/dns/detail.tsx:176
@@ -3808,7 +3808,7 @@ msgstr "Send passkey recovery link"
 msgid "Sending the recovery link failed."
 msgstr "Sending the recovery link failed."
 
-#: app/features/user/hooks/usePasskeyRecovery.ts:68
+#: app/features/user/hooks/usePasskeyRecovery.ts:74
 msgid "Sending the recovery link failed. Nothing was sent."
 msgstr "Sending the recovery link failed. Nothing was sent."
 
@@ -4507,7 +4507,7 @@ msgstr "Yes"
 msgid "Yes — new accounts use this Offer"
 msgstr "Yes — new accounts use this Offer"
 
-#: app/features/user/hooks/usePasskeyRecovery.ts:63
+#: app/features/user/hooks/usePasskeyRecovery.ts:69
 msgid "You are not authorized to send a recovery link for this user. Nothing was sent."
 msgstr "You are not authorized to send a recovery link for this user. Nothing was sent."
 

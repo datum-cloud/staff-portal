@@ -6,8 +6,12 @@ import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import axios from 'axios';
 
-/** The apiserver returns this while infra's RECOVERY_LINKS_ENABLED is still off. */
-const STATUS_LINKS_DISABLED = 503;
+/**
+ * The apiserver returns 503 from two unrelated places: while infra's RECOVERY_LINKS_ENABLED
+ * is still off, and when Zitadel itself is unreachable. Only the server knows which, so this
+ * status shows the server's message rather than one guess about the cause.
+ */
+const STATUS_UNAVAILABLE = 503;
 /** No PolicyBinding granting identity-passkey-registration-links-editor. */
 const STATUS_NOT_AUTHORIZED = 403;
 
@@ -26,10 +30,12 @@ const serverMessage = (error: unknown): string | undefined => {
  * The requester is the signed-in staff user — the server rejects a `requestedBy` that is
  * not the authenticated caller, so this is the only value that can work.
  *
- * A failure is re-thrown carrying a message support can act on. Two of the server's
- * outcomes are expected and get our own words: 503 means infrastructure has not switched
- * the backstop on, 403 means this account lacks the grant. Everything else — an unverified
- * address above all — is shown in the server's own words, because that is the useful part.
+ * A failure is re-thrown carrying a message support can act on. 403 is the one outcome that
+ * gets our own words, because both of the server's 403s mean the same thing to the person
+ * reading it: this account lacks the grant. Everything else is shown in the server's own
+ * words — an unverified address, and either cause of a 503 — because that is the useful
+ * part, and because guessing which of two causes produced a 503 misdirects support during
+ * an outage.
  */
 export function usePasskeyRecovery() {
   const { t } = useLingui();
@@ -53,9 +59,9 @@ export function usePasskeyRecovery() {
       } catch (error) {
         const status = axios.isAxiosError(error) ? error.response?.status : undefined;
 
-        if (status === STATUS_LINKS_DISABLED) {
+        if (status === STATUS_UNAVAILABLE) {
           throw new Error(
-            t`Recovery links are disabled right now. Nothing was sent — ask the infrastructure team to switch them on.`
+            serverMessage(error) ?? t`Recovery links are unavailable right now. Nothing was sent.`
           );
         }
         if (status === STATUS_NOT_AUTHORIZED) {
