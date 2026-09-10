@@ -20,7 +20,6 @@ import {
   useBillingAccountListQuery,
   usePaymentMethodListQuery,
 } from '@/resources/request/client';
-import { billingAccountRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { createColumnHelper } from '@/utils/table';
 import { t } from '@lingui/core/macro';
@@ -36,16 +35,9 @@ export const meta: Route.MetaFunction = () => {
   return metaObject(t`Organizations`);
 };
 
-type BillingContact = {
-  name: string;
-  email: string;
-  accountName: string;
-};
-
 type OrgDisplayStatus = 'Active' | 'Inactive' | 'Failed';
 
 type OrgRow = GqlOrganization & {
-  billingContacts: BillingContact[];
   displayStatus: OrgDisplayStatus;
   statusTooltip: string;
 };
@@ -53,16 +45,6 @@ type OrgRow = GqlOrganization & {
 const columnHelper = createColumnHelper<OrgRow>();
 
 const getOrgCreatedAt = (org: GqlOrganization) => org.createdAt;
-
-function contactFromAccount(
-  account: ComMiloapisBillingV1Alpha1BillingAccount
-): BillingContact | null {
-  const accountName = account.metadata?.name ?? '';
-  const email = account.spec?.contactInfo?.email?.trim() ?? '';
-  const name = account.spec?.contactInfo?.name?.trim() || email || accountName;
-  if (!accountName || (!email && !name)) return null;
-  return { name, email, accountName };
-}
 
 function orgPaymentFailureTooltip(
   accounts: ComMiloapisBillingV1Alpha1BillingAccount[],
@@ -98,29 +80,6 @@ export default function Page() {
     return map;
   }, [billingQuery.data?.items]);
 
-  const contactsByOrg = useMemo(() => {
-    const map = new Map<string, BillingContact[]>();
-    const accounts = [...(billingQuery.data?.items ?? [])].sort((a, b) => {
-      const readyA = a.status?.phase === 'Ready' ? 0 : 1;
-      const readyB = b.status?.phase === 'Ready' ? 0 : 1;
-      return readyA - readyB;
-    });
-
-    for (const account of accounts) {
-      const orgName = orgNameFromNamespace(account.metadata?.namespace);
-      const contact = contactFromAccount(account);
-      if (!orgName || !contact) continue;
-
-      const existing = map.get(orgName) ?? [];
-      const dedupeKey = contact.email.toLowerCase() || contact.accountName;
-      if (existing.some((c) => (c.email.toLowerCase() || c.accountName) === dedupeKey)) {
-        continue;
-      }
-      existing.push(contact);
-    }
-    return map;
-  }, [billingQuery.data?.items]);
-
   const rows = useMemo<OrgRow[]>(
     () =>
       orgs.map((org) => {
@@ -134,7 +93,6 @@ export default function Page() {
 
         return {
           ...org,
-          billingContacts: contactsByOrg.get(org.name) ?? [],
           displayStatus: hasPaymentFailure
             ? 'Failed'
             : ((org.onboardingStatus as OrgDisplayStatus) ?? 'Inactive'),
@@ -143,7 +101,7 @@ export default function Page() {
             : onboardingTooltip,
         };
       }),
-    [orgs, contactsByOrg, accountsByOrg, paymentMethods]
+    [orgs, accountsByOrg, paymentMethods]
   );
 
   const columns = [
@@ -165,28 +123,6 @@ export default function Page() {
           </Link>
         ) : (
           <span className="text-muted-foreground">——</span>
-        );
-      },
-    }),
-    columnHelper.accessor((row) => row.billingContacts.length, {
-      id: 'billingContact',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`Billing Contact`} />,
-      cell: ({ row }) => {
-        const contacts = row.original.billingContacts;
-        if (contacts.length === 0) {
-          return <span className="text-muted-foreground">——</span>;
-        }
-        const emails = contacts
-          .map((contact) => contact.email)
-          .filter(Boolean)
-          .join(', ');
-        const primary = contacts[0];
-        const href = billingAccountRoutes.detail(row.original.name, primary.accountName);
-        const label = emails || primary.name;
-        return (
-          <Link to={href} className="block truncate text-sm">
-            {label}
-          </Link>
         );
       },
     }),
@@ -269,11 +205,7 @@ export default function Page() {
             row.type.toLowerCase().includes(q) ||
             (row.contactInfo?.businessName?.toLowerCase().includes(q) ?? false) ||
             (row.contactInfo?.email?.toLowerCase().includes(q) ?? false) ||
-            (row.contactInfo?.name?.toLowerCase().includes(q) ?? false) ||
-            row.billingContacts.some(
-              (contact) =>
-                contact.email.toLowerCase().includes(q) || contact.name.toLowerCase().includes(q)
-            )
+            (row.contactInfo?.name?.toLowerCase().includes(q) ?? false)
           );
         }}
       />
