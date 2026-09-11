@@ -26,6 +26,7 @@ const ALL_TARGET_RESOURCES: NetMiloapisGoSearchPkgApisSearchV1Alpha1TargetResour
   { group: 'resourcemanager.miloapis.com', version: 'v1alpha1', kind: 'Project' },
   // Resources
   { group: 'networking.datumapis.com', version: 'v1alpha', kind: 'Domain' },
+  { group: 'networking.datumapis.com', version: 'v1alpha', kind: 'HTTPProxy' },
   { group: 'dns.networking.miloapis.com', version: 'v1alpha1', kind: 'DNSZone' },
   { group: 'notification.miloapis.com', version: 'v1alpha1', kind: 'Contact' },
   // Note disabled until ResourceIndexPolicy is deployed
@@ -37,7 +38,7 @@ const ALL_TARGET_RESOURCES: NetMiloapisGoSearchPkgApisSearchV1Alpha1TargetResour
  * upstream search index. `tenant.name` is the project name when
  * `tenant.type` is "project" (case-insensitive — the API spec says lowercase
  * but in practice "Project" has been observed). Use this to resolve project
- * scope for project-scoped resources (DNS zones, domains).
+ * scope for project-scoped resources (DNS zones, domains, HTTPProxy/ALBs).
  */
 export interface SearchResultItem<T> {
   resource: T;
@@ -50,6 +51,7 @@ export interface GroupedSearchResults {
   projects: SearchResultItem<ComMiloapisResourcemanagerV1Alpha1Project>[];
   domains: SearchResultItem<ComDatumapisNetworkingV1AlphaDomain>[];
   dnsZones: SearchResultItem<ComMiloapisNetworkingDnsV1Alpha1DnsZone>[];
+  httpProxies: SearchResultItem<ComDatumapisNetworkingV1AlphaHttpProxy>[];
   contacts: SearchResultItem<ComMiloapisNotificationV1Alpha1Contact>[];
 }
 
@@ -87,6 +89,7 @@ export async function searchAllQuery(queryString: string): Promise<GroupedSearch
     projects: [],
     domains: [],
     dnsZones: [],
+    httpProxies: [],
     contacts: [],
   };
 
@@ -112,7 +115,14 @@ export async function searchAllQuery(queryString: string): Promise<GroupedSearch
         });
       }
     } else if (apiVersion.startsWith('networking.datumapis.com/')) {
-      grouped.domains.push({ resource: resource as ComDatumapisNetworkingV1AlphaDomain, tenant });
+      if (kind === 'httpproxy') {
+        grouped.httpProxies.push({
+          resource: resource as ComDatumapisNetworkingV1AlphaHttpProxy,
+          tenant,
+        });
+      } else {
+        grouped.domains.push({ resource: resource as ComDatumapisNetworkingV1AlphaDomain, tenant });
+      }
     } else if (apiVersion.startsWith('dns.networking.miloapis.com/')) {
       grouped.dnsZones.push({
         resource: resource as ComMiloapisNetworkingDnsV1Alpha1DnsZone,

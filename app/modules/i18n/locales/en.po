@@ -194,7 +194,7 @@ msgstr "Active organizations"
 msgid "Active Sessions"
 msgstr "Active Sessions"
 
-#: app/components/app-search/use-app-search.ts:54
+#: app/components/app-search/use-app-search.ts:55
 #: app/components/app-sidebar/index.tsx:187
 #: app/routes/customer/organization/detail/activity/layout.tsx:5
 #: app/routes/customer/organization/detail/layout.tsx:87
@@ -350,6 +350,10 @@ msgstr "API Group"
 #: app/routes/customer/resource/index.tsx:397
 msgid "Application Load Balancer"
 msgstr "Application Load Balancer"
+
+#: app/components/app-search/search-results.tsx:308
+msgid "Application Load Balancers"
+msgstr "Application Load Balancers"
 
 #: app/routes/admin/service-catalog/detail/consumers.tsx:115
 msgid "Approval"
@@ -838,7 +842,7 @@ msgstr "Contact name"
 msgid "Contact updated successfully"
 msgstr "Contact updated successfully"
 
-#: app/components/app-search/search-results.tsx:292
+#: app/components/app-search/search-results.tsx:339
 #: app/components/app-sidebar/index.tsx:147
 #: app/components/app-sidebar/index.tsx:153
 #: app/routes/customer/user/detail/contacts.tsx:9
@@ -1035,7 +1039,7 @@ msgstr "Danger Zone"
 msgid "Dark"
 msgstr "Dark"
 
-#: app/components/app-search/use-app-search.ts:34
+#: app/components/app-search/use-app-search.ts:35
 #: app/components/app-sidebar/index.tsx:103
 msgid "Dashboard"
 msgstr "Dashboard"
@@ -1346,7 +1350,7 @@ msgstr "DNS records have been programmed for this hostname"
 msgid "DNS Zone"
 msgstr "DNS Zone"
 
-#: app/components/app-search/search-results.tsx:255
+#: app/components/app-search/search-results.tsx:271
 #: app/components/app-sidebar/index.tsx:135
 #: app/routes/customer/resource/dns/index.tsx:10
 #: app/routes/customer/resource/dns/layout.tsx:5
@@ -1371,7 +1375,7 @@ msgstr "Domain First Seen"
 msgid "Domain verification is in progress. This may take a few minutes."
 msgstr "Domain verification is in progress. This may take a few minutes."
 
-#: app/components/app-search/search-results.tsx:218
+#: app/components/app-search/search-results.tsx:234
 #: app/components/app-sidebar/index.tsx:141
 #: app/features/project/components/project-resources-card.tsx:74
 #: app/routes/customer/organization/detail/domain.tsx:9
@@ -1560,7 +1564,7 @@ msgstr "Enter the full email to search..."
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr "Enter the word <0>{confirmationText}</0> to perform this action."
 
-#: app/components/app-search/search-results.tsx:147
+#: app/components/app-search/search-results.tsx:163
 msgid "Entities"
 msgstr "Entities"
 
@@ -1867,7 +1871,7 @@ msgstr "General"
 msgid "Get"
 msgstr "Get"
 
-#: app/components/app-search/use-app-search.ts:34
+#: app/components/app-search/use-app-search.ts:35
 msgid "Go to dashboard"
 msgstr "Go to dashboard"
 
@@ -2255,11 +2259,11 @@ msgstr "Mail Lists"
 msgid "Manage"
 msgstr "Manage"
 
-#: app/components/app-search/use-app-search.ts:45
+#: app/components/app-search/use-app-search.ts:46
 msgid "Manage organizations"
 msgstr "Manage organizations"
 
-#: app/components/app-search/use-app-search.ts:51
+#: app/components/app-search/use-app-search.ts:52
 msgid "Manage projects"
 msgstr "Manage projects"
 
@@ -2267,7 +2271,7 @@ msgstr "Manage projects"
 msgid "Manage this user's platform access state"
 msgstr "Manage this user's platform access state"
 
-#: app/components/app-search/use-app-search.ts:39
+#: app/components/app-search/use-app-search.ts:40
 msgid "Manage users"
 msgstr "Manage users"
 
@@ -2395,7 +2399,7 @@ msgstr "Namespace"
 msgid "Navigate up"
 msgstr "Navigate up"
 
-#: app/components/app-search/search-results.tsx:100
+#: app/components/app-search/search-results.tsx:116
 msgid "Navigation"
 msgstr "Navigation"
 
@@ -2700,7 +2704,7 @@ msgstr "No quotas are above 70% utilization"
 msgid "No resources found."
 msgstr "No resources found."
 
-#: app/components/app-search/search-results.tsx:135
+#: app/components/app-search/search-results.tsx:151
 msgid "No results found."
 msgstr "No results found."
 
@@ -2878,8 +2882,8 @@ msgstr "Organization deleted successfully"
 msgid "organizations"
 msgstr "organizations"
 
-#: app/components/app-search/search-results.tsx:153
-#: app/components/app-search/use-app-search.ts:42
+#: app/components/app-search/search-results.tsx:169
+#: app/components/app-search/use-app-search.ts:43
 #: app/components/app-sidebar/index.tsx:119
 #: app/routes/customer/breadcrumb-switchers.tsx:7
 #: app/routes/customer/organization/index.tsx:35
@@ -3133,8 +3137,8 @@ msgstr "Project deleted"
 msgid "Project suspended"
 msgstr "Project suspended"
 
-#: app/components/app-search/search-results.tsx:169
-#: app/components/app-search/use-app-search.ts:48
+#: app/components/app-search/search-results.tsx:185
+#: app/components/app-search/use-app-search.ts:49
 #: app/components/app-sidebar/index.tsx:123
 #: app/features/organization/components/org-details-card.tsx:71
 #: app/routes/customer/breadcrumb-switchers.tsx:8
@@ -3397,7 +3401,7 @@ msgstr "Resource Type:"
 msgid "Resource:"
 msgstr "Resource:"
 
-#: app/components/app-search/search-results.tsx:214
+#: app/components/app-search/search-results.tsx:230
 #: app/features/project/components/project-resources-card.tsx:58
 #: app/routes/customer/organization/detail/layout.tsx:75
 #: app/routes/customer/resource/index.tsx:28
@@ -3584,7 +3588,7 @@ msgstr "Search groups..."
 msgid "Search invoices"
 msgstr "Search invoices"
 
-#: app/components/app-search/search-results.tsx:133
+#: app/components/app-search/search-results.tsx:149
 msgid "Search is temporarily unavailable. Please try again."
 msgstr "Search is temporarily unavailable. Please try again."
 
@@ -3659,7 +3663,7 @@ msgstr "Search users..."
 msgid "Search…"
 msgstr "Search…"
 
-#: app/components/app-search/search-results.tsx:125
+#: app/components/app-search/search-results.tsx:141
 msgid "Searching..."
 msgstr "Searching..."
 
@@ -3687,15 +3691,19 @@ msgstr "Secret Namespace"
 msgid "Secrets"
 msgstr "Secrets"
 
-#: app/components/app-search/search-results.tsx:317
+#: app/components/app-search/search-results.tsx:332
+msgid "See all Application Load Balancers"
+msgstr "See all Application Load Balancers"
+
+#: app/components/app-search/search-results.tsx:364
 msgid "See all contacts"
 msgstr "See all contacts"
 
-#: app/components/app-search/search-results.tsx:286
+#: app/components/app-search/search-results.tsx:302
 msgid "See all DNS zones"
 msgstr "See all DNS zones"
 
-#: app/components/app-search/search-results.tsx:249
+#: app/components/app-search/search-results.tsx:265
 msgid "See all domains"
 msgstr "See all domains"
 
@@ -4182,7 +4190,7 @@ msgstr "Type at least 2 characters to search all organizations."
 msgid "Type at least 2 characters to search all projects."
 msgstr "Type at least 2 characters to search all projects."
 
-#: app/components/app-search/search-results.tsx:118
+#: app/components/app-search/search-results.tsx:134
 msgid "Type at least 3 characters to search."
 msgstr "Type at least 3 characters to search."
 
@@ -4287,8 +4295,8 @@ msgstr "User invited successfully"
 msgid "User Type"
 msgstr "User Type"
 
-#: app/components/app-search/search-results.tsx:185
-#: app/components/app-search/use-app-search.ts:36
+#: app/components/app-search/search-results.tsx:201
+#: app/components/app-search/use-app-search.ts:37
 #: app/components/app-sidebar/index.tsx:115
 #: app/routes/customer/breadcrumb-switchers.tsx:6
 #: app/routes/customer/user/index.tsx:40
@@ -4330,7 +4338,7 @@ msgstr "Verifying hostname"
 msgid "Version"
 msgstr "Version"
 
-#: app/components/app-search/use-app-search.ts:57
+#: app/components/app-search/use-app-search.ts:58
 msgid "View activity logs"
 msgstr "View activity logs"
 

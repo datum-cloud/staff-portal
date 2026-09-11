@@ -1,8 +1,8 @@
 import { SearchResultGroup } from './search-result-group';
 import type { useAppSearch } from './use-app-search';
 import type { SearchResultItem } from '@/resources/request/client';
-import { STATUS_ICONS } from '@/utils/config/icons.config';
-import { contactRoutes, projectRoutes, routes } from '@/utils/config/routes.config';
+import { ENTITY_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
+import { contactRoutes, edgeRoutes, projectRoutes, routes } from '@/utils/config/routes.config';
 import {
   Command,
   CommandEmpty,
@@ -14,7 +14,10 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisNetworkingDnsV1Alpha1DnsZone } from '@openapi/dns.networking.miloapis.com/v1alpha1';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
-import { ComDatumapisNetworkingV1AlphaDomain } from '@openapi/networking.datumapis.com/v1alpha';
+import {
+  ComDatumapisNetworkingV1AlphaDomain,
+  ComDatumapisNetworkingV1AlphaHttpProxy,
+} from '@openapi/networking.datumapis.com/v1alpha';
 import { ComMiloapisNotificationV1Alpha1Contact } from '@openapi/notification.miloapis.com/v1alpha1';
 import {
   ComMiloapisResourcemanagerV1Alpha1Organization,
@@ -48,6 +51,7 @@ export function SearchResults({ state, listClassName }: SearchResultsProps) {
     projectResults,
     domainResults,
     dnsZoneResults,
+    albResults,
     contactResults,
     isLoading,
     isError,
@@ -91,6 +95,18 @@ export function SearchResults({ state, listClassName }: SearchResultsProps) {
 
   const getItemKey = <T extends { metadata?: { name?: string } }>(item: SearchResultItem<T>) =>
     item.resource.metadata?.name ?? '';
+
+  // Same precedence as edge-list `edgeDisplayName`. Cloud portal writes the
+  // ALB friendly name to app.kubernetes.io/name, not kubernetes.io/display-name.
+  const getAlbDisplayName = (edge: ComDatumapisNetworkingV1AlphaHttpProxy) => {
+    const annotations = edge.metadata?.annotations ?? {};
+    return (
+      annotations['app.kubernetes.io/name']?.trim() ||
+      annotations['kubernetes.io/display-name']?.trim() ||
+      edge.metadata?.name ||
+      ''
+    );
+  };
 
   return (
     <Command shouldFilter={false}>
@@ -284,6 +300,37 @@ export function SearchResults({ state, listClassName }: SearchResultsProps) {
                       footer={
                         (dnsZoneResults?.length ?? 0) > 3 ? (
                           <SeeAllLink to="/customers/projects" label={t`See all DNS zones`} />
+                        ) : null
+                      }
+                    />
+
+                    <SearchResultGroup<SearchResultItem<ComDatumapisNetworkingV1AlphaHttpProxy>>
+                      heading={t`Application Load Balancers`}
+                      items={(albResults || []).slice(0, 3)}
+                      icon={ENTITY_ICONS.edge}
+                      getKey={getItemKey}
+                      getValue={(item) =>
+                        `${item.resource.metadata?.name ?? ''} ${getAlbDisplayName(item.resource)}`
+                      }
+                      getTitle={(item) => getAlbDisplayName(item.resource)}
+                      getSubtitle={(item) => item.resource.metadata?.name ?? ''}
+                      onSelect={(item) =>
+                        runCommand(() => {
+                          const projectName = getProjectName(item);
+                          navigate(
+                            projectRoutes.edge.detail(
+                              projectName,
+                              item.resource.metadata?.name ?? ''
+                            )
+                          );
+                        })
+                      }
+                      footer={
+                        (albResults?.length ?? 0) > 3 ? (
+                          <SeeAllLink
+                            to={edgeRoutes.list()}
+                            label={t`See all Application Load Balancers`}
+                          />
                         ) : null
                       }
                     />

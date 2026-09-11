@@ -20,6 +20,7 @@ const EMPTY: GroupedSearchResults = {
   projects: [],
   domains: [],
   dnsZones: [],
+  httpProxies: [],
   contacts: [],
 };
 
@@ -85,11 +86,13 @@ export function useAppSearch() {
     [setOpen, setSearch]
   );
 
-  const { users, organizations, projects, domains, dnsZones, contacts } = results ?? EMPTY;
+  const { users, organizations, projects, domains, dnsZones, httpProxies, contacts } =
+    results ?? EMPTY;
 
   const hasEntityResults = users.length > 0 || organizations.length > 0 || projects.length > 0;
 
-  const hasResourceResults = domains.length > 0 || dnsZones.length > 0 || contacts.length > 0;
+  const hasResourceResults =
+    domains.length > 0 || dnsZones.length > 0 || httpProxies.length > 0 || contacts.length > 0;
 
   const hasResults = hasEntityResults || hasResourceResults;
 
@@ -109,6 +112,7 @@ export function useAppSearch() {
     projectResults: projects,
     domainResults: domains,
     dnsZoneResults: dnsZones,
+    albResults: httpProxies,
     contactResults: contacts,
     // State
     isLoading,
