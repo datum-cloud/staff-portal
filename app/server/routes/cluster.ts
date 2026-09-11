@@ -1,10 +1,10 @@
 import { EnvVariables } from '@/server/iface';
+import { runVmInstantQuery } from '@/server/lib/vm-query';
 import { logApiError, logApiSuccess } from '@/server/logger';
 import { authMiddleware } from '@/server/middleware';
 import { createErrorResponse, createSuccessResponse } from '@/server/response';
 import { env } from '@/utils/config/env.server';
 import { captureApiError, createRequestLogger } from '@/utils/logger';
-import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { Hono } from 'hono';
 
 export const clusterRoutes = new Hono<{ Variables: EnvVariables }>();
@@ -62,25 +62,6 @@ function buildHealthQueries(f: string) {
   };
 }
 
-async function runVmQuery(client: Client, query: string): Promise<any[]> {
-  const result = await client.callTool({
-    name: 'victoria-metrics-mcp-server__query',
-    arguments: { query },
-  });
-
-  if ((result as any)?.isError) {
-    throw new Error((result as any)?.content?.[0]?.text ?? 'VictoriaMetrics query failed');
-  }
-
-  const textContent = (result as any)?.content?.find((c: any) => c.type === 'text');
-  try {
-    const parsed = JSON.parse(textContent?.text ?? '{}');
-    return parsed?.data?.result ?? [];
-  } catch {
-    return [];
-  }
-}
-
 clusterRoutes.post('/health', authMiddleware(), async (c) => {
   const startTime = performance.now();
   const reqLogger = createRequestLogger(c);
@@ -113,14 +94,14 @@ clusterRoutes.post('/health', authMiddleware(), async (c) => {
       certExpiryResults,
       restartResults,
     ] = await Promise.all([
-      runVmQuery(client, queries.nodeReady),
-      runVmQuery(client, queries.gateway),
-      runVmQuery(client, queries.memoryPressure),
-      runVmQuery(client, queries.diskPressure),
-      runVmQuery(client, queries.pidPressure),
-      runVmQuery(client, queries.requestRate),
-      runVmQuery(client, queries.certExpiry),
-      runVmQuery(client, queries.restartingContainers),
+      runVmInstantQuery(client, queries.nodeReady),
+      runVmInstantQuery(client, queries.gateway),
+      runVmInstantQuery(client, queries.memoryPressure),
+      runVmInstantQuery(client, queries.diskPressure),
+      runVmInstantQuery(client, queries.pidPressure),
+      runVmInstantQuery(client, queries.requestRate),
+      runVmInstantQuery(client, queries.certExpiry),
+      runVmInstantQuery(client, queries.restartingContainers),
     ]);
 
     const valueLookup = (results: any[]) => {
