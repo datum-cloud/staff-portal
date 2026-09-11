@@ -128,4 +128,30 @@ describe('proxyWatch', () => {
     expect(sent['X-Request-ID']).to.equal('req-123');
     expect(sent.Authorization).to.equal('Bearer token');
   });
+
+  it('forwards a failed watch with its status + body so the caller can log it', async () => {
+    const errorFetch = (() =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify({
+            kind: 'Status',
+            status: 'Failure',
+            message: 'projectsuspensions is forbidden',
+            reason: 'Forbidden',
+            code: 403,
+          }),
+          { status: 403, headers: { 'Content-Type': 'application/json' } }
+        )
+      )) as unknown as typeof fetch;
+
+    const response = await proxyWatch(watchOptions(new AbortController().signal), errorFetch);
+
+    expect(response.ok).to.equal(false);
+    expect(response.status).to.equal(403);
+    // Body is read into a finite response (not a stream) so the caller can
+    // clone + parse it for logging without consuming the client's copy.
+    const body = await response.clone().json();
+    expect(body.message).to.contain('forbidden');
+    expect((await response.text()).length).to.be.greaterThan(0);
+  });
 });

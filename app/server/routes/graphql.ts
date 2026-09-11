@@ -1,4 +1,5 @@
 import { EnvVariables } from '@/server/iface';
+import { isClientAbort } from '@/server/lib/proxy';
 import { authMiddleware, getToken } from '@/server/middleware';
 import { env } from '@/utils/config/env.server';
 import { captureApiError, logger } from '@/utils/logger';
@@ -38,7 +39,7 @@ graphqlRoutes.all('/', authMiddleware(), async (c) => {
     const data = await response.json();
     return c.json(data, response.status as 200);
   } catch (error) {
-    if (error instanceof Error && error.name === 'AbortError') {
+    if (isClientAbort(c, error)) {
       return new Response(null, { status: 499 });
     }
 

@@ -1,5 +1,6 @@
 import { AppError } from '@/utils/errors';
 import { AxiosError } from 'axios';
+import type { Context } from 'hono';
 
 export interface ApiResponse {
   requestId: string;
@@ -8,6 +9,35 @@ export interface ApiResponse {
   data?: any;
   path: string;
 }
+
+/** Request metadata shared by every proxy handler's structured logs. */
+export const extractRequestContext = (c: Context) => ({
+  path: c.req.path,
+  method: c.req.method,
+  url: c.req.url,
+  userAgent: c.req.header('User-Agent'),
+  ip:
+    c.req.header('x-forwarded-for') ||
+    c.req.header('x-real-ip') ||
+    c.req.header('x-client-ip') ||
+    c.req.header('cf-connecting-ip') ||
+    c.req.header('x-forwarded') ||
+    'unknown',
+});
+
+/** Success JSON envelope + the no-store cache headers every proxy reply sends. */
+export const createSuccessResponseWithHeaders = (
+  c: Context,
+  reqId: string,
+  data: any,
+  path: string
+) => {
+  return c.json(createSuccessResponse(reqId, data, path), 200, {
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    Pragma: 'no-cache',
+    Expires: '0',
+  });
+};
 
 export function createSuccessResponse(requestId: string, data: any, path: string): ApiResponse {
   return {
