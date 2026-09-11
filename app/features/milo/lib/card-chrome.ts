@@ -21,13 +21,13 @@ export const LIST_TABLE_HEADER_CLASS = '[&_tr]:border-0';
 export const LIST_TABLE_HEADER_ROW_CLASS = 'border-0 hover:bg-transparent';
 export const LIST_TABLE_HEADER_CELL_CLASS = cn(
   'sticky top-0 z-10 h-9 border-b border-[#efefed] bg-[#fbfbfa] px-4',
-  'text-[11px] leading-4 font-normal tracking-normal text-[#0c1d31]/60 uppercase',
+  'text-xs leading-4 font-normal tracking-normal text-[#0c1d31]/60 uppercase',
   'dark:border-border dark:bg-muted dark:text-muted-foreground'
 );
 /** Mist header for tables nested inside overview TableCards (Figma 32px / #f6f6f5@50%). */
 export const EMBEDDED_TABLE_HEADER_CELL_CLASS = cn(
   'sticky top-0 z-10 h-8 border-b border-[#efefed] bg-[#f6f6f5]/50 px-4',
-  'text-[10px] leading-4 font-normal tracking-normal text-[#0c1d31]/60 uppercase',
+  'text-2xs leading-4 font-normal tracking-normal text-[#0c1d31]/60 uppercase',
   'dark:border-border dark:bg-muted dark:text-muted-foreground'
 );
 /** Kill TableRow's default border-b so only cell borders draw (avoids double lines). */

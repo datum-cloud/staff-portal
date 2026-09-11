@@ -605,7 +605,7 @@ msgstr ""
 msgid "Change your Primary Email in GitHub (your primary email)"
 msgstr ""
 
-#: app/features/billing/components/offer-included-pricing-list.tsx:116
+#: app/features/billing/components/offer-included-pricing-list.tsx:114
 msgid "Charge"
 msgstr ""
 
@@ -2317,7 +2317,7 @@ msgstr ""
 msgid "Meters"
 msgstr ""
 
-#: app/features/billing/components/offer-included-pricing-list.tsx:128
+#: app/features/billing/components/offer-included-pricing-list.tsx:126
 msgid "Metric"
 msgstr ""
 
@@ -2480,7 +2480,7 @@ msgstr ""
 msgid "No BillingEntitlement found for this account. New accounts pick up the default Offer automatically when catalog defaults are configured."
 msgstr ""
 
-#: app/features/billing/components/offer-included-pricing-list.tsx:231
+#: app/features/billing/components/offer-included-pricing-list.tsx:227
 msgid "No charges included in this Offer."
 msgstr ""
 
@@ -3259,7 +3259,7 @@ msgstr ""
 msgid "Quotas"
 msgstr ""
 
-#: app/features/billing/components/offer-included-pricing-list.tsx:122
+#: app/features/billing/components/offer-included-pricing-list.tsx:120
 msgid "Rate"
 msgstr ""
 
@@ -3749,7 +3749,7 @@ msgstr ""
 msgid "Sent"
 msgstr ""
 
-#: app/features/billing/components/offer-included-pricing-list.tsx:125
+#: app/features/billing/components/offer-included-pricing-list.tsx:123
 msgid "Service"
 msgstr ""
 
@@ -4158,7 +4158,7 @@ msgstr ""
 msgid "TTL"
 msgstr ""
 
-#: app/features/billing/components/offer-included-pricing-list.tsx:119
+#: app/features/billing/components/offer-included-pricing-list.tsx:117
 #: app/features/fraud/policy/policy-form.tsx:199
 #: app/features/organization/components/org-details-card.tsx:59
 #: app/features/service-catalog/components/conditions-card.tsx:19

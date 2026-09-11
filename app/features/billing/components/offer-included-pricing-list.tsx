@@ -71,17 +71,15 @@ function IncludedPricingRow({
             {catalogService.displayName}
           </Link>
           {catalogService.canonicalName ? (
-            <span className="font-mono text-[11px]"> · {catalogService.canonicalName}</span>
+            <span className="font-mono text-xs"> · {catalogService.canonicalName}</span>
           ) : null}
         </p>
       ) : null}
       {subtext ? (
-        <p className="text-muted-foreground mt-0.5 font-mono text-[11px] leading-relaxed">
-          {subtext}
-        </p>
+        <p className="text-muted-foreground mt-0.5 font-mono text-xs leading-relaxed">{subtext}</p>
       ) : null}
       {!summary && !catalogService && !subtext && name ? (
-        <p className="text-muted-foreground mt-0.5 font-mono text-[11px]">{name}</p>
+        <p className="text-muted-foreground mt-0.5 font-mono text-xs">{name}</p>
       ) : null}
     </li>
   );
@@ -144,9 +142,7 @@ function IncludedPricingTable({
                 <td className="px-3 py-2 align-top">
                   <div className="font-medium">{displayName}</div>
                   {subtext ? (
-                    <div className="text-muted-foreground mt-0.5 font-mono text-[11px]">
-                      {subtext}
-                    </div>
+                    <div className="text-muted-foreground mt-0.5 font-mono text-xs">{subtext}</div>
                   ) : null}
                 </td>
                 <td className="px-3 py-2 align-top">
@@ -166,7 +162,7 @@ function IncludedPricingTable({
                     '—'
                   )}
                 </td>
-                <td className="text-muted-foreground hidden px-3 py-2 align-top font-mono text-[11px] xl:table-cell">
+                <td className="text-muted-foreground hidden px-3 py-2 align-top font-mono text-xs xl:table-cell">
                   {metric ?? '—'}
                 </td>
               </tr>
