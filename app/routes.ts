@@ -265,6 +265,10 @@ export default [
 
   // Global routes
   route('logout', 'routes/auth/logout.tsx'),
+
+  // Component playground — showcases staff-portal's own components in a
+  // scroll-spy gallery. Standalone (its own sidebar); loader 404s in production.
+  route('demo', 'routes/demo.tsx'),
   ...prefix('error', [
     route('unauthorized', 'routes/error/unauthorized.tsx'),
     route('session-expired', 'routes/error/session-expired.tsx'),
