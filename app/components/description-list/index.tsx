@@ -49,7 +49,7 @@ export function DescriptionList({ items, labelWidth = '25%', className }: Descri
               className={cn(
                 'text-muted-foreground text-sm',
                 'pt-3 pb-1',
-                'md:flex md:items-center md:py-3 md:pr-4',
+                'md:flex md:items-center md:py-2 md:pr-4',
                 !isLast && 'md:border-b'
               )}>
               {item.label}
@@ -58,7 +58,7 @@ export function DescriptionList({ items, labelWidth = '25%', className }: Descri
             <dd
               className={cn(
                 'm-0 pb-3 text-sm',
-                'md:flex md:items-center md:py-3',
+                'md:flex md:items-center md:py-2',
                 !isLast && 'border-b md:border-b'
               )}>
               {item.value}

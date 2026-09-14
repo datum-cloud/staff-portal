@@ -64,7 +64,7 @@ export function ListColumnHeader<TData extends RowData, TValue>({
     return (
       <div
         className={cn(
-          'text-[11px] leading-4 font-normal tracking-normal text-inherit uppercase',
+          'text-xs leading-4 font-normal tracking-normal text-inherit uppercase',
           className
         )}
         data-slot="dt-column-header">
@@ -81,7 +81,7 @@ export function ListColumnHeader<TData extends RowData, TValue>({
         type="button"
         className={cn(
           'inline-flex h-9 cursor-pointer items-center gap-2',
-          'text-[11px] leading-4 font-normal tracking-normal text-inherit uppercase',
+          'text-xs leading-4 font-normal tracking-normal text-inherit uppercase',
           'hover:text-foreground'
         )}
         onClick={column.getToggleSortingHandler()}

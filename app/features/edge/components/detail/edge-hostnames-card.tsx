@@ -34,7 +34,7 @@ function StatusSeparator() {
 function PendingStatus({ label, tooltip }: { label: string; tooltip: string }) {
   return (
     <Tooltip message={tooltip}>
-      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-600 dark:text-amber-400">
+      <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-600 dark:text-amber-400">
         <STATUS_ICONS.loading className="size-3 shrink-0 animate-spin" aria-hidden />
         {label}
       </span>
@@ -46,7 +46,7 @@ function HostnameProvisioningStatus({ val }: { val: HostnameRow }) {
   if (val.isSystem) return null;
 
   return (
-    <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px]">
+    <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs">
       {val.verified ? (
         <Tooltip message={t`This hostname has been verified by Datum`}>
           <span className="font-medium text-green-600 dark:text-green-400">
@@ -160,7 +160,7 @@ export function EdgeHostnamesCard({ proxy }: { proxy: HttpProxy }) {
         <div className="border-input bg-background flex items-center gap-2 rounded-md border p-2.5">
           <Lock className="text-muted-foreground size-3.5 shrink-0 self-start" />
           <div className="flex min-w-0 flex-col">
-            <span className="text-muted-foreground text-[11px] font-medium">
+            <span className="text-muted-foreground text-xs font-medium">
               <Trans>TLS Hostname</Trans>
             </span>
             <Tooltip message={proxy.tlsHostname}>

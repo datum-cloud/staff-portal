@@ -67,7 +67,7 @@ function PressurePill({
     <Tooltip message={`${label} pressure detected`} side="top">
       <span className="inline-flex items-center gap-0.5 text-red-600 dark:text-red-400">
         <Icon className="h-3 w-3" />
-        <span className="text-[10px] leading-none font-medium">{label}</span>
+        <span className="text-2xs leading-none font-medium">{label}</span>
       </span>
     </Tooltip>
   );
@@ -89,7 +89,7 @@ function MetricChip({
     <Tooltip message={tooltip} side="top">
       <span className={`inline-flex items-center gap-0.5 ${color}`}>
         <Icon className="h-3 w-3" />
-        <span className="text-[10px] leading-none font-medium">{value}</span>
+        <span className="text-2xs leading-none font-medium">{value}</span>
       </span>
     </Tooltip>
   );
@@ -123,7 +123,7 @@ function CertChip({ cluster, warn }: { cluster: ClusterEntry; warn: boolean }) {
     <Tooltip side="top" contentClassName="max-w-xs" message={<CertTooltip cluster={cluster} />}>
       <span className={`inline-flex items-center gap-0.5 ${color}`}>
         <ShieldAlert className="h-3 w-3" />
-        <span className="text-[10px] leading-none font-medium">{cluster.certExpiryDays}d</span>
+        <span className="text-2xs leading-none font-medium">{cluster.certExpiryDays}d</span>
       </span>
     </Tooltip>
   );
@@ -156,7 +156,7 @@ function ClusterCell({ cluster }: { cluster: ClusterEntry }) {
       <div className="min-w-0 flex-1">
         <p className="truncate text-xs font-medium">{cluster.region ?? cluster.name}</p>
         {cluster.region && (
-          <p className="text-muted-foreground truncate text-[10px] leading-tight">{cluster.name}</p>
+          <p className="text-muted-foreground text-2xs truncate leading-tight">{cluster.name}</p>
         )}
         <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
           {cluster.requestRate !== null && (

@@ -15,6 +15,45 @@
 /* Scan activity-ui components for Tailwind classes */
 @source '../../node_modules/@datum-cloud/activity-ui/dist/**/*.js';
 
+/*
+ * Denser type scale for the staff portal (#657). The default scale (datum-ui +
+ * Tailwind) reads too large for an operational tool packed with tables and
+ * detail rows. We shrink the Tailwind `--text-*` font-size + line-height tokens
+ * app-wide; because datum-ui's Text/Title components also render through these
+ * `text-*` utilities, one override covers both the app's own classes and the
+ * shared components — no per-call-site edits, no changes to datum-ui.
+ *
+ * Loaded after `@import '@datum-cloud/datum-ui/styles'` so these win. Tweak the
+ * numbers here to retune the whole app.
+ */
+@theme {
+  --text-xs: 11px;
+  --text-xs--line-height: 15px;
+  --text-sm: 12px;
+  --text-sm--line-height: 16px;
+  --text-base: 13px;
+  --text-base--line-height: 18px;
+  --text-lg: 15px;
+  --text-lg--line-height: 20px;
+  --text-xl: 17px;
+  --text-xl--line-height: 24px;
+  --text-2xl: 20px;
+  --text-2xl--line-height: 26px;
+  --text-3xl: 24px;
+  --text-3xl--line-height: 30px;
+
+  /*
+   * Micro sizes below `xs`, for dense uppercase labels / badges / chips / kbd.
+   * Standardized so nothing uses arbitrary `text-[10px]` / `text-[8px]` values.
+   * `2xs` was 9px in datum-ui; nudged to 10px to keep the ladder monotonic
+   * (xs 11 > 2xs 10 > 3xs 8).
+   */
+  --text-2xs: 10px;
+  --text-2xs--line-height: 14px;
+  --text-3xs: 8px;
+  --text-3xs--line-height: 12px;
+}
+
 /* TipTap editor placeholder */
 .tiptap p.is-editor-empty:first-child {
   position: relative;
