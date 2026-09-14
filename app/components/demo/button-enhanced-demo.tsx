@@ -1,13 +1,24 @@
+import { DemoGroup, DemoRow, DemoSection, type DemoSectionMeta } from './demo-section';
+import type { ButtonProps } from '@datum-cloud/datum-ui/button';
 import { Button } from '@datum-cloud/datum-ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@datum-cloud/datum-ui/card';
 import { Download, Heart, Plus, Settings, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+
+export const buttonDemoSections: DemoSectionMeta[] = [
+  { id: 'button-types', label: 'Types' },
+  { id: 'button-themes', label: 'Themes' },
+  { id: 'button-sizes', label: 'Sizes & icons' },
+  { id: 'button-states', label: 'Loading & disabled' },
+];
+
+const TYPES: NonNullable<ButtonProps['type']>[] = [
+  'primary',
+  'secondary',
+  'tertiary',
+  'warning',
+  'danger',
+  'success',
+];
 
 export default function ButtonDemo() {
   const [loading, setLoading] = useState<Record<string, boolean>>({});
@@ -20,323 +31,106 @@ export default function ButtonDemo() {
   };
 
   return (
-    <div className="space-y-8 p-6">
-      {/* Button Types */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Button Types</CardTitle>
-          <CardDescription>Different button types for various use cases</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex flex-wrap gap-2">
-            <Button type="primary">Primary</Button>
-            <Button type="secondary">Secondary</Button>
-            <Button type="tertiary">Tertiary</Button>
-            <Button type="warning">Warning</Button>
-            <Button type="danger">Danger</Button>
-            <Button type="success">Success</Button>
-          </div>
-        </CardContent>
-      </Card>
+    <DemoGroup
+      title="Buttons"
+      description="datum-ui Button — the primary action primitive used across staff-portal.">
+      <DemoSection id="button-types" title="Types" description="Semantic intents.">
+        <DemoRow>
+          {TYPES.map((type) => (
+            <Button key={type} type={type} className="capitalize">
+              {type}
+            </Button>
+          ))}
+        </DemoRow>
+      </DemoSection>
 
-      {/* Button Themes */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Button Themes</CardTitle>
-          <CardDescription>Different visual themes for each button type</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {['primary', 'secondary', 'tertiary', 'warning', 'danger', 'success'].map((type) => (
+      <DemoSection
+        id="button-themes"
+        title="Themes"
+        description="Each type across the four themes.">
+        <div className="space-y-4">
+          {TYPES.map((type) => (
             <div key={type} className="space-y-2">
-              <h4 className="text-sm font-medium capitalize">{type}</h4>
+              <h4 className="text-muted-foreground text-xs font-medium capitalize">{type}</h4>
               <div className="flex flex-wrap gap-2">
-                <Button type={type as any} theme="solid">
+                <Button type={type} theme="solid">
                   Solid
                 </Button>
-                <Button type={type as any} theme="light">
+                <Button type={type} theme="light">
                   Light
                 </Button>
-                <Button type={type as any} theme="outline">
+                <Button type={type} theme="outline">
                   Outline
                 </Button>
-                <Button type={type as any} theme="borderless">
+                <Button type={type} theme="borderless">
                   Borderless
                 </Button>
               </div>
             </div>
           ))}
-        </CardContent>
-      </Card>
+        </div>
+      </DemoSection>
 
-      {/* Button Sizes */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Button Sizes</CardTitle>
-          <CardDescription>Different sizes for different contexts</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-end gap-2">
-            <Button size="small">Small</Button>
-            <Button size="default">Default</Button>
-            <Button size="large">Large</Button>
-            <Button size="icon">
-              <Settings className="h-4 w-4" />
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <DemoSection
+        id="button-sizes"
+        title="Sizes & icons"
+        description="Size scale, icon-only, and leading/trailing icons.">
+        <DemoRow>
+          <Button size="small">Small</Button>
+          <Button size="default">Default</Button>
+          <Button size="large">Large</Button>
+          <Button size="icon" icon={<Settings className="h-4 w-4" />} />
+        </DemoRow>
+        <DemoRow>
+          <Button icon={<Plus className="h-4 w-4" />}>Add item</Button>
+          <Button icon={<Download className="h-4 w-4" />} iconPosition="right">
+            Download
+          </Button>
+          <Button type="danger" theme="outline" icon={<Trash2 className="h-4 w-4" />}>
+            Delete
+          </Button>
+          <Button type="secondary" theme="light" icon={<Heart className="h-4 w-4" />}>
+            Like
+          </Button>
+        </DemoRow>
+      </DemoSection>
 
-      {/* Icon-Only Buttons */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Icon-Only Buttons</CardTitle>
-          <CardDescription>Icon-only buttons in different sizes and themes</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <h4 className="text-sm font-medium">Small Icon-Only Buttons</h4>
-            <div className="flex items-center gap-2">
-              <Button
-                type="primary"
-                theme="solid"
-                size="small"
-                icon={<Plus className="h-3 w-3" />}
-              />
-              <Button type="secondary" size="small" icon={<Download className="h-3 w-3" />} />
-              <Button
-                type="tertiary"
-                theme="light"
-                size="small"
-                icon={<Settings className="h-3 w-3" />}
-              />
-              <Button
-                type="warning"
-                theme="borderless"
-                size="small"
-                icon={<Heart className="h-3 w-3" />}
-              />
-              <Button
-                type="danger"
-                theme="solid"
-                size="small"
-                icon={<Trash2 className="h-3 w-3" />}
-              />
-              <Button
-                type="success"
-                theme="solid"
-                size="small"
-                icon={<Plus className="h-3 w-3" />}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <h4 className="text-sm font-medium">Default Icon-Only Buttons</h4>
-            <div className="flex items-center gap-2">
-              <Button
-                type="primary"
-                theme="solid"
-                size="default"
-                icon={<Plus className="h-4 w-4" />}
-              />
-              <Button type="secondary" size="default" icon={<Download className="h-4 w-4" />} />
-              <Button
-                type="tertiary"
-                theme="light"
-                size="default"
-                icon={<Settings className="h-4 w-4" />}
-              />
-              <Button
-                type="warning"
-                theme="borderless"
-                size="default"
-                icon={<Heart className="h-4 w-4" />}
-              />
-              <Button
-                type="danger"
-                theme="solid"
-                size="default"
-                icon={<Trash2 className="h-4 w-4" />}
-              />
-              <Button
-                type="success"
-                theme="outline"
-                size="default"
-                icon={<Plus className="h-4 w-4" />}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <h4 className="text-sm font-medium">Large Icon-Only Buttons</h4>
-            <div className="flex items-center gap-2">
-              <Button
-                type="primary"
-                theme="solid"
-                size="large"
-                icon={<Plus className="h-5 w-5" />}
-              />
-              <Button type="secondary" size="large" icon={<Download className="h-5 w-5" />} />
-              <Button
-                type="tertiary"
-                theme="light"
-                size="large"
-                icon={<Settings className="h-5 w-5" />}
-              />
-              <Button
-                type="warning"
-                theme="borderless"
-                size="large"
-                icon={<Heart className="h-5 w-5" />}
-              />
-              <Button
-                type="danger"
-                theme="solid"
-                size="large"
-                icon={<Trash2 className="h-5 w-5" />}
-              />
-              <Button
-                type="success"
-                theme="light"
-                size="large"
-                icon={<Plus className="h-5 w-5" />}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <h4 className="text-sm font-medium">Icon-Only Loading States</h4>
-            <div className="flex items-center gap-2">
-              <Button
-                type="primary"
-                theme="solid"
-                size="small"
-                icon={<Plus className="h-3 w-3" />}
-                loading={loading.iconSmall}
-                onClick={() => handleLoadingDemo('iconSmall')}
-              />
-              <Button
-                type="secondary"
-                size="default"
-                icon={<Download className="h-4 w-4" />}
-                loading={loading.iconDefault}
-                onClick={() => handleLoadingDemo('iconDefault')}
-              />
-              <Button
-                type="tertiary"
-                theme="light"
-                size="large"
-                icon={<Settings className="h-5 w-5" />}
-                loading={loading.iconLarge}
-                onClick={() => handleLoadingDemo('iconLarge')}
-              />
-            </div>
-            <p className="text-muted-foreground text-xs">
-              Click icon buttons to see loading states - icons are replaced with spinners
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Button with Icons */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Buttons with Icons</CardTitle>
-          <CardDescription>Buttons can include icons on left or right side</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex flex-wrap gap-2">
-            <Button icon={<Plus className="h-4 w-4" />}>Add Item</Button>
-            <Button icon={<Download className="h-4 w-4" />} iconPosition="right">
-              Download
-            </Button>
-            <Button type="danger" icon={<Trash2 className="h-4 w-4" />} theme="outline">
-              Delete
-            </Button>
-            <Button type="secondary" icon={<Heart className="h-4 w-4" />} theme="light">
-              Like
-            </Button>
-            <Button type="success" icon={<Plus className="h-4 w-4" />} theme="solid">
-              Save
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Loading States */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Loading States</CardTitle>
-          <CardDescription>Buttons can show loading states with spinners</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex flex-wrap gap-2">
-            <Button loading={loading.basic} onClick={() => handleLoadingDemo('basic')}>
-              {loading.basic ? 'Loading...' : 'Click to Load'}
-            </Button>
-            <Button
-              type="secondary"
-              loading={loading.secondary}
-              onClick={() => handleLoadingDemo('secondary')}>
-              {loading.secondary ? 'Processing...' : 'Process'}
-            </Button>
-            <Button
-              type="danger"
-              loading={loading.danger}
-              onClick={() => handleLoadingDemo('danger')}>
-              {loading.danger ? 'Deleting...' : 'Delete'}
-            </Button>
-            <Button
-              type="success"
-              theme="solid"
-              loading={loading.success}
-              onClick={() => handleLoadingDemo('success')}>
-              {loading.success ? 'Saving...' : 'Save'}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Block Buttons */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Block Buttons</CardTitle>
-          <CardDescription>Full-width buttons for forms and layouts</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Button block>Full Width Primary</Button>
-            <Button type="secondary" block>
-              Full Width Secondary
-            </Button>
-            <Button type="danger" theme="light" block>
-              Full Width Danger Light
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Disabled State */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Disabled States</CardTitle>
-          <CardDescription>Buttons can be disabled to prevent interaction</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex flex-wrap gap-2">
-            <Button disabled>Disabled Primary</Button>
-            <Button type="secondary" disabled>
-              Disabled Secondary
-            </Button>
-            <Button type="danger" disabled>
-              Disabled Danger
-            </Button>
-            <Button icon={<Settings className="h-4 w-4" />} disabled>
-              Disabled with Icon
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+      <DemoSection
+        id="button-states"
+        title="Loading & disabled"
+        description="Click to see the spinner swap in; disabled blocks interaction.">
+        <DemoRow>
+          <Button loading={loading.basic} onClick={() => handleLoadingDemo('basic')}>
+            {loading.basic ? 'Loading…' : 'Click to load'}
+          </Button>
+          <Button
+            type="danger"
+            loading={loading.danger}
+            onClick={() => handleLoadingDemo('danger')}>
+            {loading.danger ? 'Deleting…' : 'Delete'}
+          </Button>
+          <Button
+            size="icon"
+            type="primary"
+            theme="solid"
+            icon={<Plus className="h-4 w-4" />}
+            loading={loading.icon}
+            onClick={() => handleLoadingDemo('icon')}
+          />
+        </DemoRow>
+        <DemoRow>
+          <Button disabled>Disabled</Button>
+          <Button type="secondary" disabled>
+            Disabled secondary
+          </Button>
+          <Button icon={<Settings className="h-4 w-4" />} disabled>
+            Disabled with icon
+          </Button>
+          <Button block className="mt-1">
+            Full-width block button
+          </Button>
+        </DemoRow>
+      </DemoSection>
+    </DemoGroup>
   );
 }
