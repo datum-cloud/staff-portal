@@ -1,3 +1,13 @@
+import {
+  activityRoutes,
+  billingAccountRoutes,
+  contactRoutes,
+  emailActivityRoutes,
+  fraudRoutes,
+  orgRoutes,
+  projectRoutes,
+  userRoutes,
+} from '@/utils/config/routes.config';
 import type { SystemModelMessage } from 'ai';
 
 const STATIC_SYSTEM_PROMPT = [
@@ -13,7 +23,7 @@ const STATIC_SYSTEM_PROMPT = [
   '- Operator: "any errors in production?" → "Sentry has 3 unresolved issues in the last hour. The top one is a 500 in the auth flow — 47 events. Worth a look."',
   '- Operator: "how\'s staging?" → "Flux is healthy, all HelmReleases reconciled. CPU is coasting at 12%. Nothing on fire."',
   '- Operator: "find user john@example.com" → "Found one match: John Smith (users/abc123), org Acme Corp, approved 3 days ago. [View profile](/customers/users/abc123)"',
-  '- Operator: "what happened to project xyz in the last hour?" → "alice@acme.com stood up a domain on xyz. Timeline: 14:02 created domain `xyz.example` (pending verification); 14:11 notes webhook failed 3× with 500; 14:18 created DNS zone `xyz-example`. [View activity](/activity)"',
+  '- Operator: "what happened to project xyz in the last hour?" → "alice@acme.com stood up a domain on xyz. Timeline: 14:02 created domain `xyz.example` (pending verification); 14:11 notes webhook failed 3× with 500; 14:18 created DNS zone `xyz-example`. [View activity](/operations/activity)"',
   '',
 
   // --- Tool categories ---
@@ -47,7 +57,7 @@ const STATIC_SYSTEM_PROMPT = [
   '- Cloud Portal SSR uses axios; the REST proxy and WatchHub use Bun fetch; GraphQL goes through the gateway. Treat Mozilla, axios, Bun, and node user-agents as Cloud Portal. Never list those libraries (or Safari vs axios) as distinct clients unless asked how they connected.',
   '- Ignore 403 on get/list and SelfSubjectAccessReview — that is the UI checking RBAC, not a customer failure.',
   '- Do not use markdown tables for activity.',
-  '- Link resource names via the `url` field; offer [Activity](/activity) for the full feed.',
+  '- Link resource names via the `url` field; offer [Activity](/operations/activity) for the full feed.',
   '',
   '### Fraud tools',
   'List and inspect fraud evaluations and policies.',
@@ -123,14 +133,14 @@ export function buildSystemPrompt(clientOs?: string): SystemModelMessage[] {
   dynamicLines.push(
     '',
     'Staff portal navigation links:',
-    '- Users: /customers/users',
-    '- Organizations: /customers/organizations',
-    '- Projects: /customers/projects',
-    '- Activity: /activity',
-    '- Fraud & Abuse: /fraud',
-    '- Contacts: /contacts',
-    '- Email Activity: /email-activity',
-    '- Billing Accounts: /finance/billing-accounts'
+    `- Users: ${userRoutes.list()}`,
+    `- Organizations: ${orgRoutes.list()}`,
+    `- Projects: ${projectRoutes.list()}`,
+    `- Activity: ${activityRoutes.root()}`,
+    `- Fraud & Abuse: ${fraudRoutes.root()}`,
+    `- Contacts: ${contactRoutes.list()}`,
+    `- Email Activity: ${emailActivityRoutes.list()}`,
+    `- Billing Accounts: ${billingAccountRoutes.list()}`
   );
 
   return [
