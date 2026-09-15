@@ -1,6 +1,7 @@
 import { createActivityTools } from './activity-tools';
 import { createBillingTools } from './billing-tools';
 import { createClusterTools } from './cluster-tools';
+import { createContactTools } from './contact-tools';
 import { createCustomerTools } from './customer-tools';
 import { createFraudTools } from './fraud-tools';
 import { createMetricsTools } from './metrics-tools';
@@ -15,6 +16,7 @@ interface ToolDeps {
 export function createAssistantTools({ accessToken }: ToolDeps) {
   return {
     ...createCustomerTools({ accessToken }),
+    ...createContactTools({ accessToken }),
     ...createBillingTools({ accessToken }),
     ...createResourceTools({ accessToken }),
     ...createActivityTools({ accessToken }),
