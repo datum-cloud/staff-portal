@@ -126,7 +126,7 @@ function StatusPill({ state }: { state: OnboardingStepState }) {
     <Badge
       type={type}
       theme={theme}
-      className="rounded-full px-2 py-0.5 text-[11px] leading-4 font-medium">
+      className="rounded-full px-2 py-0.5 text-xs leading-4 font-medium">
       {STATUS_LABEL[state]}
     </Badge>
   );
@@ -254,7 +254,7 @@ export function OrgOnboardingCard({
                     <Text
                       size="xs"
                       className={cn(
-                        'text-stepper-label text-[10px] tracking-wide uppercase',
+                        'text-stepper-label text-2xs tracking-wide uppercase',
                         'md:mt-3',
                         step.state === 'upcoming' && 'opacity-70'
                       )}>

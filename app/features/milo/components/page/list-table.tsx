@@ -59,12 +59,12 @@ function ListTableBodySkeleton({ columnCount }: { columnCount: number }) {
       {Array.from({ length: LOADING_SKELETON_ROWS }, (_, row) => (
         <div
           key={row}
-          className="border-border flex h-10 items-center border-b px-4"
+          className="border-border flex h-8 items-center border-b px-4"
           data-slot="dt-skeleton-row">
           {Array.from({ length: cols }, (_, col) => (
             <div key={col} className="min-w-0 flex-1 px-2 first:pl-0 last:pr-0">
               <Skeleton
-                className={cn('h-4', col % 3 === 0 ? 'w-3/4' : col % 3 === 1 ? 'w-1/2' : 'w-2/3')}
+                className={cn('h-3', col % 3 === 0 ? 'w-3/4' : col % 3 === 1 ? 'w-1/2' : 'w-2/3')}
               />
             </div>
           ))}

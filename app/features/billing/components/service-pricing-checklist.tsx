@@ -164,12 +164,12 @@ export function ServicePricingChecklist({
                     {catalogService.displayName}
                   </Link>
                   {catalogService.canonicalName ? (
-                    <span className="font-mono text-[11px]"> · {catalogService.canonicalName}</span>
+                    <span className="font-mono text-xs"> · {catalogService.canonicalName}</span>
                   ) : null}
                 </p>
               ) : null}
               {subtext ? (
-                <p className="text-muted-foreground mt-0.5 font-mono text-[11px] leading-relaxed">
+                <p className="text-muted-foreground mt-0.5 font-mono text-xs leading-relaxed">
                   {subtext}
                 </p>
               ) : null}

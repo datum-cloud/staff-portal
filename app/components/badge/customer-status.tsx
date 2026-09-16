@@ -63,7 +63,7 @@ export default function CustomerStatus({ status, label, tooltip, className }: Pr
       className={cn(
         // Figma: 54×16, px 5, radius 3, 8px Medium, tracking 0.3, uppercase
         'inline-flex h-4 w-[54px] shrink-0 items-center justify-center rounded-[3px] px-[5px]',
-        'text-[8px] leading-4 font-medium tracking-[0.3px] uppercase',
+        'text-3xs leading-4 font-medium tracking-[0.3px] uppercase',
         style.className,
         className
       )}>
