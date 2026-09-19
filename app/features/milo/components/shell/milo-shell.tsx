@@ -29,7 +29,7 @@ export function MiloShell() {
       <MiloContextBar />
       <div className="flex flex-1">
         {nav && <MiloSubNav nav={nav} />}
-        <main className="flex min-w-0 flex-1 flex-col">
+        <main className="bg-card flex min-w-0 flex-1 flex-col">
           <Outlet />
         </main>
       </div>
