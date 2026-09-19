@@ -304,6 +304,10 @@ msgstr ""
 msgid "All registrations are up to date"
 msgstr ""
 
+#: app/features/milo/components/navbar/milo-mobile-menu.tsx:120
+msgid "All sections"
+msgstr ""
+
 #: app/features/activity/components/activity-list.tsx:440
 msgid "All write operations"
 msgstr ""
@@ -2274,7 +2278,7 @@ msgstr ""
 msgid "Members"
 msgstr ""
 
-#: app/features/milo/components/navbar/milo-mobile-menu.tsx:46
+#: app/features/milo/components/navbar/milo-mobile-menu.tsx:109
 msgid "Menu"
 msgstr ""
 
@@ -2807,7 +2811,7 @@ msgstr ""
 msgid "Open in Cloud Portal"
 msgstr ""
 
-#: app/features/milo/components/navbar/milo-mobile-menu.tsx:37
+#: app/features/milo/components/navbar/milo-mobile-menu.tsx:100
 msgid "Open menu"
 msgstr ""
 

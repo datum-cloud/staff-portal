@@ -304,6 +304,10 @@ msgstr "All read operations"
 msgid "All registrations are up to date"
 msgstr "All registrations are up to date"
 
+#: app/features/milo/components/navbar/milo-mobile-menu.tsx:120
+msgid "All sections"
+msgstr "All sections"
+
 #: app/features/activity/components/activity-list.tsx:440
 msgid "All write operations"
 msgstr "All write operations"
@@ -2274,7 +2278,7 @@ msgstr "Member deleted successfully"
 msgid "Members"
 msgstr "Members"
 
-#: app/features/milo/components/navbar/milo-mobile-menu.tsx:46
+#: app/features/milo/components/navbar/milo-mobile-menu.tsx:109
 msgid "Menu"
 msgstr "Menu"
 
@@ -2807,7 +2811,7 @@ msgstr "Once a contact is associated with a user, this association cannot be rem
 msgid "Open in Cloud Portal"
 msgstr "Open in Cloud Portal"
 
-#: app/features/milo/components/navbar/milo-mobile-menu.tsx:37
+#: app/features/milo/components/navbar/milo-mobile-menu.tsx:100
 msgid "Open menu"
 msgstr "Open menu"
 
