@@ -1,4 +1,5 @@
 import { useActiveNav } from '../../lib/use-active-section';
+import { useEntityNav } from '../../lib/use-entity-nav';
 import { MiloContextBar } from '../context-bar/milo-context-bar';
 import { MiloNavbar } from '../navbar/milo-navbar';
 import { MiloSubNav } from '../sub-nav/milo-sub-nav';
@@ -12,18 +13,22 @@ import { Outlet } from 'react-router';
  *   │ MiloSubNav │ <Outlet/> (page renders a template)  │
  *   └────────────┴──────────────────────────────────────┘
  *
- * Navbar and context bar are always present; the sub-nav rail appears only when
- * the active section declares one. Independent of datum-ui's SidebarProvider.
+ * Navbar and context bar are always present. The rail shows the active
+ * route's entity nav (`handle.entityNav`, #656/#775) when the current route
+ * declares one, else the active section's `subNav`, else nothing —
+ * independent of datum-ui's SidebarProvider.
  */
 export function MiloShell() {
-  const { section, subItem } = useActiveNav();
+  const { section } = useActiveNav();
+  const entityNav = useEntityNav();
+  const nav = entityNav ?? section?.subNav;
 
   return (
     <div className="bg-background flex min-h-svh w-full flex-col">
       <MiloNavbar />
       <MiloContextBar />
       <div className="flex flex-1">
-        {section?.subNav && <MiloSubNav subNav={section.subNav} activeItem={subItem} />}
+        {nav && <MiloSubNav nav={nav} />}
         <main className="flex min-w-0 flex-1 flex-col">
           <Outlet />
         </main>

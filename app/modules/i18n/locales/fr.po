@@ -197,7 +197,6 @@ msgstr ""
 #: app/components/app-search/use-app-search.ts:55
 #: app/components/app-sidebar/index.tsx:187
 #: app/routes/customer/organization/detail/activity/layout.tsx:5
-#: app/routes/customer/organization/detail/layout.tsx:87
 #: app/routes/customer/project/detail/activity/layout.tsx:5
 #: app/routes/customer/project/detail/layout.tsx:189
 #: app/routes/customer/user/detail/activity/layout.tsx:5
@@ -278,7 +277,6 @@ msgstr ""
 
 #: app/components/app-sidebar/index.tsx:129
 #: app/routes/customer/organization/detail/edge.tsx:9
-#: app/routes/customer/organization/detail/layout.tsx:79
 #: app/routes/customer/project/detail/edge/layout.tsx:5
 #: app/routes/customer/project/detail/layout.tsx:144
 #: app/routes/customer/resource/edge/layout.tsx:5
@@ -476,7 +474,6 @@ msgstr ""
 
 #: app/routes/customer/organization/detail/activity/audit-logs.tsx:14
 #: app/routes/customer/organization/detail/activity/audit-logs.tsx:17
-#: app/routes/customer/organization/detail/layout.tsx:93
 #: app/routes/customer/project/detail/activity/audit-logs.tsx:14
 #: app/routes/customer/project/detail/activity/audit-logs.tsx:17
 #: app/routes/customer/project/detail/layout.tsx:195
@@ -682,11 +679,11 @@ msgstr ""
 
 #: app/features/milo/components/page/rich-filter-panel.tsx:477
 #: app/features/milo/components/page/rich-filter-panel.tsx:616
-#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:70
+#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:115
 msgid "Collapse"
 msgstr ""
 
-#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:67
+#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:112
 msgid "Collapse sidebar"
 msgstr ""
 
@@ -1301,7 +1298,6 @@ msgstr ""
 
 #: app/features/project/components/project-resources-card.tsx:68
 #: app/routes/customer/organization/detail/dns.tsx:9
-#: app/routes/customer/organization/detail/layout.tsx:80
 #: app/routes/customer/project/detail/dns/layout.tsx:5
 #: app/routes/customer/project/detail/layout.tsx:149
 #: app/routes/customer/resource/index.tsx:143
@@ -1379,7 +1375,6 @@ msgstr ""
 #: app/components/app-sidebar/index.tsx:141
 #: app/features/project/components/project-resources-card.tsx:74
 #: app/routes/customer/organization/detail/domain.tsx:9
-#: app/routes/customer/organization/detail/layout.tsx:81
 #: app/routes/customer/project/detail/domain/layout.tsx:5
 #: app/routes/customer/project/detail/layout.tsx:154
 #: app/routes/customer/resource/domain/index.tsx:10
@@ -1617,7 +1612,6 @@ msgstr ""
 
 #: app/routes/customer/organization/detail/activity/events.tsx:14
 #: app/routes/customer/organization/detail/activity/events.tsx:17
-#: app/routes/customer/organization/detail/layout.tsx:92
 #: app/routes/customer/project/detail/activity/events.tsx:14
 #: app/routes/customer/project/detail/activity/events.tsx:17
 #: app/routes/customer/project/detail/layout.tsx:194
@@ -1632,7 +1626,7 @@ msgstr ""
 msgid "Expand"
 msgstr ""
 
-#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:67
+#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:112
 msgid "Expand sidebar"
 msgstr ""
 
@@ -1734,12 +1728,10 @@ msgid "Feature flag enabled"
 msgstr ""
 
 #: app/routes/customer/organization/detail/feature-flags.tsx:8
-#: app/routes/customer/organization/detail/layout.tsx:106
 msgid "Feature Flags"
 msgstr ""
 
 #: app/routes/customer/organization/detail/activity/index.tsx:8
-#: app/routes/customer/organization/detail/layout.tsx:91
 #: app/routes/customer/project/detail/activity/index.tsx:14
 #: app/routes/customer/project/detail/layout.tsx:193
 #: app/routes/customer/user/detail/activity/index.tsx:23
@@ -1851,7 +1843,7 @@ msgstr ""
 msgid "Full response from the provider"
 msgstr ""
 
-#: app/routes/customer/organization/detail/layout.tsx:127
+#: app/routes/customer/organization/detail/layout.tsx:140
 #: app/routes/customer/organization/index.tsx:91
 msgid "Fully onboarded"
 msgstr ""
@@ -1887,7 +1879,6 @@ msgstr ""
 msgid "Grant deleted successfully"
 msgstr ""
 
-#: app/routes/customer/organization/detail/layout.tsx:102
 #: app/routes/customer/organization/detail/quota/grant.tsx:10
 #: app/routes/customer/project/detail/layout.tsx:204
 #: app/routes/customer/project/detail/quota/grant.tsx:10
@@ -2302,7 +2293,6 @@ msgstr ""
 #: app/features/organization/components/org-members-preview-card.tsx:79
 #: app/routes/admin/group/detail/layout.tsx:41
 #: app/routes/admin/group/detail/member.tsx:34
-#: app/routes/customer/organization/detail/layout.tsx:84
 #: app/routes/customer/organization/detail/member.tsx:25
 #: app/routes/marketing/contact-group/detail/layout.tsx:43
 #: app/routes/marketing/contact-group/detail/member.tsx:33
@@ -2833,7 +2823,7 @@ msgstr ""
 msgid "Onboarding"
 msgstr ""
 
-#: app/routes/customer/organization/detail/layout.tsx:130
+#: app/routes/customer/organization/detail/layout.tsx:143
 #: app/routes/customer/organization/index.tsx:92
 msgid "Onboarding incomplete"
 msgstr ""
@@ -2903,7 +2893,6 @@ msgstr ""
 #: app/routes/admin/group/detail/layout.tsx:35
 #: app/routes/admin/offer/detail.tsx:372
 #: app/routes/admin/service-catalog/detail/layout.tsx:61
-#: app/routes/customer/organization/detail/layout.tsx:68
 #: app/routes/customer/project/detail/layout.tsx:138
 #: app/routes/customer/user/detail/layout.tsx:36
 #: app/routes/dashboard/overview.tsx:28
@@ -3142,7 +3131,6 @@ msgstr ""
 #: app/components/app-sidebar/index.tsx:123
 #: app/features/organization/components/org-details-card.tsx:71
 #: app/routes/customer/breadcrumb-switchers.tsx:8
-#: app/routes/customer/organization/detail/layout.tsx:73
 #: app/routes/customer/organization/detail/project.tsx:21
 #: app/routes/customer/project/detail/layout.tsx:53
 #: app/routes/customer/project/index.tsx:32
@@ -3256,7 +3244,6 @@ msgid "Quota Utilization"
 msgstr ""
 
 #: app/features/project/components/project-quotas-card.tsx:64
-#: app/routes/customer/organization/detail/layout.tsx:97
 #: app/routes/customer/organization/detail/quota/layout.tsx:5
 #: app/routes/customer/project/detail/layout.tsx:199
 #: app/routes/customer/project/detail/quota/layout.tsx:5
@@ -3403,7 +3390,6 @@ msgstr ""
 
 #: app/components/app-search/search-results.tsx:230
 #: app/features/project/components/project-resources-card.tsx:58
-#: app/routes/customer/organization/detail/layout.tsx:75
 #: app/routes/customer/resource/index.tsx:28
 #: app/routes/customer/resource/layout.tsx:5
 msgid "Resources"
@@ -4243,8 +4229,6 @@ msgstr ""
 #: app/features/organization/components/org-usage-card.tsx:54
 #: app/features/project/components/project-usage-card.tsx:89
 #: app/features/quota/components/quota-bucket-list.tsx:110
-#: app/routes/customer/organization/detail/layout.tsx:85
-#: app/routes/customer/organization/detail/layout.tsx:101
 #: app/routes/customer/organization/detail/quota/usage.tsx:10
 #: app/routes/customer/organization/detail/usage/index.tsx:24
 #: app/routes/customer/project/detail/layout.tsx:203
@@ -4364,7 +4348,7 @@ msgstr ""
 msgid "View Evaluation"
 msgstr ""
 
-#: app/routes/customer/organization/detail/layout.tsx:148
+#: app/routes/customer/organization/detail/layout.tsx:161
 #: app/routes/customer/project/detail/layout.tsx:234
 msgid "View in Cloud Portal"
 msgstr ""

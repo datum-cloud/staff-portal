@@ -4,28 +4,43 @@ import {
   SUBNAV_W_COLLAPSED,
   SUBNAV_W_EXPANDED,
 } from '../../lib/dimensions';
-import { type NavSubItem, type NavSubNav } from '../../lib/nav-config';
+import { type EntityNav, type NavSubNav } from '../../lib/nav-config';
+import { useActiveSubNavItem } from '../../lib/use-active-subnav-item';
+import { useSubNavCollapsed } from '../../lib/use-subnav-collapsed';
 import { MiloSubNavItem } from './milo-sub-nav-item';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { useLingui } from '@lingui/react/macro';
-import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
-import { useState } from 'react';
+import { ArrowLeft, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { NavLink } from 'react-router';
 
 interface MiloSubNavProps {
-  subNav: NavSubNav;
-  activeItem?: NavSubItem;
+  /** A section's static rail, or the active route's entity rail (see `useEntityNav`) — same group/item chrome either way. */
+  nav: NavSubNav | EntityNav;
+}
+
+function isEntityNav(nav: NavSubNav | EntityNav): nav is EntityNav {
+  return 'title' in nav;
 }
 
 /**
  * Region ③ — the left sub-nav rail (#775). One collapsible component: an
  * icon-only rail by default that expands to labels + count badges + optional
- * group headers. Only rendered when the active section has a sub-nav.
+ * group headers. Renders either a section's `NavSubNav` (only when the active
+ * section declares one) or an entity's `EntityNav` (#656) — an `EntityNav`
+ * additionally gets a `backTo` + icon + title header above the groups (D2).
  */
-export function MiloSubNav({ subNav, activeItem }: MiloSubNavProps) {
+export function MiloSubNav({ nav }: MiloSubNavProps) {
   const { t } = useLingui();
-  const [collapsed, setCollapsed] = useState(subNav.defaultCollapsed ?? false);
+  const entityNav = isEntityNav(nav) ? nav : undefined;
+  // D4: the entity rail defaults expanded — its labels are the navigation.
+  // D3: either way, the operator's choice persists across navigation.
+  const [collapsed, setCollapsed] = useSubNavCollapsed(
+    isEntityNav(nav) ? false : (nav.defaultCollapsed ?? false)
+  );
+  const { item: activeItem, parent: activeParent } = useActiveSubNavItem(nav.groups);
 
   return (
     <aside
@@ -35,8 +50,37 @@ export function MiloSubNav({ subNav, activeItem }: MiloSubNavProps) {
         height: `calc(100vh - ${NAVBAR_H + CONTEXTBAR_H}px)`,
       }}
       className="bg-background sticky flex shrink-0 flex-col border-r transition-[width]">
+      {entityNav && (
+        <div className="flex flex-col gap-2 border-b p-2">
+          {entityNav.backTo &&
+            (collapsed ? (
+              <NavLink
+                to={entityNav.backTo.href}
+                aria-label={entityNav.backTo.label}
+                className="text-foreground hover:bg-card hover:text-primary flex size-9 items-center justify-center rounded-md transition-colors">
+                <ArrowLeft className="size-4" />
+              </NavLink>
+            ) : (
+              <NavLink
+                to={entityNav.backTo.href}
+                className="text-muted-foreground hover:text-primary flex w-fit items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium transition-colors">
+                <ArrowLeft className="size-3.5 shrink-0" />
+                <span className="truncate">{entityNav.backTo.label}</span>
+              </NavLink>
+            ))}
+          <div className={cn('flex items-center gap-2 px-2', collapsed && 'justify-center px-0')}>
+            {entityNav.icon && <Icon icon={entityNav.icon} size={20} className="shrink-0" />}
+            {!collapsed && (
+              <Text size="sm" weight="semibold" className="truncate">
+                {entityNav.title}
+              </Text>
+            )}
+          </div>
+        </div>
+      )}
+
       <nav className="flex flex-1 flex-col gap-1 overflow-y-auto p-2">
-        {subNav.groups.map((group, gi) => (
+        {nav.groups.map((group, gi) => (
           <div key={group.label ?? gi} className="flex flex-col gap-1">
             {group.label && !collapsed && (
               <Text
@@ -49,10 +93,11 @@ export function MiloSubNav({ subNav, activeItem }: MiloSubNavProps) {
             )}
             {group.items.map((item) => (
               <MiloSubNavItem
-                key={item.href}
+                key={item.href ?? item.label}
                 item={item}
-                active={activeItem?.href === item.href}
+                active={activeItem === item}
                 collapsed={collapsed}
+                activeChildHref={activeParent === item ? activeItem?.href : undefined}
               />
             ))}
           </div>

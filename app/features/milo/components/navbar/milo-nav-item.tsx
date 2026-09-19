@@ -83,7 +83,7 @@ export function MiloNavItem({ section, active }: MiloNavItemProps) {
             {group.items.map((item) => (
               <NavLink
                 key={item.href}
-                to={item.href}
+                to={item.href ?? ''}
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
                   cn(

@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { useLocation } from 'react-router';
 
 /** Match length of a path prefix (or the best of several) against the pathname (0 = no match). */
-function matchLength(pathname: string, prefix: string | string[]): number {
+export function matchLength(pathname: string, prefix: string | string[]): number {
   if (Array.isArray(prefix)) {
     return prefix.reduce((best, p) => Math.max(best, matchLength(pathname, p)), 0);
   }
@@ -14,14 +14,16 @@ function matchLength(pathname: string, prefix: string | string[]): number {
 }
 
 /** Pick the entry whose `match`/`href` prefix matches the pathname most specifically. */
-function bestMatch<T extends { href: string; match?: string | string[] }>(
+function bestMatch<T extends { href?: string; match?: string | string[] }>(
   pathname: string,
   entries: T[]
 ): T | undefined {
   let best: T | undefined;
   let bestLen = 0;
   for (const entry of entries) {
-    const len = matchLength(pathname, entry.match ?? entry.href);
+    const prefix = entry.match ?? entry.href;
+    if (!prefix) continue;
+    const len = matchLength(pathname, prefix);
     if (len > bestLen) {
       best = entry;
       bestLen = len;
@@ -86,7 +88,7 @@ export function useActiveNav(): ActiveNav {
       const items = section.subNav?.groups.flatMap((g) => g.items) ?? [];
       const len = Math.max(
         matchLength(pathname, section.match ?? section.href),
-        ...items.map((i) => matchLength(pathname, i.match ?? i.href))
+        ...items.map((i) => matchLength(pathname, i.match ?? i.href ?? ''))
       );
       if (len > bestLen) {
         activeSection = section;
