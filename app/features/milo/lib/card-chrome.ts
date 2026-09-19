@@ -33,7 +33,7 @@ export const EMBEDDED_TABLE_HEADER_CELL_CLASS = cn(
 /** Kill TableRow's default border-b so only cell borders draw (avoids double lines). */
 export const LIST_TABLE_ROW_CLASS = 'border-0 hover:bg-muted/30';
 export const LIST_TABLE_CELL_CLASS =
-  'border-b border-border px-4 py-0.5 text-sm [&_[data-slot=dt-row-actions]]:!size-7 [&_[data-slot=dt-row-actions]]:!p-0 [&_[data-slot=button-copy]]:!size-5';
+  'border-b border-border px-4 py-2 text-sm [&_[data-slot=dt-row-actions]]:!size-7 [&_[data-slot=dt-row-actions]]:!p-0 [&_[data-slot=button-copy]]:!size-5';
 /**
  * Drop last-row cell borders so they don’t stack with the ListTable card’s
  * bottom border (reads as a double line above the pagination).
