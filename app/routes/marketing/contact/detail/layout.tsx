@@ -1,12 +1,11 @@
 import type { Route } from './+types/layout';
-import { DetailShell, type EntityTab } from '@/features/milo';
+import { DetailShell, type EntityNav } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
 import { contactDetailQuery, userDetailQuery } from '@/resources/request/server';
 import { ContactDetailLoaderData } from '@/routes/marketing/contact/shared';
 import { ENTITY_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
 import { contactRoutes } from '@/utils/config/routes.config';
 import { Avatar, AvatarFallback } from '@datum-cloud/datum-ui/avatar';
-import { useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import { useLoaderData } from 'react-router';
 
@@ -18,6 +17,41 @@ export const handle = {
     const contactName = data.contact?.metadata?.name ?? '';
 
     return <span>{displayName || contactName}</span>;
+  },
+  // `handle` is module scope (no hooks, no `useLingui` macro — see
+  // entity-scoped-left-nav.md's i18n gap, tracked as a follow-up), so these
+  // labels are plain strings, same as `NAV_SECTIONS`.
+  entityNav: (
+    data: ContactDetailLoaderData,
+    params: { namespace?: string; contactName?: string }
+  ): EntityNav => {
+    const namespace = params.namespace ?? data?.contact?.metadata?.namespace ?? '';
+    const contactName = params.contactName ?? data?.contact?.metadata?.name ?? '';
+    const displayName =
+      [data?.contact?.spec?.givenName, data?.contact?.spec?.familyName].filter(Boolean).join(' ') ||
+      contactName;
+
+    return {
+      backTo: { label: 'Contacts', href: contactRoutes.list() },
+      title: displayName,
+      icon: ENTITY_ICONS.contact,
+      groups: [
+        {
+          items: [
+            {
+              label: 'Details',
+              href: contactRoutes.detail(namespace, contactName),
+              icon: TAB_ICONS.overview,
+            },
+            {
+              label: 'Contact Groups',
+              href: contactRoutes.group(namespace, contactName),
+              icon: ENTITY_ICONS.contactGroup,
+            },
+          ],
+        },
+      ],
+    };
   },
 };
 
@@ -38,10 +72,8 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 };
 
 export default function Layout() {
-  const { t } = useLingui();
   const data = useLoaderData<typeof loader>();
 
-  const namespace = data?.contact?.metadata?.namespace ?? '';
   const contactName = data?.contact?.metadata?.name ?? '';
   const displayName =
     [data?.contact?.spec?.givenName, data?.contact?.spec?.familyName].filter(Boolean).join(' ') ||
@@ -54,20 +86,6 @@ export default function Layout() {
       .substring(0, 2)
       .toUpperCase() || '?';
 
-  const tabs: EntityTab[] = [
-    {
-      label: t`Details`,
-      href: contactRoutes.detail(namespace, contactName),
-      icon: TAB_ICONS.overview,
-      end: true,
-    },
-    {
-      label: t`Contact Groups`,
-      href: contactRoutes.group(namespace, contactName),
-      icon: ENTITY_ICONS.contactGroup,
-    },
-  ];
-
   return (
     <DetailShell
       icon={
@@ -77,7 +95,6 @@ export default function Layout() {
       }
       name={displayName}
       subtitle={data?.contact?.spec?.email}
-      tabs={tabs}
     />
   );
 }

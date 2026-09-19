@@ -198,9 +198,7 @@ msgstr ""
 #: app/components/app-sidebar/index.tsx:187
 #: app/routes/customer/organization/detail/activity/layout.tsx:5
 #: app/routes/customer/project/detail/activity/layout.tsx:5
-#: app/routes/customer/project/detail/layout.tsx:189
 #: app/routes/customer/user/detail/activity/layout.tsx:5
-#: app/routes/customer/user/detail/layout.tsx:53
 #: app/routes/operation/activity/layout.tsx:12
 #: app/routes/operation/activity/layout.tsx:69
 msgid "Activity"
@@ -278,7 +276,6 @@ msgstr ""
 #: app/components/app-sidebar/index.tsx:129
 #: app/routes/customer/organization/detail/edge.tsx:9
 #: app/routes/customer/project/detail/edge/layout.tsx:5
-#: app/routes/customer/project/detail/layout.tsx:144
 #: app/routes/customer/resource/edge/layout.tsx:5
 msgid "ALB"
 msgstr ""
@@ -358,7 +355,6 @@ msgid "Approval"
 msgstr ""
 
 #: app/routes/admin/service-catalog/detail/approvals.tsx:21
-#: app/routes/admin/service-catalog/detail/layout.tsx:74
 msgid "Approvals"
 msgstr ""
 
@@ -476,10 +472,8 @@ msgstr ""
 #: app/routes/customer/organization/detail/activity/audit-logs.tsx:17
 #: app/routes/customer/project/detail/activity/audit-logs.tsx:14
 #: app/routes/customer/project/detail/activity/audit-logs.tsx:17
-#: app/routes/customer/project/detail/layout.tsx:195
 #: app/routes/customer/user/detail/activity/audit-logs.tsx:14
 #: app/routes/customer/user/detail/activity/audit-logs.tsx:17
-#: app/routes/customer/user/detail/layout.tsx:58
 #: app/routes/operation/activity/audit-logs.tsx:11
 #: app/routes/operation/activity/audit-logs.tsx:14
 #: app/routes/operation/activity/layout.tsx:27
@@ -637,7 +631,7 @@ msgstr ""
 msgid "Classification"
 msgstr ""
 
-#: app/routes/customer/project/detail/layout.tsx:95
+#: app/routes/customer/project/detail/layout.tsx:170
 msgid "Cleanup finished and the project is no longer available."
 msgstr ""
 
@@ -713,10 +707,6 @@ msgstr ""
 msgid "Completing ACME challenge with the certificate authority"
 msgstr ""
 
-#: app/routes/customer/project/detail/layout.tsx:161
-msgid "Compute"
-msgstr ""
-
 #: app/features/service-catalog/components/conditions-card.tsx:64
 msgid "Conditions"
 msgstr ""
@@ -754,7 +744,6 @@ msgid "Consumer Project"
 msgstr ""
 
 #: app/routes/admin/service-catalog/detail/consumers.tsx:28
-#: app/routes/admin/service-catalog/detail/layout.tsx:67
 msgid "Consumers"
 msgstr ""
 
@@ -817,7 +806,6 @@ msgstr ""
 #: app/routes/marketing/contact-group/index.tsx:29
 #: app/routes/marketing/contact-group/layout.tsx:5
 #: app/routes/marketing/contact/detail/group.tsx:28
-#: app/routes/marketing/contact/detail/layout.tsx:65
 msgid "Contact Groups"
 msgstr ""
 
@@ -843,7 +831,6 @@ msgstr ""
 #: app/components/app-sidebar/index.tsx:147
 #: app/components/app-sidebar/index.tsx:153
 #: app/routes/customer/user/detail/contacts.tsx:9
-#: app/routes/customer/user/detail/layout.tsx:46
 #: app/routes/marketing/contact/index.tsx:14
 #: app/routes/marketing/contact/layout.tsx:5
 msgid "Contacts"
@@ -1024,7 +1011,7 @@ msgstr ""
 
 #: app/components/app-sidebar/index.tsx:109
 #: app/routes/customer/layout.tsx:7
-#: app/routes/customer/project/detail/layout.tsx:46
+#: app/routes/customer/project/detail/layout.tsx:121
 msgid "Customers"
 msgstr ""
 
@@ -1246,8 +1233,6 @@ msgstr ""
 #: app/features/organization/components/org-details-card.tsx:34
 #: app/features/project/components/project-details-card.tsx:27
 #: app/features/service-catalog/components/details-card.tsx:23
-#: app/routes/marketing/contact-group/detail/layout.tsx:37
-#: app/routes/marketing/contact/detail/layout.tsx:59
 msgid "Details"
 msgstr ""
 
@@ -1299,7 +1284,6 @@ msgstr ""
 #: app/features/project/components/project-resources-card.tsx:68
 #: app/routes/customer/organization/detail/dns.tsx:9
 #: app/routes/customer/project/detail/dns/layout.tsx:5
-#: app/routes/customer/project/detail/layout.tsx:149
 #: app/routes/customer/resource/index.tsx:143
 #: app/routes/customer/resource/index.tsx:398
 msgid "DNS"
@@ -1376,7 +1360,6 @@ msgstr ""
 #: app/features/project/components/project-resources-card.tsx:74
 #: app/routes/customer/organization/detail/domain.tsx:9
 #: app/routes/customer/project/detail/domain/layout.tsx:5
-#: app/routes/customer/project/detail/layout.tsx:154
 #: app/routes/customer/resource/domain/index.tsx:10
 #: app/routes/customer/resource/domain/layout.tsx:5
 msgid "Domains"
@@ -1455,9 +1438,7 @@ msgstr ""
 
 #: app/components/app-sidebar/index.tsx:169
 #: app/routes/customer/project/detail/email-activity.tsx:8
-#: app/routes/customer/project/detail/layout.tsx:184
 #: app/routes/customer/user/detail/email-activity.tsx:9
-#: app/routes/customer/user/detail/layout.tsx:48
 #: app/routes/operation/email-activity/layout.tsx:5
 msgid "Email Activity"
 msgstr ""
@@ -1614,7 +1595,6 @@ msgstr ""
 #: app/routes/customer/organization/detail/activity/events.tsx:17
 #: app/routes/customer/project/detail/activity/events.tsx:14
 #: app/routes/customer/project/detail/activity/events.tsx:17
-#: app/routes/customer/project/detail/layout.tsx:194
 #: app/routes/operation/activity/events.tsx:21
 #: app/routes/operation/activity/events.tsx:24
 #: app/routes/operation/activity/layout.tsx:26
@@ -1733,9 +1713,7 @@ msgstr ""
 
 #: app/routes/customer/organization/detail/activity/index.tsx:8
 #: app/routes/customer/project/detail/activity/index.tsx:14
-#: app/routes/customer/project/detail/layout.tsx:193
 #: app/routes/customer/user/detail/activity/index.tsx:23
-#: app/routes/customer/user/detail/layout.tsx:57
 #: app/routes/operation/activity/feed.tsx:28
 #: app/routes/operation/activity/feed.tsx:31
 #: app/routes/operation/activity/layout.tsx:25
@@ -1880,7 +1858,6 @@ msgid "Grant deleted successfully"
 msgstr ""
 
 #: app/routes/customer/organization/detail/quota/grant.tsx:10
-#: app/routes/customer/project/detail/layout.tsx:204
 #: app/routes/customer/project/detail/quota/grant.tsx:10
 msgid "Grants"
 msgstr ""
@@ -2291,10 +2268,8 @@ msgid "Member deleted successfully"
 msgstr ""
 
 #: app/features/organization/components/org-members-preview-card.tsx:79
-#: app/routes/admin/group/detail/layout.tsx:41
 #: app/routes/admin/group/detail/member.tsx:34
 #: app/routes/customer/organization/detail/member.tsx:25
-#: app/routes/marketing/contact-group/detail/layout.tsx:43
 #: app/routes/marketing/contact-group/detail/member.tsx:33
 msgid "Members"
 msgstr ""
@@ -2313,10 +2288,6 @@ msgstr ""
 
 #: app/features/billing/components/offer-included-pricing-list.tsx:126
 msgid "Metric"
-msgstr ""
-
-#: app/routes/customer/project/detail/layout.tsx:174
-msgid "Metrics"
 msgstr ""
 
 #: app/routes/customer/project/detail/export-policy/detail.tsx:111
@@ -2878,8 +2849,7 @@ msgstr ""
 #: app/routes/customer/breadcrumb-switchers.tsx:7
 #: app/routes/customer/organization/index.tsx:35
 #: app/routes/customer/organization/layout.tsx:8
-#: app/routes/customer/project/detail/layout.tsx:47
-#: app/routes/customer/user/detail/layout.tsx:42
+#: app/routes/customer/project/detail/layout.tsx:122
 #: app/routes/customer/user/detail/organization.tsx:18
 #: app/routes/dashboard/overview.tsx:67
 msgid "Organizations"
@@ -2890,11 +2860,7 @@ msgid "Origin"
 msgstr ""
 
 #: app/routes/admin/group/detail/index.tsx:17
-#: app/routes/admin/group/detail/layout.tsx:35
 #: app/routes/admin/offer/detail.tsx:372
-#: app/routes/admin/service-catalog/detail/layout.tsx:61
-#: app/routes/customer/project/detail/layout.tsx:138
-#: app/routes/customer/user/detail/layout.tsx:36
 #: app/routes/dashboard/overview.tsx:28
 msgid "Overview"
 msgstr ""
@@ -3117,7 +3083,7 @@ msgstr ""
 msgid "Project"
 msgstr ""
 
-#: app/routes/customer/project/detail/layout.tsx:94
+#: app/routes/customer/project/detail/layout.tsx:169
 msgid "Project deleted"
 msgstr ""
 
@@ -3132,7 +3098,7 @@ msgstr ""
 #: app/features/organization/components/org-details-card.tsx:71
 #: app/routes/customer/breadcrumb-switchers.tsx:8
 #: app/routes/customer/organization/detail/project.tsx:21
-#: app/routes/customer/project/detail/layout.tsx:53
+#: app/routes/customer/project/detail/layout.tsx:128
 #: app/routes/customer/project/index.tsx:32
 #: app/routes/customer/project/layout.tsx:8
 #: app/routes/dashboard/overview.tsx:75
@@ -3245,7 +3211,6 @@ msgstr ""
 
 #: app/features/project/components/project-quotas-card.tsx:64
 #: app/routes/customer/organization/detail/quota/layout.tsx:5
-#: app/routes/customer/project/detail/layout.tsx:199
 #: app/routes/customer/project/detail/quota/layout.tsx:5
 msgid "Quotas"
 msgstr ""
@@ -3672,7 +3637,6 @@ msgstr ""
 msgid "Secret Namespace"
 msgstr ""
 
-#: app/routes/customer/project/detail/layout.tsx:179
 #: app/routes/customer/project/detail/secret.tsx:12
 msgid "Secrets"
 msgstr ""
@@ -4231,7 +4195,6 @@ msgstr ""
 #: app/features/quota/components/quota-bucket-list.tsx:110
 #: app/routes/customer/organization/detail/quota/usage.tsx:10
 #: app/routes/customer/organization/detail/usage/index.tsx:24
-#: app/routes/customer/project/detail/layout.tsx:203
 #: app/routes/customer/project/detail/quota/usage.tsx:10
 msgid "Usage"
 msgstr ""
@@ -4349,7 +4312,7 @@ msgid "View Evaluation"
 msgstr ""
 
 #: app/routes/customer/organization/detail/layout.tsx:161
-#: app/routes/customer/project/detail/layout.tsx:234
+#: app/routes/customer/project/detail/layout.tsx:227
 msgid "View in Cloud Portal"
 msgstr ""
 
@@ -4398,10 +4361,6 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:367
 #: app/features/activity/components/activity-list.tsx:457
 msgid "Watch"
-msgstr ""
-
-#: app/routes/customer/project/detail/layout.tsx:166
-msgid "Workloads"
 msgstr ""
 
 #: app/features/edge/components/detail/edge-yaml-card.tsx:18
