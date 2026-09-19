@@ -15,6 +15,7 @@ import {
   userRoutes,
 } from '@/utils/config/routes.config';
 import { type LucideIcon } from 'lucide-react';
+import { type ReactNode } from 'react';
 
 /**
  * Single source of truth for the Milo shell navigation.
@@ -29,12 +30,21 @@ import { type LucideIcon } from 'lucide-react';
 
 export interface NavSubItem {
   label: string;
-  href: string;
+  /** Omitted when `children` is present — a parent-with-children row is a disclosure, not a link. */
+  href?: string;
   icon?: LucideIcon;
   /** Prefix(es) for active detection; defaults to `href`. Array ⇒ active if any matches (e.g. Resources spanning /albs, /dns, /domains). */
   match?: string | string[];
   /** Optional count badge (shown when the rail is expanded). */
   count?: number;
+  /** Optional adornment rendered alongside `count` (e.g. service catalog's pending-approvals badge). */
+  badge?: ReactNode;
+  /**
+   * Nested entries (entity rail only — D1). Renders as a collapsible group,
+   * auto-expanded when any child is active. The parent item itself is not a
+   * link when `children` is present; `match` should span all children's prefixes.
+   */
+  children?: NavSubItem[];
 }
 
 export interface NavSubGroup {
@@ -64,6 +74,35 @@ export interface NavSection {
    * if `subNav` is present for the left rail. Defaults to true.
    */
   navbarDropdown?: boolean;
+}
+
+/**
+ * Left rail contents for an entity detail page (org, project, user, etc.),
+ * resolved via the route's `handle.entityNav` (see `useEntityNav`). Takes
+ * over the rail from the section's `subNav` while an entity route is active.
+ *
+ * Declare it on a route module like this:
+ * ```ts
+ * export const handle = {
+ *   entityNav: (data, params): EntityNav => ({
+ *     backTo: { label: 'Organizations', href: orgRoutes.list() },
+ *     title: data.displayName,
+ *     icon: ENTITY_ICONS.organization,
+ *     groups: [{ items: [...] }],
+ *   }),
+ * };
+ * ```
+ * `data` is the route's loader data (`match.data`); `params` is the route's
+ * URL params (`match.params`). `handle` is module scope, so it cannot call
+ * hooks — hook-derived entries (e.g. a plugin-gated tab) are injected by
+ * `useEntityNav` instead, mirroring `useNavSections()`.
+ */
+export interface EntityNav {
+  /** Back-link to the entity's list page, e.g. { label: 'Organizations', href: orgRoutes.list() }. */
+  backTo?: { label: string; href: string };
+  title: string;
+  icon?: LucideIcon;
+  groups: NavSubGroup[];
 }
 
 export const NAV_SECTIONS: NavSection[] = [

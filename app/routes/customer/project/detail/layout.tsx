@@ -5,12 +5,10 @@ import {
   createStaticBreadcrumbItem,
   type BreadcrumbItem,
 } from '@/components/breadcrumb';
-import { DetailShell, type EntityTab } from '@/features/milo';
+import { DetailShell, type EntityNav } from '@/features/milo';
 import { isProjectDeleting } from '@/features/project/lib/project-phase';
 import { useEnv } from '@/hooks';
 import { authenticator } from '@/modules/auth';
-import { usePlugins } from '@/modules/plugins/client/use-plugins';
-import { findWorkloadListPluginSlug } from '@/modules/plugins/client/workload-plugin';
 import { useLiveProject } from '@/resources/request/client';
 import { orgDetailQuery, projectDetailQuery } from '@/resources/request/server';
 import { ACTION_ICONS, ENTITY_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
@@ -22,11 +20,88 @@ import {
   ComMiloapisResourcemanagerV1Alpha1Organization,
   ComMiloapisResourcemanagerV1Alpha1Project,
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
-import { Boxes } from 'lucide-react';
 import { useEffect, useMemo } from 'react';
 import { useLoaderData, useLocation, useNavigate, useParams } from 'react-router';
 
+type LoaderData = {
+  project: ComMiloapisResourcemanagerV1Alpha1Project;
+  organization: ComMiloapisResourcemanagerV1Alpha1Organization;
+};
+
 export const handle = {
+  // `handle` is module scope (no hooks, no `useLingui` macro — see
+  // entity-scoped-left-nav.md's i18n gap, tracked as a follow-up), so these
+  // labels are plain strings, same as `NAV_SECTIONS`. The Compute tab is
+  // gated on an installed workload plugin, a client hook — `useEntityNav`
+  // injects it (see `withProjectCompute`), it can't live here.
+  entityNav: (data: LoaderData, params: { projectName?: string }): EntityNav => {
+    const projectName = params.projectName ?? data?.project?.metadata?.name ?? '';
+    const displayName =
+      data?.project?.metadata?.annotations?.['kubernetes.io/description'] || projectName;
+    const orgName = data?.organization?.metadata?.name ?? '';
+    const quotasBase = `${projectRoutes.detail(projectName)}/quotas`;
+
+    return {
+      // Matches the breadcrumb (Organizations -> org -> Projects): a project
+      // is reached through its organization, so "back" is that org's own
+      // project list, not the flat /customers/projects.
+      backTo: { label: 'Projects', href: orgRoutes.project(orgName) },
+      title: displayName,
+      icon: ENTITY_ICONS.project,
+      groups: [
+        {
+          items: [
+            {
+              label: 'Overview',
+              href: projectRoutes.detail(projectName),
+              icon: TAB_ICONS.overview,
+            },
+            { label: 'ALB', href: projectRoutes.edge.list(projectName), icon: ENTITY_ICONS.edge },
+            { label: 'DNS', href: projectRoutes.dns.list(projectName), icon: ENTITY_ICONS.dns },
+            {
+              label: 'Domains',
+              href: projectRoutes.domain.list(projectName),
+              icon: ENTITY_ICONS.domain,
+            },
+            {
+              label: 'Metrics',
+              href: projectRoutes.exportPolicy.list(projectName),
+              icon: TAB_ICONS.metrics,
+            },
+            {
+              label: 'Secrets',
+              href: projectRoutes.secret.list(projectName),
+              icon: TAB_ICONS.secrets,
+            },
+            {
+              label: 'Email Activity',
+              href: projectRoutes.emailActivity(projectName),
+              icon: ENTITY_ICONS.emailActivity,
+            },
+            {
+              label: 'Activity',
+              icon: ENTITY_ICONS.activity,
+              match: projectRoutes.activity.root(projectName),
+              children: [
+                { label: 'Feed', href: projectRoutes.activity.root(projectName) },
+                { label: 'Events', href: projectRoutes.activity.events(projectName) },
+                { label: 'Audit Logs', href: projectRoutes.activity.auditLogs(projectName) },
+              ],
+            },
+            {
+              label: 'Quotas',
+              icon: TAB_ICONS.quotas,
+              match: quotasBase,
+              children: [
+                { label: 'Usage', href: projectRoutes.quota.usage(projectName) },
+                { label: 'Grants', href: projectRoutes.quota.grant(projectName) },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+  },
   customBreadcrumb: {
     generateItems: (
       params: any,
@@ -97,13 +172,6 @@ export default function Layout() {
     navigate(orgRoutes.project(orgName));
   }, [isGone, orgName, navigate, t]);
 
-  // Nav tabs for plugin-contributed project pages are additive and
-  // best-effort: if no installed plugin serves a Workloads list page,
-  // `workloadPluginSlug` stays null and the tab is simply omitted rather
-  // than linking to a dead end.
-  const { data: plugins = [] } = usePlugins();
-  const workloadPluginSlug = useMemo(() => findWorkloadListPluginSlug(plugins), [plugins]);
-
   const cloudProjectUrl = useMemo(() => {
     if (!env?.CLOUD_PORTAL_URL || !projectName) return null;
     const base = `${env.CLOUD_PORTAL_URL}/project/${projectName}`;
@@ -130,81 +198,6 @@ export default function Layout() {
 
     return base;
   }, [env, projectName, params, pathname]);
-
-  const quotasBase = `${projectRoutes.detail(projectName)}/quotas`;
-
-  const tabs: EntityTab[] = [
-    {
-      label: t`Overview`,
-      href: projectRoutes.detail(projectName),
-      icon: TAB_ICONS.overview,
-      end: true,
-    },
-    {
-      label: t`ALB`,
-      href: projectRoutes.edge.list(projectName),
-      icon: ENTITY_ICONS.edge,
-    },
-    {
-      label: t`DNS`,
-      href: projectRoutes.dns.list(projectName),
-      icon: ENTITY_ICONS.dns,
-    },
-    {
-      label: t`Domains`,
-      href: projectRoutes.domain.list(projectName),
-      icon: ENTITY_ICONS.domain,
-    },
-    ...(workloadPluginSlug
-      ? [
-          {
-            label: t`Compute`,
-            icon: Boxes,
-            match: projectRoutes.plugin.mount(projectName, workloadPluginSlug),
-            children: [
-              {
-                label: t`Workloads`,
-                href: projectRoutes.plugin.mount(projectName, workloadPluginSlug),
-              },
-            ],
-          },
-        ]
-      : []),
-    {
-      label: t`Metrics`,
-      href: projectRoutes.exportPolicy.list(projectName),
-      icon: TAB_ICONS.metrics,
-    },
-    {
-      label: t`Secrets`,
-      href: projectRoutes.secret.list(projectName),
-      icon: TAB_ICONS.secrets,
-    },
-    {
-      label: t`Email Activity`,
-      href: projectRoutes.emailActivity(projectName),
-      icon: ENTITY_ICONS.emailActivity,
-    },
-    {
-      label: t`Activity`,
-      icon: ENTITY_ICONS.activity,
-      match: projectRoutes.activity.root(projectName),
-      children: [
-        { label: t`Feed`, href: projectRoutes.activity.root(projectName) },
-        { label: t`Events`, href: projectRoutes.activity.events(projectName) },
-        { label: t`Audit Logs`, href: projectRoutes.activity.auditLogs(projectName) },
-      ],
-    },
-    {
-      label: t`Quotas`,
-      icon: TAB_ICONS.quotas,
-      match: quotasBase,
-      children: [
-        { label: t`Usage`, href: projectRoutes.quota.usage(projectName) },
-        { label: t`Grants`, href: projectRoutes.quota.grant(projectName) },
-      ],
-    },
-  ];
 
   return (
     <DetailShell
@@ -235,7 +228,6 @@ export default function Layout() {
           </LinkButton>
         )
       }
-      tabs={tabs}
     />
   );
 }

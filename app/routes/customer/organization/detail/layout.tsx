@@ -1,6 +1,6 @@
 import type { Route } from './+types/layout';
 import { CustomerStatus } from '@/components/badge';
-import { DetailShell, type EntityTab } from '@/features/milo';
+import { DetailShell, type EntityNav } from '@/features/milo';
 import { useEnv } from '@/hooks';
 import { authenticator } from '@/modules/auth';
 import { useOrganizationQuery } from '@/resources/request/client';
@@ -18,6 +18,67 @@ export const handle = {
     const displayName =
       data?.metadata?.annotations?.['kubernetes.io/display-name'] || data?.metadata?.name;
     return <span>{displayName}</span>;
+  },
+  // `handle` is module scope (no hooks, no `useLingui` macro — see
+  // entity-scoped-left-nav.md's i18n gap, tracked as a follow-up), so these
+  // labels are plain strings, same as `NAV_SECTIONS`.
+  entityNav: (
+    data: ComMiloapisResourcemanagerV1Alpha1Organization,
+    params: { orgName?: string }
+  ): EntityNav => {
+    const orgName = params.orgName ?? data?.metadata?.name ?? '';
+    const displayName = data?.metadata?.annotations?.['kubernetes.io/display-name'] || orgName;
+    const quotasBase = `${orgRoutes.detail(orgName)}/quotas`;
+
+    return {
+      backTo: { label: 'Organizations', href: orgRoutes.list() },
+      title: displayName,
+      icon: ENTITY_ICONS.organization,
+      groups: [
+        {
+          items: [
+            { label: 'Overview', href: orgRoutes.detail(orgName), icon: TAB_ICONS.overview },
+            { label: 'Projects', href: orgRoutes.project(orgName), icon: ENTITY_ICONS.project },
+            {
+              label: 'Resources',
+              icon: ENTITY_ICONS.resource,
+              match: [orgRoutes.edge(orgName), orgRoutes.dns(orgName), orgRoutes.domain(orgName)],
+              children: [
+                { label: 'ALB', href: orgRoutes.edge(orgName) },
+                { label: 'DNS', href: orgRoutes.dns(orgName) },
+                { label: 'Domains', href: orgRoutes.domain(orgName) },
+              ],
+            },
+            { label: 'Members', href: orgRoutes.member(orgName), icon: ENTITY_ICONS.user },
+            { label: 'Usage', href: orgRoutes.usage(orgName), icon: TAB_ICONS.usage },
+            {
+              label: 'Activity',
+              icon: ENTITY_ICONS.activity,
+              match: orgRoutes.activity.root(orgName),
+              children: [
+                { label: 'Feed', href: orgRoutes.activity.root(orgName) },
+                { label: 'Events', href: orgRoutes.activity.events(orgName) },
+                { label: 'Audit Logs', href: orgRoutes.activity.auditLogs(orgName) },
+              ],
+            },
+            {
+              label: 'Quotas',
+              icon: TAB_ICONS.quotas,
+              match: quotasBase,
+              children: [
+                { label: 'Usage', href: orgRoutes.quota.usage(orgName) },
+                { label: 'Grants', href: orgRoutes.quota.grant(orgName) },
+              ],
+            },
+            {
+              label: 'Feature Flags',
+              href: orgRoutes.featureFlags(orgName),
+              icon: TAB_ICONS.featureFlags,
+            },
+          ],
+        },
+      ],
+    };
   },
 };
 
@@ -61,54 +122,6 @@ export default function Layout() {
     return base;
   }, [env, orgName, pathname]);
 
-  const quotasBase = `${orgRoutes.detail(orgName)}/quotas`;
-
-  const tabs: EntityTab[] = [
-    {
-      label: t`Overview`,
-      href: orgRoutes.detail(orgName),
-      icon: TAB_ICONS.overview,
-      end: true,
-    },
-    { label: t`Projects`, href: orgRoutes.project(orgName), icon: ENTITY_ICONS.project },
-    {
-      label: t`Resources`,
-      icon: ENTITY_ICONS.resource,
-      match: [orgRoutes.edge(orgName), orgRoutes.dns(orgName), orgRoutes.domain(orgName)],
-      children: [
-        { label: t`ALB`, href: orgRoutes.edge(orgName) },
-        { label: t`DNS`, href: orgRoutes.dns(orgName) },
-        { label: t`Domains`, href: orgRoutes.domain(orgName) },
-      ],
-    },
-    { label: t`Members`, href: orgRoutes.member(orgName), icon: ENTITY_ICONS.user },
-    { label: t`Usage`, href: orgRoutes.usage(orgName), icon: TAB_ICONS.usage },
-    {
-      label: t`Activity`,
-      icon: ENTITY_ICONS.activity,
-      match: orgRoutes.activity.root(orgName),
-      children: [
-        { label: t`Feed`, href: orgRoutes.activity.root(orgName) },
-        { label: t`Events`, href: orgRoutes.activity.events(orgName) },
-        { label: t`Audit Logs`, href: orgRoutes.activity.auditLogs(orgName) },
-      ],
-    },
-    {
-      label: t`Quotas`,
-      icon: TAB_ICONS.quotas,
-      match: quotasBase,
-      children: [
-        { label: t`Usage`, href: orgRoutes.quota.usage(orgName) },
-        { label: t`Grants`, href: orgRoutes.quota.grant(orgName) },
-      ],
-    },
-    {
-      label: t`Feature Flags`,
-      href: orgRoutes.featureFlags(orgName),
-      icon: TAB_ICONS.featureFlags,
-    },
-  ];
-
   return (
     <DetailShell
       icon={
@@ -149,7 +162,6 @@ export default function Layout() {
           </LinkButton>
         )
       }
-      tabs={tabs}
     />
   );
 }

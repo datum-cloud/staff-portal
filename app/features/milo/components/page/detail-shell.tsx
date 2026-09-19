@@ -3,8 +3,13 @@ import { EntityTabNav, type EntityTab } from './entity-tab-nav';
 import { Outlet } from 'react-router';
 
 interface DetailShellProps extends EntityHeaderProps {
-  /** Tabs for the sticky nav under the header. */
-  tabs: EntityTab[];
+  /**
+   * Tabs for the sticky nav under the header. Omit once the page's nav has
+   * moved to the left rail via `handle.entityNav` (#775/#656) — the strip
+   * only remains for section pages that still use `DetailShell` (Fraud,
+   * Operations → Activity, `/customers/resources`).
+   */
+  tabs?: EntityTab[];
 }
 
 /**
@@ -18,7 +23,7 @@ export function DetailShell({ tabs, ...header }: DetailShellProps) {
       <div className="px-4 pt-4">
         <EntityHeader {...header} />
       </div>
-      <EntityTabNav tabs={tabs} />
+      {tabs && <EntityTabNav tabs={tabs} />}
       <Outlet />
     </div>
   );

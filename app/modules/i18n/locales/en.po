@@ -197,11 +197,8 @@ msgstr "Active Sessions"
 #: app/components/app-search/use-app-search.ts:55
 #: app/components/app-sidebar/index.tsx:187
 #: app/routes/customer/organization/detail/activity/layout.tsx:5
-#: app/routes/customer/organization/detail/layout.tsx:87
 #: app/routes/customer/project/detail/activity/layout.tsx:5
-#: app/routes/customer/project/detail/layout.tsx:189
 #: app/routes/customer/user/detail/activity/layout.tsx:5
-#: app/routes/customer/user/detail/layout.tsx:53
 #: app/routes/operation/activity/layout.tsx:12
 #: app/routes/operation/activity/layout.tsx:69
 msgid "Activity"
@@ -278,9 +275,7 @@ msgstr "Age"
 
 #: app/components/app-sidebar/index.tsx:129
 #: app/routes/customer/organization/detail/edge.tsx:9
-#: app/routes/customer/organization/detail/layout.tsx:79
 #: app/routes/customer/project/detail/edge/layout.tsx:5
-#: app/routes/customer/project/detail/layout.tsx:144
 #: app/routes/customer/resource/edge/layout.tsx:5
 msgid "ALB"
 msgstr "ALB"
@@ -308,6 +303,10 @@ msgstr "All read operations"
 #: app/features/dashboard/components/pending-approvals-widget.tsx:66
 msgid "All registrations are up to date"
 msgstr "All registrations are up to date"
+
+#: app/features/milo/components/navbar/milo-mobile-menu.tsx:120
+msgid "All sections"
+msgstr "All sections"
 
 #: app/features/activity/components/activity-list.tsx:440
 msgid "All write operations"
@@ -360,7 +359,6 @@ msgid "Approval"
 msgstr "Approval"
 
 #: app/routes/admin/service-catalog/detail/approvals.tsx:21
-#: app/routes/admin/service-catalog/detail/layout.tsx:74
 msgid "Approvals"
 msgstr "Approvals"
 
@@ -476,13 +474,10 @@ msgstr "Associated with User: "
 
 #: app/routes/customer/organization/detail/activity/audit-logs.tsx:14
 #: app/routes/customer/organization/detail/activity/audit-logs.tsx:17
-#: app/routes/customer/organization/detail/layout.tsx:93
 #: app/routes/customer/project/detail/activity/audit-logs.tsx:14
 #: app/routes/customer/project/detail/activity/audit-logs.tsx:17
-#: app/routes/customer/project/detail/layout.tsx:195
 #: app/routes/customer/user/detail/activity/audit-logs.tsx:14
 #: app/routes/customer/user/detail/activity/audit-logs.tsx:17
-#: app/routes/customer/user/detail/layout.tsx:58
 #: app/routes/operation/activity/audit-logs.tsx:11
 #: app/routes/operation/activity/audit-logs.tsx:14
 #: app/routes/operation/activity/layout.tsx:27
@@ -640,7 +635,7 @@ msgstr "CI runs"
 msgid "Classification"
 msgstr "Classification"
 
-#: app/routes/customer/project/detail/layout.tsx:95
+#: app/routes/customer/project/detail/layout.tsx:170
 msgid "Cleanup finished and the project is no longer available."
 msgstr "Cleanup finished and the project is no longer available."
 
@@ -682,11 +677,11 @@ msgstr "clusters healthy"
 
 #: app/features/milo/components/page/rich-filter-panel.tsx:477
 #: app/features/milo/components/page/rich-filter-panel.tsx:616
-#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:70
+#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:115
 msgid "Collapse"
 msgstr "Collapse"
 
-#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:67
+#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:112
 msgid "Collapse sidebar"
 msgstr "Collapse sidebar"
 
@@ -715,10 +710,6 @@ msgstr "Completed"
 #: app/features/edge/components/detail/edge-hostnames-card.tsx:103
 msgid "Completing ACME challenge with the certificate authority"
 msgstr "Completing ACME challenge with the certificate authority"
-
-#: app/routes/customer/project/detail/layout.tsx:161
-msgid "Compute"
-msgstr "Compute"
 
 #: app/features/service-catalog/components/conditions-card.tsx:64
 msgid "Conditions"
@@ -757,7 +748,6 @@ msgid "Consumer Project"
 msgstr "Consumer Project"
 
 #: app/routes/admin/service-catalog/detail/consumers.tsx:28
-#: app/routes/admin/service-catalog/detail/layout.tsx:67
 msgid "Consumers"
 msgstr "Consumers"
 
@@ -820,7 +810,6 @@ msgstr "Contact group updated successfully"
 #: app/routes/marketing/contact-group/index.tsx:29
 #: app/routes/marketing/contact-group/layout.tsx:5
 #: app/routes/marketing/contact/detail/group.tsx:28
-#: app/routes/marketing/contact/detail/layout.tsx:65
 msgid "Contact Groups"
 msgstr "Contact Groups"
 
@@ -846,7 +835,6 @@ msgstr "Contact updated successfully"
 #: app/components/app-sidebar/index.tsx:147
 #: app/components/app-sidebar/index.tsx:153
 #: app/routes/customer/user/detail/contacts.tsx:9
-#: app/routes/customer/user/detail/layout.tsx:46
 #: app/routes/marketing/contact/index.tsx:14
 #: app/routes/marketing/contact/layout.tsx:5
 msgid "Contacts"
@@ -1027,7 +1015,7 @@ msgstr "Custom"
 
 #: app/components/app-sidebar/index.tsx:109
 #: app/routes/customer/layout.tsx:7
-#: app/routes/customer/project/detail/layout.tsx:46
+#: app/routes/customer/project/detail/layout.tsx:121
 msgid "Customers"
 msgstr "Customers"
 
@@ -1249,8 +1237,6 @@ msgstr "Detail"
 #: app/features/organization/components/org-details-card.tsx:34
 #: app/features/project/components/project-details-card.tsx:27
 #: app/features/service-catalog/components/details-card.tsx:23
-#: app/routes/marketing/contact-group/detail/layout.tsx:37
-#: app/routes/marketing/contact/detail/layout.tsx:59
 msgid "Details"
 msgstr "Details"
 
@@ -1301,9 +1287,7 @@ msgstr "Display name updated"
 
 #: app/features/project/components/project-resources-card.tsx:68
 #: app/routes/customer/organization/detail/dns.tsx:9
-#: app/routes/customer/organization/detail/layout.tsx:80
 #: app/routes/customer/project/detail/dns/layout.tsx:5
-#: app/routes/customer/project/detail/layout.tsx:149
 #: app/routes/customer/resource/index.tsx:143
 #: app/routes/customer/resource/index.tsx:398
 msgid "DNS"
@@ -1379,9 +1363,7 @@ msgstr "Domain verification is in progress. This may take a few minutes."
 #: app/components/app-sidebar/index.tsx:141
 #: app/features/project/components/project-resources-card.tsx:74
 #: app/routes/customer/organization/detail/domain.tsx:9
-#: app/routes/customer/organization/detail/layout.tsx:81
 #: app/routes/customer/project/detail/domain/layout.tsx:5
-#: app/routes/customer/project/detail/layout.tsx:154
 #: app/routes/customer/resource/domain/index.tsx:10
 #: app/routes/customer/resource/domain/layout.tsx:5
 msgid "Domains"
@@ -1460,9 +1442,7 @@ msgstr "Email"
 
 #: app/components/app-sidebar/index.tsx:169
 #: app/routes/customer/project/detail/email-activity.tsx:8
-#: app/routes/customer/project/detail/layout.tsx:184
 #: app/routes/customer/user/detail/email-activity.tsx:9
-#: app/routes/customer/user/detail/layout.tsx:48
 #: app/routes/operation/email-activity/layout.tsx:5
 msgid "Email Activity"
 msgstr "Email Activity"
@@ -1617,10 +1597,8 @@ msgstr "Event"
 
 #: app/routes/customer/organization/detail/activity/events.tsx:14
 #: app/routes/customer/organization/detail/activity/events.tsx:17
-#: app/routes/customer/organization/detail/layout.tsx:92
 #: app/routes/customer/project/detail/activity/events.tsx:14
 #: app/routes/customer/project/detail/activity/events.tsx:17
-#: app/routes/customer/project/detail/layout.tsx:194
 #: app/routes/operation/activity/events.tsx:21
 #: app/routes/operation/activity/events.tsx:24
 #: app/routes/operation/activity/layout.tsx:26
@@ -1632,7 +1610,7 @@ msgstr "Events"
 msgid "Expand"
 msgstr "Expand"
 
-#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:67
+#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:112
 msgid "Expand sidebar"
 msgstr "Expand sidebar"
 
@@ -1734,16 +1712,12 @@ msgid "Feature flag enabled"
 msgstr "Feature flag enabled"
 
 #: app/routes/customer/organization/detail/feature-flags.tsx:8
-#: app/routes/customer/organization/detail/layout.tsx:106
 msgid "Feature Flags"
 msgstr "Feature Flags"
 
 #: app/routes/customer/organization/detail/activity/index.tsx:8
-#: app/routes/customer/organization/detail/layout.tsx:91
 #: app/routes/customer/project/detail/activity/index.tsx:14
-#: app/routes/customer/project/detail/layout.tsx:193
 #: app/routes/customer/user/detail/activity/index.tsx:23
-#: app/routes/customer/user/detail/layout.tsx:57
 #: app/routes/operation/activity/feed.tsx:28
 #: app/routes/operation/activity/feed.tsx:31
 #: app/routes/operation/activity/layout.tsx:25
@@ -1851,7 +1825,7 @@ msgstr "Full Name"
 msgid "Full response from the provider"
 msgstr "Full response from the provider"
 
-#: app/routes/customer/organization/detail/layout.tsx:127
+#: app/routes/customer/organization/detail/layout.tsx:140
 #: app/routes/customer/organization/index.tsx:91
 msgid "Fully onboarded"
 msgstr "Fully onboarded"
@@ -1887,9 +1861,7 @@ msgstr "Grant"
 msgid "Grant deleted successfully"
 msgstr "Grant deleted successfully"
 
-#: app/routes/customer/organization/detail/layout.tsx:102
 #: app/routes/customer/organization/detail/quota/grant.tsx:10
-#: app/routes/customer/project/detail/layout.tsx:204
 #: app/routes/customer/project/detail/quota/grant.tsx:10
 msgid "Grants"
 msgstr "Grants"
@@ -2300,16 +2272,13 @@ msgid "Member deleted successfully"
 msgstr "Member deleted successfully"
 
 #: app/features/organization/components/org-members-preview-card.tsx:79
-#: app/routes/admin/group/detail/layout.tsx:41
 #: app/routes/admin/group/detail/member.tsx:34
-#: app/routes/customer/organization/detail/layout.tsx:84
 #: app/routes/customer/organization/detail/member.tsx:25
-#: app/routes/marketing/contact-group/detail/layout.tsx:43
 #: app/routes/marketing/contact-group/detail/member.tsx:33
 msgid "Members"
 msgstr "Members"
 
-#: app/features/milo/components/navbar/milo-mobile-menu.tsx:46
+#: app/features/milo/components/navbar/milo-mobile-menu.tsx:109
 msgid "Menu"
 msgstr "Menu"
 
@@ -2324,10 +2293,6 @@ msgstr "Meters"
 #: app/features/billing/components/offer-included-pricing-list.tsx:126
 msgid "Metric"
 msgstr "Metric"
-
-#: app/routes/customer/project/detail/layout.tsx:174
-msgid "Metrics"
-msgstr "Metrics"
 
 #: app/routes/customer/project/detail/export-policy/detail.tsx:111
 msgid "MetricsQL"
@@ -2833,7 +2798,7 @@ msgstr "Offers bundle prices that already exist as ServicePricings. Define charg
 msgid "Onboarding"
 msgstr "Onboarding"
 
-#: app/routes/customer/organization/detail/layout.tsx:130
+#: app/routes/customer/organization/detail/layout.tsx:143
 #: app/routes/customer/organization/index.tsx:92
 msgid "Onboarding incomplete"
 msgstr "Onboarding incomplete"
@@ -2846,7 +2811,7 @@ msgstr "Once a contact is associated with a user, this association cannot be rem
 msgid "Open in Cloud Portal"
 msgstr "Open in Cloud Portal"
 
-#: app/features/milo/components/navbar/milo-mobile-menu.tsx:37
+#: app/features/milo/components/navbar/milo-mobile-menu.tsx:100
 msgid "Open menu"
 msgstr "Open menu"
 
@@ -2888,8 +2853,7 @@ msgstr "organizations"
 #: app/routes/customer/breadcrumb-switchers.tsx:7
 #: app/routes/customer/organization/index.tsx:35
 #: app/routes/customer/organization/layout.tsx:8
-#: app/routes/customer/project/detail/layout.tsx:47
-#: app/routes/customer/user/detail/layout.tsx:42
+#: app/routes/customer/project/detail/layout.tsx:122
 #: app/routes/customer/user/detail/organization.tsx:18
 #: app/routes/dashboard/overview.tsx:67
 msgid "Organizations"
@@ -2900,12 +2864,7 @@ msgid "Origin"
 msgstr "Origin"
 
 #: app/routes/admin/group/detail/index.tsx:17
-#: app/routes/admin/group/detail/layout.tsx:35
 #: app/routes/admin/offer/detail.tsx:372
-#: app/routes/admin/service-catalog/detail/layout.tsx:61
-#: app/routes/customer/organization/detail/layout.tsx:68
-#: app/routes/customer/project/detail/layout.tsx:138
-#: app/routes/customer/user/detail/layout.tsx:36
 #: app/routes/dashboard/overview.tsx:28
 msgid "Overview"
 msgstr "Overview"
@@ -3128,7 +3087,7 @@ msgstr "Programming DNS records for this hostname"
 msgid "Project"
 msgstr "Project"
 
-#: app/routes/customer/project/detail/layout.tsx:94
+#: app/routes/customer/project/detail/layout.tsx:169
 msgid "Project deleted"
 msgstr "Project deleted"
 
@@ -3142,9 +3101,8 @@ msgstr "Project suspended"
 #: app/components/app-sidebar/index.tsx:123
 #: app/features/organization/components/org-details-card.tsx:71
 #: app/routes/customer/breadcrumb-switchers.tsx:8
-#: app/routes/customer/organization/detail/layout.tsx:73
 #: app/routes/customer/organization/detail/project.tsx:21
-#: app/routes/customer/project/detail/layout.tsx:53
+#: app/routes/customer/project/detail/layout.tsx:128
 #: app/routes/customer/project/index.tsx:32
 #: app/routes/customer/project/layout.tsx:8
 #: app/routes/dashboard/overview.tsx:75
@@ -3256,9 +3214,7 @@ msgid "Quota Utilization"
 msgstr "Quota Utilization"
 
 #: app/features/project/components/project-quotas-card.tsx:64
-#: app/routes/customer/organization/detail/layout.tsx:97
 #: app/routes/customer/organization/detail/quota/layout.tsx:5
-#: app/routes/customer/project/detail/layout.tsx:199
 #: app/routes/customer/project/detail/quota/layout.tsx:5
 msgid "Quotas"
 msgstr "Quotas"
@@ -3403,7 +3359,6 @@ msgstr "Resource:"
 
 #: app/components/app-search/search-results.tsx:230
 #: app/features/project/components/project-resources-card.tsx:58
-#: app/routes/customer/organization/detail/layout.tsx:75
 #: app/routes/customer/resource/index.tsx:28
 #: app/routes/customer/resource/layout.tsx:5
 msgid "Resources"
@@ -3686,7 +3641,6 @@ msgstr "Secret Name"
 msgid "Secret Namespace"
 msgstr "Secret Namespace"
 
-#: app/routes/customer/project/detail/layout.tsx:179
 #: app/routes/customer/project/detail/secret.tsx:12
 msgid "Secrets"
 msgstr "Secrets"
@@ -4243,11 +4197,8 @@ msgstr "Updating email addresses for GitHub identities"
 #: app/features/organization/components/org-usage-card.tsx:54
 #: app/features/project/components/project-usage-card.tsx:89
 #: app/features/quota/components/quota-bucket-list.tsx:110
-#: app/routes/customer/organization/detail/layout.tsx:85
-#: app/routes/customer/organization/detail/layout.tsx:101
 #: app/routes/customer/organization/detail/quota/usage.tsx:10
 #: app/routes/customer/organization/detail/usage/index.tsx:24
-#: app/routes/customer/project/detail/layout.tsx:203
 #: app/routes/customer/project/detail/quota/usage.tsx:10
 msgid "Usage"
 msgstr "Usage"
@@ -4364,8 +4315,8 @@ msgstr "View contact groups"
 msgid "View Evaluation"
 msgstr "View Evaluation"
 
-#: app/routes/customer/organization/detail/layout.tsx:148
-#: app/routes/customer/project/detail/layout.tsx:234
+#: app/routes/customer/organization/detail/layout.tsx:161
+#: app/routes/customer/project/detail/layout.tsx:227
 msgid "View in Cloud Portal"
 msgstr "View in Cloud Portal"
 
@@ -4415,10 +4366,6 @@ msgstr "Warning"
 #: app/features/activity/components/activity-list.tsx:457
 msgid "Watch"
 msgstr "Watch"
-
-#: app/routes/customer/project/detail/layout.tsx:166
-msgid "Workloads"
-msgstr "Workloads"
 
 #: app/features/edge/components/detail/edge-yaml-card.tsx:18
 msgid "YAML"
