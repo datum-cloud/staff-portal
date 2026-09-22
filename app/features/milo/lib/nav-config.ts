@@ -110,15 +110,16 @@ export const NAV_SECTIONS: NavSection[] = [
     id: 'customers',
     label: 'Customers',
     icon: SECTION_ICONS.customers,
-    href: orgRoutes.list(),
+    href: userRoutes.list(),
     match: '/customers',
-    // Top nav goes straight to Organizations; children live in the left rail.
+    // Top nav goes straight to Users; other children live in the left rail.
     navbarDropdown: false,
     subNav: {
       defaultCollapsed: true,
       groups: [
         {
           items: [
+            { label: 'Users', href: userRoutes.list(), icon: ENTITY_ICONS.user },
             { label: 'Organizations', href: orgRoutes.list(), icon: ENTITY_ICONS.organization },
             { label: 'Projects', href: projectRoutes.list(), icon: ENTITY_ICONS.project },
             // One "Resources" entry → a tabbed page (ALB / DNS / Domains),
@@ -129,7 +130,6 @@ export const NAV_SECTIONS: NavSection[] = [
               match: resourceRoutes.root(),
               icon: ENTITY_ICONS.resource,
             },
-            { label: 'Users', href: userRoutes.list(), icon: ENTITY_ICONS.user },
             {
               label: 'Billing Accounts',
               href: billingAccountRoutes.list(),

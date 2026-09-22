@@ -677,11 +677,11 @@ msgstr "clusters healthy"
 
 #: app/features/milo/components/page/rich-filter-panel.tsx:477
 #: app/features/milo/components/page/rich-filter-panel.tsx:616
-#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:115
+#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:118
 msgid "Collapse"
 msgstr "Collapse"
 
-#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:112
+#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:115
 msgid "Collapse sidebar"
 msgstr "Collapse sidebar"
 
@@ -1610,7 +1610,7 @@ msgstr "Events"
 msgid "Expand"
 msgstr "Expand"
 
-#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:112
+#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:115
 msgid "Expand sidebar"
 msgstr "Expand sidebar"
 
@@ -1881,8 +1881,8 @@ msgstr "Group Information"
 msgid "Groups"
 msgstr "Groups"
 
-#: app/features/milo/components/page/list-table.tsx:293
-#: app/features/milo/components/page/list-table.tsx:297
+#: app/features/milo/components/page/list-table.tsx:298
+#: app/features/milo/components/page/list-table.tsx:302
 msgid "Hide filters"
 msgstr "Hide filters"
 
@@ -3772,8 +3772,8 @@ msgstr "Short-circuit < {0}"
 msgid "Short-circuit Below"
 msgstr "Short-circuit Below"
 
-#: app/features/milo/components/page/list-table.tsx:293
-#: app/features/milo/components/page/list-table.tsx:297
+#: app/features/milo/components/page/list-table.tsx:298
+#: app/features/milo/components/page/list-table.tsx:302
 msgid "Show filters"
 msgstr "Show filters"
 
@@ -3989,7 +3989,7 @@ msgstr "Tests show up here once tagged metadata.labels.stability: stable in thei
 msgid "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 msgstr "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 
-#: app/features/milo/components/page/list-table.tsx:370
+#: app/features/milo/components/page/list-table.tsx:378
 msgid "The list is limited to 2,000 results at a time. Refine your search to surface other items."
 msgstr "The list is limited to 2,000 results at a time. Refine your search to surface other items."
 
