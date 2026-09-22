@@ -28,10 +28,12 @@ const entityNav: EntityNav = {
 
 describe('MiloSubNav — D1 nested collapsible groups', () => {
   beforeEach(() => {
-    // The rail's collapsed/expanded *sidebar* preference persists via
-    // localStorage (D3) — clear it so each test starts from the entity
-    // rail's D4 default (expanded), independent of prior tests/runs.
-    window.localStorage.clear();
+    // The rail's collapsed/expanded preference persists via the
+    // `sidebar_state` cookie (D3) — clear it so each test starts from the
+    // entity rail's D4 default (expanded), independent of prior tests/runs.
+    // Mounted directly (no root loader), so the component falls back to
+    // reading this cookie itself — see useSubNavOpen's `initialOpen`.
+    document.cookie = 'sidebar_state=; path=/; max-age=0';
   });
 
   // cy.mount wraps the component in <Route path={path} element={...}/> — a
@@ -101,14 +103,23 @@ function SectionThenEntity() {
 
 describe('MiloSubNav — collapsed state does not leak across a nav-type switch', () => {
   beforeEach(() => {
-    window.localStorage.clear();
+    document.cookie = 'sidebar_state=; path=/; max-age=0';
   });
 
   it("shows the entity rail's own expanded default (D4), even though the prior section rail was collapsed", () => {
     cy.mount(<SectionThenEntity />, { path: '*' });
 
-    // Sanity: the section rail starts collapsed (icon-only) per its own default.
-    cy.contains('Organizations').should('not.exist');
+    // Sanity: the section rail starts collapsed (icon-only) per its own
+    // default. The label is always mounted and opacity-faded (Phase 4), not
+    // unmounted, so this checks the CSS opacity directly rather than DOM
+    // presence or `not.be.visible` (Cypress's visibility algorithm isn't
+    // documented as treating `opacity: 0` as invisible). `justify-between`
+    // picks out the *outer* label span specifically — the one the fade CSS
+    // (`[data-slot='sidebar-menu-button'] > span:last-child`) actually
+    // targets — since opacity isn't inherited: asserting on the nested inner
+    // span (which wraps just the text, for truncation) would see its own
+    // default `1`, not the ancestor's `0`.
+    cy.get('span.justify-between').should('have.css', 'opacity', '0');
 
     cy.contains('button', 'Go to org').click();
 

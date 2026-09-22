@@ -29,14 +29,16 @@ describe('Customers — Organization detail: entity-scoped left nav (#775, #656)
   });
 
   it("shows the organization's own nav in the left rail, not the Customers section nav", () => {
-    cy.get('aside').should('contain', 'Overview');
-    cy.get('aside').should('contain', 'Members');
-    cy.get('aside').should('contain', 'Quotas');
+    // The rail moved onto datum-ui's Sidebar (sub-nav parity plan) — it's no
+    // longer a literal <aside>, so target its own [data-slot="sidebar"] root.
+    cy.get('[data-slot="sidebar"]').should('contain', 'Overview');
+    cy.get('[data-slot="sidebar"]').should('contain', 'Members');
+    cy.get('[data-slot="sidebar"]').should('contain', 'Quotas');
 
     // Customers section entries that don't belong to this org are gone.
-    cy.get('aside').should('not.contain', 'Users');
-    cy.get('aside').should('not.contain', 'Billing Accounts');
-    cy.get('aside').should('not.contain', 'Fraud & Abuse');
+    cy.get('[data-slot="sidebar"]').should('not.contain', 'Users');
+    cy.get('[data-slot="sidebar"]').should('not.contain', 'Billing Accounts');
+    cy.get('[data-slot="sidebar"]').should('not.contain', 'Fraud & Abuse');
   });
 
   it('has no horizontal tab strip on the page (moved to the rail)', () => {

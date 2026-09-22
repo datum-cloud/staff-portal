@@ -11,7 +11,7 @@ import { queryClient } from '@/modules/tanstack/query';
 import { useNonce } from '@/providers/nonce.provider';
 import styles from '@/styles/root.css?url';
 import { env } from '@/utils/config/env.server';
-import { localeCookie } from '@/utils/cookies';
+import { getSidebarState, localeCookie } from '@/utils/cookies';
 import { RHFAdapter } from '@datum-cloud/datum-ui/form/adapters/rhf';
 import { configureProgress, startProgress, stopProgress } from '@datum-cloud/datum-ui/nprogress';
 import { ThemeProvider, ThemeScript, useTheme } from '@datum-cloud/datum-ui/theme';
@@ -35,6 +35,7 @@ import {
   useMatches,
   useNavigation,
   useRouteError,
+  type ShouldRevalidateFunctionArgs,
 } from 'react-router';
 
 export const links: Route.LinksFunction = () => [{ rel: 'stylesheet', href: styles, as: 'style' }];
@@ -46,6 +47,10 @@ export async function loader({ request }: Route.LoaderArgs) {
   return data(
     {
       locale,
+      // Milo sub-nav rail's collapsed/expanded preference (see the sub-nav
+      // parity plan) — read here so the rail renders in the right state on
+      // first paint instead of flashing its default then correcting itself.
+      sidebarOpen: getSidebarState(request),
       ENV: {
         DEBUG: env.isDebug,
         SENTRY_ENV: env.SENTRY_ENV,
@@ -63,6 +68,20 @@ export async function loader({ request }: Route.LoaderArgs) {
     },
     { headers: { 'Set-Cookie': cookie } }
   );
+}
+
+export function shouldRevalidate({
+  formMethod,
+  defaultShouldRevalidate,
+}: ShouldRevalidateFunctionArgs) {
+  // locale/ENV/sidebarOpen are resolved once per document load — none of them
+  // change as a result of an ordinary client-side navigation, only a fresh
+  // request (or an explicit useRevalidator().revalidate(), e.g.
+  // ClientHintCheck's scheme-change listener, which bypasses this entirely).
+  // A form submission is the one navigation type that could plausibly change
+  // one of them, so defer to the default in that case.
+  if (formMethod) return defaultShouldRevalidate;
+  return false;
 }
 
 function App() {

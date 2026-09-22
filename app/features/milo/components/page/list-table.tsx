@@ -229,7 +229,12 @@ export function ListTable<TData extends RowData>({
   // nav rail + a 240px inline sidebar are both on screen, so treat anything
   // below desktop the same way: swap the sidebar for a Sheet trigger.
   const isCompact = useBreakpoint() !== 'desktop';
-  const showHeader = title != null || actions != null || bulkActions != null;
+  // The header row exists to carry a title or a bulk-action bar; a bare CTA
+  // with neither moves into the search/filter bar instead, so an action-only
+  // list page doesn't pay for an otherwise-empty header row.
+  const showHeader = title != null || bulkActions != null;
+  const actionsInHeader = showHeader && actions != null;
+  const actionsInToolbar = !showHeader && actions != null;
   const hasFilters = (filters?.length ?? 0) > 0;
   const sidebarMode = hasFilters && filterLayout === 'sidebar';
   const showSidebar = sidebarMode && !isCompact;
@@ -286,10 +291,15 @@ export function ListTable<TData extends RowData>({
         // absolute positioning lives on this wrapper (Tooltip wraps the button in
         // its own `relative` span, which would otherwise be the offset parent).
         // When collapsed, sit on the sub-nav border (half outside) — ListPage
-        // allows overflow so the overhang isn't clipped.
+        // allows overflow so the overhang isn't clipped. z-[51]: the sub-nav
+        // rail's collapsed fixed panel physically reaches this far when
+        // `expandBehavior="overlay"` (unpinned rail — the common case), and
+        // that panel sits at z-50 unconditionally, not just while hovered/
+        // expanded (see the sub-nav parity plan's Phase 0b/3) — this has to
+        // clear it or the rail paints over half the button.
         <div
           style={{ left: filtersCollapsed ? -12 : FILTER_W - 12 }}
-          className="absolute top-8 z-20 transition-[left]">
+          className="absolute top-8 z-[51] transition-[left]">
           <Tooltip message={filtersCollapsed ? t`Show filters` : t`Hide filters`} side="right">
             <button
               type="button"
@@ -318,7 +328,7 @@ export function ListTable<TData extends RowData>({
               {/* Bulk-action bar (left, opposite the CTAs); null until rows are selected. */}
               {bulkActions && <DataTable.BulkActions>{bulkActions}</DataTable.BulkActions>}
             </div>
-            {actions && <div className="flex items-center gap-2">{actions}</div>}
+            {actionsInHeader && <div className="flex items-center gap-2">{actions}</div>}
           </div>
         )}
         <div className={cn('flex min-h-0 flex-1 flex-col py-4', insetX)}>
@@ -339,6 +349,9 @@ export function ListTable<TData extends RowData>({
               </div>
               {/* Mobile: filters move into a Sheet so the table keeps full width. */}
               {showMobileFilter && <MobileFilterButton filters={filters ?? []} loading={loading} />}
+              {actionsInToolbar && (
+                <div className="flex shrink-0 items-center gap-2 pl-2">{actions}</div>
+              )}
             </div>
             {hasInlineFilters && (
               <div className="shrink-0 border-b px-3 py-2">

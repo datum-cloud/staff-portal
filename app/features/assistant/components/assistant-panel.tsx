@@ -102,7 +102,13 @@ export function AssistantPanel() {
           animate={{ y: 0 }}
           exit={{ y: '100%' }}
           transition={{ type: 'tween', duration: 0.3 }}
-          className="bg-background fixed inset-x-0 bottom-0 z-40 flex flex-col border-t shadow-[0_-4px_12px_rgba(0,0,0,0.08)] [clip-path:inset(-20px_0_0_0)]"
+          // z-[51]: the sub-nav rail's fixed panel sits at z-50 whenever it's
+          // unpinned (datum-ui ties that to expandBehavior="overlay", not to
+          // whether it's actually expanded — see the sub-nav parity plan's
+          // Phase 0b/3), and this panel spans the full width at the bottom,
+          // so it needs to clear that or the rail's collapsed icon column
+          // paints over its bottom-left corner at rest, not just on hover.
+          className="bg-background fixed inset-x-0 bottom-0 z-[51] flex flex-col border-t shadow-[0_-4px_12px_rgba(0,0,0,0.08)] [clip-path:inset(-20px_0_0_0)]"
           style={{ height: panelHeight }}>
           <div
             className="group absolute top-0 left-1/2 z-10 flex h-4 w-full shrink-0 -translate-x-1/2 cursor-ns-resize items-center justify-center"
