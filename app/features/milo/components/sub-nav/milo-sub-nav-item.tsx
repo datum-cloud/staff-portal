@@ -41,9 +41,22 @@ function ItemAdornments({ item }: { item: NavSubItem }) {
 
 /**
  * One entry in the left sub-nav rail, built on datum-ui's `SidebarMenuButton`
- * (see the sub-nav parity plan's Phase 2). Its collapsed-rail tooltip comes
- * free — `SidebarMenuButton` mounts it unconditionally and gates visibility
- * on `state === 'collapsed'` internally.
+ * (see the sub-nav parity plan's Phase 2).
+ *
+ * `tooltip` is only ever passed when `collapsed` — not unconditionally, even
+ * though `SidebarMenuButton` internally gates the popup's own visibility on
+ * `state === 'collapsed'` already (`hidden={state !== 'collapsed' || ...}`)
+ * and would seem to make that redundant. It isn't: passing a truthy
+ * `tooltip` makes `SidebarMenuButton` wrap the button in datum-ui's
+ * `Tooltip`, whose outermost element is `<span className="relative
+ * inline-flex">` — a shrink-to-fit container. `hidden` only suppresses the
+ * popup opening; it doesn't undo that wrapper's layout. Since the button
+ * itself is `w-full`, wrapping it in an inline-flex ancestor with no width
+ * of its own collapses that back down to content width — every active/hover
+ * background rendered as a tight pill around the icon+label instead of
+ * spanning the rail, expanded, the entire time `tooltip` was passed
+ * unconditionally. Only ever needed while collapsed anyway (that's the only
+ * time `hidden` ever lets it show), so gating it there fixes both.
  *
  * The label (+ adornments, + chevron for a group) is always mounted and
  * faded via CSS (`app/styles/root.css`'s `[data-slot='sidebar-menu-button']
@@ -117,7 +130,7 @@ export function MiloSubNavItem({ item, active, activeChildHref }: MiloSubNavItem
           type={collapsed ? undefined : 'button'}
           aria-expanded={expanded}
           onClick={collapsed ? undefined : () => setExpanded((e) => !e)}
-          tooltip={tooltip}
+          tooltip={collapsed ? tooltip : undefined}
           className={cn(groupActive ? activeClass : idleClass)}>
           {collapsed ? <NavLink to={children[0].href ?? ''}>{content}</NavLink> : content}
         </SidebarMenuButton>
@@ -144,7 +157,7 @@ export function MiloSubNavItem({ item, active, activeChildHref }: MiloSubNavItem
     <SidebarMenuItem>
       <SidebarMenuButton
         asChild
-        tooltip={item.label}
+        tooltip={collapsed ? item.label : undefined}
         className={cn(active ? activeClass : idleClass)}>
         <NavLink to={item.href ?? ''}>
           {item.icon && <Icon icon={item.icon} size={20} className="shrink-0" />}
