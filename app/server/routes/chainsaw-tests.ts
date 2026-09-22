@@ -13,6 +13,7 @@ import { z } from 'zod';
 export const chainsawTestsRoutes = new Hono<{ Variables: EnvVariables }>();
 
 const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 // Tightened from 1h: a coarser grid collapses more same-hour runs onto one
 // tick. Now that history[].timestamp comes from timestamp_with_name (see
 // pairRangeSeries below) rather than the grid point, whichever tick survives
@@ -196,7 +197,13 @@ const stepTimingRequestSchema = z.object({
     .number()
     .int()
     .min(0)
-    .max(Date.now() + 24 * 60 * 60 * 1000),
+    // Checked against Date.now() here, at parse time, rather than via
+    // .max() on this module-level schema — a .max() bound would capture
+    // Date.now() once, when the module loads, and only ever grow staler
+    // as the server process stays up.
+    .refine((value) => value <= Date.now() + ONE_DAY_MS, {
+      message: 'timestamp must not be more than 24h in the future',
+    }),
   window: z.string().regex(DETAIL_WINDOW_PATTERN).optional(),
 });
 
