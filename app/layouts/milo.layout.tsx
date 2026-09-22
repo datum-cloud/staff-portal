@@ -24,13 +24,17 @@ export default function MiloLayout() {
   const content = (
     <AppProvider user={data?.user ?? undefined}>
       <TaskQueueProvider config={{ storageType: 'memory' }}>
-        {/* SidebarProvider supplies the useSidebar context that existing pages'
-            legacy SubLayout still needs. It wraps the whole shell (not individual
-            pages) so page content keeps a normal block layout. Removed once pages
-            migrate to the Milo page templates (#777). */}
+        {/* SidebarProvider supplies the ambient useSidebar context that
+            legacy SubLayout's menu (app/components/sub-layout/sidebar-menu*.tsx)
+            still needs — it renders datum-ui's SidebarMenuButton, which calls
+            useSidebar() internally and throws without a provider ancestor.
+            Wraps the whole shell (not individual pages) so page content keeps
+            a normal block layout. Unrelated to MiloSubNav (the left rail),
+            which nests its own scoped provider — see the sub-nav parity
+            plan's Phase 0a/2. Removed once pages migrate to the Milo page
+            templates (#777). */}
         <SidebarProvider defaultOpen={false}>
           <MiloShell />
-          {/* AssistantPanel uses useSidebar, so it must live inside SidebarProvider. */}
           {env?.CHATBOT_ENABLED && <AssistantPanel />}
         </SidebarProvider>
       </TaskQueueProvider>

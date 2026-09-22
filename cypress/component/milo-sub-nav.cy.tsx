@@ -32,7 +32,7 @@ describe('MiloSubNav — D1 nested collapsible groups', () => {
     // `sidebar_state` cookie (D3) — clear it so each test starts from the
     // entity rail's D4 default (expanded), independent of prior tests/runs.
     // Mounted directly (no root loader), so the component falls back to
-    // reading this cookie itself — see useSubNavCollapsed's `initialOpen`.
+    // reading this cookie itself — see useSubNavOpen's `initialOpen`.
     document.cookie = 'sidebar_state=; path=/; max-age=0';
   });
 

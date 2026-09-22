@@ -1,7 +1,14 @@
 import { type NavSubItem } from '../../lib/nav-config';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Icon } from '@datum-cloud/datum-ui/icons';
-import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
+import {
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  useSidebar,
+} from '@datum-cloud/datum-ui/sidebar';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { ChevronRight } from 'lucide-react';
@@ -11,12 +18,10 @@ import { NavLink } from 'react-router';
 interface MiloSubNavItemProps {
   item: NavSubItem;
   active: boolean;
-  collapsed: boolean;
   /** D1: for an item with `children`, which child is active — highlights it and auto-expands the group. */
   activeChildHref?: string;
 }
 
-const rowClass = 'flex items-center rounded-md border border-transparent transition-colors w-full';
 const idleClass = 'text-foreground hover:bg-card hover:text-primary';
 const activeClass = 'bg-card text-primary';
 
@@ -35,15 +40,32 @@ function ItemAdornments({ item }: { item: NavSubItem }) {
 }
 
 /**
- * One entry in the left sub-nav rail. Icon-only (with tooltip) when collapsed;
- * icon + label + count badge when expanded. NavLink keeps navigation client-side.
+ * One entry in the left sub-nav rail, built on datum-ui's `SidebarMenuButton`
+ * (see the sub-nav parity plan's Phase 2). Its collapsed-rail tooltip comes
+ * free — `SidebarMenuButton` mounts it unconditionally and gates visibility
+ * on `state === 'collapsed'` internally, unlike the pre-Phase-2 version's
+ * manually-conditional `Tooltip` wrapper.
+ *
+ * The *label* is a different story, and deliberately still conditionally
+ * mounted (`{!collapsed && <span>...}`) rather than always-rendered +
+ * CSS-hidden: `SidebarMenuButton` has no built-in `group-data-[collapsible=icon]:hidden`
+ * on its own children, so an always-mounted label would just sit there
+ * clipped by the button's `overflow-hidden` rather than actually disappear.
+ * Phase 4 (motion) is what earns switching this to always-mounted +
+ * opacity-fade — doing it now, ahead of that CSS, would be a regression, and
+ * would also break any Cypress assertion checking DOM presence (`not.exist`)
+ * rather than paint.
  *
  * D1: an item with `children` renders as a collapsible group instead of a
  * link — auto-expanded when `activeChildHref` is set, and further
- * toggleable by the operator. Collapsed rail: a tooltip lists the children
- * since there's no room to show them.
+ * toggleable by the operator. The two states genuinely do different things
+ * on click (collapsed: navigate to the first child, since there's no room to
+ * show them and the tooltip already lists them; expanded: toggle the
+ * disclosure) — that's a real behavioral fork, not leftover duplication.
  */
-export function MiloSubNavItem({ item, active, collapsed, activeChildHref }: MiloSubNavItemProps) {
+export function MiloSubNavItem({ item, active, activeChildHref }: MiloSubNavItemProps) {
+  const { state } = useSidebar();
+  const collapsed = state === 'collapsed';
   const children = item.children;
   const [expanded, setExpanded] = useState(Boolean(activeChildHref));
 
@@ -61,102 +83,87 @@ export function MiloSubNavItem({ item, active, collapsed, activeChildHref }: Mil
 
   if (children?.length) {
     const groupActive = Boolean(activeChildHref);
-
-    if (collapsed) {
-      return (
-        <Tooltip
-          side="right"
-          message={
-            <div className="flex flex-col gap-1">
-              <Text size="xs" weight="semibold">
-                {item.label}
-              </Text>
-              {children.map((child) => (
-                <Text key={child.href} size="xs">
-                  {child.label}
-                </Text>
-              ))}
-            </div>
-          }>
-          <NavLink
-            to={children[0].href ?? ''}
-            className={cn(
-              rowClass,
-              'size-9 justify-center',
-              groupActive ? activeClass : idleClass
-            )}>
-            {item.icon && <Icon icon={item.icon} size={20} className="shrink-0" />}
-          </NavLink>
-        </Tooltip>
-      );
-    }
-
-    return (
-      <div className="flex flex-col gap-1">
-        <button
-          type="button"
-          onClick={() => setExpanded((e) => !e)}
-          aria-expanded={expanded}
-          className={cn(rowClass, 'gap-2 px-2 py-1.5', groupActive ? activeClass : idleClass)}>
-          {item.icon && <Icon icon={item.icon} size={20} className="shrink-0" />}
-          <Text size="sm" weight="medium" className="flex-1 truncate text-left">
+    const tooltip = {
+      message: (
+        <div className="flex flex-col gap-1">
+          <Text size="xs" weight="semibold">
             {item.label}
           </Text>
-          <ItemAdornments item={item} />
-          <ChevronRight
-            className={cn('size-4 shrink-0 transition-transform', expanded && 'rotate-90')}
-          />
-        </button>
-        {expanded && (
-          <div className="ml-3.5 flex flex-col gap-1 border-l pl-3">
+          {children.map((child) => (
+            <Text key={child.href} size="xs">
+              {child.label}
+            </Text>
+          ))}
+        </div>
+      ),
+    };
+
+    return (
+      <SidebarMenuItem>
+        <SidebarMenuButton
+          asChild={collapsed}
+          type={collapsed ? undefined : 'button'}
+          aria-expanded={expanded}
+          onClick={collapsed ? undefined : () => setExpanded((e) => !e)}
+          tooltip={tooltip}
+          className={cn(groupActive ? activeClass : idleClass)}>
+          {collapsed ? (
+            <NavLink to={children[0].href ?? ''}>
+              {item.icon && <Icon icon={item.icon} size={20} className="shrink-0" />}
+            </NavLink>
+          ) : (
+            <>
+              {item.icon && <Icon icon={item.icon} size={20} className="shrink-0" />}
+              <span className="flex-1 truncate text-left">{item.label}</span>
+              <ItemAdornments item={item} />
+              <ChevronRight
+                className={cn('size-4 shrink-0 transition-transform', expanded && 'rotate-90')}
+              />
+            </>
+          )}
+        </SidebarMenuButton>
+        {!collapsed && expanded && (
+          <SidebarMenuSub>
             {children.map((child) => (
-              <NavLink
-                key={child.href}
-                to={child.href ?? ''}
-                className={cn(
-                  rowClass,
-                  'px-2 py-1.5',
-                  child.href === activeChildHref ? activeClass : idleClass
-                )}>
-                <Text size="sm" weight="medium" className="flex-1 truncate">
-                  {child.label}
-                </Text>
-              </NavLink>
+              <SidebarMenuSubItem key={child.href}>
+                <SidebarMenuSubButton
+                  asChild
+                  className={cn(child.href === activeChildHref ? activeClass : idleClass)}>
+                  <NavLink to={child.href ?? ''}>
+                    <span className="truncate">{child.label}</span>
+                  </NavLink>
+                </SidebarMenuSubButton>
+              </SidebarMenuSubItem>
             ))}
-          </div>
+          </SidebarMenuSub>
         )}
-      </div>
+      </SidebarMenuItem>
     );
   }
 
-  const link = (
-    <NavLink
-      to={item.href ?? ''}
-      className={cn(
-        // Same treatment as the top menu: active and hover get a white pill
-        // (--card) with a border and primary-coloured text/icon. Transparent base
-        // border avoids layout shift.
-        rowClass,
-        collapsed ? 'size-9 justify-center' : 'gap-2 px-2 py-1.5',
-        active ? activeClass : idleClass
-      )}>
-      {item.icon && <Icon icon={item.icon} size={20} className="shrink-0" />}
-      {!collapsed && (
-        <>
-          <Text size="sm" weight="medium" className="flex-1 truncate">
-            {item.label}
-          </Text>
-          <ItemAdornments item={item} />
-        </>
-      )}
-    </NavLink>
-  );
-
-  if (!collapsed) return link;
-
   return (
-    <Tooltip message={item.label} side="right">
-      {link}
-    </Tooltip>
+    <SidebarMenuItem>
+      <SidebarMenuButton
+        asChild
+        tooltip={item.label}
+        className={cn(active ? activeClass : idleClass)}>
+        <NavLink to={item.href ?? ''}>
+          {item.icon && <Icon icon={item.icon} size={20} className="shrink-0" />}
+          {/* Conditionally unmounted, not just CSS-hidden: Phase 4 (motion)
+              is what turns this into an always-mounted, opacity-faded label —
+              doing that now, ahead of the fade CSS that makes it meaningful,
+              would leave the full label sitting in the DOM (just visually
+              clipped by the button's `overflow-hidden`), which both looks
+              wrong and reads as "visible" to anything checking DOM presence
+              rather than paint (e.g. Cypress's `not.exist`). */}
+          {!collapsed && (
+            <span className="flex min-w-0 flex-1 items-center justify-between gap-2 truncate">
+              <span className="truncate">{item.label}</span>
+              <ItemAdornments item={item} />
+            </span>
+          )}
+        </NavLink>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
   );
 }

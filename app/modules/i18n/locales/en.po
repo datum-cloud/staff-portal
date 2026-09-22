@@ -677,11 +677,11 @@ msgstr "clusters healthy"
 
 #: app/features/milo/components/page/rich-filter-panel.tsx:477
 #: app/features/milo/components/page/rich-filter-panel.tsx:616
-#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:118
+#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:87
 msgid "Collapse"
 msgstr "Collapse"
 
-#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:115
+#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:81
 msgid "Collapse sidebar"
 msgstr "Collapse sidebar"
 
@@ -1610,7 +1610,7 @@ msgstr "Events"
 msgid "Expand"
 msgstr "Expand"
 
-#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:115
+#: app/features/milo/components/sub-nav/milo-sub-nav.tsx:81
 msgid "Expand sidebar"
 msgstr "Expand sidebar"
 

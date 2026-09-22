@@ -1,14 +1,14 @@
 /**
  * The Milo sub-nav rail's collapsed/expanded preference. Deliberately not a
  * `createCookie` like the rest of this directory: `SIDEBAR_COOKIE_NAME` is
- * written client-side (by the rail itself today; by datum-ui's
- * `SidebarProvider` once the rail moves onto it, see the sub-nav parity
- * plan), so it's unsigned and not `httpOnly` — a signed/`httpOnly` cookie
- * jar would never see it written and would silently never match.
+ * written client-side by datum-ui's `SidebarProvider` (see the sub-nav
+ * parity plan's Phase 2 — `MiloSubNav` moved onto it), so it's unsigned and
+ * not `httpOnly` — a signed/`httpOnly` cookie jar would never see it written
+ * and would silently never match.
  *
  * Stores "open" (expanded), not "collapsed", to match datum-ui's own
- * `sidebar_state` cookie format byte-for-byte — see
- * `useSubNavCollapsed` for why that matters.
+ * `sidebar_state` cookie format byte-for-byte — see `useSubNavOpen` for why
+ * that matters.
  */
 export const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 
