@@ -34,11 +34,18 @@ function isEntityNav(nav: NavSubNav | EntityNav): nav is EntityNav {
 
 /** The entity rail's back-link + icon + title, above its groups (D2). */
 function EntityHeader({ entityNav }: { entityNav: EntityNav }) {
-  const { state } = useSidebar();
+  const { state, handleMouseEnter, handleMouseLeave } = useSidebar();
   const collapsed = state === 'collapsed';
 
   return (
-    <SidebarHeader className="gap-2 border-b">
+    // Unlike SidebarContent/SidebarFooter, SidebarHeader has no built-in
+    // hover wiring — without this, hovering exactly over the entity header
+    // (an explicitly-collapsed entity rail's icon-only back-link/title area)
+    // wouldn't trigger the expand-on-hover peek.
+    <SidebarHeader
+      className="gap-2 border-b"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}>
       {entityNav.backTo &&
         (collapsed ? (
           <NavLink
@@ -120,6 +127,13 @@ export function MiloSubNav({ nav, initialOpen }: MiloSubNavProps) {
     <SidebarProvider
       open={open}
       onOpenChange={setOpen}
+      expandOnHover
+      // `open` here IS the pin: pinning takes real layout space (push);
+      // unpinned, a hover-peek floats over the page instead of reflowing it
+      // (overlay) — hover itself never touches `open`/the cookie (that's
+      // datum-ui's own isHovered, internal to the provider), so peeking
+      // never overwrites an explicit pin preference.
+      expandBehavior={open ? 'push' : 'overlay'}
       className="contents"
       style={
         {

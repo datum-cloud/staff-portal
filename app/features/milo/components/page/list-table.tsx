@@ -291,10 +291,15 @@ export function ListTable<TData extends RowData>({
         // absolute positioning lives on this wrapper (Tooltip wraps the button in
         // its own `relative` span, which would otherwise be the offset parent).
         // When collapsed, sit on the sub-nav border (half outside) — ListPage
-        // allows overflow so the overhang isn't clipped.
+        // allows overflow so the overhang isn't clipped. z-[51]: the sub-nav
+        // rail's collapsed fixed panel physically reaches this far when
+        // `expandBehavior="overlay"` (unpinned rail — the common case), and
+        // that panel sits at z-50 unconditionally, not just while hovered/
+        // expanded (see the sub-nav parity plan's Phase 0b/3) — this has to
+        // clear it or the rail paints over half the button.
         <div
           style={{ left: filtersCollapsed ? -12 : FILTER_W - 12 }}
-          className="absolute top-8 z-20 transition-[left]">
+          className="absolute top-8 z-[51] transition-[left]">
           <Tooltip message={filtersCollapsed ? t`Show filters` : t`Hide filters`} side="right">
             <button
               type="button"
