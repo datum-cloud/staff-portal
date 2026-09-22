@@ -19,6 +19,8 @@ import { NavLink } from 'react-router';
 interface MiloSubNavProps {
   /** A section's static rail, or the active route's entity rail (see `useEntityNav`) — same group/item chrome either way. */
   nav: NavSubNav | EntityNav;
+  /** The root loader's SSR-resolved collapse preference (see `useSubNavCollapsed`) — avoids a flash of the wrong state on first paint. */
+  initialOpen?: boolean;
 }
 
 function isEntityNav(nav: NavSubNav | EntityNav): nav is EntityNav {
@@ -32,13 +34,14 @@ function isEntityNav(nav: NavSubNav | EntityNav): nav is EntityNav {
  * section declares one) or an entity's `EntityNav` (#656) — an `EntityNav`
  * additionally gets a `backTo` + icon + title header above the groups (D2).
  */
-export function MiloSubNav({ nav }: MiloSubNavProps) {
+export function MiloSubNav({ nav, initialOpen }: MiloSubNavProps) {
   const { t } = useLingui();
   const entityNav = isEntityNav(nav) ? nav : undefined;
   // D4: the entity rail defaults expanded — its labels are the navigation.
   // D3: either way, the operator's choice persists across navigation.
   const [collapsed, setCollapsed] = useSubNavCollapsed(
-    isEntityNav(nav) ? false : (nav.defaultCollapsed ?? false)
+    isEntityNav(nav) ? false : (nav.defaultCollapsed ?? false),
+    initialOpen
   );
   const { item: activeItem, parent: activeParent } = useActiveSubNavItem(nav.groups);
 

@@ -1,3 +1,7 @@
+// Import the module directly, not the `@/utils/cookies` barrel: that barrel
+// also re-exports cookies built on `@/utils/config/env.server`, a
+// server-only module this client hook must not drag into the browser bundle.
+import { parseSidebarState, SIDEBAR_COOKIE_NAME } from '@/utils/cookies/sidebar';
 import { useCallback, useEffect, useState } from 'react';
 
 /**
@@ -12,52 +16,72 @@ import { useCallback, useEffect, useState } from 'react';
  * fresh mount. Baking that into `useState`'s initial value would only apply
  * it once, on whichever rail happened to mount first, and then ignore every
  * later `defaultCollapsed` change. Instead, only an *explicit* user
- * preference (read from storage, or set via `setCollapsed`) is kept in
- * state; absent one, `collapsed` always reflects the caller's current
+ * preference (from the cookie, or set via `setCollapsed`) is kept in state;
+ * absent one, `collapsed` always reflects the caller's current
  * `defaultCollapsed`.
  *
- * SSR default is the caller's `defaultCollapsed` (mirrors `useBreakpoint`'s
- * pattern: a safe default for the first render, corrected from storage once
- * mounted, to avoid a hydration mismatch).
+ * The preference lives in a cookie rather than `localStorage`, in the exact
+ * format datum-ui's own `Sidebar` component writes it (see
+ * `app/utils/cookies/sidebar.ts`) — a deliberate choice, not an accident: it
+ * means a future move onto that component (see the sub-nav parity plan)
+ * inherits today's preference for free, with no migration. That format
+ * stores `open` (expanded), the inverse of this hook's `collapsed` — the
+ * conversion happens at the read/write boundary below, so callers still see
+ * `collapsed` throughout.
+ *
+ * `initialOpen` is the value the root loader already resolved server-side
+ * from that same cookie (see `app/root.tsx`) — passing it in lets the first
+ * render already be correct, instead of rendering the SSR default and
+ * correcting a moment later. It's optional because not every mount goes
+ * through the root loader (e.g. Cypress component tests mount `MiloSubNav`
+ * directly) — those fall back to reading `document.cookie` once on mount,
+ * mirroring `useBreakpoint`'s pattern: a safe default for the first render,
+ * corrected from the client-only source once mounted, to avoid a hydration
+ * mismatch.
  */
-const STORAGE_KEY = 'datum:staff-subnav-collapsed';
-
 export function useSubNavCollapsed(
-  defaultCollapsed: boolean
+  defaultCollapsed: boolean,
+  initialOpen?: boolean
 ): [boolean, (next: boolean | ((collapsed: boolean) => boolean)) => void] {
   // `null` = no explicit preference recorded yet.
-  const [override, setOverride] = useState<boolean | null>(null);
+  const [openOverride, setOpenOverride] = useState<boolean | null>(initialOpen ?? null);
 
   useEffect(() => {
-    // Mirrors `useBreakpoint`'s shape: read once on mount, then subscribe so a
-    // change from another tab (or another rail instance) stays in sync.
+    // Already resolved server-side (the common case, anything under the Milo
+    // shell) — nothing to correct on mount.
+    if (initialOpen !== undefined) return;
+
     const readStored = () => {
-      let stored: string | null = null;
+      let stored: boolean | undefined;
       try {
-        stored = localStorage.getItem(STORAGE_KEY);
+        stored = parseSidebarState(document.cookie);
       } catch {
-        // localStorage may be unavailable (private mode, disabled storage, etc.)
+        // document.cookie may be unavailable (rare, but matches the old
+        // localStorage try/catch this replaces).
       }
-      setOverride(stored !== null ? stored === 'true' : null);
+      setOpenOverride(stored ?? null);
     };
 
+    // Only ever runs once on mount, mirroring useBreakpoint — cookies have no
+    // 'storage' event to subscribe to for cross-tab sync.
     readStored();
-    window.addEventListener('storage', readStored);
-    return () => window.removeEventListener('storage', readStored);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const collapsed = override ?? defaultCollapsed;
+  const collapsed = openOverride !== null ? !openOverride : defaultCollapsed;
 
   const setCollapsed = useCallback(
     (next: boolean | ((collapsed: boolean) => boolean)) => {
-      setOverride((prev) => {
-        const value = typeof next === 'function' ? next(prev ?? defaultCollapsed) : next;
+      setOpenOverride((prevOpen) => {
+        const prevCollapsed = prevOpen !== null ? !prevOpen : defaultCollapsed;
+        const nextCollapsed = typeof next === 'function' ? next(prevCollapsed) : next;
+        const nextOpen = !nextCollapsed;
         try {
-          localStorage.setItem(STORAGE_KEY, String(value));
+          document.cookie = `${SIDEBAR_COOKIE_NAME}=${nextOpen}; path=/; max-age=604800`;
         } catch {
-          // localStorage may be unavailable
+          // document.cookie may be unavailable
         }
-        return value;
+        return nextOpen;
       });
     },
     [defaultCollapsed]

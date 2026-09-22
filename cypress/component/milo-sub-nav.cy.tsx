@@ -28,10 +28,12 @@ const entityNav: EntityNav = {
 
 describe('MiloSubNav — D1 nested collapsible groups', () => {
   beforeEach(() => {
-    // The rail's collapsed/expanded *sidebar* preference persists via
-    // localStorage (D3) — clear it so each test starts from the entity
-    // rail's D4 default (expanded), independent of prior tests/runs.
-    window.localStorage.clear();
+    // The rail's collapsed/expanded preference persists via the
+    // `sidebar_state` cookie (D3) — clear it so each test starts from the
+    // entity rail's D4 default (expanded), independent of prior tests/runs.
+    // Mounted directly (no root loader), so the component falls back to
+    // reading this cookie itself — see useSubNavCollapsed's `initialOpen`.
+    document.cookie = 'sidebar_state=; path=/; max-age=0';
   });
 
   // cy.mount wraps the component in <Route path={path} element={...}/> — a
@@ -101,7 +103,7 @@ function SectionThenEntity() {
 
 describe('MiloSubNav — collapsed state does not leak across a nav-type switch', () => {
   beforeEach(() => {
-    window.localStorage.clear();
+    document.cookie = 'sidebar_state=; path=/; max-age=0';
   });
 
   it("shows the entity rail's own expanded default (D4), even though the prior section rail was collapsed", () => {

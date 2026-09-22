@@ -3,3 +3,4 @@ export * from './token';
 
 export * from './locale';
 export * from './redirect';
+export * from './sidebar';
