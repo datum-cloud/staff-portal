@@ -43,25 +43,24 @@ function ItemAdornments({ item }: { item: NavSubItem }) {
  * One entry in the left sub-nav rail, built on datum-ui's `SidebarMenuButton`
  * (see the sub-nav parity plan's Phase 2). Its collapsed-rail tooltip comes
  * free — `SidebarMenuButton` mounts it unconditionally and gates visibility
- * on `state === 'collapsed'` internally, unlike the pre-Phase-2 version's
- * manually-conditional `Tooltip` wrapper.
+ * on `state === 'collapsed'` internally.
  *
- * The *label* is a different story, and deliberately still conditionally
- * mounted (`{!collapsed && <span>...}`) rather than always-rendered +
- * CSS-hidden: `SidebarMenuButton` has no built-in `group-data-[collapsible=icon]:hidden`
- * on its own children, so an always-mounted label would just sit there
- * clipped by the button's `overflow-hidden` rather than actually disappear.
- * Phase 4 (motion) is what earns switching this to always-mounted +
- * opacity-fade — doing it now, ahead of that CSS, would be a regression, and
- * would also break any Cypress assertion checking DOM presence (`not.exist`)
- * rather than paint.
+ * The label (+ adornments, + chevron for a group) is always mounted and
+ * faded via CSS (`app/styles/root.css`'s `[data-slot='sidebar-menu-button']
+ * > span:last-child` rules, Phase 4) rather than conditionally rendered —
+ * that's *why* it's wrapped in its own trailing `<span>`: the fade rule
+ * targets the last child specifically, and everything that should fade
+ * together (label, count/badge, the group's chevron) needs to be inside it,
+ * not siblings of it.
  *
  * D1: an item with `children` renders as a collapsible group instead of a
  * link — auto-expanded when `activeChildHref` is set, and further
  * toggleable by the operator. The two states genuinely do different things
  * on click (collapsed: navigate to the first child, since there's no room to
  * show them and the tooltip already lists them; expanded: toggle the
- * disclosure) — that's a real behavioral fork, not leftover duplication.
+ * disclosure) — that's a real behavioral fork, not leftover duplication, but
+ * the *content* rendered is identical either way (`content` below), which is
+ * what lets the fade apply uniformly regardless of which fork is active.
  */
 export function MiloSubNavItem({ item, active, activeChildHref }: MiloSubNavItemProps) {
   const { state } = useSidebar();
@@ -98,6 +97,19 @@ export function MiloSubNavItem({ item, active, activeChildHref }: MiloSubNavItem
       ),
     };
 
+    const content = (
+      <>
+        {item.icon && <Icon icon={item.icon} size={20} className="shrink-0" />}
+        <span className="flex min-w-0 flex-1 items-center justify-between gap-2 truncate text-left">
+          <span className="truncate">{item.label}</span>
+          <ItemAdornments item={item} />
+          <ChevronRight
+            className={cn('size-4 shrink-0 transition-transform', expanded && 'rotate-90')}
+          />
+        </span>
+      </>
+    );
+
     return (
       <SidebarMenuItem>
         <SidebarMenuButton
@@ -107,20 +119,7 @@ export function MiloSubNavItem({ item, active, activeChildHref }: MiloSubNavItem
           onClick={collapsed ? undefined : () => setExpanded((e) => !e)}
           tooltip={tooltip}
           className={cn(groupActive ? activeClass : idleClass)}>
-          {collapsed ? (
-            <NavLink to={children[0].href ?? ''}>
-              {item.icon && <Icon icon={item.icon} size={20} className="shrink-0" />}
-            </NavLink>
-          ) : (
-            <>
-              {item.icon && <Icon icon={item.icon} size={20} className="shrink-0" />}
-              <span className="flex-1 truncate text-left">{item.label}</span>
-              <ItemAdornments item={item} />
-              <ChevronRight
-                className={cn('size-4 shrink-0 transition-transform', expanded && 'rotate-90')}
-              />
-            </>
-          )}
+          {collapsed ? <NavLink to={children[0].href ?? ''}>{content}</NavLink> : content}
         </SidebarMenuButton>
         {!collapsed && expanded && (
           <SidebarMenuSub>
@@ -149,19 +148,10 @@ export function MiloSubNavItem({ item, active, activeChildHref }: MiloSubNavItem
         className={cn(active ? activeClass : idleClass)}>
         <NavLink to={item.href ?? ''}>
           {item.icon && <Icon icon={item.icon} size={20} className="shrink-0" />}
-          {/* Conditionally unmounted, not just CSS-hidden: Phase 4 (motion)
-              is what turns this into an always-mounted, opacity-faded label —
-              doing that now, ahead of the fade CSS that makes it meaningful,
-              would leave the full label sitting in the DOM (just visually
-              clipped by the button's `overflow-hidden`), which both looks
-              wrong and reads as "visible" to anything checking DOM presence
-              rather than paint (e.g. Cypress's `not.exist`). */}
-          {!collapsed && (
-            <span className="flex min-w-0 flex-1 items-center justify-between gap-2 truncate">
-              <span className="truncate">{item.label}</span>
-              <ItemAdornments item={item} />
-            </span>
-          )}
+          <span className="flex min-w-0 flex-1 items-center justify-between gap-2 truncate">
+            <span className="truncate">{item.label}</span>
+            <ItemAdornments item={item} />
+          </span>
         </NavLink>
       </SidebarMenuButton>
     </SidebarMenuItem>

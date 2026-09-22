@@ -109,8 +109,17 @@ describe('MiloSubNav — collapsed state does not leak across a nav-type switch'
   it("shows the entity rail's own expanded default (D4), even though the prior section rail was collapsed", () => {
     cy.mount(<SectionThenEntity />, { path: '*' });
 
-    // Sanity: the section rail starts collapsed (icon-only) per its own default.
-    cy.contains('Organizations').should('not.exist');
+    // Sanity: the section rail starts collapsed (icon-only) per its own
+    // default. The label is always mounted and opacity-faded (Phase 4), not
+    // unmounted, so this checks the CSS opacity directly rather than DOM
+    // presence or `not.be.visible` (Cypress's visibility algorithm isn't
+    // documented as treating `opacity: 0` as invisible). `justify-between`
+    // picks out the *outer* label span specifically — the one the fade CSS
+    // (`[data-slot='sidebar-menu-button'] > span:last-child`) actually
+    // targets — since opacity isn't inherited: asserting on the nested inner
+    // span (which wraps just the text, for truncation) would see its own
+    // default `1`, not the ancestor's `0`.
+    cy.get('span.justify-between').should('have.css', 'opacity', '0');
 
     cy.contains('button', 'Go to org').click();
 

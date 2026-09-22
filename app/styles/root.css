@@ -71,3 +71,64 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/*
+ * Sub-nav rail collapse/expand motion (sub-nav parity plan, Phase 4). Ported
+ * from cloud-portal's app/styles/custom.css. datum-ui's own width/left/right
+ * transitions on the Sidebar panel run 200ms ease-linear; this layers an
+ * eased 260ms curve on each SidebarMenuButton (so the row itself feels like
+ * part of the same gesture, not a separate snap) and fades the trailing
+ * label span in/out with a deliberate asymmetry: collapsing hides the label
+ * first (90ms ease-in, no delay) so text never lingers over a narrowing
+ * rail, while expanding brings it back after the panel's had a moment to
+ * widen (160ms ease-out, 90ms delay).
+ *
+ * Unscoped to any specific sidebar instance, keyed only on datum-ui's own
+ * [data-slot] attributes — deliberately, so any future sidebar in this app
+ * gets the same motion for free. Today that's just the Milo sub-nav rail:
+ * the legacy SubLayout's menu (app/components/sub-layout/sidebar-menu*.tsx)
+ * renders SidebarMenuButton/SidebarGroup directly without an actual
+ * <Sidebar> wrapper, so it never gets a [data-slot='sidebar'] ancestor and
+ * these rules don't reach it.
+ */
+[data-slot='sidebar'] [data-slot='sidebar-menu-button'] {
+  transition:
+    width 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    padding 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+[data-slot='sidebar'] [data-slot='sidebar-menu-button'] > span:last-child {
+  transition: opacity 160ms ease-out 90ms;
+}
+
+[data-slot='sidebar'][data-collapsible='icon'] [data-slot='sidebar-menu-button'] > span:last-child {
+  opacity: 0;
+  transition: opacity 90ms ease-in;
+}
+
+/*
+ * datum-ui's own spacer + fixed-panel width transition (the two elements
+ * that actually reserve/occupy the rail's layout space) runs 200ms
+ * ease-linear, a different curve than the rows above — cloud-portal never
+ * corrected this mismatch in push mode, so the panel and its contents finish
+ * widening at visibly different times. Match it here instead of inheriting
+ * that. Structural selector, not a data attribute: neither inner div carries
+ * one of its own, only their shared ancestor ([data-slot='sidebar']) does —
+ * this depends on them staying its first two DOM children (spacer, then the
+ * fixed panel; a third, the overlay backdrop, is conditional and excluded).
+ * Revisit if a datum-ui upgrade changes that structure.
+ */
+[data-slot='sidebar'] > div:nth-child(-n + 2) {
+  transition-duration: 260ms;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot='sidebar'] [data-slot='sidebar-menu-button'],
+  [data-slot='sidebar'] [data-slot='sidebar-menu-button'] > span:last-child,
+  [data-slot='sidebar'] > div:nth-child(-n + 2) {
+    transition: none;
+  }
+}
