@@ -254,7 +254,7 @@ export function OrgOnboardingCard({
                     <Text
                       size="xs"
                       className={cn(
-                        'text-stepper-label text-2xs tracking-wide uppercase',
+                        'text-stepper-label text-4xs tracking-wide uppercase',
                         'md:mt-3',
                         step.state === 'upcoming' && 'opacity-70'
                       )}>

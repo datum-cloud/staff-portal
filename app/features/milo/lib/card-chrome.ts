@@ -27,7 +27,7 @@ export const LIST_TABLE_HEADER_CELL_CLASS = cn(
 /** Mist header for tables nested inside overview TableCards (Figma 32px / #f6f6f5@50%). */
 export const EMBEDDED_TABLE_HEADER_CELL_CLASS = cn(
   'sticky top-0 z-10 h-8 border-b border-[#efefed] bg-[#f6f6f5]/50 px-4',
-  'text-2xs leading-4 font-normal tracking-normal text-[#0c1d31]/60 uppercase',
+  'text-4xs leading-4 font-normal tracking-normal text-[#0c1d31]/60 uppercase',
   'dark:border-border dark:bg-muted dark:text-muted-foreground'
 );
 /** Kill TableRow's default border-b so only cell borders draw (avoids double lines). */

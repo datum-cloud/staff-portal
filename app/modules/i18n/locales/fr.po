@@ -33,16 +33,16 @@ msgstr ""
 
 #. placeholder {0}: filtered.length
 #. placeholder {1}: data?.items?.length ?? 0
-#: app/routes/admin/service-catalog/index.tsx:185
+#: app/routes/admin/service-catalog/index.tsx:183
 msgid "{0} of {1} services"
 msgstr ""
 
 #. placeholder {0}: filtered.length
-#: app/routes/admin/service-catalog/index.tsx:183
+#: app/routes/admin/service-catalog/index.tsx:181
 msgid "{0} services"
 msgstr ""
 
-#: app/routes/admin/service-catalog/index.tsx:78
+#: app/routes/admin/service-catalog/index.tsx:76
 msgid "{dependencyCount} dependencies"
 msgstr ""
 
@@ -328,11 +328,11 @@ msgstr ""
 msgid "Amount"
 msgstr ""
 
-#: app/routes/admin/service-catalog/index.tsx:175
+#: app/routes/admin/service-catalog/index.tsx:173
 msgid "Any enablement"
 msgstr ""
 
-#: app/routes/admin/service-catalog/index.tsx:163
+#: app/routes/admin/service-catalog/index.tsx:161
 msgid "Any phase"
 msgstr ""
 
@@ -539,7 +539,7 @@ msgstr ""
 msgid "Billing permissions are still being provisioned for this organization."
 msgstr ""
 
-#: app/routes/admin/service-catalog/index.tsx:56
+#: app/routes/admin/service-catalog/index.tsx:54
 msgid "by"
 msgstr ""
 
@@ -818,7 +818,6 @@ msgid "Contact Groups - Create"
 msgstr ""
 
 #: app/routes/marketing/contact/create.tsx:25
-#: app/routes/marketing/contact/detail/index.tsx:24
 msgid "Contact Information"
 msgstr ""
 
@@ -1220,7 +1219,7 @@ msgstr ""
 msgid "Dependencies:"
 msgstr ""
 
-#: app/routes/admin/service-catalog/index.tsx:166
+#: app/routes/admin/service-catalog/index.tsx:164
 msgid "Deprecated"
 msgstr ""
 
@@ -1381,7 +1380,7 @@ msgstr ""
 msgid "Download unavailable"
 msgstr ""
 
-#: app/routes/admin/service-catalog/index.tsx:164
+#: app/routes/admin/service-catalog/index.tsx:162
 msgid "Draft"
 msgstr ""
 
@@ -1488,7 +1487,7 @@ msgid "Enabled by"
 msgstr ""
 
 #: app/features/service-catalog/components/details-card.tsx:49
-#: app/routes/admin/service-catalog/index.tsx:172
+#: app/routes/admin/service-catalog/index.tsx:170
 msgid "Enablement"
 msgstr ""
 
@@ -1653,7 +1652,7 @@ msgstr ""
 msgid "Failed to load DNS record status"
 msgstr ""
 
-#: app/routes/admin/service-catalog/index.tsx:137
+#: app/routes/admin/service-catalog/index.tsx:135
 msgid "Failed to load service catalog."
 msgstr ""
 
@@ -1832,7 +1831,7 @@ msgstr ""
 
 #: app/features/service-catalog/components/details-card.tsx:54
 #: app/routes/admin/service-catalog/detail/index.tsx:143
-#: app/routes/admin/service-catalog/index.tsx:177
+#: app/routes/admin/service-catalog/index.tsx:175
 msgid "Gated by Provider"
 msgstr ""
 
@@ -2483,7 +2482,7 @@ msgstr ""
 msgid "No contacts found."
 msgstr ""
 
-#: app/routes/admin/service-catalog/index.tsx:72
+#: app/routes/admin/service-catalog/index.tsx:70
 msgid "No description"
 msgstr ""
 
@@ -2685,11 +2684,11 @@ msgstr ""
 msgid "No service configurations have been registered yet."
 msgstr ""
 
-#: app/routes/admin/service-catalog/index.tsx:205
+#: app/routes/admin/service-catalog/index.tsx:203
 msgid "No services found."
 msgstr ""
 
-#: app/routes/admin/service-catalog/index.tsx:203
+#: app/routes/admin/service-catalog/index.tsx:201
 msgid "No services match the current filters."
 msgstr ""
 
@@ -2949,7 +2948,7 @@ msgstr ""
 #: app/features/service-catalog/components/details-card.tsx:43
 #: app/routes/admin/service-catalog/detail/consumers.tsx:103
 #: app/routes/admin/service-catalog/detail/consumers.tsx:230
-#: app/routes/admin/service-catalog/index.tsx:160
+#: app/routes/admin/service-catalog/index.tsx:158
 #: app/routes/customer/fraud/index.tsx:137
 #: app/routes/customer/fraud/index.tsx:288
 msgid "Phase"
@@ -3059,7 +3058,7 @@ msgstr ""
 msgid "Private"
 msgstr ""
 
-#: app/routes/admin/service-catalog/index.tsx:61
+#: app/routes/admin/service-catalog/index.tsx:59
 msgid "Private Beta"
 msgstr ""
 
@@ -3177,7 +3176,7 @@ msgstr ""
 
 #: app/features/service-catalog/components/active-configuration-summary.tsx:36
 #: app/routes/admin/offer/index.tsx:66
-#: app/routes/admin/service-catalog/index.tsx:165
+#: app/routes/admin/service-catalog/index.tsx:163
 msgid "Published"
 msgstr ""
 
@@ -3369,7 +3368,7 @@ msgstr ""
 msgid "Response Code"
 msgstr ""
 
-#: app/routes/admin/service-catalog/index.tsx:167
+#: app/routes/admin/service-catalog/index.tsx:165
 msgid "Retired"
 msgstr ""
 
@@ -3380,7 +3379,7 @@ msgstr ""
 #: app/features/dashboard/components/quota-utilization-widget.tsx:113
 #: app/routes/admin/service-catalog/detail/approvals.tsx:134
 #: app/routes/admin/service-catalog/detail/index.tsx:114
-#: app/routes/admin/service-catalog/index.tsx:143
+#: app/routes/admin/service-catalog/index.tsx:141
 msgid "Retry"
 msgstr ""
 
@@ -3488,7 +3487,7 @@ msgstr ""
 msgid "Search by name or email..."
 msgstr ""
 
-#: app/routes/admin/service-catalog/index.tsx:153
+#: app/routes/admin/service-catalog/index.tsx:151
 msgid "Search by name, description, or owner..."
 msgstr ""
 
@@ -3702,7 +3701,7 @@ msgid "Selected filters"
 msgstr ""
 
 #: app/features/service-catalog/components/details-card.tsx:54
-#: app/routes/admin/service-catalog/index.tsx:176
+#: app/routes/admin/service-catalog/index.tsx:174
 msgid "Self Service"
 msgstr ""
 

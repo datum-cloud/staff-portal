@@ -48,7 +48,7 @@ function ServiceCard({ service }: { service: Service }) {
             <Package className="text-muted-foreground h-5 w-5" />
           </div>
           <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-            <Text size="base" className="group-hover:text-primary truncate font-medium">
+            <Text className="group-hover:text-primary truncate font-medium">
               {displayName}
             </Text>
             {owner && (

@@ -33,16 +33,16 @@ msgstr "{0} entries"
 
 #. placeholder {0}: filtered.length
 #. placeholder {1}: data?.items?.length ?? 0
-#: app/routes/admin/service-catalog/index.tsx:185
+#: app/routes/admin/service-catalog/index.tsx:183
 msgid "{0} of {1} services"
 msgstr "{0} of {1} services"
 
 #. placeholder {0}: filtered.length
-#: app/routes/admin/service-catalog/index.tsx:183
+#: app/routes/admin/service-catalog/index.tsx:181
 msgid "{0} services"
 msgstr "{0} services"
 
-#: app/routes/admin/service-catalog/index.tsx:78
+#: app/routes/admin/service-catalog/index.tsx:76
 msgid "{dependencyCount} dependencies"
 msgstr "{dependencyCount} dependencies"
 
@@ -328,11 +328,11 @@ msgstr "Also move accounts currently on the previous default to this Offer"
 msgid "Amount"
 msgstr "Amount"
 
-#: app/routes/admin/service-catalog/index.tsx:175
+#: app/routes/admin/service-catalog/index.tsx:173
 msgid "Any enablement"
 msgstr "Any enablement"
 
-#: app/routes/admin/service-catalog/index.tsx:163
+#: app/routes/admin/service-catalog/index.tsx:161
 msgid "Any phase"
 msgstr "Any phase"
 
@@ -539,7 +539,7 @@ msgstr "Billing address"
 msgid "Billing permissions are still being provisioned for this organization."
 msgstr "Billing permissions are still being provisioned for this organization."
 
-#: app/routes/admin/service-catalog/index.tsx:56
+#: app/routes/admin/service-catalog/index.tsx:54
 msgid "by"
 msgstr "by"
 
@@ -818,7 +818,6 @@ msgid "Contact Groups - Create"
 msgstr "Contact Groups - Create"
 
 #: app/routes/marketing/contact/create.tsx:25
-#: app/routes/marketing/contact/detail/index.tsx:24
 msgid "Contact Information"
 msgstr "Contact Information"
 
@@ -1220,7 +1219,7 @@ msgstr "Deny this consumer's access request. Optionally add a note."
 msgid "Dependencies:"
 msgstr "Dependencies:"
 
-#: app/routes/admin/service-catalog/index.tsx:166
+#: app/routes/admin/service-catalog/index.tsx:164
 msgid "Deprecated"
 msgstr "Deprecated"
 
@@ -1381,7 +1380,7 @@ msgstr "Download invoice"
 msgid "Download unavailable"
 msgstr "Download unavailable"
 
-#: app/routes/admin/service-catalog/index.tsx:164
+#: app/routes/admin/service-catalog/index.tsx:162
 msgid "Draft"
 msgstr "Draft"
 
@@ -1488,7 +1487,7 @@ msgid "Enabled by"
 msgstr "Enabled by"
 
 #: app/features/service-catalog/components/details-card.tsx:49
-#: app/routes/admin/service-catalog/index.tsx:172
+#: app/routes/admin/service-catalog/index.tsx:170
 msgid "Enablement"
 msgstr "Enablement"
 
@@ -1653,7 +1652,7 @@ msgstr "Failed to load consumers."
 msgid "Failed to load DNS record status"
 msgstr "Failed to load DNS record status"
 
-#: app/routes/admin/service-catalog/index.tsx:137
+#: app/routes/admin/service-catalog/index.tsx:135
 msgid "Failed to load service catalog."
 msgstr "Failed to load service catalog."
 
@@ -1832,7 +1831,7 @@ msgstr "Fully onboarded"
 
 #: app/features/service-catalog/components/details-card.tsx:54
 #: app/routes/admin/service-catalog/detail/index.tsx:143
-#: app/routes/admin/service-catalog/index.tsx:177
+#: app/routes/admin/service-catalog/index.tsx:175
 msgid "Gated by Provider"
 msgstr "Gated by Provider"
 
@@ -2483,7 +2482,7 @@ msgstr "No contacts found with this email. You can create a new contact below."
 msgid "No contacts found."
 msgstr "No contacts found."
 
-#: app/routes/admin/service-catalog/index.tsx:72
+#: app/routes/admin/service-catalog/index.tsx:70
 msgid "No description"
 msgstr "No description"
 
@@ -2685,11 +2684,11 @@ msgstr "No secrets found."
 msgid "No service configurations have been registered yet."
 msgstr "No service configurations have been registered yet."
 
-#: app/routes/admin/service-catalog/index.tsx:205
+#: app/routes/admin/service-catalog/index.tsx:203
 msgid "No services found."
 msgstr "No services found."
 
-#: app/routes/admin/service-catalog/index.tsx:203
+#: app/routes/admin/service-catalog/index.tsx:201
 msgid "No services match the current filters."
 msgstr "No services match the current filters."
 
@@ -2949,7 +2948,7 @@ msgstr "Permanently delete this user and all associated data"
 #: app/features/service-catalog/components/details-card.tsx:43
 #: app/routes/admin/service-catalog/detail/consumers.tsx:103
 #: app/routes/admin/service-catalog/detail/consumers.tsx:230
-#: app/routes/admin/service-catalog/index.tsx:160
+#: app/routes/admin/service-catalog/index.tsx:158
 #: app/routes/customer/fraud/index.tsx:137
 #: app/routes/customer/fraud/index.tsx:288
 msgid "Phase"
@@ -3059,7 +3058,7 @@ msgstr "Priority of mail servers defined by MX records. Lowest value = highest p
 msgid "Private"
 msgstr "Private"
 
-#: app/routes/admin/service-catalog/index.tsx:61
+#: app/routes/admin/service-catalog/index.tsx:59
 msgid "Private Beta"
 msgstr "Private Beta"
 
@@ -3177,7 +3176,7 @@ msgstr "Publish to GA before this Offer can be set as the platform default for n
 
 #: app/features/service-catalog/components/active-configuration-summary.tsx:36
 #: app/routes/admin/offer/index.tsx:66
-#: app/routes/admin/service-catalog/index.tsx:165
+#: app/routes/admin/service-catalog/index.tsx:163
 msgid "Published"
 msgstr "Published"
 
@@ -3369,7 +3368,7 @@ msgstr "Resources"
 msgid "Response Code"
 msgstr "Response Code"
 
-#: app/routes/admin/service-catalog/index.tsx:167
+#: app/routes/admin/service-catalog/index.tsx:165
 msgid "Retired"
 msgstr "Retired"
 
@@ -3380,7 +3379,7 @@ msgstr "Retired"
 #: app/features/dashboard/components/quota-utilization-widget.tsx:113
 #: app/routes/admin/service-catalog/detail/approvals.tsx:134
 #: app/routes/admin/service-catalog/detail/index.tsx:114
-#: app/routes/admin/service-catalog/index.tsx:143
+#: app/routes/admin/service-catalog/index.tsx:141
 msgid "Retry"
 msgstr "Retry"
 
@@ -3488,7 +3487,7 @@ msgstr "Search by flag key or description..."
 msgid "Search by name or email..."
 msgstr "Search by name or email..."
 
-#: app/routes/admin/service-catalog/index.tsx:153
+#: app/routes/admin/service-catalog/index.tsx:151
 msgid "Search by name, description, or owner..."
 msgstr "Search by name, description, or owner..."
 
@@ -3702,7 +3701,7 @@ msgid "Selected filters"
 msgstr "Selected filters"
 
 #: app/features/service-catalog/components/details-card.tsx:54
-#: app/routes/admin/service-catalog/index.tsx:176
+#: app/routes/admin/service-catalog/index.tsx:174
 msgid "Self Service"
 msgstr "Self Service"
 
