@@ -1,4 +1,5 @@
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 
 /**
@@ -87,16 +88,17 @@ export default function AppBadge({ status, label, tooltip, className }: Props) {
   const text = (label ?? style.label).toUpperCase();
 
   const chip = (
-    <span
+    <Text
+      size="4xs"
       className={cn(
         // Figma: h 16, px 5, radius 3, 8px Medium, tracking 0.3, uppercase
         'inline-flex h-4 min-w-[70px] shrink-0 items-center justify-center rounded-[3px] px-[5px]',
-        'text-3xs leading-4 font-medium tracking-[0.3px] uppercase',
+        'leading-4 font-medium tracking-[0.3px] uppercase',
         style.className,
         className
       )}>
       {text}
-    </span>
+    </Text>
   );
 
   if (tooltip) {

@@ -4,6 +4,7 @@ import { HEADER_STACK_H } from '@/features/milo/lib/dimensions';
 import { useEnv } from '@/hooks';
 import { useApp } from '@/providers/app.provider';
 import { metaObject } from '@/utils/helpers';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 
 export const meta: Route.MetaFunction = () => {
@@ -21,7 +22,9 @@ export default function Page() {
   if (!env?.CHATBOT_ENABLED) {
     return (
       <div className="flex flex-1 items-center justify-center p-8">
-        <p className="text-muted-foreground text-sm">The AI assistant is not enabled.</p>
+        <Text as="p" textColor="muted">
+          The AI assistant is not enabled.
+        </Text>
       </div>
     );
   }

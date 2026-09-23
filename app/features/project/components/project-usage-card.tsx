@@ -139,7 +139,9 @@ export function ProjectUsageCard({ orgName, projectName, className }: Props) {
                 <QuotaIndicator used={used} limit={limit} />
                 <div className="min-w-0 flex-1 overflow-hidden">
                   <Tooltip message={meter.label}>
-                    <span className="block truncate text-sm">{meter.label}</span>
+                    <Text ellipsis className="block">
+                      {meter.label}
+                    </Text>
                   </Tooltip>
                 </div>
                 <Text

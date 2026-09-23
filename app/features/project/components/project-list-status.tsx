@@ -3,6 +3,7 @@ import { DateTime } from '@/components/date';
 import type { FilterGroupConfig } from '@/features/milo';
 import type { ProjectPhase } from '@/features/project/lib/project-phase';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
+import { Text } from '@datum-cloud/datum-ui/typography';
 
 export function ProjectPhaseBadge({ phase }: { phase: ProjectPhase }) {
   return <BadgeState state={phase} loading={phase === 'Deleting'} />;
@@ -25,7 +26,9 @@ export function ProjectCleanupMessage({ message }: { message: string | null | un
   }
   return (
     <Tooltip message={message}>
-      <span className="block max-w-[20rem] truncate font-mono text-xs">{message}</span>
+      <Text size="xs" ellipsis className="block max-w-[20rem] font-mono">
+        {message}
+      </Text>
     </Tooltip>
   );
 }

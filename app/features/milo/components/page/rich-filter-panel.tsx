@@ -351,7 +351,9 @@ function FilterOptionRow({
       )}
       <span className="min-w-0 flex-1 truncate">{option.label}</span>
       {typeof count === 'number' && (
-        <span className="text-muted-foreground shrink-0 text-xs tabular-nums">{count}</span>
+        <Text size="xs" textColor="muted" className="shrink-0 tabular-nums">
+          {count}
+        </Text>
       )}
     </>
   );
@@ -510,17 +512,25 @@ export function SearchableFilterGroup({
             ))}
 
             {!isSearching && showBrowseEmpty && (
-              <div className="text-muted-foreground px-2 py-2 text-xs">
+              <Text as="div" size="xs" textColor="muted" className="px-2 py-2">
                 {emptyHint ?? t`Type to search.`}
-              </div>
+              </Text>
             )}
 
             {isSearching && visibleMatches.length === 0 && selectedOptions.length === 0 && (
-              <div className="text-muted-foreground px-2 py-2 text-xs">{t`Searching…`}</div>
+              <Text
+                as="div"
+                size="xs"
+                textColor="muted"
+                className="px-2 py-2">{t`Searching…`}</Text>
             )}
 
             {!isSearching && q && visibleMatches.length === 0 && selectedOptions.length === 0 && (
-              <div className="text-muted-foreground px-2 py-2 text-xs">{t`No matches.`}</div>
+              <Text
+                as="div"
+                size="xs"
+                textColor="muted"
+                className="px-2 py-2">{t`No matches.`}</Text>
             )}
 
             {visibleMatches.map((option) => (
@@ -731,9 +741,13 @@ function InlineFilter(config: FilterGroupConfig) {
             )}>
             <span>{label}</span>
             {selected.length > 0 && (
-              <span className="bg-primary/15 text-primary flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-xs font-medium">
+              <Text
+                size="xs"
+                weight="medium"
+                textColor="primary"
+                className="bg-primary/15 flex h-4 min-w-4 items-center justify-center rounded-full px-1">
                 {selected.length}
-              </span>
+              </Text>
             )}
             <ChevronDown className="text-muted-foreground size-3.5" />
           </button>
@@ -773,9 +787,13 @@ function InlineFilter(config: FilterGroupConfig) {
           )}>
           <span>{label}</span>
           {selected.length > 0 && (
-            <span className="bg-primary/15 text-primary flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-xs font-medium">
+            <Text
+              size="xs"
+              weight="medium"
+              textColor="primary"
+              className="bg-primary/15 flex h-4 min-w-4 items-center justify-center rounded-full px-1">
               {selected.length}
-            </span>
+            </Text>
           )}
           <ChevronDown className="text-muted-foreground size-3.5" />
         </button>

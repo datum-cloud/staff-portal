@@ -1,6 +1,7 @@
 import { LogoIcon } from '@/components/logo/logo-icon';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -17,17 +18,25 @@ const AuthError = ({ message, requestId }: { message: string; requestId?: string
         <LogoIcon width={64} className="mb-4" />
 
         <div className="flex max-w-xl flex-col gap-2">
-          <p className="w-full text-center text-2xl font-bold">Your session has expired</p>
-          <div className="text-muted-foreground flex items-center justify-center gap-2 text-center text-sm">
+          <Text as="p" size="2xl" weight="bold" className="w-full text-center">
+            Your session has expired
+          </Text>
+          <Text
+            as="div"
+            textColor="muted"
+            className="flex items-center justify-center gap-2 text-center">
             <STATUS_ICONS.loading className="size-4 animate-spin" />
             Logging out...
-          </div>
+          </Text>
           {requestId && (
-            <div className="text-muted-foreground rounded-r-md border-l-4 border-red-500 bg-red-50 p-4 text-center text-sm dark:bg-red-950/20">
-              <div className="text-xs">
+            <Text
+              as="div"
+              textColor="muted"
+              className="rounded-r-md border-l-4 border-red-500 bg-red-50 p-4 text-center dark:bg-red-950/20">
+              <Text as="div" size="xs">
                 <strong>Request ID:</strong> {requestId}
-              </div>
-            </div>
+              </Text>
+            </Text>
           )}
         </div>
       </CardContent>

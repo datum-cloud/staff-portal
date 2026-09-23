@@ -60,7 +60,11 @@ function useTypeMetrics<T extends HTMLElement>(measureChild = false) {
 
 /** Muted mono readout of computed type metrics. */
 function Metrics({ children }: { children: React.ReactNode }) {
-  return <span className="text-muted-foreground w-28 shrink-0 font-mono text-xs">{children}</span>;
+  return (
+    <Text size="xs" textColor="muted" className="w-28 shrink-0 font-mono">
+      {children}
+    </Text>
+  );
 }
 
 /** Renders one `text-*` utility and reports its computed size. */
@@ -68,7 +72,9 @@ function TailwindSizeRow({ cls }: { cls: string }) {
   const { ref, metrics } = useTypeMetrics<HTMLSpanElement>();
   return (
     <div className="flex items-baseline gap-4">
-      <span className="text-muted-foreground w-24 shrink-0 font-mono text-xs">{cls}</span>
+      <Text size="xs" textColor="muted" className="w-24 shrink-0 font-mono">
+        {cls}
+      </Text>
       <Metrics>{metrics}</Metrics>
       <span ref={ref} className={cls}>
         The quick brown fox
@@ -82,7 +88,10 @@ function TitleRow({ level }: { level: (typeof TITLE_LEVELS)[number] }) {
   const { ref, metrics } = useTypeMetrics<HTMLDivElement>(true);
   return (
     <div className="flex items-baseline gap-4">
-      <span className="text-muted-foreground w-24 shrink-0 font-mono text-xs">{`level ${level}`}</span>
+      <Text
+        size="xs"
+        textColor="muted"
+        className="w-24 shrink-0 font-mono">{`level ${level}`}</Text>
       <Metrics>{metrics}</Metrics>
       <div ref={ref} className="min-w-0">
         <Title level={level}>The quick brown fox</Title>
@@ -108,7 +117,9 @@ const COLORS = [
 function Spec({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-baseline gap-4">
-      <span className="text-muted-foreground w-20 shrink-0 font-mono text-xs">{label}</span>
+      <Text size="xs" textColor="muted" className="w-20 shrink-0 font-mono">
+        {label}
+      </Text>
       <div className="min-w-0">{children}</div>
     </div>
   );
@@ -211,7 +222,9 @@ export default function TypographyDemo() {
 
           <div className="grid gap-6 sm:grid-cols-2">
             <div className="space-y-2">
-              <span className="text-muted-foreground font-mono text-xs">unordered</span>
+              <Text size="xs" textColor="muted" className="font-mono">
+                unordered
+              </Text>
               <List>
                 <ListItem>First item</ListItem>
                 <ListItem>Second item</ListItem>
@@ -219,7 +232,9 @@ export default function TypographyDemo() {
               </List>
             </div>
             <div className="space-y-2">
-              <span className="text-muted-foreground font-mono text-xs">ordered</span>
+              <Text size="xs" textColor="muted" className="font-mono">
+                ordered
+              </Text>
               <List listType="ordered" as="ol">
                 <ListItem>First step</ListItem>
                 <ListItem>Second step</ListItem>

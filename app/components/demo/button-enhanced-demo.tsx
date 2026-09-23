@@ -1,6 +1,7 @@
 import { DemoGroup, DemoRow, DemoSection, type DemoSectionMeta } from './demo-section';
 import type { ButtonProps } from '@datum-cloud/datum-ui/button';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Download, Heart, Plus, Settings, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -51,7 +52,9 @@ export default function ButtonDemo() {
         <div className="space-y-4">
           {TYPES.map((type) => (
             <div key={type} className="space-y-2">
-              <h4 className="text-muted-foreground text-xs font-medium capitalize">{type}</h4>
+              <Text as="h4" size="xs" weight="medium" textColor="muted" className="capitalize">
+                {type}
+              </Text>
               <div className="flex flex-wrap gap-2">
                 <Button type={type} theme="solid">
                   Solid

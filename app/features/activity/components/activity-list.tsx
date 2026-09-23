@@ -14,6 +14,7 @@ import {
   useNuqsAdapter,
 } from '@datum-cloud/datum-ui/data-table';
 import type { FilterValue, ServerFetchArgs, StateAdapter } from '@datum-cloud/datum-ui/data-table';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import {
   endOfDay,
@@ -186,7 +187,9 @@ function createColumns(user?: { metadata?: { name?: string } }) {
             ) : (
               <span>{scopeName}</span>
             )}
-            <span className="text-xs font-bold text-gray-600">{scopeType}</span>
+            <Text size="xs" weight="bold" className="text-gray-600">
+              {scopeType}
+            </Text>
           </div>
         );
       },

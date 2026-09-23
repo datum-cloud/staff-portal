@@ -14,12 +14,15 @@ function StageCard({ stage, index }: { stage: Stage; index: number }) {
   return (
     <SectionCard
       title={
-        <span className="flex items-center gap-2 text-base">
-          <span className="bg-muted flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium">
+        <Text size="base" className="flex items-center gap-2">
+          <Text
+            size="xs"
+            weight="medium"
+            className="bg-muted flex h-6 w-6 items-center justify-center rounded-full">
             {index + 1}
-          </span>
+          </Text>
           {stage.name}
-        </span>
+        </Text>
       }
       action={
         <div className="flex items-center gap-2">
@@ -161,10 +164,10 @@ export function PolicyDetail({
       {policy.spec.triggers && policy.spec.triggers.length > 0 && (
         <SectionCard
           title={
-            <span className="flex items-center gap-2 text-base">
+            <Text size="base" className="flex items-center gap-2">
               <Zap className="h-4 w-4" />
               <Trans>Triggers</Trans>
-            </span>
+            </Text>
           }>
           <div className="flex flex-wrap gap-2">
             {policy.spec.triggers.map((trigger, i) => (

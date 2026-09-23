@@ -1,5 +1,6 @@
 import { consumerMatchesService } from '../utils/consumer-matches-service';
 import { useServiceConsumersInProjectQuery } from '@/resources/request/client';
+import { Text } from '@datum-cloud/datum-ui/typography';
 
 interface Props {
   producerProject: string | undefined;
@@ -25,8 +26,12 @@ export function PendingApprovalsBadge({ producerProject, serviceName, canonicalN
   if (count === 0) return null;
 
   return (
-    <span className="bg-primary/10 text-primary inline-flex min-w-5 items-center justify-center rounded-full px-1.5 text-xs font-medium">
+    <Text
+      size="xs"
+      weight="medium"
+      textColor="primary"
+      className="bg-primary/10 inline-flex min-w-5 items-center justify-center rounded-full px-1.5">
       {count}
-    </span>
+    </Text>
   );
 }

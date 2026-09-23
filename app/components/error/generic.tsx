@@ -1,6 +1,7 @@
 import { LogoIcon } from '@/components/logo/logo-icon';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { HomeIcon } from 'lucide-react';
 import { Link } from 'react-router';
 
@@ -11,18 +12,21 @@ const GenericError = ({ message, requestId }: { message: string; requestId?: str
         <LogoIcon width={64} className="mb-4" />
 
         <div className="flex max-w-xl flex-col gap-2">
-          <p className="w-full text-center text-2xl font-bold">
+          <Text as="p" size="2xl" weight="bold" className="w-full text-center">
             Something glitched! Probably not your fault.
-          </p>
+          </Text>
 
-          <div className="text-muted-foreground rounded-r-md border-l-4 border-red-500 bg-red-50 p-4 text-center text-sm dark:bg-red-950/20">
+          <Text
+            as="div"
+            textColor="muted"
+            className="rounded-r-md border-l-4 border-red-500 bg-red-50 p-4 text-center dark:bg-red-950/20">
             {requestId && (
-              <div className="text-xs">
+              <Text as="div" size="xs">
                 <strong>Request ID:</strong> {requestId}
-              </div>
+              </Text>
             )}
             <code className="font-mono text-xs">{message}</code>
-          </div>
+          </Text>
         </div>
         <div className="flex items-center gap-2">
           <Link to={'/'}>

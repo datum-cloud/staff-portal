@@ -1,12 +1,17 @@
 import { BadgeState } from './index';
+import { Title } from '@datum-cloud/datum-ui/typography';
 
 export default function BadgeStateExample() {
   return (
     <div className="space-y-4 p-6">
-      <h2 className="mb-4 text-2xl font-bold">BadgeState Component Examples</h2>
+      <Title as="h2" level={3} weight="bold" className="mb-4">
+        BadgeState Component Examples
+      </Title>
 
       <div className="space-y-2">
-        <h3 className="text-lg font-semibold">Original States</h3>
+        <Title as="h3" level={5} weight="semibold">
+          Original States
+        </Title>
         <div className="flex flex-wrap gap-2">
           <BadgeState state="yes" tooltip="Yes" />
           <BadgeState state="no" tooltip="No" />
@@ -17,7 +22,9 @@ export default function BadgeStateExample() {
       </div>
 
       <div className="space-y-2">
-        <h3 className="text-lg font-semibold">Activity States (Default Text)</h3>
+        <Title as="h3" level={5} weight="semibold">
+          Activity States (Default Text)
+        </Title>
         <div className="flex flex-wrap gap-2">
           <BadgeState state="success" tooltip="Operation completed successfully" />
           <BadgeState state="error" tooltip="An error occurred during processing" />
@@ -27,7 +34,9 @@ export default function BadgeStateExample() {
       </div>
 
       <div className="space-y-2">
-        <h3 className="text-lg font-semibold">Activity States (Custom Messages)</h3>
+        <Title as="h3" level={5} weight="semibold">
+          Activity States (Custom Messages)
+        </Title>
         <div className="flex flex-wrap gap-2">
           <BadgeState state="success" message="User created successfully" />
           <BadgeState state="error" message="Failed to save data" />
@@ -37,7 +46,9 @@ export default function BadgeStateExample() {
       </div>
 
       <div className="space-y-2">
-        <h3 className="text-lg font-semibold">Without Colors</h3>
+        <Title as="h3" level={5} weight="semibold">
+          Without Colors
+        </Title>
         <div className="flex flex-wrap gap-2">
           <BadgeState state="success" message="Operation complete" noColor />
           <BadgeState state="error" message="Failed" noColor />

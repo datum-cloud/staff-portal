@@ -56,14 +56,16 @@ function IncludedPricingRow({
   return (
     <li className="p-3">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-sm font-medium">{displayName}</span>
+        <Text weight="medium">{displayName}</Text>
         {chargeType ? <BadgeState state={formatChargeType(chargeType)} /> : null}
       </div>
       {summary ? (
-        <p className="text-muted-foreground mt-0.5 text-xs leading-relaxed">{summary}</p>
+        <Text as="p" size="xs" textColor="muted" className="mt-0.5 leading-relaxed">
+          {summary}
+        </Text>
       ) : null}
       {catalogService ? (
-        <p className="text-muted-foreground mt-0.5 text-xs leading-relaxed">
+        <Text as="p" size="xs" textColor="muted" className="mt-0.5 leading-relaxed">
           <Trans>From</Trans>{' '}
           <Link
             to={serviceCatalogRoutes.detail(catalogService.catalogName)}
@@ -71,15 +73,22 @@ function IncludedPricingRow({
             {catalogService.displayName}
           </Link>
           {catalogService.canonicalName ? (
-            <span className="font-mono text-xs"> · {catalogService.canonicalName}</span>
+            <Text size="xs" className="font-mono">
+              {' '}
+              · {catalogService.canonicalName}
+            </Text>
           ) : null}
-        </p>
+        </Text>
       ) : null}
       {subtext ? (
-        <p className="text-muted-foreground mt-0.5 font-mono text-xs leading-relaxed">{subtext}</p>
+        <Text as="p" size="xs" textColor="muted" className="mt-0.5 font-mono leading-relaxed">
+          {subtext}
+        </Text>
       ) : null}
       {!summary && !catalogService && !subtext && name ? (
-        <p className="text-muted-foreground mt-0.5 font-mono text-xs">{name}</p>
+        <Text as="p" size="xs" textColor="muted" className="mt-0.5 font-mono">
+          {name}
+        </Text>
       ) : null}
     </li>
   );
@@ -142,7 +151,9 @@ function IncludedPricingTable({
                 <td className="px-3 py-2 align-top">
                   <div className="font-medium">{displayName}</div>
                   {subtext ? (
-                    <div className="text-muted-foreground mt-0.5 font-mono text-xs">{subtext}</div>
+                    <Text as="div" size="xs" textColor="muted" className="mt-0.5 font-mono">
+                      {subtext}
+                    </Text>
                   ) : null}
                 </td>
                 <td className="px-3 py-2 align-top">

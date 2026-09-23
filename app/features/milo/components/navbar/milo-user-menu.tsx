@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@datum-cloud/datum-ui/dropdown';
 import { Icon } from '@datum-cloud/datum-ui/icons';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
 import { Bell, ChevronDown, User } from 'lucide-react';
 import { useMemo } from 'react';
@@ -50,18 +51,20 @@ export function MiloUserMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="min-w-56 rounded-md" side="bottom" align="end" sideOffset={8}>
         <DropdownMenuLabel className="p-0 font-normal">
-          <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+          <Text as="div" className="flex items-center gap-2 px-1 py-1.5 text-left">
             <UserAvatar
               name={fullName}
               avatarUrl={avatarUrl}
               className="size-8 rounded-md"
               fallbackClassName="rounded-md"
             />
-            <div className="grid flex-1 text-left text-sm leading-tight">
+            <Text as="div" className="grid flex-1 text-left leading-tight">
               <span className="truncate font-medium">{fullName}</span>
-              <span className="truncate text-xs">{user?.spec?.email ?? ''}</span>
-            </div>
-          </div>
+              <Text size="xs" ellipsis>
+                {user?.spec?.email ?? ''}
+              </Text>
+            </Text>
+          </Text>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>

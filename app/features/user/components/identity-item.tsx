@@ -1,3 +1,4 @@
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { ReactNode } from 'react';
 
@@ -52,8 +53,8 @@ export const IdentityItem = ({
           {icon}
         </div>
         <div className="flex flex-col text-left">
-          <span className="text-sm font-medium">{label}</span>
-          {sublabel && <span className="text-muted-foreground text-sm">{sublabel}</span>}
+          <Text weight="medium">{label}</Text>
+          {sublabel && <Text textColor="muted">{sublabel}</Text>}
         </div>
       </div>
 

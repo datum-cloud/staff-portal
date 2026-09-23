@@ -4,6 +4,7 @@ import { SearchResults } from './search-results';
 import { useAppSearch } from './use-app-search';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Input } from '@datum-cloud/datum-ui/input';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useRef, useState } from 'react';
@@ -91,7 +92,7 @@ function AppSearch({ className = '', placeholder }: Props) {
         />
         {!open && (
           <kbd className="bg-muted text-2xs pointer-events-none hidden h-5 shrink-0 items-center gap-1 rounded border px-1.5 font-mono font-medium select-none sm:flex">
-            <span className="text-xs">⌘</span>K
+            <Text size="xs">⌘</Text>K
           </kbd>
         )}
       </div>

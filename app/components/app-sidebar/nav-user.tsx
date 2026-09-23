@@ -19,6 +19,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@datum-cloud/datum-ui/sidebar';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
 import { Bell, ChevronsUpDown, User } from 'lucide-react';
 import { useMemo } from 'react';
@@ -55,10 +56,12 @@ export function NavUser() {
                 {/* <AvatarImage src={user?.spec.avatar} alt={fullName} /> */}
                 <AvatarFallback className="rounded-md">{initials}</AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
+              <Text as="div" className="grid flex-1 text-left leading-tight">
                 <span className="truncate font-medium">{fullName}</span>
-                <span className="truncate text-xs">{user?.spec?.email ?? ''}</span>
-              </div>
+                <Text size="xs" ellipsis>
+                  {user?.spec?.email ?? ''}
+                </Text>
+              </Text>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
@@ -68,16 +71,18 @@ export function NavUser() {
             align="end"
             sideOffset={4}>
             <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+              <Text as="div" className="flex items-center gap-2 px-1 py-1.5 text-left">
                 <Avatar className="h-8 w-8 rounded-md">
                   {/* <AvatarImage src={user?.avatar} alt={fullName} /> */}
                   <AvatarFallback className="rounded-md">{initials}</AvatarFallback>
                 </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
+                <Text as="div" className="grid flex-1 text-left leading-tight">
                   <span className="truncate font-medium">{fullName}</span>
-                  <span className="truncate text-xs">{user?.spec?.email ?? ''}</span>
-                </div>
-              </div>
+                  <Text size="xs" ellipsis>
+                    {user?.spec?.email ?? ''}
+                  </Text>
+                </Text>
+              </Text>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>

@@ -4,6 +4,7 @@ import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { startCase } from '@/utils/helpers';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { Clock } from 'lucide-react';
 
@@ -95,11 +96,13 @@ function createTooltipContent(title: string, message: string, lastTransitionTime
   return (
     <div className="max-w-xs">
       <div className="font-medium">{title}</div>
-      <div className="mt-1 text-sm">{message}</div>
+      <Text as="div" className="mt-1">
+        {message}
+      </Text>
       {lastTransitionTime && (
-        <div className="mt-1 text-xs opacity-60">
+        <Text as="div" size="xs" className="mt-1 opacity-60">
           Last transition: <DateTime date={lastTransitionTime} tooltip={false} />
-        </div>
+        </Text>
       )}
     </div>
   );
@@ -169,7 +172,9 @@ const BadgeCondition = ({
       <IconComponent className="h-3 w-3" />
       {displayLabel}
       {showReason && condition.reason && (
-        <span className="ml-1 text-xs opacity-75">({condition.reason})</span>
+        <Text size="xs" className="ml-1 opacity-75">
+          ({condition.reason})
+        </Text>
       )}
     </Badge>
   );

@@ -241,7 +241,11 @@ export default function Page() {
   const overviewItems = [
     {
       label: t`ID`,
-      value: <span className="font-mono text-xs">{offer.metadata?.name ?? '—'}</span>,
+      value: (
+        <Text size="xs" className="font-mono">
+          {offer.metadata?.name ?? '—'}
+        </Text>
+      ),
     },
     {
       label: t`Display name`,
@@ -294,9 +298,9 @@ export default function Page() {
       value: offer.status?.publishedAt ? (
         <DateTime date={offer.status.publishedAt} variant="both" addSuffix tooltip="detailed" />
       ) : snapshotPending ? (
-        <span className="text-muted-foreground text-xs">
+        <Text size="xs" textColor="muted">
           <Trans>Pending snapshot</Trans>
-        </span>
+        </Text>
       ) : (
         '—'
       ),
@@ -371,12 +375,12 @@ export default function Page() {
         <>
           <SectionCard title={<Trans>Overview</Trans>} contentClassName="pt-3">
             <DescriptionList items={draftOverviewItems} labelWidth="7.5rem" />
-            <p className="text-muted-foreground mt-3 border-t pt-3 text-xs leading-relaxed">
+            <Text as="p" size="xs" textColor="muted" className="mt-3 border-t pt-3 leading-relaxed">
               <Trans>
                 Publish to GA before this Offer can be set as the platform default for new billing
                 accounts.
               </Trans>
-            </p>
+            </Text>
           </SectionCard>
           <DraftConfigEditor
             key={offer.metadata?.resourceVersion ?? offerName}

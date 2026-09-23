@@ -2,6 +2,7 @@ import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { startCase } from '@/utils/helpers';
 import { Badge, type BadgeProps } from '@datum-cloud/datum-ui/badge';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import * as React from 'react';
 
@@ -258,14 +259,14 @@ const BadgeState = ({
 
   const badgeContent =
     variant === 'dot' ? (
-      <span className={cn('text-foreground inline-flex items-center gap-1.5 text-sm', className)}>
+      <Text textColor="default" className={cn('inline-flex items-center gap-1.5', className)}>
         {loading ? (
           <STATUS_ICONS.loading className="text-muted-foreground size-3 shrink-0 animate-spin" />
         ) : (
           <span className={cn('size-1.5 shrink-0 rounded-full', dotClassName(config))} />
         )}
         {displayText}
-      </span>
+      </Text>
     ) : (
       <Badge
         type={noColor ? undefined : config.type}

@@ -13,6 +13,7 @@ import { serviceCatalogRoutes } from '@/utils/config/routes.config';
 import { Alert, AlertDescription, AlertTitle } from '@datum-cloud/datum-ui/alert';
 import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1ServicePricing } from '@openapi/billing.miloapis.com/v1alpha1';
 import { Tag } from 'lucide-react';
@@ -46,16 +47,16 @@ function ServicePricingEmptyState() {
       </div>
 
       <div className="flex max-w-md flex-col gap-2">
-        <p className="text-sm font-medium">
+        <Text as="p" weight="medium">
           <Trans>No prices available yet</Trans>
-        </p>
-        <p className="text-muted-foreground text-sm leading-relaxed">
+        </Text>
+        <Text as="p" textColor="muted" className="leading-relaxed">
           <Trans>
             Offers bundle prices that already exist as ServicePricings. Define charges in git on
             ServiceConfiguration spec.charges, publish the configuration, then refresh to select
             them here.
           </Trans>
-        </p>
+        </Text>
       </div>
 
       <ol className="text-muted-foreground max-w-md list-decimal space-y-1.5 pl-5 text-left text-sm leading-relaxed">
@@ -89,7 +90,11 @@ function ServicePricingErrorState({ message }: { message?: string }) {
             updated, wait a minute for PolicyBindings to reconcile.
           </Trans>
         </p>
-        {message ? <p className="mt-2 font-mono text-xs opacity-80">{message}</p> : null}
+        {message ? (
+          <Text as="p" size="xs" className="mt-2 font-mono opacity-80">
+            {message}
+          </Text>
+        ) : null}
       </AlertDescription>
     </Alert>
   );
@@ -148,14 +153,16 @@ export function ServicePricingChecklist({
             />
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-sm font-medium">{displayName}</span>
+                <Text weight="medium">{displayName}</Text>
                 {chargeType ? <BadgeState state={formatChargeType(chargeType)} /> : null}
               </div>
               {summary ? (
-                <p className="text-muted-foreground mt-0.5 text-xs leading-relaxed">{summary}</p>
+                <Text as="p" size="xs" textColor="muted" className="mt-0.5 leading-relaxed">
+                  {summary}
+                </Text>
               ) : null}
               {catalogService ? (
-                <p className="text-muted-foreground mt-0.5 text-xs leading-relaxed">
+                <Text as="p" size="xs" textColor="muted" className="mt-0.5 leading-relaxed">
                   <Trans>From</Trans>{' '}
                   <Link
                     to={serviceCatalogRoutes.detail(catalogService.catalogName)}
@@ -164,14 +171,21 @@ export function ServicePricingChecklist({
                     {catalogService.displayName}
                   </Link>
                   {catalogService.canonicalName ? (
-                    <span className="font-mono text-xs"> · {catalogService.canonicalName}</span>
+                    <Text size="xs" className="font-mono">
+                      {' '}
+                      · {catalogService.canonicalName}
+                    </Text>
                   ) : null}
-                </p>
+                </Text>
               ) : null}
               {subtext ? (
-                <p className="text-muted-foreground mt-0.5 font-mono text-xs leading-relaxed">
+                <Text
+                  as="p"
+                  size="xs"
+                  textColor="muted"
+                  className="mt-0.5 font-mono leading-relaxed">
                   {subtext}
-                </p>
+                </Text>
               ) : null}
             </div>
           </label>

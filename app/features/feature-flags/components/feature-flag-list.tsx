@@ -15,6 +15,7 @@ import { createColumnHelper } from '@/utils/table';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Switch } from '@datum-cloud/datum-ui/switch';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
 import type {
   ComMiloapisQuotaV1Alpha1ResourceGrant,
@@ -109,11 +110,11 @@ export function FeatureFlagList({ orgName }: FeatureFlagListProps) {
         header: ({ column }) => <ListColumnHeader column={column} title={t`Flag`} />,
         cell: ({ row }) => (
           <div className="flex max-w-5xl flex-col">
-            <span className="text-sm font-medium">{displayName(row.original)}</span>
+            <Text weight="medium">{displayName(row.original)}</Text>
             {row.original.spec?.description && (
-              <span className="text-muted-foreground text-xs break-words whitespace-normal">
+              <Text size="xs" textColor="muted" className="break-words whitespace-normal">
                 {row.original.spec.description}
-              </span>
+              </Text>
             )}
           </div>
         ),
@@ -140,13 +141,13 @@ export function FeatureFlagList({ orgName }: FeatureFlagListProps) {
             // A platform-managed grant won't carry the operator annotation —
             // surface that explicitly instead of an em-dash.
             if (platformManagedByResourceType.has(resourceType)) {
-              return <span className="text-muted-foreground text-sm italic">{t`Platform`}</span>;
+              return <Text textColor="muted" className="italic">{t`Platform`}</Text>;
             }
-            return <span className="text-muted-foreground text-sm">—</span>;
+            return <Text textColor="muted">—</Text>;
           }
           return (
             <div className="flex flex-col">
-              <span className="text-sm">{enabledBy}</span>
+              <Text>{enabledBy}</Text>
               <DateTime
                 date={latest.metadata?.creationTimestamp}
                 className="text-muted-foreground text-xs"

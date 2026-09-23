@@ -1,4 +1,5 @@
 import type { DataTableFeatures } from '@datum-cloud/datum-ui/data-table';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import type { Column, RowData } from '@tanstack/react-table';
 
@@ -62,14 +63,13 @@ export function ListColumnHeader<TData extends RowData, TValue>({
 }: Props<TData, TValue>) {
   if (!column.getCanSort()) {
     return (
-      <div
-        className={cn(
-          'text-xs leading-4 font-normal tracking-normal text-inherit uppercase',
-          className
-        )}
+      <Text
+        as="div"
+        size="xs"
+        className={cn('leading-4 font-normal tracking-normal text-inherit uppercase', className)}
         data-slot="dt-column-header">
         {title}
-      </div>
+      </Text>
     );
   }
 

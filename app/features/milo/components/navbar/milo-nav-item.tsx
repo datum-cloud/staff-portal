@@ -45,7 +45,7 @@ export function MiloNavItem({ section, active }: MiloNavItemProps) {
         'flex items-center rounded-[3px] border border-transparent px-2 py-1.5 whitespace-nowrap transition-colors',
         active || open ? 'bg-card text-primary' : 'text-foreground hover:bg-card hover:text-primary'
       )}>
-      <span className="text-sm font-medium">{section.label}</span>
+      <Text weight="medium">{section.label}</Text>
       {hasDropdown && (
         <ChevronDown
           className={cn('ml-1 size-3.5 opacity-60 transition-transform', open && 'rotate-180')}

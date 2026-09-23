@@ -17,7 +17,11 @@ const columnHelper = createColumnHelper<Condition>();
 const columns = [
   columnHelper.accessor('type', {
     header: () => <Trans>Type</Trans>,
-    cell: (info) => <span className="font-mono text-xs">{info.getValue()}</span>,
+    cell: (info) => (
+      <Text size="xs" className="font-mono">
+        {info.getValue()}
+      </Text>
+    ),
   }),
   columnHelper.accessor('status', {
     header: () => <Trans>Status</Trans>,
@@ -33,7 +37,11 @@ const columns = [
   }),
   columnHelper.accessor('reason', {
     header: () => <Trans>Reason</Trans>,
-    cell: (info) => <span className="font-mono text-xs">{info.getValue()}</span>,
+    cell: (info) => (
+      <Text size="xs" className="font-mono">
+        {info.getValue()}
+      </Text>
+    ),
   }),
   columnHelper.accessor('message', {
     header: () => <Trans>Message</Trans>,
@@ -42,9 +50,9 @@ const columns = [
   columnHelper.accessor('lastTransitionTime', {
     header: () => <Trans>Updated</Trans>,
     cell: (info) => (
-      <span className="text-muted-foreground text-xs">
+      <Text size="xs" textColor="muted">
         <DateTime date={info.getValue()} variant="relative" addSuffix />
-      </span>
+      </Text>
     ),
   }),
 ];

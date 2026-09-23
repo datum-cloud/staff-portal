@@ -4,6 +4,7 @@ import { humanizeDimension } from '../usage.view';
 import { QuotaIndicator } from '@/features/organization/components/quota-ring';
 import { Card, CardContent, CardHeader } from '@datum-cloud/datum-ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@datum-cloud/datum-ui/tabs';
+import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { format } from 'date-fns';
 import { useState } from 'react';
@@ -77,24 +78,23 @@ export function MeterCard({ meter }: MeterCardProps) {
     <Card className="min-w-0 gap-0 overflow-hidden rounded-xl py-0 shadow-none">
       <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0 px-4 pt-6 pb-0 sm:px-8 sm:pt-8">
         <div className="flex min-w-0 flex-col gap-1.5">
-          <h3 className="text-foreground text-base font-medium sm:text-lg">{meter.label}</h3>
+          <Title as="h3" level={6} weight="medium" textColor="default" className="sm:text-lg">
+            {meter.label}
+          </Title>
           {meter.description ? (
-            <p className="text-muted-foreground text-sm leading-relaxed">{meter.description}</p>
+            <Text as="p" textColor="muted" className="leading-relaxed">
+              {meter.description}
+            </Text>
           ) : null}
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1 sm:gap-1.5">
-          <span className="text-foreground text-right text-sm font-medium tabular-nums">
+          <Text weight="medium" textColor="default" className="text-right tabular-nums">
             {formatUsagePair(meter.unit, meter.used, meter.limit)}
-          </span>
+          </Text>
           <div className="flex items-center gap-2 sm:gap-3">
             {(meter.spend ?? 0) > 0 || meter.unitRate !== undefined ? (
-              <span className="text-muted-foreground text-right text-xs tabular-nums">
-                {formatUnitRate(
-                  meter.unitRate,
-                  meter.unit,
-                  meter.currencyCode,
-                  meter.pricingUnit
-                )}
+              <Text size="xs" textColor="muted" className="text-right tabular-nums">
+                {formatUnitRate(meter.unitRate, meter.unit, meter.currencyCode, meter.pricingUnit)}
                 {(meter.spend ?? 0) > 0 ? (
                   <>
                     {' · '}
@@ -103,7 +103,7 @@ export function MeterCard({ meter }: MeterCardProps) {
                     </span>
                   </>
                 ) : null}
-              </span>
+              </Text>
             ) : null}
             <QuotaIndicator used={meter.used} limit={meter.limit} size={24} />
           </div>
@@ -133,13 +133,13 @@ export function MeterCard({ meter }: MeterCardProps) {
 
       <CardContent className="min-w-0 px-4 pt-4 pb-6 sm:px-8 sm:pb-8">
         {isBreakdownView && !isStackedChart ? (
-          <div className="text-muted-foreground flex h-[220px] items-center justify-center text-sm">
+          <Text as="div" textColor="muted" className="flex h-[220px] items-center justify-center">
             No {activeTab.toLowerCase()} breakdown recorded in this period.
-          </div>
+          </Text>
         ) : chartData.length === 0 ? (
-          <div className="text-muted-foreground flex h-[220px] items-center justify-center text-sm">
+          <Text as="div" textColor="muted" className="flex h-[220px] items-center justify-center">
             No usage recorded in this period.
-          </div>
+          </Text>
         ) : (
           <div className="w-full min-w-0">
             <ResponsiveContainer key={activeTab} width="100%" height={isStackedChart ? 248 : 220}>
@@ -184,15 +184,18 @@ export function MeterCard({ meter }: MeterCardProps) {
                     if (!active || !payload?.length) return null;
                     return (
                       <div className="border-border bg-background rounded-md border px-2.5 py-1.5 shadow-sm">
-                        <div className="text-muted-foreground text-xs">
+                        <Text as="div" size="xs" textColor="muted">
                           {format(new Date(label as number), 'MMM d, yyyy')}
-                        </div>
+                        </Text>
                         {isStackedChart && stack ? (
                           <div className="mt-1 flex flex-col gap-0.5">
                             {payload.map((entry) => (
-                              <div
-                                key={entry.dataKey as string}
-                                className="text-foreground flex items-center gap-1.5 text-xs">
+                              <Text
+                                as="div"
+                                size="xs"
+                                textColor="default"
+                                className="flex items-center gap-1.5"
+                                key={entry.dataKey as string}>
                                 <span
                                   className="size-2 shrink-0 rounded-[2px]"
                                   style={{ backgroundColor: entry.color }}
@@ -206,17 +209,17 @@ export function MeterCard({ meter }: MeterCardProps) {
                                     typeof entry.value === 'number' ? entry.value : 0
                                   )}
                                 </span>
-                              </div>
+                              </Text>
                             ))}
                           </div>
                         ) : (
-                          <div className="text-foreground text-xs font-medium">
+                          <Text as="div" size="xs" weight="medium" textColor="default">
                             {meter.label}:{' '}
                             {formatByUnit(
                               meter.unit,
                               typeof payload[0].value === 'number' ? payload[0].value : 0
                             )}
-                          </div>
+                          </Text>
                         )}
                       </div>
                     );

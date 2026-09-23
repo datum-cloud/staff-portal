@@ -9,7 +9,7 @@ import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
-import { Text } from '@datum-cloud/datum-ui/typography';
+import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { FingerprintPattern, GlobeIcon, MailIcon } from 'lucide-react';
 import { ComponentType, SVGProps } from 'react';
@@ -71,7 +71,7 @@ export const UserIdentityCard = ({
                   sublabel={identity.status?.username}
                   middleContent={
                     // TODO: Enable this when we have a way to get the last used date
-                    // <span className="text-foreground/80 text-center text-xs">Last used Jun 4</span>
+                    // <Text size="xs" className="text-foreground/80 text-center">Last used Jun 4</Text>
                     undefined
                   }
                   rightContent={
@@ -81,15 +81,15 @@ export const UserIdentityCard = ({
                           <Tooltip
                             message={
                               <div className="flex flex-col gap-3.5 p-4">
-                                <h4 className="text-sm font-semibold">
+                                <Title as="h4" level={7} weight="semibold">
                                   <Trans>Updating email addresses for GitHub identities</Trans>
-                                </h4>
-                                <p className="text-xs text-wrap">
+                                </Title>
+                                <Text as="p" size="xs" className="text-wrap">
                                   <Trans>
                                     Email addresses for GitHub identities should be updated through
                                     GitHub
                                   </Trans>
-                                </p>
+                                </Text>
                                 <ul className="list-outside list-decimal space-y-3.5 pl-4 text-xs text-wrap">
                                   <li>
                                     <Trans>Log out of Datum</Trans>
@@ -116,9 +116,9 @@ export const UserIdentityCard = ({
                             }>
                             <div className="pointer flex cursor-pointer items-center gap-2.5">
                               <STATUS_ICONS.alert size={12} className="text-primary" />
-                              <span className="text-primary text-xs underline">
+                              <Text size="xs" textColor="primary" className="underline">
                                 <Trans>How to update your GitHub email</Trans>
-                              </span>
+                              </Text>
                             </div>
                           </Tooltip>
                         )}
@@ -172,10 +172,10 @@ export const UserIdentityCard = ({
                       sublabel={sublabelParts.length ? sublabelParts.join(' · ') : session.id}
                       middleContent={
                         session.createdAt ? (
-                          <span className="text-foreground/80 text-center text-xs">
+                          <Text size="xs" className="text-foreground/80 text-center">
                             <Trans>Created</Trans>{' '}
                             <DateTime date={session.createdAt} variant="relative" />
-                          </span>
+                          </Text>
                         ) : undefined
                       }
                     />

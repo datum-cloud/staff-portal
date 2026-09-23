@@ -15,6 +15,7 @@ import { Card, CardContent, CardFooter } from '@datum-cloud/datum-ui/card';
 import { GroupedTable } from '@datum-cloud/datum-ui/grouped-table';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { ChevronDownIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
@@ -57,7 +58,9 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
             <QuotaIndicator used={row.original.used} limit={row.original.limit} />
             <div className="min-w-0 flex-1 overflow-hidden">
               <Tooltip message={row.original.label}>
-                <span className="block truncate text-sm">{row.original.label}</span>
+                <Text ellipsis className="block">
+                  {row.original.label}
+                </Text>
               </Tooltip>
             </div>
           </div>
@@ -82,9 +85,9 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
         enableSorting: false,
         size: 144,
         cell: ({ row }) => (
-          <span className="text-muted-foreground block text-right text-sm whitespace-nowrap tabular-nums">
+          <Text textColor="muted" className="block text-right whitespace-nowrap tabular-nums">
             {formatUsagePair(row.original.unit, row.original.used, row.original.limit)}
-          </span>
+          </Text>
         ),
       },
       {
@@ -93,14 +96,14 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
         enableSorting: false,
         size: 128,
         cell: ({ row }) => (
-          <span className="text-muted-foreground block text-right text-sm whitespace-nowrap tabular-nums">
+          <Text textColor="muted" className="block text-right whitespace-nowrap tabular-nums">
             {formatUnitRate(
               row.original.unitRate,
               row.original.unit,
               row.original.currencyCode,
               row.original.pricingUnit
             )}
-          </span>
+          </Text>
         ),
       },
       {
@@ -109,9 +112,12 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
         enableSorting: false,
         size: 112,
         cell: ({ row }) => (
-          <span className="text-foreground block text-right text-sm font-medium whitespace-nowrap tabular-nums">
+          <Text
+            weight="medium"
+            textColor="default"
+            className="block text-right whitespace-nowrap tabular-nums">
             {formatCurrency(row.original.spend, row.original.currencyCode)}
-          </span>
+          </Text>
         ),
       },
     ],

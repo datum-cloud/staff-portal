@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@datum-cloud/datum-ui/dropdown';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { useLingui } from '@lingui/react/macro';
 import { ChevronLeft, MoreVertical } from 'lucide-react';
@@ -63,7 +64,9 @@ export function MobileToolbar({ scrolled }: MobileToolbarProps) {
           </Button>
         ) : null}
 
-        <div className="min-w-0 flex-1 truncate text-sm font-medium">{current?.label ?? null}</div>
+        <Text as="div" weight="medium" ellipsis className="min-w-0 flex-1">
+          {current?.label ?? null}
+        </Text>
 
         {showOverflow && (
           <DropdownMenu modal={false}>

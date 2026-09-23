@@ -2,6 +2,7 @@ import { DemoGroup, DemoRow, DemoSection, type DemoSectionMeta } from './demo-se
 import { Button } from '@datum-cloud/datum-ui/button';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Info } from 'lucide-react';
 
 export const feedbackDemoSections: DemoSectionMeta[] = [
@@ -32,9 +33,9 @@ export default function FeedbackDemo() {
             </Button>
           </Tooltip>
           <Tooltip message="Contextual help">
-            <span className="text-muted-foreground inline-flex cursor-help items-center gap-1 text-sm">
+            <Text textColor="muted" className="inline-flex cursor-help items-center gap-1">
               <Info className="h-4 w-4" /> What is this?
-            </span>
+            </Text>
           </Tooltip>
         </DemoRow>
       </DemoSection>
