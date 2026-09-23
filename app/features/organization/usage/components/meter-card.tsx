@@ -4,7 +4,7 @@ import { humanizeDimension } from '../usage.view';
 import { QuotaIndicator } from '@/features/organization/components/quota-ring';
 import { Card, CardContent, CardHeader } from '@datum-cloud/datum-ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@datum-cloud/datum-ui/tabs';
-import { Text } from '@datum-cloud/datum-ui/typography';
+import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { format } from 'date-fns';
 import { useState } from 'react';
@@ -78,9 +78,9 @@ export function MeterCard({ meter }: MeterCardProps) {
     <Card className="min-w-0 gap-0 overflow-hidden rounded-xl py-0 shadow-none">
       <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0 px-4 pt-6 pb-0 sm:px-8 sm:pt-8">
         <div className="flex min-w-0 flex-col gap-1.5">
-          <Text as="h3" size="base" weight="medium" textColor="default" className="sm:text-lg">
+          <Title as="h3" level={6} weight="medium" textColor="default" className="sm:text-lg">
             {meter.label}
-          </Text>
+          </Title>
           {meter.description ? (
             <Text as="p" textColor="muted" className="leading-relaxed">
               {meter.description}

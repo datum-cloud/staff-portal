@@ -1,5 +1,5 @@
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
-import { Text } from '@datum-cloud/datum-ui/typography';
+import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { format } from 'date-fns';
 import { useId, useMemo } from 'react';
@@ -47,9 +47,9 @@ function ListGrowthChartSkeleton({ title }: { title: string }) {
   return (
     <div className="border-border flex shrink-0 items-center gap-6 border-b px-4 py-3">
       <div className="shrink-0">
-        <Text as="h2" weight="medium" textColor="muted">
+        <Title as="h2" level={7} weight="medium" textColor="muted">
           {title}
-        </Text>
+        </Title>
         <Skeleton className="mt-1 h-7 w-10" />
       </div>
       <div className="flex h-16 min-w-0 flex-1 items-center">
@@ -119,9 +119,9 @@ export function ListGrowthChart<T>({
   return (
     <div className="border-border flex shrink-0 items-center gap-6 border-b px-4 py-3">
       <div className="shrink-0">
-        <Text as="h2" weight="medium" textColor="muted">
+        <Title as="h2" level={7} weight="medium" textColor="muted">
           {title}
-        </Text>
+        </Title>
         <Text size="2xl" weight="semibold" className="tabular-nums">
           {items.length}
         </Text>

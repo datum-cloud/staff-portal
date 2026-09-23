@@ -9,7 +9,7 @@ import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
-import { Text } from '@datum-cloud/datum-ui/typography';
+import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { FingerprintPattern, GlobeIcon, MailIcon } from 'lucide-react';
 import { ComponentType, SVGProps } from 'react';
@@ -81,9 +81,9 @@ export const UserIdentityCard = ({
                           <Tooltip
                             message={
                               <div className="flex flex-col gap-3.5 p-4">
-                                <Text as="h4" weight="semibold">
+                                <Title as="h4" level={7} weight="semibold">
                                   <Trans>Updating email addresses for GitHub identities</Trans>
-                                </Text>
+                                </Title>
                                 <Text as="p" size="xs" className="text-wrap">
                                   <Trans>
                                     Email addresses for GitHub identities should be updated through

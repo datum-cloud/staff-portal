@@ -1,4 +1,4 @@
-import { Text } from '@datum-cloud/datum-ui/typography';
+import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import type { ReactNode } from 'react';
 
@@ -23,9 +23,9 @@ export function DemoGroup({ title, description, children }: DemoGroupProps) {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <Text as="h2" size="2xl" weight="semibold" className="tracking-tight">
+        <Title as="h2" level={3} weight="semibold" className="tracking-tight">
           {title}
-        </Text>
+        </Title>
         {description != null && (
           <Text as="p" textColor="muted">
             {description}
@@ -68,9 +68,9 @@ export function DemoSection({
   return (
     <section id={id} className={cn('scroll-mt-24 space-y-3', className)}>
       <div className="space-y-1">
-        <Text as="h3" size="base" weight="medium">
+        <Title as="h3" level={6} weight="medium">
           {title}
-        </Text>
+        </Title>
         {description != null && (
           <Text as="p" textColor="muted">
             {description}
