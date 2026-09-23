@@ -67,7 +67,7 @@ function PressurePill({
     <Tooltip message={`${label} pressure detected`} side="top">
       <span className="inline-flex items-center gap-0.5 text-red-600 dark:text-red-400">
         <Icon className="h-3 w-3" />
-        <Text size="4xs" weight="medium" className="leading-none">
+        <Text size="2xs" weight="medium" className="leading-none">
           {label}
         </Text>
       </span>
@@ -91,7 +91,7 @@ function MetricChip({
     <Tooltip message={tooltip} side="top">
       <span className={`inline-flex items-center gap-0.5 ${color}`}>
         <Icon className="h-3 w-3" />
-        <Text size="4xs" weight="medium" className="leading-none">
+        <Text size="2xs" weight="medium" className="leading-none">
           {value}
         </Text>
       </span>
@@ -127,7 +127,7 @@ function CertChip({ cluster, warn }: { cluster: ClusterEntry; warn: boolean }) {
     <Tooltip side="top" contentClassName="max-w-xs" message={<CertTooltip cluster={cluster} />}>
       <span className={`inline-flex items-center gap-0.5 ${color}`}>
         <ShieldAlert className="h-3 w-3" />
-        <Text size="4xs" weight="medium" className="leading-none">
+        <Text size="2xs" weight="medium" className="leading-none">
           {cluster.certExpiryDays}d
         </Text>
       </span>
@@ -164,7 +164,7 @@ function ClusterCell({ cluster }: { cluster: ClusterEntry }) {
           {cluster.region ?? cluster.name}
         </Text>
         {cluster.region && (
-          <Text as="p" size="4xs" textColor="muted" ellipsis className="leading-tight">
+          <Text as="p" size="2xs" textColor="muted" ellipsis className="leading-tight">
             {cluster.name}
           </Text>
         )}

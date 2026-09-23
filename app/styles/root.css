@@ -16,16 +16,106 @@
 @source '../../node_modules/@datum-cloud/activity-ui/dist/**/*.js';
 
 /*
- * The type scale comes from datum-ui (Storybook → Docs/Type Scale), which now
- * defines every step from `5xs` (9px) to `8xl` and carries the micro sizes this
- * portal used to declare for itself. There is deliberately no local override:
- * one scale, retuned in datum-ui, keeps this portal and cloud-portal rendering
- * the same role at the same size.
+ * Density mode for the staff portal (#657).
  *
- * This replaces the denser local scale added in #657, so every size steps up —
- * body text from 12px to 14px. Density is now a question for the shared scale
- * rather than a per-portal patch.
+ * The scale itself — the step names, their roles and the ladder between them —
+ * comes from datum-ui (Storybook → Docs/Type Scale), and the app writes those
+ * names everywhere: `sm` is body, `xs` is secondary, `2xs` and below are chips
+ * and badges, exactly as cloud-portal writes them. Only the pixel values differ,
+ * because an operational tool packed with tables reads better a step denser
+ * than a customer-facing portal does.
+ *
+ * Retuning here moves every `text-*` utility and every datum-ui Text, Paragraph
+ * and Title with it, so density stays one decision in one place rather than a
+ * size prop on several hundred call sites.
+ *
+ * Each step renders what the step below it renders in the shared scale: `sm` is
+ * 12px here against 14px there, `xs` is 11px against 13px. Tune the numbers
+ * below to retune the portal; reach for datum-ui when the *ladder* is wrong.
  */
+@theme {
+  /* Micro sizes: chips, badges, kbd hints. */
+  --text-5xs: 7px;
+  --text-5xs--line-height: 10px;
+  --text-4xs: 8px;
+  --text-4xs--line-height: 12px;
+  --text-3xs: 9px;
+  --text-3xs--line-height: 12px;
+  --text-2xs: 10px;
+  --text-2xs--line-height: 14px;
+
+  /* Body range. */
+  --text-xs: 11px;
+  --text-xs--line-height: 15px;
+  --text-sm: 12px;
+  --text-sm--line-height: 16px;
+  --text-base: 13px;
+  --text-base--line-height: 18px;
+  --text-lg: 15px;
+  --text-lg--line-height: 20px;
+
+  /* Display range. */
+  --text-xl: 17px;
+  --text-xl--line-height: 24px;
+  --text-2xl: 20px;
+  --text-2xl--line-height: 26px;
+  --text-3xl: 24px;
+  --text-3xl--line-height: 30px;
+  --text-4xl: 30px;
+  --text-4xl--line-height: 36px;
+  --text-5xl: 36px;
+  --text-5xl--line-height: 40px;
+  --text-6xl: 48px;
+  --text-6xl--line-height: 48px;
+  --text-7xl: 60px;
+  --text-7xl--line-height: 60px;
+  --text-8xl: 72px;
+  --text-8xl--line-height: 72px;
+}
+
+/*
+ * The display steps shrink per breakpoint in datum-ui, and those media queries
+ * carry the shared values — larger than the ones above. Left alone, `xl` would
+ * render 17px on a desktop and 18px on a phone. Redefine them here on the same
+ * breakpoints, each landing on another step of this ladder.
+ */
+@media (width < 64rem) {
+  :root {
+    --text-3xl: 20px;
+    --text-3xl--line-height: 26px;
+    --text-4xl: 24px;
+    --text-4xl--line-height: 30px;
+    --text-5xl: 30px;
+    --text-5xl--line-height: 36px;
+    --text-6xl: 36px;
+    --text-6xl--line-height: 40px;
+    --text-7xl: 48px;
+    --text-7xl--line-height: 48px;
+    --text-8xl: 60px;
+    --text-8xl--line-height: 60px;
+  }
+}
+
+@media (width < 48rem) {
+  :root {
+    --text-xl: 15px;
+    --text-xl--line-height: 20px;
+    --text-2xl: 17px;
+    --text-2xl--line-height: 24px;
+    --text-3xl: 20px;
+    --text-3xl--line-height: 26px;
+    --text-4xl: 20px;
+    --text-4xl--line-height: 26px;
+    --text-5xl: 24px;
+    --text-5xl--line-height: 30px;
+    --text-6xl: 30px;
+    --text-6xl--line-height: 36px;
+    --text-7xl: 36px;
+    --text-7xl--line-height: 40px;
+    --text-8xl: 48px;
+    --text-8xl--line-height: 48px;
+  }
+}
 
 /* TipTap editor placeholder */
 .tiptap p.is-editor-empty:first-child {

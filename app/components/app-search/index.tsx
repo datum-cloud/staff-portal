@@ -91,7 +91,7 @@ function AppSearch({ className = '', placeholder }: Props) {
           }}
         />
         {!open && (
-          <kbd className="bg-muted text-4xs pointer-events-none hidden h-5 shrink-0 items-center gap-1 rounded border px-1.5 font-mono font-medium select-none sm:flex">
+          <kbd className="bg-muted text-2xs pointer-events-none hidden h-5 shrink-0 items-center gap-1 rounded border px-1.5 font-mono font-medium select-none sm:flex">
             <Text size="xs">⌘</Text>K
           </kbd>
         )}
