@@ -12,6 +12,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@datum-cloud/datum-ui/sheet';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { useLingui } from '@lingui/react/macro';
 import { ArrowLeft, Menu } from 'lucide-react';
@@ -33,9 +34,14 @@ function MobileNavItem({ item, onNavigate }: { item: NavSubItem; onNavigate: () 
   if (item.children?.length) {
     return (
       <div className="flex flex-col gap-0.5">
-        <div className="text-muted-foreground py-1.5 pr-3 pl-9 text-xs font-medium tracking-wide uppercase">
+        <Text
+          as="div"
+          size="xs"
+          weight="medium"
+          textColor="muted"
+          className="py-1.5 pr-3 pl-9 tracking-wide uppercase">
           {item.label}
-        </div>
+        </Text>
         {item.children.map((child) => (
           <NavLink
             key={child.href}
@@ -121,7 +127,9 @@ export function MiloMobileMenu({ className }: { className?: string }) {
             </button>
             <div className="flex items-center gap-2 px-3 py-2">
               {entityNav.icon && <Icon icon={entityNav.icon} className="shrink-0" />}
-              <span className="truncate text-sm font-semibold">{entityNav.title}</span>
+              <Text weight="semibold" ellipsis>
+                {entityNav.title}
+              </Text>
             </div>
             <div className="flex flex-col gap-0.5">
               {entityNav.groups

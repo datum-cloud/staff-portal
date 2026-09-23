@@ -12,6 +12,7 @@ import type { DateTimeProps, FormatterOptions } from './types';
 import { useApp } from '@/providers/app.provider';
 import { getBrowserTimezone } from '@/utils/helpers/timezone.helper';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { useEffect, useState } from 'react';
 
@@ -74,7 +75,7 @@ export const DateTime = ({
 
   // Show loading state during hydration
   if (needsHydrationProtection && !disableHydrationProtection && !mounted) {
-    return <span className={cn('text-sm', className)}>...</span>;
+    return <Text className={className}>...</Text>;
   }
 
   // Prepare formatter options

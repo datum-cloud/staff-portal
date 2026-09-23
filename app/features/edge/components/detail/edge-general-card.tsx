@@ -8,6 +8,7 @@ import {
   type HttpProxy,
 } from '@/features/edge/lib';
 import { SectionCard } from '@/features/milo';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { useMemo } from 'react';
 
@@ -27,7 +28,7 @@ export function EdgeGeneralCard({ proxy }: { proxy: HttpProxy }) {
         label: <Trans>TLS Certificates</Trans>,
         value:
           certDisplay === undefined ? (
-            <span className="text-muted-foreground text-sm">—</span>
+            <Text textColor="muted">—</Text>
           ) : certDisplay === 'ready' ? (
             <BadgeState state="success" message={certCondition?.message || 'Ready'} />
           ) : certDisplay === 'failed' ? (

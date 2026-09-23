@@ -1,4 +1,3 @@
-import type { MeterSeries } from './usage.types';
 import {
   computeMeterSpend,
   computeRateSpend,
@@ -9,6 +8,7 @@ import {
   usageToPricingUnits,
 } from './usage-spend';
 import type { CatalogMeterPricing } from './usage-spend';
+import type { MeterSeries } from './usage.types';
 import { describe, expect, it } from 'bun:test';
 
 function meter(overrides: Partial<MeterSeries> = {}): MeterSeries {
@@ -38,21 +38,14 @@ describe('parseCatalogRates', () => {
         { flat: '0.05' },
         { flat: '0.10', match: { dimension: 'model_name', value: 'gpt-4' } },
       ])
-    ).toEqual([
-      { flat: 0.05 },
-      { flat: 0.1, match: { dimension: 'model_name', value: 'gpt-4' } },
-    ]);
+    ).toEqual([{ flat: 0.05 }, { flat: 0.1, match: { dimension: 'model_name', value: 'gpt-4' } }]);
   });
 
   it('parses tiered bands with exclusive upTo', () => {
     expect(
       parseCatalogRates([
         {
-          tiered: [
-            { upTo: '200', rate: '0' },
-            { upTo: '10240', rate: '0.05' },
-            { rate: '0.03' },
-          ],
+          tiered: [{ upTo: '200', rate: '0' }, { upTo: '10240', rate: '0.05' }, { rate: '0.03' }],
         },
       ])
     ).toEqual([
@@ -83,11 +76,7 @@ describe('usageToPricingUnits', () => {
 });
 
 describe('computeTieredSpend', () => {
-  const tiers = [
-    { upTo: 200, rate: 0 },
-    { upTo: 10_240, rate: 0.05 },
-    { rate: 0.03 },
-  ];
+  const tiers = [{ upTo: 200, rate: 0 }, { upTo: 10_240, rate: 0.05 }, { rate: 0.03 }];
 
   it('charges nothing within the free tier', () => {
     expect(computeTieredSpend(100, tiers)).toBe(0);
@@ -110,10 +99,7 @@ describe('computeRateSpend', () => {
     expect(computeRateSpend(100, { flat: 0.02 })).toBe(2);
     expect(
       computeRateSpend(1_000, {
-        tiered: [
-          { upTo: 200, rate: 0 },
-          { rate: 0.05 },
-        ],
+        tiered: [{ upTo: 200, rate: 0 }, { rate: 0.05 }],
       })
     ).toBe(40);
   });

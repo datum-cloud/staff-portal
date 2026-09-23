@@ -34,10 +34,13 @@ function StatusSeparator() {
 function PendingStatus({ label, tooltip }: { label: string; tooltip: string }) {
   return (
     <Tooltip message={tooltip}>
-      <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-600 dark:text-amber-400">
+      <Text
+        size="xs"
+        weight="medium"
+        className="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400">
         <STATUS_ICONS.loading className="size-3 shrink-0 animate-spin" aria-hidden />
         {label}
-      </span>
+      </Text>
     </Tooltip>
   );
 }
@@ -46,7 +49,7 @@ function HostnameProvisioningStatus({ val }: { val: HostnameRow }) {
   if (val.isSystem) return null;
 
   return (
-    <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs">
+    <Text as="div" size="xs" className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
       {val.verified ? (
         <Tooltip message={t`This hostname has been verified by Datum`}>
           <span className="font-medium text-green-600 dark:text-green-400">
@@ -112,7 +115,7 @@ function HostnameProvisioningStatus({ val }: { val: HostnameRow }) {
           }
         />
       )}
-    </div>
+    </Text>
   );
 }
 
@@ -160,11 +163,13 @@ export function EdgeHostnamesCard({ proxy }: { proxy: HttpProxy }) {
         <div className="border-input bg-background flex items-center gap-2 rounded-md border p-2.5">
           <Lock className="text-muted-foreground size-3.5 shrink-0 self-start" />
           <div className="flex min-w-0 flex-col">
-            <span className="text-muted-foreground text-xs font-medium">
+            <Text size="xs" weight="medium" textColor="muted">
               <Trans>TLS Hostname</Trans>
-            </span>
+            </Text>
             <Tooltip message={proxy.tlsHostname}>
-              <span className="truncate text-sm font-medium">{proxy.tlsHostname}</span>
+              <Text weight="medium" ellipsis>
+                {proxy.tlsHostname}
+              </Text>
             </Tooltip>
           </div>
         </div>
@@ -180,7 +185,9 @@ export function EdgeHostnamesCard({ proxy }: { proxy: HttpProxy }) {
               key={hostname}
               className="border-input bg-background flex items-center justify-between gap-2 rounded-md border p-2">
               <Tooltip message={hostname}>
-                <span className="min-w-0 truncate text-sm font-medium">{hostname}</span>
+                <Text weight="medium" ellipsis className="min-w-0">
+                  {hostname}
+                </Text>
               </Tooltip>
               <ButtonCopy value={hostname} />
             </div>
@@ -201,7 +208,9 @@ export function EdgeHostnamesCard({ proxy }: { proxy: HttpProxy }) {
               className="border-input bg-background flex flex-col gap-1.5 rounded-md border p-2.5">
               <div className="flex min-w-0 items-center justify-between gap-2">
                 <Tooltip message={val.hostname}>
-                  <span className="min-w-0 truncate text-sm font-medium">{val.hostname}</span>
+                  <Text weight="medium" ellipsis className="min-w-0">
+                    {val.hostname}
+                  </Text>
                 </Tooltip>
                 <ButtonCopy value={val.hostname} />
               </div>

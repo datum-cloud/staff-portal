@@ -5,6 +5,7 @@ import { Button } from '@datum-cloud/datum-ui/button';
 import { Calendar } from '@datum-cloud/datum-ui/calendar';
 import { Input } from '@datum-cloud/datum-ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { Trans } from '@lingui/react/macro';
 import {
@@ -296,9 +297,9 @@ export function DateRangePicker({
               </div>
               {resolvedPresets && resolvedPresets.length > 0 && (
                 <div className="w-56 border-l pl-3">
-                  <div className="mb-2 text-sm font-medium">
+                  <Text as="div" weight="medium" className="mb-2">
                     <Trans>Quick ranges</Trans>
-                  </div>
+                  </Text>
                   <div
                     className={`flex ${!showTimePicker ? 'max-h-64' : 'max-h-84'} flex-col gap-1 overflow-y-auto pr-1`}>
                     {resolvedPresets.map((preset) => (

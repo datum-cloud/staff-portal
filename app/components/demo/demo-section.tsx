@@ -1,3 +1,4 @@
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import type { ReactNode } from 'react';
 
@@ -22,8 +23,14 @@ export function DemoGroup({ title, description, children }: DemoGroupProps) {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
-        {description != null && <p className="text-muted-foreground text-sm">{description}</p>}
+        <Text as="h2" size="2xl" weight="semibold" className="tracking-tight">
+          {title}
+        </Text>
+        {description != null && (
+          <Text as="p" textColor="muted">
+            {description}
+          </Text>
+        )}
       </div>
       <div className="space-y-10">{children}</div>
     </div>
@@ -61,8 +68,14 @@ export function DemoSection({
   return (
     <section id={id} className={cn('scroll-mt-24 space-y-3', className)}>
       <div className="space-y-1">
-        <h3 className="text-base font-medium">{title}</h3>
-        {description != null && <p className="text-muted-foreground text-sm">{description}</p>}
+        <Text as="h3" size="base" weight="medium">
+          {title}
+        </Text>
+        {description != null && (
+          <Text as="p" textColor="muted">
+            {description}
+          </Text>
+        )}
       </div>
       {bare ? children : <div className="bg-card space-y-4 rounded-xl border p-6">{children}</div>}
     </section>

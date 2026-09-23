@@ -5,6 +5,7 @@ import { Button } from '@datum-cloud/datum-ui/button';
 import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
 import { Input } from '@datum-cloud/datum-ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { Layers, ChevronDown } from 'lucide-react';
 import { useState, useMemo, useCallback } from 'react';
@@ -233,9 +234,13 @@ export function ProjectsFilter({
                     <div className="flex min-w-0 flex-1 flex-col">
                       <span className="truncate leading-snug font-medium">{displayName}</span>
                       {displayName !== name && (
-                        <span className="text-muted-foreground truncate font-mono text-xs leading-snug">
+                        <Text
+                          size="xs"
+                          textColor="muted"
+                          ellipsis
+                          className="font-mono leading-snug">
                           {name}
-                        </span>
+                        </Text>
                       )}
                     </div>
 
@@ -268,12 +273,14 @@ export function ProjectsFilter({
                 Clear all
               </button>
               {selected.length >= maxSelection && (
-                <span className="text-muted-foreground text-xs">
+                <Text size="xs" textColor="muted">
                   Maximum {maxSelection} projects can be selected.
-                </span>
+                </Text>
               )}
             </div>
-            <span className="text-muted-foreground text-xs">{selected.length} selected</span>
+            <Text size="xs" textColor="muted">
+              {selected.length} selected
+            </Text>
           </div>
         </PopoverContent>
       </Popover>

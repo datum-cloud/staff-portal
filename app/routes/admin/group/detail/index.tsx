@@ -6,6 +6,7 @@ import { DescriptionList, type DescriptionListItem } from '@/components/descript
 import { metaObject } from '@/utils/helpers';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 
 export const meta: Route.MetaFunction = ({ matches }) => {
@@ -27,7 +28,11 @@ export default function Page() {
     { label: <Trans>Name</Trans>, value: displayName },
     {
       label: <Trans>ID</Trans>,
-      value: <span className="font-mono text-xs">{meta?.name ?? '—'}</span>,
+      value: (
+        <Text size="xs" className="font-mono">
+          {meta?.name ?? '—'}
+        </Text>
+      ),
     },
     { label: <Trans>Description</Trans>, value: description, hidden: !description },
     {

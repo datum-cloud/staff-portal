@@ -11,6 +11,7 @@ import {
   CommandList,
 } from '@datum-cloud/datum-ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { ChevronsUpDown } from 'lucide-react';
 import * as React from 'react';
@@ -99,9 +100,13 @@ export function GroupedSelectAutocomplete({
             <CommandEmpty>{emptyMessage}</CommandEmpty>
             {groupedOptions.map(({ groupKey, options: groupOptions }) => (
               <CommandGroup key={groupKey}>
-                <div className="text-muted-foreground bg-muted/50 rounded-sm px-2 py-1.5 text-sm font-semibold">
+                <Text
+                  as="div"
+                  weight="semibold"
+                  textColor="muted"
+                  className="bg-muted/50 rounded-sm px-2 py-1.5">
                   {groupKey}
-                </div>
+                </Text>
                 {groupOptions.map((option) => (
                   <CommandItem
                     key={option.value}

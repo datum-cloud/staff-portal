@@ -4,6 +4,7 @@ import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { createRequestLogger, logger } from '@/utils/logger';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { HomeIcon } from 'lucide-react';
 import { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
@@ -63,19 +64,24 @@ export default function NotFound() {
           <LogoIcon width={64} className="mb-4" />
 
           <div className="flex max-w-xl flex-col gap-2">
-            <p className="w-full text-center text-2xl font-bold">Page Not Found</p>
-            <p className="text-muted-foreground text-center text-sm">
+            <Text as="p" size="2xl" weight="bold" className="w-full text-center">
+              Page Not Found
+            </Text>
+            <Text as="p" textColor="muted" className="text-center">
               The page you are looking for doesn&apos;t exist. It might have been moved, deleted, or
               you entered the wrong URL.
-            </p>
+            </Text>
 
             {isDebug && (
-              <div className="text-muted-foreground rounded-r-md border-l-4 border-yellow-500 bg-yellow-50 p-4 text-center text-sm dark:bg-yellow-950/20">
+              <Text
+                as="div"
+                textColor="muted"
+                className="rounded-r-md border-l-4 border-yellow-500 bg-yellow-50 p-4 text-center dark:bg-yellow-950/20">
                 <code className="font-mono text-xs">
                   Path: {location.pathname}
                   {location.search && `?${location.search}`}
                 </code>
-              </div>
+              </Text>
             )}
           </div>
           <div className="flex items-center gap-2">

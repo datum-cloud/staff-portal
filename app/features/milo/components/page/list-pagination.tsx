@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@datum-cloud/datum-ui/select';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { useLingui } from '@lingui/react/macro';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -64,16 +65,16 @@ export function ListPagination({ className, pageSizes = LIST_PAGE_SIZES, resourc
             ))}
           </SelectContent>
         </Select>
-        <span className="text-muted-foreground text-xs leading-4 whitespace-nowrap">
+        <Text size="xs" textColor="muted" className="leading-4 whitespace-nowrap">
           {t`Rows per page`}
-        </span>
+        </Text>
       </div>
 
       <div className="flex items-center gap-3">
-        <span className="text-muted-foreground text-xs leading-4 whitespace-nowrap tabular-nums">
+        <Text size="xs" textColor="muted" className="leading-4 whitespace-nowrap tabular-nums">
           {startRow}-{endRow} {t`of`} {totalRows}
           {resourceLabel ? ` ${resourceLabel}` : null}
-        </span>
+        </Text>
         <div className="border-border flex items-center overflow-hidden rounded-md border">
           <Button
             theme="outline"

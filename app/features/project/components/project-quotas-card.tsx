@@ -91,9 +91,9 @@ export function ProjectQuotasCard({ projectName, className }: Props) {
               <QuotaIndicator used={bucket.allocated} limit={bucket.limit} />
               <div className="min-w-0 flex-1 overflow-hidden">
                 <Tooltip message={bucket.displayName || bucket.resourceType}>
-                  <span className="block truncate text-sm">
+                  <Text ellipsis className="block">
                     {bucket.displayName || bucket.resourceType}
-                  </span>
+                  </Text>
                 </Tooltip>
               </div>
               <Text size="sm" textColor="muted" className="shrink-0 whitespace-nowrap tabular-nums">

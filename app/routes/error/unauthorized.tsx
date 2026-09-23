@@ -2,6 +2,7 @@ import { LogoIcon } from '@/components/logo/logo-icon';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Link } from 'react-router';
 
 export const meta = () => {
@@ -19,11 +20,13 @@ export default function UnauthorizedPage() {
           <LogoIcon width={64} className="mb-4" />
 
           <div className="flex max-w-xl flex-col gap-2">
-            <p className="w-full text-center text-2xl font-bold">Access Denied</p>
-            <p className="text-muted-foreground text-center text-sm">
+            <Text as="p" size="2xl" weight="bold" className="w-full text-center">
+              Access Denied
+            </Text>
+            <Text as="p" textColor="muted" className="text-center">
               You don&apos;t have permission to access the Staff Portal. Please contact your
               administrator if you believe this is an error.
-            </p>
+            </Text>
           </div>
 
           <div className="flex items-center gap-2">

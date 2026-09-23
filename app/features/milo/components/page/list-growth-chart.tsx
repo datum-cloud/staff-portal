@@ -1,4 +1,5 @@
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { format } from 'date-fns';
 import { useId, useMemo } from 'react';
@@ -46,7 +47,9 @@ function ListGrowthChartSkeleton({ title }: { title: string }) {
   return (
     <div className="border-border flex shrink-0 items-center gap-6 border-b px-4 py-3">
       <div className="shrink-0">
-        <h2 className="text-muted-foreground text-sm font-medium">{title}</h2>
+        <Text as="h2" weight="medium" textColor="muted">
+          {title}
+        </Text>
         <Skeleton className="mt-1 h-7 w-10" />
       </div>
       <div className="flex h-16 min-w-0 flex-1 items-center">
@@ -66,10 +69,13 @@ function GrowthTooltip({
   if (!active || !payload?.[0]) return null;
   const point = payload[0].payload;
   return (
-    <div className="bg-popover text-popover-foreground rounded-md border px-2.5 py-1.5 text-xs shadow-sm">
+    <Text
+      as="div"
+      size="xs"
+      className="bg-popover text-popover-foreground rounded-md border px-2.5 py-1.5 shadow-sm">
       <div className="text-muted-foreground">{point.month}</div>
       <div className="font-medium tabular-nums">{point.cumulative}</div>
-    </div>
+    </Text>
   );
 }
 
@@ -113,14 +119,18 @@ export function ListGrowthChart<T>({
   return (
     <div className="border-border flex shrink-0 items-center gap-6 border-b px-4 py-3">
       <div className="shrink-0">
-        <h2 className="text-muted-foreground text-sm font-medium">{title}</h2>
-        <span className="text-2xl font-semibold tabular-nums">{items.length}</span>
+        <Text as="h2" weight="medium" textColor="muted">
+          {title}
+        </Text>
+        <Text size="2xl" weight="semibold" className="tabular-nums">
+          {items.length}
+        </Text>
       </div>
       <div className="min-w-0 flex-1">
         {!hasTrend ? (
-          <div className="text-muted-foreground flex h-16 items-center text-sm">
+          <Text as="div" textColor="muted" className="flex h-16 items-center">
             {t`Not enough data yet to show a trend.`}
-          </div>
+          </Text>
         ) : (
           <ResponsiveContainer width="100%" height={64}>
             <AreaChart data={growthData} margin={{ top: 6, right: 4, left: 4, bottom: 0 }}>

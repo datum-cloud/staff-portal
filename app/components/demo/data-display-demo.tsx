@@ -5,6 +5,7 @@ import Divider from '@/components/divider';
 import { UserAvatar } from '@/components/user-avatar';
 import { SectionCard } from '@/features/milo';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Text } from '@datum-cloud/datum-ui/typography';
 
 export const dataDisplayDemoSections: DemoSectionMeta[] = [
   { id: 'section-card', label: 'SectionCard' },
@@ -31,7 +32,9 @@ export default function DataDisplayDemo() {
               See all
             </Button>
           }>
-          <p className="text-muted-foreground text-sm">Card body content goes here.</p>
+          <Text as="p" textColor="muted">
+            Card body content goes here.
+          </Text>
         </SectionCard>
       </DemoSection>
 
@@ -74,9 +77,9 @@ export default function DataDisplayDemo() {
           <Divider />
           <Divider size="lg" color="border-primary" />
           <div className="flex h-10 items-center gap-3">
-            <span className="text-sm">Left</span>
+            <Text>Left</Text>
             <Divider orientation="vertical" />
-            <span className="text-sm">Right</span>
+            <Text>Right</Text>
           </div>
         </div>
       </DemoSection>

@@ -116,7 +116,7 @@ export default function Page() {
             const [preference, exchange] = value.split('|');
             return (
               <div className="flex items-center gap-2">
-                <span className="text-sm break-all">{exchange}</span>
+                <Text className="break-all">{exchange}</Text>
                 <BadgeState
                   state="info"
                   message={preference}

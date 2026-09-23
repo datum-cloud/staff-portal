@@ -17,7 +17,7 @@ msgstr ""
 msgid "(cross-org)"
 msgstr "(cross-org)"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:263
+#: app/features/fraud/detail/evaluation-sections.tsx:265
 msgid "(current)"
 msgstr "(current)"
 
@@ -27,7 +27,7 @@ msgid "{0} active suspensions — the project stays suspended until all are lift
 msgstr "{0} active suspensions — the project stays suspended until all are lifted. Instances and served traffic are paused; data is preserved."
 
 #. placeholder {0}: policy.spec.historyRetention?.maxEntries ?? 50
-#: app/features/fraud/policy/policy-detail.tsx:140
+#: app/features/fraud/policy/policy-detail.tsx:143
 msgid "{0} entries"
 msgstr "{0} entries"
 
@@ -62,48 +62,48 @@ msgstr "# of Sources"
 msgid "% Used"
 msgstr "% Used"
 
-#: app/features/activity/components/activity-list.tsx:375
-#: app/features/activity/components/activity-list.tsx:469
+#: app/features/activity/components/activity-list.tsx:378
+#: app/features/activity/components/activity-list.tsx:472
 msgid "200 - OK"
 msgstr "200 - OK"
 
-#: app/features/activity/components/activity-list.tsx:376
-#: app/features/activity/components/activity-list.tsx:470
+#: app/features/activity/components/activity-list.tsx:379
+#: app/features/activity/components/activity-list.tsx:473
 msgid "201 - Created"
 msgstr "201 - Created"
 
-#: app/features/activity/components/activity-list.tsx:377
-#: app/features/activity/components/activity-list.tsx:471
+#: app/features/activity/components/activity-list.tsx:380
+#: app/features/activity/components/activity-list.tsx:474
 msgid "204 - No Content"
 msgstr "204 - No Content"
 
-#: app/features/activity/components/activity-list.tsx:378
-#: app/features/activity/components/activity-list.tsx:472
+#: app/features/activity/components/activity-list.tsx:381
+#: app/features/activity/components/activity-list.tsx:475
 msgid "400 - Bad Request"
 msgstr "400 - Bad Request"
 
-#: app/features/activity/components/activity-list.tsx:379
-#: app/features/activity/components/activity-list.tsx:473
+#: app/features/activity/components/activity-list.tsx:382
+#: app/features/activity/components/activity-list.tsx:476
 msgid "401 - Unauthorized"
 msgstr "401 - Unauthorized"
 
-#: app/features/activity/components/activity-list.tsx:380
-#: app/features/activity/components/activity-list.tsx:474
+#: app/features/activity/components/activity-list.tsx:383
+#: app/features/activity/components/activity-list.tsx:477
 msgid "403 - Forbidden"
 msgstr "403 - Forbidden"
 
-#: app/features/activity/components/activity-list.tsx:381
-#: app/features/activity/components/activity-list.tsx:475
+#: app/features/activity/components/activity-list.tsx:384
+#: app/features/activity/components/activity-list.tsx:478
 msgid "404 - Not Found"
 msgstr "404 - Not Found"
 
-#: app/features/activity/components/activity-list.tsx:382
-#: app/features/activity/components/activity-list.tsx:476
+#: app/features/activity/components/activity-list.tsx:385
+#: app/features/activity/components/activity-list.tsx:479
 msgid "409 - Conflict"
 msgstr "409 - Conflict"
 
-#: app/features/activity/components/activity-list.tsx:383
-#: app/features/activity/components/activity-list.tsx:477
+#: app/features/activity/components/activity-list.tsx:386
+#: app/features/activity/components/activity-list.tsx:480
 msgid "500 - Server Error"
 msgstr "500 - Server Error"
 
@@ -150,7 +150,7 @@ msgstr "Account is already on that Offer"
 msgid "Account Management"
 msgstr "Account Management"
 
-#: app/features/milo/components/navbar/milo-user-menu.tsx:41
+#: app/features/milo/components/navbar/milo-user-menu.tsx:42
 msgid "Account menu"
 msgstr "Account menu"
 
@@ -158,13 +158,13 @@ msgstr "Account menu"
 msgid "Account overview"
 msgstr "Account overview"
 
-#: app/features/activity/components/activity-list.tsx:196
+#: app/features/activity/components/activity-list.tsx:199
 msgid "Action"
 msgstr "Action"
 
-#: app/components/app-toolbar/mobile-toolbar.tsx:89
-#: app/features/activity/components/activity-list.tsx:453
-#: app/features/activity/components/activity-list.tsx:519
+#: app/components/app-toolbar/mobile-toolbar.tsx:92
+#: app/features/activity/components/activity-list.tsx:456
+#: app/features/activity/components/activity-list.tsx:522
 msgid "Actions"
 msgstr "Actions"
 
@@ -228,7 +228,7 @@ msgstr "Add Member"
 msgid "Add Note"
 msgstr "Add Note"
 
-#: app/features/billing/components/service-pricing-checklist.tsx:63
+#: app/features/billing/components/service-pricing-checklist.tsx:64
 msgid "Add or update spec.charges in your infra repo and publish the configuration."
 msgstr "Add or update spec.charges in your infra repo and publish the configuration."
 
@@ -265,7 +265,7 @@ msgstr "Address"
 msgid "Admin"
 msgstr "Admin"
 
-#: app/routes/admin/offer/detail.tsx:441
+#: app/routes/admin/offer/detail.tsx:445
 msgid "After publish, only the display name can change. Rate changes need a new Offer."
 msgstr "After publish, only the display name can change. Rate changes need a new Offer."
 
@@ -288,7 +288,7 @@ msgstr "All billing accounts"
 msgid "All evaluations are clear"
 msgstr "All evaluations are clear"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:248
+#: app/features/fraud/detail/evaluation-sections.tsx:250
 msgid "All Evaluations for this User"
 msgstr "All Evaluations for this User"
 
@@ -296,7 +296,7 @@ msgstr "All Evaluations for this User"
 msgid "All quotas healthy"
 msgstr "All quotas healthy"
 
-#: app/features/activity/components/activity-list.tsx:447
+#: app/features/activity/components/activity-list.tsx:450
 msgid "All read operations"
 msgstr "All read operations"
 
@@ -304,11 +304,11 @@ msgstr "All read operations"
 msgid "All registrations are up to date"
 msgstr "All registrations are up to date"
 
-#: app/features/milo/components/navbar/milo-mobile-menu.tsx:120
+#: app/features/milo/components/navbar/milo-mobile-menu.tsx:126
 msgid "All sections"
 msgstr "All sections"
 
-#: app/features/activity/components/activity-list.tsx:440
+#: app/features/activity/components/activity-list.tsx:443
 msgid "All write operations"
 msgstr "All write operations"
 
@@ -336,13 +336,13 @@ msgstr "Any enablement"
 msgid "Any phase"
 msgstr "Any phase"
 
-#: app/features/activity/components/activity-list.tsx:505
-#: app/features/activity/components/activity-list.tsx:522
+#: app/features/activity/components/activity-list.tsx:508
+#: app/features/activity/components/activity-list.tsx:525
 msgid "API Group"
 msgstr "API Group"
 
-#: app/features/activity/components/activity-list.tsx:389
-#: app/features/activity/components/activity-list.tsx:488
+#: app/features/activity/components/activity-list.tsx:392
+#: app/features/activity/components/activity-list.tsx:491
 #: app/features/project/components/project-resources-card.tsx:62
 #: app/routes/customer/resource/edge/index.tsx:10
 #: app/routes/customer/resource/index.tsx:142
@@ -459,7 +459,7 @@ msgstr "ASN"
 msgid "Assign a billing account to this project to track usage."
 msgstr "Assign a billing account to this project to track usage."
 
-#: app/routes/dashboard/index.tsx:14
+#: app/routes/dashboard/index.tsx:15
 msgid "Assistant"
 msgstr "Assistant"
 
@@ -484,15 +484,15 @@ msgstr "Associated with User: "
 msgid "Audit Logs"
 msgstr "Audit Logs"
 
-#: app/features/fraud/policy/policy-detail.tsx:152
+#: app/features/fraud/policy/policy-detail.tsx:155
 msgid "Available"
 msgstr "Available"
 
-#: app/components/app-toolbar/mobile-toolbar.tsx:60
+#: app/components/app-toolbar/mobile-toolbar.tsx:61
 msgid "Back"
 msgstr "Back"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:301
+#: app/features/fraud/detail/evaluation-sections.tsx:303
 msgid "Back to evaluations"
 msgstr "Back to evaluations"
 
@@ -550,7 +550,7 @@ msgstr "by"
 #: app/features/contact-group/components/contact-group-form.tsx:97
 #: app/features/contact/components/contact-form.tsx:244
 #: app/features/contact/components/contact-list.tsx:121
-#: app/features/feature-flags/components/feature-flag-list.tsx:229
+#: app/features/feature-flags/components/feature-flag-list.tsx:230
 #: app/features/fraud/policy/policy-form.tsx:314
 #: app/features/project/components/project-suspension-card.tsx:85
 #: app/features/quota/components/quota-bucket-list.tsx:171
@@ -560,8 +560,8 @@ msgstr "by"
 #: app/routes/admin/group/detail/member.tsx:142
 #: app/routes/admin/group/detail/member.tsx:156
 #: app/routes/admin/offer/create.tsx:158
-#: app/routes/admin/offer/detail.tsx:432
-#: app/routes/admin/offer/detail.tsx:445
+#: app/routes/admin/offer/detail.tsx:436
+#: app/routes/admin/offer/detail.tsx:449
 #: app/routes/admin/service-catalog/detail/consumers.tsx:205
 #: app/routes/customer/fraud/index.tsx:230
 #: app/routes/customer/fraud/index.tsx:265
@@ -591,7 +591,7 @@ msgstr "Card"
 msgid "Case notes, report IDs, context…"
 msgstr "Case notes, report IDs, context…"
 
-#: app/features/dashboard/components/cluster-health-widget.tsx:102
+#: app/features/dashboard/components/cluster-health-widget.tsx:106
 msgid "Certificates nearing expiry"
 msgstr "Certificates nearing expiry"
 
@@ -604,13 +604,13 @@ msgstr "Chainsaw Tests"
 msgid "Change your Primary Email in GitHub (your primary email)"
 msgstr "Change your Primary Email in GitHub (your primary email)"
 
-#: app/features/billing/components/offer-included-pricing-list.tsx:114
+#: app/features/billing/components/offer-included-pricing-list.tsx:123
 msgid "Charge"
 msgstr "Charge"
 
 #: app/routes/admin/offer/create.tsx:115
 #: app/routes/admin/offer/detail.tsx:119
-#: app/routes/admin/offer/detail.tsx:272
+#: app/routes/admin/offer/detail.tsx:276
 #: app/routes/admin/offer/index.tsx:61
 msgid "Charge types"
 msgstr "Charge types"
@@ -619,7 +619,7 @@ msgstr "Charge types"
 msgid "Charge types and ServicePricings are required"
 msgstr "Charge types and ServicePricings are required"
 
-#: app/features/billing/components/service-pricing-checklist.tsx:87
+#: app/features/billing/components/service-pricing-checklist.tsx:88
 msgid "Check that you have permission to list ServicePricings, then try again. If IAM was just updated, wait a minute for PolicyBindings to reconcile."
 msgstr "Check that you have permission to list ServicePricings, then try again. If IAM was just updated, wait a minute for PolicyBindings to reconcile."
 
@@ -644,13 +644,13 @@ msgid "Cleanup is in progress. No named blockers yet."
 msgstr "Cleanup is in progress. No named blockers yet."
 
 #: app/features/milo/components/page/rich-filter-panel.tsx:202
-#: app/features/milo/components/page/rich-filter-panel.tsx:470
-#: app/features/milo/components/page/rich-filter-panel.tsx:609
+#: app/features/milo/components/page/rich-filter-panel.tsx:472
+#: app/features/milo/components/page/rich-filter-panel.tsx:619
 msgid "Clear"
 msgstr "Clear"
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:706
-#: app/features/milo/components/page/rich-filter-panel.tsx:859
+#: app/features/milo/components/page/rich-filter-panel.tsx:716
+#: app/features/milo/components/page/rich-filter-panel.tsx:877
 msgid "Clear all"
 msgstr "Clear all"
 
@@ -659,11 +659,11 @@ msgstr "Clear all"
 msgid "Close"
 msgstr "Close"
 
-#: app/features/dashboard/components/cluster-health-widget.tsx:212
+#: app/features/dashboard/components/cluster-health-widget.tsx:222
 msgid "Cluster Health"
 msgstr "Cluster Health"
 
-#: app/features/dashboard/components/cluster-health-widget.tsx:227
+#: app/features/dashboard/components/cluster-health-widget.tsx:237
 msgid "cluster healthy"
 msgstr "cluster healthy"
 
@@ -671,12 +671,12 @@ msgstr "cluster healthy"
 msgid "Cluster metrics unavailable"
 msgstr "Cluster metrics unavailable"
 
-#: app/features/dashboard/components/cluster-health-widget.tsx:229
+#: app/features/dashboard/components/cluster-health-widget.tsx:239
 msgid "clusters healthy"
 msgstr "clusters healthy"
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:477
-#: app/features/milo/components/page/rich-filter-panel.tsx:616
+#: app/features/milo/components/page/rich-filter-panel.tsx:479
+#: app/features/milo/components/page/rich-filter-panel.tsx:626
 #: app/features/milo/components/sub-nav/milo-sub-nav.tsx:94
 msgid "Collapse"
 msgstr "Collapse"
@@ -707,11 +707,11 @@ msgstr "Company name"
 msgid "Completed"
 msgstr "Completed"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:103
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:106
 msgid "Completing ACME challenge with the certificate authority"
 msgstr "Completing ACME challenge with the certificate authority"
 
-#: app/features/service-catalog/components/conditions-card.tsx:64
+#: app/features/service-catalog/components/conditions-card.tsx:72
 msgid "Conditions"
 msgstr "Conditions"
 
@@ -721,7 +721,7 @@ msgstr "Conditions"
 msgid "Configuration"
 msgstr "Configuration"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:79
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:82
 msgid "Configuring DNS"
 msgstr "Configuring DNS"
 
@@ -751,7 +751,7 @@ msgstr "Consumer Project"
 msgid "Consumers"
 msgstr "Consumers"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:334
+#: app/features/fraud/detail/evaluation-sections.tsx:336
 #: app/routes/marketing/contact-group/detail/member.tsx:67
 msgid "Contact"
 msgstr "Contact"
@@ -879,7 +879,7 @@ msgstr "Could not load quota data"
 msgid "Could not load quotas"
 msgstr "Could not load quotas"
 
-#: app/features/billing/components/service-pricing-checklist.tsx:83
+#: app/features/billing/components/service-pricing-checklist.tsx:84
 msgid "Could not load service pricings"
 msgstr "Could not load service pricings"
 
@@ -900,8 +900,8 @@ msgstr "Could not query cluster health metrics"
 msgid "Counts for resources in this project"
 msgstr "Counts for resources in this project"
 
-#: app/features/activity/components/activity-list.tsx:368
-#: app/features/activity/components/activity-list.tsx:458
+#: app/features/activity/components/activity-list.tsx:371
+#: app/features/activity/components/activity-list.tsx:461
 #: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:250
 #: app/features/fraud/policy/policy-form.tsx:317
@@ -948,16 +948,16 @@ msgstr "Create Policy"
 #: app/features/contact/components/contact-list.tsx:99
 #: app/features/dns/components/dns-zone-list.tsx:133
 #: app/features/domain/components/domain-list.tsx:108
-#: app/features/edge/components/detail/edge-general-card.tsx:49
+#: app/features/edge/components/detail/edge-general-card.tsx:50
 #: app/features/edge/components/edge-list.tsx:156
 #: app/features/organization/components/org-details-card.tsx:63
 #: app/features/project/components/project-details-card.tsx:52
 #: app/features/quota/components/quota-grant-list.tsx:129
 #: app/features/user/components/user-identity-card.tsx:176
-#: app/routes/admin/group/detail/index.tsx:41
+#: app/routes/admin/group/detail/index.tsx:46
 #: app/routes/admin/group/detail/member.tsx:107
 #: app/routes/admin/group/index.tsx:35
-#: app/routes/admin/offer/detail.tsx:280
+#: app/routes/admin/offer/detail.tsx:284
 #: app/routes/admin/offer/index.tsx:74
 #: app/routes/customer/billing-account/detail/index.tsx:338
 #: app/routes/customer/fraud/providers/index.tsx:102
@@ -1008,7 +1008,7 @@ msgstr "Current billing cycle for this project"
 msgid "Current Offer"
 msgstr "Current Offer"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:195
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:202
 msgid "Custom"
 msgstr "Custom"
 
@@ -1031,7 +1031,7 @@ msgstr "Dark"
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: app/features/activity/components/activity-list.tsx:217
+#: app/features/activity/components/activity-list.tsx:220
 #: app/routes/customer/billing-account/detail/index.tsx:196
 msgid "Date"
 msgstr "Date"
@@ -1045,7 +1045,7 @@ msgid "Deactivate Threshold"
 msgstr "Deactivate Threshold"
 
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:152
-#: app/features/fraud/detail/evaluation-sections.tsx:368
+#: app/features/fraud/detail/evaluation-sections.tsx:370
 #: app/routes/customer/fraud/index.tsx:161
 #: app/routes/customer/fraud/index.tsx:298
 #: app/routes/customer/user/detail/index.tsx:287
@@ -1061,7 +1061,7 @@ msgstr "Declined"
 msgid "Default"
 msgstr "Default"
 
-#: app/features/edge/components/detail/edge-general-card.tsx:44
+#: app/features/edge/components/detail/edge-general-card.tsx:45
 msgid "Default Hostname"
 msgstr "Default Hostname"
 
@@ -1073,7 +1073,7 @@ msgstr "Default Offer updated"
 msgid "Default Offer updated; accounts on the previous default will be migrated"
 msgstr "Default Offer updated; accounts on the previous default will be migrated"
 
-#: app/features/fraud/policy/policy-detail.tsx:155
+#: app/features/fraud/policy/policy-detail.tsx:158
 msgid "Degraded"
 msgstr "Degraded"
 
@@ -1081,11 +1081,11 @@ msgstr "Degraded"
 #: app/components/button/button-delete-action.tsx:49
 #: app/components/danger-zone-card/index.tsx:42
 #: app/components/danger-zone-card/index.tsx:64
-#: app/features/activity/components/activity-list.tsx:371
-#: app/features/activity/components/activity-list.tsx:461
+#: app/features/activity/components/activity-list.tsx:374
+#: app/features/activity/components/activity-list.tsx:464
 #: app/features/contact/components/contact-list.tsx:60
 #: app/features/contact/components/contact-list.tsx:120
-#: app/features/fraud/policy/policy-detail.tsx:102
+#: app/features/fraud/policy/policy-detail.tsx:105
 #: app/features/quota/components/quota-grant-list.tsx:140
 #: app/features/quota/components/quota-grant-list.tsx:161
 #: app/routes/admin/group/detail/member.tsx:80
@@ -1123,7 +1123,7 @@ msgstr "Delete {0} selected"
 msgid "Delete {itemType}"
 msgstr "Delete {itemType}"
 
-#: app/features/activity/components/activity-list.tsx:372
+#: app/features/activity/components/activity-list.tsx:375
 msgid "Delete Collection"
 msgstr "Delete Collection"
 
@@ -1225,7 +1225,7 @@ msgstr "Deprecated"
 
 #: app/features/contact-group/components/contact-group-form.tsx:80
 #: app/features/dns/components/dns-zone-list.tsx:140
-#: app/routes/admin/group/detail/index.tsx:32
+#: app/routes/admin/group/detail/index.tsx:37
 msgid "Description"
 msgstr "Description"
 
@@ -1239,24 +1239,24 @@ msgstr "Detail"
 msgid "Details"
 msgstr "Details"
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:228
+#: app/features/feature-flags/components/feature-flag-list.tsx:229
 msgid "Disable"
 msgstr "Disable"
 
 #. placeholder {0}: pendingGrants.length
-#: app/features/feature-flags/components/feature-flag-list.tsx:225
+#: app/features/feature-flags/components/feature-flag-list.tsx:226
 msgid "Disable \"{pendingFlag}\" for this organization? {0} resource grants will be deleted."
 msgstr "Disable \"{pendingFlag}\" for this organization? {0} resource grants will be deleted."
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:226
+#: app/features/feature-flags/components/feature-flag-list.tsx:227
 msgid "Disable \"{pendingFlag}\" for this organization? The associated resource grant will be deleted."
 msgstr "Disable \"{pendingFlag}\" for this organization? The associated resource grant will be deleted."
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:220
+#: app/features/feature-flags/components/feature-flag-list.tsx:221
 msgid "Disable feature flag"
 msgstr "Disable feature flag"
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:173
+#: app/features/feature-flags/components/feature-flag-list.tsx:174
 msgid "Disable flag"
 msgstr "Disable flag"
 
@@ -1264,8 +1264,8 @@ msgstr "Disable flag"
 #: app/features/project/components/project-details-card.tsx:31
 #: app/features/project/components/project-organization-card.tsx:44
 #: app/routes/admin/offer/create.tsx:109
-#: app/routes/admin/offer/detail.tsx:247
-#: app/routes/admin/offer/detail.tsx:447
+#: app/routes/admin/offer/detail.tsx:251
+#: app/routes/admin/offer/detail.tsx:451
 msgid "Display name"
 msgstr "Display name"
 
@@ -1302,12 +1302,12 @@ msgstr "DNS Host"
 msgid "DNS Providers"
 msgstr "DNS Providers"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:74
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:77
 msgid "DNS Ready"
 msgstr "DNS Ready"
 
-#: app/features/activity/components/activity-list.tsx:387
-#: app/features/activity/components/activity-list.tsx:486
+#: app/features/activity/components/activity-list.tsx:390
+#: app/features/activity/components/activity-list.tsx:489
 msgid "DNS Record"
 msgstr "DNS Record"
 
@@ -1315,8 +1315,8 @@ msgstr "DNS Record"
 msgid "DNS record is being validated"
 msgstr "DNS record is being validated"
 
-#: app/features/activity/components/activity-list.tsx:388
-#: app/features/activity/components/activity-list.tsx:487
+#: app/features/activity/components/activity-list.tsx:391
+#: app/features/activity/components/activity-list.tsx:490
 msgid "DNS Record Set"
 msgstr "DNS Record Set"
 
@@ -1324,12 +1324,12 @@ msgstr "DNS Record Set"
 msgid "DNS Records"
 msgstr "DNS Records"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:72
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:75
 msgid "DNS records have been programmed for this hostname"
 msgstr "DNS records have been programmed for this hostname"
 
-#: app/features/activity/components/activity-list.tsx:386
-#: app/features/activity/components/activity-list.tsx:485
+#: app/features/activity/components/activity-list.tsx:389
+#: app/features/activity/components/activity-list.tsx:488
 msgid "DNS Zone"
 msgstr "DNS Zone"
 
@@ -1340,8 +1340,8 @@ msgstr "DNS Zone"
 msgid "DNS Zones"
 msgstr "DNS Zones"
 
-#: app/features/activity/components/activity-list.tsx:390
-#: app/features/activity/components/activity-list.tsx:489
+#: app/features/activity/components/activity-list.tsx:393
+#: app/features/activity/components/activity-list.tsx:492
 #: app/features/domain/components/domain-list.tsx:61
 #: app/features/fraud/detail/maxmind-rows.tsx:237
 #: app/routes/customer/project/detail/domain/detail.tsx:112
@@ -1401,14 +1401,14 @@ msgid "Each resource type is limited to 2,000 results at a time. Refine your sea
 msgstr "Each resource type is limited to 2,000 results at a time. Refine your search to surface other resources."
 
 #: app/features/contact/components/contact-list.tsx:53
-#: app/features/fraud/policy/policy-detail.tsx:95
-#: app/routes/admin/offer/detail.tsx:257
+#: app/features/fraud/policy/policy-detail.tsx:98
+#: app/routes/admin/offer/detail.tsx:261
 #: app/routes/customer/fraud/providers/index.tsx:41
 #: app/routes/marketing/contact-group/index.tsx:49
 msgid "Edit"
 msgstr "Edit"
 
-#: app/routes/admin/offer/detail.tsx:440
+#: app/routes/admin/offer/detail.tsx:444
 msgid "Edit display name"
 msgstr "Edit display name"
 
@@ -1466,23 +1466,23 @@ msgstr "Email HTML preview"
 msgid "Email is required"
 msgstr "Email is required"
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:228
+#: app/features/feature-flags/components/feature-flag-list.tsx:229
 msgid "Enable"
 msgstr "Enable"
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:223
+#: app/features/feature-flags/components/feature-flag-list.tsx:224
 msgid "Enable \"{pendingFlag}\" for this organization? A new resource grant will be created."
 msgstr "Enable \"{pendingFlag}\" for this organization? A new resource grant will be created."
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:220
+#: app/features/feature-flags/components/feature-flag-list.tsx:221
 msgid "Enable feature flag"
 msgstr "Enable feature flag"
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:173
+#: app/features/feature-flags/components/feature-flag-list.tsx:174
 msgid "Enable flag"
 msgstr "Enable flag"
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:123
+#: app/features/feature-flags/components/feature-flag-list.tsx:124
 msgid "Enabled by"
 msgstr "Enabled by"
 
@@ -1491,7 +1491,7 @@ msgstr "Enabled by"
 msgid "Enablement"
 msgstr "Enablement"
 
-#: app/components/date/date-range-picker.tsx:285
+#: app/components/date/date-range-picker.tsx:286
 msgid "End Time"
 msgstr "End Time"
 
@@ -1506,13 +1506,13 @@ msgstr "Endpoint"
 msgid "Enforced"
 msgstr "Enforced"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:383
+#: app/features/fraud/detail/evaluation-sections.tsx:385
 #: app/routes/customer/fraud/index.tsx:179
 #: app/routes/customer/fraud/index.tsx:307
 msgid "Enforcement"
 msgstr "Enforcement"
 
-#: app/features/fraud/policy/policy-detail.tsx:109
+#: app/features/fraud/policy/policy-detail.tsx:112
 #: app/features/fraud/policy/policy-form.tsx:153
 msgid "Enforcement Mode"
 msgstr "Enforcement Mode"
@@ -1560,7 +1560,7 @@ msgstr "Error"
 msgid "Established"
 msgstr "Established"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:398
+#: app/features/fraud/detail/evaluation-sections.tsx:400
 #: app/routes/customer/fraud/index.tsx:198
 msgid "Evaluated"
 msgstr "Evaluated"
@@ -1569,7 +1569,7 @@ msgstr "Evaluated"
 msgid "Evaluation deleted successfully"
 msgstr "Evaluation deleted successfully"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:202
+#: app/features/fraud/detail/evaluation-sections.tsx:204
 msgid "Evaluation History"
 msgstr "Evaluation History"
 
@@ -1577,11 +1577,11 @@ msgstr "Evaluation History"
 msgid "Evaluation not found."
 msgstr "Evaluation not found."
 
-#: app/features/fraud/detail/evaluation-sections.tsx:316
+#: app/features/fraud/detail/evaluation-sections.tsx:318
 msgid "Evaluation Overview"
 msgstr "Evaluation Overview"
 
-#: app/features/fraud/policy/policy-detail.tsx:184
+#: app/features/fraud/policy/policy-detail.tsx:187
 msgid "Evaluation Pipeline"
 msgstr "Evaluation Pipeline"
 
@@ -1604,8 +1604,8 @@ msgstr "Event"
 msgid "Events"
 msgstr "Events"
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:477
-#: app/features/milo/components/page/rich-filter-panel.tsx:616
+#: app/features/milo/components/page/rich-filter-panel.tsx:479
+#: app/features/milo/components/page/rich-filter-panel.tsx:626
 msgid "Expand"
 msgstr "Expand"
 
@@ -1626,8 +1626,8 @@ msgstr "Expires"
 msgid "Export Policies"
 msgstr "Export Policies"
 
-#: app/features/activity/components/activity-list.tsx:400
-#: app/features/activity/components/activity-list.tsx:499
+#: app/features/activity/components/activity-list.tsx:403
+#: app/features/activity/components/activity-list.tsx:502
 msgid "Export Policy"
 msgstr "Export Policy"
 
@@ -1723,7 +1723,7 @@ msgstr "Feature Flags"
 msgid "Feed"
 msgstr "Feed"
 
-#: app/features/activity/components/activity-list.tsx:416
+#: app/features/activity/components/activity-list.tsx:419
 msgid "Filter by time range"
 msgstr "Filter by time range"
 
@@ -1731,16 +1731,16 @@ msgstr "Filter by time range"
 msgid "Filter options"
 msgstr "Filter options"
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:846
+#: app/features/milo/components/page/rich-filter-panel.tsx:864
 msgid "Filter the list"
 msgstr "Filter the list"
 
 #: app/components/data-table-toolbar/index.tsx:74
 #: app/components/data-table-toolbar/index.tsx:92
 #: app/features/milo/components/page/rich-filter-panel.tsx:191
-#: app/features/milo/components/page/rich-filter-panel.tsx:833
-#: app/features/milo/components/page/rich-filter-panel.tsx:845
-#: app/features/milo/components/page/rich-filter-panel.tsx:852
+#: app/features/milo/components/page/rich-filter-panel.tsx:851
+#: app/features/milo/components/page/rich-filter-panel.tsx:863
+#: app/features/milo/components/page/rich-filter-panel.tsx:870
 msgid "Filters"
 msgstr "Filters"
 
@@ -1768,7 +1768,7 @@ msgstr "First Name"
 msgid "First name is required"
 msgstr "First name is required"
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:109
+#: app/features/feature-flags/components/feature-flag-list.tsx:110
 msgid "Flag"
 msgstr "Flag"
 
@@ -1811,8 +1811,8 @@ msgstr "Fraud Policy"
 msgid "Fraud Providers"
 msgstr "Fraud Providers"
 
-#: app/features/billing/components/offer-included-pricing-list.tsx:67
-#: app/features/billing/components/service-pricing-checklist.tsx:159
+#: app/features/billing/components/offer-included-pricing-list.tsx:69
+#: app/features/billing/components/service-pricing-checklist.tsx:166
 msgid "From"
 msgstr "From"
 
@@ -1835,12 +1835,12 @@ msgstr "Fully onboarded"
 msgid "Gated by Provider"
 msgstr "Gated by Provider"
 
-#: app/features/edge/components/detail/edge-general-card.tsx:56
+#: app/features/edge/components/detail/edge-general-card.tsx:57
 msgid "General"
 msgstr "General"
 
-#: app/features/activity/components/activity-list.tsx:365
-#: app/features/activity/components/activity-list.tsx:455
+#: app/features/activity/components/activity-list.tsx:368
+#: app/features/activity/components/activity-list.tsx:458
 msgid "Get"
 msgstr "Get"
 
@@ -1865,12 +1865,12 @@ msgstr "Grant deleted successfully"
 msgid "Grants"
 msgstr "Grants"
 
-#: app/features/activity/components/activity-list.tsx:393
-#: app/features/activity/components/activity-list.tsx:492
+#: app/features/activity/components/activity-list.tsx:396
+#: app/features/activity/components/activity-list.tsx:495
 msgid "Group"
 msgstr "Group"
 
-#: app/routes/admin/group/detail/index.tsx:51
+#: app/routes/admin/group/detail/index.tsx:56
 msgid "Group Information"
 msgstr "Group Information"
 
@@ -1897,7 +1897,7 @@ msgstr "Highest utilization in this project"
 msgid "History"
 msgstr "History"
 
-#: app/features/fraud/policy/policy-detail.tsx:136
+#: app/features/fraud/policy/policy-detail.tsx:139
 msgid "History Retention"
 msgstr "History Retention"
 
@@ -1913,11 +1913,11 @@ msgstr "Home"
 msgid "Host Header"
 msgstr "Host Header"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:53
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:56
 msgid "Hostname Verified"
 msgstr "Hostname Verified"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:158
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:161
 #: app/features/edge/components/edge-list.tsx:123
 msgid "Hostnames"
 msgstr "Hostnames"
@@ -1932,7 +1932,7 @@ msgstr "HTML"
 
 #: app/features/project/components/project-billing-card.tsx:58
 #: app/features/project/components/project-organization-card.tsx:48
-#: app/routes/admin/group/detail/index.tsx:29
+#: app/routes/admin/group/detail/index.tsx:30
 #: app/routes/admin/offer/create.tsx:106
 #: app/routes/admin/offer/detail.tsx:243
 #: app/routes/customer/user/detail/index.tsx:182
@@ -1947,9 +1947,9 @@ msgstr "In Progress"
 msgid "Inactive"
 msgstr "Inactive"
 
-#: app/routes/admin/offer/detail.tsx:276
-#: app/routes/admin/offer/detail.tsx:335
-#: app/routes/admin/offer/detail.tsx:401
+#: app/routes/admin/offer/detail.tsx:280
+#: app/routes/admin/offer/detail.tsx:339
+#: app/routes/admin/offer/detail.tsx:405
 msgid "Included charges"
 msgstr "Included charges"
 
@@ -1966,8 +1966,8 @@ msgstr "Instances and served traffic are paused; data is preserved. Lift the sus
 msgid "Invalid email address"
 msgstr "Invalid email address"
 
-#: app/features/activity/components/activity-list.tsx:396
-#: app/features/activity/components/activity-list.tsx:495
+#: app/features/activity/components/activity-list.tsx:399
+#: app/features/activity/components/activity-list.tsx:498
 #: app/routes/customer/organization/detail/member.tsx:163
 msgid "Invitation"
 msgstr "Invitation"
@@ -2029,7 +2029,7 @@ msgstr "Irreversible and destructive actions"
 msgid "ISP"
 msgstr "ISP"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:108
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:111
 msgid "Issuing TLS certificate"
 msgstr "Issuing TLS certificate"
 
@@ -2083,7 +2083,7 @@ msgstr "Latest"
 msgid "Latest fraud evaluation for this user"
 msgstr "Latest fraud evaluation for this user"
 
-#: app/routes/admin/offer/detail.tsx:264
+#: app/routes/admin/offer/detail.tsx:268
 msgid "Launch stage"
 msgstr "Launch stage"
 
@@ -2131,8 +2131,8 @@ msgstr "Linked projects"
 msgid "Links"
 msgstr "Links"
 
-#: app/features/activity/components/activity-list.tsx:366
-#: app/features/activity/components/activity-list.tsx:456
+#: app/features/activity/components/activity-list.tsx:369
+#: app/features/activity/components/activity-list.tsx:459
 msgid "List"
 msgstr "List"
 
@@ -2183,7 +2183,7 @@ msgstr "Loading..."
 
 #: app/features/service-catalog/components/charges-card.tsx:118
 #: app/routes/admin/offer/detail.tsx:209
-#: app/routes/admin/offer/detail.tsx:323
+#: app/routes/admin/offer/detail.tsx:327
 msgid "Loading…"
 msgstr "Loading…"
 
@@ -2204,8 +2204,8 @@ msgstr "Log back into Datum"
 msgid "Log back into GitHub (with the new, desired email set as primary)"
 msgstr "Log back into GitHub (with the new, desired email set as primary)"
 
-#: app/components/app-sidebar/nav-user.tsx:96
-#: app/features/milo/components/navbar/milo-user-menu.tsx:80
+#: app/components/app-sidebar/nav-user.tsx:101
+#: app/features/milo/components/navbar/milo-user-menu.tsx:83
 msgid "Log out"
 msgstr "Log out"
 
@@ -2254,8 +2254,8 @@ msgstr "Manually sync this description with the one in Loops (used for opt-in pa
 msgid "Marketing"
 msgstr "Marketing"
 
-#: app/features/activity/components/activity-list.tsx:397
-#: app/features/activity/components/activity-list.tsx:496
+#: app/features/activity/components/activity-list.tsx:400
+#: app/features/activity/components/activity-list.tsx:499
 #: app/routes/customer/organization/detail/member.tsx:174
 msgid "Member"
 msgstr "Member"
@@ -2277,11 +2277,11 @@ msgstr "Member deleted successfully"
 msgid "Members"
 msgstr "Members"
 
-#: app/features/milo/components/navbar/milo-mobile-menu.tsx:109
+#: app/features/milo/components/navbar/milo-mobile-menu.tsx:115
 msgid "Menu"
 msgstr "Menu"
 
-#: app/features/service-catalog/components/conditions-card.tsx:39
+#: app/features/service-catalog/components/conditions-card.tsx:47
 msgid "Message"
 msgstr "Message"
 
@@ -2289,7 +2289,7 @@ msgstr "Message"
 msgid "Meters"
 msgstr "Meters"
 
-#: app/features/billing/components/offer-included-pricing-list.tsx:126
+#: app/features/billing/components/offer-included-pricing-list.tsx:135
 msgid "Metric"
 msgstr "Metric"
 
@@ -2301,7 +2301,7 @@ msgstr "MetricsQL"
 msgid "Monitored Resources"
 msgstr "Monitored Resources"
 
-#: app/components/app-toolbar/mobile-toolbar.tsx:71
+#: app/components/app-toolbar/mobile-toolbar.tsx:74
 msgid "More options"
 msgstr "More options"
 
@@ -2309,8 +2309,8 @@ msgstr "More options"
 msgid "Move to Pending"
 msgstr "Move to Pending"
 
-#: app/components/app-sidebar/nav-user.tsx:86
-#: app/features/milo/components/navbar/milo-user-menu.tsx:70
+#: app/components/app-sidebar/nav-user.tsx:91
+#: app/features/milo/components/navbar/milo-user-menu.tsx:73
 #: app/routes/profile/layout.tsx:9
 msgid "My Profile"
 msgstr "My Profile"
@@ -2321,7 +2321,7 @@ msgstr "My Profile"
 #: app/features/dashboard/components/pending-approvals-widget.tsx:134
 #: app/features/fraud/policy/policy-form.tsx:149
 #: app/features/organization/components/org-members-preview-card.tsx:40
-#: app/routes/admin/group/detail/index.tsx:27
+#: app/routes/admin/group/detail/index.tsx:28
 #: app/routes/admin/group/detail/member.tsx:89
 #: app/routes/admin/group/index.tsx:26
 #: app/routes/admin/offer/index.tsx:35
@@ -2351,15 +2351,15 @@ msgstr "Name"
 msgid "Nameservers"
 msgstr "Nameservers"
 
-#: app/features/activity/components/activity-list.tsx:398
-#: app/features/activity/components/activity-list.tsx:497
+#: app/features/activity/components/activity-list.tsx:401
+#: app/features/activity/components/activity-list.tsx:500
 #: app/routes/customer/project/detail/domain/detail.tsx:108
 #: app/routes/customer/project/detail/export-policy/detail.tsx:71
 #: app/routes/customer/project/detail/secret.tsx:27
 msgid "Namespace"
 msgstr "Namespace"
 
-#: app/components/app-toolbar/mobile-toolbar.tsx:78
+#: app/components/app-toolbar/mobile-toolbar.tsx:81
 msgid "Navigate up"
 msgstr "Navigate up"
 
@@ -2392,7 +2392,7 @@ msgstr "New Limit"
 msgid "New Policy"
 msgstr "New Policy"
 
-#: app/features/milo/components/page/list-pagination.tsx:93
+#: app/features/milo/components/page/list-pagination.tsx:94
 msgid "Next page"
 msgstr "Next page"
 
@@ -2401,11 +2401,11 @@ msgid "No"
 msgstr "No"
 
 #. placeholder {0}: defaultOffer.currentDefault
-#: app/routes/admin/offer/detail.tsx:329
+#: app/routes/admin/offer/detail.tsx:333
 msgid "No — current default is {0}"
 msgstr "No — current default is {0}"
 
-#: app/routes/admin/offer/detail.tsx:330
+#: app/routes/admin/offer/detail.tsx:334
 msgid "No — none configured"
 msgstr "No — none configured"
 
@@ -2413,7 +2413,7 @@ msgstr "No — none configured"
 msgid "No active billing account with a payment method"
 msgstr "No active billing account with a payment method"
 
-#: app/features/service-catalog/components/conditions-card.tsx:82
+#: app/features/service-catalog/components/conditions-card.tsx:90
 msgid "No active configuration."
 msgstr "No active configuration."
 
@@ -2448,7 +2448,7 @@ msgstr "No billing accounts found"
 msgid "No BillingEntitlement found for this account. New accounts pick up the default Offer automatically when catalog defaults are configured."
 msgstr "No BillingEntitlement found for this account. New accounts pick up the default Offer automatically when catalog defaults are configured."
 
-#: app/features/billing/components/offer-included-pricing-list.tsx:227
+#: app/features/billing/components/offer-included-pricing-list.tsx:238
 msgid "No charges included in this Offer."
 msgstr "No charges included in this Offer."
 
@@ -2456,7 +2456,7 @@ msgstr "No charges included in this Offer."
 msgid "No charges on this configuration. Add spec.charges in git, publish the ServiceConfiguration, and they will show up here."
 msgstr "No charges on this configuration. Add spec.charges in git, publish the ServiceConfiguration, and they will show up here."
 
-#: app/features/service-catalog/components/conditions-card.tsx:80
+#: app/features/service-catalog/components/conditions-card.tsx:88
 msgid "No conditions reported."
 msgstr "No conditions reported."
 
@@ -2506,7 +2506,7 @@ msgstr "No email activity found."
 msgid "No export policies found."
 msgstr "No export policies found."
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:242
+#: app/features/feature-flags/components/feature-flag-list.tsx:243
 msgid "No feature flags registered."
 msgstr "No feature flags registered."
 
@@ -2542,7 +2542,7 @@ msgstr "No grants found."
 msgid "No groups found."
 msgstr "No groups found."
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:214
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:223
 msgid "No hostnames configured"
 msgstr "No hostnames configured"
 
@@ -2563,7 +2563,7 @@ msgstr "No invoices yet"
 msgid "No linked projects"
 msgstr "No linked projects"
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:523
+#: app/features/milo/components/page/rich-filter-panel.tsx:533
 msgid "No matches."
 msgstr "No matches."
 
@@ -2631,7 +2631,7 @@ msgstr "No platform access record exists for this user yet."
 msgid "No platform access record found for this user"
 msgstr "No platform access record found for this user"
 
-#: app/features/billing/components/service-pricing-checklist.tsx:50
+#: app/features/billing/components/service-pricing-checklist.tsx:51
 msgid "No prices available yet"
 msgstr "No prices available yet"
 
@@ -2709,8 +2709,8 @@ msgstr "No users found."
 msgid "No users yet"
 msgstr "No users yet"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:377
-#: app/features/fraud/detail/evaluation-sections.tsx:392
+#: app/features/fraud/detail/evaluation-sections.tsx:379
+#: app/features/fraud/detail/evaluation-sections.tsx:394
 msgid "None"
 msgstr "None"
 
@@ -2723,7 +2723,7 @@ msgstr "None declared."
 msgid "Normal"
 msgstr "Normal"
 
-#: app/features/milo/components/page/list-growth-chart.tsx:122
+#: app/features/milo/components/page/list-growth-chart.tsx:132
 msgid "Not enough data yet to show a trend."
 msgstr "Not enough data yet to show a trend."
 
@@ -2749,8 +2749,8 @@ msgstr "Notes"
 msgid "Notes (operator-facing)"
 msgstr "Notes (operator-facing)"
 
-#: app/components/app-sidebar/nav-user.tsx:90
-#: app/features/milo/components/navbar/milo-user-menu.tsx:74
+#: app/components/app-sidebar/nav-user.tsx:95
+#: app/features/milo/components/navbar/milo-user-menu.tsx:77
 msgid "Notifications"
 msgstr "Notifications"
 
@@ -2758,7 +2758,7 @@ msgstr "Notifications"
 msgid "Observed"
 msgstr "Observed"
 
-#: app/features/milo/components/page/list-pagination.tsx:74
+#: app/features/milo/components/page/list-pagination.tsx:75
 msgid "of"
 msgstr "of"
 
@@ -2768,7 +2768,7 @@ msgstr "of"
 msgid "Offer"
 msgstr "Offer"
 
-#: app/routes/admin/offer/detail.tsx:393
+#: app/routes/admin/offer/detail.tsx:397
 msgid "Offer details"
 msgstr "Offer details"
 
@@ -2789,7 +2789,7 @@ msgstr "Offer switched"
 msgid "Offers"
 msgstr "Offers"
 
-#: app/features/billing/components/service-pricing-checklist.tsx:53
+#: app/features/billing/components/service-pricing-checklist.tsx:54
 msgid "Offers bundle prices that already exist as ServicePricings. Define charges in git on ServiceConfiguration spec.charges, publish the configuration, then refresh to select them here."
 msgstr "Offers bundle prices that already exist as ServicePricings. Define charges in git on ServiceConfiguration spec.charges, publish the configuration, then refresh to select them here."
 
@@ -2810,7 +2810,7 @@ msgstr "Once a contact is associated with a user, this association cannot be rem
 msgid "Open in Cloud Portal"
 msgstr "Open in Cloud Portal"
 
-#: app/features/milo/components/navbar/milo-mobile-menu.tsx:100
+#: app/features/milo/components/navbar/milo-mobile-menu.tsx:106
 msgid "Open menu"
 msgstr "Open menu"
 
@@ -2826,8 +2826,8 @@ msgstr "Operations"
 msgid "Optional reviewer note..."
 msgstr "Optional reviewer note..."
 
-#: app/features/activity/components/activity-list.tsx:399
-#: app/features/activity/components/activity-list.tsx:498
+#: app/features/activity/components/activity-list.tsx:402
+#: app/features/activity/components/activity-list.tsx:501
 #: app/features/billing/components/billing-account-list.tsx:192
 #: app/features/billing/components/billing-account-list.tsx:249
 #: app/features/dashboard/components/quota-utilization-widget.tsx:147
@@ -2862,8 +2862,8 @@ msgstr "Organizations"
 msgid "Origin"
 msgstr "Origin"
 
-#: app/routes/admin/group/detail/index.tsx:17
-#: app/routes/admin/offer/detail.tsx:372
+#: app/routes/admin/group/detail/index.tsx:18
+#: app/routes/admin/offer/detail.tsx:376
 #: app/routes/dashboard/overview.tsx:28
 msgid "Overview"
 msgstr "Overview"
@@ -2885,8 +2885,8 @@ msgstr "Passing"
 msgid "Past invoices"
 msgstr "Past invoices"
 
-#: app/features/activity/components/activity-list.tsx:370
-#: app/features/activity/components/activity-list.tsx:460
+#: app/features/activity/components/activity-list.tsx:373
+#: app/features/activity/components/activity-list.tsx:463
 msgid "Patch"
 msgstr "Patch"
 
@@ -2920,7 +2920,7 @@ msgstr "Pending Approval"
 msgid "Pending Approvals"
 msgstr "Pending Approvals"
 
-#: app/routes/admin/offer/detail.tsx:298
+#: app/routes/admin/offer/detail.tsx:302
 msgid "Pending snapshot"
 msgstr "Pending snapshot"
 
@@ -2944,7 +2944,7 @@ msgstr "Permanently delete this project and all associated data"
 msgid "Permanently delete this user and all associated data"
 msgstr "Permanently delete this user and all associated data"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:362
+#: app/features/fraud/detail/evaluation-sections.tsx:364
 #: app/features/service-catalog/components/details-card.tsx:43
 #: app/routes/admin/service-catalog/detail/consumers.tsx:103
 #: app/routes/admin/service-catalog/detail/consumers.tsx:230
@@ -2966,7 +2966,7 @@ msgstr "Pipeline Stages"
 msgid "Plain Text"
 msgstr "Plain Text"
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:143
+#: app/features/feature-flags/components/feature-flag-list.tsx:144
 msgid "Platform"
 msgstr "Platform"
 
@@ -2978,7 +2978,7 @@ msgstr "Platform Access State"
 msgid "Platform access updated to {state}"
 msgstr "Platform access updated to {state}"
 
-#: app/routes/admin/offer/detail.tsx:321
+#: app/routes/admin/offer/detail.tsx:325
 msgid "Platform default"
 msgstr "Platform default"
 
@@ -3033,7 +3033,7 @@ msgstr "Postal Code"
 msgid "Preview"
 msgstr "Preview"
 
-#: app/features/milo/components/page/list-pagination.tsx:84
+#: app/features/milo/components/page/list-pagination.tsx:85
 msgid "Previous page"
 msgstr "Previous page"
 
@@ -3070,12 +3070,12 @@ msgstr "Profile Information"
 msgid "Profile updated successfully"
 msgstr "Profile updated successfully"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:80
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:83
 msgid "Programming DNS records for this hostname"
 msgstr "Programming DNS records for this hostname"
 
-#: app/features/activity/components/activity-list.tsx:391
-#: app/features/activity/components/activity-list.tsx:490
+#: app/features/activity/components/activity-list.tsx:394
+#: app/features/activity/components/activity-list.tsx:493
 #: app/features/billing/components/billing-account-list.tsx:260
 #: app/features/dns/components/dns-zone-list.tsx:99
 #: app/features/domain/components/domain-list.tsx:71
@@ -3147,7 +3147,7 @@ msgstr "Provider Type"
 msgid "Provider updated successfully"
 msgstr "Provider updated successfully"
 
-#: app/features/fraud/policy/policy-detail.tsx:38
+#: app/features/fraud/policy/policy-detail.tsx:41
 #: app/routes/customer/fraud/layout.tsx:22
 #: app/routes/customer/fraud/providers/layout.tsx:5
 msgid "Providers"
@@ -3161,16 +3161,16 @@ msgstr "Providers (comma-separated)"
 msgid "Public"
 msgstr "Public"
 
-#: app/routes/admin/offer/detail.tsx:361
-#: app/routes/admin/offer/detail.tsx:431
+#: app/routes/admin/offer/detail.tsx:365
+#: app/routes/admin/offer/detail.tsx:435
 msgid "Publish"
 msgstr "Publish"
 
-#: app/routes/admin/offer/detail.tsx:429
+#: app/routes/admin/offer/detail.tsx:433
 msgid "Publish Offer"
 msgstr "Publish Offer"
 
-#: app/routes/admin/offer/detail.tsx:375
+#: app/routes/admin/offer/detail.tsx:379
 msgid "Publish to GA before this Offer can be set as the platform default for new billing accounts."
 msgstr "Publish to GA before this Offer can be set as the platform default for new billing accounts."
 
@@ -3180,11 +3180,11 @@ msgstr "Publish to GA before this Offer can be set as the platform default for n
 msgid "Published"
 msgstr "Published"
 
-#: app/routes/admin/offer/detail.tsx:293
+#: app/routes/admin/offer/detail.tsx:297
 msgid "Published at"
 msgstr "Published at"
 
-#: app/routes/admin/offer/detail.tsx:430
+#: app/routes/admin/offer/detail.tsx:434
 msgid "Publishing snapshots rates into this Offer. After GA the rates are immutable; create a new Offer version to change pricing."
 msgstr "Publishing snapshots rates into this Offer. After GA the rates are immutable; create a new Offer version to change pricing."
 
@@ -3192,7 +3192,7 @@ msgstr "Publishing snapshots rates into this Offer. After GA the rates are immut
 msgid "Query"
 msgstr "Query"
 
-#: app/components/date/date-range-picker.tsx:300
+#: app/components/date/date-range-picker.tsx:301
 msgid "Quick ranges"
 msgstr "Quick ranges"
 
@@ -3218,7 +3218,7 @@ msgstr "Quota Utilization"
 msgid "Quotas"
 msgstr "Quotas"
 
-#: app/features/billing/components/offer-included-pricing-list.tsx:120
+#: app/features/billing/components/offer-included-pricing-list.tsx:129
 msgid "Rate"
 msgstr "Rate"
 
@@ -3239,7 +3239,7 @@ msgid "Ready"
 msgstr "Ready"
 
 #: app/features/project/components/project-suspension-card.tsx:90
-#: app/features/service-catalog/components/conditions-card.tsx:35
+#: app/features/service-catalog/components/conditions-card.tsx:39
 #: app/routes/customer/user/detail/index.tsx:417
 msgid "Reason"
 msgstr "Reason"
@@ -3313,11 +3313,11 @@ msgstr "Requested at"
 msgid "Requested by"
 msgstr "Requested by"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:111
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:114
 msgid "Requesting a TLS certificate from the certificate authority"
 msgstr "Requesting a TLS certificate from the certificate authority"
 
-#: app/features/fraud/policy/policy-detail.tsx:26
+#: app/features/fraud/policy/policy-detail.tsx:29
 #: app/features/fraud/policy/policy-form.tsx:294
 msgid "Required"
 msgstr "Required"
@@ -3338,13 +3338,13 @@ msgstr "Resource"
 msgid "Resource name"
 msgstr "Resource name"
 
-#: app/features/edge/components/detail/edge-general-card.tsx:40
+#: app/features/edge/components/detail/edge-general-card.tsx:41
 #: app/routes/customer/project/detail/domain/detail.tsx:100
 msgid "Resource Name"
 msgstr "Resource Name"
 
-#: app/features/activity/components/activity-list.tsx:483
-#: app/features/activity/components/activity-list.tsx:521
+#: app/features/activity/components/activity-list.tsx:486
+#: app/features/activity/components/activity-list.tsx:524
 msgid "Resource Type"
 msgstr "Resource Type"
 
@@ -3363,8 +3363,8 @@ msgstr "Resource:"
 msgid "Resources"
 msgstr "Resources"
 
-#: app/features/activity/components/activity-list.tsx:467
-#: app/features/activity/components/activity-list.tsx:520
+#: app/features/activity/components/activity-list.tsx:470
+#: app/features/activity/components/activity-list.tsx:523
 msgid "Response Code"
 msgstr "Response Code"
 
@@ -3400,15 +3400,15 @@ msgstr "Revoke"
 msgid "Revoke access"
 msgstr "Revoke access"
 
-#: app/features/activity/components/activity-list.tsx:394
-#: app/features/activity/components/activity-list.tsx:493
+#: app/features/activity/components/activity-list.tsx:397
+#: app/features/activity/components/activity-list.tsx:496
 #: app/features/organization/components/org-members-preview-card.tsx:71
 #: app/routes/customer/organization/detail/member.tsx:128
 #: app/routes/customer/organization/detail/member.tsx:171
 msgid "Role"
 msgstr "Role"
 
-#: app/features/milo/components/page/list-pagination.tsx:68
+#: app/features/milo/components/page/list-pagination.tsx:69
 msgid "Rows per page"
 msgstr "Rows per page"
 
@@ -3421,7 +3421,7 @@ msgid "Running"
 msgstr "Running"
 
 #: app/features/profile/components/profile-form.tsx:58
-#: app/routes/admin/offer/detail.tsx:444
+#: app/routes/admin/offer/detail.tsx:448
 msgid "Save"
 msgstr "Save"
 
@@ -3442,7 +3442,7 @@ msgid "Schedule invitation to be sent at specific time"
 msgstr "Schedule invitation to be sent at specific time"
 
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:147
-#: app/features/fraud/detail/evaluation-sections.tsx:353
+#: app/features/fraud/detail/evaluation-sections.tsx:355
 #: app/routes/customer/fraud/index.tsx:141
 #: app/routes/customer/user/detail/index.tsx:278
 msgid "Score"
@@ -3458,12 +3458,12 @@ msgstr "Scroll right"
 
 #: app/components/app-search/app-search-mobile.tsx:55
 #: app/components/app-search/app-search-mobile.tsx:64
-#: app/components/app-search/index.tsx:70
+#: app/components/app-search/index.tsx:71
 #: app/features/milo/components/navbar/milo-search.tsx:49
 msgid "Search"
 msgstr "Search"
 
-#: app/features/activity/components/activity-list.tsx:408
+#: app/features/activity/components/activity-list.tsx:411
 msgid "Search activity..."
 msgstr "Search activity..."
 
@@ -3479,7 +3479,7 @@ msgstr "Search billing accounts..."
 msgid "Search by email, name, or ID..."
 msgstr "Search by email, name, or ID..."
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:241
+#: app/features/feature-flags/components/feature-flag-list.tsx:242
 msgid "Search by flag key or description..."
 msgstr "Search by flag key or description..."
 
@@ -3613,7 +3613,7 @@ msgstr "Search users, organizations, and projects"
 msgid "Search users..."
 msgstr "Search users..."
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:494
+#: app/features/milo/components/page/rich-filter-panel.tsx:496
 msgid "Search…"
 msgstr "Search…"
 
@@ -3621,12 +3621,12 @@ msgstr "Search…"
 msgid "Searching..."
 msgstr "Searching..."
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:519
+#: app/features/milo/components/page/rich-filter-panel.tsx:525
 msgid "Searching…"
 msgstr "Searching…"
 
-#: app/features/activity/components/activity-list.tsx:395
-#: app/features/activity/components/activity-list.tsx:494
+#: app/features/activity/components/activity-list.tsx:398
+#: app/features/activity/components/activity-list.tsx:497
 msgid "Secret"
 msgstr "Secret"
 
@@ -3684,7 +3684,7 @@ msgstr "Select contact group..."
 msgid "Select state"
 msgstr "Select state"
 
-#: app/features/billing/components/service-pricing-checklist.tsx:71
+#: app/features/billing/components/service-pricing-checklist.tsx:72
 msgid "Select the ServicePricings to include in your Offer."
 msgstr "Select the ServicePricings to include in your Offer."
 
@@ -3696,7 +3696,7 @@ msgstr "Select timezone..."
 msgid "Select visibility..."
 msgstr "Select visibility..."
 
-#: app/features/activity/components/activity-list.tsx:516
+#: app/features/activity/components/activity-list.tsx:519
 msgid "Selected filters"
 msgstr "Selected filters"
 
@@ -3710,7 +3710,7 @@ msgstr "Self Service"
 msgid "Sent"
 msgstr "Sent"
 
-#: app/features/billing/components/offer-included-pricing-list.tsx:123
+#: app/features/billing/components/offer-included-pricing-list.tsx:132
 msgid "Service"
 msgstr "Service"
 
@@ -3763,7 +3763,7 @@ msgid "Share"
 msgstr "Share"
 
 #. placeholder {0}: stage.shortCircuit.skipWhenBelow
-#: app/features/fraud/policy/policy-detail.tsx:30
+#: app/features/fraud/policy/policy-detail.tsx:33
 msgid "Short-circuit < {0}"
 msgstr "Short-circuit < {0}"
 
@@ -3776,7 +3776,7 @@ msgstr "Short-circuit Below"
 msgid "Show filters"
 msgstr "Show filters"
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:544
+#: app/features/milo/components/page/rich-filter-panel.tsx:554
 msgid "Show more"
 msgstr "Show more"
 
@@ -3784,15 +3784,15 @@ msgstr "Show more"
 msgid "Sinks"
 msgstr "Sinks"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:185
+#: app/features/fraud/detail/evaluation-sections.tsx:187
 msgid "Skipped"
 msgstr "Skipped"
 
-#: app/routes/admin/offer/detail.tsx:410
+#: app/routes/admin/offer/detail.tsx:414
 msgid "Snapshot not written yet — controller may still be reconciling."
 msgstr "Snapshot not written yet — controller may still be reconciling."
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:100
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:103
 msgid "Solving ACME challenge"
 msgstr "Solving ACME challenge"
 
@@ -3826,15 +3826,15 @@ msgstr "Stage {0}"
 msgid "Stage Name"
 msgstr "Stage Name"
 
-#: app/features/fraud/detail/evaluation-sections.tsx:414
+#: app/features/fraud/detail/evaluation-sections.tsx:416
 msgid "Stage Results"
 msgstr "Stage Results"
 
-#: app/features/fraud/policy/policy-detail.tsx:125
+#: app/features/fraud/policy/policy-detail.tsx:128
 msgid "Stages"
 msgstr "Stages"
 
-#: app/components/date/date-range-picker.tsx:274
+#: app/components/date/date-range-picker.tsx:275
 msgid "Start Time"
 msgstr "Start Time"
 
@@ -3842,20 +3842,20 @@ msgstr "Start Time"
 #: app/features/billing/components/org-billing-accounts-card.tsx:63
 #: app/features/contact/components/contact-list.tsx:92
 #: app/features/domain/components/domain-list.tsx:96
-#: app/features/edge/components/detail/edge-general-card.tsx:23
+#: app/features/edge/components/detail/edge-general-card.tsx:24
 #: app/features/edge/components/edge-list.tsx:148
 #: app/features/email/components/email-detail.tsx:56
 #: app/features/email/components/email-list.tsx:74
 #: app/features/email/components/email-list.tsx:129
-#: app/features/fraud/policy/policy-detail.tsx:146
+#: app/features/fraud/policy/policy-detail.tsx:149
 #: app/features/organization/components/org-members-preview-card.tsx:63
 #: app/features/project/components/project-billing-card.tsx:62
 #: app/features/project/components/project-details-card.tsx:39
 #: app/features/quota/components/quota-grant-list.tsx:109
-#: app/features/service-catalog/components/conditions-card.tsx:23
-#: app/routes/admin/group/detail/index.tsx:34
-#: app/routes/admin/offer/detail.tsx:308
-#: app/routes/admin/offer/detail.tsx:335
+#: app/features/service-catalog/components/conditions-card.tsx:27
+#: app/routes/admin/group/detail/index.tsx:39
+#: app/routes/admin/offer/detail.tsx:312
+#: app/routes/admin/offer/detail.tsx:339
 #: app/routes/customer/billing-account/detail/index.tsx:151
 #: app/routes/customer/billing-account/detail/index.tsx:188
 #: app/routes/customer/billing-account/detail/index.tsx:220
@@ -3948,11 +3948,11 @@ msgid "Switch to published Offer"
 msgstr "Switch to published Offer"
 
 #: app/components/theme-switcher/index.tsx:48
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:176
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:181
 msgid "System"
 msgstr "System"
 
-#: app/features/activity/components/activity-list.tsx:208
+#: app/features/activity/components/activity-list.tsx:211
 msgid "Target"
 msgstr "Target"
 
@@ -3968,7 +3968,7 @@ msgstr "Template"
 msgid "Temporarily pause this project's instances and served traffic without deleting any data. It can be reinstated at any time."
 msgstr "Temporarily pause this project's instances and served traffic without deleting any data. It can be reinstated at any time."
 
-#: app/features/activity/components/activity-list.tsx:134
+#: app/features/activity/components/activity-list.tsx:135
 msgid "Tenant"
 msgstr "Tenant"
 
@@ -4016,11 +4016,11 @@ msgstr "This Application Load Balancer has advanced configuration that cannot be
 msgid "This email is already used by <0>{displayName}</0>."
 msgstr "This email is already used by <0>{displayName}</0>."
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:182
+#: app/features/feature-flags/components/feature-flag-list.tsx:183
 msgid "This flag is managed by the platform and can't be changed from here."
 msgstr "This flag is managed by the platform and can't be changed from here."
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:51
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:54
 msgid "This hostname has been verified by Datum"
 msgstr "This hostname has been verified by Datum"
 
@@ -4044,7 +4044,7 @@ msgstr "This service does not have a published ServiceConfiguration yet. Prices 
 msgid "This service has no producer project recorded, so consumers cannot be listed."
 msgstr "This service has no producer project recorded, so consumers cannot be listed."
 
-#: app/features/fraud/policy/policy-detail.tsx:48
+#: app/features/fraud/policy/policy-detail.tsx:51
 msgid "Thresholds"
 msgstr "Thresholds"
 
@@ -4056,32 +4056,32 @@ msgstr "Timezone"
 msgid "Timezone updated successfully"
 msgstr "Timezone updated successfully"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:87
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:90
 msgid "TLS certificate is issued and ready for this hostname"
 msgstr "TLS certificate is issued and ready for this hostname"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:93
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:96
 msgid "TLS certificate provisioning failed"
 msgstr "TLS certificate provisioning failed"
 
-#: app/features/edge/components/detail/edge-general-card.tsx:27
+#: app/features/edge/components/detail/edge-general-card.tsx:28
 msgid "TLS Certificates"
 msgstr "TLS Certificates"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:95
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:98
 msgid "TLS Failed"
 msgstr "TLS Failed"
 
 #: app/features/edge/components/detail/edge-config-card.tsx:68
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:164
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:167
 msgid "TLS Hostname"
 msgstr "TLS Hostname"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:89
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:92
 msgid "TLS Ready"
 msgstr "TLS Ready"
 
-#: app/features/feature-flags/components/feature-flag-list.tsx:160
+#: app/features/feature-flags/components/feature-flag-list.tsx:161
 msgid "Toggle"
 msgstr "Toggle"
 
@@ -4106,7 +4106,7 @@ msgstr "Total users"
 msgid "Trigger {0}"
 msgstr "Trigger {0}"
 
-#: app/features/fraud/policy/policy-detail.tsx:166
+#: app/features/fraud/policy/policy-detail.tsx:169
 #: app/features/fraud/policy/policy-form.tsx:169
 msgid "Triggers"
 msgstr "Triggers"
@@ -4119,7 +4119,7 @@ msgstr "Trust & Safety"
 msgid "TTL"
 msgstr "TTL"
 
-#: app/features/billing/components/offer-included-pricing-list.tsx:117
+#: app/features/billing/components/offer-included-pricing-list.tsx:126
 #: app/features/fraud/policy/policy-form.tsx:199
 #: app/features/organization/components/org-details-card.tsx:59
 #: app/features/service-catalog/components/conditions-card.tsx:19
@@ -4151,12 +4151,12 @@ msgstr "Type at least 3 characters to search."
 msgid "Type to filter by project name."
 msgstr "Type to filter by project name."
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:514
+#: app/features/milo/components/page/rich-filter-panel.tsx:516
 msgid "Type to search."
 msgstr "Type to search."
 
-#: app/features/fraud/policy/policy-detail.tsx:152
-#: app/routes/admin/offer/detail.tsx:325
+#: app/features/fraud/policy/policy-detail.tsx:155
+#: app/routes/admin/offer/detail.tsx:329
 msgid "Unavailable"
 msgstr "Unavailable"
 
@@ -4166,12 +4166,12 @@ msgstr "Unavailable"
 msgid "Unknown"
 msgstr "Unknown"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:59
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:62
 msgid "Unverified"
 msgstr "Unverified"
 
-#: app/features/activity/components/activity-list.tsx:369
-#: app/features/activity/components/activity-list.tsx:459
+#: app/features/activity/components/activity-list.tsx:372
+#: app/features/activity/components/activity-list.tsx:462
 #: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:250
 #: app/features/fraud/policy/policy-form.tsx:317
@@ -4184,7 +4184,7 @@ msgstr "Update"
 msgid "Update your DNS provider with the provided record, or use the HTTP token method."
 msgstr "Update your DNS provider with the provided record, or use the HTTP token method."
 
-#: app/features/service-catalog/components/conditions-card.tsx:43
+#: app/features/service-catalog/components/conditions-card.tsx:51
 msgid "Updated"
 msgstr "Updated"
 
@@ -4197,7 +4197,7 @@ msgstr "Updating email addresses for GitHub identities"
 #: app/features/project/components/project-usage-card.tsx:89
 #: app/features/quota/components/quota-bucket-list.tsx:110
 #: app/routes/customer/organization/detail/quota/usage.tsx:10
-#: app/routes/customer/organization/detail/usage/index.tsx:24
+#: app/routes/customer/organization/detail/usage/index.tsx:25
 #: app/routes/customer/project/detail/quota/usage.tsx:10
 msgid "Usage"
 msgstr "Usage"
@@ -4222,11 +4222,11 @@ msgstr "Usage will appear here once this organization starts consuming metered r
 msgid "Usage will appear here once this project starts consuming metered resources."
 msgstr "Usage will appear here once this project starts consuming metered resources."
 
-#: app/features/activity/components/activity-list.tsx:117
-#: app/features/activity/components/activity-list.tsx:392
-#: app/features/activity/components/activity-list.tsx:491
+#: app/features/activity/components/activity-list.tsx:118
+#: app/features/activity/components/activity-list.tsx:395
+#: app/features/activity/components/activity-list.tsx:494
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:142
-#: app/features/fraud/detail/evaluation-sections.tsx:320
+#: app/features/fraud/detail/evaluation-sections.tsx:322
 #: app/routes/customer/fraud/index.tsx:109
 #: app/routes/customer/user/detail/index.tsx:175
 #: app/routes/marketing/contact-group/detail/member.tsx:107
@@ -4279,7 +4279,7 @@ msgstr "Verification in progress..."
 msgid "Verified"
 msgstr "Verified"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:64
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:67
 msgid "Verifying hostname"
 msgstr "Verifying hostname"
 
@@ -4341,11 +4341,11 @@ msgstr "View Raw Results"
 msgid "Visibility"
 msgstr "Visibility"
 
-#: app/features/billing/components/service-pricing-checklist.tsx:68
+#: app/features/billing/components/service-pricing-checklist.tsx:69
 msgid "Wait for charge fan-out, then refresh this page."
 msgstr "Wait for charge fan-out, then refresh this page."
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:65
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:68
 msgid "Waiting for hostname ownership verification to complete"
 msgstr "Waiting for hostname ownership verification to complete"
 
@@ -4361,8 +4361,8 @@ msgstr "Waiting Since"
 msgid "Warning"
 msgstr "Warning"
 
-#: app/features/activity/components/activity-list.tsx:367
-#: app/features/activity/components/activity-list.tsx:457
+#: app/features/activity/components/activity-list.tsx:370
+#: app/features/activity/components/activity-list.tsx:460
 msgid "Watch"
 msgstr "Watch"
 
@@ -4374,7 +4374,7 @@ msgstr "YAML"
 msgid "Yes"
 msgstr "Yes"
 
-#: app/routes/admin/offer/detail.tsx:327
+#: app/routes/admin/offer/detail.tsx:331
 msgid "Yes — new accounts use this Offer"
 msgstr "Yes — new accounts use this Offer"
 
@@ -4382,7 +4382,7 @@ msgstr "Yes — new accounts use this Offer"
 msgid "You do not have permission to view service configurations."
 msgstr "You do not have permission to view service configurations."
 
-#: app/features/milo/components/context-bar/milo-context-bar.tsx:14
+#: app/features/milo/components/context-bar/milo-context-bar.tsx:15
 msgid "You're here:"
 msgstr "You're here:"
 

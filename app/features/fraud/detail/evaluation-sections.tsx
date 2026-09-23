@@ -128,10 +128,10 @@ function ProviderResultRow({ result }: { result: ProviderResult }) {
           </div>
           <div className="flex items-center gap-4">
             {result.duration && (
-              <span className="text-muted-foreground flex items-center gap-1 text-xs">
+              <Text size="xs" textColor="muted" className="flex items-center gap-1">
                 <Clock className="h-3 w-3" />
                 {result.duration}
-              </span>
+              </Text>
             )}
             <Text className="font-mono text-sm font-medium">{result.score}</Text>
             {maxmindURL && (
@@ -175,12 +175,14 @@ function StageResultCard({ result, index }: { result: StageResult; index: number
   return (
     <SectionCard
       title={
-        <span className="flex items-center gap-2 text-sm">
-          <span className="bg-muted flex h-5 w-5 items-center justify-center rounded-full text-xs">
+        <Text className="flex items-center gap-2">
+          <Text
+            size="xs"
+            className="bg-muted flex h-5 w-5 items-center justify-center rounded-full">
             {index + 1}
-          </span>
+          </Text>
           {result.name}
-        </span>
+        </Text>
       }
       action={result.skipped ? <BadgeState state="pending" message={t`Skipped`} /> : undefined}
       contentClassName={!result.skipped && result.providerResults ? 'pt-0' : undefined}>
@@ -197,10 +199,10 @@ function HistoryTable({ entries }: { entries: HistoryEntry[] }) {
   return (
     <SectionCard
       title={
-        <span className="flex items-center gap-2 text-base">
+        <Text size="base" className="flex items-center gap-2">
           <History className="h-4 w-4" />
           <Trans>Evaluation History</Trans>
-        </span>
+        </Text>
       }>
       <div className="divide-border divide-y">
         {entries.map((entry, i) => (
@@ -243,10 +245,10 @@ export function UserEvaluationsTable({
   return (
     <SectionCard
       title={
-        <span className="flex items-center gap-2 text-base">
+        <Text size="base" className="flex items-center gap-2">
           <History className="h-4 w-4" />
           <Trans>All Evaluations for this User</Trans>
-        </span>
+        </Text>
       }>
       <div className="divide-border divide-y">
         {evaluations.map((evaluation) => {

@@ -96,9 +96,9 @@ export default function Page() {
         title={
           <>
             <Trans>Sources</Trans>
-            <span className="text-muted-foreground ml-2 text-sm">
+            <Text textColor="muted" className="ml-2">
               ({data?.spec?.sources?.length})
-            </span>
+            </Text>
           </>
         }>
         <Table>
@@ -147,9 +147,9 @@ export default function Page() {
         title={
           <>
             <Trans>Sinks</Trans>
-            <span className="text-muted-foreground ml-2 text-sm">
+            <Text textColor="muted" className="ml-2">
               ({data?.spec?.sinks?.length})
-            </span>
+            </Text>
           </>
         }>
         <Table>
