@@ -6,6 +6,7 @@ export default {
         8,
         {
           producerProject: [1, 'ID!'],
+          serviceNames: [2, '[String!]'],
         },
       ],
       sessions: [
@@ -113,6 +114,8 @@ export default {
     ConsumerProject: {
       name: [2],
       displayName: [2],
+      organizationName: [2],
+      organizationDisplayName: [2],
       __typename: [2],
     },
     ServiceConsumer: {
