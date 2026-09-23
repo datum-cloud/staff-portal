@@ -1,4 +1,5 @@
 import { ButtonCopy } from '@/components/button';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 
 function truncateMiddle(str: string, maxLength = 16) {
@@ -28,11 +29,12 @@ function IDDisplay({ value, className, truncate = 'middle', maxLength = 16 }: ID
   const isMiddle = truncate === 'middle';
   return (
     <div className={cn('flex min-w-0 items-center space-x-2', className)}>
-      <span
-        className={cn('font-mono text-xs', isMiddle ? 'whitespace-nowrap' : 'min-w-0 truncate')}
+      <Text
+        size="xs"
+        className={cn('font-mono', isMiddle ? 'whitespace-nowrap' : 'min-w-0 truncate')}
         title={value}>
         {isMiddle ? truncateMiddle(value, maxLength) : value}
-      </span>
+      </Text>
       <span className="shrink-0">
         <ButtonCopy value={value} />
       </span>
