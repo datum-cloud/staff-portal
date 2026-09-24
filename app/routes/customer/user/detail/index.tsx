@@ -87,9 +87,11 @@ export default function Page() {
   const { setState } = useUserPlatformAccess();
   const env = useEnv();
 
-  const { data: fraudEvalData, isLoading: isFraudLoading } = useFraudEvaluationListQuery(
-    data.metadata?.name ? { search: data.metadata.name } : undefined
-  );
+  const {
+    data: fraudEvalData,
+    isLoading: isFraudLoading,
+    isError: isFraudError,
+  } = useFraudEvaluationListQuery(data.metadata?.name ? { search: data.metadata.name } : undefined);
   const latestEval = fraudEvalData?.items?.[0];
   const maxmindInsights = extractMaxmindInsights(latestEval);
   const maxmindGroups = buildMaxmindRowGroups(maxmindInsights);
@@ -269,6 +271,10 @@ export default function Page() {
             {isFraudLoading ? (
               <Text textColor="muted" size="sm">
                 <Trans>Loading...</Trans>
+              </Text>
+            ) : isFraudError ? (
+              <Text textColor="muted" size="sm">
+                <Trans>Failed to load fraud evaluations.</Trans>
               </Text>
             ) : latestEval ? (
               <div className="flex flex-wrap items-end justify-between gap-4">

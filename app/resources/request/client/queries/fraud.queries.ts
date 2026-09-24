@@ -74,7 +74,7 @@ export const useFraudProviderDetailQuery = (name: string) => {
 export const useFraudEvaluationListQuery = (params?: ListQueryParams) => {
   return useQuery({
     queryKey: fraudQueryKeys.evaluations.list(params),
-    queryFn: () => listFraudEvaluations(params),
+    queryFn: ({ signal }) => listFraudEvaluations(params, signal),
     staleTime: 5 * 60 * 1000,
   });
 };

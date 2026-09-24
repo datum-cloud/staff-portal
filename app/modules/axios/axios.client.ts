@@ -88,6 +88,9 @@ const getErrorMessage = (error: AxiosError): { message: string; requestId?: stri
 const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   // console.error(`[response error] [${JSON.stringify(error)}]`);
 
+  // Aborted requests (e.g. React Query cancelling on unmount) aren't failures.
+  if (Axios.isCancel(error)) return Promise.reject(error);
+
   // Handle 401 AUTH_ERROR -> redirect to logout
   if (error.response?.status === 401) {
     const data = error.response?.data as { error: string; code: string };
