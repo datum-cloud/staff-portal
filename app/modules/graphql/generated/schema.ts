@@ -96,6 +96,10 @@ export interface ConsumerProject {
   name: Scalars['String'];
   /** Human-readable name from the kubernetes.io/display-name annotation, falling back to kubernetes.io/description, then name. */
   displayName: Scalars['String'];
+  /** The owning organization's machine name (spec.ownerRef.name). */
+  organizationName: Scalars['String'];
+  /** Owning organization's display name (kubernetes.io/display-name), falling back to organizationName. */
+  organizationDisplayName: Scalars['String'];
   __typename: 'ConsumerProject';
 }
 
@@ -307,7 +311,10 @@ export interface QueryRequest {
    * the core resourcemanager API). A list failure returns an empty list; a
    * per-project lookup failure degrades that row to the raw project name.
    */
-  serviceConsumers?: [{ producerProject: Scalars['ID'] }, ServiceConsumerRequest];
+  serviceConsumers?: [
+    { producerProject: Scalars['ID']; serviceNames?: Scalars['String'][] | null },
+    ServiceConsumerRequest,
+  ];
   /**
    * Returns sessions for the authenticated caller by default.
    *
@@ -447,6 +454,10 @@ export interface ConsumerProjectRequest {
   name?: boolean | number;
   /** Human-readable name from the kubernetes.io/display-name annotation, falling back to kubernetes.io/description, then name. */
   displayName?: boolean | number;
+  /** The owning organization's machine name (spec.ownerRef.name). */
+  organizationName?: boolean | number;
+  /** Owning organization's display name (kubernetes.io/display-name), falling back to organizationName. */
+  organizationDisplayName?: boolean | number;
   __typename?: boolean | number;
   __scalar?: boolean | number;
   __alias?: {

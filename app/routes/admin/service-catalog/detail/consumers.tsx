@@ -12,7 +12,7 @@ import {
   useServiceConsumersEnrichedQuery,
 } from '@/resources/request/client';
 import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
-import { projectRoutes } from '@/utils/config/routes.config';
+import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { createColumnHelper } from '@/utils/table';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
@@ -46,7 +46,13 @@ export default function ConsumersPage() {
   const revokeMutation = useRevokeServiceEntitlementMutation(producerProject ?? '');
   const [revokeTarget, setRevokeTarget] = useState<ServiceConsumer | null>(null);
 
-  const { data, isLoading, error } = useServiceConsumersEnrichedQuery(producerProject);
+  // The consumer's serviceRef may hold either the Service's metadata.name or
+  // its canonical spec.serviceName, so ask the gateway for both.
+  const serviceNames = [...new Set([serviceName, canonicalName].filter((n): n is string => !!n))];
+  const { data, isLoading, error } = useServiceConsumersEnrichedQuery(
+    producerProject,
+    serviceNames
+  );
 
   const actions: ActionItem<ServiceConsumer>[] = [
     {
@@ -72,6 +78,27 @@ export default function ConsumersPage() {
   ];
 
   const columns = [
+    columnHelper.accessor((row) => row.consumerProject.organizationDisplayName, {
+      id: 'organization',
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Organization`} />,
+      cell: ({ row }) => {
+        const { organizationName, organizationDisplayName } = row.original.consumerProject;
+        if (!organizationName) {
+          return (
+            <Text size="sm" textColor="muted">
+              —
+            </Text>
+          );
+        }
+        return (
+          <Link
+            to={orgRoutes.detail(organizationName)}
+            className="text-primary text-sm hover:underline">
+            {organizationDisplayName}
+          </Link>
+        );
+      },
+    }),
     columnHelper.accessor((row) => row.consumerProject.displayName, {
       id: 'project',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Consumer Project`} />,
@@ -85,16 +112,9 @@ export default function ConsumersPage() {
           );
         }
         return (
-          <div className="flex flex-col">
-            <Link to={projectRoutes.detail(name)} className="text-primary text-sm hover:underline">
-              {displayName}
-            </Link>
-            {displayName !== name && (
-              <Text size="xs" textColor="muted" className="font-mono">
-                {name}
-              </Text>
-            )}
-          </div>
+          <Link to={projectRoutes.detail(name)} className="text-primary text-sm hover:underline">
+            {displayName}
+          </Link>
         );
       },
     }),
@@ -139,15 +159,6 @@ export default function ConsumersPage() {
       id: 'createdAt',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Requested at`} />,
       cell: ({ getValue }) => <DateTime date={getValue()} variant="relative" addSuffix />,
-    }),
-    columnHelper.accessor((row) => row.name, {
-      id: 'name',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`Consumer ID`} />,
-      cell: ({ getValue }) => (
-        <Text size="xs" textColor="muted" className="font-mono">
-          {getValue()}
-        </Text>
-      ),
     }),
     columnHelper.display({
       id: 'actions',
@@ -220,7 +231,7 @@ export default function ConsumersPage() {
         columns={columns}
         getRowId={(row) => row.name}
         defaultSort={[{ id: 'createdAt', desc: true }]}
-        searchPlaceholder={t`Search by project, ID, or note...`}
+        searchPlaceholder={t`Search by project, organization, ID, or note...`}
         emptyMessage={t`No consumers found.`}
         filterLayout="inline"
         inset="tab"
@@ -242,6 +253,8 @@ export default function ConsumersPage() {
           return [
             row.consumerProject.name,
             row.consumerProject.displayName,
+            row.consumerProject.organizationName,
+            row.consumerProject.organizationDisplayName,
             row.name,
             row.approvalMessage,
           ]

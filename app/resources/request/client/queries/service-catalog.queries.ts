@@ -28,7 +28,8 @@ export const serviceCatalogQueryKeys = {
     // Gateway-enriched variant (adds consumer project display names), used by
     // the Consumers table. Keyed separately from the raw REST list so both can
     // coexist; mutations below invalidate both.
-    enriched: (project: string) => ['service-catalog', 'consumers', 'enriched', project] as const,
+    enriched: (project: string, serviceNames: string[] = []) =>
+      ['service-catalog', 'consumers', 'enriched', project, ...serviceNames] as const,
   },
 };
 
@@ -91,11 +92,14 @@ export const useServiceConsumersInProjectQuery = (projectName: string | undefine
 
 // Gateway-enriched consumer list (includes each consumer project's display
 // name). Used by the Consumers table; resolved server-side in one round trip.
-export const useServiceConsumersEnrichedQuery = (projectName: string | undefined) => {
+export const useServiceConsumersEnrichedQuery = (
+  projectName: string | undefined,
+  serviceNames: string[] = []
+) => {
   const project = projectName ?? '';
   return useQuery({
-    queryKey: serviceCatalogQueryKeys.consumers.enriched(project),
-    queryFn: () => listServiceConsumers(project),
+    queryKey: serviceCatalogQueryKeys.consumers.enriched(project, serviceNames),
+    queryFn: () => listServiceConsumers(project, serviceNames),
     enabled: !!project,
     staleTime: 30 * 1000,
   });

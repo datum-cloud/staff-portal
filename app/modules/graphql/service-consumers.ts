@@ -11,6 +11,10 @@ export interface EnrichedConsumerProject {
    * annotation, falling back to the machine name when unset or inaccessible.
    */
   displayName: string;
+  /** The owning organization's machine name; empty when the project is inaccessible. */
+  organizationName: string;
+  /** The owning organization's display name, falling back to organizationName. */
+  organizationDisplayName: string;
 }
 
 /**
@@ -36,21 +40,26 @@ export interface EnrichedServiceConsumer {
 
 /**
  * Lists the ServiceConsumers in a producer project, enriched with each
- * consumer project's display name. Resolved server-side by the gateway in a
+ * consumer project's display name and owning organization. Resolved server-side by the gateway in a
  * single round trip (replacing the client-side consumer-list + per-project
  * lookups).
+ *
+ * Pass serviceNames to have the gateway keep only those services' consumers
+ * before enrichment; the producer project is shared by every service, so an
+ * unfiltered call enriches every consumer of every service.
  *
  * The gateway degrades gracefully: a list failure yields an empty array, and
  * a per-project lookup failure falls back to the raw project name. Genuine
  * transport/proxy failures still throw via mapApiError.
  */
 export async function listServiceConsumers(
-  producerProject: string
+  producerProject: string,
+  serviceNames?: string[]
 ): Promise<EnrichedServiceConsumer[]> {
   const client = createGqlClient({ type: 'global' });
   const op = generateQueryOp({
     serviceConsumers: [
-      { producerProject },
+      { producerProject, ...(serviceNames?.length ? { serviceNames } : {}) },
       {
         name: true,
         serviceName: true,
@@ -58,7 +67,12 @@ export async function listServiceConsumers(
         approvalDecision: true,
         approvalMessage: true,
         requestedAt: true,
-        consumerProject: { name: true, displayName: true },
+        consumerProject: {
+          name: true,
+          displayName: true,
+          organizationName: true,
+          organizationDisplayName: true,
+        },
       },
     ],
   });
@@ -76,6 +90,8 @@ export async function listServiceConsumers(
     consumerProject: {
       name: c.consumerProject.name,
       displayName: c.consumerProject.displayName,
+      organizationName: c.consumerProject.organizationName,
+      organizationDisplayName: c.consumerProject.organizationDisplayName,
     },
   }));
 }
