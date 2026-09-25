@@ -6,7 +6,12 @@ import { ButtonCopy } from '@/components/button';
 import { DangerZoneCard } from '@/components/danger-zone-card';
 import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
-import { buildMaxmindRowGroups, extractMaxmindInsights } from '@/features/fraud';
+import {
+  buildMaxmindRowGroups,
+  extractMaxmindInsights,
+  FraudDecisionBadge,
+  FraudScore,
+} from '@/features/fraud';
 import { SectionCard } from '@/features/milo';
 import {
   PLATFORM_ACCESS_STATES,
@@ -40,12 +45,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Globe, Loader2, Mail, MapPin, Shield, ShieldAlert, UserIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useRevalidator } from 'react-router';
-
-function getScoreColor(decision?: string) {
-  if (decision === 'DEACTIVATE') return 'text-red-600 dark:text-red-400';
-  if (decision === 'REVIEW') return 'text-yellow-600 dark:text-yellow-400';
-  return 'text-green-600 dark:text-green-400';
-}
 
 function getSentryIssuesUrl(baseUrl: string | undefined, userId: string): string | null {
   if (!baseUrl) return null;
@@ -277,25 +276,17 @@ export default function Page() {
                     <Text textColor="muted" size="sm">
                       <Trans>Score</Trans>
                     </Text>
-                    <span
-                      className={`font-mono text-2xl font-bold ${getScoreColor(latestEval.status?.decision)}`}>
-                      {latestEval.status?.compositeScore ?? '-'}
-                    </span>
+                    <FraudScore
+                      score={latestEval.status?.compositeScore}
+                      decision={latestEval.status?.decision}
+                      size="xl"
+                    />
                   </div>
                   <div className="flex flex-col gap-1">
                     <Text textColor="muted" size="sm">
                       <Trans>Decision</Trans>
                     </Text>
-                    <BadgeState
-                      state={
-                        latestEval.status?.decision === 'DEACTIVATE'
-                          ? 'error'
-                          : latestEval.status?.decision === 'REVIEW'
-                            ? 'warning'
-                            : 'pending'
-                      }
-                      message={latestEval.status?.decision ?? 'NONE'}
-                    />
+                    <FraudDecisionBadge decision={latestEval.status?.decision} />
                   </div>
                   <div className="flex flex-col gap-1">
                     <Text textColor="muted" size="sm">

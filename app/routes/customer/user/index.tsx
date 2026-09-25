@@ -6,6 +6,7 @@ import { DisplayName, DisplayText } from '@/components/display';
 import GitHubIcon from '@/components/icon/github';
 import GoogleIcon from '@/components/icon/google';
 import { UserAvatar } from '@/components/user-avatar';
+import { FraudDecisionBadge, FraudScore } from '@/features/fraud';
 import {
   DATE_RANGE_OPTIONS,
   ListGrowthChart,
@@ -14,6 +15,7 @@ import {
   ListColumnHeader,
 } from '@/features/milo';
 import { UserRejectDialog, useUserPlatformAccess } from '@/features/user';
+import type { GqlUser } from '@/modules/graphql/users';
 import {
   useAllUsersQuery,
   useInvalidateUserList,
@@ -49,7 +51,7 @@ const LOGIN_PROVIDERS: Record<
   email: { label: 'Email', Icon: MailIcon },
 };
 
-const columnHelper = createColumnHelper<ComMiloapisIamV1Alpha1User>();
+const columnHelper = createColumnHelper<GqlUser>();
 
 const getUserCreatedAt = (user: ComMiloapisIamV1Alpha1User) => user.metadata?.creationTimestamp;
 
@@ -153,6 +155,20 @@ export default function Page() {
       id: 'platformAccess',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Access State`} />,
       cell: ({ getValue }) => <AppBadge status={getValue() ?? 'Pending'} />,
+    }),
+    // Keyed on `fraudDecision` so the decision filter can facet on it; sorts by
+    // the numeric score, and the cell renders the score coloured by decision.
+    columnHelper.accessor('fraudDecision', {
+      id: 'fraudDecision',
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Fraud Score`} />,
+      sortFn: (a, b) => {
+        const sa = a.original.fraudScore != null ? Number(a.original.fraudScore) : -1;
+        const sb = b.original.fraudScore != null ? Number(b.original.fraudScore) : -1;
+        return sa - sb;
+      },
+      cell: ({ row }) => (
+        <FraudScore score={row.original.fraudScore} decision={row.original.fraudDecision} />
+      ),
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'metadata.creationTimestamp',
@@ -303,6 +319,15 @@ export default function Page() {
                 { value: 'Approved', label: <AppBadge status="approved" /> },
                 { value: 'Suspended', label: <AppBadge status="suspended" /> },
                 { value: 'Rejected', label: <AppBadge status="rejected" /> },
+              ],
+            },
+            {
+              column: 'fraudDecision',
+              label: t`Fraud Decision`,
+              options: [
+                { value: 'ACCEPTED', label: <FraudDecisionBadge decision="ACCEPTED" /> },
+                { value: 'REVIEW', label: <FraudDecisionBadge decision="REVIEW" /> },
+                { value: 'DEACTIVATE', label: <FraudDecisionBadge decision="DEACTIVATE" /> },
               ],
             },
             {

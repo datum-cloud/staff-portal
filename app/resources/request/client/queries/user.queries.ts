@@ -1,10 +1,8 @@
 import { userOrgListQuery } from '../apis/membership.api';
-import {
-  listAllUsers,
-  platformAccessFindQuery,
-  userGetQuery,
-  userListQuery,
-} from '../apis/user.api';
+import { platformAccessFindQuery, userGetQuery, userListQuery } from '../apis/user.api';
+// Users list is served by the GraphQL gateway (joins each user's fraud score),
+// mirroring how organizations/projects lists are loaded.
+import { listAllUsers } from '@/modules/graphql/users';
 import { ListQueryParams } from '@/resources/schemas';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
