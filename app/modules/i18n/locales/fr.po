@@ -813,6 +813,7 @@ msgid "Contact Groups - Create"
 msgstr ""
 
 #: app/routes/marketing/contact/create.tsx:25
+#: app/routes/marketing/contact/detail/index.tsx:24
 msgid "Contact Information"
 msgstr ""
 
@@ -1613,10 +1614,6 @@ msgstr ""
 msgid "Expiration Date"
 msgstr ""
 
-#: app/routes/profile/session.tsx:80
-msgid "Expires"
-msgstr ""
-
 #: app/routes/customer/project/detail/export-policy/layout.tsx:5
 msgid "Export Policies"
 msgstr ""
@@ -2076,6 +2073,10 @@ msgstr ""
 #. placeholder {0}: providerMeta.label
 #: app/routes/customer/user/index.tsx:145
 msgid "Last signed in with {0}"
+msgstr ""
+
+#: app/routes/profile/session.tsx:80
+msgid "Last updated"
 msgstr ""
 
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:217

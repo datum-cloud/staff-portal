@@ -813,6 +813,7 @@ msgid "Contact Groups - Create"
 msgstr "Contact Groups - Create"
 
 #: app/routes/marketing/contact/create.tsx:25
+#: app/routes/marketing/contact/detail/index.tsx:24
 msgid "Contact Information"
 msgstr "Contact Information"
 
@@ -1613,10 +1614,6 @@ msgstr "Expand sidebar"
 msgid "Expiration Date"
 msgstr "Expiration Date"
 
-#: app/routes/profile/session.tsx:80
-msgid "Expires"
-msgstr "Expires"
-
 #: app/routes/customer/project/detail/export-policy/layout.tsx:5
 msgid "Export Policies"
 msgstr "Export Policies"
@@ -2077,6 +2074,10 @@ msgstr "Last name is required"
 #: app/routes/customer/user/index.tsx:145
 msgid "Last signed in with {0}"
 msgstr "Last signed in with {0}"
+
+#: app/routes/profile/session.tsx:80
+msgid "Last updated"
+msgstr "Last updated"
 
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:217
 msgid "Latest"
