@@ -3,6 +3,7 @@ import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
+import { FraudDecisionBadge, FraudScore } from '@/features/fraud';
 import { ListTable, ListColumnHeader } from '@/features/milo';
 import { useContactAllListQuery, useSearchUsersQuery } from '@/resources/request/client';
 import {
@@ -139,41 +140,13 @@ export default function Page() {
     }),
     columnHelper.accessor('status.compositeScore', {
       header: ({ column }) => <ListColumnHeader column={column} title={t`Score`} />,
-      cell: ({ getValue, row }) => {
-        const score = getValue();
-        if (!score)
-          return (
-            <Text size="sm" textColor="muted">
-              -
-            </Text>
-          );
-        const decision = row.original.status?.decision;
-        const color =
-          decision === 'DEACTIVATE'
-            ? 'text-red-600 dark:text-red-400'
-            : decision === 'REVIEW'
-              ? 'text-yellow-600 dark:text-yellow-400'
-              : 'text-green-600 dark:text-green-400';
-        return <Text className={`font-mono text-sm font-medium ${color}`}>{score}</Text>;
-      },
+      cell: ({ getValue, row }) => (
+        <FraudScore score={getValue()} decision={row.original.status?.decision} />
+      ),
     }),
     columnHelper.accessor('status.decision', {
       header: ({ column }) => <ListColumnHeader column={column} title={t`Decision`} />,
-      cell: ({ getValue }) => {
-        const decision = getValue();
-        if (!decision || decision === 'ACCEPTED')
-          return (
-            <Text size="sm" textColor="muted">
-              Accepted
-            </Text>
-          );
-        return (
-          <BadgeState
-            state={decision === 'DEACTIVATE' ? 'error' : 'warning'}
-            message={startCase(decision)}
-          />
-        );
-      },
+      cell: ({ getValue }) => <FraudDecisionBadge decision={getValue()} />,
     }),
     columnHelper.accessor('status.enforcementAction', {
       header: ({ column }) => <ListColumnHeader column={column} title={t`Enforcement`} />,

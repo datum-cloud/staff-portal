@@ -1,3 +1,4 @@
+import { FraudScore } from '../fraud-badges';
 import type { FraudEvaluation, HistoryEntry, ProviderResult, StageResult } from './types';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
@@ -16,21 +17,6 @@ import { Trans } from '@lingui/react/macro';
 import { ArrowLeft, Clock, History, Layers, Mail, User } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
-
-function ScoreDisplay({ score, decision }: { score?: string; decision?: string }) {
-  if (!score) return <Text textColor="muted">-</Text>;
-  const color =
-    decision === 'DEACTIVATE'
-      ? 'text-red-600 dark:text-red-400'
-      : decision === 'REVIEW'
-        ? 'text-yellow-600 dark:text-yellow-400'
-        : 'text-green-600 dark:text-green-400';
-  return (
-    <Text className={`font-mono text-2xl font-bold ${color}`} as="span">
-      {score}
-    </Text>
-  );
-}
 
 function RawResponseDialog({
   open,
@@ -354,9 +340,10 @@ export function EvaluationOverview({
           <Text size="xs" textColor="muted" className="mb-1 font-medium tracking-wide uppercase">
             <Trans>Score</Trans>
           </Text>
-          <ScoreDisplay
+          <FraudScore
             score={evaluation.status?.compositeScore}
             decision={evaluation.status?.decision}
+            size="xl"
           />
         </Col>
         <Col span={12} sm={8} lg={4}>
