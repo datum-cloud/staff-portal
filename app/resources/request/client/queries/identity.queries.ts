@@ -1,4 +1,9 @@
-import { identityListQuery, sessionListQuery } from '../apis/identity.api';
+import {
+  identityListQuery,
+  passkeyListQuery,
+  recoveryEmailListQuery,
+  sessionListQuery,
+} from '../apis/identity.api';
 import { sessionDeleteMutation } from '../apis/identity.api';
 import { listSessions, type ExtendedSession } from '@/modules/graphql/sessions';
 import { ListQueryParams } from '@/resources/schemas';
@@ -7,6 +12,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 export const identityQueryKeys = {
   all: ['identity'] as const,
   list: (userId: string, params?: ListQueryParams) => ['identity', 'list', userId, params] as const,
+  passkeys: (userId: string) => ['identity', 'passkeys', userId] as const,
+  recoveryEmails: (userId: string) => ['identity', 'recoveryEmails', userId] as const,
 };
 
 export const sessionQueryKeys = {
@@ -43,6 +50,30 @@ export const useIdentityListQuery = (userId: string, params?: ListQueryParams) =
     queryKey: identityQueryKeys.list(userId, params),
     queryFn: () => identityListQuery(userId, params),
     staleTime: 5 * 60 * 1000,
+  });
+};
+
+/**
+ * The user's enrolled passkeys, used for the count on the Account Identities card.
+ * Served by zitadel-provider's virtual identity apiserver, so there is nothing to
+ * cache aggressively — a minute is enough to survive a tab switch.
+ */
+export const usePasskeyListQuery = (userId: string) => {
+  return useQuery({
+    queryKey: identityQueryKeys.passkeys(userId),
+    queryFn: () => passkeyListQuery(userId),
+    enabled: Boolean(userId),
+    staleTime: 60 * 1000,
+  });
+};
+
+/** The recovery links already sent to this user, read from the labelled audit Emails. */
+export const useRecoveryEmailListQuery = (userId: string) => {
+  return useQuery({
+    queryKey: identityQueryKeys.recoveryEmails(userId),
+    queryFn: () => recoveryEmailListQuery(userId),
+    enabled: Boolean(userId),
+    staleTime: 60 * 1000,
   });
 };
 

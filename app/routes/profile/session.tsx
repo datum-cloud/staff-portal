@@ -12,7 +12,7 @@ import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session } from '@openapi/identity.miloapis.com/v1alpha1';
+import { GoMiloapisComMiloPkgApisIdentityV1Alpha1Session } from '@openapi/identity.miloapis.com/v1alpha1';
 import { useState } from 'react';
 
 export const handle = {
@@ -23,7 +23,7 @@ export const meta: Route.MetaFunction = () => {
   return metaObject('Active Sessions');
 };
 
-const columnHelper = createColumnHelper<ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session>();
+const columnHelper = createColumnHelper<GoMiloapisComMiloPkgApisIdentityV1Alpha1Session>();
 
 export default function Page() {
   const { t: tMacro } = useLingui();
@@ -33,9 +33,9 @@ export default function Page() {
   const deleteSessionMutation = useDeleteSessionMutation();
 
   const [selectedSession, setSelectedSession] =
-    useState<ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session | null>(null);
+    useState<GoMiloapisComMiloPkgApisIdentityV1Alpha1Session | null>(null);
 
-  const actions: ActionItem<ComMiloapisGoMiloPkgApisIdentityV1Alpha1Session>[] = [
+  const actions: ActionItem<GoMiloapisComMiloPkgApisIdentityV1Alpha1Session>[] = [
     {
       label: tMacro`Delete`,
       icon: <ACTION_ICONS.delete className="size-4" />,
@@ -75,9 +75,9 @@ export default function Page() {
         return <DateTime date={getValue()} />;
       },
     }),
-    columnHelper.accessor('status.expiresAt', {
-      id: 'status.expiresAt',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`Expires`} />,
+    columnHelper.accessor('status.lastUpdatedAt', {
+      id: 'status.lastUpdatedAt',
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Last updated`} />,
       cell: ({ getValue }) => {
         if (!getValue()) return <Text className="text-muted-foreground">—</Text>;
         return <DateTime date={getValue() ?? ''} />;

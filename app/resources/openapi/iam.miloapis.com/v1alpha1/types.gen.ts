@@ -221,7 +221,7 @@ export type ComMiloapisIamV1Alpha1PlatformAccess = {
   /**
    * PlatformAccessSpec defines the desired access state for a user on the platform.
    */
-  spec?: {
+  spec: {
     /**
      * Reason is a human-readable explanation for the current state.
      */
@@ -1336,6 +1336,10 @@ export type ComMiloapisIamV1Alpha1User = {
       type: string;
     }>;
     /**
+     * EmailVerification is the auth provider's view of whether the user's email address is verified. See EmailVerificationState.
+     */
+    emailVerification?: 'Verified' | 'Unverified';
+    /**
      * LastLoginProvider records the identity provider that was most recently used by the
      * user to log in (e.g., "github", "google", "passkey", or "email"). This field is set
      * by the auth provider based on authentication events.
@@ -1684,7 +1688,7 @@ export type ComMiloapisIamV1Alpha1UserPreference = {
   /**
    * UserPreferenceSpec defines the desired state of UserPreference
    */
-  spec?: {
+  spec: {
     /**
      * The user's theme preference.
      */
