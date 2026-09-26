@@ -109,9 +109,11 @@ export const deleteFraudProvider = async (name: string) => {
 };
 
 export const listFraudEvaluations = async (
-  params?: ListQueryParams
+  params?: ListQueryParams,
+  signal?: AbortSignal
 ): Promise<ComMiloapisFraudV1Alpha1FraudEvaluationList | null> => {
   const response = await listFraudMiloapisComV1Alpha1FraudEvaluation({
+    signal,
     query: {
       ...(params?.limit && { limit: params.limit }),
       ...(params?.cursor && { continue: params.cursor }),

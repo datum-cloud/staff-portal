@@ -22,7 +22,7 @@ interface UseFraudAlertsWidgetResult {
 export function useFraudAlertsWidget(): UseFraudAlertsWidgetResult {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['dashboard', 'fraud-alerts'],
-    queryFn: () => listFraudEvaluations({ limit: 100 }),
+    queryFn: ({ signal }) => listFraudEvaluations({ limit: 100 }, signal),
     refetchInterval: 60_000,
     staleTime: 30 * 1000,
   });
