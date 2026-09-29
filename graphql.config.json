@@ -11,7 +11,12 @@
     "organizationProjects",
     "organizationMembers",
     "projects",
-    "project"
+    "project",
+    "users",
+    "orgQuotaBuckets",
+    "projectQuotaBuckets",
+    "orgQuotaGrants",
+    "projectQuotaGrants"
   ],
   "mutations": []
 }

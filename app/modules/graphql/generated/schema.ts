@@ -16,6 +16,10 @@ export interface Query {
    * (in the producer project's control plane) and the per-project lookups (at
    * the core resourcemanager API). A list failure returns an empty list; a
    * per-project lookup failure degrades that row to the raw project name.
+   *
+   * serviceNames, when given, keeps only consumers whose spec.serviceRef.name
+   * matches one of them. Filtering happens before enrichment, so project and
+   * organization lookups run only for the consumers that are returned.
    */
   serviceConsumers: ServiceConsumer[];
   /**
@@ -45,6 +49,12 @@ export interface Query {
    */
   userSummaries: UserSummary[];
   /**
+   * Lists users (iam.miloapis.com) with each user's latest fraud score joined in.
+   * `search` is an exact email match (spec.email); `platformAccess` filters on
+   * status.platformAccess. Paginate with `limit` / `cursor`.
+   */
+  users: UserList;
+  /**
    * Lists all organizations the caller can access. When `search` is set, matches
    * substring against name, displayName, company, and contact fields (walks
    * upstream pages until `limit` matches).
@@ -60,6 +70,14 @@ export interface Query {
   projects: ProjectList;
   /** Returns a single project by name. */
   project?: Project;
+  /** Enriched quota buckets for an org — joins AllowanceBuckets with ResourceRegistrations server-side. */
+  orgQuotaBuckets: QuotaBucketList;
+  /** Enriched quota buckets for a project — joins AllowanceBuckets with ResourceRegistrations server-side. */
+  projectQuotaBuckets: QuotaBucketList;
+  /** Enriched resource grants for an org with flattened, display-enriched allowances. */
+  orgQuotaGrants: QuotaGrantList;
+  /** Enriched resource grants for a project with flattened, display-enriched allowances. */
+  projectQuotaGrants: QuotaGrantList;
   __typename: 'Query';
 }
 
@@ -206,6 +224,45 @@ export interface UserSummary {
   __typename: 'UserSummary';
 }
 
+export interface User {
+  /** metadata.name — the stable user ID. */
+  name: Scalars['String'];
+  uid?: Scalars['String'];
+  resourceVersion?: Scalars['String'];
+  email?: Scalars['String'];
+  givenName?: Scalars['String'];
+  familyName?: Scalars['String'];
+  createdAt?: Scalars['String'];
+  /** preferences/theme annotation. */
+  theme?: Scalars['String'];
+  /** preferences/timezone annotation. */
+  timezone?: Scalars['String'];
+  /** preferences/newsletter annotation parsed to boolean. */
+  newsletter?: Scalars['Boolean'];
+  /** onboarding/completedAt annotation. */
+  onboardedAt?: Scalars['String'];
+  registrationApproval?: Scalars['String'];
+  state?: Scalars['String'];
+  avatarUrl?: Scalars['String'];
+  lastLoginProvider?: Scalars['String'];
+  nameReviewRequired?: Scalars['Boolean'];
+  /** status.platformAccess — the platform access state. */
+  platformAccess?: Scalars['String'];
+  /** Latest fraud evaluation score — status.compositeScore (0-100). Null when never evaluated. */
+  fraudScore?: Scalars['String'];
+  /** Latest fraud decision — ACCEPTED | REVIEW | DEACTIVATE. */
+  fraudDecision?: Scalars['String'];
+  /** Latest fraud evaluation time (ISO 8601). */
+  fraudEvaluatedAt?: Scalars['String'];
+  __typename: 'User';
+}
+
+export interface UserList {
+  items: User[];
+  continueToken?: Scalars['String'];
+  __typename: 'UserList';
+}
+
 export interface OrgContactInfo {
   /** Legal / company name from spec.contactInfo.businessName. */
   businessName?: Scalars['String'];
@@ -299,6 +356,83 @@ export interface OrgMember {
   __typename: 'OrgMember';
 }
 
+export interface QuotaBucket {
+  /** metadata.name */
+  name: Scalars['String'];
+  /** metadata.namespace (needed for grant creation) */
+  namespace: Scalars['String'];
+  /** spec.resourceType */
+  resourceType: Scalars['String'];
+  /** spec.consumerRef.kind — Organization or Project */
+  consumerKind: Scalars['String'];
+  /** spec.consumerRef.name */
+  consumerName: Scalars['String'];
+  /** spec.consumerRef.apiGroup */
+  consumerApiGroup: Scalars['String'];
+  /** status.allocated */
+  allocated: Scalars['Int'];
+  /** status.limit */
+  limit: Scalars['Int'];
+  /** status.available */
+  available: Scalars['Int'];
+  /** Display name: kubernetes.io/display-name annotation → hardcoded map → raw resourceType */
+  displayName: Scalars['String'];
+  /** kubernetes.io/description annotation or spec.description from the ResourceRegistration */
+  description?: Scalars['String'];
+  /** spec.type from the ResourceRegistration: Entity, Allocation, or Feature */
+  registrationType?: Scalars['String'];
+  /** Owning service canonical name from labels (services.miloapis.com/owner or /service) */
+  serviceOwner?: Scalars['String'];
+  /** Resolved human-readable service group name */
+  serviceDisplayName: Scalars['String'];
+  __typename: 'QuotaBucket';
+}
+
+export interface QuotaBucketList {
+  items: QuotaBucket[];
+  __typename: 'QuotaBucketList';
+}
+
+export interface QuotaGrantAllowance {
+  /** resourceType for this allowance */
+  resourceType: Scalars['String'];
+  /** Resolved display name (same logic as QuotaBucket.displayName) */
+  displayName: Scalars['String'];
+  /** Resolved service group name */
+  serviceDisplayName: Scalars['String'];
+  /** Sum of all bucket amounts for this resourceType within the grant */
+  amount: Scalars['Int'];
+  __typename: 'QuotaGrantAllowance';
+}
+
+export interface QuotaCondition {
+  type: Scalars['String'];
+  status: Scalars['String'];
+  message?: Scalars['String'];
+  __typename: 'QuotaCondition';
+}
+
+export interface QuotaGrant {
+  /** metadata.name */
+  name: Scalars['String'];
+  /** metadata.namespace */
+  namespace: Scalars['String'];
+  /** metadata.creationTimestamp */
+  createdAt?: Scalars['String'];
+  /** Whether this grant was auto-created (quota.miloapis.com/auto-created label) */
+  autoCreated: Scalars['Boolean'];
+  /** Flattened and enriched allowances (one entry per resourceType) */
+  allowances: QuotaGrantAllowance[];
+  /** status.conditions for status badge display */
+  conditions: QuotaCondition[];
+  __typename: 'QuotaGrant';
+}
+
+export interface QuotaGrantList {
+  items: QuotaGrant[];
+  __typename: 'QuotaGrantList';
+}
+
 export interface QueryRequest {
   /**
    * Lists ServiceConsumers in the given producer project, enriched with each
@@ -310,6 +444,10 @@ export interface QueryRequest {
    * (in the producer project's control plane) and the per-project lookups (at
    * the core resourcemanager API). A list failure returns an empty list; a
    * per-project lookup failure degrades that row to the raw project name.
+   *
+   * serviceNames, when given, keeps only consumers whose spec.serviceRef.name
+   * matches one of them. Filtering happens before enrichment, so project and
+   * organization lookups run only for the consumers that are returned.
    */
   serviceConsumers?: [
     { producerProject: Scalars['ID']; serviceNames?: Scalars['String'][] | null },
@@ -362,6 +500,22 @@ export interface QueryRequest {
    */
   userSummaries?: [{ names: Scalars['String'][] }, UserSummaryRequest];
   /**
+   * Lists users (iam.miloapis.com) with each user's latest fraud score joined in.
+   * `search` is an exact email match (spec.email); `platformAccess` filters on
+   * status.platformAccess. Paginate with `limit` / `cursor`.
+   */
+  users?:
+    | [
+        {
+          limit?: Scalars['Int'] | null;
+          cursor?: Scalars['String'] | null;
+          search?: Scalars['String'] | null;
+          platformAccess?: Scalars['String'] | null;
+        },
+        UserListRequest,
+      ]
+    | UserListRequest;
+  /**
    * Lists all organizations the caller can access. When `search` is set, matches
    * substring against name, displayName, company, and contact fields (walks
    * upstream pages until `limit` matches).
@@ -402,6 +556,14 @@ export interface QueryRequest {
     | ProjectListRequest;
   /** Returns a single project by name. */
   project?: [{ name: Scalars['String'] }, ProjectRequest];
+  /** Enriched quota buckets for an org — joins AllowanceBuckets with ResourceRegistrations server-side. */
+  orgQuotaBuckets?: [{ orgName: Scalars['String'] }, QuotaBucketListRequest];
+  /** Enriched quota buckets for a project — joins AllowanceBuckets with ResourceRegistrations server-side. */
+  projectQuotaBuckets?: [{ projectName: Scalars['String'] }, QuotaBucketListRequest];
+  /** Enriched resource grants for an org with flattened, display-enriched allowances. */
+  orgQuotaGrants?: [{ orgName: Scalars['String'] }, QuotaGrantListRequest];
+  /** Enriched resource grants for a project with flattened, display-enriched allowances. */
+  projectQuotaGrants?: [{ projectName: Scalars['String'] }, QuotaGrantListRequest];
   __typename?: boolean | number;
   __scalar?: boolean | number;
   __alias?: {
@@ -612,6 +774,53 @@ export interface UserSummaryRequest {
   };
 }
 
+export interface UserRequest {
+  /** metadata.name — the stable user ID. */
+  name?: boolean | number;
+  uid?: boolean | number;
+  resourceVersion?: boolean | number;
+  email?: boolean | number;
+  givenName?: boolean | number;
+  familyName?: boolean | number;
+  createdAt?: boolean | number;
+  /** preferences/theme annotation. */
+  theme?: boolean | number;
+  /** preferences/timezone annotation. */
+  timezone?: boolean | number;
+  /** preferences/newsletter annotation parsed to boolean. */
+  newsletter?: boolean | number;
+  /** onboarding/completedAt annotation. */
+  onboardedAt?: boolean | number;
+  registrationApproval?: boolean | number;
+  state?: boolean | number;
+  avatarUrl?: boolean | number;
+  lastLoginProvider?: boolean | number;
+  nameReviewRequired?: boolean | number;
+  /** status.platformAccess — the platform access state. */
+  platformAccess?: boolean | number;
+  /** Latest fraud evaluation score — status.compositeScore (0-100). Null when never evaluated. */
+  fraudScore?: boolean | number;
+  /** Latest fraud decision — ACCEPTED | REVIEW | DEACTIVATE. */
+  fraudDecision?: boolean | number;
+  /** Latest fraud evaluation time (ISO 8601). */
+  fraudEvaluatedAt?: boolean | number;
+  __typename?: boolean | number;
+  __scalar?: boolean | number;
+  __alias?: {
+    [alias: string]: UserRequest;
+  };
+}
+
+export interface UserListRequest {
+  items?: UserRequest;
+  continueToken?: boolean | number;
+  __typename?: boolean | number;
+  __scalar?: boolean | number;
+  __alias?: {
+    [alias: string]: UserListRequest;
+  };
+}
+
 export interface OrgContactInfoRequest {
   /** Legal / company name from spec.contactInfo.businessName. */
   businessName?: boolean | number;
@@ -731,6 +940,107 @@ export interface OrgMemberRequest {
   };
 }
 
+export interface QuotaBucketRequest {
+  /** metadata.name */
+  name?: boolean | number;
+  /** metadata.namespace (needed for grant creation) */
+  namespace?: boolean | number;
+  /** spec.resourceType */
+  resourceType?: boolean | number;
+  /** spec.consumerRef.kind — Organization or Project */
+  consumerKind?: boolean | number;
+  /** spec.consumerRef.name */
+  consumerName?: boolean | number;
+  /** spec.consumerRef.apiGroup */
+  consumerApiGroup?: boolean | number;
+  /** status.allocated */
+  allocated?: boolean | number;
+  /** status.limit */
+  limit?: boolean | number;
+  /** status.available */
+  available?: boolean | number;
+  /** Display name: kubernetes.io/display-name annotation → hardcoded map → raw resourceType */
+  displayName?: boolean | number;
+  /** kubernetes.io/description annotation or spec.description from the ResourceRegistration */
+  description?: boolean | number;
+  /** spec.type from the ResourceRegistration: Entity, Allocation, or Feature */
+  registrationType?: boolean | number;
+  /** Owning service canonical name from labels (services.miloapis.com/owner or /service) */
+  serviceOwner?: boolean | number;
+  /** Resolved human-readable service group name */
+  serviceDisplayName?: boolean | number;
+  __typename?: boolean | number;
+  __scalar?: boolean | number;
+  __alias?: {
+    [alias: string]: QuotaBucketRequest;
+  };
+}
+
+export interface QuotaBucketListRequest {
+  items?: QuotaBucketRequest;
+  __typename?: boolean | number;
+  __scalar?: boolean | number;
+  __alias?: {
+    [alias: string]: QuotaBucketListRequest;
+  };
+}
+
+export interface QuotaGrantAllowanceRequest {
+  /** resourceType for this allowance */
+  resourceType?: boolean | number;
+  /** Resolved display name (same logic as QuotaBucket.displayName) */
+  displayName?: boolean | number;
+  /** Resolved service group name */
+  serviceDisplayName?: boolean | number;
+  /** Sum of all bucket amounts for this resourceType within the grant */
+  amount?: boolean | number;
+  __typename?: boolean | number;
+  __scalar?: boolean | number;
+  __alias?: {
+    [alias: string]: QuotaGrantAllowanceRequest;
+  };
+}
+
+export interface QuotaConditionRequest {
+  type?: boolean | number;
+  status?: boolean | number;
+  message?: boolean | number;
+  __typename?: boolean | number;
+  __scalar?: boolean | number;
+  __alias?: {
+    [alias: string]: QuotaConditionRequest;
+  };
+}
+
+export interface QuotaGrantRequest {
+  /** metadata.name */
+  name?: boolean | number;
+  /** metadata.namespace */
+  namespace?: boolean | number;
+  /** metadata.creationTimestamp */
+  createdAt?: boolean | number;
+  /** Whether this grant was auto-created (quota.miloapis.com/auto-created label) */
+  autoCreated?: boolean | number;
+  /** Flattened and enriched allowances (one entry per resourceType) */
+  allowances?: QuotaGrantAllowanceRequest;
+  /** status.conditions for status badge display */
+  conditions?: QuotaConditionRequest;
+  __typename?: boolean | number;
+  __scalar?: boolean | number;
+  __alias?: {
+    [alias: string]: QuotaGrantRequest;
+  };
+}
+
+export interface QuotaGrantListRequest {
+  items?: QuotaGrantRequest;
+  __typename?: boolean | number;
+  __scalar?: boolean | number;
+  __alias?: {
+    [alias: string]: QuotaGrantListRequest;
+  };
+}
+
 const Query_possibleTypes: string[] = ['Query'];
 export const isQuery = (obj?: { __typename?: any } | null): obj is Query => {
   if (!obj?.__typename) throw new Error('__typename is missing in "isQuery"');
@@ -846,6 +1156,18 @@ export const isUserSummary = (obj?: { __typename?: any } | null): obj is UserSum
   return UserSummary_possibleTypes.includes(obj.__typename);
 };
 
+const User_possibleTypes: string[] = ['User'];
+export const isUser = (obj?: { __typename?: any } | null): obj is User => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isUser"');
+  return User_possibleTypes.includes(obj.__typename);
+};
+
+const UserList_possibleTypes: string[] = ['UserList'];
+export const isUserList = (obj?: { __typename?: any } | null): obj is UserList => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isUserList"');
+  return UserList_possibleTypes.includes(obj.__typename);
+};
+
 const OrgContactInfo_possibleTypes: string[] = ['OrgContactInfo'];
 export const isOrgContactInfo = (obj?: { __typename?: any } | null): obj is OrgContactInfo => {
   if (!obj?.__typename) throw new Error('__typename is missing in "isOrgContactInfo"');
@@ -880,4 +1202,42 @@ const OrgMember_possibleTypes: string[] = ['OrgMember'];
 export const isOrgMember = (obj?: { __typename?: any } | null): obj is OrgMember => {
   if (!obj?.__typename) throw new Error('__typename is missing in "isOrgMember"');
   return OrgMember_possibleTypes.includes(obj.__typename);
+};
+
+const QuotaBucket_possibleTypes: string[] = ['QuotaBucket'];
+export const isQuotaBucket = (obj?: { __typename?: any } | null): obj is QuotaBucket => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isQuotaBucket"');
+  return QuotaBucket_possibleTypes.includes(obj.__typename);
+};
+
+const QuotaBucketList_possibleTypes: string[] = ['QuotaBucketList'];
+export const isQuotaBucketList = (obj?: { __typename?: any } | null): obj is QuotaBucketList => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isQuotaBucketList"');
+  return QuotaBucketList_possibleTypes.includes(obj.__typename);
+};
+
+const QuotaGrantAllowance_possibleTypes: string[] = ['QuotaGrantAllowance'];
+export const isQuotaGrantAllowance = (
+  obj?: { __typename?: any } | null
+): obj is QuotaGrantAllowance => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isQuotaGrantAllowance"');
+  return QuotaGrantAllowance_possibleTypes.includes(obj.__typename);
+};
+
+const QuotaCondition_possibleTypes: string[] = ['QuotaCondition'];
+export const isQuotaCondition = (obj?: { __typename?: any } | null): obj is QuotaCondition => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isQuotaCondition"');
+  return QuotaCondition_possibleTypes.includes(obj.__typename);
+};
+
+const QuotaGrant_possibleTypes: string[] = ['QuotaGrant'];
+export const isQuotaGrant = (obj?: { __typename?: any } | null): obj is QuotaGrant => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isQuotaGrant"');
+  return QuotaGrant_possibleTypes.includes(obj.__typename);
+};
+
+const QuotaGrantList_possibleTypes: string[] = ['QuotaGrantList'];
+export const isQuotaGrantList = (obj?: { __typename?: any } | null): obj is QuotaGrantList => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isQuotaGrantList"');
+  return QuotaGrantList_possibleTypes.includes(obj.__typename);
 };
