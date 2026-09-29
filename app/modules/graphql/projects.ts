@@ -1,23 +1,7 @@
 import { createGqlClient } from './client';
-import { GQL_PROJECT_FIELDS, type GqlProject, type GqlProjectList } from './organizations';
+import { generateQueryOp } from './generated';
+import { PROJECT_SELECTION, type GqlProject, type GqlProjectList } from './organizations';
 import { mapApiError } from '@/utils/errors/error-mapper';
-
-const PROJECTS_QUERY = `
-  query Projects($limit: Int, $cursor: String, $search: String) {
-    projects(limit: $limit, cursor: $cursor, search: $search) {
-      items { ${GQL_PROJECT_FIELDS} }
-      continueToken
-    }
-  }
-`;
-
-const PROJECT_QUERY = `
-  query Project($name: String!) {
-    project(name: $name) {
-      ${GQL_PROJECT_FIELDS}
-    }
-  }
-`;
 
 export async function listProjects(params?: {
   limit?: number;
@@ -25,15 +9,20 @@ export async function listProjects(params?: {
   search?: string;
 }): Promise<GqlProjectList> {
   const client = createGqlClient({ type: 'global' });
-  const result = await client
-    .query(PROJECTS_QUERY, {
-      limit: params?.limit ?? null,
-      cursor: params?.cursor ?? null,
-      search: params?.search ?? null,
-    })
-    .toPromise();
+  const op = generateQueryOp({
+    __name: 'StaffProjects',
+    projects: [
+      {
+        limit: params?.limit ?? null,
+        cursor: params?.cursor ?? null,
+        search: params?.search ?? null,
+      },
+      { items: PROJECT_SELECTION, continueToken: true },
+    ],
+  });
+  const result = await client.query(op.query, op.variables).toPromise();
   if (result.error) throw mapApiError(result.error);
-  return result.data?.projects ?? { items: [], continueToken: null };
+  return (result.data?.projects ?? { items: [], continueToken: null }) as GqlProjectList;
 }
 
 const ALL_PROJECTS_PAGE_LIMIT = 100;
@@ -67,7 +56,11 @@ export async function listAllProjects(
 
 export async function getProject(name: string): Promise<GqlProject | null> {
   const client = createGqlClient({ type: 'global' });
-  const result = await client.query(PROJECT_QUERY, { name }).toPromise();
+  const op = generateQueryOp({
+    __name: 'StaffProject',
+    project: [{ name }, PROJECT_SELECTION],
+  });
+  const result = await client.query(op.query, op.variables).toPromise();
   if (result.error) throw mapApiError(result.error);
-  return result.data?.project ?? null;
+  return (result.data?.project ?? null) as GqlProject | null;
 }
