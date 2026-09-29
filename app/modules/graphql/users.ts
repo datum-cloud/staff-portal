@@ -1,4 +1,5 @@
 import { createGqlClient } from './client';
+import { generateQueryOp } from './generated';
 import { mapApiError } from '@/utils/errors/error-mapper';
 import type { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 
@@ -34,19 +35,19 @@ type GqlUserFields = {
   fraudEvaluatedAt: string | null;
 };
 
-const USER_LIST_FIELDS = `
-  name email givenName familyName createdAt avatarUrl lastLoginProvider platformAccess
-  fraudScore fraudDecision fraudEvaluatedAt
-`;
-
-const USERS_QUERY = `
-  query Users($limit: Int, $cursor: String, $search: String, $platformAccess: String) {
-    users(limit: $limit, cursor: $cursor, search: $search, platformAccess: $platformAccess) {
-      items { ${USER_LIST_FIELDS} }
-      continueToken
-    }
-  }
-`;
+const USER_SELECTION = {
+  name: true,
+  email: true,
+  givenName: true,
+  familyName: true,
+  createdAt: true,
+  avatarUrl: true,
+  lastLoginProvider: true,
+  platformAccess: true,
+  fraudScore: true,
+  fraudDecision: true,
+  fraudEvaluatedAt: true,
+} as const;
 
 /**
  * Maps the gateway's flat User fields back into the k8s `User` row shape the
@@ -83,18 +84,23 @@ export async function listUsers(params?: {
   platformAccess?: string;
 }): Promise<GqlUserList> {
   const client = createGqlClient({ type: 'global' });
-  const result = await client
-    .query(USERS_QUERY, {
-      limit: params?.limit ?? null,
-      cursor: params?.cursor ?? null,
-      search: params?.search ?? null,
-      platformAccess: params?.platformAccess ?? null,
-    })
-    .toPromise();
+  const op = generateQueryOp({
+    __name: 'StaffUsers',
+    users: [
+      {
+        limit: params?.limit ?? null,
+        cursor: params?.cursor ?? null,
+        search: params?.search ?? null,
+        platformAccess: params?.platformAccess ?? null,
+      },
+      { items: USER_SELECTION, continueToken: true },
+    ],
+  });
+  const result = await client.query(op.query, op.variables).toPromise();
   if (result.error) throw mapApiError(result.error);
   const data = result.data?.users ?? { items: [], continueToken: null };
   return {
-    items: (data.items ?? []).map(mapGqlUser),
+    items: (data.items ?? []).map((u: GqlUserFields) => mapGqlUser(u)),
     continueToken: data.continueToken ?? null,
   };
 }
