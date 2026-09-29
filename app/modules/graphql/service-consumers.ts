@@ -58,6 +58,7 @@ export async function listServiceConsumers(
 ): Promise<EnrichedServiceConsumer[]> {
   const client = createGqlClient({ type: 'global' });
   const op = generateQueryOp({
+    __name: 'StaffServiceConsumers',
     serviceConsumers: [
       { producerProject, ...(serviceNames?.length ? { serviceNames } : {}) },
       {

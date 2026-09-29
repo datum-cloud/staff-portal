@@ -818,7 +818,6 @@ msgid "Contact Groups - Create"
 msgstr "Contact Groups - Create"
 
 #: app/routes/marketing/contact/create.tsx:25
-#: app/routes/marketing/contact/detail/index.tsx:24
 msgid "Contact Information"
 msgstr "Contact Information"
 
@@ -965,7 +964,7 @@ msgstr "Create Policy"
 #: app/routes/customer/organization/detail/project.tsx:79
 #: app/routes/customer/organization/index.tsx:138
 #: app/routes/customer/organization/index.tsx:194
-#: app/routes/customer/project/detail/domain/detail.tsx:138
+#: app/routes/customer/project/detail/domain/detail.tsx:139
 #: app/routes/customer/project/detail/export-policy/detail.tsx:83
 #: app/routes/customer/project/detail/export-policy/index.tsx:51
 #: app/routes/customer/project/index.tsx:174
@@ -1299,7 +1298,7 @@ msgid "DNS Host"
 msgstr "DNS Host"
 
 #: app/features/domain/components/domain-list.tsx:86
-#: app/routes/customer/project/detail/domain/detail.tsx:120
+#: app/routes/customer/project/detail/domain/detail.tsx:121
 msgid "DNS Providers"
 msgstr "DNS Providers"
 
@@ -1345,7 +1344,7 @@ msgstr "DNS Zones"
 #: app/features/activity/components/activity-list.tsx:492
 #: app/features/domain/components/domain-list.tsx:61
 #: app/features/fraud/detail/maxmind-rows.tsx:237
-#: app/routes/customer/project/detail/domain/detail.tsx:112
+#: app/routes/customer/project/detail/domain/detail.tsx:113
 #: app/routes/customer/resource/index.tsx:144
 #: app/routes/customer/resource/index.tsx:399
 msgid "Domain"
@@ -1623,7 +1622,7 @@ msgid "Expand sidebar"
 msgstr "Expand sidebar"
 
 #: app/features/domain/components/domain-list.tsx:91
-#: app/routes/customer/project/detail/domain/detail.tsx:124
+#: app/routes/customer/project/detail/domain/detail.tsx:125
 msgid "Expiration Date"
 msgstr "Expiration Date"
 
@@ -2375,7 +2374,7 @@ msgstr "Nameservers"
 
 #: app/features/activity/components/activity-list.tsx:401
 #: app/features/activity/components/activity-list.tsx:500
-#: app/routes/customer/project/detail/domain/detail.tsx:108
+#: app/routes/customer/project/detail/domain/detail.tsx:109
 #: app/routes/customer/project/detail/export-policy/detail.tsx:71
 #: app/routes/customer/project/detail/secret.tsx:27
 msgid "Namespace"
@@ -2771,7 +2770,7 @@ msgid "Note deleted"
 msgstr "Note deleted"
 
 #: app/features/project/components/project-suspension-card.tsx:200
-#: app/routes/customer/project/detail/domain/detail.tsx:151
+#: app/routes/customer/project/detail/domain/detail.tsx:152
 msgid "Notes"
 msgstr "Notes"
 
@@ -3323,7 +3322,7 @@ msgstr "Recovery links are unavailable right now. Nothing was sent."
 
 #: app/features/domain/components/domain-list.tsx:81
 #: app/routes/customer/project/detail/dns/detail.tsx:176
-#: app/routes/customer/project/detail/domain/detail.tsx:116
+#: app/routes/customer/project/detail/domain/detail.tsx:117
 msgid "Registrar"
 msgstr "Registrar"
 
@@ -3396,7 +3395,7 @@ msgid "Resource name"
 msgstr "Resource name"
 
 #: app/features/edge/components/detail/edge-general-card.tsx:41
-#: app/routes/customer/project/detail/domain/detail.tsx:100
+#: app/routes/customer/project/detail/domain/detail.tsx:101
 msgid "Resource Name"
 msgstr "Resource Name"
 
@@ -3949,7 +3948,7 @@ msgstr "Start Time"
 #: app/routes/customer/organization/detail/project.tsx:95
 #: app/routes/customer/organization/index.tsx:131
 #: app/routes/customer/organization/index.tsx:176
-#: app/routes/customer/project/detail/domain/detail.tsx:128
+#: app/routes/customer/project/detail/domain/detail.tsx:129
 #: app/routes/customer/project/detail/export-policy/detail.tsx:75
 #: app/routes/customer/project/detail/export-policy/detail.tsx:168
 #: app/routes/customer/project/detail/export-policy/index.tsx:44

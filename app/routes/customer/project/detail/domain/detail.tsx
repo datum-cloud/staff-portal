@@ -62,6 +62,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
   if (creatorIds.length > 0) {
     const client = createGqlClient({ type: 'global' });
     const op = generateQueryOp({
+      __name: 'StaffDomainUserSummaries',
       userSummaries: [
         { names: creatorIds },
         { name: true, email: true, givenName: true, familyName: true },

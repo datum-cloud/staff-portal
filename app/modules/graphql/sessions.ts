@@ -37,6 +37,7 @@ export interface ExtendedSession {
 export async function listSessions(userID?: string): Promise<ExtendedSession[]> {
   const client = createGqlClient({ type: 'global' });
   const op = generateQueryOp({
+    __name: 'StaffUserSessions',
     sessions: [
       { userID: userID ?? null },
       {

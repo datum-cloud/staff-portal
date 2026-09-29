@@ -145,6 +145,7 @@ export async function searchAllQuery(queryString: string): Promise<GroupedSearch
     if (userNames.length > 0) {
       const client = createGqlClient({ type: 'global' });
       const op = generateQueryOp({
+        __name: 'StaffSearchUserSummaries',
         userSummaries: [
           { names: userNames },
           { name: true, email: true, givenName: true, familyName: true },
@@ -237,6 +238,7 @@ export const searchUsersQuery = async (
 
     const client = createGqlClient({ type: 'global' });
     const op = generateQueryOp({
+      __name: 'StaffSearchUserSummaries',
       userSummaries: [{ names }, { name: true, email: true, givenName: true, familyName: true }],
     });
     const result = await client.query(op.query, op.variables).toPromise();
