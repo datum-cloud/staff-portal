@@ -1,4 +1,4 @@
-import { emailVerificationState, UserIdentityCard, UserRecoveryLinksCard } from '@/features/user';
+import { emailVerificationState, UserIdentityCard, UserRecoveryLinksDialog } from '@/features/user';
 import { httpClient } from '@/modules/axios/axios.client';
 import { AppProvider } from '@/providers/app.provider';
 import UserDetailPage from '@/routes/customer/user/detail/index';
@@ -141,24 +141,30 @@ describe('Account recovery on the user detail page', () => {
     });
   });
 
-  describe('UserRecoveryLinksCard — the links-sent history', () => {
+  describe('UserRecoveryLinksDialog — the links-sent history', () => {
+    const mountDialog = (open = true) =>
+      mountInDataRouter(
+        <UserRecoveryLinksDialog open={open} onOpenChange={() => {}} userId="u1" />
+      );
+
     it('lists each sent link with its requester, reason and time', () => {
       cy.intercept(
         'GET',
         '**/emails*',
         proxyList([
-          recoveryEmail('account-recovery-aaa', 'staff-1', 'ticket 42', '2026-09-09T08:00:00Z'),
           recoveryEmail('account-recovery-bbb', 'staff-2', 'phone call', '2026-09-08T08:00:00Z'),
+          recoveryEmail('account-recovery-aaa', 'staff-1', 'ticket 42', '2026-09-09T08:00:00Z'),
         ])
       ).as('listEmails');
 
-      mountInDataRouter(<UserRecoveryLinksCard userId="u1" />);
+      mountDialog();
       cy.wait('@listEmails');
 
       cy.contains('staff-1').should('be.visible');
       cy.contains('ticket 42').should('be.visible');
       cy.contains('staff-2').should('be.visible');
       cy.contains('phone call').should('be.visible');
+      cy.get('[role="dialog"]').contains('Sent by').should('contain.text', 'staff-1');
     });
 
     it('never shows a code — only who asked, why, and when', () => {
@@ -170,9 +176,9 @@ describe('Account recovery on the user detail page', () => {
         ])
       ).as('listEmails');
 
-      mountInDataRouter(<UserRecoveryLinksCard userId="u1" />);
+      mountDialog();
       cy.wait('@listEmails');
-      cy.get('[data-slot="section-card"]').should('not.contain.text', 'Code');
+      cy.get('[role="dialog"]').should('not.contain.text', 'Code');
     });
 
     it('warns that the list is truncated when the server says there is more', () => {
@@ -190,7 +196,7 @@ describe('Account recovery on the user detail page', () => {
         },
       }).as('listEmails');
 
-      mountInDataRouter(<UserRecoveryLinksCard userId="u1" />);
+      mountDialog();
       cy.wait('@listEmails');
       cy.contains('Showing the most recent 1').should('be.visible');
       cy.contains('older links exist').should('be.visible');
@@ -205,16 +211,23 @@ describe('Account recovery on the user detail page', () => {
         ])
       ).as('listEmails');
 
-      mountInDataRouter(<UserRecoveryLinksCard userId="u1" />);
+      mountDialog();
       cy.wait('@listEmails');
       cy.contains('older links exist').should('not.exist');
     });
 
     it('shows an empty state when no link has been sent', () => {
       cy.intercept('GET', '**/emails*', proxyList([])).as('listEmails');
-      mountInDataRouter(<UserRecoveryLinksCard userId="u1" />);
+      mountDialog();
       cy.wait('@listEmails');
       cy.contains('No recovery links have been sent').should('be.visible');
+    });
+
+    it('does not request the list while closed', () => {
+      cy.intercept('GET', '**/emails*', cy.spy().as('listEmails'));
+      mountDialog(false);
+      cy.get('[role="dialog"]').should('not.exist');
+      cy.get('@listEmails').should('not.have.been.called');
     });
   });
 
@@ -293,9 +306,11 @@ describe('Account recovery on the user detail page', () => {
       cy.contains('Verified').should('be.visible');
     });
 
-    it('shows the links-sent history card', () => {
+    it('opens the links-sent history from the Passkey Recovery row', () => {
       mountPage('Verified');
-      cy.contains('No recovery links have been sent').should('be.visible');
+      cy.contains('No recovery links have been sent').should('not.exist');
+      cy.contains('button', 'View sent links').should('not.be.disabled').click();
+      cy.get('[role="dialog"]').should('contain.text', 'No recovery links have been sent');
     });
   });
 });
