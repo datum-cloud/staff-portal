@@ -124,7 +124,7 @@ describe('UserRecoveryLinkDialog', () => {
     });
   });
 
-  describe('Server outcomes are surfaced, never swallowed', () => {
+  describe('A failed send keeps the dialog open without an inline error', () => {
     const submit = () => {
       mountDialog();
       cy.get('[role="dialog"]').find('input, textarea').first().type('ticket 42');
@@ -132,56 +132,53 @@ describe('UserRecoveryLinkDialog', () => {
       cy.wait('@createLink');
     };
 
-    // The apiserver returns 503 from two unrelated places — the feature flag being off, and
-    // Zitadel being unreachable — so a single hardcoded explanation is wrong half the time.
-    it('says the links are disabled when that is what the server said (503)', () => {
+    // The axios client's response interceptor toasts the failure; the dialog adds nothing.
+    const assertStillOpenWithReason = () => {
+      cy.get('@onSuccess').should('not.have.been.called');
+      cy.get('@onOpenChange').should('not.have.been.calledWith', false);
+      cy.get('[role="dialog"]').should('exist');
+      cy.get('[role="dialog"]').find('input, textarea').first().should('have.value', 'ticket 42');
+      cy.get('[role="dialog"]').find('[role="alert"]').should('not.exist');
+    };
+
+    it('stays open when the links are disabled (503)', () => {
       interceptCreate(503, 'recovery links are disabled (--recovery-links-enabled=false)');
       submit();
-      cy.get('[role="dialog"]').should('contain.text', 'recovery links are disabled');
-      cy.get('[role="dialog"]').should('not.contain.text', 'zitadel unavailable');
-      cy.get('@onOpenChange').should('not.have.been.calledWith', false);
+      assertStillOpenWithReason();
+      cy.get('[role="dialog"]').should('not.contain.text', 'recovery links are disabled');
     });
 
-    it('says the provider is unavailable when that is what the server said (503)', () => {
+    it('stays open when the provider is unavailable (503)', () => {
       interceptCreate(503, 'zitadel unavailable');
       submit();
-      cy.get('[role="dialog"]').should('contain.text', 'zitadel unavailable');
-      cy.get('[role="dialog"]').should('not.contain.text', 'recovery links are disabled');
-      cy.get('@onOpenChange').should('not.have.been.calledWith', false);
+      assertStillOpenWithReason();
+      cy.get('[role="dialog"]').should('not.contain.text', 'zitadel unavailable');
     });
 
-    it('falls back to its own words when a 503 carries no message', () => {
+    it('stays open when a 503 carries no message', () => {
       cy.intercept('POST', '**/passkeyregistrationlinks*', {
         statusCode: 503,
         body: { requestId: 'req-1', code: 'API_REQUEST_FAILED', path: '/x' },
       }).as('createLink');
       submit();
-      cy.get('[role="dialog"]').should('contain.text', 'Recovery links are unavailable');
-      cy.get('@onOpenChange').should('not.have.been.calledWith', false);
+      assertStillOpenWithReason();
     });
 
-    it('renders a permission message when the caller is not authorized (403)', () => {
+    it('stays open when the caller is not authorized (403)', () => {
       interceptCreate(403, 'not authorized to send a recovery link to user "u1"');
       submit();
-      cy.get('[role="dialog"]').should('contain.text', 'not authorized');
-      cy.get('@onOpenChange').should('not.have.been.calledWith', false);
+      assertStillOpenWithReason();
+      cy.get('[role="dialog"]').should('not.contain.text', 'not authorized');
     });
 
-    it("renders the server's own words when the address is unverified (400)", () => {
+    it('stays open when the address is unverified (400)', () => {
       interceptCreate(
         400,
         "the user's email address is not verified; ask them to sign up again to receive a verification link"
       );
       submit();
-      cy.get('[role="dialog"]').should('contain.text', 'is not verified');
-      cy.get('[role="dialog"]').should('contain.text', 'sign up again');
-      cy.get('@onOpenChange').should('not.have.been.calledWith', false);
-    });
-
-    it('keeps the typed reason so support can retry without re-typing', () => {
-      interceptCreate(503, 'recovery links are disabled (--recovery-links-enabled=false)');
-      submit();
-      cy.get('[role="dialog"]').find('input, textarea').first().should('have.value', 'ticket 42');
+      assertStillOpenWithReason();
+      cy.get('[role="dialog"]').should('not.contain.text', 'is not verified');
     });
   });
 });

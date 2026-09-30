@@ -452,7 +452,7 @@ export default function Page() {
 
             {/* Phase C account recovery, beside the other admin action. Inert until infra
                 flips RECOVERY_LINKS_ENABLED and the PolicyBinding exists; both answers come
-                back as a message in the dialog rather than a silent failure. */}
+                back as an error toast rather than a silent failure. */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-4">
               <div className="flex flex-col gap-1">
                 <Text size="sm" weight="medium">

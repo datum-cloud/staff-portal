@@ -560,7 +560,7 @@ msgstr "by"
 #: app/features/quota/components/quota-bucket-list.tsx:171
 #: app/features/quota/components/quota-grant-list.tsx:162
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:39
-#: app/features/user/components/user-recovery-link-dialog.tsx:64
+#: app/features/user/components/user-recovery-link-dialog.tsx:59
 #: app/features/user/components/user-reject-dialog.tsx:30
 #: app/routes/admin/group/detail/member.tsx:142
 #: app/routes/admin/group/detail/member.tsx:156
@@ -818,6 +818,7 @@ msgid "Contact Groups - Create"
 msgstr "Contact Groups - Create"
 
 #: app/routes/marketing/contact/create.tsx:25
+#: app/routes/marketing/contact/detail/index.tsx:24
 msgid "Contact Information"
 msgstr "Contact Information"
 
@@ -3279,7 +3280,7 @@ msgstr "Ready"
 
 #: app/features/project/components/project-suspension-card.tsx:90
 #: app/features/service-catalog/components/conditions-card.tsx:39
-#: app/features/user/components/user-recovery-link-dialog.tsx:86
+#: app/features/user/components/user-recovery-link-dialog.tsx:68
 #: app/routes/customer/user/detail/index.tsx:439
 msgid "Reason"
 msgstr "Reason"
@@ -3292,7 +3293,7 @@ msgstr "Reason for rejection"
 msgid "Reason for setting access to {pendingState}"
 msgstr "Reason for setting access to {pendingState}"
 
-#: app/features/user/components/user-recovery-link-dialog.tsx:47
+#: app/features/user/components/user-recovery-link-dialog.tsx:45
 msgid "Reason must be at least {REASON_MIN_LENGTH} characters"
 msgstr "Reason must be at least {REASON_MIN_LENGTH} characters"
 
@@ -3304,7 +3305,7 @@ msgstr "Recent Users"
 msgid "Recipient"
 msgstr "Recipient"
 
-#: app/features/user/components/user-recovery-link-dialog.tsx:87
+#: app/features/user/components/user-recovery-link-dialog.tsx:69
 msgid "Recorded on the audit record alongside your name."
 msgstr "Recorded on the audit record alongside your name."
 
@@ -3312,13 +3313,9 @@ msgstr "Recorded on the audit record alongside your name."
 msgid "Records"
 msgstr "Records"
 
-#: app/features/user/hooks/usePasskeyRecovery.ts:65
+#: app/features/user/hooks/usePasskeyRecovery.ts:39
 msgid "Recovery link sent to the user's verified email address"
 msgstr "Recovery link sent to the user's verified email address"
-
-#: app/features/user/hooks/usePasskeyRecovery.ts:72
-msgid "Recovery links are unavailable right now. Nothing was sent."
-msgstr "Recovery links are unavailable right now. Nothing was sent."
 
 #: app/features/domain/components/domain-list.tsx:81
 #: app/routes/customer/project/detail/dns/detail.tsx:176
@@ -3761,22 +3758,14 @@ msgstr "Selected filters"
 msgid "Self Service"
 msgstr "Self Service"
 
-#: app/features/user/components/user-recovery-link-dialog.tsx:63
+#: app/features/user/components/user-recovery-link-dialog.tsx:58
 msgid "Send link"
 msgstr "Send link"
 
-#: app/features/user/components/user-recovery-link-dialog.tsx:61
+#: app/features/user/components/user-recovery-link-dialog.tsx:56
 #: app/routes/customer/user/detail/index.tsx:479
 msgid "Send passkey recovery link"
 msgstr "Send passkey recovery link"
-
-#: app/features/user/components/user-recovery-link-dialog.tsx:72
-msgid "Sending the recovery link failed."
-msgstr "Sending the recovery link failed."
-
-#: app/features/user/hooks/usePasskeyRecovery.ts:82
-msgid "Sending the recovery link failed. Nothing was sent."
-msgstr "Sending the recovery link failed. Nothing was sent."
 
 #: app/features/email/components/email-detail.tsx:80
 #: app/features/email/components/email-list.tsx:100
@@ -4099,7 +4088,7 @@ msgstr "This Application Load Balancer has advanced configuration that cannot be
 msgid "This email is already used by <0>{displayName}</0>."
 msgstr "This email is already used by <0>{displayName}</0>."
 
-#: app/features/user/components/user-recovery-link-dialog.tsx:62
+#: app/features/user/components/user-recovery-link-dialog.tsx:57
 msgid "This emails a one-time passkey setup link to the verified address on file for \"{name}\". It expires in about an hour and cannot be recalled."
 msgstr "This emails a one-time passkey setup link to the verified address on file for \"{name}\". It expires in about an hour and cannot be recalled."
 
@@ -4135,7 +4124,7 @@ msgstr "This service has no producer project recorded, so consumers cannot be li
 msgid "Thresholds"
 msgstr "Thresholds"
 
-#: app/features/user/components/user-recovery-link-dialog.tsx:89
+#: app/features/user/components/user-recovery-link-dialog.tsx:71
 msgid "Ticket reference, or why the user needs this..."
 msgstr "Ticket reference, or why the user needs this..."
 
@@ -4470,10 +4459,6 @@ msgstr "Yes"
 #: app/routes/admin/offer/detail.tsx:331
 msgid "Yes — new accounts use this Offer"
 msgstr "Yes — new accounts use this Offer"
-
-#: app/features/user/hooks/usePasskeyRecovery.ts:77
-msgid "You are not authorized to send a recovery link for this user. Nothing was sent."
-msgstr "You are not authorized to send a recovery link for this user. Nothing was sent."
 
 #: app/routes/admin/service-catalog/detail/index.tsx:105
 msgid "You do not have permission to view service configurations."
