@@ -17,6 +17,7 @@ export const contactMembershipForGroupListQuery = async (
   params?: ListQueryParams<{ fieldSelector?: string }>
 ): Promise<ContactGroupMembershipListWithContacts> => {
   const op = generateQueryOp({
+    __name: 'StaffContactGroupMemberships',
     contactGroupMembershipsWithContacts: [
       {
         ...(params?.filters?.fieldSelector && { fieldSelector: params.filters.fieldSelector }),
@@ -75,6 +76,7 @@ export const contactMembershipForContactListQuery = async (
   params?: ListQueryParams<{ fieldSelector?: string }>
 ): Promise<ContactMembershipListWithContactGroups> => {
   const op = generateQueryOp({
+    __name: 'StaffContactMemberships',
     contactMembershipsWithGroups: [
       {
         ...(params?.filters?.fieldSelector && { fieldSelector: params.filters.fieldSelector }),

@@ -1,4 +1,5 @@
 import { createGqlClient } from './client';
+import { generateQueryOp } from './generated';
 import { mapApiError } from '@/utils/errors/error-mapper';
 
 export interface GqlOrgContactInfo {
@@ -89,59 +90,37 @@ type GqlOrganizationFields = {
   projects?: { items?: Array<{ name: string }> | null; continueToken?: string | null } | null;
 };
 
-const ORG_CORE_FIELDS = `
-  name displayName type createdAt state
-  contactInfo { businessName name email }
-  onboardingComplete onboardingReason onboardingMessage
-`;
+// gqlts selections (replace the old GraphQL query-string fragments).
+const ORG_CORE_SELECTION = {
+  name: true,
+  displayName: true,
+  type: true,
+  createdAt: true,
+  state: true,
+  contactInfo: { businessName: true, name: true, email: true },
+  onboardingComplete: true,
+  onboardingReason: true,
+  onboardingMessage: true,
+} as const;
 
-/** List queries omit nested projects — that field fans out one control-plane
- *  (plus billing enrichment) call per org and dominates list latency. */
-const ORG_LIST_FIELDS = ORG_CORE_FIELDS;
-
-export const GQL_PROJECT_FIELDS = `
-  name displayName organizationName organizationDisplayName organizationBusinessName
-  hasActiveBillingAccount billingAccountName createdAt state deletionTimestamp resourceCleanupMessage
-`;
-
-const ORG_DETAIL_FIELDS = `
-  ${ORG_CORE_FIELDS}
-  projects(limit: 100) { items { name } continueToken }
-`;
-
-const ORGANIZATIONS_QUERY = `
-  query Organizations($limit: Int, $cursor: String, $search: String) {
-    organizations(limit: $limit, cursor: $cursor, search: $search) {
-      items { ${ORG_LIST_FIELDS} }
-      continueToken
-    }
-  }
-`;
-
-const ORGANIZATION_QUERY = `
-  query Organization($name: String!) {
-    organization(name: $name) {
-      ${ORG_DETAIL_FIELDS}
-    }
-  }
-`;
-
-const ORG_PROJECTS_QUERY = `
-  query OrgProjects($orgName: String!, $limit: Int, $cursor: String) {
-    organizationProjects(orgName: $orgName, limit: $limit, cursor: $cursor) {
-      items { ${GQL_PROJECT_FIELDS} }
-      continueToken
-    }
-  }
-`;
-
-const ORG_MEMBERS_QUERY = `
-  query OrgMembers($orgName: String!) {
-    organizationMembers(orgName: $orgName) {
-      name givenName familyName email roles type invitationState createdAt userName avatarUrl
-    }
-  }
-`;
+/**
+ * Project fields shared by the `organizationProjects` and `projects` queries.
+ * List queries omit nested org projects — that field fans out one control-plane
+ * (plus billing enrichment) call per org and dominates list latency.
+ */
+export const PROJECT_SELECTION = {
+  name: true,
+  displayName: true,
+  organizationName: true,
+  organizationDisplayName: true,
+  organizationBusinessName: true,
+  hasActiveBillingAccount: true,
+  billingAccountName: true,
+  createdAt: true,
+  state: true,
+  deletionTimestamp: true,
+  resourceCleanupMessage: true,
+} as const;
 
 /** Maps gateway Organization fields into the list-row shape used by the UI. */
 export function mapGqlOrganization(org: GqlOrganizationFields): GqlOrganization {
@@ -179,17 +158,22 @@ export async function listOrganizations(params?: {
   search?: string;
 }): Promise<GqlOrganizationList> {
   const client = createGqlClient({ type: 'global' });
-  const result = await client
-    .query(ORGANIZATIONS_QUERY, {
-      limit: params?.limit ?? null,
-      cursor: params?.cursor ?? null,
-      search: params?.search ?? null,
-    })
-    .toPromise();
+  const op = generateQueryOp({
+    __name: 'StaffOrganizations',
+    organizations: [
+      {
+        limit: params?.limit ?? null,
+        cursor: params?.cursor ?? null,
+        search: params?.search ?? null,
+      },
+      { items: ORG_CORE_SELECTION, continueToken: true },
+    ],
+  });
+  const result = await client.query(op.query, op.variables).toPromise();
   if (result.error) throw mapApiError(result.error);
   const data = result.data?.organizations ?? { items: [], continueToken: null };
   return {
-    items: (data.items ?? []).map(mapGqlOrganization),
+    items: (data.items ?? []).map((org: GqlOrganizationFields) => mapGqlOrganization(org)),
     continueToken: data.continueToken ?? null,
   };
 }
@@ -236,10 +220,20 @@ export async function listAllOrganizations(
 
 export async function getOrganization(name: string): Promise<GqlOrganization | null> {
   const client = createGqlClient({ type: 'global' });
-  const result = await client.query(ORGANIZATION_QUERY, { name }).toPromise();
+  const op = generateQueryOp({
+    __name: 'StaffOrganization',
+    organization: [
+      { name },
+      {
+        ...ORG_CORE_SELECTION,
+        projects: [{ limit: 100 }, { items: { name: true }, continueToken: true }],
+      },
+    ],
+  });
+  const result = await client.query(op.query, op.variables).toPromise();
   if (result.error) throw mapApiError(result.error);
   const org = result.data?.organization;
-  return org ? mapGqlOrganization(org) : null;
+  return org ? mapGqlOrganization(org as GqlOrganizationFields) : null;
 }
 
 export async function listOrgProjects(
@@ -247,20 +241,42 @@ export async function listOrgProjects(
   params?: { limit?: number; cursor?: string }
 ): Promise<GqlProjectList> {
   const client = createGqlClient({ type: 'global' });
-  const result = await client
-    .query(ORG_PROJECTS_QUERY, {
-      orgName,
-      limit: params?.limit ?? null,
-      cursor: params?.cursor ?? null,
-    })
-    .toPromise();
+  const op = generateQueryOp({
+    __name: 'StaffOrgProjects',
+    organizationProjects: [
+      { orgName, limit: params?.limit ?? null, cursor: params?.cursor ?? null },
+      { items: PROJECT_SELECTION, continueToken: true },
+    ],
+  });
+  const result = await client.query(op.query, op.variables).toPromise();
   if (result.error) throw mapApiError(result.error);
-  return result.data?.organizationProjects ?? { items: [], continueToken: null };
+  return (result.data?.organizationProjects ?? {
+    items: [],
+    continueToken: null,
+  }) as GqlProjectList;
 }
 
 export async function listOrgMembers(orgName: string): Promise<GqlOrgMember[]> {
   const client = createGqlClient({ type: 'global' });
-  const result = await client.query(ORG_MEMBERS_QUERY, { orgName }).toPromise();
+  const op = generateQueryOp({
+    __name: 'StaffOrgMembers',
+    organizationMembers: [
+      { orgName },
+      {
+        name: true,
+        givenName: true,
+        familyName: true,
+        email: true,
+        roles: true,
+        type: true,
+        invitationState: true,
+        createdAt: true,
+        userName: true,
+        avatarUrl: true,
+      },
+    ],
+  });
+  const result = await client.query(op.query, op.variables).toPromise();
   if (result.error) throw mapApiError(result.error);
-  return result.data?.organizationMembers ?? [];
+  return (result.data?.organizationMembers ?? []) as GqlOrgMember[];
 }

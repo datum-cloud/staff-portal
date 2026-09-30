@@ -100,6 +100,18 @@ export var isUserSummary = function (obj) {
   return UserSummary_possibleTypes.includes(obj.__typename);
 };
 
+var User_possibleTypes = ['User'];
+export var isUser = function (obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isUser"');
+  return User_possibleTypes.includes(obj.__typename);
+};
+
+var UserList_possibleTypes = ['UserList'];
+export var isUserList = function (obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isUserList"');
+  return UserList_possibleTypes.includes(obj.__typename);
+};
+
 var OrgContactInfo_possibleTypes = ['OrgContactInfo'];
 export var isOrgContactInfo = function (obj) {
   if (!obj || !obj.__typename) throw new Error('__typename is missing in "isOrgContactInfo"');
@@ -134,4 +146,40 @@ var OrgMember_possibleTypes = ['OrgMember'];
 export var isOrgMember = function (obj) {
   if (!obj || !obj.__typename) throw new Error('__typename is missing in "isOrgMember"');
   return OrgMember_possibleTypes.includes(obj.__typename);
+};
+
+var QuotaBucket_possibleTypes = ['QuotaBucket'];
+export var isQuotaBucket = function (obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isQuotaBucket"');
+  return QuotaBucket_possibleTypes.includes(obj.__typename);
+};
+
+var QuotaBucketList_possibleTypes = ['QuotaBucketList'];
+export var isQuotaBucketList = function (obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isQuotaBucketList"');
+  return QuotaBucketList_possibleTypes.includes(obj.__typename);
+};
+
+var QuotaGrantAllowance_possibleTypes = ['QuotaGrantAllowance'];
+export var isQuotaGrantAllowance = function (obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isQuotaGrantAllowance"');
+  return QuotaGrantAllowance_possibleTypes.includes(obj.__typename);
+};
+
+var QuotaCondition_possibleTypes = ['QuotaCondition'];
+export var isQuotaCondition = function (obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isQuotaCondition"');
+  return QuotaCondition_possibleTypes.includes(obj.__typename);
+};
+
+var QuotaGrant_possibleTypes = ['QuotaGrant'];
+export var isQuotaGrant = function (obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isQuotaGrant"');
+  return QuotaGrant_possibleTypes.includes(obj.__typename);
+};
+
+var QuotaGrantList_possibleTypes = ['QuotaGrantList'];
+export var isQuotaGrantList = function (obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isQuotaGrantList"');
+  return QuotaGrantList_possibleTypes.includes(obj.__typename);
 };

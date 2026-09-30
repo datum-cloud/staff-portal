@@ -1,5 +1,5 @@
 export default {
-  scalars: [1, 2, 3, 21],
+  scalars: [1, 2, 3, 20],
   types: {
     Query: {
       serviceConsumers: [
@@ -39,8 +39,17 @@ export default {
           names: [2, '[String!]!'],
         },
       ],
+      users: [
+        21,
+        {
+          limit: [3],
+          cursor: [2],
+          search: [2],
+          platformAccess: [2],
+        },
+      ],
       organizations: [
-        22,
+        24,
         {
           limit: [3],
           cursor: [2],
@@ -48,13 +57,13 @@ export default {
         },
       ],
       organization: [
-        20,
+        23,
         {
           name: [2, 'String!'],
         },
       ],
       organizationProjects: [
-        24,
+        26,
         {
           orgName: [2, 'String!'],
           limit: [3],
@@ -62,13 +71,13 @@ export default {
         },
       ],
       organizationMembers: [
-        25,
+        27,
         {
           orgName: [2, 'String!'],
         },
       ],
       projects: [
-        24,
+        26,
         {
           limit: [3],
           cursor: [2],
@@ -76,9 +85,33 @@ export default {
         },
       ],
       project: [
-        23,
+        25,
         {
           name: [2, 'String!'],
+        },
+      ],
+      orgQuotaBuckets: [
+        29,
+        {
+          orgName: [2, 'String!'],
+        },
+      ],
+      projectQuotaBuckets: [
+        29,
+        {
+          projectName: [2, 'String!'],
+        },
+      ],
+      orgQuotaGrants: [
+        33,
+        {
+          orgName: [2, 'String!'],
+        },
+      ],
+      projectQuotaGrants: [
+        33,
+        {
+          projectName: [2, 'String!'],
         },
       ],
       __typename: [2],
@@ -193,6 +226,35 @@ export default {
       familyName: [2],
       __typename: [2],
     },
+    User: {
+      name: [2],
+      uid: [2],
+      resourceVersion: [2],
+      email: [2],
+      givenName: [2],
+      familyName: [2],
+      createdAt: [2],
+      theme: [2],
+      timezone: [2],
+      newsletter: [20],
+      onboardedAt: [2],
+      registrationApproval: [2],
+      state: [2],
+      avatarUrl: [2],
+      lastLoginProvider: [2],
+      nameReviewRequired: [20],
+      platformAccess: [2],
+      fraudScore: [2],
+      fraudDecision: [2],
+      fraudEvaluatedAt: [2],
+      __typename: [2],
+    },
+    Boolean: {},
+    UserList: {
+      items: [19],
+      continueToken: [2],
+      __typename: [2],
+    },
     OrgContactInfo: {
       businessName: [2],
       name: [2],
@@ -205,13 +267,13 @@ export default {
       type: [2],
       createdAt: [2],
       state: [2],
-      contactInfo: [19],
-      onboardingComplete: [21],
+      contactInfo: [22],
+      onboardingComplete: [20],
       onboardingReason: [2],
       onboardingMessage: [2],
-      members: [25],
+      members: [27],
       projects: [
-        24,
+        26,
         {
           limit: [3],
           cursor: [2],
@@ -219,9 +281,8 @@ export default {
       ],
       __typename: [2],
     },
-    Boolean: {},
     OrganizationList: {
-      items: [20],
+      items: [23],
       continueToken: [2],
       __typename: [2],
     },
@@ -231,14 +292,16 @@ export default {
       organizationName: [2],
       organizationDisplayName: [2],
       organizationBusinessName: [2],
-      hasActiveBillingAccount: [21],
+      hasActiveBillingAccount: [20],
       billingAccountName: [2],
       createdAt: [2],
       state: [2],
+      deletionTimestamp: [2],
+      resourceCleanupMessage: [2],
       __typename: [2],
     },
     ProjectList: {
-      items: [23],
+      items: [25],
       continueToken: [2],
       __typename: [2],
     },
@@ -253,6 +316,53 @@ export default {
       createdAt: [2],
       userName: [2],
       avatarUrl: [2],
+      __typename: [2],
+    },
+    QuotaBucket: {
+      name: [2],
+      namespace: [2],
+      resourceType: [2],
+      consumerKind: [2],
+      consumerName: [2],
+      consumerApiGroup: [2],
+      allocated: [3],
+      limit: [3],
+      available: [3],
+      displayName: [2],
+      description: [2],
+      registrationType: [2],
+      serviceOwner: [2],
+      serviceDisplayName: [2],
+      __typename: [2],
+    },
+    QuotaBucketList: {
+      items: [28],
+      __typename: [2],
+    },
+    QuotaGrantAllowance: {
+      resourceType: [2],
+      displayName: [2],
+      serviceDisplayName: [2],
+      amount: [3],
+      __typename: [2],
+    },
+    QuotaCondition: {
+      type: [2],
+      status: [2],
+      message: [2],
+      __typename: [2],
+    },
+    QuotaGrant: {
+      name: [2],
+      namespace: [2],
+      createdAt: [2],
+      autoCreated: [20],
+      allowances: [30],
+      conditions: [31],
+      __typename: [2],
+    },
+    QuotaGrantList: {
+      items: [32],
       __typename: [2],
     },
   },

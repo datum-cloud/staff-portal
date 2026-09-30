@@ -1,4 +1,5 @@
 import { createGqlClient } from './client';
+import { generateQueryOp } from './generated';
 import { mapApiError } from '@/utils/errors/error-mapper';
 
 export interface GqlQuotaBucket {
@@ -48,75 +49,72 @@ export interface GqlQuotaGrantList {
   items: GqlQuotaGrant[];
 }
 
-const QUOTA_BUCKET_FIELDS = `
-  name namespace resourceType
-  consumerKind consumerName consumerApiGroup
-  allocated limit available
-  displayName description registrationType serviceOwner serviceDisplayName
-`;
+const QUOTA_BUCKET_SELECTION = {
+  name: true,
+  namespace: true,
+  resourceType: true,
+  consumerKind: true,
+  consumerName: true,
+  consumerApiGroup: true,
+  allocated: true,
+  limit: true,
+  available: true,
+  displayName: true,
+  description: true,
+  registrationType: true,
+  serviceOwner: true,
+  serviceDisplayName: true,
+} as const;
 
-const QUOTA_GRANT_FIELDS = `
-  name namespace createdAt autoCreated
-  allowances { resourceType displayName serviceDisplayName amount }
-  conditions { type status message }
-`;
-
-const ORG_QUOTA_BUCKETS_QUERY = `
-  query OrgQuotaBuckets($orgName: String!) {
-    orgQuotaBuckets(orgName: $orgName) {
-      items { ${QUOTA_BUCKET_FIELDS} }
-    }
-  }
-`;
-
-const PROJECT_QUOTA_BUCKETS_QUERY = `
-  query ProjectQuotaBuckets($projectName: String!) {
-    projectQuotaBuckets(projectName: $projectName) {
-      items { ${QUOTA_BUCKET_FIELDS} }
-    }
-  }
-`;
-
-const ORG_QUOTA_GRANTS_QUERY = `
-  query OrgQuotaGrants($orgName: String!) {
-    orgQuotaGrants(orgName: $orgName) {
-      items { ${QUOTA_GRANT_FIELDS} }
-    }
-  }
-`;
-
-const PROJECT_QUOTA_GRANTS_QUERY = `
-  query ProjectQuotaGrants($projectName: String!) {
-    projectQuotaGrants(projectName: $projectName) {
-      items { ${QUOTA_GRANT_FIELDS} }
-    }
-  }
-`;
+const QUOTA_GRANT_SELECTION = {
+  name: true,
+  namespace: true,
+  createdAt: true,
+  autoCreated: true,
+  allowances: { resourceType: true, displayName: true, serviceDisplayName: true, amount: true },
+  conditions: { type: true, status: true, message: true },
+} as const;
 
 export async function listOrgQuotaBuckets(orgName: string): Promise<GqlQuotaBucketList> {
   const client = createGqlClient({ type: 'global' });
-  const result = await client.query(ORG_QUOTA_BUCKETS_QUERY, { orgName }).toPromise();
+  const op = generateQueryOp({
+    __name: 'StaffOrgQuotaBuckets',
+    orgQuotaBuckets: [{ orgName }, { items: QUOTA_BUCKET_SELECTION }],
+  });
+  const result = await client.query(op.query, op.variables).toPromise();
   if (result.error) throw mapApiError(result.error);
-  return result.data?.orgQuotaBuckets ?? { items: [] };
+  return (result.data?.orgQuotaBuckets ?? { items: [] }) as GqlQuotaBucketList;
 }
 
 export async function listProjectQuotaBuckets(projectName: string): Promise<GqlQuotaBucketList> {
   const client = createGqlClient({ type: 'global' });
-  const result = await client.query(PROJECT_QUOTA_BUCKETS_QUERY, { projectName }).toPromise();
+  const op = generateQueryOp({
+    __name: 'StaffProjectQuotaBuckets',
+    projectQuotaBuckets: [{ projectName }, { items: QUOTA_BUCKET_SELECTION }],
+  });
+  const result = await client.query(op.query, op.variables).toPromise();
   if (result.error) throw mapApiError(result.error);
-  return result.data?.projectQuotaBuckets ?? { items: [] };
+  return (result.data?.projectQuotaBuckets ?? { items: [] }) as GqlQuotaBucketList;
 }
 
 export async function listOrgQuotaGrants(orgName: string): Promise<GqlQuotaGrantList> {
   const client = createGqlClient({ type: 'global' });
-  const result = await client.query(ORG_QUOTA_GRANTS_QUERY, { orgName }).toPromise();
+  const op = generateQueryOp({
+    __name: 'StaffOrgQuotaGrants',
+    orgQuotaGrants: [{ orgName }, { items: QUOTA_GRANT_SELECTION }],
+  });
+  const result = await client.query(op.query, op.variables).toPromise();
   if (result.error) throw mapApiError(result.error);
-  return result.data?.orgQuotaGrants ?? { items: [] };
+  return (result.data?.orgQuotaGrants ?? { items: [] }) as GqlQuotaGrantList;
 }
 
 export async function listProjectQuotaGrants(projectName: string): Promise<GqlQuotaGrantList> {
   const client = createGqlClient({ type: 'global' });
-  const result = await client.query(PROJECT_QUOTA_GRANTS_QUERY, { projectName }).toPromise();
+  const op = generateQueryOp({
+    __name: 'StaffProjectQuotaGrants',
+    projectQuotaGrants: [{ projectName }, { items: QUOTA_GRANT_SELECTION }],
+  });
+  const result = await client.query(op.query, op.variables).toPromise();
   if (result.error) throw mapApiError(result.error);
-  return result.data?.projectQuotaGrants ?? { items: [] };
+  return (result.data?.projectQuotaGrants ?? { items: [] }) as GqlQuotaGrantList;
 }

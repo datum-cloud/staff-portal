@@ -56,6 +56,12 @@ export default [
           message:
             'Raw text size on a plain element. Render body text with <Text> / <Paragraph> / <Title> from @datum-cloud/datum-ui/typography, which takes the size as a prop.',
         },
+        {
+          selector:
+            'CallExpression[callee.name=/^generate(Query|Mutation)Op$/] > ObjectExpression.arguments:not(:has(> Property[key.name="__name"]))',
+          message:
+            'Unnamed GraphQL operation — the gateway traces it as "Anonymous", so slow queries can\'t be attributed to a view. Pass __name, e.g. generateQueryOp({ __name: "StaffFoo", ... }). See #688.',
+        },
       ],
       // 'import/order': [
       //   'warn',
