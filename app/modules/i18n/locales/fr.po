@@ -3314,7 +3314,7 @@ msgstr ""
 msgid "Records"
 msgstr ""
 
-#: app/features/user/hooks/usePasskeyRecovery.ts:39
+#: app/features/user/hooks/usePasskeyRecovery.ts:38
 msgid "Recovery link sent to the user's verified email address"
 msgstr ""
 
