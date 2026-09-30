@@ -68,11 +68,11 @@ export const usePasskeyListQuery = (userId: string) => {
 };
 
 /** The recovery links already sent to this user, read from the labelled audit Emails. */
-export const useRecoveryEmailListQuery = (userId: string) => {
+export const useRecoveryEmailListQuery = (userId: string, options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: identityQueryKeys.recoveryEmails(userId),
     queryFn: () => recoveryEmailListQuery(userId),
-    enabled: Boolean(userId),
+    enabled: Boolean(userId) && (options?.enabled ?? true),
     staleTime: 60 * 1000,
   });
 };

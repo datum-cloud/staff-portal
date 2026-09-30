@@ -19,7 +19,7 @@ import {
   PlatformAccessState,
   UserIdentityCard,
   UserRecoveryLinkDialog,
-  UserRecoveryLinksCard,
+  UserRecoveryLinksDialog,
   useUserPlatformAccess,
 } from '@/features/user';
 import { useEnv } from '@/hooks';
@@ -94,6 +94,7 @@ export default function Page() {
   const [reason, setReason] = useState('');
   const [isUpdatingAccess, setIsUpdatingAccess] = useState(false);
   const [recoveryDialogOpen, setRecoveryDialogOpen] = useState(false);
+  const [recoveryLinksOpen, setRecoveryLinksOpen] = useState(false);
 
   // An unverified address cannot receive a link — the server rejects the create — so the
   // action is disabled rather than letting support discover that in an error. A state milo
@@ -465,32 +466,45 @@ export default function Page() {
                   </Trans>
                 </Text>
               </div>
-              <Tooltip
-                message={t`Email not verified — ask the user to sign up again to get a fresh verification link`}
-                hidden={emailVerified}
-                delayDuration={0}>
-                <span className="inline-flex">
-                  <Button
-                    theme="outline"
-                    size="small"
-                    icon={<KeyRound size={16} />}
-                    disabled={!emailVerified}
-                    onClick={() => setRecoveryDialogOpen(true)}>
-                    <Trans>Send passkey recovery link</Trans>
-                  </Button>
-                </span>
-              </Tooltip>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="tertiary"
+                  theme="borderless"
+                  size="small"
+                  onClick={() => setRecoveryLinksOpen(true)}>
+                  <Trans>View sent links</Trans>
+                </Button>
+                <Tooltip
+                  message={t`Email not verified — ask the user to sign up again to get a fresh verification link`}
+                  hidden={emailVerified}
+                  delayDuration={0}>
+                  <span className="inline-flex">
+                    <Button
+                      theme="outline"
+                      size="small"
+                      icon={<KeyRound size={16} />}
+                      disabled={!emailVerified}
+                      onClick={() => setRecoveryDialogOpen(true)}>
+                      <Trans>Send passkey recovery link</Trans>
+                    </Button>
+                  </span>
+                </Tooltip>
+              </div>
             </div>
           </div>
         </SectionCard>
-
-        <UserRecoveryLinksCard userId={userId} className="mt-4" />
 
         <UserRecoveryLinkDialog
           open={recoveryDialogOpen}
           user={data}
           onOpenChange={setRecoveryDialogOpen}
           onSuccess={refreshRecoveryLinks}
+        />
+
+        <UserRecoveryLinksDialog
+          open={recoveryLinksOpen}
+          onOpenChange={setRecoveryLinksOpen}
+          userId={userId}
         />
 
         <DangerZoneCard
