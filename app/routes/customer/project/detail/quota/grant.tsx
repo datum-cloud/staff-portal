@@ -1,8 +1,10 @@
 import { getProjectDetailMetadata, useProjectDetailData } from '../../shared';
 import type { Route } from './+types/grant';
 import { QuotaGrantList } from '@/features/quota';
-import { listProjectQuotaGrants } from '@/modules/graphql/quota';
-import { projectQuotaGrantDeleteMutation } from '@/resources/request/client';
+import {
+  listProjectQuotaGrants,
+  projectQuotaGrantDeleteMutation,
+} from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 

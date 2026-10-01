@@ -1,6 +1,7 @@
 import { SectionCard } from '@/features/milo';
 import { QuotaIndicator } from '@/features/organization/components/quota-ring';
-import { listProjectQuotaBuckets, type GqlQuotaBucket } from '@/modules/graphql/quota';
+import type { GqlQuotaBucket } from '@/resources/gql/quota.gql';
+import { listProjectQuotaBuckets } from '@/resources/request/client/apis/quota.api';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';

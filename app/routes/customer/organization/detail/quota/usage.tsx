@@ -1,8 +1,7 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../../shared';
 import type { Route } from './+types/usage';
 import { QuotaBucketList } from '@/features/quota';
-import { listOrgQuotaBuckets } from '@/modules/graphql/quota';
-import { orgQuotaGrantCreateMutation } from '@/resources/request/client';
+import { listOrgQuotaBuckets, orgQuotaGrantCreateMutation } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 

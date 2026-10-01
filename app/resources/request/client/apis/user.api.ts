@@ -1,3 +1,4 @@
+import { usersOp, type GqlUser, type GqlUserFields } from '@/resources/gql/user.gql';
 import { ListQueryParams } from '@/resources/schemas';
 import {
   ComMiloapisIamV1Alpha1PlatformAccess,
@@ -45,33 +46,6 @@ export const userListQuery = async (params?: ListQueryParams) => {
     },
   });
   return response.data.data;
-};
-
-const ALL_USERS_PAGE_LIMIT = 100;
-// Safety net against a runaway walk — mirrors listAllProjects'/listAllOrganizations' pattern.
-const ALL_USERS_MAX_PAGES = 100;
-
-/**
- * Walks `continue` to fetch every user, rather than a single page —
- * `userListQuery` intentionally stays single-page for the table's normal
- * paged view. This is for views that need a true total (the Users list
- * table, growth chart) where a hidden page limit would silently under-count.
- */
-export const listAllUsers = async (): Promise<{
-  items: ComMiloapisIamV1Alpha1User[];
-  hasMore: boolean;
-}> => {
-  const items: ComMiloapisIamV1Alpha1User[] = [];
-  let cursor: string | undefined;
-
-  for (let page = 0; page < ALL_USERS_MAX_PAGES; page++) {
-    const result = await userListQuery({ limit: ALL_USERS_PAGE_LIMIT, cursor });
-    items.push(...(result?.items ?? []));
-    cursor = result?.metadata?.continue || undefined;
-    if (!cursor) return { items, hasMore: false };
-  }
-
-  return { items, hasMore: true };
 };
 
 export const userUpdateMutation = async (
@@ -199,4 +173,72 @@ export const userEmailListQuery = async (
     ...listByEmail.data.data,
     items: [...(listByEmail.data.data?.items ?? []), ...(listByUser.data.data?.items ?? [])],
   };
+};
+
+// ─── GraphQL-backed (gateway) ────────────────────────────────────────────────
+// Operation (field selection) lives in `resources/gql/user.gql.ts`. `mapGqlUser`
+// reshapes the gateway's flat fields back into the k8s `User` row the table
+// already reads — a transform, so GqlUser is hand-written (in the resource file).
+
+/**
+ * Maps the gateway's flat User fields back into the k8s `User` row shape the
+ * users table already consumes, plus the joined fraud fields.
+ */
+export const mapGqlUser = (u: GqlUserFields): GqlUser =>
+  ({
+    apiVersion: 'iam.miloapis.com/v1alpha1',
+    kind: 'User',
+    metadata: {
+      name: u.name,
+      creationTimestamp: u.createdAt ?? undefined,
+    },
+    spec: {
+      email: u.email ?? undefined,
+      givenName: u.givenName ?? undefined,
+      familyName: u.familyName ?? undefined,
+    },
+    status: {
+      platformAccess: u.platformAccess ?? undefined,
+      avatarUrl: u.avatarUrl ?? undefined,
+      lastLoginProvider: u.lastLoginProvider ?? undefined,
+    },
+    fraudScore: u.fraudScore,
+    fraudDecision: u.fraudDecision,
+    fraudEvaluatedAt: u.fraudEvaluatedAt,
+  }) as GqlUser;
+
+export const listUsers = async (params?: {
+  limit?: number;
+  cursor?: string;
+  search?: string;
+  platformAccess?: string;
+}) => {
+  const data = await usersOp(params ?? {});
+  const list = data?.users;
+  return {
+    items: (list?.items ?? []).map(mapGqlUser),
+    continueToken: list?.continueToken ?? null,
+  };
+};
+
+const ALL_USERS_PAGE_LIMIT = 100;
+// Safety net against a runaway walk — mirrors listAllOrganizations' pattern.
+const ALL_USERS_MAX_PAGES = 100;
+
+/**
+ * Walks `continueToken` to fetch every user (with fraud score joined), for the
+ * users list table and growth chart.
+ */
+export const listAllUsers = async (): Promise<{ items: GqlUser[]; hasMore: boolean }> => {
+  const items: GqlUser[] = [];
+  let cursor: string | undefined;
+
+  for (let page = 0; page < ALL_USERS_MAX_PAGES; page++) {
+    const result = await listUsers({ limit: ALL_USERS_PAGE_LIMIT, cursor });
+    items.push(...result.items);
+    cursor = result.continueToken ?? undefined;
+    if (!cursor) return { items, hasMore: false };
+  }
+
+  return { items, hasMore: Boolean(cursor) };
 };
