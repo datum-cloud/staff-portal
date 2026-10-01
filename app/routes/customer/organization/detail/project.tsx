@@ -4,11 +4,8 @@ import { DateTime } from '@/components/date';
 import { ListColumnHeader, ListTable } from '@/features/milo';
 import { ProjectDeletingFor, ProjectPhaseBadge, projectPhaseFilter } from '@/features/project';
 import { type ProjectPhase, withProjectPhase } from '@/features/project/lib/project-phase';
-import {
-  type GqlProject,
-  useAllProjectSuspensionsQuery,
-  useOrgProjectListQuery,
-} from '@/resources/request/client';
+import type { GqlProject } from '@/resources/gql/project.gql';
+import { useAllProjectSuspensionsQuery, useOrgProjectListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { createColumnHelper } from '@/utils/table';

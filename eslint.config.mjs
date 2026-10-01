@@ -77,4 +77,58 @@ export default [
       },
     },
   },
+  {
+    // GraphQL layering guard (#690). Base rule: forbid BOTH the raw genql builder
+    // and runGqlQuery everywhere, so the api/UI tiers call ops, not the gql
+    // primitives. The two overrides below re-allow each where it belongs. (These
+    // must share one `no-restricted-imports` per file — in flat config a later
+    // config REPLACES, not merges, a rule it also sets.) See
+    // docs/engineering/04-data-and-requests.md.
+    files: ['**/*.ts', '**/*.tsx'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@/modules/graphql/generated',
+              importNames: ['generateQueryOp', 'generateMutationOp'],
+              message:
+                'Build GraphQL operations with runGqlQuery in resources/gql/*.gql.ts, not the raw genql builder. See #690 / docs/engineering/04-data-and-requests.md.',
+            },
+            {
+              name: '@/modules/graphql/client',
+              importNames: ['runGqlQuery'],
+              message:
+                'Define GraphQL operations in resources/gql/*.gql.ts; the api layer calls those ops, not runGqlQuery directly. See #690 / docs/engineering/04-data-and-requests.md.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // The ops layer may call runGqlQuery (but still not the raw genql builder).
+    files: ['app/resources/gql/*.gql.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@/modules/graphql/generated',
+              importNames: ['generateQueryOp', 'generateMutationOp'],
+              message:
+                'Build GraphQL operations with runGqlQuery, not the raw genql builder. See #690 / docs/engineering/04-data-and-requests.md.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // The runGqlQuery helper + generated code are the primitives themselves.
+    files: ['app/modules/graphql/client.ts', 'app/modules/graphql/generated/**'],
+    rules: { 'no-restricted-imports': 'off' },
+  },
 ];

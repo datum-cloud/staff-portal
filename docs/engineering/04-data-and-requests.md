@@ -57,6 +57,38 @@ Examples:
 - For loader/server contexts requiring explicit token-aware calls
 - Passes `Authorization: Bearer ${token}` where needed
 
+### GraphQL data source (`app/resources/gql/**`)
+
+> Day-to-day guide (how to add/modify a gateway read, with worked examples):
+> [`app/resources/gql/README.md`](../../app/resources/gql/README.md). The section
+> below is the architectural overview.
+
+Some data comes from the GraphQL gateway instead of the OpenAPI SDK. It uses the **same tiers**, with one extra layer because GraphQL selections are hand-authored (unlike generated REST endpoints):
+
+- `app/modules/graphql/generated/**` — genql codegen output (the GraphQL schema as TS). Generated source of truth, never hand-edited, never imported by UI.
+- `app/modules/graphql/client.ts` — the urql client, its auth/proxy plumbing, and the two helpers the ops layer is built on:
+  - `runGqlQuery(name, request, scope?)` — builds a named op with genql and runs it on a scoped urql client, returning the result **typed from the selection** (`FieldsSelection<Query, R>`) instead of `any`. The **only** place `generateQueryOp` is called.
+  - `GqlResult<typeof op>` — derives a pass-through resource's row type straight from its op.
+- `app/resources/gql/<resource>.gql.ts` — the **operations layer** (peer of `resources/openapi/`). Each op is an arrow fn calling `runGqlQuery` with its **field selection inline** (readable as the request), plus the resource's `Gql*` types. This is where GraphQL field selections live.
+
+**The api layer calls ops, never the gql primitives.** A `*.api.ts` function awaits an op and either returns the rows as-is (pass-through) or maps them to a domain shape (transform) — exactly where an OpenAPI-backed function would call the SDK.
+
+Tier equivalence:
+
+| tier                           | OpenAPI-backed              | GraphQL-backed                                              |
+| ------------------------------ | --------------------------- | ----------------------------------------------------------- |
+| schema / client (no UI access) | `resources/openapi/**`      | `modules/graphql/generated` + `client.ts`                   |
+| operations                     | _(generated into the SDK)_  | `resources/gql/*.gql.ts` (`runGqlQuery` + inline selection) |
+| api / shaping                  | `apis/*.api.ts` (calls SDK) | `apis/*.api.ts` (calls the ops)                             |
+| hooks                          | `queries/*.queries.ts`      | `queries/*.queries.ts`                                      |
+| UI                             | route / component           | route / component                                           |
+
+**Types.** Only define a `Gql*` interface when the api **transforms** the response (e.g. `GqlOrganization`, `GqlUser`); the mapper's return type is then the domain type (no cast). For a **pass-through** (returned as-is), derive the type from the op — `type GqlProject = NonNullable<GqlResult<typeof projectsOp>['projects']>['items'][number]` — so the selection is the single source of truth. Consumers import `Gql*` types directly from `resources/gql/<resource>.gql.ts`.
+
+**Lint guards** (flat config): `generateQueryOp` may only appear in `client.ts`; `runGqlQuery` may only be imported by `resources/gql/*.gql.ts`. Everything above the api layer calls a `queries/*` hook.
+
+Return-type conventions match REST: **lists infer** (no annotation), **nullable gets annotate** `Promise<GqlX | null>`.
+
 ## Loader vs React Query split
 
 Use `loader` for:
@@ -100,6 +132,20 @@ This is why many route files have light loaders and richer client queries in req
    - keep keys stable and descriptive
 4. If a route `loader` needs the same endpoint, add server companion in `app/resources/request/server/<feature>.request.ts`.
 5. Consume from route/feature component, not directly from generated SDK.
+
+## How to add a new GraphQL-backed request
+
+1. Whitelist the gateway query/mutation in `graphql.config.json`, then regenerate:
+   - `bun run scripts/graphql.ts`
+   - commit the regenerated `app/modules/graphql/generated/**` (prettier-formatted, matching the existing files)
+2. Add the op in `app/resources/gql/<resource>.gql.ts`:
+   - `export const xxxOp = (args) => runGqlQuery('StaffXxx', { <field>: [args, { ...selection inline... }] })`
+   - for a pass-through, export the derived type: `export type GqlX = NonNullable<GqlResult<typeof xxxOp>['<field>']>['items'][number]`
+3. Add the api function in `app/resources/request/client/apis/<resource>.api.ts` (same file as any REST ops for that resource):
+   - `export const xxxQuery = async (args) => { const data = await xxxOp(args); return data?.<field> ?? …; }`
+   - map to a domain shape only if you reshape it (a transform — define a hand-written `Gql*` type there); otherwise return the rows as-is (no cast, no return annotation on lists; annotate `Promise<GqlX | null>` on gets)
+4. Add query hooks in `queries/<resource>.queries.ts` — identical to the OpenAPI flow.
+5. Consume from route/feature via the hook; import `Gql*` types from `resources/gql/<resource>.gql.ts`. Never call `runGqlQuery` outside the ops layer, or `generateQueryOp` outside `client.ts`.
 
 ## Standardized request structure (current)
 
@@ -232,6 +278,8 @@ export default function ThingPage() {
 ## Practical anti-patterns to avoid
 
 - Calling generated SDK directly from many route components
+- Calling `generateQueryOp` outside `client.ts`, or `runGqlQuery` outside the `resources/gql/*.gql.ts` ops layer
+- Re-declaring a `Gql*` interface for a pass-through response instead of deriving it from the op
 - Mixing API request shape logic inside UI component render trees
 - Using unstable query keys
 - Duplicating generic resource hooks inside feature query modules

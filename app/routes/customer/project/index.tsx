@@ -16,11 +16,8 @@ import {
 } from '@/features/project';
 import { type ProjectPhase, withProjectPhase } from '@/features/project/lib/project-phase';
 import { useOrganizationSearch } from '@/hooks/use-search';
-import {
-  type GqlProject,
-  useAllProjectsQuery,
-  useAllProjectSuspensionsQuery,
-} from '@/resources/request/client';
+import type { GqlProject } from '@/resources/gql/project.gql';
+import { useAllProjectsQuery, useAllProjectSuspensionsQuery } from '@/resources/request/client';
 import { billingAccountRoutes, orgRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { createColumnHelper } from '@/utils/table';

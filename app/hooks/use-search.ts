@@ -1,11 +1,11 @@
-import { listOrganizations } from '@/modules/graphql/organizations';
-import { listProjects } from '@/modules/graphql/projects';
 import {
   useContactGroupListQuery,
   useContactListQuery,
   userListQuery,
   organizationQueryKeys,
   projectQueryKeys,
+  listOrganizations,
+  listProjects,
 } from '@/resources/request/client';
 import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';

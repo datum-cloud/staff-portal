@@ -1,4 +1,5 @@
 import { PROXY_URL } from '@/modules/axios/axios.client';
+import { sessionsOp, type GqlSession } from '@/resources/gql/session.gql';
 import { ListQueryParams } from '@/resources/schemas';
 import {
   deleteIdentityMiloapisComV1Alpha1Session,
@@ -110,4 +111,36 @@ export const recoveryEmailListQuery = async (userId: string) => {
     },
   });
   return response.data.data;
+};
+
+// ─── GraphQL-backed (gateway) ────────────────────────────────────────────────
+// Operation (field selection) lives in `resources/gql/session.gql.ts`;
+// `listSessions` reshapes the raw rows into `GqlSession` (a transform).
+
+export const listSessions = async (userID?: string): Promise<GqlSession[]> => {
+  const data = await sessionsOp(userID);
+  return (data?.sessions ?? []).map((s) => ({
+    id: s.id,
+    userUID: s.userUID,
+    provider: s.provider,
+    ipAddress: s.ipAddress ?? null,
+    fingerprintID: s.fingerprintID ?? null,
+    createdAt: s.createdAt,
+    lastUpdatedAt: s.lastUpdatedAt ?? null,
+    userAgent: s.userAgent
+      ? {
+          browser: s.userAgent.browser ?? null,
+          os: s.userAgent.os ?? null,
+          formatted: s.userAgent.formatted,
+        }
+      : null,
+    location: s.location
+      ? {
+          city: s.location.city ?? null,
+          country: s.location.country ?? null,
+          countryCode: s.location.countryCode ?? null,
+          formatted: s.location.formatted,
+        }
+      : null,
+  }));
 };

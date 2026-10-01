@@ -4,8 +4,8 @@ import {
   recoveryEmailListQuery,
   sessionListQuery,
 } from '../apis/identity.api';
-import { sessionDeleteMutation } from '../apis/identity.api';
-import { listSessions, type ExtendedSession } from '@/modules/graphql/sessions';
+import { listSessions, sessionDeleteMutation } from '../apis/identity.api';
+import type { GqlSession } from '@/resources/gql/session.gql';
 import { ListQueryParams } from '@/resources/schemas';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -37,7 +37,7 @@ export const useSessionListQuery = (userId: string, params?: ListQueryParams) =>
  * carries `metadata.creationTimestamp`, `status.expiresAt`, etc.).
  */
 export const useSessionListEnrichedQuery = (userId: string) => {
-  return useQuery<ExtendedSession[]>({
+  return useQuery<GqlSession[]>({
     queryKey: ['sessions', 'enriched', userId] as const,
     queryFn: () => listSessions(userId),
     enabled: Boolean(userId),

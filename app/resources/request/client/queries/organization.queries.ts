@@ -1,19 +1,15 @@
-import { orgInvitationCreateMutation, orgInvitationDeleteMutation } from '../apis/organization.api';
 import {
   getOrganization,
   listAllOrganizations,
   listOrganizations,
   listOrgMembers,
   listOrgProjects,
-  type GqlOrganization,
-  type GqlOrgMember,
-  type GqlProject,
-} from '@/modules/graphql/organizations';
+  orgInvitationCreateMutation,
+  orgInvitationDeleteMutation,
+} from '../apis/organization.api';
 import { ListQueryParams } from '@/resources/schemas';
 import type { ComMiloapisIamV1Alpha1UserInvitation } from '@openapi/iam.miloapis.com/v1alpha1';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-
-export type { GqlOrganization, GqlOrgMember, GqlProject };
 
 export const organizationQueryKeys = {
   all: ['organizations'] as const,

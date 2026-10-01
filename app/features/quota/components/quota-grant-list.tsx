@@ -3,7 +3,7 @@ import { BadgeCondition } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
 import { TableCard } from '@/features/milo';
-import { type GqlQuotaGrant, type GqlQuotaGrantList } from '@/modules/graphql/quota';
+import { type GqlQuotaGrant, type GqlQuotaGrantList } from '@/resources/gql/quota.gql';
 import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { type ColumnDef } from '@/utils/table';
 import { Badge } from '@datum-cloud/datum-ui/badge';

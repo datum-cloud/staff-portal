@@ -3,8 +3,8 @@ import type { Route } from './+types/member';
 import { BadgeState } from '@/components/badge';
 import { DisplayName, DisplayText } from '@/components/display';
 import { ListColumnHeader, ListTable } from '@/features/milo';
+import type { GqlOrgMember } from '@/resources/gql/organization.gql';
 import {
-  type GqlOrgMember,
   useOrgInvitationCreateMutation,
   useOrgInvitationDeleteMutation,
   useOrgMemberListQuery,

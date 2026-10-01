@@ -15,7 +15,7 @@ import {
   ListColumnHeader,
 } from '@/features/milo';
 import { UserRejectDialog, useUserPlatformAccess } from '@/features/user';
-import type { GqlUser } from '@/modules/graphql/users';
+import type { GqlUser } from '@/resources/gql/user.gql';
 import {
   useAllUsersQuery,
   useInvalidateUserList,

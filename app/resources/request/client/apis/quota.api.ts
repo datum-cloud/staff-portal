@@ -1,4 +1,10 @@
 import { PROXY_URL } from '@/modules/axios/axios.client';
+import {
+  orgQuotaBucketsOp,
+  orgQuotaGrantsOp,
+  projectQuotaBucketsOp,
+  projectQuotaGrantsOp,
+} from '@/resources/gql/quota.gql';
 import { ListQueryParams } from '@/resources/schemas';
 import {
   ComMiloapisQuotaV1Alpha1ResourceGrant,
@@ -267,4 +273,29 @@ export const projectQuotaClaimListQuery = (
     baseURL: getProjectControlPlaneBaseURL(projectName),
     fieldSelector: parts.join(','),
   });
+};
+
+// ─── GraphQL-backed (gateway) ────────────────────────────────────────────────
+// Operations (field selections) live in `resources/gql/quota.gql.ts`. The
+// gateway pre-joins buckets/grants with their ResourceRegistration, so these are
+// one-round-trip pass-throughs — no mapping, no casts.
+
+export const listOrgQuotaBuckets = async (orgName: string) => {
+  const data = await orgQuotaBucketsOp(orgName);
+  return data?.orgQuotaBuckets ?? { items: [] };
+};
+
+export const listProjectQuotaBuckets = async (projectName: string) => {
+  const data = await projectQuotaBucketsOp(projectName);
+  return data?.projectQuotaBuckets ?? { items: [] };
+};
+
+export const listOrgQuotaGrants = async (orgName: string) => {
+  const data = await orgQuotaGrantsOp(orgName);
+  return data?.orgQuotaGrants ?? { items: [] };
+};
+
+export const listProjectQuotaGrants = async (projectName: string) => {
+  const data = await projectQuotaGrantsOp(projectName);
+  return data?.projectQuotaGrants ?? { items: [] };
 };

@@ -1,7 +1,7 @@
 import { groupQuotas, type QuotaRow } from '../lib/quotas-grouping';
 import { DialogForm } from '@/components/dialog';
 import { TableCard } from '@/features/milo';
-import { type GqlQuotaBucket, type GqlQuotaBucketList } from '@/modules/graphql/quota';
+import { type GqlQuotaBucket, type GqlQuotaBucketList } from '@/resources/gql/quota.gql';
 import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { type ColumnDef } from '@/utils/table';
 import { Badge } from '@datum-cloud/datum-ui/badge';
