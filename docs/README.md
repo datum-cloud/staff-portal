@@ -3,6 +3,7 @@
 ## Operators
 
 - `operators/feature-flags.md` - toggle per-org feature flags and read the audit trail
+- `operators/passkey-recovery.md` - email a user a one-time link to register a new passkey
 
 ## Engineering
 
