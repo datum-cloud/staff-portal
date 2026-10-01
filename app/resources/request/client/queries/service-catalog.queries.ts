@@ -4,12 +4,12 @@ import {
   getBillingDefaultOffer,
   getService,
   listServiceConfigurationsForService,
+  listServiceConsumers,
   listServiceConsumersInProject,
   listServices,
   setBillingDefaultOffer,
   type ApprovalDecision,
 } from '../apis/service-catalog.api';
-import { listServiceConsumers } from '@/modules/graphql/service-consumers';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export const serviceCatalogQueryKeys = {

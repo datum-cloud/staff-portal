@@ -6,7 +6,7 @@ import { DialogConfirm } from '@/components/dialog';
 import { MessageCard } from '@/components/message-card';
 import { ListColumnHeader, ListTable } from '@/features/milo';
 import { useApprovalDialog } from '@/features/service-catalog';
-import type { EnrichedServiceConsumer } from '@/modules/graphql/service-consumers';
+import type { GqlServiceConsumer } from '@/resources/gql/service-consumer.gql';
 import {
   useRevokeServiceEntitlementMutation,
   useServiceConsumersEnrichedQuery,
@@ -22,7 +22,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Link } from 'react-router';
 
-type ServiceConsumer = EnrichedServiceConsumer;
+type ServiceConsumer = GqlServiceConsumer;
 
 export const handle = {
   breadcrumb: () => <Trans>Consumers</Trans>,

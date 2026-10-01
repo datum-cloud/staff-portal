@@ -4,7 +4,7 @@ import { DateTime } from '@/components/date';
 import { MessageCard } from '@/components/message-card';
 import { ListColumnHeader, ListTable } from '@/features/milo';
 import { useApprovalDialog } from '@/features/service-catalog';
-import type { EnrichedServiceConsumer } from '@/modules/graphql/service-consumers';
+import type { GqlServiceConsumer } from '@/resources/gql/service-consumer.gql';
 import { useServiceConsumersEnrichedQuery } from '@/resources/request/client';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
@@ -15,7 +15,7 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Link } from 'react-router';
 
-type ServiceConsumer = EnrichedServiceConsumer;
+type ServiceConsumer = GqlServiceConsumer;
 
 export const handle = {
   breadcrumb: () => <Trans>Approvals</Trans>,

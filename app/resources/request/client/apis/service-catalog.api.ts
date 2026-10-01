@@ -1,5 +1,6 @@
 import { BILLING_SERVICE_CONFIGURATION_NAME } from '@/features/billing/utils';
 import { PROXY_URL } from '@/modules/axios/axios.client';
+import { serviceConsumersOp, type GqlServiceConsumer } from '@/resources/gql/service-consumer.gql';
 import {
   deleteServicesMiloapisComV1Alpha1ServiceEntitlement,
   listServicesMiloapisComV1Alpha1Service,
@@ -146,4 +147,29 @@ export const decideServiceConsumer = async (
     },
   });
   return response.data.data;
+};
+
+// ─── GraphQL-backed (gateway) ────────────────────────────────────────────────
+// Operation (field selection) lives in `resources/gql/service-consumer.gql.ts`;
+// `listServiceConsumers` reshapes the rows into `GqlServiceConsumer` (transform).
+
+export const listServiceConsumers = async (
+  producerProject: string,
+  serviceNames?: string[]
+): Promise<GqlServiceConsumer[]> => {
+  const data = await serviceConsumersOp(producerProject, serviceNames);
+  return (data?.serviceConsumers ?? []).map((c) => ({
+    name: c.name,
+    serviceName: c.serviceName ?? null,
+    phase: c.phase ?? null,
+    approvalDecision: c.approvalDecision ?? null,
+    approvalMessage: c.approvalMessage ?? null,
+    requestedAt: c.requestedAt ?? null,
+    consumerProject: {
+      name: c.consumerProject.name,
+      displayName: c.consumerProject.displayName,
+      organizationName: c.consumerProject.organizationName,
+      organizationDisplayName: c.consumerProject.organizationDisplayName,
+    },
+  }));
 };
