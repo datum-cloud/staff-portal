@@ -63,8 +63,9 @@ for themselves does not.
 
 ## What the user receives
 
-The user gets an email with a link and a code. The link expires in about an
-hour and works once. They should:
+The user gets an email with a link (the support mail carries only the link;
+there is no code to type). The link expires in about an hour and works once.
+They should:
 
 1. Open the link on the device that should hold the new passkey.
 2. Register the passkey when prompted.
