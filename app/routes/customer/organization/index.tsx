@@ -14,8 +14,8 @@ import {
   ListTable,
   ListColumnHeader,
 } from '@/features/milo';
+import type { GqlOrganization } from '@/resources/gql/organization.gql';
 import {
-  type GqlOrganization,
   useAllOrganizationsQuery,
   useBillingAccountListQuery,
   usePaymentMethodListQuery,

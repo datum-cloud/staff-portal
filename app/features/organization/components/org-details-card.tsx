@@ -3,7 +3,7 @@ import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
 import { DisplayText } from '@/components/display';
 import { SectionCard } from '@/features/milo';
-import type { GqlOrganization } from '@/modules/graphql/organizations';
+import type { GqlOrganization } from '@/resources/gql/organization.gql';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { Trans } from '@lingui/react/macro';

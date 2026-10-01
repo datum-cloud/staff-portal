@@ -5,7 +5,7 @@ import {
 } from '../lib/onboarding-steps';
 import { CustomerStatus } from '@/components/badge';
 import { SectionCard } from '@/features/milo';
-import type { GqlOrganization } from '@/modules/graphql/organizations';
+import type { GqlOrganization } from '@/resources/gql/organization.gql';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';

@@ -50,7 +50,7 @@ import {
   serializeProjectsFilter,
 } from '@/features/activity/lib/activity-filters';
 import { staffResourceLinkResolver } from '@/features/activity/lib/activity-link-resolvers';
-import type { GqlProject } from '@/modules/graphql/organizations';
+import type { GqlProject } from '@/resources/gql/project.gql';
 import { useOrgProjectListQuery } from '@/resources/request/client';
 import {
   ActivityApiClient,

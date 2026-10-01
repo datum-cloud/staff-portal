@@ -10,7 +10,7 @@ import {
   ListColumnHeader,
   TableCard,
 } from '@/features/milo';
-import type { GqlOrgMember } from '@/modules/graphql/organizations';
+import type { GqlOrgMember } from '@/resources/gql/organization.gql';
 import { orgRoutes, userRoutes } from '@/utils/config/routes.config';
 import { createColumnHelper, type ColumnDef } from '@/utils/table';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';

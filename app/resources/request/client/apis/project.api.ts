@@ -1,4 +1,5 @@
 import { PROXY_URL } from '@/modules/axios/axios.client';
+import { projectOp, projectsOp, type GqlProject } from '@/resources/gql/project.gql';
 import { ListQueryParams } from '@/resources/schemas';
 import { flattenManagedRecordSets } from '@/utils/helpers';
 import {
@@ -200,4 +201,53 @@ export const projectLiftSuspensionMutation = (name: string) => {
   return deleteResourcemanagerMiloapisComV1Alpha1ProjectSuspension({
     path: { name },
   });
+};
+
+// ─── GraphQL-backed (gateway) ────────────────────────────────────────────────
+
+export const listProjects = async (params?: {
+  limit?: number;
+  cursor?: string;
+  search?: string;
+}) => {
+  const data = await projectsOp(params ?? {});
+  const list = data?.projects;
+  return {
+    items: list?.items ?? [],
+    continueToken: list?.continueToken ?? null,
+  };
+};
+
+const ALL_PROJECTS_PAGE_LIMIT = 100;
+// Safety net against a runaway walk (e.g. a continueToken loop bug) — mirrors
+// the search index's SEARCH_MAX_PAGES pattern. 100 pages * 100/page = 10,000 rows.
+const ALL_PROJECTS_MAX_PAGES = 100;
+
+/**
+ * Walks `continueToken` to fetch every project matching `search`, rather than
+ * a single page. `listProjects`/`useProjectListQuery` intentionally stay
+ * single-page (e.g. the project-picker typeahead in useProjectSearch wants a
+ * capped, fast lookup) — this is for views that need a true total (the
+ * Projects list table, growth charts) where a hidden page limit would
+ * silently under-count.
+ */
+export const listAllProjects = async (
+  search: string = ''
+): Promise<{ items: GqlProject[]; hasMore: boolean }> => {
+  const items: GqlProject[] = [];
+  let cursor: string | undefined;
+
+  for (let page = 0; page < ALL_PROJECTS_MAX_PAGES; page++) {
+    const result = await listProjects({ limit: ALL_PROJECTS_PAGE_LIMIT, cursor, search });
+    items.push(...result.items);
+    cursor = result.continueToken ?? undefined;
+    if (!cursor) return { items, hasMore: false };
+  }
+
+  return { items, hasMore: Boolean(cursor) };
+};
+
+export const getProject = async (name: string): Promise<GqlProject | null> => {
+  const data = await projectOp(name);
+  return data?.project ?? null;
 };

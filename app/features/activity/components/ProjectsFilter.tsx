@@ -1,4 +1,4 @@
-import type { GqlProject } from '@/modules/graphql/organizations';
+import type { GqlProject } from '@/resources/gql/project.gql';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@datum-cloud/activity-ui';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Button } from '@datum-cloud/datum-ui/button';

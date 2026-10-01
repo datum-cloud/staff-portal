@@ -1,4 +1,6 @@
 import {
+  listAllProjects,
+  listProjects,
   projectDnsListQuery,
   projectDnsRecordListQuery,
   projectDomainListQuery,
@@ -9,7 +11,6 @@ import {
   projectSuspensionListQuery,
 } from '../apis/project.api';
 import { isProjectDeleting } from '@/features/project/lib/project-phase';
-import { listAllProjects, listProjects } from '@/modules/graphql/projects';
 import { ListQueryParams } from '@/resources/schemas';
 import type { ComMiloapisResourcemanagerV1Alpha1Project } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';

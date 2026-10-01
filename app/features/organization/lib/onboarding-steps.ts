@@ -1,4 +1,4 @@
-import type { GqlOrganization } from '@/modules/graphql/organizations';
+import type { GqlOrganization } from '@/resources/gql/organization.gql';
 
 export type OnboardingStepId = 'contact' | 'billing' | 'payment' | 'complete';
 
