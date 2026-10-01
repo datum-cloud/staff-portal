@@ -1,18 +1,17 @@
 # Passkey Recovery
 
-This guide is for staff users (mostly support) helping someone who has lost
-their passkey or can no longer use it and has asked for help signing in. It
-assumes you already have staff portal access.
+This guide is for staff users (mostly support) helping someone who can no longer
+use their passkey and has asked for help signing in. It assumes you already have
+staff portal access.
 
 The recovery link goes only to the verified email address on the user's
-account. You never see the link or the code, and you can't send it anywhere
-else.
+account. You never see it.
 
 ## What you can do here
 
 - Email a user a one-time link that lets them register a new passkey.
-- Record why you sent it. Your reason and your name are saved with the send
-  for audit.
+- Record why you sent it. The portal stores your reason and your name with the
+  send for audit.
 - See every recovery link staff have sent to that user, who sent it, and why.
 
 ## Before you start
@@ -35,8 +34,7 @@ else.
    the bottom.
 3. Click **Send passkey recovery link**.
 4. Type a reason of at least 5 characters (leading and trailing spaces don't
-   count). A ticket reference is ideal. The reason is recorded alongside your
-   name.
+   count). A ticket reference is ideal.
 5. Click **Send link**.
 
 On success the dialog closes and you see the toast "Recovery link sent to the
@@ -49,10 +47,10 @@ Click **View sent links** in the same row. The **Passkey Recovery Links**
 dialog lists every link staff have sent to this user, newest first. Each entry
 shows:
 
-- **Sent by**: the staff user who sent it.
-- The reason they typed.
-- The name of the notification email that carried the link.
-- When it was sent.
+- who sent it
+- the reason they typed
+- the name of the notification email that carried the link
+- when it was sent
 
 If the history is long, the dialog shows only the most recent entries and
 says "Showing the most recent N; older links exist." If nothing has been sent,
@@ -63,16 +61,15 @@ for themselves does not.
 
 ## What the user receives
 
-The user gets an email with a link (the support mail carries only the link;
-there is no code to type). The link expires in about an hour and works once.
-They should:
+The user gets an email with a link and no code to type. The link expires in
+about an hour and works once. They should:
 
 1. Open the link on the device that should hold the new passkey.
 2. Register the passkey when prompted.
 3. Sign in with it.
 
-The user-side flow is described in the auth-ui [account recovery
-doc](https://github.com/datum-cloud/auth-ui/blob/main/docs/architecture/account-recovery.md).
+The auth-ui [account recovery doc](https://github.com/datum-cloud/auth-ui/blob/main/docs/architecture/account-recovery.md)
+describes the user-side flow.
 
 ## Limits and error messages
 
