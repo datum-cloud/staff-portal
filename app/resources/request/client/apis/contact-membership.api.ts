@@ -1,53 +1,29 @@
-import { createGqlClient } from '@/modules/graphql/client';
-import { generateQueryOp } from '@/modules/graphql/generated';
-import type {
-  ContactGroupMembershipEnriched,
-  ContactMembershipEnriched,
-} from '@/modules/graphql/generated/schema';
+import {
+  contactGroupMembershipsOp,
+  contactMembershipsOp,
+} from '@/resources/gql/contact-membership.gql';
 import {
   ContactGroupMembershipListWithContacts,
+  ContactGroupMembershipWithContact,
   ContactMembershipListWithContactGroups,
+  ContactMembershipWithContactGroup,
   ListQueryParams,
 } from '@/resources/schemas';
-import { mapApiError } from '@/utils/errors/error-mapper';
-
-const client = createGqlClient({ type: 'global' });
 
 export const contactMembershipForGroupListQuery = async (
   params?: ListQueryParams<{ fieldSelector?: string }>
 ): Promise<ContactGroupMembershipListWithContacts> => {
-  const op = generateQueryOp({
-    __name: 'StaffContactGroupMemberships',
-    contactGroupMembershipsWithContacts: [
-      {
-        ...(params?.filters?.fieldSelector && { fieldSelector: params.filters.fieldSelector }),
-        ...(params?.limit && { limit: params.limit }),
-        ...(params?.cursor && { cursor: params.cursor }),
-      },
-      {
-        continue: true,
-        items: {
-          name: true,
-          contactRef: { name: true, namespace: true },
-          contact: {
-            name: true,
-            namespace: true,
-            email: true,
-            givenName: true,
-            familyName: true,
-            displayName: true,
-          },
-        },
-      },
-    ],
-  });
-  const result = await client.query(op.query, op.variables).toPromise();
-  if (result.error) throw mapApiError(result.error);
-  const data = result.data?.contactGroupMembershipsWithContacts;
+  const data = (
+    await contactGroupMembershipsOp({
+      fieldSelector: params?.filters?.fieldSelector,
+      limit: params?.limit,
+      cursor: params?.cursor,
+    })
+  )?.contactGroupMembershipsWithContacts;
 
   return {
     metadata: { continue: data?.continue ?? undefined },
-    items: (data?.items ?? []).map((item: ContactGroupMembershipEnriched) => ({
+    items: (data?.items ?? []).map((item) => ({
       metadata: { name: item.name },
       spec: {
         contactRef: {
@@ -68,54 +44,24 @@ export const contactMembershipForGroupListQuery = async (
             },
           }
         : undefined,
-    })),
+    })) as ContactGroupMembershipWithContact[],
   };
 };
 
 export const contactMembershipForContactListQuery = async (
   params?: ListQueryParams<{ fieldSelector?: string }>
 ): Promise<ContactMembershipListWithContactGroups> => {
-  const op = generateQueryOp({
-    __name: 'StaffContactMemberships',
-    contactMembershipsWithGroups: [
-      {
-        ...(params?.filters?.fieldSelector && { fieldSelector: params.filters.fieldSelector }),
-        ...(params?.limit && { limit: params.limit }),
-        ...(params?.cursor && { cursor: params.cursor }),
-      },
-      {
-        continue: true,
-        items: {
-          name: true,
-          creationTimestamp: true,
-          contactGroupRef: { name: true, namespace: true },
-          contactGroup: {
-            name: true,
-            namespace: true,
-            displayName: true,
-            visibility: true,
-            status: {
-              conditions: {
-                type: true,
-                status: true,
-                reason: true,
-                message: true,
-                lastTransitionTime: true,
-                observedGeneration: true,
-              },
-            },
-          },
-        },
-      },
-    ],
-  });
-  const result = await client.query(op.query, op.variables).toPromise();
-  if (result.error) throw mapApiError(result.error);
-  const data = result.data?.contactMembershipsWithGroups;
+  const data = (
+    await contactMembershipsOp({
+      fieldSelector: params?.filters?.fieldSelector,
+      limit: params?.limit,
+      cursor: params?.cursor,
+    })
+  )?.contactMembershipsWithGroups;
 
   return {
     metadata: { continue: data?.continue ?? undefined },
-    items: (data?.items ?? []).map((item: ContactMembershipEnriched) => ({
+    items: (data?.items ?? []).map((item) => ({
       metadata: { name: item.name, creationTimestamp: item.creationTimestamp ?? undefined },
       spec: {
         contactGroupRef: {
@@ -147,6 +93,6 @@ export const contactMembershipForContactListQuery = async (
               : undefined,
           }
         : undefined,
-    })),
+    })) as ContactMembershipWithContactGroup[],
   };
 };

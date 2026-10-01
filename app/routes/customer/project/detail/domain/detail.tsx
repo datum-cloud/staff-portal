@@ -12,9 +12,7 @@ import {
 } from '@/features/domain';
 import { SectionCard } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
-import { createGqlClient } from '@/modules/graphql/client';
-import { generateQueryOp } from '@/modules/graphql/generated';
-import type { UserSummary } from '@/modules/graphql/generated/schema';
+import { userSummariesQuery } from '@/resources/request/client';
 import { projectDomainDetailQuery, projectDomainNotesQuery } from '@/resources/request/server';
 import { useProjectDetailData } from '@/routes/customer/project/shared';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
@@ -60,16 +58,7 @@ export const loader = async ({ params, request }: Route.LoaderArgs) => {
 
   let userEmails: Record<string, string> = {};
   if (creatorIds.length > 0) {
-    const client = createGqlClient({ type: 'global' });
-    const op = generateQueryOp({
-      __name: 'StaffDomainUserSummaries',
-      userSummaries: [
-        { names: creatorIds },
-        { name: true, email: true, givenName: true, familyName: true },
-      ],
-    });
-    const result = await client.query(op.query, op.variables).toPromise();
-    const users: UserSummary[] = result.data?.userSummaries ?? [];
+    const users = await userSummariesQuery(creatorIds);
     userEmails = Object.fromEntries(
       users.map((u) => {
         const fullName = [u.givenName, u.familyName].filter(Boolean).join(' ');

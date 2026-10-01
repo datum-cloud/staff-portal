@@ -1,7 +1,5 @@
 import { PROXY_URL } from '@/modules/axios/axios.client';
-import { createGqlClient } from '@/modules/graphql/client';
-import { generateQueryOp } from '@/modules/graphql/generated';
-import type { UserSummary } from '@/modules/graphql/generated/schema';
+import { userSummariesOp } from '@/resources/gql/search.gql';
 import { ComMiloapisNetworkingDnsV1Alpha1DnsZone } from '@openapi/dns.networking.miloapis.com/v1alpha1';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import {
@@ -54,6 +52,19 @@ export interface GroupedSearchResults {
   httpProxies: SearchResultItem<ComDatumapisNetworkingV1AlphaHttpProxy>[];
   contacts: SearchResultItem<ComMiloapisNotificationV1Alpha1Contact>[];
 }
+
+/**
+ * Resolves a set of user resource names to their gateway UserSummary
+ * (name, email, given/family name) in one round trip. Shared by the search
+ * enrichment below and creator display-name lookups (e.g. domain notes).
+ * Degrades gracefully — a gateway error yields an empty list rather than
+ * throwing, so a summary lookup never fails the caller.
+ */
+export const userSummariesQuery = async (names: string[]) => {
+  if (names.length === 0) return [];
+  const data = await userSummariesOp(names);
+  return data?.userSummaries ?? [];
+};
 
 /**
  * Single search query that hits all resource types at once and groups the
@@ -143,18 +154,7 @@ export async function searchAllQuery(queryString: string): Promise<GroupedSearch
       .filter((name): name is string => !!name);
 
     if (userNames.length > 0) {
-      const client = createGqlClient({ type: 'global' });
-      const op = generateQueryOp({
-        __name: 'StaffSearchUserSummaries',
-        userSummaries: [
-          { names: userNames },
-          { name: true, email: true, givenName: true, familyName: true },
-        ],
-      });
-      const result = await client.query(op.query, op.variables).toPromise();
-      const summaryMap = new Map(
-        ((result.data?.userSummaries as UserSummary[]) ?? []).map((u: UserSummary) => [u.name, u])
-      );
+      const summaryMap = new Map((await userSummariesQuery(userNames)).map((u) => [u.name, u]));
 
       grouped.users = grouped.users.map((item) => {
         const name = item.resource.metadata?.name;
@@ -236,15 +236,7 @@ export const searchUsersQuery = async (
 
     if (names.length === 0) return results;
 
-    const client = createGqlClient({ type: 'global' });
-    const op = generateQueryOp({
-      __name: 'StaffSearchUserSummaries',
-      userSummaries: [{ names }, { name: true, email: true, givenName: true, familyName: true }],
-    });
-    const result = await client.query(op.query, op.variables).toPromise();
-    const summaryMap = new Map(
-      ((result.data?.userSummaries as UserSummary[]) ?? []).map((u: UserSummary) => [u.name, u])
-    );
+    const summaryMap = new Map((await userSummariesQuery(names)).map((u) => [u.name, u]));
 
     return results.map((user) => {
       const name = user.metadata?.name;
