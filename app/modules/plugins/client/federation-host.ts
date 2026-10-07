@@ -29,6 +29,7 @@ import * as ReactDOM from 'react-dom';
 import * as ReactDOMClient from 'react-dom/client';
 import * as ReactRouter from 'react-router';
 import reactRouterPkg from 'react-router/package.json';
+import * as ReactJSXRuntime from 'react/jsx-runtime';
 
 // Distinct from cloud-portal's `datum-portal-host` so the two hosts' MF
 // instances never collide if code is ever shared/co-loaded.
@@ -69,6 +70,15 @@ function hostShared() {
     'react-dom': {
       version: ReactDOM.version,
       lib: () => ReactDOM,
+      shareConfig: { singleton: true, requiredVersion: false as const, eager: true },
+    },
+    // Without this a plugin falls back to its bundled (production) jsx-runtime
+    // while rendering against the host's (dev) React, so dev-only bookkeeping
+    // like key validation disagrees and React logs spurious missing-`key`
+    // warnings for children built by shared libraries (e.g. motion).
+    'react/jsx-runtime': {
+      version: React.version,
+      lib: () => ReactJSXRuntime,
       shareConfig: { singleton: true, requiredVersion: false as const, eager: true },
     },
     // React 19 splits `createRoot`/`hydrateRoot` into this subpath. A plugin
