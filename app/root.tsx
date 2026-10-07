@@ -139,8 +139,12 @@ function App() {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  // ThemeProvider always renders its own inline theme script (a duplicate of
+  // the <ThemeScript> in <head>); without the nonce the CSP blocks it.
+  const nonce = useNonce();
+
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem nonce={nonce}>
       {children}
     </ThemeProvider>
   );
