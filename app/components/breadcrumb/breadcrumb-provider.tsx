@@ -29,7 +29,8 @@ export interface EnhancedRouteHandle {
   breadcrumb?:
     | React.ReactNode
     | ((data: any) => React.ReactNode)
-    | ((data: any) => BreadcrumbOptions);
+    | ((data: any) => BreadcrumbOptions)
+    | ((data: any) => BreadcrumbOptions[]);
   /** Custom breadcrumb configuration */
   customBreadcrumb?: {
     /** Function to generate custom breadcrumb items */
@@ -111,8 +112,7 @@ function replaceBreadcrumbLevels(
     for (let i = 0; i < currentMatchIndex - parentLevels; i++) {
       const match = matches[i];
       if (match.handle?.breadcrumb) {
-        const breadcrumbItem = createBreadcrumbItemFromHandle(match.handle.breadcrumb, match);
-        result.push(breadcrumbItem);
+        result.push(...createBreadcrumbItemsFromHandle(match.handle.breadcrumb, match));
       }
     }
 
@@ -123,8 +123,7 @@ function replaceBreadcrumbLevels(
     for (let i = currentMatchIndex + 1; i < matches.length; i++) {
       const match = matches[i];
       if (match.handle?.breadcrumb) {
-        const breadcrumbItem = createBreadcrumbItemFromHandle(match.handle.breadcrumb, match);
-        result.push(breadcrumbItem);
+        result.push(...createBreadcrumbItemsFromHandle(match.handle.breadcrumb, match));
       }
     }
   } else {
@@ -133,8 +132,7 @@ function replaceBreadcrumbLevels(
     for (let i = 0; i < currentMatchIndex; i++) {
       const match = matches[i];
       if (match.handle?.breadcrumb) {
-        const breadcrumbItem = createBreadcrumbItemFromHandle(match.handle.breadcrumb, match);
-        result.push(breadcrumbItem);
+        result.push(...createBreadcrumbItemsFromHandle(match.handle.breadcrumb, match));
       }
     }
 
@@ -145,8 +143,7 @@ function replaceBreadcrumbLevels(
     for (let i = currentMatchIndex + 1 + replaceLevels; i < matches.length; i++) {
       const match = matches[i];
       if (match.handle?.breadcrumb) {
-        const breadcrumbItem = createBreadcrumbItemFromHandle(match.handle.breadcrumb, match);
-        result.push(breadcrumbItem);
+        result.push(...createBreadcrumbItemsFromHandle(match.handle.breadcrumb, match));
       }
     }
   }
@@ -174,8 +171,7 @@ function insertCustomBreadcrumbs(
         result.push(...customItems);
       } else {
         // Otherwise use the standard breadcrumb with options support
-        const breadcrumbItem = createBreadcrumbItemFromHandle(breadcrumb, match);
-        result.push(breadcrumbItem);
+        result.push(...createBreadcrumbItemsFromHandle(breadcrumb, match));
       }
     }
   }
@@ -189,18 +185,26 @@ function insertCustomBreadcrumbs(
 function generateAutoBreadcrumbs(matches: any[]): BreadcrumbItem[] {
   return matches
     .filter((match: any) => Boolean(match.handle?.breadcrumb))
-    .map((match: any) => {
-      const breadcrumb = match.handle.breadcrumb;
-      return createBreadcrumbItemFromHandle(breadcrumb, match);
-    });
+    .flatMap((match: any) => createBreadcrumbItemsFromHandle(match.handle.breadcrumb, match));
 }
 
 /**
- * Create breadcrumb item from handle, supporting options format
+ * Create breadcrumb items from a handle. A handle may return a list of
+ * options to contribute several levels from one route (e.g. the plugin
+ * mount, whose splat holds the plugin's own nested pages).
  */
-function createBreadcrumbItemFromHandle(breadcrumb: any, match: any): BreadcrumbItem {
+function createBreadcrumbItemsFromHandle(breadcrumb: any, match: any): BreadcrumbItem[] {
   const label = typeof breadcrumb === 'function' ? breadcrumb(match.data) : breadcrumb;
+  if (Array.isArray(label)) {
+    return label.map((item) => createBreadcrumbItemFromLabel(item, match));
+  }
+  return [createBreadcrumbItemFromLabel(label, match)];
+}
 
+/**
+ * Create breadcrumb item from a resolved handle value, supporting options format
+ */
+function createBreadcrumbItemFromLabel(label: any, match: any): BreadcrumbItem {
   // Check if the label is an object with options
   if (typeof label === 'object' && label !== null && 'label' in label) {
     return {

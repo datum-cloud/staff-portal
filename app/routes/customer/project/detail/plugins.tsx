@@ -13,6 +13,7 @@
  * v1; add entitlement/RBAC gating here if a future plugin page needs it.
  */
 import type { Route } from './+types/plugins';
+import { pluginBreadcrumbs } from '@/modules/plugins/client/plugin-breadcrumbs';
 import { ProjectPluginOutlet } from '@/modules/plugins/client/project-plugin-outlet';
 import { getPlugin, toPublicPlugin } from '@/modules/plugins/server';
 import { NotFoundError } from '@/utils/errors/http';
@@ -20,7 +21,7 @@ import { metaObject } from '@/utils/helpers/meta.helper';
 import { useLoaderData } from 'react-router';
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
-  const { slug } = params;
+  const { projectName, slug } = params;
   if (!slug) {
     throw new NotFoundError('Plugin not found');
   }
@@ -31,7 +32,15 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
     throw new NotFoundError('Plugin not found');
   }
 
-  return { plugin };
+  // `projectName`/`splat` feed the breadcrumb; the splat changes on every
+  // in-plugin navigation, so the loader reruns (cheap, in-memory lookup).
+  return { plugin, projectName: projectName ?? '', slug, splat: params['*'] ?? '' };
+};
+
+type LoaderData = Awaited<ReturnType<typeof loader>>;
+
+export const handle = {
+  breadcrumb: (data?: LoaderData) => (data ? pluginBreadcrumbs(data) : 'Plugin'),
 };
 
 export const meta: Route.MetaFunction = ({ data }) => {
