@@ -1,5 +1,5 @@
 import { BILLING_SERVICE_CONFIGURATION_NAME } from '@/features/billing/utils';
-import { PROXY_URL } from '@/modules/axios/axios.client';
+import { httpClient, PROXY_URL } from '@/modules/axios/axios.client';
 import { serviceConsumersOp, type GqlServiceConsumer } from '@/resources/gql/service-consumer.gql';
 import {
   deleteServicesMiloapisComV1Alpha1ServiceEntitlement,
@@ -29,6 +29,31 @@ export type ServiceCharge = ComMiloapisServicesV1Alpha1ServiceCharge;
 export type ServiceConsumer = ComMiloapisServicesV1Alpha1ServiceConsumer;
 export type ServiceConsumerList = ComMiloapisServicesV1Alpha1ServiceConsumerList;
 export type ApprovalDecision = 'Approved' | 'Denied';
+
+export interface ServiceActivationRequest {
+  apiVersion?: 'services.miloapis.com/v1alpha1';
+  kind?: 'ServiceActivationRequest';
+  metadata?: {
+    name?: string;
+    generateName?: string;
+  };
+  spec: {
+    serviceRef: { name: string };
+    consumerProjectRef: { name: string };
+    requestMessage?: string;
+  };
+  status?: {
+    phase?: 'Pending' | 'Active' | 'Denied' | 'Failed' | 'Disabled';
+  };
+}
+
+export interface CreateServiceActivationInput {
+  producerProject: string;
+  /** Immutable, fully-qualified Service.spec.serviceName. */
+  serviceName: string;
+  consumerProject: string;
+  requestMessage?: string;
+}
 
 export const listServices = async (): Promise<ServiceList | null> => {
   const response = await listServicesMiloapisComV1Alpha1Service();
@@ -101,6 +126,36 @@ export const setBillingDefaultOffer = async (
 // proxy.
 const projectScope = (projectName: string) =>
   `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`;
+
+export const buildServiceActivationRequest = ({
+  serviceName,
+  consumerProject,
+  requestMessage,
+}: Omit<CreateServiceActivationInput, 'producerProject'>): ServiceActivationRequest => ({
+  apiVersion: 'services.miloapis.com/v1alpha1',
+  kind: 'ServiceActivationRequest',
+  metadata: {
+    // Server-side name generation keeps repeated, one-shot activation attempts
+    // distinct while making the owning service obvious to operators.
+    generateName: `${serviceName}-`,
+  },
+  spec: {
+    serviceRef: { name: serviceName },
+    consumerProjectRef: { name: consumerProject },
+    ...(requestMessage?.trim() ? { requestMessage: requestMessage.trim() } : {}),
+  },
+});
+
+export const createServiceActivationRequest = async (
+  input: CreateServiceActivationInput
+): Promise<ServiceActivationRequest> => {
+  const response = await httpClient.post<{ data?: ServiceActivationRequest }>(
+    '/apis/services.miloapis.com/v1alpha1/serviceactivationrequests',
+    buildServiceActivationRequest(input),
+    { baseURL: projectScope(input.producerProject) }
+  );
+  return response.data.data ?? (response.data as ServiceActivationRequest);
+};
 
 export const listServiceConsumersInProject = async (
   projectName: string

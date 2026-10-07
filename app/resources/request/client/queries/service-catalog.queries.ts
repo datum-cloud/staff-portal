@@ -1,4 +1,5 @@
 import {
+  createServiceActivationRequest,
   decideServiceConsumer,
   deleteServiceEntitlement,
   getBillingDefaultOffer,
@@ -9,6 +10,7 @@ import {
   listServices,
   setBillingDefaultOffer,
   type ApprovalDecision,
+  type CreateServiceActivationInput,
 } from '../apis/service-catalog.api';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -115,6 +117,24 @@ export const useRevokeServiceEntitlementMutation = (producerProject: string) => 
       consumerProject: string;
       entitlementName: string;
     }) => deleteServiceEntitlement(consumerProject, entitlementName),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: serviceCatalogQueryKeys.consumers.inProject(producerProject),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: serviceCatalogQueryKeys.consumers.enriched(producerProject),
+        }),
+      ]);
+    },
+  });
+};
+
+export const useCreateServiceActivationMutation = (producerProject: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: Omit<CreateServiceActivationInput, 'producerProject'>) =>
+      createServiceActivationRequest({ ...input, producerProject }),
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({
