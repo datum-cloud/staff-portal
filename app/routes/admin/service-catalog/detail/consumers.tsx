@@ -52,6 +52,7 @@ export default function ConsumersPage() {
   const serviceName = service.metadata?.name ?? '';
   const producerProject = service.spec?.owner?.producerProjectRef?.name;
   const canonicalName = service.spec?.serviceName;
+  const activationServiceName = canonicalName ?? '';
 
   const { openDialog, dialog } = useApprovalDialog(producerProject ?? '');
   const revokeMutation = useRevokeServiceEntitlementMutation(producerProject ?? '');
@@ -247,7 +248,7 @@ export default function ConsumersPage() {
         <Button
           type="primary"
           icon={<ACTION_ICONS.add size={16} />}
-          disabled={!producerProject}
+          disabled={!producerProject || !activationServiceName}
           onClick={() => setIsEnableAccessOpen(true)}>
           <Trans>Enable access</Trans>
         </Button>
@@ -267,7 +268,9 @@ export default function ConsumersPage() {
         defaultValues={{ consumerProject: '', requestMessage: '' }}
         onSubmit={async ({ consumerProject, requestMessage }) => {
           await activationMutation.mutateAsync({
-            serviceName,
+            // Activation requests use the immutable, fully-qualified
+            // Service.spec.serviceName rather than metadata.name.
+            serviceName: activationServiceName,
             consumerProject,
             requestMessage,
           });

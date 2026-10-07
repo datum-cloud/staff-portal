@@ -49,6 +49,7 @@ export interface ServiceActivationRequest {
 
 export interface CreateServiceActivationInput {
   producerProject: string;
+  /** Immutable, fully-qualified Service.spec.serviceName. */
   serviceName: string;
   consumerProject: string;
   requestMessage?: string;

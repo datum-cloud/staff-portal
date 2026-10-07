@@ -5,16 +5,16 @@ describe('buildServiceActivationRequest', () => {
   it('targets the selected consumer from the provider project', () => {
     expect(
       buildServiceActivationRequest({
-        serviceName: 'compute',
+        serviceName: 'compute.miloapis.com',
         consumerProject: 'customer-production',
         requestMessage: '  Managed onboarding  ',
       })
     ).toEqual({
       apiVersion: 'services.miloapis.com/v1alpha1',
       kind: 'ServiceActivationRequest',
-      metadata: { generateName: 'compute-' },
+      metadata: { generateName: 'compute.miloapis.com-' },
       spec: {
-        serviceRef: { name: 'compute' },
+        serviceRef: { name: 'compute.miloapis.com' },
         consumerProjectRef: { name: 'customer-production' },
         requestMessage: 'Managed onboarding',
       },
@@ -23,7 +23,7 @@ describe('buildServiceActivationRequest', () => {
 
   it('omits a blank optional message', () => {
     const request = buildServiceActivationRequest({
-      serviceName: 'compute',
+      serviceName: 'compute.miloapis.com',
       consumerProject: 'customer-production',
       requestMessage: '   ',
     });
