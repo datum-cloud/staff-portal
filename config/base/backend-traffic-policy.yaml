@@ -7,6 +7,11 @@ spec:
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
       name: staff-portal
+  compressor:
+    - type: Brotli
+      brotli: {}
+    - type: Gzip
+      gzip: {}
   tcpKeepalive:
     idleTime: 60s
     interval: 15s
