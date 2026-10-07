@@ -1,5 +1,4 @@
-import { consumerMatchesService } from '../utils/consumer-matches-service';
-import { useServiceConsumersInProjectQuery } from '@/resources/request/client';
+import { useServiceConsumersEnrichedQuery } from '@/resources/request/client';
 import { Text } from '@datum-cloud/datum-ui/typography';
 
 interface Props {
@@ -11,16 +10,19 @@ interface Props {
 /**
  * Small count chip rendered on the Approvals nav item showing how many
  * PendingApproval ServiceConsumers are waiting on the producer project.
- * The query is deduplicated by react-query so the Approvals tab itself
- * doesn't refetch.
+ *
+ * Uses the same gateway query (and query key) as the Approvals and Consumers
+ * tabs, so react-query dedupes it with them. The gateway filters by service
+ * server-side; the raw REST list returned every consumer of every service the
+ * producer project owns, managedFields included (1.3 MB for datum-cloud).
  */
 export function PendingApprovalsBadge({ producerProject, serviceName, canonicalName }: Props) {
-  const { data } = useServiceConsumersInProjectQuery(producerProject);
-  const count = (data?.items ?? []).filter(
-    (c) =>
-      consumerMatchesService(c, serviceName, canonicalName) &&
-      c.status?.phase === 'PendingApproval' &&
-      !c.spec?.approval
+  // The consumer's serviceRef may hold either the Service's metadata.name or
+  // its canonical spec.serviceName, so ask the gateway for both.
+  const serviceNames = [...new Set([serviceName, canonicalName].filter((n): n is string => !!n))];
+  const { data } = useServiceConsumersEnrichedQuery(producerProject, serviceNames);
+  const count = (data ?? []).filter(
+    (c) => c.phase === 'PendingApproval' && !c.approvalDecision
   ).length;
 
   if (count === 0) return null;
