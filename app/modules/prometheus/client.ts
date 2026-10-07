@@ -183,3 +183,29 @@ export async function getBuildInfo(client: AxiosInstance): Promise<Record<string
     return {};
   }
 }
+
+/**
+ * Get the values of a Prometheus label
+ * @param match - Optional series selector to scope label values (e.g. '{job="api"}')
+ */
+export async function getLabels(
+  client: AxiosInstance,
+  label: string,
+  match?: string
+): Promise<string[]> {
+  try {
+    const params: Record<string, string> = {};
+    if (match) params['match[]'] = match;
+
+    const response = await client.get(`/api/v1/label/${label}/values`, { params });
+
+    if (response.data?.status === 'success') {
+      return response.data.data || [];
+    }
+
+    return [];
+  } catch (error) {
+    logger.error('Failed to get Prometheus label values:', error);
+    return [];
+  }
+}
