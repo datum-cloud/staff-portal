@@ -7,6 +7,7 @@ import {
   executeRangeQuery,
   testConnection,
   getBuildInfo,
+  getLabels,
   PROMETHEUS_CONFIG,
 } from './client';
 import { PrometheusError } from './errors';
@@ -23,6 +24,8 @@ import type {
 } from './types';
 import { validateQueryOptions, timeRangeToUnix } from './validator';
 import type { AxiosInstance } from 'axios';
+
+const LABEL_NAME_PATTERN = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
 
 export class PrometheusService {
   private client: AxiosInstance;
@@ -64,6 +67,9 @@ export class PrometheusService {
       }
       case 'buildinfo': {
         return this.getBuildInfo();
+      }
+      case 'labels': {
+        return this.getLabels(params.label, params.match);
       }
       default:
         throw new PrometheusError(`Unsupported query type: ${type}`, 'query');
@@ -185,6 +191,21 @@ export class PrometheusService {
    */
   async getBuildInfo(): Promise<Record<string, string>> {
     return await getBuildInfo(this.client);
+  }
+
+  /**
+   * Get the values of a label, optionally scoped to a series selector.
+   * The label name is interpolated into the URL path, so it must be a valid
+   * Prometheus label name.
+   */
+  async getLabels(label: unknown, match?: unknown): Promise<string[]> {
+    if (typeof label !== 'string' || !LABEL_NAME_PATTERN.test(label)) {
+      throw PrometheusError.query(`Invalid label name: ${String(label)}`);
+    }
+    if (match !== undefined && typeof match !== 'string') {
+      throw PrometheusError.query('Label match selector must be a string');
+    }
+    return await getLabels(this.client, label, match || undefined);
   }
 
   /**
