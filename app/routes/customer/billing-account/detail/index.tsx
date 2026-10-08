@@ -4,7 +4,7 @@ import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
 import { DisplayId, DisplayName } from '@/components/display';
 import { PageHeader } from '@/components/page-header';
-import { OfferSwitcherCard } from '@/features/billing';
+import { OfferSwitcherCard, PaymentTermsCard } from '@/features/billing';
 import {
   formatBillingAddress,
   getActiveBindingsForAccount,
@@ -397,6 +397,8 @@ export default function Page() {
           </SectionCard>
         </Col>
       </Row>
+
+      <PaymentTermsCard orgName={orgName} account={account} />
 
       <OfferSwitcherCard
         orgName={orgName}
