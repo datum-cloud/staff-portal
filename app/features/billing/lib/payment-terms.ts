@@ -83,6 +83,16 @@ export function getPaymentReadyCondition(account: ComMiloapisBillingV1Alpha1Bill
 
 const positiveDecimal = /^(0|[1-9]\d*)(\.\d+)?$/;
 
+/**
+ * An optional date that a cleared picker can leave as '' or null. Both mean
+ * "no date". Without this, z.coerce.date() turns null into 1 January 1970,
+ * and clearing the end date of active terms would end them immediately.
+ */
+const optionalDate = z.preprocess(
+  (value) => (value === '' || value === null ? undefined : value),
+  z.coerce.date().optional()
+);
+
 const optionalText = (max: number) =>
   z.string().trim().max(max, `Must be ${max} characters or fewer`).optional().or(z.literal(''));
 
@@ -107,8 +117,8 @@ export const paymentTermsFormSchema = z
       .or(z.literal('')),
     purchaseOrderNumber: optionalText(64),
     agreementReference: optionalText(128),
-    startsAt: z.coerce.date().optional(),
-    endsAt: z.coerce.date().optional(),
+    startsAt: optionalDate,
+    endsAt: optionalDate,
     reason: z
       .string()
       .trim()

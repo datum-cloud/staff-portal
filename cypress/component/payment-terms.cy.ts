@@ -101,6 +101,14 @@ describe('paymentTermsFormSchema', () => {
     expect(paymentTermsFormSchema.safeParse({ ...valid, reason: '  ' }).success).to.equal(false);
   });
 
+  it('treats a cleared date as no date, never as 1970', () => {
+    for (const cleared of ['', null, undefined]) {
+      const result = paymentTermsFormSchema.safeParse({ ...valid, endsAt: cleared });
+      expect(result.success, `endsAt ${JSON.stringify(cleared)}`).to.equal(true);
+      expect(result.success && result.data.endsAt).to.equal(undefined);
+    }
+  });
+
   it('requires the end date to be after the start date', () => {
     const result = paymentTermsFormSchema.safeParse({
       ...valid,
