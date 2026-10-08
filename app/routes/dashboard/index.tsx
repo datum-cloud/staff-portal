@@ -1,5 +1,6 @@
 import type { Route } from './+types/index';
-import { AssistantWorkspace, STAFF_ASSISTANT_CONFIG } from '@/features/assistant';
+import { AssistantWorkspace } from '@/features/assistant/components/assistant-workspace';
+import { STAFF_ASSISTANT_CONFIG } from '@/features/assistant/staff-config';
 import { HEADER_STACK_H } from '@/features/milo/lib/dimensions';
 import { useEnv } from '@/hooks';
 import { useApp } from '@/providers/app.provider';
