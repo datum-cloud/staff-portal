@@ -1,4 +1,3 @@
-import { STAFF_ASSISTANT_CONFIG } from '../staff-config';
 import { useAssistant } from './assistant-context';
 import { useApp } from '@/providers/app.provider';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
@@ -7,9 +6,17 @@ import { lazy, Suspense, useState } from 'react';
 
 // The full-page workspace, reused here as a global slide-up so people can chat
 // anywhere without navigating to the dashboard. Lazy so its bundle only loads
-// on first open.
+// on first open. The staff config loads in the same lazy import because it
+// imports `@datum-cloud/datum-ui/assistant` (streamdown, shiki, mermaid,
+// tiptap); a static import here put that on every page rendering the panel.
 const AssistantWorkspace = lazy(() =>
-  import('./assistant-workspace').then((m) => ({ default: m.AssistantWorkspace }))
+  Promise.all([import('./assistant-workspace'), import('../staff-config')]).then(
+    ([workspace, { STAFF_ASSISTANT_CONFIG }]) => ({
+      default: ({ userName }: { userName?: string }) => (
+        <workspace.AssistantWorkspace config={STAFF_ASSISTANT_CONFIG} userName={userName} />
+      ),
+    })
+  )
 );
 
 // Mirrors the workspace's empty state (a fresh chat), which is what the panel
@@ -120,10 +127,7 @@ export function AssistantPanel() {
           <div className="relative min-h-0 flex-1 overflow-hidden">
             {isDragging && <div className="absolute inset-0 z-50" />}
             <Suspense fallback={<WorkspaceSkeleton />}>
-              <AssistantWorkspace
-                config={STAFF_ASSISTANT_CONFIG}
-                userName={user?.spec?.givenName}
-              />
+              <AssistantWorkspace userName={user?.spec?.givenName} />
             </Suspense>
           </div>
         </motion.div>

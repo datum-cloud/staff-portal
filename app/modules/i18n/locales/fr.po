@@ -463,7 +463,7 @@ msgstr ""
 msgid "Assign a billing account to this project to track usage."
 msgstr ""
 
-#: app/routes/dashboard/index.tsx:15
+#: app/routes/dashboard/index.tsx:16
 msgid "Assistant"
 msgstr ""
 
