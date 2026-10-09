@@ -1,3 +1,4 @@
+import { extractBackendRules, extractTrafficSettings } from './http-proxy.backends';
 import type { HttpProxy, HttpProxyComplexity, TrafficProtectionMode } from './http-proxy.types';
 import type {
   ComDatumapisNetworkingV1AlphaHttpProxy,
@@ -129,22 +130,7 @@ export function toHttpProxy(
   }
 ): HttpProxy {
   const backendRule = raw.spec?.rules?.find((rule) => rule.backends && rule.backends.length > 0);
-  const backend = backendRule?.backends?.[0] as
-    | { endpoint?: string; tls?: { hostname?: string }; connector?: { name: string } }
-    | undefined;
-
-  const origins: string[] = [];
-  if (raw.spec?.rules) {
-    for (const rule of raw.spec.rules) {
-      if (rule.backends && rule.backends.length > 0) {
-        for (const backendItem of rule.backends) {
-          if (backendItem.endpoint) {
-            origins.push(backendItem.endpoint);
-          }
-        }
-      }
-    }
-  }
+  const backend = backendRule?.backends?.[0] as { connector?: { name: string } } | undefined;
 
   const hasRedirectRule = raw.spec?.rules?.some((rule) => {
     const noBackends = !rule.backends || rule.backends.length === 0;
@@ -173,12 +159,11 @@ export function toHttpProxy(
     namespace: raw.metadata?.namespace,
     resourceVersion: raw.metadata?.resourceVersion ?? '',
     createdAt: raw.metadata?.creationTimestamp ?? '',
-    endpoint: backend?.endpoint,
-    origins: origins.length > 0 ? origins : undefined,
     hostnames: raw.spec?.hostnames,
-    tlsHostname: backend?.tls?.hostname,
     ...(hostHeader && { hostHeader }),
     complexity,
+    backendRules: extractBackendRules(raw),
+    traffic: extractTrafficSettings(raw),
     status: raw.status,
     canonicalHostname: status?.canonicalHostname,
     hostnameStatuses: status?.hostnameStatuses,

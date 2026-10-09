@@ -1,3 +1,4 @@
+import type { HttpProxyBackendRule, HttpProxyTrafficSettings } from './http-proxy.backends';
 import type { ComDatumapisNetworkingV1AlphaHttpProxy } from '@openapi/networking.datumapis.com/v1alpha';
 
 export type TrafficProtectionMode = 'Observe' | 'Enforce' | 'Disabled';
@@ -22,10 +23,7 @@ export type HttpProxy = {
   namespace?: string;
   resourceVersion: string;
   createdAt: string;
-  endpoint?: string;
-  origins?: string[];
   hostnames?: string[];
-  tlsHostname?: string;
   status?: ComDatumapisNetworkingV1AlphaHttpProxy['status'];
   chosenName?: string;
   canonicalHostname?: string;
@@ -39,6 +37,8 @@ export type HttpProxy = {
   basicAuthUsernames?: string[];
   hostHeader?: string;
   complexity?: HttpProxyComplexity;
+  backendRules?: HttpProxyBackendRule[];
+  traffic?: HttpProxyTrafficSettings;
 };
 
 export type EdgeDetailBundle = {

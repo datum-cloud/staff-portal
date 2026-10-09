@@ -2,6 +2,7 @@ import type { Route } from './+types/index';
 import { DateTime } from '@/components/date';
 import { DnsHostChips } from '@/features/dns';
 import { DomainDnsProviders } from '@/features/domain';
+import { backendTargets } from '@/features/edge/lib';
 import { DATE_RANGE_OPTIONS, ListPage, ListTable, ListColumnHeader } from '@/features/milo';
 import { resolvePluginIcon } from '@/modules/plugins/client/icon-map';
 import { getResourceExtensions } from '@/modules/plugins/client/match-extension';
@@ -158,9 +159,7 @@ export default function Page() {
 
     const edgeRows: ResourceRow[] = (edgeQuery.data?.items ?? []).map(({ resource, tenant }) => {
       const projectName = getProjectName(tenant);
-      const endpoints = (resource.spec?.rules ?? []).flatMap(
-        (rule) => rule.backends?.map((b) => b.endpoint ?? '').filter(Boolean) ?? []
-      );
+      const endpoints = backendTargets(resource);
       return {
         type: 'edge',
         uid: resource.metadata?.uid ?? `edge/${projectName}/${resource.metadata?.name ?? ''}`,

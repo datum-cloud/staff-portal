@@ -21,6 +21,10 @@ msgstr ""
 msgid "(current)"
 msgstr ""
 
+#: app/features/edge/components/detail/edge-load-balancing-card.tsx:24
+msgid "(default)"
+msgstr ""
+
 #. placeholder {0}: active.length
 #: app/features/project/components/project-suspension-card.tsx:149
 msgid "{0} active suspensions — the project stays suspended until all are lifted. Instances and served traffic are paused; data is preserved."
@@ -284,6 +288,10 @@ msgstr ""
 msgid "ALB"
 msgstr ""
 
+#: app/features/edge/components/detail/edge-load-balancing-card.tsx:17
+msgid "Algorithm"
+msgstr ""
+
 #: app/routes/customer/billing-account/detail/index.tsx:283
 msgid "All billing accounts"
 msgstr ""
@@ -332,6 +340,12 @@ msgstr ""
 msgid "Amount"
 msgstr ""
 
+#. placeholder {0}: traffic.passive.consecutive5xxErrors
+#. placeholder {1}: formatDuration(traffic.passive.baseEjectionTime)
+#: app/features/edge/components/detail/edge-load-balancing-card.tsx:64
+msgid "An endpoint that returns {0} 5xx responses in a row stops getting traffic for {1}, longer each time it repeats."
+msgstr ""
+
 #: app/routes/admin/service-catalog/index.tsx:173
 msgid "Any enablement"
 msgstr ""
@@ -349,8 +363,8 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:491
 #: app/features/project/components/project-resources-card.tsx:62
 #: app/routes/customer/resource/edge/index.tsx:10
-#: app/routes/customer/resource/index.tsx:142
-#: app/routes/customer/resource/index.tsx:397
+#: app/routes/customer/resource/index.tsx:143
+#: app/routes/customer/resource/index.tsx:396
 msgid "Application Load Balancer"
 msgstr ""
 
@@ -502,6 +516,19 @@ msgstr ""
 
 #: app/routes/admin/offer/detail.tsx:226
 msgid "Back to Offers"
+msgstr ""
+
+#: app/features/edge/components/detail/edge-backends-card.tsx:30
+msgid "Backend"
+msgstr ""
+
+#: app/features/edge/components/detail/edge-backends-card.tsx:115
+#: app/features/edge/components/edge-list.tsx:127
+msgid "Backends"
+msgstr ""
+
+#: app/features/edge/components/detail/edge-load-balancing-card.tsx:47
+msgid "Base Ejection"
 msgstr ""
 
 #: app/features/edge/components/detail/edge-config-card.tsx:43
@@ -718,7 +745,7 @@ msgstr ""
 msgid "Completed"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:106
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:105
 msgid "Completing ACME challenge with the certificate authority"
 msgstr ""
 
@@ -726,13 +753,13 @@ msgstr ""
 msgid "Conditions"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-config-card.tsx:81
+#: app/features/edge/components/detail/edge-config-card.tsx:72
 #: app/routes/customer/project/detail/export-policy/detail.tsx:171
 #: app/routes/customer/project/detail/export-policy/detail.tsx:205
 msgid "Configuration"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:82
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:81
 msgid "Configuring DNS"
 msgstr ""
 
@@ -746,6 +773,10 @@ msgstr ""
 
 #: app/features/edge/components/detail/edge-config-card.tsx:59
 msgid "Connector"
+msgstr ""
+
+#: app/features/edge/components/detail/edge-load-balancing-card.tsx:42
+msgid "Consecutive 5xx"
 msgstr ""
 
 #: app/routes/admin/service-catalog/detail/consumers.tsx:280
@@ -960,7 +991,7 @@ msgstr ""
 #: app/features/dns/components/dns-zone-list.tsx:133
 #: app/features/domain/components/domain-list.tsx:108
 #: app/features/edge/components/detail/edge-general-card.tsx:50
-#: app/features/edge/components/edge-list.tsx:156
+#: app/features/edge/components/edge-list.tsx:150
 #: app/features/organization/components/org-details-card.tsx:63
 #: app/features/project/components/project-details-card.tsx:52
 #: app/features/quota/components/quota-grant-list.tsx:129
@@ -980,8 +1011,8 @@ msgstr ""
 #: app/routes/customer/project/detail/export-policy/index.tsx:51
 #: app/routes/customer/project/index.tsx:171
 #: app/routes/customer/project/index.tsx:220
-#: app/routes/customer/resource/index.tsx:361
-#: app/routes/customer/resource/index.tsx:417
+#: app/routes/customer/resource/index.tsx:360
+#: app/routes/customer/resource/index.tsx:416
 #: app/routes/customer/user/detail/index.tsx:237
 #: app/routes/customer/user/index.tsx:175
 #: app/routes/customer/user/index.tsx:335
@@ -1019,7 +1050,7 @@ msgstr ""
 msgid "Current Offer"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:202
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:185
 msgid "Custom"
 msgstr ""
 
@@ -1240,7 +1271,7 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: app/routes/customer/resource/index.tsx:356
+#: app/routes/customer/resource/index.tsx:355
 msgid "Detail"
 msgstr ""
 
@@ -1282,7 +1313,7 @@ msgstr ""
 
 #: app/features/contact-group/components/contact-group-form.tsx:63
 #: app/features/edge/components/detail/edge-config-card.tsx:12
-#: app/features/edge/components/edge-list.tsx:102
+#: app/features/edge/components/edge-list.tsx:96
 #: app/features/service-catalog/components/details-card.tsx:37
 msgid "Display Name"
 msgstr ""
@@ -1298,8 +1329,8 @@ msgstr ""
 #: app/features/project/components/project-resources-card.tsx:68
 #: app/routes/customer/organization/detail/dns.tsx:9
 #: app/routes/customer/project/detail/dns/layout.tsx:5
-#: app/routes/customer/resource/index.tsx:143
-#: app/routes/customer/resource/index.tsx:398
+#: app/routes/customer/resource/index.tsx:144
+#: app/routes/customer/resource/index.tsx:397
 msgid "DNS"
 msgstr ""
 
@@ -1313,7 +1344,7 @@ msgstr ""
 msgid "DNS Providers"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:77
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:76
 msgid "DNS Ready"
 msgstr ""
 
@@ -1335,7 +1366,7 @@ msgstr ""
 msgid "DNS Records"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:75
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:74
 msgid "DNS records have been programmed for this hostname"
 msgstr ""
 
@@ -1356,8 +1387,8 @@ msgstr ""
 #: app/features/domain/components/domain-list.tsx:61
 #: app/features/fraud/detail/maxmind-rows.tsx:237
 #: app/routes/customer/project/detail/domain/detail.tsx:102
-#: app/routes/customer/resource/index.tsx:144
-#: app/routes/customer/resource/index.tsx:399
+#: app/routes/customer/resource/index.tsx:145
+#: app/routes/customer/resource/index.tsx:398
 msgid "Domain"
 msgstr ""
 
@@ -1407,8 +1438,12 @@ msgstr ""
 msgid "Draft Offer updated"
 msgstr ""
 
-#: app/routes/customer/resource/index.tsx:391
+#: app/routes/customer/resource/index.tsx:390
 msgid "Each resource type is limited to 2,000 results at a time. Refine your search to surface other resources."
+msgstr ""
+
+#: app/features/edge/components/detail/edge-backends-card.tsx:118
+msgid "Each routing rule has its own pool, weighted within the rule."
 msgstr ""
 
 #: app/features/contact/components/contact-list.tsx:53
@@ -1523,7 +1558,6 @@ msgstr ""
 msgid "End Time"
 msgstr ""
 
-#: app/features/edge/components/edge-list.tsx:133
 #: app/routes/customer/fraud/providers/create.tsx:100
 #: app/routes/customer/fraud/providers/detail.tsx:140
 #: app/routes/customer/fraud/providers/index.tsx:76
@@ -1916,6 +1950,10 @@ msgstr ""
 msgid "Groups"
 msgstr ""
 
+#: app/features/edge/components/detail/edge-load-balancing-card.tsx:31
+msgid "Hash On"
+msgstr ""
+
 #: app/features/milo/components/page/list-table.tsx:303
 #: app/features/milo/components/page/list-table.tsx:307
 msgid "Hide filters"
@@ -1949,12 +1987,12 @@ msgstr ""
 msgid "Host Header"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:56
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:55
 msgid "Hostname Verified"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:161
-#: app/features/edge/components/edge-list.tsx:123
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:160
+#: app/features/edge/components/edge-list.tsx:117
 msgid "Hostnames"
 msgstr ""
 
@@ -2065,7 +2103,7 @@ msgstr ""
 msgid "ISP"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:111
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:110
 msgid "Issuing TLS certificate"
 msgstr ""
 
@@ -2178,6 +2216,10 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:369
 #: app/features/activity/components/activity-list.tsx:459
 msgid "List"
+msgstr ""
+
+#: app/features/edge/components/detail/edge-load-balancing-card.tsx:61
+msgid "Load Balancing"
 msgstr ""
 
 #: app/features/billing/components/org-billing-accounts-card.tsx:91
@@ -2299,6 +2341,10 @@ msgstr ""
 msgid "Marketing"
 msgstr ""
 
+#: app/features/edge/components/detail/edge-load-balancing-card.tsx:52
+msgid "Max Ejected"
+msgstr ""
+
 #: app/features/activity/components/activity-list.tsx:400
 #: app/features/activity/components/activity-list.tsx:499
 #: app/routes/customer/organization/detail/member.tsx:174
@@ -2384,7 +2430,7 @@ msgstr ""
 #: app/routes/customer/project/detail/export-policy/index.tsx:28
 #: app/routes/customer/project/detail/secret.tsx:24
 #: app/routes/customer/project/index.tsx:100
-#: app/routes/customer/resource/index.tsx:320
+#: app/routes/customer/resource/index.tsx:319
 #: app/routes/customer/user/detail/organization.tsx:34
 #: app/routes/customer/user/index.tsx:116
 #: app/routes/marketing/contact-group/detail/member.tsx:181
@@ -2468,8 +2514,12 @@ msgstr ""
 msgid "No active sessions."
 msgstr ""
 
-#: app/features/edge/components/edge-list.tsx:172
+#: app/features/edge/components/edge-list.tsx:166
 msgid "No Application Load Balancer found."
+msgstr ""
+
+#: app/features/edge/components/detail/edge-backends-card.tsx:126
+msgid "No backends configured"
 msgstr ""
 
 #: app/features/organization/components/org-usage-card.tsx:84
@@ -2588,7 +2638,7 @@ msgstr ""
 msgid "No groups found."
 msgstr ""
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:223
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:206
 msgid "No hostnames configured"
 msgstr ""
 
@@ -2646,10 +2696,6 @@ msgstr ""
 #: app/routes/customer/organization/index.tsx:154
 #: app/routes/customer/user/detail/organization.tsx:69
 msgid "No organizations found."
-msgstr ""
-
-#: app/features/edge/components/detail/edge-origins-card.tsx:30
-msgid "No origins configured"
 msgstr ""
 
 #: app/features/billing/components/offer-switcher-card.tsx:135
@@ -2714,7 +2760,7 @@ msgstr ""
 msgid "No recovery links have been sent to this user."
 msgstr ""
 
-#: app/routes/customer/resource/index.tsx:388
+#: app/routes/customer/resource/index.tsx:387
 msgid "No resources found."
 msgstr ""
 
@@ -2918,10 +2964,6 @@ msgstr ""
 msgid "Organizations"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-origins-card.tsx:16
-msgid "Origin"
-msgstr ""
-
 #: app/routes/admin/group/detail/index.tsx:18
 #: app/routes/admin/offer/detail.tsx:376
 #: app/routes/dashboard/overview.tsx:28
@@ -2939,6 +2981,10 @@ msgstr ""
 
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:144
 msgid "Passing"
+msgstr ""
+
+#: app/features/edge/components/detail/edge-load-balancing-card.tsx:36
+msgid "Passive Health Checks"
 msgstr ""
 
 #: app/routes/customer/user/detail/index.tsx:466
@@ -3138,7 +3184,7 @@ msgstr ""
 msgid "Profile updated successfully"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:83
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:82
 msgid "Programming DNS records for this hostname"
 msgstr ""
 
@@ -3147,10 +3193,10 @@ msgstr ""
 #: app/features/billing/components/billing-account-list.tsx:260
 #: app/features/dns/components/dns-zone-list.tsx:99
 #: app/features/domain/components/domain-list.tsx:71
-#: app/features/edge/components/edge-list.tsx:113
+#: app/features/edge/components/edge-list.tsx:107
 #: app/routes/customer/billing-account/detail/index.tsx:168
-#: app/routes/customer/resource/index.tsx:343
-#: app/routes/customer/resource/index.tsx:409
+#: app/routes/customer/resource/index.tsx:342
+#: app/routes/customer/resource/index.tsx:408
 msgid "Project"
 msgstr ""
 
@@ -3394,7 +3440,7 @@ msgstr ""
 msgid "Requested by"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:114
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:113
 msgid "Requesting a TLS certificate from the certificate authority"
 msgstr ""
 
@@ -3433,13 +3479,13 @@ msgstr ""
 msgid "Resource Type:"
 msgstr ""
 
-#: app/routes/customer/project/detail/edge/detail.tsx:50
+#: app/routes/customer/project/detail/edge/detail.tsx:51
 msgid "Resource:"
 msgstr ""
 
 #: app/components/app-search/search-results.tsx:230
 #: app/features/project/components/project-resources-card.tsx:58
-#: app/routes/customer/resource/index.tsx:28
+#: app/routes/customer/resource/index.tsx:29
 #: app/routes/customer/resource/layout.tsx:5
 msgid "Resources"
 msgstr ""
@@ -3548,7 +3594,7 @@ msgstr ""
 msgid "Search activity..."
 msgstr ""
 
-#: app/features/edge/components/edge-list.tsx:171
+#: app/features/edge/components/edge-list.tsx:165
 msgid "Search Application Load Balancer..."
 msgstr ""
 
@@ -3661,7 +3707,7 @@ msgid "Search projects..."
 msgstr ""
 
 #: app/features/billing/components/billing-account-list.tsx:262
-#: app/routes/customer/resource/index.tsx:411
+#: app/routes/customer/resource/index.tsx:410
 msgid "Search projects…"
 msgstr ""
 
@@ -3677,7 +3723,7 @@ msgstr ""
 msgid "Search records..."
 msgstr ""
 
-#: app/routes/customer/resource/index.tsx:387
+#: app/routes/customer/resource/index.tsx:386
 msgid "Search resources..."
 msgstr ""
 
@@ -3900,7 +3946,7 @@ msgstr ""
 msgid "Snapshot not written yet — controller may still be reconciling."
 msgstr ""
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:103
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:102
 msgid "Solving ACME challenge"
 msgstr ""
 
@@ -3951,7 +3997,7 @@ msgstr ""
 #: app/features/contact/components/contact-list.tsx:92
 #: app/features/domain/components/domain-list.tsx:96
 #: app/features/edge/components/detail/edge-general-card.tsx:24
-#: app/features/edge/components/edge-list.tsx:148
+#: app/features/edge/components/edge-list.tsx:142
 #: app/features/email/components/email-detail.tsx:56
 #: app/features/email/components/email-list.tsx:74
 #: app/features/email/components/email-list.tsx:129
@@ -4056,7 +4102,7 @@ msgid "Switch to published Offer"
 msgstr ""
 
 #: app/components/theme-switcher/index.tsx:48
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:181
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:164
 msgid "System"
 msgstr ""
 
@@ -4100,7 +4146,7 @@ msgstr ""
 msgid "The list is limited to 2,000 results at a time. Refine your search to surface other items."
 msgstr ""
 
-#: app/features/edge/components/edge-list.tsx:170
+#: app/features/edge/components/edge-list.tsx:164
 msgid "The list of Application Load Balancer resources is limited to 2,000 results at a time. Refine your search to surface other resources."
 msgstr ""
 
@@ -4132,7 +4178,7 @@ msgstr ""
 msgid "This flag is managed by the platform and can't be changed from here."
 msgstr ""
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:54
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:53
 msgid "This hostname has been verified by Datum"
 msgstr ""
 
@@ -4172,11 +4218,11 @@ msgstr ""
 msgid "Timezone updated successfully"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:90
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:89
 msgid "TLS certificate is issued and ready for this hostname"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:96
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:95
 msgid "TLS certificate provisioning failed"
 msgstr ""
 
@@ -4184,16 +4230,11 @@ msgstr ""
 msgid "TLS Certificates"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:98
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:97
 msgid "TLS Failed"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-config-card.tsx:68
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:167
-msgid "TLS Hostname"
-msgstr ""
-
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:92
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:91
 msgid "TLS Ready"
 msgstr ""
 
@@ -4217,6 +4258,10 @@ msgstr ""
 msgid "Total users"
 msgstr ""
 
+#: app/features/edge/components/detail/edge-backends-card.tsx:68
+msgid "Traffic"
+msgstr ""
+
 #. placeholder {0}: idx + 1
 #: app/features/fraud/policy/policy-form.tsx:186
 msgid "Trigger {0}"
@@ -4236,6 +4281,7 @@ msgid "TTL"
 msgstr ""
 
 #: app/features/billing/components/offer-included-pricing-list.tsx:126
+#: app/features/edge/components/detail/edge-backends-card.tsx:55
 #: app/features/fraud/policy/policy-form.tsx:199
 #: app/features/organization/components/org-details-card.tsx:59
 #: app/features/service-catalog/components/conditions-card.tsx:19
@@ -4244,8 +4290,8 @@ msgstr ""
 #: app/routes/customer/project/detail/dns/detail.tsx:92
 #: app/routes/customer/project/detail/dns/detail.tsx:156
 #: app/routes/customer/project/detail/export-policy/detail.tsx:162
-#: app/routes/customer/resource/index.tsx:326
-#: app/routes/customer/resource/index.tsx:395
+#: app/routes/customer/resource/index.tsx:325
+#: app/routes/customer/resource/index.tsx:394
 #: app/routes/customer/user/detail/organization.tsx:48
 msgid "Type"
 msgstr ""
@@ -4263,7 +4309,7 @@ msgstr ""
 msgid "Type at least 3 characters to search."
 msgstr ""
 
-#: app/routes/customer/resource/index.tsx:412
+#: app/routes/customer/resource/index.tsx:411
 msgid "Type to filter by project name."
 msgstr ""
 
@@ -4282,7 +4328,7 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:62
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:61
 #: app/features/user/components/user-identity-card.tsx:62
 msgid "Unverified"
 msgstr ""
@@ -4397,7 +4443,7 @@ msgstr ""
 msgid "Verified"
 msgstr ""
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:67
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:66
 msgid "Verifying hostname"
 msgstr ""
 
@@ -4467,7 +4513,7 @@ msgstr ""
 msgid "Wait for charge fan-out, then refresh this page."
 msgstr ""
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:68
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:67
 msgid "Waiting for hostname ownership verification to complete"
 msgstr ""
 
@@ -4486,6 +4532,10 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:370
 #: app/features/activity/components/activity-list.tsx:460
 msgid "Watch"
+msgstr ""
+
+#: app/features/edge/components/detail/edge-backends-card.tsx:64
+msgid "Weight"
 msgstr ""
 
 #: app/features/edge/components/detail/edge-yaml-card.tsx:18
