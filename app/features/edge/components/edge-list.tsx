@@ -2,6 +2,7 @@ import { BadgeState } from '@/components/badge';
 import { Chip } from '@/components/chip';
 import { DateTime } from '@/components/date';
 import { SearchResourceTable, type ControlledSearch } from '@/components/search-resource-table';
+import { backendTargets } from '@/features/edge/lib';
 import { ListColumnHeader } from '@/features/milo';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { createColumnHelper } from '@/utils/table';
@@ -42,13 +43,6 @@ export interface EdgeListProps {
 }
 
 const columnHelper = createColumnHelper<EdgeRow>();
-
-/** Flatten backend endpoints across all rules, for display and filtering. */
-function endpoints(edge: ComDatumapisNetworkingV1AlphaHttpProxy): string[] {
-  return (edge.spec?.rules ?? []).flatMap(
-    (rule) => rule.backends?.map((b) => b.endpoint ?? '').filter(Boolean) ?? []
-  );
-}
 
 /** Human-readable name from annotations; falls back to resource name. */
 function edgeDisplayName(edge: ComDatumapisNetworkingV1AlphaHttpProxy): string {
@@ -128,9 +122,9 @@ export function EdgeList({
         return <Chip items={list} maxVisible={2} variant="outline" size="sm" />;
       },
     }),
-    columnHelper.accessor((row) => endpoints(row.edge), {
+    columnHelper.accessor((row) => backendTargets(row.edge), {
       id: 'endpoint',
-      header: () => t`Endpoint`,
+      header: () => t`Backends`,
       cell: ({ getValue }) => {
         const list = getValue();
         if (list.length === 0) return '—';
@@ -176,7 +170,7 @@ export function EdgeList({
         const name = (row.edge.metadata?.name ?? '').toLowerCase();
         const displayName = edgeDisplayName(row.edge).toLowerCase();
         const project = row.projectName.toLowerCase();
-        const endpointText = endpoints(row.edge).join(' ').toLowerCase();
+        const endpointText = backendTargets(row.edge).join(' ').toLowerCase();
         const hostnameText = edgeHostnames(row.edge).join(' ').toLowerCase();
         return (
           name.includes(q) ||

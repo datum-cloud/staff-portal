@@ -2,10 +2,11 @@ import type { Route } from './+types/detail';
 import { PageHeader } from '@/components/page-header';
 import {
   EdgeAdvancedBanner,
+  EdgeBackendsCard,
   EdgeConfigCard,
   EdgeGeneralCard,
   EdgeHostnamesCard,
-  EdgeOriginsCard,
+  EdgeLoadBalancingCard,
   EdgeYamlCard,
 } from '@/features/edge/components/detail';
 import type { EdgeDetailBundle } from '@/features/edge/lib';
@@ -59,8 +60,10 @@ export default function Page() {
         <EdgeGeneralCard proxy={proxy} />
         <EdgeConfigCard proxy={proxy} />
         <EdgeHostnamesCard proxy={proxy} />
-        <EdgeOriginsCard proxy={proxy} />
+        <EdgeLoadBalancingCard proxy={proxy} />
       </div>
+
+      <EdgeBackendsCard proxy={proxy} />
 
       <EdgeYamlCard raw={raw} />
     </div>

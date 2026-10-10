@@ -10,7 +10,6 @@ import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Lock } from 'lucide-react';
 import { useMemo } from 'react';
 
 type HostnameRow = {
@@ -159,22 +158,6 @@ export function EdgeHostnamesCard({ proxy }: { proxy: HttpProxy }) {
 
   return (
     <SectionCard title={<Trans>Hostnames</Trans>} contentClassName="flex flex-col gap-4">
-      {proxy.tlsHostname && (
-        <div className="border-input bg-background flex items-center gap-2 rounded-md border p-2.5">
-          <Lock className="text-muted-foreground size-3.5 shrink-0 self-start" />
-          <div className="flex min-w-0 flex-col">
-            <Text size="xs" weight="medium" textColor="muted">
-              <Trans>TLS Hostname</Trans>
-            </Text>
-            <Tooltip message={proxy.tlsHostname}>
-              <Text weight="medium" ellipsis>
-                {proxy.tlsHostname}
-              </Text>
-            </Tooltip>
-          </div>
-        </div>
-      )}
-
       {defaultHostnames.length > 0 && (
         <div className="flex flex-col gap-2">
           <Text textColor="muted" className="text-xs font-medium uppercase">

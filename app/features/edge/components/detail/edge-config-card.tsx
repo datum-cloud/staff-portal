@@ -64,15 +64,6 @@ export function EdgeConfigCard({ proxy }: { proxy: HttpProxy }) {
         ),
         hidden: !proxy.connector?.name,
       },
-      {
-        label: <Trans>TLS Hostname</Trans>,
-        value: proxy.tlsHostname ? (
-          <span>{proxy.tlsHostname}</span>
-        ) : (
-          <span className="text-muted-foreground">—</span>
-        ),
-        hidden: !proxy.tlsHostname,
-      },
     ],
     [proxy]
   );
