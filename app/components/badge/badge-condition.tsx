@@ -1,3 +1,4 @@
+import { STATUS_BADGE_CLASS } from './badge-tokens';
 import { DateTime } from '@/components/date';
 import { ControlPlaneStatus } from '@/resources/schemas';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
@@ -128,7 +129,8 @@ const BadgeCondition = ({
     const badgeContent = (
       <Badge
         className={cn(
-          'inline-flex items-center gap-1 text-xs font-medium',
+          'inline-flex items-center gap-1',
+          STATUS_BADGE_CLASS,
           config.className,
           className
         )}>

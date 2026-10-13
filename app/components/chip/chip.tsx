@@ -1,3 +1,4 @@
+import { TAG_CHIP_CLASS } from '../badge/badge-tokens';
 import { Badge, type BadgeProps } from '@datum-cloud/datum-ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
 import { cn } from '@datum-cloud/datum-ui/utils';
@@ -20,10 +21,12 @@ export interface ChipProps {
   onChipClick?: (item: ChipItem, index: number) => void;
 }
 
+// Chips are standardized to one readable tag size (TAG_CHIP_CLASS). The `size`
+// prop is kept for API compatibility but no longer varies the rendered size.
 const sizeClassNames: Record<ChipSize, string> = {
-  sm: 'text-2xs px-1.5 py-0.5',
-  md: 'text-xs px-2 py-0.5',
-  lg: 'text-sm px-3 py-1',
+  sm: TAG_CHIP_CLASS,
+  md: TAG_CHIP_CLASS,
+  lg: TAG_CHIP_CLASS,
 };
 
 export function Chip({
