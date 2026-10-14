@@ -1,3 +1,4 @@
+import { STATUS_BADGE_CLASS } from './badge-tokens';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { startCase } from '@/utils/helpers';
 import { Badge, type BadgeProps } from '@datum-cloud/datum-ui/badge';
@@ -272,7 +273,8 @@ const BadgeState = ({
         type={noColor ? undefined : config.type}
         theme={noColor ? 'outline' : config.theme}
         className={cn(
-          'inline-flex items-center gap-1 px-2 py-0 text-xs font-medium',
+          'inline-flex items-center gap-1',
+          STATUS_BADGE_CLASS,
           noColor
             ? 'border-gray-200 text-gray-700 dark:border-gray-700 dark:text-gray-300'
             : config.className,
