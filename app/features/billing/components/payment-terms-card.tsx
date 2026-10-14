@@ -355,7 +355,7 @@ type PaymentTermsFormDialogProps = {
   onSubmit: (values: PaymentTermsFormValues) => Promise<void>;
 };
 
-function PaymentTermsFormDialog({
+export function PaymentTermsFormDialog({
   open,
   onOpenChange,
   title,
@@ -388,7 +388,7 @@ function PaymentTermsFormDialog({
       <Form.Field
         name="creditLimit"
         label={currency ? t`Credit limit (${currency})` : t`Credit limit`}
-        description={t`Most the account can spend each billing cycle before staff are alerted.`}
+        description={t`The most the account should spend each billing cycle. Recorded for finance only: usage isn't capped and no alerts are sent yet.`}
         required>
         <Form.Input placeholder="10000" inputMode="decimal" />
       </Form.Field>

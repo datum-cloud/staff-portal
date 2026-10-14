@@ -83,18 +83,23 @@ export function getPaymentReadyCondition(account: ComMiloapisBillingV1Alpha1Bill
 
 const positiveDecimal = /^(0|[1-9]\d*)(\.\d+)?$/;
 
+// Optional fields end in .optional(): datum-ui's Form.Field marks a field
+// required unless its outermost schema type is optional, nullable or default.
+
 /**
  * An optional date that a cleared picker can leave as '' or null. Both mean
  * "no date". Without this, z.coerce.date() turns null into 1 January 1970,
  * and clearing the end date of active terms would end them immediately.
  */
-const optionalDate = z.preprocess(
-  (value) => (value === '' || value === null ? undefined : value),
-  z.coerce.date().optional()
-);
+const optionalDate = z
+  .preprocess(
+    (value) => (value === '' || value === null ? undefined : value),
+    z.coerce.date().optional()
+  )
+  .optional();
 
 const optionalText = (max: number) =>
-  z.string().trim().max(max, `Must be ${max} characters or fewer`).optional().or(z.literal(''));
+  z.string().trim().max(max, `Must be ${max} characters or fewer`).or(z.literal('')).optional();
 
 export const paymentTermsFormSchema = z
   .object({
@@ -113,8 +118,8 @@ export const paymentTermsFormSchema = z
       .trim()
       .email('Enter a valid email address')
       .max(254)
-      .optional()
-      .or(z.literal('')),
+      .or(z.literal(''))
+      .optional(),
     purchaseOrderNumber: optionalText(64),
     agreementReference: optionalText(128),
     startsAt: optionalDate,

@@ -2489,10 +2489,6 @@ msgstr ""
 msgid "More options"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:391
-msgid "Most the account can spend each billing cycle before staff are alerted."
-msgstr ""
-
 #: app/routes/customer/user/index.tsx:98
 msgid "Move to Pending"
 msgstr ""
@@ -4321,6 +4317,10 @@ msgstr ""
 
 #: app/features/domain/components/domain-list.tsx:124
 msgid "The list of domains is limited to 2,000 results at a time. Refine your search to surface other domains."
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:391
+msgid "The most the account should spend each billing cycle. Recorded for finance only: usage isn't capped and no alerts are sent yet."
 msgstr ""
 
 #: app/features/domain/components/domain-status-probe.tsx:119
