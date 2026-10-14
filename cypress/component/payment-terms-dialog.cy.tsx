@@ -29,8 +29,8 @@ describe('PaymentTermsFormDialog', () => {
   it('keeps the footer visible when the form is taller than the dialog', () => {
     mountGrantDialog();
 
-    cy.findByRole('button', { name: 'Grant' }).should('be.visible');
-    cy.findByRole('button', { name: 'Cancel' }).should('be.visible');
+    cy.contains('button', 'Grant').should('be.visible');
+    cy.contains('button', 'Cancel').should('be.visible');
   });
 
   it('only marks net days, credit limit and reason as required', () => {

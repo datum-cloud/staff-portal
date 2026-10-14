@@ -81,6 +81,41 @@ export function getPaymentReadyCondition(account: ComMiloapisBillingV1Alpha1Bill
   return account.status?.conditions?.find((condition) => condition.type === 'PaymentReady');
 }
 
+/** How the account is billed, from billing's PaymentReady condition. */
+export type BillingStatus =
+  | 'invoice'
+  | 'card'
+  | 'terms-scheduled'
+  | 'terms-ended'
+  | 'card-failing'
+  | 'not-set-up'
+  | 'unknown';
+
+/**
+ * Collapse PaymentReady into the few states staff care about. Reasons come
+ * from the billing controller; any unrecognised False reason is treated as
+ * "not set up" rather than shown raw.
+ */
+export function getBillingStatus(
+  condition: ReturnType<typeof getPaymentReadyCondition>
+): BillingStatus {
+  if (!condition || condition.status === 'Unknown') return 'unknown';
+  if (condition.status === 'True') {
+    return condition.reason === 'InvoiceTerms' ? 'invoice' : 'card';
+  }
+  switch (condition.reason) {
+    case 'ArrangementScheduled':
+      return 'terms-scheduled';
+    case 'ArrangementEnded':
+      return 'terms-ended';
+    case 'PaymentMethodDegraded':
+    case 'PaymentMethodNotFound':
+      return 'card-failing';
+    default:
+      return 'not-set-up';
+  }
+}
+
 const positiveDecimal = /^(0|[1-9]\d*)(\.\d+)?$/;
 
 // Optional fields end in .optional(): datum-ui's Form.Field marks a field

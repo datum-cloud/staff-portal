@@ -4,6 +4,7 @@ import {
   buildEndArrangementPatch,
   emptyPaymentTermsForm,
   getArrangementPhase,
+  getBillingStatus,
   getArrangementsForAccount,
   getCurrentArrangement,
   paymentTermsFormFromArrangement,
@@ -72,6 +73,25 @@ describe('getArrangementsForAccount and getCurrentArrangement', () => {
     expect(getCurrentArrangement([arrangement('old', iso(1), iso(5))], day(10))).to.equal(
       undefined
     );
+  });
+});
+
+describe('getBillingStatus', () => {
+  const condition = (status: string, reason: string) =>
+    ({ type: 'PaymentReady', status, reason, message: '', lastTransitionTime: '' }) as never;
+
+  it('turns PaymentReady into how the account is billed', () => {
+    expect(getBillingStatus(condition('True', 'InvoiceTerms'))).to.equal('invoice');
+    expect(getBillingStatus(condition('True', 'PaymentMethodReady'))).to.equal('card');
+    expect(getBillingStatus(condition('False', 'ArrangementScheduled'))).to.equal(
+      'terms-scheduled'
+    );
+    expect(getBillingStatus(condition('False', 'ArrangementEnded'))).to.equal('terms-ended');
+    expect(getBillingStatus(condition('False', 'PaymentMethodDegraded'))).to.equal('card-failing');
+    expect(getBillingStatus(condition('False', 'NotConfigured'))).to.equal('not-set-up');
+    expect(getBillingStatus(condition('False', 'SomethingNew'))).to.equal('not-set-up');
+    expect(getBillingStatus(condition('Unknown', 'Unknown'))).to.equal('unknown');
+    expect(getBillingStatus(undefined)).to.equal('unknown');
   });
 });
 
