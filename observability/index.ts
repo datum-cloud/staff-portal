@@ -14,6 +14,9 @@ const PROVIDER_REGISTRY = {
 type ProviderName = keyof typeof PROVIDER_REGISTRY;
 type ProviderInstance = InstanceType<(typeof PROVIDER_REGISTRY)[ProviderName]>;
 
+const SHUTDOWN_SIGNALS = ['SIGINT', 'SIGTERM'] as const;
+type ShutdownSignal = (typeof SHUTDOWN_SIGNALS)[number];
+
 // ============================================================================
 // MAIN OBSERVABILITY MANAGER
 // ============================================================================
@@ -232,11 +235,41 @@ export class ObservabilityManager {
   }
 
   private setupGracefulShutdown(): void {
-    process.on('SIGTERM', () => {
-      console.log('🛑 Received SIGTERM, shutting down observability services...');
-      this.shutdown();
-      setTimeout(() => process.exit(0), 3000);
-    });
+    // Prefer not to force-exit here: when an entrypoint owns the process
+    // lifecycle (e.g. `observability/start.js`) it is responsible for
+    // orchestrating shutdown — stop server, drain, flush telemetry, exit — and
+    // exiting from under it would cut in-flight requests short.
+    //
+    // But registering a listener at all opts the process out of Node's default
+    // terminate-on-signal behavior. Where this module is loaded without such an
+    // entrypoint (e.g. `app/server/entry.ts` running inside vite), deferring to
+    // an owner that does not exist leaves the process unkillable. So we check at
+    // signal time whether anyone else is listening; if we are alone, nobody owns
+    // the exit and we restore the default by re-raising the signal.
+    let handled = false;
+
+    const onSignal = (signal: ShutdownSignal, listener: () => void): void => {
+      if (handled) return;
+      handled = true;
+
+      console.log(`🛑 Received ${signal}, shutting down observability services...`);
+      try {
+        this.shutdown();
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        console.warn('⚠️ Error while shutting down observability services:', msg);
+      }
+
+      if (process.listenerCount(signal) <= 1) {
+        process.removeListener(signal, listener);
+        process.kill(process.pid, signal);
+      }
+    };
+
+    for (const signal of SHUTDOWN_SIGNALS) {
+      const listener = (): void => onSignal(signal, listener);
+      process.on(signal, listener);
+    }
   }
 
   private setupUncaughtExceptionHandler(): void {
