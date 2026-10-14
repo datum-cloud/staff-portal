@@ -43,13 +43,23 @@ interface ChainsawTestRow {
   docsUrl: string;
 }
 
-function grafanaHost(environment: string): string {
-  return environment === 'staging' ? 'grafana.staging.env.datum.net' : 'grafana.prod.env.datum.net';
+// The Chainsaw E2E dashboard is split per environment (datum-cloud/infra#5942):
+// uid chainsaw-e2e-<env>, slug chainsaw-e2e-tests-<env>. Anything that isn't
+// staging (including "unknown") falls back to prod.
+function grafanaEnv(environment: string): 'staging' | 'prod' {
+  return environment === 'staging' ? 'staging' : 'prod';
 }
 
+function grafanaHost(environment: string): string {
+  return `grafana.${grafanaEnv(environment)}.env.datum.net`;
+}
+
+// stability=stable matches the chainsaw_test_result{stability="stable"} filter
+// this route queries, so the dashboard shows the same runs as the row.
+// var-datasource is left unset so each Grafana uses its own default.
 function grafanaUrlFor(suite: string, test: string, environment: string): string {
-  const host = grafanaHost(environment);
-  return `https://${host}/d/chainsaw-e2e/chainsaw-e2e-tests?var-suite=${encodeURIComponent(suite)}&var-test=${encodeURIComponent(test)}`;
+  const env = grafanaEnv(environment);
+  return `https://${grafanaHost(environment)}/d/chainsaw-e2e-${env}/chainsaw-e2e-tests-${env}?orgId=1&from=now-7d&to=now&timezone=utc&var-suite=${encodeURIComponent(suite)}&var-stability=stable&var-test=${encodeURIComponent(test)}`;
 }
 
 // Every construct test's README.md lives at this path by convention

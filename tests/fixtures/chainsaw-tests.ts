@@ -33,7 +33,7 @@ export const chainsawTestsFixture = {
         history: historyOf([true, true, true, true, true, true]),
         latest: { timestamp: now, passed: true },
         grafanaUrl:
-          'https://grafana.prod.env.datum.net/d/chainsaw-e2e/chainsaw-e2e-tests?var-suite=networking&var-test=dns-setup',
+          'https://grafana.prod.env.datum.net/d/chainsaw-e2e-prod/chainsaw-e2e-tests-prod?orgId=1&from=now-7d&to=now&timezone=utc&var-suite=networking&var-stability=stable&var-test=dns-setup',
         docsUrl: docsUrlFor('networking', 'dns-setup'),
       },
     ],
@@ -50,7 +50,7 @@ export const chainsawTestsFixture = {
         history: historyOf([true, true, true, true, true, true]),
         latest: { timestamp: now, passed: true },
         grafanaUrl:
-          'https://grafana.prod.env.datum.net/d/chainsaw-e2e/chainsaw-e2e-tests?var-suite=networking&var-test=dns-setup',
+          'https://grafana.prod.env.datum.net/d/chainsaw-e2e-prod/chainsaw-e2e-tests-prod?orgId=1&from=now-7d&to=now&timezone=utc&var-suite=networking&var-stability=stable&var-test=dns-setup',
         docsUrl: docsUrlFor('networking', 'dns-setup'),
       },
       {
@@ -61,7 +61,7 @@ export const chainsawTestsFixture = {
         history: historyOf([true, true, false, true, true, false]),
         latest: { timestamp: now, passed: false },
         grafanaUrl:
-          'https://grafana.prod.env.datum.net/d/chainsaw-e2e/chainsaw-e2e-tests?var-suite=health&var-test=api-health',
+          'https://grafana.prod.env.datum.net/d/chainsaw-e2e-prod/chainsaw-e2e-tests-prod?orgId=1&from=now-7d&to=now&timezone=utc&var-suite=health&var-stability=stable&var-test=api-health',
         docsUrl: docsUrlFor('health', 'api-health'),
       },
     ],
