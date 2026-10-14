@@ -26,7 +26,7 @@ describe('BadgeState', () => {
 
     it('applies base classes on the badge', () => {
       cy.mount(<BadgeState state="active" />);
-      cy.get('.inline-flex.items-center.gap-1.text-xs.font-medium').should('exist');
+      cy.get('.inline-flex.items-center.gap-1.text-4xs.font-medium.uppercase').should('exist');
     });
 
     it('appends custom className', () => {
