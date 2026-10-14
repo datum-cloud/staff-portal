@@ -1,3 +1,7 @@
+import type {
+  ArrangementMergePatch,
+  BillingArrangementSpec,
+} from '@/features/billing/lib/payment-terms';
 import {
   buildOrganizationNamespace,
   DEFAULT_SERVICE_PRICING_NAMESPACE,
@@ -5,16 +9,19 @@ import {
 import { PROXY_URL } from '@/modules/axios/axios.client';
 import { ListQueryParams } from '@/resources/schemas';
 import {
+  createBillingMiloapisComV1Alpha1NamespacedBillingArrangement,
   createBillingMiloapisComV1Alpha1Offer,
   listBillingMiloapisComV1Alpha1BillingAccountBindingForAllNamespaces,
   listBillingMiloapisComV1Alpha1BillingAccountForAllNamespaces,
   listBillingMiloapisComV1Alpha1NamespacedBillingAccount,
   listBillingMiloapisComV1Alpha1NamespacedBillingAccountBinding,
+  listBillingMiloapisComV1Alpha1NamespacedBillingArrangement,
   listBillingMiloapisComV1Alpha1NamespacedBillingEntitlement,
   listBillingMiloapisComV1Alpha1NamespacedPaymentMethod,
   listBillingMiloapisComV1Alpha1NamespacedServicePricing,
   listBillingMiloapisComV1Alpha1Offer,
   listBillingMiloapisComV1Alpha1PaymentMethodForAllNamespaces,
+  patchBillingMiloapisComV1Alpha1NamespacedBillingArrangement,
   patchBillingMiloapisComV1Alpha1NamespacedBillingEntitlement,
   patchBillingMiloapisComV1Alpha1Offer,
   readBillingMiloapisComV1Alpha1NamespacedBillingAccount,
@@ -321,6 +328,62 @@ export const switchBillingEntitlementOffer = async (
         offerRef: { name: offerName },
       },
     },
+  });
+  return response.data?.data;
+};
+
+// ─── BillingArrangement (org-namespaced, staff-only) ─────────────────────────
+
+export const billingArrangementListForOrgQuery = async (
+  orgName: string,
+  params?: ListQueryParams
+) => {
+  const namespace = buildOrganizationNamespace(orgName);
+  const response = await listBillingMiloapisComV1Alpha1NamespacedBillingArrangement({
+    baseURL: getClientOrgControlPlaneBaseURL(orgName),
+    path: { namespace },
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
+    },
+  });
+  const data = response.data?.data;
+  return {
+    ...(data ?? { items: [] }),
+    items: filterNotDeleting(data?.items ?? []),
+  };
+};
+
+export const createBillingArrangement = async (orgName: string, spec: BillingArrangementSpec) => {
+  const namespace = buildOrganizationNamespace(orgName);
+  const response = await createBillingMiloapisComV1Alpha1NamespacedBillingArrangement({
+    baseURL: getClientOrgControlPlaneBaseURL(orgName),
+    path: { namespace },
+    query: { fieldManager: FIELD_MANAGER },
+    body: {
+      apiVersion: 'billing.miloapis.com/v1alpha1',
+      kind: 'BillingArrangement',
+      metadata: { generateName: `${spec.billingAccountRef.name}-terms-` },
+      spec,
+    },
+  });
+  return response.data?.data;
+};
+
+export const patchBillingArrangement = async (
+  orgName: string,
+  arrangementName: string,
+  body: ArrangementMergePatch
+) => {
+  const namespace = buildOrganizationNamespace(orgName);
+  const response = await patchBillingMiloapisComV1Alpha1NamespacedBillingArrangement({
+    baseURL: getClientOrgControlPlaneBaseURL(orgName),
+    path: { namespace, name: arrangementName },
+    query: { fieldManager: FIELD_MANAGER },
+    headers: { 'Content-Type': 'application/merge-patch+json' },
+    // Merge patch uses null to remove optional fields, which the generated
+    // body type (the full resource) doesn't allow for.
+    body: body as never,
   });
   return response.data?.data;
 };

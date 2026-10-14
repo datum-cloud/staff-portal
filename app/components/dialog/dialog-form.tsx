@@ -72,11 +72,13 @@ export default function DialogForm<TValues extends Record<string, unknown>>({
       <Dialog.Content className="sm:max-w-md">
         <Dialog.Header title={title} description={description} />
 
+        {/* min-h-0 flex-1 lets the form shrink inside Dialog.Content's max
+            height, so a long body scrolls and the footer stays visible. */}
         <Form.Root
           schema={schema}
           defaultValues={defaultValues}
           onSubmit={handleSubmit}
-          className="flex flex-col">
+          className="flex min-h-0 flex-1 flex-col">
           {({ form, isSubmitting, isDirty, isValid }) => {
             const isBusy = isLoading || isSubmitting;
             return (

@@ -4,12 +4,15 @@ import {
   billingAccountDetailQuery,
   billingAccountListForOrgQuery,
   billingAccountListQuery,
+  billingArrangementListForOrgQuery,
   billingEntitlementForAccountQuery,
+  createBillingArrangement,
   createOffer,
   offerDetailQuery,
   offerListQuery,
   paymentMethodListForOrgQuery,
   paymentMethodListQuery,
+  patchBillingArrangement,
   publishOffer,
   servicePricingListQuery,
   switchBillingEntitlementOffer,
@@ -17,6 +20,10 @@ import {
   updateOfferDisplayName,
   type CreateOfferInput,
 } from '../apis/billing.api';
+import type {
+  ArrangementMergePatch,
+  BillingArrangementSpec,
+} from '@/features/billing/lib/payment-terms';
 import { ListQueryParams } from '@/resources/schemas';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -41,6 +48,9 @@ export const billingQueryKeys = {
   entitlements: {
     forAccount: (orgName: string, accountName: string) =>
       ['billing-entitlements', orgName, accountName] as const,
+  },
+  arrangements: {
+    forOrg: (orgName: string) => ['billing-arrangements', orgName] as const,
   },
 };
 
@@ -195,5 +205,44 @@ export const useSwitchBillingEntitlementOfferMutation = (orgName: string, accoun
         queryKey: billingQueryKeys.entitlements.forAccount(orgName, accountName),
       });
     },
+  });
+};
+
+export const useBillingArrangementListForOrgQuery = (orgName: string) =>
+  useQuery({
+    queryKey: billingQueryKeys.arrangements.forOrg(orgName),
+    queryFn: () => billingArrangementListForOrgQuery(orgName, { limit: 500 }),
+    enabled: !!orgName,
+  });
+
+/**
+ * Granting, changing or ending payment terms also changes the billing
+ * account's PaymentReady condition, so refresh both.
+ */
+const invalidateArrangementQueries = async (
+  queryClient: ReturnType<typeof useQueryClient>,
+  orgName: string,
+  accountName: string
+) => {
+  await Promise.all([
+    queryClient.invalidateQueries({ queryKey: billingQueryKeys.arrangements.forOrg(orgName) }),
+    queryClient.invalidateQueries({ queryKey: billingQueryKeys.detail(orgName, accountName) }),
+  ]);
+};
+
+export const useCreateBillingArrangementMutation = (orgName: string, accountName: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (spec: BillingArrangementSpec) => createBillingArrangement(orgName, spec),
+    onSuccess: () => invalidateArrangementQueries(queryClient, orgName, accountName),
+  });
+};
+
+export const usePatchBillingArrangementMutation = (orgName: string, accountName: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ name, patch }: { name: string; patch: ArrangementMergePatch }) =>
+      patchBillingArrangement(orgName, name, patch),
+    onSuccess: () => invalidateArrangementQueries(queryClient, orgName, accountName),
   });
 };

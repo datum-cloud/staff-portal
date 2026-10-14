@@ -119,6 +119,10 @@ msgstr ""
 msgid "A contact with this email already exists."
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:439
+msgid "A signed MSA or order form, if there is one. Otherwise our standard terms apply."
+msgstr ""
+
 #: app/routes/customer/fraud/index.tsx:273
 msgid "Accepted"
 msgstr ""
@@ -166,6 +170,10 @@ msgstr ""
 msgid "Account overview"
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:429
+msgid "Accounts payable email"
+msgstr ""
+
 #: app/features/activity/components/activity-list.tsx:199
 msgid "Action"
 msgstr ""
@@ -176,6 +184,7 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:180
 #: app/routes/admin/service-catalog/detail/consumers.tsx:333
 msgid "Active"
 msgstr ""
@@ -279,6 +288,14 @@ msgstr ""
 
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:157
 msgid "Age"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:330
+msgid "Agreement"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:438
+msgid "Agreement reference"
 msgstr ""
 
 #: app/components/app-sidebar/index.tsx:129
@@ -535,6 +552,10 @@ msgstr ""
 msgid "Basic Authentication"
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:160
+msgid "Billed by"
+msgstr ""
+
 #: app/features/project/components/project-billing-card.tsx:38
 #: app/routes/customer/project/index.tsx:144
 #: app/routes/customer/project/index.tsx:211
@@ -578,6 +599,8 @@ msgstr ""
 #: app/components/danger-zone-card/index.tsx:43
 #: app/features/billing/components/default-offer-card.tsx:77
 #: app/features/billing/components/offer-switcher-card.tsx:173
+#: app/features/billing/components/payment-terms-card.tsx:273
+#: app/features/billing/components/payment-terms-card.tsx:409
 #: app/features/contact-group/components/contact-group-form.tsx:97
 #: app/features/contact/components/contact-form.tsx:244
 #: app/features/contact/components/contact-list.tsx:121
@@ -616,6 +639,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:93
 #: app/routes/customer/billing-account/detail/index.tsx:136
 msgid "Card"
 msgstr ""
@@ -633,8 +657,20 @@ msgstr ""
 msgid "Chainsaw Tests"
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:190
+msgid "Change"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:253
+msgid "Change payment terms"
+msgstr ""
+
 #: app/features/user/components/user-identity-card.tsx:151
 msgid "Change your Primary Email in GitHub (your primary email)"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:254
+msgid "Changes apply to the terms currently on the account."
 msgstr ""
 
 #: app/features/billing/components/offer-included-pricing-list.tsx:123
@@ -1026,6 +1062,15 @@ msgstr ""
 msgid "Credentials Reference"
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:313
+#: app/features/billing/components/payment-terms-card.tsx:422
+msgid "Credit limit"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:422
+msgid "Credit limit ({currency})"
+msgstr ""
+
 #: app/features/billing/components/billing-account-list.tsx:214
 #: app/features/billing/components/billing-account-list.tsx:270
 #: app/routes/customer/billing-account/detail/index.tsx:318
@@ -1076,6 +1121,10 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:220
 #: app/routes/customer/billing-account/detail/index.tsx:196
 msgid "Date"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:416
+msgid "Days after the invoice date that payment is due."
 msgstr ""
 
 #: app/routes/customer/fraud/index.tsx:275
@@ -1554,6 +1603,22 @@ msgstr ""
 msgid "Enablement"
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:197
+msgid "End"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:452
+msgid "End date"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:266
+msgid "End payment terms"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:272
+msgid "End terms"
+msgstr ""
+
 #: app/components/date/date-range-picker.tsx:286
 msgid "End Time"
 msgstr ""
@@ -1562,6 +1627,10 @@ msgstr ""
 #: app/routes/customer/fraud/providers/detail.tsx:140
 #: app/routes/customer/fraud/providers/index.tsx:76
 msgid "Endpoint"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:319
+msgid "Ends"
 msgstr ""
 
 #: app/routes/customer/fraud/index.tsx:283
@@ -1834,6 +1903,10 @@ msgstr ""
 msgid "Flag"
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:461
+msgid "For example: signed MSA after sales call on 1 October"
+msgstr ""
+
 #: app/features/edge/components/detail/edge-config-card.tsx:34
 msgid "Force HTTPS"
 msgstr ""
@@ -1922,12 +1995,21 @@ msgstr ""
 msgid "Grafana"
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:240
 #: app/features/quota/components/quota-grant-list.tsx:87
 msgid "Grant"
 msgstr ""
 
 #: app/features/quota/components/quota-grant-list.tsx:169
 msgid "Grant deleted successfully"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:238
+msgid "Grant payment terms"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:148
+msgid "Grant terms"
 msgstr ""
 
 #: app/routes/customer/organization/detail/quota/grant.tsx:9
@@ -2063,6 +2145,7 @@ msgstr ""
 msgid "Invite User"
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:92
 #: app/routes/customer/billing-account/detail/index.tsx:215
 msgid "Invoice"
 msgstr ""
@@ -2077,6 +2160,14 @@ msgstr ""
 
 #: app/routes/customer/billing-account/detail/index.tsx:363
 msgid "Invoice recipients"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:176
+msgid "Invoice terms"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:326
+msgid "Invoices to"
 msgstr ""
 
 #: app/routes/profile/session.tsx:57
@@ -2165,6 +2256,14 @@ msgstr ""
 msgid "Launch stage"
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:453
+msgid "Leave empty for terms with no fixed end."
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:446
+msgid "Leave empty to start immediately."
+msgstr ""
+
 #: app/routes/customer/fraud/providers/create.tsx:117
 #: app/routes/customer/fraud/providers/detail.tsx:157
 msgid "License Key Key"
@@ -2201,7 +2300,7 @@ msgstr ""
 #: app/features/billing/components/billing-account-list.tsx:219
 #: app/features/billing/components/org-billing-accounts-card.tsx:71
 #: app/routes/customer/billing-account/detail/index.tsx:334
-#: app/routes/customer/billing-account/detail/index.tsx:473
+#: app/routes/customer/billing-account/detail/index.tsx:475
 msgid "Linked projects"
 msgstr ""
 
@@ -2459,6 +2558,14 @@ msgstr ""
 msgid "Navigation"
 msgstr ""
 
+#. placeholder {0}: invoice?.netDays ?? '—'
+#. placeholder {1}: formatCreditLimit(invoice?.creditLimit)
+#: app/features/billing/components/payment-terms-card.tsx:354
+msgid "Net {0}, limit {1}"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:312
+#: app/features/billing/components/payment-terms-card.tsx:415
 #: app/routes/customer/billing-account/detail/index.tsx:326
 msgid "Net days"
 msgstr ""
@@ -2598,6 +2705,14 @@ msgstr ""
 msgid "No email activity found."
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:364
+msgid "no end date"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:323
+msgid "No end date"
+msgstr ""
+
 #: app/routes/customer/project/detail/export-policy/index.tsx:65
 msgid "No export policies found."
 msgstr ""
@@ -2642,20 +2757,20 @@ msgstr ""
 msgid "No hostnames configured"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:467
+#: app/routes/customer/billing-account/detail/index.tsx:469
 msgid "No invoices"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:452
+#: app/routes/customer/billing-account/detail/index.tsx:454
 msgid "No invoices match your search"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:448
+#: app/routes/customer/billing-account/detail/index.tsx:450
 msgid "No invoices yet"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:476
-#: app/routes/customer/billing-account/detail/index.tsx:496
+#: app/routes/customer/billing-account/detail/index.tsx:478
+#: app/routes/customer/billing-account/detail/index.tsx:498
 msgid "No linked projects"
 msgstr ""
 
@@ -2702,9 +2817,17 @@ msgstr ""
 msgid "No other published Offers are available to switch to."
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:410
-#: app/routes/customer/billing-account/detail/index.tsx:427
+#: app/routes/customer/billing-account/detail/index.tsx:412
+#: app/routes/customer/billing-account/detail/index.tsx:429
 msgid "No payment methods"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:208
+msgid "No payment terms. Grant terms to let this account be billed by invoice."
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:206
+msgid "No payment terms. This account pays by card."
 msgstr ""
 
 #: app/routes/admin/service-catalog/detail/approvals.tsx:166
@@ -2817,6 +2940,22 @@ msgstr ""
 
 #: app/features/email/components/email-list.tsx:122
 msgid "Normal"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:94
+msgid "Not billable yet: terms are scheduled"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:96
+msgid "Not billable: card is failing"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:97
+msgid "Not billable: no card or terms"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:95
+msgid "Not billable: terms have ended"
 msgstr ""
 
 #: app/features/milo/components/page/list-growth-chart.tsx:132
@@ -2995,7 +3134,7 @@ msgstr ""
 msgid "Passkey Recovery Links"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:434
+#: app/routes/customer/billing-account/detail/index.tsx:436
 msgid "Past invoices"
 msgstr ""
 
@@ -3016,8 +3155,28 @@ msgstr ""
 msgid "Payment method"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:407
+#: app/routes/customer/billing-account/detail/index.tsx:409
 msgid "Payment methods"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:145
+msgid "Payment terms"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:132
+msgid "Payment terms ended"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:105
+msgid "Payment terms granted"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:118
+msgid "Payment terms updated"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:132
+msgid "Payment terms withdrawn"
 msgstr ""
 
 #: app/features/email/components/email-list.tsx:133
@@ -3111,6 +3270,11 @@ msgstr ""
 msgid "Please wait {remainingMinutes} more minute{0} before resending this invitation"
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:329
+#: app/features/billing/components/payment-terms-card.tsx:433
+msgid "PO number"
+msgstr ""
+
 #: app/routes/operation/activity/layout.tsx:28
 #: app/routes/operation/activity/policies/index.tsx:11
 #: app/routes/operation/activity/policies/layout.tsx:5
@@ -3149,6 +3313,10 @@ msgstr ""
 
 #: app/features/milo/components/page/list-pagination.tsx:85
 msgid "Previous page"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:218
+msgid "Previous terms"
 msgstr ""
 
 #: app/features/service-catalog/components/charges-card.tsx:108
@@ -3359,6 +3527,11 @@ msgstr ""
 msgid "Reason"
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:333
+#: app/features/billing/components/payment-terms-card.tsx:458
+msgid "Reason (internal)"
+msgstr ""
+
 #: app/features/user/components/user-reject-dialog.tsx:45
 msgid "Reason for rejection"
 msgstr ""
@@ -3369,6 +3542,10 @@ msgstr ""
 
 #: app/features/user/components/user-recovery-link-dialog.tsx:45
 msgid "Reason must be at least {REASON_MIN_LENGTH} characters"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:430
+msgid "Receives invoices as well as the billing contact."
 msgstr ""
 
 #: app/features/dashboard/components/recent-users-widget.tsx:98
@@ -3547,6 +3724,7 @@ msgstr ""
 msgid "Running"
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:255
 #: app/features/profile/components/profile-form.tsx:58
 #: app/routes/admin/offer/detail.tsx:448
 msgid "Save"
@@ -3566,6 +3744,10 @@ msgstr ""
 
 #: app/routes/customer/user/index.tsx:263
 msgid "Schedule invitation to be sent at specific time"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:180
+msgid "Scheduled"
 msgstr ""
 
 #: app/features/dashboard/components/fraud-alerts-widget.tsx:147
@@ -3664,8 +3846,8 @@ msgstr ""
 msgid "Search groups..."
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:440
 #: app/routes/customer/billing-account/detail/index.tsx:442
+#: app/routes/customer/billing-account/detail/index.tsx:444
 msgid "Search invoices"
 msgstr ""
 
@@ -3988,8 +4170,16 @@ msgstr ""
 msgid "Stages"
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:445
+msgid "Start date"
+msgstr ""
+
 #: app/components/date/date-range-picker.tsx:275
 msgid "Start Time"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:316
+msgid "Starts"
 msgstr ""
 
 #: app/features/billing/components/billing-account-list.tsx:206
@@ -4142,6 +4332,14 @@ msgstr ""
 msgid "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:239
+msgid "The account will be billed by invoice on these terms. Overlapping terms are rejected, so end the current terms first if there are any."
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:270
+msgid "The account will stop being billed by invoice now and will need a card to keep using paid services. The record is kept for history."
+msgstr ""
+
 #: app/features/milo/components/page/list-table.tsx:383
 msgid "The list is limited to 2,000 results at a time. Refine your search to surface other items."
 msgstr ""
@@ -4158,8 +4356,16 @@ msgstr ""
 msgid "The list of domains is limited to 2,000 results at a time. Refine your search to surface other domains."
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:423
+msgid "The most the account should spend each billing cycle. Recorded for finance only: usage isn't capped and no alerts are sent yet."
+msgstr ""
+
 #: app/features/domain/components/domain-status-probe.tsx:119
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:269
+msgid "These terms will never take effect. The record is kept for history."
 msgstr ""
 
 #: app/features/edge/components/detail/edge-advanced-banner.tsx:11
@@ -4322,6 +4528,7 @@ msgstr ""
 msgid "Unavailable"
 msgstr ""
 
+#: app/features/billing/components/payment-terms-card.tsx:98
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:136
 #: app/features/domain/components/note-card.tsx:38
 #: app/routes/admin/service-catalog/detail/consumers.tsx:146
@@ -4536,6 +4743,19 @@ msgstr ""
 
 #: app/features/edge/components/detail/edge-backends-card.tsx:64
 msgid "Weight"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:459
+msgid "Why these terms were granted. Never shown to the customer."
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:197
+#: app/features/billing/components/payment-terms-card.tsx:272
+msgid "Withdraw"
+msgstr ""
+
+#: app/features/billing/components/payment-terms-card.tsx:266
+msgid "Withdraw payment terms"
 msgstr ""
 
 #: app/features/edge/components/detail/edge-yaml-card.tsx:18
