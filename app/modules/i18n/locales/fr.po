@@ -35,10 +35,21 @@ msgstr ""
 msgid "{0} entries"
 msgstr ""
 
+#. placeholder {0}: formatCount(last30d, truncated)
+#: app/features/dashboard/components/home/growth-section.tsx:67
+msgid "{0} in the last 30 days"
+msgstr ""
+
 #. placeholder {0}: filtered.length
 #. placeholder {1}: data?.items?.length ?? 0
 #: app/routes/admin/service-catalog/index.tsx:183
 msgid "{0} of {1} services"
+msgstr ""
+
+#. placeholder {0}: sent.toLocaleString()
+#. placeholder {1}: data.failed.toLocaleString()
+#: app/features/dashboard/components/home/health-section.tsx:205
+msgid "{0} sent · {1} failed"
 msgstr ""
 
 #. placeholder {0}: filtered.length
@@ -58,6 +69,10 @@ msgstr ""
 msgid "{passkeyCount, plural, one {# passkey} other {# passkeys}}"
 msgstr ""
 
+#: app/features/dashboard/components/home/attention-banner.tsx:60
+msgid "{total} things need attention"
+msgstr ""
+
 #: app/routes/customer/project/detail/export-policy/index.tsx:36
 msgid "# of Sinks"
 msgstr ""
@@ -68,6 +83,14 @@ msgstr ""
 
 #: app/features/quota/components/quota-bucket-list.tsx:124
 msgid "% Used"
+msgstr ""
+
+#: app/features/dashboard/components/home/health-section.tsx:136
+msgid "≥ 70% used"
+msgstr ""
+
+#: app/features/dashboard/components/home/attention-banner.tsx:58
+msgid "1 thing needs attention"
 msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:378
@@ -213,6 +236,7 @@ msgstr ""
 
 #: app/components/app-search/use-app-search.ts:55
 #: app/components/app-sidebar/index.tsx:187
+#: app/features/dashboard/components/home/activity-section.tsx:30
 #: app/routes/customer/organization/detail/activity/layout.tsx:5
 #: app/routes/customer/project/detail/activity/layout.tsx:5
 #: app/routes/customer/user/detail/activity/layout.tsx:5
@@ -286,10 +310,6 @@ msgstr ""
 msgid "After publish, only the display name can change. Rate changes need a new Offer."
 msgstr ""
 
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:157
-msgid "Age"
-msgstr ""
-
 #: app/features/billing/components/payment-terms-card.tsx:330
 msgid "Agreement"
 msgstr ""
@@ -309,28 +329,28 @@ msgstr ""
 msgid "Algorithm"
 msgstr ""
 
+#: app/features/dashboard/components/home/activity-section.tsx:17
+msgid "All"
+msgstr ""
+
 #: app/routes/customer/billing-account/detail/index.tsx:283
 msgid "All billing accounts"
 msgstr ""
 
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:80
-msgid "All evaluations are clear"
+#: app/features/dashboard/components/home/attention-banner.tsx:47
+msgid "All clear"
+msgstr ""
+
+#: app/features/dashboard/components/home/health-section.tsx:113
+msgid "All clusters healthy"
 msgstr ""
 
 #: app/features/fraud/detail/evaluation-sections.tsx:436
 msgid "All Evaluations for this User"
 msgstr ""
 
-#: app/features/dashboard/components/quota-utilization-widget.tsx:96
-msgid "All quotas healthy"
-msgstr ""
-
 #: app/features/activity/components/activity-list.tsx:450
 msgid "All read operations"
-msgstr ""
-
-#: app/features/dashboard/components/pending-approvals-widget.tsx:66
-msgid "All registrations are up to date"
 msgstr ""
 
 #: app/features/milo/components/navbar/milo-mobile-menu.tsx:126
@@ -498,10 +518,6 @@ msgstr ""
 msgid "Assign a billing account to this project to track usage."
 msgstr ""
 
-#: app/routes/dashboard/index.tsx:16
-msgid "Assistant"
-msgstr ""
-
 #: app/features/contact/components/contact-form.tsx:217
 #: app/routes/marketing/contact-group/detail/member.tsx:103
 msgid "Associate with User"
@@ -652,10 +668,6 @@ msgstr ""
 msgid "Case notes, report IDs, context…"
 msgstr ""
 
-#: app/features/dashboard/components/cluster-health-widget.tsx:106
-msgid "Certificates nearing expiry"
-msgstr ""
-
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:168
 #: app/routes/operation/chainsaw-tests.tsx:11
 msgid "Chainsaw Tests"
@@ -671,6 +683,10 @@ msgstr ""
 
 #: app/features/user/components/user-identity-card.tsx:151
 msgid "Change your Primary Email in GitHub (your primary email)"
+msgstr ""
+
+#: app/features/dashboard/components/home/activity-section.tsx:16
+msgid "Changes"
 msgstr ""
 
 #: app/features/billing/components/payment-terms-card.tsx:254
@@ -737,20 +753,12 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: app/features/dashboard/components/cluster-health-widget.tsx:222
-msgid "Cluster Health"
+#: app/features/dashboard/components/home/health-section.tsx:92
+msgid "Cluster metrics aren't connected here."
 msgstr ""
 
-#: app/features/dashboard/components/cluster-health-widget.tsx:237
-msgid "cluster healthy"
-msgstr ""
-
-#: app/features/dashboard/components/cluster-health-widget.tsx:34
-msgid "Cluster metrics unavailable"
-msgstr ""
-
-#: app/features/dashboard/components/cluster-health-widget.tsx:239
-msgid "clusters healthy"
+#: app/features/dashboard/components/home/health-section.tsx:89
+msgid "Clusters"
 msgstr ""
 
 #: app/features/milo/components/page/rich-filter-panel.tsx:479
@@ -949,18 +957,6 @@ msgstr ""
 msgid "Copy shareable link with current filters"
 msgstr ""
 
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:91
-msgid "Could not load fraud alerts"
-msgstr ""
-
-#: app/features/dashboard/components/pending-approvals-widget.tsx:77
-msgid "Could not load pending approvals"
-msgstr ""
-
-#: app/features/dashboard/components/quota-utilization-widget.tsx:110
-msgid "Could not load quota data"
-msgstr ""
-
 #: app/features/project/components/project-quotas-card.tsx:78
 msgid "Could not load quotas"
 msgstr ""
@@ -978,8 +974,16 @@ msgstr ""
 msgid "Could not load usage"
 msgstr ""
 
-#: app/features/dashboard/components/cluster-health-widget.tsx:37
-msgid "Could not query cluster health metrics"
+#: app/features/dashboard/components/home/health-section.tsx:98
+msgid "Couldn't load cluster health."
+msgstr ""
+
+#: app/features/dashboard/components/home/growth-section.tsx:65
+msgid "Couldn't load counts"
+msgstr ""
+
+#: app/features/dashboard/components/home/health-section.tsx:191
+msgid "Couldn't load email activity."
 msgstr ""
 
 #: app/features/project/components/project-resources-card.tsx:59
@@ -1132,10 +1136,15 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
+#: app/features/dashboard/components/home/home-header.tsx:28
+msgid "Datum Platform"
+msgstr ""
+
 #: app/features/billing/components/payment-terms-card.tsx:416
 msgid "Days after the invoice date that payment is due."
 msgstr ""
 
+#: app/features/dashboard/components/home/home-columns.tsx:120
 #: app/routes/customer/fraud/index.tsx:275
 msgid "Deactivate"
 msgstr ""
@@ -1144,7 +1153,6 @@ msgstr ""
 msgid "Deactivate Threshold"
 msgstr ""
 
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:152
 #: app/features/fraud/detail/evaluation-sections.tsx:330
 #: app/features/fraud/detail/evaluation-sections.tsx:424
 #: app/features/fraud/detail/evaluation-sections.tsx:661
@@ -1533,7 +1541,6 @@ msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:131
 #: app/features/contact/components/contact-list.tsx:88
-#: app/features/dashboard/components/pending-approvals-widget.tsx:137
 #: app/features/organization/components/org-contact-card.tsx:69
 #: app/features/organization/components/org-members-preview-card.tsx:57
 #: app/routes/customer/fraud/index.tsx:124
@@ -1554,6 +1561,10 @@ msgstr ""
 
 #: app/features/user/components/user-identity-card.tsx:141
 msgid "Email addresses for GitHub identities should be updated through GitHub"
+msgstr ""
+
+#: app/features/dashboard/components/home/health-section.tsx:184
+msgid "Email delivery"
 msgstr ""
 
 #: app/routes/customer/user/detail/index.tsx:286
@@ -1935,10 +1946,6 @@ msgstr ""
 msgid "Fraud & Abuse"
 msgstr ""
 
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:111
-msgid "Fraud Alerts"
-msgstr ""
-
 #: app/routes/customer/user/detail/index.tsx:297
 msgid "Fraud Assessment"
 msgstr ""
@@ -1956,7 +1963,6 @@ msgid "Fraud evaluation started"
 msgstr ""
 
 #: app/routes/customer/fraud/index.tsx:38
-#: app/routes/dashboard/overview.tsx:83
 msgid "Fraud Evaluations"
 msgstr ""
 
@@ -1966,6 +1972,10 @@ msgstr ""
 
 #: app/routes/customer/fraud/providers/index.tsx:28
 msgid "Fraud Providers"
+msgstr ""
+
+#: app/routes/dashboard/index.tsx:58
+msgid "fraud reviews"
 msgstr ""
 
 #: app/routes/customer/user/index.tsx:163
@@ -2050,8 +2060,20 @@ msgstr ""
 msgid "Groups"
 msgstr ""
 
+#: app/features/dashboard/components/home/growth-section.tsx:85
+msgid "Growth"
+msgstr ""
+
 #: app/features/edge/components/detail/edge-load-balancing-card.tsx:31
 msgid "Hash On"
+msgstr ""
+
+#: app/features/dashboard/components/home/home-header.tsx:32
+msgid "Here's what's happening across the platform."
+msgstr ""
+
+#: app/features/dashboard/components/home/attention-banner.tsx:86
+msgid "Hide"
 msgstr ""
 
 #: app/features/milo/components/page/list-table.tsx:303
@@ -2084,6 +2106,7 @@ msgid "History Retention (max entries)"
 msgstr ""
 
 #: app/features/milo/components/navbar/milo-navbar.tsx:23
+#: app/routes/dashboard/index.tsx:28
 msgid "Home"
 msgstr ""
 
@@ -2137,6 +2160,10 @@ msgstr ""
 
 #: app/routes/customer/organization/index.tsx:171
 msgid "Individual"
+msgstr ""
+
+#: app/features/dashboard/components/home/health-section.tsx:231
+msgid "Infrastructure, quota pressure, and outbound email."
 msgstr ""
 
 #: app/features/project/components/project-suspension-card.tsx:154
@@ -2229,8 +2256,8 @@ msgstr ""
 msgid "Joined"
 msgstr ""
 
-#: app/features/dashboard/components/recent-users-widget.tsx:104
-msgid "Last 10 new users who joined Datum"
+#: app/features/dashboard/components/home/health-section.tsx:185
+msgid "Last 24h"
 msgstr ""
 
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:212
@@ -2239,6 +2266,10 @@ msgstr ""
 
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:171
 msgid "Last 3 days · tests expected to pass every run"
+msgstr ""
+
+#: app/features/dashboard/components/home/growth-section.tsx:45
+msgid "Last 7d"
 msgstr ""
 
 #: app/routes/customer/user/detail/index.tsx:330
@@ -2532,7 +2563,6 @@ msgstr ""
 #: app/features/billing/components/billing-account-list.tsx:169
 #: app/features/billing/components/org-billing-accounts-card.tsx:50
 #: app/features/contact/components/contact-list.tsx:75
-#: app/features/dashboard/components/pending-approvals-widget.tsx:134
 #: app/features/fraud/policy/policy-form.tsx:149
 #: app/features/organization/components/org-members-preview-card.tsx:40
 #: app/routes/admin/group/detail/index.tsx:28
@@ -2581,6 +2611,10 @@ msgstr ""
 msgid "Navigation"
 msgstr ""
 
+#: app/features/dashboard/components/home/home-columns.tsx:142
+msgid "Needs review"
+msgstr ""
+
 #. placeholder {0}: invoice?.netDays ?? '—'
 #. placeholder {1}: formatCreditLimit(invoice?.creditLimit)
 #: app/features/billing/components/payment-terms-card.tsx:354
@@ -2609,9 +2643,27 @@ msgstr ""
 msgid "New Limit"
 msgstr ""
 
+#: app/features/dashboard/components/home/growth-section.tsx:100
+#: app/features/dashboard/components/home/home-columns.tsx:78
+msgid "New organizations"
+msgstr ""
+
 #: app/routes/operation/activity/policies/detail.tsx:15
 #: app/routes/operation/activity/policies/detail.tsx:26
 msgid "New Policy"
+msgstr ""
+
+#: app/features/dashboard/components/home/growth-section.tsx:107
+msgid "New projects"
+msgstr ""
+
+#: app/features/dashboard/components/home/growth-section.tsx:88
+msgid "New sign-ups across the platform, from the audit log."
+msgstr ""
+
+#: app/features/dashboard/components/home/growth-section.tsx:93
+#: app/features/dashboard/components/home/home-columns.tsx:40
+msgid "New users"
 msgstr ""
 
 #: app/features/milo/components/page/list-pagination.tsx:94
@@ -2728,6 +2780,10 @@ msgstr ""
 msgid "No email activity found."
 msgstr ""
 
+#: app/features/dashboard/components/home/health-section.tsx:203
+msgid "No emails sent"
+msgstr ""
+
 #: app/features/billing/components/payment-terms-card.tsx:364
 msgid "no end date"
 msgstr ""
@@ -2746,10 +2802,6 @@ msgstr ""
 
 #: app/features/feature-flags/components/feature-flag-list.tsx:243
 msgid "No feature flags registered."
-msgstr ""
-
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:77
-msgid "No fraud alerts"
 msgstr ""
 
 #: app/routes/customer/user/detail/index.tsx:349
@@ -2827,12 +2879,20 @@ msgstr ""
 msgid "No nameservers found."
 msgstr ""
 
+#: app/features/dashboard/components/home/home-columns.tsx:86
+msgid "No new organizations in 30 days"
+msgstr ""
+
 #: app/features/domain/components/notes-list.tsx:30
 msgid "No notes yet. Add the first note below."
 msgstr ""
 
 #: app/routes/admin/offer/index.tsx:89
 msgid "No offers found."
+msgstr ""
+
+#: app/features/dashboard/components/home/health-section.tsx:145
+msgid "No organization is near a limit"
 msgstr ""
 
 #: app/features/project/components/project-organization-card.tsx:28
@@ -2865,8 +2925,8 @@ msgstr ""
 msgid "No pending approval requests."
 msgstr ""
 
-#: app/features/dashboard/components/pending-approvals-widget.tsx:63
-msgid "No pending approvals"
+#: app/features/dashboard/components/home/attention-banner.tsx:50
+msgid "No pending approvals, fraud reviews, or quota limits need attention."
 msgstr ""
 
 #: app/routes/customer/user/detail/index.tsx:456
@@ -2910,10 +2970,6 @@ msgstr ""
 msgid "No quotas"
 msgstr ""
 
-#: app/features/dashboard/components/quota-utilization-widget.tsx:99
-msgid "No quotas are above 70% utilization"
-msgstr ""
-
 #: app/features/user/components/user-recovery-links-dialog.tsx:62
 msgid "No recovery links have been sent to this user."
 msgstr ""
@@ -2946,6 +3002,10 @@ msgstr ""
 msgid "No services match the current filters."
 msgstr ""
 
+#: app/features/dashboard/components/home/home-columns.tsx:46
+msgid "No sign-ups in 30 days"
+msgstr ""
+
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:73
 msgid "No stable tests labeled yet"
 msgstr ""
@@ -2957,10 +3017,6 @@ msgstr ""
 
 #: app/routes/customer/user/index.tsx:304
 msgid "No users found."
-msgstr ""
-
-#: app/features/dashboard/components/recent-users-widget.tsx:58
-msgid "No users yet"
 msgstr ""
 
 #: app/features/service-catalog/components/meters-card.tsx:32
@@ -3016,6 +3072,10 @@ msgstr ""
 
 #: app/features/project/components/project-suspension-card.tsx:108
 msgid "Notes (operator-facing)"
+msgstr ""
+
+#: app/features/dashboard/components/home/home-columns.tsx:148
+msgid "Nothing waiting on review"
 msgstr ""
 
 #: app/components/app-sidebar/nav-user.tsx:95
@@ -3103,7 +3163,6 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:501
 #: app/features/billing/components/billing-account-list.tsx:192
 #: app/features/billing/components/billing-account-list.tsx:249
-#: app/features/dashboard/components/quota-utilization-widget.tsx:147
 #: app/features/project/components/project-organization-card.tsx:25
 #: app/routes/admin/service-catalog/detail/approvals.tsx:66
 #: app/routes/admin/service-catalog/detail/consumers.tsx:100
@@ -3129,7 +3188,6 @@ msgstr ""
 #: app/routes/customer/organization/layout.tsx:8
 #: app/routes/customer/project/detail/layout.tsx:122
 #: app/routes/customer/user/detail/organization.tsx:18
-#: app/routes/dashboard/overview.tsx:67
 msgid "Organizations"
 msgstr ""
 
@@ -3139,11 +3197,9 @@ msgstr ""
 
 #: app/routes/admin/group/detail/index.tsx:18
 #: app/routes/admin/offer/detail.tsx:376
-#: app/routes/dashboard/overview.tsx:28
 msgid "Overview"
 msgstr ""
 
-#: app/features/dashboard/components/quota-utilization-widget.tsx:152
 #: app/features/service-catalog/components/details-card.tsx:60
 msgid "Owner"
 msgstr ""
@@ -3219,12 +3275,16 @@ msgstr ""
 msgid "Pending"
 msgstr ""
 
+#: app/features/dashboard/components/home/home-columns.tsx:131
+msgid "Pending access"
+msgstr ""
+
 #: app/routes/admin/service-catalog/detail/consumers.tsx:332
 msgid "Pending Approval"
 msgstr ""
 
-#: app/features/dashboard/components/pending-approvals-widget.tsx:97
-msgid "Pending Approvals"
+#: app/routes/dashboard/index.tsx:52
+msgid "pending approvals"
 msgstr ""
 
 #: app/routes/admin/offer/detail.tsx:302
@@ -3288,6 +3348,10 @@ msgstr ""
 
 #: app/routes/admin/offer/detail.tsx:325
 msgid "Platform default"
+msgstr ""
+
+#: app/features/dashboard/components/home/health-section.tsx:228
+msgid "Platform health"
 msgstr ""
 
 #. placeholder {0}: user?.spec?.givenName ?? ''
@@ -3422,7 +3486,6 @@ msgstr ""
 #: app/routes/customer/project/detail/layout.tsx:128
 #: app/routes/customer/project/index.tsx:29
 #: app/routes/customer/project/layout.tsx:8
-#: app/routes/dashboard/overview.tsx:75
 msgid "Projects"
 msgstr ""
 
@@ -3522,18 +3585,22 @@ msgstr ""
 msgid "Quota buckets will appear here once resources are granted."
 msgstr ""
 
-#: app/features/quota/components/quota-bucket-list.tsx:183
-msgid "Quota updated successfully"
+#: app/features/dashboard/components/home/health-section.tsx:136
+msgid "Quota hot spots"
 msgstr ""
 
-#: app/features/dashboard/components/quota-utilization-widget.tsx:129
-msgid "Quota Utilization"
+#: app/features/quota/components/quota-bucket-list.tsx:183
+msgid "Quota updated successfully"
 msgstr ""
 
 #: app/features/project/components/project-quotas-card.tsx:65
 #: app/routes/customer/organization/detail/quota/layout.tsx:5
 #: app/routes/customer/project/detail/quota/layout.tsx:5
 msgid "Quotas"
+msgstr ""
+
+#: app/routes/dashboard/index.tsx:64
+msgid "quotas near their limit"
 msgstr ""
 
 #: app/features/billing/components/offer-included-pricing-list.tsx:129
@@ -3582,10 +3649,6 @@ msgstr ""
 
 #: app/features/billing/components/payment-terms-card.tsx:430
 msgid "Receives invoices as well as the billing contact."
-msgstr ""
-
-#: app/features/dashboard/components/recent-users-widget.tsx:98
-msgid "Recent Users"
 msgstr ""
 
 #: app/features/email/components/email-list.tsx:62
@@ -3666,7 +3729,6 @@ msgstr ""
 msgid "Resend"
 msgstr ""
 
-#: app/features/dashboard/components/quota-utilization-widget.tsx:157
 #: app/features/quota/components/quota-bucket-list.tsx:85
 #: app/features/quota/components/quota-grant-list.tsx:69
 msgid "Resource"
@@ -3713,16 +3775,13 @@ msgid "Retired"
 msgstr ""
 
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:93
-#: app/features/dashboard/components/cluster-health-widget.tsx:40
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:94
-#: app/features/dashboard/components/pending-approvals-widget.tsx:80
-#: app/features/dashboard/components/quota-utilization-widget.tsx:113
 #: app/routes/admin/service-catalog/detail/approvals.tsx:148
 #: app/routes/admin/service-catalog/detail/index.tsx:114
 #: app/routes/admin/service-catalog/index.tsx:141
 msgid "Retry"
 msgstr ""
 
+#: app/features/dashboard/components/home/home-columns.tsx:120
 #: app/routes/customer/fraud/index.tsx:274
 msgid "Review"
 msgstr ""
@@ -3790,7 +3849,6 @@ msgstr ""
 msgid "Scheduled"
 msgstr ""
 
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:147
 #: app/features/fraud/detail/evaluation-sections.tsx:318
 #: app/features/fraud/detail/evaluation-sections.tsx:412
 #: app/features/fraud/detail/evaluation-sections.tsx:647
@@ -3959,9 +4017,17 @@ msgstr ""
 msgid "Search sessions..."
 msgstr ""
 
+#: app/features/dashboard/components/home/home-header.tsx:81
+msgid "Search the platform"
+msgstr ""
+
 #: app/components/app-search/app-search-mobile.tsx:56
 #: app/features/milo/components/navbar/milo-search.tsx:67
 msgid "Search users, organizations, and projects"
+msgstr ""
+
+#: app/features/dashboard/components/home/home-header.tsx:80
+msgid "Search users, organizations, projects, domains…"
 msgstr ""
 
 #: app/routes/customer/user/index.tsx:303
@@ -4142,6 +4208,10 @@ msgstr ""
 
 #: app/features/fraud/policy/policy-form.tsx:300
 msgid "Short-circuit Below"
+msgstr ""
+
+#: app/features/dashboard/components/home/attention-banner.tsx:86
+msgid "Show all"
 msgstr ""
 
 #: app/features/milo/components/page/list-table.tsx:303
@@ -4586,6 +4656,11 @@ msgstr ""
 msgid "Unavailable"
 msgstr ""
 
+#. placeholder {0}: unhealthy?.map((cl) => cl.name).join(', ')
+#: app/features/dashboard/components/home/health-section.tsx:115
+msgid "Unhealthy: {0}"
+msgstr ""
+
 #: app/features/billing/components/payment-terms-card.tsx:98
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:136
 #: app/features/domain/components/note-card.tsx:38
@@ -4620,7 +4695,6 @@ msgstr ""
 msgid "Updating email addresses for GitHub identities"
 msgstr ""
 
-#: app/features/dashboard/components/quota-utilization-widget.tsx:162
 #: app/features/organization/components/org-usage-card.tsx:54
 #: app/features/project/components/project-usage-card.tsx:89
 #: app/features/quota/components/quota-bucket-list.tsx:110
@@ -4653,7 +4727,6 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:118
 #: app/features/activity/components/activity-list.tsx:395
 #: app/features/activity/components/activity-list.tsx:494
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:142
 #: app/features/fraud/detail/evaluation-sections.tsx:686
 #: app/routes/customer/fraud/index.tsx:110
 #: app/routes/customer/user/detail/index.tsx:205
@@ -4679,16 +4752,7 @@ msgstr ""
 #: app/routes/customer/breadcrumb-switchers.tsx:6
 #: app/routes/customer/user/index.tsx:42
 #: app/routes/customer/user/layout.tsx:8
-#: app/routes/dashboard/overview.tsx:59
 msgid "Users"
-msgstr ""
-
-#: app/features/dashboard/components/recent-users-widget.tsx:61
-msgid "Users will appear here once they join Datum"
-msgstr ""
-
-#: app/features/dashboard/components/quota-utilization-widget.tsx:167
-msgid "Utilization"
 msgstr ""
 
 #: app/features/dns/components/dns-record-status-probe.tsx:66
@@ -4727,12 +4791,6 @@ msgstr ""
 #: app/features/project/components/project-quotas-card.tsx:71
 #: app/features/project/components/project-usage-card.tsx:93
 msgid "View all"
-msgstr ""
-
-#: app/features/dashboard/components/fraud-alerts-widget.tsx:124
-#: app/features/dashboard/components/pending-approvals-widget.tsx:112
-#: app/features/dashboard/components/recent-users-widget.tsx:113
-msgid "View All"
 msgstr ""
 
 #: app/routes/marketing/contact-group/index.tsx:169
@@ -4786,10 +4844,6 @@ msgstr ""
 msgid "Waiting on"
 msgstr ""
 
-#: app/features/dashboard/components/pending-approvals-widget.tsx:140
-msgid "Waiting Since"
-msgstr ""
-
 #: app/features/contact/components/contact-form.tsx:231
 msgid "Warning"
 msgstr ""
@@ -4801,6 +4855,14 @@ msgstr ""
 
 #: app/features/edge/components/detail/edge-backends-card.tsx:64
 msgid "Weight"
+msgstr ""
+
+#: app/features/dashboard/components/home/home-header.tsx:31
+msgid "Welcome back, {givenName}."
+msgstr ""
+
+#: app/features/dashboard/components/home/home-header.tsx:31
+msgid "Welcome back."
 msgstr ""
 
 #: app/features/billing/components/payment-terms-card.tsx:459

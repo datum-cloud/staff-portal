@@ -34,8 +34,7 @@ export default function MiloLayout() {
             plan's Phase 0a/2. Removed once pages migrate to the Milo page
             templates (#777). */}
         <SidebarProvider defaultOpen={false}>
-          <MiloShell />
-          {env?.CHATBOT_ENABLED && <AssistantPanel />}
+          <MiloShell sidePanel={env?.CHATBOT_ENABLED ? <AssistantPanel /> : undefined} />
         </SidebarProvider>
       </TaskQueueProvider>
     </AppProvider>

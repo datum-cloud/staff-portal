@@ -4,10 +4,8 @@ export default [
   // Protected routes with auth.
   // Shell switch: 'layouts/private.layout.tsx' = legacy, 'layouts/milo.layout.tsx' = new Milo shell.
   layout('layouts/milo.layout.tsx', [
-    // Home (#554): the full-page assistant workspace replaces the old KPI
-    // dashboard, which is preserved at /overview.
+    // Home: platform-wide landing page; the assistant lives in the right dock.
     index('routes/dashboard/index.tsx'),
-    route('overview', 'routes/dashboard/overview.tsx'),
 
     // Customers
     route('customers', 'routes/customer/layout.tsx', [

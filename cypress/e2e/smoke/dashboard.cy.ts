@@ -3,22 +3,18 @@ describe('Dashboard', () => {
     cy.login();
   });
 
-  it('renders the assistant workspace at the root', () => {
+  it('renders the platform landing page at the root', () => {
     cy.visit('/');
     cy.location('pathname').should('eq', '/');
-    // Title is set unconditionally in app/routes/dashboard/index.tsx; the chat
-    // body itself only renders when CHATBOT_ENABLED (off in CI).
-    cy.title().should('include', 'Assistant');
-  });
+    cy.title().should('include', 'Home');
 
-  it('renders the overview with the summary stat cards', () => {
-    cy.visit('/overview');
-    cy.location('pathname').should('eq', '/overview');
-
-    // Stat card labels rendered via <Trans> in app/routes/dashboard/overview.tsx
-    cy.contains('Users').should('be.visible');
-    cy.contains('Organizations').should('be.visible');
-    cy.contains('Projects').should('be.visible');
-    cy.contains('Fraud Evaluations').should('be.visible');
+    // Section headings rendered via <Trans> in app/features/dashboard/components/home/*.
+    cy.contains('h1', 'Datum Platform').should('be.visible');
+    cy.contains('New users').should('be.visible');
+    cy.contains('New organizations').should('be.visible');
+    cy.contains('Needs review').should('be.visible');
+    cy.contains('Growth').should('be.visible');
+    cy.contains('Platform health').should('be.visible');
+    cy.contains('Activity').should('be.visible');
   });
 });
