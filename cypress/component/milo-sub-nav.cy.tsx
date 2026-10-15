@@ -57,6 +57,18 @@ describe('MiloSubNav — D1 nested collapsible groups', () => {
     cy.contains('a', 'Feed').should('not.have.class', 'bg-card');
   });
 
+  it('activates the group at its root URL, highlighting the matching child (group-root tie)', () => {
+    // The parent's `match` (`…/activity`) equals Feed's `href`, so both tie on
+    // length. The child must win: otherwise the parent takes the match and
+    // renders as a non-highlightable group header, leaving nothing active and
+    // the group collapsed (the bug this covers).
+    mountAt(`${ORG_ROOT}/activity`);
+
+    cy.contains('Feed').should('be.visible');
+    cy.contains('a', 'Feed').should('have.class', 'bg-card');
+    cy.contains('a', 'Events').should('not.have.class', 'bg-card');
+  });
+
   it('stays collapsed when no child matches, and expands on click', () => {
     mountAt(ORG_ROOT);
 

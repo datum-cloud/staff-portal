@@ -10,12 +10,23 @@ export interface ActiveSubNavItem {
   parent?: NavSubItem;
 }
 
-/** One level of `children` flattened into standalone candidates, each tagged with its parent (D1 is single-level nesting). */
-function flatten(items: NavSubItem[]): { item: NavSubItem; parent?: NavSubItem }[] {
-  return items.flatMap((item) => [
-    { item },
-    ...(item.children ?? []).map((child) => ({ item: child, parent: item })),
-  ]);
+/**
+ * The rail's navigable targets: top-level leaf items, plus every group's
+ * children (each tagged with its parent — D1 is single-level nesting). A group
+ * header that has `children` is deliberately NOT a target of its own: you
+ * navigate to a child, never to the header, so it's excluded as a match
+ * candidate and instead becomes active via whichever child matches. That's
+ * what makes a group-root URL — where the header's `match` equals its first
+ * child's `href` (Compute/Workloads, Activity/Feed) — resolve to that child,
+ * so the group highlights and auto-expands rather than matching the
+ * non-highlightable header and leaving nothing active.
+ */
+function navigableTargets(items: NavSubItem[]): { item: NavSubItem; parent?: NavSubItem }[] {
+  return items.flatMap((item) =>
+    item.children?.length
+      ? item.children.map((child) => ({ item: child, parent: item }))
+      : [{ item }]
+  );
 }
 
 /**
@@ -30,7 +41,7 @@ export function useActiveSubNavItem(groups: NavSubGroup[]): ActiveSubNavItem {
   const { pathname } = useLocation();
 
   return useMemo(() => {
-    const candidates = flatten(groups.flatMap((g) => g.items));
+    const candidates = navigableTargets(groups.flatMap((g) => g.items));
 
     let best: (typeof candidates)[number] | undefined;
     let bestLen = 0;
