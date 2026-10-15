@@ -1042,7 +1042,7 @@ msgstr "Create Policy"
 #: app/routes/customer/organization/detail/project.tsx:76
 #: app/routes/customer/organization/index.tsx:138
 #: app/routes/customer/organization/index.tsx:194
-#: app/routes/customer/project/detail/domain/detail.tsx:128
+#: app/routes/customer/project/detail/domain/detail.tsx:129
 #: app/routes/customer/project/detail/export-policy/detail.tsx:83
 #: app/routes/customer/project/detail/export-policy/index.tsx:51
 #: app/routes/customer/project/index.tsx:171
@@ -2980,7 +2980,7 @@ msgid "Note deleted"
 msgstr "Note deleted"
 
 #: app/features/project/components/project-suspension-card.tsx:200
-#: app/routes/customer/project/detail/domain/detail.tsx:141
+#: app/routes/customer/project/detail/domain/detail.tsx:142
 msgid "Notes"
 msgstr "Notes"
 
