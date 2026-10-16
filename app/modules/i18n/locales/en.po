@@ -2362,6 +2362,7 @@ msgstr "Loading status..."
 #: app/routes/auth/callback.tsx:71
 #: app/routes/auth/login.tsx:41
 #: app/routes/auth/logout.tsx:36
+#: app/routes/auth/reauth.tsx:25
 #: app/routes/customer/user/detail/index.tsx:303
 #: app/routes/customer/user/detail/index.tsx:367
 msgid "Loading..."

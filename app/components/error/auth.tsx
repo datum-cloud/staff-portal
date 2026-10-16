@@ -1,16 +1,20 @@
 import { LogoIcon } from '@/components/logo/logo-icon';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
+import { routes } from '@/utils/config/routes.config';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 const AuthError = ({ message, requestId }: { message: string; requestId?: string }) => {
   const navigate = useNavigate();
+  const { pathname, search } = useLocation();
 
+  // Session expired: restart login and come back to this page (not /logout,
+  // which is for the Sign out button and drops the saved URL).
   useEffect(() => {
-    navigate('/logout', { replace: true });
-  }, [navigate]);
+    navigate(routes.reauth(pathname + search), { replace: true });
+  }, [navigate, pathname, search]);
 
   return (
     <Card className="w-1/2 overflow-hidden">
@@ -26,7 +30,7 @@ const AuthError = ({ message, requestId }: { message: string; requestId?: string
             textColor="muted"
             className="flex items-center justify-center gap-2 text-center">
             <STATUS_ICONS.loading className="size-4 animate-spin" />
-            Logging out...
+            Signing you in again...
           </Text>
           {requestId && (
             <Text

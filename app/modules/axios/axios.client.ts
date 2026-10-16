@@ -1,3 +1,4 @@
+import { getAuthErrorRedirectUrl } from './auth-error-redirect';
 import { parseK8sMessage } from '@/utils/errors';
 import { logger } from '@/utils/logger';
 import { captureApiError } from '@/utils/logger';
@@ -91,13 +92,11 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   // Aborted requests (e.g. React Query cancelling on unmount) aren't failures.
   if (Axios.isCancel(error)) return Promise.reject(error);
 
-  // Handle 401 AUTH_ERROR -> redirect to logout
-  if (error.response?.status === 401) {
-    const data = error.response?.data as { error: string; code: string };
-    if (data.code === 'AUTH_ERROR') {
-      window.location.href = '/logout';
-      return Promise.reject(error);
-    }
+  // 401 AUTH_ERROR: the session expired. Restart login and return to this page.
+  const authErrorRedirect = getAuthErrorRedirectUrl(error.response, window.location);
+  if (authErrorRedirect) {
+    window.location.href = authErrorRedirect;
+    return Promise.reject(error);
   }
 
   const errorInfo = getErrorMessage(error);
