@@ -1,6 +1,8 @@
 import type { Route } from './+types/index';
 import {
   EvaluationBackLink,
+  EvaluationDetailSkeleton,
+  EvaluationHeader,
   EvaluationHistorySection,
   EvaluationOverview,
   StageResultsSection,
@@ -60,13 +62,7 @@ export default function Page() {
     );
 
   if (evalQuery.isLoading) {
-    return (
-      <SectionCard className="m-4" contentClassName="flex items-center justify-center py-12">
-        <Text size="sm" textColor="muted">
-          <Trans>Loading evaluation...</Trans>
-        </Text>
-      </SectionCard>
-    );
+    return <EvaluationDetailSkeleton />;
   }
 
   if (!evaluation) {
@@ -82,8 +78,12 @@ export default function Page() {
   return (
     <div className="space-y-4 p-4">
       <EvaluationBackLink />
+      <EvaluationHeader evaluation={evaluation} userEmail={userEmail} />
       <EvaluationOverview evaluation={evaluation} contactName={contactName} userEmail={userEmail} />
-      <StageResultsSection stageResults={evaluation.status?.stageResults ?? []} />
+      <StageResultsSection
+        stageResults={evaluation.status?.stageResults ?? []}
+        compositeScore={evaluation.status?.compositeScore}
+      />
       <EvaluationHistorySection entries={evaluation.status?.history ?? []} />
       <UserEvaluationsTable evaluations={userEvaluations} currentName={evalName ?? ''} />
     </div>
