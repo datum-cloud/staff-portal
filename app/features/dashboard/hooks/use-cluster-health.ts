@@ -39,8 +39,9 @@ function parseResponse(raw: any): ClusterHealthData {
   return payload;
 }
 
-export function useClusterHealth() {
+export function useClusterHealth({ enabled = true }: { enabled?: boolean } = {}) {
   return useQuery({
+    enabled,
     queryKey: ['dashboard', 'cluster-health'],
     queryFn: async () => {
       const { data } = await httpClient.post('/api/cluster/health', {}, { baseURL: '' });

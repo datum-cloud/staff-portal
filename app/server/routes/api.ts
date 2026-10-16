@@ -7,6 +7,7 @@ import { clusterRoutes } from '@/server/routes/cluster';
 import { graphqlRoutes } from '@/server/routes/graphql';
 import { internalRoutes } from '@/server/routes/internal';
 import { metricsRoutes } from '@/server/routes/metrics';
+import { platformRoutes } from '@/server/routes/platform';
 import { usageRoutes } from '@/server/routes/usage';
 import { Hono } from 'hono';
 
@@ -28,6 +29,7 @@ api.route('/chainsaw-tests', chainsawTestsRoutes);
 api.route('/cluster', clusterRoutes);
 api.route('/graphql', graphqlRoutes);
 api.route('/usage', usageRoutes);
+api.route('/platform', platformRoutes);
 api.route('/plugins', pluginsRoutes);
 
 // Start the plugin registry (idempotent) at module load.

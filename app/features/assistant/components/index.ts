@@ -2,6 +2,6 @@
 export { AssistantWorkspace } from './assistant-workspace';
 
 // Global slide-out shell: provider + navbar trigger + panel
-export { AssistantProvider, useAssistant } from './assistant-context';
+export { AssistantProvider, useAssistant, useAssistantOptional } from './assistant-context';
 export { AssistantPanel } from './assistant-panel';
 export { AssistantTrigger } from './assistant-trigger';

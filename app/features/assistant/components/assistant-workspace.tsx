@@ -7,6 +7,7 @@ import { buildStaffAssistantConfig } from '../staff-config';
 import {
   AssistantWorkspace as SharedAssistantWorkspace,
   type AssistantConfig,
+  type AssistantWorkspaceOrientation,
 } from '@datum-cloud/datum-ui/assistant';
 import { useMemo } from 'react';
 
@@ -15,6 +16,10 @@ interface AssistantWorkspaceProps {
   config?: Partial<AssistantConfig>;
   /** Display name for the greeting; the host reads it from its own user context. */
   userName?: string;
+  /** `vertical` for a tall, narrow container such as the docked side panel. */
+  orientation?: AssistantWorkspaceOrientation;
+  /** Renders a close button in the vertical top bar. */
+  onClose?: () => void;
 }
 
 /**
@@ -24,7 +29,12 @@ interface AssistantWorkspaceProps {
  * and feeds it into the presentational layer. cloud-portal writes its own
  * equivalent wrapper.
  */
-export function AssistantWorkspace({ config, userName }: AssistantWorkspaceProps) {
+export function AssistantWorkspace({
+  config,
+  userName,
+  orientation,
+  onClose,
+}: AssistantWorkspaceProps) {
   const { models } = useAssistantModels();
   const staffConfig = useMemo(() => buildStaffAssistantConfig(models), [models]);
   const mergedConfig = useMemo((): Partial<AssistantConfig> => {
@@ -79,6 +89,8 @@ export function AssistantWorkspace({ config, userName }: AssistantWorkspaceProps
 
   return (
     <SharedAssistantWorkspace
+      orientation={orientation}
+      onClose={onClose}
       config={mergedConfig}
       userName={userName}
       title={title}
