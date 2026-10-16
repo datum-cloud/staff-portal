@@ -238,6 +238,8 @@ export const routes = {
   dashboard: () => '/',
   login: () => '/login',
   logout: () => '/logout',
+  // Expired session: clears stale cookies, then logs in again and returns to `redirectTo`.
+  reauth: (redirectTo: string) => `/auth/reauth?redirectTo=${encodeURIComponent(redirectTo)}`,
   authCallback: () => '/auth/callback',
   sessionExpired: () => '/error/session-expired',
   oauthError: () => '/error/oauth-error',

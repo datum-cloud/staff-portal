@@ -1,4 +1,5 @@
 import { authenticator } from '@/modules/auth';
+import { redirectToReauth } from '@/modules/auth/reauth.server';
 import { userDetailQuery } from '@/resources/request/server';
 import { userGroupMembershipsQuery } from '@/resources/request/server/group.request';
 import { env } from '@/utils/config/env.server';
@@ -24,9 +25,11 @@ export async function requireStaffUser(request: Request) {
     throw redirect(getLoginUrl(getRedirectToPath(request.url)));
   }
 
+  // Expired session: restart login and come back to this page. Not /logout,
+  // which is for the Sign out button and drops the saved URL.
   const isValid = await authenticator.isValidSession(request);
   if (!isValid) {
-    throw redirect('/logout');
+    throw await redirectToReauth(request, getRedirectToPath(request.url));
   }
 
   const session = await authenticator.getSession(request);

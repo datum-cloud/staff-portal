@@ -265,6 +265,7 @@ export default [
 
   // Global routes
   route('logout', 'routes/auth/logout.tsx'),
+  route('auth/reauth', 'routes/auth/reauth.tsx'),
 
   // Component playground — showcases staff-portal's own components in a
   // scroll-spy gallery. Standalone (its own sidebar); loader 404s in production.
