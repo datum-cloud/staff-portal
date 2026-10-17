@@ -121,6 +121,7 @@ export default function Page() {
                   projectName={project.metadata?.name ?? ''}
                   domainName={data?.metadata?.name ?? ''}
                   namespace={data?.metadata?.namespace ?? ''}
+                  initialStatus={data?.status}
                 />
               ),
             },
