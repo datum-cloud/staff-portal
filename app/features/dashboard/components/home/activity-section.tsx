@@ -29,7 +29,7 @@ export function ActivitySection() {
     <HomeColumn
       title={<Trans>Activity</Trans>}
       href={activityRoutes.feed()}
-      bodyClassName="h-auto"
+      bodyClassName="h-auto [&>[data-slot=card]]:p-0"
       action={
         <div role="group" aria-label="Show" className="bg-muted flex rounded-md p-0.5">
           {SOURCES.map((s) => (
