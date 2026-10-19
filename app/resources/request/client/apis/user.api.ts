@@ -221,7 +221,9 @@ export const listUsers = async (params?: {
   };
 };
 
-const ALL_USERS_PAGE_LIMIT = 100;
+// Each page is a serial browser → gateway → milo round trip, so keep pages
+// large enough that the whole user list usually arrives in one request.
+const ALL_USERS_PAGE_LIMIT = 1000;
 // Safety net against a runaway walk — mirrors listAllOrganizations' pattern.
 const ALL_USERS_MAX_PAGES = 100;
 
