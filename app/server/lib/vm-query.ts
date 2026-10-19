@@ -43,6 +43,21 @@ export async function runVmInstantQuery(
   return unwrapMcpResult(result);
 }
 
+// An instant query whose expression is a bare range selector
+// (`metric{...}[30d]`) returns a matrix of raw samples at their real
+// timestamps, not a vector — for callers that need every stored sample
+// rather than query_range's evenly-spaced grid.
+export async function runVmRawSamplesQuery(
+  client: Client,
+  query: string
+): Promise<PromMatrixSeries[]> {
+  const result = await client.callTool({
+    name: 'victoria-metrics-mcp-server__query',
+    arguments: { query },
+  });
+  return unwrapMcpResult(result);
+}
+
 export async function runVmRangeQuery(
   client: Client,
   query: string,

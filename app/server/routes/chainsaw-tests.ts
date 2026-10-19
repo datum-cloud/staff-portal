@@ -1,6 +1,12 @@
 import { EnvVariables } from '@/server/iface';
+import { computeStepHistory } from '@/server/lib/chainsaw-step-history';
 import { computeStepTiming } from '@/server/lib/chainsaw-step-timing';
-import { runVmInstantQuery, runVmRangeQuery, seriesKey } from '@/server/lib/vm-query';
+import {
+  runVmInstantQuery,
+  runVmRangeQuery,
+  runVmRawSamplesQuery,
+  seriesKey,
+} from '@/server/lib/vm-query';
 import type { PromMatrixSeries, PromVectorSample } from '@/server/lib/vm-query';
 import { logApiError, logApiSuccess } from '@/server/logger';
 import { authMiddleware } from '@/server/middleware';
@@ -23,6 +29,10 @@ const LIST_STEP = '30m';
 const DETAIL_LOOKBACK = '30m';
 const DETAIL_WINDOW_PATTERN = /^\d+[hd]$/;
 const DEFAULT_DETAIL_WINDOW = '7d';
+// The trend page's 7d/14d/30d picker — the only windows the history
+// endpoint serves. Well inside prod VMCluster retention (180d).
+const HISTORY_DAYS = [7, 14, 30] as const;
+const DEFAULT_HISTORY_DAYS = 30;
 const SAFE_LABEL = /^[A-Za-z0-9_.:-]{1,128}$/;
 const GITHUB_ACTIONS_URL =
   'https://github.com/datum-cloud/infra/actions/workflows/run-e2e-tests.yaml';
@@ -314,6 +324,113 @@ chainsawTestsRoutes.post('/step-timing', authMiddleware(), async (c) => {
       reqId,
       error,
       '/chainsaw-tests/step-timing'
+    );
+    return c.json(response, status as any);
+  }
+});
+
+const stepHistoryRequestSchema = z.object({
+  test: z.string().regex(SAFE_LABEL),
+  suite: z.string().regex(SAFE_LABEL),
+  environment: z.string().regex(SAFE_LABEL),
+  days: z
+    .number()
+    .int()
+    .refine((value) => (HISTORY_DAYS as readonly number[]).includes(value), {
+      message: `days must be one of ${HISTORY_DAYS.join(', ')}`,
+    })
+    .optional(),
+});
+
+// Every run of one test over the window, with per-step duration/pass-fail —
+// the data behind the plugin's step timing trend page. Averages and
+// run-vs-average comparisons are computed in the plugin, not here. Unlike the
+// list route, there's no stability filter: any test with named steps works.
+chainsawTestsRoutes.post('/step-timing/history', authMiddleware(), async (c) => {
+  const startTime = performance.now();
+  const reqLogger = createRequestLogger(c);
+  const reqId = c.get('requestId');
+
+  reqLogger.info('Chainsaw Step History API Request Started', {
+    path: c.req.path,
+    method: c.req.method,
+  });
+
+  try {
+    const parsed = stepHistoryRequestSchema.safeParse(await c.req.json().catch(() => ({})));
+    if (!parsed.success) {
+      throw new BadRequestError(parsed.error.message, reqId);
+    }
+    const { test, suite, environment } = parsed.data;
+    const days = parsed.data.days ?? DEFAULT_HISTORY_DAYS;
+
+    const { getMcpClient } = await import('@/modules/assistant/tools/mcp-client');
+    const client = await getMcpClient();
+    if (!client) {
+      throw new Error('MCP is not configured or unreachable');
+    }
+
+    // Raw range selectors, evaluated at now: publish-test-metrics stamps every
+    // series in a push with the report's endTime, so each run is exactly one
+    // sample per series at its real CI push time — no query_range grid,
+    // timestamp_with_name join or dedupe needed (see computeStepHistory).
+    const selector = `test="${test}",suite="${suite}",environment="${environment}"`;
+    const [stepSeries, resultSeries] = await Promise.all([
+      runVmRawSamplesQuery(
+        client,
+        `{__name__=~"chainsaw_test_step_(duration_seconds|result|start_offset_seconds)",${selector}}[${days}d]`
+      ),
+      runVmRawSamplesQuery(client, `chainsaw_test_result{${selector}}[${days}d]`),
+    ]);
+
+    const { steps, runs } = computeStepHistory(stepSeries, resultSeries);
+
+    const data = {
+      key: `${suite}/${test}/${environment}`,
+      test,
+      suite,
+      environment,
+      days,
+      steps,
+      runs,
+      grafanaUrl: grafanaUrlFor(suite, test, environment),
+      docsUrl: docsUrlFor(suite, test),
+    };
+
+    const duration = Math.round(performance.now() - startTime);
+
+    logApiSuccess(reqLogger, {
+      path: c.req.path,
+      method: c.req.method,
+      duration,
+    });
+
+    return c.json(createSuccessResponse(reqId, data, c.req.path), 200, {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      Pragma: 'no-cache',
+      Expires: '0',
+    });
+  } catch (error) {
+    const duration = Math.round(performance.now() - startTime);
+
+    await logApiError(reqLogger, error, {
+      path: c.req.path,
+      method: c.req.method,
+      duration,
+    });
+
+    if (error instanceof Error) {
+      captureApiError(error, {
+        url: c.req.path,
+        method: c.req.method,
+        requestId: reqId,
+      });
+    }
+
+    const { response, status } = await createErrorResponse(
+      reqId,
+      error,
+      '/chainsaw-tests/step-timing/history'
     );
     return c.json(response, status as any);
   }
