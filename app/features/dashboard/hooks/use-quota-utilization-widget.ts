@@ -98,7 +98,11 @@ export function useQuotaUtilizationWidget(): UseQuotaUtilizationWidgetResult {
       for (const bucket of items) {
         const allocated = bucket.status?.allocated ?? 0;
         const limit = bucket.status?.limit ?? 0;
-        if (limit === 0) continue;
+        // A quota capped at 1 (or 0) is binary — present or absent, not
+        // pressure — and reads 100% the moment it's used (e.g. the one-per-org
+        // BillingAccount). Those rows aren't hot spots and would crowd the real
+        // ones off the card and inflate the attention count. Skip them. (#715)
+        if (limit <= 1) continue;
 
         const percentage = Math.round((allocated / limit) * 100);
         if (percentage < 70) continue;
