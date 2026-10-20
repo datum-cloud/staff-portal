@@ -4,12 +4,12 @@ type Query {
   consumer project's human-readable display name (the
   kubernetes.io/description annotation on the Project, falling back to the
   project name).
-
+  
   Authorization uses the caller's bearer token for both the consumer list
   (in the producer project's control plane) and the per-project lookups (at
   the core resourcemanager API). A list failure returns an empty list; a
   per-project lookup failure degrades that row to the raw project name.
-
+  
   serviceNames, when given, keeps only consumers whose spec.serviceRef.name
   matches one of them. Filtering happens before enrichment, so project and
   organization lookups run only for the consumers that are returned.
@@ -18,7 +18,7 @@ type Query {
 
   """
   Returns sessions for the authenticated caller by default.
-
+  
   When userID is provided and differs from the caller, the request is
   forwarded to milo with a status.userUID field selector. milo authorizes
   the cross-user lookup via SubjectAccessReview against
@@ -32,23 +32,13 @@ type Query {
   Contact data for each membership. Resolves all contacts in parallel.
   fieldSelector supports standard Kubernetes field selectors.
   """
-  contactGroupMembershipsWithContacts(
-    namespace: String
-    fieldSelector: String
-    limit: Int
-    cursor: String
-  ): EnrichedContactGroupMembershipList!
+  contactGroupMembershipsWithContacts(namespace: String, fieldSelector: String, limit: Int, cursor: String): EnrichedContactGroupMembershipList!
 
   """
   Lists ContactGroupMemberships in the given namespace, enriched with full
   ContactGroup data for each membership. Resolves all contact groups in parallel.
   """
-  contactMembershipsWithGroups(
-    namespace: String
-    fieldSelector: String
-    limit: Int
-    cursor: String
-  ): EnrichedContactMembershipList!
+  contactMembershipsWithGroups(namespace: String, fieldSelector: String, limit: Int, cursor: String): EnrichedContactMembershipList!
 
   """
   Batch-fetches User summaries by name. Fetches run in parallel; individual
@@ -70,29 +60,19 @@ type Query {
   """
   organizations(limit: Int, cursor: String, search: String): OrganizationList!
 
-  """
-  Returns a single organization by name.
-  """
+  """Returns a single organization by name."""
   organization(name: String!): Organization
 
-  """
-  Lists projects in an organization via its control plane.
-  """
+  """Lists projects in an organization via its control plane."""
   organizationProjects(orgName: String!, limit: Int, cursor: String): ProjectList!
 
-  """
-  Lists members and pending invitations for an organization.
-  """
+  """Lists members and pending invitations for an organization."""
   organizationMembers(orgName: String!): [OrgMember!]!
 
-  """
-  Lists all projects the caller can access.
-  """
+  """Lists all projects the caller can access."""
   projects(limit: Int, cursor: String, search: String): ProjectList!
 
-  """
-  Returns a single project by name.
-  """
+  """Returns a single project by name."""
   project(name: String!): Project
 
   """
@@ -142,9 +122,7 @@ type ExtendedSession {
 }
 
 type ConsumerProject {
-  """
-  The project's machine name (metadata.name).
-  """
+  """The project's machine name (metadata.name)."""
   name: String!
 
   """
@@ -152,9 +130,7 @@ type ConsumerProject {
   """
   displayName: String!
 
-  """
-  The owning organization's machine name (spec.ownerRef.name).
-  """
+  """The owning organization's machine name (spec.ownerRef.name)."""
   organizationName: String!
 
   """
@@ -164,9 +140,7 @@ type ConsumerProject {
 }
 
 type ServiceConsumer {
-  """
-  The ServiceConsumer's name (metadata.name).
-  """
+  """The ServiceConsumer's name (metadata.name)."""
   name: String!
 
   """
@@ -174,29 +148,19 @@ type ServiceConsumer {
   """
   serviceName: String
 
-  """
-  Lifecycle phase (status.phase), e.g. Active, PendingApproval.
-  """
+  """Lifecycle phase (status.phase), e.g. Active, PendingApproval."""
   phase: String
 
-  """
-  Approval decision (spec.approval.decision), e.g. Approved, Denied.
-  """
+  """Approval decision (spec.approval.decision), e.g. Approved, Denied."""
   approvalDecision: String
 
-  """
-  Optional approval note (spec.approval.message).
-  """
+  """Optional approval note (spec.approval.message)."""
   approvalMessage: String
 
-  """
-  When the consumer was requested (metadata.creationTimestamp).
-  """
+  """When the consumer was requested (metadata.creationTimestamp)."""
   requestedAt: String
 
-  """
-  The consuming project, enriched with its display name.
-  """
+  """The consuming project, enriched with its display name."""
   consumerProject: ConsumerProject!
 }
 
@@ -214,9 +178,7 @@ type EnrichedContact {
   displayName: String
 }
 
-"""
-A single Kubernetes-style status condition on a ContactGroup.
-"""
+"""A single Kubernetes-style status condition on a ContactGroup."""
 type ContactGroupCondition {
   type: String!
   status: String!
@@ -240,29 +202,21 @@ type EnrichedContactGroup {
   """
   visibility: String
 
-  """
-  Observed status of the ContactGroup (Ready condition, provider sync).
-  """
+  """Observed status of the ContactGroup (Ready condition, provider sync)."""
   status: EnrichedContactGroupStatus
 }
 
 type ContactGroupMembershipEnriched {
-  """
-  metadata.name of the ContactGroupMembership resource.
-  """
+  """metadata.name of the ContactGroupMembership resource."""
   name: String!
   contactRef: ContactRef!
 
-  """
-  Full Contact data, null if lookup failed.
-  """
+  """Full Contact data, null if lookup failed."""
   contact: EnrichedContact
 }
 
 type ContactMembershipEnriched {
-  """
-  metadata.name of the ContactGroupMembership resource.
-  """
+  """metadata.name of the ContactGroupMembership resource."""
   name: String!
 
   """
@@ -271,18 +225,14 @@ type ContactMembershipEnriched {
   creationTimestamp: String
   contactGroupRef: ContactRef!
 
-  """
-  Full ContactGroup data, null if lookup failed.
-  """
+  """Full ContactGroup data, null if lookup failed."""
   contactGroup: EnrichedContactGroup
 }
 
 type EnrichedContactGroupMembershipList {
   items: [ContactGroupMembershipEnriched!]!
 
-  """
-  Kubernetes continue token for pagination.
-  """
+  """Kubernetes continue token for pagination."""
   continue: String
 }
 
@@ -292,9 +242,7 @@ type EnrichedContactMembershipList {
 }
 
 type UserSummary {
-  """
-  metadata.name of the User resource.
-  """
+  """metadata.name of the User resource."""
   name: String!
   email: String
   givenName: String
@@ -302,9 +250,7 @@ type UserSummary {
 }
 
 type User {
-  """
-  metadata.name — the stable user ID.
-  """
+  """metadata.name — the stable user ID."""
   name: String!
   uid: String
   resourceVersion: String
@@ -313,24 +259,16 @@ type User {
   familyName: String
   createdAt: String
 
-  """
-  preferences/theme annotation.
-  """
+  """preferences/theme annotation."""
   theme: String
 
-  """
-  preferences/timezone annotation.
-  """
+  """preferences/timezone annotation."""
   timezone: String
 
-  """
-  preferences/newsletter annotation parsed to boolean.
-  """
+  """preferences/newsletter annotation parsed to boolean."""
   newsletter: Boolean
 
-  """
-  onboarding/completedAt annotation.
-  """
+  """onboarding/completedAt annotation."""
   onboardedAt: String
   registrationApproval: String
   state: String
@@ -338,9 +276,7 @@ type User {
   lastLoginProvider: String
   nameReviewRequired: Boolean
 
-  """
-  status.platformAccess — the platform access state.
-  """
+  """status.platformAccess — the platform access state."""
   platformAccess: String
 
   """
@@ -348,14 +284,10 @@ type User {
   """
   fraudScore: String
 
-  """
-  Latest fraud decision — ACCEPTED | REVIEW | DEACTIVATE.
-  """
+  """Latest fraud decision — ACCEPTED | REVIEW | DEACTIVATE."""
   fraudDecision: String
 
-  """
-  Latest fraud evaluation time (ISO 8601).
-  """
+  """Latest fraud evaluation time (ISO 8601)."""
   fraudEvaluatedAt: String
 }
 
@@ -365,26 +297,18 @@ type UserList {
 }
 
 type OrgContactInfo {
-  """
-  Legal / company name from spec.contactInfo.businessName.
-  """
+  """Legal / company name from spec.contactInfo.businessName."""
   businessName: String
 
-  """
-  Primary contact name from spec.contactInfo.name.
-  """
+  """Primary contact name from spec.contactInfo.name."""
   name: String
 
-  """
-  Primary contact email from spec.contactInfo.email.
-  """
+  """Primary contact email from spec.contactInfo.email."""
   email: String
 }
 
 type Organization {
-  """
-  metadata.name — the stable organization ID.
-  """
+  """metadata.name — the stable organization ID."""
   name: String!
 
   """
@@ -392,40 +316,26 @@ type Organization {
   """
   displayName: String!
 
-  """
-  Organization type: Personal or Standard.
-  """
+  """Organization type: Personal or Standard."""
   type: String!
   createdAt: String
 
-  """
-  Status of the Ready condition.
-  """
+  """Status of the Ready condition."""
   state: String
 
-  """
-  Contact details from spec.contactInfo.
-  """
+  """Contact details from spec.contactInfo."""
   contactInfo: OrgContactInfo
 
-  """
-  True when the OnboardingComplete condition status is True.
-  """
+  """True when the OnboardingComplete condition status is True."""
   onboardingComplete: Boolean!
 
-  """
-  Reason from the OnboardingComplete condition.
-  """
+  """Reason from the OnboardingComplete condition."""
   onboardingReason: String
 
-  """
-  Human-readable message from the OnboardingComplete condition.
-  """
+  """Human-readable message from the OnboardingComplete condition."""
   onboardingMessage: String
 
-  """
-  Members and pending invitations for this organization.
-  """
+  """Members and pending invitations for this organization."""
   members: [OrgMember!]!
 
   """
@@ -446,9 +356,7 @@ type OrganizationList {
 }
 
 type Project {
-  """
-  metadata.name — the stable project ID.
-  """
+  """metadata.name — the stable project ID."""
   name: String!
 
   """
@@ -456,9 +364,7 @@ type Project {
   """
   displayName: String!
 
-  """
-  Name of the owning organization.
-  """
+  """Name of the owning organization."""
   organizationName: String!
 
   """
@@ -476,20 +382,14 @@ type Project {
   """
   hasActiveBillingAccount: Boolean!
 
-  """
-  Bound billing account name when hasActiveBillingAccount is true.
-  """
+  """Bound billing account name when hasActiveBillingAccount is true."""
   billingAccountName: String
   createdAt: String
 
-  """
-  Status of the Ready condition.
-  """
+  """Status of the Ready condition."""
   state: String
 
-  """
-  metadata.deletionTimestamp — set while the project is terminating.
-  """
+  """metadata.deletionTimestamp — set while the project is terminating."""
   deletionTimestamp: String
 
   """
@@ -508,23 +408,17 @@ type ProjectList {
 }
 
 type OrgMember {
-  """
-  Resource name of the membership or invitation.
-  """
+  """Resource name of the membership or invitation."""
   name: String!
   givenName: String
   familyName: String
   email: String!
   roles: [String!]!
 
-  """
-  member or invitation
-  """
+  """member or invitation"""
   type: String!
 
-  """
-  Only set for invitations: Pending, Accepted, Declined.
-  """
+  """Only set for invitations: Pending, Accepted, Declined."""
   invitationState: String
   createdAt: String
 
@@ -533,56 +427,36 @@ type OrgMember {
   """
   userName: String
 
-  """
-  Avatar URL from the membership user status. Null for invitations.
-  """
+  """Avatar URL from the membership user status. Null for invitations."""
   avatarUrl: String
 }
 
 type QuotaBucket {
-  """
-  metadata.name
-  """
+  """metadata.name"""
   name: String!
 
-  """
-  metadata.namespace (needed for grant creation)
-  """
+  """metadata.namespace (needed for grant creation)"""
   namespace: String!
 
-  """
-  spec.resourceType
-  """
+  """spec.resourceType"""
   resourceType: String!
 
-  """
-  spec.consumerRef.kind — Organization or Project
-  """
+  """spec.consumerRef.kind — Organization or Project"""
   consumerKind: String!
 
-  """
-  spec.consumerRef.name
-  """
+  """spec.consumerRef.name"""
   consumerName: String!
 
-  """
-  spec.consumerRef.apiGroup
-  """
+  """spec.consumerRef.apiGroup"""
   consumerApiGroup: String!
 
-  """
-  status.allocated
-  """
+  """status.allocated"""
   allocated: Int!
 
-  """
-  status.limit
-  """
+  """status.limit"""
   limit: Int!
 
-  """
-  status.available
-  """
+  """status.available"""
   available: Int!
 
   """
@@ -605,9 +479,7 @@ type QuotaBucket {
   """
   serviceOwner: String
 
-  """
-  Resolved human-readable service group name
-  """
+  """Resolved human-readable service group name"""
   serviceDisplayName: String!
 }
 
@@ -616,24 +488,16 @@ type QuotaBucketList {
 }
 
 type QuotaGrantAllowance {
-  """
-  resourceType for this allowance
-  """
+  """resourceType for this allowance"""
   resourceType: String!
 
-  """
-  Resolved display name (same logic as QuotaBucket.displayName)
-  """
+  """Resolved display name (same logic as QuotaBucket.displayName)"""
   displayName: String!
 
-  """
-  Resolved service group name
-  """
+  """Resolved service group name"""
   serviceDisplayName: String!
 
-  """
-  Sum of all bucket amounts for this resourceType within the grant
-  """
+  """Sum of all bucket amounts for this resourceType within the grant"""
   amount: Int!
 }
 
@@ -644,19 +508,13 @@ type QuotaCondition {
 }
 
 type QuotaGrant {
-  """
-  metadata.name
-  """
+  """metadata.name"""
   name: String!
 
-  """
-  metadata.namespace
-  """
+  """metadata.namespace"""
   namespace: String!
 
-  """
-  metadata.creationTimestamp
-  """
+  """metadata.creationTimestamp"""
   createdAt: String
 
   """
@@ -664,14 +522,10 @@ type QuotaGrant {
   """
   autoCreated: Boolean!
 
-  """
-  Flattened and enriched allowances (one entry per resourceType)
-  """
+  """Flattened and enriched allowances (one entry per resourceType)"""
   allowances: [QuotaGrantAllowance!]!
 
-  """
-  status.conditions for status badge display
-  """
+  """status.conditions for status badge display"""
   conditions: [QuotaCondition!]!
 }
 
