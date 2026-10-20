@@ -1,8 +1,12 @@
 import type { Route } from './+types/policy';
 import { DialogConfirm } from '@/components/dialog';
-import { PolicyDetail, PolicyForm } from '@/features/fraud';
+import { PolicyDetail, PolicyDetailSkeleton, PolicyForm } from '@/features/fraud';
 import { SectionCard } from '@/features/milo';
-import { useDeleteFraudPolicyMutation, useFraudPolicyListQuery } from '@/resources/request/client';
+import {
+  useDeleteFraudPolicyMutation,
+  useFraudPolicyListQuery,
+  useFraudProviderListQuery,
+} from '@/resources/request/client';
 import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -10,7 +14,7 @@ import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 export const handle = {
   breadcrumb: () => <Trans>Policy</Trans>,
@@ -23,18 +27,28 @@ export default function Page() {
   const deletePolicyMutation = useDeleteFraudPolicyMutation();
   const policies = policyQuery.data?.items ?? [];
   const policy = policies[0];
+
+  // The stages reference FraudProvider resources by name; a provider being
+  // unavailable is exactly what flips the policy to Degraded. Join the provider
+  // list so each provider chip can show its live availability and link out.
+  const providerListQuery = useFraudProviderListQuery();
+  const providerAvailability = useMemo(() => {
+    const map = new Map<string, boolean | undefined>();
+    for (const p of providerListQuery.data?.items ?? []) {
+      const name = p.metadata?.name;
+      if (!name) continue;
+      const available = p.status?.conditions?.find((c) => c.type === 'Available');
+      map.set(name, available ? available.status === 'True' : undefined);
+    }
+    return map;
+  }, [providerListQuery.data]);
+
   const [editing, setEditing] = useState(false);
   const [creating, setCreating] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
 
   if (policyQuery.isLoading) {
-    return (
-      <SectionCard className="m-4" contentClassName="flex items-center justify-center py-12">
-        <Text size="sm" textColor="muted">
-          <Trans>Loading policy...</Trans>
-        </Text>
-      </SectionCard>
-    );
+    return <PolicyDetailSkeleton />;
   }
 
   // No policy — show create form or empty state
@@ -86,6 +100,7 @@ export default function Page() {
     <>
       <PolicyDetail
         policy={policy}
+        providerAvailability={providerAvailability}
         onEdit={() => setEditing(true)}
         onDelete={() => setShowDelete(true)}
       />
