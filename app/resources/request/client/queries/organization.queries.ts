@@ -7,6 +7,7 @@ import {
   orgInvitationCreateMutation,
   orgInvitationDeleteMutation,
 } from '../apis/organization.api';
+import { withCursorReset } from './cursor-reset';
 import { ListQueryParams } from '@/resources/schemas';
 import type { ComMiloapisIamV1Alpha1UserInvitation } from '@openapi/iam.miloapis.com/v1alpha1';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -42,7 +43,8 @@ export const useOrganizationQuery = (orgName: string) => {
 export const useOrgListQuery = (params?: ListQueryParams) => {
   return useQuery({
     queryKey: organizationQueryKeys.list(params),
-    queryFn: () => listOrganizations(params),
+    queryFn: () =>
+      withCursorReset((cursor) => listOrganizations({ ...params, cursor }), params?.cursor),
     staleTime: 5 * 60 * 1000,
   });
 };
@@ -59,7 +61,8 @@ export const useAllOrganizationsQuery = (search: string = '') => {
 export const useOrgProjectListQuery = (orgName: string, params?: ListQueryParams) => {
   return useQuery({
     queryKey: organizationQueryKeys.projects.list(orgName, params),
-    queryFn: () => listOrgProjects(orgName, params),
+    queryFn: () =>
+      withCursorReset((cursor) => listOrgProjects(orgName, { ...params, cursor }), params?.cursor),
     enabled: !!orgName,
   });
 };

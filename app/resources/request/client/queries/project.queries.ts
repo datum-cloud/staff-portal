@@ -10,6 +10,7 @@ import {
   projectSuspensionForProjectListQuery,
   projectSuspensionListQuery,
 } from '../apis/project.api';
+import { withCursorReset } from './cursor-reset';
 import { isProjectDeleting } from '@/features/project/lib/project-phase';
 import { ListQueryParams } from '@/resources/schemas';
 import type { ComMiloapisResourcemanagerV1Alpha1Project } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
@@ -103,7 +104,7 @@ export const useLiveProject = (initial: ComMiloapisResourcemanagerV1Alpha1Projec
 export const useProjectListQuery = (params?: ListQueryParams) => {
   return useQuery({
     queryKey: projectQueryKeys.list(params),
-    queryFn: () => listProjects(params),
+    queryFn: () => withCursorReset((cursor) => listProjects({ ...params, cursor }), params?.cursor),
     staleTime: 5 * 60 * 1000,
   });
 };

@@ -1,7 +1,7 @@
 import { PROXY_URL } from '@/modules/axios/axios.client';
 import { projectOp, projectsOp, type GqlProject } from '@/resources/gql/project.gql';
 import { ListQueryParams } from '@/resources/schemas';
-import { flattenManagedRecordSets } from '@/utils/helpers';
+import { flattenManagedRecordSets, walkCursorPages } from '@/utils/helpers';
 import {
   listDnsNetworkingMiloapisComV1Alpha1DnsZoneForAllNamespaces,
   listDnsNetworkingMiloapisComV1Alpha1NamespacedDnsRecordSet,
@@ -234,17 +234,10 @@ const ALL_PROJECTS_MAX_PAGES = 100;
 export const listAllProjects = async (
   search: string = ''
 ): Promise<{ items: GqlProject[]; hasMore: boolean }> => {
-  const items: GqlProject[] = [];
-  let cursor: string | undefined;
-
-  for (let page = 0; page < ALL_PROJECTS_MAX_PAGES; page++) {
-    const result = await listProjects({ limit: ALL_PROJECTS_PAGE_LIMIT, cursor, search });
-    items.push(...result.items);
-    cursor = result.continueToken ?? undefined;
-    if (!cursor) return { items, hasMore: false };
-  }
-
-  return { items, hasMore: Boolean(cursor) };
+  return walkCursorPages(
+    (cursor) => listProjects({ limit: ALL_PROJECTS_PAGE_LIMIT, cursor, search }),
+    { maxPages: ALL_PROJECTS_MAX_PAGES }
+  );
 };
 
 export const getProject = async (name: string): Promise<GqlProject | null> => {

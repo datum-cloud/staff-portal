@@ -7,6 +7,7 @@ import {
   type GqlOrganization,
 } from '@/resources/gql/organization.gql';
 import { ListQueryParams, TeamMember } from '@/resources/schemas';
+import { walkCursorPages } from '@/utils/helpers';
 import {
   ComMiloapisIamV1Alpha1UserInvitation,
   createIamMiloapisComV1Alpha1NamespacedUserInvitation,
@@ -207,33 +208,24 @@ const ALL_ORGANIZATIONS_MAX_PAGES = 100;
 export const listAllOrganizations = async (
   search: string = ''
 ): Promise<{ items: GqlOrganization[]; hasMore: boolean }> => {
-  const items: GqlOrganization[] = [];
-  let cursor: string | undefined;
   const searchLower = search.trim().toLowerCase();
 
-  for (let page = 0; page < ALL_ORGANIZATIONS_MAX_PAGES; page++) {
-    const result = await listOrganizations({
-      limit: ALL_ORGANIZATIONS_PAGE_LIMIT,
-      cursor,
-    });
-    if (searchLower) {
-      items.push(
-        ...result.items.filter(
-          (org) =>
-            org.name.toLowerCase().includes(searchLower) ||
-            org.displayName.toLowerCase().includes(searchLower) ||
-            org.type.toLowerCase().includes(searchLower) ||
-            (org.contactInfo?.businessName?.toLowerCase().includes(searchLower) ?? false)
-        )
-      );
-    } else {
-      items.push(...result.items);
+  return walkCursorPages(
+    (cursor) => listOrganizations({ limit: ALL_ORGANIZATIONS_PAGE_LIMIT, cursor }),
+    {
+      maxPages: ALL_ORGANIZATIONS_MAX_PAGES,
+      filterPage: searchLower
+        ? (items) =>
+            items.filter(
+              (org) =>
+                org.name.toLowerCase().includes(searchLower) ||
+                org.displayName.toLowerCase().includes(searchLower) ||
+                org.type.toLowerCase().includes(searchLower) ||
+                (org.contactInfo?.businessName?.toLowerCase().includes(searchLower) ?? false)
+            )
+        : undefined,
     }
-    cursor = result.continueToken ?? undefined;
-    if (!cursor) return { items, hasMore: false };
-  }
-
-  return { items, hasMore: Boolean(cursor) };
+  );
 };
 
 export const getOrganization = async (name: string): Promise<GqlOrganization | null> => {
