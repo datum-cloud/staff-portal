@@ -6,7 +6,7 @@ export interface CursorPage<T> {
 }
 
 export interface WalkCursorPagesOptions<T> {
-  /** Safety net against a runaway walk (e.g. a continueToken loop bug). */
+  /** Total request budget for the walk, including a restart after expiry. */
   maxPages: number;
   /** Applied per page before its items are collected (e.g. client-side search). */
   filterPage?: (items: T[]) => T[];
@@ -15,30 +15,48 @@ export interface WalkCursorPagesOptions<T> {
 /**
  * Walks `continueToken` to collect every page. An expired cursor takes the
  * entries already collected with it, so the walk restarts once from the first
- * page; a second expiry (or any other failure) propagates to the caller.
+ * page; both walks share `maxPages`, and a second expiry (or any other failure)
+ * propagates to the caller. Expiry on the cursor-less first request cannot be
+ * fixed by restarting, so it propagates at once.
  */
 export async function walkCursorPages<T>(
   fetchPage: (cursor?: string) => Promise<CursorPage<T>>,
   { maxPages, filterPage }: WalkCursorPagesOptions<T>
 ): Promise<{ items: T[]; hasMore: boolean }> {
-  const walk = async () => {
+  let pagesLeft = maxPages;
+  let restarted = false;
+
+  for (;;) {
     const items: T[] = [];
     let cursor: string | undefined;
+    let expired = false;
 
-    for (let page = 0; page < maxPages; page++) {
-      const result = await fetchPage(cursor);
+    while (pagesLeft > 0) {
+      const requestedCursor = cursor;
+      pagesLeft--;
+
+      let result: CursorPage<T>;
+      try {
+        result = await fetchPage(requestedCursor);
+      } catch (error) {
+        const canRestart =
+          error instanceof CursorExpiredError &&
+          requestedCursor !== undefined &&
+          !restarted &&
+          pagesLeft > 0;
+
+        if (!canRestart) throw error;
+        expired = true;
+        break;
+      }
+
       items.push(...(filterPage ? filterPage(result.items) : result.items));
       cursor = result.continueToken ?? undefined;
       if (!cursor) return { items, hasMore: false };
     }
 
-    return { items, hasMore: Boolean(cursor) };
-  };
+    if (!expired) return { items, hasMore: Boolean(cursor) };
 
-  try {
-    return await walk();
-  } catch (error) {
-    if (!(error instanceof CursorExpiredError)) throw error;
-    return walk();
+    restarted = true;
   }
 }
