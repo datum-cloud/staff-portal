@@ -1,5 +1,6 @@
 import { AuthenticationError, AuthorizationError } from './auth';
 import { AppError } from './base';
+import { CursorExpiredError, UpstreamError, UpstreamTimeoutError } from './gateway';
 import { NotFoundError, ConflictError, ValidationError, HttpError } from './http';
 import { isGqlError, getGqlErrorCode, getGqlErrorMessage } from '@/modules/graphql/errors';
 import { CombinedError } from '@urql/core';
@@ -9,6 +10,12 @@ interface ApiErrorResponse {
   message?: string;
   code?: string;
   details?: Array<{ path: string[]; message: string }>;
+}
+
+/** Reads the upstream HTTP status the gateway puts on `extensions.status`. */
+function readUpstreamStatus(value: unknown): number | undefined {
+  const status = typeof value === 'string' ? Number(value) : value;
+  return typeof status === 'number' && Number.isFinite(status) ? status : undefined;
 }
 
 export function mapApiError(error: unknown, requestId?: string): AppError {
@@ -52,6 +59,16 @@ export function mapApiError(error: unknown, requestId?: string): AppError {
         return new NotFoundError(message, requestId);
       case 'BAD_USER_INPUT':
         return new ValidationError(message, requestId);
+      case 'UPSTREAM_TIMEOUT':
+        return new UpstreamTimeoutError(message, requestId);
+      case 'UPSTREAM_ERROR':
+        return new UpstreamError(
+          message,
+          readUpstreamStatus(gqlError.extensions?.status),
+          requestId
+        );
+      case 'CURSOR_EXPIRED':
+        return new CursorExpiredError(message, requestId);
       default:
         return new AppError(message, 500, code ?? 'GRAPHQL_ERROR', requestId);
     }
@@ -72,6 +89,16 @@ export function mapApiError(error: unknown, requestId?: string): AppError {
         return new NotFoundError(message, requestId);
       case 'BAD_USER_INPUT':
         return new ValidationError(message, requestId);
+      case 'UPSTREAM_TIMEOUT':
+        return new UpstreamTimeoutError(message, requestId);
+      case 'UPSTREAM_ERROR':
+        return new UpstreamError(
+          message,
+          readUpstreamStatus(gqlError?.extensions?.status),
+          requestId
+        );
+      case 'CURSOR_EXPIRED':
+        return new CursorExpiredError(message, requestId);
       default:
         return new AppError(message, 500, code ?? 'GRAPHQL_ERROR', requestId);
     }
