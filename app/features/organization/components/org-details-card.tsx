@@ -69,15 +69,14 @@ export function OrgDetailsCard({ org, k8sOrg, isLoading, className }: Props) {
             },
             {
               label: <Trans>Projects</Trans>,
-              value: (
-                <Text>
-                  {projectCount == null
-                    ? '—'
-                    : hasMoreProjects
-                      ? `${projectCount}+`
-                      : String(projectCount)}
-                </Text>
-              ),
+              value:
+                projectCount == null ? (
+                  <Text textColor="muted">
+                    <Trans>Unavailable</Trans>
+                  </Text>
+                ) : (
+                  <Text>{hasMoreProjects ? `${projectCount}+` : String(projectCount)}</Text>
+                ),
             },
           ]}
         />

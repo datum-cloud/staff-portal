@@ -4693,6 +4693,7 @@ msgstr ""
 msgid "Type to search."
 msgstr ""
 
+#: app/features/organization/components/org-details-card.tsx:75
 #: app/routes/admin/offer/detail.tsx:329
 msgid "Unavailable"
 msgstr ""

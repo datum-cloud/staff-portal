@@ -158,8 +158,7 @@ type GqlOrganizationFields = {
 export const mapGqlOrganization = (org: GqlOrganizationFields): GqlOrganization => {
   const businessName = org.contactInfo?.businessName?.trim() || null;
   const onboardingComplete = org.onboardingComplete === true;
-
-  const projectItems = org.projects?.items ?? [];
+  const projects = org.projects;
 
   return {
     name: org.name,
@@ -179,8 +178,8 @@ export const mapGqlOrganization = (org: GqlOrganizationFields): GqlOrganization 
     entityType: businessName ? 'Company' : 'Individual',
     onboardingReason: org.onboardingReason ?? null,
     onboardingMessage: org.onboardingMessage ?? null,
-    projectCount: projectItems.length,
-    hasMoreProjects: Boolean(org.projects?.continueToken),
+    projectCount: projects ? (projects.items ?? []).length : null,
+    hasMoreProjects: projects ? Boolean(projects.continueToken) : null,
   };
 };
 
