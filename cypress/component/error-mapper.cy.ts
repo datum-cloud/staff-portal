@@ -63,6 +63,25 @@ describe('mapApiError gateway codes', () => {
         expect((error as UpstreamError).upstreamStatus).to.be.undefined;
       });
 
+      it('ignores upstream statuses that are not HTTP error integers', () => {
+        for (const status of [0, -1, 200.5, '0', '503.5', 'nope', 600]) {
+          const error = mapApiError(
+            makeError('UPSTREAM_ERROR', 'upstream call failed', { status })
+          );
+
+          expect((error as UpstreamError).upstreamStatus, `status ${String(status)}`).to.be
+            .undefined;
+        }
+      });
+
+      it('accepts a numeric string upstream status', () => {
+        const error = mapApiError(
+          makeError('UPSTREAM_ERROR', 'upstream call failed', { status: '503' })
+        );
+
+        expect((error as UpstreamError).upstreamStatus).to.equal(503);
+      });
+
       it('maps CURSOR_EXPIRED to a CursorExpiredError', () => {
         const error = mapApiError(
           makeError('CURSOR_EXPIRED', 'continue token is expired'),
