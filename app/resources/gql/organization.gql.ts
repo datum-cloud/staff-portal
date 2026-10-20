@@ -38,9 +38,13 @@ export interface GqlOrganization {
   entityType: 'Company' | 'Individual';
   onboardingReason: string | null;
   onboardingMessage: string | null;
-  /** Projects on the first page (limit 100). Only populated on detail queries. */
-  projectCount: number;
-  hasMoreProjects: boolean;
+  /**
+   * Projects on the first page (limit 100). Only populated on detail queries.
+   * Null when the gateway could not return the project list.
+   */
+  projectCount: number | null;
+  /** True when `projects` has a next page. Null when `projects` is unavailable. */
+  hasMoreProjects: boolean | null;
 }
 
 /** Organization list with company / onboarding facets (list table + Type filter). */

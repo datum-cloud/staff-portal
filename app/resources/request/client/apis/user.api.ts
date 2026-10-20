@@ -1,5 +1,6 @@
 import { usersOp, type GqlUser, type GqlUserFields } from '@/resources/gql/user.gql';
 import { ListQueryParams } from '@/resources/schemas';
+import { walkCursorPages } from '@/utils/helpers';
 import {
   ComMiloapisIamV1Alpha1PlatformAccess,
   ComMiloapisIamV1Alpha1User,
@@ -232,15 +233,7 @@ const ALL_USERS_MAX_PAGES = 100;
  * users list table and growth chart.
  */
 export const listAllUsers = async (): Promise<{ items: GqlUser[]; hasMore: boolean }> => {
-  const items: GqlUser[] = [];
-  let cursor: string | undefined;
-
-  for (let page = 0; page < ALL_USERS_MAX_PAGES; page++) {
-    const result = await listUsers({ limit: ALL_USERS_PAGE_LIMIT, cursor });
-    items.push(...result.items);
-    cursor = result.continueToken ?? undefined;
-    if (!cursor) return { items, hasMore: false };
-  }
-
-  return { items, hasMore: Boolean(cursor) };
+  return walkCursorPages((cursor) => listUsers({ limit: ALL_USERS_PAGE_LIMIT, cursor }), {
+    maxPages: ALL_USERS_MAX_PAGES,
+  });
 };

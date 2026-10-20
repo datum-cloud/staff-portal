@@ -293,8 +293,12 @@ export interface Organization {
   onboardingMessage?: Scalars['String'];
   /** Members and pending invitations for this organization. */
   members: OrgMember[];
-  /** Projects owned by this organization (via its control plane). */
-  projects: ProjectList;
+  /**
+   * Projects owned by this organization (via its control plane). Nullable so a
+   * failed page (expired cursor, upstream error) annotates this field with an
+   * error instead of propagating up and nulling the whole organization list.
+   */
+  projects?: ProjectList;
   __typename: 'Organization';
 }
 
@@ -855,7 +859,11 @@ export interface OrganizationRequest {
   onboardingMessage?: boolean | number;
   /** Members and pending invitations for this organization. */
   members?: OrgMemberRequest;
-  /** Projects owned by this organization (via its control plane). */
+  /**
+   * Projects owned by this organization (via its control plane). Nullable so a
+   * failed page (expired cursor, upstream error) annotates this field with an
+   * error instead of propagating up and nulling the whole organization list.
+   */
   projects?:
     | [{ limit?: Scalars['Int'] | null; cursor?: Scalars['String'] | null }, ProjectListRequest]
     | ProjectListRequest;
