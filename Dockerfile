@@ -47,6 +47,12 @@ FROM base
 # Accept VERSION as build argument and set as environment variable
 ARG VERSION=dev
 ENV VERSION=${VERSION}
+ENV NODE_USE_SYSTEM_CA=1
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends --only-upgrade ca-certificates && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get clean
 
 # Copy only necessary files from build stage
 COPY --from=build /app/build /app/build
