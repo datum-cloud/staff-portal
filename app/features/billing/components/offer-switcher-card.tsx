@@ -168,7 +168,7 @@ export function OfferSwitcherCard({
         open={switchConfirmOpen}
         onOpenChange={setSwitchConfirmOpen}
         title={t`Switch Offer`}
-        description={t`Switch this billing account to Offer "${selectedOffer}"? Amberflo Customer-Plan and quota grants will update on reconcile.`}
+        description={t`Switch this billing account to Offer "${selectedOffer}"? The customer's plan and quota grants will update on reconcile.`}
         confirmText={t`Switch`}
         cancelText={t`Cancel`}
         onConfirm={handleSwitchConfirm}

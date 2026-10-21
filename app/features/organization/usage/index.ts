@@ -1,3 +1,4 @@
+export { IdleMeterList } from './components/idle-meter-list';
 export { MeterCard } from './components/meter-card';
 export { UsageDashboardSkeleton } from './components/usage-dashboard-skeleton';
 export { UsageSummaryTable } from './components/usage-summary-table';

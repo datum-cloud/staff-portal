@@ -10,10 +10,16 @@ import { Hono } from 'hono';
 const usage = new Hono<{ Variables: EnvVariables }>();
 
 /**
+ * Organization and project names are DNS-1123 labels. `orgName` ends up in
+ * the control-plane URL path, so anything else (e.g. `x/../..`) is rejected.
+ */
+const RESOURCE_NAME = /^[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?$/;
+
+/**
  * GET /api/usage?orgName=&cycle=current
  *
- * Compact org usage summary for the overview card. Amberflo credentials
- * stay server-side.
+ * Compact org usage summary for the overview card, read from Milo's
+ * UsageQuery with the staff member's token.
  */
 usage.get('/', authMiddleware(), async (c) => {
   const startTime = performance.now();
@@ -22,12 +28,12 @@ usage.get('/', authMiddleware(), async (c) => {
   const path = c.req.path;
 
   const orgName = c.req.query('orgName');
-  if (!orgName) {
+  if (!orgName || !RESOURCE_NAME.test(orgName)) {
     return c.json(
       {
         requestId: reqId,
         code: 'BAD_REQUEST',
-        error: 'orgName is required',
+        error: 'orgName must be an organization name',
         path,
       },
       400
@@ -84,12 +90,25 @@ usage.get('/dashboard', authMiddleware(), async (c) => {
   const path = c.req.path;
 
   const orgName = c.req.query('orgName');
-  if (!orgName) {
+  if (!orgName || !RESOURCE_NAME.test(orgName)) {
     return c.json(
       {
         requestId: reqId,
         code: 'BAD_REQUEST',
-        error: 'orgName is required',
+        error: 'orgName must be an organization name',
+        path,
+      },
+      400
+    );
+  }
+
+  const project = c.req.query('project');
+  if (project && project !== 'all' && !RESOURCE_NAME.test(project)) {
+    return c.json(
+      {
+        requestId: reqId,
+        code: 'BAD_REQUEST',
+        error: 'project must be a project name',
         path,
       },
       400
@@ -99,7 +118,7 @@ usage.get('/dashboard', authMiddleware(), async (c) => {
   try {
     const token = getToken(c);
     const dashboard = await loadOrgUsageDashboard(orgName, token, {
-      projectParam: c.req.query('project'),
+      projectParam: project,
       cycleParam: c.req.query('cycle'),
     });
 

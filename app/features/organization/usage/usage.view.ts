@@ -2,18 +2,14 @@
  * Adapter from the live `UsageFetchResult` into the view shapes the
  * dashboard components consume.
  */
-import { ucumToMeterUnit } from './usage.format';
+import { aggregationQualifier, ucumToMeterUnit } from './usage.format';
 import type {
   UsageGroupSection,
   UsageMeter,
   UsageProjectOption,
   UsageSummaryRow,
 } from './usage.types';
-import type { MeterSeries, UsageFetchResult } from '@/modules/billing/usage.types';
-
-function sumSeries(values: { value: number }[]): number {
-  return values.reduce((acc, point) => acc + point.value, 0);
-}
+import type { MeterSeries, UsageFetchResult, UsageSpend } from '@/modules/billing/usage.types';
 
 /** `projectId` → `Project`; `region` → `Region`; `model_name` → `Model Name`. */
 export function humanizeDimension(dimension: string): string {
@@ -34,14 +30,7 @@ function projectDisplayName(
   return projects?.find((project) => project.name === projectName)?.displayName ?? projectName;
 }
 
-function toUsageMeter(
-  meter: MeterSeries,
-  projects?: UsageProjectOption[],
-  currencyCode = 'USD'
-): UsageMeter {
-  const unit = ucumToMeterUnit(meter.unit);
-  const used = meter.used ?? sumSeries(meter.values);
-  const limit = meter.limit ?? 0;
+function toUsageMeter(meter: MeterSeries, projects?: UsageProjectOption[]): UsageMeter {
   const breakdowns = (meter.breakdowns ?? [])
     .filter((b) => b.series.length > 0)
     .map((breakdown) =>
@@ -58,27 +47,34 @@ function toUsageMeter(
   const tabs = ['Total', ...breakdowns.map((b) => humanizeDimension(b.dimension))];
 
   return {
-    apiName: meter.meterName ?? meter.meterApiName,
+    id: meter.meterDefinition,
+    apiName: meter.meterName ?? meter.meterDefinition,
     label: meter.label,
     description: meter.description ?? '',
-    unit,
-    used,
-    limit,
+    unit: ucumToMeterUnit(meter.unit),
+    used: meter.total,
+    limit: meter.limit ?? 0,
+    qualifier: aggregationQualifier(meter.aggregation),
     spend: meter.spend,
-    unitRate: meter.unitRate,
-    pricingUnit: meter.pricingUnit,
-    currencyCode,
+    spendError: meter.spendError,
     tabs,
     series: meter.values,
     breakdowns,
   };
 }
 
+/** A meter recorded something in the period. */
+function hasUsage(meter: UsageMeter): boolean {
+  return meter.series.length > 0 || meter.used !== 0;
+}
+
 export interface UsageView {
   groups: UsageGroupSection[];
   summaryRows: UsageSummaryRow[];
-  totalSpend?: number;
-  currencyCode?: string;
+  /** What all the usage costs together. */
+  spend?: UsageSpend;
+  /** Why `spend` is left out. */
+  spendError?: string;
 }
 
 /** Build the dashboard view from live loader data. */
@@ -88,47 +84,42 @@ export function toUsageView(
 ): UsageView | null {
   if (!result.groups?.length) return null;
 
-  const currencyCode = result.currencyCode ?? 'USD';
-  const meterByName = new Map(result.meters.map((m) => [m.meterApiName, m]));
+  const meterByName = new Map(result.meters.map((m) => [m.meterDefinition, m]));
 
   const groups: UsageGroupSection[] = result.groups
     .map((group) => {
-      const meters = group.meterApiNames
+      const all = group.meterDefinitions
         .map((name) => meterByName.get(name))
         .filter((m): m is MeterSeries => Boolean(m))
-        .map((meter) => toUsageMeter(meter, projects, currencyCode));
+        .map((meter) => toUsageMeter(meter, projects));
       return {
         id: group.id,
         title: group.title,
         description: `Metered consumption and spend for ${group.title} in the selected billing period.`,
-        meters,
+        meters: all.filter(hasUsage),
+        idleMeters: all.filter((meter) => !hasUsage(meter)),
       };
     })
-    .filter((group) => group.meters.length > 0);
+    .filter((group) => group.meters.length > 0 || group.idleMeters.length > 0);
 
-  if (groups.length === 0) return null;
+  if (!groups.some((group) => group.meters.length > 0)) return null;
 
   const summaryRows: UsageSummaryRow[] = groups.flatMap((group) =>
     group.meters.map((meter) => ({
+      id: meter.id,
       apiName: meter.apiName,
       label: meter.label,
       unit: meter.unit,
       used: meter.used,
       limit: meter.limit,
+      qualifier: meter.qualifier,
       spend: meter.spend,
-      unitRate: meter.unitRate,
-      pricingUnit: meter.pricingUnit,
-      currencyCode: meter.currencyCode,
+      spendError: meter.spendError,
       series: meter.series,
       groupId: group.id,
       group: group.title,
     }))
   );
 
-  return {
-    groups,
-    summaryRows,
-    totalSpend: result.totalSpend,
-    currencyCode,
-  };
+  return { groups, summaryRows, spend: result.spend, spendError: result.spendError };
 }

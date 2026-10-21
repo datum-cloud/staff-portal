@@ -1,6 +1,7 @@
 import { groupUsageSummaryRows } from '../usage-summary-grouping';
-import { formatCurrency, formatUnitRate, formatUsagePair } from '../usage.format';
+import { formatUsagePair } from '../usage.format';
 import type { UsageSummaryRow } from '../usage.types';
+import { SpendValue } from './spend-value';
 import { UsageSparkline } from './usage-sparkline';
 import {
   EMBEDDED_TABLE_HEADER_CELL_CLASS,
@@ -73,7 +74,7 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
         size: 192,
         cell: ({ row }) => (
           <UsageSparkline
-            apiName={row.original.apiName}
+            apiName={row.original.id}
             unit={row.original.unit}
             series={row.original.series}
           />
@@ -87,22 +88,11 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
         cell: ({ row }) => (
           <Text textColor="muted" className="block text-right whitespace-nowrap tabular-nums">
             {formatUsagePair(row.original.unit, row.original.used, row.original.limit)}
-          </Text>
-        ),
-      },
-      {
-        id: 'rate',
-        header: ({ column }) => <ListColumnHeader column={column} title="Rate" />,
-        enableSorting: false,
-        size: 128,
-        cell: ({ row }) => (
-          <Text textColor="muted" className="block text-right whitespace-nowrap tabular-nums">
-            {formatUnitRate(
-              row.original.unitRate,
-              row.original.unit,
-              row.original.currencyCode,
-              row.original.pricingUnit
-            )}
+            {row.original.qualifier ? (
+              <Text as="span" size="xs" textColor="muted" className="ml-1">
+                {row.original.qualifier}
+              </Text>
+            ) : null}
           </Text>
         ),
       },
@@ -112,11 +102,12 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
         enableSorting: false,
         size: 112,
         cell: ({ row }) => (
-          <Text
-            weight="medium"
-            textColor="default"
-            className="block text-right whitespace-nowrap tabular-nums">
-            {formatCurrency(row.original.spend, row.original.currencyCode)}
+          <Text className="block text-right whitespace-nowrap">
+            <SpendValue
+              spend={row.original.spend}
+              spendError={row.original.spendError}
+              className="font-medium"
+            />
           </Text>
         ),
       },
@@ -154,7 +145,6 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
   }
 
   const canExpand = rows.length > collapsedCount;
-  const lastGroupId = visibleGroups[visibleGroups.length - 1]?.group;
 
   if (rows.length === 0) {
     return (
@@ -175,34 +165,19 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
           enableSorting
           expanded={expandedGroups}
           onExpandedChange={setExpandedGroups}
-          getRowId={(row) => row.apiName}
+          getRowId={(row) => row.id}
           className="usage-summary-grouped-table [&>div:last-child]:rounded-none [&>div:last-child]:border-0"
           tableClassName="[&_td:first-child]:pl-4 [&_td:last-child]:pr-4 sm:[&_td:first-child]:pl-5 sm:[&_td:last-child]:pr-5"
           headerRowClassName={LIST_TABLE_HEADER_ROW_CLASS}
           headerCellClassName={EMBEDDED_TABLE_HEADER_CELL_CLASS}
-          bodyClassName={cn(
-            '[&_tr:first-child]:border-t [&_tr]:border-border',
-            canExpand ? '[&_tr:last-child]:border-b' : '[&_tr:last-child]:border-b-0'
-          )}
-          groupHeaderClassName={(group) => {
-            const isOpen = expandedGroups.includes(group.id);
-            const isLastGroup = group.id === lastGroupId;
-            const groupIndex = visibleGroups.findIndex((g) => g.group === group.id);
-            const previousGroupId = visibleGroups[groupIndex - 1]?.group;
-            const previousGroupOpen = previousGroupId
-              ? expandedGroups.includes(previousGroupId)
-              : true;
-
-            return cn(
-              'bg-muted/40 text-foreground h-10 border-r-0 border-border px-4 text-xs font-medium sm:px-5',
-              groupIndex > 0 && !previousGroupOpen && 'border-t',
-              isOpen ? 'border-b-0' : isLastGroup ? 'border-b' : 'border-b-0'
-            );
-          }}
+          // GroupedTable already rules between groups, under each open group
+          // header and between rows; adding borders here doubles them up.
+          bodyClassName="[&_tr]:border-border"
+          groupHeaderClassName="bg-muted/40 text-foreground h-10 px-4 text-xs font-medium sm:px-5"
         />
       </CardContent>
       {canExpand && (
-        <CardFooter className="bg-background flex items-center justify-center p-0">
+        <CardFooter className="bg-background border-border flex items-center justify-center border-t p-0">
           <Button
             htmlType="button"
             type="quaternary"
@@ -227,6 +202,5 @@ export const usageSummaryTableColumns: ColumnDef<UsageSummaryRow, unknown>[] = [
   { id: 'product', header: 'Product', size: 256 },
   { id: 'trend', header: 'Trend', size: 192 },
   { id: 'usage', header: 'Usage', size: 144 },
-  { id: 'rate', header: 'Rate', size: 128 },
   { id: 'spend', header: 'Spend', size: 112 },
 ];

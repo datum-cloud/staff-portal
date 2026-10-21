@@ -67,9 +67,7 @@ function UsageSectionSkeleton({
 export function UsageDashboardSkeleton({ scopeDescription }: { scopeDescription: string }) {
   return (
     <div className="border-border min-w-0 border-t">
-      <UsageSectionSkeleton
-        title="Usage summary"
-        description={`${scopeDescription} Rates and spend are estimated from the assigned Offer when pricing is available.`}>
+      <UsageSectionSkeleton title="Usage summary" description={scopeDescription}>
         <UsageSummaryTableSkeleton />
       </UsageSectionSkeleton>
 
