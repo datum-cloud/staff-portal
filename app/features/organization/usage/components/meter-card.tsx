@@ -1,6 +1,7 @@
-import { formatByUnit, formatCurrency, formatUnitRate, formatUsagePair } from '../usage.format';
+import { formatAxisValue, formatByUnit, formatUsagePair } from '../usage.format';
 import type { MeterPoint, UsageMeter } from '../usage.types';
 import { humanizeDimension } from '../usage.view';
+import { SpendValue } from './spend-value';
 import { QuotaIndicator } from '@/features/organization/components/quota-ring';
 import { Card, CardContent, CardHeader } from '@datum-cloud/datum-ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@datum-cloud/datum-ui/tabs';
@@ -29,13 +30,11 @@ const MAX_STACK_SERIES = 6;
 
 type StackRow = Record<string, number>;
 
-function buildStackData(series: { groupValue: string; values: MeterPoint[] }[]): {
+function buildStackData(series: { groupValue: string; total: number; values: MeterPoint[] }[]): {
   keys: string[];
   data: StackRow[];
 } {
-  const top = [...series]
-    .sort((a, b) => sumValues(b.values) - sumValues(a.values))
-    .slice(0, MAX_STACK_SERIES);
+  const top = [...series].sort((a, b) => b.total - a.total).slice(0, MAX_STACK_SERIES);
   const keys = top.map((s) => s.groupValue);
 
   const byTimestamp = new Map<number, StackRow>();
@@ -50,17 +49,13 @@ function buildStackData(series: { groupValue: string; values: MeterPoint[] }[]):
   return { keys, data };
 }
 
-function sumValues(values: MeterPoint[]): number {
-  return values.reduce((acc, point) => acc + point.value, 0);
-}
-
 /**
  * Per-meter card: title + description, used/limit with quota ring,
  * optional breakdown tabs, and a filled area chart.
  */
 export function MeterCard({ meter }: MeterCardProps) {
   const [activeTab, setActiveTab] = useState(meter.tabs[0]);
-  const fillId = `usage-fill-${meter.apiName}`.replace(/[^a-zA-Z0-9_-]/g, '-');
+  const fillId = `usage-fill-${meter.id}`.replace(/[^a-zA-Z0-9_-]/g, '-');
 
   const isBreakdownView = activeTab !== 'Total';
   const activeBreakdown = isBreakdownView
@@ -90,19 +85,21 @@ export function MeterCard({ meter }: MeterCardProps) {
         <div className="flex shrink-0 flex-col items-end gap-1 sm:gap-1.5">
           <Text weight="medium" textColor="default" className="text-right tabular-nums">
             {formatUsagePair(meter.unit, meter.used, meter.limit)}
+            {meter.qualifier ? (
+              <Text as="span" size="xs" textColor="muted" weight="normal" className="ml-1">
+                {meter.qualifier}
+              </Text>
+            ) : null}
           </Text>
           <div className="flex items-center gap-2 sm:gap-3">
-            {(meter.spend ?? 0) > 0 || meter.unitRate !== undefined ? (
-              <Text size="xs" textColor="muted" className="text-right tabular-nums">
-                {formatUnitRate(meter.unitRate, meter.unit, meter.currencyCode, meter.pricingUnit)}
-                {(meter.spend ?? 0) > 0 ? (
-                  <>
-                    {' · '}
-                    <span className="text-foreground font-medium">
-                      {formatCurrency(meter.spend, meter.currencyCode)} spent
-                    </span>
-                  </>
-                ) : null}
+            {meter.spend || meter.spendError ? (
+              <Text size="xs" textColor="muted" className="text-right">
+                <SpendValue
+                  spend={meter.spend}
+                  spendError={meter.spendError}
+                  className="text-foreground font-medium"
+                />{' '}
+                spent
               </Text>
             ) : null}
             <QuotaIndicator used={meter.used} limit={meter.limit} size={24} />
@@ -172,9 +169,9 @@ export function MeterCard({ meter }: MeterCardProps) {
                 <YAxis
                   tickLine={false}
                   axisLine={false}
-                  width={56}
+                  width={64}
                   tickFormatter={(value) =>
-                    formatByUnit(meter.unit, typeof value === 'number' ? value : 0)
+                    formatAxisValue(meter.unit, typeof value === 'number' ? value : 0)
                   }
                   tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
                 />

@@ -1,7 +1,8 @@
-import { formatUsagePair, ucumToMeterUnit } from '../lib/usage-format';
+import { aggregationQualifier, formatUsagePair, ucumToMeterUnit } from '../lib/usage-format';
 import { QuotaIndicator } from './quota-ring';
 import { SectionCard } from '@/features/milo';
-import { formatCurrency } from '@/features/organization/usage/usage.format';
+import { SpendValue } from '@/features/organization/usage/components/spend-value';
+import type { OrgUsageMeterSummary } from '@/modules/billing/org-usage.types';
 import { useOrgUsageSummaryQuery } from '@/resources/request/client/queries/usage.queries';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { Icon } from '@datum-cloud/datum-ui/icons';
@@ -11,11 +12,14 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { Trans } from '@lingui/react/macro';
 import { BarChart3 } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { Link } from 'react-router';
 
-/** ~4 compact rows before the list scrolls. */
-const LIST_MAX_HEIGHT = 'max-h-[9.5rem]';
+/**
+ * Meters listed on the card; the rest are on the usage page ("View all").
+ * Kept short so the card stays level with the onboarding card beside it.
+ */
+const TOP_N = 4;
 
 type Props = {
   orgName: string;
@@ -24,22 +28,33 @@ type Props = {
 
 function LoadingRows() {
   return (
-    <ul className={cn(LIST_MAX_HEIGHT, 'space-y-2 overflow-hidden')}>
-      {Array.from({ length: 4 }).map((_, i) => (
-        <li key={i} className="flex items-center gap-2 py-1.5">
-          <Skeleton className="size-[18px] shrink-0 rounded-full" />
-          <Skeleton className="h-3.5 flex-1" />
-          <Skeleton className="h-3.5 w-16" />
-        </li>
-      ))}
-    </ul>
+    <div className="flex flex-col gap-2">
+      <Skeleton className="h-6 w-48" />
+      <ul>
+        {Array.from({ length: TOP_N }).map((_, i) => (
+          <li key={i} className="flex h-8 items-center gap-3">
+            <Skeleton className="size-[18px] shrink-0 rounded-full" />
+            <Skeleton className="h-3.5 flex-1" />
+            <Skeleton className="h-3.5 w-14" />
+            <Skeleton className="h-3.5 w-16" />
+          </li>
+        ))}
+      </ul>
+    </div>
   );
+}
+
+/** Costliest first, then by usage, so the card leads with what matters. */
+function byCost(a: OrgUsageMeterSummary, b: OrgUsageMeterSummary): number {
+  return (b.spend?.amount ?? -1) - (a.spend?.amount ?? -1) || b.used - a.used;
 }
 
 export function OrgUsageCard({ orgName, className }: Props) {
   const query = useOrgUsageSummaryQuery(orgName);
   const summary = query.data;
-  const meters = summary?.meters ?? [];
+  const meters = useMemo(() => [...(summary?.meters ?? [])].sort(byCost), [summary?.meters]);
+  const shownMeters = meters.slice(0, TOP_N);
+  const usageHref = orgRoutes.usage(orgName);
 
   const description =
     summary?.status === 'ok' ? (
@@ -54,9 +69,7 @@ export function OrgUsageCard({ orgName, className }: Props) {
       title={<Trans>Usage</Trans>}
       description={description}
       action={
-        <Link
-          to={orgRoutes.usage(orgName)}
-          className="text-muted-foreground hover:text-foreground text-sm">
+        <Link to={usageHref} className="text-muted-foreground hover:text-foreground text-sm">
           <Trans>View all</Trans>
         </Link>
       }>
@@ -66,11 +79,6 @@ export function OrgUsageCard({ orgName, className }: Props) {
         <EmptyMessage
           title={<Trans>Could not load usage</Trans>}
           body={<Trans>Something went wrong while loading usage data.</Trans>}
-        />
-      ) : summary?.status === 'unconfigured' ? (
-        <EmptyMessage
-          title={<Trans>Usage data not available</Trans>}
-          body={<Trans>Usage metering is not configured for this environment.</Trans>}
         />
       ) : summary?.status === 'insufficient-permissions' ? (
         <EmptyMessage
@@ -99,47 +107,64 @@ export function OrgUsageCard({ orgName, className }: Props) {
           }
         />
       ) : (
-        <>
-          {summary.totalSpend !== undefined ? (
-            <div className="border-border mb-3 flex items-baseline justify-between gap-3 border-b pb-3">
-              <Text size="sm" textColor="muted">
-                <Trans>Total spend</Trans>
+        <div className="flex flex-col gap-2">
+          {summary.spend || summary.spendError ? (
+            <div className="flex flex-wrap items-baseline gap-x-2">
+              <Text size="xl" weight="semibold" textColor="default">
+                <SpendValue spend={summary.spend} spendError={summary.spendError} />
               </Text>
-              <Text size="sm" weight="medium" className="tabular-nums">
-                {formatCurrency(summary.totalSpend, summary.currencyCode)}
+              <Text size="xs" textColor="muted">
+                <Trans>spend this period</Trans>
               </Text>
             </div>
           ) : null}
-          <ul className={cn(LIST_MAX_HEIGHT, 'divide-border -mx-1 divide-y overflow-y-auto px-1')}>
-            {meters.map((meter) => {
-              const unit = ucumToMeterUnit(meter.unit);
-              return (
-                <li
-                  key={meter.meterApiName}
-                  className="flex items-center gap-2 py-1.5 first:pt-0 last:pb-0">
-                  <QuotaIndicator used={meter.used} limit={meter.limit} />
-                  <div className="min-w-0 flex-1 overflow-hidden">
-                    <Tooltip message={meter.label}>
-                      <Text ellipsis className="block">
-                        {meter.label}
+          {/* Fixed columns: names truncate instead of pushing the figures around. */}
+          <table className="w-full table-fixed border-collapse">
+            <colgroup>
+              <col className="w-7" />
+              <col />
+              <col className="w-28" />
+              <col className="w-32" />
+            </colgroup>
+            <tbody className="divide-border divide-y">
+              {shownMeters.map((meter) => {
+                const unit = ucumToMeterUnit(meter.unit);
+                const qualifier = aggregationQualifier(meter.aggregation);
+                return (
+                  <tr key={meter.meterDefinition} className="h-8">
+                    <td className="align-middle">
+                      <div className="flex items-center">
+                        <QuotaIndicator used={meter.used} limit={meter.limit} />
+                      </div>
+                    </td>
+                    <td className="overflow-hidden pr-3 align-middle">
+                      <Tooltip message={meter.label}>
+                        <Text size="sm" ellipsis className="block">
+                          {meter.label}
+                        </Text>
+                      </Tooltip>
+                    </td>
+                    <td className="overflow-hidden pr-3 text-right align-middle whitespace-nowrap">
+                      <Text size="sm" textColor="muted" className="tabular-nums">
+                        {formatUsagePair(unit, meter.used, meter.limit)}
+                        {qualifier ? (
+                          <Text as="span" size="xs" textColor="muted" className="ml-1">
+                            {qualifier}
+                          </Text>
+                        ) : null}
                       </Text>
-                    </Tooltip>
-                  </div>
-                  <div className="flex shrink-0 flex-col items-end gap-0.5">
-                    <Text size="sm" textColor="muted" className="whitespace-nowrap tabular-nums">
-                      {formatUsagePair(unit, meter.used, meter.limit)}
-                    </Text>
-                    {meter.spend !== undefined ? (
-                      <Text size="xs" className="text-foreground whitespace-nowrap tabular-nums">
-                        {formatCurrency(meter.spend, summary.currencyCode)}
+                    </td>
+                    <td className="overflow-hidden text-right align-middle whitespace-nowrap">
+                      <Text size="sm" weight="medium" textColor="default">
+                        <SpendValue spend={meter.spend} spendError={meter.spendError} />
                       </Text>
-                    ) : null}
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
     </SectionCard>
   );

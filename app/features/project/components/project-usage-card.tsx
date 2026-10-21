@@ -1,6 +1,10 @@
 import { SectionCard } from '@/features/milo';
 import { QuotaIndicator } from '@/features/organization/components/quota-ring';
-import { formatUsagePair, ucumToMeterUnit } from '@/features/organization/lib/usage-format';
+import {
+  aggregationQualifier,
+  formatUsagePair,
+  ucumToMeterUnit,
+} from '@/features/organization/lib/usage-format';
 import type { MeterSeries } from '@/modules/billing/usage.types';
 import { useOrgUsageDashboardQuery } from '@/resources/request/client/queries/usage.queries';
 import { orgRoutes } from '@/utils/config/routes.config';
@@ -23,12 +27,8 @@ type Props = {
   className?: string;
 };
 
-function sumSeries(values: { value: number }[]): number {
-  return values.reduce((acc, point) => acc + point.value, 0);
-}
-
 function meterUsed(meter: MeterSeries): number {
-  return meter.used ?? sumSeries(meter.values);
+  return meter.total;
 }
 
 function meterLimit(meter: MeterSeries): number {
@@ -100,11 +100,6 @@ export function ProjectUsageCard({ orgName, projectName, className }: Props) {
           title={<Trans>Could not load usage</Trans>}
           body={<Trans>Something went wrong while loading usage data.</Trans>}
         />
-      ) : usage?.status === 'unconfigured' ? (
-        <EmptyMessage
-          title={<Trans>Usage data not available</Trans>}
-          body={<Trans>Usage metering is not configured for this environment.</Trans>}
-        />
       ) : usage?.status === 'insufficient-permissions' ? (
         <EmptyMessage
           title={<Trans>Usage data not available</Trans>}
@@ -132,9 +127,10 @@ export function ProjectUsageCard({ orgName, projectName, className }: Props) {
             const unit = ucumToMeterUnit(meter.unit);
             const used = meterUsed(meter);
             const limit = meterLimit(meter);
+            const qualifier = aggregationQualifier(meter.aggregation);
             return (
               <li
-                key={meter.meterApiName}
+                key={meter.meterDefinition}
                 className="flex items-center gap-2 py-1.5 first:pt-0 last:pb-0">
                 <QuotaIndicator used={used} limit={limit} />
                 <div className="min-w-0 flex-1 overflow-hidden">
@@ -149,6 +145,11 @@ export function ProjectUsageCard({ orgName, projectName, className }: Props) {
                   textColor="muted"
                   className="shrink-0 whitespace-nowrap tabular-nums">
                   {formatUsagePair(unit, used, limit)}
+                  {qualifier ? (
+                    <Text as="span" size="xs" textColor="muted" className="ml-1">
+                      {qualifier}
+                    </Text>
+                  ) : null}
                 </Text>
               </li>
             );

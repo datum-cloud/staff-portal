@@ -1,6 +1,7 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../../shared';
 import type { Route } from './+types/index';
 import {
+  IdleMeterList,
   MeterCard,
   toUsageView,
   UsageDashboardSkeleton,
@@ -9,10 +10,10 @@ import {
   type UsageBillingCycleOption,
   type UsageProjectOption,
 } from '@/features/organization/usage';
-import { formatCurrency } from '@/features/organization/usage/usage.format';
+import { SpendValue } from '@/features/organization/usage/components/spend-value';
+import type { UsageSpend } from '@/modules/billing/usage.types';
 import { useOrgProjectListQuery, useOrgUsageDashboardQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
@@ -88,15 +89,15 @@ function UsagePageHeader({
   billingCycles,
   isLoading,
   isPlaceholder,
-  totalSpend,
-  currencyCode,
+  spend,
+  spendError,
 }: {
   projects: UsageProjectOption[];
   billingCycles: UsageBillingCycleOption[];
   isLoading?: boolean;
   isPlaceholder?: boolean;
-  totalSpend?: number;
-  currencyCode?: string;
+  spend?: UsageSpend;
+  spendError?: string;
 }) {
   return (
     <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -108,18 +109,13 @@ function UsagePageHeader({
           isPlaceholder={isPlaceholder}
         />
       </div>
-      {totalSpend !== undefined ? (
+      {spend || spendError ? (
         <div className="shrink-0 text-left lg:text-right">
           <Text as="p" size="xs" textColor="muted">
-            Total spend this period
+            Spend this period
           </Text>
-          <Text
-            as="p"
-            size="xl"
-            weight="semibold"
-            textColor="default"
-            className="tabular-nums sm:text-2xl">
-            {formatCurrency(totalSpend, currencyCode)}
+          <Text as="p" size="xl" weight="semibold" textColor="default" className="sm:text-2xl">
+            <SpendValue spend={spend} spendError={spendError} />
           </Text>
         </div>
       ) : null}
@@ -171,15 +167,8 @@ export default function OrgUsagePage() {
       ? `Metered consumption and spend for the ${selectedProjectLabel} project in the selected billing period.`
       : 'Metered consumption and spend across all projects in this organization for the selected billing period.';
 
-  const costDescription =
-    result?.pricingOfferName != null
-      ? `Rates and spend are estimated from Offer "${result.pricingOfferName}" (catalog rates × usage).`
-      : 'Rates and spend are estimated from the assigned Offer when pricing is available.';
-
   const dashboardKey = `${selectedProject}-${selectedBillingCycle}`;
   const toolbarLoading = projectsQuery.isLoading || (isLoading && billingCycles.length === 0);
-  const periodSpend = result?.status === 'ok' ? result.totalSpend : undefined;
-  const periodCurrency = result?.status === 'ok' ? result.currencyCode : undefined;
 
   if (isError) {
     return (
@@ -207,23 +196,6 @@ export default function OrgUsagePage() {
 
   if (!result) {
     return null;
-  }
-
-  if (result.status === 'unconfigured') {
-    return (
-      <div className="m-4 flex min-w-0 flex-col gap-6">
-        <EmptyState
-          title="Usage data not available"
-          body={
-            <>
-              Configure{' '}
-              <code className="bg-muted rounded px-1 py-0.5 text-xs">AMBERFLO_API_KEY</code> on the
-              staff-portal server to enable this dashboard.
-            </>
-          }
-        />
-      </div>
-    );
   }
 
   if (result.status === 'insufficient-permissions') {
@@ -266,8 +238,8 @@ export default function OrgUsagePage() {
           projects={projects}
           billingCycles={billingCycles}
           isLoading={isRefetching}
-          totalSpend={periodSpend}
-          currencyCode={periodCurrency}
+          spend={result.spend}
+          spendError={result.spendError}
         />
         <EmptyState
           title="No usage to display"
@@ -281,14 +253,19 @@ export default function OrgUsagePage() {
     );
   }
 
+  // Services with any usage get cards; fully idle ones collapse into one
+  // list at the bottom so the page leads with what was actually used.
+  const activeGroups = view.groups.filter((group) => group.meters.length > 0);
+  const idleGroups = view.groups.filter((group) => group.meters.length === 0);
+
   return (
     <div className="m-4 flex min-w-0 flex-col gap-6">
       <UsagePageHeader
         projects={projects}
         billingCycles={billingCycles}
         isLoading={isRefetching}
-        totalSpend={periodSpend}
-        currencyCode={periodCurrency}
+        spend={view.spend}
+        spendError={view.spendError}
       />
 
       <div
@@ -297,25 +274,34 @@ export default function OrgUsagePage() {
           'border-border min-w-0 border-t',
           isRefetching && 'opacity-60 transition-opacity'
         )}>
-        <Section title="Usage summary" description={`${scopeDescription} ${costDescription}`}>
+        <Section title="Usage summary" description={scopeDescription}>
           <UsageSummaryTable rows={view.summaryRows} />
         </Section>
 
-        {view.groups.map((group) => (
+        {activeGroups.map((group) => (
           <Section key={group.id} title={group.title} description={scopeDescription}>
-            {group.meters.length === 0 ? (
-              <Card className="shadow-none">
-                <CardContent className="text-muted-foreground py-12 text-center text-sm">
-                  No meters defined yet for this group.
-                </CardContent>
-              </Card>
-            ) : (
-              group.meters.map((meter) => (
-                <MeterCard key={`${dashboardKey}-${meter.apiName}`} meter={meter} />
-              ))
-            )}
+            {group.meters.map((meter) => (
+              <MeterCard key={`${dashboardKey}-${meter.id}`} meter={meter} />
+            ))}
+            {group.idleMeters.length > 0 ? (
+              <IdleMeterList groups={[{ id: group.id, meters: group.idleMeters }]} />
+            ) : null}
           </Section>
         ))}
+
+        {idleGroups.length > 0 ? (
+          <Section
+            title="No usage this period"
+            description="These services have meters but recorded nothing in the selected billing period.">
+            <IdleMeterList
+              groups={idleGroups.map((group) => ({
+                id: group.id,
+                title: group.title,
+                meters: group.idleMeters,
+              }))}
+            />
+          </Section>
+        ) : null}
       </div>
     </div>
   );

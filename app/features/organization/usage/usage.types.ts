@@ -1,6 +1,13 @@
-import type { MeterDimensionBreakdown } from '@/modules/billing/usage.types';
+import type { MeterDimensionBreakdown, UsageSpend } from '@/modules/billing/usage.types';
 
-export type MeterUnit = 'bytes' | 'count' | 'duration';
+/**
+ * Display family for a meter's UCUM unit. `scale` converts a raw value into
+ * the family's base unit: bytes, seconds, byte-seconds or core-seconds.
+ */
+export interface MeterUnit {
+  kind: 'count' | 'bytes' | 'duration' | 'byteTime' | 'cpuTime' | 'cpu';
+  scale: number;
+}
 
 export interface MeterPoint {
   timestamp: number;
@@ -8,20 +15,23 @@ export interface MeterPoint {
 }
 
 export interface UsageMeter {
+  /** MeterDefinition name — unique even when `apiName` (meterName) collides. */
+  id: string;
   apiName: string;
   label: string;
   description: string;
   unit: MeterUnit;
   used: number;
   limit: number;
-  /** Period spend estimated from catalog Offer rates × usage. */
-  spend?: number;
-  /** Unit rate from the active Offer, when available. */
-  unitRate?: number;
-  /** Billing pricing unit label from the Offer, e.g. `token`, `request`, `GB`. */
-  pricingUnit?: string;
-  /** ISO 4217 currency for spend/rate display. */
-  currencyCode?: string;
+  /**
+   * How `used` reads when it is not a running total, e.g. `latest` for a
+   * gauge like allocated CPU. Unset for Sum and Count meters.
+   */
+  qualifier?: string;
+  /** What the usage costs, from `UsageQuery`; unset when no plan prices it. */
+  spend?: UsageSpend;
+  /** Why `spend` could not be computed. */
+  spendError?: string;
   /** Breakdown tabs shown above the chart. The first entry is the default. */
   tabs: string[];
   series: MeterPoint[];
@@ -32,20 +42,23 @@ export interface UsageGroupSection {
   id: string;
   title: string;
   description: string;
+  /** Meters with usage in the period. */
   meters: UsageMeter[];
+  /** The group's meters with no usage in the period. */
+  idleMeters: UsageMeter[];
 }
 
 export interface UsageSummaryRow {
+  /** MeterDefinition name — table row identity. */
+  id: string;
   apiName: string;
   label: string;
   unit: MeterUnit;
   used: number;
   limit: number;
-  spend?: number;
-  unitRate?: number;
-  /** Billing pricing unit label from the Offer, e.g. `token`, `request`, `GB`. */
-  pricingUnit?: string;
-  currencyCode?: string;
+  qualifier?: string;
+  spend?: UsageSpend;
+  spendError?: string;
   /** Daily aggregate series for inline spark charts. */
   series: MeterPoint[];
   /** Human-readable service group, e.g. `Compute`, `AI Assistant`. */

@@ -1,20 +1,21 @@
-export type OrgUsageStatus =
-  | 'ok'
-  | 'unconfigured'
-  | 'insufficient-permissions'
-  | 'no-billing-account'
-  | 'no-meters';
+import type { UsageSpend } from './usage.types';
+
+export type OrgUsageStatus = 'ok' | 'insufficient-permissions' | 'no-billing-account' | 'no-meters';
 
 export interface OrgUsageMeterSummary {
-  meterApiName: string;
+  meterDefinition: string;
   label: string;
   /** UCUM unit from MeterDefinition, when available. */
   unit?: string;
+  /** Rollup function, e.g. `Sum` or `Latest`. */
+  aggregation?: string;
   used: number;
   /** 0 when no matching AllowanceBucket / unlimited. */
   limit: number;
-  /** Period spend estimated from catalog Offer rates × usage. */
-  spend?: number;
+  /** What the usage costs, from `UsageQuery`. */
+  spend?: UsageSpend;
+  /** Why `spend` could not be computed. */
+  spendError?: string;
 }
 
 export interface OrgUsageSummary {
@@ -24,11 +25,9 @@ export interface OrgUsageSummary {
   /** Full picker-style label. */
   cycleLabel: string;
   meters: OrgUsageMeterSummary[];
-  /** Total period spend (catalog estimate). */
-  totalSpend?: number;
-  /** ISO 4217 currency for spend fields. */
-  currencyCode?: string;
-  /** Offer used for spend estimates. */
-  pricingOfferName?: string;
+  /** What all the usage costs together, from `UsageQuery`. */
+  spend?: UsageSpend;
+  /** Why `spend` is left out. */
+  spendError?: string;
   message?: string;
 }

@@ -48,14 +48,6 @@ const envSchema = z.object({
   // evaluation's maxmind provider step into the MaxMind portal.
   MAXMIND_ACCOUNT_ID: z.string().optional(),
 
-  // Optional: Amberflo usage query (read path for usage metering chart)
-  //
-  // AMBERFLO_API_KEY: secret key for POST /usage/sparse — never sent to browser.
-  // AMBERFLO_BASE_URL: base URL for the Amberflo API, defaults to https://app.amberflo.io.
-  // Meter names are discovered automatically from platform MeterDefinition resources.
-  AMBERFLO_API_KEY: z.string().optional(),
-  AMBERFLO_BASE_URL: z.url().optional(),
-
   // Portal plugin system (see app/modules/plugins/) — dev-only static
   // registry source. "<slug>=<url>,…" for quick UI iteration, or a JSON array
   // of spec-shaped entries for richer options. Both are hard-disabled outside
@@ -120,6 +112,4 @@ export const env = {
   mcpUrl: parsedEnv.MCP_URL,
   mcpApiKey: parsedEnv.MCP_API_KEY,
   staffGroupName: parsedEnv.STAFF_GROUP_NAME,
-  amberfloApiKey: parsedEnv.AMBERFLO_API_KEY,
-  amberfloBaseUrl: parsedEnv.AMBERFLO_BASE_URL ?? 'https://app.amberflo.io',
 };

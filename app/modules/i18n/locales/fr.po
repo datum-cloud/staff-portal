@@ -527,7 +527,7 @@ msgstr ""
 msgid "ASN"
 msgstr ""
 
-#: app/features/project/components/project-usage-card.tsx:118
+#: app/features/project/components/project-usage-card.tsx:113
 msgid "Assign a billing account to this project to track usage."
 msgstr ""
 
@@ -615,8 +615,8 @@ msgstr ""
 msgid "Billing address"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:79
-#: app/features/project/components/project-usage-card.tsx:112
+#: app/features/organization/components/org-usage-card.tsx:87
+#: app/features/project/components/project-usage-card.tsx:107
 msgid "Billing permissions are still being provisioned for this organization."
 msgstr ""
 
@@ -978,7 +978,7 @@ msgstr ""
 msgid "Could not load test results"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:67
+#: app/features/organization/components/org-usage-card.tsx:80
 #: app/features/project/components/project-usage-card.tsx:100
 msgid "Could not load usage"
 msgstr ""
@@ -1100,13 +1100,13 @@ msgstr ""
 msgid "Currency"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:48
+#: app/features/organization/components/org-usage-card.tsx:63
 #: app/features/project/components/project-usage-card.tsx:83
 msgid "Current billing cycle"
 msgstr ""
 
 #. placeholder {0}: summary.cycleRangeLabel
-#: app/features/organization/components/org-usage-card.tsx:46
+#: app/features/organization/components/org-usage-card.tsx:61
 msgid "Current billing cycle ({0})"
 msgstr ""
 
@@ -2712,8 +2712,8 @@ msgstr ""
 msgid "No backends configured"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:84
-#: app/features/project/components/project-usage-card.tsx:117
+#: app/features/organization/components/org-usage-card.tsx:92
+#: app/features/project/components/project-usage-card.tsx:112
 msgid "No billing account"
 msgstr ""
 
@@ -3026,8 +3026,8 @@ msgstr ""
 msgid "No thresholds — this stage scores without mapping to an action."
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:94
-#: app/features/project/components/project-usage-card.tsx:122
+#: app/features/organization/components/org-usage-card.tsx:102
+#: app/features/project/components/project-usage-card.tsx:117
 msgid "No usage to display"
 msgstr ""
 
@@ -4285,7 +4285,7 @@ msgstr ""
 msgid "Something went wrong while loading quota data."
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:68
+#: app/features/organization/components/org-usage-card.tsx:81
 #: app/features/project/components/project-usage-card.tsx:101
 msgid "Something went wrong while loading usage data."
 msgstr ""
@@ -4296,6 +4296,10 @@ msgstr ""
 
 #: app/routes/customer/project/detail/export-policy/detail.tsx:98
 msgid "Sources"
+msgstr ""
+
+#: app/features/organization/components/org-usage-card.tsx:117
+msgid "spend this period"
 msgstr ""
 
 #: app/routes/admin/offer/index.tsx:49
@@ -4430,7 +4434,7 @@ msgid "Switch Offer"
 msgstr ""
 
 #: app/features/billing/components/offer-switcher-card.tsx:171
-msgid "Switch this billing account to Offer \"{selectedOffer}\"? Amberflo Customer-Plan and quota grants will update on reconcile."
+msgid "Switch this billing account to Offer \"{selectedOffer}\"? The customer's plan and quota grants will update on reconcile."
 msgstr ""
 
 #: app/features/milo/components/navbar/milo-theme-toggle.tsx:20
@@ -4550,7 +4554,7 @@ msgstr ""
 msgid "This note will be permanently deleted and cannot be recovered."
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:86
+#: app/features/organization/components/org-usage-card.tsx:94
 msgid "This organization does not have a billing account. Usage and spend data require a linked billing account."
 msgstr ""
 
@@ -4620,10 +4624,6 @@ msgstr ""
 
 #: app/routes/customer/project/index.tsx:193
 msgid "Total projects"
-msgstr ""
-
-#: app/features/organization/components/org-usage-card.tsx:106
-msgid "Total spend"
 msgstr ""
 
 #: app/routes/customer/user/index.tsx:309
@@ -4737,32 +4737,25 @@ msgstr ""
 msgid "Updating email addresses for GitHub identities"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:54
+#: app/features/organization/components/org-usage-card.tsx:69
 #: app/features/project/components/project-usage-card.tsx:89
 #: app/features/quota/components/quota-bucket-list.tsx:110
 #: app/routes/customer/organization/detail/quota/usage.tsx:9
-#: app/routes/customer/organization/detail/usage/index.tsx:25
+#: app/routes/customer/organization/detail/usage/index.tsx:26
 #: app/routes/customer/project/detail/quota/usage.tsx:12
 msgid "Usage"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:72
-#: app/features/organization/components/org-usage-card.tsx:77
+#: app/features/organization/components/org-usage-card.tsx:85
 #: app/features/project/components/project-usage-card.tsx:105
-#: app/features/project/components/project-usage-card.tsx:110
 msgid "Usage data not available"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:73
-#: app/features/project/components/project-usage-card.tsx:106
-msgid "Usage metering is not configured for this environment."
-msgstr ""
-
-#: app/features/organization/components/org-usage-card.tsx:96
+#: app/features/organization/components/org-usage-card.tsx:104
 msgid "Usage will appear here once this organization starts consuming metered resources."
 msgstr ""
 
-#: app/features/project/components/project-usage-card.tsx:124
+#: app/features/project/components/project-usage-card.tsx:119
 msgid "Usage will appear here once this project starts consuming metered resources."
 msgstr ""
 
@@ -4829,7 +4822,7 @@ msgstr ""
 
 #: app/features/billing/components/org-billing-accounts-card.tsx:86
 #: app/features/organization/components/org-members-preview-card.tsx:84
-#: app/features/organization/components/org-usage-card.tsx:60
+#: app/features/organization/components/org-usage-card.tsx:73
 #: app/features/project/components/project-quotas-card.tsx:71
 #: app/features/project/components/project-usage-card.tsx:93
 msgid "View all"
