@@ -3,6 +3,8 @@ import type { UsageSpend } from '@/modules/billing/usage.types';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
+import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 
 /**
  * Spend from `UsageQuery`: the amount, `—` when no plan prices the usage,
@@ -22,9 +24,9 @@ export function SpendValue({
   }
   if (spendError) {
     return (
-      <Tooltip message={`Spend could not be calculated: ${spendError}`}>
+      <Tooltip message={t`Spend could not be calculated: ${spendError}`}>
         <Text as="span" textColor="muted" className={cn('cursor-help', className)}>
-          Unavailable
+          <Trans>Unavailable</Trans>
         </Text>
       </Tooltip>
     );

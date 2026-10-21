@@ -2,14 +2,6 @@ import { buildBillingCycleWindows, selectBillingCycleWindow } from './billing-cy
 import type { OrgUsageMeterSummary, OrgUsageStatus, OrgUsageSummary } from './org-usage.types';
 import { fetchOrgUsage, resolveBillingAccountForUsageScope } from './usage.server';
 
-function isAuthStatus(status: number | undefined): boolean {
-  return status === 401 || status === 403;
-}
-
-function authStatusFromError(err: unknown): number | undefined {
-  return (err as { response?: { status?: number } })?.response?.status;
-}
-
 function emptySummary(
   status: OrgUsageStatus,
   cycle: { label: string; rangeLabel: string },
@@ -33,26 +25,8 @@ export async function loadOrgUsageSummary(
   token: string,
   cycleParam: string | null = 'current'
 ): Promise<OrgUsageSummary> {
-  const fallbackCycle = buildBillingCycleWindows(undefined)[0];
-
-  const scopedBillingAccount = await resolveBillingAccountForUsageScope(
-    orgName,
-    token,
-    'all'
-  ).catch((err) => {
-    if (isAuthStatus(authStatusFromError(err))) {
-      return 'auth' as const;
-    }
-    throw err;
-  });
-
-  if (scopedBillingAccount === 'auth') {
-    return emptySummary(
-      'insufficient-permissions',
-      fallbackCycle,
-      'Billing permissions are still being provisioned for this organization.'
-    );
-  }
+  // Resolves to null on any error; the UsageQuery below reports permissions.
+  const scopedBillingAccount = await resolveBillingAccountForUsageScope(orgName, token, 'all');
 
   const cycleWindows = buildBillingCycleWindows(scopedBillingAccount?.paymentTerms);
   const cycle = selectBillingCycleWindow(cycleWindows, cycleParam);
@@ -87,8 +61,8 @@ export async function loadOrgUsageSummary(
       if (meter.spendError) summary.spendError = meter.spendError;
       return summary;
     })
-    .filter((meter) => meter.used > 0)
-    .sort((a, b) => b.used - a.used);
+    // The card orders meters by spend; raw usage isn't comparable across units.
+    .filter((meter) => meter.used > 0);
 
   return {
     status: 'ok',

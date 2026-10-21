@@ -139,10 +139,23 @@ export async function resolveBillingAccountForUsageScope(
 const QUERYABLE_METER_PHASES = new Set(['Published', 'Deprecated']);
 
 // The meter catalog is platform-wide and rarely changes, so a short cache
-// spares every dashboard load a round trip.
+// spares every dashboard load a round trip. One staff member's token fills it
+// and everyone reads it for the next minute without their own access being
+// checked: fine for a catalog that is the same for everyone, never for
+// tenant data.
 const METER_DEFINITIONS_TTL_MS = 60_000;
+const METER_DEFINITIONS_TIMEOUT_MS = 10_000;
+// A UsageQuery fans out to the metering backend (and pricing, with spend),
+// so it gets longer than a plain read.
+const USAGE_QUERY_TIMEOUT_MS = 30_000;
 let meterDefinitionsCache: { expiresAt: number; defs: MeterDefinition[] } | undefined;
 
+/**
+ * The published and deprecated meters. Throws when the catalog can't be
+ * read: the definitions decide what is queried, so carrying on with none
+ * would tell staff an organization has no usage during an outage. An empty
+ * array means the catalog really is empty.
+ */
 async function listMeterDefinitions(token: string): Promise<MeterDefinition[]> {
   if (meterDefinitionsCache && meterDefinitionsCache.expiresAt > Date.now()) {
     return meterDefinitionsCache.defs;
@@ -154,10 +167,10 @@ async function listMeterDefinitions(token: string): Promise<MeterDefinition[]> {
         Authorization: `Bearer ${token}`,
         Accept: 'application/json',
       },
+      signal: AbortSignal.timeout(METER_DEFINITIONS_TIMEOUT_MS),
     });
     if (!resp.ok) {
-      logger.warn('Failed to list MeterDefinitions for usage', { status: resp.status });
-      return [];
+      throw new Error(`MeterDefinitions list returned HTTP ${resp.status}`);
     }
     const json = (await resp.json()) as {
       items?: {
@@ -192,12 +205,10 @@ async function listMeterDefinitions(token: string): Promise<MeterDefinition[]> {
     }
     return defs;
   } catch (error) {
-    // The definitions decide what is queried, so without them the page
-    // shows no usage at all; make that visible.
     logger.warn('Failed to list MeterDefinitions for usage', {
       error: error instanceof Error ? error.message : String(error),
     });
-    return [];
+    throw new Error('Could not read the meter catalog', { cause: error });
   }
 }
 
@@ -212,6 +223,7 @@ async function queryUsage(
 ): Promise<UsageQueryStatus> {
   const resp = await createUsageBillingMiloapisComV1Alpha1UsageQuery({
     baseURL: getOrgControlPlaneBaseURL(orgName),
+    timeout: USAGE_QUERY_TIMEOUT_MS,
     // The generated SDK sends `*/*`; the API server wants JSON.
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: { apiVersion: 'usage.billing.miloapis.com/v1alpha1', kind: 'UsageQuery', spec },
@@ -353,7 +365,10 @@ export async function loadOrgUsageDashboard(
   const selectedProject = resolveUsageProjectSelection(projectParam);
 
   // The catalog doesn't depend on the billing account; fetch both at once.
+  // fetchOrgUsage awaits it and surfaces a failure; this no-op only stops a
+  // rejection that lands first from counting as unhandled.
   const meterDefinitions = listMeterDefinitions(token);
+  meterDefinitions.catch(() => {});
   const scopedBillingAccount = await resolveBillingAccountForUsageScope(
     orgName,
     token,

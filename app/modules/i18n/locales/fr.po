@@ -615,7 +615,7 @@ msgstr ""
 msgid "Billing address"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:87
+#: app/features/organization/components/org-usage-card.tsx:86
 #: app/features/project/components/project-usage-card.tsx:107
 msgid "Billing permissions are still being provisioned for this organization."
 msgstr ""
@@ -978,7 +978,7 @@ msgstr ""
 msgid "Could not load test results"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:80
+#: app/features/organization/components/org-usage-card.tsx:79
 #: app/features/project/components/project-usage-card.tsx:100
 msgid "Could not load usage"
 msgstr ""
@@ -1100,13 +1100,13 @@ msgstr ""
 msgid "Currency"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:63
+#: app/features/organization/components/org-usage-card.tsx:62
 #: app/features/project/components/project-usage-card.tsx:83
 msgid "Current billing cycle"
 msgstr ""
 
 #. placeholder {0}: summary.cycleRangeLabel
-#: app/features/organization/components/org-usage-card.tsx:61
+#: app/features/organization/components/org-usage-card.tsx:60
 msgid "Current billing cycle ({0})"
 msgstr ""
 
@@ -2712,7 +2712,7 @@ msgstr ""
 msgid "No backends configured"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:92
+#: app/features/organization/components/org-usage-card.tsx:91
 #: app/features/project/components/project-usage-card.tsx:112
 msgid "No billing account"
 msgstr ""
@@ -3026,7 +3026,11 @@ msgstr ""
 msgid "No thresholds — this stage scores without mapping to an action."
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:102
+#: app/features/organization/usage/components/idle-meter-list.tsx:54
+msgid "No usage"
+msgstr ""
+
+#: app/features/organization/components/org-usage-card.tsx:101
 #: app/features/project/components/project-usage-card.tsx:117
 msgid "No usage to display"
 msgstr ""
@@ -4285,7 +4289,7 @@ msgstr ""
 msgid "Something went wrong while loading quota data."
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:81
+#: app/features/organization/components/org-usage-card.tsx:80
 #: app/features/project/components/project-usage-card.tsx:101
 msgid "Something went wrong while loading usage data."
 msgstr ""
@@ -4298,7 +4302,11 @@ msgstr ""
 msgid "Sources"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:117
+#: app/features/organization/usage/components/spend-value.tsx:27
+msgid "Spend could not be calculated: {spendError}"
+msgstr ""
+
+#: app/features/organization/components/org-usage-card.tsx:116
 msgid "spend this period"
 msgstr ""
 
@@ -4554,7 +4562,7 @@ msgstr ""
 msgid "This note will be permanently deleted and cannot be recovered."
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:94
+#: app/features/organization/components/org-usage-card.tsx:93
 msgid "This organization does not have a billing account. Usage and spend data require a linked billing account."
 msgstr ""
 
@@ -4694,6 +4702,7 @@ msgid "Type to search."
 msgstr ""
 
 #: app/features/organization/components/org-details-card.tsx:75
+#: app/features/organization/usage/components/spend-value.tsx:29
 #: app/routes/admin/offer/detail.tsx:329
 msgid "Unavailable"
 msgstr ""
@@ -4737,7 +4746,7 @@ msgstr ""
 msgid "Updating email addresses for GitHub identities"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:69
+#: app/features/organization/components/org-usage-card.tsx:68
 #: app/features/project/components/project-usage-card.tsx:89
 #: app/features/quota/components/quota-bucket-list.tsx:110
 #: app/routes/customer/organization/detail/quota/usage.tsx:9
@@ -4746,12 +4755,12 @@ msgstr ""
 msgid "Usage"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:85
+#: app/features/organization/components/org-usage-card.tsx:84
 #: app/features/project/components/project-usage-card.tsx:105
 msgid "Usage data not available"
 msgstr ""
 
-#: app/features/organization/components/org-usage-card.tsx:104
+#: app/features/organization/components/org-usage-card.tsx:103
 msgid "Usage will appear here once this organization starts consuming metered resources."
 msgstr ""
 
@@ -4822,7 +4831,7 @@ msgstr ""
 
 #: app/features/billing/components/org-billing-accounts-card.tsx:86
 #: app/features/organization/components/org-members-preview-card.tsx:84
-#: app/features/organization/components/org-usage-card.tsx:73
+#: app/features/organization/components/org-usage-card.tsx:72
 #: app/features/project/components/project-quotas-card.tsx:71
 #: app/features/project/components/project-usage-card.tsx:93
 msgid "View all"

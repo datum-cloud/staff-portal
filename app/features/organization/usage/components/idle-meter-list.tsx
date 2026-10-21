@@ -2,6 +2,7 @@ import type { UsageMeter } from '../usage.types';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
+import { Trans } from '@lingui/react/macro';
 
 export interface IdleMeterGroup {
   id: string;
@@ -50,7 +51,7 @@ export function IdleMeterList({
                     ) : null}
                   </div>
                   <Text size="xs" textColor="muted" className="shrink-0">
-                    No usage
+                    <Trans>No usage</Trans>
                   </Text>
                 </li>
               ))}
