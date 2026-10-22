@@ -1,6 +1,6 @@
 import { computeStepTiming } from './chainsaw-step-timing';
 import type { PromVectorSample } from './vm-query';
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 
 function sample(name: string, step: string, value: number): PromVectorSample {
   return { metric: { __name__: name, step }, value: [1_700_000_000, String(value)] };

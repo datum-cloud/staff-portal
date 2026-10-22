@@ -8,7 +8,7 @@ import {
   listIdentityMiloapisComV1Alpha1UserIdentity,
 } from '@openapi/identity.miloapis.com/v1alpha1';
 // TEMPORARY: hand-written stand-in until milo-os/zitadel-provider#135's
-// passkeyregistrationlinks reaches staging and `bun run openapi:generate` can emit it. Fold
+// passkeyregistrationlinks reaches staging and `npm run openapi:generate` can emit it. Fold
 // this into the group barrel above and delete the file when it does.
 import { createIdentityMiloapisComV1Alpha1PasskeyRegistrationLink } from '@openapi/identity.miloapis.com/v1alpha1/pending-phase-c';
 import { listNotificationMiloapisComV1Alpha1EmailForAllNamespaces } from '@openapi/notification.miloapis.com/v1alpha1';

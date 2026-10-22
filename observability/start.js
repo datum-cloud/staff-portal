@@ -11,8 +11,8 @@ console.log('🚀 Starting application in production environment...');
 
 /**
  * Load the server module. Importing it starts the server: in production,
- * react-router-hono-server's Bun adapter calls Bun.serve() itself and owns
- * graceful shutdown (see app/server/adapter/bun.ts). Do not call Bun.serve()
+ * react-router-hono-server's Node adapter starts the HTTP server itself, and
+ * app/server/adapter/node.ts owns graceful shutdown. Do not start a server
  * here as well; a second server on the same port gets its own settings and
  * takes a share of the connections.
  */
@@ -27,7 +27,7 @@ try {
   // Load observability services first
   console.log('📊 Loading observability services...');
 
-  import('./index.ts')
+  import('../build/observability/index.js')
     .then(async (observabilityModule) => {
       try {
         // Initialize observability with all providers

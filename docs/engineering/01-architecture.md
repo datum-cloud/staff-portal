@@ -2,7 +2,7 @@
 
 ## Stack Overview
 
-`staff-portal` is a React Router v7 full-stack app running on Bun + Vite with a Hono server layer.
+`staff-portal` is a React Router v7 full-stack app running on Node.js + Vite with a Hono server layer.
 
 - Frontend app: React + React Router + Tailwind CSS v4
 - Data layer: TanStack Query + OpenAPI-generated SDK

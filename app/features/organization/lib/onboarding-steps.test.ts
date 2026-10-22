@@ -1,6 +1,6 @@
 import { buildOnboardingSteps } from './onboarding-steps';
 import type { GqlOrganization } from '@/resources/gql/organization.gql';
-import { describe, expect, it } from 'bun:test';
+import { describe, expect, it } from 'vitest';
 
 function org(partial: Partial<GqlOrganization>): GqlOrganization {
   return {

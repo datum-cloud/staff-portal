@@ -1,5 +1,5 @@
 import { buildActivityFilter, escapeCelString, shapeAuditEvent } from './activity-query';
-import { describe, expect, it } from 'bun:test';
+import { describe, expect, it } from 'vitest';
 
 describe('escapeCelString', () => {
   it('escapes single quotes', () => {

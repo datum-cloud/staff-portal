@@ -1,5 +1,5 @@
 import { pluginBreadcrumbs } from './plugin-breadcrumbs';
-import { describe, expect, it } from 'bun:test';
+import { describe, expect, it } from 'vitest';
 
 function projectPage(id: string, path: string) {
   return {

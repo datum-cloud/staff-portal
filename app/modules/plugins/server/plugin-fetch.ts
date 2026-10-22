@@ -4,17 +4,32 @@
  *
  * Plugin assets and manifests are always fetched by the portal server, never
  * the browser. When a plugin's `assets.caBundle` is set (an internal CA
- * fronting the asset origin), it is passed to the runtime's TLS layer. This
- * relies on Bun's non-standard `tls` fetch option — staff-portal's server
- * runs on Bun, same as cloud-portal.
+ * fronting the asset origin), it is handed to the TLS layer through an undici
+ * dispatcher, which Node's `fetch` accepts as the `dispatcher` init option.
  */
+import { Agent, type Dispatcher } from 'undici';
 
-/** Bun extends `fetch` init with a `tls` option; typed loosely to stay portable. */
+export interface TlsOptions {
+  ca?: string;
+  cert?: string;
+  key?: string;
+  rejectUnauthorized?: boolean;
+}
+
 export interface TlsFetchInit extends RequestInit {
-  tls?: {
-    ca?: string;
-    rejectUnauthorized?: boolean;
-  };
+  dispatcher?: Dispatcher;
+}
+
+const dispatchers = new Map<string, Agent>();
+
+export function tlsDispatcher(tls: TlsOptions): Agent {
+  const key = JSON.stringify([tls.ca, tls.cert, tls.key, tls.rejectUnauthorized]);
+  let dispatcher = dispatchers.get(key);
+  if (!dispatcher) {
+    dispatcher = new Agent({ connect: { ...tls } });
+    dispatchers.set(key, dispatcher);
+  }
+  return dispatcher;
 }
 
 /**
@@ -24,5 +39,5 @@ export interface TlsFetchInit extends RequestInit {
 export function withCaBundle(init: RequestInit, caBundle?: string): TlsFetchInit {
   const trimmed = caBundle?.trim();
   if (!trimmed) return init;
-  return { ...init, tls: { ca: trimmed } };
+  return { ...init, dispatcher: tlsDispatcher({ ca: trimmed }) };
 }

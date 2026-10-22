@@ -1,6 +1,6 @@
 import { PrometheusError } from './errors';
 import { PrometheusService } from './service';
-import { describe, expect, it } from 'bun:test';
+import { describe, expect, it } from 'vitest';
 
 function serviceWithStubbedGet(calls: { url: string; params: unknown }[], values: string[]) {
   const service = new PrometheusService(undefined, { baseURL: 'http://prometheus.invalid' });

@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 // scripts/graphql.ts
 /**
  * GraphQL Schema Generation Script
@@ -8,14 +8,14 @@
  * Saves selections to config file for incremental updates.
  *
  * Usage:
- *   bun run graphql              # Generate from config (or interactive if no config)
- *   bun run graphql -i           # Interactive mode to modify selections
- *   bun run graphql --interactive
- *   bun run graphql --reset      # Clear config and start fresh
+ *   npm run graphql              # Generate from config (or interactive if no config)
+ *   npm run graphql -i           # Interactive mode to modify selections
+ *   npm run graphql --interactive
+ *   npm run graphql --reset      # Clear config and start fresh
  *
  * Workflow:
  *   1. Edit graphql.config.json to add queries/mutations you need
- *   2. Run `bun run graphql` to generate
+ *   2. Run `npm run graphql` to generate
  */
 import { checkbox, confirm, input } from '@inquirer/prompts';
 import {
@@ -534,7 +534,14 @@ async function main(): Promise<void> {
 
     // 13. Run Gqlts CLI
     console.log(`\nGenerating Gqlts client...`);
-    await exec('bunx', ['gqlts', '--schema', TEMP_SCHEMA_FILE, '--output', OUTPUT_DIR, '--esm']);
+    await exec(process.execPath, [
+      'node_modules/@gqlts/cli/dist/cli.js',
+      '--schema',
+      TEMP_SCHEMA_FILE,
+      '--output',
+      OUTPUT_DIR,
+      '--esm',
+    ]);
 
     // 14. Cleanup
     await cleanup();

@@ -1,8 +1,7 @@
-/// <reference types="bun-types/test" />
 import { KubeClient, resolveKubeContext, parseKubeconfig } from './kubeconfig';
 import { PlatformSource, specFromProviderPortalPlugin } from './platform-source';
 import { PluginRegistry } from './registry';
-import { describe, expect, mock, test } from 'bun:test';
+import { describe, expect, test, vi } from 'vitest';
 
 const VALID_MANIFEST = {
   name: 'workloads.staff-portal.datumapis.com',
@@ -71,7 +70,9 @@ function readyConditions(patchBody: string): any[] {
 
 /** A registry whose manifest pipeline always resolves the valid fixture. */
 function makeRegistry() {
-  const fetchImpl = mock(async () => new Response(JSON.stringify(VALID_MANIFEST), { status: 200 }));
+  const fetchImpl = vi.fn(
+    async () => new Response(JSON.stringify(VALID_MANIFEST), { status: 200 })
+  );
   const registry = new PluginRegistry({ fetchImpl: fetchImpl as unknown as typeof fetch });
   return { registry, fetchImpl };
 }
@@ -79,7 +80,7 @@ function makeRegistry() {
 /** A KubeClient whose requests (status patches) succeed. */
 function makeClient() {
   const calls: { url: string; init: RequestInit }[] = [];
-  const fetchImpl = mock(async (url: string, init: RequestInit) => {
+  const fetchImpl = vi.fn(async (url: string, init: RequestInit) => {
     calls.push({ url, init });
     return new Response('{}', { status: 200 });
   });
@@ -89,7 +90,7 @@ function makeClient() {
   return { client, calls };
 }
 
-const silentLogger = { warn: mock(() => {}), info: mock(() => {}), error: mock(() => {}) };
+const silentLogger = { warn: vi.fn(() => {}), info: vi.fn(() => {}), error: vi.fn(() => {}) };
 
 describe('specFromProviderPortalPlugin', () => {
   test('maps a resource spec with defaults applied', () => {

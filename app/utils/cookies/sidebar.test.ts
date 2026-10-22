@@ -1,5 +1,5 @@
 import { parseSidebarState } from './sidebar';
-import { describe, expect, it } from 'bun:test';
+import { describe, expect, it } from 'vitest';
 
 describe('parseSidebarState', () => {
   it('parses true', () => {

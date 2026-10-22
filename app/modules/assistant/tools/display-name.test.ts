@@ -1,5 +1,5 @@
 import { projectDisplayName } from './display-name';
-import { describe, expect, it } from 'bun:test';
+import { describe, expect, it } from 'vitest';
 
 describe('projectDisplayName', () => {
   it('prefers the display-name annotation', () => {
