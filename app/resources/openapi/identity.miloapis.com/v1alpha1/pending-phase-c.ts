@@ -1,7 +1,7 @@
 // TEMPORARY hand-written mirror of milo-os/zitadel-provider#135's PasskeyRegistrationLink;
 // delete this file and switch the import to the generated exports once staging serves
 // /apis/identity.miloapis.com/v1alpha1/passkeyregistrationlinks and
-// `bun run openapi:generate` can see it. Passkey itself is already generated.
+// `npm run openapi:generate` can see it. Passkey itself is already generated.
 //
 // Shaped exactly as @hey-api/openapi-ts emits this group — same type-name prefix, same
 // `Options` plumbing, same `ProxyResponse` envelope — so the swap is an import change and

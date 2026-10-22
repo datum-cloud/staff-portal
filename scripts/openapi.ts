@@ -1,4 +1,4 @@
-// #!/usr/bin/env bun
+// #!/usr/bin/env node
 /**
  * Generate API client using @hey-api/openapi-ts for multiple resources
  *
@@ -7,11 +7,11 @@
  * - Subsequent resources use shared core/client (no duplication)
  * - Rewrites imports automatically
  */
-import { $ } from 'bun';
 import fs from 'fs';
-import { mkdir, writeFile } from 'fs/promises';
+import { cp, mkdir, writeFile } from 'fs/promises';
+import { execFile } from 'node:child_process';
 import path from 'path';
-import { parseArgs } from 'util';
+import { parseArgs, promisify } from 'util';
 
 const args = parseArgs({
   options: {
@@ -31,7 +31,7 @@ const {
 
 if (!API_URL || !TOKEN || !RESOURCES?.length) {
   console.error(
-    'Usage: bun generate-heyapi.ts --api-url <url> --token <token> --resources group/name/v1... '
+    'Usage: npm run openapi:generate -- --api-url <url> --token <token> --resources group/name/v1... '
   );
   process.exit(1);
 }
@@ -197,10 +197,16 @@ async function cleanBaseUrlType(resourceDir: string) {
 async function generateClientForSpec(specFile: string, outDir: string) {
   await ensureDir(outDir);
 
-  await $`bunx openapi-ts \
-    -i ${specFile} \
-    -o ${outDir} \
-    -c @hey-api/client-axios`.quiet();
+  await promisify(execFile)('npx', [
+    '--no-install',
+    'openapi-ts',
+    '-i',
+    specFile,
+    '-o',
+    outDir,
+    '-c',
+    '@hey-api/client-axios',
+  ]);
 
   log(`Generated client at ${outDir}`);
 
@@ -260,12 +266,12 @@ async function extractSharedCore(firstResourceDir: string, sharedDir: string) {
   const firstClientGenFile = path.join(firstResourceDir, 'client.gen.ts');
 
   if (fs.existsSync(firstCoreDir)) {
-    await $`cp -r ${firstCoreDir}/* ${sharedCoreDir}/`.quiet();
+    await cp(firstCoreDir, sharedCoreDir, { recursive: true });
     log('✓ Extracted shared core');
   }
 
   if (fs.existsSync(firstClientDir)) {
-    await $`cp -r ${firstClientDir}/* ${sharedClientDir}/`.quiet();
+    await cp(firstClientDir, sharedClientDir, { recursive: true });
     log('✓ Extracted shared client');
   }
 

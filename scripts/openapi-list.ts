@@ -1,8 +1,9 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 /**
  * Script to list all available OpenAPI resources from the API server
- * Usage: bun scripts/openapi-list.ts [--api-url URL] [--token TOKEN]
+ * Usage: node scripts/openapi-list.ts [--api-url URL] [--token TOKEN]
  */
+import { writeFile } from 'node:fs/promises';
 import { parseArgs } from 'util';
 
 const args = parseArgs({
@@ -85,10 +86,10 @@ async function main() {
 
     // Save to a JSON file for the generator script
     const configPath = './openapi-resources.json';
-    await Bun.write(configPath, JSON.stringify(resources, null, 2));
+    await writeFile(configPath, JSON.stringify(resources, null, 2));
     console.log(`Resources list saved to: ${configPath}`);
     console.log('\nTo generate TypeScript for specific resources, use:');
-    console.log('  bun scripts/openapi-generate.ts --resources notification.miloapis.com/v1alpha1');
+    console.log('  npm run openapi:generate -- --resources notification.miloapis.com/v1alpha1');
   } catch (error) {
     console.error('Error:', error instanceof Error ? error.message : String(error));
     process.exit(1);

@@ -24,8 +24,8 @@ tests/
 Run with the Cypress **component** runner (Vite-bundled, real browser):
 
 ```bash
-bun run test:unit          # interactive (cypress open --component)
-bun run test:unit:prod     # headless (CI)
+npm run test:unit          # interactive (cypress open --component)
+npm run test:unit:prod     # headless (CI)
 ```
 
 Two flavours:
@@ -52,9 +52,9 @@ The `cy.mount` command wraps the subject in the same providers the app uses
 Hit a **real backend** with a **real signed staff session** — nothing is mocked.
 
 ```bash
-bun run test:e2e           # start dev server + run e2e
-bun run test:e2e:prod      # start prod build + run e2e
-bun run test:e2e:debug     # start prod build + cypress open
+npm run test:e2e           # start dev server + run e2e
+npm run test:e2e:prod      # start prod build + run e2e
+npm run test:e2e:debug     # start prod build + cypress open
 ```
 
 `cy.login()` builds and signs a `_session` cookie the same way the app does

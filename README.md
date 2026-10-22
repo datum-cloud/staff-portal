@@ -12,11 +12,11 @@
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdatum-cloud%2Fstaff-portal.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdatum-cloud%2Fstaff-portal?ref=badge_shield)
 
-Datum Staff Portal is a modern web application built with React and TypeScript, designed to streamline cloud operations management. The application uses the latest React Router v7 and is powered by Bun runtime.
+Datum Staff Portal is a modern web application built with React and TypeScript, designed to streamline cloud operations management. The application uses the latest React Router v7 and runs on Node.js.
 
 ## Tech Stack
 
-- **Runtime**: Bun
+- **Runtime**: Node.js 26 (see `.nvmrc`)
 - **Frontend Framework**: React 19
 - **Routing**: React Router 7
 - **Styling**: TailwindCSS
@@ -56,7 +56,7 @@ staff-portal/
 
 ### Prerequisites
 
-- [Bun](https://bun.sh/) (Latest version)
+- [Node.js](https://nodejs.org/) 26.12.1 (see `.nvmrc`)
 
 ### Installation
 
@@ -69,7 +69,7 @@ staff-portal/
 
 2. Install dependencies:
    ```bash
-   bun install
+   npm install
    ```
 
 ### Development
@@ -77,7 +77,7 @@ staff-portal/
 Start the development server:
 
 ```bash
-bun run dev
+npm run dev
 ```
 
 ### Building
@@ -85,7 +85,7 @@ bun run dev
 Build the application:
 
 ```bash
-bun run build
+npm run build
 ```
 
 ### Running Production Build
@@ -93,43 +93,49 @@ bun run build
 Start the production server:
 
 ```bash
-bun run start
+npm run start
 ```
 
 ## Available Scripts
 
-- `bun run dev` - Start development server
-- `bun run build` - Build the application
-- `bun run start` - Start production server
-- `bun run lint` - Run ESLint
-- `bun run format` - Format code with Prettier
-- `bun run typecheck` - Run TypeScript type checking
-- `bun run extract` - Extract messages for translation
-- `bun run compile` - Compile translation messages
-- `bun run test:e2e` - Run end-to-end tests in CI mode
-- `bun run test:e2e:prod` - Run end-to-end tests against production build
-- `bun run test:e2e:debug` - Open Cypress Test Runner for E2E tests
-- `bun run test:unit:prod` - Run component tests in CI mode
-- `bun run test:unit:debug` - Open Cypress Test Runner for component tests
+- `npm run dev` - Start development server
+- `npm run build` - Build the application
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+- `npm run format` - Format code with Prettier
+- `npm run typecheck` - Run TypeScript type checking
+- `npm test` - Run the vitest unit tests
+- `npm run extract` - Extract messages for translation
+- `npm run compile` - Compile translation messages
+- `npm run test:e2e` - Run end-to-end tests in CI mode
+- `npm run test:e2e:prod` - Run end-to-end tests against production build
+- `npm run test:e2e:debug` - Open Cypress Test Runner for E2E tests
+- `npm run test:unit:prod` - Run component tests in CI mode
+- `npm run test:unit:debug` - Open Cypress Test Runner for component tests
 
 ## Testing
 
-The project uses Cypress for both end-to-end (e2e) and component testing:
+The project uses vitest for unit tests and Cypress for end-to-end (e2e) and component testing:
+
+### Unit Testing
+
+- Unit tests sit next to the code they cover as `*.test.ts` files under `app/`
+- Run them with `npm test`
 
 ### Component Testing
 
 - Component tests are written using Cypress Component Testing
 - Tests are located in the `cypress/component` directory
-- Run component tests in CI mode with `bun run test:unit:prod`
-- Open Cypress Test Runner for component tests with `bun run test:unit:debug`
+- Run component tests in CI mode with `npm run test:unit:prod`
+- Open Cypress Test Runner for component tests with `npm run test:unit:debug`
 
 ### End-to-End Testing
 
 - E2E tests are written using Cypress
 - Tests are located in the `cypress/e2e` directory
-- Run E2E tests in CI mode with `bun run test:e2e`
-- Run E2E tests against production build with `bun run test:e2e:prod`
-- Open Cypress Test Runner for E2E tests with `bun run test:e2e:debug`
+- Run E2E tests in CI mode with `npm run test:e2e`
+- Run E2E tests against production build with `npm run test:e2e:prod`
+- Open Cypress Test Runner for E2E tests with `npm run test:e2e:debug`
 
 ## Code Quality
 
