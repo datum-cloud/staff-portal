@@ -4,7 +4,6 @@ import type { SearchResultItem } from '@/resources/request/client';
 import { ENTITY_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { contactRoutes, edgeRoutes, projectRoutes, routes } from '@/utils/config/routes.config';
 import {
-  Command,
   CommandEmpty,
   CommandGroup,
   CommandItem,
@@ -108,272 +107,270 @@ export function SearchResults({ state, listClassName }: SearchResultsProps) {
     );
   };
 
+  // The wrapping <Command> (and its text input) is owned by each caller so the
+  // input and this list share one cmdk context — that's what lets ↑/↓/Enter
+  // move through and open results (#721).
   return (
-    <Command shouldFilter={false}>
-      <CommandList className={listClassName}>
-        {/* Empty state — quick links */}
-        {(!search || search.length === 0) && (
-          <CommandGroup heading={t`Navigation`}>
-            {quickLinks.map((item) => {
-              const Icon = item.icon;
-              return (
-                <CommandItem key={item.href} onSelect={() => runCommand(() => navigate(item.href))}>
-                  <Icon className="mr-2 h-4 w-4" />
-                  <Text>{item.title}</Text>
-                  <Text size="xs" textColor="muted" className="ml-auto">
-                    {item.description}
+    <CommandList className={listClassName}>
+      {/* Empty state — quick links */}
+      {(!search || search.length === 0) && (
+        <CommandGroup heading={t`Navigation`}>
+          {quickLinks.map((item) => {
+            const Icon = item.icon;
+            return (
+              <CommandItem key={item.href} onSelect={() => runCommand(() => navigate(item.href))}>
+                <Icon className="mr-2 h-4 w-4" />
+                <Text>{item.title}</Text>
+                <Text size="xs" textColor="muted" className="ml-auto">
+                  {item.description}
+                </Text>
+              </CommandItem>
+            );
+          })}
+        </CommandGroup>
+      )}
+
+      {/* Min chars hint */}
+      {search && search.length > 0 && search.length < 3 && (
+        <CommandEmpty>{t`Type at least 3 characters to search.`}</CommandEmpty>
+      )}
+
+      {/* Loading */}
+      {search && search.length >= 3 && isLoading && (
+        <CommandEmpty>
+          <STATUS_ICONS.loading className="mx-auto mb-1 h-4 w-4 animate-spin opacity-50" />
+          <Text size="sm">{t`Searching...`}</Text>
+        </CommandEmpty>
+      )}
+
+      {/* Results */}
+      {search && search.length >= 3 && !isLoading && (
+        <>
+          {isError ? (
+            <CommandEmpty>{t`Search is temporarily unavailable. Please try again.`}</CommandEmpty>
+          ) : !hasResults ? (
+            <CommandEmpty>{t`No results found.`}</CommandEmpty>
+          ) : (
+            <>
+              {/* ── Entities section ── */}
+              {hasEntityResults && (
+                <>
+                  <Text
+                    as="p"
+                    size="xs"
+                    textColor="muted"
+                    weight="semibold"
+                    className="px-3 pt-3 pb-1 tracking-wider uppercase">
+                    {t`Entities`}
                   </Text>
-                </CommandItem>
-              );
-            })}
-          </CommandGroup>
-        )}
 
-        {/* Min chars hint */}
-        {search && search.length > 0 && search.length < 3 && (
-          <CommandEmpty>{t`Type at least 3 characters to search.`}</CommandEmpty>
-        )}
+                  <SearchResultGroup<
+                    SearchResultItem<ComMiloapisResourcemanagerV1Alpha1Organization>
+                  >
+                    heading={t`Organizations`}
+                    items={orgResults || []}
+                    icon={Building2}
+                    getKey={getItemKey}
+                    getValue={(item) =>
+                      `${item.resource.metadata?.name ?? ''} ${getDisplayName(item.resource)} ${item.resource.metadata?.annotations?.['kubernetes.io/description'] ?? ''}`
+                    }
+                    getTitle={(item) => getDisplayName(item.resource)}
+                    getSubtitle={(item) => item.resource.metadata?.name ?? ''}
+                    onSelect={(item) =>
+                      runCommand(() =>
+                        navigate(routes.organizations.detail(item.resource.metadata?.name ?? ''))
+                      )
+                    }
+                  />
+                  <SearchResultGroup<SearchResultItem<ComMiloapisResourcemanagerV1Alpha1Project>>
+                    heading={t`Projects`}
+                    items={projectResults || []}
+                    icon={FolderOpen}
+                    getKey={getItemKey}
+                    getValue={(item) =>
+                      `${item.resource.metadata?.name ?? ''} ${getDisplayName(item.resource)} ${item.resource.metadata?.annotations?.['kubernetes.io/description'] ?? ''}`
+                    }
+                    getTitle={(item) => getDisplayName(item.resource)}
+                    getSubtitle={(item) => item.resource.metadata?.name ?? ''}
+                    onSelect={(item) =>
+                      runCommand(() =>
+                        navigate(routes.projects.detail(item.resource.metadata?.name ?? ''))
+                      )
+                    }
+                  />
+                  <SearchResultGroup<SearchResultItem<ComMiloapisIamV1Alpha1User>>
+                    heading={t`Users`}
+                    items={userResults || []}
+                    icon={Users}
+                    getKey={getItemKey}
+                    getValue={(item) =>
+                      `${item.resource.metadata?.name ?? ''} ${item.resource.spec?.givenName ?? ''} ${item.resource.spec?.familyName ?? ''} ${item.resource.spec?.email ?? ''}`
+                    }
+                    getTitle={(item) =>
+                      `${item.resource.spec?.givenName ?? ''} ${item.resource.spec?.familyName ?? ''}`.trim()
+                    }
+                    getSubtitle={(item) => item.resource.spec?.email ?? ''}
+                    onSelect={(item) =>
+                      runCommand(() =>
+                        navigate(routes.users.detail(item.resource.metadata?.name ?? ''))
+                      )
+                    }
+                  />
+                </>
+              )}
 
-        {/* Loading */}
-        {search && search.length >= 3 && isLoading && (
-          <CommandEmpty>
-            <STATUS_ICONS.loading className="mx-auto mb-1 h-4 w-4 animate-spin opacity-50" />
-            <Text size="sm">{t`Searching...`}</Text>
-          </CommandEmpty>
-        )}
+              {/* ── Resources section ── */}
+              {hasResourceResults && (
+                <>
+                  <Text
+                    as="p"
+                    size="xs"
+                    textColor="muted"
+                    weight="semibold"
+                    className="px-3 pt-3 pb-1 tracking-wider uppercase">
+                    {t`Resources`}
+                  </Text>
 
-        {/* Results */}
-        {search && search.length >= 3 && !isLoading && (
-          <>
-            {isError ? (
-              <CommandEmpty>{t`Search is temporarily unavailable. Please try again.`}</CommandEmpty>
-            ) : !hasResults ? (
-              <CommandEmpty>{t`No results found.`}</CommandEmpty>
-            ) : (
-              <>
-                {/* ── Entities section ── */}
-                {hasEntityResults && (
-                  <>
-                    <Text
-                      as="p"
-                      size="xs"
-                      textColor="muted"
-                      weight="semibold"
-                      className="px-3 pt-3 pb-1 tracking-wider uppercase">
-                      {t`Entities`}
-                    </Text>
+                  <SearchResultGroup<SearchResultItem<ComDatumapisNetworkingV1AlphaDomain>>
+                    heading={t`Domains`}
+                    items={(domainResults || []).slice(0, 3)}
+                    icon={Globe}
+                    iconClassName="text-green-600"
+                    getKey={getItemKey}
+                    getValue={(item) =>
+                      `${item.resource.metadata?.name ?? ''} ${item.resource.spec?.domainName ?? ''}`
+                    }
+                    getTitle={(item) =>
+                      item.resource.spec?.domainName ?? item.resource.metadata?.name ?? ''
+                    }
+                    getSubtitle={(item) =>
+                      [getDomainStatus(item.resource), getDomainRegistrar(item.resource)]
+                        .filter(Boolean)
+                        .join(' \u2022 ')
+                    }
+                    onSelect={(item) =>
+                      runCommand(() => {
+                        const projectName = getProjectName(item);
+                        const namespace = getNamespace(item.resource.metadata);
+                        navigate(
+                          projectRoutes.domain.detail(
+                            projectName,
+                            namespace,
+                            item.resource.metadata?.name ?? ''
+                          )
+                        );
+                      })
+                    }
+                    footer={
+                      (domainResults?.length ?? 0) > 3 ? (
+                        <SeeAllLink to="/customers/projects" label={t`See all domains`} />
+                      ) : null
+                    }
+                  />
 
-                    <SearchResultGroup<
-                      SearchResultItem<ComMiloapisResourcemanagerV1Alpha1Organization>
-                    >
-                      heading={t`Organizations`}
-                      items={orgResults || []}
-                      icon={Building2}
-                      getKey={getItemKey}
-                      getValue={(item) =>
-                        `${item.resource.metadata?.name ?? ''} ${getDisplayName(item.resource)} ${item.resource.metadata?.annotations?.['kubernetes.io/description'] ?? ''}`
-                      }
-                      getTitle={(item) => getDisplayName(item.resource)}
-                      getSubtitle={(item) => item.resource.metadata?.name ?? ''}
-                      onSelect={(item) =>
-                        runCommand(() =>
-                          navigate(routes.organizations.detail(item.resource.metadata?.name ?? ''))
-                        )
-                      }
-                    />
-                    <SearchResultGroup<SearchResultItem<ComMiloapisResourcemanagerV1Alpha1Project>>
-                      heading={t`Projects`}
-                      items={projectResults || []}
-                      icon={FolderOpen}
-                      getKey={getItemKey}
-                      getValue={(item) =>
-                        `${item.resource.metadata?.name ?? ''} ${getDisplayName(item.resource)} ${item.resource.metadata?.annotations?.['kubernetes.io/description'] ?? ''}`
-                      }
-                      getTitle={(item) => getDisplayName(item.resource)}
-                      getSubtitle={(item) => item.resource.metadata?.name ?? ''}
-                      onSelect={(item) =>
-                        runCommand(() =>
-                          navigate(routes.projects.detail(item.resource.metadata?.name ?? ''))
-                        )
-                      }
-                    />
-                    <SearchResultGroup<SearchResultItem<ComMiloapisIamV1Alpha1User>>
-                      heading={t`Users`}
-                      items={userResults || []}
-                      icon={Users}
-                      getKey={getItemKey}
-                      getValue={(item) =>
-                        `${item.resource.metadata?.name ?? ''} ${item.resource.spec?.givenName ?? ''} ${item.resource.spec?.familyName ?? ''} ${item.resource.spec?.email ?? ''}`
-                      }
-                      getTitle={(item) =>
-                        `${item.resource.spec?.givenName ?? ''} ${item.resource.spec?.familyName ?? ''}`.trim()
-                      }
-                      getSubtitle={(item) => item.resource.spec?.email ?? ''}
-                      onSelect={(item) =>
-                        runCommand(() =>
-                          navigate(routes.users.detail(item.resource.metadata?.name ?? ''))
-                        )
-                      }
-                    />
-                  </>
-                )}
+                  <SearchResultGroup<SearchResultItem<ComMiloapisNetworkingDnsV1Alpha1DnsZone>>
+                    heading={t`DNS Zones`}
+                    items={(dnsZoneResults || []).slice(0, 3)}
+                    icon={Server}
+                    iconClassName="text-blue-600"
+                    getKey={getItemKey}
+                    getValue={(item) =>
+                      `${item.resource.metadata?.name ?? ''} ${item.resource.spec?.domainName ?? ''}`
+                    }
+                    getTitle={(item) =>
+                      item.resource.spec?.domainName ?? item.resource.metadata?.name ?? ''
+                    }
+                    getSubtitle={(item) =>
+                      [getDnsRecordCount(item.resource), getDnsStatus(item.resource)].join(
+                        ' \u2022 '
+                      )
+                    }
+                    onSelect={(item) =>
+                      runCommand(() => {
+                        const projectName = getProjectName(item);
+                        const namespace = getNamespace(item.resource.metadata);
+                        navigate(
+                          projectRoutes.dns.detail(
+                            projectName,
+                            namespace,
+                            item.resource.metadata?.name ?? ''
+                          )
+                        );
+                      })
+                    }
+                    footer={
+                      (dnsZoneResults?.length ?? 0) > 3 ? (
+                        <SeeAllLink to="/customers/projects" label={t`See all DNS zones`} />
+                      ) : null
+                    }
+                  />
 
-                {/* ── Resources section ── */}
-                {hasResourceResults && (
-                  <>
-                    <Text
-                      as="p"
-                      size="xs"
-                      textColor="muted"
-                      weight="semibold"
-                      className="px-3 pt-3 pb-1 tracking-wider uppercase">
-                      {t`Resources`}
-                    </Text>
+                  <SearchResultGroup<SearchResultItem<ComDatumapisNetworkingV1AlphaHttpProxy>>
+                    heading={t`Application Load Balancers`}
+                    items={(albResults || []).slice(0, 3)}
+                    icon={ENTITY_ICONS.edge}
+                    getKey={getItemKey}
+                    getValue={(item) =>
+                      `${item.resource.metadata?.name ?? ''} ${getAlbDisplayName(item.resource)}`
+                    }
+                    getTitle={(item) => getAlbDisplayName(item.resource)}
+                    getSubtitle={(item) => item.resource.metadata?.name ?? ''}
+                    onSelect={(item) =>
+                      runCommand(() => {
+                        const projectName = getProjectName(item);
+                        navigate(
+                          projectRoutes.edge.detail(projectName, item.resource.metadata?.name ?? '')
+                        );
+                      })
+                    }
+                    footer={
+                      (albResults?.length ?? 0) > 3 ? (
+                        <SeeAllLink
+                          to={edgeRoutes.list()}
+                          label={t`See all Application Load Balancers`}
+                        />
+                      ) : null
+                    }
+                  />
 
-                    <SearchResultGroup<SearchResultItem<ComDatumapisNetworkingV1AlphaDomain>>
-                      heading={t`Domains`}
-                      items={(domainResults || []).slice(0, 3)}
-                      icon={Globe}
-                      iconClassName="text-green-600"
-                      getKey={getItemKey}
-                      getValue={(item) =>
-                        `${item.resource.metadata?.name ?? ''} ${item.resource.spec?.domainName ?? ''}`
-                      }
-                      getTitle={(item) =>
-                        item.resource.spec?.domainName ?? item.resource.metadata?.name ?? ''
-                      }
-                      getSubtitle={(item) =>
-                        [getDomainStatus(item.resource), getDomainRegistrar(item.resource)]
-                          .filter(Boolean)
-                          .join(' \u2022 ')
-                      }
-                      onSelect={(item) =>
-                        runCommand(() => {
-                          const projectName = getProjectName(item);
-                          const namespace = getNamespace(item.resource.metadata);
-                          navigate(
-                            projectRoutes.domain.detail(
-                              projectName,
-                              namespace,
-                              item.resource.metadata?.name ?? ''
-                            )
-                          );
-                        })
-                      }
-                      footer={
-                        (domainResults?.length ?? 0) > 3 ? (
-                          <SeeAllLink to="/customers/projects" label={t`See all domains`} />
-                        ) : null
-                      }
-                    />
-
-                    <SearchResultGroup<SearchResultItem<ComMiloapisNetworkingDnsV1Alpha1DnsZone>>
-                      heading={t`DNS Zones`}
-                      items={(dnsZoneResults || []).slice(0, 3)}
-                      icon={Server}
-                      iconClassName="text-blue-600"
-                      getKey={getItemKey}
-                      getValue={(item) =>
-                        `${item.resource.metadata?.name ?? ''} ${item.resource.spec?.domainName ?? ''}`
-                      }
-                      getTitle={(item) =>
-                        item.resource.spec?.domainName ?? item.resource.metadata?.name ?? ''
-                      }
-                      getSubtitle={(item) =>
-                        [getDnsRecordCount(item.resource), getDnsStatus(item.resource)].join(
-                          ' \u2022 '
-                        )
-                      }
-                      onSelect={(item) =>
-                        runCommand(() => {
-                          const projectName = getProjectName(item);
-                          const namespace = getNamespace(item.resource.metadata);
-                          navigate(
-                            projectRoutes.dns.detail(
-                              projectName,
-                              namespace,
-                              item.resource.metadata?.name ?? ''
-                            )
-                          );
-                        })
-                      }
-                      footer={
-                        (dnsZoneResults?.length ?? 0) > 3 ? (
-                          <SeeAllLink to="/customers/projects" label={t`See all DNS zones`} />
-                        ) : null
-                      }
-                    />
-
-                    <SearchResultGroup<SearchResultItem<ComDatumapisNetworkingV1AlphaHttpProxy>>
-                      heading={t`Application Load Balancers`}
-                      items={(albResults || []).slice(0, 3)}
-                      icon={ENTITY_ICONS.edge}
-                      getKey={getItemKey}
-                      getValue={(item) =>
-                        `${item.resource.metadata?.name ?? ''} ${getAlbDisplayName(item.resource)}`
-                      }
-                      getTitle={(item) => getAlbDisplayName(item.resource)}
-                      getSubtitle={(item) => item.resource.metadata?.name ?? ''}
-                      onSelect={(item) =>
-                        runCommand(() => {
-                          const projectName = getProjectName(item);
-                          navigate(
-                            projectRoutes.edge.detail(
-                              projectName,
-                              item.resource.metadata?.name ?? ''
-                            )
-                          );
-                        })
-                      }
-                      footer={
-                        (albResults?.length ?? 0) > 3 ? (
-                          <SeeAllLink
-                            to={edgeRoutes.list()}
-                            label={t`See all Application Load Balancers`}
-                          />
-                        ) : null
-                      }
-                    />
-
-                    <SearchResultGroup<SearchResultItem<ComMiloapisNotificationV1Alpha1Contact>>
-                      heading={t`Contacts`}
-                      items={(contactResults || []).slice(0, 3)}
-                      icon={Contact}
-                      iconClassName="text-orange-600"
-                      getKey={getItemKey}
-                      getValue={(item) =>
-                        `${item.resource.metadata?.name ?? ''} ${item.resource.spec?.givenName ?? ''} ${item.resource.spec?.familyName ?? ''} ${item.resource.spec?.email ?? ''}`
-                      }
-                      getTitle={(item) =>
-                        `${item.resource.spec?.givenName ?? ''} ${item.resource.spec?.familyName ?? ''}`.trim() ||
-                        (item.resource.metadata?.name ?? '')
-                      }
-                      getSubtitle={(item) => item.resource.spec?.email ?? ''}
-                      onSelect={(item) =>
-                        runCommand(() =>
-                          navigate(
-                            contactRoutes.detail(
-                              getNamespace(item.resource.metadata),
-                              item.resource.metadata?.name ?? ''
-                            )
+                  <SearchResultGroup<SearchResultItem<ComMiloapisNotificationV1Alpha1Contact>>
+                    heading={t`Contacts`}
+                    items={(contactResults || []).slice(0, 3)}
+                    icon={Contact}
+                    iconClassName="text-orange-600"
+                    getKey={getItemKey}
+                    getValue={(item) =>
+                      `${item.resource.metadata?.name ?? ''} ${item.resource.spec?.givenName ?? ''} ${item.resource.spec?.familyName ?? ''} ${item.resource.spec?.email ?? ''}`
+                    }
+                    getTitle={(item) =>
+                      `${item.resource.spec?.givenName ?? ''} ${item.resource.spec?.familyName ?? ''}`.trim() ||
+                      (item.resource.metadata?.name ?? '')
+                    }
+                    getSubtitle={(item) => item.resource.spec?.email ?? ''}
+                    onSelect={(item) =>
+                      runCommand(() =>
+                        navigate(
+                          contactRoutes.detail(
+                            getNamespace(item.resource.metadata),
+                            item.resource.metadata?.name ?? ''
                           )
                         )
-                      }
-                      footer={
-                        (contactResults?.length ?? 0) > 3 ? (
-                          <SeeAllLink to={contactRoutes.list()} label={t`See all contacts`} />
-                        ) : null
-                      }
-                    />
+                      )
+                    }
+                    footer={
+                      (contactResults?.length ?? 0) > 3 ? (
+                        <SeeAllLink to={contactRoutes.list()} label={t`See all contacts`} />
+                      ) : null
+                    }
+                  />
 
-                    {/* Notes disabled until ResourceIndexPolicy is deployed */}
-                  </>
-                )}
-              </>
-            )}
-          </>
-        )}
-      </CommandList>
-    </Command>
+                  {/* Notes disabled until ResourceIndexPolicy is deployed */}
+                </>
+              )}
+            </>
+          )}
+        </>
+      )}
+    </CommandList>
   );
 }

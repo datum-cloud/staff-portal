@@ -422,7 +422,7 @@ msgstr ""
 msgid "Application Load Balancer"
 msgstr ""
 
-#: app/components/app-search/search-results.tsx:308
+#: app/components/app-search/search-results.tsx:309
 msgid "Application Load Balancers"
 msgstr ""
 
@@ -756,7 +756,7 @@ msgstr ""
 msgid "Clear all"
 msgstr ""
 
-#: app/components/app-search/app-search-mobile.tsx:71
+#: app/components/app-search/app-search-mobile.tsx:73
 #: app/features/fraud/detail/evaluation-sections.tsx:71
 #: app/features/user/components/user-recovery-links-dialog.tsx:99
 msgid "Close"
@@ -933,7 +933,7 @@ msgstr ""
 msgid "Contact updated successfully"
 msgstr ""
 
-#: app/components/app-search/search-results.tsx:339
+#: app/components/app-search/search-results.tsx:337
 #: app/components/app-sidebar/index.tsx:147
 #: app/components/app-sidebar/index.tsx:153
 #: app/routes/customer/user/detail/contacts.tsx:9
@@ -1449,7 +1449,7 @@ msgstr ""
 msgid "DNS Zone"
 msgstr ""
 
-#: app/components/app-search/search-results.tsx:271
+#: app/components/app-search/search-results.tsx:272
 #: app/components/app-sidebar/index.tsx:135
 #: app/routes/customer/resource/dns/index.tsx:10
 #: app/routes/customer/resource/dns/layout.tsx:5
@@ -1474,7 +1474,7 @@ msgstr ""
 msgid "Domain verification is in progress. This may take a few minutes."
 msgstr ""
 
-#: app/components/app-search/search-results.tsx:234
+#: app/components/app-search/search-results.tsx:235
 #: app/components/app-sidebar/index.tsx:141
 #: app/features/project/components/project-resources-card.tsx:74
 #: app/routes/customer/organization/detail/domain.tsx:9
@@ -1702,7 +1702,7 @@ msgstr ""
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
 msgstr ""
 
-#: app/components/app-search/search-results.tsx:163
+#: app/components/app-search/search-results.tsx:164
 msgid "Entities"
 msgstr ""
 
@@ -2615,7 +2615,7 @@ msgstr ""
 msgid "Navigate up"
 msgstr ""
 
-#: app/components/app-search/search-results.tsx:116
+#: app/components/app-search/search-results.tsx:117
 msgid "Navigation"
 msgstr ""
 
@@ -2986,7 +2986,7 @@ msgstr ""
 msgid "No resources found."
 msgstr ""
 
-#: app/components/app-search/search-results.tsx:151
+#: app/components/app-search/search-results.tsx:152
 msgid "No results found."
 msgstr ""
 
@@ -3200,7 +3200,7 @@ msgstr ""
 msgid "organizations"
 msgstr ""
 
-#: app/components/app-search/search-results.tsx:169
+#: app/components/app-search/search-results.tsx:170
 #: app/components/app-search/use-app-search.ts:43
 #: app/components/app-sidebar/index.tsx:119
 #: app/routes/customer/breadcrumb-switchers.tsx:7
@@ -3502,7 +3502,7 @@ msgstr ""
 msgid "Project suspended"
 msgstr ""
 
-#: app/components/app-search/search-results.tsx:185
+#: app/components/app-search/search-results.tsx:186
 #: app/components/app-search/use-app-search.ts:49
 #: app/components/app-sidebar/index.tsx:123
 #: app/features/organization/components/org-details-card.tsx:71
@@ -3795,7 +3795,7 @@ msgstr ""
 msgid "Resource:"
 msgstr ""
 
-#: app/components/app-search/search-results.tsx:230
+#: app/components/app-search/search-results.tsx:231
 #: app/features/project/components/project-resources-card.tsx:58
 #: app/routes/customer/resource/index.tsx:29
 #: app/routes/customer/resource/layout.tsx:5
@@ -3907,8 +3907,8 @@ msgid "Scroll right"
 msgstr ""
 
 #: app/components/app-search/app-search-mobile.tsx:55
-#: app/components/app-search/app-search-mobile.tsx:64
-#: app/components/app-search/index.tsx:71
+#: app/components/app-search/app-search-mobile.tsx:66
+#: app/components/app-search/index.tsx:79
 #: app/features/milo/components/navbar/milo-search.tsx:49
 msgid "Search"
 msgstr ""
@@ -3992,7 +3992,7 @@ msgstr ""
 msgid "Search invoices"
 msgstr ""
 
-#: app/components/app-search/search-results.tsx:149
+#: app/components/app-search/search-results.tsx:150
 msgid "Search is temporarily unavailable. Please try again."
 msgstr ""
 
@@ -4063,7 +4063,7 @@ msgid "Search the platform"
 msgstr ""
 
 #: app/components/app-search/app-search-mobile.tsx:56
-#: app/features/milo/components/navbar/milo-search.tsx:67
+#: app/features/milo/components/navbar/milo-search.tsx:68
 msgid "Search users, organizations, and projects"
 msgstr ""
 
@@ -4079,7 +4079,7 @@ msgstr ""
 msgid "Search…"
 msgstr ""
 
-#: app/components/app-search/search-results.tsx:141
+#: app/components/app-search/search-results.tsx:142
 msgid "Searching..."
 msgstr ""
 
@@ -4106,19 +4106,19 @@ msgstr ""
 msgid "Secrets"
 msgstr ""
 
-#: app/components/app-search/search-results.tsx:332
+#: app/components/app-search/search-results.tsx:330
 msgid "See all Application Load Balancers"
 msgstr ""
 
-#: app/components/app-search/search-results.tsx:364
+#: app/components/app-search/search-results.tsx:362
 msgid "See all contacts"
 msgstr ""
 
-#: app/components/app-search/search-results.tsx:302
+#: app/components/app-search/search-results.tsx:303
 msgid "See all DNS zones"
 msgstr ""
 
-#: app/components/app-search/search-results.tsx:265
+#: app/components/app-search/search-results.tsx:266
 msgid "See all domains"
 msgstr ""
 
@@ -4689,7 +4689,7 @@ msgstr ""
 msgid "Type at least 2 characters to search all projects."
 msgstr ""
 
-#: app/components/app-search/search-results.tsx:134
+#: app/components/app-search/search-results.tsx:135
 msgid "Type at least 3 characters to search."
 msgstr ""
 
@@ -4790,7 +4790,7 @@ msgstr ""
 msgid "User Type"
 msgstr ""
 
-#: app/components/app-search/search-results.tsx:201
+#: app/components/app-search/search-results.tsx:202
 #: app/components/app-search/use-app-search.ts:37
 #: app/components/app-sidebar/index.tsx:115
 #: app/routes/customer/breadcrumb-switchers.tsx:6

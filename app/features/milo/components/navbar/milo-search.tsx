@@ -3,8 +3,8 @@ import { SearchResults } from '@/components/app-search/search-results';
 import { useAppSearch } from '@/components/app-search/use-app-search';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Command, CommandInput } from '@datum-cloud/datum-ui/command';
 import { Icon } from '@datum-cloud/datum-ui/icons';
-import { Input } from '@datum-cloud/datum-ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useRef } from 'react';
@@ -59,21 +59,21 @@ export function MiloSearch() {
           e.preventDefault();
           inputRef.current?.focus();
         }}>
-        <div className="border-b p-2">
-          <Input
+        {/* Input and list share one Command so cmdk drives ↑/↓/Enter (#721). */}
+        <Command shouldFilter={false}>
+          <CommandInput
             ref={inputRef}
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onValueChange={setSearch}
             placeholder={t`Search users, organizations, and projects`}
-            className="h-9 border-none shadow-none focus-visible:shadow-none focus-visible:ring-0"
             onKeyDown={(e) => {
               if (e.key === 'Escape') setOpen(false);
             }}
           />
-        </div>
-        <div className="max-h-[60svh] overflow-y-auto">
-          <SearchResults state={state} listClassName="max-h-none" />
-        </div>
+          <div className="max-h-[60svh] overflow-y-auto">
+            <SearchResults state={state} listClassName="max-h-none" />
+          </div>
+        </Command>
       </PopoverContent>
     </Popover>
   );

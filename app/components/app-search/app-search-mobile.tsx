@@ -4,7 +4,7 @@ import { SearchResults } from './search-results';
 import { useAppSearch } from './use-app-search';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
-import { Input } from '@datum-cloud/datum-ui/input';
+import { Command, CommandInput } from '@datum-cloud/datum-ui/command';
 import {
   Sheet,
   SheetClose,
@@ -56,27 +56,30 @@ function AppSearchMobile() {
             <SheetDescription>{t`Search users, organizations, and projects`}</SheetDescription>
           </VisuallyHidden>
 
-          <SheetHeader className="sticky top-0 z-10 flex-row items-center gap-2 border-b px-3 py-2">
-            <Input
-              ref={inputRef}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={t`Search`}
-              className="h-9 flex-1 shadow-none focus-visible:shadow-none focus-visible:ring-0"
-              onKeyDown={(e) => {
-                if (e.key === 'Escape') setOpen(false);
-              }}
-            />
-            <SheetClose asChild>
-              <Button htmlType="button" theme="borderless" size="icon" aria-label={t`Close`}>
-                <ACTION_ICONS.close className="h-4 w-4" />
-              </Button>
-            </SheetClose>
-          </SheetHeader>
+          {/* Input and list share one Command so cmdk drives ↑/↓/Enter (#721). */}
+          <Command shouldFilter={false} className="flex min-h-0 flex-1 flex-col">
+            <SheetHeader className="sticky top-0 z-10 flex-row items-center gap-2 border-b px-3 py-2">
+              <CommandInput
+                ref={inputRef}
+                value={search}
+                onValueChange={setSearch}
+                placeholder={t`Search`}
+                wrapperClassName="flex-1 border-0 px-0"
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') setOpen(false);
+                }}
+              />
+              <SheetClose asChild>
+                <Button htmlType="button" theme="borderless" size="icon" aria-label={t`Close`}>
+                  <ACTION_ICONS.close className="h-4 w-4" />
+                </Button>
+              </SheetClose>
+            </SheetHeader>
 
-          <div className="min-h-0 flex-1 overflow-y-auto">
-            <SearchResults state={state} listClassName="max-h-none" />
-          </div>
+            <div className="min-h-0 flex-1 overflow-y-auto">
+              <SearchResults state={state} listClassName="max-h-none" />
+            </div>
+          </Command>
         </SheetContent>
       </Sheet>
     </>

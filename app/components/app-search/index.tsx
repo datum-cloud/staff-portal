@@ -3,7 +3,7 @@
 import { SearchResults } from './search-results';
 import { useAppSearch } from './use-app-search';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
-import { Input } from '@datum-cloud/datum-ui/input';
+import { Command, CommandInput } from '@datum-cloud/datum-ui/command';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { useLingui } from '@lingui/react/macro';
@@ -61,16 +61,24 @@ function AppSearch({ className = '', placeholder }: Props) {
     },
   };
 
+  // The field and the portalled panel share one Command (React context survives
+  // the portal) so cmdk drives ↑/↓/Enter across the results (#721). The built-in
+  // CommandInput chrome is stripped — this keeps the compact field's own icon.
   return (
-    <div ref={containerRef} className={cn('relative', className)}>
+    <Command
+      ref={containerRef}
+      shouldFilter={false}
+      className={cn('relative h-auto w-auto overflow-visible bg-transparent', className)}>
       <div className="bg-muted/25 hover:bg-muted/50 text-muted-foreground flex h-8 w-full items-center gap-1.5 rounded-md border px-2 md:w-40 lg:w-56 xl:w-64">
         <ACTION_ICONS.search className="h-4 w-4 shrink-0 opacity-50" aria-hidden="true" />
-        <Input
+        <CommandInput
           ref={inputRef}
-          className="h-full min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 shadow-none focus-visible:border-0 focus-visible:shadow-none focus-visible:ring-0"
+          wrapperClassName="h-full flex-1 border-0 px-0"
+          iconClassName="hidden"
+          className="h-full min-w-0 rounded-none border-0 bg-transparent p-0 shadow-none focus-visible:border-0 focus-visible:shadow-none focus-visible:ring-0"
           placeholder={placeholder ?? t`Search`}
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onValueChange={setSearch}
           onFocus={() => {
             if (containerRef.current) {
               const rect = containerRef.current.getBoundingClientRect();
@@ -107,7 +115,7 @@ function AppSearch({ className = '', placeholder }: Props) {
           </div>,
           document.body
         )}
-    </div>
+    </Command>
   );
 }
 
