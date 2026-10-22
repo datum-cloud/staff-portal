@@ -31,6 +31,7 @@ export default defineConfig((config) => {
       port: 3000,
     },
     ssr: {
+      noExternal: ['@gqlts/runtime'],
       optimizeDeps: {
         include: ['react-dom/server.node'],
       },
@@ -46,7 +47,7 @@ export default defineConfig((config) => {
       : [
           tailwindcss(),
           reactRouter(),
-          reactRouterHonoServer({ runtime: 'bun' }),
+          reactRouterHonoServer(),
           macrosPlugin(),
           lingui(),
           tsconfigPaths(),

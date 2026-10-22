@@ -32,7 +32,7 @@ spec:
   timeout:
     http:
       requestTimeout: '0s'
-      # Must stay below the portal's Bun idleTimeout (75s, in
-      # app/server/adapter/bun.ts) so Envoy closes idle upstream connections
-      # before Bun does.
+      # Must stay below the portal's keep-alive timeout (75s, in
+      # app/server/adapter/node.ts) so Envoy closes idle upstream connections
+      # before the portal does.
       connectionIdleTimeout: 60s

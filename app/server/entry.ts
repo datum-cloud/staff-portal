@@ -1,6 +1,6 @@
 import { api, API_BASENAME } from './routes/api';
 import { authenticator, initializeAuthenticator } from '@/modules/auth';
-import { bunAdapter } from '@/server/adapter/bun';
+import { nodeAdapter } from '@/server/adapter/node';
 import { EnvVariables } from '@/server/iface';
 import { honoLoggerMiddleware, requestContextMiddleware } from '@/server/middleware';
 import { env } from '@/utils/config/env.server';
@@ -81,7 +81,8 @@ initializeAuthenticator(authenticator).catch((error) => {
   logger.error('Authenticator initialization failed', { error: error.message });
 });
 
-// React Router SSR — always use the Bun adapter, matching cloud-portal. In
-// production the adapter calls Bun.serve() itself, so this is the only server:
-// observability/start.js must not start another.
-export default await bunAdapter(app);
+// React Router SSR. In production the adapter starts the HTTP server itself,
+// so this is the only server: observability/start.js must not start another.
+const server = nodeAdapter(app);
+
+export default import.meta.env.PROD ? server : await server;
