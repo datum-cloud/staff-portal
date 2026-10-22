@@ -10,7 +10,7 @@ import {
 import {
   listNetworkingDatumapisComV1AlphaDomainForAllNamespaces,
   listNetworkingDatumapisComV1AlphaHttpProxyForAllNamespaces,
-  readNetworkingDatumapisComV1AlphaNamespacedDomainStatus,
+  readNetworkingDatumapisComV1AlphaNamespacedDomain,
 } from '@openapi/networking.datumapis.com/v1alpha';
 import {
   ComMiloapisResourcemanagerV1Alpha1ProjectSuspension,
@@ -122,7 +122,9 @@ export const projectDomainStatusQuery = async (
   domainName: string,
   namespace: string = 'default'
 ) => {
-  const response = await readNetworkingDatumapisComV1AlphaNamespacedDomainStatus({
+  // Read the Domain itself, not its /status subresource: staff roles grant get
+  // on domains but not domains/status, and the object carries .status anyway.
+  const response = await readNetworkingDatumapisComV1AlphaNamespacedDomain({
     baseURL: `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
     path: {
       namespace,
