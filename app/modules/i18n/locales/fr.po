@@ -4058,7 +4058,7 @@ msgstr ""
 msgid "Search sessions..."
 msgstr ""
 
-#: app/features/dashboard/components/home/home-header.tsx:81
+#: app/features/dashboard/components/home/home-header.tsx:84
 msgid "Search the platform"
 msgstr ""
 
@@ -4067,7 +4067,7 @@ msgstr ""
 msgid "Search users, organizations, and projects"
 msgstr ""
 
-#: app/features/dashboard/components/home/home-header.tsx:80
+#: app/features/dashboard/components/home/home-header.tsx:83
 msgid "Search users, organizations, projects, domains…"
 msgstr ""
 

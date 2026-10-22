@@ -1,8 +1,8 @@
 import { SearchResults } from '@/components/app-search/search-results';
 import { useAppSearch } from '@/components/app-search/use-app-search';
 import { Badge } from '@datum-cloud/datum-ui/badge';
+import { Command, CommandInput } from '@datum-cloud/datum-ui/command';
 import { Icon } from '@datum-cloud/datum-ui/icons';
-import { Input } from '@datum-cloud/datum-ui/input';
 import { Popover, PopoverAnchor, PopoverContent } from '@datum-cloud/datum-ui/popover';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -60,44 +60,50 @@ function HeroSearch() {
       onOpenChange={(next) => {
         if (!next) setOpen(false);
       }}>
-      <PopoverAnchor asChild>
-        <div className="bg-card border-input flex h-12 items-center gap-2 rounded-lg border px-3 shadow-xs">
-          <Icon icon={Search} size={16} className="text-icon-quaternary shrink-0" aria-hidden />
-          <Input
-            ref={inputRef}
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setOpen(true);
-            }}
-            onFocus={() => setOpen(true)}
-            onKeyDown={(e) => {
-              if (e.key === 'Escape') {
-                setOpen(false);
-                inputRef.current?.blur();
-              }
-            }}
-            placeholder={t`Search users, organizations, projects, domains…`}
-            aria-label={t`Search the platform`}
-            className="h-full border-none bg-transparent px-0 text-sm shadow-none focus-visible:shadow-none focus-visible:ring-0"
-          />
-        </div>
-      </PopoverAnchor>
-      <PopoverContent
-        align="start"
-        sideOffset={6}
-        className="w-(--radix-popover-trigger-width) overflow-hidden p-0"
-        // Keep focus in the input so typing keeps refining the results.
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        onInteractOutside={(e) => {
-          if (e.target instanceof Node && inputRef.current?.parentElement?.contains(e.target)) {
-            e.preventDefault();
-          }
-        }}>
-        <div className="max-h-[60svh] overflow-y-auto">
-          <SearchResults state={state} listClassName="max-h-none" />
-        </div>
-      </PopoverContent>
+      {/* Anchor and portalled list share one Command (display:contents keeps it
+          layout-neutral) so cmdk drives ↑/↓/Enter across the results (#721). */}
+      <Command shouldFilter={false} className="contents">
+        <PopoverAnchor asChild>
+          <div className="bg-card border-input flex h-12 items-center gap-2 rounded-lg border px-3 shadow-xs">
+            <Icon icon={Search} size={16} className="text-icon-quaternary shrink-0" aria-hidden />
+            <CommandInput
+              ref={inputRef}
+              value={search}
+              onValueChange={(value) => {
+                setSearch(value);
+                setOpen(true);
+              }}
+              onFocus={() => setOpen(true)}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') {
+                  setOpen(false);
+                  inputRef.current?.blur();
+                }
+              }}
+              placeholder={t`Search users, organizations, projects, domains…`}
+              aria-label={t`Search the platform`}
+              wrapperClassName="h-full flex-1 border-0 px-0"
+              iconClassName="hidden"
+              className="h-full border-none bg-transparent px-0 text-sm shadow-none focus-visible:shadow-none focus-visible:ring-0"
+            />
+          </div>
+        </PopoverAnchor>
+        <PopoverContent
+          align="start"
+          sideOffset={6}
+          className="w-(--radix-popover-trigger-width) overflow-hidden p-0"
+          // Keep focus in the input so typing keeps refining the results.
+          onOpenAutoFocus={(e) => e.preventDefault()}
+          onInteractOutside={(e) => {
+            if (e.target instanceof Node && inputRef.current?.parentElement?.contains(e.target)) {
+              e.preventDefault();
+            }
+          }}>
+          <div className="max-h-[60svh] overflow-y-auto">
+            <SearchResults state={state} listClassName="max-h-none" />
+          </div>
+        </PopoverContent>
+      </Command>
     </Popover>
   );
 }
