@@ -48,6 +48,11 @@ FROM base
 ARG VERSION=dev
 ENV VERSION=${VERSION}
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends --only-upgrade ca-certificates && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get clean
+
 # Copy only necessary files from build stage
 COPY --from=build /app/build /app/build
 COPY --from=build /app/public /app/public
