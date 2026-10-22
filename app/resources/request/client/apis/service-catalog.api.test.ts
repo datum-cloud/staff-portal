@@ -1,5 +1,5 @@
 import { buildServiceActivationRequest } from './service-catalog.api';
-import { describe, expect, it } from 'bun:test';
+import { describe, expect, it } from 'vitest';
 
 describe('buildServiceActivationRequest', () => {
   it('targets the selected consumer from the provider project', () => {

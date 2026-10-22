@@ -4,7 +4,7 @@ import {
   isProjectDeleting,
   withProjectPhase,
 } from './project-phase';
-import { describe, expect, it } from 'bun:test';
+import { describe, expect, it } from 'vitest';
 
 describe('isProjectDeleting', () => {
   it('is true when metadata.deletionTimestamp is set', () => {

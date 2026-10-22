@@ -6,7 +6,7 @@ import {
   shareLabels,
 } from './http-proxy.backends';
 import type { ComDatumapisNetworkingV1AlphaHttpProxy } from '@openapi/networking.datumapis.com/v1alpha';
-import { describe, expect, it } from 'bun:test';
+import { describe, expect, it } from 'vitest';
 
 function proxy(spec: Record<string, unknown>): ComDatumapisNetworkingV1AlphaHttpProxy {
   return { spec } as unknown as ComDatumapisNetworkingV1AlphaHttpProxy;

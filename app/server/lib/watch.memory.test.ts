@@ -1,6 +1,8 @@
-/// <reference types="bun-types/test" />
 import { proxyWatch } from './watch';
-import { afterAll, describe, expect, test } from 'bun:test';
+import { createServer } from 'node:http';
+import type { AddressInfo } from 'node:net';
+import { setTimeout as sleep } from 'node:timers/promises';
+import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
 const CYCLES = 200;
 const EVENTS_PER_CYCLE = 10;
@@ -9,21 +11,22 @@ const EVENT = `${JSON.stringify({
   object: { kind: 'Activity', metadata: { name: 'a'.repeat(4096) } },
 })}\n`;
 
-const upstream = Bun.serve({
-  port: 0,
-  fetch() {
-    const body = new ReadableStream<Uint8Array>({
-      async pull(controller) {
-        controller.enqueue(new TextEncoder().encode(EVENT));
-        await Bun.sleep(0);
-      },
-    });
-
-    return new Response(body, { headers: { 'Content-Type': 'application/json' } });
-  },
+const upstream = createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  const write = () => {
+    while (!res.destroyed && res.write(EVENT));
+    if (!res.destroyed) res.once('drain', write);
+  };
+  write();
 });
 
-const url = `http://localhost:${upstream.port}/apis/activity/v1alpha1/activities?watch=true`;
+let url: string;
+
+beforeAll(async () => {
+  await new Promise<void>((resolve) => upstream.listen(0, '127.0.0.1', resolve));
+  const { port } = upstream.address() as AddressInfo;
+  url = `http://127.0.0.1:${port}/apis/activity/v1alpha1/activities?watch=true`;
+});
 
 async function watchCycle(retain: Uint8Array[] | null) {
   const client = new AbortController();
@@ -48,22 +51,30 @@ async function watchCycle(retain: Uint8Array[] | null) {
 
 async function bytesRetainedPerCycle(retain: Uint8Array[] | null) {
   await settle();
-  const before = process.memoryUsage().heapUsed;
+  const before = retainedBytes();
 
   for (let i = 0; i < CYCLES; i++) await watchCycle(retain);
 
   await settle();
 
-  return (process.memoryUsage().heapUsed - before) / CYCLES;
+  return (retainedBytes() - before) / CYCLES;
+}
+
+function retainedBytes() {
+  const { heapUsed, arrayBuffers } = process.memoryUsage();
+  return heapUsed + arrayBuffers;
 }
 
 async function settle() {
-  Bun.gc(true);
-  await Bun.sleep(50);
-  Bun.gc(true);
+  global.gc!();
+  await sleep(50);
+  global.gc!();
 }
 
-afterAll(() => upstream.stop(true));
+afterAll(() => {
+  upstream.closeAllConnections();
+  upstream.close();
+});
 
 describe('proxyWatch memory', () => {
   test('a reconnect loop retains far less than the events it carried', async () => {

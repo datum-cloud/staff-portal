@@ -1,6 +1,6 @@
 import { computeStepHistory } from './chainsaw-step-history';
 import type { PromMatrixSeries } from './vm-query';
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 
 const RUN_1 = 1_700_000_000;
 const RUN_2 = 1_700_003_600;
