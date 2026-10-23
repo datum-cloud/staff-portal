@@ -60,18 +60,21 @@ export function ViewTabs({ views }: { views: ViewTab[] }) {
 }
 
 /**
- * The switcher + view tabs on their own, for a section view with no list (e.g.
- * Fraud → Policy), so its top edge matches the list pages' search bar.
+ * The switcher (+ view tabs, if any) on their own, for a section page with no
+ * list (e.g. Fraud → Policy, Service Catalog), so its top edge matches the list
+ * pages' search bar.
  */
-export function SectionViewBar({ views }: { views: ViewTab[] }) {
+export function SectionViewBar({ views }: { views?: ViewTab[] }) {
   return (
     <div className="flex h-10 shrink-0 items-center border-b">
       <div className="flex shrink-0 items-center self-stretch border-r px-1.5">
         <SectionSwitcher />
       </div>
-      <div className="flex shrink-0 items-center self-stretch px-1.5">
-        <ViewTabs views={views} />
-      </div>
+      {views && (
+        <div className="flex shrink-0 items-center self-stretch px-1.5">
+          <ViewTabs views={views} />
+        </div>
+      )}
     </div>
   );
 }

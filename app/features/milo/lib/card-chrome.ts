@@ -1,15 +1,13 @@
 import { cn } from '@datum-cloud/datum-ui/utils';
 
 /**
- * Shared surface chrome for section cards and ListTable containers.
- * Matches Figma org-overview cards: rounded-xl, card border, soft shadow.
+ * Shared surface chrome for section cards and ListTable containers:
+ * rounded-xl with the card border, flat (no shadow).
  *
  * @see https://www.figma.com/design/bBEQ8YeTP4SngNl5EkkQdH/Datum---Master-Design-File?node-id=14079-78438
  */
-export const SECTION_CARD_CHROME = cn(
-  'bg-card text-card-foreground rounded-xl border border-card-border',
-  'shadow-[var(--section-card-shadow)]'
-);
+export const SECTION_CARD_CHROME =
+  'bg-card text-card-foreground rounded-xl border border-card-border';
 
 /**
  * Figma mist table header / dense cell classes — shared by ListTable and

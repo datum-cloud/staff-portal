@@ -102,14 +102,22 @@ const containerClass = 'flex min-h-0 flex-1 flex-col overflow-hidden';
 const contentClassName =
   'min-h-0 flex-1 overflow-auto [&>div]:overflow-visible [&_table]:border-separate [&_table]:border-spacing-0';
 
+// Id of the checkbox column DataTable injects for `enableRowSelection` (not
+// exported by datum-ui); it can't carry `meta`, so it's shrunk to the box here.
+const SELECTION_COLUMN_ID = 'select';
+// shadcn's TableHead/TableCell zero the right padding of checkbox cells
+// (`[&:has([role=checkbox])]:pr-0`), which jams the box against the column
+// border once the column is shrunk; give it even padding instead.
+const checkboxCellClass = '[&:has([role=checkbox])]:px-3';
+
 const headerClassName = LIST_TABLE_HEADER_CLASS;
 const headerRowClassName = LIST_TABLE_HEADER_ROW_CLASS;
-const headerCellClassName = LIST_TABLE_HEADER_CELL_CLASS;
+const headerCellClassName = cn(LIST_TABLE_HEADER_CELL_CLASS, checkboxCellClass);
 const bodyClassName = LIST_TABLE_BODY_CLASS;
 const rowClassName = LIST_TABLE_ROW_CLASS;
 const cellClassName = LIST_TABLE_CELL_CLASS;
 
-// Vertical dividers between columns (flush layout); the last column has no outer edge to mark.
+// Vertical dividers between columns; the last column has no outer edge to mark.
 const columnBorderClass = 'border-r last:border-r-0';
 
 const searchClassName =
@@ -191,7 +199,7 @@ interface ListTableProps<TData extends RowData> {
   readonly bulkActions?: (selectedRows: TData[]) => ReactNode;
   /** Optional slot between the search bar and the table (active-filter chips, etc.). */
   readonly toolbar?: ReactNode;
-  /** `card` (bordered card inset from the edges) or `flush` (borderless, fills the column, denser rows, column borders). Default `card`. */
+  /** `card` (bordered card inset from the edges) or `flush` (borderless, fills the column, denser rows). Both draw column borders. Default `card`. */
   readonly layout?: 'card' | 'flush';
 }
 
@@ -226,7 +234,9 @@ export function ListTable<TData extends RowData>({
   // The header row exists to carry a title or a bulk-action bar; a bare CTA
   // with neither moves into the search/filter bar instead, so an action-only
   // list page doesn't pay for an otherwise-empty header row.
-  const showHeader = title != null || bulkActions != null;
+  // Flush lists keep bulk actions in the search bar, so they don't need the row.
+  const bulkActionsInToolbar = layout === 'flush' && bulkActions != null;
+  const showHeader = title != null || (bulkActions != null && !bulkActionsInToolbar);
   const actionsInHeader = showHeader && actions != null;
   const actionsInToolbar = !showHeader && actions != null;
   const hasFilters = (filters?.length ?? 0) > 0;
@@ -346,7 +356,8 @@ export function ListTable<TData extends RowData>({
           </div>
         )}
         <div className={cn('flex min-h-0 flex-1 flex-col', !flush && cn('py-4', insetX))}>
-          <div className={cn(containerClass, !flush && SECTION_CARD_CHROME)}>
+          {/* Card layout: tighter radius than section cards so tables read as tables. */}
+          <div className={cn(containerClass, !flush && cn(SECTION_CARD_CHROME, 'rounded-md'))}>
             <div className="flex shrink-0 items-center gap-1 border-b pr-2">
               {showSectionSwitcher && (
                 <div className="flex shrink-0 items-center gap-0.5 self-stretch border-r px-1.5">
@@ -382,6 +393,7 @@ export function ListTable<TData extends RowData>({
                   <DataTable.Search placeholder={searchPlaceholder} className={searchClassName} />
                 )}
               </div>
+              {bulkActionsInToolbar && <DataTable.BulkActions>{bulkActions}</DataTable.BulkActions>}
               {filterFields && (
                 <RuleFilterButton
                   fields={filterFields}
@@ -410,15 +422,15 @@ export function ListTable<TData extends RowData>({
                 className={contentClassName}
                 headerClassName={headerClassName}
                 headerRowClassName={headerRowClassName}
-                headerCellClassName={
-                  flush ? cn(headerCellClassName, columnBorderClass) : headerCellClassName
-                }
+                headerCellClassName={cn(headerCellClassName, columnBorderClass)}
                 bodyClassName={bodyClassName}
                 rowClassName={rowClassName}
                 cellClassName={(cell) =>
                   cn(
                     cellClassName,
-                    flush && cn('py-1', columnBorderClass),
+                    columnBorderClass,
+                    flush && 'py-1',
+                    cell.column.id === SELECTION_COLUMN_ID && cn('w-px', checkboxCellClass),
                     cell.column.columnDef.meta?.cellClassName
                   )
                 }

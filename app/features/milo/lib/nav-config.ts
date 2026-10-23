@@ -156,6 +156,7 @@ export const NAV_SECTIONS: NavSection[] = [
     match: '/marketing',
     subNav: {
       defaultCollapsed: true,
+      placement: 'toolbar',
       groups: [
         {
           items: [
@@ -200,6 +201,7 @@ export const NAV_SECTIONS: NavSection[] = [
     match: '/admin',
     subNav: {
       defaultCollapsed: true,
+      placement: 'toolbar',
       groups: [
         {
           items: [

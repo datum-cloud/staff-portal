@@ -1,8 +1,13 @@
+import { type BreadcrumbOptions } from '@/components/breadcrumb';
+import { marketingSectionSwitcher } from '@/routes/marketing/breadcrumb-switchers';
 import { Trans } from '@lingui/react/macro';
 import { Outlet } from 'react-router';
 
 export const handle = {
-  breadcrumb: () => <Trans>Contact Groups</Trans>,
+  breadcrumb: (): BreadcrumbOptions => ({
+    label: <Trans>Contact Groups</Trans>,
+    switcher: marketingSectionSwitcher,
+  }),
 };
 
 export default function Layout() {

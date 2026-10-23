@@ -22,10 +22,12 @@ export default function Page() {
       <ContactList
         queryKeyPrefix="contacts"
         fetchFn={() => contactListQuery()}
+        layout="flush"
         actions={
           <Button
-            type="primary"
-            icon={<ACTION_ICONS.add size={16} />}
+            size="xs"
+            theme="outline"
+            icon={<ACTION_ICONS.add size={14} />}
             onClick={() => navigate(contactRoutes.create())}>
             <Trans>Add</Trans>
           </Button>

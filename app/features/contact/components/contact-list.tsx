@@ -1,4 +1,4 @@
-import { BadgeCondition } from '@/components/badge';
+import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
@@ -26,6 +26,8 @@ export interface ContactListProps {
   searchPlaceholder?: string;
   /** Primary CTA shown in the table's action bar (e.g. "Add"). */
   actions?: ReactNode;
+  /** Forwarded to `ListTable`: `flush` for the main Contacts page, `card` (default) in detail tabs. */
+  layout?: 'card' | 'flush';
 }
 
 function listQueryKey(prefix: string | string[]) {
@@ -37,6 +39,7 @@ export function ContactList({
   fetchFn,
   searchPlaceholder = undefined,
   actions: headerActions,
+  layout,
 }: ContactListProps) {
   const navigate = useNavigate();
   const [selectedContact, setSelectedContact] =
@@ -90,9 +93,18 @@ export function ContactList({
     }),
     columnHelper.accessor('status', {
       header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
-      cell: ({ getValue }) => (
-        <BadgeCondition status={getValue()} multiple={false} showMessage className="text-xs" />
-      ),
+      // Shrink to the badge rather than taking a share of spare width.
+      meta: { cellClassName: 'w-px whitespace-nowrap' },
+      cell: ({ getValue }) => {
+        // First condition True ⇒ active, with its message as the tooltip.
+        const condition = getValue()?.conditions?.[0];
+        return (
+          <BadgeState
+            state={condition?.status === 'True' ? 'active' : 'pending'}
+            tooltip={condition?.message || undefined}
+          />
+        );
+      },
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'metadata.creationTimestamp',
@@ -101,9 +113,11 @@ export function ContactList({
     }),
     columnHelper.display({
       id: 'actions',
-      header: () => <div className="text-right" />,
+      header: () => null,
+      // w-px shrinks the column to its button instead of a share of spare width.
+      meta: { cellClassName: 'w-px px-2' },
       cell: ({ row }) => (
-        <div className="flex w-full justify-end">
+        <div className="flex w-full justify-center">
           <DataTable.RowActions row={row} actions={actions} />
         </div>
       ),
@@ -134,11 +148,42 @@ export function ContactList({
         data={tableQuery.data?.items ?? []}
         columns={columns}
         pageSize={20}
+        layout={layout}
         getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
         defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
         actions={headerActions}
         searchPlaceholder={searchPlaceholder ?? t`Search contacts...`}
         emptyMessage={t`No contacts found.`}
+        filterFields={[
+          {
+            id: 'name',
+            label: t`Name`,
+            type: 'text',
+            accessor: (row) =>
+              [row.spec?.givenName, row.spec?.familyName].filter(Boolean).join(' ') ||
+              row.metadata?.name ||
+              '',
+          },
+          { id: 'email', label: t`Email`, type: 'text', accessor: 'spec.email' },
+          {
+            id: 'status',
+            label: t`Status`,
+            type: 'enum',
+            // Same reading as the Status column: first condition True ⇒ Active.
+            accessor: (row) =>
+              row.status?.conditions?.[0]?.status === 'True' ? 'Active' : 'Pending',
+            options: [
+              { value: 'Active', label: <BadgeState state="active" /> },
+              { value: 'Pending', label: <BadgeState state="pending" /> },
+            ],
+          },
+          {
+            id: 'created',
+            label: t`Created`,
+            type: 'date',
+            accessor: 'metadata.creationTimestamp',
+          },
+        ]}
         searchFn={(row, search) => {
           const q = search.trim().toLowerCase();
           if (!q) return true;
