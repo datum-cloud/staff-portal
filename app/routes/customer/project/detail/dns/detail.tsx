@@ -114,14 +114,18 @@ export default function Page() {
         const content = () => {
           if (type === 'MX' && value.includes('|')) {
             const [preference, exchange] = value.split('|');
+            // A blank preference would make BadgeState fall back to its state
+            // label ("Info") instead of a priority — only show it when present.
             return (
               <div className="flex items-center gap-2">
                 <Text className="break-all">{exchange}</Text>
-                <BadgeState
-                  state="info"
-                  message={preference}
-                  tooltip={tMacro`Priority of mail servers defined by MX records. Lowest value = highest priority.`}
-                />
+                {preference.trim() && (
+                  <BadgeState
+                    state="info"
+                    message={preference}
+                    tooltip={tMacro`Priority of mail servers defined by MX records. Lowest value = highest priority.`}
+                  />
+                )}
               </div>
             );
           }
@@ -161,20 +165,35 @@ export default function Page() {
     }),
     nameserverColumnHelper.accessor('ips', {
       header: () => <Trans>DNS Host</Trans>,
-      cell: ({ getValue }) => (
-        <Chip
-          items={
-            getValue()?.map((ip: { registrantName?: string }) => ip.registrantName ?? '') ?? []
-          }
-          maxVisible={2}
-          variant="outline"
-          wrap={false}
-        />
-      ),
+      cell: ({ getValue }) => {
+        // Drop IPs with no registrant name and dedupe — otherwise an empty
+        // name renders as an outline badge with no text (just a border).
+        const names = Array.from(
+          new Set(
+            (getValue() ?? [])
+              .map((ip: { registrantName?: string }) => ip.registrantName?.trim())
+              .filter((name): name is string => Boolean(name))
+          )
+        );
+        return names.length > 0 ? (
+          <Chip items={names} maxVisible={2} variant="outline" wrap={false} />
+        ) : (
+          <Text textColor="muted">-</Text>
+        );
+      },
     }),
     nameserverColumnHelper.accessor('registrarName', {
       header: () => <Trans>Registrar</Trans>,
-      cell: ({ getValue }) => <BadgeState state="pending" message={getValue() ?? ''} />,
+      cell: ({ getValue }) => {
+        // Without a message BadgeState falls back to the state label, so an
+        // unknown registrar would render "Pending". Show the name or a dash.
+        const name = getValue()?.trim();
+        return name ? (
+          <BadgeState state="pending" message={name} />
+        ) : (
+          <Text textColor="muted">-</Text>
+        );
+      },
     }),
   ];
 
