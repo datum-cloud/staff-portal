@@ -1,7 +1,7 @@
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
-import { useDataTableFilters } from '@datum-cloud/datum-ui/data-table';
+import { useDataTableFilters, useDataTableSearch } from '@datum-cloud/datum-ui/data-table';
 import { Input } from '@datum-cloud/datum-ui/input';
 import { Label } from '@datum-cloud/datum-ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
@@ -172,6 +172,57 @@ export function computeFacetCounts<T>(
   return counts;
 }
 
+/**
+ * Live facet counts for `filters`, recomputed as filters/search change (each
+ * group's counts reflect every *other* active filter). Must render inside
+ * `<DataTable.Client>`.
+ */
+export function useFacetCounts<T>({
+  data,
+  filters,
+  filterFns,
+  searchFn,
+  applyClientSearch,
+}: {
+  data: T[];
+  filters: FilterGroupConfig[];
+  filterFns?: Record<string, FilterFn>;
+  searchFn?: (row: T, search: string) => boolean;
+  /** False when search is server-driven (`controlledSearch`) — `data` is already scoped. */
+  applyClientSearch: boolean;
+}): Record<string, Record<string, number>> {
+  const { filters: activeFilters } = useDataTableFilters();
+  const { search } = useDataTableSearch();
+
+  // Stands in for `filters` content, so a fresh inline array each render
+  // doesn't recompute counts.
+  const filterSignature = useMemo(
+    () =>
+      filters
+        .map(
+          (f) => `${f.column}:${f.type ?? 'checkbox'}:${f.options.map((o) => o.value).join(',')}`
+        )
+        .join('|'),
+    [filters]
+  );
+
+  const matchers = useMemo(
+    () => ({ ...buildFilterFns(filters), ...filterFns }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [filterSignature, filterFns]
+  );
+
+  return useMemo(
+    () =>
+      computeFacetCounts(data, filters, activeFilters, matchers, {
+        search: applyClientSearch ? search : '',
+        searchFn: applyClientSearch ? searchFn : undefined,
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [data, filterSignature, activeFilters, matchers, applyClientSearch, search, searchFn]
+  );
+}
+
 interface FilterPanelProps {
   children: ReactNode;
 }
@@ -330,13 +381,13 @@ export function FilterGroupSkeleton({
   );
 }
 
-function optionSearchText(option: FilterOption): string {
+export function optionSearchText(option: FilterOption): string {
   if (option.searchText) return option.searchText;
   if (typeof option.label === 'string') return option.label;
   return option.value;
 }
 
-function FilterOptionRow({
+export function FilterOptionRow({
   option,
   counts,
 }: {

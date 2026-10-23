@@ -4,7 +4,7 @@ import type { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alp
 /**
  * GraphQL operation for the users list, backed by the gateway, plus the
  * resource's types. The gateway joins each user with their latest
- * FraudEvaluation, so the list gets fraud score/decision in one round-trip.
+ * FraudEvaluation, so the list gets the fraud decision in one round-trip.
  */
 
 /** Users list with each user's latest fraud evaluation joined. */
@@ -32,7 +32,6 @@ export const usersOp = (params: {
           avatarUrl: true,
           lastLoginProvider: true,
           platformAccess: true,
-          fraudScore: true,
           fraudDecision: true,
           fraudEvaluatedAt: true,
         },
@@ -52,7 +51,6 @@ export type GqlUserFields = NonNullable<
  * reshapes the flat gateway fields into this — a transform, so it's hand-written.
  */
 export type GqlUser = ComMiloapisIamV1Alpha1User & {
-  fraudScore: string | null;
   fraudDecision: string | null;
   fraudEvaluatedAt: string | null;
 };

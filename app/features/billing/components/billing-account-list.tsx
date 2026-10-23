@@ -6,12 +6,7 @@ import {
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
-import {
-  arrayIncludesAnyFilterFn,
-  DATE_RANGE_OPTIONS,
-  ListTable,
-  ListColumnHeader,
-} from '@/features/milo';
+import { ListTable, ListColumnHeader } from '@/features/milo';
 import { useOrganizationSearch, useProjectSearch } from '@/hooks/use-search';
 import {
   useBillingAccountBindingListQuery,
@@ -46,7 +41,10 @@ export function BillingAccountList() {
   const orgSearch = useOrganizationSearch();
   const projectSearch = useProjectSearch();
 
-  const paymentMethods = paymentMethodsQuery.data?.items ?? [];
+  const paymentMethods = useMemo(
+    () => paymentMethodsQuery.data?.items ?? [],
+    [paymentMethodsQuery.data?.items]
+  );
 
   const orgLabels = useMemo(() => {
     const map = new Map<string, string>();
@@ -163,6 +161,16 @@ export function BillingAccountList() {
       .map((value) => ({ value, label: value }));
   }, [rows]);
 
+  // Status is derived (Failed beats the phase), so offer whichever states occur.
+  const statusOptions = useMemo(() => {
+    const states = new Set(
+      rows.map((row) => getBillingAccountDisplayStatus(row, paymentMethods).state)
+    );
+    return Array.from(states)
+      .sort()
+      .map((state) => ({ value: state, label: <BadgeState state={state} /> }));
+  }, [rows, paymentMethods]);
+
   const columns = [
     columnHelper.display({
       id: 'displayName',
@@ -237,44 +245,75 @@ export function BillingAccountList() {
       data={rows}
       columns={columns}
       pageSize={20}
+      layout="flush"
       getRowId={(row) => accountKey(row.metadata?.namespace, row.metadata?.name)}
       defaultSort={[{ id: 'created', desc: true }]}
       searchPlaceholder={t`Search billing accounts...`}
       emptyMessage={t`No billing accounts found`}
-      filterFns={{ projectIds: arrayIncludesAnyFilterFn }}
-      filters={[
+      filterFields={[
         {
-          type: 'searchable',
-          column: 'organizationName',
+          id: 'name',
+          label: t`Name`,
+          type: 'text',
+          accessor: (row) => `${getBillingAccountDisplayName(row)} ${row.metadata?.name ?? ''}`,
+        },
+        {
+          id: 'company',
+          label: t`Company`,
+          type: 'text',
+          accessor: 'spec.contactInfo.businessName',
+        },
+        {
+          id: 'organization',
           label: t`Organization`,
+          type: 'enum',
+          accessor: 'organizationName',
           options: organizationOptions,
-          searchPlaceholder: t`Search organizations…`,
           emptyHint: t`Type at least 2 characters to search all organizations.`,
-          pageSize: 8,
           onSearchChange: orgSearch.setSearch,
           isSearching: orgSearch.isLoading,
         },
         {
-          type: 'searchable',
-          column: 'projectIds',
+          id: 'project',
           label: t`Project`,
+          type: 'enum',
+          accessor: 'projectIds',
           options: projectOptions,
-          searchPlaceholder: t`Search projects…`,
           emptyHint: t`Type at least 2 characters to search all projects.`,
-          pageSize: 8,
           onSearchChange: projectSearch.setSearch,
           isSearching: projectSearch.isLoading,
         },
         {
-          column: 'spec.currencyCode',
+          id: 'status',
+          label: t`Status`,
+          type: 'enum',
+          accessor: (row) => getBillingAccountDisplayStatus(row, paymentMethods).state,
+          options: statusOptions,
+        },
+        {
+          id: 'currency',
           label: t`Currency`,
+          type: 'enum',
+          accessor: 'spec.currencyCode',
           options: currencyOptions,
         },
         {
-          column: 'metadata.creationTimestamp',
+          id: 'linkedProjects',
+          label: t`Linked projects`,
+          type: 'number',
+          accessor: 'status.linkedProjectsCount',
+        },
+        {
+          id: 'contactEmail',
+          label: t`Contact email`,
+          type: 'text',
+          accessor: 'spec.contactInfo.email',
+        },
+        {
+          id: 'created',
           label: t`Created`,
-          type: 'dateRange',
-          options: DATE_RANGE_OPTIONS,
+          type: 'date',
+          accessor: 'metadata.creationTimestamp',
         },
       ]}
       searchFn={(row, search) => {

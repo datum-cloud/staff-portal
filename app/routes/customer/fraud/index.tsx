@@ -1,10 +1,9 @@
 import type { Route } from './+types/index';
-import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
-import { FraudDecisionBadge, FraudScore } from '@/features/fraud';
-import { ListTable, ListColumnHeader } from '@/features/milo';
+import { FraudDecisionBadge, FraudScore, useFraudViews } from '@/features/fraud';
+import { ListPage, ListTable, ListColumnHeader } from '@/features/milo';
 import { useContactAllListQuery, useSearchUsersQuery } from '@/resources/request/client';
 import {
   useCreateFraudEvaluationMutation,
@@ -47,6 +46,7 @@ const columnHelper = createColumnHelper<FraudEvaluation>();
 export default function Page() {
   const tableQuery = useFraudEvaluationListQuery();
   const policyQuery = useFraudPolicyListQuery();
+  const views = useFraudViews();
   const [showNewEval, setShowNewEval] = useState(false);
   const [selectedEval, setSelectedEval] = useState<FraudEvaluation | null>(null);
   const [userSearchQuery, setUserSearchQuery] = useState('');
@@ -173,9 +173,11 @@ export default function Page() {
     }),
     columnHelper.display({
       id: 'actions',
-      header: () => <div className="text-right" />,
+      header: () => null,
+      // w-px shrinks the column to its button instead of a share of spare width.
+      meta: { cellClassName: 'w-px px-2' },
       cell: ({ row }) => (
-        <div className="flex w-full justify-end">
+        <div className="flex w-full justify-center">
           <DataTable.RowActions row={row} actions={actions} />
         </div>
       ),
@@ -184,16 +186,6 @@ export default function Page() {
 
   return (
     <>
-      <AppActionBar>
-        <Button
-          type="primary"
-          icon={<ACTION_ICONS.add size={16} />}
-          disabled={policyLoaded && !policyName}
-          onClick={() => setShowNewEval(true)}>
-          <Trans>New Evaluation</Trans>
-        </Button>
-      </AppActionBar>
-
       <DialogForm
         open={showNewEval}
         onOpenChange={setShowNewEval}
@@ -244,66 +236,99 @@ export default function Page() {
         }}
       />
 
-      <ListTable
-        inset="tab"
-        filterLayout="inline"
-        loading={tableQuery.isLoading}
-        data={tableQuery.data?.items ?? []}
-        columns={columns}
-        pageSize={50}
-        getRowId={(row) => row.metadata?.name ?? ''}
-        defaultSort={[{ id: 'lastEvaluationTime', desc: true }]}
-        searchPlaceholder={t`Search by email, name, or ID...`}
-        emptyMessage={t`No fraud evaluations found.`}
-        filters={[
-          {
-            column: 'status.phase',
-            label: t`Phase`,
-            options: [
-              { value: 'Completed', label: t`Completed` },
-              { value: 'Running', label: t`Running` },
-              { value: 'Pending', label: t`Pending` },
-              { value: 'Error', label: t`Error` },
-            ],
-          },
-          {
-            column: 'status.decision',
-            label: t`Decision`,
-            options: [
-              { value: 'ACCEPTED', label: t`Accepted` },
-              { value: 'REVIEW', label: t`Review` },
-              { value: 'DEACTIVATE', label: t`Deactivate` },
-            ],
-          },
-          {
-            column: 'status.enforcementAction',
-            label: t`Enforcement`,
-            options: [
-              { value: 'OBSERVED', label: t`Observed` },
-              { value: 'ENFORCED', label: t`Enforced` },
-            ],
-          },
-        ]}
-        searchFn={(row, search) => {
-          const q = search.trim().toLowerCase();
-          if (!q) return true;
-          const userId = (row.spec?.userRef?.name ?? '').toLowerCase();
-          const name = (row.metadata?.name ?? '').toLowerCase();
-          const decision = (row.status?.decision ?? '').toLowerCase();
-          const contact = userId
-            ? contactsByUserRef.current.get(row.spec?.userRef?.name ?? '')
-            : undefined;
-          const email = (contact?.email ?? '').toLowerCase();
-          const contactName = (contact?.name ?? '').toLowerCase();
-          return (
-            userId.includes(q) ||
-            name.includes(q) ||
-            decision.includes(q) ||
-            email.includes(q) ||
-            contactName.includes(q)
-          );
-        }}
-      />
+      <ListPage>
+        <ListTable
+          layout="flush"
+          views={views}
+          actions={
+            <Button
+              size="xs"
+              theme="outline"
+              icon={<ACTION_ICONS.add size={14} />}
+              disabled={policyLoaded && !policyName}
+              onClick={() => setShowNewEval(true)}>
+              <Trans>New Evaluation</Trans>
+            </Button>
+          }
+          loading={tableQuery.isLoading}
+          data={tableQuery.data?.items ?? []}
+          columns={columns}
+          pageSize={50}
+          getRowId={(row) => row.metadata?.name ?? ''}
+          defaultSort={[{ id: 'lastEvaluationTime', desc: true }]}
+          searchPlaceholder={t`Search by email, name, or ID...`}
+          emptyMessage={t`No fraud evaluations found.`}
+          filterFields={[
+            { id: 'user', label: t`User`, type: 'text', accessor: 'spec.userRef.name' },
+            {
+              id: 'email',
+              label: t`Email`,
+              type: 'text',
+              accessor: (row) =>
+                contactsByUserRef.current.get(row.spec?.userRef?.name ?? '')?.email ?? '',
+            },
+            {
+              id: 'phase',
+              label: t`Phase`,
+              type: 'enum',
+              accessor: 'status.phase',
+              options: [
+                { value: 'Completed', label: t`Completed` },
+                { value: 'Running', label: t`Running` },
+                { value: 'Pending', label: t`Pending` },
+                { value: 'Error', label: t`Error` },
+              ],
+            },
+            { id: 'score', label: t`Score`, type: 'number', accessor: 'status.compositeScore' },
+            {
+              id: 'decision',
+              label: t`Decision`,
+              type: 'enum',
+              accessor: 'status.decision',
+              options: [
+                { value: 'ACCEPTED', label: t`Accepted` },
+                { value: 'REVIEW', label: t`Review` },
+                { value: 'DEACTIVATE', label: t`Deactivate` },
+              ],
+            },
+            {
+              id: 'enforcement',
+              label: t`Enforcement`,
+              type: 'enum',
+              accessor: 'status.enforcementAction',
+              options: [
+                { value: 'OBSERVED', label: t`Observed` },
+                { value: 'ENFORCED', label: t`Enforced` },
+              ],
+            },
+            {
+              id: 'evaluated',
+              label: t`Evaluated`,
+              type: 'date',
+              accessor: 'status.lastEvaluationTime',
+            },
+          ]}
+          searchFn={(row, search) => {
+            const q = search.trim().toLowerCase();
+            if (!q) return true;
+            const userId = (row.spec?.userRef?.name ?? '').toLowerCase();
+            const name = (row.metadata?.name ?? '').toLowerCase();
+            const decision = (row.status?.decision ?? '').toLowerCase();
+            const contact = userId
+              ? contactsByUserRef.current.get(row.spec?.userRef?.name ?? '')
+              : undefined;
+            const email = (contact?.email ?? '').toLowerCase();
+            const contactName = (contact?.name ?? '').toLowerCase();
+            return (
+              userId.includes(q) ||
+              name.includes(q) ||
+              decision.includes(q) ||
+              email.includes(q) ||
+              contactName.includes(q)
+            );
+          }}
+        />
+      </ListPage>
     </>
   );
 }

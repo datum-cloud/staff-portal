@@ -1,6 +1,6 @@
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
-import type { FilterGroupConfig } from '@/features/milo';
+import type { FilterGroupConfig, FilterOption } from '@/features/milo';
 import type { ProjectPhase } from '@/features/project/lib/project-phase';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
@@ -33,15 +33,14 @@ export function ProjectCleanupMessage({ message }: { message: string | null | un
   );
 }
 
+/** Phase options for project status filters (sidebar/inline groups and rule fields). */
+export const PROJECT_PHASE_OPTIONS: FilterOption[] = [
+  { value: 'Deleting', label: <BadgeState state="deleting" /> },
+  { value: 'Suspended', label: <BadgeState state="Suspended" /> },
+  { value: 'Ready', label: <BadgeState state="Ready" /> },
+  { value: 'Pending', label: <BadgeState state="Pending" /> },
+];
+
 export function projectPhaseFilter(label: string): FilterGroupConfig {
-  return {
-    column: 'phase',
-    label,
-    options: [
-      { value: 'Deleting', label: <BadgeState state="deleting" /> },
-      { value: 'Suspended', label: <BadgeState state="Suspended" /> },
-      { value: 'Ready', label: <BadgeState state="Ready" /> },
-      { value: 'Pending', label: <BadgeState state="Pending" /> },
-    ],
-  };
+  return { column: 'phase', label, options: PROJECT_PHASE_OPTIONS };
 }

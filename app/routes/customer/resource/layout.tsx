@@ -1,8 +1,13 @@
+import { type BreadcrumbOptions } from '@/components/breadcrumb';
+import { customerSectionSwitcher } from '@/routes/customer/breadcrumb-switchers';
 import { Trans } from '@lingui/react/macro';
 import { Outlet } from 'react-router';
 
 export const handle = {
-  breadcrumb: () => <Trans>Resources</Trans>,
+  breadcrumb: (): BreadcrumbOptions => ({
+    label: <Trans>Resources</Trans>,
+    switcher: customerSectionSwitcher,
+  }),
 };
 
 /**

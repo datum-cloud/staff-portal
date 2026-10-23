@@ -16,7 +16,8 @@ import { Outlet, useRouteLoaderData } from 'react-router';
  *
  * Navbar and context bar are always present. The rail shows the active
  * route's entity nav (`handle.entityNav`, #656/#775) when the current route
- * declares one, else the active section's `subNav`, else nothing —
+ * declares one, else the active section's `subNav` (unless it's placed in the
+ * list toolbar instead — see `NavSubNav.placement`), else nothing —
  * independent of datum-ui's SidebarProvider.
  *
  * `sidePanel` (the assistant dock) is a flex sibling of <main>, so opening it
@@ -25,7 +26,8 @@ import { Outlet, useRouteLoaderData } from 'react-router';
 export function MiloShell({ sidePanel }: { sidePanel?: ReactNode }) {
   const { section } = useActiveNav();
   const entityNav = useEntityNav();
-  const nav = entityNav ?? section?.subNav;
+  const sectionNav = section?.subNav?.placement === 'toolbar' ? undefined : section?.subNav;
+  const nav = entityNav ?? sectionNav;
   // Root route id is always 'root' (see app/root.tsx's loader/shouldRevalidate).
   const rootData = useRouteLoaderData('root') as { sidebarOpen?: boolean } | undefined;
 

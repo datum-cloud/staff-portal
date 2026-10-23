@@ -203,7 +203,6 @@ export const mapGqlUser = (u: GqlUserFields): GqlUser =>
       avatarUrl: u.avatarUrl ?? undefined,
       lastLoginProvider: u.lastLoginProvider ?? undefined,
     },
-    fraudScore: u.fraudScore,
     fraudDecision: u.fraudDecision,
     fraudEvaluatedAt: u.fraudEvaluatedAt,
   }) as GqlUser;
@@ -229,8 +228,8 @@ const ALL_USERS_PAGE_LIMIT = 1000;
 const ALL_USERS_MAX_PAGES = 100;
 
 /**
- * Walks `continueToken` to fetch every user (with fraud score joined), for the
- * users list table and growth chart.
+ * Walks `continueToken` to fetch every user (with fraud decision joined), for
+ * the users list table.
  */
 export const listAllUsers = async (): Promise<{ items: GqlUser[]; hasMore: boolean }> => {
   return walkCursorPages((cursor) => listUsers({ limit: ALL_USERS_PAGE_LIMIT, cursor }), {
