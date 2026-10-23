@@ -8,26 +8,33 @@ import {
   SECTION_CARD_CHROME,
 } from '../../lib/card-chrome';
 import { FILTER_W } from '../../lib/dimensions';
+import {
+  applyRules,
+  EMPTY_RULE_SET,
+  type FilterField,
+  type FilterRuleSet,
+} from '../../lib/filter-rules';
+import { useActiveNav } from '../../lib/use-active-section';
+import { useEntityNav } from '../../lib/use-entity-nav';
 import { ListPagination } from './list-pagination';
 import {
   buildFilterFns,
-  computeFacetCounts,
   FilterGroup,
   FilterGroupSkeleton,
   FilterPanel,
   InlineFilterBar,
   MobileFilterButton,
+  useFacetCounts,
   type FilterGroupConfig,
 } from './rich-filter-panel';
+import { RuleFilterButton } from './rule-filter';
+import { SectionSwitcher } from './section-switcher';
+import { ViewTabs, type ViewTab } from './view-tabs';
 import { useBreakpoint } from '@/hooks/use-breakpoint';
 import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import type { ColumnDef, RowData } from '@/utils/table';
 import { Button } from '@datum-cloud/datum-ui/button';
-import {
-  DataTable,
-  useDataTableFilters,
-  useDataTableSearch,
-} from '@datum-cloud/datum-ui/data-table';
+import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import type { SelectionColumnOptions } from '@datum-cloud/datum-ui/data-table';
 import { Input } from '@datum-cloud/datum-ui/input';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
@@ -86,18 +93,32 @@ export interface ControlledSearch {
  * Routes declare what table they want; density/layout lives here.
  */
 
-const containerClass = cn(SECTION_CARD_CHROME, 'flex min-h-0 flex-1 flex-col overflow-hidden');
+const containerClass = 'flex min-h-0 flex-1 flex-col overflow-hidden';
 
 // [&>div]:overflow-visible neutralizes shadcn <Table>'s inner overflow-x wrapper
 // so the sticky <th> resolves to this scroll container, not that wrapper.
-const contentClassName = 'min-h-0 flex-1 overflow-auto [&>div]:overflow-visible';
+// border-separate: with preflight's border-collapse the table paints cell
+// borders, so the sticky <th>'s bottom border scrolls away with the body.
+const contentClassName =
+  'min-h-0 flex-1 overflow-auto [&>div]:overflow-visible [&_table]:border-separate [&_table]:border-spacing-0';
+
+// Id of the checkbox column DataTable injects for `enableRowSelection` (not
+// exported by datum-ui); it can't carry `meta`, so it's shrunk to the box here.
+const SELECTION_COLUMN_ID = 'select';
+// shadcn's TableHead/TableCell zero the right padding of checkbox cells
+// (`[&:has([role=checkbox])]:pr-0`), which jams the box against the column
+// border once the column is shrunk; give it even padding instead.
+const checkboxCellClass = '[&:has([role=checkbox])]:px-3';
 
 const headerClassName = LIST_TABLE_HEADER_CLASS;
 const headerRowClassName = LIST_TABLE_HEADER_ROW_CLASS;
-const headerCellClassName = LIST_TABLE_HEADER_CELL_CLASS;
+const headerCellClassName = cn(LIST_TABLE_HEADER_CELL_CLASS, checkboxCellClass);
 const bodyClassName = LIST_TABLE_BODY_CLASS;
 const rowClassName = LIST_TABLE_ROW_CLASS;
 const cellClassName = LIST_TABLE_CELL_CLASS;
+
+// Vertical dividers between columns; the last column has no outer edge to mark.
+const columnBorderClass = 'border-r last:border-r-0';
 
 const searchClassName =
   'h-10 border-0 bg-transparent pl-9 shadow-none focus-visible:shadow-none focus-visible:ring-0';
@@ -123,35 +144,7 @@ function SidebarFilterGroups<TData extends RowData>({
   /** False when search is server-driven (`controlledSearch`) — `data` is already scoped. */
   applyClientSearch: boolean;
 }) {
-  const { filters: activeFilters } = useDataTableFilters();
-  const { search } = useDataTableSearch();
-
-  const filterSignature = useMemo(
-    () =>
-      filters
-        .map(
-          (f) => `${f.column}:${f.type ?? 'checkbox'}:${f.options.map((o) => o.value).join(',')}`
-        )
-        .join('|'),
-    [filters]
-  );
-
-  const matchers = useMemo(
-    () => ({ ...buildFilterFns(filters), ...filterFns }),
-    // filterSignature stands in for `filters` content — see ListTable comment.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [filterSignature, filterFns]
-  );
-
-  const facetCounts = useMemo(
-    () =>
-      computeFacetCounts(data, filters, activeFilters, matchers, {
-        search: applyClientSearch ? search : '',
-        searchFn: applyClientSearch ? searchFn : undefined,
-      }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data, filterSignature, activeFilters, matchers, applyClientSearch, search, searchFn]
-  );
+  const facetCounts = useFacetCounts({ data, filters, filterFns, searchFn, applyClientSearch });
 
   return (
     <FilterPanel>
@@ -194,6 +187,10 @@ interface ListTableProps<TData extends RowData> {
   readonly filters?: FilterGroupConfig[];
   /** How filters render: `sidebar` (rich left rail, for main lists) or `inline` (dropdowns above the table, for detail tabs). Default `sidebar`. */
   readonly filterLayout?: 'sidebar' | 'inline';
+  /** Rule-based filtering (`Where field op value`, AND/OR) behind a Filter button in the search bar. Use instead of `filters`. */
+  readonly filterFields?: FilterField<TData>[];
+  /** Sibling views of this section page (e.g. Fraud → Evaluations / Providers / Policy), as segmented tabs in the search bar. */
+  readonly views?: ViewTab[];
   /** Horizontal inset: `page` (px-6, main lists) or `tab` (px-4, aligns with a detail page's EntityHeader). Default `page`. */
   readonly inset?: 'page' | 'tab';
   /** Enable row-selection checkboxes (forwarded to DataTable). Pair with `bulkActions`. */
@@ -202,6 +199,8 @@ interface ListTableProps<TData extends RowData> {
   readonly bulkActions?: (selectedRows: TData[]) => ReactNode;
   /** Optional slot between the search bar and the table (active-filter chips, etc.). */
   readonly toolbar?: ReactNode;
+  /** `card` (bordered card inset from the edges) or `flush` (borderless, fills the column, denser rows). Both draw column borders. Default `card`. */
+  readonly layout?: 'card' | 'flush';
 }
 
 export function ListTable<TData extends RowData>({
@@ -222,6 +221,9 @@ export function ListTable<TData extends RowData>({
   hasMoreMessage,
   resourceLabel,
   loading = false,
+  layout = 'card',
+  filterFields,
+  views,
   ...options
 }: ListTableProps<TData>) {
   const { t } = useLingui();
@@ -232,7 +234,9 @@ export function ListTable<TData extends RowData>({
   // The header row exists to carry a title or a bulk-action bar; a bare CTA
   // with neither moves into the search/filter bar instead, so an action-only
   // list page doesn't pay for an otherwise-empty header row.
-  const showHeader = title != null || bulkActions != null;
+  // Flush lists keep bulk actions in the search bar, so they don't need the row.
+  const bulkActionsInToolbar = layout === 'flush' && bulkActions != null;
+  const showHeader = title != null || (bulkActions != null && !bulkActionsInToolbar);
   const actionsInHeader = showHeader && actions != null;
   const actionsInToolbar = !showHeader && actions != null;
   const hasFilters = (filters?.length ?? 0) > 0;
@@ -241,7 +245,26 @@ export function ListTable<TData extends RowData>({
   const showMobileFilter = sidebarMode && isCompact;
   const hasInlineFilters = hasFilters && filterLayout === 'inline';
   const insetX = inset === 'tab' ? 'px-4' : 'px-6';
+  // Sections with `subNav.placement: 'toolbar'` have no left rail; their
+  // top-level lists carry the section switcher instead (not detail tabs or
+  // entity pages, which keep their own nav).
+  const { section } = useActiveNav();
+  const entityNav = useEntityNav();
+  const showSectionSwitcher =
+    inset === 'page' && !entityNav && section?.subNav?.placement === 'toolbar';
+  // No rail to the left means no border for the collapsed filter toggle to
+  // straddle, so the "show filters" control moves into the search bar.
+  const railless = showSectionSwitcher;
+  const flush = layout === 'flush';
   const [filtersCollapsed, setFiltersCollapsed] = useState(false);
+
+  const [ruleSet, setRuleSet] = useState<FilterRuleSet>(EMPTY_RULE_SET);
+  // Rules can repeat fields and OR together, which datum-ui's one-value-per-
+  // column filter store can't express, so they narrow `data` up front.
+  const data = useMemo(
+    () => (filterFields ? applyRules(options.data, ruleSet, filterFields) : options.data),
+    [options.data, ruleSet, filterFields]
+  );
 
   // Auto-wire each filter group's matcher by its column; caller `filterFns` win.
   const mergedFilterFns = useMemo(
@@ -260,6 +283,7 @@ export function ListTable<TData extends RowData>({
       pageSize={100}
       loading={loading}
       {...options}
+      data={data}
       // columnHelper yields ColumnDef<TData, any>; DataTable.Client now wants
       // <TData, unknown> — a type-identity narrowing that's safe at runtime.
       columns={options.columns as ColumnDef<TData, unknown>[]}>
@@ -286,7 +310,7 @@ export function ListTable<TData extends RowData>({
           </div>
         </aside>
       )}
-      {showSidebar && (
+      {showSidebar && !(railless && filtersCollapsed) && (
         // Collapse toggle straddling the divider; flips to › when collapsed. The
         // absolute positioning lives on this wrapper (Tooltip wraps the button in
         // its own `relative` span, which would otherwise be the offset parent).
@@ -331,9 +355,31 @@ export function ListTable<TData extends RowData>({
             {actionsInHeader && <div className="flex items-center gap-2">{actions}</div>}
           </div>
         )}
-        <div className={cn('flex min-h-0 flex-1 flex-col py-4', insetX)}>
-          <div className={containerClass}>
+        <div className={cn('flex min-h-0 flex-1 flex-col', !flush && cn('py-4', insetX))}>
+          {/* Card layout: tighter radius than section cards so tables read as tables. */}
+          <div className={cn(containerClass, !flush && cn(SECTION_CARD_CHROME, 'rounded-md'))}>
             <div className="flex shrink-0 items-center gap-1 border-b pr-2">
+              {showSectionSwitcher && (
+                <div className="flex shrink-0 items-center gap-0.5 self-stretch border-r px-1.5">
+                  {showSidebar && filtersCollapsed && (
+                    <Tooltip message={t`Show filters`} side="bottom">
+                      <button
+                        type="button"
+                        onClick={() => setFiltersCollapsed(false)}
+                        aria-label={t`Show filters`}
+                        className="text-muted-foreground hover:bg-muted hover:text-foreground flex size-7 items-center justify-center rounded-md transition-colors">
+                        <ACTION_ICONS.filter className="size-4" />
+                      </button>
+                    </Tooltip>
+                  )}
+                  <SectionSwitcher />
+                </div>
+              )}
+              {views && (
+                <div className="flex shrink-0 items-center self-stretch border-r px-1.5">
+                  <ViewTabs views={views} />
+                </div>
+              )}
               <div className="relative min-w-0 flex-1">
                 <ACTION_ICONS.search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
                 {controlledSearch ? (
@@ -347,6 +393,16 @@ export function ListTable<TData extends RowData>({
                   <DataTable.Search placeholder={searchPlaceholder} className={searchClassName} />
                 )}
               </div>
+              {bulkActionsInToolbar && <DataTable.BulkActions>{bulkActions}</DataTable.BulkActions>}
+              {filterFields && (
+                <RuleFilterButton
+                  fields={filterFields}
+                  data={options.data}
+                  value={ruleSet}
+                  onChange={setRuleSet}
+                  disabled={loading}
+                />
+              )}
               {/* Mobile: filters move into a Sheet so the table keeps full width. */}
               {showMobileFilter && <MobileFilterButton filters={filters ?? []} loading={loading} />}
               {actionsInToolbar && (
@@ -366,15 +422,27 @@ export function ListTable<TData extends RowData>({
                 className={contentClassName}
                 headerClassName={headerClassName}
                 headerRowClassName={headerRowClassName}
-                headerCellClassName={headerCellClassName}
+                headerCellClassName={cn(headerCellClassName, columnBorderClass)}
                 bodyClassName={bodyClassName}
                 rowClassName={rowClassName}
-                cellClassName={cellClassName}
+                cellClassName={(cell) =>
+                  cn(
+                    cellClassName,
+                    columnBorderClass,
+                    flush && 'py-1',
+                    cell.column.id === SELECTION_COLUMN_ID && cn('w-px', checkboxCellClass),
+                    cell.column.columnDef.meta?.cellClassName
+                  )
+                }
                 emptyMessage={emptyMessage}
               />
             )}
           </div>
-          <div className="mt-4 flex shrink-0 items-center gap-2">
+          <div
+            className={cn(
+              'flex shrink-0 items-center gap-2',
+              flush ? cn('border-t py-3', insetX) : 'mt-4'
+            )}>
             {hasMore && !loading && (
               <Tooltip
                 side="right"

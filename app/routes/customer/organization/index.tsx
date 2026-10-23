@@ -7,13 +7,7 @@ import {
   getCriticalFailedPaymentMethod,
   orgNameFromNamespace,
 } from '@/features/billing/utils';
-import {
-  DATE_RANGE_OPTIONS,
-  ListGrowthChart,
-  ListPage,
-  ListTable,
-  ListColumnHeader,
-} from '@/features/milo';
+import { ListPage, ListTable, ListColumnHeader } from '@/features/milo';
 import type { GqlOrganization } from '@/resources/gql/organization.gql';
 import {
   useAllOrganizationsQuery,
@@ -44,8 +38,6 @@ type OrgRow = GqlOrganization & {
 
 const columnHelper = createColumnHelper<OrgRow>();
 
-const getOrgCreatedAt = (org: GqlOrganization) => org.createdAt;
-
 function orgPaymentFailureTooltip(
   accounts: ComMiloapisBillingV1Alpha1BillingAccount[],
   paymentMethods: ComMiloapisBillingV1Alpha1PaymentMethod[]
@@ -62,7 +54,6 @@ export default function Page() {
   const billingQuery = useBillingAccountListQuery({ limit: 500 });
   const paymentMethodsQuery = usePaymentMethodListQuery();
   const orgs = useMemo(() => tableQuery.data?.items ?? [], [tableQuery.data]);
-  const activeOrgs = useMemo(() => orgs.filter((org) => org.onboardingComplete), [orgs]);
   const paymentMethods = useMemo(
     () => paymentMethodsQuery.data?.items ?? [],
     [paymentMethodsQuery.data?.items]
@@ -147,6 +138,7 @@ export default function Page() {
         data={rows}
         columns={columns}
         pageSize={100}
+        layout="flush"
         resourceLabel={t`organizations`}
         getRowId={(row) => row.name}
         defaultSort={[{ id: 'createdAt', desc: true }]}
@@ -154,26 +146,34 @@ export default function Page() {
         emptyMessage={t`No organizations found.`}
         hasMore={tableQuery.data?.hasMore ?? false}
         hasMoreMessage={t`Limited to 10,000 organizations. Refine your search to surface others.`}
-        toolbar={
-          <ListGrowthChart
-            items={activeOrgs}
-            getCreatedAt={getOrgCreatedAt}
-            title={t`Active organizations`}
-            loading={tableQuery.isPending}
-          />
-        }
-        filters={[
+        filterFields={[
           {
-            column: 'entityType',
+            id: 'name',
+            label: t`Name`,
+            type: 'text',
+            accessor: (row) => `${row.displayName} ${row.name}`,
+          },
+          {
+            id: 'company',
+            label: t`Company`,
+            type: 'text',
+            accessor: 'contactInfo.businessName',
+          },
+          {
+            id: 'entityType',
             label: t`Type`,
+            type: 'enum',
+            accessor: 'entityType',
             options: [
               { value: 'Company', label: t`Company`, icon: <Building2 /> },
               { value: 'Individual', label: t`Individual`, icon: <User /> },
             ],
           },
           {
-            column: 'displayStatus',
+            id: 'displayStatus',
             label: t`Status`,
+            type: 'enum',
+            accessor: 'displayStatus',
             options: [
               { value: 'Active', label: <CustomerStatus status="active" /> },
               { value: 'Inactive', label: <CustomerStatus status="inactive" /> },
@@ -189,12 +189,7 @@ export default function Page() {
               },
             ],
           },
-          {
-            column: 'createdAt',
-            label: t`Created`,
-            type: 'dateRange',
-            options: DATE_RANGE_OPTIONS,
-          },
+          { id: 'createdAt', label: t`Created`, type: 'date', accessor: 'createdAt' },
         ]}
         searchFn={(row, search) => {
           const q = search.trim().toLowerCase();

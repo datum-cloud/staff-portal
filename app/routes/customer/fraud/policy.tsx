@@ -1,7 +1,7 @@
 import type { Route } from './+types/policy';
 import { DialogConfirm } from '@/components/dialog';
-import { PolicyDetail, PolicyDetailSkeleton, PolicyForm } from '@/features/fraud';
-import { SectionCard } from '@/features/milo';
+import { PolicyDetail, PolicyDetailSkeleton, PolicyForm, useFraudViews } from '@/features/fraud';
+import { SectionCard, SectionViewBar } from '@/features/milo';
 import {
   useDeleteFraudPolicyMutation,
   useFraudPolicyListQuery,
@@ -23,6 +23,16 @@ export const handle = {
 export const meta: Route.MetaFunction = () => metaObject(t`Fraud Policy`);
 
 export default function Page() {
+  const views = useFraudViews();
+  return (
+    <>
+      <SectionViewBar views={views} />
+      <PolicyContent />
+    </>
+  );
+}
+
+function PolicyContent() {
   const policyQuery = useFraudPolicyListQuery();
   const deletePolicyMutation = useDeleteFraudPolicyMutation();
   const policies = policyQuery.data?.items ?? [];

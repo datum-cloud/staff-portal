@@ -56,6 +56,12 @@ export interface NavSubGroup {
 export interface NavSubNav {
   /** Icon-only rail by default; expands to labels + counts. */
   defaultCollapsed?: boolean;
+  /**
+   * `rail` (default) renders the left sub-nav. `toolbar` drops the rail and
+   * instead puts a section switcher dropdown in the search bar of the
+   * section's list pages (`ListTable`), so tables get the full width.
+   */
+  placement?: 'rail' | 'toolbar';
   groups: NavSubGroup[];
 }
 
@@ -116,6 +122,7 @@ export const NAV_SECTIONS: NavSection[] = [
     navbarDropdown: false,
     subNav: {
       defaultCollapsed: true,
+      placement: 'toolbar',
       groups: [
         {
           items: [
@@ -149,6 +156,7 @@ export const NAV_SECTIONS: NavSection[] = [
     match: '/marketing',
     subNav: {
       defaultCollapsed: true,
+      placement: 'toolbar',
       groups: [
         {
           items: [
@@ -193,6 +201,7 @@ export const NAV_SECTIONS: NavSection[] = [
     match: '/admin',
     subNav: {
       defaultCollapsed: true,
+      placement: 'toolbar',
       groups: [
         {
           items: [

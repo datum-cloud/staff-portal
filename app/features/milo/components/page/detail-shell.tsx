@@ -6,8 +6,8 @@ interface DetailShellProps extends EntityHeaderProps {
   /**
    * Tabs for the sticky nav under the header. Omit once the page's nav has
    * moved to the left rail via `handle.entityNav` (#775/#656) — the strip
-   * only remains for section pages that still use `DetailShell` (Fraud,
-   * Operations → Activity, `/customers/resources`).
+   * only remains for section pages that still use `DetailShell` (Operations →
+   * Activity).
    */
   tabs?: EntityTab[];
 }

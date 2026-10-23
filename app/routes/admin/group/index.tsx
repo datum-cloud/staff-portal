@@ -44,10 +44,26 @@ export default function Page() {
         data={tableQuery.data?.items ?? []}
         columns={columns}
         pageSize={50}
+        layout="flush"
         getRowId={(row) => `${row.metadata?.namespace ?? ''}/${row.metadata?.name ?? ''}`}
         defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
         searchPlaceholder={t`Search groups...`}
         emptyMessage={t`No groups found.`}
+        filterFields={[
+          {
+            id: 'name',
+            label: t`Name`,
+            type: 'text',
+            accessor: (row) =>
+              `${row.metadata?.annotations?.['kubernetes.io/display-name'] ?? ''} ${row.metadata?.name ?? ''}`,
+          },
+          {
+            id: 'created',
+            label: t`Created`,
+            type: 'date',
+            accessor: 'metadata.creationTimestamp',
+          },
+        ]}
         searchFn={(row, search) => {
           const q = search.trim().toLowerCase();
           if (!q) return true;

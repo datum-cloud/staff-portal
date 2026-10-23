@@ -1,9 +1,23 @@
 import type { DataTableFeatures } from '@datum-cloud/datum-ui/data-table';
 import {
   createColumnHelper as createTanstackColumnHelper,
+  type CellData,
   type ColumnDef as TanstackColumnDef,
   type RowData,
+  type TableFeatures,
 } from '@tanstack/react-table';
+
+declare module '@tanstack/table-core' {
+  // Generics must mirror table-core's declaration for the merge to apply.
+  interface ColumnMeta<
+    in out TFeatures extends TableFeatures,
+    in out TData extends RowData,
+    TValue extends CellData = CellData,
+  > {
+    /** Extra classes for this column's body cells in `ListTable`, e.g. a fixed width. */
+    cellClassName?: string;
+  }
+}
 
 /**
  * react-table v9 threads a `TableFeatures` generic through every public type, and

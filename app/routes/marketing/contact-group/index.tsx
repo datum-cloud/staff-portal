@@ -1,5 +1,5 @@
 import type { Route } from './+types/index';
-import { BadgeCondition, BadgeState } from '@/components/badge';
+import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
@@ -73,9 +73,18 @@ export default function Page() {
     }),
     columnHelper.accessor('status', {
       header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
-      cell: ({ getValue }) => (
-        <BadgeCondition status={getValue()} multiple={false} showMessage className="text-xs" />
-      ),
+      // Shrink to the badge rather than taking a share of spare width.
+      meta: { cellClassName: 'w-px whitespace-nowrap' },
+      cell: ({ getValue }) => {
+        // First condition True ⇒ active, with its message as the tooltip.
+        const condition = getValue()?.conditions?.[0];
+        return (
+          <BadgeState
+            state={condition?.status === 'True' ? 'active' : 'pending'}
+            tooltip={condition?.message || undefined}
+          />
+        );
+      },
     }),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'metadata.creationTimestamp',
@@ -84,9 +93,11 @@ export default function Page() {
     }),
     columnHelper.display({
       id: 'actions',
-      header: () => <div className="text-right" />,
+      header: () => null,
+      // w-px shrinks the column to its button instead of a share of spare width.
+      meta: { cellClassName: 'w-px px-2' },
       cell: ({ row }) => (
-        <div className="flex w-full justify-end">
+        <div className="flex w-full justify-center">
           <DataTable.RowActions row={row} actions={actions} />
         </div>
       ),
@@ -183,11 +194,13 @@ export default function Page() {
           data={tableQuery.data?.items ?? []}
           columns={columns}
           pageSize={50}
+          layout="flush"
           enableRowSelection
           actions={
             <Button
-              type="primary"
-              icon={<ACTION_ICONS.add size={16} />}
+              size="xs"
+              theme="outline"
+              icon={<ACTION_ICONS.add size={14} />}
               onClick={() => navigate(contactGroupRoutes.create())}>
               <Trans>Add</Trans>
             </Button>
@@ -197,8 +210,8 @@ export default function Page() {
               <Button
                 type="danger"
                 theme="outline"
-                size="small"
-                icon={<ACTION_ICONS.delete size={16} />}
+                size="xs"
+                icon={<ACTION_ICONS.delete size={14} />}
                 onClick={() =>
                   setBulkDeleteRows(selectedRows as ComMiloapisNotificationV1Alpha1ContactGroup[])
                 }>
@@ -210,6 +223,43 @@ export default function Page() {
           defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
           searchPlaceholder={t`Search contact groups...`}
           emptyMessage={t`No contact groups found.`}
+          filterFields={[
+            {
+              id: 'name',
+              label: t`Name`,
+              type: 'text',
+              accessor: (row) => row.spec?.displayName ?? row.metadata?.name ?? '',
+            },
+            {
+              id: 'visibility',
+              label: t`Visibility`,
+              type: 'enum',
+              // Unset reads as public, as the column shows it.
+              accessor: (row) => row.spec?.visibility ?? 'public',
+              options: [
+                { value: 'public', label: <BadgeState state="public" /> },
+                { value: 'private', label: <BadgeState state="private" /> },
+              ],
+            },
+            {
+              id: 'status',
+              label: t`Status`,
+              type: 'enum',
+              // Same reading as the Status column: first condition True ⇒ Active.
+              accessor: (row) =>
+                row.status?.conditions?.[0]?.status === 'True' ? 'Active' : 'Pending',
+              options: [
+                { value: 'Active', label: <BadgeState state="active" /> },
+                { value: 'Pending', label: <BadgeState state="pending" /> },
+              ],
+            },
+            {
+              id: 'created',
+              label: t`Created`,
+              type: 'date',
+              accessor: 'metadata.creationTimestamp',
+            },
+          ]}
           searchFn={(row, search) => {
             const q = search.trim().toLowerCase();
             if (!q) return true;

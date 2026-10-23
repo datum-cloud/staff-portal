@@ -1,6 +1,6 @@
 import { userOrgListQuery } from '../apis/membership.api';
 // The users list is served by the GraphQL gateway (joins each user's fraud
-// score), mirroring how organizations/projects lists are loaded.
+// decision), mirroring how organizations/projects lists are loaded.
 import {
   listAllUsers,
   platformAccessFindQuery,

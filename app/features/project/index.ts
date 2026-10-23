@@ -10,6 +10,7 @@ export * from './hooks/useProjectSuspension';
 export {
   ProjectCleanupMessage,
   ProjectDeletingFor,
+  PROJECT_PHASE_OPTIONS,
   ProjectPhaseBadge,
   projectPhaseFilter,
 } from './components/project-list-status';

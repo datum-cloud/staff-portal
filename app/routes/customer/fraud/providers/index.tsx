@@ -1,9 +1,9 @@
 import type { Route } from './+types/index';
-import AppActionBar from '@/components/app-actiobar';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm } from '@/components/dialog';
-import { ListTable, ListColumnHeader } from '@/features/milo';
+import { useFraudViews } from '@/features/fraud';
+import { ListPage, ListTable, ListColumnHeader } from '@/features/milo';
 import {
   useDeleteFraudProviderMutation,
   useFraudProviderListQuery,
@@ -32,6 +32,7 @@ const columnHelper = createColumnHelper<FraudProvider>();
 
 export default function Page() {
   const navigate = useNavigate();
+  const views = useFraudViews();
   const tableQuery = useFraudProviderListQuery();
   const [selectedProvider, setSelectedProvider] = useState<FraudProvider | null>(null);
   const deleteProviderMutation = useDeleteFraudProviderMutation();
@@ -104,9 +105,11 @@ export default function Page() {
     }),
     columnHelper.display({
       id: 'actions',
-      header: () => <div className="text-right" />,
+      header: () => null,
+      // w-px shrinks the column to its button instead of a share of spare width.
+      meta: { cellClassName: 'w-px px-2' },
       cell: ({ row }) => (
-        <div className="flex w-full justify-end">
+        <div className="flex w-full justify-center">
           <DataTable.RowActions row={row} actions={actions} />
         </div>
       ),
@@ -115,15 +118,6 @@ export default function Page() {
 
   return (
     <>
-      <AppActionBar>
-        <Button
-          type="primary"
-          icon={<ACTION_ICONS.add size={16} />}
-          onClick={() => navigate(fraudRoutes.providers.create())}>
-          <Trans>Add Provider</Trans>
-        </Button>
-      </AppActionBar>
-
       <DialogConfirm
         open={!!selectedProvider}
         onOpenChange={() => setSelectedProvider(null)}
@@ -139,24 +133,58 @@ export default function Page() {
         }}
       />
 
-      <ListTable
-        inset="tab"
-        loading={tableQuery.isLoading}
-        data={tableQuery.data?.items ?? []}
-        columns={columns}
-        pageSize={50}
-        getRowId={(row) => row.metadata?.name ?? ''}
-        defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
-        searchPlaceholder={t`Search providers...`}
-        emptyMessage={t`No fraud providers configured.`}
-        searchFn={(row, search) => {
-          const q = search.trim().toLowerCase();
-          if (!q) return true;
-          return [row.metadata?.name, row.spec?.type, row.spec?.config?.endpoint]
-            .map((s) => (s ?? '').toLowerCase())
-            .some((s) => s.includes(q));
-        }}
-      />
+      <ListPage>
+        <ListTable
+          layout="flush"
+          views={views}
+          actions={
+            <Button
+              size="xs"
+              theme="outline"
+              icon={<ACTION_ICONS.add size={14} />}
+              onClick={() => navigate(fraudRoutes.providers.create())}>
+              <Trans>Add Provider</Trans>
+            </Button>
+          }
+          loading={tableQuery.isLoading}
+          data={tableQuery.data?.items ?? []}
+          columns={columns}
+          pageSize={50}
+          getRowId={(row) => row.metadata?.name ?? ''}
+          defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
+          searchPlaceholder={t`Search providers...`}
+          emptyMessage={t`No fraud providers configured.`}
+          filterFields={[
+            { id: 'name', label: t`Name`, type: 'text', accessor: 'metadata.name' },
+            { id: 'type', label: t`Type`, type: 'text', accessor: 'spec.type' },
+            {
+              id: 'failurePolicy',
+              label: t`Failure Policy`,
+              type: 'enum',
+              // Unset means the default, FailOpen (as the column shows it).
+              accessor: (row) => row.spec?.failurePolicy ?? 'FailOpen',
+              options: [
+                { value: 'FailOpen', label: 'FailOpen' },
+                { value: 'FailClosed', label: 'FailClosed' },
+              ],
+            },
+            { id: 'endpoint', label: t`Endpoint`, type: 'text', accessor: 'spec.config.endpoint' },
+            {
+              id: 'created',
+              label: t`Created`,
+              type: 'date',
+              accessor: 'metadata.creationTimestamp',
+            },
+          ]}
+          searchFn={(row, search) => {
+            const q = search.trim().toLowerCase();
+            if (!q) return true;
+            return [row.metadata?.name, row.spec?.type, row.spec?.config?.endpoint]
+              .map((s) => (s ?? '').toLowerCase())
+              .some((s) => s.includes(q));
+          }}
+        />
+      </ListPage>
     </>
   );
 }

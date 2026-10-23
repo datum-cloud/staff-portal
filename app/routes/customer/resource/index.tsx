@@ -3,7 +3,7 @@ import { DateTime } from '@/components/date';
 import { DnsHostChips } from '@/features/dns';
 import { DomainDnsProviders } from '@/features/domain';
 import { backendTargets } from '@/features/edge/lib';
-import { DATE_RANGE_OPTIONS, ListPage, ListTable, ListColumnHeader } from '@/features/milo';
+import { ListPage, ListTable, ListColumnHeader } from '@/features/milo';
 import { resolvePluginIcon } from '@/modules/plugins/client/icon-map';
 import { getResourceExtensions } from '@/modules/plugins/client/match-extension';
 import { usePlugins } from '@/modules/plugins/client/use-plugins';
@@ -335,8 +335,7 @@ export default function Page() {
         );
       },
     }),
-    // Column id stays `projectName` so the sidebar filter matches the row's
-    // project id; the cell shows the friendlier display name.
+    // Sorts/filters on the row's project id; the cell shows the friendlier display name.
     columnHelper.accessor('projectName', {
       id: 'projectName',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Project`} />,
@@ -381,6 +380,7 @@ export default function Page() {
         data={rows}
         columns={columns}
         pageSize={50}
+        layout="flush"
         getRowId={(row) => `${row.type}/${row.uid}`}
         defaultSort={[{ id: 'createdAt', desc: true }]}
         searchPlaceholder={t`Search resources...`}
@@ -388,10 +388,13 @@ export default function Page() {
         controlledSearch={{ value: search, onChange: setSearch }}
         hasMore={hasMore}
         hasMoreMessage={t`Each resource type is limited to 2,000 results at a time. Refine your search to surface other resources.`}
-        filters={[
+        filterFields={[
+          { id: 'name', label: t`Name`, type: 'text', accessor: 'name' },
           {
-            column: 'type',
+            id: 'type',
             label: t`Type`,
+            type: 'enum',
+            accessor: 'type',
             options: [
               { value: 'edge', label: t`Application Load Balancer`, icon: <ENTITY_ICONS.edge /> },
               { value: 'dns', label: t`DNS`, icon: <ENTITY_ICONS.dns /> },
@@ -403,20 +406,14 @@ export default function Page() {
             ],
           },
           {
-            type: 'searchable',
-            column: 'projectName',
+            id: 'project',
             label: t`Project`,
+            type: 'enum',
+            accessor: 'projectName',
             options: projectOptions,
-            searchPlaceholder: t`Search projects…`,
             emptyHint: t`Type to filter by project name.`,
-            pageSize: 8,
           },
-          {
-            column: 'createdAt',
-            label: t`Created`,
-            type: 'dateRange',
-            options: DATE_RANGE_OPTIONS,
-          },
+          { id: 'createdAt', label: t`Created`, type: 'date', accessor: 'createdAt' },
         ]}
       />
     </ListPage>

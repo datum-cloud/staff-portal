@@ -1,18 +1,12 @@
 import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
+import { ListPage, ListTable, ListColumnHeader } from '@/features/milo';
 import {
-  DATE_RANGE_OPTIONS,
-  ListGrowthChart,
-  ListPage,
-  ListTable,
-  ListColumnHeader,
-} from '@/features/milo';
-import {
+  PROJECT_PHASE_OPTIONS,
   ProjectCleanupMessage,
   ProjectDeletingFor,
   ProjectPhaseBadge,
-  projectPhaseFilter,
 } from '@/features/project';
 import { type ProjectPhase, withProjectPhase } from '@/features/project/lib/project-phase';
 import { useOrganizationSearch } from '@/hooks/use-search';
@@ -32,8 +26,6 @@ export const meta: Route.MetaFunction = () => {
 type ProjectListRow = GqlProject & { phase: ProjectPhase };
 
 const columnHelper = createColumnHelper<ProjectListRow>();
-
-const getProjectCreatedAt = (project: GqlProject) => project.createdAt;
 
 export default function Page() {
   const tableQuery = useAllProjectsQuery();
@@ -180,47 +172,66 @@ export default function Page() {
         data={projects}
         columns={columns}
         pageSize={50}
+        layout="flush"
         getRowId={(row) => row.name}
         defaultSort={[{ id: 'createdAt', desc: true }]}
         searchPlaceholder={t`Search projects...`}
         emptyMessage={t`No projects found.`}
         hasMore={tableQuery.data?.hasMore ?? false}
         hasMoreMessage={t`Limited to 10,000 projects. Refine your search to surface others.`}
-        toolbar={
-          <ListGrowthChart
-            items={projects}
-            getCreatedAt={getProjectCreatedAt}
-            title={t`Total projects`}
-            loading={tableQuery.isLoading}
-          />
-        }
-        filters={[
+        filterFields={[
           {
-            type: 'searchable',
-            column: 'organizationName',
+            id: 'name',
+            label: t`Name`,
+            type: 'text',
+            accessor: (row) => `${row.displayName} ${row.name}`,
+          },
+          {
+            id: 'phase',
+            label: t`Status`,
+            type: 'enum',
+            accessor: 'phase',
+            options: PROJECT_PHASE_OPTIONS,
+          },
+          {
+            id: 'deletingSince',
+            label: t`Deleting since`,
+            type: 'date',
+            accessor: 'deletionTimestamp',
+          },
+          {
+            id: 'waitingOn',
+            label: t`Waiting on`,
+            type: 'text',
+            accessor: 'resourceCleanupMessage',
+          },
+          {
+            id: 'company',
+            label: t`Company`,
+            type: 'text',
+            accessor: 'organizationBusinessName',
+          },
+          {
+            id: 'organization',
             label: t`Organization`,
+            type: 'enum',
+            accessor: 'organizationName',
             options: organizationOptions,
-            searchPlaceholder: t`Search organizations…`,
             emptyHint: t`Type at least 2 characters to search all organizations.`,
-            pageSize: 8,
             onSearchChange: orgSearch.setSearch,
             isSearching: orgSearch.isLoading,
           },
           {
-            column: 'hasActiveBillingAccount',
+            id: 'billing',
             label: t`Billing`,
+            type: 'enum',
+            accessor: 'hasActiveBillingAccount',
             options: [
               { value: 'true', label: <BadgeState state="yes" /> },
               { value: 'false', label: <BadgeState state="no" /> },
             ],
           },
-          projectPhaseFilter(t`Status`),
-          {
-            column: 'createdAt',
-            label: t`Created`,
-            type: 'dateRange' as const,
-            options: DATE_RANGE_OPTIONS,
-          },
+          { id: 'createdAt', label: t`Created`, type: 'date', accessor: 'createdAt' },
         ]}
         searchFn={(row, search) => {
           const q = search.trim().toLowerCase();

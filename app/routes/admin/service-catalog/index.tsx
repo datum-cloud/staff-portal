@@ -1,6 +1,6 @@
 import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
-import { SectionCard } from '@/features/milo';
+import { SectionCard, SectionViewBar } from '@/features/milo';
 import { useServiceListQuery } from '@/resources/request/client';
 import { serviceCatalogRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
@@ -96,6 +96,15 @@ function CardSkeleton() {
 }
 
 export default function ServiceCatalogPage() {
+  return (
+    <>
+      <SectionViewBar />
+      <ServiceCatalogContent />
+    </>
+  );
+}
+
+function ServiceCatalogContent() {
   const { data, isLoading, error, refetch } = useServiceListQuery();
 
   const [search, setSearch] = useState('');

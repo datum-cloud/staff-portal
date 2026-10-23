@@ -2,18 +2,12 @@ import type { Route } from './+types/index';
 import { AppBadge } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogForm } from '@/components/dialog';
-import { DisplayName, DisplayText } from '@/components/display';
+import { DisplayText } from '@/components/display';
 import GitHubIcon from '@/components/icon/github';
 import GoogleIcon from '@/components/icon/google';
 import { UserAvatar } from '@/components/user-avatar';
-import { FraudDecisionBadge, FraudScore } from '@/features/fraud';
-import {
-  DATE_RANGE_OPTIONS,
-  ListGrowthChart,
-  ListPage,
-  ListTable,
-  ListColumnHeader,
-} from '@/features/milo';
+import { FraudDecisionBadge } from '@/features/fraud';
+import { ListPage, ListTable, ListColumnHeader } from '@/features/milo';
 import { UserRejectDialog, useUserPlatformAccess } from '@/features/user';
 import type { GqlUser } from '@/resources/gql/user.gql';
 import {
@@ -35,7 +29,7 @@ import { Trans } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import { MailIcon, type LucideIcon } from 'lucide-react';
 import { useMemo, useState, type ComponentType, type SVGProps } from 'react';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { z } from 'zod';
 
 export const meta: Route.MetaFunction = () => {
@@ -52,8 +46,6 @@ const LOGIN_PROVIDERS: Record<
 };
 
 const columnHelper = createColumnHelper<GqlUser>();
-
-const getUserCreatedAt = (user: ComMiloapisIamV1Alpha1User) => user.metadata?.creationTimestamp;
 
 export default function Page() {
   const navigate = useNavigate();
@@ -114,6 +106,9 @@ export default function Page() {
   const columns = [
     columnHelper.accessor('spec.givenName', {
       header: ({ column }) => <ListColumnHeader column={column} title={t`Name`} />,
+      // Fixed width (auto layout would otherwise hand this column spare space);
+      // the inner max-w caps its content so long names truncate, not widen it.
+      meta: { cellClassName: 'w-64' },
       cell: ({ row }) => {
         const userName = row.original.metadata?.name ?? '';
         const displayName =
@@ -121,14 +116,16 @@ export default function Page() {
         const email = row.original.spec?.email ?? '';
 
         return (
-          <div className="flex items-center gap-2.5">
+          <div className="flex max-w-56 items-center gap-2.5">
             <UserAvatar
               name={displayName || email}
               avatarUrl={row.original.status?.avatarUrl}
               className="size-7 shrink-0"
               fallbackClassName="text-xs"
             />
-            <DisplayName displayName={displayName || email} to={`./${userName}`} />
+            <Link to={`./${userName}`} title={displayName || email} className="min-w-0 truncate">
+              {displayName || email}
+            </Link>
           </div>
         );
       },
@@ -156,20 +153,6 @@ export default function Page() {
       header: ({ column }) => <ListColumnHeader column={column} title={t`Access State`} />,
       cell: ({ getValue }) => <AppBadge status={getValue() ?? 'Pending'} />,
     }),
-    // Keyed on `fraudDecision` so the decision filter can facet on it; sorts by
-    // the numeric score, and the cell renders the score coloured by decision.
-    columnHelper.accessor('fraudDecision', {
-      id: 'fraudDecision',
-      header: ({ column }) => <ListColumnHeader column={column} title={t`Fraud Score`} />,
-      sortFn: (a, b) => {
-        const sa = a.original.fraudScore != null ? Number(a.original.fraudScore) : -1;
-        const sb = b.original.fraudScore != null ? Number(b.original.fraudScore) : -1;
-        return sa - sb;
-      },
-      cell: ({ row }) => (
-        <FraudScore score={row.original.fraudScore} decision={row.original.fraudDecision} />
-      ),
-    }),
     columnHelper.accessor('metadata.creationTimestamp', {
       id: 'metadata.creationTimestamp',
       header: ({ column }) => <ListColumnHeader column={column} title={t`Created`} />,
@@ -178,8 +161,10 @@ export default function Page() {
     columnHelper.display({
       id: 'actions',
       header: () => null,
+      // w-px shrinks the column to its button instead of a share of spare width.
+      meta: { cellClassName: 'w-px px-2' },
       cell: ({ row }) => (
-        <div className="flex w-full justify-end">
+        <div className="flex w-full justify-center">
           <DataTable.RowActions
             isLoading={loadingStates[row.original.metadata?.name ?? '']}
             row={row}
@@ -289,9 +274,12 @@ export default function Page() {
           data={users}
           columns={columns}
           pageSize={50}
+          layout="flush"
           actions={
             <Button
-              icon={<ACTION_ICONS.invite size={16} />}
+              size="xs"
+              theme="outline"
+              icon={<ACTION_ICONS.invite size={14} />}
               onClick={() => setInviteDialogOpen(true)}>
               <Trans>Invite User</Trans>
             </Button>
@@ -302,18 +290,20 @@ export default function Page() {
           hasMoreMessage={t`Limited to 10,000 users. Refine your search to surface others.`}
           searchPlaceholder={t`Search users...`}
           emptyMessage={t`No users found.`}
-          toolbar={
-            <ListGrowthChart
-              items={users}
-              getCreatedAt={getUserCreatedAt}
-              title={t`Total users`}
-              loading={tableQuery.isLoading}
-            />
-          }
-          filters={[
+          filterFields={[
             {
-              column: 'status.platformAccess',
+              id: 'name',
+              label: t`Name`,
+              type: 'text',
+              accessor: (row) =>
+                `${row.spec?.givenName ?? ''} ${row.spec?.familyName ?? ''}`.trim(),
+            },
+            { id: 'email', label: t`Email`, type: 'text', accessor: 'spec.email' },
+            {
+              id: 'platformAccess',
               label: t`Access State`,
+              type: 'enum',
+              accessor: 'status.platformAccess',
               options: [
                 { value: 'Pending', label: <AppBadge status="pending" /> },
                 { value: 'Approved', label: <AppBadge status="approved" /> },
@@ -322,8 +312,10 @@ export default function Page() {
               ],
             },
             {
-              column: 'fraudDecision',
+              id: 'fraudDecision',
               label: t`Fraud Decision`,
+              type: 'enum',
+              accessor: 'fraudDecision',
               options: [
                 { value: 'ACCEPTED', label: <FraudDecisionBadge decision="ACCEPTED" /> },
                 { value: 'REVIEW', label: <FraudDecisionBadge decision="REVIEW" /> },
@@ -331,10 +323,10 @@ export default function Page() {
               ],
             },
             {
-              column: 'metadata.creationTimestamp',
+              id: 'created',
               label: t`Created`,
-              type: 'dateRange',
-              options: DATE_RANGE_OPTIONS,
+              type: 'date',
+              accessor: 'metadata.creationTimestamp',
             },
           ]}
           searchFn={(row, search) => {

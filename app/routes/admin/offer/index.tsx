@@ -17,6 +17,7 @@ import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1Offer } from '@openapi/billing.miloapis.com/v1alpha1';
+import { useMemo } from 'react';
 
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Offers`);
@@ -28,6 +29,20 @@ export default function Page() {
   const tableQuery = useOfferListQuery({ limit: 500 });
   const defaultOfferQuery = useBillingDefaultOfferQuery();
   const defaultOfferName = defaultOfferQuery.data ?? '';
+  const offers = tableQuery.data?.items;
+  // Offer stages vary by catalog, so offer whichever ones are in use.
+  const stageOptions = useMemo(
+    () =>
+      Array.from(new Set((offers ?? []).map((o) => o.spec?.launchStage).filter(Boolean)))
+        .sort()
+        .map((stage) => ({
+          value: stage as string,
+          label: (
+            <BadgeState state={stage as string} message={formatLaunchStage(stage as string)} />
+          ),
+        })),
+    [offers]
+  );
 
   const columns = [
     columnHelper.accessor((row) => getOfferDisplayName(row), {
@@ -83,15 +98,60 @@ export default function Page() {
         data={tableQuery.data?.items ?? []}
         columns={columns}
         pageSize={50}
+        layout="flush"
         getRowId={(row) => row.metadata?.name ?? ''}
         defaultSort={[{ id: 'metadata.creationTimestamp', desc: true }]}
         searchPlaceholder={t`Search offers...`}
         emptyMessage={t`No offers found.`}
+        filterFields={[
+          {
+            id: 'name',
+            label: t`Name`,
+            type: 'text',
+            accessor: (row) => `${getOfferDisplayName(row)} ${row.metadata?.name ?? ''}`,
+          },
+          {
+            id: 'default',
+            label: t`Default`,
+            type: 'enum',
+            accessor: (row) => String((row.metadata?.name ?? '') === defaultOfferName),
+            options: [
+              { value: 'true', label: t`Default` },
+              { value: 'false', label: t`Not default` },
+            ],
+          },
+          {
+            id: 'stage',
+            label: t`Stage`,
+            type: 'enum',
+            accessor: 'spec.launchStage',
+            options: stageOptions,
+          },
+          {
+            id: 'chargeTypes',
+            label: t`Charge types`,
+            type: 'text',
+            accessor: (row) => formatChargeTypes(row.spec?.chargeTypes ?? []),
+          },
+          {
+            id: 'published',
+            label: t`Published`,
+            type: 'date',
+            accessor: 'status.publishedAt',
+          },
+          {
+            id: 'created',
+            label: t`Created`,
+            type: 'date',
+            accessor: 'metadata.creationTimestamp',
+          },
+        ]}
         actions={
           <LinkButton
-            type="primary"
+            size="xs"
+            theme="outline"
             href={offerRoutes.create()}
-            icon={<ACTION_ICONS.add size={16} />}>
+            icon={<ACTION_ICONS.add size={14} />}>
             <Trans>Create Offer</Trans>
           </LinkButton>
         }

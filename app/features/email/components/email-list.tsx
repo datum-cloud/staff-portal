@@ -20,7 +20,7 @@ interface EmailListProps {
   queryKeyPrefix: string | string[];
   fetchFn: () => Promise<ComMiloapisNotificationV1Alpha1EmailList>;
   searchPlaceholder?: string;
-  /** `page` (default): rich filter sidebar, page inset. `tab`: inline filters + tab inset, for embedding in a detail tab. */
+  /** `page` (default): flush layout + rule filters, page inset. `tab`: inline filters + tab inset, for embedding in a detail tab. */
   variant?: 'page' | 'tab';
 }
 
@@ -56,6 +56,17 @@ export default function EmailList({
   });
 
   const data = useMemo(() => rowsForTable(tableQuery.data?.items ?? []), [tableQuery.data?.items]);
+
+  const priorityOptions = [
+    { value: 'normal', label: t`Normal` },
+    { value: 'high', label: t`High` },
+    { value: 'low', label: t`Low` },
+  ];
+  const statusOptions = [
+    { value: 'True', label: t`Delivered` },
+    { value: 'False', label: t`Failed` },
+    { value: 'Unknown', label: t`Pending` },
+  ];
 
   const columns = [
     columnHelper.accessor('status.emailAddress', {
@@ -113,27 +124,61 @@ export default function EmailList({
       searchPlaceholder={searchPlaceholder ?? t`Search email activity...`}
       emptyMessage={t`No email activity found.`}
       inset={variant === 'tab' ? 'tab' : 'page'}
-      filterLayout={variant === 'tab' ? 'inline' : 'sidebar'}
-      filters={[
-        {
-          column: 'spec.priority',
-          label: t`Priority`,
-          options: [
-            { value: 'normal', label: t`Normal` },
-            { value: 'high', label: t`High` },
-            { value: 'low', label: t`Low` },
-          ],
-        },
-        {
-          column: 'deliveryStatus',
-          label: t`Status`,
-          options: [
-            { value: 'True', label: t`Delivered` },
-            { value: 'False', label: t`Failed` },
-            { value: 'Unknown', label: t`Pending` },
-          ],
-        },
-      ]}
+      // Page: flush layout + rule filters. Tab: carded with inline filters,
+      // matching the other detail-tab tables.
+      {...(variant === 'tab'
+        ? {
+            filterLayout: 'inline' as const,
+            filters: [
+              {
+                column: 'spec.priority',
+                label: t`Priority`,
+                options: priorityOptions,
+              },
+              {
+                column: 'deliveryStatus',
+                label: t`Status`,
+                options: statusOptions,
+              },
+            ],
+          }
+        : {
+            layout: 'flush' as const,
+            filterFields: [
+              {
+                id: 'recipient',
+                label: t`Recipient`,
+                type: 'text' as const,
+                accessor: 'status.emailAddress',
+              },
+              {
+                id: 'status',
+                label: t`Status`,
+                type: 'enum' as const,
+                accessor: 'deliveryStatus',
+                options: statusOptions,
+              },
+              {
+                id: 'priority',
+                label: t`Priority`,
+                type: 'enum' as const,
+                accessor: 'spec.priority',
+                options: priorityOptions,
+              },
+              {
+                id: 'subject',
+                label: t`Subject`,
+                type: 'text' as const,
+                accessor: 'status.subject',
+              },
+              {
+                id: 'sent',
+                label: t`Sent`,
+                type: 'date' as const,
+                accessor: 'metadata.creationTimestamp',
+              },
+            ],
+          })}
       searchFn={(row, search) => {
         const q = search.trim().toLowerCase();
         if (!q) return true;
