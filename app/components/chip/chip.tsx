@@ -43,13 +43,25 @@ export function Chip({
 }: ChipProps) {
   const [open, setOpen] = React.useState(false);
 
+  // Drop blank string items — each item renders as a Badge, so an empty string
+  // would show as a pill with a border and no text. Non-string (ReactNode)
+  // items are kept as-is.
+  const cleanedItems = React.useMemo(
+    () => (items ?? []).filter((item) => typeof item !== 'string' || item.trim().length > 0),
+    [items]
+  );
+
   const { visibleItems, hiddenItems } = React.useMemo(() => {
-    if (wrap) return { visibleItems: items, hiddenItems: [] as ChipItem[] };
-    if (!items || items.length === 0)
+    if (wrap) return { visibleItems: cleanedItems, hiddenItems: [] as ChipItem[] };
+    if (cleanedItems.length === 0)
       return { visibleItems: [] as ChipItem[], hiddenItems: [] as ChipItem[] };
-    if (items.length <= maxVisible) return { visibleItems: items, hiddenItems: [] as ChipItem[] };
-    return { visibleItems: items.slice(0, maxVisible), hiddenItems: items.slice(maxVisible) };
-  }, [items, maxVisible, wrap]);
+    if (cleanedItems.length <= maxVisible)
+      return { visibleItems: cleanedItems, hiddenItems: [] as ChipItem[] };
+    return {
+      visibleItems: cleanedItems.slice(0, maxVisible),
+      hiddenItems: cleanedItems.slice(maxVisible),
+    };
+  }, [cleanedItems, maxVisible, wrap]);
 
   const renderDefaultChip = (item: ChipItem, index: number) => {
     const isClickable = Boolean(onChipClick) && !disabled;
