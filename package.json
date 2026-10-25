@@ -154,7 +154,17 @@
     "@hey-api/json-schema-ref-parser": {
       "js-yaml": "^4.3.2"
     },
-    "axios": "$axios"
+    "axios": "$axios",
+    "@humanfs/node": "^0.16.8",
+    "react-router-hono-server": {
+      "@hono/node-server": "2.0.10"
+    },
+    "@hono/vite-dev-server": {
+      "@hono/node-server": "^1.19.15"
+    },
+    "qs": "^6.16.0",
+    "@babel/core": "^7.29.6",
+    "katex": "^0.18.2"
   },
   "engines": {
     "node": ">=26.12.1"
