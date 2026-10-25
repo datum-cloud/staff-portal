@@ -52,8 +52,8 @@
     "@opentelemetry/exporter-trace-otlp-http": "^0.221.0",
     "@opentelemetry/sdk-node": "^0.221.0",
     "@opentelemetry/sdk-trace-base": "^2.0.1",
-    "@react-router/fs-routes": "^7.10.1",
-    "@react-router/node": "^7.12.0",
+    "@react-router/fs-routes": "^7.18.2",
+    "@react-router/node": "^7.18.2",
     "@sentry/react-router": "^10.5.0",
     "@streamdown/code": "^1.1.1",
     "@tanstack/react-query": "^5.80.3",
@@ -66,7 +66,7 @@
     "@vvo/tzdb": "^6.184.0",
     "accept-language-parser": "^1.5.0",
     "ai": "^7.0.0",
-    "axios": "^1.13.2",
+    "axios": "^1.20.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
@@ -86,7 +86,7 @@
     "react-day-picker": "^10.0.0",
     "react-dom": "^19.2.3",
     "react-hook-form": "^7.72.0",
-    "react-router": "^7.12.0",
+    "react-router": "^7.18.2",
     "react-router-hono-server": "^3.0.0",
     "recharts": "^3.0.0",
     "remix-auth": "^4.2.0",
@@ -105,7 +105,7 @@
     "@hey-api/openapi-ts": "^0.99.0",
     "@inquirer/prompts": "^8.4.2",
     "@lingui/vite-plugin": "^6.0.0",
-    "@react-router/dev": "^7.12.0",
+    "@react-router/dev": "^7.18.2",
     "@tailwindcss/vite": "^4.1.6",
     "@testing-library/cypress": "^10.1.0",
     "@trivago/prettier-plugin-sort-imports": "^6.0.0",
@@ -148,7 +148,13 @@
     "graphql": "17.0.2",
     "oxfmt": {
       "tinypool": "^2.1.2"
-    }
+    },
+    "@graphql-tools/utils": "^12.1.0",
+    "ip-address": "^10.7.5",
+    "@hey-api/json-schema-ref-parser": {
+      "js-yaml": "^4.3.2"
+    },
+    "axios": "$axios"
   },
   "engines": {
     "node": ">=26.12.1"
