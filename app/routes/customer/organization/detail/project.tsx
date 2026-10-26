@@ -3,7 +3,11 @@ import type { Route } from './+types/index';
 import { DateTime } from '@/components/date';
 import { ListColumnHeader, ListTable } from '@/features/milo';
 import { ProjectDeletingFor, ProjectPhaseBadge, projectPhaseFilter } from '@/features/project';
-import { type ProjectPhase, withProjectPhase } from '@/features/project/lib/project-phase';
+import {
+  type ProjectPhase,
+  type WithProjectPhase,
+  withProjectPhase,
+} from '@/features/project/lib/project-phase';
 import type { GqlProject } from '@/resources/gql/project.gql';
 import { useAllProjectSuspensionsQuery, useOrgProjectListQuery } from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
@@ -23,7 +27,7 @@ export const meta: Route.MetaFunction = ({ matches }) => {
   return metaObject(`Projects - ${organizationName}`);
 };
 
-type ProjectListRow = GqlProject & { phase: ProjectPhase };
+type ProjectListRow = WithProjectPhase<GqlProject>;
 
 const columnHelper = createColumnHelper<ProjectListRow>();
 

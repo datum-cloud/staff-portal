@@ -8,7 +8,11 @@ import {
   ProjectDeletingFor,
   ProjectPhaseBadge,
 } from '@/features/project';
-import { type ProjectPhase, withProjectPhase } from '@/features/project/lib/project-phase';
+import {
+  type ProjectPhase,
+  type WithProjectPhase,
+  withProjectPhase,
+} from '@/features/project/lib/project-phase';
 import { useOrganizationSearch } from '@/hooks/use-search';
 import type { GqlProject } from '@/resources/gql/project.gql';
 import { useAllProjectsQuery, useAllProjectSuspensionsQuery } from '@/resources/request/client';
@@ -23,7 +27,7 @@ export const meta: Route.MetaFunction = () => {
   return metaObject(t`Projects`);
 };
 
-type ProjectListRow = GqlProject & { phase: ProjectPhase };
+type ProjectListRow = WithProjectPhase<GqlProject>;
 
 const columnHelper = createColumnHelper<ProjectListRow>();
 

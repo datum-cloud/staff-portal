@@ -18,7 +18,9 @@ describe('isProjectDeleting', () => {
   });
 
   it('is false when deletionTimestamp is unset', () => {
-    expect(isProjectDeleting({ metadata: {}, state: 'True' })).toBe(false);
+    expect(
+      isProjectDeleting({ metadata: {}, conditions: [{ type: 'Ready', status: 'True' }] })
+    ).toBe(false);
     expect(isProjectDeleting(undefined)).toBe(false);
   });
 });
@@ -44,17 +46,21 @@ describe('getResourceCleanupMessage', () => {
     );
   });
 
-  it('returns resourceCleanupMessage from a GraphQL list row', () => {
+  it('returns the ResourceCleanup condition message from a gateway row', () => {
     expect(
       getResourceCleanupMessage({
-        resourceCleanupMessage: 'Waiting for project resources to be removed',
+        conditions: [
+          { type: 'ResourceCleanup', message: 'Waiting for project resources to be removed' },
+        ],
       })
     ).toBe('Waiting for project resources to be removed');
   });
 
   it('returns null when the condition is missing or empty', () => {
     expect(getResourceCleanupMessage({ status: { conditions: [] } })).toBeNull();
-    expect(getResourceCleanupMessage({ resourceCleanupMessage: '  ' })).toBeNull();
+    expect(
+      getResourceCleanupMessage({ conditions: [{ type: 'ResourceCleanup', message: '  ' }] })
+    ).toBeNull();
   });
 });
 
@@ -66,29 +72,44 @@ describe('getProjectPhase', () => {
         status: { conditions: [{ type: 'Ready', status: 'True' }] },
       })
     ).toBe('Deleting');
-    expect(getProjectPhase({ deletionTimestamp: '2026-08-20T10:00:00Z', state: 'True' })).toBe(
-      'Deleting'
-    );
+    expect(
+      getProjectPhase({
+        deletionTimestamp: '2026-08-20T10:00:00Z',
+        conditions: [{ type: 'Ready', status: 'True' }],
+      })
+    ).toBe('Deleting');
   });
 
   it('returns Ready when Ready is True and the project is not deleting', () => {
     expect(getProjectPhase({ status: { conditions: [{ type: 'Ready', status: 'True' }] } })).toBe(
       'Ready'
     );
-    expect(getProjectPhase({ state: 'True' })).toBe('Ready');
+    expect(getProjectPhase({ conditions: [{ type: 'Ready', status: 'True' }] })).toBe('Ready');
   });
 
   it('returns Pending when Ready is not True', () => {
     expect(getProjectPhase({ status: { conditions: [{ type: 'Ready', status: 'False' }] } })).toBe(
       'Pending'
     );
-    expect(getProjectPhase({ state: 'False' })).toBe('Pending');
+    expect(getProjectPhase({ conditions: [{ type: 'Ready', status: 'False' }] })).toBe('Pending');
     expect(getProjectPhase({})).toBe('Pending');
   });
 });
 
 describe('withProjectPhase', () => {
   it('adds a derived phase field', () => {
-    expect(withProjectPhase({ state: 'True', name: 'p' }).phase).toBe('Ready');
+    expect(
+      withProjectPhase({ name: 'p', conditions: [{ type: 'Ready', status: 'True' }] }).phase
+    ).toBe('Ready');
+  });
+
+  it('adds the cleanup message from conditions', () => {
+    const row = withProjectPhase({
+      name: 'p',
+      deletionTimestamp: '2026-08-20T10:00:00Z',
+      conditions: [{ type: 'ResourceCleanup', message: 'Waiting for 2 DNS zones' }],
+    });
+    expect(row.resourceCleanupMessage).toBe('Waiting for 2 DNS zones');
+    expect(row.phase).toBe('Deleting');
   });
 });

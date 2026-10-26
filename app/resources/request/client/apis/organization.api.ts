@@ -142,22 +142,26 @@ type GqlOrganizationFields = {
   displayName: string;
   type: string;
   createdAt?: string | null;
-  state?: string | null;
   contactInfo?: {
     businessName?: string | null;
     name?: string | null;
     email?: string | null;
   } | null;
-  onboardingComplete?: boolean | null;
-  onboardingReason?: string | null;
-  onboardingMessage?: string | null;
+  conditions?: Array<{
+    type: string;
+    status: string;
+    reason?: string | null;
+    message?: string | null;
+  }> | null;
   projects?: { items?: Array<{ name: string }> | null; continueToken?: string | null } | null;
 };
 
 /** Maps gateway Organization fields into the list-row shape used by the UI. */
 export const mapGqlOrganization = (org: GqlOrganizationFields): GqlOrganization => {
   const businessName = org.contactInfo?.businessName?.trim() || null;
-  const onboardingComplete = org.onboardingComplete === true;
+  const ready = org.conditions?.find((c) => c.type === 'Ready');
+  const onboarding = org.conditions?.find((c) => c.type === 'OnboardingComplete');
+  const onboardingComplete = onboarding?.status === 'True';
   const projects = org.projects;
 
   return {
@@ -165,7 +169,7 @@ export const mapGqlOrganization = (org: GqlOrganizationFields): GqlOrganization 
     displayName: org.displayName,
     type: org.type,
     createdAt: org.createdAt ?? null,
-    state: org.state ?? null,
+    state: ready?.status ?? null,
     contactInfo: org.contactInfo
       ? {
           businessName,
@@ -176,8 +180,8 @@ export const mapGqlOrganization = (org: GqlOrganizationFields): GqlOrganization 
     onboardingComplete,
     onboardingStatus: onboardingComplete ? 'Active' : 'Inactive',
     entityType: businessName ? 'Company' : 'Individual',
-    onboardingReason: org.onboardingReason ?? null,
-    onboardingMessage: org.onboardingMessage ?? null,
+    onboardingReason: onboarding?.reason ?? null,
+    onboardingMessage: onboarding?.message ?? null,
     projectCount: projects ? (projects.items ?? []).length : null,
     hasMoreProjects: projects ? Boolean(projects.continueToken) : null,
   };
