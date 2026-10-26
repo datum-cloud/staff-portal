@@ -5,7 +5,7 @@ import type { FieldsSelection, Query, QueryRequest } from './generated';
 import type { GqlScope } from './types';
 import { mapApiError } from '@/utils/errors/error-mapper';
 import { createClient, cacheExchange, fetchExchange } from '@urql/core';
-import type { Client as UrqlClient, SSRExchange } from '@urql/core';
+import type { Client as UrqlClient, OperationResult, SSRExchange } from '@urql/core';
 
 function getRequestContext() {
   if (typeof window !== 'undefined') return undefined;
@@ -77,6 +77,18 @@ export function createGqlClient(scope: GqlScope, ssr?: SSRExchange): UrqlClient 
 }
 
 /**
+ * True when the gateway returned data and every error sits below a root field.
+ * The gateway nulls a single row's enrichment field (an org display name, a
+ * billing flag) and reports why in errors[], so the rest of the list still
+ * renders. A failed root field or a network error is still thrown.
+ */
+function isPartialResult(result: OperationResult): boolean {
+  const { data, error } = result;
+  if (!data || !error || error.networkError) return false;
+  return error.graphQLErrors.every((e) => (e.path?.length ?? 0) > 1);
+}
+
+/**
  * Builds a named GraphQL operation with genql and runs it on a scoped urql
  * client, returning the typed result data.
  *
@@ -96,7 +108,7 @@ export async function runGqlQuery<R extends QueryRequest>(
   const client = createGqlClient(scope);
   const op = generateQueryOp({ __name: name, ...request });
   const result = await client.query(op.query, op.variables).toPromise();
-  if (result.error) throw mapApiError(result.error);
+  if (result.error && !isPartialResult(result)) throw mapApiError(result.error);
   return (result.data as FieldsSelection<Query, R> | undefined) ?? null;
 }
 

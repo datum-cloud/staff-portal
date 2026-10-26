@@ -224,7 +224,8 @@ export const listServiceConsumers = async (
       name: c.consumerProject.name,
       displayName: c.consumerProject.displayName,
       organizationName: c.consumerProject.organizationName,
-      organizationDisplayName: c.consumerProject.organizationDisplayName,
+      organizationDisplayName:
+        c.consumerProject.organizationDisplayName ?? c.consumerProject.organizationName,
     },
   }));
 };

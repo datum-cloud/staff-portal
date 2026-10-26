@@ -134,9 +134,9 @@ type ConsumerProject {
   organizationName: String!
 
   """
-  Owning organization's display name (kubernetes.io/display-name), falling back to organizationName.
+  Owning organization's display name (kubernetes.io/display-name). Null when the organization could not be read; the failure is reported in errors[].
   """
-  organizationDisplayName: String!
+  organizationDisplayName: String
 }
 
 type ServiceConsumer {
@@ -307,6 +307,18 @@ type OrgContactInfo {
   email: String
 }
 
+"""
+A single Kubernetes-style status condition on a Project or Organization.
+"""
+type Condition {
+  type: String!
+  status: String!
+  reason: String
+  message: String
+  lastTransitionTime: String
+  observedGeneration: Int
+}
+
 type Organization {
   """metadata.name — the stable organization ID."""
   name: String!
@@ -321,19 +333,22 @@ type Organization {
   createdAt: String
 
   """Status of the Ready condition."""
-  state: String
+  state: String @deprecated(reason: "Use conditions")
 
   """Contact details from spec.contactInfo."""
   contactInfo: OrgContactInfo
 
   """True when the OnboardingComplete condition status is True."""
-  onboardingComplete: Boolean!
+  onboardingComplete: Boolean @deprecated(reason: "Use conditions")
 
   """Reason from the OnboardingComplete condition."""
-  onboardingReason: String
+  onboardingReason: String @deprecated(reason: "Use conditions")
 
   """Human-readable message from the OnboardingComplete condition."""
-  onboardingMessage: String
+  onboardingMessage: String @deprecated(reason: "Use conditions")
+
+  """All status conditions reported by Milo, unfiltered."""
+  conditions: [Condition!]!
 
   """Members and pending invitations for this organization."""
   members: [OrgMember!]!
@@ -368,9 +383,9 @@ type Project {
   organizationName: String!
 
   """
-  Owning organization's display name (kubernetes.io/display-name), falling back to organizationName.
+  Owning organization's display name (kubernetes.io/display-name). Null when the organization could not be read; the failure is reported in errors[].
   """
-  organizationDisplayName: String!
+  organizationDisplayName: String
 
   """
   Owning organization's company / legal name from contactInfo.businessName.
@@ -378,16 +393,16 @@ type Project {
   organizationBusinessName: String
 
   """
-  True when the project has an Active billing-account binding to an account with a default payment method.
+  True when the project has an Active billing-account binding to an account with a default payment method. Null when billing could not be read; the failure is reported in errors[].
   """
-  hasActiveBillingAccount: Boolean!
+  hasActiveBillingAccount: Boolean
 
   """Bound billing account name when hasActiveBillingAccount is true."""
   billingAccountName: String
   createdAt: String
 
   """Status of the Ready condition."""
-  state: String
+  state: String @deprecated(reason: "Use conditions")
 
   """metadata.deletionTimestamp — set while the project is terminating."""
   deletionTimestamp: String
@@ -395,7 +410,10 @@ type Project {
   """
   Unparsed ResourceCleanup condition message naming what deletion is waiting on.
   """
-  resourceCleanupMessage: String
+  resourceCleanupMessage: String @deprecated(reason: "Use conditions")
+
+  """All status conditions reported by Milo, unfiltered."""
+  conditions: [Condition!]!
 }
 
 type ProjectList {

@@ -128,7 +128,7 @@ export default function Page() {
       cell: ({ getValue, row }) => {
         const displayName = getValue();
         const orgName = row.original.organizationName;
-        return <Link to={orgRoutes.detail(orgName)}>{displayName}</Link>;
+        return <Link to={orgRoutes.detail(orgName)}>{displayName ?? orgName}</Link>;
       },
     }),
     columnHelper.accessor('hasActiveBillingAccount', {
@@ -138,6 +138,10 @@ export default function Page() {
         const hasBilling = getValue();
         const orgName = row.original.organizationName;
         const accountName = row.original.billingAccountName;
+        // Null means the gateway could not read billing for this row.
+        if (hasBilling == null) {
+          return <BadgeState state="unknown" tooltip={t`Billing could not be read`} />;
+        }
         const badge = (
           <BadgeState
             state={hasBilling ? 'yes' : 'no'}

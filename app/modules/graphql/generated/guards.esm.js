@@ -118,6 +118,12 @@ export var isOrgContactInfo = function (obj) {
   return OrgContactInfo_possibleTypes.includes(obj.__typename);
 };
 
+var Condition_possibleTypes = ['Condition'];
+export var isCondition = function (obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isCondition"');
+  return Condition_possibleTypes.includes(obj.__typename);
+};
+
 var Organization_possibleTypes = ['Organization'];
 export var isOrganization = function (obj) {
   if (!obj || !obj.__typename) throw new Error('__typename is missing in "isOrganization"');

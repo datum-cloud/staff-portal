@@ -116,8 +116,8 @@ export interface ConsumerProject {
   displayName: Scalars['String'];
   /** The owning organization's machine name (spec.ownerRef.name). */
   organizationName: Scalars['String'];
-  /** Owning organization's display name (kubernetes.io/display-name), falling back to organizationName. */
-  organizationDisplayName: Scalars['String'];
+  /** Owning organization's display name (kubernetes.io/display-name). Null when the organization could not be read; the failure is reported in errors[]. */
+  organizationDisplayName?: Scalars['String'];
   __typename: 'ConsumerProject';
 }
 
@@ -273,6 +273,17 @@ export interface OrgContactInfo {
   __typename: 'OrgContactInfo';
 }
 
+/** A single Kubernetes-style status condition on a Project or Organization. */
+export interface Condition {
+  type: Scalars['String'];
+  status: Scalars['String'];
+  reason?: Scalars['String'];
+  message?: Scalars['String'];
+  lastTransitionTime?: Scalars['String'];
+  observedGeneration?: Scalars['Int'];
+  __typename: 'Condition';
+}
+
 export interface Organization {
   /** metadata.name — the stable organization ID. */
   name: Scalars['String'];
@@ -281,16 +292,30 @@ export interface Organization {
   /** Organization type: Personal or Standard. */
   type: Scalars['String'];
   createdAt?: Scalars['String'];
-  /** Status of the Ready condition. */
+  /**
+   * @deprecated Use conditions
+   * Status of the Ready condition.
+   */
   state?: Scalars['String'];
   /** Contact details from spec.contactInfo. */
   contactInfo?: OrgContactInfo;
-  /** True when the OnboardingComplete condition status is True. */
-  onboardingComplete: Scalars['Boolean'];
-  /** Reason from the OnboardingComplete condition. */
+  /**
+   * @deprecated Use conditions
+   * True when the OnboardingComplete condition status is True.
+   */
+  onboardingComplete?: Scalars['Boolean'];
+  /**
+   * @deprecated Use conditions
+   * Reason from the OnboardingComplete condition.
+   */
   onboardingReason?: Scalars['String'];
-  /** Human-readable message from the OnboardingComplete condition. */
+  /**
+   * @deprecated Use conditions
+   * Human-readable message from the OnboardingComplete condition.
+   */
   onboardingMessage?: Scalars['String'];
+  /** All status conditions reported by Milo, unfiltered. */
+  conditions: Condition[];
   /** Members and pending invitations for this organization. */
   members: OrgMember[];
   /**
@@ -316,21 +341,29 @@ export interface Project {
   displayName: Scalars['String'];
   /** Name of the owning organization. */
   organizationName: Scalars['String'];
-  /** Owning organization's display name (kubernetes.io/display-name), falling back to organizationName. */
-  organizationDisplayName: Scalars['String'];
+  /** Owning organization's display name (kubernetes.io/display-name). Null when the organization could not be read; the failure is reported in errors[]. */
+  organizationDisplayName?: Scalars['String'];
   /** Owning organization's company / legal name from contactInfo.businessName. */
   organizationBusinessName?: Scalars['String'];
-  /** True when the project has an Active billing-account binding to an account with a default payment method. */
-  hasActiveBillingAccount: Scalars['Boolean'];
+  /** True when the project has an Active billing-account binding to an account with a default payment method. Null when billing could not be read; the failure is reported in errors[]. */
+  hasActiveBillingAccount?: Scalars['Boolean'];
   /** Bound billing account name when hasActiveBillingAccount is true. */
   billingAccountName?: Scalars['String'];
   createdAt?: Scalars['String'];
-  /** Status of the Ready condition. */
+  /**
+   * @deprecated Use conditions
+   * Status of the Ready condition.
+   */
   state?: Scalars['String'];
   /** metadata.deletionTimestamp — set while the project is terminating. */
   deletionTimestamp?: Scalars['String'];
-  /** Unparsed ResourceCleanup condition message naming what deletion is waiting on. */
+  /**
+   * @deprecated Use conditions
+   * Unparsed ResourceCleanup condition message naming what deletion is waiting on.
+   */
   resourceCleanupMessage?: Scalars['String'];
+  /** All status conditions reported by Milo, unfiltered. */
+  conditions: Condition[];
   __typename: 'Project';
 }
 
@@ -622,7 +655,7 @@ export interface ConsumerProjectRequest {
   displayName?: boolean | number;
   /** The owning organization's machine name (spec.ownerRef.name). */
   organizationName?: boolean | number;
-  /** Owning organization's display name (kubernetes.io/display-name), falling back to organizationName. */
+  /** Owning organization's display name (kubernetes.io/display-name). Null when the organization could not be read; the failure is reported in errors[]. */
   organizationDisplayName?: boolean | number;
   __typename?: boolean | number;
   __scalar?: boolean | number;
@@ -839,6 +872,21 @@ export interface OrgContactInfoRequest {
   };
 }
 
+/** A single Kubernetes-style status condition on a Project or Organization. */
+export interface ConditionRequest {
+  type?: boolean | number;
+  status?: boolean | number;
+  reason?: boolean | number;
+  message?: boolean | number;
+  lastTransitionTime?: boolean | number;
+  observedGeneration?: boolean | number;
+  __typename?: boolean | number;
+  __scalar?: boolean | number;
+  __alias?: {
+    [alias: string]: ConditionRequest;
+  };
+}
+
 export interface OrganizationRequest {
   /** metadata.name — the stable organization ID. */
   name?: boolean | number;
@@ -847,16 +895,30 @@ export interface OrganizationRequest {
   /** Organization type: Personal or Standard. */
   type?: boolean | number;
   createdAt?: boolean | number;
-  /** Status of the Ready condition. */
+  /**
+   * @deprecated Use conditions
+   * Status of the Ready condition.
+   */
   state?: boolean | number;
   /** Contact details from spec.contactInfo. */
   contactInfo?: OrgContactInfoRequest;
-  /** True when the OnboardingComplete condition status is True. */
+  /**
+   * @deprecated Use conditions
+   * True when the OnboardingComplete condition status is True.
+   */
   onboardingComplete?: boolean | number;
-  /** Reason from the OnboardingComplete condition. */
+  /**
+   * @deprecated Use conditions
+   * Reason from the OnboardingComplete condition.
+   */
   onboardingReason?: boolean | number;
-  /** Human-readable message from the OnboardingComplete condition. */
+  /**
+   * @deprecated Use conditions
+   * Human-readable message from the OnboardingComplete condition.
+   */
   onboardingMessage?: boolean | number;
+  /** All status conditions reported by Milo, unfiltered. */
+  conditions?: ConditionRequest;
   /** Members and pending invitations for this organization. */
   members?: OrgMemberRequest;
   /**
@@ -892,21 +954,29 @@ export interface ProjectRequest {
   displayName?: boolean | number;
   /** Name of the owning organization. */
   organizationName?: boolean | number;
-  /** Owning organization's display name (kubernetes.io/display-name), falling back to organizationName. */
+  /** Owning organization's display name (kubernetes.io/display-name). Null when the organization could not be read; the failure is reported in errors[]. */
   organizationDisplayName?: boolean | number;
   /** Owning organization's company / legal name from contactInfo.businessName. */
   organizationBusinessName?: boolean | number;
-  /** True when the project has an Active billing-account binding to an account with a default payment method. */
+  /** True when the project has an Active billing-account binding to an account with a default payment method. Null when billing could not be read; the failure is reported in errors[]. */
   hasActiveBillingAccount?: boolean | number;
   /** Bound billing account name when hasActiveBillingAccount is true. */
   billingAccountName?: boolean | number;
   createdAt?: boolean | number;
-  /** Status of the Ready condition. */
+  /**
+   * @deprecated Use conditions
+   * Status of the Ready condition.
+   */
   state?: boolean | number;
   /** metadata.deletionTimestamp — set while the project is terminating. */
   deletionTimestamp?: boolean | number;
-  /** Unparsed ResourceCleanup condition message naming what deletion is waiting on. */
+  /**
+   * @deprecated Use conditions
+   * Unparsed ResourceCleanup condition message naming what deletion is waiting on.
+   */
   resourceCleanupMessage?: boolean | number;
+  /** All status conditions reported by Milo, unfiltered. */
+  conditions?: ConditionRequest;
   __typename?: boolean | number;
   __scalar?: boolean | number;
   __alias?: {
@@ -1180,6 +1250,12 @@ const OrgContactInfo_possibleTypes: string[] = ['OrgContactInfo'];
 export const isOrgContactInfo = (obj?: { __typename?: any } | null): obj is OrgContactInfo => {
   if (!obj?.__typename) throw new Error('__typename is missing in "isOrgContactInfo"');
   return OrgContactInfo_possibleTypes.includes(obj.__typename);
+};
+
+const Condition_possibleTypes: string[] = ['Condition'];
+export const isCondition = (obj?: { __typename?: any } | null): obj is Condition => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isCondition"');
+  return Condition_possibleTypes.includes(obj.__typename);
 };
 
 const Organization_possibleTypes: string[] = ['Organization'];
