@@ -49,7 +49,7 @@ export default {
         },
       ],
       organizations: [
-        24,
+        25,
         {
           limit: [3],
           cursor: [2],
@@ -57,13 +57,13 @@ export default {
         },
       ],
       organization: [
-        23,
+        24,
         {
           name: [2, 'String!'],
         },
       ],
       organizationProjects: [
-        26,
+        27,
         {
           orgName: [2, 'String!'],
           limit: [3],
@@ -71,13 +71,13 @@ export default {
         },
       ],
       organizationMembers: [
-        27,
+        28,
         {
           orgName: [2, 'String!'],
         },
       ],
       projects: [
-        26,
+        27,
         {
           limit: [3],
           cursor: [2],
@@ -85,31 +85,31 @@ export default {
         },
       ],
       project: [
-        25,
+        26,
         {
           name: [2, 'String!'],
         },
       ],
       orgQuotaBuckets: [
-        29,
+        30,
         {
           orgName: [2, 'String!'],
         },
       ],
       projectQuotaBuckets: [
-        29,
+        30,
         {
           projectName: [2, 'String!'],
         },
       ],
       orgQuotaGrants: [
-        33,
+        34,
         {
           orgName: [2, 'String!'],
         },
       ],
       projectQuotaGrants: [
-        33,
+        34,
         {
           projectName: [2, 'String!'],
         },
@@ -261,6 +261,15 @@ export default {
       email: [2],
       __typename: [2],
     },
+    Condition: {
+      type: [2],
+      status: [2],
+      reason: [2],
+      message: [2],
+      lastTransitionTime: [2],
+      observedGeneration: [3],
+      __typename: [2],
+    },
     Organization: {
       name: [2],
       displayName: [2],
@@ -271,9 +280,10 @@ export default {
       onboardingComplete: [20],
       onboardingReason: [2],
       onboardingMessage: [2],
-      members: [27],
+      conditions: [23],
+      members: [28],
       projects: [
-        26,
+        27,
         {
           limit: [3],
           cursor: [2],
@@ -282,7 +292,7 @@ export default {
       __typename: [2],
     },
     OrganizationList: {
-      items: [23],
+      items: [24],
       continueToken: [2],
       __typename: [2],
     },
@@ -298,10 +308,11 @@ export default {
       state: [2],
       deletionTimestamp: [2],
       resourceCleanupMessage: [2],
+      conditions: [23],
       __typename: [2],
     },
     ProjectList: {
-      items: [25],
+      items: [26],
       continueToken: [2],
       __typename: [2],
     },
@@ -336,7 +347,7 @@ export default {
       __typename: [2],
     },
     QuotaBucketList: {
-      items: [28],
+      items: [29],
       __typename: [2],
     },
     QuotaGrantAllowance: {
@@ -357,12 +368,12 @@ export default {
       namespace: [2],
       createdAt: [2],
       autoCreated: [20],
-      allowances: [30],
-      conditions: [31],
+      allowances: [31],
+      conditions: [32],
       __typename: [2],
     },
     QuotaGrantList: {
-      items: [32],
+      items: [33],
       __typename: [2],
     },
   },

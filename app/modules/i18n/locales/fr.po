@@ -221,7 +221,7 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-#: app/routes/customer/project/index.tsx:146
+#: app/routes/customer/project/index.tsx:150
 msgid "Active billing account with a payment method"
 msgstr ""
 
@@ -592,7 +592,7 @@ msgstr ""
 
 #: app/features/project/components/project-billing-card.tsx:38
 #: app/routes/customer/project/index.tsx:136
-#: app/routes/customer/project/index.tsx:226
+#: app/routes/customer/project/index.tsx:230
 msgid "Billing"
 msgstr ""
 
@@ -619,6 +619,10 @@ msgstr ""
 
 #: app/routes/customer/billing-account/detail/index.tsx:373
 msgid "Billing address"
+msgstr ""
+
+#: app/routes/customer/project/index.tsx:143
+msgid "Billing could not be read"
 msgstr ""
 
 #: app/features/organization/components/org-usage-card.tsx:86
@@ -803,7 +807,7 @@ msgstr ""
 #: app/routes/customer/organization/index.tsx:158
 #: app/routes/customer/organization/index.tsx:168
 #: app/routes/customer/project/index.tsx:112
-#: app/routes/customer/project/index.tsx:210
+#: app/routes/customer/project/index.tsx:214
 msgid "Company"
 msgstr ""
 
@@ -1097,8 +1101,8 @@ msgstr ""
 #: app/routes/customer/project/detail/domain/detail.tsx:128
 #: app/routes/customer/project/detail/export-policy/detail.tsx:83
 #: app/routes/customer/project/detail/export-policy/index.tsx:51
-#: app/routes/customer/project/index.tsx:163
-#: app/routes/customer/project/index.tsx:234
+#: app/routes/customer/project/index.tsx:167
+#: app/routes/customer/project/index.tsx:238
 #: app/routes/customer/resource/index.tsx:359
 #: app/routes/customer/resource/index.tsx:416
 #: app/routes/customer/user/detail/index.tsx:237
@@ -1342,7 +1346,7 @@ msgid "Deleting for"
 msgstr ""
 
 #: app/features/project/components/project-details-card.tsx:43
-#: app/routes/customer/project/index.tsx:198
+#: app/routes/customer/project/index.tsx:202
 msgid "Deleting since"
 msgstr ""
 
@@ -2446,7 +2450,7 @@ msgstr ""
 msgid "Limited to 10,000 organizations. Refine your search to surface others."
 msgstr ""
 
-#: app/routes/customer/project/index.tsx:181
+#: app/routes/customer/project/index.tsx:185
 msgid "Limited to 10,000 projects. Refine your search to surface others."
 msgstr ""
 
@@ -2685,7 +2689,7 @@ msgstr ""
 #: app/routes/customer/project/detail/export-policy/index.tsx:28
 #: app/routes/customer/project/detail/secret.tsx:24
 #: app/routes/customer/project/index.tsx:92
-#: app/routes/customer/project/index.tsx:185
+#: app/routes/customer/project/index.tsx:189
 #: app/routes/customer/resource/index.tsx:319
 #: app/routes/customer/resource/index.tsx:392
 #: app/routes/customer/user/detail/organization.tsx:34
@@ -2790,7 +2794,7 @@ msgstr ""
 msgid "No — none configured"
 msgstr ""
 
-#: app/routes/customer/project/index.tsx:147
+#: app/routes/customer/project/index.tsx:151
 msgid "No active billing account with a payment method"
 msgstr ""
 
@@ -3049,7 +3053,7 @@ msgid "No prices available yet"
 msgstr ""
 
 #: app/routes/customer/organization/detail/project.tsx:91
-#: app/routes/customer/project/index.tsx:179
+#: app/routes/customer/project/index.tsx:183
 msgid "No projects found."
 msgstr ""
 
@@ -3301,7 +3305,7 @@ msgstr ""
 #: app/routes/admin/service-catalog/detail/consumers.tsx:100
 #: app/routes/customer/billing-account/detail/index.tsx:294
 #: app/routes/customer/project/index.tsx:127
-#: app/routes/customer/project/index.tsx:216
+#: app/routes/customer/project/index.tsx:220
 msgid "Organization"
 msgstr ""
 
@@ -4142,7 +4146,7 @@ msgid "Search projects by name or ID..."
 msgstr ""
 
 #: app/routes/customer/organization/detail/project.tsx:90
-#: app/routes/customer/project/index.tsx:178
+#: app/routes/customer/project/index.tsx:182
 msgid "Search projects..."
 msgstr ""
 
@@ -4509,7 +4513,7 @@ msgstr ""
 #: app/routes/customer/project/detail/export-policy/detail.tsx:168
 #: app/routes/customer/project/detail/export-policy/index.tsx:44
 #: app/routes/customer/project/index.tsx:98
-#: app/routes/customer/project/index.tsx:191
+#: app/routes/customer/project/index.tsx:195
 #: app/routes/marketing/contact-group/detail/member.tsx:207
 #: app/routes/marketing/contact-group/index.tsx:75
 #: app/routes/marketing/contact-group/index.tsx:246
@@ -4805,7 +4809,7 @@ msgid "Type"
 msgstr ""
 
 #: app/features/billing/components/billing-account-list.tsx:272
-#: app/routes/customer/project/index.tsx:220
+#: app/routes/customer/project/index.tsx:224
 msgid "Type at least 2 characters to search all organizations."
 msgstr ""
 
@@ -5011,7 +5015,7 @@ msgid "Waiting for hostname ownership verification to complete"
 msgstr ""
 
 #: app/routes/customer/project/index.tsx:107
-#: app/routes/customer/project/index.tsx:204
+#: app/routes/customer/project/index.tsx:208
 msgid "Waiting on"
 msgstr ""
 
