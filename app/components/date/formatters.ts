@@ -3,8 +3,8 @@ import { format as dateFormat, formatDistanceToNowStrict } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
 import { enUS } from 'date-fns/locale/en-US';
 
-/** e.g. "June 12th at 11:30 AM" — used for absolute/table dates. */
-export const DEFAULT_DATE_FORMAT = "MMMM do 'at' h:mm a";
+/** e.g. "Oct 23, 2026 at 12:28PM" — used for absolute/table dates (#739). */
+export const DEFAULT_DATE_FORMAT = "MMM d, yyyy 'at' h:mma";
 
 /**
  * Parses a date string or Date object into a valid Date
