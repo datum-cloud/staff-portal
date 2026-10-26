@@ -5,7 +5,7 @@ import { sentryReactRouter } from '@sentry/react-router';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { reactRouterHonoServer } from 'react-router-hono-server/dev';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import macrosPlugin from 'vite-plugin-babel-macros';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
@@ -43,12 +43,12 @@ export default defineConfig((config) => {
     // Keep the production/dev plugin pipeline byte-identical; only the Cypress
     // component-test pipeline swaps reactRouter()/hono/sentry for plugin-react.
     plugins: isCypress
-      ? [tailwindcss(), macrosPlugin(), lingui(), react(), tsconfigPaths()]
+      ? [tailwindcss(), macrosPlugin() as unknown as Plugin, lingui(), react(), tsconfigPaths()]
       : [
           tailwindcss(),
           reactRouter(),
           reactRouterHonoServer(),
-          macrosPlugin(),
+          macrosPlugin() as unknown as Plugin,
           lingui(),
           tsconfigPaths(),
           sentryReactRouter(

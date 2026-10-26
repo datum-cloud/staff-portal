@@ -34,7 +34,7 @@ export default defineConfig({
 
           return null;
         },
-        signSessionCookie(sessionData: {
+        async signSessionCookie(sessionData: {
           accessToken: string;
           refreshToken?: string | null;
           expiredAt: string;
@@ -42,7 +42,7 @@ export default defineConfig({
         }) {
           // Sign the cookie the same way the app does
           // (see app/utils/cookies/base.ts + session.ts).
-          const { createCookie, createCookieSessionStorage } = require('react-router');
+          const { createCookie, createCookieSessionStorage } = await import('react-router');
           const sessionSecret = process.env.SESSION_SECRET;
           const appUrl =
             process.env.APP_URL || process.env.CYPRESS_BASE_URL || 'http://localhost:3000';
@@ -53,7 +53,7 @@ export default defineConfig({
             sameSite: 'lax',
             httpOnly: true,
             maxAge: 7 * 24 * 60 * 60, // matches SessionCookie.MAX_AGE
-            secrets: [sessionSecret],
+            secrets: [sessionSecret as string],
           });
 
           const sessionStorage = createCookieSessionStorage({
@@ -63,7 +63,7 @@ export default defineConfig({
           // The app stores its payload under the '_session' key (BaseCookie.set).
           return sessionStorage
             .getSession()
-            .then((session: ReturnType<typeof createCookieSessionStorage>['getSession']) => {
+            .then((session) => {
               session.set('_session', sessionData);
               return sessionStorage.commitSession(session);
             })
