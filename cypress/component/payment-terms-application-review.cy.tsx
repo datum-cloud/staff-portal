@@ -36,6 +36,13 @@ const mountReview = () => {
   );
 };
 
+/** The form control a label points at. */
+const field = (label: string) =>
+  cy
+    .contains('label', label)
+    .invoke('attr', 'for')
+    .then((id) => cy.get(`[id="${id}"]`));
+
 const proxy = (data: unknown, statusCode = 200) => ({
   statusCode,
   body: { code: 'OK', path: '/x', data },
@@ -122,10 +129,10 @@ describe('ApplicationReview', () => {
     cy.screenshot('application-review-pending', { capture: 'fullPage' });
 
     cy.get('[data-e2e="application-approve"]').click();
-    cy.findByLabelText(/Accounts payable email/).should('have.value', 'ap@acme.com');
-    cy.findByLabelText(/PO number/).should('have.value', 'PO-4471');
-    cy.findByLabelText(/Credit limit/).type('10000');
-    cy.findByLabelText(/Reason/).type('Verified company and website');
+    field('Accounts payable email').should('have.value', 'ap@acme.com');
+    field('PO number').should('have.value', 'PO-4471');
+    field('Credit limit').type('10000');
+    field('Reason').type('Verified company and website');
     cy.get('[role="dialog"]').contains('button', 'Approve').click();
 
     cy.wait('@approve')
@@ -158,10 +165,10 @@ describe('ApplicationReview', () => {
     mountReview();
 
     cy.get('[data-e2e="application-decline"]').click();
-    cy.findByLabelText(/Message to the customer/).type(
+    field('Message to the customer').type(
       "We couldn't verify your company. Add a card to continue."
     );
-    cy.findByLabelText(/Internal notes/).type('Website was parked');
+    field('Internal notes').type('Website was parked');
     cy.screenshot('application-review-decline-dialog');
     cy.get('[role="dialog"]').contains('button', 'Decline').click();
 
