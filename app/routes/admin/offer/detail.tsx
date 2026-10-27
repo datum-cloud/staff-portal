@@ -309,6 +309,10 @@ export default function Page() {
       value: formatChargeTypes(offer.spec?.chargeTypes ?? []) || '—',
     },
     {
+      label: t`General discount`,
+      value: offer.spec?.discount ? `${offer.spec.discount.percentage}%` : '—',
+    },
+    {
       label: t`Included charges`,
       value: includedChargeCount > 0 ? includedChargeCount : '—',
     },
@@ -451,6 +455,7 @@ export default function Page() {
                 snapshots={snapshots}
                 refs={refs}
                 pricings={pricings}
+                offerDiscount={offer.spec?.discount}
                 isLoading={pricingsQuery.isLoading}
                 variant="table"
               />

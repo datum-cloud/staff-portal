@@ -3,6 +3,7 @@ import {
   discountPercentageSchema,
   isOfferDiscountFormValid,
   offerDiscountFormFromSpec,
+  resolveOfferServiceDiscounts,
   resolveServiceDiscount,
   withoutOverride,
   type OfferServicePricingRef,
@@ -144,5 +145,57 @@ describe('withoutOverride', () => {
     expect(
       withoutOverride({ general: '20', overrides: { 'compute-cpu': '100', gpu: '50' } }, 'gpu')
     ).toEqual({ general: '20', overrides: { 'compute-cpu': '100' } });
+  });
+});
+
+describe('resolveOfferServiceDiscounts', () => {
+  const discountedRefs: OfferServicePricingRef[] = [
+    { name: 'compute-cpu', discount: { percentage: 100 } },
+    { name: 'object-storage' },
+  ];
+
+  it('resolves a Draft from the general discount and overrides', () => {
+    expect(
+      Object.fromEntries(
+        resolveOfferServiceDiscounts({
+          discount: { percentage: 20 },
+          servicePricingRefs: discountedRefs,
+        })
+      )
+    ).toEqual({
+      'compute-cpu': { percentage: 100, source: 'override' },
+      'object-storage': { percentage: 20, source: 'general' },
+    });
+  });
+
+  it("uses a published Offer's snapshot percentages, labelled from the refs", () => {
+    const snapshot = (name: string, percentage?: number) => ({
+      name,
+      spec: { chargeType: 'Usage', serviceRef: 'compute.datumapis.com', currency: 'USD' },
+      ...(percentage === undefined ? {} : { discount: { percentage } }),
+    });
+    expect(
+      Object.fromEntries(
+        resolveOfferServiceDiscounts({
+          discount: { percentage: 20 },
+          servicePricingRefs: [...discountedRefs, { name: 'gpu' }],
+          servicePricings: [
+            snapshot('compute-cpu', 100),
+            snapshot('object-storage', 20),
+            snapshot('gpu'),
+            snapshot('network-egress', 10),
+          ] as never,
+        })
+      )
+    ).toEqual({
+      'compute-cpu': { percentage: 100, source: 'override' },
+      'object-storage': { percentage: 20, source: 'general' },
+      gpu: { percentage: 0, source: 'none' },
+      'network-egress': { percentage: 10, source: 'override' },
+    });
+  });
+
+  it('is empty without a spec', () => {
+    expect(resolveOfferServiceDiscounts(undefined).size).toBe(0);
   });
 });

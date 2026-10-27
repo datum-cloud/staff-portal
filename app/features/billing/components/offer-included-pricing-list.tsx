@@ -1,5 +1,10 @@
 import { BadgeState } from '@/components/badge';
 import {
+  resolveOfferServiceDiscounts,
+  type OfferDiscount,
+  type ResolvedServiceDiscount,
+} from '@/features/billing/lib/offer-discounts';
+import {
   formatChargeType,
   getServicePricingDisplayName,
   getServicePricingSubtext,
@@ -26,6 +31,8 @@ type OfferIncludedPricingListProps = {
   snapshots: OfferPricingSnapshot[];
   refs: NonNullable<NonNullable<ComMiloapisBillingV1Alpha1Offer['spec']>['servicePricingRefs']>;
   pricings: ComMiloapisBillingV1Alpha1ServicePricing[];
+  /** The Offer's general discount, inherited by refs without their own. */
+  offerDiscount?: OfferDiscount;
   isLoading?: boolean;
   /** Table layout for detail pages; default list for narrower contexts. */
   variant?: 'list' | 'table';
@@ -107,16 +114,30 @@ function IncludedPricingListSkeleton({ rows = 3 }: { rows?: number }) {
   );
 }
 
+function DiscountCell({ discount }: { discount?: ResolvedServiceDiscount }) {
+  if (!discount || discount.source === 'none') return <>—</>;
+  return (
+    <>
+      <div className="font-medium">{discount.percentage}%</div>
+      <Text as="div" size="xs" textColor="muted" className="mt-0.5">
+        {discount.source === 'override' ? <Trans>Override</Trans> : <Trans>Inherited</Trans>}
+      </Text>
+    </>
+  );
+}
+
 function IncludedPricingTable({
   items,
   servicesByRef,
+  discounts,
 }: {
   items: ComMiloapisBillingV1Alpha1ServicePricing[];
   servicesByRef: ReturnType<typeof indexServicesByRef>;
+  discounts: Map<string, ResolvedServiceDiscount>;
 }) {
   return (
     <div className="overflow-x-auto rounded-md border">
-      <table className="w-full min-w-[32rem] text-sm">
+      <table className="w-full min-w-[36rem] text-sm">
         <thead>
           <tr className="bg-muted/40 text-muted-foreground border-b text-left text-xs">
             <th className="px-3 py-2 font-medium">
@@ -127,6 +148,9 @@ function IncludedPricingTable({
             </th>
             <th className="px-3 py-2 font-medium">
               <Trans>Rate</Trans>
+            </th>
+            <th className="px-3 py-2 font-medium">
+              <Trans>Discount</Trans>
             </th>
             <th className="px-3 py-2 font-medium">
               <Trans>Service</Trans>
@@ -161,6 +185,9 @@ function IncludedPricingTable({
                 </td>
                 <td className="text-muted-foreground px-3 py-2 align-top text-xs leading-relaxed">
                   {summary ?? '—'}
+                </td>
+                <td className="px-3 py-2 align-top text-xs">
+                  <DiscountCell discount={discounts.get(name)} />
                 </td>
                 <td className="px-3 py-2 align-top text-xs">
                   {catalogService ? (
@@ -206,6 +233,7 @@ export function OfferIncludedPricingList({
   snapshots,
   refs,
   pricings,
+  offerDiscount,
   isLoading,
   variant = 'list',
 }: OfferIncludedPricingListProps) {
@@ -224,6 +252,16 @@ export function OfferIncludedPricingList({
     return pricings.filter((pricing) => refNames.has(pricing.metadata?.name ?? ''));
   }, [snapshots, refs, pricings]);
 
+  const discounts = useMemo(
+    () =>
+      resolveOfferServiceDiscounts({
+        discount: offerDiscount,
+        servicePricingRefs: refs,
+        servicePricings: snapshots,
+      }),
+    [offerDiscount, refs, snapshots]
+  );
+
   if (isLoading && includedPricings.length === 0 && refs.length > 0) {
     return variant === 'table' ? (
       <IncludedPricingTableSkeleton rows={refs.length} />
@@ -241,7 +279,13 @@ export function OfferIncludedPricingList({
   }
 
   if (variant === 'table') {
-    return <IncludedPricingTable items={includedPricings} servicesByRef={servicesByRef} />;
+    return (
+      <IncludedPricingTable
+        items={includedPricings}
+        servicesByRef={servicesByRef}
+        discounts={discounts}
+      />
+    );
   }
 
   return (

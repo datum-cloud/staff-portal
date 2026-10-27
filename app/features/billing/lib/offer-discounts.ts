@@ -97,6 +97,38 @@ export function resolveServiceDiscount(
 }
 
 /**
+ * Each included service's discount, by ServicePricing name. A published
+ * Offer's snapshot holds the resolved percentage the controller captured, so
+ * that wins; the refs say whether it was an override or inherited. Before the
+ * snapshot is written, it is resolved from the refs.
+ */
+export function resolveOfferServiceDiscounts(
+  spec: Pick<OfferSpec, 'discount' | 'servicePricingRefs' | 'servicePricings'> | undefined
+): Map<string, ResolvedServiceDiscount> {
+  const refs = spec?.servicePricingRefs ?? [];
+  const snapshots = spec?.servicePricings ?? [];
+  const fromRefs = new Map(
+    refs.map((ref) => [ref.name, resolveServiceDiscount(ref, spec?.discount)])
+  );
+  if (snapshots.length === 0) return fromRefs;
+
+  return new Map(
+    snapshots.map((snapshot): [string, ResolvedServiceDiscount] => {
+      if (!snapshot.discount) return [snapshot.name, { percentage: 0, source: 'none' }];
+      const source = fromRefs.get(snapshot.name)?.source ?? 'none';
+      return [
+        snapshot.name,
+        {
+          percentage: snapshot.discount.percentage,
+          // A snapshot discount the refs can't explain is the service's own.
+          source: source === 'none' ? 'override' : source,
+        },
+      ];
+    })
+  );
+}
+
+/**
  * Offer spec fields for the discount form. Each ref gets a discount only when
  * its override is set; existing ref discounts are replaced, so a cleared
  * override inherits again. Overrides for services not in refs are dropped.
