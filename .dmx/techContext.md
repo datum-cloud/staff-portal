@@ -29,6 +29,7 @@
 - `npm run dev` starts the dev server on port 3000 (health check at `/_healthz`).
 - `docker compose up` brings up the local observability stack (OTEL collector, Prometheus, Jaeger, Grafana on :3002).
 - Codegen: `npm run openapi:generate` (REST SDKs), `npm run graphql` (GraphQL schema), `npm run i18n:extract` / `i18n:compile` (Lingui catalogs).
+- Regenerating one REST SDK: run on Node 26 (the script is `.ts` and won't load on Node 20), e.g. `API_TOKEN="$(datumctl auth get-token)" API_URL=<server from ~/.datumctl/config> npm run openapi:generate -- --resources billing.miloapis.com/v1alpha1`. The output isn't Prettier-formatted, so run `npx prettier --write` on the regenerated folder before committing. A staging spec can include resources not yet in production.
 
 ## Testing and quality
 
