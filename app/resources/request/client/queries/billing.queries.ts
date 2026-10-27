@@ -160,6 +160,7 @@ export const useUpdateDraftOfferMutation = () => {
       displayName?: string;
       chargeTypes: CreateOfferInput['chargeTypes'];
       servicePricingRefs: CreateOfferInput['servicePricingRefs'];
+      discount?: CreateOfferInput['discount'];
     }) => updateDraftOffer(name, input),
     onSuccess: async (_, variables) => {
       await queryClient.invalidateQueries({ queryKey: billingQueryKeys.offers.all });
