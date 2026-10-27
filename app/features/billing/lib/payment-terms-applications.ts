@@ -133,10 +133,12 @@ export function formatSpendBand(band: EstimatedMonthlySpend, currency: string): 
 /**
  * Starting values for the approval form: the invoice details the customer
  * gave, our standard net days, and the credit limit and reason left for the
- * reviewer to fill in.
+ * reviewer to fill in. A renewal passes `startsAt`, when the current terms
+ * end, so the new terms don't overlap them.
  */
 export function paymentTermsFormFromApplication(
-  application: BillingArrangementApplication
+  application: BillingArrangementApplication,
+  options: { startsAt?: Date } = {}
 ): PaymentTermsFormValues {
   const invoice = application.spec?.invoice;
   return {
@@ -145,7 +147,7 @@ export function paymentTermsFormFromApplication(
     accountsPayableEmail: invoice?.accountsPayableEmail ?? '',
     purchaseOrderNumber: invoice?.purchaseOrderNumber ?? '',
     agreementReference: invoice?.agreementReference ?? '',
-    startsAt: undefined,
+    startsAt: options.startsAt,
     endsAt: undefined,
     reason: '',
   };

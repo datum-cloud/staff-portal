@@ -111,6 +111,14 @@ describe('payment terms applications', () => {
     });
   });
 
+  it('starts a renewal when the current terms end', () => {
+    const endsAt = new Date(iso(31));
+    expect(
+      paymentTermsFormFromApplication(application('a', 1), { startsAt: endsAt }).startsAt
+    ).to.equal(endsAt);
+    expect(paymentTermsFormFromApplication(application('a', 1)).startsAt).to.equal(undefined);
+  });
+
   it('approves the application by naming it on the new terms', () => {
     const values = {
       ...paymentTermsFormFromApplication(application('a', 1)),

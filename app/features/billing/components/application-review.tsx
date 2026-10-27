@@ -1,10 +1,14 @@
 import {
   buildArrangementSpec,
   getArrangementPhase,
+  getArrangementStart,
   getArrangementsForAccount,
   getBillingStatus,
   getCurrentArrangement,
+  getNextTermsStart,
   getPaymentReadyCondition,
+  type BillingArrangement,
+  type BillingArrangementPhase,
   type PaymentTermsFormValues,
 } from '../lib/payment-terms';
 import {
@@ -49,6 +53,7 @@ import { Form } from '@datum-cloud/datum-ui/form';
 import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { toast } from '@datum-cloud/datum-ui/toast';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useMemo, useState } from 'react';
@@ -99,13 +104,18 @@ export function ApplicationReview({ orgName, applicationName }: ApplicationRevie
 
   const account = accountQuery.data;
   const currency = account?.spec?.currencyCode ?? '';
-  const currentTerms = useMemo(
-    () =>
-      getCurrentArrangement(
-        getArrangementsForAccount(arrangementsQuery.data?.items ?? [], accountName)
-      ),
+  const accountArrangements = useMemo(
+    () => getArrangementsForAccount(arrangementsQuery.data?.items ?? [], accountName),
     [arrangementsQuery.data?.items, accountName]
   );
+  const currentTerms = useMemo(
+    () => getCurrentArrangement(accountArrangements),
+    [accountArrangements]
+  );
+  // Approved terms can't overlap the account's existing ones: a renewal
+  // starts when they end, and terms with no end date block approval.
+  const nextStart = useMemo(() => getNextTermsStart(accountArrangements), [accountArrangements]);
+  const renewsFrom = nextStart.kind === 'after' ? nextStart.startsAt : undefined;
   const decline = getDeclineForApplication(declinesQuery.data?.items ?? [], applicationName);
   const applicantUid = application?.spec?.applicant?.uid;
   const fraudEvaluation = applicantUid
@@ -186,13 +196,26 @@ export function ApplicationReview({ orgName, applicationName }: ApplicationRevie
                 data-e2e="application-decline">
                 <Trans>Decline</Trans>
               </Button>
-              <Button
-                type="primary"
-                theme="solid"
-                onClick={() => setApproveOpen(true)}
-                data-e2e="application-approve">
-                <Trans>Approve</Trans>
-              </Button>
+              {nextStart.kind === 'blocked' ? (
+                <Tooltip
+                  message={t`The account has payment terms with no end date. End them before approving.`}>
+                  {/* A disabled button gets no pointer events, so the span carries the tooltip. */}
+                  <span tabIndex={0}>
+                    <Button type="primary" theme="solid" disabled data-e2e="application-approve">
+                      <Trans>Approve</Trans>
+                    </Button>
+                  </span>
+                </Tooltip>
+              ) : (
+                <Button
+                  type="primary"
+                  theme="solid"
+                  disabled={arrangementsQuery.isLoading}
+                  onClick={() => setApproveOpen(true)}
+                  data-e2e="application-approve">
+                  <Trans>Approve</Trans>
+                </Button>
+              )}
             </>
           ) : (
             <LinkButton
@@ -402,19 +425,54 @@ export function ApplicationReview({ orgName, applicationName }: ApplicationRevie
               label: <Trans>Current terms</Trans>,
               value:
                 currentTerms && currentTermsPhase ? (
-                  <Text>
-                    {currentTermsPhase === 'Scheduled' ? (
-                      <Trans>
-                        Net {currentTerms.spec?.invoice?.netDays ?? '—'}, scheduled. End or withdraw
-                        them before approving.
-                      </Trans>
-                    ) : (
-                      <Trans>
-                        Net {currentTerms.spec?.invoice?.netDays ?? '—'}, active. End them before
-                        approving.
-                      </Trans>
-                    )}
-                  </Text>
+                  <div className="flex flex-col gap-1" data-e2e="application-current-terms">
+                    <Text>
+                      <CurrentTermsSummary terms={currentTerms} phase={currentTermsPhase} />
+                    </Text>
+                    {nextStart.kind === 'after' ? (
+                      <Text size="sm" textColor="muted">
+                        <Trans>
+                          Approving renews them: the new terms start on{' '}
+                          <DateTime date={nextStart.startsAt.toISOString()} variant="absolute" />,
+                          when the existing terms end.
+                        </Trans>
+                      </Text>
+                    ) : null}
+                    {nextStart.kind === 'blocked' ? (
+                      <Text size="sm" textColor="muted">
+                        {nextStart.blocking !== currentTerms ? (
+                          <Trans>
+                            Terms scheduled from{' '}
+                            <DateTime
+                              date={getArrangementStart(nextStart.blocking)}
+                              variant="absolute"
+                            />{' '}
+                            have no end date. Withdraw them on the{' '}
+                            <Link to={billingAccountRoutes.detail(orgName, accountName)}>
+                              billing account
+                            </Link>{' '}
+                            before approving.
+                          </Trans>
+                        ) : currentTermsPhase === 'Scheduled' ? (
+                          <Trans>
+                            Withdraw them on the{' '}
+                            <Link to={billingAccountRoutes.detail(orgName, accountName)}>
+                              billing account
+                            </Link>{' '}
+                            before approving.
+                          </Trans>
+                        ) : (
+                          <Trans>
+                            End them on the{' '}
+                            <Link to={billingAccountRoutes.detail(orgName, accountName)}>
+                              billing account
+                            </Link>{' '}
+                            before approving.
+                          </Trans>
+                        )}
+                      </Text>
+                    ) : null}
+                  </div>
                 ) : (
                   <Text>
                     <Trans>None</Trans>
@@ -448,15 +506,16 @@ export function ApplicationReview({ orgName, applicationName }: ApplicationRevie
       </SectionCard>
 
       <PaymentTermsFormDialog
-        // Remount per application so the defaults reload.
-        key={applicationName}
+        // Remount per application, and once the renewal date is known, so
+        // the defaults reload.
+        key={`${applicationName}-${renewsFrom?.toISOString() ?? ''}`}
         open={approveOpen}
         onOpenChange={setApproveOpen}
         title={t`Approve application`}
         description={t`Grants these payment terms to the billing account and approves the application. The customer can then pay by invoice.`}
         submitText={t`Approve`}
         currency={currency}
-        defaultValues={paymentTermsFormFromApplication(application)}
+        defaultValues={paymentTermsFormFromApplication(application, { startsAt: renewsFrom })}
         showStart
         onSubmit={handleApprove}
       />
@@ -467,6 +526,37 @@ export function ApplicationReview({ orgName, applicationName }: ApplicationRevie
         onSubmit={handleDecline}
       />
     </div>
+  );
+}
+
+/** "Net 30, active until 31 Dec 2026", or "…with no end date". */
+function CurrentTermsSummary({
+  terms,
+  phase,
+}: {
+  terms: BillingArrangement;
+  phase: BillingArrangementPhase;
+}) {
+  const netDays = terms.spec?.invoice?.netDays ?? '—';
+  const endsAt = terms.spec?.endsAt;
+  if (phase === 'Scheduled') {
+    const start = <DateTime date={getArrangementStart(terms)} variant="absolute" />;
+    return endsAt ? (
+      <Trans>
+        Net {netDays}, scheduled from {start} until <DateTime date={endsAt} variant="absolute" />.
+      </Trans>
+    ) : (
+      <Trans>
+        Net {netDays}, scheduled from {start} with no end date.
+      </Trans>
+    );
+  }
+  return endsAt ? (
+    <Trans>
+      Net {netDays}, active until <DateTime date={endsAt} variant="absolute" />.
+    </Trans>
+  ) : (
+    <Trans>Net {netDays}, active with no end date.</Trans>
   );
 }
 

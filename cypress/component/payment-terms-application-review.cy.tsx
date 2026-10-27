@@ -1,6 +1,7 @@
 import { ApplicationReview } from '@/features/billing';
 import type { BillingArrangementApplication } from '@/features/billing/lib/payment-terms-applications';
 import { httpClient } from '@/modules/axios/axios.client';
+import { billingAccountRoutes } from '@/utils/config/routes.config';
 import { RHFAdapter } from '@datum-cloud/datum-ui/form/adapters/rhf';
 import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
@@ -72,7 +73,7 @@ const application = (
   status,
 });
 
-const stubAccount = () => {
+const stubAccount = (arrangements: unknown[] = []) => {
   cy.intercept(
     'GET',
     '**/namespaces/organization-acme/billingaccounts/acme-billing*',
@@ -99,10 +100,34 @@ const stubAccount = () => {
       },
     })
   );
-  cy.intercept('GET', '**/namespaces/organization-acme/billingarrangements*', proxy({ items: [] }));
+  cy.intercept(
+    'GET',
+    '**/namespaces/organization-acme/billingarrangements*',
+    proxy({ items: arrangements })
+  );
   cy.intercept('GET', '**/fraudevaluations*', proxy({ items: [] }));
   cy.intercept('POST', '**/graphql*', { statusCode: 500, body: {} });
 };
+
+/** Net 30 terms for the account, active since January. */
+const currentTerms = (endsAt?: string) => ({
+  metadata: { name: 'acme-billing-terms-old', creationTimestamp: '2026-01-01T00:00:00Z' },
+  spec: {
+    billingAccountRef: { name: 'acme-billing' },
+    type: 'Invoice',
+    invoice: { netDays: 30, creditLimit: '10000' },
+    startsAt: '2026-01-01T00:00:00Z',
+    endsAt,
+    reason: 'Signed MSA',
+  },
+});
+
+const stubPendingApplication = () =>
+  cy.intercept(
+    'GET',
+    '**/namespaces/organization-acme/billingarrangementapplications/apply-acme-1*',
+    proxy(application())
+  );
 
 describe('ApplicationReview', () => {
   beforeEach(() => cy.viewport(1280, 1000));
@@ -147,6 +172,52 @@ describe('ApplicationReview', () => {
           purchaseOrderNumber: 'PO-4471',
         });
       });
+  });
+
+  it('renews terms that have an end date from the day they end', () => {
+    // Far enough out that the terms stay active whenever this runs.
+    stubAccount([currentTerms('2099-01-01T00:00:00Z')]);
+    stubPendingApplication();
+    cy.intercept(
+      'POST',
+      '**/namespaces/organization-acme/billingarrangements*',
+      proxy({ metadata: { name: 'acme-billing-terms-x' } }, 201)
+    ).as('approve');
+
+    mountReview();
+
+    cy.get('[data-e2e="application-current-terms"]')
+      .should('contain.text', 'Net 30, active until')
+      .and('contain.text', 'Approving renews them')
+      .and('not.contain.text', 'before approving');
+    cy.screenshot('application-review-renewal');
+
+    cy.get('[data-e2e="application-approve"]').click();
+    field('Credit limit').type('10000');
+    field('Reason').type('Renewing for 2099');
+    cy.get('[role="dialog"]').contains('button', 'Approve').click();
+
+    cy.wait('@approve')
+      .its('request.body.spec.startsAt')
+      .should('equal', '2099-01-01T00:00:00.000Z');
+  });
+
+  it("won't approve while the account has terms with no end date", () => {
+    stubAccount([currentTerms()]);
+    stubPendingApplication();
+
+    mountReview();
+
+    cy.get('[data-e2e="application-current-terms"]')
+      .should('contain.text', 'Net 30, active with no end date.')
+      .and('contain.text', 'End them on the billing account before approving.');
+    cy.get('[data-e2e="application-current-terms"] a').should(
+      'have.attr',
+      'href',
+      billingAccountRoutes.detail('acme', 'acme-billing')
+    );
+    cy.get('[data-e2e="application-approve"]').should('be.disabled');
+    cy.screenshot('application-review-blocked');
   });
 
   it('declines with a message for the customer', () => {

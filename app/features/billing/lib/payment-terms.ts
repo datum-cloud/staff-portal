@@ -76,6 +76,38 @@ export function getCurrentArrangement(
     )[0];
 }
 
+/**
+ * When new terms for an account can start, given the arrangements it
+ * already has. Billing rejects terms that overlap others for the same
+ * account, and its windows are half-open, so new terms can start the moment
+ * the last ones end.
+ *
+ * - `free`: nothing is in effect or scheduled, so new terms can start now.
+ * - `after`: every current or scheduled arrangement has an end date. New
+ *   terms start at the last of them (a renewal), and `last` is the one that
+ *   ends last.
+ * - `blocked`: `blocking` has no end date, so staff must end or withdraw it
+ *   before granting new terms.
+ */
+export type NextTermsStart =
+  | { kind: 'free' }
+  | { kind: 'after'; startsAt: Date; last: BillingArrangement }
+  | { kind: 'blocked'; blocking: BillingArrangement };
+
+export function getNextTermsStart(
+  arrangements: BillingArrangement[],
+  now: Date = new Date()
+): NextTermsStart {
+  const live = arrangements.filter((a) => getArrangementPhase(a, now) !== 'Ended');
+  const blocking = live.find((a) => !a.spec?.endsAt);
+  if (blocking) return { kind: 'blocked', blocking };
+  const last = [...live].sort(
+    (a, b) => Date.parse(b.spec?.endsAt ?? '') - Date.parse(a.spec?.endsAt ?? '')
+  )[0];
+  if (!last?.spec?.endsAt) return { kind: 'free' };
+  return { kind: 'after', startsAt: new Date(last.spec.endsAt), last };
+}
+
 /** The billing account's PaymentReady condition: card or active terms. */
 export function getPaymentReadyCondition(account: ComMiloapisBillingV1Alpha1BillingAccount) {
   return account.status?.conditions?.find((condition) => condition.type === 'PaymentReady');

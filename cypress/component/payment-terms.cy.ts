@@ -7,6 +7,7 @@ import {
   getBillingStatus,
   getArrangementsForAccount,
   getCurrentArrangement,
+  getNextTermsStart,
   paymentTermsFormFromArrangement,
   paymentTermsFormSchema,
   WITHDRAW_CLOCK_SKEW_MS,
@@ -73,6 +74,37 @@ describe('getArrangementsForAccount and getCurrentArrangement', () => {
     expect(getCurrentArrangement([arrangement('old', iso(1), iso(5))], day(10))).to.equal(
       undefined
     );
+  });
+});
+
+describe('getNextTermsStart', () => {
+  it('lets new terms start now when nothing is in effect or scheduled', () => {
+    expect(getNextTermsStart([], day(10))).to.deep.equal({ kind: 'free' });
+    expect(getNextTermsStart([arrangement('old', iso(1), iso(5))], day(10))).to.deep.equal({
+      kind: 'free',
+    });
+  });
+
+  it('renews from the end of the last terms when they all have end dates', () => {
+    const current = arrangement('current', iso(1), iso(20));
+    const next = arrangement('next', iso(20), iso(25));
+    const start = getNextTermsStart([next, current], day(10));
+    expect(start.kind).to.equal('after');
+    if (start.kind !== 'after') return;
+    expect(start.startsAt.toISOString()).to.equal(iso(25));
+    expect(start.last.metadata?.name).to.equal('next');
+  });
+
+  it('is blocked by terms with no end date, active or scheduled', () => {
+    const active = arrangement('active', iso(1));
+    expect(getNextTermsStart([active], day(10))).to.deep.equal({
+      kind: 'blocked',
+      blocking: active,
+    });
+    const scheduled = arrangement('scheduled', iso(20));
+    expect(
+      getNextTermsStart([scheduled, arrangement('current', iso(1), iso(20))], day(10))
+    ).to.deep.equal({ kind: 'blocked', blocking: scheduled });
   });
 });
 
