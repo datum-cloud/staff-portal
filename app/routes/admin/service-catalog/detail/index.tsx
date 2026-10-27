@@ -195,7 +195,11 @@ function BuiltInOverview() {
         pricings={pricings}
         isLoading={pricingsQuery.isLoading}
         errorMessage={
-          pricingsQuery.error instanceof Error ? pricingsQuery.error.message : undefined
+          pricingsQuery.error
+            ? pricingsQuery.error instanceof Error
+              ? pricingsQuery.error.message
+              : String(pricingsQuery.error)
+            : undefined
         }
       />
 

@@ -121,3 +121,31 @@ describe('summarizeServicePricing', () => {
     );
   });
 });
+
+describe('summary and detail stay in sync', () => {
+  it('formats matches and fixed charges the same way', () => {
+    const matched = usage('token', [
+      { match: { dimension: 'model', value: 'claude-sonnet-4-6' }, flat: '0.000003' },
+    ]);
+    expect(summarizeServicePricing(matched)).toBe('model = claude-sonnet-4-6: $0.000003 / token');
+    expect(describeServicePricingRates(matched)[0]?.label).toBe('model = claude-sonnet-4-6');
+
+    const setup = {
+      metadata: { name: 'setup-v1' },
+      spec: {
+        chargeType: 'OneTime',
+        serviceRef: 'x.datumapis.com',
+        currency: 'USD',
+        amount: '10',
+        trigger: 'BillingAccountActivation',
+      },
+    } as ComMiloapisBillingV1Alpha1ServicePricing;
+    expect(summarizeServicePricing(setup)).toBe('$10 one-time');
+    expect(describeServicePricingRates(setup)).toEqual([{ prices: ['$10 one-time'] }]);
+  });
+
+  it('treats equal rates written differently as one price', () => {
+    const tiers = usage('GB', [{ tiered: [{ upTo: '100', rate: '0.05' }, { rate: '0.050' }] }]);
+    expect(summarizeServicePricing(tiers)).toBe('$0.05 / GB (2 tiers)');
+  });
+});

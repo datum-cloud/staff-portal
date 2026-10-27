@@ -180,6 +180,28 @@ export const getServicePricingDisplayName = (
   return humanizeSlug(chargeSlug);
 };
 
+type ServicePricingSpec = NonNullable<ComMiloapisBillingV1Alpha1ServicePricing['spec']>;
+type PricingRate = NonNullable<ServicePricingSpec['rates']>[number];
+type PricingTierBand = NonNullable<PricingRate['tiered']>[number];
+
+/** A rate's dimension match, e.g. "runtime_class = general-purpose". */
+function formatRateMatch(match: NonNullable<PricingRate['match']>): string {
+  return `${match.dimension} = ${match.value}`;
+}
+
+/** An amount per pricing unit, e.g. "$0.05 / GB"; the amount alone without a unit. */
+function formatUnitPrice(amount: string, unit?: string): string {
+  return unit ? `${amount} / ${unit}` : amount;
+}
+
+/** A OneTime or Recurring pricing's amount, e.g. "$10 one-time"; undefined otherwise. */
+function formatFixedCharge(spec: ServicePricingSpec): string | undefined {
+  if (!spec.amount) return undefined;
+  if (spec.chargeType === 'OneTime') return `$${spec.amount} one-time`;
+  if (spec.chargeType === 'Recurring') return `$${spec.amount} / month`;
+  return undefined;
+}
+
 /** Short price summary for checklist rows (e.g. "$0.000001 / request"). */
 export const summarizeServicePricing = (
   pricing: ComMiloapisBillingV1Alpha1ServicePricing
@@ -187,12 +209,8 @@ export const summarizeServicePricing = (
   const spec = pricing.spec;
   if (!spec) return undefined;
 
-  if (spec.chargeType === 'OneTime' && spec.amount) {
-    return `$${spec.amount} · one-time`;
-  }
-  if (spec.chargeType === 'Recurring' && spec.amount) {
-    return `$${spec.amount} / month`;
-  }
+  const fixed = formatFixedCharge(spec);
+  if (fixed) return fixed;
 
   const unit = spec.pricingUnit?.trim();
   const rates = spec.rates ?? [];
@@ -202,15 +220,12 @@ export const summarizeServicePricing = (
 
   const parts = rates
     .map((rate) => {
-      const match = rate.match ? `${rate.match.dimension}=${rate.match.value}` : null;
+      const match = rate.match ? formatRateMatch(rate.match) : null;
       let price: string | null = null;
       if (rate.flat) {
-        price = unit ? `$${rate.flat} / ${unit}` : `$${rate.flat}`;
+        price = formatUnitPrice(`$${rate.flat}`, unit);
       } else if (rate.tiered?.length) {
-        const range = tierPriceRange(rate.tiered);
-        price = unit
-          ? `${range} / ${unit} (${rate.tiered.length} tiers)`
-          : `${range} (${rate.tiered.length} tiers)`;
+        price = `${formatUnitPrice(tierPriceRange(rate.tiered), unit)} (${rate.tiered.length} tiers)`;
       }
       if (!price) return null;
       return match ? `${match}: ${price}` : price;
@@ -222,19 +237,13 @@ export const summarizeServicePricing = (
   return `${parts[0]} · +${parts.length - 1} more`;
 };
 
-type PricingTierBand = NonNullable<
-  NonNullable<
-    NonNullable<ComMiloapisBillingV1Alpha1ServicePricing['spec']>['rates']
-  >[number]['tiered']
->[number];
-
 /** Lowest to highest band rate, e.g. "$0–$0.05", or one price when they match. */
 function tierPriceRange(tiers: PricingTierBand[]): string {
   const rates = tiers.map((band) => band.rate);
   const sorted = [...rates].sort((a, b) => Number(a) - Number(b));
   const low = sorted[0];
   const high = sorted[sorted.length - 1];
-  return low === high ? `$${low}` : `$${low}–$${high}`;
+  return Number(low) === Number(high) ? `$${low}` : `$${low}–$${high}`;
 }
 
 /** Thousands separators for a numeric quantity string; anything else as is. */
@@ -262,22 +271,18 @@ export const describeServicePricingRates = (
   const spec = pricing.spec;
   if (!spec) return [];
 
-  if (spec.chargeType === 'OneTime' && spec.amount) {
-    return [{ prices: [`$${spec.amount} one-time`] }];
-  }
-  if (spec.chargeType === 'Recurring' && spec.amount) {
-    return [{ prices: [`$${spec.amount} / month`] }];
-  }
+  const fixed = formatFixedCharge(spec);
+  if (fixed) return [{ prices: [fixed] }];
 
   const unit = spec.pricingUnit?.trim();
-  const perUnit = (rate: string) => (unit ? `$${rate} / ${unit}` : `$${rate}`);
+  const perUnit = (rate: string) => formatUnitPrice(`$${rate}`, unit);
   const withUnit = (quantity: string) => (unit ? `${quantity} ${unit}` : quantity);
   const rates = spec.rates ?? [];
   const hasMatches = rates.some((rate) => rate.match);
 
   return rates.map((rate) => {
     const label = rate.match
-      ? `${rate.match.dimension} = ${rate.match.value}`
+      ? formatRateMatch(rate.match)
       : hasMatches
         ? 'Everything else'
         : undefined;
