@@ -11,6 +11,8 @@ export interface ViewTab {
   icon?: LucideIcon;
   /** Exact-match only — set on an index view so it isn't active under its siblings. */
   end?: boolean;
+  /** Items waiting on staff (e.g. pending applications), shown as a pill when above 0. */
+  count?: number;
 }
 
 /**
@@ -51,6 +53,16 @@ export function ViewTabs({ views }: { views: ViewTab[] }) {
                 className="group-hover:text-foreground whitespace-nowrap">
                 {view.label}
               </Text>
+              {view.count ? (
+                <Text
+                  as="span"
+                  size="xs"
+                  weight="medium"
+                  textColor="primary"
+                  className="bg-primary/10 inline-flex min-w-5 items-center justify-center rounded-full px-1.5 tabular-nums">
+                  {view.count}
+                </Text>
+              ) : null}
             </>
           )}
         </NavLink>

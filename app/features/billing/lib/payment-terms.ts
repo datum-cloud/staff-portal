@@ -204,15 +204,18 @@ const textOrUndefined = (value: string | undefined) => value?.trim() || undefine
 
 /**
  * Spec for a new Invoice arrangement. An unset start is left for the billing
- * webhook, which defaults it to the time the arrangement is created.
+ * webhook, which defaults it to the time the arrangement is created. Naming
+ * an application approves it.
  */
 export function buildArrangementSpec(
   values: PaymentTermsFormValues,
-  accountName: string
+  accountName: string,
+  options: { applicationName?: string } = {}
 ): BillingArrangementSpec {
   return {
     billingAccountRef: { name: accountName },
     type: 'Invoice',
+    ...(options.applicationName ? { applicationRef: { name: options.applicationName } } : {}),
     invoice: {
       netDays: values.netDays,
       creditLimit: values.creditLimit.trim(),

@@ -16,16 +16,24 @@ import {
   type BillingStatus,
   type PaymentTermsFormValues,
 } from '../lib/payment-terms';
+import {
+  getApplicationPhase,
+  getApplicationsForAccount,
+  type BillingArrangementApplication,
+} from '../lib/payment-terms-applications';
+import { ApplicationPhaseBadge } from './application-labels';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { SectionCard } from '@/features/milo';
 import {
   useBillingAccountDetailQuery,
+  useBillingArrangementApplicationListForOrgQuery,
   useBillingArrangementListForOrgQuery,
   useCreateBillingArrangementMutation,
   usePatchBillingArrangementMutation,
 } from '@/resources/request/client';
+import { billingAccountRoutes } from '@/utils/config/routes.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
@@ -34,6 +42,7 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
 import { type ReactNode, useMemo, useState } from 'react';
+import { Link } from 'react-router';
 
 type PaymentTermsCardProps = {
   orgName: string;
@@ -69,6 +78,7 @@ export function PaymentTermsCard({ orgName, account }: PaymentTermsCardProps) {
   const currency = account.spec?.currencyCode ?? '';
 
   const arrangementsQuery = useBillingArrangementListForOrgQuery(orgName);
+  const applicationsQuery = useBillingArrangementApplicationListForOrgQuery(orgName);
   // The loader's copy of the account goes stale once terms change, and
   // PaymentReady is what decides whether the customer is let through.
   const accountQuery = useBillingAccountDetailQuery(orgName, accountName);
@@ -98,6 +108,14 @@ export function PaymentTermsCard({ orgName, account }: PaymentTermsCardProps) {
     unknown: t`Unknown`,
   };
   const history = arrangements.filter((arrangement) => arrangement !== current);
+  const applications = useMemo(
+    () => getApplicationsForAccount(applicationsQuery.data?.items ?? [], accountName),
+    [applicationsQuery.data?.items, accountName]
+  );
+  const pendingApplication = applications.find(
+    (application) => getApplicationPhase(application) === 'Pending'
+  );
+  const pastApplications = applications.filter((application) => application !== pendingApplication);
 
   const handleGrant = async (values: PaymentTermsFormValues) => {
     try {
@@ -168,6 +186,31 @@ export function PaymentTermsCard({ orgName, account }: PaymentTermsCardProps) {
               </div>
             </div>
 
+            {pendingApplication ? (
+              <div
+                className="bg-muted/50 flex flex-wrap items-center justify-between gap-2 rounded-md px-3 py-2"
+                data-e2e="payment-terms-pending-application">
+                <Text size="sm">
+                  <Trans>
+                    The customer applied for payment terms on{' '}
+                    <DateTime
+                      date={pendingApplication.metadata?.creationTimestamp}
+                      variant="absolute"
+                    />{' '}
+                    and is waiting for a decision.
+                  </Trans>
+                </Text>
+                <Link
+                  to={billingAccountRoutes.applications.detail(
+                    orgName,
+                    pendingApplication.metadata?.name ?? ''
+                  )}
+                  className="text-sm font-medium">
+                  <Trans>Review application</Trans>
+                </Link>
+              </div>
+            ) : null}
+
             {current && currentPhase ? (
               <div className="space-y-3 border-t pt-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
@@ -223,6 +266,23 @@ export function PaymentTermsCard({ orgName, account }: PaymentTermsCardProps) {
                       key={arrangement.metadata?.name}
                       arrangement={arrangement}
                       formatCreditLimit={formatCreditLimit}
+                    />
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+
+            {pastApplications.length > 0 ? (
+              <div className="space-y-2 border-t pt-4">
+                <Text size="sm" weight="medium" className="block">
+                  <Trans>Applications</Trans>
+                </Text>
+                <ul className="divide-y">
+                  {pastApplications.map((application) => (
+                    <ApplicationHistoryRow
+                      key={application.metadata?.name}
+                      orgName={orgName}
+                      application={application}
                     />
                   ))}
                 </ul>
@@ -370,6 +430,31 @@ function ArrangementHistoryRow({
         className="ml-auto truncate"
         title={arrangement.spec?.reason ?? undefined}>
         {arrangement.spec?.reason}
+      </Text>
+    </li>
+  );
+}
+
+/** One line per decided or withdrawn application: outcome, who, when. */
+function ApplicationHistoryRow({
+  orgName,
+  application,
+}: {
+  orgName: string;
+  application: BillingArrangementApplication;
+}) {
+  return (
+    <li className="flex flex-wrap items-center gap-x-4 gap-y-1 py-2">
+      <ApplicationPhaseBadge application={application} />
+      <Link
+        to={billingAccountRoutes.applications.detail(orgName, application.metadata?.name ?? '')}
+        className="text-sm">
+        {application.spec?.organization?.legalName || application.metadata?.name}
+      </Link>
+      <Text size="sm" textColor="muted">
+        <Trans>
+          Submitted <DateTime date={application.metadata?.creationTimestamp} variant="absolute" />
+        </Trans>
       </Text>
     </li>
   );

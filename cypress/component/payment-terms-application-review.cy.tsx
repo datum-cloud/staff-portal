@@ -1,0 +1,214 @@
+import { ApplicationReview } from '@/features/billing';
+import type { BillingArrangementApplication } from '@/features/billing/lib/payment-terms-applications';
+import { httpClient } from '@/modules/axios/axios.client';
+import { RHFAdapter } from '@datum-cloud/datum-ui/form/adapters/rhf';
+import { i18n } from '@lingui/core';
+import { I18nProvider } from '@lingui/react';
+import { client } from '@openapi/shared/client.gen';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { mount } from 'cypress/react';
+import { createMemoryRouter, RouterProvider } from 'react-router';
+
+const testQueryClient = () =>
+  new QueryClient({
+    defaultOptions: { queries: { retry: false, gcTime: 0 }, mutations: { retry: false } },
+  });
+
+const mountReview = () => {
+  client.setConfig({ axios: httpClient });
+  const router = createMemoryRouter(
+    [
+      {
+        path: '/',
+        element: <ApplicationReview orgName="acme" applicationName="apply-acme-1" />,
+      },
+    ],
+    { initialEntries: ['/'] }
+  );
+  return mount(
+    <I18nProvider i18n={i18n}>
+      <QueryClientProvider client={testQueryClient()}>
+        <RHFAdapter>
+          <RouterProvider router={router} />
+        </RHFAdapter>
+      </QueryClientProvider>
+    </I18nProvider>
+  );
+};
+
+const proxy = (data: unknown, statusCode = 200) => ({
+  statusCode,
+  body: { code: 'OK', path: '/x', data },
+});
+
+const application = (
+  status?: BillingArrangementApplication['status']
+): BillingArrangementApplication => ({
+  metadata: {
+    name: 'apply-acme-1',
+    namespace: 'organization-acme',
+    creationTimestamp: '2026-10-02T09:00:00Z',
+  },
+  spec: {
+    billingAccountRef: { name: 'acme-billing' },
+    paymentOption: 'Invoice',
+    organization: { legalName: 'Acme Corp Ltd', type: 'Company', website: 'https://acme.com' },
+    situation: 'Our company pays software vendors by purchase order on net-30 terms.',
+    invoice: {
+      estimatedMonthlySpend: 'From2500To10000',
+      accountsPayableEmail: 'ap@acme.com',
+      purchaseOrderNumber: 'PO-4471',
+    },
+    authorized: true,
+    applicant: { username: 'jane@acme.com', uid: 'user-1' },
+  },
+  status,
+});
+
+const stubAccount = () => {
+  cy.intercept(
+    'GET',
+    '**/namespaces/organization-acme/billingaccounts/acme-billing*',
+    proxy({
+      metadata: { name: 'acme-billing', namespace: 'organization-acme' },
+      spec: {
+        currencyCode: 'USD',
+        contactInfo: {
+          name: 'Jane Doe',
+          email: 'jane@acme.com',
+          address: { line1: '1 Main St', city: 'Austin', region: 'TX', country: 'US' },
+        },
+      },
+      status: {
+        conditions: [
+          {
+            type: 'PaymentReady',
+            status: 'False',
+            reason: 'ApplicationPending',
+            message: 'A payment terms application is under review',
+            lastTransitionTime: '2026-10-02T09:00:00Z',
+          },
+        ],
+      },
+    })
+  );
+  cy.intercept('GET', '**/namespaces/organization-acme/billingarrangements*', proxy({ items: [] }));
+  cy.intercept('GET', '**/fraudevaluations*', proxy({ items: [] }));
+  cy.intercept('POST', '**/graphql*', { statusCode: 500, body: {} });
+};
+
+describe('ApplicationReview', () => {
+  beforeEach(() => cy.viewport(1280, 1000));
+
+  it('shows what the customer sent and approves with terms that name the application', () => {
+    stubAccount();
+    cy.intercept(
+      'GET',
+      '**/namespaces/organization-acme/billingarrangementapplications/apply-acme-1*',
+      proxy(application())
+    );
+    cy.intercept(
+      'POST',
+      '**/namespaces/organization-acme/billingarrangements*',
+      proxy({ metadata: { name: 'acme-billing-terms-x' } }, 201)
+    ).as('approve');
+
+    mountReview();
+
+    cy.contains('h1', 'Acme Corp Ltd').should('exist');
+    cy.contains('$2,500–$10,000').should('exist');
+    cy.contains('net-30 terms').should('exist');
+    cy.contains('1 Main St').should('exist');
+    cy.screenshot('application-review-pending', { capture: 'fullPage' });
+
+    cy.get('[data-e2e="application-approve"]').click();
+    cy.findByLabelText(/Accounts payable email/).should('have.value', 'ap@acme.com');
+    cy.findByLabelText(/PO number/).should('have.value', 'PO-4471');
+    cy.findByLabelText(/Credit limit/).type('10000');
+    cy.findByLabelText(/Reason/).type('Verified company and website');
+    cy.get('[role="dialog"]').contains('button', 'Approve').click();
+
+    cy.wait('@approve')
+      .its('request.body.spec')
+      .should((spec) => {
+        expect(spec.applicationRef).to.deep.equal({ name: 'apply-acme-1' });
+        expect(spec.billingAccountRef).to.deep.equal({ name: 'acme-billing' });
+        expect(spec.invoice).to.include({
+          netDays: 30,
+          creditLimit: '10000',
+          accountsPayableEmail: 'ap@acme.com',
+          purchaseOrderNumber: 'PO-4471',
+        });
+      });
+  });
+
+  it('declines with a message for the customer', () => {
+    stubAccount();
+    cy.intercept(
+      'GET',
+      '**/namespaces/organization-acme/billingarrangementapplications/apply-acme-1*',
+      proxy(application())
+    );
+    cy.intercept(
+      'POST',
+      '**/namespaces/organization-acme/billingarrangementdeclines*',
+      proxy({ metadata: { name: 'apply-acme-1-decline-x' } }, 201)
+    ).as('decline');
+
+    mountReview();
+
+    cy.get('[data-e2e="application-decline"]').click();
+    cy.findByLabelText(/Message to the customer/).type(
+      "We couldn't verify your company. Add a card to continue."
+    );
+    cy.findByLabelText(/Internal notes/).type('Website was parked');
+    cy.screenshot('application-review-decline-dialog');
+    cy.get('[role="dialog"]').contains('button', 'Decline').click();
+
+    cy.wait('@decline')
+      .its('request.body.spec')
+      .should('deep.equal', {
+        applicationRef: { name: 'apply-acme-1' },
+        message: "We couldn't verify your company. Add a card to continue.",
+        internalNotes: 'Website was parked',
+      });
+  });
+
+  it('shows the decision once declined, without the actions', () => {
+    stubAccount();
+    cy.intercept(
+      'GET',
+      '**/namespaces/organization-acme/billingarrangementapplications/apply-acme-1*',
+      proxy(
+        application({
+          phase: 'Declined',
+          decidedAt: '2026-10-03T10:00:00Z',
+          declineMessage: 'Add a card to continue.',
+        })
+      )
+    );
+    cy.intercept(
+      'GET',
+      '**/namespaces/organization-acme/billingarrangementdeclines*',
+      proxy({
+        items: [
+          {
+            metadata: { name: 'apply-acme-1-decline-x' },
+            spec: {
+              applicationRef: { name: 'apply-acme-1' },
+              message: 'Add a card to continue.',
+              internalNotes: 'Website was parked',
+            },
+          },
+        ],
+      })
+    );
+
+    mountReview();
+
+    cy.contains('Add a card to continue.').should('exist');
+    cy.contains('Website was parked').should('exist');
+    cy.get('[data-e2e="application-approve"]').should('not.exist');
+    cy.get('[data-e2e="application-decline"]').should('not.exist');
+  });
+});
