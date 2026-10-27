@@ -5,16 +5,25 @@ export type ProjectPhase = 'Deleting' | 'Suspended' | 'Ready' | 'Pending';
 type ConditionLike = {
   type?: string;
   status?: string;
-  message?: string;
+  message?: string | null;
 };
 
+/**
+ * A project from either source: a gateway row carries `conditions` at the top
+ * level, a REST project carries them under `status`.
+ */
 export type ProjectDeletionSource = {
   deletionTimestamp?: string | Date | null;
-  resourceCleanupMessage?: string | null;
-  state?: string | null;
+  conditions?: ConditionLike[] | null;
   metadata?: { deletionTimestamp?: string | Date | null };
   status?: { conditions?: ConditionLike[] };
 };
+
+function findCondition(project: ProjectDeletionSource, type: string): ConditionLike | undefined {
+  return (project.conditions ?? project.status?.conditions)?.find(
+    (condition) => condition.type === type
+  );
+}
 
 function deletionTimestampOf(project: ProjectDeletionSource): string | Date | null | undefined {
   return project.deletionTimestamp ?? project.metadata?.deletionTimestamp;
@@ -28,13 +37,7 @@ export function getResourceCleanupMessage(
   project: ProjectDeletionSource | null | undefined
 ): string | null {
   if (!project) return null;
-  const fromList = project.resourceCleanupMessage?.trim();
-  if (fromList) return fromList;
-
-  const fromCondition = project.status?.conditions
-    ?.find((condition) => condition.type === PROJECT_RESOURCE_CLEANUP)
-    ?.message?.trim();
-  return fromCondition || null;
+  return findCondition(project, PROJECT_RESOURCE_CLEANUP)?.message?.trim() || null;
 }
 
 /**
@@ -50,16 +53,24 @@ export function getProjectPhase(
   if (isProjectDeleting(project)) return 'Deleting';
   if (opts?.suspended) return 'Suspended';
 
-  if (project?.state === 'True') return 'Ready';
-  const ready = project?.status?.conditions?.find((condition) => condition.type === 'Ready');
-  if (ready?.status === 'True') return 'Ready';
+  if (project && findCondition(project, 'Ready')?.status === 'True') return 'Ready';
 
   return 'Pending';
 }
 
+/** A project row with its phase and cleanup message derived from conditions. */
+export type WithProjectPhase<T> = T & {
+  phase: ProjectPhase;
+  resourceCleanupMessage: string | null;
+};
+
 export function withProjectPhase<T extends ProjectDeletionSource>(
   project: T,
   opts?: { suspended?: boolean }
-): T & { phase: ProjectPhase } {
-  return { ...project, phase: getProjectPhase(project, opts) };
+): WithProjectPhase<T> {
+  return {
+    ...project,
+    phase: getProjectPhase(project, opts),
+    resourceCleanupMessage: getResourceCleanupMessage(project),
+  };
 }

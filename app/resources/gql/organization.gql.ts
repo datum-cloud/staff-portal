@@ -27,7 +27,7 @@ export interface GqlOrganization {
   state: string | null;
   /** Company / legal name from org contact details. */
   contactInfo: GqlOrgContactInfo | null;
-  /** True when status.conditions OnboardingComplete is True. */
+  /** True when the OnboardingComplete condition is True. */
   onboardingComplete: boolean;
   /** Derived list/filter label: Active when onboarded, else Inactive. */
   onboardingStatus: 'Active' | 'Inactive';
@@ -62,11 +62,8 @@ export const organizationsOp = (params: { limit?: number; cursor?: string; searc
           displayName: true,
           type: true,
           createdAt: true,
-          state: true,
           contactInfo: { businessName: true, name: true, email: true },
-          onboardingComplete: true,
-          onboardingReason: true,
-          onboardingMessage: true,
+          conditions: { type: true, status: true, reason: true, message: true },
         },
         continueToken: true,
       },
@@ -83,11 +80,8 @@ export const organizationOp = (name: string) =>
         displayName: true,
         type: true,
         createdAt: true,
-        state: true,
         contactInfo: { businessName: true, name: true, email: true },
-        onboardingComplete: true,
-        onboardingReason: true,
-        onboardingMessage: true,
+        conditions: { type: true, status: true, reason: true, message: true },
         projects: [{ limit: 100 }, { items: { name: true }, continueToken: true }],
       },
     ],
@@ -111,9 +105,8 @@ export const organizationProjectsOp = (
           hasActiveBillingAccount: true,
           billingAccountName: true,
           createdAt: true,
-          state: true,
           deletionTimestamp: true,
-          resourceCleanupMessage: true,
+          conditions: { type: true, status: true, reason: true, message: true },
         },
         continueToken: true,
       },
