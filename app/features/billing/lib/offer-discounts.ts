@@ -42,6 +42,45 @@ export type ResolvedServiceDiscount = {
   source: 'override' | 'general' | 'none';
 };
 
+export const emptyOfferDiscountForm: OfferDiscountFormValues = { general: '', overrides: {} };
+
+/** Validation message for one discount input, or undefined when it is valid. */
+export function getDiscountError(value: string | undefined): string | undefined {
+  const result = discountPercentageSchema.safeParse(value);
+  return result.success ? undefined : result.error.issues[0]?.message;
+}
+
+/** Whether every discount the Offer would send is valid; overrides on unselected services are ignored. */
+export function isOfferDiscountFormValid(
+  values: OfferDiscountFormValues,
+  selectedNames: string[]
+): boolean {
+  return [values.general, ...selectedNames.map((name) => values.overrides[name])].every(
+    (value) => !getDiscountError(value ?? '')
+  );
+}
+
+/** Form values without a service's override, for when it is removed from the Offer. */
+export function withoutOverride(
+  values: OfferDiscountFormValues,
+  name: string
+): OfferDiscountFormValues {
+  const { [name]: _removed, ...overrides } = values.overrides;
+  return { ...values, overrides };
+}
+
+/** Form values for editing a Draft Offer's discounts. */
+export function offerDiscountFormFromSpec(spec: OfferSpec | undefined): OfferDiscountFormValues {
+  return {
+    general: spec?.discount ? String(spec.discount.percentage) : '',
+    overrides: Object.fromEntries(
+      (spec?.servicePricingRefs ?? [])
+        .filter((ref) => ref.discount)
+        .map((ref) => [ref.name, String(ref.discount?.percentage)])
+    ),
+  };
+}
+
 const toDiscount = (value: string | undefined): OfferDiscount | undefined => {
   const trimmed = value?.trim();
   return trimmed ? { percentage: Number(trimmed) } : undefined;

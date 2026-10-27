@@ -1,5 +1,12 @@
 import type { Route } from './+types/create';
-import { ServicePricingChecklist } from '@/features/billing';
+import { OfferDiscountsFields, ServicePricingChecklist } from '@/features/billing';
+import {
+  buildOfferDiscountSpec,
+  emptyOfferDiscountForm,
+  isOfferDiscountFormValid,
+  withoutOverride,
+  type OfferDiscountFormValues,
+} from '@/features/billing/lib/offer-discounts';
 import {
   CHARGE_TYPES,
   DEFAULT_SERVICE_PRICING_NAMESPACE,
@@ -45,8 +52,10 @@ export default function Page() {
   const pricingsQuery = useServicePricingListQuery();
   const [chargeTypes, setChargeTypes] = useState<ChargeType[]>(['Usage']);
   const [servicePricingNames, setServicePricingNames] = useState<string[]>([]);
+  const [discounts, setDiscounts] = useState<OfferDiscountFormValues>(emptyOfferDiscountForm);
 
   const pricings = useMemo(() => pricingsQuery.data?.items ?? [], [pricingsQuery.data?.items]);
+  const discountsValid = isOfferDiscountFormValid(discounts, servicePricingNames);
 
   const handleSubmit = async (values: OfferFormValues) => {
     if (chargeTypes.length === 0) {
@@ -57,15 +66,22 @@ export default function Page() {
       toast.error(t`Select at least one ServicePricing`);
       return;
     }
+    if (!discountsValid) {
+      toast.error(t`Fix the discounts before creating the Offer`);
+      return;
+    }
     try {
       await createMutation.mutateAsync({
         name: values.name,
         displayName: values.displayName,
         chargeTypes,
-        servicePricingRefs: servicePricingNames.map((name) => ({
-          name,
-          namespace: DEFAULT_SERVICE_PRICING_NAMESPACE,
-        })),
+        ...buildOfferDiscountSpec(
+          discounts,
+          servicePricingNames.map((name) => ({
+            name,
+            namespace: DEFAULT_SERVICE_PRICING_NAMESPACE,
+          }))
+        ),
       });
       toast.success(t`Draft Offer created`);
       navigate(offerRoutes.detail(values.name));
@@ -85,6 +101,7 @@ export default function Page() {
     setServicePricingNames((current) =>
       next ? [...current, name] : current.filter((n) => n !== name)
     );
+    if (!next) setDiscounts((current) => withoutOverride(current, name));
   };
 
   return (
@@ -149,6 +166,18 @@ export default function Page() {
                   </div>
                 </div>
 
+                <div className="border-t pt-4">
+                  <Text size="sm" weight="medium" className="mb-3">
+                    <Trans>Discounts</Trans>
+                  </Text>
+                  <OfferDiscountsFields
+                    value={discounts}
+                    onChange={setDiscounts}
+                    pricings={pricings}
+                    selectedNames={servicePricingNames}
+                  />
+                </div>
+
                 <div className="flex justify-end gap-2 border-t pt-4">
                   <Button
                     type="tertiary"
@@ -164,7 +193,8 @@ export default function Page() {
                       !isValid ||
                       isSubmitting ||
                       chargeTypes.length === 0 ||
-                      servicePricingNames.length === 0
+                      servicePricingNames.length === 0 ||
+                      !discountsValid
                     }
                     loading={isSubmitting}>
                     <Trans>Create draft</Trans>

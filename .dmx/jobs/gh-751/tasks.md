@@ -21,13 +21,13 @@
 - [x] Extend `updateDraftOffer` in `billing.api.ts` to send `spec.discount`, and `null` when the general discount is cleared so the merge patch removes it. Per-ref overrides are cleared by sending the whole `servicePricingRefs` array again.
 
 ## Phase 2: Discount authoring UI
-- [ ] Add `app/features/billing/components/offer-discounts-fields.tsx`, a separate discounts section with:
+- [x] Add `app/features/billing/components/offer-discounts-fields.tsx`, a separate discounts section with:
   - A general discount % input.
   - One override % input for each selected service. An empty input means inherit, and its placeholder shows the inherited value.
   - Inline validation errors from `discountPercentageSchema`.
-- [ ] Export `OfferDiscountsFields` from `app/features/billing/components/index.ts`.
-- [ ] Wire discounts into `app/routes/admin/offer/create.tsx`: hold discount state, block submit on invalid values, and pass `buildOfferDiscountSpec` output to `createOffer`.
-- [ ] Wire discounts into `DraftConfigEditor` in `app/routes/admin/offer/detail.tsx`:
+- [x] Export `OfferDiscountsFields` from `app/features/billing/components/index.ts`.
+- [x] Wire discounts into `app/routes/admin/offer/create.tsx`: hold discount state, block submit on invalid values, and pass `buildOfferDiscountSpec` output to `createOffer`.
+- [x] Wire discounts into `DraftConfigEditor` in `app/routes/admin/offer/detail.tsx`:
   - Start from the current `spec.discount` and ref overrides.
   - Drop the override when a service is deselected.
   - Save through `updateDraftOffer`.

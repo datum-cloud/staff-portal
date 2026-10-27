@@ -1,7 +1,10 @@
 import {
   buildOfferDiscountSpec,
   discountPercentageSchema,
+  isOfferDiscountFormValid,
+  offerDiscountFormFromSpec,
   resolveServiceDiscount,
+  withoutOverride,
   type OfferServicePricingRef,
 } from './offer-discounts';
 import { describe, expect, it } from 'vitest';
@@ -92,5 +95,54 @@ describe('resolveServiceDiscount', () => {
 
   it('is 0% when neither is set', () => {
     expect(resolveServiceDiscount({})).toEqual({ percentage: 0, source: 'none' });
+  });
+});
+
+describe('isOfferDiscountFormValid', () => {
+  it('is valid when every sent discount is valid', () => {
+    expect(
+      isOfferDiscountFormValid({ general: '20', overrides: { 'compute-cpu': '100' } }, [
+        'compute-cpu',
+      ])
+    ).toBe(true);
+  });
+
+  it('is invalid when the general discount or a selected override is out of range', () => {
+    expect(isOfferDiscountFormValid({ general: '101', overrides: {} }, [])).toBe(false);
+    expect(
+      isOfferDiscountFormValid({ general: '', overrides: { 'compute-cpu': '-1' } }, ['compute-cpu'])
+    ).toBe(false);
+  });
+
+  it('ignores overrides on services that are not selected', () => {
+    expect(isOfferDiscountFormValid({ general: '', overrides: { gpu: '500' } }, [])).toBe(true);
+  });
+});
+
+describe('offerDiscountFormFromSpec', () => {
+  it('reads the general discount and per-service overrides', () => {
+    expect(
+      offerDiscountFormFromSpec({
+        launchStage: 'Draft',
+        chargeTypes: ['Usage'],
+        discount: { percentage: 20 },
+        servicePricingRefs: [
+          { name: 'compute-cpu', discount: { percentage: 0 } },
+          { name: 'object-storage' },
+        ],
+      })
+    ).toEqual({ general: '20', overrides: { 'compute-cpu': '0' } });
+  });
+
+  it('is empty when the Offer has no discounts', () => {
+    expect(offerDiscountFormFromSpec(undefined)).toEqual({ general: '', overrides: {} });
+  });
+});
+
+describe('withoutOverride', () => {
+  it("removes only that service's override", () => {
+    expect(
+      withoutOverride({ general: '20', overrides: { 'compute-cpu': '100', gpu: '50' } }, 'gpu')
+    ).toEqual({ general: '20', overrides: { 'compute-cpu': '100' } });
   });
 });
