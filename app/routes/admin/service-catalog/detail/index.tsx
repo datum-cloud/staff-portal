@@ -3,14 +3,15 @@ import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
 import { MessageCard } from '@/components/message-card';
 import { PageHeader } from '@/components/page-header';
+import { getServicePricingsForService } from '@/features/billing/utils';
 import {
   ActiveConfigurationSummary,
-  ChargesCard,
   ConditionsCard,
   DetailsCard,
   MetersCard,
   MonitoredResourcesCard,
   QuotaLimitsCard,
+  ServicePricingsCard,
 } from '@/features/service-catalog';
 import {
   getServicePageExtensions,
@@ -19,6 +20,7 @@ import {
 import { ServiceOverviewOverride } from '@/modules/plugins/client/service-overview-override';
 import {
   useServiceConfigurationsByServiceQuery,
+  useServicePricingListQuery,
   type ServiceConfiguration,
 } from '@/resources/request/client';
 import { serviceCatalogRoutes } from '@/utils/config/routes.config';
@@ -94,6 +96,12 @@ function BuiltInOverview() {
 
   const active = useMemo(() => pickActiveConfiguration(filtered), [filtered]);
 
+  const pricingsQuery = useServicePricingListQuery();
+  const pricings = useMemo(
+    () => getServicePricingsForService(pricingsQuery.data?.items ?? [], service),
+    [pricingsQuery.data, service]
+  );
+
   if (error) {
     const is403 =
       error instanceof Error &&
@@ -127,9 +135,6 @@ function BuiltInOverview() {
   const description = spec?.description;
   const dependencies = spec?.dependencies ?? [];
   const isGated = spec?.enablementPolicy?.mode === 'GatedByProvider';
-  const configurationName = active?.metadata?.name ?? '';
-  const isPublishedConfig = active?.spec?.phase === 'Published';
-  const charges = active?.spec?.charges ?? [];
   const metrics = active?.spec?.metrics ?? [];
 
   return (
@@ -186,11 +191,16 @@ function BuiltInOverview() {
         isLoading={isLoading}
       />
 
-      <ChargesCard
-        charges={charges}
-        isLoading={isLoading}
-        isPublished={isPublishedConfig}
-        hasPublishedConfiguration={!!configurationName}
+      <ServicePricingsCard
+        pricings={pricings}
+        isLoading={pricingsQuery.isLoading}
+        errorMessage={
+          pricingsQuery.error
+            ? pricingsQuery.error instanceof Error
+              ? pricingsQuery.error.message
+              : String(pricingsQuery.error)
+            : undefined
+        }
       />
 
       <Row type="flex" gutter={[16, 16]}>

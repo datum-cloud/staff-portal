@@ -126,7 +126,7 @@ export const buildOrganizationNamespace = (orgName: string) => `organization-${o
 /** Well-known annotation for human-readable Offer names. */
 export const OFFER_DISPLAY_NAME_ANNOTATION = 'kubernetes.io/display-name';
 
-/** Namespace where ChargeFanOut emits ServicePricing objects. */
+/** Namespace where ServicePricing manifests are applied. */
 export const DEFAULT_SERVICE_PRICING_NAMESPACE = 'milo-system';
 
 export const getOfferDisplayName = (offer: {
@@ -180,6 +180,28 @@ export const getServicePricingDisplayName = (
   return humanizeSlug(chargeSlug);
 };
 
+type ServicePricingSpec = NonNullable<ComMiloapisBillingV1Alpha1ServicePricing['spec']>;
+type PricingRate = NonNullable<ServicePricingSpec['rates']>[number];
+type PricingTierBand = NonNullable<PricingRate['tiered']>[number];
+
+/** A rate's dimension match, e.g. "runtime_class = general-purpose". */
+function formatRateMatch(match: NonNullable<PricingRate['match']>): string {
+  return `${match.dimension} = ${match.value}`;
+}
+
+/** An amount per pricing unit, e.g. "$0.05 / GB"; the amount alone without a unit. */
+function formatUnitPrice(amount: string, unit?: string): string {
+  return unit ? `${amount} / ${unit}` : amount;
+}
+
+/** A OneTime or Recurring pricing's amount, e.g. "$10 one-time"; undefined otherwise. */
+function formatFixedCharge(spec: ServicePricingSpec): string | undefined {
+  if (!spec.amount) return undefined;
+  if (spec.chargeType === 'OneTime') return `$${spec.amount} one-time`;
+  if (spec.chargeType === 'Recurring') return `$${spec.amount} / month`;
+  return undefined;
+}
+
 /** Short price summary for checklist rows (e.g. "$0.000001 / request"). */
 export const summarizeServicePricing = (
   pricing: ComMiloapisBillingV1Alpha1ServicePricing
@@ -187,12 +209,8 @@ export const summarizeServicePricing = (
   const spec = pricing.spec;
   if (!spec) return undefined;
 
-  if (spec.chargeType === 'OneTime' && spec.amount) {
-    return `$${spec.amount} · one-time`;
-  }
-  if (spec.chargeType === 'Recurring' && spec.amount) {
-    return `$${spec.amount} / month`;
-  }
+  const fixed = formatFixedCharge(spec);
+  if (fixed) return fixed;
 
   const unit = spec.pricingUnit?.trim();
   const rates = spec.rates ?? [];
@@ -202,15 +220,12 @@ export const summarizeServicePricing = (
 
   const parts = rates
     .map((rate) => {
-      const match = rate.match ? `${rate.match.dimension}=${rate.match.value}` : null;
+      const match = rate.match ? formatRateMatch(rate.match) : null;
       let price: string | null = null;
       if (rate.flat) {
-        price = unit ? `$${rate.flat} / ${unit}` : `$${rate.flat}`;
+        price = formatUnitPrice(`$${rate.flat}`, unit);
       } else if (rate.tiered?.length) {
-        const last = rate.tiered[rate.tiered.length - 1];
-        price = unit
-          ? `$${last.rate} / ${unit} (${rate.tiered.length} tiers)`
-          : `${rate.tiered.length} tiers`;
+        price = `${formatUnitPrice(tierPriceRange(rate.tiered), unit)} (${rate.tiered.length} tiers)`;
       }
       if (!price) return null;
       return match ? `${match}: ${price}` : price;
@@ -220,6 +235,75 @@ export const summarizeServicePricing = (
   if (parts.length === 0) return unit ? `Per ${unit}` : undefined;
   if (parts.length <= 2) return parts.join(' · ');
   return `${parts[0]} · +${parts.length - 1} more`;
+};
+
+/** Lowest to highest band rate, e.g. "$0–$0.05", or one price when they match. */
+function tierPriceRange(tiers: PricingTierBand[]): string {
+  const rates = tiers.map((band) => band.rate);
+  const sorted = [...rates].sort((a, b) => Number(a) - Number(b));
+  const low = sorted[0];
+  const high = sorted[sorted.length - 1];
+  return Number(low) === Number(high) ? `$${low}` : `$${low}–$${high}`;
+}
+
+/** Thousands separators for a numeric quantity string; anything else as is. */
+function formatQuantity(value: string): string {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return value;
+  return n.toLocaleString('en-US', { maximumFractionDigits: 20 });
+}
+
+/** One rate entry of a ServicePricing: who it applies to and what it costs. */
+export type ServicePricingRateLine = {
+  /** The dimension match, "Everything else" for the catch-all beside matches, or none. */
+  label?: string;
+  /** One price for a flat rate, one per band for a tiered rate. */
+  prices: string[];
+};
+
+/**
+ * Every price a ServicePricing charges, one line per rate entry, for detail
+ * views. Tiered rates list each band with its range, e.g. "First 200 GB: $0 / GB".
+ */
+export const describeServicePricingRates = (
+  pricing: ComMiloapisBillingV1Alpha1ServicePricing
+): ServicePricingRateLine[] => {
+  const spec = pricing.spec;
+  if (!spec) return [];
+
+  const fixed = formatFixedCharge(spec);
+  if (fixed) return [{ prices: [fixed] }];
+
+  const unit = spec.pricingUnit?.trim();
+  const perUnit = (rate: string) => formatUnitPrice(`$${rate}`, unit);
+  const withUnit = (quantity: string) => (unit ? `${quantity} ${unit}` : quantity);
+  const rates = spec.rates ?? [];
+  const hasMatches = rates.some((rate) => rate.match);
+
+  return rates.map((rate) => {
+    const label = rate.match
+      ? formatRateMatch(rate.match)
+      : hasMatches
+        ? 'Everything else'
+        : undefined;
+
+    if (rate.flat) return { label, prices: [perUnit(rate.flat)] };
+
+    let from: string | undefined;
+    const prices = (rate.tiered ?? []).map((band) => {
+      let range: string;
+      if (band.upTo) {
+        range = from
+          ? withUnit(`${formatQuantity(from)}–${formatQuantity(band.upTo)}`)
+          : `First ${withUnit(formatQuantity(band.upTo))}`;
+      } else {
+        range = from ? `Over ${withUnit(formatQuantity(from))}` : 'All usage';
+      }
+      from = band.upTo || from;
+      return `${range}: ${perUnit(band.rate)}`;
+    });
+    return { label, prices };
+  });
 };
 
 /** Muted secondary line: internal resource id when it differs from the display label. */
@@ -275,6 +359,25 @@ export const resolveServicePricingCatalogService = (
     catalogName,
     canonicalName: canonicalName && canonicalName !== displayName ? canonicalName : undefined,
   };
+};
+
+/**
+ * ServicePricings that bill a service, matched on spec.serviceRef (the
+ * service's canonical serviceName, e.g. networking.datumapis.com). Sorted by
+ * display name.
+ */
+export const getServicePricingsForService = (
+  pricings: ComMiloapisBillingV1Alpha1ServicePricing[],
+  service: ComMiloapisServicesV1Alpha1Service
+): ComMiloapisBillingV1Alpha1ServicePricing[] => {
+  const refs = new Set(
+    [service.spec?.serviceName, service.metadata?.name]
+      .map((ref) => ref?.trim())
+      .filter((ref): ref is string => Boolean(ref))
+  );
+  return pricings
+    .filter((pricing) => refs.has(pricing.spec?.serviceRef?.trim() ?? ''))
+    .sort((a, b) => getServicePricingDisplayName(a).localeCompare(getServicePricingDisplayName(b)));
 };
 
 /** metadata.name of the billing.miloapis.com Service / ServiceConfiguration. */

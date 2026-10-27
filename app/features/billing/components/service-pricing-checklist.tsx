@@ -52,9 +52,9 @@ function ServicePricingEmptyState() {
         </Text>
         <Text as="p" textColor="muted" className="leading-relaxed">
           <Trans>
-            Offers bundle prices that already exist as ServicePricings. Define charges in git on
-            ServiceConfiguration spec.charges, publish the configuration, then refresh to select
-            them here.
+            Offers bundle prices that already exist as ServicePricings. Prices are ServicePricing
+            manifests in each service&apos;s repo; once Flux applies them, refresh to select them
+            here.
           </Trans>
         </Text>
       </div>
@@ -62,11 +62,12 @@ function ServicePricingEmptyState() {
       <ol className="text-muted-foreground max-w-md list-decimal space-y-1.5 pl-5 text-left text-sm leading-relaxed">
         <li>
           <Trans>
-            Add or update spec.charges in your infra repo and publish the configuration.
+            Add a ServicePricing manifest for this environment to the service&apos;s repo, and get
+            billing&apos;s review.
           </Trans>
         </li>
         <li>
-          <Trans>Wait for charge fan-out, then refresh this page.</Trans>
+          <Trans>Wait for Flux to apply it, then refresh this page.</Trans>
         </li>
         <li>
           <Trans>Select the ServicePricings to include in your Offer.</Trans>
