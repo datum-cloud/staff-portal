@@ -265,6 +265,10 @@ msgstr "Add"
 msgid "Add a note"
 msgstr "Add a note"
 
+#: app/features/billing/components/service-pricing-checklist.tsx:64
+msgid "Add a ServicePricing manifest for this environment to the service's repo, and get billing's review."
+msgstr "Add a ServicePricing manifest for this environment to the service's repo, and get billing's review."
+
 #: app/features/milo/components/page/rule-filter.tsx:152
 msgid "Add filter"
 msgstr "Add filter"
@@ -277,10 +281,6 @@ msgstr "Add Member"
 #: app/features/domain/components/create-note-form.tsx:64
 msgid "Add Note"
 msgstr "Add Note"
-
-#: app/features/billing/components/service-pricing-checklist.tsx:64
-msgid "Add or update spec.charges in your infra repo and publish the configuration."
-msgstr "Add or update spec.charges in your infra repo and publish the configuration."
 
 #: app/routes/customer/fraud/providers/index.tsx:146
 msgid "Add Provider"
@@ -728,7 +728,7 @@ msgstr "Charge types"
 msgid "Charge types and ServicePricings are required"
 msgstr "Charge types and ServicePricings are required"
 
-#: app/features/billing/components/service-pricing-checklist.tsx:88
+#: app/features/billing/components/service-pricing-checklist.tsx:89
 msgid "Check that you have permission to list ServicePricings, then try again. If IAM was just updated, wait a minute for PolicyBindings to reconcile."
 msgstr "Check that you have permission to list ServicePricings, then try again. If IAM was just updated, wait a minute for PolicyBindings to reconcile."
 
@@ -999,7 +999,7 @@ msgstr "Copy shareable link with current filters"
 msgid "Could not load quotas"
 msgstr "Could not load quotas"
 
-#: app/features/billing/components/service-pricing-checklist.tsx:84
+#: app/features/billing/components/service-pricing-checklist.tsx:85
 msgid "Could not load service pricings"
 msgstr "Could not load service pricings"
 
@@ -1023,6 +1023,10 @@ msgstr "Couldn't load counts"
 #: app/features/dashboard/components/home/health-section.tsx:191
 msgid "Couldn't load email activity."
 msgstr "Couldn't load email activity."
+
+#: app/features/service-catalog/components/service-pricings-card.tsx:128
+msgid "Couldn't load prices for this service."
+msgstr "Couldn't load prices for this service."
 
 #: app/features/project/components/project-resources-card.tsx:59
 msgid "Counts for resources in this project"
@@ -1372,7 +1376,7 @@ msgstr "Deny Request"
 msgid "Deny this consumer's access request. Optionally add a note."
 msgstr "Deny this consumer's access request. Optionally add a note."
 
-#: app/routes/admin/service-catalog/detail/index.tsx:169
+#: app/routes/admin/service-catalog/detail/index.tsx:174
 msgid "Dependencies:"
 msgstr "Dependencies:"
 
@@ -1877,7 +1881,7 @@ msgstr "Failed to load fraud evaluations."
 msgid "Failed to load service catalog."
 msgstr "Failed to load service catalog."
 
-#: app/routes/admin/service-catalog/detail/index.tsx:107
+#: app/routes/admin/service-catalog/detail/index.tsx:115
 msgid "Failed to load service configurations."
 msgstr "Failed to load service configurations."
 
@@ -2045,7 +2049,7 @@ msgid "fraud reviews"
 msgstr "fraud reviews"
 
 #: app/features/billing/components/offer-included-pricing-list.tsx:69
-#: app/features/billing/components/service-pricing-checklist.tsx:166
+#: app/features/billing/components/service-pricing-checklist.tsx:167
 msgid "From"
 msgstr "From"
 
@@ -2063,7 +2067,7 @@ msgid "Fully onboarded"
 msgstr "Fully onboarded"
 
 #: app/features/service-catalog/components/details-card.tsx:54
-#: app/routes/admin/service-catalog/detail/index.tsx:143
+#: app/routes/admin/service-catalog/detail/index.tsx:148
 #: app/routes/admin/service-catalog/index.tsx:184
 msgid "Gated by Provider"
 msgstr "Gated by Provider"
@@ -2522,7 +2526,6 @@ msgstr "Loading status..."
 msgid "Loading..."
 msgstr "Loading..."
 
-#: app/features/service-catalog/components/charges-card.tsx:118
 #: app/routes/admin/offer/detail.tsx:209
 #: app/routes/admin/offer/detail.tsx:327
 msgid "Loading…"
@@ -2841,10 +2844,6 @@ msgstr "No BillingEntitlement found for this account. New accounts pick up the d
 msgid "No charges included in this Offer."
 msgstr "No charges included in this Offer."
 
-#: app/features/service-catalog/components/charges-card.tsx:58
-msgid "No charges on this configuration. Add spec.charges in git, publish the ServiceConfiguration, and they will show up here."
-msgstr "No charges on this configuration. Add spec.charges in git, publish the ServiceConfiguration, and they will show up here."
-
 #: app/features/service-catalog/components/conditions-card.tsx:88
 msgid "No conditions reported."
 msgstr "No conditions reported."
@@ -3052,6 +3051,10 @@ msgstr "No platform access record found for this user"
 msgid "No prices available yet"
 msgstr "No prices available yet"
 
+#: app/features/service-catalog/components/service-pricings-card.tsx:52
+msgid "No prices for this service in this environment. Add ServicePricing manifests to the service's repo, and they will show up here once Flux applies them."
+msgstr "No prices for this service in this environment. Add ServicePricing manifests to the service's repo, and they will show up here once Flux applies them."
+
 #: app/routes/customer/organization/detail/project.tsx:95
 #: app/routes/customer/project/index.tsx:187
 msgid "No projects found."
@@ -3060,10 +3063,6 @@ msgstr "No projects found."
 #: app/features/fraud/detail/evaluation-sections.tsx:296
 msgid "No provider results."
 msgstr "No provider results."
-
-#: app/features/service-catalog/components/charges-card.tsx:43
-msgid "No published configuration"
-msgstr "No published configuration"
 
 #: app/features/service-catalog/components/active-configuration-summary.tsx:46
 msgid "No Published configuration. Drafts are not fanned out to billing or quota."
@@ -3251,8 +3250,8 @@ msgid "Offers"
 msgstr "Offers"
 
 #: app/features/billing/components/service-pricing-checklist.tsx:54
-msgid "Offers bundle prices that already exist as ServicePricings. Define charges in git on ServiceConfiguration spec.charges, publish the configuration, then refresh to select them here."
-msgstr "Offers bundle prices that already exist as ServicePricings. Define charges in git on ServiceConfiguration spec.charges, publish the configuration, then refresh to select them here."
+msgid "Offers bundle prices that already exist as ServicePricings. Prices are ServicePricing manifests in each service's repo; once Flux applies them, refresh to select them here."
+msgstr "Offers bundle prices that already exist as ServicePricings. Prices are ServicePricing manifests in each service's repo; once Flux applies them, refresh to select them here."
 
 #: app/features/organization/components/org-onboarding-card.tsx:204
 msgid "Onboarding"
@@ -3341,7 +3340,7 @@ msgstr "Overview"
 msgid "Owner"
 msgstr "Owner"
 
-#: app/routes/admin/service-catalog/detail/index.tsx:161
+#: app/routes/admin/service-catalog/detail/index.tsx:166
 msgid "Owner:"
 msgstr "Owner:"
 
@@ -3561,7 +3560,7 @@ msgstr "Previous page"
 msgid "Previous terms"
 msgstr "Previous terms"
 
-#: app/features/service-catalog/components/charges-card.tsx:108
+#: app/features/service-catalog/components/service-pricings-card.tsx:112
 msgid "Pricing"
 msgstr "Pricing"
 
@@ -3771,9 +3770,9 @@ msgstr "Rateable dimensions:"
 msgid "Raw Results — {provider}"
 msgstr "Raw Results — {provider}"
 
-#: app/features/service-catalog/components/charges-card.tsx:113
-msgid "Read-only. Prices are authored in git on ServiceConfiguration spec.charges."
-msgstr "Read-only. Prices are authored in git on ServiceConfiguration spec.charges."
+#: app/features/service-catalog/components/service-pricings-card.tsx:117
+msgid "Read-only. Prices are ServicePricing manifests in the service's repo, one set per environment, and billing reviews every change."
+msgstr "Read-only. Prices are ServicePricing manifests in the service's repo, one set per environment, and billing reviews every change."
 
 #: app/features/organization/components/org-onboarding-card.tsx:66
 msgid "Ready"
@@ -3938,7 +3937,7 @@ msgstr "Retired"
 
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:93
 #: app/routes/admin/service-catalog/detail/approvals.tsx:148
-#: app/routes/admin/service-catalog/detail/index.tsx:114
+#: app/routes/admin/service-catalog/detail/index.tsx:122
 #: app/routes/admin/service-catalog/index.tsx:150
 msgid "Retry"
 msgstr "Retry"
@@ -4267,7 +4266,7 @@ msgstr "Select contact group..."
 msgid "Select state"
 msgstr "Select state"
 
-#: app/features/billing/components/service-pricing-checklist.tsx:72
+#: app/features/billing/components/service-pricing-checklist.tsx:73
 msgid "Select the ServicePricings to include in your Offer."
 msgstr "Select the ServicePricings to include in your Offer."
 
@@ -4705,10 +4704,6 @@ msgstr "This organization does not have a billing account. Usage and spend data 
 msgid "This project is being deleted"
 msgstr "This project is being deleted"
 
-#: app/features/service-catalog/components/charges-card.tsx:46
-msgid "This service does not have a published ServiceConfiguration yet. Prices are defined in git on spec.charges and appear here after the configuration is published."
-msgstr "This service does not have a published ServiceConfiguration yet. Prices are defined in git on spec.charges and appear here after the configuration is published."
-
 #: app/routes/admin/service-catalog/detail/consumers.tsx:222
 msgid "This service has no producer project recorded, so consumers cannot be listed."
 msgstr "This service has no producer project recorded, so consumers cannot be listed."
@@ -5006,9 +5001,9 @@ msgstr "View sent links"
 msgid "Visibility"
 msgstr "Visibility"
 
-#: app/features/billing/components/service-pricing-checklist.tsx:69
-msgid "Wait for charge fan-out, then refresh this page."
-msgstr "Wait for charge fan-out, then refresh this page."
+#: app/features/billing/components/service-pricing-checklist.tsx:70
+msgid "Wait for Flux to apply it, then refresh this page."
+msgstr "Wait for Flux to apply it, then refresh this page."
 
 #: app/features/edge/components/detail/edge-hostnames-card.tsx:67
 msgid "Waiting for hostname ownership verification to complete"
@@ -5069,7 +5064,7 @@ msgstr "Yes"
 msgid "Yes — new accounts use this Offer"
 msgstr "Yes — new accounts use this Offer"
 
-#: app/routes/admin/service-catalog/detail/index.tsx:105
+#: app/routes/admin/service-catalog/detail/index.tsx:113
 msgid "You do not have permission to view service configurations."
 msgstr "You do not have permission to view service configurations."
 
