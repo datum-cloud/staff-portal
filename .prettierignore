@@ -1,0 +1,4 @@
+# Managed by dmx (rewritten by /dmx/init, /dmx/upgrade and loops)
+.dmx/
+.claude/rules/
+CLAUDE.md
