@@ -1,7 +1,5 @@
+import { userSummariesQuery } from './search.api';
 import { PROXY_URL } from '@/modules/axios/axios.client';
-import { createGqlClient } from '@/modules/graphql/client';
-import { generateQueryOp } from '@/modules/graphql/generated';
-import type { UserSummary } from '@/modules/graphql/generated/schema';
 import {
   createNotesMiloapisComV1Alpha1NamespacedNote,
   deleteNotesMiloapisComV1Alpha1NamespacedNote,
@@ -91,15 +89,7 @@ export const noteCreatorNamesQuery = async (ids: string[]): Promise<Record<strin
   const unique = [...new Set(ids.filter(Boolean))];
   if (unique.length === 0) return {};
 
-  const client = createGqlClient({ type: 'global' });
-  const op = generateQueryOp({
-    userSummaries: [
-      { names: unique },
-      { name: true, email: true, givenName: true, familyName: true },
-    ],
-  });
-  const result = await client.query(op.query, op.variables).toPromise();
-  const users: UserSummary[] = result.data?.userSummaries ?? [];
+  const users = await userSummariesQuery(unique);
 
   const map: Record<string, string> = Object.fromEntries(
     users.map((u) => {
