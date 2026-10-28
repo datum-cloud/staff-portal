@@ -206,7 +206,7 @@ msgstr "Account overview"
 msgid "Accounts"
 msgstr "Accounts"
 
-#: app/features/billing/components/application-review.tsx:362
+#: app/features/billing/components/application-review.tsx:376
 #: app/features/billing/components/payment-terms-card.tsx:514
 msgid "Accounts payable email"
 msgstr "Accounts payable email"
@@ -315,7 +315,7 @@ msgstr "Added"
 msgid "Added by"
 msgstr "Added by"
 
-#: app/features/billing/components/application-review.tsx:497
+#: app/features/billing/components/application-review.tsx:513
 #: app/features/organization/components/org-contact-card.tsx:73
 msgid "Address"
 msgstr "Address"
@@ -333,7 +333,7 @@ msgstr "After publish, only the display name can change. Rate changes need a new
 msgid "Agreement"
 msgstr "Agreement"
 
-#: app/features/billing/components/application-review.tsx:370
+#: app/features/billing/components/application-review.tsx:384
 #: app/features/billing/components/payment-terms-card.tsx:523
 msgid "Agreement reference"
 msgstr "Agreement reference"
@@ -353,7 +353,7 @@ msgstr "Algorithm"
 msgid "All"
 msgstr "All"
 
-#: app/features/billing/components/application-review.tsx:225
+#: app/features/billing/components/application-review.tsx:230
 msgid "All applications"
 msgstr "All applications"
 
@@ -434,19 +434,19 @@ msgid "API Group"
 msgstr "API Group"
 
 #: app/features/billing/components/application-list.tsx:88
-#: app/features/billing/components/application-review.tsx:315
+#: app/features/billing/components/application-review.tsx:329
 msgid "Applicant"
 msgstr "Applicant"
 
-#: app/features/billing/components/application-review.tsx:281
+#: app/features/billing/components/application-review.tsx:295
 msgid "Application"
 msgstr "Application"
 
-#: app/features/billing/components/application-review.tsx:130
+#: app/features/billing/components/application-review.tsx:135
 msgid "Application approved"
 msgstr "Application approved"
 
-#: app/features/billing/components/application-review.tsx:139
+#: app/features/billing/components/application-review.tsx:144
 msgid "Application declined"
 msgstr "Application declined"
 
@@ -463,7 +463,7 @@ msgstr "Application Load Balancer"
 msgid "Application Load Balancers"
 msgstr "Application Load Balancers"
 
-#: app/features/billing/components/application-review.tsx:158
+#: app/features/billing/components/application-review.tsx:163
 msgid "Application not found."
 msgstr "Application not found."
 
@@ -481,9 +481,9 @@ msgstr "Approval"
 msgid "Approvals"
 msgstr "Approvals"
 
-#: app/features/billing/components/application-review.tsx:205
-#: app/features/billing/components/application-review.tsx:216
-#: app/features/billing/components/application-review.tsx:516
+#: app/features/billing/components/application-review.tsx:210
+#: app/features/billing/components/application-review.tsx:221
+#: app/features/billing/components/application-review.tsx:532
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:38
 #: app/routes/admin/service-catalog/detail/approvals.tsx:51
 #: app/routes/admin/service-catalog/detail/consumers.tsx:76
@@ -491,7 +491,7 @@ msgstr "Approvals"
 msgid "Approve"
 msgstr "Approve"
 
-#: app/features/billing/components/application-review.tsx:514
+#: app/features/billing/components/application-review.tsx:530
 msgid "Approve application"
 msgstr "Approve application"
 
@@ -507,7 +507,7 @@ msgstr "Approve this consumer's access request. Optionally add a note."
 msgid "Approved"
 msgstr "Approved"
 
-#: app/features/billing/components/application-review.tsx:434
+#: app/features/billing/components/application-review.tsx:448
 msgid "Approving renews them: the new terms start on <0/>, when the existing terms end."
 msgstr "Approving renews them: the new terms start on <0/>, when the existing terms end."
 
@@ -587,7 +587,7 @@ msgstr "Are you sure you want to remove this contact from the contact group \"{0
 
 #: app/features/billing/components/application-list.tsx:130
 #: app/features/billing/components/application-list.tsx:182
-#: app/features/billing/components/application-review.tsx:289
+#: app/features/billing/components/application-review.tsx:303
 msgid "Asked for"
 msgstr "Asked for"
 
@@ -620,7 +620,7 @@ msgstr "Associated with User: "
 msgid "Audit Logs"
 msgstr "Audit Logs"
 
-#: app/features/billing/components/application-review.tsx:340
+#: app/features/billing/components/application-review.tsx:354
 msgid "Authorized to apply"
 msgstr "Authorized to apply"
 
@@ -653,7 +653,7 @@ msgstr "Base Ejection"
 msgid "Basic Authentication"
 msgstr "Basic Authentication"
 
-#: app/features/billing/components/application-review.tsx:415
+#: app/features/billing/components/application-review.tsx:429
 #: app/features/billing/components/payment-terms-card.tsx:178
 msgid "Billed by"
 msgstr "Billed by"
@@ -665,8 +665,8 @@ msgid "Billing"
 msgstr "Billing"
 
 #: app/features/billing/components/application-list.tsx:116
-#: app/features/billing/components/application-review.tsx:393
-#: app/features/billing/components/application-review.tsx:397
+#: app/features/billing/components/application-review.tsx:407
+#: app/features/billing/components/application-review.tsx:411
 #: app/features/organization/components/org-onboarding-card.tsx:64
 msgid "Billing account"
 msgstr "Billing account"
@@ -692,7 +692,7 @@ msgstr "Billing Accounts"
 msgid "Billing address"
 msgstr "Billing address"
 
-#: app/features/billing/components/application-review.tsx:487
+#: app/features/billing/components/application-review.tsx:503
 msgid "Billing contact"
 msgstr "Billing contact"
 
@@ -715,7 +715,7 @@ msgstr "by"
 
 #: app/components/button/button-delete-action.tsx:43
 #: app/components/danger-zone-card/index.tsx:43
-#: app/features/billing/components/application-review.tsx:582
+#: app/features/billing/components/application-review.tsx:598
 #: app/features/billing/components/default-offer-card.tsx:77
 #: app/features/billing/components/offer-switcher-card.tsx:173
 #: app/features/billing/components/payment-terms-card.tsx:333
@@ -758,7 +758,7 @@ msgstr "by"
 msgid "Cancel"
 msgstr "Cancel"
 
-#: app/features/billing/components/application-review.tsx:175
+#: app/features/billing/components/application-review.tsx:180
 #: app/features/billing/components/payment-terms-card.tsx:103
 #: app/routes/customer/billing-account/detail/index.tsx:136
 msgid "Card"
@@ -1214,7 +1214,7 @@ msgstr "Credit limit"
 msgid "Credit limit ({currency})"
 msgstr "Credit limit ({currency})"
 
-#: app/features/billing/components/application-review.tsx:483
+#: app/features/billing/components/application-review.tsx:499
 #: app/features/billing/components/billing-account-list.tsx:224
 #: app/features/billing/components/billing-account-list.tsx:298
 #: app/routes/customer/billing-account/detail/index.tsx:318
@@ -1239,7 +1239,7 @@ msgstr "Current billing cycle for this project"
 msgid "Current Offer"
 msgstr "Current Offer"
 
-#: app/features/billing/components/application-review.tsx:425
+#: app/features/billing/components/application-review.tsx:439
 msgid "Current terms"
 msgstr "Current terms"
 
@@ -1292,11 +1292,11 @@ msgstr "Deactivate"
 msgid "Deactivate Threshold"
 msgstr "Deactivate Threshold"
 
-#: app/features/billing/components/application-review.tsx:240
+#: app/features/billing/components/application-review.tsx:245
 msgid "Decided"
 msgstr "Decided"
 
-#: app/features/billing/components/application-review.tsx:232
+#: app/features/billing/components/application-review.tsx:237
 #: app/features/fraud/detail/evaluation-sections.tsx:330
 #: app/features/fraud/detail/evaluation-sections.tsx:424
 #: app/features/fraud/detail/evaluation-sections.tsx:661
@@ -1306,12 +1306,12 @@ msgstr "Decided"
 msgid "Decision"
 msgstr "Decision"
 
-#: app/features/billing/components/application-review.tsx:197
-#: app/features/billing/components/application-review.tsx:581
+#: app/features/billing/components/application-review.tsx:202
+#: app/features/billing/components/application-review.tsx:597
 msgid "Decline"
 msgstr "Decline"
 
-#: app/features/billing/components/application-review.tsx:579
+#: app/features/billing/components/application-review.tsx:595
 msgid "Decline application"
 msgstr "Decline application"
 
@@ -1805,10 +1805,6 @@ msgstr "End payment terms"
 msgid "End terms"
 msgstr "End terms"
 
-#: app/features/billing/components/application-review.tsx:465
-msgid "End them on the <0>billing account</0> before approving."
-msgstr "End them on the <0>billing account</0> before approving."
-
 #: app/components/date/date-range-picker.tsx:286
 msgid "End Time"
 msgstr "End Time"
@@ -1887,7 +1883,7 @@ msgid "Established"
 msgstr "Established"
 
 #: app/features/billing/components/application-list.tsx:139
-#: app/features/billing/components/application-review.tsx:358
+#: app/features/billing/components/application-review.tsx:372
 msgid "Estimated monthly spend"
 msgstr "Estimated monthly spend"
 
@@ -2121,7 +2117,7 @@ msgstr "Flag"
 msgid "For example: signed MSA after sales call on 1 October"
 msgstr "For example: signed MSA after sales call on 1 October"
 
-#: app/features/billing/components/application-review.tsx:593
+#: app/features/billing/components/application-review.tsx:609
 msgid "For example: We couldn't verify your company. Reply to our email with your company registration number, or add a card to continue."
 msgstr "For example: We couldn't verify your company. Reply to our email with your company registration number, or add a card to continue."
 
@@ -2139,7 +2135,7 @@ msgstr "Fraud & Abuse"
 msgid "Fraud Assessment"
 msgstr "Fraud Assessment"
 
-#: app/features/billing/components/application-review.tsx:325
+#: app/features/billing/components/application-review.tsx:339
 msgid "Fraud check"
 msgstr "Fraud check"
 
@@ -2234,7 +2230,7 @@ msgstr "Grant terms"
 msgid "Grants"
 msgstr "Grants"
 
-#: app/features/billing/components/application-review.tsx:515
+#: app/features/billing/components/application-review.tsx:531
 msgid "Grants these payment terms to the billing account and approves the application. The customer can then pay by invoice."
 msgstr "Grants these payment terms to the billing account and approves the application. The customer can then pay by invoice."
 
@@ -2373,8 +2369,8 @@ msgstr "Infrastructure, quota pressure, and outbound email."
 msgid "Instances and served traffic are paused; data is preserved. Lift the suspension below to restore the project."
 msgstr "Instances and served traffic are paused; data is preserved. Lift the suspension below to restore the project."
 
-#: app/features/billing/components/application-review.tsx:263
-#: app/features/billing/components/application-review.tsx:598
+#: app/features/billing/components/application-review.tsx:277
+#: app/features/billing/components/application-review.tsx:614
 msgid "Internal notes"
 msgstr "Internal notes"
 
@@ -2406,7 +2402,7 @@ msgstr "Invite"
 msgid "Invite User"
 msgstr "Invite User"
 
-#: app/features/billing/components/application-review.tsx:174
+#: app/features/billing/components/application-review.tsx:179
 #: app/features/billing/components/payment-terms-card.tsx:102
 #: app/routes/customer/billing-account/detail/index.tsx:215
 msgid "Invoice"
@@ -2416,7 +2412,7 @@ msgstr "Invoice"
 msgid "Invoice day of month"
 msgstr "Invoice day of month"
 
-#: app/features/billing/components/application-review.tsx:353
+#: app/features/billing/components/application-review.tsx:367
 msgid "Invoice details"
 msgstr "Invoice details"
 
@@ -2567,7 +2563,7 @@ msgstr "Leave empty for terms with no fixed end."
 msgid "Leave empty to start immediately."
 msgstr "Leave empty to start immediately."
 
-#: app/features/billing/components/application-review.tsx:293
+#: app/features/billing/components/application-review.tsx:307
 msgid "Legal name"
 msgstr "Legal name"
 
@@ -2776,8 +2772,8 @@ msgstr "Menu"
 msgid "Message"
 msgstr "Message"
 
-#: app/features/billing/components/application-review.tsx:254
-#: app/features/billing/components/application-review.tsx:588
+#: app/features/billing/components/application-review.tsx:268
+#: app/features/billing/components/application-review.tsx:604
 msgid "Message to the customer"
 msgstr "Message to the customer"
 
@@ -2882,19 +2878,19 @@ msgstr "Needs review"
 msgid "Net {0}, limit {1}"
 msgstr "Net {0}, limit {1}"
 
-#: app/features/billing/components/application-review.tsx:555
+#: app/features/billing/components/application-review.tsx:571
 msgid "Net {netDays}, active until <0/>."
 msgstr "Net {netDays}, active until <0/>."
 
-#: app/features/billing/components/application-review.tsx:559
+#: app/features/billing/components/application-review.tsx:575
 msgid "Net {netDays}, active with no end date."
 msgstr "Net {netDays}, active with no end date."
 
-#: app/features/billing/components/application-review.tsx:545
+#: app/features/billing/components/application-review.tsx:561
 msgid "Net {netDays}, scheduled from {start} until <0/>."
 msgstr "Net {netDays}, scheduled from {start} until <0/>."
 
-#: app/features/billing/components/application-review.tsx:549
+#: app/features/billing/components/application-review.tsx:565
 msgid "Net {netDays}, scheduled from {start} with no end date."
 msgstr "Net {netDays}, scheduled from {start} with no end date."
 
@@ -2938,6 +2934,14 @@ msgstr "New projects"
 msgid "New sign-ups across the platform, from the audit log."
 msgstr "New sign-ups across the platform, from the audit log."
 
+#: app/features/billing/components/application-review.tsx:481
+msgid "New terms would overlap these. To approve, give them an end date on the <0>billing account</0>: the new terms then start that day."
+msgstr "New terms would overlap these. To approve, give them an end date on the <0>billing account</0>: the new terms then start that day."
+
+#: app/features/billing/components/application-review.tsx:472
+msgid "New terms would overlap these. To approve, withdraw them or give them an end date on the <0>billing account</0>."
+msgstr "New terms would overlap these. To approve, withdraw them or give them an end date on the <0>billing account</0>."
+
 #: app/features/dashboard/components/home/growth-section.tsx:93
 #: app/features/dashboard/components/home/home-columns.tsx:40
 msgid "New users"
@@ -2947,7 +2951,7 @@ msgstr "New users"
 msgid "Next page"
 msgstr "Next page"
 
-#: app/features/billing/components/application-review.tsx:341
+#: app/features/billing/components/application-review.tsx:355
 #: app/routes/customer/billing-account/detail/index.tsx:159
 msgid "No"
 msgstr "No"
@@ -3066,7 +3070,7 @@ msgstr "no end date"
 msgid "No end date"
 msgstr "No end date"
 
-#: app/features/billing/components/application-review.tsx:334
+#: app/features/billing/components/application-review.tsx:348
 msgid "No evaluation for this user"
 msgstr "No evaluation for this user"
 
@@ -3321,7 +3325,7 @@ msgstr "No usage to display"
 msgid "No users found."
 msgstr "No users found."
 
-#: app/features/billing/components/application-review.tsx:478
+#: app/features/billing/components/application-review.tsx:494
 msgid "None"
 msgstr "None"
 
@@ -3338,22 +3342,22 @@ msgstr "Nonprofit"
 msgid "Normal"
 msgstr "Normal"
 
-#: app/features/billing/components/application-review.tsx:176
+#: app/features/billing/components/application-review.tsx:181
 #: app/features/billing/components/payment-terms-card.tsx:104
 msgid "Not billable yet: terms are scheduled"
 msgstr "Not billable yet: terms are scheduled"
 
-#: app/features/billing/components/application-review.tsx:178
+#: app/features/billing/components/application-review.tsx:183
 #: app/features/billing/components/payment-terms-card.tsx:106
 msgid "Not billable: card is failing"
 msgstr "Not billable: card is failing"
 
-#: app/features/billing/components/application-review.tsx:179
+#: app/features/billing/components/application-review.tsx:184
 #: app/features/billing/components/payment-terms-card.tsx:107
 msgid "Not billable: no card or terms"
 msgstr "Not billable: no card or terms"
 
-#: app/features/billing/components/application-review.tsx:177
+#: app/features/billing/components/application-review.tsx:182
 #: app/features/billing/components/payment-terms-card.tsx:105
 msgid "Not billable: terms have ended"
 msgstr "Not billable: terms have ended"
@@ -3495,7 +3499,7 @@ msgstr "or"
 #: app/features/activity/components/activity-list.tsx:402
 #: app/features/activity/components/activity-list.tsx:501
 #: app/features/billing/components/application-list.tsx:104
-#: app/features/billing/components/application-review.tsx:409
+#: app/features/billing/components/application-review.tsx:423
 #: app/features/billing/components/billing-account-list.tsx:202
 #: app/features/billing/components/billing-account-list.tsx:271
 #: app/features/contact/components/contact-organizations-card.tsx:100
@@ -3512,7 +3516,7 @@ msgstr "Organization"
 msgid "Organization deleted successfully"
 msgstr "Organization deleted successfully"
 
-#: app/features/billing/components/application-review.tsx:297
+#: app/features/billing/components/application-review.tsx:311
 msgid "Organization type"
 msgstr "Organization type"
 
@@ -3602,7 +3606,7 @@ msgstr "Payment method"
 msgid "Payment methods"
 msgstr "Payment methods"
 
-#: app/features/billing/components/application-review.tsx:245
+#: app/features/billing/components/application-review.tsx:259
 #: app/features/billing/components/payment-terms-card.tsx:163
 msgid "Payment terms"
 msgstr "Payment terms"
@@ -3611,7 +3615,7 @@ msgstr "Payment terms"
 msgid "Payment Terms Application"
 msgstr "Payment Terms Application"
 
-#: app/features/billing/components/application-review.tsx:188
+#: app/features/billing/components/application-review.tsx:193
 msgid "Payment terms application from {orgLabel}"
 msgstr "Payment terms application from {orgLabel}"
 
@@ -3736,7 +3740,7 @@ msgstr "Please select an existing contact or provide details to create a new one
 msgid "Please wait {remainingMinutes} more minute{0} before resending this invitation"
 msgstr "Please wait {remainingMinutes} more minute{0} before resending this invitation"
 
-#: app/features/billing/components/application-review.tsx:366
+#: app/features/billing/components/application-review.tsx:380
 #: app/features/billing/components/payment-terms-card.tsx:389
 #: app/features/billing/components/payment-terms-card.tsx:518
 msgid "PO number"
@@ -4017,6 +4021,7 @@ msgstr "Ready"
 msgid "Reason"
 msgstr "Reason"
 
+#: app/features/billing/components/application-review.tsx:250
 #: app/features/billing/components/payment-terms-card.tsx:393
 #: app/features/billing/components/payment-terms-card.tsx:543
 msgid "Reason (internal)"
@@ -4638,7 +4643,7 @@ msgstr "Show more"
 msgid "Showing the most recent {0}; older links exist."
 msgstr "Showing the most recent {0}; older links exist."
 
-#: app/features/billing/components/application-review.tsx:589
+#: app/features/billing/components/application-review.tsx:605
 msgid "Shown to the customer. Say what they can do next. Up to {MAX_DECLINE_MESSAGE_LENGTH} characters."
 msgstr "Shown to the customer. Say what they can do next. Up to {MAX_DECLINE_MESSAGE_LENGTH} characters."
 
@@ -4723,8 +4728,8 @@ msgstr "Starts"
 
 #: app/features/billing/components/application-list.tsx:148
 #: app/features/billing/components/application-list.tsx:172
-#: app/features/billing/components/application-review.tsx:236
-#: app/features/billing/components/application-review.tsx:285
+#: app/features/billing/components/application-review.tsx:241
+#: app/features/billing/components/application-review.tsx:299
 #: app/features/billing/components/billing-account-list.tsx:216
 #: app/features/billing/components/billing-account-list.tsx:291
 #: app/features/billing/components/org-billing-accounts-card.tsx:63
@@ -4787,7 +4792,7 @@ msgstr "Subject is required when user association is enabled"
 
 #: app/features/billing/components/application-list.tsx:153
 #: app/features/billing/components/application-list.tsx:192
-#: app/features/billing/components/application-review.tsx:344
+#: app/features/billing/components/application-review.tsx:358
 msgid "Submitted"
 msgstr "Submitted"
 
@@ -4875,9 +4880,9 @@ msgstr "Temporarily pause this project's instances and served traffic without de
 msgid "Tenant"
 msgstr "Tenant"
 
-#: app/features/billing/components/application-review.tsx:444
-msgid "Terms scheduled from <0/> have no end date. Withdraw them on the <1>billing account</1> before approving."
-msgstr "Terms scheduled from <0/> have no end date. Withdraw them on the <1>billing account</1> before approving."
+#: app/features/billing/components/application-review.tsx:458
+msgid "Terms scheduled from <0/> have no end date, so new terms would overlap them. To approve, withdraw them or give them an end date on the <1>billing account</1>."
+msgstr "Terms scheduled from <0/> have no end date, so new terms would overlap them. To approve, withdraw them or give them an end date on the <1>billing account</1>."
 
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:202
 msgid "Test"
@@ -4895,10 +4900,6 @@ msgstr "Tests show up here once tagged metadata.labels.stability: stable in thei
 msgid "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 msgstr "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 
-#: app/features/billing/components/application-review.tsx:201
-msgid "The account has payment terms with no end date. End them before approving."
-msgstr "The account has payment terms with no end date. End them before approving."
-
 #: app/features/billing/components/payment-terms-card.tsx:299
 msgid "The account will be billed by invoice on these terms. Overlapping terms are rejected, so end the current terms first if there are any."
 msgstr "The account will be billed by invoice on these terms. Overlapping terms are rejected, so end the current terms first if there are any."
@@ -4907,19 +4908,23 @@ msgstr "The account will be billed by invoice on these terms. Overlapping terms 
 msgid "The account will stop being billed by invoice now and will need a card to keep using paid services. The record is kept for history."
 msgstr "The account will stop being billed by invoice now and will need a card to keep using paid services. The record is kept for history."
 
+#: app/features/billing/components/application-review.tsx:206
+msgid "The account's payment terms have no end date. Give them one on the billing account to approve."
+msgstr "The account's payment terms have no end date. Give them one on the billing account to approve."
+
 #: app/features/billing/components/payment-terms-card.tsx:194
 msgid "The customer applied for payment terms on <0/> and is waiting for a decision."
 msgstr "The customer applied for payment terms on <0/> and is waiting for a decision."
 
-#: app/features/billing/components/application-review.tsx:377
+#: app/features/billing/components/application-review.tsx:391
 msgid "The customer isn't sure how they'd like to pay, so they didn't give invoice details. Their situation below explains what they need."
 msgstr "The customer isn't sure how they'd like to pay, so they didn't give invoice details. Their situation below explains what they need."
 
-#: app/features/billing/components/application-review.tsx:580
+#: app/features/billing/components/application-review.tsx:596
 msgid "The customer sees your message in the cloud portal and can add a card or apply again."
 msgstr "The customer sees your message in the cloud portal and can add a card or apply again."
 
-#: app/features/billing/components/application-review.tsx:271
+#: app/features/billing/components/application-review.tsx:285
 msgid "The customer withdrew this application before a decision."
 msgstr "The customer withdrew this application before a decision."
 
@@ -4947,7 +4952,7 @@ msgstr "The list of domains is limited to 2,000 results at a time. Refine your s
 msgid "The most the account should spend each billing cycle. Recorded for finance only: usage isn't capped and no alerts are sent yet."
 msgstr "The most the account should spend each billing cycle. Recorded for finance only: usage isn't capped and no alerts are sent yet."
 
-#: app/features/billing/components/application-review.tsx:387
+#: app/features/billing/components/application-review.tsx:401
 msgid "Their situation"
 msgstr "Their situation"
 
@@ -5131,7 +5136,7 @@ msgstr "Unavailable"
 msgid "Unhealthy: {0}"
 msgstr "Unhealthy: {0}"
 
-#: app/features/billing/components/application-review.tsx:180
+#: app/features/billing/components/application-review.tsx:185
 #: app/features/billing/components/payment-terms-card.tsx:108
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:136
 #: app/features/notes/components/notes-card.tsx:126
@@ -5291,7 +5296,7 @@ msgstr "View Raw Results"
 msgid "View sent links"
 msgstr "View sent links"
 
-#: app/features/billing/components/application-review.tsx:248
+#: app/features/billing/components/application-review.tsx:262
 msgid "View the terms on the billing account"
 msgstr "View the terms on the billing account"
 
@@ -5324,7 +5329,7 @@ msgstr "Warning"
 msgid "Watch"
 msgstr "Watch"
 
-#: app/features/billing/components/application-review.tsx:305
+#: app/features/billing/components/application-review.tsx:319
 msgid "Website"
 msgstr "Website"
 
@@ -5344,7 +5349,7 @@ msgstr "Welcome back."
 msgid "Where"
 msgstr "Where"
 
-#: app/features/billing/components/application-review.tsx:599
+#: app/features/billing/components/application-review.tsx:615
 msgid "Why it was declined. Never shown to the customer."
 msgstr "Why it was declined. Never shown to the customer."
 
@@ -5361,12 +5366,8 @@ msgstr "Withdraw"
 msgid "Withdraw payment terms"
 msgstr "Withdraw payment terms"
 
-#: app/features/billing/components/application-review.tsx:457
-msgid "Withdraw them on the <0>billing account</0> before approving."
-msgstr "Withdraw them on the <0>billing account</0> before approving."
-
 #: app/features/billing/components/application-labels.tsx:27
-#: app/features/billing/components/application-review.tsx:270
+#: app/features/billing/components/application-review.tsx:284
 msgid "Withdrawn"
 msgstr "Withdrawn"
 
@@ -5374,7 +5375,7 @@ msgstr "Withdrawn"
 msgid "YAML"
 msgstr "YAML"
 
-#: app/features/billing/components/application-review.tsx:341
+#: app/features/billing/components/application-review.tsx:355
 #: app/routes/customer/billing-account/detail/index.tsx:159
 msgid "Yes"
 msgstr "Yes"

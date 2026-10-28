@@ -16,6 +16,7 @@ import {
   declineApplicationFormSchema,
   emptyDeclineApplicationForm,
   getApplicationPhase,
+  getArrangementForApplication,
   getDeclineForApplication,
   MAX_DECLINE_MESSAGE_LENGTH,
   paymentTermsFormFromApplication,
@@ -117,6 +118,10 @@ export function ApplicationReview({ orgName, applicationName }: ApplicationRevie
   const nextStart = useMemo(() => getNextTermsStart(accountArrangements), [accountArrangements]);
   const renewsFrom = nextStart.kind === 'after' ? nextStart.startsAt : undefined;
   const decline = getDeclineForApplication(declinesQuery.data?.items ?? [], applicationName);
+  const approvedTerms =
+    application && phase === 'Approved'
+      ? getArrangementForApplication(accountArrangements, application)
+      : undefined;
   const applicantUid = application?.spec?.applicant?.uid;
   const fraudEvaluation = applicantUid
     ? fraudQuery.data?.items?.find((evaluation) => evaluation.spec?.userRef?.name === applicantUid)
@@ -198,7 +203,7 @@ export function ApplicationReview({ orgName, applicationName }: ApplicationRevie
               </Button>
               {nextStart.kind === 'blocked' ? (
                 <Tooltip
-                  message={t`The account has payment terms with no end date. End them before approving.`}>
+                  message={t`The account's payment terms have no end date. Give them one on the billing account to approve.`}>
                   {/* A disabled button gets no pointer events, so the span carries the tooltip. */}
                   <span tabIndex={0}>
                     <Button type="primary" theme="solid" disabled data-e2e="application-approve">
@@ -240,6 +245,15 @@ export function ApplicationReview({ orgName, applicationName }: ApplicationRevie
                 label: <Trans>Decided</Trans>,
                 value: <DateTime date={application.status?.decidedAt} variant="both" />,
                 hidden: phase === 'Withdrawn' || !application.status?.decidedAt,
+              },
+              {
+                label: <Trans>Reason (internal)</Trans>,
+                value: (
+                  <Text className="whitespace-pre-line" data-e2e="application-approval-reason">
+                    {approvedTerms?.spec?.reason || '—'}
+                  </Text>
+                ),
+                hidden: phase !== 'Approved',
               },
               {
                 label: <Trans>Payment terms</Trans>,
@@ -429,7 +443,7 @@ export function ApplicationReview({ orgName, applicationName }: ApplicationRevie
                     <Text>
                       <CurrentTermsSummary terms={currentTerms} phase={currentTermsPhase} />
                     </Text>
-                    {nextStart.kind === 'after' ? (
+                    {phase === 'Pending' && nextStart.kind === 'after' ? (
                       <Text size="sm" textColor="muted">
                         <Trans>
                           Approving renews them: the new terms start on{' '}
@@ -438,7 +452,7 @@ export function ApplicationReview({ orgName, applicationName }: ApplicationRevie
                         </Trans>
                       </Text>
                     ) : null}
-                    {nextStart.kind === 'blocked' ? (
+                    {phase === 'Pending' && nextStart.kind === 'blocked' ? (
                       <Text size="sm" textColor="muted">
                         {nextStart.blocking !== currentTerms ? (
                           <Trans>
@@ -447,27 +461,29 @@ export function ApplicationReview({ orgName, applicationName }: ApplicationRevie
                               date={getArrangementStart(nextStart.blocking)}
                               variant="absolute"
                             />{' '}
-                            have no end date. Withdraw them on the{' '}
+                            have no end date, so new terms would overlap them. To approve, withdraw
+                            them or give them an end date on the{' '}
                             <Link to={billingAccountRoutes.detail(orgName, accountName)}>
                               billing account
-                            </Link>{' '}
-                            before approving.
+                            </Link>
+                            .
                           </Trans>
                         ) : currentTermsPhase === 'Scheduled' ? (
                           <Trans>
-                            Withdraw them on the{' '}
+                            New terms would overlap these. To approve, withdraw them or give them an
+                            end date on the{' '}
                             <Link to={billingAccountRoutes.detail(orgName, accountName)}>
                               billing account
-                            </Link>{' '}
-                            before approving.
+                            </Link>
+                            .
                           </Trans>
                         ) : (
                           <Trans>
-                            End them on the{' '}
+                            New terms would overlap these. To approve, give them an end date on the{' '}
                             <Link to={billingAccountRoutes.detail(orgName, accountName)}>
                               billing account
-                            </Link>{' '}
-                            before approving.
+                            </Link>
+                            : the new terms then start that day.
                           </Trans>
                         )}
                       </Text>

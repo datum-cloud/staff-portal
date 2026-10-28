@@ -1,4 +1,8 @@
-import { DEFAULT_NET_DAYS, type PaymentTermsFormValues } from './payment-terms';
+import {
+  DEFAULT_NET_DAYS,
+  type BillingArrangement,
+  type PaymentTermsFormValues,
+} from './payment-terms';
 import type {
   ComMiloapisBillingV1Alpha1BillingArrangementApplication,
   ComMiloapisBillingV1Alpha1BillingArrangementDecline,
@@ -90,6 +94,25 @@ export function getDeclineForApplication(
   applicationName: string
 ): BillingArrangementDecline | undefined {
   return declines.find((decline) => decline.spec?.applicationRef?.name === applicationName);
+}
+
+/**
+ * The terms that approved an application: the one its status names, or,
+ * until billing's controller has reconciled the approval, the one whose
+ * spec.applicationRef names it.
+ */
+export function getArrangementForApplication(
+  arrangements: BillingArrangement[],
+  application: BillingArrangementApplication
+): BillingArrangement | undefined {
+  const arrangementName = application.status?.arrangementRef?.name;
+  const applicationName = application.metadata?.name;
+  return (
+    (arrangementName
+      ? arrangements.find((arrangement) => arrangement.metadata?.name === arrangementName)
+      : undefined) ??
+    arrangements.find((arrangement) => arrangement.spec?.applicationRef?.name === applicationName)
+  );
 }
 
 /** Each spend band's range, in the billing account's currency. */

@@ -210,7 +210,10 @@ describe('ApplicationReview', () => {
 
     cy.get('[data-e2e="application-current-terms"]')
       .should('contain.text', 'Net 30, active with no end date.')
-      .and('contain.text', 'End them on the billing account before approving.');
+      .and(
+        'contain.text',
+        'To approve, give them an end date on the billing account: the new terms then start that day.'
+      );
     cy.get('[data-e2e="application-current-terms"] a').should(
       'have.attr',
       'href',
@@ -250,6 +253,46 @@ describe('ApplicationReview', () => {
         message: "We couldn't verify your company. Add a card to continue.",
         internalNotes: 'Website was parked',
       });
+  });
+
+  it('shows why staff approved it', () => {
+    stubAccount([
+      {
+        metadata: { name: 'acme-billing-terms-new', creationTimestamp: '2026-10-03T10:00:00Z' },
+        spec: {
+          billingAccountRef: { name: 'acme-billing' },
+          applicationRef: { name: 'apply-acme-1' },
+          type: 'Invoice',
+          invoice: { netDays: 30 },
+          startsAt: '2026-10-03T10:00:00Z',
+          reason: 'Signed MSA, sales call 2026-10-01',
+        },
+      },
+    ]);
+    cy.intercept(
+      'GET',
+      '**/namespaces/organization-acme/billingarrangementapplications/apply-acme-1*',
+      proxy(
+        application({
+          phase: 'Approved',
+          decidedAt: '2026-10-03T10:00:00Z',
+          arrangementRef: { name: 'acme-billing-terms-new' },
+        })
+      )
+    );
+
+    mountReview();
+
+    cy.get('[data-e2e="application-approval-reason"]').should(
+      'have.text',
+      'Signed MSA, sales call 2026-10-01'
+    );
+    cy.contains('View the terms on the billing account').should('exist');
+    // The approved terms have no end date, but they aren't in the way of anything.
+    cy.get('[data-e2e="application-current-terms"]')
+      .should('contain.text', 'Net 30, active with no end date.')
+      .and('not.contain.text', 'To approve');
+    cy.get('[data-e2e="application-approve"]').should('not.exist');
   });
 
   it('shows the decision once declined, without the actions', () => {

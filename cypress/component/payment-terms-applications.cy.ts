@@ -6,6 +6,7 @@ import {
   getApplicationOrgName,
   getApplicationPhase,
   getApplicationsForAccount,
+  getArrangementForApplication,
   getDeclineForApplication,
   paymentTermsFormFromApplication,
   sortApplicationQueue,
@@ -89,6 +90,35 @@ describe('payment terms applications', () => {
     ];
     expect(getDeclineForApplication(declines, 'b')?.metadata?.name).to.equal('d2');
     expect(getDeclineForApplication(declines, 'c')).to.equal(undefined);
+  });
+
+  it('finds the terms that approved an application', () => {
+    const terms = (name: string, applicationName?: string) => ({
+      metadata: { name },
+      spec: {
+        billingAccountRef: { name: 'acme-billing' },
+        type: 'Invoice' as const,
+        reason: `Reason for ${name}`,
+        applicationRef: applicationName ? { name: applicationName } : undefined,
+      },
+    });
+    const arrangements = [terms('t1'), terms('t2', 'a'), terms('t3', 'b')];
+    const approved = (name: string, arrangementName?: string) => ({
+      ...application(name, 1, { phase: 'Approved' }),
+      status: {
+        phase: 'Approved' as const,
+        arrangementRef: arrangementName ? { name: arrangementName } : undefined,
+      },
+    });
+
+    expect(
+      getArrangementForApplication(arrangements, approved('a', 't2'))?.metadata?.name
+    ).to.equal('t2');
+    // Before the controller records the approval, spec.applicationRef finds it.
+    expect(getArrangementForApplication(arrangements, approved('b'))?.metadata?.name).to.equal(
+      't3'
+    );
+    expect(getArrangementForApplication(arrangements, approved('c'))).to.equal(undefined);
   });
 
   it('formats spend bands in the account currency', () => {
