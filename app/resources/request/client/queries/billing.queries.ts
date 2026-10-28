@@ -6,7 +6,7 @@ import {
   billingAccountListQuery,
   billingArrangementApplicationDetailQuery,
   billingArrangementApplicationListForOrgQuery,
-  billingArrangementApplicationListQuery,
+  listAllBillingArrangementApplications,
   billingArrangementDeclineListForOrgQuery,
   billingArrangementListForOrgQuery,
   billingEntitlementForAccountQuery,
@@ -285,7 +285,7 @@ const pollWhilePending = (application: BillingArrangementApplication | undefined
 export const useBillingArrangementApplicationListQuery = () =>
   useQuery({
     queryKey: billingQueryKeys.applications.list,
-    queryFn: () => billingArrangementApplicationListQuery({ limit: 500 }),
+    queryFn: listAllBillingArrangementApplications,
     staleTime: 30 * 1000,
   });
 

@@ -19,7 +19,7 @@ const phaseBadgeState: Record<ApplicationPhase, string> = {
 
 /** Labels for the values a customer picks when applying for payment terms. */
 export function useApplicationLabels() {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const phase: Record<ApplicationPhase, string> = {
     Pending: t`Pending`,
     Approved: t`Approved`,
@@ -38,7 +38,7 @@ export function useApplicationLabels() {
     Other: t`Other`,
   };
   const spend = (band: EstimatedMonthlySpend, currency: string) =>
-    formatSpendBand(band, currency) ?? t`Not sure`;
+    formatSpendBand(band, currency, i18n.locale) ?? t`Not sure`;
   return { phase, paymentOption, organizationType, spend };
 }
 

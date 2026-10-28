@@ -9,6 +9,7 @@ import {
 } from '@/features/billing/utils';
 import { PROXY_URL } from '@/modules/axios/axios.client';
 import { ListQueryParams } from '@/resources/schemas';
+import { walkCursorPages } from '@/utils/helpers';
 import {
   createBillingMiloapisComV1Alpha1NamespacedBillingArrangement,
   createBillingMiloapisComV1Alpha1NamespacedBillingArrangementDecline,
@@ -411,6 +412,26 @@ export const billingArrangementApplicationListQuery = async (params?: ListQueryP
     items: filterNotDeleting(data?.items ?? []),
   };
 };
+
+const ALL_APPLICATIONS_PAGE_LIMIT = 500;
+// Safety net against a runaway walk, as for organizations and users.
+const ALL_APPLICATIONS_MAX_PAGES = 20;
+
+/**
+ * Every organization's applications, walking the `continue` cursor so the
+ * review queue and its pending count don't drop rows past one page.
+ */
+export const listAllBillingArrangementApplications = () =>
+  walkCursorPages(
+    async (cursor) => {
+      const page = await billingArrangementApplicationListQuery({
+        limit: ALL_APPLICATIONS_PAGE_LIMIT,
+        cursor,
+      });
+      return { items: page.items, continueToken: page.metadata?.continue };
+    },
+    { maxPages: ALL_APPLICATIONS_MAX_PAGES }
+  );
 
 export const billingArrangementApplicationListForOrgQuery = async (
   orgName: string,

@@ -71,11 +71,15 @@ export const useFraudProviderDetailQuery = (name: string) => {
   });
 };
 
-export const useFraudEvaluationListQuery = (params?: ListQueryParams) => {
+export const useFraudEvaluationListQuery = (
+  params?: ListQueryParams,
+  options: { enabled?: boolean } = {}
+) => {
   return useQuery({
     queryKey: fraudQueryKeys.evaluations.list(params),
     queryFn: ({ signal }) => listFraudEvaluations(params, signal),
     staleTime: 5 * 60 * 1000,
+    enabled: options.enabled,
   });
 };
 

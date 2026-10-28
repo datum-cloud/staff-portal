@@ -124,10 +124,10 @@ const SPEND_BANDS: Record<EstimatedMonthlySpend, { from?: number; to?: number }>
   NotSure: {},
 };
 
-function formatAmount(amount: number, currency: string): string {
+function formatAmount(amount: number, currency: string, locale: string): string {
   if (currency) {
     try {
-      return new Intl.NumberFormat('en-US', {
+      return new Intl.NumberFormat(locale, {
         style: 'currency',
         currency,
         maximumFractionDigits: 0,
@@ -136,21 +136,39 @@ function formatAmount(amount: number, currency: string): string {
       // An unknown currency code falls through to a plain number.
     }
   }
-  return new Intl.NumberFormat('en-US').format(amount);
+  return new Intl.NumberFormat(locale).format(amount);
 }
 
 /**
- * The applicant's estimate as an amount range, such as "$2,500–$10,000", or
- * undefined for "not sure".
+ * The applicant's estimate as an amount range in the UI's locale, such as
+ * "$2,500–$10,000", or undefined for "not sure".
  */
-export function formatSpendBand(band: EstimatedMonthlySpend, currency: string): string | undefined {
+export function formatSpendBand(
+  band: EstimatedMonthlySpend,
+  currency: string,
+  locale = 'en-US'
+): string | undefined {
   const { from, to } = SPEND_BANDS[band];
-  if (from !== undefined && to !== undefined) {
-    return `${formatAmount(from, currency)}–${formatAmount(to, currency)}`;
-  }
-  if (to !== undefined) return `< ${formatAmount(to, currency)}`;
-  if (from !== undefined) return `${formatAmount(from, currency)}+`;
+  const amount = (value: number) => formatAmount(value, currency, locale);
+  if (from !== undefined && to !== undefined) return `${amount(from)}–${amount(to)}`;
+  if (to !== undefined) return `< ${amount(to)}`;
+  if (from !== undefined) return `${amount(from)}+`;
   return undefined;
+}
+
+/**
+ * The applicant's website as a link target. Billing accepts any string, so
+ * only an absolute http(s) URL is linked: "acme.com" would otherwise become a
+ * relative link into the staff portal.
+ */
+export function getWebsiteHref(website: string | undefined): string | undefined {
+  if (!website) return undefined;
+  try {
+    const url = new URL(website);
+    return url.protocol === 'http:' || url.protocol === 'https:' ? url.href : undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 /**

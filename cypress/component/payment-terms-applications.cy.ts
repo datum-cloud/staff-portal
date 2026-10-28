@@ -8,6 +8,7 @@ import {
   getApplicationsForAccount,
   getArrangementForApplication,
   getDeclineForApplication,
+  getWebsiteHref,
   paymentTermsFormFromApplication,
   sortApplicationQueue,
   type ApplicationPhase,
@@ -121,12 +122,26 @@ describe('payment terms applications', () => {
     expect(getArrangementForApplication(arrangements, approved('c'))).to.equal(undefined);
   });
 
+  it('links the website only when it is an http(s) URL', () => {
+    expect(getWebsiteHref('https://acme.com')).to.equal('https://acme.com/');
+    expect(getWebsiteHref('http://acme.com/about')).to.equal('http://acme.com/about');
+    expect(getWebsiteHref('acme.com')).to.equal(undefined);
+    expect(getWebsiteHref('javascript:alert(1)')).to.equal(undefined);
+    expect(getWebsiteHref('')).to.equal(undefined);
+  });
+
   it('formats spend bands in the account currency', () => {
     expect(formatSpendBand('From2500To10000', 'USD')).to.equal('$2,500–$10,000');
     expect(formatSpendBand('Under500', 'USD')).to.equal('< $500');
     expect(formatSpendBand('Over10000', 'EUR')).to.equal('€10,000+');
     expect(formatSpendBand('NotSure', 'USD')).to.equal(undefined);
     expect(formatSpendBand('From500To2500', '')).to.equal('500–2,500');
+    const euros = new Intl.NumberFormat('fr', {
+      style: 'currency',
+      currency: 'EUR',
+      maximumFractionDigits: 0,
+    });
+    expect(formatSpendBand('Over10000', 'EUR', 'fr')).to.equal(`${euros.format(10000)}+`);
   });
 
   it("starts the approval form from the customer's invoice details", () => {

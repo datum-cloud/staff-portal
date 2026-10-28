@@ -144,10 +144,18 @@ describe('ApplicationReview', () => {
       '**/namespaces/organization-acme/billingarrangements*',
       proxy({ metadata: { name: 'acme-billing-terms-x' } }, 201)
     ).as('approve');
+    cy.intercept('GET', '**/fraudevaluations*', proxy({ items: [] })).as('fraud');
 
     mountReview();
 
+    // Only the applicant's fraud evaluations are fetched.
+    cy.wait('@fraud')
+      .its('request.url')
+      .should((url: string) => {
+        expect(new URL(url).searchParams.get('fieldSelector')).to.equal('spec.userRef.name=user-1');
+      });
     cy.contains('h1', 'Acme Corp Ltd').should('exist');
+    cy.contains('a', 'https://acme.com').should('have.attr', 'href', 'https://acme.com/');
     cy.contains('$2,500–$10,000').should('exist');
     cy.contains('net-30 terms').should('exist');
     cy.contains('1 Main St').should('exist');
@@ -172,6 +180,22 @@ describe('ApplicationReview', () => {
           purchaseOrderNumber: 'PO-4471',
         });
       });
+  });
+
+  it("shows a website that isn't an http(s) URL as text, not a link", () => {
+    stubAccount();
+    const sent = application();
+    sent.spec!.organization.website = 'acme.com';
+    cy.intercept(
+      'GET',
+      '**/namespaces/organization-acme/billingarrangementapplications/apply-acme-1*',
+      proxy(sent)
+    );
+
+    mountReview();
+
+    cy.contains(/^acme\.com$/).should('exist');
+    cy.get('a[href*="acme.com"]').should('not.exist');
   });
 
   it('renews terms that have an end date from the day they end', () => {

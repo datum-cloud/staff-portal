@@ -18,6 +18,7 @@ import {
   getApplicationPhase,
   getArrangementForApplication,
   getDeclineForApplication,
+  getWebsiteHref,
   MAX_DECLINE_MESSAGE_LENGTH,
   paymentTermsFormFromApplication,
   type DeclineApplicationFormValues,
@@ -96,7 +97,6 @@ export function ApplicationReview({ orgName, applicationName }: ApplicationRevie
   const declinesQuery = useBillingArrangementDeclineListForOrgQuery(
     phase === 'Declined' ? orgName : ''
   );
-  const fraudQuery = useFraudEvaluationListQuery();
 
   const approveMutation = useApproveBillingArrangementApplicationMutation(orgName, accountName);
   const declineMutation = useDeclineBillingArrangementApplicationMutation(orgName, accountName);
@@ -123,9 +123,12 @@ export function ApplicationReview({ orgName, applicationName }: ApplicationRevie
       ? getArrangementForApplication(accountArrangements, application)
       : undefined;
   const applicantUid = application?.spec?.applicant?.uid;
-  const fraudEvaluation = applicantUid
-    ? fraudQuery.data?.items?.find((evaluation) => evaluation.spec?.userRef?.name === applicantUid)
-    : undefined;
+  // Only the applicant's evaluations: the list is filtered by spec.userRef.name.
+  const fraudQuery = useFraudEvaluationListQuery(
+    { search: applicantUid },
+    { enabled: !!applicantUid }
+  );
+  const fraudEvaluation = applicantUid ? fraudQuery.data?.items?.[0] : undefined;
 
   const handleApprove = async (values: PaymentTermsFormValues) => {
     try {
@@ -169,6 +172,7 @@ export function ApplicationReview({ orgName, applicationName }: ApplicationRevie
   const spec = application.spec;
   const invoice = spec?.invoice;
   const legalName = spec?.organization?.legalName || applicationName;
+  const websiteHref = getWebsiteHref(spec?.organization?.website);
   const orgLabel =
     organizationQuery.data?.contactInfo?.businessName ||
     organizationQuery.data?.displayName ||
@@ -317,12 +321,12 @@ export function ApplicationReview({ orgName, applicationName }: ApplicationRevie
                 },
                 {
                   label: <Trans>Website</Trans>,
-                  value: spec?.organization?.website ? (
-                    <a href={spec.organization.website} target="_blank" rel="noreferrer noopener">
-                      {spec.organization.website}
+                  value: websiteHref ? (
+                    <a href={websiteHref} target="_blank" rel="noreferrer noopener">
+                      {spec?.organization?.website}
                     </a>
                   ) : (
-                    <Text>—</Text>
+                    <Text>{spec?.organization?.website || '—'}</Text>
                   ),
                 },
                 {
