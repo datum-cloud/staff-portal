@@ -136,6 +136,13 @@ export default [
       // Billing Accounts (moved from Finance)
       route('billing-accounts', 'routes/customer/billing-account/layout.tsx', [
         index('routes/customer/billing-account/index.tsx'),
+        route('applications', 'routes/customer/billing-account/applications/layout.tsx', [
+          index('routes/customer/billing-account/applications/index.tsx'),
+          route(
+            ':orgName/:applicationName',
+            'routes/customer/billing-account/applications/detail.tsx'
+          ),
+        ]),
         route(
           ':orgName/:accountName',
           'routes/customer/billing-account/detail/layout.tsx',

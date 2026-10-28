@@ -2,20 +2,26 @@ import type {
   ArrangementMergePatch,
   BillingArrangementSpec,
 } from '@/features/billing/lib/payment-terms';
+import type { BillingArrangementDeclineSpec } from '@/features/billing/lib/payment-terms-applications';
 import {
   buildOrganizationNamespace,
   DEFAULT_SERVICE_PRICING_NAMESPACE,
 } from '@/features/billing/utils';
 import { PROXY_URL } from '@/modules/axios/axios.client';
 import { ListQueryParams } from '@/resources/schemas';
+import { walkCursorPages } from '@/utils/helpers';
 import {
   createBillingMiloapisComV1Alpha1NamespacedBillingArrangement,
+  createBillingMiloapisComV1Alpha1NamespacedBillingArrangementDecline,
   createBillingMiloapisComV1Alpha1Offer,
   listBillingMiloapisComV1Alpha1BillingAccountBindingForAllNamespaces,
   listBillingMiloapisComV1Alpha1BillingAccountForAllNamespaces,
+  listBillingMiloapisComV1Alpha1BillingArrangementApplicationForAllNamespaces,
   listBillingMiloapisComV1Alpha1NamespacedBillingAccount,
   listBillingMiloapisComV1Alpha1NamespacedBillingAccountBinding,
   listBillingMiloapisComV1Alpha1NamespacedBillingArrangement,
+  listBillingMiloapisComV1Alpha1NamespacedBillingArrangementApplication,
+  listBillingMiloapisComV1Alpha1NamespacedBillingArrangementDecline,
   listBillingMiloapisComV1Alpha1NamespacedBillingEntitlement,
   listBillingMiloapisComV1Alpha1NamespacedPaymentMethod,
   listBillingMiloapisComV1Alpha1NamespacedServicePricing,
@@ -25,6 +31,7 @@ import {
   patchBillingMiloapisComV1Alpha1NamespacedBillingEntitlement,
   patchBillingMiloapisComV1Alpha1Offer,
   readBillingMiloapisComV1Alpha1NamespacedBillingAccount,
+  readBillingMiloapisComV1Alpha1NamespacedBillingArrangementApplication,
   readBillingMiloapisComV1Alpha1Offer,
   type ComMiloapisBillingV1Alpha1BillingEntitlement,
   type ComMiloapisBillingV1Alpha1Offer,
@@ -384,6 +391,115 @@ export const patchBillingArrangement = async (
     // Merge patch uses null to remove optional fields, which the generated
     // body type (the full resource) doesn't allow for.
     body: body as never,
+  });
+  return response.data?.data;
+};
+
+// ─── Payment terms applications (customer-created, staff-decided) ───────────
+
+/** Every organization's applications, for the review queue. */
+export const billingArrangementApplicationListQuery = async (params?: ListQueryParams) => {
+  const response =
+    await listBillingMiloapisComV1Alpha1BillingArrangementApplicationForAllNamespaces({
+      query: {
+        limit: params?.limit,
+        continue: params?.cursor,
+      },
+    });
+  const data = response.data?.data;
+  return {
+    ...(data ?? { items: [] }),
+    items: filterNotDeleting(data?.items ?? []),
+  };
+};
+
+const ALL_APPLICATIONS_PAGE_LIMIT = 500;
+// Safety net against a runaway walk, as for organizations and users.
+const ALL_APPLICATIONS_MAX_PAGES = 20;
+
+/**
+ * Every organization's applications, walking the `continue` cursor so the
+ * review queue and its pending count don't drop rows past one page.
+ */
+export const listAllBillingArrangementApplications = () =>
+  walkCursorPages(
+    async (cursor) => {
+      const page = await billingArrangementApplicationListQuery({
+        limit: ALL_APPLICATIONS_PAGE_LIMIT,
+        cursor,
+      });
+      return { items: page.items, continueToken: page.metadata?.continue };
+    },
+    { maxPages: ALL_APPLICATIONS_MAX_PAGES }
+  );
+
+export const billingArrangementApplicationListForOrgQuery = async (
+  orgName: string,
+  params?: ListQueryParams
+) => {
+  const namespace = buildOrganizationNamespace(orgName);
+  const response = await listBillingMiloapisComV1Alpha1NamespacedBillingArrangementApplication({
+    baseURL: getClientOrgControlPlaneBaseURL(orgName),
+    path: { namespace },
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
+    },
+  });
+  const data = response.data?.data;
+  return {
+    ...(data ?? { items: [] }),
+    items: filterNotDeleting(data?.items ?? []),
+  };
+};
+
+export const billingArrangementApplicationDetailQuery = async (
+  orgName: string,
+  applicationName: string
+) => {
+  const namespace = buildOrganizationNamespace(orgName);
+  const response = await readBillingMiloapisComV1Alpha1NamespacedBillingArrangementApplication({
+    baseURL: getClientOrgControlPlaneBaseURL(orgName),
+    path: { namespace, name: applicationName },
+  });
+  return response.data?.data;
+};
+
+export const billingArrangementDeclineListForOrgQuery = async (
+  orgName: string,
+  params?: ListQueryParams
+) => {
+  const namespace = buildOrganizationNamespace(orgName);
+  const response = await listBillingMiloapisComV1Alpha1NamespacedBillingArrangementDecline({
+    baseURL: getClientOrgControlPlaneBaseURL(orgName),
+    path: { namespace },
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
+    },
+  });
+  const data = response.data?.data;
+  return {
+    ...(data ?? { items: [] }),
+    items: filterNotDeleting(data?.items ?? []),
+  };
+};
+
+export const createBillingArrangementDecline = async (
+  orgName: string,
+  spec: BillingArrangementDeclineSpec
+) => {
+  const namespace = buildOrganizationNamespace(orgName);
+  const response = await createBillingMiloapisComV1Alpha1NamespacedBillingArrangementDecline({
+    baseURL: getClientOrgControlPlaneBaseURL(orgName),
+    path: { namespace },
+    query: { fieldManager: FIELD_MANAGER },
+    body: {
+      apiVersion: 'billing.miloapis.com/v1alpha1',
+      kind: 'BillingArrangementDecline',
+      metadata: { generateName: `${spec.applicationRef.name}-decline-` },
+      spec,
+    },
   });
   return response.data?.data;
 };

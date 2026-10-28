@@ -3,6 +3,7 @@ import {
   getBillingAccountDisplayStatus,
   orgNameFromNamespace,
 } from '../utils';
+import { useBillingAccountViews } from './billing-account-views';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
@@ -34,6 +35,7 @@ function accountKey(namespace: string | undefined, name: string | undefined): st
 }
 
 export function BillingAccountList() {
+  const views = useBillingAccountViews();
   const tableQuery = useBillingAccountListQuery();
   const bindingsQuery = useBillingAccountBindingListQuery();
   const paymentMethodsQuery = usePaymentMethodListQuery();
@@ -246,6 +248,7 @@ export function BillingAccountList() {
       columns={columns}
       pageSize={20}
       layout="flush"
+      views={views}
       getRowId={(row) => accountKey(row.metadata?.namespace, row.metadata?.name)}
       defaultSort={[{ id: 'created', desc: true }]}
       searchPlaceholder={t`Search billing accounts...`}

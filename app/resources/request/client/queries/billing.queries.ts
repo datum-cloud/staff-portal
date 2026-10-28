@@ -4,9 +4,14 @@ import {
   billingAccountDetailQuery,
   billingAccountListForOrgQuery,
   billingAccountListQuery,
+  billingArrangementApplicationDetailQuery,
+  billingArrangementApplicationListForOrgQuery,
+  listAllBillingArrangementApplications,
+  billingArrangementDeclineListForOrgQuery,
   billingArrangementListForOrgQuery,
   billingEntitlementForAccountQuery,
   createBillingArrangement,
+  createBillingArrangementDecline,
   createOffer,
   offerDetailQuery,
   offerListQuery,
@@ -24,6 +29,11 @@ import type {
   ArrangementMergePatch,
   BillingArrangementSpec,
 } from '@/features/billing/lib/payment-terms';
+import {
+  getApplicationPhase,
+  type BillingArrangementApplication,
+  type BillingArrangementDeclineSpec,
+} from '@/features/billing/lib/payment-terms-applications';
 import { ListQueryParams } from '@/resources/schemas';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -51,6 +61,16 @@ export const billingQueryKeys = {
   },
   arrangements: {
     forOrg: (orgName: string) => ['billing-arrangements', orgName] as const,
+  },
+  applications: {
+    all: ['billing-arrangement-applications'] as const,
+    list: ['billing-arrangement-applications', 'list'] as const,
+    forOrg: (orgName: string) => ['billing-arrangement-applications', 'org', orgName] as const,
+    detail: (orgName: string, applicationName: string) =>
+      ['billing-arrangement-applications', 'detail', orgName, applicationName] as const,
+  },
+  declines: {
+    forOrg: (orgName: string) => ['billing-arrangement-declines', orgName] as const,
   },
 };
 
@@ -244,5 +264,92 @@ export const usePatchBillingArrangementMutation = (orgName: string, accountName:
     mutationFn: ({ name, patch }: { name: string; patch: ArrangementMergePatch }) =>
       patchBillingArrangement(orgName, name, patch),
     onSuccess: () => invalidateArrangementQueries(queryClient, orgName, accountName),
+  });
+};
+
+// ─── Payment terms applications ──────────────────────────────────────────────
+
+/**
+ * While an application waits for a decision, check for one every few
+ * seconds: billing's controller sets the phase shortly after staff decide,
+ * and the customer can withdraw at any time.
+ */
+const PENDING_APPLICATION_POLL_MS = 5_000;
+
+const pollWhilePending = (application: BillingArrangementApplication | undefined) =>
+  application && getApplicationPhase(application) === 'Pending'
+    ? PENDING_APPLICATION_POLL_MS
+    : false;
+
+/** Every organization's applications, for the review queue. */
+export const useBillingArrangementApplicationListQuery = () =>
+  useQuery({
+    queryKey: billingQueryKeys.applications.list,
+    queryFn: listAllBillingArrangementApplications,
+    staleTime: 30 * 1000,
+  });
+
+export const useBillingArrangementApplicationListForOrgQuery = (orgName: string) =>
+  useQuery({
+    queryKey: billingQueryKeys.applications.forOrg(orgName),
+    queryFn: () => billingArrangementApplicationListForOrgQuery(orgName, { limit: 500 }),
+    enabled: !!orgName,
+  });
+
+export const useBillingArrangementApplicationDetailQuery = (
+  orgName: string,
+  applicationName: string
+) =>
+  useQuery({
+    queryKey: billingQueryKeys.applications.detail(orgName, applicationName),
+    queryFn: () => billingArrangementApplicationDetailQuery(orgName, applicationName),
+    enabled: !!orgName && !!applicationName,
+    refetchInterval: (query) => pollWhilePending(query.state.data),
+  });
+
+export const useBillingArrangementDeclineListForOrgQuery = (orgName: string) =>
+  useQuery({
+    queryKey: billingQueryKeys.declines.forOrg(orgName),
+    queryFn: () => billingArrangementDeclineListForOrgQuery(orgName, { limit: 500 }),
+    enabled: !!orgName,
+  });
+
+/**
+ * A decision changes the application's phase, and approving also adds terms
+ * and changes the account's PaymentReady condition, so refresh all of them.
+ */
+const invalidateApplicationQueries = async (
+  queryClient: ReturnType<typeof useQueryClient>,
+  orgName: string,
+  accountName: string
+) => {
+  await Promise.all([
+    queryClient.invalidateQueries({ queryKey: billingQueryKeys.applications.all }),
+    queryClient.invalidateQueries({ queryKey: billingQueryKeys.declines.forOrg(orgName) }),
+    invalidateArrangementQueries(queryClient, orgName, accountName),
+  ]);
+};
+
+/** Approve an application by granting terms that name it. */
+export const useApproveBillingArrangementApplicationMutation = (
+  orgName: string,
+  accountName: string
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (spec: BillingArrangementSpec) => createBillingArrangement(orgName, spec),
+    onSuccess: () => invalidateApplicationQueries(queryClient, orgName, accountName),
+  });
+};
+
+export const useDeclineBillingArrangementApplicationMutation = (
+  orgName: string,
+  accountName: string
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (spec: BillingArrangementDeclineSpec) =>
+      createBillingArrangementDecline(orgName, spec),
+    onSuccess: () => invalidateApplicationQueries(queryClient, orgName, accountName),
   });
 };

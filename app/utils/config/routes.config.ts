@@ -114,6 +114,12 @@ export const billingAccountRoutes = {
   list: () => '/customers/billing-accounts',
   detail: (orgName: string, accountName: string) =>
     `/customers/billing-accounts/${orgName}/${accountName}`,
+  // Payment terms applications: the review queue and one application.
+  applications: {
+    list: () => '/customers/billing-accounts/applications',
+    detail: (orgName: string, applicationName: string) =>
+      `/customers/billing-accounts/applications/${orgName}/${applicationName}`,
+  },
 } as const;
 
 // Customers → Fraud & Abuse
