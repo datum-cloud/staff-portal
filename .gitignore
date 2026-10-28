@@ -2,6 +2,7 @@ node_modules
 
 /.cache
 /build
+.env
 .DS_Store
 .react-router/
 
@@ -17,4 +18,3 @@ cypress/results
 
 # Local-only notes
 docs/local/
-config.bat
