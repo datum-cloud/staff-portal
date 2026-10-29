@@ -43,7 +43,7 @@ const envSchema = z.object({
 
   // Internal wiki (Wiki.js GraphQL) — assistant knowledge source
   WIKI_API_URL: z.url().optional(),
-  WIKI_TOKEN: z.string().optional(),
+  WIKI_API_TOKEN: z.string().optional(),
 
   // Staff access control
   STAFF_GROUP_NAME: z.string().default('staff-users'),
@@ -116,6 +116,6 @@ export const env = {
   mcpUrl: parsedEnv.MCP_URL,
   mcpApiKey: parsedEnv.MCP_API_KEY,
   wikiApiUrl: parsedEnv.WIKI_API_URL,
-  wikiToken: parsedEnv.WIKI_TOKEN,
+  wikiApiToken: parsedEnv.WIKI_API_TOKEN,
   staffGroupName: parsedEnv.STAFF_GROUP_NAME,
 };

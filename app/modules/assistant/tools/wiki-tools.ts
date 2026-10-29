@@ -56,11 +56,11 @@ async function wikiQuery<T>(
   query: string,
   variables: Record<string, unknown> = {}
 ): Promise<T | ToolError> {
-  if (!env.wikiApiUrl || !env.wikiToken) {
+  if (!env.wikiApiUrl || !env.wikiApiToken) {
     return { error: 'Wiki is not configured' };
   }
   return graphqlRequest<T>(env.wikiApiUrl, query, variables, {
-    token: env.wikiToken,
+    token: env.wikiApiToken,
     label: 'Wiki',
   });
 }
