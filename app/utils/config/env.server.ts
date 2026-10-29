@@ -41,6 +41,10 @@ const envSchema = z.object({
   MCP_URL: z.string().optional(),
   MCP_API_KEY: z.string().optional(),
 
+  // Internal wiki (Wiki.js GraphQL) — assistant knowledge source
+  WIKI_API_URL: z.url().optional(),
+  WIKI_TOKEN: z.string().optional(),
+
   // Staff access control
   STAFF_GROUP_NAME: z.string().default('staff-users'),
 
@@ -111,5 +115,7 @@ export const env = {
   sentryEnvironment: parsedEnv.SENTRY_ENV,
   mcpUrl: parsedEnv.MCP_URL,
   mcpApiKey: parsedEnv.MCP_API_KEY,
+  wikiApiUrl: parsedEnv.WIKI_API_URL,
+  wikiToken: parsedEnv.WIKI_TOKEN,
   staffGroupName: parsedEnv.STAFF_GROUP_NAME,
 };
