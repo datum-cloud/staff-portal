@@ -6,10 +6,18 @@ import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { PageHeader } from '@/components/page-header';
 import {
   DefaultOfferHeaderActions,
+  OfferDiscountsFields,
   OfferIncludedPricingList,
   ServicePricingChecklist,
   useDefaultOfferControl,
 } from '@/features/billing';
+import {
+  buildOfferDiscountSpec,
+  isOfferDiscountFormValid,
+  offerDiscountFormFromSpec,
+  withoutOverride,
+  type OfferDiscountFormValues,
+} from '@/features/billing/lib/offer-discounts';
 import {
   CHARGE_TYPES,
   DEFAULT_SERVICE_PRICING_NAMESPACE,
@@ -78,10 +86,24 @@ function DraftConfigEditor({
   const [servicePricingNames, setServicePricingNames] = useState<string[]>(() =>
     (offer.spec?.servicePricingRefs ?? []).map((ref) => ref.name)
   );
+  const [discounts, setDiscounts] = useState<OfferDiscountFormValues>(() =>
+    offerDiscountFormFromSpec(offer.spec)
+  );
+
+  const togglePricing = (name: string, next: boolean) => {
+    setServicePricingNames((current) =>
+      next ? [...current, name] : current.filter((n) => n !== name)
+    );
+    if (!next) setDiscounts((current) => withoutOverride(current, name));
+  };
 
   const handleSaveDraft = async () => {
     if (chargeTypes.length === 0 || servicePricingNames.length === 0) {
       toast.error(t`Charge types and ServicePricings are required`);
+      return;
+    }
+    if (!isOfferDiscountFormValid(discounts, servicePricingNames)) {
+      toast.error(t`Fix the discounts before saving`);
       return;
     }
     try {
@@ -89,10 +111,13 @@ function DraftConfigEditor({
         name: offerName,
         displayName,
         chargeTypes,
-        servicePricingRefs: servicePricingNames.map((name) => ({
-          name,
-          namespace: DEFAULT_SERVICE_PRICING_NAMESPACE,
-        })),
+        ...buildOfferDiscountSpec(
+          discounts,
+          servicePricingNames.map((name) => ({
+            name,
+            namespace: DEFAULT_SERVICE_PRICING_NAMESPACE,
+          }))
+        ),
       });
       toast.success(t`Draft Offer updated`);
     } catch (err) {
@@ -144,17 +169,24 @@ function DraftConfigEditor({
           <ServicePricingChecklist
             pricings={pricings}
             selectedNames={servicePricingNames}
-            onToggle={(name, next) =>
-              setServicePricingNames((current) =>
-                next ? [...current, name] : current.filter((n) => n !== name)
-              )
-            }
+            onToggle={togglePricing}
             isLoading={pricingsLoading}
             isError={pricingsError}
             errorMessage={pricingsErrorMessage}
           />
         </Col>
       </Row>
+      <div className="mt-5 border-t pt-4">
+        <Text size="sm" weight="medium" className="mb-3">
+          <Trans>Discounts</Trans>
+        </Text>
+        <OfferDiscountsFields
+          value={discounts}
+          onChange={setDiscounts}
+          pricings={pricings}
+          selectedNames={servicePricingNames}
+        />
+      </div>
     </SectionCard>
   );
 }
@@ -275,6 +307,10 @@ export default function Page() {
     {
       label: t`Charge types`,
       value: formatChargeTypes(offer.spec?.chargeTypes ?? []) || '—',
+    },
+    {
+      label: t`General discount`,
+      value: offer.spec?.discount ? `${offer.spec.discount.percentage}%` : '—',
     },
     {
       label: t`Included charges`,
@@ -419,6 +455,7 @@ export default function Page() {
                 snapshots={snapshots}
                 refs={refs}
                 pricings={pricings}
+                offerDiscount={offer.spec?.discount}
                 isLoading={pricingsQuery.isLoading}
                 variant="table"
               />

@@ -1,3 +1,4 @@
+import type { OfferDiscount } from '@/features/billing/lib/offer-discounts';
 import type {
   ArrangementMergePatch,
   BillingArrangementSpec,
@@ -185,6 +186,8 @@ export type CreateOfferInput = {
   displayName?: string;
   chargeTypes: NonNullable<OfferSpec['chargeTypes']>;
   servicePricingRefs: NonNullable<OfferSpec['servicePricingRefs']>;
+  /** General discount; per-service overrides go on servicePricingRefs. */
+  discount?: OfferDiscount;
 };
 
 export const createOffer = async (input: CreateOfferInput) => {
@@ -204,6 +207,7 @@ export const createOffer = async (input: CreateOfferInput) => {
         launchStage: 'Draft',
         chargeTypes: input.chargeTypes,
         servicePricingRefs: input.servicePricingRefs,
+        ...(input.discount ? { discount: input.discount } : {}),
       },
     },
   });
@@ -214,7 +218,8 @@ export type PatchOfferInput = {
   name: string;
   body: {
     metadata?: { annotations?: Record<string, string> };
-    spec?: Partial<OfferSpec>;
+    // Merge patch: a null discount removes it.
+    spec?: Partial<Omit<OfferSpec, 'discount'>> & { discount?: OfferDiscount | null };
   };
 };
 
@@ -252,6 +257,7 @@ export const updateDraftOffer = async (
     displayName?: string;
     chargeTypes: NonNullable<OfferSpec['chargeTypes']>;
     servicePricingRefs: NonNullable<OfferSpec['servicePricingRefs']>;
+    discount?: OfferDiscount;
   }
 ) => {
   const annotations: Record<string, string> = {};
@@ -264,7 +270,10 @@ export const updateDraftOffer = async (
       ...(Object.keys(annotations).length > 0 ? { metadata: { annotations } } : {}),
       spec: {
         chargeTypes: input.chargeTypes,
+        // Merge patch replaces the whole array, so cleared per-service
+        // overrides go with it; a cleared general discount is sent as null.
         servicePricingRefs: input.servicePricingRefs,
+        discount: input.discount ?? null,
       },
     },
   });

@@ -14,6 +14,7 @@ Datum Cloud runs customer workloads on a Kubernetes-style control plane (Milo) w
   - **Operations** — activity, email activity, chainsaw tests.
   - **Admin** — groups, offers, service catalog.
   - Fraud, DNS/domains, edge, feature flags, profile and preferences.
+- **Offer discounts:** staff set a general discount and per-service overrides (whole-number percentages) on Draft Offers. A service's override wins, otherwise it inherits the general discount. Publishing to GA snapshots each service's resolved discount into `spec.servicePricings[].discount`, which the detail page reads for GA Offers. The detail page shows each service's resolved percentage, marked override or inherited, not discounted prices.
 - **Data flow:** browser code calls typed API functions → OpenAPI SDK → `/api/internal/*` on the Hono server → server injects the staff bearer token and forwards upstream. Some reads go through the GraphQL gateway proxy instead.
 - **Assistant ("Patch"):** a chat UI (`@ai-sdk/react`) backed by `app/server/routes/assistant.ts`, using the Datum AI gateway or a direct Anthropic key, with tools for platform data, Sentry and MCP cluster tools.
 - **Plugins:** additional UI can be loaded at runtime via module federation manifests (`app/modules/plugins`).
