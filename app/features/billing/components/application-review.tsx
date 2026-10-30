@@ -597,7 +597,7 @@ export function DeclineApplicationDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={t`Decline application`}
-      description={t`The customer sees your message in the cloud portal and can add a card or apply again.`}
+      description={t`We email your message to the applicant and show it in the cloud portal. They can add a card or apply again.`}
       submitText={t`Decline`}
       cancelText={t`Cancel`}
       schema={declineApplicationFormSchema}
@@ -606,11 +606,11 @@ export function DeclineApplicationDialog({
       <Form.Field
         name="message"
         label={t`Message to the customer`}
-        description={t`Shown to the customer. Say what they can do next. Up to ${MAX_DECLINE_MESSAGE_LENGTH} characters.`}
+        description={t`Goes into the decline email as a paragraph from Datum, so write it to the customer and say what they can do next. Up to ${MAX_DECLINE_MESSAGE_LENGTH} characters.`}
         required>
         <Form.Textarea
           rows={4}
-          placeholder={t`For example: We couldn't verify your company. Reply to our email with your company registration number, or add a card to continue.`}
+          placeholder={t`For example: We couldn't verify your company. Send your company registration number to support@datum.net, or add a card to continue.`}
         />
       </Form.Field>
       <Form.Field
