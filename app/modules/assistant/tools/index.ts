@@ -8,6 +8,7 @@ import { createMetricsTools } from './metrics-tools';
 import { createResourceTools } from './resource-tools';
 import { createSentryTools } from './sentry-tools';
 import { createUtilityTools } from './utility-tools';
+import { createWikiTools } from './wiki-tools';
 
 interface ToolDeps {
   accessToken: string;
@@ -25,5 +26,6 @@ export function createAssistantTools({ accessToken }: ToolDeps) {
     ...createSentryTools(),
     ...createClusterTools(),
     ...createUtilityTools(),
+    ...createWikiTools(),
   };
 }

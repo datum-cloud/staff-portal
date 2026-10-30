@@ -1,3 +1,4 @@
+import { jsonFetch } from './http';
 import { env } from '@/utils/config/env.server';
 import { tool } from 'ai';
 import { z } from 'zod';
@@ -6,20 +7,10 @@ async function sentryApi(path: string) {
   if (!env.sentryApiUrl || !env.sentryApiToken) {
     return { error: 'Sentry API is not configured' };
   }
-
-  try {
-    const res = await fetch(`${env.sentryApiUrl}/api/0/${path}`, {
-      headers: {
-        Authorization: `Bearer ${env.sentryApiToken}`,
-        Accept: 'application/json',
-      },
-      signal: AbortSignal.timeout(15_000),
-    });
-    if (!res.ok) return { error: `Sentry API error: ${res.status} ${res.statusText}` };
-    return res.json();
-  } catch (err) {
-    return { error: `Sentry request failed: ${err instanceof Error ? err.message : 'unknown'}` };
-  }
+  return jsonFetch(`${env.sentryApiUrl}/api/0/${path}`, {
+    token: env.sentryApiToken,
+    label: 'Sentry API',
+  });
 }
 
 function applyDefaults(query: string): string {
