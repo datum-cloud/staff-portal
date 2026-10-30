@@ -21,7 +21,7 @@ import * as Sentry from '@sentry/react-router';
 import { QueryClientProvider } from '@tanstack/react-query';
 import type { SSRData } from '@urql/core';
 import clsx from 'clsx';
-import { NuqsAdapter } from 'nuqs/adapters/react-router/v7';
+import { NuqsAdapter } from 'nuqs/adapters/react-router/v8';
 import { useEffect, useMemo } from 'react';
 import {
   data,
@@ -156,7 +156,7 @@ export default function AppWithProviders() {
 
   const urqlState = useMemo<SSRData>(() => {
     return matches.reduce<SSRData>((acc, match) => {
-      const state = (match.data as Record<string, unknown> | null)?.urqlState;
+      const state = (match.loaderData as Record<string, unknown> | null)?.urqlState;
       if (state && typeof state === 'object') {
         return { ...acc, ...(state as SSRData) };
       }
