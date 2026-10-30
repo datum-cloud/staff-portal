@@ -1,28 +1,23 @@
 import { EnvVariables } from '@/server/iface';
 import { Context } from 'hono';
-import type { AppLoadContext } from 'react-router';
+import { createContext, RouterContextProvider } from 'react-router';
 
 /**
- * Declare our loaders and actions context type
+ * Typed loader and action context values.
+ *
+ * React Router v8 always passes a `RouterContextProvider` as the loader/action
+ * `context`, so each value is its own context, read back with
+ * `context.get(requestIdContext)`.
  */
-declare module 'react-router' {
-  interface AppLoadContext {
-    /**
-     * The app version from the build assets
-     */
-    readonly appVersion: string;
 
-    /**
-     * The CSP nonce
-     */
-    readonly cspNonce: string;
+/** The app version from the build assets */
+export const appVersionContext = createContext<string>('development');
 
-    /**
-     * The request ID
-     */
-    readonly requestId: string;
-  }
-}
+/** The CSP nonce */
+export const cspNonceContext = createContext<string>('');
+
+/** The request ID */
+export const requestIdContext = createContext<string>('');
 
 // Types for context generation
 type ContextOptions = {
@@ -37,15 +32,18 @@ type ContextOptions = {
 // Create a function to generate the load context creator
 export const createContextGenerator = <Env extends { Variables: EnvVariables }>(
   createGetLoadContextFn: (
-    callback: (c: Context<Env>, options: ContextOptions) => AppLoadContext
-  ) => (c: Context<Env>, options: ContextOptions) => AppLoadContext
+    callback: (c: Context<Env>, options: ContextOptions) => RouterContextProvider
+  ) => (c: Context<Env>, options: ContextOptions) => RouterContextProvider
 ) => {
   return createGetLoadContextFn((c: Context<Env>, { mode, build }) => {
     const isProductionMode = mode === 'production';
-    return {
-      appVersion: isProductionMode ? (build?.assets?.version ?? 'production') : 'development',
-      cspNonce: c.get('secureHeadersNonce'),
-      requestId: c.get('requestId'),
-    };
+    const context = new RouterContextProvider();
+    context.set(
+      appVersionContext,
+      isProductionMode ? (build?.assets?.version ?? 'production') : 'development'
+    );
+    context.set(cspNonceContext, c.get('secureHeadersNonce'));
+    context.set(requestIdContext, c.get('requestId'));
+    return context;
   });
 };

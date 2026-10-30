@@ -98,7 +98,7 @@ export interface NavSection {
  *   }),
  * };
  * ```
- * `data` is the route's loader data (`match.data`); `params` is the route's
+ * `data` is the route's loader data (`match.loaderData`); `params` is the route's
  * URL params (`match.params`). `handle` is module scope, so it cannot call
  * hooks — hook-derived entries (e.g. a plugin-gated tab) are injected by
  * `useEntityNav` instead, mirroring `useNavSections()`.
