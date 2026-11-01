@@ -155,6 +155,7 @@
       "js-yaml": "^4.3.2"
     },
     "axios": "$axios",
+    "follow-redirects": "^1.16.2",
     "@humanfs/node": "^0.16.8",
     "react-router-hono-server": {
       "@hono/node-server": "2.1.3"
