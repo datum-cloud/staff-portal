@@ -147,6 +147,12 @@ export const contactRoutes = {
     `/marketing/contacts/${namespace}/${contactName}`,
   group: (namespace: string, contactName: string) =>
     `/marketing/contacts/${namespace}/${contactName}/groups`,
+  notes: (namespace: string, contactName: string) =>
+    `/marketing/contacts/${namespace}/${contactName}/notes`,
+  emailsSent: (namespace: string, contactName: string) =>
+    `/marketing/contacts/${namespace}/${contactName}/emails`,
+  activity: (namespace: string, contactName: string) =>
+    `/marketing/contacts/${namespace}/${contactName}/activity`,
 } as const;
 
 // Marketing → Contact Groups

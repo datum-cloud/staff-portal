@@ -1,4 +1,5 @@
 import type { Route } from './+types/layout';
+import { ContactTypeBadge } from '@/features/contact';
 import { DetailShell, type EntityNav } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
 import { contactDetailQuery, userDetailQuery } from '@/resources/request/server';
@@ -6,8 +7,16 @@ import { ContactDetailLoaderData } from '@/routes/marketing/contact/shared';
 import { ENTITY_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
 import { contactRoutes } from '@/utils/config/routes.config';
 import { Avatar, AvatarFallback } from '@datum-cloud/datum-ui/avatar';
+import { Badge } from '@datum-cloud/datum-ui/badge';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import { useLoaderData } from 'react-router';
+
+/** Adornment for not-yet-shipped entity tabs. `handle` is module scope (no hooks), so this is a plain element. */
+const SOON_BADGE = (
+  <Badge type="secondary" theme="light" className="text-3xs px-1.5 py-0 font-medium">
+    Soon
+  </Badge>
+);
 
 export const handle = {
   breadcrumb: (data: ContactDetailLoaderData) => {
@@ -39,14 +48,35 @@ export const handle = {
         {
           items: [
             {
-              label: 'Details',
+              label: 'Overview',
               href: contactRoutes.detail(namespace, contactName),
               icon: TAB_ICONS.overview,
+            },
+            {
+              label: 'Notes',
+              href: contactRoutes.notes(namespace, contactName),
+              icon: ENTITY_ICONS.note,
+              disabled: true,
+              badge: SOON_BADGE,
             },
             {
               label: 'Contact Groups',
               href: contactRoutes.group(namespace, contactName),
               icon: ENTITY_ICONS.contactGroup,
+            },
+            {
+              label: 'Emails sent',
+              href: contactRoutes.emailsSent(namespace, contactName),
+              icon: ENTITY_ICONS.emailActivity,
+              disabled: true,
+              badge: SOON_BADGE,
+            },
+            {
+              label: 'Activity',
+              href: contactRoutes.activity(namespace, contactName),
+              icon: ENTITY_ICONS.activity,
+              disabled: true,
+              badge: SOON_BADGE,
             },
           ],
         },
@@ -93,7 +123,12 @@ export default function Layout() {
           <AvatarFallback className="rounded-xl">{initials}</AvatarFallback>
         </Avatar>
       }
-      name={displayName}
+      name={
+        <span className="flex items-center gap-2">
+          {displayName}
+          <ContactTypeBadge contact={data?.contact} />
+        </span>
+      }
       subtitle={data?.contact?.spec?.email}
     />
   );

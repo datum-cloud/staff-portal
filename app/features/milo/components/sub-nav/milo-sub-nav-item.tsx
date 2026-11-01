@@ -24,6 +24,8 @@ interface MiloSubNavItemProps {
 
 const idleClass = 'text-foreground hover:bg-card hover:text-primary';
 const activeClass = 'bg-card text-primary';
+const disabledClass =
+  'text-muted-foreground cursor-not-allowed hover:bg-transparent hover:text-muted-foreground';
 
 /** Count + badge adornments shared by leaf items and the parent row of a children group. */
 function ItemAdornments({ item }: { item: NavSubItem }) {
@@ -149,6 +151,27 @@ export function MiloSubNavItem({ item, active, activeChildHref }: MiloSubNavItem
             ))}
           </SidebarMenuSub>
         )}
+      </SidebarMenuItem>
+    );
+  }
+
+  // A disabled leaf is a non-navigable, muted row (e.g. a "Soon" tab). Rendered
+  // as a plain disabled button rather than a link so it can't be clicked.
+  if (item.disabled) {
+    return (
+      <SidebarMenuItem>
+        <SidebarMenuButton
+          type="button"
+          disabled
+          aria-disabled
+          tooltip={collapsed ? item.label : undefined}
+          className={disabledClass}>
+          {item.icon && <Icon icon={item.icon} size={20} className="shrink-0" />}
+          <span className="flex min-w-0 flex-1 items-center justify-between gap-2 truncate">
+            <span className="truncate">{item.label}</span>
+            <ItemAdornments item={item} />
+          </span>
+        </SidebarMenuButton>
       </SidebarMenuItem>
     );
   }

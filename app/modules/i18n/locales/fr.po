@@ -46,6 +46,11 @@ msgstr ""
 msgid "{0} of {1} services"
 msgstr ""
 
+#. placeholder {0}: passkeys?.items?.length ?? 0
+#: app/features/contact/components/contact-platform-account-card.tsx:96
+msgid "{0} registered"
+msgstr ""
+
 #. placeholder {0}: sent.toLocaleString()
 #. placeholder {1}: data.failed.toLocaleString()
 #: app/features/dashboard/components/home/health-section.tsx:205
@@ -151,12 +156,20 @@ msgstr ""
 msgid "A signed MSA or order form, if there is one. Otherwise our standard terms apply."
 msgstr ""
 
+#: app/features/contact/components/contact-about-card.tsx:18
+msgid "About"
+msgstr ""
+
 #: app/features/fraud/policy/policy-detail.tsx:134
 msgid "Accept"
 msgstr ""
 
 #: app/routes/customer/fraud/index.tsx:289
 msgid "Accepted"
+msgstr ""
+
+#: app/features/contact/components/contact-platform-account-card.tsx:74
+msgid "Access"
 msgstr ""
 
 #: app/routes/admin/service-catalog/detail/approvals.tsx:128
@@ -173,6 +186,7 @@ msgstr ""
 msgid "Access State"
 msgstr ""
 
+#: app/features/contact/components/contact-timeline.tsx:76
 #: app/features/project/components/project-billing-card.tsx:49
 msgid "Account"
 msgstr ""
@@ -250,6 +264,7 @@ msgstr ""
 #: app/routes/customer/organization/detail/activity/layout.tsx:5
 #: app/routes/customer/project/detail/activity/layout.tsx:5
 #: app/routes/customer/user/detail/activity/layout.tsx:5
+#: app/routes/marketing/contact/detail/activity.tsx:11
 #: app/routes/operation/activity/layout.tsx:12
 #: app/routes/operation/activity/layout.tsx:69
 msgid "Activity"
@@ -270,6 +285,10 @@ msgstr ""
 msgid "Add a note"
 msgstr ""
 
+#: app/features/contact/components/contact-timeline.tsx:333
+msgid "Add a note about this contact… (visible to staff only)"
+msgstr ""
+
 #: app/features/billing/components/service-pricing-checklist.tsx:64
 msgid "Add a ServicePricing manifest for this environment to the service's repo, and get billing's review."
 msgstr ""
@@ -281,6 +300,10 @@ msgstr ""
 #: app/routes/admin/group/detail/member.tsx:154
 #: app/routes/marketing/contact-group/detail/member.tsx:360
 msgid "Add Member"
+msgstr ""
+
+#: app/features/contact/components/contact-timeline.tsx:341
+msgid "Add note"
 msgstr ""
 
 #: app/features/notes/components/notes-card.tsx:173
@@ -313,6 +336,10 @@ msgstr ""
 
 #: app/features/notes/components/notes-card.tsx:134
 msgid "Added by"
+msgstr ""
+
+#: app/features/contact/components/contact-timeline.tsx:253
+msgid "Added to contact group “{groupName}”"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:517
@@ -349,6 +376,7 @@ msgstr ""
 msgid "Algorithm"
 msgstr ""
 
+#: app/features/contact/components/contact-timeline.tsx:71
 #: app/features/dashboard/components/home/activity-section.tsx:17
 msgid "All"
 msgstr ""
@@ -709,10 +737,6 @@ msgstr ""
 msgid "Billing permissions are still being provisioned for this organization."
 msgstr ""
 
-#: app/features/contact/components/contact-organizations-card.tsx:106
-msgid "Business name"
-msgstr ""
-
 #: app/routes/admin/service-catalog/index.tsx:54
 msgid "by"
 msgstr ""
@@ -970,6 +994,10 @@ msgstr ""
 msgid "Contact & address"
 msgstr ""
 
+#: app/features/contact/components/contact-timeline.tsx:272
+msgid "Contact created"
+msgstr ""
+
 #: app/routes/marketing/contact-group/detail/member.tsx:320
 msgid "Contact created and added to the contact group"
 msgstr ""
@@ -1017,6 +1045,12 @@ msgstr ""
 msgid "Contact group updated successfully"
 msgstr ""
 
+#: app/features/contact/components/contact-groups-card.tsx:27
+#: app/features/contact/components/contact-timeline.tsx:75
+#: app/routes/marketing/contact/detail/index.tsx:124
+msgid "Contact groups"
+msgstr ""
+
 #: app/components/app-sidebar/index.tsx:157
 #: app/routes/marketing/breadcrumb-switchers.tsx:7
 #: app/routes/marketing/contact-group/index.tsx:29
@@ -1030,7 +1064,6 @@ msgid "Contact Groups - Create"
 msgstr ""
 
 #: app/routes/marketing/contact/create.tsx:25
-#: app/routes/marketing/contact/detail/index.tsx:22
 msgid "Contact Information"
 msgstr ""
 
@@ -1163,6 +1196,7 @@ msgstr ""
 
 #: app/features/billing/components/billing-account-list.tsx:239
 #: app/features/billing/components/billing-account-list.tsx:317
+#: app/features/contact/components/contact-about-card.tsx:26
 #: app/features/contact/components/contact-list.tsx:111
 #: app/features/contact/components/contact-list.tsx:182
 #: app/features/dns/components/dns-zone-list.tsx:133
@@ -1464,6 +1498,7 @@ msgstr ""
 msgid "Deletion started"
 msgstr ""
 
+#: app/features/contact/components/contact-timeline.tsx:218
 #: app/features/email/components/email-list.tsx:66
 msgid "Delivered"
 msgstr ""
@@ -1713,9 +1748,11 @@ msgstr ""
 msgid "Education or research"
 msgstr ""
 
+#: app/features/contact/components/contact-about-card.tsx:24
 #: app/features/contact/components/contact-form.tsx:131
 #: app/features/contact/components/contact-list.tsx:91
 #: app/features/contact/components/contact-list.tsx:167
+#: app/features/contact/components/contact-timeline.tsx:201
 #: app/features/organization/components/org-contact-card.tsx:69
 #: app/features/organization/components/org-members-preview-card.tsx:57
 #: app/routes/customer/fraud/index.tsx:124
@@ -1764,8 +1801,25 @@ msgstr ""
 msgid "Email not verified — ask the user to sign up again to get a fresh verification link"
 msgstr ""
 
+#: app/features/contact/components/contact-timeline.tsx:211
+msgid "Email sent · “{subject}”"
+msgstr ""
+
+#: app/features/contact/components/contact-timeline.tsx:73
+msgid "Emails"
+msgstr ""
+
 #: app/routes/customer/user/detail/index.tsx:469
 msgid "Emails a one-time passkey setup link to the verified address on file. It expires in about an hour and cannot be recalled."
+msgstr ""
+
+#: app/routes/marketing/contact/detail/emails.tsx:11
+#: app/routes/marketing/contact/detail/index.tsx:129
+msgid "Emails sent"
+msgstr ""
+
+#: app/routes/marketing/contact/detail/emails.tsx:12
+msgid "Emails sent to this contact will appear here."
 msgstr ""
 
 #: app/features/feature-flags/components/feature-flag-list.tsx:229
@@ -1905,6 +1959,7 @@ msgstr ""
 #: app/features/fraud/detail/evaluation-sections.tsx:751
 #: app/routes/customer/fraud/index.tsx:171
 #: app/routes/customer/fraud/index.tsx:306
+#: app/routes/marketing/contact/detail/index.tsx:147
 msgid "Evaluated"
 msgstr ""
 
@@ -2106,6 +2161,7 @@ msgstr ""
 msgid "Fingerprint ID"
 msgstr ""
 
+#: app/features/contact/components/contact-about-card.tsx:22
 #: app/routes/marketing/contact-group/detail/member.tsx:95
 msgid "First name"
 msgstr ""
@@ -2157,6 +2213,8 @@ msgid "Fraud Assessment"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:343
+#: app/features/contact/components/contact-platform-account-card.tsx:84
+#: app/routes/marketing/contact/detail/index.tsx:133
 msgid "Fraud check"
 msgstr ""
 
@@ -2530,10 +2588,17 @@ msgstr ""
 msgid "Issuing TLS certificate"
 msgstr ""
 
-#: app/features/contact/components/contact-organizations-card.tsx:112
 #: app/routes/customer/user/detail/organization.tsx:53
 #: app/routes/marketing/contact/detail/group.tsx:111
 msgid "Joined"
+msgstr ""
+
+#: app/features/contact/components/contact-timeline.tsx:238
+msgid "Joined {display}"
+msgstr ""
+
+#: app/features/contact/components/contact-timeline.tsx:234
+msgid "Joined {display} as {role}"
 msgstr ""
 
 #: app/features/dashboard/components/home/health-section.tsx:185
@@ -2556,6 +2621,7 @@ msgstr ""
 msgid "Last Evaluated"
 msgstr ""
 
+#: app/features/contact/components/contact-about-card.tsx:23
 #: app/routes/marketing/contact-group/detail/member.tsx:98
 msgid "Last name"
 msgstr ""
@@ -2985,6 +3051,10 @@ msgstr ""
 msgid "New users"
 msgstr ""
 
+#: app/features/contact/components/contact-timeline.tsx:376
+msgid "Newest first ↓"
+msgstr ""
+
 #: app/features/milo/components/page/list-pagination.tsx:94
 msgid "Next page"
 msgstr ""
@@ -3014,6 +3084,10 @@ msgstr ""
 #: app/features/user/components/user-identity-card.tsx:206
 #: app/routes/profile/session.tsx:126
 msgid "No active sessions."
+msgstr ""
+
+#: app/features/contact/components/contact-timeline.tsx:397
+msgid "No activity yet"
 msgstr ""
 
 #: app/features/edge/components/edge-list.tsx:166
@@ -3060,6 +3134,10 @@ msgstr ""
 
 #: app/features/organization/components/org-contact-card.tsx:55
 msgid "No contact details on file. Onboarding may be waiting on this step."
+msgstr ""
+
+#: app/features/contact/components/contact-groups-card.tsx:37
+msgid "No contact groups"
 msgstr ""
 
 #: app/routes/marketing/contact-group/index.tsx:225
@@ -3219,7 +3297,7 @@ msgstr ""
 msgid "No organization linked"
 msgstr ""
 
-#: app/features/contact/components/contact-organizations-card.tsx:91
+#: app/features/contact/components/contact-organizations-card.tsx:51
 msgid "No organizations"
 msgstr ""
 
@@ -3408,7 +3486,7 @@ msgstr ""
 msgid "Not enough data yet to show a trend."
 msgstr ""
 
-#: app/features/contact/components/contact-organizations-card.tsx:78
+#: app/features/contact/components/contact-organizations-card.tsx:34
 msgid "Not linked to a user"
 msgstr ""
 
@@ -3426,21 +3504,32 @@ msgstr ""
 msgid "Note"
 msgstr ""
 
+#: app/features/contact/components/contact-timeline.tsx:171
 #: app/features/notes/components/notes-card.tsx:90
 msgid "Note added"
+msgstr ""
+
+#: app/features/contact/components/contact-timeline.tsx:189
+msgid "Note by {creator}"
 msgstr ""
 
 #: app/features/notes/components/notes-card.tsx:103
 msgid "Note deleted"
 msgstr ""
 
+#: app/features/contact/components/contact-timeline.tsx:72
 #: app/features/notes/components/notes-card.tsx:111
 #: app/features/project/components/project-suspension-card.tsx:200
+#: app/routes/marketing/contact/detail/notes.tsx:11
 msgid "Notes"
 msgstr ""
 
 #: app/features/project/components/project-suspension-card.tsx:108
 msgid "Notes (operator-facing)"
+msgstr ""
+
+#: app/features/contact/components/contact-timeline.tsx:399
+msgid "Notes, emails, and account history for this contact will appear here."
 msgstr ""
 
 #: app/features/dashboard/components/home/home-columns.tsx:148
@@ -3492,6 +3581,10 @@ msgstr ""
 msgid "Offers bundle prices that already exist as ServicePricings. Prices are ServicePricing manifests in each service's repo; once Flux applies them, refresh to select them here."
 msgstr ""
 
+#: app/features/contact/components/contact-timeline.tsx:376
+msgid "Oldest first ↑"
+msgstr ""
+
 #: app/features/organization/components/org-onboarding-card.tsx:204
 msgid "Onboarding"
 msgstr ""
@@ -3517,6 +3610,10 @@ msgstr ""
 msgid "Open search"
 msgstr ""
 
+#: app/features/contact/components/contact-platform-account-card.tsx:51
+msgid "Open user"
+msgstr ""
+
 #: app/routes/operation/layout.tsx:7
 msgid "Operations"
 msgstr ""
@@ -3540,7 +3637,6 @@ msgstr ""
 #: app/features/billing/components/application-review.tsx:427
 #: app/features/billing/components/billing-account-list.tsx:202
 #: app/features/billing/components/billing-account-list.tsx:271
-#: app/features/contact/components/contact-organizations-card.tsx:100
 #: app/features/project/components/project-organization-card.tsx:25
 #: app/routes/admin/service-catalog/detail/approvals.tsx:66
 #: app/routes/admin/service-catalog/detail/consumers.tsx:100
@@ -3565,12 +3661,14 @@ msgstr ""
 #: app/components/app-search/search-results.tsx:170
 #: app/components/app-search/use-app-search.ts:43
 #: app/components/app-sidebar/index.tsx:119
-#: app/features/contact/components/contact-organizations-card.tsx:74
+#: app/features/contact/components/contact-organizations-card.tsx:30
+#: app/features/contact/components/contact-timeline.tsx:74
 #: app/routes/customer/breadcrumb-switchers.tsx:14
 #: app/routes/customer/organization/index.tsx:29
 #: app/routes/customer/organization/layout.tsx:8
 #: app/routes/customer/project/detail/layout.tsx:122
 #: app/routes/customer/user/detail/organization.tsx:18
+#: app/routes/marketing/contact/detail/index.tsx:117
 msgid "Organizations"
 msgstr ""
 
@@ -3625,6 +3723,10 @@ msgstr ""
 
 #: app/features/user/components/user-recovery-links-dialog.tsx:48
 msgid "Passkey Recovery Links"
+msgstr ""
+
+#: app/features/contact/components/contact-platform-account-card.tsx:92
+msgid "Passkeys"
 msgstr ""
 
 #: app/routes/customer/billing-account/detail/index.tsx:436
@@ -3763,6 +3865,14 @@ msgstr ""
 msgid "Platform"
 msgstr ""
 
+#: app/routes/marketing/contact/detail/index.tsx:95
+msgid "Platform access"
+msgstr ""
+
+#: app/features/contact/components/contact-timeline.tsx:262
+msgid "Platform access approved"
+msgstr ""
+
 #: app/routes/customer/user/detail/index.tsx:374
 msgid "Platform Access State"
 msgstr ""
@@ -3771,12 +3881,20 @@ msgstr ""
 msgid "Platform access updated to {state}"
 msgstr ""
 
+#: app/features/contact/components/contact-platform-account-card.tsx:45
+msgid "Platform account"
+msgstr ""
+
 #: app/routes/admin/offer/detail.tsx:361
 msgid "Platform default"
 msgstr ""
 
 #: app/features/dashboard/components/home/health-section.tsx:228
 msgid "Platform health"
+msgstr ""
+
+#: app/features/contact/components/contact-type-badge.tsx:26
+msgid "Platform user"
 msgstr ""
 
 #. placeholder {0}: user?.spec?.givenName ?? ''
@@ -3919,6 +4037,10 @@ msgstr ""
 #: app/routes/customer/project/index.tsx:27
 #: app/routes/customer/project/layout.tsx:8
 msgid "Projects"
+msgstr ""
+
+#: app/features/contact/components/contact-type-badge.tsx:40
+msgid "Prospect"
 msgstr ""
 
 #: app/features/edge/components/detail/edge-config-card.tsx:28
@@ -4097,6 +4219,10 @@ msgstr ""
 msgid "Receives invoices as well as the billing contact."
 msgstr ""
 
+#: app/routes/marketing/contact/detail/activity.tsx:12
+msgid "Recent activity entries for this contact will appear here."
+msgstr ""
+
 #: app/features/email/components/email-list.tsx:73
 #: app/features/email/components/email-list.tsx:150
 msgid "Recipient"
@@ -4180,6 +4306,7 @@ msgstr ""
 msgid "Resend"
 msgstr ""
 
+#: app/features/contact/components/contact-about-card.tsx:33
 #: app/features/quota/components/quota-bucket-list.tsx:85
 #: app/features/quota/components/quota-grant-list.tsx:69
 msgid "Resource"
@@ -4261,7 +4388,6 @@ msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:397
 #: app/features/activity/components/activity-list.tsx:496
-#: app/features/contact/components/contact-organizations-card.tsx:103
 #: app/features/organization/components/org-members-preview-card.tsx:71
 #: app/routes/customer/organization/detail/member.tsx:128
 #: app/routes/customer/organization/detail/member.tsx:171
@@ -4696,9 +4822,21 @@ msgstr ""
 msgid "Show more"
 msgstr ""
 
+#: app/features/contact/components/contact-timeline.tsx:451
+msgid "Show older activity"
+msgstr ""
+
 #. placeholder {0}: sent.length
 #: app/features/user/components/user-recovery-links-dialog.tsx:68
 msgid "Showing the most recent {0}; older links exist."
+msgstr ""
+
+#: app/routes/marketing/contact/detail/index.tsx:109
+msgid "Signed up"
+msgstr ""
+
+#: app/features/contact/components/contact-timeline.tsx:272
+msgid "Signed up · contact created"
 msgstr ""
 
 #: app/routes/customer/project/detail/export-policy/detail.tsx:149
@@ -4715,6 +4853,10 @@ msgstr ""
 
 #: app/features/edge/components/detail/edge-hostnames-card.tsx:102
 msgid "Solving ACME challenge"
+msgstr ""
+
+#: app/features/contact/components/contact-timeline.tsx:184
+msgid "someone"
 msgstr ""
 
 #: app/features/project/components/project-quotas-card.tsx:79
@@ -5002,6 +5144,10 @@ msgstr ""
 msgid "The most the account should spend each billing cycle. Recorded for finance only: usage isn't capped and no alerts are sent yet."
 msgstr ""
 
+#: app/routes/marketing/contact/detail/notes.tsx:13
+msgid "The notes and history timeline for this contact will appear here."
+msgstr ""
+
 #: app/features/billing/components/application-review.tsx:405
 msgid "Their situation"
 msgstr ""
@@ -5018,7 +5164,11 @@ msgstr ""
 msgid "This Application Load Balancer has advanced configuration that cannot be represented in the simplified overview fields. See the YAML section below for the full resource definition including routing rules, filters, and matches."
 msgstr ""
 
-#: app/features/contact/components/contact-organizations-card.tsx:80
+#: app/features/contact/components/contact-groups-card.tsx:38
+msgid "This contact isn't in any groups yet."
+msgstr ""
+
+#: app/features/contact/components/contact-organizations-card.tsx:36
 msgid "This contact isn't linked to a platform user, so organization memberships aren't available."
 msgstr ""
 
@@ -5054,7 +5204,7 @@ msgstr ""
 msgid "This service has no producer project recorded, so consumers cannot be listed."
 msgstr ""
 
-#: app/features/contact/components/contact-organizations-card.tsx:92
+#: app/features/contact/components/contact-organizations-card.tsx:52
 msgid "This user isn't a member of any organizations."
 msgstr ""
 
@@ -5137,7 +5287,6 @@ msgid "TTL"
 msgstr ""
 
 #: app/features/billing/components/offer-included-pricing-list.tsx:147
-#: app/features/contact/components/contact-organizations-card.tsx:109
 #: app/features/edge/components/detail/edge-backends-card.tsx:55
 #: app/features/fraud/policy/policy-form.tsx:199
 #: app/features/organization/components/org-details-card.tsx:59
