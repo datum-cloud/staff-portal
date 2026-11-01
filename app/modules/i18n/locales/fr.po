@@ -2195,7 +2195,7 @@ msgid "For example: signed MSA after sales call on 1 October"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:613
-msgid "For example: We couldn't verify your company. Reply to our email with your company registration number, or add a card to continue."
+msgid "For example: We couldn't verify your company. Send your company registration number to support@datum.net, or add a card to continue."
 msgstr ""
 
 #: app/features/edge/components/detail/edge-config-card.tsx:34
@@ -2286,6 +2286,10 @@ msgstr ""
 
 #: app/components/app-search/use-app-search.ts:35
 msgid "Go to dashboard"
+msgstr ""
+
+#: app/features/billing/components/application-review.tsx:609
+msgid "Goes into the decline email as a paragraph from Datum, so write it to the customer and say what they can do next. Up to {MAX_DECLINE_MESSAGE_LENGTH} characters."
 msgstr ""
 
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:260
@@ -4823,10 +4827,6 @@ msgstr ""
 msgid "Showing the most recent {0}; older links exist."
 msgstr ""
 
-#: app/features/billing/components/application-review.tsx:609
-msgid "Shown to the customer. Say what they can do next. Up to {MAX_DECLINE_MESSAGE_LENGTH} characters."
-msgstr ""
-
 #: app/routes/marketing/contact/detail/index.tsx:109
 msgid "Signed up"
 msgstr ""
@@ -5110,10 +5110,6 @@ msgstr ""
 
 #: app/features/billing/components/application-review.tsx:395
 msgid "The customer isn't sure how they'd like to pay, so they didn't give invoice details. Their situation below explains what they need."
-msgstr ""
-
-#: app/features/billing/components/application-review.tsx:600
-msgid "The customer sees your message in the cloud portal and can add a card or apply again."
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:289
@@ -5526,6 +5522,10 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:370
 #: app/features/activity/components/activity-list.tsx:460
 msgid "Watch"
+msgstr ""
+
+#: app/features/billing/components/application-review.tsx:600
+msgid "We email your message to the applicant and show it in the cloud portal. They can add a card or apply again."
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:323

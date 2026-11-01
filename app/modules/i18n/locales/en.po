@@ -2195,8 +2195,8 @@ msgid "For example: signed MSA after sales call on 1 October"
 msgstr "For example: signed MSA after sales call on 1 October"
 
 #: app/features/billing/components/application-review.tsx:613
-msgid "For example: We couldn't verify your company. Reply to our email with your company registration number, or add a card to continue."
-msgstr "For example: We couldn't verify your company. Reply to our email with your company registration number, or add a card to continue."
+msgid "For example: We couldn't verify your company. Send your company registration number to support@datum.net, or add a card to continue."
+msgstr "For example: We couldn't verify your company. Send your company registration number to support@datum.net, or add a card to continue."
 
 #: app/features/edge/components/detail/edge-config-card.tsx:34
 msgid "Force HTTPS"
@@ -2287,6 +2287,10 @@ msgstr "Get"
 #: app/components/app-search/use-app-search.ts:35
 msgid "Go to dashboard"
 msgstr "Go to dashboard"
+
+#: app/features/billing/components/application-review.tsx:609
+msgid "Goes into the decline email as a paragraph from Datum, so write it to the customer and say what they can do next. Up to {MAX_DECLINE_MESSAGE_LENGTH} characters."
+msgstr "Goes into the decline email as a paragraph from Datum, so write it to the customer and say what they can do next. Up to {MAX_DECLINE_MESSAGE_LENGTH} characters."
 
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:260
 msgid "Grafana"
@@ -4823,10 +4827,6 @@ msgstr "Show more"
 msgid "Showing the most recent {0}; older links exist."
 msgstr "Showing the most recent {0}; older links exist."
 
-#: app/features/billing/components/application-review.tsx:609
-msgid "Shown to the customer. Say what they can do next. Up to {MAX_DECLINE_MESSAGE_LENGTH} characters."
-msgstr "Shown to the customer. Say what they can do next. Up to {MAX_DECLINE_MESSAGE_LENGTH} characters."
-
 #: app/routes/marketing/contact/detail/index.tsx:109
 msgid "Signed up"
 msgstr "Signed up"
@@ -5111,10 +5111,6 @@ msgstr "The customer applied for payment terms on <0/> and is waiting for a deci
 #: app/features/billing/components/application-review.tsx:395
 msgid "The customer isn't sure how they'd like to pay, so they didn't give invoice details. Their situation below explains what they need."
 msgstr "The customer isn't sure how they'd like to pay, so they didn't give invoice details. Their situation below explains what they need."
-
-#: app/features/billing/components/application-review.tsx:600
-msgid "The customer sees your message in the cloud portal and can add a card or apply again."
-msgstr "The customer sees your message in the cloud portal and can add a card or apply again."
 
 #: app/features/billing/components/application-review.tsx:289
 msgid "The customer withdrew this application before a decision."
@@ -5527,6 +5523,10 @@ msgstr "Warning"
 #: app/features/activity/components/activity-list.tsx:460
 msgid "Watch"
 msgstr "Watch"
+
+#: app/features/billing/components/application-review.tsx:600
+msgid "We email your message to the applicant and show it in the cloud portal. They can add a card or apply again."
+msgstr "We email your message to the applicant and show it in the cloud portal. They can add a card or apply again."
 
 #: app/features/billing/components/application-review.tsx:323
 msgid "Website"
