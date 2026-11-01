@@ -1,5 +1,6 @@
 import { BadgeState } from '@/components/badge';
 import { EmptyState } from '@/components/empty-state';
+import { HEADER_STACK_H } from '@/features/milo';
 import {
   noteCreateMutation,
   noteQueryKeys,
@@ -76,6 +77,9 @@ const FILTERS: { key: string; label: React.ReactNode; types: EventType[] | null 
 ];
 
 const MAX_LENGTH = 1000;
+/** How many timeline events to show before the "Show older activity" button, and per reveal. */
+const INITIAL_COUNT = 12;
+const LOAD_BATCH = 12;
 
 function ts(value?: string): string {
   return value ?? '';
@@ -294,17 +298,29 @@ export function ContactTimeline({ contact, user, linked, className }: Props) {
     );
   }, [events, activeFilter, sortDir]);
 
+  // Cap the feed so a long history doesn't run off the page; "Show older
+  // activity" reveals the next batch. Reset the cap when the filter/sort change
+  // (adjust-state-during-render, React's escape hatch — no effect needed).
+  const [limit, setLimit] = React.useState(INITIAL_COUNT);
+  const viewKey = `${activeFilter}|${sortDir}`;
+  const [prevViewKey, setPrevViewKey] = React.useState(viewKey);
+  if (viewKey !== prevViewKey) {
+    setPrevViewKey(viewKey);
+    setLimit(INITIAL_COUNT);
+  }
+  const hasMore = visible.length > limit;
+
   // Group consecutive events by calendar day, following the chosen sort order.
   const groups = React.useMemo(() => {
     const result: { label: string; items: TimelineEvent[] }[] = [];
-    for (const e of visible) {
+    for (const e of visible.slice(0, limit)) {
       const label = dayLabel(e.timestamp);
       const last = result[result.length - 1];
       if (last && last.label === label) last.items.push(e);
       else result.push({ label, items: [e] });
     }
     return result;
-  }, [visible]);
+  }, [visible, limit]);
 
   return (
     <div className={cn('flex flex-col gap-4', className)}>
@@ -387,7 +403,9 @@ export function ContactTimeline({ contact, user, linked, className }: Props) {
         <div className="flex flex-col gap-4">
           {groups.map((group) => (
             <div key={group.label} className="flex flex-col gap-1">
-              <div className="flex items-center gap-3 py-1">
+              <div
+                className="bg-card sticky z-10 flex items-center gap-3 py-1.5"
+                style={{ top: HEADER_STACK_H }}>
                 <Text size="xs" textColor="muted" className="shrink-0 font-semibold">
                   {group.label}
                 </Text>
@@ -422,6 +440,18 @@ export function ContactTimeline({ contact, user, linked, className }: Props) {
               })}
             </div>
           ))}
+
+          {hasMore ? (
+            <div className="flex justify-center pt-1">
+              <Button
+                type="secondary"
+                theme="outline"
+                size="small"
+                onClick={() => setLimit((l) => l + LOAD_BATCH)}>
+                <Trans>Show older activity</Trans>
+              </Button>
+            </div>
+          ) : null}
         </div>
       )}
     </div>
