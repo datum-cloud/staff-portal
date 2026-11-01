@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite';
-import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
   publicDir: false,
-  plugins: [tsconfigPaths()],
+  resolve: {
+    tsconfigPaths: true,
+  },
   build: {
     ssr: 'observability/index.ts',
     outDir: 'build/observability',

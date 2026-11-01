@@ -7,13 +7,12 @@ import react from '@vitejs/plugin-react';
 import { reactRouterHonoServer } from 'react-router-hono-server/dev';
 import { defineConfig, type Plugin } from 'vite';
 import macrosPlugin from 'vite-plugin-babel-macros';
-import tsconfigPaths from 'vite-tsconfig-paths';
 
 // When running under Cypress (component tests) we cannot use the React Router
 // dev plugin: it boots the app's Hono server inside Cypress's Vite dev server,
 // which crashes on server-only imports. Instead we swap in @vitejs/plugin-react.
-// tsconfigPaths() resolves the tsconfig `paths` aliases (@/, @/tests, @openapi)
-// in every mode — the same approach cloud-portal uses.
+// resolve.tsconfigPaths resolves the tsconfig `paths` aliases (@/, @/tests,
+// @openapi) in every mode — the same approach cloud-portal uses.
 const isCypress = !!process.env.CYPRESS;
 
 export default defineConfig((config) => {
@@ -21,6 +20,7 @@ export default defineConfig((config) => {
 
   return {
     resolve: {
+      tsconfigPaths: true,
       ...(isProduction && {
         alias: {
           'react-dom/server': 'react-dom/server.node',
@@ -29,6 +29,24 @@ export default defineConfig((config) => {
     },
     server: {
       port: 3000,
+    },
+    optimizeDeps: {
+      include: [
+        // Pre-bundle deps that Vite otherwise discovers only when a route first
+        // imports them, which re-optimizes and fully reloads the page in dev.
+        // The * glob matches one subpath level; deeper ones are listed.
+        '@datum-cloud/datum-ui/*',
+        '@datum-cloud/datum-ui/form/adapters/rhf',
+        '@datum-cloud/activity-ui',
+        'nuqs',
+        'nuqs/adapters/react-router/v8',
+        '@ai-sdk/react',
+        'ai',
+        '@tiptap/react',
+        '@tiptap/starter-kit',
+        '@tiptap/extension-placeholder',
+        'js-yaml',
+      ],
     },
     ssr: {
       noExternal: ['@gqlts/runtime'],
@@ -43,14 +61,13 @@ export default defineConfig((config) => {
     // Keep the production/dev plugin pipeline byte-identical; only the Cypress
     // component-test pipeline swaps reactRouter()/hono/sentry for plugin-react.
     plugins: isCypress
-      ? [tailwindcss(), macrosPlugin() as unknown as Plugin, lingui(), react(), tsconfigPaths()]
+      ? [tailwindcss(), macrosPlugin() as unknown as Plugin, lingui(), react()]
       : [
           tailwindcss(),
           reactRouter(),
           reactRouterHonoServer(),
           macrosPlugin() as unknown as Plugin,
           lingui(),
-          tsconfigPaths(),
           sentryReactRouter(
             {
               org: sentryConfig.org,

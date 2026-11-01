@@ -16,7 +16,7 @@ function PolicyBreadcrumb() {
 }
 
 export const handle = {
-  // The breadcrumb is called with `match.data` (route loader data), so we
+  // The breadcrumb is called with `match.loaderData` (route loader data), so we
   // can't read params from there. Use a small component that reads them
   // via the router instead.
   breadcrumb: () => <PolicyBreadcrumb />,

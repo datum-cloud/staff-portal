@@ -62,7 +62,7 @@ export function useCustomBreadcrumbs(): BreadcrumbItem[] | null {
         const params = extractRouteParams(location.pathname, match.pathname);
 
         // Generate custom breadcrumb items
-        const customItems = handle.customBreadcrumb.generateItems(params, match.data);
+        const customItems = handle.customBreadcrumb.generateItems(params, match.loaderData);
 
         const replaceStrategy = handle.customBreadcrumb.replace;
 
@@ -164,7 +164,7 @@ function insertCustomBreadcrumbs(
   for (const match of matches) {
     if (match.handle?.breadcrumb) {
       const breadcrumb = match.handle.breadcrumb;
-      const label = typeof breadcrumb === 'function' ? breadcrumb(match.data) : breadcrumb;
+      const label = typeof breadcrumb === 'function' ? breadcrumb(match.loaderData) : breadcrumb;
 
       // If this is the current match with custom breadcrumbs, use the custom items
       if (match === currentMatch) {
@@ -194,7 +194,7 @@ function generateAutoBreadcrumbs(matches: any[]): BreadcrumbItem[] {
  * mount, whose splat holds the plugin's own nested pages).
  */
 function createBreadcrumbItemsFromHandle(breadcrumb: any, match: any): BreadcrumbItem[] {
-  const label = typeof breadcrumb === 'function' ? breadcrumb(match.data) : breadcrumb;
+  const label = typeof breadcrumb === 'function' ? breadcrumb(match.loaderData) : breadcrumb;
   if (Array.isArray(label)) {
     return label.map((item) => createBreadcrumbItemFromLabel(item, match));
   }
@@ -212,7 +212,7 @@ function createBreadcrumbItemFromLabel(label: any, match: any): BreadcrumbItem {
       path: label.clickable !== false ? match.pathname : undefined,
       clickable: label.clickable !== false,
       className: label.className,
-      data: match.data,
+      data: match.loaderData,
       ...label,
     };
   }
@@ -221,7 +221,7 @@ function createBreadcrumbItemFromLabel(label: any, match: any): BreadcrumbItem {
     label,
     path: match.pathname,
     clickable: true,
-    data: match.data,
+    data: match.loaderData,
   };
 }
 

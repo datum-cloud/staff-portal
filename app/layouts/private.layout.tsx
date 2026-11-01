@@ -15,8 +15,8 @@ export const meta: Route.MetaFunction = () => {
   return metaObject('Dashboard');
 };
 
-export async function loader({ request }: Route.LoaderArgs) {
-  return data(await requireStaffUser(request));
+export async function loader({ request, url }: Route.LoaderArgs) {
+  return data(await requireStaffUser(request, url));
 }
 
 export default function PrivateLayout() {

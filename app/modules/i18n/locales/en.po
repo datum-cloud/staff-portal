@@ -2693,7 +2693,7 @@ msgid "Loading status..."
 msgstr "Loading status..."
 
 #: app/features/user/components/user-recovery-links-dialog.tsx:58
-#: app/routes/auth/callback.tsx:71
+#: app/routes/auth/callback.tsx:76
 #: app/routes/auth/login.tsx:41
 #: app/routes/auth/logout.tsx:36
 #: app/routes/auth/reauth.tsx:25
