@@ -1501,7 +1501,7 @@ msgid "Deletion started"
 msgstr ""
 
 #: app/features/contact/components/timeline/timeline-item.tsx:63
-#: app/features/email/components/email-list.tsx:66
+#: app/features/email/components/email-list.tsx:67
 msgid "Delivered"
 msgstr ""
 
@@ -2037,7 +2037,7 @@ msgstr ""
 msgid "Export Policy"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:67
+#: app/features/email/components/email-list.tsx:68
 #: app/features/organization/components/org-onboarding-card.tsx:79
 msgid "Failed"
 msgstr ""
@@ -2365,7 +2365,7 @@ msgstr ""
 msgid "Hide filters"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:62
+#: app/features/email/components/email-list.tsx:63
 msgid "High"
 msgstr ""
 
@@ -2812,7 +2812,7 @@ msgstr ""
 msgid "Log out of GitHub"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:63
+#: app/features/email/components/email-list.tsx:64
 msgid "Low"
 msgstr ""
 
@@ -3179,7 +3179,7 @@ msgstr ""
 msgid "No domains found."
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:125
+#: app/features/email/components/email-list.tsx:126
 msgid "No email activity found."
 msgstr ""
 
@@ -3463,7 +3463,7 @@ msgstr ""
 msgid "Nonprofit"
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:61
+#: app/features/email/components/email-list.tsx:62
 msgid "Normal"
 msgstr ""
 
@@ -3806,7 +3806,7 @@ msgid "Payment terms withdrawn"
 msgstr ""
 
 #: app/features/billing/components/application-labels.tsx:24
-#: app/features/email/components/email-list.tsx:68
+#: app/features/email/components/email-list.tsx:69
 #: app/features/organization/components/org-onboarding-card.tsx:80
 #: app/routes/customer/fraud/index.tsx:278
 msgid "Pending"
@@ -3991,8 +3991,8 @@ msgid "Primary email"
 msgstr ""
 
 #: app/features/email/components/email-detail.tsx:92
-#: app/features/email/components/email-list.tsx:135
-#: app/features/email/components/email-list.tsx:163
+#: app/features/email/components/email-list.tsx:136
+#: app/features/email/components/email-list.tsx:164
 msgid "Priority"
 msgstr ""
 
@@ -4237,8 +4237,8 @@ msgstr ""
 msgid "Recent activity entries for this contact will appear here."
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:73
-#: app/features/email/components/email-list.tsx:150
+#: app/features/email/components/email-list.tsx:74
+#: app/features/email/components/email-list.tsx:151
 msgid "Recipient"
 msgstr ""
 
@@ -4532,7 +4532,7 @@ msgstr ""
 msgid "Search domains..."
 msgstr ""
 
-#: app/features/email/components/email-list.tsx:124
+#: app/features/email/components/email-list.tsx:125
 msgid "Search email activity..."
 msgstr ""
 
@@ -4745,8 +4745,8 @@ msgid "Send passkey recovery link"
 msgstr ""
 
 #: app/features/email/components/email-detail.tsx:80
-#: app/features/email/components/email-list.tsx:111
-#: app/features/email/components/email-list.tsx:176
+#: app/features/email/components/email-list.tsx:112
+#: app/features/email/components/email-list.tsx:177
 msgid "Sent"
 msgstr ""
 
@@ -4953,9 +4953,9 @@ msgstr ""
 #: app/features/edge/components/detail/edge-general-card.tsx:24
 #: app/features/edge/components/edge-list.tsx:142
 #: app/features/email/components/email-detail.tsx:56
-#: app/features/email/components/email-list.tsx:85
-#: app/features/email/components/email-list.tsx:140
-#: app/features/email/components/email-list.tsx:156
+#: app/features/email/components/email-list.tsx:86
+#: app/features/email/components/email-list.tsx:141
+#: app/features/email/components/email-list.tsx:157
 #: app/features/fraud/detail/evaluation-sections.tsx:746
 #: app/features/fraud/policy/policy-detail.tsx:359
 #: app/features/organization/components/org-members-preview-card.tsx:63
@@ -4994,8 +4994,8 @@ msgid "Step {0}"
 msgstr ""
 
 #: app/features/email/components/email-detail.tsx:46
-#: app/features/email/components/email-list.tsx:97
-#: app/features/email/components/email-list.tsx:170
+#: app/features/email/components/email-list.tsx:98
+#: app/features/email/components/email-list.tsx:171
 msgid "Subject"
 msgstr ""
 

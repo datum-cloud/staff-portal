@@ -1,7 +1,10 @@
 import {
   describeServicePricingRates,
+  getInvoicesForAccount,
   getServicePricingsForService,
+  isStaleInvoice,
   summarizeServicePricing,
+  type Invoice,
 } from './utils';
 import type { ComMiloapisBillingV1Alpha1ServicePricing } from '@openapi/billing.miloapis.com/v1alpha1';
 import type { ComMiloapisServicesV1Alpha1Service } from '@openapi/services.miloapis.com/v1alpha1';
@@ -147,5 +150,57 @@ describe('summary and detail stay in sync', () => {
   it('treats equal rates written differently as one price', () => {
     const tiers = usage('GB', [{ tiered: [{ upTo: '100', rate: '0.05' }, { rate: '0.050' }] }]);
     expect(summarizeServicePricing(tiers)).toBe('$0.05 / GB (2 tiers)');
+  });
+});
+
+const invoice = (
+  name: string,
+  annotations: Record<string, string>,
+  account = 'acme-main'
+): Invoice =>
+  ({
+    metadata: { name, annotations },
+    spec: {
+      billingAccountRef: { name: account },
+      period: { start: '2026-10-10T00:00:00Z', end: '2026-11-10T00:00:00Z' },
+    },
+  }) as Invoice;
+
+describe('isStaleInvoice', () => {
+  it('hides Amberflo invoices', () => {
+    expect(
+      isStaleInvoice(
+        invoice('acme-main-2026-09', { 'amberflo.billing.miloapis.com/invoiceKey': 'k' })
+      )
+    ).toBe(true);
+  });
+
+  it("hides an older OpenMeter provider's invoices, named without a hash", () => {
+    expect(
+      isStaleInvoice(invoice('acme-main-2026-10', { 'openmeter.miloapis.com/invoiceId': '01M4JY' }))
+    ).toBe(true);
+  });
+
+  it("keeps the current OpenMeter provider's invoices, and others", () => {
+    expect(
+      isStaleInvoice(
+        invoice('acme-main-2026-10-1f092bf4d7', { 'openmeter.miloapis.com/invoiceId': '01M63S' })
+      )
+    ).toBe(false);
+    expect(isStaleInvoice(invoice('acme-main-2026-10', {}))).toBe(false);
+  });
+});
+
+describe('getInvoicesForAccount', () => {
+  it("keeps the account's current invoices only", () => {
+    const current = invoice('acme-main-2026-10-1f092bf4d7', {
+      'openmeter.miloapis.com/invoiceId': '01M63S',
+    });
+    const invoices = [
+      current,
+      invoice('acme-main-2026-09', { 'amberflo.billing.miloapis.com/invoiceKey': 'k' }),
+      invoice('other-2026-10-0123456789', { 'openmeter.miloapis.com/invoiceId': '01X' }, 'other'),
+    ];
+    expect(getInvoicesForAccount(invoices, 'acme-main')).toEqual([current]);
   });
 });

@@ -1501,7 +1501,7 @@ msgid "Deletion started"
 msgstr "Deletion started"
 
 #: app/features/contact/components/timeline/timeline-item.tsx:63
-#: app/features/email/components/email-list.tsx:66
+#: app/features/email/components/email-list.tsx:67
 msgid "Delivered"
 msgstr "Delivered"
 
@@ -2037,7 +2037,7 @@ msgstr "Export Policies"
 msgid "Export Policy"
 msgstr "Export Policy"
 
-#: app/features/email/components/email-list.tsx:67
+#: app/features/email/components/email-list.tsx:68
 #: app/features/organization/components/org-onboarding-card.tsx:79
 msgid "Failed"
 msgstr "Failed"
@@ -2365,7 +2365,7 @@ msgstr "Hide"
 msgid "Hide filters"
 msgstr "Hide filters"
 
-#: app/features/email/components/email-list.tsx:62
+#: app/features/email/components/email-list.tsx:63
 msgid "High"
 msgstr "High"
 
@@ -2812,7 +2812,7 @@ msgstr "Log out of Datum"
 msgid "Log out of GitHub"
 msgstr "Log out of GitHub"
 
-#: app/features/email/components/email-list.tsx:63
+#: app/features/email/components/email-list.tsx:64
 msgid "Low"
 msgstr "Low"
 
@@ -3179,7 +3179,7 @@ msgstr "No DNS zones found."
 msgid "No domains found."
 msgstr "No domains found."
 
-#: app/features/email/components/email-list.tsx:125
+#: app/features/email/components/email-list.tsx:126
 msgid "No email activity found."
 msgstr "No email activity found."
 
@@ -3463,7 +3463,7 @@ msgstr "None declared."
 msgid "Nonprofit"
 msgstr "Nonprofit"
 
-#: app/features/email/components/email-list.tsx:61
+#: app/features/email/components/email-list.tsx:62
 msgid "Normal"
 msgstr "Normal"
 
@@ -3806,7 +3806,7 @@ msgid "Payment terms withdrawn"
 msgstr "Payment terms withdrawn"
 
 #: app/features/billing/components/application-labels.tsx:24
-#: app/features/email/components/email-list.tsx:68
+#: app/features/email/components/email-list.tsx:69
 #: app/features/organization/components/org-onboarding-card.tsx:80
 #: app/routes/customer/fraud/index.tsx:278
 msgid "Pending"
@@ -3991,8 +3991,8 @@ msgid "Primary email"
 msgstr "Primary email"
 
 #: app/features/email/components/email-detail.tsx:92
-#: app/features/email/components/email-list.tsx:135
-#: app/features/email/components/email-list.tsx:163
+#: app/features/email/components/email-list.tsx:136
+#: app/features/email/components/email-list.tsx:164
 msgid "Priority"
 msgstr "Priority"
 
@@ -4237,8 +4237,8 @@ msgstr "Receives invoices as well as the billing contact."
 msgid "Recent activity entries for this contact will appear here."
 msgstr "Recent activity entries for this contact will appear here."
 
-#: app/features/email/components/email-list.tsx:73
-#: app/features/email/components/email-list.tsx:150
+#: app/features/email/components/email-list.tsx:74
+#: app/features/email/components/email-list.tsx:151
 msgid "Recipient"
 msgstr "Recipient"
 
@@ -4532,7 +4532,7 @@ msgstr "Search DNS zones..."
 msgid "Search domains..."
 msgstr "Search domains..."
 
-#: app/features/email/components/email-list.tsx:124
+#: app/features/email/components/email-list.tsx:125
 msgid "Search email activity..."
 msgstr "Search email activity..."
 
@@ -4745,8 +4745,8 @@ msgid "Send passkey recovery link"
 msgstr "Send passkey recovery link"
 
 #: app/features/email/components/email-detail.tsx:80
-#: app/features/email/components/email-list.tsx:111
-#: app/features/email/components/email-list.tsx:176
+#: app/features/email/components/email-list.tsx:112
+#: app/features/email/components/email-list.tsx:177
 msgid "Sent"
 msgstr "Sent"
 
@@ -4953,9 +4953,9 @@ msgstr "Starts"
 #: app/features/edge/components/detail/edge-general-card.tsx:24
 #: app/features/edge/components/edge-list.tsx:142
 #: app/features/email/components/email-detail.tsx:56
-#: app/features/email/components/email-list.tsx:85
-#: app/features/email/components/email-list.tsx:140
-#: app/features/email/components/email-list.tsx:156
+#: app/features/email/components/email-list.tsx:86
+#: app/features/email/components/email-list.tsx:141
+#: app/features/email/components/email-list.tsx:157
 #: app/features/fraud/detail/evaluation-sections.tsx:746
 #: app/features/fraud/policy/policy-detail.tsx:359
 #: app/features/organization/components/org-members-preview-card.tsx:63
@@ -4994,8 +4994,8 @@ msgid "Step {0}"
 msgstr "Step {0}"
 
 #: app/features/email/components/email-detail.tsx:46
-#: app/features/email/components/email-list.tsx:97
-#: app/features/email/components/email-list.tsx:170
+#: app/features/email/components/email-list.tsx:98
+#: app/features/email/components/email-list.tsx:171
 msgid "Subject"
 msgstr "Subject"
 
