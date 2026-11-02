@@ -27,8 +27,8 @@ interface Props {
   user?: ComMiloapisIamV1Alpha1User;
   /** Override the Cancel action (e.g. close a dialog) instead of navigating to the list. */
   onCancel?: () => void;
-  /** Called after a successful create/update so a host (e.g. a dialog) can close + refresh. */
-  onSuccess?: () => void;
+  /** Called after a successful create/update; awaited, so the form stays submitting until it resolves (e.g. a dialog refreshing then closing). */
+  onSuccess?: () => void | Promise<void>;
 }
 
 export const ContactForm: React.FC<Props> = ({ contact, user, onCancel, onSuccess }) => {
@@ -74,8 +74,8 @@ export const ContactForm: React.FC<Props> = ({ contact, user, onCancel, onSucces
         givenName: value.first_name,
         email: value.email,
       });
+      await onSuccess?.();
       toast.success(t`Contact updated successfully`);
-      onSuccess?.();
     } else {
       const response = await contactCreateMutation('default', {
         familyName: value.last_name,

@@ -1074,7 +1074,7 @@ msgstr ""
 msgid "Contact name"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:77
+#: app/features/contact/components/contact-form.tsx:78
 msgid "Contact updated successfully"
 msgstr ""
 

@@ -46,9 +46,9 @@ export function EditContactDialog({ contact, user, variant = 'card' }: Props) {
               contact={contact}
               user={user}
               onCancel={() => setOpen(false)}
-              onSuccess={() => {
+              onSuccess={async () => {
+                await revalidate();
                 setOpen(false);
-                revalidate();
               }}
             />
           </Dialog.Body>
