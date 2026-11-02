@@ -1,4 +1,4 @@
-import { format, isToday } from 'date-fns';
+import { format } from 'date-fns';
 
 /** The kinds of events the contact timeline merges, each with its own dot + copy. */
 export type TimelineEventType = 'note' | 'email' | 'org' | 'group' | 'access' | 'signup';
@@ -164,11 +164,18 @@ export function dayKey(iso: string): string {
   return Number.isNaN(d.getTime()) ? '' : format(d, 'yyyy-MM-dd');
 }
 
-/** Human day header, e.g. `Today` or `Thursday, Oct 1`. */
+/**
+ * Day header for a date, e.g. `Thursday, Oct 1`. The "today" case is left to the
+ * caller so it can be translated (see {@link isTodayKey}); this stays pure.
+ */
 export function dayLabel(iso: string): string {
   const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return '';
-  return isToday(d) ? 'Today' : format(d, 'EEEE, MMM d');
+  return Number.isNaN(d.getTime()) ? '' : format(d, 'EEEE, MMM d');
+}
+
+/** Whether a {@link dayKey} is today's — lets the view show a translated "Today". */
+export function isTodayKey(key: string): boolean {
+  return key !== '' && key === dayKey(new Date().toISOString());
 }
 
 /** Per-event time, e.g. `11:50 AM`. */

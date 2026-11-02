@@ -34,6 +34,7 @@ export function TimelineFilters({ active, onChange, sortDir, onToggleSort }: Pro
           <button
             key={f.key}
             type="button"
+            aria-pressed={isActive}
             onClick={() => onChange(f.key)}
             className={cn(
               'flex items-center rounded-full px-2.5 py-0.5 transition-colors',

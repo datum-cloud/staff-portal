@@ -12,6 +12,9 @@ import type { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alp
 import type { ComMiloapisNotificationV1Alpha1Contact } from '@openapi/notification.miloapis.com/v1alpha1';
 import * as React from 'react';
 
+/** Stable empty default so an unresolved creator-names query doesn't churn the events memo. */
+const EMPTY_CREATOR_NAMES: Record<string, string> = {};
+
 /**
  * Fetches everything the timeline merges (shared query keys with the overview,
  * so React Query dedupes) and derives the pure event list. Also returns the note
@@ -42,7 +45,7 @@ export function useContactTimelineEvents(
     ],
     [notes]
   );
-  const { data: creatorNames = {} } = useNoteCreatorNamesQuery(creatorIds);
+  const { data: creatorNames = EMPTY_CREATOR_NAMES } = useNoteCreatorNamesQuery(creatorIds);
 
   const { data: emailData, isLoading: emailsLoading } = useUserEmailListQuery(userId, email, {
     enabled: linked && !!email,

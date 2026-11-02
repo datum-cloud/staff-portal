@@ -21,7 +21,7 @@ import {
 } from '@/resources/request/client';
 import { metaObject, startCase } from '@/utils/helpers';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import { Trans } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import * as React from 'react';
 
 /** Big-text colour for a platform-access state, mirroring the state badge palette. */
@@ -37,17 +37,18 @@ export const meta: Route.MetaFunction = ({ matches }) => {
   return metaObject(`Overview - ${contactName}`);
 };
 
-/** Counts memberships whose role name contains the given keyword (e.g. "owner", "editor"). */
+/** Counts memberships holding the given role (exact, case-insensitive match on the role name). */
 function countRole(
   memberships: { spec?: { roles?: { name?: string }[] } }[],
-  keyword: string
+  role: string
 ): number {
   return memberships.filter((m) =>
-    (m.spec?.roles ?? []).some((r) => (r.name ?? '').toLowerCase().includes(keyword))
+    (m.spec?.roles ?? []).some((r) => (r.name ?? '').toLowerCase() === role)
   ).length;
 }
 
 export default function Page() {
+  const { t } = useLingui();
   const data = useContactDetailData();
   const contact = data?.contact;
   const user = data?.user;
@@ -70,8 +71,8 @@ export default function Page() {
   const ownerCount = countRole(orgs, 'owner');
   const editorCount = countRole(orgs, 'editor');
   const orgHint = [
-    ownerCount ? `Owner of ${ownerCount}` : null,
-    editorCount ? `editor of ${editorCount}` : null,
+    ownerCount ? t`Owner of ${ownerCount}` : null,
+    editorCount ? t`editor of ${editorCount}` : null,
   ]
     .filter(Boolean)
     .join(' · ');

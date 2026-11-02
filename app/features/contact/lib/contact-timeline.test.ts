@@ -1,4 +1,4 @@
-import { buildTimelineEvents, dayKey, type TimelineEvent } from './contact-timeline';
+import { buildTimelineEvents, dayKey, isTodayKey, type TimelineEvent } from './contact-timeline';
 import { describe, expect, it } from 'vitest';
 
 function byId(events: TimelineEvent[], id: string) {
@@ -155,5 +155,13 @@ describe('dayKey', () => {
     expect(dayKey('2026-10-01T23:30:00Z')).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(dayKey('')).toBe('');
     expect(dayKey('not-a-date')).toBe('');
+  });
+});
+
+describe('isTodayKey', () => {
+  it('matches only today, and never the empty key', () => {
+    expect(isTodayKey(dayKey(new Date().toISOString()))).toBe(true);
+    expect(isTodayKey(dayKey('2000-01-01T00:00:00Z'))).toBe(false);
+    expect(isTodayKey('')).toBe(false);
   });
 });

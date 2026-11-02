@@ -1049,7 +1049,7 @@ msgstr "Contact group updated successfully"
 
 #: app/features/contact/components/contact-groups-card.tsx:27
 #: app/features/contact/components/timeline/timeline-filters.tsx:17
-#: app/routes/marketing/contact/detail/index.tsx:124
+#: app/routes/marketing/contact/detail/index.tsx:125
 msgid "Contact groups"
 msgstr "Contact groups"
 
@@ -1746,6 +1746,10 @@ msgstr "Edit Fraud Provider"
 msgid "Edit Quota"
 msgstr "Edit Quota"
 
+#: app/routes/marketing/contact/detail/index.tsx:75
+msgid "editor of {editorCount}"
+msgstr "editor of {editorCount}"
+
 #: app/features/billing/components/application-labels.tsx:37
 msgid "Education or research"
 msgstr "Education or research"
@@ -1816,7 +1820,7 @@ msgid "Emails a one-time passkey setup link to the verified address on file. It 
 msgstr "Emails a one-time passkey setup link to the verified address on file. It expires in about an hour and cannot be recalled."
 
 #: app/routes/marketing/contact/detail/emails.tsx:11
-#: app/routes/marketing/contact/detail/index.tsx:129
+#: app/routes/marketing/contact/detail/index.tsx:130
 msgid "Emails sent"
 msgstr "Emails sent"
 
@@ -1961,7 +1965,7 @@ msgstr "Estimated monthly spend"
 #: app/features/fraud/detail/evaluation-sections.tsx:751
 #: app/routes/customer/fraud/index.tsx:171
 #: app/routes/customer/fraud/index.tsx:306
-#: app/routes/marketing/contact/detail/index.tsx:147
+#: app/routes/marketing/contact/detail/index.tsx:148
 msgid "Evaluated"
 msgstr "Evaluated"
 
@@ -2216,7 +2220,7 @@ msgstr "Fraud Assessment"
 
 #: app/features/billing/components/application-review.tsx:343
 #: app/features/contact/components/contact-platform-account-card.tsx:84
-#: app/routes/marketing/contact/detail/index.tsx:133
+#: app/routes/marketing/contact/detail/index.tsx:134
 msgid "Fraud check"
 msgstr "Fraud check"
 
@@ -3056,7 +3060,7 @@ msgstr "New terms would overlap these. To approve, withdraw them or give them an
 msgid "New users"
 msgstr "New users"
 
-#: app/features/contact/components/timeline/timeline-filters.tsx:59
+#: app/features/contact/components/timeline/timeline-filters.tsx:60
 msgid "Newest first ↓"
 msgstr "Newest first ↓"
 
@@ -3091,7 +3095,7 @@ msgstr "No active configuration."
 msgid "No active sessions."
 msgstr "No active sessions."
 
-#: app/features/contact/components/timeline/contact-timeline.tsx:106
+#: app/features/contact/components/timeline/contact-timeline.tsx:107
 msgid "No activity yet"
 msgstr "No activity yet"
 
@@ -3534,7 +3538,7 @@ msgstr "Notes"
 msgid "Notes (operator-facing)"
 msgstr "Notes (operator-facing)"
 
-#: app/features/contact/components/timeline/contact-timeline.tsx:108
+#: app/features/contact/components/timeline/contact-timeline.tsx:109
 msgid "Notes, emails, and account history for this contact will appear here."
 msgstr "Notes, emails, and account history for this contact will appear here."
 
@@ -3587,7 +3591,7 @@ msgstr "Offers"
 msgid "Offers bundle prices that already exist as ServicePricings. Prices are ServicePricing manifests in each service's repo; once Flux applies them, refresh to select them here."
 msgstr "Offers bundle prices that already exist as ServicePricings. Prices are ServicePricing manifests in each service's repo; once Flux applies them, refresh to select them here."
 
-#: app/features/contact/components/timeline/timeline-filters.tsx:59
+#: app/features/contact/components/timeline/timeline-filters.tsx:60
 msgid "Oldest first ↑"
 msgstr "Oldest first ↑"
 
@@ -3674,7 +3678,7 @@ msgstr "organizations"
 #: app/routes/customer/organization/layout.tsx:8
 #: app/routes/customer/project/detail/layout.tsx:122
 #: app/routes/customer/user/detail/organization.tsx:18
-#: app/routes/marketing/contact/detail/index.tsx:117
+#: app/routes/marketing/contact/detail/index.tsx:118
 msgid "Organizations"
 msgstr "Organizations"
 
@@ -3706,6 +3710,10 @@ msgstr "Overview"
 #: app/features/service-catalog/components/details-card.tsx:60
 msgid "Owner"
 msgstr "Owner"
+
+#: app/routes/marketing/contact/detail/index.tsx:74
+msgid "Owner of {ownerCount}"
+msgstr "Owner of {ownerCount}"
 
 #: app/routes/admin/service-catalog/detail/index.tsx:166
 msgid "Owner:"
@@ -3871,7 +3879,7 @@ msgstr "Plain Text"
 msgid "Platform"
 msgstr "Platform"
 
-#: app/routes/marketing/contact/detail/index.tsx:95
+#: app/routes/marketing/contact/detail/index.tsx:96
 msgid "Platform access"
 msgstr "Platform access"
 
@@ -4828,7 +4836,7 @@ msgstr "Show filters"
 msgid "Show more"
 msgstr "Show more"
 
-#: app/features/contact/components/timeline/contact-timeline.tsx:136
+#: app/features/contact/components/timeline/contact-timeline.tsx:137
 msgid "Show older activity"
 msgstr "Show older activity"
 
@@ -4837,7 +4845,7 @@ msgstr "Show older activity"
 msgid "Showing the most recent {0}; older links exist."
 msgstr "Showing the most recent {0}; older links exist."
 
-#: app/routes/marketing/contact/detail/index.tsx:109
+#: app/routes/marketing/contact/detail/index.tsx:110
 msgid "Signed up"
 msgstr "Signed up"
 
@@ -4873,6 +4881,10 @@ msgstr "Something went wrong while loading quota data."
 #: app/features/project/components/project-usage-card.tsx:101
 msgid "Something went wrong while loading usage data."
 msgstr "Something went wrong while loading usage data."
+
+#: app/routes/marketing/contact/detail/layout.tsx:18
+msgid "Soon"
+msgstr "Soon"
 
 #: app/routes/customer/project/detail/export-policy/detail.tsx:165
 msgid "Source"
@@ -5257,6 +5269,10 @@ msgstr "TLS Failed"
 #: app/features/edge/components/detail/edge-hostnames-card.tsx:91
 msgid "TLS Ready"
 msgstr "TLS Ready"
+
+#: app/features/contact/components/timeline/contact-timeline.tsx:120
+msgid "Today"
+msgstr "Today"
 
 #: app/features/feature-flags/components/feature-flag-list.tsx:161
 msgid "Toggle"

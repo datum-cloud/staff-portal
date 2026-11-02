@@ -8,13 +8,14 @@ import { ENTITY_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
 import { contactRoutes } from '@/utils/config/routes.config';
 import { Avatar, AvatarFallback } from '@datum-cloud/datum-ui/avatar';
 import { Badge } from '@datum-cloud/datum-ui/badge';
+import { Trans } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import { useLoaderData } from 'react-router';
 
-/** Adornment for not-yet-shipped entity tabs. `handle` is module scope (no hooks), so this is a plain element. */
+/** Adornment for not-yet-shipped entity tabs. `handle` is module scope (no hooks); `<Trans>` renders at use site. */
 const SOON_BADGE = (
   <Badge type="secondary" theme="light" className="text-3xs px-1.5 py-0 font-medium">
-    Soon
+    <Trans>Soon</Trans>
   </Badge>
 );
 

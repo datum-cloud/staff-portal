@@ -1,4 +1,4 @@
-import { dayKey, dayLabel, type TimelineEvent } from '../../lib/contact-timeline';
+import { dayKey, dayLabel, isTodayKey, type TimelineEvent } from '../../lib/contact-timeline';
 import { NoteComposer } from './note-composer';
 import { TIMELINE_FILTERS, TimelineFilters } from './timeline-filters';
 import { TimelineItem } from './timeline-item';
@@ -9,7 +9,7 @@ import { Button } from '@datum-cloud/datum-ui/button';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import { Trans } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import type { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import type { ComMiloapisNotificationV1Alpha1Contact } from '@openapi/notification.miloapis.com/v1alpha1';
 import { MessageSquare } from 'lucide-react';
@@ -50,6 +50,7 @@ type Props = {
  * Everything except note create stays read-only; note edit/delete lands with #760.
  */
 export function ContactTimeline({ contact, user, linked, className }: Props) {
+  const { t } = useLingui();
   const { events, isLoading, noteSubject } = useContactTimelineEvents(contact, user, linked);
   const [activeFilter, setActiveFilter] = React.useState('all');
   const [sortDir, setSortDir] = React.useState<'desc' | 'asc'>('desc');
@@ -116,7 +117,7 @@ export function ContactTimeline({ contact, user, linked, className }: Props) {
                 className="bg-card sticky z-10 flex items-center gap-3 py-1.5"
                 style={{ top: HEADER_STACK_H }}>
                 <Text size="xs" textColor="muted" className="shrink-0 font-semibold">
-                  {group.label}
+                  {isTodayKey(group.key) ? t`Today` : group.label}
                 </Text>
                 <div className="bg-border h-px flex-1" />
               </div>
