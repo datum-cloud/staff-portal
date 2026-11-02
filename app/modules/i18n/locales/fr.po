@@ -186,7 +186,7 @@ msgstr ""
 msgid "Access State"
 msgstr ""
 
-#: app/features/contact/components/contact-timeline.tsx:71
+#: app/features/contact/components/timeline/timeline-filters.tsx:18
 #: app/features/project/components/project-billing-card.tsx:49
 msgid "Account"
 msgstr ""
@@ -281,12 +281,12 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: app/features/contact/components/contact-timeline.tsx:190
+#: app/features/contact/components/timeline/note-composer.tsx:48
 #: app/features/notes/components/notes-card.tsx:154
 msgid "Add a note"
 msgstr ""
 
-#: app/features/contact/components/contact-timeline.tsx:189
+#: app/features/contact/components/timeline/note-composer.tsx:47
 msgid "Add a note about this contact… (visible to staff only)"
 msgstr ""
 
@@ -303,7 +303,7 @@ msgstr ""
 msgid "Add Member"
 msgstr ""
 
-#: app/features/contact/components/contact-timeline.tsx:198
+#: app/features/contact/components/timeline/note-composer.tsx:56
 msgid "Add note"
 msgstr ""
 
@@ -340,7 +340,7 @@ msgid "Added by"
 msgstr ""
 
 #. placeholder {0}: event.group
-#: app/features/contact/components/contact-timeline.tsx:294
+#: app/features/contact/components/timeline/timeline-item.tsx:79
 msgid "Added to contact group “{0}”"
 msgstr ""
 
@@ -378,7 +378,7 @@ msgstr ""
 msgid "Algorithm"
 msgstr ""
 
-#: app/features/contact/components/contact-timeline.tsx:66
+#: app/features/contact/components/timeline/timeline-filters.tsx:13
 #: app/features/dashboard/components/home/activity-section.tsx:17
 msgid "All"
 msgstr ""
@@ -996,7 +996,7 @@ msgstr ""
 msgid "Contact & address"
 msgstr ""
 
-#: app/features/contact/components/contact-timeline.tsx:303
+#: app/features/contact/components/timeline/timeline-item.tsx:88
 msgid "Contact created"
 msgstr ""
 
@@ -1048,7 +1048,7 @@ msgid "Contact group updated successfully"
 msgstr ""
 
 #: app/features/contact/components/contact-groups-card.tsx:27
-#: app/features/contact/components/contact-timeline.tsx:70
+#: app/features/contact/components/timeline/timeline-filters.tsx:17
 #: app/routes/marketing/contact/detail/index.tsx:124
 msgid "Contact groups"
 msgstr ""
@@ -1500,7 +1500,7 @@ msgstr ""
 msgid "Deletion started"
 msgstr ""
 
-#: app/features/contact/components/contact-timeline.tsx:278
+#: app/features/contact/components/timeline/timeline-item.tsx:63
 #: app/features/email/components/email-list.tsx:66
 msgid "Delivered"
 msgstr ""
@@ -1754,7 +1754,7 @@ msgstr ""
 #: app/features/contact/components/contact-form.tsx:131
 #: app/features/contact/components/contact-list.tsx:91
 #: app/features/contact/components/contact-list.tsx:167
-#: app/features/contact/components/contact-timeline.tsx:270
+#: app/features/contact/components/timeline/timeline-item.tsx:55
 #: app/features/organization/components/org-contact-card.tsx:69
 #: app/features/organization/components/org-members-preview-card.tsx:57
 #: app/routes/customer/fraud/index.tsx:124
@@ -1803,11 +1803,11 @@ msgstr ""
 msgid "Email not verified — ask the user to sign up again to get a fresh verification link"
 msgstr ""
 
-#: app/features/contact/components/contact-timeline.tsx:271
+#: app/features/contact/components/timeline/timeline-item.tsx:56
 msgid "Email sent · “{subject}”"
 msgstr ""
 
-#: app/features/contact/components/contact-timeline.tsx:68
+#: app/features/contact/components/timeline/timeline-filters.tsx:15
 msgid "Emails"
 msgstr ""
 
@@ -2596,13 +2596,13 @@ msgid "Joined"
 msgstr ""
 
 #. placeholder {0}: event.org
-#: app/features/contact/components/contact-timeline.tsx:290
+#: app/features/contact/components/timeline/timeline-item.tsx:75
 msgid "Joined {0}"
 msgstr ""
 
 #. placeholder {0}: event.org
 #. placeholder {1}: event.role
-#: app/features/contact/components/contact-timeline.tsx:286
+#: app/features/contact/components/timeline/timeline-item.tsx:71
 msgid "Joined {0} as {1}"
 msgstr ""
 
@@ -3056,7 +3056,7 @@ msgstr ""
 msgid "New users"
 msgstr ""
 
-#: app/features/contact/components/contact-timeline.tsx:243
+#: app/features/contact/components/timeline/timeline-filters.tsx:59
 msgid "Newest first ↓"
 msgstr ""
 
@@ -3091,7 +3091,7 @@ msgstr ""
 msgid "No active sessions."
 msgstr ""
 
-#: app/features/contact/components/contact-timeline.tsx:416
+#: app/features/contact/components/timeline/contact-timeline.tsx:106
 msgid "No activity yet"
 msgstr ""
 
@@ -3509,13 +3509,13 @@ msgstr ""
 msgid "Note"
 msgstr ""
 
-#: app/features/contact/components/contact-timeline.tsx:175
+#: app/features/contact/components/timeline/note-composer.tsx:33
 #: app/features/notes/components/notes-card.tsx:90
 msgid "Note added"
 msgstr ""
 
 #. placeholder {0}: event.creator || t`someone`
-#: app/features/contact/components/contact-timeline.tsx:260
+#: app/features/contact/components/timeline/timeline-item.tsx:45
 msgid "Note by {0}"
 msgstr ""
 
@@ -3523,7 +3523,7 @@ msgstr ""
 msgid "Note deleted"
 msgstr ""
 
-#: app/features/contact/components/contact-timeline.tsx:67
+#: app/features/contact/components/timeline/timeline-filters.tsx:14
 #: app/features/notes/components/notes-card.tsx:111
 #: app/features/project/components/project-suspension-card.tsx:200
 #: app/routes/marketing/contact/detail/notes.tsx:11
@@ -3534,7 +3534,7 @@ msgstr ""
 msgid "Notes (operator-facing)"
 msgstr ""
 
-#: app/features/contact/components/contact-timeline.tsx:418
+#: app/features/contact/components/timeline/contact-timeline.tsx:108
 msgid "Notes, emails, and account history for this contact will appear here."
 msgstr ""
 
@@ -3587,7 +3587,7 @@ msgstr ""
 msgid "Offers bundle prices that already exist as ServicePricings. Prices are ServicePricing manifests in each service's repo; once Flux applies them, refresh to select them here."
 msgstr ""
 
-#: app/features/contact/components/contact-timeline.tsx:243
+#: app/features/contact/components/timeline/timeline-filters.tsx:59
 msgid "Oldest first ↑"
 msgstr ""
 
@@ -3668,7 +3668,7 @@ msgstr ""
 #: app/components/app-search/use-app-search.ts:43
 #: app/components/app-sidebar/index.tsx:119
 #: app/features/contact/components/contact-organizations-card.tsx:30
-#: app/features/contact/components/contact-timeline.tsx:69
+#: app/features/contact/components/timeline/timeline-filters.tsx:16
 #: app/routes/customer/breadcrumb-switchers.tsx:14
 #: app/routes/customer/organization/index.tsx:29
 #: app/routes/customer/organization/layout.tsx:8
@@ -3875,7 +3875,7 @@ msgstr ""
 msgid "Platform access"
 msgstr ""
 
-#: app/features/contact/components/contact-timeline.tsx:297
+#: app/features/contact/components/timeline/timeline-item.tsx:82
 msgid "Platform access approved"
 msgstr ""
 
@@ -4828,7 +4828,7 @@ msgstr ""
 msgid "Show more"
 msgstr ""
 
-#: app/features/contact/components/contact-timeline.tsx:446
+#: app/features/contact/components/timeline/contact-timeline.tsx:136
 msgid "Show older activity"
 msgstr ""
 
@@ -4841,7 +4841,7 @@ msgstr ""
 msgid "Signed up"
 msgstr ""
 
-#: app/features/contact/components/contact-timeline.tsx:301
+#: app/features/contact/components/timeline/timeline-item.tsx:86
 msgid "Signed up · contact created"
 msgstr ""
 
@@ -4861,7 +4861,7 @@ msgstr ""
 msgid "Solving ACME challenge"
 msgstr ""
 
-#: app/features/contact/components/contact-timeline.tsx:260
+#: app/features/contact/components/timeline/timeline-item.tsx:45
 msgid "someone"
 msgstr ""
 

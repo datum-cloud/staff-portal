@@ -5,6 +5,6 @@ export * from './components/contact-list';
 export * from './components/contact-organizations-card';
 export * from './components/contact-platform-account-card';
 export * from './components/contact-summary-strip';
-export * from './components/contact-timeline';
 export * from './components/contact-type-badge';
+export * from './components/timeline/contact-timeline';
 export * from './lib/contact-user-link';
