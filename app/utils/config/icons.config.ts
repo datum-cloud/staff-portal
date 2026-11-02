@@ -35,6 +35,7 @@ import {
   Minus,
   MoreHorizontal,
   Newspaper,
+  Pencil,
   PlusCircle,
   ReceiptText,
   RefreshCw,
@@ -48,7 +49,6 @@ import {
   ShieldUser,
   Signpost,
   SquareActivity,
-  SquarePen,
   StickyNote,
   Tag,
   Trash2,
@@ -125,7 +125,7 @@ export const TAB_ICONS = {
 /** Generic UI actions — one canonical icon per action across all buttons/menus. */
 export const ACTION_ICONS = {
   add: PlusCircle,
-  edit: SquarePen,
+  edit: Pencil,
   delete: Trash2,
   remove: Minus,
   close: X,

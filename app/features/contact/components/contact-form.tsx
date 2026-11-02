@@ -25,9 +25,13 @@ import z from 'zod';
 interface Props {
   contact?: ComMiloapisNotificationV1Alpha1Contact;
   user?: ComMiloapisIamV1Alpha1User;
+  /** Override the Cancel action (e.g. close a dialog) instead of navigating to the list. */
+  onCancel?: () => void;
+  /** Called after a successful create/update so a host (e.g. a dialog) can close + refresh. */
+  onSuccess?: () => void;
 }
 
-export const ContactForm: React.FC<Props> = ({ contact, user }) => {
+export const ContactForm: React.FC<Props> = ({ contact, user, onCancel, onSuccess }) => {
   const navigate = useNavigate();
   const { t } = useLingui();
 
@@ -71,6 +75,7 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
         email: value.email,
       });
       toast.success(t`Contact updated successfully`);
+      onSuccess?.();
     } else {
       const response = await contactCreateMutation('default', {
         familyName: value.last_name,
@@ -240,7 +245,7 @@ export const ContactForm: React.FC<Props> = ({ contact, user }) => {
             <Button
               type="tertiary"
               theme="borderless"
-              onClick={() => navigate(contactRoutes.list())}>
+              onClick={() => (onCancel ? onCancel() : navigate(contactRoutes.list()))}>
               {t`Cancel`}
             </Button>
             <Button

@@ -1,5 +1,5 @@
 import type { Route } from './+types/layout';
-import { ContactTypeBadge } from '@/features/contact';
+import { ContactTypeBadge, EditContactDialog } from '@/features/contact';
 import { DetailShell, type EntityNav } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
 import { contactDetailQuery, userDetailQuery } from '@/resources/request/server';
@@ -131,6 +131,7 @@ export default function Layout() {
         </span>
       }
       subtitle={data?.contact?.spec?.email}
+      actions={<EditContactDialog contact={data?.contact} user={data?.user} variant="header" />}
     />
   );
 }
