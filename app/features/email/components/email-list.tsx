@@ -18,7 +18,8 @@ import { Link } from 'react-router';
 
 interface EmailListProps {
   queryKeyPrefix: string | string[];
-  fetchFn: () => Promise<ComMiloapisNotificationV1Alpha1EmailList>;
+  /** Receives React Query's abort signal so leaving the page cancels the request. */
+  fetchFn: (opts: { signal: AbortSignal }) => Promise<ComMiloapisNotificationV1Alpha1EmailList>;
   searchPlaceholder?: string;
   /** `page` (default): flush layout + rule filters, page inset. `tab`: inline filters + tab inset, for embedding in a detail tab. */
   variant?: 'page' | 'tab';
@@ -52,7 +53,7 @@ export default function EmailList({
   const queryKey = useMemo(() => listQueryKey(queryKeyPrefix), [queryKeyPrefix]);
   const tableQuery = useQuery({
     queryKey,
-    queryFn: fetchFn,
+    queryFn: ({ signal }) => fetchFn({ signal }),
   });
 
   const data = useMemo(() => rowsForTable(tableQuery.data?.items ?? []), [tableQuery.data?.items]);

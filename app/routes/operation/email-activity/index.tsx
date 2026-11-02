@@ -11,7 +11,10 @@ export const meta: Route.MetaFunction = () => {
 export default function Page() {
   return (
     <ListPage>
-      <EmailList queryKeyPrefix="emails" fetchFn={() => emailListQuery('milo-system', {})} />
+      <EmailList
+        queryKeyPrefix="emails"
+        fetchFn={({ signal }) => emailListQuery('milo-system', signal)}
+      />
     </ListPage>
   );
 }

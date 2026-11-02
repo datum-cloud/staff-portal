@@ -19,7 +19,7 @@ export default function Page() {
   return (
     <EmailList
       queryKeyPrefix={['projects', projectName, 'warning-emails']}
-      fetchFn={() => projectSuspensionWarningEmailListQuery(projectName)}
+      fetchFn={({ signal }) => projectSuspensionWarningEmailListQuery(projectName, signal)}
       variant="tab"
     />
   );
