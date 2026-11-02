@@ -26,7 +26,7 @@ function EvaluationBreadcrumb() {
 }
 
 export const handle = {
-  // The breadcrumb is called with `match.data`, not params. Use a small
+  // The breadcrumb is called with `match.loaderData`, not params. Use a small
   // component so we can read the param via the router.
   breadcrumb: () => <EvaluationBreadcrumb />,
 };

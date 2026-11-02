@@ -81,7 +81,7 @@ export function useEntityNav(): EntityNav | undefined {
       .find((m) => (m.handle as RouteHandleWithEntityNav | undefined)?.entityNav);
     if (!match) return undefined;
     const handle = match.handle as RouteHandleWithEntityNav;
-    const nav = handle.entityNav?.(match.data, match.params);
+    const nav = handle.entityNav?.(match.loaderData, match.params);
     if (!nav) return undefined;
 
     if (match.id === PROJECT_ROUTE_ID) {

@@ -19,7 +19,7 @@ export async function loadCatalog(locale: string) {
 export function useLocale(localeKey = 'locale'): string {
   const defaultLocale = 'en';
   const [rootMatch] = useMatches();
-  const { [localeKey]: locale } = (rootMatch.data as Record<string, string>) ?? {};
+  const { [localeKey]: locale } = (rootMatch.loaderData as Record<string, string>) ?? {};
   if (!locale) return defaultLocale;
   if (typeof locale === 'string') return locale;
   return defaultLocale;
