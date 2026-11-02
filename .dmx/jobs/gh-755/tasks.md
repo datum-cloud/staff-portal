@@ -17,8 +17,8 @@
 - [x] Update `app/routes/customer/project/detail/email-activity.tsx` to pass the signal to `projectSuspensionWarningEmailListQuery`
 
 ## Phase 2: Tests & Verification
-- [ ] Add `app/resources/request/client/apis/email.api.test.ts` (vitest, mocking the generated SDK as in `service-catalog.api.test.ts`): walks multiple pages and merges items, stops when `continue` is empty, sends `limit: 100`, keeps `labelSelector` on every page, forwards the `signal`
-- [ ] Run `npm run typecheck`, `npm run lint` and `npm test`
+- [x] Add `app/resources/request/client/apis/email.api.test.ts` (vitest, mocking the generated SDK as in `service-catalog.api.test.ts`): walks multiple pages and merges items, stops when `continue` is empty, sends `limit: 100`, keeps `labelSelector` on every page, forwards the `signal`
+- [x] Run `npm run typecheck`, `npm run lint` and `npm test`
 - [ ] Load `/operations/email-activity` and a project's Email Activity tab locally: requests carry `limit=100`, the list is newest first, and leaving the page mid-load aborts the request
 
 ---

@@ -9,3 +9,4 @@
 - Developer chose to walk every page (100 per page) and sort newest first in the portal. Upstream ordering is raised as milo-os/milo#932.
 - Email lists load page by page with abort signals on both email activity pages. Phase 1 complete except the log check.
 - Phase 1 rebuilt from the session record after the local clone was replaced before the original commit was pushed.
+- Added email.api.test.ts (6 tests). Typecheck, lint (0 errors, 8 warnings in untouched files) and the full vitest suite (191 tests) pass. Local check in the browser blocked: the fresh clone has no `.env`. The developer will run that check during PR review.
