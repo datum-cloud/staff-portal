@@ -4,6 +4,7 @@ import { userOrgListQuery } from '../apis/membership.api';
 import {
   listAllUsers,
   platformAccessFindQuery,
+  userEmailListQuery,
   userGetQuery,
   userListQuery,
 } from '../apis/user.api';
@@ -20,6 +21,7 @@ export const userQueryKeys = {
     all: (userId: string) => ['users', userId, 'organizations'] as const,
     list: (userId: string) => ['users', userId, 'organizations', 'list'] as const,
   },
+  emails: (userId: string, email: string) => ['users', userId, 'emails', email] as const,
 };
 
 export const useUserDetailQuery = (userId: string) => {
@@ -64,6 +66,23 @@ export const useUserOrganizationListQuery = (userId: string) => {
     queryKey: userQueryKeys.organizations.list(userId),
     queryFn: () => userOrgListQuery(userId),
     enabled: !!userId,
+  });
+};
+
+/**
+ * Emails sent to a user — unions matches by the user's email address and by
+ * userRef. Pass the contact's email so it also works before a user is linked.
+ */
+export const useUserEmailListQuery = (
+  userId: string,
+  email: string,
+  options: { enabled?: boolean } = {}
+) => {
+  return useQuery({
+    queryKey: userQueryKeys.emails(userId, email),
+    queryFn: () => userEmailListQuery(userId, email),
+    enabled: options.enabled ?? (!!userId || !!email),
+    staleTime: 5 * 60 * 1000,
   });
 };
 

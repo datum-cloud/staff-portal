@@ -1,17 +1,15 @@
-import { BadgeState } from '@/components/badge';
-import { DateTime } from '@/components/date';
-import { DisplayName } from '@/components/display';
 import { EmptyState } from '@/components/empty-state';
+import { UserAvatar } from '@/components/user-avatar';
 import { SectionCard } from '@/features/milo';
-import {
-  useOrganizationBusinessNamesQuery,
-  useUserOrganizationListQuery,
-} from '@/resources/request/client';
+import { useUserOrganizationListQuery } from '@/resources/request/client';
 import { orgRoutes } from '@/utils/config/routes.config';
+import { startCase } from '@/utils/helpers';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
+import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { Building2, Link2Off } from 'lucide-react';
 import { useMemo } from 'react';
+import { Link } from 'react-router';
 
 type Props = {
   /** The contact's linked user id (`contact.spec.subject.name`), or empty when unlinked. */
@@ -19,56 +17,14 @@ type Props = {
   className?: string;
 };
 
-const COLUMNS = ['Organization', 'Role', 'Business name', 'Type', 'Joined'];
-
-function OrganizationsTableSkeleton() {
-  return (
-    <div className="overflow-x-auto" aria-busy="true">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="text-muted-foreground border-b text-left text-xs">
-            {COLUMNS.map((c) => (
-              <th key={c} className="py-2 pr-3 font-medium">
-                {c}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="divide-y">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <tr key={i}>
-              <td className="py-2.5 pr-3">
-                <Skeleton className="h-3.5 w-32" />
-              </td>
-              <td className="py-2.5 pr-3">
-                <Skeleton className="h-3.5 w-20" />
-              </td>
-              <td className="py-2.5 pr-3">
-                <Skeleton className="h-3.5 w-24" />
-              </td>
-              <td className="py-2.5 pr-3">
-                <Skeleton className="h-4 w-16 rounded-full" />
-              </td>
-              <td className="py-2.5">
-                <Skeleton className="h-3.5 w-20" />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
+/**
+ * Read-only "Organizations" card: the organizations a linked user belongs to,
+ * as a compact list to fit the overview's right rail. The full membership table
+ * lives on the user detail view; richer management lands with #762.
+ */
 export function ContactOrganizationsCard({ userId, className }: Props) {
-  const tableQuery = useUserOrganizationListQuery(userId);
-  const memberships = useMemo(() => tableQuery.data?.items ?? [], [tableQuery.data]);
-
-  const orgNames = useMemo(
-    () => memberships.map((m) => m.spec?.organizationRef?.name ?? '').filter(Boolean),
-    [memberships]
-  );
-  const { data: businessNames = {} } = useOrganizationBusinessNamesQuery(orgNames);
+  const query = useUserOrganizationListQuery(userId);
+  const memberships = useMemo(() => query.data?.items ?? [], [query.data]);
 
   return (
     <SectionCard className={className} title={<Trans>Organizations</Trans>}>
@@ -83,8 +39,12 @@ export function ContactOrganizationsCard({ userId, className }: Props) {
             </Trans>
           }
         />
-      ) : tableQuery.isLoading ? (
-        <OrganizationsTableSkeleton />
+      ) : query.isLoading ? (
+        <div className="flex flex-col gap-2" aria-busy="true">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton key={i} className="h-6 w-full" />
+          ))}
+        </div>
       ) : memberships.length === 0 ? (
         <EmptyState
           icon={Building2}
@@ -92,55 +52,35 @@ export function ContactOrganizationsCard({ userId, className }: Props) {
           description={<Trans>This user isn&apos;t a member of any organizations.</Trans>}
         />
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-muted-foreground border-b text-left text-xs">
-                <th className="py-2 pr-3 font-medium">
-                  <Trans>Organization</Trans>
-                </th>
-                <th className="py-2 pr-3 font-medium">
-                  <Trans>Role</Trans>
-                </th>
-                <th className="py-2 pr-3 font-medium">
-                  <Trans>Business name</Trans>
-                </th>
-                <th className="py-2 pr-3 font-medium">
-                  <Trans>Type</Trans>
-                </th>
-                <th className="py-2 font-medium">
-                  <Trans>Joined</Trans>
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {memberships.map((m) => {
-                const orgName = m.spec?.organizationRef?.name ?? '';
-                const displayName = m.status?.organization?.displayName;
-                const roles = (m.spec?.roles ?? []).map((r) => r.name).filter(Boolean);
-                return (
-                  <tr key={`${m.metadata?.namespace ?? ''}/${m.metadata?.name ?? ''}`}>
-                    <td className="py-2 pr-3">
-                      <DisplayName
-                        displayName={displayName || orgName}
-                        name={orgName}
-                        to={orgRoutes.detail(orgName)}
-                      />
-                    </td>
-                    <td className="py-2 pr-3">{roles.length ? roles.join(', ') : '—'}</td>
-                    <td className="py-2 pr-3">{businessNames[orgName] ?? '—'}</td>
-                    <td className="py-2 pr-3">
-                      <BadgeState state={m.status?.organization?.type ?? ''} />
-                    </td>
-                    <td className="py-2">
-                      <DateTime date={m.metadata?.creationTimestamp} />
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <ul className="divide-y">
+          {memberships.map((m) => {
+            const orgName = m.spec?.organizationRef?.name ?? '';
+            const displayName = m.status?.organization?.displayName || orgName;
+            const roles = (m.spec?.roles ?? [])
+              .map((r) => (r.name ? startCase(r.name) : ''))
+              .filter(Boolean);
+            return (
+              <li
+                key={`${m.metadata?.namespace ?? ''}/${m.metadata?.name ?? ''}`}
+                className="flex items-center gap-3 py-2 first:pt-0 last:pb-0">
+                <UserAvatar name={displayName} className="size-8 shrink-0" />
+                <div className="flex min-w-0 flex-1 flex-col">
+                  <Link to={orgRoutes.detail(orgName)} className="truncate text-sm">
+                    {displayName}
+                  </Link>
+                  <Text size="xs" textColor="muted" className="truncate">
+                    {orgName}
+                  </Text>
+                </div>
+                {roles.length ? (
+                  <Text size="xs" textColor="muted" className="shrink-0">
+                    {roles.join(', ')}
+                  </Text>
+                ) : null}
+              </li>
+            );
+          })}
+        </ul>
       )}
     </SectionCard>
   );

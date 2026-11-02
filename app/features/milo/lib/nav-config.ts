@@ -39,6 +39,8 @@ export interface NavSubItem {
   count?: number;
   /** Optional adornment rendered alongside `count` (e.g. service catalog's pending-approvals badge). */
   badge?: ReactNode;
+  /** When true, the item renders as a non-navigable, muted row (e.g. a not-yet-shipped tab marked "Soon"). */
+  disabled?: boolean;
   /**
    * Nested entries (entity rail only — D1). Renders as a collapsible group,
    * auto-expanded when any child is active. The parent item itself is not a

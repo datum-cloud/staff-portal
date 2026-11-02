@@ -198,6 +198,9 @@ export default [
           [
             index('routes/marketing/contact/detail/index.tsx'),
             route('groups', 'routes/marketing/contact/detail/group.tsx'),
+            route('notes', 'routes/marketing/contact/detail/notes.tsx'),
+            route('emails', 'routes/marketing/contact/detail/emails.tsx'),
+            route('activity', 'routes/marketing/contact/detail/activity.tsx'),
           ]
         ),
       ]),

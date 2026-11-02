@@ -49,6 +49,7 @@ import {
   Signpost,
   SquareActivity,
   SquarePen,
+  StickyNote,
   Tag,
   Trash2,
   UserPlus,
@@ -83,6 +84,7 @@ export const ENTITY_ICONS = {
   // Marketing
   contact: Contact,
   contactGroup: BookUser,
+  note: StickyNote,
   // Finance
   billingAccount: ReceiptText,
   // Operations
