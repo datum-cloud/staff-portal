@@ -1,5 +1,6 @@
 import type {
   ComMiloapisBillingV1Alpha1BillingEntitlement,
+  ComMiloapisBillingV1Alpha1Invoice,
   ComMiloapisBillingV1Alpha1Offer,
 } from '@openapi/billing.miloapis.com/v1alpha1';
 
@@ -262,6 +263,25 @@ export const proratedFirstInvoiceTotal = (fees: FeeAmount[], share: number) =>
         0
       )
   );
+
+/**
+ * The invoice a contract's first charges went on: the account's first
+ * invoice since the contract started with something to pay. Moving an
+ * existing account onto a contract also invoices the old subscription's
+ * last usage, usually at zero, which this passes over.
+ */
+export const getContractFirstInvoice = (
+  invoices: ComMiloapisBillingV1Alpha1Invoice[],
+  startsAt: Date
+): ComMiloapisBillingV1Alpha1Invoice | undefined =>
+  invoices
+    .filter((invoice) => {
+      const created = new Date(invoice.metadata?.creationTimestamp ?? '');
+      return created >= startsAt && Number.parseFloat(invoice.status?.total ?? '0') > 0;
+    })
+    .sort((a, b) =>
+      (a.metadata?.creationTimestamp ?? '').localeCompare(b.metadata?.creationTimestamp ?? '')
+    )[0];
 
 /** The day of the month a contract bills on, from its UTC start date. */
 export const contractBillingDay = (startsAt: Date) => startsAt.getUTCDate();

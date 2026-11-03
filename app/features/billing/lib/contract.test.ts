@@ -9,6 +9,7 @@ import {
   firstMonthShare,
   firstPeriodEnd,
   getContractFees,
+  getContractFirstInvoice,
   getContractState,
   getUsagePricingRefs,
   isContractResource,
@@ -273,6 +274,28 @@ describe('first month proration', () => {
     expect(firstPeriodEnd(new Date('2026-11-03T00:00:00Z')).toISOString()).toBe(
       '2026-12-03T00:00:00.000Z'
     );
+  });
+});
+
+describe('getContractFirstInvoice', () => {
+  const invoice = (name: string, created: string, total: string) =>
+    ({ metadata: { name, creationTimestamp: created }, status: { total } }) as never;
+
+  it('finds the first invoice with something to pay since the start', () => {
+    const first = getContractFirstInvoice(
+      [
+        invoice('old-card-invoice', '2026-11-01T00:05:00Z', '120.00'),
+        invoice('usage-tail', '2026-11-03T15:40:00Z', '0.00'),
+        invoice('second-month', '2026-12-03T00:10:00Z', '2000.00'),
+        invoice('first', '2026-11-03T14:43:42Z', '21959.55'),
+      ],
+      new Date('2026-11-03T00:00:00Z')
+    );
+    expect(first?.metadata?.name).toBe('first');
+  });
+
+  it('is undefined until it arrives', () => {
+    expect(getContractFirstInvoice([], new Date('2026-11-03T00:00:00Z'))).toBeUndefined();
   });
 });
 

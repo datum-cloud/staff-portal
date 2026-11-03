@@ -5,6 +5,7 @@ import {
   firstInvoiceTotal,
   firstMonthShare,
   getContractFees,
+  getContractFirstInvoice,
   getContractState,
   getUsagePricingRefs,
   isContractResource,
@@ -24,9 +25,13 @@ import {
   getBillingAccountDisplayName,
   getOfferDisplayName,
   indexServicesByRef,
+  PAST_INVOICE_STATUS_BADGE,
+  toPastInvoiceRow,
 } from '../../utils';
 import { BILLING_ACCOUNT_SECTION_IDS } from './billing-account-attention-banner';
 import { CardMessage, InlineDate, SectionAnchor } from './card-parts';
+import { useAccountInvoices } from './use-account-dashboard';
+import { BadgeState } from '@/components/badge';
 import { DialogForm } from '@/components/dialog';
 import { SectionCard } from '@/features/milo';
 import {
@@ -162,6 +167,7 @@ export function BillingAccountContractCard({
           orgName={orgName}
           accountName={accountName}
           firstInvoice={contract ? !contract.started : false}
+          startedAt={contract?.started ? contract.startsAt : undefined}
           onClose={() => setPreviewOpen(false)}
         />
       ) : null}
@@ -715,11 +721,14 @@ function InvoicePreviewDialog({
   orgName,
   accountName,
   firstInvoice,
+  startedAt,
   onClose,
 }: {
   orgName: string;
   accountName: string;
   firstInvoice: boolean;
+  /** When the contract started, once it has: its first invoice is shown too. */
+  startedAt?: Date;
   onClose: () => void;
 }) {
   const preview = usePreviewNextInvoiceMutation(orgName, accountName);
@@ -751,6 +760,13 @@ function InvoicePreviewDialog({
           ) : preview.data ? (
             <PreviewResult request={preview.data} />
           ) : null}
+          {startedAt ? (
+            <ContractFirstInvoice
+              orgName={orgName}
+              accountName={accountName}
+              startedAt={startedAt}
+            />
+          ) : null}
         </Dialog.Body>
         <Dialog.Footer>
           <Button type="quaternary" theme="borderless" onClick={onClose}>
@@ -759,6 +775,81 @@ function InvoicePreviewDialog({
         </Dialog.Footer>
       </Dialog.Content>
     </Dialog>
+  );
+}
+
+/**
+ * The invoice the contract's first charges went on. OpenMeter invoices a
+ * contract's setup fees and first month as it starts, so after the start the
+ * preview only shows what comes next.
+ */
+function ContractFirstInvoice({
+  orgName,
+  accountName,
+  startedAt,
+}: {
+  orgName: string;
+  accountName: string;
+  startedAt: Date;
+}) {
+  const { invoices, isLoading } = useAccountInvoices(orgName, accountName);
+  const first = invoices ? getContractFirstInvoice(invoices, startedAt) : undefined;
+  const row = first ? toPastInvoiceRow(first) : null;
+
+  return (
+    <div className="mt-4 flex flex-col gap-1 border-t pt-3">
+      <Text size="xs" textColor="muted">
+        <Trans>Already invoiced</Trans>
+      </Text>
+      {isLoading ? (
+        <Skeleton className="h-5 w-full rounded" />
+      ) : row ? (
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 flex-col">
+            <Text size="sm" className="truncate">
+              <Trans>First invoice</Trans>
+            </Text>
+            <Text size="xs" textColor="muted" className="truncate font-mono">
+              {row.invoiceNumber}
+            </Text>
+            {first?.metadata?.creationTimestamp ? (
+              <Text size="xs" textColor="muted">
+                <Trans>
+                  Issued{' '}
+                  <InlineDate
+                    date={first.metadata.creationTimestamp}
+                    variant="absolute"
+                    format="MMM d, yyyy"
+                  />
+                </Trans>
+              </Text>
+            ) : null}
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <BadgeState state={PAST_INVOICE_STATUS_BADGE[row.status]} message={row.statusLabel} />
+            <Text size="sm" className="tabular-nums">
+              {row.amount}
+            </Text>
+            {row.downloadUrl ? (
+              <Button
+                type="quaternary"
+                theme="borderless"
+                size="small"
+                onClick={() => window.open(row.downloadUrl, '_blank', 'noopener,noreferrer')}>
+                <Trans>Open</Trans>
+              </Button>
+            ) : null}
+          </div>
+        </div>
+      ) : (
+        <Text size="sm" textColor="muted">
+          <Trans>
+            The first invoice hasn&apos;t come through yet. OpenMeter sends it a few minutes after
+            the contract starts.
+          </Trans>
+        </Text>
+      )}
+    </div>
   );
 }
 
