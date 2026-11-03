@@ -22,6 +22,24 @@ export const MAX_CONTRACT_LEAD_DAYS = 366;
  */
 export const CONTRACT_STARTED_ANNOTATION = 'openmeter.miloapis.com/contractStartedAt';
 
+/**
+ * Labels on the Offers and ServicePricings the staff portal creates for a
+ * contract: the account (and its organization) they're for. Such resources
+ * are one customer's, so the catalog lists leave them out.
+ */
+export const CONTRACT_BILLING_ACCOUNT_LABEL = 'billing.miloapis.com/contract-billing-account';
+export const CONTRACT_ORGANIZATION_LABEL = 'billing.miloapis.com/contract-organization';
+
+/** Names of contract resources start with this, labelled or not. */
+const CONTRACT_NAME_PREFIX = 'contract-';
+
+/** Whether an Offer or ServicePricing was made for one account's contract. */
+export const isContractResource = (resource: {
+  metadata?: { name?: string; labels?: Record<string, string> };
+}) =>
+  Boolean(resource.metadata?.labels?.[CONTRACT_BILLING_ACCOUNT_LABEL]) ||
+  (resource.metadata?.name ?? '').startsWith(CONTRACT_NAME_PREFIX);
+
 /** Set by openmeter-provider while an amendment waits for the next billing date. */
 export const OFFER_CHANGE_AT_ANNOTATION = 'openmeter.miloapis.com/offerChangeAt';
 
@@ -150,7 +168,7 @@ export const MAX_CONTRACT_FEES = 20;
  */
 export const contractResourceNames = (accountName: string, now: Date) => {
   const stamp = now.toISOString().replace(/\D/g, '').slice(0, 14);
-  const offer = `contract-${slug(accountName, 30) || 'account'}-${stamp}`;
+  const offer = `${CONTRACT_NAME_PREFIX}${slug(accountName, 30) || 'account'}-${stamp}`;
   return { offer, fee: (index: number) => `${offer}-fee-${index + 1}` };
 };
 

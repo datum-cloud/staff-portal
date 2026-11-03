@@ -1,3 +1,4 @@
+import { isContractResource } from '../../lib/contract';
 import {
   getEntitlementActiveSince,
   getOfferPricingCount,
@@ -228,7 +229,9 @@ function SwitchOfferDialog({
           offer.spec?.launchStage === 'GA' &&
           (offer.spec?.servicePricings?.length ?? 0) > 0 &&
           !offer.metadata?.deletionTimestamp &&
-          offer.metadata?.name !== activeOfferName
+          offer.metadata?.name !== activeOfferName &&
+          // Other accounts' contract offers are theirs alone.
+          !isContractResource(offer)
       ),
     [offersQuery.data?.items, activeOfferName]
   );

@@ -1,4 +1,9 @@
-import { contractOfferPlan, contractResourceNames } from '@/features/billing/lib/contract';
+import {
+  CONTRACT_BILLING_ACCOUNT_LABEL,
+  CONTRACT_ORGANIZATION_LABEL,
+  contractOfferPlan,
+  contractResourceNames,
+} from '@/features/billing/lib/contract';
 import type { OfferDiscount } from '@/features/billing/lib/offer-discounts';
 import type {
   ArrangementMergePatch,
@@ -238,6 +243,7 @@ export type CreateOfferInput = {
   servicePricingRefs: NonNullable<OfferSpec['servicePricingRefs']>;
   /** General discount; per-service overrides go on servicePricingRefs. */
   discount?: OfferDiscount;
+  labels?: Record<string, string>;
 };
 
 export const createOffer = async (input: CreateOfferInput) => {
@@ -252,6 +258,7 @@ export const createOffer = async (input: CreateOfferInput) => {
       metadata: {
         name: input.name,
         ...(Object.keys(annotations).length > 0 ? { annotations } : {}),
+        ...(input.labels ? { labels: input.labels } : {}),
       },
       spec: {
         launchStage: 'Draft',
@@ -357,6 +364,7 @@ export type CreateFixedServicePricingInput = {
   amount: string;
   /** The catalog service's serviceName the fee is for. */
   serviceRef: string;
+  labels?: Record<string, string>;
 };
 
 /**
@@ -370,7 +378,7 @@ export const createFixedServicePricing = async (input: CreateFixedServicePricing
     body: {
       apiVersion: 'billing.miloapis.com/v1alpha1',
       kind: 'ServicePricing',
-      metadata: { name: input.name },
+      metadata: { name: input.name, ...(input.labels ? { labels: input.labels } : {}) },
       spec: {
         chargeType: input.chargeType,
         currency: 'USD',
@@ -418,6 +426,7 @@ export type ContractFeeInput = {
 };
 
 export type CreateContractOfferInput = {
+  orgName: string;
   accountName: string;
   /** Names the Offer, e.g. "Acme Corp contract". */
   displayName: string;
@@ -436,6 +445,10 @@ export type CreateContractOfferInput = {
  */
 export const createContractOffer = async (input: CreateContractOfferInput, now = new Date()) => {
   const names = contractResourceNames(input.accountName, now);
+  const labels = {
+    [CONTRACT_BILLING_ACCOUNT_LABEL]: input.accountName,
+    [CONTRACT_ORGANIZATION_LABEL]: input.orgName,
+  };
   const fees = input.fees.map((fee, index) => ({ ...fee, name: names.fee(index) }));
   for (const fee of fees) {
     await createFixedServicePricing({
@@ -444,6 +457,7 @@ export const createContractOffer = async (input: CreateContractOfferInput, now =
       chargeType: fee.chargeType,
       amount: fee.amount,
       serviceRef: fee.serviceRef,
+      labels,
     });
   }
   const plan = contractOfferPlan({
@@ -451,7 +465,7 @@ export const createContractOffer = async (input: CreateContractOfferInput, now =
     fees,
     usageRefs: input.usageRefs,
   });
-  await createOffer({ name: names.offer, displayName: input.displayName, ...plan });
+  await createOffer({ name: names.offer, displayName: input.displayName, labels, ...plan });
   await publishOffer(names.offer);
   await waitForOfferSnapshot(names.offer, plan.servicePricingRefs.length);
   return names.offer;

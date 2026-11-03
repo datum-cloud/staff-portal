@@ -6,6 +6,7 @@ import {
   getContractFees,
   getContractState,
   getUsagePricingRefs,
+  isContractResource,
   localDateForUtcDay,
   MAX_CONTRACT_FEES,
   MAX_CONTRACT_LEAD_DAYS,
@@ -371,7 +372,7 @@ function ContractDialog({
       (offer) =>
         offer.spec?.launchStage === 'GA' &&
         getUsagePricingRefs(offer).length > 0 &&
-        (!offer.metadata?.name?.startsWith('contract-') || offer.metadata.name === currentOfferName)
+        (!isContractResource(offer) || offer.metadata?.name === currentOfferName)
     );
     return listed.sort((a, b) => getOfferDisplayName(a).localeCompare(getOfferDisplayName(b)));
   }, [offersQuery.data?.items, currentOfferName]);
@@ -428,6 +429,7 @@ function ContractDialog({
 
   const handleSubmit = async (values: ContractFormValues) => {
     const offer = {
+      orgName,
       accountName,
       displayName: t`${getBillingAccountDisplayName(account)} contract`,
       fees: values.fees.map((fee) => ({

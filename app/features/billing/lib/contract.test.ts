@@ -9,6 +9,7 @@ import {
   getContractFees,
   getContractState,
   getUsagePricingRefs,
+  isContractResource,
   localDateForUtcDay,
   MAX_CONTRACT_FEES,
   monthlyTotal,
@@ -76,6 +77,22 @@ const entitlement = (
     },
     status: extra.status,
   }) as ComMiloapisBillingV1Alpha1BillingEntitlement;
+
+describe('isContractResource', () => {
+  it('spots contract offers and fees by label or name', () => {
+    expect(
+      isContractResource({
+        metadata: {
+          name: 'acme-fees',
+          labels: { 'billing.miloapis.com/contract-billing-account': 'acme' },
+        },
+      })
+    ).toBe(true);
+    expect(isContractResource({ metadata: { name: 'contract-acme-20261103-fee-1' } })).toBe(true);
+    expect(isContractResource({ metadata: { name: 'payg' } })).toBe(false);
+    expect(isContractResource({})).toBe(false);
+  });
+});
 
 describe('contractStartFromDate', () => {
   it('keeps the calendar day picked, at midnight UTC', () => {
