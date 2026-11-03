@@ -43,8 +43,8 @@ export const handle = {
   breadcrumb: (data?: LoaderData) => (data ? pluginBreadcrumbs(data) : 'Plugin'),
 };
 
-export const meta: Route.MetaFunction = ({ data }) => {
-  return metaObject(data?.plugin.displayName ?? 'Plugin');
+export const meta: Route.MetaFunction = ({ loaderData }) => {
+  return metaObject(loaderData?.plugin.displayName ?? 'Plugin');
 };
 
 export default function ProjectPluginMount() {

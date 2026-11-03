@@ -5,8 +5,30 @@ import { combineHeaders } from '@/utils/helpers';
 import { isPast } from 'date-fns';
 import { Authenticator } from 'remix-auth';
 
+/**
+ * Copy a request into a plain Fetch `Request`.
+ *
+ * React Router v8 passes the server's raw request through to loaders. On Node
+ * that is @hono/node-server's lightweight request, and remix-auth's
+ * `new Request(request.url, request)` reads `duplex` from it, which throws
+ * "Illegal invocation". A request built from plain init avoids that.
+ */
+function toFetchRequest(request: Request): Request {
+  const hasBody = request.method !== 'GET' && request.method !== 'HEAD';
+  return new Request(request.url, {
+    method: request.method,
+    headers: request.headers,
+    signal: request.signal,
+    ...(hasBody && { body: request.body, duplex: 'half' }),
+  } as RequestInit);
+}
+
 // Extend the Authenticator class
 export class CustomAuthenticator extends Authenticator<ISession> {
+  authenticate(strategy: string, request: Request): Promise<ISession> {
+    return super.authenticate(strategy, toFetchRequest(request));
+  }
+
   async logout(strategy: string, request: Request) {
     const provider = this.get(strategy);
     if (!provider) {

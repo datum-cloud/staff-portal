@@ -16,7 +16,7 @@ type CreateMetaArgs = {
   matches: RouteMatchMeta[];
   location: Location;
   params: Record<string, string>;
-  data?: any;
+  loaderData?: any;
 };
 
 /**
@@ -33,7 +33,7 @@ type CreateMetaArgs = {
  *
  * import { mergeMeta } from '~/utils/meta';
  *
- * export const meta: MetaFunction<typeof loader> = mergeMeta(({ data }) => {
+ * export const meta: MetaFunction<typeof loader> = mergeMeta(({ loaderData }) => {
  *   return [
  *     { title: "My Leaf Route" },
  *   ];
@@ -42,7 +42,7 @@ type CreateMetaArgs = {
  * // In a parent route:
  * import type { MetaFunction } from 'react-router';
  *
- * export const meta: MetaFunction<typeof loader> = ({ data }) => {
+ * export const meta: MetaFunction<typeof loader> = ({ loaderData }) => {
  *   return [
  *     { title: "My Parent Route" },
  *     { name: 'description', content: "This is the parent route" },
@@ -83,7 +83,7 @@ export function mergeMeta<
  *
  * import { mergeRouteModuleMeta } from '~/utils/meta';
  *
- * export const meta: Route.MetaFunction = mergeRouteModuleMeta(({ data }) => {
+ * export const meta: Route.MetaFunction = mergeRouteModuleMeta(({ loaderData }) => {
  *   return [
  *     { title: "My Leaf Route" },
  *   ];
@@ -92,7 +92,7 @@ export function mergeMeta<
  * // In a parent route:
  * import type { Route } from './+types/root';
  *
- * export const meta: Route.MetaFunction = ({ data }) => {
+ * export const meta: Route.MetaFunction = ({ loaderData }) => {
  *   return [
  *     { title: "My Parent Route" },
  *     { name: 'description', content: "This is the parent route" },
@@ -153,10 +153,10 @@ export function metaObject(title?: string, description?: string) {
 export function extractDataFromMatches<T>(matches: any[], routeId?: string): T | undefined {
   if (routeId) {
     const match = matches.find((match) => match?.id === routeId);
-    return match?.data as T | undefined;
+    return match?.loaderData as T | undefined;
   }
 
   // If no routeId provided, get data from the current route (last match)
   const currentMatch = matches[matches.length - 1];
-  return currentMatch?.data as T | undefined;
+  return currentMatch?.loaderData as T | undefined;
 }

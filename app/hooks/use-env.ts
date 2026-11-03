@@ -23,6 +23,6 @@ export interface PublicEnv {
 
 export function useEnv(): PublicEnv | undefined {
   const matches = useMatches();
-  const rootData = matches[0]?.data as { ENV?: PublicEnv } | undefined;
+  const rootData = matches[0]?.loaderData as { ENV?: PublicEnv } | undefined;
   return rootData?.ENV;
 }

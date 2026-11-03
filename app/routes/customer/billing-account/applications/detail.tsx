@@ -9,7 +9,7 @@ function ApplicationBreadcrumb() {
 }
 
 export const handle = {
-  // The breadcrumb is called with `match.data`, not params, so read the
+  // The breadcrumb is called with `match.loaderData`, not params, so read the
   // param through the router.
   breadcrumb: () => <ApplicationBreadcrumb />,
 };

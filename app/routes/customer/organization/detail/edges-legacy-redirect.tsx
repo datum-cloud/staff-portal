@@ -1,8 +1,7 @@
 import { redirect, type LoaderFunctionArgs } from 'react-router';
 
 /** Permanent redirect from legacy `/edges` to `/albs` under an organization. */
-export async function loader({ request, params }: LoaderFunctionArgs) {
-  const url = new URL(request.url);
+export async function loader({ url, params }: LoaderFunctionArgs) {
   const orgName = params.orgName ?? '';
   const destination =
     url.pathname.replace(

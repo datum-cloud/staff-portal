@@ -1,5 +1,5 @@
 import type { Route } from './+types/layout';
-import { ContactTypeBadge } from '@/features/contact';
+import { AddToGroupDialog, ContactTypeBadge, EditContactDialog } from '@/features/contact';
 import { DetailShell, type EntityNav } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
 import { contactDetailQuery, userDetailQuery } from '@/resources/request/server';
@@ -131,6 +131,16 @@ export default function Layout() {
         </span>
       }
       subtitle={data?.contact?.spec?.email}
+      actions={
+        <span className="flex items-center gap-2">
+          <AddToGroupDialog
+            contactName={data?.contact?.metadata?.name ?? ''}
+            contactNamespace={data?.contact?.metadata?.namespace ?? 'default'}
+            variant="header"
+          />
+          <EditContactDialog contact={data?.contact} user={data?.user} variant="header" />
+        </span>
+      }
     />
   );
 }

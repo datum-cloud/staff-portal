@@ -161,7 +161,7 @@ export default function Page() {
 
         {/* Right rail — read-only context cards (interactions land with #760 / #761 / #762). */}
         <div className="flex flex-col gap-4">
-          <ContactAboutCard contact={contact} />
+          <ContactAboutCard contact={contact} user={user} />
           {linked && <ContactPlatformAccountCard user={user} />}
           {linked && <ContactOrganizationsCard userId={userId} />}
           <ContactGroupsCard contactName={contactName} />

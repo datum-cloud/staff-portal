@@ -31,8 +31,8 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
   return { plugin };
 };
 
-export const meta: Route.MetaFunction = ({ data }) => {
-  return metaObject(data?.plugin.displayName ?? 'Plugin');
+export const meta: Route.MetaFunction = ({ loaderData }) => {
+  return metaObject(loaderData?.plugin.displayName ?? 'Plugin');
 };
 
 export const handle = {
