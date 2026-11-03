@@ -255,7 +255,7 @@ function ContractFees({ offer }: { offer: ComMiloapisBillingV1Alpha1Offer }) {
       )}
       <Text size="xs" textColor="muted">
         {offerBillsUsage(offer) ? (
-          <Trans>Plus usage, from {getOfferDisplayName(offer)}.</Trans>
+          <Trans>Plus usage.</Trans>
         ) : (
           <Trans>Fixed fees only: usage isn&apos;t billed.</Trans>
         )}

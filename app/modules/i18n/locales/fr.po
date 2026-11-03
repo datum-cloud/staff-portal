@@ -4555,9 +4555,8 @@ msgstr ""
 msgid "Please wait {remainingMinutes} more minute{0} before resending this invitation"
 msgstr ""
 
-#. placeholder {0}: getOfferDisplayName(offer)
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:258
-msgid "Plus usage, from {0}."
+msgid "Plus usage."
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:384
