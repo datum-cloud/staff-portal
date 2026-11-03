@@ -4,6 +4,7 @@ export * from './components/contact-groups-card';
 export * from './components/contact-list';
 export * from './components/contact-organizations-card';
 export * from './components/contact-platform-account-card';
+export * from './components/add-to-group-dialog';
 export * from './components/contact-summary-strip';
 export * from './components/contact-type-badge';
 export * from './components/edit-contact-dialog';
