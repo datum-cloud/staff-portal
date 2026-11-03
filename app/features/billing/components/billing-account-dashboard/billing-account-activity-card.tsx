@@ -21,7 +21,8 @@ const TIME_RANGE = { start: 'now-30d' };
 const hideTenant = () => null;
 
 /**
- * People's recent changes to the org's billing resources: accounts,
+ * People's recent changes to the org's billing resources, for every billing
+ * account in it (the activity API can't narrow to one account): accounts,
  * bindings, payment methods and terms. Only changes people made
  * (`changeSource: human`), never controllers'. Filters are fixed and hidden.
  */
@@ -43,7 +44,8 @@ export function BillingAccountActivityCard({ orgName }: { orgName: string }) {
 
   return (
     <SectionCard
-      title={<Trans>Activity</Trans>}
+      // Billing activity can only be filtered by org, not by account.
+      title={<Trans>Organization billing activity</Trans>}
       action={
         <CardLink href={orgRoutes.activity.root(orgName)}>
           <Trans>Activity log</Trans>

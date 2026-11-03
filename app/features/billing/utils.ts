@@ -1,3 +1,5 @@
+import { i18n } from '@lingui/core';
+import { t } from '@lingui/core/macro';
 import type {
   ComMiloapisBillingV1Alpha1BillingAccount,
   ComMiloapisBillingV1Alpha1BillingAccountBinding,
@@ -45,11 +47,17 @@ export const PAST_INVOICE_STATUS_BADGE: Record<PastInvoiceStatus, string> = {
   void: 'pending',
 };
 
-const statusLabels: Record<PastInvoiceStatus, string> = {
-  paid: 'Paid',
-  open: 'Open',
-  pastDue: 'Past due',
-  void: 'Void',
+const statusLabel = (status: PastInvoiceStatus): string => {
+  switch (status) {
+    case 'paid':
+      return t`Paid`;
+    case 'pastDue':
+      return t`Past due`;
+    case 'void':
+      return t`Void`;
+    default:
+      return t`Open`;
+  }
 };
 
 /**
@@ -57,10 +65,14 @@ const statusLabels: Record<PastInvoiceStatus, string> = {
  * balances and limits. Usage spend uses `formatCurrency` from the usage
  * feature instead, which keeps sub-cent precision.
  */
-export const formatMoney = (amount: number, currencyCode: string | undefined): string => {
+export const formatMoney = (
+  amount: number,
+  currencyCode: string | undefined,
+  locale: string = i18n.locale || 'en-US'
+): string => {
   const currency = currencyCode || 'USD';
   try {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(amount);
+    return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(amount);
   } catch {
     return `${amount} ${currency}`;
   }
@@ -80,7 +92,11 @@ const formatInvoiceDate = (iso: string | undefined): string => {
   if (!iso) return '—';
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return iso;
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  return date.toLocaleDateString(i18n.locale || 'en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
 };
 
 /**
@@ -104,7 +120,7 @@ export const toPastInvoiceRow = (invoice: Invoice): PastInvoiceRow => {
     amount,
     amountSortKey,
     status,
-    statusLabel: statusLabels[status],
+    statusLabel: statusLabel(status),
     phase: phase ?? 'Open',
     downloadUrl: invoice.status?.documentUri,
   };

@@ -70,12 +70,34 @@ describe.each(['UTC', 'America/New_York', 'Pacific/Auckland'])('cycle maths in %
     expect(previous.rangeLabel).toBe('1 Oct - 1 Nov 2026');
   });
 
-  it('steps quarterly cycles on the invoice day', () => {
+  it('aligns quarterly cycles to calendar quarters on the invoice day', () => {
     const terms = { invoiceDayOfMonth: 15, invoiceFrequency: 'Quarterly' as const };
     const [current] = buildBillingCycleWindows(terms, new Date('2026-11-20T00:00:00Z'));
-    expect(new Date(current.startSec * 1000).toISOString()).toBe('2026-11-15T00:00:00.000Z');
+    expect(new Date(current.startSec * 1000).toISOString()).toBe('2026-10-15T00:00:00.000Z');
     expect(getNextCycleStart(terms, new Date('2026-11-20T00:00:00Z')).toISOString()).toBe(
-      '2027-02-15T00:00:00.000Z'
+      '2027-01-15T00:00:00.000Z'
     );
+  });
+
+  it.each([
+    [
+      'Quarterly' as const,
+      '2026-11-20T00:00:00Z',
+      '2026-12-20T00:00:00Z',
+      '2026-10-01T00:00:00.000Z',
+    ],
+    [
+      'Quarterly' as const,
+      '2026-10-01T00:00:00Z',
+      '2026-12-31T23:59:59Z',
+      '2026-10-01T00:00:00.000Z',
+    ],
+    ['Annual' as const, '2026-03-03T00:00:00Z', '2026-11-03T00:00:00Z', '2026-01-01T00:00:00.000Z'],
+  ])('keeps a %s cycle start as now moves from %s to %s', (frequency, from, to, start) => {
+    const terms = { invoiceDayOfMonth: 1, invoiceFrequency: frequency };
+    for (const now of [from, to]) {
+      const [current] = buildBillingCycleWindows(terms, new Date(now));
+      expect(new Date(current.startSec * 1000).toISOString()).toBe(start);
+    }
   });
 });

@@ -148,6 +148,31 @@ export function getBillingStatus(
   }
 }
 
+/** How charges are collected: on invoice terms, by card, or not yet at all. */
+export type BillingMode = 'invoice' | 'card' | 'none' | 'unknown';
+
+/**
+ * The one rule for how an account is billed, used by the dashboard header,
+ * the payment card and the health checks so they always agree. A failing
+ * card is still card billing; scheduled or ended terms and no card mean
+ * nothing can be charged yet.
+ */
+export function getBillingMode(account: ComMiloapisBillingV1Alpha1BillingAccount): BillingMode {
+  switch (getBillingStatus(getPaymentReadyCondition(account))) {
+    case 'invoice':
+      return 'invoice';
+    case 'card':
+    case 'card-failing':
+      return 'card';
+    case 'terms-scheduled':
+    case 'terms-ended':
+    case 'not-set-up':
+      return 'none';
+    default:
+      return account.status?.paymentArrangement ? 'invoice' : 'unknown';
+  }
+}
+
 const positiveDecimal = /^(0|[1-9]\d*)(\.\d+)?$/;
 
 // Optional fields end in .optional(): datum-ui's Form.Field marks a field

@@ -21,7 +21,7 @@ import {
   getApplicationsForAccount,
   type BillingArrangementApplication,
 } from '../lib/payment-terms-applications';
-import { formatMoney } from '../utils';
+import { formatMoney, getAccountCurrency } from '../utils';
 import { ApplicationPhaseBadge } from './application-labels';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
@@ -71,7 +71,7 @@ export function usePaymentTerms(
 ) {
   const { t } = useLingui();
   const accountName = account.metadata?.name ?? '';
-  const currency = account.spec?.currencyCode ?? '';
+  const currency = getAccountCurrency(account);
 
   const arrangementsQuery = useBillingArrangementListForOrgQuery(orgName);
   const applicationsQuery = useBillingArrangementApplicationListForOrgQuery(orgName);

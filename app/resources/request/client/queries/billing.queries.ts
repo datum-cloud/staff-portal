@@ -37,6 +37,7 @@ import {
 } from '@/features/billing/lib/payment-terms-applications';
 import { ListQueryParams } from '@/resources/schemas';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
 export const billingQueryKeys = {
   all: ['billing-accounts'] as const,
@@ -92,18 +93,38 @@ export const useBillingAccountListForOrgQuery = (orgName: string) =>
   });
 
 /** `initialData` seeds the cache from a route loader so the page doesn't fetch the account twice. */
+/**
+ * One billing account. `loaderData` is the copy a route loader just fetched:
+ * it seeds an empty cache, and replaces a cached copy it's newer than, which
+ * `initialData` alone wouldn't within `staleTime`.
+ */
 export const useBillingAccountDetailQuery = (
   orgName: string,
   accountName: string,
-  initialData?: Awaited<ReturnType<typeof billingAccountDetailQuery>>
-) =>
-  useQuery({
-    queryKey: billingQueryKeys.detail(orgName, accountName),
+  loaderData?: Awaited<ReturnType<typeof billingAccountDetailQuery>>
+) => {
+  const queryClient = useQueryClient();
+  const queryKey = billingQueryKeys.detail(orgName, accountName);
+  const loaderVersion = loaderData?.metadata?.resourceVersion;
+
+  useEffect(() => {
+    if (!loaderData) return;
+    const cached = queryClient.getQueryData<typeof loaderData>(queryKey);
+    if (cached?.metadata?.resourceVersion !== loaderVersion) {
+      queryClient.setQueryData(queryKey, loaderData);
+    }
+    // Keyed on the version: a new loader copy of the same version changes nothing.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queryClient, orgName, accountName, loaderVersion]);
+
+  return useQuery({
+    queryKey,
     queryFn: () => billingAccountDetailQuery(orgName, accountName),
     enabled: !!orgName && !!accountName,
     staleTime: 5 * 60 * 1000,
-    initialData,
+    initialData: loaderData,
   });
+};
 
 /** Cluster-wide bindings — used to attach project ids to billing account list rows. */
 export const useBillingAccountBindingListQuery = () =>

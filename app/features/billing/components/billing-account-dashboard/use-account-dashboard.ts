@@ -9,7 +9,6 @@ import {
   getPaymentMethodsForAccount,
   type Invoice,
 } from '../../utils';
-import { getPreviousCycleCutoff } from '@/modules/billing/billing-cycle';
 import type { OrgUsageDashboardData } from '@/modules/billing/usage.types';
 import {
   useBillingEntitlementForAccountQuery,
@@ -97,17 +96,11 @@ export interface AccountUsageSpend extends LoadState {
 
 /**
  * This cycle's usage for the account, and the previous cycle cut at the same
- * point for the "vs last cycle" trend. `now` must be stable across renders
- * (it is part of the previous cycle's query key).
+ * point for the "vs last cycle" trend. The server works out that point from
+ * its own clock, the same one it builds the current cycle's window from.
  */
-export function useAccountUsageSpend(
-  orgName: string,
-  account: BillingAccount,
-  now: Date
-): AccountUsageSpend {
+export function useAccountUsageSpend(orgName: string, account: BillingAccount): AccountUsageSpend {
   const accountName = account.metadata?.name ?? '';
-  const terms = account.spec?.paymentTerms;
-  const until = useMemo(() => getPreviousCycleCutoff(terms, now).toISOString(), [terms, now]);
   const enabled = Boolean(orgName && accountName);
 
   const current = useOrgUsageDashboardQuery(orgName, 'all', 'current', {
@@ -115,7 +108,7 @@ export function useAccountUsageSpend(
     enabled,
   });
   const previous = useOrgUsageDashboardQuery(orgName, 'all', 'previous', {
-    scope: { billingAccount: accountName, until },
+    scope: { billingAccount: accountName, samePoint: true },
     enabled,
   });
 
@@ -197,7 +190,7 @@ export function useAccountHealth(
   const invoices = useAccountInvoices(orgName, accountName);
   const paymentMethods = useAccountPaymentMethods(orgName, account);
   const entitlement = useBillingEntitlementForAccountQuery(orgName, accountName);
-  const usage = useAccountUsageSpend(orgName, account, now);
+  const usage = useAccountUsageSpend(orgName, account);
 
   const health = useMemo(
     () =>
@@ -207,6 +200,7 @@ export function useAccountHealth(
         paymentMethods: paymentMethods.paymentMethods,
         entitlement: entitlement.data,
         usage: usage.comparison,
+        invoicesComplete: !invoices.hasMore,
         now,
       }),
     [
@@ -215,6 +209,7 @@ export function useAccountHealth(
       paymentMethods.paymentMethods,
       entitlement.data,
       usage.comparison,
+      invoices.hasMore,
       now,
     ]
   );

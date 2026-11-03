@@ -41,13 +41,15 @@ function ClustersCard({ enabled }: { enabled: boolean }) {
         </StatTileMessage>
       ) : (
         <>
-          <StatTileHeadline>
-            <Icon
-              icon={summary.unhealthy === 0 ? CircleCheck : CircleX}
-              size={18}
-              className={summary.unhealthy === 0 ? 'text-green-600' : 'text-destructive'}
-              aria-hidden
-            />
+          <StatTileHeadline
+            icon={
+              <Icon
+                icon={summary.unhealthy === 0 ? CircleCheck : CircleX}
+                size={18}
+                className={summary.unhealthy === 0 ? 'text-green-600' : 'text-destructive'}
+                aria-hidden
+              />
+            }>
             {summary.healthy}/{summary.total}
           </StatTileHeadline>
           <Text size="xs" textColor="muted" ellipsis>
@@ -80,8 +82,9 @@ function QuotaCard({ buckets, isLoading }: { buckets: QuotaBucketRow[]; isLoadin
         <StatTileSkeleton />
       ) : top.length === 0 ? (
         <>
-          <StatTileHeadline>
-            <Icon icon={CircleCheck} size={18} className="text-green-600" aria-hidden />0
+          <StatTileHeadline
+            icon={<Icon icon={CircleCheck} size={18} className="text-green-600" aria-hidden />}>
+            0
           </StatTileHeadline>
           <Text size="xs" textColor="muted">
             <Trans>No organization is near a limit</Trans>
@@ -134,10 +137,12 @@ function EmailCard() {
         </StatTileMessage>
       ) : (
         <>
-          <StatTileHeadline>
-            {data.failed > 0 && (
-              <Icon icon={TriangleAlert} size={18} className="text-amber-500" aria-hidden />
-            )}
+          <StatTileHeadline
+            icon={
+              data.failed > 0 ? (
+                <Icon icon={TriangleAlert} size={18} className="text-amber-500" aria-hidden />
+              ) : undefined
+            }>
             {rate == null ? '—' : `${rate.toFixed(1)}%`}
           </StatTileHeadline>
           <Text size="xs" textColor="muted" className="tabular-nums">

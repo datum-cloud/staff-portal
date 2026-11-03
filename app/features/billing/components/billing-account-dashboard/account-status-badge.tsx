@@ -9,7 +9,7 @@ import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.
 /**
  * The account's status, as the header and the Configuration card show it.
  * Past due outranks the account phase: it's the first thing staff need to
- * know. Until payment methods load, a placeholder.
+ * know, so the badge waits for invoices, and says so when they fail to load.
  */
 export function AccountStatusBadge({
   orgName,
@@ -18,13 +18,17 @@ export function AccountStatusBadge({
   orgName: string;
   account: ComMiloapisBillingV1Alpha1BillingAccount;
 }) {
-  const { invoices } = useAccountInvoices(orgName, account.metadata?.name ?? '');
+  const invoices = useAccountInvoices(orgName, account.metadata?.name ?? '');
   const { paymentMethods, isLoading } = useAccountPaymentMethods(orgName, account);
 
-  if (invoices?.some(isPastDueInvoice)) {
+  if (invoices.invoices?.some(isPastDueInvoice)) {
     return <BadgeState state="error" message={t`Past due`} />;
   }
-  if (isLoading) {
+  // Without invoices there's no telling whether anything is past due.
+  if (invoices.isError) {
+    return <BadgeState state="unknown" message={t`Unknown`} tooltip={t`Couldn't load invoices`} />;
+  }
+  if (isLoading || invoices.isLoading) {
     return <Skeleton className="h-4 w-14 rounded" />;
   }
   const status = getBillingAccountDisplayStatus(account, paymentMethods ?? []);

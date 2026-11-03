@@ -1,4 +1,4 @@
-import { getActiveBindingsForAccount } from '../../utils';
+import { getAccountCurrency, getActiveBindingsForAccount } from '../../utils';
 import { CardMessage, ShareBar, TableRowsSkeleton, InlineDate } from './card-parts';
 import {
   MAX_PROJECT_SPEND_REQUESTS,
@@ -148,7 +148,7 @@ const columns = [
 /** Projects billed to the account, with each one's spend this cycle. */
 export function BillingAccountProjectsCard({ orgName, account }: ProjectsCardProps) {
   const accountName = account.metadata?.name ?? '';
-  const currency = account.spec?.currencyCode ?? 'USD';
+  const currency = getAccountCurrency(account);
   const bindingsQuery = useBillingAccountBindingListForOrgQuery(orgName);
   const projectsQuery = useOrgProjectListQuery(orgName);
 

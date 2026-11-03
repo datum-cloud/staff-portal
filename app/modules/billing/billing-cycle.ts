@@ -35,19 +35,21 @@ function shiftCycle(start: Date, months: number, invoiceDay: number): Date {
   return anchorDate(start.getUTCFullYear(), start.getUTCMonth() + months, invoiceDay);
 }
 
-/** Latest cycle start at or before `ref`, anchored on `invoiceDay`. */
+/**
+ * Latest cycle start at or before `ref`, on `invoiceDay`. Cycles longer than
+ * a month align to the calendar (quarters start Jan, Apr, Jul, Oct; years
+ * start Jan), so the start stays put as `ref` moves through the cycle.
+ */
 function cycleStartAtOrBefore(ref: Date, invoiceDay: number, frequency: InvoiceFrequency): Date {
   const periodMonths = FREQUENCY_MONTHS[frequency];
-  let start = anchorDate(ref.getUTCFullYear(), ref.getUTCMonth(), invoiceDay);
-
-  while (start > ref) {
-    start = shiftCycle(start, -periodMonths, invoiceDay);
-  }
-  while (shiftCycle(start, periodMonths, invoiceDay) <= ref) {
-    start = shiftCycle(start, periodMonths, invoiceDay);
-  }
-
-  return start;
+  const thisMonth = ref.getUTCFullYear() * 12 + ref.getUTCMonth();
+  // Before this month's invoice day, `ref` still belongs to last month's cycle.
+  const month =
+    anchorDate(ref.getUTCFullYear(), ref.getUTCMonth(), invoiceDay) > ref
+      ? thisMonth - 1
+      : thisMonth;
+  const startMonth = Math.floor(month / periodMonths) * periodMonths;
+  return anchorDate(Math.floor(startMonth / 12), startMonth % 12, invoiceDay);
 }
 
 const SHORT_DATE = new Intl.DateTimeFormat('en-GB', {

@@ -108,7 +108,7 @@ function describeIssue(issue: HealthIssue, ctx: CopyContext): IssueCopy {
     case 'invoiceUnusual': {
       const count = issue.invoiceNames.length;
       const maxTotal = formatMoney(issue.maxTotal, issue.currency);
-      const median = formatMoney(issue.median, issue.currency);
+      const baseline = formatMoney(issue.baseline, issue.currency);
       const factor = UNUSUAL_INVOICE_FACTOR;
       return {
         badge: t`Unusual`,
@@ -120,8 +120,8 @@ function describeIssue(issue: HealthIssue, ctx: CopyContext): IssueCopy {
           ),
         detail: (
           <Trans>
-            Up to {maxTotal}, over {factor}× this account&apos;s median invoice ({median}). Likely a
-            metering or pricing error.
+            Up to {maxTotal}, over {factor}× the median of this account&apos;s other recent invoices
+            ({baseline}). Check usage for a metering or pricing error.
           </Trans>
         ),
         action: usageAction(ctx),
@@ -160,7 +160,10 @@ function describeIssue(issue: HealthIssue, ctx: CopyContext): IssueCopy {
           };
     case 'cardExpiry': {
       const card = formatCardLabel(issue, issue.paymentMethodName);
-      const expiry = <InlineDate date={issue.expiresAt} variant="absolute" format="MMM d, yyyy" />;
+      // A UTC month end: in UTC so it doesn't read as the 1st east of UTC.
+      const expiry = (
+        <InlineDate date={issue.expiresAt} variant="absolute" format="MMM d, yyyy" timezone="UTC" />
+      );
       return {
         badge: t`Card expiry`,
         title: issue.expired ? <Trans>Card expired</Trans> : <Trans>Card expires soon</Trans>,
@@ -326,21 +329,28 @@ function IssueRow({ issue, ctx }: { issue: HealthIssue; ctx: CopyContext }) {
   );
 }
 
-function FailedToRun({ count }: { count: number }) {
-  return count === 1 ? (
-    <Trans>1 check couldn&apos;t run</Trans>
-  ) : (
-    <Trans>{count} checks couldn&apos;t run</Trans>
-  );
+/** Checks that didn't finish: their data failed to load, or they saw only some invoices. */
+function Unchecked({ failed, partial }: { failed: number; partial: number }) {
+  const parts = [
+    failed === 1 ? t`1 check couldn't run` : failed > 1 ? t`${failed} checks couldn't run` : null,
+    partial === 1
+      ? t`1 check saw only some invoices`
+      : partial > 1
+        ? t`${partial} checks saw only some invoices`
+        : null,
+  ].filter(Boolean);
+  return <>{parts.join(' · ')}</>;
 }
 
 function PassingLine({
   passing,
-  failedToRun,
+  failed,
+  partial,
   isLoading,
 }: {
   passing: HealthCheckKey[];
-  failedToRun: number;
+  failed: number;
+  partial: number;
   isLoading: boolean;
 }) {
   const count = passing.length;
@@ -352,10 +362,10 @@ function PassingLine({
       </Text>
       <Text size="xs" textColor="muted" className="min-w-0 truncate">
         {passing.map(passingLabel).join(' · ')}
-        {failedToRun > 0 ? (
+        {failed + partial > 0 ? (
           <>
             {count > 0 ? ' · ' : ''}
-            <FailedToRun count={failedToRun} />
+            <Unchecked failed={failed} partial={partial} />
           </>
         ) : null}
       </Text>
@@ -376,9 +386,10 @@ export function BillingAccountAttentionBanner({
   now,
 }: AttentionBannerProps) {
   const { health, isLoading } = useAccountHealth(orgName, account, now);
-  const { issues, passing, pending } = health;
+  const { issues, passing, pending, incomplete } = health;
   // Checks still waiting once everything has loaded had a request fail.
-  const failedToRun = isLoading ? 0 : pending.length;
+  const failed = isLoading ? 0 : pending.length;
+  const partial = incomplete.length;
   const ctx: CopyContext = { orgName, cloudPortalUrl };
 
   return (
@@ -388,20 +399,26 @@ export function BillingAccountAttentionBanner({
       total={issues.length}
       defaultExpanded
       clearSummary={
-        failedToRun > 0 ? (
-          <FailedToRun count={failedToRun} />
+        failed + partial > 0 ? (
+          <Unchecked failed={failed} partial={partial} />
         ) : (
           passing.map(passingLabel).join(' · ')
         )
       }
-      incomplete={failedToRun > 0 ? <Trans>Some checks couldn&apos;t run</Trans> : undefined}
+      incomplete={
+        failed > 0 ? (
+          <Trans>Some checks couldn&apos;t run</Trans>
+        ) : partial > 0 ? (
+          <Trans>Some checks couldn&apos;t see every invoice</Trans>
+        ) : undefined
+      }
       issueSummary={groupSummary(issues)}>
       <ul className="border-border flex flex-col gap-1 border-t p-1.5">
         {issues.map((issue, index) => (
           <IssueRow key={`${issue.key}-${index}`} issue={issue} ctx={ctx} />
         ))}
       </ul>
-      <PassingLine passing={passing} failedToRun={failedToRun} isLoading={isLoading} />
+      <PassingLine passing={passing} failed={failed} partial={partial} isLoading={isLoading} />
     </AttentionBannerShell>
   );
 }

@@ -1,3 +1,4 @@
+import { getBillingMode } from '../../lib/payment-terms';
 import { getPaymentMethodDisplayName, isDefaultPaymentMethod } from '../../utils';
 import { CardBrandIcon, formatCardLabel } from '../card-brand-icon';
 import {
@@ -66,19 +67,14 @@ export function BillingAccountPaymentCard({ orgName, account, terms }: PaymentCa
       <SectionCard
         title={<Trans>Payment</Trans>}
         contentClassName="flex flex-col gap-4"
-        action={
-          // With no terms, the Grant button sits in the terms summary instead.
-          terms.current ? (
-            <Button
-              type="tertiary"
-              theme="outline"
-              size="small"
-              onClick={() => terms.dialogs.setGrantOpen(true)}>
-              <Trans>Grant terms</Trans>
-            </Button>
-          ) : undefined
-        }>
-        {terms.isLoading ? <Skeleton className="h-5 w-48 rounded" /> : <BilledBy terms={terms} />}
+        // Grant sits in the terms summary when there are none; existing terms
+        // are changed or ended there, so the header has no action.
+      >
+        {terms.isLoading ? (
+          <Skeleton className="h-5 w-48 rounded" />
+        ) : (
+          <BilledBy account={account} terms={terms} />
+        )}
 
         {methodsLoading ? (
           <Skeleton className="h-14 w-full rounded-md" />
@@ -120,8 +116,9 @@ export function BillingAccountPaymentCard({ orgName, account, terms }: PaymentCa
   );
 }
 
-function BilledBy({ terms }: { terms: PaymentTermsState }) {
+function BilledBy({ account, terms }: { account: BillingAccount; terms: PaymentTermsState }) {
   const { billingStatus } = terms;
+  const mode = getBillingMode(account);
   return (
     <div className="flex flex-wrap items-center gap-2">
       <Text as="span" size="sm" textColor="muted">
@@ -132,11 +129,12 @@ function BilledBy({ terms }: { terms: PaymentTermsState }) {
         message={terms.billingStatusLabel[billingStatus]}
         tooltip={terms.paymentReady?.message}
       />
-      {billingStatus === 'card' ? (
+      {/* A failing card is still card billing, but nothing is being charged. */}
+      {mode === 'card' && billingStatus !== 'card-failing' ? (
         <Text as="span" size="sm" textColor="muted">
           <Trans>auto-charged when invoiced</Trans>
         </Text>
-      ) : billingStatus === 'invoice' ? (
+      ) : mode === 'invoice' ? (
         <Text as="span" size="sm" textColor="muted">
           <Trans>pays invoices on terms</Trans>
         </Text>

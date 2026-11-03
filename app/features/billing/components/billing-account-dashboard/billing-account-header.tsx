@@ -1,4 +1,4 @@
-import { getBillingStatus, getPaymentReadyCondition } from '../../lib/payment-terms';
+import { getBillingMode } from '../../lib/payment-terms';
 import { getBillingAccountDisplayName } from '../../utils';
 import { AccountStatusBadge } from './account-status-badge';
 import { InlineDate } from './card-parts';
@@ -48,15 +48,15 @@ function MetaItem({ icon, children }: { icon: typeof Hash; children: ReactNode }
 }
 
 function BilledBy({ account }: { account: ComMiloapisBillingV1Alpha1BillingAccount }) {
-  const status = getBillingStatus(getPaymentReadyCondition(account));
-  if (status === 'invoice') {
+  const mode = getBillingMode(account);
+  if (mode === 'invoice') {
     return (
       <MetaItem icon={FileText}>
         <Trans>Billed by invoice</Trans>
       </MetaItem>
     );
   }
-  if (status === 'card' || status === 'card-failing') {
+  if (mode === 'card') {
     return (
       <MetaItem icon={CreditCard}>
         <Trans>Pays by card</Trans>

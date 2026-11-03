@@ -5,6 +5,7 @@ import {
   getTopMeter,
   type ServiceSpend,
 } from '../../lib/account-usage';
+import { getAccountCurrency } from '../../utils';
 import { CardLink, CardMessage, ShareBar, InlineDate } from './card-parts';
 import { useAccountUsageSpend } from './use-account-dashboard';
 import { SectionCard } from '@/features/milo';
@@ -48,7 +49,7 @@ const CHART_HEIGHT = 200;
  * (opening on the highest spend) and spend by service.
  */
 export function BillingAccountUsageCard({ orgName, account, now }: UsageCardProps) {
-  const { current, isLoading, isError } = useAccountUsageSpend(orgName, account, now);
+  const { current, isLoading, isError } = useAccountUsageSpend(orgName, account);
   const progress = useMemo(
     () => getCycleProgress(account.spec?.paymentTerms, now),
     [account.spec?.paymentTerms, now]
@@ -90,13 +91,33 @@ export function BillingAccountUsageCard({ orgName, account, now }: UsageCardProp
           <Trans>No usage recorded this cycle.</Trans>
         </CardMessage>
       ) : (
-        <UsageBody orgName={orgName} view={view} />
+        <UsageBody
+          orgName={orgName}
+          view={view}
+          fallbackCurrency={getAccountCurrency(account)}
+          // The whole cycle, so day 3 of 30 doesn't stretch across the chart.
+          cycleDomain={[progress.start.getTime(), lastDay.getTime()]}
+          now={now}
+        />
       )}
     </SectionCard>
   );
 }
 
-function UsageBody({ orgName, view }: { orgName: string; view: UsageView }) {
+function UsageBody({
+  orgName,
+  view,
+  fallbackCurrency,
+  cycleDomain,
+  now,
+}: {
+  orgName: string;
+  view: UsageView;
+  /** The account's currency, for when no meter is priced. */
+  fallbackCurrency: string;
+  cycleDomain: [number, number];
+  now: Date;
+}) {
   const groups = useMemo(() => getMeterOptionGroups(view), [view]);
   const services = useMemo(() => getServiceSpend(view), [view]);
   const meters = useMemo(() => groups.flatMap((group) => group.meters), [groups]);
@@ -106,7 +127,9 @@ function UsageBody({ orgName, view }: { orgName: string; view: UsageView }) {
     group.meters.some((meter) => meter.id === selected?.id)
   );
   const currency =
-    view.spend?.currency ?? meters.find((meter) => meter.spend)?.spend?.currency ?? 'USD';
+    view.spend?.currency ??
+    meters.find((meter) => meter.spend)?.spend?.currency ??
+    fallbackCurrency;
 
   return (
     <div className="@container/usage">
@@ -191,6 +214,8 @@ function UsageBody({ orgName, view }: { orgName: string; view: UsageView }) {
                   series={selected.series}
                   height={CHART_HEIGHT}
                   showDots={false}
+                  domain={cycleDomain}
+                  marker={now.getTime()}
                 />
               )}
             </>
