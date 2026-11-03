@@ -1,4 +1,5 @@
 import { getPaymentMethodDisplayName, isDefaultPaymentMethod } from '../../utils';
+import { CardBrandIcon, formatCardLabel } from '../card-brand-icon';
 import {
   ArrangementDetails,
   CurrentTermsActions,
@@ -15,7 +16,6 @@ import { useAccountPaymentMethods } from './use-account-dashboard';
 import { BadgeState } from '@/components/badge';
 import { SectionCard } from '@/features/milo';
 import { Button } from '@datum-cloud/datum-ui/button';
-import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
@@ -24,7 +24,6 @@ import type {
   ComMiloapisBillingV1Alpha1BillingAccount,
   ComMiloapisBillingV1Alpha1PaymentMethod,
 } from '@openapi/billing.miloapis.com/v1alpha1';
-import { CreditCard } from 'lucide-react';
 import { useMemo } from 'react';
 
 type BillingAccount = ComMiloapisBillingV1Alpha1BillingAccount;
@@ -41,8 +40,6 @@ const cardExpiry = (card: { expiryMonth?: number; expiryYear?: number }): string
   card.expiryMonth && card.expiryYear
     ? `${String(card.expiryMonth).padStart(2, '0')}/${String(card.expiryYear).slice(-2)}`
     : undefined;
-
-const capitalize = (value: string): string => value.charAt(0).toUpperCase() + value.slice(1);
 
 /**
  * How the account pays: how it is billed, its cards, and its payment terms,
@@ -112,7 +109,8 @@ export function BillingAccountPaymentCard({ orgName, account, terms }: PaymentCa
             {terms.pendingApplication ? (
               <PendingApplicationNotice orgName={orgName} application={terms.pendingApplication} />
             ) : null}
-            <TermsSummary terms={terms} />
+            {/* While the customer's application waits, review it rather than grant terms. */}
+            {terms.current || !terms.pendingApplication ? <TermsSummary terms={terms} /> : null}
             <PaymentTermsHistory orgName={orgName} terms={terms} />
           </>
         )}
@@ -149,17 +147,14 @@ function BilledBy({ terms }: { terms: PaymentTermsState }) {
 
 function PaymentMethodRow({ method, isDefault }: { method: PaymentMethod; isDefault: boolean }) {
   const card = method.status?.details?.card;
-  const brand = card?.brand ? capitalize(card.brand) : t`Card`;
   const expiry = card ? cardExpiry(card) : undefined;
 
   return (
     <li className="flex items-center gap-3 rounded-md border px-3 py-2.5">
-      <span className="bg-muted text-muted-foreground flex size-9 shrink-0 items-center justify-center rounded">
-        <Icon icon={CreditCard} size={16} aria-hidden />
-      </span>
+      <CardBrandIcon brand={card?.brand} />
       <div className="flex min-w-0 flex-1 flex-col">
         <Text size="sm" weight="medium" ellipsis>
-          {card?.last4 ? `${brand} •••• ${card.last4}` : getPaymentMethodDisplayName(method)}
+          {formatCardLabel(card, getPaymentMethodDisplayName(method))}
         </Text>
         <Text size="xs" textColor="muted" ellipsis>
           {[
@@ -181,7 +176,7 @@ function TermsSummary({ terms }: { terms: PaymentTermsState }) {
 
   if (current && currentPhase) {
     return (
-      <div className="bg-muted/50 flex flex-col gap-3 rounded-md p-3">
+      <div className="bg-background flex flex-col gap-3 rounded-md p-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <Text size="sm" weight="medium">
@@ -201,7 +196,7 @@ function TermsSummary({ terms }: { terms: PaymentTermsState }) {
   }
 
   return (
-    <div className="bg-muted/50 flex flex-wrap items-center justify-between gap-3 rounded-md p-3">
+    <div className="bg-background flex flex-wrap items-center justify-between gap-3 rounded-md p-3">
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
         <Text size="sm" weight="medium">
           <Trans>No payment terms</Trans>

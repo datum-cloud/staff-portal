@@ -1,15 +1,18 @@
 import {
+  getAccountCurrency,
   getCriticalFailedPaymentMethod,
+  getPaymentMethodDisplayName,
   getPaymentMethodsForAccount,
   isDefaultPaymentMethod,
   type Invoice,
 } from '../utils';
 import {
+  DAY_MS,
   getAmountOwed,
   getDaysOverdue,
   isPastDueInvoice,
-  isUnpaidInvoice,
   parseAmount,
+  summarizeInvoices,
 } from './invoice-summary';
 import { getBillingStatus, getPaymentReadyCondition } from './payment-terms';
 import type {
@@ -33,16 +36,22 @@ type BillingEntitlement = ComMiloapisBillingV1Alpha1BillingEntitlement;
 export const UNUSUAL_INVOICE_FACTOR = 100;
 /** Fewer other non-zero invoices than this and there is no baseline to compare with. */
 export const UNUSUAL_INVOICE_MIN_HISTORY = 3;
-/** Open balance, in the account currency, above which a card charge is likely to be declined. */
-export const LARGE_CARD_BALANCE = 10_000;
+/**
+ * Open balance above which a card charge is likely to be declined, per
+ * currency. Accounts in other currencies skip the check: one figure means
+ * very different amounts in, say, USD and JPY.
+ */
+export const LARGE_CARD_BALANCE: Readonly<Record<string, number>> = {
+  USD: 10_000,
+  EUR: 10_000,
+  GBP: 10_000,
+};
 /** Cards expiring within this many days get a warning. */
 export const CARD_EXPIRY_WARNING_DAYS = 30;
 /** Usage spend this many times last cycle's at the same point is a spike. */
 export const USAGE_SPIKE_FACTOR = 5;
 /** Ignore spikes from a tiny base: last cycle's spend at this point must reach this. */
 export const USAGE_SPIKE_MIN_PREVIOUS = 1;
-
-const DAY_MS = 24 * 60 * 60 * 1000;
 
 export type HealthSeverity = 'error' | 'warning' | 'info';
 
@@ -93,6 +102,7 @@ export type HealthIssue =
       key: 'cardExpiry';
       severity: 'error' | 'warning';
       paymentMethodName: string;
+      brand?: string;
       last4?: string;
       expiresAt: string;
       expired: boolean;
@@ -100,7 +110,8 @@ export type HealthIssue =
   | {
       key: 'creditLimit';
       severity: 'warning';
-      outstanding: number;
+      /** Spend so far this cycle. */
+      cycleSpend: number;
       creditLimit: number;
       currency: string;
     }
@@ -145,7 +156,12 @@ export interface AccountHealth {
 
 type Check = (inputs: AccountHealthInputs) => HealthIssue[] | null;
 
-const accountCurrency = (account: BillingAccount): string => account.spec?.currencyCode ?? 'USD';
+/**
+ * Spend this cycle is a spike: at least USAGE_SPIKE_FACTOR × last cycle's
+ * at the same point, once last cycle's reached USAGE_SPIKE_MIN_PREVIOUS.
+ */
+export const isUsageSpike = ({ current, previous }: UsageSpendComparison): boolean =>
+  previous >= USAGE_SPIKE_MIN_PREVIOUS && current / previous >= USAGE_SPIKE_FACTOR;
 
 /** Billed by card: no invoice terms in effect. */
 const isCardBilled = (account: BillingAccount): boolean =>
@@ -158,14 +174,6 @@ const median = (values: readonly number[]): number => {
   return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
 };
 
-const outstandingOf = (invoices: readonly Invoice[]) => {
-  const unpaid = invoices.filter(isUnpaidInvoice);
-  return {
-    outstanding: unpaid.reduce((sum, invoice) => sum + getAmountOwed(invoice), 0),
-    unpaidCount: unpaid.length,
-  };
-};
-
 const checkInvoicePastDue: Check = ({ account, invoices, now }) =>
   invoices
     ? invoices.filter(isPastDueInvoice).map((invoice) => ({
@@ -173,7 +181,7 @@ const checkInvoicePastDue: Check = ({ account, invoices, now }) =>
         severity: 'error',
         invoiceName: invoice.metadata?.name ?? '',
         amount: getAmountOwed(invoice),
-        currency: invoice.status?.currencyCode ?? accountCurrency(account),
+        currency: invoice.status?.currencyCode ?? getAccountCurrency(account),
         daysOverdue: getDaysOverdue(invoice, now),
         dueDate: invoice.status?.dueDate,
       }))
@@ -181,11 +189,13 @@ const checkInvoicePastDue: Check = ({ account, invoices, now }) =>
 
 /**
  * Invoices whose total is over UNUSUAL_INVOICE_FACTOR × the median of the
- * account's other non-zero invoices, once there are enough of them.
+ * account's other non-zero invoices, once there are enough of them. Void
+ * invoices are left out: voiding is how a bad total gets fixed.
  */
 const checkInvoiceUnusual: Check = ({ account, invoices }) => {
   if (!invoices) return null;
   const withTotals = invoices
+    .filter((invoice) => invoice.status?.phase !== 'Void')
     .map((invoice) => ({ invoice, total: parseAmount(invoice.status?.total) }))
     .filter(({ total }) => total > 0);
 
@@ -207,23 +217,24 @@ const checkInvoiceUnusual: Check = ({ account, invoices }) => {
       invoiceNames: unusual.map(({ invoice }) => invoice.metadata?.name ?? ''),
       maxTotal: Math.max(...unusual.map(({ total }) => total)),
       median: median(withTotals.map(({ total }) => total)),
-      currency: accountCurrency(account),
+      currency: getAccountCurrency(account),
     },
   ];
 };
 
-const checkLargeCardBalance: Check = ({ account, invoices }) => {
+const checkLargeCardBalance: Check = ({ account, invoices, now }) => {
   if (!invoices) return null;
-  if (!isCardBilled(account)) return [];
-  const { outstanding, unpaidCount } = outstandingOf(invoices);
-  return outstanding > LARGE_CARD_BALANCE
+  const threshold = LARGE_CARD_BALANCE[getAccountCurrency(account)];
+  if (!isCardBilled(account) || threshold === undefined) return [];
+  const { outstanding, unpaidCount } = summarizeInvoices(invoices, now);
+  return outstanding > threshold
     ? [
         {
           key: 'largeCardBalance',
           severity: 'warning',
           outstanding,
           unpaidCount,
-          currency: accountCurrency(account),
+          currency: getAccountCurrency(account),
         },
       ]
     : [];
@@ -255,7 +266,7 @@ const checkPaymentMethod: Check = ({ account, paymentMethods }) => {
         key: 'paymentMethod',
         severity: 'error',
         reason: 'failed',
-        paymentMethodName: failed.spec?.displayName || failed.metadata?.name,
+        paymentMethodName: getPaymentMethodDisplayName(failed),
         failureMessage: failed.status?.failureMessage || failed.status?.failureReason,
       },
     ];
@@ -283,7 +294,8 @@ const checkCardExpiry: Check = ({ account, paymentMethods, now }) => {
     {
       key: 'cardExpiry',
       severity: expired ? 'error' : 'warning',
-      paymentMethodName: method.spec?.displayName || method.metadata?.name || '',
+      paymentMethodName: getPaymentMethodDisplayName(method),
+      brand: card.brand,
       last4: card.last4,
       expiresAt: expiresAt.toISOString(),
       expired,
@@ -291,20 +303,20 @@ const checkCardExpiry: Check = ({ account, paymentMethods, now }) => {
   ];
 };
 
-const checkCreditLimit: Check = ({ account, invoices }) => {
+/** The credit limit is the most the account should spend in one billing cycle. */
+const checkCreditLimit: Check = ({ account, usage }) => {
   const limitText = account.status?.paymentArrangement?.invoice?.creditLimit;
   if (!limitText) return [];
-  if (!invoices) return null;
+  if (!usage) return null;
   const creditLimit = parseAmount(limitText);
-  const { outstanding } = outstandingOf(invoices);
-  return creditLimit > 0 && outstanding > creditLimit
+  return creditLimit > 0 && usage.current > creditLimit
     ? [
         {
           key: 'creditLimit',
           severity: 'warning',
-          outstanding,
+          cycleSpend: usage.current,
           creditLimit,
-          currency: accountCurrency(account),
+          currency: usage.currency,
         },
       ]
     : [];
@@ -312,18 +324,15 @@ const checkCreditLimit: Check = ({ account, invoices }) => {
 
 const checkUsageSpike: Check = ({ usage }) => {
   if (!usage) return null;
-  const { current, previous, currency } = usage;
-  if (previous < USAGE_SPIKE_MIN_PREVIOUS) return [];
-  const factor = current / previous;
-  return factor >= USAGE_SPIKE_FACTOR
+  return isUsageSpike(usage)
     ? [
         {
           key: 'usageSpike',
           severity: 'warning',
-          currentSpend: current,
-          previousSpend: previous,
-          factor,
-          currency,
+          currentSpend: usage.current,
+          previousSpend: usage.previous,
+          factor: usage.current / usage.previous,
+          currency: usage.currency,
         },
       ]
     : [];

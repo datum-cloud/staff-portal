@@ -21,13 +21,14 @@ import {
   useBillingAccountDetailQuery,
   useBillingEntitlementForAccountQuery,
 } from '@/resources/request/client';
+import { billingAccountRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
 import { useState } from 'react';
-import { type MetaFunction } from 'react-router';
+import { useNavigate, type MetaFunction } from 'react-router';
 
 export const meta: MetaFunction = ({ matches }) => {
   const { displayName } = getBillingAccountDetailMetadata(matches);
@@ -50,7 +51,15 @@ export default function Page() {
     );
   }
 
-  return <Dashboard orgName={orgName} orgDisplayName={orgDisplayName} loaderAccount={account} />;
+  return (
+    <Dashboard
+      // A new account starts the cards afresh: meter choice, search, dialogs.
+      key={account.metadata?.name}
+      orgName={orgName}
+      orgDisplayName={orgDisplayName}
+      loaderAccount={account}
+    />
+  );
 }
 
 /**
@@ -70,6 +79,7 @@ function Dashboard({
   // Fixed for the page's life: the usage comparison's query key depends on it.
   const [now] = useState(() => new Date());
   const env = useEnv();
+  const navigate = useNavigate();
 
   const accountQuery = useBillingAccountDetailQuery(orgName, accountName, loaderAccount);
   const account = accountQuery.data ?? loaderAccount;
@@ -81,20 +91,29 @@ function Dashboard({
   const entitlementQuery = useBillingEntitlementForAccountQuery(orgName, accountName);
   const [switchOfferOpen, setSwitchOfferOpen] = useState(false);
 
+  const pendingApplicationName = paymentTerms.pendingApplication?.metadata?.name;
   const headerActions: BillingAccountHeaderAction[] = [
-    paymentTerms.current
+    // While the customer's application waits, review it rather than grant terms.
+    !paymentTerms.current && pendingApplicationName
       ? {
           key: 'payment-terms',
-          label: <Trans>Change payment terms</Trans>,
-          disabled: paymentTerms.isLoading,
-          onSelect: () => paymentTerms.dialogs.setChangeOpen(true),
+          label: <Trans>Review terms application</Trans>,
+          onSelect: () =>
+            navigate(billingAccountRoutes.applications.detail(orgName, pendingApplicationName)),
         }
-      : {
-          key: 'payment-terms',
-          label: <Trans>Grant payment terms</Trans>,
-          disabled: paymentTerms.isLoading,
-          onSelect: () => paymentTerms.dialogs.setGrantOpen(true),
-        },
+      : paymentTerms.current
+        ? {
+            key: 'payment-terms',
+            label: <Trans>Change payment terms</Trans>,
+            disabled: paymentTerms.isLoading,
+            onSelect: () => paymentTerms.dialogs.setChangeOpen(true),
+          }
+        : {
+            key: 'payment-terms',
+            label: <Trans>Grant payment terms</Trans>,
+            disabled: paymentTerms.isLoading,
+            onSelect: () => paymentTerms.dialogs.setGrantOpen(true),
+          },
     {
       key: 'offer',
       label: <Trans>Switch offer</Trans>,
@@ -112,7 +131,6 @@ function Dashboard({
         account={account}
         cloudPortalUrl={cloudPortalUrl}
         actions={headerActions}
-        now={now}
       />
 
       <BillingAccountAttentionBanner

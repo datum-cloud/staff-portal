@@ -3,7 +3,12 @@ import {
   type AccountHealth,
   type UsageSpendComparison,
 } from '../../lib/account-health';
-import { getInvoicesForAccount, getPaymentMethodsForAccount, type Invoice } from '../../utils';
+import {
+  getAccountCurrency,
+  getInvoicesForAccount,
+  getPaymentMethodsForAccount,
+  type Invoice,
+} from '../../utils';
 import { getPreviousCycleCutoff } from '@/modules/billing/billing-cycle';
 import type { OrgUsageDashboardData } from '@/modules/billing/usage.types';
 import {
@@ -86,6 +91,8 @@ export interface AccountUsageSpend extends LoadState {
   current?: OrgUsageDashboardData;
   /** Spend so far against last cycle's at the same point; `undefined` until both load. */
   comparison?: UsageSpendComparison;
+  /** Last cycle's figures are still loading; `isLoading` covers this cycle only. */
+  isComparisonLoading: boolean;
 }
 
 /**
@@ -119,26 +126,33 @@ export function useAccountUsageSpend(
     return {
       current: currentSpend,
       previous: previousSpend,
-      currency: current.data?.usage.spend?.currency ?? account.spec?.currencyCode ?? 'USD',
+      currency: current.data?.usage.spend?.currency ?? getAccountCurrency(account),
     };
-  }, [current.data, previous.data, account.spec?.currencyCode]);
+  }, [current.data, previous.data, account]);
 
   return {
     current: current.data,
     comparison,
-    isLoading: current.isLoading || previous.isLoading,
+    isLoading: current.isLoading,
+    isComparisonLoading: previous.isLoading,
     isError: current.isError,
   };
 }
 
+/** Most projects to fetch spend for at once: each is a full usage dashboard request. */
+export const MAX_PROJECT_SPEND_REQUESTS = 25;
+
 export interface ProjectSpend extends LoadState {
   /** This cycle's spend; `undefined` while loading or when it couldn't be priced. */
   amount?: number;
+  /** Past MAX_PROJECT_SPEND_REQUESTS, so not fetched. */
+  skipped?: boolean;
 }
 
 /**
  * This cycle's spend for each project, scoped to the account. Keyed by
- * project name; each project loads and fails on its own.
+ * project name; each project loads and fails on its own. Only the first
+ * MAX_PROJECT_SPEND_REQUESTS projects are fetched.
  */
 export function useAccountProjectSpend(
   orgName: string,
@@ -146,20 +160,23 @@ export function useAccountProjectSpend(
   projects: readonly string[]
 ): ReadonlyMap<string, ProjectSpend> {
   const accountName = account.metadata?.name ?? '';
-  const results = useOrgUsageDashboardQueries(orgName, projects, 'current', {
+  const fetched = useMemo(() => projects.slice(0, MAX_PROJECT_SPEND_REQUESTS), [projects]);
+  const results = useOrgUsageDashboardQueries(orgName, fetched, 'current', {
     billingAccount: accountName,
   });
   return new Map(
-    projects.map((project, index) => {
+    projects.map((project, index): [string, ProjectSpend] => {
       const result = results[index];
-      return [
-        project,
-        {
-          amount: spendAmount(result?.data),
-          isLoading: result?.isLoading ?? true,
-          isError: result?.isError ?? false,
-        },
-      ];
+      return result
+        ? [
+            project,
+            {
+              amount: spendAmount(result.data),
+              isLoading: result.isLoading,
+              isError: result.isError,
+            },
+          ]
+        : [project, { isLoading: false, isError: false, skipped: true }];
     })
   );
 }
@@ -205,6 +222,10 @@ export function useAccountHealth(
   return {
     health,
     isLoading:
-      invoices.isLoading || paymentMethods.isLoading || entitlement.isLoading || usage.isLoading,
+      invoices.isLoading ||
+      paymentMethods.isLoading ||
+      entitlement.isLoading ||
+      usage.isLoading ||
+      usage.isComparisonLoading,
   };
 }

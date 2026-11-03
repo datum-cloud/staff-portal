@@ -1,6 +1,7 @@
 import type { Invoice } from '../utils';
 import {
   getAccountHealth,
+  isUsageSpike,
   LARGE_CARD_BALANCE,
   type AccountHealthInputs,
   type HealthIssue,
@@ -161,19 +162,37 @@ describe('invoiceUnusual', () => {
       })
     ).toEqual([]);
   });
+  it('leaves out void invoices', () => {
+    expect(
+      issuesFor({
+        invoices: [
+          paid('a', '10'),
+          paid('b', '12'),
+          paid('c', '11'),
+          invoice('voided', { phase: 'Void', total: '1101' }),
+        ],
+      })
+    ).toEqual([]);
+  });
 });
 
 describe('largeCardBalance', () => {
   const owing = (amountDue: string) => [invoice('open', { phase: 'Open', amountDue })];
 
   it('warns above the threshold on a card-billed account', () => {
-    expect(keysOf(issuesFor({ invoices: owing(String(LARGE_CARD_BALANCE + 1)) }))).toEqual([
+    expect(keysOf(issuesFor({ invoices: owing(String(LARGE_CARD_BALANCE.USD + 1)) }))).toEqual([
       'largeCardBalance',
     ]);
   });
 
   it('stays quiet at the threshold', () => {
-    expect(issuesFor({ invoices: owing(String(LARGE_CARD_BALANCE)) })).toEqual([]);
+    expect(issuesFor({ invoices: owing(String(LARGE_CARD_BALANCE.USD)) })).toEqual([]);
+  });
+
+  it('skips currencies without a threshold', () => {
+    expect(
+      issuesFor({ account: account({ currencyCode: 'JPY' }), invoices: owing('5000000') })
+    ).toEqual([]);
   });
 
   it('ignores accounts on invoice terms', () => {
@@ -185,7 +204,7 @@ describe('largeCardBalance', () => {
       }
     );
     expect(
-      keysOf(issuesFor({ account: onTerms, invoices: owing(String(LARGE_CARD_BALANCE * 2)) }))
+      keysOf(issuesFor({ account: onTerms, invoices: owing(String(LARGE_CARD_BALANCE.USD * 2)) }))
     ).toEqual([]);
   });
 });
@@ -226,22 +245,43 @@ describe('cardExpiry', () => {
 });
 
 describe('creditLimit', () => {
-  it('warns when the open balance exceeds the arrangement credit limit', () => {
-    const onTerms = account(
-      {},
-      {
-        phase: 'Ready',
-        paymentArrangement: { name: 'terms', type: 'Invoice', invoice: { creditLimit: '500' } },
-      }
-    );
+  const onTerms = account(
+    {},
+    {
+      phase: 'Ready',
+      paymentArrangement: { name: 'terms', type: 'Invoice', invoice: { creditLimit: '500' } },
+    }
+  );
+
+  it('warns when spend this cycle exceeds the per-cycle credit limit', () => {
     expect(
-      keysOf(
-        issuesFor({
-          account: onTerms,
-          invoices: [invoice('open', { phase: 'Open', amountDue: '600' })],
-        })
-      )
-    ).toEqual(['creditLimit']);
+      issuesFor({ account: onTerms, usage: { current: 600, previous: 400, currency: 'USD' } })
+    ).toEqual([
+      {
+        key: 'creditLimit',
+        severity: 'warning',
+        cycleSpend: 600,
+        creditLimit: 500,
+        currency: 'USD',
+      },
+    ]);
+  });
+
+  it('ignores unpaid invoices from earlier cycles', () => {
+    expect(
+      issuesFor({
+        account: onTerms,
+        invoices: [
+          invoice('sep', { phase: 'Open', amountDue: '400' }),
+          invoice('oct', { phase: 'Open', amountDue: '400' }),
+        ],
+        usage: { current: 100, previous: 100, currency: 'USD' },
+      })
+    ).toEqual([]);
+  });
+
+  it('waits for usage', () => {
+    expect(getAccountHealth({ account: onTerms, now: NOW }).pending).toContain('creditLimit');
   });
 });
 
@@ -254,6 +294,17 @@ describe('usageSpike', () => {
 
   it('ignores a tiny previous base', () => {
     expect(issuesFor({ usage: { current: 18.42, previous: 0.92, currency: 'USD' } })).toEqual([]);
+  });
+});
+
+describe('isUsageSpike', () => {
+  it.each([
+    [50, 10, true],
+    [49, 10, false],
+    [3, 0.5, false],
+    [5, 1, true],
+  ])('current %s vs previous %s is %s', (current, previous, expected) => {
+    expect(isUsageSpike({ current, previous, currency: 'USD' })).toBe(expected);
   });
 });
 

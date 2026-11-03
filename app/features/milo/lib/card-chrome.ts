@@ -10,6 +10,14 @@ export const SECTION_CARD_CHROME =
   'bg-card text-card-foreground rounded-xl border border-card-border';
 
 /**
+ * The nested table frame inside a `TableCard`: full width of the padded
+ * card body, `rounded-sm` with the mist border. Exported for a framed table
+ * that sits below other content in an unframed `TableCard`.
+ */
+export const TABLE_CARD_FRAME_CLASS =
+  'dark:border-border overflow-hidden rounded-sm border border-[#efefed]';
+
+/**
  * Figma mist table header / dense cell classes — shared by ListTable and
  * TableCard-embedded DataTables so cards-with-tables match list chrome.
  *

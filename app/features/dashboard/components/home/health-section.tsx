@@ -1,77 +1,19 @@
+import {
+  StatTile,
+  StatTileHeadline,
+  StatTileMessage,
+  StatTileSkeleton,
+} from '@/components/stat-tile';
 import { useClusterHealth } from '@/features/dashboard/hooks/use-cluster-health';
 import { useEmailDelivery } from '@/features/dashboard/hooks/use-platform-home';
 import type { QuotaBucketRow } from '@/features/dashboard/hooks/use-quota-utilization-widget';
 import { emailActivityRoutes, orgRoutes } from '@/utils/config/routes.config';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { Icon } from '@datum-cloud/datum-ui/icons';
-import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { Trans } from '@lingui/react/macro';
 import { CircleCheck, CircleX, TriangleAlert } from 'lucide-react';
-import type { ReactNode } from 'react';
 import { Link } from 'react-router';
-
-function HealthCard({
-  title,
-  windowLabel,
-  href,
-  children,
-}: {
-  title: ReactNode;
-  windowLabel?: ReactNode;
-  href?: string;
-  children: ReactNode;
-}) {
-  const card = (
-    <Card size="sm" className={cn('h-full w-full', href && 'hover:bg-muted/30 transition-colors')}>
-      <CardContent className="flex min-w-0 flex-col gap-2">
-        <div className="flex h-4 items-center justify-between gap-2">
-          <Text size="xs" weight="medium" textColor="muted">
-            {title}
-          </Text>
-          {windowLabel && (
-            <Text size="5xs" textColor="muted">
-              {windowLabel}
-            </Text>
-          )}
-        </div>
-        {children}
-      </CardContent>
-    </Card>
-  );
-
-  if (!href) return card;
-  return (
-    <Link
-      to={href}
-      className="focus-visible:ring-ring block h-full rounded-xl focus-visible:ring-2 focus-visible:outline-none">
-      {card}
-    </Link>
-  );
-}
-
-function CardSkeleton() {
-  return (
-    <>
-      <Skeleton className="h-8 w-20 rounded" />
-      <Skeleton className="h-4 w-32 rounded" />
-    </>
-  );
-}
-
-function Headline({ children }: { children: ReactNode }) {
-  return (
-    <Text
-      as="div"
-      size="2xl"
-      weight="semibold"
-      textColor="default"
-      className="flex h-8 items-center gap-2 tabular-nums">
-      {children}
-    </Text>
-  );
-}
 
 function ClustersCard({ enabled }: { enabled: boolean }) {
   const { data, isLoading, isError } = useClusterHealth({ enabled });
@@ -86,20 +28,20 @@ function ClustersCard({ enabled }: { enabled: boolean }) {
   );
 
   return (
-    <HealthCard title={<Trans>Clusters</Trans>}>
+    <StatTile title={<Trans>Clusters</Trans>}>
       {!enabled ? (
-        <Text size="sm" textColor="muted" className="flex h-8 items-center">
+        <StatTileMessage>
           <Trans>Cluster metrics aren&apos;t connected here.</Trans>
-        </Text>
+        </StatTileMessage>
       ) : isLoading ? (
-        <CardSkeleton />
+        <StatTileSkeleton />
       ) : isError || !summary ? (
-        <Text size="sm" textColor="muted" className="flex h-8 items-center">
+        <StatTileMessage>
           <Trans>Couldn&apos;t load cluster health.</Trans>
-        </Text>
+        </StatTileMessage>
       ) : (
         <>
-          <Headline>
+          <StatTileHeadline>
             <Icon
               icon={summary.unhealthy === 0 ? CircleCheck : CircleX}
               size={18}
@@ -107,7 +49,7 @@ function ClustersCard({ enabled }: { enabled: boolean }) {
               aria-hidden
             />
             {summary.healthy}/{summary.total}
-          </Headline>
+          </StatTileHeadline>
           <Text size="xs" textColor="muted" ellipsis>
             {summary.unhealthy === 0 ? (
               <Trans>All clusters healthy</Trans>
@@ -117,7 +59,7 @@ function ClustersCard({ enabled }: { enabled: boolean }) {
           </Text>
         </>
       )}
-    </HealthCard>
+    </StatTile>
   );
 }
 
@@ -133,14 +75,14 @@ function QuotaCard({ buckets, isLoading }: { buckets: QuotaBucketRow[]; isLoadin
   const top = buckets.slice(0, 3);
 
   return (
-    <HealthCard title={<Trans>Quota hot spots</Trans>} windowLabel={<Trans>≥ 70% used</Trans>}>
+    <StatTile title={<Trans>Quota hot spots</Trans>} windowLabel={<Trans>≥ 70% used</Trans>}>
       {isLoading ? (
-        <CardSkeleton />
+        <StatTileSkeleton />
       ) : top.length === 0 ? (
         <>
-          <Headline>
+          <StatTileHeadline>
             <Icon icon={CircleCheck} size={18} className="text-green-600" aria-hidden />0
-          </Headline>
+          </StatTileHeadline>
           <Text size="xs" textColor="muted">
             <Trans>No organization is near a limit</Trans>
           </Text>
@@ -169,7 +111,7 @@ function QuotaCard({ buckets, isLoading }: { buckets: QuotaBucketRow[]; isLoadin
           ))}
         </ul>
       )}
-    </HealthCard>
+    </StatTile>
   );
 }
 
@@ -180,24 +122,24 @@ function EmailCard() {
   const rate = settled > 0 ? (data!.delivered / settled) * 100 : null;
 
   return (
-    <HealthCard
+    <StatTile
       title={<Trans>Email delivery</Trans>}
       windowLabel={<Trans>Last 24h</Trans>}
       href={emailActivityRoutes.list()}>
       {isLoading ? (
-        <CardSkeleton />
+        <StatTileSkeleton />
       ) : isError || !data ? (
-        <Text size="sm" textColor="muted" className="flex h-8 items-center">
+        <StatTileMessage>
           <Trans>Couldn&apos;t load email activity.</Trans>
-        </Text>
+        </StatTileMessage>
       ) : (
         <>
-          <Headline>
+          <StatTileHeadline>
             {data.failed > 0 && (
               <Icon icon={TriangleAlert} size={18} className="text-amber-500" aria-hidden />
             )}
             {rate == null ? '—' : `${rate.toFixed(1)}%`}
-          </Headline>
+          </StatTileHeadline>
           <Text size="xs" textColor="muted" className="tabular-nums">
             {sent === 0 ? (
               <Trans>No emails sent</Trans>
@@ -210,7 +152,7 @@ function EmailCard() {
           </Text>
         </>
       )}
-    </HealthCard>
+    </StatTile>
   );
 }
 

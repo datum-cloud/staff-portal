@@ -1,3 +1,4 @@
+import { DateTime } from '@/components/date';
 import type { InvoiceFrequency } from '@/modules/billing/billing-cycle';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Icon } from '@datum-cloud/datum-ui/icons';
@@ -6,7 +7,7 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
 import { ArrowRight } from 'lucide-react';
-import type { ReactNode } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 
 /** Shared pieces for the dashboard's section and table cards. */
 
@@ -21,6 +22,18 @@ export const frequencyLabel = (frequency: InvoiceFrequency | undefined): string 
   }
 };
 
+/**
+ * A date inside a line of text. `DateTime` sets its own `text-sm`, which
+ * reads larger or smaller than the text around it; this inherits that size.
+ * The tooltip is always the detailed one: UTC, local time, relative and
+ * timestamp.
+ */
+export function InlineDate(props: Omit<ComponentProps<typeof DateTime>, 'className' | 'tooltip'>) {
+  return (
+    <DateTime {...props} tooltip="detailed" className="text-[length:inherit] leading-[inherit]" />
+  );
+}
+
 /** A card header's "go somewhere" link, e.g. "Open usage dashboard →". */
 export function CardLink({ href, children }: { href: string; children: ReactNode }) {
   return (
@@ -33,20 +46,6 @@ export function CardLink({ href, children }: { href: string; children: ReactNode
       iconPosition="right">
       {children}
     </LinkButton>
-  );
-}
-
-/** Title plus a muted subtitle line, for cards whose header has no description slot. */
-export function CardHeading({ title, subtitle }: { title: ReactNode; subtitle?: ReactNode }) {
-  return (
-    <span className="flex flex-col gap-1">
-      <span>{title}</span>
-      {subtitle ? (
-        <Text as="span" size="sm" textColor="muted" weight="normal">
-          {subtitle}
-        </Text>
-      ) : null}
-    </span>
   );
 }
 
@@ -82,7 +81,7 @@ export function ShareBar({
 }) {
   const percent = max > 0 ? Math.min(100, Math.max(0, (value / max) * 100)) : 0;
   return (
-    <div className={cn('bg-muted h-1.5 w-full overflow-hidden rounded-full', className)}>
+    <div className={cn('bg-foreground/10 h-1.5 w-full overflow-hidden rounded-full', className)}>
       <div className="bg-primary h-full rounded-full" style={{ width: `${percent}%` }} />
     </div>
   );
@@ -92,18 +91,6 @@ export function ShareBar({
 export function SectionAnchor({ id, children }: { id: string; children: ReactNode }) {
   return (
     <div id={id} className="scroll-mt-4">
-      {children}
-    </div>
-  );
-}
-
-/**
- * The nested table frame `TableCard` draws, for a `TableCard` with
- * `framed={false}` that puts other content above its table.
- */
-export function TableFrame({ children }: { children: ReactNode }) {
-  return (
-    <div className="dark:border-border w-full min-w-0 overflow-hidden rounded-sm border border-[#efefed]">
       {children}
     </div>
   );

@@ -53,13 +53,14 @@ The route loader (`billingAccountDetailBundleRequest`) also waits for the accoun
 - **Route.** `detail/index.tsx` composes the dashboard; the layout loader and `shared.ts` are slimmed to match.
 - **Tokens and i18n.** datum-ui theme tokens and existing class constants only (`SECTION_CARD_CHROME`, `EMBEDDED_TABLE_*`, `STATUS_BADGE_CLASS`). All strings go through Lingui.
 - **Design files.** Commit `docs/design/` with the branch.
+- **Stale invoices** (added at the developer's request after reviewing the build). `main` is merged in for #787's `isStaleInvoice` filter, so every card that reads invoices skips Amberflo's and the older OpenMeter provider's leftover invoices.
+- **Review polish** (developer's request after reviewing the build): the payment card shows the card brand marks copied from cloud-portal, and the offer card shows the services the offer prices, its discount and when the account's entitlement became active.
 
 ## Out of Scope
 - Activity policies for Invoice or system (`system:*`) actors in the billing repo, so invoice issued, past-due and payment events won't appear in the feed
 - Invoice estimates (the usage API returns spend to date only)
 - A separate invoices list route ("All invoices" expands in place)
 - Changes to `@datum-cloud/datum-ui` or `@datum-cloud/activity-ui`
-- Stale-invoice filtering (#787). The checks run on whatever list `getInvoicesForAccount` returns, and pick up #787's filter once it merges.
 - Dark-mode-specific design work beyond what the tokens give us
 
 ## Technical Approach

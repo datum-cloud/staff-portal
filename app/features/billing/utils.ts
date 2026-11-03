@@ -2,6 +2,7 @@ import type {
   ComMiloapisBillingV1Alpha1BillingAccount,
   ComMiloapisBillingV1Alpha1BillingAccountBinding,
   ComMiloapisBillingV1Alpha1Invoice,
+  ComMiloapisBillingV1Alpha1Offer,
   ComMiloapisBillingV1Alpha1PaymentMethod,
   ComMiloapisBillingV1Alpha1ServicePricing,
 } from '@openapi/billing.miloapis.com/v1alpha1';
@@ -36,6 +37,14 @@ const phaseToStatus: Record<InvoicePhase, PastInvoiceStatus> = {
   Void: 'void',
 };
 
+/** BadgeState for each invoice status. */
+export const PAST_INVOICE_STATUS_BADGE: Record<PastInvoiceStatus, string> = {
+  paid: 'success',
+  open: 'warning',
+  pastDue: 'error',
+  void: 'pending',
+};
+
 const statusLabels: Record<PastInvoiceStatus, string> = {
   paid: 'Paid',
   open: 'Open',
@@ -43,25 +52,28 @@ const statusLabels: Record<PastInvoiceStatus, string> = {
   void: 'Void',
 };
 
+/**
+ * An amount in its currency with cents, e.g. `$1,250.00`, for invoices,
+ * balances and limits. Usage spend uses `formatCurrency` from the usage
+ * feature instead, which keeps sub-cent precision.
+ */
+export const formatMoney = (amount: number, currencyCode: string | undefined): string => {
+  const currency = currencyCode || 'USD';
+  try {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(amount);
+  } catch {
+    return `${amount} ${currency}`;
+  }
+};
+
 const formatInvoiceAmount = (
   total: string | undefined,
   currencyCode: string | undefined
 ): { display: string; sortKey: number } => {
   const amount = Number.parseFloat(total ?? '');
-  if (Number.isNaN(amount)) {
-    return { display: total ?? '—', sortKey: 0 };
-  }
-  try {
-    return {
-      display: new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: currencyCode ?? 'USD',
-      }).format(amount),
-      sortKey: amount,
-    };
-  } catch {
-    return { display: `${total} ${currencyCode ?? ''}`.trim(), sortKey: amount };
-  }
+  return Number.isNaN(amount)
+    ? { display: total ?? '—', sortKey: 0 }
+    : { display: formatMoney(amount, currencyCode), sortKey: amount };
 };
 
 const formatInvoiceDate = (iso: string | undefined): string => {
@@ -145,6 +157,20 @@ export const invoiceMatchesSearch = (row: PastInvoiceRow, query: string): boolea
   );
 };
 
+/** The account's ISO 4217 currency; billing defaults to USD. */
+export const getAccountCurrency = (account: ComMiloapisBillingV1Alpha1BillingAccount): string =>
+  account.spec?.currencyCode || 'USD';
+
+/**
+ * Days after the invoice date that payment is due. `spec.paymentTerms`
+ * always holds the standard terms; custom terms granted by staff are on
+ * `status.paymentArrangement`.
+ */
+export const getEffectiveNetDays = (
+  account: ComMiloapisBillingV1Alpha1BillingAccount
+): number | undefined =>
+  account.status?.paymentArrangement?.invoice?.netDays ?? account.spec?.paymentTerms?.netDays;
+
 export const BILLING_ACCOUNT_DISPLAY_NAME_ANNOTATION = 'kubernetes.io/display-name';
 
 export const getOrganizationDisplayName = (org: {
@@ -153,6 +179,16 @@ export const getOrganizationDisplayName = (org: {
   org.metadata?.annotations?.[BILLING_ACCOUNT_DISPLAY_NAME_ANNOTATION] ?? org.metadata?.name ?? '';
 
 export const buildOrganizationNamespace = (orgName: string) => `organization-${orgName}`;
+
+/** An Offer's pricing snapshot as a ServicePricing, for the helpers that take one. */
+export const snapshotAsPricing = (
+  snapshot: NonNullable<
+    NonNullable<ComMiloapisBillingV1Alpha1Offer['spec']>['servicePricings']
+  >[number]
+): ComMiloapisBillingV1Alpha1ServicePricing => ({
+  metadata: { name: snapshot.name },
+  spec: snapshot.spec,
+});
 
 /** Well-known annotation for human-readable Offer names. */
 export const OFFER_DISPLAY_NAME_ANNOTATION = 'kubernetes.io/display-name';

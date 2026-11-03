@@ -4,22 +4,26 @@ import {
   createActivityClientConfig,
   getOrganizationControlPlanePath,
 } from '@/features/activity/lib/activity-client';
-import {
-  staffResourceLinkResolver,
-  staffTenantLinkResolver,
-} from '@/features/activity/lib/activity-link-resolvers';
+import { staffResourceLinkResolver } from '@/features/activity/lib/activity-link-resolvers';
 import { SectionCard } from '@/features/milo';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { ActivityApiClient, ActivityFeed } from '@datum-cloud/activity-ui';
 import { Trans } from '@lingui/react/macro';
 import { useMemo } from 'react';
 
-/** Billing activity often goes weeks without a change, so look further back than the feed's default. */
-const TIME_RANGE = { start: 'now-90d' };
+/**
+ * Billing activity often goes weeks without a change, so look as far back
+ * as the activity API allows (720h).
+ */
+const TIME_RANGE = { start: 'now-30d' };
+
+/** Every row is in this org, so its tenant badge adds nothing. */
+const hideTenant = () => null;
 
 /**
  * People's recent changes to the org's billing resources: accounts,
- * bindings, payment methods and terms. Filters are fixed and hidden.
+ * bindings, payment methods and terms. Only changes people made
+ * (`changeSource: human`), never controllers'. Filters are fixed and hidden.
  */
 export function BillingAccountActivityCard({ orgName }: { orgName: string }) {
   // Billing resources live on the org's control plane.
@@ -45,18 +49,20 @@ export function BillingAccountActivityCard({ orgName }: { orgName: string }) {
           <Trans>Activity log</Trans>
         </CardLink>
       }
-      contentClassName="px-2 pb-2 [&_[data-slot=card]]:border-0 [&_[data-slot=card]]:bg-transparent [&_[data-slot=card]]:p-0">
+      contentClassName="pb-2 [&_[data-slot=card]]:border-0 [&_[data-slot=card]]:bg-transparent [&_[data-slot=card]]:p-0">
       <ActivityFeed
         key={orgName}
         client={client}
         initialFilters={filters}
         initialTimeRange={TIME_RANGE}
         showFilters={false}
+        hiddenFilters={['changeSource', 'apiGroups', 'resourceNamespaces']}
+        variant="timeline"
         compact
         pageSize={8}
         infiniteScroll={false}
         resourceLinkResolver={staffResourceLinkResolver}
-        tenantLinkResolver={staffTenantLinkResolver}
+        tenantRenderer={hideTenant}
         className="shadow-none"
       />
     </SectionCard>

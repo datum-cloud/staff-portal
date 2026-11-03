@@ -1,4 +1,4 @@
-import type { Invoice } from '../utils';
+import { getEffectiveNetDays, type Invoice } from '../utils';
 import { getNextCycleStart, type PaymentTermsInput } from '@/modules/billing/billing-cycle';
 import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
 
@@ -9,7 +9,7 @@ import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.
  * past-invoices table.
  */
 
-const DAY_MS = 24 * 60 * 60 * 1000;
+export const DAY_MS = 24 * 60 * 60 * 1000;
 
 export type InvoiceAgingBucket = 'notDue' | 'days1to30' | 'days31to60' | 'days60plus';
 
@@ -119,20 +119,24 @@ export const sortInvoicesPastDueFirst = (invoices: readonly Invoice[]): Invoice[
 export interface NextInvoice {
   /** When the current cycle closes and its invoice is issued. */
   issuedAt: Date;
-  /** `issuedAt` plus the account's net days, when it has them. */
+  /** `issuedAt` plus the net days in effect, when there are some. */
   dueAt?: Date;
   frequency: NonNullable<PaymentTermsInput['invoiceFrequency']>;
   netDays?: number;
 }
 
-/** The next invoice's dates from the account's payment terms. There is no amount: billing doesn't estimate one. */
+/**
+ * The next invoice's dates: the cycle from the account's payment terms, and
+ * the net days in effect (a staff arrangement's, or the standard terms').
+ * There is no amount: billing doesn't estimate one.
+ */
 export const getNextInvoice = (
   account: ComMiloapisBillingV1Alpha1BillingAccount,
   now: Date
 ): NextInvoice => {
   const terms = account.spec?.paymentTerms;
   const issuedAt = getNextCycleStart(terms, now);
-  const netDays = terms?.netDays;
+  const netDays = getEffectiveNetDays(account);
   return {
     issuedAt,
     dueAt: netDays !== undefined ? new Date(issuedAt.getTime() + netDays * DAY_MS) : undefined,

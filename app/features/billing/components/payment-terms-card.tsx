@@ -21,6 +21,7 @@ import {
   getApplicationsForAccount,
   type BillingArrangementApplication,
 } from '../lib/payment-terms-applications';
+import { formatMoney } from '../utils';
 import { ApplicationPhaseBadge } from './application-labels';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
@@ -149,8 +150,10 @@ export function usePaymentTerms(
     }
   };
 
-  const formatCreditLimit = (amount?: string) =>
-    amount ? [amount, currency].filter(Boolean).join(' ') : '—';
+  const formatCreditLimit = (amount?: string) => {
+    const value = Number.parseFloat(amount ?? '');
+    return Number.isFinite(value) ? formatMoney(value, currency) : '—';
+  };
 
   return {
     isLoading: arrangementsQuery.isLoading,
@@ -243,7 +246,7 @@ export function PendingApplicationNotice({
 }) {
   return (
     <div
-      className="bg-muted/50 flex flex-wrap items-center justify-between gap-2 rounded-md px-3 py-2"
+      className="bg-background flex flex-wrap items-center justify-between gap-2 rounded-md px-3 py-2"
       data-e2e="payment-terms-pending-application">
       <Text size="sm">
         <Trans>

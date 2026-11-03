@@ -2,24 +2,25 @@ import {
   UNUSUAL_INVOICE_FACTOR,
   type HealthCheckKey,
   type HealthIssue,
-  type HealthSeverity,
 } from '../../lib/account-health';
+import { formatMoney } from '../../utils';
+import { formatCardLabel } from '../card-brand-icon';
+import { InlineDate } from './card-parts';
 import { useAccountHealth } from './use-account-dashboard';
+import { AttentionBannerShell } from '@/components/attention-banner';
 import { BadgeState } from '@/components/badge';
-import { DateTime } from '@/components/date';
-import { formatCurrency } from '@/features/organization/usage/usage.format';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { orgRoutes } from '@/utils/config/routes.config';
-import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
+import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
-import { Trans } from '@lingui/react/macro';
+import { Plural, Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
-import { ArrowRight, ChevronDown, CircleCheck, TriangleAlert } from 'lucide-react';
-import { useState, type ReactNode } from 'react';
+import { ArrowRight, CircleCheck } from 'lucide-react';
+import type { ReactNode } from 'react';
 
 /**
  * Dashboard sections the fix-it buttons scroll to. The cards that render
@@ -56,14 +57,6 @@ interface CopyContext {
   cloudPortalUrl?: string | null;
 }
 
-const SEVERITY_BADGE_STATE: Record<HealthSeverity, string> = {
-  error: 'error',
-  warning: 'warning',
-  info: 'info',
-};
-
-const money = (amount: number, currency: string) => formatCurrency({ amount, currency });
-
 const sectionHref = (id: string) => `#${id}`;
 
 const cloudPortalAction = (ctx: CopyContext): IssueAction | undefined =>
@@ -85,23 +78,27 @@ const paymentTermsAction: IssueAction = {
 function describeIssue(issue: HealthIssue, ctx: CopyContext): IssueCopy {
   switch (issue.key) {
     case 'invoicePastDue': {
-      const amount = money(issue.amount, issue.currency);
+      const amount = formatMoney(issue.amount, issue.currency);
       const name = issue.invoiceName;
       const days = issue.daysOverdue;
+      // Without a due date, or on the day itself, there's no count to give.
+      const overdue = days > 0 ? <Plural value={days} one="# day" other="# days" /> : null;
       return {
         badge: t`Past due`,
         title: <Trans>Invoice past due — {amount}</Trans>,
-        detail: issue.dueDate ? (
-          <Trans>
-            {name} was due{' '}
-            <DateTime date={issue.dueDate} variant="absolute" format="MMM d" tooltip={false} /> and
-            is {days} days overdue.
-          </Trans>
-        ) : (
-          <Trans>
-            {name} is {days} days overdue.
-          </Trans>
-        ),
+        detail:
+          issue.dueDate && overdue ? (
+            <Trans>
+              {name} was due <InlineDate date={issue.dueDate} variant="absolute" format="MMM d" />{' '}
+              and is {overdue} overdue.
+            </Trans>
+          ) : issue.dueDate ? (
+            <Trans>
+              {name} was due <InlineDate date={issue.dueDate} variant="absolute" format="MMM d" />.
+            </Trans>
+          ) : (
+            <Trans>{name} is past due.</Trans>
+          ),
         action: {
           label: <Trans>View invoices</Trans>,
           href: sectionHref(BILLING_ACCOUNT_SECTION_IDS.invoices),
@@ -110,8 +107,8 @@ function describeIssue(issue: HealthIssue, ctx: CopyContext): IssueCopy {
     }
     case 'invoiceUnusual': {
       const count = issue.invoiceNames.length;
-      const maxTotal = money(issue.maxTotal, issue.currency);
-      const median = money(issue.median, issue.currency);
+      const maxTotal = formatMoney(issue.maxTotal, issue.currency);
+      const median = formatMoney(issue.median, issue.currency);
       const factor = UNUSUAL_INVOICE_FACTOR;
       return {
         badge: t`Unusual`,
@@ -131,7 +128,7 @@ function describeIssue(issue: HealthIssue, ctx: CopyContext): IssueCopy {
       };
     }
     case 'largeCardBalance': {
-      const outstanding = money(issue.outstanding, issue.currency);
+      const outstanding = formatMoney(issue.outstanding, issue.currency);
       const count = issue.unpaidCount;
       return {
         badge: t`Card limit`,
@@ -162,12 +159,8 @@ function describeIssue(issue: HealthIssue, ctx: CopyContext): IssueCopy {
             action: cloudPortalAction(ctx),
           };
     case 'cardExpiry': {
-      const card = issue.last4
-        ? `${issue.paymentMethodName} •••• ${issue.last4}`
-        : issue.paymentMethodName;
-      const expiry = (
-        <DateTime date={issue.expiresAt} variant="absolute" format="MMM d, yyyy" tooltip={false} />
-      );
+      const card = formatCardLabel(issue, issue.paymentMethodName);
+      const expiry = <InlineDate date={issue.expiresAt} variant="absolute" format="MMM d, yyyy" />;
       return {
         badge: t`Card expiry`,
         title: issue.expired ? <Trans>Card expired</Trans> : <Trans>Card expires soon</Trans>,
@@ -184,22 +177,22 @@ function describeIssue(issue: HealthIssue, ctx: CopyContext): IssueCopy {
       };
     }
     case 'creditLimit': {
-      const outstanding = money(issue.outstanding, issue.currency);
-      const limit = money(issue.creditLimit, issue.currency);
+      const spend = formatMoney(issue.cycleSpend, issue.currency);
+      const limit = formatMoney(issue.creditLimit, issue.currency);
       return {
         badge: t`Credit limit`,
-        title: <Trans>Open balance over the credit limit</Trans>,
+        title: <Trans>Spend this cycle over the credit limit</Trans>,
         detail: (
           <Trans>
-            {outstanding} owed against a {limit} credit limit.
+            {spend} spent so far this cycle against a {limit} per-cycle credit limit.
           </Trans>
         ),
         action: paymentTermsAction,
       };
     }
     case 'usageSpike': {
-      const current = money(issue.currentSpend, issue.currency);
-      const previous = money(issue.previousSpend, issue.currency);
+      const current = formatMoney(issue.currentSpend, issue.currency);
+      const previous = formatMoney(issue.previousSpend, issue.currency);
       const factor = Math.round(issue.factor);
       return {
         badge: t`Usage`,
@@ -222,7 +215,6 @@ function describeIssue(issue: HealthIssue, ctx: CopyContext): IssueCopy {
         ) : (
           <Trans>Business account with no tax ID.</Trans>
         ),
-        action: cloudPortalAction(ctx),
       };
     }
     case 'offer':
@@ -230,10 +222,6 @@ function describeIssue(issue: HealthIssue, ctx: CopyContext): IssueCopy {
         badge: t`Offer`,
         title: <Trans>No active offer</Trans>,
         detail: <Trans>Usage on this account isn&apos;t priced by an offer.</Trans>,
-        action: {
-          label: <Trans>Choose an offer</Trans>,
-          href: sectionHref(BILLING_ACCOUNT_SECTION_IDS.offer),
-        },
       };
   }
 }
@@ -305,7 +293,7 @@ function IssueRow({ issue, ctx }: { issue: HealthIssue; ctx: CopyContext }) {
         issue.severity === 'error' && 'bg-destructive/5'
       )}>
       <span className="w-24 shrink-0">
-        <BadgeState state={SEVERITY_BADGE_STATE[issue.severity]} message={copy.badge} />
+        <BadgeState state={issue.severity} message={copy.badge} />
       </span>
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
         <Text size="sm" weight="medium">
@@ -338,6 +326,14 @@ function IssueRow({ issue, ctx }: { issue: HealthIssue; ctx: CopyContext }) {
   );
 }
 
+function FailedToRun({ count }: { count: number }) {
+  return count === 1 ? (
+    <Trans>1 check couldn&apos;t run</Trans>
+  ) : (
+    <Trans>{count} checks couldn&apos;t run</Trans>
+  );
+}
+
 function PassingLine({
   passing,
   failedToRun,
@@ -359,11 +355,7 @@ function PassingLine({
         {failedToRun > 0 ? (
           <>
             {count > 0 ? ' · ' : ''}
-            {failedToRun === 1 ? (
-              <Trans>1 check couldn&apos;t run</Trans>
-            ) : (
-              <Trans>{failedToRun} checks couldn&apos;t run</Trans>
-            )}
+            <FailedToRun count={failedToRun} />
           </>
         ) : null}
       </Text>
@@ -383,81 +375,33 @@ export function BillingAccountAttentionBanner({
   cloudPortalUrl,
   now,
 }: AttentionBannerProps) {
-  const [expanded, setExpanded] = useState(true);
   const { health, isLoading } = useAccountHealth(orgName, account, now);
   const { issues, passing, pending } = health;
-  const total = issues.length;
   // Checks still waiting once everything has loaded had a request fail.
   const failedToRun = isLoading ? 0 : pending.length;
   const ctx: CopyContext = { orgName, cloudPortalUrl };
 
   return (
-    <section
-      aria-label={t`Account attention`}
-      className="bg-card border-border overflow-hidden rounded-xl border">
-      <div className="flex h-12 items-center gap-3 px-4">
-        {total === 0 && isLoading ? (
-          <>
-            <Skeleton className="size-4 rounded-full" />
-            <Skeleton className="h-4 w-56 rounded" />
-          </>
-        ) : total === 0 ? (
-          <>
-            <Icon icon={CircleCheck} size={16} className="shrink-0 text-green-600" aria-hidden />
-            <Text size="sm" weight="medium" className="shrink-0">
-              <Trans>All clear</Trans>
-            </Text>
-            <Text size="sm" textColor="muted" className="hidden min-w-0 truncate @3xl/main:block">
-              {passing.map(passingLabel).join(' · ')}
-            </Text>
-          </>
+    <AttentionBannerShell
+      label={t`Account attention`}
+      isLoading={isLoading}
+      total={issues.length}
+      defaultExpanded
+      clearSummary={
+        failedToRun > 0 ? (
+          <FailedToRun count={failedToRun} />
         ) : (
-          <>
-            <Icon icon={TriangleAlert} size={16} className="shrink-0 text-amber-500" aria-hidden />
-            <Text size="sm" weight="medium" className="shrink-0">
-              {total === 1 ? (
-                <Trans>1 thing needs attention</Trans>
-              ) : (
-                <Trans>{total} things need attention</Trans>
-              )}
-            </Text>
-            <Text size="sm" textColor="muted" className="hidden min-w-0 truncate @3xl/main:block">
-              {groupSummary(issues)}
-            </Text>
-            <div className="ml-auto shrink-0">
-              <Button
-                type="quaternary"
-                theme="borderless"
-                size="xs"
-                onClick={() => setExpanded((e) => !e)}
-                aria-expanded={expanded}
-                icon={
-                  <Icon
-                    icon={ChevronDown}
-                    size={14}
-                    className={cn('transition-transform', expanded && 'rotate-180')}
-                  />
-                }
-                iconPosition="right">
-                {expanded ? <Trans>Hide</Trans> : <Trans>Show all</Trans>}
-              </Button>
-            </div>
-          </>
-        )}
-      </div>
-      {total > 0 && expanded ? (
-        <>
-          <ul className="border-border flex flex-col gap-1 border-t p-1.5">
-            {issues.map((issue, index) => (
-              <IssueRow key={`${issue.key}-${index}`} issue={issue} ctx={ctx} />
-            ))}
-          </ul>
-          <PassingLine passing={passing} failedToRun={failedToRun} isLoading={isLoading} />
-        </>
-      ) : null}
-      {total === 0 && !isLoading && failedToRun > 0 ? (
-        <PassingLine passing={passing} failedToRun={failedToRun} isLoading={false} />
-      ) : null}
-    </section>
+          passing.map(passingLabel).join(' · ')
+        )
+      }
+      incomplete={failedToRun > 0 ? <Trans>Some checks couldn&apos;t run</Trans> : undefined}
+      issueSummary={groupSummary(issues)}>
+      <ul className="border-border flex flex-col gap-1 border-t p-1.5">
+        {issues.map((issue, index) => (
+          <IssueRow key={`${issue.key}-${index}`} issue={issue} ctx={ctx} />
+        ))}
+      </ul>
+      <PassingLine passing={passing} failedToRun={failedToRun} isLoading={isLoading} />
+    </AttentionBannerShell>
   );
 }

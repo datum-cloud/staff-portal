@@ -7,23 +7,24 @@ import {
   type InvoiceAgingBucket,
 } from '../../lib/invoice-summary';
 import {
+  formatMoney,
+  getAccountCurrency,
+  getEffectiveNetDays,
   invoiceMatchesSearch,
+  PAST_INVOICE_STATUS_BADGE,
   toPastInvoiceRow,
   type Invoice,
-  type PastInvoiceStatus,
 } from '../../utils';
 import { BILLING_ACCOUNT_SECTION_IDS } from './billing-account-attention-banner';
 import {
-  CardHeading,
   CardMessage,
   SectionAnchor,
-  TableFrame,
   TableRowsSkeleton,
   frequencyLabel,
+  InlineDate,
 } from './card-parts';
 import { useAccountInvoices } from './use-account-dashboard';
 import { BadgeState } from '@/components/badge';
-import { DateTime } from '@/components/date';
 import { DisplayId } from '@/components/display';
 import {
   EMBEDDED_TABLE_BODY_CLASS,
@@ -33,9 +34,9 @@ import {
   LIST_TABLE_HEADER_ROW_CLASS,
   LIST_TABLE_ROW_CLASS,
   ListColumnHeader,
+  TABLE_CARD_FRAME_CLASS,
   TableCard,
 } from '@/features/milo';
-import { formatCurrency } from '@/features/organization/usage/usage.format';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { createColumnHelper, type ColumnDef } from '@/utils/table';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -63,13 +64,6 @@ interface InvoicesCardProps {
 const PREVIEW_ROWS = 6;
 const PAGE_SIZE = 10;
 
-const statusBadgeState: Record<PastInvoiceStatus, string> = {
-  paid: 'success',
-  open: 'warning',
-  pastDue: 'error',
-  void: 'pending',
-};
-
 const agingLabel = (bucket: InvoiceAgingBucket): string => {
   switch (bucket) {
     case 'days1to30':
@@ -85,8 +79,16 @@ const agingLabel = (bucket: InvoiceAgingBucket): string => {
 
 const columnHelper = createColumnHelper<Invoice>();
 
+/**
+ * Billing periods and due dates are UTC midnights, so show them in UTC: in
+ * a local timezone west of UTC they'd read a day early.
+ */
+const billingDate = (date: string | undefined): ReactNode =>
+  date ? <InlineDate date={date} variant="absolute" format="MMM d" timezone="UTC" /> : '—';
+
+/** When the invoice was created, in the viewer's timezone. */
 const shortDate = (date: string | undefined): ReactNode =>
-  date ? <DateTime date={date} variant="absolute" format="MMM d" tooltip={false} /> : '—';
+  date ? <InlineDate date={date} variant="absolute" format="MMM d" /> : '—';
 
 const buildColumns = (now: Date) => [
   columnHelper.display({
@@ -101,7 +103,8 @@ const buildColumns = (now: Date) => [
     header: ({ column }) => <ListColumnHeader column={column} title={t`Period`} />,
     cell: ({ row }) => (
       <Text size="xs" className="whitespace-nowrap">
-        {shortDate(row.original.spec?.period?.start)} – {shortDate(row.original.spec?.period?.end)}
+        {billingDate(row.original.spec?.period?.start)} –{' '}
+        {billingDate(row.original.spec?.period?.end)}
       </Text>
     ),
   }),
@@ -125,7 +128,7 @@ const buildColumns = (now: Date) => [
         <Text
           size="xs"
           className={cn('whitespace-nowrap', days > 0 && 'text-destructive font-medium')}>
-          {shortDate(row.original.status?.dueDate)}
+          {billingDate(row.original.status?.dueDate)}
           {days > 0 ? <Trans> · {days}d late</Trans> : null}
         </Text>
       );
@@ -151,7 +154,7 @@ const buildColumns = (now: Date) => [
     header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
     cell: ({ row }) => {
       const { status, statusLabel } = toPastInvoiceRow(row.original);
-      return <BadgeState state={statusBadgeState[status]} message={statusLabel} />;
+      return <BadgeState state={PAST_INVOICE_STATUS_BADGE[status]} message={statusLabel} />;
     },
   }),
   columnHelper.display({
@@ -206,14 +209,15 @@ export function BillingAccountInvoicesCard({ orgName, account, now }: InvoicesCa
   const canExpand = sorted.length > PREVIEW_ROWS;
 
   const terms = account.spec?.paymentTerms;
+  const netDays = getEffectiveNetDays(account);
   const count = sorted.length;
   const countLabel = hasMore ? `${count}+` : String(count);
   const frequency = frequencyLabel(terms?.invoiceFrequency);
   const invoiceDay = terms?.invoiceDayOfMonth ?? 1;
   const subtitle = invoices ? (
-    terms?.netDays !== undefined ? (
+    netDays !== undefined ? (
       <Trans>
-        {countLabel} invoices · net {terms.netDays} · {frequency} on day {invoiceDay}
+        {countLabel} invoices · net {netDays} · {frequency} on day {invoiceDay}
       </Trans>
     ) : (
       <Trans>
@@ -227,7 +231,8 @@ export function BillingAccountInvoicesCard({ orgName, account, now }: InvoicesCa
       <TableCard
         framed={false}
         contentClassName="flex flex-col gap-4"
-        title={<CardHeading title={<Trans>Invoices</Trans>} subtitle={subtitle} />}
+        title={<Trans>Invoices</Trans>}
+        description={subtitle}
         action={
           canExpand ? (
             <Button
@@ -245,9 +250,9 @@ export function BillingAccountInvoicesCard({ orgName, account, now }: InvoicesCa
         {isLoading ? (
           <>
             <AgingSkeleton />
-            <TableFrame>
+            <div className={TABLE_CARD_FRAME_CLASS}>
               <TableRowsSkeleton />
-            </TableFrame>
+            </div>
           </>
         ) : isError || !summary ? (
           <CardMessage>
@@ -259,7 +264,7 @@ export function BillingAccountInvoicesCard({ orgName, account, now }: InvoicesCa
           </CardMessage>
         ) : (
           <>
-            <AgingSummary aging={summary.aging} currency={account.spec?.currencyCode ?? 'USD'} />
+            <AgingSummary aging={summary.aging} currency={getAccountCurrency(account)} />
             {expanded ? (
               <Input
                 value={search}
@@ -269,7 +274,7 @@ export function BillingAccountInvoicesCard({ orgName, account, now }: InvoicesCa
                 className="h-9 w-full sm:w-64"
               />
             ) : null}
-            <TableFrame>
+            <div className={TABLE_CARD_FRAME_CLASS}>
               {rows.length === 0 ? (
                 <CardMessage className="px-4 py-6">
                   <Trans>No invoices match your search.</Trans>
@@ -298,7 +303,7 @@ export function BillingAccountInvoicesCard({ orgName, account, now }: InvoicesCa
                   ) : null}
                 </DataTable.Client>
               )}
-            </TableFrame>
+            </div>
           </>
         )}
       </TableCard>
@@ -314,15 +319,15 @@ function AgingSummary({
   currency: string;
 }) {
   return (
-    <dl className="grid grid-cols-2 gap-1 @3xl/main:grid-cols-4">
+    <dl className="grid grid-cols-2 gap-2 @3xl/main:grid-cols-4">
       {INVOICE_AGING_BUCKETS.map((bucket) => {
         const overdue = bucket !== 'notDue' && aging[bucket] > 0;
         return (
           <div
             key={bucket}
             className={cn(
-              'flex flex-col gap-0.5 rounded-sm px-3 py-2',
-              overdue ? 'bg-destructive/10' : 'bg-muted/60'
+              'flex flex-col gap-0.5 rounded-md px-3 py-2',
+              overdue ? 'bg-destructive/10' : 'bg-background'
             )}>
             <dt>
               <Text
@@ -338,7 +343,7 @@ function AgingSummary({
                 size="sm"
                 weight="medium"
                 className={cn('tabular-nums', overdue && 'text-destructive')}>
-                {formatCurrency({ amount: aging[bucket], currency })}
+                {formatMoney(aging[bucket], currency)}
               </Text>
             </dd>
           </div>
@@ -350,9 +355,9 @@ function AgingSummary({
 
 function AgingSkeleton() {
   return (
-    <div className="grid grid-cols-2 gap-1 @3xl/main:grid-cols-4" aria-busy="true">
+    <div className="grid grid-cols-2 gap-2 @3xl/main:grid-cols-4" aria-busy="true">
       {INVOICE_AGING_BUCKETS.map((bucket) => (
-        <Skeleton key={bucket} className="h-12 w-full rounded-sm" />
+        <Skeleton key={bucket} className="h-12 w-full rounded-md" />
       ))}
     </div>
   );

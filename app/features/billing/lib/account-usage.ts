@@ -1,3 +1,4 @@
+import { DAY_MS } from './invoice-summary';
 import type { UsageGroupSection, UsageMeter } from '@/features/organization/usage/usage.types';
 import type { UsageView } from '@/features/organization/usage/usage.view';
 import {
@@ -10,8 +11,6 @@ import {
  * Selectors for the billing account dashboard's usage card, over the view
  * the org usage dashboard builds (`toUsageView`).
  */
-
-const DAY_MS = 24 * 60 * 60 * 1000;
 
 export const meterSpend = (meter: UsageMeter): number => meter.spend?.amount ?? 0;
 

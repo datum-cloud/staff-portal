@@ -1,16 +1,20 @@
-import { USAGE_SPIKE_FACTOR, type UsageSpendComparison } from '../../lib/account-health';
+import { isUsageSpike, type UsageSpendComparison } from '../../lib/account-health';
 import { getNextInvoice, summarizeInvoices, type InvoiceSummary } from '../../lib/invoice-summary';
-import { frequencyLabel } from './card-parts';
+import { formatMoney, getAccountCurrency } from '../../utils';
+import { frequencyLabel, InlineDate } from './card-parts';
 import { useAccountInvoices, useAccountUsageSpend } from './use-account-dashboard';
-import { DateTime } from '@/components/date';
-import { formatCurrency } from '@/features/organization/usage/usage.format';
-import { Card, CardContent } from '@datum-cloud/datum-ui/card';
+import {
+  StatTile,
+  StatTileDetail,
+  StatTileHeadline,
+  StatTileMessage,
+  StatTileSkeleton,
+} from '@/components/stat-tile';
+import { SpendValue } from '@/features/organization/usage/components/spend-value';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
-import { Text } from '@datum-cloud/datum-ui/typography';
-import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
-import { Trans } from '@lingui/react/macro';
+import { Plural, Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
 import { ArrowDown, ArrowUp, CircleAlert } from 'lucide-react';
 import { useMemo, type ReactNode } from 'react';
@@ -21,63 +25,6 @@ interface HealthCardsProps {
   orgName: string;
   account: BillingAccount;
   now: Date;
-}
-
-const accountCurrency = (account: BillingAccount) => account.spec?.currencyCode ?? 'USD';
-
-const money = (amount: number, currency: string) => formatCurrency({ amount, currency });
-
-// Tile chrome mirrors the platform home's HealthCard (dashboard/home/health-section).
-
-function Tile({ title, children }: { title: ReactNode; children: ReactNode }) {
-  return (
-    <Card size="sm" className="h-full w-full">
-      <CardContent className="flex min-w-0 flex-col gap-2">
-        <Text size="xs" weight="medium" textColor="muted" className="flex h-4 items-center">
-          {title}
-        </Text>
-        {children}
-      </CardContent>
-    </Card>
-  );
-}
-
-function TileSkeleton() {
-  return (
-    <>
-      <Skeleton className="h-8 w-20 rounded" />
-      <Skeleton className="h-4 w-32 rounded" />
-    </>
-  );
-}
-
-function TileMessage({ children }: { children: ReactNode }) {
-  return (
-    <Text size="sm" textColor="muted" className="flex h-8 items-center">
-      {children}
-    </Text>
-  );
-}
-
-function Headline({ className, children }: { className?: string; children: ReactNode }) {
-  return (
-    <Text
-      as="div"
-      size="2xl"
-      weight="semibold"
-      textColor="default"
-      className={cn('flex h-8 min-w-0 items-center gap-2 truncate tabular-nums', className)}>
-      {children}
-    </Text>
-  );
-}
-
-function Detail({ className, children }: { className?: string; children: ReactNode }) {
-  return (
-    <Text size="xs" textColor="muted" ellipsis className={cn('tabular-nums', className)}>
-      {children}
-    </Text>
-  );
 }
 
 /**
@@ -99,12 +46,12 @@ function InvoiceTileBody({
     [invoices, now]
   );
 
-  if (isLoading) return <TileSkeleton />;
+  if (isLoading) return <StatTileSkeleton />;
   if (isError || !summary) {
     return (
-      <TileMessage>
+      <StatTileMessage>
         <Trans>Couldn&apos;t load invoices.</Trans>
-      </TileMessage>
+      </StatTileMessage>
     );
   }
   // Some of the org's invoices weren't read, so totals are a floor.
@@ -112,18 +59,18 @@ function InvoiceTileBody({
 }
 
 function OutstandingTile(props: HealthCardsProps) {
-  const currency = accountCurrency(props.account);
+  const currency = getAccountCurrency(props.account);
   return (
-    <Tile title={<Trans>Outstanding balance</Trans>}>
+    <StatTile title={<Trans>Outstanding balance</Trans>}>
       <InvoiceTileBody
         {...props}
         render={(s, more) => (
           <>
-            <Headline>
-              {money(s.outstanding, currency)}
+            <StatTileHeadline>
+              {formatMoney(s.outstanding, currency)}
               {more}
-            </Headline>
-            <Detail>
+            </StatTileHeadline>
+            <StatTileDetail>
               {s.unpaidCount === 0 ? (
                 <Trans>Nothing owed</Trans>
               ) : s.unpaidCount === 1 ? (
@@ -131,74 +78,83 @@ function OutstandingTile(props: HealthCardsProps) {
               ) : (
                 <Trans>{s.unpaidCount} unpaid invoices</Trans>
               )}
-            </Detail>
+            </StatTileDetail>
           </>
         )}
       />
-    </Tile>
+    </StatTile>
   );
 }
 
 function PastDueTile(props: HealthCardsProps) {
-  const currency = accountCurrency(props.account);
+  const currency = getAccountCurrency(props.account);
   return (
-    <Tile title={<Trans>Past due</Trans>}>
+    <StatTile title={<Trans>Past due</Trans>}>
       <InvoiceTileBody
         {...props}
         render={(s) =>
           s.pastDueCount === 0 ? (
             <>
-              <Headline>{money(0, currency)}</Headline>
-              <Detail>
+              <StatTileHeadline>{formatMoney(0, currency)}</StatTileHeadline>
+              <StatTileDetail>
                 <Trans>Nothing past due</Trans>
-              </Detail>
+              </StatTileDetail>
             </>
           ) : (
             <>
-              <Headline className="text-destructive">
+              <StatTileHeadline className="text-destructive">
                 <Icon icon={CircleAlert} size={18} className="shrink-0" aria-hidden />
-                {money(s.pastDue, currency)}
-              </Headline>
-              <Detail>
-                {s.pastDueCount === 1 ? (
-                  <Trans>1 invoice · {s.maxDaysOverdue} days overdue</Trans>
-                ) : (
-                  <Trans>
-                    {s.pastDueCount} invoices · oldest {s.maxDaysOverdue} days overdue
-                  </Trans>
-                )}
-              </Detail>
+                {formatMoney(s.pastDue, currency)}
+              </StatTileHeadline>
+              <StatTileDetail>
+                <PastDueDetail count={s.pastDueCount} days={s.maxDaysOverdue} />
+              </StatTileDetail>
             </>
           )
         }
       />
-    </Tile>
+    </StatTile>
+  );
+}
+
+function PastDueDetail({ count, days }: { count: number; days: number }) {
+  const invoices = <Plural value={count} one="# invoice" other="# invoices" />;
+  if (days <= 0) return invoices;
+  const overdue = <Plural value={days} one="# day" other="# days" />;
+  return count === 1 ? (
+    <Trans>
+      {invoices} · {overdue} overdue
+    </Trans>
+  ) : (
+    <Trans>
+      {invoices} · oldest {overdue} overdue
+    </Trans>
   );
 }
 
 function LifetimePaidTile(props: HealthCardsProps) {
-  const currency = accountCurrency(props.account);
+  const currency = getAccountCurrency(props.account);
   return (
-    <Tile title={<Trans>Lifetime paid</Trans>}>
+    <StatTile title={<Trans>Lifetime paid</Trans>}>
       <InvoiceTileBody
         {...props}
         render={(s, more) => (
           <>
-            <Headline>
-              {money(s.lifetimePaid, currency)}
+            <StatTileHeadline>
+              {formatMoney(s.lifetimePaid, currency)}
               {more}
-            </Headline>
-            <Detail>
+            </StatTileHeadline>
+            <StatTileDetail>
               {s.paidCount === 1 ? (
                 <Trans>1 paid invoice</Trans>
               ) : (
                 <Trans>{s.paidCount} paid invoices</Trans>
               )}
-            </Detail>
+            </StatTileDetail>
           </>
         )}
       />
-    </Tile>
+    </StatTile>
   );
 }
 
@@ -206,66 +162,76 @@ function UsageTrend({ comparison }: { comparison: UsageSpendComparison }) {
   const { current, previous } = comparison;
   if (previous <= 0) {
     return (
-      <Detail>
+      <StatTileDetail>
         <Trans>No spend last cycle at this point</Trans>
-      </Detail>
+      </StatTileDetail>
     );
   }
   const factor = current / previous;
-  if (factor >= USAGE_SPIKE_FACTOR) {
+  if (isUsageSpike(comparison)) {
     const times = Math.round(factor);
     return (
-      <Detail className="text-warning flex items-center gap-1">
+      <StatTileDetail className="text-warning flex items-center gap-1">
         <Icon icon={ArrowUp} size={12} className="shrink-0" aria-hidden />
         <Trans>{times}× last cycle at this point</Trans>
-      </Detail>
+      </StatTileDetail>
     );
   }
   const percent = Math.round(Math.abs(factor - 1) * 100);
   if (percent === 0) {
     return (
-      <Detail>
+      <StatTileDetail>
         <Trans>Same as last cycle at this point</Trans>
-      </Detail>
+      </StatTileDetail>
     );
   }
   return (
-    <Detail className="flex items-center gap-1">
+    <StatTileDetail className="flex items-center gap-1">
       <Icon icon={factor > 1 ? ArrowUp : ArrowDown} size={12} className="shrink-0" aria-hidden />
       <Trans>{percent}% vs last cycle at this point</Trans>
-    </Detail>
+    </StatTileDetail>
   );
 }
 
 function UsageTile({ orgName, account, now }: HealthCardsProps) {
-  const { current, comparison, isLoading, isError } = useAccountUsageSpend(orgName, account, now);
+  const { current, comparison, isLoading, isComparisonLoading, isError } = useAccountUsageSpend(
+    orgName,
+    account,
+    now
+  );
 
   return (
-    <Tile title={<Trans>Usage this cycle</Trans>}>
+    <StatTile title={<Trans>Usage this cycle</Trans>}>
       {isLoading ? (
-        <TileSkeleton />
+        <StatTileSkeleton />
       ) : isError || !current ? (
-        <TileMessage>
+        <StatTileMessage>
           <Trans>Couldn&apos;t load usage.</Trans>
-        </TileMessage>
-      ) : current.usage.status !== 'ok' || current.usage.spendError ? (
-        <>
-          <Headline>—</Headline>
-          <Detail>
-            <Trans>Spend isn&apos;t available</Trans>
-          </Detail>
-        </>
+        </StatTileMessage>
+      ) : current.usage.status !== 'ok' ? (
+        <StatTileMessage>
+          <Trans>Usage isn&apos;t available.</Trans>
+        </StatTileMessage>
       ) : (
         <>
-          <Headline>
-            {formatCurrency(
-              current.usage.spend ?? { amount: 0, currency: accountCurrency(account) }
-            )}
-          </Headline>
-          {comparison ? <UsageTrend comparison={comparison} /> : null}
+          <StatTileHeadline>
+            <SpendValue
+              spend={
+                current.usage.spendError
+                  ? undefined
+                  : (current.usage.spend ?? { amount: 0, currency: getAccountCurrency(account) })
+              }
+              spendError={current.usage.spendError}
+            />
+          </StatTileHeadline>
+          {comparison ? (
+            <UsageTrend comparison={comparison} />
+          ) : isComparisonLoading ? (
+            <Skeleton className="h-4 w-32 rounded" />
+          ) : null}
         </>
       )}
-    </Tile>
+    </StatTile>
   );
 }
 
@@ -275,22 +241,22 @@ function NextInvoiceTile({ account, now }: HealthCardsProps) {
   const frequency = frequencyLabel(next.frequency);
 
   return (
-    <Tile title={<Trans>Next invoice</Trans>}>
-      <Headline>
-        <DateTime date={next.issuedAt} variant="absolute" format="MMM d, yyyy" tooltip={false} />
-      </Headline>
-      <Detail>
+    <StatTile title={<Trans>Next invoice</Trans>}>
+      <StatTileHeadline>
+        <InlineDate date={next.issuedAt} variant="absolute" format="MMM d, yyyy" timezone="UTC" />
+      </StatTileHeadline>
+      <StatTileDetail>
         {next.dueAt ? (
           <Trans>
             {frequency} · due{' '}
-            <DateTime date={next.dueAt} variant="absolute" format="MMM d" tooltip={false} /> (net{' '}
+            <InlineDate date={next.dueAt} variant="absolute" format="MMM d" timezone="UTC" /> (net{' '}
             {next.netDays})
           </Trans>
         ) : (
           frequency
         )}
-      </Detail>
-    </Tile>
+      </StatTileDetail>
+    </StatTile>
   );
 }
 

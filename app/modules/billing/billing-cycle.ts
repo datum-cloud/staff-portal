@@ -1,5 +1,3 @@
-import { addMonths, format } from 'date-fns';
-
 export type InvoiceFrequency = 'Monthly' | 'Quarterly' | 'Annual';
 
 export interface PaymentTermsInput {
@@ -28,12 +26,13 @@ function anchorDate(year: number, month: number, day: number): Date {
   return new Date(Date.UTC(year, month, Math.min(day, lastDay)));
 }
 
-function addPeriod(start: Date, frequency: InvoiceFrequency): Date {
-  return addMonths(start, FREQUENCY_MONTHS[frequency]);
-}
-
-function subtractPeriod(start: Date, frequency: InvoiceFrequency): Date {
-  return addMonths(start, -FREQUENCY_MONTHS[frequency]);
+/**
+ * The cycle start `months` before or after `start`, anchored on `invoiceDay`.
+ * All cycle maths is in UTC: date-fns' `addMonths` keeps local wall-clock
+ * time, so in a browser west of UTC it lands on the previous day.
+ */
+function shiftCycle(start: Date, months: number, invoiceDay: number): Date {
+  return anchorDate(start.getUTCFullYear(), start.getUTCMonth() + months, invoiceDay);
 }
 
 /** Latest cycle start at or before `ref`, anchored on `invoiceDay`. */
@@ -42,19 +41,30 @@ function cycleStartAtOrBefore(ref: Date, invoiceDay: number, frequency: InvoiceF
   let start = anchorDate(ref.getUTCFullYear(), ref.getUTCMonth(), invoiceDay);
 
   while (start > ref) {
-    start = addMonths(start, -periodMonths);
+    start = shiftCycle(start, -periodMonths, invoiceDay);
   }
-  while (addMonths(start, periodMonths) <= ref) {
-    start = addMonths(start, periodMonths);
+  while (shiftCycle(start, periodMonths, invoiceDay) <= ref) {
+    start = shiftCycle(start, periodMonths, invoiceDay);
   }
 
   return start;
 }
 
+const SHORT_DATE = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric',
+  month: 'short',
+  timeZone: 'UTC',
+});
+const SHORT_DATE_YEAR = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+
+/** E.g. `1 Jun - 1 Jul 2026`, in UTC like the cycle boundaries. */
 function formatCycleRange(start: Date, end: Date): string {
-  const startLabel = format(start, 'd MMM');
-  const endLabel = format(end, 'd MMM yyyy');
-  return `${startLabel} - ${endLabel}`;
+  return `${SHORT_DATE.format(start)} - ${SHORT_DATE_YEAR.format(end)}`;
 }
 
 /**
@@ -68,9 +78,10 @@ export function buildBillingCycleWindows(
   const invoiceDay = terms?.invoiceDayOfMonth ?? 1;
   const frequency = terms?.invoiceFrequency ?? 'Monthly';
 
+  const periodMonths = FREQUENCY_MONTHS[frequency];
   const currentStart = cycleStartAtOrBefore(now, invoiceDay, frequency);
-  const currentEndBoundary = addPeriod(currentStart, frequency);
-  const previousStart = subtractPeriod(currentStart, frequency);
+  const currentEndBoundary = shiftCycle(currentStart, periodMonths, invoiceDay);
+  const previousStart = shiftCycle(currentStart, -periodMonths, invoiceDay);
   const currentQueryEnd = new Date(Math.min(currentEndBoundary.getTime(), now.getTime()));
 
   const currentRange = formatCycleRange(currentStart, currentEndBoundary);
@@ -98,12 +109,17 @@ export function buildBillingCycleWindows(
 export function getNextCycleStart(terms: PaymentTermsInput | undefined, now = new Date()): Date {
   const invoiceDay = terms?.invoiceDayOfMonth ?? 1;
   const frequency = terms?.invoiceFrequency ?? 'Monthly';
-  return addPeriod(cycleStartAtOrBefore(now, invoiceDay, frequency), frequency);
+  return shiftCycle(
+    cycleStartAtOrBefore(now, invoiceDay, frequency),
+    FREQUENCY_MONTHS[frequency],
+    invoiceDay
+  );
 }
 
 /**
  * The same point in the previous cycle as `now` is in the current one, for
- * comparing spend so far against last cycle's at that point.
+ * comparing spend so far against last cycle's at that point. Capped at the
+ * previous cycle's end, for when it was the shorter of the two.
  */
 export function getPreviousCycleCutoff(
   terms: PaymentTermsInput | undefined,
@@ -112,14 +128,9 @@ export function getPreviousCycleCutoff(
   const invoiceDay = terms?.invoiceDayOfMonth ?? 1;
   const frequency = terms?.invoiceFrequency ?? 'Monthly';
   const currentStart = cycleStartAtOrBefore(now, invoiceDay, frequency);
-  // In UTC: date-fns' addMonths keeps local wall-clock time, which shifts by
-  // an hour across a daylight-saving change.
-  const previousStart = anchorDate(
-    currentStart.getUTCFullYear(),
-    currentStart.getUTCMonth() - FREQUENCY_MONTHS[frequency],
-    invoiceDay
-  );
-  return new Date(previousStart.getTime() + (now.getTime() - currentStart.getTime()));
+  const previousStart = shiftCycle(currentStart, -FREQUENCY_MONTHS[frequency], invoiceDay);
+  const elapsed = now.getTime() - currentStart.getTime();
+  return new Date(Math.min(previousStart.getTime() + elapsed, currentStart.getTime()));
 }
 
 export function selectBillingCycleWindow(

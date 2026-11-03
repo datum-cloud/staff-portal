@@ -1,8 +1,11 @@
 import { getActiveBindingsForAccount } from '../../utils';
-import { CardHeading, CardMessage, ShareBar, TableRowsSkeleton } from './card-parts';
-import { useAccountProjectSpend, type ProjectSpend } from './use-account-dashboard';
+import { CardMessage, ShareBar, TableRowsSkeleton, InlineDate } from './card-parts';
+import {
+  MAX_PROJECT_SPEND_REQUESTS,
+  useAccountProjectSpend,
+  type ProjectSpend,
+} from './use-account-dashboard';
 import { BadgeState } from '@/components/badge';
-import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
 import {
   EMBEDDED_TABLE_BODY_CLASS,
@@ -74,7 +77,7 @@ const columns = [
     cell: ({ row }) =>
       row.original.linkedAt ? (
         <Text size="xs" className="whitespace-nowrap">
-          <DateTime date={row.original.linkedAt} variant="absolute" format="MMM d, yyyy" />
+          <InlineDate date={row.original.linkedAt} variant="absolute" format="MMM d, yyyy" />
         </Text>
       ) : (
         <Text size="xs">—</Text>
@@ -118,7 +121,13 @@ const columns = [
               size="xs"
               weight="medium"
               className="tabular-nums"
-              title={spend.isError ? t`Couldn't load spend` : undefined}>
+              title={
+                spend.isError
+                  ? t`Couldn't load spend`
+                  : spend.skipped
+                    ? t`See the usage dashboard for this project's spend`
+                    : undefined
+              }>
               {spend.amount === undefined
                 ? '—'
                 : formatCurrency({ amount: spend.amount, currency })}
@@ -163,6 +172,7 @@ export function BillingAccountProjectsCard({ orgName, account }: ProjectsCardPro
   );
   const spendByProject = useAccountProjectSpend(orgName, account, projectNames);
 
+  const skipped = projectNames.filter((name) => spendByProject.get(name)?.skipped).length;
   const totalSpend = projectNames.reduce(
     (sum, name) => sum + (spendByProject.get(name)?.amount ?? 0),
     0
@@ -192,7 +202,7 @@ export function BillingAccountProjectsCard({ orgName, account }: ProjectsCardPro
   ) : null;
 
   return (
-    <TableCard title={<CardHeading title={<Trans>Linked projects</Trans>} subtitle={subtitle} />}>
+    <TableCard title={<Trans>Linked projects</Trans>} description={subtitle}>
       {bindingsQuery.isLoading ? (
         <TableRowsSkeleton />
       ) : bindingsQuery.isError ? (
@@ -218,6 +228,14 @@ export function BillingAccountProjectsCard({ orgName, account }: ProjectsCardPro
             cellClassName={EMBEDDED_TABLE_CELL_CLASS}
             emptyMessage={t`No linked projects`}
           />
+          {skipped > 0 ? (
+            <CardMessage className="dark:border-border border-t border-[#efefed] px-4">
+              <Trans>
+                Spend shows for the first {MAX_PROJECT_SPEND_REQUESTS} projects. See the usage
+                dashboard for the other {skipped}.
+              </Trans>
+            </CardMessage>
+          ) : null}
         </DataTable.Client>
       )}
     </TableCard>

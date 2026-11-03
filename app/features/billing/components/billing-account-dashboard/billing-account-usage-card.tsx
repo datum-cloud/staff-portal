@@ -5,17 +5,13 @@ import {
   getTopMeter,
   type ServiceSpend,
 } from '../../lib/account-usage';
-import { CardLink, CardMessage, ShareBar } from './card-parts';
+import { CardLink, CardMessage, ShareBar, InlineDate } from './card-parts';
 import { useAccountUsageSpend } from './use-account-dashboard';
-import { DateTime } from '@/components/date';
 import { SectionCard } from '@/features/milo';
 import { toUsageView } from '@/features/organization/usage';
-import {
-  formatAxisValue,
-  formatByUnit,
-  formatCurrency,
-} from '@/features/organization/usage/usage.format';
-import type { UsageMeter } from '@/features/organization/usage/usage.types';
+import { MeterAreaChart } from '@/features/organization/usage/components/meter-area-chart';
+import { SpendValue } from '@/features/organization/usage/components/spend-value';
+import { formatByUnit, formatCurrency } from '@/features/organization/usage/usage.format';
 import type { UsageView } from '@/features/organization/usage/usage.view';
 import { orgRoutes } from '@/utils/config/routes.config';
 import {
@@ -24,6 +20,7 @@ import {
   SelectGroup,
   SelectItem,
   SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from '@datum-cloud/datum-ui/select';
@@ -33,17 +30,7 @@ import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
-import { format } from 'date-fns';
 import { useMemo, useState } from 'react';
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
 
 type BillingAccount = ComMiloapisBillingV1Alpha1BillingAccount;
 
@@ -78,8 +65,8 @@ export function BillingAccountUsageCard({ orgName, account, now }: UsageCardProp
       title={<Trans>Usage this billing cycle</Trans>}
       description={
         <Trans>
-          <DateTime date={progress.start} variant="absolute" format="MMM d" tooltip={false} /> –{' '}
-          <DateTime date={lastDay} variant="absolute" format="MMM d, yyyy" tooltip={false} /> · day{' '}
+          <InlineDate date={progress.start} variant="absolute" format="MMM d" timezone="UTC" /> –{' '}
+          <InlineDate date={lastDay} variant="absolute" format="MMM d, yyyy" timezone="UTC" /> · day{' '}
           {progress.day} of {progress.days}
         </Trans>
       }
@@ -126,8 +113,11 @@ function UsageBody({ orgName, view }: { orgName: string; view: UsageView }) {
       <div className="grid grid-cols-1 gap-6 @2xl/usage:grid-cols-[minmax(0,1fr)_240px]">
         <div className="flex min-w-0 flex-col gap-3">
           <div className="flex flex-wrap items-baseline gap-x-2">
-            <Text as="span" size="2xl" weight="semibold" className="tabular-nums">
-              {view.spendError ? '—' : formatCurrency(view.spend)}
+            <Text as="span" size="2xl" weight="semibold">
+              <SpendValue
+                spend={view.spendError ? undefined : view.spend}
+                spendError={view.spendError}
+              />
             </Text>
             <Text as="span" size="sm" textColor="muted">
               {view.spendError ? (
@@ -148,14 +138,17 @@ function UsageBody({ orgName, view }: { orgName: string; view: UsageView }) {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {groups.map((group) => (
+                    {groups.map((group, index) => (
                       <SelectGroup key={group.id}>
-                        <SelectLabel>{group.title}</SelectLabel>
+                        {index > 0 ? <SelectSeparator /> : null}
+                        <SelectLabel className="text-muted-foreground pt-2 pb-1 text-xs font-medium tracking-wide uppercase">
+                          {group.title}
+                        </SelectLabel>
                         {group.meters.map((meter) => (
                           <SelectItem key={meter.id} value={meter.id}>
-                            <span className="flex w-full items-center gap-2">
+                            <span className="flex items-center gap-2 pr-6">
                               <span className="truncate">{meter.label}</span>
-                              {meter.spend ? (
+                              {meter.spend && meter.spend.amount > 0 ? (
                                 <span className="text-muted-foreground tabular-nums">
                                   {formatCurrency(meter.spend)}
                                 </span>
@@ -180,7 +173,26 @@ function UsageBody({ orgName, view }: { orgName: string; view: UsageView }) {
                   <Trans>daily usage</Trans>
                 </Text>
               </div>
-              <UsageChart meter={selected} />
+              {selected.series.length === 0 ? (
+                <Text
+                  as="div"
+                  size="sm"
+                  textColor="muted"
+                  className="flex items-center justify-center"
+                  style={{ height: CHART_HEIGHT }}>
+                  <Trans>No daily usage recorded for this meter.</Trans>
+                </Text>
+              ) : (
+                <MeterAreaChart
+                  key={selected.id}
+                  id={`account-${selected.id}`}
+                  label={selected.label}
+                  unit={selected.unit}
+                  series={selected.series}
+                  height={CHART_HEIGHT}
+                  showDots={false}
+                />
+              )}
             </>
           ) : null}
         </div>
@@ -227,8 +239,9 @@ function ServiceSpendList({
               aria-pressed={service.id === selectedServiceId}
               onClick={() => onSelect(service)}
               className={cn(
-                'hover:bg-muted/60 flex w-full flex-col gap-1.5 rounded-md px-2.5 py-2 text-left transition-colors',
-                service.id === selectedServiceId && 'bg-muted'
+                'hover:bg-background flex w-full flex-col gap-1.5 rounded-md border border-transparent px-2.5 py-2 text-left transition-colors',
+                // An outline rather than a fill, so the share bar stays visible.
+                service.id === selectedServiceId && 'border-border bg-background shadow-xs'
               )}>
               <span className="flex items-center justify-between gap-2">
                 <Text as="span" size="sm" ellipsis>
@@ -254,93 +267,6 @@ function ServiceSpendList({
           </CardLink>
         </div>
       ) : null}
-    </div>
-  );
-}
-
-/** One meter's daily usage, styled like the org usage page's `MeterCard`. */
-function UsageChart({ meter }: { meter: UsageMeter }) {
-  const fillId = `account-usage-fill-${meter.id}`.replace(/[^a-zA-Z0-9_-]/g, '-');
-
-  if (meter.series.length === 0) {
-    return (
-      <Text
-        as="div"
-        size="sm"
-        textColor="muted"
-        className="flex items-center justify-center"
-        style={{ height: CHART_HEIGHT }}>
-        <Trans>No daily usage recorded for this meter.</Trans>
-      </Text>
-    );
-  }
-
-  return (
-    <div className="w-full min-w-0">
-      <ResponsiveContainer key={meter.id} width="100%" height={CHART_HEIGHT}>
-        <AreaChart data={meter.series} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-          <defs>
-            <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.25} />
-              <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} />
-          <XAxis
-            dataKey="timestamp"
-            type="number"
-            scale="time"
-            domain={['dataMin', 'dataMax']}
-            tickFormatter={(ts) => format(new Date(ts), 'MMM d')}
-            tickLine={false}
-            axisLine={false}
-            minTickGap={24}
-            tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
-          />
-          <YAxis
-            tickLine={false}
-            axisLine={false}
-            width={64}
-            tickFormatter={(value) =>
-              formatAxisValue(meter.unit, typeof value === 'number' ? value : 0)
-            }
-            tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
-          />
-          <Tooltip
-            cursor={{ stroke: 'var(--border)' }}
-            content={({ active, payload, label }) => {
-              if (!active || !payload?.length) return null;
-              return (
-                <div className="border-border bg-background rounded-md border px-2.5 py-1.5 shadow-sm">
-                  <Text as="div" size="xs" textColor="muted">
-                    {format(new Date(label as number), 'MMM d, yyyy')}
-                  </Text>
-                  <Text as="div" size="xs" weight="medium" textColor="default">
-                    {meter.label}:{' '}
-                    {formatByUnit(
-                      meter.unit,
-                      typeof payload[0].value === 'number' ? payload[0].value : 0
-                    )}
-                  </Text>
-                </div>
-              );
-            }}
-          />
-          <Area
-            type="monotone"
-            dataKey="value"
-            stroke="var(--primary)"
-            strokeWidth={2}
-            fill={`url(#${fillId})`}
-            activeDot={{
-              r: 4,
-              fill: 'var(--primary)',
-              stroke: 'var(--background)',
-              strokeWidth: 2,
-            }}
-          />
-        </AreaChart>
-      </ResponsiveContainer>
     </div>
   );
 }

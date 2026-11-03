@@ -1,10 +1,8 @@
-import { summarizeInvoices } from '../../lib/invoice-summary';
 import { getBillingStatus, getPaymentReadyCondition } from '../../lib/payment-terms';
-import { getBillingAccountDisplayName, getBillingAccountDisplayStatus } from '../../utils';
-import { useAccountInvoices, useAccountPaymentMethods } from './use-account-dashboard';
-import { BadgeState } from '@/components/badge';
+import { getBillingAccountDisplayName } from '../../utils';
+import { AccountStatusBadge } from './account-status-badge';
+import { InlineDate } from './card-parts';
 import { ButtonCopy } from '@/components/button';
-import { DateTime } from '@/components/date';
 import { PageHeader } from '@/components/page-header';
 import { ACTION_ICONS, ENTITY_ICONS } from '@/utils/config/icons.config';
 import { orgRoutes } from '@/utils/config/routes.config';
@@ -16,13 +14,12 @@ import {
   DropdownMenuTrigger,
 } from '@datum-cloud/datum-ui/dropdown';
 import { Icon } from '@datum-cloud/datum-ui/icons';
-import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
 import { CalendarDays, ChevronDown, Coins, CreditCard, FileText, Hash } from 'lucide-react';
-import { useMemo, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 
 export interface BillingAccountHeaderAction {
@@ -39,33 +36,6 @@ interface BillingAccountHeaderProps {
   cloudPortalUrl?: string | null;
   /** Items for the Actions menu; the menu is hidden when there are none. */
   actions?: BillingAccountHeaderAction[];
-  now: Date;
-}
-
-/**
- * Past due outranks the account phase: it's the first thing staff need to
- * know. Until invoices and payment methods load, show the phase alone.
- */
-function AccountStatusBadge({
-  orgName,
-  account,
-  now,
-}: Pick<BillingAccountHeaderProps, 'orgName' | 'account' | 'now'>) {
-  const { invoices } = useAccountInvoices(orgName, account.metadata?.name ?? '');
-  const { paymentMethods, isLoading } = useAccountPaymentMethods(orgName, account);
-  const pastDueCount = useMemo(
-    () => (invoices ? summarizeInvoices(invoices, now).pastDueCount : 0),
-    [invoices, now]
-  );
-
-  if (pastDueCount > 0) {
-    return <BadgeState state="error" message={t`Past due`} />;
-  }
-  if (isLoading) {
-    return <Skeleton className="h-4 w-14 rounded" />;
-  }
-  const status = getBillingAccountDisplayStatus(account, paymentMethods ?? []);
-  return <BadgeState state={status.state} tooltip={status.tooltip} />;
 }
 
 function MetaItem({ icon, children }: { icon: typeof Hash; children: ReactNode }) {
@@ -102,7 +72,6 @@ export function BillingAccountHeader({
   account,
   cloudPortalUrl,
   actions = [],
-  now,
 }: BillingAccountHeaderProps) {
   const accountName = account.metadata?.name ?? '';
 
@@ -111,7 +80,7 @@ export function BillingAccountHeader({
       title={
         <span className="flex min-w-0 items-center gap-2">
           <span className="truncate">{getBillingAccountDisplayName(account)}</span>
-          <AccountStatusBadge orgName={orgName} account={account} now={now} />
+          <AccountStatusBadge orgName={orgName} account={account} />
         </span>
       }
       description={
@@ -139,7 +108,7 @@ export function BillingAccountHeader({
             <MetaItem icon={CalendarDays}>
               <Trans>
                 Created{' '}
-                <DateTime
+                <InlineDate
                   date={account.metadata.creationTimestamp}
                   variant="absolute"
                   format="MMM d, yyyy"

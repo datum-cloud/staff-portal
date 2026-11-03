@@ -1,11 +1,9 @@
-import { formatBillingAddress, getBillingAccountDisplayStatus } from '../../utils';
+import { formatBillingAddress, getAccountCurrency, getEffectiveNetDays } from '../../utils';
+import { AccountStatusBadge } from './account-status-badge';
 import { frequencyLabel } from './card-parts';
-import { useAccountPaymentMethods } from './use-account-dashboard';
-import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
 import { SectionCard } from '@/features/milo';
-import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
@@ -92,9 +90,8 @@ export function BillingAccountConfigCard({
   orgName: string;
   account: BillingAccount;
 }) {
-  const { paymentMethods, isLoading } = useAccountPaymentMethods(orgName, account);
-  const status = getBillingAccountDisplayStatus(account, paymentMethods ?? []);
   const terms = account.spec?.paymentTerms;
+  const netDays = getEffectiveNetDays(account);
   const frequency = frequencyLabel(terms?.invoiceFrequency);
   const invoiceDay = terms?.invoiceDayOfMonth ?? 1;
 
@@ -104,15 +101,11 @@ export function BillingAccountConfigCard({
         items={[
           {
             label: <Trans>Status</Trans>,
-            value: isLoading ? (
-              <Skeleton className="h-4 w-14 rounded" />
-            ) : (
-              <BadgeState state={status.state} tooltip={status.tooltip} />
-            ),
+            value: <AccountStatusBadge orgName={orgName} account={account} />,
           },
           {
             label: <Trans>Currency</Trans>,
-            value: <Text>{account.spec?.currencyCode ?? '—'}</Text>,
+            value: <Text>{getAccountCurrency(account)}</Text>,
           },
           {
             label: <Trans>Invoice frequency</Trans>,
@@ -126,7 +119,7 @@ export function BillingAccountConfigCard({
           },
           {
             label: <Trans>Net days</Trans>,
-            value: <Text>{terms?.netDays ?? '—'}</Text>,
+            value: <Text>{netDays ?? '—'}</Text>,
           },
           {
             label: <Trans>Created</Trans>,

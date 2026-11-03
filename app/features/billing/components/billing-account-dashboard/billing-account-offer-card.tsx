@@ -1,6 +1,11 @@
-import { formatLaunchStage, getOfferDisplayName } from '../../utils';
+import {
+  getEntitlementActiveSince,
+  getOfferPricingCount,
+  getOfferServices,
+} from '../../lib/offer-summary';
+import { formatLaunchStage, getOfferDisplayName, indexServicesByRef } from '../../utils';
 import { BILLING_ACCOUNT_SECTION_IDS } from './billing-account-attention-banner';
-import { CardMessage, SectionAnchor } from './card-parts';
+import { CardMessage, SectionAnchor, InlineDate } from './card-parts';
 import { BadgeState } from '@/components/badge';
 import { DialogForm } from '@/components/dialog';
 import { SectionCard } from '@/features/milo';
@@ -8,9 +13,10 @@ import {
   useBillingEntitlementForAccountQuery,
   useOfferDetailQuery,
   useOfferListQuery,
+  useServiceListQuery,
   useSwitchBillingEntitlementOfferMutation,
 } from '@/resources/request/client';
-import { offerRoutes } from '@/utils/config/routes.config';
+import { offerRoutes, serviceCatalogRoutes } from '@/utils/config/routes.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { Icon } from '@datum-cloud/datum-ui/icons';
@@ -80,7 +86,7 @@ export function BillingAccountOfferCard({
             </Trans>
           </CardMessage>
         ) : (
-          <ActiveOffer offerName={entitlement.spec?.offerRef?.name ?? ''} />
+          <ActiveOffer entitlement={entitlement} />
         )}
       </SectionCard>
       {entitlement ? (
@@ -96,25 +102,101 @@ export function BillingAccountOfferCard({
   );
 }
 
-function ActiveOffer({ offerName }: { offerName: string }) {
+/** Most service chips before the rest collapse into "+N more". */
+const MAX_SERVICES = 6;
+
+function ActiveOffer({
+  entitlement,
+}: {
+  entitlement: ComMiloapisBillingV1Alpha1BillingEntitlement;
+}) {
+  const offerName = entitlement.spec?.offerRef?.name ?? '';
   const offerQuery = useOfferDetailQuery(offerName);
-  const launchStage = offerQuery.data?.spec?.launchStage ?? '';
+  const servicesQuery = useServiceListQuery();
+  const servicesByRef = useMemo(
+    () => indexServicesByRef(servicesQuery.data?.items ?? []),
+    [servicesQuery.data?.items]
+  );
+  const offer = offerQuery.data;
+  const services = useMemo(
+    () => (offer ? getOfferServices(offer, servicesByRef) : []),
+    [offer, servicesByRef]
+  );
+  const activeSince = getEntitlementActiveSince(entitlement);
+  const launchStage = offer?.spec?.launchStage ?? '';
+  const discount = offer?.spec?.discount?.percentage;
+  const pricingCount = offer ? getOfferPricingCount(offer) : 0;
 
   if (!offerName) return <Text size="sm">—</Text>;
 
   return (
-    <div className="flex flex-col gap-1">
-      <div className="flex flex-wrap items-center gap-2">
-        <Link to={offerRoutes.detail(offerName)} className="font-medium">
-          {offerQuery.data ? getOfferDisplayName(offerQuery.data) : offerName}
-        </Link>
-        {launchStage ? (
-          <BadgeState state={launchStage} message={formatLaunchStage(launchStage)} />
-        ) : null}
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-1">
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            to={offerRoutes.detail(offerName)}
+            className="text-primary text-lg font-medium hover:underline">
+            {offer ? getOfferDisplayName(offer) : offerName}
+          </Link>
+          {launchStage ? (
+            <BadgeState state={launchStage} message={formatLaunchStage(launchStage)} />
+          ) : null}
+        </div>
+        <Text size="xs" textColor="muted">
+          <span className="font-mono">{offerName}</span>
+          {activeSince ? (
+            <>
+              {' · '}
+              <Trans>
+                active since{' '}
+                <InlineDate date={activeSince} variant="absolute" format="MMM d, yyyy" />
+              </Trans>
+            </>
+          ) : null}
+        </Text>
       </div>
-      <Text size="xs" textColor="muted" className="font-mono">
-        {offerName}
-      </Text>
+
+      {offerQuery.isLoading ? (
+        <Skeleton className="h-6 w-full rounded" />
+      ) : offer ? (
+        <div className="flex flex-col gap-2 border-t pt-3">
+          <Text size="xs" textColor="muted">
+            {pricingCount === 1 ? <Trans>1 price</Trans> : <Trans>{pricingCount} prices</Trans>}
+            {discount ? (
+              <>
+                {' · '}
+                <Trans>{discount}% off</Trans>
+              </>
+            ) : null}
+          </Text>
+          {services.length > 0 ? (
+            <ul className="flex flex-wrap gap-1.5" aria-label={t`Services included`}>
+              {services.slice(0, MAX_SERVICES).map((service) => (
+                <li key={service.catalogName}>
+                  <Link
+                    to={serviceCatalogRoutes.detail(service.catalogName)}
+                    className="border-border bg-background hover:border-foreground/30 inline-flex rounded-md border px-2 py-0.5 transition-colors">
+                    <Text as="span" size="xs">
+                      {service.displayName}
+                    </Text>
+                  </Link>
+                </li>
+              ))}
+              {services.length > MAX_SERVICES ? (
+                <li>
+                  <Link
+                    to={offerRoutes.detail(offerName)}
+                    className="text-muted-foreground inline-flex px-1 py-0.5 hover:underline">
+                    <Text as="span" size="xs" textColor="muted">
+                      <Trans>+{services.length - MAX_SERVICES} more</Trans>
+                    </Text>
+                  </Link>
+                </li>
+              ) : null}
+            </ul>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }
