@@ -270,6 +270,7 @@ msgstr "Active Sessions"
 msgid "Activity"
 msgstr "Activity"
 
+#: app/features/contact/components/add-to-group-dialog.tsx:93
 #: app/routes/admin/group/detail/member.tsx:132
 #: app/routes/admin/group/detail/member.tsx:155
 #: app/routes/marketing/contact-group/detail/member.tsx:335
@@ -323,9 +324,14 @@ msgstr "Add Stage"
 msgid "Add the first note below to start tracking context."
 msgstr "Add the first note below to start tracking context."
 
+#: app/features/contact/components/add-to-group-dialog.tsx:92
 #: app/routes/marketing/contact/detail/group.tsx:170
 msgid "Add to Contact Group"
 msgstr "Add to Contact Group"
+
+#: app/features/contact/components/add-to-group-dialog.tsx:86
+msgid "Add to group"
+msgstr "Add to group"
 
 #: app/features/fraud/policy/policy-form.tsx:178
 msgid "Add Trigger"
@@ -614,6 +620,10 @@ msgstr "Are you sure you want to delete this fraud evaluation? This action canno
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 
+#: app/features/contact/components/contact-groups-card.tsx:101
+msgid "Are you sure you want to remove this contact from \"{removingName}\"? This action cannot be undone."
+msgstr "Are you sure you want to remove this contact from \"{removingName}\"? This action cannot be undone."
+
 #. placeholder {0}: selectedGroup?.contactGroup?.spec?.displayName ?? ''
 #: app/routes/marketing/contact/detail/group.tsx:157
 msgid "Are you sure you want to remove this contact from the contact group \"{0}\"? This action cannot be undone."
@@ -751,7 +761,9 @@ msgstr "by"
 #: app/features/billing/components/payment-terms-card.tsx:333
 #: app/features/billing/components/payment-terms-card.tsx:494
 #: app/features/contact-group/components/contact-group-form.tsx:97
+#: app/features/contact/components/add-to-group-dialog.tsx:94
 #: app/features/contact/components/contact-form.tsx:249
+#: app/features/contact/components/contact-groups-card.tsx:103
 #: app/features/contact/components/contact-list.tsx:135
 #: app/features/feature-flags/components/feature-flag-list.tsx:230
 #: app/features/fraud/policy/policy-form.tsx:314
@@ -1022,6 +1034,7 @@ msgstr "Contact details"
 msgid "Contact email"
 msgstr "Contact email"
 
+#: app/features/contact/components/add-to-group-dialog.tsx:75
 #: app/routes/marketing/contact/detail/group.tsx:139
 msgid "Contact group added successfully"
 msgstr "Contact group added successfully"
@@ -1039,6 +1052,7 @@ msgstr "Contact group deleted successfully"
 msgid "Contact Group Information"
 msgstr "Contact Group Information"
 
+#: app/features/contact/components/add-to-group-dialog.tsx:61
 #: app/routes/marketing/contact/detail/group.tsx:125
 msgid "Contact group is required"
 msgstr "Contact group is required"
@@ -1047,7 +1061,7 @@ msgstr "Contact group is required"
 msgid "Contact group updated successfully"
 msgstr "Contact group updated successfully"
 
-#: app/features/contact/components/contact-groups-card.tsx:27
+#: app/features/contact/components/contact-groups-card.tsx:48
 #: app/features/contact/components/timeline/timeline-filters.tsx:17
 #: app/routes/marketing/contact/detail/index.tsx:125
 msgid "Contact groups"
@@ -3150,7 +3164,7 @@ msgstr "No consumers found."
 msgid "No contact details on file. Onboarding may be waiting on this step."
 msgstr "No contact details on file. Onboarding may be waiting on this step."
 
-#: app/features/contact/components/contact-groups-card.tsx:37
+#: app/features/contact/components/contact-groups-card.tsx:60
 msgid "No contact groups"
 msgstr "No contact groups"
 
@@ -4279,6 +4293,10 @@ msgstr "Reject"
 msgid "Reject User"
 msgstr "Reject User"
 
+#: app/features/contact/components/contact-groups-card.tsx:102
+msgid "Remove"
+msgstr "Remove"
+
 #: app/routes/admin/service-catalog/detail/consumers.tsx:303
 msgid "Remove {revokeConsumerProject}'s access to {revokeEntitlementName}? They'll lose access immediately and all of their resources for this service will be permanently deleted. This cannot be undone."
 msgstr "Remove {revokeConsumerProject}'s access to {revokeEntitlementName}? They'll lose access immediately and all of their resources for this service will be permanently deleted. This cannot be undone."
@@ -4287,10 +4305,17 @@ msgstr "Remove {revokeConsumerProject}'s access to {revokeEntitlementName}? They
 msgid "Remove filter"
 msgstr "Remove filter"
 
+#. placeholder {0}: displayName || groupName
+#: app/features/contact/components/contact-groups-card.tsx:88
+msgid "Remove from {0}"
+msgstr "Remove from {0}"
+
+#: app/features/contact/components/contact-groups-card.tsx:100
 #: app/routes/marketing/contact/detail/group.tsx:156
 msgid "Remove from Contact Group"
 msgstr "Remove from Contact Group"
 
+#: app/features/contact/components/contact-groups-card.tsx:111
 #: app/routes/marketing/contact/detail/group.tsx:164
 msgid "Removed from contact group successfully"
 msgstr "Removed from contact group successfully"
@@ -4519,6 +4544,7 @@ msgstr "Search by project, organization, ID, or note..."
 msgid "Search by project, organization, or ID..."
 msgstr "Search by project, organization, or ID..."
 
+#: app/features/contact/components/add-to-group-dialog.tsx:102
 #: app/routes/marketing/contact-group/index.tsx:224
 #: app/routes/marketing/contact/detail/group.tsx:180
 #: app/routes/marketing/contact/detail/group.tsx:194
@@ -4703,6 +4729,7 @@ msgstr "Select at least one charge type"
 msgid "Select at least one ServicePricing"
 msgstr "Select at least one ServicePricing"
 
+#: app/features/contact/components/add-to-group-dialog.tsx:101
 #: app/routes/marketing/contact/detail/group.tsx:179
 msgid "Select contact group..."
 msgstr "Select contact group..."
@@ -5187,7 +5214,7 @@ msgstr "These terms will never take effect. The record is kept for history."
 msgid "This Application Load Balancer has advanced configuration that cannot be represented in the simplified overview fields. See the YAML section below for the full resource definition including routing rules, filters, and matches."
 msgstr "This Application Load Balancer has advanced configuration that cannot be represented in the simplified overview fields. See the YAML section below for the full resource definition including routing rules, filters, and matches."
 
-#: app/features/contact/components/contact-groups-card.tsx:38
+#: app/features/contact/components/contact-groups-card.tsx:61
 msgid "This contact isn't in any groups yet."
 msgstr "This contact isn't in any groups yet."
 

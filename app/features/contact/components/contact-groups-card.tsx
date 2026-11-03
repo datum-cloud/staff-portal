@@ -1,13 +1,25 @@
+import { AddToGroupDialog } from './add-to-group-dialog';
 import { BadgeState } from '@/components/badge';
+import { DialogConfirm } from '@/components/dialog';
 import { EmptyState } from '@/components/empty-state';
 import { UserAvatar } from '@/components/user-avatar';
 import { SectionCard } from '@/features/milo';
-import { useContactGroupMembershipListQuery } from '@/resources/request/client';
+import {
+  contactQueryKeys,
+  useContactGroupMembershipListQuery,
+  useDeleteContactGroupMembershipMutation,
+} from '@/resources/request/client';
+import type { ContactMembershipWithContactGroup } from '@/resources/schemas';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { contactGroupRoutes } from '@/utils/config/routes.config';
+import { Button } from '@datum-cloud/datum-ui/button';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
+import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
-import { Trans } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { useQueryClient } from '@tanstack/react-query';
 import { BookUser } from 'lucide-react';
+import { useState } from 'react';
 import { Link } from 'react-router';
 
 type Props = {
@@ -16,15 +28,26 @@ type Props = {
 };
 
 /**
- * Read-only "Contact groups" card: the groups a contact belongs to, with
- * visibility. Add/remove management lands with #761.
+ * "Contact groups" card: the groups a contact belongs to, with visibility.
+ * Add via the group picker, remove per row with confirmation (#761). The full
+ * table stays on the Contact groups tab.
  */
 export function ContactGroupsCard({ contactName, className }: Props) {
+  const { t } = useLingui();
+  const queryClient = useQueryClient();
   const query = useContactGroupMembershipListQuery(contactName);
   const items = query.data?.items ?? [];
 
+  const [removing, setRemoving] = useState<ContactMembershipWithContactGroup | null>(null);
+  const deleteMembership = useDeleteContactGroupMembershipMutation();
+  const removingName =
+    removing?.contactGroup?.spec?.displayName ?? removing?.contactGroup?.metadata?.name ?? '';
+
   return (
-    <SectionCard title={<Trans>Contact groups</Trans>} className={className}>
+    <SectionCard
+      title={<Trans>Contact groups</Trans>}
+      action={<AddToGroupDialog contactName={contactName} variant="card" />}
+      className={className}>
       {query.isLoading ? (
         <div className="flex flex-col gap-2" aria-busy="true">
           {Array.from({ length: 3 }).map((_, i) => (
@@ -46,7 +69,7 @@ export function ContactGroupsCard({ contactName, className }: Props) {
             return (
               <li
                 key={m.metadata?.name ?? groupName}
-                className="flex items-center gap-3 py-2 first:pt-0 last:pb-0">
+                className="group flex items-center gap-3 py-2 first:pt-0 last:pb-0">
                 <UserAvatar name={displayName || groupName} className="size-8 shrink-0" />
                 <div className="flex min-w-0 flex-1 flex-col">
                   <Link to={contactGroupRoutes.detail(groupName)} className="truncate text-sm">
@@ -57,11 +80,37 @@ export function ContactGroupsCard({ contactName, className }: Props) {
                   </Text>
                 </div>
                 {visibility ? <BadgeState state={visibility} /> : null}
+                <Button
+                  type="tertiary"
+                  theme="borderless"
+                  size="xs"
+                  icon={<ACTION_ICONS.delete size={14} />}
+                  aria-label={t`Remove from ${displayName || groupName}`}
+                  onClick={() => setRemoving(m)}
+                />
               </li>
             );
           })}
         </ul>
       )}
+
+      <DialogConfirm
+        open={!!removing}
+        onOpenChange={() => setRemoving(null)}
+        title={t`Remove from Contact Group`}
+        description={t`Are you sure you want to remove this contact from "${removingName}"? This action cannot be undone.`}
+        confirmText={t`Remove`}
+        cancelText={t`Cancel`}
+        variant="destructive"
+        onConfirm={async () => {
+          await deleteMembership.mutateAsync(removing?.metadata);
+          await queryClient.invalidateQueries({
+            queryKey: contactQueryKeys.groups.all(contactName),
+          });
+          setRemoving(null);
+          toast.success(t`Removed from contact group successfully`);
+        }}
+      />
     </SectionCard>
   );
 }
