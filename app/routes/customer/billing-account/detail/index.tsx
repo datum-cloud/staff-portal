@@ -5,6 +5,7 @@ import {
   BillingAccountAttentionBanner,
   BillingAccountConfigCard,
   BillingAccountContactCard,
+  BillingAccountContractCard,
   BillingAccountHeader,
   BillingAccountHealthCards,
   BillingAccountInvoicesCard,
@@ -14,6 +15,7 @@ import {
   BillingAccountUsageCard,
   usePaymentTerms,
   type BillingAccountHeaderAction,
+  type ContractDialogMode,
 } from '@/features/billing/components/billing-account-dashboard';
 import { SectionCard } from '@/features/milo';
 import { useEnv } from '@/hooks';
@@ -89,7 +91,9 @@ function Dashboard({
   // Held here so the header's Actions menu can open the cards' dialogs.
   const paymentTerms = usePaymentTerms(orgName, account);
   const entitlementQuery = useBillingEntitlementForAccountQuery(orgName, accountName);
+  const entitlement = entitlementQuery.data ?? null;
   const [switchOfferOpen, setSwitchOfferOpen] = useState(false);
+  const [contractDialog, setContractDialog] = useState<ContractDialogMode | null>(null);
 
   const pendingApplicationName = paymentTerms.pendingApplication?.metadata?.name;
   const headerActions: BillingAccountHeaderAction[] = [
@@ -118,9 +122,22 @@ function Dashboard({
       key: 'offer',
       label: <Trans>Switch offer</Trans>,
       // There's nothing to switch until the account has an entitlement.
-      disabled: !entitlementQuery.data,
+      disabled: !entitlement,
       onSelect: () => setSwitchOfferOpen(true),
     },
+    entitlement?.spec?.contract
+      ? {
+          key: 'contract',
+          label: <Trans>Change contract fees</Trans>,
+          onSelect: () => setContractDialog('change'),
+        }
+      : {
+          key: 'contract',
+          label: <Trans>Set up contract</Trans>,
+          // The contract goes on the account's entitlement.
+          disabled: !entitlement,
+          onSelect: () => setContractDialog('setup'),
+        },
   ];
 
   return (
@@ -151,6 +168,14 @@ function Dashboard({
 
         <aside className="flex min-w-0 flex-col gap-4">
           <BillingAccountPaymentCard orgName={orgName} account={account} terms={paymentTerms} />
+          <BillingAccountContractCard
+            orgName={orgName}
+            account={account}
+            entitlement={entitlement}
+            now={now}
+            dialogMode={contractDialog}
+            onDialogModeChange={setContractDialog}
+          />
           <BillingAccountOfferCard
             orgName={orgName}
             accountName={accountName}

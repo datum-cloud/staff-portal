@@ -1,3 +1,4 @@
+import { contractOfferPlan, contractResourceNames } from '@/features/billing/lib/contract';
 import type { OfferDiscount } from '@/features/billing/lib/offer-discounts';
 import type {
   ArrangementMergePatch,
@@ -14,6 +15,8 @@ import { walkCursorPages } from '@/utils/helpers';
 import {
   createBillingMiloapisComV1Alpha1NamespacedBillingArrangement,
   createBillingMiloapisComV1Alpha1NamespacedBillingArrangementDecline,
+  createBillingMiloapisComV1Alpha1NamespacedInvoiceRequest,
+  createBillingMiloapisComV1Alpha1NamespacedServicePricing,
   createBillingMiloapisComV1Alpha1Offer,
   listBillingMiloapisComV1Alpha1BillingAccountBindingForAllNamespaces,
   listBillingMiloapisComV1Alpha1BillingAccountForAllNamespaces,
@@ -34,9 +37,11 @@ import {
   patchBillingMiloapisComV1Alpha1Offer,
   readBillingMiloapisComV1Alpha1NamespacedBillingAccount,
   readBillingMiloapisComV1Alpha1NamespacedBillingArrangementApplication,
+  readBillingMiloapisComV1Alpha1NamespacedInvoiceRequest,
   readBillingMiloapisComV1Alpha1Offer,
   type ComMiloapisBillingV1Alpha1BillingEntitlement,
   type ComMiloapisBillingV1Alpha1Invoice,
+  type ComMiloapisBillingV1Alpha1InvoiceRequest,
   type ComMiloapisBillingV1Alpha1Offer,
   type ComMiloapisBillingV1Alpha1ServicePricing,
 } from '@openapi/billing.miloapis.com/v1alpha1';
@@ -54,6 +59,7 @@ export type OfferSpec = NonNullable<Offer['spec']>;
 export type ServicePricing = ComMiloapisBillingV1Alpha1ServicePricing;
 export type BillingEntitlement = ComMiloapisBillingV1Alpha1BillingEntitlement;
 export type Invoice = ComMiloapisBillingV1Alpha1Invoice;
+export type InvoiceRequest = ComMiloapisBillingV1Alpha1InvoiceRequest;
 
 export const billingAccountListQuery = async (params?: ListQueryParams) => {
   const response = await listBillingMiloapisComV1Alpha1BillingAccountForAllNamespaces({
@@ -342,6 +348,114 @@ export const servicePricingListQuery = async (
   };
 };
 
+export type CreateFixedServicePricingInput = {
+  name: string;
+  /** Shown on invoices, e.g. "Server installation". */
+  displayName: string;
+  chargeType: 'OneTime' | 'Recurring';
+  /** USD decimal string, e.g. "1500.00". */
+  amount: string;
+  /** The catalog service's serviceName the fee is for. */
+  serviceRef: string;
+};
+
+/**
+ * A one-time or monthly fee, such as a contract's. Pricings are immutable,
+ * so a new fee is always a new pricing.
+ */
+export const createFixedServicePricing = async (input: CreateFixedServicePricingInput) => {
+  const response = await createBillingMiloapisComV1Alpha1NamespacedServicePricing({
+    path: { namespace: DEFAULT_SERVICE_PRICING_NAMESPACE },
+    query: { fieldManager: FIELD_MANAGER },
+    body: {
+      apiVersion: 'billing.miloapis.com/v1alpha1',
+      kind: 'ServicePricing',
+      metadata: { name: input.name },
+      spec: {
+        chargeType: input.chargeType,
+        currency: 'USD',
+        displayName: input.displayName,
+        amount: input.amount,
+        serviceRef: input.serviceRef,
+        ...(input.chargeType === 'OneTime'
+          ? { trigger: 'BillingAccountActivation' as const }
+          : { interval: 'monthly' as const }),
+      },
+    },
+  });
+  return response.data?.data;
+};
+
+// ─── Contracts ───────────────────────────────────────────────────────────────
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Waits for billing to snapshot a published Offer's pricings, which it does
+ * after the Offer goes GA. An entitlement can't point at the Offer before.
+ */
+export const waitForOfferSnapshot = async (
+  name: string,
+  pricingCount: number,
+  { attempts = 30, intervalMs = 1000 } = {}
+): Promise<Offer> => {
+  for (let i = 0; i < attempts; i++) {
+    const offer = await offerDetailQuery(name);
+    if (offer && (offer.spec?.servicePricings?.length ?? 0) >= pricingCount) return offer;
+    await sleep(intervalMs);
+  }
+  throw new Error(`Offer ${name} wasn't published in time. Try assigning it again shortly.`);
+};
+
+export type ContractFeeInput = { label: string; amount: string };
+
+export type CreateContractOfferInput = {
+  accountName: string;
+  /** Names the Offer, e.g. "Acme Corp contract". */
+  displayName: string;
+  /** The catalog service's serviceName the fees are for. */
+  serviceRef: string;
+  /** Left out when amending: a setup fee is charged again on every change. */
+  setupFee?: ContractFeeInput;
+  monthlyFee: ContractFeeInput;
+  /** Usage pricings billed alongside the fees, if any. */
+  usageRefs: NonNullable<OfferSpec['servicePricingRefs']>;
+};
+
+/**
+ * Creates a contract's fee pricings and a published Offer with them, and
+ * returns the Offer's name once an entitlement can point at it.
+ */
+export const createContractOffer = async (input: CreateContractOfferInput, now = new Date()) => {
+  const names = contractResourceNames(input.accountName, now);
+  if (input.setupFee) {
+    await createFixedServicePricing({
+      name: names.setupFee,
+      displayName: input.setupFee.label,
+      chargeType: 'OneTime',
+      amount: input.setupFee.amount,
+      serviceRef: input.serviceRef,
+    });
+  }
+  await createFixedServicePricing({
+    name: names.monthlyFee,
+    displayName: input.monthlyFee.label,
+    chargeType: 'Recurring',
+    amount: input.monthlyFee.amount,
+    serviceRef: input.serviceRef,
+  });
+  const plan = contractOfferPlan({
+    namespace: DEFAULT_SERVICE_PRICING_NAMESPACE,
+    setupFeeName: input.setupFee ? names.setupFee : undefined,
+    monthlyFeeName: names.monthlyFee,
+    usageRefs: input.usageRefs,
+  });
+  await createOffer({ name: names.offer, displayName: input.displayName, ...plan });
+  await publishOffer(names.offer);
+  await waitForOfferSnapshot(names.offer, plan.servicePricingRefs.length);
+  return names.offer;
+};
+
 // ─── BillingEntitlement (org-namespaced) ─────────────────────────────────────
 
 export const billingEntitlementListForOrgQuery = async (
@@ -390,6 +504,85 @@ export const switchBillingEntitlementOffer = async (
     },
   });
   return response.data?.data;
+};
+
+/**
+ * Moves the account onto a contract: its Offer, starting at midnight UTC on
+ * startsAt. Until then the account is billed as before. The contract can't
+ * be removed or its start moved afterwards.
+ */
+export const setBillingEntitlementContract = async (
+  orgName: string,
+  entitlementName: string,
+  offerName: string,
+  startsAt: string
+) => {
+  const namespace = buildOrganizationNamespace(orgName);
+  const response = await patchBillingMiloapisComV1Alpha1NamespacedBillingEntitlement({
+    baseURL: getClientOrgControlPlaneBaseURL(orgName),
+    path: { namespace, name: entitlementName },
+    query: { fieldManager: FIELD_MANAGER },
+    headers: { 'Content-Type': 'application/merge-patch+json' },
+    body: {
+      spec: {
+        offerRef: { name: offerName },
+        contract: { startsAt },
+      },
+    },
+  });
+  return response.data?.data;
+};
+
+// ─── InvoiceRequest (org-namespaced, staff-only) ─────────────────────────────
+
+/** Asks the invoicing provider what the account will be invoiced next. */
+export const createInvoicePreviewRequest = async (orgName: string, accountName: string) => {
+  const namespace = buildOrganizationNamespace(orgName);
+  const response = await createBillingMiloapisComV1Alpha1NamespacedInvoiceRequest({
+    baseURL: getClientOrgControlPlaneBaseURL(orgName),
+    path: { namespace },
+    query: { fieldManager: FIELD_MANAGER },
+    body: {
+      apiVersion: 'billing.miloapis.com/v1alpha1',
+      kind: 'InvoiceRequest',
+      metadata: { generateName: `${accountName}-preview-` },
+      spec: { billingAccountRef: { name: accountName }, mode: 'Preview' },
+    },
+  });
+  return response.data?.data;
+};
+
+/**
+ * Creates a Preview request and waits for the provider to answer it.
+ * Returns the request as it finished, Succeeded or Failed.
+ */
+export const previewNextInvoice = async (
+  orgName: string,
+  accountName: string,
+  { attempts = 45, intervalMs = 2000 } = {}
+): Promise<InvoiceRequest> => {
+  const created = await createInvoicePreviewRequest(orgName, accountName);
+  const name = created?.metadata?.name;
+  if (!name) throw new Error('The preview request was not created.');
+  for (let i = 0; i < attempts; i++) {
+    const request = await invoiceRequestDetailQuery(orgName, name);
+    const phase = request?.status?.phase;
+    if (request && (phase === 'Succeeded' || phase === 'Failed')) return request;
+    await sleep(intervalMs);
+  }
+  throw new Error('The billing provider has not answered the preview yet. Try again shortly.');
+};
+
+export const invoiceRequestDetailQuery = async (
+  orgName: string,
+  name: string
+): Promise<InvoiceRequest | null> => {
+  const namespace = buildOrganizationNamespace(orgName);
+  const response = await readBillingMiloapisComV1Alpha1NamespacedInvoiceRequest({
+    baseURL: getClientOrgControlPlaneBaseURL(orgName),
+    path: { namespace, name },
+  });
+  return response.data?.data ?? null;
 };
 
 // ─── BillingArrangement (org-namespaced, staff-only) ─────────────────────────

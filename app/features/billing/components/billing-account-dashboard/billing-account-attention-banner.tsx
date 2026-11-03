@@ -29,6 +29,7 @@ import type { ReactNode } from 'react';
 export const BILLING_ACCOUNT_SECTION_IDS = {
   invoices: 'invoices',
   paymentTerms: 'payment-terms',
+  contract: 'contract',
   offer: 'offer',
 } as const;
 

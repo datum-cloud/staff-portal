@@ -7,6 +7,10 @@ export {
   BillingAccountConfigCard,
   BillingAccountContactCard,
 } from './billing-account-details-cards';
+export {
+  BillingAccountContractCard,
+  type ContractDialogMode,
+} from './billing-account-contract-card';
 export { BillingAccountHeader, type BillingAccountHeaderAction } from './billing-account-header';
 export { BillingAccountHealthCards } from './billing-account-health-cards';
 export { BillingAccountInvoicesCard } from './billing-account-invoices-card';
