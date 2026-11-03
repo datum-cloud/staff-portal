@@ -226,5 +226,42 @@ export const monthlyTotal = (fees: FeeAmount[]) =>
  */
 export const firstInvoiceTotal = (fees: FeeAmount[]) => sumFees(fees, () => true);
 
+/**
+ * When a contract's first billing period ends: a month after it starts, or
+ * the last day of a shorter month (a contract starting on 31 January's
+ * first period ends on 28 or 29 February).
+ */
+export const firstPeriodEnd = (startsAt: Date): Date => {
+  const year = startsAt.getUTCFullYear();
+  const month = startsAt.getUTCMonth() + 1;
+  const lastDay = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+  return new Date(Date.UTC(year, month, Math.min(startsAt.getUTCDate(), lastDay)));
+};
+
+/**
+ * How much of the first month a contract's monthly fees are charged for
+ * when the account starts on them at a given moment. OpenMeter prorates a
+ * flat fee from when the subscription starts, and can't start it in the
+ * past, so a contract set up on the day it starts gets a part month; one
+ * set up ahead starts at midnight and gets a full one.
+ */
+export const firstMonthShare = (startsAt: Date, subscribedAt: Date): number => {
+  const end = firstPeriodEnd(startsAt).getTime();
+  const from = Math.max(startsAt.getTime(), subscribedAt.getTime());
+  return Math.min(1, Math.max(0, (end - from) / (end - startsAt.getTime())));
+};
+
+/** The first invoice with its monthly fees prorated by share, fee by fee. */
+export const proratedFirstInvoiceTotal = (fees: FeeAmount[], share: number) =>
+  cents(
+    fees
+      .filter((fee) => !Number.isNaN(fee.amount))
+      .reduce(
+        (total, fee) =>
+          total + (fee.chargeType === 'Recurring' ? cents(fee.amount * share) : fee.amount),
+        0
+      )
+  );
+
 /** The day of the month a contract bills on, from its UTC start date. */
 export const contractBillingDay = (startsAt: Date) => startsAt.getUTCDate();

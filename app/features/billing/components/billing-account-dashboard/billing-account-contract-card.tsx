@@ -3,6 +3,7 @@ import {
   contractStartFromDate,
   contractStartProblem,
   firstInvoiceTotal,
+  firstMonthShare,
   getContractFees,
   getContractState,
   getUsagePricingRefs,
@@ -13,6 +14,7 @@ import {
   monthlyTotal,
   offerBillsUsage,
   parseAmount,
+  proratedFirstInvoiceTotal,
   startOfUtcDay,
   toPricingAmount,
   type ContractState,
@@ -649,14 +651,34 @@ function ContractSummary({ isSetup }: { isSetup: boolean }) {
   if (!fees.some((fee) => fee.amount > 0)) return null;
 
   const hasOneTime = fees.some((fee) => fee.chargeType === 'OneTime' && fee.amount > 0);
-  const total = formatMoney(firstInvoiceTotal(fees), CONTRACT_CURRENCY);
   const perMonth = formatMoney(monthlyTotal(fees), CONTRACT_CURRENCY);
   const startsAt = picked ? contractStartFromDate(picked) : null;
+  // Set up on its start day, the account moves onto the contract when it's
+  // saved, so the first month is prorated from then.
+  const now = new Date();
+  const startsToday = isSetup && startsAt?.getTime() === startOfUtcDay(now).getTime();
+  const share = startsAt && startsToday ? firstMonthShare(startsAt, now) : 1;
+  const prorated = share < 1 && monthlyTotal(fees) > 0;
+  const total = formatMoney(
+    prorated ? proratedFirstInvoiceTotal(fees, share) : firstInvoiceTotal(fees),
+    CONTRACT_CURRENCY
+  );
+  const firstMonth = formatMoney(
+    proratedFirstInvoiceTotal(
+      fees.filter((fee) => fee.chargeType === 'Recurring'),
+      share
+    ),
+    CONTRACT_CURRENCY
+  );
 
   return (
     <div className="bg-muted/40 flex flex-col gap-1 rounded-md border px-3 py-2">
       <Text as="p" size="sm" weight="medium">
-        {isSetup && startsAt ? (
+        {startsToday ? (
+          <Trans>
+            First invoice today: about {total}, then {perMonth} a month.
+          </Trans>
+        ) : isSetup && startsAt ? (
           <Trans>
             First invoice on{' '}
             <InlineDate date={startsAt.toISOString()} variant="absolute" format="MMM d, yyyy" />:{' '}
@@ -670,6 +692,14 @@ function ContractSummary({ isSetup }: { isSetup: boolean }) {
           <Trans>{perMonth} a month from the next billing date.</Trans>
         )}
       </Text>
+      {prorated ? (
+        <Text as="p" size="xs" textColor="warning">
+          <Trans>
+            Starting today, the first month is charged from when you save, so it&apos;s prorated:
+            about {firstMonth} of {perMonth}. Start tomorrow for a full first month.
+          </Trans>
+        </Text>
+      ) : null}
       <Text as="p" size="xs" textColor="muted">
         <Trans>Before discounts and tax, plus any usage. Check it with a preview once saved.</Trans>
       </Text>

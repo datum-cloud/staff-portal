@@ -6,6 +6,8 @@ import {
   contractStartFromDate,
   contractStartProblem,
   firstInvoiceTotal,
+  firstMonthShare,
+  firstPeriodEnd,
   getContractFees,
   getContractState,
   getUsagePricingRefs,
@@ -14,6 +16,7 @@ import {
   MAX_CONTRACT_FEES,
   monthlyTotal,
   parseAmount,
+  proratedFirstInvoiceTotal,
   toPricingAmount,
 } from './contract';
 import type {
@@ -244,6 +247,32 @@ describe('contractResourceNames', () => {
   it('keeps long account names within 63 characters', () => {
     const { fee } = contractResourceNames('a'.repeat(80), now);
     expect(fee(MAX_CONTRACT_FEES - 1).length).toBeLessThanOrEqual(63);
+  });
+});
+
+describe('first month proration', () => {
+  it('matches what OpenMeter charged for a contract set up on its start day', () => {
+    const startsAt = new Date('2026-11-03T00:00:00Z');
+    const share = firstMonthShare(startsAt, new Date('2026-11-03T14:33:42Z'));
+    const fees = [
+      { chargeType: 'OneTime' as const, amount: 20000 },
+      { chargeType: 'Recurring' as const, amount: 2000 },
+    ];
+    expect(proratedFirstInvoiceTotal(fees, share)).toBe(21959.55);
+  });
+
+  it('charges a full month when the account starts on it at midnight', () => {
+    const startsAt = new Date('2026-12-01T00:00:00Z');
+    expect(firstMonthShare(startsAt, new Date('2026-11-20T10:00:00Z'))).toBe(1);
+  });
+
+  it('ends the first period on the last day of a shorter month', () => {
+    expect(firstPeriodEnd(new Date('2027-01-31T00:00:00Z')).toISOString()).toBe(
+      '2027-02-28T00:00:00.000Z'
+    );
+    expect(firstPeriodEnd(new Date('2026-11-03T00:00:00Z')).toISOString()).toBe(
+      '2026-12-03T00:00:00.000Z'
+    );
   });
 });
 
