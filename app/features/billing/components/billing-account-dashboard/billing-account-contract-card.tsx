@@ -7,14 +7,21 @@ import {
   getContractState,
   getUsagePricingRefs,
   localDateForUtcDay,
+  MAX_CONTRACT_FEES,
   MAX_CONTRACT_LEAD_DAYS,
+  monthlyTotal,
   offerBillsUsage,
   parseAmount,
   startOfUtcDay,
   toPricingAmount,
   type ContractState,
 } from '../../lib/contract';
-import { formatMoney, getBillingAccountDisplayName, getOfferDisplayName } from '../../utils';
+import {
+  formatMoney,
+  getBillingAccountDisplayName,
+  getOfferDisplayName,
+  indexServicesByRef,
+} from '../../utils';
 import { BILLING_ACCOUNT_SECTION_IDS } from './billing-account-attention-banner';
 import { CardMessage, InlineDate, SectionAnchor } from './card-parts';
 import { DialogForm } from '@/components/dialog';
@@ -44,7 +51,7 @@ import type {
   ComMiloapisBillingV1Alpha1BillingEntitlement,
   ComMiloapisBillingV1Alpha1Offer,
 } from '@openapi/billing.miloapis.com/v1alpha1';
-import { FileSearch, Pencil } from 'lucide-react';
+import { FileSearch, Pencil, Plus, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { z } from 'zod';
 
@@ -212,6 +219,11 @@ function ContractDates({ contract }: { contract: ContractState }) {
 function ContractFees({ offer }: { offer: ComMiloapisBillingV1Alpha1Offer }) {
   const fees = getContractFees(offer);
   const discount = offer.spec?.discount?.percentage;
+  const servicesQuery = useServiceListQuery();
+  const servicesByRef = useMemo(
+    () => indexServicesByRef(servicesQuery.data?.items ?? []),
+    [servicesQuery.data?.items]
+  );
   return (
     <div className="flex flex-col gap-1.5">
       {fees.length === 0 ? (
@@ -222,9 +234,14 @@ function ContractFees({ offer }: { offer: ComMiloapisBillingV1Alpha1Offer }) {
         <ul className="flex flex-col gap-1">
           {fees.map((fee) => (
             <li key={fee.name} className="flex items-baseline justify-between gap-3">
-              <Text size="sm" className="truncate">
-                {fee.label}
-              </Text>
+              <div className="flex min-w-0 flex-col">
+                <Text size="sm" className="truncate">
+                  {fee.label}
+                </Text>
+                <Text size="xs" textColor="muted" className="truncate">
+                  {servicesByRef.get(fee.serviceRef)?.spec?.displayName || fee.serviceRef}
+                </Text>
+              </div>
               <Text size="sm" className="shrink-0 tabular-nums">
                 {fee.chargeType === 'OneTime' ? (
                   <Trans>{formatMoney(fee.amount, CONTRACT_CURRENCY)} once</Trans>
@@ -253,39 +270,39 @@ function ContractFees({ offer }: { offer: ComMiloapisBillingV1Alpha1Offer }) {
   );
 }
 
-const amountField = (message: string) =>
-  z.string().refine((value) => !Number.isNaN(parseAmount(value)), { message });
-
-const buildContractSchema = (needsStart: boolean, needsSetupFee: boolean, now: Date) =>
+const buildContractSchema = (needsStart: boolean, allowOneTime: boolean, now: Date) =>
   z
     .object({
-      serviceRef: z.string().min(1, t`Pick the service the fees are for.`),
-      setupFeeLabel: z.string(),
-      setupFeeAmount: z.string(),
-      monthlyFeeLabel: z
-        .string()
-        .trim()
-        .min(1, t`Name the monthly fee, as invoices show it.`),
-      monthlyFeeAmount: amountField(t`Enter an amount, such as 1000 or 1000.00.`),
+      fees: z
+        .array(
+          z.object({
+            label: z
+              .string()
+              .trim()
+              .min(1, t`Name the fee, as invoices show it.`),
+            chargeType: z.enum(['OneTime', 'Recurring']),
+            amount: z.string().refine((value) => parseAmount(value) > 0, {
+              message: t`Enter an amount, such as 1000 or 1000.00.`,
+            }),
+            serviceRef: z.string().min(1, t`Pick the service the fee is for.`),
+          })
+        )
+        .min(1, t`Add at least one fee.`)
+        .max(MAX_CONTRACT_FEES, t`A contract can have at most ${MAX_CONTRACT_FEES} fees.`),
       usageOffer: z.string().min(1),
       startsAt: z.date().optional(),
     })
     .superRefine((values, ctx) => {
-      if (needsSetupFee && values.setupFeeAmount.trim()) {
-        if (Number.isNaN(parseAmount(values.setupFeeAmount))) {
-          ctx.addIssue({
-            code: 'custom',
-            path: ['setupFeeAmount'],
-            message: t`Enter an amount, or leave it empty for no setup fee.`,
-          });
-        }
-        if (!values.setupFeeLabel.trim()) {
-          ctx.addIssue({
-            code: 'custom',
-            path: ['setupFeeLabel'],
-            message: t`Name the setup fee, as invoices show it.`,
-          });
-        }
+      if (!allowOneTime) {
+        values.fees.forEach((fee, index) => {
+          if (fee.chargeType === 'OneTime') {
+            ctx.addIssue({
+              code: 'custom',
+              path: ['fees', index, 'chargeType'],
+              message: t`The contract has started, so a one-time fee would be charged again.`,
+            });
+          }
+        });
       }
       if (!needsStart) return;
       if (!values.startsAt) {
@@ -306,6 +323,8 @@ const buildContractSchema = (needsStart: boolean, needsSetupFee: boolean, now: D
     });
 
 type ContractFormValues = z.infer<ReturnType<typeof buildContractSchema>>;
+type ContractFeeRow = ContractFormValues['fees'][number];
+type ServiceOption = { serviceName: string; label: string };
 
 /** RFC 3339 at second precision, as Kubernetes writes times. */
 const toRfc3339 = (date: Date) => date.toISOString().replace(/\.\d{3}Z$/, 'Z');
@@ -338,9 +357,9 @@ function ContractDialog({
   const offersQuery = useOfferListQuery({ limit: 500 });
 
   const isSetup = mode === 'setup';
-  // A setup fee is charged whenever the account moves onto an Offer that has
-  // one, so a contract that has started is amended without it.
-  const needsSetupFee = isSetup || !contract?.started;
+  // A one-time fee is charged whenever the account moves onto an Offer that
+  // has one, so a contract that has started is amended without them.
+  const allowOneTime = isSetup || !contract?.started;
 
   // Usage is billed at the rates (and discounts) of an offer staff pick:
   // any published offer with usage pricing. Other accounts' contract offers
@@ -361,37 +380,45 @@ function ContractDialog({
     usageOfferByName.has(name)
   );
 
-  const services = useMemo(
+  const services = useMemo<ServiceOption[]>(
     () =>
       (servicesQuery.data?.items ?? [])
         .filter((service) => service.spec?.serviceName)
-        .sort((a, b) =>
-          (a.spec?.displayName ?? a.metadata?.name ?? '').localeCompare(
-            b.spec?.displayName ?? b.metadata?.name ?? ''
-          )
-        ),
+        .map((service) => ({
+          serviceName: service.spec?.serviceName ?? '',
+          label: `${service.spec?.displayName || service.metadata?.name} (${service.spec?.serviceName})`,
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label)),
     [servicesQuery.data?.items]
   );
 
-  const currentFees = getContractFees(currentOffer);
-  const currentMonthly = currentFees.find((fee) => fee.chargeType === 'Recurring');
-  const currentSetup = currentFees.find((fee) => fee.chargeType === 'OneTime');
-  const defaultServiceRef =
-    currentMonthly?.serviceRef ??
-    services.find((service) => service.spec?.serviceName?.includes('bare-metal'))?.spec
-      ?.serviceName ??
-    '';
+  const currentFees = getContractFees(currentOffer).filter(
+    (fee) => allowOneTime || fee.chargeType === 'Recurring'
+  );
+  const blankFee = (chargeType: ContractFeeRow['chargeType'], label = ''): ContractFeeRow => ({
+    label,
+    chargeType,
+    amount: '',
+    serviceRef: '',
+  });
+  const defaultFees: ContractFeeRow[] =
+    !isSetup && currentFees.length > 0
+      ? currentFees.map((fee) => ({
+          label: fee.label,
+          chargeType: fee.chargeType,
+          amount: toPricingAmount(fee.amount),
+          serviceRef: fee.serviceRef,
+        }))
+      : allowOneTime
+        ? [blankFee('OneTime', t`Setup fee`), blankFee('Recurring', t`Monthly fee`)]
+        : [blankFee('Recurring', t`Monthly fee`)];
 
   const schema = useMemo(
-    () => buildContractSchema(isSetup, needsSetupFee, now),
-    [isSetup, needsSetupFee, now]
+    () => buildContractSchema(isSetup, allowOneTime, now),
+    [isSetup, allowOneTime, now]
   );
   const defaultValues: ContractFormValues = {
-    serviceRef: defaultServiceRef,
-    setupFeeLabel: (!isSetup && currentSetup?.label) || t`Setup fee`,
-    setupFeeAmount: !isSetup && currentSetup ? toPricingAmount(currentSetup.amount) : '',
-    monthlyFeeLabel: (!isSetup && currentMonthly?.label) || t`Monthly fee`,
-    monthlyFeeAmount: '',
+    fees: defaultFees,
     usageOffer:
       (isSetup || offerBillsUsage(currentOffer)) && defaultUsageOffer
         ? defaultUsageOffer
@@ -400,19 +427,15 @@ function ContractDialog({
   };
 
   const handleSubmit = async (values: ContractFormValues) => {
-    const setupAmount = parseAmount(values.setupFeeAmount);
     const offer = {
       accountName,
       displayName: t`${getBillingAccountDisplayName(account)} contract`,
-      serviceRef: values.serviceRef,
-      setupFee:
-        needsSetupFee && !Number.isNaN(setupAmount) && setupAmount > 0
-          ? { label: values.setupFeeLabel.trim(), amount: toPricingAmount(setupAmount) }
-          : undefined,
-      monthlyFee: {
-        label: values.monthlyFeeLabel.trim(),
-        amount: toPricingAmount(parseAmount(values.monthlyFeeAmount)),
-      },
+      fees: values.fees.map((fee) => ({
+        label: fee.label.trim(),
+        chargeType: fee.chargeType,
+        amount: toPricingAmount(parseAmount(fee.amount)),
+        serviceRef: fee.serviceRef,
+      })),
       usageRefs: getUsagePricingRefs(usageOfferByName.get(values.usageOffer)),
     };
     try {
@@ -435,9 +458,9 @@ function ContractDialog({
 
   const title = isSetup ? t`Set up contract` : t`Change contract fees`;
   const description = isSetup
-    ? t`Bill this account a negotiated set fee from a start date, with or without usage. Creates the contract's prices and offer, and moves the account onto it.`
+    ? t`Bill this account negotiated fees from a start date, with or without usage. Creates the contract's prices and offer, and moves the account onto it.`
     : contract?.started
-      ? t`New fees apply from the account's next billing date, so this month is billed as agreed. The setup fee isn't charged again.`
+      ? t`New fees apply from the account's next billing date, so this month is billed as agreed. One-time fees aren't charged again.`
       : t`The account moves onto these fees when the contract starts.`;
 
   return (
@@ -451,45 +474,7 @@ function ContractDialog({
       schema={schema}
       defaultValues={defaultValues}
       onSubmit={handleSubmit}>
-      <Form.Field
-        name="serviceRef"
-        label={t`Service`}
-        description={t`The catalog service the fees are for.`}
-        required>
-        <Form.Select placeholder={t`Select a service`}>
-          {services.map((service) => {
-            const serviceName = service.spec?.serviceName ?? '';
-            return (
-              <Form.SelectItem key={serviceName} value={serviceName}>
-                {service.spec?.displayName || service.metadata?.name} ({serviceName})
-              </Form.SelectItem>
-            );
-          })}
-        </Form.Select>
-      </Form.Field>
-
-      {needsSetupFee ? (
-        <div className="grid grid-cols-[minmax(0,1fr)_8rem] gap-3">
-          <Form.Field name="setupFeeLabel" label={t`Setup fee`}>
-            <Form.Input />
-          </Form.Field>
-          <Form.Field
-            name="setupFeeAmount"
-            label={t`Amount (${CONTRACT_CURRENCY})`}
-            description={t`Optional`}>
-            <Form.Input inputMode="decimal" placeholder="1500.00" />
-          </Form.Field>
-        </div>
-      ) : null}
-
-      <div className="grid grid-cols-[minmax(0,1fr)_8rem] gap-3">
-        <Form.Field name="monthlyFeeLabel" label={t`Monthly fee`} required>
-          <Form.Input />
-        </Form.Field>
-        <Form.Field name="monthlyFeeAmount" label={t`Amount (${CONTRACT_CURRENCY})`} required>
-          <Form.Input inputMode="decimal" placeholder="1000.00" />
-        </Form.Field>
-      </div>
+      <ContractFeeList services={services} allowOneTime={allowOneTime} />
 
       <Form.Field
         name="usageOffer"
@@ -526,8 +511,103 @@ function ContractDialog({
         </Form.Field>
       ) : null}
 
-      <ContractSummary isSetup={isSetup} needsSetupFee={needsSetupFee} />
+      <ContractSummary isSetup={isSetup} />
     </DialogForm>
+  );
+}
+
+/**
+ * The contract's fees, one row each: a name for invoices, one-time or
+ * monthly, the amount, and the service it's for. Each becomes its own
+ * pricing, so fees for different services can sit on one contract.
+ */
+function ContractFeeList({
+  services,
+  allowOneTime,
+}: {
+  services: ServiceOption[];
+  allowOneTime: boolean;
+}) {
+  const fees = (Form.useWatch('fees') as ContractFeeRow[] | undefined) ?? [];
+  return (
+    <Form.FieldArray name="fees">
+      {({ fields, append, remove }) => (
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <Text size="sm" weight="medium">
+              <Trans>Fees</Trans>
+            </Text>
+            <Button
+              type="tertiary"
+              theme="borderless"
+              size="small"
+              htmlType="button"
+              icon={<Icon icon={Plus} size={14} />}
+              disabled={fields.length >= MAX_CONTRACT_FEES}
+              onClick={() =>
+                append({
+                  label: '',
+                  chargeType: 'Recurring',
+                  amount: '',
+                  // New fees are usually for the same service as the last.
+                  serviceRef: fees[fees.length - 1]?.serviceRef ?? '',
+                } satisfies ContractFeeRow)
+              }>
+              <Trans>Add fee</Trans>
+            </Button>
+          </div>
+          {fields.map((field, index) => (
+            <div key={field.key} className="flex flex-col gap-2 rounded-md border p-3">
+              <div className="grid grid-cols-[minmax(0,1fr)_7rem_auto] items-start gap-2">
+                <Form.Field name={`fees.${index}.label`} label={t`Name`} required>
+                  <Form.Input placeholder={t`Dedicated servers`} />
+                </Form.Field>
+                <Form.Field
+                  name={`fees.${index}.amount`}
+                  label={t`Amount (${CONTRACT_CURRENCY})`}
+                  required>
+                  <Form.Input inputMode="decimal" placeholder="1000.00" />
+                </Form.Field>
+                <Button
+                  type="tertiary"
+                  theme="borderless"
+                  size="small"
+                  htmlType="button"
+                  className="mt-6"
+                  aria-label={t`Remove fee`}
+                  icon={<Icon icon={X} size={14} />}
+                  disabled={fields.length <= 1}
+                  onClick={() => remove(index)}
+                />
+              </div>
+              <div className="grid grid-cols-[7rem_minmax(0,1fr)] items-start gap-2">
+                <Form.Field name={`fees.${index}.chargeType`} label={t`Charged`} required>
+                  <Form.Select>
+                    {allowOneTime || fees[index]?.chargeType === 'OneTime' ? (
+                      <Form.SelectItem value="OneTime">
+                        <Trans>Once</Trans>
+                      </Form.SelectItem>
+                    ) : null}
+                    <Form.SelectItem value="Recurring">
+                      <Trans>Monthly</Trans>
+                    </Form.SelectItem>
+                  </Form.Select>
+                </Form.Field>
+                <Form.Field name={`fees.${index}.serviceRef`} label={t`Service`} required>
+                  <Form.Select placeholder={t`Select a service`}>
+                    {services.map((service) => (
+                      <Form.SelectItem key={service.serviceName} value={service.serviceName}>
+                        {service.label}
+                      </Form.SelectItem>
+                    ))}
+                  </Form.Select>
+                </Form.Field>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </Form.FieldArray>
   );
 }
 
@@ -560,15 +640,15 @@ function ContractStartPicker({ now }: { now: Date }) {
 }
 
 /** What the first invoice will be, worked out from the form as it's filled. */
-function ContractSummary({ isSetup, needsSetupFee }: { isSetup: boolean; needsSetupFee: boolean }) {
-  const monthly = parseAmount(Form.useWatch('monthlyFeeAmount') as string | undefined);
-  const setupWatched = Form.useWatch('setupFeeAmount') as string | undefined;
-  const setup = needsSetupFee ? parseAmount(setupWatched) : Number.NaN;
+function ContractSummary({ isSetup }: { isSetup: boolean }) {
+  const rows = (Form.useWatch('fees') as ContractFeeRow[] | undefined) ?? [];
   const picked = Form.useWatch('startsAt') as Date | undefined;
-  if (Number.isNaN(monthly)) return null;
+  const fees = rows.map((row) => ({ chargeType: row.chargeType, amount: parseAmount(row.amount) }));
+  if (!fees.some((fee) => fee.amount > 0)) return null;
 
-  const total = formatMoney(firstInvoiceTotal(setup, monthly), CONTRACT_CURRENCY);
-  const perMonth = formatMoney(monthly, CONTRACT_CURRENCY);
+  const hasOneTime = fees.some((fee) => fee.chargeType === 'OneTime' && fee.amount > 0);
+  const total = formatMoney(firstInvoiceTotal(fees), CONTRACT_CURRENCY);
+  const perMonth = formatMoney(monthlyTotal(fees), CONTRACT_CURRENCY);
   const startsAt = picked ? contractStartFromDate(picked) : null;
 
   return (
@@ -580,7 +660,7 @@ function ContractSummary({ isSetup, needsSetupFee }: { isSetup: boolean; needsSe
             <InlineDate date={startsAt.toISOString()} variant="absolute" format="MMM d, yyyy" />:{' '}
             {total}, then {perMonth} a month.
           </Trans>
-        ) : needsSetupFee ? (
+        ) : isSetup || hasOneTime ? (
           <Trans>
             First invoice: {total}, then {perMonth} a month.
           </Trans>

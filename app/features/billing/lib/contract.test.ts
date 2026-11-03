@@ -10,6 +10,8 @@ import {
   getContractState,
   getUsagePricingRefs,
   localDateForUtcDay,
+  MAX_CONTRACT_FEES,
+  monthlyTotal,
   parseAmount,
   toPricingAmount,
 } from './contract';
@@ -183,49 +185,48 @@ describe('getUsagePricingRefs', () => {
 describe('contractOfferPlan', () => {
   const usageRefs = [{ name: 'cpu', namespace: 'milo-system' }];
 
-  it('bundles the fees and, when asked, usage', () => {
+  it('bundles the fees in order and, when asked, usage', () => {
     expect(
       contractOfferPlan({
         namespace: 'milo-system',
-        setupFeeName: 'setup',
-        monthlyFeeName: 'monthly',
+        fees: [
+          { name: 'servers', chargeType: 'Recurring' },
+          { name: 'install', chargeType: 'OneTime' },
+          { name: 'compute', chargeType: 'Recurring' },
+        ],
         usageRefs,
       })
     ).toEqual({
       chargeTypes: ['OneTime', 'Recurring', 'Usage'],
       servicePricingRefs: [
-        { name: 'setup', namespace: 'milo-system' },
-        { name: 'monthly', namespace: 'milo-system' },
+        { name: 'servers', namespace: 'milo-system' },
+        { name: 'install', namespace: 'milo-system' },
+        { name: 'compute', namespace: 'milo-system' },
         { name: 'cpu', namespace: 'milo-system' },
       ],
     });
   });
 
-  it('leaves out the setup fee for an amendment', () => {
+  it('lists only the charge types it has', () => {
     const plan = contractOfferPlan({
       namespace: 'milo-system',
-      monthlyFeeName: 'monthly',
+      fees: [{ name: 'servers', chargeType: 'Recurring' }],
       usageRefs: [],
     });
     expect(plan.chargeTypes).toEqual(['Recurring']);
-    expect(plan.servicePricingRefs).toEqual([{ name: 'monthly', namespace: 'milo-system' }]);
   });
 });
 
 describe('contractResourceNames', () => {
   it('derives valid, unique names from the account', () => {
     const names = contractResourceNames('Acme_Corp.Billing', now);
-    expect(names).toEqual({
-      offer: 'contract-acme-corp-billing-20261103150405',
-      setupFee: 'contract-acme-corp-billing-20261103150405-setup',
-      monthlyFee: 'contract-acme-corp-billing-20261103150405-monthly',
-    });
-    expect(names.monthlyFee.length).toBeLessThanOrEqual(63);
+    expect(names.offer).toBe('contract-acme-corp-billing-20261103150405');
+    expect(names.fee(0)).toBe('contract-acme-corp-billing-20261103150405-fee-1');
   });
 
   it('keeps long account names within 63 characters', () => {
-    const { monthlyFee } = contractResourceNames('a'.repeat(80), now);
-    expect(monthlyFee.length).toBeLessThanOrEqual(63);
+    const { fee } = contractResourceNames('a'.repeat(80), now);
+    expect(fee(MAX_CONTRACT_FEES - 1).length).toBeLessThanOrEqual(63);
   });
 });
 
@@ -238,9 +239,15 @@ describe('amounts', () => {
     expect(parseAmount('-5')).toBeNaN();
   });
 
-  it('formats pricing amounts and totals the first invoice', () => {
+  it('formats pricing amounts and totals the invoices', () => {
     expect(toPricingAmount(1500)).toBe('1500.00');
-    expect(firstInvoiceTotal(1500, 1000)).toBe(2500);
-    expect(firstInvoiceTotal(Number.NaN, 1000)).toBe(1000);
+    const fees = [
+      { chargeType: 'OneTime' as const, amount: 1500 },
+      { chargeType: 'Recurring' as const, amount: 1000 },
+      { chargeType: 'Recurring' as const, amount: 500.5 },
+      { chargeType: 'Recurring' as const, amount: Number.NaN },
+    ];
+    expect(firstInvoiceTotal(fees)).toBe(3000.5);
+    expect(monthlyTotal(fees)).toBe(1500.5);
   });
 });

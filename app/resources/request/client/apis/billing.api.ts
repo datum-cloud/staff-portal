@@ -407,17 +407,25 @@ export const waitForOfferSnapshot = async (
   throw new Error(`Offer ${name} wasn't published in time. Try assigning it again shortly.`);
 };
 
-export type ContractFeeInput = { label: string; amount: string };
+export type ContractFeeInput = {
+  /** Shown on invoices, e.g. "Dedicated servers". */
+  label: string;
+  chargeType: 'OneTime' | 'Recurring';
+  /** USD decimal string, e.g. "1000.00". */
+  amount: string;
+  /** The catalog service's serviceName the fee is for. */
+  serviceRef: string;
+};
 
 export type CreateContractOfferInput = {
   accountName: string;
   /** Names the Offer, e.g. "Acme Corp contract". */
   displayName: string;
-  /** The catalog service's serviceName the fees are for. */
-  serviceRef: string;
-  /** Left out when amending: a setup fee is charged again on every change. */
-  setupFee?: ContractFeeInput;
-  monthlyFee: ContractFeeInput;
+  /**
+   * The contract's fees, each its own pricing and invoice line. Leave out
+   * one-time fees when amending a started contract: they'd be charged again.
+   */
+  fees: ContractFeeInput[];
   /** Usage pricings billed alongside the fees, if any. */
   usageRefs: NonNullable<OfferSpec['servicePricingRefs']>;
 };
@@ -428,26 +436,19 @@ export type CreateContractOfferInput = {
  */
 export const createContractOffer = async (input: CreateContractOfferInput, now = new Date()) => {
   const names = contractResourceNames(input.accountName, now);
-  if (input.setupFee) {
+  const fees = input.fees.map((fee, index) => ({ ...fee, name: names.fee(index) }));
+  for (const fee of fees) {
     await createFixedServicePricing({
-      name: names.setupFee,
-      displayName: input.setupFee.label,
-      chargeType: 'OneTime',
-      amount: input.setupFee.amount,
-      serviceRef: input.serviceRef,
+      name: fee.name,
+      displayName: fee.label,
+      chargeType: fee.chargeType,
+      amount: fee.amount,
+      serviceRef: fee.serviceRef,
     });
   }
-  await createFixedServicePricing({
-    name: names.monthlyFee,
-    displayName: input.monthlyFee.label,
-    chargeType: 'Recurring',
-    amount: input.monthlyFee.amount,
-    serviceRef: input.serviceRef,
-  });
   const plan = contractOfferPlan({
     namespace: DEFAULT_SERVICE_PRICING_NAMESPACE,
-    setupFeeName: input.setupFee ? names.setupFee : undefined,
-    monthlyFeeName: names.monthlyFee,
+    fees,
     usageRefs: input.usageRefs,
   });
   await createOffer({ name: names.offer, displayName: input.displayName, ...plan });

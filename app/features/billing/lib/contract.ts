@@ -140,15 +140,18 @@ const slug = (value: string, max: number) =>
     .slice(0, max)
     .replace(/-+$/g, '');
 
+/** Most fees one contract can have, which keeps its pricing names short. */
+export const MAX_CONTRACT_FEES = 20;
+
 /**
- * Names for a contract's Offer and its fee pricings. The timestamp keeps
- * them unique: pricings are immutable, so every change of fees gets new
- * ones, and an amendment gets a new Offer.
+ * Names for a contract's Offer and its fee pricings (`fee(0)` is the first
+ * fee's). The timestamp keeps them unique: pricings are immutable, so every
+ * change of fees gets new ones, and an amendment gets a new Offer.
  */
 export const contractResourceNames = (accountName: string, now: Date) => {
   const stamp = now.toISOString().replace(/\D/g, '').slice(0, 14);
   const offer = `contract-${slug(accountName, 30) || 'account'}-${stamp}`;
-  return { offer, setupFee: `${offer}-setup`, monthlyFee: `${offer}-monthly` };
+  return { offer, fee: (index: number) => `${offer}-fee-${index + 1}` };
 };
 
 export interface ContractOfferPlan {
@@ -159,29 +162,20 @@ export interface ContractOfferPlan {
 /** The charge types and pricing refs of a contract's Offer. */
 export const contractOfferPlan = ({
   namespace,
-  setupFeeName,
-  monthlyFeeName,
+  fees,
   usageRefs,
 }: {
   namespace: string;
-  /** Left out when amending, or for a contract with no setup fee. */
-  setupFeeName?: string;
-  monthlyFeeName: string;
+  /** The contract's fee pricings, in the order staff listed them. */
+  fees: { name: string; chargeType: ContractFee['chargeType'] }[];
   usageRefs: ServicePricingRef[];
 }): ContractOfferPlan => {
-  const refs: ServicePricingRef[] = [];
-  const chargeTypes: ChargeType[] = [];
-  if (setupFeeName) {
-    refs.push({ name: setupFeeName, namespace });
-    chargeTypes.push('OneTime');
-  }
-  refs.push({ name: monthlyFeeName, namespace });
-  chargeTypes.push('Recurring');
-  if (usageRefs.length > 0) {
-    refs.push(...usageRefs);
-    chargeTypes.push('Usage');
-  }
-  return { chargeTypes, servicePricingRefs: refs };
+  const present = new Set<ChargeType>(fees.map((fee) => fee.chargeType));
+  if (usageRefs.length > 0) present.add('Usage');
+  return {
+    chargeTypes: (['OneTime', 'Recurring', 'Usage'] as const).filter((type) => present.has(type)),
+    servicePricingRefs: [...fees.map((fee) => ({ name: fee.name, namespace })), ...usageRefs],
+  };
 };
 
 /** Round to cents, as billing does. */
@@ -197,12 +191,22 @@ export const parseAmount = (value: string | undefined): number => {
   return Number.parseFloat(cleaned);
 };
 
+type FeeAmount = { chargeType: ContractFee['chargeType']; amount: number };
+
+const sumFees = (fees: FeeAmount[], keep: (fee: FeeAmount) => boolean) =>
+  cents(
+    fees.filter((fee) => keep(fee) && !Number.isNaN(fee.amount)).reduce((a, f) => a + f.amount, 0)
+  );
+
+/** What the contract charges each month: its monthly fees. */
+export const monthlyTotal = (fees: FeeAmount[]) =>
+  sumFees(fees, (fee) => fee.chargeType === 'Recurring');
+
 /**
- * The contract's first invoice: the setup fee and the first month, both
- * charged in advance on the start date.
+ * The contract's first invoice: its one-time fees and the first month of
+ * its monthly ones, all charged in advance on the start date.
  */
-export const firstInvoiceTotal = (setupFee: number, monthlyFee: number) =>
-  cents((Number.isNaN(setupFee) ? 0 : setupFee) + monthlyFee);
+export const firstInvoiceTotal = (fees: FeeAmount[]) => sumFees(fees, () => true);
 
 /** The day of the month a contract bills on, from its UTC start date. */
 export const contractBillingDay = (startsAt: Date) => startsAt.getUTCDate();
