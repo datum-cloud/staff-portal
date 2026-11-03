@@ -343,11 +343,12 @@ function TermField({
   wide?: boolean;
 }) {
   return (
-    <div className={wide ? 'col-span-2 sm:col-span-4' : undefined}>
+    <div className={wide ? 'col-span-2 min-w-0 @md:col-span-4' : 'min-w-0'}>
       <Text size="xs" className="text-muted-foreground block">
         {label}
       </Text>
-      <Text as="div" size="sm" className="mt-0.5">
+      {/* wrap-anywhere: long emails and references wrap instead of overflowing. */}
+      <Text as="div" size="sm" className="mt-0.5 wrap-anywhere">
         {children}
       </Text>
     </div>
@@ -362,32 +363,38 @@ export function ArrangementDetails({
   formatCreditLimit: (amount?: string) => string;
 }) {
   const invoice = arrangement.spec?.invoice;
+  // Sized to the card, not the window: it sits in the dashboard's narrow
+  // sidebar as well as on wider pages.
   return (
-    <div className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
-      <TermField label={<Trans>Net days</Trans>}>{invoice?.netDays ?? '—'}</TermField>
-      <TermField label={<Trans>Credit limit</Trans>}>
-        {formatCreditLimit(invoice?.creditLimit)}
-      </TermField>
-      <TermField label={<Trans>Starts</Trans>}>
-        <DateTime date={getArrangementStart(arrangement)} variant="both" />
-      </TermField>
-      <TermField label={<Trans>Ends</Trans>}>
-        {arrangement.spec?.endsAt ? (
-          <DateTime date={arrangement.spec.endsAt} variant="both" />
-        ) : (
-          <Trans>No end date</Trans>
-        )}
-      </TermField>
-      <TermField label={<Trans>Invoices to</Trans>}>
-        {invoice?.accountsPayableEmail || '—'}
-      </TermField>
-      <TermField label={<Trans>PO number</Trans>}>{invoice?.purchaseOrderNumber || '—'}</TermField>
-      <TermField label={<Trans>Agreement</Trans>} wide>
-        {invoice?.agreementReference || '—'}
-      </TermField>
-      <TermField label={<Trans>Reason (internal)</Trans>} wide>
-        {arrangement.spec?.reason || '—'}
-      </TermField>
+    <div className="@container">
+      <div className="grid grid-cols-2 gap-x-6 gap-y-3 @md:grid-cols-4">
+        <TermField label={<Trans>Net days</Trans>}>{invoice?.netDays ?? '—'}</TermField>
+        <TermField label={<Trans>Credit limit</Trans>}>
+          {formatCreditLimit(invoice?.creditLimit)}
+        </TermField>
+        <TermField label={<Trans>Starts</Trans>}>
+          <DateTime date={getArrangementStart(arrangement)} variant="both" />
+        </TermField>
+        <TermField label={<Trans>Ends</Trans>}>
+          {arrangement.spec?.endsAt ? (
+            <DateTime date={arrangement.spec.endsAt} variant="both" />
+          ) : (
+            <Trans>No end date</Trans>
+          )}
+        </TermField>
+        <TermField label={<Trans>Invoices to</Trans>}>
+          {invoice?.accountsPayableEmail || '—'}
+        </TermField>
+        <TermField label={<Trans>PO number</Trans>}>
+          {invoice?.purchaseOrderNumber || '—'}
+        </TermField>
+        <TermField label={<Trans>Agreement</Trans>} wide>
+          {invoice?.agreementReference || '—'}
+        </TermField>
+        <TermField label={<Trans>Reason (internal)</Trans>} wide>
+          {arrangement.spec?.reason || '—'}
+        </TermField>
+      </div>
     </div>
   );
 }

@@ -372,7 +372,7 @@ msgstr "A contract can start at most {MAX_CONTRACT_LEAD_DAYS} days ahead."
 msgid "A contract can't start in the past: charges can't be backdated."
 msgstr "A contract can't start in the past: charges can't be backdated."
 
-#: app/features/billing/components/payment-terms-card.tsx:519
+#: app/features/billing/components/payment-terms-card.tsx:526
 msgid "A signed MSA or order form, if there is one. Otherwise our standard terms apply."
 msgstr "A signed MSA or order form, if there is one. Otherwise our standard terms apply."
 
@@ -441,7 +441,7 @@ msgid "Accounts"
 msgstr "Accounts"
 
 #: app/features/billing/components/application-review.tsx:380
-#: app/features/billing/components/payment-terms-card.tsx:509
+#: app/features/billing/components/payment-terms-card.tsx:516
 msgid "Accounts payable email"
 msgstr "Accounts payable email"
 
@@ -590,12 +590,12 @@ msgstr "Admin"
 msgid "After publish, only the display name can change. Rate changes need a new Offer."
 msgstr "After publish, only the display name can change. Rate changes need a new Offer."
 
-#: app/features/billing/components/payment-terms-card.tsx:385
+#: app/features/billing/components/payment-terms-card.tsx:391
 msgid "Agreement"
 msgstr "Agreement"
 
 #: app/features/billing/components/application-review.tsx:388
-#: app/features/billing/components/payment-terms-card.tsx:518
+#: app/features/billing/components/payment-terms-card.tsx:525
 msgid "Agreement reference"
 msgstr "Agreement reference"
 
@@ -1032,7 +1032,7 @@ msgstr "by"
 #: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:256
 #: app/features/billing/components/default-offer-card.tsx:77
 #: app/features/billing/components/payment-terms-card.tsx:231
-#: app/features/billing/components/payment-terms-card.tsx:489
+#: app/features/billing/components/payment-terms-card.tsx:496
 #: app/features/contact-group/components/contact-group-form.tsx:97
 #: app/features/contact/components/add-to-group-dialog.tsx:94
 #: app/features/contact/components/contact-form.tsx:249
@@ -1623,12 +1623,12 @@ msgid "Credentials Reference"
 msgstr "Credentials Reference"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:184
-#: app/features/billing/components/payment-terms-card.tsx:368
-#: app/features/billing/components/payment-terms-card.tsx:502
+#: app/features/billing/components/payment-terms-card.tsx:372
+#: app/features/billing/components/payment-terms-card.tsx:509
 msgid "Credit limit"
 msgstr "Credit limit"
 
-#: app/features/billing/components/payment-terms-card.tsx:502
+#: app/features/billing/components/payment-terms-card.tsx:509
 msgid "Credit limit ({currency})"
 msgstr "Credit limit ({currency})"
 
@@ -1696,7 +1696,7 @@ msgstr "Datum Platform"
 msgid "days"
 msgstr "days"
 
-#: app/features/billing/components/payment-terms-card.tsx:496
+#: app/features/billing/components/payment-terms-card.tsx:503
 msgid "Days after the invoice date that payment is due."
 msgstr "Days after the invoice date that payment is due."
 
@@ -2261,7 +2261,7 @@ msgstr "Enablement"
 msgid "End"
 msgstr "End"
 
-#: app/features/billing/components/payment-terms-card.tsx:532
+#: app/features/billing/components/payment-terms-card.tsx:539
 msgid "End date"
 msgstr "End date"
 
@@ -2284,7 +2284,7 @@ msgstr "End Time"
 msgid "Endpoint"
 msgstr "Endpoint"
 
-#: app/features/billing/components/payment-terms-card.tsx:374
+#: app/features/billing/components/payment-terms-card.tsx:378
 msgid "Ends"
 msgstr "Ends"
 
@@ -2619,7 +2619,7 @@ msgstr "Fixed fees only: usage isn't billed."
 msgid "Flag"
 msgstr "Flag"
 
-#: app/features/billing/components/payment-terms-card.tsx:541
+#: app/features/billing/components/payment-terms-card.tsx:548
 msgid "For example: signed MSA after sales call on 1 October"
 msgstr "For example: signed MSA after sales call on 1 October"
 
@@ -2975,7 +2975,7 @@ msgstr "Invoice totals normal"
 msgid "Invoices"
 msgstr "Invoices"
 
-#: app/features/billing/components/payment-terms-card.tsx:381
+#: app/features/billing/components/payment-terms-card.tsx:385
 msgid "Invoices to"
 msgstr "Invoices to"
 
@@ -3125,11 +3125,11 @@ msgstr "Latest fraud evaluation for this user"
 msgid "Launch stage"
 msgstr "Launch stage"
 
-#: app/features/billing/components/payment-terms-card.tsx:533
+#: app/features/billing/components/payment-terms-card.tsx:540
 msgid "Leave empty for terms with no fixed end."
 msgstr "Leave empty for terms with no fixed end."
 
-#: app/features/billing/components/payment-terms-card.tsx:526
+#: app/features/billing/components/payment-terms-card.tsx:533
 msgid "Leave empty to start immediately."
 msgstr "Leave empty to start immediately."
 
@@ -3479,7 +3479,7 @@ msgstr "Needs review"
 
 #. placeholder {0}: invoice?.netDays ?? '—'
 #. placeholder {1}: formatCreditLimit(invoice?.creditLimit)
-#: app/features/billing/components/payment-terms-card.tsx:409
+#: app/features/billing/components/payment-terms-card.tsx:416
 msgid "Net {0}, limit {1}"
 msgstr "Net {0}, limit {1}"
 
@@ -3500,8 +3500,8 @@ msgid "Net {netDays}, scheduled from {start} with no end date."
 msgstr "Net {netDays}, scheduled from {start} with no end date."
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:121
-#: app/features/billing/components/payment-terms-card.tsx:367
-#: app/features/billing/components/payment-terms-card.tsx:495
+#: app/features/billing/components/payment-terms-card.tsx:371
+#: app/features/billing/components/payment-terms-card.tsx:502
 msgid "Net days"
 msgstr "Net days"
 
@@ -3702,11 +3702,11 @@ msgstr "No email activity found."
 msgid "No emails sent"
 msgstr "No emails sent"
 
-#: app/features/billing/components/payment-terms-card.tsx:419
+#: app/features/billing/components/payment-terms-card.tsx:426
 msgid "no end date"
 msgstr "no end date"
 
-#: app/features/billing/components/payment-terms-card.tsx:378
+#: app/features/billing/components/payment-terms-card.tsx:382
 msgid "No end date"
 msgstr "No end date"
 
@@ -4544,8 +4544,8 @@ msgid "Plus usage, from {0}."
 msgstr "Plus usage, from {0}."
 
 #: app/features/billing/components/application-review.tsx:384
-#: app/features/billing/components/payment-terms-card.tsx:384
-#: app/features/billing/components/payment-terms-card.tsx:513
+#: app/features/billing/components/payment-terms-card.tsx:388
+#: app/features/billing/components/payment-terms-card.tsx:520
 msgid "PO number"
 msgstr "PO number"
 
@@ -4837,8 +4837,8 @@ msgid "Reason"
 msgstr "Reason"
 
 #: app/features/billing/components/application-review.tsx:254
-#: app/features/billing/components/payment-terms-card.tsx:388
-#: app/features/billing/components/payment-terms-card.tsx:538
+#: app/features/billing/components/payment-terms-card.tsx:394
+#: app/features/billing/components/payment-terms-card.tsx:545
 msgid "Reason (internal)"
 msgstr "Reason (internal)"
 
@@ -4854,7 +4854,7 @@ msgstr "Reason for setting access to {pendingState}"
 msgid "Reason must be at least {REASON_MIN_LENGTH} characters"
 msgstr "Reason must be at least {REASON_MIN_LENGTH} characters"
 
-#: app/features/billing/components/payment-terms-card.tsx:510
+#: app/features/billing/components/payment-terms-card.tsx:517
 msgid "Receives invoices as well as the billing contact."
 msgstr "Receives invoices as well as the billing contact."
 
@@ -5642,7 +5642,7 @@ msgid "Stages run top to bottom; an earlier stage can short-circuit the rest."
 msgstr "Stages run top to bottom; an earlier stage can short-circuit the rest."
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:522
-#: app/features/billing/components/payment-terms-card.tsx:525
+#: app/features/billing/components/payment-terms-card.tsx:532
 msgid "Start date"
 msgstr "Start date"
 
@@ -5654,7 +5654,7 @@ msgstr "Start Time"
 msgid "Started <0/>"
 msgstr "Started <0/>"
 
-#: app/features/billing/components/payment-terms-card.tsx:371
+#: app/features/billing/components/payment-terms-card.tsx:375
 msgid "Starts"
 msgstr "Starts"
 
@@ -5731,7 +5731,7 @@ msgstr "Subject is required when user association is enabled"
 msgid "Submitted"
 msgstr "Submitted"
 
-#: app/features/billing/components/payment-terms-card.tsx:450
+#: app/features/billing/components/payment-terms-card.tsx:457
 msgid "Submitted <0/>"
 msgstr "Submitted <0/>"
 
@@ -5891,7 +5891,7 @@ msgstr "The list of DNS zones is limited to 2,000 results at a time. Refine your
 msgid "The list of domains is limited to 2,000 results at a time. Refine your search to surface other domains."
 msgstr "The list of domains is limited to 2,000 results at a time. Refine your search to surface other domains."
 
-#: app/features/billing/components/payment-terms-card.tsx:503
+#: app/features/billing/components/payment-terms-card.tsx:510
 msgid "The most the account should spend each billing cycle. Recorded for finance only: usage isn't capped and no alerts are sent yet."
 msgstr "The most the account should spend each billing cycle. Recorded for finance only: usage isn't capped and no alerts are sent yet."
 
@@ -6390,7 +6390,7 @@ msgstr "Where"
 msgid "Why it was declined. Never shown to the customer."
 msgstr "Why it was declined. Never shown to the customer."
 
-#: app/features/billing/components/payment-terms-card.tsx:539
+#: app/features/billing/components/payment-terms-card.tsx:546
 msgid "Why these terms were granted. Never shown to the customer."
 msgstr "Why these terms were granted. Never shown to the customer."
 
