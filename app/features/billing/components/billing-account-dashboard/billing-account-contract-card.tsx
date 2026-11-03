@@ -572,8 +572,8 @@ function ContractSummary({ isSetup, needsSetupFee }: { isSetup: boolean; needsSe
   const startsAt = picked ? contractStartFromDate(picked) : null;
 
   return (
-    <div className="bg-muted/40 rounded-md border px-3 py-2">
-      <Text size="sm">
+    <div className="bg-muted/40 flex flex-col gap-1 rounded-md border px-3 py-2">
+      <Text as="p" size="sm" weight="medium">
         {isSetup && startsAt ? (
           <Trans>
             First invoice on{' '}
@@ -588,7 +588,7 @@ function ContractSummary({ isSetup, needsSetupFee }: { isSetup: boolean; needsSe
           <Trans>{perMonth} a month from the next billing date.</Trans>
         )}
       </Text>
-      <Text size="xs" textColor="muted">
+      <Text as="p" size="xs" textColor="muted">
         <Trans>Before discounts and tax, plus any usage. Check it with a preview once saved.</Trans>
       </Text>
     </div>
