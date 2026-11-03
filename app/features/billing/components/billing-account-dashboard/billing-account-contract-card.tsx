@@ -538,7 +538,7 @@ function ContractFeeList({
               <Trans>Fees</Trans>
             </Text>
             <Button
-              type="tertiary"
+              type="quaternary"
               theme="borderless"
               size="small"
               htmlType="button"
@@ -569,7 +569,7 @@ function ContractFeeList({
                   <Form.Input inputMode="decimal" placeholder="1000.00" />
                 </Form.Field>
                 <Button
-                  type="tertiary"
+                  type="quaternary"
                   theme="borderless"
                   size="small"
                   htmlType="button"
@@ -721,7 +721,7 @@ function InvoicePreviewDialog({
           ) : null}
         </Dialog.Body>
         <Dialog.Footer>
-          <Button type="tertiary" theme="borderless" onClick={onClose}>
+          <Button type="quaternary" theme="borderless" onClick={onClose}>
             <Trans>Close</Trans>
           </Button>
         </Dialog.Footer>
