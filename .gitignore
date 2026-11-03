@@ -18,3 +18,6 @@ cypress/results
 
 # Local-only notes
 docs/local/
+
+# dmx per-ticket working notes are personal, not shared repo content
+.dmx/jobs/
