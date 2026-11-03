@@ -1,11 +1,5 @@
-import { DAY_MS } from './invoice-summary';
 import type { UsageGroupSection, UsageMeter } from '@/features/organization/usage/usage.types';
 import type { UsageView } from '@/features/organization/usage/usage.view';
-import {
-  buildBillingCycleWindows,
-  getNextCycleStart,
-  type PaymentTermsInput,
-} from '@/modules/billing/billing-cycle';
 
 /**
  * Selectors for the billing account dashboard's usage card, over the view
@@ -62,25 +56,3 @@ export const getMeterOptionGroups = (view: UsageView): MeterOptionGroup[] => {
 /** The meter the card opens on: the highest spend across every service. */
 export const getTopMeter = (view: UsageView): UsageMeter | undefined =>
   view.groups.flatMap((group) => group.meters).sort(bySpendDesc)[0];
-
-export interface CycleProgress {
-  start: Date;
-  end: Date;
-  /** 1-based day of the cycle `now` falls on. */
-  day: number;
-  days: number;
-}
-
-/** Where `now` sits in the account's current billing cycle. */
-export const getCycleProgress = (
-  terms: PaymentTermsInput | undefined,
-  now: Date
-): CycleProgress => {
-  const [current] = buildBillingCycleWindows(terms, now);
-  const start = new Date(current.startSec * 1000);
-  const end = getNextCycleStart(terms, now);
-  // Rounded: a daylight-saving change makes a cycle an hour short or long.
-  const days = Math.round((end.getTime() - start.getTime()) / DAY_MS);
-  const day = Math.min(days, Math.floor((now.getTime() - start.getTime()) / DAY_MS) + 1);
-  return { start, end, day, days };
-};

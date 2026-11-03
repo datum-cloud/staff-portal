@@ -1,5 +1,10 @@
-import { getEffectiveNetDays, type Invoice } from '../utils';
-import { getNextCycleStart, type PaymentTermsInput } from '@/modules/billing/billing-cycle';
+import { getEffectiveNetDays, getInvoicePhase, parseAmount, type Invoice } from '../utils';
+import {
+  getNextCycleStart,
+  resolveCycleTerms,
+  type InvoiceFrequency,
+} from '@/modules/billing/billing-cycle';
+import { DAY_MS } from '@/utils/helpers/time.helper';
 import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
 
 /**
@@ -8,8 +13,6 @@ import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.
  * are still being projected by the provider and count as Open, like the
  * past-invoices table.
  */
-
-export const DAY_MS = 24 * 60 * 60 * 1000;
 
 export type InvoiceAgingBucket = 'notDue' | 'days1to30' | 'days31to60' | 'days60plus';
 
@@ -37,19 +40,13 @@ export interface InvoiceSummary {
 }
 
 /** A decimal string from the API as a number; missing or malformed is 0. */
-export const parseAmount = (value: string | undefined): number => {
-  const amount = Number.parseFloat(value ?? '');
-  return Number.isFinite(amount) ? amount : 0;
-};
-
-const phaseOf = (invoice: Invoice) => invoice.status?.phase ?? 'Open';
-
 export const isUnpaidInvoice = (invoice: Invoice): boolean => {
-  const phase = phaseOf(invoice);
+  const phase = getInvoicePhase(invoice);
   return phase === 'Open' || phase === 'PastDue';
 };
 
-export const isPastDueInvoice = (invoice: Invoice): boolean => phaseOf(invoice) === 'PastDue';
+export const isPastDueInvoice = (invoice: Invoice): boolean =>
+  getInvoicePhase(invoice) === 'PastDue';
 
 /** What is still owed: `amountDue`, or the total before the provider sets it. */
 export const getAmountOwed = (invoice: Invoice): number =>
@@ -121,7 +118,7 @@ export interface NextInvoice {
   issuedAt: Date;
   /** `issuedAt` plus the net days in effect, when there are some. */
   dueAt?: Date;
-  frequency: NonNullable<PaymentTermsInput['invoiceFrequency']>;
+  frequency: InvoiceFrequency;
   netDays?: number;
 }
 
@@ -140,7 +137,7 @@ export const getNextInvoice = (
   return {
     issuedAt,
     dueAt: netDays !== undefined ? new Date(issuedAt.getTime() + netDays * DAY_MS) : undefined,
-    frequency: terms?.invoiceFrequency ?? 'Monthly',
+    frequency: resolveCycleTerms(terms).frequency,
     netDays,
   };
 };

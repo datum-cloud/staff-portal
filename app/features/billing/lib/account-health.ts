@@ -2,24 +2,21 @@ import {
   getAccountCurrency,
   getCriticalFailedPaymentMethod,
   getPaymentMethodDisplayName,
-  getPaymentMethodsForAccount,
   isDefaultPaymentMethod,
+  parseAmount,
+  type BillingAccount,
+  type BillingEntitlement,
   type Invoice,
+  type PaymentMethod,
 } from '../utils';
 import {
-  DAY_MS,
   getAmountOwed,
   getDaysOverdue,
   isPastDueInvoice,
-  parseAmount,
   summarizeInvoices,
 } from './invoice-summary';
 import { getBillingMode } from './payment-terms';
-import type {
-  ComMiloapisBillingV1Alpha1BillingAccount,
-  ComMiloapisBillingV1Alpha1BillingEntitlement,
-  ComMiloapisBillingV1Alpha1PaymentMethod,
-} from '@openapi/billing.miloapis.com/v1alpha1';
+import { DAY_MS } from '@/utils/helpers/time.helper';
 
 /**
  * The billing account dashboard's attention checks. Each check is a pure
@@ -27,10 +24,6 @@ import type {
  * means it passed) or `null` while an input it needs is still loading.
  * Issues carry data rather than sentences so the banner can translate them.
  */
-
-type BillingAccount = ComMiloapisBillingV1Alpha1BillingAccount;
-type PaymentMethod = ComMiloapisBillingV1Alpha1PaymentMethod;
-type BillingEntitlement = ComMiloapisBillingV1Alpha1BillingEntitlement;
 
 /** An invoice is unusual when its total is this many times the account's median. */
 export const UNUSUAL_INVOICE_FACTOR = 100;
@@ -141,6 +134,7 @@ export interface UsageSpendComparison {
 export interface AccountHealthInputs {
   account: BillingAccount;
   invoices?: readonly Invoice[];
+  /** The account's own payment methods, already scoped to it. */
   paymentMethods?: readonly PaymentMethod[];
   /** `null` when loaded and the account has none. */
   entitlement?: BillingEntitlement | null;
@@ -265,13 +259,6 @@ const checkLargeCardBalance: Check = ({ account, invoices, now }) => {
     : [];
 };
 
-const accountMethods = (account: BillingAccount, paymentMethods: readonly PaymentMethod[]) =>
-  getPaymentMethodsForAccount(
-    [...paymentMethods],
-    account.metadata?.name ?? '',
-    account.metadata?.namespace
-  );
-
 /**
  * The card charges land on: the default, or the only card when there's no
  * default. With several cards and no default, there's no single answer.
@@ -280,17 +267,16 @@ const chargedMethod = (
   account: BillingAccount,
   paymentMethods: readonly PaymentMethod[]
 ): PaymentMethod | undefined => {
-  const methods = accountMethods(account, paymentMethods);
   return (
-    methods.find((method) => isDefaultPaymentMethod(method, account)) ??
-    (methods.length === 1 ? methods[0] : undefined)
+    paymentMethods.find((method) => isDefaultPaymentMethod(method, account)) ??
+    (paymentMethods.length === 1 ? paymentMethods[0] : undefined)
   );
 };
 
 const checkPaymentMethod: Check = ({ account, paymentMethods }) => {
   if (!paymentMethods) return null;
   if (!usesCards(account)) return NOT_APPLICABLE;
-  const failed = getCriticalFailedPaymentMethod(account, [...paymentMethods]);
+  const failed = getCriticalFailedPaymentMethod(account, paymentMethods);
   if (failed) {
     return [
       {
@@ -302,7 +288,7 @@ const checkPaymentMethod: Check = ({ account, paymentMethods }) => {
       },
     ];
   }
-  return accountMethods(account, paymentMethods).length === 0
+  return paymentMethods.length === 0
     ? [{ key: 'paymentMethod', severity: 'error', reason: 'missing' }]
     : [];
 };

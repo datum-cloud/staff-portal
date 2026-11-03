@@ -1,10 +1,9 @@
+import { useAccountInvoices, useAccountPaymentMethods } from '../../hooks';
 import { isPastDueInvoice } from '../../lib/invoice-summary';
-import { getBillingAccountDisplayStatus } from '../../utils';
-import { useAccountInvoices, useAccountPaymentMethods } from './use-account-dashboard';
+import { getBillingAccountDisplayStatus, type BillingAccount } from '../../utils';
 import { BadgeState } from '@/components/badge';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { t } from '@lingui/core/macro';
-import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
 
 /**
  * The account's status, as the header and the Configuration card show it.
@@ -16,9 +15,9 @@ export function AccountStatusBadge({
   account,
 }: {
   orgName: string;
-  account: ComMiloapisBillingV1Alpha1BillingAccount;
+  account: BillingAccount;
 }) {
-  const invoices = useAccountInvoices(orgName, account.metadata?.name ?? '');
+  const invoices = useAccountInvoices(orgName, account);
   const { paymentMethods, isLoading } = useAccountPaymentMethods(orgName, account);
 
   if (invoices.invoices?.some(isPastDueInvoice)) {

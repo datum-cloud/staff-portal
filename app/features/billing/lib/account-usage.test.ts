@@ -1,9 +1,4 @@
-import {
-  getCycleProgress,
-  getMeterOptionGroups,
-  getServiceSpend,
-  getTopMeter,
-} from './account-usage';
+import { getMeterOptionGroups, getServiceSpend, getTopMeter } from './account-usage';
 import type { UsageGroupSection, UsageMeter } from '@/features/organization/usage/usage.types';
 import type { UsageView } from '@/features/organization/usage/usage.view';
 import { describe, expect, it } from 'vitest';
@@ -65,26 +60,5 @@ describe('getTopMeter', () => {
 
   it('is undefined with no usage', () => {
     expect(getTopMeter(view([group('storage', [], [meter('disk')])]))).toBeUndefined();
-  });
-});
-
-describe('getCycleProgress', () => {
-  it('places now within a monthly cycle', () => {
-    const progress = getCycleProgress(
-      { invoiceDayOfMonth: 1, invoiceFrequency: 'Monthly' },
-      new Date('2026-11-12T12:00:00Z')
-    );
-    expect(progress.start.toISOString()).toBe('2026-11-01T00:00:00.000Z');
-    expect(progress.day).toBe(12);
-    expect(progress.days).toBe(30);
-  });
-
-  it('counts the first day as day 1', () => {
-    const progress = getCycleProgress(
-      { invoiceDayOfMonth: 15, invoiceFrequency: 'Monthly' },
-      new Date('2026-11-15T00:00:00Z')
-    );
-    expect(progress.day).toBe(1);
-    expect(progress.days).toBe(30);
   });
 });

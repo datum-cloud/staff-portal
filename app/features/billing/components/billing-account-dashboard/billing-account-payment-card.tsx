@@ -1,5 +1,11 @@
+import { useAccountPaymentMethods } from '../../hooks';
 import { getBillingMode } from '../../lib/payment-terms';
-import { getPaymentMethodDisplayName, isDefaultPaymentMethod } from '../../utils';
+import {
+  getPaymentMethodDisplayName,
+  isDefaultPaymentMethod,
+  type BillingAccount,
+  type PaymentMethod,
+} from '../../utils';
 import { CardBrandIcon, formatCardLabel } from '../card-brand-icon';
 import {
   ArrangementDetails,
@@ -10,10 +16,8 @@ import {
   billingStatusBadge,
   phaseBadgeState,
   type PaymentTermsState,
-} from '../payment-terms-card';
-import { BILLING_ACCOUNT_SECTION_IDS } from './billing-account-attention-banner';
-import { CardMessage, SectionAnchor } from './card-parts';
-import { useAccountPaymentMethods } from './use-account-dashboard';
+} from '../payment-terms';
+import { BILLING_ACCOUNT_SECTION_IDS, CardQueryState, SectionAnchor } from './card-parts';
 import { BadgeState } from '@/components/badge';
 import { SectionCard } from '@/features/milo';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -21,14 +25,7 @@ import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import type {
-  ComMiloapisBillingV1Alpha1BillingAccount,
-  ComMiloapisBillingV1Alpha1PaymentMethod,
-} from '@openapi/billing.miloapis.com/v1alpha1';
 import { useMemo } from 'react';
-
-type BillingAccount = ComMiloapisBillingV1Alpha1BillingAccount;
-type PaymentMethod = ComMiloapisBillingV1Alpha1PaymentMethod;
 
 interface PaymentCardProps {
   orgName: string;
@@ -76,17 +73,13 @@ export function BillingAccountPaymentCard({ orgName, account, terms }: PaymentCa
           <BilledBy account={account} terms={terms} />
         )}
 
-        {methodsLoading ? (
-          <Skeleton className="h-14 w-full rounded-md" />
-        ) : methodsError ? (
-          <CardMessage className="py-0">
-            <Trans>Couldn&apos;t load payment methods.</Trans>
-          </CardMessage>
-        ) : methods.length === 0 ? (
-          <CardMessage className="py-0">
-            <Trans>No payment method on file.</Trans>
-          </CardMessage>
-        ) : (
+        <CardQueryState
+          isLoading={methodsLoading}
+          isError={methodsError}
+          isEmpty={methods.length === 0}
+          skeleton={<Skeleton className="h-14 w-full rounded-md" />}
+          error={<Trans>Couldn&apos;t load payment methods</Trans>}
+          empty={<Trans>No payment method on file</Trans>}>
           <ul className="flex flex-col gap-2">
             {methods.map((method) => (
               <PaymentMethodRow
@@ -96,7 +89,7 @@ export function BillingAccountPaymentCard({ orgName, account, terms }: PaymentCa
               />
             ))}
           </ul>
-        )}
+        </CardQueryState>
 
         {terms.isLoading ? (
           <Skeleton className="h-16 w-full rounded-md" />

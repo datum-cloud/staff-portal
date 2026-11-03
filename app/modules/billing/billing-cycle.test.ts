@@ -1,5 +1,6 @@
 import {
   buildBillingCycleWindows,
+  getCycleProgress,
   getNextCycleStart,
   getPreviousCycleCutoff,
 } from './billing-cycle';
@@ -99,5 +100,26 @@ describe.each(['UTC', 'America/New_York', 'Pacific/Auckland'])('cycle maths in %
       const [current] = buildBillingCycleWindows(terms, new Date(now));
       expect(new Date(current.startSec * 1000).toISOString()).toBe(start);
     }
+  });
+});
+
+describe('getCycleProgress', () => {
+  it('places now within a monthly cycle', () => {
+    const progress = getCycleProgress(
+      { invoiceDayOfMonth: 1, invoiceFrequency: 'Monthly' },
+      new Date('2026-11-12T12:00:00Z')
+    );
+    expect(progress.start.toISOString()).toBe('2026-11-01T00:00:00.000Z');
+    expect(progress.day).toBe(12);
+    expect(progress.days).toBe(30);
+  });
+
+  it('counts the first day as day 1', () => {
+    const progress = getCycleProgress(
+      { invoiceDayOfMonth: 15, invoiceFrequency: 'Monthly' },
+      new Date('2026-11-15T00:00:00Z')
+    );
+    expect(progress.day).toBe(1);
+    expect(progress.days).toBe(30);
   });
 });

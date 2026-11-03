@@ -4,6 +4,7 @@ import type {
   BillingArrangementSpec,
 } from '@/features/billing/lib/payment-terms';
 import type { BillingArrangementDeclineSpec } from '@/features/billing/lib/payment-terms-applications';
+import type { BillingEntitlement, Invoice } from '@/features/billing/utils';
 import {
   buildOrganizationNamespace,
   DEFAULT_SERVICE_PRICING_NAMESPACE,
@@ -52,8 +53,8 @@ const filterNotDeleting = <T extends { metadata?: { deletionTimestamp?: string }
 export type Offer = ComMiloapisBillingV1Alpha1Offer;
 export type OfferSpec = NonNullable<Offer['spec']>;
 export type ServicePricing = ComMiloapisBillingV1Alpha1ServicePricing;
-export type BillingEntitlement = ComMiloapisBillingV1Alpha1BillingEntitlement;
-export type Invoice = ComMiloapisBillingV1Alpha1Invoice;
+// One set of billing aliases, defined with the billing feature.
+export type { BillingEntitlement, Invoice };
 
 export const billingAccountListQuery = async (params?: ListQueryParams) => {
   const response = await listBillingMiloapisComV1Alpha1BillingAccountForAllNamespaces({

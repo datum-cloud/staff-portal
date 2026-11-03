@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:132
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:141
 msgid " · {days}d late"
 msgstr ""
 
@@ -29,9 +29,19 @@ msgstr ""
 msgid "(default)"
 msgstr ""
 
-#. placeholder {0}: bindings.length
-#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:200
-msgid "{0} active bindings · spend this cycle by project"
+#. placeholder {0}: projects.length
+#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:173
+msgid "{0, plural, one {# active binding · spend this cycle by project} other {# active bindings · spend this cycle by project}}"
+msgstr ""
+
+#. placeholder {0}: s.paidCount
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:144
+msgid "{0, plural, one {# paid invoice} other {# paid invoices}}"
+msgstr ""
+
+#. placeholder {0}: s.unpaidCount
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:79
+msgid "{0, plural, one {# unpaid invoice} other {# unpaid invoices}}"
 msgstr ""
 
 #. placeholder {0}: active.length
@@ -55,11 +65,6 @@ msgstr ""
 msgid "{0} of {1} services"
 msgstr ""
 
-#. placeholder {0}: s.paidCount
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:155
-msgid "{0} paid invoices"
-msgstr ""
-
 #. placeholder {0}: passkeys?.items?.length ?? 0
 #: app/features/contact/components/contact-platform-account-card.tsx:96
 msgid "{0} registered"
@@ -77,53 +82,45 @@ msgid "{0} services"
 msgstr ""
 
 #. placeholder {0}: selected.qualifier
-#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:191
+#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:188
 msgid "{0} this cycle"
 msgstr ""
 
-#. placeholder {0}: s.unpaidCount
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:87
-msgid "{0} unpaid invoices"
-msgstr ""
-
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:171
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:162
 msgid "{card} expired {expiry}."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:175
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:166
 msgid "{card} expires {expiry}."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:128
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:356
+msgid "{count, plural, one {# check passing} other {# checks passing}}"
+msgstr ""
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:120
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:233
 msgid "{count, plural, one {# invoice} other {# invoices}}"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:361
-msgid "{count} checks passing"
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:228
+msgid "{count, plural, one {# past-due invoice} other {# past-due invoices}}"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:119
-msgid "{count} invoice amounts far outside the normal range"
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:106
+msgid "{count, plural, one {Invoice amount far outside the normal range} other {# invoice amounts far outside the normal range}}"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:236
-msgid "{count} past-due invoices"
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:231
+msgid "{count}+ invoices"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:223
-msgid "{countLabel} invoices · {frequency} on day {invoiceDay}"
-msgstr ""
-
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:219
-msgid "{countLabel} invoices · net {netDays} · {frequency} on day {invoiceDay}"
-msgstr ""
-
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:204
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:196
 msgid "{current} so far this cycle, {factor}× the {previous} spent by this point last cycle."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:85
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:130
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:75
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:122
 msgid "{days, plural, one {# day} other {# days}}"
 msgstr ""
 
@@ -131,20 +128,20 @@ msgstr ""
 msgid "{dependencyCount} dependencies"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:168
+#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:174
 msgid "{discount}% off"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:335
-msgid "{failed} checks couldn't run"
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:328
+msgid "{failed, plural, one {# check couldn't run} other {# checks couldn't run}}"
 msgstr ""
 
 #. placeholder {0}: next.netDays
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:252
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:240
 msgid "{frequency} · due <0/> (net {0})"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:114
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:118
 msgid "{frequency}, on day {invoiceDay}"
 msgstr ""
 
@@ -152,51 +149,59 @@ msgstr ""
 msgid "{heading}"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:132
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:244
+msgid "{invoiceCount} · {frequency} on day {invoiceDay}"
+msgstr ""
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:240
+msgid "{invoiceCount} · net {netDays} · {frequency} on day {invoiceDay}"
+msgstr ""
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:124
 msgid "{invoices} · {overdue} overdue"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:136
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:128
 msgid "{invoices} · oldest {overdue} overdue"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:290
-msgid "{more} more services in the usage dashboard"
+#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:284
+msgid "{more, plural, one {# more service in the usage dashboard} other {# more services in the usage dashboard}}"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:100
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:90
 msgid "{name} is past due."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:91
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:81
 msgid "{name} was due <0/> and is {overdue} overdue."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:96
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:86
 msgid "{name} was due <0/>."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:137
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:128
 msgid "{outstanding} across {count} unpaid invoices will be charged to the card on file. Charges this size are likely to be declined."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:339
-msgid "{partial} checks saw only some invoices"
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:331
+msgid "{partial, plural, one {# check saw only some invoices} other {# checks saw only some invoices}}"
 msgstr ""
 
 #: app/features/user/components/user-identity-card.tsx:92
 msgid "{passkeyCount, plural, one {# passkey} other {# passkeys}}"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:194
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:182
 msgid "{percent}% vs last cycle at this point"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:164
-msgid "{pricingCount} prices"
+#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:170
+msgid "{pricingCount, plural, one {# price} other {# prices}}"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:189
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:181
 msgid "{spend} spent so far this cycle against a {limit} per-cycle credit limit."
 msgstr ""
 
@@ -205,12 +210,12 @@ msgstr ""
 msgid "{stageCount} {0}"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:179
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:167
 msgid "{times}× last cycle at this point"
 msgstr ""
 
-#: app/components/attention-banner/index.tsx:79
-msgid "{total} things need attention"
+#: app/components/attention-banner/index.tsx:76
+msgid "{total, plural, one {# thing needs attention} other {# things need attention}}"
 msgstr ""
 
 #: app/routes/customer/project/detail/export-policy/index.tsx:36
@@ -226,13 +231,13 @@ msgid "% Used"
 msgstr ""
 
 #. placeholder {0}: services.length - MAX_SERVICES
-#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:191
+#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:197
 msgid "+{0} more"
 msgstr ""
 
 #. placeholder {0}: progress.day
 #. placeholder {1}: progress.days
-#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:68
+#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:65
 msgid "<0/> – <1/> · day {0} of {1}"
 msgstr ""
 
@@ -240,47 +245,7 @@ msgstr ""
 msgid "≥ 70% used"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:198
-msgid "1 active binding · spend this cycle by project"
-msgstr ""
-
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:335
-msgid "1 check couldn't run"
-msgstr ""
-
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:361
-msgid "1 check passing"
-msgstr ""
-
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:337
-msgid "1 check saw only some invoices"
-msgstr ""
-
-#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:288
-msgid "1 more service in the usage dashboard"
-msgstr ""
-
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:153
-msgid "1 paid invoice"
-msgstr ""
-
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:236
-msgid "1 past-due invoice"
-msgstr ""
-
-#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:164
-msgid "1 price"
-msgstr ""
-
-#: app/components/attention-banner/index.tsx:77
-msgid "1 thing needs attention"
-msgstr ""
-
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:85
-msgid "1 unpaid invoice"
-msgstr ""
-
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:70
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:72
 msgid "1–30 days overdue"
 msgstr ""
 
@@ -299,7 +264,7 @@ msgstr ""
 msgid "204 - No Content"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:72
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:74
 msgid "31–60 days"
 msgstr ""
 
@@ -333,7 +298,7 @@ msgstr ""
 msgid "500 - Server Error"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:74
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:76
 msgid "60+ days"
 msgstr ""
 
@@ -341,7 +306,7 @@ msgstr ""
 msgid "A contact with this email already exists."
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:519
+#: app/features/billing/components/payment-terms.tsx:519
 msgid "A signed MSA or order form, if there is one. Otherwise our standard terms apply."
 msgstr ""
 
@@ -380,7 +345,7 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:397
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:392
 msgid "Account attention"
 msgstr ""
 
@@ -401,7 +366,7 @@ msgstr ""
 msgid "Account menu"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:269
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:257
 msgid "Account summary"
 msgstr ""
 
@@ -410,7 +375,7 @@ msgid "Accounts"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:380
-#: app/features/billing/components/payment-terms-card.tsx:509
+#: app/features/billing/components/payment-terms.tsx:509
 msgid "Accounts payable email"
 msgstr ""
 
@@ -421,11 +386,11 @@ msgstr ""
 #: app/components/app-toolbar/mobile-toolbar.tsx:92
 #: app/features/activity/components/activity-list.tsx:456
 #: app/features/activity/components/activity-list.tsx:522
-#: app/features/billing/components/billing-account-dashboard/billing-account-header.tsx:146
+#: app/features/billing/components/billing-account-dashboard/billing-account-header.tsx:145
 msgid "Actions"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:185
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:178
 #: app/routes/admin/service-catalog/detail/consumers.tsx:333
 msgid "Active"
 msgstr ""
@@ -444,7 +409,7 @@ msgstr ""
 msgid "Active Sessions"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:150
+#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:156
 msgid "active since <0/>"
 msgstr ""
 
@@ -558,12 +523,12 @@ msgstr ""
 msgid "After publish, only the display name can change. Rate changes need a new Offer."
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:385
+#: app/features/billing/components/payment-terms.tsx:385
 msgid "Agreement"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:388
-#: app/features/billing/components/payment-terms-card.tsx:518
+#: app/features/billing/components/payment-terms.tsx:518
 msgid "Agreement reference"
 msgstr ""
 
@@ -599,7 +564,7 @@ msgstr ""
 msgid "All Evaluations for this User"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:246
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:267
 msgid "All invoices"
 msgstr ""
 
@@ -631,7 +596,7 @@ msgstr ""
 msgid "Always runs, even when an earlier stage short-circuits the pipeline."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:142
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:151
 msgid "Amount"
 msgstr ""
 
@@ -650,7 +615,7 @@ msgstr ""
 msgid "and"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/card-parts.tsx:19
+#: app/features/billing/components/billing-account-dashboard/card-parts.tsx:30
 msgid "Annual"
 msgstr ""
 
@@ -702,7 +667,7 @@ msgid "Application not found."
 msgstr ""
 
 #: app/features/billing/components/billing-account-views.ts:28
-#: app/features/billing/components/payment-terms-card.tsx:297
+#: app/features/billing/components/payment-terms.tsx:297
 #: app/routes/customer/billing-account/applications/layout.tsx:5
 msgid "Applications"
 msgstr ""
@@ -866,7 +831,7 @@ msgstr ""
 msgid "Authorized to apply"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:135
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:128
 msgid "auto-charged when invoiced"
 msgstr ""
 
@@ -900,11 +865,11 @@ msgid "Basic Authentication"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:433
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:125
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:118
 msgid "Billed by"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-header.tsx:55
+#: app/features/billing/components/billing-account-dashboard/billing-account-header.tsx:54
 msgid "Billed by invoice"
 msgstr ""
 
@@ -921,12 +886,12 @@ msgstr ""
 msgid "Billing account"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:35
-#: app/routes/customer/billing-account/detail/index.tsx:44
+#: app/routes/customer/billing-account/detail/index.tsx:13
+#: app/routes/customer/billing-account/detail/index.tsx:22
 msgid "Billing Account"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:47
+#: app/routes/customer/billing-account/detail/index.tsx:25
 msgid "Billing account not found or you do not have permission to view it."
 msgstr ""
 
@@ -938,12 +903,12 @@ msgstr ""
 msgid "Billing Accounts"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:58
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:61
 msgid "Billing address"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:507
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:26
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:29
 msgid "Billing contact"
 msgstr ""
 
@@ -956,11 +921,11 @@ msgstr ""
 msgid "Billing permissions are still being provisioned for this organization."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:217
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:209
 msgid "Business account with a billing address in {country} and no tax ID."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:219
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:211
 msgid "Business account with no tax ID."
 msgstr ""
 
@@ -971,10 +936,10 @@ msgstr ""
 #: app/components/button/button-delete-action.tsx:43
 #: app/components/danger-zone-card/index.tsx:43
 #: app/features/billing/components/application-review.tsx:602
-#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:256
+#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:262
 #: app/features/billing/components/default-offer-card.tsx:77
-#: app/features/billing/components/payment-terms-card.tsx:231
-#: app/features/billing/components/payment-terms-card.tsx:489
+#: app/features/billing/components/payment-terms.tsx:231
+#: app/features/billing/components/payment-terms.tsx:489
 #: app/features/contact-group/components/contact-group-form.tsx:97
 #: app/features/contact/components/add-to-group-dialog.tsx:94
 #: app/features/contact/components/contact-form.tsx:249
@@ -1016,35 +981,35 @@ msgid "Cancel"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:184
-#: app/features/billing/components/payment-terms-card.tsx:99
+#: app/features/billing/components/payment-terms.tsx:99
 msgid "Card"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:264
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:256
 msgid "Card balance OK"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:169
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:160
 msgid "Card expired"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:169
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:160
 msgid "Card expires soon"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:244
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:236
 msgid "card expiry"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:168
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:159
 msgid "Card expiry"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:134
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:125
 msgid "Card limit"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:268
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:260
 msgid "Card not expiring"
 msgstr ""
 
@@ -1057,12 +1022,12 @@ msgstr ""
 msgid "Chainsaw Tests"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:323
+#: app/features/billing/components/payment-terms.tsx:323
 msgid "Change"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:211
-#: app/routes/customer/billing-account/detail/index.tsx:107
+#: app/features/billing/components/payment-terms.tsx:211
+#: app/features/billing/hooks/use-billing-account-header-actions.tsx:42
 msgid "Change payment terms"
 msgstr ""
 
@@ -1074,7 +1039,7 @@ msgstr ""
 msgid "Changes"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:212
+#: app/features/billing/components/payment-terms.tsx:212
 msgid "Changes apply to the terms currently on the account."
 msgstr ""
 
@@ -1166,7 +1131,7 @@ msgid "Collapse sidebar"
 msgstr ""
 
 #: app/features/billing/components/application-labels.tsx:34
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:34
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:37
 #: app/features/billing/components/billing-account-list.tsx:194
 #: app/features/billing/components/billing-account-list.tsx:265
 #: app/features/project/components/project-organization-card.tsx:34
@@ -1203,7 +1168,7 @@ msgstr ""
 msgid "Conditions"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:99
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:103
 #: app/features/edge/components/detail/edge-config-card.tsx:72
 #: app/routes/customer/project/detail/export-policy/detail.tsx:171
 #: app/routes/customer/project/detail/export-policy/detail.tsx:205
@@ -1243,7 +1208,7 @@ msgstr ""
 msgid "Consumers"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:30
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:33
 #: app/features/fraud/detail/evaluation-sections.tsx:697
 #: app/routes/marketing/contact-group/detail/member.tsx:67
 msgid "Contact"
@@ -1399,37 +1364,40 @@ msgstr ""
 msgid "Couldn't load email activity."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/account-status-badge.tsx:29
+#: app/features/billing/components/billing-account-dashboard/account-status-badge.tsx:28
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:283
 msgid "Couldn't load invoices"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:63
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:259
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:57
 msgid "Couldn't load invoices."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:210
-msgid "Couldn't load linked projects."
+#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:187
+msgid "Couldn't load linked projects"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:83
-msgid "Couldn't load payment methods."
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:81
+msgid "Couldn't load payment methods"
 msgstr ""
 
 #: app/features/service-catalog/components/service-pricings-card.tsx:128
 msgid "Couldn't load prices for this service."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:126
+#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:122
 msgid "Couldn't load spend"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:79
-msgid "Couldn't load the account's offer."
+#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:92
+msgid "Couldn't load the account's offer"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:211
-#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:83
+#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:81
+msgid "Couldn't load usage"
+msgstr ""
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:199
 msgid "Couldn't load usage."
 msgstr ""
 
@@ -1480,7 +1448,7 @@ msgstr ""
 msgid "Create Policy"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:125
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:129
 #: app/features/billing/components/billing-account-list.tsx:239
 #: app/features/billing/components/billing-account-list.tsx:317
 #: app/features/contact/components/contact-about-card.tsx:32
@@ -1524,7 +1492,7 @@ msgstr ""
 msgid "Created"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-header.tsx:109
+#: app/features/billing/components/billing-account-dashboard/billing-account-header.tsx:108
 msgid "Created <0/>"
 msgstr ""
 
@@ -1533,18 +1501,18 @@ msgstr ""
 msgid "Credentials Reference"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:186
-#: app/features/billing/components/payment-terms-card.tsx:368
-#: app/features/billing/components/payment-terms-card.tsx:502
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:178
+#: app/features/billing/components/payment-terms.tsx:368
+#: app/features/billing/components/payment-terms.tsx:502
 msgid "Credit limit"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:502
+#: app/features/billing/components/payment-terms.tsx:502
 msgid "Credit limit ({currency})"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:503
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:107
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:111
 #: app/features/billing/components/billing-account-list.tsx:224
 #: app/features/billing/components/billing-account-list.tsx:298
 msgid "Currency"
@@ -1578,7 +1546,7 @@ msgstr ""
 msgid "Customers"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:196
+#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:193
 msgid "daily usage"
 msgstr ""
 
@@ -1607,7 +1575,7 @@ msgstr ""
 msgid "days"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:496
+#: app/features/billing/components/payment-terms.tsx:496
 msgid "Days after the invoice date that payment is due."
 msgstr ""
 
@@ -1648,7 +1616,7 @@ msgstr ""
 msgid "Declined"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:161
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:154
 #: app/routes/admin/offer/index.tsx:58
 #: app/routes/admin/offer/index.tsx:115
 #: app/routes/admin/offer/index.tsx:119
@@ -1667,7 +1635,7 @@ msgstr ""
 msgid "Default Offer updated; accounts on the previous default will be migrated"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:149
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:140
 msgid "Default payment method failed"
 msgstr ""
 
@@ -1977,15 +1945,15 @@ msgstr ""
 msgid "Domains"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:163
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:172
 msgid "Download"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:175
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:184
 msgid "Download invoice"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:175
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:184
 msgid "Download unavailable"
 msgstr ""
 
@@ -2005,7 +1973,7 @@ msgstr ""
 msgid "Draft Offer updated"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:124
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:132
 msgid "Due"
 msgstr ""
 
@@ -2055,7 +2023,7 @@ msgstr ""
 msgid "Education or research"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:42
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:45
 #: app/features/contact/components/contact-about-card.tsx:30
 #: app/features/contact/components/contact-form.tsx:136
 #: app/features/contact/components/contact-list.tsx:91
@@ -2164,19 +2132,19 @@ msgstr ""
 msgid "Enablement"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:330
+#: app/features/billing/components/payment-terms.tsx:330
 msgid "End"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:532
+#: app/features/billing/components/payment-terms.tsx:532
 msgid "End date"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:224
+#: app/features/billing/components/payment-terms.tsx:224
 msgid "End payment terms"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:230
+#: app/features/billing/components/payment-terms.tsx:230
 msgid "End terms"
 msgstr ""
 
@@ -2191,7 +2159,7 @@ msgstr ""
 msgid "Endpoint"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:374
+#: app/features/billing/components/payment-terms.tsx:374
 msgid "Ends"
 msgstr ""
 
@@ -2326,7 +2294,7 @@ msgstr ""
 msgid "Expiration Date"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:160
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:153
 msgid "expires {expiry}"
 msgstr ""
 
@@ -2384,7 +2352,7 @@ msgstr ""
 msgid "Failed to set default Offer"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:242
+#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:248
 msgid "Failed to switch Offer"
 msgstr ""
 
@@ -2498,7 +2466,7 @@ msgstr ""
 msgid "Flag"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:541
+#: app/features/billing/components/payment-terms.tsx:541
 msgid "For example: signed MSA after sales call on 1 October"
 msgstr ""
 
@@ -2604,7 +2572,7 @@ msgstr ""
 msgid "Grafana"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:198
+#: app/features/billing/components/payment-terms.tsx:198
 #: app/features/quota/components/quota-grant-list.tsx:87
 msgid "Grant"
 msgstr ""
@@ -2613,16 +2581,16 @@ msgstr ""
 msgid "Grant deleted successfully"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:196
-#: app/routes/customer/billing-account/detail/index.tsx:113
+#: app/features/billing/components/payment-terms.tsx:196
+#: app/features/billing/hooks/use-billing-account-header-actions.tsx:48
 msgid "Grant payment terms"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:217
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:210
 msgid "Grant terms"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:208
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:201
 msgid "Grant terms to let this account be billed by invoice."
 msgstr ""
 
@@ -2663,7 +2631,7 @@ msgstr ""
 msgid "Here's what's happening across the platform."
 msgstr ""
 
-#: app/components/attention-banner/index.tsx:102
+#: app/components/attention-banner/index.tsx:98
 msgid "Hide"
 msgstr ""
 
@@ -2774,7 +2742,7 @@ msgstr ""
 msgid "Inherits {inheritedPercentage}%"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:68
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:58
 msgid "Inspect usage"
 msgstr ""
 
@@ -2816,44 +2784,40 @@ msgid "Invite User"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:183
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:97
-#: app/features/billing/components/payment-terms-card.tsx:98
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:105
+#: app/features/billing/components/payment-terms.tsx:98
 msgid "Invoice"
-msgstr ""
-
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:117
-msgid "Invoice amount far outside the normal range"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:371
 msgid "Invoice details"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:111
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:115
 msgid "Invoice frequency"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:88
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:78
 msgid "Invoice past due — {amount}"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:50
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:53
 msgid "Invoice recipients"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:181
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:174
 msgid "Invoice terms"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:262
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:254
 msgid "Invoice totals normal"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:234
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:255
 msgid "Invoices"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:381
+#: app/features/billing/components/payment-terms.tsx:381
 msgid "Invoices to"
 msgstr ""
 
@@ -2913,7 +2877,7 @@ msgstr ""
 msgid "ISP"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:114
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:122
 msgid "Issued"
 msgstr ""
 
@@ -2937,11 +2901,11 @@ msgstr ""
 msgid "Joined {0} as {1}"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:240
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:232
 msgid "large card balance"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:135
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:126
 msgid "Large open balance on a card-billed account"
 msgstr ""
 
@@ -3003,11 +2967,11 @@ msgstr ""
 msgid "Launch stage"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:533
+#: app/features/billing/components/payment-terms.tsx:533
 msgid "Leave empty for terms with no fixed end."
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:526
+#: app/features/billing/components/payment-terms.tsx:526
 msgid "Leave empty to start immediately."
 msgstr ""
 
@@ -3020,7 +2984,7 @@ msgstr ""
 msgid "License Key Key"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:147
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:139
 msgid "Lifetime paid"
 msgstr ""
 
@@ -3052,11 +3016,11 @@ msgstr ""
 msgid "Limited to 10,000 users. Refine your search to surface others."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:76
+#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:72
 msgid "Linked"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:205
+#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:181
 #: app/features/billing/components/billing-account-list.tsx:229
 #: app/features/billing/components/billing-account-list.tsx:305
 #: app/features/billing/components/org-billing-accounts-card.tsx:71
@@ -3232,7 +3196,7 @@ msgstr ""
 msgid "Message to the customer"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:160
+#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:157
 msgid "Meter"
 msgstr ""
 
@@ -3248,7 +3212,7 @@ msgstr ""
 msgid "MetricsQL"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:250
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:242
 msgid "missing tax ID"
 msgstr ""
 
@@ -3256,7 +3220,7 @@ msgstr ""
 msgid "Monitored Resources"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/card-parts.tsx:21
+#: app/features/billing/components/billing-account-dashboard/card-parts.tsx:32
 msgid "Monthly"
 msgstr ""
 
@@ -3264,7 +3228,7 @@ msgstr ""
 msgid "More options"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:254
+#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:260
 msgid "Move this billing account to another published Offer. The customer's plan and quota grants update on reconcile."
 msgstr ""
 
@@ -3344,7 +3308,7 @@ msgstr ""
 
 #. placeholder {0}: invoice?.netDays ?? '—'
 #. placeholder {1}: formatCreditLimit(invoice?.creditLimit)
-#: app/features/billing/components/payment-terms-card.tsx:409
+#: app/features/billing/components/payment-terms.tsx:409
 msgid "Net {0}, limit {1}"
 msgstr ""
 
@@ -3364,9 +3328,9 @@ msgstr ""
 msgid "Net {netDays}, scheduled from {start} with no end date."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:121
-#: app/features/billing/components/payment-terms-card.tsx:367
-#: app/features/billing/components/payment-terms-card.tsx:495
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:125
+#: app/features/billing/components/payment-terms.tsx:367
+#: app/features/billing/components/payment-terms.tsx:495
 msgid "Net days"
 msgstr ""
 
@@ -3421,7 +3385,7 @@ msgstr ""
 msgid "Newest first ↓"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:246
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:234
 msgid "Next invoice"
 msgstr ""
 
@@ -3450,7 +3414,7 @@ msgstr ""
 msgid "No active configuration."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:226
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:218
 msgid "No active offer"
 msgstr ""
 
@@ -3489,7 +3453,7 @@ msgstr ""
 msgid "No billing accounts found"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:83
+#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:94
 msgid "No BillingEntitlement found for this account. New accounts pick up the default Offer automatically when catalog defaults are configured."
 msgstr ""
 
@@ -3527,7 +3491,7 @@ msgstr ""
 msgid "No contacts found."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:206
+#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:203
 msgid "No daily usage recorded for this meter."
 msgstr ""
 
@@ -3555,11 +3519,11 @@ msgstr ""
 msgid "No emails sent"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:419
+#: app/features/billing/components/payment-terms.tsx:419
 msgid "no end date"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:378
+#: app/features/billing/components/payment-terms.tsx:378
 msgid "No end date"
 msgstr ""
 
@@ -3615,24 +3579,21 @@ msgstr ""
 msgid "No hostnames configured"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:297
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:315
 msgid "No invoices"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:280
-msgid "No invoices match your search."
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:299
+msgid "No invoices match your search"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:263
-msgid "No invoices yet."
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:284
+msgid "No invoices yet"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:229
+#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:188
+#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:201
 msgid "No linked projects"
-msgstr ""
-
-#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:214
-msgid "No linked projects."
 msgstr ""
 
 #: app/features/milo/components/page/rich-filter-panel.tsx:584
@@ -3665,7 +3626,7 @@ msgstr ""
 msgid "No notes yet"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:252
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:244
 msgid "no offer"
 msgstr ""
 
@@ -3690,19 +3651,19 @@ msgstr ""
 msgid "No organizations found."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:264
+#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:270
 msgid "No other published Offers are available to switch to."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:157
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:148
 msgid "No payment method"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:87
-msgid "No payment method on file."
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:82
+msgid "No payment method on file"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:200
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:193
 msgid "No payment terms"
 msgstr ""
 
@@ -3799,7 +3760,7 @@ msgstr ""
 msgid "No sign-ups in 30 days"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:169
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:157
 msgid "No spend last cycle at this point"
 msgstr ""
 
@@ -3811,7 +3772,7 @@ msgstr ""
 msgid "No stages configured."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:215
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:207
 msgid "No tax ID on file"
 msgstr ""
 
@@ -3823,8 +3784,8 @@ msgstr ""
 msgid "No usage"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:91
-msgid "No usage recorded this cycle."
+#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:86
+msgid "No usage recorded this cycle"
 msgstr ""
 
 #: app/features/organization/components/org-usage-card.tsx:101
@@ -3854,22 +3815,22 @@ msgid "Normal"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:185
-#: app/features/billing/components/payment-terms-card.tsx:100
+#: app/features/billing/components/payment-terms.tsx:100
 msgid "Not billable yet: terms are scheduled"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:187
-#: app/features/billing/components/payment-terms-card.tsx:102
+#: app/features/billing/components/payment-terms.tsx:102
 msgid "Not billable: card is failing"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:188
-#: app/features/billing/components/payment-terms-card.tsx:103
+#: app/features/billing/components/payment-terms.tsx:103
 msgid "Not billable: no card or terms"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:186
-#: app/features/billing/components/payment-terms-card.tsx:101
+#: app/features/billing/components/payment-terms.tsx:101
 msgid "Not billable: terms have ended"
 msgstr ""
 
@@ -3885,7 +3846,7 @@ msgstr ""
 msgid "Not linked to a user"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:15
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:18
 msgid "Not provided"
 msgstr ""
 
@@ -3898,7 +3859,7 @@ msgstr ""
 msgid "Not synced"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:76
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:78
 msgid "Not yet due"
 msgstr ""
 
@@ -3936,12 +3897,12 @@ msgstr ""
 msgid "Notes, emails, and account history for this contact will appear here."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:83
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:77
 msgid "Nothing owed"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:260
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:107
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:252
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:99
 msgid "Nothing past due"
 msgstr ""
 
@@ -3962,16 +3923,16 @@ msgstr ""
 msgid "of"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:225
-#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:58
-#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:267
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:217
+#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:68
+#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:273
 #: app/routes/admin/offer/detail.tsx:60
 #: app/routes/admin/offer/detail.tsx:238
 #: app/routes/admin/offer/detail.tsx:251
 msgid "Offer"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:276
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:268
 msgid "Offer active"
 msgstr ""
 
@@ -3987,7 +3948,7 @@ msgstr ""
 msgid "Offer published"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:240
+#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:246
 msgid "Offer switched"
 msgstr ""
 
@@ -4018,12 +3979,12 @@ msgstr ""
 msgid "Once a contact is associated with a user, this association cannot be removed or changed later."
 msgstr ""
 
-#: app/features/billing/utils.ts:59
+#: app/features/billing/utils.ts:72
 msgid "Open"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:64
-#: app/features/billing/components/billing-account-dashboard/billing-account-header.tsx:135
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:54
+#: app/features/billing/components/billing-account-dashboard/billing-account-header.tsx:134
 msgid "Open in Cloud Portal"
 msgstr ""
 
@@ -4035,7 +3996,7 @@ msgstr ""
 msgid "Open search"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:76
+#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:73
 msgid "Open usage dashboard"
 msgstr ""
 
@@ -4108,11 +4069,11 @@ msgstr ""
 msgid "Other"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:77
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:71
 msgid "Outstanding balance"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:246
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:238
 msgid "over credit limit"
 msgstr ""
 
@@ -4149,11 +4110,11 @@ msgstr ""
 msgid "Owner:"
 msgstr ""
 
-#: app/features/billing/utils.ts:53
+#: app/features/billing/utils.ts:66
 msgid "Paid"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:58
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:52
 msgid "Partial: not every invoice loaded"
 msgstr ""
 
@@ -4181,10 +4142,10 @@ msgstr ""
 msgid "Passkeys"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/account-status-badge.tsx:25
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:87
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:101
-#: app/features/billing/utils.ts:55
+#: app/features/billing/components/billing-account-dashboard/account-status-badge.tsx:24
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:77
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:93
+#: app/features/billing/utils.ts:68
 msgid "Past due"
 msgstr ""
 
@@ -4205,9 +4166,9 @@ msgstr ""
 msgid "Pay by invoice"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:148
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:156
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:68
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:139
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:147
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:65
 msgid "Payment"
 msgstr ""
 
@@ -4215,11 +4176,11 @@ msgstr ""
 msgid "Payment method"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:266
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:258
 msgid "Payment method OK"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:242
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:234
 msgid "payment method problem"
 msgstr ""
 
@@ -4239,31 +4200,31 @@ msgstr ""
 msgid "Payment Terms Applications"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:146
+#: app/features/billing/components/payment-terms.tsx:146
 msgid "Payment terms ended"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:119
+#: app/features/billing/components/payment-terms.tsx:119
 msgid "Payment terms granted"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:132
+#: app/features/billing/components/payment-terms.tsx:132
 msgid "Payment terms updated"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:146
+#: app/features/billing/components/payment-terms.tsx:146
 msgid "Payment terms withdrawn"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-header.tsx:62
+#: app/features/billing/components/billing-account-dashboard/billing-account-header.tsx:61
 msgid "Pays by card"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:204
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:197
 msgid "Pays by card. Invoice billing (net terms, credit limit, PO) isn't granted."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:139
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:132
 msgid "pays invoices on terms"
 msgstr ""
 
@@ -4302,7 +4263,7 @@ msgstr ""
 msgid "Per-service discounts"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:103
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:111
 msgid "Period"
 msgstr ""
 
@@ -4393,8 +4354,8 @@ msgid "Please wait {remainingMinutes} more minute{0} before resending this invit
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:384
-#: app/features/billing/components/payment-terms-card.tsx:384
-#: app/features/billing/components/payment-terms-card.tsx:513
+#: app/features/billing/components/payment-terms.tsx:384
+#: app/features/billing/components/payment-terms.tsx:513
 msgid "PO number"
 msgstr ""
 
@@ -4444,7 +4405,7 @@ msgstr ""
 msgid "Previous page"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:280
+#: app/features/billing/components/payment-terms.tsx:280
 msgid "Previous terms"
 msgstr ""
 
@@ -4484,7 +4445,7 @@ msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:394
 #: app/features/activity/components/activity-list.tsx:493
-#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:62
+#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:58
 #: app/features/billing/components/billing-account-list.tsx:281
 #: app/features/dns/components/dns-zone-list.tsx:99
 #: app/features/domain/components/domain-list.tsx:71
@@ -4612,7 +4573,7 @@ msgstr ""
 msgid "Publishing snapshots rates into this Offer. After GA the rates are immutable; create a new Offer version to change pricing."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/card-parts.tsx:17
+#: app/features/billing/components/billing-account-dashboard/card-parts.tsx:28
 msgid "Quarterly"
 msgstr ""
 
@@ -4678,8 +4639,8 @@ msgid "Reason"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:254
-#: app/features/billing/components/payment-terms-card.tsx:388
-#: app/features/billing/components/payment-terms-card.tsx:538
+#: app/features/billing/components/payment-terms.tsx:388
+#: app/features/billing/components/payment-terms.tsx:538
 msgid "Reason (internal)"
 msgstr ""
 
@@ -4695,7 +4656,7 @@ msgstr ""
 msgid "Reason must be at least {REASON_MIN_LENGTH} characters"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:510
+#: app/features/billing/components/payment-terms.tsx:510
 msgid "Receives invoices as well as the billing contact."
 msgstr ""
 
@@ -4855,15 +4816,15 @@ msgstr ""
 msgid "Review"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:261
+#: app/features/billing/components/payment-terms.tsx:261
 msgid "Review application"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:73
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:63
 msgid "Review payment terms"
 msgstr ""
 
-#: app/routes/customer/billing-account/detail/index.tsx:100
+#: app/features/billing/hooks/use-billing-account-header-actions.tsx:35
 msgid "Review terms application"
 msgstr ""
 
@@ -4904,11 +4865,11 @@ msgstr ""
 msgid "Running"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:187
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:175
 msgid "Same as last cycle at this point"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:213
+#: app/features/billing/components/payment-terms.tsx:213
 #: app/features/profile/components/profile-form.tsx:58
 #: app/routes/admin/offer/detail.tsx:485
 msgid "Save"
@@ -4930,7 +4891,7 @@ msgstr ""
 msgid "Schedule invitation to be sent at specific time"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:185
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:178
 msgid "Scheduled"
 msgstr ""
 
@@ -5041,8 +5002,8 @@ msgstr ""
 msgid "Search groups..."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:272
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:273
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:292
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:293
 msgid "Search invoices"
 msgstr ""
 
@@ -5171,11 +5132,11 @@ msgstr ""
 msgid "See all domains"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:128
+#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:124
 msgid "See the usage dashboard for this project's spend"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:268
+#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:274
 msgid "Select a GA Offer"
 msgstr ""
 
@@ -5276,7 +5237,7 @@ msgstr ""
 msgid "Service pricings"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:173
+#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:179
 msgid "Services included"
 msgstr ""
 
@@ -5310,7 +5271,7 @@ msgstr ""
 msgid "Share"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:89
+#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:85
 msgid "Share of spend"
 msgstr ""
 
@@ -5323,11 +5284,11 @@ msgstr ""
 msgid "Short-circuit Below"
 msgstr ""
 
-#: app/components/attention-banner/index.tsx:102
+#: app/components/attention-banner/index.tsx:98
 msgid "Show all"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:246
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:267
 msgid "Show fewer"
 msgstr ""
 
@@ -5375,11 +5336,11 @@ msgstr ""
 msgid "Solving ACME challenge"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:410
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:405
 msgid "Some checks couldn't run"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:412
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:407
 msgid "Some checks couldn't see every invoice"
 msgstr ""
 
@@ -5408,11 +5369,11 @@ msgstr ""
 msgid "Sources"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:110
+#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:106
 msgid "Spend"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:257
+#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:254
 msgid "Spend by service"
 msgstr ""
 
@@ -5420,15 +5381,15 @@ msgstr ""
 msgid "Spend could not be calculated: {spendError}"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:147
+#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:144
 msgid "Spend isn't available"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:233
+#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:205
 msgid "Spend shows for the first {MAX_PROJECT_SPEND_REQUESTS} projects. See the usage dashboard for the other {skipped}."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:187
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:179
 msgid "Spend this cycle over the credit limit"
 msgstr ""
 
@@ -5436,7 +5397,7 @@ msgstr ""
 msgid "spend this period"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:149
+#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:146
 msgid "spent so far, before tax and credits"
 msgstr ""
 
@@ -5466,7 +5427,7 @@ msgstr ""
 msgid "Stages run top to bottom; an earlier stage can short-circuit the rest."
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:525
+#: app/features/billing/components/payment-terms.tsx:525
 msgid "Start date"
 msgstr ""
 
@@ -5474,7 +5435,7 @@ msgstr ""
 msgid "Start Time"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:371
+#: app/features/billing/components/payment-terms.tsx:371
 msgid "Starts"
 msgstr ""
 
@@ -5482,9 +5443,9 @@ msgstr ""
 #: app/features/billing/components/application-list.tsx:172
 #: app/features/billing/components/application-review.tsx:245
 #: app/features/billing/components/application-review.tsx:303
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:103
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:154
-#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:143
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:107
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:163
+#: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:139
 #: app/features/billing/components/billing-account-list.tsx:216
 #: app/features/billing/components/billing-account-list.tsx:291
 #: app/features/billing/components/org-billing-accounts-card.tsx:63
@@ -5547,7 +5508,7 @@ msgstr ""
 msgid "Submitted"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:450
+#: app/features/billing/components/payment-terms.tsx:450
 msgid "Submitted <0/>"
 msgstr ""
 
@@ -5581,16 +5542,16 @@ msgstr ""
 msgid "Suspension lifted"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:255
+#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:261
 msgid "Switch"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:68
-#: app/routes/customer/billing-account/detail/index.tsx:119
+#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:78
+#: app/features/billing/hooks/use-billing-account-header-actions.tsx:57
 msgid "Switch offer"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:253
+#: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:259
 msgid "Switch Offer"
 msgstr ""
 
@@ -5611,15 +5572,15 @@ msgstr ""
 msgid "Target"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:214
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:206
 msgid "Tax"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:274
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:266
 msgid "Tax details OK"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:66
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:69
 msgid "Tax IDs"
 msgstr ""
 
@@ -5655,11 +5616,11 @@ msgstr ""
 msgid "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:197
+#: app/features/billing/components/payment-terms.tsx:197
 msgid "The account will be billed by invoice on these terms. Overlapping terms are rejected, so end the current terms first if there are any."
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:228
+#: app/features/billing/components/payment-terms.tsx:228
 msgid "The account will stop being billed by invoice now and will need a card to keep using paid services. The record is kept for history."
 msgstr ""
 
@@ -5667,7 +5628,7 @@ msgstr ""
 msgid "The account's payment terms have no end date. Give them one on the billing account to approve."
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:252
+#: app/features/billing/components/payment-terms.tsx:252
 msgid "The customer applied for payment terms on <0/> and is waiting for a decision."
 msgstr ""
 
@@ -5699,7 +5660,7 @@ msgstr ""
 msgid "The list of domains is limited to 2,000 results at a time. Refine your search to surface other domains."
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:503
+#: app/features/billing/components/payment-terms.tsx:503
 msgid "The most the account should spend each billing cycle. Recorded for finance only: usage isn't capped and no alerts are sent yet."
 msgstr ""
 
@@ -5708,7 +5669,7 @@ msgid "The notes and history timeline for this contact will appear here."
 msgstr ""
 
 #. placeholder {0}: issue.paymentMethodName
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:151
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:142
 msgid "The payment provider rejected {0}."
 msgstr ""
 
@@ -5720,11 +5681,11 @@ msgstr ""
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:227
+#: app/features/billing/components/payment-terms.tsx:227
 msgid "These terms will never take effect. The record is kept for history."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:158
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:149
 msgid "This account pays by card but has no payment method on file."
 msgstr ""
 
@@ -5740,7 +5701,7 @@ msgstr ""
 msgid "This contact isn't linked to a platform user, so organization memberships aren't available."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:193
+#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:190
 msgid "this cycle"
 msgstr ""
 
@@ -5912,19 +5873,19 @@ msgid "Unhealthy: {0}"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:189
-#: app/features/billing/components/billing-account-dashboard/account-status-badge.tsx:29
-#: app/features/billing/components/payment-terms-card.tsx:104
+#: app/features/billing/components/billing-account-dashboard/account-status-badge.tsx:28
+#: app/features/billing/components/payment-terms.tsx:104
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:136
 #: app/features/notes/components/notes-card.tsx:126
 #: app/routes/admin/service-catalog/detail/consumers.tsx:146
 msgid "Unknown"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:114
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:104
 msgid "Unusual"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:238
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:230
 msgid "unusual invoice totals"
 msgstr ""
 
@@ -5933,7 +5894,7 @@ msgstr ""
 msgid "Unverified"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:122
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:113
 msgid "Up to {maxTotal}, over {factor}× the median of this account's other recent invoices ({baseline}). Check usage for a metering or pricing error."
 msgstr ""
 
@@ -5959,7 +5920,7 @@ msgstr ""
 msgid "Updating email addresses for GitHub identities"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:201
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:193
 #: app/features/organization/components/org-usage-card.tsx:68
 #: app/features/project/components/project-usage-card.tsx:89
 #: app/features/quota/components/quota-bucket-list.tsx:110
@@ -5974,35 +5935,35 @@ msgstr ""
 msgid "Usage data not available"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:87
-msgid "Usage isn't available for this account."
+#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:84
+msgid "Usage isn't available for this account"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:215
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:203
 msgid "Usage isn't available."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:227
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:219
 msgid "Usage on this account isn't priced by an offer."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:202
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:194
 msgid "Usage spend spiking"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:248
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:240
 msgid "usage spike"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:272
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:264
 msgid "Usage steady"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:66
+#: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:63
 msgid "Usage this billing cycle"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:206
+#: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:194
 msgid "Usage this cycle"
 msgstr ""
 
@@ -6101,7 +6062,7 @@ msgstr ""
 msgid "View in Sentry"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:103
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:93
 msgid "View invoices"
 msgstr ""
 
@@ -6109,7 +6070,7 @@ msgstr ""
 msgid "View on MaxMind"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-header.tsx:124
+#: app/features/billing/components/billing-account-dashboard/billing-account-header.tsx:123
 msgid "View organization"
 msgstr ""
 
@@ -6132,7 +6093,7 @@ msgstr ""
 msgid "Visibility"
 msgstr ""
 
-#: app/features/billing/utils.ts:57
+#: app/features/billing/utils.ts:70
 msgid "Void"
 msgstr ""
 
@@ -6186,16 +6147,16 @@ msgstr ""
 msgid "Why it was declined. Never shown to the customer."
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:539
+#: app/features/billing/components/payment-terms.tsx:539
 msgid "Why these terms were granted. Never shown to the customer."
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:230
-#: app/features/billing/components/payment-terms-card.tsx:330
+#: app/features/billing/components/payment-terms.tsx:230
+#: app/features/billing/components/payment-terms.tsx:330
 msgid "Withdraw"
 msgstr ""
 
-#: app/features/billing/components/payment-terms-card.tsx:224
+#: app/features/billing/components/payment-terms.tsx:224
 msgid "Withdraw payment terms"
 msgstr ""
 
@@ -6204,7 +6165,7 @@ msgstr ""
 msgid "Withdrawn"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:270
+#: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:262
 msgid "Within credit limit"
 msgstr ""
 

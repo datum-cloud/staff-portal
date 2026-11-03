@@ -1,5 +1,5 @@
 import { getBillingMode } from '../../lib/payment-terms';
-import { getBillingAccountDisplayName } from '../../utils';
+import { getBillingAccountDisplayName, type BillingAccount } from '../../utils';
 import { AccountStatusBadge } from './account-status-badge';
 import { InlineDate } from './card-parts';
 import { ButtonCopy } from '@/components/button';
@@ -17,7 +17,6 @@ import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
 import { CalendarDays, ChevronDown, Coins, CreditCard, FileText, Hash } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
@@ -32,7 +31,7 @@ export interface BillingAccountHeaderAction {
 interface BillingAccountHeaderProps {
   orgName: string;
   orgDisplayName: string;
-  account: ComMiloapisBillingV1Alpha1BillingAccount;
+  account: BillingAccount;
   cloudPortalUrl?: string | null;
   /** Items for the Actions menu; the menu is hidden when there are none. */
   actions?: BillingAccountHeaderAction[];
@@ -47,7 +46,7 @@ function MetaItem({ icon, children }: { icon: typeof Hash; children: ReactNode }
   );
 }
 
-function BilledBy({ account }: { account: ComMiloapisBillingV1Alpha1BillingAccount }) {
+function BilledBy({ account }: { account: BillingAccount }) {
   const mode = getBillingMode(account);
   if (mode === 'invoice') {
     return (

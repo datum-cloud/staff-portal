@@ -3,7 +3,7 @@ import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import { Trans } from '@lingui/react/macro';
+import { Plural, Trans } from '@lingui/react/macro';
 import { ChevronDown, CircleCheck, CircleHelp, TriangleAlert } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 
@@ -73,11 +73,7 @@ export function AttentionBannerShell({
           <>
             <Icon icon={TriangleAlert} size={16} className="shrink-0 text-amber-500" aria-hidden />
             <Text size="sm" weight="medium" className="shrink-0">
-              {total === 1 ? (
-                <Trans>1 thing needs attention</Trans>
-              ) : (
-                <Trans>{total} things need attention</Trans>
-              )}
+              <Plural value={total} one="# thing needs attention" other="# things need attention" />
             </Text>
             {issueSummary ? (
               <Text size="sm" textColor="muted" className="hidden min-w-0 truncate @3xl/main:block">

@@ -1,8 +1,8 @@
+import { useAccountInvoices, useAccountUsageSpend } from '../../hooks';
 import { isUsageSpike, type UsageSpendComparison } from '../../lib/account-health';
 import { getNextInvoice, summarizeInvoices, type InvoiceSummary } from '../../lib/invoice-summary';
-import { formatMoney, getAccountCurrency } from '../../utils';
+import { formatMoney, getAccountCurrency, type BillingAccount } from '../../utils';
 import { frequencyLabel, InlineDate } from './card-parts';
-import { useAccountInvoices, useAccountUsageSpend } from './use-account-dashboard';
 import {
   StatTile,
   StatTileDetail,
@@ -15,11 +15,8 @@ import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { t } from '@lingui/core/macro';
 import { Plural, Trans } from '@lingui/react/macro';
-import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
 import { ArrowDown, ArrowUp, CircleAlert } from 'lucide-react';
 import { useMemo, type ReactNode } from 'react';
-
-type BillingAccount = ComMiloapisBillingV1Alpha1BillingAccount;
 
 interface HealthCardsProps {
   orgName: string;
@@ -43,10 +40,7 @@ function InvoiceTile({
   title: ReactNode;
   render: (summary: InvoiceSummary, more: string) => ReactNode;
 }) {
-  const { invoices, hasMore, isLoading, isError } = useAccountInvoices(
-    orgName,
-    account.metadata?.name ?? ''
-  );
+  const { invoices, hasMore, isLoading, isError } = useAccountInvoices(orgName, account);
   const summary = useMemo(
     () => (invoices ? summarizeInvoices(invoices, now) : undefined),
     [invoices, now]
@@ -81,10 +75,8 @@ function OutstandingTile(props: HealthCardsProps) {
           <StatTileDetail>
             {s.unpaidCount === 0 ? (
               <Trans>Nothing owed</Trans>
-            ) : s.unpaidCount === 1 ? (
-              <Trans>1 unpaid invoice</Trans>
             ) : (
-              <Trans>{s.unpaidCount} unpaid invoices</Trans>
+              <Plural value={s.unpaidCount} one="# unpaid invoice" other="# unpaid invoices" />
             )}
           </StatTileDetail>
         </>
@@ -149,11 +141,7 @@ function LifetimePaidTile(props: HealthCardsProps) {
         <>
           <StatTileHeadline>{`${formatMoney(s.lifetimePaid, currency)}${more}`}</StatTileHeadline>
           <StatTileDetail>
-            {s.paidCount === 1 ? (
-              <Trans>1 paid invoice</Trans>
-            ) : (
-              <Trans>{s.paidCount} paid invoices</Trans>
-            )}
+            <Plural value={s.paidCount} one="# paid invoice" other="# paid invoices" />
           </StatTileDetail>
         </>
       )}

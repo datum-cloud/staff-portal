@@ -1,3 +1,4 @@
+import { useAccountInvoices } from '../../hooks';
 import {
   INVOICE_AGING_BUCKETS,
   getDaysOverdue,
@@ -13,19 +14,21 @@ import {
   invoiceMatchesSearch,
   PAST_INVOICE_STATUS_BADGE,
   toPastInvoiceRow,
+  type PastInvoiceRow,
   type Invoice,
+  type BillingAccount,
 } from '../../utils';
-import { BILLING_ACCOUNT_SECTION_IDS } from './billing-account-attention-banner';
 import {
-  CardMessage,
+  BILLING_ACCOUNT_SECTION_IDS,
+  CardQueryState,
   SectionAnchor,
   TableRowsSkeleton,
   frequencyLabel,
   InlineDate,
 } from './card-parts';
-import { useAccountInvoices } from './use-account-dashboard';
 import { BadgeState } from '@/components/badge';
 import { DisplayId } from '@/components/display';
+import { EmptyState } from '@/components/empty-state';
 import {
   EMBEDDED_TABLE_BODY_CLASS,
   EMBEDDED_TABLE_CELL_CLASS,
@@ -34,9 +37,11 @@ import {
   LIST_TABLE_HEADER_ROW_CLASS,
   LIST_TABLE_ROW_CLASS,
   ListColumnHeader,
+  TABLE_CARD_FOOTER_CLASS,
   TABLE_CARD_FRAME_CLASS,
   TableCard,
 } from '@/features/milo';
+import { resolveCycleTerms } from '@/modules/billing/billing-cycle';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { createColumnHelper, type ColumnDef } from '@/utils/table';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -47,12 +52,9 @@ import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
-import { Trans } from '@lingui/react/macro';
-import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
+import { Plural, Trans } from '@lingui/react/macro';
 import { ArrowRight, ChevronUp } from 'lucide-react';
 import { useMemo, useState, type ReactNode } from 'react';
-
-type BillingAccount = ComMiloapisBillingV1Alpha1BillingAccount;
 
 interface InvoicesCardProps {
   orgName: string;
@@ -77,7 +79,13 @@ const agingLabel = (bucket: InvoiceAgingBucket): string => {
   }
 };
 
-const columnHelper = createColumnHelper<Invoice>();
+/** An invoice with its display fields, worked out once per list rather than per cell. */
+interface InvoiceRow {
+  invoice: Invoice;
+  display: PastInvoiceRow;
+}
+
+const columnHelper = createColumnHelper<InvoiceRow>();
 
 /**
  * Billing periods and due dates are UTC midnights, so show them in UTC: in
@@ -95,7 +103,7 @@ const buildColumns = (now: Date) => [
     id: 'invoice',
     enableSorting: false,
     header: ({ column }) => <ListColumnHeader column={column} title={t`Invoice`} />,
-    cell: ({ row }) => <DisplayId value={row.original.metadata?.name ?? ''} />,
+    cell: ({ row }) => <DisplayId value={row.original.invoice.metadata?.name ?? ''} />,
   }),
   columnHelper.display({
     id: 'period',
@@ -103,8 +111,8 @@ const buildColumns = (now: Date) => [
     header: ({ column }) => <ListColumnHeader column={column} title={t`Period`} />,
     cell: ({ row }) => (
       <Text size="xs" className="whitespace-nowrap">
-        {billingDate(row.original.spec?.period?.start)} –{' '}
-        {billingDate(row.original.spec?.period?.end)}
+        {billingDate(row.original.invoice.spec?.period?.start)} –{' '}
+        {billingDate(row.original.invoice.spec?.period?.end)}
       </Text>
     ),
   }),
@@ -114,7 +122,7 @@ const buildColumns = (now: Date) => [
     header: ({ column }) => <ListColumnHeader column={column} title={t`Issued`} />,
     cell: ({ row }) => (
       <Text size="xs" className="whitespace-nowrap">
-        {shortDate(row.original.metadata?.creationTimestamp)}
+        {shortDate(row.original.invoice.metadata?.creationTimestamp)}
       </Text>
     ),
   }),
@@ -123,12 +131,13 @@ const buildColumns = (now: Date) => [
     enableSorting: false,
     header: ({ column }) => <ListColumnHeader column={column} title={t`Due`} />,
     cell: ({ row }) => {
-      const days = isPastDueInvoice(row.original) ? getDaysOverdue(row.original, now) : 0;
+      const { invoice } = row.original;
+      const days = isPastDueInvoice(invoice) ? getDaysOverdue(invoice, now) : 0;
       return (
         <Text
           size="xs"
           className={cn('whitespace-nowrap', days > 0 && 'text-destructive font-medium')}>
-          {billingDate(row.original.status?.dueDate)}
+          {billingDate(invoice.status?.dueDate)}
           {days > 0 ? <Trans> · {days}d late</Trans> : null}
         </Text>
       );
@@ -144,7 +153,7 @@ const buildColumns = (now: Date) => [
     ),
     cell: ({ row }) => (
       <Text size="xs" weight="medium" className="block text-right tabular-nums">
-        {toPastInvoiceRow(row.original).amount}
+        {row.original.display.amount}
       </Text>
     ),
   }),
@@ -153,7 +162,7 @@ const buildColumns = (now: Date) => [
     enableSorting: false,
     header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
     cell: ({ row }) => {
-      const { status, statusLabel } = toPastInvoiceRow(row.original);
+      const { status, statusLabel } = row.original.display;
       return <BadgeState state={PAST_INVOICE_STATUS_BADGE[status]} message={statusLabel} />;
     },
   }),
@@ -162,7 +171,7 @@ const buildColumns = (now: Date) => [
     enableSorting: false,
     header: () => <span className="sr-only">{t`Download`}</span>,
     cell: ({ row }) => {
-      const url = row.original.status?.documentUri;
+      const url = row.original.invoice.status?.documentUri;
       return (
         <Button
           type="secondary"
@@ -185,23 +194,29 @@ const buildColumns = (now: Date) => [
  * "All invoices" expands the table in place with search and paging.
  */
 export function BillingAccountInvoicesCard({ orgName, account, now }: InvoicesCardProps) {
-  const { invoices, hasMore, isLoading, isError } = useAccountInvoices(
-    orgName,
-    account.metadata?.name ?? ''
-  );
+  const { invoices, hasMore, isLoading, isError } = useAccountInvoices(orgName, account);
   const [expanded, setExpanded] = useState(false);
   const [search, setSearch] = useState('');
 
-  const sorted = useMemo(() => (invoices ? sortInvoicesPastDueFirst(invoices) : []), [invoices]);
+  const sorted = useMemo(
+    (): InvoiceRow[] =>
+      invoices
+        ? sortInvoicesPastDueFirst(invoices).map((invoice) => ({
+            invoice,
+            display: toPastInvoiceRow(invoice),
+          }))
+        : [],
+    [invoices]
+  );
   const summary = useMemo(
     () => (invoices ? summarizeInvoices(invoices, now) : undefined),
     [invoices, now]
   );
-  const columns = useMemo(() => buildColumns(now) as ColumnDef<Invoice, unknown>[], [now]);
+  const columns = useMemo(() => buildColumns(now) as ColumnDef<InvoiceRow, unknown>[], [now]);
   const filtered = useMemo(
     () =>
       expanded && search.trim()
-        ? sorted.filter((invoice) => invoiceMatchesSearch(toPastInvoiceRow(invoice), search))
+        ? sorted.filter(({ display }) => invoiceMatchesSearch(display, search))
         : sorted,
     [sorted, expanded, search]
   );
@@ -211,17 +226,23 @@ export function BillingAccountInvoicesCard({ orgName, account, now }: InvoicesCa
   const terms = account.spec?.paymentTerms;
   const netDays = getEffectiveNetDays(account);
   const count = sorted.length;
-  const countLabel = hasMore ? `${count}+` : String(count);
-  const frequency = frequencyLabel(terms?.invoiceFrequency);
-  const invoiceDay = terms?.invoiceDayOfMonth ?? 1;
+  // Some of the org's invoices weren't read, so the count is a floor.
+  const invoiceCount = hasMore ? (
+    <Trans>{count}+ invoices</Trans>
+  ) : (
+    <Plural value={count} one="# invoice" other="# invoices" />
+  );
+  const cycle = resolveCycleTerms(terms);
+  const frequency = frequencyLabel(cycle.frequency);
+  const invoiceDay = cycle.invoiceDay;
   const subtitle = invoices ? (
     netDays !== undefined ? (
       <Trans>
-        {countLabel} invoices · net {netDays} · {frequency} on day {invoiceDay}
+        {invoiceCount} · net {netDays} · {frequency} on day {invoiceDay}
       </Trans>
     ) : (
       <Trans>
-        {countLabel} invoices · {frequency} on day {invoiceDay}
+        {invoiceCount} · {frequency} on day {invoiceDay}
       </Trans>
     )
   ) : null;
@@ -247,65 +268,61 @@ export function BillingAccountInvoicesCard({ orgName, account, now }: InvoicesCa
             </Button>
           ) : undefined
         }>
-        {isLoading ? (
-          <>
-            <AgingSkeleton />
-            <div className={TABLE_CARD_FRAME_CLASS}>
-              <TableRowsSkeleton />
-            </div>
-          </>
-        ) : isError || !summary ? (
-          <CardMessage>
-            <Trans>Couldn&apos;t load invoices.</Trans>
-          </CardMessage>
-        ) : count === 0 ? (
-          <CardMessage>
-            <Trans>No invoices yet.</Trans>
-          </CardMessage>
-        ) : (
-          <>
+        <CardQueryState
+          isLoading={isLoading}
+          isError={isError || (!isLoading && !summary)}
+          isEmpty={count === 0}
+          skeleton={
+            <>
+              <AgingSkeleton />
+              <div className={TABLE_CARD_FRAME_CLASS}>
+                <TableRowsSkeleton />
+              </div>
+            </>
+          }
+          error={<Trans>Couldn&apos;t load invoices</Trans>}
+          empty={<Trans>No invoices yet</Trans>}>
+          {summary ? (
             <AgingSummary aging={summary.aging} currency={getAccountCurrency(account)} />
-            {expanded ? (
-              <Input
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder={t`Search invoices`}
-                aria-label={t`Search invoices`}
-                className="h-9 w-full sm:w-64"
-              />
-            ) : null}
-            <div className={TABLE_CARD_FRAME_CLASS}>
-              {rows.length === 0 ? (
-                <CardMessage className="px-4 py-6">
-                  <Trans>No invoices match your search.</Trans>
-                </CardMessage>
-              ) : (
-                <DataTable.Client
-                  // Remount when expanding so paging starts from the first page.
-                  key={expanded ? 'all' : 'preview'}
-                  data={rows}
-                  columns={columns}
-                  pageSize={expanded ? PAGE_SIZE : PREVIEW_ROWS}
-                  getRowId={(row) => row.metadata?.name ?? ''}>
-                  <DataTable.Content
-                    headerClassName={LIST_TABLE_HEADER_CLASS}
-                    headerRowClassName={LIST_TABLE_HEADER_ROW_CLASS}
-                    headerCellClassName={EMBEDDED_TABLE_HEADER_CELL_CLASS}
-                    bodyClassName={EMBEDDED_TABLE_BODY_CLASS}
-                    rowClassName={LIST_TABLE_ROW_CLASS}
-                    cellClassName={EMBEDDED_TABLE_CELL_CLASS}
-                    emptyMessage={t`No invoices`}
-                  />
-                  {expanded && rows.length > PAGE_SIZE ? (
-                    <div className="dark:border-border border-t border-[#efefed] px-2 py-1">
-                      <DataTable.Pagination pageSizes={[10, 25, 50]} />
-                    </div>
-                  ) : null}
-                </DataTable.Client>
-              )}
-            </div>
-          </>
-        )}
+          ) : null}
+          {expanded ? (
+            <Input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder={t`Search invoices`}
+              aria-label={t`Search invoices`}
+              className="h-9 w-full sm:w-64"
+            />
+          ) : null}
+          <div className={TABLE_CARD_FRAME_CLASS}>
+            {rows.length === 0 ? (
+              <EmptyState size="sm" title={<Trans>No invoices match your search</Trans>} />
+            ) : (
+              <DataTable.Client
+                // Remount when expanding so paging starts from the first page.
+                key={expanded ? 'all' : 'preview'}
+                data={rows}
+                columns={columns}
+                pageSize={expanded ? PAGE_SIZE : PREVIEW_ROWS}
+                getRowId={(row) => row.invoice.metadata?.name ?? ''}>
+                <DataTable.Content
+                  headerClassName={LIST_TABLE_HEADER_CLASS}
+                  headerRowClassName={LIST_TABLE_HEADER_ROW_CLASS}
+                  headerCellClassName={EMBEDDED_TABLE_HEADER_CELL_CLASS}
+                  bodyClassName={EMBEDDED_TABLE_BODY_CLASS}
+                  rowClassName={LIST_TABLE_ROW_CLASS}
+                  cellClassName={EMBEDDED_TABLE_CELL_CLASS}
+                  emptyMessage={t`No invoices`}
+                />
+                {expanded && rows.length > PAGE_SIZE ? (
+                  <div className={cn(TABLE_CARD_FOOTER_CLASS, 'px-2 py-1')}>
+                    <DataTable.Pagination pageSizes={[10, 25, 50]} />
+                  </div>
+                ) : null}
+              </DataTable.Client>
+            )}
+          </div>
+        </CardQueryState>
       </TableCard>
     </SectionAnchor>
   );

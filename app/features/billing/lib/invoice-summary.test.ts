@@ -1,10 +1,9 @@
-import type { Invoice } from '../utils';
+import { parseAmount, type Invoice } from '../utils';
 import {
   getAgingBucket,
   getAmountOwed,
   getDaysOverdue,
   getNextInvoice,
-  parseAmount,
   sortInvoicesPastDueFirst,
   summarizeInvoices,
 } from './invoice-summary';

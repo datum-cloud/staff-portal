@@ -1,19 +1,19 @@
+import { useAccountUsageSpend } from '../../hooks';
 import {
-  getCycleProgress,
   getMeterOptionGroups,
   getServiceSpend,
   getTopMeter,
   type ServiceSpend,
 } from '../../lib/account-usage';
-import { getAccountCurrency } from '../../utils';
-import { CardLink, CardMessage, ShareBar, InlineDate } from './card-parts';
-import { useAccountUsageSpend } from './use-account-dashboard';
+import { getAccountCurrency, type BillingAccount } from '../../utils';
+import { CardLink, CardMessage, CardQueryState, ShareBar, InlineDate } from './card-parts';
 import { SectionCard } from '@/features/milo';
 import { toUsageView } from '@/features/organization/usage';
 import { MeterAreaChart } from '@/features/organization/usage/components/meter-area-chart';
 import { SpendValue } from '@/features/organization/usage/components/spend-value';
 import { formatByUnit, formatCurrency } from '@/features/organization/usage/usage.format';
 import type { UsageView } from '@/features/organization/usage/usage.view';
+import { getCycleProgress } from '@/modules/billing/billing-cycle';
 import { orgRoutes } from '@/utils/config/routes.config';
 import {
   Select,
@@ -29,11 +29,8 @@ import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
-import { Trans } from '@lingui/react/macro';
-import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
+import { Plural, Trans } from '@lingui/react/macro';
 import { useMemo, useState } from 'react';
-
-type BillingAccount = ComMiloapisBillingV1Alpha1BillingAccount;
 
 interface UsageCardProps {
   orgName: string;
@@ -76,30 +73,30 @@ export function BillingAccountUsageCard({ orgName, account, now }: UsageCardProp
           <Trans>Open usage dashboard</Trans>
         </CardLink>
       }>
-      {isLoading ? (
-        <UsageSkeleton />
-      ) : isError || !current ? (
-        <CardMessage>
-          <Trans>Couldn&apos;t load usage.</Trans>
-        </CardMessage>
-      ) : current.usage.status !== 'ok' ? (
-        <CardMessage>
-          {current.usage.message ?? <Trans>Usage isn&apos;t available for this account.</Trans>}
-        </CardMessage>
-      ) : !view ? (
-        <CardMessage>
-          <Trans>No usage recorded this cycle.</Trans>
-        </CardMessage>
-      ) : (
-        <UsageBody
-          orgName={orgName}
-          view={view}
-          fallbackCurrency={getAccountCurrency(account)}
-          // The whole cycle, so day 3 of 30 doesn't stretch across the chart.
-          cycleDomain={[progress.start.getTime(), lastDay.getTime()]}
-          now={now}
-        />
-      )}
+      <CardQueryState
+        isLoading={isLoading}
+        isError={isError || (!isLoading && !current)}
+        isEmpty={!view}
+        skeleton={<UsageSkeleton />}
+        error={<Trans>Couldn&apos;t load usage</Trans>}
+        empty={
+          current && current.usage.status !== 'ok' ? (
+            (current.usage.message ?? <Trans>Usage isn&apos;t available for this account</Trans>)
+          ) : (
+            <Trans>No usage recorded this cycle</Trans>
+          )
+        }>
+        {view ? (
+          <UsageBody
+            orgName={orgName}
+            view={view}
+            fallbackCurrency={getAccountCurrency(account)}
+            // The whole cycle, so day 3 of 30 doesn't stretch across the chart.
+            cycleDomain={[progress.start.getTime(), lastDay.getTime()]}
+            now={now}
+          />
+        ) : null}
+      </CardQueryState>
     </SectionCard>
   );
 }
@@ -284,11 +281,11 @@ function ServiceSpendList({
       {more > 0 ? (
         <div className="px-0.5">
           <CardLink href={orgRoutes.usage(orgName)}>
-            {more === 1 ? (
-              <Trans>1 more service in the usage dashboard</Trans>
-            ) : (
-              <Trans>{more} more services in the usage dashboard</Trans>
-            )}
+            <Plural
+              value={more}
+              one="# more service in the usage dashboard"
+              other="# more services in the usage dashboard"
+            />
           </CardLink>
         </div>
       ) : null}

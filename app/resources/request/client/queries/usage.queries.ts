@@ -38,6 +38,20 @@ export function useOrgUsageSummaryQuery(
   });
 }
 
+/** Key, fetch and freshness for one usage dashboard query; shared by both hooks below. */
+export const usageDashboardQueryOptions = (
+  orgName: string,
+  project: string = 'all',
+  cycle: 'current' | 'previous' = 'current',
+  scope: UsageDashboardScope = {}
+) => ({
+  queryKey: usageQueryKeys.dashboard(orgName, project, cycle, scope),
+  queryFn: ({ signal }: { signal: AbortSignal }) =>
+    fetchOrgUsageDashboard(orgName, project, cycle, scope, signal),
+  enabled: !!orgName && !!project,
+  staleTime: 60 * 1000,
+});
+
 export function useOrgUsageDashboardQuery(
   orgName: string,
   project: string = 'all',
@@ -47,14 +61,8 @@ export function useOrgUsageDashboardQuery(
     scope?: UsageDashboardScope;
   }
 ) {
-  const { scope = {}, ...queryOptions } = options ?? {};
-  return useQuery({
-    queryKey: usageQueryKeys.dashboard(orgName, project, cycle, scope),
-    queryFn: ({ signal }) => fetchOrgUsageDashboard(orgName, project, cycle, scope, signal),
-    enabled: !!orgName,
-    staleTime: 60 * 1000,
-    ...queryOptions,
-  });
+  const { scope, ...overrides } = options ?? {};
+  return useQuery({ ...usageDashboardQueryOptions(orgName, project, cycle, scope), ...overrides });
 }
 
 /**
@@ -66,15 +74,11 @@ export function useOrgUsageDashboardQueries(
   orgName: string,
   projects: readonly string[],
   cycle: 'current' | 'previous' = 'current',
-  scope: UsageDashboardScope = {}
+  options: { scope?: UsageDashboardScope } = {}
 ) {
   return useQueries({
     queries: projects.map((project) => ({
-      queryKey: usageQueryKeys.dashboard(orgName, project, cycle, scope),
-      queryFn: ({ signal }: { signal: AbortSignal }) =>
-        fetchOrgUsageDashboard(orgName, project, cycle, scope, signal),
-      enabled: !!orgName && !!project,
-      staleTime: 60 * 1000,
+      ...usageDashboardQueryOptions(orgName, project, cycle, options.scope),
       // Once, and never on a 4xx.
       retry: (failureCount: number, error: unknown) =>
         failureCount < 1 && shouldRetryQuery(failureCount, error),

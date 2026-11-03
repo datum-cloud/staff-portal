@@ -3,9 +3,19 @@ import {
   getOfferPricingCount,
   getOfferServices,
 } from '../../lib/offer-summary';
-import { formatLaunchStage, getOfferDisplayName, indexServicesByRef } from '../../utils';
-import { BILLING_ACCOUNT_SECTION_IDS } from './billing-account-attention-banner';
-import { CardMessage, SectionAnchor, InlineDate } from './card-parts';
+import {
+  formatLaunchStage,
+  getOfferDisplayName,
+  indexServicesByRef,
+  type BillingAccount,
+  type BillingEntitlement,
+} from '../../utils';
+import {
+  BILLING_ACCOUNT_SECTION_IDS,
+  CardQueryState,
+  SectionAnchor,
+  InlineDate,
+} from './card-parts';
 import { BadgeState } from '@/components/badge';
 import { DialogForm } from '@/components/dialog';
 import { SectionCard } from '@/features/milo';
@@ -24,8 +34,7 @@ import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
-import { Trans } from '@lingui/react/macro';
-import type { ComMiloapisBillingV1Alpha1BillingEntitlement } from '@openapi/billing.miloapis.com/v1alpha1';
+import { Plural, Trans } from '@lingui/react/macro';
 import { ArrowRight } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router';
@@ -33,7 +42,7 @@ import { z } from 'zod';
 
 interface OfferCardProps {
   orgName: string;
-  accountName: string;
+  account: BillingAccount;
   /** The switch dialog, held by the page so its header can open it too. */
   switchOpen: boolean;
   onSwitchOpenChange: (open: boolean) => void;
@@ -45,10 +54,11 @@ interface OfferCardProps {
  */
 export function BillingAccountOfferCard({
   orgName,
-  accountName,
+  account,
   switchOpen,
   onSwitchOpenChange,
 }: OfferCardProps) {
+  const accountName = account.metadata?.name ?? '';
   const entitlementQuery = useBillingEntitlementForAccountQuery(orgName, accountName);
   const entitlement = entitlementQuery.data ?? null;
 
@@ -69,25 +79,25 @@ export function BillingAccountOfferCard({
             </Button>
           ) : undefined
         }>
-        {entitlementQuery.isLoading ? (
-          <div className="flex flex-col gap-1.5" aria-busy="true">
-            <Skeleton className="h-5 w-40 rounded" />
-            <Skeleton className="h-3 w-28 rounded" />
-          </div>
-        ) : entitlementQuery.isError ? (
-          <CardMessage className="py-0">
-            <Trans>Couldn&apos;t load the account&apos;s offer.</Trans>
-          </CardMessage>
-        ) : !entitlement ? (
-          <CardMessage className="py-0">
+        <CardQueryState
+          isLoading={entitlementQuery.isLoading}
+          isError={entitlementQuery.isError}
+          isEmpty={!entitlement}
+          skeleton={
+            <div className="flex flex-col gap-1.5" aria-busy="true">
+              <Skeleton className="h-5 w-40 rounded" />
+              <Skeleton className="h-3 w-28 rounded" />
+            </div>
+          }
+          error={<Trans>Couldn&apos;t load the account&apos;s offer</Trans>}
+          empty={
             <Trans>
               No BillingEntitlement found for this account. New accounts pick up the default Offer
               automatically when catalog defaults are configured.
             </Trans>
-          </CardMessage>
-        ) : (
-          <ActiveOffer entitlement={entitlement} />
-        )}
+          }>
+          {entitlement ? <ActiveOffer entitlement={entitlement} /> : null}
+        </CardQueryState>
       </SectionCard>
       {entitlement ? (
         <SwitchOfferDialog
@@ -105,11 +115,7 @@ export function BillingAccountOfferCard({
 /** Most service chips before the rest collapse into "+N more". */
 const MAX_SERVICES = 6;
 
-function ActiveOffer({
-  entitlement,
-}: {
-  entitlement: ComMiloapisBillingV1Alpha1BillingEntitlement;
-}) {
+function ActiveOffer({ entitlement }: { entitlement: BillingEntitlement }) {
   const offerName = entitlement.spec?.offerRef?.name ?? '';
   const offerQuery = useOfferDetailQuery(offerName);
   const servicesQuery = useServiceListQuery();
@@ -161,7 +167,7 @@ function ActiveOffer({
       ) : offer ? (
         <div className="flex flex-col gap-2 border-t pt-3">
           <Text size="xs" textColor="muted">
-            {pricingCount === 1 ? <Trans>1 price</Trans> : <Trans>{pricingCount} prices</Trans>}
+            <Plural value={pricingCount} one="# price" other="# prices" />
             {discount ? (
               <>
                 {' · '}
@@ -212,7 +218,7 @@ function SwitchOfferDialog({
 }: {
   orgName: string;
   accountName: string;
-  entitlement: ComMiloapisBillingV1Alpha1BillingEntitlement;
+  entitlement: BillingEntitlement;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {

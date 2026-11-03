@@ -3,6 +3,7 @@ import { t } from '@lingui/core/macro';
 import type {
   ComMiloapisBillingV1Alpha1BillingAccount,
   ComMiloapisBillingV1Alpha1BillingAccountBinding,
+  ComMiloapisBillingV1Alpha1BillingEntitlement,
   ComMiloapisBillingV1Alpha1Invoice,
   ComMiloapisBillingV1Alpha1Offer,
   ComMiloapisBillingV1Alpha1PaymentMethod,
@@ -10,27 +11,39 @@ import type {
 } from '@openapi/billing.miloapis.com/v1alpha1';
 import type { ComMiloapisServicesV1Alpha1Service } from '@openapi/services.miloapis.com/v1alpha1';
 
+export type BillingAccount = ComMiloapisBillingV1Alpha1BillingAccount;
+export type BillingEntitlement = ComMiloapisBillingV1Alpha1BillingEntitlement;
 export type Invoice = ComMiloapisBillingV1Alpha1Invoice;
+export type PaymentMethod = ComMiloapisBillingV1Alpha1PaymentMethod;
 export type InvoicePhase = NonNullable<NonNullable<Invoice['status']>['phase']>;
 
 /** UI status values mapped from Invoice.status.phase for the past-invoices table. */
 export type PastInvoiceStatus = 'paid' | 'open' | 'pastDue' | 'void';
 
-/** Row shape rendered by the past-invoices table. */
+/** An invoice's display fields: what the invoices table shows and searches. */
 export type PastInvoiceRow = {
-  id: string;
   date: string;
-  /** ISO period end — used for sorting. */
-  dateSortKey: string;
   amount: string;
-  /** Numeric amount for sorting. */
-  amountSortKey: number;
   invoiceNumber: string;
   status: PastInvoiceStatus;
   statusLabel: string;
-  phase: InvoicePhase | 'Open';
-  downloadUrl?: string;
+  phase: InvoicePhase;
 };
+
+/** A decimal string from the API as a number; `undefined` when it isn't one. */
+export const parseDecimal = (value: string | undefined): number | undefined => {
+  const amount = Number.parseFloat(value ?? '');
+  return Number.isFinite(amount) ? amount : undefined;
+};
+
+/** A decimal string from the API as a number, `0` when missing or unreadable. */
+export const parseAmount = (value: string | undefined): number => parseDecimal(value) ?? 0;
+
+/**
+ * The invoice's phase. One with none yet is still being projected by the
+ * provider and counts as Open.
+ */
+export const getInvoicePhase = (invoice: Invoice): InvoicePhase => invoice.status?.phase ?? 'Open';
 
 const phaseToStatus: Record<InvoicePhase, PastInvoiceStatus> = {
   Paid: 'paid',
@@ -78,14 +91,9 @@ export const formatMoney = (
   }
 };
 
-const formatInvoiceAmount = (
-  total: string | undefined,
-  currencyCode: string | undefined
-): { display: string; sortKey: number } => {
-  const amount = Number.parseFloat(total ?? '');
-  return Number.isNaN(amount)
-    ? { display: total ?? '—', sortKey: 0 }
-    : { display: formatMoney(amount, currencyCode), sortKey: amount };
+const formatInvoiceAmount = (total: string | undefined, currencyCode: string | undefined) => {
+  const amount = parseDecimal(total);
+  return amount === undefined ? (total ?? '—') : formatMoney(amount, currencyCode);
 };
 
 const formatInvoiceDate = (iso: string | undefined): string => {
@@ -100,29 +108,19 @@ const formatInvoiceDate = (iso: string | undefined): string => {
 };
 
 /**
- * Project an Invoice CRD onto the row shape the past-invoices table renders.
- * Missing phase (provider still projecting) collapses to `open`.
+ * Project an Invoice CRD onto the fields the invoices table shows and
+ * searches. A missing phase counts as Open (see `getInvoicePhase`).
  */
 export const toPastInvoiceRow = (invoice: Invoice): PastInvoiceRow => {
-  const name = invoice.metadata?.name ?? '';
-  const phase = invoice.status?.phase;
-  const status = phase ? phaseToStatus[phase] : 'open';
-  const periodEnd = invoice.spec?.period?.end ?? '';
-  const { display: amount, sortKey: amountSortKey } = formatInvoiceAmount(
-    invoice.status?.total,
-    invoice.status?.currencyCode
-  );
+  const phase = getInvoicePhase(invoice);
+  const status = phaseToStatus[phase];
   return {
-    id: name,
-    invoiceNumber: name,
-    date: formatInvoiceDate(periodEnd),
-    dateSortKey: periodEnd,
-    amount,
-    amountSortKey,
+    invoiceNumber: invoice.metadata?.name ?? '',
+    date: formatInvoiceDate(invoice.spec?.period?.end),
+    amount: formatInvoiceAmount(invoice.status?.total, invoice.status?.currencyCode),
     status,
     statusLabel: statusLabel(status),
-    phase: phase ?? 'Open',
-    downloadUrl: invoice.status?.documentUri,
+    phase,
   };
 };
 
@@ -505,7 +503,7 @@ export const isDefaultPaymentMethod = (
 ): boolean => account?.spec?.defaultPaymentMethodRef?.name === method.metadata?.name;
 
 export const getPaymentMethodsForAccount = (
-  methods: ComMiloapisBillingV1Alpha1PaymentMethod[],
+  methods: readonly ComMiloapisBillingV1Alpha1PaymentMethod[],
   accountName: string,
   namespace?: string
 ): ComMiloapisBillingV1Alpha1PaymentMethod[] =>
@@ -535,7 +533,7 @@ export const formatPaymentMethodFailureTooltip = (
  */
 export const getCriticalFailedPaymentMethod = (
   account: ComMiloapisBillingV1Alpha1BillingAccount,
-  paymentMethods: ComMiloapisBillingV1Alpha1PaymentMethod[]
+  paymentMethods: readonly ComMiloapisBillingV1Alpha1PaymentMethod[]
 ): ComMiloapisBillingV1Alpha1PaymentMethod | undefined => {
   const accountName = account.metadata?.name;
   if (!accountName) return undefined;
@@ -557,7 +555,7 @@ export const getCriticalFailedPaymentMethod = (
 
 export const billingAccountHasCriticalPaymentFailure = (
   account: ComMiloapisBillingV1Alpha1BillingAccount,
-  paymentMethods: ComMiloapisBillingV1Alpha1PaymentMethod[]
+  paymentMethods: readonly ComMiloapisBillingV1Alpha1PaymentMethod[]
 ): boolean => Boolean(getCriticalFailedPaymentMethod(account, paymentMethods));
 
 export type BillingAccountDisplayStatus = {
@@ -568,7 +566,7 @@ export type BillingAccountDisplayStatus = {
 /** Prefer Failed when payment failure is critical; otherwise the account phase. */
 export const getBillingAccountDisplayStatus = (
   account: ComMiloapisBillingV1Alpha1BillingAccount,
-  paymentMethods: ComMiloapisBillingV1Alpha1PaymentMethod[]
+  paymentMethods: readonly ComMiloapisBillingV1Alpha1PaymentMethod[]
 ): BillingAccountDisplayStatus => {
   const failedMethod = getCriticalFailedPaymentMethod(account, paymentMethods);
   if (failedMethod) {
@@ -581,7 +579,7 @@ export const getBillingAccountDisplayStatus = (
 };
 
 export const getActiveProjectBinding = (
-  bindings: ComMiloapisBillingV1Alpha1BillingAccountBinding[],
+  bindings: readonly ComMiloapisBillingV1Alpha1BillingAccountBinding[],
   projectName: string
 ): ComMiloapisBillingV1Alpha1BillingAccountBinding | undefined =>
   bindings.find(
@@ -591,7 +589,7 @@ export const getActiveProjectBinding = (
   );
 
 export const getActiveBindingsForAccount = (
-  bindings: ComMiloapisBillingV1Alpha1BillingAccountBinding[],
+  bindings: readonly ComMiloapisBillingV1Alpha1BillingAccountBinding[],
   accountName: string
 ): ComMiloapisBillingV1Alpha1BillingAccountBinding[] =>
   bindings.filter(

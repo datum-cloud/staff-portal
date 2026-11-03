@@ -21,7 +21,7 @@ import {
   getApplicationsForAccount,
   type BillingArrangementApplication,
 } from '../lib/payment-terms-applications';
-import { formatMoney, getAccountCurrency } from '../utils';
+import { formatMoney, getAccountCurrency, parseDecimal } from '../utils';
 import { ApplicationPhaseBadge } from './application-labels';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
@@ -151,8 +151,8 @@ export function usePaymentTerms(
   };
 
   const formatCreditLimit = (amount?: string) => {
-    const value = Number.parseFloat(amount ?? '');
-    return Number.isFinite(value) ? formatMoney(value, currency) : '—';
+    const value = parseDecimal(amount);
+    return value === undefined ? '—' : formatMoney(value, currency);
   };
 
   return {

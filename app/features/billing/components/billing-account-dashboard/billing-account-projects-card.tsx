@@ -1,10 +1,11 @@
-import { getAccountCurrency, getActiveBindingsForAccount } from '../../utils';
-import { CardMessage, ShareBar, TableRowsSkeleton, InlineDate } from './card-parts';
 import {
   MAX_PROJECT_SPEND_REQUESTS,
+  useAccountProjects,
   useAccountProjectSpend,
   type ProjectSpend,
-} from './use-account-dashboard';
+} from '../../hooks';
+import { getAccountCurrency, type BillingAccount } from '../../utils';
+import { CardMessage, CardQueryState, InlineDate, ShareBar, TableRowsSkeleton } from './card-parts';
 import { BadgeState } from '@/components/badge';
 import { DisplayName } from '@/components/display';
 import {
@@ -15,24 +16,19 @@ import {
   LIST_TABLE_HEADER_ROW_CLASS,
   LIST_TABLE_ROW_CLASS,
   ListColumnHeader,
+  TABLE_CARD_FOOTER_CLASS,
   TableCard,
 } from '@/features/milo';
 import { formatCurrency } from '@/features/organization/usage/usage.format';
-import {
-  useBillingAccountBindingListForOrgQuery,
-  useOrgProjectListQuery,
-} from '@/resources/request/client';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { createColumnHelper, type ColumnDef } from '@/utils/table';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
-import { Trans } from '@lingui/react/macro';
-import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
+import { Plural, Trans } from '@lingui/react/macro';
 import { useMemo } from 'react';
-
-type BillingAccount = ComMiloapisBillingV1Alpha1BillingAccount;
 
 interface ProjectsCardProps {
   orgName: string;
@@ -147,28 +143,11 @@ const columns = [
 
 /** Projects billed to the account, with each one's spend this cycle. */
 export function BillingAccountProjectsCard({ orgName, account }: ProjectsCardProps) {
-  const accountName = account.metadata?.name ?? '';
   const currency = getAccountCurrency(account);
-  const bindingsQuery = useBillingAccountBindingListForOrgQuery(orgName);
-  const projectsQuery = useOrgProjectListQuery(orgName);
-
-  const bindings = useMemo(
-    () => getActiveBindingsForAccount(bindingsQuery.data?.items ?? [], accountName),
-    [bindingsQuery.data?.items, accountName]
-  );
+  const { projects, isLoading, isError } = useAccountProjects(orgName, account);
   const projectNames = useMemo(
-    () => bindings.map((binding) => binding.spec?.projectRef?.name ?? '').filter(Boolean),
-    [bindings]
-  );
-  const displayNames = useMemo(
-    () =>
-      new Map(
-        (projectsQuery.data?.items ?? []).map((project) => [
-          project.name,
-          project.displayName || project.name,
-        ])
-      ),
-    [projectsQuery.data?.items]
+    () => (projects ?? []).map((project) => project.projectName).filter(Boolean),
+    [projects]
   );
   const spendByProject = useAccountProjectSpend(orgName, account, projectNames);
 
@@ -177,43 +156,36 @@ export function BillingAccountProjectsCard({ orgName, account }: ProjectsCardPro
     (sum, name) => sum + (spendByProject.get(name)?.amount ?? 0),
     0
   );
-  const rows: ProjectRow[] = bindings
-    .map((binding) => {
-      const projectName = binding.spec?.projectRef?.name ?? '';
-      return {
-        id: binding.metadata?.name ?? projectName,
-        projectName,
-        displayName: displayNames.get(projectName) ?? projectName,
-        linkedAt: binding.status?.billingResponsibility?.establishedAt,
-        phase: binding.status?.phase,
-        spend: spendByProject.get(projectName) ?? { isLoading: false, isError: false },
-        totalSpend,
-        currency,
-      };
-    })
+  const rows: ProjectRow[] = (projects ?? [])
+    .map(({ binding, projectName, displayName }) => ({
+      id: binding.metadata?.name ?? projectName,
+      projectName,
+      displayName,
+      linkedAt: binding.status?.billingResponsibility?.establishedAt,
+      phase: binding.status?.phase,
+      spend: spendByProject.get(projectName) ?? { isLoading: false, isError: false },
+      totalSpend,
+      currency,
+    }))
     .sort((a, b) => (b.spend.amount ?? -1) - (a.spend.amount ?? -1));
 
-  const subtitle = bindingsQuery.data ? (
-    bindings.length === 1 ? (
-      <Trans>1 active binding · spend this cycle by project</Trans>
-    ) : (
-      <Trans>{bindings.length} active bindings · spend this cycle by project</Trans>
-    )
+  const subtitle = projects ? (
+    <Plural
+      value={projects.length}
+      one="# active binding · spend this cycle by project"
+      other="# active bindings · spend this cycle by project"
+    />
   ) : null;
 
   return (
     <TableCard title={<Trans>Linked projects</Trans>} description={subtitle}>
-      {bindingsQuery.isLoading ? (
-        <TableRowsSkeleton />
-      ) : bindingsQuery.isError ? (
-        <CardMessage className="px-4 py-6">
-          <Trans>Couldn&apos;t load linked projects.</Trans>
-        </CardMessage>
-      ) : rows.length === 0 ? (
-        <CardMessage className="px-4 py-6">
-          <Trans>No linked projects.</Trans>
-        </CardMessage>
-      ) : (
+      <CardQueryState
+        isLoading={isLoading}
+        isError={isError}
+        isEmpty={rows.length === 0}
+        skeleton={<TableRowsSkeleton />}
+        error={<Trans>Couldn&apos;t load linked projects</Trans>}
+        empty={<Trans>No linked projects</Trans>}>
         <DataTable.Client
           data={rows}
           columns={columns}
@@ -229,7 +201,7 @@ export function BillingAccountProjectsCard({ orgName, account }: ProjectsCardPro
             emptyMessage={t`No linked projects`}
           />
           {skipped > 0 ? (
-            <CardMessage className="dark:border-border border-t border-[#efefed] px-4">
+            <CardMessage className={cn(TABLE_CARD_FOOTER_CLASS, 'px-4')}>
               <Trans>
                 Spend shows for the first {MAX_PROJECT_SPEND_REQUESTS} projects. See the usage
                 dashboard for the other {skipped}.
@@ -237,7 +209,7 @@ export function BillingAccountProjectsCard({ orgName, account }: ProjectsCardPro
             </CardMessage>
           ) : null}
         </DataTable.Client>
-      )}
+      </CardQueryState>
     </TableCard>
   );
 }

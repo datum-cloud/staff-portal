@@ -1,4 +1,4 @@
-import { PaymentTermsFormDialog } from '@/features/billing/components/payment-terms-card';
+import { PaymentTermsFormDialog } from '@/features/billing/components/payment-terms';
 import { emptyPaymentTermsForm } from '@/features/billing/lib/payment-terms';
 import { RHFAdapter } from '@datum-cloud/datum-ui/form/adapters/rhf';
 
