@@ -27,6 +27,8 @@
 
 - `npm install`, copy `.env.sample` to `.env` and fill in API, OIDC, session and optional Sentry/OTEL/AI settings.
 - `npm run dev` starts the dev server on port 3000 (health check at `/_healthz`).
+- Run everything on Node 26 (`nvm use` reads `.nvmrc`): since React Router 8, `node_modules` installed on Node 26 won't run vitest, lingui or the lefthook i18n step on Node 20.
+- In a container: `docker run -p 3000:3000 -v "$PWD":/app -v staff-portal-node-modules:/app/node_modules -w /app node:26.12.1-alpine3.24 sh -c "npm ci --ignore-scripts && node --env-file-if-exists=.env node_modules/vite/bin/vite.js --host 0.0.0.0"` runs the dev server with hot reload; Vite must bind `0.0.0.0`. A production image (`Dockerfile`) must run with `NODE_ENV=production`, or the server never listens. There is no `.dockerignore`, so build from a clean export (`git archive`), not the working tree.
 - `docker compose up` brings up the local observability stack (OTEL collector, Prometheus, Jaeger, Grafana on :3002).
 - Codegen: `npm run openapi:generate` (REST SDKs), `npm run graphql` (GraphQL schema), `npm run i18n:extract` / `i18n:compile` (Lingui catalogs).
 - Regenerating one REST SDK: run on Node 26 (the script is `.ts` and won't load on Node 20), e.g. `API_TOKEN="$(datumctl auth get-token)" API_URL=<server from ~/.datumctl/config> npm run openapi:generate -- --resources billing.miloapis.com/v1alpha1`. The output isn't Prettier-formatted, so run `npx prettier --write` on the regenerated folder before committing. A staging spec can include resources not yet in production.
@@ -46,4 +48,6 @@
 - Generated OpenAPI and GraphQL code must be regenerated, never edited by hand.
 - `graphql` is pinned to 17.0.2 via `overrides`; `react-is` and `form-data` are also overridden.
 - Upstream credentials are attached only on the server; browser code goes through `/api/internal/*`.
-- `app/modules/billing/billing-cycle.ts` steps months with date-fns `addMonths`, which keeps local wall-clock time: on a non-UTC host, `buildBillingCycleWindows`' previous window is an hour off across a daylight-saving change. New cycle maths should step months in UTC, as `getPreviousCycleCutoff` does.
+- Billing cycle maths (`app/modules/billing/billing-cycle.ts`) runs in the browser as well as the server, so it steps months and formats range labels in UTC. Never use date-fns `addMonths`/`format` for cycle boundaries: they work in local time and land a day early west of UTC. Tests run the same cases under New York and Auckland time. Cycle, period and due dates display with `timezone="UTC"`.
+- The activity API rejects query ranges over 720h, so feeds look back at most `now-30d`.
+- `app/features/billing/components/card-brand-icons/` are copies of cloud-portal's card brand marks (Apache-2.0, attributed in each file); keep the two in step. Neither datum-ui nor another installed package ships them.
