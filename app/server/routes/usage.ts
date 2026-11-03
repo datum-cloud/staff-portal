@@ -78,7 +78,7 @@ usage.get('/', authMiddleware(), async (c) => {
 });
 
 /**
- * GET /api/usage/dashboard?orgName=&project=&cycle=&billingAccount=&until=
+ * GET /api/usage/dashboard?orgName=&project=&cycle=&billingAccount=&samePoint=
  *
  * Full usage dashboard: billing-cycle windows, grouped meters, and
  * per-dimension series for the org usage page.
@@ -128,18 +128,7 @@ usage.get('/dashboard', authMiddleware(), async (c) => {
     );
   }
 
-  const until = c.req.query('until');
-  if (until && Number.isNaN(Date.parse(until))) {
-    return c.json(
-      {
-        requestId: reqId,
-        code: 'BAD_REQUEST',
-        error: 'until must be an ISO 8601 time',
-        path,
-      },
-      400
-    );
-  }
+  const samePoint = c.req.query('samePoint') === 'true';
 
   try {
     const token = getToken(c);
@@ -147,7 +136,7 @@ usage.get('/dashboard', authMiddleware(), async (c) => {
       projectParam: project,
       cycleParam: c.req.query('cycle'),
       billingAccountParam: billingAccount,
-      untilParam: until,
+      samePoint,
     });
 
     const duration = Math.round(performance.now() - startTime);

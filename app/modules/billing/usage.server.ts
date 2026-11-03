@@ -1,5 +1,6 @@
 import {
   buildBillingCycleWindows,
+  getPreviousCycleCutoff,
   selectBillingCycleWindow,
   type PaymentTermsInput,
 } from './billing-cycle';
@@ -71,10 +72,16 @@ type UsageScopeBillingAccount = {
   paymentTerms?: PaymentTermsInput;
 };
 
+/**
+ * Read one billing account's cycle. With `strict`, a failed read (403, 404,
+ * 5xx) throws instead of returning `null`: the caller asked for this account,
+ * and falling back to calendar months would mislabel its figures.
+ */
 async function readUsageScopeBillingAccount(
   orgName: string,
   token: string,
-  accountName: string
+  accountName: string,
+  strict = false
 ): Promise<UsageScopeBillingAccount | null> {
   try {
     const resp = await readBillingMiloapisComV1Alpha1NamespacedBillingAccount({
@@ -88,7 +95,8 @@ async function readUsageScopeBillingAccount(
       uid: account?.metadata?.uid,
       paymentTerms: account?.spec?.paymentTerms as PaymentTermsInput | undefined,
     };
-  } catch {
+  } catch (error) {
+    if (strict) throw error;
     return null;
   }
 }
@@ -108,7 +116,7 @@ export async function resolveBillingAccountForUsageScope(
   const namespace = orgNamespace(orgName);
 
   if (accountName) {
-    return readUsageScopeBillingAccount(orgName, token, accountName);
+    return readUsageScopeBillingAccount(orgName, token, accountName, true);
   }
 
   if (projectId !== 'all') {
@@ -367,17 +375,6 @@ export async function fetchOrgUsage(
   };
 }
 
-/** End of the query range: `until` (ISO time) clamped into the window, else the window's end. */
-function clampUntil(
-  untilParam: string | null | undefined,
-  window: { startSec: number; endSec: number }
-): number {
-  const untilMs = untilParam ? Date.parse(untilParam) : Number.NaN;
-  if (Number.isNaN(untilMs)) return window.endSec;
-  const untilSec = Math.floor(untilMs / 1000);
-  return Math.min(window.endSec, Math.max(window.startSec + 1, untilSec));
-}
-
 function resolveUsageProjectSelection(projectParam: string | null | undefined): string {
   if (!projectParam || projectParam === 'all') return 'all';
   return projectParam;
@@ -395,11 +392,11 @@ export async function loadOrgUsageDashboard(
     cycleParam?: string | null;
     /** Scope usage and its billing cycle to this billing account. */
     billingAccountParam?: string | null;
-    /** Cut the selected cycle's query off at this time (e.g. the previous cycle at the same day). */
-    untilParam?: string | null;
+    /** For the previous cycle, stop at the same point in it as now is in the current one. */
+    samePoint?: boolean;
   } = {}
 ): Promise<OrgUsageDashboardData> {
-  const { projectParam, cycleParam, billingAccountParam, untilParam } = options;
+  const { projectParam, cycleParam, billingAccountParam, samePoint = false } = options;
   const selectedProject = resolveUsageProjectSelection(projectParam);
 
   // The catalog doesn't depend on the billing account; fetch both at once.
@@ -407,23 +404,34 @@ export async function loadOrgUsageDashboard(
   // rejection that lands first from counting as unhandled.
   const meterDefinitions = listMeterDefinitions(token);
   meterDefinitions.catch(() => {});
+  // A named account must be read; otherwise fall back to calendar months.
   const scopedBillingAccount = await resolveBillingAccountForUsageScope(
     orgName,
     token,
     selectedProject,
     billingAccountParam ?? undefined
-  ).catch(() => null);
+  ).catch((error: unknown) => {
+    if (billingAccountParam) throw error;
+    return null;
+  });
 
-  const cycleWindows = buildBillingCycleWindows(scopedBillingAccount?.paymentTerms);
+  const now = new Date();
+  const terms = scopedBillingAccount?.paymentTerms;
+  const cycleWindows = buildBillingCycleWindows(terms, now);
   const selectedCycleWindow = selectBillingCycleWindow(cycleWindows, cycleParam);
   const selectedBillingCycle = selectedCycleWindow.value;
   const billingCycles = cycleWindows.map((window) => ({
     value: window.value,
     label: window.label,
   }));
+  // The same clock and terms as the current cycle's window, so the two match.
+  const cutoffSec =
+    samePoint && selectedCycleWindow.value === 'previous'
+      ? Math.floor(getPreviousCycleCutoff(terms, now).getTime() / 1000)
+      : selectedCycleWindow.endSec;
   const range = {
     startSec: selectedCycleWindow.startSec,
-    endSec: clampUntil(untilParam, selectedCycleWindow),
+    endSec: Math.max(selectedCycleWindow.startSec + 1, cutoffSec),
   };
 
   const usage = await fetchOrgUsage(orgName, token, {

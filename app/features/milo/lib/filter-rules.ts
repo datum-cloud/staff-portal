@@ -1,4 +1,5 @@
 import type { FilterOption } from '../components/page/rich-filter-panel';
+import { DAY_MS } from '@/utils/helpers/time.helper';
 
 /**
  * Rule model + matcher behind `RuleFilterButton` (`Where field op value` rows
@@ -107,8 +108,6 @@ export const VALUE_KIND: Record<
   before: 'date',
   after: 'date',
 };
-
-const DAY_MS = 86_400_000;
 
 let nextRuleId = 0;
 

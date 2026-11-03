@@ -1,4 +1,5 @@
 import { DateTime } from '@/components/date';
+import { EmptyState } from '@/components/empty-state';
 import type { InvoiceFrequency } from '@/modules/billing/billing-cycle';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Icon } from '@datum-cloud/datum-ui/icons';
@@ -6,12 +7,23 @@ import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, CircleAlert } from 'lucide-react';
 import type { ComponentProps, ReactNode } from 'react';
 
 /** Shared pieces for the dashboard's section and table cards. */
 
-export const frequencyLabel = (frequency: InvoiceFrequency | undefined): string => {
+/**
+ * Dashboard sections the banner's fix-it links scroll to. The cards that
+ * render these sections set the matching `id` with `SectionAnchor`.
+ */
+export const BILLING_ACCOUNT_SECTION_IDS = {
+  invoices: 'invoices',
+  paymentTerms: 'payment-terms',
+  contract: 'contract',
+  offer: 'offer',
+} as const;
+
+export const frequencyLabel = (frequency: InvoiceFrequency): string => {
   switch (frequency) {
     case 'Quarterly':
       return t`Quarterly`;
@@ -49,7 +61,36 @@ export function CardLink({ href, children }: { href: string; children: ReactNode
   );
 }
 
-/** Empty, error and unavailable states inside a card. */
+/**
+ * A card body's loading, error and empty states, then its content. Errors
+ * and empty states use `EmptyState`, like the rest of the portal.
+ */
+export function CardQueryState({
+  isLoading,
+  isError,
+  isEmpty = false,
+  skeleton,
+  error,
+  empty,
+  children,
+}: {
+  isLoading: boolean;
+  isError: boolean;
+  isEmpty?: boolean;
+  /** Shown while loading, in the shape of the content. */
+  skeleton: ReactNode;
+  /** What failed, e.g. "Couldn't load invoices". */
+  error: ReactNode;
+  empty?: ReactNode;
+  children: ReactNode;
+}) {
+  if (isLoading) return <>{skeleton}</>;
+  if (isError) return <EmptyState size="sm" icon={CircleAlert} title={error} />;
+  if (isEmpty) return <EmptyState size="sm" title={empty} />;
+  return <>{children}</>;
+}
+
+/** A short note inside a card, e.g. "No daily usage recorded for this meter". */
 export function CardMessage({ className, children }: { className?: string; children: ReactNode }) {
   return (
     <Text as="p" size="sm" textColor="muted" className={cn('py-2', className)}>

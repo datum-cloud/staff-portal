@@ -17,6 +17,9 @@ export const SECTION_CARD_CHROME =
 export const TABLE_CARD_FRAME_CLASS =
   'dark:border-border overflow-hidden rounded-sm border border-[#efefed]';
 
+/** A note under the table inside a `TableCard` frame, with the frame's border. */
+export const TABLE_CARD_FOOTER_CLASS = 'dark:border-border border-t border-[#efefed]';
+
 /**
  * Figma mist table header / dense cell classes — shared by ListTable and
  * TableCard-embedded DataTables so cards-with-tables match list chrome.

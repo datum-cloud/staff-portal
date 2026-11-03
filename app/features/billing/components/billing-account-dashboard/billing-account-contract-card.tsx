@@ -1,3 +1,4 @@
+import { useAccountInvoices } from '../../hooks';
 import {
   contractBillingDay,
   contractStartFromDate,
@@ -28,9 +29,7 @@ import {
   PAST_INVOICE_STATUS_BADGE,
   toPastInvoiceRow,
 } from '../../utils';
-import { BILLING_ACCOUNT_SECTION_IDS } from './billing-account-attention-banner';
-import { CardMessage, InlineDate, SectionAnchor } from './card-parts';
-import { useAccountInvoices } from './use-account-dashboard';
+import { BILLING_ACCOUNT_SECTION_IDS, CardMessage, InlineDate, SectionAnchor } from './card-parts';
 import { BadgeState } from '@/components/badge';
 import { DialogForm } from '@/components/dialog';
 import { SectionCard } from '@/features/milo';
@@ -165,7 +164,7 @@ export function BillingAccountContractCard({
       {previewOpen ? (
         <InvoicePreviewDialog
           orgName={orgName}
-          accountName={accountName}
+          account={account}
           firstInvoice={contract ? !contract.started : false}
           startedAt={contract?.started ? contract.startsAt : undefined}
           onClose={() => setPreviewOpen(false)}
@@ -719,19 +718,19 @@ function ContractSummary({ isSetup }: { isSetup: boolean }) {
  */
 function InvoicePreviewDialog({
   orgName,
-  accountName,
+  account,
   firstInvoice,
   startedAt,
   onClose,
 }: {
   orgName: string;
-  accountName: string;
+  account: ComMiloapisBillingV1Alpha1BillingAccount;
   firstInvoice: boolean;
   /** When the contract started, once it has: its first invoice is shown too. */
   startedAt?: Date;
   onClose: () => void;
 }) {
-  const preview = usePreviewNextInvoiceMutation(orgName, accountName);
+  const preview = usePreviewNextInvoiceMutation(orgName, account.metadata?.name ?? '');
   const { mutate } = preview;
   useEffect(() => {
     mutate();
@@ -761,11 +760,7 @@ function InvoicePreviewDialog({
             <PreviewResult request={preview.data} />
           ) : null}
           {startedAt ? (
-            <ContractFirstInvoice
-              orgName={orgName}
-              accountName={accountName}
-              startedAt={startedAt}
-            />
+            <ContractFirstInvoice orgName={orgName} account={account} startedAt={startedAt} />
           ) : null}
         </Dialog.Body>
         <Dialog.Footer>
@@ -785,16 +780,17 @@ function InvoicePreviewDialog({
  */
 function ContractFirstInvoice({
   orgName,
-  accountName,
+  account,
   startedAt,
 }: {
   orgName: string;
-  accountName: string;
+  account: ComMiloapisBillingV1Alpha1BillingAccount;
   startedAt: Date;
 }) {
-  const { invoices, isLoading } = useAccountInvoices(orgName, accountName);
+  const { invoices, isLoading } = useAccountInvoices(orgName, account);
   const first = invoices ? getContractFirstInvoice(invoices, startedAt) : undefined;
   const row = first ? toPastInvoiceRow(first) : null;
+  const documentUri = first?.status?.documentUri;
 
   return (
     <div className="mt-4 flex flex-col gap-1 border-t pt-3">
@@ -830,12 +826,12 @@ function ContractFirstInvoice({
             <Text size="sm" className="tabular-nums">
               {row.amount}
             </Text>
-            {row.downloadUrl ? (
+            {documentUri ? (
               <Button
                 type="quaternary"
                 theme="borderless"
                 size="small"
-                onClick={() => window.open(row.downloadUrl, '_blank', 'noopener,noreferrer')}>
+                onClick={() => window.open(documentUri, '_blank', 'noopener,noreferrer')}>
                 <Trans>Open</Trans>
               </Button>
             ) : null}

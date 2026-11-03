@@ -6,6 +6,7 @@ import {
   type AccountHealthInputs,
   type HealthIssue,
 } from './account-health';
+import { buildInvoice, buildPaidInvoice } from './test-fixtures';
 import type {
   ComMiloapisBillingV1Alpha1BillingAccount,
   ComMiloapisBillingV1Alpha1PaymentMethod,
@@ -55,17 +56,9 @@ const card = (
   },
 });
 
-const invoice = (name: string, status: NonNullable<Invoice['status']>): Invoice => ({
-  metadata: { name },
-  spec: {
-    billingAccountRef: { name: 'ba-test' },
-    period: { start: '2026-10-01T00:00:00Z', end: '2026-10-31T00:00:00Z' },
-  },
-  status,
-});
+const invoice = buildInvoice;
 
-const paid = (name: string, total: string) =>
-  invoice(name, { phase: 'Paid', total, amountPaid: total, amountDue: '0' });
+const paid = buildPaidInvoice;
 
 const healthy: AccountHealthInputs = {
   account: account(),
@@ -86,7 +79,55 @@ describe('getAccountHealth', () => {
     const health = getAccountHealth(healthy);
     expect(health.issues).toEqual([]);
     expect(health.pending).toEqual([]);
-    expect(health.passing).toHaveLength(9);
+    // An individual with no credit limit: the tax ID and credit-limit checks don't apply.
+    expect(health.passing).toHaveLength(7);
+    expect(health.passing).not.toContain('taxId');
+    expect(health.passing).not.toContain('creditLimit');
+  });
+
+  it('keeps card checks out of an invoice-billed account', () => {
+    const onInvoice = account(
+      {},
+      {
+        phase: 'Ready',
+        paymentArrangement: { name: 'terms', type: 'Invoice', invoice: { creditLimit: '500' } },
+        conditions: [
+          {
+            type: 'PaymentReady',
+            status: 'True',
+            reason: 'InvoiceTerms',
+            message: '',
+            lastTransitionTime: '2026-07-09T00:00:00Z',
+          },
+        ],
+      }
+    );
+    const health = getAccountHealth({
+      ...healthy,
+      account: onInvoice,
+      paymentMethods: [card({}, { expiryMonth: 10, expiryYear: 2026 })],
+    });
+    expect(health.issues).toEqual([]);
+    expect(health.passing).not.toContain('paymentMethod');
+    expect(health.passing).not.toContain('cardExpiry');
+    expect(health.passing).not.toContain('largeCardBalance');
+    expect(health.passing).toContain('creditLimit');
+  });
+
+  it('counts invoice checks that saw only some invoices as incomplete', () => {
+    const health = getAccountHealth({ ...healthy, invoicesComplete: false });
+    expect(health.incomplete).toEqual(['invoicePastDue', 'invoiceUnusual', 'largeCardBalance']);
+    expect(health.passing).not.toContain('invoicePastDue');
+  });
+
+  it('still reports issues found in a partial invoice list', () => {
+    const health = getAccountHealth({
+      ...healthy,
+      invoicesComplete: false,
+      invoices: [invoice('late', { phase: 'PastDue', amountDue: '5', dueDate: '2026-10-14' })],
+    });
+    expect(keysOf(health.issues)).toEqual(['invoicePastDue']);
+    expect(health.incomplete).not.toContain('invoicePastDue');
   });
 
   it('marks checks pending while their inputs load', () => {
@@ -102,7 +143,8 @@ describe('getAccountHealth', () => {
         'offer',
       ])
     );
-    expect(health.passing).toEqual(expect.arrayContaining(['taxId', 'creditLimit']));
+    expect(health.pending).not.toContain('taxId');
+    expect(health.pending).not.toContain('creditLimit');
   });
 
   it('sorts issues most severe first', () => {
@@ -145,6 +187,37 @@ describe('invoiceUnusual', () => {
     expect(issues).toEqual([
       expect.objectContaining({ key: 'invoiceUnusual', invoiceNames: ['huge'] }),
     ]);
+  });
+
+  it('reports the baseline the largest invoice was compared with', () => {
+    const [issue] = issuesFor({
+      invoices: [
+        paid('a', '1'),
+        paid('b', '1'),
+        paid('c', '1'),
+        paid('d', '150'),
+        paid('e', '200'),
+      ],
+    });
+    // 200 against the median of the other four (1, 1, 1, 150), not of all five.
+    expect(issue).toMatchObject({ key: 'invoiceUnusual', maxTotal: 200, baseline: 1 });
+  });
+
+  it('compares only the most recent invoices', () => {
+    const monthEnd = (month: number) => new Date(Date.UTC(2025, month, 28)).toISOString();
+    const dated = (name: string, total: string, month: number): Invoice => ({
+      ...paid(name, total),
+      spec: {
+        billingAccountRef: { name: 'ba-test' },
+        period: { start: monthEnd(month - 1), end: monthEnd(month) },
+      },
+    });
+    // Three $1 trial months, then twelve months of real usage.
+    const invoices = [
+      ...[0, 1, 2].map((month) => dated(`trial-${month}`, '1', month)),
+      ...Array.from({ length: 12 }, (_, i) => dated(`real-${i}`, '200', i + 3)),
+    ];
+    expect(issuesFor({ invoices })).toEqual([]);
   });
 
   it('leaves an invoice at 100× the median alone', () => {
@@ -241,6 +314,20 @@ describe('cardExpiry', () => {
       paymentMethods: [card({}, { expiryMonth: 10, expiryYear: 2026 })],
     });
     expect(issue).toMatchObject({ key: 'cardExpiry', severity: 'error', expired: true });
+  });
+
+  it("doesn't guess between several cards with no default", () => {
+    const second = {
+      ...card({}, { expiryMonth: 10, expiryYear: 2026 }),
+      metadata: { name: 'backup', namespace: 'organization-test' },
+    };
+    const health = getAccountHealth({
+      ...healthy,
+      account: account({ defaultPaymentMethodRef: undefined }),
+      paymentMethods: [card(), second],
+    });
+    expect(keysOf(health.issues)).toEqual([]);
+    expect(health.passing).not.toContain('cardExpiry');
   });
 });
 

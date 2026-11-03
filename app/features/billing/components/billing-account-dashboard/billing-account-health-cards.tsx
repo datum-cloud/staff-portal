@@ -1,8 +1,8 @@
+import { useAccountInvoices, useAccountUsageSpend } from '../../hooks';
 import { isUsageSpike, type UsageSpendComparison } from '../../lib/account-health';
 import { getNextInvoice, summarizeInvoices, type InvoiceSummary } from '../../lib/invoice-summary';
-import { formatMoney, getAccountCurrency } from '../../utils';
+import { formatMoney, getAccountCurrency, type BillingAccount } from '../../utils';
 import { frequencyLabel, InlineDate } from './card-parts';
-import { useAccountInvoices, useAccountUsageSpend } from './use-account-dashboard';
 import {
   StatTile,
   StatTileDetail,
@@ -15,11 +15,8 @@ import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { t } from '@lingui/core/macro';
 import { Plural, Trans } from '@lingui/react/macro';
-import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
 import { ArrowDown, ArrowUp, CircleAlert } from 'lucide-react';
 import { useMemo, type ReactNode } from 'react';
-
-type BillingAccount = ComMiloapisBillingV1Alpha1BillingAccount;
 
 interface HealthCardsProps {
   orgName: string;
@@ -28,92 +25,94 @@ interface HealthCardsProps {
 }
 
 /**
- * The account's invoice summary, rendered by `render` once loaded. Every
- * invoice tile calls this; React Query shares the one request between them.
+ * A tile from the account's invoice summary, rendered by `render` once
+ * loaded. Every invoice tile calls this; React Query shares the one request.
+ * When the org has more invoices than were read, totals are a floor: the
+ * figure gets a "+" and the tile says it's partial.
  */
-function InvoiceTileBody({
+function InvoiceTile({
   orgName,
   account,
   now,
+  title,
   render,
-}: HealthCardsProps & { render: (summary: InvoiceSummary, more: string) => ReactNode }) {
-  const { invoices, hasMore, isLoading, isError } = useAccountInvoices(
-    orgName,
-    account.metadata?.name ?? ''
-  );
+}: HealthCardsProps & {
+  title: ReactNode;
+  render: (summary: InvoiceSummary, more: string) => ReactNode;
+}) {
+  const { invoices, hasMore, isLoading, isError } = useAccountInvoices(orgName, account);
   const summary = useMemo(
     () => (invoices ? summarizeInvoices(invoices, now) : undefined),
     [invoices, now]
   );
 
-  if (isLoading) return <StatTileSkeleton />;
-  if (isError || !summary) {
-    return (
-      <StatTileMessage>
-        <Trans>Couldn&apos;t load invoices.</Trans>
-      </StatTileMessage>
-    );
-  }
-  // Some of the org's invoices weren't read, so totals are a floor.
-  return render(summary, hasMore ? '+' : '');
+  return (
+    <StatTile
+      title={title}
+      windowLabel={hasMore ? <Trans>Partial: not every invoice loaded</Trans> : undefined}>
+      {isLoading ? (
+        <StatTileSkeleton />
+      ) : isError || !summary ? (
+        <StatTileMessage>
+          <Trans>Couldn&apos;t load invoices.</Trans>
+        </StatTileMessage>
+      ) : (
+        render(summary, hasMore ? '+' : '')
+      )}
+    </StatTile>
+  );
 }
 
 function OutstandingTile(props: HealthCardsProps) {
   const currency = getAccountCurrency(props.account);
   return (
-    <StatTile title={<Trans>Outstanding balance</Trans>}>
-      <InvoiceTileBody
-        {...props}
-        render={(s, more) => (
-          <>
-            <StatTileHeadline>
-              {formatMoney(s.outstanding, currency)}
-              {more}
-            </StatTileHeadline>
-            <StatTileDetail>
-              {s.unpaidCount === 0 ? (
-                <Trans>Nothing owed</Trans>
-              ) : s.unpaidCount === 1 ? (
-                <Trans>1 unpaid invoice</Trans>
-              ) : (
-                <Trans>{s.unpaidCount} unpaid invoices</Trans>
-              )}
-            </StatTileDetail>
-          </>
-        )}
-      />
-    </StatTile>
+    <InvoiceTile
+      {...props}
+      title={<Trans>Outstanding balance</Trans>}
+      render={(s, more) => (
+        <>
+          <StatTileHeadline>{`${formatMoney(s.outstanding, currency)}${more}`}</StatTileHeadline>
+          <StatTileDetail>
+            {s.unpaidCount === 0 ? (
+              <Trans>Nothing owed</Trans>
+            ) : (
+              <Plural value={s.unpaidCount} one="# unpaid invoice" other="# unpaid invoices" />
+            )}
+          </StatTileDetail>
+        </>
+      )}
+    />
   );
 }
 
 function PastDueTile(props: HealthCardsProps) {
   const currency = getAccountCurrency(props.account);
   return (
-    <StatTile title={<Trans>Past due</Trans>}>
-      <InvoiceTileBody
-        {...props}
-        render={(s) =>
-          s.pastDueCount === 0 ? (
-            <>
-              <StatTileHeadline>{formatMoney(0, currency)}</StatTileHeadline>
-              <StatTileDetail>
-                <Trans>Nothing past due</Trans>
-              </StatTileDetail>
-            </>
-          ) : (
-            <>
-              <StatTileHeadline className="text-destructive">
-                <Icon icon={CircleAlert} size={18} className="shrink-0" aria-hidden />
-                {formatMoney(s.pastDue, currency)}
-              </StatTileHeadline>
-              <StatTileDetail>
-                <PastDueDetail count={s.pastDueCount} days={s.maxDaysOverdue} />
-              </StatTileDetail>
-            </>
-          )
-        }
-      />
-    </StatTile>
+    <InvoiceTile
+      {...props}
+      title={<Trans>Past due</Trans>}
+      render={(s) =>
+        s.pastDueCount === 0 ? (
+          <>
+            <StatTileHeadline>{formatMoney(0, currency)}</StatTileHeadline>
+            <StatTileDetail>
+              <Trans>Nothing past due</Trans>
+            </StatTileDetail>
+          </>
+        ) : (
+          <>
+            <StatTileHeadline
+              className="text-destructive"
+              icon={<Icon icon={CircleAlert} size={18} className="shrink-0" aria-hidden />}>
+              {formatMoney(s.pastDue, currency)}
+            </StatTileHeadline>
+            <StatTileDetail>
+              <PastDueDetail count={s.pastDueCount} days={s.maxDaysOverdue} />
+            </StatTileDetail>
+          </>
+        )
+      }
+    />
   );
 }
 
@@ -135,26 +134,18 @@ function PastDueDetail({ count, days }: { count: number; days: number }) {
 function LifetimePaidTile(props: HealthCardsProps) {
   const currency = getAccountCurrency(props.account);
   return (
-    <StatTile title={<Trans>Lifetime paid</Trans>}>
-      <InvoiceTileBody
-        {...props}
-        render={(s, more) => (
-          <>
-            <StatTileHeadline>
-              {formatMoney(s.lifetimePaid, currency)}
-              {more}
-            </StatTileHeadline>
-            <StatTileDetail>
-              {s.paidCount === 1 ? (
-                <Trans>1 paid invoice</Trans>
-              ) : (
-                <Trans>{s.paidCount} paid invoices</Trans>
-              )}
-            </StatTileDetail>
-          </>
-        )}
-      />
-    </StatTile>
+    <InvoiceTile
+      {...props}
+      title={<Trans>Lifetime paid</Trans>}
+      render={(s, more) => (
+        <>
+          <StatTileHeadline>{`${formatMoney(s.lifetimePaid, currency)}${more}`}</StatTileHeadline>
+          <StatTileDetail>
+            <Plural value={s.paidCount} one="# paid invoice" other="# paid invoices" />
+          </StatTileDetail>
+        </>
+      )}
+    />
   );
 }
 
@@ -193,11 +184,10 @@ function UsageTrend({ comparison }: { comparison: UsageSpendComparison }) {
   );
 }
 
-function UsageTile({ orgName, account, now }: HealthCardsProps) {
+function UsageTile({ orgName, account }: HealthCardsProps) {
   const { current, comparison, isLoading, isComparisonLoading, isError } = useAccountUsageSpend(
     orgName,
-    account,
-    now
+    account
   );
 
   return (

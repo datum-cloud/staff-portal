@@ -1,6 +1,7 @@
 export { ApplicationList } from './application-list';
 export { ApplicationPhaseBadge, useApplicationLabels } from './application-labels';
 export { ApplicationReview, DeclineApplicationDialog } from './application-review';
+export { BillingAccountDashboard } from './billing-account-dashboard';
 export { BillingAccountList } from './billing-account-list';
 export { useBillingAccountViews } from './billing-account-views';
 export { OrgBillingAccountsCard } from './org-billing-accounts-card';

@@ -1,12 +1,12 @@
 import { formatAxisValue, formatByUnit } from '../usage.format';
 import type { MeterPoint, MeterUnit } from '../usage.types';
 import { Text } from '@datum-cloud/datum-ui/typography';
-import { format } from 'date-fns';
 import {
   Area,
   AreaChart,
   CartesianGrid,
   Legend,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -14,6 +14,19 @@ import {
 } from 'recharts';
 
 const STACK_COLORS = ['var(--primary)', '#6366f1', '#0ea5e9', '#14b8a6', '#f59e0b', '#ec4899'];
+
+// Usage buckets are UTC days, so label them in UTC.
+const DAY_TICK = new Intl.DateTimeFormat('en-US', {
+  month: 'short',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+const DAY_FULL = new Intl.DateTimeFormat('en-US', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
 
 /** Extra height for the legend under a stacked chart. */
 const STACK_LEGEND_HEIGHT = 28;
@@ -37,6 +50,10 @@ interface MeterAreaChartProps {
   height?: number;
   /** A dot on each day of the single-series chart. */
   showDots?: boolean;
+  /** The x-axis range in ms, e.g. the whole billing cycle; defaults to the data's. */
+  domain?: [number, number];
+  /** Draws a "today" line at this time in ms. */
+  marker?: number;
 }
 
 /**
@@ -52,13 +69,15 @@ export function MeterAreaChart({
   stack,
   height = 220,
   showDots = true,
+  domain,
+  marker,
 }: MeterAreaChartProps) {
   const isStackedChart = Boolean(stack && stack.keys.length > 0);
   const chartData = isStackedChart && stack ? stack.data : series;
   const fillId = `usage-fill-${id}`.replace(/[^a-zA-Z0-9_-]/g, '-');
 
   return (
-    <div className="w-full min-w-0">
+    <div className="w-full min-w-0" role="img" aria-label={`${label}: daily usage`}>
       <ResponsiveContainer
         width="100%"
         height={isStackedChart ? height + STACK_LEGEND_HEIGHT : height}>
@@ -81,8 +100,8 @@ export function MeterAreaChart({
             dataKey="timestamp"
             type="number"
             scale="time"
-            domain={['dataMin', 'dataMax']}
-            tickFormatter={(ts) => format(new Date(ts), 'MMM d')}
+            domain={domain ?? ['dataMin', 'dataMax']}
+            tickFormatter={(ts) => DAY_TICK.format(new Date(ts))}
             tickLine={false}
             axisLine={false}
             minTickGap={24}
@@ -95,6 +114,19 @@ export function MeterAreaChart({
             tickFormatter={(value) => formatAxisValue(unit, typeof value === 'number' ? value : 0)}
             tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
           />
+          {marker !== undefined ? (
+            <ReferenceLine
+              x={marker}
+              stroke="var(--muted-foreground)"
+              strokeDasharray="3 3"
+              label={{
+                value: 'Today',
+                position: 'insideTopRight',
+                fill: 'var(--muted-foreground)',
+                fontSize: 11,
+              }}
+            />
+          ) : null}
           <Tooltip
             cursor={{ stroke: 'var(--border)' }}
             content={({ active, payload, label }) => {
@@ -102,7 +134,7 @@ export function MeterAreaChart({
               return (
                 <div className="border-border bg-background rounded-md border px-2.5 py-1.5 shadow-sm">
                   <Text as="div" size="xs" textColor="muted">
-                    {format(new Date(label as number), 'MMM d, yyyy')}
+                    {DAY_FULL.format(new Date(label as number))}
                   </Text>
                   {isStackedChart && stack ? (
                     <div className="mt-1 flex flex-col gap-0.5">

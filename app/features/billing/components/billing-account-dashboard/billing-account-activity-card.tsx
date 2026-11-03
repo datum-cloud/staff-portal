@@ -17,11 +17,15 @@ import { useMemo } from 'react';
  */
 const TIME_RANGE = { start: 'now-30d' };
 
+/** Changes shown in the card; the activity log has the rest. */
+const ACTIVITY_PAGE_SIZE = 8;
+
 /** Every row is in this org, so its tenant badge adds nothing. */
 const hideTenant = () => null;
 
 /**
- * People's recent changes to the org's billing resources: accounts,
+ * People's recent changes to the org's billing resources, for every billing
+ * account in it (the activity API can't narrow to one account): accounts,
  * bindings, payment methods and terms. Only changes people made
  * (`changeSource: human`), never controllers'. Filters are fixed and hidden.
  */
@@ -43,7 +47,8 @@ export function BillingAccountActivityCard({ orgName }: { orgName: string }) {
 
   return (
     <SectionCard
-      title={<Trans>Activity</Trans>}
+      // Billing activity can only be filtered by org, not by account.
+      title={<Trans>Organization billing activity</Trans>}
       action={
         <CardLink href={orgRoutes.activity.root(orgName)}>
           <Trans>Activity log</Trans>
@@ -59,7 +64,7 @@ export function BillingAccountActivityCard({ orgName }: { orgName: string }) {
         hiddenFilters={['changeSource', 'apiGroups', 'resourceNamespaces']}
         variant="timeline"
         compact
-        pageSize={8}
+        pageSize={ACTIVITY_PAGE_SIZE}
         infiniteScroll={false}
         resourceLinkResolver={staffResourceLinkResolver}
         tenantRenderer={hideTenant}

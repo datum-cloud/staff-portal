@@ -20,7 +20,7 @@ import type { ComponentType } from 'react';
  * adapts to the theme foreground.
  */
 
-export type CardBrand =
+type CardBrand =
   | 'visa'
   | 'mastercard'
   | 'amex'
@@ -34,7 +34,7 @@ export type CardBrand =
  * `PaymentMethod.status.details.card.brand` is a free-form string (Stripe's
  * vocabulary today), so map it onto the brands the icon set draws.
  */
-export const normalizeCardBrand = (brand: string | undefined | null): CardBrand => {
+const normalizeCardBrand = (brand: string | undefined | null): CardBrand => {
   if (!brand) return 'unknown';
   const slug = brand.toLowerCase().replace(/[\s_-]+/g, '');
   switch (slug) {
@@ -61,7 +61,7 @@ export const normalizeCardBrand = (brand: string | undefined | null): CardBrand 
   }
 };
 
-export const CARD_BRAND_LABELS: Record<CardBrand, string> = {
+const CARD_BRAND_LABELS: Record<CardBrand, string> = {
   visa: 'Visa',
   mastercard: 'Mastercard',
   amex: 'American Express',
@@ -75,7 +75,7 @@ export const CARD_BRAND_LABELS: Record<CardBrand, string> = {
 const capitalize = (value: string): string => value.charAt(0).toUpperCase() + value.slice(1);
 
 /** The brand's name; an unknown brand keeps the API's own name. */
-export const getCardBrandLabel = (brand: string | undefined | null): string => {
+const getCardBrandLabel = (brand: string | undefined | null): string => {
   const key = normalizeCardBrand(brand);
   return key === 'unknown' && brand ? capitalize(brand) : CARD_BRAND_LABELS[key];
 };
@@ -102,8 +102,8 @@ interface CardBrandIconProps {
   className?: string;
 }
 
-export const CardBrandIcon = ({ brand, className }: CardBrandIconProps) => {
-  const Renderer = brandRenderers[normalizeCardBrand(brand)] ?? GenericMark;
+export function CardBrandIcon({ brand, className }: CardBrandIconProps) {
+  const Renderer = brandRenderers[normalizeCardBrand(brand)];
   // The mono marks draw their own card-shaped body, so the wrapper is only
   // a sizing slot, and inherits its colour from the row.
   return (
@@ -116,4 +116,4 @@ export const CardBrandIcon = ({ brand, className }: CardBrandIconProps) => {
       <Renderer className="h-full w-full" />
     </span>
   );
-};
+}

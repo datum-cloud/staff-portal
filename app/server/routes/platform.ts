@@ -3,13 +3,13 @@ import { EnvVariables } from '@/server/iface';
 import { logApiError, logApiSuccess } from '@/server/logger';
 import { authMiddleware, getToken } from '@/server/middleware';
 import { createErrorResponse, createSuccessResponse } from '@/server/response';
+import { DAY_MS } from '@/utils/helpers/time.helper';
 import { captureApiError, createRequestLogger } from '@/utils/logger';
 import { Hono } from 'hono';
 import { createHash } from 'node:crypto';
 
 const platform = new Hono<{ Variables: EnvVariables }>();
 
-const DAY_MS = 24 * 60 * 60 * 1000;
 const CACHE_TTL_MS = 5 * 60 * 1000;
 // The activity API has no count/aggregate endpoint, so totals come from paging
 // create events. Cap the walk so a sign-up spike can't stall the landing page;

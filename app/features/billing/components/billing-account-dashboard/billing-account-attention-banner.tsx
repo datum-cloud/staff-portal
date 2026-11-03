@@ -1,14 +1,15 @@
+import { useAccountHealth } from '../../hooks';
 import {
   UNUSUAL_INVOICE_FACTOR,
   type HealthCheckKey,
   type HealthIssue,
 } from '../../lib/account-health';
-import { formatMoney } from '../../utils';
+import { formatMoney, type BillingAccount } from '../../utils';
 import { formatCardLabel } from '../card-brand-icon';
-import { InlineDate } from './card-parts';
-import { useAccountHealth } from './use-account-dashboard';
+import { BILLING_ACCOUNT_SECTION_IDS, InlineDate } from './card-parts';
 import { AttentionBannerShell } from '@/components/attention-banner';
 import { BadgeState } from '@/components/badge';
+import { formatCurrency } from '@/features/organization/usage/usage.format';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
@@ -16,26 +17,14 @@ import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import { t } from '@lingui/core/macro';
+import { plural, t } from '@lingui/core/macro';
 import { Plural, Trans } from '@lingui/react/macro';
-import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
 import { ArrowRight, CircleCheck } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-/**
- * Dashboard sections the fix-it buttons scroll to. The cards that render
- * these sections set the matching `id`.
- */
-export const BILLING_ACCOUNT_SECTION_IDS = {
-  invoices: 'invoices',
-  paymentTerms: 'payment-terms',
-  contract: 'contract',
-  offer: 'offer',
-} as const;
-
 interface AttentionBannerProps {
   orgName: string;
-  account: ComMiloapisBillingV1Alpha1BillingAccount;
+  account: BillingAccount;
   cloudPortalUrl?: string | null;
   now: Date;
 }
@@ -109,20 +98,21 @@ function describeIssue(issue: HealthIssue, ctx: CopyContext): IssueCopy {
     case 'invoiceUnusual': {
       const count = issue.invoiceNames.length;
       const maxTotal = formatMoney(issue.maxTotal, issue.currency);
-      const median = formatMoney(issue.median, issue.currency);
+      const baseline = formatMoney(issue.baseline, issue.currency);
       const factor = UNUSUAL_INVOICE_FACTOR;
       return {
         badge: t`Unusual`,
-        title:
-          count === 1 ? (
-            <Trans>Invoice amount far outside the normal range</Trans>
-          ) : (
-            <Trans>{count} invoice amounts far outside the normal range</Trans>
-          ),
+        title: (
+          <Plural
+            value={count}
+            one="Invoice amount far outside the normal range"
+            other="# invoice amounts far outside the normal range"
+          />
+        ),
         detail: (
           <Trans>
-            Up to {maxTotal}, over {factor}× this account&apos;s median invoice ({median}). Likely a
-            metering or pricing error.
+            Up to {maxTotal}, over {factor}× the median of this account&apos;s other recent invoices
+            ({baseline}). Check usage for a metering or pricing error.
           </Trans>
         ),
         action: usageAction(ctx),
@@ -161,7 +151,10 @@ function describeIssue(issue: HealthIssue, ctx: CopyContext): IssueCopy {
           };
     case 'cardExpiry': {
       const card = formatCardLabel(issue, issue.paymentMethodName);
-      const expiry = <InlineDate date={issue.expiresAt} variant="absolute" format="MMM d, yyyy" />;
+      // A UTC month end: in UTC so it doesn't read as the 1st east of UTC.
+      const expiry = (
+        <InlineDate date={issue.expiresAt} variant="absolute" format="MMM d, yyyy" timezone="UTC" />
+      );
       return {
         badge: t`Card expiry`,
         title: issue.expired ? <Trans>Card expired</Trans> : <Trans>Card expires soon</Trans>,
@@ -178,7 +171,8 @@ function describeIssue(issue: HealthIssue, ctx: CopyContext): IssueCopy {
       };
     }
     case 'creditLimit': {
-      const spend = formatMoney(issue.cycleSpend, issue.currency);
+      // Spend is usage, formatted like the usage tile; the limit is a billing amount.
+      const spend = formatCurrency({ amount: issue.cycleSpend, currency: issue.currency });
       const limit = formatMoney(issue.creditLimit, issue.currency);
       return {
         badge: t`Credit limit`,
@@ -192,8 +186,8 @@ function describeIssue(issue: HealthIssue, ctx: CopyContext): IssueCopy {
       };
     }
     case 'usageSpike': {
-      const current = formatMoney(issue.currentSpend, issue.currency);
-      const previous = formatMoney(issue.previousSpend, issue.currency);
+      const current = formatCurrency({ amount: issue.currentSpend, currency: issue.currency });
+      const previous = formatCurrency({ amount: issue.previousSpend, currency: issue.currency });
       const factor = Math.round(issue.factor);
       return {
         badge: t`Usage`,
@@ -231,7 +225,7 @@ function describeIssue(issue: HealthIssue, ctx: CopyContext): IssueCopy {
 function summaryLabel(key: HealthCheckKey, count: number): string {
   switch (key) {
     case 'invoicePastDue':
-      return count === 1 ? t`1 past-due invoice` : t`${count} past-due invoices`;
+      return plural(count, { one: '# past-due invoice', other: '# past-due invoices' });
     case 'invoiceUnusual':
       return t`unusual invoice totals`;
     case 'largeCardBalance':
@@ -327,21 +321,31 @@ function IssueRow({ issue, ctx }: { issue: HealthIssue; ctx: CopyContext }) {
   );
 }
 
-function FailedToRun({ count }: { count: number }) {
-  return count === 1 ? (
-    <Trans>1 check couldn&apos;t run</Trans>
-  ) : (
-    <Trans>{count} checks couldn&apos;t run</Trans>
-  );
+/** Checks that didn't finish: their data failed to load, or they saw only some invoices. */
+function Unchecked({ failed, partial }: { failed: number; partial: number }) {
+  const parts = [
+    failed > 0
+      ? plural(failed, { one: "# check couldn't run", other: "# checks couldn't run" })
+      : null,
+    partial > 0
+      ? plural(partial, {
+          one: '# check saw only some invoices',
+          other: '# checks saw only some invoices',
+        })
+      : null,
+  ].filter(Boolean);
+  return <>{parts.join(' · ')}</>;
 }
 
 function PassingLine({
   passing,
-  failedToRun,
+  failed,
+  partial,
   isLoading,
 }: {
   passing: HealthCheckKey[];
-  failedToRun: number;
+  failed: number;
+  partial: number;
   isLoading: boolean;
 }) {
   const count = passing.length;
@@ -349,14 +353,14 @@ function PassingLine({
     <div className="border-border flex min-h-10 items-center gap-2 border-t px-4 py-2">
       <Icon icon={CircleCheck} size={14} className="shrink-0 text-green-600" aria-hidden />
       <Text size="xs" weight="medium" className="shrink-0">
-        {count === 1 ? <Trans>1 check passing</Trans> : <Trans>{count} checks passing</Trans>}
+        <Plural value={count} one="# check passing" other="# checks passing" />
       </Text>
       <Text size="xs" textColor="muted" className="min-w-0 truncate">
         {passing.map(passingLabel).join(' · ')}
-        {failedToRun > 0 ? (
+        {failed + partial > 0 ? (
           <>
             {count > 0 ? ' · ' : ''}
-            <FailedToRun count={failedToRun} />
+            <Unchecked failed={failed} partial={partial} />
           </>
         ) : null}
       </Text>
@@ -377,9 +381,10 @@ export function BillingAccountAttentionBanner({
   now,
 }: AttentionBannerProps) {
   const { health, isLoading } = useAccountHealth(orgName, account, now);
-  const { issues, passing, pending } = health;
+  const { issues, passing, pending, incomplete } = health;
   // Checks still waiting once everything has loaded had a request fail.
-  const failedToRun = isLoading ? 0 : pending.length;
+  const failed = isLoading ? 0 : pending.length;
+  const partial = incomplete.length;
   const ctx: CopyContext = { orgName, cloudPortalUrl };
 
   return (
@@ -389,20 +394,28 @@ export function BillingAccountAttentionBanner({
       total={issues.length}
       defaultExpanded
       clearSummary={
-        failedToRun > 0 ? (
-          <FailedToRun count={failedToRun} />
+        failed + partial > 0 ? (
+          <Unchecked failed={failed} partial={partial} />
         ) : (
           passing.map(passingLabel).join(' · ')
         )
       }
-      incomplete={failedToRun > 0 ? <Trans>Some checks couldn&apos;t run</Trans> : undefined}
-      issueSummary={groupSummary(issues)}>
-      <ul className="border-border flex flex-col gap-1 border-t p-1.5">
+      incomplete={
+        failed > 0 ? (
+          <Trans>Some checks couldn&apos;t run</Trans>
+        ) : partial > 0 ? (
+          <Trans>Some checks couldn&apos;t see every invoice</Trans>
+        ) : undefined
+      }
+      issueSummary={groupSummary(issues)}
+      footer={
+        <PassingLine passing={passing} failed={failed} partial={partial} isLoading={isLoading} />
+      }>
+      <ul className="flex flex-col gap-1">
         {issues.map((issue, index) => (
           <IssueRow key={`${issue.key}-${index}`} issue={issue} ctx={ctx} />
         ))}
       </ul>
-      <PassingLine passing={passing} failedToRun={failedToRun} isLoading={isLoading} />
     </AttentionBannerShell>
   );
 }

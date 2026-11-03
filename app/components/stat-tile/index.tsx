@@ -61,11 +61,19 @@ export function StatTileSkeleton() {
   );
 }
 
-/** The tile's big figure. */
+/**
+ * The tile's big figure. `icon` sits before it; the figure itself ellipsizes
+ * when it's too wide, with the full text on hover.
+ */
 export function StatTileHeadline({
+  icon,
+  title,
   className,
   children,
 }: {
+  icon?: ReactNode;
+  /** Hover text, e.g. the full amount; defaults to the children when they're a string. */
+  title?: string;
   className?: string;
   children: ReactNode;
 }) {
@@ -75,8 +83,13 @@ export function StatTileHeadline({
       size="2xl"
       weight="semibold"
       textColor="default"
-      className={cn('flex h-8 min-w-0 items-center gap-2 truncate tabular-nums', className)}>
-      {children}
+      className={cn('flex h-8 min-w-0 items-center gap-2 tabular-nums', className)}>
+      {icon}
+      <span
+        className="min-w-0 truncate"
+        title={title ?? (typeof children === 'string' ? children : undefined)}>
+        {children}
+      </span>
     </Text>
   );
 }

@@ -1,29 +1,18 @@
-import type { Invoice } from '../utils';
+import { parseAmount, type Invoice } from '../utils';
 import {
   getAgingBucket,
   getAmountOwed,
   getDaysOverdue,
   getNextInvoice,
-  parseAmount,
   sortInvoicesPastDueFirst,
   summarizeInvoices,
 } from './invoice-summary';
+import { buildInvoice } from './test-fixtures';
 import { describe, expect, it } from 'vitest';
 
 const NOW = new Date('2026-11-12T12:00:00Z');
 
-const invoice = (
-  name: string,
-  status: NonNullable<Invoice['status']>,
-  periodEnd = '2026-10-31T00:00:00Z'
-): Invoice => ({
-  metadata: { name },
-  spec: {
-    billingAccountRef: { name: 'ba-test' },
-    period: { start: '2026-10-01T00:00:00Z', end: periodEnd },
-  },
-  status,
-});
+const invoice = buildInvoice;
 
 describe('parseAmount', () => {
   it.each([

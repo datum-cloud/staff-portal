@@ -2,24 +2,21 @@ import {
   getAccountCurrency,
   getCriticalFailedPaymentMethod,
   getPaymentMethodDisplayName,
-  getPaymentMethodsForAccount,
   isDefaultPaymentMethod,
+  parseAmount,
+  type BillingAccount,
+  type BillingEntitlement,
   type Invoice,
+  type PaymentMethod,
 } from '../utils';
 import {
-  DAY_MS,
   getAmountOwed,
   getDaysOverdue,
   isPastDueInvoice,
-  parseAmount,
   summarizeInvoices,
 } from './invoice-summary';
-import { getBillingStatus, getPaymentReadyCondition } from './payment-terms';
-import type {
-  ComMiloapisBillingV1Alpha1BillingAccount,
-  ComMiloapisBillingV1Alpha1BillingEntitlement,
-  ComMiloapisBillingV1Alpha1PaymentMethod,
-} from '@openapi/billing.miloapis.com/v1alpha1';
+import { getBillingMode } from './payment-terms';
+import { DAY_MS } from '@/utils/helpers/time.helper';
 
 /**
  * The billing account dashboard's attention checks. Each check is a pure
@@ -28,14 +25,12 @@ import type {
  * Issues carry data rather than sentences so the banner can translate them.
  */
 
-type BillingAccount = ComMiloapisBillingV1Alpha1BillingAccount;
-type PaymentMethod = ComMiloapisBillingV1Alpha1PaymentMethod;
-type BillingEntitlement = ComMiloapisBillingV1Alpha1BillingEntitlement;
-
 /** An invoice is unusual when its total is this many times the account's median. */
 export const UNUSUAL_INVOICE_FACTOR = 100;
 /** Fewer other non-zero invoices than this and there is no baseline to compare with. */
 export const UNUSUAL_INVOICE_MIN_HISTORY = 3;
+/** Only the account's most recent invoices are compared, so old trial months don't set the baseline. */
+export const UNUSUAL_INVOICE_RECENT = 12;
 /**
  * Open balance above which a card charge is likely to be declined, per
  * currency. Accounts in other currencies skip the check: one figure means
@@ -81,7 +76,8 @@ export type HealthIssue =
       severity: 'warning';
       invoiceNames: string[];
       maxTotal: number;
-      median: number;
+      /** The median of the other recent invoices the largest one was compared with. */
+      baseline: number;
       currency: string;
     }
   | {
@@ -138,10 +134,13 @@ export interface UsageSpendComparison {
 export interface AccountHealthInputs {
   account: BillingAccount;
   invoices?: readonly Invoice[];
+  /** The account's own payment methods, already scoped to it. */
   paymentMethods?: readonly PaymentMethod[];
   /** `null` when loaded and the account has none. */
   entitlement?: BillingEntitlement | null;
   usage?: UsageSpendComparison;
+  /** False when the org had more invoices than were loaded, so invoice checks saw only some. */
+  invoicesComplete?: boolean;
   now: Date;
 }
 
@@ -152,9 +151,23 @@ export interface AccountHealth {
   passing: HealthCheckKey[];
   /** Checks waiting on data. */
   pending: HealthCheckKey[];
+  /** Checks that found nothing but saw only some of the invoices. */
+  incomplete: HealthCheckKey[];
 }
 
-type Check = (inputs: AccountHealthInputs) => HealthIssue[] | null;
+/** A check that doesn't apply to this account, e.g. card checks on invoice terms. */
+const NOT_APPLICABLE = 'not-applicable';
+
+/** Issues (`[]` means it passed), `null` while loading, or NOT_APPLICABLE. */
+type CheckResult = HealthIssue[] | null | typeof NOT_APPLICABLE;
+type Check = (inputs: AccountHealthInputs) => CheckResult;
+
+/** Checks that read the invoice list, and so are only as complete as it is. */
+const INVOICE_CHECKS: ReadonlySet<HealthCheckKey> = new Set([
+  'invoicePastDue',
+  'invoiceUnusual',
+  'largeCardBalance',
+]);
 
 /**
  * Spend this cycle is a spike: at least USAGE_SPIKE_FACTOR × last cycle's
@@ -163,10 +176,11 @@ type Check = (inputs: AccountHealthInputs) => HealthIssue[] | null;
 export const isUsageSpike = ({ current, previous }: UsageSpendComparison): boolean =>
   previous >= USAGE_SPIKE_MIN_PREVIOUS && current / previous >= USAGE_SPIKE_FACTOR;
 
-/** Billed by card: no invoice terms in effect. */
-const isCardBilled = (account: BillingAccount): boolean =>
-  !account.status?.paymentArrangement &&
-  getBillingStatus(getPaymentReadyCondition(account)) !== 'invoice';
+/** Card checks apply unless the account is on invoice terms (or its mode is unknown). */
+const usesCards = (account: BillingAccount): boolean => {
+  const mode = getBillingMode(account);
+  return mode === 'card' || mode === 'none';
+};
 
 const median = (values: readonly number[]): number => {
   const sorted = [...values].sort((a, b) => a - b);
@@ -187,36 +201,41 @@ const checkInvoicePastDue: Check = ({ account, invoices, now }) =>
       }))
     : null;
 
+const periodEndMs = (invoice: Invoice): number => Date.parse(invoice.spec?.period?.end ?? '') || 0;
+
 /**
- * Invoices whose total is over UNUSUAL_INVOICE_FACTOR × the median of the
- * account's other non-zero invoices, once there are enough of them. Void
- * invoices are left out: voiding is how a bad total gets fixed.
+ * Recent invoices whose total is over UNUSUAL_INVOICE_FACTOR × the median of
+ * the account's other recent non-zero invoices, once there are enough of
+ * them. Void invoices are left out: voiding is how a bad total gets fixed.
  */
 const checkInvoiceUnusual: Check = ({ account, invoices }) => {
   if (!invoices) return null;
   const withTotals = invoices
     .filter((invoice) => invoice.status?.phase !== 'Void')
     .map((invoice) => ({ invoice, total: parseAmount(invoice.status?.total) }))
-    .filter(({ total }) => total > 0);
+    .filter(({ total }) => total > 0)
+    .sort((a, b) => periodEndMs(b.invoice) - periodEndMs(a.invoice))
+    .slice(0, UNUSUAL_INVOICE_RECENT);
 
   const unusual = withTotals
     .map((entry) => {
       const others = withTotals.filter((other) => other !== entry).map(({ total }) => total);
       return {
         ...entry,
-        median: others.length >= UNUSUAL_INVOICE_MIN_HISTORY ? median(others) : 0,
+        baseline: others.length >= UNUSUAL_INVOICE_MIN_HISTORY ? median(others) : 0,
       };
     })
-    .filter(({ total, median: m }) => m > 0 && total > m * UNUSUAL_INVOICE_FACTOR);
+    .filter(({ total, baseline }) => baseline > 0 && total > baseline * UNUSUAL_INVOICE_FACTOR);
 
   if (unusual.length === 0) return [];
+  const largest = unusual.reduce((max, entry) => (entry.total > max.total ? entry : max));
   return [
     {
       key: 'invoiceUnusual',
       severity: 'warning',
       invoiceNames: unusual.map(({ invoice }) => invoice.metadata?.name ?? ''),
-      maxTotal: Math.max(...unusual.map(({ total }) => total)),
-      median: median(withTotals.map(({ total }) => total)),
+      maxTotal: largest.total,
+      baseline: largest.baseline,
       currency: getAccountCurrency(account),
     },
   ];
@@ -225,7 +244,7 @@ const checkInvoiceUnusual: Check = ({ account, invoices }) => {
 const checkLargeCardBalance: Check = ({ account, invoices, now }) => {
   if (!invoices) return null;
   const threshold = LARGE_CARD_BALANCE[getAccountCurrency(account)];
-  if (!isCardBilled(account) || threshold === undefined) return [];
+  if (getBillingMode(account) !== 'card' || threshold === undefined) return NOT_APPLICABLE;
   const { outstanding, unpaidCount } = summarizeInvoices(invoices, now);
   return outstanding > threshold
     ? [
@@ -240,26 +259,24 @@ const checkLargeCardBalance: Check = ({ account, invoices, now }) => {
     : [];
 };
 
-const accountMethods = (account: BillingAccount, paymentMethods: readonly PaymentMethod[]) =>
-  getPaymentMethodsForAccount(
-    [...paymentMethods],
-    account.metadata?.name ?? '',
-    account.metadata?.namespace
-  );
-
-/** The card charges land on: the default, or the only one. */
+/**
+ * The card charges land on: the default, or the only card when there's no
+ * default. With several cards and no default, there's no single answer.
+ */
 const chargedMethod = (
   account: BillingAccount,
   paymentMethods: readonly PaymentMethod[]
 ): PaymentMethod | undefined => {
-  const methods = accountMethods(account, paymentMethods);
-  return methods.find((method) => isDefaultPaymentMethod(method, account)) ?? methods[0];
+  return (
+    paymentMethods.find((method) => isDefaultPaymentMethod(method, account)) ??
+    (paymentMethods.length === 1 ? paymentMethods[0] : undefined)
+  );
 };
 
 const checkPaymentMethod: Check = ({ account, paymentMethods }) => {
   if (!paymentMethods) return null;
-  if (!isCardBilled(account)) return [];
-  const failed = getCriticalFailedPaymentMethod(account, [...paymentMethods]);
+  if (!usesCards(account)) return NOT_APPLICABLE;
+  const failed = getCriticalFailedPaymentMethod(account, paymentMethods);
   if (failed) {
     return [
       {
@@ -271,7 +288,7 @@ const checkPaymentMethod: Check = ({ account, paymentMethods }) => {
       },
     ];
   }
-  return accountMethods(account, paymentMethods).length === 0
+  return paymentMethods.length === 0
     ? [{ key: 'paymentMethod', severity: 'error', reason: 'missing' }]
     : [];
 };
@@ -281,9 +298,10 @@ const cardExpiresAt = (month: number, year: number): Date => new Date(Date.UTC(y
 
 const checkCardExpiry: Check = ({ account, paymentMethods, now }) => {
   if (!paymentMethods) return null;
+  if (!usesCards(account)) return NOT_APPLICABLE;
   const method = chargedMethod(account, paymentMethods);
   const card = method?.status?.details?.card;
-  if (!method || !card?.expiryMonth || !card.expiryYear) return [];
+  if (!method || !card?.expiryMonth || !card.expiryYear) return NOT_APPLICABLE;
 
   const expiresAt = cardExpiresAt(card.expiryMonth, card.expiryYear);
   const daysLeft = (expiresAt.getTime() - now.getTime()) / DAY_MS;
@@ -306,7 +324,7 @@ const checkCardExpiry: Check = ({ account, paymentMethods, now }) => {
 /** The credit limit is the most the account should spend in one billing cycle. */
 const checkCreditLimit: Check = ({ account, usage }) => {
   const limitText = account.status?.paymentArrangement?.invoice?.creditLimit;
-  if (!limitText) return [];
+  if (!limitText) return NOT_APPLICABLE;
   if (!usage) return null;
   const creditLimit = parseAmount(limitText);
   return creditLimit > 0 && usage.current > creditLimit
@@ -341,10 +359,10 @@ const checkUsageSpike: Check = ({ usage }) => {
 /** A business (it has a company name) with no tax ID on file. */
 const checkTaxId: Check = ({ account }) => {
   const contact = account.spec?.contactInfo;
-  const isBusiness = Boolean(contact?.businessName?.trim());
-  return isBusiness && !account.spec?.taxIds?.length
-    ? [{ key: 'taxId', severity: 'info', country: contact?.address?.country }]
-    : [];
+  if (!contact?.businessName?.trim()) return NOT_APPLICABLE;
+  return account.spec?.taxIds?.length
+    ? []
+    : [{ key: 'taxId', severity: 'info', country: contact.address?.country }];
 };
 
 const checkOffer: Check = ({ entitlement }) => {
@@ -366,13 +384,24 @@ const CHECKS: ReadonlyArray<readonly [HealthCheckKey, Check]> = [
 
 const SEVERITY_RANK: Record<HealthSeverity, number> = { error: 0, warning: 1, info: 2 };
 
+const issuesOf = (result: CheckResult): HealthIssue[] => (Array.isArray(result) ? result : []);
+
 export const getAccountHealth = (inputs: AccountHealthInputs): AccountHealth => {
-  const results = CHECKS.map(([key, check]) => ({ key, issues: check(inputs) }));
+  const partial = inputs.invoicesComplete === false;
+  const results = CHECKS.map(([key, check]) => ({ key, result: check(inputs) }));
+  // Finding nothing in some of the invoices isn't a pass.
+  const passed = ({ result }: { result: CheckResult }) =>
+    Array.isArray(result) && result.length === 0;
   return {
     issues: results
-      .flatMap(({ issues }) => issues ?? [])
+      .flatMap(({ result }) => issuesOf(result))
       .sort((a, b) => SEVERITY_RANK[a.severity] - SEVERITY_RANK[b.severity]),
-    passing: results.filter(({ issues }) => issues?.length === 0).map(({ key }) => key),
-    pending: results.filter(({ issues }) => issues === null).map(({ key }) => key),
+    passing: results
+      .filter((entry) => passed(entry) && !(partial && INVOICE_CHECKS.has(entry.key)))
+      .map(({ key }) => key),
+    pending: results.filter(({ result }) => result === null).map(({ key }) => key),
+    incomplete: results
+      .filter((entry) => passed(entry) && partial && INVOICE_CHECKS.has(entry.key))
+      .map(({ key }) => key),
   };
 };

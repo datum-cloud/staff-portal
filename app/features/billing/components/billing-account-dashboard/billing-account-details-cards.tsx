@@ -1,14 +1,17 @@
-import { formatBillingAddress, getAccountCurrency, getEffectiveNetDays } from '../../utils';
+import {
+  formatBillingAddress,
+  getAccountCurrency,
+  getEffectiveNetDays,
+  type BillingAccount,
+} from '../../utils';
 import { AccountStatusBadge } from './account-status-badge';
 import { frequencyLabel } from './card-parts';
 import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
 import { SectionCard } from '@/features/milo';
+import { resolveCycleTerms } from '@/modules/billing/billing-cycle';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
-import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
-
-type BillingAccount = ComMiloapisBillingV1Alpha1BillingAccount;
 
 const NotProvided = () => (
   <Text textColor="muted">
@@ -92,8 +95,9 @@ export function BillingAccountConfigCard({
 }) {
   const terms = account.spec?.paymentTerms;
   const netDays = getEffectiveNetDays(account);
-  const frequency = frequencyLabel(terms?.invoiceFrequency);
-  const invoiceDay = terms?.invoiceDayOfMonth ?? 1;
+  const cycle = resolveCycleTerms(terms);
+  const frequency = frequencyLabel(cycle.frequency);
+  const invoiceDay = cycle.invoiceDay;
 
   return (
     <SectionCard title={<Trans>Configuration</Trans>}>

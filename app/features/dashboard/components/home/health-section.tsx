@@ -1,5 +1,6 @@
 import {
   StatTile,
+  StatTileDetail,
   StatTileHeadline,
   StatTileMessage,
   StatTileSkeleton,
@@ -41,22 +42,24 @@ function ClustersCard({ enabled }: { enabled: boolean }) {
         </StatTileMessage>
       ) : (
         <>
-          <StatTileHeadline>
-            <Icon
-              icon={summary.unhealthy === 0 ? CircleCheck : CircleX}
-              size={18}
-              className={summary.unhealthy === 0 ? 'text-green-600' : 'text-destructive'}
-              aria-hidden
-            />
+          <StatTileHeadline
+            icon={
+              <Icon
+                icon={summary.unhealthy === 0 ? CircleCheck : CircleX}
+                size={18}
+                className={summary.unhealthy === 0 ? 'text-green-600' : 'text-destructive'}
+                aria-hidden
+              />
+            }>
             {summary.healthy}/{summary.total}
           </StatTileHeadline>
-          <Text size="xs" textColor="muted" ellipsis>
+          <StatTileDetail>
             {summary.unhealthy === 0 ? (
               <Trans>All clusters healthy</Trans>
             ) : (
               <Trans>Unhealthy: {unhealthy?.map((cl) => cl.name).join(', ')}</Trans>
             )}
-          </Text>
+          </StatTileDetail>
         </>
       )}
     </StatTile>
@@ -80,12 +83,13 @@ function QuotaCard({ buckets, isLoading }: { buckets: QuotaBucketRow[]; isLoadin
         <StatTileSkeleton />
       ) : top.length === 0 ? (
         <>
-          <StatTileHeadline>
-            <Icon icon={CircleCheck} size={18} className="text-green-600" aria-hidden />0
+          <StatTileHeadline
+            icon={<Icon icon={CircleCheck} size={18} className="text-green-600" aria-hidden />}>
+            0
           </StatTileHeadline>
-          <Text size="xs" textColor="muted">
+          <StatTileDetail>
             <Trans>No organization is near a limit</Trans>
-          </Text>
+          </StatTileDetail>
         </>
       ) : (
         <ul className="flex flex-col">
@@ -134,13 +138,15 @@ function EmailCard() {
         </StatTileMessage>
       ) : (
         <>
-          <StatTileHeadline>
-            {data.failed > 0 && (
-              <Icon icon={TriangleAlert} size={18} className="text-amber-500" aria-hidden />
-            )}
+          <StatTileHeadline
+            icon={
+              data.failed > 0 ? (
+                <Icon icon={TriangleAlert} size={18} className="text-amber-500" aria-hidden />
+              ) : undefined
+            }>
             {rate == null ? '—' : `${rate.toFixed(1)}%`}
           </StatTileHeadline>
-          <Text size="xs" textColor="muted" className="tabular-nums">
+          <StatTileDetail>
             {sent === 0 ? (
               <Trans>No emails sent</Trans>
             ) : (
@@ -149,7 +155,7 @@ function EmailCard() {
               </Trans>
             )}
             {data.truncated && '+'}
-          </Text>
+          </StatTileDetail>
         </>
       )}
     </StatTile>
