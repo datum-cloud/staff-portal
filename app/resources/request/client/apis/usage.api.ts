@@ -24,14 +24,28 @@ export async function fetchOrgUsageSummary(
   return body.data;
 }
 
+/** Narrows the usage dashboard to one billing account, optionally cut off at `until`. */
+export interface UsageDashboardScope {
+  billingAccount?: string;
+  /** ISO 8601 time; the selected cycle's query stops here. */
+  until?: string;
+}
+
 export async function fetchOrgUsageDashboard(
   orgName: string,
   project: string = 'all',
-  cycle: 'current' | 'previous' = 'current'
+  cycle: 'current' | 'previous' = 'current',
+  scope: UsageDashboardScope = {}
 ): Promise<OrgUsageDashboardData> {
   const search = new URLSearchParams({ orgName, cycle });
   if (project && project !== 'all') {
     search.set('project', project);
+  }
+  if (scope.billingAccount) {
+    search.set('billingAccount', scope.billingAccount);
+  }
+  if (scope.until) {
+    search.set('until', scope.until);
   }
   const response = await fetch(`/api/usage/dashboard?${search.toString()}`);
   const body = (await response.json().catch(() => ({}))) as {

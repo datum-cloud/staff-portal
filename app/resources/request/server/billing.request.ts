@@ -1,5 +1,4 @@
 import { buildOrganizationNamespace } from '@/features/billing/utils';
-import { orgDetailQuery } from '@/resources/request/server/organization.request';
 import { env } from '@/utils/config/env.server';
 import {
   listBillingMiloapisComV1Alpha1NamespacedBillingAccountBinding,
@@ -83,35 +82,4 @@ export const billingEntitlementsForOrgRequest = async (token: string, orgName: s
   });
   const data = response.data as unknown as UnwrapProxyResponse<typeof response.data>;
   return filterNotDeleting(data?.items ?? []) as ComMiloapisBillingV1Alpha1BillingEntitlement[];
-};
-
-export const billingAccountDetailBundleRequest = async (
-  token: string,
-  orgName: string,
-  accountName: string
-) => {
-  const [account, bindings, paymentMethods, invoices, entitlements, organization] =
-    await Promise.all([
-      billingAccountDetailRequest(token, orgName, accountName),
-      billingAccountBindingsForOrgRequest(token, orgName),
-      paymentMethodsForOrgRequest(token, orgName),
-      invoicesForOrgRequest(token, orgName),
-      billingEntitlementsForOrgRequest(token, orgName).catch(
-        () => [] as ComMiloapisBillingV1Alpha1BillingEntitlement[]
-      ),
-      orgDetailQuery(token, orgName).catch(() => undefined),
-    ]);
-
-  const billingEntitlement =
-    entitlements.find((be) => be.spec?.billingAccountRef?.name === accountName) ?? null;
-
-  return {
-    account,
-    bindings,
-    paymentMethods,
-    invoices,
-    billingEntitlement,
-    orgName,
-    organization,
-  };
 };

@@ -13,6 +13,7 @@ import {
   createBillingArrangement,
   createBillingArrangementDecline,
   createOffer,
+  invoiceListForOrgQuery,
   offerDetailQuery,
   offerListQuery,
   paymentMethodListForOrgQuery,
@@ -47,6 +48,7 @@ export const billingQueryKeys = {
   bindingsAll: ['billing-accounts', 'bindings', 'all'] as const,
   paymentMethods: (orgName: string) => ['billing-accounts', 'payment-methods', orgName] as const,
   paymentMethodsAll: ['billing-accounts', 'payment-methods', 'all'] as const,
+  invoices: (orgName: string) => ['billing-accounts', 'invoices', orgName] as const,
   offers: {
     all: ['offers'] as const,
     list: (params?: ListQueryParams) => ['offers', 'list', params] as const,
@@ -89,12 +91,18 @@ export const useBillingAccountListForOrgQuery = (orgName: string) =>
     staleTime: 5 * 60 * 1000,
   });
 
-export const useBillingAccountDetailQuery = (orgName: string, accountName: string) =>
+/** `initialData` seeds the cache from a route loader so the page doesn't fetch the account twice. */
+export const useBillingAccountDetailQuery = (
+  orgName: string,
+  accountName: string,
+  initialData?: Awaited<ReturnType<typeof billingAccountDetailQuery>>
+) =>
   useQuery({
     queryKey: billingQueryKeys.detail(orgName, accountName),
     queryFn: () => billingAccountDetailQuery(orgName, accountName),
     enabled: !!orgName && !!accountName,
     staleTime: 5 * 60 * 1000,
+    initialData,
   });
 
 /** Cluster-wide bindings — used to attach project ids to billing account list rows. */
@@ -117,6 +125,15 @@ export const usePaymentMethodListForOrgQuery = (orgName: string) =>
   useQuery({
     queryKey: billingQueryKeys.paymentMethods(orgName),
     queryFn: () => paymentMethodListForOrgQuery(orgName),
+    enabled: !!orgName,
+    staleTime: 5 * 60 * 1000,
+  });
+
+/** Every invoice in the organization; filter to an account with `getInvoicesForAccount`. */
+export const useInvoiceListForOrgQuery = (orgName: string) =>
+  useQuery({
+    queryKey: billingQueryKeys.invoices(orgName),
+    queryFn: () => invoiceListForOrgQuery(orgName),
     enabled: !!orgName,
     staleTime: 5 * 60 * 1000,
   });

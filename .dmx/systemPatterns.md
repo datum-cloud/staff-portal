@@ -28,6 +28,9 @@ A single-package React Router v7 full-stack app (SSR) running on Node with a Hon
 - **Kubernetes-style lists aren't time-ordered:** `*.miloapis.com` list endpoints return items by name and can't sort. Some resources (e.g. `Email`) have hash names, so a `limit`-capped list is an arbitrary subset. Newest first means walking every page with `continue` (see `listAllEmails` in `email.api.ts`) or an upstream time-ordered query.
 - **Generic proxy 500s:** a 500 with code `HTTP_ERROR` and "An unexpected error occurred" means the upstream call failed with no response (e.g. the 32 MB `maxContentLength` cap in `axios.server.ts`, a socket reset). It is not an upstream 500, which would carry the Kubernetes `Status.message`.
 - **Abort signals:** list fetchers take React Query's `signal` and pass it to the SDK, so leaving a page cancels in-flight requests (the proxy answers 499) instead of reporting their errors against the next page.
+- **Walking every page:** `walkCursorPages` (`app/utils/helpers/pagination.helper.ts`) returns `{ items, hasMore }`; client list helpers that need every item (invoices, applications) use it with a page limit and a max-pages guard, and show totals as a floor when `hasMore`.
+- **Non-blocking detail loaders:** a route loader fetches only what the page shell needs (e.g. the billing account and org name) and passes it to the matching query hook as `initialData` (`useBillingAccountDetailQuery`); every card then loads its own data through React Query with a skeleton, sharing requests by query key.
+- **Account-scoped usage:** `UsageQuery.spec.billingAccounts` narrows an organization usage query to one billing account; without it the query uses the org's first Ready account's cycle and reads every account's usage.
 
 ## Component relationships
 

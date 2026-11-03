@@ -46,3 +46,4 @@
 - Generated OpenAPI and GraphQL code must be regenerated, never edited by hand.
 - `graphql` is pinned to 17.0.2 via `overrides`; `react-is` and `form-data` are also overridden.
 - Upstream credentials are attached only on the server; browser code goes through `/api/internal/*`.
+- `app/modules/billing/billing-cycle.ts` steps months with date-fns `addMonths`, which keeps local wall-clock time: on a non-UTC host, `buildBillingCycleWindows`' previous window is an hour off across a daylight-saving change. New cycle maths should step months in UTC, as `getPreviousCycleCutoff` does.

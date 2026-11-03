@@ -1,0 +1,192 @@
+import { summarizeInvoices } from '../../lib/invoice-summary';
+import { getBillingStatus, getPaymentReadyCondition } from '../../lib/payment-terms';
+import { getBillingAccountDisplayName, getBillingAccountDisplayStatus } from '../../utils';
+import { useAccountInvoices, useAccountPaymentMethods } from './use-account-dashboard';
+import { BadgeState } from '@/components/badge';
+import { ButtonCopy } from '@/components/button';
+import { DateTime } from '@/components/date';
+import { PageHeader } from '@/components/page-header';
+import { ACTION_ICONS, ENTITY_ICONS } from '@/utils/config/icons.config';
+import { orgRoutes } from '@/utils/config/routes.config';
+import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@datum-cloud/datum-ui/dropdown';
+import { Icon } from '@datum-cloud/datum-ui/icons';
+import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
+import { Text } from '@datum-cloud/datum-ui/typography';
+import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
+import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
+import { CalendarDays, ChevronDown, Coins, CreditCard, FileText, Hash } from 'lucide-react';
+import { useMemo, type ReactNode } from 'react';
+import { Link } from 'react-router';
+
+export interface BillingAccountHeaderAction {
+  key: string;
+  label: ReactNode;
+  onSelect: () => void;
+}
+
+interface BillingAccountHeaderProps {
+  orgName: string;
+  orgDisplayName: string;
+  account: ComMiloapisBillingV1Alpha1BillingAccount;
+  cloudPortalUrl?: string | null;
+  /** Items for the Actions menu; the menu is hidden when there are none. */
+  actions?: BillingAccountHeaderAction[];
+  now: Date;
+}
+
+/**
+ * Past due outranks the account phase: it's the first thing staff need to
+ * know. Until invoices and payment methods load, show the phase alone.
+ */
+function AccountStatusBadge({
+  orgName,
+  account,
+  now,
+}: Pick<BillingAccountHeaderProps, 'orgName' | 'account' | 'now'>) {
+  const { invoices } = useAccountInvoices(orgName, account.metadata?.name ?? '');
+  const { paymentMethods, isLoading } = useAccountPaymentMethods(orgName, account);
+  const pastDueCount = useMemo(
+    () => (invoices ? summarizeInvoices(invoices, now).pastDueCount : 0),
+    [invoices, now]
+  );
+
+  if (pastDueCount > 0) {
+    return <BadgeState state="error" message={t`Past due`} />;
+  }
+  if (isLoading) {
+    return <Skeleton className="h-4 w-14 rounded" />;
+  }
+  const status = getBillingAccountDisplayStatus(account, paymentMethods ?? []);
+  return <BadgeState state={status.state} tooltip={status.tooltip} />;
+}
+
+function MetaItem({ icon, children }: { icon: typeof Hash; children: ReactNode }) {
+  return (
+    <span className="inline-flex min-w-0 items-center gap-1.5">
+      <Icon icon={icon} size={14} className="text-icon-quaternary shrink-0" aria-hidden />
+      {children}
+    </span>
+  );
+}
+
+function BilledBy({ account }: { account: ComMiloapisBillingV1Alpha1BillingAccount }) {
+  const status = getBillingStatus(getPaymentReadyCondition(account));
+  if (status === 'invoice') {
+    return (
+      <MetaItem icon={FileText}>
+        <Trans>Billed by invoice</Trans>
+      </MetaItem>
+    );
+  }
+  if (status === 'card' || status === 'card-failing') {
+    return (
+      <MetaItem icon={CreditCard}>
+        <Trans>Pays by card</Trans>
+      </MetaItem>
+    );
+  }
+  return null;
+}
+
+export function BillingAccountHeader({
+  orgName,
+  orgDisplayName,
+  account,
+  cloudPortalUrl,
+  actions = [],
+  now,
+}: BillingAccountHeaderProps) {
+  const accountName = account.metadata?.name ?? '';
+
+  return (
+    <PageHeader
+      title={
+        <span className="flex min-w-0 items-center gap-2">
+          <span className="truncate">{getBillingAccountDisplayName(account)}</span>
+          <AccountStatusBadge orgName={orgName} account={account} now={now} />
+        </span>
+      }
+      description={
+        <Text
+          as="span"
+          size="sm"
+          textColor="muted"
+          className="flex flex-wrap items-center gap-x-4 gap-y-1">
+          <MetaItem icon={ENTITY_ICONS.organization}>
+            <Link to={orgRoutes.detail(orgName)} className="text-primary hover:underline">
+              {orgDisplayName || orgName}
+            </Link>
+          </MetaItem>
+          <MetaItem icon={Hash}>
+            <Text as="span" size="xs" className="font-mono">
+              {accountName}
+            </Text>
+            <ButtonCopy value={accountName} />
+          </MetaItem>
+          {account.spec?.currencyCode ? (
+            <MetaItem icon={Coins}>{account.spec.currencyCode}</MetaItem>
+          ) : null}
+          <BilledBy account={account} />
+          {account.metadata?.creationTimestamp ? (
+            <MetaItem icon={CalendarDays}>
+              <Trans>
+                Created{' '}
+                <DateTime
+                  date={account.metadata.creationTimestamp}
+                  variant="absolute"
+                  format="MMM d, yyyy"
+                />
+              </Trans>
+            </MetaItem>
+          ) : null}
+        </Text>
+      }
+      actions={
+        <>
+          <LinkButton type="secondary" theme="outline" href={orgRoutes.detail(orgName)}>
+            <Trans>View organization</Trans>
+          </LinkButton>
+          {cloudPortalUrl ? (
+            <LinkButton
+              type="secondary"
+              theme="outline"
+              href={cloudPortalUrl}
+              target="_blank"
+              rel="noreferrer"
+              icon={<ACTION_ICONS.externalLink className="size-4" />}
+              iconPosition="right">
+              <Trans>Open in Cloud Portal</Trans>
+            </LinkButton>
+          ) : null}
+          {actions.length > 0 ? (
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  type="secondary"
+                  theme="solid"
+                  icon={<Icon icon={ChevronDown} size={14} />}
+                  iconPosition="right">
+                  <Trans>Actions</Trans>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {actions.map((action) => (
+                  <DropdownMenuItem key={action.key} onClick={action.onSelect}>
+                    {action.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : null}
+        </>
+      }
+    />
+  );
+}

@@ -94,6 +94,34 @@ export function buildBillingCycleWindows(
   ];
 }
 
+/** When the cycle containing `now` ends and the next invoice is issued. */
+export function getNextCycleStart(terms: PaymentTermsInput | undefined, now = new Date()): Date {
+  const invoiceDay = terms?.invoiceDayOfMonth ?? 1;
+  const frequency = terms?.invoiceFrequency ?? 'Monthly';
+  return addPeriod(cycleStartAtOrBefore(now, invoiceDay, frequency), frequency);
+}
+
+/**
+ * The same point in the previous cycle as `now` is in the current one, for
+ * comparing spend so far against last cycle's at that point.
+ */
+export function getPreviousCycleCutoff(
+  terms: PaymentTermsInput | undefined,
+  now = new Date()
+): Date {
+  const invoiceDay = terms?.invoiceDayOfMonth ?? 1;
+  const frequency = terms?.invoiceFrequency ?? 'Monthly';
+  const currentStart = cycleStartAtOrBefore(now, invoiceDay, frequency);
+  // In UTC: date-fns' addMonths keeps local wall-clock time, which shifts by
+  // an hour across a daylight-saving change.
+  const previousStart = anchorDate(
+    currentStart.getUTCFullYear(),
+    currentStart.getUTCMonth() - FREQUENCY_MONTHS[frequency],
+    invoiceDay
+  );
+  return new Date(previousStart.getTime() + (now.getTime() - currentStart.getTime()));
+}
+
 export function selectBillingCycleWindow(
   windows: BillingCycleWindow[],
   cycle: string | null | undefined

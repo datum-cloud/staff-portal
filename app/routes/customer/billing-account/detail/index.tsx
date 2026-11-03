@@ -6,12 +6,18 @@ import { DisplayId, DisplayName } from '@/components/display';
 import { PageHeader } from '@/components/page-header';
 import { OfferSwitcherCard, PaymentTermsCard } from '@/features/billing';
 import {
+  BILLING_ACCOUNT_SECTION_IDS,
+  BillingAccountAttentionBanner,
+  BillingAccountHeader,
+  BillingAccountHealthCards,
+  useAccountInvoices,
+  useAccountPaymentMethods,
+  type BillingAccountHeaderAction,
+} from '@/features/billing/components/billing-account-dashboard';
+import {
   formatBillingAddress,
   getActiveBindingsForAccount,
-  getBillingAccountDisplayName,
   getBillingAccountDisplayStatus,
-  getInvoicesForAccount,
-  getOrganizationDisplayName,
   getPaymentMethodDisplayName,
   invoiceMatchesSearch,
   isDefaultPaymentMethod,
@@ -31,21 +37,29 @@ import {
   TableCard,
 } from '@/features/milo';
 import { useEnv } from '@/hooks';
-import { useOrgProjectListQuery } from '@/resources/request/client';
+import {
+  useBillingAccountBindingListForOrgQuery,
+  useBillingAccountDetailQuery,
+  useBillingEntitlementForAccountQuery,
+  useOrgProjectListQuery,
+} from '@/resources/request/client';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
-import { billingAccountRoutes, orgRoutes, projectRoutes } from '@/utils/config/routes.config';
+import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { createColumnHelper, type ColumnDef } from '@/utils/table';
-import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
-import { Col, Row } from '@datum-cloud/datum-ui/grid';
 import { Input } from '@datum-cloud/datum-ui/input';
+import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import type { ComMiloapisBillingV1Alpha1BillingAccountBinding } from '@openapi/billing.miloapis.com/v1alpha1';
-import type { ComMiloapisBillingV1Alpha1PaymentMethod } from '@openapi/billing.miloapis.com/v1alpha1';
-import { useMemo, useState } from 'react';
+import type {
+  ComMiloapisBillingV1Alpha1BillingAccount,
+  ComMiloapisBillingV1Alpha1BillingAccountBinding,
+  ComMiloapisBillingV1Alpha1PaymentMethod,
+} from '@openapi/billing.miloapis.com/v1alpha1';
+import { useMemo, useState, type ReactNode } from 'react';
 import { type MetaFunction } from 'react-router';
 
 export const meta: MetaFunction = ({ matches }) => {
@@ -64,42 +78,35 @@ const invoiceStatusBadgeState: Record<PastInvoiceStatus, string> = {
   void: 'pending',
 };
 
-export default function Page() {
-  const { account, bindings, paymentMethods, invoices, billingEntitlement, orgName, organization } =
-    useBillingAccountDetailData();
-  const env = useEnv();
-  const projectsQuery = useOrgProjectListQuery(orgName);
-  const [invoiceSearch, setInvoiceSearch] = useState('');
+function scrollToSection(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 
-  const projectDisplayNames = useMemo(() => {
-    const map = new Map<string, string>();
-    for (const project of projectsQuery.data?.items ?? []) {
-      map.set(project.name, project.displayName || project.name);
-    }
-    return map;
-  }, [projectsQuery.data?.items]);
-
-  const accountName = account?.metadata?.name;
-  const pastInvoices = useMemo(() => {
-    if (!accountName) return [];
-    return getInvoicesForAccount(invoices ?? [], accountName)
-      .map(toPastInvoiceRow)
-      .sort((a, b) => {
-        const aTime = Date.parse(a.dateSortKey);
-        const bTime = Date.parse(b.dateSortKey);
-        if (Number.isNaN(aTime) && Number.isNaN(bTime)) return 0;
-        if (Number.isNaN(aTime)) return 1;
-        if (Number.isNaN(bTime)) return -1;
-        return bTime - aTime;
-      });
-  }, [accountName, invoices]);
-
-  const filteredInvoices = useMemo(
-    () => pastInvoices.filter((invoice) => invoiceMatchesSearch(invoice, invoiceSearch)),
-    [pastInvoices, invoiceSearch]
+/** Placeholder rows while a table's data loads. */
+function TableSkeleton() {
+  return (
+    <div className="flex flex-col gap-2 px-4 py-3">
+      <Skeleton className="h-8 w-full rounded" />
+      <Skeleton className="h-8 w-full rounded" />
+      <Skeleton className="h-8 w-full rounded" />
+    </div>
   );
+}
 
-  const hasInvoiceSearch = invoiceSearch.trim().length > 0;
+function EmptyText({ children }: { children: ReactNode }) {
+  return <Text className="text-muted-foreground px-4 py-6">{children}</Text>;
+}
+
+function SectionAnchor({ id, children }: { id: string; children: ReactNode }) {
+  return (
+    <div id={id} className="scroll-mt-4">
+      {children}
+    </div>
+  );
+}
+
+export default function Page() {
+  const { account, orgName, orgDisplayName } = useBillingAccountDetailData();
 
   if (!account) {
     return (
@@ -114,14 +121,85 @@ export default function Page() {
     );
   }
 
-  const displayName = getBillingAccountDisplayName(account);
+  return <Dashboard orgName={orgName} orgDisplayName={orgDisplayName} loaderAccount={account} />;
+}
+
+/**
+ * The loader only fetched the account. Everything else loads here on the
+ * client, card by card, so the route change never waits on it.
+ */
+function Dashboard({
+  orgName,
+  orgDisplayName,
+  loaderAccount,
+}: {
+  orgName: string;
+  orgDisplayName: string;
+  loaderAccount: ComMiloapisBillingV1Alpha1BillingAccount;
+}) {
+  const accountName = loaderAccount.metadata?.name ?? '';
+  // Fixed for the page's life: the usage comparison's query key depends on it.
+  const [now] = useState(() => new Date());
+  const env = useEnv();
+
+  const accountQuery = useBillingAccountDetailQuery(orgName, accountName, loaderAccount);
+  const account = accountQuery.data ?? loaderAccount;
+  const { invoices, isLoading: invoicesLoading } = useAccountInvoices(orgName, accountName);
+  const { paymentMethods, isLoading: paymentMethodsLoading } = useAccountPaymentMethods(
+    orgName,
+    account
+  );
+  const bindingsQuery = useBillingAccountBindingListForOrgQuery(orgName);
+  const entitlementQuery = useBillingEntitlementForAccountQuery(orgName, accountName);
+  const projectsQuery = useOrgProjectListQuery(orgName);
+  const [invoiceSearch, setInvoiceSearch] = useState('');
+
+  const projectDisplayNames = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const project of projectsQuery.data?.items ?? []) {
+      map.set(project.name, project.displayName || project.name);
+    }
+    return map;
+  }, [projectsQuery.data?.items]);
+
+  const pastInvoices = useMemo(
+    () =>
+      (invoices ?? []).map(toPastInvoiceRow).sort((a, b) => {
+        const aTime = Date.parse(a.dateSortKey);
+        const bTime = Date.parse(b.dateSortKey);
+        if (Number.isNaN(aTime) && Number.isNaN(bTime)) return 0;
+        if (Number.isNaN(aTime)) return 1;
+        if (Number.isNaN(bTime)) return -1;
+        return bTime - aTime;
+      }),
+    [invoices]
+  );
+
+  const filteredInvoices = useMemo(
+    () => pastInvoices.filter((invoice) => invoiceMatchesSearch(invoice, invoiceSearch)),
+    [pastInvoices, invoiceSearch]
+  );
+
+  const hasInvoiceSearch = invoiceSearch.trim().length > 0;
   const contactInfo = account.spec?.contactInfo;
   const paymentTerms = account.spec?.paymentTerms;
-  const activeBindings = getActiveBindingsForAccount(bindings, account.metadata?.name ?? '');
-  const accountDisplayStatus = getBillingAccountDisplayStatus(account, paymentMethods);
+  const activeBindings = getActiveBindingsForAccount(bindingsQuery.data?.items ?? [], accountName);
+  const accountDisplayStatus = getBillingAccountDisplayStatus(account, paymentMethods ?? []);
   const cloudPortalUrl =
     env?.CLOUD_PORTAL_URL && orgName ? `${env.CLOUD_PORTAL_URL}/org/${orgName}/billing` : null;
-  const orgDisplayName = organization ? getOrganizationDisplayName(organization) : orgName;
+
+  const headerActions: BillingAccountHeaderAction[] = [
+    {
+      key: 'payment-terms',
+      label: <Trans>Grant or change payment terms</Trans>,
+      onSelect: () => scrollToSection(BILLING_ACCOUNT_SECTION_IDS.paymentTerms),
+    },
+    {
+      key: 'offer',
+      label: <Trans>Switch offer</Trans>,
+      onSelect: () => scrollToSection(BILLING_ACCOUNT_SECTION_IDS.offer),
+    },
+  ];
 
   const paymentMethodColumns = [
     paymentMethodColumnHelper.display({
@@ -259,92 +337,153 @@ export default function Page() {
 
   return (
     <div className="m-4 flex flex-col gap-4">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <PageHeader title={displayName} />
-        <div className="flex flex-wrap gap-2">
-          {orgName ? (
-            <LinkButton type="secondary" theme="outline" href={orgRoutes.detail(orgName)}>
-              <Trans>View organization</Trans>
-            </LinkButton>
-          ) : null}
-          {cloudPortalUrl ? (
-            <LinkButton
-              type="secondary"
-              theme="outline"
-              href={cloudPortalUrl}
-              target="_blank"
-              rel="noreferrer"
-              icon={<ACTION_ICONS.externalLink className="size-4" />}
-              iconPosition="right">
-              <Trans>Open in Cloud Portal</Trans>
-            </LinkButton>
-          ) : null}
-          <LinkButton type="secondary" theme="outline" href={billingAccountRoutes.list()}>
-            <Trans>All billing accounts</Trans>
-          </LinkButton>
+      <BillingAccountHeader
+        orgName={orgName}
+        orgDisplayName={orgDisplayName}
+        account={account}
+        cloudPortalUrl={cloudPortalUrl}
+        actions={headerActions}
+        now={now}
+      />
+
+      <BillingAccountAttentionBanner
+        orgName={orgName}
+        account={account}
+        cloudPortalUrl={cloudPortalUrl}
+        now={now}
+      />
+
+      <BillingAccountHealthCards orgName={orgName} account={account} now={now} />
+
+      <div className="grid grid-cols-1 items-start gap-4 @5xl/main:grid-cols-[minmax(0,1fr)_400px]">
+        <div className="flex min-w-0 flex-col gap-4">
+          <SectionAnchor id={BILLING_ACCOUNT_SECTION_IDS.invoices}>
+            <TableCard
+              title={<Trans>Past invoices</Trans>}
+              action={
+                pastInvoices.length > 0 ? (
+                  <Input
+                    value={invoiceSearch}
+                    onChange={(event) => setInvoiceSearch(event.target.value)}
+                    placeholder={t`Search invoices`}
+                    className="h-9 w-56"
+                    aria-label={t`Search invoices`}
+                  />
+                ) : undefined
+              }>
+              {invoicesLoading ? (
+                <TableSkeleton />
+              ) : pastInvoices.length === 0 ? (
+                <EmptyText>
+                  <Trans>No invoices yet</Trans>
+                </EmptyText>
+              ) : filteredInvoices.length === 0 && hasInvoiceSearch ? (
+                <EmptyText>
+                  <Trans>No invoices match your search</Trans>
+                </EmptyText>
+              ) : (
+                <DataTable.Client
+                  data={filteredInvoices}
+                  columns={invoiceColumns as ColumnDef<PastInvoiceRow, unknown>[]}
+                  pageSize={10}
+                  getRowId={(row) => row.id}>
+                  <DataTable.Content
+                    headerClassName={LIST_TABLE_HEADER_CLASS}
+                    headerRowClassName={LIST_TABLE_HEADER_ROW_CLASS}
+                    headerCellClassName={EMBEDDED_TABLE_HEADER_CELL_CLASS}
+                    bodyClassName={EMBEDDED_TABLE_BODY_CLASS}
+                    rowClassName={LIST_TABLE_ROW_CLASS}
+                    cellClassName={EMBEDDED_TABLE_CELL_CLASS}
+                    emptyMessage={t`No invoices`}
+                  />
+                </DataTable.Client>
+              )}
+            </TableCard>
+          </SectionAnchor>
+
+          <TableCard title={<Trans>Linked projects</Trans>}>
+            {bindingsQuery.isLoading ? (
+              <TableSkeleton />
+            ) : activeBindings.length === 0 ? (
+              <EmptyText>
+                <Trans>No linked projects</Trans>
+              </EmptyText>
+            ) : (
+              <DataTable.Client
+                data={activeBindings}
+                columns={
+                  bindingColumns as ColumnDef<
+                    ComMiloapisBillingV1Alpha1BillingAccountBinding,
+                    unknown
+                  >[]
+                }
+                pageSize={10}
+                getRowId={(row) => row.metadata?.name ?? ''}>
+                <DataTable.Content
+                  headerClassName={LIST_TABLE_HEADER_CLASS}
+                  headerRowClassName={LIST_TABLE_HEADER_ROW_CLASS}
+                  headerCellClassName={EMBEDDED_TABLE_HEADER_CELL_CLASS}
+                  bodyClassName={EMBEDDED_TABLE_BODY_CLASS}
+                  rowClassName={LIST_TABLE_ROW_CLASS}
+                  cellClassName={EMBEDDED_TABLE_CELL_CLASS}
+                  emptyMessage={t`No linked projects`}
+                />
+              </DataTable.Client>
+            )}
+          </TableCard>
+
+          <TableCard title={<Trans>Payment methods</Trans>}>
+            {paymentMethodsLoading ? (
+              <TableSkeleton />
+            ) : !paymentMethods?.length ? (
+              <EmptyText>
+                <Trans>No payment methods</Trans>
+              </EmptyText>
+            ) : (
+              <DataTable.Client
+                data={paymentMethods}
+                columns={
+                  paymentMethodColumns as ColumnDef<
+                    ComMiloapisBillingV1Alpha1PaymentMethod,
+                    unknown
+                  >[]
+                }
+                pageSize={10}
+                getRowId={(row) => row.metadata?.name ?? ''}>
+                <DataTable.Content
+                  headerClassName={LIST_TABLE_HEADER_CLASS}
+                  headerRowClassName={LIST_TABLE_HEADER_ROW_CLASS}
+                  headerCellClassName={EMBEDDED_TABLE_HEADER_CELL_CLASS}
+                  bodyClassName={EMBEDDED_TABLE_BODY_CLASS}
+                  rowClassName={LIST_TABLE_ROW_CLASS}
+                  cellClassName={EMBEDDED_TABLE_CELL_CLASS}
+                  emptyMessage={t`No payment methods`}
+                />
+              </DataTable.Client>
+            )}
+          </TableCard>
         </div>
-      </div>
 
-      <Row type="flex" gutter={[16, 16]}>
-        <Col span={24} lg={12}>
-          <SectionCard className="h-full" title={<Trans>Account overview</Trans>}>
-            <DescriptionList
-              items={[
-                {
-                  label: <Trans>Organization</Trans>,
-                  value: orgName ? (
-                    <DisplayName
-                      displayName={orgDisplayName || orgName}
-                      to={orgRoutes.detail(orgName)}
-                    />
-                  ) : (
-                    <Text>—</Text>
-                  ),
-                },
-                {
-                  label: <Trans>Resource name</Trans>,
-                  value: <Text>{account.metadata?.name}</Text>,
-                },
-                {
-                  label: <Trans>Status</Trans>,
-                  value: (
-                    <BadgeState
-                      state={accountDisplayStatus.state}
-                      tooltip={accountDisplayStatus.tooltip}
-                    />
-                  ),
-                },
-                {
-                  label: <Trans>Currency</Trans>,
-                  value: <Text>{account.spec?.currencyCode ?? '—'}</Text>,
-                },
-                {
-                  label: <Trans>Invoice frequency</Trans>,
-                  value: <Text>{paymentTerms?.invoiceFrequency ?? '—'}</Text>,
-                },
-                {
-                  label: <Trans>Net days</Trans>,
-                  value: <Text>{paymentTerms?.netDays ?? '—'}</Text>,
-                },
-                {
-                  label: <Trans>Invoice day of month</Trans>,
-                  value: <Text>{paymentTerms?.invoiceDayOfMonth ?? '—'}</Text>,
-                },
-                {
-                  label: <Trans>Linked projects</Trans>,
-                  value: <Text>{account.status?.linkedProjectsCount ?? 0}</Text>,
-                },
-                {
-                  label: <Trans>Created</Trans>,
-                  value: <DateTime date={account.metadata?.creationTimestamp} variant="both" />,
-                },
-              ]}
-            />
-          </SectionCard>
-        </Col>
+        <aside className="flex min-w-0 flex-col gap-4">
+          <SectionAnchor id={BILLING_ACCOUNT_SECTION_IDS.paymentTerms}>
+            <PaymentTermsCard orgName={orgName} account={account} />
+          </SectionAnchor>
 
-        <Col span={24} lg={12}>
-          <SectionCard className="h-full" title={<Trans>Contact & address</Trans>}>
+          <SectionAnchor id={BILLING_ACCOUNT_SECTION_IDS.offer}>
+            {entitlementQuery.isLoading ? (
+              <SectionCard title={<Trans>Active Offer</Trans>}>
+                <Skeleton className="h-5 w-40 rounded" />
+              </SectionCard>
+            ) : (
+              <OfferSwitcherCard
+                orgName={orgName}
+                accountName={accountName}
+                billingEntitlement={entitlementQuery.data ?? null}
+              />
+            )}
+          </SectionAnchor>
+
+          <SectionCard title={<Trans>Contact & address</Trans>}>
             <DescriptionList
               items={[
                 {
@@ -395,111 +534,50 @@ export default function Page() {
               ]}
             />
           </SectionCard>
-        </Col>
-      </Row>
 
-      <PaymentTermsCard orgName={orgName} account={account} />
-
-      <OfferSwitcherCard
-        orgName={orgName}
-        accountName={account.metadata?.name ?? ''}
-        billingEntitlement={billingEntitlement ?? null}
-      />
-
-      <TableCard title={<Trans>Payment methods</Trans>}>
-        {paymentMethods.length === 0 ? (
-          <Text className="text-muted-foreground px-4 py-6">
-            <Trans>No payment methods</Trans>
-          </Text>
-        ) : (
-          <DataTable.Client
-            data={paymentMethods}
-            columns={
-              paymentMethodColumns as ColumnDef<ComMiloapisBillingV1Alpha1PaymentMethod, unknown>[]
-            }
-            pageSize={10}
-            getRowId={(row) => row.metadata?.name ?? ''}>
-            <DataTable.Content
-              headerClassName={LIST_TABLE_HEADER_CLASS}
-              headerRowClassName={LIST_TABLE_HEADER_ROW_CLASS}
-              headerCellClassName={EMBEDDED_TABLE_HEADER_CELL_CLASS}
-              bodyClassName={EMBEDDED_TABLE_BODY_CLASS}
-              rowClassName={LIST_TABLE_ROW_CLASS}
-              cellClassName={EMBEDDED_TABLE_CELL_CLASS}
-              emptyMessage={t`No payment methods`}
+          <SectionCard title={<Trans>Configuration</Trans>}>
+            <DescriptionList
+              items={[
+                {
+                  label: <Trans>Status</Trans>,
+                  value: paymentMethodsLoading ? (
+                    <Skeleton className="h-4 w-14 rounded" />
+                  ) : (
+                    <BadgeState
+                      state={accountDisplayStatus.state}
+                      tooltip={accountDisplayStatus.tooltip}
+                    />
+                  ),
+                },
+                {
+                  label: <Trans>Currency</Trans>,
+                  value: <Text>{account.spec?.currencyCode ?? '—'}</Text>,
+                },
+                {
+                  label: <Trans>Invoice frequency</Trans>,
+                  value: <Text>{paymentTerms?.invoiceFrequency ?? '—'}</Text>,
+                },
+                {
+                  label: <Trans>Net days</Trans>,
+                  value: <Text>{paymentTerms?.netDays ?? '—'}</Text>,
+                },
+                {
+                  label: <Trans>Invoice day of month</Trans>,
+                  value: <Text>{paymentTerms?.invoiceDayOfMonth ?? '—'}</Text>,
+                },
+                {
+                  label: <Trans>Linked projects</Trans>,
+                  value: <Text>{account.status?.linkedProjectsCount ?? 0}</Text>,
+                },
+                {
+                  label: <Trans>Created</Trans>,
+                  value: <DateTime date={account.metadata?.creationTimestamp} variant="both" />,
+                },
+              ]}
             />
-          </DataTable.Client>
-        )}
-      </TableCard>
-
-      <TableCard
-        title={<Trans>Past invoices</Trans>}
-        action={
-          pastInvoices.length > 0 ? (
-            <Input
-              value={invoiceSearch}
-              onChange={(event) => setInvoiceSearch(event.target.value)}
-              placeholder={t`Search invoices`}
-              className="h-9 w-56"
-              aria-label={t`Search invoices`}
-            />
-          ) : undefined
-        }>
-        {pastInvoices.length === 0 ? (
-          <Text className="text-muted-foreground px-4 py-6">
-            <Trans>No invoices yet</Trans>
-          </Text>
-        ) : filteredInvoices.length === 0 && hasInvoiceSearch ? (
-          <Text className="text-muted-foreground px-4 py-6">
-            <Trans>No invoices match your search</Trans>
-          </Text>
-        ) : (
-          <DataTable.Client
-            data={filteredInvoices}
-            columns={invoiceColumns as ColumnDef<PastInvoiceRow, unknown>[]}
-            pageSize={10}
-            getRowId={(row) => row.id}>
-            <DataTable.Content
-              headerClassName={LIST_TABLE_HEADER_CLASS}
-              headerRowClassName={LIST_TABLE_HEADER_ROW_CLASS}
-              headerCellClassName={EMBEDDED_TABLE_HEADER_CELL_CLASS}
-              bodyClassName={EMBEDDED_TABLE_BODY_CLASS}
-              rowClassName={LIST_TABLE_ROW_CLASS}
-              cellClassName={EMBEDDED_TABLE_CELL_CLASS}
-              emptyMessage={t`No invoices`}
-            />
-          </DataTable.Client>
-        )}
-      </TableCard>
-
-      <TableCard title={<Trans>Linked projects</Trans>}>
-        {activeBindings.length === 0 ? (
-          <Text className="text-muted-foreground px-4 py-6">
-            <Trans>No linked projects</Trans>
-          </Text>
-        ) : (
-          <DataTable.Client
-            data={activeBindings}
-            columns={
-              bindingColumns as ColumnDef<
-                ComMiloapisBillingV1Alpha1BillingAccountBinding,
-                unknown
-              >[]
-            }
-            pageSize={10}
-            getRowId={(row) => row.metadata?.name ?? ''}>
-            <DataTable.Content
-              headerClassName={LIST_TABLE_HEADER_CLASS}
-              headerRowClassName={LIST_TABLE_HEADER_ROW_CLASS}
-              headerCellClassName={EMBEDDED_TABLE_HEADER_CELL_CLASS}
-              bodyClassName={EMBEDDED_TABLE_BODY_CLASS}
-              rowClassName={LIST_TABLE_ROW_CLASS}
-              cellClassName={EMBEDDED_TABLE_CELL_CLASS}
-              emptyMessage={t`No linked projects`}
-            />
-          </DataTable.Client>
-        )}
-      </TableCard>
+          </SectionCard>
+        </aside>
+      </div>
     </div>
   );
 }

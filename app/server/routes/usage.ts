@@ -78,7 +78,7 @@ usage.get('/', authMiddleware(), async (c) => {
 });
 
 /**
- * GET /api/usage/dashboard?orgName=&project=&cycle=
+ * GET /api/usage/dashboard?orgName=&project=&cycle=&billingAccount=&until=
  *
  * Full usage dashboard: billing-cycle windows, grouped meters, and
  * per-dimension series for the org usage page.
@@ -115,11 +115,39 @@ usage.get('/dashboard', authMiddleware(), async (c) => {
     );
   }
 
+  const billingAccount = c.req.query('billingAccount');
+  if (billingAccount && !RESOURCE_NAME.test(billingAccount)) {
+    return c.json(
+      {
+        requestId: reqId,
+        code: 'BAD_REQUEST',
+        error: 'billingAccount must be a billing account name',
+        path,
+      },
+      400
+    );
+  }
+
+  const until = c.req.query('until');
+  if (until && Number.isNaN(Date.parse(until))) {
+    return c.json(
+      {
+        requestId: reqId,
+        code: 'BAD_REQUEST',
+        error: 'until must be an ISO 8601 time',
+        path,
+      },
+      400
+    );
+  }
+
   try {
     const token = getToken(c);
     const dashboard = await loadOrgUsageDashboard(orgName, token, {
       projectParam: project,
       cycleParam: c.req.query('cycle'),
+      billingAccountParam: billingAccount,
+      untilParam: until,
     });
 
     const duration = Math.round(performance.now() - startTime);
