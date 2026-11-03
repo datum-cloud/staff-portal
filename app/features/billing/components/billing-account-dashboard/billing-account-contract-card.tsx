@@ -22,6 +22,7 @@ import {
   useBillingDefaultOfferQuery,
   useChangeContractFeesMutation,
   useOfferDetailQuery,
+  useOfferListQuery,
   usePreviewNextInvoiceMutation,
   useServiceListQuery,
   useSetUpContractMutation,
@@ -47,6 +48,9 @@ import { z } from 'zod';
 
 /** Contract fees are USD only, like every ServicePricing. */
 const CONTRACT_CURRENCY = 'USD';
+
+/** The usage picker's value for a contract that bills fixed fees only. */
+const NO_USAGE = 'none';
 
 export type ContractDialogMode = 'setup' | 'change';
 
@@ -261,7 +265,7 @@ const buildContractSchema = (needsStart: boolean, needsSetupFee: boolean, now: D
         .trim()
         .min(1, t`Name the monthly fee, as invoices show it.`),
       monthlyFeeAmount: amountField(t`Enter an amount, such as 1000 or 1000.00.`),
-      billUsage: z.boolean(),
+      usageOffer: z.string().min(1),
       startsAt: z.date().optional(),
     })
     .superRefine((values, ctx) => {
@@ -329,19 +333,31 @@ function ContractDialog({
   const changeFees = useChangeContractFeesMutation(orgName, accountName);
   const servicesQuery = useServiceListQuery();
   const defaultOfferName = useBillingDefaultOfferQuery().data ?? '';
-  const defaultOfferQuery = useOfferDetailQuery(defaultOfferName);
+  const offersQuery = useOfferListQuery({ limit: 500 });
 
   const isSetup = mode === 'setup';
   // A setup fee is charged whenever the account moves onto an Offer that has
   // one, so a contract that has started is amended without it.
   const needsSetupFee = isSetup || !contract?.started;
 
-  // Usage keeps the account's current rates and discounts when it has some,
-  // and otherwise takes the platform default's.
-  const currentUsageRefs = getUsagePricingRefs(currentOffer);
-  const usageSource = currentUsageRefs.length > 0 ? currentOffer : (defaultOfferQuery.data ?? null);
-  const usageRefs =
-    currentUsageRefs.length > 0 ? currentUsageRefs : getUsagePricingRefs(usageSource);
+  // Usage is billed at the rates (and discounts) of an offer staff pick:
+  // any published offer with usage pricing. Other accounts' contract offers
+  // are left out; the account's own current one stays, so an amendment can
+  // keep its rates.
+  const currentOfferName = currentOffer?.metadata?.name ?? '';
+  const usageOffers = useMemo(() => {
+    const listed = (offersQuery.data?.items ?? []).filter(
+      (offer) =>
+        offer.spec?.launchStage === 'GA' &&
+        getUsagePricingRefs(offer).length > 0 &&
+        (!offer.metadata?.name?.startsWith('contract-') || offer.metadata.name === currentOfferName)
+    );
+    return listed.sort((a, b) => getOfferDisplayName(a).localeCompare(getOfferDisplayName(b)));
+  }, [offersQuery.data?.items, currentOfferName]);
+  const usageOfferByName = new Map(usageOffers.map((offer) => [offer.metadata?.name ?? '', offer]));
+  const defaultUsageOffer = [currentOfferName, defaultOfferName].find((name) =>
+    usageOfferByName.has(name)
+  );
 
   const services = useMemo(
     () =>
@@ -374,7 +390,10 @@ function ContractDialog({
     setupFeeAmount: !isSetup && currentSetup ? toPricingAmount(currentSetup.amount) : '',
     monthlyFeeLabel: (!isSetup && currentMonthly?.label) || t`Monthly fee`,
     monthlyFeeAmount: '',
-    billUsage: isSetup ? usageRefs.length > 0 : offerBillsUsage(currentOffer),
+    usageOffer:
+      (isSetup || offerBillsUsage(currentOffer)) && defaultUsageOffer
+        ? defaultUsageOffer
+        : NO_USAGE,
     startsAt: undefined,
   };
 
@@ -392,7 +411,7 @@ function ContractDialog({
         label: values.monthlyFeeLabel.trim(),
         amount: toPricingAmount(parseAmount(values.monthlyFeeAmount)),
       },
-      usageRefs: values.billUsage ? usageRefs : [],
+      usageRefs: getUsagePricingRefs(usageOfferByName.get(values.usageOffer)),
     };
     try {
       if (isSetup) {
@@ -471,13 +490,28 @@ function ContractDialog({
       </div>
 
       <Form.Field
-        name="billUsage"
-        description={
-          usageRefs.length > 0 && usageSource
-            ? t`At the rates of ${getOfferDisplayName(usageSource)}.`
-            : t`Neither the account's offer nor the default offer has usage pricing.`
-        }>
-        <Form.Switch label={t`Also bill usage`} disabled={usageRefs.length === 0} />
+        name="usageOffer"
+        label={t`Usage`}
+        description={t`Bill usage too, at the rates and discounts of a published offer.`}
+        required>
+        <Form.Select placeholder={t`Select an offer`}>
+          <Form.SelectItem value={NO_USAGE}>
+            <Trans>Don&apos;t bill usage</Trans>
+          </Form.SelectItem>
+          {usageOffers.map((offer) => {
+            const name = offer.metadata?.name ?? '';
+            return (
+              <Form.SelectItem key={name} value={name}>
+                {getOfferDisplayName(offer)}
+                {name === currentOfferName
+                  ? t` (current)`
+                  : name === defaultOfferName
+                    ? t` (default)`
+                    : ''}
+              </Form.SelectItem>
+            );
+          })}
+        </Form.Select>
       </Form.Field>
 
       {isSetup ? (
