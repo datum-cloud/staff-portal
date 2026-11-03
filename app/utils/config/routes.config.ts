@@ -288,3 +288,14 @@ export const routes = {
   // Plugins
   plugins: pluginRoutes,
 } as const;
+
+/**
+ * Links into the customer-facing Cloud Portal. `baseUrl` is the
+ * CLOUD_PORTAL_URL env; without it (or an org) there's nothing to link to.
+ */
+export const cloudPortalUrls = {
+  org: (baseUrl: string | undefined, orgName: string, path = ''): string | null =>
+    baseUrl && orgName ? `${baseUrl}/org/${orgName}${path}` : null,
+  orgBilling: (baseUrl: string | undefined, orgName: string): string | null =>
+    cloudPortalUrls.org(baseUrl, orgName, '/billing'),
+};

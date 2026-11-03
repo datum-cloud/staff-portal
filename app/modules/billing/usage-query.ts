@@ -10,13 +10,12 @@ import type {
   MeterPoint,
   MeterSeries,
 } from './usage.types';
+import { DAY_MS } from '@/utils/helpers/time.helper';
 import type {
   ComMiloapisGoBillingApiUsageV1Alpha1MeterUsage as MeterUsage,
   ComMiloapisGoBillingApiUsageV1Alpha1UsagePoint as UsagePoint,
   ComMiloapisGoBillingApiUsageV1Alpha1UsageSeries as UsageSeries,
 } from '@openapi/usage.billing.miloapis.com/v1alpha1';
-
-const DAY_MS = 24 * 3600 * 1000;
 
 // Cap the per-meter breakdown tabs; the UI only surfaces a handful.
 const MAX_BREAKDOWN_DIMENSIONS = 3;

@@ -21,11 +21,11 @@ import {
   getApplicationsForAccount,
   type BillingArrangementApplication,
 } from '../lib/payment-terms-applications';
+import { formatMoney, getAccountCurrency, parseDecimal } from '../utils';
 import { ApplicationPhaseBadge } from './application-labels';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
-import { SectionCard } from '@/features/milo';
 import {
   useBillingAccountDetailQuery,
   useBillingArrangementApplicationListForOrgQuery,
@@ -36,7 +36,6 @@ import {
 import { billingAccountRoutes } from '@/utils/config/routes.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Form } from '@datum-cloud/datum-ui/form';
-import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -44,12 +43,7 @@ import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.
 import { type ReactNode, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 
-type PaymentTermsCardProps = {
-  orgName: string;
-  account: ComMiloapisBillingV1Alpha1BillingAccount;
-};
-
-const billingStatusBadge: Record<BillingStatus, { state: string }> = {
+export const billingStatusBadge: Record<BillingStatus, { state: string }> = {
   invoice: { state: 'success' },
   card: { state: 'success' },
   'terms-scheduled': { state: 'info' },
@@ -60,22 +54,24 @@ const billingStatusBadge: Record<BillingStatus, { state: string }> = {
 };
 
 // Ended terms are a normal part of history, so grey rather than red.
-const phaseBadgeState: Record<BillingArrangementPhase, string> = {
+export const phaseBadgeState: Record<BillingArrangementPhase, string> = {
   Active: 'active',
   Scheduled: 'info',
   Ended: 'unknown',
 };
 
 /**
- * Payment terms staff have granted to the account (BillingArrangements), so
- * it can be billed by invoice instead of by card. Staff can grant terms,
- * change the current terms, and end or withdraw them. Terms are never
- * deleted here: ending them keeps the record for history.
+ * Everything a payment terms view needs: the account's arrangements and
+ * applications, how it is billed, and the grant, change and end actions.
+ * Render `PaymentTermsDialogs` with the result to get the dialogs.
  */
-export function PaymentTermsCard({ orgName, account }: PaymentTermsCardProps) {
+export function usePaymentTerms(
+  orgName: string,
+  account: ComMiloapisBillingV1Alpha1BillingAccount
+) {
   const { t } = useLingui();
   const accountName = account.metadata?.name ?? '';
-  const currency = account.spec?.currencyCode ?? '';
+  const currency = getAccountCurrency(account);
 
   const arrangementsQuery = useBillingArrangementListForOrgQuery(orgName);
   const applicationsQuery = useBillingArrangementApplicationListForOrgQuery(orgName);
@@ -154,175 +150,77 @@ export function PaymentTermsCard({ orgName, account }: PaymentTermsCardProps) {
     }
   };
 
-  const formatCreditLimit = (amount?: string) =>
-    amount ? [amount, currency].filter(Boolean).join(' ') : '—';
+  const formatCreditLimit = (amount?: string) => {
+    const value = parseDecimal(amount);
+    return value === undefined ? '—' : formatMoney(value, currency);
+  };
 
+  return {
+    isLoading: arrangementsQuery.isLoading,
+    currency,
+    current,
+    currentName,
+    currentPhase,
+    paymentReady,
+    billingStatus,
+    billingStatusLabel,
+    history,
+    pendingApplication,
+    pastApplications,
+    formatCreditLimit,
+    dialogs: {
+      grantOpen,
+      setGrantOpen,
+      changeOpen,
+      setChangeOpen,
+      endOpen,
+      setEndOpen,
+      handleGrant,
+      handleChange,
+      handleEnd,
+    },
+  };
+}
+
+export type PaymentTermsState = ReturnType<typeof usePaymentTerms>;
+
+/** The grant, change and end dialogs for a `usePaymentTerms` result. */
+export function PaymentTermsDialogs({ terms }: { terms: PaymentTermsState }) {
+  const { t } = useLingui();
+  const { current, currentName, currentPhase, currency, dialogs } = terms;
   return (
     <>
-      <SectionCard
-        title={<Trans>Payment terms</Trans>}
-        action={
-          <Button type="tertiary" theme="outline" size="small" onClick={() => setGrantOpen(true)}>
-            <Trans>Grant terms</Trans>
-          </Button>
-        }>
-        {arrangementsQuery.isLoading ? (
-          <div className="space-y-2" aria-busy="true">
-            <Skeleton className="h-3 w-20" />
-            <Skeleton className="h-5 w-40" />
-          </div>
-        ) : (
-          <div className="space-y-4">
-            <div>
-              <Text size="sm" className="text-muted-foreground">
-                <Trans>Billed by</Trans>
-              </Text>
-              <div className="mt-1.5">
-                <BadgeState
-                  state={billingStatusBadge[billingStatus].state}
-                  message={billingStatusLabel[billingStatus]}
-                  tooltip={paymentReady?.message}
-                />
-              </div>
-            </div>
-
-            {pendingApplication ? (
-              <div
-                className="bg-muted/50 flex flex-wrap items-center justify-between gap-2 rounded-md px-3 py-2"
-                data-e2e="payment-terms-pending-application">
-                <Text size="sm">
-                  <Trans>
-                    The customer applied for payment terms on{' '}
-                    <DateTime
-                      date={pendingApplication.metadata?.creationTimestamp}
-                      variant="absolute"
-                    />{' '}
-                    and is waiting for a decision.
-                  </Trans>
-                </Text>
-                <Link
-                  to={billingAccountRoutes.applications.detail(
-                    orgName,
-                    pendingApplication.metadata?.name ?? ''
-                  )}
-                  className="text-sm font-medium">
-                  <Trans>Review application</Trans>
-                </Link>
-              </div>
-            ) : null}
-
-            {current && currentPhase ? (
-              <div className="space-y-3 border-t pt-4">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <Text size="sm" weight="medium">
-                      <Trans>Invoice terms</Trans>
-                    </Text>
-                    <BadgeState
-                      state={phaseBadgeState[currentPhase]}
-                      message={currentPhase === 'Active' ? t`Active` : t`Scheduled`}
-                      variant="dot"
-                    />
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      type="tertiary"
-                      theme="outline"
-                      size="small"
-                      onClick={() => setChangeOpen(true)}>
-                      <Trans>Change</Trans>
-                    </Button>
-                    <Button
-                      type="warning"
-                      theme="outline"
-                      size="small"
-                      onClick={() => setEndOpen(true)}>
-                      {currentPhase === 'Scheduled' ? <Trans>Withdraw</Trans> : <Trans>End</Trans>}
-                    </Button>
-                  </div>
-                </div>
-                <ArrangementDetails arrangement={current} formatCreditLimit={formatCreditLimit} />
-              </div>
-            ) : (
-              <Text size="sm" className="text-muted-foreground block">
-                {billingStatus === 'card' ? (
-                  <Trans>No payment terms. This account pays by card.</Trans>
-                ) : (
-                  <Trans>
-                    No payment terms. Grant terms to let this account be billed by invoice.
-                  </Trans>
-                )}
-              </Text>
-            )}
-
-            {history.length > 0 ? (
-              <div className="space-y-2 border-t pt-4">
-                <Text size="sm" weight="medium" className="block">
-                  <Trans>Previous terms</Trans>
-                </Text>
-                <ul className="divide-y">
-                  {history.map((arrangement) => (
-                    <ArrangementHistoryRow
-                      key={arrangement.metadata?.name}
-                      arrangement={arrangement}
-                      formatCreditLimit={formatCreditLimit}
-                    />
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-
-            {pastApplications.length > 0 ? (
-              <div className="space-y-2 border-t pt-4">
-                <Text size="sm" weight="medium" className="block">
-                  <Trans>Applications</Trans>
-                </Text>
-                <ul className="divide-y">
-                  {pastApplications.map((application) => (
-                    <ApplicationHistoryRow
-                      key={application.metadata?.name}
-                      orgName={orgName}
-                      application={application}
-                    />
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-          </div>
-        )}
-      </SectionCard>
-
       <PaymentTermsFormDialog
-        open={grantOpen}
-        onOpenChange={setGrantOpen}
+        open={dialogs.grantOpen}
+        onOpenChange={dialogs.setGrantOpen}
         title={t`Grant payment terms`}
         description={t`The account will be billed by invoice on these terms. Overlapping terms are rejected, so end the current terms first if there are any.`}
         submitText={t`Grant`}
         currency={currency}
         defaultValues={emptyPaymentTermsForm}
         showStart
-        onSubmit={handleGrant}
+        onSubmit={dialogs.handleGrant}
       />
 
       {current ? (
         <PaymentTermsFormDialog
           // Remount when the current arrangement changes so defaults reload.
           key={`${currentName}-${current.metadata?.resourceVersion}`}
-          open={changeOpen}
-          onOpenChange={setChangeOpen}
+          open={dialogs.changeOpen}
+          onOpenChange={dialogs.setChangeOpen}
           title={t`Change payment terms`}
           description={t`Changes apply to the terms currently on the account.`}
           submitText={t`Save`}
           currency={currency}
           defaultValues={paymentTermsFormFromArrangement(current)}
           showStart={currentPhase === 'Scheduled'}
-          onSubmit={handleChange}
+          onSubmit={dialogs.handleChange}
         />
       ) : null}
 
       <DialogConfirm
-        open={endOpen}
-        onOpenChange={setEndOpen}
+        open={dialogs.endOpen}
+        onOpenChange={dialogs.setEndOpen}
         title={currentPhase === 'Scheduled' ? t`Withdraw payment terms` : t`End payment terms`}
         description={
           currentPhase === 'Scheduled'
@@ -332,9 +230,106 @@ export function PaymentTermsCard({ orgName, account }: PaymentTermsCardProps) {
         confirmText={currentPhase === 'Scheduled' ? t`Withdraw` : t`End terms`}
         cancelText={t`Cancel`}
         variant="destructive"
-        onConfirm={handleEnd}
+        onConfirm={dialogs.handleEnd}
       />
     </>
+  );
+}
+
+/** The customer's open application for terms, with a link to review it. */
+export function PendingApplicationNotice({
+  orgName,
+  application,
+}: {
+  orgName: string;
+  application: BillingArrangementApplication;
+}) {
+  return (
+    <div
+      className="bg-background flex flex-wrap items-center justify-between gap-2 rounded-md px-3 py-2"
+      data-e2e="payment-terms-pending-application">
+      <Text size="sm">
+        <Trans>
+          The customer applied for payment terms on{' '}
+          <DateTime date={application.metadata?.creationTimestamp} variant="absolute" /> and is
+          waiting for a decision.
+        </Trans>
+      </Text>
+      <Link
+        to={billingAccountRoutes.applications.detail(orgName, application.metadata?.name ?? '')}
+        className="text-sm font-medium">
+        <Trans>Review application</Trans>
+      </Link>
+    </div>
+  );
+}
+
+/** Earlier terms and decided applications, each under its own heading. */
+export function PaymentTermsHistory({
+  orgName,
+  terms,
+}: {
+  orgName: string;
+  terms: PaymentTermsState;
+}) {
+  return (
+    <>
+      {terms.history.length > 0 ? (
+        <div className="space-y-2 border-t pt-4">
+          <Text size="sm" weight="medium" className="block">
+            <Trans>Previous terms</Trans>
+          </Text>
+          <ul className="divide-y">
+            {terms.history.map((arrangement) => (
+              <ArrangementHistoryRow
+                key={arrangement.metadata?.name}
+                arrangement={arrangement}
+                formatCreditLimit={terms.formatCreditLimit}
+              />
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      {terms.pastApplications.length > 0 ? (
+        <div className="space-y-2 border-t pt-4">
+          <Text size="sm" weight="medium" className="block">
+            <Trans>Applications</Trans>
+          </Text>
+          <ul className="divide-y">
+            {terms.pastApplications.map((application) => (
+              <ApplicationHistoryRow
+                key={application.metadata?.name}
+                orgName={orgName}
+                application={application}
+              />
+            ))}
+          </ul>
+        </div>
+      ) : null}
+    </>
+  );
+}
+
+/** Change and End (or Withdraw) buttons for the current terms. */
+export function CurrentTermsActions({ terms }: { terms: PaymentTermsState }) {
+  return (
+    <div className="flex gap-2">
+      <Button
+        type="tertiary"
+        theme="outline"
+        size="small"
+        onClick={() => terms.dialogs.setChangeOpen(true)}>
+        <Trans>Change</Trans>
+      </Button>
+      <Button
+        type="warning"
+        theme="outline"
+        size="small"
+        onClick={() => terms.dialogs.setEndOpen(true)}>
+        {terms.currentPhase === 'Scheduled' ? <Trans>Withdraw</Trans> : <Trans>End</Trans>}
+      </Button>
+    </div>
   );
 }
 
@@ -359,7 +354,7 @@ function TermField({
   );
 }
 
-function ArrangementDetails({
+export function ArrangementDetails({
   arrangement,
   formatCreditLimit,
 }: {

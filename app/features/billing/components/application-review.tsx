@@ -25,7 +25,7 @@ import {
 } from '../lib/payment-terms-applications';
 import { formatBillingAddress, getBillingAccountDisplayName } from '../utils';
 import { ApplicationPhaseBadge, useApplicationLabels } from './application-labels';
-import { PaymentTermsFormDialog } from './payment-terms-card';
+import { PaymentTermsFormDialog } from './payment-terms';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';

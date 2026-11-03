@@ -1,0 +1,58 @@
+import type { UsageGroupSection, UsageMeter } from '@/features/organization/usage/usage.types';
+import type { UsageView } from '@/features/organization/usage/usage.view';
+
+/**
+ * Selectors for the billing account dashboard's usage card, over the view
+ * the org usage dashboard builds (`toUsageView`).
+ */
+
+export const meterSpend = (meter: UsageMeter): number => meter.spend?.amount ?? 0;
+
+const bySpendDesc = (a: UsageMeter, b: UsageMeter): number => meterSpend(b) - meterSpend(a);
+
+export interface ServiceSpend {
+  id: string;
+  title: string;
+  amount: number;
+  /** The service's highest-spend meter, which a click on the service selects. */
+  topMeterId: string;
+}
+
+export interface MeterOptionGroup {
+  id: string;
+  title: string;
+  /** Meters with usage this cycle, highest spend first. Idle meters are left out. */
+  meters: UsageMeter[];
+}
+
+const groupSpend = (group: UsageGroupSection): number =>
+  group.meters.reduce((total, meter) => total + meterSpend(meter), 0);
+
+/** Services with usage, highest spend first. */
+export const getServiceSpend = (view: UsageView): ServiceSpend[] =>
+  view.groups
+    .filter((group) => group.meters.length > 0)
+    .map((group) => ({
+      id: group.id,
+      title: group.title,
+      amount: groupSpend(group),
+      topMeterId: [...group.meters].sort(bySpendDesc)[0].id,
+    }))
+    .sort((a, b) => b.amount - a.amount);
+
+/** The meter select's groups: services by spend, each with its meters by spend. */
+export const getMeterOptionGroups = (view: UsageView): MeterOptionGroup[] => {
+  const order = new Map(getServiceSpend(view).map((service, index) => [service.id, index]));
+  return view.groups
+    .filter((group) => order.has(group.id))
+    .map((group) => ({
+      id: group.id,
+      title: group.title,
+      meters: [...group.meters].sort(bySpendDesc),
+    }))
+    .sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
+};
+
+/** The meter the card opens on: the highest spend across every service. */
+export const getTopMeter = (view: UsageView): UsageMeter | undefined =>
+  view.groups.flatMap((group) => group.meters).sort(bySpendDesc)[0];

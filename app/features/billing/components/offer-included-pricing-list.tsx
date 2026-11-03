@@ -10,6 +10,7 @@ import {
   getServicePricingSubtext,
   indexServicesByRef,
   resolveServicePricingCatalogService,
+  snapshotAsPricing,
   summarizeServicePricing,
   type ServicePricingCatalogService,
 } from '@/features/billing/utils';
@@ -37,15 +38,6 @@ type OfferIncludedPricingListProps = {
   /** Table layout for detail pages; default list for narrower contexts. */
   variant?: 'list' | 'table';
 };
-
-function snapshotAsPricing(
-  snapshot: OfferPricingSnapshot
-): ComMiloapisBillingV1Alpha1ServicePricing {
-  return {
-    metadata: { name: snapshot.name },
-    spec: snapshot.spec,
-  };
-}
 
 function IncludedPricingRow({
   pricing,

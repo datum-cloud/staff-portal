@@ -1,39 +1,26 @@
-import { formatAxisValue, formatByUnit, formatUsagePair } from '../usage.format';
+import { formatUsagePair } from '../usage.format';
 import type { MeterPoint, UsageMeter } from '../usage.types';
 import { humanizeDimension } from '../usage.view';
+import { MeterAreaChart, type MeterStack } from './meter-area-chart';
 import { SpendValue } from './spend-value';
 import { QuotaIndicator } from '@/features/organization/components/quota-ring';
 import { Card, CardContent, CardHeader } from '@datum-cloud/datum-ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@datum-cloud/datum-ui/tabs';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import { format } from 'date-fns';
 import { useState } from 'react';
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  Legend,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
 
 interface MeterCardProps {
   meter: UsageMeter;
 }
 
-const STACK_COLORS = ['var(--primary)', '#6366f1', '#0ea5e9', '#14b8a6', '#f59e0b', '#ec4899'];
-
 const MAX_STACK_SERIES = 6;
 
 type StackRow = Record<string, number>;
 
-function buildStackData(series: { groupValue: string; total: number; values: MeterPoint[] }[]): {
-  keys: string[];
-  data: StackRow[];
-} {
+function buildStackData(
+  series: { groupValue: string; total: number; values: MeterPoint[] }[]
+): MeterStack {
   const top = [...series].sort((a, b) => b.total - a.total).slice(0, MAX_STACK_SERIES);
   const keys = top.map((s) => s.groupValue);
 
@@ -55,7 +42,6 @@ function buildStackData(series: { groupValue: string; total: number; values: Met
  */
 export function MeterCard({ meter }: MeterCardProps) {
   const [activeTab, setActiveTab] = useState(meter.tabs[0]);
-  const fillId = `usage-fill-${meter.id}`.replace(/[^a-zA-Z0-9_-]/g, '-');
 
   const isBreakdownView = activeTab !== 'Total';
   const activeBreakdown = isBreakdownView
@@ -138,137 +124,15 @@ export function MeterCard({ meter }: MeterCardProps) {
             No usage recorded in this period.
           </Text>
         ) : (
-          <div className="w-full min-w-0">
-            <ResponsiveContainer key={activeTab} width="100%" height={isStackedChart ? 248 : 220}>
-              <AreaChart
-                data={chartData as Record<string, number>[]}
-                margin={{
-                  top: 4,
-                  right: 8,
-                  left: 0,
-                  bottom: isStackedChart ? 20 : 0,
-                }}>
-                <defs>
-                  <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.25} />
-                    <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis
-                  dataKey="timestamp"
-                  type="number"
-                  scale="time"
-                  domain={['dataMin', 'dataMax']}
-                  tickFormatter={(ts) => format(new Date(ts), 'MMM d')}
-                  tickLine={false}
-                  axisLine={false}
-                  minTickGap={24}
-                  tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
-                />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  width={64}
-                  tickFormatter={(value) =>
-                    formatAxisValue(meter.unit, typeof value === 'number' ? value : 0)
-                  }
-                  tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
-                />
-                <Tooltip
-                  cursor={{ stroke: 'var(--border)' }}
-                  content={({ active, payload, label }) => {
-                    if (!active || !payload?.length) return null;
-                    return (
-                      <div className="border-border bg-background rounded-md border px-2.5 py-1.5 shadow-sm">
-                        <Text as="div" size="xs" textColor="muted">
-                          {format(new Date(label as number), 'MMM d, yyyy')}
-                        </Text>
-                        {isStackedChart && stack ? (
-                          <div className="mt-1 flex flex-col gap-0.5">
-                            {payload.map((entry) => (
-                              <Text
-                                as="div"
-                                size="xs"
-                                textColor="default"
-                                className="flex items-center gap-1.5"
-                                key={entry.dataKey as string}>
-                                <span
-                                  className="size-2 shrink-0 rounded-[2px]"
-                                  style={{ backgroundColor: entry.color }}
-                                />
-                                <span className="text-muted-foreground">
-                                  {String(entry.dataKey)}
-                                </span>
-                                <span className="ml-auto font-medium tabular-nums">
-                                  {formatByUnit(
-                                    meter.unit,
-                                    typeof entry.value === 'number' ? entry.value : 0
-                                  )}
-                                </span>
-                              </Text>
-                            ))}
-                          </div>
-                        ) : (
-                          <Text as="div" size="xs" weight="medium" textColor="default">
-                            {meter.label}:{' '}
-                            {formatByUnit(
-                              meter.unit,
-                              typeof payload[0].value === 'number' ? payload[0].value : 0
-                            )}
-                          </Text>
-                        )}
-                      </div>
-                    );
-                  }}
-                />
-                {isStackedChart && stack ? (
-                  <>
-                    <Legend
-                      verticalAlign="bottom"
-                      height={28}
-                      iconType="square"
-                      iconSize={8}
-                      wrapperStyle={{ fontSize: 11, paddingTop: 8 }}
-                    />
-                    {stack.keys.map((key, index) => (
-                      <Area
-                        key={key}
-                        type="monotone"
-                        dataKey={key}
-                        name={key}
-                        stackId="breakdown"
-                        stroke={STACK_COLORS[index % STACK_COLORS.length]}
-                        strokeWidth={1.5}
-                        fill={STACK_COLORS[index % STACK_COLORS.length]}
-                        fillOpacity={0.18}
-                      />
-                    ))}
-                  </>
-                ) : (
-                  <Area
-                    type="monotone"
-                    dataKey="value"
-                    stroke="var(--primary)"
-                    strokeWidth={2}
-                    fill={`url(#${fillId})`}
-                    dot={{
-                      r: 3,
-                      fill: 'var(--primary)',
-                      stroke: 'var(--background)',
-                      strokeWidth: 1.5,
-                    }}
-                    activeDot={{
-                      r: 4,
-                      fill: 'var(--primary)',
-                      stroke: 'var(--background)',
-                      strokeWidth: 2,
-                    }}
-                  />
-                )}
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+          <MeterAreaChart
+            // Remount per tab so the chart animates in afresh.
+            key={activeTab}
+            id={meter.id}
+            label={meter.label}
+            unit={meter.unit}
+            series={meter.series}
+            stack={isStackedChart ? stack : null}
+          />
         )}
       </CardContent>
     </Card>

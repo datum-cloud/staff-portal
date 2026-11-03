@@ -1,6 +1,6 @@
-import { getBillingAccountDisplayName } from '@/features/billing/utils';
+import { getBillingAccountDisplayName, getOrganizationDisplayName } from '@/features/billing/utils';
 import { authenticator } from '@/modules/auth';
-import { billingAccountDetailBundleRequest } from '@/resources/request/server';
+import { billingAccountDetailRequest, orgDetailQuery } from '@/resources/request/server';
 import { Outlet, useLoaderData, type LoaderFunctionArgs } from 'react-router';
 
 export const handle = {
@@ -10,39 +10,32 @@ export const handle = {
   },
 };
 
+/**
+ * Only what the breadcrumb and page header need. The dashboard's cards load
+ * invoices, payment methods, usage and the rest on the client, so the route
+ * change doesn't wait on them.
+ */
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const session = await authenticator.getSession(request);
+  const token = session?.accessToken ?? '';
   const orgName = params.orgName ?? '';
   const accountName = params.accountName ?? '';
+  const empty = { account: null, orgName, orgDisplayName: orgName };
 
-  if (!orgName || !accountName) {
-    return {
-      account: null,
-      bindings: [],
-      paymentMethods: [],
-      invoices: [],
-      billingEntitlement: null,
-      orgName,
-      organization: undefined,
-    };
-  }
+  if (!orgName || !accountName) return empty;
 
   try {
-    return await billingAccountDetailBundleRequest(
-      session?.accessToken ?? '',
-      orgName,
-      accountName
-    );
-  } catch {
+    const [account, organization] = await Promise.all([
+      billingAccountDetailRequest(token, orgName, accountName),
+      orgDetailQuery(token, orgName).catch(() => undefined),
+    ]);
     return {
-      account: null,
-      bindings: [],
-      paymentMethods: [],
-      invoices: [],
-      billingEntitlement: null,
+      account,
       orgName,
-      organization: undefined,
+      orgDisplayName: organization ? getOrganizationDisplayName(organization) : orgName,
     };
+  } catch {
+    return empty;
   }
 };
 

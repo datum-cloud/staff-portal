@@ -4,6 +4,7 @@ import type {
   BillingArrangementSpec,
 } from '@/features/billing/lib/payment-terms';
 import type { BillingArrangementDeclineSpec } from '@/features/billing/lib/payment-terms-applications';
+import type { BillingEntitlement, Invoice } from '@/features/billing/utils';
 import {
   buildOrganizationNamespace,
   DEFAULT_SERVICE_PRICING_NAMESPACE,
@@ -24,6 +25,7 @@ import {
   listBillingMiloapisComV1Alpha1NamespacedBillingArrangementApplication,
   listBillingMiloapisComV1Alpha1NamespacedBillingArrangementDecline,
   listBillingMiloapisComV1Alpha1NamespacedBillingEntitlement,
+  listBillingMiloapisComV1Alpha1NamespacedInvoice,
   listBillingMiloapisComV1Alpha1NamespacedPaymentMethod,
   listBillingMiloapisComV1Alpha1NamespacedServicePricing,
   listBillingMiloapisComV1Alpha1Offer,
@@ -35,6 +37,7 @@ import {
   readBillingMiloapisComV1Alpha1NamespacedBillingArrangementApplication,
   readBillingMiloapisComV1Alpha1Offer,
   type ComMiloapisBillingV1Alpha1BillingEntitlement,
+  type ComMiloapisBillingV1Alpha1Invoice,
   type ComMiloapisBillingV1Alpha1Offer,
   type ComMiloapisBillingV1Alpha1ServicePricing,
 } from '@openapi/billing.miloapis.com/v1alpha1';
@@ -50,7 +53,8 @@ const filterNotDeleting = <T extends { metadata?: { deletionTimestamp?: string }
 export type Offer = ComMiloapisBillingV1Alpha1Offer;
 export type OfferSpec = NonNullable<Offer['spec']>;
 export type ServicePricing = ComMiloapisBillingV1Alpha1ServicePricing;
-export type BillingEntitlement = ComMiloapisBillingV1Alpha1BillingEntitlement;
+// One set of billing aliases, defined with the billing feature.
+export type { BillingEntitlement, Invoice };
 
 export const billingAccountListQuery = async (params?: ListQueryParams) => {
   const response = await listBillingMiloapisComV1Alpha1BillingAccountForAllNamespaces({
@@ -142,6 +146,47 @@ export const paymentMethodListForOrgQuery = async (orgName: string, params?: Lis
     items: filterNotDeleting(data?.items ?? []),
   };
 };
+
+// ─── Invoices (org-namespaced) ───────────────────────────────────────────────
+
+const INVOICE_PAGE_LIMIT = 500;
+// Safety net against a runaway walk, as for applications.
+const INVOICE_MAX_PAGES = 20;
+
+const invoiceListPageForOrgQuery = async (orgName: string, params?: ListQueryParams) => {
+  const namespace = buildOrganizationNamespace(orgName);
+  const response = await listBillingMiloapisComV1Alpha1NamespacedInvoice({
+    baseURL: getClientOrgControlPlaneBaseURL(orgName),
+    path: { namespace },
+    query: {
+      limit: params?.limit,
+      continue: params?.cursor,
+    },
+  });
+  const data = response.data?.data;
+  return {
+    ...(data ?? { items: [] }),
+    items: filterNotDeleting(data?.items ?? []),
+  };
+};
+
+/**
+ * Every invoice in the organization, walking the `continue` cursor so an
+ * account's balance and aging don't drop invoices past one page.
+ */
+export const invoiceListForOrgQuery = (
+  orgName: string
+): Promise<{ items: Invoice[]; hasMore: boolean }> =>
+  walkCursorPages(
+    async (cursor) => {
+      const page = await invoiceListPageForOrgQuery(orgName, {
+        limit: INVOICE_PAGE_LIMIT,
+        cursor,
+      });
+      return { items: page.items, continueToken: page.metadata?.continue };
+    },
+    { maxPages: INVOICE_MAX_PAGES }
+  );
 
 /** Cluster-wide payment methods — used to surface Failed status on billing/org lists. */
 export const paymentMethodListQuery = async (params?: ListQueryParams) => {

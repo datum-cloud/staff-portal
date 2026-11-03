@@ -1,5 +1,6 @@
 import {
   buildBillingCycleWindows,
+  getPreviousCycleCutoff,
   selectBillingCycleWindow,
   type PaymentTermsInput,
 } from './billing-cycle';
@@ -65,17 +66,58 @@ function authStatusFromError(err: unknown): number | undefined {
   return (err as { response?: { status?: number } })?.response?.status;
 }
 
-export async function resolveBillingAccountForUsageScope(
-  orgName: string,
-  token: string,
-  projectId: string | 'all'
-): Promise<{
+type UsageScopeBillingAccount = {
   name?: string;
   uid?: string;
   paymentTerms?: PaymentTermsInput;
-} | null> {
+};
+
+/**
+ * Read one billing account's cycle. With `strict`, a failed read (403, 404,
+ * 5xx) throws instead of returning `null`: the caller asked for this account,
+ * and falling back to calendar months would mislabel its figures.
+ */
+async function readUsageScopeBillingAccount(
+  orgName: string,
+  token: string,
+  accountName: string,
+  strict = false
+): Promise<UsageScopeBillingAccount | null> {
+  try {
+    const resp = await readBillingMiloapisComV1Alpha1NamespacedBillingAccount({
+      baseURL: getOrgControlPlaneBaseURL(orgName),
+      path: { namespace: orgNamespace(orgName), name: accountName },
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const account = resp.data as unknown as UnwrapProxyResponse<typeof resp.data>;
+    return {
+      name: account?.metadata?.name,
+      uid: account?.metadata?.uid,
+      paymentTerms: account?.spec?.paymentTerms as PaymentTermsInput | undefined,
+    };
+  } catch (error) {
+    if (strict) throw error;
+    return null;
+  }
+}
+
+/**
+ * The billing account whose cycle a usage view follows: `accountName` when
+ * given, else the account `projectId` is bound to, else the organization's
+ * first Ready account.
+ */
+export async function resolveBillingAccountForUsageScope(
+  orgName: string,
+  token: string,
+  projectId: string | 'all',
+  accountName?: string
+): Promise<UsageScopeBillingAccount | null> {
   const baseURL = getOrgControlPlaneBaseURL(orgName);
   const namespace = orgNamespace(orgName);
+
+  if (accountName) {
+    return readUsageScopeBillingAccount(orgName, token, accountName, true);
+  }
 
   if (projectId !== 'all') {
     let bindings;
@@ -95,24 +137,10 @@ export async function resolveBillingAccountForUsageScope(
       (b) =>
         b.spec?.projectRef?.name === projectId && (!b.status?.phase || b.status.phase === 'Active')
     );
-    const accountName = binding?.spec?.billingAccountRef?.name;
-    if (!accountName) return null;
+    const boundAccountName = binding?.spec?.billingAccountRef?.name;
+    if (!boundAccountName) return null;
 
-    try {
-      const resp = await readBillingMiloapisComV1Alpha1NamespacedBillingAccount({
-        baseURL,
-        path: { namespace, name: accountName },
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const account = resp.data as unknown as UnwrapProxyResponse<typeof resp.data>;
-      return {
-        name: account?.metadata?.name,
-        uid: account?.metadata?.uid,
-        paymentTerms: account?.spec?.paymentTerms as PaymentTermsInput | undefined,
-      };
-    } catch {
-      return null;
-    }
+    return readUsageScopeBillingAccount(orgName, token, boundAccountName);
   }
 
   try {
@@ -257,11 +285,13 @@ export async function fetchOrgUsage(
     days?: number;
     range?: UsageTimeRange;
     projectId?: string;
+    /** Narrows the query to one billing account with `spec.billingAccounts`. */
+    billingAccountName?: string;
     /** A catalog fetch already under way, so callers can overlap it with other work. */
     meterDefinitions?: Promise<MeterDefinition[]>;
   } = {}
 ): Promise<UsageFetchResult> {
-  const { days = DEFAULT_DAYS, range, projectId } = options;
+  const { days = DEFAULT_DAYS, range, projectId, billingAccountName } = options;
   const { startSec, endSec, days: resolvedDays } = resolveQueryTimeRange(days, range);
   // A project breakdown only makes sense across several projects.
   const includeProjectBreakdown = !projectId;
@@ -279,6 +309,7 @@ export async function fetchOrgUsage(
         granularity: 'Day',
         timeZone: 'UTC',
         projects: projectId ? [projectId] : undefined,
+        billingAccounts: billingAccountName ? [{ name: billingAccountName }] : undefined,
         includeSpend: index === 0 || undefined,
         groupings: [
           ...(index === 0 ? [{ groupBy: [] }] : []),
@@ -359,9 +390,13 @@ export async function loadOrgUsageDashboard(
   options: {
     projectParam?: string | null;
     cycleParam?: string | null;
+    /** Scope usage and its billing cycle to this billing account. */
+    billingAccountParam?: string | null;
+    /** For the previous cycle, stop at the same point in it as now is in the current one. */
+    samePoint?: boolean;
   } = {}
 ): Promise<OrgUsageDashboardData> {
-  const { projectParam, cycleParam } = options;
+  const { projectParam, cycleParam, billingAccountParam, samePoint = false } = options;
   const selectedProject = resolveUsageProjectSelection(projectParam);
 
   // The catalog doesn't depend on the billing account; fetch both at once.
@@ -369,24 +404,40 @@ export async function loadOrgUsageDashboard(
   // rejection that lands first from counting as unhandled.
   const meterDefinitions = listMeterDefinitions(token);
   meterDefinitions.catch(() => {});
+  // A named account must be read; otherwise fall back to calendar months.
   const scopedBillingAccount = await resolveBillingAccountForUsageScope(
     orgName,
     token,
-    selectedProject
-  ).catch(() => null);
+    selectedProject,
+    billingAccountParam ?? undefined
+  ).catch((error: unknown) => {
+    if (billingAccountParam) throw error;
+    return null;
+  });
 
-  const cycleWindows = buildBillingCycleWindows(scopedBillingAccount?.paymentTerms);
+  const now = new Date();
+  const terms = scopedBillingAccount?.paymentTerms;
+  const cycleWindows = buildBillingCycleWindows(terms, now);
   const selectedCycleWindow = selectBillingCycleWindow(cycleWindows, cycleParam);
   const selectedBillingCycle = selectedCycleWindow.value;
   const billingCycles = cycleWindows.map((window) => ({
     value: window.value,
     label: window.label,
   }));
-  const range = { startSec: selectedCycleWindow.startSec, endSec: selectedCycleWindow.endSec };
+  // The same clock and terms as the current cycle's window, so the two match.
+  const cutoffSec =
+    samePoint && selectedCycleWindow.value === 'previous'
+      ? Math.floor(getPreviousCycleCutoff(terms, now).getTime() / 1000)
+      : selectedCycleWindow.endSec;
+  const range = {
+    startSec: selectedCycleWindow.startSec,
+    endSec: Math.max(selectedCycleWindow.startSec + 1, cutoffSec),
+  };
 
   const usage = await fetchOrgUsage(orgName, token, {
     range,
     projectId: selectedProject === 'all' ? undefined : selectedProject,
+    billingAccountName: billingAccountParam ?? undefined,
     meterDefinitions,
   });
 

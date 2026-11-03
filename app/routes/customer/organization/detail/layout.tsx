@@ -6,7 +6,7 @@ import { authenticator } from '@/modules/auth';
 import { useOrganizationQuery } from '@/resources/request/client';
 import { orgDetailQuery } from '@/resources/request/server';
 import { ACTION_ICONS, ENTITY_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
-import { orgRoutes } from '@/utils/config/routes.config';
+import { orgRoutes, cloudPortalUrls } from '@/utils/config/routes.config';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisResourcemanagerV1Alpha1Organization } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
@@ -109,8 +109,8 @@ export default function Layout() {
     : orgName;
 
   const cloudOrgUrl = useMemo(() => {
-    if (!env?.CLOUD_PORTAL_URL || !orgName) return null;
-    const base = `${env.CLOUD_PORTAL_URL}/org/${orgName}`;
+    const base = cloudPortalUrls.org(env?.CLOUD_PORTAL_URL, orgName);
+    if (!base) return null;
     if (pathname.startsWith(orgRoutes.project(orgName))) return `${base}/projects`;
     if (pathname.startsWith(orgRoutes.member(orgName))) return `${base}/team`;
     if (pathname.startsWith(orgRoutes.activity.root(orgName))) return `${base}/activity`;

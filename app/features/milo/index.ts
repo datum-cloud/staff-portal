@@ -41,6 +41,8 @@ export { SectionCard } from './components/page/section-card';
 export { TableCard } from './components/page/table-card';
 export {
   SECTION_CARD_CHROME,
+  TABLE_CARD_FRAME_CLASS,
+  TABLE_CARD_FOOTER_CLASS,
   LIST_TABLE_HEADER_CLASS,
   LIST_TABLE_HEADER_ROW_CLASS,
   LIST_TABLE_HEADER_CELL_CLASS,
