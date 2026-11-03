@@ -79,7 +79,14 @@ export function BillingAccountPaymentCard({ orgName, account, terms }: PaymentCa
           isEmpty={methods.length === 0}
           skeleton={<Skeleton className="h-14 w-full rounded-md" />}
           error={<Trans>Couldn&apos;t load payment methods</Trans>}
-          empty={<Trans>No payment method on file</Trans>}>
+          empty={
+            // An account on invoice terms pays by transfer, so no card is fine.
+            terms.current ? (
+              <Trans>No card on file. Not needed while invoice terms are active.</Trans>
+            ) : (
+              <Trans>No payment method on file</Trans>
+            )
+          }>
           <ul className="flex flex-col gap-2">
             {methods.map((method) => (
               <PaymentMethodRow

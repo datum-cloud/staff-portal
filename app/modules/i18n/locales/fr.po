@@ -437,7 +437,7 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:178
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:185
 #: app/routes/admin/service-catalog/detail/consumers.tsx:333
 msgid "Active"
 msgstr ""
@@ -894,7 +894,7 @@ msgstr ""
 msgid "Authorized to apply"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:128
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:135
 msgid "auto-charged when invoiced"
 msgstr ""
 
@@ -940,7 +940,7 @@ msgid "Bill usage too, at the rates and discounts of a published offer."
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:433
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:118
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:125
 msgid "Billed by"
 msgstr ""
 
@@ -1743,7 +1743,7 @@ msgstr ""
 msgid "Dedicated servers"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:154
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:161
 #: app/routes/admin/offer/index.tsx:66
 #: app/routes/admin/offer/index.tsx:123
 #: app/routes/admin/offer/index.tsx:127
@@ -2429,7 +2429,7 @@ msgstr ""
 msgid "Expiration Date"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:153
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:160
 msgid "expires {expiry}"
 msgstr ""
 
@@ -2753,11 +2753,11 @@ msgstr ""
 msgid "Grant payment terms"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:210
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:217
 msgid "Grant terms"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:201
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:208
 msgid "Grant terms to let this account be billed by invoice."
 msgstr ""
 
@@ -2981,7 +2981,7 @@ msgstr ""
 msgid "Invoice recipients"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:174
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:181
 msgid "Invoice terms"
 msgstr ""
 
@@ -3660,6 +3660,10 @@ msgstr ""
 msgid "No BillingEntitlement found for this account. New accounts pick up the default Offer automatically when catalog defaults are configured."
 msgstr ""
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:85
+msgid "No card on file. Not needed while invoice terms are active."
+msgstr ""
+
 #: app/features/billing/components/offer-included-pricing-list.tsx:268
 msgid "No charges included in this Offer."
 msgstr ""
@@ -3862,11 +3866,11 @@ msgstr ""
 msgid "No payment method"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:82
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:87
 msgid "No payment method on file"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:193
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:200
 msgid "No payment terms"
 msgstr ""
 
@@ -4428,11 +4432,11 @@ msgstr ""
 msgid "Pays by card"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:197
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:204
 msgid "Pays by card. Invoice billing (net terms, credit limit, PO) isn't granted."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:132
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:139
 msgid "pays invoices on terms"
 msgstr ""
 
@@ -5131,7 +5135,7 @@ msgstr ""
 msgid "Schedule invitation to be sent at specific time"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:178
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:185
 msgid "Scheduled"
 msgstr ""
 

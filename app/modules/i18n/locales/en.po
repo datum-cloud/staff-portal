@@ -437,7 +437,7 @@ msgstr "Action"
 msgid "Actions"
 msgstr "Actions"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:178
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:185
 #: app/routes/admin/service-catalog/detail/consumers.tsx:333
 msgid "Active"
 msgstr "Active"
@@ -894,7 +894,7 @@ msgstr "Audit Logs"
 msgid "Authorized to apply"
 msgstr "Authorized to apply"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:128
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:135
 msgid "auto-charged when invoiced"
 msgstr "auto-charged when invoiced"
 
@@ -940,7 +940,7 @@ msgid "Bill usage too, at the rates and discounts of a published offer."
 msgstr "Bill usage too, at the rates and discounts of a published offer."
 
 #: app/features/billing/components/application-review.tsx:433
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:118
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:125
 msgid "Billed by"
 msgstr "Billed by"
 
@@ -1743,7 +1743,7 @@ msgstr "Declined"
 msgid "Dedicated servers"
 msgstr "Dedicated servers"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:154
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:161
 #: app/routes/admin/offer/index.tsx:66
 #: app/routes/admin/offer/index.tsx:123
 #: app/routes/admin/offer/index.tsx:127
@@ -2429,7 +2429,7 @@ msgstr "Expand sidebar"
 msgid "Expiration Date"
 msgstr "Expiration Date"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:153
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:160
 msgid "expires {expiry}"
 msgstr "expires {expiry}"
 
@@ -2753,11 +2753,11 @@ msgstr "Grant deleted successfully"
 msgid "Grant payment terms"
 msgstr "Grant payment terms"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:210
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:217
 msgid "Grant terms"
 msgstr "Grant terms"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:201
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:208
 msgid "Grant terms to let this account be billed by invoice."
 msgstr "Grant terms to let this account be billed by invoice."
 
@@ -2981,7 +2981,7 @@ msgstr "Invoice past due — {amount}"
 msgid "Invoice recipients"
 msgstr "Invoice recipients"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:174
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:181
 msgid "Invoice terms"
 msgstr "Invoice terms"
 
@@ -3660,6 +3660,10 @@ msgstr "No billing accounts found"
 msgid "No BillingEntitlement found for this account. New accounts pick up the default Offer automatically when catalog defaults are configured."
 msgstr "No BillingEntitlement found for this account. New accounts pick up the default Offer automatically when catalog defaults are configured."
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:85
+msgid "No card on file. Not needed while invoice terms are active."
+msgstr "No card on file. Not needed while invoice terms are active."
+
 #: app/features/billing/components/offer-included-pricing-list.tsx:268
 msgid "No charges included in this Offer."
 msgstr "No charges included in this Offer."
@@ -3862,11 +3866,11 @@ msgstr "No other published Offers are available to switch to."
 msgid "No payment method"
 msgstr "No payment method"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:82
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:87
 msgid "No payment method on file"
 msgstr "No payment method on file"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:193
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:200
 msgid "No payment terms"
 msgstr "No payment terms"
 
@@ -4428,11 +4432,11 @@ msgstr "Payment terms withdrawn"
 msgid "Pays by card"
 msgstr "Pays by card"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:197
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:204
 msgid "Pays by card. Invoice billing (net terms, credit limit, PO) isn't granted."
 msgstr "Pays by card. Invoice billing (net terms, credit limit, PO) isn't granted."
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:132
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:139
 msgid "pays invoices on terms"
 msgstr "pays invoices on terms"
 
@@ -5131,7 +5135,7 @@ msgstr "Schedule date and time is required"
 msgid "Schedule invitation to be sent at specific time"
 msgstr "Schedule invitation to be sent at specific time"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:178
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:185
 msgid "Scheduled"
 msgstr "Scheduled"
 
