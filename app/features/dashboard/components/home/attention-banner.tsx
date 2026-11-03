@@ -1,5 +1,6 @@
 import { AttentionBannerShell } from '@/components/attention-banner';
 import { Icon } from '@datum-cloud/datum-ui/icons';
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { ChevronRight } from 'lucide-react';
 import type { ReactNode } from 'react';
@@ -28,7 +29,7 @@ export function AttentionBanner({ items, isLoading }: AttentionBannerProps) {
 
   return (
     <AttentionBannerShell
-      label="Platform attention"
+      label={t`Platform attention`}
       isLoading={isLoading}
       total={total}
       clearSummary={
@@ -40,18 +41,16 @@ export function AttentionBanner({ items, isLoading }: AttentionBannerProps) {
           {i.count} {i.label}
         </span>
       ))}>
-      <div className="border-border flex flex-col border-t p-1.5">
-        {active.map((i) => (
-          <Link
-            key={i.key}
-            to={i.href}
-            className="hover:bg-accent flex h-9 items-center gap-2 rounded-md px-2.5 text-sm">
-            <span className="font-medium tabular-nums">{i.count}</span>
-            <span className="text-muted-foreground min-w-0 flex-1 truncate">{i.label}</span>
-            <Icon icon={ChevronRight} size={14} className="text-icon-quaternary" aria-hidden />
-          </Link>
-        ))}
-      </div>
+      {active.map((i) => (
+        <Link
+          key={i.key}
+          to={i.href}
+          className="hover:bg-accent flex h-9 items-center gap-2 rounded-md px-2.5 text-sm">
+          <span className="font-medium tabular-nums">{i.count}</span>
+          <span className="text-muted-foreground min-w-0 flex-1 truncate">{i.label}</span>
+          <Icon icon={ChevronRight} size={14} className="text-icon-quaternary" aria-hidden />
+        </Link>
+      ))}
     </AttentionBannerShell>
   );
 }

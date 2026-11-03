@@ -24,8 +24,10 @@ interface AttentionBannerShellProps {
    */
   incomplete?: ReactNode;
   defaultExpanded?: boolean;
-  /** The expanded list, shown under the header while there are issues. */
+  /** The expanded list's rows, shown under the header while there are issues. */
   children: ReactNode;
+  /** Shown under the expanded list, e.g. what passed. */
+  footer?: ReactNode;
 }
 
 /**
@@ -41,6 +43,7 @@ export function AttentionBannerShell({
   incomplete,
   defaultExpanded = false,
   children,
+  footer,
 }: AttentionBannerShellProps) {
   const [expanded, setExpanded] = useState(defaultExpanded);
 
@@ -101,7 +104,12 @@ export function AttentionBannerShell({
           </>
         )}
       </div>
-      {total > 0 && expanded ? children : null}
+      {total > 0 && expanded ? (
+        <>
+          <div className="border-border flex flex-col gap-1 border-t p-1.5">{children}</div>
+          {footer}
+        </>
+      ) : null}
     </section>
   );
 }

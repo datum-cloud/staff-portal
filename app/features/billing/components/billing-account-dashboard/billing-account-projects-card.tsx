@@ -189,7 +189,8 @@ export function BillingAccountProjectsCard({ orgName, account }: ProjectsCardPro
         <DataTable.Client
           data={rows}
           columns={columns}
-          pageSize={Math.max(rows.length, 10)}
+          // One page: spend requests are already capped, so the list stays short.
+          pageSize={Math.max(rows.length, 1)}
           getRowId={(row) => row.id}>
           <DataTable.Content
             headerClassName={LIST_TABLE_HEADER_CLASS}

@@ -6,6 +6,7 @@ import {
   type AccountHealthInputs,
   type HealthIssue,
 } from './account-health';
+import { buildInvoice, buildPaidInvoice } from './test-fixtures';
 import type {
   ComMiloapisBillingV1Alpha1BillingAccount,
   ComMiloapisBillingV1Alpha1PaymentMethod,
@@ -55,17 +56,9 @@ const card = (
   },
 });
 
-const invoice = (name: string, status: NonNullable<Invoice['status']>): Invoice => ({
-  metadata: { name },
-  spec: {
-    billingAccountRef: { name: 'ba-test' },
-    period: { start: '2026-10-01T00:00:00Z', end: '2026-10-31T00:00:00Z' },
-  },
-  status,
-});
+const invoice = buildInvoice;
 
-const paid = (name: string, total: string) =>
-  invoice(name, { phase: 'Paid', total, amountPaid: total, amountDue: '0' });
+const paid = buildPaidInvoice;
 
 const healthy: AccountHealthInputs = {
   account: account(),

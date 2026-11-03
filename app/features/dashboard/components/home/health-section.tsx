@@ -1,5 +1,6 @@
 import {
   StatTile,
+  StatTileDetail,
   StatTileHeadline,
   StatTileMessage,
   StatTileSkeleton,
@@ -52,13 +53,13 @@ function ClustersCard({ enabled }: { enabled: boolean }) {
             }>
             {summary.healthy}/{summary.total}
           </StatTileHeadline>
-          <Text size="xs" textColor="muted" ellipsis>
+          <StatTileDetail>
             {summary.unhealthy === 0 ? (
               <Trans>All clusters healthy</Trans>
             ) : (
               <Trans>Unhealthy: {unhealthy?.map((cl) => cl.name).join(', ')}</Trans>
             )}
-          </Text>
+          </StatTileDetail>
         </>
       )}
     </StatTile>
@@ -86,9 +87,9 @@ function QuotaCard({ buckets, isLoading }: { buckets: QuotaBucketRow[]; isLoadin
             icon={<Icon icon={CircleCheck} size={18} className="text-green-600" aria-hidden />}>
             0
           </StatTileHeadline>
-          <Text size="xs" textColor="muted">
+          <StatTileDetail>
             <Trans>No organization is near a limit</Trans>
-          </Text>
+          </StatTileDetail>
         </>
       ) : (
         <ul className="flex flex-col">
@@ -145,7 +146,7 @@ function EmailCard() {
             }>
             {rate == null ? '—' : `${rate.toFixed(1)}%`}
           </StatTileHeadline>
-          <Text size="xs" textColor="muted" className="tabular-nums">
+          <StatTileDetail>
             {sent === 0 ? (
               <Trans>No emails sent</Trans>
             ) : (
@@ -154,7 +155,7 @@ function EmailCard() {
               </Trans>
             )}
             {data.truncated && '+'}
-          </Text>
+          </StatTileDetail>
         </>
       )}
     </StatTile>

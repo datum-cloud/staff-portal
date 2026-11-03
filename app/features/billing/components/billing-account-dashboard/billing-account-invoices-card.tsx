@@ -64,7 +64,9 @@ interface InvoicesCardProps {
 
 /** Rows shown before "All invoices" expands the table. */
 const PREVIEW_ROWS = 6;
+/** Rows per page once expanded, and the page sizes staff can pick from. */
 const PAGE_SIZE = 10;
+const PAGE_SIZE_OPTIONS = [PAGE_SIZE, 25, 50];
 
 const agingLabel = (bucket: InvoiceAgingBucket): string => {
   switch (bucket) {
@@ -316,7 +318,7 @@ export function BillingAccountInvoicesCard({ orgName, account, now }: InvoicesCa
                 />
                 {expanded && rows.length > PAGE_SIZE ? (
                   <div className={cn(TABLE_CARD_FOOTER_CLASS, 'px-2 py-1')}>
-                    <DataTable.Pagination pageSizes={[10, 25, 50]} />
+                    <DataTable.Pagination pageSizes={PAGE_SIZE_OPTIONS} />
                   </div>
                 ) : null}
               </DataTable.Client>

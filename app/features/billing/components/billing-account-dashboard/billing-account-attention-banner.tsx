@@ -407,13 +407,15 @@ export function BillingAccountAttentionBanner({
           <Trans>Some checks couldn&apos;t see every invoice</Trans>
         ) : undefined
       }
-      issueSummary={groupSummary(issues)}>
-      <ul className="border-border flex flex-col gap-1 border-t p-1.5">
+      issueSummary={groupSummary(issues)}
+      footer={
+        <PassingLine passing={passing} failed={failed} partial={partial} isLoading={isLoading} />
+      }>
+      <ul className="flex flex-col gap-1">
         {issues.map((issue, index) => (
           <IssueRow key={`${issue.key}-${index}`} issue={issue} ctx={ctx} />
         ))}
       </ul>
-      <PassingLine passing={passing} failed={failed} partial={partial} isLoading={isLoading} />
     </AttentionBannerShell>
   );
 }

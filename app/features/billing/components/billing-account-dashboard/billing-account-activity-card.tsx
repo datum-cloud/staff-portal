@@ -17,6 +17,9 @@ import { useMemo } from 'react';
  */
 const TIME_RANGE = { start: 'now-30d' };
 
+/** Changes shown in the card; the activity log has the rest. */
+const ACTIVITY_PAGE_SIZE = 8;
+
 /** Every row is in this org, so its tenant badge adds nothing. */
 const hideTenant = () => null;
 
@@ -61,7 +64,7 @@ export function BillingAccountActivityCard({ orgName }: { orgName: string }) {
         hiddenFilters={['changeSource', 'apiGroups', 'resourceNamespaces']}
         variant="timeline"
         compact
-        pageSize={8}
+        pageSize={ACTIVITY_PAGE_SIZE}
         infiniteScroll={false}
         resourceLinkResolver={staffResourceLinkResolver}
         tenantRenderer={hideTenant}
