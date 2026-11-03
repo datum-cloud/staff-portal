@@ -502,11 +502,11 @@ function ContractDialog({
             const name = offer.metadata?.name ?? '';
             return (
               <Form.SelectItem key={name} value={name}>
-                {getOfferDisplayName(offer)}
+                {getOfferDisplayName(offer)} ({name})
                 {name === currentOfferName
-                  ? t` (current)`
+                  ? t` · current`
                   : name === defaultOfferName
-                    ? t` (default)`
+                    ? t` · default`
                     : ''}
               </Form.SelectItem>
             );

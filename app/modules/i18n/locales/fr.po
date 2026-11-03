@@ -18,11 +18,11 @@ msgid " · {days}d late"
 msgstr ""
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:507
-msgid " (current)"
+msgid " · current"
 msgstr ""
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:509
-msgid " (default)"
+msgid " · default"
 msgstr ""
 
 #: app/features/project/components/project-billing-card.tsx:69
