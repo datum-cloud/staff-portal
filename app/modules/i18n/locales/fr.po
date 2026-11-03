@@ -148,7 +148,7 @@ msgstr ""
 msgid "500 - Server Error"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:138
+#: app/features/contact/components/contact-form.tsx:143
 msgid "A contact with this email already exists."
 msgstr ""
 
@@ -156,7 +156,7 @@ msgstr ""
 msgid "A signed MSA or order form, if there is one. Otherwise our standard terms apply."
 msgstr ""
 
-#: app/features/contact/components/contact-about-card.tsx:18
+#: app/features/contact/components/contact-about-card.tsx:22
 msgid "About"
 msgstr ""
 
@@ -633,12 +633,12 @@ msgstr ""
 msgid "Assign a billing account to this project to track usage."
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:217
+#: app/features/contact/components/contact-form.tsx:222
 #: app/routes/marketing/contact-group/detail/member.tsx:103
 msgid "Associate with User"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:161
+#: app/features/contact/components/contact-form.tsx:166
 msgid "Associated with User: "
 msgstr ""
 
@@ -751,7 +751,7 @@ msgstr ""
 #: app/features/billing/components/payment-terms-card.tsx:333
 #: app/features/billing/components/payment-terms-card.tsx:494
 #: app/features/contact-group/components/contact-group-form.tsx:97
-#: app/features/contact/components/contact-form.tsx:244
+#: app/features/contact/components/contact-form.tsx:249
 #: app/features/contact/components/contact-list.tsx:135
 #: app/features/feature-flags/components/feature-flag-list.tsx:230
 #: app/features/fraud/policy/policy-form.tsx:314
@@ -1004,7 +1004,7 @@ msgstr ""
 msgid "Contact created and added to the contact group"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:106
+#: app/features/contact/components/contact-form.tsx:111
 msgid "Contact created successfully"
 msgstr ""
 
@@ -1074,7 +1074,7 @@ msgstr ""
 msgid "Contact name"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:73
+#: app/features/contact/components/contact-form.tsx:78
 msgid "Contact updated successfully"
 msgstr ""
 
@@ -1156,7 +1156,7 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:371
 #: app/features/activity/components/activity-list.tsx:461
 #: app/features/contact-group/components/contact-group-form.tsx:103
-#: app/features/contact/components/contact-form.tsx:250
+#: app/features/contact/components/contact-form.tsx:255
 #: app/features/fraud/policy/policy-form.tsx:317
 #: app/routes/admin/offer/create.tsx:32
 #: app/routes/customer/fraud/providers/create.tsx:16
@@ -1198,7 +1198,7 @@ msgstr ""
 
 #: app/features/billing/components/billing-account-list.tsx:239
 #: app/features/billing/components/billing-account-list.tsx:317
-#: app/features/contact/components/contact-about-card.tsx:26
+#: app/features/contact/components/contact-about-card.tsx:32
 #: app/features/contact/components/contact-list.tsx:111
 #: app/features/contact/components/contact-list.tsx:182
 #: app/features/dns/components/dns-zone-list.tsx:133
@@ -1722,11 +1722,16 @@ msgid "Each routing rule has its own pool, weighted within the rule."
 msgstr ""
 
 #: app/features/contact/components/contact-list.tsx:56
+#: app/features/contact/components/edit-contact-dialog.tsx:38
 #: app/features/fraud/policy/policy-detail.tsx:318
 #: app/routes/admin/offer/detail.tsx:293
 #: app/routes/customer/fraud/providers/index.tsx:42
 #: app/routes/marketing/contact-group/index.tsx:49
 msgid "Edit"
+msgstr ""
+
+#: app/features/contact/components/edit-contact-dialog.tsx:43
+msgid "Edit contact"
 msgstr ""
 
 #: app/routes/admin/offer/detail.tsx:481
@@ -1754,8 +1759,8 @@ msgstr ""
 msgid "Education or research"
 msgstr ""
 
-#: app/features/contact/components/contact-about-card.tsx:24
-#: app/features/contact/components/contact-form.tsx:131
+#: app/features/contact/components/contact-about-card.tsx:30
+#: app/features/contact/components/contact-form.tsx:136
 #: app/features/contact/components/contact-list.tsx:91
 #: app/features/contact/components/contact-list.tsx:167
 #: app/features/contact/components/timeline/timeline-item.tsx:55
@@ -1924,7 +1929,7 @@ msgstr ""
 msgid "Enter reason for rejection..."
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:226
+#: app/features/contact/components/contact-form.tsx:231
 #: app/routes/admin/group/detail/member.tsx:180
 #: app/routes/marketing/contact-group/detail/member.tsx:114
 msgid "Enter the full email to search..."
@@ -2167,18 +2172,18 @@ msgstr ""
 msgid "Fingerprint ID"
 msgstr ""
 
-#: app/features/contact/components/contact-about-card.tsx:22
+#: app/features/contact/components/contact-about-card.tsx:28
 #: app/routes/marketing/contact-group/detail/member.tsx:95
 msgid "First name"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:125
+#: app/features/contact/components/contact-form.tsx:130
 #: app/features/profile/components/profile-form.tsx:46
 #: app/routes/customer/user/index.tsx:238
 msgid "First Name"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:46
+#: app/features/contact/components/contact-form.tsx:50
 #: app/features/profile/components/profile-form.tsx:15
 #: app/routes/customer/user/index.tsx:180
 msgid "First name is required"
@@ -2476,7 +2481,7 @@ msgstr ""
 msgid "Internal notes"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:48
+#: app/features/contact/components/contact-form.tsx:52
 #: app/routes/customer/user/index.tsx:182
 msgid "Invalid email address"
 msgstr ""
@@ -2630,18 +2635,18 @@ msgstr ""
 msgid "Last Evaluated"
 msgstr ""
 
-#: app/features/contact/components/contact-about-card.tsx:23
+#: app/features/contact/components/contact-about-card.tsx:29
 #: app/routes/marketing/contact-group/detail/member.tsx:98
 msgid "Last name"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:128
+#: app/features/contact/components/contact-form.tsx:133
 #: app/features/profile/components/profile-form.tsx:49
 #: app/routes/customer/user/index.tsx:241
 msgid "Last Name"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:47
+#: app/features/contact/components/contact-form.tsx:51
 #: app/features/profile/components/profile-form.tsx:16
 #: app/routes/customer/user/index.tsx:181
 msgid "Last name is required"
@@ -2750,7 +2755,7 @@ msgstr ""
 msgid "Loading details…"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:178
+#: app/features/contact/components/contact-form.tsx:183
 msgid "Loading mail lists..."
 msgstr ""
 
@@ -2816,7 +2821,7 @@ msgstr ""
 msgid "Low"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:181
+#: app/features/contact/components/contact-form.tsx:186
 msgid "Mail Lists"
 msgstr ""
 
@@ -3604,7 +3609,7 @@ msgstr ""
 msgid "Onboarding incomplete"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:232
+#: app/features/contact/components/contact-form.tsx:237
 msgid "Once a contact is associated with a user, this association cannot be removed or changed later."
 msgstr ""
 
@@ -4320,7 +4325,7 @@ msgstr ""
 msgid "Resend"
 msgstr ""
 
-#: app/features/contact/components/contact-about-card.tsx:33
+#: app/features/contact/components/contact-about-card.tsx:39
 #: app/features/quota/components/quota-bucket-list.tsx:85
 #: app/features/quota/components/quota-grant-list.tsx:69
 msgid "Resource"
@@ -4999,7 +5004,7 @@ msgstr ""
 msgid "Subject"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:61
+#: app/features/contact/components/contact-form.tsx:65
 #: app/routes/marketing/contact-group/detail/member.tsx:272
 msgid "Subject is required when user association is enabled"
 msgstr ""
@@ -5190,7 +5195,7 @@ msgstr ""
 msgid "This contact isn't linked to a platform user, so organization memberships aren't available."
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:147
+#: app/features/contact/components/contact-form.tsx:152
 msgid "This email is already used by <0>{displayName}</0>."
 msgstr ""
 
@@ -5373,7 +5378,7 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:372
 #: app/features/activity/components/activity-list.tsx:462
 #: app/features/contact-group/components/contact-group-form.tsx:103
-#: app/features/contact/components/contact-form.tsx:250
+#: app/features/contact/components/contact-form.tsx:255
 #: app/features/fraud/policy/policy-form.tsx:317
 #: app/features/quota/components/quota-bucket-list.tsx:170
 #: app/routes/customer/fraud/providers/detail.tsx:174
@@ -5541,7 +5546,7 @@ msgstr ""
 msgid "Waiting on"
 msgstr ""
 
-#: app/features/contact/components/contact-form.tsx:231
+#: app/features/contact/components/contact-form.tsx:236
 msgid "Warning"
 msgstr ""
 

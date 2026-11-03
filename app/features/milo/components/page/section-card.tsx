@@ -36,7 +36,11 @@ export function SectionCard({
   return (
     <Card className={cn(SECTION_CARD_CHROME, 'gap-0 py-0', className)} data-slot="section-card">
       {hasHeader && (
-        <CardHeader className="flex flex-row items-start justify-between gap-3 space-y-0 px-4 pt-4 pb-0">
+        <CardHeader
+          className={cn(
+            'flex flex-row justify-between gap-3 space-y-0 px-4 pt-4 pb-0',
+            description != null ? 'items-start' : 'items-center'
+          )}>
           <div className="min-w-0 flex-1 space-y-1">
             {title != null && <CardTitle className="text-base font-medium">{title}</CardTitle>}
             {description != null && <CardDescription>{description}</CardDescription>}
