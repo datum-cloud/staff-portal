@@ -89,7 +89,7 @@ export default function DialogForm<TValues extends Record<string, unknown>>({
 
                 <Dialog.Footer className="gap-2">
                   <Button
-                    type="tertiary"
+                    type="quaternary"
                     theme="borderless"
                     htmlType="button"
                     onClick={handleCancel}
