@@ -29,6 +29,7 @@ export interface BillingAccountHeaderAction {
   key: string;
   label: ReactNode;
   onSelect: () => void;
+  disabled?: boolean;
 }
 
 interface BillingAccountHeaderProps {
@@ -178,7 +179,10 @@ export function BillingAccountHeader({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {actions.map((action) => (
-                  <DropdownMenuItem key={action.key} onClick={action.onSelect}>
+                  <DropdownMenuItem
+                    key={action.key}
+                    disabled={action.disabled}
+                    onClick={action.onSelect}>
                     {action.label}
                   </DropdownMenuItem>
                 ))}

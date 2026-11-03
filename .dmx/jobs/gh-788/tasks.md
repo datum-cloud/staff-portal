@@ -26,14 +26,14 @@
 - [x] Rebuild `app/routes/customer/billing-account/detail/index.tsx` as the dashboard grid (main column and 400px side column) composing the header, banner and health cards
 
 ## Phase 3: Dashboard cards
-- [ ] Add `BillingAccountUsageCard` (`SectionCard`): spend so far, meter `Select` grouped by service and sorted by spend with idle meters left out, `recharts` `AreaChart` of daily usage styled like `MeterCard`, top-3 spend-by-service rows that select a meter, and a usage dashboard link; skeleton and error state
-- [ ] Add `BillingAccountInvoicesCard` (`TableCard` + `DataTable.Client` with `EMBEDDED_TABLE_*` classes): aging summary, past-due rows first, copy/download, "All invoices" expanding in place with search
-- [ ] Add `BillingAccountProjectsCard` (`TableCard`): bindings plus per-project spend via `useQueries` on `useOrgUsageDashboardQuery` with `project`, share bar, linked date, status; per-row skeletons
-- [ ] Add `BillingAccountPaymentCard` (`SectionCard`): billed-by badge, default card row, payment terms summary, reusing the grant/edit dialogs from `PaymentTermsCard`
-- [ ] Add `BillingAccountOfferCard`, reusing the switch flow from `OfferSwitcherCard`
-- [ ] Add `BillingAccountContactCard` and `BillingAccountConfigCard` (`SectionCard` + `DescriptionList`)
-- [ ] Add `BillingAccountActivityCard` (`SectionCard` + compact `ActivityFeed` with `apiGroups: ['billing.miloapis.com']`, `resourceNamespaces: ['organization-{org}']`, filters hidden, link to the activity log)
-- [ ] Compose all cards in `detail/index.tsx` and delete the old page sections and helpers that are no longer used
+- [x] Add `BillingAccountUsageCard` (`SectionCard`): spend so far, meter `Select` grouped by service and sorted by spend with idle meters left out, `recharts` `AreaChart` of daily usage styled like `MeterCard`, top-3 spend-by-service rows that select a meter, and a usage dashboard link; skeleton and error state
+- [x] Add `BillingAccountInvoicesCard` (`TableCard` + `DataTable.Client` with `EMBEDDED_TABLE_*` classes): aging summary, past-due rows first, copy/download, "All invoices" expanding in place with search
+- [x] Add `BillingAccountProjectsCard` (`TableCard`): bindings plus per-project spend via `useQueries` on `useOrgUsageDashboardQuery` with `project`, share bar, linked date, status; per-row skeletons
+- [x] Add `BillingAccountPaymentCard` (`SectionCard`): billed-by badge, default card row, payment terms summary, reusing the grant/edit dialogs from `PaymentTermsCard`
+- [x] Add `BillingAccountOfferCard`, reusing the switch flow from `OfferSwitcherCard`
+- [x] Add `BillingAccountContactCard` and `BillingAccountConfigCard` (`SectionCard` + `DescriptionList`)
+- [x] Add `BillingAccountActivityCard` (`SectionCard` + compact `ActivityFeed` with `apiGroups: ['billing.miloapis.com']`, `resourceNamespaces: ['organization-{org}']`, filters hidden, link to the activity log)
+- [x] Compose all cards in `detail/index.tsx` and delete the old page sections and helpers that are no longer used
 
 ## Phase 4: Polish and validation
 - [ ] Check the page at mobile width (stacked columns) and in dark mode

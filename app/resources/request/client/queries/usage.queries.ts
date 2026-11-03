@@ -5,7 +5,7 @@ import {
 } from '../apis/usage.api';
 import type { OrgUsageSummary } from '@/modules/billing/org-usage.types';
 import type { OrgUsageDashboardData } from '@/modules/billing/usage.types';
-import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
+import { useQueries, useQuery, type UseQueryOptions } from '@tanstack/react-query';
 
 export const usageQueryKeys = {
   all: ['org-usage'] as const,
@@ -53,5 +53,25 @@ export function useOrgUsageDashboardQuery(
     enabled: !!orgName,
     staleTime: 60 * 1000,
     ...queryOptions,
+  });
+}
+
+/**
+ * One usage dashboard query per project, e.g. spend per linked project.
+ * Results are in `projects` order; each loads and fails on its own.
+ */
+export function useOrgUsageDashboardQueries(
+  orgName: string,
+  projects: readonly string[],
+  cycle: 'current' | 'previous' = 'current',
+  scope: UsageDashboardScope = {}
+) {
+  return useQueries({
+    queries: projects.map((project) => ({
+      queryKey: usageQueryKeys.dashboard(orgName, project, cycle, scope),
+      queryFn: () => fetchOrgUsageDashboard(orgName, project, cycle, scope),
+      enabled: !!orgName && !!project,
+      staleTime: 60 * 1000,
+    })),
   });
 }

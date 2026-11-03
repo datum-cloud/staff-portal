@@ -1,10 +1,6 @@
 import { USAGE_SPIKE_FACTOR, type UsageSpendComparison } from '../../lib/account-health';
-import {
-  getNextInvoice,
-  summarizeInvoices,
-  type InvoiceSummary,
-  type NextInvoice,
-} from '../../lib/invoice-summary';
+import { getNextInvoice, summarizeInvoices, type InvoiceSummary } from '../../lib/invoice-summary';
+import { frequencyLabel } from './card-parts';
 import { useAccountInvoices, useAccountUsageSpend } from './use-account-dashboard';
 import { DateTime } from '@/components/date';
 import { formatCurrency } from '@/features/organization/usage/usage.format';
@@ -30,17 +26,6 @@ interface HealthCardsProps {
 const accountCurrency = (account: BillingAccount) => account.spec?.currencyCode ?? 'USD';
 
 const money = (amount: number, currency: string) => formatCurrency({ amount, currency });
-
-const frequencyLabel = (frequency: NextInvoice['frequency']): string => {
-  switch (frequency) {
-    case 'Quarterly':
-      return t`Quarterly`;
-    case 'Annual':
-      return t`Annual`;
-    default:
-      return t`Monthly`;
-  }
-};
 
 // Tile chrome mirrors the platform home's HealthCard (dashboard/home/health-section).
 

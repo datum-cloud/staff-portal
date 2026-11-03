@@ -9,6 +9,7 @@ import type { OrgUsageDashboardData } from '@/modules/billing/usage.types';
 import {
   useBillingEntitlementForAccountQuery,
   useInvoiceListForOrgQuery,
+  useOrgUsageDashboardQueries,
   useOrgUsageDashboardQuery,
   usePaymentMethodListForOrgQuery,
 } from '@/resources/request/client';
@@ -128,6 +129,39 @@ export function useAccountUsageSpend(
     isLoading: current.isLoading || previous.isLoading,
     isError: current.isError,
   };
+}
+
+export interface ProjectSpend extends LoadState {
+  /** This cycle's spend; `undefined` while loading or when it couldn't be priced. */
+  amount?: number;
+}
+
+/**
+ * This cycle's spend for each project, scoped to the account. Keyed by
+ * project name; each project loads and fails on its own.
+ */
+export function useAccountProjectSpend(
+  orgName: string,
+  account: BillingAccount,
+  projects: readonly string[]
+): ReadonlyMap<string, ProjectSpend> {
+  const accountName = account.metadata?.name ?? '';
+  const results = useOrgUsageDashboardQueries(orgName, projects, 'current', {
+    billingAccount: accountName,
+  });
+  return new Map(
+    projects.map((project, index) => {
+      const result = results[index];
+      return [
+        project,
+        {
+          amount: spendAmount(result?.data),
+          isLoading: result?.isLoading ?? true,
+          isError: result?.isError ?? false,
+        },
+      ];
+    })
+  );
 }
 
 export interface AccountHealthState {

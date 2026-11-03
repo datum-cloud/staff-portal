@@ -31,6 +31,8 @@ A single-package React Router v7 full-stack app (SSR) running on Node with a Hon
 - **Walking every page:** `walkCursorPages` (`app/utils/helpers/pagination.helper.ts`) returns `{ items, hasMore }`; client list helpers that need every item (invoices, applications) use it with a page limit and a max-pages guard, and show totals as a floor when `hasMore`.
 - **Non-blocking detail loaders:** a route loader fetches only what the page shell needs (e.g. the billing account and org name) and passes it to the matching query hook as `initialData` (`useBillingAccountDetailQuery`); every card then loads its own data through React Query with a skeleton, sharing requests by query key.
 - **Account-scoped usage:** `UsageQuery.spec.billingAccounts` narrows an organization usage query to one billing account; without it the query uses the org's first Ready account's cycle and reads every account's usage.
+- **Per-project usage:** `useOrgUsageDashboardQueries` runs one usage dashboard query per project with the same keys as `useOrgUsageDashboardQuery`, so per-project spend shares the cache with the org usage page.
+- **Billing activity:** billing resources live on the org control plane, so a billing activity feed needs an `ActivityApiClient` built with `getOrganizationControlPlanePath(orgName)` and filtered to `billing.miloapis.com` in `organization-{org}`.
 
 ## Component relationships
 
