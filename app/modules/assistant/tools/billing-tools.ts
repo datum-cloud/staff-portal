@@ -1,17 +1,37 @@
 import { datumGet } from './api-helpers';
-import { projectDisplayName } from './display-name';
 import {
+  summarizeAccountStanding,
+  summarizeApplication,
+  summarizeArrangement,
+  summarizeEntitlement,
+  summarizeInvoice,
+  summarizeInvoiceTotals,
+  summarizeOffer,
+  summarizeUsage,
+} from './billing-summaries';
+import { projectDisplayName } from './display-name';
+import { sortInvoicesPastDueFirst } from '@/features/billing/lib/invoice-summary';
+import { getArrangementsForAccount } from '@/features/billing/lib/payment-terms';
+import {
+  BILLING_SERVICE_CONFIGURATION_NAME,
   buildOrganizationNamespace,
   getActiveBindingsForAccount,
   getActiveProjectBinding,
   getBillingAccountDisplayName,
   isDefaultPaymentMethod,
+  isStaleInvoice,
   orgNameFromNamespace,
+  type BillingEntitlement,
+  type Invoice,
 } from '@/features/billing/utils';
+import { loadOrgUsageDashboard } from '@/modules/billing/usage.server';
 import { billingAccountRoutes } from '@/utils/config/routes.config';
 import type {
   ComMiloapisBillingV1Alpha1BillingAccount,
   ComMiloapisBillingV1Alpha1BillingAccountBinding,
+  ComMiloapisBillingV1Alpha1BillingArrangement,
+  ComMiloapisBillingV1Alpha1BillingArrangementApplication,
+  ComMiloapisBillingV1Alpha1Offer,
   ComMiloapisBillingV1Alpha1PaymentMethod,
 } from '@openapi/billing.miloapis.com/v1alpha1';
 import { tool } from 'ai';
@@ -32,6 +52,62 @@ function normalizeProjectName(projectName: string): string {
 function orgBillingPath(orgName: string, subPath: string): string {
   const namespace = buildOrganizationNamespace(orgName);
   return `/apis/resourcemanager.miloapis.com/v1alpha1/organizations/${orgName}/control-plane/apis/billing.miloapis.com/v1alpha1/namespaces/${namespace}/${subPath}`;
+}
+
+const BILLING_ROOT = '/apis/billing.miloapis.com/v1alpha1';
+
+/** Most invoices returned in one list; the rest are counted. */
+const MAX_INVOICES = 50;
+
+/** The default offer new accounts get, from billing's service configuration. */
+async function defaultOfferName(accessToken: string): Promise<string> {
+  const result = await datumGet(
+    `/apis/services.miloapis.com/v1alpha1/serviceconfigurations/${BILLING_SERVICE_CONFIGURATION_NAME}`,
+    accessToken
+  );
+  return result?.error ? '' : (result?.spec?.defaultOffer?.trim() ?? '');
+}
+
+/** Most pages read when listing every invoice on the platform. */
+const MAX_LIST_PAGES = 10;
+
+/**
+ * Every item of a platform-wide list, page by page, up to MAX_LIST_PAGES.
+ * `truncated` says the walk stopped before the end.
+ */
+async function datumListAll(
+  path: string,
+  accessToken: string
+): Promise<{ items: unknown[]; truncated: boolean } | { error: string }> {
+  const items: unknown[] = [];
+  let cont = '';
+  for (let page = 0; page < MAX_LIST_PAGES; page++) {
+    const sep = path.includes('?') ? '&' : '?';
+    const result = await datumGet(
+      cont ? `${path}${sep}continue=${encodeURIComponent(cont)}` : path,
+      accessToken
+    );
+    if (result.error) return result;
+    items.push(...(result.items ?? []));
+    cont = result.metadata?.continue ?? '';
+    if (!cont) return { items, truncated: false };
+  }
+  return { items, truncated: true };
+}
+
+/** Invoices worth showing: not the leftovers nothing updates any more. */
+function liveInvoices(items: unknown[] | undefined): Invoice[] {
+  return filterNotDeleting((items ?? []) as Invoice[]).filter(
+    (invoice) => !isStaleInvoice(invoice)
+  );
+}
+
+/** Offers made for one account's contract: labelled, or named contract-…. */
+function isContractOffer(offer: ComMiloapisBillingV1Alpha1Offer): boolean {
+  return (
+    Boolean(offer.metadata?.labels?.['billing.miloapis.com/contract-billing-account']) ||
+    (offer.metadata?.name ?? '').startsWith('contract-')
+  );
 }
 
 function isActiveBinding(binding: ComMiloapisBillingV1Alpha1BillingAccountBinding): boolean {
@@ -187,7 +263,8 @@ export function createBillingTools({ accessToken }: BillingToolDeps) {
 
     getBillingAccount: tool({
       description:
-        'Get details for a specific billing account including linked projects and default payment method.',
+        'Get details for a specific billing account: contact, linked projects, default payment method,' +
+        ' whether it can pay and is up to date with its invoices, its payment terms, and its offer or contract.',
       inputSchema: z.object({
         orgName: z.string().describe('The organization resource name'),
         billingAccountName: z.string().describe('The billing account resource name'),
@@ -200,12 +277,26 @@ export function createBillingTools({ accessToken }: BillingToolDeps) {
         billingAccountName: string;
       }) => {
         const name = normalizeOrgName(orgName);
-        const [accountResult, bindingsResult, paymentMethodsResult] = await Promise.all([
-          datumGet(orgBillingPath(name, `billingaccounts/${billingAccountName}`), accessToken),
-          datumGet(orgBillingPath(name, 'billingaccountbindings'), accessToken),
-          datumGet(orgBillingPath(name, 'paymentmethods'), accessToken),
-        ]);
+        const [accountResult, bindingsResult, paymentMethodsResult, entitlementsResult] =
+          await Promise.all([
+            datumGet(orgBillingPath(name, `billingaccounts/${billingAccountName}`), accessToken),
+            datumGet(orgBillingPath(name, 'billingaccountbindings'), accessToken),
+            datumGet(orgBillingPath(name, 'paymentmethods'), accessToken),
+            datumGet(orgBillingPath(name, 'billingentitlements'), accessToken),
+          ]);
         if (accountResult.error) return accountResult;
+
+        const entitlement = filterNotDeleting(
+          (entitlementsResult.error ? [] : (entitlementsResult.items ?? [])) as BillingEntitlement[]
+        ).find((be) => be.spec?.billingAccountRef?.name === billingAccountName);
+        const offerName = entitlement?.spec?.offerRef?.name;
+        const offerResult = offerName
+          ? await datumGet(`${BILLING_ROOT}/offers/${offerName}`, accessToken)
+          : null;
+        const offer =
+          offerResult && !offerResult.error
+            ? (offerResult as ComMiloapisBillingV1Alpha1Offer)
+            : null;
 
         const account = accountResult as ComMiloapisBillingV1Alpha1BillingAccount;
         const bindings = filterNotDeleting(
@@ -264,6 +355,8 @@ export function createBillingTools({ accessToken }: BillingToolDeps) {
           linkedProjects,
           defaultPaymentMethod,
           paymentMethodCount: accountPaymentMethods.length,
+          standing: summarizeAccountStanding(account),
+          offer: summarizeEntitlement(entitlement, offer, new Date()),
         };
       },
     }),
@@ -386,6 +479,240 @@ export function createBillingTools({ accessToken }: BillingToolDeps) {
             ? billingAccountRoutes.detail(name, billingAccountName)
             : billingAccountRoutes.list(),
         };
+      },
+    }),
+    listInvoices: tool({
+      description:
+        "List an organization's invoices, optionally for one billing account, with what's owed and" +
+        ' how overdue each is. Past-due invoices come first. Use for invoice history, balances owed,' +
+        ' or "is this account paid up?".',
+      inputSchema: z.object({
+        orgName: z.string().describe('The organization resource name'),
+        billingAccountName: z
+          .string()
+          .optional()
+          .describe('Optional billing account name to filter invoices'),
+      }),
+      execute: async ({
+        orgName,
+        billingAccountName,
+      }: {
+        orgName: string;
+        billingAccountName?: string;
+      }) => {
+        const name = normalizeOrgName(orgName);
+        const result = await datumGet(orgBillingPath(name, 'invoices?limit=500'), accessToken);
+        if (result.error) return result;
+
+        const now = new Date();
+        const invoices = liveInvoices(result.items).filter(
+          (invoice) =>
+            !billingAccountName || invoice.spec?.billingAccountRef?.name === billingAccountName
+        );
+        const sorted = sortInvoicesPastDueFirst(invoices);
+        return {
+          totals: summarizeInvoiceTotals(invoices, now),
+          invoices: sorted.slice(0, MAX_INVOICES).map((invoice) => summarizeInvoice(invoice, now)),
+          moreInvoices: Math.max(0, sorted.length - MAX_INVOICES),
+          url: billingAccountName
+            ? billingAccountRoutes.detail(name, billingAccountName)
+            : billingAccountRoutes.list(),
+        };
+      },
+    }),
+
+    listPastDueInvoices: tool({
+      description:
+        'List past-due invoices across the whole platform, most overdue first.' +
+        ' Use when the operator asks who owes money, which accounts are overdue, or for a collections view.',
+      inputSchema: z.object({}),
+      execute: async () => {
+        const result = await datumListAll(`${BILLING_ROOT}/invoices?limit=500`, accessToken);
+        if ('error' in result) return result;
+
+        const now = new Date();
+        const pastDue = liveInvoices(result.items)
+          .filter((invoice) => invoice.status?.phase === 'PastDue')
+          .map((invoice) => {
+            const orgName = orgNameFromNamespace(invoice.metadata?.namespace);
+            const summary = summarizeInvoice(invoice, now);
+            return {
+              ...summary,
+              orgName,
+              url: summary.billingAccountName
+                ? billingAccountRoutes.detail(orgName, summary.billingAccountName)
+                : billingAccountRoutes.list(),
+            };
+          })
+          .sort((a, b) => b.daysOverdue - a.daysOverdue);
+        return {
+          pastDueCount: pastDue.length,
+          invoices: pastDue.slice(0, MAX_INVOICES),
+          moreInvoices: Math.max(0, pastDue.length - MAX_INVOICES),
+          // Stopped paging before the end of the platform's invoices.
+          truncatedList: result.truncated,
+        };
+      },
+    }),
+
+    getPaymentTerms: tool({
+      description:
+        "Get a billing account's payment terms (invoice terms granted by staff): the terms in effect" +
+        " or scheduled, earlier ones, and the customer's applications for terms." +
+        ' Use when the operator asks about net days, credit limits, PO numbers, or a terms application.',
+      inputSchema: z.object({
+        orgName: z.string().describe('The organization resource name'),
+        billingAccountName: z.string().describe('The billing account resource name'),
+      }),
+      execute: async ({
+        orgName,
+        billingAccountName,
+      }: {
+        orgName: string;
+        billingAccountName: string;
+      }) => {
+        const name = normalizeOrgName(orgName);
+        const [arrangementsResult, applicationsResult] = await Promise.all([
+          datumGet(orgBillingPath(name, 'billingarrangements'), accessToken),
+          datumGet(orgBillingPath(name, 'billingarrangementapplications'), accessToken),
+        ]);
+        if (arrangementsResult.error) return arrangementsResult;
+
+        const now = new Date();
+        const arrangements = getArrangementsForAccount(
+          filterNotDeleting(
+            (arrangementsResult.items ?? []) as ComMiloapisBillingV1Alpha1BillingArrangement[]
+          ),
+          billingAccountName
+        ).map((arrangement) => summarizeArrangement(arrangement, now));
+        const applications = filterNotDeleting(
+          (applicationsResult.error
+            ? []
+            : (applicationsResult.items ??
+              [])) as ComMiloapisBillingV1Alpha1BillingArrangementApplication[]
+        )
+          .filter((app) => app.spec?.billingAccountRef?.name === billingAccountName)
+          .map((app) => summarizeApplication(app, name));
+
+        return {
+          current:
+            arrangements.find((a) => a.phase === 'Active') ??
+            arrangements.find((a) => a.phase === 'Scheduled') ??
+            null,
+          history: arrangements,
+          applications,
+          url: billingAccountRoutes.detail(name, billingAccountName),
+        };
+      },
+    }),
+
+    listPaymentTermsApplications: tool({
+      description:
+        'List customer applications for payment terms (pay by invoice) across the platform.' +
+        ' Defaults to the ones waiting for review. Use when the operator asks what needs reviewing.',
+      inputSchema: z.object({
+        phase: z
+          .enum(['Pending', 'Approved', 'Declined', 'Withdrawn', 'All'])
+          .optional()
+          .describe('Which applications to list; Pending (awaiting review) when omitted'),
+      }),
+      execute: async ({ phase = 'Pending' }: { phase?: string }) => {
+        const result = await datumGet(
+          `${BILLING_ROOT}/billingarrangementapplications?limit=500`,
+          accessToken
+        );
+        if (result.error) return result;
+
+        const applications = filterNotDeleting(
+          (result.items ?? []) as ComMiloapisBillingV1Alpha1BillingArrangementApplication[]
+        )
+          .map((app) => summarizeApplication(app, orgNameFromNamespace(app.metadata?.namespace)))
+          .filter((app) => phase === 'All' || app.phase === phase)
+          .sort((a, b) => (a.submittedAt ?? '').localeCompare(b.submittedAt ?? ''));
+        return { phase, count: applications.length, applications };
+      },
+    }),
+
+    getBillingAccountUsage: tool({
+      description:
+        "Get a billing account's usage and spend for its current or previous billing cycle, by meter." +
+        ' Use when the operator asks what an account is spending, what drives its bill, or how usage compares.',
+      inputSchema: z.object({
+        orgName: z.string().describe('The organization resource name'),
+        billingAccountName: z.string().describe('The billing account resource name'),
+        cycle: z
+          .enum(['current', 'previous'])
+          .optional()
+          .describe('Which billing cycle; current when omitted'),
+      }),
+      execute: async ({
+        orgName,
+        billingAccountName,
+        cycle,
+      }: {
+        orgName: string;
+        billingAccountName: string;
+        cycle?: 'current' | 'previous';
+      }) => {
+        const name = normalizeOrgName(orgName);
+        try {
+          const dashboard = await loadOrgUsageDashboard(name, accessToken, {
+            billingAccountParam: billingAccountName,
+            cycleParam: cycle,
+          });
+          return {
+            ...summarizeUsage(dashboard),
+            url: billingAccountRoutes.detail(name, billingAccountName),
+          };
+        } catch (err) {
+          return { error: err instanceof Error ? err.message : 'Failed to load usage' };
+        }
+      },
+    }),
+
+    listOffers: tool({
+      description:
+        'List the offers (pricing plans) billing accounts can be put on, and which is the default.' +
+        " Offers made for one account's contract are left out unless asked for.",
+      inputSchema: z.object({
+        includeContracts: z
+          .boolean()
+          .optional()
+          .describe("Also list offers made for individual accounts' contracts"),
+      }),
+      execute: async ({ includeContracts = false }: { includeContracts?: boolean }) => {
+        const [offersResult, defaultName] = await Promise.all([
+          datumGet(`${BILLING_ROOT}/offers?limit=500`, accessToken),
+          defaultOfferName(accessToken),
+        ]);
+        if (offersResult.error) return offersResult;
+
+        const offers = filterNotDeleting(
+          (offersResult.items ?? []) as ComMiloapisBillingV1Alpha1Offer[]
+        ).filter((offer) => includeContracts || !isContractOffer(offer));
+        return {
+          defaultOffer: defaultName || null,
+          offers: offers.map((offer) => summarizeOffer(offer, defaultName)),
+        };
+      },
+    }),
+
+    getOffer: tool({
+      description:
+        'Get an offer and every price it charges: usage rates, one-time and monthly fees, and discounts.' +
+        ' Use when the operator asks what an offer or plan costs.',
+      inputSchema: z.object({
+        offerName: z.string().describe('The offer resource name'),
+      }),
+      execute: async ({ offerName }: { offerName: string }) => {
+        const [offerResult, defaultName] = await Promise.all([
+          datumGet(`${BILLING_ROOT}/offers/${offerName}`, accessToken),
+          defaultOfferName(accessToken),
+        ]);
+        if (offerResult.error) return offerResult;
+        return summarizeOffer(offerResult as ComMiloapisBillingV1Alpha1Offer, defaultName, {
+          withPrices: true,
+        });
       },
     }),
   };
