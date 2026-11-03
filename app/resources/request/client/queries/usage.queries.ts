@@ -5,6 +5,7 @@ import {
 } from '../apis/usage.api';
 import type { OrgUsageSummary } from '@/modules/billing/org-usage.types';
 import type { OrgUsageDashboardData } from '@/modules/billing/usage.types';
+import { shouldRetryQuery } from '@/modules/tanstack/query';
 import { useQueries, useQuery, type UseQueryOptions } from '@tanstack/react-query';
 
 export const usageQueryKeys = {
@@ -74,7 +75,9 @@ export function useOrgUsageDashboardQueries(
         fetchOrgUsageDashboard(orgName, project, cycle, scope, signal),
       enabled: !!orgName && !!project,
       staleTime: 60 * 1000,
-      retry: 1,
+      // Once, and never on a 4xx.
+      retry: (failureCount: number, error: unknown) =>
+        failureCount < 1 && shouldRetryQuery(failureCount, error),
       refetchOnWindowFocus: false,
     })),
   });
