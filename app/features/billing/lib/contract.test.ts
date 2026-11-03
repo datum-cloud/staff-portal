@@ -9,6 +9,7 @@ import {
   getContractFees,
   getContractState,
   getUsagePricingRefs,
+  localDateForUtcDay,
   parseAmount,
   toPricingAmount,
 } from './contract';
@@ -80,6 +81,15 @@ describe('contractStartFromDate', () => {
     expect(contractStartFromDate(new Date(2026, 10, 18)).toISOString()).toBe(
       '2026-11-18T00:00:00.000Z'
     );
+  });
+});
+
+describe('localDateForUtcDay', () => {
+  it('shows the UTC calendar day in the browser, and maps back to it', () => {
+    const utcDay = new Date('2026-11-18T00:00:00Z');
+    const local = localDateForUtcDay(utcDay);
+    expect([local.getFullYear(), local.getMonth(), local.getDate()]).toEqual([2026, 10, 18]);
+    expect(contractStartFromDate(local).toISOString()).toBe(utcDay.toISOString());
   });
 });
 

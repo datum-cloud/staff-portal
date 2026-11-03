@@ -32,6 +32,13 @@ const OFFER_CHANGE_SCHEDULED = 'OfferChangeScheduled';
 export const contractStartFromDate = (date: Date): Date =>
   new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
 
+/**
+ * The calendar day a UTC date falls on, as a local date, for date pickers,
+ * which work in the browser's zone. The inverse of contractStartFromDate.
+ */
+export const localDateForUtcDay = (date: Date): Date =>
+  new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+
 /** Midnight UTC today. */
 export const startOfUtcDay = (now: Date): Date =>
   new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));

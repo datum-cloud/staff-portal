@@ -6,6 +6,7 @@ import {
   getContractFees,
   getContractState,
   getUsagePricingRefs,
+  localDateForUtcDay,
   MAX_CONTRACT_LEAD_DAYS,
   offerBillsUsage,
   parseAmount,
@@ -32,6 +33,7 @@ import { Button } from '@datum-cloud/datum-ui/button';
 import { Dialog } from '@datum-cloud/datum-ui/dialog';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { Icon } from '@datum-cloud/datum-ui/icons';
+import { DatePicker } from '@datum-cloud/datum-ui/picker';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
@@ -520,12 +522,40 @@ function ContractDialog({
           label={t`Start date`}
           description={t`Charges start on this day, in UTC, and bill on it each month. Today or later.`}
           required>
-          <Form.DatePicker modal minDate={startOfUtcDay(now)} />
+          <ContractStartPicker now={now} />
         </Form.Field>
       ) : null}
 
       <ContractSummary isSetup={isSetup} needsSetupFee={needsSetupFee} />
     </DialogForm>
+  );
+}
+
+/**
+ * A single day, today (UTC) to a year ahead. Form.DatePicker picks a range
+ * and stores a string, so this wires the single-date picker into the field.
+ */
+function ContractStartPicker({ now }: { now: Date }) {
+  const { id, fieldState } = Form.useFieldContext();
+  const value = fieldState?.value instanceof Date ? fieldState.value : null;
+  const today = startOfUtcDay(now);
+  return (
+    <DatePicker
+      id={id}
+      value={value}
+      onChange={(date) => {
+        fieldState?.change(date ?? undefined);
+        fieldState?.blur();
+      }}
+      placeholder={t`Pick a date`}
+      modal
+      commit="immediate"
+      minDate={localDateForUtcDay(today)}
+      maxDate={localDateForUtcDay(
+        new Date(today.getTime() + (MAX_CONTRACT_LEAD_DAYS - 1) * 24 * 60 * 60 * 1000)
+      )}
+      triggerClassName="w-full"
+    />
   );
 }
 
