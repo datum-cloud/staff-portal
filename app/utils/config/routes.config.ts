@@ -204,6 +204,8 @@ export const serviceCatalogRoutes = {
   root: () => '/admin/service-catalog',
   list: () => '/admin/service-catalog',
   detail: (name: string) => `/admin/service-catalog/${name}`,
+  // The built-in Overview, kept reachable when a plugin replaces Overview.
+  details: (name: string) => `/admin/service-catalog/${name}/details`,
   consumers: (name: string) => `/admin/service-catalog/${name}/consumers`,
   approvals: (name: string) => `/admin/service-catalog/${name}/approvals`,
   // Service-scoped plugin mount (`portal.page/service` extensions) — see

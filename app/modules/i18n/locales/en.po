@@ -1906,7 +1906,7 @@ msgstr "Deny Request"
 msgid "Deny this consumer's access request. Optionally add a note."
 msgstr "Deny this consumer's access request. Optionally add a note."
 
-#: app/routes/admin/service-catalog/detail/index.tsx:174
+#: app/routes/admin/service-catalog/service-details.tsx:139
 msgid "Dependencies:"
 msgstr "Dependencies:"
 
@@ -2471,7 +2471,7 @@ msgstr "Failed to load fraud evaluations."
 msgid "Failed to load service catalog."
 msgstr "Failed to load service catalog."
 
-#: app/routes/admin/service-catalog/detail/index.tsx:115
+#: app/routes/admin/service-catalog/service-details.tsx:80
 msgid "Failed to load service configurations."
 msgstr "Failed to load service configurations."
 
@@ -2708,8 +2708,8 @@ msgid "Fully onboarded"
 msgstr "Fully onboarded"
 
 #: app/features/service-catalog/components/details-card.tsx:54
-#: app/routes/admin/service-catalog/detail/index.tsx:148
 #: app/routes/admin/service-catalog/index.tsx:184
+#: app/routes/admin/service-catalog/service-details.tsx:113
 msgid "Gated by Provider"
 msgstr "Gated by Provider"
 
@@ -4318,7 +4318,7 @@ msgstr "Owner"
 msgid "Owner of {ownerCount}"
 msgstr "Owner of {ownerCount}"
 
-#: app/routes/admin/service-catalog/detail/index.tsx:166
+#: app/routes/admin/service-catalog/service-details.tsx:131
 msgid "Owner:"
 msgstr "Owner:"
 
@@ -5050,8 +5050,8 @@ msgstr "Retired"
 
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:93
 #: app/routes/admin/service-catalog/detail/approvals.tsx:148
-#: app/routes/admin/service-catalog/detail/index.tsx:122
 #: app/routes/admin/service-catalog/index.tsx:150
+#: app/routes/admin/service-catalog/service-details.tsx:87
 msgid "Retry"
 msgstr "Retry"
 
@@ -5477,6 +5477,10 @@ msgstr "Service activation requested"
 #: app/routes/admin/service-catalog/layout.tsx:8
 msgid "Service Catalog"
 msgstr "Service Catalog"
+
+#: app/routes/admin/service-catalog/detail/details.tsx:14
+msgid "Service details"
+msgstr "Service details"
 
 #: app/features/service-catalog/components/details-card.tsx:29
 msgid "Service Name"
@@ -6502,7 +6506,7 @@ msgstr "Yes"
 msgid "Yes — new accounts use this Offer"
 msgstr "Yes — new accounts use this Offer"
 
-#: app/routes/admin/service-catalog/detail/index.tsx:113
+#: app/routes/admin/service-catalog/service-details.tsx:78
 msgid "You do not have permission to view service configurations."
 msgstr "You do not have permission to view service configurations."
 

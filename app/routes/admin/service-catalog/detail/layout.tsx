@@ -12,7 +12,7 @@ import { serviceDetailQuery } from '@/resources/request/server';
 import { ENTITY_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
 import { serviceCatalogRoutes } from '@/utils/config/routes.config';
 import { ComMiloapisServicesV1Alpha1Service } from '@openapi/services.miloapis.com/v1alpha1';
-import { Blocks, CheckSquare, Users } from 'lucide-react';
+import { Blocks, CheckSquare, Info, Users } from 'lucide-react';
 import { useLoaderData } from 'react-router';
 
 type LoaderData = { service: ComMiloapisServicesV1Alpha1Service; plugins: PublicPlugin[] };
@@ -36,7 +36,12 @@ export const handle = {
     const displayName = data.service?.spec?.displayName || serviceName;
 
     // `path: ""` extensions replace the built-in Overview instead of adding a
-    // tab (see types.ts) — everything else becomes a nav item as before.
+    // tab (see types.ts) — everything else becomes a nav item as before. The
+    // built-in Overview then moves under "Service details", so a plugin
+    // taking over the landing page never hides the service's own facts.
+    const overviewOverridden = (data.plugins ?? []).some((plugin) =>
+      getServicePageExtensions(plugin.manifest).some(isOverviewOverrideExtension)
+    );
     const servicePlugins = (data.plugins ?? []).flatMap((plugin) =>
       getServicePageExtensions(plugin.manifest)
         .filter((ext) => !isOverviewOverrideExtension(ext))
@@ -59,6 +64,15 @@ export const handle = {
               href: serviceCatalogRoutes.detail(serviceName),
               icon: TAB_ICONS.overview,
             },
+            ...(overviewOverridden
+              ? [
+                  {
+                    label: 'Service details',
+                    href: serviceCatalogRoutes.details(serviceName),
+                    icon: Info,
+                  },
+                ]
+              : []),
             { label: 'Consumers', href: serviceCatalogRoutes.consumers(serviceName), icon: Users },
             ...(isGated
               ? [
