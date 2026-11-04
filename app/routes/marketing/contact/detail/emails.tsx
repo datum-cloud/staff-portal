@@ -1,16 +1,29 @@
-import { EmptyState } from '@/components/empty-state';
+import { getContactDetailMetadata, useContactDetailData } from '../shared';
+import type { Route } from './+types/emails';
+import { isPlatformUser } from '@/features/contact';
+import { EmailList } from '@/features/email';
+import { userEmailListQuery } from '@/resources/request/client';
+import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
-import { Mail } from 'lucide-react';
 
-// Placeholder tab — the contact-scoped email list lands with its own ticket.
+export const handle = { breadcrumb: () => <Trans>Email Activity</Trans> };
+
+export const meta: Route.MetaFunction = ({ matches }) => {
+  const { contactName } = getContactDetailMetadata(matches);
+  return metaObject(`Email Activity - ${contactName}`);
+};
+
 export default function Page() {
+  const detail = useContactDetailData();
+  const contact = detail.contact;
+  const email = contact?.spec?.email ?? '';
+  const userId = isPlatformUser(contact) ? (detail.user?.metadata?.name ?? '') : '';
+
   return (
-    <div className="m-4">
-      <EmptyState
-        icon={Mail}
-        title={<Trans>Emails sent</Trans>}
-        description={<Trans>Emails sent to this contact will appear here.</Trans>}
-      />
-    </div>
+    <EmailList
+      variant="tab"
+      queryKeyPrefix={['contact-emails', userId, email]}
+      fetchFn={() => userEmailListQuery(userId, email)}
+    />
   );
 }

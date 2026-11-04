@@ -80,8 +80,8 @@ export function AddToGroupDialog({
       <Button
         type={variant === 'header' ? 'secondary' : 'quaternary'}
         theme={variant === 'header' ? 'outline' : 'borderless'}
-        size="xs"
-        icon={<AddIcon size={14} />}
+        size={variant === 'header' ? undefined : 'xs'}
+        icon={<AddIcon size={variant === 'header' ? 16 : 14} />}
         onClick={() => setOpen(true)}>
         <Trans>Add to group</Trans>
       </Button>

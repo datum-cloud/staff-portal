@@ -26,14 +26,15 @@ export function EditContactDialog({ contact, user, variant = 'card' }: Props) {
   const { revalidate } = useRevalidator();
   const [open, setOpen] = React.useState(false);
   const EditIcon = ACTION_ICONS.edit;
+  const isHeader = variant === 'header';
 
   return (
     <>
       <Button
-        type={variant === 'header' ? 'secondary' : 'quaternary'}
-        theme={variant === 'header' ? 'outline' : 'borderless'}
-        size="xs"
-        icon={<EditIcon size={14} />}
+        type={isHeader ? 'secondary' : 'quaternary'}
+        theme={isHeader ? 'outline' : 'borderless'}
+        size={isHeader ? undefined : 'xs'}
+        icon={<EditIcon size={isHeader ? 16 : 14} />}
         onClick={() => setOpen(true)}>
         <Trans>Edit</Trans>
       </Button>
