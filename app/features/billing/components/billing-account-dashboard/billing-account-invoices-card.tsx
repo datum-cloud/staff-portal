@@ -105,22 +105,18 @@ const buildColumns = (now: Date) => [
     id: 'invoice',
     enableSorting: false,
     header: ({ column }) => <ListColumnHeader column={column} title={t`Invoice`} />,
-    cell: ({ row }) => {
-      const { stripeNumber } = row.original.display;
-      return (
-        <div className="flex flex-col gap-0.5">
-          <DisplayId value={row.original.invoice.metadata?.name ?? ''} />
-          {stripeNumber ? (
-            <div className="flex items-center gap-1.5">
-              <Text size="xs" className="text-muted-foreground">
-                <Trans>Stripe</Trans>
-              </Text>
-              <DisplayId value={stripeNumber} />
-            </div>
-          ) : null}
-        </div>
-      );
-    },
+    cell: ({ row }) => <DisplayId value={row.original.invoice.metadata?.name ?? ''} />,
+  }),
+  columnHelper.display({
+    id: 'stripeNumber',
+    enableSorting: false,
+    header: ({ column }) => <ListColumnHeader column={column} title={t`Stripe number`} />,
+    cell: ({ row }) =>
+      row.original.display.stripeNumber ? (
+        <DisplayId value={row.original.display.stripeNumber} />
+      ) : (
+        '—'
+      ),
   }),
   columnHelper.display({
     id: 'period',
