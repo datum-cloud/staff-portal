@@ -1,3 +1,4 @@
+import type { ContractDialogMode } from '../components/billing-account-dashboard/billing-account-contract-card';
 import type { BillingAccountHeaderAction } from '../components/billing-account-dashboard/billing-account-header';
 import type { PaymentTermsState } from '../components/payment-terms';
 import type { BillingAccount } from '../utils';
@@ -8,18 +9,21 @@ import { useNavigate } from 'react-router';
 
 /**
  * The billing account header's Actions menu: grant or change terms (or
- * review the customer's pending application instead), and switch offer.
+ * review the customer's pending application instead), switch offer, and set
+ * up a contract or change its fees.
  */
 export function useBillingAccountHeaderActions({
   orgName,
   account,
   paymentTerms,
   onSwitchOffer,
+  onContract,
 }: {
   orgName: string;
   account: BillingAccount;
   paymentTerms: PaymentTermsState;
   onSwitchOffer: () => void;
+  onContract: (mode: ContractDialogMode) => void;
 }): BillingAccountHeaderAction[] {
   const navigate = useNavigate();
   const entitlementQuery = useBillingEntitlementForAccountQuery(
@@ -59,5 +63,18 @@ export function useBillingAccountHeaderActions({
       disabled: !entitlementQuery.data,
       onSelect: onSwitchOffer,
     },
+    entitlementQuery.data?.spec?.contract
+      ? {
+          key: 'contract',
+          label: <Trans>Change contract fees</Trans>,
+          onSelect: () => onContract('change'),
+        }
+      : {
+          key: 'contract',
+          label: <Trans>Set up contract</Trans>,
+          // The contract goes on the account's entitlement.
+          disabled: !entitlementQuery.data,
+          onSelect: () => onContract('setup'),
+        },
   ];
 }

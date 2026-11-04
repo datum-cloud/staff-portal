@@ -11,6 +11,7 @@ import {
   ServicePricingChecklist,
   useDefaultOfferControl,
 } from '@/features/billing';
+import { isContractResource } from '@/features/billing/lib/contract';
 import {
   buildOfferDiscountSpec,
   isOfferDiscountFormValid,
@@ -204,6 +205,11 @@ export default function Page() {
   const isGA = offer?.spec?.launchStage === 'GA';
 
   const pricings = useMemo(() => pricingsQuery.data?.items ?? [], [pricingsQuery.data?.items]);
+  // What a draft can add: the catalog's pricings, not other contracts' fees.
+  const catalogPricings = useMemo(
+    () => pricings.filter((pricing) => !isContractResource(pricing)),
+    [pricings]
+  );
   const displayName = offer ? getOfferDisplayName(offer) : offerName;
   const [publishConfirmOpen, setPublishConfirmOpen] = useState(false);
   const [displayNameDialogOpen, setDisplayNameDialogOpen] = useState(false);
@@ -421,7 +427,7 @@ export default function Page() {
           <DraftConfigEditor
             key={offer.metadata?.resourceVersion ?? offerName}
             offer={offer}
-            pricings={pricings}
+            pricings={catalogPricings}
             pricingsLoading={pricingsQuery.isLoading}
             pricingsError={pricingsQuery.isError}
             pricingsErrorMessage={

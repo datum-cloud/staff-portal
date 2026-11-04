@@ -1,5 +1,6 @@
 import type { Route } from './+types/create';
 import { OfferDiscountsFields, ServicePricingChecklist } from '@/features/billing';
+import { isContractResource } from '@/features/billing/lib/contract';
 import {
   buildOfferDiscountSpec,
   emptyOfferDiscountForm,
@@ -54,7 +55,11 @@ export default function Page() {
   const [servicePricingNames, setServicePricingNames] = useState<string[]>([]);
   const [discounts, setDiscounts] = useState<OfferDiscountFormValues>(emptyOfferDiscountForm);
 
-  const pricings = useMemo(() => pricingsQuery.data?.items ?? [], [pricingsQuery.data?.items]);
+  // Contract fees belong to one account's contract, not the catalog.
+  const pricings = useMemo(
+    () => (pricingsQuery.data?.items ?? []).filter((pricing) => !isContractResource(pricing)),
+    [pricingsQuery.data?.items]
+  );
   const discountsValid = isOfferDiscountFormValid(discounts, servicePricingNames);
 
   const handleSubmit = async (values: OfferFormValues) => {

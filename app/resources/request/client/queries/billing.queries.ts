@@ -12,6 +12,7 @@ import {
   billingEntitlementForAccountQuery,
   createBillingArrangement,
   createBillingArrangementDecline,
+  createContractOffer,
   createOffer,
   invoiceListForOrgQuery,
   offerDetailQuery,
@@ -19,11 +20,14 @@ import {
   paymentMethodListForOrgQuery,
   paymentMethodListQuery,
   patchBillingArrangement,
+  previewNextInvoice,
   publishOffer,
   servicePricingListQuery,
+  setBillingEntitlementContract,
   switchBillingEntitlementOffer,
   updateDraftOffer,
   updateOfferDisplayName,
+  type CreateContractOfferInput,
   type CreateOfferInput,
 } from '../apis/billing.api';
 import type {
@@ -266,6 +270,74 @@ export const useSwitchBillingEntitlementOfferMutation = (orgName: string, accoun
     },
   });
 };
+
+const invalidateContractQueries = async (
+  queryClient: ReturnType<typeof useQueryClient>,
+  orgName: string,
+  accountName: string
+) =>
+  Promise.all([
+    queryClient.invalidateQueries({ queryKey: billingQueryKeys.offers.all }),
+    queryClient.invalidateQueries({
+      queryKey: billingQueryKeys.servicePricings.list('milo-system'),
+    }),
+    queryClient.invalidateQueries({
+      queryKey: billingQueryKeys.entitlements.forAccount(orgName, accountName),
+    }),
+    queryClient.invalidateQueries({ queryKey: billingQueryKeys.detail(orgName, accountName) }),
+  ]);
+
+/**
+ * Puts the account on a contract: creates its fees and Offer, then points the
+ * entitlement at the Offer with the contract's start date (midnight UTC).
+ */
+export const useSetUpContractMutation = (orgName: string, accountName: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      entitlementName,
+      startsAt,
+      offer,
+    }: {
+      entitlementName: string;
+      startsAt: string;
+      offer: CreateContractOfferInput;
+    }) => {
+      const offerName = await createContractOffer(offer);
+      return setBillingEntitlementContract(orgName, entitlementName, offerName, startsAt);
+    },
+    onSettled: async () => {
+      await invalidateContractQueries(queryClient, orgName, accountName);
+    },
+  });
+};
+
+/**
+ * Changes a contract's fees: a new Offer for the entitlement. Once the
+ * contract has started, it applies from the next billing date.
+ */
+export const useChangeContractFeesMutation = (orgName: string, accountName: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      entitlementName,
+      offer,
+    }: {
+      entitlementName: string;
+      offer: CreateContractOfferInput;
+    }) => {
+      const offerName = await createContractOffer(offer);
+      return switchBillingEntitlementOffer(orgName, entitlementName, offerName);
+    },
+    onSettled: async () => {
+      await invalidateContractQueries(queryClient, orgName, accountName);
+    },
+  });
+};
+
+/** Asks the invoicing provider what the account will be invoiced next. */
+export const usePreviewNextInvoiceMutation = (orgName: string, accountName: string) =>
+  useMutation({ mutationFn: () => previewNextInvoice(orgName, accountName) });
 
 export const useBillingArrangementListForOrgQuery = (orgName: string) =>
   useQuery({

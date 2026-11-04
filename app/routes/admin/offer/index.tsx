@@ -2,6 +2,7 @@ import type { Route } from './+types/index';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
 import { DisplayName } from '@/components/display';
+import { isContractResource } from '@/features/billing/lib/contract';
 import {
   formatChargeTypes,
   formatLaunchStage,
@@ -13,11 +14,11 @@ import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { offerRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { createColumnHelper } from '@/utils/table';
-import { LinkButton } from '@datum-cloud/datum-ui/button';
+import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1Offer } from '@openapi/billing.miloapis.com/v1alpha1';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Offers`);
@@ -29,7 +30,14 @@ export default function Page() {
   const tableQuery = useOfferListQuery({ limit: 500 });
   const defaultOfferQuery = useBillingDefaultOfferQuery();
   const defaultOfferName = defaultOfferQuery.data ?? '';
-  const offers = tableQuery.data?.items;
+  // Contract offers are one account's each; they're listed only on request.
+  const [showContracts, setShowContracts] = useState(false);
+  const allOffers = tableQuery.data?.items;
+  const contractCount = (allOffers ?? []).filter(isContractResource).length;
+  const offers = useMemo(
+    () => (showContracts ? allOffers : allOffers?.filter((offer) => !isContractResource(offer))),
+    [allOffers, showContracts]
+  );
   // Offer stages vary by catalog, so offer whichever ones are in use.
   const stageOptions = useMemo(
     () =>
@@ -95,7 +103,7 @@ export default function Page() {
     <ListPage>
       <ListTable
         loading={tableQuery.isLoading}
-        data={tableQuery.data?.items ?? []}
+        data={offers ?? []}
         columns={columns}
         pageSize={50}
         layout="flush"
@@ -147,13 +155,28 @@ export default function Page() {
           },
         ]}
         actions={
-          <LinkButton
-            size="xs"
-            theme="outline"
-            href={offerRoutes.create()}
-            icon={<ACTION_ICONS.add size={14} />}>
-            <Trans>Create Offer</Trans>
-          </LinkButton>
+          <>
+            {contractCount > 0 ? (
+              <Button
+                type="quaternary"
+                theme="borderless"
+                size="xs"
+                onClick={() => setShowContracts((show) => !show)}>
+                {showContracts ? (
+                  <Trans>Hide contract offers</Trans>
+                ) : (
+                  <Trans>Show contract offers ({contractCount})</Trans>
+                )}
+              </Button>
+            ) : null}
+            <LinkButton
+              size="xs"
+              theme="outline"
+              href={offerRoutes.create()}
+              icon={<ACTION_ICONS.add size={14} />}>
+              <Trans>Create Offer</Trans>
+            </LinkButton>
+          </>
         }
         searchFn={(row, search) => {
           const q = search.trim().toLowerCase();

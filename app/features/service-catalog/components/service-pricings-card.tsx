@@ -1,5 +1,6 @@
 import { CardRowSkeleton } from './card-row-skeleton';
 import { BadgeState } from '@/components/badge';
+import { isContractResource } from '@/features/billing/lib/contract';
 import {
   describeServicePricingRates,
   formatChargeType,
@@ -7,10 +8,12 @@ import {
   getServicePricingSubtext,
 } from '@/features/billing/utils';
 import { SectionCard } from '@/features/milo';
+import { Button } from '@datum-cloud/datum-ui/button';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1ServicePricing } from '@openapi/billing.miloapis.com/v1alpha1';
 import { Tag } from 'lucide-react';
+import { useState } from 'react';
 
 /** Every rate a pricing charges: matched rates under their dimension, tiers band by band. */
 function PricingRates({ pricing }: { pricing: ComMiloapisBillingV1Alpha1ServicePricing }) {
@@ -103,6 +106,11 @@ export function ServicePricingsCard({
   isLoading,
   errorMessage,
 }: ServicePricingsCardProps) {
+  // Contract fees are one account's each, created from its billing account;
+  // they're listed only on request.
+  const [showContracts, setShowContracts] = useState(false);
+  const contractCount = pricings.filter(isContractResource).length;
+  const listed = showContracts ? pricings : pricings.filter((p) => !isContractResource(p));
   return (
     <SectionCard
       className="h-full"
@@ -132,7 +140,30 @@ export function ServicePricingsCard({
           </Text>
         </div>
       ) : (
-        <ServicePricingsList pricings={pricings} />
+        <div className="flex flex-col gap-2">
+          <ServicePricingsList pricings={listed} />
+          {contractCount > 0 ? (
+            <div className="flex items-center justify-between gap-2 border-t pt-2">
+              <Text size="xs" textColor="muted">
+                {showContracts ? (
+                  <Trans>Including fees set up for individual accounts&apos; contracts.</Trans>
+                ) : (
+                  <Trans>
+                    {contractCount} fees set up for individual accounts&apos; contracts aren&apos;t
+                    shown.
+                  </Trans>
+                )}
+              </Text>
+              <Button
+                type="quaternary"
+                theme="borderless"
+                size="small"
+                onClick={() => setShowContracts((show) => !show)}>
+                {showContracts ? <Trans>Hide</Trans> : <Trans>Show</Trans>}
+              </Button>
+            </div>
+          ) : null}
+        </div>
       )}
     </SectionCard>
   );

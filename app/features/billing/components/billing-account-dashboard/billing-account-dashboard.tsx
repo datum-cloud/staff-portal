@@ -4,6 +4,10 @@ import { usePaymentTerms } from '../payment-terms';
 import { BillingAccountActivityCard } from './billing-account-activity-card';
 import { BillingAccountAttentionBanner } from './billing-account-attention-banner';
 import {
+  BillingAccountContractCard,
+  type ContractDialogMode,
+} from './billing-account-contract-card';
+import {
   BillingAccountConfigCard,
   BillingAccountContactCard,
 } from './billing-account-details-cards';
@@ -15,7 +19,10 @@ import { BillingAccountPaymentCard } from './billing-account-payment-card';
 import { BillingAccountProjectsCard } from './billing-account-projects-card';
 import { BillingAccountUsageCard } from './billing-account-usage-card';
 import { useEnv } from '@/hooks';
-import { useBillingAccountDetailQuery } from '@/resources/request/client';
+import {
+  useBillingAccountDetailQuery,
+  useBillingEntitlementForAccountQuery,
+} from '@/resources/request/client';
 import { cloudPortalUrls } from '@/utils/config/routes.config';
 import { useState } from 'react';
 
@@ -46,11 +53,14 @@ export function BillingAccountDashboard({
   // Held here so the header's Actions menu can open the cards' dialogs.
   const paymentTerms = usePaymentTerms(orgName, account);
   const [switchOfferOpen, setSwitchOfferOpen] = useState(false);
+  const [contractDialog, setContractDialog] = useState<ContractDialogMode | null>(null);
+  const entitlementQuery = useBillingEntitlementForAccountQuery(orgName, accountName);
   const headerActions = useBillingAccountHeaderActions({
     orgName,
     account,
     paymentTerms,
     onSwitchOffer: () => setSwitchOfferOpen(true),
+    onContract: setContractDialog,
   });
 
   return (
@@ -81,6 +91,14 @@ export function BillingAccountDashboard({
 
         <aside className="flex min-w-0 flex-col gap-4">
           <BillingAccountPaymentCard orgName={orgName} account={account} terms={paymentTerms} />
+          <BillingAccountContractCard
+            orgName={orgName}
+            account={account}
+            entitlement={entitlementQuery.data ?? null}
+            now={now}
+            dialogMode={contractDialog}
+            onDialogModeChange={setContractDialog}
+          />
           <BillingAccountOfferCard
             orgName={orgName}
             account={account}

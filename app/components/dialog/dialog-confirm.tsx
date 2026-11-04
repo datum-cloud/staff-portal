@@ -109,7 +109,7 @@ export default function DialogConfirm({
 
         <Dialog.Footer className="gap-2">
           <Button
-            type="tertiary"
+            type="quaternary"
             theme="borderless"
             onClick={handleCancel}
             disabled={isLoading}
