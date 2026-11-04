@@ -5,6 +5,7 @@ import type {
   ComMiloapisBillingV1Alpha1BillingAccountBinding,
   ComMiloapisBillingV1Alpha1BillingEntitlement,
   ComMiloapisBillingV1Alpha1Invoice,
+  ComMiloapisBillingV1Alpha1InvoiceRequest,
   ComMiloapisBillingV1Alpha1Offer,
   ComMiloapisBillingV1Alpha1PaymentMethod,
   ComMiloapisBillingV1Alpha1ServicePricing,
@@ -14,6 +15,7 @@ import type { ComMiloapisServicesV1Alpha1Service } from '@openapi/services.miloa
 export type BillingAccount = ComMiloapisBillingV1Alpha1BillingAccount;
 export type BillingEntitlement = ComMiloapisBillingV1Alpha1BillingEntitlement;
 export type Invoice = ComMiloapisBillingV1Alpha1Invoice;
+export type InvoiceRequest = ComMiloapisBillingV1Alpha1InvoiceRequest;
 export type PaymentMethod = ComMiloapisBillingV1Alpha1PaymentMethod;
 export type InvoicePhase = NonNullable<NonNullable<Invoice['status']>['phase']>;
 

@@ -227,7 +227,7 @@ jobs:
           'npm run start' http://localhost:3000/_healthz
           'npx cypress run --spec "cypress/e2e/smoke/**" --config-file cypress.config.ts'
       - if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: e2e-smoke-artifacts-${{ github.run_id }}
           path: |
@@ -271,7 +271,13 @@ jobs:
     uses: datum-cloud/actions/.github/workflows/publish-docker.yaml@v1.26.0
     with:
       image-name: staff-portal
-    secrets: inherit
+    # The Sentry token goes in only as a BuildKit secret, which the Dockerfile
+    # mounts for the build step. The upstream SENTRY_AUTH_TOKEN secret is left
+    # unset on purpose: upstream forwards it as a build arg, and build args are
+    # recorded in plaintext in the image's public provenance.
+    secrets:
+      build-secrets: |
+        "sentry_auth_token=${{ secrets.SENTRY_AUTH_TOKEN }}"
 
   publish-kustomize-bundles:
     name: Publish Kustomize Bundles
@@ -287,7 +293,8 @@ jobs:
       bundle-path: config
       image-overlays: config/base
       image-name: ghcr.io/datum-cloud/staff-portal
-    secrets: inherit
+    # No explicit secrets block: upstream only uses GITHUB_TOKEN, which is
+    # automatically available to reusable workflows.
 
   # ─── PR Comment ─────────────────────────────────────────────
   pr-comment:

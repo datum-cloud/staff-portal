@@ -1,7 +1,7 @@
 # ==========================================
 # BASE STAGE - Common dependencies and setup
 # ==========================================
-FROM node:26.12.1-alpine3.24@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS base
+FROM node:26.13.0-alpine3.24@sha256:c6ad9e9c1d80f6eb607c26b4b0a132ff7a2344fad1c78ea3baa2a7d4c8de6d94 AS base
 
 RUN apk add --no-cache --upgrade 'ca-certificates>=20261020-r0'
 RUN ! grep -q MIICTjCCAdOgAwIBAgIKPPYHqWhwDtqLhDAKBggqhkjOPQQDAzBrMQswCQYDVQQG /etc/ssl/certs/ca-certificates.crt
@@ -16,12 +16,10 @@ ENV NODE_ENV=production \
 # ==========================================
 FROM base AS build
 
-ARG SENTRY_AUTH_TOKEN
 ARG VERSION=dev
 
 # Set environment variables
 ENV VERSION=${VERSION}
-ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
 
 # Install dependencies first (better layer caching)
 COPY --link package.json package-lock.json .npmrc ./
@@ -30,8 +28,11 @@ RUN npm ci --include=dev --ignore-scripts --no-audit --no-fund
 # Copy application code
 COPY --link . .
 
-# Build application and clean up
-RUN npm run build && \
+# Build application and clean up. The Sentry auth token (for source map upload)
+# arrives as a BuildKit secret, so it never lands in image layers, history or
+# provenance.
+RUN --mount=type=secret,id=sentry_auth_token,env=SENTRY_AUTH_TOKEN \
+    npm run build && \
     npm prune --omit=dev --ignore-scripts --no-audit --no-fund && \
     touch .env
 
