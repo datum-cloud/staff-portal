@@ -27,6 +27,8 @@ export type PastInvoiceRow = {
   date: string;
   amount: string;
   invoiceNumber: string;
+  /** The number Stripe printed on the invoice, '' before the provider reads it. */
+  stripeNumber: string;
   status: PastInvoiceStatus;
   statusLabel: string;
   phase: InvoicePhase;
@@ -118,6 +120,7 @@ export const toPastInvoiceRow = (invoice: Invoice): PastInvoiceRow => {
   const status = phaseToStatus[phase];
   return {
     invoiceNumber: invoice.metadata?.name ?? '',
+    stripeNumber: getStripeInvoiceNumber(invoice),
     date: formatInvoiceDate(invoice.spec?.period?.end),
     amount: formatInvoiceAmount(invoice.status?.total, invoice.status?.currencyCode),
     status,
@@ -125,6 +128,16 @@ export const toPastInvoiceRow = (invoice: Invoice): PastInvoiceRow => {
     phase,
   };
 };
+
+/**
+ * Set by openmeter-provider: the number printed on the invoice in Stripe,
+ * the one customers quote and finance searches Stripe by.
+ */
+const STRIPE_INVOICE_NUMBER_ANNOTATION = 'openmeter.miloapis.com/stripeInvoiceNumber';
+
+/** The invoice's number in Stripe, or '' when there isn't one yet. */
+export const getStripeInvoiceNumber = (invoice: Invoice): string =>
+  invoice.metadata?.annotations?.[STRIPE_INVOICE_NUMBER_ANNOTATION] ?? '';
 
 const AMBERFLO_INVOICE_KEY = 'amberflo.billing.miloapis.com/invoiceKey';
 const OPENMETER_INVOICE_ID = 'openmeter.miloapis.com/invoiceId';
@@ -167,6 +180,7 @@ export const invoiceMatchesSearch = (row: PastInvoiceRow, query: string): boolea
     row.date.toLowerCase().includes(q) ||
     row.amount.toLowerCase().includes(q) ||
     row.invoiceNumber.toLowerCase().includes(q) ||
+    row.stripeNumber.toLowerCase().includes(q) ||
     row.status.toLowerCase().includes(q) ||
     row.statusLabel.toLowerCase().includes(q) ||
     row.phase.toLowerCase().includes(q)

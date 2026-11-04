@@ -108,6 +108,17 @@ const buildColumns = (now: Date) => [
     cell: ({ row }) => <DisplayId value={row.original.invoice.metadata?.name ?? ''} />,
   }),
   columnHelper.display({
+    id: 'stripeNumber',
+    enableSorting: false,
+    header: ({ column }) => <ListColumnHeader column={column} title={t`Stripe number`} />,
+    cell: ({ row }) =>
+      row.original.display.stripeNumber ? (
+        <DisplayId value={row.original.display.stripeNumber} />
+      ) : (
+        '—'
+      ),
+  }),
+  columnHelper.display({
     id: 'period',
     enableSorting: false,
     header: ({ column }) => <ListColumnHeader column={column} title={t`Period`} />,

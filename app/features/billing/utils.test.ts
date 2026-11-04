@@ -2,9 +2,12 @@ import {
   describeServicePricingRates,
   getInvoicesForAccount,
   getServicePricingsForService,
+  invoiceMatchesSearch,
   isStaleInvoice,
+  getStripeInvoiceNumber,
   summarizeServicePricing,
   type Invoice,
+  type PastInvoiceRow,
 } from './utils';
 import type { ComMiloapisBillingV1Alpha1ServicePricing } from '@openapi/billing.miloapis.com/v1alpha1';
 import type { ComMiloapisServicesV1Alpha1Service } from '@openapi/services.miloapis.com/v1alpha1';
@@ -202,5 +205,29 @@ describe('getInvoicesForAccount', () => {
       invoice('other-2026-10-0123456789', { 'openmeter.miloapis.com/invoiceId': '01X' }, 'other'),
     ];
     expect(getInvoicesForAccount(invoices, 'acme-main')).toEqual([current]);
+  });
+});
+
+describe('Stripe invoice number', () => {
+  it("is read from the provider's annotation, and empty before it's set", () => {
+    const numbered = invoice('acme-main-2026-10-1f092bf4d7', {
+      'openmeter.miloapis.com/stripeInvoiceNumber': '8D3F2A1C-0003',
+    });
+    expect(getStripeInvoiceNumber(numbered)).toBe('8D3F2A1C-0003');
+    expect(getStripeInvoiceNumber(invoice('acme-main-2026-10-1f092bf4d7', {}))).toBe('');
+  });
+
+  it('finds an invoice by it', () => {
+    const row: PastInvoiceRow = {
+      invoiceNumber: 'acme-main-2026-10-1f092bf4d7',
+      stripeNumber: '8D3F2A1C-0003',
+      date: 'Nov 10, 2026',
+      amount: '$10.00',
+      status: 'open',
+      statusLabel: 'Open',
+      phase: 'Open',
+    };
+    expect(invoiceMatchesSearch(row, '8d3f2a1c-0003')).toBe(true);
+    expect(invoiceMatchesSearch(row, '0004')).toBe(false);
   });
 });
