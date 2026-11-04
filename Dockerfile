@@ -16,12 +16,10 @@ ENV NODE_ENV=production \
 # ==========================================
 FROM base AS build
 
-ARG SENTRY_AUTH_TOKEN
 ARG VERSION=dev
 
 # Set environment variables
 ENV VERSION=${VERSION}
-ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
 
 # Install dependencies first (better layer caching)
 COPY --link package.json package-lock.json .npmrc ./
@@ -30,8 +28,11 @@ RUN npm ci --include=dev --ignore-scripts --no-audit --no-fund
 # Copy application code
 COPY --link . .
 
-# Build application and clean up
-RUN npm run build && \
+# Build application and clean up. The Sentry auth token (for source map upload)
+# arrives as a BuildKit secret, so it never lands in image layers, history or
+# provenance.
+RUN --mount=type=secret,id=sentry_auth_token,env=SENTRY_AUTH_TOKEN \
+    npm run build && \
     npm prune --omit=dev --ignore-scripts --no-audit --no-fund && \
     touch .env
 
