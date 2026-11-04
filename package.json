@@ -31,12 +31,12 @@
     "@ai-sdk/anthropic": "^4.0.0",
     "@ai-sdk/openai-compatible": "^3.0.0",
     "@ai-sdk/react": "^4.0.0",
-    "@datum-cloud/activity-ui": "0.5.1",
+    "@datum-cloud/activity-ui": "0.7.1",
     "@datum-cloud/datum-ui": "^3.4.0",
     "@epic-web/client-hints": "^1.3.5",
     "@gqlts/runtime": "3.4.2",
     "@grpc/grpc-js": "^1.14.3",
-    "@hono/node-server": "2.1.3",
+    "@hono/node-server": "2.1.6",
     "@hono/prometheus": "^1.0.1",
     "@hookform/resolvers": "^5.2.2",
     "@lingui/cli": "^6.0.0",
@@ -47,10 +47,10 @@
     "@module-federation/runtime": "^2.7.0",
     "@monaco-editor/react": "^4.7.0",
     "@myunisoft/loki": "^6.0.0",
-    "@opentelemetry/auto-instrumentations-node": "^0.79.0",
-    "@opentelemetry/exporter-metrics-otlp-http": "^0.221.0",
-    "@opentelemetry/exporter-trace-otlp-http": "^0.221.0",
-    "@opentelemetry/sdk-node": "^0.221.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.82.0",
+    "@opentelemetry/exporter-metrics-otlp-http": "^0.300.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.300.0",
+    "@opentelemetry/sdk-node": "^0.300.0",
     "@opentelemetry/sdk-trace-base": "^2.0.1",
     "@react-router/fs-routes": "^8.3.1",
     "@react-router/node": "^8.3.1",
@@ -71,7 +71,7 @@
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
     "dotenv": "^17.0.0",
-    "graphql": "17.0.2",
+    "graphql": "17.1.0",
     "hono": "^4.7.9",
     "intl-parse-accept-language": "^1.0.0",
     "isbot": "^5.1.27",
@@ -128,7 +128,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.0",
     "lefthook": "^2.0.0",
-    "monaco-editor": "^0.52.2",
+    "monaco-editor": "^0.57.0",
     "postcss": "^8.5.3",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
@@ -144,7 +144,7 @@
   "overrides": {
     "react-is": "^19.0.0-rc-69d4b800-20241021",
     "form-data": "^4.0.6",
-    "graphql": "17.0.2",
+    "graphql": "17.1.0",
     "oxfmt": {
       "tinypool": "^2.1.2"
     },
@@ -155,16 +155,16 @@
     },
     "axios": "$axios",
     "follow-redirects": "^1.16.2",
-    "@humanfs/node": "^0.16.8",
+    "@humanfs/node": "^0.17.0",
     "react-router-hono-server": {
-      "@hono/node-server": "2.1.3"
+      "@hono/node-server": "2.1.6"
     },
     "@hono/vite-dev-server": {
       "@hono/node-server": "^2.1.3"
     },
     "qs": "^6.16.0",
     "@babel/core": "^7.29.6",
-    "katex": "^0.18.2"
+    "katex": "^0.19.0"
   },
   "engines": {
     "node": ">=26.12.1"
