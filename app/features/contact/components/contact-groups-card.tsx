@@ -81,7 +81,7 @@ export function ContactGroupsCard({ contactName, className }: Props) {
                 </div>
                 {visibility ? <BadgeState state={visibility} /> : null}
                 <Button
-                  type="tertiary"
+                  type="quaternary"
                   theme="borderless"
                   size="xs"
                   icon={<ACTION_ICONS.delete size={14} />}

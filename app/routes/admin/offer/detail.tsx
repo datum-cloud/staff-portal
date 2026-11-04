@@ -292,7 +292,7 @@ export default function Page() {
           <span>{displayName || '—'}</span>
           {isGA ? (
             <Button
-              type="tertiary"
+              type="quaternary"
               theme="borderless"
               icon={<ACTION_ICONS.edit size={14} />}
               onClick={() => setDisplayNameDialogOpen(true)}>

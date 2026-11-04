@@ -311,7 +311,7 @@ function PolicyHeader({
       </div>
       <div className="flex shrink-0 items-center gap-2">
         <Button
-          type="tertiary"
+          type="quaternary"
           theme="outline"
           icon={<ACTION_ICONS.edit size={16} />}
           onClick={onEdit}>

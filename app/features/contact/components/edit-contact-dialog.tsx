@@ -30,7 +30,7 @@ export function EditContactDialog({ contact, user, variant = 'card' }: Props) {
   return (
     <>
       <Button
-        type={variant === 'header' ? 'secondary' : 'tertiary'}
+        type={variant === 'header' ? 'secondary' : 'quaternary'}
         theme={variant === 'header' ? 'outline' : 'borderless'}
         size="xs"
         icon={<EditIcon size={14} />}

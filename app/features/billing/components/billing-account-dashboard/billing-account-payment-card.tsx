@@ -210,7 +210,7 @@ function TermsSummary({ terms }: { terms: PaymentTermsState }) {
         </Text>
       </div>
       <Button
-        type="tertiary"
+        type="quaternary"
         theme="outline"
         size="small"
         onClick={() => terms.dialogs.setGrantOpen(true)}>

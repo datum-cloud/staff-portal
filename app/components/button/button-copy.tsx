@@ -33,7 +33,7 @@ function ButtonCopy({
   const getButtonProps = () => {
     switch (variant) {
       case 'ghost':
-        return { type: 'tertiary' as const, theme: 'borderless' as const };
+        return { type: 'quaternary' as const, theme: 'borderless' as const };
       case 'outline':
         return { type: 'secondary' as const, theme: 'outline' as const };
       case 'default':

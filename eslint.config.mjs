@@ -1,5 +1,5 @@
-import { fixupPluginRules } from '@eslint/compat';
 import prettierConfig from './prettier.config.mjs';
+import { fixupPluginRules } from '@eslint/compat';
 import eslintPluginJsxA11y from 'eslint-plugin-jsx-a11y';
 import eslintPluginPrettier from 'eslint-plugin-prettier';
 import eslintPluginReact from 'eslint-plugin-react';
@@ -61,6 +61,12 @@ export default [
             'CallExpression[callee.name=/^generate(Query|Mutation)Op$/] > ObjectExpression.arguments:not(:has(> Property[key.name="__name"]))',
           message:
             'Unnamed GraphQL operation — the gateway traces it as "Anonymous", so slow queries can\'t be attributed to a view. Pass __name, e.g. generateQueryOp({ __name: "StaffFoo", ... }). See #688.',
+        },
+        {
+          selector:
+            'JSXOpeningElement[name.name="Button"]:has(> JSXAttribute[name.name="type"][value.value="tertiary"]):has(> JSXAttribute[name.name="theme"][value.value!="solid"])',
+          message:
+            'A tertiary Button that isn\'t solid has green text. Use type="quaternary", the neutral version of the same style.',
         },
       ],
       // 'import/order': [

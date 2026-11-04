@@ -243,7 +243,7 @@ export const ContactForm: React.FC<Props> = ({ contact, user, onCancel, onSucces
 
           <div className="flex justify-end gap-2 pt-4">
             <Button
-              type="tertiary"
+              type="quaternary"
               theme="borderless"
               onClick={() => (onCancel ? onCancel() : navigate(contactRoutes.list()))}>
               {t`Cancel`}

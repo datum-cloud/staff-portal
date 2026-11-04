@@ -157,7 +157,7 @@ export default function Page() {
                 ? [
                     {
                       children: t`Summary`,
-                      type: 'tertiary' as const,
+                      type: 'quaternary' as const,
                       theme: 'outline' as const,
                       size: 'small' as const,
                       onClick: () =>

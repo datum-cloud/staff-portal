@@ -43,7 +43,7 @@ export function MiloSearch() {
       <PopoverTrigger asChild>
         <Button
           htmlType="button"
-          type="tertiary"
+          type="quaternary"
           theme="borderless"
           size="icon"
           aria-label={t`Search`}
