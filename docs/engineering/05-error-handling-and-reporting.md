@@ -146,7 +146,9 @@ build time — `org`/`project: 'staff-portal'`/`authToken: SENTRY_AUTH_TOKEN`
 VERSION.includes('main')` (`app/utils/config/sentry.config.ts`,
 `vite.config.ts`; `sentryOnBuildEnd` in `react-router.config.ts`). Runtime
 `release` (`VERSION`) must match the upload release for events to resolve to
-source.
+source. In the image build the token reaches only the Dockerfile's build step,
+as the BuildKit secret `sentry_auth_token`. Never pass it as a build arg:
+build args are recorded in the image's public provenance.
 
 **Config / env.** `app/utils/config/env.server.ts` validates `SENTRY_DSN` /
 `SENTRY_ENV` and derives `isSentryEnabled` / `sentryUiUrl`; the root loader
