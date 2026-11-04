@@ -15,7 +15,7 @@ export const buttonDemoSections: DemoSectionMeta[] = [
 const TYPES: NonNullable<ButtonProps['type']>[] = [
   'primary',
   'secondary',
-  'tertiary',
+  'quaternary',
   'warning',
   'danger',
   'success',

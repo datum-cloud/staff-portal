@@ -122,7 +122,7 @@ export default function Demo() {
             <div className="flex gap-1">
               <Tooltip message={areAllOpen ? 'Collapse all' : 'Expand all'}>
                 <Button
-                  type="tertiary"
+                  type="quaternary"
                   theme="borderless"
                   size="icon"
                   onClick={toggleAllAccordions}
@@ -132,7 +132,7 @@ export default function Demo() {
               </Tooltip>
               <Tooltip message={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
                 <Button
-                  type="tertiary"
+                  type="quaternary"
                   theme="borderless"
                   size="icon"
                   onClick={() => setIsDarkMode((v) => !v)}
@@ -156,7 +156,7 @@ export default function Demo() {
                 className="group">
                 <CollapsibleTrigger asChild>
                   <Button
-                    type="tertiary"
+                    type="quaternary"
                     theme="borderless"
                     className="text-muted-foreground group-data-[state=open]:text-foreground hover:bg-accent mb-1 w-full justify-between text-sm font-semibold">
                     <span>{component.name}</span>
@@ -168,7 +168,7 @@ export default function Demo() {
                     {component.sections.map((section) => (
                       <li key={section.id}>
                         <Button
-                          type="tertiary"
+                          type="quaternary"
                           theme="borderless"
                           className={cn(
                             'w-full justify-start text-left text-sm',

@@ -95,7 +95,7 @@ export function UserRecoveryLinksDialog({
           )}
         </Dialog.Body>
         <Dialog.Footer>
-          <Button type="tertiary" theme="borderless" onClick={() => onOpenChange(false)}>
+          <Button type="quaternary" theme="borderless" onClick={() => onOpenChange(false)}>
             <Trans>Close</Trans>
           </Button>
         </Dialog.Footer>

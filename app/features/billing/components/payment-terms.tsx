@@ -316,7 +316,7 @@ export function CurrentTermsActions({ terms }: { terms: PaymentTermsState }) {
   return (
     <div className="flex gap-2">
       <Button
-        type="tertiary"
+        type="quaternary"
         theme="outline"
         size="small"
         onClick={() => terms.dialogs.setChangeOpen(true)}>

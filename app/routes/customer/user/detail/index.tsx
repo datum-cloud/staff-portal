@@ -418,7 +418,7 @@ export default function Page() {
                     />
                     <div className="flex justify-end gap-2">
                       <Button
-                        type="tertiary"
+                        type="quaternary"
                         theme="borderless"
                         size="small"
                         onClick={cancelPendingState}
@@ -474,7 +474,7 @@ export default function Page() {
               </div>
               <div className="flex items-center gap-2">
                 <Button
-                  type="tertiary"
+                  type="quaternary"
                   theme="borderless"
                   size="small"
                   onClick={() => setRecoveryLinksOpen(true)}>

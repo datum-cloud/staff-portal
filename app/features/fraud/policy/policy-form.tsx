@@ -169,7 +169,7 @@ export function PolicyForm({
                         <Trans>Triggers</Trans>
                       </Text>
                       <Button
-                        type="tertiary"
+                        type="quaternary"
                         theme="outline"
                         size="small"
                         icon={<ACTION_ICONS.add size={14} />}
@@ -186,7 +186,7 @@ export function PolicyForm({
                             <Trans>Trigger {idx + 1}</Trans>
                           </Text>
                           <Button
-                            type="tertiary"
+                            type="quaternary"
                             theme="borderless"
                             size="small"
                             icon={<ACTION_ICONS.close size={14} />}
@@ -227,7 +227,7 @@ export function PolicyForm({
                         <Trans>Pipeline Stages</Trans>
                       </Text>
                       <Button
-                        type="tertiary"
+                        type="quaternary"
                         theme="outline"
                         size="small"
                         icon={<ACTION_ICONS.add size={14} />}
@@ -254,7 +254,7 @@ export function PolicyForm({
                           </Text>
                           {fields.length > 1 && (
                             <Button
-                              type="tertiary"
+                              type="quaternary"
                               theme="borderless"
                               size="small"
                               icon={<ACTION_ICONS.close size={14} />}
@@ -310,7 +310,7 @@ export function PolicyForm({
             </div>
 
             <div className="flex justify-end gap-2 pt-4">
-              <Button type="tertiary" theme="borderless" htmlType="button" onClick={onCancel}>
+              <Button type="quaternary" theme="borderless" htmlType="button" onClick={onCancel}>
                 {t`Cancel`}
               </Button>
               <Button htmlType="submit" disabled={!isDirty || !isValid || isSubmitting}>

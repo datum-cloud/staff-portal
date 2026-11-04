@@ -91,7 +91,7 @@ export const ContactGroupForm: React.FC<Props> = ({ contactGroup }) => {
 
           <div className="flex justify-end gap-2 pt-4">
             <Button
-              type="tertiary"
+              type="quaternary"
               theme="borderless"
               onClick={() => navigate(contactGroupRoutes.list())}>
               {t`Cancel`}

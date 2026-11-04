@@ -67,7 +67,7 @@ function RawResponseDialog({
           <pre className="bg-muted overflow-auto rounded-md p-4 text-xs">{formatted}</pre>
         </Dialog.Body>
         <Dialog.Footer>
-          <Button type="tertiary" theme="borderless" onClick={() => onOpenChange(false)}>
+          <Button type="quaternary" theme="borderless" onClick={() => onOpenChange(false)}>
             <Trans>Close</Trans>
           </Button>
         </Dialog.Footer>

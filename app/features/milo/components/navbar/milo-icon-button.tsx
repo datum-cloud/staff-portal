@@ -28,7 +28,7 @@ export function MiloIconButton({ label, icon, onClick, active, className }: Milo
     <Tooltip message={label}>
       <Button
         htmlType="button"
-        type="tertiary"
+        type="quaternary"
         theme="borderless"
         size="icon"
         onClick={onClick}

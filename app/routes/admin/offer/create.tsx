@@ -185,7 +185,7 @@ export default function Page() {
 
                 <div className="flex justify-end gap-2 border-t pt-4">
                   <Button
-                    type="tertiary"
+                    type="quaternary"
                     theme="borderless"
                     htmlType="button"
                     onClick={() => navigate(offerRoutes.list())}>

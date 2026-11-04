@@ -175,7 +175,7 @@ export function ProjectSuspensionCard({ project, className }: Props) {
                 <div className="mb-2 flex items-center justify-between gap-2">
                   <BadgeState state={s.spec?.reason ?? 'Unknown'} />
                   <Button
-                    type="tertiary"
+                    type="quaternary"
                     theme="outline"
                     size="small"
                     loading={liftingName === s.metadata?.name}

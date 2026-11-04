@@ -78,7 +78,7 @@ export function AddToGroupDialog({
   return (
     <>
       <Button
-        type={variant === 'header' ? 'secondary' : 'tertiary'}
+        type={variant === 'header' ? 'secondary' : 'quaternary'}
         theme={variant === 'header' ? 'outline' : 'borderless'}
         size="xs"
         icon={<AddIcon size={14} />}
