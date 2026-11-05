@@ -2034,6 +2034,12 @@ export type ComMiloapisBillingV1Alpha1Offer = {
        * milo-system when empty.
        */
       namespace?: string;
+      /**
+       * Quantity is how many of a OneTime or Recurring fee the Offer charges:
+       * the fee's amount times its quantity. Defaults to 1. Not allowed on a
+       * Usage pricing.
+       */
+      quantity?: number;
     }>;
     /**
      * ServicePricings is an immutable snapshot of referenced
@@ -2056,6 +2062,11 @@ export type ComMiloapisBillingV1Alpha1Offer = {
        */
       name: string;
       /**
+       * Quantity is how many of a OneTime or Recurring fee the Offer charges,
+       * captured from the reference when the Offer becomes GA. Unset means 1.
+       */
+      quantity?: number;
+      /**
        * Spec is a deep copy of the source ServicePricingSpec at publish time.
        */
       spec: {
@@ -2064,6 +2075,12 @@ export type ComMiloapisBillingV1Alpha1Offer = {
          * charges.
          */
         amount?: string;
+        /**
+         * BasedOn names the list pricing, in the same namespace, that this
+         * Usage pricing gives a customer their own rates for. Only the rate
+         * amounts differ from it.
+         */
+        basedOn?: string;
         /**
          * ChargeType distinguishes Usage, OneTime, and Recurring pricing.
          */
@@ -2136,9 +2153,10 @@ export type ComMiloapisBillingV1Alpha1Offer = {
         }>;
         /**
          * ServiceRef is the canonical service identifier (e.g.
-         * "compute.datumapis.com").
+         * "compute.datumapis.com"). Required for Usage pricings; optional
+         * for OneTime and Recurring fees.
          */
-        serviceRef: string;
+        serviceRef?: string;
         /**
          * Trigger identifies when a OneTime charge fires.
          */
@@ -2695,6 +2713,12 @@ export type ComMiloapisBillingV1Alpha1ServicePricing = {
      */
     amount?: string;
     /**
+     * BasedOn names the list pricing, in the same namespace, that this
+     * Usage pricing gives a customer their own rates for. Only the rate
+     * amounts differ from it.
+     */
+    basedOn?: string;
+    /**
      * ChargeType distinguishes Usage, OneTime, and Recurring pricing.
      */
     chargeType: 'Usage' | 'OneTime' | 'Recurring';
@@ -2766,9 +2790,10 @@ export type ComMiloapisBillingV1Alpha1ServicePricing = {
     }>;
     /**
      * ServiceRef is the canonical service identifier (e.g.
-     * "compute.datumapis.com").
+     * "compute.datumapis.com"). Required for Usage pricings; optional
+     * for OneTime and Recurring fees.
      */
-    serviceRef: string;
+    serviceRef?: string;
     /**
      * Trigger identifies when a OneTime charge fires.
      */

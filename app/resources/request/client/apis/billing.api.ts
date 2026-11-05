@@ -4,6 +4,7 @@ import {
   contractOfferPlan,
   contractResourceNames,
 } from '@/features/billing/lib/contract';
+import type { UsagePlan } from '@/features/billing/lib/contract-usage';
 import type { OfferDiscount } from '@/features/billing/lib/offer-discounts';
 import type {
   ArrangementMergePatch,
@@ -60,6 +61,7 @@ const filterNotDeleting = <T extends { metadata?: { deletionTimestamp?: string }
 export type Offer = ComMiloapisBillingV1Alpha1Offer;
 export type OfferSpec = NonNullable<Offer['spec']>;
 export type ServicePricing = ComMiloapisBillingV1Alpha1ServicePricing;
+type ServicePricingSpec = NonNullable<ServicePricing['spec']>;
 // One set of billing aliases, defined with the billing feature.
 export type { BillingEntitlement, Invoice, InvoiceRequest };
 
@@ -359,8 +361,10 @@ export type CreateFixedServicePricingInput = {
   chargeType: 'OneTime' | 'Recurring';
   /** USD decimal string, e.g. "1500.00". */
   amount: string;
-  /** The catalog service's serviceName the fee is for. */
-  serviceRef: string;
+  /** The catalog service's serviceName the fee is for, if it's for one. */
+  serviceRef?: string;
+  /** What the amount is per, e.g. "port", if the fee has a unit. */
+  pricingUnit?: string;
   labels?: Record<string, string>;
 };
 
@@ -381,11 +385,34 @@ export const createFixedServicePricing = async (input: CreateFixedServicePricing
         currency: 'USD',
         displayName: input.displayName,
         amount: input.amount,
-        serviceRef: input.serviceRef,
+        ...(input.serviceRef ? { serviceRef: input.serviceRef } : {}),
+        ...(input.pricingUnit ? { pricingUnit: input.pricingUnit } : {}),
         ...(input.chargeType === 'OneTime'
           ? { trigger: 'BillingAccountActivation' as const }
           : { interval: 'monthly' as const }),
       },
+    },
+  });
+  return response.data?.data;
+};
+
+/**
+ * A customer's own usage rates: a Usage pricing based on a list pricing,
+ * differing from it only in its rate amounts, which billing checks.
+ */
+export const createCustomerUsagePricing = async (input: {
+  name: string;
+  spec: ServicePricingSpec;
+  labels?: Record<string, string>;
+}) => {
+  const response = await createBillingMiloapisComV1Alpha1NamespacedServicePricing({
+    path: { namespace: DEFAULT_SERVICE_PRICING_NAMESPACE },
+    query: { fieldManager: FIELD_MANAGER },
+    body: {
+      apiVersion: 'billing.miloapis.com/v1alpha1',
+      kind: 'ServicePricing',
+      metadata: { name: input.name, ...(input.labels ? { labels: input.labels } : {}) },
+      spec: input.spec,
     },
   });
   return response.data?.data;
@@ -413,13 +440,23 @@ export const waitForOfferSnapshot = async (
 };
 
 export type ContractFeeInput = {
-  /** Shown on invoices, e.g. "Dedicated servers". */
+  /** Shown on invoices, e.g. "Dedicated server". */
   label: string;
   chargeType: 'OneTime' | 'Recurring';
-  /** USD decimal string, e.g. "1000.00". */
+  /** The unit amount, as a USD decimal string, e.g. "1000.00". */
   amount: string;
-  /** The catalog service's serviceName the fee is for. */
-  serviceRef: string;
+  /** How many of the fee the contract charges. */
+  quantity: number;
+  /** What the amount is per, e.g. "port", if the fee has a unit. */
+  pricingUnit?: string;
+  /** The catalog service's serviceName the fee is for, if it's for one. */
+  serviceRef?: string;
+  /**
+   * An existing pricing that already charges this fee, such as the
+   * contract's current one when an amendment keeps it, to use instead of
+   * creating another.
+   */
+  existingPricing?: string;
 };
 
 export type CreateContractOfferInput = {
@@ -432,8 +469,8 @@ export type CreateContractOfferInput = {
    * one-time fees when amending a started contract: they'd be charged again.
    */
   fees: ContractFeeInput[];
-  /** Usage pricings billed alongside the fees, if any. */
-  usageRefs: NonNullable<OfferSpec['servicePricingRefs']>;
+  /** Usage billed alongside the fees, if any, and customer pricings to create for it. */
+  usage: UsagePlan;
 };
 
 /**
@@ -446,21 +483,32 @@ export const createContractOffer = async (input: CreateContractOfferInput, now =
     [CONTRACT_BILLING_ACCOUNT_LABEL]: input.accountName,
     [CONTRACT_ORGANIZATION_LABEL]: input.orgName,
   };
-  const fees = input.fees.map((fee, index) => ({ ...fee, name: names.fee(index) }));
+  const fees = input.fees.map((fee, index) => ({
+    ...fee,
+    name: fee.existingPricing || names.fee(index),
+  }));
   for (const fee of fees) {
+    if (fee.existingPricing) continue;
     await createFixedServicePricing({
       name: fee.name,
       displayName: fee.label,
       chargeType: fee.chargeType,
       amount: fee.amount,
       serviceRef: fee.serviceRef,
+      pricingUnit: fee.pricingUnit,
       labels,
     });
+  }
+  const usageRefs = input.usage.refs.map((ref) => ({ ...ref }));
+  for (const [i, pricing] of input.usage.create.entries()) {
+    const name = names.usage(i);
+    await createCustomerUsagePricing({ name, spec: pricing.spec, labels });
+    usageRefs[pricing.index] = { ...usageRefs[pricing.index], name };
   }
   const plan = contractOfferPlan({
     namespace: DEFAULT_SERVICE_PRICING_NAMESPACE,
     fees,
-    usageRefs: input.usageRefs,
+    usageRefs,
   });
   await createOffer({ name: names.offer, displayName: input.displayName, labels, ...plan });
   await publishOffer(names.offer);

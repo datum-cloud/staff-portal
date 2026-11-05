@@ -6,10 +6,9 @@ import {
   firstInvoiceTotal,
   firstMonthShare,
   getContractFees,
+  feeTotal,
   getContractFirstInvoice,
   getContractState,
-  getUsagePricingRefs,
-  isContractResource,
   localDateForUtcDay,
   MAX_CONTRACT_FEES,
   MAX_CONTRACT_LEAD_DAYS,
@@ -19,12 +18,21 @@ import {
   proratedFirstInvoiceTotal,
   startOfUtcDay,
   toPricingAmount,
+  type ContractFee,
   type ContractState,
 } from '../../lib/contract';
 import {
+  buildUsagePlan,
+  listUsageMeterOptions,
+  RATE_AMOUNT_PATTERN,
+  rateSlots,
+  usageRowsFromOffer,
+  type UsageMeterOption,
+} from '../../lib/contract-usage';
+import {
+  DEFAULT_SERVICE_PRICING_NAMESPACE,
   formatMoney,
   getBillingAccountDisplayName,
-  getOfferDisplayName,
   indexServicesByRef,
   PAST_INVOICE_STATUS_BADGE,
   toPastInvoiceRow,
@@ -37,11 +45,12 @@ import {
   useBillingDefaultOfferQuery,
   useChangeContractFeesMutation,
   useOfferDetailQuery,
-  useOfferListQuery,
   usePreviewNextInvoiceMutation,
   useServiceListQuery,
+  useServicePricingListQuery,
   useSetUpContractMutation,
   type InvoiceRequest,
+  type ServicePricing,
 } from '@/resources/request/client';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Dialog } from '@datum-cloud/datum-ui/dialog';
@@ -52,7 +61,7 @@ import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
-import { Trans } from '@lingui/react/macro';
+import { Plural, Trans } from '@lingui/react/macro';
 import type {
   ComMiloapisBillingV1Alpha1BillingAccount,
   ComMiloapisBillingV1Alpha1BillingEntitlement,
@@ -60,13 +69,17 @@ import type {
 } from '@openapi/billing.miloapis.com/v1alpha1';
 import { FileSearch, Pencil, Plus, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import type { UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
 
 /** Contract fees are USD only, like every ServicePricing. */
 const CONTRACT_CURRENCY = 'USD';
 
-/** The usage picker's value for a contract that bills fixed fees only. */
-const NO_USAGE = 'none';
+/** The service picker's value for a fee that isn't for any one service. */
+const NO_SERVICE = 'none';
+
+/** Most of one fee a contract can charge, as billing allows. */
+const MAX_FEE_QUANTITY = 10000;
 
 export type ContractDialogMode = 'setup' | 'change';
 
@@ -224,9 +237,19 @@ function ContractDates({ contract }: { contract: ContractState }) {
   );
 }
 
+/** A fee's quantity and unit price, e.g. "4 port × $300.00", or null for one of it. */
+const feeQuantityText = (fee: { amount: number; quantity: number; pricingUnit?: string }) => {
+  const unitPrice = formatMoney(fee.amount, CONTRACT_CURRENCY);
+  if (fee.pricingUnit) return `${fee.quantity} ${fee.pricingUnit} × ${unitPrice}`;
+  return fee.quantity > 1 ? `${fee.quantity} × ${unitPrice}` : null;
+};
+
 function ContractFees({ offer }: { offer: ComMiloapisBillingV1Alpha1Offer }) {
   const fees = getContractFees(offer);
   const discount = offer.spec?.discount?.percentage;
+  const customRates = (offer.spec?.servicePricings ?? []).filter(
+    (snapshot) => snapshot.spec?.chargeType === 'Usage' && snapshot.spec.basedOn
+  ).length;
   const servicesQuery = useServiceListQuery();
   const servicesByRef = useMemo(
     () => indexServicesByRef(servicesQuery.data?.items ?? []),
@@ -240,32 +263,49 @@ function ContractFees({ offer }: { offer: ComMiloapisBillingV1Alpha1Offer }) {
         </Text>
       ) : (
         <ul className="flex flex-col gap-1">
-          {fees.map((fee) => (
-            <li key={fee.name} className="flex items-baseline justify-between gap-3">
-              <div className="flex min-w-0 flex-col">
-                <Text size="sm" className="truncate">
-                  {fee.label}
+          {fees.map((fee) => {
+            const total = formatMoney(feeTotal(fee), CONTRACT_CURRENCY);
+            const detail = [
+              feeQuantityText(fee),
+              fee.serviceRef
+                ? servicesByRef.get(fee.serviceRef)?.spec?.displayName || fee.serviceRef
+                : null,
+            ].filter(Boolean);
+            return (
+              <li key={fee.name} className="flex items-baseline justify-between gap-3">
+                <div className="flex min-w-0 flex-col">
+                  <Text size="sm" className="truncate">
+                    {fee.label}
+                  </Text>
+                  {detail.length > 0 ? (
+                    <Text size="xs" textColor="muted" className="truncate">
+                      {detail.join(' · ')}
+                    </Text>
+                  ) : null}
+                </div>
+                <Text size="sm" className="shrink-0 tabular-nums">
+                  {fee.chargeType === 'OneTime' ? (
+                    <Trans>{total} once</Trans>
+                  ) : (
+                    <Trans>{total} / month</Trans>
+                  )}
                 </Text>
-                <Text size="xs" textColor="muted" className="truncate">
-                  {servicesByRef.get(fee.serviceRef)?.spec?.displayName || fee.serviceRef}
-                </Text>
-              </div>
-              <Text size="sm" className="shrink-0 tabular-nums">
-                {fee.chargeType === 'OneTime' ? (
-                  <Trans>{formatMoney(fee.amount, CONTRACT_CURRENCY)} once</Trans>
-                ) : (
-                  <Trans>{formatMoney(fee.amount, CONTRACT_CURRENCY)} / month</Trans>
-                )}
-              </Text>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       )}
       <Text size="xs" textColor="muted">
-        {offerBillsUsage(offer) ? (
-          <Trans>Plus usage.</Trans>
-        ) : (
+        {!offerBillsUsage(offer) ? (
           <Trans>Fixed fees only: usage isn&apos;t billed.</Trans>
+        ) : customRates > 0 ? (
+          <Plural
+            value={customRates}
+            one="Plus usage, at the customer's own rates for # meter."
+            other="Plus usage, at the customer's own rates for # meters."
+          />
+        ) : (
+          <Trans>Plus usage.</Trans>
         )}
         {discount ? (
           <>
@@ -277,6 +317,16 @@ function ContractFees({ offer }: { offer: ComMiloapisBillingV1Alpha1Offer }) {
     </div>
   );
 }
+
+const usageRowSchema = z.object({
+  metric: z.string(),
+  selected: z.boolean(),
+  pricingName: z.string(),
+  discount: z.string(),
+  custom: z.boolean(),
+  amounts: z.array(z.string()),
+  currentPricing: z.string().optional(),
+});
 
 const buildContractSchema = (needsStart: boolean, allowOneTime: boolean, now: Date) =>
   z
@@ -292,12 +342,25 @@ const buildContractSchema = (needsStart: boolean, allowOneTime: boolean, now: Da
             amount: z.string().refine((value) => parseAmount(value) > 0, {
               message: t`Enter an amount, such as 1000 or 1000.00.`,
             }),
-            serviceRef: z.string().min(1, t`Pick the service the fee is for.`),
+            quantity: z.string().refine(
+              (value) => {
+                const n = Number(value);
+                return Number.isInteger(n) && n >= 1 && n <= MAX_FEE_QUANTITY;
+              },
+              { message: t`A whole number from 1 to ${MAX_FEE_QUANTITY}.` }
+            ),
+            pricingUnit: z
+              .string()
+              .trim()
+              .max(64, t`Keep the unit short, such as port or kW.`),
+            serviceRef: z.string(),
+            existingPricing: z.string().optional(),
           })
         )
         .min(1, t`Add at least one fee.`)
         .max(MAX_CONTRACT_FEES, t`A contract can have at most ${MAX_CONTRACT_FEES} fees.`),
-      usageOffer: z.string().min(1),
+      billUsage: z.boolean(),
+      usage: z.array(usageRowSchema),
       startsAt: z.date().optional(),
     })
     .superRefine((values, ctx) => {
@@ -310,6 +373,36 @@ const buildContractSchema = (needsStart: boolean, allowOneTime: boolean, now: Da
               message: t`The contract has started, so a one-time fee would be charged again.`,
             });
           }
+        });
+      }
+      if (values.billUsage) {
+        if (!values.usage.some((row) => row.selected)) {
+          ctx.addIssue({
+            code: 'custom',
+            path: ['billUsage'],
+            message: t`Pick the usage the contract bills, or turn this off.`,
+          });
+        }
+        values.usage.forEach((row, index) => {
+          if (!row.selected) return;
+          const discount = row.discount.trim();
+          if (discount && !/^(100|[1-9]?\d)$/.test(discount)) {
+            ctx.addIssue({
+              code: 'custom',
+              path: ['usage', index, 'discount'],
+              message: t`A whole percentage from 0 to 100.`,
+            });
+          }
+          if (!row.custom) return;
+          row.amounts.forEach((amount, slot) => {
+            if (!RATE_AMOUNT_PATTERN.test(amount.trim())) {
+              ctx.addIssue({
+                code: 'custom',
+                path: ['usage', index, 'amounts', slot],
+                message: t`Enter a rate, such as 0.000012.`,
+              });
+            }
+          });
         });
       }
       if (!needsStart) return;
@@ -337,16 +430,15 @@ type ServiceOption = { serviceName: string; label: string };
 /** RFC 3339 at second precision, as Kubernetes writes times. */
 const toRfc3339 = (date: Date) => date.toISOString().replace(/\.\d{3}Z$/, 'Z');
 
-function ContractDialog({
-  orgName,
-  account,
-  entitlement,
-  contract,
-  currentOffer,
-  mode,
-  now,
-  onOpenChange,
-}: {
+/** Whether a fee row still charges exactly what an existing pricing does. */
+const sameFeePricing = (row: ContractFeeRow, fee: ContractFee) =>
+  row.label.trim() === fee.label &&
+  row.chargeType === fee.chargeType &&
+  parseAmount(row.amount) === fee.amount &&
+  row.pricingUnit.trim() === (fee.pricingUnit ?? '') &&
+  (row.serviceRef === NO_SERVICE ? '' : row.serviceRef) === (fee.serviceRef ?? '');
+
+function ContractDialog(props: {
   orgName: string;
   account: ComMiloapisBillingV1Alpha1BillingAccount;
   entitlement: ComMiloapisBillingV1Alpha1BillingEntitlement;
@@ -356,37 +448,72 @@ function ContractDialog({
   now: Date;
   onOpenChange: (open: boolean) => void;
 }) {
+  const isSetup = props.mode === 'setup';
+  const pricingsQuery = useServicePricingListQuery(DEFAULT_SERVICE_PRICING_NAMESPACE);
+  const defaultOfferName = useBillingDefaultOfferQuery().data ?? '';
+  const defaultOfferQuery = useOfferDetailQuery(isSetup ? defaultOfferName : '');
+  // The form's usage rows start from the pricings and, for a new contract,
+  // the default offer's selection, so it waits for them.
+  const loading =
+    pricingsQuery.isLoading || (isSetup && (!defaultOfferName || defaultOfferQuery.isLoading));
+
+  if (props.mode !== null && loading) {
+    return (
+      <Dialog open onOpenChange={props.onOpenChange}>
+        <Dialog.Content className="sm:max-w-2xl">
+          <Dialog.Header title={isSetup ? t`Set up contract` : t`Change contract fees`} />
+          <Dialog.Body className="flex flex-col gap-2 px-5 pb-5" aria-busy="true">
+            <Skeleton className="h-24 w-full rounded" />
+            <Skeleton className="h-10 w-full rounded" />
+          </Dialog.Body>
+        </Dialog.Content>
+      </Dialog>
+    );
+  }
+  return (
+    <ContractDialogForm
+      {...props}
+      pricings={pricingsQuery.data?.items ?? []}
+      defaultOffer={defaultOfferQuery.data ?? null}
+    />
+  );
+}
+
+function ContractDialogForm({
+  orgName,
+  account,
+  entitlement,
+  contract,
+  currentOffer,
+  mode,
+  now,
+  onOpenChange,
+  pricings,
+  defaultOffer,
+}: {
+  orgName: string;
+  account: ComMiloapisBillingV1Alpha1BillingAccount;
+  entitlement: ComMiloapisBillingV1Alpha1BillingEntitlement;
+  contract: ContractState | null;
+  currentOffer: ComMiloapisBillingV1Alpha1Offer | null;
+  mode: ContractDialogMode | null;
+  now: Date;
+  onOpenChange: (open: boolean) => void;
+  pricings: ServicePricing[];
+  defaultOffer: ComMiloapisBillingV1Alpha1Offer | null;
+}) {
   const accountName = account.metadata?.name ?? '';
   const entitlementName = entitlement.metadata?.name ?? '';
   const setUp = useSetUpContractMutation(orgName, accountName);
   const changeFees = useChangeContractFeesMutation(orgName, accountName);
   const servicesQuery = useServiceListQuery();
-  const defaultOfferName = useBillingDefaultOfferQuery().data ?? '';
-  const offersQuery = useOfferListQuery({ limit: 500 });
 
   const isSetup = mode === 'setup';
   // A one-time fee is charged whenever the account moves onto an Offer that
   // has one, so a contract that has started is amended without them.
   const allowOneTime = isSetup || !contract?.started;
 
-  // Usage is billed at the rates (and discounts) of an offer staff pick:
-  // any published offer with usage pricing. Other accounts' contract offers
-  // are left out; the account's own current one stays, so an amendment can
-  // keep its rates.
-  const currentOfferName = currentOffer?.metadata?.name ?? '';
-  const usageOffers = useMemo(() => {
-    const listed = (offersQuery.data?.items ?? []).filter(
-      (offer) =>
-        offer.spec?.launchStage === 'GA' &&
-        getUsagePricingRefs(offer).length > 0 &&
-        (!isContractResource(offer) || offer.metadata?.name === currentOfferName)
-    );
-    return listed.sort((a, b) => getOfferDisplayName(a).localeCompare(getOfferDisplayName(b)));
-  }, [offersQuery.data?.items, currentOfferName]);
-  const usageOfferByName = new Map(usageOffers.map((offer) => [offer.metadata?.name ?? '', offer]));
-  const defaultUsageOffer = [currentOfferName, defaultOfferName].find((name) =>
-    usageOfferByName.has(name)
-  );
+  const usageOptions = useMemo(() => listUsageMeterOptions(pricings), [pricings]);
 
   const services = useMemo<ServiceOption[]>(
     () =>
@@ -403,11 +530,14 @@ function ContractDialog({
   const currentFees = getContractFees(currentOffer).filter(
     (fee) => allowOneTime || fee.chargeType === 'Recurring'
   );
+  const currentFeeByName = new Map(currentFees.map((fee) => [fee.name, fee]));
   const blankFee = (chargeType: ContractFeeRow['chargeType'], label = ''): ContractFeeRow => ({
     label,
     chargeType,
     amount: '',
-    serviceRef: '',
+    quantity: '1',
+    pricingUnit: '',
+    serviceRef: NO_SERVICE,
   });
   const defaultFees: ContractFeeRow[] =
     !isSetup && currentFees.length > 0
@@ -415,22 +545,24 @@ function ContractDialog({
           label: fee.label,
           chargeType: fee.chargeType,
           amount: toPricingAmount(fee.amount),
-          serviceRef: fee.serviceRef,
+          quantity: String(fee.quantity),
+          pricingUnit: fee.pricingUnit ?? '',
+          serviceRef: fee.serviceRef ?? NO_SERVICE,
+          existingPricing: fee.name,
         }))
       : allowOneTime
         ? [blankFee('OneTime', t`Setup fee`), blankFee('Recurring', t`Monthly fee`)]
         : [blankFee('Recurring', t`Monthly fee`)];
 
+  const usageFrom = isSetup ? defaultOffer : currentOffer;
   const schema = useMemo(
     () => buildContractSchema(isSetup, allowOneTime, now),
     [isSetup, allowOneTime, now]
   );
   const defaultValues: ContractFormValues = {
     fees: defaultFees,
-    usageOffer:
-      (isSetup || offerBillsUsage(currentOffer)) && defaultUsageOffer
-        ? defaultUsageOffer
-        : NO_USAGE,
+    billUsage: offerBillsUsage(usageFrom) && usageOptions.length > 0,
+    usage: usageRowsFromOffer(usageOptions, usageFrom),
     startsAt: undefined,
   };
 
@@ -439,13 +571,28 @@ function ContractDialog({
       orgName,
       accountName,
       displayName: t`${getBillingAccountDisplayName(account)} contract`,
-      fees: values.fees.map((fee) => ({
-        label: fee.label.trim(),
-        chargeType: fee.chargeType,
-        amount: toPricingAmount(parseAmount(fee.amount)),
-        serviceRef: fee.serviceRef,
-      })),
-      usageRefs: getUsagePricingRefs(usageOfferByName.get(values.usageOffer)),
+      fees: values.fees.map((fee) => {
+        const existing = fee.existingPricing
+          ? currentFeeByName.get(fee.existingPricing)
+          : undefined;
+        return {
+          label: fee.label.trim(),
+          chargeType: fee.chargeType,
+          amount: toPricingAmount(parseAmount(fee.amount)),
+          quantity: Number(fee.quantity),
+          pricingUnit: fee.pricingUnit.trim() || undefined,
+          serviceRef: fee.serviceRef === NO_SERVICE ? undefined : fee.serviceRef,
+          existingPricing: existing && sameFeePricing(fee, existing) ? existing.name : undefined,
+        };
+      }),
+      usage: values.billUsage
+        ? buildUsagePlan(
+            values.usage,
+            usageOptions,
+            DEFAULT_SERVICE_PRICING_NAMESPACE,
+            currentOffer
+          )
+        : { refs: [], create: [] },
     };
     try {
       if (isSetup) {
@@ -482,33 +629,11 @@ function ContractDialog({
       cancelText={t`Cancel`}
       schema={schema}
       defaultValues={defaultValues}
+      contentClassName="sm:max-w-2xl"
       onSubmit={handleSubmit}>
       <ContractFeeList services={services} allowOneTime={allowOneTime} />
 
-      <Form.Field
-        name="usageOffer"
-        label={t`Usage`}
-        description={t`Bill usage too, at the rates and discounts of a published offer.`}
-        required>
-        <Form.Select placeholder={t`Select an offer`}>
-          <Form.SelectItem value={NO_USAGE}>
-            <Trans>Don&apos;t bill usage</Trans>
-          </Form.SelectItem>
-          {usageOffers.map((offer) => {
-            const name = offer.metadata?.name ?? '';
-            return (
-              <Form.SelectItem key={name} value={name}>
-                {getOfferDisplayName(offer)} ({name})
-                {name === currentOfferName
-                  ? t` · current`
-                  : name === defaultOfferName
-                    ? t` · default`
-                    : ''}
-              </Form.SelectItem>
-            );
-          })}
-        </Form.Select>
-      </Form.Field>
+      <UsagePricingPicker options={usageOptions} />
 
       {isSetup ? (
         <Form.Field
@@ -526,9 +651,9 @@ function ContractDialog({
 }
 
 /**
- * The contract's fees, one row each: a name for invoices, one-time or
- * monthly, the amount, and the service it's for. Each becomes its own
- * pricing, so fees for different services can sit on one contract.
+ * The contract's fees, one row each: a name for invoices, the unit amount
+ * and how many, optionally what the amount is per, one-time or monthly, and
+ * the service it's for, if any. Each fee is its own pricing and invoice line.
  */
 function ContractFeeList({
   services,
@@ -558,8 +683,10 @@ function ContractFeeList({
                   label: '',
                   chargeType: 'Recurring',
                   amount: '',
+                  quantity: '1',
+                  pricingUnit: '',
                   // New fees are usually for the same service as the last.
-                  serviceRef: fees[fees.length - 1]?.serviceRef ?? '',
+                  serviceRef: fees[fees.length - 1]?.serviceRef ?? NO_SERVICE,
                 } satisfies ContractFeeRow)
               }>
               <Trans>Add fee</Trans>
@@ -567,15 +694,18 @@ function ContractFeeList({
           </div>
           {fields.map((field, index) => (
             <div key={field.key} className="flex flex-col gap-2 rounded-md border p-3">
-              <div className="grid grid-cols-[minmax(0,1fr)_7rem_auto] items-start gap-2">
+              <div className="grid grid-cols-[minmax(0,1fr)_7rem_5rem_auto] items-start gap-2">
                 <Form.Field name={`fees.${index}.label`} label={t`Name`} required>
-                  <Form.Input placeholder={t`Dedicated servers`} />
+                  <Form.Input placeholder={t`Dedicated server`} />
                 </Form.Field>
                 <Form.Field
                   name={`fees.${index}.amount`}
                   label={t`Amount (${CONTRACT_CURRENCY})`}
                   required>
                   <Form.Input inputMode="decimal" placeholder="1000.00" />
+                </Form.Field>
+                <Form.Field name={`fees.${index}.quantity`} label={t`Quantity`} required>
+                  <Form.Input inputMode="numeric" placeholder="1" />
                 </Form.Field>
                 <Button
                   type="quaternary"
@@ -589,7 +719,7 @@ function ContractFeeList({
                   onClick={() => remove(index)}
                 />
               </div>
-              <div className="grid grid-cols-[7rem_minmax(0,1fr)] items-start gap-2">
+              <div className="grid grid-cols-[7rem_7rem_minmax(0,1fr)] items-start gap-2">
                 <Form.Field name={`fees.${index}.chargeType`} label={t`Charged`} required>
                   <Form.Select>
                     {allowOneTime || fees[index]?.chargeType === 'OneTime' ? (
@@ -602,8 +732,14 @@ function ContractFeeList({
                     </Form.SelectItem>
                   </Form.Select>
                 </Form.Field>
-                <Form.Field name={`fees.${index}.serviceRef`} label={t`Service`} required>
-                  <Form.Select placeholder={t`Select a service`}>
+                <Form.Field name={`fees.${index}.pricingUnit`} label={t`Per`}>
+                  <Form.Input placeholder={t`port, kW`} />
+                </Form.Field>
+                <Form.Field name={`fees.${index}.serviceRef`} label={t`Service`}>
+                  <Form.Select>
+                    <Form.SelectItem value={NO_SERVICE}>
+                      <Trans>None</Trans>
+                    </Form.SelectItem>
                     {services.map((service) => (
                       <Form.SelectItem key={service.serviceName} value={service.serviceName}>
                         {service.label}
@@ -617,6 +753,140 @@ function ContractFeeList({
         </div>
       )}
     </Form.FieldArray>
+  );
+}
+
+type UsageRowValues = ContractFormValues['usage'][number];
+
+/**
+ * The usage the contract bills: the platform's usage pricings by service,
+ * one per meter. Each ticked meter bills at its list rates, with an optional
+ * discount, or at rates negotiated for the customer, which become their own
+ * pricing based on the list one.
+ */
+function UsagePricingPicker({ options }: { options: UsageMeterOption[] }) {
+  const billUsage = Form.useWatch('billUsage') as boolean | undefined;
+  const servicesQuery = useServiceListQuery();
+  const servicesByRef = useMemo(
+    () => indexServicesByRef(servicesQuery.data?.items ?? []),
+    [servicesQuery.data?.items]
+  );
+  const groups = useMemo(() => {
+    const byService = new Map<string, { option: UsageMeterOption; index: number }[]>();
+    options.forEach((option, index) => {
+      byService.set(option.serviceRef, [
+        ...(byService.get(option.serviceRef) ?? []),
+        { option, index },
+      ]);
+    });
+    return [...byService.entries()];
+  }, [options]);
+
+  if (options.length === 0) {
+    return (
+      <Text size="sm" textColor="muted">
+        <Trans>The platform has no usage pricing to bill.</Trans>
+      </Text>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      <Form.Field
+        name="billUsage"
+        description={t`Usage is billed at each meter's list rates, less any discount, or at the customer's own rates.`}>
+        <Form.Switch label={t`Bill usage too`} />
+      </Form.Field>
+      {billUsage ? (
+        <div className="flex max-h-80 flex-col gap-3 overflow-y-auto rounded-md border p-3">
+          {groups.map(([serviceRef, rows]) => (
+            <div key={serviceRef} className="flex flex-col gap-1">
+              <Text size="xs" weight="medium" textColor="muted">
+                {servicesByRef.get(serviceRef)?.spec?.displayName || serviceRef}
+              </Text>
+              {rows.map(({ option, index }) => (
+                <UsageMeterRow key={option.metric} option={option} index={index} />
+              ))}
+            </div>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function UsageMeterRow({ option, index }: { option: UsageMeterOption; index: number }) {
+  const row = Form.useWatch(`usage.${index}`) as UsageRowValues | undefined;
+  const form = Form.useFormContext().form.raw as UseFormReturn<ContractFormValues>;
+  const list = option.pricings.find((p) => p.metadata?.name === row?.pricingName);
+  const slots = rateSlots(list?.spec);
+  const unit = option.pricingUnit;
+
+  // A different list pricing may price the meter in more or fewer rates, so
+  // the customer's rates start again from its list rates.
+  const pricingName = row?.pricingName;
+  const slotCount = slots.length;
+  useEffect(() => {
+    if (!row || row.amounts.length === slotCount) return;
+    form.setValue(
+      `usage.${index}.amounts`,
+      slots.map((slot) => slot.listAmount),
+      { shouldDirty: true }
+    );
+    // Only when the pricing changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pricingName, slotCount]);
+
+  return (
+    <div className="flex flex-col gap-2 rounded-md py-1">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+        <Form.Field name={`usage.${index}.selected`}>
+          <Form.Checkbox label={option.label} />
+        </Form.Field>
+        {row?.selected ? (
+          <div className="flex items-center gap-2">
+            {option.pricings.length > 1 ? (
+              <Form.Field name={`usage.${index}.pricingName`} className="w-44">
+                <Form.Select>
+                  {option.pricings.map((pricing, i) => {
+                    const name = pricing.metadata?.name ?? '';
+                    return (
+                      <Form.SelectItem key={name} value={name}>
+                        {name}
+                        {i === 0 ? t` · newest` : ''}
+                      </Form.SelectItem>
+                    );
+                  })}
+                </Form.Select>
+              </Form.Field>
+            ) : null}
+            <Form.Field name={`usage.${index}.discount`} className="w-20">
+              <Form.Input inputMode="numeric" placeholder={t`% off`} aria-label={t`Discount`} />
+            </Form.Field>
+          </div>
+        ) : null}
+      </div>
+      {row?.selected ? (
+        <div className="flex flex-col gap-2 pl-6">
+          <Form.Field name={`usage.${index}.custom`}>
+            <Form.Switch label={t`Customer's own rates`} />
+          </Form.Field>
+          {row.custom ? (
+            <div className="grid grid-cols-2 gap-2">
+              {slots.map((slot, slotIndex) => (
+                <Form.Field
+                  key={`${row.pricingName}-${slotIndex}`}
+                  name={`usage.${index}.amounts.${slotIndex}`}
+                  label={slot.label ? t`${slot.label}, per ${unit}` : t`Per ${unit}`}
+                  description={t`List: ${slot.listAmount}`}>
+                  <Form.Input inputMode="decimal" placeholder={slot.listAmount} />
+                </Form.Field>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
   );
 }
 
@@ -652,7 +922,11 @@ function ContractStartPicker({ now }: { now: Date }) {
 function ContractSummary({ isSetup }: { isSetup: boolean }) {
   const rows = (Form.useWatch('fees') as ContractFeeRow[] | undefined) ?? [];
   const picked = Form.useWatch('startsAt') as Date | undefined;
-  const fees = rows.map((row) => ({ chargeType: row.chargeType, amount: parseAmount(row.amount) }));
+  const fees = rows.map((row) => ({
+    chargeType: row.chargeType,
+    amount: parseAmount(row.amount),
+    quantity: Number.parseInt(row.quantity, 10) || 1,
+  }));
   if (!fees.some((fee) => fee.amount > 0)) return null;
 
   const hasOneTime = fees.some((fee) => fee.chargeType === 'OneTime' && fee.amount > 0);

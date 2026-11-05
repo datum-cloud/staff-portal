@@ -181,10 +181,20 @@ describe('getContractFees', () => {
         fixed('setup', 'OneTime', '1500.00'),
       ])
     );
-    expect(fees.map((f) => [f.name, f.label, f.amount])).toEqual([
-      ['setup', 'setup', 1500],
-      ['monthly', 'Dedicated server', 1000],
+    expect(fees.map((f) => [f.name, f.label, f.amount, f.quantity])).toEqual([
+      ['setup', 'setup', 1500, 1],
+      ['monthly', 'Dedicated server', 1000, 1],
     ]);
+  });
+
+  it("reads each fee's quantity, unit and service, if any", () => {
+    const ports = fixed('ports', 'Recurring', '300.00', 'Cross connect');
+    ports.quantity = 4;
+    ports.spec.pricingUnit = 'port';
+    delete ports.spec.serviceRef;
+    const [fee] = getContractFees(offer([ports]));
+    expect(fee).toMatchObject({ amount: 300, quantity: 4, pricingUnit: 'port' });
+    expect(fee.serviceRef).toBeUndefined();
   });
 });
 
@@ -226,6 +236,21 @@ describe('contractOfferPlan', () => {
         { name: 'cpu', namespace: 'milo-system' },
       ],
     });
+  });
+
+  it('sets a quantity on fees charged more than once', () => {
+    const plan = contractOfferPlan({
+      namespace: 'milo-system',
+      fees: [
+        { name: 'servers', chargeType: 'Recurring', quantity: 3 },
+        { name: 'support', chargeType: 'Recurring', quantity: 1 },
+      ],
+      usageRefs: [],
+    });
+    expect(plan.servicePricingRefs).toEqual([
+      { name: 'servers', namespace: 'milo-system', quantity: 3 },
+      { name: 'support', namespace: 'milo-system' },
+    ]);
   });
 
   it('lists only the charge types it has', () => {
@@ -318,5 +343,15 @@ describe('amounts', () => {
     ];
     expect(firstInvoiceTotal(fees)).toBe(3000.5);
     expect(monthlyTotal(fees)).toBe(1500.5);
+  });
+
+  it('charges each fee its amount times its quantity', () => {
+    const fees = [
+      { chargeType: 'OneTime' as const, amount: 1500, quantity: 2 },
+      { chargeType: 'Recurring' as const, amount: 300, quantity: 4 },
+    ];
+    expect(firstInvoiceTotal(fees)).toBe(4200);
+    expect(monthlyTotal(fees)).toBe(1200);
+    expect(proratedFirstInvoiceTotal(fees, 0.5)).toBe(3600);
   });
 });
