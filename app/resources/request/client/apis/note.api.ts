@@ -4,6 +4,7 @@ import {
   createNotesMiloapisComV1Alpha1NamespacedNote,
   deleteNotesMiloapisComV1Alpha1NamespacedNote,
   listNotesMiloapisComV1Alpha1NamespacedNote,
+  patchNotesMiloapisComV1Alpha1NamespacedNote,
 } from '@openapi/notes.miloapis.com/v1alpha1';
 
 /**
@@ -64,6 +65,23 @@ export const noteCreateMutation = async (
       metadata: { generateName: 'note-', namespace: subject.namespace },
       spec: { subjectRef: subject, content },
     },
+  });
+  return response.data.data;
+};
+
+export const noteUpdateMutation = async (
+  namespace: string,
+  noteName: string,
+  content: string,
+  scope: NoteScope = { kind: 'core' }
+) => {
+  const baseURL = scopeBaseURL(scope);
+  const response = await patchNotesMiloapisComV1Alpha1NamespacedNote({
+    ...(baseURL && { baseURL }),
+    path: { namespace, name: noteName },
+    query: { fieldManager: 'datum-staff-portal' },
+    headers: { 'Content-Type': 'application/merge-patch+json' },
+    body: { spec: { content } },
   });
   return response.data.data;
 };

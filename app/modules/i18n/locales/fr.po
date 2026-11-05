@@ -488,6 +488,7 @@ msgstr ""
 #: app/routes/marketing/contact-group/index.tsx:205
 #: app/routes/marketing/contact/detail/group.tsx:149
 #: app/routes/marketing/contact/detail/group.tsx:171
+#: app/routes/marketing/contact/detail/notes.tsx:157
 #: app/routes/marketing/contact/index.tsx:32
 msgid "Add"
 msgstr ""
@@ -498,6 +499,7 @@ msgid "Add a note"
 msgstr ""
 
 #: app/features/contact/components/timeline/note-composer.tsx:47
+#: app/routes/marketing/contact/detail/notes.tsx:165
 msgid "Add a note about this contact… (visible to staff only)"
 msgstr ""
 
@@ -523,6 +525,8 @@ msgid "Add Member"
 msgstr ""
 
 #: app/features/contact/components/timeline/note-composer.tsx:56
+#: app/routes/marketing/contact/detail/notes.tsx:149
+#: app/routes/marketing/contact/detail/notes.tsx:156
 msgid "Add note"
 msgstr ""
 
@@ -560,6 +564,7 @@ msgid "Added"
 msgstr ""
 
 #: app/features/notes/components/notes-card.tsx:134
+#: app/routes/marketing/contact/detail/notes.tsx:100
 msgid "Added by"
 msgstr ""
 
@@ -844,6 +849,10 @@ msgstr ""
 msgid "Are you sure you want to delete this fraud evaluation? This action cannot be undone."
 msgstr ""
 
+#: app/routes/marketing/contact/detail/notes.tsx:189
+msgid "Are you sure you want to delete this note? This action cannot be undone."
+msgstr ""
+
 #. placeholder {0}: data.spec?.givenName ?? ''
 #. placeholder {1}: data.spec?.familyName ?? ''
 #: app/routes/customer/user/detail/index.tsx:520
@@ -1064,6 +1073,9 @@ msgstr ""
 #: app/routes/marketing/contact-group/index.tsx:134
 #: app/routes/marketing/contact/detail/group.tsx:159
 #: app/routes/marketing/contact/detail/group.tsx:172
+#: app/routes/marketing/contact/detail/notes.tsx:158
+#: app/routes/marketing/contact/detail/notes.tsx:176
+#: app/routes/marketing/contact/detail/notes.tsx:191
 #: app/routes/profile/session.tsx:105
 msgid "Cancel"
 msgstr ""
@@ -1615,6 +1627,7 @@ msgstr ""
 #: app/routes/customer/user/index.tsx:327
 #: app/routes/marketing/contact-group/index.tsx:91
 #: app/routes/marketing/contact-group/index.tsx:258
+#: app/routes/marketing/contact/detail/notes.tsx:105
 #: app/routes/profile/session.tsx:72
 msgid "Created"
 msgstr ""
@@ -1797,6 +1810,8 @@ msgstr ""
 #: app/routes/marketing/contact-group/index.tsx:133
 #: app/routes/marketing/contact/detail/group.tsx:71
 #: app/routes/marketing/contact/detail/group.tsx:158
+#: app/routes/marketing/contact/detail/notes.tsx:83
+#: app/routes/marketing/contact/detail/notes.tsx:190
 #: app/routes/profile/session.tsx:40
 #: app/routes/profile/session.tsx:104
 msgid "Delete"
@@ -1847,6 +1862,10 @@ msgstr ""
 #: app/routes/admin/group/detail/member.tsx:139
 #: app/routes/marketing/contact-group/detail/member.tsx:342
 msgid "Delete Member"
+msgstr ""
+
+#: app/routes/marketing/contact/detail/notes.tsx:188
+msgid "Delete note"
 msgstr ""
 
 #: app/routes/customer/organization/detail/index.tsx:116
@@ -2127,6 +2146,7 @@ msgstr ""
 #: app/routes/admin/offer/detail.tsx:299
 #: app/routes/customer/fraud/providers/index.tsx:42
 #: app/routes/marketing/contact-group/index.tsx:49
+#: app/routes/marketing/contact/detail/notes.tsx:78
 msgid "Edit"
 msgstr ""
 
@@ -2144,6 +2164,10 @@ msgstr ""
 
 #: app/routes/customer/fraud/providers/detail.tsx:34
 msgid "Edit Fraud Provider"
+msgstr ""
+
+#: app/routes/marketing/contact/detail/notes.tsx:174
+msgid "Edit note"
 msgstr ""
 
 #: app/features/quota/components/quota-bucket-list.tsx:150
@@ -3837,6 +3861,10 @@ msgstr ""
 msgid "No new organizations in 30 days"
 msgstr ""
 
+#: app/routes/marketing/contact/detail/notes.tsx:211
+msgid "No notes found."
+msgstr ""
+
 #: app/features/notes/components/notes-card.tsx:119
 msgid "No notes yet"
 msgstr ""
@@ -4080,6 +4108,9 @@ msgstr ""
 
 #: app/features/notes/components/notes-card.tsx:140
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:53
+#: app/routes/marketing/contact/detail/notes.tsx:93
+#: app/routes/marketing/contact/detail/notes.tsx:162
+#: app/routes/marketing/contact/detail/notes.tsx:180
 msgid "Note"
 msgstr ""
 
@@ -4088,19 +4119,35 @@ msgstr ""
 msgid "Note added"
 msgstr ""
 
+#: app/routes/marketing/contact/detail/notes.tsx:129
+msgid "Note added successfully"
+msgstr ""
+
 #. placeholder {0}: event.creator || t`someone`
 #: app/features/contact/components/timeline/timeline-item.tsx:45
 msgid "Note by {0}"
+msgstr ""
+
+#: app/routes/marketing/contact/detail/notes.tsx:123
+msgid "Note cannot be empty"
 msgstr ""
 
 #: app/features/notes/components/notes-card.tsx:103
 msgid "Note deleted"
 msgstr ""
 
+#: app/routes/marketing/contact/detail/notes.tsx:199
+msgid "Note deleted successfully"
+msgstr ""
+
+#: app/routes/marketing/contact/detail/notes.tsx:139
+msgid "Note updated successfully"
+msgstr ""
+
 #: app/features/contact/components/timeline/timeline-filters.tsx:14
 #: app/features/notes/components/notes-card.tsx:111
 #: app/features/project/components/project-suspension-card.tsx:200
-#: app/routes/marketing/contact/detail/notes.tsx:11
+#: app/routes/marketing/contact/detail/notes.tsx:28
 msgid "Notes"
 msgstr ""
 
@@ -5125,6 +5172,7 @@ msgstr ""
 #: app/features/billing/components/payment-terms.tsx:213
 #: app/features/profile/components/profile-form.tsx:58
 #: app/routes/admin/offer/detail.tsx:491
+#: app/routes/marketing/contact/detail/notes.tsx:175
 msgid "Save"
 msgstr ""
 
@@ -5272,6 +5320,10 @@ msgstr ""
 
 #: app/routes/customer/project/detail/dns/detail.tsx:243
 msgid "Search nameservers..."
+msgstr ""
+
+#: app/routes/marketing/contact/detail/notes.tsx:210
+msgid "Search notes..."
 msgstr ""
 
 #: app/routes/admin/offer/index.tsx:112
@@ -5975,10 +6027,6 @@ msgstr ""
 
 #: app/features/billing/components/payment-terms.tsx:510
 msgid "The most the account should spend each billing cycle. Recorded for finance only: usage isn't capped and no alerts are sent yet."
-msgstr ""
-
-#: app/routes/marketing/contact/detail/notes.tsx:13
-msgid "The notes and history timeline for this contact will appear here."
 msgstr ""
 
 #. placeholder {0}: issue.paymentMethodName
