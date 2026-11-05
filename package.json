@@ -128,7 +128,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.0",
     "lefthook": "^2.0.0",
-    "monaco-editor": "^0.57.0",
+    "monaco-editor": "^0.55.1",
     "postcss": "^8.5.3",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
