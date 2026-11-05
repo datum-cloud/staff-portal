@@ -12,7 +12,10 @@ import {
   patchIamMiloapisComV1Alpha1User,
   readIamMiloapisComV1Alpha1User,
 } from '@openapi/iam.miloapis.com/v1alpha1';
-import { listNotificationMiloapisComV1Alpha1EmailForAllNamespaces } from '@openapi/notification.miloapis.com/v1alpha1';
+import {
+  ComMiloapisNotificationV1Alpha1Email,
+  listNotificationMiloapisComV1Alpha1EmailForAllNamespaces,
+} from '@openapi/notification.miloapis.com/v1alpha1';
 
 export const userGetQuery = async (userId: string): Promise<ComMiloapisIamV1Alpha1User | null> => {
   const response = await readIamMiloapisComV1Alpha1User({
@@ -154,26 +157,35 @@ export const userEmailListQuery = async (
   userEmail: string,
   params?: ListQueryParams
 ) => {
-  const listByEmail = await listNotificationMiloapisComV1Alpha1EmailForAllNamespaces({
-    query: {
-      limit: params?.limit,
-      continue: params?.cursor,
-      fieldSelector: `spec.recipient.emailAddress=${userEmail}`,
-    },
-  });
+  // An email belongs to the contact when it was sent to the linked user or to the
+  // contact's email address. A prospect has no linked user, so the userRef query is
+  // skipped and emails still resolve by address. Field selectors can't OR, so this
+  // is one call per selector, merged and de-duped by name.
+  const fieldSelectors = [
+    userEmail && `spec.recipient.emailAddress=${userEmail}`,
+    userId && `spec.recipient.userRef.name=${userId}`,
+  ].filter(Boolean) as string[];
 
-  const listByUser = await listNotificationMiloapisComV1Alpha1EmailForAllNamespaces({
-    query: {
-      limit: params?.limit,
-      continue: params?.cursor,
-      fieldSelector: `spec.recipient.userRef.name=${userId}`,
-    },
-  });
+  const responses = await Promise.all(
+    fieldSelectors.map((fieldSelector) =>
+      listNotificationMiloapisComV1Alpha1EmailForAllNamespaces({
+        query: { limit: params?.limit, continue: params?.cursor, fieldSelector },
+      })
+    )
+  );
 
-  return {
-    ...listByEmail.data.data,
-    items: [...(listByEmail.data.data?.items ?? []), ...(listByUser.data.data?.items ?? [])],
-  };
+  const seen = new Set<string>();
+  const items: ComMiloapisNotificationV1Alpha1Email[] = [];
+  for (const response of responses) {
+    for (const item of response.data.data?.items ?? []) {
+      const key = `${item.metadata?.namespace ?? ''}/${item.metadata?.name ?? ''}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      items.push(item);
+    }
+  }
+
+  return { ...responses[0]?.data.data, items };
 };
 
 // ─── GraphQL-backed (gateway) ────────────────────────────────────────────────

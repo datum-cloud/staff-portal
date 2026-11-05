@@ -1,5 +1,5 @@
 import type { Route } from './+types/layout';
-import { AddToGroupDialog, ContactTypeBadge, EditContactDialog } from '@/features/contact';
+import { ContactTypeBadge } from '@/features/contact';
 import { DetailShell, type EntityNav } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
 import { contactDetailQuery, userDetailQuery } from '@/resources/request/server';
@@ -66,11 +66,9 @@ export const handle = {
               icon: ENTITY_ICONS.contactGroup,
             },
             {
-              label: 'Emails sent',
+              label: 'Email Activity',
               href: contactRoutes.emailsSent(namespace, contactName),
               icon: ENTITY_ICONS.emailActivity,
-              disabled: true,
-              badge: SOON_BADGE,
             },
             {
               label: 'Activity',
@@ -131,16 +129,6 @@ export default function Layout() {
         </span>
       }
       subtitle={data?.contact?.spec?.email}
-      actions={
-        <span className="flex items-center gap-2">
-          <AddToGroupDialog
-            contactName={data?.contact?.metadata?.name ?? ''}
-            contactNamespace={data?.contact?.metadata?.namespace ?? 'default'}
-            variant="header"
-          />
-          <EditContactDialog contact={data?.contact} user={data?.user} variant="header" />
-        </span>
-      }
     />
   );
 }
