@@ -1,4 +1,5 @@
 export * from './components/contact-about-card';
+export * from './components/contact-emails-card';
 export * from './components/contact-form';
 export * from './components/contact-groups-card';
 export * from './components/contact-list';

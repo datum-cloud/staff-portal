@@ -1,13 +1,17 @@
 import { getContactDetailMetadata, useContactDetailData } from '../shared';
 import type { Route } from './+types/index';
+import AppActionBar from '@/components/app-actiobar';
 import { DateTime } from '@/components/date';
 import {
+  AddToGroupDialog,
   ContactAboutCard,
+  ContactEmailsCard,
   ContactGroupsCard,
   ContactOrganizationsCard,
   ContactPlatformAccountCard,
   ContactSummaryStrip,
   ContactTimeline,
+  EditContactDialog,
   StatTile,
   isPlatformUser,
 } from '@/features/contact';
@@ -19,6 +23,7 @@ import {
   useUserEmailListQuery,
   useUserOrganizationListQuery,
 } from '@/resources/request/client';
+import { contactRoutes } from '@/utils/config/routes.config';
 import { metaObject, startCase } from '@/utils/helpers';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -83,13 +88,28 @@ export default function Page() {
   );
   const latestEval = fraudData?.items?.[0];
 
+  // Emails are contact-scoped: a prospect still has emails sent to its address, so
+  // this isn't gated on a linked user. Shared with the Emails sent card and tab.
   const { data: emails, isLoading: emailsLoading } = useUserEmailListQuery(userId, email, {
-    enabled: linked && !!email,
+    enabled: !!email || !!userId,
   });
   const emailCount = emails?.items?.length ?? 0;
 
   return (
     <div className="m-4 flex flex-col gap-4">
+      {/* Header CTAs live on the overview only, injected via AppActionBar so they
+          don't persist across the other detail tabs. */}
+      <AppActionBar>
+        <span className="flex items-center gap-2">
+          <AddToGroupDialog
+            contactName={contactName}
+            contactNamespace={contact?.metadata?.namespace ?? 'default'}
+            variant="header"
+          />
+          <EditContactDialog contact={contact} user={user} variant="header" />
+        </span>
+      </AppActionBar>
+
       <ContactSummaryStrip>
         {linked && (
           <StatTile
@@ -126,9 +146,11 @@ export default function Page() {
           loading={groupsQuery.isLoading}
           value={groupCount}
         />
-        {linked && (
-          <StatTile label={<Trans>Emails sent</Trans>} loading={emailsLoading} value={emailCount} />
-        )}
+        <StatTile
+          label={<Trans>Email Activity</Trans>}
+          loading={emailsLoading}
+          value={emailCount}
+        />
         {linked && (
           <StatTile
             label={<Trans>Fraud check</Trans>}
@@ -159,12 +181,17 @@ export default function Page() {
           <ContactTimeline contact={contact} user={user} linked={linked} />
         </div>
 
-        {/* Right rail — read-only context cards (interactions land with #760 / #761 / #762). */}
+        {/* Right rail — context cards (#760 / #761 / #762 / #784). */}
         <div className="flex flex-col gap-4">
           <ContactAboutCard contact={contact} user={user} />
           {linked && <ContactPlatformAccountCard user={user} />}
           {linked && <ContactOrganizationsCard userId={userId} />}
           <ContactGroupsCard contactName={contactName} />
+          <ContactEmailsCard
+            userId={userId}
+            email={email}
+            viewAllHref={contactRoutes.emailsSent(contact?.metadata?.namespace ?? '', contactName)}
+          />
         </div>
       </div>
     </div>

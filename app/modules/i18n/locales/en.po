@@ -37,6 +37,10 @@ msgstr "(current)"
 msgid "(default)"
 msgstr "(default)"
 
+#: app/features/contact/components/contact-emails-card.tsx:93
+msgid "(no subject)"
+msgstr "(no subject)"
+
 #. placeholder {0}: projects.length
 #: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:173
 msgid "{0, plural, one {# active binding · spend this cycle by project} other {# active bindings · spend this cycle by project}}"
@@ -1372,7 +1376,7 @@ msgstr "Contact group updated successfully"
 
 #: app/features/contact/components/contact-groups-card.tsx:48
 #: app/features/contact/components/timeline/timeline-filters.tsx:17
-#: app/routes/marketing/contact/detail/index.tsx:125
+#: app/routes/marketing/contact/detail/index.tsx:145
 msgid "Contact groups"
 msgstr "Contact groups"
 
@@ -1887,6 +1891,7 @@ msgstr "Deleting since"
 msgid "Deletion started"
 msgstr "Deletion started"
 
+#: app/features/contact/components/contact-emails-card.tsx:48
 #: app/features/contact/components/timeline/timeline-item.tsx:63
 #: app/features/email/components/email-list.tsx:67
 msgid "Delivered"
@@ -2117,7 +2122,7 @@ msgid "Each routing rule has its own pool, weighted within the rule."
 msgstr "Each routing rule has its own pool, weighted within the rule."
 
 #: app/features/contact/components/contact-list.tsx:56
-#: app/features/contact/components/edit-contact-dialog.tsx:38
+#: app/features/contact/components/edit-contact-dialog.tsx:39
 #: app/features/fraud/policy/policy-detail.tsx:318
 #: app/routes/admin/offer/detail.tsx:299
 #: app/routes/customer/fraud/providers/index.tsx:42
@@ -2125,7 +2130,7 @@ msgstr "Each routing rule has its own pool, weighted within the rule."
 msgid "Edit"
 msgstr "Edit"
 
-#: app/features/contact/components/edit-contact-dialog.tsx:43
+#: app/features/contact/components/edit-contact-dialog.tsx:44
 msgid "Edit contact"
 msgstr "Edit contact"
 
@@ -2146,7 +2151,7 @@ msgstr "Edit Fraud Provider"
 msgid "Edit Quota"
 msgstr "Edit Quota"
 
-#: app/routes/marketing/contact/detail/index.tsx:75
+#: app/routes/marketing/contact/detail/index.tsx:80
 msgid "editor of {editorCount}"
 msgstr "editor of {editorCount}"
 
@@ -2174,8 +2179,11 @@ msgid "Email"
 msgstr "Email"
 
 #: app/components/app-sidebar/index.tsx:169
+#: app/features/contact/components/contact-emails-card.tsx:56
 #: app/routes/customer/project/detail/email-activity.tsx:8
 #: app/routes/customer/user/detail/email-activity.tsx:9
+#: app/routes/marketing/contact/detail/emails.tsx:9
+#: app/routes/marketing/contact/detail/index.tsx:150
 #: app/routes/operation/email-activity/layout.tsx:5
 msgid "Email Activity"
 msgstr "Email Activity"
@@ -2219,15 +2227,6 @@ msgstr "Emails"
 #: app/routes/customer/user/detail/index.tsx:469
 msgid "Emails a one-time passkey setup link to the verified address on file. It expires in about an hour and cannot be recalled."
 msgstr "Emails a one-time passkey setup link to the verified address on file. It expires in about an hour and cannot be recalled."
-
-#: app/routes/marketing/contact/detail/emails.tsx:11
-#: app/routes/marketing/contact/detail/index.tsx:130
-msgid "Emails sent"
-msgstr "Emails sent"
-
-#: app/routes/marketing/contact/detail/emails.tsx:12
-msgid "Emails sent to this contact will appear here."
-msgstr "Emails sent to this contact will appear here."
 
 #: app/features/feature-flags/components/feature-flag-list.tsx:229
 msgid "Enable"
@@ -2366,7 +2365,7 @@ msgstr "Estimated monthly spend"
 #: app/features/fraud/detail/evaluation-sections.tsx:751
 #: app/routes/customer/fraud/index.tsx:171
 #: app/routes/customer/fraud/index.tsx:306
-#: app/routes/marketing/contact/detail/index.tsx:148
+#: app/routes/marketing/contact/detail/index.tsx:170
 msgid "Evaluated"
 msgstr "Evaluated"
 
@@ -2442,6 +2441,7 @@ msgstr "Export Policies"
 msgid "Export Policy"
 msgstr "Export Policy"
 
+#: app/features/contact/components/contact-emails-card.tsx:49
 #: app/features/email/components/email-list.tsx:68
 #: app/features/organization/components/org-onboarding-card.tsx:79
 msgid "Failed"
@@ -2657,7 +2657,7 @@ msgstr "Fraud Assessment"
 
 #: app/features/billing/components/application-review.tsx:343
 #: app/features/contact/components/contact-platform-account-card.tsx:84
-#: app/routes/marketing/contact/detail/index.tsx:134
+#: app/routes/marketing/contact/detail/index.tsx:156
 msgid "Fraud check"
 msgstr "Fraud check"
 
@@ -3718,9 +3718,17 @@ msgstr "No DNS zones found."
 msgid "No domains found."
 msgstr "No domains found."
 
+#: app/features/contact/components/contact-emails-card.tsx:73
+msgid "No email activity"
+msgstr "No email activity"
+
 #: app/features/email/components/email-list.tsx:126
 msgid "No email activity found."
 msgstr "No email activity found."
+
+#: app/features/contact/components/contact-emails-card.tsx:74
+msgid "No emails have been sent to this contact yet."
+msgstr "No emails have been sent to this contact yet."
 
 #: app/features/dashboard/components/home/health-section.tsx:151
 msgid "No emails sent"
@@ -4273,7 +4281,7 @@ msgstr "organizations"
 #: app/routes/customer/organization/layout.tsx:8
 #: app/routes/customer/project/detail/layout.tsx:122
 #: app/routes/customer/user/detail/organization.tsx:18
-#: app/routes/marketing/contact/detail/index.tsx:118
+#: app/routes/marketing/contact/detail/index.tsx:138
 msgid "Organizations"
 msgstr "Organizations"
 
@@ -4314,7 +4322,7 @@ msgstr "Overview"
 msgid "Owner"
 msgstr "Owner"
 
-#: app/routes/marketing/contact/detail/index.tsx:74
+#: app/routes/marketing/contact/detail/index.tsx:79
 msgid "Owner of {ownerCount}"
 msgstr "Owner of {ownerCount}"
 
@@ -4441,6 +4449,7 @@ msgid "pays invoices on terms"
 msgstr "pays invoices on terms"
 
 #: app/features/billing/components/application-labels.tsx:24
+#: app/features/contact/components/contact-emails-card.tsx:50
 #: app/features/email/components/email-list.tsx:69
 #: app/features/organization/components/org-onboarding-card.tsx:80
 #: app/routes/customer/fraud/index.tsx:278
@@ -4530,7 +4539,7 @@ msgstr "Plain Text"
 msgid "Platform"
 msgstr "Platform"
 
-#: app/routes/marketing/contact/detail/index.tsx:96
+#: app/routes/marketing/contact/detail/index.tsx:116
 msgid "Platform access"
 msgstr "Platform access"
 
@@ -5583,7 +5592,7 @@ msgstr "Show older activity"
 msgid "Showing the most recent {0}; older links exist."
 msgstr "Showing the most recent {0}; older links exist."
 
-#: app/routes/marketing/contact/detail/index.tsx:110
+#: app/routes/marketing/contact/detail/index.tsx:130
 msgid "Signed up"
 msgstr "Signed up"
 
@@ -6355,6 +6364,7 @@ msgid "View activity logs"
 msgstr "View activity logs"
 
 #: app/features/billing/components/org-billing-accounts-card.tsx:86
+#: app/features/contact/components/contact-emails-card.tsx:60
 #: app/features/organization/components/org-members-preview-card.tsx:84
 #: app/features/organization/components/org-usage-card.tsx:72
 #: app/features/project/components/project-quotas-card.tsx:71
