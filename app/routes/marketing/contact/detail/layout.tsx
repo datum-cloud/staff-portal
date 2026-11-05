@@ -57,8 +57,6 @@ export const handle = {
               label: 'Notes',
               href: contactRoutes.notes(namespace, contactName),
               icon: ENTITY_ICONS.note,
-              disabled: true,
-              badge: SOON_BADGE,
             },
             {
               label: 'Contact Groups',
