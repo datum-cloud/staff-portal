@@ -1911,7 +1911,7 @@ msgstr ""
 msgid "Deny this consumer's access request. Optionally add a note."
 msgstr ""
 
-#: app/routes/admin/service-catalog/detail/index.tsx:174
+#: app/routes/admin/service-catalog/service-details.tsx:139
 msgid "Dependencies:"
 msgstr ""
 
@@ -2471,7 +2471,7 @@ msgstr ""
 msgid "Failed to load service catalog."
 msgstr ""
 
-#: app/routes/admin/service-catalog/detail/index.tsx:115
+#: app/routes/admin/service-catalog/service-details.tsx:80
 msgid "Failed to load service configurations."
 msgstr ""
 
@@ -2708,8 +2708,8 @@ msgid "Fully onboarded"
 msgstr ""
 
 #: app/features/service-catalog/components/details-card.tsx:54
-#: app/routes/admin/service-catalog/detail/index.tsx:148
 #: app/routes/admin/service-catalog/index.tsx:184
+#: app/routes/admin/service-catalog/service-details.tsx:113
 msgid "Gated by Provider"
 msgstr ""
 
@@ -4326,7 +4326,7 @@ msgstr ""
 msgid "Owner of {ownerCount}"
 msgstr ""
 
-#: app/routes/admin/service-catalog/detail/index.tsx:166
+#: app/routes/admin/service-catalog/service-details.tsx:131
 msgid "Owner:"
 msgstr ""
 
@@ -5059,8 +5059,8 @@ msgstr ""
 
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:93
 #: app/routes/admin/service-catalog/detail/approvals.tsx:148
-#: app/routes/admin/service-catalog/detail/index.tsx:122
 #: app/routes/admin/service-catalog/index.tsx:150
+#: app/routes/admin/service-catalog/service-details.tsx:87
 msgid "Retry"
 msgstr ""
 
@@ -5485,6 +5485,10 @@ msgstr ""
 #: app/routes/admin/service-catalog/index.tsx:26
 #: app/routes/admin/service-catalog/layout.tsx:8
 msgid "Service Catalog"
+msgstr ""
+
+#: app/routes/admin/service-catalog/detail/details.tsx:14
+msgid "Service details"
 msgstr ""
 
 #: app/features/service-catalog/components/details-card.tsx:29
@@ -6512,7 +6516,7 @@ msgstr ""
 msgid "Yes — new accounts use this Offer"
 msgstr ""
 
-#: app/routes/admin/service-catalog/detail/index.tsx:113
+#: app/routes/admin/service-catalog/service-details.tsx:78
 msgid "You do not have permission to view service configurations."
 msgstr ""
 
