@@ -319,9 +319,7 @@ export interface SearchableFilterConfig extends BaseFilterGroup {
  * Routes and `ListTable` stay untouched.
  */
 export type FilterGroupConfig =
-  | CheckboxFilterConfig
-  | DateRangeFilterConfig
-  | SearchableFilterConfig;
+  CheckboxFilterConfig | DateRangeFilterConfig | SearchableFilterConfig;
 
 type FilterType = NonNullable<FilterGroupConfig['type']>;
 

@@ -221,8 +221,7 @@ export function extractTrafficSettings(
   raw: ComDatumapisNetworkingV1AlphaHttpProxy
 ): HttpProxyTrafficSettings {
   const spec = raw.spec as
-    | { loadBalancer?: RawLoadBalancer; healthCheck?: RawHealthCheck }
-    | undefined;
+    { loadBalancer?: RawLoadBalancer; healthCheck?: RawHealthCheck } | undefined;
   const lb = spec?.loadBalancer;
   const passive = spec?.healthCheck?.passive;
 

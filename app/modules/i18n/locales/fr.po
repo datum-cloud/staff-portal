@@ -1194,13 +1194,13 @@ msgid "Cleanup is in progress. No named blockers yet."
 msgstr ""
 
 #: app/features/milo/components/page/rich-filter-panel.tsx:253
-#: app/features/milo/components/page/rich-filter-panel.tsx:523
-#: app/features/milo/components/page/rich-filter-panel.tsx:670
+#: app/features/milo/components/page/rich-filter-panel.tsx:521
+#: app/features/milo/components/page/rich-filter-panel.tsx:668
 msgid "Clear"
 msgstr ""
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:767
-#: app/features/milo/components/page/rich-filter-panel.tsx:928
+#: app/features/milo/components/page/rich-filter-panel.tsx:765
+#: app/features/milo/components/page/rich-filter-panel.tsx:926
 msgid "Clear all"
 msgstr ""
 
@@ -1227,8 +1227,8 @@ msgstr ""
 msgid "Clusters"
 msgstr ""
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:530
-#: app/features/milo/components/page/rich-filter-panel.tsx:677
+#: app/features/milo/components/page/rich-filter-panel.tsx:528
+#: app/features/milo/components/page/rich-filter-panel.tsx:675
 #: app/features/milo/components/sub-nav/milo-sub-nav.tsx:94
 msgid "Collapse"
 msgstr ""
@@ -2414,8 +2414,8 @@ msgstr ""
 msgid "Events"
 msgstr ""
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:530
-#: app/features/milo/components/page/rich-filter-panel.tsx:677
+#: app/features/milo/components/page/rich-filter-panel.tsx:528
+#: app/features/milo/components/page/rich-filter-panel.tsx:675
 msgid "Expand"
 msgstr ""
 
@@ -2559,16 +2559,16 @@ msgstr ""
 msgid "Filter options"
 msgstr ""
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:915
+#: app/features/milo/components/page/rich-filter-panel.tsx:913
 msgid "Filter the list"
 msgstr ""
 
 #: app/components/data-table-toolbar/index.tsx:74
 #: app/components/data-table-toolbar/index.tsx:92
 #: app/features/milo/components/page/rich-filter-panel.tsx:242
-#: app/features/milo/components/page/rich-filter-panel.tsx:902
-#: app/features/milo/components/page/rich-filter-panel.tsx:914
-#: app/features/milo/components/page/rich-filter-panel.tsx:921
+#: app/features/milo/components/page/rich-filter-panel.tsx:900
+#: app/features/milo/components/page/rich-filter-panel.tsx:912
+#: app/features/milo/components/page/rich-filter-panel.tsx:919
 msgid "Filters"
 msgstr ""
 
@@ -3811,7 +3811,7 @@ msgstr ""
 msgid "No linked projects"
 msgstr ""
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:584
+#: app/features/milo/components/page/rich-filter-panel.tsx:582
 msgid "No matches."
 msgstr ""
 
@@ -5337,7 +5337,7 @@ msgstr ""
 msgid "Search..."
 msgstr ""
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:547
+#: app/features/milo/components/page/rich-filter-panel.tsx:545
 msgid "Search…"
 msgstr ""
 
@@ -5346,7 +5346,7 @@ msgstr ""
 msgid "Searching..."
 msgstr ""
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:576
+#: app/features/milo/components/page/rich-filter-panel.tsx:574
 msgid "Searching…"
 msgstr ""
 
@@ -5579,7 +5579,7 @@ msgstr ""
 msgid "Show filters"
 msgstr ""
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:605
+#: app/features/milo/components/page/rich-filter-panel.tsx:603
 msgid "Show more"
 msgstr ""
 
@@ -6178,7 +6178,7 @@ msgstr ""
 msgid "Type to filter by project name."
 msgstr ""
 
-#: app/features/milo/components/page/rich-filter-panel.tsx:567
+#: app/features/milo/components/page/rich-filter-panel.tsx:565
 msgid "Type to search."
 msgstr ""
 

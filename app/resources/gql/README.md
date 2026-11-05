@@ -75,9 +75,7 @@ import { runGqlQuery, type GqlResult } from '@/modules/graphql/client';
 
 export const projectsOp = (/* … */) =>
   runGqlQuery('StaffProjects', {
-    projects: [
-      /* … */
-    ],
+    projects: [/* … */],
   });
 
 export type GqlProject = NonNullable<

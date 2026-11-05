@@ -695,11 +695,7 @@ export type ComMiloapisBillingV1Alpha1BillingArrangementApplication = {
        * EstimatedMonthlySpend is the applicant's spend estimate.
        */
       estimatedMonthlySpend:
-        | 'Under500'
-        | 'From500To2500'
-        | 'From2500To10000'
-        | 'Over10000'
-        | 'NotSure';
+        'Under500' | 'From500To2500' | 'From2500To10000' | 'Over10000' | 'NotSure';
       /**
        * PurchaseOrderNumber to print on invoices.
        */

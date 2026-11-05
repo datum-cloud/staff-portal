@@ -112,8 +112,7 @@ export const projectEdgeDetailBundleQuery = async (
 
   const raw = proxyResponse.data as unknown as UnwrapProxyResponse<typeof proxyResponse.data>;
   const wafData = wafResponse?.data as unknown as
-    | UnwrapProxyResponse<NonNullable<typeof wafResponse>['data']>
-    | undefined;
+    UnwrapProxyResponse<NonNullable<typeof wafResponse>['data']> | undefined;
 
   const usernames = parseHtpasswdUsernames(basicAuthSecret);
   const basicAuth = getBasicAuthState(securityPolicy, usernames);

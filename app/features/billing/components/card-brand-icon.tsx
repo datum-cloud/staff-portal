@@ -21,14 +21,7 @@ import type { ComponentType } from 'react';
  */
 
 type CardBrand =
-  | 'visa'
-  | 'mastercard'
-  | 'amex'
-  | 'discover'
-  | 'diners'
-  | 'jcb'
-  | 'unionpay'
-  | 'unknown';
+  'visa' | 'mastercard' | 'amex' | 'discover' | 'diners' | 'jcb' | 'unionpay' | 'unknown';
 
 /**
  * `PaymentMethod.status.details.card.brand` is a free-form string (Stripe's
