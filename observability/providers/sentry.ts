@@ -110,8 +110,6 @@ export class SentryProvider extends BaseProvider {
     return {
       dsn: process.env.SENTRY_DSN,
       environment: process.env.SENTRY_ENV || 'development',
-      sendDefaultPii: true,
-      enableLogs: true,
       skipOpenTelemetrySetup: true,
       tracesSampleRate: this.getTracesSampleRate(),
       profilesSampleRate: 0, // Not supported in Bun

@@ -47,14 +47,14 @@
     "@module-federation/runtime": "^2.7.0",
     "@monaco-editor/react": "^4.7.0",
     "@myunisoft/loki": "^6.0.0",
-    "@opentelemetry/auto-instrumentations-node": "^0.79.0",
-    "@opentelemetry/exporter-metrics-otlp-http": "^0.221.0",
-    "@opentelemetry/exporter-trace-otlp-http": "^0.221.0",
-    "@opentelemetry/sdk-node": "^0.221.0",
-    "@opentelemetry/sdk-trace-base": "^2.0.1",
+    "@opentelemetry/api": "^1.10.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.83.0",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.301.0",
+    "@opentelemetry/sdk-node": "^0.301.0",
+    "@opentelemetry/sdk-trace": "3.1.0",
     "@react-router/fs-routes": "^8.3.1",
     "@react-router/node": "^8.3.1",
-    "@sentry/react-router": "^10.69.0",
+    "@sentry/react-router": "^11.11.0",
     "@streamdown/code": "^1.1.1",
     "@tanstack/react-query": "^5.80.3",
     "@tanstack/react-table": "^9.0.0",
@@ -164,7 +164,8 @@
     },
     "qs": "^6.16.0",
     "@babel/core": "^7.29.6",
-    "katex": "^0.18.2"
+    "katex": "^0.18.2",
+    "rimraf": "^6.1.4"
   },
   "engines": {
     "node": ">=26.12.1"
