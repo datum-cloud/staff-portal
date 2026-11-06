@@ -1,6 +1,7 @@
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Dialog } from '@datum-cloud/datum-ui/dialog';
 import { Form, type NormalizedFormInstance } from '@datum-cloud/datum-ui/form';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { ReactNode, useState } from 'react';
 import { z } from 'zod';
 
@@ -22,6 +23,8 @@ interface DialogFormProps<TValues extends Record<string, unknown>> {
    * no optional note).
    */
   requireDirty?: boolean;
+  /** Classes for the dialog's content, e.g. a wider max width. */
+  contentClassName?: string;
   children: ((form: NormalizedFormInstance) => ReactNode) | ReactNode;
 }
 
@@ -37,6 +40,7 @@ export default function DialogForm<TValues extends Record<string, unknown>>({
   schema,
   defaultValues = {} as TValues,
   requireDirty = true,
+  contentClassName,
   children,
 }: DialogFormProps<TValues>) {
   const [isLoading, setIsLoading] = useState(false);
@@ -69,7 +73,7 @@ export default function DialogForm<TValues extends Record<string, unknown>>({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <Dialog.Content className="sm:max-w-md">
+      <Dialog.Content className={cn('sm:max-w-md', contentClassName)}>
         <Dialog.Header title={title} description={description} />
 
         {/* min-h-0 flex-1 lets the form shrink inside Dialog.Content's max
