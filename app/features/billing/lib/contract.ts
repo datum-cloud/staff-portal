@@ -114,6 +114,10 @@ export interface ContractFee {
   pricingUnit?: string;
   /** The service the fee is for, when it's for one. */
   serviceRef?: string;
+  /** The list fee this is the customer's own amount for, if any. */
+  basedOn?: string;
+  /** Percent off the fee, if the Offer gives one. */
+  discount?: number;
 }
 
 /** An offer's fixed fees, setup fee first, from its pricing snapshots. */
@@ -135,6 +139,8 @@ export const getContractFees = (
           quantity: snapshot.quantity && snapshot.quantity > 0 ? snapshot.quantity : 1,
           pricingUnit: spec.pricingUnit || undefined,
           serviceRef: spec.serviceRef || undefined,
+          basedOn: spec.basedOn || undefined,
+          discount: snapshot.discount?.percentage || undefined,
         },
       ];
     })
@@ -199,7 +205,12 @@ export const contractOfferPlan = ({
 }: {
   namespace: string;
   /** The contract's fee pricings, in the order staff listed them. */
-  fees: { name: string; chargeType: ContractFee['chargeType']; quantity?: number }[];
+  fees: {
+    name: string;
+    chargeType: ContractFee['chargeType'];
+    quantity?: number;
+    discount?: number;
+  }[];
   usageRefs: ServicePricingRef[];
 }): ContractOfferPlan => {
   const present = new Set<ChargeType>(fees.map((fee) => fee.chargeType));
@@ -211,6 +222,7 @@ export const contractOfferPlan = ({
         name: fee.name,
         namespace,
         ...(fee.quantity && fee.quantity > 1 ? { quantity: fee.quantity } : {}),
+        ...(fee.discount ? { discount: { percentage: fee.discount } } : {}),
       })),
       ...usageRefs,
     ],

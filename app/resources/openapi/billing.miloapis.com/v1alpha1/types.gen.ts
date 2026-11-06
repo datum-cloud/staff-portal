@@ -2077,8 +2077,8 @@ export type ComMiloapisBillingV1Alpha1Offer = {
         amount?: string;
         /**
          * BasedOn names the list pricing, in the same namespace, that this
-         * Usage pricing gives a customer their own rates for. Only the rate
-         * amounts differ from it.
+         * pricing gives a customer their own price for. Only the rate amounts
+         * (Usage) or the amount and displayName (fees) differ from it.
          */
         basedOn?: string;
         /**
@@ -2714,8 +2714,8 @@ export type ComMiloapisBillingV1Alpha1ServicePricing = {
     amount?: string;
     /**
      * BasedOn names the list pricing, in the same namespace, that this
-     * Usage pricing gives a customer their own rates for. Only the rate
-     * amounts differ from it.
+     * pricing gives a customer their own price for. Only the rate amounts
+     * (Usage) or the amount and displayName (fees) differ from it.
      */
     basedOn?: string;
     /**

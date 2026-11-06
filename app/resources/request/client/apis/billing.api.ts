@@ -365,6 +365,11 @@ export type CreateFixedServicePricingInput = {
   serviceRef?: string;
   /** What the amount is per, e.g. "port", if the fee has a unit. */
   pricingUnit?: string;
+  /**
+   * The list fee this is the customer's own amount for. It must match it
+   * in everything but the amount and name, which billing checks.
+   */
+  basedOn?: string;
   labels?: Record<string, string>;
 };
 
@@ -387,6 +392,7 @@ export const createFixedServicePricing = async (input: CreateFixedServicePricing
         amount: input.amount,
         ...(input.serviceRef ? { serviceRef: input.serviceRef } : {}),
         ...(input.pricingUnit ? { pricingUnit: input.pricingUnit } : {}),
+        ...(input.basedOn ? { basedOn: input.basedOn } : {}),
         ...(input.chargeType === 'OneTime'
           ? { trigger: 'BillingAccountActivation' as const }
           : { interval: 'monthly' as const }),
@@ -452,11 +458,15 @@ export type ContractFeeInput = {
   /** The catalog service's serviceName the fee is for, if it's for one. */
   serviceRef?: string;
   /**
-   * An existing pricing that already charges this fee, such as the
-   * contract's current one when an amendment keeps it, to use instead of
-   * creating another.
+   * An existing pricing that already charges this fee, such as a list fee
+   * or the contract's current one when an amendment keeps it, to use
+   * instead of creating another.
    */
   existingPricing?: string;
+  /** For a fee to create: the list fee it's the customer's own amount for. */
+  basedOn?: string;
+  /** Percent off the fee, if any. */
+  discount?: number;
 };
 
 export type CreateContractOfferInput = {
@@ -465,8 +475,9 @@ export type CreateContractOfferInput = {
   /** Names the Offer, e.g. "Acme Corp contract". */
   displayName: string;
   /**
-   * The contract's fees, each its own pricing and invoice line. Leave out
-   * one-time fees when amending a started contract: they'd be charged again.
+   * The contract's fees, each its own pricing and invoice line: its own,
+   * then those from the price list. Leave out one-time fees when amending
+   * a started contract: they'd be charged again.
    */
   fees: ContractFeeInput[];
   /** Usage billed alongside the fees, if any, and customer pricings to create for it. */
@@ -496,6 +507,7 @@ export const createContractOffer = async (input: CreateContractOfferInput, now =
       amount: fee.amount,
       serviceRef: fee.serviceRef,
       pricingUnit: fee.pricingUnit,
+      basedOn: fee.basedOn,
       labels,
     });
   }
