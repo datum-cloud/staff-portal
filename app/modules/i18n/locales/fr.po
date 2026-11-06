@@ -470,7 +470,7 @@ msgstr ""
 #: app/routes/customer/organization/detail/activity/layout.tsx:5
 #: app/routes/customer/project/detail/activity/layout.tsx:5
 #: app/routes/customer/user/detail/activity/layout.tsx:5
-#: app/routes/marketing/contact/detail/activity.tsx:11
+#: app/routes/marketing/contact/detail/activity.tsx:25
 #: app/routes/operation/activity/layout.tsx:12
 #: app/routes/operation/activity/layout.tsx:69
 msgid "Activity"
@@ -3650,6 +3650,10 @@ msgstr ""
 msgid "No active sessions."
 msgstr ""
 
+#: app/routes/marketing/contact/detail/activity.tsx:89
+msgid "No activity"
+msgstr ""
+
 #: app/features/contact/components/timeline/contact-timeline.tsx:107
 msgid "No activity yet"
 msgstr ""
@@ -4956,10 +4960,6 @@ msgstr ""
 msgid "Receives invoices as well as the billing contact."
 msgstr ""
 
-#: app/routes/marketing/contact/detail/activity.tsx:12
-msgid "Recent activity entries for this contact will appear here."
-msgstr ""
-
 #: app/features/email/components/email-list.tsx:74
 #: app/features/email/components/email-list.tsx:151
 msgid "Recipient"
@@ -5693,10 +5693,6 @@ msgstr ""
 msgid "Something went wrong while loading usage data."
 msgstr ""
 
-#: app/routes/marketing/contact/detail/layout.tsx:18
-msgid "Soon"
-msgstr ""
-
 #: app/routes/customer/project/detail/export-policy/detail.tsx:165
 msgid "Source"
 msgstr ""
@@ -6056,6 +6052,10 @@ msgstr ""
 
 #: app/features/edge/components/detail/edge-advanced-banner.tsx:11
 msgid "This Application Load Balancer has advanced configuration that cannot be represented in the simplified overview fields. See the YAML section below for the full resource definition including routing rules, filters, and matches."
+msgstr ""
+
+#: app/routes/marketing/contact/detail/activity.tsx:91
+msgid "This contact is not linked to a platform user, so there is no activity to show."
 msgstr ""
 
 #: app/features/contact/components/contact-groups-card.tsx:61
