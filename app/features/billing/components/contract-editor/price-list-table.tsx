@@ -7,6 +7,7 @@ import {
   type ListFeeRowValues,
   type UsageRowValues,
 } from './schema';
+import { WholeNumberInput } from './whole-number-input';
 import { useServiceListQuery } from '@/resources/request/client';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
@@ -186,22 +187,12 @@ function ListFeeRows({ option, index }: { option: ListFeeOption; index: number }
       </TableCell>
       <TableCell className="align-middle">
         <Form.Field name={`listFees.${index}.quantity`}>
-          <Form.Input
-            inputMode="numeric"
-            placeholder="1"
-            aria-label={t`Quantity`}
-            disabled={!selected}
-          />
+          <WholeNumberInput placeholder="1" aria-label={t`Quantity`} disabled={!selected} />
         </Form.Field>
       </TableCell>
       <TableCell className="align-middle">
         <Form.Field name={`listFees.${index}.discount`}>
-          <Form.Input
-            inputMode="numeric"
-            placeholder="0"
-            aria-label={t`Discount`}
-            disabled={!selected}
-          />
+          <WholeNumberInput placeholder="0" aria-label={t`Discount`} disabled={!selected} />
         </Form.Field>
       </TableCell>
       <TableCell className="align-middle">
@@ -294,12 +285,7 @@ function UsageRows({ option, index }: { option: UsageMeterOption; index: number 
         </TableCell>
         <TableCell className="align-middle">
           <Form.Field name={`usage.${index}.discount`}>
-            <Form.Input
-              inputMode="numeric"
-              placeholder="0"
-              aria-label={t`Discount`}
-              disabled={!selected}
-            />
+            <WholeNumberInput placeholder="0" aria-label={t`Discount`} disabled={!selected} />
           </Form.Field>
         </TableCell>
         <TableCell className="align-middle">

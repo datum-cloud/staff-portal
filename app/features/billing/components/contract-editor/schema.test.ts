@@ -106,3 +106,12 @@ describe('buildContractSchema', () => {
     ).toBe(true);
   });
 });
+
+describe('digitsOnly', () => {
+  it('drops anything that is not a digit', async () => {
+    const { digitsOnly } = await import('./whole-number-input');
+    expect(digitsOnly('1a2b')).toBe('12');
+    expect(digitsOnly('-3.5')).toBe('35');
+    expect(digitsOnly('abc')).toBe('');
+  });
+});

@@ -5,6 +5,7 @@ import {
   type ContractFeeRow,
   type ContractFormValues,
 } from './schema';
+import { WholeNumberInput } from './whole-number-input';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { Icon } from '@datum-cloud/datum-ui/icons';
@@ -60,7 +61,7 @@ export function ContractFeeList({
                   <Form.Input inputMode="decimal" placeholder="1000.00" />
                 </Form.Field>
                 <Form.Field name={`fees.${index}.quantity`} label={t`Quantity`} required>
-                  <Form.Input inputMode="numeric" placeholder="1" />
+                  <WholeNumberInput placeholder="1" />
                 </Form.Field>
                 <Button
                   type="quaternary"
