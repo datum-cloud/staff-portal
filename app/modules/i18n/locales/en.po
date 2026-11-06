@@ -84,7 +84,7 @@ msgid "{0} of {1} services"
 msgstr "{0} of {1} services"
 
 #. placeholder {0}: slots.length
-#: app/features/billing/components/contract-editor/price-list-table.tsx:254
+#: app/features/billing/components/contract-editor/price-list-table.tsx:255
 msgid "{0} rates per {unit}"
 msgstr "{0} rates per {unit}"
 
@@ -1755,16 +1755,16 @@ msgstr "Customer amount"
 msgid "Customer price"
 msgstr "Customer price"
 
-#: app/features/billing/components/contract-editor/price-list-table.tsx:276
+#: app/features/billing/components/contract-editor/price-list-table.tsx:277
 msgid "Customer rate"
 msgstr "Customer rate"
 
 #. placeholder {0}: slot.label
-#: app/features/billing/components/contract-editor/price-list-table.tsx:307
+#: app/features/billing/components/contract-editor/price-list-table.tsx:308
 msgid "Customer rate, {0}"
 msgstr "Customer rate, {0}"
 
-#: app/features/billing/components/contract-editor/price-list-table.tsx:281
+#: app/features/billing/components/contract-editor/price-list-table.tsx:282
 msgid "Customer rates"
 msgstr "Customer rates"
 
@@ -2064,7 +2064,7 @@ msgid "Disable flag"
 msgstr "Disable flag"
 
 #: app/features/billing/components/contract-editor/price-list-table.tsx:171
-#: app/features/billing/components/contract-editor/price-list-table.tsx:266
+#: app/features/billing/components/contract-editor/price-list-table.tsx:267
 #: app/features/billing/components/offer-included-pricing-list.tsx:145
 msgid "Discount"
 msgstr "Discount"
@@ -6441,7 +6441,7 @@ msgstr "Updating email addresses for GitHub identities"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:193
 #: app/features/billing/components/contract-editor/contract-summary.tsx:135
-#: app/features/billing/components/contract-editor/price-list-table.tsx:260
+#: app/features/billing/components/contract-editor/price-list-table.tsx:261
 #: app/features/organization/components/org-usage-card.tsx:68
 #: app/features/project/components/project-usage-card.tsx:89
 #: app/features/quota/components/quota-bucket-list.tsx:110

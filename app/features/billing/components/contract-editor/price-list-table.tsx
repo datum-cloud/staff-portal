@@ -148,31 +148,31 @@ function ListFeeRows({ option, index }: { option: ListFeeOption; index: number }
   const selected = Boolean(row?.selected);
   return (
     <TableRow>
-      <TableCell className="align-top">
+      <TableCell className="align-middle">
         <Form.Field name={`listFees.${index}.selected`}>
           <Form.Checkbox label={option.label} />
         </Form.Field>
       </TableCell>
-      <TableCell className="align-top">
+      <TableCell className="align-middle">
         <Text size="sm" className="tabular-nums">
           {feePriceText(option)}
         </Text>
       </TableCell>
-      <TableCell className="align-top">
+      <TableCell className="align-middle">
         {selected ? (
           <Form.Field name={`listFees.${index}.quantity`}>
             <Form.Input inputMode="numeric" placeholder="1" aria-label={t`Quantity`} />
           </Form.Field>
         ) : null}
       </TableCell>
-      <TableCell className="align-top">
+      <TableCell className="align-middle">
         {selected ? (
           <Form.Field name={`listFees.${index}.discount`}>
             <Form.Input inputMode="numeric" placeholder="0" aria-label={t`Discount`} />
           </Form.Field>
         ) : null}
       </TableCell>
-      <TableCell className="align-top">
+      <TableCell className="align-middle">
         {selected ? (
           <Form.Field name={`listFees.${index}.amount`}>
             <Form.Input
@@ -216,7 +216,7 @@ function UsageRows({ option, index }: { option: UsageMeterOption; index: number 
   return (
     <>
       <TableRow>
-        <TableCell className="align-top">
+        <TableCell className="align-middle">
           <div className="flex flex-col gap-1">
             <Form.Field name={`usage.${index}.selected`}>
               <Form.Checkbox label={option.label} />
@@ -238,7 +238,7 @@ function UsageRows({ option, index }: { option: UsageMeterOption; index: number 
             ) : null}
           </div>
         </TableCell>
-        <TableCell className="align-top">
+        <TableCell className="align-middle">
           {single ? (
             <Text size="sm" className="tabular-nums">
               {t`$${slots[0].listAmount} per ${unit}`}
@@ -249,25 +249,26 @@ function UsageRows({ option, index }: { option: UsageMeterOption; index: number 
               theme="borderless"
               size="small"
               htmlType="button"
+              className="-ml-2 h-auto px-2 py-1"
               icon={<Icon icon={expanded ? ChevronDown : ChevronRight} size={14} />}
               onClick={() => setExpanded((open) => !open)}>
               {t`${slots.length} rates per ${unit}`}
             </Button>
           )}
         </TableCell>
-        <TableCell className="align-top">
+        <TableCell className="align-middle">
           <Text size="sm" textColor="muted">
             <Trans>Usage</Trans>
           </Text>
         </TableCell>
-        <TableCell className="align-top">
+        <TableCell className="align-middle">
           {selected ? (
             <Form.Field name={`usage.${index}.discount`}>
               <Form.Input inputMode="numeric" placeholder="0" aria-label={t`Discount`} />
             </Form.Field>
           ) : null}
         </TableCell>
-        <TableCell className="align-top">
+        <TableCell className="align-middle">
           {selected && single ? (
             <Form.Field name={`usage.${index}.amounts.0`}>
               <Form.Input
