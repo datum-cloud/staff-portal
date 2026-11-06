@@ -147,7 +147,10 @@ export default [
           ':orgName/:accountName',
           'routes/customer/billing-account/detail/layout.tsx',
           { id: 'billing-account-detail' },
-          [index('routes/customer/billing-account/detail/index.tsx')]
+          [
+            index('routes/customer/billing-account/detail/index.tsx'),
+            route('contract', 'routes/customer/billing-account/detail/contract.tsx'),
+          ]
         ),
       ]),
 

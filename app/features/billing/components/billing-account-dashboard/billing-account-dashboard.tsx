@@ -3,10 +3,7 @@ import type { BillingAccount } from '../../utils';
 import { usePaymentTerms } from '../payment-terms';
 import { BillingAccountActivityCard } from './billing-account-activity-card';
 import { BillingAccountAttentionBanner } from './billing-account-attention-banner';
-import {
-  BillingAccountContractCard,
-  type ContractDialogMode,
-} from './billing-account-contract-card';
+import { BillingAccountContractCard } from './billing-account-contract-card';
 import {
   BillingAccountConfigCard,
   BillingAccountContactCard,
@@ -53,14 +50,12 @@ export function BillingAccountDashboard({
   // Held here so the header's Actions menu can open the cards' dialogs.
   const paymentTerms = usePaymentTerms(orgName, account);
   const [switchOfferOpen, setSwitchOfferOpen] = useState(false);
-  const [contractDialog, setContractDialog] = useState<ContractDialogMode | null>(null);
   const entitlementQuery = useBillingEntitlementForAccountQuery(orgName, accountName);
   const headerActions = useBillingAccountHeaderActions({
     orgName,
     account,
     paymentTerms,
     onSwitchOffer: () => setSwitchOfferOpen(true),
-    onContract: setContractDialog,
   });
 
   return (
@@ -96,8 +91,6 @@ export function BillingAccountDashboard({
             account={account}
             entitlement={entitlementQuery.data ?? null}
             now={now}
-            dialogMode={contractDialog}
-            onDialogModeChange={setContractDialog}
           />
           <BillingAccountOfferCard
             orgName={orgName}

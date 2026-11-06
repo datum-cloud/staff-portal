@@ -1,4 +1,3 @@
-import type { ContractDialogMode } from '../components/billing-account-dashboard/billing-account-contract-card';
 import type { BillingAccountHeaderAction } from '../components/billing-account-dashboard/billing-account-header';
 import type { PaymentTermsState } from '../components/payment-terms';
 import type { BillingAccount } from '../utils';
@@ -17,19 +16,15 @@ export function useBillingAccountHeaderActions({
   account,
   paymentTerms,
   onSwitchOffer,
-  onContract,
 }: {
   orgName: string;
   account: BillingAccount;
   paymentTerms: PaymentTermsState;
   onSwitchOffer: () => void;
-  onContract: (mode: ContractDialogMode) => void;
 }): BillingAccountHeaderAction[] {
   const navigate = useNavigate();
-  const entitlementQuery = useBillingEntitlementForAccountQuery(
-    orgName,
-    account.metadata?.name ?? ''
-  );
+  const accountName = account.metadata?.name ?? '';
+  const entitlementQuery = useBillingEntitlementForAccountQuery(orgName, accountName);
   const pendingApplicationName = paymentTerms.pendingApplication?.metadata?.name;
 
   const termsAction: BillingAccountHeaderAction =
@@ -67,14 +62,14 @@ export function useBillingAccountHeaderActions({
       ? {
           key: 'contract',
           label: <Trans>Change contract fees</Trans>,
-          onSelect: () => onContract('change'),
+          onSelect: () => navigate(billingAccountRoutes.contract(orgName, accountName)),
         }
       : {
           key: 'contract',
           label: <Trans>Set up contract</Trans>,
           // The contract goes on the account's entitlement.
           disabled: !entitlementQuery.data,
-          onSelect: () => onContract('setup'),
+          onSelect: () => navigate(billingAccountRoutes.contract(orgName, accountName)),
         },
   ];
 }
