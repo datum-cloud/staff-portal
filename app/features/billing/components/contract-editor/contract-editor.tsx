@@ -301,21 +301,19 @@ function ContractEditorForm({
               description={t`What the contract bills from the platform's prices. Leave the customer price empty to bill the list price.`}>
               <PriceListTable usageOptions={usageOptions} feeOptions={feeOptions} />
             </SectionCard>
+          </div>
 
+          <aside className="flex flex-col gap-4 @5xl/main:sticky @5xl/main:top-4">
             {isSetup ? (
               <SectionCard title={<Trans>Start date</Trans>}>
                 <Form.Field
                   name="startsAt"
                   description={t`Charges start on this day, in UTC, and bill on it each month. Today or later.`}
-                  className="max-w-xs"
                   required>
                   <ContractStartPicker now={now} />
                 </Form.Field>
               </SectionCard>
             ) : null}
-          </div>
-
-          <aside className="@5xl/main:sticky @5xl/main:top-4">
             <SectionCard title={<Trans>Summary</Trans>}>
               <ContractSummary isSetup={isSetup} feeOptions={feeOptions}>
                 <div className="flex justify-end gap-2 border-t pt-4">

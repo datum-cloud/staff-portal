@@ -9,6 +9,7 @@ import {
 } from './schema';
 import { useServiceListQuery } from '@/resources/request/client';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import {
@@ -77,7 +78,7 @@ export function PriceListTable({
         <TableHeader>
           <TableRow className="bg-muted hover:bg-muted">
             <TableHead>
-              <Trans>Pricing</Trans>
+              <SelectAll />
             </TableHead>
             <TableHead className="w-44">
               <Trans>List price</Trans>
@@ -108,6 +109,31 @@ export function PriceListTable({
         </TableBody>
       </Table>
     </div>
+  );
+}
+
+/** Ticks or unticks every row of the price list. */
+function SelectAll() {
+  const form = Form.useFormContext().form.raw as UseFormReturn<ContractFormValues>;
+  const usage = (Form.useWatch('usage') as UsageRowValues[] | undefined) ?? [];
+  const listFees = (Form.useWatch('listFees') as ListFeeRowValues[] | undefined) ?? [];
+  const rows = [...usage, ...listFees];
+  const ticked = rows.filter((row) => row.selected).length;
+  const checked = ticked === 0 ? false : ticked === rows.length ? true : 'indeterminate';
+  const setAll = (selected: boolean) => {
+    const options = { shouldDirty: true, shouldValidate: form.formState.isSubmitted };
+    usage.forEach((_, i) => form.setValue(`usage.${i}.selected`, selected, options));
+    listFees.forEach((_, i) => form.setValue(`listFees.${i}.selected`, selected, options));
+  };
+  return (
+    <label className="flex items-center gap-2">
+      <Checkbox
+        checked={checked}
+        onCheckedChange={() => setAll(checked !== true)}
+        aria-label={checked === true ? t`Untick all` : t`Tick all`}
+      />
+      <Trans>Pricing</Trans>
+    </label>
   );
 }
 
@@ -159,29 +185,34 @@ function ListFeeRows({ option, index }: { option: ListFeeOption; index: number }
         </Text>
       </TableCell>
       <TableCell className="align-middle">
-        {selected ? (
-          <Form.Field name={`listFees.${index}.quantity`}>
-            <Form.Input inputMode="numeric" placeholder="1" aria-label={t`Quantity`} />
-          </Form.Field>
-        ) : null}
+        <Form.Field name={`listFees.${index}.quantity`}>
+          <Form.Input
+            inputMode="numeric"
+            placeholder="1"
+            aria-label={t`Quantity`}
+            disabled={!selected}
+          />
+        </Form.Field>
       </TableCell>
       <TableCell className="align-middle">
-        {selected ? (
-          <Form.Field name={`listFees.${index}.discount`}>
-            <Form.Input inputMode="numeric" placeholder="0" aria-label={t`Discount`} />
-          </Form.Field>
-        ) : null}
+        <Form.Field name={`listFees.${index}.discount`}>
+          <Form.Input
+            inputMode="numeric"
+            placeholder="0"
+            aria-label={t`Discount`}
+            disabled={!selected}
+          />
+        </Form.Field>
       </TableCell>
       <TableCell className="align-middle">
-        {selected ? (
-          <Form.Field name={`listFees.${index}.amount`}>
-            <Form.Input
-              inputMode="decimal"
-              placeholder={option.amount}
-              aria-label={t`Customer amount`}
-            />
-          </Form.Field>
-        ) : null}
+        <Form.Field name={`listFees.${index}.amount`}>
+          <Form.Input
+            inputMode="decimal"
+            placeholder={option.amount}
+            aria-label={t`Customer amount`}
+            disabled={!selected}
+          />
+        </Form.Field>
       </TableCell>
     </TableRow>
   );
@@ -221,9 +252,9 @@ function UsageRows({ option, index }: { option: UsageMeterOption; index: number 
             <Form.Field name={`usage.${index}.selected`}>
               <Form.Checkbox label={option.label} />
             </Form.Field>
-            {selected && option.pricings.length > 1 ? (
+            {option.pricings.length > 1 ? (
               <Form.Field name={`usage.${index}.pricingName`} className="w-56 pl-6">
-                <Form.Select>
+                <Form.Select disabled={!selected}>
                   {option.pricings.map((pricing, i) => {
                     const name = pricing.metadata?.name ?? '';
                     return (
@@ -262,22 +293,26 @@ function UsageRows({ option, index }: { option: UsageMeterOption; index: number 
           </Text>
         </TableCell>
         <TableCell className="align-middle">
-          {selected ? (
-            <Form.Field name={`usage.${index}.discount`}>
-              <Form.Input inputMode="numeric" placeholder="0" aria-label={t`Discount`} />
-            </Form.Field>
-          ) : null}
+          <Form.Field name={`usage.${index}.discount`}>
+            <Form.Input
+              inputMode="numeric"
+              placeholder="0"
+              aria-label={t`Discount`}
+              disabled={!selected}
+            />
+          </Form.Field>
         </TableCell>
         <TableCell className="align-middle">
-          {selected && single ? (
+          {single ? (
             <Form.Field name={`usage.${index}.amounts.0`}>
               <Form.Input
                 inputMode="decimal"
                 placeholder={slots[0].listAmount}
                 aria-label={t`Customer rate`}
+                disabled={!selected}
               />
             </Form.Field>
-          ) : selected && !expanded && hasCustomRates ? (
+          ) : !expanded && hasCustomRates ? (
             <Text size="sm">
               <Trans>Customer rates</Trans>
             </Text>
@@ -300,15 +335,14 @@ function UsageRows({ option, index }: { option: UsageMeterOption; index: number 
               <TableCell />
               <TableCell />
               <TableCell>
-                {selected ? (
-                  <Form.Field name={`usage.${index}.amounts.${slotIndex}`}>
-                    <Form.Input
-                      inputMode="decimal"
-                      placeholder={slot.listAmount}
-                      aria-label={t`Customer rate, ${slot.label}`}
-                    />
-                  </Form.Field>
-                ) : null}
+                <Form.Field name={`usage.${index}.amounts.${slotIndex}`}>
+                  <Form.Input
+                    inputMode="decimal"
+                    placeholder={slot.listAmount}
+                    aria-label={t`Customer rate, ${slot.label}`}
+                    disabled={!selected}
+                  />
+                </Form.Field>
               </TableCell>
             </TableRow>
           ))
