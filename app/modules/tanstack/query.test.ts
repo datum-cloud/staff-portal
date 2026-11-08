@@ -27,6 +27,14 @@ describe('shouldRetryQuery', () => {
     expect(shouldRetryQuery(0, axiosResponseError(404))).toBe(false);
   });
 
+  it('retries a REST 408 because the request timed out', () => {
+    expect(shouldRetryQuery(0, axiosResponseError(408))).toBe(true);
+  });
+
+  it('retries a REST 429 because the request was rate limited', () => {
+    expect(shouldRetryQuery(0, axiosResponseError(429))).toBe(true);
+  });
+
   it('retries a REST 5xx', () => {
     expect(shouldRetryQuery(0, axiosResponseError(503))).toBe(true);
   });
