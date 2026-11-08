@@ -1,5 +1,5 @@
 import type { Route } from './+types/layout';
-import { ContactTypeBadge } from '@/features/contact';
+import { ContactTypeBadge, isPlatformUser } from '@/features/contact';
 import { DetailShell, type EntityNav } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
 import { contactDetailQuery, userDetailQuery } from '@/resources/request/server';
@@ -7,17 +7,8 @@ import { ContactDetailLoaderData } from '@/routes/marketing/contact/shared';
 import { ENTITY_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
 import { contactRoutes } from '@/utils/config/routes.config';
 import { Avatar, AvatarFallback } from '@datum-cloud/datum-ui/avatar';
-import { Badge } from '@datum-cloud/datum-ui/badge';
-import { Trans } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import { useLoaderData } from 'react-router';
-
-/** Adornment for not-yet-shipped entity tabs. `handle` is module scope (no hooks); `<Trans>` renders at use site. */
-const SOON_BADGE = (
-  <Badge type="secondary" theme="light" className="text-3xs px-1.5 py-0 font-medium">
-    <Trans>Soon</Trans>
-  </Badge>
-);
 
 export const handle = {
   breadcrumb: (data: ContactDetailLoaderData) => {
@@ -40,6 +31,10 @@ export const handle = {
     const displayName =
       [data?.contact?.spec?.givenName, data?.contact?.spec?.familyName].filter(Boolean).join(' ') ||
       contactName;
+    // The activity feed comes from the linked user's control plane, so a prospect
+    // (no linked user) has nothing to show — hide the entry, as the overview does
+    // for the Platform account and Organizations cards.
+    const linked = isPlatformUser(data?.contact);
 
     return {
       backTo: { label: 'Contacts', href: contactRoutes.list() },
@@ -68,13 +63,15 @@ export const handle = {
               href: contactRoutes.emailsSent(namespace, contactName),
               icon: ENTITY_ICONS.emailActivity,
             },
-            {
-              label: 'Activity',
-              href: contactRoutes.activity(namespace, contactName),
-              icon: ENTITY_ICONS.activity,
-              disabled: true,
-              badge: SOON_BADGE,
-            },
+            ...(linked
+              ? [
+                  {
+                    label: 'Activity',
+                    href: contactRoutes.activity(namespace, contactName),
+                    icon: ENTITY_ICONS.activity,
+                  },
+                ]
+              : []),
           ],
         },
       ],
