@@ -1,6 +1,9 @@
 import { mapApiError } from '@/utils/errors/error-mapper';
 import { QueryClient } from '@tanstack/react-query';
 
+/** How many times a query may retry before the failure reaches the caller. */
+const MAX_QUERY_RETRIES = 3;
+
 /**
  * The 4xx statuses that are still worth retrying: the request timed out (408)
  * or was rate limited (429), so the same request can succeed later.
@@ -24,7 +27,7 @@ export const shouldRetryQuery = (failureCount: number, error: unknown): boolean 
   if (isClientError && !RETRYABLE_CLIENT_STATUSES.has(statusCode)) {
     return false;
   }
-  return failureCount < 3;
+  return failureCount < MAX_QUERY_RETRIES;
 };
 
 export const queryClient = new QueryClient({
