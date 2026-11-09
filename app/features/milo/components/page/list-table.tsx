@@ -30,12 +30,12 @@ import {
 import { RuleFilterButton } from './rule-filter';
 import { SectionSwitcher } from './section-switcher';
 import { ViewTabs, type ViewTab } from './view-tabs';
-import { useBreakpoint } from '@/hooks/use-breakpoint';
 import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import type { ColumnDef, RowData } from '@/utils/table';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import type { SelectionColumnOptions } from '@datum-cloud/datum-ui/data-table';
+import { useBreakpoint } from '@datum-cloud/datum-ui/hooks';
 import { Input } from '@datum-cloud/datum-ui/input';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
