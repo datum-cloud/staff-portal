@@ -1,3 +1,4 @@
+import type { PaymentTermsInput } from '@/modules/billing/billing-cycle';
 import type {
   ComMiloapisBillingV1Alpha1BillingEntitlement,
   ComMiloapisBillingV1Alpha1Invoice,
@@ -350,3 +351,16 @@ export const getContractFirstInvoice = (
 
 /** The day of the month a contract bills on, from its UTC start date. */
 export const contractBillingDay = (startsAt: Date) => startsAt.getUTCDate();
+
+/**
+ * The billing cycle an account is on. A contract that has started bills
+ * monthly on its start day, whatever the account's payment terms say;
+ * before it starts, and without one, the account's terms apply.
+ */
+export const billingCycleTerms = (
+  terms: PaymentTermsInput | undefined,
+  contract: ContractState | null | undefined
+): PaymentTermsInput | undefined =>
+  contract?.started
+    ? { invoiceDayOfMonth: contractBillingDay(contract.startsAt), invoiceFrequency: 'Monthly' }
+    : terms;

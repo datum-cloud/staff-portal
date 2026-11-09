@@ -1,3 +1,4 @@
+import { billingCycleTerms, type ContractState } from '../../lib/contract';
 import {
   formatBillingAddress,
   getAccountCurrency,
@@ -89,11 +90,14 @@ export function BillingAccountContactCard({ account }: { account: BillingAccount
 export function BillingAccountConfigCard({
   orgName,
   account,
+  contract,
 }: {
   orgName: string;
   account: BillingAccount;
+  /** The account's contract, which sets its billing day once it starts. */
+  contract?: ContractState | null;
 }) {
-  const terms = account.spec?.paymentTerms;
+  const terms = billingCycleTerms(account.spec?.paymentTerms, contract);
   const netDays = getEffectiveNetDays(account);
   const cycle = resolveCycleTerms(terms);
   const frequency = frequencyLabel(cycle.frequency);
