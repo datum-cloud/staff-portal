@@ -104,15 +104,13 @@ export class SentryProvider extends BaseProvider {
     console.log('📊 SENTRY_DSN:', process.env.SENTRY_DSN || 'not configured');
   }
 
-  private createConfig() {
+  private createConfig(): Sentry.NodeOptions | null {
     if (!this.isEnabled) return null;
 
     return {
       dsn: process.env.SENTRY_DSN,
       environment: process.env.SENTRY_ENV || 'development',
-      skipOpenTelemetrySetup: true,
       tracesSampleRate: this.getTracesSampleRate(),
-      profilesSampleRate: 0, // Not supported in Bun
       release: process.env.VERSION || 'dev',
 
       // Circuit breaker implementation
