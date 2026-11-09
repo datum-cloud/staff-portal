@@ -173,8 +173,8 @@ export function getWebsiteHref(website: string | undefined): string | undefined 
 
 /**
  * Starting values for the approval form: the invoice details the customer
- * gave, our standard net days, and the credit limit and reason left for the
- * reviewer to fill in. A renewal passes `startsAt`, when the current terms
+ * gave, our standard net days, and the reason left for the reviewer to fill
+ * in. A renewal passes `startsAt`, when the current terms
  * end, so the new terms don't overlap them.
  */
 export function paymentTermsFormFromApplication(
@@ -184,7 +184,6 @@ export function paymentTermsFormFromApplication(
   const invoice = application.spec?.invoice;
   return {
     netDays: DEFAULT_NET_DAYS,
-    creditLimit: '',
     accountsPayableEmail: invoice?.accountsPayableEmail ?? '',
     purchaseOrderNumber: invoice?.purchaseOrderNumber ?? '',
     agreementReference: invoice?.agreementReference ?? '',

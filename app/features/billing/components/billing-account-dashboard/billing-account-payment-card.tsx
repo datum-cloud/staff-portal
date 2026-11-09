@@ -201,9 +201,7 @@ function TermsSummary({ terms }: { terms: PaymentTermsState }) {
         </Text>
         <Text size="xs" textColor="muted">
           {billingStatus === 'card' ? (
-            <Trans>
-              Pays by card. Invoice billing (net terms, credit limit, PO) isn&apos;t granted.
-            </Trans>
+            <Trans>Pays by card. Invoice billing (net terms, PO) isn&apos;t granted.</Trans>
           ) : (
             <Trans>Grant terms to let this account be billed by invoice.</Trans>
           )}

@@ -370,6 +370,24 @@ describe('creditLimit', () => {
   it('waits for usage', () => {
     expect(getAccountHealth({ account: onTerms, now: NOW }).pending).toContain('creditLimit');
   });
+
+  it("doesn't apply to invoice terms without a credit limit", () => {
+    const noLimit = account(
+      {},
+      {
+        phase: 'Ready',
+        paymentArrangement: { name: 'terms', type: 'Invoice', invoice: { netDays: 30 } },
+      }
+    );
+    const health = getAccountHealth({
+      account: noLimit,
+      now: NOW,
+      usage: { current: 100_000, previous: 100, currency: 'USD' },
+    });
+    expect(health.issues.map(({ key }) => key)).not.toContain('creditLimit');
+    expect(health.pending).not.toContain('creditLimit');
+    expect(health.passing).not.toContain('creditLimit');
+  });
 });
 
 describe('usageSpike', () => {
