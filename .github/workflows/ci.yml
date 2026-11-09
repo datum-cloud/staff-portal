@@ -262,7 +262,11 @@ jobs:
   publish-container-image:
     name: Publish Container Image
     needs: [status-check]
-    if: ${{ !failure() && !cancelled() }}
+    # Never publish from a pull_request run: that would push PR-tagged images
+    # to the public registry and hand the Sentry build secret to untrusted code.
+    # `push` is already limited to main by the `on:` triggers, but pin the ref
+    # too so widening that trigger cannot accidentally publish branches.
+    if: ${{ !failure() && !cancelled() && (github.event_name == 'release' || (github.event_name == 'push' && github.ref == 'refs/heads/main')) }}
     permissions:
       id-token: write
       contents: read
@@ -282,7 +286,9 @@ jobs:
   publish-kustomize-bundles:
     name: Publish Kustomize Bundles
     needs: [publish-container-image]
-    if: ${{ !failure() && !cancelled() }}
+    # Same event guard as the image publish: bundles must only be published
+    # from main pushes and releases, never from a pull_request run.
+    if: ${{ !failure() && !cancelled() && (github.event_name == 'release' || (github.event_name == 'push' && github.ref == 'refs/heads/main')) }}
     permissions:
       id-token: write
       contents: read
