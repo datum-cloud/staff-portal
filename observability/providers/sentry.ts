@@ -110,17 +110,18 @@ export class SentryProvider extends BaseProvider {
     return {
       dsn: process.env.SENTRY_DSN,
       environment: process.env.SENTRY_ENV || 'development',
-      tracesSampleRate: this.getTracesSampleRate(),
+      // Server tracing is owned by OTel. Sentry 11 traces every incoming and
+      // outgoing HTTP call on its own, and beforeSend does not scrub spans,
+      // so Sentry sends no server spans.
+      tracesSampleRate: 0,
+      // Never attach request or response bodies to events.
+      dataCollection: { httpBodies: [] },
       release: process.env.VERSION || 'dev',
 
       // Circuit breaker implementation
       beforeSend: this.createBeforeSendHandler(),
       beforeBreadcrumb: this.createBeforeBreadcrumbHandler(),
     };
-  }
-
-  private getTracesSampleRate(): number {
-    return process.env.NODE_ENV === 'production' ? 0.1 : 1.0;
   }
 
   private createBeforeSendHandler() {

@@ -19,6 +19,9 @@ Sentry.init({
   // Environment configuration
   environment: env?.SENTRY_ENV || 'development',
 
+  // Never attach request or response bodies to events.
+  dataCollection: { httpBodies: [] },
+
   integrations: [
     // Performance
     Sentry.reactRouterTracingIntegration(),
