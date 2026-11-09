@@ -5,6 +5,8 @@ import {
   contractResourceNames,
   contractStartFromDate,
   contractStartProblem,
+  discountedFeeTotal,
+  discountText,
   firstInvoiceTotal,
   firstMonthShare,
   firstPeriodEnd,
@@ -17,6 +19,7 @@ import {
   MAX_CONTRACT_FEES,
   monthlyTotal,
   parseAmount,
+  parseDiscount,
   proratedFirstInvoiceTotal,
   toPricingAmount,
 } from './contract';
@@ -81,6 +84,24 @@ const entitlement = (
     },
     status: extra.status,
   }) as ComMiloapisBillingV1Alpha1BillingEntitlement;
+
+describe('discounts', () => {
+  it("reads a typed discount, and shows a ref's", () => {
+    expect(parseDiscount('25')).toBe(25);
+    expect(parseDiscount('0')).toBeUndefined();
+    expect(parseDiscount('')).toBeUndefined();
+    expect(discountText(25)).toBe('25');
+    expect(discountText(undefined)).toBe('');
+  });
+
+  it("takes a fee's discount off its total, to the cent", () => {
+    expect(discountedFeeTotal({ chargeType: 'Recurring', amount: 300, quantity: 4 })).toBe(1200);
+    expect(
+      discountedFeeTotal({ chargeType: 'Recurring', amount: 300, quantity: 4, discount: 25 })
+    ).toBe(900);
+    expect(discountedFeeTotal({ chargeType: 'OneTime', amount: 99.99, discount: 33 })).toBe(66.99);
+  });
+});
 
 describe('isContractResource', () => {
   it('spots contract offers and fees by label or name', () => {

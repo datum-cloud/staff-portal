@@ -19,7 +19,9 @@ import {
   buildUsagePlan,
   listUsageMeterOptions,
   rateSlots,
+  unclaimedUsageRefs,
   usageRowsFromOffer,
+  type UsagePlan,
 } from '../../lib/contract-usage';
 import { DEFAULT_SERVICE_PRICING_NAMESPACE, getBillingAccountDisplayName } from '../../utils';
 import { ContractFeeList, type ServiceOption } from './contract-fee-list';
@@ -90,7 +92,8 @@ export function ContractEditor({
     contract ? (entitlement?.spec?.offerRef?.name ?? '') : ''
   );
   const pricingsQuery = useServicePricingListQuery(DEFAULT_SERVICE_PRICING_NAMESPACE);
-  const defaultOfferName = useBillingDefaultOfferQuery().data ?? '';
+  const defaultOfferNameQuery = useBillingDefaultOfferQuery();
+  const defaultOfferName = defaultOfferNameQuery.data ?? '';
   const defaultOfferQuery = useOfferDetailQuery(isSetup ? defaultOfferName : '');
 
   const title = isSetup ? t`Set up contract` : t`Change contract fees`;
@@ -106,7 +109,30 @@ export function ContractEditor({
     entitlementQuery.isLoading ||
     pricingsQuery.isLoading ||
     (!isSetup && currentOfferQuery.isLoading) ||
-    (isSetup && (!defaultOfferName || defaultOfferQuery.isLoading));
+    (isSetup &&
+      (defaultOfferNameQuery.isLoading ||
+        (Boolean(defaultOfferName) && defaultOfferQuery.isLoading)));
+
+  // Saving replaces the contract's fees and usage with the form's, so the
+  // form isn't shown on anything less than what it starts from. The default
+  // offer only suggests what a new contract bills, so it doesn't block.
+  const failed = [
+    entitlementQuery.isError
+      ? { label: t`the account's entitlement`, query: entitlementQuery }
+      : null,
+    pricingsQuery.isError ? { label: t`the price list`, query: pricingsQuery } : null,
+    !isSetup && (currentOfferQuery.isError || !currentOfferQuery.data)
+      ? { label: t`the contract's current offer`, query: currentOfferQuery }
+      : null,
+  ].filter((failure) => failure !== null);
+  const defaultOfferProblem: DefaultOfferProblem | undefined = !isSetup
+    ? undefined
+    : defaultOfferNameQuery.isError ||
+        (defaultOfferName && (defaultOfferQuery.isError || !defaultOfferQuery.data))
+      ? 'failed'
+      : !defaultOfferName
+        ? 'none'
+        : undefined;
 
   return (
     <div className="m-4 flex flex-col gap-4">
@@ -116,6 +142,23 @@ export function ContractEditor({
           <Skeleton className="h-40 w-full rounded" />
           <Skeleton className="h-64 w-full rounded" />
         </div>
+      ) : failed.length > 0 ? (
+        <SectionCard contentClassName="flex flex-col items-start gap-3 py-6">
+          <Text>
+            <Trans>
+              Couldn&apos;t load {failed.map((failure) => failure.label).join(', ')}, so the
+              contract can&apos;t be changed safely right now.
+            </Trans>
+          </Text>
+          <Button
+            type="secondary"
+            theme="outline"
+            size="small"
+            htmlType="button"
+            onClick={() => failed.forEach((failure) => void failure.query.refetch())}>
+            <Trans>Try again</Trans>
+          </Button>
+        </SectionCard>
       ) : !entitlement ? (
         <SectionCard contentClassName="py-6">
           <Text>
@@ -132,7 +175,8 @@ export function ContractEditor({
           entitlement={entitlement}
           contract={contract}
           currentOffer={currentOfferQuery.data ?? null}
-          defaultOffer={defaultOfferQuery.data ?? null}
+          defaultOffer={defaultOfferProblem ? null : (defaultOfferQuery.data ?? null)}
+          defaultOfferProblem={defaultOfferProblem}
           pricings={pricingsQuery.data?.items ?? []}
           now={now}
         />
@@ -141,6 +185,9 @@ export function ContractEditor({
   );
 }
 
+/** Why a new contract's price list starts with nothing ticked. */
+type DefaultOfferProblem = 'none' | 'failed';
+
 function ContractEditorForm({
   orgName,
   account,
@@ -148,6 +195,7 @@ function ContractEditorForm({
   contract,
   currentOffer,
   defaultOffer,
+  defaultOfferProblem,
   pricings,
   now,
 }: {
@@ -157,6 +205,7 @@ function ContractEditorForm({
   contract: ContractState | null;
   currentOffer: ComMiloapisBillingV1Alpha1Offer | null;
   defaultOffer: ComMiloapisBillingV1Alpha1Offer | null;
+  defaultOfferProblem?: DefaultOfferProblem;
   pricings: ServicePricing[];
   now: Date;
 }) {
@@ -173,14 +222,16 @@ function ContractEditorForm({
   // has one, so a contract that has started is amended without them.
   const allowOneTime = isSetup || !contract.started;
 
-  const usageOptions = useMemo(() => listUsageMeterOptions(pricings), [pricings]);
-  const feeOptions = useMemo(
-    () =>
-      listFeeOptions(pricings).filter(
-        (option) => allowOneTime || option.chargeType === 'Recurring'
-      ),
-    [pricings, allowOneTime]
-  );
+  // The form's rows are built once, from the price list as it was when the
+  // page opened, and matched to these options by position. The pricing list
+  // refetches in the background, so the options are kept as they were too:
+  // a pricing added or removed meanwhile would otherwise shift the rows.
+  const [{ usageOptions, feeOptions }] = useState(() => ({
+    usageOptions: listUsageMeterOptions(pricings),
+    feeOptions: listFeeOptions(pricings).filter(
+      (option) => allowOneTime || option.chargeType === 'Recurring'
+    ),
+  }));
   const services = useMemo<ServiceOption[]>(
     () =>
       (servicesQuery.data?.items ?? [])
@@ -193,16 +244,24 @@ function ContractEditorForm({
     [servicesQuery.data?.items]
   );
 
-  // Fees from the price list, and customer fees based on them, are the
-  // price list's rows; the rest are the contract's own.
-  const listedFees = listFeeNames(feeOptions, currentOffer);
+  const pickFrom = isSetup ? defaultOffer : currentOffer;
+  const usageRows = usageRowsFromOffer(usageOptions, pickFrom);
+  const listFeeRows = listFeeRowsFromOffer(feeOptions, pickFrom);
+  // Fees the price list's rows show stay there; the rest are the contract's
+  // own, including any whose list fee has gone, so saving keeps them.
+  const listedFees = isSetup ? new Set<string>() : listFeeNames(listFeeRows);
   const currentFees = getContractFees(currentOffer).filter(
     (fee) => (allowOneTime || fee.chargeType === 'Recurring') && !listedFees.has(fee.name)
   );
   const currentFeeByName = new Map(currentFees.map((fee) => [fee.name, fee]));
-  const pickFrom = isSetup ? defaultOffer : currentOffer;
-  const usageRows = usageRowsFromOffer(usageOptions, pickFrom);
-  const listFeeRows = listFeeRowsFromOffer(feeOptions, pickFrom);
+  // Usage the price list can't show, such as a pricing being deleted, is
+  // kept as it is rather than dropped.
+  const keptUsageRefs = isSetup ? [] : unclaimedUsageRefs(usageRows, currentOffer);
+  const keptUsageNames = keptUsageRefs.map(
+    (ref) =>
+      currentOffer?.spec?.servicePricings?.find((snap) => snap.name === ref.name)?.spec
+        ?.displayName || ref.name
+  );
 
   const blankFee = (chargeType: ContractFeeRow['chargeType'], label: string): ContractFeeRow => ({
     label,
@@ -236,8 +295,9 @@ function ContractEditorForm({
   };
 
   const handleSubmit = async (values: ContractFormValues) => {
-    const usage = values.usage.map((row, index) => {
-      const option = usageOptions[index];
+    const optionByMetric = new Map(usageOptions.map((option) => [option.metric, option]));
+    const usage = values.usage.map((row) => {
+      const option = optionByMetric.get(row.metric);
       const list = option?.pricings.find((p) => p.metadata?.name === row.pricingName);
       return fromUsageRowValues(
         row,
@@ -265,7 +325,10 @@ function ContractEditorForm({
         }),
         ...buildListFeePlan(values.listFees.map(fromListFeeRowValues), feeOptions, currentOffer),
       ],
-      usage: buildUsagePlan(usage, usageOptions, DEFAULT_SERVICE_PRICING_NAMESPACE, currentOffer),
+      usage: withKeptRefs(
+        buildUsagePlan(usage, usageOptions, DEFAULT_SERVICE_PRICING_NAMESPACE, currentOffer),
+        keptUsageRefs
+      ),
     };
     try {
       if (isSetup) {
@@ -299,7 +362,32 @@ function ContractEditorForm({
             <SectionCard
               title={<Trans>Price list</Trans>}
               description={t`What the contract bills from the platform's prices. Leave the customer price empty to bill the list price.`}>
-              <PriceListTable usageOptions={usageOptions} feeOptions={feeOptions} />
+              <div className="flex flex-col gap-3">
+                {defaultOfferProblem ? (
+                  <Text size="sm" textColor="muted">
+                    {defaultOfferProblem === 'none' ? (
+                      <Trans>
+                        No default offer is set up, so nothing starts ticked. Tick what the contract
+                        bills.
+                      </Trans>
+                    ) : (
+                      <Trans>
+                        Couldn&apos;t load the default offer, so nothing starts ticked. Tick what
+                        the contract bills.
+                      </Trans>
+                    )}
+                  </Text>
+                ) : null}
+                {keptUsageNames.length > 0 ? (
+                  <Text size="sm" textColor="muted">
+                    <Trans>
+                      Also kept as it is, because it isn&apos;t on the price list:{' '}
+                      {keptUsageNames.join(', ')}.
+                    </Trans>
+                  </Text>
+                ) : null}
+                <PriceListTable usageOptions={usageOptions} feeOptions={feeOptions} />
+              </div>
             </SectionCard>
           </div>
 
@@ -340,6 +428,10 @@ function ContractEditorForm({
     </Form.Root>
   );
 }
+
+/** A usage plan with refs the form doesn't show added after its own. */
+const withKeptRefs = (plan: UsagePlan, kept: UsagePlan['refs']): UsagePlan =>
+  kept.length > 0 ? { ...plan, refs: [...plan.refs, ...kept] } : plan;
 
 /**
  * A single day, today (UTC) to a year ahead. Form.DatePicker picks a range

@@ -11,9 +11,6 @@ import { RATE_AMOUNT_PATTERN, type UsageRow } from '../../lib/contract-usage';
 import { t } from '@lingui/core/macro';
 import { z } from 'zod';
 
-/** Contract fees are USD only, like every ServicePricing. */
-export const CONTRACT_CURRENCY = 'USD';
-
 /** The service picker's value for a fee that isn't for any one service. */
 export const NO_SERVICE = 'none';
 

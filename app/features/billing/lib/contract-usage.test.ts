@@ -2,6 +2,7 @@ import {
   buildUsagePlan,
   listUsageMeterOptions,
   rateSlots,
+  unclaimedUsageRefs,
   usageRowsFromOffer,
   withRateAmounts,
 } from './contract-usage';
@@ -85,12 +86,15 @@ describe('listUsageMeterOptions', () => {
 describe('rate slots', () => {
   it('has one slot per flat rate and per tier band', () => {
     expect(rateSlots(cpuSpec('0.000014'))).toEqual([
-      { label: 'runtime_class general-purpose', listAmount: '0.000014' },
-      { label: 'everything else', listAmount: '0.000014' },
+      {
+        label: { match: { dimension: 'runtime_class', value: 'general-purpose' } },
+        listAmount: '0.000014',
+      },
+      { label: { rest: true }, listAmount: '0.000014' },
     ]);
     expect(rateSlots(egressSpec)).toEqual([
-      { label: 'up to 100', listAmount: '0' },
-      { label: 'over 100', listAmount: '0.05' },
+      { label: { band: { upTo: '100' } }, listAmount: '0' },
+      { label: { band: { over: '100' } }, listAmount: '0.05' },
     ]);
   });
 
@@ -136,6 +140,39 @@ describe('usage rows', () => {
       amounts: ['0.00001', '0.00001'],
       currentPricing: 'contract-acme-1-usage-1',
     });
+  });
+});
+
+describe('unclaimedUsageRefs', () => {
+  it("keeps usage the rows don't show: a pricing gone from the list, or a second one for a meter", () => {
+    const current = offer(
+      [
+        { name: 'compute-vcpu-v1', discount: { percentage: 10 } },
+        { name: 'contract-acme-1-usage-1' },
+        { name: 'storage-v1' },
+      ],
+      [
+        { name: 'compute-vcpu-v1', spec: cpuSpec('0.000014') },
+        {
+          name: 'contract-acme-1-usage-1',
+          spec: { ...cpuSpec('0.00001'), basedOn: 'compute-vcpu-v2' },
+        },
+        { name: 'storage-v1', spec: { ...egressSpec, metric: 'storage', displayName: 'Storage' } },
+      ]
+    );
+    const rows = usageRowsFromOffer(options, current);
+    expect(unclaimedUsageRefs(rows, current).map((ref) => ref.name)).toEqual([
+      'contract-acme-1-usage-1',
+      'storage-v1',
+    ]);
+  });
+
+  it('keeps nothing when every usage ref has a row', () => {
+    const current = offer(
+      [{ name: 'compute-vcpu-v1' }],
+      [{ name: 'compute-vcpu-v1', spec: cpuSpec('0.000014') }]
+    );
+    expect(unclaimedUsageRefs(usageRowsFromOffer(options, current), current)).toEqual([]);
   });
 });
 

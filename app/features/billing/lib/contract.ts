@@ -14,8 +14,20 @@ type OfferSpec = NonNullable<ComMiloapisBillingV1Alpha1Offer['spec']>;
 type ServicePricingRef = NonNullable<OfferSpec['servicePricingRefs']>[number];
 type ChargeType = NonNullable<OfferSpec['chargeTypes']>[number];
 
+/** Contract fees are USD only, like every ServicePricing. */
+export const CONTRACT_CURRENCY = 'USD';
+
 /** How far ahead billing lets a contract start (its MaxContractLeadTime). */
 export const MAX_CONTRACT_LEAD_DAYS = 366;
+
+/** A discount as typed ("25"), as the whole percent an Offer ref takes, or undefined for none. */
+export const parseDiscount = (value: string): number | undefined => {
+  const n = Number.parseInt(value, 10);
+  return Number.isFinite(n) && n > 0 ? n : undefined;
+};
+
+/** A ref's discount as the form shows it: "25", or empty for none. */
+export const discountText = (percentage?: number): string => (percentage ? String(percentage) : '');
 
 /**
  * Set by openmeter-provider once the account is on its contract. From then
@@ -253,6 +265,15 @@ type FeeAmount = {
 /** What a fee charges: its amount times its quantity, in cents. */
 export const feeTotal = (fee: FeeAmount) =>
   cents(fee.amount * (fee.quantity && fee.quantity > 0 ? fee.quantity : 1));
+
+/**
+ * What a fee charges after its discount, as billing works it out: the
+ * total less the percentage, rounded to the cent.
+ */
+export const discountedFeeTotal = (fee: FeeAmount & { discount?: number }) => {
+  const total = feeTotal(fee);
+  return fee.discount ? cents((total * (100 - fee.discount)) / 100) : total;
+};
 
 const sumFees = (fees: FeeAmount[], keep: (fee: FeeAmount) => boolean) =>
   cents(

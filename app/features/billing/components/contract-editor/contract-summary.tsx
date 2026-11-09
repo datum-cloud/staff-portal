@@ -1,4 +1,5 @@
 import {
+  CONTRACT_CURRENCY,
   contractStartFromDate,
   feeTotal,
   firstInvoiceTotal,
@@ -12,7 +13,6 @@ import { listFeeRowAmount, type ListFeeOption } from '../../lib/contract-list-fe
 import { formatMoney } from '../../utils';
 import { InlineDate } from '../billing-account-dashboard/card-parts';
 import {
-  CONTRACT_CURRENCY,
   fromListFeeRowValues,
   type ContractFeeRow,
   type ListFeeRowValues,

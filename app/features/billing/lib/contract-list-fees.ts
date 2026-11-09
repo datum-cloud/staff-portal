@@ -1,4 +1,10 @@
-import { isContractResource, parseAmount, toPricingAmount } from './contract';
+import {
+  discountText,
+  isContractResource,
+  parseAmount,
+  parseDiscount,
+  toPricingAmount,
+} from './contract';
 import type {
   ComMiloapisBillingV1Alpha1Offer,
   ComMiloapisBillingV1Alpha1ServicePricing,
@@ -84,11 +90,10 @@ export interface ListFeeRow {
   currentPricing?: string;
 }
 
-const discountText = (percentage?: number) => (percentage ? String(percentage) : '');
-
 /**
  * The form's starting rows: each list fee ticked if `offer` charges it, or a
- * customer fee based on it, with its quantity and discount.
+ * customer fee based on it, with its quantity and discount. A row takes the
+ * first such ref; any other for the same list fee is left to listFeeNames.
  */
 export const listFeeRowsFromOffer = (
   options: ListFeeOption[],
@@ -128,18 +133,19 @@ export const listFeeRowsFromOffer = (
   });
 };
 
-/** Whether a fee name is one the price list's rows account for. */
-export const listFeeNames = (
-  options: ListFeeOption[],
-  offer: ComMiloapisBillingV1Alpha1Offer | null | undefined
-): Set<string> => {
-  const listed = new Set(options.map((option) => option.name));
-  const names = new Set(listed);
-  for (const snap of offer?.spec?.servicePricings ?? []) {
-    if (snap.spec?.basedOn && listed.has(snap.spec.basedOn)) names.add(snap.name);
-  }
-  return names;
-};
+/**
+ * The offer's fees the price list's rows account for, from the rows
+ * listFeeRowsFromOffer built for it. Any other fee, such as a second one
+ * for the same list fee, or one whose list fee has gone, stays one of the
+ * contract's own fees, so saving keeps it.
+ */
+export const listFeeNames = (rows: ListFeeRow[]): Set<string> =>
+  new Set(
+    rows
+      .filter((row) => row.selected)
+      .map((row) => (row.custom ? (row.currentPricing ?? '') : row.name))
+      .filter(Boolean)
+  );
 
 /** A fee for the contract's Offer: a list fee, or the customer's own. */
 export interface PlannedListFee {
@@ -157,11 +163,6 @@ export interface PlannedListFee {
   /** For a customer fee to create: the list fee it's based on. */
   basedOn?: string;
 }
-
-const parseDiscount = (value: string) => {
-  const n = Number.parseInt(value, 10);
-  return Number.isFinite(n) && n > 0 ? n : undefined;
-};
 
 /** The amount a row charges for one, or NaN. */
 export const listFeeRowAmount = (row: ListFeeRow, option: ListFeeOption) =>

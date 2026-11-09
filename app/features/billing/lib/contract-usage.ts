@@ -1,4 +1,4 @@
-import { isContractResource } from './contract';
+import { discountText, isContractResource, parseDiscount } from './contract';
 import type {
   ComMiloapisBillingV1Alpha1Offer,
   ComMiloapisBillingV1Alpha1ServicePricing,
@@ -62,32 +62,51 @@ export const listUsageMeterOptions = (pricings: ServicePricing[]): UsageMeterOpt
     .sort((a, b) => a.serviceRef.localeCompare(b.serviceRef) || a.label.localeCompare(b.label));
 };
 
+/**
+ * Which usage a rate amount prices, for the component to put into words
+ * (e.g. "runtime_class general-purpose, up to 100"). Empty for a pricing's
+ * only flat rate, which prices every unit.
+ */
+export interface RateSlotLabel {
+  /** The dimension value a matched rate prices. */
+  match?: { dimension: string; value: string };
+  /** A rate that prices everything its pricing's matched rates don't. */
+  rest?: boolean;
+  /** A tier band: up to a bound, over the previous band's, or all usage. */
+  band?: { upTo: string } | { over: string } | 'all';
+}
+
 /** One rate amount a customer can set: a flat rate, or one tier band. */
 export interface RateSlot {
-  /** Which usage it prices, e.g. "runtime_class general-purpose, up to 100". */
-  label: string;
+  label: RateSlotLabel;
   /** The list pricing's amount, as a decimal string. */
   listAmount: string;
 }
 
-const bandLabel = (band: { upTo?: string }, previous?: { upTo?: string }) =>
-  band.upTo ? `up to ${band.upTo}` : previous?.upTo ? `over ${previous.upTo}` : 'all usage';
+const bandLabel = (
+  band: { upTo?: string },
+  previous?: { upTo?: string }
+): NonNullable<RateSlotLabel['band']> =>
+  band.upTo ? { upTo: band.upTo } : previous?.upTo ? { over: previous.upTo } : 'all';
 
 /**
  * A pricing's rate amounts in order, flat rates as one each and tiered ones
- * as one per band, with labels for the form.
+ * as one per band, with what each prices.
  */
 export const rateSlots = (spec: PricingSpec | undefined): RateSlot[] =>
   (spec?.rates ?? []).flatMap((rate, index, rates) => {
-    const matched = rate.match ? `${rate.match.dimension} ${rate.match.value}` : '';
-    const scope = matched || (rates.length > 1 ? 'everything else' : '');
+    const scope: RateSlotLabel = rate.match
+      ? { match: { dimension: rate.match.dimension, value: rate.match.value } }
+      : rates.length > 1
+        ? { rest: true }
+        : {};
     if (rate.tiered?.length) {
       return rate.tiered.map((band, b) => ({
-        label: [scope, bandLabel(band, rate.tiered?.[b - 1])].filter(Boolean).join(', '),
+        label: { ...scope, band: bandLabel(band, rate.tiered?.[b - 1]) },
         listAmount: band.rate,
       }));
     }
-    return [{ label: scope || 'per unit', listAmount: rate.flat ?? '' }];
+    return [{ label: scope, listAmount: rate.flat ?? '' }];
   });
 
 /** A pricing's rates with their amounts replaced, in rateSlots order. */
@@ -132,9 +151,6 @@ export interface UsageRow {
 const snapshotByName = (offer: ComMiloapisBillingV1Alpha1Offer | null | undefined) =>
   new Map((offer?.spec?.servicePricings ?? []).map((snap) => [snap.name, snap]));
 
-const discountText = (ref?: { discount?: { percentage: number } }) =>
-  ref?.discount?.percentage ? String(ref.discount.percentage) : '';
-
 /**
  * The form's starting rows: each meter ticked if `offer` bills it, with
  * its discount and, for customer rates, their amounts. Meters it doesn't
@@ -165,7 +181,7 @@ export const usageRowsFromOffer = (
           ...blank,
           selected: true,
           pricingName: ref.name,
-          discount: discountText(ref),
+          discount: discountText(ref.discount?.percentage),
           amounts: rateSlots(list?.spec).map((slot) => slot.listAmount),
         };
       }
@@ -175,7 +191,7 @@ export const usageRowsFromOffer = (
           ...blank,
           selected: true,
           pricingName: basedOn,
-          discount: discountText(ref),
+          discount: discountText(ref.discount?.percentage),
           custom: true,
           amounts: rateSlots(snap.spec).map((slot) => slot.listAmount),
           currentPricing: ref.name,
@@ -184,6 +200,28 @@ export const usageRowsFromOffer = (
     }
     return blank;
   });
+};
+
+/**
+ * The offer's usage refs that no row accounts for: a pricing that's no
+ * longer on the price list (deleted, or being deleted), or a second pricing
+ * for a meter a row already shows. An amendment keeps them as they are, so
+ * the contract doesn't silently stop billing them. `rows` are the ones
+ * usageRowsFromOffer built from the same offer.
+ */
+export const unclaimedUsageRefs = (
+  rows: UsageRow[],
+  offer: ComMiloapisBillingV1Alpha1Offer | null | undefined
+): ServicePricingRef[] => {
+  const claimed = new Set(
+    rows
+      .filter((row) => row.selected)
+      .map((row) => (row.custom ? row.currentPricing : row.pricingName))
+  );
+  const snapshots = snapshotByName(offer);
+  return (offer?.spec?.servicePricingRefs ?? []).filter(
+    (ref) => snapshots.get(ref.name)?.spec?.chargeType === 'Usage' && !claimed.has(ref.name)
+  );
 };
 
 /** A customer pricing to create for the contract, based on a list pricing. */
@@ -204,11 +242,6 @@ export interface UsagePlan {
   /** Customer pricings to create, each filling the ref at its index. */
   create: CustomerUsagePricing[];
 }
-
-const parseDiscount = (value: string) => {
-  const n = Number.parseInt(value, 10);
-  return Number.isFinite(n) && n > 0 ? n : undefined;
-};
 
 const sameAmounts = (a: string[], b: string[]) =>
   a.length === b.length && a.every((value, i) => Number(value) === Number(b[i]));

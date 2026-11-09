@@ -1,10 +1,5 @@
-import { MAX_CONTRACT_FEES } from '../../lib/contract';
-import {
-  CONTRACT_CURRENCY,
-  NO_SERVICE,
-  type ContractFeeRow,
-  type ContractFormValues,
-} from './schema';
+import { CONTRACT_CURRENCY, MAX_CONTRACT_FEES } from '../../lib/contract';
+import { NO_SERVICE, type ContractFeeRow, type ContractFormValues } from './schema';
 import { WholeNumberInput } from './whole-number-input';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Form } from '@datum-cloud/datum-ui/form';

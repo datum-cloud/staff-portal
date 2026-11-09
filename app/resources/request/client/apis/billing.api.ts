@@ -25,6 +25,8 @@ import {
   createBillingMiloapisComV1Alpha1NamespacedInvoiceRequest,
   createBillingMiloapisComV1Alpha1NamespacedServicePricing,
   createBillingMiloapisComV1Alpha1Offer,
+  deleteBillingMiloapisComV1Alpha1NamespacedServicePricing,
+  deleteBillingMiloapisComV1Alpha1Offer,
   listBillingMiloapisComV1Alpha1BillingAccountBindingForAllNamespaces,
   listBillingMiloapisComV1Alpha1BillingAccountForAllNamespaces,
   listBillingMiloapisComV1Alpha1BillingArrangementApplicationForAllNamespaces,
@@ -484,48 +486,101 @@ export type CreateContractOfferInput = {
   usage: UsagePlan;
 };
 
+const isNotFound = (err: unknown) => {
+  const e = err as { status?: number; response?: { status?: number } } | null;
+  return e?.status === 404 || e?.response?.status === 404;
+};
+
+/** Deletes what a failed contract save created, Offer first, and returns what's left. */
+const removeContractResources = async (created: { offer?: string; pricings: string[] }) => {
+  const left: string[] = [];
+  const remove = async (name: string, del: () => Promise<unknown>) => {
+    try {
+      await del();
+    } catch (err) {
+      if (!isNotFound(err)) left.push(name);
+    }
+  };
+  if (created.offer) {
+    const offer = created.offer;
+    await remove(offer, () => deleteBillingMiloapisComV1Alpha1Offer({ path: { name: offer } }));
+  }
+  for (const name of created.pricings) {
+    await remove(name, () =>
+      deleteBillingMiloapisComV1Alpha1NamespacedServicePricing({
+        path: { namespace: DEFAULT_SERVICE_PRICING_NAMESPACE, name },
+      })
+    );
+  }
+  return left;
+};
+
 /**
- * Creates a contract's fee pricings and a published Offer with them, and
- * returns the Offer's name once an entitlement can point at it.
+ * Creates a contract's fee pricings and a published Offer with them, then,
+ * once an entitlement can point at the Offer, `assign`s it to the account.
+ *
+ * If any step fails, the pricings and Offer it created are deleted again,
+ * so nothing is left unused and a retry starts afresh (their names are
+ * timestamped, so a retry would otherwise make another set). The error says
+ * what couldn't be deleted, if anything.
  */
-export const createContractOffer = async (input: CreateContractOfferInput, now = new Date()) => {
+export const createContractOffer = async <T>(
+  input: CreateContractOfferInput,
+  assign: (offerName: string) => Promise<T>,
+  now = new Date()
+): Promise<T> => {
   const names = contractResourceNames(input.accountName, now);
   const labels = {
     [CONTRACT_BILLING_ACCOUNT_LABEL]: input.accountName,
     [CONTRACT_ORGANIZATION_LABEL]: input.orgName,
   };
-  const fees = input.fees.map((fee, index) => ({
-    ...fee,
-    name: fee.existingPricing || names.fee(index),
-  }));
-  for (const fee of fees) {
-    if (fee.existingPricing) continue;
-    await createFixedServicePricing({
-      name: fee.name,
-      displayName: fee.label,
-      chargeType: fee.chargeType,
-      amount: fee.amount,
-      serviceRef: fee.serviceRef,
-      pricingUnit: fee.pricingUnit,
-      basedOn: fee.basedOn,
-      labels,
+  const created: { offer?: string; pricings: string[] } = { pricings: [] };
+  try {
+    const fees = input.fees.map((fee, index) => ({
+      ...fee,
+      name: fee.existingPricing || names.fee(index),
+    }));
+    for (const fee of fees) {
+      if (fee.existingPricing) continue;
+      await createFixedServicePricing({
+        name: fee.name,
+        displayName: fee.label,
+        chargeType: fee.chargeType,
+        amount: fee.amount,
+        serviceRef: fee.serviceRef,
+        pricingUnit: fee.pricingUnit,
+        basedOn: fee.basedOn,
+        labels,
+      });
+      created.pricings.push(fee.name);
+    }
+    const usageRefs = input.usage.refs.map((ref) => ({ ...ref }));
+    for (const [i, pricing] of input.usage.create.entries()) {
+      const name = names.usage(i);
+      await createCustomerUsagePricing({ name, spec: pricing.spec, labels });
+      created.pricings.push(name);
+      usageRefs[pricing.index] = { ...usageRefs[pricing.index], name };
+    }
+    const plan = contractOfferPlan({
+      namespace: DEFAULT_SERVICE_PRICING_NAMESPACE,
+      fees,
+      usageRefs,
     });
+    await createOffer({ name: names.offer, displayName: input.displayName, labels, ...plan });
+    created.offer = names.offer;
+    await publishOffer(names.offer);
+    await waitForOfferSnapshot(names.offer, plan.servicePricingRefs.length);
+    return await assign(names.offer);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    const left = await removeContractResources(created);
+    throw new Error(
+      left.length > 0
+        ? `${message}. The contract wasn't saved, and these couldn't be deleted again: ${left.join(', ')}.`
+        : `${message}. The contract wasn't saved.`,
+      { cause: err }
+    );
   }
-  const usageRefs = input.usage.refs.map((ref) => ({ ...ref }));
-  for (const [i, pricing] of input.usage.create.entries()) {
-    const name = names.usage(i);
-    await createCustomerUsagePricing({ name, spec: pricing.spec, labels });
-    usageRefs[pricing.index] = { ...usageRefs[pricing.index], name };
-  }
-  const plan = contractOfferPlan({
-    namespace: DEFAULT_SERVICE_PRICING_NAMESPACE,
-    fees,
-    usageRefs,
-  });
-  await createOffer({ name: names.offer, displayName: input.displayName, labels, ...plan });
-  await publishOffer(names.offer);
-  await waitForOfferSnapshot(names.offer, plan.servicePricingRefs.length);
-  return names.offer;
 };
 
 // ─── BillingEntitlement (org-namespaced) ─────────────────────────────────────

@@ -1,6 +1,8 @@
 import { useAccountInvoices } from '../../hooks';
 import {
+  CONTRACT_CURRENCY,
   contractBillingDay,
+  discountedFeeTotal,
   getContractFees,
   feeTotal,
   getContractFirstInvoice,
@@ -15,7 +17,6 @@ import {
   PAST_INVOICE_STATUS_BADGE,
   toPastInvoiceRow,
 } from '../../utils';
-import { CONTRACT_CURRENCY } from '../contract-editor/schema';
 import { BILLING_ACCOUNT_SECTION_IDS, CardMessage, InlineDate, SectionAnchor } from './card-parts';
 import { BadgeState } from '@/components/badge';
 import { SectionCard } from '@/features/milo';
@@ -27,7 +28,7 @@ import {
   type InvoiceRequest,
 } from '@/resources/request/client';
 import { billingAccountRoutes } from '@/utils/config/routes.config';
-import { Button } from '@datum-cloud/datum-ui/button';
+import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
 import { Dialog } from '@datum-cloud/datum-ui/dialog';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
@@ -41,7 +42,6 @@ import type {
 } from '@openapi/billing.miloapis.com/v1alpha1';
 import { FileSearch, Pencil } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router';
 
 interface ContractCardProps {
   orgName: string;
@@ -65,7 +65,6 @@ export function BillingAccountContractCard({
   const contract = getContractState(entitlement, now);
   const offerQuery = useOfferDetailQuery(entitlement?.spec?.offerRef?.name ?? '');
   const [previewOpen, setPreviewOpen] = useState(false);
-  const navigate = useNavigate();
 
   return (
     <>
@@ -74,15 +73,15 @@ export function BillingAccountContractCard({
           <SectionCard
             title={<Trans>Contract</Trans>}
             action={
-              <Button
+              <LinkButton
                 type="quaternary"
                 theme="borderless"
                 size="small"
-                onClick={() => navigate(billingAccountRoutes.contract(orgName, accountName))}
+                href={billingAccountRoutes.contract(orgName, accountName)}
                 icon={<Icon icon={Pencil} size={14} />}
                 iconPosition="right">
                 <Trans>Change fees</Trans>
-              </Button>
+              </LinkButton>
             }>
             <div className="flex flex-col gap-3">
               <ContractDates contract={contract} />
@@ -216,14 +215,17 @@ function ContractFees({ offer }: { offer: ComMiloapisBillingV1Alpha1Offer }) {
       ) : (
         <ul className="flex flex-col gap-1">
           {fees.map((fee) => {
-            const total = formatMoney(feeTotal(fee), CONTRACT_CURRENCY);
+            // What the customer pays, after any discount; the full amount is
+            // shown with the discount underneath.
+            const total = formatMoney(discountedFeeTotal(fee), CONTRACT_CURRENCY);
             const listAmount = fee.basedOn ? listAmountByName.get(fee.basedOn) : undefined;
+            const beforeDiscount = formatMoney(feeTotal(fee), CONTRACT_CURRENCY);
             const detail = [
               feeQuantityText(fee),
               listAmount !== undefined && !Number.isNaN(listAmount)
                 ? t`list ${formatMoney(listAmount, CONTRACT_CURRENCY)}`
                 : null,
-              fee.discount ? t`${fee.discount}% off` : null,
+              fee.discount ? t`${fee.discount}% off ${beforeDiscount}` : null,
               fee.serviceRef
                 ? servicesByRef.get(fee.serviceRef)?.spec?.displayName || fee.serviceRef
                 : null,

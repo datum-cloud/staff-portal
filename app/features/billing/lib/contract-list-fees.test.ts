@@ -127,7 +127,29 @@ describe('list fee rows', () => {
       amount: '250.00',
       currentPricing: 'contract-acme-1-fee-1',
     });
-    expect([...listFeeNames(options, current)]).toContain('contract-acme-1-fee-1');
+    expect([...listFeeNames(listFeeRowsFromOffer(options, current))]).toContain(
+      'contract-acme-1-fee-1'
+    );
+  });
+
+  it("leave a second fee for the same list fee to the contract's own fees", () => {
+    const current = offer(
+      [{ name: 'cross-connect-v1', quantity: 2 }, { name: 'contract-acme-1-fee-1' }],
+      [
+        { name: 'cross-connect-v1', spec: crossConnect, quantity: 2 },
+        {
+          name: 'contract-acme-1-fee-1',
+          spec: { ...crossConnect, amount: '250.00', basedOn: 'cross-connect-v1' },
+        },
+      ]
+    );
+    const rows = listFeeRowsFromOffer(options, current);
+    expect(rows.find((r) => r.name === 'cross-connect-v1')).toMatchObject({
+      selected: true,
+      custom: false,
+      quantity: '2',
+    });
+    expect([...listFeeNames(rows)]).toEqual(['cross-connect-v1']);
   });
 });
 

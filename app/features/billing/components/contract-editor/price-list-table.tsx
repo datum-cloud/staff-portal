@@ -1,13 +1,10 @@
+import { CONTRACT_CURRENCY } from '../../lib/contract';
 import type { ListFeeOption } from '../../lib/contract-list-fees';
-import { rateSlots, type UsageMeterOption } from '../../lib/contract-usage';
+import { rateSlots, type RateSlotLabel, type UsageMeterOption } from '../../lib/contract-usage';
 import { formatMoney, indexServicesByRef } from '../../utils';
-import {
-  CONTRACT_CURRENCY,
-  type ContractFormValues,
-  type ListFeeRowValues,
-  type UsageRowValues,
-} from './schema';
+import type { ContractFormValues, ListFeeRowValues, UsageRowValues } from './schema';
 import { WholeNumberInput } from './whole-number-input';
+import { EMBEDDED_TABLE_HEADER_CELL_CLASS, TABLE_CARD_FRAME_CLASS } from '@/features/milo';
 import { useServiceListQuery } from '@/resources/request/client';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
@@ -22,10 +19,11 @@ import {
   TableRow,
 } from '@datum-cloud/datum-ui/table';
 import { Text } from '@datum-cloud/datum-ui/typography';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { ChevronDown, ChevronRight } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
 type PriceListEntry =
@@ -74,23 +72,23 @@ export function PriceListTable({
   }
 
   return (
-    <div className="overflow-x-auto rounded-md border">
+    <div className={cn(TABLE_CARD_FRAME_CLASS, 'overflow-x-auto')}>
       <Table className="min-w-[40rem]">
         <TableHeader>
-          <TableRow className="bg-muted hover:bg-muted">
-            <TableHead>
+          <TableRow className="hover:bg-transparent">
+            <TableHead className={EMBEDDED_TABLE_HEADER_CELL_CLASS}>
               <SelectAll />
             </TableHead>
-            <TableHead className="w-44">
+            <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-44')}>
               <Trans>List price</Trans>
             </TableHead>
-            <TableHead className="w-20">
+            <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-20')}>
               <Trans>Qty</Trans>
             </TableHead>
-            <TableHead className="w-20">
+            <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-20')}>
               <Trans>% off</Trans>
             </TableHead>
-            <TableHead className="w-36">
+            <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-36')}>
               <Trans>Customer price</Trans>
             </TableHead>
           </TableRow>
@@ -126,17 +124,37 @@ function SelectAll() {
     usage.forEach((_, i) => form.setValue(`usage.${i}.selected`, selected, options));
     listFees.forEach((_, i) => form.setValue(`listFees.${i}.selected`, selected, options));
   };
+  // The title sits outside the checkbox, so clicking it doesn't tick every row.
   return (
-    <label className="flex items-center gap-2">
+    <div className="flex items-center gap-2">
       <Checkbox
         checked={checked}
         onCheckedChange={() => setAll(checked !== true)}
         aria-label={checked === true ? t`Untick all` : t`Tick all`}
       />
-      <Trans>Pricing</Trans>
-    </label>
+      <span>
+        <Trans>Pricing</Trans>
+      </span>
+    </div>
   );
 }
+
+/** What a rate amount prices, in words, e.g. "runtime_class general-purpose, up to 100". */
+const rateSlotText = (label: RateSlotLabel) => {
+  const parts: string[] = [];
+  if (label.match) parts.push(`${label.match.dimension} ${label.match.value}`);
+  else if (label.rest) parts.push(t`everything else`);
+  if (label.band === 'all') {
+    parts.push(t`all usage`);
+  } else if (label.band && 'upTo' in label.band) {
+    const upTo = label.band.upTo;
+    parts.push(t`up to ${upTo}`);
+  } else if (label.band) {
+    const over = label.band.over;
+    parts.push(t`over ${over}`);
+  }
+  return parts.length > 0 ? parts.join(', ') : t`per unit`;
+};
 
 function ServiceGroup({ title, entries }: { title: string; entries: PriceListEntry[] }) {
   return (
@@ -219,12 +237,17 @@ function UsageRows({ option, index }: { option: UsageMeterOption; index: number 
   const hasCustomRates = (row?.amounts ?? []).some((amount) => amount.trim() !== '');
   const [expanded, setExpanded] = useState(hasCustomRates);
 
-  // A different list pricing may price the meter in more or fewer rates, so
-  // the customer's rates start again, at the list rates.
+  // Rates typed against one list pricing don't carry over to another, which
+  // may price the meter differently or in more or fewer rates: picking a
+  // different version starts the customer's rates again, at the list rates.
   const pricingName = row?.pricingName;
-  const slotCount = slots.length;
+  const shownPricing = useRef(pricingName);
   useEffect(() => {
-    if (!row || row.amounts.length === slotCount) return;
+    if (!row || shownPricing.current === pricingName) return;
+    const previous = shownPricing.current;
+    shownPricing.current = pricingName;
+    // The row's first value is what the form started with, not a change.
+    if (previous === undefined) return;
     form.setValue(
       `usage.${index}.amounts`,
       slots.map(() => ''),
@@ -232,7 +255,7 @@ function UsageRows({ option, index }: { option: UsageMeterOption; index: number 
     );
     // Only when the pricing changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pricingName, slotCount]);
+  }, [pricingName]);
 
   const single = slots.length === 1;
   return (
@@ -310,7 +333,7 @@ function UsageRows({ option, index }: { option: UsageMeterOption; index: number 
             <TableRow key={`${row?.pricingName}-${slotIndex}`} className="hover:bg-transparent">
               <TableCell className="pl-12">
                 <Text size="xs" textColor="muted">
-                  {slot.label}
+                  {rateSlotText(slot.label)}
                 </Text>
               </TableCell>
               <TableCell>
@@ -325,7 +348,7 @@ function UsageRows({ option, index }: { option: UsageMeterOption; index: number 
                   <Form.Input
                     inputMode="decimal"
                     placeholder={slot.listAmount}
-                    aria-label={t`Customer rate, ${slot.label}`}
+                    aria-label={t`Customer rate, ${rateSlotText(slot.label)}`}
                     disabled={!selected}
                   />
                 </Form.Field>
