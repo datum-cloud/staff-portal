@@ -2,7 +2,7 @@ import AppSearch from '@/components/app-search';
 import AppSearchMobile from '@/components/app-search/app-search-mobile';
 import { AssistantTrigger } from '@/features/assistant';
 import { useEnv } from '@/hooks';
-import { useBreakpoint } from '@/hooks/use-breakpoint';
+import { useBreakpoint } from '@datum-cloud/datum-ui/hooks';
 import { Separator } from '@datum-cloud/datum-ui/separator';
 import { SidebarTrigger } from '@datum-cloud/datum-ui/sidebar';
 import { TaskQueueDropdown } from '@datum-cloud/datum-ui/task-queue';

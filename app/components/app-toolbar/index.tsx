@@ -1,7 +1,7 @@
 import { MobileToolbar } from './mobile-toolbar';
 import { Breadcrumb } from '@/components/breadcrumb';
-import { useBreakpoint } from '@/hooks/use-breakpoint';
 import { useApp } from '@/providers/app.provider';
+import { useBreakpoint } from '@datum-cloud/datum-ui/hooks';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { useEffect, useState } from 'react';
 
