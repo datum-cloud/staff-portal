@@ -14,8 +14,20 @@ type OfferSpec = NonNullable<ComMiloapisBillingV1Alpha1Offer['spec']>;
 type ServicePricingRef = NonNullable<OfferSpec['servicePricingRefs']>[number];
 type ChargeType = NonNullable<OfferSpec['chargeTypes']>[number];
 
+/** Contract fees are USD only, like every ServicePricing. */
+export const CONTRACT_CURRENCY = 'USD';
+
 /** How far ahead billing lets a contract start (its MaxContractLeadTime). */
 export const MAX_CONTRACT_LEAD_DAYS = 366;
+
+/** A discount as typed ("25"), as the whole percent an Offer ref takes, or undefined for none. */
+export const parseDiscount = (value: string): number | undefined => {
+  const n = Number.parseInt(value, 10);
+  return Number.isFinite(n) && n > 0 ? n : undefined;
+};
+
+/** A ref's discount as the form shows it: "25", or empty for none. */
+export const discountText = (percentage?: number): string => (percentage ? String(percentage) : '');
 
 /**
  * Set by openmeter-provider once the account is on its contract. From then
@@ -106,8 +118,18 @@ export interface ContractFee {
   name: string;
   label: string;
   chargeType: 'OneTime' | 'Recurring';
+  /** The unit amount: the fee charged is amount × quantity. */
   amount: number;
-  serviceRef: string;
+  /** How many of the fee the contract charges, 1 unless the Offer says. */
+  quantity: number;
+  /** What the amount is per (e.g. "port"), when the fee has a unit. */
+  pricingUnit?: string;
+  /** The service the fee is for, when it's for one. */
+  serviceRef?: string;
+  /** The list fee this is the customer's own amount for, if any. */
+  basedOn?: string;
+  /** Percent off the fee, if the Offer gives one. */
+  discount?: number;
 }
 
 /** An offer's fixed fees, setup fee first, from its pricing snapshots. */
@@ -126,7 +148,11 @@ export const getContractFees = (
           label: spec.displayName || snapshot.name,
           chargeType: spec.chargeType,
           amount,
-          serviceRef: spec.serviceRef,
+          quantity: snapshot.quantity && snapshot.quantity > 0 ? snapshot.quantity : 1,
+          pricingUnit: spec.pricingUnit || undefined,
+          serviceRef: spec.serviceRef || undefined,
+          basedOn: spec.basedOn || undefined,
+          discount: snapshot.discount?.percentage || undefined,
         },
       ];
     })
@@ -163,14 +189,19 @@ const slug = (value: string, max: number) =>
 export const MAX_CONTRACT_FEES = 20;
 
 /**
- * Names for a contract's Offer and its fee pricings (`fee(0)` is the first
- * fee's). The timestamp keeps them unique: pricings are immutable, so every
- * change of fees gets new ones, and an amendment gets a new Offer.
+ * Names for a contract's Offer, its fee pricings (`fee(0)` is the first
+ * fee's) and the customer's own usage pricings (`usage(0)`). The timestamp
+ * keeps them unique: pricings are immutable, so every change of fees gets
+ * new ones, and an amendment gets a new Offer.
  */
 export const contractResourceNames = (accountName: string, now: Date) => {
   const stamp = now.toISOString().replace(/\D/g, '').slice(0, 14);
   const offer = `${CONTRACT_NAME_PREFIX}${slug(accountName, 30) || 'account'}-${stamp}`;
-  return { offer, fee: (index: number) => `${offer}-fee-${index + 1}` };
+  return {
+    offer,
+    fee: (index: number) => `${offer}-fee-${index + 1}`,
+    usage: (index: number) => `${offer}-usage-${index + 1}`,
+  };
 };
 
 export interface ContractOfferPlan {
@@ -186,14 +217,27 @@ export const contractOfferPlan = ({
 }: {
   namespace: string;
   /** The contract's fee pricings, in the order staff listed them. */
-  fees: { name: string; chargeType: ContractFee['chargeType'] }[];
+  fees: {
+    name: string;
+    chargeType: ContractFee['chargeType'];
+    quantity?: number;
+    discount?: number;
+  }[];
   usageRefs: ServicePricingRef[];
 }): ContractOfferPlan => {
   const present = new Set<ChargeType>(fees.map((fee) => fee.chargeType));
   if (usageRefs.length > 0) present.add('Usage');
   return {
     chargeTypes: (['OneTime', 'Recurring', 'Usage'] as const).filter((type) => present.has(type)),
-    servicePricingRefs: [...fees.map((fee) => ({ name: fee.name, namespace })), ...usageRefs],
+    servicePricingRefs: [
+      ...fees.map((fee) => ({
+        name: fee.name,
+        namespace,
+        ...(fee.quantity && fee.quantity > 1 ? { quantity: fee.quantity } : {}),
+        ...(fee.discount ? { discount: { percentage: fee.discount } } : {}),
+      })),
+      ...usageRefs,
+    ],
   };
 };
 
@@ -210,11 +254,32 @@ export const parseAmount = (value: string | undefined): number => {
   return Number.parseFloat(cleaned);
 };
 
-type FeeAmount = { chargeType: ContractFee['chargeType']; amount: number };
+type FeeAmount = {
+  chargeType: ContractFee['chargeType'];
+  /** The unit amount. */
+  amount: number;
+  /** How many of the fee are charged; 1 when unset. */
+  quantity?: number;
+};
+
+/** What a fee charges: its amount times its quantity, in cents. */
+export const feeTotal = (fee: FeeAmount) =>
+  cents(fee.amount * (fee.quantity && fee.quantity > 0 ? fee.quantity : 1));
+
+/**
+ * What a fee charges after its discount, as billing works it out: the
+ * total less the percentage, rounded to the cent.
+ */
+export const discountedFeeTotal = (fee: FeeAmount & { discount?: number }) => {
+  const total = feeTotal(fee);
+  return fee.discount ? cents((total * (100 - fee.discount)) / 100) : total;
+};
 
 const sumFees = (fees: FeeAmount[], keep: (fee: FeeAmount) => boolean) =>
   cents(
-    fees.filter((fee) => keep(fee) && !Number.isNaN(fee.amount)).reduce((a, f) => a + f.amount, 0)
+    fees
+      .filter((fee) => keep(fee) && !Number.isNaN(fee.amount))
+      .reduce((a, f) => a + feeTotal(f), 0)
   );
 
 /** What the contract charges each month: its monthly fees. */
@@ -259,7 +324,7 @@ export const proratedFirstInvoiceTotal = (fees: FeeAmount[], share: number) =>
       .filter((fee) => !Number.isNaN(fee.amount))
       .reduce(
         (total, fee) =>
-          total + (fee.chargeType === 'Recurring' ? cents(fee.amount * share) : fee.amount),
+          total + (fee.chargeType === 'Recurring' ? cents(feeTotal(fee) * share) : feeTotal(fee)),
         0
       )
   );

@@ -303,8 +303,9 @@ export const useSetUpContractMutation = (orgName: string, accountName: string) =
       startsAt: string;
       offer: CreateContractOfferInput;
     }) => {
-      const offerName = await createContractOffer(offer);
-      return setBillingEntitlementContract(orgName, entitlementName, offerName, startsAt);
+      return createContractOffer(offer, (offerName) =>
+        setBillingEntitlementContract(orgName, entitlementName, offerName, startsAt)
+      );
     },
     onSettled: async () => {
       await invalidateContractQueries(queryClient, orgName, accountName);
@@ -326,8 +327,9 @@ export const useChangeContractFeesMutation = (orgName: string, accountName: stri
       entitlementName: string;
       offer: CreateContractOfferInput;
     }) => {
-      const offerName = await createContractOffer(offer);
-      return switchBillingEntitlementOffer(orgName, entitlementName, offerName);
+      return createContractOffer(offer, (offerName) =>
+        switchBillingEntitlementOffer(orgName, entitlementName, offerName)
+      );
     },
     onSettled: async () => {
       await invalidateContractQueries(queryClient, orgName, accountName);
