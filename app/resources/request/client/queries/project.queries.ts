@@ -1,6 +1,7 @@
 import {
   listAllProjects,
   listProjects,
+  projectComputeQuery,
   projectDnsListQuery,
   projectDnsRecordListQuery,
   projectDomainListQuery,
@@ -11,9 +12,11 @@ import {
   projectSuspensionListQuery,
 } from '../apis/project.api';
 import { isProjectDeleting } from '@/features/project/lib/project-phase';
+import { shouldRetryQuery } from '@/modules/tanstack/query';
 import { ListQueryParams } from '@/resources/schemas';
+import { createConcurrencyLimit } from '@/utils/helpers';
 import type { ComMiloapisResourcemanagerV1Alpha1Project } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
-import { useQuery } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 
 export const projectQueryKeys = {
   all: ['projects'] as const,
@@ -42,6 +45,7 @@ export const projectQueryKeys = {
     records: (projectName: string, dnsName: string, namespace: string = 'default') =>
       ['projects', projectName, 'dns', dnsName, 'records', namespace] as const,
   },
+  compute: (projectName: string) => ['projects', projectName, 'compute'] as const,
   suspensions: (projectName: string) => ['projects', projectName, 'suspensions'] as const,
   suspensionsAll: () => ['projects', 'suspensions', 'all'] as const,
 };
@@ -152,3 +156,33 @@ export const useProjectDnsListQuery = (projectName: string, params?: ListQueryPa
     staleTime: 5 * 60 * 1000,
   });
 };
+
+/** Most projects whose compute is fetched at once across an organization (#765). */
+export const MAX_CONCURRENT_PROJECT_COMPUTE_FETCHES = 12;
+
+// One limit shared by every caller, so two overviews open at once still stay within it.
+const projectComputeLimit = createConcurrencyLimit(MAX_CONCURRENT_PROJECT_COMPUTE_FETCHES);
+
+/**
+ * Each project's Workloads and Instances, one query per project. Every project
+ * is fetched, at most MAX_CONCURRENT_PROJECT_COMPUTE_FETCHES at a time, and each
+ * loads and fails on its own so one unreadable project doesn't hide the rest.
+ */
+export function useProjectComputeQueries(
+  projectNames: readonly string[],
+  options: { enabled?: boolean } = {}
+) {
+  return useQueries({
+    queries: projectNames.map((projectName) => ({
+      queryKey: projectQueryKeys.compute(projectName),
+      queryFn: ({ signal }: { signal: AbortSignal }) =>
+        projectComputeLimit(() => projectComputeQuery(projectName, signal)),
+      enabled: (options.enabled ?? true) && Boolean(projectName),
+      staleTime: 60 * 1000,
+      // Once, and never on a 4xx: a project the staff user can't read stays an error.
+      retry: (failureCount: number, error: unknown) =>
+        failureCount < 1 && shouldRetryQuery(failureCount, error),
+      refetchOnWindowFocus: false,
+    })),
+  });
+}

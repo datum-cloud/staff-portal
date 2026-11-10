@@ -275,6 +275,20 @@ export const listOrgProjects = async (
   };
 };
 
+// Each page is a gateway round trip; an org rarely has more than one page.
+const ALL_ORG_PROJECTS_PAGE_LIMIT = 100;
+// Safety net against a runaway walk — mirrors listAllOrganizations' pattern.
+const ALL_ORG_PROJECTS_MAX_PAGES = 50;
+
+/** Every project an organization owns, walking `continueToken` past the first page. */
+export const listAllOrgProjects = (orgName: string) =>
+  walkCursorPages(
+    (cursor) => listOrgProjects(orgName, { limit: ALL_ORG_PROJECTS_PAGE_LIMIT, cursor }),
+    {
+      maxPages: ALL_ORG_PROJECTS_MAX_PAGES,
+    }
+  );
+
 export const listOrgMembers = async (orgName: string) => {
   const data = await organizationMembersOp(orgName);
   return data?.organizationMembers ?? [];
