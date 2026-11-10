@@ -1,5 +1,6 @@
 import { useAccountInvoices, useAccountUsageSpend } from '../../hooks';
 import { isUsageSpike, type UsageSpendComparison } from '../../lib/account-health';
+import type { ContractState } from '../../lib/contract';
 import { getNextInvoice, summarizeInvoices, type InvoiceSummary } from '../../lib/invoice-summary';
 import { formatMoney, getAccountCurrency, type BillingAccount } from '../../utils';
 import { frequencyLabel, InlineDate } from './card-parts';
@@ -22,6 +23,8 @@ interface HealthCardsProps {
   orgName: string;
   account: BillingAccount;
   now: Date;
+  /** The account's contract, which sets when it's invoiced, if it has one. */
+  contract?: ContractState | null;
 }
 
 /**
@@ -225,10 +228,14 @@ function UsageTile({ orgName, account }: HealthCardsProps) {
   );
 }
 
-/** Dates come from the account's payment terms, so there's nothing to load. */
-function NextInvoiceTile({ account, now }: HealthCardsProps) {
-  const next = useMemo(() => getNextInvoice(account, now), [account, now]);
-  const frequency = frequencyLabel(next.frequency);
+/**
+ * Dates come from the account's payment terms, or its contract's billing
+ * day, so there's nothing to load beyond the entitlement.
+ */
+function NextInvoiceTile({ account, now, contract }: HealthCardsProps) {
+  const next = useMemo(() => getNextInvoice(account, now, contract), [account, now, contract]);
+  // A contract's first invoice goes out the day it starts, then monthly.
+  const frequency = next.contractStart ? t`Contract starts` : frequencyLabel(next.frequency);
 
   return (
     <StatTile title={<Trans>Next invoice</Trans>}>

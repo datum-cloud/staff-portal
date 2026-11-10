@@ -1,4 +1,5 @@
 import { getEffectiveNetDays, getInvoicePhase, parseAmount, type Invoice } from '../utils';
+import { billingCycleTerms, type ContractState } from './contract';
 import {
   getNextCycleStart,
   resolveCycleTerms,
@@ -120,24 +121,31 @@ export interface NextInvoice {
   dueAt?: Date;
   frequency: InvoiceFrequency;
   netDays?: number;
+  /** It's a contract's first invoice, sent when the contract starts. */
+  contractStart?: boolean;
 }
 
 /**
- * The next invoice's dates: the cycle from the account's payment terms, and
- * the net days in effect (a staff arrangement's, or the standard terms').
+ * The next invoice's dates and the net days in effect (a staff
+ * arrangement's, or the standard terms'). A contract that hasn't started
+ * sends its first invoice the day it starts; one that has bills monthly on
+ * its start day. Otherwise the cycle comes from the account's payment terms.
  * There is no amount: billing doesn't estimate one.
  */
 export const getNextInvoice = (
   account: ComMiloapisBillingV1Alpha1BillingAccount,
-  now: Date
+  now: Date,
+  contract?: ContractState | null
 ): NextInvoice => {
-  const terms = account.spec?.paymentTerms;
-  const issuedAt = getNextCycleStart(terms, now);
+  const terms = billingCycleTerms(account.spec?.paymentTerms, contract);
+  const firstContractInvoice = contract && !contract.started ? contract.startsAt : undefined;
+  const issuedAt = firstContractInvoice ?? getNextCycleStart(terms, now);
   const netDays = getEffectiveNetDays(account);
   return {
     issuedAt,
     dueAt: netDays !== undefined ? new Date(issuedAt.getTime() + netDays * DAY_MS) : undefined,
     frequency: resolveCycleTerms(terms).frequency,
     netDays,
+    ...(firstContractInvoice ? { contractStart: true } : {}),
   };
 };

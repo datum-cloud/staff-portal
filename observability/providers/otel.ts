@@ -4,7 +4,7 @@ import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
 import { NodeSDK } from '@opentelemetry/sdk-node';
-import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
+import { BatchSpanProcessor } from '@opentelemetry/sdk-trace';
 
 // ============================================================================
 // OTEL PROVIDER
@@ -220,7 +220,8 @@ export class OtelProvider extends BaseProvider {
     return new NodeSDK({
       instrumentations: [getNodeAutoInstrumentations()],
       spanProcessors: [
-        new BatchSpanProcessor(exporter, {
+        new BatchSpanProcessor({
+          exporter,
           maxQueueSize: 1000,
           maxExportBatchSize: 50,
           scheduledDelayMillis: 5000,

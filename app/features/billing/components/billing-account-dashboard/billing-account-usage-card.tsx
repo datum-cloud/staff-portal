@@ -5,6 +5,7 @@ import {
   getTopMeter,
   type ServiceSpend,
 } from '../../lib/account-usage';
+import { billingCycleTerms, type ContractState } from '../../lib/contract';
 import { getAccountCurrency, type BillingAccount } from '../../utils';
 import { CardLink, CardMessage, CardQueryState, ShareBar, InlineDate } from './card-parts';
 import { SectionCard } from '@/features/milo';
@@ -36,6 +37,8 @@ interface UsageCardProps {
   orgName: string;
   account: BillingAccount;
   now: Date;
+  /** The account's contract, which sets its billing day once it starts. */
+  contract?: ContractState | null;
 }
 
 const TOP_SERVICES = 3;
@@ -45,11 +48,11 @@ const CHART_HEIGHT = 200;
  * This cycle's usage for the account: spend so far, one meter's daily usage
  * (opening on the highest spend) and spend by service.
  */
-export function BillingAccountUsageCard({ orgName, account, now }: UsageCardProps) {
+export function BillingAccountUsageCard({ orgName, account, now, contract }: UsageCardProps) {
   const { current, isLoading, isError } = useAccountUsageSpend(orgName, account);
   const progress = useMemo(
-    () => getCycleProgress(account.spec?.paymentTerms, now),
-    [account.spec?.paymentTerms, now]
+    () => getCycleProgress(billingCycleTerms(account.spec?.paymentTerms, contract), now),
+    [account.spec?.paymentTerms, contract, now]
   );
   const view = useMemo(
     () => (current?.usage.status === 'ok' ? toUsageView(current.usage) : null),

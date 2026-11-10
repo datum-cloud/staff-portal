@@ -98,15 +98,19 @@ DSN + `SENTRY_ENV` per overlay in `datum-cloud/infra`
 **Two init sites** (a change to Sentry behavior usually has to touch both):
 
 - **Client** — `app/entry.client.tsx`: `dsn`/`environment`/`release`,
-  `sendDefaultPii: true`, React-Router tracing + replay integrations,
-  `tracesSampleRate` 0.1 (prod) / 1.0 (else), replay 0.1 / on-error 1.0, and
-  the shared `beforeSend` policy (below).
+  `dataCollection: { httpBodies: [] }` (no request/response bodies),
+  React-Router tracing + replay integrations, `tracesSampleRate` 0.1 (prod) /
+  1.0 (else), replay 0.1 / on-error 1.0, and the shared `beforeSend` policy
+  (below).
 - **Server** — `observability/providers/sentry.ts`, a `SentryProvider extends
 BaseProvider` started at boot by `observability/start.js` /
-  `dev-start.js` (**not** `entry.server.tsx`). Its `beforeSend` is a
-  circuit-breaker (drops events while open) **wrapping** the same shared policy,
-  plus Sentry self-error detection so the observability layer swallows Sentry's
-  own failures.
+  `dev-start.js` (**not** `entry.server.tsx`). It sets
+  `dataCollection: { httpBodies: [] }` and `tracesSampleRate: 0`: OTel owns
+  server tracing, so Sentry sends errors only and no server spans. Its
+  `beforeSend` is a circuit-breaker (drops events while open) **wrapping** the
+  same shared policy, plus Sentry self-error detection so the observability
+  layer swallows Sentry's own failures. `createConfig()` is typed as
+  `Sentry.NodeOptions`, so an option Sentry no longer supports fails typecheck.
 
 **Shared reporting policy — `app/modules/sentry/`.** One `beforeSend` factory
 (`createBeforeSend()`) runs on every outgoing event at **both** init sites, so
@@ -148,7 +152,12 @@ VERSION.includes('main')` (`app/utils/config/sentry.config.ts`,
 `release` (`VERSION`) must match the upload release for events to resolve to
 source. In the image build the token reaches only the Dockerfile's build step,
 as the BuildKit secret `sentry_auth_token`. Never pass it as a build arg:
-build args are recorded in the image's public provenance.
+build args are recorded in the image's public provenance. The plugin's
+`sentryUrl` comes from `SENTRY_URL` and defaults to our self-hosted
+`https://sentry.prod.env.datum.net`. Without it the plugin targets
+`https://sentry.io`, the CLI refuses the upload because the token is for our
+host, and the build still passes, so check the publish log for
+`Uploaded files to Sentry`.
 
 **Config / env.** `app/utils/config/env.server.ts` validates `SENTRY_DSN` /
 `SENTRY_ENV` and derives `isSentryEnabled` / `sentryUiUrl`; the root loader
@@ -186,10 +195,18 @@ issues. This is unrelated to how the app _reports_ errors.
 
 Worth knowing when working in this area:
 
-- **User identity is sent on purpose.** `sendDefaultPii: true` on both inits and
-  `setSentryUser` send id/email/name so staff can see _who_ hit an error. The
-  scrubber strips credentials/tokens, **not** identity. Revisit this stance if
-  the portal ever handles third-party end-user PII.
+- **What Sentry receives.** Both inits use Sentry 11's `dataCollection`
+  defaults except `httpBodies: []`, so no HTTP request or response body is
+  ever attached. Headers, cookies and query params are collected, with values
+  Sentry recognises as secrets filtered out. `setSentryUser` sends
+  id/email/name on purpose so staff can see _who_ hit an error. The shared
+  scrubber then redacts secret/token-shaped keys and `Bearer`/JWT strings in
+  `request`, `extra` and `contexts`; it strips credentials, **not** identity.
+  Revisit this if the portal ever handles third-party end-user PII.
+- **The scrubber only sees error events.** `beforeSend` does not run on spans
+  or transactions. That is why Sentry server tracing is off (OTel owns it). The
+  browser still sends React-Router transactions at the client sample rate, and
+  those are not scrubbed.
 - **Session Replay records the DOM** (`replaysSessionSampleRate: 0.1`,
   on-error 1.0). Sentry's default input masking applies, but sensitive data
   rendered as plain text can still be captured — mask deliberately when adding

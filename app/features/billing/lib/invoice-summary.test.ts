@@ -142,4 +142,27 @@ describe('getNextInvoice', () => {
     expect(next.issuedAt.toISOString()).toBe('2026-12-01T00:00:00.000Z');
     expect(next.dueAt).toBeUndefined();
   });
+
+  const onTerms = {
+    spec: {
+      currencyCode: 'USD',
+      paymentTerms: { invoiceFrequency: 'Monthly' as const, invoiceDayOfMonth: 1, netDays: 30 },
+    },
+  };
+
+  it("is a contract's first invoice, on the day it starts, before it starts", () => {
+    const startsAt = new Date('2026-11-20T00:00:00Z');
+    const next = getNextInvoice(onTerms, NOW, { startsAt, started: false });
+    expect(next.issuedAt.toISOString()).toBe('2026-11-20T00:00:00.000Z');
+    expect(next.dueAt?.toISOString()).toBe('2026-12-20T00:00:00.000Z');
+    expect(next.contractStart).toBe(true);
+  });
+
+  it("follows a started contract's billing day, not the payment terms'", () => {
+    const startsAt = new Date('2026-11-10T00:00:00Z');
+    const next = getNextInvoice(onTerms, NOW, { startsAt, started: true });
+    expect(next.issuedAt.toISOString()).toBe('2026-12-10T00:00:00.000Z');
+    expect(next.frequency).toBe('Monthly');
+    expect(next.contractStart).toBeUndefined();
+  });
 });
