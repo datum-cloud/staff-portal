@@ -173,8 +173,6 @@ export function getBillingMode(account: ComMiloapisBillingV1Alpha1BillingAccount
   }
 }
 
-const positiveDecimal = /^(0|[1-9]\d*)(\.\d+)?$/;
-
 // Optional fields end in .optional(): datum-ui's Form.Field marks a field
 // required unless its outermost schema type is optional, nullable or default.
 
@@ -200,11 +198,6 @@ export const paymentTermsFormSchema = z
       .int('Net days must be a whole number')
       .min(1, 'Net days must be at least 1')
       .max(MAX_NET_DAYS, `Net days must be ${MAX_NET_DAYS} or fewer`),
-    creditLimit: z
-      .string()
-      .trim()
-      .regex(positiveDecimal, 'Enter an amount such as 10000 or 2500.50')
-      .refine((value) => Number(value) > 0, 'Credit limit must be greater than 0'),
     accountsPayableEmail: z
       .string()
       .trim()
@@ -231,7 +224,6 @@ export type PaymentTermsFormValues = z.infer<typeof paymentTermsFormSchema>;
 
 export const emptyPaymentTermsForm: PaymentTermsFormValues = {
   netDays: DEFAULT_NET_DAYS,
-  creditLimit: '',
   accountsPayableEmail: '',
   purchaseOrderNumber: '',
   agreementReference: '',
@@ -247,7 +239,6 @@ export function paymentTermsFormFromArrangement(
   const spec = arrangement.spec;
   return {
     netDays: spec?.invoice?.netDays ?? DEFAULT_NET_DAYS,
-    creditLimit: spec?.invoice?.creditLimit ?? '',
     accountsPayableEmail: spec?.invoice?.accountsPayableEmail ?? '',
     purchaseOrderNumber: spec?.invoice?.purchaseOrderNumber ?? '',
     agreementReference: spec?.invoice?.agreementReference ?? '',
@@ -275,7 +266,6 @@ export function buildArrangementSpec(
     ...(options.applicationName ? { applicationRef: { name: options.applicationName } } : {}),
     invoice: {
       netDays: values.netDays,
-      creditLimit: values.creditLimit.trim(),
       accountsPayableEmail: textOrUndefined(values.accountsPayableEmail),
       purchaseOrderNumber: textOrUndefined(values.purchaseOrderNumber),
       agreementReference: textOrUndefined(values.agreementReference),
@@ -309,7 +299,6 @@ export function buildArrangementPatch(
     spec: {
       invoice: {
         netDays: values.netDays,
-        creditLimit: values.creditLimit.trim(),
         accountsPayableEmail: textOrUndefined(values.accountsPayableEmail) ?? null,
         purchaseOrderNumber: textOrUndefined(values.purchaseOrderNumber) ?? null,
         agreementReference: textOrUndefined(values.agreementReference) ?? null,

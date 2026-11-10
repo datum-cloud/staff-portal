@@ -353,11 +353,12 @@ export type ComMiloapisBillingV1Alpha1BillingAccount = {
          */
         agreementReference?: string;
         /**
-         * CreditLimit is the maximum spend per billing cycle, as a decimal
-         * string in the billing account's currency (e.g. "10000"). Staff are
-         * alerted as the account nears it; it is not a hard cap.
+         * CreditLimit is the most the account should spend per billing cycle,
+         * as a decimal string in the billing account's currency (e.g. "10000").
+         * It is not a hard cap. Optional: nothing enforces it yet, so staff
+         * only set one when finance wants it recorded.
          */
-        creditLimit: string;
+        creditLimit?: string;
         /**
          * NetDays is the number of days after the invoice date that payment
          * is due.
@@ -610,11 +611,12 @@ export type ComMiloapisBillingV1Alpha1BillingArrangement = {
        */
       agreementReference?: string;
       /**
-       * CreditLimit is the maximum spend per billing cycle, as a decimal
-       * string in the billing account's currency (e.g. "10000"). Staff are
-       * alerted as the account nears it; it is not a hard cap.
+       * CreditLimit is the most the account should spend per billing cycle,
+       * as a decimal string in the billing account's currency (e.g. "10000").
+       * It is not a hard cap. Optional: nothing enforces it yet, so staff
+       * only set one when finance wants it recorded.
        */
-      creditLimit: string;
+      creditLimit?: string;
       /**
        * NetDays is the number of days after the invoice date that payment
        * is due.

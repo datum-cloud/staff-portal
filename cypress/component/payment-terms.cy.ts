@@ -128,19 +128,10 @@ describe('getBillingStatus', () => {
 });
 
 describe('paymentTermsFormSchema', () => {
-  const valid = { ...emptyPaymentTermsForm, creditLimit: '10000', reason: 'Signed MSA' };
+  const valid = { ...emptyPaymentTermsForm, reason: 'Signed MSA' };
 
-  it('accepts the defaults with a credit limit and reason', () => {
+  it('accepts the defaults with a reason', () => {
     expect(paymentTermsFormSchema.safeParse(valid).success).to.equal(true);
-  });
-
-  it('rejects a zero or malformed credit limit', () => {
-    expect(paymentTermsFormSchema.safeParse({ ...valid, creditLimit: '0' }).success).to.equal(
-      false
-    );
-    expect(paymentTermsFormSchema.safeParse({ ...valid, creditLimit: '1,000' }).success).to.equal(
-      false
-    );
   });
 
   it('keeps net days between 1 and 90', () => {
@@ -177,7 +168,6 @@ describe('buildArrangementSpec', () => {
     const spec = buildArrangementSpec(
       {
         ...emptyPaymentTermsForm,
-        creditLimit: ' 10000 ',
         purchaseOrderNumber: '  ',
         endsAt: day(30),
         reason: ' Signed MSA ',
@@ -189,7 +179,6 @@ describe('buildArrangementSpec', () => {
       type: 'Invoice',
       invoice: {
         netDays: 30,
-        creditLimit: '10000',
         accountsPayableEmail: undefined,
         purchaseOrderNumber: undefined,
         agreementReference: undefined,
@@ -214,6 +203,11 @@ describe('buildArrangementPatch', () => {
     expect(patch.spec).not.to.have.property('startsAt');
     expect(patch.spec).not.to.have.property('billingAccountRef');
     expect(patch.spec).not.to.have.property('type');
+  });
+
+  it("leaves the terms' credit limit as it is", () => {
+    const patch = buildArrangementPatch(values, { canChangeStart: false });
+    expect(patch.spec.invoice).not.to.have.property('creditLimit');
   });
 
   it('only moves the start while terms are scheduled', () => {
