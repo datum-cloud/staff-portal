@@ -1,4 +1,5 @@
 import {
+  billingCycleTerms,
   CONTRACT_STARTED_ANNOTATION,
   OFFER_CHANGE_AT_ANNOTATION,
   contractOfferPlan,
@@ -100,6 +101,23 @@ describe('discounts', () => {
       discountedFeeTotal({ chargeType: 'Recurring', amount: 300, quantity: 4, discount: 25 })
     ).toBe(900);
     expect(discountedFeeTotal({ chargeType: 'OneTime', amount: 99.99, discount: 33 })).toBe(66.99);
+  });
+});
+
+describe('billingCycleTerms', () => {
+  const terms = { invoiceDayOfMonth: 1, invoiceFrequency: 'Quarterly' as const };
+  const startsAt = new Date('2026-11-10T00:00:00Z');
+
+  it("uses a started contract's start day, monthly", () => {
+    expect(billingCycleTerms(terms, { startsAt, started: true })).toEqual({
+      invoiceDayOfMonth: 10,
+      invoiceFrequency: 'Monthly',
+    });
+  });
+
+  it("keeps the account's terms before the contract starts, or without one", () => {
+    expect(billingCycleTerms(terms, { startsAt, started: false })).toBe(terms);
+    expect(billingCycleTerms(terms, null)).toBe(terms);
   });
 });
 
