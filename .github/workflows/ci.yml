@@ -92,6 +92,17 @@ jobs:
             **/node_modules
           key: ${{ runner.os }}-deps-${{ hashFiles('**/package-lock.json', '**/package.json', '.npmrc') }}
       - run: npm run build
+      # The image runs the server bundle from a dev-pruned node_modules.
+      # Rebuild that tree in a separate directory (the deps cache above
+      # must keep its dev packages) and check every bundle import resolves.
+      - name: Check server bundle imports
+        run: |
+          prod_dir="$RUNNER_TEMP/prod-install"
+          mkdir -p "$prod_dir"
+          cp package.json package-lock.json .npmrc "$prod_dir/"
+          npm ci --omit=dev --ignore-scripts --no-audit --no-fund --prefix "$prod_dir"
+          cp -R build "$prod_dir/build"
+          node scripts/check-server-imports.mjs "$prod_dir/build/server"
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: build
