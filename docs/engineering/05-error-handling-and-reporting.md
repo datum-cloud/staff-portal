@@ -152,7 +152,12 @@ VERSION.includes('main')` (`app/utils/config/sentry.config.ts`,
 `release` (`VERSION`) must match the upload release for events to resolve to
 source. In the image build the token reaches only the Dockerfile's build step,
 as the BuildKit secret `sentry_auth_token`. Never pass it as a build arg:
-build args are recorded in the image's public provenance.
+build args are recorded in the image's public provenance. The plugin's
+`sentryUrl` comes from `SENTRY_URL` and defaults to our self-hosted
+`https://sentry.prod.env.datum.net`. Without it the plugin targets
+`https://sentry.io`, the CLI refuses the upload because the token is for our
+host, and the build still passes, so check the publish log for
+`Uploaded files to Sentry`.
 
 **Config / env.** `app/utils/config/env.server.ts` validates `SENTRY_DSN` /
 `SENTRY_ENV` and derives `isSentryEnabled` / `sentryUiUrl`; the root loader

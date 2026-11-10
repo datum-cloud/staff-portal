@@ -70,6 +70,7 @@ export default defineConfig((config) => {
           lingui(),
           sentryReactRouter(
             {
+              sentryUrl: sentryConfig.url,
               org: sentryConfig.org,
               project: sentryConfig.project,
               authToken: sentryConfig.authToken,
