@@ -2,6 +2,7 @@ import {
   listAllProjects,
   listProjects,
   projectComputeQuery,
+  projectNetworkQuery,
   projectDnsListQuery,
   projectDnsRecordListQuery,
   projectDomainListQuery,
@@ -46,6 +47,7 @@ export const projectQueryKeys = {
       ['projects', projectName, 'dns', dnsName, 'records', namespace] as const,
   },
   compute: (projectName: string) => ['projects', projectName, 'compute'] as const,
+  network: (projectName: string) => ['projects', projectName, 'network'] as const,
   suspensions: (projectName: string) => ['projects', projectName, 'suspensions'] as const,
   suspensionsAll: () => ['projects', 'suspensions', 'all'] as const,
 };
@@ -157,15 +159,20 @@ export const useProjectDnsListQuery = (projectName: string, params?: ListQueryPa
   });
 };
 
-/** Most projects whose compute is fetched at once across an organization (#765). */
-export const MAX_CONCURRENT_PROJECT_COMPUTE_FETCHES = 12;
+/** Most per-project fetches run at once across an organization (#765, #766). */
+export const MAX_CONCURRENT_PROJECT_FETCHES = 12;
 
-// One limit shared by every caller, so two overviews open at once still stay within it.
-const projectComputeLimit = createConcurrencyLimit(MAX_CONCURRENT_PROJECT_COMPUTE_FETCHES);
+// One limit shared by every org-wide fan-out (compute and network), so the
+// overview's two fan-outs, or two overviews open at once, stay within it.
+const projectFanOutLimit = createConcurrencyLimit(MAX_CONCURRENT_PROJECT_FETCHES);
+
+// Once, and never on a 4xx: a project the staff user can't read stays an error.
+const retryOnceUnlessClientError = (failureCount: number, error: unknown) =>
+  failureCount < 1 && shouldRetryQuery(failureCount, error);
 
 /**
  * Each project's Workloads and Instances, one query per project. Every project
- * is fetched, at most MAX_CONCURRENT_PROJECT_COMPUTE_FETCHES at a time, and each
+ * is fetched, at most MAX_CONCURRENT_PROJECT_FETCHES at a time, and each
  * loads and fails on its own so one unreadable project doesn't hide the rest.
  */
 export function useProjectComputeQueries(
@@ -176,12 +183,32 @@ export function useProjectComputeQueries(
     queries: projectNames.map((projectName) => ({
       queryKey: projectQueryKeys.compute(projectName),
       queryFn: ({ signal }: { signal: AbortSignal }) =>
-        projectComputeLimit(() => projectComputeQuery(projectName, signal)),
+        projectFanOutLimit(() => projectComputeQuery(projectName, signal)),
       enabled: (options.enabled ?? true) && Boolean(projectName),
       staleTime: 60 * 1000,
-      // Once, and never on a 4xx: a project the staff user can't read stays an error.
-      retry: (failureCount: number, error: unknown) =>
-        failureCount < 1 && shouldRetryQuery(failureCount, error),
+      retry: retryOnceUnlessClientError,
+      refetchOnWindowFocus: false,
+    })),
+  });
+}
+
+/**
+ * Each project's load balancers, domains, DNS zones and quota buckets, one
+ * query per project, sharing the compute fan-out's limit. Each project loads
+ * and fails on its own.
+ */
+export function useProjectNetworkQueries(
+  projectNames: readonly string[],
+  options: { enabled?: boolean } = {}
+) {
+  return useQueries({
+    queries: projectNames.map((projectName) => ({
+      queryKey: projectQueryKeys.network(projectName),
+      queryFn: ({ signal }: { signal: AbortSignal }) =>
+        projectFanOutLimit(() => projectNetworkQuery(projectName, signal)),
+      enabled: (options.enabled ?? true) && Boolean(projectName),
+      staleTime: 60 * 1000,
+      retry: retryOnceUnlessClientError,
       refetchOnWindowFocus: false,
     })),
   });
