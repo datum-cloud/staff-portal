@@ -15,6 +15,8 @@ export interface ProjectCompute extends LoadState {
   compute?: ProjectComputeStatus;
   /** Why the project couldn't be read, when `isError`. */
   error?: unknown;
+  /** When this project's data last arrived (ms), 0 if never. */
+  updatedAt: number;
 }
 
 export interface OrgComputeStatus extends LoadState {
@@ -65,6 +67,7 @@ export function useOrgComputeStatus(orgName: string): OrgComputeStatus {
             {
               isLoading: result?.isLoading ?? true,
               isError: result?.isError ?? false,
+              updatedAt: result?.dataUpdatedAt ?? 0,
               ...(result?.data &&
                 pluginSlug && {
                   compute: toProjectComputeStatus(result.data, projectName, pluginSlug),
@@ -78,10 +81,12 @@ export function useOrgComputeStatus(orgName: string): OrgComputeStatus {
     [projectNames, pluginSlug, resultsKey]
   );
 
-  return {
-    enabled,
-    projects,
-    isLoading: pluginsQuery.isLoading || (enabled && projectsQuery.isLoading),
-    isError: pluginsQuery.isError || projectsQuery.isError,
-  };
+  const isLoading = pluginsQuery.isLoading || (enabled && projectsQuery.isLoading);
+  const isError = pluginsQuery.isError || projectsQuery.isError;
+
+  // Stable between renders, so callers can depend on the whole result.
+  return useMemo(
+    () => ({ enabled, projects, isLoading, isError }),
+    [enabled, projects, isLoading, isError]
+  );
 }

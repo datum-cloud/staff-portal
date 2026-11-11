@@ -1,5 +1,6 @@
 import type { InstanceStatus, WorkloadStatus } from './compute-status';
 import {
+  collectOrgIssues,
   countByArea,
   dnsZoneIssues,
   domainIssues,
@@ -378,5 +379,56 @@ describe('sortIssues and countByArea', () => {
     expect(counts.instances).toEqual({ total: 19, issues: 1, low: 1 });
     expect(counts.domains).toEqual({ total: 6, issues: 1, low: 0 });
     expect(counts.dnsZones).toEqual({ total: 4, issues: 0, low: 0 });
+  });
+});
+
+describe('collectOrgIssues', () => {
+  const zone = {
+    metadata: { name: 'z', namespace: 'default', creationTimestamp: ago(DAY) },
+    status: { conditions: [{ type: 'Programmed', status: 'False', reason: 'DNSZoneInUse' }] },
+  } as unknown as ComMiloapisNetworkingDnsV1Alpha1DnsZone;
+  const hotBucket = {
+    metadata: { name: 'org-cpus' },
+    spec: { resourceType: 'compute.datumapis.com/cpus' },
+    status: { allocated: 10, limit: 10 },
+  } as unknown as ComMiloapisQuotaV1Alpha1AllowanceBucket;
+  const failing = instance({ reason: 'InstanceCrashing', since: ago(MIN) });
+
+  it('combines every source, sorted, with totals per area', () => {
+    const { issues, totals } = collectOrgIssues(
+      {
+        orgName: 'org-1',
+        projects: [
+          {
+            name: 'a',
+            compute: {
+              workloads: [
+                workload({ conditions: [{ type: 'Available', status: 'True', reason: 'Ok' }] }),
+              ],
+              instances: [failing],
+              hasMore: false,
+            },
+            network: { proxies: [], domains: [], dnsZones: [zone], quotaBuckets: [] },
+          },
+          // Still loading: contributes nothing yet.
+          { name: 'b' },
+        ],
+        orgQuotaBuckets: [hotBucket],
+      },
+      NOW
+    );
+    expect(issues.map((i) => [i.area, i.project ?? 'org'])).toEqual([
+      ['instances', 'a'],
+      ['dnsZones', 'a'],
+      ['quota', 'org'],
+    ]);
+    expect(totals).toEqual({
+      workloads: 1,
+      instances: 1,
+      loadBalancers: 0,
+      domains: 0,
+      dnsZones: 1,
+      quota: 1,
+    });
   });
 });

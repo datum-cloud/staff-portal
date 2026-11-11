@@ -3,6 +3,7 @@ import {
   toConditions,
   type ComputeCondition,
   type InstanceStatus,
+  type ProjectComputeStatus,
   type WorkloadStatus,
 } from './compute-status';
 import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
@@ -421,4 +422,66 @@ export function countByArea(
       ];
     })
   ) as Record<IssueArea, AreaCount>;
+}
+
+// ── Collect ───────────────────────────────
+
+/** One project's load balancers, domains, DNS zones and quota buckets. */
+export interface ProjectNetworkStatus {
+  proxies: readonly ComDatumapisNetworkingV1AlphaHttpProxy[];
+  domains: readonly ComDatumapisNetworkingV1AlphaDomain[];
+  dnsZones: readonly ComMiloapisNetworkingDnsV1Alpha1DnsZone[];
+  quotaBuckets: readonly ComMiloapisQuotaV1Alpha1AllowanceBucket[];
+}
+
+export interface OrgIssueSources {
+  orgName: string;
+  /** Each project with whatever has loaded for it; missing parts are skipped. */
+  projects: readonly {
+    name: string;
+    compute?: ProjectComputeStatus;
+    network?: ProjectNetworkStatus;
+  }[];
+  orgQuotaBuckets?: readonly ComMiloapisQuotaV1Alpha1AllowanceBucket[];
+}
+
+/** Every issue across the organization, sorted, with how many resources each area checked. */
+export function collectOrgIssues(
+  { orgName, projects, orgQuotaBuckets = [] }: OrgIssueSources,
+  now: number
+): { issues: OrgIssue[]; totals: Record<IssueArea, number> } {
+  const issues = [
+    ...projects.flatMap(({ name, compute, network }) => [
+      ...(compute
+        ? [
+            ...workloadIssues(name, compute.workloads, now),
+            ...instanceIssues(name, compute.instances, now),
+          ]
+        : []),
+      ...(network
+        ? [
+            ...httpProxyIssues(name, network.proxies, now),
+            ...domainIssues(name, network.domains, now),
+            ...dnsZoneIssues(name, network.dnsZones, now),
+            ...quotaIssues({ orgName, project: name }, network.quotaBuckets),
+          ]
+        : []),
+    ]),
+    ...quotaIssues({ orgName }, orgQuotaBuckets),
+  ];
+
+  const sum = (pick: (p: OrgIssueSources['projects'][number]) => number) =>
+    projects.reduce((total, project) => total + pick(project), 0);
+
+  return {
+    issues: sortIssues(issues),
+    totals: {
+      workloads: sum((p) => p.compute?.workloads.length ?? 0),
+      instances: sum((p) => p.compute?.instances.length ?? 0),
+      loadBalancers: sum((p) => p.network?.proxies.length ?? 0),
+      domains: sum((p) => p.network?.domains.length ?? 0),
+      dnsZones: sum((p) => p.network?.dnsZones.length ?? 0),
+      quota: sum((p) => p.network?.quotaBuckets.length ?? 0) + orgQuotaBuckets.length,
+    },
+  };
 }

@@ -16,3 +16,5 @@ export type {
   ProjectComputeStatus,
   WorkloadStatus,
 } from './lib/compute-status';
+export { useOrgIssues, type AreaState, type OrgIssues } from './hooks/use-org-issues';
+export type { AreaCount, IssueArea, IssueSeverity, OrgIssue } from './lib/org-issues';
