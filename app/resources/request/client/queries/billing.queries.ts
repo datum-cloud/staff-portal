@@ -23,12 +23,13 @@ import {
   previewNextInvoice,
   publishOffer,
   servicePricingListQuery,
-  setBillingEntitlementContract,
+  setUpContract,
   switchBillingEntitlementOffer,
   updateDraftOffer,
   updateOfferDisplayName,
   type CreateContractOfferInput,
   type CreateOfferInput,
+  type SetUpContractInput,
 } from '../apis/billing.api';
 import type {
   ArrangementMergePatch,
@@ -289,24 +290,14 @@ const invalidateContractQueries = async (
 
 /**
  * Puts the account on a contract: creates its fees and Offer, then points the
- * entitlement at the Offer with the contract's start date (midnight UTC).
+ * entitlement at the Offer with the contract's start date (midnight UTC). An
+ * account without an entitlement gets one, carrying the contract.
  */
 export const useSetUpContractMutation = (orgName: string, accountName: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({
-      entitlementName,
-      startsAt,
-      offer,
-    }: {
-      entitlementName: string;
-      startsAt: string;
-      offer: CreateContractOfferInput;
-    }) => {
-      return createContractOffer(offer, (offerName) =>
-        setBillingEntitlementContract(orgName, entitlementName, offerName, startsAt)
-      );
-    },
+    mutationFn: (input: Omit<SetUpContractInput, 'orgName' | 'accountName'>) =>
+      setUpContract({ ...input, orgName, accountName }),
     onSettled: async () => {
       await invalidateContractQueries(queryClient, orgName, accountName);
     },

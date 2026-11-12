@@ -159,15 +159,6 @@ export function ContractEditor({
             <Trans>Try again</Trans>
           </Button>
         </SectionCard>
-      ) : !entitlement ? (
-        <SectionCard contentClassName="py-6">
-          <Text>
-            <Trans>
-              This account has no entitlement yet, so it can&apos;t have a contract. Assign it an
-              offer first.
-            </Trans>
-          </Text>
-        </SectionCard>
       ) : (
         <ContractEditorForm
           orgName={orgName}
@@ -201,7 +192,8 @@ function ContractEditorForm({
 }: {
   orgName: string;
   account: ComMiloapisBillingV1Alpha1BillingAccount;
-  entitlement: ComMiloapisBillingV1Alpha1BillingEntitlement;
+  /** None when the account has no entitlement: setting up a contract creates it. */
+  entitlement: ComMiloapisBillingV1Alpha1BillingEntitlement | null;
   contract: ContractState | null;
   currentOffer: ComMiloapisBillingV1Alpha1Offer | null;
   defaultOffer: ComMiloapisBillingV1Alpha1Offer | null;
@@ -211,7 +203,7 @@ function ContractEditorForm({
 }) {
   const navigate = useNavigate();
   const accountName = account.metadata?.name ?? '';
-  const entitlementName = entitlement.metadata?.name ?? '';
+  const entitlementName = entitlement?.metadata?.name;
   const detailUrl = billingAccountRoutes.detail(orgName, accountName);
   const setUp = useSetUpContractMutation(orgName, accountName);
   const changeFees = useChangeContractFeesMutation(orgName, accountName);
@@ -244,6 +236,9 @@ function ContractEditorForm({
     [servicesQuery.data?.items]
   );
 
+  // Without list prices (as before any ServicePricing exists) the contract
+  // bills only its own fees, and there's nothing to tick.
+  const priceListEmpty = usageOptions.length === 0 && feeOptions.length === 0;
   const pickFrom = isSetup ? defaultOffer : currentOffer;
   const usageRows = usageRowsFromOffer(usageOptions, pickFrom);
   const listFeeRows = listFeeRowsFromOffer(feeOptions, pickFrom);
@@ -338,7 +333,8 @@ function ContractEditorForm({
           offer,
         });
         toast.success(t`Contract set up`);
-      } else {
+      } else if (entitlementName) {
+        // A contract is only ever on an entitlement.
         await changeFees.mutateAsync({ entitlementName, offer });
         toast.success(t`Contract fees changed`);
       }
@@ -363,7 +359,7 @@ function ContractEditorForm({
               title={<Trans>Price list</Trans>}
               description={t`What the contract bills from the platform's prices. Leave the customer price empty to bill the list price.`}>
               <div className="flex flex-col gap-3">
-                {defaultOfferProblem ? (
+                {defaultOfferProblem && !priceListEmpty ? (
                   <Text size="sm" textColor="muted">
                     {defaultOfferProblem === 'none' ? (
                       <Trans>

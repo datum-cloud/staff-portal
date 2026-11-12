@@ -67,8 +67,10 @@ export function useBillingAccountHeaderActions({
       : {
           key: 'contract',
           label: <Trans>Set up contract</Trans>,
-          // The contract goes on the account's entitlement.
-          disabled: !entitlementQuery.data,
+          // The contract goes on the account's entitlement, or creates one
+          // for an account without (the query's null), so it waits to know
+          // which: undefined while loading or if loading failed.
+          disabled: entitlementQuery.data === undefined,
           onSelect: () => navigate(billingAccountRoutes.contract(orgName, accountName)),
         },
   ];

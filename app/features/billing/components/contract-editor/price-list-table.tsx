@@ -66,7 +66,9 @@ export function PriceListTable({
   if (groups.length === 0) {
     return (
       <Text size="sm" textColor="muted">
-        <Trans>The platform&apos;s price list is empty.</Trans>
+        <Trans>
+          The platform has no list prices yet, so the contract bills only the fees above.
+        </Trans>
       </Text>
     );
   }

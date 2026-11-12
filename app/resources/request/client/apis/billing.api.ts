@@ -22,6 +22,7 @@ import { walkCursorPages } from '@/utils/helpers';
 import {
   createBillingMiloapisComV1Alpha1NamespacedBillingArrangement,
   createBillingMiloapisComV1Alpha1NamespacedBillingArrangementDecline,
+  createBillingMiloapisComV1Alpha1NamespacedBillingEntitlement,
   createBillingMiloapisComV1Alpha1NamespacedInvoiceRequest,
   createBillingMiloapisComV1Alpha1NamespacedServicePricing,
   createBillingMiloapisComV1Alpha1Offer,
@@ -51,6 +52,7 @@ import {
   type ComMiloapisBillingV1Alpha1Offer,
   type ComMiloapisBillingV1Alpha1ServicePricing,
 } from '@openapi/billing.miloapis.com/v1alpha1';
+import { isAxiosError } from 'axios';
 
 const FIELD_MANAGER = 'datum-staff-portal';
 
@@ -659,6 +661,88 @@ export const setBillingEntitlementContract = async (
   });
   return response.data?.data;
 };
+
+/** The entitlement made for an account that has none when it's put on a contract. */
+export const contractEntitlementName = (accountName: string) => `${accountName}-contract`;
+
+/**
+ * Puts an account that has no entitlement on a contract: creates its
+ * entitlement for the Offer, starting at midnight UTC on startsAt.
+ *
+ * Billing allows one entitlement per account, so if another appeared since
+ * the page loaded (staff on another tab, or the default offer being seeded),
+ * creating this one fails. Then the contract goes on that one instead, as
+ * long as it isn't on a contract already.
+ */
+export const createBillingEntitlementWithContract = async (
+  orgName: string,
+  accountName: string,
+  offerName: string,
+  startsAt: string
+): Promise<BillingEntitlement | undefined> => {
+  const namespace = buildOrganizationNamespace(orgName);
+  try {
+    const response = await createBillingMiloapisComV1Alpha1NamespacedBillingEntitlement({
+      baseURL: getClientOrgControlPlaneBaseURL(orgName),
+      path: { namespace },
+      query: { fieldManager: FIELD_MANAGER },
+      body: {
+        apiVersion: 'billing.miloapis.com/v1alpha1',
+        kind: 'BillingEntitlement',
+        metadata: { name: contractEntitlementName(accountName), namespace },
+        spec: {
+          billingAccountRef: { name: accountName },
+          offerRef: { name: offerName },
+          contract: { startsAt },
+        },
+      },
+    });
+    return response.data?.data;
+  } catch (err) {
+    // 409 when the name is taken; 422 when billing's webhook finds another
+    // entitlement for the account. Anything else, or a 422 for another
+    // reason, leaves the account without one, so the error stands.
+    const status = isAxiosError(err) ? err.response?.status : undefined;
+    if (status !== 409 && status !== 422) throw err;
+    const existing = await billingEntitlementForAccountQuery(orgName, accountName);
+    const existingName = existing?.metadata?.name;
+    if (!existingName) throw err;
+    if (existing.spec?.contract) {
+      throw new Error(
+        `The account was put on a contract meanwhile, by entitlement ${existingName}. Reload to see it.`,
+        { cause: err }
+      );
+    }
+    return setBillingEntitlementContract(orgName, existingName, offerName, startsAt);
+  }
+};
+
+export type SetUpContractInput = {
+  orgName: string;
+  accountName: string;
+  /** The account's entitlement. Without one, the contract creates it. */
+  entitlementName?: string;
+  /** Midnight UTC, RFC 3339. */
+  startsAt: string;
+  offer: CreateContractOfferInput;
+};
+
+/**
+ * Puts an account on a contract: creates its fees and Offer, then sets the
+ * contract on the account's entitlement, or creates the entitlement with it.
+ */
+export const setUpContract = ({
+  orgName,
+  accountName,
+  entitlementName,
+  startsAt,
+  offer,
+}: SetUpContractInput) =>
+  createContractOffer(offer, (offerName) =>
+    entitlementName
+      ? setBillingEntitlementContract(orgName, entitlementName, offerName, startsAt)
+      : createBillingEntitlementWithContract(orgName, accountName, offerName, startsAt)
+  );
 
 // ─── InvoiceRequest (org-namespaced, staff-only) ─────────────────────────────
 
