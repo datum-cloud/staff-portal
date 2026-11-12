@@ -3,6 +3,7 @@ import {
   DEFAULT_FEE_BILLING_TIMING,
   MAX_CONTRACT_FEES,
 } from '../../lib/contract';
+import { periodUnitText } from '../contract-fee-text';
 import { NO_SERVICE, type ContractFeeRow, type ContractFormValues } from './schema';
 import { WholeNumberInput } from './whole-number-input';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -97,7 +98,7 @@ export function ContractFeeList({
                     onClick={() => remove(index)}
                   />
                 </div>
-                <div className="grid grid-cols-[8rem_8rem_9rem_7rem] items-start gap-2">
+                <div className="grid grid-cols-[8rem_8rem_9rem_9rem] items-start gap-2">
                   <Form.Field name={`fees.${index}.chargeType`} label={t`Charged`} required>
                     <Form.Select>
                       {allowOneTime || fees[index]?.chargeType === 'OneTime' ? (
@@ -143,7 +144,12 @@ export function ContractFeeList({
                         name={`fees.${index}.periods`}
                         label={t`Renewals`}
                         tooltip={t`How many periods the fee is charged for, counted from the contract's start: 36 monthly is three years. Leave it blank for no end.`}>
-                        <WholeNumberInput placeholder={t`No end`} />
+                        <div className="flex items-center gap-1.5">
+                          <WholeNumberInput placeholder={t`No end`} className="w-16" />
+                          <Text size="xs" textColor="muted">
+                            {periodUnitText(fees[index]?.interval)}
+                          </Text>
+                        </div>
                       </Form.Field>
                     </>
                   ) : null}

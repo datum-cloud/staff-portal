@@ -71,3 +71,7 @@ export const periodsText = (periods: number, interval: FeeInterval | undefined):
       return periods === 1 ? t`for 1 month` : t`for ${periods} months`;
   }
 };
+
+/** What a fee's renewals count, shown after the number: "months", "quarters" or "years". */
+export const periodUnitText = (interval: FeeInterval | undefined): string =>
+  interval === 'quarterly' ? t`quarters` : interval === 'annual' ? t`years` : t`months`;

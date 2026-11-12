@@ -2,7 +2,7 @@ import { CONTRACT_CURRENCY } from '../../lib/contract';
 import type { ListFeeOption } from '../../lib/contract-list-fees';
 import { rateSlots, type UsageMeterOption } from '../../lib/contract-usage';
 import { formatMoney, indexServicesByRef } from '../../utils';
-import { feeChargeText, rateSlotText } from '../contract-fee-text';
+import { feeChargeText, periodUnitText, rateSlotText } from '../contract-fee-text';
 import type { ContractFormValues, ListFeeRowValues, UsageRowValues } from './schema';
 import { WholeNumberInput } from './whole-number-input';
 import { EMBEDDED_TABLE_HEADER_CELL_CLASS, TABLE_CARD_FRAME_CLASS } from '@/features/milo';
@@ -145,7 +145,7 @@ export function PriceListTable({
               <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-36')}>
                 <Trans>Billed</Trans>
               </TableHead>
-              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-24')}>
+              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-32')}>
                 <Trans>Renewals</Trans>
               </TableHead>
               <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-20')}>
@@ -359,11 +359,17 @@ function ListFeeRows({
           // How many periods the contract charges it for: its term, not
           // the list fee's. Empty for no end.
           <Form.Field name={`listFees.${index}.periods`}>
-            <WholeNumberInput
-              placeholder={t`No end`}
-              aria-label={t`Renewals`}
-              disabled={!selected}
-            />
+            <div className="flex items-center gap-1.5">
+              <WholeNumberInput
+                placeholder={t`No end`}
+                aria-label={t`Renewals`}
+                disabled={!selected}
+                className="w-16"
+              />
+              <Text size="xs" textColor="muted">
+                {periodUnitText(option.interval)}
+              </Text>
+            </div>
           </Form.Field>
         ) : (
           <Text size="sm" textColor="muted">
