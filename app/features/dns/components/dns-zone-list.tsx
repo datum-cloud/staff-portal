@@ -1,11 +1,11 @@
+import { getDnsZoneReadiness } from '../lib/dns-zone-status';
 import { DnsHostChips } from './dns-host-chips';
-import { BadgeProgrammingError } from '@/components/badge';
+import { DnsZoneStatusBadge } from './dns-zone-status';
 import { DateTime } from '@/components/date';
 import { SearchResourceTable, type ControlledSearch } from '@/components/search-resource-table';
 import { ListColumnHeader } from '@/features/milo';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { projectRoutes } from '@/utils/config/routes.config';
-import { transformControlPlaneStatus } from '@/utils/helpers';
 import { createColumnHelper } from '@/utils/table';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { t } from '@lingui/core/macro';
@@ -70,27 +70,20 @@ export function DnsZoneList({
       header: ({ column }) => <ListColumnHeader column={column} title={t`Zone Name`} />,
       cell: ({ getValue, row }) => {
         const to = linkBuilder(row.original);
-        const status = transformControlPlaneStatus(row.original.dnsZone.status, {
-          includeConditionDetails: true,
-        });
-        return (
-          <div className="flex items-center gap-2">
-            {to ? (
-              <Link to={to} className="font-medium">
-                {getValue()}
-              </Link>
-            ) : (
-              <span className="font-medium">{getValue()}</span>
-            )}
-            <BadgeProgrammingError
-              isProgrammed={status.isProgrammed}
-              programmedReason={status.programmedReason}
-              statusMessage={status.message}
-              errorReasons={null}
-            />
-          </div>
+        return to ? (
+          <Link to={to} className="font-medium">
+            {getValue()}
+          </Link>
+        ) : (
+          <span className="font-medium">{getValue()}</span>
         );
       },
+    }),
+    // Sorts by readiness (failed, pending, ready); rows without a status sort last.
+    columnHelper.accessor((row) => getDnsZoneReadiness(row.dnsZone.status)?.readiness ?? '~', {
+      id: 'status',
+      header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
+      cell: ({ row }) => <DnsZoneStatusBadge status={row.original.dnsZone.status} />,
     }),
     ...(showProjectColumn
       ? [

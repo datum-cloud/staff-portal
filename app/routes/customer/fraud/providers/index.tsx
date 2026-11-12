@@ -57,7 +57,7 @@ export default function Page() {
       cell: ({ getValue }) => (
         <Link
           to={fraudRoutes.providers.detail(getValue() ?? '')}
-          className="font-medium text-blue-600 hover:underline">
+          className="text-primary font-medium hover:underline">
           {getValue()}
         </Link>
       ),

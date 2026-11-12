@@ -2,17 +2,20 @@
 
 ## UI Layers in This Project
 
-The app uses three main UI layers together:
+The app uses three UI layers together:
 
-1. `@datum-cloud/datum-ui` (package) for product-consistent components
-2. Local shadcn primitives in `app/modules/shadcn/**`
-3. App-local extended UI in `app/modules/datum-ui/**` (`@datum-ui/*` alias)
+1. `@datum-cloud/datum-ui` (package) for primitives and extended UI, imported by subpath (`@datum-cloud/datum-ui/button`, `/form`, `/data-table`, `/code-editor`, `/toast`)
+2. Shared app wrappers in `app/components/**`
+3. Domain UI in `app/features/**`, including the shell and page templates in `app/features/milo`
+
+There is no local shadcn setup and no `@datum-ui/*` alias. `tsconfig.json` defines only `@/*`, `@/tests/*` and `@openapi/*`.
 
 Use the layer that best matches the use-case:
 
-- Product-standard component already exists in package -> use `@datum-cloud/datum-ui/...`
-- Need primitive composition or Radix behavior -> use local shadcn components
-- Need app-specific rich wrappers (form/data-table/editor) -> use `@datum-ui/*`
+- Component already exists in the package -> use `@datum-cloud/datum-ui/...`
+- App-specific wrapper reused across features -> `app/components/**`
+- Page frame, list table or detail layout -> the templates exported from `@/features/milo` (`ListPage`, `DetailPage`, `PlainPage`, `ListTable`)
+- A primitive is missing -> add it to the datum-ui package, not to this repo
 
 ## Component Placement Rules
 
@@ -42,8 +45,8 @@ Put here when:
 ## Styling and Class Strategy
 
 - Tailwind v4 from `app/styles/root.css`
-- `cn()` from `@/modules/shadcn/lib/utils` for class merging
-- CVA-style variants for reusable component variants
+- `cn()` from `@datum-cloud/datum-ui/utils` for class merging
+- `tailwind-variants` (`tv`) for reusable component variants
 - Theme uses `ThemeProvider` and `ThemeScript`
 - Prefer `@datum-cloud/datum-ui/typography` for text styles and headings
 - Prefer `@datum-cloud/datum-ui/grid` (`Row`/`Col`) for responsive layout grids when practical
@@ -58,7 +61,7 @@ Practical guidance:
 
 ## Form Pattern
 
-For non-trivial forms, favor `@datum-ui/form`:
+For non-trivial forms, favor `@datum-cloud/datum-ui/form`:
 
 - central field rendering and validation integration
 - consistent submit and field handling
@@ -79,7 +82,7 @@ Prefer shared table utilities over custom one-off table logic.
 ## Suggested "new component" checklist
 
 1. Decide scope: global component vs feature component.
-2. Pick base layer (`datum-ui` package, local shadcn, or local `@datum-ui` module).
+2. Pick base layer (`@datum-cloud/datum-ui` subpath, shared `app/components` wrapper, or feature component).
 3. Use `cn` and existing variants for class composition.
 4. Keep API/data concerns outside presentational components.
 5. Export from feature/index barrel when reused.

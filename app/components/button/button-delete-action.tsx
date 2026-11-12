@@ -50,6 +50,7 @@ export default function ButtonDeleteAction({
         <Button
           type="danger"
           size="icon"
+          aria-label={tooltip || t`Delete ${itemType}`}
           onClick={() => setDeleteDialogOpen(true)}
           {...buttonProps}>
           <ACTION_ICONS.delete size={16} />
