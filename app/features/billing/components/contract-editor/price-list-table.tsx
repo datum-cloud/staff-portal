@@ -337,7 +337,10 @@ function ListFeeRows({
       <TableCell className="align-middle">
         {option.chargeType === 'Recurring' ? (
           // When the contract invoices it: its term, not the list fee's.
-          <Form.Field name={`listFees.${index}.billingTiming`}>
+          // space-y-0: Form.Field spaces its children, and a Select is followed
+          // by its hidden native select, so its box would carry a bottom margin
+          // and sit higher than the inputs beside it.
+          <Form.Field name={`listFees.${index}.billingTiming`} className="space-y-0">
             <Form.Select disabled={!selected} aria-label={t`Billed`}>
               <Form.SelectItem value="InArrears">
                 <Trans>In arrears</Trans>
@@ -449,7 +452,7 @@ function UsageRows({
               <Form.Checkbox label={option.label} />
             </Form.Field>
             {option.pricings.length > 1 ? (
-              <Form.Field name={`usage.${index}.pricingName`} className="w-56 pl-6">
+              <Form.Field name={`usage.${index}.pricingName`} className="w-56 space-y-0 pl-6">
                 <Form.Select disabled={!selected}>
                   {option.pricings.map((pricing, i) => {
                     const name = pricing.metadata?.name ?? '';
