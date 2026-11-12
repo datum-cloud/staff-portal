@@ -838,43 +838,6 @@ export const contractDraftQuery = async (
 
 const refNames = (offer: Offer) => (offer.spec?.servicePricingRefs ?? []).map((ref) => ref.name);
 
-/**
- * Deletes those of `candidates` that are the account's contract pricings and
- * that none of its Offers refers to any more, such as fees dropped from a
- * draft. List prices and pricings a published contract uses are never
- * deleted. Best effort: one left behind is only clutter.
- */
-const removeUnusedContractPricings = async (
-  orgName: string,
-  accountName: string,
-  candidates: string[]
-) => {
-  if (candidates.length === 0) return;
-  try {
-    const [offers, pricings] = await Promise.all([
-      contractOffersForAccount(orgName, accountName),
-      listBillingMiloapisComV1Alpha1NamespacedServicePricing({
-        path: { namespace: DEFAULT_SERVICE_PRICING_NAMESPACE },
-        query: { labelSelector: contractSelector(orgName, accountName), limit: 500 },
-      }),
-    ]);
-    const used = new Set(
-      offers.flatMap((offer) => [
-        ...refNames(offer),
-        ...(offer.spec?.servicePricings ?? []).map((snapshot) => snapshot.name),
-      ])
-    );
-    const own = new Set(
-      (pricings.data?.data?.items ?? []).map((pricing) => pricing.metadata?.name ?? '')
-    );
-    await removeContractResources({
-      pricings: [...new Set(candidates)].filter((name) => own.has(name) && !used.has(name)),
-    });
-  } catch {
-    // Left for a later save or discard to tidy up.
-  }
-};
-
 export type SaveContractDraftInput = {
   offer: CreateContractOfferInput;
   /** A new contract's start date, if picked: midnight UTC, RFC 3339. */
@@ -883,9 +846,13 @@ export type SaveContractDraftInput = {
 
 /**
  * Saves the account's draft contract: creates the pricings its fees need,
- * then creates the draft Offer, or updates the one the account has. Pricings
- * the draft no longer uses are deleted. Nothing is billed until it's
- * published.
+ * then creates the draft Offer, or updates the one the account has. Nothing
+ * is billed until it's published.
+ *
+ * Pricings the draft no longer uses are left in place: staff can create
+ * pricings but not delete them, and a failed delete would show staff an
+ * error after the save succeeded. They're labelled with the account, and
+ * bill nothing without an Offer.
  */
 export const saveContractDraft = async (
   { offer: input, startsAt }: SaveContractDraftInput,
@@ -924,17 +891,19 @@ export const saveContractDraft = async (
   } catch (err) {
     throw await contractSaveError(err, created, "The draft wasn't saved");
   }
-  if (previous) await removeUnusedContractPricings(orgName, accountName, refNames(previous));
   return saved;
 };
 
-/** Deletes a draft Offer, and the contract pricings only it used. */
+/**
+ * Deletes a draft Offer. Its fee pricings stay, as on saving a draft (see
+ * saveContractDraft).
+ */
 export const discardContractDraft = async (
   orgName: string,
   accountName: string,
   draftName: string
 ) => {
-  // Fresh, for the pricings it uses now.
+  // Fresh, so only the account's current draft is deleted.
   const draft = await contractDraftQuery(orgName, accountName);
   if (draft?.metadata?.name !== draftName) return;
   try {
@@ -942,7 +911,6 @@ export const discardContractDraft = async (
   } catch (err) {
     if (!isNotFound(err)) throw err;
   }
-  await removeUnusedContractPricings(orgName, accountName, refNames(draft));
 };
 
 /**

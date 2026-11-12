@@ -356,7 +356,7 @@ export const usePublishContractDraftMutation = (orgName: string, accountName: st
   });
 };
 
-/** Discards the account's draft contract and the pricings only it used. */
+/** Discards the account's draft contract. Its fee pricings stay (see saveContractDraft). */
 export const useDiscardContractDraftMutation = (orgName: string, accountName: string) => {
   const queryClient = useQueryClient();
   return useMutation({

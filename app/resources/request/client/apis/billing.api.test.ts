@@ -306,7 +306,7 @@ describe('saveContractDraft', () => {
     expect(patchBillingMiloapisComV1Alpha1NamespacedBillingEntitlement).not.toHaveBeenCalled();
   });
 
-  it('updates the draft the account has, and deletes the pricings it stopped using', async () => {
+  it('updates the draft the account has, leaving the pricings it stopped using', async () => {
     withOffers([draftOffer(), publishedOffer]);
     // draft-fee is the draft's own; kept-fee the published contract's.
     withContractPricings(['draft-fee', 'kept-fee']);
@@ -355,11 +355,9 @@ describe('saveContractDraft', () => {
         },
       })
     );
-    // The old fee went; the list fee and the published contract's stay.
-    expect(deleteBillingMiloapisComV1Alpha1NamespacedServicePricing).toHaveBeenCalledTimes(1);
-    expect(deleteBillingMiloapisComV1Alpha1NamespacedServicePricing).toHaveBeenCalledWith({
-      path: { namespace: 'milo-system', name: 'draft-fee' },
-    });
+    // Staff can't delete pricings, so the old fee's is left: trying would
+    // fail and show an error after the draft was saved.
+    expect(deleteBillingMiloapisComV1Alpha1NamespacedServicePricing).not.toHaveBeenCalled();
   });
 
   it("removes the pricings it made when the draft can't be saved", async () => {
@@ -470,7 +468,7 @@ describe('publishContractDraft', () => {
 });
 
 describe('discardContractDraft', () => {
-  it('deletes the draft and the pricings only it used', async () => {
+  it('deletes the draft, leaving its pricings', async () => {
     const draft = draftOffer();
     draft.spec.servicePricingRefs.push(ref('kept-fee'));
     withOffers([draft, publishedOffer]);
@@ -484,11 +482,9 @@ describe('discardContractDraft', () => {
     await discardContractDraft(ORG, ACCOUNT, DRAFT);
 
     expect(deleteBillingMiloapisComV1Alpha1Offer).toHaveBeenCalledWith({ path: { name: DRAFT } });
-    // Not the list fee, nor the published contract's fee.
-    expect(deleteBillingMiloapisComV1Alpha1NamespacedServicePricing).toHaveBeenCalledTimes(1);
-    expect(deleteBillingMiloapisComV1Alpha1NamespacedServicePricing).toHaveBeenCalledWith({
-      path: { namespace: 'milo-system', name: 'draft-fee' },
-    });
+    // Staff can't delete pricings, so none is tried: a 403 would show an
+    // error after the draft was discarded.
+    expect(deleteBillingMiloapisComV1Alpha1NamespacedServicePricing).not.toHaveBeenCalled();
   });
 
   it('discards the draft after a contract is set up from it', async () => {
