@@ -2,6 +2,7 @@ import { CONTRACT_CURRENCY } from '../lib/contract';
 import { notableInvoices, type ScheduledInvoice } from '../lib/contract-schedule';
 import { formatMoney } from '../utils';
 import { InlineDate } from './billing-account-dashboard/card-parts';
+import { chargeNamesText } from './contract-fee-text';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
@@ -28,8 +29,8 @@ export function ContractScheduleList({ upcoming }: { upcoming: ScheduledInvoice[
         {shown.map((invoice) => {
           const total = formatMoney(invoice.total, CONTRACT_CURRENCY);
           return (
-            <li key={invoice.date.toISOString()} className="flex flex-col">
-              <div className="flex items-baseline justify-between gap-3">
+            <li key={invoice.date.toISOString()} className="flex items-start justify-between gap-3">
+              <div className="flex min-w-0 flex-col">
                 <Text size="sm">
                   <InlineDate
                     date={invoice.date.toISOString()}
@@ -37,7 +38,20 @@ export function ContractScheduleList({ upcoming }: { upcoming: ScheduledInvoice[
                     format="MMM d, yyyy"
                   />
                 </Text>
-                <Text size="sm" className="shrink-0 tabular-nums">
+                {invoice.charges.length > 0 ? (
+                  // However many fees are on it, one line: the first two and
+                  // how many more, with the full list on hover.
+                  <Text
+                    size="xs"
+                    textColor="muted"
+                    className="truncate"
+                    title={invoice.charges.map((charge) => charge.label).join(', ')}>
+                    {chargeNamesText(invoice.charges.map((charge) => charge.label))}
+                  </Text>
+                ) : null}
+              </div>
+              <div className="flex shrink-0 flex-col items-end">
+                <Text size="sm" className="tabular-nums">
                   {invoice.charges.length === 0 ? (
                     <Trans>Usage</Trans>
                   ) : invoice.billsUsage ? (
@@ -46,23 +60,19 @@ export function ContractScheduleList({ upcoming }: { upcoming: ScheduledInvoice[
                     total
                   )}
                 </Text>
-              </div>
-              <Text size="xs" textColor="muted">
-                {invoice.charges.map((charge) => charge.label).join(' · ')}
                 {invoice.dueDate ? (
-                  <>
-                    {invoice.charges.length > 0 ? ' · ' : null}
+                  <Text size="xs" textColor="muted">
                     <Trans>
-                      due{' '}
+                      Due{' '}
                       <InlineDate
                         date={invoice.dueDate.toISOString()}
                         variant="absolute"
                         format="MMM d"
                       />
                     </Trans>
-                  </>
+                  </Text>
                 ) : null}
-              </Text>
+              </div>
             </li>
           );
         })}

@@ -77,6 +77,12 @@ msgstr "{0} a year"
 msgid "{0} active suspensions — the project stays suspended until all are lifted. Instances and served traffic are paused; data is preserved."
 msgstr "{0} active suspensions — the project stays suspended until all are lifted. Instances and served traffic are paused; data is preserved."
 
+#. placeholder {0}: names[0]
+#. placeholder {1}: names[1]
+#: app/features/billing/components/contract-fee-text.ts:86
+msgid "{0} and {1}"
+msgstr "{0} and {1}"
+
 #. placeholder {0}: getBillingAccountDisplayName(account)
 #: app/features/billing/components/contract-editor/contract-editor.tsx:367
 msgid "{0} contract"
@@ -220,6 +226,10 @@ msgstr "{discount}% off."
 msgid "{failed, plural, one {# check couldn't run} other {# checks couldn't run}}"
 msgstr "{failed, plural, one {# check couldn't run} other {# checks couldn't run}}"
 
+#: app/features/billing/components/contract-fee-text.ts:90
+msgid "{first} and {more} more"
+msgstr "{first} and {more} more"
+
 #. placeholder {0}: next.netDays
 #: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:247
 msgid "{frequency} · due <0/> (net {0})"
@@ -323,7 +333,7 @@ msgstr "{times}× last cycle at this point"
 msgid "{total, plural, one {# thing needs attention} other {# things need attention}}"
 msgstr "{total, plural, one {# thing needs attention} other {# things need attention}}"
 
-#: app/features/billing/components/contract-schedule-list.tsx:44
+#: app/features/billing/components/contract-schedule-list.tsx:58
 msgid "{total} plus usage"
 msgstr "{total} plus usage"
 
@@ -2356,9 +2366,9 @@ msgstr "Draft saved. Nothing is billed until it's published."
 msgid "Due"
 msgstr "Due"
 
-#: app/features/billing/components/contract-schedule-list.tsx:55
-msgid "due <0/>"
-msgstr "due <0/>"
+#: app/features/billing/components/contract-schedule-list.tsx:65
+msgid "Due <0/>"
+msgstr "Due <0/>"
 
 #: app/routes/customer/resource/index.tsx:390
 msgid "Each resource type is limited to 2,000 results at a time. Refine your search to surface other resources."
@@ -2617,7 +2627,7 @@ msgstr "equals"
 msgid "Error"
 msgstr "Error"
 
-#: app/features/billing/components/contract-schedule-list.tsx:84
+#: app/features/billing/components/contract-schedule-list.tsx:94
 msgid "Estimated from the contract's fees, before tax and any offer-wide discount. Invoices can arrive a little after their date."
 msgstr "Estimated from the contract's fees, before tax and any offer-wide discount. Invoices can arrive a little after their date."
 
@@ -6067,12 +6077,12 @@ msgstr "Show all"
 msgid "Show contract offers ({contractCount})"
 msgstr "Show contract offers ({contractCount})"
 
-#: app/features/billing/components/contract-schedule-list.tsx:79
+#: app/features/billing/components/contract-schedule-list.tsx:89
 msgid "Show every month for a year"
 msgstr "Show every month for a year"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:283
-#: app/features/billing/components/contract-schedule-list.tsx:79
+#: app/features/billing/components/contract-schedule-list.tsx:89
 msgid "Show fewer"
 msgstr "Show fewer"
 
@@ -6826,7 +6836,7 @@ msgstr "Up to {maxTotal}, over {factor}× the median of this account's other rec
 msgid "up to {upTo}"
 msgstr "up to {upTo}"
 
-#: app/features/billing/components/contract-schedule-list.tsx:25
+#: app/features/billing/components/contract-schedule-list.tsx:26
 msgid "Upcoming invoices"
 msgstr "Upcoming invoices"
 
@@ -6856,7 +6866,7 @@ msgstr "Updating email addresses for GitHub identities"
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:193
 #: app/features/billing/components/contract-editor/contract-summary.tsx:225
 #: app/features/billing/components/contract-editor/price-list-table.tsx:502
-#: app/features/billing/components/contract-schedule-list.tsx:42
+#: app/features/billing/components/contract-schedule-list.tsx:56
 #: app/features/organization/components/org-usage-card.tsx:68
 #: app/features/project/components/project-usage-card.tsx:89
 #: app/features/quota/components/quota-bucket-list.tsx:110

@@ -75,3 +75,17 @@ export const periodsText = (periods: number, interval: FeeInterval | undefined):
 /** What a fee's renewals count, shown after the number: "months", "quarters" or "years". */
 export const periodUnitText = (interval: FeeInterval | undefined): string =>
   interval === 'quarterly' ? t`quarters` : interval === 'annual' ? t`years` : t`months`;
+
+/**
+ * The fees on an invoice in a few words, however many there are: "Private
+ * link", "Private link and Cross connect", or "Private link, Cross connect
+ * and 3 more" past `shown` of them.
+ */
+export const chargeNamesText = (names: string[], shown = 2): string => {
+  if (names.length === 1) return names[0];
+  if (names.length === 2) return t`${names[0]} and ${names[1]}`;
+  if (names.length <= shown) return names.join(', ');
+  const first = names.slice(0, shown).join(', ');
+  const more = names.length - shown;
+  return t`${first} and ${more} more`;
+};
