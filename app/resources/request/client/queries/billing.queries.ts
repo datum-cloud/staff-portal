@@ -10,10 +10,12 @@ import {
   billingArrangementDeclineListForOrgQuery,
   billingArrangementListForOrgQuery,
   billingEntitlementForAccountQuery,
+  changeContractFees,
+  contractDraftQuery,
   createBillingArrangement,
   createBillingArrangementDecline,
-  createContractOffer,
   createOffer,
+  discardContractDraft,
   invoiceListForOrgQuery,
   offerDetailQuery,
   offerListQuery,
@@ -21,14 +23,18 @@ import {
   paymentMethodListQuery,
   patchBillingArrangement,
   previewNextInvoice,
+  publishContractDraft,
   publishOffer,
+  saveContractDraft,
   servicePricingListQuery,
-  setBillingEntitlementContract,
+  setUpContract,
   switchBillingEntitlementOffer,
   updateDraftOffer,
   updateOfferDisplayName,
-  type CreateContractOfferInput,
+  type ChangeContractFeesInput,
   type CreateOfferInput,
+  type SaveContractDraftInput,
+  type SetUpContractInput,
 } from '../apis/billing.api';
 import type {
   ArrangementMergePatch,
@@ -58,6 +64,8 @@ export const billingQueryKeys = {
     all: ['offers'] as const,
     list: (params?: ListQueryParams) => ['offers', 'list', params] as const,
     detail: (name: string) => ['offers', 'detail', name] as const,
+    contractDraft: (orgName: string, accountName: string) =>
+      ['offers', 'contract-draft', orgName, accountName] as const,
   },
   servicePricings: {
     list: (namespace: string) => ['service-pricings', 'list', namespace] as const,
@@ -289,24 +297,14 @@ const invalidateContractQueries = async (
 
 /**
  * Puts the account on a contract: creates its fees and Offer, then points the
- * entitlement at the Offer with the contract's start date (midnight UTC).
+ * entitlement at the Offer with the contract's start date (midnight UTC). An
+ * account without an entitlement gets one, carrying the contract.
  */
 export const useSetUpContractMutation = (orgName: string, accountName: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({
-      entitlementName,
-      startsAt,
-      offer,
-    }: {
-      entitlementName: string;
-      startsAt: string;
-      offer: CreateContractOfferInput;
-    }) => {
-      return createContractOffer(offer, (offerName) =>
-        setBillingEntitlementContract(orgName, entitlementName, offerName, startsAt)
-      );
-    },
+    mutationFn: (input: Omit<SetUpContractInput, 'orgName' | 'accountName'>) =>
+      setUpContract({ ...input, orgName, accountName }),
     onSettled: async () => {
       await invalidateContractQueries(queryClient, orgName, accountName);
     },
@@ -320,17 +318,49 @@ export const useSetUpContractMutation = (orgName: string, accountName: string) =
 export const useChangeContractFeesMutation = (orgName: string, accountName: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({
-      entitlementName,
-      offer,
-    }: {
-      entitlementName: string;
-      offer: CreateContractOfferInput;
-    }) => {
-      return createContractOffer(offer, (offerName) =>
-        switchBillingEntitlementOffer(orgName, entitlementName, offerName)
-      );
+    mutationFn: (input: Omit<ChangeContractFeesInput, 'orgName' | 'accountName'>) =>
+      changeContractFees({ ...input, orgName, accountName }),
+    onSettled: async () => {
+      await invalidateContractQueries(queryClient, orgName, accountName);
     },
+  });
+};
+
+/** The account's draft contract, or null when it has none. */
+export const useContractDraftQuery = (orgName: string, accountName: string) =>
+  useQuery({
+    queryKey: billingQueryKeys.offers.contractDraft(orgName, accountName),
+    queryFn: () => contractDraftQuery(orgName, accountName),
+    enabled: !!orgName && !!accountName,
+  });
+
+/** Saves the account's draft contract, creating or updating it. */
+export const useSaveContractDraftMutation = (orgName: string, accountName: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: SaveContractDraftInput) => saveContractDraft(input),
+    onSettled: async () => {
+      await invalidateContractQueries(queryClient, orgName, accountName);
+    },
+  });
+};
+
+/** Publishes the account's draft contract as it is. */
+export const usePublishContractDraftMutation = (orgName: string, accountName: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (draftName: string) => publishContractDraft(orgName, accountName, draftName),
+    onSettled: async () => {
+      await invalidateContractQueries(queryClient, orgName, accountName);
+    },
+  });
+};
+
+/** Discards the account's draft contract. Its fee pricings stay (see saveContractDraft). */
+export const useDiscardContractDraftMutation = (orgName: string, accountName: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (draftName: string) => discardContractDraft(orgName, accountName, draftName),
     onSettled: async () => {
       await invalidateContractQueries(queryClient, orgName, accountName);
     },

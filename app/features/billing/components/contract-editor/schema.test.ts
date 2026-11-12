@@ -96,6 +96,19 @@ describe('buildContractSchema', () => {
     ]);
   });
 
+  it('lets a draft leave the start date for later, but not a published contract', () => {
+    let draft = false;
+    const schema = buildContractSchema(true, true, now, () => draft);
+    const values = { ...empty, listFees: [listFee] };
+    expect(schema.safeParse(values).error?.issues.map((i) => i.path.join('.'))).toEqual([
+      'startsAt',
+    ]);
+    draft = true;
+    expect(schema.safeParse(values).success).toBe(true);
+    // A date it does have is still checked.
+    expect(schema.safeParse({ ...values, startsAt: new Date('2000-01-01') }).success).toBe(false);
+  });
+
   it("ignores rows that aren't ticked", () => {
     const schema = buildContractSchema(false, true, now);
     expect(

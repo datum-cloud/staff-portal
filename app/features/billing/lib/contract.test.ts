@@ -1,6 +1,11 @@
 import {
   billingCycleTerms,
+  CONTRACT_BILLING_ACCOUNT_LABEL,
   CONTRACT_STARTED_ANNOTATION,
+  CONTRACT_STARTS_AT_ANNOTATION,
+  draftPublishProblem,
+  isContractDraft,
+  withDraftSnapshot,
   OFFER_CHANGE_AT_ANNOTATION,
   contractOfferPlan,
   contractResourceNames,
@@ -392,5 +397,80 @@ describe('amounts', () => {
     expect(firstInvoiceTotal(fees)).toBe(4200);
     expect(monthlyTotal(fees)).toBe(1200);
     expect(proratedFirstInvoiceTotal(fees, 0.5)).toBe(3600);
+  });
+});
+
+describe('draft contracts', () => {
+  const draft = (
+    startsAt?: string,
+    chargeTypes: Array<'OneTime' | 'Recurring' | 'Usage'> = ['OneTime', 'Recurring']
+  ): ComMiloapisBillingV1Alpha1Offer => ({
+    metadata: {
+      name: 'contract-acme-ops-20261101000000',
+      labels: { [CONTRACT_BILLING_ACCOUNT_LABEL]: 'acme-ops' },
+      ...(startsAt ? { annotations: { [CONTRACT_STARTS_AT_ANNOTATION]: startsAt } } : {}),
+    },
+    spec: {
+      launchStage: 'Draft',
+      chargeTypes,
+      servicePricingRefs: [
+        { name: 'setup', namespace: 'milo-system' },
+        { name: 'ports', namespace: 'milo-system', quantity: 4, discount: { percentage: 10 } },
+        { name: 'gone', namespace: 'milo-system' },
+      ],
+    },
+  });
+
+  it('knows a draft from a published contract or a catalog offer', () => {
+    expect(isContractDraft(draft())).toBe(true);
+    const published = draft();
+    published.spec!.launchStage = 'GA';
+    expect(isContractDraft(published)).toBe(false);
+    expect(isContractDraft({ ...draft(), metadata: { name: 'payg' } })).toBe(false);
+  });
+
+  it('reads a draft the way it will bill, from its pricings', () => {
+    const pricing = (name: string, chargeType: 'OneTime' | 'Recurring', amount: string) => ({
+      metadata: { name },
+      spec: { chargeType, amount, currency: 'USD', displayName: name },
+    });
+    const view = withDraftSnapshot(draft(), [
+      pricing('setup', 'OneTime', '500.00'),
+      pricing('ports', 'Recurring', '300.00'),
+    ] as never);
+
+    // A pricing deleted meanwhile is left out rather than shown blank.
+    expect(view.spec?.servicePricings?.map((snapshot) => snapshot.name)).toEqual([
+      'setup',
+      'ports',
+    ]);
+    expect(getContractFees(view)).toEqual([
+      expect.objectContaining({ name: 'setup', chargeType: 'OneTime', amount: 500, quantity: 1 }),
+      expect.objectContaining({ name: 'ports', amount: 300, quantity: 4, discount: 10 }),
+    ]);
+  });
+
+  it('publishes a new contract only with a start date billing accepts', () => {
+    expect(draftPublishProblem(draft('2026-12-01T00:00:00Z'), null, now)).toBeNull();
+    expect(draftPublishProblem(draft(), null, now)).toBe('no-start');
+    expect(draftPublishProblem(draft('2026-11-01T00:00:00Z'), null, now)).toBe('start-passed');
+    expect(draftPublishProblem(draft('2028-01-01T00:00:00Z'), null, now)).toBe('start-too-far');
+    // An entitlement without a contract gets one the same way.
+    expect(draftPublishProblem(draft('2026-12-01T00:00:00Z'), entitlement(undefined), now)).toBe(
+      null
+    );
+  });
+
+  it('publishes a fee change onto the contract the account is on', () => {
+    const upcoming = entitlement('2026-12-01T00:00:00Z');
+    expect(draftPublishProblem(draft(), upcoming, now)).toBeNull();
+    // A draft that set up a contract can't once the account is on one.
+    expect(draftPublishProblem(draft('2026-12-01T00:00:00Z'), upcoming, now)).toBe(
+      'contract-exists'
+    );
+    // Once started, one-time fees would be charged again.
+    const started = entitlement('2026-10-01T00:00:00Z');
+    expect(draftPublishProblem(draft(), started, now)).toBe('one-time-after-start');
+    expect(draftPublishProblem(draft(undefined, ['Recurring']), started, now)).toBeNull();
   });
 });
