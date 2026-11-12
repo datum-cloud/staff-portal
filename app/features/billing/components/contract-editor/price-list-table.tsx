@@ -1,7 +1,8 @@
 import { CONTRACT_CURRENCY } from '../../lib/contract';
 import type { ListFeeOption } from '../../lib/contract-list-fees';
-import { rateSlots, type RateSlotLabel, type UsageMeterOption } from '../../lib/contract-usage';
+import { rateSlots, type UsageMeterOption } from '../../lib/contract-usage';
 import { formatMoney, indexServicesByRef } from '../../utils';
+import { feeChargeText, periodUnitText, rateSlotText } from '../contract-fee-text';
 import type { ContractFormValues, ListFeeRowValues, UsageRowValues } from './schema';
 import { WholeNumberInput } from './whole-number-input';
 import { EMBEDDED_TABLE_HEADER_CELL_CLASS, TABLE_CARD_FRAME_CLASS } from '@/features/milo';
@@ -10,6 +11,7 @@ import { Button } from '@datum-cloud/datum-ui/button';
 import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { Icon } from '@datum-cloud/datum-ui/icons';
+import { Input } from '@datum-cloud/datum-ui/input';
 import {
   Table,
   TableBody,
@@ -36,6 +38,10 @@ type PriceListEntry =
  * an optional discount. A customer price, left empty for the list price,
  * becomes the customer's own pricing based on the list one, so the list
  * price stays beside it.
+ *
+ * Staff can search it by name or service, and collapse a service. Rows that
+ * are filtered out or collapsed are only hidden, so what's ticked and typed
+ * in them is kept and still saved.
  */
 export function PriceListTable({
   usageOptions,
@@ -63,66 +69,153 @@ export function PriceListTable({
     );
   }, [usageOptions, feeOptions]);
 
+  const [search, setSearch] = useState('');
+  const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set());
+  const usageRows = (Form.useWatch('usage') as UsageRowValues[] | undefined) ?? [];
+  const feeRows = (Form.useWatch('listFees') as ListFeeRowValues[] | undefined) ?? [];
+
   if (groups.length === 0) {
     return (
       <Text size="sm" textColor="muted">
-        <Trans>The platform&apos;s price list is empty.</Trans>
+        <Trans>
+          The platform has no list prices yet, so the contract bills only the fees above.
+        </Trans>
       </Text>
     );
   }
 
+  // Search matches a row's name or its service's; while searching, every
+  // service with a match is shown open.
+  const query = search.trim().toLowerCase();
+  const shown = groups.map(([serviceRef, entries]) => {
+    const title = serviceRef
+      ? servicesByRef.get(serviceRef)?.spec?.displayName || serviceRef
+      : t`Not for a service`;
+    const groupMatches = query !== '' && title.toLowerCase().includes(query);
+    const visible = new Set(
+      entries.filter(
+        (entry) => !query || groupMatches || entry.option.label.toLowerCase().includes(query)
+      )
+    );
+    const key = serviceRef || 'none';
+    const ticked = entries.filter((entry) =>
+      entry.kind === 'fee' ? feeRows[entry.index]?.selected : usageRows[entry.index]?.selected
+    ).length;
+    return {
+      key,
+      title,
+      entries,
+      visible,
+      ticked,
+      open: query !== '' || !collapsed.has(key),
+    };
+  });
+  const anyVisible = shown.some((group) => group.visible.size > 0);
+  const toggle = (key: string) =>
+    setCollapsed((current) => {
+      const next = new Set(current);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  // Tick all acts on the rows on screen.
+  const onScreen = shown.flatMap((group) =>
+    group.open ? group.entries.filter((entry) => group.visible.has(entry)) : []
+  );
+
   return (
-    <div className={cn(TABLE_CARD_FRAME_CLASS, 'overflow-x-auto')}>
-      <Table className="min-w-[40rem]">
-        <TableHeader>
-          <TableRow className="hover:bg-transparent">
-            <TableHead className={EMBEDDED_TABLE_HEADER_CELL_CLASS}>
-              <SelectAll />
-            </TableHead>
-            <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-44')}>
-              <Trans>List price</Trans>
-            </TableHead>
-            <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-20')}>
-              <Trans>Qty</Trans>
-            </TableHead>
-            <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-20')}>
-              <Trans>% off</Trans>
-            </TableHead>
-            <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-36')}>
-              <Trans>Customer price</Trans>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {groups.map(([serviceRef, entries]) => (
-            <ServiceGroup
-              key={serviceRef || 'none'}
-              title={
-                serviceRef
-                  ? servicesByRef.get(serviceRef)?.spec?.displayName || serviceRef
-                  : t`Not for a service`
-              }
-              entries={entries}
-            />
-          ))}
-        </TableBody>
-      </Table>
+    <div className="flex flex-col gap-2">
+      <Input
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+        placeholder={t`Search the price list`}
+        aria-label={t`Search the price list`}
+        className="h-9 w-full sm:w-64"
+      />
+      <div className={cn(TABLE_CARD_FRAME_CLASS, 'overflow-x-auto')}>
+        <Table className="min-w-[54rem]">
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className={EMBEDDED_TABLE_HEADER_CELL_CLASS}>
+                <SelectAll entries={onScreen} />
+              </TableHead>
+              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-44')}>
+                <Trans>List price</Trans>
+              </TableHead>
+              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-36')}>
+                <Trans>Billed</Trans>
+              </TableHead>
+              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-32')}>
+                <Trans>Renewals</Trans>
+              </TableHead>
+              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-20')}>
+                <Trans>Qty</Trans>
+              </TableHead>
+              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-20')}>
+                <Trans>% off</Trans>
+              </TableHead>
+              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-36')}>
+                <Trans>Customer price</Trans>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {/*
+              Rows filtered out or collapsed stay mounted, so they keep what's
+              ticked and typed, but come first: the body drops the border of
+              its last row, which must be one on screen, or it doubles up with
+              the frame's.
+            */}
+            {shown.flatMap((group) =>
+              group.entries
+                .filter((entry) => !group.open || !group.visible.has(entry))
+                .map((entry) => <PriceListRow key={entryKey(entry)} entry={entry} hidden />)
+            )}
+            {shown.map((group) => (
+              <ServiceGroup
+                key={group.key}
+                title={group.title}
+                entries={group.entries}
+                visible={group.visible}
+                ticked={group.ticked}
+                open={group.open}
+                // A search shows every matching service open.
+                onToggle={query ? undefined : () => toggle(group.key)}
+              />
+            ))}
+            {!anyVisible ? (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={7} className="py-6 text-center">
+                  <Text size="sm" textColor="muted">
+                    <Trans>Nothing on the price list matches “{search.trim()}”.</Trans>
+                  </Text>
+                </TableCell>
+              </TableRow>
+            ) : null}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
 
-/** Ticks or unticks every row of the price list. */
-function SelectAll() {
+/** Ticks or unticks every row of the price list on screen. */
+function SelectAll({ entries }: { entries: PriceListEntry[] }) {
   const form = Form.useFormContext().form.raw as UseFormReturn<ContractFormValues>;
   const usage = (Form.useWatch('usage') as UsageRowValues[] | undefined) ?? [];
   const listFees = (Form.useWatch('listFees') as ListFeeRowValues[] | undefined) ?? [];
-  const rows = [...usage, ...listFees];
-  const ticked = rows.filter((row) => row.selected).length;
-  const checked = ticked === 0 ? false : ticked === rows.length ? true : 'indeterminate';
+  const isTicked = (entry: PriceListEntry) =>
+    Boolean(entry.kind === 'fee' ? listFees[entry.index]?.selected : usage[entry.index]?.selected);
+  const ticked = entries.filter(isTicked).length;
+  const checked =
+    ticked === 0 ? false : ticked === entries.length ? true : ('indeterminate' as const);
   const setAll = (selected: boolean) => {
     const options = { shouldDirty: true, shouldValidate: form.formState.isSubmitted };
-    usage.forEach((_, i) => form.setValue(`usage.${i}.selected`, selected, options));
-    listFees.forEach((_, i) => form.setValue(`listFees.${i}.selected`, selected, options));
+    entries.forEach((entry) =>
+      entry.kind === 'fee'
+        ? form.setValue(`listFees.${entry.index}.selected`, selected, options)
+        : form.setValue(`usage.${entry.index}.selected`, selected, options)
+    );
   };
   // The title sits outside the checkbox, so clicking it doesn't tick every row.
   return (
@@ -139,60 +232,98 @@ function SelectAll() {
   );
 }
 
-/** What a rate amount prices, in words, e.g. "runtime_class general-purpose, up to 100". */
-const rateSlotText = (label: RateSlotLabel) => {
-  const parts: string[] = [];
-  if (label.match) parts.push(`${label.match.dimension} ${label.match.value}`);
-  else if (label.rest) parts.push(t`everything else`);
-  if (label.band === 'all') {
-    parts.push(t`all usage`);
-  } else if (label.band && 'upTo' in label.band) {
-    const upTo = label.band.upTo;
-    parts.push(t`up to ${upTo}`);
-  } else if (label.band) {
-    const over = label.band.over;
-    parts.push(t`over ${over}`);
-  }
-  return parts.length > 0 ? parts.join(', ') : t`per unit`;
-};
-
-function ServiceGroup({ title, entries }: { title: string; entries: PriceListEntry[] }) {
+function ServiceGroup({
+  title,
+  entries,
+  visible,
+  ticked,
+  open,
+  onToggle,
+}: {
+  title: string;
+  entries: PriceListEntry[];
+  /** The entries a search leaves. */
+  visible: Set<PriceListEntry>;
+  /** How many of the service's rows are ticked, shown while it's collapsed. */
+  ticked: number;
+  open: boolean;
+  /** Collapses or opens the service; unset while searching. */
+  onToggle?: () => void;
+}) {
+  // Its hidden rows are rendered at the top of the table (see PriceListTable).
+  if (visible.size === 0) return null;
   return (
     <>
       <TableRow className="bg-muted/40 hover:bg-muted/40">
-        <TableCell colSpan={5} className="py-1.5">
-          <Text size="xs" weight="medium" textColor="muted">
-            {title}
-          </Text>
+        <TableCell colSpan={7} className="py-1.5">
+          {onToggle ? (
+            <button
+              type="button"
+              className="flex w-full items-center gap-1.5 text-left"
+              aria-expanded={open}
+              onClick={onToggle}>
+              <Icon
+                icon={open ? ChevronDown : ChevronRight}
+                size={14}
+                className="text-muted-foreground"
+              />
+              <Text size="xs" weight="medium" textColor="muted">
+                {title}
+              </Text>
+              {!open && ticked > 0 ? (
+                <Text size="xs" textColor="muted">
+                  {' · '}
+                  <Trans>{ticked} ticked</Trans>
+                </Text>
+              ) : null}
+            </button>
+          ) : (
+            <Text size="xs" weight="medium" textColor="muted">
+              {title}
+            </Text>
+          )}
         </TableCell>
       </TableRow>
-      {entries.map((entry) =>
-        entry.kind === 'fee' ? (
-          <ListFeeRows key={`fee-${entry.option.name}`} option={entry.option} index={entry.index} />
-        ) : (
-          <UsageRows
-            key={`usage-${entry.option.metric}`}
-            option={entry.option}
-            index={entry.index}
-          />
-        )
-      )}
+      {open
+        ? entries
+            .filter((entry) => visible.has(entry))
+            .map((entry) => <PriceListRow key={entryKey(entry)} entry={entry} hidden={false} />)
+        : null}
     </>
   );
 }
 
-/** A list fee's price, e.g. "$300.00 / month per port". */
+const entryKey = (entry: PriceListEntry) =>
+  entry.kind === 'fee' ? `fee-${entry.option.name}` : `usage-${entry.option.metric}`;
+
+function PriceListRow({ entry, hidden }: { entry: PriceListEntry; hidden: boolean }) {
+  return entry.kind === 'fee' ? (
+    <ListFeeRows option={entry.option} index={entry.index} hidden={hidden} />
+  ) : (
+    <UsageRows option={entry.option} index={entry.index} hidden={hidden} />
+  );
+}
+
+/** A list fee's price, e.g. "$300.00 / month per port" or "$6,000.00 / year". */
 const feePriceText = (option: ListFeeOption) => {
   const amount = formatMoney(Number.parseFloat(option.amount), CONTRACT_CURRENCY);
-  const price = option.chargeType === 'OneTime' ? t`${amount} once` : t`${amount} / month`;
+  const price = feeChargeText(amount, option);
   return option.pricingUnit ? t`${price} per ${option.pricingUnit}` : price;
 };
 
-function ListFeeRows({ option, index }: { option: ListFeeOption; index: number }) {
+function ListFeeRows({
+  option,
+  index,
+  hidden,
+}: {
+  option: ListFeeOption;
+  index: number;
+  hidden: boolean;
+}) {
   const row = Form.useWatch(`listFees.${index}`) as ListFeeRowValues | undefined;
   const selected = Boolean(row?.selected);
   return (
-    <TableRow>
+    <TableRow className={cn(hidden && 'hidden')}>
       <TableCell className="align-middle">
         <Form.Field name={`listFees.${index}.selected`}>
           <Form.Checkbox label={option.label} />
@@ -202,6 +333,52 @@ function ListFeeRows({ option, index }: { option: ListFeeOption; index: number }
         <Text size="sm" className="tabular-nums">
           {feePriceText(option)}
         </Text>
+      </TableCell>
+      <TableCell className="align-middle">
+        {option.chargeType === 'Recurring' ? (
+          // When the contract invoices it: its term, not the list fee's.
+          // space-y-0: Form.Field spaces its children, and a Select is followed
+          // by its hidden native select, so its box would carry a bottom margin
+          // and sit higher than the inputs beside it.
+          <Form.Field name={`listFees.${index}.billingTiming`} className="space-y-0">
+            <Form.Select disabled={!selected} aria-label={t`Billed`}>
+              <Form.SelectItem value="InArrears">
+                <Trans>In arrears</Trans>
+              </Form.SelectItem>
+              <Form.SelectItem value="InAdvance">
+                <Trans>In advance</Trans>
+              </Form.SelectItem>
+            </Form.Select>
+          </Form.Field>
+        ) : (
+          // A one-time fee is invoiced when it's charged.
+          <Text size="sm" textColor="muted">
+            <Trans>In advance</Trans>
+          </Text>
+        )}
+      </TableCell>
+      <TableCell className="align-middle">
+        {option.chargeType === 'Recurring' ? (
+          // How many periods the contract charges it for: its term, not
+          // the list fee's. Empty for no end.
+          <Form.Field name={`listFees.${index}.periods`}>
+            <div className="flex items-center gap-1.5">
+              <WholeNumberInput
+                placeholder={t`No end`}
+                aria-label={t`Renewals`}
+                disabled={!selected}
+                className="w-16"
+              />
+              <Text size="xs" textColor="muted">
+                {periodUnitText(option.interval)}
+              </Text>
+            </div>
+          </Form.Field>
+        ) : (
+          <Text size="sm" textColor="muted">
+            —
+          </Text>
+        )}
       </TableCell>
       <TableCell className="align-middle">
         <Form.Field name={`listFees.${index}.quantity`}>
@@ -227,7 +404,15 @@ function ListFeeRows({ option, index }: { option: ListFeeOption; index: number }
   );
 }
 
-function UsageRows({ option, index }: { option: UsageMeterOption; index: number }) {
+function UsageRows({
+  option,
+  index,
+  hidden,
+}: {
+  option: UsageMeterOption;
+  index: number;
+  hidden: boolean;
+}) {
   const row = Form.useWatch(`usage.${index}`) as UsageRowValues | undefined;
   const form = Form.useFormContext().form.raw as UseFormReturn<ContractFormValues>;
   const selected = Boolean(row?.selected);
@@ -260,14 +445,14 @@ function UsageRows({ option, index }: { option: UsageMeterOption; index: number 
   const single = slots.length === 1;
   return (
     <>
-      <TableRow>
+      <TableRow className={cn(hidden && 'hidden')}>
         <TableCell className="align-middle">
           <div className="flex flex-col gap-1">
             <Form.Field name={`usage.${index}.selected`}>
               <Form.Checkbox label={option.label} />
             </Form.Field>
             {option.pricings.length > 1 ? (
-              <Form.Field name={`usage.${index}.pricingName`} className="w-56 pl-6">
+              <Form.Field name={`usage.${index}.pricingName`} className="w-56 space-y-0 pl-6">
                 <Form.Select disabled={!selected}>
                   {option.pricings.map((pricing, i) => {
                     const name = pricing.metadata?.name ?? '';
@@ -302,6 +487,17 @@ function UsageRows({ option, index }: { option: UsageMeterOption; index: number 
           )}
         </TableCell>
         <TableCell className="align-middle">
+          {/* Usage is always invoiced at the end of the period. */}
+          <Text size="sm" textColor="muted">
+            <Trans>In arrears</Trans>
+          </Text>
+        </TableCell>
+        <TableCell className="align-middle">
+          <Text size="sm" textColor="muted">
+            —
+          </Text>
+        </TableCell>
+        <TableCell className="align-middle">
           <Text size="sm" textColor="muted">
             <Trans>Usage</Trans>
           </Text>
@@ -330,7 +526,9 @@ function UsageRows({ option, index }: { option: UsageMeterOption; index: number 
       </TableRow>
       {!single && expanded
         ? slots.map((slot, slotIndex) => (
-            <TableRow key={`${row?.pricingName}-${slotIndex}`} className="hover:bg-transparent">
+            <TableRow
+              key={`${row?.pricingName}-${slotIndex}`}
+              className={cn('hover:bg-transparent', hidden && 'hidden')}>
               <TableCell className="pl-12">
                 <Text size="xs" textColor="muted">
                   {rateSlotText(slot.label)}
@@ -341,6 +539,8 @@ function UsageRows({ option, index }: { option: UsageMeterOption; index: number 
                   {`$${slot.listAmount}`}
                 </Text>
               </TableCell>
+              <TableCell />
+              <TableCell />
               <TableCell />
               <TableCell />
               <TableCell>

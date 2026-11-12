@@ -3,6 +3,7 @@ import {
   contractStartProblem,
   MAX_CONTRACT_FEES,
   MAX_CONTRACT_LEAD_DAYS,
+  MAX_FEE_PERIODS,
   parseAmount,
   type ContractFee,
 } from '../../lib/contract';
@@ -37,6 +38,9 @@ const usageRowSchema = z.object({
   currentPricing: z.string().optional(),
 });
 
+/** When a recurring fee is invoiced: a term of the contract, on the Offer's reference. */
+const billingTimingSchema = z.enum(['InAdvance', 'InArrears']);
+
 /** A list fee's row in the form; an empty amount means the list amount. */
 const listFeeRowSchema = z.object({
   name: z.string(),
@@ -44,10 +48,31 @@ const listFeeRowSchema = z.object({
   quantity: z.string(),
   discount: z.string(),
   amount: z.string(),
+  billingTiming: billingTimingSchema,
+  /** Renewals: how many periods a recurring fee runs for; empty for no end. */
+  periods: z.string(),
   currentPricing: z.string().optional(),
 });
 
-export const buildContractSchema = (needsStart: boolean, allowOneTime: boolean, now: Date) =>
+/** Renewals as typed: empty for no end, or a whole number billing accepts. */
+const isPeriods = (value: string) => {
+  const trimmed = value.trim();
+  if (!trimmed) return true;
+  const n = Number(trimmed);
+  return Number.isInteger(n) && n >= 1 && n <= MAX_FEE_PERIODS;
+};
+
+/**
+ * The contract form's schema. A new contract needs a start date to publish;
+ * `isDraft` says when the form is being saved as a draft instead, which can
+ * leave it for later (it's read at validation, as the button decides).
+ */
+export const buildContractSchema = (
+  needsStart: boolean,
+  allowOneTime: boolean,
+  now: Date,
+  isDraft: () => boolean = () => false
+) =>
   z
     .object({
       fees: z.array(
@@ -57,6 +82,12 @@ export const buildContractSchema = (needsStart: boolean, allowOneTime: boolean, 
             .trim()
             .min(1, t`Name the fee, as invoices show it.`),
           chargeType: z.enum(['OneTime', 'Recurring']),
+          // For a recurring fee: how often it's charged, and when it's
+          // invoiced. Kept on a one-time fee's row, and ignored.
+          interval: z.enum(['monthly', 'quarterly', 'annual']),
+          billingTiming: billingTimingSchema,
+          // Renewals: how many periods it runs for; empty for no end.
+          periods: z.string(),
           amount: z.string().refine((value) => parseAmount(value) > 0, {
             message: t`Enter an amount, such as 1000 or 1000.00.`,
           }),
@@ -89,10 +120,23 @@ export const buildContractSchema = (needsStart: boolean, allowOneTime: boolean, 
           }
         });
       }
+      values.fees.forEach((fee, index) => {
+        if (fee.chargeType === 'Recurring' && !isPeriods(fee.periods)) {
+          issue(['fees', index, 'periods'], t`1 to ${MAX_FEE_PERIODS}, or blank for no end.`);
+        }
+      });
+      values.listFees.forEach((row, index) => {
+        if (row.selected && !isPeriods(row.periods)) {
+          issue(['listFees', index, 'periods'], t`1 to ${MAX_FEE_PERIODS}, or blank.`);
+        }
+      });
       const listFees = values.listFees.filter((row) => row.selected);
       const feeCount = values.fees.length + listFees.length;
-      if (feeCount === 0) {
-        issue(['fees'], t`Add a fee, or pick one from the price list.`);
+      // A contract must bill something: a fee, or usage. Billing only needs
+      // the Offer to have a pricing, and one billing only usage is fine.
+      const billsUsage = values.usage.some((row) => row.selected);
+      if (feeCount === 0 && !billsUsage) {
+        issue(['fees'], t`Add a fee, or tick something on the price list.`);
       } else if (feeCount > MAX_CONTRACT_FEES) {
         issue(
           ['fees'],
@@ -127,7 +171,7 @@ export const buildContractSchema = (needsStart: boolean, allowOneTime: boolean, 
 
       if (!needsStart) return;
       if (!values.startsAt) {
-        issue(['startsAt'], t`Pick a start date.`);
+        if (!isDraft()) issue(['startsAt'], t`Pick a start date.`);
         return;
       }
       const problem = contractStartProblem(contractStartFromDate(values.startsAt), now);
@@ -170,6 +214,8 @@ export const toListFeeRowValues = (row: ListFeeRow): ListFeeRowValues => ({
   quantity: row.quantity,
   discount: row.discount,
   amount: row.custom ? row.amount : '',
+  billingTiming: row.billingTiming,
+  periods: row.periods,
   currentPricing: row.currentPricing,
 });
 
@@ -179,10 +225,15 @@ export const fromListFeeRowValues = (row: ListFeeRowValues): ListFeeRow => ({
   custom: row.amount.trim() !== '',
 });
 
-/** Whether a fee row still charges exactly what an existing pricing does. */
+/**
+ * Whether a fee row still charges exactly what an existing pricing does. A
+ * recurring fee's interval is the pricing's; its timing isn't, it's on the
+ * Offer's reference.
+ */
 export const sameFeePricing = (row: ContractFeeRow, fee: ContractFee) =>
   row.label.trim() === fee.label &&
   row.chargeType === fee.chargeType &&
+  (row.chargeType === 'OneTime' || row.interval === (fee.interval ?? 'monthly')) &&
   parseAmount(row.amount) === fee.amount &&
   row.pricingUnit.trim() === (fee.pricingUnit ?? '') &&
   (row.serviceRef === NO_SERVICE ? '' : row.serviceRef) === (fee.serviceRef ?? '');

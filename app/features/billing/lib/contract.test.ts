@@ -1,6 +1,11 @@
 import {
   billingCycleTerms,
+  CONTRACT_BILLING_ACCOUNT_LABEL,
   CONTRACT_STARTED_ANNOTATION,
+  CONTRACT_STARTS_AT_ANNOTATION,
+  draftPublishProblem,
+  isContractDraft,
+  withDraftSnapshot,
   OFFER_CHANGE_AT_ANNOTATION,
   contractOfferPlan,
   contractResourceNames,
@@ -8,9 +13,12 @@ import {
   contractStartProblem,
   discountedFeeTotal,
   discountText,
+  feeEndsAt,
   firstInvoiceTotal,
   firstMonthShare,
   firstPeriodEnd,
+  firstPeriodShare,
+  hasFeesInArrears,
   getContractFees,
   getContractFirstInvoice,
   getContractState,
@@ -21,7 +29,9 @@ import {
   monthlyTotal,
   parseAmount,
   parseDiscount,
+  parsePeriods,
   proratedFirstInvoiceTotal,
+  recurringTotals,
   toPricingAmount,
 } from './contract';
 import type {
@@ -235,6 +245,19 @@ describe('getContractFees', () => {
     expect(fee).toMatchObject({ amount: 300, quantity: 4, pricingUnit: 'port' });
     expect(fee.serviceRef).toBeUndefined();
   });
+
+  it("reads a recurring fee's interval and timing, in advance when the snapshot has none", () => {
+    const support = fixed('support', 'Recurring', '6000.00', 'Support');
+    support.spec.interval = 'annual';
+    support.billingTiming = 'InArrears';
+    const [setup, rack, annual] = getContractFees(
+      offer([fixed('setup', 'OneTime', '500.00'), fixed('rack', 'Recurring', '1000.00'), support])
+    );
+    expect(setup.interval).toBeUndefined();
+    expect(setup.billingTiming).toBeUndefined();
+    expect(rack).toMatchObject({ interval: 'monthly', billingTiming: 'InAdvance' });
+    expect(annual).toMatchObject({ interval: 'annual', billingTiming: 'InArrears' });
+  });
 });
 
 describe('getUsagePricingRefs', () => {
@@ -275,6 +298,40 @@ describe('contractOfferPlan', () => {
         { name: 'cpu', namespace: 'milo-system' },
       ],
     });
+  });
+
+  it("sets a recurring fee's renewals, never a one-time fee's", () => {
+    const plan = contractOfferPlan({
+      namespace: 'milo-system',
+      fees: [
+        { name: 'promo', chargeType: 'Recurring', periods: 3 },
+        { name: 'rack', chargeType: 'Recurring' },
+        { name: 'setup', chargeType: 'OneTime', periods: 3 },
+      ],
+      usageRefs: [],
+    });
+    expect(plan.servicePricingRefs).toEqual([
+      { name: 'promo', namespace: 'milo-system', periods: 3 },
+      { name: 'rack', namespace: 'milo-system' },
+      { name: 'setup', namespace: 'milo-system' },
+    ]);
+  });
+
+  it("sets a recurring fee's timing, never a one-time fee's", () => {
+    const plan = contractOfferPlan({
+      namespace: 'milo-system',
+      fees: [
+        { name: 'rack', chargeType: 'Recurring', billingTiming: 'InAdvance' },
+        { name: 'ports', chargeType: 'Recurring', billingTiming: 'InArrears' },
+        { name: 'setup', chargeType: 'OneTime', billingTiming: 'InArrears' },
+      ],
+      usageRefs: [],
+    });
+    expect(plan.servicePricingRefs).toEqual([
+      { name: 'rack', namespace: 'milo-system', billingTiming: 'InAdvance' },
+      { name: 'ports', namespace: 'milo-system', billingTiming: 'InArrears' },
+      { name: 'setup', namespace: 'milo-system' },
+    ]);
   });
 
   it('sets a quantity on fees charged more than once', () => {
@@ -318,12 +375,34 @@ describe('contractResourceNames', () => {
 describe('first month proration', () => {
   it('matches what OpenMeter charged for a contract set up on its start day', () => {
     const startsAt = new Date('2026-11-03T00:00:00Z');
-    const share = firstMonthShare(startsAt, new Date('2026-11-03T14:33:42Z'));
     const fees = [
       { chargeType: 'OneTime' as const, amount: 20000 },
       { chargeType: 'Recurring' as const, amount: 2000 },
     ];
-    expect(proratedFirstInvoiceTotal(fees, share)).toBe(21959.55);
+    expect(proratedFirstInvoiceTotal(fees, startsAt, new Date('2026-11-03T14:33:42Z'))).toBe(
+      21959.55
+    );
+  });
+
+  it('prorates each fee in advance by its own first period, and leaves out fees in arrears', () => {
+    const startsAt = new Date('2026-11-01T00:00:00Z');
+    // Set up at noon on the start day: half a day into each period.
+    const noon = new Date('2026-11-01T12:00:00Z');
+    const fees = [
+      { chargeType: 'OneTime' as const, amount: 100 },
+      // 30 days in November.
+      { chargeType: 'Recurring' as const, amount: 3000, billingTiming: 'InAdvance' as const },
+      // 365 days from 1 November 2026.
+      {
+        chargeType: 'Recurring' as const,
+        amount: 3650,
+        interval: 'annual' as const,
+        billingTiming: 'InAdvance' as const,
+      },
+      { chargeType: 'Recurring' as const, amount: 9999, billingTiming: 'InArrears' as const },
+    ];
+    expect(proratedFirstInvoiceTotal(fees, startsAt, noon)).toBe(100 + 2950 + 3645);
+    expect(firstPeriodShare(startsAt, noon, 12)).toBeCloseTo(364.5 / 365);
   });
 
   it('charges a full month when the account starts on it at midnight', () => {
@@ -337,6 +416,15 @@ describe('first month proration', () => {
     );
     expect(firstPeriodEnd(new Date('2026-11-03T00:00:00Z')).toISOString()).toBe(
       '2026-12-03T00:00:00.000Z'
+    );
+  });
+
+  it("ends a quarterly or annual fee's first period on the same day", () => {
+    expect(firstPeriodEnd(new Date('2026-11-30T00:00:00Z'), 3).toISOString()).toBe(
+      '2027-02-28T00:00:00.000Z'
+    );
+    expect(firstPeriodEnd(new Date('2026-04-18T00:00:00Z'), 12).toISOString()).toBe(
+      '2027-04-18T00:00:00.000Z'
     );
   });
 });
@@ -391,6 +479,127 @@ describe('amounts', () => {
     ];
     expect(firstInvoiceTotal(fees)).toBe(4200);
     expect(monthlyTotal(fees)).toBe(1200);
-    expect(proratedFirstInvoiceTotal(fees, 0.5)).toBe(3600);
+  });
+
+  it('totals recurring fees by interval and invoices only those in advance first', () => {
+    const fees = [
+      { chargeType: 'OneTime' as const, amount: 500 },
+      { chargeType: 'Recurring' as const, amount: 1000, billingTiming: 'InArrears' as const },
+      { chargeType: 'Recurring' as const, amount: 200 },
+      {
+        chargeType: 'Recurring' as const,
+        amount: 900,
+        interval: 'quarterly' as const,
+        billingTiming: 'InAdvance' as const,
+      },
+      {
+        chargeType: 'Recurring' as const,
+        amount: 6000,
+        interval: 'annual' as const,
+        billingTiming: 'InArrears' as const,
+      },
+    ];
+    expect(recurringTotals(fees)).toEqual({ monthly: 1200, quarterly: 900, annual: 6000 });
+    // The one-time fee, the monthly fee without a timing (in advance) and
+    // the quarterly one: fees in arrears come at the end of their period.
+    expect(firstInvoiceTotal(fees)).toBe(1600);
+    expect(hasFeesInArrears(fees)).toBe(true);
+    expect(hasFeesInArrears(fees.slice(2, 4))).toBe(false);
+  });
+});
+
+describe('draft contracts', () => {
+  const draft = (
+    startsAt?: string,
+    chargeTypes: Array<'OneTime' | 'Recurring' | 'Usage'> = ['OneTime', 'Recurring']
+  ): ComMiloapisBillingV1Alpha1Offer => ({
+    metadata: {
+      name: 'contract-acme-ops-20261101000000',
+      labels: { [CONTRACT_BILLING_ACCOUNT_LABEL]: 'acme-ops' },
+      ...(startsAt ? { annotations: { [CONTRACT_STARTS_AT_ANNOTATION]: startsAt } } : {}),
+    },
+    spec: {
+      launchStage: 'Draft',
+      chargeTypes,
+      servicePricingRefs: [
+        { name: 'setup', namespace: 'milo-system' },
+        { name: 'ports', namespace: 'milo-system', quantity: 4, discount: { percentage: 10 } },
+        { name: 'gone', namespace: 'milo-system' },
+      ],
+    },
+  });
+
+  it('knows a draft from a published contract or a catalog offer', () => {
+    expect(isContractDraft(draft())).toBe(true);
+    const published = draft();
+    published.spec!.launchStage = 'GA';
+    expect(isContractDraft(published)).toBe(false);
+    expect(isContractDraft({ ...draft(), metadata: { name: 'payg' } })).toBe(false);
+  });
+
+  it('reads a draft the way it will bill, from its pricings', () => {
+    const pricing = (name: string, chargeType: 'OneTime' | 'Recurring', amount: string) => ({
+      metadata: { name },
+      spec: { chargeType, amount, currency: 'USD', displayName: name },
+    });
+    const view = withDraftSnapshot(draft(), [
+      pricing('setup', 'OneTime', '500.00'),
+      pricing('ports', 'Recurring', '300.00'),
+    ] as never);
+
+    // A pricing deleted meanwhile is left out rather than shown blank.
+    expect(view.spec?.servicePricings?.map((snapshot) => snapshot.name)).toEqual([
+      'setup',
+      'ports',
+    ]);
+    expect(getContractFees(view)).toEqual([
+      expect.objectContaining({ name: 'setup', chargeType: 'OneTime', amount: 500, quantity: 1 }),
+      expect.objectContaining({ name: 'ports', amount: 300, quantity: 4, discount: 10 }),
+    ]);
+  });
+
+  it('publishes a new contract only with a start date billing accepts', () => {
+    expect(draftPublishProblem(draft('2026-12-01T00:00:00Z'), null, now)).toBeNull();
+    expect(draftPublishProblem(draft(), null, now)).toBe('no-start');
+    expect(draftPublishProblem(draft('2026-11-01T00:00:00Z'), null, now)).toBe('start-passed');
+    expect(draftPublishProblem(draft('2028-01-01T00:00:00Z'), null, now)).toBe('start-too-far');
+    // An entitlement without a contract gets one the same way.
+    expect(draftPublishProblem(draft('2026-12-01T00:00:00Z'), entitlement(undefined), now)).toBe(
+      null
+    );
+  });
+
+  it('publishes a fee change onto the contract the account is on', () => {
+    const upcoming = entitlement('2026-12-01T00:00:00Z');
+    expect(draftPublishProblem(draft(), upcoming, now)).toBeNull();
+    // A draft that set up a contract can't once the account is on one.
+    expect(draftPublishProblem(draft('2026-12-01T00:00:00Z'), upcoming, now)).toBe(
+      'contract-exists'
+    );
+    // Once started, one-time fees would be charged again.
+    const started = entitlement('2026-10-01T00:00:00Z');
+    expect(draftPublishProblem(draft(), started, now)).toBe('one-time-after-start');
+    expect(draftPublishProblem(draft(undefined, ['Recurring']), started, now)).toBeNull();
+  });
+});
+
+describe('fee renewals', () => {
+  it('end the fee that many intervals from the start', () => {
+    const start = new Date('2026-11-12T00:00:00Z');
+    expect(feeEndsAt(start, 'monthly', 3).toISOString()).toBe('2027-02-12T00:00:00.000Z');
+    expect(feeEndsAt(start, 'quarterly', 4).toISOString()).toBe('2027-11-12T00:00:00.000Z');
+    expect(feeEndsAt(start, 'annual', 3).toISOString()).toBe('2029-11-12T00:00:00.000Z');
+    expect(feeEndsAt(new Date('2027-01-31T00:00:00Z'), 'monthly', 1).toISOString()).toBe(
+      '2027-02-28T00:00:00.000Z'
+    );
+  });
+
+  it('are read from the snapshot, and typed ones parsed', () => {
+    const promo = fixed('promo', 'Recurring', '100.00');
+    promo.periods = 3;
+    expect(getContractFees(offer([promo]))[0].periods).toBe(3);
+    expect(parsePeriods('36')).toBe(36);
+    expect(parsePeriods('')).toBeUndefined();
+    expect(parsePeriods('0')).toBeUndefined();
   });
 });
