@@ -1,11 +1,56 @@
-import { jsonFetch } from './http';
+import { isToolError, jsonFetch, type ToolError } from './http';
 import { env } from '@/utils/config/env.server';
 import { tool } from 'ai';
 import { z } from 'zod';
 
+/**
+ * Sentry's numeric issue id, as returned in `id` by `listSentryIssues`. The
+ * `issues/{id}/` endpoints used here do not accept short ids such as
+ * `CLOUD-PORTAL-1A`, so only digits are allowed.
+ */
+const SENTRY_ISSUE_ID = /^\d{1,20}$/;
+
+export const sentryIssueIdSchema = z
+  .string()
+  .regex(SENTRY_ISSUE_ID, 'issueId must be the numeric Sentry issue id')
+  .describe('The numeric Sentry issue ID (the `id` field from listSentryIssues, not the short ID)');
+
+/**
+ * The model chooses tool input, so the id is checked again here before it is
+ * placed in a URL path. Returns the path segment, or a tool error.
+ */
+export function toIssuePathSegment(issueId: unknown): string | ToolError {
+  const parsed = sentryIssueIdSchema.safeParse(issueId);
+  if (!parsed.success) {
+    return { error: 'Invalid Sentry issue ID: expected the numeric id from listSentryIssues' };
+  }
+  return encodeURIComponent(parsed.data);
+}
+
+/** True when the path (before any query string) cannot leave `/api/0/`. */
+export function isSafeSentryPath(path: string): boolean {
+  const [pathname] = path.split('?');
+  if (pathname.startsWith('/') || pathname.includes('\\')) return false;
+  return !pathname.split('/').some((segment) => {
+    const decoded = safeDecode(segment);
+    return decoded === null || decoded === '.' || decoded === '..';
+  });
+}
+
+function safeDecode(segment: string): string | null {
+  try {
+    return decodeURIComponent(segment);
+  } catch {
+    return null;
+  }
+}
+
 async function sentryApi(path: string) {
   if (!env.sentryApiUrl || !env.sentryApiToken) {
     return { error: 'Sentry API is not configured' };
+  }
+  if (!isSafeSentryPath(path)) {
+    return { error: 'Sentry API error: invalid request path' };
   }
   return jsonFetch(`${env.sentryApiUrl}/api/0/${path}`, {
     token: env.sentryApiToken,
@@ -89,12 +134,15 @@ export function createSentryTools() {
       description:
         'Get detailed information about a specific Sentry issue including last event, tags, and frequency.',
       inputSchema: z.object({
-        issueId: z.string().describe('The Sentry issue ID'),
+        issueId: sentryIssueIdSchema,
       }),
       execute: async ({ issueId }: { issueId: string }) => {
+        const segment = toIssuePathSegment(issueId);
+        if (isToolError(segment)) return segment;
+
         const [issue, latestEvent] = await Promise.all([
-          sentryApi(`issues/${issueId}/`),
-          sentryApi(`issues/${issueId}/events/latest/`),
+          sentryApi(`issues/${segment}/`),
+          sentryApi(`issues/${segment}/events/latest/`),
         ]);
         if (issue.error) return issue;
 
@@ -131,11 +179,14 @@ export function createSentryTools() {
         'List recent events (occurrences) for a specific Sentry issue.' +
         ' Use this to see recent stack traces and context for an error.',
       inputSchema: z.object({
-        issueId: z.string().describe('The Sentry issue ID'),
+        issueId: sentryIssueIdSchema,
         limit: z.number().int().min(1).max(10).default(5).describe('Max events to return'),
       }),
       execute: async ({ issueId, limit }: { issueId: string; limit: number }) => {
-        const result = await sentryApi(`issues/${issueId}/events/?limit=${limit}`);
+        const segment = toIssuePathSegment(issueId);
+        if (isToolError(segment)) return segment;
+
+        const result = await sentryApi(`issues/${segment}/events/?limit=${limit}`);
         if (result.error) return result;
 
         return {
