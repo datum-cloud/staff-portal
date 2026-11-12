@@ -66,8 +66,8 @@ export function ContractSummary({
   const feeCount = rows.length + listRows.filter((row) => row.selected).length;
   const feesError = !isSubmitted
     ? null
-    : feeCount === 0
-      ? t`Add a fee, or pick one from the price list.`
+    : feeCount === 0 && !usageRows.some((row) => row.selected)
+      ? t`Add a fee, or tick something on the price list.`
       : feeCount > MAX_CONTRACT_FEES
         ? t`A contract can have at most ${MAX_CONTRACT_FEES} fees, counting those from the price list.`
         : null;

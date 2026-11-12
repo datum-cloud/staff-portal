@@ -109,8 +109,11 @@ export const buildContractSchema = (
       }
       const listFees = values.listFees.filter((row) => row.selected);
       const feeCount = values.fees.length + listFees.length;
-      if (feeCount === 0) {
-        issue(['fees'], t`Add a fee, or pick one from the price list.`);
+      // A contract must bill something: a fee, or usage. Billing only needs
+      // the Offer to have a pricing, and one billing only usage is fine.
+      const billsUsage = values.usage.some((row) => row.selected);
+      if (feeCount === 0 && !billsUsage) {
+        issue(['fees'], t`Add a fee, or tick something on the price list.`);
       } else if (feeCount > MAX_CONTRACT_FEES) {
         issue(
           ['fees'],

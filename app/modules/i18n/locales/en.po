@@ -346,12 +346,12 @@ msgstr "≥ 70% used"
 msgid "${0} per {unit}"
 msgstr "${0} per {unit}"
 
-#: app/features/billing/components/contract-editor/schema.ts:127
-#: app/features/billing/components/contract-editor/schema.ts:137
+#: app/features/billing/components/contract-editor/schema.ts:130
+#: app/features/billing/components/contract-editor/schema.ts:140
 msgid "0 to 100."
 msgstr "0 to 100."
 
-#: app/features/billing/components/contract-editor/schema.ts:123
+#: app/features/billing/components/contract-editor/schema.ts:126
 msgid "1 to {MAX_FEE_QUANTITY}."
 msgstr "1 to {MAX_FEE_QUANTITY}."
 
@@ -417,19 +417,19 @@ msgid "A contact with this email already exists."
 msgstr "A contact with this email already exists."
 
 #: app/features/billing/components/contract-editor/contract-summary.tsx:72
-#: app/features/billing/components/contract-editor/schema.ts:117
+#: app/features/billing/components/contract-editor/schema.ts:120
 msgid "A contract can have at most {MAX_CONTRACT_FEES} fees, counting those from the price list."
 msgstr "A contract can have at most {MAX_CONTRACT_FEES} fees, counting those from the price list."
 
-#: app/features/billing/components/contract-editor/schema.ts:157
+#: app/features/billing/components/contract-editor/schema.ts:160
 msgid "A contract can start at most {MAX_CONTRACT_LEAD_DAYS} days ahead."
 msgstr "A contract can start at most {MAX_CONTRACT_LEAD_DAYS} days ahead."
 
-#: app/features/billing/components/contract-editor/schema.ts:156
+#: app/features/billing/components/contract-editor/schema.ts:159
 msgid "A contract can't start in the past: charges can't be backdated."
 msgstr "A contract can't start in the past: charges can't be backdated."
 
-#: app/features/billing/components/contract-editor/schema.ts:141
+#: app/features/billing/components/contract-editor/schema.ts:144
 msgid "A rate, such as 0.000012."
 msgstr "A rate, such as 0.000012."
 
@@ -572,9 +572,9 @@ msgid "Add"
 msgstr "Add"
 
 #: app/features/billing/components/contract-editor/contract-summary.tsx:70
-#: app/features/billing/components/contract-editor/schema.ts:113
-msgid "Add a fee, or pick one from the price list."
-msgstr "Add a fee, or pick one from the price list."
+#: app/features/billing/components/contract-editor/schema.ts:116
+msgid "Add a fee, or tick something on the price list."
+msgstr "Add a fee, or tick something on the price list."
 
 #: app/features/contact/components/timeline/note-composer.tsx:48
 #: app/features/notes/components/notes-card.tsx:154
@@ -759,7 +759,7 @@ msgstr "Amount"
 msgid "Amount ({CONTRACT_CURRENCY})"
 msgstr "Amount ({CONTRACT_CURRENCY})"
 
-#: app/features/billing/components/contract-editor/schema.ts:130
+#: app/features/billing/components/contract-editor/schema.ts:133
 msgid "An amount, such as 250.00."
 msgstr "An amount, such as 250.00."
 
@@ -4866,7 +4866,7 @@ msgstr "Pick a date"
 msgid "Pick a start date before publishing: edit the draft."
 msgstr "Pick a start date before publishing: edit the draft."
 
-#: app/features/billing/components/contract-editor/schema.ts:148
+#: app/features/billing/components/contract-editor/schema.ts:151
 msgid "Pick a start date."
 msgstr "Pick a start date."
 

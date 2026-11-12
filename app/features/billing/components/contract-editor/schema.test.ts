@@ -104,10 +104,21 @@ describe('buildContractSchema', () => {
     ]);
   });
 
-  it('needs a fee of its own or one from the price list', () => {
+  it('needs something to bill: a fee of its own, or one or usage from the price list', () => {
     const schema = buildContractSchema(false, true, now);
     expect(schema.safeParse(empty).success).toBe(false);
     expect(schema.safeParse({ ...empty, listFees: [listFee] }).success).toBe(true);
+    const meter = {
+      metric: 'cpu',
+      selected: true,
+      pricingName: 'compute-vcpu-v1',
+      discount: '',
+      amounts: [''],
+    };
+    expect(schema.safeParse({ ...empty, usage: [meter] }).success).toBe(true);
+    expect(schema.safeParse({ ...empty, usage: [{ ...meter, selected: false }] }).success).toBe(
+      false
+    );
   });
 
   it("checks a list fee's quantity, discount and customer amount", () => {
