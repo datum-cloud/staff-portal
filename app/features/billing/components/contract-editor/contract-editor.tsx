@@ -418,7 +418,7 @@ function ContractEditorForm({
           <div className="flex min-w-0 flex-col gap-4">
             <SectionCard
               title={<Trans>Contract fees</Trans>}
-              description={t`For anything that isn't on the price list below: a price we don't list, a manual product or service, one-off work, or a fee negotiated for this customer. Each is its own invoice line.`}>
+              description={t`Anything that isn't on the price list, such as a manual product, one-off work or a negotiated price. Each fee is its own invoice line.`}>
               <ContractFeeList services={services} allowOneTime={allowOneTime} />
             </SectionCard>
 

@@ -18,6 +18,7 @@ import { billingTimingText, feeChargeText, recurringTotalsText } from '../contra
 import {
   fromListFeeRowValues,
   type ContractFeeRow,
+  type ContractFormValues,
   type ListFeeRowValues,
   type UsageRowValues,
 } from './schema';
@@ -25,6 +26,7 @@ import { Form } from '@datum-cloud/datum-ui/form';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Plural, Trans } from '@lingui/react/macro';
 import type { ReactNode } from 'react';
+import { useFormState, type UseFormReturn } from 'react-hook-form';
 
 type SummaryFee = {
   key: string;
@@ -53,6 +55,10 @@ export function ContractSummary({
   const listRows = (Form.useWatch('listFees') as ListFeeRowValues[] | undefined) ?? [];
   const usageRows = (Form.useWatch('usage') as UsageRowValues[] | undefined) ?? [];
   const picked = Form.useWatch('startsAt') as Date | undefined;
+  // Errors about the contract's fees as a whole: none at all, or too many.
+  const form = Form.useFormContext().form.raw as UseFormReturn<ContractFormValues>;
+  const { errors } = useFormState({ control: form.control, name: 'fees' });
+  const feesError = errors.fees?.message ?? errors.fees?.root?.message;
 
   const fees: SummaryFee[] = [
     ...rows.map((row, index) => ({
@@ -226,6 +232,12 @@ export function ContractSummary({
             </Trans>
           </Text>
         </div>
+      ) : null}
+
+      {feesError ? (
+        <Text size="sm" textColor="destructive" role="alert">
+          {feesError}
+        </Text>
       ) : null}
 
       {children}
