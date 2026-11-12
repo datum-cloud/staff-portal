@@ -2,6 +2,7 @@ import {
   collectOrgIssues,
   countByArea,
   ISSUE_AREAS,
+  NETWORK_SOURCE,
   type AreaCount,
   type IssueArea,
   type OrgIssue,
@@ -90,7 +91,15 @@ export function useOrgIssues(orgName: string): OrgIssues {
     const computeUnread = [...compute.projects]
       .filter(([, project]) => project.isError)
       .map(([name]) => name);
-    const networkUnread = projectNames.filter((name) => networkByProject.get(name)?.isError);
+    // A project is unread for an area when its whole network query failed, or
+    // just that area's source did.
+    const networkUnreadFor = (source: keyof ProjectNetworkStatus) =>
+      projectNames.filter((name) => {
+        const result = networkByProject.get(name);
+        if (result?.isError) return true;
+        const data = result?.data as ProjectNetworkStatus | undefined;
+        return Boolean(data) && data?.[source] === undefined;
+      });
     const computeLoading =
       compute.isLoading || [...compute.projects.values()].some((p) => p.isLoading);
     const networkLoading = projectsQuery.isLoading || network.some((r) => r.isLoading);
@@ -106,12 +115,15 @@ export function useOrgIssues(orgName: string): OrgIssues {
         };
       }
       const quota = area === 'quota';
+      const unreadProjects = networkUnreadFor(NETWORK_SOURCE[area as keyof typeof NETWORK_SOURCE]);
+      // Every project failing for this area is a failed source, not a few unread projects.
+      const allUnread = projectNames.length > 0 && unreadProjects.length === projectNames.length;
       return {
         ...counts[area],
         enabled: true,
         isLoading: networkLoading || (quota && orgQuota.isLoading),
-        isError: projectsQuery.isError || (quota && orgQuota.isError),
-        unreadProjects: networkUnread,
+        isError: projectsQuery.isError || allUnread || (quota && orgQuota.isError),
+        unreadProjects: allUnread ? [] : unreadProjects,
       };
     };
 

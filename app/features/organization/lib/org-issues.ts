@@ -426,13 +426,26 @@ export function countByArea(
 
 // ── Collect ───────────────────────────────
 
-/** One project's load balancers, domains, DNS zones and quota buckets. */
+/**
+ * One project's load balancers, domains, DNS zones and quota buckets. A source
+ * that couldn't be read is `undefined`, so it adds no issues and no totals.
+ */
 export interface ProjectNetworkStatus {
-  proxies: readonly ComDatumapisNetworkingV1AlphaHttpProxy[];
-  domains: readonly ComDatumapisNetworkingV1AlphaDomain[];
-  dnsZones: readonly ComMiloapisNetworkingDnsV1Alpha1DnsZone[];
-  quotaBuckets: readonly ComMiloapisQuotaV1Alpha1AllowanceBucket[];
+  proxies?: readonly ComDatumapisNetworkingV1AlphaHttpProxy[];
+  domains?: readonly ComDatumapisNetworkingV1AlphaDomain[];
+  dnsZones?: readonly ComMiloapisNetworkingDnsV1Alpha1DnsZone[];
+  quotaBuckets?: readonly ComMiloapisQuotaV1Alpha1AllowanceBucket[];
 }
+
+/** Which network source feeds each network area. */
+export const NETWORK_SOURCE: Readonly<
+  Record<'loadBalancers' | 'domains' | 'dnsZones' | 'quota', keyof ProjectNetworkStatus>
+> = {
+  loadBalancers: 'proxies',
+  domains: 'domains',
+  dnsZones: 'dnsZones',
+  quota: 'quotaBuckets',
+};
 
 export interface OrgIssueSources {
   orgName: string;
@@ -460,10 +473,10 @@ export function collectOrgIssues(
         : []),
       ...(network
         ? [
-            ...httpProxyIssues(name, network.proxies, now),
-            ...domainIssues(name, network.domains, now),
-            ...dnsZoneIssues(name, network.dnsZones, now),
-            ...quotaIssues({ orgName, project: name }, network.quotaBuckets),
+            ...httpProxyIssues(name, network.proxies ?? [], now),
+            ...domainIssues(name, network.domains ?? [], now),
+            ...dnsZoneIssues(name, network.dnsZones ?? [], now),
+            ...quotaIssues({ orgName, project: name }, network.quotaBuckets ?? []),
           ]
         : []),
     ]),
@@ -478,10 +491,10 @@ export function collectOrgIssues(
     totals: {
       workloads: sum((p) => p.compute?.workloads.length ?? 0),
       instances: sum((p) => p.compute?.instances.length ?? 0),
-      loadBalancers: sum((p) => p.network?.proxies.length ?? 0),
-      domains: sum((p) => p.network?.domains.length ?? 0),
-      dnsZones: sum((p) => p.network?.dnsZones.length ?? 0),
-      quota: sum((p) => p.network?.quotaBuckets.length ?? 0) + orgQuotaBuckets.length,
+      loadBalancers: sum((p) => p.network?.proxies?.length ?? 0),
+      domains: sum((p) => p.network?.domains?.length ?? 0),
+      dnsZones: sum((p) => p.network?.dnsZones?.length ?? 0),
+      quota: sum((p) => p.network?.quotaBuckets?.length ?? 0) + orgQuotaBuckets.length,
     },
   };
 }

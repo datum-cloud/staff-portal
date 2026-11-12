@@ -101,21 +101,36 @@ export const projectComputeQuery = async (projectName: string, signal?: AbortSig
 /**
  * A project's load balancers, domains, DNS zones and quota buckets, fetched
  * together for the org overview. Lists are requested without a limit, so the
- * API returns every item.
+ * API returns every item. Each source fails on its own: a source that couldn't
+ * be read comes back `undefined`, and only when all four fail does the whole
+ * call reject (e.g. a project the staff user can't read).
  */
 export const projectNetworkQuery = async (projectName: string, signal?: AbortSignal) => {
   const baseURL = `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`;
-  const [proxies, domains, dnsZones, quotaBuckets] = await Promise.all([
-    listNetworkingDatumapisComV1AlphaHttpProxyForAllNamespaces({ baseURL, signal }),
-    listNetworkingDatumapisComV1AlphaDomainForAllNamespaces({ baseURL, signal }),
-    listDnsNetworkingMiloapisComV1Alpha1DnsZoneForAllNamespaces({ baseURL, signal }),
-    projectQuotaBucketListQuery(projectName, { signal }),
+  const [proxies, domains, dnsZones, quotaBuckets] = await Promise.allSettled([
+    listNetworkingDatumapisComV1AlphaHttpProxyForAllNamespaces({ baseURL, signal }).then(
+      (response) => response.data.data?.items ?? []
+    ),
+    listNetworkingDatumapisComV1AlphaDomainForAllNamespaces({ baseURL, signal }).then(
+      (response) => response.data.data?.items ?? []
+    ),
+    listDnsNetworkingMiloapisComV1Alpha1DnsZoneForAllNamespaces({ baseURL, signal }).then(
+      (response) => response.data.data?.items ?? []
+    ),
+    projectQuotaBucketListQuery(projectName, { signal }).then((list) => list?.items ?? []),
   ]);
+
+  const results = [proxies, domains, dnsZones, quotaBuckets];
+  const firstFailure = results.find((r): r is PromiseRejectedResult => r.status === 'rejected');
+  if (firstFailure && results.every((r) => r.status === 'rejected')) throw firstFailure.reason;
+
+  const value = <T>(result: PromiseSettledResult<T>) =>
+    result.status === 'fulfilled' ? result.value : undefined;
   return {
-    proxies: proxies.data.data?.items ?? [],
-    domains: domains.data.data?.items ?? [],
-    dnsZones: dnsZones.data.data?.items ?? [],
-    quotaBuckets: quotaBuckets?.items ?? [],
+    proxies: value(proxies),
+    domains: value(domains),
+    dnsZones: value(dnsZones),
+    quotaBuckets: value(quotaBuckets),
   };
 };
 

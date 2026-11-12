@@ -431,4 +431,22 @@ describe('collectOrgIssues', () => {
       quota: 1,
     });
   });
+
+  it('skips a network source that failed and leaves it out of the totals', () => {
+    const { issues, totals } = collectOrgIssues(
+      {
+        orgName: 'org-1',
+        projects: [
+          {
+            name: 'a',
+            // DNS zones and quota couldn't be read for this project.
+            network: { proxies: [], domains: [] },
+          },
+        ],
+      },
+      NOW
+    );
+    expect(issues).toEqual([]);
+    expect(totals).toMatchObject({ loadBalancers: 0, domains: 0, dnsZones: 0, quota: 0 });
+  });
 });
