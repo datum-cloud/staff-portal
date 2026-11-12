@@ -37,6 +37,9 @@ const usageRowSchema = z.object({
   currentPricing: z.string().optional(),
 });
 
+/** When a recurring fee is invoiced: a term of the contract, on the Offer's reference. */
+const billingTimingSchema = z.enum(['InAdvance', 'InArrears']);
+
 /** A list fee's row in the form; an empty amount means the list amount. */
 const listFeeRowSchema = z.object({
   name: z.string(),
@@ -44,6 +47,7 @@ const listFeeRowSchema = z.object({
   quantity: z.string(),
   discount: z.string(),
   amount: z.string(),
+  billingTiming: billingTimingSchema,
   currentPricing: z.string().optional(),
 });
 
@@ -67,6 +71,10 @@ export const buildContractSchema = (
             .trim()
             .min(1, t`Name the fee, as invoices show it.`),
           chargeType: z.enum(['OneTime', 'Recurring']),
+          // For a recurring fee: how often it's charged, and when it's
+          // invoiced. Kept on a one-time fee's row, and ignored.
+          interval: z.enum(['monthly', 'quarterly', 'annual']),
+          billingTiming: billingTimingSchema,
           amount: z.string().refine((value) => parseAmount(value) > 0, {
             message: t`Enter an amount, such as 1000 or 1000.00.`,
           }),
@@ -180,6 +188,7 @@ export const toListFeeRowValues = (row: ListFeeRow): ListFeeRowValues => ({
   quantity: row.quantity,
   discount: row.discount,
   amount: row.custom ? row.amount : '',
+  billingTiming: row.billingTiming,
   currentPricing: row.currentPricing,
 });
 
@@ -189,10 +198,15 @@ export const fromListFeeRowValues = (row: ListFeeRowValues): ListFeeRow => ({
   custom: row.amount.trim() !== '',
 });
 
-/** Whether a fee row still charges exactly what an existing pricing does. */
+/**
+ * Whether a fee row still charges exactly what an existing pricing does. A
+ * recurring fee's interval is the pricing's; its timing isn't, it's on the
+ * Offer's reference.
+ */
 export const sameFeePricing = (row: ContractFeeRow, fee: ContractFee) =>
   row.label.trim() === fee.label &&
   row.chargeType === fee.chargeType &&
+  (row.chargeType === 'OneTime' || row.interval === (fee.interval ?? 'monthly')) &&
   parseAmount(row.amount) === fee.amount &&
   row.pricingUnit.trim() === (fee.pricingUnit ?? '') &&
   (row.serviceRef === NO_SERVICE ? '' : row.serviceRef) === (fee.serviceRef ?? '');

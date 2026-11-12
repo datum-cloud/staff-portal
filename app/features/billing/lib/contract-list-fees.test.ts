@@ -60,7 +60,12 @@ const pricings = [
 const options = listFeeOptions(pricings);
 
 const offer = (
-  refs: { name: string; quantity?: number; discount?: { percentage: number } }[],
+  refs: {
+    name: string;
+    quantity?: number;
+    discount?: { percentage: number };
+    billingTiming?: 'InAdvance' | 'InArrears';
+  }[],
   snapshots: { name: string; spec: Spec; quantity?: number; discount?: { percentage: number } }[]
 ) =>
   ({
@@ -80,6 +85,7 @@ const row = (name: string, changes: Partial<ListFeeRow> = {}): ListFeeRow => ({
   discount: '',
   custom: false,
   amount: '',
+  billingTiming: 'InArrears',
   ...changes,
 });
 
@@ -104,8 +110,24 @@ describe('list fee rows', () => {
       quantity: '4',
       discount: '10',
       custom: false,
+      // The ref has no timing, so it's billed in advance.
+      billingTiming: 'InAdvance',
     });
-    expect(rows.find((r) => r.name === 'rack-install-v1')?.selected).toBe(false);
+    expect(rows.find((r) => r.name === 'rack-install-v1')).toMatchObject({
+      selected: false,
+      billingTiming: 'InArrears',
+    });
+  });
+
+  it("start from the timing the offer's reference sets", () => {
+    const current = offer(
+      [{ name: 'cross-connect-v1', billingTiming: 'InArrears' }],
+      [{ name: 'cross-connect-v1', spec: crossConnect }]
+    );
+    expect(listFeeRowsFromOffer(options, current)[1]).toMatchObject({
+      selected: true,
+      billingTiming: 'InArrears',
+    });
   });
 
   it("pick up the customer's own amount from the fee based on the list one", () => {
@@ -168,9 +190,32 @@ describe('buildListFeePlan', () => {
         pricingUnit: 'port',
         serviceRef: 'bare-metal.datumapis.com',
         discount: 10,
+        interval: 'monthly',
+        billingTiming: 'InArrears',
         existingPricing: 'cross-connect-v1',
       },
     ]);
+  });
+
+  it("gives a recurring fee the row's timing and the list fee's interval, a one-time fee neither", () => {
+    const quarterly = listFeeOptions([
+      pricing('maintenance-v1', { ...crossConnect, interval: 'quarterly' }),
+      pricing('rack-install-v1', install),
+    ]);
+    const plan = buildListFeePlan(
+      [
+        row('rack-install-v1', { billingTiming: 'InAdvance' }),
+        row('maintenance-v1', { billingTiming: 'InAdvance' }),
+      ],
+      quarterly
+    );
+    expect(plan.find((fee) => fee.label === 'Cross connect')).toMatchObject({
+      interval: 'quarterly',
+      billingTiming: 'InAdvance',
+    });
+    const oneTime = plan.find((fee) => fee.chargeType === 'OneTime');
+    expect(oneTime?.interval).toBeUndefined();
+    expect(oneTime?.billingTiming).toBeUndefined();
   });
 
   it("creates a customer fee based on the list one for the customer's own amount", () => {

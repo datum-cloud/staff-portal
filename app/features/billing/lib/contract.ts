@@ -16,6 +16,23 @@ type OfferSpec = NonNullable<ComMiloapisBillingV1Alpha1Offer['spec']>;
 type ServicePricingRef = NonNullable<OfferSpec['servicePricingRefs']>[number];
 type ChargeType = NonNullable<OfferSpec['chargeTypes']>[number];
 
+/** How often a recurring fee is charged: its pricing's interval. */
+export type FeeInterval = 'monthly' | 'quarterly' | 'annual';
+
+/**
+ * When a recurring fee is invoiced: at the start of each of its periods, or
+ * at the end with that period's usage. It's a term of the contract, on the
+ * Offer's reference, not of the price.
+ */
+export type FeeBillingTiming = 'InAdvance' | 'InArrears';
+
+/** What new contract fees are billed: in arrears, unless staff choose in advance. */
+export const DEFAULT_FEE_BILLING_TIMING: FeeBillingTiming = 'InArrears';
+
+/** How many months one period of a recurring fee is. */
+export const intervalMonths = (interval: FeeInterval | undefined) =>
+  interval === 'quarterly' ? 3 : interval === 'annual' ? 12 : 1;
+
 /** Contract fees are USD only, like every ServicePricing. */
 export const CONTRACT_CURRENCY = 'USD';
 
@@ -98,6 +115,7 @@ export const withDraftSnapshot = (
         spec,
         ...(ref.quantity ? { quantity: ref.quantity } : {}),
         ...(ref.discount ? { discount: ref.discount } : {}),
+        ...(ref.billingTiming ? { billingTiming: ref.billingTiming } : {}),
       },
     ];
   });
@@ -215,7 +233,19 @@ export interface ContractFee {
   basedOn?: string;
   /** Percent off the fee, if the Offer gives one. */
   discount?: number;
+  /** How often a recurring fee is charged; unset for a one-time fee. */
+  interval?: FeeInterval;
+  /** When a recurring fee is invoiced; unset for a one-time fee. */
+  billingTiming?: FeeBillingTiming;
 }
+
+/**
+ * When a recurring fee in a snapshot is invoiced: as the snapshot says, or
+ * in advance when it doesn't, as billing reads a fee from before the choice
+ * existed or whose Offer didn't make it.
+ */
+export const snapshotBillingTiming = (snapshot: { billingTiming?: FeeBillingTiming }) =>
+  snapshot.billingTiming ?? 'InAdvance';
 
 /** An offer's fixed fees, setup fee first, from its pricing snapshots. */
 export const getContractFees = (
@@ -238,6 +268,12 @@ export const getContractFees = (
           serviceRef: spec.serviceRef || undefined,
           basedOn: spec.basedOn || undefined,
           discount: snapshot.discount?.percentage || undefined,
+          ...(spec.chargeType === 'Recurring'
+            ? {
+                interval: spec.interval ?? 'monthly',
+                billingTiming: snapshotBillingTiming(snapshot),
+              }
+            : {}),
         },
       ];
     })
@@ -307,6 +343,8 @@ export const contractOfferPlan = ({
     chargeType: ContractFee['chargeType'];
     quantity?: number;
     discount?: number;
+    /** A recurring fee's timing; it's always set, so it doesn't fall back to billing's default. */
+    billingTiming?: FeeBillingTiming;
   }[];
   usageRefs: ServicePricingRef[];
 }): ContractOfferPlan => {
@@ -320,6 +358,9 @@ export const contractOfferPlan = ({
         namespace,
         ...(fee.quantity && fee.quantity > 1 ? { quantity: fee.quantity } : {}),
         ...(fee.discount ? { discount: { percentage: fee.discount } } : {}),
+        ...(fee.chargeType === 'Recurring' && fee.billingTiming
+          ? { billingTiming: fee.billingTiming }
+          : {}),
       })),
       ...usageRefs,
     ],
@@ -345,7 +386,14 @@ type FeeAmount = {
   amount: number;
   /** How many of the fee are charged; 1 when unset. */
   quantity?: number;
+  /** A recurring fee's interval; monthly when unset. */
+  interval?: FeeInterval;
+  /** A recurring fee's timing; in advance when unset, as billing reads it. */
+  billingTiming?: FeeBillingTiming;
 };
+
+const inAdvance = (fee: FeeAmount) =>
+  fee.chargeType === 'OneTime' || (fee.billingTiming ?? 'InAdvance') === 'InAdvance';
 
 /** What a fee charges: its amount times its quantity, in cents. */
 export const feeTotal = (fee: FeeAmount) =>
@@ -369,47 +417,77 @@ const sumFees = (fees: FeeAmount[], keep: (fee: FeeAmount) => boolean) =>
 
 /** What the contract charges each month: its monthly fees. */
 export const monthlyTotal = (fees: FeeAmount[]) =>
-  sumFees(fees, (fee) => fee.chargeType === 'Recurring');
+  sumFees(
+    fees,
+    (fee) => fee.chargeType === 'Recurring' && (fee.interval ?? 'monthly') === 'monthly'
+  );
+
+/** What the contract's recurring fees charge each period, by interval. */
+export const recurringTotals = (fees: FeeAmount[]): Record<FeeInterval, number> => ({
+  monthly: monthlyTotal(fees),
+  quarterly: sumFees(fees, (fee) => fee.chargeType === 'Recurring' && fee.interval === 'quarterly'),
+  annual: sumFees(fees, (fee) => fee.chargeType === 'Recurring' && fee.interval === 'annual'),
+});
+
+/** Whether any of the fees is a recurring one billed in arrears. */
+export const hasFeesInArrears = (fees: FeeAmount[]) =>
+  fees.some((fee) => fee.chargeType === 'Recurring' && !inAdvance(fee));
 
 /**
- * The contract's first invoice: its one-time fees and the first month of
- * its monthly ones, all charged in advance on the start date.
+ * The contract's first invoice: its one-time fees and the first period of
+ * the recurring fees billed in advance, all charged on the start date. Fees
+ * billed in arrears are invoiced at the end of their first period.
  */
-export const firstInvoiceTotal = (fees: FeeAmount[]) => sumFees(fees, () => true);
+export const firstInvoiceTotal = (fees: FeeAmount[]) => sumFees(fees, inAdvance);
 
 /**
- * When a contract's first billing period ends: a month after it starts, or
- * the last day of a shorter month (a contract starting on 31 January's
- * first period ends on 28 or 29 February).
+ * When the first period of a fee charged every `months` months ends, for
+ * a contract starting on `startsAt`: that many months on, on the same day,
+ * or the last day of a shorter month (a monthly fee starting on 31
+ * January's first period ends on 28 or 29 February).
  */
-export const firstPeriodEnd = (startsAt: Date): Date => {
+export const firstPeriodEnd = (startsAt: Date, months = 1): Date => {
   const year = startsAt.getUTCFullYear();
-  const month = startsAt.getUTCMonth() + 1;
+  const month = startsAt.getUTCMonth() + months;
   const lastDay = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
   return new Date(Date.UTC(year, month, Math.min(startsAt.getUTCDate(), lastDay)));
 };
 
 /**
- * How much of the first month a contract's monthly fees are charged for
- * when the account starts on them at a given moment. OpenMeter prorates a
- * flat fee from when the subscription starts, and can't start it in the
- * past, so a contract set up on the day it starts gets a part month; one
- * set up ahead starts at midnight and gets a full one.
+ * How much of its first period a fee charged every `months` months is
+ * charged for when the account starts on it at a given moment. OpenMeter
+ * prorates a flat fee from when the subscription starts, and can't start it
+ * in the past, so a contract set up on the day it starts gets a part
+ * period; one set up ahead starts at midnight and gets a full one.
  */
-export const firstMonthShare = (startsAt: Date, subscribedAt: Date): number => {
-  const end = firstPeriodEnd(startsAt).getTime();
+export const firstPeriodShare = (startsAt: Date, subscribedAt: Date, months = 1): number => {
+  const end = firstPeriodEnd(startsAt, months).getTime();
   const from = Math.max(startsAt.getTime(), subscribedAt.getTime());
   return Math.min(1, Math.max(0, (end - from) / (end - startsAt.getTime())));
 };
 
-/** The first invoice with its monthly fees prorated by share, fee by fee. */
-export const proratedFirstInvoiceTotal = (fees: FeeAmount[], share: number) =>
+/** firstPeriodShare for a monthly fee. */
+export const firstMonthShare = (startsAt: Date, subscribedAt: Date): number =>
+  firstPeriodShare(startsAt, subscribedAt, 1);
+
+/**
+ * The first invoice when the account starts on the contract at
+ * `subscribedAt`: its one-time fees, and each recurring fee billed in
+ * advance prorated for the part of its own first period left.
+ */
+export const proratedFirstInvoiceTotal = (fees: FeeAmount[], startsAt: Date, subscribedAt: Date) =>
   cents(
     fees
-      .filter((fee) => !Number.isNaN(fee.amount))
+      .filter((fee) => !Number.isNaN(fee.amount) && inAdvance(fee))
       .reduce(
         (total, fee) =>
-          total + (fee.chargeType === 'Recurring' ? cents(feeTotal(fee) * share) : feeTotal(fee)),
+          total +
+          (fee.chargeType === 'Recurring'
+            ? cents(
+                feeTotal(fee) *
+                  firstPeriodShare(startsAt, subscribedAt, intervalMonths(fee.interval))
+              )
+            : feeTotal(fee)),
         0
       )
   );

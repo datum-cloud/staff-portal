@@ -57,11 +57,15 @@ describe('list fee rows', () => {
       discount: '',
       custom: false,
       amount: '300.00',
+      billingTiming: 'InArrears' as const,
     };
     expect(toListFeeRowValues(base).amount).toBe('');
     expect(toListFeeRowValues({ ...base, custom: true, amount: '250.00' }).amount).toBe('250.00');
     expect(fromListFeeRowValues({ ...toListFeeRowValues(base), amount: '250' }).custom).toBe(true);
     expect(fromListFeeRowValues(toListFeeRowValues(base)).custom).toBe(false);
+    expect(toListFeeRowValues({ ...base, billingTiming: 'InAdvance' }).billingTiming).toBe(
+      'InAdvance'
+    );
   });
 });
 
@@ -74,7 +78,31 @@ describe('buildContractSchema', () => {
     quantity: '2',
     discount: '',
     amount: '',
+    billingTiming: 'InArrears' as const,
   };
+  const fee = {
+    label: 'Annual support',
+    chargeType: 'Recurring' as const,
+    interval: 'annual' as const,
+    billingTiming: 'InAdvance' as const,
+    amount: '6000',
+    quantity: '1',
+    pricingUnit: '',
+    serviceRef: 'none',
+  };
+
+  it("takes a recurring fee's interval and timing, and refuses others", () => {
+    const schema = buildContractSchema(false, true, now);
+    expect(schema.safeParse({ ...empty, fees: [fee] }).success).toBe(true);
+    const result = schema.safeParse({
+      ...empty,
+      fees: [{ ...fee, interval: 'weekly', billingTiming: 'Never' }],
+    });
+    expect(result.error?.issues.map((i) => i.path.join('.'))).toEqual([
+      'fees.0.interval',
+      'fees.0.billingTiming',
+    ]);
+  });
 
   it('needs a fee of its own or one from the price list', () => {
     const schema = buildContractSchema(false, true, now);

@@ -8,6 +8,8 @@ import {
   getContractState,
   isContractDraft,
   type DraftPublishProblem,
+  type FeeBillingTiming,
+  type FeeInterval,
 } from '@/features/billing/lib/contract';
 import type { UsagePlan } from '@/features/billing/lib/contract-usage';
 import type { OfferDiscount } from '@/features/billing/lib/offer-discounts';
@@ -377,6 +379,8 @@ export type CreateFixedServicePricingInput = {
   serviceRef?: string;
   /** What the amount is per, e.g. "port", if the fee has a unit. */
   pricingUnit?: string;
+  /** How often a recurring fee is charged; monthly when unset. */
+  interval?: FeeInterval;
   /**
    * The list fee this is the customer's own amount for. It must match it
    * in everything but the amount and name, which billing checks.
@@ -386,8 +390,9 @@ export type CreateFixedServicePricingInput = {
 };
 
 /**
- * A one-time or monthly fee, such as a contract's. Pricings are immutable,
- * so a new fee is always a new pricing.
+ * A one-time or recurring fee, such as a contract's: a recurring one is
+ * charged monthly, quarterly or annually. Pricings are immutable, so a new
+ * fee is always a new pricing.
  */
 export const createFixedServicePricing = async (input: CreateFixedServicePricingInput) => {
   const response = await createBillingMiloapisComV1Alpha1NamespacedServicePricing({
@@ -407,7 +412,7 @@ export const createFixedServicePricing = async (input: CreateFixedServicePricing
         ...(input.basedOn ? { basedOn: input.basedOn } : {}),
         ...(input.chargeType === 'OneTime'
           ? { trigger: 'BillingAccountActivation' as const }
-          : { interval: 'monthly' as const }),
+          : { interval: input.interval ?? ('monthly' as const) }),
       },
     },
   });
@@ -479,6 +484,10 @@ export type ContractFeeInput = {
   basedOn?: string;
   /** Percent off the fee, if any. */
   discount?: number;
+  /** How often a recurring fee is charged: its pricing's interval. */
+  interval?: FeeInterval;
+  /** When a recurring fee is invoiced, set on the Offer's reference. */
+  billingTiming?: FeeBillingTiming;
 };
 
 export type CreateContractOfferInput = {
@@ -582,6 +591,7 @@ const createContractPricings = async (
       amount: fee.amount,
       serviceRef: fee.serviceRef,
       pricingUnit: fee.pricingUnit,
+      interval: fee.chargeType === 'Recurring' ? fee.interval : undefined,
       basedOn: fee.basedOn,
       labels,
     });

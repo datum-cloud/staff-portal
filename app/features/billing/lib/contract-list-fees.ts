@@ -1,9 +1,12 @@
 import {
+  DEFAULT_FEE_BILLING_TIMING,
   discountText,
   isContractResource,
   parseAmount,
   parseDiscount,
   toPricingAmount,
+  type FeeBillingTiming,
+  type FeeInterval,
 } from './contract';
 import type {
   ComMiloapisBillingV1Alpha1Offer,
@@ -34,6 +37,8 @@ export interface ListFeeOption {
   pricingUnit: string;
   /** The list amount, as a decimal string. */
   amount: string;
+  /** How often a recurring list fee is charged; unset for a one-time one. */
+  interval?: FeeInterval;
 }
 
 const isFeeChargeType = (value: string | undefined): value is FeeChargeType =>
@@ -59,6 +64,7 @@ export const listFeeOptions = (pricings: ServicePricing[]): ListFeeOption[] =>
           serviceRef: spec.serviceRef ?? '',
           pricingUnit: spec.pricingUnit ?? '',
           amount: spec.amount,
+          ...(spec.chargeType === 'Recurring' ? { interval: spec.interval ?? 'monthly' } : {}),
         },
       ];
     })
@@ -84,6 +90,11 @@ export interface ListFeeRow {
   /** The customer's amount, as typed. */
   amount: string;
   /**
+   * When the contract invoices a recurring list fee. It's the contract's
+   * term, not the list fee's, so it's on the Offer's reference.
+   */
+  billingTiming: FeeBillingTiming;
+  /**
    * The customer fee the contract already charges, so an amendment that
    * keeps its amount reuses it rather than creating another.
    */
@@ -92,8 +103,10 @@ export interface ListFeeRow {
 
 /**
  * The form's starting rows: each list fee ticked if `offer` charges it, or a
- * customer fee based on it, with its quantity and discount. A row takes the
- * first such ref; any other for the same list fee is left to listFeeNames.
+ * customer fee based on it, with its quantity, discount and timing. A row
+ * takes the first such ref; any other for the same list fee is left to
+ * listFeeNames. A ref without a timing is billed in advance, as billing
+ * reads it; an unticked row starts in arrears, as new fees do.
  */
 export const listFeeRowsFromOffer = (
   options: ListFeeOption[],
@@ -109,13 +122,15 @@ export const listFeeRowsFromOffer = (
       discount: '',
       custom: false,
       amount: option.amount,
+      billingTiming: DEFAULT_FEE_BILLING_TIMING,
     };
     for (const ref of refs) {
       const snap = snapshots.get(ref.name);
       const quantity = String(snap?.quantity || ref.quantity || 1);
       const discount = discountText(ref.discount?.percentage);
+      const billingTiming = ref.billingTiming ?? snap?.billingTiming ?? 'InAdvance';
       if (ref.name === option.name) {
-        return { ...blank, selected: true, quantity, discount };
+        return { ...blank, selected: true, quantity, discount, billingTiming };
       }
       if (snap?.spec?.basedOn === option.name && isFeeChargeType(snap.spec.chargeType)) {
         return {
@@ -123,6 +138,7 @@ export const listFeeRowsFromOffer = (
           selected: true,
           quantity,
           discount,
+          billingTiming,
           custom: true,
           amount: snap.spec.amount ?? option.amount,
           currentPricing: ref.name,
@@ -158,6 +174,10 @@ export interface PlannedListFee {
   serviceRef?: string;
   /** Percent off, if any. */
   discount?: number;
+  /** How often a recurring fee is charged: the list fee's interval. */
+  interval?: FeeInterval;
+  /** When a recurring fee is invoiced. */
+  billingTiming?: FeeBillingTiming;
   /** The pricing to refer to as it is: the list fee, or a kept customer fee. */
   existingPricing?: string;
   /** For a customer fee to create: the list fee it's based on. */
@@ -192,6 +212,9 @@ export const buildListFeePlan = (
       pricingUnit: option.pricingUnit || undefined,
       serviceRef: option.serviceRef || undefined,
       discount: parseDiscount(row.discount),
+      ...(option.chargeType === 'Recurring'
+        ? { interval: option.interval ?? 'monthly', billingTiming: row.billingTiming }
+        : {}),
     };
     if (!row.custom || amount === Number.parseFloat(option.amount)) {
       return [{ ...fee, existingPricing: option.name }];

@@ -17,6 +17,7 @@ import {
   PAST_INVOICE_STATUS_BADGE,
   toPastInvoiceRow,
 } from '../../utils';
+import { billingTimingText, feeChargeText } from '../contract-fee-text';
 import { BILLING_ACCOUNT_SECTION_IDS, CardMessage, InlineDate, SectionAnchor } from './card-parts';
 import { BadgeState } from '@/components/badge';
 import { SectionCard } from '@/features/milo';
@@ -226,6 +227,7 @@ export function ContractFees({ offer }: { offer: ComMiloapisBillingV1Alpha1Offer
                 ? t`list ${formatMoney(listAmount, CONTRACT_CURRENCY)}`
                 : null,
               fee.discount ? t`${fee.discount}% off ${beforeDiscount}` : null,
+              fee.billingTiming ? billingTimingText(fee.billingTiming) : null,
               fee.serviceRef
                 ? servicesByRef.get(fee.serviceRef)?.spec?.displayName || fee.serviceRef
                 : null,
@@ -243,11 +245,7 @@ export function ContractFees({ offer }: { offer: ComMiloapisBillingV1Alpha1Offer
                   ) : null}
                 </div>
                 <Text size="sm" className="shrink-0 tabular-nums">
-                  {fee.chargeType === 'OneTime' ? (
-                    <Trans>{total} once</Trans>
-                  ) : (
-                    <Trans>{total} / month</Trans>
-                  )}
+                  {feeChargeText(total, fee)}
                 </Text>
               </li>
             );

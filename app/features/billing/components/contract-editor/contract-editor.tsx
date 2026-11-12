@@ -1,5 +1,6 @@
 import {
   contractStartFromDate,
+  DEFAULT_FEE_BILLING_TIMING,
   getContractFees,
   getContractState,
   getDraftStartsAt,
@@ -114,10 +115,17 @@ export function ContractEditor({
     : draft
       ? t`Edit draft fee change`
       : t`Change contract fees`;
+  // A quarterly or annual fee billed in advance has been invoiced for its
+  // whole period, so openmeter-provider holds a change until that ends.
+  const heldForLongFee = getContractFees(currentOfferQuery.data).some(
+    (fee) => fee.billingTiming === 'InAdvance' && fee.interval && fee.interval !== 'monthly'
+  );
   const description = isSetup
     ? t`Bill ${getBillingAccountDisplayName(account)} negotiated fees from a start date, with or without usage. Save a draft to finish later; nothing is billed until it's published, which moves the account onto it.`
     : contract.started
-      ? t`New fees apply from the account's next billing date, so this month is billed as agreed. One-time fees aren't charged again.`
+      ? heldForLongFee
+        ? t`The contract has a quarterly or annual fee billed in advance, so changes apply when that fee's current period ends, which can be up to a year away. One-time fees aren't charged again.`
+        : t`New fees apply from the account's next billing date, so this month is billed as agreed. One-time fees aren't charged again.`
       : t`The account moves onto these fees when the contract starts.`;
 
   // The form starts from the pricings, the current offer and, for a new
@@ -301,6 +309,8 @@ function ContractEditorForm({
   const blankFee = (chargeType: ContractFeeRow['chargeType'], label: string): ContractFeeRow => ({
     label,
     chargeType,
+    interval: 'monthly',
+    billingTiming: DEFAULT_FEE_BILLING_TIMING,
     amount: '',
     quantity: '1',
     pricingUnit: '',
@@ -310,6 +320,10 @@ function ContractEditorForm({
     ? currentFees.map((fee) => ({
         label: fee.label,
         chargeType: fee.chargeType,
+        // Fees the contract charges now keep their timing: in advance for
+        // one from before the choice existed, as billing reads it.
+        interval: fee.interval ?? 'monthly',
+        billingTiming: fee.billingTiming ?? 'InAdvance',
         amount: toPricingAmount(fee.amount),
         quantity: String(fee.quantity),
         pricingUnit: fee.pricingUnit ?? '',
@@ -357,6 +371,9 @@ function ContractEditorForm({
             pricingUnit: fee.pricingUnit.trim() || undefined,
             serviceRef: fee.serviceRef === NO_SERVICE ? undefined : fee.serviceRef,
             existingPricing: existing && sameFeePricing(fee, existing) ? existing.name : undefined,
+            ...(fee.chargeType === 'Recurring'
+              ? { interval: fee.interval, billingTiming: fee.billingTiming }
+              : {}),
           };
         }),
         ...buildListFeePlan(values.listFees.map(fromListFeeRowValues), feeOptions, base),

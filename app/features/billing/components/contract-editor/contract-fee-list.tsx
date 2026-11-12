@@ -1,4 +1,8 @@
-import { CONTRACT_CURRENCY, MAX_CONTRACT_FEES } from '../../lib/contract';
+import {
+  CONTRACT_CURRENCY,
+  DEFAULT_FEE_BILLING_TIMING,
+  MAX_CONTRACT_FEES,
+} from '../../lib/contract';
 import { NO_SERVICE, type ContractFeeRow, type ContractFormValues } from './schema';
 import { WholeNumberInput } from './whole-number-input';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -14,9 +18,11 @@ export type ServiceOption = { serviceName: string; label: string };
 
 /**
  * Fees made for this contract, one row each: a name for invoices, the unit
- * amount and how many, optionally what the amount is per, one-time or
- * monthly, and the service it's for, if any. Each fee is its own pricing and
- * invoice line. Fees from the price list are picked in the price list.
+ * amount and how many, one-time or recurring, optionally what the amount is
+ * per, and the service it's for, if any. A recurring fee is charged every
+ * month, quarter or year, and billed in advance or in arrears. Each fee is
+ * its own pricing and invoice line. Fees from the price list are picked in
+ * the price list.
  */
 export function ContractFeeList({
   services,
@@ -69,7 +75,7 @@ export function ContractFeeList({
                   onClick={() => remove(index)}
                 />
               </div>
-              <div className="grid grid-cols-[8rem_7rem_minmax(0,1fr)] items-start gap-2">
+              <div className="grid grid-cols-[8rem_8rem_9rem] items-start gap-2">
                 <Form.Field name={`fees.${index}.chargeType`} label={t`Charged`} required>
                   <Form.Select>
                     {allowOneTime || fees[index]?.chargeType === 'OneTime' ? (
@@ -78,10 +84,43 @@ export function ContractFeeList({
                       </Form.SelectItem>
                     ) : null}
                     <Form.SelectItem value="Recurring">
-                      <Trans>Monthly</Trans>
+                      <Trans>Recurring</Trans>
                     </Form.SelectItem>
                   </Form.Select>
                 </Form.Field>
+                {fees[index]?.chargeType === 'Recurring' ? (
+                  <>
+                    <Form.Field name={`fees.${index}.interval`} label={t`Every`} required>
+                      <Form.Select>
+                        <Form.SelectItem value="monthly">
+                          <Trans>Month</Trans>
+                        </Form.SelectItem>
+                        <Form.SelectItem value="quarterly">
+                          <Trans>Quarter</Trans>
+                        </Form.SelectItem>
+                        <Form.SelectItem value="annual">
+                          <Trans>Year</Trans>
+                        </Form.SelectItem>
+                      </Form.Select>
+                    </Form.Field>
+                    <Form.Field
+                      name={`fees.${index}.billingTiming`}
+                      label={t`Billed`}
+                      required
+                      tooltip={t`In arrears invoices each period's fee at its end, with that period's usage. In advance invoices it when the period starts, as is usual for rent-like charges such as rack space.`}>
+                      <Form.Select>
+                        <Form.SelectItem value="InArrears">
+                          <Trans>In arrears</Trans>
+                        </Form.SelectItem>
+                        <Form.SelectItem value="InAdvance">
+                          <Trans>In advance</Trans>
+                        </Form.SelectItem>
+                      </Form.Select>
+                    </Form.Field>
+                  </>
+                ) : null}
+              </div>
+              <div className="grid grid-cols-[8rem_minmax(0,1fr)] items-start gap-2">
                 <Form.Field name={`fees.${index}.pricingUnit`} label={t`Per`}>
                   <Form.Input placeholder={t`port, kW`} />
                 </Form.Field>
@@ -112,6 +151,8 @@ export function ContractFeeList({
                 append({
                   label: '',
                   chargeType: 'Recurring',
+                  interval: 'monthly',
+                  billingTiming: DEFAULT_FEE_BILLING_TIMING,
                   amount: '',
                   quantity: '1',
                   pricingUnit: '',

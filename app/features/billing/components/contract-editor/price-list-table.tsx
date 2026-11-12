@@ -2,6 +2,7 @@ import { CONTRACT_CURRENCY } from '../../lib/contract';
 import type { ListFeeOption } from '../../lib/contract-list-fees';
 import { rateSlots, type RateSlotLabel, type UsageMeterOption } from '../../lib/contract-usage';
 import { formatMoney, indexServicesByRef } from '../../utils';
+import { feeChargeText } from '../contract-fee-text';
 import type { ContractFormValues, ListFeeRowValues, UsageRowValues } from './schema';
 import { WholeNumberInput } from './whole-number-input';
 import { EMBEDDED_TABLE_HEADER_CELL_CLASS, TABLE_CARD_FRAME_CLASS } from '@/features/milo';
@@ -183,10 +184,10 @@ function ServiceGroup({ title, entries }: { title: string; entries: PriceListEnt
   );
 }
 
-/** A list fee's price, e.g. "$300.00 / month per port". */
+/** A list fee's price, e.g. "$300.00 / month per port" or "$6,000.00 / year". */
 const feePriceText = (option: ListFeeOption) => {
   const amount = formatMoney(Number.parseFloat(option.amount), CONTRACT_CURRENCY);
-  const price = option.chargeType === 'OneTime' ? t`${amount} once` : t`${amount} / month`;
+  const price = feeChargeText(amount, option);
   return option.pricingUnit ? t`${price} per ${option.pricingUnit}` : price;
 };
 
@@ -196,9 +197,24 @@ function ListFeeRows({ option, index }: { option: ListFeeOption; index: number }
   return (
     <TableRow>
       <TableCell className="align-middle">
-        <Form.Field name={`listFees.${index}.selected`}>
-          <Form.Checkbox label={option.label} />
-        </Form.Field>
+        <div className="flex flex-col gap-1">
+          <Form.Field name={`listFees.${index}.selected`}>
+            <Form.Checkbox label={option.label} />
+          </Form.Field>
+          {option.chargeType === 'Recurring' ? (
+            // When the contract invoices it: its term, not the list fee's.
+            <Form.Field name={`listFees.${index}.billingTiming`} className="w-40 pl-6">
+              <Form.Select disabled={!selected} aria-label={t`Billed`}>
+                <Form.SelectItem value="InArrears">
+                  <Trans>Billed in arrears</Trans>
+                </Form.SelectItem>
+                <Form.SelectItem value="InAdvance">
+                  <Trans>Billed in advance</Trans>
+                </Form.SelectItem>
+              </Form.Select>
+            </Form.Field>
+          ) : null}
+        </div>
       </TableCell>
       <TableCell className="align-middle">
         <Text size="sm" className="tabular-nums">
