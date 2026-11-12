@@ -5,6 +5,7 @@ import { usePaymentTerms } from '../payment-terms';
 import { BillingAccountActivityCard } from './billing-account-activity-card';
 import { BillingAccountAttentionBanner } from './billing-account-attention-banner';
 import { BillingAccountContractCard } from './billing-account-contract-card';
+import { BillingAccountContractDraftCard } from './billing-account-contract-draft-card';
 import {
   BillingAccountConfigCard,
   BillingAccountContactCard,
@@ -117,6 +118,12 @@ export function BillingAccountDashboard({
         <aside className="flex min-w-0 flex-col gap-4 @5xl/main:row-span-2">
           <BillingAccountPaymentCard orgName={orgName} account={account} terms={paymentTerms} />
           <BillingAccountContractCard
+            orgName={orgName}
+            account={account}
+            entitlement={entitlementQuery.data ?? null}
+            now={now}
+          />
+          <BillingAccountContractDraftCard
             orgName={orgName}
             account={account}
             entitlement={entitlementQuery.data ?? null}

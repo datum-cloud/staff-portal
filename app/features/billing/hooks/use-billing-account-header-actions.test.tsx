@@ -1,12 +1,21 @@
 import type { PaymentTermsState } from '../components/payment-terms';
 import { useBillingAccountHeaderActions } from './use-billing-account-header-actions';
-import { useBillingEntitlementForAccountQuery } from '@/resources/request/client';
+import {
+  useBillingEntitlementForAccountQuery,
+  useContractDraftQuery,
+} from '@/resources/request/client';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const navigate = vi.fn();
 vi.mock('react-router', () => ({ useNavigate: () => navigate }));
-vi.mock('@lingui/react/macro', () => ({ Trans: () => null }));
-vi.mock('@/resources/request/client', () => ({ useBillingEntitlementForAccountQuery: vi.fn() }));
+// Each label renders as its text, to tell them apart.
+vi.mock('@lingui/react/macro', () => ({
+  Trans: ({ children }: { children: string }) => children,
+}));
+vi.mock('@/resources/request/client', () => ({
+  useBillingEntitlementForAccountQuery: vi.fn(),
+  useContractDraftQuery: vi.fn(),
+}));
 
 type EntitlementQuery = ReturnType<typeof useBillingEntitlementForAccountQuery>;
 
@@ -36,7 +45,19 @@ const entitlement = (contract?: { startsAt: string }) => ({
   },
 });
 
-beforeEach(() => vi.clearAllMocks());
+const withDraft = (draft: boolean) =>
+  vi.mocked(useContractDraftQuery).mockReturnValue({
+    data: draft ? { metadata: { name: 'contract-acme-ops-20261110090000' } } : null,
+  } as ReturnType<typeof useContractDraftQuery>);
+
+/** An action's label as its text. */
+const labelText = (action: { label: unknown }) =>
+  (action.label as { props: { children: string } }).props.children;
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  withDraft(false);
+});
 
 describe('useBillingAccountHeaderActions', () => {
   it('lets an account without an entitlement set up a contract', () => {
@@ -80,5 +101,29 @@ describe('useBillingAccountHeaderActions', () => {
     });
 
     expect(useActions().contract.disabled).toBeFalsy();
+  });
+
+  it('opens the draft when there is one', () => {
+    withDraft(true);
+    withEntitlementQuery({ data: null, isSuccess: true });
+    expect(labelText(useActions().contract)).toBe('Edit draft contract');
+    expect(useActions().contract.disabled).toBe(false);
+
+    withEntitlementQuery({
+      data: entitlement({ startsAt: '2026-12-01T00:00:00Z' }),
+      isSuccess: true,
+    });
+    expect(labelText(useActions().contract)).toBe('Edit draft fee change');
+  });
+
+  it('names the action for what it does without a draft', () => {
+    withEntitlementQuery({ data: null, isSuccess: true });
+    expect(labelText(useActions().contract)).toBe('Set up contract');
+
+    withEntitlementQuery({
+      data: entitlement({ startsAt: '2026-12-01T00:00:00Z' }),
+      isSuccess: true,
+    });
+    expect(labelText(useActions().contract)).toBe('Change contract fees');
   });
 });

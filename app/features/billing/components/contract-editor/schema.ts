@@ -47,7 +47,17 @@ const listFeeRowSchema = z.object({
   currentPricing: z.string().optional(),
 });
 
-export const buildContractSchema = (needsStart: boolean, allowOneTime: boolean, now: Date) =>
+/**
+ * The contract form's schema. A new contract needs a start date to publish;
+ * `isDraft` says when the form is being saved as a draft instead, which can
+ * leave it for later (it's read at validation, as the button decides).
+ */
+export const buildContractSchema = (
+  needsStart: boolean,
+  allowOneTime: boolean,
+  now: Date,
+  isDraft: () => boolean = () => false
+) =>
   z
     .object({
       fees: z.array(
@@ -127,7 +137,7 @@ export const buildContractSchema = (needsStart: boolean, allowOneTime: boolean, 
 
       if (!needsStart) return;
       if (!values.startsAt) {
-        issue(['startsAt'], t`Pick a start date.`);
+        if (!isDraft()) issue(['startsAt'], t`Pick a start date.`);
         return;
       }
       const problem = contractStartProblem(contractStartFromDate(values.startsAt), now);

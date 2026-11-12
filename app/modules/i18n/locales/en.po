@@ -63,7 +63,7 @@ msgid "{0} active suspensions — the project stays suspended until all are lift
 msgstr "{0} active suspensions — the project stays suspended until all are lifted. Instances and served traffic are paused; data is preserved."
 
 #. placeholder {0}: getBillingAccountDisplayName(account)
-#: app/features/billing/components/contract-editor/contract-editor.tsx:305
+#: app/features/billing/components/contract-editor/contract-editor.tsx:346
 msgid "{0} contract"
 msgstr "{0} contract"
 
@@ -325,12 +325,12 @@ msgstr "≥ 70% used"
 msgid "${0} per {unit}"
 msgstr "${0} per {unit}"
 
-#: app/features/billing/components/contract-editor/schema.ts:109
 #: app/features/billing/components/contract-editor/schema.ts:119
+#: app/features/billing/components/contract-editor/schema.ts:129
 msgid "0 to 100."
 msgstr "0 to 100."
 
-#: app/features/billing/components/contract-editor/schema.ts:105
+#: app/features/billing/components/contract-editor/schema.ts:115
 msgid "1 to {MAX_FEE_QUANTITY}."
 msgstr "1 to {MAX_FEE_QUANTITY}."
 
@@ -395,19 +395,19 @@ msgstr "60+ days"
 msgid "A contact with this email already exists."
 msgstr "A contact with this email already exists."
 
-#: app/features/billing/components/contract-editor/schema.ts:99
+#: app/features/billing/components/contract-editor/schema.ts:109
 msgid "A contract can have at most {MAX_CONTRACT_FEES} fees, counting those from the price list."
 msgstr "A contract can have at most {MAX_CONTRACT_FEES} fees, counting those from the price list."
 
-#: app/features/billing/components/contract-editor/schema.ts:139
+#: app/features/billing/components/contract-editor/schema.ts:149
 msgid "A contract can start at most {MAX_CONTRACT_LEAD_DAYS} days ahead."
 msgstr "A contract can start at most {MAX_CONTRACT_LEAD_DAYS} days ahead."
 
-#: app/features/billing/components/contract-editor/schema.ts:138
+#: app/features/billing/components/contract-editor/schema.ts:148
 msgid "A contract can't start in the past: charges can't be backdated."
 msgstr "A contract can't start in the past: charges can't be backdated."
 
-#: app/features/billing/components/contract-editor/schema.ts:123
+#: app/features/billing/components/contract-editor/schema.ts:133
 msgid "A rate, such as 0.000012."
 msgstr "A rate, such as 0.000012."
 
@@ -415,7 +415,7 @@ msgstr "A rate, such as 0.000012."
 msgid "A signed MSA or order form, if there is one. Otherwise our standard terms apply."
 msgstr "A signed MSA or order form, if there is one. Otherwise our standard terms apply."
 
-#: app/features/billing/components/contract-editor/schema.ts:64
+#: app/features/billing/components/contract-editor/schema.ts:74
 msgid "A whole number from 1 to {MAX_FEE_QUANTITY}."
 msgstr "A whole number from 1 to {MAX_FEE_QUANTITY}."
 
@@ -549,7 +549,7 @@ msgstr "Activity log"
 msgid "Add"
 msgstr "Add"
 
-#: app/features/billing/components/contract-editor/schema.ts:95
+#: app/features/billing/components/contract-editor/schema.ts:105
 msgid "Add a fee, or pick one from the price list."
 msgstr "Add a fee, or pick one from the price list."
 
@@ -712,7 +712,7 @@ msgid "Already invoiced"
 msgstr "Already invoiced"
 
 #. placeholder {0}: keptUsageNames.join(', ')
-#: app/features/billing/components/contract-editor/contract-editor.tsx:379
+#: app/features/billing/components/contract-editor/contract-editor.tsx:429
 msgid "Also kept as it is, because it isn't on the price list: {0}."
 msgstr "Also kept as it is, because it isn't on the price list: {0}."
 
@@ -736,7 +736,7 @@ msgstr "Amount"
 msgid "Amount ({CONTRACT_CURRENCY})"
 msgstr "Amount ({CONTRACT_CURRENCY})"
 
-#: app/features/billing/components/contract-editor/schema.ts:112
+#: app/features/billing/components/contract-editor/schema.ts:122
 msgid "An amount, such as 250.00."
 msgstr "An amount, such as 250.00."
 
@@ -1018,9 +1018,9 @@ msgid "Before discounts and tax, plus any usage. Check it with a preview once sa
 msgstr "Before discounts and tax, plus any usage. Check it with a preview once saved."
 
 #. placeholder {0}: getBillingAccountDisplayName(account)
-#: app/features/billing/components/contract-editor/contract-editor.tsx:101
-msgid "Bill {0} negotiated fees from a start date, with or without usage. Saving creates the contract's prices and offer, and moves the account onto it."
-msgstr "Bill {0} negotiated fees from a start date, with or without usage. Saving creates the contract's prices and offer, and moves the account onto it."
+#: app/features/billing/components/contract-editor/contract-editor.tsx:118
+msgid "Bill {0} negotiated fees from a start date, with or without usage. Save a draft to finish later; nothing is billed until it's published, which moves the account onto it."
+msgstr "Bill {0} negotiated fees from a start date, with or without usage. Save a draft to finish later; nothing is billed until it's published, which moves the account onto it."
 
 #: app/features/billing/components/application-review.tsx:433
 #: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:125
@@ -1079,6 +1079,11 @@ msgstr "Billing could not be read"
 msgid "Billing permissions are still being provisioned for this organization."
 msgstr "Billing permissions are still being provisioned for this organization."
 
+#. placeholder {0}: contractBillingDay(startsAt)
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:123
+msgid "Bills on day {0} of each month once published."
+msgstr "Bills on day {0} of each month once published."
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:132
 msgid "Bills on day {day} of each month, or the last day of shorter months."
 msgstr "Bills on day {day} of each month, or the last day of shorter months."
@@ -1103,7 +1108,7 @@ msgstr "by"
 #: app/components/danger-zone-card/index.tsx:43
 #: app/features/billing/components/application-review.tsx:601
 #: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:265
-#: app/features/billing/components/contract-editor/contract-editor.tsx:410
+#: app/features/billing/components/contract-editor/contract-editor.tsx:460
 #: app/features/billing/components/default-offer-card.tsx:77
 #: app/features/billing/components/payment-terms.tsx:229
 #: app/features/billing/components/payment-terms.tsx:498
@@ -1196,18 +1201,17 @@ msgstr "Chainsaw Tests"
 msgid "Change"
 msgstr "Change"
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:99
-#: app/features/billing/hooks/use-billing-account-header-actions.tsx:64
+#: app/features/billing/components/contract-editor/contract-editor.tsx:116
+#: app/features/billing/hooks/use-billing-account-header-actions.tsx:72
 msgid "Change contract fees"
 msgstr "Change contract fees"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:83
-#: app/features/billing/components/contract-editor/contract-editor.tsx:416
 msgid "Change fees"
 msgstr "Change fees"
 
 #: app/features/billing/components/payment-terms.tsx:210
-#: app/features/billing/hooks/use-billing-account-header-actions.tsx:41
+#: app/features/billing/hooks/use-billing-account-header-actions.tsx:46
 msgid "Change payment terms"
 msgstr "Change payment terms"
 
@@ -1243,7 +1247,7 @@ msgstr "Charge types and ServicePricings are required"
 msgid "Charged"
 msgstr "Charged"
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:395
+#: app/features/billing/components/contract-editor/contract-editor.tsx:445
 msgid "Charges start on this day, in UTC, and bill on it each month. Today or later."
 msgstr "Charges start on this day, in UTC, and bill on it each month. Today or later."
 
@@ -1515,15 +1519,19 @@ msgstr "Content"
 msgid "Contract"
 msgstr "Contract"
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:353
+#: app/features/billing/components/contract-editor/contract-editor.tsx:403
 msgid "Contract fees"
 msgstr "Contract fees"
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:339
+#: app/features/billing/components/contract-editor/contract-editor.tsx:389
 msgid "Contract fees changed"
 msgstr "Contract fees changed"
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:335
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:75
+msgid "Contract published"
+msgstr "Contract published"
+
+#: app/features/billing/components/contract-editor/contract-editor.tsx:385
 msgid "Contract set up"
 msgstr "Contract set up"
 
@@ -1573,7 +1581,7 @@ msgid "Could not load usage"
 msgstr "Could not load usage"
 
 #. placeholder {0}: failed.map((failure) => failure.label).join(', ')
-#: app/features/billing/components/contract-editor/contract-editor.tsx:148
+#: app/features/billing/components/contract-editor/contract-editor.tsx:169
 msgid "Couldn't load {0}, so the contract can't be changed safely right now."
 msgstr "Couldn't load {0}, so the contract can't be changed safely right now."
 
@@ -1622,9 +1630,13 @@ msgstr "Couldn't load the account's offer"
 msgid "Couldn't load the contract's offer."
 msgstr "Couldn't load the contract's offer."
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:370
+#: app/features/billing/components/contract-editor/contract-editor.tsx:420
 msgid "Couldn't load the default offer, so nothing starts ticked. Tick what the contract bills."
 msgstr "Couldn't load the default offer, so nothing starts ticked. Tick what the contract bills."
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:137
+msgid "Couldn't load the draft's fees."
+msgstr "Couldn't load the draft's fees."
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:84
 msgid "Couldn't load usage"
@@ -2084,6 +2096,15 @@ msgstr "Disable feature flag"
 msgid "Disable flag"
 msgstr "Disable flag"
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:160
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:184
+msgid "Discard"
+msgstr "Discard"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:182
+msgid "Discard the draft?"
+msgstr "Discard the draft?"
+
 #: app/features/billing/components/contract-editor/price-list-table.tsx:215
 #: app/features/billing/components/contract-editor/price-list-table.tsx:313
 #: app/features/billing/components/offer-included-pricing-list.tsx:145
@@ -2225,6 +2246,18 @@ msgstr "Draft"
 msgid "Draft configuration"
 msgstr "Draft configuration"
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:89
+msgid "Draft contract"
+msgstr "Draft contract"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:78
+msgid "Draft discarded"
+msgstr "Draft discarded"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:89
+msgid "Draft fee change"
+msgstr "Draft fee change"
+
 #: app/routes/admin/offer/create.tsx:91
 msgid "Draft Offer created"
 msgstr "Draft Offer created"
@@ -2232,6 +2265,10 @@ msgstr "Draft Offer created"
 #: app/routes/admin/offer/detail.tsx:123
 msgid "Draft Offer updated"
 msgstr "Draft Offer updated"
+
+#: app/features/billing/components/contract-editor/contract-editor.tsx:377
+msgid "Draft saved. Nothing is billed until it's published."
+msgstr "Draft saved. Nothing is billed until it's published."
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:148
 msgid "Due"
@@ -2245,6 +2282,7 @@ msgstr "Each resource type is limited to 2,000 results at a time. Refine your se
 msgid "Each routing rule has its own pool, weighted within the rule."
 msgstr "Each routing rule has its own pool, weighted within the rule."
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:98
 #: app/features/contact/components/contact-list.tsx:56
 #: app/features/contact/components/edit-contact-dialog.tsx:39
 #: app/features/fraud/policy/policy-detail.tsx:318
@@ -2262,6 +2300,16 @@ msgstr "Edit contact"
 #: app/routes/admin/offer/detail.tsx:487
 msgid "Edit display name"
 msgstr "Edit display name"
+
+#: app/features/billing/components/contract-editor/contract-editor.tsx:112
+#: app/features/billing/hooks/use-billing-account-header-actions.tsx:78
+msgid "Edit draft contract"
+msgstr "Edit draft contract"
+
+#: app/features/billing/components/contract-editor/contract-editor.tsx:115
+#: app/features/billing/hooks/use-billing-account-header-actions.tsx:70
+msgid "Edit draft fee change"
+msgstr "Edit draft fee change"
 
 #: app/features/fraud/policy/policy-form.tsx:140
 msgid "Edit Fraud Policy"
@@ -2440,7 +2488,7 @@ msgstr "Enforcement Mode"
 msgid "Enter a reason (at least {REASON_MIN_LENGTH} characters)..."
 msgstr "Enter a reason (at least {REASON_MIN_LENGTH} characters)..."
 
-#: app/features/billing/components/contract-editor/schema.ts:61
+#: app/features/billing/components/contract-editor/schema.ts:71
 msgid "Enter an amount, such as 1000 or 1000.00."
 msgstr "Enter an amount, such as 1000 or 1000.00."
 
@@ -2620,7 +2668,7 @@ msgstr "Failed to load status"
 msgid "Failed to publish Offer"
 msgstr "Failed to publish Offer"
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:343
+#: app/features/billing/components/contract-editor/contract-editor.tsx:393
 msgid "Failed to save the contract"
 msgstr "Failed to save the contract"
 
@@ -2684,7 +2732,7 @@ msgstr "Feed"
 msgid "Fees"
 msgstr "Fees"
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:354
+#: app/features/billing/components/contract-editor/contract-editor.tsx:404
 msgid "Fees made for this contract, such as a setup fee or a negotiated monthly fee. Each is an invoice line."
 msgstr "Fees made for this contract, such as a setup fee or a negotiated monthly fee. Each is an invoice line."
 
@@ -2889,7 +2937,7 @@ msgid "Grant deleted successfully"
 msgstr "Grant deleted successfully"
 
 #: app/features/billing/components/payment-terms.tsx:196
-#: app/features/billing/hooks/use-billing-account-header-actions.tsx:47
+#: app/features/billing/hooks/use-billing-account-header-actions.tsx:52
 msgid "Grant payment terms"
 msgstr "Grant payment terms"
 
@@ -3220,7 +3268,7 @@ msgstr "Joined {0}"
 msgid "Joined {0} as {1}"
 msgstr "Joined {0} as {1}"
 
-#: app/features/billing/components/contract-editor/schema.ts:69
+#: app/features/billing/components/contract-editor/schema.ts:79
 msgid "Keep the unit short, such as port or kW."
 msgstr "Keep the unit short, such as port or kW."
 
@@ -3553,7 +3601,7 @@ msgstr "Monitored Resources"
 msgid "Monthly"
 msgstr "Monthly"
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:279
+#: app/features/billing/components/contract-editor/contract-editor.tsx:319
 msgid "Monthly fee"
 msgstr "Monthly fee"
 
@@ -3615,7 +3663,7 @@ msgstr "My Profile"
 msgid "Name"
 msgstr "Name"
 
-#: app/features/billing/components/contract-editor/schema.ts:58
+#: app/features/billing/components/contract-editor/schema.ts:68
 msgid "Name the fee, as invoices show it."
 msgstr "Name the fee, as invoices show it."
 
@@ -3676,13 +3724,21 @@ msgstr "Net days"
 msgid "Network"
 msgstr "Network"
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:75
+msgid "New contract fees published"
+msgstr "New contract fees published"
+
 #: app/routes/customer/fraud/index.tsx:250
 msgid "New Evaluation"
 msgstr "New Evaluation"
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:103
+#: app/features/billing/components/contract-editor/contract-editor.tsx:120
 msgid "New fees apply from the account's next billing date, so this month is billed as agreed. One-time fees aren't charged again."
 msgstr "New fees apply from the account's next billing date, so this month is billed as agreed. One-time fees aren't charged again."
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:105
+msgid "New fees for the account's contract"
+msgstr "New fees for the account's contract"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:164
 msgid "New fees take effect on <0/>, the next billing date."
@@ -3857,7 +3913,7 @@ msgstr "No contacts found."
 msgid "No daily usage recorded for this meter."
 msgstr "No daily usage recorded for this meter."
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:365
+#: app/features/billing/components/contract-editor/contract-editor.tsx:415
 msgid "No default offer is set up, so nothing starts ticked. Tick what the contract bills."
 msgstr "No default offer is set up, so nothing starts ticked. Tick what the contract bills."
 
@@ -4158,6 +4214,10 @@ msgstr "No stable tests labeled yet"
 msgid "No stages configured."
 msgstr "No stages configured."
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:112
+msgid "No start date yet"
+msgstr "No start date yet"
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:207
 msgid "No tax ID on file"
 msgstr "No tax ID on file"
@@ -4248,6 +4308,10 @@ msgstr "Not linked to a user"
 #: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:19
 msgid "Not provided"
 msgstr "Not provided"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:127
+msgid "Not published, so nothing is billed from it yet."
+msgstr "Not published, so nothing is billed from it yet."
 
 #: app/features/billing/components/application-labels.tsx:31
 #: app/features/billing/components/application-labels.tsx:41
@@ -4725,11 +4789,15 @@ msgstr "Permanently delete this user and all associated data"
 msgid "Phase"
 msgstr "Phase"
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:448
+#: app/features/billing/components/contract-editor/contract-editor.tsx:524
 msgid "Pick a date"
 msgstr "Pick a date"
 
-#: app/features/billing/components/contract-editor/schema.ts:130
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:195
+msgid "Pick a start date before publishing: edit the draft."
+msgstr "Pick a start date before publishing: edit the draft."
+
+#: app/features/billing/components/contract-editor/schema.ts:140
 msgid "Pick a start date."
 msgstr "Pick a start date."
 
@@ -4872,7 +4940,7 @@ msgstr "Previous page"
 msgid "Previous terms"
 msgstr "Previous terms"
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:359
+#: app/features/billing/components/contract-editor/contract-editor.tsx:409
 msgid "Price list"
 msgstr "Price list"
 
@@ -5012,6 +5080,9 @@ msgstr "Providers (comma-separated)"
 msgid "Public"
 msgstr "Public"
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:152
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:176
+#: app/features/billing/components/contract-editor/contract-editor.tsx:479
 #: app/routes/admin/offer/detail.tsx:407
 #: app/routes/admin/offer/detail.tsx:478
 msgid "Publish"
@@ -5020,6 +5091,14 @@ msgstr "Publish"
 #: app/routes/admin/offer/detail.tsx:476
 msgid "Publish Offer"
 msgstr "Publish Offer"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:168
+msgid "Publish the contract?"
+msgstr "Publish the contract?"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:168
+msgid "Publish the new fees?"
+msgstr "Publish the new fees?"
 
 #: app/routes/admin/offer/detail.tsx:421
 msgid "Publish to GA before this Offer can be set as the platform default for new billing accounts."
@@ -5035,6 +5114,14 @@ msgstr "Published"
 #: app/routes/admin/offer/detail.tsx:339
 msgid "Published at"
 msgstr "Published at"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:118
+msgid "Published, they apply from the account's next billing date."
+msgstr "Published, they apply from the account's next billing date."
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:120
+msgid "Published, they apply when the contract starts."
+msgstr "Published, they apply when the contract starts."
 
 #: app/routes/admin/offer/detail.tsx:477
 msgid "Publishing snapshots rates into this Offer. After GA the rates are immutable; create a new Offer version to change pricing."
@@ -5306,7 +5393,7 @@ msgstr "Review application"
 msgid "Review payment terms"
 msgstr "Review payment terms"
 
-#: app/features/billing/hooks/use-billing-account-header-actions.tsx:34
+#: app/features/billing/hooks/use-billing-account-header-actions.tsx:39
 msgid "Review terms application"
 msgstr "Review terms application"
 
@@ -5357,6 +5444,10 @@ msgstr "Same as last cycle at this point"
 #: app/routes/marketing/contact/detail/notes.tsx:175
 msgid "Save"
 msgstr "Save"
+
+#: app/features/billing/components/contract-editor/contract-editor.tsx:471
+msgid "Save as draft"
+msgstr "Save as draft"
 
 #: app/routes/admin/offer/detail.tsx:138
 msgid "Save draft"
@@ -5750,9 +5841,8 @@ msgstr "Set as default"
 msgid "Set platform default"
 msgstr "Set platform default"
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:99
-#: app/features/billing/components/contract-editor/contract-editor.tsx:416
-#: app/features/billing/hooks/use-billing-account-header-actions.tsx:69
+#: app/features/billing/components/contract-editor/contract-editor.tsx:113
+#: app/features/billing/hooks/use-billing-account-header-actions.tsx:78
 msgid "Set up contract"
 msgstr "Set up contract"
 
@@ -5761,7 +5851,7 @@ msgstr "Set up contract"
 msgid "Settings"
 msgstr "Settings"
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:279
+#: app/features/billing/components/contract-editor/contract-editor.tsx:319
 msgid "Setup fee"
 msgstr "Setup fee"
 
@@ -5867,6 +5957,10 @@ msgstr "Something went wrong while loading quota data."
 msgid "Something went wrong while loading usage data."
 msgstr "Something went wrong while loading usage data."
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:81
+msgid "Something went wrong. Try again."
+msgstr "Something went wrong. Try again."
+
 #: app/routes/customer/project/detail/export-policy/detail.tsx:165
 msgid "Source"
 msgstr "Source"
@@ -5933,7 +6027,7 @@ msgstr "Stage Results"
 msgid "Stages run top to bottom; an earlier stage can short-circuit the rest."
 msgstr "Stages run top to bottom; an earlier stage can short-circuit the rest."
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:392
+#: app/features/billing/components/contract-editor/contract-editor.tsx:442
 #: app/features/billing/components/payment-terms.tsx:527
 msgid "Start date"
 msgstr "Start date"
@@ -5955,6 +6049,7 @@ msgid "Starts"
 msgstr "Starts"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:148
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:107
 msgid "Starts <0/>"
 msgstr "Starts <0/>"
 
@@ -6041,7 +6136,7 @@ msgstr "Submitted <0/>"
 msgid "Suite"
 msgstr "Suite"
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:401
+#: app/features/billing/components/contract-editor/contract-editor.tsx:451
 #: app/routes/marketing/contact-group/index.tsx:159
 msgid "Summary"
 msgstr "Summary"
@@ -6073,7 +6168,7 @@ msgid "Switch"
 msgstr "Switch"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:79
-#: app/features/billing/hooks/use-billing-account-header-actions.tsx:56
+#: app/features/billing/hooks/use-billing-account-header-actions.tsx:61
 msgid "Switch offer"
 msgstr "Switch offer"
 
@@ -6141,7 +6236,16 @@ msgstr "Tests show up here once tagged metadata.labels.stability: stable in thei
 msgid "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 msgstr "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:104
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:201
+msgid "The account is on a contract now, so this draft can't set one up. Edit it to change the contract's fees instead."
+msgstr "The account is on a contract now, so this draft can't set one up. Edit it to change the contract's fees instead."
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:174
+msgid "The account moves onto the contract on its start date, when its charges start. A contract can't be removed or its start moved afterwards."
+msgstr "The account moves onto the contract on its start date, when its charges start. A contract can't be removed or its start moved afterwards."
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:173
+#: app/features/billing/components/contract-editor/contract-editor.tsx:121
 msgid "The account moves onto these fees when the contract starts."
 msgstr "The account moves onto these fees when the contract starts."
 
@@ -6153,7 +6257,11 @@ msgstr "The account will be billed by invoice on these terms. Overlapping terms 
 msgid "The account will stop being billed by invoice now and will need a card to keep using paid services. The record is kept for history."
 msgstr "The account will stop being billed by invoice now and will need a card to keep using paid services. The record is kept for history."
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:121
+#: app/features/billing/components/contract-editor/contract-editor.tsx:142
+msgid "the account's draft contract"
+msgstr "the account's draft contract"
+
+#: app/features/billing/components/contract-editor/contract-editor.tsx:139
 msgid "the account's entitlement"
 msgstr "the account's entitlement"
 
@@ -6161,13 +6269,21 @@ msgstr "the account's entitlement"
 msgid "The account's payment terms have no end date. Give them one on the billing account to approve."
 msgstr "The account's payment terms have no end date. Give them one on the billing account to approve."
 
-#: app/features/billing/components/contract-editor/schema.ts:87
+#: app/features/billing/components/contract-editor/schema.ts:97
 msgid "The contract has started, so a one-time fee would be charged again."
 msgstr "The contract has started, so a one-time fee would be charged again."
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:125
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:203
+msgid "The contract has started, so the draft's one-time fees would be charged again. Edit it to remove them."
+msgstr "The contract has started, so the draft's one-time fees would be charged again. Edit it to remove them."
+
+#: app/features/billing/components/contract-editor/contract-editor.tsx:144
 msgid "the contract's current offer"
 msgstr "the contract's current offer"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:172
+msgid "The contract's fees change from the account's next billing date."
+msgstr "The contract's fees change from the account's next billing date."
 
 #: app/features/billing/components/payment-terms.tsx:250
 msgid "The customer applied for payment terms on <0/> and is waiting for a decision."
@@ -6180,6 +6296,10 @@ msgstr "The customer isn't sure how they'd like to pay, so they didn't give invo
 #: app/features/billing/components/application-review.tsx:289
 msgid "The customer withdrew this application before a decision."
 msgstr "The customer withdrew this application before a decision."
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:183
+msgid "The draft and the prices made for it are deleted. The account's billing doesn't change."
+msgstr "The draft and the prices made for it are deleted. The account's billing doesn't change."
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:407
 msgid "The first invoice hasn't come through yet. OpenMeter sends it a few minutes after the contract starts."
@@ -6222,9 +6342,17 @@ msgstr "The payment provider rejected {0}."
 msgid "The platform has no list prices yet, so the contract bills only the fees above."
 msgstr "The platform has no list prices yet, so the contract bills only the fees above."
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:123
+#: app/features/billing/components/contract-editor/contract-editor.tsx:141
 msgid "the price list"
 msgstr "the price list"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:197
+msgid "The start date has passed. Edit the draft to pick another."
+msgstr "The start date has passed. Edit the draft to pick another."
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:199
+msgid "The start date is too far ahead. Edit the draft to pick another."
+msgstr "The start date is too far ahead. Edit the draft to pick another."
 
 #: app/features/billing/components/application-review.tsx:405
 msgid "Their situation"
@@ -6392,7 +6520,7 @@ msgstr "Triggers"
 msgid "Trust & Safety"
 msgstr "Trust & Safety"
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:159
+#: app/features/billing/components/contract-editor/contract-editor.tsx:180
 msgid "Try again"
 msgstr "Try again"
 
@@ -6736,7 +6864,7 @@ msgstr "Welcome back, {givenName}."
 msgid "Welcome back."
 msgstr "Welcome back."
 
-#: app/features/billing/components/contract-editor/contract-editor.tsx:360
+#: app/features/billing/components/contract-editor/contract-editor.tsx:410
 msgid "What the contract bills from the platform's prices. Leave the customer price empty to bill the list price."
 msgstr "What the contract bills from the platform's prices. Leave the customer price empty to bill the list price."
 

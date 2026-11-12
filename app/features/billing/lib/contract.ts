@@ -3,6 +3,7 @@ import type {
   ComMiloapisBillingV1Alpha1BillingEntitlement,
   ComMiloapisBillingV1Alpha1Invoice,
   ComMiloapisBillingV1Alpha1Offer,
+  ComMiloapisBillingV1Alpha1ServicePricing,
 } from '@openapi/billing.miloapis.com/v1alpha1';
 
 /**
@@ -53,6 +54,55 @@ export const isContractResource = (resource: {
 }) =>
   Boolean(resource.metadata?.labels?.[CONTRACT_BILLING_ACCOUNT_LABEL]) ||
   (resource.metadata?.name ?? '').startsWith(CONTRACT_NAME_PREFIX);
+
+/**
+ * A draft contract is its Offer left at launchStage Draft, with the contract
+ * labels and, for a new contract, its start date here (midnight UTC, RFC
+ * 3339). It isn't on the entitlement until it's published.
+ */
+export const CONTRACT_STARTS_AT_ANNOTATION = 'billing.miloapis.com/contract-starts-at';
+
+/** Whether an Offer is a draft contract, not yet published. */
+export const isContractDraft = (offer: ComMiloapisBillingV1Alpha1Offer | null | undefined) =>
+  Boolean(offer) &&
+  offer?.spec?.launchStage === 'Draft' &&
+  Boolean(offer.metadata?.labels?.[CONTRACT_BILLING_ACCOUNT_LABEL]) &&
+  !offer.metadata?.deletionTimestamp;
+
+/** A draft contract's start date, if it has a valid one. */
+export const getDraftStartsAt = (
+  offer: ComMiloapisBillingV1Alpha1Offer | null | undefined
+): Date | undefined => {
+  const raw = offer?.metadata?.annotations?.[CONTRACT_STARTS_AT_ANNOTATION];
+  const date = raw ? new Date(raw) : undefined;
+  return date && !Number.isNaN(date.getTime()) ? date : undefined;
+};
+
+/**
+ * A draft Offer with the snapshot billing would write when it's published:
+ * each ref's pricing, quantity and discount. Drafts have no snapshot of their
+ * own, and the contract's fees and the editor's rows are read from it. A ref
+ * whose pricing isn't in `pricings` (deleted meanwhile) is left out.
+ */
+export const withDraftSnapshot = (
+  offer: ComMiloapisBillingV1Alpha1Offer,
+  pricings: ComMiloapisBillingV1Alpha1ServicePricing[]
+): ComMiloapisBillingV1Alpha1Offer => {
+  const byName = new Map(pricings.map((pricing) => [pricing.metadata?.name ?? '', pricing]));
+  const servicePricings = (offer.spec?.servicePricingRefs ?? []).flatMap((ref) => {
+    const spec = byName.get(ref.name)?.spec;
+    if (!spec) return [];
+    return [
+      {
+        name: ref.name,
+        spec,
+        ...(ref.quantity ? { quantity: ref.quantity } : {}),
+        ...(ref.discount ? { discount: ref.discount } : {}),
+      },
+    ];
+  });
+  return { ...offer, spec: { ...offer.spec, servicePricings } as OfferSpec };
+};
 
 /** Set by openmeter-provider while an amendment waits for the next billing date. */
 export const OFFER_CHANGE_AT_ANNOTATION = 'openmeter.miloapis.com/offerChangeAt';
@@ -113,6 +163,40 @@ export const getContractState = (
     started: Boolean(annotations[CONTRACT_STARTED_ANNOTATION]) || startsAt <= now,
     changeAt: changeAt && !Number.isNaN(changeAt.getTime()) ? changeAt : undefined,
   };
+};
+
+/** Why a draft can't be published as it is, so it needs editing first. */
+export type DraftPublishProblem =
+  | 'no-start'
+  | 'start-passed'
+  | 'start-too-far'
+  | 'contract-exists'
+  | 'one-time-after-start';
+
+/**
+ * Whether the account's draft can be published as it is, given its
+ * entitlement now: a new contract needs a start date that billing accepts,
+ * and a fee change made before the contract started can't charge one-time
+ * fees once it has. A draft that sets up a contract (it has a start date)
+ * can't be published once the account is on one.
+ */
+export const draftPublishProblem = (
+  draft: ComMiloapisBillingV1Alpha1Offer,
+  entitlement: ComMiloapisBillingV1Alpha1BillingEntitlement | null | undefined,
+  now: Date
+): DraftPublishProblem | null => {
+  const contract = getContractState(entitlement, now);
+  if (contract) {
+    if (draft.metadata?.annotations?.[CONTRACT_STARTS_AT_ANNOTATION]) return 'contract-exists';
+    if (contract.started && (draft.spec?.chargeTypes ?? []).includes('OneTime')) {
+      return 'one-time-after-start';
+    }
+    return null;
+  }
+  const startsAt = getDraftStartsAt(draft);
+  if (!startsAt) return 'no-start';
+  const problem = contractStartProblem(startsAt, now);
+  return problem === 'past' ? 'start-passed' : problem === 'too-far' ? 'start-too-far' : null;
 };
 
 export interface ContractFee {

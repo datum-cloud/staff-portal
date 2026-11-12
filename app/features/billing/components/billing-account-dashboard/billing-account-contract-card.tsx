@@ -183,7 +183,7 @@ const feeQuantityText = (fee: { amount: number; quantity: number; pricingUnit?: 
   return fee.quantity > 1 ? `${fee.quantity} × ${unitPrice}` : null;
 };
 
-function ContractFees({ offer }: { offer: ComMiloapisBillingV1Alpha1Offer }) {
+export function ContractFees({ offer }: { offer: ComMiloapisBillingV1Alpha1Offer }) {
   const fees = getContractFees(offer);
   const discount = offer.spec?.discount?.percentage;
   const customRates = (offer.spec?.servicePricings ?? []).filter(

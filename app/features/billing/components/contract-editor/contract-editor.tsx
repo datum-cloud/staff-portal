@@ -2,11 +2,13 @@ import {
   contractStartFromDate,
   getContractFees,
   getContractState,
+  getDraftStartsAt,
   localDateForUtcDay,
   MAX_CONTRACT_LEAD_DAYS,
   parseAmount,
   startOfUtcDay,
   toPricingAmount,
+  withDraftSnapshot,
   type ContractState,
 } from '../../lib/contract';
 import {
@@ -45,7 +47,9 @@ import {
   useBillingDefaultOfferQuery,
   useBillingEntitlementForAccountQuery,
   useChangeContractFeesMutation,
+  useContractDraftQuery,
   useOfferDetailQuery,
+  useSaveContractDraftMutation,
   useServiceListQuery,
   useServicePricingListQuery,
   useSetUpContractMutation,
@@ -95,10 +99,23 @@ export function ContractEditor({
   const defaultOfferNameQuery = useBillingDefaultOfferQuery();
   const defaultOfferName = defaultOfferNameQuery.data ?? '';
   const defaultOfferQuery = useOfferDetailQuery(isSetup ? defaultOfferName : '');
+  // A saved draft is where the form starts, and what publishing replaces.
+  const draftQuery = useContractDraftQuery(orgName, accountName);
+  const pricings = pricingsQuery.data?.items;
+  const draft = useMemo(
+    () => (draftQuery.data && pricings ? withDraftSnapshot(draftQuery.data, pricings) : null),
+    [draftQuery.data, pricings]
+  );
 
-  const title = isSetup ? t`Set up contract` : t`Change contract fees`;
+  const title = isSetup
+    ? draft
+      ? t`Edit draft contract`
+      : t`Set up contract`
+    : draft
+      ? t`Edit draft fee change`
+      : t`Change contract fees`;
   const description = isSetup
-    ? t`Bill ${getBillingAccountDisplayName(account)} negotiated fees from a start date, with or without usage. Saving creates the contract's prices and offer, and moves the account onto it.`
+    ? t`Bill ${getBillingAccountDisplayName(account)} negotiated fees from a start date, with or without usage. Save a draft to finish later; nothing is billed until it's published, which moves the account onto it.`
     : contract.started
       ? t`New fees apply from the account's next billing date, so this month is billed as agreed. One-time fees aren't charged again.`
       : t`The account moves onto these fees when the contract starts.`;
@@ -108,6 +125,7 @@ export function ContractEditor({
   const loading =
     entitlementQuery.isLoading ||
     pricingsQuery.isLoading ||
+    draftQuery.isLoading ||
     (!isSetup && currentOfferQuery.isLoading) ||
     (isSetup &&
       (defaultOfferNameQuery.isLoading ||
@@ -121,18 +139,21 @@ export function ContractEditor({
       ? { label: t`the account's entitlement`, query: entitlementQuery }
       : null,
     pricingsQuery.isError ? { label: t`the price list`, query: pricingsQuery } : null,
+    draftQuery.isError ? { label: t`the account's draft contract`, query: draftQuery } : null,
     !isSetup && (currentOfferQuery.isError || !currentOfferQuery.data)
       ? { label: t`the contract's current offer`, query: currentOfferQuery }
       : null,
   ].filter((failure) => failure !== null);
-  const defaultOfferProblem: DefaultOfferProblem | undefined = !isSetup
-    ? undefined
-    : defaultOfferNameQuery.isError ||
-        (defaultOfferName && (defaultOfferQuery.isError || !defaultOfferQuery.data))
-      ? 'failed'
-      : !defaultOfferName
-        ? 'none'
-        : undefined;
+  // A draft says what the contract bills, so the default offer isn't asked.
+  const defaultOfferProblem: DefaultOfferProblem | undefined =
+    !isSetup || draft
+      ? undefined
+      : defaultOfferNameQuery.isError ||
+          (defaultOfferName && (defaultOfferQuery.isError || !defaultOfferQuery.data))
+        ? 'failed'
+        : !defaultOfferName
+          ? 'none'
+          : undefined;
 
   return (
     <div className="m-4 flex flex-col gap-4">
@@ -166,6 +187,7 @@ export function ContractEditor({
           entitlement={entitlement}
           contract={contract}
           currentOffer={currentOfferQuery.data ?? null}
+          draft={draft}
           defaultOffer={defaultOfferProblem ? null : (defaultOfferQuery.data ?? null)}
           defaultOfferProblem={defaultOfferProblem}
           pricings={pricingsQuery.data?.items ?? []}
@@ -185,6 +207,7 @@ function ContractEditorForm({
   entitlement,
   contract,
   currentOffer,
+  draft,
   defaultOffer,
   defaultOfferProblem,
   pricings,
@@ -196,6 +219,8 @@ function ContractEditorForm({
   entitlement: ComMiloapisBillingV1Alpha1BillingEntitlement | null;
   contract: ContractState | null;
   currentOffer: ComMiloapisBillingV1Alpha1Offer | null;
+  /** The account's draft, with the snapshot it would have once published. */
+  draft: ComMiloapisBillingV1Alpha1Offer | null;
   defaultOffer: ComMiloapisBillingV1Alpha1Offer | null;
   defaultOfferProblem?: DefaultOfferProblem;
   pricings: ServicePricing[];
@@ -207,6 +232,17 @@ function ContractEditorForm({
   const detailUrl = billingAccountRoutes.detail(orgName, accountName);
   const setUp = useSetUpContractMutation(orgName, accountName);
   const changeFees = useChangeContractFeesMutation(orgName, accountName);
+  const saveDraft = useSaveContractDraftMutation(orgName, accountName);
+  const draftName = draft?.metadata?.name;
+  // Which button submitted the form. The schema asks at validation, after
+  // the click, to let a draft leave its start date for later; the state is
+  // for the buttons' spinners.
+  const [intent, setIntent] = useState<SubmitIntent>('publish');
+  const [submitIntent] = useState(() => createSubmitIntent());
+  const submitAs = (next: SubmitIntent) => {
+    submitIntent.set(next);
+    setIntent(next);
+  };
   const servicesQuery = useServiceListQuery();
 
   const isSetup = !contract;
@@ -239,23 +275,27 @@ function ContractEditorForm({
   // Without list prices (as before any ServicePricing exists) the contract
   // bills only its own fees, and there's nothing to tick.
   const priceListEmpty = usageOptions.length === 0 && feeOptions.length === 0;
-  const pickFrom = isSetup ? defaultOffer : currentOffer;
+  // What the form starts from and what saving can reuse pricings from: the
+  // draft, else the contract's current offer. A new contract without a draft
+  // starts from the default offer's usage, with nothing to reuse.
+  const base = draft ?? currentOffer;
+  const pickFrom = draft ?? (isSetup ? defaultOffer : currentOffer);
   const usageRows = usageRowsFromOffer(usageOptions, pickFrom);
   const listFeeRows = listFeeRowsFromOffer(feeOptions, pickFrom);
   // Fees the price list's rows show stay there; the rest are the contract's
   // own, including any whose list fee has gone, so saving keeps them.
-  const listedFees = isSetup ? new Set<string>() : listFeeNames(listFeeRows);
-  const currentFees = getContractFees(currentOffer).filter(
+  const listedFees = base ? listFeeNames(listFeeRows) : new Set<string>();
+  const currentFees = getContractFees(base).filter(
     (fee) => (allowOneTime || fee.chargeType === 'Recurring') && !listedFees.has(fee.name)
   );
   const currentFeeByName = new Map(currentFees.map((fee) => [fee.name, fee]));
   // Usage the price list can't show, such as a pricing being deleted, is
   // kept as it is rather than dropped.
-  const keptUsageRefs = isSetup ? [] : unclaimedUsageRefs(usageRows, currentOffer);
+  const keptUsageRefs = base ? unclaimedUsageRefs(usageRows, base) : [];
   const keptUsageNames = keptUsageRefs.map(
     (ref) =>
-      currentOffer?.spec?.servicePricings?.find((snap) => snap.name === ref.name)?.spec
-        ?.displayName || ref.name
+      base?.spec?.servicePricings?.find((snap) => snap.name === ref.name)?.spec?.displayName ||
+      ref.name
   );
 
   const blankFee = (chargeType: ContractFeeRow['chargeType'], label: string): ContractFeeRow => ({
@@ -266,7 +306,7 @@ function ContractEditorForm({
     pricingUnit: '',
     serviceRef: NO_SERVICE,
   });
-  const defaultFees: ContractFeeRow[] = !isSetup
+  const defaultFees: ContractFeeRow[] = base
     ? currentFees.map((fee) => ({
         label: fee.label,
         chargeType: fee.chargeType,
@@ -278,15 +318,16 @@ function ContractEditorForm({
       }))
     : [blankFee('OneTime', t`Setup fee`), blankFee('Recurring', t`Monthly fee`)];
 
+  const draftStartsAt = isSetup ? getDraftStartsAt(draft) : undefined;
   const schema = useMemo(
-    () => buildContractSchema(isSetup, allowOneTime, now),
-    [isSetup, allowOneTime, now]
+    () => buildContractSchema(isSetup, allowOneTime, now, submitIntent.isDraft),
+    [isSetup, allowOneTime, now, submitIntent]
   );
   const defaultValues: ContractFormValues = {
     fees: defaultFees,
     usage: usageRows.map(toUsageRowValues),
     listFees: listFeeRows.map(toListFeeRowValues),
-    startsAt: undefined,
+    startsAt: draftStartsAt ? localDateForUtcDay(draftStartsAt) : undefined,
   };
 
   const handleSubmit = async (values: ContractFormValues) => {
@@ -318,24 +359,33 @@ function ContractEditorForm({
             existingPricing: existing && sameFeePricing(fee, existing) ? existing.name : undefined,
           };
         }),
-        ...buildListFeePlan(values.listFees.map(fromListFeeRowValues), feeOptions, currentOffer),
+        ...buildListFeePlan(values.listFees.map(fromListFeeRowValues), feeOptions, base),
       ],
       usage: withKeptRefs(
-        buildUsagePlan(usage, usageOptions, DEFAULT_SERVICE_PRICING_NAMESPACE, currentOffer),
+        buildUsagePlan(usage, usageOptions, DEFAULT_SERVICE_PRICING_NAMESPACE, base),
         keptUsageRefs
       ),
     };
+    const startsAt = values.startsAt
+      ? toRfc3339(contractStartFromDate(values.startsAt))
+      : undefined;
     try {
-      if (isSetup) {
+      if (submitIntent.isDraft()) {
+        // A fee change takes effect when it's published, so only a new
+        // contract's draft keeps a start date.
+        await saveDraft.mutateAsync({ offer, startsAt: isSetup ? startsAt : undefined });
+        toast.success(t`Draft saved. Nothing is billed until it's published.`);
+      } else if (isSetup) {
         await setUp.mutateAsync({
           entitlementName,
-          startsAt: toRfc3339(contractStartFromDate(values.startsAt as Date)),
+          startsAt: startsAt as string,
           offer,
+          draftName,
         });
         toast.success(t`Contract set up`);
       } else if (entitlementName) {
         // A contract is only ever on an entitlement.
-        await changeFees.mutateAsync({ entitlementName, offer });
+        await changeFees.mutateAsync({ entitlementName, offer, draftName });
         toast.success(t`Contract fees changed`);
       }
       navigate(detailUrl);
@@ -410,10 +460,23 @@ function ContractEditorForm({
                     <Trans>Cancel</Trans>
                   </Button>
                   <Button
+                    type="secondary"
+                    theme="outline"
                     htmlType="submit"
-                    loading={isSubmitting}
-                    disabled={isSubmitting || (!isSetup && !isDirty)}>
-                    {isSetup ? <Trans>Set up contract</Trans> : <Trans>Change fees</Trans>}
+                    onClick={() => submitAs('draft')}
+                    loading={isSubmitting && intent === 'draft'}
+                    // Nothing to save until the form differs from what it
+                    // started from, unless that was a new contract's blank.
+                    disabled={isSubmitting || (!isDirty && Boolean(base))}>
+                    <Trans>Save as draft</Trans>
+                  </Button>
+                  <Button
+                    htmlType="submit"
+                    onClick={() => submitAs('publish')}
+                    loading={isSubmitting && intent === 'publish'}
+                    // A draft can be published as it is.
+                    disabled={isSubmitting || (!isSetup && !isDirty && !draft)}>
+                    <Trans>Publish</Trans>
                   </Button>
                 </div>
               </ContractSummary>
@@ -424,6 +487,19 @@ function ContractEditorForm({
     </Form.Root>
   );
 }
+
+type SubmitIntent = 'publish' | 'draft';
+
+/** Which of the form's buttons submitted it, read when the form validates. */
+const createSubmitIntent = () => {
+  let current: SubmitIntent = 'publish';
+  return {
+    set: (next: SubmitIntent) => {
+      current = next;
+    },
+    isDraft: () => current === 'draft',
+  };
+};
 
 /** A usage plan with refs the form doesn't show added after its own. */
 const withKeptRefs = (plan: UsagePlan, kept: UsagePlan['refs']): UsagePlan =>
