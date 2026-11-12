@@ -4,6 +4,7 @@ import {
   feeTotal,
   firstInvoiceTotal,
   hasFeesInArrears,
+  MAX_CONTRACT_FEES,
   parseAmount,
   proratedFirstInvoiceTotal,
   recurringTotals,
@@ -24,6 +25,7 @@ import {
 } from './schema';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { Text } from '@datum-cloud/datum-ui/typography';
+import { t } from '@lingui/core/macro';
 import { Plural, Trans } from '@lingui/react/macro';
 import type { ReactNode } from 'react';
 import { useFormState, type UseFormReturn } from 'react-hook-form';
@@ -55,10 +57,20 @@ export function ContractSummary({
   const listRows = (Form.useWatch('listFees') as ListFeeRowValues[] | undefined) ?? [];
   const usageRows = (Form.useWatch('usage') as UsageRowValues[] | undefined) ?? [];
   const picked = Form.useWatch('startsAt') as Date | undefined;
-  // Errors about the contract's fees as a whole: none at all, or too many.
+  // The contract's fees as a whole: none at all, or too many. Worked out
+  // from the form as it is, since the form only re-checks the rule when the
+  // contract's own fees change, not when the price list's are ticked, and
+  // shown once a save has been tried.
   const form = Form.useFormContext().form.raw as UseFormReturn<ContractFormValues>;
-  const { errors } = useFormState({ control: form.control, name: 'fees' });
-  const feesError = errors.fees?.message ?? errors.fees?.root?.message;
+  const { isSubmitted } = useFormState({ control: form.control });
+  const feeCount = rows.length + listRows.filter((row) => row.selected).length;
+  const feesError = !isSubmitted
+    ? null
+    : feeCount === 0
+      ? t`Add a fee, or pick one from the price list.`
+      : feeCount > MAX_CONTRACT_FEES
+        ? t`A contract can have at most ${MAX_CONTRACT_FEES} fees, counting those from the price list.`
+        : null;
 
   const fees: SummaryFee[] = [
     ...rows.map((row, index) => ({
