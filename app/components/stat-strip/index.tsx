@@ -100,9 +100,10 @@ export function StatStripItem({
   );
 
   // Dividers: a top line between wrapped rows on narrow screens, a left line
-  // between items on wide ones.
+  // between items on wide ones. On narrow screens a lone last item (an odd
+  // count) spans the whole row, so no half-empty cell breaks the lines.
   const cell =
-    'border-border min-w-0 border-t even:border-l @3xl/main:border-t-0 @3xl/main:border-l @3xl/main:first:border-l-0';
+    'border-border min-w-0 border-t even:border-l @max-3xl/main:odd:last:col-span-2 @3xl/main:border-t-0 @3xl/main:border-l @3xl/main:first:border-l-0';
 
   if (!href) return <div className={cell}>{body}</div>;
   return (
