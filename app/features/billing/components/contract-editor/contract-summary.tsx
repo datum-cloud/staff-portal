@@ -5,6 +5,7 @@ import {
   firstInvoiceTotal,
   hasFeesInArrears,
   MAX_CONTRACT_FEES,
+  parseDiscount,
   parseAmount,
   proratedFirstInvoiceTotal,
   recurringTotals,
@@ -13,9 +14,11 @@ import {
   type FeeInterval,
 } from '../../lib/contract';
 import { listFeeRowAmount, type ListFeeOption } from '../../lib/contract-list-fees';
+import { contractInvoiceSchedule, upcomingInvoices } from '../../lib/contract-schedule';
 import { formatMoney } from '../../utils';
 import { InlineDate } from '../billing-account-dashboard/card-parts';
 import { billingTimingText, feeChargeText, recurringTotalsText } from '../contract-fee-text';
+import { ContractScheduleList } from '../contract-schedule-list';
 import {
   fromListFeeRowValues,
   type ContractFeeRow,
@@ -38,6 +41,7 @@ type SummaryFee = {
   quantity: number;
   interval?: FeeInterval;
   billingTiming?: FeeBillingTiming;
+  discount?: number;
 };
 
 /**
@@ -47,10 +51,16 @@ type SummaryFee = {
 export function ContractSummary({
   isSetup,
   feeOptions,
+  contractStartsAt,
+  netDays,
   children,
 }: {
   isSetup: boolean;
   feeOptions: ListFeeOption[];
+  /** The contract's start, for a change to one; a new contract's is picked. */
+  contractStartsAt?: Date;
+  /** The account's payment terms, for when invoices are due. */
+  netDays?: number;
   children: ReactNode;
 }) {
   const rows = (Form.useWatch('fees') as ContractFeeRow[] | undefined) ?? [];
@@ -93,6 +103,7 @@ export function ContractSummary({
           chargeType: option.chargeType,
           amount: listFeeRowAmount(fromListFeeRowValues(row), option),
           quantity: Number.parseInt(row.quantity, 10) || 1,
+          discount: parseDiscount(row.discount),
           ...(option.chargeType === 'Recurring'
             ? { interval: option.interval, billingTiming: row.billingTiming }
             : {}),
@@ -125,6 +136,19 @@ export function ContractSummary({
   const fullTotal = formatMoney(fullFirst, CONTRACT_CURRENCY);
   // A first invoice on the start date only when something's billed in advance.
   const showFirstInvoice = (isSetup || hasOneTime) && fullFirst > 0;
+
+  // When the contract's charges will be invoiced: a new contract's from its
+  // first invoice, a change's from today, as if it applied now.
+  const scheduleStart = isSetup ? startsAt : contractStartsAt;
+  const schedule = scheduleStart
+    ? contractInvoiceSchedule({
+        startsAt: scheduleStart,
+        fees: priced.map((fee) => ({ ...fee, name: fee.key, label: fee.label || t`Unnamed fee` })),
+        billsUsage: meters.length > 0,
+        netDays,
+      })
+    : [];
+  const upcoming = isSetup ? schedule : upcomingInvoices(schedule, now);
 
   return (
     <div className="flex flex-col gap-4">
@@ -243,6 +267,12 @@ export function ContractSummary({
               Before discounts and tax, plus any usage. Check it with a preview once saved.
             </Trans>
           </Text>
+        </div>
+      ) : null}
+
+      {upcoming.length > 0 ? (
+        <div className="border-t pt-3">
+          <ContractScheduleList upcoming={upcoming} />
         </div>
       ) : null}
 

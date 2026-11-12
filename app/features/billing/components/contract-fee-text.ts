@@ -1,4 +1,5 @@
 import type { FeeBillingTiming, FeeInterval } from '../lib/contract';
+import type { RateSlotLabel } from '../lib/contract-usage';
 import { i18n } from '@lingui/core';
 import { t } from '@lingui/core/macro';
 
@@ -40,4 +41,21 @@ export const recurringTotalsText = (totals: Partial<Record<FeeInterval, string>>
     totals.annual ? t`${totals.annual} a year` : null,
   ].filter((part): part is string => Boolean(part));
   return new Intl.ListFormat(i18n.locale || undefined, { type: 'conjunction' }).format(parts);
+};
+
+/** What a rate amount prices, in words, e.g. "runtime_class general-purpose, up to 100". */
+export const rateSlotText = (label: RateSlotLabel) => {
+  const parts: string[] = [];
+  if (label.match) parts.push(`${label.match.dimension} ${label.match.value}`);
+  else if (label.rest) parts.push(t`everything else`);
+  if (label.band === 'all') {
+    parts.push(t`all usage`);
+  } else if (label.band && 'upTo' in label.band) {
+    const upTo = label.band.upTo;
+    parts.push(t`up to ${upTo}`);
+  } else if (label.band) {
+    const over = label.band.over;
+    parts.push(t`over ${over}`);
+  }
+  return parts.length > 0 ? parts.join(', ') : t`per unit`;
 };

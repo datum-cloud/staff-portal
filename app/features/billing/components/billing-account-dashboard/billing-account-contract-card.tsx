@@ -10,14 +10,17 @@ import {
   offerBillsUsage,
   type ContractState,
 } from '../../lib/contract';
+import { contractInvoiceSchedule, upcomingInvoices } from '../../lib/contract-schedule';
 import {
   DEFAULT_SERVICE_PRICING_NAMESPACE,
   formatMoney,
+  getEffectiveNetDays,
   indexServicesByRef,
   PAST_INVOICE_STATUS_BADGE,
   toPastInvoiceRow,
 } from '../../utils';
 import { billingTimingText, feeChargeText } from '../contract-fee-text';
+import { ContractScheduleList } from '../contract-schedule-list';
 import { BILLING_ACCOUNT_SECTION_IDS, CardMessage, InlineDate, SectionAnchor } from './card-parts';
 import { BadgeState } from '@/components/badge';
 import { SectionCard } from '@/features/milo';
@@ -89,7 +92,22 @@ export function BillingAccountContractCard({
               {offerQuery.isLoading ? (
                 <Skeleton className="h-10 w-full rounded" />
               ) : offerQuery.data ? (
-                <ContractFees offer={offerQuery.data} />
+                <>
+                  <ContractFees offer={offerQuery.data} />
+                  <div className="border-t pt-3">
+                    <ContractScheduleList
+                      upcoming={upcomingInvoices(
+                        contractInvoiceSchedule({
+                          startsAt: contract.startsAt,
+                          fees: getContractFees(offerQuery.data),
+                          billsUsage: offerBillsUsage(offerQuery.data),
+                          netDays: getEffectiveNetDays(account),
+                        }),
+                        now
+                      )}
+                    />
+                  </div>
+                </>
               ) : (
                 <CardMessage className="py-0">
                   <Trans>Couldn&apos;t load the contract&apos;s offer.</Trans>

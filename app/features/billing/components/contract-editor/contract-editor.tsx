@@ -26,7 +26,11 @@ import {
   usageRowsFromOffer,
   type UsagePlan,
 } from '../../lib/contract-usage';
-import { DEFAULT_SERVICE_PRICING_NAMESPACE, getBillingAccountDisplayName } from '../../utils';
+import {
+  DEFAULT_SERVICE_PRICING_NAMESPACE,
+  getBillingAccountDisplayName,
+  getEffectiveNetDays,
+} from '../../utils';
 import { ContractFeeList, type ServiceOption } from './contract-fee-list';
 import { ContractSummary } from './contract-summary';
 import { PriceListTable } from './price-list-table';
@@ -466,7 +470,11 @@ function ContractEditorForm({
               </SectionCard>
             ) : null}
             <SectionCard title={<Trans>Summary</Trans>}>
-              <ContractSummary isSetup={isSetup} feeOptions={feeOptions}>
+              <ContractSummary
+                isSetup={isSetup}
+                feeOptions={feeOptions}
+                contractStartsAt={contract?.startsAt}
+                netDays={getEffectiveNetDays(account)}>
                 <div className="flex justify-end gap-2 border-t pt-4">
                   <Button
                     type="quaternary"

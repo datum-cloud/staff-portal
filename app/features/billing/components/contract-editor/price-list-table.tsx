@@ -1,8 +1,8 @@
 import { CONTRACT_CURRENCY } from '../../lib/contract';
 import type { ListFeeOption } from '../../lib/contract-list-fees';
-import { rateSlots, type RateSlotLabel, type UsageMeterOption } from '../../lib/contract-usage';
+import { rateSlots, type UsageMeterOption } from '../../lib/contract-usage';
 import { formatMoney, indexServicesByRef } from '../../utils';
-import { feeChargeText } from '../contract-fee-text';
+import { feeChargeText, rateSlotText } from '../contract-fee-text';
 import type { ContractFormValues, ListFeeRowValues, UsageRowValues } from './schema';
 import { WholeNumberInput } from './whole-number-input';
 import { EMBEDDED_TABLE_HEADER_CELL_CLASS, TABLE_CARD_FRAME_CLASS } from '@/features/milo';
@@ -228,23 +228,6 @@ function SelectAll({ entries }: { entries: PriceListEntry[] }) {
     </div>
   );
 }
-
-/** What a rate amount prices, in words, e.g. "runtime_class general-purpose, up to 100". */
-const rateSlotText = (label: RateSlotLabel) => {
-  const parts: string[] = [];
-  if (label.match) parts.push(`${label.match.dimension} ${label.match.value}`);
-  else if (label.rest) parts.push(t`everything else`);
-  if (label.band === 'all') {
-    parts.push(t`all usage`);
-  } else if (label.band && 'upTo' in label.band) {
-    const upTo = label.band.upTo;
-    parts.push(t`up to ${upTo}`);
-  } else if (label.band) {
-    const over = label.band.over;
-    parts.push(t`over ${over}`);
-  }
-  return parts.length > 0 ? parts.join(', ') : t`per unit`;
-};
 
 function ServiceGroup({
   title,
