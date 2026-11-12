@@ -3,6 +3,12 @@ import { projectOp, projectsOp, type GqlProject } from '@/resources/gql/project.
 import { ListQueryParams } from '@/resources/schemas';
 import { flattenManagedRecordSets, walkCursorPages } from '@/utils/helpers';
 import {
+  listComputeDatumapisComV1AlphaInstanceForAllNamespaces,
+  listComputeDatumapisComV1AlphaWorkloadForAllNamespaces,
+  type ComDatumapisComputeV1AlphaInstance,
+  type ComDatumapisComputeV1AlphaWorkload,
+} from '@openapi/compute.datumapis.com/v1alpha';
+import {
   listDnsNetworkingMiloapisComV1Alpha1DnsZoneForAllNamespaces,
   listDnsNetworkingMiloapisComV1Alpha1NamespacedDnsRecordSet,
   readDnsNetworkingMiloapisComV1Alpha1NamespacedDnsRecordSetStatus,
@@ -44,6 +50,51 @@ export const projectEdgeListQuery = async (projectName: string, params?: ListQue
     },
   });
   return response.data.data;
+};
+
+// The org overview lists every project's compute, so pages are large enough
+// that a project's Workloads or Instances usually arrive in one request.
+const COMPUTE_PAGE_LIMIT = 500;
+// Safety net against a runaway walk.
+const COMPUTE_MAX_PAGES = 20;
+
+/** Every Workload in a project (compute.datumapis.com), walking the `continue` cursor. */
+export const projectWorkloadListQuery = (projectName: string, signal?: AbortSignal) =>
+  walkCursorPages<ComDatumapisComputeV1AlphaWorkload>(
+    async (cursor) => {
+      const response = await listComputeDatumapisComV1AlphaWorkloadForAllNamespaces({
+        baseURL: `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+        signal,
+        query: { limit: COMPUTE_PAGE_LIMIT, ...(cursor && { continue: cursor }) },
+      });
+      const page = response.data.data;
+      return { items: page?.items ?? [], continueToken: page?.metadata?.continue };
+    },
+    { maxPages: COMPUTE_MAX_PAGES }
+  );
+
+/** Every Instance in a project (compute.datumapis.com), walking the `continue` cursor. */
+export const projectInstanceListQuery = (projectName: string, signal?: AbortSignal) =>
+  walkCursorPages<ComDatumapisComputeV1AlphaInstance>(
+    async (cursor) => {
+      const response = await listComputeDatumapisComV1AlphaInstanceForAllNamespaces({
+        baseURL: `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+        signal,
+        query: { limit: COMPUTE_PAGE_LIMIT, ...(cursor && { continue: cursor }) },
+      });
+      const page = response.data.data;
+      return { items: page?.items ?? [], continueToken: page?.metadata?.continue };
+    },
+    { maxPages: COMPUTE_MAX_PAGES }
+  );
+
+/** A project's Workloads and Instances, fetched together for the org overview. */
+export const projectComputeQuery = async (projectName: string, signal?: AbortSignal) => {
+  const [workloads, instances] = await Promise.all([
+    projectWorkloadListQuery(projectName, signal),
+    projectInstanceListQuery(projectName, signal),
+  ]);
+  return { workloads, instances };
 };
 
 export const projectExportPolicyListQuery = async (

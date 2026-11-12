@@ -2,6 +2,7 @@ import {
   getOrganization,
   listAllOrganizations,
   listOrganizations,
+  listAllOrgProjects,
   listOrgMembers,
   listOrgProjects,
   orgInvitationCreateMutation,
@@ -22,6 +23,7 @@ export const organizationQueryKeys = {
     all: (orgName: string) => ['organizations', orgName, 'projects'] as const,
     list: (orgName: string, params?: ListQueryParams) =>
       ['organizations', orgName, 'projects', 'list', params] as const,
+    listAll: (orgName: string) => ['organizations', orgName, 'projects', 'list-all'] as const,
   },
   members: {
     all: (orgName: string) => ['organizations', orgName, 'members'] as const,
@@ -74,6 +76,15 @@ export const useOrgProjectListQuery = (orgName: string, params?: ListQueryParams
     queryKey: organizationQueryKeys.projects.list(orgName, params),
     queryFn: () => listOrgProjects(orgName, params),
     enabled: !!orgName,
+  });
+};
+
+/** Every project an organization owns, not just the first page. */
+export const useOrgAllProjectsQuery = (orgName: string, options: { enabled?: boolean } = {}) => {
+  return useQuery({
+    queryKey: organizationQueryKeys.projects.listAll(orgName),
+    queryFn: () => listAllOrgProjects(orgName),
+    enabled: (options.enabled ?? true) && !!orgName,
   });
 };
 
