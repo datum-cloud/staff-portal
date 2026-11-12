@@ -59,3 +59,15 @@ export const rateSlotText = (label: RateSlotLabel) => {
   }
   return parts.length > 0 ? parts.join(', ') : t`per unit`;
 };
+
+/** How long a fee with renewals runs, e.g. "for 36 months" or "for 1 year". */
+export const periodsText = (periods: number, interval: FeeInterval | undefined): string => {
+  switch (interval) {
+    case 'quarterly':
+      return periods === 1 ? t`for 1 quarter` : t`for ${periods} quarters`;
+    case 'annual':
+      return periods === 1 ? t`for 1 year` : t`for ${periods} years`;
+    default:
+      return periods === 1 ? t`for 1 month` : t`for ${periods} months`;
+  }
+};

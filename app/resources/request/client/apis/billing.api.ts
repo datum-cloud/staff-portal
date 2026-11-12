@@ -488,6 +488,8 @@ export type ContractFeeInput = {
   interval?: FeeInterval;
   /** When a recurring fee is invoiced, set on the Offer's reference. */
   billingTiming?: FeeBillingTiming;
+  /** How many periods a recurring fee runs for, on the Offer's reference; unset for no end. */
+  periods?: number;
 };
 
 export type CreateContractOfferInput = {

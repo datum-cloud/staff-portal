@@ -4,6 +4,7 @@ import {
   isContractResource,
   parseAmount,
   parseDiscount,
+  parsePeriods,
   toPricingAmount,
   type FeeBillingTiming,
   type FeeInterval,
@@ -94,6 +95,8 @@ export interface ListFeeRow {
    * term, not the list fee's, so it's on the Offer's reference.
    */
   billingTiming: FeeBillingTiming;
+  /** Renewals, as typed: how many periods a recurring list fee runs for; empty for no end. */
+  periods: string;
   /**
    * The customer fee the contract already charges, so an amendment that
    * keeps its amount reuses it rather than creating another.
@@ -123,14 +126,16 @@ export const listFeeRowsFromOffer = (
       custom: false,
       amount: option.amount,
       billingTiming: DEFAULT_FEE_BILLING_TIMING,
+      periods: '',
     };
     for (const ref of refs) {
       const snap = snapshots.get(ref.name);
       const quantity = String(snap?.quantity || ref.quantity || 1);
       const discount = discountText(ref.discount?.percentage);
       const billingTiming = ref.billingTiming ?? snap?.billingTiming ?? 'InAdvance';
+      const periods = String(ref.periods || snap?.periods || '');
       if (ref.name === option.name) {
-        return { ...blank, selected: true, quantity, discount, billingTiming };
+        return { ...blank, selected: true, quantity, discount, billingTiming, periods };
       }
       if (snap?.spec?.basedOn === option.name && isFeeChargeType(snap.spec.chargeType)) {
         return {
@@ -139,6 +144,7 @@ export const listFeeRowsFromOffer = (
           quantity,
           discount,
           billingTiming,
+          periods,
           custom: true,
           amount: snap.spec.amount ?? option.amount,
           currentPricing: ref.name,
@@ -178,6 +184,8 @@ export interface PlannedListFee {
   interval?: FeeInterval;
   /** When a recurring fee is invoiced. */
   billingTiming?: FeeBillingTiming;
+  /** How many periods a recurring fee runs for, when it has an end. */
+  periods?: number;
   /** The pricing to refer to as it is: the list fee, or a kept customer fee. */
   existingPricing?: string;
   /** For a customer fee to create: the list fee it's based on. */
@@ -213,7 +221,11 @@ export const buildListFeePlan = (
       serviceRef: option.serviceRef || undefined,
       discount: parseDiscount(row.discount),
       ...(option.chargeType === 'Recurring'
-        ? { interval: option.interval ?? 'monthly', billingTiming: row.billingTiming }
+        ? {
+            interval: option.interval ?? 'monthly',
+            billingTiming: row.billingTiming,
+            periods: parsePeriods(row.periods),
+          }
         : {}),
     };
     if (!row.custom || amount === Number.parseFloat(option.amount)) {

@@ -65,6 +65,7 @@ const offer = (
     quantity?: number;
     discount?: { percentage: number };
     billingTiming?: 'InAdvance' | 'InArrears';
+    periods?: number;
   }[],
   snapshots: { name: string; spec: Spec; quantity?: number; discount?: { percentage: number } }[]
 ) =>
@@ -86,6 +87,7 @@ const row = (name: string, changes: Partial<ListFeeRow> = {}): ListFeeRow => ({
   custom: false,
   amount: '',
   billingTiming: 'InArrears',
+  periods: '',
   ...changes,
 });
 
@@ -290,5 +292,19 @@ describe('list fees on the Offer', () => {
       )
     );
     expect(fee).toMatchObject({ basedOn: 'cross-connect-v1', discount: 5, amount: 250 });
+  });
+});
+
+describe('list fee renewals', () => {
+  it("start from the offer's reference, and go on the plan", () => {
+    const current = offer(
+      [{ name: 'cross-connect-v1', periods: 36 }],
+      [{ name: 'cross-connect-v1', spec: crossConnect }]
+    );
+    const rows = listFeeRowsFromOffer(options, current);
+    expect(rows[1]).toMatchObject({ selected: true, periods: '36' });
+    const [fee] = buildListFeePlan([rows[1]], options);
+    expect(fee.periods).toBe(36);
+    expect(buildListFeePlan([{ ...rows[1], periods: '' }], options)[0].periods).toBeUndefined();
   });
 });

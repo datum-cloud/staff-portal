@@ -5,6 +5,7 @@ import {
   getContractState,
   getDraftStartsAt,
   localDateForUtcDay,
+  parsePeriods,
   MAX_CONTRACT_LEAD_DAYS,
   parseAmount,
   startOfUtcDay,
@@ -315,6 +316,7 @@ function ContractEditorForm({
     chargeType,
     interval: 'monthly',
     billingTiming: DEFAULT_FEE_BILLING_TIMING,
+    periods: '',
     amount: '',
     quantity: '1',
     pricingUnit: '',
@@ -328,6 +330,7 @@ function ContractEditorForm({
         // one from before the choice existed, as billing reads it.
         interval: fee.interval ?? 'monthly',
         billingTiming: fee.billingTiming ?? 'InAdvance',
+        periods: fee.periods ? String(fee.periods) : '',
         amount: toPricingAmount(fee.amount),
         quantity: String(fee.quantity),
         pricingUnit: fee.pricingUnit ?? '',
@@ -376,7 +379,11 @@ function ContractEditorForm({
             serviceRef: fee.serviceRef === NO_SERVICE ? undefined : fee.serviceRef,
             existingPricing: existing && sameFeePricing(fee, existing) ? existing.name : undefined,
             ...(fee.chargeType === 'Recurring'
-              ? { interval: fee.interval, billingTiming: fee.billingTiming }
+              ? {
+                  interval: fee.interval,
+                  billingTiming: fee.billingTiming,
+                  periods: parsePeriods(fee.periods),
+                }
               : {}),
           };
         }),

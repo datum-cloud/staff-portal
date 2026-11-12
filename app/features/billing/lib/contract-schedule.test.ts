@@ -114,3 +114,21 @@ describe('upcoming and notable invoices', () => {
     ]);
   });
 });
+
+describe('fees with renewals', () => {
+  const startsAt = new Date('2026-11-12T00:00:00Z');
+  const charged = (billingTiming: 'InAdvance' | 'InArrears') =>
+    contractInvoiceSchedule({
+      startsAt,
+      fees: [fee({ name: 'promo', billingTiming, periods: 3 })],
+      billsUsage: false,
+    }).map((invoice) => day(invoice.date));
+
+  it('stop after their last period, billed in advance', () => {
+    expect(charged('InAdvance')).toEqual(['2026-11-12', '2026-12-12', '2027-01-12']);
+  });
+
+  it('stop after their last period, billed in arrears', () => {
+    expect(charged('InArrears')).toEqual(['2026-12-12', '2027-01-12', '2027-02-12']);
+  });
+});

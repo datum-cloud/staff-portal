@@ -3,6 +3,7 @@ import {
   contractStartProblem,
   MAX_CONTRACT_FEES,
   MAX_CONTRACT_LEAD_DAYS,
+  MAX_FEE_PERIODS,
   parseAmount,
   type ContractFee,
 } from '../../lib/contract';
@@ -48,8 +49,18 @@ const listFeeRowSchema = z.object({
   discount: z.string(),
   amount: z.string(),
   billingTiming: billingTimingSchema,
+  /** Renewals: how many periods a recurring fee runs for; empty for no end. */
+  periods: z.string(),
   currentPricing: z.string().optional(),
 });
+
+/** Renewals as typed: empty for no end, or a whole number billing accepts. */
+const isPeriods = (value: string) => {
+  const trimmed = value.trim();
+  if (!trimmed) return true;
+  const n = Number(trimmed);
+  return Number.isInteger(n) && n >= 1 && n <= MAX_FEE_PERIODS;
+};
 
 /**
  * The contract form's schema. A new contract needs a start date to publish;
@@ -75,6 +86,8 @@ export const buildContractSchema = (
           // invoiced. Kept on a one-time fee's row, and ignored.
           interval: z.enum(['monthly', 'quarterly', 'annual']),
           billingTiming: billingTimingSchema,
+          // Renewals: how many periods it runs for; empty for no end.
+          periods: z.string(),
           amount: z.string().refine((value) => parseAmount(value) > 0, {
             message: t`Enter an amount, such as 1000 or 1000.00.`,
           }),
@@ -107,6 +120,16 @@ export const buildContractSchema = (
           }
         });
       }
+      values.fees.forEach((fee, index) => {
+        if (fee.chargeType === 'Recurring' && !isPeriods(fee.periods)) {
+          issue(['fees', index, 'periods'], t`1 to ${MAX_FEE_PERIODS}, or blank for no end.`);
+        }
+      });
+      values.listFees.forEach((row, index) => {
+        if (row.selected && !isPeriods(row.periods)) {
+          issue(['listFees', index, 'periods'], t`1 to ${MAX_FEE_PERIODS}, or blank.`);
+        }
+      });
       const listFees = values.listFees.filter((row) => row.selected);
       const feeCount = values.fees.length + listFees.length;
       // A contract must bill something: a fee, or usage. Billing only needs
@@ -192,6 +215,7 @@ export const toListFeeRowValues = (row: ListFeeRow): ListFeeRowValues => ({
   discount: row.discount,
   amount: row.custom ? row.amount : '',
   billingTiming: row.billingTiming,
+  periods: row.periods,
   currentPricing: row.currentPricing,
 });
 

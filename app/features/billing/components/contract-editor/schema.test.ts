@@ -58,6 +58,7 @@ describe('list fee rows', () => {
       custom: false,
       amount: '300.00',
       billingTiming: 'InArrears' as const,
+      periods: '',
     };
     expect(toListFeeRowValues(base).amount).toBe('');
     expect(toListFeeRowValues({ ...base, custom: true, amount: '250.00' }).amount).toBe('250.00');
@@ -79,17 +80,34 @@ describe('buildContractSchema', () => {
     discount: '',
     amount: '',
     billingTiming: 'InArrears' as const,
+    periods: '',
   };
   const fee = {
     label: 'Annual support',
     chargeType: 'Recurring' as const,
     interval: 'annual' as const,
     billingTiming: 'InAdvance' as const,
+    periods: '',
     amount: '6000',
     quantity: '1',
     pricingUnit: '',
     serviceRef: 'none',
   };
+
+  it('takes renewals as a whole number from 1, or blank for no end', () => {
+    const schema = buildContractSchema(false, true, now);
+    expect(schema.safeParse({ ...empty, fees: [{ ...fee, periods: '36' }] }).success).toBe(true);
+    expect(schema.safeParse({ ...empty, fees: [{ ...fee, periods: '' }] }).success).toBe(true);
+    const result = schema.safeParse({
+      ...empty,
+      fees: [{ ...fee, periods: '0' }],
+      listFees: [{ ...listFee, periods: '1201' }],
+    });
+    expect(result.error?.issues.map((i) => i.path.join('.'))).toEqual([
+      'fees.0.periods',
+      'listFees.0.periods',
+    ]);
+  });
 
   it("takes a recurring fee's interval and timing, and refuses others", () => {
     const schema = buildContractSchema(false, true, now);

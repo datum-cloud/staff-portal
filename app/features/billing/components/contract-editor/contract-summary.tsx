@@ -6,6 +6,8 @@ import {
   hasFeesInArrears,
   MAX_CONTRACT_FEES,
   parseDiscount,
+  parsePeriods,
+  feeEndsAt,
   parseAmount,
   proratedFirstInvoiceTotal,
   recurringTotals,
@@ -17,7 +19,12 @@ import { listFeeRowAmount, type ListFeeOption } from '../../lib/contract-list-fe
 import { contractInvoiceSchedule, upcomingInvoices } from '../../lib/contract-schedule';
 import { formatMoney } from '../../utils';
 import { InlineDate } from '../billing-account-dashboard/card-parts';
-import { billingTimingText, feeChargeText, recurringTotalsText } from '../contract-fee-text';
+import {
+  billingTimingText,
+  feeChargeText,
+  periodsText,
+  recurringTotalsText,
+} from '../contract-fee-text';
 import { ContractScheduleList } from '../contract-schedule-list';
 import {
   fromListFeeRowValues,
@@ -42,6 +49,7 @@ type SummaryFee = {
   interval?: FeeInterval;
   billingTiming?: FeeBillingTiming;
   discount?: number;
+  periods?: number;
 };
 
 /**
@@ -90,7 +98,11 @@ export function ContractSummary({
       amount: parseAmount(row.amount),
       quantity: Number.parseInt(row.quantity, 10) || 1,
       ...(row.chargeType === 'Recurring'
-        ? { interval: row.interval, billingTiming: row.billingTiming }
+        ? {
+            interval: row.interval,
+            billingTiming: row.billingTiming,
+            periods: parsePeriods(row.periods),
+          }
         : {}),
     })),
     ...listRows.flatMap((row, index): SummaryFee[] => {
@@ -105,7 +117,11 @@ export function ContractSummary({
           quantity: Number.parseInt(row.quantity, 10) || 1,
           discount: parseDiscount(row.discount),
           ...(option.chargeType === 'Recurring'
-            ? { interval: option.interval, billingTiming: row.billingTiming }
+            ? {
+                interval: option.interval,
+                billingTiming: row.billingTiming,
+                periods: parsePeriods(row.periods),
+              }
             : {}),
         },
       ];
@@ -176,7 +192,24 @@ export function ContractSummary({
                     </Text>
                     {fee.billingTiming ? (
                       <Text size="xs" textColor="muted">
-                        {billingTimingText(fee.billingTiming)}
+                        {[
+                          billingTimingText(fee.billingTiming),
+                          fee.periods ? periodsText(fee.periods, fee.interval) : null,
+                        ]
+                          .filter(Boolean)
+                          .join(' · ')}
+                      </Text>
+                    ) : null}
+                    {fee.periods && scheduleStart ? (
+                      <Text size="xs" textColor="muted">
+                        <Trans>
+                          until{' '}
+                          <InlineDate
+                            date={feeEndsAt(scheduleStart, fee.interval, fee.periods).toISOString()}
+                            variant="absolute"
+                            format="MMM d, yyyy"
+                          />
+                        </Trans>
                       </Text>
                     ) : null}
                   </div>

@@ -133,7 +133,7 @@ export function PriceListTable({
         className="h-9 w-full sm:w-64"
       />
       <div className={cn(TABLE_CARD_FRAME_CLASS, 'overflow-x-auto')}>
-        <Table className="min-w-[48rem]">
+        <Table className="min-w-[54rem]">
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead className={EMBEDDED_TABLE_HEADER_CELL_CLASS}>
@@ -144,6 +144,9 @@ export function PriceListTable({
               </TableHead>
               <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-36')}>
                 <Trans>Billed</Trans>
+              </TableHead>
+              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-24')}>
+                <Trans>Renewals</Trans>
               </TableHead>
               <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-20')}>
                 <Trans>Qty</Trans>
@@ -182,7 +185,7 @@ export function PriceListTable({
             ))}
             {!anyVisible ? (
               <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={6} className="py-6 text-center">
+                <TableCell colSpan={7} className="py-6 text-center">
                   <Text size="sm" textColor="muted">
                     <Trans>Nothing on the price list matches “{search.trim()}”.</Trans>
                   </Text>
@@ -252,7 +255,7 @@ function ServiceGroup({
   return (
     <>
       <TableRow className="bg-muted/40 hover:bg-muted/40">
-        <TableCell colSpan={6} className="py-1.5">
+        <TableCell colSpan={7} className="py-1.5">
           {onToggle ? (
             <button
               type="button"
@@ -348,6 +351,23 @@ function ListFeeRows({
           // A one-time fee is invoiced when it's charged.
           <Text size="sm" textColor="muted">
             <Trans>In advance</Trans>
+          </Text>
+        )}
+      </TableCell>
+      <TableCell className="align-middle">
+        {option.chargeType === 'Recurring' ? (
+          // How many periods the contract charges it for: its term, not
+          // the list fee's. Empty for no end.
+          <Form.Field name={`listFees.${index}.periods`}>
+            <WholeNumberInput
+              placeholder={t`No end`}
+              aria-label={t`Renewals`}
+              disabled={!selected}
+            />
+          </Form.Field>
+        ) : (
+          <Text size="sm" textColor="muted">
+            —
           </Text>
         )}
       </TableCell>
@@ -465,6 +485,11 @@ function UsageRows({
         </TableCell>
         <TableCell className="align-middle">
           <Text size="sm" textColor="muted">
+            —
+          </Text>
+        </TableCell>
+        <TableCell className="align-middle">
+          <Text size="sm" textColor="muted">
             <Trans>Usage</Trans>
           </Text>
         </TableCell>
@@ -505,6 +530,7 @@ function UsageRows({
                   {`$${slot.listAmount}`}
                 </Text>
               </TableCell>
+              <TableCell />
               <TableCell />
               <TableCell />
               <TableCell />

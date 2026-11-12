@@ -29,6 +29,15 @@ export type FeeBillingTiming = 'InAdvance' | 'InArrears';
 /** What new contract fees are billed: in arrears, unless staff choose in advance. */
 export const DEFAULT_FEE_BILLING_TIMING: FeeBillingTiming = 'InArrears';
 
+/** The most periods a fee can run for, as billing allows. */
+export const MAX_FEE_PERIODS = 1200;
+
+/** Renewals as typed ("36"), as a number of periods, or undefined for no end. */
+export const parsePeriods = (value: string | undefined): number | undefined => {
+  const n = Number.parseInt((value ?? '').trim(), 10);
+  return Number.isInteger(n) && n > 0 ? n : undefined;
+};
+
 /** How many months one period of a recurring fee is. */
 export const intervalMonths = (interval: FeeInterval | undefined) =>
   interval === 'quarterly' ? 3 : interval === 'annual' ? 12 : 1;
@@ -116,6 +125,7 @@ export const withDraftSnapshot = (
         ...(ref.quantity ? { quantity: ref.quantity } : {}),
         ...(ref.discount ? { discount: ref.discount } : {}),
         ...(ref.billingTiming ? { billingTiming: ref.billingTiming } : {}),
+        ...(ref.periods ? { periods: ref.periods } : {}),
       },
     ];
   });
@@ -237,6 +247,8 @@ export interface ContractFee {
   interval?: FeeInterval;
   /** When a recurring fee is invoiced; unset for a one-time fee. */
   billingTiming?: FeeBillingTiming;
+  /** How many periods a recurring fee runs for; unset when it has no end. */
+  periods?: number;
 }
 
 /**
@@ -272,6 +284,7 @@ export const getContractFees = (
             ? {
                 interval: spec.interval ?? 'monthly',
                 billingTiming: snapshotBillingTiming(snapshot),
+                periods: snapshot.periods || undefined,
               }
             : {}),
         },
@@ -345,6 +358,8 @@ export const contractOfferPlan = ({
     discount?: number;
     /** A recurring fee's timing; it's always set, so it doesn't fall back to billing's default. */
     billingTiming?: FeeBillingTiming;
+    /** How many periods a recurring fee runs for, when it has an end. */
+    periods?: number;
   }[];
   usageRefs: ServicePricingRef[];
 }): ContractOfferPlan => {
@@ -361,6 +376,7 @@ export const contractOfferPlan = ({
         ...(fee.chargeType === 'Recurring' && fee.billingTiming
           ? { billingTiming: fee.billingTiming }
           : {}),
+        ...(fee.chargeType === 'Recurring' && fee.periods ? { periods: fee.periods } : {}),
       })),
       ...usageRefs,
     ],
@@ -452,6 +468,14 @@ export const firstPeriodEnd = (startsAt: Date, months = 1): Date => {
   const lastDay = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
   return new Date(Date.UTC(year, month, Math.min(startsAt.getUTCDate(), lastDay)));
 };
+
+/**
+ * When a recurring fee charged for `periods` periods from a contract's start
+ * stops: that many intervals on, on the start's day of the month, or the
+ * last day of a shorter month, as billing's status.contract.fees[].endsAt.
+ */
+export const feeEndsAt = (startsAt: Date, interval: FeeInterval | undefined, periods: number) =>
+  firstPeriodEnd(startsAt, intervalMonths(interval) * periods);
 
 /**
  * How much of its first period a fee charged every `months` months is

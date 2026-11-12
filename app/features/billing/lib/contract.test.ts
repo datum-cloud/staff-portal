@@ -13,6 +13,7 @@ import {
   contractStartProblem,
   discountedFeeTotal,
   discountText,
+  feeEndsAt,
   firstInvoiceTotal,
   firstMonthShare,
   firstPeriodEnd,
@@ -28,6 +29,7 @@ import {
   monthlyTotal,
   parseAmount,
   parseDiscount,
+  parsePeriods,
   proratedFirstInvoiceTotal,
   recurringTotals,
   toPricingAmount,
@@ -298,6 +300,23 @@ describe('contractOfferPlan', () => {
     });
   });
 
+  it("sets a recurring fee's renewals, never a one-time fee's", () => {
+    const plan = contractOfferPlan({
+      namespace: 'milo-system',
+      fees: [
+        { name: 'promo', chargeType: 'Recurring', periods: 3 },
+        { name: 'rack', chargeType: 'Recurring' },
+        { name: 'setup', chargeType: 'OneTime', periods: 3 },
+      ],
+      usageRefs: [],
+    });
+    expect(plan.servicePricingRefs).toEqual([
+      { name: 'promo', namespace: 'milo-system', periods: 3 },
+      { name: 'rack', namespace: 'milo-system' },
+      { name: 'setup', namespace: 'milo-system' },
+    ]);
+  });
+
   it("sets a recurring fee's timing, never a one-time fee's", () => {
     const plan = contractOfferPlan({
       namespace: 'milo-system',
@@ -561,5 +580,26 @@ describe('draft contracts', () => {
     const started = entitlement('2026-10-01T00:00:00Z');
     expect(draftPublishProblem(draft(), started, now)).toBe('one-time-after-start');
     expect(draftPublishProblem(draft(undefined, ['Recurring']), started, now)).toBeNull();
+  });
+});
+
+describe('fee renewals', () => {
+  it('end the fee that many intervals from the start', () => {
+    const start = new Date('2026-11-12T00:00:00Z');
+    expect(feeEndsAt(start, 'monthly', 3).toISOString()).toBe('2027-02-12T00:00:00.000Z');
+    expect(feeEndsAt(start, 'quarterly', 4).toISOString()).toBe('2027-11-12T00:00:00.000Z');
+    expect(feeEndsAt(start, 'annual', 3).toISOString()).toBe('2029-11-12T00:00:00.000Z');
+    expect(feeEndsAt(new Date('2027-01-31T00:00:00Z'), 'monthly', 1).toISOString()).toBe(
+      '2027-02-28T00:00:00.000Z'
+    );
+  });
+
+  it('are read from the snapshot, and typed ones parsed', () => {
+    const promo = fixed('promo', 'Recurring', '100.00');
+    promo.periods = 3;
+    expect(getContractFees(offer([promo]))[0].periods).toBe(3);
+    expect(parsePeriods('36')).toBe(36);
+    expect(parsePeriods('')).toBeUndefined();
+    expect(parsePeriods('0')).toBeUndefined();
   });
 });

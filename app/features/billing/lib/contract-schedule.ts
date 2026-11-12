@@ -85,7 +85,12 @@ export const contractInvoiceSchedule = ({
       if (fee.chargeType === 'OneTime') return k === 0 ? [base] : [];
       const every = intervalMonths(fee.interval);
       if (k % every !== 0) return [];
-      if ((fee.billingTiming ?? 'InAdvance') === 'InAdvance') {
+      // A fee with renewals stops after its last period: one billed in
+      // advance isn't charged at its end, one in arrears is, for the last.
+      const last = fee.periods ? fee.periods * every : undefined;
+      const inAdvance = (fee.billingTiming ?? 'InAdvance') === 'InAdvance';
+      if (last !== undefined && (inAdvance ? k >= last : k > last)) return [];
+      if (inAdvance) {
         // The last date in the window starts a period mostly beyond it;
         // it's still invoiced then, so it's kept.
         return [{ ...base, period: { from: date, to: billingDate(startsAt, k + every) } }];

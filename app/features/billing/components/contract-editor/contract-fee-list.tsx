@@ -48,6 +48,7 @@ export function ContractFeeList({
                 chargeType: 'Recurring',
                 interval: 'monthly',
                 billingTiming: DEFAULT_FEE_BILLING_TIMING,
+                periods: '',
                 amount: '',
                 quantity: '1',
                 pricingUnit: '',
@@ -96,7 +97,7 @@ export function ContractFeeList({
                     onClick={() => remove(index)}
                   />
                 </div>
-                <div className="grid grid-cols-[8rem_8rem_9rem] items-start gap-2">
+                <div className="grid grid-cols-[8rem_8rem_9rem_7rem] items-start gap-2">
                   <Form.Field name={`fees.${index}.chargeType`} label={t`Charged`} required>
                     <Form.Select>
                       {allowOneTime || fees[index]?.chargeType === 'OneTime' ? (
@@ -137,6 +138,12 @@ export function ContractFeeList({
                             <Trans>In advance</Trans>
                           </Form.SelectItem>
                         </Form.Select>
+                      </Form.Field>
+                      <Form.Field
+                        name={`fees.${index}.periods`}
+                        label={t`Renewals`}
+                        tooltip={t`How many periods the fee is charged for, counted from the contract's start: 36 monthly is three years. Leave it blank for no end.`}>
+                        <WholeNumberInput placeholder={t`No end`} />
                       </Form.Field>
                     </>
                   ) : null}
