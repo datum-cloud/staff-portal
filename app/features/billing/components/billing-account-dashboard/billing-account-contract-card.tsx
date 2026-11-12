@@ -205,6 +205,9 @@ function ContractDates({ contract }: { contract: ContractState }) {
   );
 }
 
+/** How many fees the contract and draft cards show before "Show all". */
+const FEES_SHOWN = 5;
+
 /** A fee's quantity and unit price, e.g. "4 port × $300.00", or null for one of it. */
 const feeQuantityText = (fee: { amount: number; quantity: number; pricingUnit?: string }) => {
   const unitPrice = formatMoney(fee.amount, CONTRACT_CURRENCY);
@@ -224,6 +227,9 @@ export function ContractFees({
   startsAt?: Date;
 }) {
   const fees = getContractFees(offer);
+  // A long contract shows its first fees, with the rest a click away.
+  const [showAll, setShowAll] = useState(false);
+  const shownFees = showAll ? fees : fees.slice(0, FEES_SHOWN);
   const discount = offer.spec?.discount?.percentage;
   const customRates = (offer.spec?.servicePricings ?? []).filter(
     (snapshot) => snapshot.spec?.chargeType === 'Usage' && snapshot.spec.basedOn
@@ -253,7 +259,7 @@ export function ContractFees({
         </Text>
       ) : (
         <ul className="flex flex-col gap-1">
-          {fees.map((fee) => {
+          {shownFees.map((fee) => {
             // What the customer pays, after any discount; the full amount is
             // shown with the discount underneath.
             const total = formatMoney(discountedFeeTotal(fee), CONTRACT_CURRENCY);
@@ -294,6 +300,19 @@ export function ContractFees({
           })}
         </ul>
       )}
+      {fees.length > FEES_SHOWN ? (
+        <div>
+          <Button
+            type="quaternary"
+            theme="borderless"
+            size="small"
+            htmlType="button"
+            className="-ml-2"
+            onClick={() => setShowAll((value) => !value)}>
+            {showAll ? <Trans>Show fewer</Trans> : <Trans>Show all {fees.length} fees</Trans>}
+          </Button>
+        </div>
+      ) : null}
       <Text size="xs" textColor="muted">
         {!offerBillsUsage(offer) ? (
           <Trans>Fixed fees only: usage isn&apos;t billed.</Trans>
