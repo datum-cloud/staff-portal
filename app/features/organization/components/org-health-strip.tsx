@@ -17,13 +17,14 @@ import {
   type StatStripTone,
 } from '@/components/stat-strip';
 import { StatTileDetail, StatTileHeadline, StatTileSkeleton } from '@/components/stat-tile';
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { Plural, Trans, useLingui } from '@lingui/react/macro';
-import { CircleCheck, CircleX, LoaderCircle, TriangleAlert, type LucideIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { useMemo, type ReactNode } from 'react';
 
 /** The strip's tiles, in order. Quota counts toward the verdict but has no tile. */
@@ -32,17 +33,17 @@ type TileArea = (typeof TILE_AREAS)[number];
 
 const TONE_CLASS: Record<TileTone, string> = {
   danger: 'text-destructive',
-  warning: 'text-amber-600',
+  warning: 'text-warning',
   neutral: 'text-muted-foreground',
-  success: 'text-green-600',
+  success: 'text-success',
   muted: 'text-muted-foreground',
 };
 
 const VERDICT_STYLE: Record<Verdict, { icon: LucideIcon; text: string }> = {
-  degraded: { icon: CircleX, text: 'text-destructive' },
-  warnings: { icon: TriangleAlert, text: 'text-amber-600' },
-  healthy: { icon: CircleCheck, text: 'text-green-600' },
-  checking: { icon: LoaderCircle, text: 'text-muted-foreground' },
+  degraded: { icon: STATUS_ICONS.error, text: 'text-destructive' },
+  warnings: { icon: STATUS_ICONS.warning, text: 'text-warning' },
+  healthy: { icon: STATUS_ICONS.success, text: 'text-success' },
+  checking: { icon: STATUS_ICONS.loading, text: 'text-muted-foreground' },
 };
 
 function areaLabel(area: TileArea | IssueArea): ReactNode {

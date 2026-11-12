@@ -40,8 +40,8 @@ export type StatStripTone = 'danger' | 'warning' | 'success' | 'neutral';
 
 const LEAD_TONE: Record<StatStripTone, string> = {
   danger: 'bg-destructive/5',
-  warning: 'bg-amber-500/5',
-  success: 'bg-green-600/5',
+  warning: 'bg-warning/5',
+  success: 'bg-success/5',
   neutral: '',
 };
 
