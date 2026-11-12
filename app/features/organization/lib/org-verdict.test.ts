@@ -73,7 +73,7 @@ describe('summarizeVerdict', () => {
       allAreas({ dnsZones: { isError: true }, workloads: { unreadProjects: ['p9'] } })
     );
     expect(summary.verdict).toBe('warnings');
-    expect(summary.unchecked).toEqual(['workloads', 'dnsZones']);
+    expect(summary.unchecked).toEqual(['dnsZones']);
     expect(summary.unreadProjects).toEqual(['p9']);
   });
 

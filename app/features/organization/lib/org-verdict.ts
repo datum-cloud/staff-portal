@@ -29,7 +29,7 @@ export interface VerdictSummary {
   /** When the oldest and newest timed issues started. */
   oldest?: string;
   newest?: string;
-  /** Areas that couldn't be fully checked, in display order. */
+  /** Areas whose source failed, in display order. */
   unchecked: IssueArea[];
   /** Projects any area couldn't read. */
   unreadProjects: string[];
@@ -44,8 +44,7 @@ const AREA_ORDER: readonly IssueArea[] = [
   'quota',
 ];
 
-const isUnchecked = (state: AreaStatusInput) =>
-  state.enabled && (state.isError || state.unreadProjects.length > 0);
+const isUnchecked = (state: AreaStatusInput) => state.enabled && state.isError;
 
 /**
  * Degraded with any danger issue, Warnings with any warning or anything left
@@ -70,7 +69,7 @@ export function summarizeVerdict(
 
   const verdict: Verdict = counted.some((issue) => issue.severity === 'danger')
     ? 'degraded'
-    : counted.length > 0 || unchecked.length > 0
+    : counted.length > 0 || unchecked.length > 0 || unreadProjects.length > 0
       ? 'warnings'
       : loading
         ? 'checking'
