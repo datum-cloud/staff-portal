@@ -76,7 +76,7 @@ export function PriceListTable({
 
   return (
     <div className={cn(TABLE_CARD_FRAME_CLASS, 'overflow-x-auto')}>
-      <Table className="min-w-[40rem]">
+      <Table className="min-w-[48rem]">
         <TableHeader>
           <TableRow className="hover:bg-transparent">
             <TableHead className={EMBEDDED_TABLE_HEADER_CELL_CLASS}>
@@ -84,6 +84,9 @@ export function PriceListTable({
             </TableHead>
             <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-44')}>
               <Trans>List price</Trans>
+            </TableHead>
+            <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-36')}>
+              <Trans>Billed</Trans>
             </TableHead>
             <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-20')}>
               <Trans>Qty</Trans>
@@ -163,7 +166,7 @@ function ServiceGroup({ title, entries }: { title: string; entries: PriceListEnt
   return (
     <>
       <TableRow className="bg-muted/40 hover:bg-muted/40">
-        <TableCell colSpan={5} className="py-1.5">
+        <TableCell colSpan={6} className="py-1.5">
           <Text size="xs" weight="medium" textColor="muted">
             {title}
           </Text>
@@ -197,29 +200,34 @@ function ListFeeRows({ option, index }: { option: ListFeeOption; index: number }
   return (
     <TableRow>
       <TableCell className="align-middle">
-        <div className="flex flex-col gap-1">
-          <Form.Field name={`listFees.${index}.selected`}>
-            <Form.Checkbox label={option.label} />
-          </Form.Field>
-          {option.chargeType === 'Recurring' ? (
-            // When the contract invoices it: its term, not the list fee's.
-            <Form.Field name={`listFees.${index}.billingTiming`} className="w-40 pl-6">
-              <Form.Select disabled={!selected} aria-label={t`Billed`}>
-                <Form.SelectItem value="InArrears">
-                  <Trans>Billed in arrears</Trans>
-                </Form.SelectItem>
-                <Form.SelectItem value="InAdvance">
-                  <Trans>Billed in advance</Trans>
-                </Form.SelectItem>
-              </Form.Select>
-            </Form.Field>
-          ) : null}
-        </div>
+        <Form.Field name={`listFees.${index}.selected`}>
+          <Form.Checkbox label={option.label} />
+        </Form.Field>
       </TableCell>
       <TableCell className="align-middle">
         <Text size="sm" className="tabular-nums">
           {feePriceText(option)}
         </Text>
+      </TableCell>
+      <TableCell className="align-middle">
+        {option.chargeType === 'Recurring' ? (
+          // When the contract invoices it: its term, not the list fee's.
+          <Form.Field name={`listFees.${index}.billingTiming`}>
+            <Form.Select disabled={!selected} aria-label={t`Billed`}>
+              <Form.SelectItem value="InArrears">
+                <Trans>In arrears</Trans>
+              </Form.SelectItem>
+              <Form.SelectItem value="InAdvance">
+                <Trans>In advance</Trans>
+              </Form.SelectItem>
+            </Form.Select>
+          </Form.Field>
+        ) : (
+          // A one-time fee is invoiced when it's charged.
+          <Text size="sm" textColor="muted">
+            <Trans>In advance</Trans>
+          </Text>
+        )}
       </TableCell>
       <TableCell className="align-middle">
         <Form.Field name={`listFees.${index}.quantity`}>
@@ -320,6 +328,12 @@ function UsageRows({ option, index }: { option: UsageMeterOption; index: number 
           )}
         </TableCell>
         <TableCell className="align-middle">
+          {/* Usage is always invoiced at the end of the period. */}
+          <Text size="sm" textColor="muted">
+            <Trans>In arrears</Trans>
+          </Text>
+        </TableCell>
+        <TableCell className="align-middle">
           <Text size="sm" textColor="muted">
             <Trans>Usage</Trans>
           </Text>
@@ -359,6 +373,7 @@ function UsageRows({ option, index }: { option: UsageMeterOption; index: number 
                   {`$${slot.listAmount}`}
                 </Text>
               </TableCell>
+              <TableCell />
               <TableCell />
               <TableCell />
               <TableCell>
