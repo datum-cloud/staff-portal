@@ -1,3 +1,4 @@
+import { projectQuotaBucketListQuery } from './quota.api';
 import { PROXY_URL } from '@/modules/axios/axios.client';
 import { projectOp, projectsOp, type GqlProject } from '@/resources/gql/project.gql';
 import { ListQueryParams } from '@/resources/schemas';
@@ -95,6 +96,27 @@ export const projectComputeQuery = async (projectName: string, signal?: AbortSig
     projectInstanceListQuery(projectName, signal),
   ]);
   return { workloads, instances };
+};
+
+/**
+ * A project's load balancers, domains, DNS zones and quota buckets, fetched
+ * together for the org overview. Lists are requested without a limit, so the
+ * API returns every item.
+ */
+export const projectNetworkQuery = async (projectName: string, signal?: AbortSignal) => {
+  const baseURL = `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`;
+  const [proxies, domains, dnsZones, quotaBuckets] = await Promise.all([
+    listNetworkingDatumapisComV1AlphaHttpProxyForAllNamespaces({ baseURL, signal }),
+    listNetworkingDatumapisComV1AlphaDomainForAllNamespaces({ baseURL, signal }),
+    listDnsNetworkingMiloapisComV1Alpha1DnsZoneForAllNamespaces({ baseURL, signal }),
+    projectQuotaBucketListQuery(projectName, { signal }),
+  ]);
+  return {
+    proxies: proxies.data.data?.items ?? [],
+    domains: domains.data.data?.items ?? [],
+    dnsZones: dnsZones.data.data?.items ?? [],
+    quotaBuckets: quotaBuckets?.items ?? [],
+  };
 };
 
 export const projectExportPolicyListQuery = async (

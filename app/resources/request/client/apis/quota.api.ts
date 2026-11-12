@@ -151,10 +151,16 @@ export const projectQuotaGrantDeleteMutation = async (
 
 export const quotaBucketListQuery = async (
   namespace: string,
-  params?: ListQueryParams & { fieldSelector?: string; labelSelector?: string; baseURL?: string }
+  params?: ListQueryParams & {
+    fieldSelector?: string;
+    labelSelector?: string;
+    baseURL?: string;
+    signal?: AbortSignal;
+  }
 ) => {
   const response = await listQuotaMiloapisComV1Alpha1NamespacedAllowanceBucket({
     ...(params?.baseURL && { baseURL: params.baseURL }),
+    ...(params?.signal && { signal: params.signal }),
     path: { namespace },
     query: {
       ...(params?.limit && { limit: params.limit }),
@@ -185,7 +191,7 @@ export const orgQuotaBucketListQuery = (
 
 export const projectQuotaBucketListQuery = (
   projectName: string,
-  params?: ListQueryParams & { resourceType?: string; labelSelector?: string }
+  params?: ListQueryParams & { resourceType?: string; labelSelector?: string; signal?: AbortSignal }
 ) => {
   const fieldSelectorParts = [
     `spec.consumerRef.kind=Project`,
