@@ -129,6 +129,6 @@ Guidance:
 
 ## 9) Navigation placement convention
 
-- If navigation belongs to a section-level hub, use route `layout.tsx` with `AppNavigation` tabs.
-- If navigation belongs to a resource workspace (detail-oriented), use `SubLayout.SidebarMenu`.
-- Keep global app sidebar (`app/components/app-sidebar`) focused on top-level domains, not page-local tabs.
+- If navigation belongs to a section-level hub, add the section's `subNav` items in `app/features/milo/lib/nav-config.ts`.
+- If navigation belongs to a resource workspace (detail-oriented), declare `handle.entityNav` on the detail `layout.tsx` so the sub-nav rail shows that resource's pages.
+- Keep the main menu (`NAV_SECTIONS` in `nav-config.ts`) focused on top-level domains, not page-local tabs.

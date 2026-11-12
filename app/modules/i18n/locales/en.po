@@ -492,7 +492,6 @@ msgstr "Accounts payable email"
 msgid "Action"
 msgstr "Action"
 
-#: app/components/app-toolbar/mobile-toolbar.tsx:92
 #: app/features/activity/components/activity-list.tsx:454
 #: app/features/activity/components/activity-list.tsx:520
 #: app/features/billing/components/billing-account-dashboard/billing-account-header.tsx:145
@@ -523,7 +522,6 @@ msgid "active since <0/>"
 msgstr "active since <0/>"
 
 #: app/components/app-search/use-app-search.ts:55
-#: app/components/app-sidebar/index.tsx:187
 #: app/features/dashboard/components/home/activity-section.tsx:30
 #: app/routes/customer/organization/detail/activity/layout.tsx:5
 #: app/routes/customer/project/detail/activity/layout.tsx:5
@@ -654,7 +652,6 @@ msgstr "Agreement"
 msgid "Agreement reference"
 msgstr "Agreement reference"
 
-#: app/components/app-sidebar/index.tsx:129
 #: app/routes/customer/organization/detail/edge.tsx:9
 #: app/routes/customer/project/detail/edge/layout.tsx:5
 #: app/routes/customer/resource/edge/layout.tsx:5
@@ -986,10 +983,6 @@ msgstr "Authorized to apply"
 msgid "auto-charged when invoiced"
 msgstr "auto-charged when invoiced"
 
-#: app/components/app-toolbar/mobile-toolbar.tsx:61
-msgid "Back"
-msgstr "Back"
-
 #: app/features/fraud/detail/evaluation-sections.tsx:462
 msgid "Back to evaluations"
 msgstr "Back to evaluations"
@@ -1061,7 +1054,6 @@ msgstr "Billing Account"
 msgid "Billing account not found or you do not have permission to view it."
 msgstr "Billing account not found or you do not have permission to view it."
 
-#: app/components/app-sidebar/index.tsx:181
 #: app/features/billing/components/org-billing-accounts-card.tsx:81
 #: app/routes/customer/billing-account/index.tsx:7
 #: app/routes/customer/billing-account/layout.tsx:8
@@ -1306,7 +1298,6 @@ msgstr "Clear date range"
 msgid "Clear filters"
 msgstr "Clear filters"
 
-#: app/components/app-search/app-search-mobile.tsx:73
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:333
 #: app/features/fraud/detail/evaluation-sections.tsx:71
 #: app/features/user/components/user-recovery-links-dialog.tsx:99
@@ -1474,7 +1465,6 @@ msgstr "Contact group updated successfully"
 msgid "Contact groups"
 msgstr "Contact groups"
 
-#: app/components/app-sidebar/index.tsx:157
 #: app/routes/marketing/breadcrumb-switchers.tsx:7
 #: app/routes/marketing/contact-group/index.tsx:29
 #: app/routes/marketing/contact-group/layout.tsx:8
@@ -1499,8 +1489,6 @@ msgid "Contact updated successfully"
 msgstr "Contact updated successfully"
 
 #: app/components/app-search/search-results.tsx:337
-#: app/components/app-sidebar/index.tsx:147
-#: app/components/app-sidebar/index.tsx:153
 #: app/routes/customer/user/detail/contacts.tsx:9
 #: app/routes/marketing/breadcrumb-switchers.tsx:6
 #: app/routes/marketing/contact/index.tsx:14
@@ -1806,7 +1794,6 @@ msgstr "Customer rate, {0}"
 msgid "Customer rates"
 msgstr "Customer rates"
 
-#: app/components/app-sidebar/index.tsx:109
 #: app/routes/customer/layout.tsx:7
 #: app/routes/customer/project/detail/layout.tsx:121
 msgid "Customers"
@@ -1820,12 +1807,7 @@ msgstr "daily usage"
 msgid "Danger Zone"
 msgstr "Danger Zone"
 
-#: app/components/theme-switcher/index.tsx:45
-msgid "Dark"
-msgstr "Dark"
-
 #: app/components/app-search/use-app-search.ts:35
-#: app/components/app-sidebar/index.tsx:103
 msgid "Dashboard"
 msgstr "Dashboard"
 
@@ -2187,7 +2169,6 @@ msgid "DNS Zone"
 msgstr "DNS Zone"
 
 #: app/components/app-search/search-results.tsx:272
-#: app/components/app-sidebar/index.tsx:135
 #: app/routes/customer/resource/dns/index.tsx:10
 #: app/routes/customer/resource/dns/layout.tsx:5
 msgid "DNS Zones"
@@ -2216,7 +2197,6 @@ msgid "Domain verification is in progress. This may take a few minutes."
 msgstr "Domain verification is in progress. This may take a few minutes."
 
 #: app/components/app-search/search-results.tsx:235
-#: app/components/app-sidebar/index.tsx:141
 #: app/features/project/components/project-resources-card.tsx:74
 #: app/routes/customer/organization/detail/domain.tsx:9
 #: app/routes/customer/project/detail/domain/layout.tsx:5
@@ -2327,7 +2307,6 @@ msgstr "Education or research"
 msgid "Email"
 msgstr "Email"
 
-#: app/components/app-sidebar/index.tsx:169
 #: app/features/contact/components/contact-emails-card.tsx:56
 #: app/routes/customer/project/detail/email-activity.tsx:8
 #: app/routes/customer/user/detail/email-activity.tsx:9
@@ -2734,10 +2713,6 @@ msgstr "Filter the list"
 msgid "Filters"
 msgstr "Filters"
 
-#: app/components/app-sidebar/index.tsx:175
-msgid "Finance"
-msgstr "Finance"
-
 #: app/routes/profile/session.tsx:64
 msgid "Fingerprint ID"
 msgstr "Fingerprint ID"
@@ -2807,7 +2782,6 @@ msgstr "For example: We couldn't verify your company. Send your company registra
 msgid "Force HTTPS"
 msgstr "Force HTTPS"
 
-#: app/components/app-sidebar/index.tsx:199
 #: app/routes/customer/breadcrumb-switchers.tsx:18
 #: app/routes/customer/fraud/layout.tsx:8
 msgid "Fraud & Abuse"
@@ -2945,7 +2919,6 @@ msgstr "Group"
 msgid "Group Information"
 msgstr "Group Information"
 
-#: app/components/app-sidebar/index.tsx:163
 #: app/routes/admin/breadcrumb-switchers.tsx:6
 #: app/routes/admin/group/index.tsx:12
 #: app/routes/admin/group/layout.tsx:8
@@ -3346,10 +3319,6 @@ msgstr "Lift"
 msgid "Lifted"
 msgstr "Lifted"
 
-#: app/components/theme-switcher/index.tsx:40
-msgid "Light"
-msgstr "Light"
-
 #: app/features/quota/components/quota-bucket-list.tsx:193
 msgid "Limit:"
 msgstr "Limit:"
@@ -3464,7 +3433,6 @@ msgstr "Log back into Datum"
 msgid "Log back into GitHub (with the new, desired email set as primary)"
 msgstr "Log back into GitHub (with the new, desired email set as primary)"
 
-#: app/components/app-sidebar/nav-user.tsx:101
 #: app/features/milo/components/navbar/milo-user-menu.tsx:83
 msgid "Log out"
 msgstr "Log out"
@@ -3589,10 +3557,6 @@ msgstr "Monthly"
 msgid "Monthly fee"
 msgstr "Monthly fee"
 
-#: app/components/app-toolbar/mobile-toolbar.tsx:74
-msgid "More options"
-msgstr "More options"
-
 #: app/features/milo/components/page/list-table.tsx:457
 msgid "More results available"
 msgstr "More results available"
@@ -3605,7 +3569,6 @@ msgstr "Move this billing account to another published Offer. The customer's pla
 msgid "Move to Pending"
 msgstr "Move to Pending"
 
-#: app/components/app-sidebar/nav-user.tsx:91
 #: app/features/milo/components/navbar/milo-user-menu.tsx:73
 #: app/routes/profile/layout.tsx:9
 msgid "My Profile"
@@ -3667,10 +3630,6 @@ msgstr "Nameservers"
 #: app/routes/customer/project/detail/secret.tsx:27
 msgid "Namespace"
 msgstr "Namespace"
-
-#: app/components/app-toolbar/mobile-toolbar.tsx:81
-msgid "Navigate up"
-msgstr "Navigate up"
 
 #: app/components/app-search/search-results.tsx:117
 msgid "Navigation"
@@ -4369,7 +4328,6 @@ msgstr "Nothing past due"
 msgid "Nothing waiting on review"
 msgstr "Nothing waiting on review"
 
-#: app/components/app-sidebar/nav-user.tsx:95
 #: app/features/milo/components/navbar/milo-user-menu.tsx:77
 msgid "Notifications"
 msgstr "Notifications"
@@ -4456,10 +4414,6 @@ msgstr "Open in Cloud Portal"
 msgid "Open menu"
 msgstr "Open menu"
 
-#: app/components/app-search/app-search-mobile.tsx:40
-msgid "Open search"
-msgstr "Open search"
-
 #: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:76
 msgid "Open usage dashboard"
 msgstr "Open usage dashboard"
@@ -4517,7 +4471,6 @@ msgstr "organizations"
 
 #: app/components/app-search/search-results.tsx:170
 #: app/components/app-search/use-app-search.ts:43
-#: app/components/app-sidebar/index.tsx:119
 #: app/features/contact/components/contact-organizations-card.tsx:30
 #: app/features/contact/components/timeline/timeline-filters.tsx:16
 #: app/routes/customer/breadcrumb-switchers.tsx:14
@@ -4981,7 +4934,6 @@ msgstr "Project suspended"
 
 #: app/components/app-search/search-results.tsx:186
 #: app/components/app-search/use-app-search.ts:49
-#: app/components/app-sidebar/index.tsx:123
 #: app/features/organization/components/org-details-card.tsx:71
 #: app/routes/customer/breadcrumb-switchers.tsx:15
 #: app/routes/customer/organization/detail/project.tsx:22
@@ -5447,8 +5399,6 @@ msgstr "Scroll left"
 msgid "Scroll right"
 msgstr "Scroll right"
 
-#: app/components/app-search/app-search-mobile.tsx:55
-#: app/components/app-search/app-search-mobile.tsx:66
 #: app/components/app-search/index.tsx:79
 #: app/features/milo/components/navbar/milo-search.tsx:49
 msgid "Search"
@@ -5602,7 +5552,6 @@ msgstr "Search sessions..."
 msgid "Search the platform"
 msgstr "Search the platform"
 
-#: app/components/app-search/app-search-mobile.tsx:56
 #: app/features/milo/components/navbar/milo-search.tsx:68
 msgid "Search users, organizations, and projects"
 msgstr "Search users, organizations, and projects"
@@ -5754,7 +5703,6 @@ msgstr "Service"
 msgid "Service activation requested"
 msgstr "Service activation requested"
 
-#: app/components/app-sidebar/index.tsx:193
 #: app/routes/admin/breadcrumb-switchers.tsx:7
 #: app/routes/admin/service-catalog/index.tsx:26
 #: app/routes/admin/service-catalog/layout.tsx:8
@@ -6141,7 +6089,6 @@ msgstr "Switch to dark theme"
 msgid "Switch to light theme"
 msgstr "Switch to light theme"
 
-#: app/components/theme-switcher/index.tsx:50
 #: app/features/edge/components/detail/edge-hostnames-card.tsx:164
 msgid "System"
 msgstr "System"
@@ -6419,7 +6366,6 @@ msgstr "Today"
 msgid "Toggle"
 msgstr "Toggle"
 
-#: app/components/theme-switcher/index.tsx:33
 #: app/features/milo/components/navbar/milo-theme-toggle.tsx:18
 msgid "Toggle theme"
 msgstr "Toggle theme"
@@ -6655,7 +6601,6 @@ msgstr "User Type"
 
 #: app/components/app-search/search-results.tsx:202
 #: app/components/app-search/use-app-search.ts:37
-#: app/components/app-sidebar/index.tsx:115
 #: app/routes/customer/breadcrumb-switchers.tsx:13
 #: app/routes/customer/user/index.tsx:36
 #: app/routes/customer/user/layout.tsx:8

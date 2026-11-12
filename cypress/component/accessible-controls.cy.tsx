@@ -1,8 +1,6 @@
 import ButtonCopy from '@/components/button/button-copy';
 import ButtonDeleteAction from '@/components/button/button-delete-action';
 import { DateRangePicker } from '@/components/date';
-import ThemeSwitcher from '@/components/theme-switcher';
-import { ThemeProvider } from '@datum-cloud/datum-ui/theme';
 
 const THEMES = ['light', 'dark'] as const;
 
@@ -32,15 +30,6 @@ THEMES.forEach((theme) => {
     it('names the delete button after the item type', () => {
       cy.mount(<ButtonDeleteAction itemType="Project" description="Gone." onConfirm={cy.stub()} />);
       cy.get('button[aria-label="Delete Project"]').should('be.visible');
-    });
-
-    it('names the theme switcher', () => {
-      cy.mount(
-        <ThemeProvider>
-          <ThemeSwitcher />
-        </ThemeProvider>
-      );
-      cy.contains('button', 'Toggle theme').should('exist');
     });
 
     describe('DateRangePicker clear button', () => {

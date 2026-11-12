@@ -12,14 +12,8 @@
 - `engineering/02-pages-and-routes.md` - how to add and structure pages/routes
 - `engineering/03-components-ui.md` - component layering and placement conventions
 - `engineering/04-data-and-requests.md` - request lifecycle, proxy flow, and templates
-
-## Existing Technical Notes
-
-- `datum-ui-styles-root-cause.md`
-- `datattable.md`
-- `form-adapter-feasibility.md`
-- `form-component-comparison.md`
-- `migration-datum-ui-subtasks.md`
+- `engineering/05-error-handling-and-reporting.md` - error model, error flow, and Sentry reporting
+- `../tests/README.md` - test runners (Vitest, Cypress component, Cypress e2e) and where specs go
 
 ## Local Notes
 

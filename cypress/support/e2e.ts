@@ -3,8 +3,8 @@ import '@testing-library/cypress/add-commands';
 /**
  * Login by building and signing a `_session` cookie, the same way the app does
  * server-side (app/utils/cookies/session.ts). The session payload must belong to
- * a user in the staff group, otherwise the private layout loader redirects away
- * (see app/layouts/private.layout.tsx).
+ * a user in the staff group, otherwise the Milo layout loader redirects away
+ * (see app/layouts/milo.layout.tsx).
  *
  * Values come from options or the ACCESS_TOKEN / SUB environment variables.
  */

@@ -18,7 +18,7 @@ This section documents the implementation patterns used in `staff-portal`, inclu
 ## Quick Mental Model
 
 - Route definitions are centralized in `app/routes.ts`.
-- The authenticated shell is applied by `app/layouts/private.layout.tsx`.
+- The authenticated shell is applied by `app/layouts/milo.layout.tsx`, which renders `MiloShell` from `app/features/milo`.
 - Page modules live in `app/routes/**`, and route-level data usually mixes:
   - `loader` for access checks and shell-critical data
   - React Query hooks from `app/resources/request/client/**` for page data
@@ -30,11 +30,14 @@ This section documents the implementation patterns used in `staff-portal`, inclu
 
 - Route map: `app/routes.ts`
 - Root providers/document: `app/root.tsx`
-- Authenticated shell: `app/layouts/private.layout.tsx`
+- Authenticated shell: `app/layouts/milo.layout.tsx` and `app/features/milo/**` (navbar, context bar, sub-nav rail, page templates)
+- Shell navigation config: `app/features/milo/lib/nav-config.ts`
+- Staff auth gate: `app/modules/auth/require-staff.server.ts`
 - Shared components: `app/components/**`
 - Feature components: `app/features/**`
-- UI primitives: `app/modules/shadcn/**`
-- App-local extended UI: `app/modules/datum-ui/**`
+- UI primitives and extended UI (form, data-table, code-editor, toast): the `@datum-cloud/datum-ui` package, imported by subpath (`@datum-cloud/datum-ui/button`)
+- Cross-cutting modules: `app/modules/**` (`assistant`, `auth`, `axios`, `billing`, `graphql`, `i18n`, `loki`, `plugins`, `prometheus`, `sentry`, `tanstack`)
 - Request wrappers: `app/resources/request/**`
 - OpenAPI generated code: `app/resources/openapi/**`
 - Internal proxy/API routes: `app/server/routes/api.ts`
+- Tests: colocated `app/**/*.test.ts` (Vitest) and `cypress/**` (component and e2e), see `tests/README.md`
