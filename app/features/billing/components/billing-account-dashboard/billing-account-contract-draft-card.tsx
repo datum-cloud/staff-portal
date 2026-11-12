@@ -129,7 +129,7 @@ export function BillingAccountContractDraftCard({
         </div>
 
         {draft ? (
-          <ContractFees offer={draft} />
+          <ContractFees offer={draft} startsAt={startsAt ?? contract?.startsAt} />
         ) : pricingsQuery.isLoading ? (
           <Skeleton className="h-10 w-full rounded" />
         ) : (

@@ -1,16 +1,20 @@
-import { isContractResource } from '../../lib/contract';
+import { CONTRACT_CURRENCY, isContractResource } from '../../lib/contract';
+import { getOfferOverrides, type PriceOverride } from '../../lib/offer-overrides';
 import {
   getEntitlementActiveSince,
   getOfferPricingCount,
   getOfferServices,
 } from '../../lib/offer-summary';
 import {
+  DEFAULT_SERVICE_PRICING_NAMESPACE,
   formatLaunchStage,
+  formatMoney,
   getOfferDisplayName,
   indexServicesByRef,
   type BillingAccount,
   type BillingEntitlement,
 } from '../../utils';
+import { feeChargeText, rateSlotText } from '../contract-fee-text';
 import {
   BILLING_ACCOUNT_SECTION_IDS,
   CardQueryState,
@@ -25,6 +29,7 @@ import {
   useOfferDetailQuery,
   useOfferListQuery,
   useServiceListQuery,
+  useServicePricingListQuery,
   useSwitchBillingEntitlementOfferMutation,
 } from '@/resources/request/client';
 import { offerRoutes, serviceCatalogRoutes } from '@/utils/config/routes.config';
@@ -36,6 +41,7 @@ import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Plural, Trans } from '@lingui/react/macro';
+import type { ComMiloapisBillingV1Alpha1Offer } from '@openapi/billing.miloapis.com/v1alpha1';
 import { ArrowRight } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router';
@@ -202,8 +208,102 @@ function ActiveOffer({ entitlement }: { entitlement: BillingEntitlement }) {
               ) : null}
             </ul>
           ) : null}
+          <CustomerPricing offer={offer} />
         </div>
       ) : null}
+    </div>
+  );
+}
+
+/** A fee's amount as a price, e.g. "$250.00 / month". */
+const overrideFeePrice = (override: PriceOverride, amount: string) =>
+  feeChargeText(formatMoney(Number.parseFloat(amount), CONTRACT_CURRENCY), {
+    chargeType: override.chargeType === 'OneTime' ? 'OneTime' : 'Recurring',
+    interval: override.interval,
+  });
+
+/** A usage rate as a price, e.g. "$0.00001 per vcpu-second". */
+const ratePrice = (amount: string, unit?: string) => {
+  const price = `$${amount}`;
+  return unit ? t`${price} per ${unit}` : price;
+};
+
+/** What an override charges, and what to say under it. */
+const overrideLines = (override: PriceOverride): { price: string; detail: string[] } => {
+  const discount = override.discount ? t`${override.discount}% off` : null;
+  const detail: string[] = [];
+  let price = discount ?? '';
+  const rates = override.rates ?? [];
+  const unit = override.pricingUnit;
+  if (override.fee) {
+    price = overrideFeePrice(override, override.fee.amount);
+    if (override.fee.listAmount) {
+      const listPrice = overrideFeePrice(override, override.fee.listAmount);
+      detail.push(t`list ${listPrice}`);
+    }
+  } else if (rates.length === 1 && Object.keys(rates[0].label).length === 0) {
+    price = ratePrice(rates[0].amount, unit);
+    if (rates[0].listAmount) {
+      const listPrice = ratePrice(rates[0].listAmount, unit);
+      detail.push(t`list ${listPrice}`);
+    }
+  } else if (rates.length > 0) {
+    const count = rates.length;
+    price = count === 1 ? t`1 customer rate` : t`${count} customer rates`;
+    for (const rate of rates) {
+      const what = rateSlotText(rate.label);
+      const amount = ratePrice(rate.amount, unit);
+      if (rate.listAmount) {
+        const listPrice = ratePrice(rate.listAmount, unit);
+        detail.push(t`${what}: ${amount} (list ${listPrice})`);
+      } else {
+        detail.push(t`${what}: ${amount}`);
+      }
+    }
+  }
+  if (discount && price !== discount) detail.push(discount);
+  return { price, detail };
+};
+
+/**
+ * Where the Offer's prices differ from the price list: a customer's own fee
+ * amounts and usage rates, each with the list price beside it, and
+ * discounts on one price. Hidden when there are none.
+ */
+function CustomerPricing({ offer }: { offer: ComMiloapisBillingV1Alpha1Offer }) {
+  const pricingsQuery = useServicePricingListQuery(DEFAULT_SERVICE_PRICING_NAMESPACE);
+  const overrides = useMemo(
+    () => getOfferOverrides(offer, pricingsQuery.data?.items ?? []),
+    [offer, pricingsQuery.data?.items]
+  );
+  if (overrides.length === 0) return null;
+  return (
+    <div className="flex flex-col gap-1.5 border-t pt-3">
+      <Text size="sm" weight="medium">
+        <Trans>Customer pricing</Trans>
+      </Text>
+      <ul className="flex flex-col gap-1.5">
+        {overrides.map((override) => {
+          const { price, detail } = overrideLines(override);
+          return (
+            <li key={override.name} className="flex items-baseline justify-between gap-3">
+              <div className="flex min-w-0 flex-col">
+                <Text size="sm" className="truncate">
+                  {override.label}
+                </Text>
+                {detail.map((line) => (
+                  <Text key={line} size="xs" textColor="muted">
+                    {line}
+                  </Text>
+                ))}
+              </div>
+              <Text size="sm" className="shrink-0 tabular-nums">
+                {price}
+              </Text>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }

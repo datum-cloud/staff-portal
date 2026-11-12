@@ -57,11 +57,16 @@ describe('list fee rows', () => {
       discount: '',
       custom: false,
       amount: '300.00',
+      billingTiming: 'InArrears' as const,
+      periods: '',
     };
     expect(toListFeeRowValues(base).amount).toBe('');
     expect(toListFeeRowValues({ ...base, custom: true, amount: '250.00' }).amount).toBe('250.00');
     expect(fromListFeeRowValues({ ...toListFeeRowValues(base), amount: '250' }).custom).toBe(true);
     expect(fromListFeeRowValues(toListFeeRowValues(base)).custom).toBe(false);
+    expect(toListFeeRowValues({ ...base, billingTiming: 'InAdvance' }).billingTiming).toBe(
+      'InAdvance'
+    );
   });
 });
 
@@ -74,12 +79,64 @@ describe('buildContractSchema', () => {
     quantity: '2',
     discount: '',
     amount: '',
+    billingTiming: 'InArrears' as const,
+    periods: '',
+  };
+  const fee = {
+    label: 'Annual support',
+    chargeType: 'Recurring' as const,
+    interval: 'annual' as const,
+    billingTiming: 'InAdvance' as const,
+    periods: '',
+    amount: '6000',
+    quantity: '1',
+    pricingUnit: '',
+    serviceRef: 'none',
   };
 
-  it('needs a fee of its own or one from the price list', () => {
+  it('takes renewals as a whole number from 1, or blank for no end', () => {
+    const schema = buildContractSchema(false, true, now);
+    expect(schema.safeParse({ ...empty, fees: [{ ...fee, periods: '36' }] }).success).toBe(true);
+    expect(schema.safeParse({ ...empty, fees: [{ ...fee, periods: '' }] }).success).toBe(true);
+    const result = schema.safeParse({
+      ...empty,
+      fees: [{ ...fee, periods: '0' }],
+      listFees: [{ ...listFee, periods: '1201' }],
+    });
+    expect(result.error?.issues.map((i) => i.path.join('.'))).toEqual([
+      'fees.0.periods',
+      'listFees.0.periods',
+    ]);
+  });
+
+  it("takes a recurring fee's interval and timing, and refuses others", () => {
+    const schema = buildContractSchema(false, true, now);
+    expect(schema.safeParse({ ...empty, fees: [fee] }).success).toBe(true);
+    const result = schema.safeParse({
+      ...empty,
+      fees: [{ ...fee, interval: 'weekly', billingTiming: 'Never' }],
+    });
+    expect(result.error?.issues.map((i) => i.path.join('.'))).toEqual([
+      'fees.0.interval',
+      'fees.0.billingTiming',
+    ]);
+  });
+
+  it('needs something to bill: a fee of its own, or one or usage from the price list', () => {
     const schema = buildContractSchema(false, true, now);
     expect(schema.safeParse(empty).success).toBe(false);
     expect(schema.safeParse({ ...empty, listFees: [listFee] }).success).toBe(true);
+    const meter = {
+      metric: 'cpu',
+      selected: true,
+      pricingName: 'compute-vcpu-v1',
+      discount: '',
+      amounts: [''],
+    };
+    expect(schema.safeParse({ ...empty, usage: [meter] }).success).toBe(true);
+    expect(schema.safeParse({ ...empty, usage: [{ ...meter, selected: false }] }).success).toBe(
+      false
+    );
   });
 
   it("checks a list fee's quantity, discount and customer amount", () => {

@@ -3,6 +3,7 @@ import {
   CONTRACT_CURRENCY,
   contractBillingDay,
   discountedFeeTotal,
+  feeEndsAt,
   getContractFees,
   feeTotal,
   getContractFirstInvoice,
@@ -10,13 +11,17 @@ import {
   offerBillsUsage,
   type ContractState,
 } from '../../lib/contract';
+import { contractInvoiceSchedule, upcomingInvoices } from '../../lib/contract-schedule';
 import {
   DEFAULT_SERVICE_PRICING_NAMESPACE,
   formatMoney,
+  getEffectiveNetDays,
   indexServicesByRef,
   PAST_INVOICE_STATUS_BADGE,
   toPastInvoiceRow,
 } from '../../utils';
+import { billingTimingText, feeChargeText, periodsText } from '../contract-fee-text';
+import { ContractScheduleList } from '../contract-schedule-list';
 import { BILLING_ACCOUNT_SECTION_IDS, CardMessage, InlineDate, SectionAnchor } from './card-parts';
 import { BadgeState } from '@/components/badge';
 import { SectionCard } from '@/features/milo';
@@ -42,6 +47,15 @@ import type {
 } from '@openapi/billing.miloapis.com/v1alpha1';
 import { FileSearch, Pencil } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+
+/** A date as fee details show it, e.g. "Feb 12, 2027" (UTC). */
+const formatDate = (date: Date) =>
+  date.toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
 
 interface ContractCardProps {
   orgName: string;
@@ -88,7 +102,22 @@ export function BillingAccountContractCard({
               {offerQuery.isLoading ? (
                 <Skeleton className="h-10 w-full rounded" />
               ) : offerQuery.data ? (
-                <ContractFees offer={offerQuery.data} />
+                <>
+                  <ContractFees offer={offerQuery.data} startsAt={contract.startsAt} />
+                  <div className="border-t pt-3">
+                    <ContractScheduleList
+                      upcoming={upcomingInvoices(
+                        contractInvoiceSchedule({
+                          startsAt: contract.startsAt,
+                          fees: getContractFees(offerQuery.data),
+                          billsUsage: offerBillsUsage(offerQuery.data),
+                          netDays: getEffectiveNetDays(account),
+                        }),
+                        now
+                      )}
+                    />
+                  </div>
+                </>
               ) : (
                 <CardMessage className="py-0">
                   <Trans>Couldn&apos;t load the contract&apos;s offer.</Trans>
@@ -183,7 +212,17 @@ const feeQuantityText = (fee: { amount: number; quantity: number; pricingUnit?: 
   return fee.quantity > 1 ? `${fee.quantity} × ${unitPrice}` : null;
 };
 
-export function ContractFees({ offer }: { offer: ComMiloapisBillingV1Alpha1Offer }) {
+/**
+ * The offer's fees, each with what it charges and how often. `startsAt`, the
+ * contract's start, says when a fee with renewals ends.
+ */
+export function ContractFees({
+  offer,
+  startsAt,
+}: {
+  offer: ComMiloapisBillingV1Alpha1Offer;
+  startsAt?: Date;
+}) {
   const fees = getContractFees(offer);
   const discount = offer.spec?.discount?.percentage;
   const customRates = (offer.spec?.servicePricings ?? []).filter(
@@ -226,6 +265,11 @@ export function ContractFees({ offer }: { offer: ComMiloapisBillingV1Alpha1Offer
                 ? t`list ${formatMoney(listAmount, CONTRACT_CURRENCY)}`
                 : null,
               fee.discount ? t`${fee.discount}% off ${beforeDiscount}` : null,
+              fee.billingTiming ? billingTimingText(fee.billingTiming) : null,
+              fee.periods ? periodsText(fee.periods, fee.interval) : null,
+              fee.periods && startsAt
+                ? t`until ${formatDate(feeEndsAt(startsAt, fee.interval, fee.periods))}`
+                : null,
               fee.serviceRef
                 ? servicesByRef.get(fee.serviceRef)?.spec?.displayName || fee.serviceRef
                 : null,
@@ -243,11 +287,7 @@ export function ContractFees({ offer }: { offer: ComMiloapisBillingV1Alpha1Offer
                   ) : null}
                 </div>
                 <Text size="sm" className="shrink-0 tabular-nums">
-                  {fee.chargeType === 'OneTime' ? (
-                    <Trans>{total} once</Trans>
-                  ) : (
-                    <Trans>{total} / month</Trans>
-                  )}
+                  {feeChargeText(total, fee)}
                 </Text>
               </li>
             );
