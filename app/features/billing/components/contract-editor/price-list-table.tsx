@@ -157,6 +157,17 @@ export function PriceListTable({
             </TableRow>
           </TableHeader>
           <TableBody>
+            {/*
+              Rows filtered out or collapsed stay mounted, so they keep what's
+              ticked and typed, but come first: the body drops the border of
+              its last row, which must be one on screen, or it doubles up with
+              the frame's.
+            */}
+            {shown.flatMap((group) =>
+              group.entries
+                .filter((entry) => !group.open || !group.visible.has(entry))
+                .map((entry) => <PriceListRow key={entryKey(entry)} entry={entry} hidden />)
+            )}
             {shown.map((group) => (
               <ServiceGroup
                 key={group.key}
@@ -253,16 +264,8 @@ function ServiceGroup({
   /** Collapses or opens the service; unset while searching. */
   onToggle?: () => void;
 }) {
-  if (visible.size === 0) {
-    // Hidden, not unmounted, so the rows keep what's ticked and typed.
-    return (
-      <>
-        {entries.map((entry) => (
-          <PriceListRow key={entryKey(entry)} entry={entry} hidden />
-        ))}
-      </>
-    );
-  }
+  // Its hidden rows are rendered at the top of the table (see PriceListTable).
+  if (visible.size === 0) return null;
   return (
     <>
       <TableRow className="bg-muted/40 hover:bg-muted/40">
@@ -295,9 +298,11 @@ function ServiceGroup({
           )}
         </TableCell>
       </TableRow>
-      {entries.map((entry) => (
-        <PriceListRow key={entryKey(entry)} entry={entry} hidden={!open || !visible.has(entry)} />
-      ))}
+      {open
+        ? entries
+            .filter((entry) => visible.has(entry))
+            .map((entry) => <PriceListRow key={entryKey(entry)} entry={entry} hidden={false} />)
+        : null}
     </>
   );
 }

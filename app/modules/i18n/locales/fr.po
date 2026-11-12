@@ -17,7 +17,7 @@ msgstr ""
 msgid " · {days}d late"
 msgstr ""
 
-#: app/features/billing/components/contract-editor/price-list-table.tsx:445
+#: app/features/billing/components/contract-editor/price-list-table.tsx:450
 msgid " · newest"
 msgstr ""
 
@@ -99,7 +99,7 @@ msgid "{0} of {1} services"
 msgstr ""
 
 #. placeholder {0}: slots.length
-#: app/features/billing/components/contract-editor/price-list-table.tsx:468
+#: app/features/billing/components/contract-editor/price-list-table.tsx:473
 msgid "{0} rates per {unit}"
 msgstr ""
 
@@ -273,7 +273,7 @@ msgid "{percent}% vs last cycle at this point"
 msgstr ""
 
 #. placeholder {0}: option.pricingUnit
-#: app/features/billing/components/contract-editor/price-list-table.tsx:320
+#: app/features/billing/components/contract-editor/price-list-table.tsx:325
 msgid "{price} per {0}"
 msgstr ""
 
@@ -298,7 +298,7 @@ msgstr ""
 msgid "{stageCount} {0}"
 msgstr ""
 
-#: app/features/billing/components/contract-editor/price-list-table.tsx:287
+#: app/features/billing/components/contract-editor/price-list-table.tsx:290
 msgid "{ticked} ticked"
 msgstr ""
 
@@ -342,7 +342,7 @@ msgid "≥ 70% used"
 msgstr ""
 
 #. placeholder {0}: slots[0].listAmount
-#: app/features/billing/components/contract-editor/price-list-table.tsx:457
+#: app/features/billing/components/contract-editor/price-list-table.tsx:462
 msgid "${0} per {unit}"
 msgstr ""
 
@@ -716,7 +716,7 @@ msgstr ""
 msgid "All sections"
 msgstr ""
 
-#: app/features/billing/components/contract-editor/price-list-table.tsx:227
+#: app/features/billing/components/contract-editor/price-list-table.tsx:238
 msgid "all usage"
 msgstr ""
 
@@ -1045,7 +1045,7 @@ msgstr ""
 
 #: app/features/billing/components/contract-editor/contract-fee-list.tsx:111
 #: app/features/billing/components/contract-editor/price-list-table.tsx:146
-#: app/features/billing/components/contract-editor/price-list-table.tsx:350
+#: app/features/billing/components/contract-editor/price-list-table.tsx:355
 msgid "Billed"
 msgstr ""
 
@@ -1820,7 +1820,7 @@ msgstr ""
 msgid "Custom"
 msgstr ""
 
-#: app/features/billing/components/contract-editor/price-list-table.tsx:381
+#: app/features/billing/components/contract-editor/price-list-table.tsx:386
 msgid "Customer amount"
 msgstr ""
 
@@ -1828,16 +1828,16 @@ msgstr ""
 msgid "Customer price"
 msgstr ""
 
-#: app/features/billing/components/contract-editor/price-list-table.tsx:494
+#: app/features/billing/components/contract-editor/price-list-table.tsx:499
 msgid "Customer rate"
 msgstr ""
 
 #. placeholder {0}: rateSlotText(slot.label)
-#: app/features/billing/components/contract-editor/price-list-table.tsx:528
+#: app/features/billing/components/contract-editor/price-list-table.tsx:533
 msgid "Customer rate, {0}"
 msgstr ""
 
-#: app/features/billing/components/contract-editor/price-list-table.tsx:500
+#: app/features/billing/components/contract-editor/price-list-table.tsx:505
 msgid "Customer rates"
 msgstr ""
 
@@ -2140,8 +2140,8 @@ msgstr ""
 msgid "Discard the draft?"
 msgstr ""
 
-#: app/features/billing/components/contract-editor/price-list-table.tsx:373
-#: app/features/billing/components/contract-editor/price-list-table.tsx:485
+#: app/features/billing/components/contract-editor/price-list-table.tsx:378
+#: app/features/billing/components/contract-editor/price-list-table.tsx:490
 #: app/features/billing/components/offer-included-pricing-list.tsx:145
 msgid "Discount"
 msgstr ""
@@ -2629,7 +2629,7 @@ msgstr ""
 msgid "Every"
 msgstr ""
 
-#: app/features/billing/components/contract-editor/price-list-table.tsx:225
+#: app/features/billing/components/contract-editor/price-list-table.tsx:236
 msgid "everything else"
 msgstr ""
 
@@ -3111,14 +3111,14 @@ msgid "If this stage's top score is below {0}, later non-required stages are ski
 msgstr ""
 
 #: app/features/billing/components/contract-editor/contract-fee-list.tsx:119
-#: app/features/billing/components/contract-editor/price-list-table.tsx:355
-#: app/features/billing/components/contract-editor/price-list-table.tsx:362
+#: app/features/billing/components/contract-editor/price-list-table.tsx:360
+#: app/features/billing/components/contract-editor/price-list-table.tsx:367
 msgid "In advance"
 msgstr ""
 
 #: app/features/billing/components/contract-editor/contract-fee-list.tsx:116
-#: app/features/billing/components/contract-editor/price-list-table.tsx:352
-#: app/features/billing/components/contract-editor/price-list-table.tsx:475
+#: app/features/billing/components/contract-editor/price-list-table.tsx:357
+#: app/features/billing/components/contract-editor/price-list-table.tsx:480
 msgid "In arrears"
 msgstr ""
 
@@ -4442,7 +4442,7 @@ msgid "Notes, emails, and account history for this contact will appear here."
 msgstr ""
 
 #. placeholder {0}: search.trim()
-#: app/features/billing/components/contract-editor/price-list-table.tsx:176
+#: app/features/billing/components/contract-editor/price-list-table.tsx:187
 msgid "Nothing on the price list matches “{0}”."
 msgstr ""
 
@@ -4621,7 +4621,7 @@ msgstr ""
 msgid "Outstanding balance"
 msgstr ""
 
-#: app/features/billing/components/contract-editor/price-list-table.tsx:233
+#: app/features/billing/components/contract-editor/price-list-table.tsx:244
 msgid "over {over}"
 msgstr ""
 
@@ -4821,7 +4821,7 @@ msgstr ""
 msgid "Per"
 msgstr ""
 
-#: app/features/billing/components/contract-editor/price-list-table.tsx:235
+#: app/features/billing/components/contract-editor/price-list-table.tsx:246
 msgid "per unit"
 msgstr ""
 
@@ -5011,7 +5011,7 @@ msgstr ""
 msgid "Price list"
 msgstr ""
 
-#: app/features/billing/components/contract-editor/price-list-table.tsx:215
+#: app/features/billing/components/contract-editor/price-list-table.tsx:226
 #: app/features/service-catalog/components/service-pricings-card.tsx:120
 msgid "Pricing"
 msgstr ""
@@ -5199,7 +5199,7 @@ msgid "Qty"
 msgstr ""
 
 #: app/features/billing/components/contract-editor/contract-fee-list.tsx:67
-#: app/features/billing/components/contract-editor/price-list-table.tsx:368
+#: app/features/billing/components/contract-editor/price-list-table.tsx:373
 msgid "Quantity"
 msgstr ""
 
@@ -6530,7 +6530,7 @@ msgstr ""
 msgid "Thresholds are evaluated but no enforcement action is applied — results are logged only."
 msgstr ""
 
-#: app/features/billing/components/contract-editor/price-list-table.tsx:212
+#: app/features/billing/components/contract-editor/price-list-table.tsx:223
 msgid "Tick all"
 msgstr ""
 
@@ -6679,7 +6679,7 @@ msgstr ""
 msgid "Unnamed fee"
 msgstr ""
 
-#: app/features/billing/components/contract-editor/price-list-table.tsx:212
+#: app/features/billing/components/contract-editor/price-list-table.tsx:223
 msgid "Untick all"
 msgstr ""
 
@@ -6704,7 +6704,7 @@ msgstr ""
 msgid "Up to {maxTotal}, over {factor}× the median of this account's other recent invoices ({baseline}). Check usage for a metering or pricing error."
 msgstr ""
 
-#: app/features/billing/components/contract-editor/price-list-table.tsx:230
+#: app/features/billing/components/contract-editor/price-list-table.tsx:241
 msgid "up to {upTo}"
 msgstr ""
 
@@ -6733,7 +6733,7 @@ msgstr ""
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:193
 #: app/features/billing/components/contract-editor/contract-summary.tsx:150
-#: app/features/billing/components/contract-editor/price-list-table.tsx:480
+#: app/features/billing/components/contract-editor/price-list-table.tsx:485
 #: app/features/organization/components/org-usage-card.tsx:68
 #: app/features/project/components/project-usage-card.tsx:89
 #: app/features/quota/components/quota-bucket-list.tsx:110
