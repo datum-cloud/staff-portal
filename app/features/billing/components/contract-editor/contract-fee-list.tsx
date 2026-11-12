@@ -41,7 +41,10 @@ export function ContractFeeList({
         <div className="flex flex-col gap-3">
           {fields.length === 0 ? (
             <Text size="sm" textColor="muted">
-              <Trans>None: the contract charges only what&apos;s picked from the price list.</Trans>
+              <Trans>
+                None. Add one for anything the price list doesn&apos;t have; otherwise the contract
+                charges only what&apos;s picked there.
+              </Trans>
             </Text>
           ) : null}
           {listError ? (
