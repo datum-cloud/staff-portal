@@ -338,18 +338,18 @@ msgstr "1 to {MAX_FEE_QUANTITY}."
 msgid "1–30 days overdue"
 msgstr "1–30 days overdue"
 
-#: app/features/activity/components/activity-list.tsx:378
-#: app/features/activity/components/activity-list.tsx:472
+#: app/features/activity/components/activity-list.tsx:376
+#: app/features/activity/components/activity-list.tsx:470
 msgid "200 - OK"
 msgstr "200 - OK"
 
-#: app/features/activity/components/activity-list.tsx:379
-#: app/features/activity/components/activity-list.tsx:473
+#: app/features/activity/components/activity-list.tsx:377
+#: app/features/activity/components/activity-list.tsx:471
 msgid "201 - Created"
 msgstr "201 - Created"
 
-#: app/features/activity/components/activity-list.tsx:380
-#: app/features/activity/components/activity-list.tsx:474
+#: app/features/activity/components/activity-list.tsx:378
+#: app/features/activity/components/activity-list.tsx:472
 msgid "204 - No Content"
 msgstr "204 - No Content"
 
@@ -357,33 +357,33 @@ msgstr "204 - No Content"
 msgid "31–60 days"
 msgstr "31–60 days"
 
-#: app/features/activity/components/activity-list.tsx:381
-#: app/features/activity/components/activity-list.tsx:475
+#: app/features/activity/components/activity-list.tsx:379
+#: app/features/activity/components/activity-list.tsx:473
 msgid "400 - Bad Request"
 msgstr "400 - Bad Request"
 
-#: app/features/activity/components/activity-list.tsx:382
-#: app/features/activity/components/activity-list.tsx:476
+#: app/features/activity/components/activity-list.tsx:380
+#: app/features/activity/components/activity-list.tsx:474
 msgid "401 - Unauthorized"
 msgstr "401 - Unauthorized"
 
-#: app/features/activity/components/activity-list.tsx:383
-#: app/features/activity/components/activity-list.tsx:477
+#: app/features/activity/components/activity-list.tsx:381
+#: app/features/activity/components/activity-list.tsx:475
 msgid "403 - Forbidden"
 msgstr "403 - Forbidden"
 
-#: app/features/activity/components/activity-list.tsx:384
-#: app/features/activity/components/activity-list.tsx:478
+#: app/features/activity/components/activity-list.tsx:382
+#: app/features/activity/components/activity-list.tsx:476
 msgid "404 - Not Found"
 msgstr "404 - Not Found"
 
-#: app/features/activity/components/activity-list.tsx:385
-#: app/features/activity/components/activity-list.tsx:479
+#: app/features/activity/components/activity-list.tsx:383
+#: app/features/activity/components/activity-list.tsx:477
 msgid "409 - Conflict"
 msgstr "409 - Conflict"
 
-#: app/features/activity/components/activity-list.tsx:386
-#: app/features/activity/components/activity-list.tsx:480
+#: app/features/activity/components/activity-list.tsx:384
+#: app/features/activity/components/activity-list.tsx:478
 msgid "500 - Server Error"
 msgstr "500 - Server Error"
 
@@ -488,13 +488,13 @@ msgstr "Accounts"
 msgid "Accounts payable email"
 msgstr "Accounts payable email"
 
-#: app/features/activity/components/activity-list.tsx:199
+#: app/features/activity/components/activity-list.tsx:197
 msgid "Action"
 msgstr "Action"
 
 #: app/components/app-toolbar/mobile-toolbar.tsx:92
-#: app/features/activity/components/activity-list.tsx:456
-#: app/features/activity/components/activity-list.tsx:522
+#: app/features/activity/components/activity-list.tsx:454
+#: app/features/activity/components/activity-list.tsx:520
 #: app/features/billing/components/billing-account-dashboard/billing-account-header.tsx:145
 msgid "Actions"
 msgstr "Actions"
@@ -512,7 +512,7 @@ msgstr "Active billing account with a payment method"
 msgid "Active Configuration"
 msgstr "Active Configuration"
 
-#: app/features/user/components/user-identity-card.tsx:200
+#: app/features/user/components/user-identity-card.tsx:204
 #: app/routes/profile/layout.tsx:22
 #: app/routes/profile/session.tsx:19
 msgid "Active Sessions"
@@ -690,7 +690,7 @@ msgstr "All Evaluations for this User"
 msgid "All invoices"
 msgstr "All invoices"
 
-#: app/features/activity/components/activity-list.tsx:450
+#: app/features/activity/components/activity-list.tsx:448
 msgid "All read operations"
 msgstr "All read operations"
 
@@ -702,7 +702,7 @@ msgstr "All sections"
 msgid "all usage"
 msgstr "all usage"
 
-#: app/features/activity/components/activity-list.tsx:443
+#: app/features/activity/components/activity-list.tsx:441
 msgid "All write operations"
 msgstr "All write operations"
 
@@ -770,8 +770,8 @@ msgstr "Any enablement"
 msgid "Any phase"
 msgstr "Any phase"
 
-#: app/features/activity/components/activity-list.tsx:508
-#: app/features/activity/components/activity-list.tsx:525
+#: app/features/activity/components/activity-list.tsx:506
+#: app/features/activity/components/activity-list.tsx:523
 msgid "API Group"
 msgstr "API Group"
 
@@ -792,8 +792,8 @@ msgstr "Application approved"
 msgid "Application declined"
 msgstr "Application declined"
 
-#: app/features/activity/components/activity-list.tsx:392
-#: app/features/activity/components/activity-list.tsx:491
+#: app/features/activity/components/activity-list.tsx:390
+#: app/features/activity/components/activity-list.tsx:489
 #: app/features/project/components/project-resources-card.tsx:62
 #: app/routes/customer/resource/edge/index.tsx:10
 #: app/routes/customer/resource/index.tsx:143
@@ -953,6 +953,10 @@ msgstr "ASN"
 msgid "Assign a billing account to this project to track usage."
 msgstr "Assign a billing account to this project to track usage."
 
+#: app/features/dns/components/dns-zone-status.tsx:136
+msgid "Assigned nameservers"
+msgstr "Assigned nameservers"
+
 #: app/features/contact/components/contact-form.tsx:222
 #: app/routes/marketing/contact-group/detail/member.tsx:103
 msgid "Associate with User"
@@ -989,6 +993,11 @@ msgstr "Back"
 #: app/features/fraud/detail/evaluation-sections.tsx:462
 msgid "Back to evaluations"
 msgstr "Back to evaluations"
+
+#: app/components/error/generic.tsx:37
+#: app/routes/error/not-found.tsx:92
+msgid "Back to Home"
+msgstr "Back to Home"
 
 #: app/routes/admin/offer/detail.tsx:264
 msgid "Back to Offers"
@@ -1210,7 +1219,7 @@ msgstr "Change fees"
 msgid "Change payment terms"
 msgstr "Change payment terms"
 
-#: app/features/user/components/user-identity-card.tsx:151
+#: app/features/user/components/user-identity-card.tsx:161
 msgid "Change your Primary Email in GitHub (your primary email)"
 msgstr "Change your Primary Email in GitHub (your primary email)"
 
@@ -1288,6 +1297,10 @@ msgstr "Clear all"
 #: app/features/milo/components/page/rule-filter.tsx:161
 msgid "Clear all filters"
 msgstr "Clear all filters"
+
+#: app/components/date/date-range-picker.tsx:257
+msgid "Clear date range"
+msgstr "Clear date range"
 
 #: app/features/milo/components/page/rule-filter.tsx:173
 msgid "Clear filters"
@@ -1538,9 +1551,17 @@ msgstr "Controls whether this user can sign in and access the platform. Suspendi
 msgid "Coordinates"
 msgstr "Coordinates"
 
+#: app/components/button/button-copy.tsx:30
+msgid "Copied to clipboard"
+msgstr "Copied to clipboard"
+
 #: app/routes/operation/activity/layout.tsx:53
 msgid "Copied!"
 msgstr "Copied!"
+
+#: app/components/button/button-copy.tsx:25
+msgid "Copy"
+msgstr "Copy"
 
 #: app/routes/operation/activity/layout.tsx:49
 msgid "Copy shareable link with current filters"
@@ -1633,8 +1654,8 @@ msgstr "Couldn't preview the invoice."
 msgid "Counts for resources in this project"
 msgstr "Counts for resources in this project"
 
-#: app/features/activity/components/activity-list.tsx:371
-#: app/features/activity/components/activity-list.tsx:461
+#: app/features/activity/components/activity-list.tsx:369
+#: app/features/activity/components/activity-list.tsx:459
 #: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:255
 #: app/features/fraud/policy/policy-form.tsx:317
@@ -1682,7 +1703,7 @@ msgstr "Create Policy"
 #: app/features/contact/components/contact-about-card.tsx:32
 #: app/features/contact/components/contact-list.tsx:111
 #: app/features/contact/components/contact-list.tsx:182
-#: app/features/dns/components/dns-zone-list.tsx:133
+#: app/features/dns/components/dns-zone-list.tsx:126
 #: app/features/domain/components/domain-list.tsx:108
 #: app/features/edge/components/detail/edge-general-card.tsx:50
 #: app/features/edge/components/edge-list.tsx:150
@@ -1691,7 +1712,7 @@ msgstr "Create Policy"
 #: app/features/organization/components/org-details-card.tsx:63
 #: app/features/project/components/project-details-card.tsx:52
 #: app/features/quota/components/quota-grant-list.tsx:129
-#: app/features/user/components/user-identity-card.tsx:229
+#: app/features/user/components/user-identity-card.tsx:233
 #: app/routes/admin/group/detail/index.tsx:46
 #: app/routes/admin/group/detail/member.tsx:107
 #: app/routes/admin/group/index.tsx:35
@@ -1799,7 +1820,7 @@ msgstr "daily usage"
 msgid "Danger Zone"
 msgstr "Danger Zone"
 
-#: app/components/theme-switcher/index.tsx:43
+#: app/components/theme-switcher/index.tsx:45
 msgid "Dark"
 msgstr "Dark"
 
@@ -1808,7 +1829,7 @@ msgstr "Dark"
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: app/features/activity/components/activity-list.tsx:220
+#: app/features/activity/components/activity-list.tsx:218
 msgid "Date"
 msgstr "Date"
 
@@ -1892,8 +1913,8 @@ msgstr "Default payment method failed"
 #: app/components/button/button-delete-action.tsx:49
 #: app/components/danger-zone-card/index.tsx:42
 #: app/components/danger-zone-card/index.tsx:64
-#: app/features/activity/components/activity-list.tsx:374
-#: app/features/activity/components/activity-list.tsx:464
+#: app/features/activity/components/activity-list.tsx:372
+#: app/features/activity/components/activity-list.tsx:462
 #: app/features/contact/components/contact-list.tsx:63
 #: app/features/contact/components/contact-list.tsx:134
 #: app/features/fraud/policy/policy-detail.tsx:325
@@ -1933,10 +1954,11 @@ msgid "Delete {0} selected"
 msgstr "Delete {0} selected"
 
 #: app/components/button/button-delete-action.tsx:40
+#: app/components/button/button-delete-action.tsx:53
 msgid "Delete {itemType}"
 msgstr "Delete {itemType}"
 
-#: app/features/activity/components/activity-list.tsx:375
+#: app/features/activity/components/activity-list.tsx:373
 msgid "Delete Collection"
 msgstr "Delete Collection"
 
@@ -2044,7 +2066,7 @@ msgid "Deprecated"
 msgstr "Deprecated"
 
 #: app/features/contact-group/components/contact-group-form.tsx:80
-#: app/features/dns/components/dns-zone-list.tsx:140
+#: app/features/dns/components/dns-zone-list.tsx:133
 #: app/routes/admin/group/detail/index.tsx:37
 msgid "Description"
 msgstr "Description"
@@ -2123,7 +2145,7 @@ msgstr "Display name updated"
 msgid "DNS"
 msgstr "DNS"
 
-#: app/features/dns/components/dns-zone-list.tsx:110
+#: app/features/dns/components/dns-zone-list.tsx:103
 #: app/routes/customer/project/detail/dns/detail.tsx:167
 msgid "DNS Host"
 msgstr "DNS Host"
@@ -2137,8 +2159,8 @@ msgstr "DNS Providers"
 msgid "DNS Ready"
 msgstr "DNS Ready"
 
-#: app/features/activity/components/activity-list.tsx:390
-#: app/features/activity/components/activity-list.tsx:489
+#: app/features/activity/components/activity-list.tsx:388
+#: app/features/activity/components/activity-list.tsx:487
 msgid "DNS Record"
 msgstr "DNS Record"
 
@@ -2146,12 +2168,12 @@ msgstr "DNS Record"
 msgid "DNS record is being validated"
 msgstr "DNS record is being validated"
 
-#: app/features/activity/components/activity-list.tsx:391
-#: app/features/activity/components/activity-list.tsx:490
+#: app/features/activity/components/activity-list.tsx:389
+#: app/features/activity/components/activity-list.tsx:488
 msgid "DNS Record Set"
 msgstr "DNS Record Set"
 
-#: app/routes/customer/project/detail/dns/detail.tsx:209
+#: app/routes/customer/project/detail/dns/detail.tsx:211
 msgid "DNS Records"
 msgstr "DNS Records"
 
@@ -2159,8 +2181,8 @@ msgstr "DNS Records"
 msgid "DNS records have been programmed for this hostname"
 msgstr "DNS records have been programmed for this hostname"
 
-#: app/features/activity/components/activity-list.tsx:389
-#: app/features/activity/components/activity-list.tsx:488
+#: app/features/activity/components/activity-list.tsx:387
+#: app/features/activity/components/activity-list.tsx:486
 msgid "DNS Zone"
 msgstr "DNS Zone"
 
@@ -2175,8 +2197,8 @@ msgstr "DNS Zones"
 msgid "does not contain"
 msgstr "does not contain"
 
-#: app/features/activity/components/activity-list.tsx:393
-#: app/features/activity/components/activity-list.tsx:492
+#: app/features/activity/components/activity-list.tsx:391
+#: app/features/activity/components/activity-list.tsx:490
 #: app/features/domain/components/domain-list.tsx:61
 #: app/features/fraud/detail/maxmind-rows.tsx:237
 #: app/routes/customer/project/detail/domain/detail.tsx:66
@@ -2315,7 +2337,7 @@ msgstr "Email"
 msgid "Email Activity"
 msgstr "Email Activity"
 
-#: app/features/user/components/user-identity-card.tsx:141
+#: app/features/user/components/user-identity-card.tsx:151
 msgid "Email addresses for GitHub identities should be updated through GitHub"
 msgstr "Email addresses for GitHub identities should be updated through GitHub"
 
@@ -2405,7 +2427,7 @@ msgstr "End payment terms"
 msgid "End terms"
 msgstr "End terms"
 
-#: app/components/date/date-range-picker.tsx:286
+#: app/components/date/date-range-picker.tsx:291
 msgid "End Time"
 msgstr "End Time"
 
@@ -2567,16 +2589,21 @@ msgstr "expires {expiry}"
 msgid "Export Policies"
 msgstr "Export Policies"
 
-#: app/features/activity/components/activity-list.tsx:403
-#: app/features/activity/components/activity-list.tsx:502
+#: app/features/activity/components/activity-list.tsx:401
+#: app/features/activity/components/activity-list.tsx:500
 msgid "Export Policy"
 msgstr "Export Policy"
 
 #: app/features/contact/components/contact-emails-card.tsx:49
+#: app/features/dns/components/dns-zone-status.tsx:40
 #: app/features/email/components/email-list.tsx:68
 #: app/features/organization/components/org-onboarding-card.tsx:79
 msgid "Failed"
 msgstr "Failed"
+
+#: app/components/button/button-copy.tsx:32
+msgid "Failed to copy"
+msgstr "Failed to copy"
 
 #: app/routes/admin/offer/create.tsx:94
 msgid "Failed to create Offer"
@@ -2686,7 +2713,7 @@ msgstr "Fees made for this contract, such as a setup fee or a negotiated monthly
 msgid "Filter"
 msgstr "Filter"
 
-#: app/features/activity/components/activity-list.tsx:419
+#: app/features/activity/components/activity-list.tsx:417
 msgid "Filter by time range"
 msgstr "Filter by time range"
 
@@ -2857,10 +2884,14 @@ msgstr "General"
 msgid "General discount"
 msgstr "General discount"
 
-#: app/features/activity/components/activity-list.tsx:368
-#: app/features/activity/components/activity-list.tsx:458
+#: app/features/activity/components/activity-list.tsx:366
+#: app/features/activity/components/activity-list.tsx:456
 msgid "Get"
 msgstr "Get"
+
+#: app/routes/error/not-found.tsx:96
+msgid "Go Back"
+msgstr "Go Back"
 
 #: app/components/app-search/use-app-search.ts:35
 msgid "Go to dashboard"
@@ -2905,8 +2936,8 @@ msgstr "Grants"
 msgid "Grants these payment terms to the billing account and approves the application. The customer can then pay by invoice."
 msgstr "Grants these payment terms to the billing account and approves the application. The customer can then pay by invoice."
 
-#: app/features/activity/components/activity-list.tsx:396
-#: app/features/activity/components/activity-list.tsx:495
+#: app/features/activity/components/activity-list.tsx:394
+#: app/features/activity/components/activity-list.tsx:493
 msgid "Group"
 msgstr "Group"
 
@@ -2993,7 +3024,7 @@ msgstr "Hostnames"
 msgid "How far the evaluation has run: Pending, Running, Completed, or Error."
 msgstr "How far the evaluation has run: Pending, Running, Completed, or Error."
 
-#: app/features/user/components/user-identity-card.tsx:173
+#: app/features/user/components/user-identity-card.tsx:141
 msgid "How to update your GitHub email"
 msgstr "How to update your GitHub email"
 
@@ -3071,8 +3102,8 @@ msgstr "Internal notes"
 msgid "Invalid email address"
 msgstr "Invalid email address"
 
-#: app/features/activity/components/activity-list.tsx:399
-#: app/features/activity/components/activity-list.tsx:498
+#: app/features/activity/components/activity-list.tsx:397
+#: app/features/activity/components/activity-list.tsx:496
 #: app/routes/customer/organization/detail/member.tsx:163
 msgid "Invitation"
 msgstr "Invitation"
@@ -3315,7 +3346,7 @@ msgstr "Lift"
 msgid "Lifted"
 msgstr "Lifted"
 
-#: app/components/theme-switcher/index.tsx:38
+#: app/components/theme-switcher/index.tsx:40
 msgid "Light"
 msgstr "Light"
 
@@ -3354,8 +3385,8 @@ msgstr "Links"
 msgid "Links support has emailed to this user's verified address"
 msgstr "Links support has emailed to this user's verified address"
 
-#: app/features/activity/components/activity-list.tsx:369
-#: app/features/activity/components/activity-list.tsx:459
+#: app/features/activity/components/activity-list.tsx:367
+#: app/features/activity/components/activity-list.tsx:457
 msgid "List"
 msgstr "List"
 
@@ -3425,11 +3456,11 @@ msgstr "Local Time"
 msgid "Location"
 msgstr "Location"
 
-#: app/features/user/components/user-identity-card.tsx:165
+#: app/features/user/components/user-identity-card.tsx:175
 msgid "Log back into Datum"
 msgstr "Log back into Datum"
 
-#: app/features/user/components/user-identity-card.tsx:159
+#: app/features/user/components/user-identity-card.tsx:169
 msgid "Log back into GitHub (with the new, desired email set as primary)"
 msgstr "Log back into GitHub (with the new, desired email set as primary)"
 
@@ -3438,11 +3469,11 @@ msgstr "Log back into GitHub (with the new, desired email set as primary)"
 msgid "Log out"
 msgstr "Log out"
 
-#: app/features/user/components/user-identity-card.tsx:148
+#: app/features/user/components/user-identity-card.tsx:158
 msgid "Log out of Datum"
 msgstr "Log out of Datum"
 
-#: app/features/user/components/user-identity-card.tsx:156
+#: app/features/user/components/user-identity-card.tsx:166
 msgid "Log out of GitHub"
 msgstr "Log out of GitHub"
 
@@ -3454,7 +3485,7 @@ msgstr "Low"
 msgid "Mail Lists"
 msgstr "Mail Lists"
 
-#: app/features/user/components/user-identity-card.tsx:186
+#: app/features/user/components/user-identity-card.tsx:190
 #: app/routes/customer/user/index.tsx:63
 msgid "Manage"
 msgstr "Manage"
@@ -3487,8 +3518,8 @@ msgstr "Marketing"
 msgid "Max Ejected"
 msgstr "Max Ejected"
 
-#: app/features/activity/components/activity-list.tsx:400
-#: app/features/activity/components/activity-list.tsx:499
+#: app/features/activity/components/activity-list.tsx:398
+#: app/features/activity/components/activity-list.tsx:497
 #: app/routes/customer/organization/detail/member.tsx:174
 msgid "Member"
 msgstr "Member"
@@ -3514,6 +3545,7 @@ msgstr "Members"
 msgid "Menu"
 msgstr "Menu"
 
+#: app/features/dns/components/dns-zone-status.tsx:84
 #: app/features/service-catalog/components/conditions-card.tsx:47
 #: app/routes/admin/service-catalog/detail/consumers.tsx:290
 msgid "Message"
@@ -3560,6 +3592,10 @@ msgstr "Monthly fee"
 #: app/components/app-toolbar/mobile-toolbar.tsx:74
 msgid "More options"
 msgstr "More options"
+
+#: app/features/milo/components/page/list-table.tsx:457
+msgid "More results available"
+msgstr "More results available"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:263
 msgid "Move this billing account to another published Offer. The customer's plan and quota grants update on reconcile."
@@ -3620,12 +3656,12 @@ msgstr "Name"
 msgid "Name the fee, as invoices show it."
 msgstr "Name the fee, as invoices show it."
 
-#: app/routes/customer/project/detail/dns/detail.tsx:238
+#: app/routes/customer/project/detail/dns/detail.tsx:240
 msgid "Nameservers"
 msgstr "Nameservers"
 
-#: app/features/activity/components/activity-list.tsx:401
-#: app/features/activity/components/activity-list.tsx:500
+#: app/features/activity/components/activity-list.tsx:399
+#: app/features/activity/components/activity-list.tsx:498
 #: app/routes/customer/project/detail/domain/detail.tsx:62
 #: app/routes/customer/project/detail/export-policy/detail.tsx:71
 #: app/routes/customer/project/detail/secret.tsx:27
@@ -3773,7 +3809,7 @@ msgstr "No active configuration."
 msgid "No active offer"
 msgstr "No active offer"
 
-#: app/features/user/components/user-identity-card.tsx:206
+#: app/features/user/components/user-identity-card.tsx:210
 #: app/routes/profile/session.tsx:126
 msgid "No active sessions."
 msgstr "No active sessions."
@@ -3824,6 +3860,10 @@ msgstr "No card on file. Not needed while invoice terms are active."
 msgid "No charges included in this Offer."
 msgstr "No charges included in this Offer."
 
+#: app/features/dns/components/dns-zone-status.tsx:124
+msgid "No conditions reported yet."
+msgstr "No conditions reported yet."
+
 #: app/features/service-catalog/components/conditions-card.tsx:88
 msgid "No conditions reported."
 msgstr "No conditions reported."
@@ -3866,11 +3906,11 @@ msgstr "No default offer is set up, so nothing starts ticked. Tick what the cont
 msgid "No description"
 msgstr "No description"
 
-#: app/routes/customer/project/detail/dns/detail.tsx:224
+#: app/routes/customer/project/detail/dns/detail.tsx:226
 msgid "No DNS records found."
 msgstr "No DNS records found."
 
-#: app/features/dns/components/dns-zone-list.tsx:159
+#: app/features/dns/components/dns-zone-list.tsx:152
 msgid "No DNS zones found."
 msgstr "No DNS zones found."
 
@@ -3993,7 +4033,11 @@ msgstr "No members found."
 msgid "No members in this group."
 msgstr "No members in this group."
 
-#: app/routes/customer/project/detail/dns/detail.tsx:244
+#: app/features/dns/components/dns-zone-status.tsx:146
+msgid "No nameservers assigned yet."
+msgstr "No nameservers assigned yet."
+
+#: app/routes/customer/project/detail/dns/detail.tsx:246
 msgid "No nameservers found."
 msgstr "No nameservers found."
 
@@ -4441,8 +4485,8 @@ msgstr "Optional reviewer note..."
 msgid "or"
 msgstr "or"
 
-#: app/features/activity/components/activity-list.tsx:402
-#: app/features/activity/components/activity-list.tsx:501
+#: app/features/activity/components/activity-list.tsx:400
+#: app/features/activity/components/activity-list.tsx:499
 #: app/features/billing/components/application-list.tsx:104
 #: app/features/billing/components/application-review.tsx:427
 #: app/features/billing/components/billing-account-list.tsx:202
@@ -4534,6 +4578,10 @@ msgstr "Owner of {ownerCount}"
 msgid "Owner:"
 msgstr "Owner:"
 
+#: app/routes/error/not-found.tsx:69
+msgid "Page Not Found"
+msgstr "Page Not Found"
+
 #: app/features/billing/utils.ts:70
 msgid "Paid"
 msgstr "Paid"
@@ -4573,8 +4621,8 @@ msgstr "Passkeys"
 msgid "Past due"
 msgstr "Past due"
 
-#: app/features/activity/components/activity-list.tsx:373
-#: app/features/activity/components/activity-list.tsx:463
+#: app/features/activity/components/activity-list.tsx:371
+#: app/features/activity/components/activity-list.tsx:461
 msgid "Patch"
 msgstr "Patch"
 
@@ -4654,6 +4702,7 @@ msgstr "pays invoices on terms"
 
 #: app/features/billing/components/application-labels.tsx:24
 #: app/features/contact/components/contact-emails-card.tsx:50
+#: app/features/dns/components/dns-zone-status.tsx:39
 #: app/features/email/components/email-list.tsx:69
 #: app/features/organization/components/org-onboarding-card.tsx:80
 #: app/routes/customer/fraud/index.tsx:278
@@ -4909,11 +4958,11 @@ msgstr "Profile updated successfully"
 msgid "Programming DNS records for this hostname"
 msgstr "Programming DNS records for this hostname"
 
-#: app/features/activity/components/activity-list.tsx:394
-#: app/features/activity/components/activity-list.tsx:493
+#: app/features/activity/components/activity-list.tsx:392
+#: app/features/activity/components/activity-list.tsx:491
 #: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:58
 #: app/features/billing/components/billing-account-list.tsx:281
-#: app/features/dns/components/dns-zone-list.tsx:99
+#: app/features/dns/components/dns-zone-list.tsx:92
 #: app/features/domain/components/domain-list.tsx:71
 #: app/features/edge/components/edge-list.tsx:107
 #: app/routes/customer/resource/index.tsx:341
@@ -5056,7 +5105,7 @@ msgstr "Quarterly"
 msgid "Query"
 msgstr "Query"
 
-#: app/components/date/date-range-picker.tsx:301
+#: app/components/date/date-range-picker.tsx:306
 msgid "Quick ranges"
 msgstr "Quick ranges"
 
@@ -5102,10 +5151,12 @@ msgstr "Raw Results — {provider}"
 msgid "Read-only. Prices are ServicePricing manifests in the service's repo, one set per environment, and billing reviews every change."
 msgstr "Read-only. Prices are ServicePricing manifests in the service's repo, one set per environment, and billing reviews every change."
 
+#: app/features/dns/components/dns-zone-status.tsx:38
 #: app/features/organization/components/org-onboarding-card.tsx:66
 msgid "Ready"
 msgstr "Ready"
 
+#: app/features/dns/components/dns-zone-status.tsx:76
 #: app/features/project/components/project-suspension-card.tsx:90
 #: app/features/service-catalog/components/conditions-card.tsx:39
 #: app/features/user/components/user-recovery-link-dialog.tsx:68
@@ -5144,7 +5195,7 @@ msgstr "Recipient"
 msgid "Recorded on the audit record alongside your name."
 msgstr "Recorded on the audit record alongside your name."
 
-#: app/features/dns/components/dns-zone-list.tsx:128
+#: app/features/dns/components/dns-zone-list.tsx:121
 msgid "Records"
 msgstr "Records"
 
@@ -5211,6 +5262,10 @@ msgstr "Request approved"
 msgid "Request denied"
 msgstr "Request denied"
 
+#: app/components/error/generic.tsx:27
+msgid "Request ID:"
+msgstr "Request ID:"
+
 #: app/routes/admin/service-catalog/detail/approvals.tsx:106
 #: app/routes/admin/service-catalog/detail/consumers.tsx:177
 msgid "Requested at"
@@ -5249,8 +5304,8 @@ msgstr "Resource name"
 msgid "Resource Name"
 msgstr "Resource Name"
 
-#: app/features/activity/components/activity-list.tsx:486
-#: app/features/activity/components/activity-list.tsx:524
+#: app/features/activity/components/activity-list.tsx:484
+#: app/features/activity/components/activity-list.tsx:522
 msgid "Resource Type"
 msgstr "Resource Type"
 
@@ -5270,8 +5325,8 @@ msgstr "Resource:"
 msgid "Resources"
 msgstr "Resources"
 
-#: app/features/activity/components/activity-list.tsx:470
-#: app/features/activity/components/activity-list.tsx:523
+#: app/features/activity/components/activity-list.tsx:468
+#: app/features/activity/components/activity-list.tsx:521
 msgid "Response Code"
 msgstr "Response Code"
 
@@ -5320,8 +5375,8 @@ msgstr "Revoke access"
 msgid "Risk score: 0 = low risk, 100 = high risk"
 msgstr "Risk score: 0 = low risk, 100 = high risk"
 
-#: app/features/activity/components/activity-list.tsx:397
-#: app/features/activity/components/activity-list.tsx:496
+#: app/features/activity/components/activity-list.tsx:395
+#: app/features/activity/components/activity-list.tsx:494
 #: app/features/organization/components/org-members-preview-card.tsx:71
 #: app/routes/customer/organization/detail/member.tsx:128
 #: app/routes/customer/organization/detail/member.tsx:171
@@ -5399,7 +5454,7 @@ msgstr "Scroll right"
 msgid "Search"
 msgstr "Search"
 
-#: app/features/activity/components/activity-list.tsx:411
+#: app/features/activity/components/activity-list.tsx:409
 msgid "Search activity..."
 msgstr "Search activity..."
 
@@ -5450,7 +5505,7 @@ msgstr "Search contact groups..."
 msgid "Search contacts..."
 msgstr "Search contacts..."
 
-#: app/features/dns/components/dns-zone-list.tsx:158
+#: app/features/dns/components/dns-zone-list.tsx:151
 msgid "Search DNS zones..."
 msgstr "Search DNS zones..."
 
@@ -5493,7 +5548,7 @@ msgstr "Search is temporarily unavailable. Please try again."
 msgid "Search members..."
 msgstr "Search members..."
 
-#: app/routes/customer/project/detail/dns/detail.tsx:243
+#: app/routes/customer/project/detail/dns/detail.tsx:245
 msgid "Search nameservers..."
 msgstr "Search nameservers..."
 
@@ -5527,7 +5582,7 @@ msgstr "Search providers..."
 msgid "Search quotas..."
 msgstr "Search quotas..."
 
-#: app/routes/customer/project/detail/dns/detail.tsx:223
+#: app/routes/customer/project/detail/dns/detail.tsx:225
 msgid "Search records..."
 msgstr "Search records..."
 
@@ -5577,8 +5632,8 @@ msgstr "Searching..."
 msgid "Searching…"
 msgstr "Searching…"
 
-#: app/features/activity/components/activity-list.tsx:398
-#: app/features/activity/components/activity-list.tsx:497
+#: app/features/activity/components/activity-list.tsx:396
+#: app/features/activity/components/activity-list.tsx:495
 msgid "Secret"
 msgstr "Secret"
 
@@ -5661,7 +5716,7 @@ msgstr "Select visibility..."
 msgid "Select..."
 msgstr "Select..."
 
-#: app/features/activity/components/activity-list.tsx:519
+#: app/features/activity/components/activity-list.tsx:517
 msgid "Selected filters"
 msgstr "Selected filters"
 
@@ -5851,6 +5906,10 @@ msgstr "Some checks couldn't see every invoice"
 msgid "someone"
 msgstr "someone"
 
+#: app/components/error/generic.tsx:17
+msgid "Something glitched! Probably not your fault."
+msgstr "Something glitched! Probably not your fault."
+
 #: app/features/project/components/project-quotas-card.tsx:79
 msgid "Something went wrong while loading quota data."
 msgstr "Something went wrong while loading quota data."
@@ -5931,7 +5990,7 @@ msgstr "Stages run top to bottom; an earlier stage can short-circuit the rest."
 msgid "Start date"
 msgstr "Start date"
 
-#: app/components/date/date-range-picker.tsx:275
+#: app/components/date/date-range-picker.tsx:280
 msgid "Start Time"
 msgstr "Start Time"
 
@@ -5963,6 +6022,8 @@ msgstr "Starts <0/>"
 #: app/features/billing/components/org-billing-accounts-card.tsx:63
 #: app/features/contact/components/contact-list.tsx:95
 #: app/features/contact/components/contact-list.tsx:170
+#: app/features/dns/components/dns-zone-list.tsx:85
+#: app/features/dns/components/dns-zone-status.tsx:64
 #: app/features/domain/components/domain-list.tsx:96
 #: app/features/edge/components/detail/edge-general-card.tsx:24
 #: app/features/edge/components/edge-list.tsx:142
@@ -6080,12 +6141,12 @@ msgstr "Switch to dark theme"
 msgid "Switch to light theme"
 msgstr "Switch to light theme"
 
-#: app/components/theme-switcher/index.tsx:48
+#: app/components/theme-switcher/index.tsx:50
 #: app/features/edge/components/detail/edge-hostnames-card.tsx:164
 msgid "System"
 msgstr "System"
 
-#: app/features/activity/components/activity-list.tsx:211
+#: app/features/activity/components/activity-list.tsx:209
 msgid "Target"
 msgstr "Target"
 
@@ -6189,13 +6250,21 @@ msgstr "The list is limited to 2,000 results at a time. Refine your search to su
 msgid "The list of Application Load Balancer resources is limited to 2,000 results at a time. Refine your search to surface other resources."
 msgstr "The list of Application Load Balancer resources is limited to 2,000 results at a time. Refine your search to surface other resources."
 
-#: app/features/dns/components/dns-zone-list.tsx:157
+#: app/features/dns/components/dns-zone-list.tsx:150
 msgid "The list of DNS zones is limited to 2,000 results at a time. Refine your search to surface other zones."
 msgstr "The list of DNS zones is limited to 2,000 results at a time. Refine your search to surface other zones."
 
 #: app/features/domain/components/domain-list.tsx:124
 msgid "The list of domains is limited to 2,000 results at a time. Refine your search to surface other domains."
 msgstr "The list of domains is limited to 2,000 results at a time. Refine your search to surface other domains."
+
+#: app/features/dns/components/dns-zone-status.tsx:139
+msgid "The nameservers Datum serves this zone from. The domain must be delegated to them at its registrar."
+msgstr "The nameservers Datum serves this zone from. The domain must be delegated to them at its registrar."
+
+#: app/routes/error/not-found.tsx:72
+msgid "The page you are looking for doesn't exist. It might have been moved, deleted, or you entered the wrong URL."
+msgstr "The page you are looking for doesn't exist. It might have been moved, deleted, or you entered the wrong URL."
 
 #. placeholder {0}: issue.paymentMethodName
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:142
@@ -6350,6 +6419,7 @@ msgstr "Today"
 msgid "Toggle"
 msgstr "Toggle"
 
+#: app/components/theme-switcher/index.tsx:33
 #: app/features/milo/components/navbar/milo-theme-toggle.tsx:18
 msgid "Toggle theme"
 msgstr "Toggle theme"
@@ -6389,6 +6459,7 @@ msgid "TTL"
 msgstr "TTL"
 
 #: app/features/billing/components/offer-included-pricing-list.tsx:139
+#: app/features/dns/components/dns-zone-status.tsx:56
 #: app/features/edge/components/detail/edge-backends-card.tsx:55
 #: app/features/fraud/policy/policy-form.tsx:199
 #: app/features/organization/components/org-details-card.tsx:59
@@ -6479,8 +6550,8 @@ msgstr "Up to {maxTotal}, over {factor}× the median of this account's other rec
 msgid "up to {upTo}"
 msgstr "up to {upTo}"
 
-#: app/features/activity/components/activity-list.tsx:372
-#: app/features/activity/components/activity-list.tsx:462
+#: app/features/activity/components/activity-list.tsx:370
+#: app/features/activity/components/activity-list.tsx:460
 #: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:255
 #: app/features/fraud/policy/policy-form.tsx:317
@@ -6493,11 +6564,12 @@ msgstr "Update"
 msgid "Update your DNS provider with the provided record, or use the HTTP token method."
 msgstr "Update your DNS provider with the provided record, or use the HTTP token method."
 
+#: app/features/dns/components/dns-zone-status.tsx:88
 #: app/features/service-catalog/components/conditions-card.tsx:51
 msgid "Updated"
 msgstr "Updated"
 
-#: app/features/user/components/user-identity-card.tsx:138
+#: app/features/user/components/user-identity-card.tsx:148
 msgid "Updating email addresses for GitHub identities"
 msgstr "Updating email addresses for GitHub identities"
 
@@ -6559,8 +6631,8 @@ msgid "Usage will appear here once this project starts consuming metered resourc
 msgstr "Usage will appear here once this project starts consuming metered resources."
 
 #: app/features/activity/components/activity-list.tsx:118
-#: app/features/activity/components/activity-list.tsx:395
-#: app/features/activity/components/activity-list.tsx:494
+#: app/features/activity/components/activity-list.tsx:393
+#: app/features/activity/components/activity-list.tsx:492
 #: app/features/fraud/detail/evaluation-sections.tsx:686
 #: app/routes/customer/fraud/index.tsx:110
 #: app/routes/customer/fraud/index.tsx:262
@@ -6698,8 +6770,8 @@ msgstr "Waiting on"
 msgid "Warning"
 msgstr "Warning"
 
-#: app/features/activity/components/activity-list.tsx:370
-#: app/features/activity/components/activity-list.tsx:460
+#: app/features/activity/components/activity-list.tsx:368
+#: app/features/activity/components/activity-list.tsx:458
 msgid "Watch"
 msgstr "Watch"
 
@@ -6784,3 +6856,7 @@ msgstr "You're here:"
 #: app/features/dns/components/dns-zone-list.tsx:70
 msgid "Zone Name"
 msgstr "Zone Name"
+
+#: app/features/dns/components/dns-zone-status.tsx:117
+msgid "Zone status"
+msgstr "Zone status"

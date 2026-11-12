@@ -179,15 +179,13 @@ function createColumns(user?: { metadata?: { name?: string } }) {
         return (
           <div className="flex flex-col gap-1">
             {tenantLink ? (
-              <Link
-                to={tenantLink}
-                className="font-medium text-blue-600 hover:text-blue-800 hover:underline">
+              <Link to={tenantLink} className="text-primary font-medium hover:underline">
                 {scopeName}
               </Link>
             ) : (
               <span>{scopeName}</span>
             )}
-            <Text size="xs" weight="bold" className="text-gray-600">
+            <Text size="xs" weight="bold" textColor="muted">
               {scopeType}
             </Text>
           </div>

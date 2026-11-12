@@ -126,6 +126,23 @@ describe('Account recovery on the user detail page', () => {
       cy.contains('Unverified').should('not.exist');
     });
 
+    it('opens the GitHub email steps from a focusable button', () => {
+      cy.intercept(
+        'GET',
+        '**/useridentities*',
+        proxyList([
+          {
+            metadata: { name: 'gh-1' },
+            status: { providerName: 'GitHub', username: 'ada@example.com' },
+          },
+        ])
+      );
+      mountInDataRouter(<UserIdentityCard userId="u1" />);
+      // A native <button> that holds focus is activated by Enter and Space.
+      cy.contains('button', 'How to update your GitHub email').focus().should('have.focus').click();
+      cy.contains('Log out of GitHub').should('be.visible');
+    });
+
     it('renders "1 passkey" in the singular', () => {
       mountInDataRouter(
         <UserIdentityCard userId="u1" readOnly passkeyCount={1} emailVerification="Verified" />

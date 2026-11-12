@@ -454,6 +454,7 @@ export function ListTable<TData extends RowData>({
                   type="warning"
                   theme="borderless"
                   size="icon"
+                  aria-label={t`More results available`}
                   className="size-7 hover:bg-transparent"
                   icon={<STATUS_ICONS.info className="size-4" />}
                 />

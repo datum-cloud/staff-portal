@@ -9,7 +9,7 @@ import { useIdentityListQuery, useSessionListEnrichedQuery } from '@/resources/r
 import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
-import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
@@ -131,8 +131,18 @@ export const UserIdentityCard = ({
                     readOnly ? undefined : (
                       <>
                         {provider === 'github' && (
-                          <Tooltip
-                            message={
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <button
+                                type="button"
+                                className="focus-visible:ring-ring flex cursor-pointer items-center gap-2.5 rounded-sm focus-visible:ring-2 focus-visible:outline-none">
+                                <STATUS_ICONS.alert size={12} className="text-primary" />
+                                <Text size="xs" textColor="primary" className="underline">
+                                  <Trans>How to update your GitHub email</Trans>
+                                </Text>
+                              </button>
+                            </PopoverTrigger>
+                            <PopoverContent align="end" className="w-80 p-0">
                               <div className="flex flex-col gap-3.5 p-4">
                                 <Title as="h4" level={7} weight="semibold">
                                   <Trans>Updating email addresses for GitHub identities</Trans>
@@ -166,14 +176,8 @@ export const UserIdentityCard = ({
                                   </li>
                                 </ul>
                               </div>
-                            }>
-                            <div className="pointer flex cursor-pointer items-center gap-2.5">
-                              <STATUS_ICONS.alert size={12} className="text-primary" />
-                              <Text size="xs" textColor="primary" className="underline">
-                                <Trans>How to update your GitHub email</Trans>
-                              </Text>
-                            </div>
-                          </Tooltip>
+                            </PopoverContent>
+                          </Popover>
                         )}
                         <LinkButton
                           href={`${env?.AUTH_OIDC_ISSUER}/ui/v2/login/idp/link`}

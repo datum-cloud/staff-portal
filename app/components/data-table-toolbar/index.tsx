@@ -78,7 +78,7 @@ export function DataTableToolbar({ search, filters, extras, className }: DataTab
             {activeCount > 0 && (
               <span
                 aria-hidden="true"
-                className="bg-primary absolute top-1 right-1 h-2 w-2 rounded-full ring-2 ring-white"
+                className="bg-primary ring-background absolute top-1 right-1 h-2 w-2 rounded-full ring-2"
               />
             )}
           </Button>
