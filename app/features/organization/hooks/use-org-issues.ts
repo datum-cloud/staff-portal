@@ -108,7 +108,9 @@ export function useOrgIssues(orgName: string): OrgIssues {
       if (COMPUTE_AREAS.has(area)) {
         return {
           ...counts[area],
-          enabled: compute.enabled,
+          // Shown (loading) until the plugin list says whether compute is installed,
+          // so the strip doesn't jump from three tiles to five.
+          enabled: compute.enabled || compute.pluginPending,
           isLoading: computeLoading,
           isError: compute.isError,
           unreadProjects: computeUnread,
