@@ -134,7 +134,7 @@ msgstr "{0} registered"
 
 #. placeholder {0}: sent.toLocaleString()
 #. placeholder {1}: data.failed.toLocaleString()
-#: app/features/dashboard/components/home/health-section.tsx:160
+#: app/features/dashboard/components/home/health-section.tsx:155
 msgid "{0} sent · {1} failed"
 msgstr "{0} sent · {1} failed"
 
@@ -1494,7 +1494,7 @@ msgstr "Company name"
 msgid "Completed"
 msgstr "Completed"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:105
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:102
 msgid "Completing ACME challenge with the certificate authority"
 msgstr "Completing ACME challenge with the certificate authority"
 
@@ -1513,7 +1513,7 @@ msgstr "Conditions"
 msgid "Configuration"
 msgstr "Configuration"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:81
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:78
 msgid "Configuring DNS"
 msgstr "Configuring DNS"
 
@@ -1933,7 +1933,7 @@ msgstr "Current billing cycle for this project"
 msgid "Current terms"
 msgstr "Current terms"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:185
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:182
 msgid "Custom"
 msgstr "Custom"
 
@@ -2318,7 +2318,7 @@ msgstr "DNS Host"
 msgid "DNS Providers"
 msgstr "DNS Providers"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:76
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:73
 msgid "DNS Ready"
 msgstr "DNS Ready"
 
@@ -2340,7 +2340,7 @@ msgstr "DNS Record Set"
 msgid "DNS Records"
 msgstr "DNS Records"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:74
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:71
 msgid "DNS records have been programmed for this hostname"
 msgstr "DNS records have been programmed for this hostname"
 
@@ -3237,11 +3237,11 @@ msgstr "Home"
 msgid "Host Header"
 msgstr "Host Header"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:55
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:52
 msgid "Hostname Verified"
 msgstr "Hostname Verified"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:160
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:157
 #: app/features/edge/components/edge-list.tsx:117
 msgid "Hostnames"
 msgstr "Hostnames"
@@ -3318,7 +3318,7 @@ msgstr "Including fees set up for individual accounts' contracts."
 msgid "Individual"
 msgstr "Individual"
 
-#: app/features/dashboard/components/home/health-section.tsx:186
+#: app/features/dashboard/components/home/health-section.tsx:181
 msgid "Infrastructure, quota pressure, and outbound email."
 msgstr "Infrastructure, quota pressure, and outbound email."
 
@@ -3477,7 +3477,7 @@ msgstr "Issued"
 msgid "Issued <0/>"
 msgstr "Issued <0/>"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:110
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:107
 msgid "Issuing TLS certificate"
 msgstr "Issuing TLS certificate"
 
@@ -4194,7 +4194,7 @@ msgstr "No email activity found."
 msgid "No emails have been sent to this contact yet."
 msgstr "No emails have been sent to this contact yet."
 
-#: app/features/dashboard/components/home/health-section.tsx:158
+#: app/features/dashboard/components/home/health-section.tsx:153
 msgid "No emails sent"
 msgstr "No emails sent"
 
@@ -4263,7 +4263,7 @@ msgstr "No groups found."
 msgid "No history"
 msgstr "No history"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:206
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:203
 msgid "No hostnames configured"
 msgstr "No hostnames configured"
 
@@ -5113,7 +5113,7 @@ msgstr "Platform attention"
 msgid "Platform default"
 msgstr "Platform default"
 
-#: app/features/dashboard/components/home/health-section.tsx:183
+#: app/features/dashboard/components/home/health-section.tsx:178
 msgid "Platform health"
 msgstr "Platform health"
 
@@ -5243,7 +5243,7 @@ msgstr "Profile Information"
 msgid "Profile updated successfully"
 msgstr "Profile updated successfully"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:82
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:79
 msgid "Programming DNS records for this hostname"
 msgstr "Programming DNS records for this hostname"
 
@@ -5601,7 +5601,7 @@ msgstr "Requested at"
 msgid "Requested by"
 msgstr "Requested by"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:113
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:110
 msgid "Requesting a TLS certificate from the certificate authority"
 msgstr "Requesting a TLS certificate from the certificate authority"
 
@@ -6225,7 +6225,7 @@ msgstr "Skipped"
 msgid "Snapshot not written yet — controller may still be reconciling."
 msgstr "Snapshot not written yet — controller may still be reconciling."
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:102
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:99
 msgid "Solving ACME challenge"
 msgstr "Solving ACME challenge"
 
@@ -6481,7 +6481,7 @@ msgstr "Switch to dark theme"
 msgid "Switch to light theme"
 msgstr "Switch to light theme"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:164
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:161
 msgid "System"
 msgstr "System"
 
@@ -6711,7 +6711,7 @@ msgstr "This emails a one-time passkey setup link to the verified address on fil
 msgid "This flag is managed by the platform and can't be changed from here."
 msgstr "This flag is managed by the platform and can't be changed from here."
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:53
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:50
 msgid "This hostname has been verified by Datum"
 msgstr "This hostname has been verified by Datum"
 
@@ -6767,11 +6767,11 @@ msgstr "Timezone"
 msgid "Timezone updated successfully"
 msgstr "Timezone updated successfully"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:89
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:86
 msgid "TLS certificate is issued and ready for this hostname"
 msgstr "TLS certificate is issued and ready for this hostname"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:95
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:92
 msgid "TLS certificate provisioning failed"
 msgstr "TLS certificate provisioning failed"
 
@@ -6779,11 +6779,11 @@ msgstr "TLS certificate provisioning failed"
 msgid "TLS Certificates"
 msgstr "TLS Certificates"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:97
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:94
 msgid "TLS Failed"
 msgstr "TLS Failed"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:91
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:88
 msgid "TLS Ready"
 msgstr "TLS Ready"
 
@@ -6922,7 +6922,7 @@ msgstr "Unusual"
 msgid "unusual invoice totals"
 msgstr "unusual invoice totals"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:61
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:58
 #: app/features/user/components/user-identity-card.tsx:62
 msgid "Unverified"
 msgstr "Unverified"
@@ -7068,7 +7068,7 @@ msgstr "Verification in progress..."
 msgid "Verified"
 msgstr "Verified"
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:66
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:63
 msgid "Verifying hostname"
 msgstr "Verifying hostname"
 
@@ -7146,7 +7146,7 @@ msgstr "Void"
 msgid "Wait for Flux to apply it, then refresh this page."
 msgstr "Wait for Flux to apply it, then refresh this page."
 
-#: app/features/edge/components/detail/edge-hostnames-card.tsx:67
+#: app/features/edge/components/detail/edge-hostnames-card.tsx:64
 msgid "Waiting for hostname ownership verification to complete"
 msgstr "Waiting for hostname ownership verification to complete"
 

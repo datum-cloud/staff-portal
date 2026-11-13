@@ -61,7 +61,7 @@ export function AttentionBannerShell({
             <Icon
               icon={incomplete ? CircleHelp : STATUS_ICONS.success}
               size={16}
-              className={cn('shrink-0', incomplete ? 'text-muted-foreground' : 'text-green-600')}
+              className={cn('shrink-0', incomplete ? 'text-muted-foreground' : 'text-success')}
               aria-hidden
             />
             <Text size="sm" weight="medium" className="shrink-0">
@@ -78,7 +78,7 @@ export function AttentionBannerShell({
             <Icon
               icon={STATUS_ICONS.warning}
               size={16}
-              className="shrink-0 text-amber-500"
+              className="text-warning shrink-0"
               aria-hidden
             />
             <Text size="sm" weight="medium" className="shrink-0">

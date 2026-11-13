@@ -36,7 +36,7 @@ const AuthError = ({ message, requestId }: { message: string; requestId?: string
             <Text
               as="div"
               textColor="muted"
-              className="rounded-r-md border-l-4 border-red-500 bg-red-50 p-4 text-center dark:bg-red-950/20">
+              className="border-destructive bg-destructive/10 rounded-r-md border-l-4 p-4 text-center">
               <Text as="div" size="xs">
                 <strong>Request ID:</strong> {requestId}
               </Text>

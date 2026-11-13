@@ -124,7 +124,7 @@ function reviewRowProps(item: ReviewItem) {
   }
   return {
     to: userRoutes.detail(item.name),
-    icon: <Icon icon={STATUS_ICONS.pending} size={14} className="text-amber-500" aria-hidden />,
+    icon: <Icon icon={STATUS_ICONS.pending} size={14} className="text-warning" aria-hidden />,
     meta: (
       <Badge type="muted" theme="light" className="shrink-0">
         <Trans>Pending access</Trans>

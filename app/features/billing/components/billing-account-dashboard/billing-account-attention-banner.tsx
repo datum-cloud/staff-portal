@@ -351,7 +351,7 @@ function PassingLine({
   const count = passing.length;
   return (
     <div className="border-border flex min-h-10 items-center gap-2 border-t px-4 py-2">
-      <Icon icon={STATUS_ICONS.success} size={14} className="shrink-0 text-green-600" aria-hidden />
+      <Icon icon={STATUS_ICONS.success} size={14} className="text-success shrink-0" aria-hidden />
       <Text size="xs" weight="medium" className="shrink-0">
         <Plural value={count} one="# check passing" other="# checks passing" />
       </Text>

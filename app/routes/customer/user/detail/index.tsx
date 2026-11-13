@@ -395,7 +395,7 @@ export default function Page() {
 
                 {/* Inline reason capture when moving to Suspended/Rejected */}
                 {pendingState && (
-                  <div className="flex flex-col gap-2 rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-900/20">
+                  <div className="border-warning/30 bg-warning/10 flex flex-col gap-2 rounded-md border p-3">
                     <Text size="sm" weight="medium">
                       <Trans>Reason for setting access to {pendingState}</Trans>
                     </Text>

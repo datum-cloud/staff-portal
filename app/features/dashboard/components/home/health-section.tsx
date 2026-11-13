@@ -47,7 +47,7 @@ function ClustersCard({ enabled }: { enabled: boolean }) {
               <Icon
                 icon={summary.unhealthy === 0 ? STATUS_ICONS.success : STATUS_ICONS.error}
                 size={18}
-                className={summary.unhealthy === 0 ? 'text-green-600' : 'text-destructive'}
+                className={summary.unhealthy === 0 ? 'text-success' : 'text-destructive'}
                 aria-hidden
               />
             }>
@@ -85,7 +85,7 @@ function QuotaCard({ buckets, isLoading }: { buckets: QuotaBucketRow[]; isLoadin
         <>
           <StatTileHeadline
             icon={
-              <Icon icon={STATUS_ICONS.success} size={18} className="text-green-600" aria-hidden />
+              <Icon icon={STATUS_ICONS.success} size={18} className="text-success" aria-hidden />
             }>
             0
           </StatTileHeadline>
@@ -108,7 +108,7 @@ function QuotaCard({ buckets, isLoading }: { buckets: QuotaBucketRow[]; isLoadin
                 <span
                   className={cn(
                     'shrink-0 font-medium tabular-nums',
-                    b.percentage >= 90 ? 'text-destructive' : 'text-amber-600'
+                    b.percentage >= 90 ? 'text-destructive' : 'text-warning'
                   )}>
                   {b.percentage}%
                 </span>
@@ -143,12 +143,7 @@ function EmailCard() {
           <StatTileHeadline
             icon={
               data.failed > 0 ? (
-                <Icon
-                  icon={STATUS_ICONS.warning}
-                  size={18}
-                  className="text-amber-500"
-                  aria-hidden
-                />
+                <Icon icon={STATUS_ICONS.warning} size={18} className="text-warning" aria-hidden />
               ) : undefined
             }>
             {rate == null ? '—' : `${rate.toFixed(1)}%`}

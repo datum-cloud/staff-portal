@@ -96,7 +96,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
 }
 
 function RunTick({ run }: { run: ChainsawTestRun }) {
-  const color = run.passed ? 'bg-green-500 dark:bg-green-400' : 'bg-red-500 dark:bg-red-400';
+  const color = run.passed ? 'bg-success' : 'bg-destructive';
   return (
     <Tooltip
       side="top"
@@ -137,14 +137,14 @@ function LatestBadge({ latest }: { latest: ChainsawTestRow['latest'] }) {
     );
   }
   return latest.passed ? (
-    <span className="inline-flex items-center gap-1 text-green-600 dark:text-green-400">
+    <span className="text-success inline-flex items-center gap-1">
       <STATUS_ICONS.success className="h-3.5 w-3.5" />
       <Text size="sm" className="font-medium">
         <Trans>Passing</Trans>
       </Text>
     </span>
   ) : (
-    <span className="inline-flex items-center gap-1 text-red-600 dark:text-red-400">
+    <span className="text-destructive inline-flex items-center gap-1">
       <STATUS_ICONS.error className="h-3.5 w-3.5" />
       <Text size="sm" className="font-medium">
         <Trans>Failing</Trans>
