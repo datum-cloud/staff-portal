@@ -36,7 +36,7 @@ import {
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { useLingui } from '@lingui/react/macro';
-import { ChevronDown, Plus, X } from 'lucide-react';
+import { ChevronDown, Plus } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 /**
@@ -172,7 +172,7 @@ export function RuleFilterButton<TData>({
           size="icon"
           aria-label={t`Clear filters`}
           className="border-background size-7 rounded-l-none border-l"
-          icon={<X className="size-3.5" />}
+          icon={<ACTION_ICONS.close className="size-3.5" />}
           onClick={() => onChange({ ...value, rules: [] })}
         />
       )}
@@ -299,7 +299,7 @@ function RuleRow<TData>({
         size="icon"
         aria-label={t`Remove filter`}
         className="size-7 shrink-0"
-        icon={<X className="size-3.5" />}
+        icon={<ACTION_ICONS.close className="size-3.5" />}
         onClick={onRemove}
       />
     </div>

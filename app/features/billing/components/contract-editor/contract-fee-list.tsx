@@ -6,13 +6,14 @@ import {
 import { periodUnitText } from '../contract-fee-text';
 import { NO_SERVICE, type ContractFeeRow, type ContractFormValues } from './schema';
 import { WholeNumberInput } from './whole-number-input';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Plus, X } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 export type ServiceOption = { serviceName: string; label: string };
 
@@ -94,7 +95,7 @@ export function ContractFeeList({
                     htmlType="button"
                     className="mt-6"
                     aria-label={t`Remove fee`}
-                    icon={<Icon icon={X} size={14} />}
+                    icon={<Icon icon={ACTION_ICONS.close} size={14} />}
                     onClick={() => remove(index)}
                   />
                 </div>

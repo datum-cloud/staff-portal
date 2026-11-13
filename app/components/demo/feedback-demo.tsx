@@ -1,9 +1,9 @@
 import { DemoGroup, DemoRow, DemoSection, type DemoSectionMeta } from './demo-section';
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
-import { Info } from 'lucide-react';
 
 export const feedbackDemoSections: DemoSectionMeta[] = [
   { id: 'tooltip', label: 'Tooltip' },
@@ -34,7 +34,7 @@ export default function FeedbackDemo() {
           </Tooltip>
           <Tooltip message="Contextual help">
             <Text textColor="muted" className="inline-flex cursor-help items-center gap-1">
-              <Info className="h-4 w-4" /> What is this?
+              <STATUS_ICONS.info className="h-4 w-4" /> What is this?
             </Text>
           </Tooltip>
         </DemoRow>
