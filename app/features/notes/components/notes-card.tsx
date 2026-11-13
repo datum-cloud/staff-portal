@@ -11,6 +11,7 @@ import {
   type NoteScope,
   type NoteSubjectRef,
 } from '@/resources/request/client';
+import { ENTITY_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Textarea } from '@datum-cloud/datum-ui/textarea';
@@ -19,7 +20,6 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import type { ComMiloapisNotesV1Alpha1Note } from '@openapi/notes.miloapis.com/v1alpha1';
 import { useQueryClient } from '@tanstack/react-query';
-import { StickyNote } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 const MAX_LENGTH = 1000;
@@ -115,7 +115,7 @@ export function NotesCard({ subject, scope = { kind: 'core' }, className }: Prop
         ) : notes.length === 0 ? (
           <EmptyState
             size="sm"
-            icon={StickyNote}
+            icon={ENTITY_ICONS.note}
             title={<Trans>No notes yet</Trans>}
             description={<Trans>Add the first note below to start tracking context.</Trans>}
           />

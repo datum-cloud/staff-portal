@@ -1,10 +1,11 @@
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { Plural, Trans } from '@lingui/react/macro';
-import { ChevronDown, CircleCheck, CircleHelp, TriangleAlert } from 'lucide-react';
+import { ChevronDown, CircleHelp } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 
 interface AttentionBannerShellProps {
@@ -58,7 +59,7 @@ export function AttentionBannerShell({
         ) : total === 0 ? (
           <>
             <Icon
-              icon={incomplete ? CircleHelp : CircleCheck}
+              icon={incomplete ? CircleHelp : STATUS_ICONS.success}
               size={16}
               className={cn('shrink-0', incomplete ? 'text-muted-foreground' : 'text-green-600')}
               aria-hidden
@@ -74,7 +75,12 @@ export function AttentionBannerShell({
           </>
         ) : (
           <>
-            <Icon icon={TriangleAlert} size={16} className="shrink-0 text-amber-500" aria-hidden />
+            <Icon
+              icon={STATUS_ICONS.warning}
+              size={16}
+              className="shrink-0 text-amber-500"
+              aria-hidden
+            />
             <Text size="sm" weight="medium" className="shrink-0">
               <Plural value={total} one="# thing needs attention" other="# things need attention" />
             </Text>

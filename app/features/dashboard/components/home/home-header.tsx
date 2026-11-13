@@ -1,12 +1,12 @@
 import { SearchResults } from '@/components/app-search/search-results';
 import { useAppSearch } from '@/components/app-search/use-app-search';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Command, CommandInput } from '@datum-cloud/datum-ui/command';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Popover, PopoverAnchor, PopoverContent } from '@datum-cloud/datum-ui/popover';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Search } from 'lucide-react';
 import { useRef } from 'react';
 
 interface HomeHeaderProps {
@@ -65,7 +65,12 @@ function HeroSearch() {
       <Command shouldFilter={false} className="contents">
         <PopoverAnchor asChild>
           <div className="bg-card border-input flex h-12 items-center gap-2 rounded-lg border px-3 shadow-xs">
-            <Icon icon={Search} size={16} className="text-icon-quaternary shrink-0" aria-hidden />
+            <Icon
+              icon={ACTION_ICONS.search}
+              size={16}
+              className="text-icon-quaternary shrink-0"
+              aria-hidden
+            />
             <CommandInput
               ref={inputRef}
               value={search}

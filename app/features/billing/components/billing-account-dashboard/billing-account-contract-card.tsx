@@ -32,6 +32,7 @@ import {
   useServicePricingListQuery,
   type InvoiceRequest,
 } from '@/resources/request/client';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { billingAccountRoutes } from '@/utils/config/routes.config';
 import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
 import { Dialog } from '@datum-cloud/datum-ui/dialog';
@@ -45,7 +46,7 @@ import type {
   ComMiloapisBillingV1Alpha1BillingEntitlement,
   ComMiloapisBillingV1Alpha1Offer,
 } from '@openapi/billing.miloapis.com/v1alpha1';
-import { FileSearch, Pencil } from 'lucide-react';
+import { FileSearch } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 /** A date as fee details show it, e.g. "Feb 12, 2027" (UTC). */
@@ -92,7 +93,7 @@ export function BillingAccountContractCard({
                 theme="borderless"
                 size="small"
                 href={billingAccountRoutes.contract(orgName, accountName)}
-                icon={<Icon icon={Pencil} size={14} />}
+                icon={<Icon icon={ACTION_ICONS.edit} size={14} />}
                 iconPosition="right">
                 <Trans>Change fees</Trans>
               </LinkButton>

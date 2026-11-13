@@ -1,7 +1,7 @@
 import { useChainsawTests } from '../hooks/use-chainsaw-tests';
 import type { ChainsawTestRow, ChainsawTestRun } from '../hooks/use-chainsaw-tests';
 import { DateTime } from '@/components/date';
-import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
+import { ACTION_ICONS, ENTITY_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader } from '@datum-cloud/datum-ui/card';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
@@ -16,7 +16,6 @@ import {
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
-import { FlaskConical } from 'lucide-react';
 
 function LoadingSkeleton() {
   return (
@@ -68,7 +67,7 @@ function LoadingSkeleton() {
 function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center py-6 text-center">
-      <FlaskConical className="text-muted-foreground mb-3 h-8 w-8" />
+      <ENTITY_ICONS.chainsawTest className="text-muted-foreground mb-3 h-8 w-8" />
       <Title level={5} className="mb-1">
         <Trans>No stable tests labeled yet</Trans>
       </Title>
@@ -163,7 +162,7 @@ export function ChainsawTestsWidget() {
       <CardHeader className="px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <FlaskConical className="text-muted-foreground h-4 w-4" />
+            <ENTITY_ICONS.chainsawTest className="text-muted-foreground h-4 w-4" />
             <Title level={4}>
               <Trans>Chainsaw Tests</Trans>
             </Title>

@@ -8,13 +8,12 @@ import {
 } from '@/features/dashboard/hooks/use-platform-home';
 import { useResourceCount } from '@/features/dashboard/hooks/use-resource-count';
 import { orgListQuery, userListQuery } from '@/resources/request/client';
-import { ENTITY_ICONS } from '@/utils/config/icons.config';
+import { ENTITY_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes, orgRoutes, userRoutes } from '@/utils/config/routes.config';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
-import { CircleCheck, Clock } from 'lucide-react';
 
 function formatCount(count: number | undefined) {
   return count == null ? undefined : count.toLocaleString();
@@ -125,7 +124,7 @@ function reviewRowProps(item: ReviewItem) {
   }
   return {
     to: userRoutes.detail(item.name),
-    icon: <Icon icon={Clock} size={14} className="text-amber-500" aria-hidden />,
+    icon: <Icon icon={STATUS_ICONS.pending} size={14} className="text-amber-500" aria-hidden />,
     meta: (
       <Badge type="muted" theme="light" className="shrink-0">
         <Trans>Pending access</Trans>
@@ -145,7 +144,10 @@ export function NeedsReviewColumn() {
       {isLoading ? (
         <HomeColumnSkeleton />
       ) : items.length === 0 ? (
-        <HomeColumnEmpty icon={CircleCheck} message={<Trans>Nothing waiting on review</Trans>} />
+        <HomeColumnEmpty
+          icon={STATUS_ICONS.success}
+          message={<Trans>Nothing waiting on review</Trans>}
+        />
       ) : (
         items.map((item) => (
           <HomeColumnRow key={item.key} label={item.userDisplay} {...reviewRowProps(item)} />

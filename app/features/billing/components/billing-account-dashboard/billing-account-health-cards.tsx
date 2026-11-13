@@ -12,11 +12,12 @@ import {
   StatTileSkeleton,
 } from '@/components/stat-tile';
 import { SpendValue } from '@/features/organization/usage/components/spend-value';
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { t } from '@lingui/core/macro';
 import { Plural, Trans } from '@lingui/react/macro';
-import { ArrowDown, ArrowUp, CircleAlert } from 'lucide-react';
+import { ArrowDown, ArrowUp } from 'lucide-react';
 import { useMemo, type ReactNode } from 'react';
 
 interface HealthCardsProps {
@@ -106,7 +107,7 @@ function PastDueTile(props: HealthCardsProps) {
           <>
             <StatTileHeadline
               className="text-destructive"
-              icon={<Icon icon={CircleAlert} size={18} className="shrink-0" aria-hidden />}>
+              icon={<Icon icon={STATUS_ICONS.alert} size={18} className="shrink-0" aria-hidden />}>
               {formatMoney(s.pastDue, currency)}
             </StatTileHeadline>
             <StatTileDetail>

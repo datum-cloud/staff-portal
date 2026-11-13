@@ -1,9 +1,9 @@
 import { CardRowSkeleton } from './card-row-skeleton';
 import { SectionCard } from '@/features/milo';
+import { TAB_ICONS } from '@/utils/config/icons.config';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisServicesV1Alpha1ServiceConfiguration } from '@openapi/services.miloapis.com/v1alpha1';
-import { CircleGauge } from 'lucide-react';
 
 type QuotaLimit = NonNullable<
   NonNullable<
@@ -22,7 +22,7 @@ export function QuotaLimitsCard({ limits, isLoading }: Props) {
       className="h-full"
       title={
         <span className="flex items-center gap-2">
-          <CircleGauge className="h-4 w-4" />
+          <TAB_ICONS.quotas className="h-4 w-4" />
           <Trans>Quota</Trans>
         </span>
       }>

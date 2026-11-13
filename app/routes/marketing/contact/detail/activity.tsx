@@ -10,6 +10,7 @@ import {
   staffTenantLinkResolver,
 } from '@/features/activity/lib/activity-link-resolvers';
 import { isPlatformUser } from '@/features/contact';
+import { ENTITY_ICONS } from '@/utils/config/icons.config';
 import { metaObject } from '@/utils/helpers';
 import {
   ActivityFeed,
@@ -18,7 +19,6 @@ import {
   type Tenant,
 } from '@datum-cloud/activity-ui';
 import { Trans } from '@lingui/react/macro';
-import { SquareActivity } from 'lucide-react';
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -85,7 +85,7 @@ export default function Page() {
     return (
       <div className="m-4">
         <EmptyState
-          icon={SquareActivity}
+          icon={ENTITY_ICONS.activity}
           title={<Trans>No activity</Trans>}
           description={
             <Trans>

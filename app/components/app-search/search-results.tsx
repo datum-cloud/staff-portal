@@ -22,7 +22,7 @@ import {
   ComMiloapisResourcemanagerV1Alpha1Organization,
   ComMiloapisResourcemanagerV1Alpha1Project,
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
-import { Building2, Contact, FolderOpen, Globe, Server, Users } from 'lucide-react';
+import { FolderOpen, Globe, Server } from 'lucide-react';
 import { Link } from 'react-router';
 
 type SearchState = ReturnType<typeof useAppSearch>;
@@ -169,7 +169,7 @@ export function SearchResults({ state, listClassName }: SearchResultsProps) {
                   >
                     heading={t`Organizations`}
                     items={orgResults || []}
-                    icon={Building2}
+                    icon={ENTITY_ICONS.organization}
                     getKey={getItemKey}
                     getValue={(item) =>
                       `${item.resource.metadata?.name ?? ''} ${getDisplayName(item.resource)} ${item.resource.metadata?.annotations?.['kubernetes.io/description'] ?? ''}`
@@ -201,7 +201,7 @@ export function SearchResults({ state, listClassName }: SearchResultsProps) {
                   <SearchResultGroup<SearchResultItem<ComMiloapisIamV1Alpha1User>>
                     heading={t`Users`}
                     items={userResults || []}
-                    icon={Users}
+                    icon={ENTITY_ICONS.user}
                     getKey={getItemKey}
                     getValue={(item) =>
                       `${item.resource.metadata?.name ?? ''} ${item.resource.spec?.givenName ?? ''} ${item.resource.spec?.familyName ?? ''} ${item.resource.spec?.email ?? ''}`
@@ -336,7 +336,7 @@ export function SearchResults({ state, listClassName }: SearchResultsProps) {
                   <SearchResultGroup<SearchResultItem<ComMiloapisNotificationV1Alpha1Contact>>
                     heading={t`Contacts`}
                     items={(contactResults || []).slice(0, 3)}
-                    icon={Contact}
+                    icon={ENTITY_ICONS.contact}
                     iconClassName="text-orange-600"
                     getKey={getItemKey}
                     getValue={(item) =>

@@ -31,7 +31,7 @@ import {
   userDeleteMutation,
   userQueryKeys,
 } from '@/resources/request/client';
-import { ACTION_ICONS } from '@/utils/config/icons.config';
+import { ACTION_ICONS, ENTITY_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes, userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
@@ -48,16 +48,7 @@ import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useQueryClient } from '@tanstack/react-query';
-import {
-  Globe,
-  KeyRound,
-  Loader2,
-  Mail,
-  MapPin,
-  Shield,
-  ShieldAlert,
-  UserIcon,
-} from 'lucide-react';
+import { Globe, KeyRound, Mail, MapPin, Shield, UserIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useRevalidator } from 'react-router';
 
@@ -293,7 +284,7 @@ export default function Page() {
           <SectionCard
             title={
               <span className="flex items-center gap-2">
-                <ShieldAlert className="h-4 w-4" />
+                <ENTITY_ICONS.fraud className="h-4 w-4" />
                 <Trans>Fraud Assessment</Trans>
               </span>
             }
@@ -382,7 +373,7 @@ export default function Page() {
                   </div>
                   <div className="flex items-center gap-2">
                     {isUpdatingAccess && (
-                      <Loader2 className="text-muted-foreground size-4 animate-spin" />
+                      <STATUS_ICONS.loading className="text-muted-foreground size-4 animate-spin" />
                     )}
                     <Select
                       value={currentState}
