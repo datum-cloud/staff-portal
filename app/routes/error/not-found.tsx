@@ -79,7 +79,7 @@ export default function NotFound() {
               <Text
                 as="div"
                 textColor="muted"
-                className="rounded-r-md border-l-4 border-yellow-500 bg-yellow-50 p-4 text-center dark:bg-yellow-950/20">
+                className="border-warning bg-warning/10 rounded-r-md border-l-4 p-4 text-center">
                 <code className="font-mono text-xs break-all">
                   Path: {location.pathname}
                   {location.search && `?${location.search}`}

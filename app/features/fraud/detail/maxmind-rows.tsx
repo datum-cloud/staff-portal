@@ -11,9 +11,9 @@ import { Trans } from '@lingui/react/macro';
 
 function ipRiskColor(score: number | undefined): string {
   if (score == null) return '';
-  if (score >= 75) return 'text-red-600 dark:text-red-400';
-  if (score >= 25) return 'text-yellow-600 dark:text-yellow-400';
-  return 'text-green-600 dark:text-green-400';
+  if (score >= 75) return 'text-destructive';
+  if (score >= 25) return 'text-warning';
+  return 'text-success';
 }
 
 // MaxMind reports common datacentre / proxy categories under user_type. We

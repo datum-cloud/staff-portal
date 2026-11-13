@@ -1,10 +1,11 @@
 import { type NavSubItem } from '../../lib/nav-config';
 import { useActiveNav } from '../../lib/use-active-section';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import { Check, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
 
@@ -56,7 +57,7 @@ export function SectionSwitcher() {
               <Text as="span" size="sm" weight={active ? 'medium' : 'normal'} className="flex-1">
                 {item.label}
               </Text>
-              {active && <Check className="size-4 shrink-0" />}
+              {active && <ACTION_ICONS.check className="size-4 shrink-0" />}
             </Link>
           );
         })}

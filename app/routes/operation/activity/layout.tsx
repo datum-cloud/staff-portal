@@ -1,11 +1,11 @@
 import AppActionBar from '@/components/app-actiobar';
 import { DetailShell, type EntityTab } from '@/features/milo';
-import { ACTION_ICONS } from '@/utils/config/icons.config';
+import { ACTION_ICONS, ENTITY_ICONS } from '@/utils/config/icons.config';
 import { activityRoutes } from '@/utils/config/routes.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { t } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { FileSearch, ListChecks, ScrollText, SquareActivity } from 'lucide-react';
+import { FileSearch, ListChecks, ScrollText } from 'lucide-react';
 import { useState } from 'react';
 
 export const handle = {
@@ -22,7 +22,7 @@ export default function ActivityLayout() {
   const [copied, setCopied] = useState(false);
 
   const tabs: EntityTab[] = [
-    { label: tLingui`Feed`, href: activityRoutes.feed(), icon: SquareActivity },
+    { label: tLingui`Feed`, href: activityRoutes.feed(), icon: ENTITY_ICONS.activity },
     { label: tLingui`Events`, href: activityRoutes.events(), icon: FileSearch },
     { label: tLingui`Audit Logs`, href: activityRoutes.auditLogs(), icon: ScrollText },
     { label: tLingui`Policies`, href: activityRoutes.policies.list(), icon: ListChecks },
@@ -63,7 +63,7 @@ export default function ActivityLayout() {
       <DetailShell
         icon={
           <div className="bg-muted flex size-10 items-center justify-center rounded-md">
-            <SquareActivity className="size-5" />
+            <ENTITY_ICONS.activity className="size-5" />
           </div>
         }
         name={t`Activity`}

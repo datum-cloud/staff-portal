@@ -1,8 +1,9 @@
 import { DemoGroup, DemoRow, DemoSection, type DemoSectionMeta } from './demo-section';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import type { ButtonProps } from '@datum-cloud/datum-ui/button';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Text } from '@datum-cloud/datum-ui/typography';
-import { Download, Heart, Plus, Settings, Trash2 } from 'lucide-react';
+import { Heart, Plus } from 'lucide-react';
 import { useState } from 'react';
 
 export const buttonDemoSections: DemoSectionMeta[] = [
@@ -82,14 +83,14 @@ export default function ButtonDemo() {
           <Button size="small">Small</Button>
           <Button size="default">Default</Button>
           <Button size="large">Large</Button>
-          <Button size="icon" icon={<Settings className="h-4 w-4" />} />
+          <Button size="icon" icon={<ACTION_ICONS.settings className="h-4 w-4" />} />
         </DemoRow>
         <DemoRow>
           <Button icon={<Plus className="h-4 w-4" />}>Add item</Button>
-          <Button icon={<Download className="h-4 w-4" />} iconPosition="right">
+          <Button icon={<ACTION_ICONS.download className="h-4 w-4" />} iconPosition="right">
             Download
           </Button>
-          <Button type="danger" theme="outline" icon={<Trash2 className="h-4 w-4" />}>
+          <Button type="danger" theme="outline" icon={<ACTION_ICONS.delete className="h-4 w-4" />}>
             Delete
           </Button>
           <Button type="secondary" theme="light" icon={<Heart className="h-4 w-4" />}>
@@ -126,7 +127,7 @@ export default function ButtonDemo() {
           <Button type="secondary" disabled>
             Disabled secondary
           </Button>
-          <Button icon={<Settings className="h-4 w-4" />} disabled>
+          <Button icon={<ACTION_ICONS.settings className="h-4 w-4" />} disabled>
             Disabled with icon
           </Button>
           <Button block className="mt-1">

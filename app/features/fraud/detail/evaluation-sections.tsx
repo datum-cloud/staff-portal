@@ -108,18 +108,18 @@ function parseScore(score: string | number | undefined): number {
 function providerScoreColor(score: string | number | undefined): string {
   const n = parseScore(score);
   if (Number.isNaN(n)) return 'text-muted-foreground';
-  if (n >= 75) return 'text-red-600 dark:text-red-400';
-  if (n >= 25) return 'text-yellow-600 dark:text-yellow-400';
-  return 'text-green-600 dark:text-green-400';
+  if (n >= 75) return 'text-destructive';
+  if (n >= 25) return 'text-warning';
+  return 'text-success';
 }
 
 /** Fill colour for the score meter bar, same thresholds as the text colour. */
 function providerScoreBar(score: string | number | undefined): string {
   const n = parseScore(score);
   if (Number.isNaN(n)) return 'bg-muted-foreground/40';
-  if (n >= 75) return 'bg-red-500';
-  if (n >= 25) return 'bg-yellow-500';
-  return 'bg-green-500';
+  if (n >= 75) return 'bg-destructive';
+  if (n >= 25) return 'bg-warning';
+  return 'bg-success';
 }
 
 /**

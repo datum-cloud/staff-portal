@@ -7,43 +7,36 @@ import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import { Clock } from 'lucide-react';
 
 // Unified configuration for both modes
 const StatusConfig = {
   // Multiple mode (individual conditions)
   True: {
     icon: STATUS_ICONS.success,
-    className:
-      'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800',
+    className: 'bg-success/10 text-success border-success/20',
   },
   False: {
     icon: STATUS_ICONS.error,
-    className:
-      'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800',
+    className: 'bg-destructive/10 text-destructive border-destructive/20',
   },
   Unknown: {
-    icon: Clock,
-    className:
-      'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/20 dark:text-gray-400 dark:border-gray-800',
+    icon: STATUS_ICONS.pending,
+    className: 'bg-muted text-muted-foreground border-border',
   },
   // Control plane mode (summarized)
   [ControlPlaneStatus.Success]: {
     icon: STATUS_ICONS.success,
-    className:
-      'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800',
+    className: 'bg-success/10 text-success border-success/20',
     label: 'Active',
   },
   [ControlPlaneStatus.Error]: {
     icon: STATUS_ICONS.error,
-    className:
-      'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800',
+    className: 'bg-destructive/10 text-destructive border-destructive/20',
     label: 'Error',
   },
   [ControlPlaneStatus.Pending]: {
-    icon: Clock,
-    className:
-      'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/20 dark:text-gray-400 dark:border-gray-800',
+    icon: STATUS_ICONS.pending,
+    className: 'bg-muted text-muted-foreground border-border',
     label: 'Pending',
   },
 } as const;

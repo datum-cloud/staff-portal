@@ -31,7 +31,7 @@ import {
   userDeleteMutation,
   userQueryKeys,
 } from '@/resources/request/client';
-import { ACTION_ICONS } from '@/utils/config/icons.config';
+import { ACTION_ICONS, ENTITY_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { fraudRoutes, userRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
 import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
@@ -48,16 +48,7 @@ import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useQueryClient } from '@tanstack/react-query';
-import {
-  Globe,
-  KeyRound,
-  Loader2,
-  Mail,
-  MapPin,
-  Shield,
-  ShieldAlert,
-  UserIcon,
-} from 'lucide-react';
+import { Globe, KeyRound, Mail, MapPin, Shield, UserIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useRevalidator } from 'react-router';
 
@@ -293,7 +284,7 @@ export default function Page() {
           <SectionCard
             title={
               <span className="flex items-center gap-2">
-                <ShieldAlert className="h-4 w-4" />
+                <ENTITY_ICONS.fraud className="h-4 w-4" />
                 <Trans>Fraud Assessment</Trans>
               </span>
             }
@@ -382,7 +373,7 @@ export default function Page() {
                   </div>
                   <div className="flex items-center gap-2">
                     {isUpdatingAccess && (
-                      <Loader2 className="text-muted-foreground size-4 animate-spin" />
+                      <STATUS_ICONS.loading className="text-muted-foreground size-4 animate-spin" />
                     )}
                     <Select
                       value={currentState}
@@ -404,7 +395,7 @@ export default function Page() {
 
                 {/* Inline reason capture when moving to Suspended/Rejected */}
                 {pendingState && (
-                  <div className="flex flex-col gap-2 rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-900/20">
+                  <div className="border-warning/30 bg-warning/10 flex flex-col gap-2 rounded-md border p-3">
                     <Text size="sm" weight="medium">
                       <Trans>Reason for setting access to {pendingState}</Trans>
                     </Text>

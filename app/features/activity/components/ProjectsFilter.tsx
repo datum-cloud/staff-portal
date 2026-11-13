@@ -1,4 +1,5 @@
 import type { GqlProject } from '@/resources/gql/project.gql';
+import { ENTITY_ICONS } from '@/utils/config/icons.config';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@datum-cloud/activity-ui';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -7,7 +8,7 @@ import { Input } from '@datum-cloud/datum-ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import { Layers, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { useState, useMemo, useCallback } from 'react';
 
 /** Badge type options available in datum-ui for project color chips. */
@@ -152,7 +153,7 @@ export function ProjectsFilter({
       onClick={() => !isDisabled && setOpen((prev) => !prev)}
       aria-haspopup="listbox"
       aria-expanded={open}>
-      <Layers className="h-3.5 w-3.5 shrink-0" aria-hidden />
+      <ENTITY_ICONS.project className="h-3.5 w-3.5 shrink-0" aria-hidden />
       <span>{pillLabel}</span>
       <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-60" aria-hidden />
     </Button>

@@ -19,11 +19,11 @@ type TextColor = 'warning' | 'success' | 'destructive' | 'info';
 
 const variantStyles: Record<ActionCardVariant, { container: string; color: TextColor }> = {
   warning: {
-    container: 'border-yellow-500 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20',
+    container: 'border-warning bg-warning/10',
     color: 'warning',
   },
   success: {
-    container: 'border-green-500 bg-green-50 dark:border-green-800 dark:bg-green-900/20',
+    container: 'border-success bg-success/10',
     color: 'success',
   },
   destructive: {
@@ -31,7 +31,7 @@ const variantStyles: Record<ActionCardVariant, { container: string; color: TextC
     color: 'destructive',
   },
   info: {
-    container: 'border-blue-500 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20',
+    container: 'border-info bg-info/10',
     color: 'info',
   },
 };

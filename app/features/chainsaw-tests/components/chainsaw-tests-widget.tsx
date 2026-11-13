@@ -1,7 +1,7 @@
 import { useChainsawTests } from '../hooks/use-chainsaw-tests';
 import type { ChainsawTestRow, ChainsawTestRun } from '../hooks/use-chainsaw-tests';
 import { DateTime } from '@/components/date';
-import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
+import { ACTION_ICONS, ENTITY_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader } from '@datum-cloud/datum-ui/card';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
@@ -16,7 +16,6 @@ import {
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
-import { FlaskConical } from 'lucide-react';
 
 function LoadingSkeleton() {
   return (
@@ -68,7 +67,7 @@ function LoadingSkeleton() {
 function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center py-6 text-center">
-      <FlaskConical className="text-muted-foreground mb-3 h-8 w-8" />
+      <ENTITY_ICONS.chainsawTest className="text-muted-foreground mb-3 h-8 w-8" />
       <Title level={5} className="mb-1">
         <Trans>No stable tests labeled yet</Trans>
       </Title>
@@ -97,7 +96,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
 }
 
 function RunTick({ run }: { run: ChainsawTestRun }) {
-  const color = run.passed ? 'bg-green-500 dark:bg-green-400' : 'bg-red-500 dark:bg-red-400';
+  const color = run.passed ? 'bg-success' : 'bg-destructive';
   return (
     <Tooltip
       side="top"
@@ -138,14 +137,14 @@ function LatestBadge({ latest }: { latest: ChainsawTestRow['latest'] }) {
     );
   }
   return latest.passed ? (
-    <span className="inline-flex items-center gap-1 text-green-600 dark:text-green-400">
+    <span className="text-success inline-flex items-center gap-1">
       <STATUS_ICONS.success className="h-3.5 w-3.5" />
       <Text size="sm" className="font-medium">
         <Trans>Passing</Trans>
       </Text>
     </span>
   ) : (
-    <span className="inline-flex items-center gap-1 text-red-600 dark:text-red-400">
+    <span className="text-destructive inline-flex items-center gap-1">
       <STATUS_ICONS.error className="h-3.5 w-3.5" />
       <Text size="sm" className="font-medium">
         <Trans>Failing</Trans>
@@ -163,7 +162,7 @@ export function ChainsawTestsWidget() {
       <CardHeader className="px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <FlaskConical className="text-muted-foreground h-4 w-4" />
+            <ENTITY_ICONS.chainsawTest className="text-muted-foreground h-4 w-4" />
             <Title level={4}>
               <Trans>Chainsaw Tests</Trans>
             </Title>

@@ -10,7 +10,7 @@ import { BILLING_ACCOUNT_SECTION_IDS, InlineDate } from './card-parts';
 import { AttentionBannerShell } from '@/components/attention-banner';
 import { BadgeState } from '@/components/badge';
 import { formatCurrency } from '@/features/organization/usage/usage.format';
-import { ACTION_ICONS } from '@/utils/config/icons.config';
+import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Icon } from '@datum-cloud/datum-ui/icons';
@@ -19,7 +19,7 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { plural, t } from '@lingui/core/macro';
 import { Plural, Trans } from '@lingui/react/macro';
-import { ArrowRight, CircleCheck } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 interface AttentionBannerProps {
@@ -351,7 +351,7 @@ function PassingLine({
   const count = passing.length;
   return (
     <div className="border-border flex min-h-10 items-center gap-2 border-t px-4 py-2">
-      <Icon icon={CircleCheck} size={14} className="shrink-0 text-green-600" aria-hidden />
+      <Icon icon={STATUS_ICONS.success} size={14} className="text-success shrink-0" aria-hidden />
       <Text size="xs" weight="medium" className="shrink-0">
         <Plural value={count} one="# check passing" other="# checks passing" />
       </Text>

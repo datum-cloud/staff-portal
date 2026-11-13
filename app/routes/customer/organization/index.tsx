@@ -14,6 +14,7 @@ import {
   useBillingAccountListQuery,
   usePaymentMethodListQuery,
 } from '@/resources/request/client';
+import { ENTITY_ICONS } from '@/utils/config/icons.config';
 import { metaObject } from '@/utils/helpers';
 import { createColumnHelper } from '@/utils/table';
 import { t } from '@lingui/core/macro';
@@ -21,7 +22,7 @@ import type {
   ComMiloapisBillingV1Alpha1BillingAccount,
   ComMiloapisBillingV1Alpha1PaymentMethod,
 } from '@openapi/billing.miloapis.com/v1alpha1';
-import { Building2, User } from 'lucide-react';
+import { User } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router';
 
@@ -165,7 +166,7 @@ export default function Page() {
             type: 'enum',
             accessor: 'entityType',
             options: [
-              { value: 'Company', label: t`Company`, icon: <Building2 /> },
+              { value: 'Company', label: t`Company`, icon: <ENTITY_ICONS.organization /> },
               { value: 'Individual', label: t`Individual`, icon: <User /> },
             ],
           },

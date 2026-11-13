@@ -10,7 +10,7 @@ import {
   useDeleteContactGroupMembershipMutation,
 } from '@/resources/request/client';
 import type { ContactMembershipWithContactGroup } from '@/resources/schemas';
-import { ACTION_ICONS } from '@/utils/config/icons.config';
+import { ACTION_ICONS, ENTITY_ICONS } from '@/utils/config/icons.config';
 import { contactGroupRoutes } from '@/utils/config/routes.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
@@ -18,7 +18,6 @@ import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useQueryClient } from '@tanstack/react-query';
-import { BookUser } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
 
@@ -56,7 +55,7 @@ export function ContactGroupsCard({ contactName, className }: Props) {
         </div>
       ) : items.length === 0 ? (
         <EmptyState
-          icon={BookUser}
+          icon={ENTITY_ICONS.contactGroup}
           title={<Trans>No contact groups</Trans>}
           description={<Trans>This contact isn&apos;t in any groups yet.</Trans>}
         />

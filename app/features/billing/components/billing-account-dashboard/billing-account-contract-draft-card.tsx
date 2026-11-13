@@ -17,6 +17,7 @@ import {
   usePublishContractDraftMutation,
   useServicePricingListQuery,
 } from '@/resources/request/client';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { billingAccountRoutes } from '@/utils/config/routes.config';
 import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
 import { Icon } from '@datum-cloud/datum-ui/icons';
@@ -29,7 +30,6 @@ import type {
   ComMiloapisBillingV1Alpha1BillingAccount,
   ComMiloapisBillingV1Alpha1BillingEntitlement,
 } from '@openapi/billing.miloapis.com/v1alpha1';
-import { Pencil } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 /**
@@ -93,7 +93,7 @@ export function BillingAccountContractDraftCard({
           theme="borderless"
           size="small"
           href={billingAccountRoutes.contract(orgName, accountName)}
-          icon={<Icon icon={Pencil} size={14} />}
+          icon={<Icon icon={ACTION_ICONS.edit} size={14} />}
           iconPosition="right">
           <Trans>Edit</Trans>
         </LinkButton>
