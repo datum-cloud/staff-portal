@@ -1,4 +1,5 @@
 import type { Route } from './+types/detail';
+import { SectionBoundary } from '@/components/error/section-boundary';
 import { PageHeader } from '@/components/page-header';
 import {
   EdgeAdvancedBanner,
@@ -57,15 +58,27 @@ export default function Page() {
       {proxy.complexity === 'advanced' && <EdgeAdvancedBanner />}
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <EdgeGeneralCard proxy={proxy} />
-        <EdgeConfigCard proxy={proxy} />
-        <EdgeHostnamesCard proxy={proxy} />
-        <EdgeLoadBalancingCard proxy={proxy} />
+        <SectionBoundary>
+          <EdgeGeneralCard proxy={proxy} />
+        </SectionBoundary>
+        <SectionBoundary>
+          <EdgeConfigCard proxy={proxy} />
+        </SectionBoundary>
+        <SectionBoundary>
+          <EdgeHostnamesCard proxy={proxy} />
+        </SectionBoundary>
+        <SectionBoundary>
+          <EdgeLoadBalancingCard proxy={proxy} />
+        </SectionBoundary>
       </div>
 
-      <EdgeBackendsCard proxy={proxy} />
+      <SectionBoundary>
+        <EdgeBackendsCard proxy={proxy} />
+      </SectionBoundary>
 
-      <EdgeYamlCard raw={raw} />
+      <SectionBoundary>
+        <EdgeYamlCard raw={raw} />
+      </SectionBoundary>
     </div>
   );
 }

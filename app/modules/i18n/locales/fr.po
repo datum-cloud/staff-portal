@@ -5639,7 +5639,7 @@ msgstr ""
 msgid "Resource Type:"
 msgstr ""
 
-#: app/routes/customer/project/detail/edge/detail.tsx:51
+#: app/routes/customer/project/detail/edge/detail.tsx:52
 msgid "Resource:"
 msgstr ""
 
@@ -6731,6 +6731,10 @@ msgstr ""
 msgid "This project is being deleted"
 msgstr ""
 
+#: app/components/error/section-boundary.tsx:41
+msgid "This section couldn't be shown. The rest of the page still works."
+msgstr ""
+
 #: app/routes/admin/service-catalog/detail/consumers.tsx:222
 msgid "This service has no producer project recorded, so consumers cannot be listed."
 msgstr ""
@@ -6825,6 +6829,7 @@ msgstr ""
 msgid "Trust & Safety"
 msgstr ""
 
+#: app/components/error/section-boundary.tsx:49
 #: app/features/billing/components/contract-editor/contract-editor.tsx:193
 msgid "Try again"
 msgstr ""

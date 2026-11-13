@@ -1,7 +1,7 @@
 import { ButtonCopy } from '@/components/button';
+import { CodeEditor, type EditorLanguage } from '@/components/code-editor';
 import { toHttpProxyYaml } from '@/features/edge/lib';
 import { SectionCard } from '@/features/milo';
-import { CodeEditor, type EditorLanguage } from '@datum-cloud/datum-ui/code-editor';
 import { Trans } from '@lingui/react/macro';
 import type { ComDatumapisNetworkingV1AlphaHttpProxy } from '@openapi/networking.datumapis.com/v1alpha';
 import { useMemo } from 'react';
