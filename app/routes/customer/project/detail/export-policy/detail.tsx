@@ -1,6 +1,5 @@
 import type { Route } from './+types/detail';
 import { BadgeCondition, BadgeState } from '@/components/badge';
-import { CodeEditor, type EditorLanguage } from '@/components/code-editor';
 import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
 import { DisplayText } from '@/components/display';
@@ -11,6 +10,7 @@ import { projectExportPolicyDetailQuery } from '@/resources/request/server';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { extractDataFromMatches, metaObject } from '@/utils/helpers';
 import { Button } from '@datum-cloud/datum-ui/button';
+import { CodeEditor, type EditorLanguage } from '@datum-cloud/datum-ui/code-editor';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
 import {
   Table,
