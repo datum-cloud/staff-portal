@@ -42,6 +42,18 @@ msgstr "(no subject)"
 msgid "{0, plural, one {# active binding · spend this cycle by project} other {# active bindings · spend this cycle by project}}"
 msgstr "{0, plural, one {# active binding · spend this cycle by project} other {# active bindings · spend this cycle by project}}"
 
+#. placeholder {0}: summary.issueCount
+#: app/features/organization/components/org-health-strip.tsx:189
+msgid "{0, plural, one {# issue} other {# issues}}"
+msgstr "{0, plural, one {# issue} other {# issues}}"
+
+#. placeholder {0}: line.count
+#. placeholder {0}: summary.lowCount
+#: app/features/organization/components/org-health-strip.tsx:101
+#: app/features/organization/components/org-health-strip.tsx:205
+msgid "{0, plural, one {# long-pending} other {# long-pending}}"
+msgstr "{0, plural, one {# long-pending} other {# long-pending}}"
+
 #. placeholder {0}: meters.length
 #: app/features/billing/components/contract-editor/contract-summary.tsx:232
 msgid "{0, plural, one {# meter billed} other {# meters billed}}"
@@ -52,10 +64,22 @@ msgstr "{0, plural, one {# meter billed} other {# meters billed}}"
 msgid "{0, plural, one {# paid invoice} other {# paid invoices}}"
 msgstr "{0, plural, one {# paid invoice} other {# paid invoices}}"
 
+#. placeholder {0}: line.count
+#. placeholder {0}: summary.unreadProjects.length
+#: app/features/organization/components/org-health-strip.tsx:99
+#: app/features/organization/components/org-health-strip.tsx:139
+msgid "{0, plural, one {# project unread} other {# projects unread}}"
+msgstr "{0, plural, one {# project unread} other {# projects unread}}"
+
 #. placeholder {0}: s.unpaidCount
 #: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:82
 msgid "{0, plural, one {# unpaid invoice} other {# unpaid invoices}}"
 msgstr "{0, plural, one {# unpaid invoice} other {# unpaid invoices}}"
+
+#. placeholder {0}: summary.projectCount
+#: app/features/organization/components/org-health-strip.tsx:193
+msgid "{0, plural, one {in # project} other {in # projects}}"
+msgstr "{0, plural, one {in # project} other {in # projects}}"
 
 #. placeholder {0}: totals.monthly
 #: app/features/billing/components/contract-fee-text.ts:39
@@ -166,14 +190,30 @@ msgstr "{contractCount} fees set up for individual accounts' contracts aren't sh
 msgid "{count, plural, one {# check passing} other {# checks passing}}"
 msgstr "{count, plural, one {# check passing} other {# checks passing}}"
 
+#: app/features/organization/components/org-health-strip.tsx:71
+msgid "{count, plural, one {# failing} other {# failing}}"
+msgstr "{count, plural, one {# failing} other {# failing}}"
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:123
 #: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:249
 msgid "{count, plural, one {# invoice} other {# invoices}}"
 msgstr "{count, plural, one {# invoice} other {# invoices}}"
 
+#: app/features/organization/components/org-health-strip.tsx:76
+msgid "{count, plural, one {# needs attention} other {# need attention}}"
+msgstr "{count, plural, one {# needs attention} other {# need attention}}"
+
+#: app/features/organization/components/org-health-strip.tsx:74
+msgid "{count, plural, one {# not programmed} other {# not programmed}}"
+msgstr "{count, plural, one {# not programmed} other {# not programmed}}"
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:228
 msgid "{count, plural, one {# past-due invoice} other {# past-due invoices}}"
 msgstr "{count, plural, one {# past-due invoice} other {# past-due invoices}}"
+
+#: app/features/organization/components/org-health-strip.tsx:69
+msgid "{count, plural, one {# unhealthy} other {# unhealthy}}"
+msgstr "{count, plural, one {# unhealthy} other {# unhealthy}}"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:106
 msgid "{count, plural, one {Invoice amount far outside the normal range} other {# invoice amounts far outside the normal range}}"
@@ -747,9 +787,21 @@ msgstr "All Evaluations for this User"
 msgid "All invoices"
 msgstr "All invoices"
 
+#: app/features/organization/components/org-health-strip.tsx:90
+msgid "All programmed"
+msgstr "All programmed"
+
 #: app/features/activity/components/activity-list.tsx:448
 msgid "All read operations"
 msgstr "All read operations"
+
+#: app/features/organization/components/org-health-strip.tsx:83
+msgid "All ready"
+msgstr "All ready"
+
+#: app/features/organization/components/org-health-strip.tsx:85
+msgid "All running"
+msgstr "All running"
 
 #: app/features/milo/components/navbar/milo-mobile-menu.tsx:126
 msgid "All sections"
@@ -758,6 +810,10 @@ msgstr "All sections"
 #: app/features/billing/components/contract-fee-text.ts:52
 msgid "all usage"
 msgstr "all usage"
+
+#: app/features/organization/components/org-health-strip.tsx:87
+msgid "All verified"
+msgstr "All verified"
 
 #: app/features/activity/components/activity-list.tsx:441
 msgid "All write operations"
@@ -952,7 +1008,7 @@ msgstr "Are you sure you want to delete member \"{0}\"? This action cannot be un
 msgid "Are you sure you want to delete member \"{deleteMemberDisplayName}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete member \"{deleteMemberDisplayName}\"? This action cannot be undone."
 
-#: app/routes/customer/organization/detail/index.tsx:119
+#: app/routes/customer/organization/detail/index.tsx:122
 msgid "Are you sure you want to delete organization \"{displayNameForDelete} ({orgName})\"? This action cannot be undone."
 msgstr "Are you sure you want to delete organization \"{displayNameForDelete} ({orgName})\"? This action cannot be undone."
 
@@ -1333,6 +1389,14 @@ msgstr "Charges start on this day, in UTC, and bill on it each month. Today or l
 msgid "Check that you have permission to list ServicePricings, then try again. If IAM was just updated, wait a minute for PolicyBindings to reconcile."
 msgstr "Check that you have permission to list ServicePricings, then try again. If IAM was just updated, wait a minute for PolicyBindings to reconcile."
 
+#: app/features/organization/components/org-health-strip.tsx:198
+msgid "Checking every project…"
+msgstr "Checking every project…"
+
+#: app/features/organization/components/org-health-strip.tsx:121
+msgid "Checking…"
+msgstr "Checking…"
+
 #: app/routes/admin/service-catalog/detail/consumers.tsx:264
 msgid "Choose a consumer project that has authorized this provider to enable the service."
 msgstr "Choose a consumer project that has authorized this provider to enable the service."
@@ -1657,6 +1721,16 @@ msgstr "Could not load test results"
 #: app/features/project/components/project-usage-card.tsx:100
 msgid "Could not load usage"
 msgstr "Could not load usage"
+
+#. placeholder {0}: parts.map((part, index) => ( <span key={index}> {index > 0 && ', '} {part} </span> ))
+#. placeholder {1}: summary.unreadProjects.length > 0 && ( <> {parts.length > 0 && ', '} <Plural value={summary.unreadProjects.length} one="# project unread" other="# projects unread" /> </> )
+#: app/features/organization/components/org-health-strip.tsx:128
+msgid "Couldn't check: {0}{1}"
+msgstr "Couldn't check: {0}{1}"
+
+#: app/features/organization/components/org-health-strip.tsx:270
+msgid "Couldn't load"
+msgstr "Couldn't load"
 
 #. placeholder {0}: failed.map((failure) => failure.label).join(', ')
 #: app/features/billing/components/contract-editor/contract-editor.tsx:182
@@ -1985,6 +2059,10 @@ msgstr "Default Offer updated; accounts on the previous default will be migrated
 msgid "Default payment method failed"
 msgstr "Default payment method failed"
 
+#: app/features/organization/components/org-health-strip.tsx:115
+msgid "Degraded"
+msgstr "Degraded"
+
 #: app/components/button/button-delete-action.tsx:42
 #: app/components/button/button-delete-action.tsx:49
 #: app/components/danger-zone-card/index.tsx:42
@@ -2071,8 +2149,8 @@ msgstr "Delete Member"
 msgid "Delete note"
 msgstr "Delete note"
 
-#: app/routes/customer/organization/detail/index.tsx:116
-#: app/routes/customer/organization/detail/index.tsx:118
+#: app/routes/customer/organization/detail/index.tsx:119
+#: app/routes/customer/organization/detail/index.tsx:121
 msgid "Delete Organization"
 msgstr "Delete Organization"
 
@@ -2271,6 +2349,10 @@ msgstr "DNS records have been programmed for this hostname"
 msgid "DNS Zone"
 msgstr "DNS Zone"
 
+#: app/features/organization/components/org-health-strip.tsx:60
+msgid "DNS zones"
+msgstr "DNS zones"
+
 #: app/components/app-search/search-results.tsx:272
 #: app/routes/customer/resource/dns/index.tsx:10
 #: app/routes/customer/resource/dns/layout.tsx:5
@@ -2300,6 +2382,7 @@ msgid "Domain verification is in progress. This may take a few minutes."
 msgstr "Domain verification is in progress. This may take a few minutes."
 
 #: app/components/app-search/search-results.tsx:235
+#: app/features/organization/components/org-health-strip.tsx:58
 #: app/features/project/components/project-resources-card.tsx:74
 #: app/routes/customer/organization/detail/domain.tsx:9
 #: app/routes/customer/project/detail/domain/layout.tsx:5
@@ -3099,6 +3182,10 @@ msgstr "Growth"
 msgid "Hash On"
 msgstr "Hash On"
 
+#: app/features/organization/components/org-health-strip.tsx:119
+msgid "Healthy"
+msgstr "Healthy"
+
 #: app/features/dashboard/components/home/home-header.tsx:32
 msgid "Here's what's happening across the platform."
 msgstr "Here's what's happening across the platform."
@@ -3246,6 +3333,10 @@ msgstr "Inherits {inheritedPercentage}%"
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:58
 msgid "Inspect usage"
 msgstr "Inspect usage"
+
+#: app/features/organization/components/org-health-strip.tsx:54
+msgid "Instances"
+msgstr "Instances"
 
 #: app/features/project/components/project-suspension-card.tsx:154
 msgid "Instances and served traffic are paused; data is preserved. Lift the suspension below to restore the project."
@@ -3558,6 +3649,10 @@ msgstr "list {listPrice}"
 #: app/features/billing/components/contract-editor/price-list-table.tsx:143
 msgid "List price"
 msgstr "List price"
+
+#: app/features/organization/components/org-health-strip.tsx:56
+msgid "Load balancers"
+msgstr "Load balancers"
 
 #: app/features/edge/components/detail/edge-load-balancing-card.tsx:61
 msgid "Load Balancing"
@@ -4404,6 +4499,7 @@ msgstr "No users found."
 
 #: app/features/billing/components/application-review.tsx:498
 #: app/features/billing/components/contract-editor/contract-fee-list.tsx:164
+#: app/features/organization/components/org-health-strip.tsx:105
 msgid "None"
 msgstr "None"
 
@@ -4534,6 +4630,10 @@ msgstr "Notes (operator-facing)"
 msgid "Notes, emails, and account history for this contact will appear here."
 msgstr "Notes, emails, and account history for this contact will appear here."
 
+#: app/features/organization/components/org-health-strip.tsx:200
+msgid "Nothing needs attention"
+msgstr "Nothing needs attention"
+
 #. placeholder {0}: search.trim()
 #: app/features/billing/components/contract-editor/price-list-table.tsx:190
 msgid "Nothing on the price list matches “{0}”."
@@ -4602,6 +4702,10 @@ msgstr "Offers"
 #: app/features/billing/components/service-pricing-checklist.tsx:54
 msgid "Offers bundle prices that already exist as ServicePricings. Prices are ServicePricing manifests in each service's repo; once Flux applies them, refresh to select them here."
 msgstr "Offers bundle prices that already exist as ServicePricings. Prices are ServicePricing manifests in each service's repo; once Flux applies them, refresh to select them here."
+
+#: app/features/organization/components/org-health-strip.tsx:214
+msgid "Oldest <0/> · newest <1/>"
+msgstr "Oldest <0/> · newest <1/>"
 
 #: app/features/contact/components/timeline/timeline-filters.tsx:60
 msgid "Oldest first ↑"
@@ -4681,9 +4785,13 @@ msgstr "Organization"
 msgid "Organization billing activity"
 msgstr "Organization billing activity"
 
-#: app/routes/customer/organization/detail/index.tsx:69
+#: app/routes/customer/organization/detail/index.tsx:70
 msgid "Organization deleted successfully"
 msgstr "Organization deleted successfully"
+
+#: app/features/organization/components/org-health-strip.tsx:251
+msgid "Organization health"
+msgstr "Organization health"
 
 #: app/features/billing/components/application-review.tsx:315
 msgid "Organization type"
@@ -4926,7 +5034,7 @@ msgstr "Per-service discounts"
 msgid "Period"
 msgstr "Period"
 
-#: app/routes/customer/organization/detail/index.tsx:117
+#: app/routes/customer/organization/detail/index.tsx:120
 msgid "Permanently delete this organization and all associated data"
 msgstr "Permanently delete this organization and all associated data"
 
@@ -5316,6 +5424,7 @@ msgstr "Query"
 msgid "Quick ranges"
 msgstr "Quick ranges"
 
+#: app/features/organization/components/org-health-strip.tsx:62
 #: app/features/service-catalog/components/quota-limits-card.tsx:26
 msgid "Quota"
 msgstr "Quota"
@@ -7050,6 +7159,10 @@ msgstr "Waiting on"
 msgid "Warning"
 msgstr "Warning"
 
+#: app/features/organization/components/org-health-strip.tsx:117
+msgid "Warnings"
+msgstr "Warnings"
+
 #: app/features/activity/components/activity-list.tsx:368
 #: app/features/activity/components/activity-list.tsx:458
 msgid "Watch"
@@ -7112,6 +7225,10 @@ msgstr "Within credit limit"
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:349
 msgid "Worked out by the billing provider. Nothing is sent to the customer."
 msgstr "Worked out by the billing provider. Nothing is sent to the customer."
+
+#: app/features/organization/components/org-health-strip.tsx:52
+msgid "Workloads"
+msgstr "Workloads"
 
 #: app/features/edge/components/detail/edge-yaml-card.tsx:18
 msgid "YAML"

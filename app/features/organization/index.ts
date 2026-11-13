@@ -3,6 +3,7 @@ export { OrgContactCard } from './components/org-contact-card';
 export { OrgDetailsCard } from './components/org-details-card';
 export { OrgMembersPreviewCard } from './components/org-members-preview-card';
 export { OrgUsageCard } from './components/org-usage-card';
+export { OrgHealthStrip } from './components/org-health-strip';
 export { buildOnboardingSteps } from './lib/onboarding-steps';
 export {
   useOrgComputeStatus,
