@@ -21,6 +21,10 @@ msgstr ""
 msgid " · newest"
 msgstr ""
 
+#: app/features/organization/components/org-needs-attention.tsx:361
+msgid " and "
+msgstr ""
+
 #: app/features/project/components/project-billing-card.tsx:69
 msgid "(cross-org)"
 msgstr ""
@@ -43,14 +47,14 @@ msgid "{0, plural, one {# active binding · spend this cycle by project} other {
 msgstr ""
 
 #. placeholder {0}: summary.issueCount
-#: app/features/organization/components/org-health-strip.tsx:189
+#: app/features/organization/components/org-health-strip.tsx:190
 msgid "{0, plural, one {# issue} other {# issues}}"
 msgstr ""
 
 #. placeholder {0}: line.count
 #. placeholder {0}: summary.lowCount
-#: app/features/organization/components/org-health-strip.tsx:101
-#: app/features/organization/components/org-health-strip.tsx:205
+#: app/features/organization/components/org-health-strip.tsx:102
+#: app/features/organization/components/org-health-strip.tsx:206
 msgid "{0, plural, one {# long-pending} other {# long-pending}}"
 msgstr ""
 
@@ -66,8 +70,8 @@ msgstr ""
 
 #. placeholder {0}: line.count
 #. placeholder {0}: summary.unreadProjects.length
-#: app/features/organization/components/org-health-strip.tsx:99
-#: app/features/organization/components/org-health-strip.tsx:139
+#: app/features/organization/components/org-health-strip.tsx:100
+#: app/features/organization/components/org-health-strip.tsx:140
 msgid "{0, plural, one {# project unread} other {# projects unread}}"
 msgstr ""
 
@@ -77,7 +81,7 @@ msgid "{0, plural, one {# unpaid invoice} other {# unpaid invoices}}"
 msgstr ""
 
 #. placeholder {0}: summary.projectCount
-#: app/features/organization/components/org-health-strip.tsx:193
+#: app/features/organization/components/org-health-strip.tsx:194
 msgid "{0, plural, one {in # project} other {in # projects}}"
 msgstr ""
 
@@ -190,7 +194,7 @@ msgstr ""
 msgid "{count, plural, one {# check passing} other {# checks passing}}"
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:71
+#: app/features/organization/components/org-health-strip.tsx:72
 msgid "{count, plural, one {# failing} other {# failing}}"
 msgstr ""
 
@@ -199,11 +203,11 @@ msgstr ""
 msgid "{count, plural, one {# invoice} other {# invoices}}"
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:76
+#: app/features/organization/components/org-health-strip.tsx:77
 msgid "{count, plural, one {# needs attention} other {# need attention}}"
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:74
+#: app/features/organization/components/org-health-strip.tsx:75
 msgid "{count, plural, one {# not programmed} other {# not programmed}}"
 msgstr ""
 
@@ -211,7 +215,7 @@ msgstr ""
 msgid "{count, plural, one {# past-due invoice} other {# past-due invoices}}"
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:69
+#: app/features/organization/components/org-health-strip.tsx:70
 msgid "{count, plural, one {# unhealthy} other {# unhealthy}}"
 msgstr ""
 
@@ -359,8 +363,32 @@ msgstr ""
 msgid "{times}× last cycle at this point"
 msgstr ""
 
+#: app/features/organization/components/org-needs-attention.tsx:93
+msgid "{total, plural, one {# DNS zone} other {# DNS zones}}"
+msgstr ""
+
+#: app/features/organization/components/org-needs-attention.tsx:91
+msgid "{total, plural, one {# domain} other {# domains}}"
+msgstr ""
+
+#: app/features/organization/components/org-needs-attention.tsx:87
+msgid "{total, plural, one {# instance} other {# instances}}"
+msgstr ""
+
+#: app/features/organization/components/org-needs-attention.tsx:89
+msgid "{total, plural, one {# load balancer} other {# load balancers}}"
+msgstr ""
+
+#: app/features/organization/components/org-needs-attention.tsx:95
+msgid "{total, plural, one {# quota bucket} other {# quota buckets}}"
+msgstr ""
+
 #: app/components/attention-banner/index.tsx:85
 msgid "{total, plural, one {# thing needs attention} other {# things need attention}}"
+msgstr ""
+
+#: app/features/organization/components/org-needs-attention.tsx:85
+msgid "{total, plural, one {# workload} other {# workloads}}"
 msgstr ""
 
 #: app/features/billing/components/contract-schedule-list.tsx:44
@@ -743,6 +771,10 @@ msgstr ""
 msgid "After publish, only the display name can change. Rate changes need a new Offer."
 msgstr ""
 
+#: app/features/organization/components/org-needs-attention.tsx:153
+msgid "Age"
+msgstr ""
+
 #: app/features/billing/components/payment-terms.tsx:391
 msgid "Agreement"
 msgstr ""
@@ -764,6 +796,7 @@ msgstr ""
 
 #: app/features/contact/components/timeline/timeline-filters.tsx:13
 #: app/features/dashboard/components/home/activity-section.tsx:17
+#: app/features/organization/components/org-needs-attention.tsx:72
 msgid "All"
 msgstr ""
 
@@ -787,7 +820,7 @@ msgstr ""
 msgid "All invoices"
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:90
+#: app/features/organization/components/org-health-strip.tsx:91
 msgid "All programmed"
 msgstr ""
 
@@ -795,11 +828,11 @@ msgstr ""
 msgid "All read operations"
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:83
+#: app/features/organization/components/org-health-strip.tsx:84
 msgid "All ready"
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:85
+#: app/features/organization/components/org-health-strip.tsx:86
 msgid "All running"
 msgstr ""
 
@@ -811,7 +844,7 @@ msgstr ""
 msgid "all usage"
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:87
+#: app/features/organization/components/org-health-strip.tsx:88
 msgid "All verified"
 msgstr ""
 
@@ -1008,7 +1041,7 @@ msgstr ""
 msgid "Are you sure you want to delete member \"{deleteMemberDisplayName}\"? This action cannot be undone."
 msgstr ""
 
-#: app/routes/customer/organization/detail/index.tsx:122
+#: app/routes/customer/organization/detail/index.tsx:124
 msgid "Are you sure you want to delete organization \"{displayNameForDelete} ({orgName})\"? This action cannot be undone."
 msgstr ""
 
@@ -1389,11 +1422,19 @@ msgstr ""
 msgid "Check that you have permission to list ServicePricings, then try again. If IAM was just updated, wait a minute for PolicyBindings to reconcile."
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:198
+#: app/features/organization/components/org-needs-attention.tsx:358
+msgid "Checked"
+msgstr ""
+
+#: app/features/organization/components/org-needs-attention.tsx:319
+msgid "Checked <0/>"
+msgstr ""
+
+#: app/features/organization/components/org-health-strip.tsx:199
 msgid "Checking every project…"
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:121
+#: app/features/organization/components/org-health-strip.tsx:122
 msgid "Checking…"
 msgstr ""
 
@@ -1500,6 +1541,10 @@ msgstr ""
 
 #: app/features/fraud/detail/evaluation-sections.tsx:146
 msgid "Composite"
+msgstr ""
+
+#: app/features/organization/components/org-needs-attention.tsx:74
+msgid "Compute"
 msgstr ""
 
 #: app/features/service-catalog/components/conditions-card.tsx:72
@@ -1724,11 +1769,11 @@ msgstr ""
 
 #. placeholder {0}: parts.map((part, index) => ( <span key={index}> {index > 0 && ', '} {part} </span> ))
 #. placeholder {1}: summary.unreadProjects.length > 0 && ( <> {parts.length > 0 && ', '} <Plural value={summary.unreadProjects.length} one="# project unread" other="# projects unread" /> </> )
-#: app/features/organization/components/org-health-strip.tsx:128
+#: app/features/organization/components/org-health-strip.tsx:129
 msgid "Couldn't check: {0}{1}"
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:270
+#: app/features/organization/components/org-health-strip.tsx:260
 msgid "Couldn't load"
 msgstr ""
 
@@ -2059,7 +2104,7 @@ msgstr ""
 msgid "Default payment method failed"
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:115
+#: app/features/organization/components/org-health-strip.tsx:116
 msgid "Degraded"
 msgstr ""
 
@@ -2149,8 +2194,8 @@ msgstr ""
 msgid "Delete note"
 msgstr ""
 
-#: app/routes/customer/organization/detail/index.tsx:119
 #: app/routes/customer/organization/detail/index.tsx:121
+#: app/routes/customer/organization/detail/index.tsx:123
 msgid "Delete Organization"
 msgstr ""
 
@@ -2344,12 +2389,16 @@ msgstr ""
 msgid "DNS records have been programmed for this hostname"
 msgstr ""
 
+#: app/features/organization/components/org-needs-attention.tsx:63
+msgid "DNS zone"
+msgstr ""
+
 #: app/features/activity/components/activity-list.tsx:387
 #: app/features/activity/components/activity-list.tsx:486
 msgid "DNS Zone"
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:60
+#: app/features/organization/components/org-health-strip.tsx:61
 msgid "DNS zones"
 msgstr ""
 
@@ -2367,6 +2416,7 @@ msgstr ""
 #: app/features/activity/components/activity-list.tsx:490
 #: app/features/domain/components/domain-list.tsx:61
 #: app/features/fraud/detail/maxmind-rows.tsx:237
+#: app/features/organization/components/org-needs-attention.tsx:61
 #: app/routes/customer/project/detail/domain/detail.tsx:66
 #: app/routes/customer/resource/index.tsx:145
 #: app/routes/customer/resource/index.tsx:401
@@ -2382,7 +2432,7 @@ msgid "Domain verification is in progress. This may take a few minutes."
 msgstr ""
 
 #: app/components/app-search/search-results.tsx:235
-#: app/features/organization/components/org-health-strip.tsx:58
+#: app/features/organization/components/org-health-strip.tsx:59
 #: app/features/project/components/project-resources-card.tsx:74
 #: app/routes/customer/organization/detail/domain.tsx:9
 #: app/routes/customer/project/detail/domain/layout.tsx:5
@@ -2753,6 +2803,7 @@ msgstr ""
 msgid "Event"
 msgstr ""
 
+#: app/features/organization/components/org-needs-attention.tsx:274
 #: app/routes/customer/organization/detail/activity/events.tsx:14
 #: app/routes/customer/organization/detail/activity/events.tsx:17
 #: app/routes/customer/project/detail/activity/events.tsx:14
@@ -3190,7 +3241,7 @@ msgstr ""
 msgid "Hash On"
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:119
+#: app/features/organization/components/org-health-strip.tsx:120
 msgid "Healthy"
 msgstr ""
 
@@ -3342,7 +3393,12 @@ msgstr ""
 msgid "Inspect usage"
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:54
+#: app/features/organization/components/org-needs-attention.tsx:57
+#: app/features/organization/components/org-needs-attention.tsx:141
+msgid "Instance"
+msgstr ""
+
+#: app/features/organization/components/org-health-strip.tsx:55
 msgid "Instances"
 msgstr ""
 
@@ -3537,6 +3593,10 @@ msgstr ""
 msgid "Last Evaluated"
 msgstr ""
 
+#: app/features/organization/components/org-needs-attention.tsx:150
+msgid "Last event"
+msgstr ""
+
 #: app/features/contact/components/contact-about-card.tsx:29
 #: app/routes/marketing/contact-group/detail/member.tsx:98
 msgid "Last name"
@@ -3658,7 +3718,11 @@ msgstr ""
 msgid "List price"
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:56
+#: app/features/organization/components/org-needs-attention.tsx:59
+msgid "Load balancer"
+msgstr ""
+
+#: app/features/organization/components/org-health-strip.tsx:57
 msgid "Load balancers"
 msgstr ""
 
@@ -3715,6 +3779,7 @@ msgid "Local Time"
 msgstr ""
 
 #: app/features/fraud/detail/maxmind-rows.tsx:178
+#: app/features/organization/components/org-needs-attention.tsx:144
 #: app/routes/customer/user/detail/index.tsx:265
 msgid "Location"
 msgstr ""
@@ -3936,6 +4001,10 @@ msgstr ""
 msgid "Navigation"
 msgstr ""
 
+#: app/features/organization/components/org-needs-attention.tsx:315
+msgid "Needs attention"
+msgstr ""
+
 #: app/features/dashboard/components/home/home-columns.tsx:141
 msgid "Needs review"
 msgstr ""
@@ -3974,6 +4043,7 @@ msgid "Net days"
 msgstr ""
 
 #: app/features/fraud/detail/maxmind-rows.tsx:120
+#: app/features/organization/components/org-needs-attention.tsx:76
 msgid "Network"
 msgstr ""
 
@@ -4275,6 +4345,10 @@ msgstr ""
 msgid "No hostnames configured"
 msgstr ""
 
+#: app/features/organization/components/org-needs-attention.tsx:131
+msgid "No instances."
+msgstr ""
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:331
 msgid "No invoices"
 msgstr ""
@@ -4507,7 +4581,7 @@ msgstr ""
 
 #: app/features/billing/components/application-review.tsx:498
 #: app/features/billing/components/contract-editor/contract-fee-list.tsx:165
-#: app/features/organization/components/org-health-strip.tsx:105
+#: app/features/organization/components/org-health-strip.tsx:106
 msgid "None"
 msgstr ""
 
@@ -4638,8 +4712,13 @@ msgstr ""
 msgid "Notes, emails, and account history for this contact will appear here."
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:200
+#: app/features/organization/components/org-health-strip.tsx:201
+#: app/features/organization/components/org-needs-attention.tsx:355
 msgid "Nothing needs attention"
+msgstr ""
+
+#: app/features/organization/components/org-needs-attention.tsx:370
+msgid "Nothing needs attention here."
 msgstr ""
 
 #. placeholder {0}: search.trim()
@@ -4711,7 +4790,7 @@ msgstr ""
 msgid "Offers bundle prices that already exist as ServicePricings. Prices are ServicePricing manifests in each service's repo; once Flux applies them, refresh to select them here."
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:214
+#: app/features/organization/components/org-health-strip.tsx:215
 msgid "Oldest <0/> · newest <1/>"
 msgstr ""
 
@@ -4738,6 +4817,7 @@ msgstr ""
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:441
 #: app/features/billing/utils.ts:76
+#: app/features/organization/components/org-needs-attention.tsx:279
 msgid "Open"
 msgstr ""
 
@@ -4781,6 +4861,7 @@ msgstr ""
 #: app/features/billing/components/application-review.tsx:427
 #: app/features/billing/components/billing-account-list.tsx:202
 #: app/features/billing/components/billing-account-list.tsx:271
+#: app/features/organization/components/org-needs-attention.tsx:246
 #: app/features/project/components/project-organization-card.tsx:25
 #: app/routes/admin/service-catalog/detail/approvals.tsx:66
 #: app/routes/admin/service-catalog/detail/consumers.tsx:100
@@ -4793,11 +4874,11 @@ msgstr ""
 msgid "Organization billing activity"
 msgstr ""
 
-#: app/routes/customer/organization/detail/index.tsx:70
+#: app/routes/customer/organization/detail/index.tsx:71
 msgid "Organization deleted successfully"
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:251
+#: app/features/organization/components/org-health-strip.tsx:238
 msgid "Organization health"
 msgstr ""
 
@@ -5042,7 +5123,7 @@ msgstr ""
 msgid "Period"
 msgstr ""
 
-#: app/routes/customer/organization/detail/index.tsx:120
+#: app/routes/customer/organization/detail/index.tsx:122
 msgid "Permanently delete this organization and all associated data"
 msgstr ""
 
@@ -5432,7 +5513,9 @@ msgstr ""
 msgid "Quick ranges"
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:62
+#: app/features/organization/components/org-health-strip.tsx:63
+#: app/features/organization/components/org-needs-attention.tsx:65
+#: app/features/organization/components/org-needs-attention.tsx:78
 #: app/features/service-catalog/components/quota-limits-card.tsx:26
 msgid "Quota"
 msgstr ""
@@ -5476,6 +5559,7 @@ msgid "Read-only. Prices are ServicePricing manifests in the service's repo, one
 msgstr ""
 
 #: app/features/dns/components/dns-zone-status.tsx:38
+#: app/features/organization/components/org-needs-attention.tsx:173
 #: app/features/organization/components/org-onboarding-card.tsx:58
 msgid "Ready"
 msgstr ""
@@ -6382,6 +6466,7 @@ msgstr ""
 #: app/features/fraud/detail/evaluation-sections.tsx:746
 #: app/features/fraud/policy/policy-detail.tsx:359
 #: app/features/organization/components/org-members-preview-card.tsx:63
+#: app/features/organization/components/org-needs-attention.tsx:147
 #: app/features/project/components/project-billing-card.tsx:62
 #: app/features/project/components/project-details-card.tsx:39
 #: app/features/quota/components/quota-grant-list.tsx:109
@@ -7167,7 +7252,7 @@ msgstr ""
 msgid "Warning"
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:117
+#: app/features/organization/components/org-health-strip.tsx:118
 msgid "Warnings"
 msgstr ""
 
@@ -7234,7 +7319,15 @@ msgstr ""
 msgid "Worked out by the billing provider. Nothing is sent to the customer."
 msgstr ""
 
-#: app/features/organization/components/org-health-strip.tsx:52
+#: app/features/organization/components/org-needs-attention.tsx:55
+msgid "Workload"
+msgstr ""
+
+#: app/features/organization/components/org-needs-attention.tsx:279
+msgid "Workload detail"
+msgstr ""
+
+#: app/features/organization/components/org-health-strip.tsx:53
 msgid "Workloads"
 msgstr ""
 
