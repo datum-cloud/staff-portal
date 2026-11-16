@@ -63,7 +63,22 @@ describe('orgInvitationResendMutation', () => {
     });
     // Milo sets the inviter itself.
     expect(body.spec).not.toHaveProperty('invitedBy');
+    // Names the invitation it replaces, so activity shows it as resent.
+    expect(body.metadata?.annotations).toEqual({ 'iam.miloapis.com/resent-from': 'inv-1' });
     expect(new Date(body.spec!.expirationDate!).getTime()).toBeGreaterThan(Date.now());
+  });
+
+  it('gives the resent invitation seven days, matching cloud-portal', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-11-16T12:00:00Z'));
+    try {
+      await orgInvitationResendMutation('acme', 'inv-1');
+    } finally {
+      vi.useRealTimers();
+    }
+
+    const body = createInvitation.mock.calls[0][0].body;
+    expect(new Date(body.spec!.expirationDate!).toISOString()).toBe('2026-11-23T12:00:00.000Z');
   });
 
   it('deletes before it creates, since Milo allows one pending invitation per email', async () => {

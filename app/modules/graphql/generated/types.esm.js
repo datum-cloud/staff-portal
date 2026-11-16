@@ -324,6 +324,7 @@ export default {
       roles: [2],
       type: [2],
       invitationState: [2],
+      expiresAt: [2],
       createdAt: [2],
       userName: [2],
       avatarUrl: [2],
