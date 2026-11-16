@@ -51,6 +51,12 @@ export interface OrgIssue {
   href?: string;
   /** For an instance: its workload, so the list can nest it. */
   workloadName?: string;
+  /** All of the resource's conditions, so the list can show the full picture. */
+  conditions?: ComputeCondition[];
+  /** For an unverified domain: the DNS record the customer must create. */
+  verificationRecord?: { type: string; name: string; content: string };
+  /** For a quota bucket: how much is used out of the limit. */
+  usage?: { allocated: number; limit: number };
 }
 
 /** Waiting states only count after this long. */
@@ -156,6 +162,7 @@ export function instanceIssues(
       project,
       ...(instance.href && { href: instance.href }),
       ...(instance.workloadName && { workloadName: instance.workloadName }),
+      conditions: instance.conditions,
     };
     const since = firstRealTime(instance.since, instance.createdAt);
 
@@ -198,6 +205,7 @@ export function workloadIssues(
       name: workload.name,
       project,
       href: workload.href,
+      conditions: workload.conditions,
     };
     const available = findCondition(workload.conditions, 'Available');
     const since = firstRealTime(available?.lastTransitionTime, workload.createdAt);
@@ -244,6 +252,7 @@ export function httpProxyIssues(
         name,
         project,
         href: projectRoutes.edge.detail(project, name),
+        conditions,
       },
       blocking?.reason ?? 'PendingProgramming',
       blocking?.message,
@@ -273,6 +282,7 @@ export function dnsZoneIssues(
         name,
         project,
         href: projectRoutes.dns.detail(project, namespace, name),
+        conditions,
       },
       blocking?.reason ?? 'PendingProgramming',
       blocking?.message,
@@ -305,13 +315,24 @@ export function domainIssues(
       name,
       project,
       href: projectRoutes.domain.detail(project, namespace, name),
+      conditions: toConditions(domain.status?.conditions),
     };
 
-    const verified = findCondition(toConditions(domain.status?.conditions), 'Verified');
+    const verified = findCondition(base.conditions ?? [], 'Verified');
+    const record = domain.status?.verification?.dnsRecord;
     const unverified =
       verified?.status === 'False'
         ? conditionIssue(
-            base,
+            {
+              ...base,
+              ...(record && {
+                verificationRecord: {
+                  type: record.type,
+                  name: record.name,
+                  content: record.content,
+                },
+              }),
+            },
             verified.reason ?? 'PendingVerification',
             verified.message,
             firstRealTime(verified.lastTransitionTime, domain.metadata?.creationTimestamp),
@@ -363,6 +384,7 @@ export function quotaIssues(
         severity: 'warning',
         reason: `${percent}% of limit`,
         message: `Using ${allocated} of ${limit}`,
+        usage: { allocated, limit },
         href: scope.project
           ? projectRoutes.quota.usage(scope.project)
           : orgRoutes.quota.usage(scope.orgName),

@@ -450,3 +450,73 @@ describe('collectOrgIssues', () => {
     expect(totals).toMatchObject({ loadBalancers: 0, domains: 0, dnsZones: 0, quota: 0 });
   });
 });
+
+describe('extra detail for the expanded row', () => {
+  it('keeps every condition and the verification record on an unverified domain', () => {
+    const [unverified] = domainIssues(
+      P,
+      [
+        {
+          metadata: { name: 'shop.example.com', namespace: 'default', creationTimestamp: ago(DAY) },
+          status: {
+            conditions: [
+              {
+                type: 'Verified',
+                status: 'False',
+                reason: 'PendingVerification',
+                lastTransitionTime: ago(DAY),
+              },
+              {
+                type: 'VerifiedDNS',
+                status: 'False',
+                reason: 'RecordNotFound',
+                message: 'TXT record not found',
+              },
+            ],
+            verification: {
+              dnsRecord: {
+                type: 'TXT',
+                name: '_datum-verify.shop.example.com',
+                content: 'token-123',
+              },
+            },
+          },
+        } as unknown as ComDatumapisNetworkingV1AlphaDomain,
+      ],
+      NOW
+    );
+    expect(unverified.conditions?.map((c) => c.type)).toEqual(['Verified', 'VerifiedDNS']);
+    expect(unverified.verificationRecord).toEqual({
+      type: 'TXT',
+      name: '_datum-verify.shop.example.com',
+      content: 'token-123',
+    });
+  });
+
+  it('keeps every condition on a load balancer and usage on a quota bucket', () => {
+    const [proxy] = httpProxyIssues(
+      P,
+      [
+        {
+          metadata: { name: 'p', namespace: 'default', creationTimestamp: ago(DAY) },
+          status: {
+            conditions: [
+              { type: 'Accepted', status: 'False', reason: 'Pending' },
+              { type: 'Programmed', status: 'False', reason: 'NetworkServiceBackendNotFound' },
+            ],
+          },
+        } as unknown as ComDatumapisNetworkingV1AlphaHttpProxy,
+      ],
+      NOW
+    );
+    expect(proxy.conditions).toHaveLength(2);
+    const [bucket] = quotaIssues({ orgName: 'org-1', project: P }, [
+      {
+        metadata: { name: 'b' },
+        spec: { resourceType: 'cpus' },
+        status: { allocated: 47, limit: 50 },
+      } as unknown as ComMiloapisQuotaV1Alpha1AllowanceBucket,
+    ]);
+    expect(bucket.usage).toEqual({ allocated: 47, limit: 50 });
+  });
+});

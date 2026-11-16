@@ -1,6 +1,6 @@
 import { useOrgComputeStatus } from '../hooks/use-org-compute-status';
 import { useOrgIssues } from '../hooks/use-org-issues';
-import type { InstanceStatus } from '../lib/compute-status';
+import type { ComputeCondition, InstanceStatus } from '../lib/compute-status';
 import {
   ATTENTION_TABS,
   TAB_AREAS,
@@ -11,7 +11,8 @@ import {
   type AttentionRow,
   type AttentionTab,
 } from '../lib/needs-attention';
-import type { IssueArea, IssueSeverity, OrgIssue } from '../lib/org-issues';
+import { realTime, type IssueArea, type IssueSeverity, type OrgIssue } from '../lib/org-issues';
+import { ButtonCopy } from '@/components/button';
 import { DateTime } from '@/components/date';
 import { SectionCard } from '@/features/milo';
 import { ENTITY_ICONS, STATUS_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
@@ -206,6 +207,125 @@ function RowLink({ to, children }: { to: string; children: ReactNode }) {
   );
 }
 
+function openLabel(area: IssueArea): ReactNode {
+  switch (area) {
+    case 'workloads':
+      return <Trans>Workload detail</Trans>;
+    case 'instances':
+      return <Trans>Open instance</Trans>;
+    case 'loadBalancers':
+      return <Trans>Open load balancer</Trans>;
+    case 'domains':
+      return <Trans>Open domain</Trans>;
+    case 'dnsZones':
+      return <Trans>Open DNS zone</Trans>;
+    case 'quota':
+      return <Trans>Open quota usage</Trans>;
+  }
+}
+
+const CONDITION_STATUS_CLASS: Record<ComputeCondition['status'], string> = {
+  True: 'text-success',
+  False: 'text-destructive',
+  Unknown: 'text-muted-foreground',
+};
+
+/** Every condition on the resource: often the real cause is in one that isn't the headline. */
+function ConditionsTable({ conditions }: { conditions: ComputeCondition[] }) {
+  return (
+    <div className="overflow-hidden rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>
+              <Trans>Condition</Trans>
+            </TableHead>
+            <TableHead>
+              <Trans>Status</Trans>
+            </TableHead>
+            <TableHead>
+              <Trans>Reason</Trans>
+            </TableHead>
+            <TableHead>
+              <Trans>Message</Trans>
+            </TableHead>
+            <TableHead>
+              <Trans>Changed</Trans>
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {conditions.map((condition) => (
+            <TableRow key={condition.type}>
+              <TableCell>{condition.type}</TableCell>
+              <TableCell className={CONDITION_STATUS_CLASS[condition.status]}>
+                {condition.status}
+              </TableCell>
+              <TableCell className="font-mono">{condition.reason ?? '—'}</TableCell>
+              <TableCell className="text-muted-foreground max-w-md whitespace-normal">
+                {condition.message ?? '—'}
+              </TableCell>
+              <TableCell>
+                {realTime(condition.lastTransitionTime) !== undefined ? (
+                  <DateTime date={condition.lastTransitionTime} variant="relative" />
+                ) : (
+                  '—'
+                )}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}
+
+/** The DNS record the customer must create to verify a domain. */
+function VerificationRecord({ record }: { record: NonNullable<OrgIssue['verificationRecord']> }) {
+  const rows: [ReactNode, string][] = [
+    [<Trans key="type">Type</Trans>, record.type],
+    [<Trans key="name">Name</Trans>, record.name],
+    [<Trans key="value">Value</Trans>, record.content],
+  ];
+  return (
+    <div className="flex flex-col gap-2 rounded-md border p-3">
+      <Text size="xs" weight="medium" textColor="muted">
+        <Trans>Verification record the customer needs to create</Trans>
+      </Text>
+      {rows.map(([label, value], index) => (
+        <div key={index} className="flex items-center gap-3">
+          <Text as="span" size="xs" textColor="muted" className="w-12 shrink-0">
+            {label}
+          </Text>
+          <Text as="span" size="xs" className="min-w-0 flex-1 truncate font-mono">
+            {value}
+          </Text>
+          <ButtonCopy value={value} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function QuotaUsage({ usage }: { usage: NonNullable<OrgIssue['usage']> }) {
+  const percent = Math.min(100, Math.round((usage.allocated / usage.limit) * 100));
+  return (
+    <div className="flex max-w-md flex-col gap-1.5">
+      <div className="bg-muted h-2 overflow-hidden rounded-full">
+        <div
+          className={cn('h-full rounded-full', percent >= 100 ? 'bg-destructive' : 'bg-warning')}
+          style={{ width: `${percent}%` }}
+        />
+      </div>
+      <Text size="xs" textColor="muted">
+        <Trans>
+          {usage.allocated} of {usage.limit} used ({percent}%)
+        </Trans>
+      </Text>
+    </div>
+  );
+}
+
 function AttentionRowItem({
   row,
   instancesOf,
@@ -261,22 +381,30 @@ function AttentionRowItem({
       </button>
 
       {open && (
-        <div className="flex flex-col gap-3 pb-4 pl-[3.75rem]">
+        <div className="flex flex-col gap-3 pr-2 pb-4 pl-19">
           {isWorkload && issue.project && (
             <InstancesTable
               instances={instancesOf(issue.project, issue.name)}
               failing={new Set(row.instances.map((instance) => instance.name))}
             />
           )}
+          {issue.verificationRecord && <VerificationRecord record={issue.verificationRecord} />}
+          {issue.usage && <QuotaUsage usage={issue.usage} />}
+          {issue.area === 'domains' && issue.expiresAt && (
+            <Text size="xs" textColor="muted">
+              <Trans>
+                Registration expires <DateTime date={issue.expiresAt} />
+              </Trans>
+            </Text>
+          )}
+          {issue.conditions && issue.conditions.length > 0 && (
+            <ConditionsTable conditions={issue.conditions} />
+          )}
           <div className="flex flex-wrap gap-4">
-            {issue.project && (isWorkload || issue.area === 'instances') && (
+            {issue.href && <RowLink to={issue.href}>{openLabel(issue.area)}</RowLink>}
+            {issue.project && issue.area !== 'quota' && (
               <RowLink to={projectRoutes.activity.events(issue.project)}>
                 <Trans>Events</Trans>
-              </RowLink>
-            )}
-            {issue.href && (
-              <RowLink to={issue.href}>
-                {isWorkload ? <Trans>Workload detail</Trans> : <Trans>Open</Trans>}
               </RowLink>
             )}
           </div>
@@ -289,7 +417,7 @@ function AttentionRowItem({
 /**
  * The organization overview's "Needs attention" list (#768): every issue from
  * `useOrgIssues`, with failing instances nested under their workload, filtered
- * by tab. The tab lives in the URL so the health strip's tiles can open it.
+ * by tab. Rows expand to the resource's conditions and what to do next.
  */
 export function OrgNeedsAttention({ orgName, className }: { orgName: string; className?: string }) {
   const { issues, areas, checkedAt, isLoading } = useOrgIssues(orgName);
