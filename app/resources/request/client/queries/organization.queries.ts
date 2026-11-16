@@ -5,12 +5,11 @@ import {
   listAllOrgProjects,
   listOrgMembers,
   listOrgProjects,
-  orgInvitationCreateMutation,
   orgInvitationDeleteMutation,
+  orgInvitationResendMutation,
   organizationBusinessNamesQuery,
 } from '../apis/organization.api';
 import { ListQueryParams } from '@/resources/schemas';
-import type { ComMiloapisIamV1Alpha1UserInvitation } from '@openapi/iam.miloapis.com/v1alpha1';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export const organizationQueryKeys = {
@@ -96,17 +95,13 @@ export const useOrgMemberListQuery = (orgName: string, params?: ListQueryParams)
   });
 };
 
-export const useOrgInvitationCreateMutation = () => {
+export const useOrgInvitationResendMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      orgName,
-      payload,
-    }: {
-      orgName: string;
-      payload: ComMiloapisIamV1Alpha1UserInvitation['spec'];
-    }) => orgInvitationCreateMutation(orgName, payload),
-    onSuccess: async (_, variables) => {
+    mutationFn: ({ orgName, name }: { orgName: string; name: string }) =>
+      orgInvitationResendMutation(orgName, name),
+    // Settled, not success: a failed create still deleted the old invitation.
+    onSettled: async (_data, _error, variables) => {
       await queryClient.invalidateQueries({
         queryKey: organizationQueryKeys.members.all(variables.orgName),
       });

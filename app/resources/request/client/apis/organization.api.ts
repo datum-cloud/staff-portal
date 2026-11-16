@@ -13,6 +13,7 @@ import {
   createIamMiloapisComV1Alpha1NamespacedUserInvitation,
   deleteIamMiloapisComV1Alpha1NamespacedUserInvitation,
   listIamMiloapisComV1Alpha1NamespacedUserInvitation,
+  readIamMiloapisComV1Alpha1NamespacedUserInvitation,
 } from '@openapi/iam.miloapis.com/v1alpha1';
 import {
   deleteResourcemanagerMiloapisComV1Alpha1Organization,
@@ -21,6 +22,7 @@ import {
   listResourcemanagerMiloapisComV1Alpha1Project,
   readResourcemanagerMiloapisComV1Alpha1Organization,
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
+import { addHours, formatRFC3339 } from 'date-fns';
 
 /**
  * Reads the business name for each org (from Organization.spec.contactInfo) and
@@ -146,6 +148,37 @@ export const orgInvitationDeleteMutation = async (orgName: string, name: string)
       namespace: `organization-${orgName}`,
       name,
     },
+  });
+};
+
+/**
+ * Resends an invitation: replaces it with a fresh one that expires in 24 hours.
+ *
+ * The new spec is copied from the stored invitation, not from the members list,
+ * because the list carries role names only and Milo rejects a role without its
+ * namespace. Milo also refuses a second pending invitation for the same email,
+ * so the old one has to go first.
+ */
+export const orgInvitationResendMutation = async (orgName: string, name: string) => {
+  const namespace = `organization-${orgName}`;
+  const response = await readIamMiloapisComV1Alpha1NamespacedUserInvitation({
+    path: { namespace, name },
+  });
+  const spec = response.data.data?.spec;
+  if (!spec) {
+    throw new Error(`Invitation ${name} has no spec to resend`);
+  }
+
+  await orgInvitationDeleteMutation(orgName, name);
+
+  return orgInvitationCreateMutation(orgName, {
+    email: spec.email,
+    givenName: spec.givenName,
+    familyName: spec.familyName,
+    organizationRef: spec.organizationRef,
+    roles: spec.roles,
+    expirationDate: formatRFC3339(addHours(new Date(), 24)),
+    state: 'Pending',
   });
 };
 

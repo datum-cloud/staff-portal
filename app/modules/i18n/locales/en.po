@@ -1273,7 +1273,7 @@ msgstr "by"
 #: app/routes/customer/fraud/providers/detail.tsx:168
 #: app/routes/customer/fraud/providers/detail.tsx:189
 #: app/routes/customer/fraud/providers/index.tsx:127
-#: app/routes/customer/organization/detail/member.tsx:85
+#: app/routes/customer/organization/detail/member.tsx:83
 #: app/routes/customer/user/detail/index.tsx:417
 #: app/routes/customer/user/index.tsx:206
 #: app/routes/marketing/contact-group/detail/member.tsx:345
@@ -2805,6 +2805,10 @@ msgstr "Export Policy"
 msgid "Failed"
 msgstr "Failed"
 
+#: app/routes/customer/organization/detail/member.tsx:93
+msgid "Failed to cancel invitation"
+msgstr "Failed to cancel invitation"
+
 #: app/components/button/button-copy.tsx:32
 msgid "Failed to copy"
 msgstr "Failed to copy"
@@ -2844,6 +2848,10 @@ msgstr "Failed to load status"
 #: app/routes/admin/offer/detail.tsx:223
 msgid "Failed to publish Offer"
 msgstr "Failed to publish Offer"
+
+#: app/routes/customer/organization/detail/member.tsx:76
+msgid "Failed to resend invitation"
+msgstr "Failed to resend invitation"
 
 #: app/features/billing/components/contract-editor/contract-editor.tsx:421
 msgid "Failed to save the contract"
@@ -3358,11 +3366,11 @@ msgstr "Invalid email address"
 msgid "Invitation"
 msgstr "Invitation"
 
-#: app/routes/customer/organization/detail/member.tsx:93
+#: app/routes/customer/organization/detail/member.tsx:91
 msgid "Invitation cancelled successfully"
 msgstr "Invitation cancelled successfully"
 
-#: app/routes/customer/organization/detail/member.tsx:78
+#: app/routes/customer/organization/detail/member.tsx:74
 msgid "Invitation resend successfully"
 msgstr "Invitation resend successfully"
 
@@ -3790,7 +3798,7 @@ msgstr "Member deleted successfully"
 
 #: app/features/organization/components/org-members-preview-card.tsx:79
 #: app/routes/admin/group/detail/member.tsx:34
-#: app/routes/customer/organization/detail/member.tsx:25
+#: app/routes/customer/organization/detail/member.tsx:26
 #: app/routes/marketing/contact-group/detail/member.tsx:33
 msgid "Members"
 msgstr "Members"
@@ -5132,7 +5140,7 @@ msgid "Please select an existing contact or provide details to create a new one"
 msgstr "Please select an existing contact or provide details to create a new one"
 
 #. placeholder {0}: remainingMinutes !== 1 ? 's' : ''
-#: app/routes/customer/organization/detail/member.tsx:58
+#: app/routes/customer/organization/detail/member.tsx:66
 msgid "Please wait {remainingMinutes} more minute{0} before resending this invitation"
 msgstr "Please wait {remainingMinutes} more minute{0} before resending this invitation"
 
@@ -5610,7 +5618,7 @@ msgstr "Requesting a TLS certificate from the certificate authority"
 msgid "Required"
 msgstr "Required"
 
-#: app/routes/customer/organization/detail/member.tsx:47
+#: app/routes/customer/organization/detail/member.tsx:55
 msgid "Resend"
 msgstr "Resend"
 
