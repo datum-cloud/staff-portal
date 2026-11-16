@@ -21,7 +21,7 @@ msgstr ""
 msgid " · newest"
 msgstr ""
 
-#: app/features/organization/components/org-needs-attention.tsx:495
+#: app/features/organization/components/org-needs-attention.tsx:494
 msgid " and "
 msgstr ""
 
@@ -1432,11 +1432,11 @@ msgstr ""
 msgid "Check that you have permission to list ServicePricings, then try again. If IAM was just updated, wait a minute for PolicyBindings to reconcile."
 msgstr ""
 
-#: app/features/organization/components/org-needs-attention.tsx:492
+#: app/features/organization/components/org-needs-attention.tsx:491
 msgid "Checked"
 msgstr ""
 
-#: app/features/organization/components/org-needs-attention.tsx:450
+#: app/features/organization/components/org-needs-attention.tsx:449
 msgid "Checked <0/>"
 msgstr ""
 
@@ -2817,7 +2817,7 @@ msgstr ""
 msgid "Event"
 msgstr ""
 
-#: app/features/organization/components/org-needs-attention.tsx:407
+#: app/features/organization/components/org-needs-attention.tsx:406
 #: app/routes/customer/organization/detail/activity/events.tsx:14
 #: app/routes/customer/organization/detail/activity/events.tsx:17
 #: app/routes/customer/project/detail/activity/events.tsx:14
@@ -4017,7 +4017,7 @@ msgstr ""
 msgid "Navigation"
 msgstr ""
 
-#: app/features/organization/components/org-needs-attention.tsx:446
+#: app/features/organization/components/org-needs-attention.tsx:445
 msgid "Needs attention"
 msgstr ""
 
@@ -4729,11 +4729,11 @@ msgid "Notes, emails, and account history for this contact will appear here."
 msgstr ""
 
 #: app/features/organization/components/org-health-strip.tsx:200
-#: app/features/organization/components/org-needs-attention.tsx:489
+#: app/features/organization/components/org-needs-attention.tsx:488
 msgid "Nothing needs attention"
 msgstr ""
 
-#: app/features/organization/components/org-needs-attention.tsx:504
+#: app/features/organization/components/org-needs-attention.tsx:503
 msgid "Nothing needs attention here."
 msgstr ""
 
@@ -4896,7 +4896,7 @@ msgstr ""
 #: app/features/billing/components/application-review.tsx:427
 #: app/features/billing/components/billing-account-list.tsx:202
 #: app/features/billing/components/billing-account-list.tsx:271
-#: app/features/organization/components/org-needs-attention.tsx:366
+#: app/features/organization/components/org-needs-attention.tsx:369
 #: app/features/project/components/project-organization-card.tsx:25
 #: app/routes/admin/service-catalog/detail/approvals.tsx:66
 #: app/routes/admin/service-catalog/detail/consumers.tsx:100
@@ -5657,7 +5657,7 @@ msgstr ""
 msgid "Registrar"
 msgstr ""
 
-#: app/features/organization/components/org-needs-attention.tsx:395
+#: app/features/organization/components/org-needs-attention.tsx:394
 msgid "Registration expires <0/>"
 msgstr ""
 

@@ -338,8 +338,11 @@ function AttentionRowItem({
   const style = SEVERITY_STYLE[issue.severity];
   const isWorkload = issue.area === 'workloads';
 
+  // Expanded, the conditions table or usage bar already says what the message says.
+  const repeatsMessage = Boolean(issue.conditions?.length) || Boolean(issue.usage);
+
   return (
-    <li className={cn(issue.severity === 'low' && 'opacity-60')}>
+    <li>
       <button
         type="button"
         aria-expanded={open}
@@ -365,12 +368,8 @@ function AttentionRowItem({
           <Text as="span" size="xs" textColor="muted" className="truncate">
             {issue.project ?? <Trans>Organization</Trans>} › {kindLabel(issue.area)} › {issue.name}
           </Text>
-          {issue.message && (
-            <Text
-              as="span"
-              size="xs"
-              textColor="muted"
-              className={cn('font-mono', !open && 'truncate')}>
+          {issue.message && !(open && repeatsMessage) && (
+            <Text as="span" size="xs" textColor="muted" className="truncate font-mono">
               {issue.message}
             </Text>
           )}
