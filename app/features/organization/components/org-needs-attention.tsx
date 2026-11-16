@@ -1,9 +1,9 @@
-import { NEEDS_ATTENTION_ID, useAttentionTab } from '../hooks/use-attention-tab';
 import { useOrgComputeStatus } from '../hooks/use-org-compute-status';
 import { useOrgIssues } from '../hooks/use-org-issues';
 import type { InstanceStatus } from '../lib/compute-status';
 import {
   ATTENTION_TABS,
+  TAB_AREAS,
   buildAttentionRows,
   checkedTotals,
   rowsForTab,
@@ -294,7 +294,7 @@ function AttentionRowItem({
 export function OrgNeedsAttention({ orgName, className }: { orgName: string; className?: string }) {
   const { issues, areas, checkedAt, isLoading } = useOrgIssues(orgName);
   const compute = useOrgComputeStatus(orgName);
-  const { tab, setTab } = useAttentionTab();
+  const [tab, setTab] = useState<AttentionTab>('all');
 
   const rows = useMemo(() => buildAttentionRows(issues), [issues]);
   const counts = useMemo(() => tabCounts(rows), [rows]);
@@ -302,7 +302,10 @@ export function OrgNeedsAttention({ orgName, className }: { orgName: string; cla
   const tabs = ATTENTION_TABS.filter((t) => t !== 'compute' || computeOn);
   const activeTab: AttentionTab = tabs.includes(tab) ? tab : 'all';
   const visible = rowsForTab(rows, activeTab);
-  const loading = isLoading || Object.values(areas).some((area) => area.enabled && area.isLoading);
+  // A tab is loading while any of its areas is; All waits on every area.
+  const tabAreas =
+    activeTab === 'all' ? Object.values(areas) : TAB_AREAS[activeTab].map((area) => areas[area]);
+  const loading = isLoading || tabAreas.some((area) => area.enabled && area.isLoading);
 
   const instancesOf = (project: string, workload: string) =>
     (compute.projects.get(project)?.compute?.instances ?? []).filter(
@@ -310,7 +313,7 @@ export function OrgNeedsAttention({ orgName, className }: { orgName: string; cla
     );
 
   return (
-    <section id={NEEDS_ATTENTION_ID} className={cn('scroll-mt-4', className)}>
+    <section className={className}>
       <SectionCard
         title={<Trans>Needs attention</Trans>}
         action={
@@ -336,19 +339,22 @@ export function OrgNeedsAttention({ orgName, className }: { orgName: string; cla
             </TabsList>
           </Tabs>
 
-          {visible.length > 0 ? (
+          {visible.length > 0 && (
             <ul className="divide-y">
               {visible.map((row) => (
                 <AttentionRowItem key={row.issue.id} row={row} instancesOf={instancesOf} />
               ))}
             </ul>
-          ) : loading ? (
+          )}
+
+          {loading ? (
+            // Rows already loaded stay visible; the rest of the tab fills in below.
             <div className="flex flex-col gap-3 py-2" aria-busy="true">
-              {Array.from({ length: 4 }).map((_, index) => (
+              {Array.from({ length: visible.length > 0 ? 2 : 4 }).map((_, index) => (
                 <Skeleton key={index} className="h-12 w-full rounded-md" />
               ))}
             </div>
-          ) : rows.length === 0 ? (
+          ) : visible.length > 0 ? null : rows.length === 0 ? (
             <div className="flex flex-col items-center gap-2 py-8 text-center">
               <Icon icon={STATUS_ICONS.success} size={24} aria-hidden className="text-success" />
               <Text weight="semibold">

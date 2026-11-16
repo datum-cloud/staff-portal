@@ -77,19 +77,14 @@ export function StatStripItems({ children }: { children: ReactNode }) {
   );
 }
 
-/**
- * One stat in the strip. With `href` the whole cell is a link, with `onClick`
- * a button; either way it shows an arrow.
- */
+/** One stat in the strip. With `href`, the whole cell is a link and shows an arrow. */
 export function StatStripItem({
   title,
   href,
-  onClick,
   children,
 }: {
   title: ReactNode;
   href?: string;
-  onClick?: () => void;
   children: ReactNode;
 }) {
   const body = (
@@ -98,9 +93,7 @@ export function StatStripItem({
         <Text size="xs" weight="medium" textColor="muted" ellipsis>
           {title}
         </Text>
-        {(href || onClick) && (
-          <Icon icon={ArrowRight} size={14} aria-hidden className="text-muted-foreground" />
-        )}
+        {href && <Icon icon={ArrowRight} size={14} aria-hidden className="text-muted-foreground" />}
       </div>
       {children}
     </div>
@@ -112,22 +105,15 @@ export function StatStripItem({
   const cell =
     'border-border min-w-0 border-t even:border-l @max-3xl/main:odd:last:col-span-2 @3xl/main:border-t-0 @3xl/main:border-l @3xl/main:first:border-l-0';
 
-  const interactive =
-    'hover:bg-muted/30 focus-visible:ring-ring block text-left transition-colors focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset';
-
-  if (href) {
-    return (
-      <Link to={href} className={cn(cell, interactive)}>
-        {body}
-      </Link>
-    );
-  }
-  if (onClick) {
-    return (
-      <button type="button" onClick={onClick} className={cn(cell, interactive, 'w-full')}>
-        {body}
-      </button>
-    );
-  }
-  return <div className={cell}>{body}</div>;
+  if (!href) return <div className={cell}>{body}</div>;
+  return (
+    <Link
+      to={href}
+      className={cn(
+        cell,
+        'hover:bg-muted/30 focus-visible:ring-ring block transition-colors focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset'
+      )}>
+      {body}
+    </Link>
+  );
 }

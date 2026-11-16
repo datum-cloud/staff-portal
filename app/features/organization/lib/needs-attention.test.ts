@@ -1,10 +1,4 @@
-import {
-  buildAttentionRows,
-  checkedTotals,
-  rowsForTab,
-  tabCounts,
-  tabForArea,
-} from './needs-attention';
+import { buildAttentionRows, checkedTotals, rowsForTab, tabCounts } from './needs-attention';
 import type { IssueArea, OrgIssue } from './org-issues';
 import { describe, expect, it } from 'vitest';
 
@@ -56,12 +50,6 @@ describe('tabs', () => {
     expect(rowsForTab(rows, 'compute').map((r) => r.issue.id)).toEqual(['api-gateway', 'worker-0']);
     expect(rowsForTab(rows, 'network').map((r) => r.issue.id)).toEqual(['docs-proxy']);
     expect(tabCounts(rows)).toEqual({ all: 4, compute: 2, network: 1, quota: 1 });
-  });
-
-  it('maps each area to its tab', () => {
-    expect(tabForArea('instances')).toBe('compute');
-    expect(tabForArea('dnsZones')).toBe('network');
-    expect(tabForArea('quota')).toBe('quota');
   });
 });
 

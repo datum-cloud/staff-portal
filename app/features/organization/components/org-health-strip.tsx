@@ -1,6 +1,4 @@
-import { useAttentionTab } from '../hooks/use-attention-tab';
 import { useOrgIssues } from '../hooks/use-org-issues';
-import { tabForArea } from '../lib/needs-attention';
 import type { IssueArea } from '../lib/org-issues';
 import {
   summarizeVerdict,
@@ -20,6 +18,7 @@ import {
 } from '@/components/stat-strip';
 import { StatTileDetail, StatTileHeadline, StatTileSkeleton } from '@/components/stat-tile';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
+import { orgRoutes } from '@/utils/config/routes.config';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
@@ -222,6 +221,21 @@ function VerdictLead({ summary, isLoading }: { summary: VerdictSummary; isLoadin
   );
 }
 
+const tileHref = (area: TileArea, orgName: string): string => {
+  switch (area) {
+    case 'workloads':
+    case 'instances':
+      // No organization-wide compute list; compute lives in each project.
+      return orgRoutes.project(orgName);
+    case 'loadBalancers':
+      return orgRoutes.edge(orgName);
+    case 'domains':
+      return orgRoutes.domain(orgName);
+    case 'dnsZones':
+      return orgRoutes.dns(orgName);
+  }
+};
+
 /**
  * The organization overview's health strip (#767): a verdict, then one tile per
  * resource area. Compute tiles only show with the compute plugin installed;
@@ -229,7 +243,6 @@ function VerdictLead({ summary, isLoading }: { summary: VerdictSummary; isLoadin
  */
 export function OrgHealthStrip({ orgName, className }: { orgName: string; className?: string }) {
   const { t } = useLingui();
-  const { openTab } = useAttentionTab();
   const { issues, areas, isLoading } = useOrgIssues(orgName);
   const summary = useMemo(() => summarizeVerdict(issues, areas), [issues, areas]);
   const tiles = TILE_AREAS.filter((area) => areas[area].enabled);
@@ -242,10 +255,7 @@ export function OrgHealthStrip({ orgName, className }: { orgName: string; classN
           const state = areas[area];
           const status = tileStatus(area, issues, state);
           return (
-            <StatStripItem
-              key={area}
-              title={areaLabel(area)}
-              onClick={() => openTab(tabForArea(area))}>
+            <StatStripItem key={area} title={areaLabel(area)} href={tileHref(area, orgName)}>
               {status.line.kind === 'loading' ? (
                 <StatTileSkeleton />
               ) : (

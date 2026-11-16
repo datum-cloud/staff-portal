@@ -17,13 +17,6 @@ export const TAB_AREAS: Readonly<Record<Exclude<AttentionTab, 'all'>, readonly I
   quota: ['quota'],
 };
 
-/** The tab an area's issues live in, e.g. for a health-strip tile to open. */
-export function tabForArea(area: IssueArea): Exclude<AttentionTab, 'all'> {
-  if (TAB_AREAS.compute.includes(area)) return 'compute';
-  if (TAB_AREAS.network.includes(area)) return 'network';
-  return 'quota';
-}
-
 export interface AttentionRow {
   issue: OrgIssue;
   /** For a workload row: its failing instances, nested under it. */
