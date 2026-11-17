@@ -6,6 +6,18 @@ import { createMiddleware } from 'hono/factory';
  * Hono middleware for request logging
  * Logs incoming requests and outgoing responses with timing information
  */
+/** Headers that carry credentials. Logged as "[redacted]", never their value. */
+const SENSITIVE_HEADERS = new Set(['cookie', 'set-cookie', 'authorization']);
+
+function redactHeaders(headers: Record<string, string>): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(headers).map(([name, value]) => [
+      name,
+      SENSITIVE_HEADERS.has(name.toLowerCase()) ? '[redacted]' : value,
+    ])
+  );
+}
+
 export function loggerMiddleware() {
   return createMiddleware(async (c: Context, next: Next) => {
     const startTime = performance.now();
@@ -18,7 +30,7 @@ export function loggerMiddleware() {
     }
 
     // Log request start
-    logger.httpRequest(requestId, c.req.method, c.req.path, c.req.header());
+    logger.httpRequest(requestId, c.req.method, c.req.path, redactHeaders(c.req.header()));
 
     await next();
 
@@ -30,7 +42,7 @@ export function loggerMiddleware() {
       requestId,
       c.res.status,
       responseTime,
-      Object.fromEntries(c.res.headers.entries())
+      redactHeaders(Object.fromEntries(c.res.headers.entries()))
     );
 
     // Log errors if any
