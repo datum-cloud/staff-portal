@@ -240,6 +240,7 @@ export default function Page() {
             userId={data?.metadata?.name ?? ''}
             readOnly
             showSessions
+            canRevokeSessions
             className="shadow-none"
             passkeyCount={passkeys ? passkeys.items.length : undefined}
             emailVerification={emailVerification}

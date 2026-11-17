@@ -158,6 +158,78 @@ describe('Account recovery on the user detail page', () => {
     });
   });
 
+  describe('UserIdentityCard — revoking a session', () => {
+    const session = {
+      id: 's-1',
+      userUID: 'u1',
+      provider: 'zitadel',
+      ipAddress: '203.0.113.7',
+      fingerprintID: null,
+      createdAt: '2026-11-01T10:00:00Z',
+      lastUpdatedAt: null,
+      userAgent: null,
+      location: null,
+    };
+
+    beforeEach(() => {
+      cy.intercept('GET', '**/useridentities*', proxyList([]));
+    });
+
+    const stubSessions = () => {
+      let sessions = [session];
+      cy.intercept('POST', '**/graphql*', (req) =>
+        req.reply({ statusCode: 200, body: { data: { sessions } } })
+      ).as('listSessions');
+      return { clear: () => (sessions = []) };
+    };
+
+    it('offers no revoke action unless asked to', () => {
+      stubSessions();
+      mountInDataRouter(<UserIdentityCard userId="u1" readOnly showSessions />);
+      cy.wait('@listSessions');
+      cy.contains('203.0.113.7').should('be.visible');
+      cy.get('button[aria-label^="Revoke session"]').should('not.exist');
+    });
+
+    it('confirms, deletes that session, and refreshes the list', () => {
+      const list = stubSessions();
+      cy.intercept('DELETE', '**/sessions/s-1', (req) => {
+        list.clear();
+        req.reply({ statusCode: 200, body: { code: 'OK', path: '/x', data: {} } });
+      }).as('deleteSession');
+
+      mountInDataRouter(<UserIdentityCard userId="u1" readOnly showSessions canRevokeSessions />);
+      cy.wait('@listSessions');
+
+      cy.get('button[aria-label="Revoke session from 203.0.113.7"]').click();
+      cy.get('[role="dialog"]').should('contain.text', 'signed out on that device');
+      cy.get('@deleteSession.all').should('have.length', 0);
+
+      cy.get('[role="dialog"]').contains('button', 'Revoke').click();
+      cy.wait('@deleteSession').then(({ request }) => {
+        expect(new URL(request.url).pathname).to.match(
+          /\/users\/u1\/control-plane\/apis\/identity\.miloapis\.com\/v1alpha1\/sessions\/s-1$/
+        );
+      });
+      cy.wait('@listSessions');
+      cy.contains('No active sessions.').should('be.visible');
+      cy.contains('203.0.113.7').should('not.exist');
+    });
+
+    it('cancelling leaves the session alone', () => {
+      stubSessions();
+      cy.intercept('DELETE', '**/sessions/*', cy.spy().as('deleteSession'));
+      mountInDataRouter(<UserIdentityCard userId="u1" readOnly showSessions canRevokeSessions />);
+      cy.wait('@listSessions');
+
+      cy.get('button[aria-label="Revoke session from 203.0.113.7"]').click();
+      cy.get('[role="dialog"]').contains('button', 'Cancel').click();
+      cy.get('[role="dialog"]').should('not.exist');
+      cy.get('@deleteSession').should('not.have.been.called');
+      cy.contains('203.0.113.7').should('be.visible');
+    });
+  });
+
   describe('UserRecoveryLinksDialog — the links-sent history', () => {
     const mountDialog = (open = true) =>
       mountInDataRouter(

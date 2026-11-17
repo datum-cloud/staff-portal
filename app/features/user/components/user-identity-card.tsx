@@ -2,19 +2,26 @@ import { IdentityItem } from './identity-item';
 import { IdentityItemSkeleton } from './identity-item-skeleton';
 import { BadgeState } from '@/components/badge';
 import { DateTime } from '@/components/date';
+import { DialogConfirm } from '@/components/dialog';
 import GitHubIcon from '@/components/icon/github';
 import GoogleIcon from '@/components/icon/google';
 import { useEnv } from '@/hooks';
-import { useIdentityListQuery, useSessionListEnrichedQuery } from '@/resources/request/client';
+import type { GqlSession } from '@/resources/gql/session.gql';
+import {
+  useDeleteSessionMutation,
+  useIdentityListQuery,
+  useSessionListEnrichedQuery,
+} from '@/resources/request/client';
 import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
-import { LinkButton } from '@datum-cloud/datum-ui/button';
+import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@datum-cloud/datum-ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
+import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
 import { FingerprintPattern, GlobeIcon, KeyRound, MailIcon } from 'lucide-react';
-import { ComponentType, SVGProps } from 'react';
+import { ComponentType, SVGProps, useState } from 'react';
 
 /**
  * The three answers support needs from milo's two-valued `status.emailVerification`
@@ -38,6 +45,7 @@ export const UserIdentityCard = ({
   userId,
   readOnly = false,
   showSessions = false,
+  canRevokeSessions = false,
   className,
   passkeyCount,
   emailVerification,
@@ -45,6 +53,11 @@ export const UserIdentityCard = ({
   userId: string;
   readOnly?: boolean;
   showSessions?: boolean;
+  /**
+   * Adds a Revoke action to each session row, for staff ending a customer's session.
+   * Independent of `readOnly`, which keeps the rest of the card read-only.
+   */
+  canRevokeSessions?: boolean;
   className?: string;
   /** Enrolled passkeys. Omit when the caller could not read them — the row is then hidden. */
   passkeyCount?: number;
@@ -70,6 +83,22 @@ export const UserIdentityCard = ({
     (b.createdAt ?? '').localeCompare(a.createdAt ?? '')
   );
   const env = useEnv();
+  const deleteSession = useDeleteSessionMutation();
+  const [sessionToRevoke, setSessionToRevoke] = useState<GqlSession | null>(null);
+  const sessionName = (session: GqlSession) => session.ipAddress ?? t`Unknown IP`;
+
+  const revokeSession = async (session: GqlSession) => {
+    try {
+      // The mutation invalidates every ['sessions', ...] query, which refetches this list.
+      await deleteSession.mutateAsync({ userId, sessionName: session.id });
+      toast.success(t`Session revoked`);
+    } catch (error) {
+      toast.error(t`Could not revoke the session`, {
+        description: error instanceof Error ? error.message : undefined,
+      });
+      throw error;
+    }
+  };
 
   return (
     <Card className={className}>
@@ -225,7 +254,7 @@ export const UserIdentityCard = ({
                       key={session.id}
                       className="py-2"
                       icon={<GlobeIcon className="size-3.5" />}
-                      label={session.ipAddress ?? 'Unknown IP'}
+                      label={sessionName(session)}
                       sublabel={sublabelParts.length ? sublabelParts.join(' · ') : session.id}
                       middleContent={
                         session.createdAt ? (
@@ -233,6 +262,19 @@ export const UserIdentityCard = ({
                             <Trans>Created</Trans>{' '}
                             <DateTime date={session.createdAt} variant="relative" />
                           </Text>
+                        ) : undefined
+                      }
+                      rightContent={
+                        canRevokeSessions ? (
+                          <Button
+                            type="danger"
+                            theme="outline"
+                            size="small"
+                            icon={<ACTION_ICONS.delete size={12} />}
+                            aria-label={t`Revoke session from ${sessionName(session)}`}
+                            onClick={() => setSessionToRevoke(session)}>
+                            <Trans>Revoke</Trans>
+                          </Button>
                         ) : undefined
                       }
                     />
@@ -243,6 +285,21 @@ export const UserIdentityCard = ({
           </div>
         )}
       </CardContent>
+
+      {canRevokeSessions && (
+        <DialogConfirm
+          open={!!sessionToRevoke}
+          onOpenChange={(open) => !open && setSessionToRevoke(null)}
+          title={t`Revoke session`}
+          description={t`Revoke the session from ${sessionToRevoke ? sessionName(sessionToRevoke) : ''}? The user is signed out on that device and has to sign in again.`}
+          confirmText={t`Revoke`}
+          cancelText={t`Cancel`}
+          variant="destructive"
+          onConfirm={async () => {
+            if (sessionToRevoke) await revokeSession(sessionToRevoke);
+          }}
+        />
+      )}
     </Card>
   );
 };
