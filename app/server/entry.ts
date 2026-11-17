@@ -6,6 +6,7 @@ import {
   cookieUpgradeMiddleware,
   honoLoggerMiddleware,
   requestContextMiddleware,
+  sessionRefreshMiddleware,
 } from '@/server/middleware';
 import { env } from '@/utils/config/env.server';
 import { logger } from '@/utils/logger';
@@ -26,6 +27,9 @@ if (env.isOtelEnabled) {
 }
 
 app.use(requestId());
+
+// Refresh an expiring session first, so everything after it reads the new token.
+app.use(sessionRefreshMiddleware());
 
 app.use(requestContextMiddleware());
 
