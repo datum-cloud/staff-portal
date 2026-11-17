@@ -99,8 +99,9 @@ export function authMiddleware() {
       }
 
       // Under Cypress the caller is a CI service account outside the staff
-      // group, matching the bypass in requireStaffUser.
-      if (!env.isCypress && !(await isStaffSession(session.accessToken, session.sub))) {
+      // group, matching the bypass in requireStaffUser. Never in production.
+      const skipStaffCheck = env.isCypress && !env.isProd;
+      if (!skipStaffCheck && !(await isStaffSession(session.accessToken, session.sub))) {
         throw new AuthorizationError('Staff access required', reqId);
       }
 

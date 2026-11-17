@@ -80,7 +80,21 @@ function getEnv(): Env {
   }
 }
 
+/**
+ * CYPRESS switches off the staff-membership check on every page and API route,
+ * so it must never reach a production server. Refuse to start if it does.
+ */
+export function assertNoCypressInProduction(
+  nodeEnv: string | undefined,
+  cypress: string | undefined
+): void {
+  if (nodeEnv === 'production' && toBoolean(cypress)) {
+    throw new Error('CYPRESS must not be set when NODE_ENV is production');
+  }
+}
+
 const parsedEnv = getEnv();
+assertNoCypressInProduction(parsedEnv.NODE_ENV, process.env.CYPRESS);
 
 export const env = {
   ...parsedEnv,
@@ -93,7 +107,7 @@ export const env = {
   isProd: parsedEnv.NODE_ENV === 'production',
   isTest: parsedEnv.NODE_ENV === 'test',
   isDebug: toBoolean(process.env.DEBUG),
-  isCypress: toBoolean(process.env.CYPRESS),
+  isCypress: toBoolean(process.env.CYPRESS) && parsedEnv.NODE_ENV !== 'production',
   isOtelEnabled: toBoolean(parsedEnv.OTEL_ENABLED) && parsedEnv.OTEL_EXPORTER_OTLP_ENDPOINT !== '',
   isSentryEnabled: !!parsedEnv.SENTRY_DSN,
   sentryUiUrl: getOrigin(parsedEnv.SENTRY_DSN),

@@ -7,7 +7,7 @@ import {
 import { authenticator } from '@/modules/auth';
 import { isStaffMember } from '@/modules/auth/require-staff.server';
 import { EnvVariables } from '@/server/iface';
-import { env } from '@/utils/config/env.server';
+import { assertNoCypressInProduction, env } from '@/utils/config/env.server';
 import { Hono } from 'hono';
 import { requestId } from 'hono/request-id';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -52,6 +52,7 @@ describe('authMiddleware', () => {
     vi.resetAllMocks();
     clearStaffMembershipCache();
     env.isCypress = false;
+    env.isProd = false;
     isAuthenticated.mockResolvedValue(true);
     signIn();
     staffMember.mockResolvedValue(true);
@@ -149,6 +150,34 @@ describe('authMiddleware', () => {
 
     expect(res.status).toBe(200);
     expect(staffMember).not.toHaveBeenCalled();
+  });
+
+  it('still checks staff membership under Cypress in production', async () => {
+    env.isCypress = true;
+    env.isProd = true;
+    staffMember.mockResolvedValue(false);
+
+    const res = await createApp().request('/api/thing');
+
+    expect(res.status).toBe(403);
+    expect(staffMember).toHaveBeenCalledWith(TOKEN, USER_ID);
+  });
+
+  describe('assertNoCypressInProduction', () => {
+    it('refuses to start a production server with CYPRESS set', () => {
+      expect(() => assertNoCypressInProduction('production', 'true')).toThrow(
+        'CYPRESS must not be set when NODE_ENV is production'
+      );
+    });
+
+    it.each([
+      ['test', 'true'],
+      ['development', 'true'],
+      ['production', undefined],
+      ['production', 'false'],
+    ])('allows NODE_ENV=%s with CYPRESS=%s', (nodeEnv, cypress) => {
+      expect(() => assertNoCypressInProduction(nodeEnv, cypress)).not.toThrow();
+    });
   });
 
   describe('state-changing requests', () => {
