@@ -1,24 +1,61 @@
-import { openCookieValue, SEALED_PREFIX, sealCookieValue } from './cipher';
+import { openCookieValue, SEALED_PREFIX, SealedCookiePayload, sealCookieValue } from './cipher';
 import { env } from '@/utils/config/env.server';
 import { createCookie, createCookieSessionStorage } from 'react-router';
+
+/**
+ * The longest a session lives from sign-in, however often it is used or
+ * refreshed. Nothing in this repo records the IdP's refresh-token lifetime, so
+ * this is a fixed 30 days. An older cookie reads as no session.
+ */
+export const SESSION_MAX_AGE_SECONDS = 30 * 24 * 60 * 60;
+
+const SESSION_MAX_AGE_MS = SESSION_MAX_AGE_SECONDS * 1000;
 
 export interface IBaseCookieData {}
 
 type CookieResponse<T> = {
   data?: T;
   headers: Headers;
+  /** When the session behind the cookie began (epoch ms). Present whenever `data` is. */
+  issuedAt?: number;
+  /** True when the request carried the cookie in the old signed-only format. */
+  isLegacy?: boolean;
 };
 
 /** What a request's cookie held, and whether it was still in the old signed-only format. */
-type ReadResult<T> = { data?: T; isLegacy: boolean };
+type ReadResult<T> = { data?: T; issuedAt?: number; isLegacy: boolean };
+
+type SetOptions = {
+  /** When the session began (epoch ms). Defaults to now; a refresh passes the original. */
+  issuedAt?: number;
+};
+
+const isPastMaxAge = (issuedAt: number, now: number): boolean =>
+  now - issuedAt >= SESSION_MAX_AGE_MS;
+
+/** The sealed JSON as a payload, or undefined when it lacks a usable issue time. */
+function parsePayload<T>(json: string | null): SealedCookiePayload<T> | undefined {
+  if (!json) return undefined;
+  const payload = JSON.parse(json) as Partial<SealedCookiePayload<T>> | null;
+  if (!payload || typeof payload.issuedAt !== 'number' || !Number.isFinite(payload.issuedAt)) {
+    return undefined;
+  }
+  if (payload.data === undefined) return undefined;
+  return { issuedAt: payload.issuedAt, data: payload.data };
+}
 
 /**
  * A cookie whose payload is JSON sealed with AES-256-GCM (see `./cipher`), so
  * the browser and anything that logs the Cookie header never see the tokens
  * inside. GCM authenticates the value, so it needs no separate signature.
  *
+ * The sealed payload records when the session began. Re-issuing the cookie
+ * keeps that time, and its Max-Age never runs past {@link SESSION_MAX_AGE_SECONDS}
+ * from it, so a session in constant use still ends.
+ *
  * Cookies written before encryption hold signed-only JSON. Those are still
- * read through the old signed storage, and `upgrade` re-issues them sealed.
+ * read through the old signed storage, reported as `isLegacy`, and `upgrade`
+ * re-issues them sealed with the session starting at the upgrade.
  */
 export abstract class BaseCookie<T extends IBaseCookieData> {
   protected abstract readonly COOKIE_KEY: string;
@@ -63,10 +100,17 @@ export abstract class BaseCookie<T extends IBaseCookieData> {
     return attributes.join('; ');
   }
 
-  private seal(data: T): string {
+  /** This cookie's Max-Age, cut short so it never outlives the session's absolute limit. */
+  private maxAgeFor(issuedAt: number, now: number): number {
+    const remaining = Math.floor((issuedAt + SESSION_MAX_AGE_MS - now) / 1000);
+    return Math.max(0, Math.min(this.MAX_AGE, remaining));
+  }
+
+  private seal(data: T, issuedAt: number): string {
+    const payload: SealedCookiePayload<T> = { issuedAt, data };
     return this.serialize(
-      sealCookieValue(JSON.stringify(data), env.SESSION_SECRET, this.COOKIE_KEY),
-      this.MAX_AGE
+      sealCookieValue(JSON.stringify(payload), env.SESSION_SECRET, this.COOKIE_KEY),
+      this.maxAgeFor(issuedAt, Date.now())
     );
   }
 
@@ -84,28 +128,37 @@ export abstract class BaseCookie<T extends IBaseCookieData> {
     if (!raw) return { isLegacy: false };
 
     if (raw.startsWith(SEALED_PREFIX)) {
-      const json = openCookieValue(raw, env.SESSION_SECRET, this.COOKIE_KEY);
-      return { data: json ? (JSON.parse(json) as T) : undefined, isLegacy: false };
+      const payload = parsePayload<T>(openCookieValue(raw, env.SESSION_SECRET, this.COOKIE_KEY));
+      if (!payload || isPastMaxAge(payload.issuedAt, Date.now())) return { isLegacy: false };
+      return { data: payload.data, issuedAt: payload.issuedAt, isLegacy: false };
     }
 
     const session = await this.legacyStorage.getSession(request.headers.get('Cookie'));
     const data = session.get(this.COOKIE_KEY) as T | undefined;
-    return { data, isLegacy: data !== undefined };
+    if (data === undefined) return { isLegacy: false };
+    // The old format carries no issue time, so the session counts from now.
+    return { data, issuedAt: Date.now(), isLegacy: true };
   }
 
   private createHeaders(cookieHeader: string): Headers {
     return new Headers({ 'Set-Cookie': cookieHeader });
   }
 
-  async set(_request: Request, data: T): Promise<CookieResponse<T>> {
-    return { data, headers: this.createHeaders(this.seal(data)) };
+  async set(_request: Request, data: T, options: SetOptions = {}): Promise<CookieResponse<T>> {
+    const issuedAt = options.issuedAt ?? Date.now();
+    return {
+      data,
+      issuedAt,
+      isLegacy: false,
+      headers: this.createHeaders(this.seal(data, issuedAt)),
+    };
   }
 
   async get(request: Request): Promise<CookieResponse<T>> {
-    const { data } = await this.read(request);
-    if (!data) return { data, headers: new Headers() };
+    const { data, issuedAt, isLegacy } = await this.read(request);
+    if (!data || issuedAt === undefined) return { data: undefined, headers: new Headers() };
 
-    return { data, headers: this.createHeaders(this.seal(data)) };
+    return { data, issuedAt, isLegacy, headers: this.createHeaders(this.seal(data, issuedAt)) };
   }
 
   async destroy(_request: Request): Promise<CookieResponse<T>> {
@@ -114,11 +167,11 @@ export abstract class BaseCookie<T extends IBaseCookieData> {
 
   /**
    * When the request still carries this cookie in the old signed-only format,
-   * returns a `Set-Cookie` value that re-issues the same data sealed. Returns
-   * null for a sealed, missing or unreadable cookie.
+   * returns a `Set-Cookie` value that re-issues the same data sealed, with the
+   * session starting now. Returns null for a sealed, missing or unreadable cookie.
    */
   async upgrade(request: Request): Promise<string | null> {
-    const { data, isLegacy } = await this.read(request);
-    return isLegacy && data ? this.seal(data) : null;
+    const { data, issuedAt, isLegacy } = await this.read(request);
+    return isLegacy && data && issuedAt !== undefined ? this.seal(data, issuedAt) : null;
   }
 }

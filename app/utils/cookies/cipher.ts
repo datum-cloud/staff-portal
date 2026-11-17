@@ -12,6 +12,12 @@ import { createCipheriv, createDecipheriv, hkdfSync, randomBytes } from 'node:cr
 /** Prefix of a sealed value; lets readers tell it from the old signed-only JSON. */
 export const SEALED_PREFIX = 'v1.';
 
+/**
+ * What a sealed cookie holds, as JSON: the data plus when the session behind it
+ * began (epoch ms), so readers can cap how long it lives.
+ */
+export type SealedCookiePayload<T> = { issuedAt: number; data: T };
+
 const KEY_LABEL = 'staff-portal:cookie-encryption:v1';
 const IV_BYTES = 12;
 const TAG_BYTES = 16;

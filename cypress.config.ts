@@ -48,8 +48,10 @@ export default defineConfig({
             throw new Error('SESSION_SECRET is required to build the login cookie');
           }
 
-          // The app stores the payload as sealed JSON under the '_session' cookie.
-          return sealCookieValue(JSON.stringify(sessionData), sessionSecret, '_session');
+          // The app stores { issuedAt, data } as sealed JSON under the '_session'
+          // cookie; issuedAt starts the session's absolute lifetime.
+          const payload = { issuedAt: Date.now(), data: sessionData };
+          return sealCookieValue(JSON.stringify(payload), sessionSecret, '_session');
         },
       });
 

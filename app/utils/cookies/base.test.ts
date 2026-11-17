@@ -1,7 +1,9 @@
+import { SESSION_MAX_AGE_SECONDS } from './base';
+import { sealCookieValue } from './cipher';
 import { sessionCookie } from './session';
 import { tokenCookie } from './token';
 import { createCookie, createCookieSessionStorage } from 'react-router';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const SECRET = 'test-session-secret-at-least-32-chars'; // vitest.config.ts SESSION_SECRET
 
@@ -27,7 +29,17 @@ async function legacyCookie(name: string, data: unknown): Promise<string> {
   return (await storage.commitSession(session)).split(';')[0];
 }
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/** The Max-Age attribute of a Set-Cookie header, in seconds. */
+const maxAgeOf = (headers: Headers): number =>
+  Number(/Max-Age=(\d+)/.exec(headers.get('Set-Cookie')!)![1]);
+
 describe('BaseCookie', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('round-trips an encrypted session cookie', async () => {
     const { headers } = await sessionCookie.set(requestWith(''), SESSION);
 
@@ -93,7 +105,87 @@ describe('BaseCookie', () => {
     expect(headers.get('Set-Cookie')).toMatch(/^_session=; Max-Age=0;/);
   });
 
+  describe('session lifetime', () => {
+    it('records when the session began and reports a sealed cookie as not legacy', async () => {
+      vi.useFakeTimers({ now: new Date('2030-01-01T00:00:00.000Z') });
+      const { headers } = await sessionCookie.set(requestWith(''), SESSION);
+
+      const read = await sessionCookie.get(requestWith(cookiePair(headers)));
+
+      expect(read.issuedAt).toBe(Date.parse('2030-01-01T00:00:00.000Z'));
+      expect(read.isLegacy).toBe(false);
+    });
+
+    it('keeps the original issue time when the cookie is re-issued', async () => {
+      vi.useFakeTimers({ now: new Date('2030-01-01T00:00:00.000Z') });
+      const issuedAt = Date.now();
+      const first = await sessionCookie.set(requestWith(''), SESSION);
+      vi.advanceTimersByTime(3 * DAY_MS);
+
+      const reissued = await sessionCookie.get(requestWith(cookiePair(first.headers)));
+      const reread = await sessionCookie.get(requestWith(cookiePair(reissued.headers)));
+
+      expect(reread.issuedAt).toBe(issuedAt);
+    });
+
+    it('keeps an issue time passed to set', async () => {
+      const issuedAt = Date.now() - 5 * DAY_MS;
+      const { headers } = await sessionCookie.set(requestWith(''), SESSION, { issuedAt });
+
+      expect((await sessionCookie.get(requestWith(cookiePair(headers)))).issuedAt).toBe(issuedAt);
+    });
+
+    it('treats a cookie older than the absolute limit as no session', async () => {
+      vi.useFakeTimers({ now: new Date('2030-01-01T00:00:00.000Z') });
+      const { headers } = await sessionCookie.set(requestWith(''), SESSION);
+      vi.advanceTimersByTime(SESSION_MAX_AGE_SECONDS * 1000);
+
+      const read = await sessionCookie.get(requestWith(cookiePair(headers)));
+
+      expect(read.data).toBeUndefined();
+      expect(read.headers.get('Set-Cookie')).toBeNull();
+    });
+
+    it('never sets a Max-Age past the absolute limit', async () => {
+      vi.useFakeTimers({ now: new Date('2030-01-01T00:00:00.000Z') });
+      const issuedAt = Date.now() - (SESSION_MAX_AGE_SECONDS * 1000 - DAY_MS);
+
+      const { headers } = await sessionCookie.set(requestWith(''), SESSION, { issuedAt });
+
+      expect(maxAgeOf(headers)).toBe(24 * 60 * 60);
+    });
+
+    it('uses the full cookie Max-Age for a new session', async () => {
+      const { headers } = await sessionCookie.set(requestWith(''), SESSION);
+
+      expect(maxAgeOf(headers)).toBe(7 * 24 * 60 * 60);
+    });
+
+    it('rejects a sealed cookie that carries no issue time', async () => {
+      const value = sealCookieValue(JSON.stringify(SESSION), SECRET, '_session');
+
+      expect((await sessionCookie.get(requestWith(`_session=${value}`))).data).toBeUndefined();
+    });
+  });
+
   describe('old signed-only cookies', () => {
+    it('reports an old cookie as legacy', async () => {
+      const legacy = await legacyCookie('_session', SESSION);
+
+      expect((await sessionCookie.get(requestWith(legacy))).isLegacy).toBe(true);
+    });
+
+    it('starts the session at the upgrade', async () => {
+      vi.useFakeTimers({ now: new Date('2030-01-01T00:00:00.000Z') });
+      const legacy = await legacyCookie('_session', SESSION);
+
+      const upgraded = await sessionCookie.upgrade(requestWith(legacy));
+      const read = await sessionCookie.get(requestWith(upgraded!.split(';')[0]));
+
+      expect(read.issuedAt).toBe(Date.parse('2030-01-01T00:00:00.000Z'));
+      expect(read.isLegacy).toBe(false);
+    });
+
     it('still reads one and re-issues it encrypted', async () => {
       const legacy = await legacyCookie('_session', SESSION);
 
