@@ -1,3 +1,4 @@
+import { assertSameOrigin } from './same-origin';
 import { authenticator } from '@/modules/auth';
 import { isStaffMember } from '@/modules/auth/require-staff.server';
 import { EnvVariables } from '@/server/iface';
@@ -59,7 +60,8 @@ export function clearStaffMembershipCache(): void {
 /**
  * Hono middleware for authentication
  * Validates user authentication and staff-group membership, then sets the
- * access token in context. A signed-in user outside the staff group gets 403.
+ * access token in context. A signed-in user outside the staff group gets 403,
+ * and so does a state-changing request from another origin.
  */
 export function authMiddleware() {
   return createMiddleware(async (c: Context<{ Variables: EnvVariables }>, next: Next) => {
@@ -80,6 +82,10 @@ export function authMiddleware() {
     });
 
     try {
+      // The session cookie rides along on cross-site requests, so a
+      // state-changing call must come from our own origin.
+      assertSameOrigin(request, reqId);
+
       // Check if user is authenticated
       const isAuthenticated = await authenticator.isAuthenticated(request);
       if (!isAuthenticated) {

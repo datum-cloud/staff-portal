@@ -1,4 +1,9 @@
-import { authMiddleware, clearStaffMembershipCache, getToken, STAFF_MEMBERSHIP_TTL_MS } from './auth';
+import {
+  authMiddleware,
+  clearStaffMembershipCache,
+  getToken,
+  STAFF_MEMBERSHIP_TTL_MS,
+} from './auth';
 import { authenticator } from '@/modules/auth';
 import { isStaffMember } from '@/modules/auth/require-staff.server';
 import { EnvVariables } from '@/server/iface';
@@ -28,7 +33,15 @@ function createApp() {
   const app = new Hono<{ Variables: EnvVariables }>();
   app.use(requestId());
   app.get('/api/thing', authMiddleware(), (c) => c.json({ token: getToken(c) }));
+  app.all('/api/internal/*', authMiddleware(), (c) => c.json({ method: c.req.method }));
   return app;
+}
+
+const APP_ORIGIN = 'http://localhost:3000';
+
+/** Sends `method` to the internal proxy with the given request headers. */
+function send(method: string, headers: Record<string, string> = {}) {
+  return createApp().request(`${APP_ORIGIN}/api/internal/apis/v1/things`, { method, headers });
 }
 
 const signIn = (accessToken = TOKEN) =>
@@ -136,5 +149,52 @@ describe('authMiddleware', () => {
 
     expect(res.status).toBe(200);
     expect(staffMember).not.toHaveBeenCalled();
+  });
+
+  describe('state-changing requests', () => {
+    it.each(['POST', 'PUT', 'PATCH', 'DELETE'])(
+      'refuses a cross-origin %s before touching the session',
+      async (method) => {
+        const res = await send(method, { Origin: 'https://evil.example' });
+
+        expect(res.status).toBe(403);
+        expect(await res.json()).toMatchObject({ code: 'FORBIDDEN' });
+        expect(isAuthenticated).not.toHaveBeenCalled();
+      }
+    );
+
+    it('passes a same-origin POST', async () => {
+      const res = await send('POST', { Origin: APP_ORIGIN });
+
+      expect(res.status).toBe(200);
+      expect(await res.json()).toEqual({ method: 'POST' });
+    });
+
+    it('passes a POST without Origin when Sec-Fetch-Site is same-origin', async () => {
+      const res = await send('POST', { 'Sec-Fetch-Site': 'same-origin' });
+
+      expect(res.status).toBe(200);
+    });
+
+    it.each([
+      ['no Origin and no Sec-Fetch-Site', {}],
+      ['no Origin and a cross-site fetch', { 'Sec-Fetch-Site': 'cross-site' }],
+      ['an Origin on another port', { Origin: 'http://localhost:4000' }],
+      [
+        'a cross-site Origin even with Sec-Fetch-Site same-origin',
+        {
+          Origin: 'https://evil.example',
+          'Sec-Fetch-Site': 'same-origin',
+        },
+      ],
+    ])('refuses a POST with %s', async (_case, headers) => {
+      expect((await send('POST', headers)).status).toBe(403);
+    });
+
+    it.each(['GET', 'HEAD', 'OPTIONS'])('lets a cross-origin %s through', async (method) => {
+      const res = await send(method, { Origin: 'https://evil.example' });
+
+      expect(res.status).toBe(200);
+    });
   });
 });
