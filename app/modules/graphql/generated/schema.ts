@@ -385,6 +385,8 @@ export interface OrgMember {
   type: Scalars['String'];
   /** Only set for invitations: Pending, Accepted, Declined. */
   invitationState?: Scalars['String'];
+  /** Only set for invitations: when it stops being accepted (RFC 3339). */
+  expiresAt?: Scalars['String'];
   createdAt?: Scalars['String'];
   /** The member's user resource name. Null for invitations, which have no user yet. */
   userName?: Scalars['String'];
@@ -1006,6 +1008,8 @@ export interface OrgMemberRequest {
   type?: boolean | number;
   /** Only set for invitations: Pending, Accepted, Declined. */
   invitationState?: boolean | number;
+  /** Only set for invitations: when it stops being accepted (RFC 3339). */
+  expiresAt?: boolean | number;
   createdAt?: boolean | number;
   /** The member's user resource name. Null for invitations, which have no user yet. */
   userName?: boolean | number;

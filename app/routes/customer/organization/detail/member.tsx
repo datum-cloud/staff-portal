@@ -1,6 +1,7 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../shared';
 import type { Route } from './+types/member';
 import { BadgeState } from '@/components/badge';
+import { DateTime } from '@/components/date';
 import { DisplayName, DisplayText } from '@/components/display';
 import { ListColumnHeader, ListTable } from '@/features/milo';
 import type { GqlOrgMember } from '@/resources/gql/organization.gql';
@@ -123,6 +124,23 @@ export default function Page() {
       header: () => '',
       cell: ({ getValue }) => <BadgeState state={getValue() ?? ''} />,
       enableSorting: false,
+    }),
+    columnHelper.accessor('expiresAt', {
+      header: ({ column }) => <ListColumnHeader column={column} title={tCore`Expires`} />,
+      cell: ({ row }) => {
+        const { expiresAt, invitationState } = row.original;
+        if (!expiresAt || invitationState !== 'Pending') return '—';
+        if (new Date(expiresAt) < new Date()) {
+          return (
+            <span className="text-destructive">
+              <Trans>
+                Expired <DateTime date={expiresAt} variant="relative" addSuffix />
+              </Trans>
+            </span>
+          );
+        }
+        return <DateTime date={expiresAt} variant="relative" addSuffix />;
+      },
     }),
     columnHelper.accessor('roles', {
       header: ({ column }) => <ListColumnHeader column={column} title={tCore`Role`} />,

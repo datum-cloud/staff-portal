@@ -22,7 +22,7 @@ import {
   listResourcemanagerMiloapisComV1Alpha1Project,
   readResourcemanagerMiloapisComV1Alpha1Organization,
 } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
-import { addHours, formatRFC3339 } from 'date-fns';
+import { addDays, formatRFC3339 } from 'date-fns';
 
 /**
  * Reads the business name for each org (from Organization.spec.contactInfo) and
@@ -123,7 +123,8 @@ export const orgMemberListQuery = async (orgName: string, params?: ListQueryPara
 
 export const orgInvitationCreateMutation = async (
   orgName: string,
-  payload: ComMiloapisIamV1Alpha1UserInvitation['spec']
+  payload: ComMiloapisIamV1Alpha1UserInvitation['spec'],
+  annotations?: Record<string, string>
 ) => {
   const response = await createIamMiloapisComV1Alpha1NamespacedUserInvitation({
     path: {
@@ -134,6 +135,7 @@ export const orgInvitationCreateMutation = async (
       kind: 'UserInvitation',
       metadata: {
         generateName: 'user-invitation-',
+        ...(annotations ? { annotations } : {}),
       },
       spec: payload,
     },
@@ -150,6 +152,19 @@ export const orgInvitationDeleteMutation = async (orgName: string, name: string)
     },
   });
 };
+
+/**
+ * How long a resent invitation stays open. Matches cloud-portal: most invitees
+ * have to create a Datum account first, and Milo only lets them read the
+ * invitation once their user exists and it is still live.
+ */
+export const INVITATION_LIFETIME_DAYS = 7;
+
+/**
+ * Names the invitation a resend replaces. Milo's activity policy shows a create
+ * carrying it as "resent the invitation" rather than a new invitation.
+ */
+export const INVITATION_RESENT_FROM_ANNOTATION = 'iam.miloapis.com/resent-from';
 
 /**
  * Resends an invitation: replaces it with a fresh one that expires in 24 hours.
@@ -171,15 +186,19 @@ export const orgInvitationResendMutation = async (orgName: string, name: string)
 
   await orgInvitationDeleteMutation(orgName, name);
 
-  return orgInvitationCreateMutation(orgName, {
-    email: spec.email,
-    givenName: spec.givenName,
-    familyName: spec.familyName,
-    organizationRef: spec.organizationRef,
-    roles: spec.roles,
-    expirationDate: formatRFC3339(addHours(new Date(), 24)),
-    state: 'Pending',
-  });
+  return orgInvitationCreateMutation(
+    orgName,
+    {
+      email: spec.email,
+      givenName: spec.givenName,
+      familyName: spec.familyName,
+      organizationRef: spec.organizationRef,
+      roles: spec.roles,
+      expirationDate: formatRFC3339(addDays(new Date(), INVITATION_LIFETIME_DAYS)),
+      state: 'Pending',
+    },
+    { [INVITATION_RESENT_FROM_ANNOTATION]: name }
+  );
 };
 
 export const orgDeleteMutation = (orgName: string) => {
