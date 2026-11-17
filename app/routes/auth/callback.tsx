@@ -50,12 +50,13 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     const url = new URL(request.url);
+    // Never log the Cookie header or the query string: they carry the session
+    // tokens, the OAuth state and the one-time authorization code.
     logger.error('OAuth callback error', {
       error: message,
-      url: url.toString(),
+      url: `${url.origin}${url.pathname}`,
       hostname: url.hostname,
       protocol: url.protocol,
-      cookies: request.headers.get('Cookie') || 'none',
     });
 
     if (message.includes('Missing state on cookie')) {
