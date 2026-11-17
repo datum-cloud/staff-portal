@@ -1,8 +1,8 @@
 import { type EntityNav, type NavSubItem } from './nav-config';
 import { usePlugins } from '@/modules/plugins/client/use-plugins';
 import { findWorkloadListPluginSlug } from '@/modules/plugins/client/workload-plugin';
+import { ENTITY_ICONS } from '@/utils/config/icons.config';
 import { projectRoutes } from '@/utils/config/routes.config';
-import { Boxes } from 'lucide-react';
 import { useMemo } from 'react';
 import { useMatches } from 'react-router';
 
@@ -34,7 +34,7 @@ function withProjectCompute(
 
   const computeItem: NavSubItem = {
     label: 'Compute',
-    icon: Boxes,
+    icon: ENTITY_ICONS.workload,
     match: projectRoutes.plugin.mount(projectName, workloadPluginSlug),
     children: [
       { label: 'Workloads', href: projectRoutes.plugin.mount(projectName, workloadPluginSlug) },
