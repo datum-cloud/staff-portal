@@ -77,16 +77,25 @@ export function StatStripItems({ children }: { children: ReactNode }) {
   );
 }
 
-/** One stat in the strip. With `href`, the whole cell is a link and shows an arrow. */
+/** What clicking a strip item does: follow a link, run an action (e.g. open a dialog), or nothing. */
+type StatStripItemAction =
+  | { href: string; onClick?: never }
+  | { onClick: () => void; href?: never }
+  | { href?: undefined; onClick?: undefined };
+
+/**
+ * One stat in the strip. With `href`, the whole cell is a link and shows an
+ * arrow; with `onClick`, it is a button.
+ */
 export function StatStripItem({
   title,
   href,
+  onClick,
   children,
 }: {
   title: ReactNode;
-  href?: string;
   children: ReactNode;
-}) {
+} & StatStripItemAction) {
   const body = (
     <div className="flex h-full min-w-0 flex-col gap-2 px-4 py-3">
       <div className="flex h-4 items-center justify-between gap-2">
@@ -105,15 +114,22 @@ export function StatStripItem({
   const cell =
     'border-border min-w-0 border-t even:border-l @max-3xl/main:odd:last:col-span-2 @3xl/main:border-t-0 @3xl/main:border-l @3xl/main:first:border-l-0';
 
-  if (!href) return <div className={cell}>{body}</div>;
-  return (
-    <Link
-      to={href}
-      className={cn(
-        cell,
-        'hover:bg-muted/30 focus-visible:ring-ring block transition-colors focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset'
-      )}>
-      {body}
-    </Link>
-  );
+  const interactive =
+    'hover:bg-muted/30 focus-visible:ring-ring block transition-colors focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset';
+
+  if (href) {
+    return (
+      <Link to={href} className={cn(cell, interactive)}>
+        {body}
+      </Link>
+    );
+  }
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick} className={cn(cell, interactive, 'text-left')}>
+        {body}
+      </button>
+    );
+  }
+  return <div className={cell}>{body}</div>;
 }

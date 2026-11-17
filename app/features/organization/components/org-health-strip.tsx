@@ -8,6 +8,7 @@ import {
   type Verdict,
   type VerdictSummary,
 } from '../lib/org-verdict';
+import { ComputeProjectsDialog } from './compute-projects-dialog';
 import { DateTime } from '@/components/date';
 import {
   StatStrip,
@@ -25,7 +26,7 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import type { LucideIcon } from 'lucide-react';
-import { useMemo, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 
 /** The strip's tiles, in order. Quota counts toward the verdict but has no tile. */
 const TILE_AREAS = ['workloads', 'instances', 'loadBalancers', 'domains', 'dnsZones'] as const;
@@ -221,12 +222,12 @@ function VerdictLead({ summary, isLoading }: { summary: VerdictSummary; isLoadin
   );
 }
 
-const tileHref = (area: TileArea, orgName: string): string => {
+const isComputeTile = (area: TileArea): area is 'workloads' | 'instances' =>
+  area === 'workloads' || area === 'instances';
+
+/** Network tiles link to the org's list page; compute tiles open a dialog instead. */
+const tileHref = (area: Exclude<TileArea, 'workloads' | 'instances'>, orgName: string): string => {
   switch (area) {
-    case 'workloads':
-    case 'instances':
-      // No organization-wide compute list; compute lives in each project.
-      return orgRoutes.project(orgName);
     case 'loadBalancers':
       return orgRoutes.edge(orgName);
     case 'domains':
@@ -246,6 +247,8 @@ export function OrgHealthStrip({ orgName, className }: { orgName: string; classN
   const { issues, areas, isLoading } = useOrgIssues(orgName);
   const summary = useMemo(() => summarizeVerdict(issues, areas), [issues, areas]);
   const tiles = TILE_AREAS.filter((area) => areas[area].enabled);
+  // No organization-wide compute list exists, so compute tiles open one by project.
+  const [computeOpen, setComputeOpen] = useState(false);
 
   return (
     <StatStrip label={t`Organization health`} className={className}>
@@ -255,7 +258,12 @@ export function OrgHealthStrip({ orgName, className }: { orgName: string; classN
           const state = areas[area];
           const status = tileStatus(area, issues, state);
           return (
-            <StatStripItem key={area} title={areaLabel(area)} href={tileHref(area, orgName)}>
+            <StatStripItem
+              key={area}
+              title={areaLabel(area)}
+              {...(isComputeTile(area)
+                ? { onClick: () => setComputeOpen(true) }
+                : { href: tileHref(area, orgName) })}>
               {status.line.kind === 'loading' ? (
                 <StatTileSkeleton />
               ) : (
@@ -278,6 +286,12 @@ export function OrgHealthStrip({ orgName, className }: { orgName: string; classN
           );
         })}
       </StatStripItems>
+      <ComputeProjectsDialog
+        orgName={orgName}
+        issues={issues}
+        open={computeOpen}
+        onOpenChange={setComputeOpen}
+      />
     </StatStrip>
   );
 }

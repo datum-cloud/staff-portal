@@ -24,6 +24,8 @@ export interface OrgComputeStatus extends LoadState {
   enabled: boolean;
   /** True until the plugin list loads, so callers can't tell yet whether compute is on. */
   pluginPending: boolean;
+  /** The compute plugin's slug, for links to its pages; null when it isn't installed. */
+  pluginSlug: string | null;
   /** Each of the organization's projects, in list order. */
   projects: ReadonlyMap<string, ProjectCompute>;
 }
@@ -89,7 +91,7 @@ export function useOrgComputeStatus(orgName: string): OrgComputeStatus {
 
   // Stable between renders, so callers can depend on the whole result.
   return useMemo(
-    () => ({ enabled, pluginPending, projects, isLoading, isError }),
-    [enabled, pluginPending, projects, isLoading, isError]
+    () => ({ enabled, pluginPending, pluginSlug, projects, isLoading, isError }),
+    [enabled, pluginPending, pluginSlug, projects, isLoading, isError]
   );
 }
