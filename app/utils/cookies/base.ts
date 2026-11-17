@@ -140,6 +140,14 @@ export abstract class BaseCookie<T extends IBaseCookieData> {
     return { data, issuedAt: Date.now(), isLegacy: true };
   }
 
+  /**
+   * The data an old signed-only cookie is re-issued with when it is sealed.
+   * Subclasses drop whatever must not survive the upgrade.
+   */
+  protected forUpgrade(data: T): T {
+    return data;
+  }
+
   private createHeaders(cookieHeader: string): Headers {
     return new Headers({ 'Set-Cookie': cookieHeader });
   }
@@ -158,7 +166,8 @@ export abstract class BaseCookie<T extends IBaseCookieData> {
     const { data, issuedAt, isLegacy } = await this.read(request);
     if (!data || issuedAt === undefined) return { data: undefined, headers: new Headers() };
 
-    return { data, issuedAt, isLegacy, headers: this.createHeaders(this.seal(data, issuedAt)) };
+    const resealed = isLegacy ? this.forUpgrade(data) : data;
+    return { data, issuedAt, isLegacy, headers: this.createHeaders(this.seal(resealed, issuedAt)) };
   }
 
   async destroy(_request: Request): Promise<CookieResponse<T>> {
@@ -167,11 +176,13 @@ export abstract class BaseCookie<T extends IBaseCookieData> {
 
   /**
    * When the request still carries this cookie in the old signed-only format,
-   * returns a `Set-Cookie` value that re-issues the same data sealed, with the
-   * session starting now. Returns null for a sealed, missing or unreadable cookie.
+   * returns a `Set-Cookie` value that re-issues its data (less anything
+   * `forUpgrade` drops) sealed, with the session starting now. Returns null for
+   * a sealed, missing or unreadable cookie.
    */
   async upgrade(request: Request): Promise<string | null> {
     const { data, issuedAt, isLegacy } = await this.read(request);
-    return isLegacy && data && issuedAt !== undefined ? this.seal(data, issuedAt) : null;
+    if (!isLegacy || !data || issuedAt === undefined) return null;
+    return this.seal(this.forUpgrade(data), issuedAt);
   }
 }

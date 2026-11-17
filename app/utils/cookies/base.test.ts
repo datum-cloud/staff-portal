@@ -194,7 +194,7 @@ describe('BaseCookie', () => {
       expect(data).toMatchObject({ sub: 'user-123', accessToken: 'secret-access-token' });
       expect(headers.get('Set-Cookie')).not.toContain('secret-access-token');
       const reread = await sessionCookie.get(requestWith(cookiePair(headers)));
-      expect(reread.data).toEqual(data);
+      expect(reread.data).toEqual({ ...data, refreshToken: null });
     });
 
     it('upgrade() returns an encrypted Set-Cookie for an old session cookie', async () => {
@@ -205,6 +205,30 @@ describe('BaseCookie', () => {
       expect(upgraded).toMatch(/^_session=v1\./);
       const { data } = await sessionCookie.get(requestWith(upgraded!.split(';')[0]));
       expect(data).toMatchObject({ accessToken: 'secret-access-token' });
+    });
+
+    it('drops the refresh token when it re-issues an old session cookie', async () => {
+      const legacy = await legacyCookie('_session', SESSION);
+
+      const upgraded = await sessionCookie.upgrade(requestWith(legacy));
+      const viaGet = (await sessionCookie.get(requestWith(legacy))).headers;
+
+      for (const pair of [upgraded!.split(';')[0], cookiePair(viaGet)]) {
+        const { data } = await sessionCookie.get(requestWith(pair));
+        expect(data).toEqual({
+          ...SESSION,
+          expiredAt: SESSION.expiredAt.toISOString(),
+          refreshToken: null,
+        });
+      }
+    });
+
+    it('still reports the old cookie as it was, refresh token included', async () => {
+      const legacy = await legacyCookie('_session', SESSION);
+
+      const { data } = await sessionCookie.get(requestWith(legacy));
+
+      expect(data).toMatchObject({ refreshToken: 'secret-refresh-token' });
     });
 
     it('upgrade() re-issues an old token cookie too', async () => {
