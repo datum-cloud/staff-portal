@@ -36,7 +36,8 @@ function appendSetCookies(c: Context, setCookies: string[]): void {
  * Runs ahead of the request-context middleware, the API auth middleware and the
  * React Router loaders, and swaps in a request that carries the new cookies, so
  * all of them see the same, current access token. The new cookies (or, after a
- * failed refresh, the cleared ones) go back on the response.
+ * rejected refresh, the cleared ones) go back on the response. When the IdP is
+ * down, the request runs without a session and the cookies are left as they are.
  */
 export function sessionRefreshMiddleware() {
   return createMiddleware(async (c: Context, next: Next) => {
