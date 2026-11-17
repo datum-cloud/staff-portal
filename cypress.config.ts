@@ -40,39 +40,16 @@ export default defineConfig({
           expiredAt: string;
           sub: string;
         }) {
-          // Sign the cookie the same way the app does
-          // (see app/utils/cookies/base.ts + session.ts).
-          const { createCookie, createCookieSessionStorage } = await import('react-router');
+          // Seal the cookie the same way the app does
+          // (see app/utils/cookies/base.ts + cipher.ts + session.ts).
+          const { sealCookieValue } = await import('./app/utils/cookies/cipher');
           const sessionSecret = process.env.SESSION_SECRET;
-          const appUrl =
-            process.env.APP_URL || process.env.CYPRESS_BASE_URL || 'http://localhost:3000';
+          if (!sessionSecret) {
+            throw new Error('SESSION_SECRET is required to build the login cookie');
+          }
 
-          const sessionCookie = createCookie('_session', {
-            path: '/',
-            domain: new URL(appUrl).hostname,
-            sameSite: 'lax',
-            httpOnly: true,
-            maxAge: 7 * 24 * 60 * 60, // matches SessionCookie.MAX_AGE
-            secrets: [sessionSecret as string],
-          });
-
-          const sessionStorage = createCookieSessionStorage({
-            cookie: sessionCookie,
-          });
-
-          // The app stores its payload under the '_session' key (BaseCookie.set).
-          return sessionStorage
-            .getSession()
-            .then((session) => {
-              session.set('_session', sessionData);
-              return sessionStorage.commitSession(session);
-            })
-            .then((cookieHeader: string) => {
-              // Extract just the cookie value from the Set-Cookie header.
-              // Format: "_session=value; Path=/; ..."
-              const match = cookieHeader.match(/^_session=([^;]+)/);
-              return match ? match[1] : null;
-            });
+          // The app stores the payload as sealed JSON under the '_session' cookie.
+          return sealCookieValue(JSON.stringify(sessionData), sessionSecret, '_session');
         },
       });
 
