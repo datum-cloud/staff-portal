@@ -4,6 +4,7 @@ export { OrgDetailsCard } from './components/org-details-card';
 export { OrgMembersPreviewCard } from './components/org-members-preview-card';
 export { OrgUsageCard } from './components/org-usage-card';
 export { OrgHealthStrip } from './components/org-health-strip';
+export { OrgNeedsAttention } from './components/org-needs-attention';
 export { buildOnboardingSteps } from './lib/onboarding-steps';
 export {
   useOrgComputeStatus,

@@ -1,5 +1,7 @@
 import {
   AlertCircle,
+  Box,
+  Boxes,
   AlertTriangle,
   ArrowRightLeft,
   BarChart3,
@@ -99,6 +101,9 @@ export const ENTITY_ICONS = {
   edge: Gauge,
   dns: Signpost,
   domain: Layers,
+  // Compute (served by the compute plugin)
+  workload: Boxes,
+  instance: Box,
   // Not in the menu
   fraud: ShieldAlert,
 } satisfies Record<string, LucideIcon>;
