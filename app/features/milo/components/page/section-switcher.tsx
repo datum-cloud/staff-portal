@@ -10,8 +10,9 @@ import { Link } from 'react-router';
 
 /**
  * Section switcher for the list search bar — stands in for the left sub-nav
- * rail on sections whose `subNav.placement` is `toolbar`. Lists the active
- * section's sub-nav items; the trigger names the current one.
+ * rail on a `toolbar` section's full-width list pages (`handle.fullWidth`,
+ * see `useRailNav`). Lists the active section's sub-nav items; the trigger
+ * names the current one.
  */
 export function SectionSwitcher() {
   const { section, subItem } = useActiveNav();
