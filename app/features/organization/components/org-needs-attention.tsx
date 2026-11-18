@@ -15,8 +15,10 @@ import { realTime, type IssueArea, type IssueSeverity, type OrgIssue } from '../
 import { ButtonCopy } from '@/components/button';
 import { DateTime } from '@/components/date';
 import { SectionCard } from '@/features/milo';
+import { useShowMore } from '@/hooks';
 import { ENTITY_ICONS, STATUS_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
 import { projectRoutes } from '@/utils/config/routes.config';
+import { Button } from '@datum-cloud/datum-ui/button';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import {
@@ -43,6 +45,9 @@ const AREA_ICON: Record<IssueArea, LucideIcon> = {
   dnsZones: ENTITY_ICONS.dns,
   quota: TAB_ICONS.quotas,
 };
+
+/** Rows a tab shows before "Show all"; low-priority rows sort last, so they fold away first. */
+const VISIBLE_ROWS = 10;
 
 const SEVERITY_STYLE: Record<IssueSeverity, { box: string; text: string }> = {
   danger: { box: 'bg-destructive/10', text: 'text-destructive' },
@@ -429,6 +434,7 @@ export function OrgNeedsAttention({ orgName, className }: { orgName: string; cla
   const tabs = ATTENTION_TABS.filter((t) => t !== 'compute' || computeOn);
   const activeTab: AttentionTab = tabs.includes(tab) ? tab : 'all';
   const visible = rowsForTab(rows, activeTab);
+  const { shown, hidden, roomForMore, showAll, reset } = useShowMore(visible, VISIBLE_ROWS);
   // A tab is loading while any of its areas is; All waits on every area.
   const tabAreas =
     activeTab === 'all' ? Object.values(areas) : TAB_AREAS[activeTab].map((area) => areas[area]);
@@ -453,7 +459,12 @@ export function OrgNeedsAttention({ orgName, className }: { orgName: string; cla
           ) : null
         }>
         <div className="flex flex-col gap-2">
-          <Tabs value={activeTab} onValueChange={(value) => setTab(value as AttentionTab)}>
+          <Tabs
+            value={activeTab}
+            onValueChange={(value) => {
+              setTab(value as AttentionTab);
+              reset();
+            }}>
             <TabsList variant="line">
               {tabs.map((t) => (
                 <TabsTrigger key={t} value={t} className="gap-1.5">
@@ -468,19 +479,22 @@ export function OrgNeedsAttention({ orgName, className }: { orgName: string; cla
 
           {visible.length > 0 && (
             <ul className="divide-y">
-              {visible.map((row) => (
+              {shown.map((row) => (
                 <AttentionRowItem key={row.issue.id} row={row} instancesOf={instancesOf} />
               ))}
             </ul>
           )}
 
           {loading ? (
-            // Rows already loaded stay visible; the rest of the tab fills in below.
-            <div className="flex flex-col gap-3 py-2" aria-busy="true">
-              {Array.from({ length: visible.length > 0 ? 2 : 4 }).map((_, index) => (
-                <Skeleton key={index} className="h-12 w-full rounded-md" />
-              ))}
-            </div>
+            // Rows already loaded stay visible; the rest of the tab fills in below,
+            // unless the list is already at its cap (new rows may sort above it).
+            roomForMore && (
+              <div className="flex flex-col gap-3 py-2" aria-busy="true">
+                {Array.from({ length: visible.length > 0 ? 2 : 4 }).map((_, index) => (
+                  <Skeleton key={index} className="h-12 w-full rounded-md" />
+                ))}
+              </div>
+            )
           ) : visible.length > 0 ? null : rows.length === 0 ? (
             <div className="flex flex-col items-center gap-2 py-8 text-center">
               <Icon icon={STATUS_ICONS.success} size={24} aria-hidden className="text-success" />
@@ -502,6 +516,20 @@ export function OrgNeedsAttention({ orgName, className }: { orgName: string; cla
             <Text size="sm" textColor="muted" className="py-6 text-center">
               <Trans>Nothing needs attention here.</Trans>
             </Text>
+          )}
+
+          {hidden > 0 && (
+            <div className="flex items-center gap-3">
+              <Button type="quaternary" theme="borderless" size="small" onClick={showAll}>
+                <Plural value={visible.length} one="Show all # issues" other="Show all # issues" />
+              </Button>
+              {loading && (
+                // At the cap the skeleton is hidden, so say that more is still coming.
+                <Text size="xs" textColor="muted" aria-busy="true">
+                  <Trans>Still checking…</Trans>
+                </Text>
+              )}
+            </div>
           )}
         </div>
       </SectionCard>

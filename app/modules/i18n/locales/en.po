@@ -21,7 +21,7 @@ msgstr " · {days}d late"
 msgid " · newest"
 msgstr " · newest"
 
-#: app/features/organization/components/org-needs-attention.tsx:494
+#: app/features/organization/components/org-needs-attention.tsx:508
 msgid " and "
 msgstr " and "
 
@@ -85,6 +85,11 @@ msgstr "{0, plural, one {# unpaid invoice} other {# unpaid invoices}}"
 msgid "{0, plural, one {in # project} other {in # projects}}"
 msgstr "{0, plural, one {in # project} other {in # projects}}"
 
+#. placeholder {0}: visible.length
+#: app/features/organization/components/org-needs-attention.tsx:524
+msgid "{0, plural, one {Show all # issues} other {Show all # issues}}"
+msgstr "{0, plural, one {Show all # issues} other {Show all # issues}}"
+
 #. placeholder {0}: totals.monthly
 #: app/features/billing/components/contract-fee-text.ts:39
 msgid "{0} a month"
@@ -128,7 +133,7 @@ msgstr "{0} of {1} services"
 
 #. placeholder {0}: usage.allocated
 #. placeholder {1}: usage.limit
-#: app/features/organization/components/org-needs-attention.tsx:321
+#: app/features/organization/components/org-needs-attention.tsx:326
 msgid "{0} of {1} used ({percent}%)"
 msgstr "{0} of {1} used ({percent}%)"
 
@@ -393,19 +398,19 @@ msgstr "{ticked} ticked"
 msgid "{times}× last cycle at this point"
 msgstr "{times}× last cycle at this point"
 
-#: app/features/organization/components/org-needs-attention.tsx:94
+#: app/features/organization/components/org-needs-attention.tsx:99
 msgid "{total, plural, one {# DNS zone} other {# DNS zones}}"
 msgstr "{total, plural, one {# DNS zone} other {# DNS zones}}"
 
-#: app/features/organization/components/org-needs-attention.tsx:92
+#: app/features/organization/components/org-needs-attention.tsx:97
 msgid "{total, plural, one {# domain} other {# domains}}"
 msgstr "{total, plural, one {# domain} other {# domains}}"
 
-#: app/features/organization/components/org-needs-attention.tsx:88
+#: app/features/organization/components/org-needs-attention.tsx:93
 msgid "{total, plural, one {# instance} other {# instances}}"
 msgstr "{total, plural, one {# instance} other {# instances}}"
 
-#: app/features/organization/components/org-needs-attention.tsx:90
+#: app/features/organization/components/org-needs-attention.tsx:95
 msgid "{total, plural, one {# load balancer} other {# load balancers}}"
 msgstr "{total, plural, one {# load balancer} other {# load balancers}}"
 
@@ -413,7 +418,7 @@ msgstr "{total, plural, one {# load balancer} other {# load balancers}}"
 msgid "{total, plural, one {# project, no compute problems} other {# projects, no compute problems}}"
 msgstr "{total, plural, one {# project, no compute problems} other {# projects, no compute problems}}"
 
-#: app/features/organization/components/org-needs-attention.tsx:96
+#: app/features/organization/components/org-needs-attention.tsx:101
 msgid "{total, plural, one {# quota bucket} other {# quota buckets}}"
 msgstr "{total, plural, one {# quota bucket} other {# quota buckets}}"
 
@@ -421,7 +426,7 @@ msgstr "{total, plural, one {# quota bucket} other {# quota buckets}}"
 msgid "{total, plural, one {# thing needs attention} other {# things need attention}}"
 msgstr "{total, plural, one {# thing needs attention} other {# things need attention}}"
 
-#: app/features/organization/components/org-needs-attention.tsx:86
+#: app/features/organization/components/org-needs-attention.tsx:91
 msgid "{total, plural, one {# workload} other {# workloads}}"
 msgstr "{total, plural, one {# workload} other {# workloads}}"
 
@@ -817,7 +822,7 @@ msgstr "Admin"
 msgid "After publish, only the display name can change. Rate changes need a new Offer."
 msgstr "After publish, only the display name can change. Rate changes need a new Offer."
 
-#: app/features/organization/components/org-needs-attention.tsx:154
+#: app/features/organization/components/org-needs-attention.tsx:159
 msgid "Age"
 msgstr "Age"
 
@@ -842,7 +847,7 @@ msgstr "Algorithm"
 
 #: app/features/contact/components/timeline/timeline-filters.tsx:13
 #: app/features/dashboard/components/home/activity-section.tsx:17
-#: app/features/organization/components/org-needs-attention.tsx:73
+#: app/features/organization/components/org-needs-attention.tsx:78
 msgid "All"
 msgstr "All"
 
@@ -1437,7 +1442,7 @@ msgstr "Change payment terms"
 msgid "Change your Primary Email in GitHub (your primary email)"
 msgstr "Change your Primary Email in GitHub (your primary email)"
 
-#: app/features/organization/components/org-needs-attention.tsx:253
+#: app/features/organization/components/org-needs-attention.tsx:258
 msgid "Changed"
 msgstr "Changed"
 
@@ -1477,11 +1482,11 @@ msgstr "Charges start on this day, in UTC, and bill on it each month. Today or l
 msgid "Check that you have permission to list ServicePricings, then try again. If IAM was just updated, wait a minute for PolicyBindings to reconcile."
 msgstr "Check that you have permission to list ServicePricings, then try again. If IAM was just updated, wait a minute for PolicyBindings to reconcile."
 
-#: app/features/organization/components/org-needs-attention.tsx:491
+#: app/features/organization/components/org-needs-attention.tsx:505
 msgid "Checked"
 msgstr "Checked"
 
-#: app/features/organization/components/org-needs-attention.tsx:449
+#: app/features/organization/components/org-needs-attention.tsx:455
 msgid "Checked <0/>"
 msgstr "Checked <0/>"
 
@@ -1599,7 +1604,7 @@ msgstr "Completing ACME challenge with the certificate authority"
 msgid "Composite"
 msgstr "Composite"
 
-#: app/features/organization/components/org-needs-attention.tsx:75
+#: app/features/organization/components/org-needs-attention.tsx:80
 msgid "Compute"
 msgstr "Compute"
 
@@ -1607,7 +1612,7 @@ msgstr "Compute"
 msgid "Compute by project"
 msgstr "Compute by project"
 
-#: app/features/organization/components/org-needs-attention.tsx:241
+#: app/features/organization/components/org-needs-attention.tsx:246
 msgid "Condition"
 msgstr "Condition"
 
@@ -2470,7 +2475,7 @@ msgstr "DNS Records"
 msgid "DNS records have been programmed for this hostname"
 msgstr "DNS records have been programmed for this hostname"
 
-#: app/features/organization/components/org-needs-attention.tsx:64
+#: app/features/organization/components/org-needs-attention.tsx:69
 msgid "DNS zone"
 msgstr "DNS zone"
 
@@ -2497,7 +2502,7 @@ msgstr "does not contain"
 #: app/features/activity/components/activity-list.tsx:490
 #: app/features/domain/components/domain-list.tsx:61
 #: app/features/fraud/detail/maxmind-rows.tsx:237
-#: app/features/organization/components/org-needs-attention.tsx:62
+#: app/features/organization/components/org-needs-attention.tsx:67
 #: app/routes/customer/project/detail/domain/detail.tsx:66
 #: app/routes/customer/resource/index.tsx:145
 #: app/routes/customer/resource/index.tsx:401
@@ -2884,7 +2889,7 @@ msgstr "Evaluations"
 msgid "Event"
 msgstr "Event"
 
-#: app/features/organization/components/org-needs-attention.tsx:406
+#: app/features/organization/components/org-needs-attention.tsx:411
 #: app/routes/customer/organization/detail/activity/events.tsx:14
 #: app/routes/customer/organization/detail/activity/events.tsx:17
 #: app/routes/customer/project/detail/activity/events.tsx:14
@@ -3483,8 +3488,8 @@ msgstr "Inherits {inheritedPercentage}%"
 msgid "Inspect usage"
 msgstr "Inspect usage"
 
-#: app/features/organization/components/org-needs-attention.tsx:58
-#: app/features/organization/components/org-needs-attention.tsx:142
+#: app/features/organization/components/org-needs-attention.tsx:63
+#: app/features/organization/components/org-needs-attention.tsx:147
 msgid "Instance"
 msgstr "Instance"
 
@@ -3692,7 +3697,7 @@ msgstr "Last 7d"
 msgid "Last Evaluated"
 msgstr "Last Evaluated"
 
-#: app/features/organization/components/org-needs-attention.tsx:151
+#: app/features/organization/components/org-needs-attention.tsx:156
 msgid "Last event"
 msgstr "Last event"
 
@@ -3825,7 +3830,7 @@ msgstr "list {listPrice}"
 msgid "List price"
 msgstr "List price"
 
-#: app/features/organization/components/org-needs-attention.tsx:60
+#: app/features/organization/components/org-needs-attention.tsx:65
 msgid "Load balancer"
 msgstr "Load balancer"
 
@@ -3891,7 +3896,7 @@ msgid "Local Time"
 msgstr "Local Time"
 
 #: app/features/fraud/detail/maxmind-rows.tsx:178
-#: app/features/organization/components/org-needs-attention.tsx:145
+#: app/features/organization/components/org-needs-attention.tsx:150
 #: app/routes/customer/user/detail/index.tsx:266
 msgid "Location"
 msgstr "Location"
@@ -3985,7 +3990,7 @@ msgid "Menu"
 msgstr "Menu"
 
 #: app/features/dns/components/dns-zone-status.tsx:84
-#: app/features/organization/components/org-needs-attention.tsx:250
+#: app/features/organization/components/org-needs-attention.tsx:255
 #: app/features/service-catalog/components/conditions-card.tsx:47
 #: app/routes/admin/service-catalog/detail/consumers.tsx:290
 msgid "Message"
@@ -4061,7 +4066,7 @@ msgstr "My Profile"
 #: app/features/contact/components/contact-list.tsx:160
 #: app/features/fraud/policy/policy-form.tsx:149
 #: app/features/organization/components/org-members-preview-card.tsx:40
-#: app/features/organization/components/org-needs-attention.tsx:287
+#: app/features/organization/components/org-needs-attention.tsx:292
 #: app/routes/admin/group/detail/index.tsx:28
 #: app/routes/admin/group/detail/member.tsx:89
 #: app/routes/admin/group/index.tsx:26
@@ -4115,7 +4120,7 @@ msgstr "Namespace"
 msgid "Navigation"
 msgstr "Navigation"
 
-#: app/features/organization/components/org-needs-attention.tsx:445
+#: app/features/organization/components/org-needs-attention.tsx:451
 msgid "Needs attention"
 msgstr "Needs attention"
 
@@ -4157,7 +4162,7 @@ msgid "Net days"
 msgstr "Net days"
 
 #: app/features/fraud/detail/maxmind-rows.tsx:120
-#: app/features/organization/components/org-needs-attention.tsx:77
+#: app/features/organization/components/org-needs-attention.tsx:82
 msgid "Network"
 msgstr "Network"
 
@@ -4463,7 +4468,7 @@ msgstr "No history"
 msgid "No hostnames configured"
 msgstr "No hostnames configured"
 
-#: app/features/organization/components/org-needs-attention.tsx:132
+#: app/features/organization/components/org-needs-attention.tsx:137
 msgid "No instances."
 msgstr "No instances."
 
@@ -4847,11 +4852,11 @@ msgid "Notes, emails, and account history for this contact will appear here."
 msgstr "Notes, emails, and account history for this contact will appear here."
 
 #: app/features/organization/components/org-health-strip.tsx:201
-#: app/features/organization/components/org-needs-attention.tsx:488
+#: app/features/organization/components/org-needs-attention.tsx:502
 msgid "Nothing needs attention"
 msgstr "Nothing needs attention"
 
-#: app/features/organization/components/org-needs-attention.tsx:503
+#: app/features/organization/components/org-needs-attention.tsx:517
 msgid "Nothing needs attention here."
 msgstr "Nothing needs attention here."
 
@@ -4958,11 +4963,11 @@ msgstr "Once a contact is associated with a user, this association cannot be rem
 msgid "Open"
 msgstr "Open"
 
-#: app/features/organization/components/org-needs-attention.tsx:221
+#: app/features/organization/components/org-needs-attention.tsx:226
 msgid "Open DNS zone"
 msgstr "Open DNS zone"
 
-#: app/features/organization/components/org-needs-attention.tsx:219
+#: app/features/organization/components/org-needs-attention.tsx:224
 msgid "Open domain"
 msgstr "Open domain"
 
@@ -4971,11 +4976,11 @@ msgstr "Open domain"
 msgid "Open in Cloud Portal"
 msgstr "Open in Cloud Portal"
 
-#: app/features/organization/components/org-needs-attention.tsx:215
+#: app/features/organization/components/org-needs-attention.tsx:220
 msgid "Open instance"
 msgstr "Open instance"
 
-#: app/features/organization/components/org-needs-attention.tsx:217
+#: app/features/organization/components/org-needs-attention.tsx:222
 msgid "Open load balancer"
 msgstr "Open load balancer"
 
@@ -4983,7 +4988,7 @@ msgstr "Open load balancer"
 msgid "Open menu"
 msgstr "Open menu"
 
-#: app/features/organization/components/org-needs-attention.tsx:223
+#: app/features/organization/components/org-needs-attention.tsx:228
 msgid "Open quota usage"
 msgstr "Open quota usage"
 
@@ -5022,7 +5027,7 @@ msgstr "or"
 #: app/features/billing/components/application-review.tsx:427
 #: app/features/billing/components/billing-account-list.tsx:202
 #: app/features/billing/components/billing-account-list.tsx:271
-#: app/features/organization/components/org-needs-attention.tsx:369
+#: app/features/organization/components/org-needs-attention.tsx:374
 #: app/features/organization/components/org-warning-events.tsx:43
 #: app/features/project/components/project-organization-card.tsx:25
 #: app/routes/admin/service-catalog/detail/approvals.tsx:66
@@ -5678,8 +5683,8 @@ msgid "Quick ranges"
 msgstr "Quick ranges"
 
 #: app/features/organization/components/org-health-strip.tsx:63
-#: app/features/organization/components/org-needs-attention.tsx:66
-#: app/features/organization/components/org-needs-attention.tsx:79
+#: app/features/organization/components/org-needs-attention.tsx:71
+#: app/features/organization/components/org-needs-attention.tsx:84
 #: app/features/service-catalog/components/quota-limits-card.tsx:26
 msgid "Quota"
 msgstr "Quota"
@@ -5723,13 +5728,13 @@ msgid "Read-only. Prices are ServicePricing manifests in the service's repo, one
 msgstr "Read-only. Prices are ServicePricing manifests in the service's repo, one set per environment, and billing reviews every change."
 
 #: app/features/dns/components/dns-zone-status.tsx:38
-#: app/features/organization/components/org-needs-attention.tsx:174
+#: app/features/organization/components/org-needs-attention.tsx:179
 #: app/features/organization/components/org-onboarding-card.tsx:58
 msgid "Ready"
 msgstr "Ready"
 
 #: app/features/dns/components/dns-zone-status.tsx:76
-#: app/features/organization/components/org-needs-attention.tsx:247
+#: app/features/organization/components/org-needs-attention.tsx:252
 #: app/features/organization/components/org-warning-events.tsx:137
 #: app/features/project/components/project-suspension-card.tsx:90
 #: app/features/service-catalog/components/conditions-card.tsx:39
@@ -5787,7 +5792,7 @@ msgstr "Recurring"
 msgid "Registrar"
 msgstr "Registrar"
 
-#: app/features/organization/components/org-needs-attention.tsx:394
+#: app/features/organization/components/org-needs-attention.tsx:399
 msgid "Registration expires <0/>"
 msgstr "Registration expires <0/>"
 
@@ -6675,8 +6680,8 @@ msgstr "Starts <0/>"
 #: app/features/fraud/detail/evaluation-sections.tsx:746
 #: app/features/fraud/policy/policy-detail.tsx:359
 #: app/features/organization/components/org-members-preview-card.tsx:63
-#: app/features/organization/components/org-needs-attention.tsx:148
-#: app/features/organization/components/org-needs-attention.tsx:244
+#: app/features/organization/components/org-needs-attention.tsx:153
+#: app/features/organization/components/org-needs-attention.tsx:249
 #: app/features/project/components/project-billing-card.tsx:62
 #: app/features/project/components/project-details-card.tsx:39
 #: app/features/quota/components/quota-grant-list.tsx:109
@@ -6706,6 +6711,10 @@ msgstr "Status"
 #: app/features/organization/components/org-onboarding-card.tsx:253
 msgid "Step {0}"
 msgstr "Step {0}"
+
+#: app/features/organization/components/org-needs-attention.tsx:529
+msgid "Still checking…"
+msgstr "Still checking…"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:116
 msgid "Stripe number"
@@ -7145,7 +7154,7 @@ msgstr "TTL"
 #: app/features/edge/components/detail/edge-backends-card.tsx:55
 #: app/features/fraud/policy/policy-form.tsx:199
 #: app/features/organization/components/org-details-card.tsx:59
-#: app/features/organization/components/org-needs-attention.tsx:286
+#: app/features/organization/components/org-needs-attention.tsx:291
 #: app/features/service-catalog/components/conditions-card.tsx:19
 #: app/routes/customer/fraud/providers/index.tsx:66
 #: app/routes/customer/fraud/providers/index.tsx:159
@@ -7367,7 +7376,7 @@ msgstr "Users"
 msgid "Validating"
 msgstr "Validating"
 
-#: app/features/organization/components/org-needs-attention.tsx:288
+#: app/features/organization/components/org-needs-attention.tsx:293
 #: app/routes/customer/project/detail/dns/detail.tsx:164
 msgid "Value"
 msgstr "Value"
@@ -7376,7 +7385,7 @@ msgstr "Value"
 msgid "Verification in progress..."
 msgstr "Verification in progress..."
 
-#: app/features/organization/components/org-needs-attention.tsx:293
+#: app/features/organization/components/org-needs-attention.tsx:298
 msgid "Verification record the customer needs to create"
 msgstr "Verification record the customer needs to create"
 
@@ -7547,11 +7556,11 @@ msgstr "Within credit limit"
 msgid "Worked out by the billing provider. Nothing is sent to the customer."
 msgstr "Worked out by the billing provider. Nothing is sent to the customer."
 
-#: app/features/organization/components/org-needs-attention.tsx:56
+#: app/features/organization/components/org-needs-attention.tsx:61
 msgid "Workload"
 msgstr "Workload"
 
-#: app/features/organization/components/org-needs-attention.tsx:213
+#: app/features/organization/components/org-needs-attention.tsx:218
 msgid "Workload detail"
 msgstr "Workload detail"
 
