@@ -6,6 +6,7 @@ export { NAV_SECTIONS } from './lib/nav-config';
 export type { NavSection, NavSubNav, NavSubGroup, NavSubItem, EntityNav } from './lib/nav-config';
 export { useActiveNav, type ActiveNav } from './lib/use-active-section';
 export { useEntityNav, type RouteHandleWithEntityNav } from './lib/use-entity-nav';
+export { useRailNav, type RouteHandleWithFullWidth } from './lib/use-rail-nav';
 export * from './lib/dimensions';
 
 // Page templates

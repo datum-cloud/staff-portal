@@ -10,6 +10,9 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { useNavigate } from 'react-router';
 
+// Full-width list: no section rail, the switcher is in the search bar.
+export const handle = { fullWidth: true };
+
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Contacts`);
 };

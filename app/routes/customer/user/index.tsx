@@ -32,6 +32,9 @@ import { useMemo, useState, type ComponentType, type SVGProps } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { z } from 'zod';
 
+// Full-width list: no section rail, the switcher is in the search bar.
+export const handle = { fullWidth: true };
+
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Users`);
 };

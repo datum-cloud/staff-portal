@@ -26,6 +26,9 @@ import { User } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router';
 
+// Full-width list: no section rail, the switcher is in the search bar.
+export const handle = { fullWidth: true };
+
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Organizations`);
 };
