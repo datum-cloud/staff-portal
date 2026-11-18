@@ -1,0 +1,4 @@
+[[IgnoredVulns]]
+id = "GHSA-g3hv-75wg-m249"
+ignoreUntil = 2027-02-28
+reason = "minimatch is only fixed in 11.0.1; no backport exists for 9.x or 10.x. The remaining copies are 9.0.9 (@hono/vite-dev-server and @trivago/prettier-plugin-sort-imports, both dev tooling) and 10.2.6 (@react-router/fs-routes, build-time route globbing). Each parent declares ^9 or ^10 and has no release accepting 11. The patterns are developer-authored, not attacker input. Unblocked when those packages publish releases that depend on minimatch 11."
