@@ -2,6 +2,7 @@ import { useAccountInvoices } from '../../hooks';
 import {
   CONTRACT_CURRENCY,
   contractBillingDay,
+  contractInvoiceDay,
   discountedFeeTotal,
   feeEndsAt,
   getContractFees,
@@ -78,6 +79,7 @@ export function BillingAccountContractCard({
 }: ContractCardProps) {
   const accountName = account.metadata?.name ?? '';
   const contract = getContractState(entitlement, now);
+  const invoiceDay = contractInvoiceDay(contract?.billingDay, account.spec?.paymentTerms);
   const offerQuery = useOfferDetailQuery(entitlement?.spec?.offerRef?.name ?? '');
   const [previewOpen, setPreviewOpen] = useState(false);
 
@@ -99,12 +101,16 @@ export function BillingAccountContractCard({
               </LinkButton>
             }>
             <div className="flex flex-col gap-3">
-              <ContractDates contract={contract} />
+              <ContractDates contract={contract} invoiceDay={invoiceDay} />
               {offerQuery.isLoading ? (
                 <Skeleton className="h-10 w-full rounded" />
               ) : offerQuery.data ? (
                 <>
-                  <ContractFees offer={offerQuery.data} startsAt={contract.startsAt} />
+                  <ContractFees
+                    offer={offerQuery.data}
+                    startsAt={contract.startsAt}
+                    invoiceDay={invoiceDay}
+                  />
                   <div className="border-t pt-3">
                     <ContractScheduleList
                       upcoming={upcomingInvoices(
@@ -113,6 +119,7 @@ export function BillingAccountContractCard({
                           fees: getContractFees(offerQuery.data),
                           billsUsage: offerBillsUsage(offerQuery.data),
                           netDays: getEffectiveNetDays(account),
+                          invoiceDay,
                         }),
                         now
                       )}
@@ -156,8 +163,16 @@ export function BillingAccountContractCard({
   );
 }
 
-function BillingDay({ startsAt }: { startsAt: Date }) {
-  const day = contractBillingDay(startsAt);
+function BillingDay({ startsAt, invoiceDay }: { startsAt: Date; invoiceDay?: number }) {
+  const day = contractBillingDay(startsAt, invoiceDay);
+  if (invoiceDay) {
+    return (
+      <Trans>
+        Bills on day {day} of each month, the account&apos;s invoice day; the first month is
+        prorated.
+      </Trans>
+    );
+  }
   return day > 28 ? (
     <Trans>Bills on day {day} of each month, or the last day of shorter months.</Trans>
   ) : (
@@ -165,7 +180,7 @@ function BillingDay({ startsAt }: { startsAt: Date }) {
   );
 }
 
-function ContractDates({ contract }: { contract: ContractState }) {
+function ContractDates({ contract, invoiceDay }: { contract: ContractState; invoiceDay?: number }) {
   const start = contract.startsAt.toISOString();
   return (
     <div className="flex flex-col gap-1">
@@ -181,7 +196,7 @@ function ContractDates({ contract }: { contract: ContractState }) {
         )}
       </Text>
       <Text size="xs" textColor="muted">
-        <BillingDay startsAt={contract.startsAt} />
+        <BillingDay startsAt={contract.startsAt} invoiceDay={invoiceDay} />
         {contract.started ? null : (
           <>
             {' '}
@@ -215,14 +230,17 @@ const feeQuantityText = (fee: { amount: number; quantity: number; pricingUnit?: 
 
 /**
  * The offer's fees, each with what it charges and how often. `startsAt`, the
- * contract's start, says when a fee with renewals ends.
+ * contract's start, says when a fee with renewals ends, and `invoiceDay`
+ * whether the contract bills on the account's invoice day instead.
  */
 export function ContractFees({
   offer,
   startsAt,
+  invoiceDay,
 }: {
   offer: ComMiloapisBillingV1Alpha1Offer;
   startsAt?: Date;
+  invoiceDay?: number;
 }) {
   const fees = getContractFees(offer);
   const discount = offer.spec?.discount?.percentage;
@@ -270,7 +288,7 @@ export function ContractFees({
               fee.billingTiming ? billingTimingText(fee.billingTiming) : null,
               fee.periods ? periodsText(fee.periods, fee.interval) : null,
               fee.periods && startsAt
-                ? t`until ${formatDate(feeEndsAt(startsAt, fee.interval, fee.periods))}`
+                ? t`until ${formatDate(feeEndsAt(startsAt, fee.interval, fee.periods, invoiceDay))}`
                 : null,
               fee.serviceRef
                 ? servicesByRef.get(fee.serviceRef)?.spec?.displayName || fee.serviceRef

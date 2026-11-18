@@ -33,6 +33,7 @@ import {
   proratedFirstInvoiceTotal,
   recurringTotals,
   toPricingAmount,
+  nextBillingDate,
 } from './contract';
 import type {
   ComMiloapisBillingV1Alpha1BillingEntitlement,
@@ -123,6 +124,12 @@ describe('billingCycleTerms', () => {
       invoiceDayOfMonth: 10,
       invoiceFrequency: 'Monthly',
     });
+  });
+
+  it("uses the account's invoice day for a contract billed on it", () => {
+    expect(billingCycleTerms(terms, { startsAt, started: true, billingDay: 'InvoiceDay' })).toEqual(
+      { invoiceDayOfMonth: 1, invoiceFrequency: 'Monthly' }
+    );
   });
 
   it("keeps the account's terms before the contract starts, or without one", () => {
@@ -601,5 +608,33 @@ describe('fee renewals', () => {
     expect(parsePeriods('36')).toBe(36);
     expect(parsePeriods('')).toBeUndefined();
     expect(parsePeriods('0')).toBeUndefined();
+  });
+});
+
+describe('billing on the invoice day', () => {
+  const startsAt = new Date('2026-11-15T00:00:00Z');
+  const day = (date: Date) => date.toISOString().slice(0, 10);
+
+  it('finds the next billing date for each interval', () => {
+    expect(day(nextBillingDate(startsAt, 1, 1))).toBe('2026-12-01');
+    expect(day(nextBillingDate(startsAt, 1, 3))).toBe('2027-01-01');
+    expect(day(nextBillingDate(startsAt, 1, 12))).toBe('2027-01-01');
+    expect(day(nextBillingDate(new Date('2026-11-01T00:00:00Z'), 1, 1))).toBe('2026-11-01');
+    expect(day(nextBillingDate(new Date('2026-11-03T00:00:00Z'), 10, 1))).toBe('2026-11-10');
+  });
+
+  it('counts renewals from the first billing date, after the prorated period', () => {
+    expect(day(feeEndsAt(startsAt, 'monthly', 12))).toBe('2027-11-15');
+    expect(day(feeEndsAt(startsAt, 'monthly', 12, 1))).toBe('2027-12-01');
+  });
+
+  it('prorates the first invoice to the next billing date', () => {
+    const fees = [
+      { chargeType: 'OneTime' as const, amount: 2500, quantity: 1 },
+      { chargeType: 'Recurring' as const, amount: 300, quantity: 1, interval: 'monthly' as const },
+    ];
+    // 16 of November's 30 days of the monthly fee, and all of the one-time one.
+    expect(proratedFirstInvoiceTotal(fees, startsAt, startsAt, 1)).toBe(2660);
+    expect(proratedFirstInvoiceTotal(fees, startsAt, startsAt)).toBe(2800);
   });
 });

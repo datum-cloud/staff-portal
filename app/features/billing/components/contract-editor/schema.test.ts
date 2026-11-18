@@ -72,7 +72,13 @@ describe('list fee rows', () => {
 
 describe('buildContractSchema', () => {
   const now = new Date('2026-11-06T12:00:00Z');
-  const empty: ContractFormValues = { fees: [], usage: [], listFees: [], startsAt: undefined };
+  const empty: ContractFormValues = {
+    fees: [],
+    usage: [],
+    listFees: [],
+    startsAt: undefined,
+    billingDay: 'StartDate',
+  };
   const listFee = {
     name: 'cross-connect-v1',
     selected: true,

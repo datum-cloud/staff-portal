@@ -88,6 +88,28 @@ export const isContractResource = (resource: {
  */
 export const CONTRACT_STARTS_AT_ANNOTATION = 'billing.miloapis.com/contract-starts-at';
 
+/** A new draft contract's billing day, when it bills on the invoice day. */
+export const CONTRACT_BILLING_DAY_ANNOTATION = 'billing.miloapis.com/contract-billing-day';
+
+/**
+ * The day of the month a contract bills on: the day it starts, so every
+ * period is whole, or the account's invoice day, with the first period
+ * prorated.
+ */
+export type ContractBillingDay = 'StartDate' | 'InvoiceDay';
+
+/** A draft contract's billing day. */
+export const getDraftBillingDay = (
+  offer: ComMiloapisBillingV1Alpha1Offer | null | undefined
+): ContractBillingDay =>
+  offer?.metadata?.annotations?.[CONTRACT_BILLING_DAY_ANNOTATION] === 'InvoiceDay'
+    ? 'InvoiceDay'
+    : 'StartDate';
+
+/** The day of the month an account is invoiced on: its terms', or the 1st. */
+export const accountInvoiceDay = (terms: { invoiceDayOfMonth?: number } | undefined) =>
+  terms?.invoiceDayOfMonth && terms.invoiceDayOfMonth > 0 ? terms.invoiceDayOfMonth : 1;
+
 /** Whether an Offer is a draft contract, not yet published. */
 export const isContractDraft = (offer: ComMiloapisBillingV1Alpha1Offer | null | undefined) =>
   Boolean(offer) &&
@@ -167,6 +189,8 @@ export const contractStartProblem = (startsAt: Date, now: Date): 'past' | 'too-f
 
 export interface ContractState {
   startsAt: Date;
+  /** The day it bills on: its start day, or the account's invoice day. */
+  billingDay?: ContractBillingDay;
   /** The contract has started, so a change of fees amends it. */
   started: boolean;
   /** When an amendment takes effect, while one is waiting. */
@@ -188,6 +212,8 @@ export const getContractState = (
     changeAtRaw && condition?.reason === OFFER_CHANGE_SCHEDULED ? new Date(changeAtRaw) : undefined;
   return {
     startsAt,
+    billingDay:
+      entitlement?.spec?.contract?.billingDay === 'InvoiceDay' ? 'InvoiceDay' : 'StartDate',
     started: Boolean(annotations[CONTRACT_STARTED_ANNOTATION]) || startsAt <= now,
     changeAt: changeAt && !Number.isNaN(changeAt.getTime()) ? changeAt : undefined,
   };
@@ -455,50 +481,102 @@ export const hasFeesInArrears = (fees: FeeAmount[]) =>
  */
 export const firstInvoiceTotal = (fees: FeeAmount[]) => sumFees(fees, inAdvance);
 
+/** `months` months after `date`, on its day or a shorter month's last day. */
+const addMonthsClamped = (date: Date, months: number): Date => {
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth() + months;
+  const lastDay = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+  return new Date(Date.UTC(year, month, Math.min(date.getUTCDate(), lastDay)));
+};
+
+/**
+ * The first date on or after `date` that a fee charged every `months`
+ * months bills on, for a contract billed on the invoice day `invoiceDay`
+ * (1 to 28): that day of every month, of January, April, July and October,
+ * or of January, as billing counts periods.
+ */
+export const nextBillingDate = (date: Date, invoiceDay: number, months = 1): Date => {
+  let billing = new Date(Date.UTC(date.getUTCFullYear(), 0, invoiceDay));
+  while (billing > date) billing = new Date(Date.UTC(billing.getUTCFullYear() - 1, 0, invoiceDay));
+  while (billing < date) {
+    billing = new Date(
+      Date.UTC(billing.getUTCFullYear(), billing.getUTCMonth() + months, invoiceDay)
+    );
+  }
+  return billing;
+};
+
 /**
  * When the first period of a fee charged every `months` months ends, for
  * a contract starting on `startsAt`: that many months on, on the same day,
  * or the last day of a shorter month (a monthly fee starting on 31
- * January's first period ends on 28 or 29 February).
+ * January's first period ends on 28 or 29 February). A contract billed on
+ * the invoice day (`invoiceDay` set) ends it on the fee's next billing date
+ * instead, unless it starts on one.
  */
-export const firstPeriodEnd = (startsAt: Date, months = 1): Date => {
-  const year = startsAt.getUTCFullYear();
-  const month = startsAt.getUTCMonth() + months;
-  const lastDay = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
-  return new Date(Date.UTC(year, month, Math.min(startsAt.getUTCDate(), lastDay)));
+export const firstPeriodEnd = (startsAt: Date, months = 1, invoiceDay?: number): Date => {
+  if (invoiceDay) {
+    const next = nextBillingDate(startsAt, invoiceDay, months);
+    if (next > startsAt) return next;
+  }
+  return addMonthsClamped(startsAt, months);
 };
 
 /**
  * When a recurring fee charged for `periods` periods from a contract's start
  * stops: that many intervals on, on the start's day of the month, or the
  * last day of a shorter month, as billing's status.contract.fees[].endsAt.
+ * A contract billed on the invoice day counts them from the fee's first
+ * billing date, after the prorated first period.
  */
-export const feeEndsAt = (startsAt: Date, interval: FeeInterval | undefined, periods: number) =>
-  firstPeriodEnd(startsAt, intervalMonths(interval) * periods);
+export const feeEndsAt = (
+  startsAt: Date,
+  interval: FeeInterval | undefined,
+  periods: number,
+  invoiceDay?: number
+) => {
+  const months = intervalMonths(interval);
+  const from = invoiceDay ? nextBillingDate(startsAt, invoiceDay, months) : startsAt;
+  return addMonthsClamped(from, months * periods);
+};
 
 /**
  * How much of its first period a fee charged every `months` months is
  * charged for when the account starts on it at a given moment. OpenMeter
  * prorates a flat fee from when the subscription starts, and can't start it
  * in the past, so a contract set up on the day it starts gets a part
- * period; one set up ahead starts at midnight and gets a full one.
+ * period; one set up ahead starts at midnight and gets a full one. A
+ * contract billed on the invoice day gets the part of the period from its
+ * start to the next billing date.
  */
-export const firstPeriodShare = (startsAt: Date, subscribedAt: Date, months = 1): number => {
-  const end = firstPeriodEnd(startsAt, months).getTime();
+export const firstPeriodShare = (
+  startsAt: Date,
+  subscribedAt: Date,
+  months = 1,
+  invoiceDay?: number
+): number => {
+  const endDate = firstPeriodEnd(startsAt, months, invoiceDay);
+  const end = endDate.getTime();
+  const whole = end - addMonthsClamped(endDate, -months).getTime();
   const from = Math.max(startsAt.getTime(), subscribedAt.getTime());
-  return Math.min(1, Math.max(0, (end - from) / (end - startsAt.getTime())));
+  return Math.min(1, Math.max(0, (end - from) / whole));
 };
 
 /** firstPeriodShare for a monthly fee. */
-export const firstMonthShare = (startsAt: Date, subscribedAt: Date): number =>
-  firstPeriodShare(startsAt, subscribedAt, 1);
+export const firstMonthShare = (startsAt: Date, subscribedAt: Date, invoiceDay?: number): number =>
+  firstPeriodShare(startsAt, subscribedAt, 1, invoiceDay);
 
 /**
  * The first invoice when the account starts on the contract at
  * `subscribedAt`: its one-time fees, and each recurring fee billed in
  * advance prorated for the part of its own first period left.
  */
-export const proratedFirstInvoiceTotal = (fees: FeeAmount[], startsAt: Date, subscribedAt: Date) =>
+export const proratedFirstInvoiceTotal = (
+  fees: FeeAmount[],
+  startsAt: Date,
+  subscribedAt: Date,
+  invoiceDay?: number
+) =>
   cents(
     fees
       .filter((fee) => !Number.isNaN(fee.amount) && inAdvance(fee))
@@ -508,7 +586,7 @@ export const proratedFirstInvoiceTotal = (fees: FeeAmount[], startsAt: Date, sub
           (fee.chargeType === 'Recurring'
             ? cents(
                 feeTotal(fee) *
-                  firstPeriodShare(startsAt, subscribedAt, intervalMonths(fee.interval))
+                  firstPeriodShare(startsAt, subscribedAt, intervalMonths(fee.interval), invoiceDay)
               )
             : feeTotal(fee)),
         0
@@ -534,8 +612,18 @@ export const getContractFirstInvoice = (
       (a.metadata?.creationTimestamp ?? '').localeCompare(b.metadata?.creationTimestamp ?? '')
     )[0];
 
-/** The day of the month a contract bills on, from its UTC start date. */
-export const contractBillingDay = (startsAt: Date) => startsAt.getUTCDate();
+/**
+ * The day of the month a contract bills on: its UTC start date's, or the
+ * account's invoice day when it bills on that (`invoiceDay` set).
+ */
+export const contractBillingDay = (startsAt: Date, invoiceDay?: number) =>
+  invoiceDay ?? startsAt.getUTCDate();
+
+/** The invoice day a contract bills on, or undefined when it bills on its start day. */
+export const contractInvoiceDay = (
+  billingDay: ContractBillingDay | undefined,
+  terms: { invoiceDayOfMonth?: number } | undefined
+) => (billingDay === 'InvoiceDay' ? accountInvoiceDay(terms) : undefined);
 
 /**
  * The billing cycle an account is on. A contract that has started bills
@@ -547,5 +635,11 @@ export const billingCycleTerms = (
   contract: ContractState | null | undefined
 ): PaymentTermsInput | undefined =>
   contract?.started
-    ? { invoiceDayOfMonth: contractBillingDay(contract.startsAt), invoiceFrequency: 'Monthly' }
+    ? {
+        invoiceDayOfMonth: contractBillingDay(
+          contract.startsAt,
+          contractInvoiceDay(contract.billingDay, terms)
+        ),
+        invoiceFrequency: 'Monthly',
+      }
     : terms;

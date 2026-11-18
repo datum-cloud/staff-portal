@@ -1,12 +1,15 @@
 import {
   CONTRACT_BILLING_ACCOUNT_LABEL,
+  CONTRACT_BILLING_DAY_ANNOTATION,
   CONTRACT_ORGANIZATION_LABEL,
   CONTRACT_STARTS_AT_ANNOTATION,
   contractOfferPlan,
   contractResourceNames,
   draftPublishProblem,
   getContractState,
+  getDraftBillingDay,
   isContractDraft,
+  type ContractBillingDay,
   type DraftPublishProblem,
   type FeeBillingTiming,
   type FeeInterval,
@@ -690,7 +693,8 @@ export const setBillingEntitlementContract = async (
   orgName: string,
   entitlementName: string,
   offerName: string,
-  startsAt: string
+  startsAt: string,
+  billingDay?: ContractBillingDay
 ) => {
   const namespace = buildOrganizationNamespace(orgName);
   const response = await patchBillingMiloapisComV1Alpha1NamespacedBillingEntitlement({
@@ -701,12 +705,18 @@ export const setBillingEntitlementContract = async (
     body: {
       spec: {
         offerRef: { name: offerName },
-        contract: { startsAt },
+        contract: contractTerms(startsAt, billingDay),
       },
     },
   });
   return response.data?.data;
 };
+
+/** A contract's terms: its start, and its billing day when it isn't the start's. */
+const contractTerms = (startsAt: string, billingDay?: ContractBillingDay) => ({
+  startsAt,
+  ...(billingDay === 'InvoiceDay' ? { billingDay } : {}),
+});
 
 /** The entitlement made for an account that has none when it's put on a contract. */
 export const contractEntitlementName = (accountName: string) => `${accountName}-contract`;
@@ -724,7 +734,8 @@ export const createBillingEntitlementWithContract = async (
   orgName: string,
   accountName: string,
   offerName: string,
-  startsAt: string
+  startsAt: string,
+  billingDay?: ContractBillingDay
 ): Promise<BillingEntitlement | undefined> => {
   const namespace = buildOrganizationNamespace(orgName);
   try {
@@ -739,7 +750,7 @@ export const createBillingEntitlementWithContract = async (
         spec: {
           billingAccountRef: { name: accountName },
           offerRef: { name: offerName },
-          contract: { startsAt },
+          contract: contractTerms(startsAt, billingDay),
         },
       },
     });
@@ -759,7 +770,7 @@ export const createBillingEntitlementWithContract = async (
         { cause: err }
       );
     }
-    return setBillingEntitlementContract(orgName, existingName, offerName, startsAt);
+    return setBillingEntitlementContract(orgName, existingName, offerName, startsAt, billingDay);
   }
 };
 
@@ -770,6 +781,8 @@ export type SetUpContractInput = {
   entitlementName?: string;
   /** Midnight UTC, RFC 3339. */
   startsAt: string;
+  /** The day it bills on; its start day when unset. */
+  billingDay?: ContractBillingDay;
   offer: CreateContractOfferInput;
   /** The draft the contract was edited from, discarded once it's set up. */
   draftName?: string;
@@ -784,13 +797,14 @@ export const setUpContract = async ({
   accountName,
   entitlementName,
   startsAt,
+  billingDay,
   offer,
   draftName,
 }: SetUpContractInput) => {
   const result = await createContractOffer(offer, (offerName) =>
     entitlementName
-      ? setBillingEntitlementContract(orgName, entitlementName, offerName, startsAt)
-      : createBillingEntitlementWithContract(orgName, accountName, offerName, startsAt)
+      ? setBillingEntitlementContract(orgName, entitlementName, offerName, startsAt, billingDay)
+      : createBillingEntitlementWithContract(orgName, accountName, offerName, startsAt, billingDay)
   );
   if (draftName) await discardPublishedDraft(orgName, accountName, draftName);
   return result;
@@ -860,6 +874,8 @@ export type SaveContractDraftInput = {
   offer: CreateContractOfferInput;
   /** A new contract's start date, if picked: midnight UTC, RFC 3339. */
   startsAt?: string;
+  /** A new contract's billing day; its start day when unset. */
+  billingDay?: ContractBillingDay;
 };
 
 /**
@@ -873,7 +889,7 @@ export type SaveContractDraftInput = {
  * bill nothing without an Offer.
  */
 export const saveContractDraft = async (
-  { offer: input, startsAt }: SaveContractDraftInput,
+  { offer: input, startsAt, billingDay }: SaveContractDraftInput,
   now = new Date()
 ): Promise<Offer | undefined> => {
   const { orgName, accountName } = input;
@@ -894,6 +910,7 @@ export const saveContractDraft = async (
               annotations: {
                 'kubernetes.io/display-name': input.displayName.trim(),
                 [CONTRACT_STARTS_AT_ANNOTATION]: startsAt ?? null,
+                [CONTRACT_BILLING_DAY_ANNOTATION]: billingDay === 'InvoiceDay' ? billingDay : null,
               },
             },
             spec: plan,
@@ -903,7 +920,14 @@ export const saveContractDraft = async (
           name: names.offer,
           displayName: input.displayName,
           labels,
-          annotations: startsAt ? { [CONTRACT_STARTS_AT_ANNOTATION]: startsAt } : undefined,
+          annotations: startsAt
+            ? {
+                [CONTRACT_STARTS_AT_ANNOTATION]: startsAt,
+                ...(billingDay === 'InvoiceDay'
+                  ? { [CONTRACT_BILLING_DAY_ANNOTATION]: billingDay }
+                  : {}),
+              }
+            : undefined,
           ...plan,
         });
   } catch (err) {
@@ -1025,10 +1049,11 @@ const draftAssignment = (
   }
   // No problem means a valid start date.
   const startsAt = draft.metadata?.annotations?.[CONTRACT_STARTS_AT_ANNOTATION] ?? '';
+  const billingDay = getDraftBillingDay(draft);
   return (offerName: string) =>
     entitlementName
-      ? setBillingEntitlementContract(orgName, entitlementName, offerName, startsAt)
-      : createBillingEntitlementWithContract(orgName, accountName, offerName, startsAt);
+      ? setBillingEntitlementContract(orgName, entitlementName, offerName, startsAt, billingDay)
+      : createBillingEntitlementWithContract(orgName, accountName, offerName, startsAt, billingDay);
 };
 
 // ─── InvoiceRequest (org-namespaced, staff-only) ─────────────────────────────

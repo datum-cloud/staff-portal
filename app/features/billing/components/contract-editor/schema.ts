@@ -113,6 +113,9 @@ export const buildContractSchema = (
       usage: z.array(usageRowSchema),
       listFees: z.array(listFeeRowSchema),
       startsAt: z.date().optional(),
+      // A new contract's billing day: its start day, or the account's
+      // invoice day with a prorated first period.
+      billingDay: z.enum(['StartDate', 'InvoiceDay']),
     })
     .superRefine((values, ctx) => {
       const issue = (path: (string | number)[], message: string) =>

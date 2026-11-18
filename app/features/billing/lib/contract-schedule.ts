@@ -1,6 +1,7 @@
 import {
   discountedFeeTotal,
   firstPeriodEnd,
+  nextBillingDate,
   intervalMonths,
   type ContractFee,
   type FeeInterval,
@@ -63,14 +64,20 @@ export const contractInvoiceSchedule = ({
   fees,
   billsUsage,
   netDays,
+  invoiceDay,
   months = 12,
 }: {
   startsAt: Date;
   fees: ContractFee[];
   billsUsage: boolean;
   netDays?: number;
+  /** Set when the contract bills on the account's invoice day, not its start's. */
+  invoiceDay?: number;
   months?: number;
 }): ScheduledInvoice[] => {
+  if (invoiceDay) {
+    return invoiceDaySchedule({ startsAt, fees, billsUsage, netDays, invoiceDay, months });
+  }
   const invoices: ScheduledInvoice[] = [];
   for (let k = 0; k <= months; k++) {
     const date = billingDate(startsAt, k);
@@ -111,6 +118,98 @@ export const contractInvoiceSchedule = ({
   }
   return invoices;
 };
+
+/**
+ * contractInvoiceSchedule for a contract billed on the account's invoice
+ * day: invoiced on its start, then on each invoice day. Each recurring fee's
+ * first period runs from the start to its first billing date and is
+ * prorated, and its renewals are whole periods from there.
+ */
+const invoiceDaySchedule = ({
+  startsAt,
+  fees,
+  billsUsage,
+  netDays,
+  invoiceDay,
+  months,
+}: {
+  startsAt: Date;
+  fees: ContractFee[];
+  billsUsage: boolean;
+  netDays?: number;
+  invoiceDay: number;
+  months: number;
+}): ScheduledInvoice[] => {
+  const first = nextBillingDate(startsAt, invoiceDay, 1);
+  const dates = [startsAt];
+  for (let k = first > startsAt ? 0 : 1; dates.length <= months; k++) {
+    dates.push(addMonthsUtc(first, k));
+  }
+  const horizon = dates[dates.length - 1].getTime();
+  const byDate = new Map<number, ScheduledCharge[]>(dates.map((date) => [date.getTime(), []]));
+  const add = (date: Date, charge: ScheduledCharge) => {
+    if (date.getTime() <= horizon) byDate.get(date.getTime())?.push(charge);
+  };
+
+  for (const fee of fees) {
+    const base = {
+      name: fee.name,
+      label: fee.label,
+      chargeType: fee.chargeType,
+      interval: fee.interval,
+      total: discountedFeeTotal(fee),
+    };
+    if (fee.chargeType === 'OneTime') {
+      add(startsAt, base);
+      continue;
+    }
+    const every = intervalMonths(fee.interval);
+    const feeFirst = nextBillingDate(startsAt, invoiceDay, every);
+    const inAdvance = (fee.billingTiming ?? 'InAdvance') === 'InAdvance';
+    const periods: { from: Date; to: Date; share: number }[] = [];
+    if (feeFirst > startsAt) {
+      const whole = feeFirst.getTime() - addMonthsUtc(feeFirst, -every).getTime();
+      periods.push({
+        from: startsAt,
+        to: feeFirst,
+        share: (feeFirst.getTime() - startsAt.getTime()) / whole,
+      });
+    }
+    for (let i = 0; ; i++) {
+      if (fee.periods && i >= fee.periods) break;
+      const from = addMonthsUtc(feeFirst, i * every);
+      if (from.getTime() > horizon) break;
+      periods.push({ from, to: addMonthsUtc(feeFirst, (i + 1) * every), share: 1 });
+    }
+    for (const period of periods) {
+      const charge = {
+        ...base,
+        total: Math.round(base.total * period.share * 100) / 100,
+        period: { from: period.from, to: period.to },
+      };
+      add(inAdvance ? period.from : period.to, charge);
+    }
+  }
+
+  return dates.flatMap((date, k): ScheduledInvoice[] => {
+    const charges = byDate.get(date.getTime()) ?? [];
+    const usage = billsUsage && k > 0;
+    if (charges.length === 0 && !usage) return [];
+    return [
+      {
+        date,
+        dueDate: netDays === undefined ? undefined : new Date(date.getTime() + netDays * DAY_MS),
+        charges,
+        total: Math.round(charges.reduce((sum, charge) => sum + charge.total, 0) * 100) / 100,
+        billsUsage: usage,
+      },
+    ];
+  });
+};
+
+/** `months` months after a billing date, on the same day (1 to 28). */
+const addMonthsUtc = (date: Date, months: number) =>
+  new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + months, date.getUTCDate()));
 
 /** The schedule's invoices still to come: those dated after `now`. */
 export const upcomingInvoices = (schedule: ScheduledInvoice[], now: Date) =>

@@ -132,3 +132,41 @@ describe('fees with renewals', () => {
     expect(charged('InArrears')).toEqual(['2026-12-12', '2027-01-12', '2027-02-12']);
   });
 });
+
+describe('a contract billed on the invoice day', () => {
+  // Starting 15 November 2026 and billed on the 1st: the first period runs
+  // to the next billing date and is prorated, then periods are whole.
+  const startsAt = new Date('2026-11-15T00:00:00Z');
+  const schedule = contractInvoiceSchedule({
+    startsAt,
+    fees: [
+      fee({ name: 'setup', chargeType: 'OneTime', amount: 2500, interval: undefined }),
+      fee({ name: 'ports', amount: 300, periods: 2 }),
+      fee({ name: 'support', amount: 900, interval: 'quarterly', billingTiming: 'InArrears' }),
+    ],
+    billsUsage: true,
+    invoiceDay: 1,
+  });
+  const on = (date: string) => schedule.find((invoice) => day(invoice.date) === date);
+  const charge = (date: string, name: string) => on(date)?.charges.find((c) => c.name === name);
+
+  it('invoices the start with one-time fees and a prorated first month', () => {
+    // 15 November to 1 December is 16 of November's 30 days.
+    expect(on('2026-11-15')?.charges.map((c) => c.name)).toEqual(['setup', 'ports']);
+    expect(charge('2026-11-15', 'ports')).toMatchObject({ total: 160 });
+    expect(day(charge('2026-11-15', 'ports')?.period?.to as Date)).toBe('2026-12-01');
+  });
+
+  it('then bills whole periods on the invoice day, renewals after the prorated one', () => {
+    expect(charge('2026-12-01', 'ports')?.total).toBe(300);
+    expect(charge('2027-01-01', 'ports')?.total).toBe(300);
+    expect(charge('2027-02-01', 'ports')).toBeUndefined();
+    expect(on('2027-02-01')?.billsUsage).toBe(true);
+  });
+
+  it('bills a quarterly fee in arrears at the quarter, prorated for the part quarter', () => {
+    // 15 November to 1 January is 47 of the quarter's 92 days.
+    expect(charge('2027-01-01', 'support')?.total).toBe(459.78);
+    expect(charge('2027-04-01', 'support')?.total).toBe(900);
+  });
+});
