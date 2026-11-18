@@ -195,11 +195,7 @@ export const getContractState = (
 
 /** Why a draft can't be published as it is, so it needs editing first. */
 export type DraftPublishProblem =
-  | 'no-start'
-  | 'start-passed'
-  | 'start-too-far'
-  | 'contract-exists'
-  | 'one-time-after-start';
+  'no-start' | 'start-passed' | 'start-too-far' | 'contract-exists' | 'one-time-after-start';
 
 /**
  * Whether the account's draft can be published as it is, given its
@@ -237,6 +233,8 @@ export interface ContractFee {
   quantity: number;
   /** What the amount is per (e.g. "port"), when the fee has a unit. */
   pricingUnit?: string;
+  /** The product code invoices show before the fee's name, if it has one. */
+  sku?: string;
   /** The service the fee is for, when it's for one. */
   serviceRef?: string;
   /** The list fee this is the customer's own amount for, if any. */
@@ -277,6 +275,7 @@ export const getContractFees = (
           amount,
           quantity: snapshot.quantity && snapshot.quantity > 0 ? snapshot.quantity : 1,
           pricingUnit: spec.pricingUnit || undefined,
+          sku: spec.sku || undefined,
           serviceRef: spec.serviceRef || undefined,
           basedOn: spec.basedOn || undefined,
           discount: snapshot.discount?.percentage || undefined,

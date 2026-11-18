@@ -379,6 +379,8 @@ export type CreateFixedServicePricingInput = {
   serviceRef?: string;
   /** What the amount is per, e.g. "port", if the fee has a unit. */
   pricingUnit?: string;
+  /** The product code invoices show before the fee's name, if it has one. */
+  sku?: string;
   /** How often a recurring fee is charged; monthly when unset. */
   interval?: FeeInterval;
   /**
@@ -409,6 +411,7 @@ export const createFixedServicePricing = async (input: CreateFixedServicePricing
         amount: input.amount,
         ...(input.serviceRef ? { serviceRef: input.serviceRef } : {}),
         ...(input.pricingUnit ? { pricingUnit: input.pricingUnit } : {}),
+        ...(input.sku ? { sku: input.sku } : {}),
         ...(input.basedOn ? { basedOn: input.basedOn } : {}),
         ...(input.chargeType === 'OneTime'
           ? { trigger: 'BillingAccountActivation' as const }
@@ -472,6 +475,8 @@ export type ContractFeeInput = {
   quantity: number;
   /** What the amount is per, e.g. "port", if the fee has a unit. */
   pricingUnit?: string;
+  /** The product code invoices show before the fee's name, if it has one. */
+  sku?: string;
   /** The catalog service's serviceName the fee is for, if it's for one. */
   serviceRef?: string;
   /**
@@ -593,6 +598,7 @@ const createContractPricings = async (
       amount: fee.amount,
       serviceRef: fee.serviceRef,
       pricingUnit: fee.pricingUnit,
+      sku: fee.sku,
       interval: fee.chargeType === 'Recurring' ? fee.interval : undefined,
       basedOn: fee.basedOn,
       labels,

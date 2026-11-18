@@ -261,6 +261,7 @@ export function ContractFees({
             const listAmount = fee.basedOn ? listAmountByName.get(fee.basedOn) : undefined;
             const beforeDiscount = formatMoney(feeTotal(fee), CONTRACT_CURRENCY);
             const detail = [
+              fee.sku ? t`SKU ${fee.sku}` : null,
               feeQuantityText(fee),
               listAmount !== undefined && !Number.isNaN(listAmount)
                 ? t`list ${formatMoney(listAmount, CONTRACT_CURRENCY)}`

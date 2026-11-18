@@ -91,6 +91,7 @@ describe('buildContractSchema', () => {
     amount: '6000',
     quantity: '1',
     pricingUnit: '',
+    sku: '',
     serviceRef: 'none',
   };
 
@@ -107,6 +108,15 @@ describe('buildContractSchema', () => {
       'fees.0.periods',
       'listFees.0.periods',
     ]);
+  });
+
+  it('takes a SKU of letters, numbers, dots, dashes and underscores', () => {
+    const schema = buildContractSchema(false, true, now);
+    const parse = (sku: string) => schema.safeParse({ ...empty, fees: [{ ...fee, sku }] });
+    expect(parse('').success).toBe(true);
+    expect(parse('DC-CAB_01.v2').success).toBe(true);
+    expect(parse('DC CAB').error?.issues.map((i) => i.path.join('.'))).toEqual(['fees.0.sku']);
+    expect(parse('-DC').success).toBe(false);
   });
 
   it("takes a recurring fee's interval and timing, and refuses others", () => {

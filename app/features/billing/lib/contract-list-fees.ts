@@ -36,6 +36,8 @@ export interface ListFeeOption {
   serviceRef: string;
   /** What the amount is per, or ''. */
   pricingUnit: string;
+  /** Its product code, or ''. A customer fee based on it has the same. */
+  sku: string;
   /** The list amount, as a decimal string. */
   amount: string;
   /** How often a recurring list fee is charged; unset for a one-time one. */
@@ -64,6 +66,7 @@ export const listFeeOptions = (pricings: ServicePricing[]): ListFeeOption[] =>
           chargeType: spec.chargeType,
           serviceRef: spec.serviceRef ?? '',
           pricingUnit: spec.pricingUnit ?? '',
+          sku: spec.sku ?? '',
           amount: spec.amount,
           ...(spec.chargeType === 'Recurring' ? { interval: spec.interval ?? 'monthly' } : {}),
         },
@@ -177,6 +180,7 @@ export interface PlannedListFee {
   amount: string;
   quantity: number;
   pricingUnit?: string;
+  sku?: string;
   serviceRef?: string;
   /** Percent off, if any. */
   discount?: number;
@@ -218,6 +222,7 @@ export const buildListFeePlan = (
       amount: option.amount,
       quantity: Number(row.quantity) || 1,
       pricingUnit: option.pricingUnit || undefined,
+      sku: option.sku || undefined,
       serviceRef: option.serviceRef || undefined,
       discount: parseDiscount(row.discount),
       ...(option.chargeType === 'Recurring'

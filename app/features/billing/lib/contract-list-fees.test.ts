@@ -23,6 +23,7 @@ const crossConnect: Spec = {
   amount: '300.00',
   interval: 'monthly',
   pricingUnit: 'port',
+  sku: 'DC-XC-01',
 };
 
 const install: Spec = {
@@ -190,6 +191,7 @@ describe('buildListFeePlan', () => {
         amount: '300.00',
         quantity: 4,
         pricingUnit: 'port',
+        sku: 'DC-XC-01',
         serviceRef: 'bare-metal.datumapis.com',
         discount: 10,
         interval: 'monthly',
@@ -225,7 +227,13 @@ describe('buildListFeePlan', () => {
       [row('cross-connect-v1', { quantity: '4', custom: true, amount: '250' })],
       options
     );
-    expect(fee).toMatchObject({ amount: '250.00', quantity: 4, basedOn: 'cross-connect-v1' });
+    // Billing refuses a customer fee without its list fee's SKU.
+    expect(fee).toMatchObject({
+      amount: '250.00',
+      quantity: 4,
+      basedOn: 'cross-connect-v1',
+      sku: 'DC-XC-01',
+    });
     expect(fee.existingPricing).toBeUndefined();
   });
 
