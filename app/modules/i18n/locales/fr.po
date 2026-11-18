@@ -331,7 +331,7 @@ msgstr ""
 msgid "{partial, plural, one {# check saw only some invoices} other {# checks saw only some invoices}}"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:92
+#: app/features/user/components/user-identity-card.tsx:121
 msgid "{passkeyCount, plural, one {# passkey} other {# passkeys}}"
 msgstr ""
 
@@ -632,11 +632,11 @@ msgstr ""
 msgid "Account ID Key"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:79
+#: app/features/user/components/user-identity-card.tsx:108
 msgid "Account Identities"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:351
+#: app/routes/customer/user/detail/index.tsx:352
 msgid "Account Management"
 msgstr ""
 
@@ -680,7 +680,7 @@ msgstr ""
 msgid "Active Configuration"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:204
+#: app/features/user/components/user-identity-card.tsx:233
 #: app/routes/profile/layout.tsx:22
 #: app/routes/profile/session.tsx:19
 msgid "Active Sessions"
@@ -1118,7 +1118,7 @@ msgstr ""
 
 #. placeholder {0}: data.spec?.givenName ?? ''
 #. placeholder {1}: data.spec?.familyName ?? ''
-#: app/routes/customer/user/detail/index.tsx:511
+#: app/routes/customer/user/detail/index.tsx:512
 msgid "Are you sure you want to delete user \"{0} {1}\"? This action cannot be undone."
 msgstr ""
 
@@ -1332,6 +1332,7 @@ msgstr ""
 #: app/features/quota/components/quota-bucket-list.tsx:171
 #: app/features/quota/components/quota-grant-list.tsx:162
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:39
+#: app/features/user/components/user-identity-card.tsx:296
 #: app/features/user/components/user-recovery-link-dialog.tsx:59
 #: app/features/user/components/user-reject-dialog.tsx:30
 #: app/routes/admin/group/detail/member.tsx:142
@@ -1349,7 +1350,7 @@ msgstr ""
 #: app/routes/customer/fraud/providers/detail.tsx:189
 #: app/routes/customer/fraud/providers/index.tsx:127
 #: app/routes/customer/organization/detail/member.tsx:84
-#: app/routes/customer/user/detail/index.tsx:417
+#: app/routes/customer/user/detail/index.tsx:418
 #: app/routes/customer/user/index.tsx:206
 #: app/routes/marketing/contact-group/detail/member.tsx:345
 #: app/routes/marketing/contact-group/detail/member.tsx:362
@@ -1424,7 +1425,7 @@ msgstr ""
 msgid "Change payment terms"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:161
+#: app/features/user/components/user-identity-card.tsx:190
 msgid "Change your Primary Email in GitHub (your primary email)"
 msgstr ""
 
@@ -1617,7 +1618,7 @@ msgstr ""
 msgid "Configuring DNS"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:425
+#: app/routes/customer/user/detail/index.tsx:426
 msgid "Confirm"
 msgstr ""
 
@@ -1781,7 +1782,7 @@ msgstr ""
 msgid "Contract starts"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:368
+#: app/routes/customer/user/detail/index.tsx:369
 msgid "Controls whether this user can sign in and access the platform. Suspending or rejecting requires a reason."
 msgstr ""
 
@@ -1820,6 +1821,10 @@ msgstr ""
 #: app/features/organization/components/org-usage-card.tsx:79
 #: app/features/project/components/project-usage-card.tsx:100
 msgid "Could not load usage"
+msgstr ""
+
+#: app/features/user/components/user-identity-card.tsx:96
+msgid "Could not revoke the session"
 msgstr ""
 
 #. placeholder {0}: parts.map((part, index) => ( <span key={index}> {index > 0 && ', '} {part} </span> ))
@@ -1965,7 +1970,7 @@ msgstr ""
 #: app/features/organization/components/org-details-card.tsx:63
 #: app/features/project/components/project-details-card.tsx:52
 #: app/features/quota/components/quota-grant-list.tsx:129
-#: app/features/user/components/user-identity-card.tsx:233
+#: app/features/user/components/user-identity-card.tsx:262
 #: app/routes/admin/group/detail/index.tsx:46
 #: app/routes/admin/group/detail/member.tsx:107
 #: app/routes/admin/group/index.tsx:35
@@ -2115,7 +2120,7 @@ msgstr ""
 #: app/features/fraud/detail/evaluation-sections.tsx:661
 #: app/routes/customer/fraud/index.tsx:148
 #: app/routes/customer/fraud/index.tsx:285
-#: app/routes/customer/user/detail/index.tsx:315
+#: app/routes/customer/user/detail/index.tsx:316
 msgid "Decision"
 msgstr ""
 
@@ -2273,8 +2278,8 @@ msgstr ""
 msgid "Delete Session"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:508
-#: app/routes/customer/user/detail/index.tsx:510
+#: app/routes/customer/user/detail/index.tsx:509
+#: app/routes/customer/user/detail/index.tsx:511
 msgid "Delete User"
 msgstr ""
 
@@ -2639,7 +2644,7 @@ msgstr ""
 msgid "Email Activity"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:151
+#: app/features/user/components/user-identity-card.tsx:180
 msgid "Email addresses for GitHub identities should be updated through GitHub"
 msgstr ""
 
@@ -2647,7 +2652,7 @@ msgstr ""
 msgid "Email delivery"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:277
+#: app/routes/customer/user/detail/index.tsx:278
 msgid "Email Domain"
 msgstr ""
 
@@ -2663,7 +2668,7 @@ msgstr ""
 msgid "Email is required"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:475
+#: app/routes/customer/user/detail/index.tsx:476
 msgid "Email not verified — ask the user to sign up again to get a fresh verification link"
 msgstr ""
 
@@ -2675,7 +2680,7 @@ msgstr ""
 msgid "Emails"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:460
+#: app/routes/customer/user/detail/index.tsx:461
 msgid "Emails a one-time passkey setup link to the verified address on file. It expires in about an hour and cannot be recalled."
 msgstr ""
 
@@ -2759,7 +2764,7 @@ msgstr ""
 msgid "Enforcement Mode"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:405
+#: app/routes/customer/user/detail/index.tsx:406
 msgid "Enter a reason (at least {REASON_MIN_LENGTH} characters)..."
 msgstr ""
 
@@ -2944,7 +2949,7 @@ msgstr ""
 msgid "Failed to load DNS record status"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:298
+#: app/routes/customer/user/detail/index.tsx:299
 msgid "Failed to load fraud evaluations."
 msgstr ""
 
@@ -3159,7 +3164,7 @@ msgstr ""
 msgid "Fraud & Abuse"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:288
+#: app/routes/customer/user/detail/index.tsx:289
 msgid "Fraud Assessment"
 msgstr ""
 
@@ -3378,7 +3383,7 @@ msgstr ""
 msgid "How many periods the fee is charged for, counted from the contract's start: 36 monthly is three years. Leave it blank for no end."
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:141
+#: app/features/user/components/user-identity-card.tsx:170
 msgid "How to update your GitHub email"
 msgstr ""
 
@@ -3547,7 +3552,7 @@ msgstr ""
 msgid "IP"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:253
+#: app/routes/customer/user/detail/index.tsx:254
 msgid "IP & Network"
 msgstr ""
 
@@ -3655,7 +3660,7 @@ msgstr ""
 msgid "Last 7d"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:321
+#: app/routes/customer/user/detail/index.tsx:322
 msgid "Last Evaluated"
 msgstr ""
 
@@ -3693,7 +3698,7 @@ msgstr ""
 msgid "Latest"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:291
+#: app/routes/customer/user/detail/index.tsx:292
 msgid "Latest fraud evaluation for this user"
 msgstr ""
 
@@ -3834,8 +3839,8 @@ msgstr ""
 #: app/routes/auth/login.tsx:41
 #: app/routes/auth/logout.tsx:47
 #: app/routes/auth/reauth.tsx:25
-#: app/routes/customer/user/detail/index.tsx:294
-#: app/routes/customer/user/detail/index.tsx:358
+#: app/routes/customer/user/detail/index.tsx:295
+#: app/routes/customer/user/detail/index.tsx:359
 msgid "Loading..."
 msgstr ""
 
@@ -3851,15 +3856,15 @@ msgstr ""
 
 #: app/features/fraud/detail/maxmind-rows.tsx:178
 #: app/features/organization/components/org-needs-attention.tsx:145
-#: app/routes/customer/user/detail/index.tsx:265
+#: app/routes/customer/user/detail/index.tsx:266
 msgid "Location"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:175
+#: app/features/user/components/user-identity-card.tsx:204
 msgid "Log back into Datum"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:169
+#: app/features/user/components/user-identity-card.tsx:198
 msgid "Log back into GitHub (with the new, desired email set as primary)"
 msgstr ""
 
@@ -3867,11 +3872,11 @@ msgstr ""
 msgid "Log out"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:158
+#: app/features/user/components/user-identity-card.tsx:187
 msgid "Log out of Datum"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:166
+#: app/features/user/components/user-identity-card.tsx:195
 msgid "Log out of GitHub"
 msgstr ""
 
@@ -3883,7 +3888,7 @@ msgstr ""
 msgid "Mail Lists"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:190
+#: app/features/user/components/user-identity-card.tsx:219
 #: app/routes/customer/user/index.tsx:63
 msgid "Manage"
 msgstr ""
@@ -3896,7 +3901,7 @@ msgstr ""
 msgid "Manage projects"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:354
+#: app/routes/customer/user/detail/index.tsx:355
 msgid "Manage this user's platform access state"
 msgstr ""
 
@@ -4220,7 +4225,7 @@ msgstr ""
 msgid "No active offer"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:210
+#: app/features/user/components/user-identity-card.tsx:239
 #: app/routes/profile/session.tsx:126
 msgid "No active sessions."
 msgstr ""
@@ -4386,7 +4391,7 @@ msgstr ""
 msgid "No fees yet."
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:340
+#: app/routes/customer/user/detail/index.tsx:341
 msgid "No fraud evaluations found for this user."
 msgstr ""
 
@@ -4534,7 +4539,7 @@ msgstr ""
 msgid "No pending approvals, fraud reviews, or quota limits need attention."
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:447
+#: app/routes/customer/user/detail/index.tsx:448
 msgid "No platform access record exists for this user yet."
 msgstr ""
 
@@ -4736,7 +4741,7 @@ msgstr ""
 msgid "Not sure"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:63
+#: app/features/user/components/user-identity-card.tsx:76
 msgid "Not synced"
 msgstr ""
 
@@ -5080,7 +5085,7 @@ msgstr ""
 msgid "Passive Health Checks"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:457
+#: app/routes/customer/user/detail/index.tsx:458
 msgid "Passkey Recovery"
 msgstr ""
 
@@ -5235,7 +5240,7 @@ msgstr ""
 msgid "Permanently delete this project and all associated data"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:509
+#: app/routes/customer/user/detail/index.tsx:510
 msgid "Permanently delete this user and all associated data"
 msgstr ""
 
@@ -5286,7 +5291,7 @@ msgstr ""
 msgid "Platform access approved"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:365
+#: app/routes/customer/user/detail/index.tsx:366
 msgid "Platform Access State"
 msgstr ""
 
@@ -5674,7 +5679,7 @@ msgstr ""
 #: app/features/project/components/project-suspension-card.tsx:90
 #: app/features/service-catalog/components/conditions-card.tsx:39
 #: app/features/user/components/user-recovery-link-dialog.tsx:68
-#: app/routes/customer/user/detail/index.tsx:437
+#: app/routes/customer/user/detail/index.tsx:438
 msgid "Reason"
 msgstr ""
 
@@ -5688,7 +5693,7 @@ msgstr ""
 msgid "Reason for rejection"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:400
+#: app/routes/customer/user/detail/index.tsx:401
 msgid "Reason for setting access to {pendingState}"
 msgstr ""
 
@@ -5890,6 +5895,8 @@ msgstr ""
 msgid "Review Threshold"
 msgstr ""
 
+#: app/features/user/components/user-identity-card.tsx:276
+#: app/features/user/components/user-identity-card.tsx:295
 #: app/routes/admin/service-catalog/detail/consumers.tsx:89
 #: app/routes/admin/service-catalog/detail/consumers.tsx:304
 msgid "Revoke"
@@ -5897,6 +5904,20 @@ msgstr ""
 
 #: app/routes/admin/service-catalog/detail/consumers.tsx:302
 msgid "Revoke access"
+msgstr ""
+
+#: app/features/user/components/user-identity-card.tsx:293
+msgid "Revoke session"
+msgstr ""
+
+#. placeholder {0}: sessionName(session)
+#: app/features/user/components/user-identity-card.tsx:274
+msgid "Revoke session from {0}"
+msgstr ""
+
+#. placeholder {0}: sessionToRevoke ? sessionName(sessionToRevoke) : ''
+#: app/features/user/components/user-identity-card.tsx:294
+msgid "Revoke the session from {0}? The user is signed out on that device and has to sign in again."
 msgstr ""
 
 #: app/features/fraud/detail/evaluation-sections.tsx:150
@@ -5963,7 +5984,7 @@ msgstr ""
 #: app/features/fraud/detail/evaluation-sections.tsx:647
 #: app/routes/customer/fraud/index.tsx:142
 #: app/routes/customer/fraud/index.tsx:282
-#: app/routes/customer/user/detail/index.tsx:305
+#: app/routes/customer/user/detail/index.tsx:306
 msgid "Score"
 msgstr ""
 
@@ -6235,7 +6256,7 @@ msgstr ""
 msgid "Select service pricings to set per-service discounts."
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:383
+#: app/routes/customer/user/detail/index.tsx:384
 msgid "Select state"
 msgstr ""
 
@@ -6269,7 +6290,7 @@ msgid "Send link"
 msgstr ""
 
 #: app/features/user/components/user-recovery-link-dialog.tsx:56
-#: app/routes/customer/user/detail/index.tsx:485
+#: app/routes/customer/user/detail/index.tsx:486
 msgid "Send passkey recovery link"
 msgstr ""
 
@@ -6325,6 +6346,10 @@ msgstr ""
 
 #: app/routes/profile/session.tsx:50
 msgid "Session ID"
+msgstr ""
+
+#: app/features/user/components/user-identity-card.tsx:94
+msgid "Session revoked"
 msgstr ""
 
 #: app/features/billing/components/default-offer-card.tsx:75
@@ -7102,6 +7127,10 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
+#: app/features/user/components/user-identity-card.tsx:88
+msgid "Unknown IP"
+msgstr ""
+
 #: app/features/billing/components/contract-editor/contract-summary.tsx:162
 #: app/features/billing/components/contract-editor/contract-summary.tsx:186
 msgid "Unnamed fee"
@@ -7133,7 +7162,7 @@ msgid "unusual invoice totals"
 msgstr ""
 
 #: app/features/edge/components/detail/edge-hostnames-card.tsx:58
-#: app/features/user/components/user-identity-card.tsx:62
+#: app/features/user/components/user-identity-card.tsx:75
 msgid "Unverified"
 msgstr ""
 
@@ -7168,7 +7197,7 @@ msgstr ""
 msgid "Updated"
 msgstr ""
 
-#: app/features/user/components/user-identity-card.tsx:148
+#: app/features/user/components/user-identity-card.tsx:177
 msgid "Updating email addresses for GitHub identities"
 msgstr ""
 
@@ -7279,7 +7308,7 @@ msgid "Verification record the customer needs to create"
 msgstr ""
 
 #: app/features/domain/components/domain-status-probe.tsx:83
-#: app/features/user/components/user-identity-card.tsx:61
+#: app/features/user/components/user-identity-card.tsx:74
 msgid "Verified"
 msgstr ""
 
@@ -7309,7 +7338,7 @@ msgstr ""
 msgid "View contact groups"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:335
+#: app/routes/customer/user/detail/index.tsx:336
 msgid "View Evaluation"
 msgstr ""
 
@@ -7338,7 +7367,7 @@ msgstr ""
 msgid "View Raw Results"
 msgstr ""
 
-#: app/routes/customer/user/detail/index.tsx:472
+#: app/routes/customer/user/detail/index.tsx:473
 msgid "View sent links"
 msgstr ""
 

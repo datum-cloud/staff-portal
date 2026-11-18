@@ -65,9 +65,9 @@ export class CustomAuthenticator extends Authenticator<ISession> {
   async isValidSession(request: Request): Promise<boolean> {
     const session = await sessionCookie.get(request);
 
-    // Check if session is expired
+    // sessionRefreshMiddleware has already refreshed a session that had a refresh
+    // token, so an expired one here has none (or the refresh failed): re-auth.
     if (session?.data?.expiredAt && isPast(session.data.expiredAt)) {
-      // Todo: refresh token
       return false;
     }
 
