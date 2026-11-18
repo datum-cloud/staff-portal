@@ -2,372 +2,700 @@
 import type { ProxyResponse, UnwrapProxyResponse } from '../../shared/core/types.gen';
 
 export type ClientOptions = {
-  baseURL: `${string}://.openapi-temp` | (string & {});
+  baseURL: string;
 };
 
 /**
- * APIResource specifies the name of a resource and whether it is namespaced.
+ * Activity is a human-readable summary of something that happened in your cluster. Think of it as the "what changed and who did it" record that powers activity feeds, audit trails, and change history views.
+ *
+ * Activities are created automatically from audit logs and Kubernetes events based on your ActivityPolicy rules. They're read-only - you query them, not create them.
+ *
+ * # Accessing Activities
+ *
+ * There are three ways to get activity data, depending on what you need:
+ *
+ * | What you need | API to use | Notes | | --- | --- | --- | | Live feed | GET /activities?watch=true | Streams new activities as they happen. List only returns the last hour. | | Search history | POST /activityqueries | Query any time range with filters, search, and pagination. | | Filter options | POST /activityfacetqueries | Get values for dropdowns (e.g., "which actors have activities?"). |
+ *
+ * # Quick Examples
+ *
+ * Watch for new activities:
+ *
+ * kubectl get activities --watch
+ *
+ * List recent human-initiated changes:
+ *
+ * kubectl get activities --field-selector spec.changeSource=human
+ *
+ * For historical queries or advanced filtering, use ActivityQuery instead.
  */
-export type ApiResourceV1MetaApisPkgApimachineryK8sIo = {
-  /**
-   * categories is a list of the grouped resources this resource belongs to (e.g. 'all')
-   */
-  categories?: Array<string>;
-  /**
-   * group is the preferred group of the resource.  Empty implies the group of the containing resource list. For subresources, this may have a different value, for example: Scale".
-   */
-  group?: string;
-  /**
-   * kind is the kind for the resource (e.g. 'Foo' is the kind for a resource 'foo')
-   */
-  kind: string;
-  /**
-   * name is the plural name of the resource.
-   */
-  name: string;
-  /**
-   * namespaced indicates if a resource is namespaced or not.
-   */
-  namespaced: boolean;
-  /**
-   * shortNames is a list of suggested short names of the resource.
-   */
-  shortNames?: Array<string>;
-  /**
-   * singularName is the singular name of the resource.  This allows clients to handle plural and singular opaquely. The singularName is more correct for reporting status on a single item and both singular and plural are allowed from the kubectl CLI interface.
-   */
-  singularName: string;
-  /**
-   * The hash value of the storage version, the version this resource is converted to when written to the data store. Value must be treated as opaque by clients. Only equality comparison on the value is valid. This is an alpha feature and may change or be removed in the future. The field is populated by the apiserver only if the StorageVersionHash feature gate is enabled. This field will remain optional even if it graduates.
-   */
-  storageVersionHash?: string;
-  /**
-   * verbs is a list of supported kube verbs (this includes get, list, watch, create, update, patch, delete, deletecollection, and proxy)
-   */
-  verbs: Array<string>;
-  /**
-   * version is the preferred version of the resource.  Empty implies the version of the containing resource list For subresources, this may have a different value, for example: v1 (while inside a v1beta1 version of the core resource's group)".
-   */
-  version?: string;
-};
-
-/**
- * APIResourceList is a list of APIResource, it is used to expose the name of the resources supported in a specific group and version, and if the resource is namespaced.
- */
-export type ApiResourceListV1MetaApisPkgApimachineryK8sIo = {
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1Activity = {
   /**
    * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
    */
   apiVersion?: string;
   /**
-   * groupVersion is the group and version this APIResourceList is for.
+   * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
    */
-  groupVersion: string;
+  kind?: string;
+  metadata?: IoK8sApimachineryPkgApisMetaV1ObjectMeta;
+  spec: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivitySpec;
+};
+
+/**
+ * ActivityActor identifies who performed an action.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityActor = {
+  /**
+   * Email is the actor's email address. Only populated for user actors when available.
+   */
+  email?: string;
+  /**
+   * Name is the display name for the actor. For users, this is typically the email address. For service accounts, this is the full name (e.g., "system:serviceaccount:default:my-sa"). For controllers, this is the controller name.
+   */
+  name: string;
+  /**
+   * Type indicates the actor category. Values: "user", "serviceaccount", "controller"
+   */
+  type: string;
+  /**
+   * UID is the unique identifier for the actor. Stable across username changes.
+   */
+  uid?: string;
+};
+
+/**
+ * ActivityChange represents a field-level change in an update/patch operation.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityChange = {
+  /**
+   * Field is the path to the changed field (e.g., "spec.virtualhost.fqdn").
+   */
+  field: string;
+  /**
+   * New is the new value. May be empty for deleted fields.
+   */
+  new?: string;
+  /**
+   * Old is the previous value. May be empty for new fields.
+   */
+  old?: string;
+};
+
+/**
+ * ActivityFacetQuery helps you build filter UIs by returning "what values exist" for a field.
+ *
+ * For example, if you want a dropdown showing "filter by actor", this API tells you which actors have activities and how many each has. Great for autocomplete, filter chips, and faceted search interfaces.
+ *
+ * # Example: Get top actors and resource types from the last week
+ *
+ * apiVersion: activity.miloapis.com/v1alpha1
+ * kind: ActivityFacetQuery
+ * spec:
+ * timeRange:
+ * start: "now-7d"
+ * facets:
+ * - field: spec.actor.name
+ * limit: 10
+ * - field: spec.resource.kind
+ *
+ * This returns something like:
+ *
+ * status:
+ * facets:
+ * - field: spec.actor.name
+ * values:
+ * - value: alice@example.com
+ * count: 142
+ * - value: bob@example.com
+ * count: 89
+ * - field: spec.resource.kind
+ * values:
+ * - value: Deployment
+ * count: 95
+ * - value: HTTPProxy
+ * count: 67
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityFacetQuery = {
+  /**
+   * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+   */
+  apiVersion?: string;
   /**
    * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
    */
   kind?: string;
+  metadata?: IoK8sApimachineryPkgApisMetaV1ObjectMeta;
+  spec: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityFacetQuerySpec;
+  status?: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityFacetQueryStatus;
+};
+
+/**
+ * ActivityFacetQuerySpec defines what you want facet data for.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityFacetQuerySpec = {
   /**
-   * resources contains the name of the resources and if they are namespaced.
+   * Facets specifies which fields to get distinct values for. Each facet returns the top N values with counts.
    */
-  resources: Array<ApiResourceV1MetaApisPkgApimachineryK8sIo>;
-};
-
-/**
- * FieldsV1 stores a set of fields in a data structure like a Trie, in JSON format.
- *
- * Each key is either a '.' representing the field itself, and will always map to an empty set, or a string representing a sub-field or item. The string will follow one of these four formats: 'f:<name>', where <name> is the name of a field in a struct, or key in a map 'v:<value>', where <value> is the exact json formatted value of a list item 'i:<index>', where <index> is position of a item in a list 'k:<keys>', where <keys> is a map of  a list item's key fields to their unique values If a key maps to an empty Fields value, the field that key represents is part of the set.
- *
- * The exact format is defined in sigs.k8s.io/structured-merge-diff
- */
-export type FieldsV1V1MetaApisPkgApimachineryK8sIo = {
-  [key: string]: unknown;
-};
-
-/**
- * ListMeta describes metadata that synthetic resources must have, including lists and various status objects. A resource may have only one of {ObjectMeta, ListMeta}.
- */
-export type ListMetaV1MetaApisPkgApimachineryK8sIo = {
+  facets: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1FacetSpec>;
   /**
-   * continue may be set if the user set a limit on the number of items returned, and indicates that the server has more data available. The value is opaque and may be used to issue another request to the endpoint that served this list to retrieve the next set of available objects. Continuing a consistent list may not be possible if the server configuration has changed or more than a few minutes have passed. The resourceVersion field returned when using this continue value will be identical to the value in the first response, unless you have received this token from an error message.
+   * Filter lets you narrow down which activities to include before computing facets. Uses CEL (Common Expression Language) syntax.
+   *
+   * This is useful when you want facet values for a specific subset - for example, "show me actors, but only for human-initiated changes."
+   *
+   * Fields you can filter on:
+   * spec.changeSource       - "human" or "system"
+   * spec.actor.name         - who did it (e.g., "alice@example.com")
+   * spec.actor.type         - user, serviceaccount, or controller
+   * spec.resource.kind      - what type of resource (Deployment, Pod, etc.)
+   * spec.resource.namespace - which namespace
+   * spec.resource.name      - resource name
+   * spec.resource.apiGroup  - API group (empty string for core resources)
+   *
+   * Example filters:
+   * "spec.changeSource == 'human'"              - Only human actions
+   * "spec.resource.kind == 'Deployment'"        - Only Deployment changes
+   * "!spec.actor.name.startsWith('system:')"    - Exclude system accounts
+   */
+  filter?: string;
+  /**
+   * TimeRange sets how far back to look. Defaults to the last 7 days if not set. Use relative times like "now-7d" or absolute timestamps.
+   */
+  timeRange?: ComMiloapisGoActivityPkgApisActivityV1Alpha1FacetTimeRange;
+};
+
+/**
+ * ActivityFacetQueryStatus contains the facet results.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityFacetQueryStatus = {
+  /**
+   * Facets contains the results for each requested facet.
+   */
+  facets?: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1FacetResult>;
+};
+
+/**
+ * ActivityLink represents a clickable reference in an activity summary.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityLink = {
+  /**
+   * Marker is the text substring in the summary that should be linked. The portal scans the summary for this marker and makes it clickable.
+   *
+   * Example: "HTTP proxy api-gateway"
+   */
+  marker: string;
+  /**
+   * Resource identifies what the marker links to.
+   */
+  resource: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityResource;
+};
+
+/**
+ * ActivityList contains a list of Activity resources.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityList = {
+  /**
+   * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+   */
+  apiVersion?: string;
+  items: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1Activity>;
+  /**
+   * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind?: string;
+  metadata?: IoK8sApimachineryPkgApisMetaV1ListMeta;
+};
+
+/**
+ * ActivityOrigin identifies the source record for an activity.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityOrigin = {
+  /**
+   * ID is the correlation ID to the source record. For audit: the auditID from the audit log entry. For event: the metadata.uid of the Kubernetes Event.
+   */
+  id: string;
+  /**
+   * Type indicates the source type. Values: "audit" (from audit logs), "event" (from Kubernetes events)
+   */
+  type: string;
+};
+
+/**
+ * ActivityPolicy defines translation rules for a specific resource type. Service providers create one ActivityPolicy per resource kind to customize activity descriptions without modifying the Activity Processor.
+ *
+ * Example:
+ *
+ * apiVersion: activity.miloapis.com/v1alpha1
+ * kind: ActivityPolicy
+ * metadata:
+ * name: networking-httpproxy
+ * spec:
+ * resource:
+ * apiGroup: networking.datumapis.com
+ * kind: HTTPProxy
+ * auditRules:
+ * - match: "audit.verb == 'create'"
+ * summary: "{{ actor }} created {{ link(kind + ' ' + audit.objectRef.name, audit.objectRef) }}"
+ * eventRules:
+ * - match: "event.reason == 'Programmed'"
+ * summary: "{{ link(kind + ' ' + event.regarding.name, event.regarding) }} is now programmed"
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicy = {
+  /**
+   * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+   */
+  apiVersion?: string;
+  /**
+   * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind?: string;
+  metadata?: IoK8sApimachineryPkgApisMetaV1ObjectMeta;
+  spec: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicySpec;
+  status?: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicyStatus;
+};
+
+/**
+ * ActivityPolicyList is a list of ActivityPolicy objects
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicyList = {
+  /**
+   * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+   */
+  apiVersion?: string;
+  items: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicy>;
+  /**
+   * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind?: string;
+  metadata?: IoK8sApimachineryPkgApisMetaV1ListMeta;
+};
+
+/**
+ * ActivityPolicyResource identifies the target Kubernetes resource for a policy.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicyResource = {
+  /**
+   * APIGroup is the API group of the target resource (e.g., "networking.datumapis.com"). Use an empty string for core API group resources.
+   */
+  apiGroup: string;
+  /**
+   * Kind is the kind of the target resource (e.g., "HTTPProxy", "Network").
+   */
+  kind: string;
+};
+
+/**
+ * ActivityPolicyRule defines a single translation rule that matches input events and generates human-readable activity summaries.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicyRule = {
+  /**
+   * Description is an optional human-readable description of what this rule does.
+   */
+  description?: string;
+  /**
+   * Match is a CEL expression that determines if this rule applies to the input. For audit rules, use the `audit` variable (e.g., "audit.verb == 'create'", "audit.objectRef.namespace == 'default'"). For event rules, use the `event` variable (e.g., "event.reason == 'Programmed'").
+   *
+   * Examples:
+   * "audit.verb == 'create'"
+   * "audit.verb in ['update', 'patch']"
+   * "event.reason.startsWith('Failed')"
+   * "true"  (fallback rule that always matches)
+   */
+  match: string;
+  /**
+   * Name is a unique identifier for this rule within the policy. Used for strategic merge patching and error reporting.
+   */
+  name: string;
+  /**
+   * Summary is a CEL template for generating the activity summary. Use {{ }} delimiters to embed CEL expressions within strings.
+   *
+   * Available variables:
+   * - For audit rules: audit (map), actor, actorRef, kind
+   * Access audit fields via: audit.verb, audit.objectRef, audit.user, audit.responseStatus, audit.responseObject
+   * - For event rules: event, actor, actorRef
+   *
+   * Available functions:
+   * - link(displayText, resourceRef): Creates a clickable reference
+   *
+   * Examples:
+   * "{{ actor }} created {{ link(kind + ' ' + audit.objectRef.name, audit.objectRef) }}"
+   * "{{ link(kind + ' ' + event.regarding.name, event.regarding) }} is now programmed"
+   */
+  summary: string;
+};
+
+/**
+ * ActivityPolicySpec defines the translation rules for a resource type.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicySpec = {
+  /**
+   * AuditRules define how to translate audit log entries into activity summaries. Rules are evaluated in order; the first matching rule wins. Available variables: audit (map with verb, objectRef, user, responseStatus,
+   * responseObject, requestObject), actor, actorRef, kind
+   */
+  auditRules?: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicyRule>;
+  /**
+   * EventRules define how to translate Kubernetes events into activity summaries. Rules are evaluated in order; the first matching rule wins. The `event` variable contains the full Kubernetes Event structure. Convenience variables available: actor
+   */
+  eventRules?: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicyRule>;
+  /**
+   * Resource identifies the Kubernetes resource this policy applies to. One ActivityPolicy should exist per resource kind.
+   */
+  resource: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicyResource;
+};
+
+/**
+ * ActivityPolicyStatus represents the current state of an ActivityPolicy.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicyStatus = {
+  /**
+   * Conditions represent the current state of the policy. The "Ready" condition indicates whether all rules compile successfully.
+   */
+  conditions?: Array<IoK8sApimachineryPkgApisMetaV1Condition>;
+  /**
+   * ObservedGeneration is the generation last processed by the controller.
+   */
+  observedGeneration?: number;
+};
+
+/**
+ * ActivityQuery searches for activity records.
+ *
+ * Activities are human-readable summaries of resource changes, generated from audit logs and Kubernetes events. Use this to display activity feeds, investigate changes, or filter by actor, resource type, or time range.
+ *
+ * Quick Start:
+ *
+ * apiVersion: activity.miloapis.com/v1alpha1
+ * kind: ActivityQuery
+ * metadata:
+ * name: recent-human-changes
+ * spec:
+ * startTime: "now-7d"
+ * endTime: "now"
+ * filter: "spec.changeSource == 'human'"  # filter out system noise
+ * limit: 50
+ *
+ * Time Formats: - Relative: "now-7d", "now-2h" (great for dashboards) - Absolute: "2024-01-01T00:00:00Z" (great for historical analysis)
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityQuery = {
+  /**
+   * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+   */
+  apiVersion?: string;
+  /**
+   * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind?: string;
+  metadata?: IoK8sApimachineryPkgApisMetaV1ObjectMeta;
+  spec: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityQuerySpec;
+  status?: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityQueryStatus;
+};
+
+/**
+ * ActivityQuerySpec defines the search parameters for activities.
+ *
+ * Required: startTime and endTime define your search window. Optional: filter (CEL expression), search, limit, continue.
+ *
+ * CEL is the primary filtering mechanism. All dedicated filter fields have been removed in favor of the expressive filter field.
+ *
+ * Available CEL Fields:
+ *
+ * spec.changeSource      - "human" or "system"
+ * spec.actor.name        - who performed the action
+ * spec.actor.type        - "user", "serviceaccount", "controller"
+ * spec.actor.uid         - actor's unique identifier
+ * spec.resource.apiGroup - resource API group (empty for core)
+ * spec.resource.kind     - resource kind (Deployment, Pod, etc.)
+ * spec.resource.name     - resource name
+ * spec.resource.namespace - resource namespace
+ * spec.resource.uid      - resource UID
+ * spec.summary           - activity summary text
+ * spec.origin.type       - "audit" or "event"
+ * spec.source.planeType  - plane the record originated from (management, edge)
+ * spec.source.cluster    - cluster the record originated from
+ * spec.source.region     - region the record originated from
+ * spec.source.city       - city the record originated from
+ * spec.relatedUIDs       - UIDs of the resource, its related resources, and
+ * linked resources (list; use '<uid>' in spec.relatedUIDs)
+ * metadata.namespace     - activity namespace
+ *
+ * CEL Filter Examples:
+ *
+ * "spec.changeSource == 'human'"
+ * "spec.resource.kind == 'Deployment'"
+ * "spec.actor.name.contains('admin')"
+ * "spec.resource.kind in ['Deployment', 'StatefulSet']"
+ * "spec.resource.apiGroup == 'networking.datumapis.com'"
+ * "spec.actor.uid == 'abc123'"
+ * "'abc123' in spec.relatedUIDs && spec.source.region == 'us-east-1'"
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityQuerySpec = {
+  /**
+   * Continue is the pagination cursor for fetching additional pages.
+   *
+   * Leave empty for the first page. Copy status.continue here to get the next page. Keep all other parameters identical across paginated requests.
    */
   continue?: string;
   /**
-   * remainingItemCount is the number of subsequent items in the list which are not included in this list response. If the list request contained label or field selectors, then the number of remaining items is unknown and the field will be left unset and omitted during serialization. If the list is complete (either because it is not chunking or because this is the last chunk), then there are no more remaining items and this field will be left unset and omitted during serialization. Servers older than v1.15 do not set this field. The intended use of the remainingItemCount is *estimating* the size of a collection. Clients should not rely on the remainingItemCount to be set or to be exact.
+   * EndTime is the end of your search window (exclusive).
+   *
+   * Uses the same formats as StartTime. Commonly "now" for current moment. Must be greater than StartTime.
    */
-  remainingItemCount?: number;
+  endTime: string;
   /**
-   * String that identifies the server's internal version of this object that can be used by clients to determine when objects have changed. Value must be treated as opaque by clients and passed unmodified back to the server. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+   * Filter narrows results using CEL (Common Expression Language).
+   *
+   * This is the primary filtering mechanism. See the ActivityQuerySpec godoc for available fields and examples.
+   *
+   * Operators: ==, !=, &&, ||, !, in String Functions: startsWith(), endsWith(), contains()
    */
-  resourceVersion?: string;
+  filter?: string;
   /**
-   * Deprecated: selfLink is a legacy read-only field that is no longer populated by the system.
+   * Limit sets the maximum number of results per page. Default: 100, Maximum: 1000.
    */
-  selfLink?: string;
+  limit?: number;
+  /**
+   * Search performs full-text search on activity summaries.
+   *
+   * Example: "created deployment" matches activities with those words in the summary.
+   */
+  search?: string;
+  /**
+   * StartTime is the beginning of your search window (inclusive).
+   *
+   * Format Options: - Relative: "now-7d", "now-2h", "now-30m" (units: s, m, h, d, w) - Absolute: "2024-01-01T00:00:00Z" (RFC3339 with timezone)
+   */
+  startTime: string;
 };
 
 /**
- * ManagedFieldsEntry is a workflow-id, a FieldSet and the group version of the resource that the fieldset applies to.
+ * ActivityQueryStatus contains the query results and pagination state.
  */
-export type ManagedFieldsEntryV1MetaApisPkgApimachineryK8sIo = {
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityQueryStatus = {
   /**
-   * APIVersion defines the version of this resource that this field set applies to. The format is "group/version" just like the top-level APIVersion field. It is necessary to track the version of a field set because it cannot be automatically converted.
+   * Continue is the pagination cursor. Non-empty means more results are available.
    */
-  apiVersion?: string;
+  continue?: string;
   /**
-   * FieldsType is the discriminator for the different fields format and version. There is currently only one possible value: "FieldsV1"
+   * EffectiveEndTime is the actual end time used (RFC3339 format). Shows the resolved timestamp when relative times are used.
    */
-  fieldsType?: string;
+  effectiveEndTime?: string;
   /**
-   * FieldsV1 holds the first JSON version format as described in the "FieldsV1" type.
+   * EffectiveStartTime is the actual start time used (RFC3339 format). Shows the resolved timestamp when relative times are used.
    */
-  fieldsV1?: FieldsV1V1MetaApisPkgApimachineryK8sIo;
+  effectiveStartTime?: string;
   /**
-   * Manager is an identifier of the workflow managing these fields.
+   * Results contains matching activities, sorted newest-first.
    */
-  manager?: string;
-  /**
-   * Operation is the type of operation which lead to this ManagedFieldsEntry being created. The only valid values for this field are 'Apply' and 'Update'.
-   */
-  operation?: string;
-  /**
-   * Subresource is the name of the subresource used to update that object, or empty string if the object was updated through the main resource. The value of this field is used to distinguish between managers, even if they share the same name. For example, a status update will be distinct from a regular update using the same manager name. Note that the APIVersion field is not related to the Subresource field and it always corresponds to the version of the main resource.
-   */
-  subresource?: string;
-  /**
-   * Time is the timestamp of when the ManagedFields entry was added. The timestamp will also be updated if a field is added, the manager changes any of the owned fields value or removes a field. The timestamp does not update when a field is removed from the entry because another manager took it over.
-   */
-  time?: TimeV1MetaApisPkgApimachineryK8sIo;
+  results?: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1Activity>;
 };
 
 /**
- * MicroTime is version of Time with microsecond level precision.
+ * ActivityResource identifies the Kubernetes resource affected by an activity.
  */
-export type MicroTimeV1MetaApisPkgApimachineryK8sIo = string;
-
-/**
- * ObjectMeta is metadata that all persisted resources must have, which includes all objects users must create.
- */
-export type ObjectMetaV1MetaApisPkgApimachineryK8sIo = {
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityResource = {
   /**
-   * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations
+   * APIGroup is the API group of the resource. Empty string for core API group.
    */
-  annotations?: {
-    [key: string]: string;
-  };
+  apiGroup?: string;
   /**
-   * CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC.
-   *
-   * Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+   * APIVersion is the API version of the resource.
    */
-  creationTimestamp?: TimeV1MetaApisPkgApimachineryK8sIo;
+  apiVersion: string;
   /**
-   * Number of seconds allowed for this object to gracefully terminate before it will be removed from the system. Only set when deletionTimestamp is also set. May only be shortened. Read-only.
+   * Kind is the kind of the resource.
    */
-  deletionGracePeriodSeconds?: number;
+  kind: string;
   /**
-   * DeletionTimestamp is RFC 3339 date and time at which this resource will be deleted. This field is set by the server when a graceful deletion is requested by the user, and is not directly settable by a client. The resource is expected to be deleted (no longer visible from resource lists, and not reachable by name) after the time in this field, once the finalizers list is empty. As long as the finalizers list contains items, deletion is blocked. Once the deletionTimestamp is set, this value may not be unset or be set further into the future, although it may be shortened or the resource may be deleted prior to this time. For example, a user may request that a pod is deleted in 30 seconds. The Kubelet will react by sending a graceful termination signal to the containers in the pod. After that 30 seconds, the Kubelet will send a hard termination signal (SIGKILL) to the container and after cleanup, remove the pod from the API. In the presence of network partitions, this object may still exist after this timestamp, until an administrator or automated process can determine the resource is fully terminated. If not set, graceful deletion of the object has not been requested.
-   *
-   * Populated by the system when a graceful deletion is requested. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+   * Name is the name of the resource.
    */
-  deletionTimestamp?: TimeV1MetaApisPkgApimachineryK8sIo;
+  name: string;
   /**
-   * Must be empty before the object is deleted from the registry. Each entry is an identifier for the responsible component that will remove the entry from the list. If the deletionTimestamp of the object is non-nil, entries in this list can only be removed. Finalizers may be processed and removed in any order.  Order is NOT enforced because it introduces significant risk of stuck finalizers. finalizers is a shared field, any actor with permission can reorder it. If the finalizer list is processed in order, then this can lead to a situation in which the component responsible for the first finalizer in the list is waiting for a signal (field value, external system, or other) produced by a component responsible for a finalizer later in the list, resulting in a deadlock. Without enforced ordering finalizers are free to order amongst themselves and are not vulnerable to ordering changes in the list.
-   */
-  finalizers?: Array<string>;
-  /**
-   * GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server.
-   *
-   * If this field is specified and the generated name exists, the server will return a 409.
-   *
-   * Applied only if Name is not specified. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency
-   */
-  generateName?: string;
-  /**
-   * A sequence number representing a specific generation of the desired state. Populated by the system. Read-only.
-   */
-  generation?: number;
-  /**
-   * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels
-   */
-  labels?: {
-    [key: string]: string;
-  };
-  /**
-   * ManagedFields maps workflow-id and version to the set of fields that are managed by that workflow. This is mostly for internal housekeeping, and users typically shouldn't need to set or understand this field. A workflow can be the user's name, a controller's name, or the name of a specific apply path like "ci-cd". The set of fields is always in the version that the workflow used when modifying the object.
-   */
-  managedFields?: Array<ManagedFieldsEntryV1MetaApisPkgApimachineryK8sIo>;
-  /**
-   * Name must be unique within a namespace. Is required when creating resources, although some resources may allow a client to request the generation of an appropriate name automatically. Name is primarily intended for creation idempotence and configuration definition. Cannot be updated. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names
-   */
-  name?: string;
-  /**
-   * Namespace defines the space within which each name must be unique. An empty namespace is equivalent to the "default" namespace, but "default" is the canonical representation. Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty.
-   *
-   * Must be a DNS_LABEL. Cannot be updated. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces
+   * Namespace is the namespace of the resource. Empty for cluster-scoped resources.
    */
   namespace?: string;
   /**
-   * List of objects depended by this object. If ALL objects in the list have been deleted, this object will be garbage collected. If this object is managed by a controller, then an entry in this list will point to this controller, with the controller field set to true. There cannot be more than one managing controller.
-   */
-  ownerReferences?: Array<OwnerReferenceV1MetaApisPkgApimachineryK8sIo>;
-  /**
-   * An opaque value that represents the internal version of this object that can be used by clients to determine when objects have changed. May be used for optimistic concurrency, change detection, and the watch operation on a resource or set of resources. Clients must treat these values as opaque and passed unmodified back to the server. They may only be valid for a particular resource or set of resources.
-   *
-   * Populated by the system. Read-only. Value must be treated as opaque by clients and . More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-   */
-  resourceVersion?: string;
-  /**
-   * Deprecated: selfLink is a legacy read-only field that is no longer populated by the system.
-   */
-  selfLink?: string;
-  /**
-   * UID is the unique in time and space value for this object. It is typically generated by the server on successful creation of a resource and is not allowed to change on PUT operations.
-   *
-   * Populated by the system. Read-only. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
+   * UID is the unique identifier of the resource.
    */
   uid?: string;
 };
 
 /**
- * OwnerReference contains enough information to let you identify an owning object. An owning object must be in the same namespace as the dependent, or be cluster-scoped, so there is no namespace field.
+ * ActivitySource describes where the underlying event or activity originated.
  */
-export type OwnerReferenceV1MetaApisPkgApimachineryK8sIo = {
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivitySource = {
   /**
-   * API version of the referent.
+   * City is the city the event or activity originated from.
    */
-  apiVersion: string;
+  city?: string;
   /**
-   * If true, AND if the owner has the "foregroundDeletion" finalizer, then the owner cannot be deleted from the key-value store until this reference is removed. See https://kubernetes.io/docs/concepts/architecture/garbage-collection/#foreground-deletion for how the garbage collector interacts with this field and enforces the foreground deletion. Defaults to false. To set this field, a user needs "delete" permission of the owner, otherwise 422 (Unprocessable Entity) will be returned.
+   * Cluster is the name of the cluster the event or activity originated from.
    */
-  blockOwnerDeletion?: boolean;
+  cluster?: string;
   /**
-   * If true, this reference points to the managing controller.
+   * PlaneType indicates which plane the event or activity originated from. Example values: "management", "edge".
    */
-  controller?: boolean;
+  planeType?: string;
   /**
-   * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   * Region is the region the event or activity originated from.
    */
-  kind: string;
-  /**
-   * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names
-   */
-  name: string;
-  /**
-   * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
-   */
-  uid: string;
+  region?: string;
 };
 
 /**
- * Status is a return value for calls that don't return other objects.
+ * ActivitySpec contains the translated activity details.
  */
-export type StatusV1MetaApisPkgApimachineryK8sIo = {
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivitySpec = {
+  /**
+   * Actor identifies who performed the action.
+   */
+  actor: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityActor;
+  /**
+   * ChangeSource indicates who initiated the change. Used to filter human actions from system reconciliation noise.
+   *
+   * Values:
+   * - "human": User action via kubectl, API, or UI
+   * - "system": Controller reconciliation, operator actions, scheduled jobs
+   */
+  changeSource: string;
+  /**
+   * Changes contains field-level changes for update/patch operations. Shows old and new values for modified fields.
+   *
+   * NOTE: This field may be empty in the initial implementation. Populating old values requires resource history lookups.
+   */
+  changes?: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityChange>;
+  /**
+   * Links contains clickable references found in the summary. The portal uses these to make resource names in the summary clickable.
+   */
+  links?: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityLink>;
+  /**
+   * Origin identifies the source record for correlation.
+   */
+  origin: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityOrigin;
+  /**
+   * Related lists other resources the source record references, such as an event's related object (e.g., the Workload an Instance belongs to).
+   */
+  related?: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityResource>;
+  /**
+   * Resource identifies the Kubernetes resource that was affected.
+   */
+  resource: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityResource;
+  /**
+   * Source describes where the underlying event or activity originated: plane type, cluster, region, and city.
+   *
+   * Unset means this information is unknown or not yet populated.
+   */
+  source?: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivitySource;
+  /**
+   * Summary is the human-readable description of what happened. Generated from ActivityPolicy templates.
+   *
+   * Example: "alice created HTTP proxy api-gateway"
+   */
+  summary: string;
+  /**
+   * Tenant identifies the scope for multi-tenant isolation.
+   */
+  tenant: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityTenant;
+};
+
+/**
+ * ActivityTenant identifies the scope for multi-tenant isolation.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityTenant = {
+  /**
+   * Name is the tenant identifier within the scope type.
+   */
+  name: string;
+  /**
+   * Type is the scope level. Values: "global", "organization", "project", "user"
+   */
+  type: string;
+};
+
+/**
+ * AuditLogFacetsQuery is an ephemeral resource for getting distinct field values from audit logs. Use this to power autocomplete, filter dropdowns, and faceted search in UIs for audit log queries.
+ *
+ * The query returns counts for each distinct value, allowing you to show both available options and their frequency.
+ *
+ * Example:
+ *
+ * apiVersion: activity.miloapis.com/v1alpha1
+ * kind: AuditLogFacetsQuery
+ * metadata:
+ * name: get-verbs
+ * spec:
+ * timeRange:
+ * start: "now-7d"
+ * facets:
+ * - field: verb
+ * limit: 10
+ * - field: objectRef.resource
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogFacetsQuery = {
   /**
    * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
    */
   apiVersion?: string;
   /**
-   * Suggested HTTP return code for this status, 0 if not set.
-   */
-  code?: number;
-  /**
-   * Extended data associated with the reason.  Each reason may define its own extended details. This field is optional and the data returned is not guaranteed to conform to any schema except that defined by the reason type.
-   */
-  details?: StatusDetailsV1MetaApisPkgApimachineryK8sIo;
-  /**
    * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
    */
   kind?: string;
-  /**
-   * A human-readable description of the status of this operation.
-   */
-  message?: string;
-  /**
-   * Standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-   */
-  metadata?: ListMetaV1MetaApisPkgApimachineryK8sIo;
-  /**
-   * A machine-readable description of why this operation is in the "Failure" status. If this value is empty there is no information available. A Reason clarifies an HTTP status code but does not override it.
-   */
-  reason?: string;
-  /**
-   * Status of the operation. One of: "Success" or "Failure". More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-   */
-  status?: string;
+  metadata?: IoK8sApimachineryPkgApisMetaV1ObjectMeta;
+  spec: ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogFacetsQuerySpec;
+  status?: ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogFacetsQueryStatus;
 };
 
 /**
- * StatusCause provides more information about an api.Status failure, including cases when multiple errors are encountered.
+ * AuditLogFacetsQuerySpec defines which facets to retrieve from audit logs.
  */
-export type StatusCauseV1MetaApisPkgApimachineryK8sIo = {
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogFacetsQuerySpec = {
   /**
-   * The field of the resource that has caused this error, as named by its JSON serialization. May include dot and postfix notation for nested attributes. Arrays are zero-indexed.  Fields may appear more than once in an array of causes due to fields having multiple errors. Optional.
+   * Facets specifies which fields to get distinct values for. Each facet returns the top N values with counts.
+   *
+   * Supported fields:
+   * - verb: API action (get, list, create, update, patch, delete, watch)
+   * - user.username: Actor display names
+   * - user.uid: Unique user identifiers
+   * - responseStatus.code: HTTP response codes
+   * - objectRef.namespace: Namespaces
+   * - objectRef.resource: Resource types
+   * - objectRef.apiGroup: API groups
+   */
+  facets: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1FacetSpec>;
+  /**
+   * Filter narrows the audit logs before computing facets using CEL. This allows you to get facet values for a subset of audit logs.
+   *
+   * Available Fields:
+   * verb               - API action: get, list, create, update, patch, delete, watch
+   * user.username      - who made the request (user or service account)
+   * user.uid           - unique user identifier
+   * responseStatus.code - HTTP response code (200, 201, 404, 500, etc.)
+   * objectRef.namespace - target resource namespace
+   * objectRef.resource  - resource type (pods, deployments, secrets, configmaps, etc.)
+   * objectRef.apiGroup  - API group of the resource
+   * objectRef.name     - specific resource name
+   *
+   * Operators: ==, !=, <, >, <=, >=, &&, ||, !, in String Functions: startsWith(), endsWith(), contains()
    *
    * Examples:
-   * "name" - the field "name" on the current resource
-   * "items[0].name" - the field "name" on the first array entry in "items"
+   * "verb in ['create', 'update', 'delete']"        - Facets for write operations only
+   * "!(verb in ['get', 'list', 'watch'])"           - Exclude read-only operations
+   * "!user.username.startsWith('system:')"          - Exclude system users
+   * "objectRef.namespace == 'production'"           - Facets for production namespace
    */
-  field?: string;
+  filter?: string;
   /**
-   * A human-readable description of the cause of the error.  This field may be presented as-is to a reader.
+   * TimeRange limits the time window for facet aggregation. If not specified, defaults to the last 7 days.
    */
-  message?: string;
-  /**
-   * A machine-readable description of the cause of the error. If this value is empty there is no information available.
-   */
-  reason?: string;
+  timeRange?: ComMiloapisGoActivityPkgApisActivityV1Alpha1FacetTimeRange;
 };
 
 /**
- * StatusDetails is a set of additional properties that MAY be set by the server to provide additional information about a response. The Reason field of a Status object defines what attributes will be set. Clients must ignore fields that do not match the defined type of each attribute, and should assume that any attribute may be empty, invalid, or under defined.
+ * AuditLogFacetsQueryStatus contains the facet results.
  */
-export type StatusDetailsV1MetaApisPkgApimachineryK8sIo = {
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogFacetsQueryStatus = {
   /**
-   * The Causes array includes more details associated with the StatusReason failure. Not all StatusReasons may provide detailed causes.
+   * Facets contains the results for each requested facet.
    */
-  causes?: Array<StatusCauseV1MetaApisPkgApimachineryK8sIo>;
-  /**
-   * The group attribute of the resource associated with the status StatusReason.
-   */
-  group?: string;
-  /**
-   * The kind attribute of the resource associated with the status StatusReason. On some operations may differ from the requested resource Kind. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-   */
-  kind?: string;
-  /**
-   * The name attribute of the resource associated with the status StatusReason (when there is a single name which can be described).
-   */
-  name?: string;
-  /**
-   * If specified, the time in seconds before the operation should be retried. Some errors may indicate the client must take an alternate action - for those errors this field may indicate how long to wait before taking the alternate action.
-   */
-  retryAfterSeconds?: number;
-  /**
-   * UID of the resource. (when there is a single resource which can be described). More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
-   */
-  uid?: string;
-};
-
-/**
- * Time is a wrapper around time.Time which supports correct marshaling to YAML and JSON.  Wrappers are provided for many of the factory methods that the time package offers.
- */
-export type TimeV1MetaApisPkgApimachineryK8sIo = string;
-
-/**
- * Unknown allows api objects with unknown types to be passed-through. This can be used to deal with the API objects from a plug-in. Unknown objects still have functioning TypeMeta features-- kind, version, etc. metadata and field mutatation.
- */
-export type UnknownRuntimePkgApimachineryK8sIo = {
-  /**
-   * ContentEncoding is encoding used to encode 'Raw' data. Unspecified means no encoding.
-   */
-  ContentEncoding: string;
-  /**
-   * ContentType  is serialization method used to serialize 'Raw'. Unspecified means ContentTypeJSON.
-   */
-  ContentType: string;
-  apiVersion?: string;
-  kind?: string;
+  facets?: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1FacetResult>;
 };
 
 /**
@@ -398,7 +726,7 @@ export type ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogQuery = {
    * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
    */
   kind?: string;
-  metadata?: ObjectMetaV1MetaApisPkgApimachineryK8sIo;
+  metadata?: IoK8sApimachineryPkgApisMetaV1ObjectMeta;
   spec: ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogQuerySpec;
   status?: ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogQueryStatus;
 };
@@ -443,14 +771,16 @@ export type ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogQuerySpec = {
    * objectRef.resource  - resource type (pods, deployments, secrets, configmaps, etc.)
    * objectRef.name     - specific resource name
    *
-   * Operators: ==, !=, <, >, <=, >=, &&, ||, in String Functions: startsWith(), endsWith(), contains()
+   * Operators: ==, !=, <, >, <=, >=, &&, ||, !, in String Functions: startsWith(), endsWith(), contains()
    *
    * Common Patterns:
    * "verb == 'delete'"                                    - All deletions
    * "objectRef.namespace == 'production'"                 - Activity in production namespace
    * "verb in ['create', 'update', 'delete', 'patch']"     - All write operations
+   * "!(verb in ['get', 'list', 'watch'])"                 - Exclude read-only operations
    * "responseStatus.code >= 400"                          - Failed requests
    * "user.username.startsWith('system:serviceaccount:')"  - Service account activity
+   * "!user.username.startsWith('system:')"                - Exclude system users
    * "user.uid == '550e8400-e29b-41d4-a716-446655440000'"  - Specific user by UID
    * "objectRef.resource == 'secrets'"                     - Secret access
    * "verb == 'delete' && objectRef.namespace == 'production'" - Production deletions
@@ -516,27 +846,1387 @@ export type ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogQueryStatus = {
 };
 
 /**
+ * AutoFetchSpec configures automatic sample data retrieval.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1AutoFetchSpec = {
+  /**
+   * Limit is the maximum number of sample inputs to fetch (default: 10, max: 50). The API fetches up to this many audit logs and/or events.
+   */
+  limit?: number;
+  /**
+   * Sources specifies which data sources to query: "audit", "events", or "both" (default: "both"). - "audit": Only fetch audit logs (only tests auditRules) - "events": Only fetch Kubernetes events (only tests eventRules) - "both": Fetch both types (tests all rules)
+   */
+  sources?: string;
+  /**
+   * TimeRange specifies how far back to look for samples (default: "24h"). Supports relative format: "1h", "24h", "7d", "30d"
+   */
+  timeRange?: string;
+};
+
+/**
+ * EventFacetQuery is an ephemeral resource for getting distinct field values from Kubernetes Events. Use this to power autocomplete, filter dropdowns, and faceted search in UIs.
+ *
+ * The query returns counts for each distinct value, allowing you to show both available options and their frequency.
+ *
+ * Example:
+ *
+ * apiVersion: activity.miloapis.com/v1alpha1
+ * kind: EventFacetQuery
+ * metadata:
+ * name: get-facets
+ * spec:
+ * timeRange:
+ * start: "now-7d"
+ * facets:
+ * - field: regarding.kind
+ * limit: 10
+ * - field: reason
+ * - field: type
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1EventFacetQuery = {
+  /**
+   * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+   */
+  apiVersion?: string;
+  /**
+   * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind?: string;
+  metadata?: IoK8sApimachineryPkgApisMetaV1ObjectMeta;
+  spec: ComMiloapisGoActivityPkgApisActivityV1Alpha1EventFacetQuerySpec;
+  status?: ComMiloapisGoActivityPkgApisActivityV1Alpha1EventFacetQueryStatus;
+};
+
+/**
+ * EventFacetQuerySpec defines which facets to retrieve from Kubernetes Events.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1EventFacetQuerySpec = {
+  /**
+   * Facets specifies which fields to get distinct values for. Each facet returns the top N values with counts.
+   *
+   * Supported fields:
+   * - regarding.kind: Resource kinds (Pod, Deployment, etc.)
+   * - regarding.namespace: Namespaces of regarding objects
+   * - reason: Event reasons (Scheduled, Pulled, Created, etc.)
+   * - type: Event types (Normal, Warning)
+   * - source.component: Source components (kubelet, scheduler, etc.)
+   * - namespace: Event namespace
+   * - related.kind: Related resource kinds (Node, ConfigMap, etc.)
+   * - related.namespace: Namespaces of related objects
+   */
+  facets: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1FacetSpec>;
+  /**
+   * TimeRange limits the time window for facet aggregation. If not specified, defaults to the last 7 days.
+   */
+  timeRange?: ComMiloapisGoActivityPkgApisActivityV1Alpha1FacetTimeRange;
+};
+
+/**
+ * EventFacetQueryStatus contains the facet results.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1EventFacetQueryStatus = {
+  /**
+   * Facets contains the results for each requested facet.
+   */
+  facets?: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1FacetResult>;
+};
+
+/**
+ * EventQuery searches Kubernetes Events stored in ClickHouse.
+ *
+ * Unlike the native Events list (limited to 24 hours), EventQuery supports up to 60 days of history. Results are returned in the Status field, ordered newest-first.
+ *
+ * Quick Start:
+ *
+ * apiVersion: activity.miloapis.com/v1alpha1
+ * kind: EventQuery
+ * metadata:
+ * name: recent-pod-failures
+ * spec:
+ * startTime: "now-7d"          # last 7 days
+ * endTime: "now"
+ * namespace: "production"      # optional: limit to namespace
+ * fieldSelector: "type=Warning" # optional: standard K8s field selector
+ * limit: 100
+ *
+ * Time Formats: - Relative: "now-30d" (great for dashboards and recurring queries) - Absolute: "2024-01-01T00:00:00Z" (great for historical analysis)
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1EventQuery = {
+  /**
+   * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+   */
+  apiVersion?: string;
+  /**
+   * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind?: string;
+  metadata?: IoK8sApimachineryPkgApisMetaV1ObjectMeta;
+  spec: ComMiloapisGoActivityPkgApisActivityV1Alpha1EventQuerySpec;
+  status?: ComMiloapisGoActivityPkgApisActivityV1Alpha1EventQueryStatus;
+};
+
+/**
+ * EventQuerySpec defines the search parameters.
+ *
+ * Required: startTime and endTime define your search window (max 60 days). Optional: namespace (limit to namespace), fieldSelector (standard K8s syntax), limit (page size, default 100), continue (pagination).
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1EventQuerySpec = {
+  /**
+   * Continue is the pagination cursor for fetching additional pages.
+   *
+   * Leave empty for the first page. If status.continue is non-empty after a query, copy that value here in a new query with identical parameters to get the next page. Repeat until status.continue is empty.
+   *
+   * Important: Keep all other parameters (startTime, endTime, namespace, fieldSelector, limit) identical across paginated requests. The cursor is opaque - copy it exactly without modification.
+   */
+  continue?: string;
+  /**
+   * EndTime is the end of your search window (exclusive).
+   *
+   * Uses the same formats as StartTime. Commonly "now" for the current moment. Must be greater than StartTime.
+   *
+   * Examples:
+   * "now"                  → current time
+   * "2024-01-02T00:00:00Z" → specific end point
+   */
+  endTime: string;
+  /**
+   * FieldSelector filters events using standard Kubernetes field selector syntax.
+   *
+   * Supported Fields:
+   * metadata.name               - event name
+   * metadata.namespace          - event namespace
+   * metadata.uid                - event UID
+   * regarding.apiVersion        - regarding resource API version
+   * regarding.kind              - regarding resource kind (e.g., Pod, Deployment)
+   * regarding.namespace         - regarding resource namespace
+   * regarding.name              - regarding resource name
+   * regarding.uid               - regarding resource UID
+   * regarding.fieldPath         - regarding resource field path
+   * related.apiVersion          - related resource API version
+   * related.kind                - related resource kind (e.g., Node)
+   * related.namespace           - related resource namespace
+   * related.name                - related resource name
+   * reason                      - event reason (e.g., FailedMount, Pulled)
+   * type                        - event type (Normal or Warning)
+   * source.component            - reporting component
+   * source.host                 - reporting host
+   * reportingComponent          - reporting component (alias for source.component)
+   * reportingInstance           - reporting instance (alias for source.host)
+   *
+   * Operators: = (or ==), != Multiple conditions: comma-separated (all must match)
+   *
+   * Common Patterns:
+   * "type=Warning"                                  - Warning events only
+   * "regarding.kind=Pod"                            - Events for pods
+   * "reason=FailedMount"                            - Mount failure events
+   * "regarding.name=my-pod,type=Warning"            - Warnings for a specific pod
+   * "related.kind=Node"                              - Events related to nodes
+   */
+  fieldSelector?: string;
+  /**
+   * Limit sets the maximum number of results per page. Default: 100, Maximum: 1000.
+   *
+   * Use smaller values (10-50) for exploration, larger (500-1000) for data collection. Use continue to fetch additional pages.
+   */
+  limit?: number;
+  /**
+   * Namespace limits results to events from a specific namespace. Leave empty to query events across all namespaces.
+   */
+  namespace?: string;
+  /**
+   * StartTime is the beginning of your search window (inclusive).
+   *
+   * Format Options: - Relative: "now-30d", "now-2h", "now-30m" (units: s, m, h, d, w)
+   * Use for dashboards and recurring queries - they adjust automatically.
+   * - Absolute: "2024-01-01T00:00:00Z" (RFC3339 with timezone)
+   * Use for historical analysis of specific time periods.
+   *
+   * Maximum lookback is 60 days from now.
+   *
+   * Examples:
+   * "now-7d"                      → 7 days ago
+   * "2024-06-15T14:30:00-05:00"   → specific time with timezone offset
+   */
+  startTime: string;
+};
+
+/**
+ * EventQueryStatus contains the query results and pagination state.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1EventQueryStatus = {
+  /**
+   * Continue is the pagination cursor. Non-empty means more results are available - copy this to spec.continue for the next page. Empty means you have all results.
+   */
+  continue?: string;
+  /**
+   * EffectiveEndTime is the actual end time used for this query (RFC3339 format).
+   *
+   * When you use relative times like "now", this shows the exact timestamp that was calculated. Useful for understanding exactly what time range was queried.
+   *
+   * Example: If you query with endTime="now" at 2025-12-17T12:00:00Z, this will be "2025-12-17T12:00:00Z".
+   */
+  effectiveEndTime?: string;
+  /**
+   * EffectiveStartTime is the actual start time used for this query (RFC3339 format).
+   *
+   * When you use relative times like "now-7d", this shows the exact timestamp that was calculated. Useful for understanding exactly what time range was queried, especially for auditing, debugging, or recreating queries with absolute timestamps.
+   *
+   * Example: If you query with startTime="now-7d" at 2025-12-17T12:00:00Z, this will be "2025-12-10T12:00:00Z".
+   */
+  effectiveStartTime?: string;
+  /**
+   * Results contains matching Kubernetes Events, sorted newest-first.
+   *
+   * Each event follows the eventsv1.Event format with fields like:
+   * regarding.{kind,name,namespace}, reason, note, type,
+   * eventTime, series.count, reportingController
+   *
+   * Empty results? Try broadening your field selector or time range.
+   */
+  results?: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1EventRecord>;
+};
+
+/**
+ * EventRecord represents a Kubernetes Event returned in EventQuery results. This is a wrapper type registered under activity.miloapis.com/v1alpha1 that embeds the events.k8s.io/v1 Event to avoid OpenAPI GVK conflicts while preserving full event data.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1EventRecord = {
+  /**
+   * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+   */
+  apiVersion?: string;
+  /**
+   * Event contains the full Kubernetes Event data in events.k8s.io/v1 format. This includes fields like eventTime, regarding, note, type, reason, reportingController, reportingInstance, series, and action.
+   */
+  event: IoK8sApiEventsV1Event;
+  /**
+   * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind?: string;
+  metadata?: IoK8sApimachineryPkgApisMetaV1ObjectMeta;
+};
+
+/**
+ * FacetResult contains the distinct values for a single facet.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1FacetResult = {
+  /**
+   * Field is the field path that was queried.
+   */
+  field: string;
+  /**
+   * Values contains the distinct values and their counts.
+   */
+  values?: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1FacetValue>;
+};
+
+/**
+ * FacetSpec defines a single facet to retrieve.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1FacetSpec = {
+  /**
+   * Field is the activity field path to get distinct values for.
+   *
+   * Supported fields:
+   * - spec.actor.name: Actor display names
+   * - spec.actor.type: Actor types (user, serviceaccount, controller)
+   * - spec.resource.apiGroup: API groups
+   * - spec.resource.kind: Resource kinds
+   * - spec.resource.namespace: Namespaces
+   * - spec.changeSource: Change sources (human, system)
+   */
+  field: string;
+  /**
+   * Limit is the maximum number of distinct values to return. Default: 20, Maximum: 100.
+   */
+  limit?: number;
+};
+
+/**
+ * FacetTimeRange specifies the time window for facet queries.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1FacetTimeRange = {
+  /**
+   * End is the end of the time window (exclusive). Supports RFC3339 timestamps and relative times. Defaults to "now".
+   */
+  end?: string;
+  /**
+   * Start is the beginning of the time window (inclusive). Supports RFC3339 timestamps and relative times (e.g., "now-7d").
+   */
+  start?: string;
+};
+
+/**
+ * FacetValue represents a single distinct value with its occurrence count.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1FacetValue = {
+  /**
+   * Count is the number of activities with this value.
+   */
+  count: number;
+  /**
+   * Value is the distinct field value.
+   */
+  value: string;
+};
+
+/**
+ * PolicyPreview tests an ActivityPolicy against sample inputs without persisting anything. Use this to verify that your policy rules match correctly and generate the expected summaries before deploying the policy.
+ *
+ * The preview accepts multiple inputs (audit logs and/or events) and returns the rendered Activity stream that would be generated by the policy.
+ *
+ * Example:
+ *
+ * apiVersion: activity.miloapis.com/v1alpha1
+ * kind: PolicyPreview
+ * metadata:
+ * name: test-preview
+ * spec:
+ * policy:
+ * resource:
+ * apiGroup: networking.datumapis.com
+ * kind: HTTPProxy
+ * auditRules:
+ * - match: "audit.verb == 'create'"
+ * summary: "{{ actor }} created HTTPProxy"
+ * - match: "audit.verb == 'delete'"
+ * summary: "{{ actor }} deleted HTTPProxy"
+ * inputs:
+ * - type: audit
+ * audit:
+ * verb: create
+ * objectRef:
+ * apiGroup: networking.datumapis.com
+ * resource: httpproxies
+ * name: my-proxy
+ * user:
+ * username: alice@example.com
+ * - type: audit
+ * audit:
+ * verb: delete
+ * objectRef:
+ * apiGroup: networking.datumapis.com
+ * resource: httpproxies
+ * name: old-proxy
+ * user:
+ * username: bob@example.com
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1PolicyPreview = {
+  /**
+   * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+   */
+  apiVersion?: string;
+  /**
+   * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind?: string;
+  metadata?: IoK8sApimachineryPkgApisMetaV1ObjectMeta;
+  spec: ComMiloapisGoActivityPkgApisActivityV1Alpha1PolicyPreviewSpec;
+  status?: ComMiloapisGoActivityPkgApisActivityV1Alpha1PolicyPreviewStatus;
+};
+
+/**
+ * PolicyPreviewInput contains the sample input for policy testing.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1PolicyPreviewInput = {
+  /**
+   * Audit contains a sample audit log entry. Required when Type is "audit".
+   */
+  audit?: IoK8sApiserverPkgApisAuditV1Event;
+  /**
+   * Event contains a sample Kubernetes event. Required when Type is "event". Uses RawExtension to allow flexible event structure.
+   */
+  event?: IoK8sApimachineryPkgRuntimeRawExtension;
+  /**
+   * Type indicates whether this is an audit log or event input. Values: "audit", "event"
+   */
+  type: string;
+};
+
+/**
+ * PolicyPreviewInputResult contains the result for a single input.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1PolicyPreviewInputResult = {
+  /**
+   * Error contains any error message if evaluating this input failed. This could be a CEL compilation error or evaluation error.
+   */
+  error?: string;
+  /**
+   * InputIndex is the index of this input in spec.inputs (0-based).
+   */
+  inputIndex: number;
+  /**
+   * Matched indicates whether any rule matched this input.
+   */
+  matched: boolean;
+  /**
+   * MatchedRuleIndex is the index of the rule that matched (0-based). -1 if no rule matched.
+   */
+  matchedRuleIndex: number;
+  /**
+   * MatchedRuleName is the name of the rule that matched this input. This is the value from the rule's Name field in the policy spec. Empty if no rule matched.
+   */
+  matchedRuleName?: string;
+  /**
+   * MatchedRuleType indicates whether the matched rule was an audit or event rule. Empty if no rule matched.
+   */
+  matchedRuleType?: string;
+};
+
+/**
+ * PolicyPreviewSpec defines the policy and inputs to test.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1PolicyPreviewSpec = {
+  /**
+   * AutoFetch automatically retrieves sample inputs based on the policy resource type. When specified, the API queries recent audit logs and/or events matching the policy. Mutually exclusive with manual inputs - only one should be provided.
+   */
+  autoFetch?: ComMiloapisGoActivityPkgApisActivityV1Alpha1AutoFetchSpec;
+  /**
+   * Inputs contains sample audit logs and/or events to test against the policy. Each input is evaluated independently and produces an Activity if a rule matches. You can mix audit logs and events in the same request. Optional when AutoFetch is specified.
+   */
+  inputs?: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1PolicyPreviewInput>;
+  /**
+   * KindLabel overrides the display label for the resource kind.
+   */
+  kindLabel?: string;
+  /**
+   * KindLabelPlural overrides the plural display label.
+   */
+  kindLabelPlural?: string;
+  /**
+   * Policy is the ActivityPolicy spec to test. You can use the full spec from an existing policy or create a new one.
+   */
+  policy: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicySpec;
+};
+
+/**
+ * PolicyPreviewStatus contains the preview results.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1PolicyPreviewStatus = {
+  /**
+   * Activities contains the rendered Activity objects for inputs that matched a rule. The order corresponds to the order of matched inputs (not necessarily the input order). Inputs that don't match any rule are not included here.
+   */
+  activities?: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1Activity>;
+  /**
+   * Error contains a general error message if the preview failed entirely. Individual input errors are reported in results[].error.
+   */
+  error?: string;
+  /**
+   * FetchedInputs contains the auto-fetched sample inputs (only present when autoFetch was used). This allows clients to see what data was tested.
+   */
+  fetchedInputs?: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1PolicyPreviewInput>;
+  /**
+   * Results contains detailed results for each input, in the same order as spec.inputs. Use this to see which inputs matched and any errors that occurred.
+   */
+  results?: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1PolicyPreviewInputResult>;
+};
+
+/**
+ * ReindexConfig contains processing configuration options.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexConfig = {
+  /**
+   * BatchSize is the number of events to process per batch. Larger batches are faster but use more memory. Default: 1000
+   */
+  batchSize?: number;
+  /**
+   * DryRun previews changes without writing activities. Useful for estimating impact before execution. Default: false
+   */
+  dryRun?: boolean;
+  /**
+   * RateLimit is the maximum events per second to process. Prevents overwhelming ClickHouse. Default: 100
+   */
+  rateLimit?: number;
+};
+
+/**
+ * ReindexJob triggers re-processing of historical audit logs and events through current ActivityPolicy rules. Use this to fix policy bugs retroactively, add coverage for new policies, or refine activity summaries after policy improvements.
+ *
+ * ReindexJob is a one-shot resource: once completed or failed, it cannot be re-run. Create a new ReindexJob for subsequent re-indexing operations.
+ *
+ * KUBERNETES EVENT LIMITATION:
+ *
+ * When a Kubernetes Event is updated (e.g., count incremented from 1 to 5), it retains the same UID. Re-indexing will produce ONE activity per Event UID, reflecting the Event's final state. Historical activity occurrences from earlier Event states are lost.
+ *
+ * Example: Event "pod-oom" fires 5 times (count=5) → Re-indexing produces 1 activity (not 5)
+ *
+ * Mitigation: Scope re-indexing to audit logs only via spec.policySelector to preserve activities from earlier Event occurrences.
+ *
+ * Example:
+ *
+ * kubectl apply -f - <<EOF
+ * apiVersion: activity.miloapis.com/v1alpha1
+ * kind: ReindexJob
+ * metadata:
+ * name: fix-policy-bug-2026-02-27
+ * spec:
+ * timeRange:
+ * startTime: "now-7d"       # last 7 days (or use absolute: "2026-02-25T00:00:00Z")
+ * endTime: "now"            # defaults to "now" if omitted
+ * policySelector:
+ * names: ["httpproxy-policy"]
+ * EOF
+ *
+ * kubectl get reindexjobs -w  # Watch progress
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJob = {
+  /**
+   * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+   */
+  apiVersion?: string;
+  /**
+   * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind?: string;
+  metadata?: IoK8sApimachineryPkgApisMetaV1ObjectMeta;
+  spec: ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJobSpec;
+  status?: ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJobStatus;
+};
+
+/**
+ * ReindexJobList is a list of ReindexJob objects
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJobList = {
+  /**
+   * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+   */
+  apiVersion?: string;
+  items: Array<ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJob>;
+  /**
+   * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind?: string;
+  metadata?: IoK8sApimachineryPkgApisMetaV1ListMeta;
+};
+
+/**
+ * ReindexJobSpec defines the parameters for a re-indexing operation.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJobSpec = {
+  /**
+   * Config contains processing configuration options.
+   */
+  config?: ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexConfig;
+  /**
+   * PolicySelector optionally limits re-indexing to specific policies. If omitted, all active ActivityPolicies are evaluated.
+   */
+  policySelector?: ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexPolicySelector;
+  /**
+   * TimeRange specifies the time window of events to re-index. Events outside this range are not processed.
+   */
+  timeRange: ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexTimeRange;
+  /**
+   * TTLSecondsAfterFinished limits the lifetime of a ReindexJob after it finishes execution (either Succeeded or Failed). If set, the controller will delete the ReindexJob resource after it has been in a terminal state for this many seconds.
+   *
+   * This field is optional. If unset, completed jobs are retained indefinitely.
+   *
+   * Example: Setting to 3600 (1 hour) allows users to inspect job results for an hour after completion, after which the job is automatically cleaned up.
+   */
+  ttlSecondsAfterFinished?: number;
+};
+
+/**
+ * ReindexJobStatus represents the current state of a ReindexJob.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJobStatus = {
+  /**
+   * CompletedAt is when processing finished (success or failure).
+   */
+  completedAt?: IoK8sApimachineryPkgApisMetaV1Time;
+  /**
+   * Conditions represent the latest observations of the job's state.
+   */
+  conditions?: Array<IoK8sApimachineryPkgApisMetaV1Condition>;
+  /**
+   * Message is a human-readable description of the current state.
+   */
+  message?: string;
+  /**
+   * Phase is the current lifecycle phase. Values: Pending, Running, Succeeded, Failed
+   */
+  phase?: string;
+  /**
+   * Progress contains detailed progress information.
+   */
+  progress?: ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexProgress;
+  /**
+   * StartedAt is when processing began.
+   */
+  startedAt?: IoK8sApimachineryPkgApisMetaV1Time;
+};
+
+/**
+ * ReindexPolicySelector specifies which policies to include in re-indexing.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexPolicySelector = {
+  /**
+   * MatchLabels selects policies by label. Mutually exclusive with Names.
+   */
+  matchLabels?: {
+    [key: string]: string;
+  };
+  /**
+   * Names is a list of ActivityPolicy names to include. Mutually exclusive with MatchLabels.
+   */
+  names?: Array<string>;
+};
+
+/**
+ * ReindexProgress contains detailed progress metrics.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexProgress = {
+  /**
+   * ActivitiesGenerated is the number of activities created.
+   */
+  activitiesGenerated?: number;
+  /**
+   * CurrentBatch is the batch number currently being processed.
+   */
+  currentBatch?: number;
+  /**
+   * Errors is the count of non-fatal errors encountered.
+   */
+  errors?: number;
+  /**
+   * ProcessedEvents is the number of events processed so far.
+   */
+  processedEvents?: number;
+  /**
+   * TotalBatches is the estimated total number of batches.
+   */
+  totalBatches?: number;
+  /**
+   * TotalEvents is the estimated total events to process.
+   */
+  totalEvents?: number;
+};
+
+/**
+ * ReindexTimeRange specifies the time window for re-indexing.
+ */
+export type ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexTimeRange = {
+  /**
+   * EndTime is the end of the time range (exclusive). Defaults to "now" (job start time) if omitted.
+   *
+   * Uses the same formats as StartTime. Must be greater than StartTime.
+   *
+   * Examples:
+   * "now"                  → current time when job starts
+   * "2026-03-01T00:00:00Z" → specific end point
+   * "now-1h"               → 1 hour before job starts
+   */
+  endTime?: string;
+  /**
+   * StartTime is the beginning of the time range (inclusive). Must be within the ClickHouse retention window (60 days).
+   *
+   * Format Options: - Relative: "now-30d", "now-2h", "now-30m" (units: s, m, h, d, w)
+   * Use for recent time windows - they adjust automatically at job start.
+   * - Absolute: "2026-02-01T00:00:00Z" (RFC3339 with timezone)
+   * Use for specific historical time periods.
+   *
+   * Examples:
+   * "now-7d"                      → 7 days before job starts
+   * "2026-02-25T00:00:00Z"        → specific time with UTC
+   * "2026-02-25T00:00:00-08:00"   → specific time with timezone offset
+   *
+   * Note: Relative times are resolved when the job STARTS processing, not when the resource is created. This ensures consistent time ranges even if the job is queued.
+   */
+  startTime: string;
+};
+
+/**
  * UserInfo holds the information about the user needed to implement the user.Info interface.
  */
 export type IoK8sApiAuthenticationV1UserInfo = {
   /**
-   * Any additional information provided by the authenticator.
+   * extra is any additional information provided by the authenticator.
    */
   extra?: {
     [key: string]: Array<string>;
   };
   /**
-   * The names of groups this user is a part of.
+   * groups is the names of groups this user is a part of.
    */
   groups?: Array<string>;
   /**
-   * A unique value that identifies this user across time. If this user is deleted and another user by the same name is added, they will have different UIDs.
+   * uid is a unique value that identifies this user across time. If this user is deleted and another user by the same name is added, they will have different UIDs.
    */
   uid?: string;
   /**
-   * The name that uniquely identifies this user among all active users.
+   * username is the name that uniquely identifies this user among all active users.
    */
   username?: string;
+};
+
+/**
+ * EventSource contains information for an event.
+ */
+export type IoK8sApiCoreV1EventSource = {
+  /**
+   * Component from which the event is generated.
+   */
+  component?: string;
+  /**
+   * Node name on which the event is generated.
+   */
+  host?: string;
+};
+
+/**
+ * ObjectReference contains enough information to let you inspect or modify the referred object.
+ */
+export type IoK8sApiCoreV1ObjectReference = {
+  /**
+   * API version of the referent.
+   */
+  apiVersion?: string;
+  /**
+   * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object.
+   */
+  fieldPath?: string;
+  /**
+   * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind?: string;
+  /**
+   * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+   */
+  name?: string;
+  /**
+   * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+   */
+  namespace?: string;
+  /**
+   * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+   */
+  resourceVersion?: string;
+  /**
+   * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+   */
+  uid?: string;
+};
+
+/**
+ * Event is a report of an event somewhere in the cluster. It generally denotes some state change in the system. Events have a limited retention time and triggers and messages may evolve with time.  Event consumers should not rely on the timing of an event with a given Reason reflecting a consistent underlying trigger, or the continued existence of events with that Reason.  Events should be treated as informative, best-effort, supplemental data.
+ */
+export type IoK8sApiEventsV1Event = {
+  /**
+   * action is what action was taken/failed regarding to the regarding object. It is machine-readable. This field cannot be empty for new Events and it can have at most 128 characters.
+   */
+  action?: string;
+  /**
+   * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+   */
+  apiVersion?: string;
+  /**
+   * deprecatedCount is the deprecated field assuring backward compatibility with core.v1 Event type.
+   */
+  deprecatedCount?: number;
+  /**
+   * deprecatedFirstTimestamp is the deprecated field assuring backward compatibility with core.v1 Event type.
+   */
+  deprecatedFirstTimestamp?: IoK8sApimachineryPkgApisMetaV1Time;
+  /**
+   * deprecatedLastTimestamp is the deprecated field assuring backward compatibility with core.v1 Event type.
+   */
+  deprecatedLastTimestamp?: IoK8sApimachineryPkgApisMetaV1Time;
+  /**
+   * deprecatedSource is the deprecated field assuring backward compatibility with core.v1 Event type.
+   */
+  deprecatedSource?: IoK8sApiCoreV1EventSource;
+  /**
+   * eventTime is the time when this Event was first observed. It is required.
+   */
+  eventTime: IoK8sApimachineryPkgApisMetaV1MicroTime;
+  /**
+   * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind?: string;
+  /**
+   * metadata is the standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+   */
+  metadata?: IoK8sApimachineryPkgApisMetaV1ObjectMeta;
+  /**
+   * note is a human-readable description of the status of this operation. Maximal length of the note is 1kB, but libraries should be prepared to handle values up to 64kB.
+   */
+  note?: string;
+  /**
+   * reason is why the action was taken. It is human-readable. This field cannot be empty for new Events and it can have at most 128 characters.
+   */
+  reason?: string;
+  /**
+   * regarding contains the object this Event is about. In most cases it's an Object reporting controller implements, e.g. ReplicaSetController implements ReplicaSets and this event is emitted because it acts on some changes in a ReplicaSet object.
+   */
+  regarding?: IoK8sApiCoreV1ObjectReference;
+  /**
+   * related is the optional secondary object for more complex actions. E.g. when regarding object triggers a creation or deletion of related object.
+   */
+  related?: IoK8sApiCoreV1ObjectReference;
+  /**
+   * reportingController is the name of the controller that emitted this Event, e.g. `kubernetes.io/kubelet`. This field cannot be empty for new Events.
+   */
+  reportingController?: string;
+  /**
+   * reportingInstance is the ID of the controller instance, e.g. `kubelet-xyzf`. This field cannot be empty for new Events and it can have at most 128 characters.
+   */
+  reportingInstance?: string;
+  /**
+   * series is data about the Event series this event represents or nil if it's a singleton Event.
+   */
+  series?: IoK8sApiEventsV1EventSeries;
+  /**
+   * type is the type of this event (Normal, Warning), new types could be added in the future. It is machine-readable. This field cannot be empty for new Events.
+   */
+  type?: string;
+};
+
+/**
+ * EventSeries contain information on series of events, i.e. thing that was/is happening continuously for some time. How often to update the EventSeries is up to the event reporters. The default event reporter in "k8s.io/client-go/tools/events/event_broadcaster.go" shows how this struct is updated on heartbeats and can guide customized reporter implementations.
+ */
+export type IoK8sApiEventsV1EventSeries = {
+  /**
+   * count is the number of occurrences in this series up to the last heartbeat time.
+   */
+  count: number;
+  /**
+   * lastObservedTime is the time when last Event from the series was seen before last heartbeat.
+   */
+  lastObservedTime: IoK8sApimachineryPkgApisMetaV1MicroTime;
+};
+
+/**
+ * APIResource specifies the name of a resource and whether it is namespaced.
+ */
+export type IoK8sApimachineryPkgApisMetaV1ApiResource = {
+  /**
+   * categories is a list of the grouped resources this resource belongs to (e.g. 'all')
+   */
+  categories?: Array<string>;
+  /**
+   * group is the preferred group of the resource.  Empty implies the group of the containing resource list. For subresources, this may have a different value, for example: Scale".
+   */
+  group?: string;
+  /**
+   * kind is the kind for the resource (e.g. 'Foo' is the kind for a resource 'foo')
+   */
+  kind: string;
+  /**
+   * name is the plural name of the resource.
+   */
+  name: string;
+  /**
+   * namespaced indicates if a resource is namespaced or not.
+   */
+  namespaced: boolean;
+  /**
+   * shortNames is a list of suggested short names of the resource.
+   */
+  shortNames?: Array<string>;
+  /**
+   * singularName is the singular name of the resource.  This allows clients to handle plural and singular opaquely. The singularName is more correct for reporting status on a single item and both singular and plural are allowed from the kubectl CLI interface.
+   */
+  singularName: string;
+  /**
+   * The hash value of the storage version, the version this resource is converted to when written to the data store. Value must be treated as opaque by clients. Only equality comparison on the value is valid. This is an alpha feature and may change or be removed in the future. The field is populated by the apiserver only if the StorageVersionHash feature gate is enabled. This field will remain optional even if it graduates.
+   */
+  storageVersionHash?: string;
+  /**
+   * verbs is a list of supported kube verbs (this includes get, list, watch, create, update, patch, delete, deletecollection, and proxy)
+   */
+  verbs: Array<string>;
+  /**
+   * version is the preferred version of the resource.  Empty implies the version of the containing resource list For subresources, this may have a different value, for example: v1 (while inside a v1beta1 version of the core resource's group)".
+   */
+  version?: string;
+};
+
+/**
+ * APIResourceList is a list of APIResource, it is used to expose the name of the resources supported in a specific group and version, and if the resource is namespaced.
+ */
+export type IoK8sApimachineryPkgApisMetaV1ApiResourceList = {
+  /**
+   * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+   */
+  apiVersion?: string;
+  /**
+   * groupVersion is the group and version this APIResourceList is for.
+   */
+  groupVersion: string;
+  /**
+   * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind?: string;
+  /**
+   * resources contains the name of the resources and if they are namespaced.
+   */
+  resources: Array<IoK8sApimachineryPkgApisMetaV1ApiResource>;
+};
+
+/**
+ * Condition contains details for one aspect of the current state of this API Resource.
+ */
+export type IoK8sApimachineryPkgApisMetaV1Condition = {
+  /**
+   * lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+   */
+  lastTransitionTime: IoK8sApimachineryPkgApisMetaV1Time;
+  /**
+   * message is a human readable message indicating details about the transition. This may be an empty string.
+   */
+  message: string;
+  /**
+   * observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.
+   */
+  observedGeneration?: number;
+  /**
+   * reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.
+   */
+  reason: string;
+  /**
+   * status of the condition, one of True, False, Unknown.
+   */
+  status: string;
+  /**
+   * type of condition in CamelCase or in foo.example.com/CamelCase.
+   */
+  type: string;
+};
+
+/**
+ * DeleteOptions may be provided when deleting an API object.
+ */
+export type IoK8sApimachineryPkgApisMetaV1DeleteOptions = {
+  /**
+   * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+   */
+  apiVersion?: string;
+  /**
+   * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+   */
+  dryRun?: Array<string>;
+  /**
+   * The duration in seconds before the object should be deleted. Value must be non-negative integer. The value zero indicates delete immediately. If this value is nil, the default grace period for the specified type will be used. Defaults to a per object value if not specified. zero means delete immediately.
+   */
+  gracePeriodSeconds?: number;
+  /**
+   * if set to true, it will trigger an unsafe deletion of the resource in case the normal deletion flow fails with a corrupt object error. A resource is considered corrupt if it can not be retrieved from the underlying storage successfully because of a) its data can not be transformed e.g. decryption failure, or b) it fails to decode into an object. NOTE: unsafe deletion ignores finalizer constraints, skips precondition checks, and removes the object from the storage. WARNING: This may potentially break the cluster if the workload associated with the resource being unsafe-deleted relies on normal deletion flow. Use only if you REALLY know what you are doing. The default value is false, and the user must opt in to enable it
+   */
+  ignoreStoreReadErrorWithClusterBreakingPotential?: boolean;
+  /**
+   * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind?: string;
+  /**
+   * Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7. Should the dependent objects be orphaned. If true/false, the "orphan" finalizer will be added to/removed from the object's finalizers list. Either this field or PropagationPolicy may be set, but not both.
+   */
+  orphanDependents?: boolean;
+  /**
+   * Must be fulfilled before a deletion is carried out. If not possible, a 409 Conflict status will be returned.
+   */
+  preconditions?: IoK8sApimachineryPkgApisMetaV1Preconditions;
+  /**
+   * Whether and how garbage collection will be performed. Either this field or OrphanDependents may be set, but not both. The default policy is decided by the existing finalizer set in the metadata.finalizers and the resource-specific default policy. Acceptable values are: 'Orphan' - orphan the dependents; 'Background' - allow the garbage collector to delete the dependents in the background; 'Foreground' - a cascading policy that deletes all dependents in the foreground.
+   */
+  propagationPolicy?: string;
+};
+
+/**
+ * FieldsV1 stores a set of fields in a data structure like a Trie, in JSON format.
+ *
+ * Each key is either a '.' representing the field itself, and will always map to an empty set, or a string representing a sub-field or item. The string will follow one of these four formats: 'f:<name>', where <name> is the name of a field in a struct, or key in a map 'v:<value>', where <value> is the exact json formatted value of a list item 'i:<index>', where <index> is position of a item in a list 'k:<keys>', where <keys> is a map of  a list item's key fields to their unique values If a key maps to an empty Fields value, the field that key represents is part of the set.
+ *
+ * The exact format is defined in sigs.k8s.io/structured-merge-diff
+ */
+export type IoK8sApimachineryPkgApisMetaV1FieldsV1 = {
+  [key: string]: unknown;
+};
+
+/**
+ * ListMeta describes metadata that synthetic resources must have, including lists and various status objects. A resource may have only one of {ObjectMeta, ListMeta}.
+ */
+export type IoK8sApimachineryPkgApisMetaV1ListMeta = {
+  /**
+   * continue may be set if the user set a limit on the number of items returned, and indicates that the server has more data available. The value is opaque and may be used to issue another request to the endpoint that served this list to retrieve the next set of available objects. Continuing a consistent list may not be possible if the server configuration has changed or more than a few minutes have passed. The resourceVersion field returned when using this continue value will be identical to the value in the first response, unless you have received this token from an error message.
+   */
+  continue?: string;
+  /**
+   * remainingItemCount is the number of subsequent items in the list which are not included in this list response. If the list request contained label or field selectors, then the number of remaining items is unknown and the field will be left unset and omitted during serialization. If the list is complete (either because it is not chunking or because this is the last chunk), then there are no more remaining items and this field will be left unset and omitted during serialization. Servers older than v1.15 do not set this field. The intended use of the remainingItemCount is *estimating* the size of a collection. Clients should not rely on the remainingItemCount to be set or to be exact.
+   */
+  remainingItemCount?: number;
+  /**
+   * String that identifies the server's internal version of this object that can be used by clients to determine when objects have changed. Value must be treated as opaque by clients and passed unmodified back to the server. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+   */
+  resourceVersion?: string;
+  /**
+   * Deprecated: selfLink is a legacy read-only field that is no longer populated by the system.
+   */
+  selfLink?: string;
+  /**
+   * shardInfo is set when the list is a filtered subset of the full collection, as selected by a shard selector on the request. It echoes back the selector so clients can verify which shard they received and merge sharded responses. Clients should not cache sharded list responses as a full representation of the collection.
+   *
+   * This is an alpha field and requires enabling the ShardedListAndWatch feature gate.
+   */
+  shardInfo?: IoK8sApimachineryPkgApisMetaV1ShardInfo;
+};
+
+/**
+ * ManagedFieldsEntry is a workflow-id, a FieldSet and the group version of the resource that the fieldset applies to.
+ */
+export type IoK8sApimachineryPkgApisMetaV1ManagedFieldsEntry = {
+  /**
+   * APIVersion defines the version of this resource that this field set applies to. The format is "group/version" just like the top-level APIVersion field. It is necessary to track the version of a field set because it cannot be automatically converted.
+   */
+  apiVersion?: string;
+  /**
+   * FieldsType is the discriminator for the different fields format and version. There is currently only one possible value: "FieldsV1"
+   */
+  fieldsType?: string;
+  /**
+   * FieldsV1 holds the first JSON version format as described in the "FieldsV1" type.
+   */
+  fieldsV1?: IoK8sApimachineryPkgApisMetaV1FieldsV1;
+  /**
+   * Manager is an identifier of the workflow managing these fields.
+   */
+  manager?: string;
+  /**
+   * Operation is the type of operation which lead to this ManagedFieldsEntry being created. The only valid values for this field are 'Apply' and 'Update'.
+   */
+  operation?: string;
+  /**
+   * Subresource is the name of the subresource used to update that object, or empty string if the object was updated through the main resource. The value of this field is used to distinguish between managers, even if they share the same name. For example, a status update will be distinct from a regular update using the same manager name. Note that the APIVersion field is not related to the Subresource field and it always corresponds to the version of the main resource.
+   */
+  subresource?: string;
+  /**
+   * Time is the timestamp of when the ManagedFields entry was added. The timestamp will also be updated if a field is added, the manager changes any of the owned fields value or removes a field. The timestamp does not update when a field is removed from the entry because another manager took it over.
+   */
+  time?: IoK8sApimachineryPkgApisMetaV1Time;
+};
+
+/**
+ * MicroTime is version of Time with microsecond level precision.
+ */
+export type IoK8sApimachineryPkgApisMetaV1MicroTime = string;
+
+/**
+ * ObjectMeta is metadata that all persisted resources must have, which includes all objects users must create.
+ */
+export type IoK8sApimachineryPkgApisMetaV1ObjectMeta = {
+  /**
+   * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations
+   */
+  annotations?: {
+    [key: string]: string;
+  };
+  /**
+   * CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC.
+   *
+   * Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+   */
+  creationTimestamp?: IoK8sApimachineryPkgApisMetaV1Time;
+  /**
+   * Number of seconds allowed for this object to gracefully terminate before it will be removed from the system. Only set when deletionTimestamp is also set. May only be shortened. Read-only.
+   */
+  deletionGracePeriodSeconds?: number;
+  /**
+   * DeletionTimestamp is RFC 3339 date and time at which this resource will be deleted. This field is set by the server when a graceful deletion is requested by the user, and is not directly settable by a client. The resource is expected to be deleted (no longer visible from resource lists, and not reachable by name) after the time in this field, once the finalizers list is empty. As long as the finalizers list contains items, deletion is blocked. Once the deletionTimestamp is set, this value may not be unset or be set further into the future, although it may be shortened or the resource may be deleted prior to this time. For example, a user may request that a pod is deleted in 30 seconds. The Kubelet will react by sending a graceful termination signal to the containers in the pod. After that 30 seconds, the Kubelet will send a hard termination signal (SIGKILL) to the container and after cleanup, remove the pod from the API. In the presence of network partitions, this object may still exist after this timestamp, until an administrator or automated process can determine the resource is fully terminated. If not set, graceful deletion of the object has not been requested.
+   *
+   * Populated by the system when a graceful deletion is requested. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+   */
+  deletionTimestamp?: IoK8sApimachineryPkgApisMetaV1Time;
+  /**
+   * Must be empty before the object is deleted from the registry. Each entry is an identifier for the responsible component that will remove the entry from the list. If the deletionTimestamp of the object is non-nil, entries in this list can only be removed. Finalizers may be processed and removed in any order.  Order is NOT enforced because it introduces significant risk of stuck finalizers. finalizers is a shared field, any actor with permission can reorder it. If the finalizer list is processed in order, then this can lead to a situation in which the component responsible for the first finalizer in the list is waiting for a signal (field value, external system, or other) produced by a component responsible for a finalizer later in the list, resulting in a deadlock. Without enforced ordering finalizers are free to order amongst themselves and are not vulnerable to ordering changes in the list.
+   */
+  finalizers?: Array<string>;
+  /**
+   * GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server.
+   *
+   * If this field is specified and the generated name exists, the server will return a 409.
+   *
+   * Applied only if Name is not specified. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency
+   */
+  generateName?: string;
+  /**
+   * A sequence number representing a specific generation of the desired state. Populated by the system. Read-only.
+   */
+  generation?: number;
+  /**
+   * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels
+   */
+  labels?: {
+    [key: string]: string;
+  };
+  /**
+   * ManagedFields maps workflow-id and version to the set of fields that are managed by that workflow. This is mostly for internal housekeeping, and users typically shouldn't need to set or understand this field. A workflow can be the user's name, a controller's name, or the name of a specific apply path like "ci-cd". The set of fields is always in the version that the workflow used when modifying the object.
+   */
+  managedFields?: Array<IoK8sApimachineryPkgApisMetaV1ManagedFieldsEntry>;
+  /**
+   * Name must be unique within a namespace. Is required when creating resources, although some resources may allow a client to request the generation of an appropriate name automatically. Name is primarily intended for creation idempotence and configuration definition. Cannot be updated. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names
+   */
+  name?: string;
+  /**
+   * Namespace defines the space within which each name must be unique. An empty namespace is equivalent to the "default" namespace, but "default" is the canonical representation. Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty.
+   *
+   * Must be a DNS_LABEL. Cannot be updated. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces
+   */
+  namespace?: string;
+  /**
+   * List of objects depended by this object. If ALL objects in the list have been deleted, this object will be garbage collected. If this object is managed by a controller, then an entry in this list will point to this controller, with the controller field set to true. There cannot be more than one managing controller.
+   */
+  ownerReferences?: Array<IoK8sApimachineryPkgApisMetaV1OwnerReference>;
+  /**
+   * An opaque value that represents the internal version of this object that can be used by clients to determine when objects have changed. May be used for optimistic concurrency, change detection, and the watch operation on a resource or set of resources. Clients must treat these values as opaque and passed unmodified back to the server. They may only be valid for a particular resource or set of resources.
+   *
+   * Populated by the system. Read-only. Value must be treated as opaque by clients and . More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+   */
+  resourceVersion?: string;
+  /**
+   * Deprecated: selfLink is a legacy read-only field that is no longer populated by the system.
+   */
+  selfLink?: string;
+  /**
+   * UID is the unique in time and space value for this object. It is typically generated by the server on successful creation of a resource and is not allowed to change on PUT operations.
+   *
+   * Populated by the system. Read-only. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
+   */
+  uid?: string;
+};
+
+/**
+ * OwnerReference contains enough information to let you identify an owning object. An owning object must be in the same namespace as the dependent, or be cluster-scoped, so there is no namespace field.
+ */
+export type IoK8sApimachineryPkgApisMetaV1OwnerReference = {
+  /**
+   * API version of the referent.
+   */
+  apiVersion: string;
+  /**
+   * If true, AND if the owner has the "foregroundDeletion" finalizer, then the owner cannot be deleted from the key-value store until this reference is removed. See https://kubernetes.io/docs/concepts/architecture/garbage-collection/#foreground-deletion for how the garbage collector interacts with this field and enforces the foreground deletion. Defaults to false. To set this field, a user needs "delete" permission of the owner, otherwise 422 (Unprocessable Entity) will be returned.
+   */
+  blockOwnerDeletion?: boolean;
+  /**
+   * If true, this reference points to the managing controller.
+   */
+  controller?: boolean;
+  /**
+   * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind: string;
+  /**
+   * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names
+   */
+  name: string;
+  /**
+   * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
+   */
+  uid: string;
+};
+
+/**
+ * Patch is provided to give a concrete name and type to the Kubernetes PATCH request body.
+ */
+export type IoK8sApimachineryPkgApisMetaV1Patch = {
+  [key: string]: unknown;
+};
+
+/**
+ * Preconditions must be fulfilled before an operation (update, delete, etc.) is carried out.
+ */
+export type IoK8sApimachineryPkgApisMetaV1Preconditions = {
+  /**
+   * Specifies the target ResourceVersion
+   */
+  resourceVersion?: string;
+  /**
+   * Specifies the target UID.
+   */
+  uid?: string;
+};
+
+/**
+ * ShardInfo describes the shard selector that was applied to produce a list response. Its presence on a list response indicates the list is a filtered subset.
+ */
+export type IoK8sApimachineryPkgApisMetaV1ShardInfo = {
+  /**
+   * selector is the shard selector string from the request, echoed back so clients can verify which shard they received and merge responses from multiple shards.
+   */
+  selector: string;
+};
+
+/**
+ * Status is a return value for calls that don't return other objects.
+ */
+export type IoK8sApimachineryPkgApisMetaV1Status = {
+  /**
+   * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+   */
+  apiVersion?: string;
+  /**
+   * Suggested HTTP return code for this status, 0 if not set.
+   */
+  code?: number;
+  /**
+   * Extended data associated with the reason.  Each reason may define its own extended details. This field is optional and the data returned is not guaranteed to conform to any schema except that defined by the reason type.
+   */
+  details?: IoK8sApimachineryPkgApisMetaV1StatusDetails;
+  /**
+   * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind?: string;
+  /**
+   * A human-readable description of the status of this operation.
+   */
+  message?: string;
+  /**
+   * Standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  metadata?: IoK8sApimachineryPkgApisMetaV1ListMeta;
+  /**
+   * A machine-readable description of why this operation is in the "Failure" status. If this value is empty there is no information available. A Reason clarifies an HTTP status code but does not override it.
+   */
+  reason?: string;
+  /**
+   * Status of the operation. One of: "Success" or "Failure". More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+   */
+  status?: string;
+};
+
+/**
+ * StatusCause provides more information about an api.Status failure, including cases when multiple errors are encountered.
+ */
+export type IoK8sApimachineryPkgApisMetaV1StatusCause = {
+  /**
+   * The field of the resource that has caused this error, as named by its JSON serialization. May include dot and postfix notation for nested attributes. Arrays are zero-indexed.  Fields may appear more than once in an array of causes due to fields having multiple errors. Optional.
+   *
+   * Examples:
+   * "name" - the field "name" on the current resource
+   * "items[0].name" - the field "name" on the first array entry in "items"
+   */
+  field?: string;
+  /**
+   * A human-readable description of the cause of the error.  This field may be presented as-is to a reader.
+   */
+  message?: string;
+  /**
+   * A machine-readable description of the cause of the error. If this value is empty there is no information available.
+   */
+  reason?: string;
+};
+
+/**
+ * StatusDetails is a set of additional properties that MAY be set by the server to provide additional information about a response. The Reason field of a Status object defines what attributes will be set. Clients must ignore fields that do not match the defined type of each attribute, and should assume that any attribute may be empty, invalid, or under defined.
+ */
+export type IoK8sApimachineryPkgApisMetaV1StatusDetails = {
+  /**
+   * The Causes array includes more details associated with the StatusReason failure. Not all StatusReasons may provide detailed causes.
+   */
+  causes?: Array<IoK8sApimachineryPkgApisMetaV1StatusCause>;
+  /**
+   * The group attribute of the resource associated with the status StatusReason.
+   */
+  group?: string;
+  /**
+   * The kind attribute of the resource associated with the status StatusReason. On some operations may differ from the requested resource Kind. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+   */
+  kind?: string;
+  /**
+   * The name attribute of the resource associated with the status StatusReason (when there is a single name which can be described).
+   */
+  name?: string;
+  /**
+   * If specified, the time in seconds before the operation should be retried. Some errors may indicate the client must take an alternate action - for those errors this field may indicate how long to wait before taking the alternate action.
+   */
+  retryAfterSeconds?: number;
+  /**
+   * UID of the resource. (when there is a single resource which can be described). More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
+   */
+  uid?: string;
+};
+
+/**
+ * Time is a wrapper around time.Time which supports correct marshaling to YAML and JSON.  Wrappers are provided for many of the factory methods that the time package offers.
+ */
+export type IoK8sApimachineryPkgApisMetaV1Time = string;
+
+/**
+ * Event represents a single event to a watched resource.
+ */
+export type IoK8sApimachineryPkgApisMetaV1WatchEvent = {
+  /**
+   * Object is:
+   * * If Type is Added or Modified: the new state of the object.
+   * * If Type is Deleted: the state of the object immediately before deletion.
+   * * If Type is Error: *Status is recommended; other types may make sense
+   * depending on context.
+   */
+  object: IoK8sApimachineryPkgRuntimeRawExtension;
+  type: string;
+};
+
+/**
+ * RawExtension is used to hold extensions in external versions.
+ *
+ * To use this, make a field which has RawExtension as its type in your external, versioned struct, and Object in your internal struct. You also need to register your various plugin types.
+ *
+ * // Internal package:
+ *
+ * type MyAPIObject struct {
+ * runtime.TypeMeta `json:""`
+ * MyPlugin runtime.Object `json:"myPlugin"`
+ * }
+ *
+ * type PluginA struct {
+ * AOption string `json:"aOption"`
+ * }
+ *
+ * // External package:
+ *
+ * type MyAPIObject struct {
+ * runtime.TypeMeta `json:""`
+ * MyPlugin runtime.RawExtension `json:"myPlugin"`
+ * }
+ *
+ * type PluginA struct {
+ * AOption string `json:"aOption"`
+ * }
+ *
+ * // On the wire, the JSON will look something like this:
+ *
+ * {
+ * "kind":"MyAPIObject",
+ * "apiVersion":"v1",
+ * "myPlugin": {
+ * "kind":"PluginA",
+ * "aOption":"foo",
+ * },
+ * }
+ *
+ * So what happens? Decode first uses json or yaml to unmarshal the serialized data into your external MyAPIObject. That causes the raw JSON to be stored, but not unpacked. The next step is to copy (using pkg/conversion) into the internal struct. The runtime package's DefaultScheme has conversion functions installed which will unpack the JSON stored in RawExtension, turning it into the correct object type, and storing it in the Object. (TODO: In the case where the object is of an unknown type, a runtime.Unknown object will be created and stored.)
+ */
+export type IoK8sApimachineryPkgRuntimeRawExtension = {
+  [key: string]: unknown;
+};
+
+/**
+ * Unknown allows api objects with unknown types to be passed-through. This can be used to deal with the API objects from a plug-in. Unknown objects still have functioning TypeMeta features-- kind, version, etc. metadata and field mutatation.
+ */
+export type IoK8sApimachineryPkgRuntimeUnknown = {
+  /**
+   * ContentEncoding is encoding used to encode 'Raw' data. Unspecified means no encoding.
+   */
+  ContentEncoding: string;
+  /**
+   * ContentType  is serialization method used to serialize 'Raw'. Unspecified means ContentTypeJSON.
+   */
+  ContentType: string;
+  apiVersion?: string;
+  kind?: string;
+};
+
+export type IoK8sApiserverPkgApisAuditV1AuthenticationMetadata = {
+  /**
+   * ImpersonationConstraint is the verb associated with the constrained impersonation mode that was used to authorize the ImpersonatedUser associated with this audit event.  It is only set when constrained impersonation was used.
+   */
+  impersonationConstraint?: string;
 };
 
 /**
@@ -558,6 +2248,10 @@ export type IoK8sApiserverPkgApisAuditV1Event = {
    */
   auditID: string;
   /**
+   * AuthenticationMetadata contains details about how the request was authenticated.
+   */
+  authenticationMetadata?: IoK8sApiserverPkgApisAuditV1AuthenticationMetadata;
+  /**
    * Impersonated user information.
    */
   impersonatedUser?: IoK8sApiAuthenticationV1UserInfo;
@@ -576,11 +2270,11 @@ export type IoK8sApiserverPkgApisAuditV1Event = {
   /**
    * API object from the request, in JSON format. The RequestObject is recorded as-is in the request (possibly re-encoded as JSON), prior to version conversion, defaulting, admission or merging. It is an external versioned object type, and may not be a valid object on its own. Omitted for non-resource requests.  Only logged at Request Level and higher.
    */
-  requestObject?: UnknownRuntimePkgApimachineryK8sIo;
+  requestObject?: IoK8sApimachineryPkgRuntimeUnknown;
   /**
    * Time the request reached the apiserver.
    */
-  requestReceivedTimestamp?: MicroTimeV1MetaApisPkgApimachineryK8sIo;
+  requestReceivedTimestamp?: IoK8sApimachineryPkgApisMetaV1MicroTime;
   /**
    * RequestURI is the request URI as sent by the client to a server.
    */
@@ -588,11 +2282,11 @@ export type IoK8sApiserverPkgApisAuditV1Event = {
   /**
    * API object returned in the response, in JSON. The ResponseObject is recorded after conversion to the external type, and serialized as JSON.  Omitted for non-resource requests.  Only logged at Response Level.
    */
-  responseObject?: UnknownRuntimePkgApimachineryK8sIo;
+  responseObject?: IoK8sApimachineryPkgRuntimeUnknown;
   /**
    * The response status, populated even when the ResponseObject is not a Status type. For successful responses, this will only include the Code and StatusSuccess. For non-status type error responses, this will be auto-populated with the error Message.
    */
-  responseStatus?: StatusV1MetaApisPkgApimachineryK8sIo;
+  responseStatus?: IoK8sApimachineryPkgApisMetaV1Status;
   /**
    * Source IPs, from where the request originated and intermediate proxies. The source IPs are listed from (in order): 1. X-Forwarded-For request header IPs 2. X-Real-Ip header, if not present in the X-Forwarded-For list 3. The remote address for the connection, if it doesn't match the last
    * IP in the list up to here (X-Forwarded-For or X-Real-Ip).
@@ -606,7 +2300,7 @@ export type IoK8sApiserverPkgApisAuditV1Event = {
   /**
    * Time the request reached current audit stage.
    */
-  stageTimestamp?: MicroTimeV1MetaApisPkgApimachineryK8sIo;
+  stageTimestamp?: IoK8sApimachineryPkgApisMetaV1MicroTime;
   /**
    * Authenticated user information.
    */
@@ -652,11 +2346,797 @@ export type GetActivityMiloapisComV1Alpha1ApiResourcesResponses = {
   /**
    * OK
    */
-  200: ProxyResponse<ApiResourceListV1MetaApisPkgApimachineryK8sIo>;
+  200: ProxyResponse<IoK8sApimachineryPkgApisMetaV1ApiResourceList>;
 };
 
 export type GetActivityMiloapisComV1Alpha1ApiResourcesResponse =
   GetActivityMiloapisComV1Alpha1ApiResourcesResponses[keyof GetActivityMiloapisComV1Alpha1ApiResourcesResponses]['data'];
+
+export type ListActivityMiloapisComV1Alpha1ActivityForAllNamespacesData = {
+  body?: never;
+  path?: never;
+  query?: {
+    /**
+     * allowWatchBookmarks requests watch events with type "BOOKMARK". Servers that do not implement bookmarks may ignore this flag and bookmarks are sent at the server's discretion. Clients should not assume bookmarks are returned at any specific interval, nor may they assume the server will send any BOOKMARK event during a session. If this is not a watch, this field is ignored.
+     */
+    allowWatchBookmarks?: boolean;
+    /**
+     * The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server, the server will respond with a 410 ResourceExpired error together with a continue token. If the client needs a consistent list, it must restart their list without the continue field. Otherwise, the client may send another list request with the token received with the 410 error, the server will respond with a list starting from the next key, but from the latest snapshot, which is inconsistent from the previous list results - objects that are created, modified, or deleted after the first list request will be included in the response, as long as their keys are after the "next key".
+     *
+     * This field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.
+     */
+    continue?: string;
+    /**
+     * A selector to restrict the list of returned objects by their fields. Defaults to everything.
+     */
+    fieldSelector?: string;
+    /**
+     * A selector to restrict the list of returned objects by their labels. Defaults to everything.
+     */
+    labelSelector?: string;
+    /**
+     * limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.
+     *
+     * The server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.
+     */
+    limit?: number;
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * resourceVersion sets a constraint on what resource versions a request may be served from. See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersion?: string;
+    /**
+     * resourceVersionMatch determines how resourceVersion is applied to list calls. It is highly recommended that resourceVersionMatch be set for list calls where resourceVersion is set See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersionMatch?: string;
+    /**
+     * `sendInitialEvents=true` may be set together with `watch=true`. In that case, the watch stream will begin with synthetic events to produce the current state of objects in the collection. Once all such events have been sent, a synthetic "Bookmark" event  will be sent. The bookmark will report the ResourceVersion (RV) corresponding to the set of objects, and be marked with `"k8s.io/initial-events-end": "true"` annotation. Afterwards, the watch stream will proceed as usual, sending watch events corresponding to changes (subsequent to the RV) to objects watched.
+     *
+     * When `sendInitialEvents` option is set, we require `resourceVersionMatch` option to also be set. The semantic of the watch request is as following: - `resourceVersionMatch` = NotOlderThan
+     * is interpreted as "data at least as new as the provided `resourceVersion`"
+     * and the bookmark event is send when the state is synced
+     * to a `resourceVersion` at least as fresh as the one provided by the ListOptions.
+     * If `resourceVersion` is unset, this is interpreted as "consistent read" and the
+     * bookmark event is send when the state is synced at least to the moment
+     * when request started being processed.
+     * - `resourceVersionMatch` set to any other value or unset
+     * Invalid error is returned.
+     *
+     * Defaults to true if `resourceVersion=""` or `resourceVersion="0"` (for backward compatibility reasons) and to false otherwise.
+     */
+    sendInitialEvents?: boolean;
+    /**
+     * shardSelector restricts the list of returned objects using a CEL-based shard selector expression. The format uses the shardRange() function combined with || (logical OR) to specify one or more hash ranges:
+     *
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000')
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000') || shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     *
+     * Field paths use CEL-style object-rooted syntax (e.g. "object.metadata.uid"), NOT the fieldSelector format ("metadata.uid"). Currently supported paths:
+     * - object.metadata.uid
+     * - object.metadata.namespace
+     *
+     * hexStart and hexEnd are single-quoted CEL string literals with a '0x' prefix, defining the inclusive lower and exclusive upper bounds over the 64-bit FNV-1a hash space. The full range is [0x0, 0x10000000000000000), where the exclusive upper bound equals 2^64.
+     *
+     * Examples:
+     * 2-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x8000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     * 4-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x4000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x4000000000000000', '0x8000000000000000')
+     * shard 2: shardRange(object.metadata.uid, '0x8000000000000000', '0xc000000000000000')
+     * shard 3: shardRange(object.metadata.uid, '0xc000000000000000', '0x10000000000000000')
+     *
+     * This is an alpha field and requires enabling the ShardedListAndWatch feature gate.
+     */
+    shardSelector?: string;
+    /**
+     * Timeout for the list/watch call. This limits the duration of the call, regardless of any activity or inactivity.
+     */
+    timeoutSeconds?: number;
+    /**
+     * Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.
+     */
+    watch?: boolean;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/activities';
+};
+
+export type ListActivityMiloapisComV1Alpha1ActivityForAllNamespacesResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityList>;
+};
+
+export type ListActivityMiloapisComV1Alpha1ActivityForAllNamespacesResponse =
+  ListActivityMiloapisComV1Alpha1ActivityForAllNamespacesResponses[keyof ListActivityMiloapisComV1Alpha1ActivityForAllNamespacesResponses]['data'];
+
+export type CreateActivityMiloapisComV1Alpha1ActivityFacetQueryData = {
+  body: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityFacetQuery;
+  path?: never;
+  query?: {
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint.
+     */
+    fieldManager?: string;
+    /**
+     * fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.
+     */
+    fieldValidation?: string;
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/activityfacetqueries';
+};
+
+export type CreateActivityMiloapisComV1Alpha1ActivityFacetQueryResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityFacetQuery>;
+  /**
+   * Created
+   */
+  201: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityFacetQuery>;
+  /**
+   * Accepted
+   */
+  202: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityFacetQuery>;
+};
+
+export type CreateActivityMiloapisComV1Alpha1ActivityFacetQueryResponse =
+  CreateActivityMiloapisComV1Alpha1ActivityFacetQueryResponses[keyof CreateActivityMiloapisComV1Alpha1ActivityFacetQueryResponses]['data'];
+
+export type DeleteActivityMiloapisComV1Alpha1CollectionActivityPolicyData = {
+  body?: IoK8sApimachineryPkgApisMetaV1DeleteOptions;
+  path?: never;
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server, the server will respond with a 410 ResourceExpired error together with a continue token. If the client needs a consistent list, it must restart their list without the continue field. Otherwise, the client may send another list request with the token received with the 410 error, the server will respond with a list starting from the next key, but from the latest snapshot, which is inconsistent from the previous list results - objects that are created, modified, or deleted after the first list request will be included in the response, as long as their keys are after the "next key".
+     *
+     * This field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.
+     */
+    continue?: string;
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * A selector to restrict the list of returned objects by their fields. Defaults to everything.
+     */
+    fieldSelector?: string;
+    /**
+     * The duration in seconds before the object should be deleted. Value must be non-negative integer. The value zero indicates delete immediately. If this value is nil, the default grace period for the specified type will be used. Defaults to a per object value if not specified. zero means delete immediately.
+     */
+    gracePeriodSeconds?: number;
+    /**
+     * if set to true, it will trigger an unsafe deletion of the resource in case the normal deletion flow fails with a corrupt object error. A resource is considered corrupt if it can not be retrieved from the underlying storage successfully because of a) its data can not be transformed e.g. decryption failure, or b) it fails to decode into an object. NOTE: unsafe deletion ignores finalizer constraints, skips precondition checks, and removes the object from the storage. WARNING: This may potentially break the cluster if the workload associated with the resource being unsafe-deleted relies on normal deletion flow. Use only if you REALLY know what you are doing. The default value is false, and the user must opt in to enable it
+     */
+    ignoreStoreReadErrorWithClusterBreakingPotential?: boolean;
+    /**
+     * A selector to restrict the list of returned objects by their labels. Defaults to everything.
+     */
+    labelSelector?: string;
+    /**
+     * limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.
+     *
+     * The server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.
+     */
+    limit?: number;
+    /**
+     * Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7. Should the dependent objects be orphaned. If true/false, the "orphan" finalizer will be added to/removed from the object's finalizers list. Either this field or PropagationPolicy may be set, but not both.
+     */
+    orphanDependents?: boolean;
+    /**
+     * Whether and how garbage collection will be performed. Either this field or OrphanDependents may be set, but not both. The default policy is decided by the existing finalizer set in the metadata.finalizers and the resource-specific default policy. Acceptable values are: 'Orphan' - orphan the dependents; 'Background' - allow the garbage collector to delete the dependents in the background; 'Foreground' - a cascading policy that deletes all dependents in the foreground.
+     */
+    propagationPolicy?: string;
+    /**
+     * resourceVersion sets a constraint on what resource versions a request may be served from. See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersion?: string;
+    /**
+     * resourceVersionMatch determines how resourceVersion is applied to list calls. It is highly recommended that resourceVersionMatch be set for list calls where resourceVersion is set See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersionMatch?: string;
+    /**
+     * `sendInitialEvents=true` may be set together with `watch=true`. In that case, the watch stream will begin with synthetic events to produce the current state of objects in the collection. Once all such events have been sent, a synthetic "Bookmark" event  will be sent. The bookmark will report the ResourceVersion (RV) corresponding to the set of objects, and be marked with `"k8s.io/initial-events-end": "true"` annotation. Afterwards, the watch stream will proceed as usual, sending watch events corresponding to changes (subsequent to the RV) to objects watched.
+     *
+     * When `sendInitialEvents` option is set, we require `resourceVersionMatch` option to also be set. The semantic of the watch request is as following: - `resourceVersionMatch` = NotOlderThan
+     * is interpreted as "data at least as new as the provided `resourceVersion`"
+     * and the bookmark event is send when the state is synced
+     * to a `resourceVersion` at least as fresh as the one provided by the ListOptions.
+     * If `resourceVersion` is unset, this is interpreted as "consistent read" and the
+     * bookmark event is send when the state is synced at least to the moment
+     * when request started being processed.
+     * - `resourceVersionMatch` set to any other value or unset
+     * Invalid error is returned.
+     *
+     * Defaults to true if `resourceVersion=""` or `resourceVersion="0"` (for backward compatibility reasons) and to false otherwise.
+     */
+    sendInitialEvents?: boolean;
+    /**
+     * shardSelector restricts the list of returned objects using a CEL-based shard selector expression. The format uses the shardRange() function combined with || (logical OR) to specify one or more hash ranges:
+     *
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000')
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000') || shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     *
+     * Field paths use CEL-style object-rooted syntax (e.g. "object.metadata.uid"), NOT the fieldSelector format ("metadata.uid"). Currently supported paths:
+     * - object.metadata.uid
+     * - object.metadata.namespace
+     *
+     * hexStart and hexEnd are single-quoted CEL string literals with a '0x' prefix, defining the inclusive lower and exclusive upper bounds over the 64-bit FNV-1a hash space. The full range is [0x0, 0x10000000000000000), where the exclusive upper bound equals 2^64.
+     *
+     * Examples:
+     * 2-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x8000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     * 4-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x4000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x4000000000000000', '0x8000000000000000')
+     * shard 2: shardRange(object.metadata.uid, '0x8000000000000000', '0xc000000000000000')
+     * shard 3: shardRange(object.metadata.uid, '0xc000000000000000', '0x10000000000000000')
+     *
+     * This is an alpha field and requires enabling the ShardedListAndWatch feature gate.
+     */
+    shardSelector?: string;
+    /**
+     * Timeout for the list/watch call. This limits the duration of the call, regardless of any activity or inactivity.
+     */
+    timeoutSeconds?: number;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/activitypolicies';
+};
+
+export type DeleteActivityMiloapisComV1Alpha1CollectionActivityPolicyResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<IoK8sApimachineryPkgApisMetaV1Status>;
+};
+
+export type DeleteActivityMiloapisComV1Alpha1CollectionActivityPolicyResponse =
+  DeleteActivityMiloapisComV1Alpha1CollectionActivityPolicyResponses[keyof DeleteActivityMiloapisComV1Alpha1CollectionActivityPolicyResponses]['data'];
+
+export type ListActivityMiloapisComV1Alpha1ActivityPolicyData = {
+  body?: never;
+  path?: never;
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * allowWatchBookmarks requests watch events with type "BOOKMARK". Servers that do not implement bookmarks may ignore this flag and bookmarks are sent at the server's discretion. Clients should not assume bookmarks are returned at any specific interval, nor may they assume the server will send any BOOKMARK event during a session. If this is not a watch, this field is ignored.
+     */
+    allowWatchBookmarks?: boolean;
+    /**
+     * The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server, the server will respond with a 410 ResourceExpired error together with a continue token. If the client needs a consistent list, it must restart their list without the continue field. Otherwise, the client may send another list request with the token received with the 410 error, the server will respond with a list starting from the next key, but from the latest snapshot, which is inconsistent from the previous list results - objects that are created, modified, or deleted after the first list request will be included in the response, as long as their keys are after the "next key".
+     *
+     * This field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.
+     */
+    continue?: string;
+    /**
+     * A selector to restrict the list of returned objects by their fields. Defaults to everything.
+     */
+    fieldSelector?: string;
+    /**
+     * A selector to restrict the list of returned objects by their labels. Defaults to everything.
+     */
+    labelSelector?: string;
+    /**
+     * limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.
+     *
+     * The server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.
+     */
+    limit?: number;
+    /**
+     * resourceVersion sets a constraint on what resource versions a request may be served from. See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersion?: string;
+    /**
+     * resourceVersionMatch determines how resourceVersion is applied to list calls. It is highly recommended that resourceVersionMatch be set for list calls where resourceVersion is set See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersionMatch?: string;
+    /**
+     * `sendInitialEvents=true` may be set together with `watch=true`. In that case, the watch stream will begin with synthetic events to produce the current state of objects in the collection. Once all such events have been sent, a synthetic "Bookmark" event  will be sent. The bookmark will report the ResourceVersion (RV) corresponding to the set of objects, and be marked with `"k8s.io/initial-events-end": "true"` annotation. Afterwards, the watch stream will proceed as usual, sending watch events corresponding to changes (subsequent to the RV) to objects watched.
+     *
+     * When `sendInitialEvents` option is set, we require `resourceVersionMatch` option to also be set. The semantic of the watch request is as following: - `resourceVersionMatch` = NotOlderThan
+     * is interpreted as "data at least as new as the provided `resourceVersion`"
+     * and the bookmark event is send when the state is synced
+     * to a `resourceVersion` at least as fresh as the one provided by the ListOptions.
+     * If `resourceVersion` is unset, this is interpreted as "consistent read" and the
+     * bookmark event is send when the state is synced at least to the moment
+     * when request started being processed.
+     * - `resourceVersionMatch` set to any other value or unset
+     * Invalid error is returned.
+     *
+     * Defaults to true if `resourceVersion=""` or `resourceVersion="0"` (for backward compatibility reasons) and to false otherwise.
+     */
+    sendInitialEvents?: boolean;
+    /**
+     * shardSelector restricts the list of returned objects using a CEL-based shard selector expression. The format uses the shardRange() function combined with || (logical OR) to specify one or more hash ranges:
+     *
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000')
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000') || shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     *
+     * Field paths use CEL-style object-rooted syntax (e.g. "object.metadata.uid"), NOT the fieldSelector format ("metadata.uid"). Currently supported paths:
+     * - object.metadata.uid
+     * - object.metadata.namespace
+     *
+     * hexStart and hexEnd are single-quoted CEL string literals with a '0x' prefix, defining the inclusive lower and exclusive upper bounds over the 64-bit FNV-1a hash space. The full range is [0x0, 0x10000000000000000), where the exclusive upper bound equals 2^64.
+     *
+     * Examples:
+     * 2-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x8000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     * 4-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x4000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x4000000000000000', '0x8000000000000000')
+     * shard 2: shardRange(object.metadata.uid, '0x8000000000000000', '0xc000000000000000')
+     * shard 3: shardRange(object.metadata.uid, '0xc000000000000000', '0x10000000000000000')
+     *
+     * This is an alpha field and requires enabling the ShardedListAndWatch feature gate.
+     */
+    shardSelector?: string;
+    /**
+     * Timeout for the list/watch call. This limits the duration of the call, regardless of any activity or inactivity.
+     */
+    timeoutSeconds?: number;
+    /**
+     * Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.
+     */
+    watch?: boolean;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/activitypolicies';
+};
+
+export type ListActivityMiloapisComV1Alpha1ActivityPolicyResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicyList>;
+};
+
+export type ListActivityMiloapisComV1Alpha1ActivityPolicyResponse =
+  ListActivityMiloapisComV1Alpha1ActivityPolicyResponses[keyof ListActivityMiloapisComV1Alpha1ActivityPolicyResponses]['data'];
+
+export type CreateActivityMiloapisComV1Alpha1ActivityPolicyData = {
+  body: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicy;
+  path?: never;
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint.
+     */
+    fieldManager?: string;
+    /**
+     * fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.
+     */
+    fieldValidation?: string;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/activitypolicies';
+};
+
+export type CreateActivityMiloapisComV1Alpha1ActivityPolicyResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicy>;
+  /**
+   * Created
+   */
+  201: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicy>;
+  /**
+   * Accepted
+   */
+  202: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicy>;
+};
+
+export type CreateActivityMiloapisComV1Alpha1ActivityPolicyResponse =
+  CreateActivityMiloapisComV1Alpha1ActivityPolicyResponses[keyof CreateActivityMiloapisComV1Alpha1ActivityPolicyResponses]['data'];
+
+export type DeleteActivityMiloapisComV1Alpha1ActivityPolicyData = {
+  body?: IoK8sApimachineryPkgApisMetaV1DeleteOptions;
+  path: {
+    /**
+     * name of the ActivityPolicy
+     */
+    name: string;
+  };
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * The duration in seconds before the object should be deleted. Value must be non-negative integer. The value zero indicates delete immediately. If this value is nil, the default grace period for the specified type will be used. Defaults to a per object value if not specified. zero means delete immediately.
+     */
+    gracePeriodSeconds?: number;
+    /**
+     * if set to true, it will trigger an unsafe deletion of the resource in case the normal deletion flow fails with a corrupt object error. A resource is considered corrupt if it can not be retrieved from the underlying storage successfully because of a) its data can not be transformed e.g. decryption failure, or b) it fails to decode into an object. NOTE: unsafe deletion ignores finalizer constraints, skips precondition checks, and removes the object from the storage. WARNING: This may potentially break the cluster if the workload associated with the resource being unsafe-deleted relies on normal deletion flow. Use only if you REALLY know what you are doing. The default value is false, and the user must opt in to enable it
+     */
+    ignoreStoreReadErrorWithClusterBreakingPotential?: boolean;
+    /**
+     * Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7. Should the dependent objects be orphaned. If true/false, the "orphan" finalizer will be added to/removed from the object's finalizers list. Either this field or PropagationPolicy may be set, but not both.
+     */
+    orphanDependents?: boolean;
+    /**
+     * Whether and how garbage collection will be performed. Either this field or OrphanDependents may be set, but not both. The default policy is decided by the existing finalizer set in the metadata.finalizers and the resource-specific default policy. Acceptable values are: 'Orphan' - orphan the dependents; 'Background' - allow the garbage collector to delete the dependents in the background; 'Foreground' - a cascading policy that deletes all dependents in the foreground.
+     */
+    propagationPolicy?: string;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/activitypolicies/{name}';
+};
+
+export type DeleteActivityMiloapisComV1Alpha1ActivityPolicyResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<IoK8sApimachineryPkgApisMetaV1Status>;
+  /**
+   * Accepted
+   */
+  202: ProxyResponse<IoK8sApimachineryPkgApisMetaV1Status>;
+};
+
+export type DeleteActivityMiloapisComV1Alpha1ActivityPolicyResponse =
+  DeleteActivityMiloapisComV1Alpha1ActivityPolicyResponses[keyof DeleteActivityMiloapisComV1Alpha1ActivityPolicyResponses]['data'];
+
+export type ReadActivityMiloapisComV1Alpha1ActivityPolicyData = {
+  body?: never;
+  path: {
+    /**
+     * name of the ActivityPolicy
+     */
+    name: string;
+  };
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/activitypolicies/{name}';
+};
+
+export type ReadActivityMiloapisComV1Alpha1ActivityPolicyResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicy>;
+};
+
+export type ReadActivityMiloapisComV1Alpha1ActivityPolicyResponse =
+  ReadActivityMiloapisComV1Alpha1ActivityPolicyResponses[keyof ReadActivityMiloapisComV1Alpha1ActivityPolicyResponses]['data'];
+
+export type PatchActivityMiloapisComV1Alpha1ActivityPolicyData = {
+  body: IoK8sApimachineryPkgApisMetaV1Patch;
+  path: {
+    /**
+     * name of the ActivityPolicy
+     */
+    name: string;
+  };
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch).
+     */
+    fieldManager?: string;
+    /**
+     * fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.
+     */
+    fieldValidation?: string;
+    /**
+     * Force is going to "force" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests.
+     */
+    force?: boolean;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/activitypolicies/{name}';
+};
+
+export type PatchActivityMiloapisComV1Alpha1ActivityPolicyResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicy>;
+  /**
+   * Created
+   */
+  201: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicy>;
+};
+
+export type PatchActivityMiloapisComV1Alpha1ActivityPolicyResponse =
+  PatchActivityMiloapisComV1Alpha1ActivityPolicyResponses[keyof PatchActivityMiloapisComV1Alpha1ActivityPolicyResponses]['data'];
+
+export type ReplaceActivityMiloapisComV1Alpha1ActivityPolicyData = {
+  body: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicy;
+  path: {
+    /**
+     * name of the ActivityPolicy
+     */
+    name: string;
+  };
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint.
+     */
+    fieldManager?: string;
+    /**
+     * fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.
+     */
+    fieldValidation?: string;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/activitypolicies/{name}';
+};
+
+export type ReplaceActivityMiloapisComV1Alpha1ActivityPolicyResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicy>;
+  /**
+   * Created
+   */
+  201: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicy>;
+};
+
+export type ReplaceActivityMiloapisComV1Alpha1ActivityPolicyResponse =
+  ReplaceActivityMiloapisComV1Alpha1ActivityPolicyResponses[keyof ReplaceActivityMiloapisComV1Alpha1ActivityPolicyResponses]['data'];
+
+export type ReadActivityMiloapisComV1Alpha1ActivityPolicyStatusData = {
+  body?: never;
+  path: {
+    /**
+     * name of the ActivityPolicy
+     */
+    name: string;
+  };
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/activitypolicies/{name}/status';
+};
+
+export type ReadActivityMiloapisComV1Alpha1ActivityPolicyStatusResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicy>;
+};
+
+export type ReadActivityMiloapisComV1Alpha1ActivityPolicyStatusResponse =
+  ReadActivityMiloapisComV1Alpha1ActivityPolicyStatusResponses[keyof ReadActivityMiloapisComV1Alpha1ActivityPolicyStatusResponses]['data'];
+
+export type PatchActivityMiloapisComV1Alpha1ActivityPolicyStatusData = {
+  body: IoK8sApimachineryPkgApisMetaV1Patch;
+  path: {
+    /**
+     * name of the ActivityPolicy
+     */
+    name: string;
+  };
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch).
+     */
+    fieldManager?: string;
+    /**
+     * fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.
+     */
+    fieldValidation?: string;
+    /**
+     * Force is going to "force" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests.
+     */
+    force?: boolean;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/activitypolicies/{name}/status';
+};
+
+export type PatchActivityMiloapisComV1Alpha1ActivityPolicyStatusResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicy>;
+  /**
+   * Created
+   */
+  201: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicy>;
+};
+
+export type PatchActivityMiloapisComV1Alpha1ActivityPolicyStatusResponse =
+  PatchActivityMiloapisComV1Alpha1ActivityPolicyStatusResponses[keyof PatchActivityMiloapisComV1Alpha1ActivityPolicyStatusResponses]['data'];
+
+export type ReplaceActivityMiloapisComV1Alpha1ActivityPolicyStatusData = {
+  body: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicy;
+  path: {
+    /**
+     * name of the ActivityPolicy
+     */
+    name: string;
+  };
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint.
+     */
+    fieldManager?: string;
+    /**
+     * fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.
+     */
+    fieldValidation?: string;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/activitypolicies/{name}/status';
+};
+
+export type ReplaceActivityMiloapisComV1Alpha1ActivityPolicyStatusResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicy>;
+  /**
+   * Created
+   */
+  201: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityPolicy>;
+};
+
+export type ReplaceActivityMiloapisComV1Alpha1ActivityPolicyStatusResponse =
+  ReplaceActivityMiloapisComV1Alpha1ActivityPolicyStatusResponses[keyof ReplaceActivityMiloapisComV1Alpha1ActivityPolicyStatusResponses]['data'];
+
+export type CreateActivityMiloapisComV1Alpha1ActivityQueryData = {
+  body: ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityQuery;
+  path?: never;
+  query?: {
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint.
+     */
+    fieldManager?: string;
+    /**
+     * fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.
+     */
+    fieldValidation?: string;
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/activityqueries';
+};
+
+export type CreateActivityMiloapisComV1Alpha1ActivityQueryResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityQuery>;
+  /**
+   * Created
+   */
+  201: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityQuery>;
+  /**
+   * Accepted
+   */
+  202: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityQuery>;
+};
+
+export type CreateActivityMiloapisComV1Alpha1ActivityQueryResponse =
+  CreateActivityMiloapisComV1Alpha1ActivityQueryResponses[keyof CreateActivityMiloapisComV1Alpha1ActivityQueryResponses]['data'];
+
+export type CreateActivityMiloapisComV1Alpha1AuditLogFacetsQueryData = {
+  body: ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogFacetsQuery;
+  path?: never;
+  query?: {
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint.
+     */
+    fieldManager?: string;
+    /**
+     * fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.
+     */
+    fieldValidation?: string;
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/auditlogfacetsqueries';
+};
+
+export type CreateActivityMiloapisComV1Alpha1AuditLogFacetsQueryResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogFacetsQuery>;
+  /**
+   * Created
+   */
+  201: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogFacetsQuery>;
+  /**
+   * Accepted
+   */
+  202: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogFacetsQuery>;
+};
+
+export type CreateActivityMiloapisComV1Alpha1AuditLogFacetsQueryResponse =
+  CreateActivityMiloapisComV1Alpha1AuditLogFacetsQueryResponses[keyof CreateActivityMiloapisComV1Alpha1AuditLogFacetsQueryResponses]['data'];
 
 export type CreateActivityMiloapisComV1Alpha1AuditLogQueryData = {
   body: ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogQuery;
@@ -699,3 +3179,1567 @@ export type CreateActivityMiloapisComV1Alpha1AuditLogQueryResponses = {
 
 export type CreateActivityMiloapisComV1Alpha1AuditLogQueryResponse =
   CreateActivityMiloapisComV1Alpha1AuditLogQueryResponses[keyof CreateActivityMiloapisComV1Alpha1AuditLogQueryResponses]['data'];
+
+export type CreateActivityMiloapisComV1Alpha1EventFacetQueryData = {
+  body: ComMiloapisGoActivityPkgApisActivityV1Alpha1EventFacetQuery;
+  path?: never;
+  query?: {
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint.
+     */
+    fieldManager?: string;
+    /**
+     * fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.
+     */
+    fieldValidation?: string;
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/eventfacetqueries';
+};
+
+export type CreateActivityMiloapisComV1Alpha1EventFacetQueryResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1EventFacetQuery>;
+  /**
+   * Created
+   */
+  201: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1EventFacetQuery>;
+  /**
+   * Accepted
+   */
+  202: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1EventFacetQuery>;
+};
+
+export type CreateActivityMiloapisComV1Alpha1EventFacetQueryResponse =
+  CreateActivityMiloapisComV1Alpha1EventFacetQueryResponses[keyof CreateActivityMiloapisComV1Alpha1EventFacetQueryResponses]['data'];
+
+export type CreateActivityMiloapisComV1Alpha1EventQueryData = {
+  body: ComMiloapisGoActivityPkgApisActivityV1Alpha1EventQuery;
+  path?: never;
+  query?: {
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint.
+     */
+    fieldManager?: string;
+    /**
+     * fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.
+     */
+    fieldValidation?: string;
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/eventqueries';
+};
+
+export type CreateActivityMiloapisComV1Alpha1EventQueryResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1EventQuery>;
+  /**
+   * Created
+   */
+  201: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1EventQuery>;
+  /**
+   * Accepted
+   */
+  202: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1EventQuery>;
+};
+
+export type CreateActivityMiloapisComV1Alpha1EventQueryResponse =
+  CreateActivityMiloapisComV1Alpha1EventQueryResponses[keyof CreateActivityMiloapisComV1Alpha1EventQueryResponses]['data'];
+
+export type ListActivityMiloapisComV1Alpha1NamespacedActivityData = {
+  body?: never;
+  path: {
+    /**
+     * object name and auth scope, such as for teams and projects
+     */
+    namespace: string;
+  };
+  query?: {
+    /**
+     * allowWatchBookmarks requests watch events with type "BOOKMARK". Servers that do not implement bookmarks may ignore this flag and bookmarks are sent at the server's discretion. Clients should not assume bookmarks are returned at any specific interval, nor may they assume the server will send any BOOKMARK event during a session. If this is not a watch, this field is ignored.
+     */
+    allowWatchBookmarks?: boolean;
+    /**
+     * The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server, the server will respond with a 410 ResourceExpired error together with a continue token. If the client needs a consistent list, it must restart their list without the continue field. Otherwise, the client may send another list request with the token received with the 410 error, the server will respond with a list starting from the next key, but from the latest snapshot, which is inconsistent from the previous list results - objects that are created, modified, or deleted after the first list request will be included in the response, as long as their keys are after the "next key".
+     *
+     * This field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.
+     */
+    continue?: string;
+    /**
+     * A selector to restrict the list of returned objects by their fields. Defaults to everything.
+     */
+    fieldSelector?: string;
+    /**
+     * A selector to restrict the list of returned objects by their labels. Defaults to everything.
+     */
+    labelSelector?: string;
+    /**
+     * limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.
+     *
+     * The server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.
+     */
+    limit?: number;
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * resourceVersion sets a constraint on what resource versions a request may be served from. See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersion?: string;
+    /**
+     * resourceVersionMatch determines how resourceVersion is applied to list calls. It is highly recommended that resourceVersionMatch be set for list calls where resourceVersion is set See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersionMatch?: string;
+    /**
+     * `sendInitialEvents=true` may be set together with `watch=true`. In that case, the watch stream will begin with synthetic events to produce the current state of objects in the collection. Once all such events have been sent, a synthetic "Bookmark" event  will be sent. The bookmark will report the ResourceVersion (RV) corresponding to the set of objects, and be marked with `"k8s.io/initial-events-end": "true"` annotation. Afterwards, the watch stream will proceed as usual, sending watch events corresponding to changes (subsequent to the RV) to objects watched.
+     *
+     * When `sendInitialEvents` option is set, we require `resourceVersionMatch` option to also be set. The semantic of the watch request is as following: - `resourceVersionMatch` = NotOlderThan
+     * is interpreted as "data at least as new as the provided `resourceVersion`"
+     * and the bookmark event is send when the state is synced
+     * to a `resourceVersion` at least as fresh as the one provided by the ListOptions.
+     * If `resourceVersion` is unset, this is interpreted as "consistent read" and the
+     * bookmark event is send when the state is synced at least to the moment
+     * when request started being processed.
+     * - `resourceVersionMatch` set to any other value or unset
+     * Invalid error is returned.
+     *
+     * Defaults to true if `resourceVersion=""` or `resourceVersion="0"` (for backward compatibility reasons) and to false otherwise.
+     */
+    sendInitialEvents?: boolean;
+    /**
+     * shardSelector restricts the list of returned objects using a CEL-based shard selector expression. The format uses the shardRange() function combined with || (logical OR) to specify one or more hash ranges:
+     *
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000')
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000') || shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     *
+     * Field paths use CEL-style object-rooted syntax (e.g. "object.metadata.uid"), NOT the fieldSelector format ("metadata.uid"). Currently supported paths:
+     * - object.metadata.uid
+     * - object.metadata.namespace
+     *
+     * hexStart and hexEnd are single-quoted CEL string literals with a '0x' prefix, defining the inclusive lower and exclusive upper bounds over the 64-bit FNV-1a hash space. The full range is [0x0, 0x10000000000000000), where the exclusive upper bound equals 2^64.
+     *
+     * Examples:
+     * 2-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x8000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     * 4-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x4000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x4000000000000000', '0x8000000000000000')
+     * shard 2: shardRange(object.metadata.uid, '0x8000000000000000', '0xc000000000000000')
+     * shard 3: shardRange(object.metadata.uid, '0xc000000000000000', '0x10000000000000000')
+     *
+     * This is an alpha field and requires enabling the ShardedListAndWatch feature gate.
+     */
+    shardSelector?: string;
+    /**
+     * Timeout for the list/watch call. This limits the duration of the call, regardless of any activity or inactivity.
+     */
+    timeoutSeconds?: number;
+    /**
+     * Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.
+     */
+    watch?: boolean;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/namespaces/{namespace}/activities';
+};
+
+export type ListActivityMiloapisComV1Alpha1NamespacedActivityResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ActivityList>;
+};
+
+export type ListActivityMiloapisComV1Alpha1NamespacedActivityResponse =
+  ListActivityMiloapisComV1Alpha1NamespacedActivityResponses[keyof ListActivityMiloapisComV1Alpha1NamespacedActivityResponses]['data'];
+
+export type CreateActivityMiloapisComV1Alpha1PolicyPreviewData = {
+  body: ComMiloapisGoActivityPkgApisActivityV1Alpha1PolicyPreview;
+  path?: never;
+  query?: {
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint.
+     */
+    fieldManager?: string;
+    /**
+     * fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.
+     */
+    fieldValidation?: string;
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/policypreviews';
+};
+
+export type CreateActivityMiloapisComV1Alpha1PolicyPreviewResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1PolicyPreview>;
+  /**
+   * Created
+   */
+  201: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1PolicyPreview>;
+  /**
+   * Accepted
+   */
+  202: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1PolicyPreview>;
+};
+
+export type CreateActivityMiloapisComV1Alpha1PolicyPreviewResponse =
+  CreateActivityMiloapisComV1Alpha1PolicyPreviewResponses[keyof CreateActivityMiloapisComV1Alpha1PolicyPreviewResponses]['data'];
+
+export type DeleteActivityMiloapisComV1Alpha1CollectionReindexJobData = {
+  body?: IoK8sApimachineryPkgApisMetaV1DeleteOptions;
+  path?: never;
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server, the server will respond with a 410 ResourceExpired error together with a continue token. If the client needs a consistent list, it must restart their list without the continue field. Otherwise, the client may send another list request with the token received with the 410 error, the server will respond with a list starting from the next key, but from the latest snapshot, which is inconsistent from the previous list results - objects that are created, modified, or deleted after the first list request will be included in the response, as long as their keys are after the "next key".
+     *
+     * This field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.
+     */
+    continue?: string;
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * A selector to restrict the list of returned objects by their fields. Defaults to everything.
+     */
+    fieldSelector?: string;
+    /**
+     * The duration in seconds before the object should be deleted. Value must be non-negative integer. The value zero indicates delete immediately. If this value is nil, the default grace period for the specified type will be used. Defaults to a per object value if not specified. zero means delete immediately.
+     */
+    gracePeriodSeconds?: number;
+    /**
+     * if set to true, it will trigger an unsafe deletion of the resource in case the normal deletion flow fails with a corrupt object error. A resource is considered corrupt if it can not be retrieved from the underlying storage successfully because of a) its data can not be transformed e.g. decryption failure, or b) it fails to decode into an object. NOTE: unsafe deletion ignores finalizer constraints, skips precondition checks, and removes the object from the storage. WARNING: This may potentially break the cluster if the workload associated with the resource being unsafe-deleted relies on normal deletion flow. Use only if you REALLY know what you are doing. The default value is false, and the user must opt in to enable it
+     */
+    ignoreStoreReadErrorWithClusterBreakingPotential?: boolean;
+    /**
+     * A selector to restrict the list of returned objects by their labels. Defaults to everything.
+     */
+    labelSelector?: string;
+    /**
+     * limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.
+     *
+     * The server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.
+     */
+    limit?: number;
+    /**
+     * Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7. Should the dependent objects be orphaned. If true/false, the "orphan" finalizer will be added to/removed from the object's finalizers list. Either this field or PropagationPolicy may be set, but not both.
+     */
+    orphanDependents?: boolean;
+    /**
+     * Whether and how garbage collection will be performed. Either this field or OrphanDependents may be set, but not both. The default policy is decided by the existing finalizer set in the metadata.finalizers and the resource-specific default policy. Acceptable values are: 'Orphan' - orphan the dependents; 'Background' - allow the garbage collector to delete the dependents in the background; 'Foreground' - a cascading policy that deletes all dependents in the foreground.
+     */
+    propagationPolicy?: string;
+    /**
+     * resourceVersion sets a constraint on what resource versions a request may be served from. See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersion?: string;
+    /**
+     * resourceVersionMatch determines how resourceVersion is applied to list calls. It is highly recommended that resourceVersionMatch be set for list calls where resourceVersion is set See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersionMatch?: string;
+    /**
+     * `sendInitialEvents=true` may be set together with `watch=true`. In that case, the watch stream will begin with synthetic events to produce the current state of objects in the collection. Once all such events have been sent, a synthetic "Bookmark" event  will be sent. The bookmark will report the ResourceVersion (RV) corresponding to the set of objects, and be marked with `"k8s.io/initial-events-end": "true"` annotation. Afterwards, the watch stream will proceed as usual, sending watch events corresponding to changes (subsequent to the RV) to objects watched.
+     *
+     * When `sendInitialEvents` option is set, we require `resourceVersionMatch` option to also be set. The semantic of the watch request is as following: - `resourceVersionMatch` = NotOlderThan
+     * is interpreted as "data at least as new as the provided `resourceVersion`"
+     * and the bookmark event is send when the state is synced
+     * to a `resourceVersion` at least as fresh as the one provided by the ListOptions.
+     * If `resourceVersion` is unset, this is interpreted as "consistent read" and the
+     * bookmark event is send when the state is synced at least to the moment
+     * when request started being processed.
+     * - `resourceVersionMatch` set to any other value or unset
+     * Invalid error is returned.
+     *
+     * Defaults to true if `resourceVersion=""` or `resourceVersion="0"` (for backward compatibility reasons) and to false otherwise.
+     */
+    sendInitialEvents?: boolean;
+    /**
+     * shardSelector restricts the list of returned objects using a CEL-based shard selector expression. The format uses the shardRange() function combined with || (logical OR) to specify one or more hash ranges:
+     *
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000')
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000') || shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     *
+     * Field paths use CEL-style object-rooted syntax (e.g. "object.metadata.uid"), NOT the fieldSelector format ("metadata.uid"). Currently supported paths:
+     * - object.metadata.uid
+     * - object.metadata.namespace
+     *
+     * hexStart and hexEnd are single-quoted CEL string literals with a '0x' prefix, defining the inclusive lower and exclusive upper bounds over the 64-bit FNV-1a hash space. The full range is [0x0, 0x10000000000000000), where the exclusive upper bound equals 2^64.
+     *
+     * Examples:
+     * 2-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x8000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     * 4-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x4000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x4000000000000000', '0x8000000000000000')
+     * shard 2: shardRange(object.metadata.uid, '0x8000000000000000', '0xc000000000000000')
+     * shard 3: shardRange(object.metadata.uid, '0xc000000000000000', '0x10000000000000000')
+     *
+     * This is an alpha field and requires enabling the ShardedListAndWatch feature gate.
+     */
+    shardSelector?: string;
+    /**
+     * Timeout for the list/watch call. This limits the duration of the call, regardless of any activity or inactivity.
+     */
+    timeoutSeconds?: number;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/reindexjobs';
+};
+
+export type DeleteActivityMiloapisComV1Alpha1CollectionReindexJobResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<IoK8sApimachineryPkgApisMetaV1Status>;
+};
+
+export type DeleteActivityMiloapisComV1Alpha1CollectionReindexJobResponse =
+  DeleteActivityMiloapisComV1Alpha1CollectionReindexJobResponses[keyof DeleteActivityMiloapisComV1Alpha1CollectionReindexJobResponses]['data'];
+
+export type ListActivityMiloapisComV1Alpha1ReindexJobData = {
+  body?: never;
+  path?: never;
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * allowWatchBookmarks requests watch events with type "BOOKMARK". Servers that do not implement bookmarks may ignore this flag and bookmarks are sent at the server's discretion. Clients should not assume bookmarks are returned at any specific interval, nor may they assume the server will send any BOOKMARK event during a session. If this is not a watch, this field is ignored.
+     */
+    allowWatchBookmarks?: boolean;
+    /**
+     * The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server, the server will respond with a 410 ResourceExpired error together with a continue token. If the client needs a consistent list, it must restart their list without the continue field. Otherwise, the client may send another list request with the token received with the 410 error, the server will respond with a list starting from the next key, but from the latest snapshot, which is inconsistent from the previous list results - objects that are created, modified, or deleted after the first list request will be included in the response, as long as their keys are after the "next key".
+     *
+     * This field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.
+     */
+    continue?: string;
+    /**
+     * A selector to restrict the list of returned objects by their fields. Defaults to everything.
+     */
+    fieldSelector?: string;
+    /**
+     * A selector to restrict the list of returned objects by their labels. Defaults to everything.
+     */
+    labelSelector?: string;
+    /**
+     * limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.
+     *
+     * The server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.
+     */
+    limit?: number;
+    /**
+     * resourceVersion sets a constraint on what resource versions a request may be served from. See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersion?: string;
+    /**
+     * resourceVersionMatch determines how resourceVersion is applied to list calls. It is highly recommended that resourceVersionMatch be set for list calls where resourceVersion is set See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersionMatch?: string;
+    /**
+     * `sendInitialEvents=true` may be set together with `watch=true`. In that case, the watch stream will begin with synthetic events to produce the current state of objects in the collection. Once all such events have been sent, a synthetic "Bookmark" event  will be sent. The bookmark will report the ResourceVersion (RV) corresponding to the set of objects, and be marked with `"k8s.io/initial-events-end": "true"` annotation. Afterwards, the watch stream will proceed as usual, sending watch events corresponding to changes (subsequent to the RV) to objects watched.
+     *
+     * When `sendInitialEvents` option is set, we require `resourceVersionMatch` option to also be set. The semantic of the watch request is as following: - `resourceVersionMatch` = NotOlderThan
+     * is interpreted as "data at least as new as the provided `resourceVersion`"
+     * and the bookmark event is send when the state is synced
+     * to a `resourceVersion` at least as fresh as the one provided by the ListOptions.
+     * If `resourceVersion` is unset, this is interpreted as "consistent read" and the
+     * bookmark event is send when the state is synced at least to the moment
+     * when request started being processed.
+     * - `resourceVersionMatch` set to any other value or unset
+     * Invalid error is returned.
+     *
+     * Defaults to true if `resourceVersion=""` or `resourceVersion="0"` (for backward compatibility reasons) and to false otherwise.
+     */
+    sendInitialEvents?: boolean;
+    /**
+     * shardSelector restricts the list of returned objects using a CEL-based shard selector expression. The format uses the shardRange() function combined with || (logical OR) to specify one or more hash ranges:
+     *
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000')
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000') || shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     *
+     * Field paths use CEL-style object-rooted syntax (e.g. "object.metadata.uid"), NOT the fieldSelector format ("metadata.uid"). Currently supported paths:
+     * - object.metadata.uid
+     * - object.metadata.namespace
+     *
+     * hexStart and hexEnd are single-quoted CEL string literals with a '0x' prefix, defining the inclusive lower and exclusive upper bounds over the 64-bit FNV-1a hash space. The full range is [0x0, 0x10000000000000000), where the exclusive upper bound equals 2^64.
+     *
+     * Examples:
+     * 2-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x8000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     * 4-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x4000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x4000000000000000', '0x8000000000000000')
+     * shard 2: shardRange(object.metadata.uid, '0x8000000000000000', '0xc000000000000000')
+     * shard 3: shardRange(object.metadata.uid, '0xc000000000000000', '0x10000000000000000')
+     *
+     * This is an alpha field and requires enabling the ShardedListAndWatch feature gate.
+     */
+    shardSelector?: string;
+    /**
+     * Timeout for the list/watch call. This limits the duration of the call, regardless of any activity or inactivity.
+     */
+    timeoutSeconds?: number;
+    /**
+     * Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.
+     */
+    watch?: boolean;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/reindexjobs';
+};
+
+export type ListActivityMiloapisComV1Alpha1ReindexJobResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJobList>;
+};
+
+export type ListActivityMiloapisComV1Alpha1ReindexJobResponse =
+  ListActivityMiloapisComV1Alpha1ReindexJobResponses[keyof ListActivityMiloapisComV1Alpha1ReindexJobResponses]['data'];
+
+export type CreateActivityMiloapisComV1Alpha1ReindexJobData = {
+  body: ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJob;
+  path?: never;
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint.
+     */
+    fieldManager?: string;
+    /**
+     * fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.
+     */
+    fieldValidation?: string;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/reindexjobs';
+};
+
+export type CreateActivityMiloapisComV1Alpha1ReindexJobResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJob>;
+  /**
+   * Created
+   */
+  201: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJob>;
+  /**
+   * Accepted
+   */
+  202: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJob>;
+};
+
+export type CreateActivityMiloapisComV1Alpha1ReindexJobResponse =
+  CreateActivityMiloapisComV1Alpha1ReindexJobResponses[keyof CreateActivityMiloapisComV1Alpha1ReindexJobResponses]['data'];
+
+export type DeleteActivityMiloapisComV1Alpha1ReindexJobData = {
+  body?: IoK8sApimachineryPkgApisMetaV1DeleteOptions;
+  path: {
+    /**
+     * name of the ReindexJob
+     */
+    name: string;
+  };
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * The duration in seconds before the object should be deleted. Value must be non-negative integer. The value zero indicates delete immediately. If this value is nil, the default grace period for the specified type will be used. Defaults to a per object value if not specified. zero means delete immediately.
+     */
+    gracePeriodSeconds?: number;
+    /**
+     * if set to true, it will trigger an unsafe deletion of the resource in case the normal deletion flow fails with a corrupt object error. A resource is considered corrupt if it can not be retrieved from the underlying storage successfully because of a) its data can not be transformed e.g. decryption failure, or b) it fails to decode into an object. NOTE: unsafe deletion ignores finalizer constraints, skips precondition checks, and removes the object from the storage. WARNING: This may potentially break the cluster if the workload associated with the resource being unsafe-deleted relies on normal deletion flow. Use only if you REALLY know what you are doing. The default value is false, and the user must opt in to enable it
+     */
+    ignoreStoreReadErrorWithClusterBreakingPotential?: boolean;
+    /**
+     * Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7. Should the dependent objects be orphaned. If true/false, the "orphan" finalizer will be added to/removed from the object's finalizers list. Either this field or PropagationPolicy may be set, but not both.
+     */
+    orphanDependents?: boolean;
+    /**
+     * Whether and how garbage collection will be performed. Either this field or OrphanDependents may be set, but not both. The default policy is decided by the existing finalizer set in the metadata.finalizers and the resource-specific default policy. Acceptable values are: 'Orphan' - orphan the dependents; 'Background' - allow the garbage collector to delete the dependents in the background; 'Foreground' - a cascading policy that deletes all dependents in the foreground.
+     */
+    propagationPolicy?: string;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/reindexjobs/{name}';
+};
+
+export type DeleteActivityMiloapisComV1Alpha1ReindexJobResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<IoK8sApimachineryPkgApisMetaV1Status>;
+  /**
+   * Accepted
+   */
+  202: ProxyResponse<IoK8sApimachineryPkgApisMetaV1Status>;
+};
+
+export type DeleteActivityMiloapisComV1Alpha1ReindexJobResponse =
+  DeleteActivityMiloapisComV1Alpha1ReindexJobResponses[keyof DeleteActivityMiloapisComV1Alpha1ReindexJobResponses]['data'];
+
+export type ReadActivityMiloapisComV1Alpha1ReindexJobData = {
+  body?: never;
+  path: {
+    /**
+     * name of the ReindexJob
+     */
+    name: string;
+  };
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/reindexjobs/{name}';
+};
+
+export type ReadActivityMiloapisComV1Alpha1ReindexJobResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJob>;
+};
+
+export type ReadActivityMiloapisComV1Alpha1ReindexJobResponse =
+  ReadActivityMiloapisComV1Alpha1ReindexJobResponses[keyof ReadActivityMiloapisComV1Alpha1ReindexJobResponses]['data'];
+
+export type PatchActivityMiloapisComV1Alpha1ReindexJobData = {
+  body: IoK8sApimachineryPkgApisMetaV1Patch;
+  path: {
+    /**
+     * name of the ReindexJob
+     */
+    name: string;
+  };
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch).
+     */
+    fieldManager?: string;
+    /**
+     * fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.
+     */
+    fieldValidation?: string;
+    /**
+     * Force is going to "force" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests.
+     */
+    force?: boolean;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/reindexjobs/{name}';
+};
+
+export type PatchActivityMiloapisComV1Alpha1ReindexJobResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJob>;
+  /**
+   * Created
+   */
+  201: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJob>;
+};
+
+export type PatchActivityMiloapisComV1Alpha1ReindexJobResponse =
+  PatchActivityMiloapisComV1Alpha1ReindexJobResponses[keyof PatchActivityMiloapisComV1Alpha1ReindexJobResponses]['data'];
+
+export type ReplaceActivityMiloapisComV1Alpha1ReindexJobData = {
+  body: ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJob;
+  path: {
+    /**
+     * name of the ReindexJob
+     */
+    name: string;
+  };
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint.
+     */
+    fieldManager?: string;
+    /**
+     * fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.
+     */
+    fieldValidation?: string;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/reindexjobs/{name}';
+};
+
+export type ReplaceActivityMiloapisComV1Alpha1ReindexJobResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJob>;
+  /**
+   * Created
+   */
+  201: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJob>;
+};
+
+export type ReplaceActivityMiloapisComV1Alpha1ReindexJobResponse =
+  ReplaceActivityMiloapisComV1Alpha1ReindexJobResponses[keyof ReplaceActivityMiloapisComV1Alpha1ReindexJobResponses]['data'];
+
+export type ReadActivityMiloapisComV1Alpha1ReindexJobStatusData = {
+  body?: never;
+  path: {
+    /**
+     * name of the ReindexJob
+     */
+    name: string;
+  };
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/reindexjobs/{name}/status';
+};
+
+export type ReadActivityMiloapisComV1Alpha1ReindexJobStatusResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJob>;
+};
+
+export type ReadActivityMiloapisComV1Alpha1ReindexJobStatusResponse =
+  ReadActivityMiloapisComV1Alpha1ReindexJobStatusResponses[keyof ReadActivityMiloapisComV1Alpha1ReindexJobStatusResponses]['data'];
+
+export type PatchActivityMiloapisComV1Alpha1ReindexJobStatusData = {
+  body: IoK8sApimachineryPkgApisMetaV1Patch;
+  path: {
+    /**
+     * name of the ReindexJob
+     */
+    name: string;
+  };
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch).
+     */
+    fieldManager?: string;
+    /**
+     * fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.
+     */
+    fieldValidation?: string;
+    /**
+     * Force is going to "force" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests.
+     */
+    force?: boolean;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/reindexjobs/{name}/status';
+};
+
+export type PatchActivityMiloapisComV1Alpha1ReindexJobStatusResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJob>;
+  /**
+   * Created
+   */
+  201: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJob>;
+};
+
+export type PatchActivityMiloapisComV1Alpha1ReindexJobStatusResponse =
+  PatchActivityMiloapisComV1Alpha1ReindexJobStatusResponses[keyof PatchActivityMiloapisComV1Alpha1ReindexJobStatusResponses]['data'];
+
+export type ReplaceActivityMiloapisComV1Alpha1ReindexJobStatusData = {
+  body: ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJob;
+  path: {
+    /**
+     * name of the ReindexJob
+     */
+    name: string;
+  };
+  query?: {
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed
+     */
+    dryRun?: string;
+    /**
+     * fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint.
+     */
+    fieldManager?: string;
+    /**
+     * fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.
+     */
+    fieldValidation?: string;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/reindexjobs/{name}/status';
+};
+
+export type ReplaceActivityMiloapisComV1Alpha1ReindexJobStatusResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJob>;
+  /**
+   * Created
+   */
+  201: ProxyResponse<ComMiloapisGoActivityPkgApisActivityV1Alpha1ReindexJob>;
+};
+
+export type ReplaceActivityMiloapisComV1Alpha1ReindexJobStatusResponse =
+  ReplaceActivityMiloapisComV1Alpha1ReindexJobStatusResponses[keyof ReplaceActivityMiloapisComV1Alpha1ReindexJobStatusResponses]['data'];
+
+export type WatchActivityMiloapisComV1Alpha1ActivityListForAllNamespacesData = {
+  body?: never;
+  path?: never;
+  query?: {
+    /**
+     * allowWatchBookmarks requests watch events with type "BOOKMARK". Servers that do not implement bookmarks may ignore this flag and bookmarks are sent at the server's discretion. Clients should not assume bookmarks are returned at any specific interval, nor may they assume the server will send any BOOKMARK event during a session. If this is not a watch, this field is ignored.
+     */
+    allowWatchBookmarks?: boolean;
+    /**
+     * The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server, the server will respond with a 410 ResourceExpired error together with a continue token. If the client needs a consistent list, it must restart their list without the continue field. Otherwise, the client may send another list request with the token received with the 410 error, the server will respond with a list starting from the next key, but from the latest snapshot, which is inconsistent from the previous list results - objects that are created, modified, or deleted after the first list request will be included in the response, as long as their keys are after the "next key".
+     *
+     * This field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.
+     */
+    continue?: string;
+    /**
+     * A selector to restrict the list of returned objects by their fields. Defaults to everything.
+     */
+    fieldSelector?: string;
+    /**
+     * A selector to restrict the list of returned objects by their labels. Defaults to everything.
+     */
+    labelSelector?: string;
+    /**
+     * limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.
+     *
+     * The server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.
+     */
+    limit?: number;
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * resourceVersion sets a constraint on what resource versions a request may be served from. See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersion?: string;
+    /**
+     * resourceVersionMatch determines how resourceVersion is applied to list calls. It is highly recommended that resourceVersionMatch be set for list calls where resourceVersion is set See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersionMatch?: string;
+    /**
+     * `sendInitialEvents=true` may be set together with `watch=true`. In that case, the watch stream will begin with synthetic events to produce the current state of objects in the collection. Once all such events have been sent, a synthetic "Bookmark" event  will be sent. The bookmark will report the ResourceVersion (RV) corresponding to the set of objects, and be marked with `"k8s.io/initial-events-end": "true"` annotation. Afterwards, the watch stream will proceed as usual, sending watch events corresponding to changes (subsequent to the RV) to objects watched.
+     *
+     * When `sendInitialEvents` option is set, we require `resourceVersionMatch` option to also be set. The semantic of the watch request is as following: - `resourceVersionMatch` = NotOlderThan
+     * is interpreted as "data at least as new as the provided `resourceVersion`"
+     * and the bookmark event is send when the state is synced
+     * to a `resourceVersion` at least as fresh as the one provided by the ListOptions.
+     * If `resourceVersion` is unset, this is interpreted as "consistent read" and the
+     * bookmark event is send when the state is synced at least to the moment
+     * when request started being processed.
+     * - `resourceVersionMatch` set to any other value or unset
+     * Invalid error is returned.
+     *
+     * Defaults to true if `resourceVersion=""` or `resourceVersion="0"` (for backward compatibility reasons) and to false otherwise.
+     */
+    sendInitialEvents?: boolean;
+    /**
+     * shardSelector restricts the list of returned objects using a CEL-based shard selector expression. The format uses the shardRange() function combined with || (logical OR) to specify one or more hash ranges:
+     *
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000')
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000') || shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     *
+     * Field paths use CEL-style object-rooted syntax (e.g. "object.metadata.uid"), NOT the fieldSelector format ("metadata.uid"). Currently supported paths:
+     * - object.metadata.uid
+     * - object.metadata.namespace
+     *
+     * hexStart and hexEnd are single-quoted CEL string literals with a '0x' prefix, defining the inclusive lower and exclusive upper bounds over the 64-bit FNV-1a hash space. The full range is [0x0, 0x10000000000000000), where the exclusive upper bound equals 2^64.
+     *
+     * Examples:
+     * 2-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x8000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     * 4-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x4000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x4000000000000000', '0x8000000000000000')
+     * shard 2: shardRange(object.metadata.uid, '0x8000000000000000', '0xc000000000000000')
+     * shard 3: shardRange(object.metadata.uid, '0xc000000000000000', '0x10000000000000000')
+     *
+     * This is an alpha field and requires enabling the ShardedListAndWatch feature gate.
+     */
+    shardSelector?: string;
+    /**
+     * Timeout for the list/watch call. This limits the duration of the call, regardless of any activity or inactivity.
+     */
+    timeoutSeconds?: number;
+    /**
+     * Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.
+     */
+    watch?: boolean;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/watch/activities';
+};
+
+export type WatchActivityMiloapisComV1Alpha1ActivityListForAllNamespacesResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<IoK8sApimachineryPkgApisMetaV1WatchEvent>;
+};
+
+export type WatchActivityMiloapisComV1Alpha1ActivityListForAllNamespacesResponse =
+  WatchActivityMiloapisComV1Alpha1ActivityListForAllNamespacesResponses[keyof WatchActivityMiloapisComV1Alpha1ActivityListForAllNamespacesResponses]['data'];
+
+export type WatchActivityMiloapisComV1Alpha1ActivityPolicyListData = {
+  body?: never;
+  path?: never;
+  query?: {
+    /**
+     * allowWatchBookmarks requests watch events with type "BOOKMARK". Servers that do not implement bookmarks may ignore this flag and bookmarks are sent at the server's discretion. Clients should not assume bookmarks are returned at any specific interval, nor may they assume the server will send any BOOKMARK event during a session. If this is not a watch, this field is ignored.
+     */
+    allowWatchBookmarks?: boolean;
+    /**
+     * The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server, the server will respond with a 410 ResourceExpired error together with a continue token. If the client needs a consistent list, it must restart their list without the continue field. Otherwise, the client may send another list request with the token received with the 410 error, the server will respond with a list starting from the next key, but from the latest snapshot, which is inconsistent from the previous list results - objects that are created, modified, or deleted after the first list request will be included in the response, as long as their keys are after the "next key".
+     *
+     * This field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.
+     */
+    continue?: string;
+    /**
+     * A selector to restrict the list of returned objects by their fields. Defaults to everything.
+     */
+    fieldSelector?: string;
+    /**
+     * A selector to restrict the list of returned objects by their labels. Defaults to everything.
+     */
+    labelSelector?: string;
+    /**
+     * limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.
+     *
+     * The server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.
+     */
+    limit?: number;
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * resourceVersion sets a constraint on what resource versions a request may be served from. See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersion?: string;
+    /**
+     * resourceVersionMatch determines how resourceVersion is applied to list calls. It is highly recommended that resourceVersionMatch be set for list calls where resourceVersion is set See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersionMatch?: string;
+    /**
+     * `sendInitialEvents=true` may be set together with `watch=true`. In that case, the watch stream will begin with synthetic events to produce the current state of objects in the collection. Once all such events have been sent, a synthetic "Bookmark" event  will be sent. The bookmark will report the ResourceVersion (RV) corresponding to the set of objects, and be marked with `"k8s.io/initial-events-end": "true"` annotation. Afterwards, the watch stream will proceed as usual, sending watch events corresponding to changes (subsequent to the RV) to objects watched.
+     *
+     * When `sendInitialEvents` option is set, we require `resourceVersionMatch` option to also be set. The semantic of the watch request is as following: - `resourceVersionMatch` = NotOlderThan
+     * is interpreted as "data at least as new as the provided `resourceVersion`"
+     * and the bookmark event is send when the state is synced
+     * to a `resourceVersion` at least as fresh as the one provided by the ListOptions.
+     * If `resourceVersion` is unset, this is interpreted as "consistent read" and the
+     * bookmark event is send when the state is synced at least to the moment
+     * when request started being processed.
+     * - `resourceVersionMatch` set to any other value or unset
+     * Invalid error is returned.
+     *
+     * Defaults to true if `resourceVersion=""` or `resourceVersion="0"` (for backward compatibility reasons) and to false otherwise.
+     */
+    sendInitialEvents?: boolean;
+    /**
+     * shardSelector restricts the list of returned objects using a CEL-based shard selector expression. The format uses the shardRange() function combined with || (logical OR) to specify one or more hash ranges:
+     *
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000')
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000') || shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     *
+     * Field paths use CEL-style object-rooted syntax (e.g. "object.metadata.uid"), NOT the fieldSelector format ("metadata.uid"). Currently supported paths:
+     * - object.metadata.uid
+     * - object.metadata.namespace
+     *
+     * hexStart and hexEnd are single-quoted CEL string literals with a '0x' prefix, defining the inclusive lower and exclusive upper bounds over the 64-bit FNV-1a hash space. The full range is [0x0, 0x10000000000000000), where the exclusive upper bound equals 2^64.
+     *
+     * Examples:
+     * 2-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x8000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     * 4-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x4000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x4000000000000000', '0x8000000000000000')
+     * shard 2: shardRange(object.metadata.uid, '0x8000000000000000', '0xc000000000000000')
+     * shard 3: shardRange(object.metadata.uid, '0xc000000000000000', '0x10000000000000000')
+     *
+     * This is an alpha field and requires enabling the ShardedListAndWatch feature gate.
+     */
+    shardSelector?: string;
+    /**
+     * Timeout for the list/watch call. This limits the duration of the call, regardless of any activity or inactivity.
+     */
+    timeoutSeconds?: number;
+    /**
+     * Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.
+     */
+    watch?: boolean;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/watch/activitypolicies';
+};
+
+export type WatchActivityMiloapisComV1Alpha1ActivityPolicyListResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<IoK8sApimachineryPkgApisMetaV1WatchEvent>;
+};
+
+export type WatchActivityMiloapisComV1Alpha1ActivityPolicyListResponse =
+  WatchActivityMiloapisComV1Alpha1ActivityPolicyListResponses[keyof WatchActivityMiloapisComV1Alpha1ActivityPolicyListResponses]['data'];
+
+export type WatchActivityMiloapisComV1Alpha1ActivityPolicyData = {
+  body?: never;
+  path: {
+    /**
+     * name of the ActivityPolicy
+     */
+    name: string;
+  };
+  query?: {
+    /**
+     * allowWatchBookmarks requests watch events with type "BOOKMARK". Servers that do not implement bookmarks may ignore this flag and bookmarks are sent at the server's discretion. Clients should not assume bookmarks are returned at any specific interval, nor may they assume the server will send any BOOKMARK event during a session. If this is not a watch, this field is ignored.
+     */
+    allowWatchBookmarks?: boolean;
+    /**
+     * The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server, the server will respond with a 410 ResourceExpired error together with a continue token. If the client needs a consistent list, it must restart their list without the continue field. Otherwise, the client may send another list request with the token received with the 410 error, the server will respond with a list starting from the next key, but from the latest snapshot, which is inconsistent from the previous list results - objects that are created, modified, or deleted after the first list request will be included in the response, as long as their keys are after the "next key".
+     *
+     * This field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.
+     */
+    continue?: string;
+    /**
+     * A selector to restrict the list of returned objects by their fields. Defaults to everything.
+     */
+    fieldSelector?: string;
+    /**
+     * A selector to restrict the list of returned objects by their labels. Defaults to everything.
+     */
+    labelSelector?: string;
+    /**
+     * limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.
+     *
+     * The server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.
+     */
+    limit?: number;
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * resourceVersion sets a constraint on what resource versions a request may be served from. See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersion?: string;
+    /**
+     * resourceVersionMatch determines how resourceVersion is applied to list calls. It is highly recommended that resourceVersionMatch be set for list calls where resourceVersion is set See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersionMatch?: string;
+    /**
+     * `sendInitialEvents=true` may be set together with `watch=true`. In that case, the watch stream will begin with synthetic events to produce the current state of objects in the collection. Once all such events have been sent, a synthetic "Bookmark" event  will be sent. The bookmark will report the ResourceVersion (RV) corresponding to the set of objects, and be marked with `"k8s.io/initial-events-end": "true"` annotation. Afterwards, the watch stream will proceed as usual, sending watch events corresponding to changes (subsequent to the RV) to objects watched.
+     *
+     * When `sendInitialEvents` option is set, we require `resourceVersionMatch` option to also be set. The semantic of the watch request is as following: - `resourceVersionMatch` = NotOlderThan
+     * is interpreted as "data at least as new as the provided `resourceVersion`"
+     * and the bookmark event is send when the state is synced
+     * to a `resourceVersion` at least as fresh as the one provided by the ListOptions.
+     * If `resourceVersion` is unset, this is interpreted as "consistent read" and the
+     * bookmark event is send when the state is synced at least to the moment
+     * when request started being processed.
+     * - `resourceVersionMatch` set to any other value or unset
+     * Invalid error is returned.
+     *
+     * Defaults to true if `resourceVersion=""` or `resourceVersion="0"` (for backward compatibility reasons) and to false otherwise.
+     */
+    sendInitialEvents?: boolean;
+    /**
+     * shardSelector restricts the list of returned objects using a CEL-based shard selector expression. The format uses the shardRange() function combined with || (logical OR) to specify one or more hash ranges:
+     *
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000')
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000') || shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     *
+     * Field paths use CEL-style object-rooted syntax (e.g. "object.metadata.uid"), NOT the fieldSelector format ("metadata.uid"). Currently supported paths:
+     * - object.metadata.uid
+     * - object.metadata.namespace
+     *
+     * hexStart and hexEnd are single-quoted CEL string literals with a '0x' prefix, defining the inclusive lower and exclusive upper bounds over the 64-bit FNV-1a hash space. The full range is [0x0, 0x10000000000000000), where the exclusive upper bound equals 2^64.
+     *
+     * Examples:
+     * 2-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x8000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     * 4-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x4000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x4000000000000000', '0x8000000000000000')
+     * shard 2: shardRange(object.metadata.uid, '0x8000000000000000', '0xc000000000000000')
+     * shard 3: shardRange(object.metadata.uid, '0xc000000000000000', '0x10000000000000000')
+     *
+     * This is an alpha field and requires enabling the ShardedListAndWatch feature gate.
+     */
+    shardSelector?: string;
+    /**
+     * Timeout for the list/watch call. This limits the duration of the call, regardless of any activity or inactivity.
+     */
+    timeoutSeconds?: number;
+    /**
+     * Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.
+     */
+    watch?: boolean;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/watch/activitypolicies/{name}';
+};
+
+export type WatchActivityMiloapisComV1Alpha1ActivityPolicyResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<IoK8sApimachineryPkgApisMetaV1WatchEvent>;
+};
+
+export type WatchActivityMiloapisComV1Alpha1ActivityPolicyResponse =
+  WatchActivityMiloapisComV1Alpha1ActivityPolicyResponses[keyof WatchActivityMiloapisComV1Alpha1ActivityPolicyResponses]['data'];
+
+export type WatchActivityMiloapisComV1Alpha1NamespacedActivityListData = {
+  body?: never;
+  path: {
+    /**
+     * object name and auth scope, such as for teams and projects
+     */
+    namespace: string;
+  };
+  query?: {
+    /**
+     * allowWatchBookmarks requests watch events with type "BOOKMARK". Servers that do not implement bookmarks may ignore this flag and bookmarks are sent at the server's discretion. Clients should not assume bookmarks are returned at any specific interval, nor may they assume the server will send any BOOKMARK event during a session. If this is not a watch, this field is ignored.
+     */
+    allowWatchBookmarks?: boolean;
+    /**
+     * The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server, the server will respond with a 410 ResourceExpired error together with a continue token. If the client needs a consistent list, it must restart their list without the continue field. Otherwise, the client may send another list request with the token received with the 410 error, the server will respond with a list starting from the next key, but from the latest snapshot, which is inconsistent from the previous list results - objects that are created, modified, or deleted after the first list request will be included in the response, as long as their keys are after the "next key".
+     *
+     * This field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.
+     */
+    continue?: string;
+    /**
+     * A selector to restrict the list of returned objects by their fields. Defaults to everything.
+     */
+    fieldSelector?: string;
+    /**
+     * A selector to restrict the list of returned objects by their labels. Defaults to everything.
+     */
+    labelSelector?: string;
+    /**
+     * limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.
+     *
+     * The server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.
+     */
+    limit?: number;
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * resourceVersion sets a constraint on what resource versions a request may be served from. See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersion?: string;
+    /**
+     * resourceVersionMatch determines how resourceVersion is applied to list calls. It is highly recommended that resourceVersionMatch be set for list calls where resourceVersion is set See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersionMatch?: string;
+    /**
+     * `sendInitialEvents=true` may be set together with `watch=true`. In that case, the watch stream will begin with synthetic events to produce the current state of objects in the collection. Once all such events have been sent, a synthetic "Bookmark" event  will be sent. The bookmark will report the ResourceVersion (RV) corresponding to the set of objects, and be marked with `"k8s.io/initial-events-end": "true"` annotation. Afterwards, the watch stream will proceed as usual, sending watch events corresponding to changes (subsequent to the RV) to objects watched.
+     *
+     * When `sendInitialEvents` option is set, we require `resourceVersionMatch` option to also be set. The semantic of the watch request is as following: - `resourceVersionMatch` = NotOlderThan
+     * is interpreted as "data at least as new as the provided `resourceVersion`"
+     * and the bookmark event is send when the state is synced
+     * to a `resourceVersion` at least as fresh as the one provided by the ListOptions.
+     * If `resourceVersion` is unset, this is interpreted as "consistent read" and the
+     * bookmark event is send when the state is synced at least to the moment
+     * when request started being processed.
+     * - `resourceVersionMatch` set to any other value or unset
+     * Invalid error is returned.
+     *
+     * Defaults to true if `resourceVersion=""` or `resourceVersion="0"` (for backward compatibility reasons) and to false otherwise.
+     */
+    sendInitialEvents?: boolean;
+    /**
+     * shardSelector restricts the list of returned objects using a CEL-based shard selector expression. The format uses the shardRange() function combined with || (logical OR) to specify one or more hash ranges:
+     *
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000')
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000') || shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     *
+     * Field paths use CEL-style object-rooted syntax (e.g. "object.metadata.uid"), NOT the fieldSelector format ("metadata.uid"). Currently supported paths:
+     * - object.metadata.uid
+     * - object.metadata.namespace
+     *
+     * hexStart and hexEnd are single-quoted CEL string literals with a '0x' prefix, defining the inclusive lower and exclusive upper bounds over the 64-bit FNV-1a hash space. The full range is [0x0, 0x10000000000000000), where the exclusive upper bound equals 2^64.
+     *
+     * Examples:
+     * 2-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x8000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     * 4-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x4000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x4000000000000000', '0x8000000000000000')
+     * shard 2: shardRange(object.metadata.uid, '0x8000000000000000', '0xc000000000000000')
+     * shard 3: shardRange(object.metadata.uid, '0xc000000000000000', '0x10000000000000000')
+     *
+     * This is an alpha field and requires enabling the ShardedListAndWatch feature gate.
+     */
+    shardSelector?: string;
+    /**
+     * Timeout for the list/watch call. This limits the duration of the call, regardless of any activity or inactivity.
+     */
+    timeoutSeconds?: number;
+    /**
+     * Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.
+     */
+    watch?: boolean;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/watch/namespaces/{namespace}/activities';
+};
+
+export type WatchActivityMiloapisComV1Alpha1NamespacedActivityListResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<IoK8sApimachineryPkgApisMetaV1WatchEvent>;
+};
+
+export type WatchActivityMiloapisComV1Alpha1NamespacedActivityListResponse =
+  WatchActivityMiloapisComV1Alpha1NamespacedActivityListResponses[keyof WatchActivityMiloapisComV1Alpha1NamespacedActivityListResponses]['data'];
+
+export type WatchActivityMiloapisComV1Alpha1NamespacedActivityData = {
+  body?: never;
+  path: {
+    /**
+     * name of the Activity
+     */
+    name: string;
+    /**
+     * object name and auth scope, such as for teams and projects
+     */
+    namespace: string;
+  };
+  query?: {
+    /**
+     * allowWatchBookmarks requests watch events with type "BOOKMARK". Servers that do not implement bookmarks may ignore this flag and bookmarks are sent at the server's discretion. Clients should not assume bookmarks are returned at any specific interval, nor may they assume the server will send any BOOKMARK event during a session. If this is not a watch, this field is ignored.
+     */
+    allowWatchBookmarks?: boolean;
+    /**
+     * The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server, the server will respond with a 410 ResourceExpired error together with a continue token. If the client needs a consistent list, it must restart their list without the continue field. Otherwise, the client may send another list request with the token received with the 410 error, the server will respond with a list starting from the next key, but from the latest snapshot, which is inconsistent from the previous list results - objects that are created, modified, or deleted after the first list request will be included in the response, as long as their keys are after the "next key".
+     *
+     * This field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.
+     */
+    continue?: string;
+    /**
+     * A selector to restrict the list of returned objects by their fields. Defaults to everything.
+     */
+    fieldSelector?: string;
+    /**
+     * A selector to restrict the list of returned objects by their labels. Defaults to everything.
+     */
+    labelSelector?: string;
+    /**
+     * limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.
+     *
+     * The server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.
+     */
+    limit?: number;
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * resourceVersion sets a constraint on what resource versions a request may be served from. See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersion?: string;
+    /**
+     * resourceVersionMatch determines how resourceVersion is applied to list calls. It is highly recommended that resourceVersionMatch be set for list calls where resourceVersion is set See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersionMatch?: string;
+    /**
+     * `sendInitialEvents=true` may be set together with `watch=true`. In that case, the watch stream will begin with synthetic events to produce the current state of objects in the collection. Once all such events have been sent, a synthetic "Bookmark" event  will be sent. The bookmark will report the ResourceVersion (RV) corresponding to the set of objects, and be marked with `"k8s.io/initial-events-end": "true"` annotation. Afterwards, the watch stream will proceed as usual, sending watch events corresponding to changes (subsequent to the RV) to objects watched.
+     *
+     * When `sendInitialEvents` option is set, we require `resourceVersionMatch` option to also be set. The semantic of the watch request is as following: - `resourceVersionMatch` = NotOlderThan
+     * is interpreted as "data at least as new as the provided `resourceVersion`"
+     * and the bookmark event is send when the state is synced
+     * to a `resourceVersion` at least as fresh as the one provided by the ListOptions.
+     * If `resourceVersion` is unset, this is interpreted as "consistent read" and the
+     * bookmark event is send when the state is synced at least to the moment
+     * when request started being processed.
+     * - `resourceVersionMatch` set to any other value or unset
+     * Invalid error is returned.
+     *
+     * Defaults to true if `resourceVersion=""` or `resourceVersion="0"` (for backward compatibility reasons) and to false otherwise.
+     */
+    sendInitialEvents?: boolean;
+    /**
+     * shardSelector restricts the list of returned objects using a CEL-based shard selector expression. The format uses the shardRange() function combined with || (logical OR) to specify one or more hash ranges:
+     *
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000')
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000') || shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     *
+     * Field paths use CEL-style object-rooted syntax (e.g. "object.metadata.uid"), NOT the fieldSelector format ("metadata.uid"). Currently supported paths:
+     * - object.metadata.uid
+     * - object.metadata.namespace
+     *
+     * hexStart and hexEnd are single-quoted CEL string literals with a '0x' prefix, defining the inclusive lower and exclusive upper bounds over the 64-bit FNV-1a hash space. The full range is [0x0, 0x10000000000000000), where the exclusive upper bound equals 2^64.
+     *
+     * Examples:
+     * 2-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x8000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     * 4-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x4000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x4000000000000000', '0x8000000000000000')
+     * shard 2: shardRange(object.metadata.uid, '0x8000000000000000', '0xc000000000000000')
+     * shard 3: shardRange(object.metadata.uid, '0xc000000000000000', '0x10000000000000000')
+     *
+     * This is an alpha field and requires enabling the ShardedListAndWatch feature gate.
+     */
+    shardSelector?: string;
+    /**
+     * Timeout for the list/watch call. This limits the duration of the call, regardless of any activity or inactivity.
+     */
+    timeoutSeconds?: number;
+    /**
+     * Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.
+     */
+    watch?: boolean;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/watch/namespaces/{namespace}/activities/{name}';
+};
+
+export type WatchActivityMiloapisComV1Alpha1NamespacedActivityResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<IoK8sApimachineryPkgApisMetaV1WatchEvent>;
+};
+
+export type WatchActivityMiloapisComV1Alpha1NamespacedActivityResponse =
+  WatchActivityMiloapisComV1Alpha1NamespacedActivityResponses[keyof WatchActivityMiloapisComV1Alpha1NamespacedActivityResponses]['data'];
+
+export type WatchActivityMiloapisComV1Alpha1ReindexJobListData = {
+  body?: never;
+  path?: never;
+  query?: {
+    /**
+     * allowWatchBookmarks requests watch events with type "BOOKMARK". Servers that do not implement bookmarks may ignore this flag and bookmarks are sent at the server's discretion. Clients should not assume bookmarks are returned at any specific interval, nor may they assume the server will send any BOOKMARK event during a session. If this is not a watch, this field is ignored.
+     */
+    allowWatchBookmarks?: boolean;
+    /**
+     * The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server, the server will respond with a 410 ResourceExpired error together with a continue token. If the client needs a consistent list, it must restart their list without the continue field. Otherwise, the client may send another list request with the token received with the 410 error, the server will respond with a list starting from the next key, but from the latest snapshot, which is inconsistent from the previous list results - objects that are created, modified, or deleted after the first list request will be included in the response, as long as their keys are after the "next key".
+     *
+     * This field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.
+     */
+    continue?: string;
+    /**
+     * A selector to restrict the list of returned objects by their fields. Defaults to everything.
+     */
+    fieldSelector?: string;
+    /**
+     * A selector to restrict the list of returned objects by their labels. Defaults to everything.
+     */
+    labelSelector?: string;
+    /**
+     * limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.
+     *
+     * The server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.
+     */
+    limit?: number;
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * resourceVersion sets a constraint on what resource versions a request may be served from. See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersion?: string;
+    /**
+     * resourceVersionMatch determines how resourceVersion is applied to list calls. It is highly recommended that resourceVersionMatch be set for list calls where resourceVersion is set See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersionMatch?: string;
+    /**
+     * `sendInitialEvents=true` may be set together with `watch=true`. In that case, the watch stream will begin with synthetic events to produce the current state of objects in the collection. Once all such events have been sent, a synthetic "Bookmark" event  will be sent. The bookmark will report the ResourceVersion (RV) corresponding to the set of objects, and be marked with `"k8s.io/initial-events-end": "true"` annotation. Afterwards, the watch stream will proceed as usual, sending watch events corresponding to changes (subsequent to the RV) to objects watched.
+     *
+     * When `sendInitialEvents` option is set, we require `resourceVersionMatch` option to also be set. The semantic of the watch request is as following: - `resourceVersionMatch` = NotOlderThan
+     * is interpreted as "data at least as new as the provided `resourceVersion`"
+     * and the bookmark event is send when the state is synced
+     * to a `resourceVersion` at least as fresh as the one provided by the ListOptions.
+     * If `resourceVersion` is unset, this is interpreted as "consistent read" and the
+     * bookmark event is send when the state is synced at least to the moment
+     * when request started being processed.
+     * - `resourceVersionMatch` set to any other value or unset
+     * Invalid error is returned.
+     *
+     * Defaults to true if `resourceVersion=""` or `resourceVersion="0"` (for backward compatibility reasons) and to false otherwise.
+     */
+    sendInitialEvents?: boolean;
+    /**
+     * shardSelector restricts the list of returned objects using a CEL-based shard selector expression. The format uses the shardRange() function combined with || (logical OR) to specify one or more hash ranges:
+     *
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000')
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000') || shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     *
+     * Field paths use CEL-style object-rooted syntax (e.g. "object.metadata.uid"), NOT the fieldSelector format ("metadata.uid"). Currently supported paths:
+     * - object.metadata.uid
+     * - object.metadata.namespace
+     *
+     * hexStart and hexEnd are single-quoted CEL string literals with a '0x' prefix, defining the inclusive lower and exclusive upper bounds over the 64-bit FNV-1a hash space. The full range is [0x0, 0x10000000000000000), where the exclusive upper bound equals 2^64.
+     *
+     * Examples:
+     * 2-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x8000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     * 4-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x4000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x4000000000000000', '0x8000000000000000')
+     * shard 2: shardRange(object.metadata.uid, '0x8000000000000000', '0xc000000000000000')
+     * shard 3: shardRange(object.metadata.uid, '0xc000000000000000', '0x10000000000000000')
+     *
+     * This is an alpha field and requires enabling the ShardedListAndWatch feature gate.
+     */
+    shardSelector?: string;
+    /**
+     * Timeout for the list/watch call. This limits the duration of the call, regardless of any activity or inactivity.
+     */
+    timeoutSeconds?: number;
+    /**
+     * Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.
+     */
+    watch?: boolean;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/watch/reindexjobs';
+};
+
+export type WatchActivityMiloapisComV1Alpha1ReindexJobListResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<IoK8sApimachineryPkgApisMetaV1WatchEvent>;
+};
+
+export type WatchActivityMiloapisComV1Alpha1ReindexJobListResponse =
+  WatchActivityMiloapisComV1Alpha1ReindexJobListResponses[keyof WatchActivityMiloapisComV1Alpha1ReindexJobListResponses]['data'];
+
+export type WatchActivityMiloapisComV1Alpha1ReindexJobData = {
+  body?: never;
+  path: {
+    /**
+     * name of the ReindexJob
+     */
+    name: string;
+  };
+  query?: {
+    /**
+     * allowWatchBookmarks requests watch events with type "BOOKMARK". Servers that do not implement bookmarks may ignore this flag and bookmarks are sent at the server's discretion. Clients should not assume bookmarks are returned at any specific interval, nor may they assume the server will send any BOOKMARK event during a session. If this is not a watch, this field is ignored.
+     */
+    allowWatchBookmarks?: boolean;
+    /**
+     * The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server, the server will respond with a 410 ResourceExpired error together with a continue token. If the client needs a consistent list, it must restart their list without the continue field. Otherwise, the client may send another list request with the token received with the 410 error, the server will respond with a list starting from the next key, but from the latest snapshot, which is inconsistent from the previous list results - objects that are created, modified, or deleted after the first list request will be included in the response, as long as their keys are after the "next key".
+     *
+     * This field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.
+     */
+    continue?: string;
+    /**
+     * A selector to restrict the list of returned objects by their fields. Defaults to everything.
+     */
+    fieldSelector?: string;
+    /**
+     * A selector to restrict the list of returned objects by their labels. Defaults to everything.
+     */
+    labelSelector?: string;
+    /**
+     * limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.
+     *
+     * The server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.
+     */
+    limit?: number;
+    /**
+     * If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).
+     */
+    pretty?: string;
+    /**
+     * resourceVersion sets a constraint on what resource versions a request may be served from. See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersion?: string;
+    /**
+     * resourceVersionMatch determines how resourceVersion is applied to list calls. It is highly recommended that resourceVersionMatch be set for list calls where resourceVersion is set See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.
+     *
+     * Defaults to unset
+     */
+    resourceVersionMatch?: string;
+    /**
+     * `sendInitialEvents=true` may be set together with `watch=true`. In that case, the watch stream will begin with synthetic events to produce the current state of objects in the collection. Once all such events have been sent, a synthetic "Bookmark" event  will be sent. The bookmark will report the ResourceVersion (RV) corresponding to the set of objects, and be marked with `"k8s.io/initial-events-end": "true"` annotation. Afterwards, the watch stream will proceed as usual, sending watch events corresponding to changes (subsequent to the RV) to objects watched.
+     *
+     * When `sendInitialEvents` option is set, we require `resourceVersionMatch` option to also be set. The semantic of the watch request is as following: - `resourceVersionMatch` = NotOlderThan
+     * is interpreted as "data at least as new as the provided `resourceVersion`"
+     * and the bookmark event is send when the state is synced
+     * to a `resourceVersion` at least as fresh as the one provided by the ListOptions.
+     * If `resourceVersion` is unset, this is interpreted as "consistent read" and the
+     * bookmark event is send when the state is synced at least to the moment
+     * when request started being processed.
+     * - `resourceVersionMatch` set to any other value or unset
+     * Invalid error is returned.
+     *
+     * Defaults to true if `resourceVersion=""` or `resourceVersion="0"` (for backward compatibility reasons) and to false otherwise.
+     */
+    sendInitialEvents?: boolean;
+    /**
+     * shardSelector restricts the list of returned objects using a CEL-based shard selector expression. The format uses the shardRange() function combined with || (logical OR) to specify one or more hash ranges:
+     *
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000')
+     * shardRange(object.metadata.uid, '0x0', '0x8000000000000000') || shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     *
+     * Field paths use CEL-style object-rooted syntax (e.g. "object.metadata.uid"), NOT the fieldSelector format ("metadata.uid"). Currently supported paths:
+     * - object.metadata.uid
+     * - object.metadata.namespace
+     *
+     * hexStart and hexEnd are single-quoted CEL string literals with a '0x' prefix, defining the inclusive lower and exclusive upper bounds over the 64-bit FNV-1a hash space. The full range is [0x0, 0x10000000000000000), where the exclusive upper bound equals 2^64.
+     *
+     * Examples:
+     * 2-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x8000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')
+     * 4-shard split:
+     * shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x4000000000000000')
+     * shard 1: shardRange(object.metadata.uid, '0x4000000000000000', '0x8000000000000000')
+     * shard 2: shardRange(object.metadata.uid, '0x8000000000000000', '0xc000000000000000')
+     * shard 3: shardRange(object.metadata.uid, '0xc000000000000000', '0x10000000000000000')
+     *
+     * This is an alpha field and requires enabling the ShardedListAndWatch feature gate.
+     */
+    shardSelector?: string;
+    /**
+     * Timeout for the list/watch call. This limits the duration of the call, regardless of any activity or inactivity.
+     */
+    timeoutSeconds?: number;
+    /**
+     * Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.
+     */
+    watch?: boolean;
+  };
+  url: '/apis/activity.miloapis.com/v1alpha1/watch/reindexjobs/{name}';
+};
+
+export type WatchActivityMiloapisComV1Alpha1ReindexJobResponses = {
+  /**
+   * OK
+   */
+  200: ProxyResponse<IoK8sApimachineryPkgApisMetaV1WatchEvent>;
+};
+
+export type WatchActivityMiloapisComV1Alpha1ReindexJobResponse =
+  WatchActivityMiloapisComV1Alpha1ReindexJobResponses[keyof WatchActivityMiloapisComV1Alpha1ReindexJobResponses]['data'];
