@@ -74,7 +74,7 @@ export function MiloMainNav() {
 
       <div
         ref={scrollRef}
-        className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        className="flex min-w-0 flex-1 [scrollbar-width:none] items-center gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden">
         {sections.map((section) => (
           <MiloNavItem
             key={section.id}

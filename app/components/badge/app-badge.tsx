@@ -11,13 +11,7 @@ import { cn } from '@datum-cloud/datum-ui/utils';
  * @see https://www.figma.com/design/bBEQ8YeTP4SngNl5EkkQdH/Datum---Master-Design-File?node-id=13458-52789
  */
 export type AppBadgeValue =
-  | 'open'
-  | 'closed'
-  | 'in-progress'
-  | 'pending'
-  | 'approved'
-  | 'rejected'
-  | 'suspended';
+  'open' | 'closed' | 'in-progress' | 'pending' | 'approved' | 'rejected' | 'suspended';
 
 type Props = {
   status: AppBadgeValue | string;

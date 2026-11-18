@@ -48,8 +48,7 @@ export interface AssistantRequest {
 }
 
 export type AssistantRequestResult =
-  | { success: true; data: AssistantRequest }
-  | { success: false; issues: string[] };
+  { success: true; data: AssistantRequest } | { success: false; issues: string[] };
 
 export function parseAssistantRequest(body: unknown): AssistantRequestResult {
   const parsed = assistantRequestSchema.safeParse(body);
