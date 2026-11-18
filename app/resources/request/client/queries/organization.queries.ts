@@ -1,3 +1,4 @@
+import { warningEventsQuery } from '../apis/activity.api';
 import {
   getOrganization,
   listAllOrganizations,
@@ -9,6 +10,7 @@ import {
   orgInvitationResendMutation,
   organizationBusinessNamesQuery,
 } from '../apis/organization.api';
+import { retryOnceUnlessClientError } from '@/modules/tanstack/query';
 import { ListQueryParams } from '@/resources/schemas';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -18,6 +20,7 @@ export const organizationQueryKeys = {
   listAll: (search?: string) =>
     ['organizations', 'list-all', 'v3-no-nested', search ?? ''] as const,
   detail: (orgName: string) => ['organizations', orgName, 'detail'] as const,
+  warningEvents: (orgName: string) => ['organizations', orgName, 'warning-events'] as const,
   projects: {
     all: (orgName: string) => ['organizations', orgName, 'projects'] as const,
     list: (orgName: string, params?: ListQueryParams) =>
@@ -84,6 +87,18 @@ export const useOrgAllProjectsQuery = (orgName: string, options: { enabled?: boo
     queryKey: organizationQueryKeys.projects.listAll(orgName),
     queryFn: () => listAllOrgProjects(orgName),
     enabled: (options.enabled ?? true) && !!orgName,
+  });
+};
+
+/** The organization control plane's own Warning events from the last 24 hours (#769). */
+export const useOrgWarningEventsQuery = (orgName: string) => {
+  return useQuery({
+    queryKey: organizationQueryKeys.warningEvents(orgName),
+    queryFn: ({ signal }) => warningEventsQuery({ kind: 'organization', name: orgName }, signal),
+    enabled: !!orgName,
+    staleTime: 60 * 1000,
+    retry: retryOnceUnlessClientError,
+    refetchOnWindowFocus: false,
   });
 };
 

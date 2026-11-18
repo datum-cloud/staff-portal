@@ -437,6 +437,10 @@ msgstr "{total} plus usage"
 msgid "{unread, plural, one {# couldn't be read} other {# couldn't be read}}"
 msgstr "{unread, plural, one {# couldn't be read} other {# couldn't be read}}"
 
+#: app/features/organization/components/org-warning-events.tsx:179
+msgid "{unread, plural, one {# project's events couldn't be read, so this list may be incomplete.} other {# projects' events couldn't be read, so this list may be incomplete.}}"
+msgstr "{unread, plural, one {# project's events couldn't be read, so this list may be incomplete.} other {# projects' events couldn't be read, so this list may be incomplete.}}"
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:260
 msgid "{what}: {amount}"
 msgstr "{what}: {amount}"
@@ -858,6 +862,10 @@ msgstr "All clusters healthy"
 msgid "All Evaluations for this User"
 msgstr "All Evaluations for this User"
 
+#: app/features/organization/components/org-warning-events.tsx:123
+msgid "All events"
+msgstr "All events"
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:283
 msgid "All invoices"
 msgstr "All invoices"
@@ -1083,7 +1091,7 @@ msgstr "Are you sure you want to delete member \"{0}\"? This action cannot be un
 msgid "Are you sure you want to delete member \"{deleteMemberDisplayName}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete member \"{deleteMemberDisplayName}\"? This action cannot be undone."
 
-#: app/routes/customer/organization/detail/index.tsx:124
+#: app/routes/customer/organization/detail/index.tsx:126
 msgid "Are you sure you want to delete organization \"{displayNameForDelete} ({orgName})\"? This action cannot be undone."
 msgstr "Are you sure you want to delete organization \"{displayNameForDelete} ({orgName})\"? This action cannot be undone."
 
@@ -1904,9 +1912,17 @@ msgstr "Couldn't load usage"
 msgid "Couldn't load usage."
 msgstr "Couldn't load usage."
 
+#: app/features/organization/components/org-warning-events.tsx:78
+msgid "Couldn't load warning events."
+msgstr "Couldn't load warning events."
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:364
 msgid "Couldn't preview the invoice."
 msgstr "Couldn't preview the invoice."
+
+#: app/features/organization/components/org-warning-events.tsx:134
+msgid "Count"
+msgstr "Count"
 
 #: app/features/project/components/project-resources-card.tsx:59
 msgid "Counts for resources in this project"
@@ -2259,8 +2275,8 @@ msgstr "Delete Member"
 msgid "Delete note"
 msgstr "Delete note"
 
-#: app/routes/customer/organization/detail/index.tsx:121
 #: app/routes/customer/organization/detail/index.tsx:123
+#: app/routes/customer/organization/detail/index.tsx:125
 msgid "Delete Organization"
 msgstr "Delete Organization"
 
@@ -3652,6 +3668,10 @@ msgstr "large card balance"
 msgid "Large open balance on a card-billed account"
 msgstr "Large open balance on a card-billed account"
 
+#: app/features/organization/components/org-warning-events.tsx:115
+msgid "Last 24 hours"
+msgstr "Last 24 hours"
+
 #: app/features/dashboard/components/home/health-section.tsx:133
 msgid "Last 24h"
 msgstr "Last 24h"
@@ -3692,6 +3712,10 @@ msgstr "Last Name"
 #: app/routes/customer/user/index.tsx:181
 msgid "Last name is required"
 msgstr "Last name is required"
+
+#: app/features/organization/components/org-warning-events.tsx:146
+msgid "Last seen"
+msgstr "Last seen"
 
 #. placeholder {0}: providerMeta.label
 #: app/routes/customer/user/index.tsx:142
@@ -4681,6 +4705,14 @@ msgstr "No usage to display"
 msgid "No users found."
 msgstr "No users found."
 
+#: app/features/organization/components/org-warning-events.tsx:85
+msgid "No warning events in the last 24 hours in what could be read."
+msgstr "No warning events in the last 24 hours in what could be read."
+
+#: app/features/organization/components/org-warning-events.tsx:87
+msgid "No warning events in the last 24 hours."
+msgstr "No warning events in the last 24 hours."
+
 #: app/features/billing/components/application-review.tsx:498
 #: app/features/billing/components/contract-editor/contract-fee-list.tsx:172
 #: app/features/organization/components/org-health-strip.tsx:106
@@ -4845,6 +4877,10 @@ msgstr "Nothing waiting on review"
 msgid "Notifications"
 msgstr "Notifications"
 
+#: app/features/organization/components/org-warning-events.tsx:140
+msgid "Object"
+msgstr "Object"
+
 #: app/routes/customer/fraud/index.tsx:300
 msgid "Observed"
 msgstr "Observed"
@@ -4987,6 +5023,7 @@ msgstr "or"
 #: app/features/billing/components/billing-account-list.tsx:202
 #: app/features/billing/components/billing-account-list.tsx:271
 #: app/features/organization/components/org-needs-attention.tsx:369
+#: app/features/organization/components/org-warning-events.tsx:43
 #: app/features/project/components/project-organization-card.tsx:25
 #: app/routes/admin/service-catalog/detail/approvals.tsx:66
 #: app/routes/admin/service-catalog/detail/consumers.tsx:100
@@ -4999,7 +5036,7 @@ msgstr "Organization"
 msgid "Organization billing activity"
 msgstr "Organization billing activity"
 
-#: app/routes/customer/organization/detail/index.tsx:71
+#: app/routes/customer/organization/detail/index.tsx:72
 msgid "Organization deleted successfully"
 msgstr "Organization deleted successfully"
 
@@ -5248,7 +5285,7 @@ msgstr "Per-service discounts"
 msgid "Period"
 msgstr "Period"
 
-#: app/routes/customer/organization/detail/index.tsx:122
+#: app/routes/customer/organization/detail/index.tsx:124
 msgid "Permanently delete this organization and all associated data"
 msgstr "Permanently delete this organization and all associated data"
 
@@ -5469,6 +5506,7 @@ msgstr "Programming DNS records for this hostname"
 #: app/features/domain/components/domain-list.tsx:71
 #: app/features/edge/components/edge-list.tsx:107
 #: app/features/organization/components/compute-projects-dialog.tsx:297
+#: app/features/organization/components/org-warning-events.tsx:143
 #: app/routes/customer/resource/index.tsx:341
 #: app/routes/customer/resource/index.tsx:410
 msgid "Project"
@@ -5692,6 +5730,7 @@ msgstr "Ready"
 
 #: app/features/dns/components/dns-zone-status.tsx:76
 #: app/features/organization/components/org-needs-attention.tsx:247
+#: app/features/organization/components/org-warning-events.tsx:137
 #: app/features/project/components/project-suspension-card.tsx:90
 #: app/features/service-catalog/components/conditions-card.tsx:39
 #: app/features/user/components/user-recovery-link-dialog.tsx:68
@@ -6420,6 +6459,11 @@ msgstr "Show"
 msgid "Show all"
 msgstr "Show all"
 
+#. placeholder {0}: groups.length
+#: app/features/organization/components/org-warning-events.tsx:169
+msgid "Show all {0}"
+msgstr "Show all {0}"
+
 #: app/routes/admin/offer/index.tsx:168
 msgid "Show contract offers ({contractCount})"
 msgstr "Show contract offers ({contractCount})"
@@ -6888,6 +6932,10 @@ msgstr "The list of domains is limited to 2,000 results at a time. Refine your s
 #: app/features/dns/components/dns-zone-status.tsx:139
 msgid "The nameservers Datum serves this zone from. The domain must be delegated to them at its registrar."
 msgstr "The nameservers Datum serves this zone from. The domain must be delegated to them at its registrar."
+
+#: app/features/organization/components/org-warning-events.tsx:176
+msgid "The organization's own events couldn't be read."
+msgstr "The organization's own events couldn't be read."
 
 #: app/routes/error/not-found.tsx:72
 msgid "The page you are looking for doesn't exist. It might have been moved, deleted, or you entered the wrong URL."
@@ -7427,6 +7475,10 @@ msgstr "Waiting on"
 #: app/features/contact/components/contact-form.tsx:236
 msgid "Warning"
 msgstr "Warning"
+
+#: app/features/organization/components/org-warning-events.tsx:113
+msgid "Warning events"
+msgstr "Warning events"
 
 #: app/features/organization/components/org-health-strip.tsx:118
 msgid "Warnings"

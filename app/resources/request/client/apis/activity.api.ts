@@ -1,7 +1,14 @@
 import { PROXY_URL } from '@/modules/axios/axios.client';
 import { ActivityQueryParams, ListQueryParams } from '@/resources/schemas';
-import { createActivityMiloapisComV1Alpha1AuditLogQuery } from '@openapi/activity.miloapis.com/v1alpha1';
-import type { ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogQuery } from '@openapi/activity.miloapis.com/v1alpha1';
+import { walkCursorPages } from '@/utils/helpers/pagination.helper';
+import {
+  createActivityMiloapisComV1Alpha1AuditLogQuery,
+  createActivityMiloapisComV1Alpha1EventQuery,
+} from '@openapi/activity.miloapis.com/v1alpha1';
+import type {
+  ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogQuery,
+  IoK8sApiEventsV1Event,
+} from '@openapi/activity.miloapis.com/v1alpha1';
 import { subDays } from 'date-fns';
 
 function convertTimestampToISO(timestamp: number): string {
@@ -214,3 +221,51 @@ export const activityListQuery = async (
 
   return { ...response.data, data: responseData };
 };
+
+/** A control plane whose events can be queried: an organization's or a project's. */
+export type EventScope = { kind: 'organization' | 'project'; name: string };
+
+const eventScopeBaseURL = ({ kind, name }: EventScope) =>
+  `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/${
+    kind === 'organization' ? 'organizations' : 'projects'
+  }/${encodeURIComponent(name)}/control-plane`;
+
+// The API's maximum page; a day of warnings for one control plane rarely needs more.
+const WARNING_EVENTS_PAGE_LIMIT = 1000;
+// Safety net against a runaway walk.
+const WARNING_EVENTS_MAX_PAGES = 5;
+
+/**
+ * Warning events from the last 24 hours on one control plane, through
+ * EventQuery (staff can't list live events). A query only covers its own
+ * control plane: an organization's doesn't include its projects' events.
+ */
+export const warningEventsQuery = (scope: EventScope, signal?: AbortSignal) =>
+  walkCursorPages<IoK8sApiEventsV1Event>(
+    async (cursor) => {
+      const response = await createActivityMiloapisComV1Alpha1EventQuery({
+        baseURL: eventScopeBaseURL(scope),
+        signal,
+        // The generated SDK sends `*/*`, which the API rejects.
+        headers: { 'Content-Type': 'application/json' },
+        body: {
+          apiVersion: 'activity.miloapis.com/v1alpha1',
+          kind: 'EventQuery',
+          metadata: { name: `warning-events-${Date.now()}` },
+          spec: {
+            startTime: 'now-24h',
+            endTime: 'now',
+            fieldSelector: 'type=Warning',
+            limit: WARNING_EVENTS_PAGE_LIMIT,
+            ...(cursor && { continue: cursor }),
+          },
+        },
+      });
+      const status = response.data.data?.status;
+      return {
+        items: (status?.results ?? []).map((record) => record.event),
+        continueToken: status?.continue,
+      };
+    },
+    { maxPages: WARNING_EVENTS_MAX_PAGES }
+  );

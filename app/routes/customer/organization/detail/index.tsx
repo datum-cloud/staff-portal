@@ -8,6 +8,7 @@ import {
   OrgDetailsCard,
   OrgHealthStrip,
   OrgNeedsAttention,
+  OrgWarningEvents,
   OrgMembersPreviewCard,
   OrgOnboardingCard,
   OrgUsageCard,
@@ -81,6 +82,7 @@ export default function Page() {
     <div className="m-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
       <OrgHealthStrip className="lg:col-span-2" orgName={orgName} />
       <OrgNeedsAttention className="lg:col-span-2" orgName={orgName} />
+      <OrgWarningEvents className="lg:col-span-2" orgName={orgName} />
 
       <OrgOnboardingCard
         className="h-full"
