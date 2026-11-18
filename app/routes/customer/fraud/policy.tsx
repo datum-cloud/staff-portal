@@ -18,6 +18,7 @@ import { useMemo, useState } from 'react';
 
 export const handle = {
   breadcrumb: () => <Trans>Policy</Trans>,
+  fullWidth: true,
 };
 
 export const meta: Route.MetaFunction = () => metaObject(t`Fraud Policy`);

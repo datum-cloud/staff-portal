@@ -15,7 +15,7 @@ import {
   type FilterRuleSet,
 } from '../../lib/filter-rules';
 import { useActiveNav } from '../../lib/use-active-section';
-import { useEntityNav } from '../../lib/use-entity-nav';
+import { useRailNav } from '../../lib/use-rail-nav';
 import { ListPagination } from './list-pagination';
 import {
   buildFilterFns,
@@ -245,13 +245,13 @@ export function ListTable<TData extends RowData>({
   const showMobileFilter = sidebarMode && isCompact;
   const hasInlineFilters = hasFilters && filterLayout === 'inline';
   const insetX = inset === 'tab' ? 'px-4' : 'px-6';
-  // Sections with `subNav.placement: 'toolbar'` have no left rail; their
-  // top-level lists carry the section switcher instead (not detail tabs or
-  // entity pages, which keep their own nav).
+  // A toolbar section's full-width lists (`handle.fullWidth`) have no left
+  // rail; they carry the section switcher instead. Pages with a rail (detail
+  // tabs, entity pages, everything else) keep it.
   const { section } = useActiveNav();
-  const entityNav = useEntityNav();
+  const railNav = useRailNav();
   const showSectionSwitcher =
-    inset === 'page' && !entityNav && section?.subNav?.placement === 'toolbar';
+    inset === 'page' && !railNav && section?.subNav?.placement === 'toolbar';
   // No rail to the left means no border for the collapsed filter toggle to
   // straddle, so the "show filters" control moves into the search bar.
   const railless = showSectionSwitcher;

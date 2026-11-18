@@ -24,6 +24,9 @@ import { Link, useNavigate } from 'react-router';
 
 type FraudProvider = ComMiloapisFraudV1Alpha1FraudProvider;
 
+// Full-width list: no section rail, the switcher is in the search bar.
+export const handle = { fullWidth: true };
+
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Fraud Providers`);
 };

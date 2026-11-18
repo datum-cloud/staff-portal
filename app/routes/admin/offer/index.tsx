@@ -20,6 +20,9 @@ import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1Offer } from '@openapi/billing.miloapis.com/v1alpha1';
 import { useMemo, useState } from 'react';
 
+// Full-width list: no section rail, the switcher is in the search bar.
+export const handle = { fullWidth: true };
+
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Offers`);
 };

@@ -31,6 +31,7 @@ type FraudEvaluation = ComMiloapisFraudV1Alpha1FraudEvaluation;
 
 export const handle = {
   breadcrumb: () => <Trans>Evaluations</Trans>,
+  fullWidth: true,
 };
 
 export const meta: Route.MetaFunction = () => {

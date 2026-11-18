@@ -26,6 +26,9 @@ import type { LucideIcon } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Link } from 'react-router';
 
+// Full-width list: no section rail, the switcher is in the search bar.
+export const handle = { fullWidth: true };
+
 export const meta: Route.MetaFunction = () => metaObject(t`Resources`);
 
 /**

@@ -59,9 +59,11 @@ export interface NavSubNav {
   /** Icon-only rail by default; expands to labels + counts. */
   defaultCollapsed?: boolean;
   /**
-   * `rail` (default) renders the left sub-nav. `toolbar` drops the rail and
-   * instead puts a section switcher dropdown in the search bar of the
-   * section's list pages (`ListTable`), so tables get the full width.
+   * `rail` (default) renders the left sub-nav on every page in the section.
+   * `toolbar` drops the rail on the section's full-width list pages (routes
+   * with `handle.fullWidth`, see `useRailNav`) and instead puts a section
+   * switcher dropdown in their search bar (`ListTable`), so tables get the
+   * full width. Other pages in the section keep the rail.
    */
   placement?: 'rail' | 'toolbar';
   groups: NavSubGroup[];

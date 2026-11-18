@@ -8,6 +8,9 @@ import { createColumnHelper } from '@/utils/table';
 import { t } from '@lingui/core/macro';
 import { ComMiloapisIamV1Alpha1Group } from '@openapi/iam.miloapis.com/v1alpha1';
 
+// Full-width list: no section rail, the switcher is in the search bar.
+export const handle = { fullWidth: true };
+
 export const meta: Route.MetaFunction = () => {
   return metaObject(t`Groups`);
 };
