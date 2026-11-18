@@ -43,23 +43,31 @@ export async function requireStaffUser(request: Request, url: URL) {
     return { user: null };
   }
 
-  let isStaff = false;
-  try {
-    const memberships = await userGroupMembershipsQuery(token, userId);
-    isStaff = memberships.some((m) => m.spec?.groupRef?.name === env.staffGroupName);
-  } catch (error) {
-    // 401/403 means the user can't list memberships — treat as not staff.
-    // Other errors (network, 500) surface so they aren't silently swallowed.
-    if (error instanceof Response && (error.status === 401 || error.status === 403)) {
-      isStaff = false;
-    } else {
-      throw error;
-    }
-  }
+  const isStaff = await isStaffMember(token, userId);
   if (!isStaff) {
     throw redirect('/error/unauthorized');
   }
 
   const user = await userDetailQuery(token, userId);
   return { user };
+}
+
+/**
+ * Whether `userId` belongs to the configured staff group. Shared by the page
+ * gate above and the API middleware so both decide membership the same way.
+ *
+ * A 401/403 from the membership lookup means the user can't list memberships,
+ * so it counts as not staff. Other errors (network, 500) are rethrown so they
+ * aren't silently swallowed.
+ */
+export async function isStaffMember(token: string, userId: string): Promise<boolean> {
+  try {
+    const memberships = await userGroupMembershipsQuery(token, userId);
+    return memberships.some((m) => m.spec?.groupRef?.name === env.staffGroupName);
+  } catch (error) {
+    if (error instanceof Response && (error.status === 401 || error.status === 403)) {
+      return false;
+    }
+    throw error;
+  }
 }

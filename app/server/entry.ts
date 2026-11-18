@@ -2,7 +2,11 @@ import { api, API_BASENAME } from './routes/api';
 import { authenticator, initializeAuthenticator } from '@/modules/auth';
 import { nodeAdapter } from '@/server/adapter/node';
 import { EnvVariables } from '@/server/iface';
-import { honoLoggerMiddleware, requestContextMiddleware } from '@/server/middleware';
+import {
+  cookieUpgradeMiddleware,
+  honoLoggerMiddleware,
+  requestContextMiddleware,
+} from '@/server/middleware';
 import { env } from '@/utils/config/env.server';
 import { logger } from '@/utils/logger';
 import { prometheus } from '@hono/prometheus';
@@ -26,6 +30,9 @@ app.use(requestId());
 app.use(requestContextMiddleware());
 
 app.use(honoLoggerMiddleware());
+
+// Re-issue pre-encryption session cookies encrypted.
+app.use(cookieUpgradeMiddleware());
 
 app.use(
   '*',
