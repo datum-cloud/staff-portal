@@ -320,6 +320,7 @@ function ContractEditorForm({
     amount: '',
     quantity: '1',
     pricingUnit: '',
+    sku: '',
     serviceRef: NO_SERVICE,
   });
   const defaultFees: ContractFeeRow[] = base
@@ -334,6 +335,7 @@ function ContractEditorForm({
         amount: toPricingAmount(fee.amount),
         quantity: String(fee.quantity),
         pricingUnit: fee.pricingUnit ?? '',
+        sku: fee.sku ?? '',
         serviceRef: fee.serviceRef ?? NO_SERVICE,
         existingPricing: fee.name,
       }))
@@ -376,6 +378,7 @@ function ContractEditorForm({
             amount: toPricingAmount(parseAmount(fee.amount)),
             quantity: Number(fee.quantity),
             pricingUnit: fee.pricingUnit.trim() || undefined,
+            sku: fee.sku.trim() || undefined,
             serviceRef: fee.serviceRef === NO_SERVICE ? undefined : fee.serviceRef,
             existingPricing: existing && sameFeePricing(fee, existing) ? existing.name : undefined,
             ...(fee.chargeType === 'Recurring'

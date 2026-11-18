@@ -94,7 +94,11 @@ export function PriceListTable({
     const groupMatches = query !== '' && title.toLowerCase().includes(query);
     const visible = new Set(
       entries.filter(
-        (entry) => !query || groupMatches || entry.option.label.toLowerCase().includes(query)
+        (entry) =>
+          !query ||
+          groupMatches ||
+          entry.option.label.toLowerCase().includes(query) ||
+          (entry.kind === 'fee' && entry.option.sku.toLowerCase().includes(query))
       )
     );
     const key = serviceRef || 'none';
@@ -304,6 +308,10 @@ function PriceListRow({ entry, hidden }: { entry: PriceListEntry; hidden: boolea
   );
 }
 
+/** A list fee's name, after its SKU when it has one, as invoices show it. */
+const feeLabel = (option: ListFeeOption) =>
+  option.sku ? `[${option.sku}] ${option.label}` : option.label;
+
 /** A list fee's price, e.g. "$300.00 / month per port" or "$6,000.00 / year". */
 const feePriceText = (option: ListFeeOption) => {
   const amount = formatMoney(Number.parseFloat(option.amount), CONTRACT_CURRENCY);
@@ -326,7 +334,7 @@ function ListFeeRows({
     <TableRow className={cn(hidden && 'hidden')}>
       <TableCell className="align-middle">
         <Form.Field name={`listFees.${index}.selected`}>
-          <Form.Checkbox label={option.label} />
+          <Form.Checkbox label={feeLabel(option)} />
         </Form.Field>
       </TableCell>
       <TableCell className="align-middle">

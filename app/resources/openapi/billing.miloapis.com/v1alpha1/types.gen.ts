@@ -286,6 +286,10 @@ export type ComMiloapisBillingV1Alpha1BillingAccount = {
          * for any one service.
          */
         serviceRef?: string;
+        /**
+         * SKU is the fee's product code, from its pricing. Empty when it has none.
+         */
+        sku?: string;
       }>;
       /**
        * StartsAt is when the contract starts, at midnight UTC: its one-time
@@ -797,11 +801,7 @@ export type ComMiloapisBillingV1Alpha1BillingArrangementApplication = {
        * EstimatedMonthlySpend is the applicant's spend estimate.
        */
       estimatedMonthlySpend:
-        | 'Under500'
-        | 'From500To2500'
-        | 'From2500To10000'
-        | 'Over10000'
-        | 'NotSure';
+        'Under500' | 'From500To2500' | 'From2500To10000' | 'Over10000' | 'NotSure';
       /**
        * PurchaseOrderNumber to print on invoices.
        */
@@ -2316,6 +2316,15 @@ export type ComMiloapisBillingV1Alpha1Offer = {
          */
         serviceRef?: string;
         /**
+         * SKU is the product code finance knows this price's product by (e.g.
+         * "DC-CAB-01"). Invoices show it before the line's name ("[DC-CAB-01]
+         * Structured cabling"), so it can be read from Stripe and reports. It
+         * names the product, not the price: a customer's pricing with basedOn
+         * has its list pricing's SKU, and a new price for the same product
+         * keeps it.
+         */
+        sku?: string;
+        /**
          * Trigger identifies when a OneTime charge fires.
          */
         trigger?: 'BillingAccountActivation';
@@ -2978,6 +2987,15 @@ export type ComMiloapisBillingV1Alpha1ServicePricing = {
      * setup or support fee; when set, it must name a Service.
      */
     serviceRef?: string;
+    /**
+     * SKU is the product code finance knows this price's product by (e.g.
+     * "DC-CAB-01"). Invoices show it before the line's name ("[DC-CAB-01]
+     * Structured cabling"), so it can be read from Stripe and reports. It
+     * names the product, not the price: a customer's pricing with basedOn
+     * has its list pricing's SKU, and a new price for the same product
+     * keeps it.
+     */
+    sku?: string;
     /**
      * Trigger identifies when a OneTime charge fires.
      */

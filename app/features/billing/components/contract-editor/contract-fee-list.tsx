@@ -54,6 +54,7 @@ export function ContractFeeList({
                 amount: '',
                 quantity: '1',
                 pricingUnit: '',
+                sku: '',
                 // New fees are usually for the same service as the last.
                 serviceRef: fees[fees.length - 1]?.serviceRef ?? NO_SERVICE,
               } satisfies ContractFeeRow)
@@ -155,9 +156,15 @@ export function ContractFeeList({
                     </>
                   ) : null}
                 </div>
-                <div className="grid grid-cols-[8rem_minmax(0,1fr)] items-start gap-2">
+                <div className="grid grid-cols-[8rem_8rem_minmax(0,1fr)] items-start gap-2">
                   <Form.Field name={`fees.${index}.pricingUnit`} label={t`Per`}>
                     <Form.Input placeholder={t`port, kW`} />
+                  </Form.Field>
+                  <Form.Field
+                    name={`fees.${index}.sku`}
+                    label={t`SKU`}
+                    tooltip={t`Optional product code. Invoices show it before the fee's name.`}>
+                    <Form.Input placeholder={t`DC-CAB-01`} />
                   </Form.Field>
                   <Form.Field name={`fees.${index}.serviceRef`} label={t`Service`}>
                     <Form.Select>

@@ -98,6 +98,14 @@ export const buildContractSchema = (
             .string()
             .trim()
             .max(64, t`Keep the unit short, such as port or kW.`),
+          sku: z
+            .string()
+            .trim()
+            .max(64, t`Keep the SKU to 64 characters.`)
+            .regex(
+              /^([A-Za-z0-9]([A-Za-z0-9._-]*[A-Za-z0-9])?)?$/,
+              t`Letters, numbers, dots, dashes and underscores, such as DC-CAB-01.`
+            ),
           serviceRef: z.string(),
           existingPricing: z.string().optional(),
         })
@@ -236,6 +244,7 @@ export const sameFeePricing = (row: ContractFeeRow, fee: ContractFee) =>
   (row.chargeType === 'OneTime' || row.interval === (fee.interval ?? 'monthly')) &&
   parseAmount(row.amount) === fee.amount &&
   row.pricingUnit.trim() === (fee.pricingUnit ?? '') &&
+  row.sku.trim() === (fee.sku ?? '') &&
   (row.serviceRef === NO_SERVICE ? '' : row.serviceRef) === (fee.serviceRef ?? '');
 
 /** RFC 3339 at second precision, as Kubernetes writes times. */
