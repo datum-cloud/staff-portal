@@ -8,6 +8,7 @@ import {
 import {
   CONTRACT_BILLING_ACCOUNT_LABEL,
   CONTRACT_ORGANIZATION_LABEL,
+  CONTRACT_BILLING_DAY_ANNOTATION,
   CONTRACT_STARTS_AT_ANNOTATION,
 } from '@/features/billing/lib/contract';
 import {
@@ -343,6 +344,7 @@ describe('saveContractDraft', () => {
             annotations: {
               'kubernetes.io/display-name': 'Acme Ops contract',
               [CONTRACT_STARTS_AT_ANNOTATION]: null,
+              [CONTRACT_BILLING_DAY_ANNOTATION]: null,
             },
           },
           spec: {
