@@ -4,13 +4,13 @@ import { SectionCard } from '@/features/milo';
 import { SpendValue } from '@/features/organization/usage/components/spend-value';
 import type { OrgUsageMeterSummary } from '@/modules/billing/org-usage.types';
 import { useOrgUsageSummaryQuery } from '@/resources/request/client/queries/usage.queries';
+import { TAB_ICONS } from '@/utils/config/icons.config';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
-import { BarChart3 } from 'lucide-react';
 import { useMemo, type ReactNode } from 'react';
 import { Link } from 'react-router';
 
@@ -172,7 +172,7 @@ export function OrgUsageCard({ orgName, className }: Props) {
 function EmptyMessage({ title, body }: { title: ReactNode; body: ReactNode }) {
   return (
     <div className="flex flex-col items-center justify-center gap-2 py-6 text-center">
-      <Icon icon={BarChart3} size={32} className="text-muted-foreground" />
+      <Icon icon={TAB_ICONS.usage} size={32} className="text-muted-foreground" />
       <Text size="sm" weight="medium">
         {title}
       </Text>

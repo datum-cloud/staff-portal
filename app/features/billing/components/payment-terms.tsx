@@ -187,7 +187,7 @@ export type PaymentTermsState = ReturnType<typeof usePaymentTerms>;
 /** The grant, change and end dialogs for a `usePaymentTerms` result. */
 export function PaymentTermsDialogs({ terms }: { terms: PaymentTermsState }) {
   const { t } = useLingui();
-  const { current, currentName, currentPhase, currency, dialogs } = terms;
+  const { current, currentName, currentPhase, dialogs } = terms;
   return (
     <>
       <PaymentTermsFormDialog
@@ -196,7 +196,6 @@ export function PaymentTermsDialogs({ terms }: { terms: PaymentTermsState }) {
         title={t`Grant payment terms`}
         description={t`The account will be billed by invoice on these terms. Overlapping terms are rejected, so end the current terms first if there are any.`}
         submitText={t`Grant`}
-        currency={currency}
         defaultValues={emptyPaymentTermsForm}
         showStart
         onSubmit={dialogs.handleGrant}
@@ -211,7 +210,6 @@ export function PaymentTermsDialogs({ terms }: { terms: PaymentTermsState }) {
           title={t`Change payment terms`}
           description={t`Changes apply to the terms currently on the account.`}
           submitText={t`Save`}
-          currency={currency}
           defaultValues={paymentTermsFormFromArrangement(current)}
           showStart={currentPhase === 'Scheduled'}
           onSubmit={dialogs.handleChange}
@@ -369,9 +367,11 @@ export function ArrangementDetails({
     <div className="@container">
       <div className="grid grid-cols-2 gap-x-6 gap-y-3 @md:grid-cols-4">
         <TermField label={<Trans>Net days</Trans>}>{invoice?.netDays ?? '—'}</TermField>
-        <TermField label={<Trans>Credit limit</Trans>}>
-          {formatCreditLimit(invoice?.creditLimit)}
-        </TermField>
+        {invoice?.creditLimit ? (
+          <TermField label={<Trans>Credit limit</Trans>}>
+            {formatCreditLimit(invoice.creditLimit)}
+          </TermField>
+        ) : null}
         <TermField label={<Trans>Starts</Trans>}>
           <DateTime date={getArrangementStart(arrangement)} variant="both" />
         </TermField>
@@ -413,9 +413,13 @@ function ArrangementHistoryRow({
     <li className="flex flex-wrap items-center gap-x-4 gap-y-1 py-2">
       <BadgeState state={phaseBadgeState[phase]} message={phase} variant="dot" />
       <Text size="sm">
-        <Trans>
-          Net {invoice?.netDays ?? '—'}, limit {formatCreditLimit(invoice?.creditLimit)}
-        </Trans>
+        {invoice?.creditLimit ? (
+          <Trans>
+            Net {invoice?.netDays ?? '—'}, limit {formatCreditLimit(invoice.creditLimit)}
+          </Trans>
+        ) : (
+          <Trans>Net {invoice?.netDays ?? '—'}</Trans>
+        )}
       </Text>
       <Text size="sm" textColor="muted">
         <DateTime date={getArrangementStart(arrangement)} variant="absolute" />
@@ -468,7 +472,6 @@ type PaymentTermsFormDialogProps = {
   title: string;
   description: string;
   submitText: string;
-  currency: string;
   defaultValues: PaymentTermsFormValues;
   showStart: boolean;
   onSubmit: (values: PaymentTermsFormValues) => Promise<void>;
@@ -480,7 +483,6 @@ export function PaymentTermsFormDialog({
   title,
   description,
   submitText,
-  currency,
   defaultValues,
   showStart,
   onSubmit,
@@ -503,13 +505,6 @@ export function PaymentTermsFormDialog({
         description={t`Days after the invoice date that payment is due.`}
         required>
         <Form.Input type="number" />
-      </Form.Field>
-      <Form.Field
-        name="creditLimit"
-        label={currency ? t`Credit limit (${currency})` : t`Credit limit`}
-        description={t`The most the account should spend each billing cycle. Recorded for finance only: usage isn't capped and no alerts are sent yet.`}
-        required>
-        <Form.Input placeholder="10000" inputMode="decimal" />
       </Form.Field>
       <Form.Field
         name="accountsPayableEmail"

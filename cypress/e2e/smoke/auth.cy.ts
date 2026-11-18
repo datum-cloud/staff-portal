@@ -1,6 +1,6 @@
 describe('Authentication gate', () => {
   it('redirects unauthenticated requests for a protected page to /login', () => {
-    // The private layout loader redirects unauthenticated users (app/layouts/private.layout.tsx).
+    // The Milo layout loader redirects unauthenticated users (app/layouts/milo.layout.tsx).
     cy.request({ url: '/', followRedirect: false }).then((response) => {
       expect(response.status).to.be.oneOf([301, 302, 303, 307, 308]);
       expect(response.redirectedToUrl ?? response.headers.location).to.include('/login');

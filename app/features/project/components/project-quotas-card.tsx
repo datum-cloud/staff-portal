@@ -2,6 +2,7 @@ import { SectionCard } from '@/features/milo';
 import { QuotaIndicator } from '@/features/organization/components/quota-ring';
 import type { GqlQuotaBucket } from '@/resources/gql/quota.gql';
 import { listProjectQuotaBuckets } from '@/resources/request/client/apis/quota.api';
+import { TAB_ICONS } from '@/utils/config/icons.config';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
@@ -10,7 +11,6 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { Trans } from '@lingui/react/macro';
 import { useQuery } from '@tanstack/react-query';
-import { Gauge } from 'lucide-react';
 import { useMemo, type ReactNode } from 'react';
 import { Link } from 'react-router';
 
@@ -113,7 +113,7 @@ export function ProjectQuotasCard({ projectName, className }: Props) {
 function EmptyMessage({ title, body }: { title: ReactNode; body: ReactNode }) {
   return (
     <div className="flex flex-col items-center justify-center gap-2 py-6 text-center">
-      <Icon icon={Gauge} size={32} className="text-muted-foreground" />
+      <Icon icon={TAB_ICONS.quotas} size={32} className="text-muted-foreground" />
       <Text size="sm" weight="medium">
         {title}
       </Text>

@@ -1,4 +1,5 @@
 import { useEnhancedBreadcrumbs } from './breadcrumb-provider';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import {
   BreadcrumbEllipsis,
   BreadcrumbItem,
@@ -14,7 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@datum-cloud/datum-ui/dropdown';
-import { Check, ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import React from 'react';
 import { Link, useLocation } from 'react-router';
 
@@ -190,7 +191,7 @@ function BreadcrumbSwitcher({ item }: { item: BreadcrumbItem }) {
             <DropdownMenuItem key={opt.path} asChild>
               <Link to={opt.path} className="flex items-center justify-between gap-6">
                 {opt.label}
-                {active && <Check className="size-3.5" />}
+                {active && <ACTION_ICONS.check className="size-3.5" />}
               </Link>
             </DropdownMenuItem>
           );

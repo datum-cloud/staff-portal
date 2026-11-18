@@ -2,7 +2,7 @@ import { normalizeEndpoint } from '@/modules/sentry/fingerprint';
 import { shouldReportApiError } from '@/modules/sentry/report-policy';
 import { scrubValue } from '@/modules/sentry/scrub';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
-import * as Sentry from '@sentry/react';
+import * as Sentry from '@sentry/react-router';
 
 interface UserContext {
   id: string;

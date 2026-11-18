@@ -1,8 +1,10 @@
-import type { ContractDialogMode } from '../components/billing-account-dashboard/billing-account-contract-card';
 import type { BillingAccountHeaderAction } from '../components/billing-account-dashboard/billing-account-header';
 import type { PaymentTermsState } from '../components/payment-terms';
 import type { BillingAccount } from '../utils';
-import { useBillingEntitlementForAccountQuery } from '@/resources/request/client';
+import {
+  useBillingEntitlementForAccountQuery,
+  useContractDraftQuery,
+} from '@/resources/request/client';
 import { billingAccountRoutes } from '@/utils/config/routes.config';
 import { Trans } from '@lingui/react/macro';
 import { useNavigate } from 'react-router';
@@ -10,26 +12,24 @@ import { useNavigate } from 'react-router';
 /**
  * The billing account header's Actions menu: grant or change terms (or
  * review the customer's pending application instead), switch offer, and set
- * up a contract or change its fees.
+ * up a contract or change its fees, or edit the draft of either.
  */
 export function useBillingAccountHeaderActions({
   orgName,
   account,
   paymentTerms,
   onSwitchOffer,
-  onContract,
 }: {
   orgName: string;
   account: BillingAccount;
   paymentTerms: PaymentTermsState;
   onSwitchOffer: () => void;
-  onContract: (mode: ContractDialogMode) => void;
 }): BillingAccountHeaderAction[] {
   const navigate = useNavigate();
-  const entitlementQuery = useBillingEntitlementForAccountQuery(
-    orgName,
-    account.metadata?.name ?? ''
-  );
+  const accountName = account.metadata?.name ?? '';
+  const entitlementQuery = useBillingEntitlementForAccountQuery(orgName, accountName);
+  // With a draft saved, the editor opens on it.
+  const hasDraft = Boolean(useContractDraftQuery(orgName, accountName).data);
   const pendingApplicationName = paymentTerms.pendingApplication?.metadata?.name;
 
   const termsAction: BillingAccountHeaderAction =
@@ -66,15 +66,21 @@ export function useBillingAccountHeaderActions({
     entitlementQuery.data?.spec?.contract
       ? {
           key: 'contract',
-          label: <Trans>Change contract fees</Trans>,
-          onSelect: () => onContract('change'),
+          label: hasDraft ? (
+            <Trans>Edit draft fee change</Trans>
+          ) : (
+            <Trans>Change contract fees</Trans>
+          ),
+          onSelect: () => navigate(billingAccountRoutes.contract(orgName, accountName)),
         }
       : {
           key: 'contract',
-          label: <Trans>Set up contract</Trans>,
-          // The contract goes on the account's entitlement.
-          disabled: !entitlementQuery.data,
-          onSelect: () => onContract('setup'),
+          label: hasDraft ? <Trans>Edit draft contract</Trans> : <Trans>Set up contract</Trans>,
+          // The contract goes on the account's entitlement, or creates one
+          // for an account without (the query's null), so it waits to know
+          // which: undefined while loading or if loading failed.
+          disabled: entitlementQuery.data === undefined,
+          onSelect: () => navigate(billingAccountRoutes.contract(orgName, accountName)),
         },
   ];
 }

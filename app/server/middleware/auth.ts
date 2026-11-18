@@ -1,15 +1,67 @@
+import { assertSameOrigin } from './same-origin';
 import { authenticator } from '@/modules/auth';
+import { isStaffMember } from '@/modules/auth/require-staff.server';
 import { EnvVariables } from '@/server/iface';
 import { logApiError } from '@/server/logger';
 import { createErrorResponse } from '@/server/response';
-import { AuthenticationError } from '@/utils/errors';
+import { env } from '@/utils/config/env.server';
+import { AuthenticationError, AuthorizationError } from '@/utils/errors';
 import { createRequestLogger } from '@/utils/logger';
 import { Context, Next } from 'hono';
 import { createMiddleware } from 'hono/factory';
+import { createHash } from 'node:crypto';
+
+/** How long one staff-membership decision is reused before the IdP is asked again. */
+export const STAFF_MEMBERSHIP_TTL_MS = 60_000;
+
+/** Upper bound on cached decisions, so the cache can't grow without limit. */
+const STAFF_MEMBERSHIP_CACHE_MAX = 1_000;
+
+type StaffDecision = { isStaff: boolean; expiresAt: number };
+
+/** Keyed by a hash of the access token, so each session (and each refresh) has its own entry. */
+const staffDecisions = new Map<string, StaffDecision>();
+
+const sessionKey = (accessToken: string): string =>
+  createHash('sha256').update(accessToken).digest('hex');
+
+function rememberDecision(key: string, isStaff: boolean, now: number): void {
+  staffDecisions.forEach((entry, k) => {
+    if (entry.expiresAt <= now) staffDecisions.delete(k);
+  });
+  if (staffDecisions.size >= STAFF_MEMBERSHIP_CACHE_MAX) {
+    const oldest = staffDecisions.keys().next().value;
+    if (oldest !== undefined) staffDecisions.delete(oldest);
+  }
+  staffDecisions.set(key, { isStaff, expiresAt: now + STAFF_MEMBERSHIP_TTL_MS });
+}
+
+/**
+ * Same staff-group check the page layouts run (`requireStaffUser`), cached per
+ * session for `STAFF_MEMBERSHIP_TTL_MS`. Lookup failures other than 401/403
+ * are not cached and surface as errors.
+ */
+async function isStaffSession(accessToken: string, userId: string): Promise<boolean> {
+  const key = sessionKey(accessToken);
+  const now = Date.now();
+  const cached = staffDecisions.get(key);
+  if (cached && cached.expiresAt > now) return cached.isStaff;
+
+  const isStaff = await isStaffMember(accessToken, userId);
+  rememberDecision(key, isStaff, Date.now());
+  return isStaff;
+}
+
+/** Test hook: forget every cached staff decision. */
+export function clearStaffMembershipCache(): void {
+  staffDecisions.clear();
+}
 
 /**
  * Hono middleware for authentication
- * Validates user authentication and sets access token in context
+ * Validates user authentication and staff-group membership, then sets the
+ * access token in context. A signed-in user outside the staff group gets 403,
+ * and so does a state-changing request from another origin.
  */
 export function authMiddleware() {
   return createMiddleware(async (c: Context<{ Variables: EnvVariables }>, next: Next) => {
@@ -30,6 +82,10 @@ export function authMiddleware() {
     });
 
     try {
+      // The session cookie rides along on cross-site requests, so a
+      // state-changing call must come from our own origin.
+      assertSameOrigin(request, reqId);
+
       // Check if user is authenticated
       const isAuthenticated = await authenticator.isAuthenticated(request);
       if (!isAuthenticated) {
@@ -40,6 +96,13 @@ export function authMiddleware() {
       const session = await authenticator.getSession(request);
       if (!session?.accessToken) {
         throw new AuthenticationError('No access token available', reqId);
+      }
+
+      // Under Cypress the caller is a CI service account outside the staff
+      // group, matching the bypass in requireStaffUser. Never in production.
+      const skipStaffCheck = env.isCypress && !env.isProd;
+      if (!skipStaffCheck && !(await isStaffSession(session.accessToken, session.sub))) {
+        throw new AuthorizationError('Staff access required', reqId);
       }
 
       c.set('token', session.accessToken);

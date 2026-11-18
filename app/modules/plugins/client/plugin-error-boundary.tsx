@@ -1,11 +1,11 @@
 /**
  * Ported from cloud-portal unchanged.
  */
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Card, CardContent } from '@datum-cloud/datum-ui/card';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Text } from '@datum-cloud/datum-ui/typography';
-import { TriangleAlert } from 'lucide-react';
 import { Component, type ReactNode } from 'react';
 
 interface PluginErrorBoundaryProps {
@@ -64,7 +64,7 @@ export class PluginErrorBoundary extends Component<
         <Card className="w-full max-w-md">
           <CardContent className="flex flex-col items-center gap-4 py-10 text-center">
             <div className="bg-warning/10 text-warning flex size-12 items-center justify-center rounded-full">
-              <Icon icon={TriangleAlert} className="size-6" />
+              <Icon icon={STATUS_ICONS.warning} className="size-6" />
             </div>
             <div className="flex flex-col gap-1">
               <Text as="p" size="base" weight="semibold">

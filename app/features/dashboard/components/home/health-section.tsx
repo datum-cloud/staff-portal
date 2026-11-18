@@ -8,12 +8,12 @@ import {
 import { useClusterHealth } from '@/features/dashboard/hooks/use-cluster-health';
 import { useEmailDelivery } from '@/features/dashboard/hooks/use-platform-home';
 import type { QuotaBucketRow } from '@/features/dashboard/hooks/use-quota-utilization-widget';
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { emailActivityRoutes, orgRoutes } from '@/utils/config/routes.config';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { Trans } from '@lingui/react/macro';
-import { CircleCheck, CircleX, TriangleAlert } from 'lucide-react';
 import { Link } from 'react-router';
 
 function ClustersCard({ enabled }: { enabled: boolean }) {
@@ -45,9 +45,9 @@ function ClustersCard({ enabled }: { enabled: boolean }) {
           <StatTileHeadline
             icon={
               <Icon
-                icon={summary.unhealthy === 0 ? CircleCheck : CircleX}
+                icon={summary.unhealthy === 0 ? STATUS_ICONS.success : STATUS_ICONS.error}
                 size={18}
-                className={summary.unhealthy === 0 ? 'text-green-600' : 'text-destructive'}
+                className={summary.unhealthy === 0 ? 'text-success' : 'text-destructive'}
                 aria-hidden
               />
             }>
@@ -84,7 +84,9 @@ function QuotaCard({ buckets, isLoading }: { buckets: QuotaBucketRow[]; isLoadin
       ) : top.length === 0 ? (
         <>
           <StatTileHeadline
-            icon={<Icon icon={CircleCheck} size={18} className="text-green-600" aria-hidden />}>
+            icon={
+              <Icon icon={STATUS_ICONS.success} size={18} className="text-success" aria-hidden />
+            }>
             0
           </StatTileHeadline>
           <StatTileDetail>
@@ -106,7 +108,7 @@ function QuotaCard({ buckets, isLoading }: { buckets: QuotaBucketRow[]; isLoadin
                 <span
                   className={cn(
                     'shrink-0 font-medium tabular-nums',
-                    b.percentage >= 90 ? 'text-destructive' : 'text-amber-600'
+                    b.percentage >= 90 ? 'text-destructive' : 'text-warning'
                   )}>
                   {b.percentage}%
                 </span>
@@ -141,7 +143,7 @@ function EmailCard() {
           <StatTileHeadline
             icon={
               data.failed > 0 ? (
-                <Icon icon={TriangleAlert} size={18} className="text-amber-500" aria-hidden />
+                <Icon icon={STATUS_ICONS.warning} size={18} className="text-warning" aria-hidden />
               ) : undefined
             }>
             {rate == null ? '—' : `${rate.toFixed(1)}%`}

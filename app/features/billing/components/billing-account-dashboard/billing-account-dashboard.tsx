@@ -1,12 +1,11 @@
 import { useBillingAccountHeaderActions } from '../../hooks/use-billing-account-header-actions';
+import { getContractState } from '../../lib/contract';
 import type { BillingAccount } from '../../utils';
 import { usePaymentTerms } from '../payment-terms';
 import { BillingAccountActivityCard } from './billing-account-activity-card';
 import { BillingAccountAttentionBanner } from './billing-account-attention-banner';
-import {
-  BillingAccountContractCard,
-  type ContractDialogMode,
-} from './billing-account-contract-card';
+import { BillingAccountContractCard } from './billing-account-contract-card';
+import { BillingAccountContractDraftCard } from './billing-account-contract-draft-card';
 import {
   BillingAccountConfigCard,
   BillingAccountContactCard,
@@ -24,7 +23,7 @@ import {
   useBillingEntitlementForAccountQuery,
 } from '@/resources/request/client';
 import { cloudPortalUrls } from '@/utils/config/routes.config';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 /**
  * The billing account page. The route loader only fetched the account;
@@ -53,14 +52,18 @@ export function BillingAccountDashboard({
   // Held here so the header's Actions menu can open the cards' dialogs.
   const paymentTerms = usePaymentTerms(orgName, account);
   const [switchOfferOpen, setSwitchOfferOpen] = useState(false);
-  const [contractDialog, setContractDialog] = useState<ContractDialogMode | null>(null);
   const entitlementQuery = useBillingEntitlementForAccountQuery(orgName, accountName);
+  // A contract sets when the account is invoiced: its first invoice the day
+  // it starts, then monthly on that day, whatever the payment terms say.
+  const contract = useMemo(
+    () => getContractState(entitlementQuery.data ?? null, now),
+    [entitlementQuery.data, now]
+  );
   const headerActions = useBillingAccountHeaderActions({
     orgName,
     account,
     paymentTerms,
     onSwitchOffer: () => setSwitchOfferOpen(true),
-    onContract: setContractDialog,
   });
 
   return (
@@ -80,24 +83,51 @@ export function BillingAccountDashboard({
         now={now}
       />
 
-      <BillingAccountHealthCards orgName={orgName} account={account} now={now} />
+      <BillingAccountHealthCards
+        orgName={orgName}
+        account={account}
+        now={now}
+        contract={contract}
+      />
 
-      <div className="grid grid-cols-1 items-start gap-4 @5xl/main:grid-cols-[minmax(0,1fr)_400px]">
+      {/*
+        Two columns when wide: usage, invoices and projects, then the activity
+        feed, beside the account's details. The feed sits in the wide column
+        so a quiet account's page isn't one long narrow column of cards; the
+        details span both rows, and the second row is the flexible one, so
+        their height never pushes the feed down. In one column the feed
+        comes last, after the details.
+      */}
+      <div className="grid grid-cols-1 items-start gap-4 @5xl/main:grid-cols-[minmax(0,1fr)_400px] @5xl/main:grid-rows-[auto_1fr]">
         <div className="flex min-w-0 flex-col gap-4">
-          <BillingAccountUsageCard orgName={orgName} account={account} now={now} />
-          <BillingAccountInvoicesCard orgName={orgName} account={account} now={now} />
+          <BillingAccountUsageCard
+            orgName={orgName}
+            account={account}
+            now={now}
+            contract={contract}
+          />
+          <BillingAccountInvoicesCard
+            orgName={orgName}
+            account={account}
+            now={now}
+            contract={contract}
+          />
           <BillingAccountProjectsCard orgName={orgName} account={account} />
         </div>
 
-        <aside className="flex min-w-0 flex-col gap-4">
+        <aside className="flex min-w-0 flex-col gap-4 @5xl/main:row-span-2">
           <BillingAccountPaymentCard orgName={orgName} account={account} terms={paymentTerms} />
           <BillingAccountContractCard
             orgName={orgName}
             account={account}
             entitlement={entitlementQuery.data ?? null}
             now={now}
-            dialogMode={contractDialog}
-            onDialogModeChange={setContractDialog}
+          />
+          <BillingAccountContractDraftCard
+            orgName={orgName}
+            account={account}
+            entitlement={entitlementQuery.data ?? null}
+            now={now}
           />
           <BillingAccountOfferCard
             orgName={orgName}
@@ -106,9 +136,12 @@ export function BillingAccountDashboard({
             onSwitchOpenChange={setSwitchOfferOpen}
           />
           <BillingAccountContactCard account={account} />
-          <BillingAccountConfigCard orgName={orgName} account={account} />
-          <BillingAccountActivityCard orgName={orgName} />
+          <BillingAccountConfigCard orgName={orgName} account={account} contract={contract} />
         </aside>
+
+        <div className="min-w-0 @5xl/main:col-start-1">
+          <BillingAccountActivityCard orgName={orgName} />
+        </div>
       </div>
     </div>
   );

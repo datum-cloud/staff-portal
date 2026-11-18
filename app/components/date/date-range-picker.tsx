@@ -7,7 +7,7 @@ import { Input } from '@datum-cloud/datum-ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@datum-cloud/datum-ui/popover';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import { Trans } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import {
   endOfDay,
   endOfMonth,
@@ -114,6 +114,7 @@ export function DateRangePicker({
   showTimePicker = true,
   showClearButton = true,
 }: DateRangePickerProps) {
+  const { t } = useLingui();
   const [startTime, setStartTime] = React.useState<string>('');
   const [endTime, setEndTime] = React.useState<string>('');
   const [open, setOpen] = React.useState<boolean>(false);
@@ -232,31 +233,35 @@ export function DateRangePicker({
   return (
     <div className={cn('flex items-center gap-2', className)}>
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            theme="outline"
-            className={cn(
-              'relative w-[350px] justify-start pr-8 text-left font-normal',
-              !value && 'text-muted-foreground'
-            )}
-            disabled={disabled}>
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {formatDisplayValue()}
-            {value && showClearButton && (
-              <Button
-                theme="borderless"
-                size="icon"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  clearRange();
-                }}
-                disabled={disabled}
-                className="absolute right-1 h-6 w-6">
-                <ACTION_ICONS.close className="h-3 w-3" />
-              </Button>
-            )}
-          </Button>
-        </PopoverTrigger>
+        {/* The clear button sits over the trigger's right padding as a sibling.
+            A button inside the trigger button is invalid HTML and cannot take
+            keyboard focus on its own. */}
+        <div className="relative flex items-center">
+          <PopoverTrigger asChild>
+            <Button
+              theme="outline"
+              className={cn(
+                'w-[350px] justify-start pr-8 text-left font-normal',
+                !value && 'text-muted-foreground'
+              )}
+              disabled={disabled}>
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {formatDisplayValue()}
+            </Button>
+          </PopoverTrigger>
+          {value && showClearButton && (
+            <Button
+              htmlType="button"
+              theme="borderless"
+              size="icon"
+              aria-label={t`Clear date range`}
+              onClick={clearRange}
+              disabled={disabled}
+              className="absolute right-1 h-6 w-6">
+              <ACTION_ICONS.close className="h-3 w-3" />
+            </Button>
+          )}
+        </div>
         <PopoverContent className="w-auto p-0" align="start">
           <div className="p-3">
             <div className="flex items-start gap-4">

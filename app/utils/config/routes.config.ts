@@ -114,6 +114,9 @@ export const billingAccountRoutes = {
   list: () => '/customers/billing-accounts',
   detail: (orgName: string, accountName: string) =>
     `/customers/billing-accounts/${orgName}/${accountName}`,
+  // Set up the account's contract, or change its fees.
+  contract: (orgName: string, accountName: string) =>
+    `/customers/billing-accounts/${orgName}/${accountName}/contract`,
   // Payment terms applications: the review queue and one application.
   applications: {
     list: () => '/customers/billing-accounts/applications',

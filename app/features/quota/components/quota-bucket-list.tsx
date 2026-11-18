@@ -39,10 +39,10 @@ function usage(bucket: GqlQuotaBucket) {
 }
 
 function barColor(percentage: number, total: number) {
-  if (total === 0) return 'bg-gray-400';
-  if (percentage <= 70) return 'bg-green-500';
-  if (percentage <= 90) return 'bg-yellow-500';
-  return 'bg-red-500';
+  if (total === 0) return 'bg-muted-foreground/40';
+  if (percentage <= 70) return 'bg-success';
+  if (percentage <= 90) return 'bg-warning';
+  return 'bg-destructive';
 }
 
 export function QuotaBucketList({ queryKeyPrefix, fetchFn, createGrantFn }: QuotaBucketListProps) {

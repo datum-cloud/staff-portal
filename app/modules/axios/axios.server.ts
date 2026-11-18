@@ -61,12 +61,19 @@ export const http = Axios.create({
   maxContentLength: MAX_RESPONSE_BYTES,
 });
 
+/** Hides bearer tokens and cookies in a logged curl command. */
+function redactCurlCredentials(command: string): string {
+  return command
+    .replace(/(authorization:\s*)[^'"\n]+/gi, '$1[redacted]')
+    .replace(/(cookie:\s*)[^'"\n]+/gi, '$1[redacted]');
+}
+
 function defaultLogCallback(curlResult: any, err: any) {
   const { command } = curlResult;
   if (err) {
     logger.error('Axios curl error', { error: err instanceof Error ? err.message : String(err) });
   } else {
-    logger.debug('Axios curl command', { command });
+    logger.debug('Axios curl command', { command: redactCurlCredentials(command) });
   }
 }
 

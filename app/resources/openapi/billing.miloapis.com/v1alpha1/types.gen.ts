@@ -107,6 +107,13 @@ export type ComMiloapisBillingV1Alpha1BillingAccount = {
      */
     currencyCode: string;
     /**
+     * DefaultForNewProjects makes this the account the organization's new
+     * projects are billed to when it has more than one billing account.
+     * With only one, new projects are billed to it either way. At most one
+     * account in an organization can set it.
+     */
+    defaultForNewProjects?: boolean;
+    /**
      * DefaultPaymentMethodRef references the PaymentMethod to use by
      * default for charge processing. The referenced PaymentMethod must
      * reside in the same namespace and be in the Active phase.
@@ -199,6 +206,99 @@ export type ComMiloapisBillingV1Alpha1BillingAccount = {
       type: string;
     }>;
     /**
+     * Contract summarises the contract on the account's BillingEntitlement,
+     * copied with its fees from the contract's published Offer so customers
+     * can see their contract without reading the entitlement or the Offer.
+     * Set from when the contract is added, including before it starts.
+     * Cleared when the account has no contract, or its Offer isn't
+     * published.
+     */
+    contract?: {
+      /**
+       * BillingDayOfMonth is the day of the month the contract bills on, the
+       * day it starts. Months shorter than it bill on their last day.
+       */
+      billingDayOfMonth: number;
+      /**
+       * Fees are the contract's fixed fees, before discounts: its one-time
+       * fees, such as a setup fee, and its recurring ones, such as a monthly
+       * fee. Discounts on them are listed in status.discounts. A contract
+       * amended after it started omits the one-time fees already charged.
+       */
+      fees?: Array<{
+        /**
+         * Amount is the fee's unit amount as a decimal string in currency (e.g.
+         * "2400.00"). The contract charges it quantity times.
+         */
+        amount: string;
+        /**
+         * BillingTiming is when a Recurring fee is invoiced: InAdvance at the
+         * start of each period, or InArrears at its end, with that period's
+         * usage. Empty for a OneTime fee, which is invoiced when it's charged.
+         */
+        billingTiming?: 'InAdvance' | 'InArrears';
+        /**
+         * ChargeType is OneTime for a fee charged once, when the contract
+         * starts, or Recurring for one charged every interval.
+         */
+        chargeType: ('Usage' | 'OneTime' | 'Recurring') & ('OneTime' | 'Recurring');
+        /**
+         * Currency is the ISO 4217 currency code of amount.
+         */
+        currency: string;
+        /**
+         * DisplayName is the fee's label, as invoices show it (e.g. "Setup
+         * fee").
+         */
+        displayName?: string;
+        /**
+         * EndsAt is when a Recurring fee with periods stops: the end of its
+         * last period, on the contract's billing day. Empty when the fee has
+         * no end.
+         */
+        endsAt?: string;
+        /**
+         * Interval is how often a Recurring fee is charged (monthly, quarterly
+         * or annual), so amount is per interval. Empty for a OneTime fee.
+         */
+        interval?: 'monthly' | 'quarterly' | 'annual';
+        /**
+         * Name is the metadata.name of the fee's ServicePricing.
+         */
+        name: string;
+        /**
+         * Periods is how many intervals a Recurring fee is charged for,
+         * counted from startsAt. Empty when the fee has no end.
+         */
+        periods?: number;
+        /**
+         * PricingUnit is what amount is per (e.g. "port"), so the fee reads
+         * "4 port × $300.00". Empty when the quantity is a count of the fee.
+         */
+        pricingUnit?: string;
+        /**
+         * Quantity is how many of the fee the contract charges, so the fee
+         * charged is amount times quantity (e.g. 3 × "1000.00").
+         */
+        quantity?: number;
+        /**
+         * ServiceRef is the service the fee is for. Empty for a fee that isn't
+         * for any one service.
+         */
+        serviceRef?: string;
+      }>;
+      /**
+       * StartsAt is when the contract starts, at midnight UTC: its one-time
+       * fees are charged then, and its monthly fees bill from then.
+       */
+      startsAt: string;
+      /**
+       * UsageBilled is true when the contract also bills usage, at the rates
+       * in its Offer, on top of its fees.
+       */
+      usageBilled?: boolean;
+    };
+    /**
      * Discounts lists the discount on each service pricing in the account's
      * Offer, copied from the Offer's published snapshot so customers can see
      * their discounts without reading the Offer. Set only while at least one
@@ -270,11 +370,12 @@ export type ComMiloapisBillingV1Alpha1BillingAccount = {
          */
         agreementReference?: string;
         /**
-         * CreditLimit is the maximum spend per billing cycle, as a decimal
-         * string in the billing account's currency (e.g. "10000"). Staff are
-         * alerted as the account nears it; it is not a hard cap.
+         * CreditLimit is the most the account should spend per billing cycle,
+         * as a decimal string in the billing account's currency (e.g. "10000").
+         * It is not a hard cap. Optional: nothing enforces it yet, so staff
+         * only set one when finance wants it recorded.
          */
-        creditLimit: string;
+        creditLimit?: string;
         /**
          * NetDays is the number of days after the invoice date that payment
          * is due.
@@ -527,11 +628,12 @@ export type ComMiloapisBillingV1Alpha1BillingArrangement = {
        */
       agreementReference?: string;
       /**
-       * CreditLimit is the maximum spend per billing cycle, as a decimal
-       * string in the billing account's currency (e.g. "10000"). Staff are
-       * alerted as the account nears it; it is not a hard cap.
+       * CreditLimit is the most the account should spend per billing cycle,
+       * as a decimal string in the billing account's currency (e.g. "10000").
+       * It is not a hard cap. Optional: nothing enforces it yet, so staff
+       * only set one when finance wants it recorded.
        */
-      creditLimit: string;
+      creditLimit?: string;
       /**
        * NetDays is the number of days after the invoice date that payment
        * is due.
@@ -2017,6 +2119,17 @@ export type ComMiloapisBillingV1Alpha1Offer = {
      */
     servicePricingRefs?: Array<{
       /**
+       * BillingTiming is when a Recurring fee is invoiced: InArrears at the
+       * end of each period with that period's usage, or InAdvance at its
+       * start. Unset, the fee is billed in advance, as every fee was before
+       * this field existed; the staff portal sets InArrears on new contract
+       * fees unless staff choose in advance. Only allowed on a Recurring
+       * pricing: a OneTime fee is always invoiced when it's charged and usage
+       * at the end of the period, and the Offer controller won't publish an
+       * Offer that sets it on either.
+       */
+      billingTiming?: 'InAdvance' | 'InArrears';
+      /**
        * Discount specifies an optional discount override for this service pricing.
        */
       discount?: {
@@ -2034,6 +2147,23 @@ export type ComMiloapisBillingV1Alpha1Offer = {
        * milo-system when empty.
        */
       namespace?: string;
+      /**
+       * Periods is how many of its intervals a Recurring fee is charged for,
+       * counted from the contract's start: 36 on a monthly fee is three
+       * years, and 4 on an annual fee is four. The fee stops after its last
+       * period. Unset, it's charged for as long as the account is on the
+       * Offer. Only allowed on a Recurring pricing: the Offer controller
+       * won't publish an Offer that sets it on any other.
+       */
+      periods?: number;
+      /**
+       * Quantity is how many of a OneTime or Recurring fee the Offer charges:
+       * the fee's amount times its quantity, such as three servers at the
+       * same monthly price. Defaults to 1. Not allowed on a Usage pricing,
+       * whose quantity is what was used: the Offer controller won't publish
+       * an Offer that sets it there.
+       */
+      quantity?: number;
     }>;
     /**
      * ServicePricings is an immutable snapshot of referenced
@@ -2041,6 +2171,13 @@ export type ComMiloapisBillingV1Alpha1Offer = {
      * first becomes GA. Empty while Draft.
      */
     servicePricings?: Array<{
+      /**
+       * BillingTiming is when a Recurring fee is invoiced, captured from the
+       * reference when the Offer becomes GA, and only when the reference sets
+       * it. Providers bill a Recurring snapshot without it in advance. Unset
+       * for OneTime and Usage pricings.
+       */
+      billingTiming?: 'InAdvance' | 'InArrears';
       /**
        * Discount is the resolved discount for this service pricing snapshot,
        * captured when the Offer becomes GA.
@@ -2056,6 +2193,20 @@ export type ComMiloapisBillingV1Alpha1Offer = {
        */
       name: string;
       /**
+       * Periods is how many of its intervals a Recurring fee is charged for,
+       * counted from the contract's start, captured from the reference when
+       * the Offer becomes GA. Unset when the fee has no end.
+       */
+      periods?: number;
+      /**
+       * Quantity is how many of a OneTime or Recurring fee the Offer charges,
+       * captured from the reference when the Offer becomes GA: 1 unless the
+       * reference set it. Providers charge the fee's amount times its
+       * quantity, and treat an unset quantity (in a snapshot taken before it
+       * existed) as 1. Unset for Usage pricings.
+       */
+      quantity?: number;
+      /**
        * Spec is a deep copy of the source ServicePricingSpec at publish time.
        */
       spec: {
@@ -2064,6 +2215,21 @@ export type ComMiloapisBillingV1Alpha1Offer = {
          * charges.
          */
         amount?: string;
+        /**
+         * BasedOn names the list pricing, in the same namespace, that this
+         * pricing gives a customer their own price for. It must have the same
+         * chargeType, and the named pricing can't itself have basedOn.
+         *
+         * A Usage pricing must match it in everything but its rate amounts:
+         * serviceRef, metric, pricingUnit, unitConversion, each rate's match and
+         * whether it's flat or tiered, and tier bounds. A OneTime or Recurring
+         * pricing must match it in everything but its amount and displayName:
+         * serviceRef, pricingUnit, trigger and interval.
+         *
+         * Billing doesn't change with basedOn: it records which list price the
+         * customer's price replaces, so portals can show them side by side.
+         */
+        basedOn?: string;
         /**
          * ChargeType distinguishes Usage, OneTime, and Recurring pricing.
          */
@@ -2077,9 +2243,11 @@ export type ComMiloapisBillingV1Alpha1Offer = {
          */
         displayName?: string;
         /**
-         * Interval is the cadence for a Recurring charge.
+         * Interval is the cadence for a Recurring charge: monthly, quarterly
+         * or annual. It's the fee's own, so an Offer billed monthly can charge
+         * an annual fee once a year, on the account's billing day.
          */
-        interval?: 'monthly';
+        interval?: 'monthly' | 'quarterly' | 'annual';
         /**
          * Metric is the meterName of the MeterDefinition a Usage pricing
          * selects (e.g. "compute.datumapis.com/instance/cpu-allocated").
@@ -2091,6 +2259,11 @@ export type ComMiloapisBillingV1Alpha1Offer = {
          * PricingUnit is a human-readable billing unit label (e.g. "vcpu",
          * "gib"). Required when chargeType is Usage. Does not need to be the
          * literal UCUM unit string of the meter.
+         *
+         * Optional for OneTime and Recurring fees, where it labels what the
+         * amount is per (e.g. "port", "kW"), so invoices and portals show a
+         * fee's quantity in it ("4 port × $300.00"). It doesn't change what's
+         * charged.
          */
         pricingUnit?: string;
         /**
@@ -2136,9 +2309,12 @@ export type ComMiloapisBillingV1Alpha1Offer = {
         }>;
         /**
          * ServiceRef is the canonical service identifier (e.g.
-         * "compute.datumapis.com").
+         * "compute.datumapis.com"). Required for Usage pricings, where it names
+         * the service that owns the meter. Optional for OneTime and Recurring
+         * fees, which needn't be for any one service, such as a contract's
+         * setup or support fee; when set, it must name a Service.
          */
-        serviceRef: string;
+        serviceRef?: string;
         /**
          * Trigger identifies when a OneTime charge fires.
          */
@@ -2686,6 +2862,14 @@ export type ComMiloapisBillingV1Alpha1ServicePricing = {
    * fixed amount. Providers read the Offer's snapshot of this shape,
    * distinguished by chargeType.
    *
+   * A OneTime or Recurring pricing is a fee, such as a contract's setup or
+   * monthly fee. A fee may name a service and a pricingUnit, and an Offer
+   * charges it as many times as its reference's quantity.
+   *
+   * A pricing with basedOn is a customer's own price: a copy of the list
+   * pricing basedOn names, with only its rate amounts (Usage) or its amount
+   * (OneTime and Recurring) changed.
+   *
    * The spec is immutable: a new price is a new ServicePricing.
    */
   spec?: {
@@ -2694,6 +2878,21 @@ export type ComMiloapisBillingV1Alpha1ServicePricing = {
      * charges.
      */
     amount?: string;
+    /**
+     * BasedOn names the list pricing, in the same namespace, that this
+     * pricing gives a customer their own price for. It must have the same
+     * chargeType, and the named pricing can't itself have basedOn.
+     *
+     * A Usage pricing must match it in everything but its rate amounts:
+     * serviceRef, metric, pricingUnit, unitConversion, each rate's match and
+     * whether it's flat or tiered, and tier bounds. A OneTime or Recurring
+     * pricing must match it in everything but its amount and displayName:
+     * serviceRef, pricingUnit, trigger and interval.
+     *
+     * Billing doesn't change with basedOn: it records which list price the
+     * customer's price replaces, so portals can show them side by side.
+     */
+    basedOn?: string;
     /**
      * ChargeType distinguishes Usage, OneTime, and Recurring pricing.
      */
@@ -2707,9 +2906,11 @@ export type ComMiloapisBillingV1Alpha1ServicePricing = {
      */
     displayName?: string;
     /**
-     * Interval is the cadence for a Recurring charge.
+     * Interval is the cadence for a Recurring charge: monthly, quarterly
+     * or annual. It's the fee's own, so an Offer billed monthly can charge
+     * an annual fee once a year, on the account's billing day.
      */
-    interval?: 'monthly';
+    interval?: 'monthly' | 'quarterly' | 'annual';
     /**
      * Metric is the meterName of the MeterDefinition a Usage pricing
      * selects (e.g. "compute.datumapis.com/instance/cpu-allocated").
@@ -2721,6 +2922,11 @@ export type ComMiloapisBillingV1Alpha1ServicePricing = {
      * PricingUnit is a human-readable billing unit label (e.g. "vcpu",
      * "gib"). Required when chargeType is Usage. Does not need to be the
      * literal UCUM unit string of the meter.
+     *
+     * Optional for OneTime and Recurring fees, where it labels what the
+     * amount is per (e.g. "port", "kW"), so invoices and portals show a
+     * fee's quantity in it ("4 port × $300.00"). It doesn't change what's
+     * charged.
      */
     pricingUnit?: string;
     /**
@@ -2766,9 +2972,12 @@ export type ComMiloapisBillingV1Alpha1ServicePricing = {
     }>;
     /**
      * ServiceRef is the canonical service identifier (e.g.
-     * "compute.datumapis.com").
+     * "compute.datumapis.com"). Required for Usage pricings, where it names
+     * the service that owns the meter. Optional for OneTime and Recurring
+     * fees, which needn't be for any one service, such as a contract's
+     * setup or support fee; when set, it must name a Service.
      */
-    serviceRef: string;
+    serviceRef?: string;
     /**
      * Trigger identifies when a OneTime charge fires.
      */

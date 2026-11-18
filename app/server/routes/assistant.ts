@@ -7,6 +7,8 @@ import {
   isAssistantConfigured,
   resolveGatewayModel,
 } from '@/server/lib/ai-gateway';
+import { parseAssistantRequest, toClientErrorMessage } from '@/server/lib/assistant-request';
+import { createRateLimiter } from '@/server/lib/rate-limiter';
 import { authMiddleware, getToken, getUserId } from '@/server/middleware';
 import { env } from '@/utils/config/env.server';
 import { logger } from '@/utils/logger';
@@ -61,7 +63,10 @@ function usesAdaptiveThinking(modelId: string): boolean {
   return /^claude-(?:opus|sonnet|haiku|fable)-5(?:-|$)/.test(modelId);
 }
 
-/** Prefer the provider's real message over the SDK's opaque default. */
+/**
+ * The provider's real message, for server logs only. Clients get
+ * `toClientErrorMessage`, which never includes provider text.
+ */
 function formatAssistantError(error: unknown): string {
   if (APICallError.isInstance(error)) {
     if (typeof error.responseBody === 'string' && error.responseBody.length > 0) {
@@ -93,20 +98,30 @@ function formatAssistantError(error: unknown): string {
   return 'An error occurred.';
 }
 
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 20;
+/** Cap on tracked users, so the limiter's memory stays bounded. */
+const RATE_LIMIT_MAX_ENTRIES = 10_000;
 
-function checkRateLimit(userId: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(userId);
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(userId, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return true;
-  }
-  if (entry.count >= RATE_LIMIT_MAX) return false;
-  entry.count++;
-  return true;
+const rateLimiter = createRateLimiter({
+  windowMs: RATE_LIMIT_WINDOW_MS,
+  max: RATE_LIMIT_MAX,
+  maxEntries: RATE_LIMIT_MAX_ENTRIES,
+});
+
+/**
+ * Stream `onError` handler: logs the provider detail and sends the client a
+ * fixed message.
+ */
+function createStreamErrorHandler(context: { userId: string; model: string; protocol: string }) {
+  return (error: unknown): string => {
+    logger.error('assistant stream error', {
+      ...context,
+      error: formatAssistantError(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+    return toClientErrorMessage(error);
+  };
 }
 
 function resolveDirectAnthropicModel(requested?: string): string {
@@ -149,18 +164,12 @@ assistantRoutes.post('/', authMiddleware(), async (c) => {
   const token = getToken(c);
   const userId = getUserId(c);
 
-  const body = await c.req.json();
-  const {
-    messages,
-    clientOs,
-    model: requestedModel,
-    effort: requestedEffort,
-  } = body as {
-    messages: UIMessage[];
-    clientOs?: string;
-    model?: string;
-    effort?: string;
-  };
+  const parsed = parseAssistantRequest(await c.req.json().catch(() => undefined));
+  if (!parsed.success) {
+    logger.warn('assistant request rejected', { userId, issues: parsed.issues });
+    return c.json({ error: 'Invalid request' }, 400);
+  }
+  const { messages, clientOs, model: requestedModel, effort: requestedEffort } = parsed.data;
 
   const lastUserMessage = messages.filter((m) => m.role === 'user').at(-1);
   const userMessage = lastUserMessage?.parts
@@ -169,7 +178,7 @@ assistantRoutes.post('/', authMiddleware(), async (c) => {
     .join(' ')
     .slice(0, 500);
 
-  if (!checkRateLimit(userId)) {
+  if (!rateLimiter.check(userId)) {
     return c.json({ error: 'Too Many Requests' }, 429);
   }
 
@@ -196,14 +205,13 @@ assistantRoutes.post('/', authMiddleware(), async (c) => {
       userMessage,
     });
   } catch (err) {
-    const message = formatAssistantError(err);
     logger.error('assistant request failed', {
       userId,
       userMessage,
-      error: message,
+      error: formatAssistantError(err),
       stack: err instanceof Error ? err.stack : undefined,
     });
-    return c.json({ error: message }, 500);
+    return c.json({ error: toClientErrorMessage(err) }, 500);
   }
 });
 
@@ -282,7 +290,11 @@ async function streamViaGateway(args: {
 
   return result.toUIMessageStreamResponse({
     sendReasoning: true,
-    onError: formatAssistantError,
+    onError: createStreamErrorHandler({
+      userId,
+      model: selected.id,
+      protocol: selected.protocol,
+    }),
   });
 }
 
@@ -354,6 +366,6 @@ async function streamViaAnthropic(args: {
 
   return result.toUIMessageStreamResponse({
     sendReasoning: true,
-    onError: formatAssistantError,
+    onError: createStreamErrorHandler({ userId, model: modelId, protocol: 'anthropic-direct' }),
   });
 }

@@ -148,7 +148,6 @@ describe('payment terms applications', () => {
     const values = paymentTermsFormFromApplication(application('a', 1));
     expect(values).to.include({
       netDays: 30,
-      creditLimit: '',
       accountsPayableEmail: 'ap@acme.com',
       purchaseOrderNumber: 'PO-4471',
       agreementReference: 'MSA-2026-014',
@@ -167,7 +166,6 @@ describe('payment terms applications', () => {
   it('approves the application by naming it on the new terms', () => {
     const values = {
       ...paymentTermsFormFromApplication(application('a', 1)),
-      creditLimit: '10000',
       reason: 'Verified company',
     };
     const spec = buildArrangementSpec(values, 'acme-billing', { applicationName: 'a' });

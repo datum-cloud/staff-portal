@@ -1,13 +1,14 @@
 import { DateTime } from '@/components/date';
 import { EmptyState } from '@/components/empty-state';
 import type { InvoiceFrequency } from '@/modules/billing/billing-cycle';
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { LinkButton } from '@datum-cloud/datum-ui/button';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
-import { ArrowRight, CircleAlert } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import type { ComponentProps, ReactNode } from 'react';
 
 /** Shared pieces for the dashboard's section and table cards. */
@@ -85,7 +86,7 @@ export function CardQueryState({
   children: ReactNode;
 }) {
   if (isLoading) return <>{skeleton}</>;
-  if (isError) return <EmptyState size="sm" icon={CircleAlert} title={error} />;
+  if (isError) return <EmptyState size="sm" icon={STATUS_ICONS.alert} title={error} />;
   if (isEmpty) return <EmptyState size="sm" title={empty} />;
   return <>{children}</>;
 }

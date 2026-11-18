@@ -33,10 +33,7 @@ function StatusSeparator() {
 function PendingStatus({ label, tooltip }: { label: string; tooltip: string }) {
   return (
     <Tooltip message={tooltip}>
-      <Text
-        size="xs"
-        weight="medium"
-        className="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400">
+      <Text size="xs" weight="medium" className="text-warning inline-flex items-center gap-1">
         <STATUS_ICONS.loading className="size-3 shrink-0 animate-spin" aria-hidden />
         {label}
       </Text>
@@ -51,13 +48,13 @@ function HostnameProvisioningStatus({ val }: { val: HostnameRow }) {
     <Text as="div" size="xs" className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
       {val.verified ? (
         <Tooltip message={t`This hostname has been verified by Datum`}>
-          <span className="font-medium text-green-600 dark:text-green-400">
+          <span className="text-success font-medium">
             <Trans>Hostname Verified</Trans>
           </span>
         </Tooltip>
       ) : val.message ? (
         <Tooltip message={val.message}>
-          <span className="font-medium text-red-600 dark:text-red-400">
+          <span className="text-destructive font-medium">
             <Trans>Unverified</Trans>
           </span>
         </Tooltip>
@@ -72,7 +69,7 @@ function HostnameProvisioningStatus({ val }: { val: HostnameRow }) {
 
       {val.dnsProgrammed ? (
         <Tooltip message={t`DNS records have been programmed for this hostname`}>
-          <span className="font-medium text-green-600 dark:text-green-400">
+          <span className="text-success font-medium">
             <Trans>DNS Ready</Trans>
           </span>
         </Tooltip>
@@ -87,13 +84,13 @@ function HostnameProvisioningStatus({ val }: { val: HostnameRow }) {
 
       {val.certStatus === 'ready' ? (
         <Tooltip message={t`TLS certificate is issued and ready for this hostname`}>
-          <span className="font-medium text-green-600 dark:text-green-400">
+          <span className="text-success font-medium">
             <Trans>TLS Ready</Trans>
           </span>
         </Tooltip>
       ) : val.certStatus === 'failed' ? (
         <Tooltip message={val.certCondition?.message || t`TLS certificate provisioning failed`}>
-          <span className="font-medium text-red-600 dark:text-red-400">
+          <span className="text-destructive font-medium">
             <Trans>TLS Failed</Trans>
           </span>
         </Tooltip>

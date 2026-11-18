@@ -2,12 +2,13 @@ import { EmptyState } from '@/components/empty-state';
 import { UserAvatar } from '@/components/user-avatar';
 import { SectionCard } from '@/features/milo';
 import { useUserOrganizationListQuery } from '@/resources/request/client';
+import { ENTITY_ICONS } from '@/utils/config/icons.config';
 import { orgRoutes } from '@/utils/config/routes.config';
 import { startCase } from '@/utils/helpers';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
-import { Building2, Link2Off } from 'lucide-react';
+import { Link2Off } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router';
 
@@ -47,7 +48,7 @@ export function ContactOrganizationsCard({ userId, className }: Props) {
         </div>
       ) : memberships.length === 0 ? (
         <EmptyState
-          icon={Building2}
+          icon={ENTITY_ICONS.organization}
           title={<Trans>No organizations</Trans>}
           description={<Trans>This user isn&apos;t a member of any organizations.</Trans>}
         />

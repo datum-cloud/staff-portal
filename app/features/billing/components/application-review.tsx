@@ -534,7 +534,6 @@ export function ApplicationReview({ orgName, applicationName }: ApplicationRevie
         title={t`Approve application`}
         description={t`Grants these payment terms to the billing account and approves the application. The customer can then pay by invoice.`}
         submitText={t`Approve`}
-        currency={currency}
         defaultValues={paymentTermsFormFromApplication(application, { startsAt: renewsFrom })}
         showStart
         onSubmit={handleApprove}

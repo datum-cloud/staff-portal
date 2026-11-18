@@ -126,6 +126,7 @@ export const organizationMembersOp = (orgName: string) =>
         roles: true,
         type: true,
         invitationState: true,
+        expiresAt: true,
         createdAt: true,
         userName: true,
         avatarUrl: true,

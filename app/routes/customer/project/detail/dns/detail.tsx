@@ -2,7 +2,7 @@ import type { Route } from './+types/detail';
 import { BadgeState } from '@/components/badge';
 import { Chip } from '@/components/chip';
 import { PageHeader } from '@/components/page-header';
-import { DnsRecordStatusProbe } from '@/features/dns';
+import { DnsRecordStatusProbe, DnsZoneStatusCard } from '@/features/dns';
 import { ListColumnHeader, ListTable, SectionCard } from '@/features/milo';
 import { authenticator } from '@/modules/auth';
 import { useProjectDnsRecordListQuery } from '@/resources/request/client';
@@ -200,6 +200,8 @@ export default function Page() {
   return (
     <div className="m-4 flex flex-col gap-1">
       <PageHeader title={dns?.spec?.domainName} />
+
+      <DnsZoneStatusCard className="mt-4" status={dns?.status} />
 
       {/* Both tables use ListTable inside a padding-free SectionCard (title on the
           table, inset governs spacing) so DNS Records and Nameservers read the

@@ -1,6 +1,6 @@
 import { sentryConfig } from './app/utils/config/sentry.config';
 import type { Config } from '@react-router/dev/config';
-import { sentryOnBuildEnd } from '@sentry/react-router';
+import { sentryOnBuildEnd } from '@sentry/react-router/vite';
 
 export default {
   // Config options...

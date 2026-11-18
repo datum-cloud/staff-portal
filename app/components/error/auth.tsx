@@ -17,7 +17,7 @@ const AuthError = ({ message, requestId }: { message: string; requestId?: string
   }, [navigate, pathname, search]);
 
   return (
-    <Card className="w-1/2 overflow-hidden">
+    <Card className="mx-4 w-full max-w-xl overflow-hidden">
       <CardContent className="flex min-h-[500px] flex-col items-center justify-center gap-6">
         <LogoIcon width={64} className="mb-4" />
 
@@ -36,7 +36,7 @@ const AuthError = ({ message, requestId }: { message: string; requestId?: string
             <Text
               as="div"
               textColor="muted"
-              className="rounded-r-md border-l-4 border-red-500 bg-red-50 p-4 text-center dark:bg-red-950/20">
+              className="border-destructive bg-destructive/10 rounded-r-md border-l-4 p-4 text-center">
               <Text as="div" size="xs">
                 <strong>Request ID:</strong> {requestId}
               </Text>

@@ -1,12 +1,13 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../shared';
 import type { Route } from './+types/member';
 import { BadgeState } from '@/components/badge';
+import { DateTime } from '@/components/date';
 import { DisplayName, DisplayText } from '@/components/display';
 import { ListColumnHeader, ListTable } from '@/features/milo';
 import type { GqlOrgMember } from '@/resources/gql/organization.gql';
 import {
-  useOrgInvitationCreateMutation,
   useOrgInvitationDeleteMutation,
+  useOrgInvitationResendMutation,
   useOrgMemberListQuery,
 } from '@/resources/request/client';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
@@ -17,7 +18,8 @@ import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { t as tCore } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { addHours, differenceInMinutes, formatRFC3339 } from 'date-fns';
+import { isAxiosError } from 'axios';
+import { differenceInMinutes } from 'date-fns';
 import { MailIcon } from 'lucide-react';
 import { useState } from 'react';
 
@@ -37,8 +39,15 @@ export default function Page() {
   const data = useOrganizationDetailData();
   const orgName = data.metadata?.name ?? '';
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
-  const createInvitationMutation = useOrgInvitationCreateMutation();
+  const resendInvitationMutation = useOrgInvitationResendMutation();
   const deleteInvitationMutation = useOrgInvitationDeleteMutation();
+
+  // The API client already toasts a failed request, so only other errors need one here.
+  const reportError = (err: unknown, fallback: string) => {
+    if (!isAxiosError(err)) {
+      toast.error(err instanceof Error ? err.message : fallback);
+    }
+  };
 
   const tableQuery = useOrgMemberListQuery(orgName);
 
@@ -62,20 +71,10 @@ export default function Page() {
         }
         setLoadingStates((prev) => ({ ...prev, [row.name]: true }));
         try {
-          await deleteInvitationMutation.mutateAsync({ orgName, name: row.name });
-          await createInvitationMutation.mutateAsync({
-            orgName,
-            payload: {
-              email: row.email,
-              familyName: row.familyName ?? undefined,
-              givenName: row.givenName ?? undefined,
-              expirationDate: formatRFC3339(addHours(new Date(), 24)),
-              organizationRef: { name: orgName },
-              roles: (row.roles ?? []).map((name: string) => ({ name })),
-              state: 'Pending',
-            },
-          });
+          await resendInvitationMutation.mutateAsync({ orgName, name: row.name });
           toast.success(t`Invitation resend successfully`);
+        } catch (err) {
+          reportError(err, t`Failed to resend invitation`);
         } finally {
           setLoadingStates((prev) => ({ ...prev, [row.name]: false }));
         }
@@ -91,6 +90,8 @@ export default function Page() {
         try {
           await deleteInvitationMutation.mutateAsync({ orgName, name: row.name });
           toast.success(t`Invitation cancelled successfully`);
+        } catch (err) {
+          reportError(err, t`Failed to cancel invitation`);
         } finally {
           setLoadingStates((prev) => ({ ...prev, [row.name]: false }));
         }
@@ -123,6 +124,23 @@ export default function Page() {
       header: () => '',
       cell: ({ getValue }) => <BadgeState state={getValue() ?? ''} />,
       enableSorting: false,
+    }),
+    columnHelper.accessor('expiresAt', {
+      header: ({ column }) => <ListColumnHeader column={column} title={tCore`Expires`} />,
+      cell: ({ row }) => {
+        const { expiresAt, invitationState } = row.original;
+        if (!expiresAt || invitationState !== 'Pending') return '—';
+        if (new Date(expiresAt) < new Date()) {
+          return (
+            <span className="text-destructive">
+              <Trans>
+                Expired <DateTime date={expiresAt} variant="relative" addSuffix />
+              </Trans>
+            </span>
+          );
+        }
+        return <DateTime date={expiresAt} variant="relative" addSuffix />;
+      },
     }),
     columnHelper.accessor('roles', {
       header: ({ column }) => <ListColumnHeader column={column} title={tCore`Role`} />,

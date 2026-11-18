@@ -1,0 +1,561 @@
+import { CONTRACT_CURRENCY } from '../../lib/contract';
+import type { ListFeeOption } from '../../lib/contract-list-fees';
+import { rateSlots, type UsageMeterOption } from '../../lib/contract-usage';
+import { formatMoney, indexServicesByRef } from '../../utils';
+import { feeChargeText, periodUnitText, rateSlotText } from '../contract-fee-text';
+import type { ContractFormValues, ListFeeRowValues, UsageRowValues } from './schema';
+import { WholeNumberInput } from './whole-number-input';
+import { EMBEDDED_TABLE_HEADER_CELL_CLASS, TABLE_CARD_FRAME_CLASS } from '@/features/milo';
+import { useServiceListQuery } from '@/resources/request/client';
+import { Button } from '@datum-cloud/datum-ui/button';
+import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
+import { Form } from '@datum-cloud/datum-ui/form';
+import { Icon } from '@datum-cloud/datum-ui/icons';
+import { Input } from '@datum-cloud/datum-ui/input';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@datum-cloud/datum-ui/table';
+import { Text } from '@datum-cloud/datum-ui/typography';
+import { cn } from '@datum-cloud/datum-ui/utils';
+import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
+import { ChevronDown, ChevronRight } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import type { UseFormReturn } from 'react-hook-form';
+
+type PriceListEntry =
+  | { kind: 'usage'; option: UsageMeterOption; index: number }
+  | { kind: 'fee'; option: ListFeeOption; index: number };
+
+/**
+ * The platform's price list, by service: each meter's usage pricing and each
+ * list fee. Staff tick what the contract bills, with a quantity for fees and
+ * an optional discount. A customer price, left empty for the list price,
+ * becomes the customer's own pricing based on the list one, so the list
+ * price stays beside it.
+ *
+ * Staff can search it by name or service, and collapse a service. Rows that
+ * are filtered out or collapsed are only hidden, so what's ticked and typed
+ * in them is kept and still saved.
+ */
+export function PriceListTable({
+  usageOptions,
+  feeOptions,
+}: {
+  usageOptions: UsageMeterOption[];
+  feeOptions: ListFeeOption[];
+}) {
+  const servicesQuery = useServiceListQuery();
+  const servicesByRef = useMemo(
+    () => indexServicesByRef(servicesQuery.data?.items ?? []),
+    [servicesQuery.data?.items]
+  );
+  const groups = useMemo(() => {
+    const byService = new Map<string, PriceListEntry[]>();
+    const add = (serviceRef: string, entry: PriceListEntry) =>
+      byService.set(serviceRef, [...(byService.get(serviceRef) ?? []), entry]);
+    feeOptions.forEach((option, index) => add(option.serviceRef, { kind: 'fee', option, index }));
+    usageOptions.forEach((option, index) =>
+      add(option.serviceRef, { kind: 'usage', option, index })
+    );
+    // Fees that aren't for a service go last.
+    return [...byService.entries()].sort(
+      ([a], [b]) => Number(a === '') - Number(b === '') || a.localeCompare(b)
+    );
+  }, [usageOptions, feeOptions]);
+
+  const [search, setSearch] = useState('');
+  const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set());
+  const usageRows = (Form.useWatch('usage') as UsageRowValues[] | undefined) ?? [];
+  const feeRows = (Form.useWatch('listFees') as ListFeeRowValues[] | undefined) ?? [];
+
+  if (groups.length === 0) {
+    return (
+      <Text size="sm" textColor="muted">
+        <Trans>
+          The platform has no list prices yet, so the contract bills only the fees above.
+        </Trans>
+      </Text>
+    );
+  }
+
+  // Search matches a row's name or its service's; while searching, every
+  // service with a match is shown open.
+  const query = search.trim().toLowerCase();
+  const shown = groups.map(([serviceRef, entries]) => {
+    const title = serviceRef
+      ? servicesByRef.get(serviceRef)?.spec?.displayName || serviceRef
+      : t`Not for a service`;
+    const groupMatches = query !== '' && title.toLowerCase().includes(query);
+    const visible = new Set(
+      entries.filter(
+        (entry) => !query || groupMatches || entry.option.label.toLowerCase().includes(query)
+      )
+    );
+    const key = serviceRef || 'none';
+    const ticked = entries.filter((entry) =>
+      entry.kind === 'fee' ? feeRows[entry.index]?.selected : usageRows[entry.index]?.selected
+    ).length;
+    return {
+      key,
+      title,
+      entries,
+      visible,
+      ticked,
+      open: query !== '' || !collapsed.has(key),
+    };
+  });
+  const anyVisible = shown.some((group) => group.visible.size > 0);
+  const toggle = (key: string) =>
+    setCollapsed((current) => {
+      const next = new Set(current);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  // Tick all acts on the rows on screen.
+  const onScreen = shown.flatMap((group) =>
+    group.open ? group.entries.filter((entry) => group.visible.has(entry)) : []
+  );
+
+  return (
+    <div className="flex flex-col gap-2">
+      <Input
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+        placeholder={t`Search the price list`}
+        aria-label={t`Search the price list`}
+        className="h-9 w-full sm:w-64"
+      />
+      <div className={cn(TABLE_CARD_FRAME_CLASS, 'overflow-x-auto')}>
+        <Table className="min-w-[54rem]">
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className={EMBEDDED_TABLE_HEADER_CELL_CLASS}>
+                <SelectAll entries={onScreen} />
+              </TableHead>
+              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-44')}>
+                <Trans>List price</Trans>
+              </TableHead>
+              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-36')}>
+                <Trans>Billed</Trans>
+              </TableHead>
+              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-32')}>
+                <Trans>Renewals</Trans>
+              </TableHead>
+              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-20')}>
+                <Trans>Qty</Trans>
+              </TableHead>
+              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-20')}>
+                <Trans>% off</Trans>
+              </TableHead>
+              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-36')}>
+                <Trans>Customer price</Trans>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {/*
+              Rows filtered out or collapsed stay mounted, so they keep what's
+              ticked and typed, but come first: the body drops the border of
+              its last row, which must be one on screen, or it doubles up with
+              the frame's.
+            */}
+            {shown.flatMap((group) =>
+              group.entries
+                .filter((entry) => !group.open || !group.visible.has(entry))
+                .map((entry) => <PriceListRow key={entryKey(entry)} entry={entry} hidden />)
+            )}
+            {shown.map((group) => (
+              <ServiceGroup
+                key={group.key}
+                title={group.title}
+                entries={group.entries}
+                visible={group.visible}
+                ticked={group.ticked}
+                open={group.open}
+                // A search shows every matching service open.
+                onToggle={query ? undefined : () => toggle(group.key)}
+              />
+            ))}
+            {!anyVisible ? (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={7} className="py-6 text-center">
+                  <Text size="sm" textColor="muted">
+                    <Trans>Nothing on the price list matches “{search.trim()}”.</Trans>
+                  </Text>
+                </TableCell>
+              </TableRow>
+            ) : null}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
+}
+
+/** Ticks or unticks every row of the price list on screen. */
+function SelectAll({ entries }: { entries: PriceListEntry[] }) {
+  const form = Form.useFormContext().form.raw as UseFormReturn<ContractFormValues>;
+  const usage = (Form.useWatch('usage') as UsageRowValues[] | undefined) ?? [];
+  const listFees = (Form.useWatch('listFees') as ListFeeRowValues[] | undefined) ?? [];
+  const isTicked = (entry: PriceListEntry) =>
+    Boolean(entry.kind === 'fee' ? listFees[entry.index]?.selected : usage[entry.index]?.selected);
+  const ticked = entries.filter(isTicked).length;
+  const checked =
+    ticked === 0 ? false : ticked === entries.length ? true : ('indeterminate' as const);
+  const setAll = (selected: boolean) => {
+    const options = { shouldDirty: true, shouldValidate: form.formState.isSubmitted };
+    entries.forEach((entry) =>
+      entry.kind === 'fee'
+        ? form.setValue(`listFees.${entry.index}.selected`, selected, options)
+        : form.setValue(`usage.${entry.index}.selected`, selected, options)
+    );
+  };
+  // The title sits outside the checkbox, so clicking it doesn't tick every row.
+  return (
+    <div className="flex items-center gap-2">
+      <Checkbox
+        checked={checked}
+        onCheckedChange={() => setAll(checked !== true)}
+        aria-label={checked === true ? t`Untick all` : t`Tick all`}
+      />
+      <span>
+        <Trans>Pricing</Trans>
+      </span>
+    </div>
+  );
+}
+
+function ServiceGroup({
+  title,
+  entries,
+  visible,
+  ticked,
+  open,
+  onToggle,
+}: {
+  title: string;
+  entries: PriceListEntry[];
+  /** The entries a search leaves. */
+  visible: Set<PriceListEntry>;
+  /** How many of the service's rows are ticked, shown while it's collapsed. */
+  ticked: number;
+  open: boolean;
+  /** Collapses or opens the service; unset while searching. */
+  onToggle?: () => void;
+}) {
+  // Its hidden rows are rendered at the top of the table (see PriceListTable).
+  if (visible.size === 0) return null;
+  return (
+    <>
+      <TableRow className="bg-muted/40 hover:bg-muted/40">
+        <TableCell colSpan={7} className="py-1.5">
+          {onToggle ? (
+            <button
+              type="button"
+              className="flex w-full items-center gap-1.5 text-left"
+              aria-expanded={open}
+              onClick={onToggle}>
+              <Icon
+                icon={open ? ChevronDown : ChevronRight}
+                size={14}
+                className="text-muted-foreground"
+              />
+              <Text size="xs" weight="medium" textColor="muted">
+                {title}
+              </Text>
+              {!open && ticked > 0 ? (
+                <Text size="xs" textColor="muted">
+                  {' · '}
+                  <Trans>{ticked} ticked</Trans>
+                </Text>
+              ) : null}
+            </button>
+          ) : (
+            <Text size="xs" weight="medium" textColor="muted">
+              {title}
+            </Text>
+          )}
+        </TableCell>
+      </TableRow>
+      {open
+        ? entries
+            .filter((entry) => visible.has(entry))
+            .map((entry) => <PriceListRow key={entryKey(entry)} entry={entry} hidden={false} />)
+        : null}
+    </>
+  );
+}
+
+const entryKey = (entry: PriceListEntry) =>
+  entry.kind === 'fee' ? `fee-${entry.option.name}` : `usage-${entry.option.metric}`;
+
+function PriceListRow({ entry, hidden }: { entry: PriceListEntry; hidden: boolean }) {
+  return entry.kind === 'fee' ? (
+    <ListFeeRows option={entry.option} index={entry.index} hidden={hidden} />
+  ) : (
+    <UsageRows option={entry.option} index={entry.index} hidden={hidden} />
+  );
+}
+
+/** A list fee's price, e.g. "$300.00 / month per port" or "$6,000.00 / year". */
+const feePriceText = (option: ListFeeOption) => {
+  const amount = formatMoney(Number.parseFloat(option.amount), CONTRACT_CURRENCY);
+  const price = feeChargeText(amount, option);
+  return option.pricingUnit ? t`${price} per ${option.pricingUnit}` : price;
+};
+
+function ListFeeRows({
+  option,
+  index,
+  hidden,
+}: {
+  option: ListFeeOption;
+  index: number;
+  hidden: boolean;
+}) {
+  const row = Form.useWatch(`listFees.${index}`) as ListFeeRowValues | undefined;
+  const selected = Boolean(row?.selected);
+  return (
+    <TableRow className={cn(hidden && 'hidden')}>
+      <TableCell className="align-middle">
+        <Form.Field name={`listFees.${index}.selected`}>
+          <Form.Checkbox label={option.label} />
+        </Form.Field>
+      </TableCell>
+      <TableCell className="align-middle">
+        <Text size="sm" className="tabular-nums">
+          {feePriceText(option)}
+        </Text>
+      </TableCell>
+      <TableCell className="align-middle">
+        {option.chargeType === 'Recurring' ? (
+          // When the contract invoices it: its term, not the list fee's.
+          // space-y-0: Form.Field spaces its children, and a Select is followed
+          // by its hidden native select, so its box would carry a bottom margin
+          // and sit higher than the inputs beside it.
+          <Form.Field name={`listFees.${index}.billingTiming`} className="space-y-0">
+            <Form.Select disabled={!selected} aria-label={t`Billed`}>
+              <Form.SelectItem value="InArrears">
+                <Trans>In arrears</Trans>
+              </Form.SelectItem>
+              <Form.SelectItem value="InAdvance">
+                <Trans>In advance</Trans>
+              </Form.SelectItem>
+            </Form.Select>
+          </Form.Field>
+        ) : (
+          // A one-time fee is invoiced when it's charged.
+          <Text size="sm" textColor="muted">
+            <Trans>In advance</Trans>
+          </Text>
+        )}
+      </TableCell>
+      <TableCell className="align-middle">
+        {option.chargeType === 'Recurring' ? (
+          // How many periods the contract charges it for: its term, not
+          // the list fee's. Empty for no end.
+          <Form.Field name={`listFees.${index}.periods`}>
+            <div className="flex items-center gap-1.5">
+              <WholeNumberInput
+                placeholder={t`No end`}
+                aria-label={t`Renewals`}
+                disabled={!selected}
+                className="w-16"
+              />
+              <Text size="xs" textColor="muted">
+                {periodUnitText(option.interval)}
+              </Text>
+            </div>
+          </Form.Field>
+        ) : (
+          <Text size="sm" textColor="muted">
+            —
+          </Text>
+        )}
+      </TableCell>
+      <TableCell className="align-middle">
+        <Form.Field name={`listFees.${index}.quantity`}>
+          <WholeNumberInput placeholder="1" aria-label={t`Quantity`} disabled={!selected} />
+        </Form.Field>
+      </TableCell>
+      <TableCell className="align-middle">
+        <Form.Field name={`listFees.${index}.discount`}>
+          <WholeNumberInput placeholder="0" aria-label={t`Discount`} disabled={!selected} />
+        </Form.Field>
+      </TableCell>
+      <TableCell className="align-middle">
+        <Form.Field name={`listFees.${index}.amount`}>
+          <Form.Input
+            inputMode="decimal"
+            placeholder={option.amount}
+            aria-label={t`Customer amount`}
+            disabled={!selected}
+          />
+        </Form.Field>
+      </TableCell>
+    </TableRow>
+  );
+}
+
+function UsageRows({
+  option,
+  index,
+  hidden,
+}: {
+  option: UsageMeterOption;
+  index: number;
+  hidden: boolean;
+}) {
+  const row = Form.useWatch(`usage.${index}`) as UsageRowValues | undefined;
+  const form = Form.useFormContext().form.raw as UseFormReturn<ContractFormValues>;
+  const selected = Boolean(row?.selected);
+  const list = option.pricings.find((p) => p.metadata?.name === row?.pricingName);
+  const slots = rateSlots(list?.spec);
+  const unit = option.pricingUnit;
+  const hasCustomRates = (row?.amounts ?? []).some((amount) => amount.trim() !== '');
+  const [expanded, setExpanded] = useState(hasCustomRates);
+
+  // Rates typed against one list pricing don't carry over to another, which
+  // may price the meter differently or in more or fewer rates: picking a
+  // different version starts the customer's rates again, at the list rates.
+  const pricingName = row?.pricingName;
+  const shownPricing = useRef(pricingName);
+  useEffect(() => {
+    if (!row || shownPricing.current === pricingName) return;
+    const previous = shownPricing.current;
+    shownPricing.current = pricingName;
+    // The row's first value is what the form started with, not a change.
+    if (previous === undefined) return;
+    form.setValue(
+      `usage.${index}.amounts`,
+      slots.map(() => ''),
+      { shouldDirty: true }
+    );
+    // Only when the pricing changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pricingName]);
+
+  const single = slots.length === 1;
+  return (
+    <>
+      <TableRow className={cn(hidden && 'hidden')}>
+        <TableCell className="align-middle">
+          <div className="flex flex-col gap-1">
+            <Form.Field name={`usage.${index}.selected`}>
+              <Form.Checkbox label={option.label} />
+            </Form.Field>
+            {option.pricings.length > 1 ? (
+              <Form.Field name={`usage.${index}.pricingName`} className="w-56 space-y-0 pl-6">
+                <Form.Select disabled={!selected}>
+                  {option.pricings.map((pricing, i) => {
+                    const name = pricing.metadata?.name ?? '';
+                    return (
+                      <Form.SelectItem key={name} value={name}>
+                        {name}
+                        {i === 0 ? t` · newest` : ''}
+                      </Form.SelectItem>
+                    );
+                  })}
+                </Form.Select>
+              </Form.Field>
+            ) : null}
+          </div>
+        </TableCell>
+        <TableCell className="align-middle">
+          {single ? (
+            <Text size="sm" className="tabular-nums">
+              {t`$${slots[0].listAmount} per ${unit}`}
+            </Text>
+          ) : (
+            <Button
+              type="quaternary"
+              theme="borderless"
+              size="small"
+              htmlType="button"
+              className="-ml-2 h-auto px-2 py-1"
+              icon={<Icon icon={expanded ? ChevronDown : ChevronRight} size={14} />}
+              onClick={() => setExpanded((open) => !open)}>
+              {t`${slots.length} rates per ${unit}`}
+            </Button>
+          )}
+        </TableCell>
+        <TableCell className="align-middle">
+          {/* Usage is always invoiced at the end of the period. */}
+          <Text size="sm" textColor="muted">
+            <Trans>In arrears</Trans>
+          </Text>
+        </TableCell>
+        <TableCell className="align-middle">
+          <Text size="sm" textColor="muted">
+            —
+          </Text>
+        </TableCell>
+        <TableCell className="align-middle">
+          <Text size="sm" textColor="muted">
+            <Trans>Usage</Trans>
+          </Text>
+        </TableCell>
+        <TableCell className="align-middle">
+          <Form.Field name={`usage.${index}.discount`}>
+            <WholeNumberInput placeholder="0" aria-label={t`Discount`} disabled={!selected} />
+          </Form.Field>
+        </TableCell>
+        <TableCell className="align-middle">
+          {single ? (
+            <Form.Field name={`usage.${index}.amounts.0`}>
+              <Form.Input
+                inputMode="decimal"
+                placeholder={slots[0].listAmount}
+                aria-label={t`Customer rate`}
+                disabled={!selected}
+              />
+            </Form.Field>
+          ) : !expanded && hasCustomRates ? (
+            <Text size="sm">
+              <Trans>Customer rates</Trans>
+            </Text>
+          ) : null}
+        </TableCell>
+      </TableRow>
+      {!single && expanded
+        ? slots.map((slot, slotIndex) => (
+            <TableRow
+              key={`${row?.pricingName}-${slotIndex}`}
+              className={cn('hover:bg-transparent', hidden && 'hidden')}>
+              <TableCell className="pl-12">
+                <Text size="xs" textColor="muted">
+                  {rateSlotText(slot.label)}
+                </Text>
+              </TableCell>
+              <TableCell>
+                <Text size="xs" className="tabular-nums">
+                  {`$${slot.listAmount}`}
+                </Text>
+              </TableCell>
+              <TableCell />
+              <TableCell />
+              <TableCell />
+              <TableCell />
+              <TableCell>
+                <Form.Field name={`usage.${index}.amounts.${slotIndex}`}>
+                  <Form.Input
+                    inputMode="decimal"
+                    placeholder={slot.listAmount}
+                    aria-label={t`Customer rate, ${rateSlotText(slot.label)}`}
+                    disabled={!selected}
+                  />
+                </Form.Field>
+              </TableCell>
+            </TableRow>
+          ))
+        : null}
+    </>
+  );
+}

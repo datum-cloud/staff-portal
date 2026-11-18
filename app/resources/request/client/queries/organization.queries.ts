@@ -2,14 +2,14 @@ import {
   getOrganization,
   listAllOrganizations,
   listOrganizations,
+  listAllOrgProjects,
   listOrgMembers,
   listOrgProjects,
-  orgInvitationCreateMutation,
   orgInvitationDeleteMutation,
+  orgInvitationResendMutation,
   organizationBusinessNamesQuery,
 } from '../apis/organization.api';
 import { ListQueryParams } from '@/resources/schemas';
-import type { ComMiloapisIamV1Alpha1UserInvitation } from '@openapi/iam.miloapis.com/v1alpha1';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export const organizationQueryKeys = {
@@ -22,6 +22,7 @@ export const organizationQueryKeys = {
     all: (orgName: string) => ['organizations', orgName, 'projects'] as const,
     list: (orgName: string, params?: ListQueryParams) =>
       ['organizations', orgName, 'projects', 'list', params] as const,
+    listAll: (orgName: string) => ['organizations', orgName, 'projects', 'list-all'] as const,
   },
   members: {
     all: (orgName: string) => ['organizations', orgName, 'members'] as const,
@@ -77,6 +78,15 @@ export const useOrgProjectListQuery = (orgName: string, params?: ListQueryParams
   });
 };
 
+/** Every project an organization owns, not just the first page. */
+export const useOrgAllProjectsQuery = (orgName: string, options: { enabled?: boolean } = {}) => {
+  return useQuery({
+    queryKey: organizationQueryKeys.projects.listAll(orgName),
+    queryFn: () => listAllOrgProjects(orgName),
+    enabled: (options.enabled ?? true) && !!orgName,
+  });
+};
+
 export const useOrgMemberListQuery = (orgName: string, params?: ListQueryParams) => {
   return useQuery({
     queryKey: organizationQueryKeys.members.list(orgName, params),
@@ -85,17 +95,13 @@ export const useOrgMemberListQuery = (orgName: string, params?: ListQueryParams)
   });
 };
 
-export const useOrgInvitationCreateMutation = () => {
+export const useOrgInvitationResendMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      orgName,
-      payload,
-    }: {
-      orgName: string;
-      payload: ComMiloapisIamV1Alpha1UserInvitation['spec'];
-    }) => orgInvitationCreateMutation(orgName, payload),
-    onSuccess: async (_, variables) => {
+    mutationFn: ({ orgName, name }: { orgName: string; name: string }) =>
+      orgInvitationResendMutation(orgName, name),
+    // Settled, not success: a failed create still deleted the old invitation.
+    onSettled: async (_data, _error, variables) => {
       await queryClient.invalidateQueries({
         queryKey: organizationQueryKeys.members.all(variables.orgName),
       });

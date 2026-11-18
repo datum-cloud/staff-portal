@@ -6,22 +6,14 @@ import {
 import { CustomerStatus } from '@/components/badge';
 import { SectionCard } from '@/features/milo';
 import type { GqlOrganization } from '@/resources/gql/organization.gql';
+import { ACTION_ICONS, ENTITY_ICONS } from '@/utils/config/icons.config';
 import { Badge } from '@datum-cloud/datum-ui/badge';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { Trans } from '@lingui/react/macro';
-import {
-  Building2,
-  Check,
-  CircleDot,
-  CreditCard,
-  Ellipsis,
-  UserRound,
-  X,
-  type LucideIcon,
-} from 'lucide-react';
+import { CircleDot, CreditCard, Ellipsis, UserRound, type LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 const STEP_COUNT = 4;
@@ -68,7 +60,7 @@ const STEP_TITLES: Record<OnboardingStepId, ReactNode> = {
 
 const STEP_ICONS: Record<OnboardingStepId, LucideIcon> = {
   contact: UserRound,
-  billing: Building2,
+  billing: ENTITY_ICONS.billingAccount,
   payment: CreditCard,
   complete: CircleDot,
 };
@@ -83,9 +75,9 @@ const STATUS_LABEL: Record<OnboardingStepState, ReactNode> = {
 function StepIcon({ id, state }: { id: OnboardingStepId; state: OnboardingStepState }) {
   const stepIcon =
     state === 'complete'
-      ? Check
+      ? ACTION_ICONS.check
       : state === 'failed'
-        ? X
+        ? ACTION_ICONS.close
         : state === 'upcoming' && id === 'complete'
           ? Ellipsis
           : STEP_ICONS[id];

@@ -21,8 +21,8 @@ export function requestContextMiddleware() {
 
     // Read the session token directly from the cookie (same as authMiddleware does).
     // authMiddleware is per-route and hasn't run yet, so we cannot use c.get('token').
-    // NOTE: if authMiddleware ever gains token-refresh logic, this independent read
-    // will hold a pre-rotation token — both reads would need to be unified at that point.
+    // sessionRefreshMiddleware runs first and swaps in a request carrying refreshed
+    // cookies, so this read and authMiddleware's both see the current token.
     const session = await authenticator.getSession(c.req.raw).catch(() => null);
 
     return withRequestContext(

@@ -66,7 +66,7 @@ function EnforcementBadge({ mode }: { mode: FraudPolicy['spec']['enforcement']['
       {mode === 'OBSERVE' ? (
         <Eye className="text-muted-foreground size-4" />
       ) : (
-        <Zap className="size-4 text-yellow-500" />
+        <Zap className="text-warning size-4" />
       )}
       <BadgeState
         state={mode === 'OBSERVE' ? 'info' : 'warning'}
@@ -96,7 +96,7 @@ function ProviderChip({
 }) {
   const known = availability.has(name);
   const available = availability.get(name);
-  const dot = !known ? 'bg-muted-foreground/40' : available ? 'bg-green-500' : 'bg-red-500';
+  const dot = !known ? 'bg-muted-foreground/40' : available ? 'bg-success' : 'bg-destructive';
   const title = !known
     ? t`Provider status unknown`
     : available
@@ -131,7 +131,7 @@ function toDecisionBands(thresholds: Threshold[]): DecisionBand[] {
   if (!sorted.length) return [];
 
   const bands: DecisionBand[] = [
-    { label: t`Accept`, from: 0, to: sorted[0].minScore, bar: 'bg-green-500', dot: 'bg-green-500' },
+    { label: t`Accept`, from: 0, to: sorted[0].minScore, bar: 'bg-success', dot: 'bg-success' },
   ];
   sorted.forEach((th, i) => {
     const to = i < sorted.length - 1 ? sorted[i + 1].minScore : 100;
@@ -140,8 +140,8 @@ function toDecisionBands(thresholds: Threshold[]): DecisionBand[] {
       label: startCase(th.action),
       from: th.minScore,
       to,
-      bar: isDeactivate ? 'bg-red-500' : 'bg-yellow-500',
-      dot: isDeactivate ? 'bg-red-500' : 'bg-yellow-500',
+      bar: isDeactivate ? 'bg-destructive' : 'bg-warning',
+      dot: isDeactivate ? 'bg-destructive' : 'bg-warning',
     });
   });
   return bands;

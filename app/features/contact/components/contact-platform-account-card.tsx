@@ -8,13 +8,13 @@ import {
   usePasskeyListQuery,
   usePlatformAccessQuery,
 } from '@/resources/request/client';
+import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { userRoutes } from '@/utils/config/routes.config';
 import { startCase } from '@/utils/helpers';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1User } from '@openapi/iam.miloapis.com/v1alpha1';
-import { ExternalLink } from 'lucide-react';
 import { Link } from 'react-router';
 
 type Props = {
@@ -49,7 +49,7 @@ export function ContactPlatformAccountCard({ user, className }: Props) {
           to={userRoutes.detail(userId)}
           className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm">
           <Trans>Open user</Trans>
-          <ExternalLink className="size-3.5" />
+          <ACTION_ICONS.externalLink className="size-3.5" />
         </Link>
       }>
       <div className="mb-3 flex items-center gap-2">

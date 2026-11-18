@@ -19,9 +19,8 @@ Sentry.init({
   // Environment configuration
   environment: env?.SENTRY_ENV || 'development',
 
-  // Adds request headers and IP for users, for more info visit:
-  // https://docs.sentry.io/platforms/javascript/guides/react-router/configuration/options/#sendDefaultPii
-  sendDefaultPii: true,
+  // Never attach request or response bodies to events.
+  dataCollection: { httpBodies: [] },
 
   integrations: [
     // Performance
@@ -34,9 +33,6 @@ Sentry.init({
     //   colorScheme: 'system',
     // }),
   ],
-
-  // Enable logs to be sent to Sentry
-  enableLogs: true,
 
   // Shared reporting policy: drop handled/noise events, scrub secrets, group
   // API errors. Same handler runs on the server (observability/providers/sentry).

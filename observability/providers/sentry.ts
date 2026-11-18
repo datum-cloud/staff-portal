@@ -104,27 +104,24 @@ export class SentryProvider extends BaseProvider {
     console.log('📊 SENTRY_DSN:', process.env.SENTRY_DSN || 'not configured');
   }
 
-  private createConfig() {
+  private createConfig(): Sentry.NodeOptions | null {
     if (!this.isEnabled) return null;
 
     return {
       dsn: process.env.SENTRY_DSN,
       environment: process.env.SENTRY_ENV || 'development',
-      sendDefaultPii: true,
-      enableLogs: true,
-      skipOpenTelemetrySetup: true,
-      tracesSampleRate: this.getTracesSampleRate(),
-      profilesSampleRate: 0, // Not supported in Bun
+      // Server tracing is owned by OTel. Sentry 11 traces every incoming and
+      // outgoing HTTP call on its own, and beforeSend does not scrub spans,
+      // so Sentry sends no server spans.
+      tracesSampleRate: 0,
+      // Never attach request or response bodies to events.
+      dataCollection: { httpBodies: [] },
       release: process.env.VERSION || 'dev',
 
       // Circuit breaker implementation
       beforeSend: this.createBeforeSendHandler(),
       beforeBreadcrumb: this.createBeforeBreadcrumbHandler(),
     };
-  }
-
-  private getTracesSampleRate(): number {
-    return process.env.NODE_ENV === 'production' ? 0.1 : 1.0;
   }
 
   private createBeforeSendHandler() {

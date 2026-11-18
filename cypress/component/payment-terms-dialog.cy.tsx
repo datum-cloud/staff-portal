@@ -12,7 +12,6 @@ function mountGrantDialog() {
         title="Grant payment terms"
         description="The account will be billed by invoice on these terms. Overlapping terms are rejected, so end the current terms first if there are any."
         submitText="Grant"
-        currency="USD"
         defaultValues={emptyPaymentTermsForm}
         showStart
         onSubmit={async () => {}}
@@ -33,10 +32,11 @@ describe('PaymentTermsFormDialog', () => {
     cy.contains('button', 'Cancel').should('be.visible');
   });
 
-  it('only marks net days, credit limit and reason as required', () => {
+  it('only marks net days and reason as required, and asks for no credit limit', () => {
     mountGrantDialog();
 
-    const required = ['Net days', 'Credit limit (USD)', 'Reason (internal)'];
+    cy.contains('label', 'Credit limit').should('not.exist');
+    const required = ['Net days', 'Reason (internal)'];
     const optional = [
       'Accounts payable email',
       'PO number',

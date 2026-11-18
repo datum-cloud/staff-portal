@@ -1,4 +1,5 @@
-import type { Route } from './+types/login';
+import type { Route } from './+types/logout';
+import { clearChats } from '@/features/assistant/lib/chat-storage';
 import { authenticator } from '@/modules/auth';
 import { sessionCookie, tokenCookie } from '@/utils/cookies';
 import { combineHeaders } from '@/utils/helpers';
@@ -28,6 +29,16 @@ export async function loader({ request }: Route.LoaderArgs) {
   return redirect('/login', {
     headers: combineHeaders(token.headers, session.headers),
   });
+}
+
+/**
+ * Runs in the browser when sign-out starts from inside the app. The server
+ * loader can only clear cookies, so stored assistant transcripts are removed
+ * here before it runs.
+ */
+export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
+  clearChats();
+  return serverLoader();
 }
 
 export default function Logout() {

@@ -1,4 +1,5 @@
 import { useAccountInvoices } from '../../hooks';
+import { billingCycleTerms, type ContractState } from '../../lib/contract';
 import {
   INVOICE_AGING_BUCKETS,
   getDaysOverdue,
@@ -60,6 +61,8 @@ interface InvoicesCardProps {
   orgName: string;
   account: BillingAccount;
   now: Date;
+  /** The account's contract, which sets its billing day once it starts. */
+  contract?: ContractState | null;
 }
 
 /** Rows shown before "All invoices" expands the table. */
@@ -206,7 +209,7 @@ const buildColumns = (now: Date) => [
  * The account's invoices: an aging summary, then past-due invoices first.
  * "All invoices" expands the table in place with search and paging.
  */
-export function BillingAccountInvoicesCard({ orgName, account, now }: InvoicesCardProps) {
+export function BillingAccountInvoicesCard({ orgName, account, now, contract }: InvoicesCardProps) {
   const { invoices, hasMore, isLoading, isError } = useAccountInvoices(orgName, account);
   const [expanded, setExpanded] = useState(false);
   const [search, setSearch] = useState('');
@@ -236,7 +239,7 @@ export function BillingAccountInvoicesCard({ orgName, account, now }: InvoicesCa
   const rows = expanded ? filtered : sorted.slice(0, PREVIEW_ROWS);
   const canExpand = sorted.length > PREVIEW_ROWS;
 
-  const terms = account.spec?.paymentTerms;
+  const terms = billingCycleTerms(account.spec?.paymentTerms, contract);
   const netDays = getEffectiveNetDays(account);
   const count = sorted.length;
   // Some of the org's invoices weren't read, so the count is a floor.

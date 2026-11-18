@@ -1,7 +1,14 @@
+import { projectQuotaBucketListQuery } from './quota.api';
 import { PROXY_URL } from '@/modules/axios/axios.client';
 import { projectOp, projectsOp, type GqlProject } from '@/resources/gql/project.gql';
 import { ListQueryParams } from '@/resources/schemas';
 import { flattenManagedRecordSets, walkCursorPages } from '@/utils/helpers';
+import {
+  listComputeDatumapisComV1AlphaInstanceForAllNamespaces,
+  listComputeDatumapisComV1AlphaWorkloadForAllNamespaces,
+  type ComDatumapisComputeV1AlphaInstance,
+  type ComDatumapisComputeV1AlphaWorkload,
+} from '@openapi/compute.datumapis.com/v1alpha';
 import {
   listDnsNetworkingMiloapisComV1Alpha1DnsZoneForAllNamespaces,
   listDnsNetworkingMiloapisComV1Alpha1NamespacedDnsRecordSet,
@@ -44,6 +51,87 @@ export const projectEdgeListQuery = async (projectName: string, params?: ListQue
     },
   });
   return response.data.data;
+};
+
+// The org overview lists every project's compute, so pages are large enough
+// that a project's Workloads or Instances usually arrive in one request.
+const COMPUTE_PAGE_LIMIT = 500;
+// Safety net against a runaway walk.
+const COMPUTE_MAX_PAGES = 20;
+
+/** Every Workload in a project (compute.datumapis.com), walking the `continue` cursor. */
+export const projectWorkloadListQuery = (projectName: string, signal?: AbortSignal) =>
+  walkCursorPages<ComDatumapisComputeV1AlphaWorkload>(
+    async (cursor) => {
+      const response = await listComputeDatumapisComV1AlphaWorkloadForAllNamespaces({
+        baseURL: `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+        signal,
+        query: { limit: COMPUTE_PAGE_LIMIT, ...(cursor && { continue: cursor }) },
+      });
+      const page = response.data.data;
+      return { items: page?.items ?? [], continueToken: page?.metadata?.continue };
+    },
+    { maxPages: COMPUTE_MAX_PAGES }
+  );
+
+/** Every Instance in a project (compute.datumapis.com), walking the `continue` cursor. */
+export const projectInstanceListQuery = (projectName: string, signal?: AbortSignal) =>
+  walkCursorPages<ComDatumapisComputeV1AlphaInstance>(
+    async (cursor) => {
+      const response = await listComputeDatumapisComV1AlphaInstanceForAllNamespaces({
+        baseURL: `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`,
+        signal,
+        query: { limit: COMPUTE_PAGE_LIMIT, ...(cursor && { continue: cursor }) },
+      });
+      const page = response.data.data;
+      return { items: page?.items ?? [], continueToken: page?.metadata?.continue };
+    },
+    { maxPages: COMPUTE_MAX_PAGES }
+  );
+
+/** A project's Workloads and Instances, fetched together for the org overview. */
+export const projectComputeQuery = async (projectName: string, signal?: AbortSignal) => {
+  const [workloads, instances] = await Promise.all([
+    projectWorkloadListQuery(projectName, signal),
+    projectInstanceListQuery(projectName, signal),
+  ]);
+  return { workloads, instances };
+};
+
+/**
+ * A project's load balancers, domains, DNS zones and quota buckets, fetched
+ * together for the org overview. Lists are requested without a limit, so the
+ * API returns every item. Each source fails on its own: a source that couldn't
+ * be read comes back `undefined`, and only when all four fail does the whole
+ * call reject (e.g. a project the staff user can't read).
+ */
+export const projectNetworkQuery = async (projectName: string, signal?: AbortSignal) => {
+  const baseURL = `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`;
+  const [proxies, domains, dnsZones, quotaBuckets] = await Promise.allSettled([
+    listNetworkingDatumapisComV1AlphaHttpProxyForAllNamespaces({ baseURL, signal }).then(
+      (response) => response.data.data?.items ?? []
+    ),
+    listNetworkingDatumapisComV1AlphaDomainForAllNamespaces({ baseURL, signal }).then(
+      (response) => response.data.data?.items ?? []
+    ),
+    listDnsNetworkingMiloapisComV1Alpha1DnsZoneForAllNamespaces({ baseURL, signal }).then(
+      (response) => response.data.data?.items ?? []
+    ),
+    projectQuotaBucketListQuery(projectName, { signal }).then((list) => list?.items ?? []),
+  ]);
+
+  const results = [proxies, domains, dnsZones, quotaBuckets];
+  const firstFailure = results.find((r): r is PromiseRejectedResult => r.status === 'rejected');
+  if (firstFailure && results.every((r) => r.status === 'rejected')) throw firstFailure.reason;
+
+  const value = <T>(result: PromiseSettledResult<T>) =>
+    result.status === 'fulfilled' ? result.value : undefined;
+  return {
+    proxies: value(proxies),
+    domains: value(domains),
+    dnsZones: value(dnsZones),
+    quotaBuckets: value(quotaBuckets),
+  };
 };
 
 export const projectExportPolicyListQuery = async (

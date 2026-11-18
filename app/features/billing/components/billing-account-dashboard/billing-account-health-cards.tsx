@@ -1,5 +1,6 @@
 import { useAccountInvoices, useAccountUsageSpend } from '../../hooks';
 import { isUsageSpike, type UsageSpendComparison } from '../../lib/account-health';
+import type { ContractState } from '../../lib/contract';
 import { getNextInvoice, summarizeInvoices, type InvoiceSummary } from '../../lib/invoice-summary';
 import { formatMoney, getAccountCurrency, type BillingAccount } from '../../utils';
 import { frequencyLabel, InlineDate } from './card-parts';
@@ -11,17 +12,20 @@ import {
   StatTileSkeleton,
 } from '@/components/stat-tile';
 import { SpendValue } from '@/features/organization/usage/components/spend-value';
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { t } from '@lingui/core/macro';
 import { Plural, Trans } from '@lingui/react/macro';
-import { ArrowDown, ArrowUp, CircleAlert } from 'lucide-react';
+import { ArrowDown, ArrowUp } from 'lucide-react';
 import { useMemo, type ReactNode } from 'react';
 
 interface HealthCardsProps {
   orgName: string;
   account: BillingAccount;
   now: Date;
+  /** The account's contract, which sets when it's invoiced, if it has one. */
+  contract?: ContractState | null;
 }
 
 /**
@@ -103,7 +107,7 @@ function PastDueTile(props: HealthCardsProps) {
           <>
             <StatTileHeadline
               className="text-destructive"
-              icon={<Icon icon={CircleAlert} size={18} className="shrink-0" aria-hidden />}>
+              icon={<Icon icon={STATUS_ICONS.alert} size={18} className="shrink-0" aria-hidden />}>
               {formatMoney(s.pastDue, currency)}
             </StatTileHeadline>
             <StatTileDetail>
@@ -225,10 +229,14 @@ function UsageTile({ orgName, account }: HealthCardsProps) {
   );
 }
 
-/** Dates come from the account's payment terms, so there's nothing to load. */
-function NextInvoiceTile({ account, now }: HealthCardsProps) {
-  const next = useMemo(() => getNextInvoice(account, now), [account, now]);
-  const frequency = frequencyLabel(next.frequency);
+/**
+ * Dates come from the account's payment terms, or its contract's billing
+ * day, so there's nothing to load beyond the entitlement.
+ */
+function NextInvoiceTile({ account, now, contract }: HealthCardsProps) {
+  const next = useMemo(() => getNextInvoice(account, now, contract), [account, now, contract]);
+  // A contract's first invoice goes out the day it starts, then monthly.
+  const frequency = next.contractStart ? t`Contract starts` : frequencyLabel(next.frequency);
 
   return (
     <StatTile title={<Trans>Next invoice</Trans>}>

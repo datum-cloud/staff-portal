@@ -164,7 +164,6 @@ describe('ApplicationReview', () => {
     cy.get('[data-e2e="application-approve"]').click();
     field('Accounts payable email').should('have.value', 'ap@acme.com');
     field('PO number').should('have.value', 'PO-4471');
-    field('Credit limit').type('10000');
     field('Reason').type('Verified company and website');
     cy.get('[role="dialog"]').contains('button', 'Approve').click();
 
@@ -175,10 +174,10 @@ describe('ApplicationReview', () => {
         expect(spec.billingAccountRef).to.deep.equal({ name: 'acme-billing' });
         expect(spec.invoice).to.include({
           netDays: 30,
-          creditLimit: '10000',
           accountsPayableEmail: 'ap@acme.com',
           purchaseOrderNumber: 'PO-4471',
         });
+        expect(spec.invoice).not.to.have.property('creditLimit');
       });
   });
 
@@ -217,7 +216,6 @@ describe('ApplicationReview', () => {
     cy.screenshot('application-review-renewal');
 
     cy.get('[data-e2e="application-approve"]').click();
-    field('Credit limit').type('10000');
     field('Reason').type('Renewing for 2099');
     cy.get('[role="dialog"]').contains('button', 'Approve').click();
 

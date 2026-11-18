@@ -94,7 +94,7 @@ export function DomainStatusProbe({
         </span>
       </HoverCardTrigger>
       <HoverCardContent
-        className={cn('w-96', priorityConditions.length > 0 && 'border-yellow-500 bg-yellow-50')}>
+        className={cn('w-96', priorityConditions.length > 0 && 'border-warning bg-warning/10')}>
         {priorityConditions.length > 0 ? (
           <div className="space-y-1.5">
             <Text size="sm" weight="semibold" textColor="warning">

@@ -4,12 +4,12 @@ import { EmptyState } from '@/components/empty-state';
 import { extractTemplateName, getEmailCondition } from '@/features/email';
 import { SectionCard } from '@/features/milo';
 import { useUserEmailListQuery } from '@/resources/request/client';
+import { ENTITY_ICONS } from '@/utils/config/icons.config';
 import { routes } from '@/utils/config/routes.config';
 import { startCase } from '@/utils/helpers';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Mail } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router';
 
@@ -69,7 +69,7 @@ export function ContactEmailsCard({ userId, email, viewAllHref, className }: Pro
         </div>
       ) : items.length === 0 ? (
         <EmptyState
-          icon={Mail}
+          icon={ENTITY_ICONS.emailActivity}
           title={<Trans>No email activity</Trans>}
           description={<Trans>No emails have been sent to this contact yet.</Trans>}
         />

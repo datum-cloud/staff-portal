@@ -1,7 +1,7 @@
 import { type MenuItem, SidebarMenuComponent } from './sidebar-menu';
 import { SidebarMenuTabs } from './sidebar-menu-tabs';
 import AppActionBar from '@/components/app-actiobar';
-import { useBreakpoint } from '@/hooks/use-breakpoint';
+import { useBreakpoint } from '@datum-cloud/datum-ui/hooks';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import * as React from 'react';
 

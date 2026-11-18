@@ -438,6 +438,9 @@ type OrgMember {
 
   """Only set for invitations: Pending, Accepted, Declined."""
   invitationState: String
+
+  """Only set for invitations: when it stops being accepted (RFC 3339)."""
+  expiresAt: String
   createdAt: String
 
   """

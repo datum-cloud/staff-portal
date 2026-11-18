@@ -10,9 +10,9 @@ type Decision = string | null | undefined;
  * Single source of truth — used by <FraudScore> and anywhere a score is shown.
  */
 export function fraudDecisionColor(decision: Decision): string {
-  if (decision === 'DEACTIVATE') return 'text-red-600 dark:text-red-400';
-  if (decision === 'REVIEW') return 'text-yellow-600 dark:text-yellow-400';
-  return 'text-green-600 dark:text-green-400';
+  if (decision === 'DEACTIVATE') return 'text-destructive';
+  if (decision === 'REVIEW') return 'text-warning';
+  return 'text-success';
 }
 
 /** Maps a fraud decision to a BadgeState colour: accepted → green, review → amber, deactivate → red. */

@@ -2,10 +2,11 @@ import { DemoGroup, DemoSection, type DemoSectionMeta } from './demo-section';
 import { ActionCard } from '@/components/action-card';
 import { DangerZoneCard } from '@/components/danger-zone-card';
 import { MessageCard } from '@/components/message-card';
+import { ACTION_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { Alert, AlertDescription, AlertTitle } from '@datum-cloud/datum-ui/alert';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { toast } from '@datum-cloud/datum-ui/toast';
-import { AlertTriangle, CheckCircle2, Info, RotateCcw } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 
 export const alertDemoSections: DemoSectionMeta[] = [
   { id: 'alert-variants', label: 'Alert' },
@@ -25,7 +26,7 @@ export default function AlertDemo() {
         description="datum-ui Alert — variants and a closable example.">
         <div className="space-y-3">
           <Alert variant="info">
-            <Info className="h-4 w-4" />
+            <STATUS_ICONS.info className="h-4 w-4" />
             <AlertTitle>Heads up</AlertTitle>
             <AlertDescription>This organization is on the legacy quota plan.</AlertDescription>
           </Alert>
@@ -35,12 +36,12 @@ export default function AlertDemo() {
             <AlertDescription>The registration request has been approved.</AlertDescription>
           </Alert>
           <Alert variant="warning" closable>
-            <AlertTriangle className="h-4 w-4" />
+            <STATUS_ICONS.warning className="h-4 w-4" />
             <AlertTitle>Nearing quota</AlertTitle>
             <AlertDescription>This project is at 92% of its ALB quota.</AlertDescription>
           </Alert>
           <Alert variant="destructive">
-            <AlertTriangle className="h-4 w-4" />
+            <STATUS_ICONS.warning className="h-4 w-4" />
             <AlertTitle>Payment failed</AlertTitle>
             <AlertDescription>The billing account could not be charged.</AlertDescription>
           </Alert>
@@ -54,18 +55,21 @@ export default function AlertDemo() {
         <div className="space-y-3">
           <ActionCard
             variant="info"
-            icon={Info}
+            icon={STATUS_ICONS.info}
             title="Suspended project"
             description="This project is suspended. Lift the suspension to restore access."
             action={
-              <Button type="secondary" size="small" icon={<RotateCcw className="h-4 w-4" />}>
+              <Button
+                type="secondary"
+                size="small"
+                icon={<ACTION_ICONS.reset className="h-4 w-4" />}>
                 Lift suspension
               </Button>
             }
           />
           <ActionCard
             variant="warning"
-            icon={AlertTriangle}
+            icon={STATUS_ICONS.warning}
             title="Unverified email"
             description="The account owner has not verified their email address."
             action={

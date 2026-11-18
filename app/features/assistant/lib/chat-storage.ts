@@ -36,6 +36,18 @@ export function deleteChat(chatId: string): void {
   } catch {}
 }
 
+/**
+ * Removes every stored chat. Called on sign-out: transcripts hold tool output
+ * with customer data and must not outlive the session in this browser.
+ */
+export function clearChats(): void {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // localStorage may be unavailable; there is nothing stored to clear then
+  }
+}
+
 export function deriveTitle(messages: UIMessage[]): string {
   const first = messages.find((m) => m.role === 'user');
   if (!first) return 'New chat';

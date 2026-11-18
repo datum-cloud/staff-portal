@@ -1,30 +1,26 @@
 import { timeLabel, type TimelineEvent, type TimelineEventType } from '../../lib/contact-timeline';
 import { BadgeState } from '@/components/badge';
+import { ENTITY_ICONS } from '@/utils/config/icons.config';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { Trans, useLingui } from '@lingui/react/macro';
-import {
-  Building2,
-  Mail,
-  ShieldCheck,
-  StickyNote,
-  UserPlus,
-  Users,
-  type LucideIcon,
-} from 'lucide-react';
+import { ShieldCheck, UserPlus, type LucideIcon } from 'lucide-react';
 
 /** Dot icon + colour per event type — mirrors the Pencil design's colour families. */
 const DOT: Record<TimelineEventType, { icon: LucideIcon; className: string }> = {
   note: {
-    icon: StickyNote,
+    icon: ENTITY_ICONS.note,
     className: 'bg-amber-100 text-amber-600 dark:bg-amber-950 dark:text-amber-400',
   },
-  email: { icon: Mail, className: 'bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400' },
+  email: {
+    icon: ENTITY_ICONS.emailActivity,
+    className: 'bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400',
+  },
   org: {
-    icon: Building2,
+    icon: ENTITY_ICONS.organization,
     className: 'bg-violet-100 text-violet-600 dark:bg-violet-950 dark:text-violet-400',
   },
-  group: { icon: Users, className: 'bg-primary/10 text-primary' },
+  group: { icon: ENTITY_ICONS.contactGroup, className: 'bg-primary/10 text-primary' },
   access: {
     icon: ShieldCheck,
     className: 'bg-green-100 text-green-600 dark:bg-green-950 dark:text-green-400',

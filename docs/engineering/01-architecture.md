@@ -8,7 +8,7 @@
 - Data layer: TanStack Query + OpenAPI-generated SDK
 - Server layer: Hono routes and middleware
 - Auth/session: `remix-auth` + cookie-based session handling
-- Design/UI: `@datum-cloud/datum-ui`, local shadcn setup, local `@datum-ui/*` modules
+- Design/UI: the `@datum-cloud/datum-ui` package (primitives plus form, data-table and code-editor), imported by subpath
 
 ## Source Tree and Responsibilities
 
@@ -33,14 +33,14 @@ Route modules for pages and sub-layouts.
 
 App-level layout wrappers.
 
-- `private.layout.tsx`: auth gate + app shell (sidebar/topbar/toolbar)
+- `milo.layout.tsx`: auth gate + app shell (`MiloShell`: navbar, context bar, sub-nav rail, assistant dock)
 - `public.layout.tsx`: login/callback routes
 
 ### `app/components/**`
 
 Reusable cross-feature components:
 
-- Navigation/shell pieces (`app-sidebar`, `app-topbar`, `app-toolbar`)
+- Shell-adjacent pieces shared with the Milo shell (`app-search`, `breadcrumb`, `logo`)
 - Generic reusable UI wrappers (`dialog`, `sub-layout`, `chip`, etc.)
 
 ### `app/features/**`
@@ -49,15 +49,20 @@ Feature-local logic and components.
 
 - Keeps domain-level logic close to domain UI
 - Used by route modules to avoid large page files
+- `milo/` is the app shell: `components/shell`, `navbar`, `context-bar`, `sub-nav`, the page templates in `components/page` (`ListPage`, `DetailPage`, `PlainPage`, `ListTable`), and the navigation config in `lib/nav-config.ts`
 
 ### `app/modules/**`
 
 Cross-cutting foundations.
 
-- `shadcn/`: local primitive UI setup
-- `datum-ui/`: app-local extensions (form/data-table/editor)
 - `axios/`: browser/server HTTP clients
-- `auth/`, `i18n/`, `tanstack/`, etc.
+- `auth/`: authenticator, session handling and the staff gate (`require-staff.server.ts`)
+- `graphql/`, `tanstack/`: GraphQL (urql) and TanStack Query setup
+- `i18n/`: Lingui setup and message catalogs
+- `assistant/`, `billing/`, `plugins/`: assistant tools, billing helpers, plugin host
+- `loki/`, `prometheus/`, `sentry/`: logs, metrics and error reporting
+
+There is no local UI module. Primitives and extended UI come from `@datum-cloud/datum-ui`.
 
 ### `app/resources/**`
 
@@ -87,11 +92,12 @@ Hono server entry, middleware, and API routes.
 - Lingui locale integration
 - Toaster and global app shell document
 
-### Private shell (`app/layouts/private.layout.tsx`)
+### Private shell (`app/layouts/milo.layout.tsx`)
 
-- Auth check via `authenticator`
-- Fetches current user on server (`userDetailQuery`)
-- Wraps page with `AppProvider`, `TaskQueueProvider`, sidebar and toolbar layout
+- The loader calls `requireStaffUser` (`app/modules/auth/require-staff.server.ts`), which checks the session through `authenticator`, enforces staff-group membership and fetches the current user (`userDetailQuery`)
+- Wraps the page with `AppProvider`, `TaskQueueProvider` and a `SidebarProvider` (still needed by `SubLayout` menus), then renders `MiloShell`
+- `MiloShell` (`app/features/milo/components/shell/milo-shell.tsx`) lays out `MiloNavbar`, `MiloContextBar` (breadcrumb), the optional `MiloSubNav` rail, the routed page and the assistant dock
+- When `CHATBOT_ENABLED` is set, the layout adds `AssistantProvider` and passes `AssistantPanel` as the shell's side panel
 
 ## Routing Pattern Summary
 
@@ -104,21 +110,24 @@ Hono server entry, middleware, and API routes.
 
 ## Navigation Pattern
 
-Two navigation patterns are currently used:
+Shell navigation is driven by `app/features/milo/lib/nav-config.ts` (`NAV_SECTIONS`):
 
-- Toolbar tabs (`AppNavigation` + tabs) for top-level hubs (`activity-hub`, `fraud`)
-- Left sub-layout sidebar (`SubLayout.SidebarMenu`) for detail/workspace contexts (`project/detail`, `contact/detail`, `profile`)
+- Main menu: one entry per section, rendered by `MiloNavbar`
+- Section sub-nav: a section's `subNav` renders in the left rail (`MiloSubNav`), or in the list toolbar when `placement: 'toolbar'`
+- Entity nav: a detail layout declares `handle.entityNav`, and the rail shows that entity's pages instead of the section sub-nav (`organization/detail`, `contact/detail`, `group/detail`)
+- Breadcrumb: `MiloContextBar`, fed by route `handle.breadcrumb`
 
 Choose based on information architecture:
 
-- Use toolbar tabs when sections are peer-level pages under one area
-- Use sidebar menu when users stay in a resource/workspace context with deeper subsections
+- Add a section or sub-nav item in `nav-config.ts` when the page is a peer of existing top-level pages
+- Use `handle.entityNav` when users stay inside one resource with several subsections
+- `SubLayout.SidebarMenu` (`app/components/sub-layout`) is the older in-page menu, still used by `profile` and `operations/activity`. Prefer the Milo page templates for new pages
 
 ## Fraud Feature Structure (current)
 
 Fraud was standardized to keep route files thin and move heavy UI to feature modules:
 
-- Route orchestration: `app/routes/fraud/**`
+- Route orchestration: `app/routes/customer/fraud/**`
 - Feature components: `app/features/fraud/**`
   - `policy/policy-form.tsx`
   - `policy/policy-detail.tsx`
