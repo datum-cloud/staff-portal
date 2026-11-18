@@ -21,12 +21,7 @@ import type { ComMiloapisQuotaV1Alpha1AllowanceBucket } from '@openapi/quota.mil
  */
 
 export type IssueArea =
-  | 'workloads'
-  | 'instances'
-  | 'loadBalancers'
-  | 'domains'
-  | 'dnsZones'
-  | 'quota';
+  'workloads' | 'instances' | 'loadBalancers' | 'domains' | 'dnsZones' | 'quota';
 
 /** `low` is listed but never changes the verdict. */
 export type IssueSeverity = 'danger' | 'warning' | 'low';
