@@ -35,6 +35,7 @@ export function ContractScheduleList({ upcoming }: { upcoming: ScheduledInvoice[
                     date={invoice.date.toISOString()}
                     variant="absolute"
                     format="MMM d, yyyy"
+                    timezone="UTC"
                   />
                 </Text>
                 <Text size="sm" className="shrink-0 tabular-nums">
@@ -58,6 +59,7 @@ export function ContractScheduleList({ upcoming }: { upcoming: ScheduledInvoice[
                         date={invoice.dueDate.toISOString()}
                         variant="absolute"
                         format="MMM d"
+                        timezone="UTC"
                       />
                     </Trans>
                   </>
