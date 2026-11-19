@@ -1058,8 +1058,16 @@ const draftAssignment = (
 
 // ─── InvoiceRequest (org-namespaced, staff-only) ─────────────────────────────
 
-/** Asks the invoicing provider what the account will be invoiced next. */
-export const createInvoicePreviewRequest = async (orgName: string, accountName: string) => {
+/**
+ * Asks the invoicing provider what the account will be invoiced next. With
+ * `draft`, the provider also leaves the invoice as a draft in its own system
+ * (a Stripe draft invoice) for staff to open there.
+ */
+export const createInvoicePreviewRequest = async (
+  orgName: string,
+  accountName: string,
+  { draft = false }: { draft?: boolean } = {}
+) => {
   const namespace = buildOrganizationNamespace(orgName);
   const response = await createBillingMiloapisComV1Alpha1NamespacedInvoiceRequest({
     baseURL: getClientOrgControlPlaneBaseURL(orgName),
@@ -1069,7 +1077,11 @@ export const createInvoicePreviewRequest = async (orgName: string, accountName: 
       apiVersion: 'billing.miloapis.com/v1alpha1',
       kind: 'InvoiceRequest',
       metadata: { generateName: `${accountName}-preview-` },
-      spec: { billingAccountRef: { name: accountName }, mode: 'Preview' },
+      spec: {
+        billingAccountRef: { name: accountName },
+        mode: 'Preview',
+        ...(draft ? { draft: true } : {}),
+      },
     },
   });
   return response.data?.data;
@@ -1082,9 +1094,9 @@ export const createInvoicePreviewRequest = async (orgName: string, accountName: 
 export const previewNextInvoice = async (
   orgName: string,
   accountName: string,
-  { attempts = 45, intervalMs = 2000 } = {}
+  { attempts = 45, intervalMs = 2000, draft = false } = {}
 ): Promise<InvoiceRequest> => {
-  const created = await createInvoicePreviewRequest(orgName, accountName);
+  const created = await createInvoicePreviewRequest(orgName, accountName, { draft });
   const name = created?.metadata?.name;
   if (!name) throw new Error('The preview request was not created.');
   for (let i = 0; i < attempts; i++) {

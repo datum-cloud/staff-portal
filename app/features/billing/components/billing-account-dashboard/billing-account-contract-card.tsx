@@ -382,7 +382,12 @@ function InvoicePreviewDialog({
                 : t`Couldn't preview the invoice.`}
             </Text>
           ) : preview.data ? (
-            <PreviewResult request={preview.data} />
+            <>
+              <PreviewResult request={preview.data} />
+              {preview.data.status?.tax ? (
+                <StripeDraft orgName={orgName} accountName={account.metadata?.name ?? ''} />
+              ) : null}
+            </>
           ) : null}
           {startedAt ? (
             <ContractFirstInvoice orgName={orgName} account={account} startedAt={startedAt} />
@@ -474,6 +479,68 @@ function ContractFirstInvoice({
   );
 }
 
+/**
+ * Leaves the previewed invoice as a draft in Stripe, for staff to open in
+ * the Stripe dashboard and see exactly what the customer will get. The draft
+ * is never finalized or sent, and it's deleted after a day.
+ */
+function StripeDraft({ orgName, accountName }: { orgName: string; accountName: string }) {
+  const draft = usePreviewNextInvoiceMutation(orgName, accountName);
+  const url = draft.data?.status?.draft?.url;
+  const message = draft.data?.status?.conditions?.find(
+    (condition) => condition.type === 'Completed'
+  )?.message;
+
+  return (
+    <div className="mt-4 flex flex-col gap-2 border-t pt-3">
+      {url ? (
+        <>
+          <div>
+            <Button
+              type="secondary"
+              theme="outline"
+              size="small"
+              onClick={() => window.open(url, '_blank', 'noopener,noreferrer')}>
+              <Trans>Open the Stripe draft</Trans>
+            </Button>
+          </div>
+          <Text size="xs" textColor="muted">
+            <Trans>
+              A draft in the Stripe dashboard, deleted after a day. Don&apos;t send or finalize it
+              there.
+            </Trans>
+          </Text>
+        </>
+      ) : draft.isPending ? (
+        <Text size="xs" textColor="muted" aria-busy="true">
+          <Trans>Making a draft in Stripe…</Trans>
+        </Text>
+      ) : (
+        <>
+          <div>
+            <Button
+              type="secondary"
+              theme="outline"
+              size="small"
+              onClick={() => draft.mutate({ draft: true })}>
+              <Trans>Open as a Stripe draft</Trans>
+            </Button>
+          </div>
+          <Text size="xs" textColor="muted">
+            {draft.isError
+              ? draft.error instanceof Error
+                ? draft.error.message
+                : t`Couldn't make a Stripe draft.`
+              : draft.data
+                ? message || t`Stripe didn't make a draft.`
+                : t`See the invoice as Stripe will make it. Only staff with Stripe access can open it.`}
+          </Text>
+        </>
+      )}
+    </div>
+  );
+}
+
 function PreviewResult({ request }: { request: InvoiceRequest }) {
   const status = request.status;
   const completed = status?.conditions?.find((condition) => condition.type === 'Completed');
@@ -499,6 +566,11 @@ function PreviewResult({ request }: { request: InvoiceRequest }) {
               <Text size="sm" className="truncate">
                 {line.description}
               </Text>
+              {line.quantity && line.unitAmount ? (
+                <Text size="xs" textColor="muted" className="tabular-nums">
+                  {line.quantity} × {formatMoney(Number.parseFloat(line.unitAmount), currency)}
+                </Text>
+              ) : null}
               {line.period ? (
                 <Text size="xs" textColor="muted">
                   <InlineDate date={line.period.start} variant="absolute" format="MMM d, yyyy" />
@@ -506,21 +578,53 @@ function PreviewResult({ request }: { request: InvoiceRequest }) {
                   <InlineDate date={line.period.end} variant="absolute" format="MMM d, yyyy" />
                 </Text>
               ) : null}
+              {line.discount && Number.parseFloat(line.discount) > 0 ? (
+                <Text size="xs" textColor="muted" className="tabular-nums">
+                  <Trans>{formatMoney(Number.parseFloat(line.discount), currency)} discount</Trans>
+                </Text>
+              ) : null}
             </div>
-            <Text size="sm" className="shrink-0 tabular-nums">
-              {formatMoney(Number.parseFloat(line.amount), currency)}
-            </Text>
+            <div className="flex shrink-0 flex-col items-end">
+              <Text size="sm" className="tabular-nums">
+                {formatMoney(Number.parseFloat(line.amount), currency)}
+              </Text>
+              {line.tax && Number.parseFloat(line.tax) > 0 ? (
+                <Text size="xs" textColor="muted" className="tabular-nums">
+                  <Trans>+ {formatMoney(Number.parseFloat(line.tax), currency)} tax</Trans>
+                </Text>
+              ) : null}
+            </div>
           </li>
         ))}
       </ul>
       <div className="flex items-baseline justify-between gap-3 border-t pt-2">
-        <Text size="sm" weight="medium">
+        <Text size="sm" weight={status?.tax ? undefined : 'medium'}>
           <Trans>Total before tax</Trans>
         </Text>
-        <Text size="sm" weight="medium" className="tabular-nums">
+        <Text size="sm" weight={status?.tax ? undefined : 'medium'} className="tabular-nums">
           {formatMoney(Number.parseFloat(status?.total ?? '0'), currency)}
         </Text>
       </div>
+      {status?.tax ? (
+        <>
+          <div className="flex items-baseline justify-between gap-3">
+            <Text size="sm">
+              <Trans>Tax</Trans>
+            </Text>
+            <Text size="sm" className="tabular-nums">
+              {formatMoney(Number.parseFloat(status.tax), currency)}
+            </Text>
+          </div>
+          <div className="flex items-baseline justify-between gap-3">
+            <Text size="sm" weight="medium">
+              <Trans>Total</Trans>
+            </Text>
+            <Text size="sm" weight="medium" className="tabular-nums">
+              {formatMoney(Number.parseFloat(status.totalWithTax ?? status.total ?? '0'), currency)}
+            </Text>
+          </div>
+        </>
+      ) : null}
       {completed?.message ? (
         <Text size="xs" textColor="muted">
           {completed.message}
