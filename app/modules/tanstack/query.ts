@@ -30,6 +30,14 @@ export const shouldRetryQuery = (failureCount: number, error: unknown): boolean 
   return failureCount < MAX_QUERY_RETRIES;
 };
 
+/**
+ * For fan-outs over many projects: retry once, and never on a 4xx, so a
+ * project the staff user can't read settles as an error quickly instead of
+ * holding its part of the page in a loading state.
+ */
+export const retryOnceUnlessClientError = (failureCount: number, error: unknown): boolean =>
+  failureCount < 1 && shouldRetryQuery(failureCount, error);
+
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

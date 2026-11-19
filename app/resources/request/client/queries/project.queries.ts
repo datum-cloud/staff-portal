@@ -1,3 +1,4 @@
+import { warningEventsQuery } from '../apis/activity.api';
 import {
   listAllProjects,
   listProjects,
@@ -13,7 +14,7 @@ import {
   projectSuspensionListQuery,
 } from '../apis/project.api';
 import { isProjectDeleting } from '@/features/project/lib/project-phase';
-import { shouldRetryQuery } from '@/modules/tanstack/query';
+import { retryOnceUnlessClientError } from '@/modules/tanstack/query';
 import { ListQueryParams } from '@/resources/schemas';
 import { createConcurrencyLimit } from '@/utils/helpers';
 import type { ComMiloapisResourcemanagerV1Alpha1Project } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
@@ -48,6 +49,7 @@ export const projectQueryKeys = {
   },
   compute: (projectName: string) => ['projects', projectName, 'compute'] as const,
   network: (projectName: string) => ['projects', projectName, 'network'] as const,
+  warningEvents: (projectName: string) => ['projects', projectName, 'warning-events'] as const,
   suspensions: (projectName: string) => ['projects', projectName, 'suspensions'] as const,
   suspensionsAll: () => ['projects', 'suspensions', 'all'] as const,
 };
@@ -166,10 +168,6 @@ export const MAX_CONCURRENT_PROJECT_FETCHES = 12;
 // overview's two fan-outs, or two overviews open at once, stay within it.
 const projectFanOutLimit = createConcurrencyLimit(MAX_CONCURRENT_PROJECT_FETCHES);
 
-// Once, and never on a 4xx: a project the staff user can't read stays an error.
-const retryOnceUnlessClientError = (failureCount: number, error: unknown) =>
-  failureCount < 1 && shouldRetryQuery(failureCount, error);
-
 /**
  * Each project's Workloads and Instances, one query per project. Every project
  * is fetched, at most MAX_CONCURRENT_PROJECT_FETCHES at a time, and each
@@ -206,6 +204,30 @@ export function useProjectNetworkQueries(
       queryKey: projectQueryKeys.network(projectName),
       queryFn: ({ signal }: { signal: AbortSignal }) =>
         projectFanOutLimit(() => projectNetworkQuery(projectName, signal)),
+      enabled: (options.enabled ?? true) && Boolean(projectName),
+      staleTime: 60 * 1000,
+      retry: retryOnceUnlessClientError,
+      refetchOnWindowFocus: false,
+    })),
+  });
+}
+
+/**
+ * Each project's Warning events from the last 24 hours, one query per project,
+ * sharing the compute and network fan-outs' limit (#769). Each project loads
+ * and fails on its own.
+ */
+export function useProjectWarningEventQueries(
+  projectNames: readonly string[],
+  options: { enabled?: boolean } = {}
+) {
+  return useQueries({
+    queries: projectNames.map((projectName) => ({
+      queryKey: projectQueryKeys.warningEvents(projectName),
+      queryFn: ({ signal }: { signal: AbortSignal }) =>
+        projectFanOutLimit(() =>
+          warningEventsQuery({ kind: 'project', name: projectName }, signal)
+        ),
       enabled: (options.enabled ?? true) && Boolean(projectName),
       staleTime: 60 * 1000,
       retry: retryOnceUnlessClientError,
