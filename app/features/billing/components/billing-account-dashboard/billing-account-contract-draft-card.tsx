@@ -113,7 +113,12 @@ export function BillingAccountContractDraftCard({
             ) : startsAt ? (
               <Trans>
                 Starts{' '}
-                <InlineDate date={startsAt.toISOString()} variant="absolute" format="MMM d, yyyy" />
+                <InlineDate
+                  date={startsAt.toISOString()}
+                  variant="absolute"
+                  format="MMM d, yyyy"
+                  timezone="UTC"
+                />
               </Trans>
             ) : (
               <Trans>No start date yet</Trans>
