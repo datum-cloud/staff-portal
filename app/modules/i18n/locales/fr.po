@@ -116,7 +116,7 @@ msgid "{0} contract"
 msgstr ""
 
 #. placeholder {0}: formatMoney(Number.parseFloat(line.discount), currency)
-#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:583
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:622
 msgid "{0} discount"
 msgstr ""
 
@@ -476,7 +476,7 @@ msgid "% Used"
 msgstr ""
 
 #. placeholder {0}: formatMoney(Number.parseFloat(line.tax), currency)
-#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:593
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:632
 msgid "+ {0} tax"
 msgstr ""
 
@@ -648,6 +648,10 @@ msgstr ""
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:392
 msgid "Account attention"
+msgstr ""
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:565
+msgid "Account credit"
 msgstr ""
 
 #: app/routes/customer/fraud/providers/create.tsx:114
@@ -952,6 +956,10 @@ msgstr ""
 
 #: app/features/billing/components/contract-editor/contract-fee-list.tsx:85
 msgid "Amount ({CONTRACT_CURRENCY})"
+msgstr ""
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:573
+msgid "Amount due"
 msgstr ""
 
 #: app/features/billing/components/contract-editor/schema.ts:167
@@ -5161,6 +5169,10 @@ msgstr ""
 msgid "Overview"
 msgstr ""
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:565
+msgid "Owed from earlier invoices"
+msgstr ""
+
 #: app/features/service-catalog/components/details-card.tsx:60
 msgid "Owner"
 msgstr ""
@@ -6868,7 +6880,7 @@ msgid "Target"
 msgstr ""
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:206
-#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:612
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:651
 msgid "Tax"
 msgstr ""
 
@@ -7046,7 +7058,7 @@ msgstr ""
 msgid "Then {recurring}."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:553
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:592
 msgid "There's nothing to invoice yet."
 msgstr ""
 
@@ -7182,11 +7194,11 @@ msgstr ""
 msgid "Toggle theme"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:620
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:659
 msgid "Total"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:602
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:641
 msgid "Total before tax"
 msgstr ""
 
