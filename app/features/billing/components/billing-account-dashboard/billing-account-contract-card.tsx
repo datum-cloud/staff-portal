@@ -187,11 +187,13 @@ function ContractDates({ contract, invoiceDay }: { contract: ContractState; invo
       <Text size="sm" weight="medium">
         {contract.started ? (
           <Trans>
-            Started <InlineDate date={start} variant="absolute" format="MMM d, yyyy" />
+            Started{' '}
+            <InlineDate date={start} variant="absolute" format="MMM d, yyyy" timezone="UTC" />
           </Trans>
         ) : (
           <Trans>
-            Starts <InlineDate date={start} variant="absolute" format="MMM d, yyyy" />
+            Starts{' '}
+            <InlineDate date={start} variant="absolute" format="MMM d, yyyy" timezone="UTC" />
           </Trans>
         )}
       </Text>
@@ -212,6 +214,7 @@ function ContractDates({ contract, invoiceDay }: { contract: ContractState; invo
               date={contract.changeAt.toISOString()}
               variant="absolute"
               format="MMM d, yyyy"
+              timezone="UTC"
             />
             , the next billing date.
           </Trans>
@@ -612,9 +615,19 @@ function PreviewResult({ request }: { request: InvoiceRequest }) {
               ) : null}
               {line.period ? (
                 <Text size="xs" textColor="muted">
-                  <InlineDate date={line.period.start} variant="absolute" format="MMM d, yyyy" />
+                  <InlineDate
+                    date={line.period.start}
+                    variant="absolute"
+                    format="MMM d, yyyy"
+                    timezone="UTC"
+                  />
                   {' – '}
-                  <InlineDate date={line.period.end} variant="absolute" format="MMM d, yyyy" />
+                  <InlineDate
+                    date={line.period.end}
+                    variant="absolute"
+                    format="MMM d, yyyy"
+                    timezone="UTC"
+                  />
                 </Text>
               ) : null}
               {line.discount && Number.parseFloat(line.discount) > 0 ? (

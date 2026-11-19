@@ -35,6 +35,7 @@ import {
   getBillingAccountDisplayName,
   getEffectiveNetDays,
 } from '../../utils';
+import { BillingDayField } from './billing-day-field';
 import { ContractFeeList, type ServiceOption } from './contract-fee-list';
 import { ContractSummary } from './contract-summary';
 import { PriceListTable } from './price-list-table';
@@ -488,19 +489,7 @@ function ContractEditorForm({
                     required>
                     <ContractStartPicker now={now} />
                   </Form.Field>
-                  <Form.Field
-                    name="billingDay"
-                    label={t`Billing day`}
-                    description={t`Can't be changed once the contract is saved.`}>
-                    <Form.Select>
-                      <Form.SelectItem value="StartDate">
-                        <Trans>Start date, every month a whole one</Trans>
-                      </Form.SelectItem>
-                      <Form.SelectItem value="InvoiceDay">
-                        <Trans>Day {invoiceDay}, first month prorated</Trans>
-                      </Form.SelectItem>
-                    </Form.Select>
-                  </Form.Field>
+                  <BillingDayField invoiceDay={invoiceDay} />
                 </div>
               </SectionCard>
             ) : null}
