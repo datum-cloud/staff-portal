@@ -1085,6 +1085,12 @@ export type ComMiloapisBillingV1Alpha1BillingEntitlement = {
      */
     contract?: {
       /**
+       * BillingDay is the day of the month the contract bills on. StartDate, the
+       * default, bills on the day it starts; InvoiceDay bills on the account's
+       * invoice day, with the first period prorated. Immutable.
+       */
+      billingDay?: 'StartDate' | 'InvoiceDay';
+      /**
        * StartsAt is when the contract starts, at midnight UTC. The Offer's
        * charges start on this day, so a one-time setup fee is charged then,
        * and monthly charges bill on this day of each month: a contract

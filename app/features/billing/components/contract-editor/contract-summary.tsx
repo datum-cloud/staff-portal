@@ -60,6 +60,7 @@ export function ContractSummary({
   isSetup,
   feeOptions,
   contractStartsAt,
+  invoiceDay,
   netDays,
   children,
 }: {
@@ -67,6 +68,11 @@ export function ContractSummary({
   feeOptions: ListFeeOption[];
   /** The contract's start, for a change to one; a new contract's is picked. */
   contractStartsAt?: Date;
+  /**
+   * The account's invoice day, for a new contract that may bill on it; for a
+   * change, set only when the contract bills on it.
+   */
+  invoiceDay?: number;
   /** The account's payment terms, for when invoices are due. */
   netDays?: number;
   children: ReactNode;
@@ -75,6 +81,9 @@ export function ContractSummary({
   const listRows = (Form.useWatch('listFees') as ListFeeRowValues[] | undefined) ?? [];
   const usageRows = (Form.useWatch('usage') as UsageRowValues[] | undefined) ?? [];
   const picked = Form.useWatch('startsAt') as Date | undefined;
+  const billingDay = Form.useWatch('billingDay') as ContractFormValues['billingDay'] | undefined;
+  // The day it bills on, when it's the invoice day rather than its start's.
+  const billedOnDay = isSetup ? (billingDay === 'InvoiceDay' ? invoiceDay : undefined) : invoiceDay;
   // The contract's fees as a whole: none at all, or too many. Worked out
   // from the form as it is, since the form only re-checks the rule when the
   // contract's own fees change, not when the price list's are ticked, and
@@ -145,9 +154,14 @@ export function ContractSummary({
   const now = new Date();
   const startsToday = isSetup && startsAt?.getTime() === startOfUtcDay(now).getTime();
   const fullFirst = firstInvoiceTotal(priced);
+  // Billed on the invoice day, the first period runs to the next one.
   const firstInvoice =
-    startsAt && startsToday ? proratedFirstInvoiceTotal(priced, startsAt, now) : fullFirst;
-  const prorated = firstInvoice < fullFirst;
+    startsAt && (startsToday || billedOnDay)
+      ? proratedFirstInvoiceTotal(priced, startsAt, startsToday ? now : startsAt, billedOnDay)
+      : fullFirst;
+  // Starting today prorates a contract billed on its start day, which a
+  // later start avoids; one billed on the invoice day is prorated anyway.
+  const prorated = startsToday && !billedOnDay && firstInvoice < fullFirst;
   const total = formatMoney(firstInvoice, CONTRACT_CURRENCY);
   const fullTotal = formatMoney(fullFirst, CONTRACT_CURRENCY);
   // A first invoice on the start date only when something's billed in advance.
@@ -162,6 +176,7 @@ export function ContractSummary({
         fees: priced.map((fee) => ({ ...fee, name: fee.key, label: fee.label || t`Unnamed fee` })),
         billsUsage: meters.length > 0,
         netDays,
+        invoiceDay: billedOnDay,
       })
     : [];
   const upcoming = isSetup ? schedule : upcomingInvoices(schedule, now);
@@ -276,6 +291,14 @@ export function ContractSummary({
               ) : (
                 <Trans>{recurring} from the next billing date.</Trans>
               )}
+            </Text>
+          ) : null}
+          {billedOnDay && isSetup ? (
+            <Text as="p" size="xs" textColor="muted">
+              <Trans>
+                Billed on day {billedOnDay} of each month, so the first period runs from the start
+                date to the next day {billedOnDay} and its recurring fees are prorated.
+              </Trans>
             </Text>
           ) : null}
           {inArrears ? (

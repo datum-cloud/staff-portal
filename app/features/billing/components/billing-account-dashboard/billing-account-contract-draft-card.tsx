@@ -1,7 +1,9 @@
 import {
   contractBillingDay,
+  contractInvoiceDay,
   draftPublishProblem,
   getContractState,
+  getDraftBillingDay,
   getDraftStartsAt,
   withDraftSnapshot,
   type DraftPublishProblem,
@@ -66,6 +68,11 @@ export function BillingAccountContractDraftCard({
   const draftName = raw.metadata?.name ?? '';
   const contract = getContractState(entitlement, now);
   const startsAt = contract ? undefined : getDraftStartsAt(raw);
+  // The day it bills on: the draft's for a new contract, the contract's for a change.
+  const invoiceDay = contractInvoiceDay(
+    contract ? contract.billingDay : getDraftBillingDay(raw),
+    account.spec?.paymentTerms
+  );
   const problem = draftPublishProblem(raw, entitlement, now);
 
   const run = async (action: 'publish' | 'discard') => {
@@ -120,16 +127,27 @@ export function BillingAccountContractDraftCard({
                 <Trans>Published, they apply when the contract starts.</Trans>
               )
             ) : startsAt ? (
-              <Trans>
-                Bills on day {contractBillingDay(startsAt)} of each month once published.
-              </Trans>
+              invoiceDay ? (
+                <Trans>
+                  Bills on day {invoiceDay} of each month once published, with the first month
+                  prorated.
+                </Trans>
+              ) : (
+                <Trans>
+                  Bills on day {contractBillingDay(startsAt)} of each month once published.
+                </Trans>
+              )
             ) : null}{' '}
             <Trans>Not published, so nothing is billed from it yet.</Trans>
           </Text>
         </div>
 
         {draft ? (
-          <ContractFees offer={draft} startsAt={startsAt ?? contract?.startsAt} />
+          <ContractFees
+            offer={draft}
+            startsAt={startsAt ?? contract?.startsAt}
+            invoiceDay={invoiceDay}
+          />
         ) : pricingsQuery.isLoading ? (
           <Skeleton className="h-10 w-full rounded" />
         ) : (

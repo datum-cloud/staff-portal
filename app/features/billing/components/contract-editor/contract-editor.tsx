@@ -3,6 +3,9 @@ import {
   DEFAULT_FEE_BILLING_TIMING,
   getContractFees,
   getContractState,
+  accountInvoiceDay,
+  contractInvoiceDay,
+  getDraftBillingDay,
   getDraftStartsAt,
   localDateForUtcDay,
   parsePeriods,
@@ -351,7 +354,9 @@ function ContractEditorForm({
     usage: usageRows.map(toUsageRowValues),
     listFees: listFeeRows.map(toListFeeRowValues),
     startsAt: draftStartsAt ? localDateForUtcDay(draftStartsAt) : undefined,
+    billingDay: isSetup ? getDraftBillingDay(draft) : 'StartDate',
   };
+  const invoiceDay = accountInvoiceDay(account.spec?.paymentTerms);
 
   const handleSubmit = async (values: ContractFormValues) => {
     const optionByMetric = new Map(usageOptions.map((option) => [option.metric, option]));
@@ -404,12 +409,17 @@ function ContractEditorForm({
       if (submitIntent.isDraft()) {
         // A fee change takes effect when it's published, so only a new
         // contract's draft keeps a start date.
-        await saveDraft.mutateAsync({ offer, startsAt: isSetup ? startsAt : undefined });
+        await saveDraft.mutateAsync({
+          offer,
+          startsAt: isSetup ? startsAt : undefined,
+          billingDay: isSetup ? values.billingDay : undefined,
+        });
         toast.success(t`Draft saved. Nothing is billed until it's published.`);
       } else if (isSetup) {
         await setUp.mutateAsync({
           entitlementName,
           startsAt: startsAt as string,
+          billingDay: values.billingDay,
           offer,
           draftName,
         });
@@ -471,12 +481,27 @@ function ContractEditorForm({
           <aside className="flex flex-col gap-4 @5xl/main:sticky @5xl/main:top-4">
             {isSetup ? (
               <SectionCard title={<Trans>Start date</Trans>}>
-                <Form.Field
-                  name="startsAt"
-                  description={t`Charges start on this day, in UTC, and bill on it each month. Today or later.`}
-                  required>
-                  <ContractStartPicker now={now} />
-                </Form.Field>
+                <div className="flex flex-col gap-4">
+                  <Form.Field
+                    name="startsAt"
+                    description={t`Charges start on this day, in UTC. Today or later.`}
+                    required>
+                    <ContractStartPicker now={now} />
+                  </Form.Field>
+                  <Form.Field
+                    name="billingDay"
+                    label={t`Billing day`}
+                    description={t`Can't be changed once the contract is saved.`}>
+                    <Form.Select>
+                      <Form.SelectItem value="StartDate">
+                        <Trans>Start date, every month a whole one</Trans>
+                      </Form.SelectItem>
+                      <Form.SelectItem value="InvoiceDay">
+                        <Trans>Day {invoiceDay}, first month prorated</Trans>
+                      </Form.SelectItem>
+                    </Form.Select>
+                  </Form.Field>
+                </div>
               </SectionCard>
             ) : null}
             <SectionCard title={<Trans>Summary</Trans>}>
@@ -484,6 +509,11 @@ function ContractEditorForm({
                 isSetup={isSetup}
                 feeOptions={feeOptions}
                 contractStartsAt={contract?.startsAt}
+                invoiceDay={
+                  isSetup
+                    ? invoiceDay
+                    : contractInvoiceDay(contract?.billingDay, account.spec?.paymentTerms)
+                }
                 netDays={getEffectiveNetDays(account)}>
                 <div className="flex justify-end gap-2 border-t pt-4">
                   <Button
