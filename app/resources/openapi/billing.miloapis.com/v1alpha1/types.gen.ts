@@ -1554,6 +1554,14 @@ export type ComMiloapisBillingV1Alpha1InvoiceRequest = {
       name: string;
     };
     /**
+     * Draft, on a Preview, also leaves the invoice as a draft in the
+     * invoicing provider's own system, for staff to open there: with Stripe,
+     * a draft invoice in the Stripe dashboard. The draft is never finalized
+     * or sent, and the provider deletes it after a day. status.draft links
+     * to it. Providers that can't make one complete the Preview without it.
+     */
+    draft?: boolean;
+    /**
      * Mode is Preview to work out the invoice without creating it, or
      * Issue to create it and send it to the customer.
      */
@@ -1611,6 +1619,20 @@ export type ComMiloapisBillingV1Alpha1InvoiceRequest = {
      */
     currencyCode?: string;
     /**
+     * Draft links to the draft a Preview with spec.draft left in the
+     * invoicing provider's own system.
+     */
+    draft?: {
+      /**
+       * ExpiresAt is when the provider deletes the draft.
+       */
+      expiresAt?: string;
+      /**
+       * URL opens the draft in the provider's dashboard.
+       */
+      url: string;
+    };
+    /**
      * InvoiceRef references the Invoice an Issue request created, once the
      * provider has recorded it.
      */
@@ -1634,6 +1656,11 @@ export type ComMiloapisBillingV1Alpha1InvoiceRequest = {
        */
       description: string;
       /**
+       * Discount is what discounts take off the charge, as a decimal string.
+       * Amount is already after it.
+       */
+      discount?: string;
+      /**
        * Period is the service period the charge covers. Unset for a one-time
        * charge.
        */
@@ -1647,6 +1674,21 @@ export type ComMiloapisBillingV1Alpha1InvoiceRequest = {
          */
         start: string;
       };
+      /**
+       * Quantity is how many are charged, as a decimal string. Unset when
+       * the provider didn't say.
+       */
+      quantity?: string;
+      /**
+       * Tax is the tax on the charge, as a decimal string. Unset when the
+       * provider didn't work out tax.
+       */
+      tax?: string;
+      /**
+       * UnitAmount is the price of one, before discounts, as a decimal
+       * string. Unset when the provider didn't say.
+       */
+      unitAmount?: string;
     }>;
     /**
      * ObservedGeneration is the most recent generation observed by the
@@ -1659,9 +1701,20 @@ export type ComMiloapisBillingV1Alpha1InvoiceRequest = {
      */
     phase?: 'Pending' | 'Succeeded' | 'Failed';
     /**
+     * Tax is the invoice's tax, as a decimal string, worked out from the
+     * customer's address, tax IDs and exemptions and each charge's tax
+     * code. Unset when the provider didn't work out tax.
+     */
+    tax?: string;
+    /**
      * Total is the sum of the lines, before tax, as a decimal string.
      */
     total?: string;
+    /**
+     * TotalWithTax is what the customer would pay: Total plus Tax. Unset
+     * with Tax.
+     */
+    totalWithTax?: string;
   };
 };
 

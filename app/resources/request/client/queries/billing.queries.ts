@@ -367,9 +367,15 @@ export const useDiscardContractDraftMutation = (orgName: string, accountName: st
   });
 };
 
-/** Asks the invoicing provider what the account will be invoiced next. */
+/**
+ * Asks the invoicing provider what the account will be invoiced next.
+ * `{ draft: true }` also leaves a draft in the provider's own system.
+ */
 export const usePreviewNextInvoiceMutation = (orgName: string, accountName: string) =>
-  useMutation({ mutationFn: () => previewNextInvoice(orgName, accountName) });
+  useMutation({
+    mutationFn: (options?: { draft?: boolean }) =>
+      previewNextInvoice(orgName, accountName, { draft: options?.draft }),
+  });
 
 export const useBillingArrangementListForOrgQuery = (orgName: string) =>
   useQuery({

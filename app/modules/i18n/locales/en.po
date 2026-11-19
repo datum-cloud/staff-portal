@@ -115,6 +115,11 @@ msgstr "{0} active suspensions — the project stays suspended until all are lif
 msgid "{0} contract"
 msgstr "{0} contract"
 
+#. placeholder {0}: formatMoney(Number.parseFloat(line.discount), currency)
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:583
+msgid "{0} discount"
+msgstr "{0} discount"
+
 #. placeholder {0}: spec.historyRetention?.maxEntries ?? 50
 #: app/features/fraud/policy/policy-detail.tsx:366
 msgid "{0} entries per evaluation"
@@ -470,6 +475,11 @@ msgstr "% off"
 msgid "% Used"
 msgstr "% Used"
 
+#. placeholder {0}: formatMoney(Number.parseFloat(line.tax), currency)
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:593
+msgid "+ {0} tax"
+msgstr "+ {0} tax"
+
 #. placeholder {0}: services.length - MAX_SERVICES
 #: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:204
 msgid "+{0} more"
@@ -584,6 +594,10 @@ msgstr "A contract can start at most {MAX_CONTRACT_LEAD_DAYS} days ahead."
 #: app/features/billing/components/contract-editor/schema.ts:193
 msgid "A contract can't start in the past: charges can't be backdated."
 msgstr "A contract can't start in the past: charges can't be backdated."
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:508
+msgid "A draft in the Stripe dashboard, deleted after a day. Don't send or finalize it there."
+msgstr "A draft in the Stripe dashboard, deleted after a day. Don't send or finalize it there."
 
 #: app/features/billing/components/contract-editor/schema.ts:178
 msgid "A rate, such as 0.000012."
@@ -911,7 +925,7 @@ msgstr "All write operations"
 msgid "Allocation"
 msgstr "Allocation"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:423
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:428
 msgid "Already invoiced"
 msgstr "Already invoiced"
 
@@ -1565,7 +1579,7 @@ msgstr "Clear date range"
 msgid "Clear filters"
 msgstr "Clear filters"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:393
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:398
 #: app/features/fraud/detail/evaluation-sections.tsx:71
 #: app/features/organization/components/compute-projects-dialog.tsx:316
 #: app/features/user/components/user-recovery-links-dialog.tsx:99
@@ -1940,6 +1954,10 @@ msgstr "Couldn't load usage."
 #: app/features/organization/components/org-warning-events.tsx:78
 msgid "Couldn't load warning events."
 msgstr "Couldn't load warning events."
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:533
+msgid "Couldn't make a Stripe draft."
+msgstr "Couldn't make a Stripe draft."
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:382
 msgid "Couldn't preview the invoice."
@@ -3119,7 +3137,7 @@ msgstr "Filters"
 msgid "Fingerprint ID"
 msgstr "Fingerprint ID"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:431
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:436
 msgid "First invoice"
 msgstr "First invoice"
 
@@ -3657,7 +3675,7 @@ msgstr "ISP"
 msgid "Issued"
 msgstr "Issued"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:438
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:443
 msgid "Issued <0/>"
 msgstr "Issued <0/>"
 
@@ -3952,6 +3970,10 @@ msgstr "Low"
 #: app/features/contact/components/contact-form.tsx:186
 msgid "Mail Lists"
 msgstr "Mail Lists"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:516
+msgid "Making a draft in Stripe…"
+msgstr "Making a draft in Stripe…"
 
 #: app/features/user/components/user-identity-card.tsx:219
 #: app/routes/customer/user/index.tsx:63
@@ -4982,10 +5004,14 @@ msgstr "Once"
 msgid "Once a contact is associated with a user, this association cannot be removed or changed later."
 msgstr "Once a contact is associated with a user, this association cannot be removed or changed later."
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:460
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:465
 #: app/features/billing/utils.ts:76
 msgid "Open"
 msgstr "Open"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:526
+msgid "Open as a Stripe draft"
+msgstr "Open as a Stripe draft"
 
 #: app/features/organization/components/org-needs-attention.tsx:226
 msgid "Open DNS zone"
@@ -5015,6 +5041,10 @@ msgstr "Open menu"
 #: app/features/organization/components/org-needs-attention.tsx:228
 msgid "Open quota usage"
 msgstr "Open quota usage"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:504
+msgid "Open the Stripe draft"
+msgstr "Open the Stripe draft"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:76
 msgid "Open usage dashboard"
@@ -6311,6 +6341,10 @@ msgstr "See all DNS zones"
 msgid "See all domains"
 msgstr "See all domains"
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:536
+msgid "See the invoice as Stripe will make it. Only staff with Stripe access can open it."
+msgstr "See the invoice as Stripe will make it. Only staff with Stripe access can open it."
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:124
 msgid "See the usage dashboard for this project's spend"
 msgstr "See the usage dashboard for this project's spend"
@@ -6744,6 +6778,10 @@ msgstr "Step {0}"
 msgid "Still checking…"
 msgstr "Still checking…"
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:535
+msgid "Stripe didn't make a draft."
+msgstr "Stripe didn't make a draft."
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:116
 msgid "Stripe number"
 msgstr "Stripe number"
@@ -6830,6 +6868,7 @@ msgid "Target"
 msgstr "Target"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:206
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:612
 msgid "Tax"
 msgstr "Tax"
 
@@ -6942,7 +6981,7 @@ msgstr "The customer withdrew this application before a decision."
 msgid "The draft and the prices made for it are deleted. The account's billing doesn't change."
 msgstr "The draft and the prices made for it are deleted. The account's billing doesn't change."
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:467
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:472
 msgid "The first invoice hasn't come through yet. OpenMeter sends it a few minutes after the contract starts."
 msgstr "The first invoice hasn't come through yet. OpenMeter sends it a few minutes after the contract starts."
 
@@ -7007,7 +7046,7 @@ msgstr "Their situation"
 msgid "Then {recurring}."
 msgstr "Then {recurring}."
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:486
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:553
 msgid "There's nothing to invoice yet."
 msgstr "There's nothing to invoice yet."
 
@@ -7143,7 +7182,11 @@ msgstr "Toggle"
 msgid "Toggle theme"
 msgstr "Toggle theme"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:518
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:620
+msgid "Total"
+msgstr "Total"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:602
 msgid "Total before tax"
 msgstr "Total before tax"
 
