@@ -223,6 +223,7 @@ export function ContractSummary({
                             date={feeEndsAt(scheduleStart, fee.interval, fee.periods).toISOString()}
                             variant="absolute"
                             format="MMM d, yyyy"
+                            timezone="UTC"
                           />
                         </Trans>
                       </Text>
@@ -274,6 +275,7 @@ export function ContractSummary({
                     date={startsAt.toISOString()}
                     variant="absolute"
                     format="MMM d, yyyy"
+                    timezone="UTC"
                   />
                   : {total}.
                 </Trans>
