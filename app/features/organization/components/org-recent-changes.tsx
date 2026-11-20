@@ -1,15 +1,14 @@
 import { useOrgRecentChanges } from '../hooks/use-org-recent-changes';
 import type { ChangeRow } from '../lib/recent-changes';
+import { OverviewCardLink, OverviewCardTitle, OverviewEmptyState } from './overview-card';
 import { DateTime } from '@/components/date';
 import { SectionCard } from '@/features/milo';
+import { ENTITY_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { orgRoutes } from '@/utils/config/routes.config';
-import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Plural, Trans } from '@lingui/react/macro';
-import { ArrowRight } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { Link } from 'react-router';
 
 function verbLabel(verb: string): ReactNode {
   switch (verb) {
@@ -69,20 +68,12 @@ export function OrgRecentChanges({ orgName, className }: { orgName: string; clas
     <section className={className}>
       <SectionCard
         title={
-          <span className="flex items-baseline gap-2">
-            <Trans>What changed</Trans>
-            <Text as="span" size="sm" textColor="muted" weight="normal">
-              <Trans>Last 24h</Trans>
-            </Text>
-          </span>
+          <OverviewCardTitle title={<Trans>What changed</Trans>} hint={<Trans>Last 24h</Trans>} />
         }
         action={
-          <Link
-            to={orgRoutes.activity.auditLogs(orgName)}
-            className="text-primary inline-flex items-center gap-1 text-sm hover:underline">
+          <OverviewCardLink to={orgRoutes.activity.auditLogs(orgName)}>
             <Trans>Audit logs</Trans>
-            <Icon icon={ArrowRight} size={14} aria-hidden />
-          </Link>
+          </OverviewCardLink>
         }>
         <div className="flex flex-col gap-1">
           {changes.length > 0 && (
@@ -107,15 +98,22 @@ export function OrgRecentChanges({ orgName, className }: { orgName: string; clas
               </Text>
             )
           ) : changes.length === 0 ? (
-            <Text size="sm" textColor="muted">
-              {nothingRead ? (
-                <Trans>Couldn&apos;t load recent changes.</Trans>
-              ) : orgUnread || unread > 0 ? (
-                <Trans>No changes in the last 24 hours in what could be read.</Trans>
-              ) : (
-                <Trans>No changes in the last 24 hours.</Trans>
-              )}
-            </Text>
+            nothingRead ? (
+              <OverviewEmptyState
+                icon={STATUS_ICONS.error}
+                title={<Trans>Couldn&apos;t load recent changes</Trans>}
+              />
+            ) : orgUnread || unread > 0 ? (
+              <OverviewEmptyState
+                icon={STATUS_ICONS.warning}
+                title={<Trans>No changes found</Trans>}>
+                <Trans>Nothing in the last 24 hours in what could be read.</Trans>
+              </OverviewEmptyState>
+            ) : (
+              <OverviewEmptyState icon={ENTITY_ICONS.activity} title={<Trans>No changes</Trans>}>
+                <Trans>Nothing was changed in the last 24 hours.</Trans>
+              </OverviewEmptyState>
+            )
           ) : null}
 
           {!loading && !nothingRead && (unread > 0 || orgUnread) && (

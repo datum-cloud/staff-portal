@@ -12,6 +12,7 @@ import {
   type AttentionTab,
 } from '../lib/needs-attention';
 import { realTime, type IssueArea, type IssueSeverity, type OrgIssue } from '../lib/org-issues';
+import { OverviewEmptyState } from './overview-card';
 import { ButtonCopy } from '@/components/button';
 import { DateTime } from '@/components/date';
 import { SectionCard } from '@/features/milo';
@@ -496,22 +497,19 @@ export function OrgNeedsAttention({ orgName, className }: { orgName: string; cla
               </div>
             )
           ) : visible.length > 0 ? null : rows.length === 0 ? (
-            <div className="flex flex-col items-center gap-2 py-8 text-center">
-              <Icon icon={STATUS_ICONS.success} size={24} aria-hidden className="text-success" />
-              <Text weight="semibold">
-                <Trans>Nothing needs attention</Trans>
-              </Text>
-              <Text size="sm" textColor="muted">
-                <Trans>Checked</Trans>{' '}
-                {checkedTotals(areas).map(({ area, total }, index, all) => (
-                  <span key={area}>
-                    {index > 0 && (index === all.length - 1 ? <Trans> and </Trans> : ', ')}
-                    {checkedLabel(area, total)}
-                  </span>
-                ))}
-                .
-              </Text>
-            </div>
+            <OverviewEmptyState
+              icon={STATUS_ICONS.success}
+              iconClassName="text-success"
+              title={<Trans>Nothing needs attention</Trans>}>
+              <Trans>Checked</Trans>{' '}
+              {checkedTotals(areas).map(({ area, total }, index, all) => (
+                <span key={area}>
+                  {index > 0 && (index === all.length - 1 ? <Trans> and </Trans> : ', ')}
+                  {checkedLabel(area, total)}
+                </span>
+              ))}
+              .
+            </OverviewEmptyState>
           ) : (
             <Text size="sm" textColor="muted" className="py-6 text-center">
               <Trans>Nothing needs attention here.</Trans>
