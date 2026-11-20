@@ -1,4 +1,5 @@
 import {
+  type ContractDraftPreview,
   billingAccountBindingListForOrgQuery,
   billingAccountBindingListQuery,
   billingAccountDetailQuery,
@@ -371,10 +372,14 @@ export const useDiscardContractDraftMutation = (orgName: string, accountName: st
  * Asks the invoicing provider what the account will be invoiced next.
  * `{ draft: true }` also leaves a draft in the provider's own system.
  */
-export const usePreviewNextInvoiceMutation = (orgName: string, accountName: string) =>
+export const usePreviewNextInvoiceMutation = (
+  orgName: string,
+  accountName: string,
+  contractDraft?: ContractDraftPreview
+) =>
   useMutation({
     mutationFn: (options?: { draft?: boolean }) =>
-      previewNextInvoice(orgName, accountName, { draft: options?.draft }),
+      previewNextInvoice(orgName, accountName, { draft: options?.draft, contractDraft }),
   });
 
 export const useBillingArrangementListForOrgQuery = (orgName: string) =>

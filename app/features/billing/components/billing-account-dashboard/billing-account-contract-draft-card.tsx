@@ -9,11 +9,12 @@ import {
   type DraftPublishProblem,
 } from '../../lib/contract';
 import { DEFAULT_SERVICE_PRICING_NAMESPACE } from '../../utils';
-import { ContractFees } from './billing-account-contract-card';
+import { ContractFees, InvoicePreviewDialog } from './billing-account-contract-card';
 import { InlineDate } from './card-parts';
 import { DialogConfirm } from '@/components/dialog';
 import { SectionCard } from '@/features/milo';
 import {
+  type ContractDraftPreview,
   useContractDraftQuery,
   useDiscardContractDraftMutation,
   usePublishContractDraftMutation,
@@ -32,6 +33,7 @@ import type {
   ComMiloapisBillingV1Alpha1BillingAccount,
   ComMiloapisBillingV1Alpha1BillingEntitlement,
 } from '@openapi/billing.miloapis.com/v1alpha1';
+import { FileSearch } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 /**
@@ -56,6 +58,7 @@ export function BillingAccountContractDraftCard({
   const publish = usePublishContractDraftMutation(orgName, accountName);
   const discard = useDiscardContractDraftMutation(orgName, accountName);
   const [confirm, setConfirm] = useState<'publish' | 'discard' | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const raw = draftQuery.data;
   const pricings = pricingsQuery.data?.items;
@@ -74,6 +77,11 @@ export function BillingAccountContractDraftCard({
     account.spec?.paymentTerms
   );
   const problem = draftPublishProblem(raw, entitlement, now);
+  // A new contract's first invoice, once it could be published as it is.
+  const preview: ContractDraftPreview | undefined =
+    !contract && startsAt && !problem
+      ? { offerName: draftName, startsAt, billingDay: getDraftBillingDay(raw) }
+      : undefined;
 
   const run = async (action: 'publish' | 'discard') => {
     try {
@@ -182,8 +190,29 @@ export function BillingAccountContractDraftCard({
             onClick={() => setConfirm('discard')}>
             <Trans>Discard</Trans>
           </Button>
+          {preview ? (
+            <Button
+              type="secondary"
+              theme="outline"
+              size="small"
+              className="ml-auto"
+              icon={<Icon icon={FileSearch} size={14} />}
+              onClick={() => setPreviewOpen(true)}>
+              <Trans>Preview first invoice</Trans>
+            </Button>
+          ) : null}
         </div>
       </div>
+
+      {preview && previewOpen ? (
+        <InvoicePreviewDialog
+          orgName={orgName}
+          account={account}
+          firstInvoice
+          contractDraft={preview}
+          onClose={() => setPreviewOpen(false)}
+        />
+      ) : null}
 
       <DialogConfirm
         open={confirm === 'publish'}

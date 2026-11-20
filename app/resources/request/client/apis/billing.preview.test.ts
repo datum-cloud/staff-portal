@@ -53,4 +53,33 @@ describe('invoice previews', () => {
     });
     expect(request.status?.draft?.url).toBe('https://dashboard.stripe.com/test/invoices/in_1');
   });
+
+  it('previews a draft contract as published, with a Stripe draft when asked', async () => {
+    vi.mocked(readBillingMiloapisComV1Alpha1NamespacedInvoiceRequest).mockResolvedValue({
+      data: { data: { metadata: { name: 'acme-ops-preview-x1' }, status: { phase: 'Succeeded' } } },
+    } as never);
+
+    await previewNextInvoice('acme', 'acme-ops', {
+      draft: true,
+      intervalMs: 0,
+      contractDraft: {
+        offerName: 'contract-acme-ops-20261120',
+        startsAt: new Date('2026-12-01T00:00:00Z'),
+        billingDay: 'InvoiceDay',
+      },
+    });
+
+    const body = vi.mocked(createBillingMiloapisComV1Alpha1NamespacedInvoiceRequest).mock
+      .calls[0]?.[0].body;
+    expect(body?.spec).toEqual({
+      billingAccountRef: { name: 'acme-ops' },
+      mode: 'Preview',
+      draft: true,
+      contractDraft: {
+        offerRef: { name: 'contract-acme-ops-20261120' },
+        startsAt: '2026-12-01T00:00:00Z',
+        billingDay: 'InvoiceDay',
+      },
+    });
+  });
 });

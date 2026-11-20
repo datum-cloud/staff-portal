@@ -31,6 +31,7 @@ import {
   usePreviewNextInvoiceMutation,
   useServiceListQuery,
   useServicePricingListQuery,
+  type ContractDraftPreview,
   type InvoiceRequest,
 } from '@/resources/request/client';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
@@ -342,13 +343,15 @@ export function ContractFees({
 
 /**
  * Asks the invoicing provider for the account's next invoice, and shows its
- * lines. Before a contract starts, that's the contract's first invoice.
+ * lines. Before a contract starts, that's the contract's first invoice; for
+ * a draft contract, the first invoice it would have once published.
  */
-function InvoicePreviewDialog({
+export function InvoicePreviewDialog({
   orgName,
   account,
   firstInvoice,
   startedAt,
+  contractDraft,
   onClose,
 }: {
   orgName: string;
@@ -356,9 +359,15 @@ function InvoicePreviewDialog({
   firstInvoice: boolean;
   /** When the contract started, once it has: its first invoice is shown too. */
   startedAt?: Date;
+  /** A draft contract to preview instead of the account's billing. */
+  contractDraft?: ContractDraftPreview;
   onClose: () => void;
 }) {
-  const preview = usePreviewNextInvoiceMutation(orgName, account.metadata?.name ?? '');
+  const preview = usePreviewNextInvoiceMutation(
+    orgName,
+    account.metadata?.name ?? '',
+    contractDraft
+  );
   const { mutate } = preview;
   useEffect(() => {
     mutate();
@@ -368,8 +377,18 @@ function InvoicePreviewDialog({
     <Dialog open onOpenChange={(open) => (open ? undefined : onClose())}>
       <Dialog.Content className="sm:max-w-lg">
         <Dialog.Header
-          title={firstInvoice ? t`First invoice preview` : t`Next invoice preview`}
-          description={t`Worked out by the billing provider. Nothing is sent to the customer.`}
+          title={
+            contractDraft
+              ? t`Draft contract's first invoice`
+              : firstInvoice
+                ? t`First invoice preview`
+                : t`Next invoice preview`
+          }
+          description={
+            contractDraft
+              ? t`Worked out by the billing provider as if the draft were published. Nothing is published or sent to the customer.`
+              : t`Worked out by the billing provider. Nothing is sent to the customer.`
+          }
         />
         <Dialog.Body className="px-5">
           {preview.isPending ? (
@@ -388,7 +407,11 @@ function InvoicePreviewDialog({
             <>
               <PreviewResult request={preview.data} />
               {preview.data.status?.tax ? (
-                <StripeDraft orgName={orgName} accountName={account.metadata?.name ?? ''} />
+                <StripeDraft
+                  orgName={orgName}
+                  accountName={account.metadata?.name ?? ''}
+                  contractDraft={contractDraft}
+                />
               ) : null}
             </>
           ) : null}
@@ -487,8 +510,16 @@ function ContractFirstInvoice({
  * the Stripe dashboard and see exactly what the customer will get. The draft
  * is never finalized or sent, and it's deleted after a day.
  */
-function StripeDraft({ orgName, accountName }: { orgName: string; accountName: string }) {
-  const draft = usePreviewNextInvoiceMutation(orgName, accountName);
+function StripeDraft({
+  orgName,
+  accountName,
+  contractDraft,
+}: {
+  orgName: string;
+  accountName: string;
+  contractDraft?: ContractDraftPreview;
+}) {
+  const draft = usePreviewNextInvoiceMutation(orgName, accountName, contractDraft);
   const url = draft.data?.status?.draft?.url;
   const message = draft.data?.status?.conditions?.find(
     (condition) => condition.type === 'Completed'

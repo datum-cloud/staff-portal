@@ -1063,10 +1063,17 @@ const draftAssignment = (
  * `draft`, the provider also leaves the invoice as a draft in its own system
  * (a Stripe draft invoice) for staff to open there.
  */
+/** A contract not published yet, to preview instead of the account's billing. */
+export interface ContractDraftPreview {
+  offerName: string;
+  startsAt: Date;
+  billingDay: 'StartDate' | 'InvoiceDay';
+}
+
 export const createInvoicePreviewRequest = async (
   orgName: string,
   accountName: string,
-  { draft = false }: { draft?: boolean } = {}
+  { draft = false, contractDraft }: { draft?: boolean; contractDraft?: ContractDraftPreview } = {}
 ) => {
   const namespace = buildOrganizationNamespace(orgName);
   const response = await createBillingMiloapisComV1Alpha1NamespacedInvoiceRequest({
@@ -1081,6 +1088,15 @@ export const createInvoicePreviewRequest = async (
         billingAccountRef: { name: accountName },
         mode: 'Preview',
         ...(draft ? { draft: true } : {}),
+        ...(contractDraft
+          ? {
+              contractDraft: {
+                offerRef: { name: contractDraft.offerName },
+                startsAt: contractDraft.startsAt.toISOString().replace('.000Z', 'Z'),
+                billingDay: contractDraft.billingDay,
+              },
+            }
+          : {}),
       },
     },
   });
@@ -1094,9 +1110,22 @@ export const createInvoicePreviewRequest = async (
 export const previewNextInvoice = async (
   orgName: string,
   accountName: string,
-  { attempts = 45, intervalMs = 2000, draft = false } = {}
+  {
+    attempts = 45,
+    intervalMs = 2000,
+    draft = false,
+    contractDraft,
+  }: {
+    attempts?: number;
+    intervalMs?: number;
+    draft?: boolean;
+    contractDraft?: ContractDraftPreview;
+  } = {}
 ): Promise<InvoiceRequest> => {
-  const created = await createInvoicePreviewRequest(orgName, accountName, { draft });
+  const created = await createInvoicePreviewRequest(orgName, accountName, {
+    draft,
+    contractDraft,
+  });
   const name = created?.metadata?.name;
   if (!name) throw new Error('The preview request was not created.');
   for (let i = 0; i < attempts; i++) {

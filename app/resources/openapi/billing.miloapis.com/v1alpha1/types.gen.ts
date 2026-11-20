@@ -1554,6 +1554,34 @@ export type ComMiloapisBillingV1Alpha1InvoiceRequest = {
       name: string;
     };
     /**
+     * ContractDraft, on a Preview, previews the first invoice of a contract
+     * that isn't published yet, instead of what the account is billed
+     * for now. Its Offer must be a contract Offer for this billing account,
+     * labelled with ContractBillingAccountLabel and
+     * ContractOrganizationLabel, usually still at launch stage Draft.
+     */
+    contractDraft?: {
+      /**
+       * BillingDay is the day of the month it would bill on, as
+       * BillingContract.BillingDay. Defaults to StartDate.
+       */
+      billingDay?: 'StartDate' | 'InvoiceDay';
+      /**
+       * OfferRef names the contract's Offer.
+       */
+      offerRef: {
+        /**
+         * Name of the Offer.
+         */
+        name: string;
+      };
+      /**
+       * StartsAt is when the contract would start, at midnight UTC, as
+       * BillingContract.StartsAt.
+       */
+      startsAt: string;
+    };
+    /**
      * Draft, on a Preview, also leaves the invoice as a draft in the
      * invoicing provider's own system, for staff to open there: with Stripe,
      * a draft invoice in the Stripe dashboard. The draft is never finalized
