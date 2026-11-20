@@ -1573,6 +1573,11 @@ export type ComMiloapisBillingV1Alpha1InvoiceRequest = {
    */
   status?: {
     /**
+     * AmountDue is what the customer would be charged: TotalWithTax with
+     * StartingBalance applied. Unset when the provider didn't say.
+     */
+    amountDue?: string;
+    /**
      * CompletedAt is when the provider finished the request.
      */
     completedAt?: string;
@@ -1700,6 +1705,13 @@ export type ComMiloapisBillingV1Alpha1InvoiceRequest = {
      * Succeeded or Failed.
      */
     phase?: 'Pending' | 'Succeeded' | 'Failed';
+    /**
+     * StartingBalance is the account's balance the provider carries onto
+     * the invoice, as a decimal string: positive for what the customer
+     * already owes, such as an earlier invoice too small to charge,
+     * negative for credit. Unset when the provider didn't say.
+     */
+    startingBalance?: string;
     /**
      * Tax is the invoice's tax, as a decimal string, worked out from the
      * customer's address, tax IDs and exemptions and each charge's tax

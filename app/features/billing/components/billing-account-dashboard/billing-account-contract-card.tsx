@@ -544,6 +544,45 @@ function StripeDraft({ orgName, accountName }: { orgName: string; accountName: s
   );
 }
 
+/**
+ * The balance the provider carries onto the invoice, when there is one:
+ * what the account already owes, such as an earlier invoice too small to
+ * charge, or its credit. Then what's charged differs from the total.
+ */
+export function CarriedBalance({
+  balance,
+  amountDue,
+  currency,
+}: {
+  balance?: string;
+  amountDue?: string;
+  currency: string | undefined;
+}) {
+  const carried = Number.parseFloat(balance ?? '');
+  const due = Number.parseFloat(amountDue ?? '');
+  if (!Number.isFinite(carried) || carried === 0 || !Number.isFinite(due)) return null;
+  return (
+    <>
+      <div className="flex items-baseline justify-between gap-3">
+        <Text size="sm">
+          {carried > 0 ? <Trans>Owed from earlier invoices</Trans> : <Trans>Account credit</Trans>}
+        </Text>
+        <Text size="sm" className="tabular-nums">
+          {formatMoney(carried, currency)}
+        </Text>
+      </div>
+      <div className="flex items-baseline justify-between gap-3">
+        <Text size="sm" weight="medium">
+          <Trans>Amount due</Trans>
+        </Text>
+        <Text size="sm" weight="medium" className="tabular-nums">
+          {formatMoney(due, currency)}
+        </Text>
+      </div>
+    </>
+  );
+}
+
 function PreviewResult({ request }: { request: InvoiceRequest }) {
   const status = request.status;
   const completed = status?.conditions?.find((condition) => condition.type === 'Completed');
@@ -638,6 +677,11 @@ function PreviewResult({ request }: { request: InvoiceRequest }) {
           </div>
         </>
       ) : null}
+      <CarriedBalance
+        balance={status?.startingBalance}
+        amountDue={status?.amountDue}
+        currency={currency}
+      />
       {completed?.message ? (
         <Text size="xs" textColor="muted">
           {completed.message}
