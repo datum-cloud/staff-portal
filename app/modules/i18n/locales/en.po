@@ -21,7 +21,7 @@ msgstr " · {days}d late"
 msgid " · newest"
 msgstr " · newest"
 
-#: app/features/organization/components/org-needs-attention.tsx:508
+#: app/features/organization/components/org-needs-attention.tsx:507
 msgid " and "
 msgstr " and "
 
@@ -49,7 +49,7 @@ msgstr "{0, plural, one {# active binding · spend this cycle by project} other 
 #. placeholder {0}: row.issueCount
 #. placeholder {0}: summary.issueCount
 #: app/features/organization/components/org-health-strip.tsx:190
-#: app/features/organization/components/org-projects-card.tsx:71
+#: app/features/organization/components/org-projects-card.tsx:73
 msgid "{0, plural, one {# issue} other {# issues}}"
 msgstr "{0, plural, one {# issue} other {# issues}}"
 
@@ -93,7 +93,7 @@ msgid "{0, plural, one {in # project} other {in # projects}}"
 msgstr "{0, plural, one {in # project} other {in # projects}}"
 
 #. placeholder {0}: visible.length
-#: app/features/organization/components/org-needs-attention.tsx:524
+#: app/features/organization/components/org-needs-attention.tsx:522
 msgid "{0, plural, one {Show all # issues} other {Show all # issues}}"
 msgstr "{0, plural, one {Show all # issues} other {Show all # issues}}"
 
@@ -151,7 +151,7 @@ msgstr "{0} of {1} services"
 
 #. placeholder {0}: usage.allocated
 #. placeholder {1}: usage.limit
-#: app/features/organization/components/org-needs-attention.tsx:326
+#: app/features/organization/components/org-needs-attention.tsx:327
 msgid "{0} of {1} used ({percent}%)"
 msgstr "{0} of {1} used ({percent}%)"
 
@@ -310,7 +310,7 @@ msgstr "{frequency}, on day {invoiceDay}"
 msgid "{heading}"
 msgstr "{heading}"
 
-#: app/features/organization/components/org-projects-card.tsx:46
+#: app/features/organization/components/org-projects-card.tsx:48
 msgid "{instances, plural, one {# instance} other {# instances}}"
 msgstr "{instances, plural, one {# instance} other {# instances}}"
 
@@ -334,7 +334,7 @@ msgstr "{invoices} · oldest {overdue} overdue"
 msgid "{known, plural, one {No compute problems in the # project checked so far} other {No compute problems in the # projects checked so far}}"
 msgstr "{known, plural, one {No compute problems in the # project checked so far} other {No compute problems in the # projects checked so far}}"
 
-#: app/features/organization/components/org-projects-card.tsx:47
+#: app/features/organization/components/org-projects-card.tsx:49
 msgid "{loadBalancers, plural, one {# ALB} other {# ALBs}}"
 msgstr "{loadBalancers, plural, one {# ALB} other {# ALBs}}"
 
@@ -428,19 +428,19 @@ msgstr "{ticked} ticked"
 msgid "{times}× last cycle at this point"
 msgstr "{times}× last cycle at this point"
 
-#: app/features/organization/components/org-needs-attention.tsx:99
+#: app/features/organization/components/org-needs-attention.tsx:100
 msgid "{total, plural, one {# DNS zone} other {# DNS zones}}"
 msgstr "{total, plural, one {# DNS zone} other {# DNS zones}}"
 
-#: app/features/organization/components/org-needs-attention.tsx:97
+#: app/features/organization/components/org-needs-attention.tsx:98
 msgid "{total, plural, one {# domain} other {# domains}}"
 msgstr "{total, plural, one {# domain} other {# domains}}"
 
-#: app/features/organization/components/org-needs-attention.tsx:93
+#: app/features/organization/components/org-needs-attention.tsx:94
 msgid "{total, plural, one {# instance} other {# instances}}"
 msgstr "{total, plural, one {# instance} other {# instances}}"
 
-#: app/features/organization/components/org-needs-attention.tsx:95
+#: app/features/organization/components/org-needs-attention.tsx:96
 msgid "{total, plural, one {# load balancer} other {# load balancers}}"
 msgstr "{total, plural, one {# load balancer} other {# load balancers}}"
 
@@ -448,7 +448,7 @@ msgstr "{total, plural, one {# load balancer} other {# load balancers}}"
 msgid "{total, plural, one {# project, no compute problems} other {# projects, no compute problems}}"
 msgstr "{total, plural, one {# project, no compute problems} other {# projects, no compute problems}}"
 
-#: app/features/organization/components/org-needs-attention.tsx:101
+#: app/features/organization/components/org-needs-attention.tsx:102
 msgid "{total, plural, one {# quota bucket} other {# quota buckets}}"
 msgstr "{total, plural, one {# quota bucket} other {# quota buckets}}"
 
@@ -456,7 +456,7 @@ msgstr "{total, plural, one {# quota bucket} other {# quota buckets}}"
 msgid "{total, plural, one {# thing needs attention} other {# things need attention}}"
 msgstr "{total, plural, one {# thing needs attention} other {# things need attention}}"
 
-#: app/features/organization/components/org-needs-attention.tsx:91
+#: app/features/organization/components/org-needs-attention.tsx:92
 msgid "{total, plural, one {# workload} other {# workloads}}"
 msgstr "{total, plural, one {# workload} other {# workloads}}"
 
@@ -472,11 +472,11 @@ msgstr "{total} plus usage"
 msgid "{unread, plural, one {# couldn't be read} other {# couldn't be read}}"
 msgstr "{unread, plural, one {# couldn't be read} other {# couldn't be read}}"
 
-#: app/features/organization/components/org-recent-changes.tsx:127
+#: app/features/organization/components/org-recent-changes.tsx:125
 msgid "{unread, plural, one {# project's audit log couldn't be read.} other {# projects' audit logs couldn't be read.}}"
 msgstr "{unread, plural, one {# project's audit log couldn't be read.} other {# projects' audit logs couldn't be read.}}"
 
-#: app/features/organization/components/org-warning-events.tsx:179
+#: app/features/organization/components/org-warning-events.tsx:184
 msgid "{unread, plural, one {# project's events couldn't be read, so this list may be incomplete.} other {# projects' events couldn't be read, so this list may be incomplete.}}"
 msgstr "{unread, plural, one {# project's events couldn't be read, so this list may be incomplete.} other {# projects' events couldn't be read, so this list may be incomplete.}}"
 
@@ -488,7 +488,7 @@ msgstr "{what}: {amount}"
 msgid "{what}: {amount} (list {listPrice})"
 msgstr "{what}: {amount} (list {listPrice})"
 
-#: app/features/organization/components/org-projects-card.tsx:45
+#: app/features/organization/components/org-projects-card.tsx:47
 msgid "{workloads, plural, one {# workload} other {# workloads}}"
 msgstr "{workloads, plural, one {# workload} other {# workloads}}"
 
@@ -870,7 +870,7 @@ msgstr "Admin"
 msgid "After publish, only the display name can change. Rate changes need a new Offer."
 msgstr "After publish, only the display name can change. Rate changes need a new Offer."
 
-#: app/features/organization/components/org-needs-attention.tsx:159
+#: app/features/organization/components/org-needs-attention.tsx:160
 msgid "Age"
 msgstr "Age"
 
@@ -895,7 +895,7 @@ msgstr "Algorithm"
 
 #: app/features/contact/components/timeline/timeline-filters.tsx:13
 #: app/features/dashboard/components/home/activity-section.tsx:17
-#: app/features/organization/components/org-needs-attention.tsx:78
+#: app/features/organization/components/org-needs-attention.tsx:79
 msgid "All"
 msgstr "All"
 
@@ -915,7 +915,7 @@ msgstr "All clusters healthy"
 msgid "All Evaluations for this User"
 msgstr "All Evaluations for this User"
 
-#: app/features/organization/components/org-warning-events.tsx:123
+#: app/features/organization/components/org-warning-events.tsx:129
 msgid "All events"
 msgstr "All events"
 
@@ -1219,7 +1219,7 @@ msgstr "Associate with User"
 msgid "Associated with User: "
 msgstr "Associated with User: "
 
-#: app/features/organization/components/org-recent-changes.tsx:83
+#: app/features/organization/components/org-recent-changes.tsx:75
 msgid "Audit logs"
 msgstr "Audit logs"
 
@@ -1353,7 +1353,7 @@ msgstr "Billing contact"
 msgid "Billing could not be read"
 msgstr "Billing could not be read"
 
-#: app/features/organization/components/org-usage-card.tsx:86
+#: app/features/organization/components/org-usage-card.tsx:81
 #: app/features/project/components/project-usage-card.tsx:107
 msgid "Billing permissions are still being provisioned for this organization."
 msgstr "Billing permissions are still being provisioned for this organization."
@@ -1515,7 +1515,7 @@ msgstr "Change payment terms"
 msgid "Change your Primary Email in GitHub (your primary email)"
 msgstr "Change your Primary Email in GitHub (your primary email)"
 
-#: app/features/organization/components/org-needs-attention.tsx:258
+#: app/features/organization/components/org-needs-attention.tsx:259
 msgid "Changed"
 msgstr "Changed"
 
@@ -1555,11 +1555,11 @@ msgstr "Charges start on this day, in UTC. Today or later."
 msgid "Check that you have permission to list ServicePricings, then try again. If IAM was just updated, wait a minute for PolicyBindings to reconcile."
 msgstr "Check that you have permission to list ServicePricings, then try again. If IAM was just updated, wait a minute for PolicyBindings to reconcile."
 
-#: app/features/organization/components/org-needs-attention.tsx:505
+#: app/features/organization/components/org-needs-attention.tsx:504
 msgid "Checked"
 msgstr "Checked"
 
-#: app/features/organization/components/org-needs-attention.tsx:455
+#: app/features/organization/components/org-needs-attention.tsx:456
 msgid "Checked <0/>"
 msgstr "Checked <0/>"
 
@@ -1678,7 +1678,7 @@ msgstr "Completing ACME challenge with the certificate authority"
 msgid "Composite"
 msgstr "Composite"
 
-#: app/features/organization/components/org-needs-attention.tsx:80
+#: app/features/organization/components/org-needs-attention.tsx:81
 msgid "Compute"
 msgstr "Compute"
 
@@ -1686,7 +1686,7 @@ msgstr "Compute"
 msgid "Compute by project"
 msgstr "Compute by project"
 
-#: app/features/organization/components/org-needs-attention.tsx:246
+#: app/features/organization/components/org-needs-attention.tsx:247
 msgid "Condition"
 msgstr "Condition"
 
@@ -1906,7 +1906,7 @@ msgstr "Could not load service pricings"
 msgid "Could not load test results"
 msgstr "Could not load test results"
 
-#: app/features/organization/components/org-usage-card.tsx:79
+#: app/features/organization/components/org-usage-card.tsx:76
 #: app/features/project/components/project-usage-card.tsx:100
 msgid "Could not load usage"
 msgstr "Could not load usage"
@@ -1964,9 +1964,9 @@ msgstr "Couldn't load payment methods"
 msgid "Couldn't load prices for this service."
 msgstr "Couldn't load prices for this service."
 
-#: app/features/organization/components/org-recent-changes.tsx:112
-msgid "Couldn't load recent changes."
-msgstr "Couldn't load recent changes."
+#: app/features/organization/components/org-recent-changes.tsx:104
+msgid "Couldn't load recent changes"
+msgstr "Couldn't load recent changes"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:122
 msgid "Couldn't load spend"
@@ -1988,9 +1988,9 @@ msgstr "Couldn't load the default offer, so nothing starts ticked. Tick what the
 msgid "Couldn't load the draft's fees."
 msgstr "Couldn't load the draft's fees."
 
-#: app/features/organization/components/org-projects-card.tsx:156
-msgid "Couldn't load the organization's projects."
-msgstr "Couldn't load the organization's projects."
+#: app/features/organization/components/org-projects-card.tsx:159
+msgid "Couldn't load the organization's projects"
+msgstr "Couldn't load the organization's projects"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:84
 msgid "Couldn't load usage"
@@ -2000,9 +2000,9 @@ msgstr "Couldn't load usage"
 msgid "Couldn't load usage."
 msgstr "Couldn't load usage."
 
-#: app/features/organization/components/org-warning-events.tsx:78
-msgid "Couldn't load warning events."
-msgstr "Couldn't load warning events."
+#: app/features/organization/components/org-warning-events.tsx:79
+msgid "Couldn't load warning events"
+msgstr "Couldn't load warning events"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:536
 msgid "Couldn't make a Stripe draft."
@@ -2012,11 +2012,11 @@ msgstr "Couldn't make a Stripe draft."
 msgid "Couldn't preview the invoice."
 msgstr "Couldn't preview the invoice."
 
-#: app/features/organization/components/org-projects-card.tsx:83
+#: app/features/organization/components/org-projects-card.tsx:85
 msgid "Couldn't read"
 msgstr "Couldn't read"
 
-#: app/features/organization/components/org-warning-events.tsx:134
+#: app/features/organization/components/org-warning-events.tsx:139
 msgid "Count"
 msgstr "Count"
 
@@ -2067,7 +2067,7 @@ msgstr "Create Offer"
 msgid "Create Policy"
 msgstr "Create Policy"
 
-#: app/features/organization/components/org-recent-changes.tsx:17
+#: app/features/organization/components/org-recent-changes.tsx:16
 msgid "created"
 msgstr "created"
 
@@ -2137,13 +2137,13 @@ msgstr "Credit limit"
 msgid "Currency"
 msgstr "Currency"
 
-#: app/features/organization/components/org-usage-card.tsx:62
+#: app/features/organization/components/org-usage-card.tsx:61
 #: app/features/project/components/project-usage-card.tsx:83
 msgid "Current billing cycle"
 msgstr "Current billing cycle"
 
 #. placeholder {0}: summary.cycleRangeLabel
-#: app/features/organization/components/org-usage-card.tsx:60
+#: app/features/organization/components/org-usage-card.tsx:59
 msgid "Current billing cycle ({0})"
 msgstr "Current billing cycle ({0})"
 
@@ -2403,7 +2403,7 @@ msgstr "Delete Session"
 msgid "Delete User"
 msgstr "Delete User"
 
-#: app/features/organization/components/org-recent-changes.tsx:24
+#: app/features/organization/components/org-recent-changes.tsx:23
 msgid "deleted"
 msgstr "deleted"
 
@@ -2574,7 +2574,7 @@ msgstr "DNS Records"
 msgid "DNS records have been programmed for this hostname"
 msgstr "DNS records have been programmed for this hostname"
 
-#: app/features/organization/components/org-needs-attention.tsx:69
+#: app/features/organization/components/org-needs-attention.tsx:70
 msgid "DNS zone"
 msgstr "DNS zone"
 
@@ -2601,7 +2601,7 @@ msgstr "does not contain"
 #: app/features/activity/components/activity-list.tsx:490
 #: app/features/domain/components/domain-list.tsx:61
 #: app/features/fraud/detail/maxmind-rows.tsx:237
-#: app/features/organization/components/org-needs-attention.tsx:67
+#: app/features/organization/components/org-needs-attention.tsx:68
 #: app/routes/customer/project/detail/domain/detail.tsx:66
 #: app/routes/customer/resource/index.tsx:145
 #: app/routes/customer/resource/index.tsx:401
@@ -2989,7 +2989,7 @@ msgstr "Evaluations"
 msgid "Event"
 msgstr "Event"
 
-#: app/features/organization/components/org-needs-attention.tsx:411
+#: app/features/organization/components/org-needs-attention.tsx:412
 #: app/routes/customer/organization/detail/activity/events.tsx:14
 #: app/routes/customer/organization/detail/activity/events.tsx:17
 #: app/routes/customer/project/detail/activity/events.tsx:14
@@ -3453,7 +3453,7 @@ msgstr "Hash On"
 
 #: app/features/organization/components/compute-projects-dialog.tsx:81
 #: app/features/organization/components/org-health-strip.tsx:120
-#: app/features/organization/components/org-projects-card.tsx:77
+#: app/features/organization/components/org-projects-card.tsx:79
 msgid "Healthy"
 msgstr "Healthy"
 
@@ -3605,8 +3605,8 @@ msgstr "Inherits {inheritedPercentage}%"
 msgid "Inspect usage"
 msgstr "Inspect usage"
 
-#: app/features/organization/components/org-needs-attention.tsx:63
-#: app/features/organization/components/org-needs-attention.tsx:147
+#: app/features/organization/components/org-needs-attention.tsx:64
+#: app/features/organization/components/org-needs-attention.tsx:148
 msgid "Instance"
 msgstr "Instance"
 
@@ -3790,12 +3790,12 @@ msgstr "large card balance"
 msgid "Large open balance on a card-billed account"
 msgstr "Large open balance on a card-billed account"
 
-#: app/features/organization/components/org-warning-events.tsx:115
+#: app/features/organization/components/org-warning-events.tsx:124
 msgid "Last 24 hours"
 msgstr "Last 24 hours"
 
 #: app/features/dashboard/components/home/health-section.tsx:133
-#: app/features/organization/components/org-recent-changes.tsx:75
+#: app/features/organization/components/org-recent-changes.tsx:71
 msgid "Last 24h"
 msgstr "Last 24h"
 
@@ -3815,7 +3815,7 @@ msgstr "Last 7d"
 msgid "Last Evaluated"
 msgstr "Last Evaluated"
 
-#: app/features/organization/components/org-needs-attention.tsx:156
+#: app/features/organization/components/org-needs-attention.tsx:157
 msgid "Last event"
 msgstr "Last event"
 
@@ -3836,7 +3836,7 @@ msgstr "Last Name"
 msgid "Last name is required"
 msgstr "Last name is required"
 
-#: app/features/organization/components/org-warning-events.tsx:146
+#: app/features/organization/components/org-warning-events.tsx:151
 msgid "Last seen"
 msgstr "Last seen"
 
@@ -3948,7 +3948,7 @@ msgstr "list {listPrice}"
 msgid "List price"
 msgstr "List price"
 
-#: app/features/organization/components/org-needs-attention.tsx:65
+#: app/features/organization/components/org-needs-attention.tsx:66
 msgid "Load balancer"
 msgstr "Load balancer"
 
@@ -4004,7 +4004,7 @@ msgid "Loading..."
 msgstr "Loading..."
 
 #: app/features/organization/components/compute-projects-dialog.tsx:77
-#: app/features/organization/components/org-projects-card.tsx:101
+#: app/features/organization/components/org-projects-card.tsx:103
 #: app/routes/admin/offer/detail.tsx:247
 #: app/routes/admin/offer/detail.tsx:369
 msgid "Loading…"
@@ -4016,7 +4016,7 @@ msgstr "Local Time"
 
 #: app/features/fraud/detail/maxmind-rows.tsx:178
 #: app/features/organization/components/org-account-card.tsx:163
-#: app/features/organization/components/org-needs-attention.tsx:150
+#: app/features/organization/components/org-needs-attention.tsx:151
 #: app/routes/customer/user/detail/index.tsx:266
 msgid "Location"
 msgstr "Location"
@@ -4115,7 +4115,7 @@ msgid "Menu"
 msgstr "Menu"
 
 #: app/features/dns/components/dns-zone-status.tsx:84
-#: app/features/organization/components/org-needs-attention.tsx:255
+#: app/features/organization/components/org-needs-attention.tsx:256
 #: app/features/service-catalog/components/conditions-card.tsx:47
 #: app/routes/admin/service-catalog/detail/consumers.tsx:290
 msgid "Message"
@@ -4191,7 +4191,7 @@ msgstr "My Profile"
 #: app/features/contact/components/contact-list.tsx:160
 #: app/features/fraud/policy/policy-form.tsx:149
 #: app/features/organization/components/org-members-preview-card.tsx:40
-#: app/features/organization/components/org-needs-attention.tsx:292
+#: app/features/organization/components/org-needs-attention.tsx:293
 #: app/routes/admin/group/detail/index.tsx:28
 #: app/routes/admin/group/detail/member.tsx:89
 #: app/routes/admin/group/index.tsx:26
@@ -4245,13 +4245,17 @@ msgstr "Namespace"
 msgid "Navigation"
 msgstr "Navigation"
 
-#: app/features/organization/components/org-needs-attention.tsx:451
+#: app/features/organization/components/org-needs-attention.tsx:452
 msgid "Needs attention"
 msgstr "Needs attention"
 
 #: app/features/dashboard/components/home/home-columns.tsx:141
 msgid "Needs review"
 msgstr "Needs review"
+
+#: app/features/organization/components/org-warning-events.tsx:80
+msgid "Neither the organization nor its projects could be read."
+msgstr "Neither the organization nor its projects could be read."
 
 #. placeholder {0}: invoice?.netDays ?? '—'
 #: app/features/billing/components/payment-terms.tsx:421
@@ -4287,7 +4291,7 @@ msgid "Net days"
 msgstr "Net days"
 
 #: app/features/fraud/detail/maxmind-rows.tsx:120
-#: app/features/organization/components/org-needs-attention.tsx:82
+#: app/features/organization/components/org-needs-attention.tsx:83
 msgid "Network"
 msgstr "Network"
 
@@ -4412,7 +4416,7 @@ msgstr "No Application Load Balancer found."
 msgid "No backends configured"
 msgstr "No backends configured"
 
-#: app/features/organization/components/org-usage-card.tsx:91
+#: app/features/organization/components/org-usage-card.tsx:84
 #: app/features/project/components/project-usage-card.tsx:112
 msgid "No billing account"
 msgstr "No billing account"
@@ -4438,13 +4442,13 @@ msgstr "No BillingEntitlement found for this account. New accounts pick up the d
 msgid "No card on file. Not needed while invoice terms are active."
 msgstr "No card on file. Not needed while invoice terms are active."
 
-#: app/features/organization/components/org-recent-changes.tsx:114
-msgid "No changes in the last 24 hours in what could be read."
-msgstr "No changes in the last 24 hours in what could be read."
+#: app/features/organization/components/org-recent-changes.tsx:113
+msgid "No changes"
+msgstr "No changes"
 
-#: app/features/organization/components/org-recent-changes.tsx:116
-msgid "No changes in the last 24 hours."
-msgstr "No changes in the last 24 hours."
+#: app/features/organization/components/org-recent-changes.tsx:109
+msgid "No changes found"
+msgstr "No changes found"
 
 #: app/features/billing/components/offer-included-pricing-list.tsx:268
 msgid "No charges included in this Offer."
@@ -4601,7 +4605,7 @@ msgstr "No history"
 msgid "No hostnames configured"
 msgstr "No hostnames configured"
 
-#: app/features/organization/components/org-needs-attention.tsx:137
+#: app/features/organization/components/org-needs-attention.tsx:138
 msgid "No instances."
 msgstr "No instances."
 
@@ -4738,9 +4742,9 @@ msgstr "No projects found."
 msgid "No projects match."
 msgstr "No projects match."
 
-#: app/features/organization/components/org-projects-card.tsx:160
-msgid "No projects yet."
-msgstr "No projects yet."
+#: app/features/organization/components/org-projects-card.tsx:162
+msgid "No projects yet"
+msgstr "No projects yet"
 
 #: app/features/organization/components/compute-projects-dialog.tsx:264
 msgid "No projects."
@@ -4770,7 +4774,7 @@ msgstr "No quotas"
 msgid "No recovery links have been sent to this user."
 msgstr "No recovery links have been sent to this user."
 
-#: app/features/organization/components/org-projects-card.tsx:50
+#: app/features/organization/components/org-projects-card.tsx:52
 msgid "No resources"
 msgstr "No resources"
 
@@ -4842,7 +4846,7 @@ msgstr "No usage"
 msgid "No usage recorded this cycle"
 msgstr "No usage recorded this cycle"
 
-#: app/features/organization/components/org-usage-card.tsx:101
+#: app/features/organization/components/org-usage-card.tsx:91
 #: app/features/project/components/project-usage-card.tsx:117
 msgid "No usage to display"
 msgstr "No usage to display"
@@ -4851,13 +4855,13 @@ msgstr "No usage to display"
 msgid "No users found."
 msgstr "No users found."
 
-#: app/features/organization/components/org-warning-events.tsx:85
-msgid "No warning events in the last 24 hours in what could be read."
-msgstr "No warning events in the last 24 hours in what could be read."
+#: app/features/organization/components/org-warning-events.tsx:97
+msgid "No warning events"
+msgstr "No warning events"
 
-#: app/features/organization/components/org-warning-events.tsx:87
-msgid "No warning events in the last 24 hours."
-msgstr "No warning events in the last 24 hours."
+#: app/features/organization/components/org-warning-events.tsx:88
+msgid "No warning events found"
+msgstr "No warning events found"
 
 #: app/features/billing/components/application-review.tsx:498
 #: app/features/billing/components/contract-editor/contract-fee-list.tsx:172
@@ -4992,12 +4996,21 @@ msgstr "Notes (operator-facing)"
 msgid "Notes, emails, and account history for this contact will appear here."
 msgstr "Notes, emails, and account history for this contact will appear here."
 
+#: app/features/organization/components/org-warning-events.tsx:98
+msgid "Nothing has reported a warning in the last 24 hours."
+msgstr "Nothing has reported a warning in the last 24 hours."
+
+#: app/features/organization/components/org-recent-changes.tsx:110
+#: app/features/organization/components/org-warning-events.tsx:89
+msgid "Nothing in the last 24 hours in what could be read."
+msgstr "Nothing in the last 24 hours in what could be read."
+
 #: app/features/organization/components/org-health-strip.tsx:201
-#: app/features/organization/components/org-needs-attention.tsx:502
+#: app/features/organization/components/org-needs-attention.tsx:503
 msgid "Nothing needs attention"
 msgstr "Nothing needs attention"
 
-#: app/features/organization/components/org-needs-attention.tsx:517
+#: app/features/organization/components/org-needs-attention.tsx:515
 msgid "Nothing needs attention here."
 msgstr "Nothing needs attention here."
 
@@ -5019,11 +5032,15 @@ msgstr "Nothing past due"
 msgid "Nothing waiting on review"
 msgstr "Nothing waiting on review"
 
+#: app/features/organization/components/org-recent-changes.tsx:114
+msgid "Nothing was changed in the last 24 hours."
+msgstr "Nothing was changed in the last 24 hours."
+
 #: app/features/milo/components/navbar/milo-user-menu.tsx:77
 msgid "Notifications"
 msgstr "Notifications"
 
-#: app/features/organization/components/org-warning-events.tsx:140
+#: app/features/organization/components/org-warning-events.tsx:145
 msgid "Object"
 msgstr "Object"
 
@@ -5113,11 +5130,11 @@ msgstr "Open"
 msgid "Open as a Stripe draft"
 msgstr "Open as a Stripe draft"
 
-#: app/features/organization/components/org-needs-attention.tsx:226
+#: app/features/organization/components/org-needs-attention.tsx:227
 msgid "Open DNS zone"
 msgstr "Open DNS zone"
 
-#: app/features/organization/components/org-needs-attention.tsx:224
+#: app/features/organization/components/org-needs-attention.tsx:225
 msgid "Open domain"
 msgstr "Open domain"
 
@@ -5126,11 +5143,11 @@ msgstr "Open domain"
 msgid "Open in Cloud Portal"
 msgstr "Open in Cloud Portal"
 
-#: app/features/organization/components/org-needs-attention.tsx:220
+#: app/features/organization/components/org-needs-attention.tsx:221
 msgid "Open instance"
 msgstr "Open instance"
 
-#: app/features/organization/components/org-needs-attention.tsx:222
+#: app/features/organization/components/org-needs-attention.tsx:223
 msgid "Open load balancer"
 msgstr "Open load balancer"
 
@@ -5138,7 +5155,7 @@ msgstr "Open load balancer"
 msgid "Open menu"
 msgstr "Open menu"
 
-#: app/features/organization/components/org-needs-attention.tsx:228
+#: app/features/organization/components/org-needs-attention.tsx:229
 msgid "Open quota usage"
 msgstr "Open quota usage"
 
@@ -5181,7 +5198,7 @@ msgstr "or"
 #: app/features/billing/components/application-review.tsx:427
 #: app/features/billing/components/billing-account-list.tsx:202
 #: app/features/billing/components/billing-account-list.tsx:271
-#: app/features/organization/components/org-needs-attention.tsx:374
+#: app/features/organization/components/org-needs-attention.tsx:375
 #: app/features/organization/components/org-warning-events.tsx:43
 #: app/features/project/components/project-organization-card.tsx:25
 #: app/routes/admin/service-catalog/detail/approvals.tsx:66
@@ -5325,7 +5342,7 @@ msgstr "Patch"
 msgid "Patch AI"
 msgstr "Patch AI"
 
-#: app/features/organization/components/org-recent-changes.tsx:21
+#: app/features/organization/components/org-recent-changes.tsx:20
 msgid "patched"
 msgstr "patched"
 
@@ -5670,7 +5687,7 @@ msgstr "Programming DNS records for this hostname"
 #: app/features/domain/components/domain-list.tsx:71
 #: app/features/edge/components/edge-list.tsx:107
 #: app/features/organization/components/compute-projects-dialog.tsx:297
-#: app/features/organization/components/org-warning-events.tsx:143
+#: app/features/organization/components/org-warning-events.tsx:148
 #: app/routes/customer/resource/index.tsx:341
 #: app/routes/customer/resource/index.tsx:410
 msgid "Project"
@@ -5688,7 +5705,7 @@ msgstr "Project suspended"
 #: app/components/app-search/search-results.tsx:186
 #: app/components/app-search/use-app-search.ts:49
 #: app/features/organization/components/org-details-card.tsx:71
-#: app/features/organization/components/org-projects-card.tsx:140
+#: app/features/organization/components/org-projects-card.tsx:142
 #: app/routes/customer/breadcrumb-switchers.tsx:15
 #: app/routes/customer/organization/detail/project.tsx:22
 #: app/routes/customer/project/detail/layout.tsx:128
@@ -5843,8 +5860,8 @@ msgid "Quick ranges"
 msgstr "Quick ranges"
 
 #: app/features/organization/components/org-health-strip.tsx:63
-#: app/features/organization/components/org-needs-attention.tsx:71
-#: app/features/organization/components/org-needs-attention.tsx:84
+#: app/features/organization/components/org-needs-attention.tsx:72
+#: app/features/organization/components/org-needs-attention.tsx:85
 #: app/features/service-catalog/components/quota-limits-card.tsx:26
 msgid "Quota"
 msgstr "Quota"
@@ -5888,14 +5905,14 @@ msgid "Read-only. Prices are ServicePricing manifests in the service's repo, one
 msgstr "Read-only. Prices are ServicePricing manifests in the service's repo, one set per environment, and billing reviews every change."
 
 #: app/features/dns/components/dns-zone-status.tsx:38
-#: app/features/organization/components/org-needs-attention.tsx:179
+#: app/features/organization/components/org-needs-attention.tsx:180
 #: app/features/organization/components/org-onboarding-card.tsx:58
 msgid "Ready"
 msgstr "Ready"
 
 #: app/features/dns/components/dns-zone-status.tsx:76
-#: app/features/organization/components/org-needs-attention.tsx:252
-#: app/features/organization/components/org-warning-events.tsx:137
+#: app/features/organization/components/org-needs-attention.tsx:253
+#: app/features/organization/components/org-warning-events.tsx:142
 #: app/features/project/components/project-suspension-card.tsx:90
 #: app/features/service-catalog/components/conditions-card.tsx:39
 #: app/features/user/components/user-recovery-link-dialog.tsx:68
@@ -5952,7 +5969,7 @@ msgstr "Recurring"
 msgid "Registrar"
 msgstr "Registrar"
 
-#: app/features/organization/components/org-needs-attention.tsx:399
+#: app/features/organization/components/org-needs-attention.tsx:400
 msgid "Registration expires <0/>"
 msgstr "Registration expires <0/>"
 
@@ -6630,8 +6647,8 @@ msgstr "Show all"
 
 #. placeholder {0}: groups.length
 #. placeholder {0}: rows.length
-#: app/features/organization/components/org-projects-card.tsx:176
-#: app/features/organization/components/org-warning-events.tsx:169
+#: app/features/organization/components/org-projects-card.tsx:177
+#: app/features/organization/components/org-warning-events.tsx:174
 msgid "Show all {0}"
 msgstr "Show all {0}"
 
@@ -6709,7 +6726,7 @@ msgstr "Some checks couldn't run"
 msgid "Some checks couldn't see every invoice"
 msgstr "Some checks couldn't see every invoice"
 
-#: app/features/organization/components/org-projects-card.tsx:97
+#: app/features/organization/components/org-projects-card.tsx:99
 msgid "Some data couldn't be loaded"
 msgstr "Some data couldn't be loaded"
 
@@ -6725,7 +6742,7 @@ msgstr "Something glitched! Probably not your fault."
 msgid "Something went wrong while loading quota data."
 msgstr "Something went wrong while loading quota data."
 
-#: app/features/organization/components/org-usage-card.tsx:80
+#: app/features/organization/components/org-usage-card.tsx:77
 #: app/features/project/components/project-usage-card.tsx:101
 msgid "Something went wrong while loading usage data."
 msgstr "Something went wrong while loading usage data."
@@ -6766,7 +6783,7 @@ msgstr "Spend shows for the first {MAX_PROJECT_SPEND_REQUESTS} projects. See the
 msgid "Spend this cycle over the credit limit"
 msgstr "Spend this cycle over the credit limit"
 
-#: app/features/organization/components/org-usage-card.tsx:116
+#: app/features/organization/components/org-usage-card.tsx:104
 msgid "spend this period"
 msgstr "spend this period"
 
@@ -6850,8 +6867,8 @@ msgstr "Starts <0/>"
 #: app/features/fraud/detail/evaluation-sections.tsx:746
 #: app/features/fraud/policy/policy-detail.tsx:359
 #: app/features/organization/components/org-members-preview-card.tsx:63
-#: app/features/organization/components/org-needs-attention.tsx:153
-#: app/features/organization/components/org-needs-attention.tsx:249
+#: app/features/organization/components/org-needs-attention.tsx:154
+#: app/features/organization/components/org-needs-attention.tsx:250
 #: app/features/project/components/project-billing-card.tsx:62
 #: app/features/project/components/project-details-card.tsx:39
 #: app/features/quota/components/quota-grant-list.tsx:109
@@ -6882,8 +6899,8 @@ msgstr "Status"
 msgid "Step {0}"
 msgstr "Step {0}"
 
-#: app/features/organization/components/org-needs-attention.tsx:529
-#: app/features/organization/components/org-recent-changes.tsx:106
+#: app/features/organization/components/org-needs-attention.tsx:527
+#: app/features/organization/components/org-recent-changes.tsx:97
 msgid "Still checking…"
 msgstr "Still checking…"
 
@@ -7134,11 +7151,11 @@ msgstr "The list of domains is limited to 2,000 results at a time. Refine your s
 msgid "The nameservers Datum serves this zone from. The domain must be delegated to them at its registrar."
 msgstr "The nameservers Datum serves this zone from. The domain must be delegated to them at its registrar."
 
-#: app/features/organization/components/org-recent-changes.tsx:124
+#: app/features/organization/components/org-recent-changes.tsx:122
 msgid "The organization's own audit log couldn't be read."
 msgstr "The organization's own audit log couldn't be read."
 
-#: app/features/organization/components/org-warning-events.tsx:176
+#: app/features/organization/components/org-warning-events.tsx:181
 msgid "The organization's own events couldn't be read."
 msgstr "The organization's own events couldn't be read."
 
@@ -7239,7 +7256,7 @@ msgstr "This note will be permanently deleted and cannot be recovered."
 msgid "This offer has no fixed fees."
 msgstr "This offer has no fixed fees."
 
-#: app/features/organization/components/org-usage-card.tsx:93
+#: app/features/organization/components/org-usage-card.tsx:85
 msgid "This organization does not have a billing account. Usage and spend data require a linked billing account."
 msgstr "This organization does not have a billing account. Usage and spend data require a linked billing account."
 
@@ -7358,7 +7375,7 @@ msgstr "TTL"
 #: app/features/edge/components/detail/edge-backends-card.tsx:55
 #: app/features/fraud/policy/policy-form.tsx:199
 #: app/features/organization/components/org-details-card.tsx:59
-#: app/features/organization/components/org-needs-attention.tsx:291
+#: app/features/organization/components/org-needs-attention.tsx:292
 #: app/features/service-catalog/components/conditions-card.tsx:19
 #: app/routes/customer/fraud/providers/index.tsx:66
 #: app/routes/customer/fraud/providers/index.tsx:159
@@ -7478,7 +7495,7 @@ msgstr "Update"
 msgid "Update your DNS provider with the provided record, or use the HTTP token method."
 msgstr "Update your DNS provider with the provided record, or use the HTTP token method."
 
-#: app/features/organization/components/org-recent-changes.tsx:19
+#: app/features/organization/components/org-recent-changes.tsx:18
 msgid "updated"
 msgstr "updated"
 
@@ -7495,7 +7512,7 @@ msgstr "Updating email addresses for GitHub identities"
 #: app/features/billing/components/contract-editor/contract-summary.tsx:241
 #: app/features/billing/components/contract-editor/price-list-table.tsx:510
 #: app/features/billing/components/contract-schedule-list.tsx:43
-#: app/features/organization/components/org-usage-card.tsx:68
+#: app/features/organization/components/org-usage-card.tsx:67
 #: app/features/project/components/project-usage-card.tsx:89
 #: app/features/quota/components/quota-bucket-list.tsx:110
 #: app/routes/customer/organization/detail/quota/usage.tsx:9
@@ -7504,7 +7521,7 @@ msgstr "Updating email addresses for GitHub identities"
 msgid "Usage"
 msgstr "Usage"
 
-#: app/features/organization/components/org-usage-card.tsx:84
+#: app/features/organization/components/org-usage-card.tsx:80
 #: app/features/project/components/project-usage-card.tsx:105
 msgid "Usage data not available"
 msgstr "Usage data not available"
@@ -7541,7 +7558,7 @@ msgstr "Usage this billing cycle"
 msgid "Usage this cycle"
 msgstr "Usage this cycle"
 
-#: app/features/organization/components/org-usage-card.tsx:103
+#: app/features/organization/components/org-usage-card.tsx:92
 msgid "Usage will appear here once this organization starts consuming metered resources."
 msgstr "Usage will appear here once this organization starts consuming metered resources."
 
@@ -7584,7 +7601,7 @@ msgstr "Users"
 msgid "Validating"
 msgstr "Validating"
 
-#: app/features/organization/components/org-needs-attention.tsx:293
+#: app/features/organization/components/org-needs-attention.tsx:294
 #: app/routes/customer/project/detail/dns/detail.tsx:164
 msgid "Value"
 msgstr "Value"
@@ -7593,7 +7610,7 @@ msgstr "Value"
 msgid "Verification in progress..."
 msgstr "Verification in progress..."
 
-#: app/features/organization/components/org-needs-attention.tsx:298
+#: app/features/organization/components/org-needs-attention.tsx:299
 msgid "Verification record the customer needs to create"
 msgstr "Verification record the customer needs to create"
 
@@ -7618,7 +7635,7 @@ msgstr "View activity logs"
 #: app/features/billing/components/org-billing-accounts-card.tsx:86
 #: app/features/contact/components/contact-emails-card.tsx:60
 #: app/features/organization/components/org-members-preview-card.tsx:84
-#: app/features/organization/components/org-usage-card.tsx:72
+#: app/features/organization/components/org-usage-card.tsx:70
 #: app/features/project/components/project-quotas-card.tsx:71
 #: app/features/project/components/project-usage-card.tsx:93
 msgid "View all"
@@ -7693,7 +7710,7 @@ msgstr "Waiting on"
 msgid "Warning"
 msgstr "Warning"
 
-#: app/features/organization/components/org-warning-events.tsx:113
+#: app/features/organization/components/org-warning-events.tsx:123
 msgid "Warning events"
 msgstr "Warning events"
 
@@ -7726,7 +7743,7 @@ msgstr "Welcome back, {givenName}."
 msgid "Welcome back."
 msgstr "Welcome back."
 
-#: app/features/organization/components/org-recent-changes.tsx:73
+#: app/features/organization/components/org-recent-changes.tsx:71
 msgid "What changed"
 msgstr "What changed"
 
@@ -7768,11 +7785,11 @@ msgstr "Within credit limit"
 msgid "Worked out by the billing provider. Nothing is sent to the customer."
 msgstr "Worked out by the billing provider. Nothing is sent to the customer."
 
-#: app/features/organization/components/org-needs-attention.tsx:61
+#: app/features/organization/components/org-needs-attention.tsx:62
 msgid "Workload"
 msgstr "Workload"
 
-#: app/features/organization/components/org-needs-attention.tsx:218
+#: app/features/organization/components/org-needs-attention.tsx:219
 msgid "Workload detail"
 msgstr "Workload detail"
 

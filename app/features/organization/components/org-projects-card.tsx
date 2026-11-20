@@ -1,7 +1,9 @@
 import { useOrgProjectHealth } from '../hooks/use-org-project-health';
 import type { ProjectHealthRow } from '../lib/project-health';
+import { OverviewEmptyState } from './overview-card';
 import { SectionCard } from '@/features/milo';
 import { useShowMore } from '@/hooks';
+import { ENTITY_ICONS, STATUS_ICONS } from '@/utils/config/icons.config';
 import { projectRoutes } from '@/utils/config/routes.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
@@ -152,13 +154,12 @@ export function OrgProjectsCard({ orgName, className }: { orgName: string; class
             ))}
           </div>
         ) : isError ? (
-          <Text size="sm" textColor="muted">
-            <Trans>Couldn&apos;t load the organization&apos;s projects.</Trans>
-          </Text>
+          <OverviewEmptyState
+            icon={STATUS_ICONS.error}
+            title={<Trans>Couldn&apos;t load the organization&apos;s projects</Trans>}
+          />
         ) : rows.length === 0 ? (
-          <Text size="sm" textColor="muted">
-            <Trans>No projects yet.</Trans>
-          </Text>
+          <OverviewEmptyState icon={ENTITY_ICONS.project} title={<Trans>No projects yet</Trans>} />
         ) : (
           <div className="flex flex-col gap-1">
             <ul className="divide-border flex flex-col divide-y">
