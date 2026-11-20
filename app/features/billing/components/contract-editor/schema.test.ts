@@ -6,6 +6,7 @@ import {
   toUsageRowValues,
   type ContractFormValues,
 } from './schema';
+import { digitsOnly } from './whole-number-input';
 import { describe, expect, it, vi } from 'vitest';
 
 // Lingui's macros are compiled away in the app; tests run the source as is.
@@ -206,8 +207,7 @@ describe('buildContractSchema', () => {
 });
 
 describe('digitsOnly', () => {
-  it('drops anything that is not a digit', async () => {
-    const { digitsOnly } = await import('./whole-number-input');
+  it('drops anything that is not a digit', () => {
     expect(digitsOnly('1a2b')).toBe('12');
     expect(digitsOnly('-3.5')).toBe('35');
     expect(digitsOnly('abc')).toBe('');
