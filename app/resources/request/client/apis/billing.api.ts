@@ -382,8 +382,10 @@ export type CreateFixedServicePricingInput = {
   serviceRef?: string;
   /** What the amount is per, e.g. "port", if the fee has a unit. */
   pricingUnit?: string;
-  /** The product code invoices show before the fee's name, if it has one. */
+  /** The fee's product code, for tracking and reporting, if it has one. */
   sku?: string;
+  /** How the fee is taxed, if it says: a customer's fee copies its list fee's. */
+  tax?: { code?: string; taxable?: boolean };
   /** How often a recurring fee is charged; monthly when unset. */
   interval?: FeeInterval;
   /**
@@ -415,6 +417,7 @@ export const createFixedServicePricing = async (input: CreateFixedServicePricing
         ...(input.serviceRef ? { serviceRef: input.serviceRef } : {}),
         ...(input.pricingUnit ? { pricingUnit: input.pricingUnit } : {}),
         ...(input.sku ? { sku: input.sku } : {}),
+        ...(input.tax ? { tax: input.tax } : {}),
         ...(input.basedOn ? { basedOn: input.basedOn } : {}),
         ...(input.chargeType === 'OneTime'
           ? { trigger: 'BillingAccountActivation' as const }
@@ -478,8 +481,10 @@ export type ContractFeeInput = {
   quantity: number;
   /** What the amount is per, e.g. "port", if the fee has a unit. */
   pricingUnit?: string;
-  /** The product code invoices show before the fee's name, if it has one. */
+  /** The fee's product code, for tracking and reporting, if it has one. */
   sku?: string;
+  /** How the fee is taxed, if it says: a customer's fee copies its list fee's. */
+  tax?: { code?: string; taxable?: boolean };
   /** The catalog service's serviceName the fee is for, if it's for one. */
   serviceRef?: string;
   /**
@@ -602,6 +607,7 @@ const createContractPricings = async (
       serviceRef: fee.serviceRef,
       pricingUnit: fee.pricingUnit,
       sku: fee.sku,
+      tax: fee.tax,
       interval: fee.chargeType === 'Recurring' ? fee.interval : undefined,
       basedOn: fee.basedOn,
       labels,

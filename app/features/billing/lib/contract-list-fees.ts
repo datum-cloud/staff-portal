@@ -24,6 +24,8 @@ import type {
  */
 
 type ServicePricing = ComMiloapisBillingV1Alpha1ServicePricing;
+/** How a pricing's charges are taxed. */
+export type PricingTax = NonNullable<NonNullable<ServicePricing['spec']>['tax']>;
 type FeeChargeType = 'OneTime' | 'Recurring';
 
 /** A fee on the price list. */
@@ -38,7 +40,12 @@ export interface ListFeeOption {
   pricingUnit: string;
   /** Its product code, or ''. A customer fee based on it has the same. */
   sku: string;
-  /** The list amount, as a decimal string. */
+  /** How it's taxed, if it says. A customer fee based on it has the same. */
+  tax?: PricingTax;
+  /**
+   * The list amount, as a decimal string. "0" for a fee priced per
+   * contract (see isPricedPerContract).
+   */
   amount: string;
   /** How often a recurring list fee is charged; unset for a one-time one. */
   interval?: FeeInterval;
@@ -46,6 +53,14 @@ export interface ListFeeOption {
 
 const isFeeChargeType = (value: string | undefined): value is FeeChargeType =>
   value === 'OneTime' || value === 'Recurring';
+
+/**
+ * Whether a list fee is priced per contract: a list amount of 0, for a fee
+ * quoted on each order form, such as a cage build. A contract that charges
+ * it must give the customer's own amount.
+ */
+export const isPricedPerContract = (option: ListFeeOption) =>
+  Number.parseFloat(option.amount) === 0;
 
 /**
  * The price list's fees, by service, one-time first: list pricings only,
@@ -67,6 +82,7 @@ export const listFeeOptions = (pricings: ServicePricing[]): ListFeeOption[] =>
           serviceRef: spec.serviceRef ?? '',
           pricingUnit: spec.pricingUnit ?? '',
           sku: spec.sku ?? '',
+          ...(spec.tax ? { tax: spec.tax } : {}),
           amount: spec.amount,
           ...(spec.chargeType === 'Recurring' ? { interval: spec.interval ?? 'monthly' } : {}),
         },
@@ -181,6 +197,7 @@ export interface PlannedListFee {
   quantity: number;
   pricingUnit?: string;
   sku?: string;
+  tax?: PricingTax;
   serviceRef?: string;
   /** Percent off, if any. */
   discount?: number;
@@ -223,6 +240,7 @@ export const buildListFeePlan = (
       quantity: Number(row.quantity) || 1,
       pricingUnit: option.pricingUnit || undefined,
       sku: option.sku || undefined,
+      tax: option.tax,
       serviceRef: option.serviceRef || undefined,
       discount: parseDiscount(row.discount),
       ...(option.chargeType === 'Recurring'

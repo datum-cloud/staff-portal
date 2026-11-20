@@ -182,6 +182,18 @@ describe('buildContractSchema', () => {
     expect(schema.safeParse({ ...values, startsAt: new Date('2000-01-01') }).success).toBe(false);
   });
 
+  it("needs the customer's amount for a list fee priced per contract, even in a draft", () => {
+    const schema = buildContractSchema(false, true, now, () => true, new Set(['cage-build-v1']));
+    const cageBuild = { ...listFee, name: 'cage-build-v1' };
+    const result = schema.safeParse({ ...empty, listFees: [cageBuild] });
+    expect(result.error?.issues.map((i) => i.path.join('.'))).toEqual(['listFees.0.amount']);
+    expect(
+      schema.safeParse({ ...empty, listFees: [{ ...cageBuild, amount: '42000' }] }).success
+    ).toBe(true);
+    // Other list fees still bill their list amount when it's left empty.
+    expect(schema.safeParse({ ...empty, listFees: [listFee] }).success).toBe(true);
+  });
+
   it("ignores rows that aren't ticked", () => {
     const schema = buildContractSchema(false, true, now);
     expect(

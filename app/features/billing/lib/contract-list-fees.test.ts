@@ -1,6 +1,7 @@
 import { contractOfferPlan, getContractFees } from './contract';
 import {
   buildListFeePlan,
+  isPricedPerContract,
   listFeeNames,
   listFeeOptions,
   listFeeRowsFromOffer,
@@ -24,6 +25,7 @@ const crossConnect: Spec = {
   interval: 'monthly',
   pricingUnit: 'port',
   sku: 'DC-XC-01',
+  tax: { code: 'txcd_10000000' },
 };
 
 const install: Spec = {
@@ -192,6 +194,7 @@ describe('buildListFeePlan', () => {
         quantity: 4,
         pricingUnit: 'port',
         sku: 'DC-XC-01',
+        tax: { code: 'txcd_10000000' },
         serviceRef: 'bare-metal.datumapis.com',
         discount: 10,
         interval: 'monthly',
@@ -227,12 +230,14 @@ describe('buildListFeePlan', () => {
       [row('cross-connect-v1', { quantity: '4', custom: true, amount: '250' })],
       options
     );
-    // Billing refuses a customer fee without its list fee's SKU.
+    // Billing refuses a customer fee without its list fee's SKU, and it's
+    // taxed as the list fee is.
     expect(fee).toMatchObject({
       amount: '250.00',
       quantity: 4,
       basedOn: 'cross-connect-v1',
       sku: 'DC-XC-01',
+      tax: { code: 'txcd_10000000' },
     });
     expect(fee.existingPricing).toBeUndefined();
   });
@@ -314,5 +319,16 @@ describe('list fee renewals', () => {
     const [fee] = buildListFeePlan([rows[1]], options);
     expect(fee.periods).toBe(36);
     expect(buildListFeePlan([{ ...rows[1], periods: '' }], options)[0].periods).toBeUndefined();
+  });
+});
+
+describe('list fees priced per contract', () => {
+  it('are the ones with a list amount of 0', () => {
+    const [cageBuild] = listFeeOptions([
+      pricing('cage-build-v1', { ...install, displayName: 'Cage build', amount: '0' }),
+    ]);
+    expect(cageBuild).toMatchObject({ name: 'cage-build-v1', amount: '0' });
+    expect(isPricedPerContract(cageBuild)).toBe(true);
+    expect(options.some(isPricedPerContract)).toBe(false);
   });
 });

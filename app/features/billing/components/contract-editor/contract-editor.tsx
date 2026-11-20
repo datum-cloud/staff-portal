@@ -18,6 +18,7 @@ import {
 } from '../../lib/contract';
 import {
   buildListFeePlan,
+  isPricedPerContract,
   listFeeNames,
   listFeeOptions,
   listFeeRowsFromOffer,
@@ -346,9 +347,13 @@ function ContractEditorForm({
     : [blankFee('OneTime', t`Setup fee`), blankFee('Recurring', t`Monthly fee`)];
 
   const draftStartsAt = isSetup ? getDraftStartsAt(draft) : undefined;
+  const pricedPerContract = useMemo(
+    () => new Set(feeOptions.filter(isPricedPerContract).map((option) => option.name)),
+    [feeOptions]
+  );
   const schema = useMemo(
-    () => buildContractSchema(isSetup, allowOneTime, now, submitIntent.isDraft),
-    [isSetup, allowOneTime, now, submitIntent]
+    () => buildContractSchema(isSetup, allowOneTime, now, submitIntent.isDraft, pricedPerContract),
+    [isSetup, allowOneTime, now, submitIntent, pricedPerContract]
   );
   const defaultValues: ContractFormValues = {
     fees: defaultFees,
