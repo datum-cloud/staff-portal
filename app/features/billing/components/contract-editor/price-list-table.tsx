@@ -1,5 +1,5 @@
 import { CONTRACT_CURRENCY } from '../../lib/contract';
-import type { ListFeeOption } from '../../lib/contract-list-fees';
+import { isPricedPerContract, type ListFeeOption } from '../../lib/contract-list-fees';
 import { rateSlots, type UsageMeterOption } from '../../lib/contract-usage';
 import { formatMoney, indexServicesByRef } from '../../utils';
 import { feeChargeText, periodUnitText, rateSlotText } from '../contract-fee-text';
@@ -308,13 +308,18 @@ function PriceListRow({ entry, hidden }: { entry: PriceListEntry; hidden: boolea
   );
 }
 
-/** A list fee's name, after its SKU when it has one, as invoices show it. */
+/** A list fee's name, after its SKU when it has one. The SKU is for staff only. */
 const feeLabel = (option: ListFeeOption) =>
   option.sku ? `[${option.sku}] ${option.label}` : option.label;
 
-/** A list fee's price, e.g. "$300.00 / month per port" or "$6,000.00 / year". */
+/**
+ * A list fee's price, e.g. "$300.00 / month per port" or "$6,000.00 / year",
+ * or "Per contract / month" for one priced on each order form.
+ */
 const feePriceText = (option: ListFeeOption) => {
-  const amount = formatMoney(Number.parseFloat(option.amount), CONTRACT_CURRENCY);
+  const amount = isPricedPerContract(option)
+    ? t`Per contract`
+    : formatMoney(Number.parseFloat(option.amount), CONTRACT_CURRENCY);
   const price = feeChargeText(amount, option);
   return option.pricingUnit ? t`${price} per ${option.pricingUnit}` : price;
 };
@@ -402,7 +407,7 @@ function ListFeeRows({
         <Form.Field name={`listFees.${index}.amount`}>
           <Form.Input
             inputMode="decimal"
-            placeholder={option.amount}
+            placeholder={isPricedPerContract(option) ? t`Required` : option.amount}
             aria-label={t`Customer amount`}
             disabled={!selected}
           />

@@ -71,7 +71,9 @@ export const buildContractSchema = (
   needsStart: boolean,
   allowOneTime: boolean,
   now: Date,
-  isDraft: () => boolean = () => false
+  isDraft: () => boolean = () => false,
+  /** List fees priced per contract, which need the customer's own amount. */
+  pricedPerContract: ReadonlySet<string> = new Set()
 ) =>
   z
     .object({
@@ -165,6 +167,11 @@ export const buildContractSchema = (
         }
         if (row.amount.trim() && !(parseAmount(row.amount) > 0)) {
           issue(['listFees', index, 'amount'], t`An amount, such as 250.00.`);
+        } else if (!row.amount.trim() && pricedPerContract.has(row.name)) {
+          issue(
+            ['listFees', index, 'amount'],
+            t`Priced per contract: enter the customer's amount from the order form.`
+          );
         }
       });
       values.usage.forEach((row, index) => {
