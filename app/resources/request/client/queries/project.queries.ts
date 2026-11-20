@@ -1,4 +1,4 @@
-import { warningEventsQuery } from '../apis/activity.api';
+import { recentChangesQuery, warningEventsQuery } from '../apis/activity.api';
 import {
   listAllProjects,
   listProjects,
@@ -50,6 +50,7 @@ export const projectQueryKeys = {
   compute: (projectName: string) => ['projects', projectName, 'compute'] as const,
   network: (projectName: string) => ['projects', projectName, 'network'] as const,
   warningEvents: (projectName: string) => ['projects', projectName, 'warning-events'] as const,
+  recentChanges: (projectName: string) => ['projects', projectName, 'recent-changes'] as const,
   suspensions: (projectName: string) => ['projects', projectName, 'suspensions'] as const,
   suspensionsAll: () => ['projects', 'suspensions', 'all'] as const,
 };
@@ -227,6 +228,30 @@ export function useProjectWarningEventQueries(
       queryFn: ({ signal }: { signal: AbortSignal }) =>
         projectFanOutLimit(() =>
           warningEventsQuery({ kind: 'project', name: projectName }, signal)
+        ),
+      enabled: (options.enabled ?? true) && Boolean(projectName),
+      staleTime: 60 * 1000,
+      retry: retryOnceUnlessClientError,
+      refetchOnWindowFocus: false,
+    })),
+  });
+}
+
+/**
+ * Each project's newest changes from the last 24 hours (audit log), one query
+ * per project, sharing the other fan-outs' limit (#770). Each project loads
+ * and fails on its own.
+ */
+export function useProjectRecentChangesQueries(
+  projectNames: readonly string[],
+  options: { enabled?: boolean } = {}
+) {
+  return useQueries({
+    queries: projectNames.map((projectName) => ({
+      queryKey: projectQueryKeys.recentChanges(projectName),
+      queryFn: ({ signal }: { signal: AbortSignal }) =>
+        projectFanOutLimit(() =>
+          recentChangesQuery({ kind: 'project', name: projectName }, signal)
         ),
       enabled: (options.enabled ?? true) && Boolean(projectName),
       staleTime: 60 * 1000,

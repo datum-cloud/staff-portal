@@ -1,3 +1,4 @@
+import { resolveAddress } from '../lib/account-summary';
 import { DescriptionList } from '@/components/description-list';
 import { formatBillingAddress } from '@/features/billing/utils';
 import { SectionCard } from '@/features/milo';
@@ -7,24 +8,6 @@ import { cn } from '@datum-cloud/datum-ui/utils';
 import { Trans } from '@lingui/react/macro';
 import type { ComMiloapisBillingV1Alpha1BillingAccount } from '@openapi/billing.miloapis.com/v1alpha1';
 import type { ComMiloapisResourcemanagerV1Alpha1Organization } from '@openapi/resourcemanager.miloapis.com/v1alpha1';
-
-type Address = NonNullable<
-  NonNullable<ComMiloapisResourcemanagerV1Alpha1Organization['spec']>['contactInfo']
->['address'];
-
-function resolveAddress(
-  k8sOrg: ComMiloapisResourcemanagerV1Alpha1Organization | undefined,
-  billingAccounts: ComMiloapisBillingV1Alpha1BillingAccount[]
-): Address | undefined {
-  const orgAddress = k8sOrg?.spec?.contactInfo?.address;
-  if (orgAddress && (orgAddress.line1 || orgAddress.city || orgAddress.country)) {
-    return orgAddress;
-  }
-
-  const ready =
-    billingAccounts.find((account) => account.status?.phase === 'Ready') ?? billingAccounts[0];
-  return ready?.spec?.contactInfo?.address;
-}
 
 type Props = {
   org: GqlOrganization | null | undefined;

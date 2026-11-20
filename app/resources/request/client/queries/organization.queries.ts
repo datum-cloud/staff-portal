@@ -1,4 +1,4 @@
-import { warningEventsQuery } from '../apis/activity.api';
+import { recentChangesQuery, warningEventsQuery } from '../apis/activity.api';
 import {
   getOrganization,
   listAllOrganizations,
@@ -21,6 +21,7 @@ export const organizationQueryKeys = {
     ['organizations', 'list-all', 'v3-no-nested', search ?? ''] as const,
   detail: (orgName: string) => ['organizations', orgName, 'detail'] as const,
   warningEvents: (orgName: string) => ['organizations', orgName, 'warning-events'] as const,
+  recentChanges: (orgName: string) => ['organizations', orgName, 'recent-changes'] as const,
   projects: {
     all: (orgName: string) => ['organizations', orgName, 'projects'] as const,
     list: (orgName: string, params?: ListQueryParams) =>
@@ -95,6 +96,18 @@ export const useOrgWarningEventsQuery = (orgName: string) => {
   return useQuery({
     queryKey: organizationQueryKeys.warningEvents(orgName),
     queryFn: ({ signal }) => warningEventsQuery({ kind: 'organization', name: orgName }, signal),
+    enabled: !!orgName,
+    staleTime: 60 * 1000,
+    retry: retryOnceUnlessClientError,
+    refetchOnWindowFocus: false,
+  });
+};
+
+/** The organization control plane's own newest changes from the last 24 hours (#770). */
+export const useOrgRecentChangesQuery = (orgName: string) => {
+  return useQuery({
+    queryKey: organizationQueryKeys.recentChanges(orgName),
+    queryFn: ({ signal }) => recentChangesQuery({ kind: 'organization', name: orgName }, signal),
     enabled: !!orgName,
     staleTime: 60 * 1000,
     retry: retryOnceUnlessClientError,
