@@ -175,6 +175,95 @@ type Props = {
   className?: string;
 };
 
+type StepsProps = Pick<Props, 'org' | 'hasBillingAccount' | 'paymentMethodFailed'>;
+
+/**
+ * The onboarding steps on their own, with the waiting message when onboarding
+ * isn't done. The card wraps them with a title and status; the overview's
+ * Account card shows them in a dialog (#770).
+ */
+export function OnboardingSteps({
+  org,
+  hasBillingAccount,
+  paymentMethodFailed = false,
+}: StepsProps) {
+  const { steps, waitingMessage } = buildOnboardingSteps({
+    org,
+    hasBillingAccount,
+    paymentMethodFailed,
+  });
+  const isActive = org?.onboardingComplete === true;
+
+  return (
+    <div className="space-y-4">
+      {!isActive && waitingMessage && (
+        <Text size="sm" textColor="muted">
+          {waitingMessage}
+        </Text>
+      )}
+
+      <ol className="flex w-full flex-col pt-1 md:flex-row md:items-start">
+        {steps.map((step, index) => {
+          const isLast = index === steps.length - 1;
+          const lineComplete = step.state === 'complete';
+          const linePartial = step.state === 'current';
+          const lineFailed = step.state === 'failed';
+
+          return (
+            <li
+              key={step.id}
+              className={cn(
+                'relative flex min-w-0 items-start gap-3',
+                'md:flex-1 md:flex-col md:items-center md:gap-0 md:px-1'
+              )}>
+              <StepConnector
+                isLast={isLast}
+                lineComplete={lineComplete}
+                linePartial={linePartial}
+                lineFailed={lineFailed}
+              />
+
+              <StepIcon id={step.id} state={step.state} />
+
+              <div
+                className={cn(
+                  'flex min-w-0 flex-1 flex-col',
+                  !isLast && 'pb-5',
+                  'md:items-center md:pb-0'
+                )}>
+                <Text
+                  size="xs"
+                  className={cn(
+                    'text-stepper-label text-2xs tracking-wide uppercase',
+                    'md:mt-3',
+                    step.state === 'upcoming' && 'opacity-70'
+                  )}>
+                  <Trans>Step {index + 1}</Trans>
+                </Text>
+
+                <Text
+                  size="sm"
+                  weight="medium"
+                  className={cn(
+                    'mt-0.5 leading-snug md:mt-1 md:text-center',
+                    step.state === 'upcoming' && 'text-muted-foreground',
+                    step.state === 'failed' && 'text-destructive'
+                  )}>
+                  {STEP_TITLES[step.id]}
+                </Text>
+
+                <div className="mt-1.5 md:mt-2">
+                  <StatusPill state={step.state} />
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
 export function OrgOnboardingCard({
   org,
   hasBillingAccount,
@@ -182,7 +271,7 @@ export function OrgOnboardingCard({
   isLoading,
   className,
 }: Props) {
-  const { steps, waitingMessage } = buildOnboardingSteps({
+  const { waitingMessage } = buildOnboardingSteps({
     org,
     hasBillingAccount,
     paymentMethodFailed,
@@ -207,72 +296,11 @@ export function OrgOnboardingCard({
       {isLoading ? (
         <OnboardingSkeleton />
       ) : (
-        <div className="space-y-4">
-          {!isActive && waitingMessage && (
-            <Text size="sm" textColor="muted">
-              {waitingMessage}
-            </Text>
-          )}
-
-          <ol className="flex w-full flex-col pt-1 md:flex-row md:items-start">
-            {steps.map((step, index) => {
-              const isLast = index === steps.length - 1;
-              const lineComplete = step.state === 'complete';
-              const linePartial = step.state === 'current';
-              const lineFailed = step.state === 'failed';
-
-              return (
-                <li
-                  key={step.id}
-                  className={cn(
-                    'relative flex min-w-0 items-start gap-3',
-                    'md:flex-1 md:flex-col md:items-center md:gap-0 md:px-1'
-                  )}>
-                  <StepConnector
-                    isLast={isLast}
-                    lineComplete={lineComplete}
-                    linePartial={linePartial}
-                    lineFailed={lineFailed}
-                  />
-
-                  <StepIcon id={step.id} state={step.state} />
-
-                  <div
-                    className={cn(
-                      'flex min-w-0 flex-1 flex-col',
-                      !isLast && 'pb-5',
-                      'md:items-center md:pb-0'
-                    )}>
-                    <Text
-                      size="xs"
-                      className={cn(
-                        'text-stepper-label text-2xs tracking-wide uppercase',
-                        'md:mt-3',
-                        step.state === 'upcoming' && 'opacity-70'
-                      )}>
-                      <Trans>Step {index + 1}</Trans>
-                    </Text>
-
-                    <Text
-                      size="sm"
-                      weight="medium"
-                      className={cn(
-                        'mt-0.5 leading-snug md:mt-1 md:text-center',
-                        step.state === 'upcoming' && 'text-muted-foreground',
-                        step.state === 'failed' && 'text-destructive'
-                      )}>
-                      {STEP_TITLES[step.id]}
-                    </Text>
-
-                    <div className="mt-1.5 md:mt-2">
-                      <StatusPill state={step.state} />
-                    </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ol>
-        </div>
+        <OnboardingSteps
+          org={org}
+          hasBillingAccount={hasBillingAccount}
+          paymentMethodFailed={paymentMethodFailed}
+        />
       )}
     </SectionCard>
   );

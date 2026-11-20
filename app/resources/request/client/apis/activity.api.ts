@@ -1,3 +1,4 @@
+import { buildActivityFilter } from '@/modules/assistant/tools/activity-query';
 import { PROXY_URL } from '@/modules/axios/axios.client';
 import { ActivityQueryParams, ListQueryParams } from '@/resources/schemas';
 import { walkCursorPages } from '@/utils/helpers/pagination.helper';
@@ -8,6 +9,7 @@ import {
 import type {
   ComMiloapisGoActivityPkgApisActivityV1Alpha1AuditLogQuery,
   IoK8sApiEventsV1Event,
+  IoK8sApiserverPkgApisAuditV1Event,
 } from '@openapi/activity.miloapis.com/v1alpha1';
 import { subDays } from 'date-fns';
 
@@ -269,3 +271,37 @@ export const warningEventsQuery = (scope: EventScope, signal?: AbortSignal) =>
     },
     { maxPages: WARNING_EVENTS_MAX_PAGES }
   );
+
+// A few more than the overview shows, so failed requests can be dropped and
+// still leave enough.
+const RECENT_CHANGES_LIMIT = 20;
+
+/**
+ * The newest changes from the last 24 hours on one control plane, through
+ * AuditLogQuery: writes only, no `system:` users and no activity or auth
+ * queries (the same rules as the assistant's activity tool).
+ */
+export const recentChangesQuery = async (
+  scope: EventScope,
+  signal?: AbortSignal
+): Promise<IoK8sApiserverPkgApisAuditV1Event[]> => {
+  const now = new Date();
+  const response = await createActivityMiloapisComV1Alpha1AuditLogQuery({
+    baseURL: eventScopeBaseURL(scope),
+    signal,
+    // The generated SDK sends `*/*`, which the API rejects.
+    headers: { 'Content-Type': 'application/json' },
+    body: {
+      apiVersion: 'activity.miloapis.com/v1alpha1',
+      kind: 'AuditLogQuery',
+      metadata: { name: `recent-changes-${now.getTime()}` },
+      spec: {
+        startTime: subDays(now, 1).toISOString(),
+        endTime: now.toISOString(),
+        limit: RECENT_CHANGES_LIMIT,
+        filter: buildActivityFilter({}),
+      },
+    },
+  });
+  return response.data.data?.status?.results ?? [];
+};

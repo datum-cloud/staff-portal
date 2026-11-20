@@ -46,8 +46,10 @@ msgstr "(no subject)"
 msgid "{0, plural, one {# active binding · spend this cycle by project} other {# active bindings · spend this cycle by project}}"
 msgstr "{0, plural, one {# active binding · spend this cycle by project} other {# active bindings · spend this cycle by project}}"
 
+#. placeholder {0}: row.issueCount
 #. placeholder {0}: summary.issueCount
 #: app/features/organization/components/org-health-strip.tsx:190
+#: app/features/organization/components/org-projects-card.tsx:71
 msgid "{0, plural, one {# issue} other {# issues}}"
 msgstr "{0, plural, one {# issue} other {# issues}}"
 
@@ -62,6 +64,11 @@ msgstr "{0, plural, one {# long-pending} other {# long-pending}}"
 #: app/features/billing/components/contract-editor/contract-summary.tsx:248
 msgid "{0, plural, one {# meter billed} other {# meters billed}}"
 msgstr "{0, plural, one {# meter billed} other {# meters billed}}"
+
+#. placeholder {0}: members.owners
+#: app/features/organization/components/org-account-card.tsx:142
+msgid "{0, plural, one {# owner} other {# owners}}"
+msgstr "{0, plural, one {# owner} other {# owners}}"
 
 #. placeholder {0}: s.paidCount
 #: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:148
@@ -129,6 +136,12 @@ msgstr "{0} entries per evaluation"
 #: app/features/dashboard/components/home/growth-section.tsx:67
 msgid "{0} in the last 30 days"
 msgstr "{0} in the last 30 days"
+
+#. placeholder {0}: onboarding.complete
+#. placeholder {1}: onboarding.total
+#: app/features/organization/components/org-account-card.tsx:113
+msgid "{0} of {1} complete"
+msgstr "{0} of {1} complete"
 
 #. placeholder {0}: filtered.length
 #. placeholder {1}: data?.items?.length ?? 0
@@ -297,6 +310,10 @@ msgstr "{frequency}, on day {invoiceDay}"
 msgid "{heading}"
 msgstr "{heading}"
 
+#: app/features/organization/components/org-projects-card.tsx:46
+msgid "{instances, plural, one {# instance} other {# instances}}"
+msgstr "{instances, plural, one {# instance} other {# instances}}"
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:260
 msgid "{invoiceCount} · {frequency} on day {invoiceDay}"
 msgstr "{invoiceCount} · {frequency} on day {invoiceDay}"
@@ -316,6 +333,10 @@ msgstr "{invoices} · oldest {overdue} overdue"
 #: app/features/organization/components/compute-projects-dialog.tsx:213
 msgid "{known, plural, one {No compute problems in the # project checked so far} other {No compute problems in the # projects checked so far}}"
 msgstr "{known, plural, one {No compute problems in the # project checked so far} other {No compute problems in the # projects checked so far}}"
+
+#: app/features/organization/components/org-projects-card.tsx:47
+msgid "{loadBalancers, plural, one {# ALB} other {# ALBs}}"
+msgstr "{loadBalancers, plural, one {# ALB} other {# ALBs}}"
 
 #: app/features/organization/components/compute-projects-dialog.tsx:228
 msgid "{loading, plural, one {# still loading} other {# still loading}}"
@@ -451,6 +472,10 @@ msgstr "{total} plus usage"
 msgid "{unread, plural, one {# couldn't be read} other {# couldn't be read}}"
 msgstr "{unread, plural, one {# couldn't be read} other {# couldn't be read}}"
 
+#: app/features/organization/components/org-recent-changes.tsx:127
+msgid "{unread, plural, one {# project's audit log couldn't be read.} other {# projects' audit logs couldn't be read.}}"
+msgstr "{unread, plural, one {# project's audit log couldn't be read.} other {# projects' audit logs couldn't be read.}}"
+
 #: app/features/organization/components/org-warning-events.tsx:179
 msgid "{unread, plural, one {# project's events couldn't be read, so this list may be incomplete.} other {# projects' events couldn't be read, so this list may be incomplete.}}"
 msgstr "{unread, plural, one {# project's events couldn't be read, so this list may be incomplete.} other {# projects' events couldn't be read, so this list may be incomplete.}}"
@@ -462,6 +487,10 @@ msgstr "{what}: {amount}"
 #: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:258
 msgid "{what}: {amount} (list {listPrice})"
 msgstr "{what}: {amount} (list {listPrice})"
+
+#: app/features/organization/components/org-projects-card.tsx:45
+msgid "{workloads, plural, one {# workload} other {# workloads}}"
+msgstr "{workloads, plural, one {# workload} other {# workloads}}"
 
 #: app/routes/customer/project/detail/export-policy/index.tsx:36
 msgid "# of Sinks"
@@ -646,6 +675,7 @@ msgid "Access State"
 msgstr "Access State"
 
 #: app/features/contact/components/timeline/timeline-filters.tsx:18
+#: app/features/organization/components/org-account-card.tsx:106
 #: app/features/project/components/project-billing-card.tsx:49
 msgid "Account"
 msgstr "Account"
@@ -827,7 +857,7 @@ msgid "Added to contact group “{0}”"
 msgstr "Added to contact group “{0}”"
 
 #: app/features/billing/components/application-review.tsx:517
-#: app/features/organization/components/org-contact-card.tsx:73
+#: app/features/organization/components/org-contact-card.tsx:56
 msgid "Address"
 msgstr "Address"
 
@@ -1114,7 +1144,7 @@ msgstr "Are you sure you want to delete member \"{0}\"? This action cannot be un
 msgid "Are you sure you want to delete member \"{deleteMemberDisplayName}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete member \"{deleteMemberDisplayName}\"? This action cannot be undone."
 
-#: app/routes/customer/organization/detail/index.tsx:126
+#: app/routes/customer/organization/detail/index.tsx:70
 msgid "Are you sure you want to delete organization \"{displayNameForDelete} ({orgName})\"? This action cannot be undone."
 msgstr "Are you sure you want to delete organization \"{displayNameForDelete} ({orgName})\"? This action cannot be undone."
 
@@ -1188,6 +1218,10 @@ msgstr "Associate with User"
 #: app/features/contact/components/contact-form.tsx:166
 msgid "Associated with User: "
 msgstr "Associated with User: "
+
+#: app/features/organization/components/org-recent-changes.tsx:83
+msgid "Audit logs"
+msgstr "Audit logs"
 
 #: app/routes/customer/organization/detail/activity/audit-logs.tsx:14
 #: app/routes/customer/organization/detail/activity/audit-logs.tsx:17
@@ -1284,6 +1318,7 @@ msgstr "Billing"
 #: app/features/billing/components/application-list.tsx:116
 #: app/features/billing/components/application-review.tsx:411
 #: app/features/billing/components/application-review.tsx:415
+#: app/features/organization/components/org-account-card.tsx:118
 #: app/features/organization/components/org-onboarding-card.tsx:56
 msgid "Billing account"
 msgstr "Billing account"
@@ -1586,6 +1621,7 @@ msgstr "Clear filters"
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:401
 #: app/features/fraud/detail/evaluation-sections.tsx:71
 #: app/features/organization/components/compute-projects-dialog.tsx:316
+#: app/features/organization/components/org-account-card.tsx:191
 #: app/features/user/components/user-recovery-links-dialog.tsx:99
 msgid "Close"
 msgstr "Close"
@@ -1621,7 +1657,7 @@ msgstr "Collapse sidebar"
 msgid "Company"
 msgstr "Company"
 
-#: app/features/organization/components/org-contact-card.tsx:61
+#: app/features/organization/components/org-contact-card.tsx:44
 msgid "Company / legal name"
 msgstr "Company / legal name"
 
@@ -1700,6 +1736,7 @@ msgstr "Consumers"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:34
 #: app/features/fraud/detail/evaluation-sections.tsx:697
+#: app/features/organization/components/org-account-card.tsx:145
 #: app/routes/marketing/contact-group/detail/member.tsx:67
 msgid "Contact"
 msgstr "Contact"
@@ -1720,7 +1757,7 @@ msgstr "Contact created successfully"
 msgid "Contact deleted successfully"
 msgstr "Contact deleted successfully"
 
-#: app/features/organization/components/org-contact-card.tsx:48
+#: app/features/organization/components/org-contact-card.tsx:31
 #: app/features/organization/components/org-onboarding-card.tsx:55
 msgid "Contact details"
 msgstr "Contact details"
@@ -1778,7 +1815,7 @@ msgstr "Contact Groups - Create"
 msgid "Contact Information"
 msgstr "Contact Information"
 
-#: app/features/organization/components/org-contact-card.tsx:65
+#: app/features/organization/components/org-contact-card.tsx:48
 msgid "Contact name"
 msgstr "Contact name"
 
@@ -1927,6 +1964,10 @@ msgstr "Couldn't load payment methods"
 msgid "Couldn't load prices for this service."
 msgstr "Couldn't load prices for this service."
 
+#: app/features/organization/components/org-recent-changes.tsx:112
+msgid "Couldn't load recent changes."
+msgstr "Couldn't load recent changes."
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:122
 msgid "Couldn't load spend"
 msgstr "Couldn't load spend"
@@ -1947,6 +1988,10 @@ msgstr "Couldn't load the default offer, so nothing starts ticked. Tick what the
 msgid "Couldn't load the draft's fees."
 msgstr "Couldn't load the draft's fees."
 
+#: app/features/organization/components/org-projects-card.tsx:156
+msgid "Couldn't load the organization's projects."
+msgstr "Couldn't load the organization's projects."
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:84
 msgid "Couldn't load usage"
 msgstr "Couldn't load usage"
@@ -1966,6 +2011,10 @@ msgstr "Couldn't make a Stripe draft."
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:385
 msgid "Couldn't preview the invoice."
 msgstr "Couldn't preview the invoice."
+
+#: app/features/organization/components/org-projects-card.tsx:83
+msgid "Couldn't read"
+msgstr "Couldn't read"
 
 #: app/features/organization/components/org-warning-events.tsx:134
 msgid "Count"
@@ -2017,6 +2066,10 @@ msgstr "Create Offer"
 #: app/routes/customer/fraud/policy.tsx:89
 msgid "Create Policy"
 msgstr "Create Policy"
+
+#: app/features/organization/components/org-recent-changes.tsx:17
+msgid "created"
+msgstr "created"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:133
 #: app/features/billing/components/billing-account-list.tsx:239
@@ -2322,8 +2375,8 @@ msgstr "Delete Member"
 msgid "Delete note"
 msgstr "Delete note"
 
-#: app/routes/customer/organization/detail/index.tsx:123
-#: app/routes/customer/organization/detail/index.tsx:125
+#: app/routes/customer/organization/detail/index.tsx:67
+#: app/routes/customer/organization/detail/index.tsx:69
 msgid "Delete Organization"
 msgstr "Delete Organization"
 
@@ -2349,6 +2402,10 @@ msgstr "Delete Session"
 #: app/routes/customer/user/detail/index.tsx:511
 msgid "Delete User"
 msgstr "Delete User"
+
+#: app/features/organization/components/org-recent-changes.tsx:24
+msgid "deleted"
+msgstr "deleted"
 
 #: app/routes/customer/organization/detail/project.tsx:75
 #: app/routes/customer/project/index.tsx:107
@@ -2689,7 +2746,8 @@ msgstr "Education or research"
 #: app/features/contact/components/contact-list.tsx:91
 #: app/features/contact/components/contact-list.tsx:167
 #: app/features/contact/components/timeline/timeline-item.tsx:51
-#: app/features/organization/components/org-contact-card.tsx:69
+#: app/features/organization/components/org-account-card.tsx:154
+#: app/features/organization/components/org-contact-card.tsx:52
 #: app/features/organization/components/org-members-preview-card.tsx:57
 #: app/routes/customer/fraud/index.tsx:124
 #: app/routes/customer/fraud/index.tsx:265
@@ -3281,6 +3339,10 @@ msgstr "Fraud Providers"
 msgid "fraud reviews"
 msgstr "fraud reviews"
 
+#: app/features/organization/components/org-account-card.tsx:125
+msgid "Fraud score (highest owner)"
+msgstr "Fraud score (highest owner)"
+
 #: app/features/billing/components/offer-included-pricing-list.tsx:68
 #: app/features/billing/components/service-pricing-checklist.tsx:167
 msgid "From"
@@ -3391,6 +3453,7 @@ msgstr "Hash On"
 
 #: app/features/organization/components/compute-projects-dialog.tsx:81
 #: app/features/organization/components/org-health-strip.tsx:120
+#: app/features/organization/components/org-projects-card.tsx:77
 msgid "Healthy"
 msgstr "Healthy"
 
@@ -3732,6 +3795,7 @@ msgid "Last 24 hours"
 msgstr "Last 24 hours"
 
 #: app/features/dashboard/components/home/health-section.tsx:133
+#: app/features/organization/components/org-recent-changes.tsx:75
 msgid "Last 24h"
 msgstr "Last 24h"
 
@@ -3900,7 +3964,7 @@ msgstr "Load Balancing"
 msgid "Loading billing accounts..."
 msgstr "Loading billing accounts..."
 
-#: app/features/organization/components/org-contact-card.tsx:51
+#: app/features/organization/components/org-contact-card.tsx:34
 msgid "Loading contact details…"
 msgstr "Loading contact details…"
 
@@ -3940,6 +4004,7 @@ msgid "Loading..."
 msgstr "Loading..."
 
 #: app/features/organization/components/compute-projects-dialog.tsx:77
+#: app/features/organization/components/org-projects-card.tsx:101
 #: app/routes/admin/offer/detail.tsx:247
 #: app/routes/admin/offer/detail.tsx:369
 msgid "Loading…"
@@ -3950,6 +4015,7 @@ msgid "Local Time"
 msgstr "Local Time"
 
 #: app/features/fraud/detail/maxmind-rows.tsx:178
+#: app/features/organization/components/org-account-card.tsx:163
 #: app/features/organization/components/org-needs-attention.tsx:150
 #: app/routes/customer/user/detail/index.tsx:266
 msgid "Location"
@@ -4036,6 +4102,7 @@ msgstr "Member added successfully"
 msgid "Member deleted successfully"
 msgstr "Member deleted successfully"
 
+#: app/features/organization/components/org-account-card.tsx:138
 #: app/features/organization/components/org-members-preview-card.tsx:79
 #: app/routes/admin/group/detail/member.tsx:34
 #: app/routes/customer/organization/detail/member.tsx:27
@@ -4371,6 +4438,14 @@ msgstr "No BillingEntitlement found for this account. New accounts pick up the d
 msgid "No card on file. Not needed while invoice terms are active."
 msgstr "No card on file. Not needed while invoice terms are active."
 
+#: app/features/organization/components/org-recent-changes.tsx:114
+msgid "No changes in the last 24 hours in what could be read."
+msgstr "No changes in the last 24 hours in what could be read."
+
+#: app/features/organization/components/org-recent-changes.tsx:116
+msgid "No changes in the last 24 hours."
+msgstr "No changes in the last 24 hours."
+
 #: app/features/billing/components/offer-included-pricing-list.tsx:268
 msgid "No charges included in this Offer."
 msgstr "No charges included in this Offer."
@@ -4391,7 +4466,7 @@ msgstr "No conditions reported."
 msgid "No consumers found."
 msgstr "No consumers found."
 
-#: app/features/organization/components/org-contact-card.tsx:55
+#: app/features/organization/components/org-contact-card.tsx:38
 msgid "No contact details on file. Onboarding may be waiting on this step."
 msgstr "No contact details on file. Onboarding may be waiting on this step."
 
@@ -4663,6 +4738,10 @@ msgstr "No projects found."
 msgid "No projects match."
 msgstr "No projects match."
 
+#: app/features/organization/components/org-projects-card.tsx:160
+msgid "No projects yet."
+msgstr "No projects yet."
+
 #: app/features/organization/components/compute-projects-dialog.tsx:264
 msgid "No projects."
 msgstr "No projects."
@@ -4690,6 +4769,10 @@ msgstr "No quotas"
 #: app/features/user/components/user-recovery-links-dialog.tsx:62
 msgid "No recovery links have been sent to this user."
 msgstr "No recovery links have been sent to this user."
+
+#: app/features/organization/components/org-projects-card.tsx:50
+msgid "No resources"
+msgstr "No resources"
 
 #: app/routes/customer/resource/index.tsx:387
 msgid "No resources found."
@@ -4999,7 +5082,8 @@ msgstr "Oldest <0/> · newest <1/>"
 msgid "Oldest first ↑"
 msgstr "Oldest first ↑"
 
-#: app/features/organization/components/org-onboarding-card.tsx:196
+#: app/features/organization/components/org-account-card.tsx:109
+#: app/features/organization/components/org-onboarding-card.tsx:285
 msgid "Onboarding"
 msgstr "Onboarding"
 
@@ -5007,6 +5091,10 @@ msgstr "Onboarding"
 #: app/routes/customer/organization/index.tsx:84
 msgid "Onboarding incomplete"
 msgstr "Onboarding incomplete"
+
+#: app/features/organization/components/org-account-card.tsx:180
+msgid "Onboarding steps and status"
+msgstr "Onboarding steps and status"
 
 #: app/features/billing/components/contract-editor/contract-fee-list.tsx:108
 msgid "Once"
@@ -5107,7 +5195,7 @@ msgstr "Organization"
 msgid "Organization billing activity"
 msgstr "Organization billing activity"
 
-#: app/routes/customer/organization/detail/index.tsx:72
+#: app/routes/customer/organization/detail/index.tsx:37
 msgid "Organization deleted successfully"
 msgstr "Organization deleted successfully"
 
@@ -5237,6 +5325,10 @@ msgstr "Patch"
 msgid "Patch AI"
 msgstr "Patch AI"
 
+#: app/features/organization/components/org-recent-changes.tsx:21
+msgid "patched"
+msgstr "patched"
+
 #: app/features/project/components/project-suspension-card.tsx:83
 msgid "Pause this project and everything it is running. Data is preserved and the project can be reinstated at any time."
 msgstr "Pause this project and everything it is running. Data is preserved and the project can be reinstated at any time."
@@ -5251,6 +5343,7 @@ msgstr "Pay by invoice"
 msgid "Payment"
 msgstr "Payment"
 
+#: app/features/organization/components/org-account-card.tsx:121
 #: app/features/organization/components/org-onboarding-card.tsx:57
 msgid "Payment method"
 msgstr "Payment method"
@@ -5356,7 +5449,7 @@ msgstr "Per-service discounts"
 msgid "Period"
 msgstr "Period"
 
-#: app/routes/customer/organization/detail/index.tsx:124
+#: app/routes/customer/organization/detail/index.tsx:68
 msgid "Permanently delete this organization and all associated data"
 msgstr "Permanently delete this organization and all associated data"
 
@@ -5595,6 +5688,7 @@ msgstr "Project suspended"
 #: app/components/app-search/search-results.tsx:186
 #: app/components/app-search/use-app-search.ts:49
 #: app/features/organization/components/org-details-card.tsx:71
+#: app/features/organization/components/org-projects-card.tsx:140
 #: app/routes/customer/breadcrumb-switchers.tsx:15
 #: app/routes/customer/organization/detail/project.tsx:22
 #: app/routes/customer/project/detail/layout.tsx:128
@@ -6535,6 +6629,8 @@ msgid "Show all"
 msgstr "Show all"
 
 #. placeholder {0}: groups.length
+#. placeholder {0}: rows.length
+#: app/features/organization/components/org-projects-card.tsx:176
 #: app/features/organization/components/org-warning-events.tsx:169
 msgid "Show all {0}"
 msgstr "Show all {0}"
@@ -6612,6 +6708,10 @@ msgstr "Some checks couldn't run"
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:407
 msgid "Some checks couldn't see every invoice"
 msgstr "Some checks couldn't see every invoice"
+
+#: app/features/organization/components/org-projects-card.tsx:97
+msgid "Some data couldn't be loaded"
+msgstr "Some data couldn't be loaded"
 
 #: app/features/contact/components/timeline/timeline-item.tsx:41
 msgid "someone"
@@ -6778,11 +6878,12 @@ msgid "Status"
 msgstr "Status"
 
 #. placeholder {0}: index + 1
-#: app/features/organization/components/org-onboarding-card.tsx:253
+#: app/features/organization/components/org-onboarding-card.tsx:241
 msgid "Step {0}"
 msgstr "Step {0}"
 
 #: app/features/organization/components/org-needs-attention.tsx:529
+#: app/features/organization/components/org-recent-changes.tsx:106
 msgid "Still checking…"
 msgstr "Still checking…"
 
@@ -7032,6 +7133,10 @@ msgstr "The list of domains is limited to 2,000 results at a time. Refine your s
 #: app/features/dns/components/dns-zone-status.tsx:139
 msgid "The nameservers Datum serves this zone from. The domain must be delegated to them at its registrar."
 msgstr "The nameservers Datum serves this zone from. The domain must be delegated to them at its registrar."
+
+#: app/features/organization/components/org-recent-changes.tsx:124
+msgid "The organization's own audit log couldn't be read."
+msgstr "The organization's own audit log couldn't be read."
 
 #: app/features/organization/components/org-warning-events.tsx:176
 msgid "The organization's own events couldn't be read."
@@ -7373,6 +7478,10 @@ msgstr "Update"
 msgid "Update your DNS provider with the provided record, or use the HTTP token method."
 msgstr "Update your DNS provider with the provided record, or use the HTTP token method."
 
+#: app/features/organization/components/org-recent-changes.tsx:19
+msgid "updated"
+msgstr "updated"
+
 #: app/features/dns/components/dns-zone-status.tsx:88
 #: app/features/service-catalog/components/conditions-card.tsx:51
 msgid "Updated"
@@ -7616,6 +7725,10 @@ msgstr "Welcome back, {givenName}."
 #: app/features/dashboard/components/home/home-header.tsx:31
 msgid "Welcome back."
 msgstr "Welcome back."
+
+#: app/features/organization/components/org-recent-changes.tsx:73
+msgid "What changed"
+msgstr "What changed"
 
 #: app/features/billing/components/contract-editor/contract-editor.tsx:452
 msgid "What the contract bills from the platform's prices. Leave the customer price empty to bill the list price."
