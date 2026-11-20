@@ -18,7 +18,7 @@ import {
   updateFraudProvider,
 } from '../apis/fraud.api';
 import { ListQueryParams } from '@/resources/schemas';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export const fraudQueryKeys = {
   all: ['fraud'] as const,
@@ -80,6 +80,23 @@ export const useFraudEvaluationListQuery = (
     queryFn: ({ signal }) => listFraudEvaluations(params, signal),
     staleTime: 5 * 60 * 1000,
     enabled: options.enabled,
+  });
+};
+
+/**
+ * Each user's fraud evaluations, one query per user. Same key as
+ * `useFraudEvaluationListQuery({ search: userName })` (the user detail page),
+ * so the two share their cache.
+ */
+export const useUserFraudEvaluationQueries = (userNames: readonly string[]) => {
+  return useQueries({
+    queries: userNames.map((userName) => ({
+      queryKey: fraudQueryKeys.evaluations.list({ search: userName }),
+      queryFn: ({ signal }: { signal: AbortSignal }) =>
+        listFraudEvaluations({ search: userName }, signal),
+      staleTime: 5 * 60 * 1000,
+      enabled: Boolean(userName),
+    })),
   });
 };
 

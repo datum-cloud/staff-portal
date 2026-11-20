@@ -6,6 +6,9 @@ export { OrgUsageCard } from './components/org-usage-card';
 export { OrgHealthStrip } from './components/org-health-strip';
 export { OrgNeedsAttention } from './components/org-needs-attention';
 export { OrgWarningEvents } from './components/org-warning-events';
+export { OrgProjectsCard } from './components/org-projects-card';
+export { OrgRecentChanges } from './components/org-recent-changes';
+export { OrgAccountCard } from './components/org-account-card';
 export { buildOnboardingSteps } from './lib/onboarding-steps';
 export {
   useOrgComputeStatus,

@@ -1,11 +1,12 @@
 import { useOrgWarningEvents } from '../hooks/use-org-warning-events';
 import type { WarningGroup } from '../lib/warning-events';
+import { OverviewCardLink, OverviewCardTitle, OverviewEmptyState } from './overview-card';
 import { DateTime } from '@/components/date';
 import { SectionCard } from '@/features/milo';
 import { useShowMore } from '@/hooks';
+import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { Button } from '@datum-cloud/datum-ui/button';
-import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import {
   Table,
@@ -17,7 +18,6 @@ import {
 } from '@datum-cloud/datum-ui/table';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Plural, Trans } from '@lingui/react/macro';
-import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router';
 
 /** Groups shown before "Show all". */
@@ -74,19 +74,29 @@ function SkeletonRows({ count }: { count: number }) {
 function EmptyLine({ nothingRead, someUnread }: { nothingRead: boolean; someUnread: boolean }) {
   if (nothingRead) {
     return (
-      <Text size="sm" textColor="muted">
-        <Trans>Couldn&apos;t load warning events.</Trans>
-      </Text>
+      <OverviewEmptyState
+        icon={STATUS_ICONS.error}
+        title={<Trans>Couldn&apos;t load warning events</Trans>}>
+        <Trans>Neither the organization nor its projects could be read.</Trans>
+      </OverviewEmptyState>
+    );
+  }
+  if (someUnread) {
+    return (
+      <OverviewEmptyState
+        icon={STATUS_ICONS.warning}
+        title={<Trans>No warning events found</Trans>}>
+        <Trans>Nothing in the last 24 hours in what could be read.</Trans>
+      </OverviewEmptyState>
     );
   }
   return (
-    <Text size="sm" textColor="muted">
-      {someUnread ? (
-        <Trans>No warning events in the last 24 hours in what could be read.</Trans>
-      ) : (
-        <Trans>No warning events in the last 24 hours.</Trans>
-      )}
-    </Text>
+    <OverviewEmptyState
+      icon={STATUS_ICONS.success}
+      iconClassName="text-success"
+      title={<Trans>No warning events</Trans>}>
+      <Trans>Nothing has reported a warning in the last 24 hours.</Trans>
+    </OverviewEmptyState>
   );
 }
 
@@ -109,20 +119,15 @@ export function OrgWarningEvents({ orgName, className }: { orgName: string; clas
     <section className={className}>
       <SectionCard
         title={
-          <span className="flex items-baseline gap-2">
-            <Trans>Warning events</Trans>
-            <Text as="span" size="sm" textColor="muted" weight="normal">
-              <Trans>Last 24 hours</Trans>
-            </Text>
-          </span>
+          <OverviewCardTitle
+            title={<Trans>Warning events</Trans>}
+            hint={<Trans>Last 24 hours</Trans>}
+          />
         }
         action={
-          <Link
-            to={orgRoutes.activity.events(orgName)}
-            className="text-primary inline-flex items-center gap-1 text-sm hover:underline">
+          <OverviewCardLink to={orgRoutes.activity.events(orgName)}>
             <Trans>All events</Trans>
-            <Icon icon={ArrowRight} size={14} aria-hidden />
-          </Link>
+          </OverviewCardLink>
         }>
         <div className="flex flex-col gap-2">
           {groups.length > 0 || loading ? (
