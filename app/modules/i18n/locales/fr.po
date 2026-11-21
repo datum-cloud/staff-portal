@@ -631,6 +631,7 @@ msgstr ""
 msgid "Access"
 msgstr ""
 
+#: app/features/service-catalog/components/pending-approvals-card.tsx:79
 #: app/routes/admin/service-catalog/detail/approvals.tsx:128
 msgid "Access denied — IAM role pending."
 msgstr ""
@@ -975,6 +976,10 @@ msgstr ""
 #: app/features/milo/components/page/rule-filter.tsx:220
 #: app/features/milo/components/page/rule-filter.tsx:238
 msgid "and"
+msgstr ""
+
+#: app/features/service-catalog/components/pending-approvals-card.tsx:113
+msgid "and {remaining} more"
 msgstr ""
 
 #: app/features/billing/components/billing-account-dashboard/card-parts.tsx:32
@@ -2384,7 +2389,7 @@ msgstr ""
 msgid "Deny this consumer's access request. Optionally add a note."
 msgstr ""
 
-#: app/routes/admin/service-catalog/service-details.tsx:139
+#: app/routes/admin/service-catalog/service-details.tsx:140
 msgid "Dependencies:"
 msgstr ""
 
@@ -3016,6 +3021,7 @@ msgstr ""
 msgid "Failed to create Offer"
 msgstr ""
 
+#: app/features/service-catalog/components/pending-approvals-card.tsx:81
 #: app/routes/admin/service-catalog/detail/approvals.tsx:130
 msgid "Failed to load approvals."
 msgstr ""
@@ -3036,7 +3042,7 @@ msgstr ""
 msgid "Failed to load service catalog."
 msgstr ""
 
-#: app/routes/admin/service-catalog/service-details.tsx:80
+#: app/routes/admin/service-catalog/service-details.tsx:81
 msgid "Failed to load service configurations."
 msgstr ""
 
@@ -3301,7 +3307,7 @@ msgstr ""
 
 #: app/features/service-catalog/components/details-card.tsx:54
 #: app/routes/admin/service-catalog/index.tsx:184
-#: app/routes/admin/service-catalog/service-details.tsx:113
+#: app/routes/admin/service-catalog/service-details.tsx:114
 msgid "Gated by Provider"
 msgstr ""
 
@@ -4630,6 +4636,7 @@ msgstr ""
 msgid "No payment terms applications yet"
 msgstr ""
 
+#: app/features/service-catalog/components/pending-approvals-card.tsx:86
 #: app/routes/admin/service-catalog/detail/approvals.tsx:166
 msgid "No pending approval requests."
 msgstr ""
@@ -5181,7 +5188,7 @@ msgstr ""
 msgid "Owner of {ownerCount}"
 msgstr ""
 
-#: app/routes/admin/service-catalog/service-details.tsx:131
+#: app/routes/admin/service-catalog/service-details.tsx:132
 msgid "Owner:"
 msgstr ""
 
@@ -5326,6 +5333,10 @@ msgstr ""
 
 #: app/routes/dashboard/index.tsx:52
 msgid "pending approvals"
+msgstr ""
+
+#: app/features/service-catalog/components/pending-approvals-card.tsx:55
+msgid "Pending approvals"
 msgstr ""
 
 #: app/routes/admin/offer/detail.tsx:344
@@ -5996,7 +6007,7 @@ msgstr ""
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:92
 #: app/routes/admin/service-catalog/detail/approvals.tsx:148
 #: app/routes/admin/service-catalog/index.tsx:150
-#: app/routes/admin/service-catalog/service-details.tsx:87
+#: app/routes/admin/service-catalog/service-details.tsx:88
 msgid "Retry"
 msgstr ""
 
@@ -7512,6 +7523,7 @@ msgstr ""
 #: app/features/organization/components/org-usage-card.tsx:72
 #: app/features/project/components/project-quotas-card.tsx:71
 #: app/features/project/components/project-usage-card.tsx:93
+#: app/features/service-catalog/components/pending-approvals-card.tsx:71
 msgid "View all"
 msgstr ""
 
@@ -7688,7 +7700,7 @@ msgstr ""
 msgid "Yes — new accounts use this Offer"
 msgstr ""
 
-#: app/routes/admin/service-catalog/service-details.tsx:78
+#: app/routes/admin/service-catalog/service-details.tsx:79
 msgid "You do not have permission to view service configurations."
 msgstr ""
 
