@@ -52,6 +52,7 @@ import {
   type ContractFeeRow,
   type ContractFormValues,
 } from './schema';
+import { ShowSubmitErrors } from './show-submit-errors';
 import { PageHeader } from '@/components/page-header';
 import { SectionCard } from '@/features/milo';
 import {
@@ -445,6 +446,7 @@ function ContractEditorForm({
     <Form.Root schema={schema} defaultValues={defaultValues} onSubmit={handleSubmit}>
       {({ isSubmitting, isDirty }) => (
         <div className="grid grid-cols-1 items-start gap-4 @5xl/main:grid-cols-[minmax(0,1fr)_360px]">
+          <ShowSubmitErrors />
           <div className="flex min-w-0 flex-col gap-4">
             <SectionCard
               title={<Trans>Contract fees</Trans>}
