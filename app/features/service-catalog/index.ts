@@ -9,4 +9,5 @@ export * from './components/pending-approvals-card';
 export * from './components/quota-limits-card';
 export * from './components/service-pricings-card';
 export * from './hooks/useApprovalDialog';
+export * from './hooks/usePendingApprovals';
 export * from './utils/consumer-matches-service';

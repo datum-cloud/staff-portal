@@ -390,6 +390,10 @@ msgstr ""
 msgid "{recurring}."
 msgstr ""
 
+#: app/features/service-catalog/components/pending-approvals-card.tsx:118
+msgid "{remaining, plural, one {and # more request} other {and # more requests}}"
+msgstr ""
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:181
 msgid "{spend} spent so far this cycle against a {limit} per-cycle credit limit."
 msgstr ""
@@ -631,8 +635,8 @@ msgstr ""
 msgid "Access"
 msgstr ""
 
-#: app/features/service-catalog/components/pending-approvals-card.tsx:79
-#: app/routes/admin/service-catalog/detail/approvals.tsx:128
+#: app/features/service-catalog/components/pending-approvals-card.tsx:54
+#: app/routes/admin/service-catalog/detail/approvals.tsx:124
 msgid "Access denied — IAM role pending."
 msgstr ""
 
@@ -978,10 +982,6 @@ msgstr ""
 msgid "and"
 msgstr ""
 
-#: app/features/service-catalog/components/pending-approvals-card.tsx:113
-msgid "and {remaining} more"
-msgstr ""
-
 #: app/features/billing/components/billing-account-dashboard/card-parts.tsx:32
 msgid "Annual"
 msgstr ""
@@ -1051,7 +1051,7 @@ msgstr ""
 msgid "Approval"
 msgstr ""
 
-#: app/routes/admin/service-catalog/detail/approvals.tsx:21
+#: app/routes/admin/service-catalog/detail/approvals.tsx:20
 msgid "Approvals"
 msgstr ""
 
@@ -1059,7 +1059,7 @@ msgstr ""
 #: app/features/billing/components/application-review.tsx:225
 #: app/features/billing/components/application-review.tsx:536
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:38
-#: app/routes/admin/service-catalog/detail/approvals.tsx:51
+#: app/routes/admin/service-catalog/detail/approvals.tsx:47
 #: app/routes/admin/service-catalog/detail/consumers.tsx:76
 #: app/routes/customer/user/index.tsx:68
 msgid "Approve"
@@ -1694,7 +1694,7 @@ msgstr ""
 msgid "Consumer project"
 msgstr ""
 
-#: app/routes/admin/service-catalog/detail/approvals.tsx:87
+#: app/routes/admin/service-catalog/detail/approvals.tsx:83
 #: app/routes/admin/service-catalog/detail/consumers.tsx:121
 msgid "Consumer Project"
 msgstr ""
@@ -2376,7 +2376,7 @@ msgid "Delivered"
 msgstr ""
 
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:38
-#: app/routes/admin/service-catalog/detail/approvals.tsx:56
+#: app/routes/admin/service-catalog/detail/approvals.tsx:52
 #: app/routes/admin/service-catalog/detail/consumers.tsx:82
 msgid "Deny"
 msgstr ""
@@ -3021,8 +3021,8 @@ msgstr ""
 msgid "Failed to create Offer"
 msgstr ""
 
-#: app/features/service-catalog/components/pending-approvals-card.tsx:81
-#: app/routes/admin/service-catalog/detail/approvals.tsx:130
+#: app/features/service-catalog/components/pending-approvals-card.tsx:56
+#: app/routes/admin/service-catalog/detail/approvals.tsx:126
 msgid "Failed to load approvals."
 msgstr ""
 
@@ -4636,8 +4636,8 @@ msgstr ""
 msgid "No payment terms applications yet"
 msgstr ""
 
-#: app/features/service-catalog/components/pending-approvals-card.tsx:86
-#: app/routes/admin/service-catalog/detail/approvals.tsx:166
+#: app/features/service-catalog/components/pending-approvals-card.tsx:75
+#: app/routes/admin/service-catalog/detail/approvals.tsx:162
 msgid "No pending approval requests."
 msgstr ""
 
@@ -5103,7 +5103,7 @@ msgstr ""
 #: app/features/organization/components/org-needs-attention.tsx:374
 #: app/features/organization/components/org-warning-events.tsx:43
 #: app/features/project/components/project-organization-card.tsx:25
-#: app/routes/admin/service-catalog/detail/approvals.tsx:66
+#: app/routes/admin/service-catalog/detail/approvals.tsx:62
 #: app/routes/admin/service-catalog/detail/consumers.tsx:100
 #: app/routes/customer/project/index.tsx:131
 #: app/routes/customer/project/index.tsx:224
@@ -5335,7 +5335,7 @@ msgstr ""
 msgid "pending approvals"
 msgstr ""
 
-#: app/features/service-catalog/components/pending-approvals-card.tsx:55
+#: app/features/service-catalog/components/pending-approvals-card.tsx:130
 msgid "Pending approvals"
 msgstr ""
 
@@ -5936,7 +5936,7 @@ msgstr ""
 msgid "Request ID:"
 msgstr ""
 
-#: app/routes/admin/service-catalog/detail/approvals.tsx:106
+#: app/routes/admin/service-catalog/detail/approvals.tsx:102
 #: app/routes/admin/service-catalog/detail/consumers.tsx:177
 msgid "Requested at"
 msgstr ""
@@ -6005,7 +6005,8 @@ msgid "Retired"
 msgstr ""
 
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:92
-#: app/routes/admin/service-catalog/detail/approvals.tsx:148
+#: app/features/service-catalog/components/pending-approvals-card.tsx:65
+#: app/routes/admin/service-catalog/detail/approvals.tsx:144
 #: app/routes/admin/service-catalog/index.tsx:150
 #: app/routes/admin/service-catalog/service-details.tsx:88
 msgid "Retry"
@@ -6178,7 +6179,7 @@ msgstr ""
 msgid "Search by project, organization, ID, or note..."
 msgstr ""
 
-#: app/routes/admin/service-catalog/detail/approvals.tsx:165
+#: app/routes/admin/service-catalog/detail/approvals.tsx:161
 msgid "Search by project, organization, or ID..."
 msgstr ""
 
@@ -6935,7 +6936,7 @@ msgstr ""
 msgid "The <0/> of each month, with the first month prorated"
 msgstr ""
 
-#: app/routes/admin/service-catalog/detail/approvals.tsx:135
+#: app/routes/admin/service-catalog/detail/approvals.tsx:131
 msgid "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 msgstr ""
 
@@ -7151,6 +7152,10 @@ msgstr ""
 
 #: app/features/project/components/project-deletion-banner.tsx:22
 msgid "This project is being deleted"
+msgstr ""
+
+#: app/features/service-catalog/components/pending-approvals-card.tsx:44
+msgid "This service has no owner project, so its approvals cannot be loaded."
 msgstr ""
 
 #: app/routes/admin/service-catalog/detail/consumers.tsx:222
@@ -7523,7 +7528,7 @@ msgstr ""
 #: app/features/organization/components/org-usage-card.tsx:72
 #: app/features/project/components/project-quotas-card.tsx:71
 #: app/features/project/components/project-usage-card.tsx:93
-#: app/features/service-catalog/components/pending-approvals-card.tsx:71
+#: app/features/service-catalog/components/pending-approvals-card.tsx:142
 msgid "View all"
 msgstr ""
 
