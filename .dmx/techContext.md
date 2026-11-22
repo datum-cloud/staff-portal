@@ -46,6 +46,9 @@
 
 - Node 26.13.0 or newer is required.
 - Generated OpenAPI and GraphQL code must be regenerated, never edited by hand.
+- pnpm links only declared packages: import nothing that is only reachable as another package's dependency, including type-only imports and `declare module` augmentations (`skipLibCheck` hides a missing module in a `.d.ts`).
+- Peer ranges that upstream hasn't widened yet (eslint 10 for the import/jsx-a11y/react plugins, monaco-editor for `@datum-cloud/activity-ui`, `@hono/node-server` 2 for `@hono/node-ws`) are overridden in `pnpm-workspace.yaml` through the catalog; keep `pnpm peers check` clean.
+- The SSR build bundles the dependencies of packages Vite already bundles (`ai`, `@modelcontextprotocol/sdk`, `@sentry/server-utils`, `hono`, `@gqlts/runtime`, `react-router-hono-server`), because under pnpm they don't resolve from `build/server` at runtime.
 - Overrides live in `pnpm-workspace.yaml`, not `package.json`. `graphql` is pinned to 17.1.0 there, alongside security floors such as `axios`, `form-data`, `qs` and `dompurify`.
 - Upstream credentials are attached only on the server; browser code goes through `/api/internal/*`.
 - Billing cycle maths (`app/modules/billing/billing-cycle.ts`) runs in the browser as well as the server, so it steps months and formats range labels in UTC. Never use date-fns `addMonths`/`format` for cycle boundaries: they work in local time and land a day early west of UTC. Tests run the same cases under New York and Auckland time. Cycle, period and due dates display with `timezone="UTC"`.

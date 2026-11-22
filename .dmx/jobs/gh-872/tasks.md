@@ -16,9 +16,9 @@
 - [x] `pnpm install` succeeds on Node 26; list the peer warnings pnpm reports for Phase 2
 
 ## Phase 2: Strictness fixes
-- [ ] Run `pnpm typecheck`, `pnpm build` and `pnpm test`; declare each package the app, scripts or generated code import without declaring (likely `graphql-ws` for the generated GraphQL types)
-- [ ] Meet peer ranges pnpm reports that `legacy-peer-deps` hid (likely `ws@8` for `react-router-hono-server`), with an override or a declared dependency
-- [ ] Compare `build/client` with the npm build from `main` and explain any difference
+- [x] Run `pnpm typecheck`, `pnpm build` and `pnpm test`; declare each package the app, scripts or generated code import without declaring (likely `graphql-ws` for the generated GraphQL types)
+- [x] Meet peer ranges pnpm reports that `legacy-peer-deps` hid (likely `ws@8` for `react-router-hono-server`), with an override or a declared dependency
+- [x] Compare `build/client` with the npm build from `main` and explain any difference
 
 ## Phase 3: Scripts and dev tooling
 - [ ] `package.json`: `test:e2e*` scripts start the server with `pnpm dev` / `pnpm start`

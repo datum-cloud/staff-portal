@@ -19,7 +19,10 @@ allowBuilds:
 # Versions that overrides must agree with. package.json takes them with
 # `catalog:` so each is written once.
 catalog:
+  '@hono/node-server': 2.1.9
   axios: ^1.20.0
+  eslint: ^10.0.0
+  monaco-editor: ^0.57.0
 
 overrides:
   react-is: ^19.3.1
@@ -32,10 +35,16 @@ overrides:
   axios: 'catalog:'
   follow-redirects: ^1.16.3
   '@humanfs/node': ^0.17.0
-  react-router-hono-server>@hono/node-server: 2.1.9
-  '@hono/vite-dev-server>@hono/node-server': ^2.1.9
+  # Also meets @hono/node-ws's peer, which still asks for ^1.19.11.
+  '@hono/node-server': 'catalog:'
   qs: ^6.17.1
   '@babel/core': ^7.29.13
   dompurify@<3.4.17: ^3.4.17
   katex: ^0.19.1
   rimraf: ^6.1.4
+  # Peers the latest releases have not caught up with; npm ignored them
+  # through legacy-peer-deps. Each already ran on these versions under npm.
+  '@datum-cloud/activity-ui>monaco-editor': 'catalog:'
+  eslint-plugin-import>eslint: 'catalog:'
+  eslint-plugin-jsx-a11y>eslint: 'catalog:'
+  eslint-plugin-react>eslint: 'catalog:'
