@@ -3,11 +3,11 @@
 ## Stack
 
 - **Language:** TypeScript (v6), ESM (`"type": "module"`).
-- **Runtime:** Node.js 26.12.1 (`.nvmrc`, `engines.node >= 26.12.1`). The Docker image builds on Node 26 Alpine.
+- **Runtime:** Node.js 26.13.1 (`.nvmrc`, `engines.node >= 26.13.0`). The Docker image builds on Node 26 Alpine.
 - **Framework:** React 19 + React Router 7 (SSR, explicit route config), served by Hono via `react-router-hono-server` and `@hono/node-server`.
 - **Build:** Vite 7 (`react-router build`, plus a separate observability bundle via `vite.observability.config.ts`).
 - **Styling:** Tailwind CSS v4, `tailwind-variants`, `@datum-cloud/datum-ui` design system.
-- **Package manager:** npm (`package-lock.json`; CI runs `npm ci`). A stray `bun.lock` may exist locally but is not used by CI.
+- **Package manager:** pnpm 11, pinned by `packageManager` in `package.json` (`pnpm-lock.yaml`). `pnpm-workspace.yaml` holds the pnpm settings for this single package: dependency overrides (nested ones as `parent>child`), a `catalog:` for versions an override shares with `package.json` (`axios`), the `allowBuilds` allowlist for install scripts (cypress, esbuild, lefthook), and `minimumReleaseAgeExclude` for `@datum-cloud/*`.
 
 ## Key dependencies
 
@@ -44,9 +44,9 @@
 
 ## Constraints
 
-- Node 26.12.1 or newer is required.
+- Node 26.13.0 or newer is required.
 - Generated OpenAPI and GraphQL code must be regenerated, never edited by hand.
-- `graphql` is pinned to 17.0.2 via `overrides`; `react-is` and `form-data` are also overridden.
+- Overrides live in `pnpm-workspace.yaml`, not `package.json`. `graphql` is pinned to 17.1.0 there, alongside security floors such as `axios`, `form-data`, `qs` and `dompurify`.
 - Upstream credentials are attached only on the server; browser code goes through `/api/internal/*`.
 - Billing cycle maths (`app/modules/billing/billing-cycle.ts`) runs in the browser as well as the server, so it steps months and formats range labels in UTC. Never use date-fns `addMonths`/`format` for cycle boundaries: they work in local time and land a day early west of UTC. Tests run the same cases under New York and Auckland time. Cycle, period and due dates display with `timezone="UTC"`.
 - The activity API rejects query ranges over 720h, so feeds look back at most `now-30d`.
