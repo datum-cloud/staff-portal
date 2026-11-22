@@ -26,7 +26,7 @@
 - [x] `scripts/graphql.ts`, `scripts/openapi.ts`, `scripts/openapi-list.ts`, `scripts/check-server-imports.mjs`: usage strings and messages use pnpm
 
 ## Phase 4: Docker image
-- [ ] `Dockerfile` build stage: install the pinned pnpm, copy `package.json pnpm-lock.yaml pnpm-workspace.yaml`, `pnpm install --frozen-lockfile --prod=false --ignore-scripts`, `pnpm build`, `pnpm prune --prod --ignore-scripts`; runtime stage unchanged
+- [x] `Dockerfile` build stage: install the pinned pnpm, copy `package.json pnpm-lock.yaml pnpm-workspace.yaml`, `pnpm install --frozen-lockfile --prod=false --ignore-scripts`, `pnpm build`, `pnpm prune --prod --ignore-scripts`; runtime stage unchanged
 - [ ] Build the image from a clean export (`git archive`), run it with `NODE_ENV=production` and check `/_healthz`
 
 ## Phase 5: CI and Renovate
