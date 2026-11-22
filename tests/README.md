@@ -2,11 +2,11 @@
 
 Staff Portal has three test runners:
 
-| Runner            | What it covers                                        | Where specs live         | Command                  |
-| ----------------- | ----------------------------------------------------- | ------------------------ | ------------------------ |
-| Vitest            | Pure logic and server code (Node environment)         | `app/**/*.test.{ts,tsx}` | `npm test`               |
-| Cypress component | Rendered UI in a real browser, plus older logic specs | `cypress/component/**`   | `npm run test:unit:prod` |
-| Cypress e2e       | Smoke checks against a running app and real backend   | `cypress/e2e/smoke/**`   | `npm run test:e2e`       |
+| Runner            | What it covers                                        | Where specs live         | Command               |
+| ----------------- | ----------------------------------------------------- | ------------------------ | --------------------- |
+| Vitest            | Pure logic and server code (Node environment)         | `app/**/*.test.{ts,tsx}` | `pnpm test`           |
+| Cypress component | Rendered UI in a real browser, plus older logic specs | `cypress/component/**`   | `pnpm test:unit:prod` |
+| Cypress e2e       | Smoke checks against a running app and real backend   | `cypress/e2e/smoke/**`   | `pnpm test:e2e`       |
 
 CI runs all three (`.github/workflows/ci.yml`: `vitest`, `unit-tests`, `e2e-smoke`).
 
@@ -41,9 +41,9 @@ Configured in `vitest.config.ts`: Node environment, `app/**/*.test.{ts,tsx}`, th
 `@/*` path aliases, and stub env values so server modules load without a `.env`.
 
 ```bash
-npm test                                   # whole suite (vitest run)
-npx vitest run app/features/billing/lib    # one folder or file
-npx vitest app/utils/cookies               # watch mode
+pnpm test                                       # whole suite (vitest run)
+pnpm exec vitest run app/features/billing/lib   # one folder or file
+pnpm exec vitest app/utils/cookies              # watch mode
 ```
 
 Specs use `describe` / `it` / `expect(x).toBe(...)` and may use `vi.mock` and
@@ -58,8 +58,8 @@ Cypress component.
 Run with the Cypress **component** runner (Vite-bundled, real browser):
 
 ```bash
-npm run test:unit          # interactive (cypress open --component)
-npm run test:unit:prod     # headless (CI)
+pnpm test:unit             # interactive (cypress open --component)
+pnpm test:unit:prod        # headless (CI)
 ```
 
 Two flavours:
@@ -87,9 +87,9 @@ The `cy.mount` command wraps the subject in the same providers the app uses
 Hit a **real backend** with a **real signed staff session** — nothing is mocked.
 
 ```bash
-npm run test:e2e           # start dev server + run e2e
-npm run test:e2e:prod      # start prod build + run e2e
-npm run test:e2e:debug     # start prod build + cypress open
+pnpm test:e2e              # start dev server + run e2e
+pnpm test:e2e:prod         # start prod build + run e2e
+pnpm test:e2e:debug        # start prod build + cypress open
 ```
 
 `cy.login()` builds and signs a `_session` cookie the same way the app does

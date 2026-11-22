@@ -25,7 +25,7 @@ This setup uses `@hey-api/openapi-ts` to automatically generate TypeScript types
 List all available OpenAPI resources from the API server:
 
 ```bash
-npm run openapi:list
+pnpm openapi:list
 ```
 
 This will:
@@ -39,7 +39,7 @@ This will:
 Generate TypeScript types, Zod schemas, and Axios clients for specific API resources:
 
 ```bash
-npm run openapi:generate -- --resources networking.datumapis.com/v1alpha --name networking
+pnpm openapi:generate --resources networking.datumapis.com/v1alpha --name networking
 ```
 
 **Options:**
@@ -55,13 +55,13 @@ npm run openapi:generate -- --resources networking.datumapis.com/v1alpha --name 
 
 ```bash
 # Single resource
-npm run openapi:generate -- --resources networking.datumapis.com/v1alpha --name networking
+pnpm openapi:generate --resources networking.datumapis.com/v1alpha --name networking
 
 # Multiple resources
-npm run openapi:generate -- --resources networking.datumapis.com/v1alpha notification.miloapis.com/v1alpha1 --name networking notification
+pnpm openapi:generate --resources networking.datumapis.com/v1alpha notification.miloapis.com/v1alpha1 --name networking notification
 
 # Keep existing shared core/client
-npm run openapi:generate -- --resources networking.datumapis.com/v1alpha --name networking --keep-shared
+pnpm openapi:generate --resources networking.datumapis.com/v1alpha --name networking --keep-shared
 ```
 
 ### 3. Use Generated Code

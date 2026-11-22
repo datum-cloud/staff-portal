@@ -18,7 +18,7 @@ A single-package React Router v7 full-stack app (SSR) running on Node with a Hon
 
 - **Request layering:** route/page → query hook (`client/queries`) → API function (`client/apis`) → generated SDK → browser axios → `/api/internal/*` → Hono injects bearer token → upstream. Query hooks call only API functions, never the SDK directly. API functions call the SDK, not raw URLs.
 - **Query ownership:** a hook lives with the resource whose endpoint it calls (`contact.queries.ts`, `user.queries.ts`, `project.queries.ts`). Feature query modules are only for feature-specific selectors or multi-resource composition.
-- **Generated code is never hand-edited:** `app/resources/openapi/**` (via `npm run openapi:generate`) and `app/modules/graphql/generated/**` (via `npm run graphql`).
+- **Generated code is never hand-edited:** `app/resources/openapi/**` (via `pnpm openapi:generate`) and `app/modules/graphql/generated/**` (via `pnpm graphql`).
 - **GraphQL:** same tiers as REST plus a hand-authored selection layer; see `app/resources/gql/README.md`.
 - **Errors:** typed `AppError` hierarchy in `app/utils/errors/`; `mapApiError` normalises Axios, GraphQL and unknown errors. 4xx errors are `expected` and stay out of Sentry. See `docs/engineering/05-error-handling-and-reporting.md`.
 - **Navigation:** toolbar tabs for peer-level hub pages; `SubLayout.SidebarMenu` for resource/workspace detail contexts. Route links come from helpers in `app/utils/config/routes.config.ts`.
