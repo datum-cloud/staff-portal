@@ -2,7 +2,7 @@
 // Resolves every bare import in the server bundle against the
 // node_modules next to it, the way Node will at startup in the image.
 //
-// Run it from a production install (`npm ci --omit=dev`) with `build/`
+// Run it from a production install (`pnpm install --prod`) with `build/`
 // copied in. A package that is only reachable through the dev tree, or
 // only nested under another package, fails here instead of in prod.
 // Bundler plugins that inline a dependency (ssr.noExternal) move that

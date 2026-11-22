@@ -21,9 +21,9 @@
 - [x] Compare `build/client` with the npm build from `main` and explain any difference
 
 ## Phase 3: Scripts and dev tooling
-- [ ] `package.json`: `test:e2e*` scripts start the server with `pnpm dev` / `pnpm start`
-- [ ] `lefthook.yml`: `npx` becomes `pnpm exec` for eslint, prettier and lingui
-- [ ] `scripts/graphql.ts`, `scripts/openapi.ts`, `scripts/openapi-list.ts`, `scripts/check-server-imports.mjs`: usage strings and messages use pnpm
+- [x] `package.json`: `test:e2e*` scripts start the server with `pnpm dev` / `pnpm start`
+- [x] `lefthook.yml`: `npx` becomes `pnpm exec` for eslint, prettier and lingui
+- [x] `scripts/graphql.ts`, `scripts/openapi.ts`, `scripts/openapi-list.ts`, `scripts/check-server-imports.mjs`: usage strings and messages use pnpm
 
 ## Phase 4: Docker image
 - [ ] `Dockerfile` build stage: install the pinned pnpm, copy `package.json pnpm-lock.yaml pnpm-workspace.yaml`, `pnpm install --frozen-lockfile --prod=false --ignore-scripts`, `pnpm build`, `pnpm prune --prod --ignore-scripts`; runtime stage unchanged

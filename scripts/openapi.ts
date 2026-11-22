@@ -31,7 +31,7 @@ const {
 
 if (!API_URL || !TOKEN || !RESOURCES?.length) {
   console.error(
-    'Usage: npm run openapi:generate -- --api-url <url> --token <token> --resources group/name/v1... '
+    'Usage: pnpm openapi:generate --api-url <url> --token <token> --resources group/name/v1... '
   );
   process.exit(1);
 }
@@ -197,8 +197,8 @@ async function cleanBaseUrlType(resourceDir: string) {
 async function generateClientForSpec(specFile: string, outDir: string) {
   await ensureDir(outDir);
 
-  await promisify(execFile)('npx', [
-    '--no-install',
+  await promisify(execFile)('pnpm', [
+    'exec',
     'openapi-ts',
     '-i',
     specFile,
