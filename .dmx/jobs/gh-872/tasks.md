@@ -30,11 +30,11 @@
 - [ ] Build the image from a clean export (`git archive`), run it with `NODE_ENV=production` and check `/_healthz`
 
 ## Phase 5: CI and Renovate
-- [ ] `.github/workflows/ci.yml`: set up the pinned pnpm before `setup-node` in every job; drop `NPM_CACHE`; key the dependency cache on `pnpm-lock.yaml`, `pnpm-workspace.yaml` and `package.json`
-- [ ] `ci.yml`: install with `pnpm install --frozen-lockfile --ignore-scripts`, run scripts as `pnpm <script>`, and `npx` as `pnpm exec`
-- [ ] `ci.yml`: rebuild the production tree check (copying `package-lock.json`/`.npmrc` and `npm ci --prefix`) with pnpm
-- [ ] `ci.yml`: fail fast when cached dependencies are missing outside the install job
-- [ ] `renovate.json`: remove the `npm <12` constraint; reference #848 in the PR without a closing keyword
+- [x] `.github/workflows/ci.yml`: set up the pinned pnpm before `setup-node` in every job; drop `NPM_CACHE`; key the dependency cache on `pnpm-lock.yaml`, `pnpm-workspace.yaml` and `package.json`
+- [x] `ci.yml`: install with `pnpm install --frozen-lockfile --ignore-scripts`, run scripts as `pnpm <script>`, and `npx` as `pnpm exec`
+- [x] `ci.yml`: rebuild the production tree check (copying `package-lock.json`/`.npmrc` and `npm ci --prefix`) with pnpm
+- [x] `ci.yml`: fail fast when cached dependencies are missing outside the install job
+- [x] `renovate.json`: remove the `npm <12` constraint; reference #848 in the PR without a closing keyword
 
 ## Phase 6: Docs
 - [ ] `README.md`, `tests/README.md`, `scripts/README.md`, `docs/engineering/04-data-and-requests.md`, `app/modules/prometheus/README.md`, `app/resources/gql/README.md`: `npm run X` / `npm test` → `pnpm X`, `npm install`/`npm ci` → `pnpm install`, `npx` → `pnpm exec` (or `pnpm dlx` for tools the repo doesn't install); cover installing pnpm, since Node 26 ships no corepack
