@@ -4,6 +4,7 @@ import type { BillingAccount } from '../../utils';
 import { usePaymentTerms } from '../payment-terms';
 import { BillingAccountActivityCard } from './billing-account-activity-card';
 import { BillingAccountAttentionBanner } from './billing-account-attention-banner';
+import { BillingAccountChargesCard } from './billing-account-charges-card';
 import { BillingAccountContractCard } from './billing-account-contract-card';
 import { BillingAccountContractDraftCard } from './billing-account-contract-draft-card';
 import {
@@ -91,7 +92,7 @@ export function BillingAccountDashboard({
       />
 
       {/*
-        Two columns when wide: usage, invoices and projects, then the activity
+        Two columns when wide: usage, invoices, charges and projects, then the activity
         feed, beside the account's details. The feed sits in the wide column
         so a quiet account's page isn't one long narrow column of cards; the
         details span both rows, and the second row is the flexible one, so
@@ -112,6 +113,7 @@ export function BillingAccountDashboard({
             now={now}
             contract={contract}
           />
+          <BillingAccountChargesCard orgName={orgName} account={account} now={now} />
           <BillingAccountProjectsCard orgName={orgName} account={account} />
         </div>
 

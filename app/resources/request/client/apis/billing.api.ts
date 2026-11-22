@@ -1,3 +1,4 @@
+import type { Charge, ChargeSpec } from '@/features/billing/lib/charges';
 import {
   CONTRACT_BILLING_ACCOUNT_LABEL,
   CONTRACT_BILLING_DAY_ANNOTATION,
@@ -33,9 +34,11 @@ import {
   createBillingMiloapisComV1Alpha1NamespacedBillingArrangement,
   createBillingMiloapisComV1Alpha1NamespacedBillingArrangementDecline,
   createBillingMiloapisComV1Alpha1NamespacedBillingEntitlement,
+  createBillingMiloapisComV1Alpha1NamespacedCharge,
   createBillingMiloapisComV1Alpha1NamespacedInvoiceRequest,
   createBillingMiloapisComV1Alpha1NamespacedServicePricing,
   createBillingMiloapisComV1Alpha1Offer,
+  deleteBillingMiloapisComV1Alpha1NamespacedCharge,
   deleteBillingMiloapisComV1Alpha1NamespacedServicePricing,
   deleteBillingMiloapisComV1Alpha1Offer,
   listBillingMiloapisComV1Alpha1BillingAccountBindingForAllNamespaces,
@@ -47,6 +50,7 @@ import {
   listBillingMiloapisComV1Alpha1NamespacedBillingArrangementApplication,
   listBillingMiloapisComV1Alpha1NamespacedBillingArrangementDecline,
   listBillingMiloapisComV1Alpha1NamespacedBillingEntitlement,
+  listBillingMiloapisComV1Alpha1NamespacedCharge,
   listBillingMiloapisComV1Alpha1NamespacedInvoice,
   listBillingMiloapisComV1Alpha1NamespacedPaymentMethod,
   listBillingMiloapisComV1Alpha1NamespacedServicePricing,
@@ -77,7 +81,7 @@ export type OfferSpec = NonNullable<Offer['spec']>;
 export type ServicePricing = ComMiloapisBillingV1Alpha1ServicePricing;
 type ServicePricingSpec = NonNullable<ServicePricing['spec']>;
 // One set of billing aliases, defined with the billing feature.
-export type { BillingEntitlement, Invoice, InvoiceRequest };
+export type { BillingEntitlement, Charge, Invoice, InvoiceRequest };
 
 export const billingAccountListQuery = async (params?: ListQueryParams) => {
   const response = await listBillingMiloapisComV1Alpha1BillingAccountForAllNamespaces({
@@ -1318,4 +1322,69 @@ export const createBillingArrangementDecline = async (
     },
   });
   return response.data?.data;
+};
+
+// ─── Charges (org-namespaced, staff-added) ──────────────────────────────────
+
+/** An account's charges, and whether the API serves charges at all. */
+export interface AccountCharges {
+  items: Charge[];
+  /**
+   * False when the control plane has no Charge resource (billing without
+   * charges installed), so there's nothing to show or add.
+   */
+  served: boolean;
+}
+
+/**
+ * The account's charges, not being deleted. Charges can't be selected by
+ * account on the server, so the org's are read and filtered here; an org has
+ * few. A 404 means the Charge resource isn't installed, which is answered
+ * without the error toast.
+ */
+export const chargeListForAccountQuery = async (
+  orgName: string,
+  accountName: string
+): Promise<AccountCharges> => {
+  const namespace = buildOrganizationNamespace(orgName);
+  const response = await listBillingMiloapisComV1Alpha1NamespacedCharge({
+    baseURL: getClientOrgControlPlaneBaseURL(orgName),
+    path: { namespace },
+    query: { limit: 500 },
+    validateStatus: (status) => (status >= 200 && status < 300) || status === 404,
+  });
+  if (response.status === 404) return { items: [], served: false };
+  const items = filterNotDeleting(response.data?.data?.items ?? []).filter(
+    (charge) => charge.spec?.billingAccountRef?.name === accountName
+  );
+  return { items, served: true };
+};
+
+/** Adds a charge, named after its description. Billing defaults what the spec leaves out. */
+export const createCharge = async (orgName: string, spec: ChargeSpec, generateName: string) => {
+  const namespace = buildOrganizationNamespace(orgName);
+  const response = await createBillingMiloapisComV1Alpha1NamespacedCharge({
+    baseURL: getClientOrgControlPlaneBaseURL(orgName),
+    path: { namespace },
+    query: { fieldManager: FIELD_MANAGER },
+    body: {
+      apiVersion: 'billing.miloapis.com/v1alpha1',
+      kind: 'Charge',
+      metadata: { generateName },
+      spec,
+    },
+  });
+  return response.data?.data;
+};
+
+/**
+ * Removes a charge. The billing provider takes it off the account's next
+ * invoice first; billing refuses once it's invoiced.
+ */
+export const deleteCharge = async (orgName: string, chargeName: string) => {
+  const namespace = buildOrganizationNamespace(orgName);
+  await deleteBillingMiloapisComV1Alpha1NamespacedCharge({
+    baseURL: getClientOrgControlPlaneBaseURL(orgName),
+    path: { namespace, name: chargeName },
+  });
 };
