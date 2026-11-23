@@ -1,7 +1,10 @@
 import {
   billingPeriodContaining,
+  buildChargeDraftSpec,
   buildChargeSpec,
   chargeAmounts,
+  chargeDraftTotal,
+  chargeFormValuesFromLine,
   chargeBillingDay,
   chargeInvoiceGroup,
   chargeInvoiceGroupName,
@@ -347,6 +350,73 @@ describe('invoice groups', () => {
       true
     );
     expect(isEmptyChargeForm({ ...emptyChargeFormValues(), description: 'CPU node' })).toBe(false);
+  });
+});
+
+describe('charge drafts', () => {
+  const custom = values({
+    item: 'Remote hands',
+    description: 'Remote hands',
+    quantity: '3',
+    unitAmount: '150',
+    discountPercent: '12.5',
+    notTaxable: true,
+    note: 'Reseller, exempt',
+    setPeriod: true,
+    periodStart: '2026-12-01',
+    periodEnd: '2026-12-05',
+  });
+  const catalog = values({ item: 'pricing:install-v1', description: 'Install', unitAmount: '300' });
+
+  it('builds a draft from the lines, timing the draft and not each line', () => {
+    const spec = buildChargeDraftSpec([custom, catalog], 'Now', 'acme');
+    expect(spec.billingAccountRef).toEqual({ name: 'acme' });
+    expect(spec.invoice).toBe('Now');
+    expect(spec.lines).toHaveLength(2);
+    for (const line of spec.lines) {
+      expect(line).not.toHaveProperty('billingAccountRef');
+      expect(line).not.toHaveProperty('invoice');
+      expect(line).not.toHaveProperty('invoiceGroup');
+    }
+    expect(spec.lines[0]).toMatchObject({
+      description: 'Remote hands',
+      quantity: '3',
+      unitAmount: '150.00',
+      discountPercent: '12.5',
+      tax: { taxable: false },
+      servicePeriod: { start: '2026-12-01', end: '2026-12-05' },
+    });
+    expect(spec.lines[1].servicePricingRef).toEqual({
+      name: 'install-v1',
+      namespace: 'milo-system',
+    });
+  });
+
+  it('brings a saved line back into the form as it was', () => {
+    const spec = buildChargeDraftSpec([custom, catalog], 'Now', 'acme');
+    const back = spec.lines.map((line) => chargeFormValuesFromLine(line, 'Now'));
+    expect(back[0]).toMatchObject({
+      item: 'Remote hands',
+      unitAmount: '150.00',
+      notTaxable: true,
+      taxCode: '',
+      setPeriod: true,
+      periodEnd: '2026-12-05',
+      invoice: 'Now',
+    });
+    expect(back[1]).toMatchObject({ item: 'pricing:install-v1', notTaxable: false });
+    // And saved again, it's the same draft.
+    expect(buildChargeDraftSpec(back, 'Now', 'acme')).toEqual(spec);
+  });
+
+  it('totals a draft before tax, or not while a line waits for its catalog price', () => {
+    const spec = buildChargeDraftSpec([custom, catalog], 'Now', 'acme');
+    expect(chargeDraftTotal({ spec })).toBe(69375n);
+    const unpriced = {
+      ...spec,
+      lines: [{ servicePricingRef: { name: 'install-v1' }, quantity: '1' }],
+    };
+    expect(chargeDraftTotal({ spec: unpriced })).toBeNull();
   });
 });
 

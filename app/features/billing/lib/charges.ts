@@ -11,6 +11,7 @@ import { t } from '@lingui/core/macro';
 import type {
   ComMiloapisBillingV1Alpha1BillingAccount,
   ComMiloapisBillingV1Alpha1Charge,
+  ComMiloapisBillingV1Alpha1ChargeDraft,
   ComMiloapisBillingV1Alpha1ServicePricing,
 } from '@openapi/billing.miloapis.com/v1alpha1';
 
@@ -22,6 +23,10 @@ import type {
 
 export type Charge = ComMiloapisBillingV1Alpha1Charge;
 export type ChargeSpec = Charge['spec'];
+/** Charges staff saved to check and send later: several lines, still editable. */
+export type ChargeDraft = ComMiloapisBillingV1Alpha1ChargeDraft;
+export type ChargeDraftSpec = ChargeDraft['spec'];
+export type ChargeDraftLine = ChargeDraftSpec['lines'][number];
 type BillingAccount = ComMiloapisBillingV1Alpha1BillingAccount;
 type ServicePricing = ComMiloapisBillingV1Alpha1ServicePricing;
 
@@ -418,6 +423,65 @@ export const chargeInvoiceGroup = (
 /** A name for an invoice group: "invoice-x7k2p". */
 export const chargeInvoiceGroupName = (suffix: string = randomNameSuffix()): string =>
   `invoice-${suffix}`;
+
+/**
+ * A charge draft's spec from the dialog's lines: each line as its Charge
+ * would be sent, without the account and timing the draft gives them all.
+ */
+export const buildChargeDraftSpec = (
+  lines: ChargeFormValues[],
+  invoice: ChargeInvoiceTiming,
+  accountName: string
+): ChargeDraftSpec => ({
+  billingAccountRef: { name: accountName },
+  invoice,
+  lines: lines.map((values) => {
+    const {
+      billingAccountRef,
+      invoice: _invoice,
+      invoiceGroup,
+      ...line
+    } = buildChargeSpec({ ...values, invoice }, accountName);
+    return line;
+  }),
+});
+
+/** A draft's line as the add charge form holds it, to change or send. */
+export const chargeFormValuesFromLine = (
+  line: ChargeDraftLine,
+  invoice: ChargeInvoiceTiming
+): ChargeFormValues => ({
+  item: line.servicePricingRef
+    ? `${CATALOG_ITEM_PREFIX}${line.servicePricingRef.name}`
+    : (line.description ?? ''),
+  description: line.description ?? '',
+  quantity: line.quantity,
+  unitAmount: line.unitAmount ?? '',
+  taxCode: line.tax?.taxable === false ? '' : (line.tax?.code ?? ''),
+  notTaxable: line.tax?.taxable === false,
+  discountPercent: line.discountPercent ?? '',
+  setPeriod: Boolean(line.servicePeriod),
+  periodStart: line.servicePeriod?.start ?? '',
+  periodEnd: line.servicePeriod?.end ?? '',
+  note: line.note ?? '',
+  invoice,
+});
+
+/**
+ * What a draft's lines come to before tax, from their quantities, prices
+ * and discounts, or null while one of them isn't priced: a catalog line
+ * left to its item's price is priced when it's sent.
+ */
+export const chargeDraftTotal = (draft: ChargeDraft): bigint | null => {
+  let total = 0n;
+  for (const line of draft.spec.lines) {
+    if (!line.unitAmount) return null;
+    const amounts = chargeAmounts(line.quantity, line.unitAmount, line.discountPercent);
+    if (!amounts.ok) return null;
+    total += amounts.amountDue;
+  }
+  return total;
+};
 
 /** Whether the add charge form holds nothing yet: no item, description or price. */
 export const isEmptyChargeForm = (values: ChargeFormValues): boolean =>

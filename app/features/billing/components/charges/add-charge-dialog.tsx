@@ -1,8 +1,10 @@
 import { useAccountPaymentMethods } from '../../hooks';
 import {
+  buildChargeDraftSpec,
   buildChargeSpec,
   catalogPricingName,
   chargeAmounts,
+  chargeFormValuesFromLine,
   chargeInvoiceGroup,
   chargeInvoiceGroupName,
   chargeItemOptions,
@@ -20,6 +22,7 @@ import {
   nextBillingPeriod,
   parseHundredths,
   pricingUnitAmount,
+  type ChargeDraft,
   type ChargeFormValues,
   type ChargeInvoiceTiming,
   type ServicePeriod,
@@ -34,8 +37,13 @@ import { ShowSubmitErrors } from '../contract-editor/show-submit-errors';
 import { ItemOptions, SupplyDateField } from '../item-options';
 import { ChargeItemPicker, PickedItemInfo } from './charge-item-picker';
 import { buildChargeSchema } from './schema';
-import { chargeServerErrors } from './server-errors';
-import { useCreateChargeMutation, useServicePricingListQuery } from '@/resources/request/client';
+import { chargeDraftServerErrors, chargeServerErrors } from './server-errors';
+import {
+  useCreateChargeMutation,
+  useDeleteChargeDraftMutation,
+  useSaveChargeDraftMutation,
+  useServicePricingListQuery,
+} from '@/resources/request/client';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Alert, AlertDescription } from '@datum-cloud/datum-ui/alert';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -97,10 +105,16 @@ const newLineId = () => `line-${++nextLineId}`;
 export function AddChargeDialog({
   orgName,
   account,
+  draft,
+  canSaveDraft = false,
   onClose,
 }: {
   orgName: string;
   account: BillingAccount;
+  /** A saved draft to change or send, instead of starting empty. */
+  draft?: ChargeDraft;
+  /** Whether billing serves charge drafts, so lines can be saved as one. */
+  canSaveDraft?: boolean;
   onClose: () => void;
 }) {
   const [now] = useState(() => new Date());
@@ -109,8 +123,12 @@ export function AddChargeDialog({
     <Dialog open onOpenChange={(open) => (open ? undefined : onClose())}>
       <Dialog.Content className="sm:max-w-2xl">
         <Dialog.Header
-          title={t`Add charge`}
-          description={t`A one-off line on ${getBillingAccountDisplayName(account)}'s invoice: a catalog item or a custom one.`}
+          title={draft ? t`Draft charges` : t`Add charge`}
+          description={
+            draft
+              ? t`Charges saved for ${getBillingAccountDisplayName(account)}. Change them and save the draft, or add them now.`
+              : t`A one-off line on ${getBillingAccountDisplayName(account)}'s invoice: a catalog item or a custom one.`
+          }
         />
         {pricingsQuery.isLoading ? (
           <Dialog.Body className="flex flex-col gap-3 px-5" aria-busy="true">
@@ -125,6 +143,8 @@ export function AddChargeDialog({
             now={now}
             pricings={pricingsQuery.data?.items ?? []}
             catalogFailed={pricingsQuery.isError}
+            draft={draft}
+            canSaveDraft={canSaveDraft || Boolean(draft)}
             onClose={onClose}
           />
         )}
@@ -139,6 +159,8 @@ function AddChargeForm({
   now,
   pricings,
   catalogFailed,
+  draft,
+  canSaveDraft,
   onClose,
 }: {
   orgName: string;
@@ -146,6 +168,8 @@ function AddChargeForm({
   now: Date;
   pricings: NonNullable<ReturnType<typeof useServicePricingListQuery>['data']>['items'];
   catalogFailed: boolean;
+  draft?: ChargeDraft;
+  canSaveDraft: boolean;
   onClose: () => void;
 }) {
   const accountName = account.metadata?.name ?? '';
@@ -155,10 +179,29 @@ function AddChargeForm({
   const currentPeriod = useMemo(() => currentBillingPeriod(account, now), [account, now]);
   const options = useMemo(() => chargeItemOptions(pricings, account), [pricings, account]);
   const [optionsOpen, setOptionsOpen] = useState(false);
-  // Lines kept with "Add another line", before the one in the form.
-  const [lines, setLines] = useState<ChargeLine[]>([]);
+  const initialInvoice = draft?.spec.invoice ?? 'NextInvoice';
+  // Lines kept with "Add another line", or a draft's: all but the one in
+  // the form.
+  const [lines, setLines] = useState<ChargeLine[]>(() =>
+    (draft?.spec.lines ?? []).map((line) => ({
+      id: newLineId(),
+      values: chargeFormValuesFromLine(line, initialInvoice),
+      added: false,
+    }))
+  );
   // The line in the form, so it keeps its charge's name if it comes back.
   const formLineIdRef = useRef(newLineId());
+  // Where the line in the form goes among the kept ones: at the end, or,
+  // while a kept line is being changed, back in its place.
+  const [formAt, setFormAt] = useState<number | null>(null);
+  const withFormLine = (kept: ChargeLine[], line: ChargeLine) => {
+    const at = formAt ?? kept.length;
+    return [...kept.slice(0, at), line, ...kept.slice(at)];
+  };
+  const saveDraft = useSaveChargeDraftMutation(orgName, accountName);
+  const deleteDraft = useDeleteChargeDraftMutation(orgName, accountName);
+  // Set once the draft is removed: its lines are charges from then on.
+  const draftGoneRef = useRef(false);
   // Invoicing now confirms in a second step, with every line.
   const [confirming, setConfirming] = useState<PendingSend | null>(null);
   // What billing refused that isn't one field's, shown above the buttons.
@@ -196,6 +239,7 @@ function AddChargeForm({
             name,
           });
           added.add(line.id);
+          await removeSentDraft();
         } catch (err) {
           showFailure(err, line, all, added, invoice);
           return;
@@ -205,6 +249,21 @@ function AddChargeForm({
       onClose();
     } finally {
       sendingRef.current = false;
+    }
+  };
+
+  // Once a draft's first line is a charge, the draft goes, so it can't be
+  // sent twice; the lines still to add stay in the dialog.
+  const removeSentDraft = async () => {
+    const name = draft?.metadata?.name;
+    if (!name || draftGoneRef.current) return;
+    draftGoneRef.current = true;
+    try {
+      await deleteDraft.mutateAsync(name);
+    } catch {
+      toast.error(
+        t`The charges were added, but the draft couldn't be removed. Discard it from the charges card so it isn't sent again.`
+      );
     }
   };
 
@@ -223,6 +282,7 @@ function AddChargeForm({
         .filter((line) => line.id !== failed.id)
         .map((line) => ({ ...line, added: added.has(line.id) }))
     );
+    setFormAt(all.findIndex((line) => line.id === failed.id));
     formLineIdRef.current = failed.id;
     const form = formRef.current;
     form?.reset({ ...failed.values, invoice });
@@ -256,7 +316,10 @@ function AddChargeForm({
   };
 
   const handleSubmit = async (values: ChargeFormValues) => {
-    await send([...lines, { id: formLineIdRef.current, values, added: false }], values.invoice);
+    await send(
+      withFormLine(lines, { id: formLineIdRef.current, values, added: false }),
+      values.invoice
+    );
   };
 
   // Sends the kept lines without the form, when it's left empty.
@@ -275,17 +338,85 @@ function AddChargeForm({
       return;
     }
     const values = form.getValues();
-    setLines((kept) => [...kept, { id: formLineIdRef.current, values, added: false }]);
+    setLines((kept) => withFormLine(kept, { id: formLineIdRef.current, values, added: false }));
+    setFormAt(null);
     formLineIdRef.current = newLineId();
     form.reset({ ...emptyChargeFormValues(), invoice: values.invoice });
     setOptionsOpen(false);
     setFormErrors([]);
   };
 
+  // Puts a kept line back in the form to change it, keeping its place.
+  // What's in the form is kept first, once it's valid.
+  const editLine = async (id: string) => {
+    const form = formRef.current;
+    if (!form || !lines.some((line) => line.id === id)) return;
+    const current = form.getValues();
+    let kept = lines;
+    if (!isEmptyChargeForm(current)) {
+      if (!(await form.trigger())) {
+        if (hasOptionError(form.formState.errors)) setOptionsOpen(true);
+        return;
+      }
+      kept = withFormLine(lines, {
+        id: formLineIdRef.current,
+        values: form.getValues(),
+        added: false,
+      });
+    }
+    const at = kept.findIndex((line) => line.id === id);
+    const line = kept[at];
+    setLines(kept.filter((other) => other.id !== id));
+    setFormAt(at);
+    formLineIdRef.current = line.id;
+    form.reset({ ...line.values, invoice: current.invoice });
+    setOptionsOpen(false);
+    setFormErrors([]);
+  };
+
+  // Saves the lines, with the one in the form once it's valid, as a draft
+  // to check and send later, or saves the draft being changed.
+  const saveAsDraft = async () => {
+    const form = formRef.current;
+    if (!form) return;
+    const current = form.getValues();
+    let all = lines;
+    if (!isEmptyChargeForm(current) || lines.length === 0) {
+      if (!(await form.trigger())) {
+        if (hasOptionError(form.formState.errors)) setOptionsOpen(true);
+        return;
+      }
+      all = withFormLine(lines, {
+        id: formLineIdRef.current,
+        values: form.getValues(),
+        added: false,
+      });
+    }
+    setFormErrors([]);
+    try {
+      await saveDraft.mutateAsync({
+        spec: buildChargeDraftSpec(
+          all.map((line) => line.values),
+          current.invoice,
+          accountName
+        ),
+        draft,
+      });
+      toast.success(
+        draft
+          ? t`Draft saved.`
+          : t`Saved as a draft. It's on the charges card to check, preview and add.`
+      );
+      onClose();
+    } catch (err) {
+      setFormErrors(chargeDraftServerErrors(err));
+    }
+  };
+
   return (
     <Form.Root
       schema={schema}
-      defaultValues={emptyChargeFormValues()}
+      defaultValues={{ ...emptyChargeFormValues(), invoice: initialInvoice }}
       onSubmit={handleSubmit}
       className="flex min-h-0 flex-1 flex-col">
       {({ isSubmitting }) => {
@@ -297,9 +428,15 @@ function AddChargeForm({
             <Dialog.Body className={cn('flex flex-col gap-4 px-5 pt-0', confirming && 'hidden')}>
               <KeptLines
                 lines={lines}
+                formAt={formAt}
                 currentPeriod={currentPeriod}
                 locked={locked}
-                onRemove={(id) => setLines((kept) => kept.filter((line) => line.id !== id))}
+                onEdit={(id) => void editLine(id)}
+                onRemove={(id) => {
+                  const index = lines.findIndex((line) => line.id === id);
+                  if (formAt !== null && index >= 0 && index < formAt) setFormAt(formAt - 1);
+                  setLines((kept) => kept.filter((line) => line.id !== id));
+                }}
               />
               {catalogFailed ? (
                 <Text size="sm" textColor="muted">
@@ -411,6 +548,17 @@ function AddChargeForm({
                     onClick={onClose}>
                     <Trans>Cancel</Trans>
                   </Button>
+                  {canSaveDraft && !locked ? (
+                    <Button
+                      type="secondary"
+                      theme="outline"
+                      htmlType="button"
+                      loading={saveDraft.isPending}
+                      disabled={busy || saveDraft.isPending}
+                      onClick={() => void saveAsDraft()}>
+                      {draft ? <Trans>Save draft</Trans> : <Trans>Save as draft</Trans>}
+                    </Button>
+                  ) : null}
                   <SubmitButton
                     keptLines={lines.length}
                     locked={locked}
@@ -525,40 +673,61 @@ function SubmitButton({
  */
 function KeptLines({
   lines,
+  formAt,
   currentPeriod,
   locked,
+  onEdit,
   onRemove,
 }: {
   lines: ChargeLine[];
+  /** Where the line in the form sits among them, when it's a kept one being changed. */
+  formAt: number | null;
   currentPeriod: ServicePeriod;
   locked: boolean;
+  onEdit: (id: string) => void;
   onRemove: (id: string) => void;
 }) {
   if (lines.length === 0) return null;
   return (
     <div className="flex flex-col gap-2">
-      {lines.map((line, index) => (
-        <div key={line.id} className="flex items-start gap-2">
-          <div className="min-w-0 flex-1">
-            <ChargeLineSummary
-              label={line.added ? t`Line ${index + 1} · added` : t`Line ${index + 1}`}
-              summary={chargeSummary(line.values, currentPeriod)}
-            />
+      {lines.map((line, index) => {
+        // Numbered as on the invoice, counting the line in the form.
+        const number = formAt !== null && index >= formAt ? index + 2 : index + 1;
+        return (
+          <div key={line.id} className="flex items-start gap-1">
+            <div className="min-w-0 flex-1">
+              <ChargeLineSummary
+                label={line.added ? t`Line ${number} · added` : t`Line ${number}`}
+                summary={chargeSummary(line.values, currentPeriod)}
+              />
+            </div>
+            {locked ? null : (
+              <>
+                <Button
+                  type="quaternary"
+                  theme="borderless"
+                  size="small"
+                  htmlType="button"
+                  className="mt-1"
+                  aria-label={t`Change line ${number}`}
+                  icon={<Icon icon={ACTION_ICONS.edit} size={14} />}
+                  onClick={() => onEdit(line.id)}
+                />
+                <Button
+                  type="quaternary"
+                  theme="borderless"
+                  size="small"
+                  htmlType="button"
+                  className="mt-1"
+                  aria-label={t`Remove line ${number}`}
+                  icon={<Icon icon={ACTION_ICONS.close} size={14} />}
+                  onClick={() => onRemove(line.id)}
+                />
+              </>
+            )}
           </div>
-          {locked ? null : (
-            <Button
-              type="quaternary"
-              theme="borderless"
-              size="small"
-              htmlType="button"
-              className="mt-1"
-              aria-label={t`Remove line ${index + 1}`}
-              icon={<Icon icon={ACTION_ICONS.close} size={14} />}
-              onClick={() => onRemove(line.id)}
-            />
-          )}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
