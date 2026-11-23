@@ -21,8 +21,14 @@ import {
   PAST_INVOICE_STATUS_BADGE,
   toPastInvoiceRow,
 } from '../../utils';
-import { billingTimingText, feeChargeText, periodsText } from '../contract-fee-text';
+import {
+  billingTimingText,
+  feeChargeText,
+  periodsText,
+  supplyDateText,
+} from '../contract-fee-text';
 import { ContractScheduleList } from '../contract-schedule-list';
+import { PricingInfo } from '../pricing-info';
 import { BILLING_ACCOUNT_SECTION_IDS, CardMessage, InlineDate, SectionAnchor } from './card-parts';
 import { BadgeState } from '@/components/badge';
 import { SectionCard } from '@/features/milo';
@@ -233,9 +239,11 @@ const feeQuantityText = (fee: { amount: number; quantity: number; pricingUnit?: 
 };
 
 /**
- * The offer's fees, each with what it charges and how often. `startsAt`, the
- * contract's start, says when a fee with renewals ends, and `invoiceDay`
- * whether the contract bills on the account's invoice day instead.
+ * The offer's fees, each with what it charges and how often, what it's for,
+ * a one-time fee's supply date, and its pricing's notes for staff.
+ * `startsAt`, the contract's start, says when a fee with renewals ends, and
+ * `invoiceDay` whether the contract bills on the account's invoice day
+ * instead.
  */
 export function ContractFees({
   offer,
@@ -268,6 +276,15 @@ export function ContractFees({
       ),
     [pricingsQuery.data?.items]
   );
+  // Notes aren't in the Offer's snapshot, which customers can read, so
+  // they're the pricing's own.
+  const notesByName = useMemo(
+    () =>
+      new Map(
+        (pricingsQuery.data?.items ?? []).map((p) => [p.metadata?.name ?? '', p.spec?.notes])
+      ),
+    [pricingsQuery.data?.items]
+  );
   return (
     <div className="flex flex-col gap-1.5">
       {fees.length === 0 ? (
@@ -289,6 +306,7 @@ export function ContractFees({
                 ? t`list ${formatMoney(listAmount, CONTRACT_CURRENCY)}`
                 : null,
               fee.discount ? t`${fee.discount}% off ${beforeDiscount}` : null,
+              fee.servicePeriod ? supplyDateText(fee.servicePeriod) : null,
               fee.billingTiming ? billingTimingText(fee.billingTiming) : null,
               fee.periods ? periodsText(fee.periods, fee.interval) : null,
               fee.periods && startsAt
@@ -309,6 +327,11 @@ export function ContractFees({
                       {detail.join(' · ')}
                     </Text>
                   ) : null}
+                  <PricingInfo
+                    description={fee.description}
+                    notes={notesByName.get(fee.name)}
+                    clamp
+                  />
                 </div>
                 <Text size="sm" className="shrink-0 tabular-nums">
                   {feeChargeText(total, fee)}

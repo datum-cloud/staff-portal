@@ -1,3 +1,4 @@
+import type { ServicePeriod } from '../../lib/charges';
 import {
   CONTRACT_CURRENCY,
   contractStartFromDate,
@@ -15,7 +16,11 @@ import {
   type FeeBillingTiming,
   type FeeInterval,
 } from '../../lib/contract';
-import { listFeeRowAmount, type ListFeeOption } from '../../lib/contract-list-fees';
+import {
+  listFeeRowAmount,
+  rowServicePeriod,
+  type ListFeeOption,
+} from '../../lib/contract-list-fees';
 import { contractInvoiceSchedule, upcomingInvoices } from '../../lib/contract-schedule';
 import { formatMoney } from '../../utils';
 import { InlineDate } from '../billing-account-dashboard/card-parts';
@@ -24,6 +29,7 @@ import {
   feeChargeText,
   periodsText,
   recurringTotalsText,
+  supplyDateText,
 } from '../contract-fee-text';
 import { ContractScheduleList } from '../contract-schedule-list';
 import {
@@ -40,7 +46,7 @@ import { Plural, Trans } from '@lingui/react/macro';
 import type { ReactNode } from 'react';
 import { useFormState, type UseFormReturn } from 'react-hook-form';
 
-type SummaryFee = {
+export type SummaryFee = {
   key: string;
   label: string;
   chargeType: 'OneTime' | 'Recurring';
@@ -50,7 +56,55 @@ type SummaryFee = {
   billingTiming?: FeeBillingTiming;
   discount?: number;
   periods?: number;
+  /** A one-time fee's supply date, when it isn't the day it's charged. */
+  servicePeriod?: ServicePeriod;
 };
+
+/**
+ * The fees the form charges, as the summary lists them: the contract's own,
+ * then those ticked on the price list.
+ */
+export const summaryFees = (
+  rows: ContractFeeRow[],
+  listRows: ListFeeRowValues[],
+  feeOptions: ListFeeOption[]
+): SummaryFee[] => [
+  ...rows.map((row, index): SummaryFee => ({
+    key: `own-${index}`,
+    label: row.label.trim(),
+    chargeType: row.chargeType,
+    amount: parseAmount(row.amount),
+    quantity: Number.parseInt(row.quantity, 10) || 1,
+    ...(row.chargeType === 'Recurring'
+      ? {
+          interval: row.interval,
+          billingTiming: row.billingTiming,
+          periods: parsePeriods(row.periods),
+        }
+      : { servicePeriod: rowServicePeriod(row) }),
+  })),
+  ...listRows.flatMap((row, index): SummaryFee[] => {
+    const option = feeOptions[index];
+    if (!row.selected || !option) return [];
+    return [
+      {
+        key: `list-${option.name}`,
+        label: option.label,
+        chargeType: option.chargeType,
+        amount: listFeeRowAmount(fromListFeeRowValues(row), option),
+        quantity: Number.parseInt(row.quantity, 10) || 1,
+        discount: parseDiscount(row.discount),
+        ...(option.chargeType === 'Recurring'
+          ? {
+              interval: option.interval,
+              billingTiming: row.billingTiming,
+              periods: parsePeriods(row.periods),
+            }
+          : { servicePeriod: rowServicePeriod(row) }),
+      },
+    ];
+  }),
+];
 
 /**
  * What the contract bills, worked out from the form as it's filled: each
@@ -99,43 +153,7 @@ export function ContractSummary({
         ? t`A contract can have at most ${MAX_CONTRACT_FEES} fees, counting those from the price list.`
         : null;
 
-  const fees: SummaryFee[] = [
-    ...rows.map((row, index) => ({
-      key: `own-${index}`,
-      label: row.label.trim(),
-      chargeType: row.chargeType,
-      amount: parseAmount(row.amount),
-      quantity: Number.parseInt(row.quantity, 10) || 1,
-      ...(row.chargeType === 'Recurring'
-        ? {
-            interval: row.interval,
-            billingTiming: row.billingTiming,
-            periods: parsePeriods(row.periods),
-          }
-        : {}),
-    })),
-    ...listRows.flatMap((row, index): SummaryFee[] => {
-      const option = feeOptions[index];
-      if (!row.selected || !option) return [];
-      return [
-        {
-          key: `list-${option.name}`,
-          label: option.label,
-          chargeType: option.chargeType,
-          amount: listFeeRowAmount(fromListFeeRowValues(row), option),
-          quantity: Number.parseInt(row.quantity, 10) || 1,
-          discount: parseDiscount(row.discount),
-          ...(option.chargeType === 'Recurring'
-            ? {
-                interval: option.interval,
-                billingTiming: row.billingTiming,
-                periods: parsePeriods(row.periods),
-              }
-            : {}),
-        },
-      ];
-    }),
-  ];
+  const fees = summaryFees(rows, listRows, feeOptions);
   const meters = usageRows.filter((row) => row.selected);
   const customMeters = meters.filter((row) => row.amounts.some((a) => a.trim() !== '')).length;
 
@@ -213,6 +231,11 @@ export function ContractSummary({
                         ]
                           .filter(Boolean)
                           .join(' · ')}
+                      </Text>
+                    ) : null}
+                    {fee.servicePeriod?.start ? (
+                      <Text size="xs" textColor="muted">
+                        {supplyDateText(fee.servicePeriod)}
                       </Text>
                     ) : null}
                     {fee.periods && scheduleStart ? (

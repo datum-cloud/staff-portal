@@ -1,3 +1,4 @@
+import type { ServicePeriod } from './charges';
 import {
   DEFAULT_FEE_BILLING_TIMING,
   discountText,
@@ -49,6 +50,10 @@ export interface ListFeeOption {
   amount: string;
   /** How often a recurring list fee is charged; unset for a one-time one. */
   interval?: FeeInterval;
+  /** What the fee is for, as customers and staff see it, or ''. */
+  description: string;
+  /** The pricing's notes, for staff only and never shown to customers, or ''. */
+  notes: string;
 }
 
 const isFeeChargeType = (value: string | undefined): value is FeeChargeType =>
@@ -80,6 +85,8 @@ export const feeOptionFromPricing = (pricing: ServicePricing): ListFeeOption | u
     ...(spec.tax ? { tax: spec.tax } : {}),
     amount: spec.amount,
     ...(spec.chargeType === 'Recurring' ? { interval: spec.interval ?? 'monthly' } : {}),
+    description: spec.description?.trim() ?? '',
+    notes: spec.notes?.trim() ?? '',
   };
 };
 
@@ -124,18 +131,44 @@ export interface ListFeeRow {
   /** Renewals, as typed: how many periods a recurring list fee runs for; empty for no end. */
   periods: string;
   /**
+   * Whether a one-time list fee has a supply date, from periodStart to
+   * periodEnd (YYYY-MM-DD, UTC), rather than the day it's charged. It's the
+   * contract's, so it's on the Offer's reference.
+   */
+  setPeriod: boolean;
+  periodStart: string;
+  periodEnd: string;
+  /**
    * The customer fee the contract already charges, so an amendment that
    * keeps its amount reuses it rather than creating another.
    */
   currentPricing?: string;
 }
 
+const unsetServicePeriod = { setPeriod: false, periodStart: '', periodEnd: '' };
+
+/** A ref's supply date as a row's fields: unset when it has none. */
+export const servicePeriodFields = (
+  period: ServicePeriod | undefined
+): Pick<ListFeeRow, 'setPeriod' | 'periodStart' | 'periodEnd'> =>
+  period
+    ? { setPeriod: true, periodStart: period.start, periodEnd: period.end }
+    : unsetServicePeriod;
+
+/** A row's supply date, when it sets one. */
+export const rowServicePeriod = (row: {
+  setPeriod: boolean;
+  periodStart: string;
+  periodEnd: string;
+}): ServicePeriod | undefined =>
+  row.setPeriod ? { start: row.periodStart, end: row.periodEnd } : undefined;
+
 /**
  * The form's starting rows: each list fee ticked if `offer` charges it, or a
- * customer fee based on it, with its quantity, discount and timing. A row
- * takes the first such ref; any other for the same list fee is left to
- * listFeeNames. A ref without a timing is billed in advance, as billing
- * reads it; an unticked row starts in arrears, as new fees do.
+ * customer fee based on it, with its quantity, discount, timing and supply
+ * date. A row takes the first such ref; any other for the same list fee is
+ * left to listFeeNames. A ref without a timing is billed in advance, as
+ * billing reads it; an unticked row starts in arrears, as new fees do.
  */
 export const listFeeRowsFromOffer = (
   options: ListFeeOption[],
@@ -153,6 +186,7 @@ export const listFeeRowsFromOffer = (
       amount: option.amount,
       billingTiming: DEFAULT_FEE_BILLING_TIMING,
       periods: '',
+      ...unsetServicePeriod,
     };
     for (const ref of refs) {
       const snap = snapshots.get(ref.name);
@@ -160,8 +194,9 @@ export const listFeeRowsFromOffer = (
       const discount = discountText(ref.discount?.percentage);
       const billingTiming = ref.billingTiming ?? snap?.billingTiming ?? 'InAdvance';
       const periods = String(ref.periods || snap?.periods || '');
+      const supply = servicePeriodFields(ref.servicePeriod ?? snap?.servicePeriod);
       if (ref.name === option.name) {
-        return { ...blank, selected: true, quantity, discount, billingTiming, periods };
+        return { ...blank, selected: true, quantity, discount, billingTiming, periods, ...supply };
       }
       if (snap?.spec?.basedOn === option.name && isFeeChargeType(snap.spec.chargeType)) {
         return {
@@ -171,6 +206,7 @@ export const listFeeRowsFromOffer = (
           discount,
           billingTiming,
           periods,
+          ...supply,
           custom: true,
           amount: snap.spec.amount ?? option.amount,
           currentPricing: ref.name,
@@ -214,6 +250,8 @@ export interface PlannedListFee {
   billingTiming?: FeeBillingTiming;
   /** How many periods a recurring fee runs for, when it has an end. */
   periods?: number;
+  /** A one-time fee's supply date, when it isn't the day it's charged. */
+  servicePeriod?: ServicePeriod;
   /** The pricing to refer to as it is: the list fee, or a kept customer fee. */
   existingPricing?: string;
   /** For a customer fee to create: the list fee it's based on. */
@@ -256,7 +294,7 @@ export const buildListFeePlan = (
             billingTiming: row.billingTiming,
             periods: parsePeriods(row.periods),
           }
-        : {}),
+        : { servicePeriod: rowServicePeriod(row) }),
     };
     if (!row.custom || amount === Number.parseFloat(option.amount)) {
       return [{ ...fee, existingPricing: option.name }];

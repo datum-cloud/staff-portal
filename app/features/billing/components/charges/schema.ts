@@ -8,6 +8,7 @@ import {
   parseHundredths,
   servicePeriodProblems,
   type ChargeFormValues,
+  type ServicePeriodProblem,
 } from '../../lib/charges';
 import { t } from '@lingui/core/macro';
 import { z } from 'zod';
@@ -90,29 +91,25 @@ export const buildChargeSchema = (now: Date) =>
         { start: values.periodStart, end: values.periodEnd },
         now
       )) {
-        const field = problem.field === 'start' ? 'periodStart' : 'periodEnd';
-        switch (problem.problem) {
-          case 'missing':
-            issue(field, problem.field === 'start' ? t`Pick a start date.` : t`Pick an end date.`);
-            break;
-          case 'before-start':
-            issue(field, t`The end can't be before the start.`);
-            break;
-          case 'too-long':
-            issue(field, t`A supply date can be up to ${CHARGE_PERIOD_MAX_YEARS_LONG} years long.`);
-            break;
-          case 'too-far-back':
-            issue(
-              field,
-              t`A supply date can start up to ${CHARGE_PERIOD_MAX_YEARS_BACK} years ago.`
-            );
-            break;
-          case 'too-far-ahead':
-            issue(
-              field,
-              t`A supply date can end up to ${CHARGE_PERIOD_MAX_YEARS_AHEAD} years from now.`
-            );
-            break;
-        }
+        issue(
+          problem.field === 'start' ? 'periodStart' : 'periodEnd',
+          servicePeriodProblemText(problem)
+        );
       }
     });
+
+/** What staff are told about a supply date billing would refuse. */
+export const servicePeriodProblemText = (problem: ServicePeriodProblem): string => {
+  switch (problem.problem) {
+    case 'missing':
+      return problem.field === 'start' ? t`Pick a start date.` : t`Pick an end date.`;
+    case 'before-start':
+      return t`The end can't be before the start.`;
+    case 'too-long':
+      return t`A supply date can be up to ${CHARGE_PERIOD_MAX_YEARS_LONG} years long.`;
+    case 'too-far-back':
+      return t`A supply date can start up to ${CHARGE_PERIOD_MAX_YEARS_BACK} years ago.`;
+    case 'too-far-ahead':
+      return t`A supply date can end up to ${CHARGE_PERIOD_MAX_YEARS_AHEAD} years from now.`;
+  }
+};

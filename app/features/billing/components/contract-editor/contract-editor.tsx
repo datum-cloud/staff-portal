@@ -22,6 +22,8 @@ import {
   listFeeNames,
   listFeeOptions,
   listFeeRowsFromOffer,
+  rowServicePeriod,
+  servicePeriodFields,
 } from '../../lib/contract-list-fees';
 import {
   buildUsagePlan,
@@ -323,6 +325,7 @@ function ContractEditorForm({
     interval: 'monthly',
     billingTiming: DEFAULT_FEE_BILLING_TIMING,
     periods: '',
+    ...servicePeriodFields(undefined),
     amount: '',
     quantity: '1',
     pricingUnit: '',
@@ -338,6 +341,7 @@ function ContractEditorForm({
         interval: fee.interval ?? 'monthly',
         billingTiming: fee.billingTiming ?? 'InAdvance',
         periods: fee.periods ? String(fee.periods) : '',
+        ...servicePeriodFields(fee.servicePeriod),
         amount: toPricingAmount(fee.amount),
         quantity: String(fee.quantity),
         pricingUnit: fee.pricingUnit ?? '',
@@ -399,7 +403,7 @@ function ContractEditorForm({
                   billingTiming: fee.billingTiming,
                   periods: parsePeriods(fee.periods),
                 }
-              : {}),
+              : { servicePeriod: rowServicePeriod(fee) }),
           };
         }),
         ...buildListFeePlan(values.listFees.map(fromListFeeRowValues), feeOptions, base),
@@ -451,7 +455,11 @@ function ContractEditorForm({
             <SectionCard
               title={<Trans>Contract fees</Trans>}
               description={t`Anything that isn't on the price list, such as a manual product, one-off work or a negotiated price. Each fee is its own invoice line.`}>
-              <ContractFeeList services={services} allowOneTime={allowOneTime} />
+              <ContractFeeList
+                services={services}
+                allowOneTime={allowOneTime}
+                contractStartsAt={contract?.startsAt}
+              />
             </SectionCard>
 
             <SectionCard
@@ -481,7 +489,11 @@ function ContractEditorForm({
                     </Trans>
                   </Text>
                 ) : null}
-                <PriceListTable usageOptions={usageOptions} feeOptions={feeOptions} />
+                <PriceListTable
+                  usageOptions={usageOptions}
+                  feeOptions={feeOptions}
+                  contractStartsAt={contract?.startsAt}
+                />
               </div>
             </SectionCard>
           </div>
