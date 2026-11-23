@@ -3,6 +3,8 @@ import {
   buildChargeSpec,
   chargeAmounts,
   chargeBillingDay,
+  chargeInvoiceGroup,
+  chargeInvoiceGroupName,
   chargeItemOptions,
   chargeName,
   chargeQuantityText,
@@ -17,6 +19,7 @@ import {
   invoiceNowOutcome,
   isBeforePeriod,
   isChargeRemovable,
+  isEmptyChargeForm,
   isInvoiceWriterReady,
   isoDayFromLocalDate,
   localDateFromIsoDay,
@@ -319,6 +322,34 @@ describe('buildChargeSpec', () => {
   });
 });
 
+describe('invoice groups', () => {
+  it('groups two or more lines invoiced now', () => {
+    expect(chargeInvoiceGroup('Now', 2, 'invoice-x7k2p')).toEqual({
+      name: 'invoice-x7k2p',
+      size: 2,
+    });
+    expect(chargeInvoiceGroup('Now', 1, 'invoice-x7k2p')).toBeUndefined();
+    expect(chargeInvoiceGroup('NextInvoice', 3, 'invoice-x7k2p')).toBeUndefined();
+    expect(chargeInvoiceGroupName('x7k2p')).toBe('invoice-x7k2p');
+  });
+
+  it('puts the group on a charge invoiced now only', () => {
+    const group = { name: 'invoice-x7k2p', size: 2 };
+    const line = values({ item: 'GPU node', description: 'GPU node', unitAmount: '10' });
+    expect(buildChargeSpec({ ...line, invoice: 'Now' }, 'acme', group).invoiceGroup).toEqual(group);
+    expect(buildChargeSpec(line, 'acme', group)).not.toHaveProperty('invoiceGroup');
+    expect(buildChargeSpec({ ...line, invoice: 'Now' }, 'acme')).not.toHaveProperty('invoiceGroup');
+  });
+
+  it('tells an empty form from a started one', () => {
+    expect(isEmptyChargeForm(emptyChargeFormValues())).toBe(true);
+    expect(isEmptyChargeForm({ ...emptyChargeFormValues(), invoice: 'Now', quantity: '3' })).toBe(
+      true
+    );
+    expect(isEmptyChargeForm({ ...emptyChargeFormValues(), description: 'CPU node' })).toBe(false);
+  });
+});
+
 describe('chargeName', () => {
   it('is a slug of the description and a suffix', () => {
     expect(chargeName('Cross-connect install, cage 12', 'x7k2p')).toBe(
@@ -551,6 +582,7 @@ describe('charge status', () => {
     expect(waitingFor('WaitingForProvider')).toBe('Waiting for the billing provider');
     expect(waitingFor('WaitingForCustomer')).toBe("Waiting for the account's billing customer");
     expect(waitingFor('WaitingForAmounts')).toBe('Waiting for billing to work out the amount');
+    expect(waitingFor('WaitingForInvoiceGroup')).toBe('Waiting for the other lines on its invoice');
     // A reason this doesn't know shows the condition's own message.
     expect(waitingFor('SomethingElse')).toBe('Waiting for x');
     expect(chargeStatusText(getChargeStatus(charge()))).toBe('Waiting');

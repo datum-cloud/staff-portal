@@ -1399,6 +1399,24 @@ export type ComMiloapisBillingV1Alpha1Charge = {
      */
     invoice?: 'NextInvoice' | 'Now';
     /**
+     * InvoiceGroup puts this charge on one invoice with the account's other
+     * charges in the same group, for several lines staff send together.
+     * Only for a charge invoiced now. The group's charges wait until all of
+     * them are added, then go on one invoice of their own.
+     */
+    invoiceGroup?: {
+      /**
+       * Name identifies the group among the billing account's charges.
+       */
+      name: string;
+      /**
+       * Size is how many charges the group has. Every charge in the group
+       * gives the same size, and none is invoiced until all of them are
+       * added.
+       */
+      size: number;
+    };
+    /**
      * Note is for staff and finance, kept on the invoice line's metadata.
      * It's never printed on the invoice or shown to the customer.
      */

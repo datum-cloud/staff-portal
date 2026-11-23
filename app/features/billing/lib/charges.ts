@@ -366,7 +366,11 @@ const priceText = (value: string): string => {
  * fill in the pricing's code staff removed. An unticked supply date is
  * left out, for billing to store the account's current billing period.
  */
-export const buildChargeSpec = (values: ChargeFormValues, accountName: string): ChargeSpec => {
+export const buildChargeSpec = (
+  values: ChargeFormValues,
+  accountName: string,
+  invoiceGroup?: ChargeInvoiceGroup
+): ChargeSpec => {
   const pricingName = catalogPricingName(values.item);
   const taxCode = values.taxCode.trim();
   const tax = values.notTaxable
@@ -392,8 +396,32 @@ export const buildChargeSpec = (values: ChargeFormValues, accountName: string): 
       : {}),
     ...(note ? { note } : {}),
     invoice: values.invoice,
+    ...(invoiceGroup && values.invoice === 'Now' ? { invoiceGroup } : {}),
   };
 };
+
+export type ChargeInvoiceGroup = NonNullable<ChargeSpec['invoiceGroup']>;
+
+/**
+ * The invoice group for lines added together, or undefined when they don't
+ * need one: a single line, or lines going on the next invoice, which they
+ * join anyway. The name is picked once per dialog, so a retry joins the
+ * same group.
+ */
+export const chargeInvoiceGroup = (
+  invoice: ChargeInvoiceTiming,
+  lines: number,
+  name: string
+): ChargeInvoiceGroup | undefined =>
+  invoice === 'Now' && lines > 1 ? { name, size: lines } : undefined;
+
+/** A name for an invoice group: "invoice-x7k2p". */
+export const chargeInvoiceGroupName = (suffix: string = randomNameSuffix()): string =>
+  `invoice-${suffix}`;
+
+/** Whether the add charge form holds nothing yet: no item, description or price. */
+export const isEmptyChargeForm = (values: ChargeFormValues): boolean =>
+  !values.item.trim() && !values.description.trim() && !values.unitAmount.trim();
 
 /** The characters Kubernetes uses for generateName suffixes: no vowels, no look-alikes. */
 const NAME_SUFFIX_ALPHABET = 'bcdfghjklmnpqrstvwxz2456789';
@@ -599,6 +627,8 @@ const waitingText = (reason: string | undefined, message: string | undefined): s
       return t`Waiting for the account's billing customer`;
     case 'WaitingForAmounts':
       return t`Waiting for billing to work out the amount`;
+    case 'WaitingForInvoiceGroup':
+      return t`Waiting for the other lines on its invoice`;
     default:
       return message || t`Waiting`;
   }
