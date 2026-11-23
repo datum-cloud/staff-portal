@@ -507,6 +507,11 @@ export type ContractFeeInput = {
   billingTiming?: FeeBillingTiming;
   /** How many periods a recurring fee runs for, on the Offer's reference; unset for no end. */
   periods?: number;
+  /**
+   * A one-time fee's supply date, such as an install date, on the Offer's
+   * reference; unset for the day it's charged.
+   */
+  servicePeriod?: { start: string; end: string };
 };
 
 export type CreateContractOfferInput = {

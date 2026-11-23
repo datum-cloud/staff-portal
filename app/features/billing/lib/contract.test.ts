@@ -611,6 +611,54 @@ describe('fee renewals', () => {
   });
 });
 
+describe('fee supply dates and descriptions', () => {
+  const days = { start: '2027-03-03', end: '2027-03-05' };
+
+  it("read a one-time fee's supply date from the snapshot, never a recurring fee's", () => {
+    const install = fixed('install', 'OneTime', '500.00', 'Cage install');
+    install.servicePeriod = days;
+    install.spec.description = 'Building and wiring the cage. ';
+    const rack = fixed('rack', 'Recurring', '1000.00');
+    rack.servicePeriod = days;
+    const [setup, monthly] = getContractFees(offer([install, rack]));
+    expect(setup).toMatchObject({
+      servicePeriod: days,
+      description: 'Building and wiring the cage.',
+    });
+    expect(monthly.servicePeriod).toBeUndefined();
+    expect(monthly.description).toBeUndefined();
+  });
+
+  it("are read from a draft's references", () => {
+    const view = withDraftSnapshot(
+      {
+        metadata: { name: 'contract-acme-ops-20261101000000' },
+        spec: {
+          launchStage: 'Draft',
+          chargeTypes: ['OneTime'],
+          servicePricingRefs: [{ name: 'install', namespace: 'milo-system', servicePeriod: days }],
+        },
+      },
+      [
+        {
+          metadata: { name: 'install' },
+          spec: {
+            chargeType: 'OneTime',
+            amount: '500.00',
+            currency: 'USD',
+            description: 'Building and wiring the cage.',
+          },
+        },
+      ]
+    );
+    expect(view.spec?.servicePricings?.[0].servicePeriod).toEqual(days);
+    expect(getContractFees(view)[0]).toMatchObject({
+      servicePeriod: days,
+      description: 'Building and wiring the cage.',
+    });
+  });
+});
+
 describe('billing on the invoice day', () => {
   const startsAt = new Date('2026-11-15T00:00:00Z');
   const day = (date: Date) => date.toISOString().slice(0, 10);

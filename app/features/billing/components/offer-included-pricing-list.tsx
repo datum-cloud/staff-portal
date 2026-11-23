@@ -1,3 +1,4 @@
+import { PricingInfo } from './pricing-info';
 import { BadgeState } from '@/components/badge';
 import {
   resolveOfferServiceDiscounts,
@@ -42,9 +43,12 @@ type OfferIncludedPricingListProps = {
 function IncludedPricingRow({
   pricing,
   catalogService,
+  notes,
 }: {
   pricing: ComMiloapisBillingV1Alpha1ServicePricing;
   catalogService?: ServicePricingCatalogService;
+  /** The pricing's notes, for staff. */
+  notes?: string;
 }) {
   const name = pricing.metadata?.name ?? '';
   const chargeType = pricing.spec?.chargeType ?? '';
@@ -58,6 +62,7 @@ function IncludedPricingRow({
         <Text weight="medium">{displayName}</Text>
         {chargeType ? <BadgeState state={formatChargeType(chargeType)} /> : null}
       </div>
+      <PricingInfo description={pricing.spec?.description} notes={notes} className="mt-0.5" />
       {summary ? (
         <Text as="p" size="xs" textColor="muted" className="mt-0.5 leading-relaxed">
           {summary}
@@ -122,10 +127,12 @@ function IncludedPricingTable({
   items,
   servicesByRef,
   discounts,
+  notesByName,
 }: {
   items: ComMiloapisBillingV1Alpha1ServicePricing[];
   servicesByRef: ReturnType<typeof indexServicesByRef>;
   discounts: Map<string, ResolvedServiceDiscount>;
+  notesByName: Map<string, string | undefined>;
 }) {
   return (
     <div className="overflow-x-auto rounded-md border">
@@ -166,6 +173,12 @@ function IncludedPricingTable({
               <tr key={name || displayName} className="border-b last:border-b-0">
                 <td className="px-3 py-2 align-top">
                   <div className="font-medium">{displayName}</div>
+                  <PricingInfo
+                    description={pricing.spec?.description}
+                    notes={notesByName.get(name)}
+                    clamp
+                    className="mt-0.5 max-w-sm"
+                  />
                   {subtext ? (
                     <Text as="div" size="xs" textColor="muted" className="mt-0.5 font-mono">
                       {subtext}
@@ -244,6 +257,13 @@ export function OfferIncludedPricingList({
     return pricings.filter((pricing) => refNames.has(pricing.metadata?.name ?? ''));
   }, [snapshots, refs, pricings]);
 
+  // A published Offer's snapshots leave out its pricings' notes, which are
+  // for staff only, so they're read from the pricings themselves.
+  const notesByName = useMemo(
+    () => new Map(pricings.map((pricing) => [pricing.metadata?.name ?? '', pricing.spec?.notes])),
+    [pricings]
+  );
+
   const discounts = useMemo(
     () =>
       resolveOfferServiceDiscounts({
@@ -276,6 +296,7 @@ export function OfferIncludedPricingList({
         items={includedPricings}
         servicesByRef={servicesByRef}
         discounts={discounts}
+        notesByName={notesByName}
       />
     );
   }
@@ -287,6 +308,7 @@ export function OfferIncludedPricingList({
           key={pricing.metadata?.name ?? pricing.spec?.displayName}
           pricing={pricing}
           catalogService={resolveServicePricingCatalogService(pricing, servicesByRef)}
+          notes={notesByName.get(pricing.metadata?.name ?? '')}
         />
       ))}
     </ul>

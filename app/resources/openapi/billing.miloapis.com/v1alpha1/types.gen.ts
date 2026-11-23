@@ -258,6 +258,10 @@ export type ComMiloapisBillingV1Alpha1BillingAccount = {
          */
         currency: string;
         /**
+         * Description is the pricing's description of what the fee is for.
+         */
+        description?: string;
+        /**
          * DisplayName is the fee's label, as invoices show it (e.g. "Setup
          * fee").
          */
@@ -292,6 +296,20 @@ export type ComMiloapisBillingV1Alpha1BillingAccount = {
          * charged is amount times quantity (e.g. 3 × "1000.00").
          */
         quantity?: number;
+        /**
+         * ServicePeriod is a OneTime fee's supply date, from the contract.
+         * Empty when the fee's period is the day it's charged.
+         */
+        servicePeriod?: {
+          /**
+           * End is the last day, as YYYY-MM-DD.
+           */
+          end: string;
+          /**
+           * Start is the first day, as YYYY-MM-DD.
+           */
+          start: string;
+        };
         /**
          * ServiceRef is the service the fee is for. Empty for a fee that isn't
          * for any one service.
@@ -2644,6 +2662,25 @@ export type ComMiloapisBillingV1Alpha1Offer = {
        * an Offer that sets it there.
        */
       quantity?: number;
+      /**
+       * ServicePeriod is the supply date of a OneTime fee: the days the
+       * service it charges for was supplied, such as a cage's installation
+       * date. It's the period on the fee's invoice line, which Revenue
+       * Recognition spreads it over. Unset, the period is the day the fee is
+       * charged. It doesn't change when the fee is charged or how much. Only
+       * allowed on a OneTime pricing: a Recurring fee's period is the period
+       * it pays for, and a Usage pricing's is when it was used.
+       */
+      servicePeriod?: {
+        /**
+         * End is the last day, as YYYY-MM-DD.
+         */
+        end: string;
+        /**
+         * Start is the first day, as YYYY-MM-DD.
+         */
+        start: string;
+      };
     }>;
     /**
      * ServicePricings is an immutable snapshot of referenced
@@ -2687,7 +2724,23 @@ export type ComMiloapisBillingV1Alpha1Offer = {
        */
       quantity?: number;
       /**
-       * Spec is a deep copy of the source ServicePricingSpec at publish time.
+       * ServicePeriod is a OneTime fee's supply date, captured from the
+       * reference when the Offer becomes GA. Unset, the fee's period is the
+       * day it's charged.
+       */
+      servicePeriod?: {
+        /**
+         * End is the last day, as YYYY-MM-DD.
+         */
+        end: string;
+        /**
+         * Start is the first day, as YYYY-MM-DD.
+         */
+        start: string;
+      };
+      /**
+       * Spec is a deep copy of the source ServicePricingSpec at publish time,
+       * without its notes, which are for staff only.
        */
       spec: {
         /**
@@ -2720,6 +2773,13 @@ export type ComMiloapisBillingV1Alpha1Offer = {
          */
         currency: string;
         /**
+         * Description says what the price is for, in a sentence or two, for
+         * customers and staff: the portals show it with the item, and it's the
+         * description of the price's Product in Stripe. It isn't printed on
+         * invoice lines.
+         */
+        description?: string;
+        /**
          * DisplayName is a human-readable label for invoices and portals.
          */
         displayName?: string;
@@ -2736,6 +2796,12 @@ export type ComMiloapisBillingV1Alpha1Offer = {
          * Retired, and serviceRef must name the service that owns it.
          */
         metric?: string;
+        /**
+         * Notes are for staff and finance only: how the price was agreed, what
+         * it covers, who to ask. They're never shown to customers, and they
+         * aren't copied into an Offer's snapshot, which customers can read.
+         */
+        notes?: string;
         /**
          * PricingUnit is a human-readable billing unit label (e.g. "vcpu",
          * "gib"). Required when chargeType is Usage. Does not need to be the
@@ -3412,6 +3478,13 @@ export type ComMiloapisBillingV1Alpha1ServicePricing = {
      */
     currency: string;
     /**
+     * Description says what the price is for, in a sentence or two, for
+     * customers and staff: the portals show it with the item, and it's the
+     * description of the price's Product in Stripe. It isn't printed on
+     * invoice lines.
+     */
+    description?: string;
+    /**
      * DisplayName is a human-readable label for invoices and portals.
      */
     displayName?: string;
@@ -3428,6 +3501,12 @@ export type ComMiloapisBillingV1Alpha1ServicePricing = {
      * Retired, and serviceRef must name the service that owns it.
      */
     metric?: string;
+    /**
+     * Notes are for staff and finance only: how the price was agreed, what
+     * it covers, who to ask. They're never shown to customers, and they
+     * aren't copied into an Offer's snapshot, which customers can read.
+     */
+    notes?: string;
     /**
      * PricingUnit is a human-readable billing unit label (e.g. "vcpu",
      * "gib"). Required when chargeType is Usage. Does not need to be the

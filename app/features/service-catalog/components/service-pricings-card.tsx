@@ -1,5 +1,6 @@
 import { CardRowSkeleton } from './card-row-skeleton';
 import { BadgeState } from '@/components/badge';
+import { PricingInfo } from '@/features/billing/components/pricing-info';
 import { isContractResource } from '@/features/billing/lib/contract';
 import {
   describeServicePricingRates,
@@ -87,6 +88,7 @@ function ServicePricingsList({ pricings }: ServicePricingsListProps) {
                 {metric}
               </Text>
             ) : null}
+            <PricingInfo description={pricing.spec?.description} notes={pricing.spec?.notes} />
             <PricingRates pricing={pricing} />
           </div>
         );

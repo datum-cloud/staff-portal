@@ -13,8 +13,6 @@ import {
   invoiceNowOutcome,
   isBeforePeriod,
   isoDay,
-  isoDayFromLocalDate,
-  localDateFromIsoDay,
   MAX_CHARGE_NOTE,
   nextBillingPeriod,
   parseHundredths,
@@ -29,7 +27,8 @@ import {
   type BillingAccount,
 } from '../../utils';
 import { ShowSubmitErrors } from '../contract-editor/show-submit-errors';
-import { ChargeItemPicker } from './charge-item-picker';
+import { ItemOptions, SupplyDateField } from '../item-options';
+import { ChargeItemPicker, PickedItemInfo } from './charge-item-picker';
 import { buildChargeSchema } from './schema';
 import { chargeServerErrors } from './server-errors';
 import { useCreateChargeMutation, useServicePricingListQuery } from '@/resources/request/client';
@@ -40,7 +39,6 @@ import { Dialog } from '@datum-cloud/datum-ui/dialog';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Label } from '@datum-cloud/datum-ui/label';
-import { DatePicker } from '@datum-cloud/datum-ui/picker';
 import { RadioGroupItem } from '@datum-cloud/datum-ui/radio-group';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { toast } from '@datum-cloud/datum-ui/toast';
@@ -48,7 +46,7 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ChevronDown, ChevronRight, TriangleAlert } from 'lucide-react';
+import { TriangleAlert } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useWatch, type FieldErrors, type UseFormReturn } from 'react-hook-form';
 
@@ -217,6 +215,7 @@ function AddChargeForm({
                   <Form.Input inputMode="decimal" placeholder="1" />
                 </Form.Field>
               </div>
+              <PickedItemInfo options={options} />
               <Form.Field
                 name="description"
                 label={t`Description`}
@@ -226,7 +225,7 @@ function AddChargeForm({
               </Form.Field>
               <PriceField options={options} />
 
-              <ItemOptions
+              <ChargeItemOptions
                 open={optionsOpen}
                 onToggle={() => setOptionsOpen((open) => !open)}
                 account={account}
@@ -397,7 +396,7 @@ function PriceField({ options }: { options: ReturnType<typeof chargeItemOptions>
  * Tax, discount, supply date and the staff note, collapsed by default as in
  * Stripe's editor.
  */
-function ItemOptions({
+function ChargeItemOptions({
   open,
   onToggle,
   account,
@@ -412,7 +411,6 @@ function ItemOptions({
 }) {
   const form = Form.useFormContext().form.raw as UseFormReturn<ChargeFormValues>;
   const notTaxable = Boolean(Form.useWatch('notTaxable'));
-  const setPeriod = Boolean(Form.useWatch('setPeriod'));
   const periodEnd = (Form.useWatch('periodEnd') as string | undefined) ?? '';
   const nextPeriod = useMemo(() => nextBillingPeriod(account, now), [account, now]);
   const today = isoDay(startOfUtcDay(now));
@@ -427,106 +425,67 @@ function ItemOptions({
   };
 
   return (
-    <div className="flex flex-col gap-3 rounded-md border p-3">
-      <button
-        type="button"
-        className="flex items-center gap-1.5 text-left text-sm font-medium"
-        aria-expanded={open}
-        onClick={onToggle}>
-        <Icon icon={open ? ChevronDown : ChevronRight} size={14} />
-        <Trans>Item options</Trans>
-      </button>
-      <div className={cn('flex flex-col gap-4', !open && 'hidden')}>
-        <div className="flex flex-col gap-1.5">
-          <Form.Field
-            name="taxCode"
-            label={t`Tax code`}
-            description={t`One of Stripe's tax codes, such as txcd_20030000. Leave it empty for the account's default.`}>
-            <Form.Input placeholder="txcd_20030000" disabled={notTaxable} />
-          </Form.Field>
-          <label className="flex items-center gap-2 text-sm">
-            <Checkbox
-              checked={notTaxable}
-              onCheckedChange={(checked) => {
-                set('notTaxable', checked === true);
-                if (checked === true) set('taxCode', '');
-              }}
-            />
-            <Trans>Not taxable</Trans>
-          </label>
-        </div>
-
-        <Form.Field name="discountPercent" label={t`Discount (%)`} className="w-40">
-          <Form.Input inputMode="decimal" placeholder={t`None`} />
-        </Form.Field>
-
-        <div className="flex flex-col gap-2">
-          <Text size="sm" weight="medium">
-            <Trans>Supply date</Trans>
-          </Text>
-          <label className="flex items-center gap-2 text-sm">
-            <Checkbox
-              checked={setPeriod}
-              onCheckedChange={(checked) => {
-                set('setPeriod', checked === true);
-                if (checked === true && !form.getValues('periodStart')) setDates(currentPeriod);
-              }}
-            />
-            <Trans>Choose the dates</Trans>
-          </label>
-          {setPeriod ? (
-            <>
-              <div className="grid grid-cols-2 items-start gap-3">
-                <Form.Field name="periodStart" label={t`From`} required>
-                  <UtcDayPicker />
-                </Form.Field>
-                <Form.Field name="periodEnd" label={t`To`} required>
-                  <UtcDayPicker minFrom="periodStart" />
-                </Form.Field>
-              </div>
-              <Text as="p" size="sm" className="flex flex-wrap items-center gap-x-1">
-                <Shortcut onClick={() => setDates(currentPeriod)}>
-                  <Trans>This billing period</Trans>
-                </Shortcut>
-                <span aria-hidden>·</span>
-                <Shortcut onClick={() => setDates(nextPeriod)}>
-                  <Trans>Next billing period</Trans>
-                </Shortcut>
-                <span aria-hidden>·</span>
-                <Shortcut onClick={() => setDates({ start: today, end: today })}>
-                  <Trans>Today</Trans>
-                </Shortcut>
-              </Text>
-              {isBeforePeriod(periodEnd, currentPeriod) ? (
-                <Text size="sm" className="text-warning flex items-center gap-1.5">
-                  <Icon icon={TriangleAlert} size={14} />
-                  <Trans>These dates are before the current billing period.</Trans>
-                </Text>
-              ) : null}
-            </>
-          ) : (
-            <Text size="sm" textColor="muted">
-              <Trans>
-                Current billing period, {formatServicePeriod(currentPeriod)}. Tick to choose other
-                dates, such as the day of an install.
-              </Trans>
-            </Text>
-          )}
-        </div>
-
+    <ItemOptions open={open} onToggle={onToggle}>
+      <div className="flex flex-col gap-1.5">
         <Form.Field
-          name="note"
-          label={t`Note for staff`}
-          description={
-            notTaxable
-              ? t`Required: say why it isn't taxable. Never shown to the customer.`
-              : t`Never shown to the customer. Up to ${MAX_CHARGE_NOTE} characters.`
-          }
-          required={notTaxable}>
-          <Form.Textarea rows={2} placeholder={t`Installed for the new cage; ticket OPS-1234`} />
+          name="taxCode"
+          label={t`Tax code`}
+          description={t`One of Stripe's tax codes, such as txcd_20030000. Leave it empty for the account's default.`}>
+          <Form.Input placeholder="txcd_20030000" disabled={notTaxable} />
         </Form.Field>
+        <label className="flex items-center gap-2 text-sm">
+          <Checkbox
+            checked={notTaxable}
+            onCheckedChange={(checked) => {
+              set('notTaxable', checked === true);
+              if (checked === true) set('taxCode', '');
+            }}
+          />
+          <Trans>Not taxable</Trans>
+        </label>
       </div>
-    </div>
+
+      <Form.Field name="discountPercent" label={t`Discount (%)`} className="w-40">
+        <Form.Input inputMode="decimal" placeholder={t`None`} />
+      </Form.Field>
+
+      <SupplyDateField
+        defaultPeriod={() => currentPeriod}
+        unsetHint={<Trans>The current billing period, {formatServicePeriod(currentPeriod)}.</Trans>}
+        tooltip={t`The dates shown on the invoice line. Unticked, it's the current billing period. Tick to show when the work was done, such as an install date. This doesn't change when it's billed.`}>
+        <Text as="p" size="sm" className="flex flex-wrap items-center gap-x-1">
+          <Shortcut onClick={() => setDates(currentPeriod)}>
+            <Trans>This billing period</Trans>
+          </Shortcut>
+          <span aria-hidden>·</span>
+          <Shortcut onClick={() => setDates(nextPeriod)}>
+            <Trans>Next billing period</Trans>
+          </Shortcut>
+          <span aria-hidden>·</span>
+          <Shortcut onClick={() => setDates({ start: today, end: today })}>
+            <Trans>Today</Trans>
+          </Shortcut>
+        </Text>
+        {isBeforePeriod(periodEnd, currentPeriod) ? (
+          <Text size="sm" className="text-warning flex items-center gap-1.5">
+            <Icon icon={TriangleAlert} size={14} />
+            <Trans>These dates are before the current billing period.</Trans>
+          </Text>
+        ) : null}
+      </SupplyDateField>
+
+      <Form.Field
+        name="note"
+        label={t`Note for staff`}
+        description={
+          notTaxable
+            ? t`Required: say why it isn't taxable. Never shown to the customer.`
+            : t`Never shown to the customer. Up to ${MAX_CHARGE_NOTE} characters.`
+        }
+        required={notTaxable}>
+        <Form.Textarea rows={2} placeholder={t`Installed for the new cage; ticket OPS-1234`} />
+      </Form.Field>
+    </ItemOptions>
   );
 }
 
@@ -535,31 +494,6 @@ function Shortcut({ onClick, children }: { onClick: () => void; children: ReactN
     <button type="button" className="underline underline-offset-2" onClick={onClick}>
       {children}
     </button>
-  );
-}
-
-/**
- * A single UTC day for a YYYY-MM-DD field, with the contract editor's
- * date picker. `minFrom` names a field the day can't be before.
- */
-function UtcDayPicker({ minFrom }: { minFrom?: keyof ChargeFormValues }) {
-  const { id, fieldState } = Form.useFieldContext();
-  const min = Form.useWatch(minFrom ?? 'periodStart') as string | undefined;
-  const minDate = minFrom ? localDateFromIsoDay(min) : null;
-  return (
-    <DatePicker
-      id={id}
-      value={localDateFromIsoDay(fieldState?.value as string | undefined)}
-      onChange={(date) => {
-        fieldState?.change(date ? isoDayFromLocalDate(date) : '');
-        fieldState?.blur();
-      }}
-      placeholder={t`Pick a date`}
-      modal
-      commit="immediate"
-      minDate={minDate ?? undefined}
-      triggerClassName="w-full"
-    />
   );
 }
 

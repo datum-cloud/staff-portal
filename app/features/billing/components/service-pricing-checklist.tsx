@@ -1,3 +1,4 @@
+import { PricingInfo } from './pricing-info';
 import { BadgeState } from '@/components/badge';
 import {
   formatChargeType,
@@ -157,6 +158,12 @@ export function ServicePricingChecklist({
                 <Text weight="medium">{displayName}</Text>
                 {chargeType ? <BadgeState state={formatChargeType(chargeType)} /> : null}
               </div>
+              <PricingInfo
+                description={pricing.spec?.description}
+                notes={pricing.spec?.notes}
+                clamp
+                className="mt-0.5"
+              />
               {summary ? (
                 <Text as="p" size="xs" textColor="muted" className="mt-0.5 leading-relaxed">
                   {summary}

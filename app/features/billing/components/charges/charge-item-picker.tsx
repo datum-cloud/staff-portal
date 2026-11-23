@@ -8,6 +8,7 @@ import {
 import type { ListFeeOption } from '../../lib/contract-list-fees';
 import { formatMoney } from '../../utils';
 import { feeChargeText } from '../contract-fee-text';
+import { PricingInfo } from '../pricing-info';
 import { Autocomplete, type AutocompleteGroup } from '@datum-cloud/datum-ui/autocomplete';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { Text } from '@datum-cloud/datum-ui/typography';
@@ -29,7 +30,7 @@ const itemPriceText = (fee: ListFeeOption) => {
 };
 
 const matches = (fee: ListFeeOption, query: string) =>
-  [fee.label, fee.name, fee.sku, fee.tax?.code ?? ''].some((text) =>
+  [fee.label, fee.name, fee.sku, fee.tax?.code ?? '', fee.description].some((text) =>
     text.toLowerCase().includes(query)
   );
 
@@ -46,7 +47,8 @@ const toOption = (fee: ListFeeOption): ItemOption => ({
  *
  * Picking a catalog item fills in its description, price and tax, which
  * staff can still change. The SKU shows here, for staff, and never on the
- * invoice. Render it inside the item's Form.Field.
+ * invoice, as does what the item is for. Render it inside the item's
+ * Form.Field, and PickedItemInfo after it.
  */
 export function ChargeItemPicker({
   options,
@@ -147,8 +149,27 @@ export function ChargeItemPicker({
               .filter(Boolean)
               .join(' · ')}
           </Text>
+          {option.fee.description ? (
+            <Text size="xs" textColor="muted" className="truncate">
+              {option.fee.description}
+            </Text>
+          ) : null}
         </div>
       )}
     />
   );
+}
+
+/**
+ * What the picked catalog item is for, and its pricing's notes for staff,
+ * under the item. Nothing for a custom item.
+ */
+export function PickedItemInfo({ options }: { options: ChargeItemOptions }) {
+  const item = (Form.useWatch('item') as string | undefined) ?? '';
+  const pricingName = catalogPricingName(item);
+  const fee = pricingName
+    ? [...options.accountPrices, ...options.catalog].find((option) => option.name === pricingName)
+    : undefined;
+  if (!fee) return null;
+  return <PricingInfo description={fee.description} notes={fee.notes} className="-mt-2" />;
 }

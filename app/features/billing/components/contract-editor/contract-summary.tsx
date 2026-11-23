@@ -1,3 +1,4 @@
+import type { ServicePeriod } from '../../lib/charges';
 import {
   CONTRACT_CURRENCY,
   contractStartFromDate,
@@ -15,7 +16,11 @@ import {
   type FeeBillingTiming,
   type FeeInterval,
 } from '../../lib/contract';
-import { listFeeRowAmount, type ListFeeOption } from '../../lib/contract-list-fees';
+import {
+  listFeeRowAmount,
+  rowServicePeriod,
+  type ListFeeOption,
+} from '../../lib/contract-list-fees';
 import { contractInvoiceSchedule, upcomingInvoices } from '../../lib/contract-schedule';
 import { formatMoney } from '../../utils';
 import { InlineDate } from '../billing-account-dashboard/card-parts';
@@ -24,6 +29,7 @@ import {
   feeChargeText,
   periodsText,
   recurringTotalsText,
+  supplyDateText,
 } from '../contract-fee-text';
 import { ContractScheduleList } from '../contract-schedule-list';
 import {
@@ -33,6 +39,7 @@ import {
   type ListFeeRowValues,
   type UsageRowValues,
 } from './schema';
+import { Alert, AlertDescription } from '@datum-cloud/datum-ui/alert';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
@@ -40,7 +47,7 @@ import { Plural, Trans } from '@lingui/react/macro';
 import type { ReactNode } from 'react';
 import { useFormState, type UseFormReturn } from 'react-hook-form';
 
-type SummaryFee = {
+export type SummaryFee = {
   key: string;
   label: string;
   chargeType: 'OneTime' | 'Recurring';
@@ -50,7 +57,64 @@ type SummaryFee = {
   billingTiming?: FeeBillingTiming;
   discount?: number;
   periods?: number;
+  /** A one-time fee's supply date, when it isn't the day it's charged. */
+  servicePeriod?: ServicePeriod;
 };
+
+/**
+ * The fees the form charges, as the summary lists them: the contract's own,
+ * then those ticked on the price list.
+ */
+/**
+ * Whether a contract with fees bills no usage at all. A new contract starts
+ * with nothing ticked, so fees alone save fine and the account's usage goes
+ * unbilled: the summary warns before it's saved. A contract with neither is
+ * refused anyway.
+ */
+export const billsNoUsage = (feeCount: number, metersTicked: number): boolean =>
+  feeCount > 0 && metersTicked === 0;
+
+export const summaryFees = (
+  rows: ContractFeeRow[],
+  listRows: ListFeeRowValues[],
+  feeOptions: ListFeeOption[]
+): SummaryFee[] => [
+  ...rows.map((row, index): SummaryFee => ({
+    key: `own-${index}`,
+    label: row.label.trim(),
+    chargeType: row.chargeType,
+    amount: parseAmount(row.amount),
+    quantity: Number.parseInt(row.quantity, 10) || 1,
+    ...(row.chargeType === 'Recurring'
+      ? {
+          interval: row.interval,
+          billingTiming: row.billingTiming,
+          periods: parsePeriods(row.periods),
+        }
+      : { servicePeriod: rowServicePeriod(row) }),
+  })),
+  ...listRows.flatMap((row, index): SummaryFee[] => {
+    const option = feeOptions[index];
+    if (!row.selected || !option) return [];
+    return [
+      {
+        key: `list-${option.name}`,
+        label: option.label,
+        chargeType: option.chargeType,
+        amount: listFeeRowAmount(fromListFeeRowValues(row), option),
+        quantity: Number.parseInt(row.quantity, 10) || 1,
+        discount: parseDiscount(row.discount),
+        ...(option.chargeType === 'Recurring'
+          ? {
+              interval: option.interval,
+              billingTiming: row.billingTiming,
+              periods: parsePeriods(row.periods),
+            }
+          : { servicePeriod: rowServicePeriod(row) }),
+      },
+    ];
+  }),
+];
 
 /**
  * What the contract bills, worked out from the form as it's filled: each
@@ -99,43 +163,7 @@ export function ContractSummary({
         ? t`A contract can have at most ${MAX_CONTRACT_FEES} fees, counting those from the price list.`
         : null;
 
-  const fees: SummaryFee[] = [
-    ...rows.map((row, index) => ({
-      key: `own-${index}`,
-      label: row.label.trim(),
-      chargeType: row.chargeType,
-      amount: parseAmount(row.amount),
-      quantity: Number.parseInt(row.quantity, 10) || 1,
-      ...(row.chargeType === 'Recurring'
-        ? {
-            interval: row.interval,
-            billingTiming: row.billingTiming,
-            periods: parsePeriods(row.periods),
-          }
-        : {}),
-    })),
-    ...listRows.flatMap((row, index): SummaryFee[] => {
-      const option = feeOptions[index];
-      if (!row.selected || !option) return [];
-      return [
-        {
-          key: `list-${option.name}`,
-          label: option.label,
-          chargeType: option.chargeType,
-          amount: listFeeRowAmount(fromListFeeRowValues(row), option),
-          quantity: Number.parseInt(row.quantity, 10) || 1,
-          discount: parseDiscount(row.discount),
-          ...(option.chargeType === 'Recurring'
-            ? {
-                interval: option.interval,
-                billingTiming: row.billingTiming,
-                periods: parsePeriods(row.periods),
-              }
-            : {}),
-        },
-      ];
-    }),
-  ];
+  const fees = summaryFees(rows, listRows, feeOptions);
   const meters = usageRows.filter((row) => row.selected);
   const customMeters = meters.filter((row) => row.amounts.some((a) => a.trim() !== '')).length;
 
@@ -215,6 +243,11 @@ export function ContractSummary({
                           .join(' · ')}
                       </Text>
                     ) : null}
+                    {fee.servicePeriod?.start ? (
+                      <Text size="xs" textColor="muted">
+                        {supplyDateText(fee.servicePeriod)}
+                      </Text>
+                    ) : null}
                     {fee.periods && scheduleStart ? (
                       <Text size="xs" textColor="muted">
                         <Trans>
@@ -240,6 +273,16 @@ export function ContractSummary({
         <Text size="sm" weight="medium">
           <Trans>Usage</Trans>
         </Text>
+        {billsNoUsage(feeCount, meters.length) ? (
+          <Alert variant="warning">
+            <AlertDescription>
+              <Trans>
+                No usage is billed: the account&apos;s usage will be free under this contract. Tick
+                usage on the price list to bill it.
+              </Trans>
+            </AlertDescription>
+          </Alert>
+        ) : null}
         <Text size="sm" textColor="muted">
           {meters.length === 0 ? (
             <Trans>Not billed.</Trans>

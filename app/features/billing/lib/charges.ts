@@ -256,10 +256,14 @@ export type ServicePeriodProblem =
   | { field: 'end'; problem: 'before-start' | 'too-long' | 'too-far-ahead' }
   | { field: 'start'; problem: 'too-far-back' };
 
-/** What billing would refuse about a service period, as billing checks it. */
-export const servicePeriodProblems = (
-  period: Partial<ServicePeriod>,
-  now: Date
+/**
+ * What billing would refuse about a period's own dates, whenever they are:
+ * missing, the end before the start, or longer than a charge's can be. A
+ * contract fee's supply date is checked only for these, since billing
+ * checks an Offer again long after its fees' dates.
+ */
+export const servicePeriodShapeProblems = (
+  period: Partial<ServicePeriod>
 ): ServicePeriodProblem[] => {
   const start = parseIsoDay(period.start);
   const end = parseIsoDay(period.end);
@@ -267,11 +271,26 @@ export const servicePeriodProblems = (
   if (!start) problems.push({ field: 'start', problem: 'missing' });
   if (!end) problems.push({ field: 'end', problem: 'missing' });
   if (!start || !end) return problems;
-  const today = startOfUtcDay(now);
   if (end < start) problems.push({ field: 'end', problem: 'before-start' });
   else if (end > addYears(start, CHARGE_PERIOD_MAX_YEARS_LONG)) {
     problems.push({ field: 'end', problem: 'too-long' });
   }
+  return problems;
+};
+
+/**
+ * What billing would refuse about a charge's service period, as billing
+ * checks it: its dates, and how far they are from today.
+ */
+export const servicePeriodProblems = (
+  period: Partial<ServicePeriod>,
+  now: Date
+): ServicePeriodProblem[] => {
+  const problems = servicePeriodShapeProblems(period);
+  const start = parseIsoDay(period.start);
+  const end = parseIsoDay(period.end);
+  if (!start || !end) return problems;
+  const today = startOfUtcDay(now);
   if (start < addYears(today, -CHARGE_PERIOD_MAX_YEARS_BACK)) {
     problems.push({ field: 'start', problem: 'too-far-back' });
   }

@@ -69,8 +69,15 @@ const offer = (
     discount?: { percentage: number };
     billingTiming?: 'InAdvance' | 'InArrears';
     periods?: number;
+    servicePeriod?: { start: string; end: string };
   }[],
-  snapshots: { name: string; spec: Spec; quantity?: number; discount?: { percentage: number } }[]
+  snapshots: {
+    name: string;
+    spec: Spec;
+    quantity?: number;
+    discount?: { percentage: number };
+    servicePeriod?: { start: string; end: string };
+  }[]
 ) =>
   ({
     metadata: { name: 'contract-acme-1' },
@@ -91,6 +98,9 @@ const row = (name: string, changes: Partial<ListFeeRow> = {}): ListFeeRow => ({
   amount: '',
   billingTiming: 'InArrears',
   periods: '',
+  setPeriod: false,
+  periodStart: '',
+  periodEnd: '',
   ...changes,
 });
 
@@ -319,6 +329,85 @@ describe('list fee renewals', () => {
     const [fee] = buildListFeePlan([rows[1]], options);
     expect(fee.periods).toBe(36);
     expect(buildListFeePlan([{ ...rows[1], periods: '' }], options)[0].periods).toBeUndefined();
+  });
+});
+
+describe('list fee supply dates', () => {
+  const days = { start: '2027-03-03', end: '2027-03-05' };
+
+  it("start from the offer's reference, or its snapshot, and go on the plan", () => {
+    const fromRef = listFeeRowsFromOffer(
+      options,
+      offer(
+        [{ name: 'rack-install-v1', servicePeriod: days }],
+        [{ name: 'rack-install-v1', spec: install }]
+      )
+    );
+    expect(fromRef[0]).toMatchObject({
+      selected: true,
+      setPeriod: true,
+      periodStart: '2027-03-03',
+      periodEnd: '2027-03-05',
+    });
+    const fromSnapshot = listFeeRowsFromOffer(
+      options,
+      offer(
+        [{ name: 'rack-install-v1' }],
+        [{ name: 'rack-install-v1', spec: install, servicePeriod: days }]
+      )
+    );
+    expect(fromSnapshot[0]).toMatchObject({ setPeriod: true, periodStart: '2027-03-03' });
+
+    const [fee] = buildListFeePlan([fromRef[0]], options);
+    expect(fee.servicePeriod).toEqual(days);
+    expect(
+      buildListFeePlan([{ ...fromRef[0], setPeriod: false }], options)[0].servicePeriod
+    ).toBeUndefined();
+  });
+
+  it('start unset, and stay off recurring fees', () => {
+    const rows = listFeeRowsFromOffer(options, null);
+    expect(rows.every((r) => !r.setPeriod && r.periodStart === '')).toBe(true);
+    const [fee] = buildListFeePlan(
+      [row('cross-connect-v1', { setPeriod: true, periodStart: days.start, periodEnd: days.end })],
+      options
+    );
+    expect(fee.servicePeriod).toBeUndefined();
+  });
+
+  it("go on a one-time fee's reference only", () => {
+    expect(
+      contractOfferPlan({
+        namespace: 'milo-system',
+        fees: [
+          { name: 'rack-install-v1', chargeType: 'OneTime', servicePeriod: days },
+          { name: 'cross-connect-v1', chargeType: 'Recurring', servicePeriod: days },
+          { name: 'setup', chargeType: 'OneTime' },
+        ],
+        usageRefs: [],
+      }).servicePricingRefs
+    ).toEqual([
+      { name: 'rack-install-v1', namespace: 'milo-system', servicePeriod: days },
+      { name: 'cross-connect-v1', namespace: 'milo-system' },
+      { name: 'setup', namespace: 'milo-system' },
+    ]);
+  });
+});
+
+describe('list fee descriptions and notes', () => {
+  it("come from the pricing, and are empty when it hasn't any", () => {
+    const [described] = listFeeOptions([
+      pricing('rack-install-v1', {
+        ...install,
+        description: ' Racking and cabling one server. ',
+        notes: 'Agreed with ops; ask #dc-team.',
+      }),
+    ]);
+    expect(described).toMatchObject({
+      description: 'Racking and cabling one server.',
+      notes: 'Agreed with ops; ask #dc-team.',
+    });
+    expect(options[0]).toMatchObject({ description: '', notes: '' });
   });
 });
 

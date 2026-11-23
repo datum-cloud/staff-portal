@@ -1,3 +1,4 @@
+import type { ServicePeriod } from './charges';
 import type { PaymentTermsInput } from '@/modules/billing/billing-cycle';
 import type {
   ComMiloapisBillingV1Alpha1BillingEntitlement,
@@ -128,7 +129,7 @@ export const getDraftStartsAt = (
 
 /**
  * A draft Offer with the snapshot billing would write when it's published:
- * each ref's pricing, quantity and discount. Drafts have no snapshot of their
+ * each ref's pricing, quantity, discount, timing, renewals and supply date. Drafts have no snapshot of their
  * own, and the contract's fees and the editor's rows are read from it. A ref
  * whose pricing isn't in `pricings` (deleted meanwhile) is left out.
  */
@@ -148,6 +149,7 @@ export const withDraftSnapshot = (
         ...(ref.discount ? { discount: ref.discount } : {}),
         ...(ref.billingTiming ? { billingTiming: ref.billingTiming } : {}),
         ...(ref.periods ? { periods: ref.periods } : {}),
+        ...(ref.servicePeriod ? { servicePeriod: ref.servicePeriod } : {}),
       },
     ];
   });
@@ -259,7 +261,7 @@ export interface ContractFee {
   quantity: number;
   /** What the amount is per (e.g. "port"), when the fee has a unit. */
   pricingUnit?: string;
-  /** The product code invoices show before the fee's name, if it has one. */
+  /** The product code finance tracks the fee by, if it has one. Internal: never on the invoice. */
   sku?: string;
   /** The service the fee is for, when it's for one. */
   serviceRef?: string;
@@ -273,6 +275,13 @@ export interface ContractFee {
   billingTiming?: FeeBillingTiming;
   /** How many periods a recurring fee runs for; unset when it has no end. */
   periods?: number;
+  /**
+   * A one-time fee's supply date, such as an install date, which is its
+   * invoice line's period; unset when it's the day the fee is charged.
+   */
+  servicePeriod?: ServicePeriod;
+  /** What the fee is for, from its pricing, if it says. */
+  description?: string;
 }
 
 /**
@@ -305,6 +314,10 @@ export const getContractFees = (
           serviceRef: spec.serviceRef || undefined,
           basedOn: spec.basedOn || undefined,
           discount: snapshot.discount?.percentage || undefined,
+          description: spec.description?.trim() || undefined,
+          ...(spec.chargeType === 'OneTime' && snapshot.servicePeriod
+            ? { servicePeriod: { ...snapshot.servicePeriod } }
+            : {}),
           ...(spec.chargeType === 'Recurring'
             ? {
                 interval: spec.interval ?? 'monthly',
@@ -385,6 +398,8 @@ export const contractOfferPlan = ({
     billingTiming?: FeeBillingTiming;
     /** How many periods a recurring fee runs for, when it has an end. */
     periods?: number;
+    /** A one-time fee's supply date, when it isn't the day it's charged. */
+    servicePeriod?: ServicePeriod;
   }[];
   usageRefs: ServicePricingRef[];
 }): ContractOfferPlan => {
@@ -402,6 +417,9 @@ export const contractOfferPlan = ({
           ? { billingTiming: fee.billingTiming }
           : {}),
         ...(fee.chargeType === 'Recurring' && fee.periods ? { periods: fee.periods } : {}),
+        ...(fee.chargeType === 'OneTime' && fee.servicePeriod
+          ? { servicePeriod: { start: fee.servicePeriod.start, end: fee.servicePeriod.end } }
+          : {}),
       })),
       ...usageRefs,
     ],

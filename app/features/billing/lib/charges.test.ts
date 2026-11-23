@@ -23,6 +23,7 @@ import {
   nextBillingPeriod,
   parseHundredths,
   servicePeriodProblems,
+  servicePeriodShapeProblems,
   sortChargesNewestFirst,
   type Charge,
   type ChargeFormValues,
@@ -166,6 +167,21 @@ describe('service periods', () => {
     ]);
     expect(servicePeriodProblems({ start: '', end: '2026-12-01' }, now)).toEqual([
       { field: 'start', problem: 'missing' },
+    ]);
+  });
+
+  it("checks a period's own dates, whenever they are, for a contract fee's supply date", () => {
+    expect(servicePeriodShapeProblems({ start: '2019-01-01', end: '2019-01-01' })).toEqual([]);
+    expect(servicePeriodShapeProblems({ start: '2040-01-01', end: '2040-01-31' })).toEqual([]);
+    expect(servicePeriodShapeProblems({ start: '2027-01-02', end: '2027-01-01' })).toEqual([
+      { field: 'end', problem: 'before-start' },
+    ]);
+    expect(servicePeriodShapeProblems({ start: '2027-01-01', end: '2032-01-02' })).toEqual([
+      { field: 'end', problem: 'too-long' },
+    ]);
+    expect(servicePeriodShapeProblems({ start: '2027-02-30', end: '' })).toEqual([
+      { field: 'start', problem: 'missing' },
+      { field: 'end', problem: 'missing' },
     ]);
   });
 });
