@@ -57,6 +57,7 @@ import {
 import { ShowSubmitErrors } from './show-submit-errors';
 import { PageHeader } from '@/components/page-header';
 import { SectionCard } from '@/features/milo';
+import { HEADER_STACK_H } from '@/features/milo/lib/dimensions';
 import {
   useBillingEntitlementForAccountQuery,
   useChangeContractFeesMutation,
@@ -82,7 +83,7 @@ import type {
   ComMiloapisBillingV1Alpha1BillingEntitlement,
   ComMiloapisBillingV1Alpha1Offer,
 } from '@openapi/billing.miloapis.com/v1alpha1';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type CSSProperties } from 'react';
 import { useNavigate } from 'react-router';
 
 /**
@@ -440,7 +441,11 @@ function ContractEditorForm({
             </SectionCard>
           </div>
 
-          <aside className="flex flex-col gap-4 @5xl/main:sticky @5xl/main:top-4">
+          {/* Sticks below the navbar and breadcrumb bar, which would cover
+              it otherwise, and scrolls on its own when taller than the window. */}
+          <aside
+            className="flex flex-col gap-4 @5xl/main:sticky @5xl/main:top-(--contract-aside-top) @5xl/main:max-h-[calc(100vh-var(--contract-aside-top)-1rem)] @5xl/main:overflow-y-auto"
+            style={{ '--contract-aside-top': `${HEADER_STACK_H + 16}px` } as CSSProperties}>
             {isSetup ? (
               <SectionCard title={<Trans>Start date</Trans>}>
                 <div className="flex flex-col gap-4">
