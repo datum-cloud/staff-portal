@@ -63,6 +63,27 @@ export const isPricedPerContract = (option: ListFeeOption) =>
   Number.parseFloat(option.amount) === 0;
 
 /**
+ * A one-time or recurring pricing as a fee option, or undefined for any
+ * other pricing (usage, or one without an amount).
+ */
+export const feeOptionFromPricing = (pricing: ServicePricing): ListFeeOption | undefined => {
+  const spec = pricing.spec;
+  if (!spec || !isFeeChargeType(spec.chargeType) || !spec.amount) return undefined;
+  const name = pricing.metadata?.name ?? '';
+  return {
+    name,
+    label: spec.displayName || name,
+    chargeType: spec.chargeType,
+    serviceRef: spec.serviceRef ?? '',
+    pricingUnit: spec.pricingUnit ?? '',
+    sku: spec.sku ?? '',
+    ...(spec.tax ? { tax: spec.tax } : {}),
+    amount: spec.amount,
+    ...(spec.chargeType === 'Recurring' ? { interval: spec.interval ?? 'monthly' } : {}),
+  };
+};
+
+/**
  * The price list's fees, by service, one-time first: list pricings only,
  * leaving out customer fees (with a `basedOn`) and anything made for a
  * contract.
@@ -70,23 +91,9 @@ export const isPricedPerContract = (option: ListFeeOption) =>
 export const listFeeOptions = (pricings: ServicePricing[]): ListFeeOption[] =>
   pricings
     .flatMap((pricing): ListFeeOption[] => {
-      const spec = pricing.spec;
-      if (!spec || !isFeeChargeType(spec.chargeType)) return [];
-      if (spec.basedOn || isContractResource(pricing) || !spec.amount) return [];
-      const name = pricing.metadata?.name ?? '';
-      return [
-        {
-          name,
-          label: spec.displayName || name,
-          chargeType: spec.chargeType,
-          serviceRef: spec.serviceRef ?? '',
-          pricingUnit: spec.pricingUnit ?? '',
-          sku: spec.sku ?? '',
-          ...(spec.tax ? { tax: spec.tax } : {}),
-          amount: spec.amount,
-          ...(spec.chargeType === 'Recurring' ? { interval: spec.interval ?? 'monthly' } : {}),
-        },
-      ];
+      if (pricing.spec?.basedOn || isContractResource(pricing)) return [];
+      const option = feeOptionFromPricing(pricing);
+      return option ? [option] : [];
     })
     .sort(
       (a, b) =>

@@ -97,6 +97,11 @@ msgstr "{0, plural, one {in # project} other {in # projects}}"
 msgid "{0, plural, one {Show all # issues} other {Show all # issues}}"
 msgstr "{0, plural, one {Show all # issues} other {Show all # issues}}"
 
+#. placeholder {0}: summary.dates
+#: app/features/billing/components/charges/add-charge-dialog.tsx:589
+msgid "{0} · Tax is worked out by Stripe on the invoice"
+msgstr "{0} · Tax is worked out by Stripe on the invoice"
+
 #. placeholder {0}: totals.monthly
 #: app/features/billing/components/contract-fee-text.ts:39
 msgid "{0} a month"
@@ -191,6 +196,10 @@ msgstr "{0}% off"
 msgid "{0}% off {beforeDiscount}"
 msgstr "{0}% off {beforeDiscount}"
 
+#: app/features/billing/components/charges/add-charge-dialog.tsx:210
+msgid "{accountDisplayName}'s contract prices"
+msgstr "{accountDisplayName}'s contract prices"
+
 #: app/features/billing/components/contract-fee-text.ts:24
 msgid "{amount} / month"
 msgstr "{amount} / month"
@@ -207,6 +216,10 @@ msgstr "{amount} / year"
 msgid "{amount} once"
 msgstr "{amount} once"
 
+#: app/features/billing/lib/charges.ts:433
+msgid "{base}, less {discountText}%"
+msgstr "{base}, less {discountText}%"
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:162
 msgid "{card} expired {expiry}."
 msgstr "{card} expired {expiry}."
@@ -218,6 +231,10 @@ msgstr "{card} expires {expiry}."
 #: app/features/service-catalog/components/service-pricings-card.tsx:151
 msgid "{contractCount} fees set up for individual accounts' contracts aren't shown."
 msgstr "{contractCount} fees set up for individual accounts' contracts aren't shown."
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:269
+msgid "{count, plural, one {# charge} other {# charges}}"
+msgstr "{count, plural, one {# charge} other {# charges}}"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:356
 msgid "{count, plural, one {# check passing} other {# checks passing}}"
@@ -346,9 +363,42 @@ msgstr "{loading, plural, one {# still loading} other {# still loading}}"
 msgid "{more, plural, one {# more service in the usage dashboard} other {# more services in the usage dashboard}}"
 msgstr "{more, plural, one {# more service in the usage dashboard} other {# more services in the usage dashboard}}"
 
+#: app/features/billing/lib/charges.ts:648
+msgid "{name} didn't reach an invoice, so it won't be billed."
+msgstr "{name} didn't reach an invoice, so it won't be billed."
+
+#: app/features/billing/lib/charges.ts:468
+msgid "{name} has no card on file, so the invoice for {amount} plus tax stays unpaid until one is added."
+msgstr "{name} has no card on file, so the invoice for {amount} plus tax stays unpaid until one is added."
+
+#: app/features/billing/lib/charges.ts:640
+msgid "{name} is already on its invoice, so it can't be removed."
+msgstr "{name} is already on its invoice, so it can't be removed."
+
+#. placeholder {0}: formatUtcDayTime(status.removableUntil)
+#: app/features/billing/lib/charges.ts:645
+msgid "{name} is held until {0} and isn't on an invoice yet, so removing it bills nothing."
+msgstr "{name} is held until {0} and isn't on an invoice yet, so removing it bills nothing."
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:90
 msgid "{name} is past due."
 msgstr "{name} is past due."
+
+#: app/features/billing/lib/charges.ts:461
+msgid "{name} is sent an invoice for {amount} plus tax, due in {netDays} days."
+msgstr "{name} is sent an invoice for {amount} plus tax, due in {netDays} days."
+
+#: app/features/billing/lib/charges.ts:462
+msgid "{name} is sent an invoice for {amount} plus tax."
+msgstr "{name} is sent an invoice for {amount} plus tax."
+
+#: app/features/billing/lib/charges.ts:650
+msgid "{name} isn't on an invoice yet, so it won't be billed."
+msgstr "{name} isn't on an invoice yet, so it won't be billed."
+
+#: app/features/billing/lib/charges.ts:646
+msgid "{name} isn't on an invoice yet, so removing it bills nothing."
+msgstr "{name} isn't on an invoice yet, so removing it bills nothing."
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:81
 msgid "{name} was due <0/> and is {overdue} overdue."
@@ -374,7 +424,9 @@ msgstr "{passkeyCount, plural, one {# passkey} other {# passkeys}}"
 msgid "{percent}% vs last cycle at this point"
 msgstr "{percent}% vs last cycle at this point"
 
+#. placeholder {0}: fee.pricingUnit
 #. placeholder {0}: option.pricingUnit
+#: app/features/billing/components/charges/charge-item-picker.tsx:28
 #: app/features/billing/components/contract-editor/price-list-table.tsx:324
 msgid "{price} per {0}"
 msgstr "{price} per {0}"
@@ -611,6 +663,10 @@ msgstr "500 - Server Error"
 msgid "60+ days"
 msgstr "60+ days"
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:343
+msgid "A charge can't be changed, so to correct one, remove it and add another."
+msgstr "A charge can't be changed, so to correct one, remove it and add another."
+
 #: app/features/contact/components/contact-form.tsx:143
 msgid "A contact with this email already exists."
 msgstr "A contact with this email already exists."
@@ -632,6 +688,15 @@ msgstr "A contract can't start in the past: charges can't be backdated."
 msgid "A draft in the Stripe dashboard, deleted after a day. Don't send or finalize it there."
 msgstr "A draft in the Stripe dashboard, deleted after a day. Don't send or finalize it there."
 
+#. placeholder {0}: getBillingAccountDisplayName(account)
+#: app/features/billing/components/charges/add-charge-dialog.tsx:89
+msgid "A one-off line on {0}'s invoice: a catalog item or a custom one."
+msgstr "A one-off line on {0}'s invoice: a catalog item or a custom one."
+
+#: app/features/billing/components/charges/schema.ts:58
+msgid "A price with up to two decimal places, such as 250.00."
+msgstr "A price with up to two decimal places, such as 250.00."
+
 #: app/features/billing/components/contract-editor/schema.ts:185
 msgid "A rate, such as 0.000012."
 msgstr "A rate, such as 0.000012."
@@ -639,6 +704,18 @@ msgstr "A rate, such as 0.000012."
 #: app/features/billing/components/payment-terms.tsx:521
 msgid "A signed MSA or order form, if there is one. Otherwise our standard terms apply."
 msgstr "A signed MSA or order form, if there is one. Otherwise our standard terms apply."
+
+#: app/features/billing/components/charges/schema.ts:102
+msgid "A supply date can be up to {CHARGE_PERIOD_MAX_YEARS_LONG} years long."
+msgstr "A supply date can be up to {CHARGE_PERIOD_MAX_YEARS_LONG} years long."
+
+#: app/features/billing/components/charges/schema.ts:113
+msgid "A supply date can end up to {CHARGE_PERIOD_MAX_YEARS_AHEAD} years from now."
+msgstr "A supply date can end up to {CHARGE_PERIOD_MAX_YEARS_AHEAD} years from now."
+
+#: app/features/billing/components/charges/schema.ts:107
+msgid "A supply date can start up to {CHARGE_PERIOD_MAX_YEARS_BACK} years ago."
+msgstr "A supply date can start up to {CHARGE_PERIOD_MAX_YEARS_BACK} years ago."
 
 #: app/features/billing/components/contract-editor/schema.ts:97
 msgid "A whole number from 1 to {MAX_FEE_QUANTITY}."
@@ -724,6 +801,7 @@ msgstr "Action"
 
 #: app/features/activity/components/activity-list.tsx:454
 #: app/features/activity/components/activity-list.tsx:520
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:209
 #: app/features/billing/components/billing-account-dashboard/billing-account-header.tsx:145
 msgid "Actions"
 msgstr "Actions"
@@ -779,6 +857,10 @@ msgstr "Activity log"
 msgid "Add"
 msgstr "Add"
 
+#: app/features/billing/components/charges/charge-item-picker.tsx:125
+msgid "Add “{name}” as a custom item"
+msgstr "Add “{name}” as a custom item"
+
 #: app/features/billing/components/contract-editor/contract-summary.tsx:97
 #: app/features/billing/components/contract-editor/schema.ts:152
 msgid "Add a fee, or tick something on the price list."
@@ -797,6 +879,12 @@ msgstr "Add a note about this contact… (visible to staff only)"
 #: app/features/billing/components/service-pricing-checklist.tsx:64
 msgid "Add a ServicePricing manifest for this environment to the service's repo, and get billing's review."
 msgstr "Add a ServicePricing manifest for this environment to the service's repo, and get billing's review."
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:280
+#: app/features/billing/components/charges/add-charge-dialog.tsx:88
+#: app/features/billing/components/charges/add-charge-dialog.tsx:289
+msgid "Add charge"
+msgstr "Add charge"
 
 #: app/features/billing/components/contract-editor/contract-fee-list.tsx:62
 msgid "Add fee"
@@ -984,6 +1072,7 @@ msgstr "Also move accounts currently on the previous default to this Offer"
 msgid "Always runs, even when an earlier stage short-circuits the pipeline."
 msgstr "Always runs, even when an earlier stage short-circuits the pipeline."
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:177
 #: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:167
 msgid "Amount"
 msgstr "Amount"
@@ -1251,6 +1340,10 @@ msgstr "Authorized to apply"
 msgid "auto-charged when invoiced"
 msgstr "auto-charged when invoiced"
 
+#: app/features/billing/components/charges/add-charge-dialog.tsx:268
+msgid "Back"
+msgstr "Back"
+
 #: app/features/fraud/detail/evaluation-sections.tsx:462
 msgid "Back to evaluations"
 msgstr "Back to evaluations"
@@ -1403,6 +1496,11 @@ msgstr "Business account with no tax ID."
 msgid "by"
 msgstr "by"
 
+#. placeholder {0}: formatUtcDayTime(until)
+#: app/features/billing/lib/charges.ts:628
+msgid "Can be removed until {0}"
+msgstr "Can be removed until {0}"
+
 #: app/features/billing/components/contract-editor/billing-day-field.tsx:73
 msgid "Can't be changed once the contract is saved."
 msgstr "Can't be changed once the contract is saved."
@@ -1411,6 +1509,7 @@ msgstr "Can't be changed once the contract is saved."
 #: app/components/danger-zone-card/index.tsx:43
 #: app/features/billing/components/application-review.tsx:601
 #: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:365
+#: app/features/billing/components/charges/add-charge-dialog.tsx:286
 #: app/features/billing/components/contract-editor/contract-editor.tsx:521
 #: app/features/billing/components/default-offer-card.tsx:77
 #: app/features/billing/components/payment-terms.tsx:229
@@ -1496,6 +1595,10 @@ msgstr "Card not expiring"
 msgid "Case notes, report IDs, context…"
 msgstr "Case notes, report IDs, context…"
 
+#: app/features/billing/components/charges/charge-item-picker.tsx:83
+msgid "Catalog"
+msgstr "Catalog"
+
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:167
 #: app/routes/operation/chainsaw-tests.tsx:11
 msgid "Chainsaw Tests"
@@ -1535,9 +1638,18 @@ msgstr "Changes"
 msgid "Changes apply to the terms currently on the account."
 msgstr "Changes apply to the terms currently on the account."
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:149
 #: app/features/billing/components/offer-included-pricing-list.tsx:136
 msgid "Charge"
 msgstr "Charge"
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:158
+msgid "Charge added. It goes on the account's next invoice."
+msgstr "Charge added. It goes on the account's next invoice."
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:157
+msgid "Charge added. It's invoiced on its own now."
+msgstr "Charge added. It's invoiced on its own now."
 
 #: app/routes/admin/offer/create.tsx:137
 #: app/routes/admin/offer/detail.tsx:145
@@ -1554,6 +1666,14 @@ msgstr "Charge types and ServicePricings are required"
 #: app/features/billing/components/contract-editor/contract-fee-list.tsx:104
 msgid "Charged"
 msgstr "Charged"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:266
+msgid "Charges"
+msgstr "Charges"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:294
+msgid "Charges become available when this account's invoices move to the new invoice writer."
+msgstr "Charges become available when this account's invoices move to the new invoice writer."
 
 #: app/features/billing/components/contract-editor/contract-editor.tsx:495
 msgid "Charges start on this day, in UTC. Today or later."
@@ -1586,6 +1706,10 @@ msgstr "Choose a consumer project that has authorized this provider to enable th
 #: app/features/preferences/components/preferences-form.tsx:71
 msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
 msgstr "Choose how the portal looks to you. Select a single theme, or sync with your system."
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:473
+msgid "Choose the dates"
+msgstr "Choose the dates"
 
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:182
 msgid "CI runs"
@@ -1923,6 +2047,10 @@ msgstr "Could not load usage"
 msgid "Could not revoke the session"
 msgstr "Could not revoke the session"
 
+#: app/features/billing/components/charges/server-errors.ts:121
+msgid "Couldn't add the charge."
+msgstr "Couldn't add the charge."
+
 #. placeholder {0}: parts.map((part, index) => ( <span key={index}> {index > 0 && ', '} {part} </span> ))
 #. placeholder {1}: summary.unreadProjects.length > 0 && ( <> {parts.length > 0 && ', '} <Plural value={summary.unreadProjects.length} one="# project unread" other="# projects unread" /> </> )
 #: app/features/organization/components/org-health-strip.tsx:129
@@ -1938,6 +2066,10 @@ msgstr "Couldn't load"
 #: app/features/billing/components/contract-editor/contract-editor.tsx:188
 msgid "Couldn't load {0}, so the contract can't be changed safely right now."
 msgstr "Couldn't load {0}, so the contract can't be changed safely right now."
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:309
+msgid "Couldn't load charges"
+msgstr "Couldn't load charges"
 
 #: app/features/dashboard/components/home/health-section.tsx:41
 msgid "Couldn't load cluster health."
@@ -1983,6 +2115,10 @@ msgstr "Couldn't load spend"
 #: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:99
 msgid "Couldn't load the account's offer"
 msgstr "Couldn't load the account's offer"
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:203
+msgid "Couldn't load the catalog. You can still add a custom item."
+msgstr "Couldn't load the catalog. You can still add a custom item."
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:132
 msgid "Couldn't load the contract's offer."
@@ -2138,6 +2274,10 @@ msgstr "Credentials Reference"
 msgid "Credit limit"
 msgstr "Credit limit"
 
+#: app/features/billing/components/charges/add-charge-dialog.tsx:223
+msgid "Cross-connect install, cage 12"
+msgstr "Cross-connect install, cage 12"
+
 #: app/features/billing/components/application-review.tsx:503
 #: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:115
 #: app/features/billing/components/billing-account-list.tsx:224
@@ -2158,6 +2298,11 @@ msgstr "Current billing cycle ({0})"
 #: app/features/project/components/project-usage-card.tsx:81
 msgid "Current billing cycle for this project"
 msgstr "Current billing cycle for this project"
+
+#. placeholder {0}: formatServicePeriod(currentPeriod)
+#: app/features/billing/components/charges/add-charge-dialog.tsx:507
+msgid "Current billing period, {0}. Tick to choose other dates, such as the day of an install."
+msgstr "Current billing period, {0}. Tick to choose other dates, such as the day of an install."
 
 #: app/features/billing/components/application-review.tsx:443
 msgid "Current terms"
@@ -2457,6 +2602,11 @@ msgstr "Dependencies:"
 msgid "Deprecated"
 msgstr "Deprecated"
 
+#: app/features/billing/components/charges/schema.ts:45
+msgid "Describe the charge, as the invoice will show it."
+msgstr "Describe the charge, as the invoice will show it."
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:220
 #: app/features/contact-group/components/contact-group-form.tsx:80
 #: app/features/dns/components/dns-zone-list.tsx:133
 #: app/routes/admin/group/detail/index.tsx:37
@@ -2508,6 +2658,10 @@ msgstr "Discard the draft?"
 #: app/features/billing/components/offer-included-pricing-list.tsx:145
 msgid "Discount"
 msgstr "Discount"
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:457
+msgid "Discount (%)"
+msgstr "Discount (%)"
 
 #: app/routes/admin/offer/create.tsx:176
 #: app/routes/admin/offer/detail.tsx:182
@@ -2901,6 +3055,10 @@ msgstr "Enforcement"
 msgid "Enforcement Mode"
 msgstr "Enforcement Mode"
 
+#: app/features/billing/components/charges/schema.ts:56
+msgid "Enter a price per unit, such as 250.00."
+msgstr "Enter a price per unit, such as 250.00."
+
 #: app/routes/customer/user/detail/index.tsx:406
 msgid "Enter a reason (at least {REASON_MIN_LENGTH} characters)..."
 msgstr "Enter a reason (at least {REASON_MIN_LENGTH} characters)..."
@@ -3067,6 +3225,7 @@ msgstr "Export Policies"
 msgid "Export Policy"
 msgstr "Export Policy"
 
+#: app/features/billing/lib/charges.ts:601
 #: app/features/contact/components/contact-emails-card.tsx:49
 #: app/features/dns/components/dns-zone-status.tsx:40
 #: app/features/email/components/email-list.tsx:68
@@ -3149,6 +3308,11 @@ msgstr "Failed to update theme"
 #: app/features/preferences/components/preferences-form.tsx:41
 msgid "Failed to update timezone"
 msgstr "Failed to update timezone"
+
+#. placeholder {0}: status.message
+#: app/features/billing/lib/charges.ts:601
+msgid "Failed: {0}"
+msgstr "Failed: {0}"
 
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:150
 msgid "Failing"
@@ -3355,6 +3519,7 @@ msgstr "fraud reviews"
 msgid "Fraud score (highest owner)"
 msgstr "Fraud score (highest owner)"
 
+#: app/features/billing/components/charges/add-charge-dialog.tsx:478
 #: app/features/billing/components/offer-included-pricing-list.tsx:68
 #: app/features/billing/components/service-pricing-checklist.tsx:167
 msgid "From"
@@ -3554,6 +3719,10 @@ msgstr "HTML"
 msgid "ID"
 msgstr "ID"
 
+#: app/features/billing/lib/charges.ts:472
+msgid "If {amount} plus tax is under Stripe's {minimum} minimum, Stripe carries it to {name}'s next invoice instead of charging the card."
+msgstr "If {amount} plus tax is under Stripe's {minimum} minimum, Stripe carries it to {name}'s next invoice instead of charging the card."
+
 #. placeholder {0}: stage.shortCircuit.skipWhenBelow
 #: app/features/fraud/policy/policy-detail.tsx:247
 msgid "If this stage's top score is below {0}, later non-required stages are skipped."
@@ -3617,6 +3786,10 @@ msgstr "Inherits {inheritedPercentage}%"
 msgid "Inspect usage"
 msgstr "Inspect usage"
 
+#: app/features/billing/components/charges/add-charge-dialog.tsx:524
+msgid "Installed for the new cage; ticket OPS-1234"
+msgstr "Installed for the new cage; ticket OPS-1234"
+
 #: app/features/organization/components/org-needs-attention.tsx:64
 #: app/features/organization/components/org-needs-attention.tsx:148
 msgid "Instance"
@@ -3678,6 +3851,11 @@ msgstr "Invoice details"
 msgid "Invoice frequency"
 msgstr "Invoice frequency"
 
+#: app/features/billing/components/charges/add-charge-dialog.tsx:238
+#: app/features/billing/components/charges/add-charge-dialog.tsx:275
+msgid "Invoice now"
+msgstr "Invoice now"
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:78
 msgid "Invoice past due — {amount}"
 msgstr "Invoice past due — {amount}"
@@ -3690,9 +3868,26 @@ msgstr "Invoice recipients"
 msgid "Invoice terms"
 msgstr "Invoice terms"
 
+#: app/features/billing/components/charges/add-charge-dialog.tsx:618
+msgid "Invoice this charge now?"
+msgstr "Invoice this charge now?"
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:254
 msgid "Invoice totals normal"
 msgstr "Invoice totals normal"
+
+#: app/features/billing/lib/charges.ts:597
+msgid "Invoiced"
+msgstr "Invoiced"
+
+#. placeholder {0}: status.invoiceName
+#: app/features/billing/lib/charges.ts:597
+msgid "Invoiced on {0}"
+msgstr "Invoiced on {0}"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:129
+msgid "Invoiced on {link}"
+msgstr "Invoiced on {link}"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:271
 msgid "Invoices"
@@ -3701,6 +3896,10 @@ msgstr "Invoices"
 #: app/features/billing/components/payment-terms.tsx:385
 msgid "Invoices to"
 msgstr "Invoices to"
+
+#: app/features/billing/lib/charges.ts:595
+msgid "Invoicing now"
+msgstr "Invoicing now"
 
 #: app/routes/profile/session.tsx:57
 msgid "IP"
@@ -3770,6 +3969,19 @@ msgstr "Issued <0/>"
 msgid "Issuing TLS certificate"
 msgstr "Issuing TLS certificate"
 
+#. placeholder {0}: formatChargeMoney(amountDue)
+#: app/features/billing/components/charges/add-charge-dialog.tsx:622
+msgid "It goes on an invoice of its own, for {0} before tax, sent as soon as the billing provider has it."
+msgstr "It goes on an invoice of its own, for {0} before tax, sent as soon as the billing provider has it."
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:207
+msgid "Item"
+msgstr "Item"
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:435
+msgid "Item options"
+msgstr "Item options"
+
 #: app/routes/customer/user/detail/organization.tsx:53
 #: app/routes/marketing/contact/detail/group.tsx:111
 msgid "Joined"
@@ -3785,6 +3997,18 @@ msgstr "Joined {0}"
 #: app/features/contact/components/timeline/timeline-item.tsx:67
 msgid "Joined {0} as {1}"
 msgstr "Joined {0} as {1}"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:347
+msgid "Keep it"
+msgstr "Keep it"
+
+#: app/features/billing/components/charges/schema.ts:47
+msgid "Keep it to {MAX_CHARGE_DESCRIPTION} characters."
+msgstr "Keep it to {MAX_CHARGE_DESCRIPTION} characters."
+
+#: app/features/billing/components/charges/schema.ts:83
+msgid "Keep the note to {MAX_CHARGE_NOTE} characters."
+msgstr "Keep the note to {MAX_CHARGE_NOTE} characters."
 
 #: app/features/billing/components/contract-editor/schema.ts:106
 msgid "Keep the SKU to 64 characters."
@@ -3885,6 +4109,10 @@ msgstr "Leave empty to start immediately."
 msgid "Legal name"
 msgstr "Legal name"
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:97
+msgid "less {discount}%"
+msgstr "less {discount}%"
+
 #: app/features/billing/components/contract-editor/schema.ts:109
 msgid "Letters, numbers, dots, dashes and underscores, such as DC-CAB-01."
 msgstr "Letters, numbers, dots, dashes and underscores, such as DC-CAB-01."
@@ -3959,6 +4187,11 @@ msgstr "list {listPrice}"
 #: app/features/billing/components/contract-editor/price-list-table.tsx:147
 msgid "List price"
 msgstr "List price"
+
+#. placeholder {0}: listCents === null ? `${fee.amount} USD` : formatChargeMoney(listCents)
+#: app/features/billing/components/charges/add-charge-dialog.tsx:372
+msgid "List price {0}"
+msgstr "List price {0}"
 
 #: app/features/organization/components/org-needs-attention.tsx:66
 msgid "Load balancer"
@@ -4182,6 +4415,14 @@ msgstr "months"
 msgid "More results available"
 msgstr "More results available"
 
+#: app/features/billing/components/charges/schema.ts:63
+msgid "More than 0 and up to 100, with up to two decimal places."
+msgstr "More than 0 and up to 100, with up to two decimal places."
+
+#: app/features/billing/components/charges/schema.ts:52
+msgid "More than 0, with up to two decimal places, such as 2 or 3.5."
+msgstr "More than 0, with up to two decimal places, such as 2 or 3.5."
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:363
 msgid "Move this billing account to another published Offer. The customer's plan and quota grants update on reconcile."
 msgstr "Move this billing account to another published Offer. The customer's plan and quota grants update on reconcile."
@@ -4307,6 +4548,10 @@ msgstr "Net days"
 msgid "Network"
 msgstr "Network"
 
+#: app/features/billing/components/charges/add-charge-dialog.tsx:521
+msgid "Never shown to the customer. Up to {MAX_CHARGE_NOTE} characters."
+msgstr "Never shown to the customer. Up to {MAX_CHARGE_NOTE} characters."
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:90
 msgid "New contract fees published"
 msgstr "New contract fees published"
@@ -4370,13 +4615,23 @@ msgstr "New users"
 msgid "Newest first ↓"
 msgstr "Newest first ↓"
 
+#: app/features/billing/components/charges/add-charge-dialog.tsx:491
+msgid "Next billing period"
+msgstr "Next billing period"
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:242
+#: app/features/billing/lib/charges.ts:592
 msgid "Next invoice"
 msgstr "Next invoice"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:385
 msgid "Next invoice preview"
 msgstr "Next invoice preview"
+
+#. placeholder {0}: formatUtcDay(status.invoiceAt)
+#: app/features/billing/lib/charges.ts:593
+msgid "Next invoice, {0}"
+msgstr "Next invoice, {0}"
 
 #: app/features/milo/components/page/list-pagination.tsx:94
 msgid "Next page"
@@ -4462,9 +4717,17 @@ msgstr "No changes"
 msgid "No changes found"
 msgstr "No changes found"
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:326
+msgid "No charges"
+msgstr "No charges"
+
 #: app/features/billing/components/offer-included-pricing-list.tsx:268
 msgid "No charges included in this Offer."
 msgstr "No charges included in this Offer."
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:311
+msgid "No charges. Charges added here go on the account's next invoice."
+msgstr "No charges. Charges added here go on the account's next invoice."
 
 #: app/features/organization/components/compute-projects-dialog.tsx:83
 msgid "No compute"
@@ -4876,6 +5139,7 @@ msgid "No warning events found"
 msgstr "No warning events found"
 
 #: app/features/billing/components/application-review.tsx:498
+#: app/features/billing/components/charges/add-charge-dialog.tsx:458
 #: app/features/billing/components/contract-editor/contract-fee-list.tsx:172
 #: app/features/organization/components/org-health-strip.tsx:106
 msgid "None"
@@ -4951,6 +5215,14 @@ msgstr "Not sure"
 msgid "Not synced"
 msgstr "Not synced"
 
+#: app/features/billing/components/charges/charge-item-picker.tsx:142
+msgid "not taxable"
+msgstr "not taxable"
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:453
+msgid "Not taxable"
+msgstr "Not taxable"
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:83
 msgid "Not yet due"
 msgstr "Not yet due"
@@ -4989,6 +5261,10 @@ msgstr "Note deleted"
 msgid "Note deleted successfully"
 msgstr "Note deleted successfully"
 
+#: app/features/billing/components/charges/add-charge-dialog.tsx:517
+msgid "Note for staff"
+msgstr "Note for staff"
+
 #: app/routes/marketing/contact/detail/notes.tsx:139
 msgid "Note updated successfully"
 msgstr "Note updated successfully"
@@ -5011,6 +5287,10 @@ msgstr "Notes, emails, and account history for this contact will appear here."
 #: app/features/organization/components/org-warning-events.tsx:98
 msgid "Nothing has reported a warning in the last 24 hours."
 msgstr "Nothing has reported a warning in the last 24 hours."
+
+#: app/features/billing/components/charges/charge-item-picker.tsx:128
+msgid "Nothing in the catalog matches. Type a name for a custom item."
+msgstr "Nothing in the catalog matches. Type a name for a custom item."
 
 #: app/features/organization/components/org-recent-changes.tsx:110
 #: app/features/organization/components/org-warning-events.tsx:89
@@ -5111,6 +5391,18 @@ msgstr "Oldest <0/> · newest <1/>"
 msgid "Oldest first ↑"
 msgstr "Oldest first ↑"
 
+#: app/features/billing/lib/charges.ts:625
+msgid "On its invoice, so it can't be removed. Once the invoice is issued, correct it with a credit note."
+msgstr "On its invoice, so it can't be removed. Once the invoice is issued, correct it with a credit note."
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:576
+msgid "On the invoice"
+msgstr "On the invoice"
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:237
+msgid "On the next invoice"
+msgstr "On the next invoice"
+
 #: app/features/organization/components/org-account-card.tsx:109
 #: app/features/organization/components/org-onboarding-card.tsx:285
 msgid "Onboarding"
@@ -5132,6 +5424,10 @@ msgstr "Once"
 #: app/features/contact/components/contact-form.tsx:237
 msgid "Once a contact is associated with a user, this association cannot be removed or changed later."
 msgstr "Once a contact is associated with a user, this association cannot be removed or changed later."
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:442
+msgid "One of Stripe's tax codes, such as txcd_20030000. Leave it empty for the account's default."
+msgstr "One of Stripe's tax codes, such as txcd_20030000. Leave it empty for the account's default."
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:491
 #: app/features/billing/utils.ts:76
@@ -5470,6 +5766,10 @@ msgstr "per"
 msgid "Per"
 msgstr "Per"
 
+#: app/features/billing/components/charges/add-charge-dialog.tsx:368
+msgid "per {unit}"
+msgstr "per {unit}"
+
 #: app/features/billing/components/contract-editor/price-list-table.tsx:321
 msgid "Per contract"
 msgstr "Per contract"
@@ -5509,6 +5809,11 @@ msgstr "Permanently delete this user and all associated data"
 msgid "Phase"
 msgstr "Phase"
 
+#: app/features/billing/components/charges/schema.ts:41
+msgid "Pick a catalog item, or type a name for a custom one."
+msgstr "Pick a catalog item, or type a name for a custom one."
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:555
 #: app/features/billing/components/contract-editor/contract-editor.tsx:585
 msgid "Pick a date"
 msgstr "Pick a date"
@@ -5517,9 +5822,14 @@ msgstr "Pick a date"
 msgid "Pick a start date before publishing: edit the draft."
 msgstr "Pick a start date before publishing: edit the draft."
 
+#: app/features/billing/components/charges/schema.ts:96
 #: app/features/billing/components/contract-editor/schema.ts:192
 msgid "Pick a start date."
 msgstr "Pick a start date."
+
+#: app/features/billing/components/charges/schema.ts:96
+msgid "Pick an end date."
+msgstr "Pick an end date."
 
 #: app/routes/customer/user/index.tsx:254
 msgid "Pick date and time Test"
@@ -5660,6 +5970,10 @@ msgstr "Previous page"
 #: app/features/billing/components/payment-terms.tsx:278
 msgid "Previous terms"
 msgstr "Previous terms"
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:364
+msgid "Price (US$)"
+msgstr "Price (US$)"
 
 #: app/features/billing/components/contract-editor/contract-editor.tsx:458
 msgid "Price list"
@@ -5855,9 +6169,14 @@ msgstr "Published, they apply when the contract starts."
 msgid "Publishing snapshots rates into this Offer. After GA the rates are immutable; create a new Offer version to change pricing."
 msgstr "Publishing snapshots rates into this Offer. After GA the rates are immutable; create a new Offer version to change pricing."
 
+#: app/features/billing/components/charges/add-charge-dialog.tsx:214
 #: app/features/billing/components/contract-editor/price-list-table.tsx:156
 msgid "Qty"
 msgstr "Qty"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:155
+msgid "Qty × price"
+msgstr "Qty × price"
 
 #: app/features/billing/components/contract-editor/contract-fee-list.tsx:89
 #: app/features/billing/components/contract-editor/price-list-table.tsx:398
@@ -6012,6 +6331,7 @@ msgstr "Reject"
 msgid "Reject User"
 msgstr "Reject User"
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:218
 #: app/features/contact/components/contact-groups-card.tsx:101
 msgid "Remove"
 msgstr "Remove"
@@ -6019,6 +6339,14 @@ msgstr "Remove"
 #: app/routes/admin/service-catalog/detail/consumers.tsx:303
 msgid "Remove {revokeConsumerProject}'s access to {revokeEntitlementName}? They'll lose access immediately and all of their resources for this service will be permanently deleted. This cannot be undone."
 msgstr "Remove {revokeConsumerProject}'s access to {revokeEntitlementName}? They'll lose access immediately and all of their resources for this service will be permanently deleted. This cannot be undone."
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:346
+msgid "Remove charge"
+msgstr "Remove charge"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:340
+msgid "Remove charge?"
+msgstr "Remove charge?"
 
 #: app/features/billing/components/contract-editor/contract-fee-list.tsx:98
 msgid "Remove fee"
@@ -6080,9 +6408,17 @@ msgstr "Requesting a TLS certificate from the certificate authority"
 msgid "Required"
 msgstr "Required"
 
+#: app/features/billing/components/charges/add-charge-dialog.tsx:520
+msgid "Required: say why it isn't taxable. Never shown to the customer."
+msgstr "Required: say why it isn't taxable. Never shown to the customer."
+
 #: app/routes/customer/organization/detail/member.tsx:56
 msgid "Resend"
 msgstr "Resend"
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:385
+msgid "Reset"
+msgstr "Reset"
 
 #: app/features/contact/components/contact-about-card.tsx:39
 #: app/features/quota/components/quota-bucket-list.tsx:85
@@ -6226,6 +6562,10 @@ msgstr "Save as draft"
 msgid "Save draft"
 msgstr "Save draft"
 
+#: app/features/billing/components/charges/schema.ts:85
+msgid "Say why the charge isn't taxable."
+msgstr "Say why the charge isn't taxable."
+
 #: app/routes/customer/user/index.tsx:251
 msgid "Schedule At"
 msgstr "Schedule At"
@@ -6299,6 +6639,10 @@ msgstr "Search by name or email..."
 #: app/routes/admin/service-catalog/index.tsx:160
 msgid "Search by name, description, or owner..."
 msgstr "Search by name, description, or owner..."
+
+#: app/features/billing/components/charges/charge-item-picker.tsx:127
+msgid "Search by name, SKU or tax code"
+msgstr "Search by name, SKU or tax code"
 
 #: app/routes/admin/service-catalog/detail/consumers.tsx:323
 msgid "Search by project, organization, ID, or note..."
@@ -6416,6 +6760,10 @@ msgstr "Search secrets..."
 #: app/routes/profile/session.tsx:125
 msgid "Search sessions..."
 msgstr "Search sessions..."
+
+#: app/features/billing/components/charges/charge-item-picker.tsx:126
+msgid "Search the catalog, or type a name"
+msgstr "Search the catalog, or type a name"
 
 #: app/features/dashboard/components/home/home-header.tsx:89
 msgid "Search the platform"
@@ -6732,7 +7080,9 @@ msgid "SKU"
 msgstr "SKU"
 
 #. placeholder {0}: fee.sku
+#. placeholder {0}: option.fee.sku
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:286
+#: app/features/billing/components/charges/charge-item-picker.tsx:140
 msgid "SKU {0}"
 msgstr "SKU {0}"
 
@@ -6817,6 +7167,10 @@ msgstr "spend this period"
 msgid "spent so far, before tax and credits"
 msgstr "spent so far, before tax and credits"
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:68
+msgid "Staff only:"
+msgstr "Staff only:"
+
 #: app/routes/admin/offer/index.tsx:72
 #: app/routes/admin/offer/index.tsx:133
 msgid "Stage"
@@ -6873,6 +7227,7 @@ msgstr "Starts <0/>"
 #: app/features/billing/components/application-list.tsx:172
 #: app/features/billing/components/application-review.tsx:245
 #: app/features/billing/components/application-review.tsx:303
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:185
 #: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:111
 #: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:179
 #: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:139
@@ -6968,6 +7323,11 @@ msgstr "Suite"
 msgid "Summary"
 msgstr "Summary"
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:165
+#: app/features/billing/components/charges/add-charge-dialog.tsx:463
+msgid "Supply date"
+msgstr "Supply date"
+
 #: app/features/project/components/project-suspension-card.tsx:84
 #: app/features/project/components/project-suspension-card.tsx:168
 msgid "Suspend"
@@ -7023,6 +7383,15 @@ msgstr "Target"
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:695
 msgid "Tax"
 msgstr "Tax"
+
+#. placeholder {0}: option.fee.tax.code
+#: app/features/billing/components/charges/charge-item-picker.tsx:144
+msgid "tax {0}"
+msgstr "tax {0}"
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:441
+msgid "Tax code"
+msgstr "Tax code"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:266
 msgid "Tax details OK"
@@ -7105,6 +7474,14 @@ msgstr "the account's entitlement"
 msgid "The account's payment terms have no end date. Give them one on the billing account to approve."
 msgstr "The account's payment terms have no end date. Give them one on the billing account to approve."
 
+#: app/features/billing/lib/charges.ts:474
+msgid "The card on file is charged {amount} plus tax straight away."
+msgstr "The card on file is charged {amount} plus tax straight away."
+
+#: app/features/billing/lib/charges.ts:637
+msgid "The charge"
+msgstr "The charge"
+
 #: app/features/billing/components/contract-editor/contract-editor.tsx:138
 msgid "The contract has a quarterly or annual fee billed in advance, so changes apply when that fee's current period ends, which can be up to a year away. One-time fees aren't charged again."
 msgstr "The contract has a quarterly or annual fee billed in advance, so changes apply when that fee's current period ends, which can be up to a year away. One-time fees aren't charged again."
@@ -7137,9 +7514,17 @@ msgstr "The customer isn't sure how they'd like to pay, so they didn't give invo
 msgid "The customer withdrew this application before a decision."
 msgstr "The customer withdrew this application before a decision."
 
+#: app/features/billing/components/charges/schema.ts:76
+msgid "The discount isn't whole cents of the amount. Change the discount."
+msgstr "The discount isn't whole cents of the amount. Change the discount."
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:235
 msgid "The draft and the prices made for it are deleted. The account's billing doesn't change."
 msgstr "The draft and the prices made for it are deleted. The account's billing doesn't change."
+
+#: app/features/billing/components/charges/schema.ts:99
+msgid "The end can't be before the start."
+msgstr "The end can't be before the start."
 
 #: app/features/billing/components/contract-editor/billing-day-field.tsx:28
 msgid "The first invoice covers the <0/> to the <1/>. After that, every invoice covers a whole month, the <2/> to the <3/>."
@@ -7156,6 +7541,10 @@ msgstr "The first invoice hasn't come through yet. OpenMeter sends it a few minu
 #: app/features/fraud/detail/evaluation-sections.tsx:662
 msgid "The fraud verdict from the score against policy thresholds: Accepted, Review, or Deactivate."
 msgstr "The fraud verdict from the score against policy thresholds: Accepted, Review, or Deactivate."
+
+#: app/features/billing/lib/charges.ts:465
+msgid "The invoice comes to {amount}, so nothing is charged."
+msgstr "The invoice comes to {amount}, so nothing is charged."
 
 #: app/features/milo/components/page/list-table.tsx:451
 msgid "The list is limited to 2,000 results at a time. Refine your search to surface other items."
@@ -7176,6 +7565,10 @@ msgstr "The list of domains is limited to 2,000 results at a time. Refine your s
 #: app/features/dns/components/dns-zone-status.tsx:139
 msgid "The nameservers Datum serves this zone from. The domain must be delegated to them at its registrar."
 msgstr "The nameservers Datum serves this zone from. The domain must be delegated to them at its registrar."
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:286
+msgid "The organization has too many charges to read them all, so some of this account's may be missing."
+msgstr "The organization has too many charges to read them all, so some of this account's may be missing."
 
 #: app/features/organization/components/org-recent-changes.tsx:122
 msgid "The organization's own audit log couldn't be read."
@@ -7202,6 +7595,10 @@ msgstr "The platform has no list prices yet, so the contract bills only the fees
 msgid "the price list"
 msgstr "the price list"
 
+#: app/features/billing/components/charges/schema.ts:71
+msgid "The quantity times the price isn't whole cents. Change the quantity or the price."
+msgstr "The quantity times the price isn't whole cents. Change the quantity or the price."
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:249
 msgid "The start date has passed. Edit the draft to pick another."
 msgstr "The start date has passed. Edit the draft to pick another."
@@ -7226,6 +7623,10 @@ msgstr "Then {recurring}."
 msgid "There's nothing to invoice yet."
 msgstr "There's nothing to invoice yet."
 
+#: app/features/billing/components/charges/add-charge-dialog.tsx:501
+msgid "These dates are before the current billing period."
+msgstr "These dates are before the current billing period."
+
 #: app/features/domain/components/domain-status-probe.tsx:119
 msgid "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
 msgstr "These items are checked every few minutes. If you've already made changes, they should resolve shortly."
@@ -7241,6 +7642,10 @@ msgstr "This account pays by card but has no payment method on file."
 #: app/features/edge/components/detail/edge-advanced-banner.tsx:11
 msgid "This Application Load Balancer has advanced configuration that cannot be represented in the simplified overview fields. See the YAML section below for the full resource definition including routing rules, filters, and matches."
 msgstr "This Application Load Balancer has advanced configuration that cannot be represented in the simplified overview fields. See the YAML section below for the full resource definition including routing rules, filters, and matches."
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:487
+msgid "This billing period"
+msgstr "This billing period"
 
 #: app/routes/marketing/contact/detail/activity.tsx:91
 msgid "This contact is not linked to a platform user, so there is no activity to show."
@@ -7346,6 +7751,11 @@ msgstr "TLS Failed"
 msgid "TLS Ready"
 msgstr "TLS Ready"
 
+#: app/features/billing/components/charges/add-charge-dialog.tsx:481
+msgid "To"
+msgstr "To"
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:495
 #: app/features/contact/components/timeline/contact-timeline.tsx:120
 msgid "Today"
 msgstr "Today"
@@ -7446,6 +7856,10 @@ msgstr "Unavailable"
 #: app/features/dashboard/components/home/health-section.tsx:60
 msgid "Unhealthy: {0}"
 msgstr "Unhealthy: {0}"
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:359
+msgid "unit"
+msgstr "unit"
 
 #: app/features/billing/components/application-review.tsx:189
 #: app/features/billing/components/billing-account-dashboard/account-status-badge.tsx:28
@@ -7723,9 +8137,29 @@ msgstr "Void"
 msgid "Wait for Flux to apply it, then refresh this page."
 msgstr "Wait for Flux to apply it, then refresh this page."
 
+#: app/features/billing/lib/charges.ts:584
+msgid "Waiting"
+msgstr "Waiting"
+
+#: app/features/billing/lib/charges.ts:582
+msgid "Waiting for billing to work out the amount"
+msgstr "Waiting for billing to work out the amount"
+
 #: app/features/edge/components/detail/edge-hostnames-card.tsx:64
 msgid "Waiting for hostname ownership verification to complete"
 msgstr "Waiting for hostname ownership verification to complete"
+
+#: app/features/billing/lib/charges.ts:578
+msgid "Waiting for the account to move to the invoice writer"
+msgstr "Waiting for the account to move to the invoice writer"
+
+#: app/features/billing/lib/charges.ts:580
+msgid "Waiting for the account's billing customer"
+msgstr "Waiting for the account's billing customer"
+
+#: app/features/billing/lib/charges.ts:576
+msgid "Waiting for the billing provider"
+msgstr "Waiting for the billing provider"
 
 #: app/routes/customer/project/index.tsx:111
 #: app/routes/customer/project/index.tsx:212
@@ -7776,6 +8210,14 @@ msgstr "What changed"
 #: app/features/billing/components/contract-editor/contract-editor.tsx:459
 msgid "What the contract bills from the platform's prices. Leave the customer price empty to bill the list price."
 msgstr "What the contract bills from the platform's prices. Leave the customer price empty to bill the list price."
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:221
+msgid "What the invoice calls the line. Never put the SKU here."
+msgstr "What the invoice calls the line. Never put the SKU here."
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:235
+msgid "When"
+msgstr "When"
 
 #: app/features/milo/components/page/rule-filter.tsx:227
 msgid "Where"

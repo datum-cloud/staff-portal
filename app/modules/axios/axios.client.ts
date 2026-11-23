@@ -11,6 +11,16 @@ import Axios, {
 } from 'axios';
 import { z } from 'zod';
 
+declare module 'axios' {
+  interface AxiosRequestConfig {
+    /**
+     * Skip the generic error toast, for a request whose caller shows its own
+     * errors (e.g. on a form's fields). The error is still reported to Sentry.
+     */
+    skipErrorToast?: boolean;
+  }
+}
+
 export const PROXY_URL = '/api/internal';
 
 export const httpClient = Axios.create({
@@ -86,7 +96,7 @@ const getErrorMessage = (error: AxiosError): { message: string; requestId?: stri
   return { ...raw, message: parseK8sMessage(raw.message) };
 };
 
-const onResponseError = (error: AxiosError): Promise<AxiosError> => {
+export const onResponseError = (error: AxiosError): Promise<AxiosError> => {
   // console.error(`[response error] [${JSON.stringify(error)}]`);
 
   // Aborted requests (e.g. React Query cancelling on unmount) aren't failures.
@@ -113,9 +123,12 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
     responseData: error.response?.data,
   });
 
-  // For all other errors, show toast with meaningful info
-  const title = errorInfo.requestId ? `Request ID: ${errorInfo.requestId}` : 'Error';
-  toast.error(title, { description: errorInfo.message });
+  // For all other errors, show toast with meaningful info, unless the
+  // caller shows its own.
+  if (!error.config?.skipErrorToast) {
+    const title = errorInfo.requestId ? `Request ID: ${errorInfo.requestId}` : 'Error';
+    toast.error(title, { description: errorInfo.message });
+  }
 
   return Promise.reject(error);
 };
