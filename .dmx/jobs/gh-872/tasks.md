@@ -3,7 +3,7 @@
 **Spec:** `.dmx/jobs/gh-872/spec.md`
 **Branch:** chore-gh-872-install-with-pnpm
 **Ticket:** [gh-872](https://github.com/datum-cloud/staff-portal/issues/872)
-**Status:** In Progress
+**Status:** In Review
 
 ---
 
