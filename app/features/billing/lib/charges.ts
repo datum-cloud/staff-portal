@@ -519,11 +519,23 @@ export const pricingUnitAmount = (amount: string): string => {
 // ─── Status ──────────────────────────────────────────────────────────────────
 
 export type ChargeStatus =
-  | { kind: 'next'; invoiceAt?: string }
+  | { kind: 'next'; invoiceAt?: string; removableUntil?: string; onInvoice: boolean }
   | { kind: 'now' }
   | { kind: 'invoiced'; invoiceName: string }
   | { kind: 'waiting'; reason?: string; message?: string }
   | { kind: 'failed'; message?: string };
+
+/** The condition the billing provider sets once a charge is on its invoice. */
+export const CHARGE_ON_INVOICE_CONDITION = 'OnInvoice';
+
+/**
+ * Whether the billing provider has put the charge on its invoice, or has
+ * started to. From then on billing refuses to remove it.
+ */
+export const isChargeOnInvoice = (charge: Charge): boolean =>
+  charge.status?.conditions?.some(
+    (condition) => condition.type === CHARGE_ON_INVOICE_CONDITION && condition.status === 'True'
+  ) ?? false;
 
 /** Where a charge is, from its phase and Ready condition. */
 export const getChargeStatus = (charge: Charge): ChargeStatus => {
@@ -536,7 +548,12 @@ export const getChargeStatus = (charge: Charge): ChargeStatus => {
     case 'Scheduled':
       return charge.spec.invoice === 'Now'
         ? { kind: 'now' }
-        : { kind: 'next', invoiceAt: charge.status.invoiceAt };
+        : {
+            kind: 'next',
+            invoiceAt: charge.status.invoiceAt,
+            removableUntil: charge.status.removableUntil,
+            onInvoice: isChargeOnInvoice(charge),
+          };
     default: {
       const waiting = ready && ready.status !== 'True';
       return {
@@ -585,31 +602,54 @@ export const chargeStatusText = (status: ChargeStatus): string => {
   }
 };
 
+/** A UTC time as "Dec 31, 2026, 00:00 UTC". */
+const formatUtcDayTime = (value: string): string =>
+  `${formatUtcDay(value)}, ${new Date(value).toISOString().slice(11, 16)} UTC`;
+
 /**
- * What removing a charge does, by where it is: one that's on an invoice
- * still to go out comes off it, though it's billed anyway if the invoice
- * goes out before the removal reaches the billing provider; one that never
- * reached an invoice just won't be billed.
+ * Whether staff can still remove a charge: until the billing provider puts
+ * it on its invoice. A next-invoice charge is held in billing until shortly
+ * before its invoice date, so it can be removed until then.
+ */
+export const isChargeRemovable = (charge: Charge): boolean =>
+  charge.status?.phase !== 'Invoiced' && !isChargeOnInvoice(charge);
+
+/**
+ * A line under a charge's status about removing it: until when a held
+ * charge can be removed, or, once it's on its invoice, how to correct it.
+ * Nothing for charges that are invoiced, waiting or failed.
+ */
+export const chargeRemovalNote = (charge: Charge): string | undefined => {
+  if (charge.status?.phase !== 'Scheduled') return undefined;
+  if (isChargeOnInvoice(charge)) {
+    return t`On its invoice, so it can't be removed. Once the invoice is issued, correct it with a credit note.`;
+  }
+  const until = charge.status.removableUntil;
+  return until ? t`Can be removed until ${formatUtcDayTime(until)}` : undefined;
+};
+
+/**
+ * What removing a charge does. Only charges that aren't on an invoice yet
+ * can be removed, so nothing is billed: a held next-invoice charge, or one
+ * that's waiting or failed.
  */
 export const chargeRemovalText = (charge: Charge): string => {
   const name = charge.spec.description || charge.metadata?.name || t`The charge`;
   const status = getChargeStatus(charge);
+  if (!isChargeRemovable(charge)) {
+    return t`${name} is already on its invoice, so it can't be removed.`;
+  }
   switch (status.kind) {
     case 'next':
-      return t`${name} comes off the account's next invoice. If that invoice goes out before the removal reaches the billing provider, the charge is billed anyway.`;
-    case 'now':
-      return t`${name} comes off the invoice it's on, if that invoice hasn't gone out yet. If it has, the charge is billed anyway.`;
-    case 'waiting':
-      return t`${name} isn't on an invoice yet, so it won't be billed.`;
+      return status.removableUntil
+        ? t`${name} is held until ${formatUtcDayTime(status.removableUntil)} and isn't on an invoice yet, so removing it bills nothing.`
+        : t`${name} isn't on an invoice yet, so removing it bills nothing.`;
     case 'failed':
       return t`${name} didn't reach an invoice, so it won't be billed.`;
-    case 'invoiced':
-      return t`${name} is on an issued invoice and stays billed.`;
+    default:
+      return t`${name} isn't on an invoice yet, so it won't be billed.`;
   }
 };
-
-/** Whether staff can still remove a charge: until it's on an issued invoice. */
-export const isChargeRemovable = (charge: Charge): boolean => charge.status?.phase !== 'Invoiced';
 
 /** A charge's quantity and unit price, e.g. "2 × $250.00". */
 export const chargeQuantityText = (spec: ChargeSpec): string =>

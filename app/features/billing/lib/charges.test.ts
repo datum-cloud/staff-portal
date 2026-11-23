@@ -6,6 +6,7 @@ import {
   chargeItemOptions,
   chargeName,
   chargeQuantityText,
+  chargeRemovalNote,
   chargeRemovalText,
   chargeStatusText,
   chargeSummary,
@@ -550,21 +551,56 @@ describe('charge status', () => {
     );
   });
 
+  it('lets a charge be removed only until it goes on its invoice', () => {
+    const onInvoice = (status: 'True' | 'False') => ({
+      type: 'OnInvoice',
+      status,
+      reason: status === 'True' ? 'Added' : 'Held',
+      message: '',
+      lastTransitionTime: '2026-12-01T10:00:00Z',
+    });
+    const held = charge({
+      status: {
+        phase: 'Scheduled',
+        invoiceAt: '2027-01-01T00:00:00Z',
+        removableUntil: '2026-12-31T00:00:00Z',
+        conditions: [onInvoice('False')],
+      },
+    });
+    expect(isChargeRemovable(held)).toBe(true);
+    expect(chargeRemovalNote(held)).toBe('Can be removed until Dec 31, 2026, 00:00 UTC');
+    expect(chargeRemovalText(held)).toBe(
+      "Install is held until Dec 31, 2026, 00:00 UTC and isn't on an invoice yet, so removing it bills nothing."
+    );
+
+    const added = charge({
+      status: {
+        phase: 'Scheduled',
+        invoiceAt: '2027-01-01T00:00:00Z',
+        conditions: [onInvoice('True')],
+      },
+    });
+    expect(isChargeRemovable(added)).toBe(false);
+    expect(chargeRemovalNote(added)).toBe(
+      "On its invoice, so it can't be removed. Once the invoice is issued, correct it with a credit note."
+    );
+    const addedNow = charge(
+      { status: { phase: 'Scheduled', conditions: [onInvoice('True')] } },
+      { invoice: 'Now' }
+    );
+    expect(isChargeRemovable(addedNow)).toBe(false);
+  });
+
   it('says what removing a charge does, by where it is', () => {
     const named = (status: Charge['status'], invoice: 'NextInvoice' | 'Now' = 'NextInvoice') =>
       chargeRemovalText(charge({ status }, { description: 'Install', invoice }));
-    expect(named({ phase: 'Scheduled' })).toBe(
-      "Install comes off the account's next invoice. If that invoice goes out before the removal reaches the billing provider, the charge is billed anyway."
-    );
-    expect(named({ phase: 'Scheduled' }, 'Now')).toBe(
-      "Install comes off the invoice it's on, if that invoice hasn't gone out yet. If it has, the charge is billed anyway."
-    );
     expect(named({ phase: 'Pending' }, 'Now')).toBe(
       "Install isn't on an invoice yet, so it won't be billed."
     );
     expect(named({ phase: 'Failed' }, 'Now')).toBe(
       "Install didn't reach an invoice, so it won't be billed."
     );
+    expect(chargeRemovalNote(charge({ status: { phase: 'Pending' } }))).toBeUndefined();
   });
 
   it('lists charges newest first', () => {

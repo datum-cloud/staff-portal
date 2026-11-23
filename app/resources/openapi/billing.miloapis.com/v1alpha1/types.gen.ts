@@ -1462,7 +1462,7 @@ export type ComMiloapisBillingV1Alpha1Charge = {
     amountDue?: string;
     /**
      * Conditions are the latest observations of the charge. See
-     * ChargeConditionReady.
+     * ChargeConditionReady and ChargeConditionOnInvoice.
      */
     conditions?: Array<{
       /**
@@ -1526,6 +1526,13 @@ export type ComMiloapisBillingV1Alpha1Charge = {
      * Phase is where the charge is: Pending, Scheduled, Invoiced or Failed.
      */
     phase?: 'Pending' | 'Scheduled' | 'Invoiced' | 'Failed';
+    /**
+     * RemovableUntil is when the billing provider puts the charge on its
+     * invoice. Until then the charge is held in billing alone, and removing
+     * it bills nothing. Unset once the charge is on its invoice (see
+     * ChargeConditionOnInvoice), and for an invoice-now charge.
+     */
+    removableUntil?: string;
   };
 };
 

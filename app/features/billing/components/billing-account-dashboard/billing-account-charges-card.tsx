@@ -2,6 +2,7 @@ import { useAccountInvoices } from '../../hooks';
 import {
   chargeAmounts,
   chargeQuantityText,
+  chargeRemovalNote,
   chargeRemovalText,
   chargeStatusText,
   formatChargeAmount,
@@ -184,11 +185,21 @@ const buildColumns = (invoicesByName: Map<string, Invoice>, onRemove: (charge: C
     header: ({ column }) => <ListColumnHeader column={column} title={t`Status`} />,
     cell: ({ row }) => {
       const status = getChargeStatus(row.original);
+      const removalNote = chargeRemovalNote(row.original);
       return (
-        <ChargeStatusText
-          status={status}
-          invoice={status.kind === 'invoiced' ? invoicesByName.get(status.invoiceName) : undefined}
-        />
+        <div className="flex flex-col gap-0.5">
+          <ChargeStatusText
+            status={status}
+            invoice={
+              status.kind === 'invoiced' ? invoicesByName.get(status.invoiceName) : undefined
+            }
+          />
+          {removalNote ? (
+            <Text size="xs" className="text-muted-foreground">
+              {removalNote}
+            </Text>
+          ) : null}
+        </div>
       );
     },
   }),
