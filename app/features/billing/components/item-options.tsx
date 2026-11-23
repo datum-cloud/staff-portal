@@ -3,11 +3,12 @@ import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { DatePicker } from '@datum-cloud/datum-ui/picker';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronRight, CircleHelp } from 'lucide-react';
 import type { ReactNode } from 'react';
 import type { FieldValues, UseFormReturn } from 'react-hook-form';
 
@@ -65,11 +66,15 @@ export function SupplyDateField({
   prefix = '',
   defaultPeriod,
   unsetHint,
+  tooltip,
   children,
 }: {
   prefix?: string;
   defaultPeriod: () => ServicePeriod;
+  /** The dates the line gets when none are chosen, shown while unticked. */
   unsetHint: ReactNode;
+  /** What the supply date is, behind the help icon by its heading. */
+  tooltip: string;
   children?: ReactNode;
 }) {
   const form = Form.useFormContext().form.raw as UseFormReturn<FieldValues>;
@@ -82,9 +87,22 @@ export function SupplyDateField({
 
   return (
     <div className="flex flex-col gap-2">
-      <Text size="sm" weight="medium">
-        <Trans>Supply date</Trans>
-      </Text>
+      <div className="flex items-center gap-1.5">
+        <Text size="sm" weight="medium">
+          <Trans>Supply date</Trans>
+        </Text>
+        <Tooltip
+          message={tooltip}
+          side="bottom"
+          contentClassName="w-[calc(100vw-2rem)] whitespace-normal break-words sm:w-auto sm:max-w-xs">
+          <button
+            type="button"
+            aria-label={t`What the supply date is`}
+            className="text-muted-foreground hover:text-foreground cursor-pointer">
+            <Icon icon={CircleHelp} className="size-3.5" />
+          </button>
+        </Tooltip>
+      </div>
       <label className="flex items-center gap-2 text-sm">
         <Checkbox
           checked={setPeriod}

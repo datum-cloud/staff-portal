@@ -3,6 +3,7 @@ import { contractStartFromDate, startOfUtcDay } from '../../lib/contract';
 import { supplyDateText } from '../contract-fee-text';
 import { ItemOptions, SupplyDateField } from '../item-options';
 import { Form } from '@datum-cloud/datum-ui/form';
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { useState } from 'react';
 import { useFormState, type FieldValues, type UseFormReturn } from 'react-hook-form';
@@ -38,12 +39,8 @@ export function FeeSupplyDate({
     <SupplyDateField
       prefix={prefix}
       defaultPeriod={() => defaultSupplyDate(picked, contractStartsAt)}
-      unsetHint={
-        <Trans>
-          The day it&apos;s charged, when the contract starts. Tick to choose other dates, such as
-          the day of an install.
-        </Trans>
-      }
+      unsetHint={<Trans>The contract&apos;s start date.</Trans>}
+      tooltip={t`The dates shown on the invoice line. Unticked, it's the contract's start date, when the fee is charged. Tick to show when the work was done, such as an install date. This doesn't change when it's billed.`}
     />
   );
 }

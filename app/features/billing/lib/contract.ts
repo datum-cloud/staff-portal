@@ -261,7 +261,7 @@ export interface ContractFee {
   quantity: number;
   /** What the amount is per (e.g. "port"), when the fee has a unit. */
   pricingUnit?: string;
-  /** The product code invoices show before the fee's name, if it has one. */
+  /** The product code finance tracks the fee by, if it has one. Internal: never on the invoice. */
   sku?: string;
   /** The service the fee is for, when it's for one. */
   serviceRef?: string;

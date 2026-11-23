@@ -451,12 +451,8 @@ function ChargeItemOptions({
 
       <SupplyDateField
         defaultPeriod={() => currentPeriod}
-        unsetHint={
-          <Trans>
-            Current billing period, {formatServicePeriod(currentPeriod)}. Tick to choose other
-            dates, such as the day of an install.
-          </Trans>
-        }>
+        unsetHint={<Trans>The current billing period, {formatServicePeriod(currentPeriod)}.</Trans>}
+        tooltip={t`The dates shown on the invoice line. Unticked, it's the current billing period. Tick to show when the work was done, such as an install date. This doesn't change when it's billed.`}>
         <Text as="p" size="sm" className="flex flex-wrap items-center gap-x-1">
           <Shortcut onClick={() => setDates(currentPeriod)}>
             <Trans>This billing period</Trans>

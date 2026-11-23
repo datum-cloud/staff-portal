@@ -171,7 +171,7 @@ export function ContractFeeList({
                   <Form.Field
                     name={`fees.${index}.sku`}
                     label={t`SKU`}
-                    tooltip={t`Optional product code. Invoices show it before the fee's name.`}>
+                    tooltip={t`Optional product code finance tracks the fee by. Internal only: it's never printed on the invoice.`}>
                     <Form.Input placeholder={t`DC-CAB-01`} />
                   </Form.Field>
                   <Form.Field name={`fees.${index}.serviceRef`} label={t`Service`}>

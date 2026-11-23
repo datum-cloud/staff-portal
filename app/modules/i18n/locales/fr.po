@@ -98,7 +98,7 @@ msgid "{0, plural, one {Show all # issues} other {Show all # issues}}"
 msgstr ""
 
 #. placeholder {0}: summary.dates
-#: app/features/billing/components/charges/add-charge-dialog.tsx:529
+#: app/features/billing/components/charges/add-charge-dialog.tsx:525
 msgid "{0} · Tax is worked out by Stripe on the invoice"
 msgstr ""
 
@@ -1707,7 +1707,7 @@ msgstr ""
 msgid "Choose how the portal looks to you. Select a single theme, or sync with your system."
 msgstr ""
 
-#: app/features/billing/components/item-options.tsx:100
+#: app/features/billing/components/item-options.tsx:118
 msgid "Choose the dates"
 msgstr ""
 
@@ -2297,11 +2297,6 @@ msgstr ""
 
 #: app/features/project/components/project-usage-card.tsx:81
 msgid "Current billing cycle for this project"
-msgstr ""
-
-#. placeholder {0}: formatServicePeriod(currentPeriod)
-#: app/features/billing/components/charges/add-charge-dialog.tsx:455
-msgid "Current billing period, {0}. Tick to choose other dates, such as the day of an install."
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:443
@@ -3519,7 +3514,7 @@ msgstr ""
 msgid "Fraud score (highest owner)"
 msgstr ""
 
-#: app/features/billing/components/item-options.tsx:105
+#: app/features/billing/components/item-options.tsx:123
 #: app/features/billing/components/offer-included-pricing-list.tsx:73
 #: app/features/billing/components/service-pricing-checklist.tsx:174
 msgid "From"
@@ -3786,7 +3781,7 @@ msgstr ""
 msgid "Inspect usage"
 msgstr ""
 
-#: app/features/billing/components/charges/add-charge-dialog.tsx:490
+#: app/features/billing/components/charges/add-charge-dialog.tsx:486
 msgid "Installed for the new cage; ticket OPS-1234"
 msgstr ""
 
@@ -3868,7 +3863,7 @@ msgstr ""
 msgid "Invoice terms"
 msgstr ""
 
-#: app/features/billing/components/charges/add-charge-dialog.tsx:575
+#: app/features/billing/components/charges/add-charge-dialog.tsx:571
 msgid "Invoice this charge now?"
 msgstr ""
 
@@ -3970,7 +3965,7 @@ msgid "Issuing TLS certificate"
 msgstr ""
 
 #. placeholder {0}: formatChargeMoney(amountDue)
-#: app/features/billing/components/charges/add-charge-dialog.tsx:579
+#: app/features/billing/components/charges/add-charge-dialog.tsx:575
 msgid "It goes on an invoice of its own, for {0} before tax, sent as soon as the billing provider has it."
 msgstr ""
 
@@ -3979,7 +3974,7 @@ msgid "Item"
 msgstr ""
 
 #: app/features/billing/components/contract-editor/price-list-table.tsx:404
-#: app/features/billing/components/item-options.tsx:42
+#: app/features/billing/components/item-options.tsx:43
 msgid "Item options"
 msgstr ""
 
@@ -4549,7 +4544,7 @@ msgstr ""
 msgid "Network"
 msgstr ""
 
-#: app/features/billing/components/charges/add-charge-dialog.tsx:487
+#: app/features/billing/components/charges/add-charge-dialog.tsx:483
 msgid "Never shown to the customer. Up to {MAX_CHARGE_NOTE} characters."
 msgstr ""
 
@@ -4616,7 +4611,7 @@ msgstr ""
 msgid "Newest first ↓"
 msgstr ""
 
-#: app/features/billing/components/charges/add-charge-dialog.tsx:466
+#: app/features/billing/components/charges/add-charge-dialog.tsx:462
 msgid "Next billing period"
 msgstr ""
 
@@ -5262,7 +5257,7 @@ msgstr ""
 msgid "Note deleted successfully"
 msgstr ""
 
-#: app/features/billing/components/charges/add-charge-dialog.tsx:483
+#: app/features/billing/components/charges/add-charge-dialog.tsx:479
 msgid "Note for staff"
 msgstr ""
 
@@ -5396,7 +5391,7 @@ msgstr ""
 msgid "On its invoice, so it can't be removed. Once the invoice is issued, correct it with a credit note."
 msgstr ""
 
-#: app/features/billing/components/charges/add-charge-dialog.tsx:516
+#: app/features/billing/components/charges/add-charge-dialog.tsx:512
 msgid "On the invoice"
 msgstr ""
 
@@ -5489,7 +5484,7 @@ msgid "Optional context for the consumer's audit history..."
 msgstr ""
 
 #: app/features/billing/components/contract-editor/contract-fee-list.tsx:174
-msgid "Optional product code. Invoices show it before the fee's name."
+msgid "Optional product code finance tracks the fee by. Internal only: it's never printed on the invoice."
 msgstr ""
 
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:54
@@ -5815,7 +5810,7 @@ msgid "Pick a catalog item, or type a name for a custom one."
 msgstr ""
 
 #: app/features/billing/components/contract-editor/contract-editor.tsx:597
-#: app/features/billing/components/item-options.tsx:140
+#: app/features/billing/components/item-options.tsx:158
 msgid "Pick a date"
 msgstr ""
 
@@ -6409,7 +6404,7 @@ msgstr ""
 msgid "Required"
 msgstr ""
 
-#: app/features/billing/components/charges/add-charge-dialog.tsx:486
+#: app/features/billing/components/charges/add-charge-dialog.tsx:482
 msgid "Required: say why it isn't taxable. Never shown to the customer."
 msgstr ""
 
@@ -7329,7 +7324,7 @@ msgid "Summary"
 msgstr ""
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:165
-#: app/features/billing/components/item-options.tsx:86
+#: app/features/billing/components/item-options.tsx:92
 msgid "Supply date"
 msgstr ""
 
@@ -7512,6 +7507,15 @@ msgstr ""
 msgid "The contract's fees change from the account's next billing date."
 msgstr ""
 
+#: app/features/billing/components/contract-editor/fee-supply-date.tsx:42
+msgid "The contract's start date."
+msgstr ""
+
+#. placeholder {0}: formatServicePeriod(currentPeriod)
+#: app/features/billing/components/charges/add-charge-dialog.tsx:454
+msgid "The current billing period, {0}."
+msgstr ""
+
 #: app/features/billing/components/payment-terms.tsx:250
 msgid "The customer applied for payment terms on <0/> and is waiting for a decision."
 msgstr ""
@@ -7524,8 +7528,12 @@ msgstr ""
 msgid "The customer withdrew this application before a decision."
 msgstr ""
 
-#: app/features/billing/components/contract-editor/fee-supply-date.tsx:42
-msgid "The day it's charged, when the contract starts. Tick to choose other dates, such as the day of an install."
+#: app/features/billing/components/contract-editor/fee-supply-date.tsx:43
+msgid "The dates shown on the invoice line. Unticked, it's the contract's start date, when the fee is charged. Tick to show when the work was done, such as an install date. This doesn't change when it's billed."
+msgstr ""
+
+#: app/features/billing/components/charges/add-charge-dialog.tsx:455
+msgid "The dates shown on the invoice line. Unticked, it's the current billing period. Tick to show when the work was done, such as an install date. This doesn't change when it's billed."
 msgstr ""
 
 #: app/features/billing/components/charges/schema.ts:77
@@ -7637,7 +7645,7 @@ msgstr ""
 msgid "There's nothing to invoice yet."
 msgstr ""
 
-#: app/features/billing/components/charges/add-charge-dialog.tsx:476
+#: app/features/billing/components/charges/add-charge-dialog.tsx:472
 msgid "These dates are before the current billing period."
 msgstr ""
 
@@ -7657,7 +7665,7 @@ msgstr ""
 msgid "This Application Load Balancer has advanced configuration that cannot be represented in the simplified overview fields. See the YAML section below for the full resource definition including routing rules, filters, and matches."
 msgstr ""
 
-#: app/features/billing/components/charges/add-charge-dialog.tsx:462
+#: app/features/billing/components/charges/add-charge-dialog.tsx:458
 msgid "This billing period"
 msgstr ""
 
@@ -7765,11 +7773,11 @@ msgstr ""
 msgid "TLS Ready"
 msgstr ""
 
-#: app/features/billing/components/item-options.tsx:108
+#: app/features/billing/components/item-options.tsx:126
 msgid "To"
 msgstr ""
 
-#: app/features/billing/components/charges/add-charge-dialog.tsx:470
+#: app/features/billing/components/charges/add-charge-dialog.tsx:466
 #: app/features/contact/components/timeline/contact-timeline.tsx:120
 msgid "Today"
 msgstr ""
@@ -8227,6 +8235,10 @@ msgstr ""
 
 #: app/features/billing/components/charges/add-charge-dialog.tsx:222
 msgid "What the invoice calls the line. Never put the SKU here."
+msgstr ""
+
+#: app/features/billing/components/item-options.tsx:100
+msgid "What the supply date is"
 msgstr ""
 
 #: app/features/billing/components/charges/add-charge-dialog.tsx:236
