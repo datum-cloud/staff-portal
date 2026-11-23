@@ -39,7 +39,9 @@ import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
 import { Dialog } from '@datum-cloud/datum-ui/dialog';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { Icon } from '@datum-cloud/datum-ui/icons';
+import { Label } from '@datum-cloud/datum-ui/label';
 import { DatePicker } from '@datum-cloud/datum-ui/picker';
+import { RadioGroupItem } from '@datum-cloud/datum-ui/radio-group';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
@@ -234,8 +236,8 @@ function AddChargeForm({
 
               <Form.Field name="invoice" label={t`When`}>
                 <Form.RadioGroup orientation="horizontal">
-                  <Form.RadioItem value="NextInvoice" label={t`On the next invoice`} />
-                  <Form.RadioItem value="Now" label={t`Invoice now`} />
+                  <TimingOption value="NextInvoice" label={t`On the next invoice`} />
+                  <TimingOption value="Now" label={t`Invoice now`} />
                 </Form.RadioGroup>
               </Form.Field>
 
@@ -593,6 +595,23 @@ export function ChargeLineSummary({ summary }: { summary: ReturnType<typeof char
           {summary.amount || '—'}
         </Text>
       </div>
+    </div>
+  );
+}
+
+/**
+ * One choice of when the charge is invoiced. Form.RadioItem top-aligns the
+ * radio and nudges it down by a fixed margin, which leaves it below the
+ * middle of a one-line label; this centres the two instead.
+ */
+function TimingOption({ value, label }: { value: string; label: string }) {
+  const id = `charge-invoice-${value}`;
+  return (
+    <div className="flex items-center gap-2">
+      <RadioGroupItem id={id} value={value} />
+      <Label htmlFor={id} className="cursor-pointer text-sm font-normal">
+        {label}
+      </Label>
     </div>
   );
 }
