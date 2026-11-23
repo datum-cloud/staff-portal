@@ -1,6 +1,7 @@
 import { httpClient } from '@/modules/axios/axios.client';
 import { loadCatalog } from '@/modules/i18n/lingui';
 import { createBeforeSend } from '@/modules/sentry';
+import { NonceProvider } from '@/providers/nonce.provider';
 import { logger } from '@/utils/logger';
 import { i18n } from '@lingui/core';
 import { detect, fromHtmlTag } from '@lingui/detect-locale';
@@ -57,17 +58,31 @@ client.setConfig({
   axios: httpClient,
 });
 
+/**
+ * The CSP nonce the server rendered into this page. Browsers hide the `nonce`
+ * attribute from the DOM once the page loads, but keep the value on the
+ * element's `nonce` property. Hydrating with the same value the server used
+ * keeps the `<head>` scripts from mismatching (#875). The CSP itself is
+ * unchanged: the browser still enforces the nonce from the response header.
+ */
+function readCspNonce(): string {
+  return document.querySelector<HTMLScriptElement>('script[nonce]')?.nonce ?? '';
+}
+
 async function main() {
   const locale = detect(fromHtmlTag('lang')) || 'en';
   await loadCatalog(locale);
+  const cspNonce = readCspNonce();
 
   startTransition(() => {
     hydrateRoot(
       document,
       <StrictMode>
-        <I18nProvider i18n={i18n}>
-          <HydratedRouter />
-        </I18nProvider>
+        <NonceProvider value={cspNonce}>
+          <I18nProvider i18n={i18n}>
+            <HydratedRouter />
+          </I18nProvider>
+        </NonceProvider>
       </StrictMode>
     );
   });
