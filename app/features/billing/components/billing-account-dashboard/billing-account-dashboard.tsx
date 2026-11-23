@@ -113,7 +113,7 @@ export function BillingAccountDashboard({
             now={now}
             contract={contract}
           />
-          <BillingAccountChargesCard orgName={orgName} account={account} now={now} />
+          <BillingAccountChargesCard orgName={orgName} account={account} />
           <BillingAccountProjectsCard orgName={orgName} account={account} />
         </div>
 

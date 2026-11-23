@@ -528,9 +528,11 @@ export const useChargeListForAccountQuery = (orgName: string, accountName: strin
 export const useCreateChargeMutation = (orgName: string, accountName: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ spec, generateName }: { spec: ChargeSpec; generateName: string }) =>
-      createCharge(orgName, spec, generateName),
-    onSuccess: () =>
+    mutationFn: ({ spec, name }: { spec: ChargeSpec; name: string }) =>
+      createCharge(orgName, spec, name),
+    // Refreshed after a failure too: a create can land even when its
+    // response is lost, and staff should see it before trying again.
+    onSettled: () =>
       queryClient.invalidateQueries({ queryKey: billingQueryKeys.charges(orgName, accountName) }),
   });
 };

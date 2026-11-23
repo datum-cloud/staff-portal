@@ -3,9 +3,10 @@ import {
   buildChargeSpec,
   chargeAmounts,
   chargeBillingDay,
-  chargeGenerateName,
   chargeItemOptions,
+  chargeName,
   chargeQuantityText,
+  chargeRemovalText,
   chargeStatusText,
   chargeSummary,
   currentBillingPeriod,
@@ -134,9 +135,9 @@ describe('billing periods', () => {
 
 describe('service periods', () => {
   it('shows a single day, or a range', () => {
-    expect(formatServicePeriod({ start: '2026-12-15', end: '2026-12-15' })).toBe('15 Dec 2026');
+    expect(formatServicePeriod({ start: '2026-12-15', end: '2026-12-15' })).toBe('Dec 15, 2026');
     expect(formatServicePeriod({ start: '2026-12-01', end: '2026-12-31' })).toBe(
-      '1 Dec 2026 – 31 Dec 2026'
+      'Dec 1, 2026 – Dec 31, 2026'
     );
     expect(formatServicePeriod(undefined)).toBe('—');
   });
@@ -173,9 +174,19 @@ describe('amounts', () => {
     expect(parseHundredths('2')).toBe(200n);
     expect(parseHundredths('3.5')).toBe(350n);
     expect(parseHundredths('1,250.00')).toBe(125000n);
+    expect(parseHundredths('1,234,567')).toBe(123456700n);
     expect(parseHundredths('0.333')).toBeNull();
     expect(parseHundredths('-1')).toBeNull();
     expect(parseHundredths('')).toBeNull();
+  });
+
+  it('refuses a decimal comma rather than reading it as thousands', () => {
+    // As typed in French: not 150 and 25.
+    expect(parseHundredths('1,50')).toBeNull();
+    expect(parseHundredths('2,5')).toBeNull();
+    expect(parseHundredths('1,2345')).toBeNull();
+    expect(parseHundredths(',250')).toBeNull();
+    expect(chargeAmounts('2,5', '1,50')).toEqual({ ok: false, problem: 'quantity' });
   });
 
   it('works out the amount and discount in cents', () => {
@@ -291,14 +302,19 @@ describe('buildChargeSpec', () => {
   });
 });
 
-describe('chargeGenerateName', () => {
-  it('is a slug of the description', () => {
-    expect(chargeGenerateName('Cross-connect install, cage 12')).toBe(
-      'cross-connect-install-cage-12-'
+describe('chargeName', () => {
+  it('is a slug of the description and a suffix', () => {
+    expect(chargeName('Cross-connect install, cage 12', 'x7k2p')).toBe(
+      'cross-connect-install-cage-12-x7k2p'
     );
-    expect(chargeGenerateName('Remote hands — Décembre')).toBe('remote-hands-decembre-');
-    expect(chargeGenerateName('!!!')).toBe('charge-');
-    expect(chargeGenerateName('a'.repeat(80))).toHaveLength(41);
+    expect(chargeName('Remote hands — Décembre', 'x7k2p')).toBe('remote-hands-decembre-x7k2p');
+    expect(chargeName('!!!', 'x7k2p')).toBe('charge-x7k2p');
+    expect(chargeName('a'.repeat(80), 'x7k2p')).toHaveLength(46);
+  });
+
+  it('picks a random suffix Kubernetes would accept', () => {
+    const name = chargeName('Install');
+    expect(name).toMatch(/^install-[bcdfghjklmnpqrstvwxz2456789]{5}$/);
   });
 });
 
@@ -321,9 +337,9 @@ describe('chargeSummary', () => {
       )
     ).toEqual({
       description: 'Cross-connect install, cage 12',
-      line: '2 × US$ 250.00, less 10%',
-      amount: 'US$ 450.00',
-      dates: '15 Dec 2026',
+      line: '2 × $250.00, less 10%',
+      amount: '$450.00',
+      dates: 'Dec 15, 2026',
     });
   });
 
@@ -333,9 +349,9 @@ describe('chargeSummary', () => {
       current
     );
     expect(summary).toMatchObject({
-      line: '3.5 × US$ 1,500.00',
-      amount: 'US$ 5,250.00',
-      dates: '1 Dec 2026 – 31 Dec 2026',
+      line: '3.5 × $1,500.00',
+      amount: '$5,250.00',
+      dates: 'Dec 1, 2026 – Dec 31, 2026',
     });
   });
 
@@ -345,7 +361,7 @@ describe('chargeSummary', () => {
       amount: '',
     });
     expect(chargeSummary(values({ quantity: '3.33', unitAmount: '0.15' }), current)).toMatchObject({
-      line: '3.33 × US$ 0.15',
+      line: '3.33 × $0.15',
       amount: '',
     });
   });
@@ -359,13 +375,36 @@ describe('invoiceNowOutcome', () => {
       },
     });
     expect(invoiceNowOutcome(invoiced, 45000n)).toBe(
-      'Acme is sent an invoice for US$ 450.00 plus tax, due in 30 days.'
+      'Acme is sent an invoice for $450.00 plus tax, due in 30 days.'
     );
   });
 
-  it('charges the card otherwise', () => {
+  it('charges the card on file otherwise', () => {
+    const card = { metadata: { name: 'card-1' } };
+    expect(invoiceNowOutcome(account(), 45000n, [card])).toBe(
+      'The card on file is charged $450.00 plus tax straight away.'
+    );
+    // Before the payment methods load.
     expect(invoiceNowOutcome(account(), 45000n)).toBe(
-      "Acme's card is charged US$ 450.00 plus tax straight away."
+      'The card on file is charged $450.00 plus tax straight away.'
+    );
+  });
+
+  it('charges nothing for $0.00', () => {
+    expect(invoiceNowOutcome(account(), 0n, [])).toBe(
+      'The invoice comes to $0.00, so nothing is charged.'
+    );
+  });
+
+  it('says Stripe carries an amount under its minimum to the next invoice', () => {
+    expect(invoiceNowOutcome(account(), 49n, [{ metadata: { name: 'card-1' } }])).toBe(
+      "If $0.49 plus tax is under Stripe's $0.50 minimum, Stripe carries it to Acme's next invoice instead of charging the card."
+    );
+  });
+
+  it('says an account without a card is left with an unpaid invoice', () => {
+    expect(invoiceNowOutcome(account(), 45000n, [])).toBe(
+      'Acme has no card on file, so the invoice for $450.00 plus tax stays unpaid until one is added.'
     );
   });
 });
@@ -445,7 +484,7 @@ describe('charge status', () => {
     const scheduled = charge({
       status: { phase: 'Scheduled', invoiceAt: '2027-01-01T00:00:00Z' },
     });
-    expect(chargeStatusText(getChargeStatus(scheduled))).toBe('Next invoice, 1 Jan 2027');
+    expect(chargeStatusText(getChargeStatus(scheduled))).toBe('Next invoice, Jan 1, 2027');
     expect(
       chargeStatusText(
         getChargeStatus(charge({ status: { phase: 'Scheduled' } }, { invoice: 'Now' }))
@@ -463,6 +502,10 @@ describe('charge status', () => {
     });
     expect(chargeStatusText(getChargeStatus(invoiced))).toBe('Invoiced on acme-2027-01-abc');
     expect(isChargeRemovable(invoiced)).toBe(false);
+    // The provider hasn't named the invoice yet.
+    expect(chargeStatusText(getChargeStatus(charge({ status: { phase: 'Invoiced' } })))).toBe(
+      'Invoiced'
+    );
   });
 
   it('says what a pending charge waits for, and why one failed', () => {
@@ -480,8 +523,19 @@ describe('charge status', () => {
       },
     });
     expect(chargeStatusText(getChargeStatus(pending))).toBe(
-      'Waiting: the account is off the invoice writer'
+      'Waiting for the account to move to the invoice writer'
     );
+    const waitingFor = (reason: string) =>
+      chargeStatusText(
+        getChargeStatus(
+          charge({ status: { phase: 'Pending', conditions: [condition(reason, 'Waiting for x')] } })
+        )
+      );
+    expect(waitingFor('WaitingForProvider')).toBe('Waiting for the billing provider');
+    expect(waitingFor('WaitingForCustomer')).toBe("Waiting for the account's billing customer");
+    expect(waitingFor('WaitingForAmounts')).toBe('Waiting for billing to work out the amount');
+    // A reason this doesn't know shows the condition's own message.
+    expect(waitingFor('SomethingElse')).toBe('Waiting for x');
     expect(chargeStatusText(getChargeStatus(charge()))).toBe('Waiting');
     expect(isChargeRemovable(pending)).toBe(true);
     const failed = charge({
@@ -492,7 +546,24 @@ describe('charge status', () => {
 
   it('shows the quantity and unit price', () => {
     expect(chargeQuantityText(charge({}, { quantity: '3.50', unitAmount: '150' }).spec)).toBe(
-      '3.5 × US$ 150.00'
+      '3.5 × $150.00'
+    );
+  });
+
+  it('says what removing a charge does, by where it is', () => {
+    const named = (status: Charge['status'], invoice: 'NextInvoice' | 'Now' = 'NextInvoice') =>
+      chargeRemovalText(charge({ status }, { description: 'Install', invoice }));
+    expect(named({ phase: 'Scheduled' })).toBe(
+      "Install comes off the account's next invoice. If that invoice goes out before the removal reaches the billing provider, the charge is billed anyway."
+    );
+    expect(named({ phase: 'Scheduled' }, 'Now')).toBe(
+      "Install comes off the invoice it's on, if that invoice hasn't gone out yet. If it has, the charge is billed anyway."
+    );
+    expect(named({ phase: 'Pending' }, 'Now')).toBe(
+      "Install isn't on an invoice yet, so it won't be billed."
+    );
+    expect(named({ phase: 'Failed' }, 'Now')).toBe(
+      "Install didn't reach an invoice, so it won't be billed."
     );
   });
 

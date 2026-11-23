@@ -2,6 +2,7 @@ import { useAccountInvoices } from '../../hooks';
 import {
   chargeAmounts,
   chargeQuantityText,
+  chargeRemovalText,
   chargeStatusText,
   formatChargeAmount,
   formatChargeMoney,
@@ -48,7 +49,6 @@ import { useMemo, useState } from 'react';
 interface ChargesCardProps {
   orgName: string;
   account: BillingAccount;
-  now: Date;
 }
 
 const columnHelper = createColumnHelper<Charge>();
@@ -213,12 +213,13 @@ const buildColumns = (invoicesByName: Map<string, Invoice>, onRemove: (charge: C
 
 /**
  * One-off charges staff add to the account, newest first: catalog or
- * custom items billed on the next invoice or straight away. Hidden where
- * the control plane has no charges. Charges can only be added once the
- * account's invoices are written by the invoice writer; existing ones are
- * listed either way.
+ * custom items billed on the next invoice or straight away. Nothing shows
+ * until billing has said whether it serves charges, and nothing at all
+ * where it doesn't, so the page doesn't jump. Charges can only be added
+ * once the account's invoices are written by the invoice writer; existing
+ * ones are listed either way.
  */
-export function BillingAccountChargesCard({ orgName, account, now }: ChargesCardProps) {
+export function BillingAccountChargesCard({ orgName, account }: ChargesCardProps) {
   const accountName = account.metadata?.name ?? '';
   const chargesQuery = useChargeListForAccountQuery(orgName, accountName);
   const deleteCharge = useDeleteChargeMutation(orgName, accountName);
@@ -239,13 +240,13 @@ export function BillingAccountChargesCard({ orgName, account, now }: ChargesCard
     [invoicesByName]
   );
 
-  if (chargesQuery.data && !chargesQuery.data.served) return null;
+  // Until the list answers, it isn't known whether charges are served. A
+  // failure other than a 404 means they are, and shows on the card.
+  const served = chargesQuery.data ? chargesQuery.data.served : chargesQuery.isError;
+  if (!served) return null;
 
   const canAdd = isInvoiceWriterReady(account);
   const count = charges.length;
-  const removingName = removing
-    ? removing.spec.description || removing.metadata?.name || t`The charge`
-    : '';
 
   return (
     <TableCard
@@ -269,6 +270,14 @@ export function BillingAccountChargesCard({ orgName, account, now }: ChargesCard
           </Button>
         ) : undefined
       }>
+      {chargesQuery.data?.hasMore ? (
+        <CardMessage className="py-0">
+          <Trans>
+            The organization has too many charges to read them all, so some of this account&apos;s
+            may be missing.
+          </Trans>
+        </CardMessage>
+      ) : null}
       {canAdd ? null : (
         <CardMessage className="py-0">
           <Trans>
@@ -311,12 +320,7 @@ export function BillingAccountChargesCard({ orgName, account, now }: ChargesCard
       </CardQueryState>
 
       {adding ? (
-        <AddChargeDialog
-          orgName={orgName}
-          account={account}
-          now={now}
-          onClose={() => setAdding(false)}
-        />
+        <AddChargeDialog orgName={orgName} account={account} onClose={() => setAdding(false)} />
       ) : null}
 
       <DialogConfirm
@@ -325,7 +329,7 @@ export function BillingAccountChargesCard({ orgName, account, now }: ChargesCard
         title={t`Remove charge?`}
         description={
           removing
-            ? t`${removingName} comes off the account's next invoice. A charge can't be changed, so to correct one, remove it and add another.`
+            ? `${chargeRemovalText(removing)} ${t`A charge can't be changed, so to correct one, remove it and add another.`}`
             : ''
         }
         confirmText={t`Remove charge`}

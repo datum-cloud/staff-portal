@@ -1,9 +1,10 @@
+import { useAccountPaymentMethods } from '../../hooks';
 import {
   buildChargeSpec,
   catalogPricingName,
   chargeAmounts,
-  chargeGenerateName,
   chargeItemOptions,
+  chargeName,
   chargeSummary,
   currentBillingPeriod,
   emptyChargeFormValues,
@@ -64,18 +65,21 @@ const OPTION_FIELDS: (keyof ChargeFormValues)[] = [
  * editor: the item, quantity and price, then item options (tax, discount,
  * supply date, a note for staff), when it's invoiced, and the line as the
  * invoice will show it. Invoicing it now asks to confirm first.
+ *
+ * Mount it only while it's open: the date its defaults and limits are
+ * worked out from is taken when it opens, as billing's webhook will take
+ * its own when the charge is sent.
  */
 export function AddChargeDialog({
   orgName,
   account,
-  now,
   onClose,
 }: {
   orgName: string;
   account: BillingAccount;
-  now: Date;
   onClose: () => void;
 }) {
+  const [now] = useState(() => new Date());
   const pricingsQuery = useServicePricingListQuery(DEFAULT_SERVICE_PRICING_NAMESPACE);
   return (
     <Dialog open onOpenChange={(open) => (open ? undefined : onClose())}>
@@ -132,13 +136,21 @@ function AddChargeForm({
   // What billing refused that isn't one field's, shown above the buttons.
   const [formErrors, setFormErrors] = useState<string[]>([]);
   const formRef = useRef<UseFormReturn<ChargeFormValues> | null>(null);
+  // One name for the dialog, picked on the first try and sent on every
+  // retry, so a retry after a lost response can't add a second charge.
+  const nameRef = useRef<string | null>(null);
+  // Set while a create is in flight, so a double click sends it once.
+  const sendingRef = useRef(false);
 
   const create = async (values: ChargeFormValues) => {
+    if (sendingRef.current) return;
+    sendingRef.current = true;
     setFormErrors([]);
+    nameRef.current ??= chargeName(values.description);
     try {
       await createCharge.mutateAsync({
         spec: buildChargeSpec(values, accountName),
-        generateName: chargeGenerateName(values.description),
+        name: nameRef.current,
       });
       toast.success(
         values.invoice === 'Now'
@@ -159,6 +171,8 @@ function AddChargeForm({
         }
       }
       setFormErrors(unplaced);
+    } finally {
+      sendingRef.current = false;
     }
   };
 
@@ -233,6 +247,7 @@ function AddChargeForm({
             {confirming ? (
               <Dialog.Body className="flex flex-col gap-3 px-5 pt-0">
                 <InvoiceNowConfirmation
+                  orgName={orgName}
                   account={account}
                   values={confirming}
                   currentPeriod={currentPeriod}
@@ -355,7 +370,7 @@ function PriceField({ options }: { options: ReturnType<typeof chargeItemOptions>
         {changed ? (
           <Text size="sm" textColor="muted" className="ml-auto pb-2">
             <Trans>
-              List price {listCents === null ? `US$ ${fee.amount}` : formatChargeMoney(listCents)}
+              List price {listCents === null ? `${fee.amount} USD` : formatChargeMoney(listCents)}
             </Trans>{' '}
             ·{' '}
             <button
@@ -584,14 +599,17 @@ export function ChargeLineSummary({ summary }: { summary: ReturnType<typeof char
 
 /** Invoice now's second step: the total before tax, and what happens next. */
 function InvoiceNowConfirmation({
+  orgName,
   account,
   values,
   currentPeriod,
 }: {
+  orgName: string;
   account: BillingAccount;
   values: ChargeFormValues;
   currentPeriod: ServicePeriod;
 }) {
+  const { paymentMethods } = useAccountPaymentMethods(orgName, account);
   const amounts = chargeAmounts(values.quantity, values.unitAmount, values.discountPercent);
   const amountDue = amounts.ok ? amounts.amountDue : 0n;
   return (
@@ -605,7 +623,7 @@ function InvoiceNowConfirmation({
           It goes on an invoice of its own, for {formatChargeMoney(amountDue)} before tax, sent as
           soon as the billing provider has it.
         </Trans>{' '}
-        {invoiceNowOutcome(account, amountDue)}
+        {invoiceNowOutcome(account, amountDue, paymentMethods)}
       </Text>
     </div>
   );

@@ -1,6 +1,12 @@
-import { getBillingAccountDisplayName, getEffectiveNetDays } from '../utils';
+import {
+  formatMoney,
+  getBillingAccountDisplayName,
+  getEffectiveNetDays,
+  type PaymentMethod,
+} from '../utils';
 import { accountInvoiceDay, startOfUtcDay } from './contract';
 import { feeOptionFromPricing, listFeeOptions, type ListFeeOption } from './contract-list-fees';
+import { i18n } from '@lingui/core';
 import { t } from '@lingui/core/macro';
 import type {
   ComMiloapisBillingV1Alpha1BillingAccount,
@@ -40,16 +46,21 @@ export const MAX_CHARGE_NOTE = 500;
 
 // ─── Amounts ─────────────────────────────────────────────────────────────────
 
-const DECIMAL_PATTERN = /^\d+(\.\d{1,2})?$/;
+/**
+ * Digits with up to two decimal places after a dot. Commas are only allowed
+ * between groups of three digits ("1,250.00"), so a decimal comma ("1,50",
+ * as typed in French) is refused rather than read as 150.
+ */
+const DECIMAL_PATTERN = /^(\d{1,3}(,\d{3})+|\d+)(\.\d{1,2})?$/;
 
 /**
  * A decimal with up to two places ("2", "3.5", "1,250.00") in hundredths,
  * so amounts are worked out exactly; null when it isn't one.
  */
 export const parseHundredths = (value: string | undefined): bigint | null => {
-  const cleaned = (value ?? '').trim().replace(/,/g, '');
-  if (!DECIMAL_PATTERN.test(cleaned)) return null;
-  const [whole, fraction = ''] = cleaned.split('.');
+  const trimmed = (value ?? '').trim();
+  if (!DECIMAL_PATTERN.test(trimmed)) return null;
+  const [whole, fraction = ''] = trimmed.replace(/,/g, '').split('.');
   return BigInt(whole) * 100n + BigInt(fraction.padEnd(2, '0'));
 };
 
@@ -61,19 +72,16 @@ export const centsText = (cents: bigint): string =>
 export const hundredthsText = (value: bigint): string =>
   centsText(value).replace(/\.?0+$/, '') || '0';
 
-const MONEY = new Intl.NumberFormat('en-US', {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-});
-
-/** An amount in cents as the charge form shows it, e.g. "US$ 1,250.00". */
-export const formatChargeMoney = (cents: bigint): string =>
-  `US$ ${MONEY.format(Number(cents) / 100)}`;
+/**
+ * An amount in cents as money, as the rest of the billing pages show it,
+ * e.g. "$1,250.00". The sums stay in cents; this is only for display.
+ */
+export const formatChargeMoney = (cents: bigint): string => formatMoney(Number(cents) / 100, 'USD');
 
 /** A decimal amount string from the API as money, or as it is when it isn't whole cents. */
 export const formatChargeAmount = (amount: string | undefined): string => {
   const cents = parseHundredths(amount);
-  return cents === null ? (amount ? `US$ ${amount}` : '—') : formatChargeMoney(cents);
+  return cents === null ? (amount ? `${amount} USD` : '—') : formatChargeMoney(cents);
 };
 
 export type ChargeAmounts =
@@ -151,21 +159,24 @@ export const localDateFromIsoDay = (day: string | undefined): Date | null => {
   return date ? new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) : null;
 };
 
-const UTC_DAY = new Intl.DateTimeFormat('en-GB', {
-  day: 'numeric',
-  month: 'short',
-  year: 'numeric',
-  timeZone: 'UTC',
-});
-
-/** A date (YYYY-MM-DD or a timestamp) as its UTC day, e.g. "15 Dec 2026". */
+/**
+ * A date (YYYY-MM-DD or a timestamp) as its UTC day, in the invoices card's
+ * format, e.g. "Dec 15, 2026". Charge dates are UTC days, so the browser's
+ * zone never moves them.
+ */
 export const formatUtcDay = (value: string | undefined): string => {
   if (!value) return '—';
   const date = DAY_PATTERN.test(value) ? parseIsoDay(value) : new Date(value);
-  return date && !Number.isNaN(date.getTime()) ? UTC_DAY.format(date) : value;
+  if (!date || Number.isNaN(date.getTime())) return value;
+  return date.toLocaleDateString(i18n.locale || 'en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
 };
 
-/** A service period, e.g. "15 Dec 2026", or "1 Dec 2026 – 31 Dec 2026". */
+/** A service period, e.g. "Dec 15, 2026", or "Dec 1, 2026 – Dec 31, 2026". */
 export const formatServicePeriod = (period: Partial<ServicePeriod> | undefined): string => {
   if (!period?.start) return '—';
   if (!period.end || period.end === period.start) return formatUtcDay(period.start);
@@ -365,8 +376,24 @@ export const buildChargeSpec = (values: ChargeFormValues, accountName: string): 
   };
 };
 
-/** A Charge's generateName, from a slug of its description: "cross-connect-install-". */
-export const chargeGenerateName = (description: string): string => {
+/** The characters Kubernetes uses for generateName suffixes: no vowels, no look-alikes. */
+const NAME_SUFFIX_ALPHABET = 'bcdfghjklmnpqrstvwxz2456789';
+
+/** Five random characters, as Kubernetes adds to a generateName. */
+export const randomNameSuffix = (): string => {
+  const bytes = crypto.getRandomValues(new Uint8Array(5));
+  return Array.from(bytes, (byte) => NAME_SUFFIX_ALPHABET[byte % NAME_SUFFIX_ALPHABET.length]).join(
+    ''
+  );
+};
+
+/**
+ * A Charge's name, from a slug of its description and a random suffix:
+ * "cross-connect-install-x7k2p". The add charge dialog picks it once and
+ * sends the same name on every try, so a retry after a lost response finds
+ * the charge already there instead of adding a second one.
+ */
+export const chargeName = (description: string, suffix: string = randomNameSuffix()): string => {
   const slug = description
     .toLowerCase()
     .normalize('NFKD')
@@ -375,13 +402,13 @@ export const chargeGenerateName = (description: string): string => {
     .replace(/^-+/, '')
     .slice(0, 40)
     .replace(/-+$/, '');
-  return `${slug || 'charge'}-`;
+  return `${slug || 'charge'}-${suffix}`;
 };
 
 /** The line as the customer reads it on the invoice: never the SKU, list price or note. */
 export interface ChargeSummary {
   description: string;
-  /** "2 × US$ 250.00, less 10%", or empty until the quantity and price are numbers. */
+  /** "2 × $250.00, less 10%", or empty until the quantity and price are numbers. */
   line: string;
   /** The amount after any discount, or empty until it can be worked out. */
   amount: string;
@@ -411,11 +438,21 @@ export const chargeSummary = (
   };
 };
 
+/** Stripe's smallest card charge in US dollars, in cents. */
+export const STRIPE_MINIMUM_CHARGE_CENTS = 50n;
+
 /**
  * What invoicing a charge now does, by how the account pays: an invoice it
- * pays on its terms, or its card, charged straight away.
+ * pays on its terms, or the card on file, charged straight away. A $0.00
+ * charge charges nothing; one under Stripe's minimum is carried to the next
+ * invoice by Stripe; and an account with no card is left with an unpaid
+ * invoice. `paymentMethods` is the account's, or undefined while they load.
  */
-export const invoiceNowOutcome = (account: BillingAccount, amountDue: bigint): string => {
+export const invoiceNowOutcome = (
+  account: BillingAccount,
+  amountDue: bigint,
+  paymentMethods?: readonly PaymentMethod[]
+): string => {
   const name = getBillingAccountDisplayName(account);
   const amount = formatChargeMoney(amountDue);
   if (account.status?.paymentArrangement?.type === 'Invoice') {
@@ -424,7 +461,17 @@ export const invoiceNowOutcome = (account: BillingAccount, amountDue: bigint): s
       ? t`${name} is sent an invoice for ${amount} plus tax, due in ${netDays} days.`
       : t`${name} is sent an invoice for ${amount} plus tax.`;
   }
-  return t`${name}'s card is charged ${amount} plus tax straight away.`;
+  if (amountDue === 0n) {
+    return t`The invoice comes to ${amount}, so nothing is charged.`;
+  }
+  if (paymentMethods !== undefined && paymentMethods.length === 0) {
+    return t`${name} has no card on file, so the invoice for ${amount} plus tax stays unpaid until one is added.`;
+  }
+  if (amountDue < STRIPE_MINIMUM_CHARGE_CENTS) {
+    const minimum = formatChargeMoney(STRIPE_MINIMUM_CHARGE_CENTS);
+    return t`If ${amount} plus tax is under Stripe's ${minimum} minimum, Stripe carries it to ${name}'s next invoice instead of charging the card.`;
+  }
+  return t`The card on file is charged ${amount} plus tax straight away.`;
 };
 
 // ─── The item picker ─────────────────────────────────────────────────────────
@@ -475,7 +522,7 @@ export type ChargeStatus =
   | { kind: 'next'; invoiceAt?: string }
   | { kind: 'now' }
   | { kind: 'invoiced'; invoiceName: string }
-  | { kind: 'waiting'; message?: string }
+  | { kind: 'waiting'; reason?: string; message?: string }
   | { kind: 'failed'; message?: string };
 
 /** Where a charge is, from its phase and Ready condition. */
@@ -490,15 +537,38 @@ export const getChargeStatus = (charge: Charge): ChargeStatus => {
       return charge.spec.invoice === 'Now'
         ? { kind: 'now' }
         : { kind: 'next', invoiceAt: charge.status.invoiceAt };
-    default:
+    default: {
+      const waiting = ready && ready.status !== 'True';
       return {
         kind: 'waiting',
-        message: ready && ready.status !== 'True' ? ready.message || undefined : undefined,
+        reason: waiting ? ready.reason || undefined : undefined,
+        message: waiting ? ready.message || undefined : undefined,
       };
+    }
   }
 };
 
-/** A charge's status in words, e.g. "Next invoice, 1 Jan 2027". */
+/**
+ * What a charge is waiting for, by its Ready condition's reason: billing
+ * sets WaitingForProvider, and openmeter-provider the rest. Another reason
+ * shows the condition's own message.
+ */
+const waitingText = (reason: string | undefined, message: string | undefined): string => {
+  switch (reason) {
+    case 'WaitingForProvider':
+      return t`Waiting for the billing provider`;
+    case 'WaitingForInvoiceWriter':
+      return t`Waiting for the account to move to the invoice writer`;
+    case 'WaitingForCustomer':
+      return t`Waiting for the account's billing customer`;
+    case 'WaitingForAmounts':
+      return t`Waiting for billing to work out the amount`;
+    default:
+      return message || t`Waiting`;
+  }
+};
+
+/** A charge's status in words, e.g. "Next invoice, Jan 1, 2027". */
 export const chargeStatusText = (status: ChargeStatus): string => {
   switch (status.kind) {
     case 'next':
@@ -507,18 +577,41 @@ export const chargeStatusText = (status: ChargeStatus): string => {
     case 'now':
       return t`Invoicing now`;
     case 'invoiced':
-      return t`Invoiced on ${status.invoiceName}`;
+      return status.invoiceName ? t`Invoiced on ${status.invoiceName}` : t`Invoiced`;
     case 'waiting':
-      return status.message ? t`Waiting: ${status.message}` : t`Waiting`;
+      return waitingText(status.reason, status.message);
     case 'failed':
       return status.message ? t`Failed: ${status.message}` : t`Failed`;
+  }
+};
+
+/**
+ * What removing a charge does, by where it is: one that's on an invoice
+ * still to go out comes off it, though it's billed anyway if the invoice
+ * goes out before the removal reaches the billing provider; one that never
+ * reached an invoice just won't be billed.
+ */
+export const chargeRemovalText = (charge: Charge): string => {
+  const name = charge.spec.description || charge.metadata?.name || t`The charge`;
+  const status = getChargeStatus(charge);
+  switch (status.kind) {
+    case 'next':
+      return t`${name} comes off the account's next invoice. If that invoice goes out before the removal reaches the billing provider, the charge is billed anyway.`;
+    case 'now':
+      return t`${name} comes off the invoice it's on, if that invoice hasn't gone out yet. If it has, the charge is billed anyway.`;
+    case 'waiting':
+      return t`${name} isn't on an invoice yet, so it won't be billed.`;
+    case 'failed':
+      return t`${name} didn't reach an invoice, so it won't be billed.`;
+    case 'invoiced':
+      return t`${name} is on an issued invoice and stays billed.`;
   }
 };
 
 /** Whether staff can still remove a charge: until it's on an issued invoice. */
 export const isChargeRemovable = (charge: Charge): boolean => charge.status?.phase !== 'Invoiced';
 
-/** A charge's quantity and unit price, e.g. "2 × US$ 250.00". */
+/** A charge's quantity and unit price, e.g. "2 × $250.00". */
 export const chargeQuantityText = (spec: ChargeSpec): string =>
   `${decimalText(spec.quantity)} × ${formatChargeAmount(spec.unitAmount)}`;
 

@@ -1334,12 +1334,18 @@ export interface AccountCharges {
    * charges installed), so there's nothing to show or add.
    */
   served: boolean;
+  /** True when the walk stopped at its page limit, so some charges may be missing. */
+  hasMore: boolean;
 }
+
+const CHARGE_PAGE_LIMIT = 500;
+// Safety net against a runaway walk, as for invoices.
+const CHARGE_MAX_PAGES = 20;
 
 /**
  * The account's charges, not being deleted. Charges can't be selected by
- * account on the server, so the org's are read and filtered here; an org has
- * few. A 404 means the Charge resource isn't installed, which is answered
+ * account on the server, so every page of the org's is read and filtered
+ * here. A 404 means the Charge resource isn't installed, which is answered
  * without the error toast.
  */
 export const chargeListForAccountQuery = async (
@@ -1347,34 +1353,64 @@ export const chargeListForAccountQuery = async (
   accountName: string
 ): Promise<AccountCharges> => {
   const namespace = buildOrganizationNamespace(orgName);
-  const response = await listBillingMiloapisComV1Alpha1NamespacedCharge({
-    baseURL: getClientOrgControlPlaneBaseURL(orgName),
-    path: { namespace },
-    query: { limit: 500 },
-    validateStatus: (status) => (status >= 200 && status < 300) || status === 404,
-  });
-  if (response.status === 404) return { items: [], served: false };
-  const items = filterNotDeleting(response.data?.data?.items ?? []).filter(
-    (charge) => charge.spec?.billingAccountRef?.name === accountName
+  let served = true;
+  const { items, hasMore } = await walkCursorPages<Charge>(
+    async (cursor) => {
+      const response = await listBillingMiloapisComV1Alpha1NamespacedCharge({
+        baseURL: getClientOrgControlPlaneBaseURL(orgName),
+        path: { namespace },
+        query: { limit: CHARGE_PAGE_LIMIT, continue: cursor },
+        validateStatus: (status) => (status >= 200 && status < 300) || status === 404,
+      });
+      if (response.status === 404) {
+        served = false;
+        return { items: [] };
+      }
+      const data = response.data?.data;
+      return { items: data?.items ?? [], continueToken: data?.metadata?.continue };
+    },
+    {
+      maxPages: CHARGE_MAX_PAGES,
+      filterPage: (page) =>
+        filterNotDeleting(page).filter(
+          (charge) => charge.spec?.billingAccountRef?.name === accountName
+        ),
+    }
   );
-  return { items, served: true };
+  return served ? { items, served, hasMore } : { items: [], served, hasMore: false };
 };
 
-/** Adds a charge, named after its description. Billing defaults what the spec leaves out. */
-export const createCharge = async (orgName: string, spec: ChargeSpec, generateName: string) => {
+/**
+ * Adds a charge under the name the dialog picked. Billing defaults what the
+ * spec leaves out. The name is the same on every try, so a 409 means an
+ * earlier try got through and its response was lost: the charge is there,
+ * and this one is done. Billing's refusals show on the form's fields, so
+ * they skip the generic error toast.
+ */
+export const createCharge = async (
+  orgName: string,
+  spec: ChargeSpec,
+  name: string
+): Promise<Charge | undefined> => {
   const namespace = buildOrganizationNamespace(orgName);
-  const response = await createBillingMiloapisComV1Alpha1NamespacedCharge({
-    baseURL: getClientOrgControlPlaneBaseURL(orgName),
-    path: { namespace },
-    query: { fieldManager: FIELD_MANAGER },
-    body: {
-      apiVersion: 'billing.miloapis.com/v1alpha1',
-      kind: 'Charge',
-      metadata: { generateName },
-      spec,
-    },
-  });
-  return response.data?.data;
+  try {
+    const response = await createBillingMiloapisComV1Alpha1NamespacedCharge({
+      baseURL: getClientOrgControlPlaneBaseURL(orgName),
+      path: { namespace },
+      query: { fieldManager: FIELD_MANAGER },
+      body: {
+        apiVersion: 'billing.miloapis.com/v1alpha1',
+        kind: 'Charge',
+        metadata: { name, namespace },
+        spec,
+      },
+      skipErrorToast: true,
+    });
+    return response.data?.data;
+  } catch (err) {
+    if (isAxiosError(err) && err.response?.status === 409) return undefined;
+    throw err;
+  }
 };
 
 /**

@@ -50,13 +50,13 @@ describe('ChargeAmount', () => {
         charge={charge({ discountPercent: '10' }, { amount: '500.00', amountDue: '450.00' })}
       />
     );
-    expect(html).toContain('US$ 450.00');
+    expect(html).toContain('$450.00');
     expect(html).toContain('less 10%');
   });
 
   it('works the amount out before billing has', () => {
     expect(render(<ChargeAmount charge={charge({ discountPercent: '10' })} />)).toContain(
-      'US$ 450.00'
+      '$450.00'
     );
   });
 });
@@ -89,10 +89,20 @@ describe('ChargeStatusText', () => {
     expect(html).toContain('acme-2027-01-abc');
   });
 
-  it('says what a pending charge waits for', () => {
+  it('says what a pending charge waits for, by its reason', () => {
     expect(
-      render(<ChargeStatusText status={{ kind: 'waiting', message: 'waiting for the writer' }} />)
-    ).toContain('Waiting: waiting for the writer');
+      render(
+        <ChargeStatusText
+          status={{ kind: 'waiting', reason: 'WaitingForProvider', message: 'Waiting for x' }}
+        />
+      )
+    ).toContain('Waiting for the billing provider');
+  });
+
+  it('leaves out "Invoiced on" until the invoice is named', () => {
+    const html = render(<ChargeStatusText status={{ kind: 'invoiced', invoiceName: '' }} />);
+    expect(html).toContain('Invoiced');
+    expect(html).not.toContain('Invoiced on');
   });
 });
 
@@ -102,16 +112,16 @@ describe('ChargeLineSummary', () => {
       <ChargeLineSummary
         summary={{
           description: 'Cross-connect install, cage 12',
-          line: '2 × US$ 250.00, less 10%',
-          amount: 'US$ 450.00',
-          dates: '15 Dec 2026',
+          line: '2 × $250.00, less 10%',
+          amount: '$450.00',
+          dates: 'Dec 15, 2026',
         }}
       />
     );
     expect(html).toContain('On the invoice');
     expect(html).toContain('Cross-connect install, cage 12');
-    expect(html).toContain('2 × US$ 250.00, less 10%');
-    expect(html).toContain('US$ 450.00');
-    expect(html).toContain('15 Dec 2026 · Tax is worked out by Stripe on the invoice');
+    expect(html).toContain('2 × $250.00, less 10%');
+    expect(html).toContain('$450.00');
+    expect(html).toContain('Dec 15, 2026 · Tax is worked out by Stripe on the invoice');
   });
 });

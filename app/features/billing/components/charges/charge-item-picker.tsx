@@ -68,15 +68,21 @@ export function ChargeItemPicker({
     () => new Map([...options.accountPrices, ...options.catalog].map((fee) => [fee.name, fee])),
     [options]
   );
+  // The search outlives the popover, so the picked item stays in the list
+  // whatever it filters to: the trigger finds its label there, rather than
+  // showing the raw value.
   const groups = useMemo((): AutocompleteGroup<ItemOption>[] => {
     const query = search.trim().toLowerCase();
+    const picked = catalogPricingName(value);
     const keep = (fees: ListFeeOption[]) =>
-      (query ? fees.filter((fee) => matches(fee, query)) : fees).map(toOption);
+      (query ? fees.filter((fee) => fee.name === picked || matches(fee, query)) : fees).map(
+        toOption
+      );
     return [
       { label: accountPricesLabel, options: keep(options.accountPrices) },
       { label: t`Catalog`, options: keep(options.catalog) },
     ].filter((group) => group.options.length > 0);
-  }, [options, search, accountPricesLabel]);
+  }, [options, search, value, accountPricesLabel]);
 
   const choose = (next: string) => {
     const previous = value;
