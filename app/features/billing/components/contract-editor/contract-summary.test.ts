@@ -1,5 +1,5 @@
 import { supplyDateText } from '../contract-fee-text';
-import { summaryFees } from './contract-summary';
+import { billsNoUsage, summaryFees } from './contract-summary';
 import type { ContractFeeRow, ListFeeRowValues } from './schema';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -86,5 +86,14 @@ describe('supplyDateText', () => {
     expect(supplyDateText({ start: '2027-03-03', end: '2027-03-05' })).toBe(
       'Supply date Mar 3, 2027 – Mar 5, 2027'
     );
+  });
+});
+
+describe('billsNoUsage', () => {
+  it('warns about fees with no usage, not about usage or an empty contract', () => {
+    expect(billsNoUsage(2, 0)).toBe(true);
+    expect(billsNoUsage(2, 3)).toBe(false);
+    expect(billsNoUsage(0, 3)).toBe(false);
+    expect(billsNoUsage(0, 0)).toBe(false);
   });
 });

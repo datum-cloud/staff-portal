@@ -39,6 +39,7 @@ import {
   type ListFeeRowValues,
   type UsageRowValues,
 } from './schema';
+import { Alert, AlertDescription } from '@datum-cloud/datum-ui/alert';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
@@ -64,6 +65,15 @@ export type SummaryFee = {
  * The fees the form charges, as the summary lists them: the contract's own,
  * then those ticked on the price list.
  */
+/**
+ * Whether a contract with fees bills no usage at all. A new contract starts
+ * with nothing ticked, so fees alone save fine and the account's usage goes
+ * unbilled: the summary warns before it's saved. A contract with neither is
+ * refused anyway.
+ */
+export const billsNoUsage = (feeCount: number, metersTicked: number): boolean =>
+  feeCount > 0 && metersTicked === 0;
+
 export const summaryFees = (
   rows: ContractFeeRow[],
   listRows: ListFeeRowValues[],
@@ -263,6 +273,16 @@ export function ContractSummary({
         <Text size="sm" weight="medium">
           <Trans>Usage</Trans>
         </Text>
+        {billsNoUsage(feeCount, meters.length) ? (
+          <Alert variant="warning">
+            <AlertDescription>
+              <Trans>
+                No usage is billed: the account&apos;s usage will be free under this contract. Tick
+                usage on the price list to bill it.
+              </Trans>
+            </AlertDescription>
+          </Alert>
+        ) : null}
         <Text size="sm" textColor="muted">
           {meters.length === 0 ? (
             <Trans>Not billed.</Trans>

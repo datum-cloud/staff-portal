@@ -61,7 +61,7 @@ msgid "{0, plural, one {# long-pending} other {# long-pending}}"
 msgstr "{0, plural, one {# long-pending} other {# long-pending}}"
 
 #. placeholder {0}: meters.length
-#: app/features/billing/components/contract-editor/contract-summary.tsx:271
+#: app/features/billing/components/contract-editor/contract-summary.tsx:291
 msgid "{0, plural, one {# meter billed} other {# meters billed}}"
 msgstr "{0, plural, one {# meter billed} other {# meters billed}}"
 
@@ -281,7 +281,7 @@ msgstr "{count}+ invoices"
 msgid "{current} so far this cycle, {factor}× the {previous} spent by this point last cycle."
 msgstr "{current} so far this cycle, {factor}× the {previous} spent by this point last cycle."
 
-#: app/features/billing/components/contract-editor/contract-summary.tsx:275
+#: app/features/billing/components/contract-editor/contract-summary.tsx:295
 msgid "{customMeters, plural, one {# at the customer's rates} other {# at the customer's rates}}"
 msgstr "{customMeters, plural, one {# at the customer's rates} other {# at the customer's rates}}"
 
@@ -455,11 +455,11 @@ msgstr "{problems} of {total} instances with problems"
 msgid "{problems} of {total} workloads with problems"
 msgstr "{problems} of {total} workloads with problems"
 
-#: app/features/billing/components/contract-editor/contract-summary.tsx:317
+#: app/features/billing/components/contract-editor/contract-summary.tsx:337
 msgid "{recurring} from the next billing date."
 msgstr "{recurring} from the next billing date."
 
-#: app/features/billing/components/contract-editor/contract-summary.tsx:315
+#: app/features/billing/components/contract-editor/contract-summary.tsx:335
 msgid "{recurring}."
 msgstr "{recurring}."
 
@@ -671,7 +671,7 @@ msgstr "A charge can't be changed, so to correct one, remove it and add another.
 msgid "A contact with this email already exists."
 msgstr "A contact with this email already exists."
 
-#: app/features/billing/components/contract-editor/contract-summary.tsx:153
+#: app/features/billing/components/contract-editor/contract-summary.tsx:163
 #: app/features/billing/components/contract-editor/schema.ts:193
 msgid "A contract can have at most {MAX_CONTRACT_FEES} fees, counting those from the price list."
 msgstr "A contract can have at most {MAX_CONTRACT_FEES} fees, counting those from the price list."
@@ -861,7 +861,7 @@ msgstr "Add"
 msgid "Add “{name}” as a custom item"
 msgstr "Add “{name}” as a custom item"
 
-#: app/features/billing/components/contract-editor/contract-summary.tsx:151
+#: app/features/billing/components/contract-editor/contract-summary.tsx:161
 #: app/features/billing/components/contract-editor/schema.ts:189
 msgid "Add a fee, or tick something on the price list."
 msgstr "Add a fee, or tick something on the price list."
@@ -1374,7 +1374,7 @@ msgstr "Base Ejection"
 msgid "Basic Authentication"
 msgstr "Basic Authentication"
 
-#: app/features/billing/components/contract-editor/contract-summary.tsx:347
+#: app/features/billing/components/contract-editor/contract-summary.tsx:367
 msgid "Before discounts and tax, plus any usage. Check it with a preview once saved."
 msgstr "Before discounts and tax, plus any usage. Check it with a preview once saved."
 
@@ -1406,7 +1406,7 @@ msgstr "billed in advance"
 msgid "billed in arrears"
 msgstr "billed in arrears"
 
-#: app/features/billing/components/contract-editor/contract-summary.tsx:323
+#: app/features/billing/components/contract-editor/contract-summary.tsx:343
 msgid "Billed on day {billedOnDay} of each month, so the first period runs from the start date to the next day {billedOnDay} and its recurring fees are prorated."
 msgstr "Billed on day {billedOnDay} of each month, so the first period runs from the start date to the next day {billedOnDay} and its recurring fees are prorated."
 
@@ -3337,11 +3337,11 @@ msgstr "Feature Flags"
 msgid "Feed"
 msgstr "Feed"
 
-#: app/features/billing/components/contract-editor/contract-summary.tsx:206
+#: app/features/billing/components/contract-editor/contract-summary.tsx:216
 msgid "Fees"
 msgstr "Fees"
 
-#: app/features/billing/components/contract-editor/contract-summary.tsx:331
+#: app/features/billing/components/contract-editor/contract-summary.tsx:351
 msgid "Fees billed in arrears are invoiced at the end of each period, with that period's usage."
 msgstr "Fees billed in arrears are invoiced at the end of each period, with that period's usage."
 
@@ -3378,7 +3378,7 @@ msgstr "Fingerprint ID"
 msgid "First invoice"
 msgstr "First invoice"
 
-#: app/features/billing/components/contract-editor/contract-summary.tsx:295
+#: app/features/billing/components/contract-editor/contract-summary.tsx:315
 msgid "First invoice on <0/>: {total}."
 msgstr "First invoice on <0/>: {total}."
 
@@ -3386,11 +3386,11 @@ msgstr "First invoice on <0/>: {total}."
 msgid "First invoice preview"
 msgstr "First invoice preview"
 
-#: app/features/billing/components/contract-editor/contract-summary.tsx:293
+#: app/features/billing/components/contract-editor/contract-summary.tsx:313
 msgid "First invoice today: about {total}."
 msgstr "First invoice today: about {total}."
 
-#: app/features/billing/components/contract-editor/contract-summary.tsx:306
+#: app/features/billing/components/contract-editor/contract-summary.tsx:326
 msgid "First invoice: {total}."
 msgstr "First invoice: {total}."
 
@@ -4824,7 +4824,7 @@ msgstr "No export policies found."
 msgid "No feature flags registered."
 msgstr "No feature flags registered."
 
-#: app/features/billing/components/contract-editor/contract-summary.tsx:210
+#: app/features/billing/components/contract-editor/contract-summary.tsx:220
 msgid "No fees yet."
 msgstr "No fees yet."
 
@@ -5101,6 +5101,10 @@ msgstr "No thresholds — this stage scores without mapping to an action."
 msgid "No usage"
 msgstr "No usage"
 
+#: app/features/billing/components/contract-editor/contract-summary.tsx:279
+msgid "No usage is billed: the account's usage will be free under this contract. Tick usage on the price list to bill it."
+msgstr "No usage is billed: the account's usage will be free under this contract. Tick usage on the price list to bill it."
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-usage-card.tsx:89
 msgid "No usage recorded this cycle"
 msgstr "No usage recorded this cycle"
@@ -5162,7 +5166,7 @@ msgstr "Not billable: no card or terms"
 msgid "Not billable: terms have ended"
 msgstr "Not billable: terms have ended"
 
-#: app/features/billing/components/contract-editor/contract-summary.tsx:268
+#: app/features/billing/components/contract-editor/contract-summary.tsx:288
 msgid "Not billed."
 msgstr "Not billed."
 
@@ -7194,7 +7198,7 @@ msgstr "Start Time"
 msgid "Started <0/>"
 msgstr "Started <0/>"
 
-#: app/features/billing/components/contract-editor/contract-summary.tsx:339
+#: app/features/billing/components/contract-editor/contract-summary.tsx:359
 msgid "Starting today, fees billed in advance are charged from when you save, so their first period is prorated: about {total} rather than {fullTotal}. Start tomorrow for a full first period."
 msgstr "Starting today, fees billed in advance are charged from when you save, so their first period is prorated: about {total} rather than {fullTotal}. Start tomorrow for a full first period."
 
@@ -7621,7 +7625,7 @@ msgstr "The start date's day each month"
 msgid "Their situation"
 msgstr "Their situation"
 
-#: app/features/billing/components/contract-editor/contract-summary.tsx:313
+#: app/features/billing/components/contract-editor/contract-summary.tsx:333
 msgid "Then {recurring}."
 msgstr "Then {recurring}."
 
@@ -7880,8 +7884,8 @@ msgstr "Unknown"
 msgid "Unknown IP"
 msgstr "Unknown IP"
 
-#: app/features/billing/components/contract-editor/contract-summary.tsx:194
-#: app/features/billing/components/contract-editor/contract-summary.tsx:219
+#: app/features/billing/components/contract-editor/contract-summary.tsx:204
+#: app/features/billing/components/contract-editor/contract-summary.tsx:229
 msgid "Unnamed fee"
 msgstr "Unnamed fee"
 
@@ -7894,7 +7898,7 @@ msgstr "Untick all"
 msgid "until {0}"
 msgstr "until {0}"
 
-#: app/features/billing/components/contract-editor/contract-summary.tsx:243
+#: app/features/billing/components/contract-editor/contract-summary.tsx:253
 msgid "until <0/>"
 msgstr "until <0/>"
 
@@ -7955,7 +7959,7 @@ msgid "Updating email addresses for GitHub identities"
 msgstr "Updating email addresses for GitHub identities"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:193
-#: app/features/billing/components/contract-editor/contract-summary.tsx:264
+#: app/features/billing/components/contract-editor/contract-summary.tsx:274
 #: app/features/billing/components/contract-editor/price-list-table.tsx:600
 #: app/features/billing/components/contract-schedule-list.tsx:43
 #: app/features/organization/components/org-usage-card.tsx:67
