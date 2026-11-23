@@ -107,7 +107,7 @@ function App() {
         <ClientHintCheck nonce={nonce} />
         <ThemeScript nonce={nonce} attribute="class" defaultTheme="light" />
         <Meta />
-        <Links />
+        <Links nonce={nonce} />
       </head>
       <body className="bg-background overscroll-none font-sans antialiased">
         <Outlet />
@@ -200,7 +200,7 @@ function ErrorLayout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <ThemeScript nonce={nonce} attribute="class" defaultTheme="light" />
         <Meta />
-        <Links />
+        <Links nonce={nonce} />
       </head>
       <body className="bg-background overscroll-none font-sans antialiased">
         <div className="flex min-h-screen items-center justify-center">{children}</div>
