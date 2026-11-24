@@ -3,7 +3,7 @@ import type { UsageGroupSection, UsageMeter } from '@/features/organization/usag
 import type { UsageView } from '@/features/organization/usage/usage.view';
 import { describe, expect, it } from 'vitest';
 
-const meter = (id: string, amount?: number): UsageMeter => ({
+const meter = (id: string, amount?: number, beforeDiscounts?: number): UsageMeter => ({
   id,
   apiName: id,
   label: id,
@@ -11,7 +11,12 @@ const meter = (id: string, amount?: number): UsageMeter => ({
   unit: { kind: 'count', scale: 1 },
   used: 1,
   limit: 0,
-  spend: amount === undefined ? undefined : { amount, currency: 'USD' },
+  spend:
+    amount === undefined
+      ? undefined
+      : beforeDiscounts === undefined
+        ? { amount, currency: 'USD' }
+        : { amount, beforeDiscounts, discount: beforeDiscounts - amount, currency: 'USD' },
   tabs: ['Total'],
   series: [],
 });
@@ -33,15 +38,64 @@ const VIEW = view([
 describe('getServiceSpend', () => {
   it('sums each service with usage, highest first, with its top meter', () => {
     expect(getServiceSpend(VIEW)).toEqual([
-      { id: 'compute', title: 'COMPUTE', amount: 13.75, topMeterId: 'vcpu' },
-      { id: 'network', title: 'NETWORK', amount: 3.25, topMeterId: 'egress' },
+      {
+        id: 'compute',
+        title: 'COMPUTE',
+        amount: 13.75,
+        beforeDiscounts: 13.75,
+        discount: 0,
+        topMeterId: 'vcpu',
+      },
+      {
+        id: 'network',
+        title: 'NETWORK',
+        amount: 3.25,
+        beforeDiscounts: 3.25,
+        discount: 0,
+        topMeterId: 'egress',
+      },
     ]);
   });
 
   it('counts unpriced meters as no spend', () => {
     expect(getServiceSpend(view([group('dns', [meter('queries')])]))).toEqual([
-      { id: 'dns', title: 'DNS', amount: 0, topMeterId: 'queries' },
+      {
+        id: 'dns',
+        title: 'DNS',
+        amount: 0,
+        beforeDiscounts: 0,
+        discount: 0,
+        topMeterId: 'queries',
+      },
     ]);
+  });
+
+  it('adds up discounts and orders by spend before them', () => {
+    // Compute is 100% off and network 20% off: by what they cost after
+    // discounts, network would come first and compute's meters would tie.
+    const discounted = view([
+      group('network', [meter('egress', 8, 10)]),
+      group('compute', [meter('memory', 0, 5), meter('vcpu', 0, 30)]),
+    ]);
+    expect(getServiceSpend(discounted)).toEqual([
+      {
+        id: 'compute',
+        title: 'COMPUTE',
+        amount: 0,
+        beforeDiscounts: 35,
+        discount: 35,
+        topMeterId: 'vcpu',
+      },
+      {
+        id: 'network',
+        title: 'NETWORK',
+        amount: 8,
+        beforeDiscounts: 10,
+        discount: 2,
+        topMeterId: 'egress',
+      },
+    ]);
+    expect(getTopMeter(discounted)?.id).toBe('vcpu');
   });
 });
 

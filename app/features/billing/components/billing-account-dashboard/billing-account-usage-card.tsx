@@ -3,6 +3,7 @@ import {
   getMeterOptionGroups,
   getServiceSpend,
   getTopMeter,
+  meterSpendBeforeDiscounts,
   type ServiceSpend,
 } from '../../lib/account-usage';
 import { billingCycleTerms, type ContractState } from '../../lib/contract';
@@ -11,8 +12,13 @@ import { CardLink, CardMessage, CardQueryState, ShareBar, InlineDate } from './c
 import { SectionCard } from '@/features/milo';
 import { toUsageView } from '@/features/organization/usage';
 import { MeterAreaChart } from '@/features/organization/usage/components/meter-area-chart';
+import { SpendBreakdown } from '@/features/organization/usage/components/spend-breakdown';
 import { SpendValue } from '@/features/organization/usage/components/spend-value';
-import { formatByUnit, formatCurrency } from '@/features/organization/usage/usage.format';
+import {
+  formatByUnit,
+  formatCurrency,
+  spendDiscount,
+} from '@/features/organization/usage/usage.format';
 import type { UsageView } from '@/features/organization/usage/usage.view';
 import { getCycleProgress } from '@/modules/billing/billing-cycle';
 import { orgRoutes } from '@/utils/config/routes.config';
@@ -135,20 +141,25 @@ function UsageBody({
     <div className="@container/usage">
       <div className="grid grid-cols-1 gap-6 @2xl/usage:grid-cols-[minmax(0,1fr)_240px]">
         <div className="flex min-w-0 flex-col gap-3">
-          <div className="flex flex-wrap items-baseline gap-x-2">
-            <Text as="span" size="2xl" weight="semibold">
-              <SpendValue
-                spend={view.spendError ? undefined : view.spend}
-                spendError={view.spendError}
-              />
-            </Text>
-            <Text as="span" size="sm" textColor="muted">
-              {view.spendError ? (
-                <Trans>Spend isn&apos;t available</Trans>
-              ) : (
-                <Trans>spent so far, before tax and credits</Trans>
-              )}
-            </Text>
+          <div className="flex flex-col gap-0.5">
+            <div className="flex flex-wrap items-baseline gap-x-2">
+              <Text as="span" size="2xl" weight="semibold">
+                <SpendValue
+                  spend={view.spendError ? undefined : view.spend}
+                  spendError={view.spendError}
+                />
+              </Text>
+              <Text as="span" size="sm" textColor="muted">
+                {view.spendError ? (
+                  <Trans>Spend isn&apos;t available</Trans>
+                ) : spendDiscount(view.spend) ? (
+                  <Trans>due so far, before tax and credits</Trans>
+                ) : (
+                  <Trans>spent so far, before tax and credits</Trans>
+                )}
+              </Text>
+            </div>
+            {view.spendError ? null : <SpendBreakdown spend={view.spend} />}
           </div>
 
           {selected ? (
@@ -171,8 +182,16 @@ function UsageBody({
                           <SelectItem key={meter.id} value={meter.id}>
                             <span className="flex items-center gap-2 pr-6">
                               <span className="truncate">{meter.label}</span>
-                              {meter.spend && meter.spend.amount > 0 ? (
+                              {meter.spend && meterSpendBeforeDiscounts(meter) > 0 ? (
                                 <span className="text-muted-foreground tabular-nums">
+                                  {spendDiscount(meter.spend) ? (
+                                    <span className="mr-1 line-through">
+                                      {formatCurrency({
+                                        ...meter.spend,
+                                        amount: meterSpendBeforeDiscounts(meter),
+                                      })}
+                                    </span>
+                                  ) : null}
                                   {formatCurrency(meter.spend)}
                                 </span>
                               ) : null}
@@ -234,7 +253,7 @@ function UsageBody({
   );
 }
 
-function ServiceSpendList({
+export function ServiceSpendList({
   orgName,
   services,
   currency,
@@ -249,7 +268,9 @@ function ServiceSpendList({
 }) {
   const top = services.slice(0, TOP_SERVICES);
   const more = services.length - top.length;
-  const total = services.reduce((sum, service) => sum + service.amount, 0);
+  // Shares of what the usage costs before discounts, so a service that is
+  // 100% off still shows how much of the usage it is.
+  const total = services.reduce((sum, service) => sum + service.beforeDiscounts, 0);
 
   return (
     <div className="flex min-w-0 flex-col gap-1">
@@ -276,7 +297,15 @@ function ServiceSpendList({
                   {formatCurrency({ amount: service.amount, currency })}
                 </Text>
               </span>
-              <ShareBar value={service.amount} max={total} />
+              <SpendBreakdown
+                spend={{
+                  amount: service.amount,
+                  beforeDiscounts: service.beforeDiscounts,
+                  discount: service.discount,
+                  currency,
+                }}
+              />
+              <ShareBar value={service.beforeDiscounts} max={total} />
             </button>
           </li>
         ))}
