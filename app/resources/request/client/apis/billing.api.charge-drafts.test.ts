@@ -113,6 +113,36 @@ describe('saveChargeDraft', () => {
     expect(replaceBillingMiloapisComV1Alpha1NamespacedChargeDraft).not.toHaveBeenCalled();
   });
 
+  it('sets and removes annotations, keeping the others', async () => {
+    const read = {
+      ...draft('acme-ops-draft-x7k2p', 'acme-ops', '2026-11-01T00:00:00Z'),
+    };
+    read.metadata = { ...read.metadata, annotations: { keep: 'yes', old: 'gone' } };
+    vi.mocked(replaceBillingMiloapisComV1Alpha1NamespacedChargeDraft).mockResolvedValue({
+      data: { data: read },
+    } as never);
+    await saveChargeDraft(ORG, 'acme-ops', spec, read, { added: 'new', old: undefined });
+    expect(replaceBillingMiloapisComV1Alpha1NamespacedChargeDraft).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.objectContaining({
+          metadata: expect.objectContaining({ annotations: { keep: 'yes', added: 'new' } }),
+        }),
+      })
+    );
+
+    vi.mocked(createBillingMiloapisComV1Alpha1NamespacedChargeDraft).mockResolvedValue({
+      data: { data: read },
+    } as never);
+    await saveChargeDraft(ORG, 'acme-ops', spec, undefined, { added: 'new' });
+    expect(createBillingMiloapisComV1Alpha1NamespacedChargeDraft).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.objectContaining({
+          metadata: { generateName: 'acme-ops-draft-', namespace: NAMESPACE, annotations: { added: 'new' } },
+        }),
+      })
+    );
+  });
+
   it('replaces the draft as it was read, keeping its resource version', async () => {
     const read = draft('acme-ops-draft-x7k2p', 'acme-ops', '2026-11-01T00:00:00Z');
     const changed = { ...spec, invoice: 'NextInvoice' as const };

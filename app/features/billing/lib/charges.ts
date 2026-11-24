@@ -425,6 +425,61 @@ export const chargeInvoiceGroupName = (suffix: string = randomNameSuffix()): str
   `invoice-${suffix}`;
 
 /**
+ * The annotation on a charge draft that records a send under way: each
+ * line's charge name, in the draft's line order, and the invoice group
+ * they join. It's written before the first charge is added, so a send that
+ * stops partway can be picked up from the draft: lines whose charges exist
+ * are already added (a create under the same name is a no-op), and the rest
+ * join the same group.
+ */
+export const CHARGE_DRAFT_SEND_ANNOTATION = 'staff-portal.datum.net/charge-send';
+
+export interface ChargeDraftSend {
+  /** Each line's charge name, in the draft's line order. */
+  names: string[];
+  group?: ChargeInvoiceGroup;
+}
+
+/** The annotations recording a send on a draft. */
+export const chargeDraftSendAnnotations = (send: ChargeDraftSend): Record<string, string> => ({
+  [CHARGE_DRAFT_SEND_ANNOTATION]: JSON.stringify(send),
+});
+
+/**
+ * How many of a draft's lines are added already: those whose recorded
+ * charge exists among the account's charges.
+ */
+export const chargeDraftAddedCount = (
+  draft: ChargeDraft,
+  chargeNames: ReadonlySet<string>
+): number => readChargeDraftSend(draft)?.names.filter((name) => chargeNames.has(name)).length ?? 0;
+
+/**
+ * A draft's recorded send, if it has one that fits its lines. A record that
+ * doesn't parse, or names a different number of lines, is ignored: the
+ * draft is then sent afresh.
+ */
+export const readChargeDraftSend = (draft: ChargeDraft | undefined): ChargeDraftSend | undefined => {
+  const raw = draft?.metadata?.annotations?.[CHARGE_DRAFT_SEND_ANNOTATION];
+  if (!raw || !draft) return undefined;
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (typeof parsed !== 'object' || parsed === null) return undefined;
+    const { names, group } = parsed as { names?: unknown; group?: unknown };
+    if (!Array.isArray(names) || !names.every((name) => typeof name === 'string' && name)) {
+      return undefined;
+    }
+    if (names.length !== draft.spec.lines.length) return undefined;
+    if (group === undefined) return { names };
+    const g = group as { name?: unknown; size?: unknown };
+    if (typeof g.name !== 'string' || typeof g.size !== 'number') return undefined;
+    return { names, group: { name: g.name, size: g.size } };
+  } catch {
+    return undefined;
+  }
+};
+
+/**
  * A charge draft's spec from the dialog's lines: each line as its Charge
  * would be sent, without the account and timing the draft gives them all.
  */

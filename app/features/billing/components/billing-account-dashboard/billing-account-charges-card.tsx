@@ -1,6 +1,7 @@
 import { useAccountInvoices } from '../../hooks';
 import {
   chargeAmounts,
+  chargeDraftAddedCount,
   chargeDraftTotal,
   chargeQuantityText,
   chargeRemovalNote,
@@ -247,11 +248,14 @@ const buildColumns = (invoicesByName: Map<string, Invoice>, onRemove: (charge: C
  */
 function ChargeDraftRow({
   draft,
+  added,
   onEdit,
   onPreview,
   onDiscard,
 }: {
   draft: ChargeDraft;
+  /** How many of its lines are charges already, from a send that stopped partway. */
+  added: number;
   onEdit: () => void;
   onPreview: () => void;
   onDiscard: () => void;
@@ -278,6 +282,19 @@ function ChargeDraftRow({
         <Text size="xs" textColor="muted" className="break-words">
           {descriptions}
         </Text>
+        {added > 0 ? (
+          <Text size="xs" className="text-warning">
+            {draft.spec.invoice === 'Now' ? (
+              <Trans>
+                {added} of {lines.length} added. Add the rest to send their invoice.
+              </Trans>
+            ) : (
+              <Trans>
+                {added} of {lines.length} added. Add the rest from here.
+              </Trans>
+            )}
+          </Text>
+        ) : null}
         {created ? (
           <Text size="xs" textColor="muted">
             <Trans>
@@ -328,6 +345,10 @@ export function BillingAccountChargesCard({ orgName, account }: ChargesCardProps
   const charges = useMemo(
     () => sortChargesNewestFirst(chargesQuery.data?.items ?? []),
     [chargesQuery.data?.items]
+  );
+  const chargeNames = useMemo(
+    () => new Set(charges.map((charge) => charge.metadata?.name ?? '')),
+    [charges]
   );
   const invoicesByName = useMemo(
     () => new Map((invoices ?? []).map((invoice) => [invoice.metadata?.name ?? '', invoice])),
@@ -391,6 +412,7 @@ export function BillingAccountChargesCard({ orgName, account }: ChargesCardProps
             <ChargeDraftRow
               key={draft.metadata?.name}
               draft={draft}
+              added={chargeDraftAddedCount(draft, chargeNames)}
               onEdit={() => setEditingDraft(draft)}
               onPreview={() => setPreviewingDraft(draft.metadata?.name ?? null)}
               onDiscard={() => setDiscarding(draft)}
@@ -464,7 +486,13 @@ export function BillingAccountChargesCard({ orgName, account }: ChargesCardProps
         open={discarding !== null}
         onOpenChange={(open) => (open ? undefined : setDiscarding(null))}
         title={t`Discard draft?`}
-        description={t`Its lines are deleted. Nothing was added or invoiced from it.`}
+        description={
+          discarding && chargeDraftAddedCount(discarding, chargeNames) > 0
+            ? discarding.spec.invoice === 'Now'
+              ? t`Its lines not added yet are deleted. The ones already added wait for them, so remove those from the charges list too.`
+              : t`Its lines not added yet are deleted. The ones already added stay on the next invoice.`
+            : t`Its lines are deleted. Nothing was added or invoiced from it.`
+        }
         confirmText={t`Discard draft`}
         cancelText={t`Keep it`}
         variant="destructive"

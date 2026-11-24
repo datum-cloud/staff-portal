@@ -2,6 +2,8 @@ import { useAccountPaymentMethods } from '../../hooks';
 import {
   buildChargeDraftSpec,
   buildChargeSpec,
+  CHARGE_DRAFT_SEND_ANNOTATION,
+  chargeDraftSendAnnotations,
   catalogPricingName,
   chargeAmounts,
   chargeFormValuesFromLine,
@@ -22,6 +24,7 @@ import {
   nextBillingPeriod,
   parseHundredths,
   pricingUnitAmount,
+  readChargeDraftSend,
   type ChargeDraft,
   type ChargeFormValues,
   type ChargeInvoiceTiming,
@@ -39,6 +42,7 @@ import { ChargeItemPicker, PickedItemInfo } from './charge-item-picker';
 import { buildChargeSchema } from './schema';
 import { chargeDraftServerErrors, chargeServerErrors } from './server-errors';
 import {
+  useChargeListForAccountQuery,
   useCreateChargeMutation,
   useDeleteChargeDraftMutation,
   useSaveChargeDraftMutation,
@@ -119,8 +123,11 @@ export function AddChargeDialog({
 }) {
   const [now] = useState(() => new Date());
   const pricingsQuery = useServicePricingListQuery(DEFAULT_SERVICE_PRICING_NAMESPACE);
+  // Closing goes through the form, which asks first when some lines are
+  // added and the rest would be lost.
+  const requestCloseRef = useRef<() => void>(onClose);
   return (
-    <Dialog open onOpenChange={(open) => (open ? undefined : onClose())}>
+    <Dialog open onOpenChange={(open) => (open ? undefined : requestCloseRef.current())}>
       <Dialog.Content className="sm:max-w-2xl">
         <Dialog.Header
           title={draft ? t`Draft charges` : t`Add charge`}
@@ -146,6 +153,7 @@ export function AddChargeDialog({
             draft={draft}
             canSaveDraft={canSaveDraft || Boolean(draft)}
             onClose={onClose}
+            requestCloseRef={requestCloseRef}
           />
         )}
       </Dialog.Content>
@@ -162,6 +170,7 @@ function AddChargeForm({
   draft,
   canSaveDraft,
   onClose,
+  requestCloseRef,
 }: {
   orgName: string;
   account: BillingAccount;
@@ -171,6 +180,7 @@ function AddChargeForm({
   draft?: ChargeDraft;
   canSaveDraft: boolean;
   onClose: () => void;
+  requestCloseRef: { current: () => void };
 }) {
   const accountName = account.metadata?.name ?? '';
   const accountDisplayName = getBillingAccountDisplayName(account);
@@ -180,15 +190,22 @@ function AddChargeForm({
   const options = useMemo(() => chargeItemOptions(pricings, account), [pricings, account]);
   const [optionsOpen, setOptionsOpen] = useState(false);
   const initialInvoice = draft?.spec.invoice ?? 'NextInvoice';
-  // Lines kept with "Add another line", or a draft's: all but the one in
-  // the form.
-  const [lines, setLines] = useState<ChargeLine[]>(() =>
-    (draft?.spec.lines ?? []).map((line) => ({
+  // A send of this draft that stopped partway: its charges' names and
+  // invoice group, so the rest join the same invoice.
+  const [sendRecord] = useState(() => readChargeDraftSend(draft));
+  const [initial] = useState(() => {
+    const lines: ChargeLine[] = (draft?.spec.lines ?? []).map((line) => ({
       id: newLineId(),
       values: chargeFormValuesFromLine(line, initialInvoice),
       added: false,
-    }))
-  );
+    }));
+    const names = new Map<string, string>();
+    sendRecord?.names.forEach((name, index) => names.set(lines[index].id, name));
+    return { lines, names };
+  });
+  // Lines kept with "Add another line", or a draft's: all but the one in
+  // the form.
+  const [lines, setLines] = useState<ChargeLine[]>(initial.lines);
   // The line in the form, so it keeps its charge's name if it comes back.
   const formLineIdRef = useRef(newLineId());
   // Where the line in the form goes among the kept ones: at the end, or,
@@ -200,8 +217,8 @@ function AddChargeForm({
   };
   const saveDraft = useSaveChargeDraftMutation(orgName, accountName);
   const deleteDraft = useDeleteChargeDraftMutation(orgName, accountName);
-  // Set once the draft is removed: its lines are charges from then on.
-  const draftGoneRef = useRef(false);
+  // The draft as last saved, for its latest version.
+  const draftRef = useRef(draft);
   // Invoicing now confirms in a second step, with every line.
   const [confirming, setConfirming] = useState<PendingSend | null>(null);
   // What billing refused that isn't one field's, shown above the buttons.
@@ -209,14 +226,50 @@ function AddChargeForm({
   const formRef = useRef<UseFormReturn<ChargeFormValues> | null>(null);
   // Each line's charge name, picked on its first try and sent on every
   // retry, so a retry after a lost response can't add a second charge.
-  const namesRef = useRef(new Map<string, string>());
+  const namesRef = useRef(initial.names);
   // The invoice group's name, picked once, so a retry joins the same group.
-  const groupNameRef = useRef<string | null>(null);
+  const groupNameRef = useRef<string | null>(sendRecord?.group?.name ?? null);
   // Set while a create is in flight, so a double click sends it once.
   const sendingRef = useRef(false);
   // Once a line is added, the rest must join it as they are: same group
   // size and timing.
   const locked = lines.some((line) => line.added);
+
+  // Lines of a recorded send whose charges exist are added already.
+  const chargesQuery = useChargeListForAccountQuery(orgName, accountName);
+  const markedRef = useRef(false);
+  useEffect(() => {
+    if (markedRef.current || !sendRecord || !chargesQuery.data) return;
+    markedRef.current = true;
+    const existing = new Set(chargesQuery.data.items.map((charge) => charge.metadata?.name));
+    setLines((current) =>
+      current.map((line) =>
+        existing.has(namesRef.current.get(line.id)) ? { ...line, added: true } : line
+      )
+    );
+  }, [sendRecord, chargesQuery.data]);
+
+  // Closing with some lines added and the rest only here asks first. A
+  // draft being sent keeps every line until they're all added, so it can be
+  // picked up later.
+  const [leaving, setLeaving] = useState(false);
+  const requestClose = () => {
+    if (locked && !draftRef.current) setLeaving(true);
+    else onClose();
+  };
+  useEffect(() => {
+    requestCloseRef.current = requestClose;
+  });
+
+  // Each line's charge name, picked once.
+  const nameFor = (line: ChargeLine) => {
+    let name = namesRef.current.get(line.id);
+    if (!name) {
+      name = chargeName(line.values.description);
+      namesRef.current.set(line.id, name);
+    }
+    return name;
+  };
 
   const create = async ({ lines: all, invoice }: PendingSend) => {
     if (sendingRef.current) return;
@@ -226,25 +279,40 @@ function AddChargeForm({
     const group = chargeInvoiceGroup(invoice, all.length, groupNameRef.current);
     const added = new Set(all.filter((line) => line.added).map((line) => line.id));
     try {
+      // A draft records the send before the first charge, and keeps every
+      // line until all are added: if the send stops partway, the draft
+      // still has the rest, and picking it up adds nothing twice.
+      if (draftRef.current) {
+        try {
+          draftRef.current =
+            (await saveDraft.mutateAsync({
+              spec: buildChargeDraftSpec(
+                all.map((line) => line.values),
+                invoice,
+                accountName
+              ),
+              draft: draftRef.current,
+              annotations: chargeDraftSendAnnotations({ names: all.map(nameFor), group }),
+            })) ?? draftRef.current;
+        } catch (err) {
+          setFormErrors(chargeDraftServerErrors(err));
+          return;
+        }
+      }
       for (const line of all) {
         if (added.has(line.id)) continue;
-        let name = namesRef.current.get(line.id);
-        if (!name) {
-          name = chargeName(line.values.description);
-          namesRef.current.set(line.id, name);
-        }
         try {
           await createCharge.mutateAsync({
             spec: buildChargeSpec({ ...line.values, invoice }, accountName, group),
-            name,
+            name: nameFor(line),
           });
           added.add(line.id);
-          await removeSentDraft();
         } catch (err) {
           showFailure(err, line, all, added, invoice);
           return;
         }
       }
+      await removeSentDraft();
       toast.success(successMessage(all.length, invoice));
       onClose();
     } finally {
@@ -252,17 +320,16 @@ function AddChargeForm({
     }
   };
 
-  // Once a draft's first line is a charge, the draft goes, so it can't be
-  // sent twice; the lines still to add stay in the dialog.
+  // Once every line is a charge, the draft goes.
   const removeSentDraft = async () => {
-    const name = draft?.metadata?.name;
-    if (!name || draftGoneRef.current) return;
-    draftGoneRef.current = true;
+    const name = draftRef.current?.metadata?.name;
+    if (!name) return;
     try {
       await deleteDraft.mutateAsync(name);
+      draftRef.current = undefined;
     } catch {
       toast.error(
-        t`The charges were added, but the draft couldn't be removed. Discard it from the charges card so it isn't sent again.`
+        t`The charges were added, but the draft couldn't be removed. Discard it from the charges card. Adding it again wouldn't add them twice.`
       );
     }
   };
@@ -288,10 +355,14 @@ function AddChargeForm({
     form?.reset({ ...failed.values, invoice });
     const unplaced: string[] = [];
     if (added.size > 0) {
+      const kept = draftRef.current
+        ? t` The draft keeps the rest until they're all added.`
+        : '';
       unplaced.push(
-        invoice === 'Now' && all.length > 1
+        (invoice === 'Now' && all.length > 1
           ? t`${added.size} of the ${all.length} lines are added. Fix this one and add it again: the invoice goes out once all of them are added.`
-          : t`${added.size} of the ${all.length} lines are added. Fix this one and add it again.`
+          : t`${added.size} of the ${all.length} lines are added. Fix this one and add it again.`) +
+          kept
       );
     }
     for (const error of chargeServerErrors(err, failed.values.setPeriod)) {
@@ -393,6 +464,9 @@ function AddChargeForm({
       });
     }
     setFormErrors([]);
+    // With some lines added, the draft records their charges and group, so
+    // adding it later finishes the same invoice rather than starting one.
+    const partial = all.some((line) => line.added);
     try {
       await saveDraft.mutateAsync({
         spec: buildChargeDraftSpec(
@@ -400,12 +474,20 @@ function AddChargeForm({
           current.invoice,
           accountName
         ),
-        draft,
+        draft: draftRef.current,
+        annotations: partial
+          ? chargeDraftSendAnnotations({
+              names: all.map(nameFor),
+              group: chargeInvoiceGroup(current.invoice, all.length, groupNameRef.current ?? ''),
+            })
+          : { [CHARGE_DRAFT_SEND_ANNOTATION]: undefined },
       });
       toast.success(
-        draft
-          ? t`Draft saved.`
-          : t`Saved as a draft. It's on the charges card to check, preview and add.`
+        partial
+          ? t`The rest are saved with the added lines as a draft. Add it from the charges card to finish the invoice.`
+          : draftRef.current
+            ? t`Draft saved.`
+            : t`Saved as a draft. It's on the charges card to check, preview and add.`
       );
       onClose();
     } catch (err) {
@@ -425,7 +507,8 @@ function AddChargeForm({
           <>
             <ShowSubmitErrors />
             <FormBridge formRef={formRef} onOptionErrors={() => setOptionsOpen(true)} />
-            <Dialog.Body className={cn('flex flex-col gap-4 px-5 pt-0', confirming && 'hidden')}>
+            <Dialog.Body
+              className={cn('flex flex-col gap-4 px-5 pt-0', (confirming || leaving) && 'hidden')}>
               <KeptLines
                 lines={lines}
                 formAt={formAt}
@@ -507,6 +590,21 @@ function AddChargeForm({
               <FormErrors errors={formErrors} />
             </Dialog.Body>
 
+            {leaving ? (
+              <Dialog.Body className="flex flex-col gap-3 px-5 pt-0">
+                <LeavingWarning
+                  added={lines.filter((line) => line.added).length}
+                  pending={
+                    lines.filter((line) => !line.added).length +
+                    (formRef.current && !isEmptyChargeForm(formRef.current.getValues()) ? 1 : 0)
+                  }
+                  grouped={formRef.current?.getValues('invoice') === 'Now'}
+                  canSaveDraft={canSaveDraft}
+                />
+                <FormErrors errors={formErrors} />
+              </Dialog.Body>
+            ) : null}
+
             {confirming ? (
               <Dialog.Body className="flex flex-col gap-3 px-5 pt-0">
                 <InvoiceNowConfirmation
@@ -520,7 +618,35 @@ function AddChargeForm({
             ) : null}
 
             <Dialog.Footer className="gap-2">
-              {confirming ? (
+              {leaving ? (
+                <>
+                  <Button
+                    type="quaternary"
+                    theme="borderless"
+                    htmlType="button"
+                    disabled={saveDraft.isPending}
+                    onClick={() => setLeaving(false)}>
+                    <Trans>Back</Trans>
+                  </Button>
+                  <Button
+                    type="danger"
+                    theme="outline"
+                    htmlType="button"
+                    disabled={saveDraft.isPending}
+                    onClick={onClose}>
+                    <Trans>Close anyway</Trans>
+                  </Button>
+                  {canSaveDraft ? (
+                    <Button
+                      htmlType="button"
+                      loading={saveDraft.isPending}
+                      disabled={saveDraft.isPending}
+                      onClick={() => void saveAsDraft()}>
+                      <Trans>Save the rest as a draft</Trans>
+                    </Button>
+                  ) : null}
+                </>
+              ) : confirming ? (
                 <>
                   <Button
                     type="quaternary"
@@ -545,10 +671,10 @@ function AddChargeForm({
                     theme="borderless"
                     htmlType="button"
                     disabled={busy}
-                    onClick={onClose}>
+                    onClick={requestClose}>
                     <Trans>Cancel</Trans>
                   </Button>
-                  {canSaveDraft && !locked ? (
+                  {canSaveDraft ? (
                     <Button
                       type="secondary"
                       theme="outline"
@@ -556,7 +682,13 @@ function AddChargeForm({
                       loading={saveDraft.isPending}
                       disabled={busy || saveDraft.isPending}
                       onClick={() => void saveAsDraft()}>
-                      {draft ? <Trans>Save draft</Trans> : <Trans>Save as draft</Trans>}
+                      {draftRef.current ? (
+                        <Trans>Save draft</Trans>
+                      ) : locked ? (
+                        <Trans>Save the rest as a draft</Trans>
+                      ) : (
+                        <Trans>Save as draft</Trans>
+                      )}
                     </Button>
                   ) : null}
                   <SubmitButton
@@ -604,6 +736,49 @@ function FormBridge({
 
 const hasOptionError = (errors: FieldErrors<ChargeFormValues>) =>
   OPTION_FIELDS.some((field) => Boolean(errors[field]));
+
+/**
+ * What closing loses, when some lines are added and the rest are only in
+ * the dialog.
+ */
+function LeavingWarning({
+  added,
+  pending,
+  grouped,
+  canSaveDraft,
+}: {
+  added: number;
+  pending: number;
+  grouped: boolean;
+  canSaveDraft: boolean;
+}) {
+  return (
+    <Alert variant="warning">
+      <AlertDescription className="flex flex-col gap-2">
+        <Text size="sm" weight="medium">
+          <Trans>
+            {added} added, {pending} not added yet
+          </Trans>
+        </Text>
+        <Text size="sm">
+          {grouped ? (
+            <Trans>
+              The added charges wait for the rest: their invoice goes out once every line is added.
+              Closing loses the lines not added yet.
+            </Trans>
+          ) : (
+            <Trans>Closing loses the lines not added yet.</Trans>
+          )}{' '}
+          {canSaveDraft ? (
+            <Trans>Save them as a draft to add later.</Trans>
+          ) : grouped ? (
+            <Trans>If you close, remove the added charges from the charges card.</Trans>
+          ) : null}
+        </Text>
+      </AlertDescription>
+    </Alert>
+  );
+}
 
 function FormErrors({ errors }: { errors: string[] }) {
   if (errors.length === 0) return null;

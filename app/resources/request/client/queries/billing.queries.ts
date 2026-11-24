@@ -559,8 +559,16 @@ export const useChargeDraftListForAccountQuery = (orgName: string, accountName: 
 export const useSaveChargeDraftMutation = (orgName: string, accountName: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ spec, draft }: { spec: ChargeDraftSpec; draft?: ChargeDraft }) =>
-      saveChargeDraft(orgName, accountName, spec, draft),
+    mutationFn: ({
+      spec,
+      draft,
+      annotations,
+    }: {
+      spec: ChargeDraftSpec;
+      draft?: ChargeDraft;
+      /** Set annotations replace the draft's; undefined ones are removed. */
+      annotations?: Record<string, string | undefined>;
+    }) => saveChargeDraft(orgName, accountName, spec, draft, annotations),
     onSettled: () =>
       queryClient.invalidateQueries({
         queryKey: billingQueryKeys.chargeDrafts(orgName, accountName),

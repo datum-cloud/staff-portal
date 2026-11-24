@@ -1490,15 +1490,30 @@ export const saveChargeDraft = async (
   orgName: string,
   accountName: string,
   spec: ChargeDraftSpec,
-  draft?: ChargeDraft
+  draft?: ChargeDraft,
+  annotations?: Record<string, string | undefined>
 ): Promise<ChargeDraft | undefined> => {
   const namespace = buildOrganizationNamespace(orgName);
+  // Set annotations replace the draft's, and undefined ones are removed.
+  const withAnnotations = (current?: Record<string, string>) => {
+    if (!annotations) return current;
+    const merged: Record<string, string> = { ...current };
+    for (const [key, value] of Object.entries(annotations)) {
+      if (value === undefined) delete merged[key];
+      else merged[key] = value;
+    }
+    return Object.keys(merged).length > 0 ? merged : undefined;
+  };
   if (draft?.metadata?.name) {
     const response = await replaceBillingMiloapisComV1Alpha1NamespacedChargeDraft({
       baseURL: getClientOrgControlPlaneBaseURL(orgName),
       path: { namespace, name: draft.metadata.name },
       query: { fieldManager: FIELD_MANAGER },
-      body: { ...draft, spec },
+      body: {
+        ...draft,
+        metadata: { ...draft.metadata, annotations: withAnnotations(draft.metadata.annotations) },
+        spec,
+      },
       skipErrorToast: true,
     });
     return response.data?.data;
@@ -1510,7 +1525,11 @@ export const saveChargeDraft = async (
     body: {
       apiVersion: 'billing.miloapis.com/v1alpha1',
       kind: 'ChargeDraft',
-      metadata: { generateName: `${accountName}-draft-`, namespace },
+      metadata: {
+        generateName: `${accountName}-draft-`,
+        namespace,
+        annotations: withAnnotations(undefined),
+      },
       spec,
     },
     skipErrorToast: true,

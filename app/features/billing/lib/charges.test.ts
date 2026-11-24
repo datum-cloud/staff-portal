@@ -1,5 +1,9 @@
 import {
   billingPeriodContaining,
+  CHARGE_DRAFT_SEND_ANNOTATION,
+  chargeDraftAddedCount,
+  chargeDraftSendAnnotations,
+  readChargeDraftSend,
   buildChargeDraftSpec,
   buildChargeSpec,
   chargeAmounts,
@@ -32,6 +36,7 @@ import {
   servicePeriodShapeProblems,
   sortChargesNewestFirst,
   type Charge,
+  type ChargeDraft,
   type ChargeFormValues,
 } from './charges';
 import type {
@@ -751,5 +756,50 @@ describe('isInvoiceWriterReady', () => {
     expect(isInvoiceWriterReady(withCondition('True'))).toBe(true);
     expect(isInvoiceWriterReady(withCondition('False'))).toBe(false);
     expect(isInvoiceWriterReady(account())).toBe(false);
+  });
+});
+
+describe('recording a draft send', () => {
+  const draft = (annotation?: string, lines = 2): ChargeDraft => ({
+    apiVersion: 'billing.miloapis.com/v1alpha1',
+    kind: 'ChargeDraft',
+    metadata: {
+      name: 'acme-draft-x7k2p',
+      annotations: annotation ? { [CHARGE_DRAFT_SEND_ANNOTATION]: annotation } : undefined,
+    },
+    spec: {
+      billingAccountRef: { name: 'acme' },
+      invoice: 'Now',
+      lines: Array.from({ length: lines }, () => ({ description: 'Install', quantity: '1' })),
+    },
+  });
+
+  it('reads back what it records', () => {
+    const send = { names: ['setup-a1b2c', 'install-d3e4f'], group: { name: 'invoice-x7k2p', size: 2 } };
+    const annotation = chargeDraftSendAnnotations(send)[CHARGE_DRAFT_SEND_ANNOTATION];
+    expect(readChargeDraftSend(draft(annotation))).toEqual(send);
+  });
+
+  it('reads a send without a group', () => {
+    const annotation = JSON.stringify({ names: ['setup-a1b2c', 'install-d3e4f'] });
+    expect(readChargeDraftSend(draft(annotation))).toEqual({ names: ['setup-a1b2c', 'install-d3e4f'] });
+  });
+
+  it('counts the lines whose charges exist', () => {
+    const recorded = draft(JSON.stringify({ names: ['setup-a1b2c', 'install-d3e4f'] }));
+    expect(chargeDraftAddedCount(recorded, new Set(['setup-a1b2c', 'other']))).toBe(1);
+    expect(chargeDraftAddedCount(recorded, new Set())).toBe(0);
+    expect(chargeDraftAddedCount(draft(), new Set(['setup-a1b2c']))).toBe(0);
+  });
+
+  it('ignores a record that is missing, unreadable or for other lines', () => {
+    expect(readChargeDraftSend(undefined)).toBeUndefined();
+    expect(readChargeDraftSend(draft())).toBeUndefined();
+    expect(readChargeDraftSend(draft('not json'))).toBeUndefined();
+    expect(readChargeDraftSend(draft(JSON.stringify({ names: ['only-one'] })))).toBeUndefined();
+    expect(readChargeDraftSend(draft(JSON.stringify({ names: ['a', ''] })))).toBeUndefined();
+    expect(
+      readChargeDraftSend(draft(JSON.stringify({ names: ['a', 'b'], group: { name: 'g' } })))
+    ).toBeUndefined();
   });
 });
