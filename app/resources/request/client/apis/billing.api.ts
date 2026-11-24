@@ -1,4 +1,5 @@
 import type { Charge, ChargeSpec } from '@/features/billing/lib/charges';
+import type { ContactMergePatch } from '@/features/billing/lib/contact-details';
 import {
   CONTRACT_BILLING_ACCOUNT_LABEL,
   CONTRACT_BILLING_DAY_ANNOTATION,
@@ -56,6 +57,7 @@ import {
   listBillingMiloapisComV1Alpha1NamespacedServicePricing,
   listBillingMiloapisComV1Alpha1Offer,
   listBillingMiloapisComV1Alpha1PaymentMethodForAllNamespaces,
+  patchBillingMiloapisComV1Alpha1NamespacedBillingAccount,
   patchBillingMiloapisComV1Alpha1NamespacedBillingArrangement,
   patchBillingMiloapisComV1Alpha1NamespacedBillingEntitlement,
   patchBillingMiloapisComV1Alpha1Offer,
@@ -119,6 +121,29 @@ export const billingAccountDetailQuery = async (orgName: string, accountName: st
   const response = await readBillingMiloapisComV1Alpha1NamespacedBillingAccount({
     baseURL: getClientOrgControlPlaneBaseURL(orgName),
     path: { namespace, name: accountName },
+  });
+  return response.data?.data;
+};
+
+/**
+ * Edits a billing account's contact details, address and tax IDs. Errors
+ * aren't toasted: the form puts billing's refusals on their fields.
+ */
+export const patchBillingAccountContact = async (
+  orgName: string,
+  accountName: string,
+  body: ContactMergePatch
+) => {
+  const namespace = buildOrganizationNamespace(orgName);
+  const response = await patchBillingMiloapisComV1Alpha1NamespacedBillingAccount({
+    baseURL: getClientOrgControlPlaneBaseURL(orgName),
+    path: { namespace, name: accountName },
+    query: { fieldManager: FIELD_MANAGER },
+    headers: { 'Content-Type': 'application/merge-patch+json' },
+    // Merge patch uses null to remove optional fields, which the generated
+    // body type (the full resource) doesn't allow for.
+    body: body as never,
+    skipErrorToast: true,
   });
   return response.data?.data;
 };

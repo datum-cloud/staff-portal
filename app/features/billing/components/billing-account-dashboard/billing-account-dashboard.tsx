@@ -137,7 +137,7 @@ export function BillingAccountDashboard({
             switchOpen={switchOfferOpen}
             onSwitchOpenChange={setSwitchOfferOpen}
           />
-          <BillingAccountContactCard account={account} />
+          <BillingAccountContactCard orgName={orgName} account={account} />
           <BillingAccountConfigCard orgName={orgName} account={account} contract={contract} />
         </aside>
 
