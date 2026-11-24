@@ -892,8 +892,8 @@ msgid "Activity log"
 msgstr ""
 
 #: app/features/contact/components/add-to-group-dialog.tsx:93
-#: app/routes/admin/group/detail/member.tsx:132
-#: app/routes/admin/group/detail/member.tsx:155
+#: app/routes/admin/group/detail/member.tsx:150
+#: app/routes/admin/group/detail/member.tsx:173
 #: app/routes/marketing/contact-group/detail/member.tsx:335
 #: app/routes/marketing/contact-group/detail/member.tsx:361
 #: app/routes/marketing/contact-group/index.tsx:205
@@ -949,7 +949,12 @@ msgstr ""
 msgid "Add filter"
 msgstr ""
 
-#: app/routes/admin/group/detail/member.tsx:154
+#: app/features/group/group-dialogs.tsx:68
+#: app/routes/admin/group/index.tsx:95
+msgid "Add Group"
+msgstr ""
+
+#: app/routes/admin/group/detail/member.tsx:172
 #: app/routes/marketing/contact-group/detail/member.tsx:360
 msgid "Add Member"
 msgstr ""
@@ -1288,7 +1293,7 @@ msgid "Are you sure you want to delete grant \"{0}\"? This action cannot be undo
 msgstr ""
 
 #. placeholder {0}: selectedGroupMembership?.metadata?.name ?? ''
-#: app/routes/admin/group/detail/member.tsx:140
+#: app/routes/admin/group/detail/member.tsx:158
 msgid "Are you sure you want to delete member \"{0}\"? This action cannot be undone."
 msgstr ""
 
@@ -1557,6 +1562,10 @@ msgstr ""
 msgid "Can be removed until {0}"
 msgstr ""
 
+#: app/features/group/group-dialogs.tsx:86
+msgid "Can't be changed later. Lowercase letters, numbers and hyphens."
+msgstr ""
+
 #: app/features/billing/components/contract-editor/billing-day-field.tsx:73
 msgid "Can't be changed once the contract is saved."
 msgstr ""
@@ -1581,6 +1590,8 @@ msgstr ""
 #: app/features/contact/components/contact-list.tsx:135
 #: app/features/feature-flags/components/feature-flag-list.tsx:230
 #: app/features/fraud/policy/policy-form.tsx:314
+#: app/features/group/group-dialogs.tsx:71
+#: app/features/group/group-dialogs.tsx:126
 #: app/features/project/components/project-suspension-card.tsx:85
 #: app/features/quota/components/quota-bucket-list.tsx:171
 #: app/features/quota/components/quota-grant-list.tsx:162
@@ -1588,8 +1599,8 @@ msgstr ""
 #: app/features/user/components/user-identity-card.tsx:296
 #: app/features/user/components/user-recovery-link-dialog.tsx:59
 #: app/features/user/components/user-reject-dialog.tsx:30
-#: app/routes/admin/group/detail/member.tsx:142
-#: app/routes/admin/group/detail/member.tsx:156
+#: app/routes/admin/group/detail/member.tsx:160
+#: app/routes/admin/group/detail/member.tsx:174
 #: app/routes/admin/offer/create.tsx:192
 #: app/routes/admin/offer/detail.tsx:479
 #: app/routes/admin/offer/detail.tsx:492
@@ -2259,6 +2270,7 @@ msgstr ""
 #: app/features/contact-group/components/contact-group-form.tsx:103
 #: app/features/contact/components/contact-form.tsx:255
 #: app/features/fraud/policy/policy-form.tsx:317
+#: app/features/group/group-dialogs.tsx:70
 #: app/routes/admin/offer/create.tsx:33
 #: app/routes/customer/fraud/providers/create.tsx:16
 #: app/routes/customer/fraud/providers/create.tsx:134
@@ -2317,10 +2329,10 @@ msgstr ""
 #: app/features/project/components/project-details-card.tsx:52
 #: app/features/quota/components/quota-grant-list.tsx:129
 #: app/features/user/components/user-identity-card.tsx:262
-#: app/routes/admin/group/detail/index.tsx:46
-#: app/routes/admin/group/detail/member.tsx:107
-#: app/routes/admin/group/index.tsx:35
-#: app/routes/admin/group/index.tsx:62
+#: app/routes/admin/group/detail/index.tsx:62
+#: app/routes/admin/group/detail/member.tsx:125
+#: app/routes/admin/group/index.tsx:75
+#: app/routes/admin/group/index.tsx:112
 #: app/routes/admin/offer/detail.tsx:326
 #: app/routes/admin/offer/index.tsx:97
 #: app/routes/admin/offer/index.tsx:152
@@ -2348,6 +2360,10 @@ msgstr ""
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-header.tsx:108
 msgid "Created <0/>"
+msgstr ""
+
+#: app/features/group/group-dialogs.tsx:69
+msgid "Creates a staff group in {STAFF_GROUP_NAMESPACE}."
 msgstr ""
 
 #: app/routes/customer/fraud/providers/create.tsx:105
@@ -2534,8 +2550,8 @@ msgstr ""
 #: app/features/fraud/policy/policy-detail.tsx:325
 #: app/features/quota/components/quota-grant-list.tsx:140
 #: app/features/quota/components/quota-grant-list.tsx:161
-#: app/routes/admin/group/detail/member.tsx:80
-#: app/routes/admin/group/detail/member.tsx:141
+#: app/routes/admin/group/detail/member.tsx:89
+#: app/routes/admin/group/detail/member.tsx:159
 #: app/routes/customer/fraud/index.tsx:101
 #: app/routes/customer/fraud/index.tsx:229
 #: app/routes/customer/fraud/policy.tsx:123
@@ -2555,6 +2571,18 @@ msgstr ""
 #: app/routes/profile/session.tsx:40
 #: app/routes/profile/session.tsx:104
 msgid "Delete"
+msgstr ""
+
+#: app/routes/admin/group/detail/index.tsx:100
+msgid "Delete \"{displayName}\"? Its {memberCount} members lose any access this group grants. This can't be undone."
+msgstr ""
+
+#: app/routes/admin/group/detail/index.tsx:99
+msgid "Delete \"{displayName}\"? Its 1 member loses any access this group grants. This can't be undone."
+msgstr ""
+
+#: app/routes/admin/group/detail/index.tsx:97
+msgid "Delete \"{displayName}\"? This can't be undone."
 msgstr ""
 
 #. placeholder {0}: taskRows.length
@@ -2600,7 +2628,12 @@ msgstr ""
 msgid "Delete Grant"
 msgstr ""
 
-#: app/routes/admin/group/detail/member.tsx:139
+#: app/routes/admin/group/detail/index.tsx:92
+#: app/routes/admin/group/detail/index.tsx:94
+msgid "Delete Group"
+msgstr ""
+
+#: app/routes/admin/group/detail/member.tsx:157
 #: app/routes/marketing/contact-group/detail/member.tsx:342
 msgid "Delete Member"
 msgstr ""
@@ -2690,7 +2723,8 @@ msgstr ""
 #: app/features/billing/components/charges/add-charge-dialog.tsx:544
 #: app/features/contact-group/components/contact-group-form.tsx:80
 #: app/features/dns/components/dns-zone-list.tsx:133
-#: app/routes/admin/group/detail/index.tsx:37
+#: app/features/group/group-dialogs.tsx:28
+#: app/routes/admin/group/detail/index.tsx:53
 msgid "Description"
 msgstr ""
 
@@ -2758,6 +2792,7 @@ msgstr ""
 msgid "Discounts"
 msgstr ""
 
+#: app/features/group/group-dialogs.tsx:25
 #: app/features/organization/components/org-details-card.tsx:47
 #: app/features/project/components/project-details-card.tsx:31
 #: app/features/project/components/project-organization-card.tsx:44
@@ -2775,6 +2810,8 @@ msgid "Display Name"
 msgstr ""
 
 #: app/features/contact-group/components/contact-group-form.tsx:21
+#: app/features/group/group-dialogs.tsx:60
+#: app/features/group/group-dialogs.tsx:116
 msgid "Display name is required"
 msgstr ""
 
@@ -2938,6 +2975,14 @@ msgstr ""
 msgid "due so far, before tax and credits"
 msgstr ""
 
+#: app/features/group/group-dialogs.tsx:88
+msgid "e.g. finance"
+msgstr ""
+
+#: app/features/group/group-dialogs.tsx:26
+msgid "e.g. Finance"
+msgstr ""
+
 #: app/routes/customer/resource/index.tsx:390
 msgid "Each resource type is limited to 2,000 results at a time. Refine your search to surface other resources."
 msgstr ""
@@ -2950,6 +2995,7 @@ msgstr ""
 #: app/features/contact/components/contact-list.tsx:56
 #: app/features/contact/components/edit-contact-dialog.tsx:39
 #: app/features/fraud/policy/policy-detail.tsx:318
+#: app/routes/admin/group/detail/index.tsx:79
 #: app/routes/admin/offer/detail.tsx:299
 #: app/routes/customer/fraud/providers/index.tsx:42
 #: app/routes/marketing/contact-group/index.tsx:49
@@ -2981,6 +3027,10 @@ msgstr ""
 
 #: app/routes/customer/fraud/providers/detail.tsx:34
 msgid "Edit Fraud Provider"
+msgstr ""
+
+#: app/features/group/group-dialogs.tsx:124
+msgid "Edit Group"
 msgstr ""
 
 #: app/routes/marketing/contact/detail/notes.tsx:174
@@ -3178,7 +3228,6 @@ msgid "Enter reason for rejection..."
 msgstr ""
 
 #: app/features/contact/components/contact-form.tsx:231
-#: app/routes/admin/group/detail/member.tsx:180
 #: app/routes/marketing/contact-group/detail/member.tsx:114
 msgid "Enter the full email to search..."
 msgstr ""
@@ -3712,12 +3761,24 @@ msgstr ""
 msgid "Group"
 msgstr ""
 
-#: app/routes/admin/group/detail/index.tsx:56
+#: app/features/group/group-dialogs.tsx:79
+msgid "Group created"
+msgstr ""
+
+#: app/routes/admin/group/detail/index.tsx:104
+msgid "Group deleted"
+msgstr ""
+
+#: app/routes/admin/group/detail/index.tsx:72
 msgid "Group Information"
 msgstr ""
 
+#: app/features/group/group-dialogs.tsx:138
+msgid "Group updated"
+msgstr ""
+
 #: app/routes/admin/breadcrumb-switchers.tsx:6
-#: app/routes/admin/group/index.tsx:12
+#: app/routes/admin/group/index.tsx:20
 #: app/routes/admin/group/layout.tsx:8
 msgid "Groups"
 msgstr ""
@@ -3812,13 +3873,22 @@ msgstr ""
 msgid "HTML"
 msgstr ""
 
+#: app/features/group/group-dialogs.tsx:85
 #: app/features/project/components/project-billing-card.tsx:58
 #: app/features/project/components/project-organization-card.tsx:48
-#: app/routes/admin/group/detail/index.tsx:30
+#: app/routes/admin/group/detail/index.tsx:46
 #: app/routes/admin/offer/create.tsx:128
 #: app/routes/admin/offer/detail.tsx:281
 #: app/routes/customer/user/detail/index.tsx:203
 msgid "ID"
+msgstr ""
+
+#: app/features/group/group-dialogs.tsx:51
+msgid "ID is required"
+msgstr ""
+
+#: app/features/group/group-dialogs.tsx:52
+msgid "ID must be 63 characters or fewer"
 msgstr ""
 
 #: app/features/billing/lib/charges.ts:638
@@ -4492,19 +4562,19 @@ msgstr ""
 msgid "Member"
 msgstr ""
 
-#: app/routes/admin/group/detail/member.tsx:166
+#: app/routes/admin/group/detail/member.tsx:185
 #: app/routes/marketing/contact-group/detail/member.tsx:321
 msgid "Member added successfully"
 msgstr ""
 
-#: app/routes/admin/group/detail/member.tsx:147
+#: app/routes/admin/group/detail/member.tsx:165
 #: app/routes/marketing/contact-group/detail/member.tsx:350
 msgid "Member deleted successfully"
 msgstr ""
 
 #: app/features/organization/components/org-account-card.tsx:138
 #: app/features/organization/components/org-members-preview-card.tsx:79
-#: app/routes/admin/group/detail/member.tsx:34
+#: app/routes/admin/group/detail/member.tsx:35
 #: app/routes/customer/organization/detail/member.tsx:27
 #: app/routes/marketing/contact-group/detail/member.tsx:33
 msgid "Members"
@@ -4596,10 +4666,10 @@ msgstr ""
 #: app/features/fraud/policy/policy-form.tsx:149
 #: app/features/organization/components/org-members-preview-card.tsx:40
 #: app/features/organization/components/org-needs-attention.tsx:293
-#: app/routes/admin/group/detail/index.tsx:28
-#: app/routes/admin/group/detail/member.tsx:89
-#: app/routes/admin/group/index.tsx:26
-#: app/routes/admin/group/index.tsx:55
+#: app/routes/admin/group/detail/index.tsx:44
+#: app/routes/admin/group/detail/member.tsx:98
+#: app/routes/admin/group/index.tsx:61
+#: app/routes/admin/group/index.tsx:105
 #: app/routes/admin/offer/index.tsx:58
 #: app/routes/admin/offer/index.tsx:117
 #: app/routes/customer/fraud/providers/create.tsx:86
@@ -5015,7 +5085,7 @@ msgstr ""
 msgid "No grants found."
 msgstr ""
 
-#: app/routes/admin/group/index.tsx:51
+#: app/routes/admin/group/index.tsx:101
 msgid "No groups found."
 msgstr ""
 
@@ -5062,7 +5132,7 @@ msgstr ""
 msgid "No members found."
 msgstr ""
 
-#: app/routes/admin/group/detail/member.tsx:193
+#: app/routes/admin/group/detail/member.tsx:212
 msgid "No members in this group."
 msgstr ""
 
@@ -5749,7 +5819,7 @@ msgstr ""
 msgid "Overrides the general discount. Leave empty to inherit it."
 msgstr ""
 
-#: app/routes/admin/group/detail/index.tsx:18
+#: app/routes/admin/group/detail/index.tsx:27
 #: app/routes/admin/offer/detail.tsx:418
 msgid "Overview"
 msgstr ""
@@ -5759,6 +5829,7 @@ msgid "Owed from earlier invoices"
 msgstr ""
 
 #: app/features/service-catalog/components/details-card.tsx:60
+#: app/routes/admin/group/index.tsx:70
 msgid "Owner"
 msgstr ""
 
@@ -5952,6 +6023,10 @@ msgstr ""
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:130
 msgid "Period"
+msgstr ""
+
+#: app/routes/admin/group/detail/index.tsx:93
+msgid "Permanently delete this group"
 msgstr ""
 
 #: app/routes/customer/organization/detail/index.tsx:68
@@ -6721,6 +6796,7 @@ msgid "Same as last cycle at this point"
 msgstr ""
 
 #: app/features/billing/components/payment-terms.tsx:212
+#: app/features/group/group-dialogs.tsx:125
 #: app/features/profile/components/profile-form.tsx:58
 #: app/routes/admin/offer/detail.tsx:491
 #: app/routes/marketing/contact/detail/notes.tsx:175
@@ -6824,6 +6900,7 @@ msgstr ""
 msgid "Search by flag key or description..."
 msgstr ""
 
+#: app/routes/admin/group/detail/member.tsx:199
 #: app/routes/customer/fraud/index.tsx:218
 msgid "Search by name or email..."
 msgstr ""
@@ -6879,7 +6956,7 @@ msgstr ""
 msgid "Search grants..."
 msgstr ""
 
-#: app/routes/admin/group/index.tsx:50
+#: app/routes/admin/group/index.tsx:100
 msgid "Search groups..."
 msgstr ""
 
@@ -6892,7 +6969,7 @@ msgstr ""
 msgid "Search is temporarily unavailable. Please try again."
 msgstr ""
 
-#: app/routes/admin/group/detail/member.tsx:192
+#: app/routes/admin/group/detail/member.tsx:211
 #: app/routes/customer/organization/detail/member.tsx:174
 #: app/routes/marketing/contact-group/detail/member.tsx:391
 msgid "Search members..."
@@ -7355,6 +7432,10 @@ msgstr ""
 msgid "spent so far, before tax and credits"
 msgstr ""
 
+#: app/routes/admin/group/index.tsx:32
+msgid "Staff"
+msgstr ""
+
 #: app/features/billing/components/pricing-info.tsx:46
 msgid "Staff note:"
 msgstr ""
@@ -7446,7 +7527,7 @@ msgstr ""
 #: app/features/project/components/project-details-card.tsx:39
 #: app/features/quota/components/quota-grant-list.tsx:109
 #: app/features/service-catalog/components/conditions-card.tsx:27
-#: app/routes/admin/group/detail/index.tsx:39
+#: app/routes/admin/group/detail/index.tsx:55
 #: app/routes/admin/offer/detail.tsx:354
 #: app/routes/admin/offer/detail.tsx:381
 #: app/routes/customer/fraud/providers/index.tsx:86
@@ -8237,6 +8318,10 @@ msgstr ""
 msgid "Usage will appear here once this project starts consuming metered resources."
 msgstr ""
 
+#: app/features/group/group-dialogs.tsx:55
+msgid "Use lowercase letters, numbers and hyphens, starting and ending with a letter or number"
+msgstr ""
+
 #: app/features/activity/components/activity-list.tsx:118
 #: app/features/activity/components/activity-list.tsx:393
 #: app/features/activity/components/activity-list.tsx:492
@@ -8452,6 +8537,10 @@ msgstr ""
 
 #: app/features/billing/components/item-options.tsx:100
 msgid "What the supply date is"
+msgstr ""
+
+#: app/features/group/group-dialogs.tsx:29
+msgid "What this group is for"
 msgstr ""
 
 #: app/features/billing/components/charges/add-charge-dialog.tsx:561

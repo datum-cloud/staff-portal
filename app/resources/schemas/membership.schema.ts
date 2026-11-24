@@ -1,11 +1,5 @@
 import z from 'zod';
 
-export const GroupMembershipFiltersSchema = z.object({
-  fieldSelector: z.string().optional(),
-});
-
-export type GroupMembershipFilters = z.infer<typeof GroupMembershipFiltersSchema>;
-
 export const MembershipFiltersSchema = z.object({
   fieldSelector: z.string().optional(),
   labelSelector: z.string().optional(),

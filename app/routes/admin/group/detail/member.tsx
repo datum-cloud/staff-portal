@@ -5,12 +5,12 @@ import { DateTime } from '@/components/date';
 import { DialogConfirm, DialogForm } from '@/components/dialog';
 import { DisplayName } from '@/components/display';
 import { ListColumnHeader, ListTable } from '@/features/milo';
-import { useUserSearch } from '@/hooks';
+import { useUserSearchService } from '@/hooks';
 import {
   useCreateGroupMembershipMutation,
   useDeleteGroupMembershipMutation,
+  useGroupMemberUsersQuery,
   useGroupMembershipListQuery,
-  useUserListQuery,
 } from '@/resources/request/client';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { userRoutes } from '@/utils/config/routes.config';
@@ -19,6 +19,7 @@ import { createColumnHelper } from '@/utils/table';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { ActionItem, DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Form } from '@datum-cloud/datum-ui/form';
+import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ComMiloapisIamV1Alpha1GroupMembership } from '@openapi/iam.miloapis.com/v1alpha1';
@@ -40,25 +41,33 @@ export default function Page() {
   const { t } = useLingui();
   const group = useGroupDetailData();
   const groupName = group.metadata?.name ?? '';
-  const tableQuery = useGroupMembershipListQuery(groupName);
-  const userListQueryResult = useUserListQuery({ limit: 500 });
+  const namespace = group.metadata?.namespace ?? '';
+  const tableQuery = useGroupMembershipListQuery(namespace, groupName);
+  // Look up exactly this group's members, not "the first 500 users" (#849).
+  const memberUserNames = useMemo(
+    () =>
+      (tableQuery.data?.items ?? [])
+        .map((membership) => membership.spec?.userRef?.name ?? '')
+        .filter(Boolean),
+    [tableQuery.data]
+  );
+  const memberUsersQuery = useGroupMemberUsersQuery(memberUserNames);
   const createMembershipMutation = useCreateGroupMembershipMutation();
-  const deleteMembershipMutation = useDeleteGroupMembershipMutation();
+  const deleteMembershipMutation = useDeleteGroupMembershipMutation(namespace, groupName);
 
   const userMap = useMemo(() => {
     const map = new Map<string, { displayName: string; email: string }>();
-    for (const user of userListQueryResult.data?.items ?? []) {
-      const name = user.metadata?.name ?? '';
+    for (const user of memberUsersQuery.data ?? []) {
+      const name = user.name ?? '';
       if (name) {
         map.set(name, {
-          displayName:
-            `${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''}`.trim() || name,
-          email: user.spec?.email ?? '',
+          displayName: `${user.givenName ?? ''} ${user.familyName ?? ''}`.trim() || name,
+          email: user.email ?? '',
         });
       }
     }
     return map;
-  }, [userListQueryResult.data]);
+  }, [memberUsersQuery.data]);
 
   const userMapRef = useRef(userMap);
   useEffect(() => {
@@ -73,7 +82,7 @@ export default function Page() {
     options: userOptions,
     isLoading: usersLoading,
     setSearch: setUserSearch,
-  } = useUserSearch();
+  } = useUserSearchService();
 
   const actions: ActionItem<ComMiloapisIamV1Alpha1GroupMembership>[] = [
     {
@@ -90,6 +99,15 @@ export default function Page() {
       cell: ({ row }) => {
         const userRefName = row.original.spec?.userRef?.name ?? '';
         const user = userMap.get(userRefName);
+        // Until names and emails arrive, show where they'll go rather than the raw ID.
+        if (!user && memberUsersQuery.isLoading) {
+          return (
+            <div className="flex flex-col gap-1.5 py-0.5" aria-busy="true">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-3 w-44" />
+            </div>
+          );
+        }
         const displayName = user?.displayName || userRefName;
         const email = user?.email ?? '';
 
@@ -156,10 +174,11 @@ export default function Page() {
         cancelText={t`Cancel`}
         onSubmit={async (formData) => {
           try {
+            // The membership lives with the group, in the group's namespace.
             await createMembershipMutation.mutateAsync({
-              namespace: 'milo-system',
+              namespace,
               payload: {
-                groupRef: { name: groupName, namespace: 'milo-system' },
+                groupRef: { name: groupName, namespace },
                 userRef: { name: formData.name },
               },
             });
@@ -177,7 +196,7 @@ export default function Page() {
             loading={usersLoading}
             onSearch={setUserSearch}
             searchDebounceMs={500}
-            placeholder={t`Enter the full email to search...`}
+            placeholder={t`Search by name or email...`}
           />
         </Form.Field>
       </DialogForm>

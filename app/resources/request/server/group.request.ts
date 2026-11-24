@@ -4,11 +4,7 @@ import {
 } from '@openapi/iam.miloapis.com/v1alpha1';
 import { UnwrapProxyResponse } from '@openapi/shared/core/types.gen';
 
-export const groupDetailQuery = async (
-  token: string,
-  groupName: string,
-  namespace: string = 'milo-system'
-) => {
+export const groupDetailQuery = async (token: string, groupName: string, namespace: string) => {
   const response = await readIamMiloapisComV1Alpha1NamespacedGroup({
     path: {
       namespace,

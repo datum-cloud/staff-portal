@@ -6,6 +6,7 @@ import {
   projectQueryKeys,
   listOrganizations,
   listProjects,
+  useSearchUsersQuery,
 } from '@/resources/request/client';
 import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
@@ -38,6 +39,35 @@ export function useUserSearch() {
   const setSearch = React.useCallback((query: string) => {
     setSearchQuery(query);
   }, []);
+
+  return { options, isLoading, setSearch };
+}
+
+/**
+ * A user picker backed by the search service, so partial emails and names
+ * match. `useUserSearch` filters on the exact email, so it only finds a user
+ * when the whole address is typed (#849).
+ */
+export function useUserSearchService(minChars = 2) {
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const { data, isLoading } = useSearchUsersQuery(searchQuery.trim(), minChars);
+
+  const options = React.useMemo(
+    () =>
+      (data ?? [])
+        .map((user) => ({
+          value: user.metadata?.name ?? '',
+          label:
+            `${user.spec?.givenName ?? ''} ${user.spec?.familyName ?? ''}`.trim() ||
+            (user.spec?.email ?? user.metadata?.name ?? ''),
+          description: user.spec?.email ?? '',
+        }))
+        .filter((option) => option.value)
+        .sort((a, b) => a.label.localeCompare(b.label)),
+    [data]
+  );
+
+  const setSearch = React.useCallback((query: string) => setSearchQuery(query), []);
 
   return { options, isLoading, setSearch };
 }
