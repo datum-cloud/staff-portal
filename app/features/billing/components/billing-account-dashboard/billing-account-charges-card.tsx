@@ -342,9 +342,10 @@ export function BillingAccountChargesCard({ orgName, account }: ChargesCardProps
       contentClassName="flex flex-col gap-3"
       title={<Trans>Charges</Trans>}
       description={
-        chargesQuery.data && count > 0 ? (
-          <Plural value={count} one="# charge" other="# charges" />
-        ) : null
+        <Trans>
+          One-off items billed once, outside the account&apos;s plan or contract: an install, remote
+          hands, a correction. Anything billed every period belongs in a contract instead.
+        </Trans>
       }
       action={
         canAdd ? (
@@ -398,7 +399,10 @@ export function BillingAccountChargesCard({ orgName, account }: ChargesCardProps
         }
         error={<Trans>Couldn&apos;t load charges</Trans>}
         empty={
-          <Trans>No charges. Charges added here go on the account&apos;s next invoice.</Trans>
+          <Trans>
+            No charges yet. A charge goes on the account&apos;s next invoice, or on an invoice of
+            its own straight away.
+          </Trans>
         }>
         <div className={TABLE_CARD_FRAME_CLASS}>
           <DataTable.Client

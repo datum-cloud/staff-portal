@@ -8,6 +8,7 @@ import {
   summarizeInvoices,
   type InvoiceAgingBucket,
 } from '../../lib/invoice-summary';
+import { getBillingMode } from '../../lib/payment-terms';
 import {
   formatMoney,
   getAccountCurrency,
@@ -183,9 +184,9 @@ const buildColumns = (now: Date) => [
     },
   }),
   columnHelper.display({
-    id: 'download',
+    id: 'open',
     enableSorting: false,
-    header: () => <span className="sr-only">{t`Download`}</span>,
+    header: () => <span className="sr-only">{t`Open`}</span>,
     cell: ({ row }) => {
       const url = row.original.invoice.status?.documentUri;
       return (
@@ -194,10 +195,11 @@ const buildColumns = (now: Date) => [
           theme="borderless"
           size="small"
           disabled={!url}
-          icon={<ACTION_ICONS.download className="size-4" />}
+          title={url ? t`Open the invoice in Stripe` : undefined}
+          icon={<ACTION_ICONS.externalLink className="size-4" />}
           onClick={url ? () => window.open(url, '_blank', 'noopener,noreferrer') : undefined}>
           <span className="sr-only">
-            {url ? <Trans>Download invoice</Trans> : <Trans>Download unavailable</Trans>}
+            {url ? <Trans>Open invoice</Trans> : <Trans>Invoice unavailable</Trans>}
           </span>
         </Button>
       );
@@ -240,7 +242,9 @@ export function BillingAccountInvoicesCard({ orgName, account, now, contract }: 
   const canExpand = sorted.length > PREVIEW_ROWS;
 
   const terms = billingCycleTerms(account.spec?.paymentTerms, contract);
-  const netDays = getEffectiveNetDays(account);
+  // Net days only mean something on invoice terms: a card account is charged
+  // when it's invoiced, whatever spec.paymentTerms says.
+  const netDays = getBillingMode(account) === 'invoice' ? getEffectiveNetDays(account) : undefined;
   const count = sorted.length;
   // Some of the org's invoices weren't read, so the count is a floor.
   const invoiceCount = hasMore ? (
