@@ -3,9 +3,8 @@ import type { Route } from './+types/approvals';
 import { DateTime } from '@/components/date';
 import { MessageCard } from '@/components/message-card';
 import { ListColumnHeader, ListTable } from '@/features/milo';
-import { useApprovalDialog } from '@/features/service-catalog';
+import { useApprovalDialog, usePendingApprovals } from '@/features/service-catalog';
 import type { GqlServiceConsumer } from '@/resources/gql/service-consumer.gql';
-import { useServiceConsumersEnrichedQuery } from '@/resources/request/client';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { orgRoutes, projectRoutes } from '@/utils/config/routes.config';
 import { metaObject } from '@/utils/helpers';
@@ -35,16 +34,13 @@ export default function ApprovalsPage() {
   const producerProject = service.spec?.owner?.producerProjectRef?.name ?? '';
   const canonicalName = service.spec?.serviceName;
 
-  // The consumer's serviceRef may hold either the Service's metadata.name or
-  // its canonical spec.serviceName, so ask the gateway for both.
-  const serviceNames = [...new Set([serviceName, canonicalName].filter((n): n is string => !!n))];
-  const { data, isLoading, error, refetch } = useServiceConsumersEnrichedQuery(
-    producerProject,
-    serviceNames
-  );
+  const {
+    pending: items,
+    isLoading,
+    error,
+    refetch,
+  } = usePendingApprovals(producerProject, serviceName, canonicalName);
   const { openDialog, dialog } = useApprovalDialog(producerProject);
-
-  const items = (data ?? []).filter((c) => c.phase === 'PendingApproval' && !c.approvalDecision);
 
   const actions: ActionItem<ServiceConsumer>[] = [
     {

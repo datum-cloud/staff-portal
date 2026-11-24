@@ -16,6 +16,7 @@ import {
   DetailsCard,
   MetersCard,
   MonitoredResourcesCard,
+  PendingApprovalsCard,
   QuotaLimitsCard,
   ServicePricingsCard,
 } from '@/features/service-catalog';
@@ -149,6 +150,14 @@ export function ServiceDetails() {
           </div>
         )}
       </div>
+
+      {isGated && (
+        <PendingApprovalsCard
+          producerProject={ownerProject}
+          serviceName={serviceName}
+          canonicalName={canonicalName}
+        />
+      )}
 
       <ActiveConfigurationSummary
         active={active}

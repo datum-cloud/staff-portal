@@ -463,6 +463,10 @@ msgstr "{recurring} from the next billing date."
 msgid "{recurring}."
 msgstr "{recurring}."
 
+#: app/features/service-catalog/components/pending-approvals-card.tsx:118
+msgid "{remaining, plural, one {and # more request} other {and # more requests}}"
+msgstr "{remaining, plural, one {and # more request} other {and # more requests}}"
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:181
 msgid "{spend} spent so far this cycle against a {limit} per-cycle credit limit."
 msgstr "{spend} spent so far this cycle against a {limit} per-cycle credit limit."
@@ -737,7 +741,8 @@ msgstr "Accepted"
 msgid "Access"
 msgstr "Access"
 
-#: app/routes/admin/service-catalog/detail/approvals.tsx:128
+#: app/features/service-catalog/components/pending-approvals-card.tsx:54
+#: app/routes/admin/service-catalog/detail/approvals.tsx:124
 msgid "Access denied — IAM role pending."
 msgstr "Access denied — IAM role pending."
 
@@ -1173,7 +1178,7 @@ msgstr "Applies to every service without its own discount. Leave empty for none.
 msgid "Approval"
 msgstr "Approval"
 
-#: app/routes/admin/service-catalog/detail/approvals.tsx:21
+#: app/routes/admin/service-catalog/detail/approvals.tsx:20
 msgid "Approvals"
 msgstr "Approvals"
 
@@ -1181,7 +1186,7 @@ msgstr "Approvals"
 #: app/features/billing/components/application-review.tsx:225
 #: app/features/billing/components/application-review.tsx:536
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:38
-#: app/routes/admin/service-catalog/detail/approvals.tsx:51
+#: app/routes/admin/service-catalog/detail/approvals.tsx:47
 #: app/routes/admin/service-catalog/detail/consumers.tsx:76
 #: app/routes/customer/user/index.tsx:68
 msgid "Approve"
@@ -1857,7 +1862,7 @@ msgstr "Consecutive 5xx"
 msgid "Consumer project"
 msgstr "Consumer project"
 
-#: app/routes/admin/service-catalog/detail/approvals.tsx:87
+#: app/routes/admin/service-catalog/detail/approvals.tsx:83
 #: app/routes/admin/service-catalog/detail/consumers.tsx:121
 msgid "Consumer Project"
 msgstr "Consumer Project"
@@ -2572,7 +2577,7 @@ msgid "Delivered"
 msgstr "Delivered"
 
 #: app/features/service-catalog/hooks/useApprovalDialog.tsx:38
-#: app/routes/admin/service-catalog/detail/approvals.tsx:56
+#: app/routes/admin/service-catalog/detail/approvals.tsx:52
 #: app/routes/admin/service-catalog/detail/consumers.tsx:82
 msgid "Deny"
 msgstr "Deny"
@@ -2585,7 +2590,7 @@ msgstr "Deny Request"
 msgid "Deny this consumer's access request. Optionally add a note."
 msgstr "Deny this consumer's access request. Optionally add a note."
 
-#: app/routes/admin/service-catalog/service-details.tsx:139
+#: app/routes/admin/service-catalog/service-details.tsx:140
 msgid "Dependencies:"
 msgstr "Dependencies:"
 
@@ -3236,7 +3241,8 @@ msgstr "Failed to copy"
 msgid "Failed to create Offer"
 msgstr "Failed to create Offer"
 
-#: app/routes/admin/service-catalog/detail/approvals.tsx:130
+#: app/features/service-catalog/components/pending-approvals-card.tsx:56
+#: app/routes/admin/service-catalog/detail/approvals.tsx:126
 msgid "Failed to load approvals."
 msgstr "Failed to load approvals."
 
@@ -3256,7 +3262,7 @@ msgstr "Failed to load fraud evaluations."
 msgid "Failed to load service catalog."
 msgstr "Failed to load service catalog."
 
-#: app/routes/admin/service-catalog/service-details.tsx:80
+#: app/routes/admin/service-catalog/service-details.tsx:81
 msgid "Failed to load service configurations."
 msgstr "Failed to load service configurations."
 
@@ -3531,7 +3537,7 @@ msgstr "Fully onboarded"
 
 #: app/features/service-catalog/components/details-card.tsx:54
 #: app/routes/admin/service-catalog/index.tsx:184
-#: app/routes/admin/service-catalog/service-details.tsx:113
+#: app/routes/admin/service-catalog/service-details.tsx:114
 msgid "Gated by Provider"
 msgstr "Gated by Provider"
 
@@ -4968,7 +4974,8 @@ msgstr "No payment terms"
 msgid "No payment terms applications yet"
 msgstr "No payment terms applications yet"
 
-#: app/routes/admin/service-catalog/detail/approvals.tsx:166
+#: app/features/service-catalog/components/pending-approvals-card.tsx:75
+#: app/routes/admin/service-catalog/detail/approvals.tsx:162
 msgid "No pending approval requests."
 msgstr "No pending approval requests."
 
@@ -5497,7 +5504,7 @@ msgstr "or"
 #: app/features/organization/components/org-needs-attention.tsx:375
 #: app/features/organization/components/org-warning-events.tsx:43
 #: app/features/project/components/project-organization-card.tsx:25
-#: app/routes/admin/service-catalog/detail/approvals.tsx:66
+#: app/routes/admin/service-catalog/detail/approvals.tsx:62
 #: app/routes/admin/service-catalog/detail/consumers.tsx:100
 #: app/routes/customer/project/index.tsx:131
 #: app/routes/customer/project/index.tsx:224
@@ -5586,7 +5593,7 @@ msgstr "Owner"
 msgid "Owner of {ownerCount}"
 msgstr "Owner of {ownerCount}"
 
-#: app/routes/admin/service-catalog/service-details.tsx:131
+#: app/routes/admin/service-catalog/service-details.tsx:132
 msgid "Owner:"
 msgstr "Owner:"
 
@@ -5737,6 +5744,10 @@ msgstr "Pending Approval"
 #: app/routes/dashboard/index.tsx:52
 msgid "pending approvals"
 msgstr "pending approvals"
+
+#: app/features/service-catalog/components/pending-approvals-card.tsx:130
+msgid "Pending approvals"
+msgstr "Pending approvals"
 
 #: app/routes/admin/offer/detail.tsx:344
 msgid "Pending snapshot"
@@ -6377,7 +6388,7 @@ msgstr "Request denied"
 msgid "Request ID:"
 msgstr "Request ID:"
 
-#: app/routes/admin/service-catalog/detail/approvals.tsx:106
+#: app/routes/admin/service-catalog/detail/approvals.tsx:102
 #: app/routes/admin/service-catalog/detail/consumers.tsx:177
 msgid "Requested at"
 msgstr "Requested at"
@@ -6455,9 +6466,10 @@ msgid "Retired"
 msgstr "Retired"
 
 #: app/features/chainsaw-tests/components/chainsaw-tests-widget.tsx:92
-#: app/routes/admin/service-catalog/detail/approvals.tsx:148
+#: app/features/service-catalog/components/pending-approvals-card.tsx:65
+#: app/routes/admin/service-catalog/detail/approvals.tsx:144
 #: app/routes/admin/service-catalog/index.tsx:150
-#: app/routes/admin/service-catalog/service-details.tsx:87
+#: app/routes/admin/service-catalog/service-details.tsx:88
 msgid "Retry"
 msgstr "Retry"
 
@@ -6636,7 +6648,7 @@ msgstr "Search by name, SKU or tax code"
 msgid "Search by project, organization, ID, or note..."
 msgstr "Search by project, organization, ID, or note..."
 
-#: app/routes/admin/service-catalog/detail/approvals.tsx:165
+#: app/routes/admin/service-catalog/detail/approvals.tsx:161
 msgid "Search by project, organization, or ID..."
 msgstr "Search by project, organization, or ID..."
 
@@ -7430,7 +7442,7 @@ msgstr "The <0/> of each month (the start date)"
 msgid "The <0/> of each month, with the first month prorated"
 msgstr "The <0/> of each month, with the first month prorated"
 
-#: app/routes/admin/service-catalog/detail/approvals.tsx:135
+#: app/routes/admin/service-catalog/detail/approvals.tsx:131
 msgid "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 msgstr "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 
@@ -7704,6 +7716,10 @@ msgstr "This organization does not have a billing account. Usage and spend data 
 #: app/features/project/components/project-deletion-banner.tsx:22
 msgid "This project is being deleted"
 msgstr "This project is being deleted"
+
+#: app/features/service-catalog/components/pending-approvals-card.tsx:44
+msgid "This service has no owner project, so its approvals cannot be loaded."
+msgstr "This service has no owner project, so its approvals cannot be loaded."
 
 #: app/routes/admin/service-catalog/detail/consumers.tsx:222
 msgid "This service has no producer project recorded, so consumers cannot be listed."
@@ -8088,6 +8104,7 @@ msgstr "View activity logs"
 #: app/features/organization/components/org-usage-card.tsx:70
 #: app/features/project/components/project-quotas-card.tsx:71
 #: app/features/project/components/project-usage-card.tsx:93
+#: app/features/service-catalog/components/pending-approvals-card.tsx:142
 msgid "View all"
 msgstr "View all"
 
@@ -8304,7 +8321,7 @@ msgstr "Yes"
 msgid "Yes — new accounts use this Offer"
 msgstr "Yes — new accounts use this Offer"
 
-#: app/routes/admin/service-catalog/service-details.tsx:78
+#: app/routes/admin/service-catalog/service-details.tsx:79
 msgid "You do not have permission to view service configurations."
 msgstr "You do not have permission to view service configurations."
 
