@@ -3,7 +3,7 @@
 **Spec:** `.dmx/jobs/gh-882/spec.md`
 **Branch:** chore-gh-882-let-renovate-update-vite
 **Ticket:** [gh-882](https://github.com/datum-cloud/staff-portal/issues/882)
-**Status:** In Progress
+**Status:** In Review
 
 ---
 
