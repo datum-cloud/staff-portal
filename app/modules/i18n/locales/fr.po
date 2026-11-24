@@ -451,6 +451,10 @@ msgstr ""
 msgid "{name} was due <0/>."
 msgstr ""
 
+#: app/features/organization/usage/components/discounted-spend.tsx:33
+msgid "{off} ({percent}% off)"
+msgstr ""
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:128
 msgid "{outstanding} across {count} unpaid invoices will be charged to the card on file. Charges this size are likely to be declined."
 msgstr ""

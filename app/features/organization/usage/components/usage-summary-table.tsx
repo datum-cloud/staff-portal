@@ -1,7 +1,7 @@
 import { groupUsageSummaryRows } from '../usage-summary-grouping';
-import { formatDiscount, formatUsagePair, spendDiscount } from '../usage.format';
+import { formatUsagePair, spendDiscount } from '../usage.format';
 import type { UsageSummaryRow } from '../usage.types';
-import { SpendValue } from './spend-value';
+import { DiscountedSpend } from './discounted-spend';
 import { UsageSparkline } from './usage-sparkline';
 import {
   EMBEDDED_TABLE_HEADER_CELL_CLASS,
@@ -31,7 +31,7 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
   const [listExpanded, setListExpanded] = useState(false);
 
   const grouped = useMemo(() => groupUsageSummaryRows(rows), [rows]);
-  // The discount columns only appear when something in the period was discounted.
+  // The cost column widens when something in the period was discounted.
   const showDiscounts = useMemo(() => rows.some((row) => spendDiscount(row.spend)), [rows]);
 
   const visibleGroups = useMemo(() => {
@@ -98,56 +98,15 @@ export function UsageSummaryTable({ rows, collapsedCount = 5 }: UsageSummaryTabl
           </Text>
         ),
       },
-      ...(showDiscounts
-        ? ([
-            {
-              id: 'beforeDiscount',
-              header: ({ column }) => <ListColumnHeader column={column} title="Before discount" />,
-              enableSorting: false,
-              size: 128,
-              cell: ({ row }) => {
-                const { spend, spendError } = row.original;
-                return (
-                  <Text textColor="muted" className="block text-right whitespace-nowrap">
-                    <SpendValue
-                      spend={spend && { ...spend, amount: spend.beforeDiscounts ?? spend.amount }}
-                      spendError={spendError}
-                    />
-                  </Text>
-                );
-              },
-            },
-            {
-              id: 'discount',
-              header: ({ column }) => <ListColumnHeader column={column} title="Discount" />,
-              enableSorting: false,
-              size: 128,
-              cell: ({ row }) => {
-                const discount = spendDiscount(row.original.spend);
-                return discount ? (
-                  <Text className="block text-right whitespace-nowrap tabular-nums">
-                    {formatDiscount(discount.discount)}
-                    <Text as="span" size="xs" textColor="muted" className="ml-1">
-                      {discount.percent}%
-                    </Text>
-                  </Text>
-                ) : (
-                  <Text textColor="muted" className="block text-right">
-                    —
-                  </Text>
-                );
-              },
-            },
-          ] satisfies ColumnDef<UsageSummaryRow, unknown>[])
-        : []),
       {
         id: 'spend',
         header: ({ column }) => <ListColumnHeader column={column} title="Cost" />,
         enableSorting: false,
-        size: 112,
+        // Room for the struck-through amount before a discount.
+        size: showDiscounts ? 168 : 112,
         cell: ({ row }) => (
           <Text className="block text-right whitespace-nowrap">
-            <SpendValue
+            <DiscountedSpend
               spend={row.original.spend}
               spendError={row.original.spendError}
               className="font-medium"

@@ -1,12 +1,11 @@
-import { formatCurrency, formatDiscount, formatUsagePair, spendDiscount } from '../usage.format';
+import { formatUsagePair } from '../usage.format';
 import type { MeterPoint, UsageMeter } from '../usage.types';
 import { humanizeDimension } from '../usage.view';
+import { DiscountedSpend } from './discounted-spend';
 import { MeterAreaChart, type MeterStack } from './meter-area-chart';
-import { SpendValue } from './spend-value';
 import { QuotaIndicator } from '@/features/organization/components/quota-ring';
 import { Card, CardContent, CardHeader } from '@datum-cloud/datum-ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@datum-cloud/datum-ui/tabs';
-import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text, Title } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { useState } from 'react';
@@ -43,7 +42,6 @@ function buildStackData(
  */
 export function MeterCard({ meter }: MeterCardProps) {
   const [activeTab, setActiveTab] = useState(meter.tabs[0]);
-  const discount = spendDiscount(meter.spend);
 
   const isBreakdownView = activeTab !== 'Total';
   const activeBreakdown = isBreakdownView
@@ -82,18 +80,11 @@ export function MeterCard({ meter }: MeterCardProps) {
           <div className="flex items-center gap-2 sm:gap-3">
             {meter.spend || meter.spendError ? (
               <Text size="xs" textColor="muted" className="text-right">
-                {discount ? (
-                  <Tooltip
-                    message={`${formatDiscount(discount.discount)} (${discount.percent}% off)`}>
-                    <span className="mr-1 cursor-help tabular-nums line-through">
-                      {formatCurrency(discount.beforeDiscounts)}
-                    </span>
-                  </Tooltip>
-                ) : null}
-                <SpendValue
+                <DiscountedSpend
                   spend={meter.spend}
                   spendError={meter.spendError}
                   className="text-foreground font-medium"
+                  beforeClassName="mr-1"
                 />{' '}
                 spent
               </Text>

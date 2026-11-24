@@ -451,6 +451,10 @@ msgstr "{name} was due <0/> and is {overdue} overdue."
 msgid "{name} was due <0/>."
 msgstr "{name} was due <0/>."
 
+#: app/features/organization/usage/components/discounted-spend.tsx:33
+msgid "{off} ({percent}% off)"
+msgstr "{off} ({percent}% off)"
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:128
 msgid "{outstanding} across {count} unpaid invoices will be charged to the card on file. Charges this size are likely to be declined."
 msgstr "{outstanding} across {count} unpaid invoices will be charged to the card on file. Charges this size are likely to be declined."
