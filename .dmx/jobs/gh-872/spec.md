@@ -23,17 +23,16 @@ Today the repo installs with npm: `package-lock.json`, `.npmrc` (`legacy-peer-de
 - **Install with pnpm.** Pin pnpm with `packageManager` in `package.json`, and raise `engines.node` to `>=26.13.0` to match cloud-portal. Add `pnpm-workspace.yaml` (single package, no `packages:`) holding:
   - `minimumReleaseAgeExclude` for `@datum-cloud/*`
   - an `allowBuilds` allowlist for install scripts
-  - the npm `overrides` in pnpm syntax, with a `catalog:` for versions an override must share with `package.json` (replaces npm's `$axios` reference)
+  - the npm `overrides` in pnpm syntax, plus `yaml@1: ^1.10.3` (GHSA-48c2-rrv3-qjmp, newly reported because vuln-scan reads every package in `pnpm-lock.yaml`), with a `catalog:` for versions an override must share with `package.json` (replaces npm's `$axios` reference)
 - **Same versions.** Generate `pnpm-lock.yaml` with `pnpm import` from `package-lock.json`, so every package stays at the version npm resolved. Remove `package-lock.json` and `.npmrc`.
 - **Strictness fixes.** Declare any dependency the app or generated code imports but only reached through hoisting, and meet peer ranges pnpm enforces (`legacy-peer-deps` goes away).
 - **Scripts and tooling.** `package.json` scripts, `lefthook.yml` and `scripts/*` usage strings use `pnpm` / `pnpm exec`.
-- **Docker image.** The build stage installs the pinned pnpm (Node 26 ships no corepack), installs with `--frozen-lockfile`, builds and prunes with pnpm. The runtime stage stays plain Node.
+- **Docker image.** A `.dockerignore` (based on cloud-portal's) keeps `node_modules`, `.git`, `build`, `.env*`, tests, docs and tooling out of the build context; added after review on #879, since CI restores `node_modules` into the checkout and copying it over pnpm's tree stops the image build. The build stage installs the pinned pnpm (Node 26 ships no corepack), installs with `--frozen-lockfile`, builds and prunes with pnpm. The runtime stage stays plain Node.
 - **CI.** `ci.yml` sets up pnpm in every job, keys the dependency cache on the pnpm files, installs with `pnpm install --frozen-lockfile --ignore-scripts`, runs `pnpm <script>` / `pnpm exec`, rebuilds the production tree check with pnpm, and fails fast on a cache miss outside the install job. `renovate.json` drops the npm constraint; #848 stays open for the other repositories.
 - **Docs.** README, `tests/`, `scripts/`, `docs/`, module READMEs, code comments and `.dmx/techContext.md` use pnpm. npm stays where it names the registry, the `npm:` alias or the changelog.
 
 ## Out of Scope
 - Changing the Node runtime (`.nvmrc` and the Docker base image stay at 26.13.1)
-- Adding a `.dockerignore`
 - Upgrading any dependency beyond what pnpm's peer checks force
 - The reusable workflows in `datum-cloud/actions` (`ci-basic`, `vuln-scan`, `publish-docker`)
 
