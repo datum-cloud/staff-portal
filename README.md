@@ -57,7 +57,7 @@ staff-portal/
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) 26.13.1 (see `.nvmrc`)
-- [pnpm](https://pnpm.io/) 11. Node 26 ships without corepack, so install it once with `npm install -g pnpm@11`; it then switches to the version `package.json` pins (`packageManager`) on its own.
+- [pnpm](https://pnpm.io/) 12. Node 26 ships without corepack, so install it once with `npm install -g pnpm@12`; it then switches to the version `package.json` pins (`packageManager`) on its own.
 
 ### Installation
 

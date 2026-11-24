@@ -7,7 +7,7 @@
 - **Framework:** React 19 + React Router 7 (SSR, explicit route config), served by Hono via `react-router-hono-server` and `@hono/node-server`.
 - **Build:** Vite 7 (`react-router build`, plus a separate observability bundle via `vite.observability.config.ts`).
 - **Styling:** Tailwind CSS v4, `tailwind-variants`, `@datum-cloud/datum-ui` design system.
-- **Package manager:** pnpm 11, pinned by `packageManager` in `package.json` (`pnpm-lock.yaml`). `pnpm-workspace.yaml` holds the pnpm settings for this single package: dependency overrides (nested ones as `parent>child`), a `catalog:` for versions an override shares with `package.json` (`axios`), the `allowBuilds` allowlist for install scripts (cypress, esbuild, lefthook), and `minimumReleaseAgeExclude` for `@datum-cloud/*`.
+- **Package manager:** pnpm 12, pinned by `packageManager` in `package.json` (`pnpm-lock.yaml`). `pnpm-workspace.yaml` holds the pnpm settings for this single package: dependency overrides (nested ones as `parent>child`), a `catalog:` for versions an override shares with `package.json` (`axios`), the `allowBuilds` allowlist for install scripts (cypress, esbuild, lefthook), a one-day `minimumReleaseAge` with `minimumReleaseAgeExclude` for `@datum-cloud/*`, and `trustPolicy: no-downgrade` with `trustPolicyExclude` listing exact versions published with weaker provenance than earlier ones.
 
 ## Key dependencies
 
@@ -25,10 +25,10 @@
 
 ## Dev setup
 
-- Install pnpm once (`npm install -g pnpm@11`; Node 26 has no corepack), then `pnpm install`, copy `.env.sample` to `.env` and fill in API, OIDC, session and optional Sentry/OTEL/AI settings.
+- Install pnpm once (`npm install -g pnpm@12`; Node 26 has no corepack), then `pnpm install`, copy `.env.sample` to `.env` and fill in API, OIDC, session and optional Sentry/OTEL/AI settings.
 - `pnpm dev` starts the dev server on port 3000 (health check at `/_healthz`).
 - Run everything on Node 26 (`nvm use` reads `.nvmrc`): since React Router 8, `node_modules` installed on Node 26 won't run vitest, lingui or the lefthook i18n step on Node 20.
-- In a container: `docker run -p 3000:3000 -v "$PWD":/app -v staff-portal-node-modules:/app/node_modules -w /app node:26.13.1-alpine3.24 sh -c "npm install -g pnpm@11 && pnpm install --frozen-lockfile --ignore-scripts && node --env-file-if-exists=.env node_modules/vite/bin/vite.js --host 0.0.0.0"` runs the dev server with hot reload; Vite must bind `0.0.0.0`. A production image (`Dockerfile`) must run with `NODE_ENV=production`, or the server never listens. `.dockerignore` keeps `node_modules`, `.git`, `build` and `.env*` out of the build context; a `node_modules` copied over the tree pnpm installed in the image makes pnpm stop without a TTY (`ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY`).
+- In a container: `docker run -p 3000:3000 -v "$PWD":/app -v staff-portal-node-modules:/app/node_modules -w /app node:26.13.1-alpine3.24 sh -c "npm install -g pnpm@12 && pnpm install --frozen-lockfile --ignore-scripts && node --env-file-if-exists=.env node_modules/vite/bin/vite.js --host 0.0.0.0"` runs the dev server with hot reload; Vite must bind `0.0.0.0`. A production image (`Dockerfile`) must run with `NODE_ENV=production`, or the server never listens. `.dockerignore` keeps `node_modules`, `.git`, `build` and `.env*` out of the build context; a `node_modules` copied over the tree pnpm installed in the image makes pnpm stop without a TTY (`ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY`).
 - `docker compose up` brings up the local observability stack (OTEL collector, Prometheus, Jaeger, Grafana on :3002).
 - Codegen: `pnpm openapi:generate` (REST SDKs), `pnpm graphql` (GraphQL schema), `pnpm i18n:extract` / `i18n:compile` (Lingui catalogs).
 - Regenerating one REST SDK: run on Node 26 (the script is `.ts` and won't load on Node 20), e.g. `API_TOKEN="$(datumctl auth get-token)" API_URL=<server from ~/.datumctl/config> pnpm openapi:generate --resources billing.miloapis.com/v1alpha1`. The output isn't Prettier-formatted, so run `pnpm exec prettier --write` on the regenerated folder before committing. A staging spec can include resources not yet in production.

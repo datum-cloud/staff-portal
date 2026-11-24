@@ -25,7 +25,7 @@ ENV VERSION=${VERSION}
 # corepack, so install the pnpm that package.json's packageManager pins; it
 # stays in this stage only.
 COPY --link package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-RUN npm install -g "$(node -p 'require("./package.json").packageManager')" --no-audit --no-fund && \
+RUN npm install -g "$(node -p 'require("./package.json").packageManager.split("+")[0]')" --no-audit --no-fund && \
     pnpm install --frozen-lockfile --prod=false --ignore-scripts
 
 # Copy application code

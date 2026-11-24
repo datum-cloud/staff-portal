@@ -1,10 +1,31 @@
 # pnpm settings for this repo. It is a single package, not a workspace: there
 # is no `packages:` list.
 
-# Our own packages are published and consumed across repos on the same day, so
-# the one-day release delay must not hold them back.
+# Wait a day before installing a newly published version. Most compromised
+# releases are pulled within hours. Our own packages are published and
+# consumed across repos on the same day, so the delay must not hold them back.
+minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
   - '@datum-cloud/*'
+
+# Reject a version published with weaker provenance than the versions before
+# it, such as a release pushed with a stolen token for a package that normally
+# publishes from CI.
+trustPolicy: no-downgrade
+# Each version below was published without provenance after earlier releases
+# of the same package had it. Exempt by exact version, so the next release of
+# each package is checked again.
+trustPolicyExclude:
+  # Through remix-auth-oauth2. No later release has provenance.
+  - '@mjackson/headers@0.10.0'
+  # Through recharts. 2.11.1 and later publish from CI.
+  - '@reduxjs/toolkit@2.9.0'
+  # Direct. 2.2.2 is the latest and 2.2.1 was published from CI.
+  - lefthook@2.2.2
+  # Through recharts. 9.3.0 and later publish from CI.
+  - react-redux@9.2.0
+  # Through @types/node 22, which pins undici-types ~6.21.0.
+  - undici-types@6.21.0
 
 # Only scripts a local install needs: lefthook installs the git hooks, cypress
 # fetches its binary, esbuild checks its platform binary. CI and the image
