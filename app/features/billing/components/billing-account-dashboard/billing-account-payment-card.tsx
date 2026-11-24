@@ -23,6 +23,7 @@ import { SectionCard } from '@/features/milo';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { useMemo } from 'react';
@@ -132,7 +133,7 @@ function BilledBy({ account, terms }: { account: BillingAccount; terms: PaymentT
       {/* A failing card is still card billing, but nothing is being charged. */}
       {mode === 'card' && billingStatus !== 'card-failing' ? (
         <Text as="span" size="sm" textColor="muted">
-          <Trans>auto-charged when invoiced</Trans>
+          <Trans>charged automatically, about an hour after each invoice</Trans>
         </Text>
       ) : mode === 'invoice' ? (
         <Text as="span" size="sm" textColor="muted">
@@ -147,24 +148,37 @@ function PaymentMethodRow({ method, isDefault }: { method: PaymentMethod; isDefa
   const card = method.status?.details?.card;
   const expiry = card ? cardExpiry(card) : undefined;
 
+  // A setup the customer never finished: no card was saved, and nothing is
+  // charged to it.
+  const abandoned = method.status?.phase === 'Failed' && !isDefault;
+
   return (
-    <li className="flex items-center gap-3 rounded-md border px-3 py-2.5">
+    <li
+      className={cn(
+        'flex items-center gap-3 rounded-md border px-3 py-2.5',
+        abandoned && 'border-dashed opacity-70'
+      )}>
       <CardBrandIcon brand={card?.brand} />
       <div className="flex min-w-0 flex-1 flex-col">
         <Text size="sm" weight="medium" ellipsis>
           {formatCardLabel(card, getPaymentMethodDisplayName(method))}
         </Text>
         <Text size="xs" textColor="muted" ellipsis>
-          {[
-            getPaymentMethodDisplayName(method),
-            expiry ? t`expires ${expiry}` : undefined,
-            isDefault ? t`Default` : undefined,
-          ]
-            .filter(Boolean)
-            .join(' · ')}
+          {abandoned
+            ? t`Card setup wasn't finished, so this isn't used for payments`
+            : [
+                getPaymentMethodDisplayName(method),
+                expiry ? t`expires ${expiry}` : undefined,
+                isDefault ? t`Default` : undefined,
+              ]
+                .filter(Boolean)
+                .join(' · ')}
         </Text>
       </div>
-      <BadgeState state={method.status?.phase ?? 'Unknown'} />
+      <BadgeState
+        state={method.status?.phase ?? 'Unknown'}
+        message={abandoned ? t`Not set up` : undefined}
+      />
     </li>
   );
 }

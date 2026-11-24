@@ -375,6 +375,7 @@ export function InvoicePreviewDialog({
   firstInvoice,
   startedAt,
   contractDraft,
+  chargeDraft,
   onClose,
 }: {
   orgName: string;
@@ -384,12 +385,15 @@ export function InvoicePreviewDialog({
   startedAt?: Date;
   /** A draft contract to preview instead of the account's billing. */
   contractDraft?: ContractDraftPreview;
+  /** A charge draft's name, to preview its lines on their own instead. */
+  chargeDraft?: string;
   onClose: () => void;
 }) {
   const preview = usePreviewNextInvoiceMutation(
     orgName,
     account.metadata?.name ?? '',
-    contractDraft
+    contractDraft,
+    chargeDraft
   );
   const { mutate } = preview;
   useEffect(() => {
@@ -401,16 +405,20 @@ export function InvoicePreviewDialog({
       <Dialog.Content className="sm:max-w-lg">
         <Dialog.Header
           title={
-            contractDraft
-              ? t`Draft contract's first invoice`
-              : firstInvoice
-                ? t`First invoice preview`
-                : t`Next invoice preview`
+            chargeDraft
+              ? t`Draft charges' invoice`
+              : contractDraft
+                ? t`Draft contract's first invoice`
+                : firstInvoice
+                  ? t`First invoice preview`
+                  : t`Next invoice preview`
           }
           description={
-            contractDraft
-              ? t`Worked out by the billing provider as if the draft were published. Nothing is published or sent to the customer.`
-              : t`Worked out by the billing provider. Nothing is sent to the customer.`
+            chargeDraft
+              ? t`Worked out by the billing provider for the draft's lines on their own, as if they were added now. Nothing is added or sent to the customer.`
+              : contractDraft
+                ? t`Worked out by the billing provider as if the draft were published. Nothing is published or sent to the customer.`
+                : t`Worked out by the billing provider. Nothing is sent to the customer.`
           }
         />
         <Dialog.Body className="px-5">
@@ -434,6 +442,7 @@ export function InvoicePreviewDialog({
                   orgName={orgName}
                   accountName={account.metadata?.name ?? ''}
                   contractDraft={contractDraft}
+                  chargeDraft={chargeDraft}
                 />
               ) : null}
             </>
@@ -537,12 +546,14 @@ function StripeDraft({
   orgName,
   accountName,
   contractDraft,
+  chargeDraft,
 }: {
   orgName: string;
   accountName: string;
   contractDraft?: ContractDraftPreview;
+  chargeDraft?: string;
 }) {
-  const draft = usePreviewNextInvoiceMutation(orgName, accountName, contractDraft);
+  const draft = usePreviewNextInvoiceMutation(orgName, accountName, contractDraft, chargeDraft);
   const url = draft.data?.status?.draft?.url;
   const message = draft.data?.status?.conditions?.find(
     (condition) => condition.type === 'Completed'

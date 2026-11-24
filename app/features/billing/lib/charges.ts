@@ -11,6 +11,7 @@ import { t } from '@lingui/core/macro';
 import type {
   ComMiloapisBillingV1Alpha1BillingAccount,
   ComMiloapisBillingV1Alpha1Charge,
+  ComMiloapisBillingV1Alpha1ChargeDraft,
   ComMiloapisBillingV1Alpha1ServicePricing,
 } from '@openapi/billing.miloapis.com/v1alpha1';
 
@@ -22,6 +23,10 @@ import type {
 
 export type Charge = ComMiloapisBillingV1Alpha1Charge;
 export type ChargeSpec = Charge['spec'];
+/** Charges staff saved to check and send later: several lines, still editable. */
+export type ChargeDraft = ComMiloapisBillingV1Alpha1ChargeDraft;
+export type ChargeDraftSpec = ChargeDraft['spec'];
+export type ChargeDraftLine = ChargeDraftSpec['lines'][number];
 type BillingAccount = ComMiloapisBillingV1Alpha1BillingAccount;
 type ServicePricing = ComMiloapisBillingV1Alpha1ServicePricing;
 
@@ -366,7 +371,11 @@ const priceText = (value: string): string => {
  * fill in the pricing's code staff removed. An unticked supply date is
  * left out, for billing to store the account's current billing period.
  */
-export const buildChargeSpec = (values: ChargeFormValues, accountName: string): ChargeSpec => {
+export const buildChargeSpec = (
+  values: ChargeFormValues,
+  accountName: string,
+  invoiceGroup?: ChargeInvoiceGroup
+): ChargeSpec => {
   const pricingName = catalogPricingName(values.item);
   const taxCode = values.taxCode.trim();
   const tax = values.notTaxable
@@ -392,8 +401,146 @@ export const buildChargeSpec = (values: ChargeFormValues, accountName: string): 
       : {}),
     ...(note ? { note } : {}),
     invoice: values.invoice,
+    ...(invoiceGroup && values.invoice === 'Now' ? { invoiceGroup } : {}),
   };
 };
+
+export type ChargeInvoiceGroup = NonNullable<ChargeSpec['invoiceGroup']>;
+
+/**
+ * The invoice group for lines added together, or undefined when they don't
+ * need one: a single line, or lines going on the next invoice, which they
+ * join anyway. The name is picked once per dialog, so a retry joins the
+ * same group.
+ */
+export const chargeInvoiceGroup = (
+  invoice: ChargeInvoiceTiming,
+  lines: number,
+  name: string
+): ChargeInvoiceGroup | undefined =>
+  invoice === 'Now' && lines > 1 ? { name, size: lines } : undefined;
+
+/** A name for an invoice group: "invoice-x7k2p". */
+export const chargeInvoiceGroupName = (suffix: string = randomNameSuffix()): string =>
+  `invoice-${suffix}`;
+
+/**
+ * The annotation on a charge draft that records a send under way: each
+ * line's charge name, in the draft's line order, and the invoice group
+ * they join. It's written before the first charge is added, so a send that
+ * stops partway can be picked up from the draft: lines whose charges exist
+ * are already added (a create under the same name is a no-op), and the rest
+ * join the same group.
+ */
+export const CHARGE_DRAFT_SEND_ANNOTATION = 'staff-portal.datum.net/charge-send';
+
+export interface ChargeDraftSend {
+  /** Each line's charge name, in the draft's line order. */
+  names: string[];
+  group?: ChargeInvoiceGroup;
+}
+
+/** The annotations recording a send on a draft. */
+export const chargeDraftSendAnnotations = (send: ChargeDraftSend): Record<string, string> => ({
+  [CHARGE_DRAFT_SEND_ANNOTATION]: JSON.stringify(send),
+});
+
+/**
+ * How many of a draft's lines are added already: those whose recorded
+ * charge exists among the account's charges.
+ */
+export const chargeDraftAddedCount = (
+  draft: ChargeDraft,
+  chargeNames: ReadonlySet<string>
+): number => readChargeDraftSend(draft)?.names.filter((name) => chargeNames.has(name)).length ?? 0;
+
+/**
+ * A draft's recorded send, if it has one that fits its lines. A record that
+ * doesn't parse, or names a different number of lines, is ignored: the
+ * draft is then sent afresh.
+ */
+export const readChargeDraftSend = (draft: ChargeDraft | undefined): ChargeDraftSend | undefined => {
+  const raw = draft?.metadata?.annotations?.[CHARGE_DRAFT_SEND_ANNOTATION];
+  if (!raw || !draft) return undefined;
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (typeof parsed !== 'object' || parsed === null) return undefined;
+    const { names, group } = parsed as { names?: unknown; group?: unknown };
+    if (!Array.isArray(names) || !names.every((name) => typeof name === 'string' && name)) {
+      return undefined;
+    }
+    if (names.length !== draft.spec.lines.length) return undefined;
+    if (group === undefined) return { names };
+    const g = group as { name?: unknown; size?: unknown };
+    if (typeof g.name !== 'string' || typeof g.size !== 'number') return undefined;
+    return { names, group: { name: g.name, size: g.size } };
+  } catch {
+    return undefined;
+  }
+};
+
+/**
+ * A charge draft's spec from the dialog's lines: each line as its Charge
+ * would be sent, without the account and timing the draft gives them all.
+ */
+export const buildChargeDraftSpec = (
+  lines: ChargeFormValues[],
+  invoice: ChargeInvoiceTiming,
+  accountName: string
+): ChargeDraftSpec => ({
+  billingAccountRef: { name: accountName },
+  invoice,
+  lines: lines.map((values) => {
+    const {
+      billingAccountRef,
+      invoice: _invoice,
+      invoiceGroup,
+      ...line
+    } = buildChargeSpec({ ...values, invoice }, accountName);
+    return line;
+  }),
+});
+
+/** A draft's line as the add charge form holds it, to change or send. */
+export const chargeFormValuesFromLine = (
+  line: ChargeDraftLine,
+  invoice: ChargeInvoiceTiming
+): ChargeFormValues => ({
+  item: line.servicePricingRef
+    ? `${CATALOG_ITEM_PREFIX}${line.servicePricingRef.name}`
+    : (line.description ?? ''),
+  description: line.description ?? '',
+  quantity: line.quantity,
+  unitAmount: line.unitAmount ?? '',
+  taxCode: line.tax?.taxable === false ? '' : (line.tax?.code ?? ''),
+  notTaxable: line.tax?.taxable === false,
+  discountPercent: line.discountPercent ?? '',
+  setPeriod: Boolean(line.servicePeriod),
+  periodStart: line.servicePeriod?.start ?? '',
+  periodEnd: line.servicePeriod?.end ?? '',
+  note: line.note ?? '',
+  invoice,
+});
+
+/**
+ * What a draft's lines come to before tax, from their quantities, prices
+ * and discounts, or null while one of them isn't priced: a catalog line
+ * left to its item's price is priced when it's sent.
+ */
+export const chargeDraftTotal = (draft: ChargeDraft): bigint | null => {
+  let total = 0n;
+  for (const line of draft.spec.lines) {
+    if (!line.unitAmount) return null;
+    const amounts = chargeAmounts(line.quantity, line.unitAmount, line.discountPercent);
+    if (!amounts.ok) return null;
+    total += amounts.amountDue;
+  }
+  return total;
+};
+
+/** Whether the add charge form holds nothing yet: no item, description or price. */
+export const isEmptyChargeForm = (values: ChargeFormValues): boolean =>
+  !values.item.trim() && !values.description.trim() && !values.unitAmount.trim();
 
 /** The characters Kubernetes uses for generateName suffixes: no vowels, no look-alikes. */
 const NAME_SUFFIX_ALPHABET = 'bcdfghjklmnpqrstvwxz2456789';
@@ -599,6 +746,8 @@ const waitingText = (reason: string | undefined, message: string | undefined): s
       return t`Waiting for the account's billing customer`;
     case 'WaitingForAmounts':
       return t`Waiting for billing to work out the amount`;
+    case 'WaitingForInvoiceGroup':
+      return t`Waiting for the other lines on its invoice`;
     default:
       return message || t`Waiting`;
   }
@@ -633,18 +782,28 @@ const formatUtcDayTime = (value: string): string =>
 export const isChargeRemovable = (charge: Charge): boolean =>
   charge.status?.phase !== 'Invoiced' && !isChargeOnInvoice(charge);
 
+/** A short line under a charge's status, with more on hover. */
+export interface ChargeRemovalNote {
+  note: string;
+  detail?: string;
+}
+
 /**
  * A line under a charge's status about removing it: until when a held
- * charge can be removed, or, once it's on its invoice, how to correct it.
- * Nothing for charges that are invoiced, waiting or failed.
+ * charge can be removed, or, once it's on its invoice, that it can't be,
+ * with how to correct it on hover. Nothing for charges that are invoiced,
+ * waiting or failed.
  */
-export const chargeRemovalNote = (charge: Charge): string | undefined => {
+export const chargeRemovalNote = (charge: Charge): ChargeRemovalNote | undefined => {
   if (charge.status?.phase !== 'Scheduled') return undefined;
   if (isChargeOnInvoice(charge)) {
-    return t`On its invoice, so it can't be removed. Once the invoice is issued, correct it with a credit note.`;
+    return {
+      note: t`Can't be removed`,
+      detail: t`It's on its invoice. Once the invoice is issued, correct it with a credit note.`,
+    };
   }
   const until = charge.status.removableUntil;
-  return until ? t`Can be removed until ${formatUtcDayTime(until)}` : undefined;
+  return until ? { note: t`Can be removed until ${formatUtcDayTime(until)}` } : undefined;
 };
 
 /**

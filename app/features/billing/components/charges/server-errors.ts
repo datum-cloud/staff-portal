@@ -99,19 +99,41 @@ const findStatus = (err: unknown): StatusLike | undefined => {
  */
 const causesFromMessage = (message: string): StatusCause[] => {
   const causes: StatusCause[] = [];
-  const pattern = /(spec(?:\.[A-Za-z]+)+): ((?:(?!, spec\.).)+?)(?=, spec\.|\]?$)/g;
+  const pattern = /(spec(?:\.[A-Za-z]+|\[\d+\])+): ((?:(?!, spec[.[]).)+?)(?=, spec[.[]|\]?$)/g;
   for (const match of message.matchAll(pattern)) {
     causes.push({ field: match[1], message: match[2] });
   }
   return causes;
 };
 
-/** What the webhook refused, field by field, from a failed create. */
-export const chargeServerErrors = (err: unknown, setPeriod: boolean): ChargeServerError[] => {
+/** The refusal's causes, field by field, and its overall message. */
+const serverCauses = (err: unknown): { found: StatusCause[]; message: string } => {
   const status = findStatus(err);
   const message = status?.message ?? (err instanceof Error ? err.message : '');
   const causes = status?.details?.causes?.filter((cause) => cause.message) ?? [];
-  const found = causes.length > 0 ? causes : message ? causesFromMessage(message) : [];
+  return { found: causes.length > 0 ? causes : message ? causesFromMessage(message) : [], message };
+};
+
+/**
+ * What billing refused in a charge draft, each as a sentence: a line's
+ * problems start with its number, as billing reports them at
+ * `spec.lines[i]`.
+ */
+export const chargeDraftServerErrors = (err: unknown): string[] => {
+  const { found, message } = serverCauses(err);
+  if (found.length > 0) {
+    return found.map((cause) => {
+      const text = causeMessage(cause.message ?? '');
+      const line = cause.field?.match(/^spec\.lines\[(\d+)\]/);
+      return line ? t`Line ${Number(line[1]) + 1}: ${text}` : text;
+    });
+  }
+  return [message ? parseK8sMessage(message) : t`Couldn't save the draft.`];
+};
+
+/** What the webhook refused, field by field, from a failed create. */
+export const chargeServerErrors = (err: unknown, setPeriod: boolean): ChargeServerError[] => {
+  const { found, message } = serverCauses(err);
   if (found.length > 0) {
     return found.map((cause) => ({
       field: chargeFieldForPath(cause.field, setPeriod),

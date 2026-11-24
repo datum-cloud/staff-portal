@@ -1,4 +1,9 @@
-import { causeMessage, chargeFieldForPath, chargeServerErrors } from './server-errors';
+import {
+  causeMessage,
+  chargeDraftServerErrors,
+  chargeFieldForPath,
+  chargeServerErrors,
+} from './server-errors';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('@lingui/core/macro', () => ({
@@ -62,6 +67,39 @@ describe('chargeServerErrors', () => {
     ).toEqual([{ message: 'No' }]);
     expect(chargeServerErrors(new Error('Network Error'), false)).toEqual([
       { message: 'Network Error' },
+    ]);
+  });
+});
+
+describe('chargeDraftServerErrors', () => {
+  it('names the line each cause is for', () => {
+    const err = apiError({
+      kind: 'Status',
+      message: 'admission webhook "vchargedraft.kb.io" denied the request',
+      details: {
+        causes: [
+          {
+            field: 'spec.lines[1].quantity',
+            message: 'Invalid value: "3.33": 3.33 × 0.15 isn\'t whole cents',
+          },
+          { field: 'spec.billingAccountRef.name', message: "Forbidden: charges aren't available" },
+        ],
+      },
+    });
+    expect(chargeDraftServerErrors(err)).toEqual([
+      "Line 2: 3.33 × 0.15 isn't whole cents",
+      "Charges aren't available",
+    ]);
+  });
+
+  it('reads lines from the message when the causes didn’t come through', () => {
+    const err = apiError({
+      message:
+        'ChargeDraft "acme-draft-x" is invalid: [spec.lines[0].note: Required value: a note is needed, spec.lines[2].unitAmount: Required value: a price is required]',
+    });
+    expect(chargeDraftServerErrors(err)).toEqual([
+      'Line 1: A note is needed',
+      'Line 3: A price is required',
     ]);
   });
 });
