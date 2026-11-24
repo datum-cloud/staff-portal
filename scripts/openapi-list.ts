@@ -89,7 +89,7 @@ async function main() {
     await writeFile(configPath, JSON.stringify(resources, null, 2));
     console.log(`Resources list saved to: ${configPath}`);
     console.log('\nTo generate TypeScript for specific resources, use:');
-    console.log('  npm run openapi:generate -- --resources notification.miloapis.com/v1alpha1');
+    console.log('  pnpm openapi:generate --resources notification.miloapis.com/v1alpha1');
   } catch (error) {
     console.error('Error:', error instanceof Error ? error.message : String(error));
     process.exit(1);

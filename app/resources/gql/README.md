@@ -136,7 +136,7 @@ export const listOrganizations = async (p?) => {
 
 ## Checklist: add a new gateway-backed read
 
-1. Whitelist the query in `graphql.config.json`, then `npm run graphql`
+1. Whitelist the query in `graphql.config.json`, then `pnpm graphql`
    and commit the regenerated `modules/graphql/generated/**` (prettier-formatted).
 2. Add `xxxOp` here with the selection inline + the `Gql*` type
    (derive it for pass-through, hand-write it for a transform).
@@ -144,4 +144,4 @@ export const listOrganizations = async (p?) => {
    as-is or map.
 4. Add the hook in `queries/<resource>.queries.ts`.
 5. Consume via the hook; import `Gql*` types from here.
-6. `tsc --noEmit`, `eslint`, `npm test` — all green.
+6. `tsc --noEmit`, `eslint`, `pnpm test` — all green.

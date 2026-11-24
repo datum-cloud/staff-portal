@@ -18,9 +18,12 @@ import {
 } from '../../lib/contract';
 import {
   buildListFeePlan,
+  isPricedPerContract,
   listFeeNames,
   listFeeOptions,
   listFeeRowsFromOffer,
+  rowServicePeriod,
+  servicePeriodFields,
 } from '../../lib/contract-list-fees';
 import {
   buildUsagePlan,
@@ -51,10 +54,11 @@ import {
   type ContractFeeRow,
   type ContractFormValues,
 } from './schema';
+import { ShowSubmitErrors } from './show-submit-errors';
 import { PageHeader } from '@/components/page-header';
 import { SectionCard } from '@/features/milo';
+import { HEADER_STACK_H } from '@/features/milo/lib/dimensions';
 import {
-  useBillingDefaultOfferQuery,
   useBillingEntitlementForAccountQuery,
   useChangeContractFeesMutation,
   useContractDraftQuery,
@@ -79,7 +83,7 @@ import type {
   ComMiloapisBillingV1Alpha1BillingEntitlement,
   ComMiloapisBillingV1Alpha1Offer,
 } from '@openapi/billing.miloapis.com/v1alpha1';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type CSSProperties } from 'react';
 import { useNavigate } from 'react-router';
 
 /**
@@ -106,9 +110,6 @@ export function ContractEditor({
     contract ? (entitlement?.spec?.offerRef?.name ?? '') : ''
   );
   const pricingsQuery = useServicePricingListQuery(DEFAULT_SERVICE_PRICING_NAMESPACE);
-  const defaultOfferNameQuery = useBillingDefaultOfferQuery();
-  const defaultOfferName = defaultOfferNameQuery.data ?? '';
-  const defaultOfferQuery = useOfferDetailQuery(isSetup ? defaultOfferName : '');
   // A saved draft is where the form starts, and what publishing replaces.
   const draftQuery = useContractDraftQuery(orgName, accountName);
   const pricings = pricingsQuery.data?.items;
@@ -137,20 +138,16 @@ export function ContractEditor({
         : t`New fees apply from the account's next billing date, so this month is billed as agreed. One-time fees aren't charged again.`
       : t`The account moves onto these fees when the contract starts.`;
 
-  // The form starts from the pricings, the current offer and, for a new
-  // contract, the default offer's usage, so it waits for them.
+  // The form starts from the pricings and the current offer, so it waits
+  // for them. A new contract starts empty: nothing ticked, no fees.
   const loading =
     entitlementQuery.isLoading ||
     pricingsQuery.isLoading ||
     draftQuery.isLoading ||
-    (!isSetup && currentOfferQuery.isLoading) ||
-    (isSetup &&
-      (defaultOfferNameQuery.isLoading ||
-        (Boolean(defaultOfferName) && defaultOfferQuery.isLoading)));
+    (!isSetup && currentOfferQuery.isLoading);
 
   // Saving replaces the contract's fees and usage with the form's, so the
-  // form isn't shown on anything less than what it starts from. The default
-  // offer only suggests what a new contract bills, so it doesn't block.
+  // form isn't shown on anything less than what it starts from.
   const failed = [
     entitlementQuery.isError
       ? { label: t`the account's entitlement`, query: entitlementQuery }
@@ -161,16 +158,6 @@ export function ContractEditor({
       ? { label: t`the contract's current offer`, query: currentOfferQuery }
       : null,
   ].filter((failure) => failure !== null);
-  // A draft says what the contract bills, so the default offer isn't asked.
-  const defaultOfferProblem: DefaultOfferProblem | undefined =
-    !isSetup || draft
-      ? undefined
-      : defaultOfferNameQuery.isError ||
-          (defaultOfferName && (defaultOfferQuery.isError || !defaultOfferQuery.data))
-        ? 'failed'
-        : !defaultOfferName
-          ? 'none'
-          : undefined;
 
   return (
     <div className="m-4 flex flex-col gap-4">
@@ -205,8 +192,6 @@ export function ContractEditor({
           contract={contract}
           currentOffer={currentOfferQuery.data ?? null}
           draft={draft}
-          defaultOffer={defaultOfferProblem ? null : (defaultOfferQuery.data ?? null)}
-          defaultOfferProblem={defaultOfferProblem}
           pricings={pricingsQuery.data?.items ?? []}
           now={now}
         />
@@ -215,9 +200,6 @@ export function ContractEditor({
   );
 }
 
-/** Why a new contract's price list starts with nothing ticked. */
-type DefaultOfferProblem = 'none' | 'failed';
-
 function ContractEditorForm({
   orgName,
   account,
@@ -225,8 +207,6 @@ function ContractEditorForm({
   contract,
   currentOffer,
   draft,
-  defaultOffer,
-  defaultOfferProblem,
   pricings,
   now,
 }: {
@@ -238,8 +218,6 @@ function ContractEditorForm({
   currentOffer: ComMiloapisBillingV1Alpha1Offer | null;
   /** The account's draft, with the snapshot it would have once published. */
   draft: ComMiloapisBillingV1Alpha1Offer | null;
-  defaultOffer: ComMiloapisBillingV1Alpha1Offer | null;
-  defaultOfferProblem?: DefaultOfferProblem;
   pricings: ServicePricing[];
   now: Date;
 }) {
@@ -289,14 +267,11 @@ function ContractEditorForm({
     [servicesQuery.data?.items]
   );
 
-  // Without list prices (as before any ServicePricing exists) the contract
-  // bills only its own fees, and there's nothing to tick.
-  const priceListEmpty = usageOptions.length === 0 && feeOptions.length === 0;
   // What the form starts from and what saving can reuse pricings from: the
   // draft, else the contract's current offer. A new contract without a draft
-  // starts from the default offer's usage, with nothing to reuse.
+  // starts with nothing ticked and nothing to reuse.
   const base = draft ?? currentOffer;
-  const pickFrom = draft ?? (isSetup ? defaultOffer : currentOffer);
+  const pickFrom = draft ?? (isSetup ? null : currentOffer);
   const usageRows = usageRowsFromOffer(usageOptions, pickFrom);
   const listFeeRows = listFeeRowsFromOffer(feeOptions, pickFrom);
   // Fees the price list's rows show stay there; the rest are the contract's
@@ -315,18 +290,6 @@ function ContractEditorForm({
       ref.name
   );
 
-  const blankFee = (chargeType: ContractFeeRow['chargeType'], label: string): ContractFeeRow => ({
-    label,
-    chargeType,
-    interval: 'monthly',
-    billingTiming: DEFAULT_FEE_BILLING_TIMING,
-    periods: '',
-    amount: '',
-    quantity: '1',
-    pricingUnit: '',
-    sku: '',
-    serviceRef: NO_SERVICE,
-  });
   const defaultFees: ContractFeeRow[] = base
     ? currentFees.map((fee) => ({
         label: fee.label,
@@ -336,6 +299,7 @@ function ContractEditorForm({
         interval: fee.interval ?? 'monthly',
         billingTiming: fee.billingTiming ?? 'InAdvance',
         periods: fee.periods ? String(fee.periods) : '',
+        ...servicePeriodFields(fee.servicePeriod),
         amount: toPricingAmount(fee.amount),
         quantity: String(fee.quantity),
         pricingUnit: fee.pricingUnit ?? '',
@@ -343,12 +307,16 @@ function ContractEditorForm({
         serviceRef: fee.serviceRef ?? NO_SERVICE,
         existingPricing: fee.name,
       }))
-    : [blankFee('OneTime', t`Setup fee`), blankFee('Recurring', t`Monthly fee`)];
+    : [];
 
   const draftStartsAt = isSetup ? getDraftStartsAt(draft) : undefined;
+  const pricedPerContract = useMemo(
+    () => new Set(feeOptions.filter(isPricedPerContract).map((option) => option.name)),
+    [feeOptions]
+  );
   const schema = useMemo(
-    () => buildContractSchema(isSetup, allowOneTime, now, submitIntent.isDraft),
-    [isSetup, allowOneTime, now, submitIntent]
+    () => buildContractSchema(isSetup, allowOneTime, now, submitIntent.isDraft, pricedPerContract),
+    [isSetup, allowOneTime, now, submitIntent, pricedPerContract]
   );
   const defaultValues: ContractFormValues = {
     fees: defaultFees,
@@ -393,7 +361,7 @@ function ContractEditorForm({
                   billingTiming: fee.billingTiming,
                   periods: parsePeriods(fee.periods),
                 }
-              : {}),
+              : { servicePeriod: rowServicePeriod(fee) }),
           };
         }),
         ...buildListFeePlan(values.listFees.map(fromListFeeRowValues), feeOptions, base),
@@ -440,32 +408,22 @@ function ContractEditorForm({
     <Form.Root schema={schema} defaultValues={defaultValues} onSubmit={handleSubmit}>
       {({ isSubmitting, isDirty }) => (
         <div className="grid grid-cols-1 items-start gap-4 @5xl/main:grid-cols-[minmax(0,1fr)_360px]">
+          <ShowSubmitErrors />
           <div className="flex min-w-0 flex-col gap-4">
             <SectionCard
               title={<Trans>Contract fees</Trans>}
               description={t`Anything that isn't on the price list, such as a manual product, one-off work or a negotiated price. Each fee is its own invoice line.`}>
-              <ContractFeeList services={services} allowOneTime={allowOneTime} />
+              <ContractFeeList
+                services={services}
+                allowOneTime={allowOneTime}
+                contractStartsAt={contract?.startsAt}
+              />
             </SectionCard>
 
             <SectionCard
               title={<Trans>Price list</Trans>}
               description={t`What the contract bills from the platform's prices. Leave the customer price empty to bill the list price.`}>
               <div className="flex flex-col gap-3">
-                {defaultOfferProblem && !priceListEmpty ? (
-                  <Text size="sm" textColor="muted">
-                    {defaultOfferProblem === 'none' ? (
-                      <Trans>
-                        No default offer is set up, so nothing starts ticked. Tick what the contract
-                        bills.
-                      </Trans>
-                    ) : (
-                      <Trans>
-                        Couldn&apos;t load the default offer, so nothing starts ticked. Tick what
-                        the contract bills.
-                      </Trans>
-                    )}
-                  </Text>
-                ) : null}
                 {keptUsageNames.length > 0 ? (
                   <Text size="sm" textColor="muted">
                     <Trans>
@@ -474,12 +432,20 @@ function ContractEditorForm({
                     </Trans>
                   </Text>
                 ) : null}
-                <PriceListTable usageOptions={usageOptions} feeOptions={feeOptions} />
+                <PriceListTable
+                  usageOptions={usageOptions}
+                  feeOptions={feeOptions}
+                  contractStartsAt={contract?.startsAt}
+                />
               </div>
             </SectionCard>
           </div>
 
-          <aside className="flex flex-col gap-4 @5xl/main:sticky @5xl/main:top-4">
+          {/* Sticks below the navbar and breadcrumb bar, which would cover
+              it otherwise, and scrolls on its own when taller than the window. */}
+          <aside
+            className="flex flex-col gap-4 @5xl/main:sticky @5xl/main:top-(--contract-aside-top) @5xl/main:max-h-[calc(100vh-var(--contract-aside-top)-1rem)] @5xl/main:overflow-y-auto"
+            style={{ '--contract-aside-top': `${HEADER_STACK_H + 16}px` } as CSSProperties}>
             {isSetup ? (
               <SectionCard title={<Trans>Start date</Trans>}>
                 <div className="flex flex-col gap-4">

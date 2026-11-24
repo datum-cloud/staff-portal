@@ -24,10 +24,15 @@ const ACTIVITY_PAGE_SIZE = 8;
 const hideTenant = () => null;
 
 /**
- * People's recent changes to the org's billing resources, for every billing
- * account in it (the activity API can't narrow to one account): accounts,
- * bindings, payment methods and terms. Only changes people made
- * (`changeSource: human`), never controllers'. Filters are fixed and hidden.
+ * Recent billing activity for every billing account in the org (the
+ * activity API can't narrow to one account): what people changed (accounts,
+ * bindings, payment methods, terms) and what happened to the bills (invoices
+ * issued, emailed, paid, declined, past due, voided). The second kind is
+ * recorded by the billing providers as events, which the activity API calls
+ * `system` changes, so both sources are shown. That lets in no controller
+ * noise: billing's activity policies skip writes by service accounts and
+ * only turn billing's own timeline events into activity. Filters are fixed
+ * and hidden.
  */
 export function BillingAccountActivityCard({ orgName }: { orgName: string }) {
   // Billing resources live on the org's control plane.
@@ -38,7 +43,7 @@ export function BillingAccountActivityCard({ orgName }: { orgName: string }) {
   );
   const filters = useMemo(
     () => ({
-      changeSource: 'human' as const,
+      changeSource: 'all' as const,
       apiGroups: ['billing.miloapis.com'],
       resourceNamespaces: [buildOrganizationNamespace(orgName)],
     }),

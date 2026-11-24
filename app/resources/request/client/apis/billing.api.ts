@@ -1,3 +1,4 @@
+import type { Charge, ChargeSpec } from '@/features/billing/lib/charges';
 import {
   CONTRACT_BILLING_ACCOUNT_LABEL,
   CONTRACT_BILLING_DAY_ANNOTATION,
@@ -33,9 +34,11 @@ import {
   createBillingMiloapisComV1Alpha1NamespacedBillingArrangement,
   createBillingMiloapisComV1Alpha1NamespacedBillingArrangementDecline,
   createBillingMiloapisComV1Alpha1NamespacedBillingEntitlement,
+  createBillingMiloapisComV1Alpha1NamespacedCharge,
   createBillingMiloapisComV1Alpha1NamespacedInvoiceRequest,
   createBillingMiloapisComV1Alpha1NamespacedServicePricing,
   createBillingMiloapisComV1Alpha1Offer,
+  deleteBillingMiloapisComV1Alpha1NamespacedCharge,
   deleteBillingMiloapisComV1Alpha1NamespacedServicePricing,
   deleteBillingMiloapisComV1Alpha1Offer,
   listBillingMiloapisComV1Alpha1BillingAccountBindingForAllNamespaces,
@@ -47,6 +50,7 @@ import {
   listBillingMiloapisComV1Alpha1NamespacedBillingArrangementApplication,
   listBillingMiloapisComV1Alpha1NamespacedBillingArrangementDecline,
   listBillingMiloapisComV1Alpha1NamespacedBillingEntitlement,
+  listBillingMiloapisComV1Alpha1NamespacedCharge,
   listBillingMiloapisComV1Alpha1NamespacedInvoice,
   listBillingMiloapisComV1Alpha1NamespacedPaymentMethod,
   listBillingMiloapisComV1Alpha1NamespacedServicePricing,
@@ -77,7 +81,7 @@ export type OfferSpec = NonNullable<Offer['spec']>;
 export type ServicePricing = ComMiloapisBillingV1Alpha1ServicePricing;
 type ServicePricingSpec = NonNullable<ServicePricing['spec']>;
 // One set of billing aliases, defined with the billing feature.
-export type { BillingEntitlement, Invoice, InvoiceRequest };
+export type { BillingEntitlement, Charge, Invoice, InvoiceRequest };
 
 export const billingAccountListQuery = async (params?: ListQueryParams) => {
   const response = await listBillingMiloapisComV1Alpha1BillingAccountForAllNamespaces({
@@ -382,8 +386,10 @@ export type CreateFixedServicePricingInput = {
   serviceRef?: string;
   /** What the amount is per, e.g. "port", if the fee has a unit. */
   pricingUnit?: string;
-  /** The product code invoices show before the fee's name, if it has one. */
+  /** The fee's product code, for tracking and reporting, if it has one. */
   sku?: string;
+  /** How the fee is taxed, if it says: a customer's fee copies its list fee's. */
+  tax?: { code?: string; taxable?: boolean };
   /** How often a recurring fee is charged; monthly when unset. */
   interval?: FeeInterval;
   /**
@@ -415,6 +421,7 @@ export const createFixedServicePricing = async (input: CreateFixedServicePricing
         ...(input.serviceRef ? { serviceRef: input.serviceRef } : {}),
         ...(input.pricingUnit ? { pricingUnit: input.pricingUnit } : {}),
         ...(input.sku ? { sku: input.sku } : {}),
+        ...(input.tax ? { tax: input.tax } : {}),
         ...(input.basedOn ? { basedOn: input.basedOn } : {}),
         ...(input.chargeType === 'OneTime'
           ? { trigger: 'BillingAccountActivation' as const }
@@ -478,8 +485,10 @@ export type ContractFeeInput = {
   quantity: number;
   /** What the amount is per, e.g. "port", if the fee has a unit. */
   pricingUnit?: string;
-  /** The product code invoices show before the fee's name, if it has one. */
+  /** The fee's product code, for tracking and reporting, if it has one. */
   sku?: string;
+  /** How the fee is taxed, if it says: a customer's fee copies its list fee's. */
+  tax?: { code?: string; taxable?: boolean };
   /** The catalog service's serviceName the fee is for, if it's for one. */
   serviceRef?: string;
   /**
@@ -498,6 +507,11 @@ export type ContractFeeInput = {
   billingTiming?: FeeBillingTiming;
   /** How many periods a recurring fee runs for, on the Offer's reference; unset for no end. */
   periods?: number;
+  /**
+   * A one-time fee's supply date, such as an install date, on the Offer's
+   * reference; unset for the day it's charged.
+   */
+  servicePeriod?: { start: string; end: string };
 };
 
 export type CreateContractOfferInput = {
@@ -602,6 +616,7 @@ const createContractPricings = async (
       serviceRef: fee.serviceRef,
       pricingUnit: fee.pricingUnit,
       sku: fee.sku,
+      tax: fee.tax,
       interval: fee.chargeType === 'Recurring' ? fee.interval : undefined,
       basedOn: fee.basedOn,
       labels,
@@ -1063,10 +1078,17 @@ const draftAssignment = (
  * `draft`, the provider also leaves the invoice as a draft in its own system
  * (a Stripe draft invoice) for staff to open there.
  */
+/** A contract not published yet, to preview instead of the account's billing. */
+export interface ContractDraftPreview {
+  offerName: string;
+  startsAt: Date;
+  billingDay: 'StartDate' | 'InvoiceDay';
+}
+
 export const createInvoicePreviewRequest = async (
   orgName: string,
   accountName: string,
-  { draft = false }: { draft?: boolean } = {}
+  { draft = false, contractDraft }: { draft?: boolean; contractDraft?: ContractDraftPreview } = {}
 ) => {
   const namespace = buildOrganizationNamespace(orgName);
   const response = await createBillingMiloapisComV1Alpha1NamespacedInvoiceRequest({
@@ -1081,6 +1103,15 @@ export const createInvoicePreviewRequest = async (
         billingAccountRef: { name: accountName },
         mode: 'Preview',
         ...(draft ? { draft: true } : {}),
+        ...(contractDraft
+          ? {
+              contractDraft: {
+                offerRef: { name: contractDraft.offerName },
+                startsAt: contractDraft.startsAt.toISOString().replace('.000Z', 'Z'),
+                billingDay: contractDraft.billingDay,
+              },
+            }
+          : {}),
       },
     },
   });
@@ -1094,9 +1125,22 @@ export const createInvoicePreviewRequest = async (
 export const previewNextInvoice = async (
   orgName: string,
   accountName: string,
-  { attempts = 45, intervalMs = 2000, draft = false } = {}
+  {
+    attempts = 45,
+    intervalMs = 2000,
+    draft = false,
+    contractDraft,
+  }: {
+    attempts?: number;
+    intervalMs?: number;
+    draft?: boolean;
+    contractDraft?: ContractDraftPreview;
+  } = {}
 ): Promise<InvoiceRequest> => {
-  const created = await createInvoicePreviewRequest(orgName, accountName, { draft });
+  const created = await createInvoicePreviewRequest(orgName, accountName, {
+    draft,
+    contractDraft,
+  });
   const name = created?.metadata?.name;
   if (!name) throw new Error('The preview request was not created.');
   for (let i = 0; i < attempts; i++) {
@@ -1283,4 +1327,105 @@ export const createBillingArrangementDecline = async (
     },
   });
   return response.data?.data;
+};
+
+// ─── Charges (org-namespaced, staff-added) ──────────────────────────────────
+
+/** An account's charges, and whether the API serves charges at all. */
+export interface AccountCharges {
+  items: Charge[];
+  /**
+   * False when the control plane has no Charge resource (billing without
+   * charges installed), so there's nothing to show or add.
+   */
+  served: boolean;
+  /** True when the walk stopped at its page limit, so some charges may be missing. */
+  hasMore: boolean;
+}
+
+const CHARGE_PAGE_LIMIT = 500;
+// Safety net against a runaway walk, as for invoices.
+const CHARGE_MAX_PAGES = 20;
+
+/**
+ * The account's charges, not being deleted. Charges can't be selected by
+ * account on the server, so every page of the org's is read and filtered
+ * here. A 404 means the Charge resource isn't installed, which is answered
+ * without the error toast.
+ */
+export const chargeListForAccountQuery = async (
+  orgName: string,
+  accountName: string
+): Promise<AccountCharges> => {
+  const namespace = buildOrganizationNamespace(orgName);
+  let served = true;
+  const { items, hasMore } = await walkCursorPages<Charge>(
+    async (cursor) => {
+      const response = await listBillingMiloapisComV1Alpha1NamespacedCharge({
+        baseURL: getClientOrgControlPlaneBaseURL(orgName),
+        path: { namespace },
+        query: { limit: CHARGE_PAGE_LIMIT, continue: cursor },
+        validateStatus: (status) => (status >= 200 && status < 300) || status === 404,
+      });
+      if (response.status === 404) {
+        served = false;
+        return { items: [] };
+      }
+      const data = response.data?.data;
+      return { items: data?.items ?? [], continueToken: data?.metadata?.continue };
+    },
+    {
+      maxPages: CHARGE_MAX_PAGES,
+      filterPage: (page) =>
+        filterNotDeleting(page).filter(
+          (charge) => charge.spec?.billingAccountRef?.name === accountName
+        ),
+    }
+  );
+  return served ? { items, served, hasMore } : { items: [], served, hasMore: false };
+};
+
+/**
+ * Adds a charge under the name the dialog picked. Billing defaults what the
+ * spec leaves out. The name is the same on every try, so a 409 means an
+ * earlier try got through and its response was lost: the charge is there,
+ * and this one is done. Billing's refusals show on the form's fields, so
+ * they skip the generic error toast.
+ */
+export const createCharge = async (
+  orgName: string,
+  spec: ChargeSpec,
+  name: string
+): Promise<Charge | undefined> => {
+  const namespace = buildOrganizationNamespace(orgName);
+  try {
+    const response = await createBillingMiloapisComV1Alpha1NamespacedCharge({
+      baseURL: getClientOrgControlPlaneBaseURL(orgName),
+      path: { namespace },
+      query: { fieldManager: FIELD_MANAGER },
+      body: {
+        apiVersion: 'billing.miloapis.com/v1alpha1',
+        kind: 'Charge',
+        metadata: { name, namespace },
+        spec,
+      },
+      skipErrorToast: true,
+    });
+    return response.data?.data;
+  } catch (err) {
+    if (isAxiosError(err) && err.response?.status === 409) return undefined;
+    throw err;
+  }
+};
+
+/**
+ * Removes a charge. The billing provider takes it off the account's next
+ * invoice first; billing refuses once it's invoiced.
+ */
+export const deleteCharge = async (orgName: string, chargeName: string) => {
+  const namespace = buildOrganizationNamespace(orgName);
+  await deleteBillingMiloapisComV1Alpha1NamespacedCharge({
+    baseURL: getClientOrgControlPlaneBaseURL(orgName),
+    path: { namespace, name: chargeName },
+  });
 };

@@ -1,18 +1,17 @@
 import { aggregationQualifier, formatUsagePair, ucumToMeterUnit } from '../lib/usage-format';
+import { OverviewCardLink, OverviewCardTitle, OverviewEmptyState } from './overview-card';
 import { QuotaIndicator } from './quota-ring';
 import { SectionCard } from '@/features/milo';
 import { SpendValue } from '@/features/organization/usage/components/spend-value';
 import type { OrgUsageMeterSummary } from '@/modules/billing/org-usage.types';
 import { useOrgUsageSummaryQuery } from '@/resources/request/client/queries/usage.queries';
-import { TAB_ICONS } from '@/utils/config/icons.config';
+import { STATUS_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
 import { orgRoutes } from '@/utils/config/routes.config';
-import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
-import { useMemo, type ReactNode } from 'react';
-import { Link } from 'react-router';
+import { useMemo } from 'react';
 
 /**
  * Meters listed on the card; the rest are on the usage page ("View all").
@@ -55,7 +54,7 @@ export function OrgUsageCard({ orgName, className }: Props) {
   const shownMeters = meters.slice(0, TOP_N);
   const usageHref = orgRoutes.usage(orgName);
 
-  const description =
+  const hint =
     summary?.status === 'ok' ? (
       <Trans>Current billing cycle ({summary.cycleRangeLabel})</Trans>
     ) : (
@@ -65,46 +64,35 @@ export function OrgUsageCard({ orgName, className }: Props) {
   return (
     <SectionCard
       className={className}
-      title={<Trans>Usage</Trans>}
-      description={description}
+      title={<OverviewCardTitle title={<Trans>Usage</Trans>} hint={hint} />}
       action={
-        <Link to={usageHref} className="text-muted-foreground hover:text-foreground text-sm">
+        <OverviewCardLink to={usageHref}>
           <Trans>View all</Trans>
-        </Link>
+        </OverviewCardLink>
       }>
       {query.isPending ? (
         <LoadingRows />
       ) : query.isError ? (
-        <EmptyMessage
-          title={<Trans>Could not load usage</Trans>}
-          body={<Trans>Something went wrong while loading usage data.</Trans>}
-        />
+        <OverviewEmptyState icon={STATUS_ICONS.error} title={<Trans>Could not load usage</Trans>}>
+          <Trans>Something went wrong while loading usage data.</Trans>
+        </OverviewEmptyState>
       ) : summary?.status === 'insufficient-permissions' ? (
-        <EmptyMessage
-          title={<Trans>Usage data not available</Trans>}
-          body={
-            <Trans>Billing permissions are still being provisioned for this organization.</Trans>
-          }
-        />
+        <OverviewEmptyState icon={TAB_ICONS.usage} title={<Trans>Usage data not available</Trans>}>
+          <Trans>Billing permissions are still being provisioned for this organization.</Trans>
+        </OverviewEmptyState>
       ) : summary?.status === 'no-billing-account' ? (
-        <EmptyMessage
-          title={<Trans>No billing account</Trans>}
-          body={
-            <Trans>
-              This organization does not have a billing account. Usage and spend data require a
-              linked billing account.
-            </Trans>
-          }
-        />
+        <OverviewEmptyState icon={TAB_ICONS.usage} title={<Trans>No billing account</Trans>}>
+          <Trans>
+            This organization does not have a billing account. Usage and spend data require a linked
+            billing account.
+          </Trans>
+        </OverviewEmptyState>
       ) : summary?.status !== 'ok' || meters.length === 0 ? (
-        <EmptyMessage
-          title={<Trans>No usage to display</Trans>}
-          body={
-            <Trans>
-              Usage will appear here once this organization starts consuming metered resources.
-            </Trans>
-          }
-        />
+        <OverviewEmptyState icon={TAB_ICONS.usage} title={<Trans>No usage to display</Trans>}>
+          <Trans>
+            Usage will appear here once this organization starts consuming metered resources.
+          </Trans>
+        </OverviewEmptyState>
       ) : (
         <div className="flex flex-col gap-2">
           {summary.spend || summary.spendError ? (
@@ -166,19 +154,5 @@ export function OrgUsageCard({ orgName, className }: Props) {
         </div>
       )}
     </SectionCard>
-  );
-}
-
-function EmptyMessage({ title, body }: { title: ReactNode; body: ReactNode }) {
-  return (
-    <div className="flex flex-col items-center justify-center gap-2 py-6 text-center">
-      <Icon icon={TAB_ICONS.usage} size={32} className="text-muted-foreground" />
-      <Text size="sm" weight="medium">
-        {title}
-      </Text>
-      <Text size="sm" textColor="muted" className="max-w-xs">
-        {body}
-      </Text>
-    </div>
   );
 }

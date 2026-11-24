@@ -1,3 +1,4 @@
+import { formatServicePeriod, type ServicePeriod } from '../lib/charges';
 import type { FeeBillingTiming, FeeInterval } from '../lib/contract';
 import type { RateSlotLabel } from '../lib/contract-usage';
 import { i18n } from '@lingui/core';
@@ -75,3 +76,10 @@ export const periodsText = (periods: number, interval: FeeInterval | undefined):
 /** What a fee's renewals count, shown after the number: "months", "quarters" or "years". */
 export const periodUnitText = (interval: FeeInterval | undefined): string =>
   interval === 'quarterly' ? t`quarters` : interval === 'annual' ? t`years` : t`months`;
+
+/**
+ * A one-time fee's supply date as its details show it, e.g. "Supply date
+ * Mar 3, 2027" or "Supply date Mar 3, 2027 – Mar 5, 2027".
+ */
+export const supplyDateText = (period: ServicePeriod): string =>
+  t`Supply date ${formatServicePeriod(period)}`;

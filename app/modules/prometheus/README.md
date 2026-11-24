@@ -18,7 +18,7 @@ This library is designed to be used directly in backend services or as the core 
 Ensure you have the required peer dependencies:
 
 ```bash
-npm install zod axios
+pnpm add zod axios
 ```
 
 ## Environment Setup

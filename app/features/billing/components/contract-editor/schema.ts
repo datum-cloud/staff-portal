@@ -1,3 +1,4 @@
+import { servicePeriodShapeProblems } from '../../lib/charges';
 import {
   contractStartFromDate,
   contractStartProblem,
@@ -9,6 +10,7 @@ import {
 } from '../../lib/contract';
 import type { ListFeeRow } from '../../lib/contract-list-fees';
 import { RATE_AMOUNT_PATTERN, type UsageRow } from '../../lib/contract-usage';
+import { servicePeriodProblemText } from '../charges/schema';
 import { t } from '@lingui/core/macro';
 import { z } from 'zod';
 
@@ -41,6 +43,16 @@ const usageRowSchema = z.object({
 /** When a recurring fee is invoiced: a term of the contract, on the Offer's reference. */
 const billingTimingSchema = z.enum(['InAdvance', 'InArrears']);
 
+/**
+ * A one-time fee's supply date, as the add charge form has it: unticked, its
+ * period is the day it's charged. Kept on any other row, and ignored.
+ */
+const supplyDateFields = {
+  setPeriod: z.boolean(),
+  periodStart: z.string(),
+  periodEnd: z.string(),
+};
+
 /** A list fee's row in the form; an empty amount means the list amount. */
 const listFeeRowSchema = z.object({
   name: z.string(),
@@ -51,6 +63,7 @@ const listFeeRowSchema = z.object({
   billingTiming: billingTimingSchema,
   /** Renewals: how many periods a recurring fee runs for; empty for no end. */
   periods: z.string(),
+  ...supplyDateFields,
   currentPricing: z.string().optional(),
 });
 
@@ -71,7 +84,9 @@ export const buildContractSchema = (
   needsStart: boolean,
   allowOneTime: boolean,
   now: Date,
-  isDraft: () => boolean = () => false
+  isDraft: () => boolean = () => false,
+  /** List fees priced per contract, which need the customer's own amount. */
+  pricedPerContract: ReadonlySet<string> = new Set()
 ) =>
   z
     .object({
@@ -88,6 +103,7 @@ export const buildContractSchema = (
           billingTiming: billingTimingSchema,
           // Renewals: how many periods it runs for; empty for no end.
           periods: z.string(),
+          ...supplyDateFields,
           amount: z.string().refine((value) => parseAmount(value) > 0, {
             message: t`Enter an amount, such as 1000 or 1000.00.`,
           }),
@@ -141,6 +157,29 @@ export const buildContractSchema = (
           issue(['listFees', index, 'periods'], t`1 to ${MAX_FEE_PERIODS}, or blank.`);
         }
       });
+      // A supply date's own dates, as billing checks them. Only one-time
+      // rows offer one; a list fee's row is only ticked with it there.
+      const checkSupplyDate = (
+        path: ['fees' | 'listFees', number],
+        row: { setPeriod: boolean; periodStart: string; periodEnd: string }
+      ) => {
+        if (!row.setPeriod) return;
+        for (const problem of servicePeriodShapeProblems({
+          start: row.periodStart,
+          end: row.periodEnd,
+        })) {
+          issue(
+            [...path, problem.field === 'start' ? 'periodStart' : 'periodEnd'],
+            servicePeriodProblemText(problem)
+          );
+        }
+      };
+      values.fees.forEach((fee, index) => {
+        if (fee.chargeType === 'OneTime') checkSupplyDate(['fees', index], fee);
+      });
+      values.listFees.forEach((row, index) => {
+        if (row.selected) checkSupplyDate(['listFees', index], row);
+      });
       const listFees = values.listFees.filter((row) => row.selected);
       const feeCount = values.fees.length + listFees.length;
       // A contract must bill something: a fee, or usage. Billing only needs
@@ -165,6 +204,11 @@ export const buildContractSchema = (
         }
         if (row.amount.trim() && !(parseAmount(row.amount) > 0)) {
           issue(['listFees', index, 'amount'], t`An amount, such as 250.00.`);
+        } else if (!row.amount.trim() && pricedPerContract.has(row.name)) {
+          issue(
+            ['listFees', index, 'amount'],
+            t`Priced per contract: enter the customer's amount from the order form.`
+          );
         }
       });
       values.usage.forEach((row, index) => {
@@ -227,6 +271,9 @@ export const toListFeeRowValues = (row: ListFeeRow): ListFeeRowValues => ({
   amount: row.custom ? row.amount : '',
   billingTiming: row.billingTiming,
   periods: row.periods,
+  setPeriod: row.setPeriod,
+  periodStart: row.periodStart,
+  periodEnd: row.periodEnd,
   currentPricing: row.currentPricing,
 });
 

@@ -16,6 +16,21 @@
 @source '../../node_modules/@datum-cloud/activity-ui/dist/**/*.js';
 
 /*
+ * Keeps the sticky navbar in place while a dropdown, menu or dialog is open.
+ * datum-ui clips sideways overflow on <html>, so <body>'s overflow no longer
+ * passes to the window. Radix locks scrolling with `overflow: hidden` on
+ * <body>, which then makes <body> a scroll container of its own, and the
+ * navbar, sticky within it, scrolls out of view. Clipping on <body> instead
+ * keeps the sideways clip and lets the lock reach the window.
+ */
+html {
+  overflow-x: visible;
+}
+body {
+  overflow-x: clip;
+}
+
+/*
  * Density mode for the staff portal (#657).
  *
  * The scale itself — the step names, their roles and the ladder between them —

@@ -123,7 +123,7 @@ This is why many route files have light loaders and richer client queries in req
 ## How to add a new OpenAPI-backed request
 
 1. Regenerate OpenAPI SDK if endpoint is new:
-   - `npm run openapi:generate`
+   - `pnpm openapi:generate`
 2. Add API wrapper in `app/resources/request/client/apis/<feature>.api.ts`:
    - export async query/mutation functions
    - unwrap response payload consistently
@@ -136,7 +136,7 @@ This is why many route files have light loaders and richer client queries in req
 ## How to add a new GraphQL-backed request
 
 1. Whitelist the gateway query/mutation in `graphql.config.json`, then regenerate:
-   - `npm run graphql`
+   - `pnpm graphql`
    - commit the regenerated `app/modules/graphql/generated/**` (prettier-formatted, matching the existing files)
 2. Add the op in `app/resources/gql/<resource>.gql.ts`:
    - `export const xxxOp = (args) => runGqlQuery('StaffXxx', { <field>: [args, { ...selection inline... }] })`

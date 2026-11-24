@@ -1,4 +1,5 @@
 import {
+  type ContractDraftPreview,
   billingAccountBindingListForOrgQuery,
   billingAccountBindingListQuery,
   billingAccountDetailQuery,
@@ -11,10 +12,13 @@ import {
   billingArrangementListForOrgQuery,
   billingEntitlementForAccountQuery,
   changeContractFees,
+  chargeListForAccountQuery,
   contractDraftQuery,
+  createCharge,
   createBillingArrangement,
   createBillingArrangementDecline,
   createOffer,
+  deleteCharge,
   discardContractDraft,
   invoiceListForOrgQuery,
   offerDetailQuery,
@@ -36,6 +40,7 @@ import {
   type SaveContractDraftInput,
   type SetUpContractInput,
 } from '../apis/billing.api';
+import type { ChargeSpec } from '@/features/billing/lib/charges';
 import type {
   ArrangementMergePatch,
   BillingArrangementSpec,
@@ -60,6 +65,8 @@ export const billingQueryKeys = {
   paymentMethods: (orgName: string) => ['billing-accounts', 'payment-methods', orgName] as const,
   paymentMethodsAll: ['billing-accounts', 'payment-methods', 'all'] as const,
   invoices: (orgName: string) => ['billing-accounts', 'invoices', orgName] as const,
+  charges: (orgName: string, accountName: string) =>
+    ['billing-accounts', 'charges', orgName, accountName] as const,
   offers: {
     all: ['offers'] as const,
     list: (params?: ListQueryParams) => ['offers', 'list', params] as const,
@@ -371,10 +378,14 @@ export const useDiscardContractDraftMutation = (orgName: string, accountName: st
  * Asks the invoicing provider what the account will be invoiced next.
  * `{ draft: true }` also leaves a draft in the provider's own system.
  */
-export const usePreviewNextInvoiceMutation = (orgName: string, accountName: string) =>
+export const usePreviewNextInvoiceMutation = (
+  orgName: string,
+  accountName: string,
+  contractDraft?: ContractDraftPreview
+) =>
   useMutation({
     mutationFn: (options?: { draft?: boolean }) =>
-      previewNextInvoice(orgName, accountName, { draft: options?.draft }),
+      previewNextInvoice(orgName, accountName, { draft: options?.draft, contractDraft }),
   });
 
 export const useBillingArrangementListForOrgQuery = (orgName: string) =>
@@ -500,5 +511,37 @@ export const useDeclineBillingArrangementApplicationMutation = (
     mutationFn: (spec: BillingArrangementDeclineSpec) =>
       createBillingArrangementDecline(orgName, spec),
     onSuccess: () => invalidateApplicationQueries(queryClient, orgName, accountName),
+  });
+};
+
+// ─── Charges ─────────────────────────────────────────────────────────────────
+
+/** The account's charges, and whether the API serves charges at all. */
+export const useChargeListForAccountQuery = (orgName: string, accountName: string) =>
+  useQuery({
+    queryKey: billingQueryKeys.charges(orgName, accountName),
+    queryFn: () => chargeListForAccountQuery(orgName, accountName),
+    enabled: !!orgName && !!accountName,
+    staleTime: 60 * 1000,
+  });
+
+export const useCreateChargeMutation = (orgName: string, accountName: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ spec, name }: { spec: ChargeSpec; name: string }) =>
+      createCharge(orgName, spec, name),
+    // Refreshed after a failure too: a create can land even when its
+    // response is lost, and staff should see it before trying again.
+    onSettled: () =>
+      queryClient.invalidateQueries({ queryKey: billingQueryKeys.charges(orgName, accountName) }),
+  });
+};
+
+export const useDeleteChargeMutation = (orgName: string, accountName: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (chargeName: string) => deleteCharge(orgName, chargeName),
+    onSettled: () =>
+      queryClient.invalidateQueries({ queryKey: billingQueryKeys.charges(orgName, accountName) }),
   });
 };

@@ -4,6 +4,7 @@ import {
   MAX_CONTRACT_FEES,
 } from '../../lib/contract';
 import { periodUnitText } from '../contract-fee-text';
+import { FeeItemOptions } from './fee-supply-date';
 import { NO_SERVICE, type ContractFeeRow, type ContractFormValues } from './schema';
 import { WholeNumberInput } from './whole-number-input';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
@@ -21,16 +22,20 @@ export type ServiceOption = { serviceName: string; label: string };
  * Fees made for this contract, one row each: a name for invoices, the unit
  * amount and how many, one-time or recurring, optionally what the amount is
  * per, and the service it's for, if any. A recurring fee is charged every
- * month, quarter or year, and billed in advance or in arrears. Each fee is
- * its own pricing and invoice line. Fees from the price list are picked in
- * the price list.
+ * month, quarter or year, and billed in advance or in arrears. A one-time
+ * fee can have a supply date under its item options. Each fee is its own
+ * pricing and invoice line. Fees from the price list are picked in the
+ * price list.
  */
 export function ContractFeeList({
   services,
   allowOneTime,
+  contractStartsAt,
 }: {
   services: ServiceOption[];
   allowOneTime: boolean;
+  /** The contract's start, for a change to one, where a supply date starts. */
+  contractStartsAt?: Date;
 }) {
   const fees = (Form.useWatch('fees') as ContractFeeRow[] | undefined) ?? [];
   return (
@@ -51,6 +56,9 @@ export function ContractFeeList({
                 interval: 'monthly',
                 billingTiming: DEFAULT_FEE_BILLING_TIMING,
                 periods: '',
+                setPeriod: false,
+                periodStart: '',
+                periodEnd: '',
                 amount: '',
                 quantity: '1',
                 pricingUnit: '',
@@ -163,7 +171,7 @@ export function ContractFeeList({
                   <Form.Field
                     name={`fees.${index}.sku`}
                     label={t`SKU`}
-                    tooltip={t`Optional product code. Invoices show it before the fee's name.`}>
+                    tooltip={t`Optional product code finance tracks the fee by. Internal only: it's never printed on the invoice.`}>
                     <Form.Input placeholder={t`DC-CAB-01`} />
                   </Form.Field>
                   <Form.Field name={`fees.${index}.serviceRef`} label={t`Service`}>
@@ -179,6 +187,9 @@ export function ContractFeeList({
                     </Form.Select>
                   </Form.Field>
                 </div>
+                {fees[index]?.chargeType === 'OneTime' ? (
+                  <FeeItemOptions prefix={`fees.${index}.`} contractStartsAt={contractStartsAt} />
+                ) : null}
               </div>
             ))}
             <div>{addFee}</div>

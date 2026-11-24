@@ -59,6 +59,9 @@ describe('list fee rows', () => {
       amount: '300.00',
       billingTiming: 'InArrears' as const,
       periods: '',
+      setPeriod: false,
+      periodStart: '',
+      periodEnd: '',
     };
     expect(toListFeeRowValues(base).amount).toBe('');
     expect(toListFeeRowValues({ ...base, custom: true, amount: '250.00' }).amount).toBe('250.00');
@@ -67,6 +70,27 @@ describe('list fee rows', () => {
     expect(toListFeeRowValues({ ...base, billingTiming: 'InAdvance' }).billingTiming).toBe(
       'InAdvance'
     );
+  });
+
+  it('keep a supply date', () => {
+    const supplied = {
+      name: 'rack-install-v1',
+      selected: true,
+      quantity: '1',
+      discount: '',
+      custom: false,
+      amount: '500.00',
+      billingTiming: 'InArrears' as const,
+      periods: '',
+      setPeriod: true,
+      periodStart: '2027-03-03',
+      periodEnd: '2027-03-05',
+    };
+    expect(fromListFeeRowValues(toListFeeRowValues(supplied))).toMatchObject({
+      setPeriod: true,
+      periodStart: '2027-03-03',
+      periodEnd: '2027-03-05',
+    });
   });
 });
 
@@ -87,6 +111,9 @@ describe('buildContractSchema', () => {
     amount: '',
     billingTiming: 'InArrears' as const,
     periods: '',
+    setPeriod: false,
+    periodStart: '',
+    periodEnd: '',
   };
   const fee = {
     label: 'Annual support',
@@ -94,6 +121,9 @@ describe('buildContractSchema', () => {
     interval: 'annual' as const,
     billingTiming: 'InAdvance' as const,
     periods: '',
+    setPeriod: false,
+    periodStart: '',
+    periodEnd: '',
     amount: '6000',
     quantity: '1',
     pricingUnit: '',
@@ -180,6 +210,70 @@ describe('buildContractSchema', () => {
     expect(schema.safeParse(values).success).toBe(true);
     // A date it does have is still checked.
     expect(schema.safeParse({ ...values, startsAt: new Date('2000-01-01') }).success).toBe(false);
+  });
+
+  it("needs the customer's amount for a list fee priced per contract, even in a draft", () => {
+    const schema = buildContractSchema(false, true, now, () => true, new Set(['cage-build-v1']));
+    const cageBuild = { ...listFee, name: 'cage-build-v1' };
+    const result = schema.safeParse({ ...empty, listFees: [cageBuild] });
+    expect(result.error?.issues.map((i) => i.path.join('.'))).toEqual(['listFees.0.amount']);
+    expect(
+      schema.safeParse({ ...empty, listFees: [{ ...cageBuild, amount: '42000' }] }).success
+    ).toBe(true);
+    // Other list fees still bill their list amount when it's left empty.
+    expect(schema.safeParse({ ...empty, listFees: [listFee] }).success).toBe(true);
+  });
+
+  describe("a one-time fee's supply date", () => {
+    const setup = { ...fee, label: 'Cage install', chargeType: 'OneTime' as const };
+    const install = { ...listFee, name: 'rack-install-v1' };
+    const paths = (values: Partial<ContractFormValues>) =>
+      buildContractSchema(false, true, now)
+        .safeParse({ ...empty, ...values })
+        .error?.issues.map((i) => `${i.path.join('.')}: ${i.message}`) ?? [];
+
+    it('is optional: unticked, the fee is supplied the day it is charged', () => {
+      expect(paths({ fees: [setup], listFees: [install] })).toEqual([]);
+    });
+
+    it('takes a day or a span of days, whenever they are', () => {
+      const days = { setPeriod: true, periodStart: '2027-03-03', periodEnd: '2027-03-05' };
+      const longAgo = { setPeriod: true, periodStart: '2019-01-01', periodEnd: '2019-01-01' };
+      expect(
+        paths({ fees: [{ ...setup, ...days }], listFees: [{ ...install, ...longAgo }] })
+      ).toEqual([]);
+    });
+
+    it("needs both days, and the end can't be before the start", () => {
+      expect(
+        paths({
+          fees: [{ ...setup, setPeriod: true, periodStart: '2027-03-05', periodEnd: '2027-03-03' }],
+          listFees: [{ ...install, setPeriod: true, periodStart: '', periodEnd: '' }],
+        })
+      ).toEqual([
+        "fees.0.periodEnd: The end can't be before the start.",
+        'listFees.0.periodStart: Pick a start date.',
+        'listFees.0.periodEnd: Pick an end date.',
+      ]);
+    });
+
+    it('can be up to five years long, as a charge', () => {
+      expect(
+        paths({
+          fees: [{ ...setup, setPeriod: true, periodStart: '2027-01-01', periodEnd: '2032-01-02' }],
+        })
+      ).toEqual(['fees.0.periodEnd: A supply date can be up to 5 years long.']);
+    });
+
+    it('is ignored on a recurring fee, and on a list fee that is not ticked', () => {
+      const bad = { setPeriod: true, periodStart: '2027-03-05', periodEnd: '2027-03-03' };
+      expect(
+        paths({
+          fees: [{ ...fee, ...bad }],
+          listFees: [install, { ...install, name: 'other', selected: false, ...bad }],
+        })
+      ).toEqual([]);
+    });
   });
 
   it("ignores rows that aren't ticked", () => {
