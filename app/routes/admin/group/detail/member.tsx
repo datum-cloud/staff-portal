@@ -99,8 +99,10 @@ export default function Page() {
       cell: ({ row }) => {
         const userRefName = row.original.spec?.userRef?.name ?? '';
         const user = userMap.get(userRefName);
-        // Until names and emails arrive, show where they'll go rather than the raw ID.
-        if (!user && memberUsersQuery.isLoading) {
+        // Until this member's name and email arrive, show where they'll go
+        // rather than the raw ID. Members already looked up keep their names
+        // while a new lookup runs (e.g. after adding someone).
+        if (!user && memberUsersQuery.isFetching) {
           return (
             <div className="flex flex-col gap-1.5 py-0.5" aria-busy="true">
               <Skeleton className="h-4 w-32" />

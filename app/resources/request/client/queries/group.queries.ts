@@ -14,7 +14,7 @@ import {
   ComMiloapisIamV1Alpha1Group,
   ComMiloapisIamV1Alpha1GroupMembership,
 } from '@openapi/iam.miloapis.com/v1alpha1';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export const groupQueryKeys = {
   all: ['groups'] as const,
@@ -25,10 +25,25 @@ export const groupQueryKeys = {
   userSummaries: (names: readonly string[]) => ['groups', 'user-summaries', names] as const,
 };
 
+type GroupList = Awaited<ReturnType<typeof groupListQuery>>;
+type GroupMembershipList = Awaited<ReturnType<typeof groupMembershipsForGroupQuery>>;
+
+/**
+ * Groups and memberships both carry an IAM finalizer, so after a delete the
+ * API keeps returning them, marked with a deletionTimestamp, until the
+ * controller finishes. For staff they're already gone: leave them out. Module
+ * level so TanStack keeps the selected result stable between renders.
+ */
+const withoutDeleting = <T extends { items: { metadata?: { deletionTimestamp?: string } }[] }>(
+  list: T | undefined
+): T | undefined =>
+  list && { ...list, items: list.items.filter((item) => !item.metadata?.deletionTimestamp) };
+
 export const useGroupListQuery = (params?: ListQueryParams) => {
   return useQuery({
     queryKey: groupQueryKeys.list(params),
     queryFn: () => groupListQuery(params),
+    select: withoutDeleting<NonNullable<GroupList>>,
     staleTime: 5 * 60 * 1000,
   });
 };
@@ -38,9 +53,7 @@ export const useGroupMembershipListQuery = (namespace: string, groupName: string
   return useQuery({
     queryKey: groupQueryKeys.members(namespace, groupName),
     queryFn: () => groupMembershipsForGroupQuery(namespace, groupName),
-    // A deleted membership lingers until its finalizer runs; it's already gone for staff.
-    select: (list) =>
-      list && { ...list, items: list.items.filter((item) => !item.metadata?.deletionTimestamp) },
+    select: withoutDeleting<NonNullable<GroupMembershipList>>,
     enabled: Boolean(namespace && groupName),
     staleTime: 5 * 60 * 1000,
   });
@@ -56,6 +69,9 @@ export const useGroupMemberUsersQuery = (userNames: readonly string[]) => {
     queryKey: groupQueryKeys.userSummaries(names),
     queryFn: () => userSummariesQuery(names),
     enabled: names.length > 0,
+    // When a member is added or removed the names change; keep showing the
+    // names we have while the new lookup runs, instead of blanking every row.
+    placeholderData: keepPreviousData,
     staleTime: 5 * 60 * 1000,
   });
 };
@@ -87,12 +103,31 @@ export const useUpdateGroupMutation = () => {
   });
 };
 
+/**
+ * Deletes a group. Like memberships, the API keeps listing it (marked as
+ * deleting) until its finalizer runs, so drop it from every cached group list
+ * straight away; the list's `select` keeps it out after the refetch too.
+ */
 export const useDeleteGroupMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (metadata: ComMiloapisIamV1Alpha1Group['metadata']) =>
       groupDeleteMutation(metadata),
-    onSuccess: async () => {
+    onSuccess: async (_, metadata) => {
+      queryClient.setQueriesData<GroupList>({ queryKey: ['groups', 'list'] }, (list) =>
+        list
+          ? {
+              ...list,
+              items: list.items.filter(
+                (item) =>
+                  !(
+                    item.metadata?.name === metadata?.name &&
+                    item.metadata?.namespace === metadata?.namespace
+                  )
+              ),
+            }
+          : list
+      );
       await queryClient.invalidateQueries({ queryKey: groupQueryKeys.all });
     },
   });
@@ -125,7 +160,7 @@ export const useDeleteGroupMembershipMutation = (namespace: string, groupName: s
     mutationFn: (metadata: ComMiloapisIamV1Alpha1GroupMembership['metadata']) =>
       groupMembershipDeleteMutation(metadata),
     onSuccess: async (_, metadata) => {
-      queryClient.setQueryData<Awaited<ReturnType<typeof groupMembershipsForGroupQuery>>>(
+      queryClient.setQueryData<GroupMembershipList>(
         groupQueryKeys.members(namespace, groupName),
         (list) =>
           list && {
