@@ -185,6 +185,8 @@ export interface EnrichedContactGroup {
 export interface ContactGroupMembershipEnriched {
   /** metadata.name of the ContactGroupMembership resource. */
   name: Scalars['String'];
+  /** metadata.namespace of the ContactGroupMembership resource. It can differ from the contact's and the group's namespaces. */
+  namespace: Scalars['String'];
   contactRef: ContactRef;
   /** Full Contact data, null if lookup failed. */
   contact?: EnrichedContact;
@@ -194,6 +196,8 @@ export interface ContactGroupMembershipEnriched {
 export interface ContactMembershipEnriched {
   /** metadata.name of the ContactGroupMembership resource. */
   name: Scalars['String'];
+  /** metadata.namespace of the ContactGroupMembership resource. It can differ from the contact's and the group's namespaces. */
+  namespace: Scalars['String'];
   /** When the contact joined the group (membership metadata.creationTimestamp). */
   creationTimestamp?: Scalars['String'];
   contactGroupRef: ContactRef;
@@ -754,6 +758,8 @@ export interface EnrichedContactGroupRequest {
 export interface ContactGroupMembershipEnrichedRequest {
   /** metadata.name of the ContactGroupMembership resource. */
   name?: boolean | number;
+  /** metadata.namespace of the ContactGroupMembership resource. It can differ from the contact's and the group's namespaces. */
+  namespace?: boolean | number;
   contactRef?: ContactRefRequest;
   /** Full Contact data, null if lookup failed. */
   contact?: EnrichedContactRequest;
@@ -767,6 +773,8 @@ export interface ContactGroupMembershipEnrichedRequest {
 export interface ContactMembershipEnrichedRequest {
   /** metadata.name of the ContactGroupMembership resource. */
   name?: boolean | number;
+  /** metadata.namespace of the ContactGroupMembership resource. It can differ from the contact's and the group's namespaces. */
+  namespace?: boolean | number;
   /** When the contact joined the group (membership metadata.creationTimestamp). */
   creationTimestamp?: boolean | number;
   contactGroupRef?: ContactRefRequest;

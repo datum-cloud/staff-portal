@@ -22,6 +22,7 @@ export const contactGroupMembershipsOp = (params?: MembershipListParams) =>
         continue: true,
         items: {
           name: true,
+          namespace: true,
           contactRef: { name: true, namespace: true },
           contact: {
             name: true,
@@ -49,6 +50,7 @@ export const contactMembershipsOp = (params?: MembershipListParams) =>
         continue: true,
         items: {
           name: true,
+          namespace: true,
           creationTimestamp: true,
           contactGroupRef: { name: true, namespace: true },
           contactGroup: {
