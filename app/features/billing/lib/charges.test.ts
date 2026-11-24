@@ -686,7 +686,9 @@ describe('charge status', () => {
       },
     });
     expect(isChargeRemovable(held)).toBe(true);
-    expect(chargeRemovalNote(held)).toBe('Can be removed until Dec 31, 2026, 00:00 UTC');
+    expect(chargeRemovalNote(held)).toEqual({
+      note: 'Can be removed until Dec 31, 2026, 00:00 UTC',
+    });
     expect(chargeRemovalText(held)).toBe(
       "Install is held until Dec 31, 2026, 00:00 UTC and isn't on an invoice yet, so removing it bills nothing."
     );
@@ -699,9 +701,10 @@ describe('charge status', () => {
       },
     });
     expect(isChargeRemovable(added)).toBe(false);
-    expect(chargeRemovalNote(added)).toBe(
-      "On its invoice, so it can't be removed. Once the invoice is issued, correct it with a credit note."
-    );
+    expect(chargeRemovalNote(added)).toEqual({
+      note: "Can't be removed",
+      detail: "It's on its invoice. Once the invoice is issued, correct it with a credit note.",
+    });
     const addedNow = charge(
       { status: { phase: 'Scheduled', conditions: [onInvoice('True')] } },
       { invoice: 'Now' }

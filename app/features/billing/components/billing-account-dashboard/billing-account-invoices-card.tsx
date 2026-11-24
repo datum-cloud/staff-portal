@@ -72,7 +72,7 @@ const PREVIEW_ROWS = 6;
 const PAGE_SIZE = 10;
 const PAGE_SIZE_OPTIONS = [PAGE_SIZE, 25, 50];
 
-const agingLabel = (bucket: InvoiceAgingBucket): string => {
+const agingLabel = (bucket: InvoiceAgingBucket, byCard: boolean): string => {
   switch (bucket) {
     case 'days1to30':
       return t`1–30 days overdue`;
@@ -81,7 +81,7 @@ const agingLabel = (bucket: InvoiceAgingBucket): string => {
     case 'days60plus':
       return t`60+ days`;
     default:
-      return t`Not yet due`;
+      return byCard ? t`Awaiting card payment` : t`Not yet due`;
   }
 };
 
@@ -104,7 +104,9 @@ const billingDate = (date: string | undefined): ReactNode =>
 const shortDate = (date: string | undefined): ReactNode =>
   date ? <InlineDate date={date} variant="absolute" format="MMM d" /> : '—';
 
-const buildColumns = (now: Date) => [
+// byCard: the account pays by card, so an invoice is charged rather than
+// due on a date, and its due date only matters once it's overdue.
+const buildColumns = (now: Date, byCard: boolean) => [
   columnHelper.display({
     id: 'invoice',
     enableSorting: false,
@@ -150,6 +152,13 @@ const buildColumns = (now: Date) => [
     cell: ({ row }) => {
       const { invoice } = row.original;
       const days = isPastDueInvoice(invoice) ? getDaysOverdue(invoice, now) : 0;
+      if (byCard && days === 0) {
+        return (
+          <Text size="xs" className="text-muted-foreground whitespace-nowrap">
+            <Trans>Card</Trans>
+          </Text>
+        );
+      }
       return (
         <Text
           size="xs"
@@ -230,7 +239,11 @@ export function BillingAccountInvoicesCard({ orgName, account, now, contract }: 
     () => (invoices ? summarizeInvoices(invoices, now) : undefined),
     [invoices, now]
   );
-  const columns = useMemo(() => buildColumns(now) as ColumnDef<InvoiceRow, unknown>[], [now]);
+  const byCard = getBillingMode(account) === 'card';
+  const columns = useMemo(
+    () => buildColumns(now, byCard) as ColumnDef<InvoiceRow, unknown>[],
+    [now, byCard]
+  );
   const filtered = useMemo(
     () =>
       expanded && search.trim()
@@ -302,8 +315,12 @@ export function BillingAccountInvoicesCard({ orgName, account, now, contract }: 
           }
           error={<Trans>Couldn&apos;t load invoices</Trans>}
           empty={<Trans>No invoices yet</Trans>}>
-          {summary ? (
-            <AgingSummary aging={summary.aging} currency={getAccountCurrency(account)} />
+          {summary && (!byCard || hasOverdue(summary.aging)) ? (
+            <AgingSummary
+              aging={summary.aging}
+              currency={getAccountCurrency(account)}
+              byCard={byCard}
+            />
           ) : null}
           {expanded ? (
             <Input
@@ -348,12 +365,19 @@ export function BillingAccountInvoicesCard({ orgName, account, now, contract }: 
   );
 }
 
+// A card account's invoices are charged, not left to fall due, so their
+// aging only shows once a charge has failed long enough to be overdue.
+const hasOverdue = (aging: Readonly<Record<InvoiceAgingBucket, number>>): boolean =>
+  INVOICE_AGING_BUCKETS.some((bucket) => bucket !== 'notDue' && aging[bucket] > 0);
+
 function AgingSummary({
   aging,
   currency,
+  byCard,
 }: {
   aging: Readonly<Record<InvoiceAgingBucket, number>>;
   currency: string;
+  byCard: boolean;
 }) {
   return (
     <dl className="grid grid-cols-2 gap-2 @3xl/main:grid-cols-4">
@@ -371,7 +395,7 @@ function AgingSummary({
                 as="span"
                 size="xs"
                 className={overdue ? 'text-destructive' : 'text-muted-foreground'}>
-                {agingLabel(bucket)}
+                {agingLabel(bucket, byCard)}
               </Text>
             </dt>
             <dd>

@@ -727,18 +727,28 @@ const formatUtcDayTime = (value: string): string =>
 export const isChargeRemovable = (charge: Charge): boolean =>
   charge.status?.phase !== 'Invoiced' && !isChargeOnInvoice(charge);
 
+/** A short line under a charge's status, with more on hover. */
+export interface ChargeRemovalNote {
+  note: string;
+  detail?: string;
+}
+
 /**
  * A line under a charge's status about removing it: until when a held
- * charge can be removed, or, once it's on its invoice, how to correct it.
- * Nothing for charges that are invoiced, waiting or failed.
+ * charge can be removed, or, once it's on its invoice, that it can't be,
+ * with how to correct it on hover. Nothing for charges that are invoiced,
+ * waiting or failed.
  */
-export const chargeRemovalNote = (charge: Charge): string | undefined => {
+export const chargeRemovalNote = (charge: Charge): ChargeRemovalNote | undefined => {
   if (charge.status?.phase !== 'Scheduled') return undefined;
   if (isChargeOnInvoice(charge)) {
-    return t`On its invoice, so it can't be removed. Once the invoice is issued, correct it with a credit note.`;
+    return {
+      note: t`Can't be removed`,
+      detail: t`It's on its invoice. Once the invoice is issued, correct it with a credit note.`,
+    };
   }
   const until = charge.status.removableUntil;
-  return until ? t`Can be removed until ${formatUtcDayTime(until)}` : undefined;
+  return until ? { note: t`Can be removed until ${formatUtcDayTime(until)}` } : undefined;
 };
 
 /**

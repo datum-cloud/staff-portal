@@ -49,6 +49,7 @@ import { createColumnHelper, type ColumnDef } from '@/utils/table';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Icon } from '@datum-cloud/datum-ui/icons';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
@@ -203,9 +204,18 @@ const buildColumns = (invoicesByName: Map<string, Invoice>, onRemove: (charge: C
               status.kind === 'invoiced' ? invoicesByName.get(status.invoiceName) : undefined
             }
           />
-          {removalNote ? (
+          {removalNote?.detail ? (
+            <Tooltip message={removalNote.detail}>
+              <Text
+                size="xs"
+                tabIndex={0}
+                className="text-muted-foreground w-fit cursor-help underline decoration-dotted underline-offset-2">
+                {removalNote.note}
+              </Text>
+            </Tooltip>
+          ) : removalNote ? (
             <Text size="xs" className="text-muted-foreground">
-              {removalNote}
+              {removalNote.note}
             </Text>
           ) : null}
         </div>

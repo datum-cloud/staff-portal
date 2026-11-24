@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:158
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:167
 msgid " · {days}d late"
 msgstr ""
 
@@ -88,7 +88,7 @@ msgid "{0, plural, one {# unpaid invoice} other {# unpaid invoices}}"
 msgstr ""
 
 #. placeholder {0}: lines.length
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:259
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:269
 msgid "{0, plural, one {Draft of # line} other {Draft of # lines}}"
 msgstr ""
 
@@ -258,7 +258,7 @@ msgid "{count, plural, one {# failing} other {# failing}}"
 msgstr ""
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-health-cards.tsx:124
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:253
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:266
 msgid "{count, plural, one {# invoice} other {# invoices}}"
 msgstr ""
 
@@ -286,7 +286,7 @@ msgstr ""
 msgid "{count} customer rates"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:251
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:264
 msgid "{count}+ invoices"
 msgstr ""
 
@@ -344,11 +344,11 @@ msgstr ""
 msgid "{instances, plural, one {# instance} other {# instances}}"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:264
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:277
 msgid "{invoiceCount} · {frequency} on day {invoiceDay}"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:260
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:273
 msgid "{invoiceCount} · net {netDays} · {frequency} on day {invoiceDay}"
 msgstr ""
 
@@ -384,7 +384,7 @@ msgstr ""
 msgid "{more, plural, one {# more service in the usage dashboard} other {# more services in the usage dashboard}}"
 msgstr ""
 
-#: app/features/billing/lib/charges.ts:761
+#: app/features/billing/lib/charges.ts:771
 msgid "{name} didn't reach an invoice, so it won't be billed."
 msgstr ""
 
@@ -392,12 +392,12 @@ msgstr ""
 msgid "{name} has no card on file, so the invoice for {amount} plus tax stays unpaid until one is added."
 msgstr ""
 
-#: app/features/billing/lib/charges.ts:753
+#: app/features/billing/lib/charges.ts:763
 msgid "{name} is already on its invoice, so it can't be removed."
 msgstr ""
 
 #. placeholder {0}: formatUtcDayTime(status.removableUntil)
-#: app/features/billing/lib/charges.ts:758
+#: app/features/billing/lib/charges.ts:768
 msgid "{name} is held until {0} and isn't on an invoice yet, so removing it bills nothing."
 msgstr ""
 
@@ -413,11 +413,11 @@ msgstr ""
 msgid "{name} is sent an invoice for {amount} plus tax."
 msgstr ""
 
-#: app/features/billing/lib/charges.ts:763
+#: app/features/billing/lib/charges.ts:773
 msgid "{name} isn't on an invoice yet, so it won't be billed."
 msgstr ""
 
-#: app/features/billing/lib/charges.ts:759
+#: app/features/billing/lib/charges.ts:769
 msgid "{name} isn't on an invoice yet, so removing it bills nothing."
 msgstr ""
 
@@ -684,7 +684,7 @@ msgstr ""
 msgid "60+ days"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:472
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:482
 msgid "A charge can't be changed, so to correct one, remove it and add another."
 msgstr ""
 
@@ -822,12 +822,12 @@ msgstr ""
 
 #: app/features/activity/components/activity-list.tsx:454
 #: app/features/activity/components/activity-list.tsx:520
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:218
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:228
 #: app/features/billing/components/billing-account-dashboard/billing-account-header.tsx:145
 msgid "Actions"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:185
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:199
 #: app/routes/admin/service-catalog/detail/consumers.tsx:333
 msgid "Active"
 msgstr ""
@@ -909,7 +909,7 @@ msgstr ""
 msgid "Add another line"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:358
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:368
 #: app/features/billing/components/charges/add-charge-dialog.tsx:126
 #: app/features/billing/components/charges/add-charge-dialog.tsx:655
 msgid "Add charge"
@@ -1040,7 +1040,7 @@ msgstr ""
 msgid "All events"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:287
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:300
 msgid "All invoices"
 msgstr ""
 
@@ -1101,8 +1101,8 @@ msgstr ""
 msgid "Always runs, even when an earlier stage short-circuits the pipeline."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:186
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:168
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:187
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:177
 msgid "Amount"
 msgstr ""
 
@@ -1365,8 +1365,8 @@ msgstr ""
 msgid "Authorized to apply"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:135
-msgid "auto-charged when invoiced"
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:84
+msgid "Awaiting card payment"
 msgstr ""
 
 #: app/features/billing/components/charges/add-charge-dialog.tsx:531
@@ -1419,7 +1419,7 @@ msgid "Billed"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:433
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:125
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:126
 msgid "Billed by"
 msgstr ""
 
@@ -1526,12 +1526,16 @@ msgid "by"
 msgstr ""
 
 #. placeholder {0}: formatUtcDayTime(until)
-#: app/features/billing/lib/charges.ts:741
+#: app/features/billing/lib/charges.ts:751
 msgid "Can be removed until {0}"
 msgstr ""
 
 #: app/features/billing/components/contract-editor/billing-day-field.tsx:73
 msgid "Can't be changed once the contract is saved."
+msgstr ""
+
+#: app/features/billing/lib/charges.ts:746
+msgid "Can't be removed"
 msgstr ""
 
 #: app/components/button/button-delete-action.tsx:43
@@ -1588,6 +1592,7 @@ msgid "Cancel"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:184
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:158
 #: app/features/billing/components/payment-terms.tsx:99
 msgid "Card"
 msgstr ""
@@ -1618,6 +1623,10 @@ msgstr ""
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:260
 msgid "Card not expiring"
+msgstr ""
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:168
+msgid "Card setup wasn't finished, so this isn't used for payments"
 msgstr ""
 
 #: app/features/project/components/project-suspension-card.tsx:109
@@ -1671,7 +1680,7 @@ msgstr ""
 msgid "Changes apply to the terms currently on the account."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:158
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:159
 #: app/features/billing/components/offer-included-pricing-list.tsx:143
 msgid "Charge"
 msgstr ""
@@ -1700,11 +1709,15 @@ msgstr ""
 msgid "Charged"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:343
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:136
+msgid "charged automatically, about an hour after each invoice"
+msgstr ""
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:353
 msgid "Charges"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:372
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:382
 msgid "Charges become available when this account's invoices move to the new invoice writer."
 msgstr ""
 
@@ -2105,7 +2118,7 @@ msgstr ""
 msgid "Couldn't load {0}, so the contract can't be changed safely right now."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:400
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:410
 msgid "Couldn't load charges"
 msgstr ""
 
@@ -2122,7 +2135,7 @@ msgid "Couldn't load email activity."
 msgstr ""
 
 #: app/features/billing/components/billing-account-dashboard/account-status-badge.tsx:28
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:303
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:316
 msgid "Couldn't load invoices"
 msgstr ""
 
@@ -2134,7 +2147,7 @@ msgstr ""
 msgid "Couldn't load linked projects"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:81
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:82
 msgid "Couldn't load payment methods"
 msgstr ""
 
@@ -2448,7 +2461,7 @@ msgstr ""
 msgid "Dedicated server"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:161
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:172
 #: app/routes/admin/offer/index.tsx:66
 #: app/routes/admin/offer/index.tsx:123
 #: app/routes/admin/offer/index.tsx:127
@@ -2677,17 +2690,17 @@ msgstr ""
 msgid "Disable flag"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:288
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:298
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:191
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:236
 msgid "Discard"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:458
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:468
 msgid "Discard draft"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:456
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:466
 msgid "Discard draft?"
 msgstr ""
 
@@ -2878,7 +2891,7 @@ msgstr ""
 msgid "Draft saved. Nothing is billed until it's published."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:149
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:151
 msgid "Due"
 msgstr ""
 
@@ -2935,7 +2948,7 @@ msgstr ""
 msgid "Edit note"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:285
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:295
 msgid "Edit or add"
 msgstr ""
 
@@ -3258,7 +3271,7 @@ msgstr ""
 msgid "Expires"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:160
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:171
 msgid "expires {expiry}"
 msgstr ""
 
@@ -3638,11 +3651,11 @@ msgstr ""
 msgid "Grant payment terms"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:215
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:229
 msgid "Grant terms"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:206
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:220
 msgid "Grant terms to let this account be billed by invoice."
 msgstr ""
 
@@ -3888,7 +3901,7 @@ msgid "Invite User"
 msgstr ""
 
 #: app/features/billing/components/application-review.tsx:183
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:111
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:113
 #: app/features/billing/components/payment-terms.tsx:98
 msgid "Invoice"
 msgstr ""
@@ -3914,7 +3927,7 @@ msgstr ""
 msgid "Invoice recipients"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:181
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:195
 msgid "Invoice terms"
 msgstr ""
 
@@ -3931,7 +3944,7 @@ msgstr ""
 msgid "Invoice totals normal"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:202
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:211
 msgid "Invoice unavailable"
 msgstr ""
 
@@ -3944,15 +3957,15 @@ msgstr ""
 msgid "Invoiced on {0}"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:138
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:139
 msgid "Invoiced on {link}"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:263
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:273
 msgid "invoiced on its own"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:275
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:288
 msgid "Invoices"
 msgstr ""
 
@@ -4020,7 +4033,7 @@ msgstr ""
 msgid "ISP"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:139
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:141
 msgid "Issued"
 msgstr ""
 
@@ -4037,6 +4050,10 @@ msgstr ""
 msgid "It goes on an invoice of its own, for {0} before tax, sent as soon as the billing provider has it."
 msgstr ""
 
+#: app/features/billing/lib/charges.ts:747
+msgid "It's on its invoice. Once the invoice is issued, correct it with a credit note."
+msgstr ""
+
 #: app/features/billing/components/charges/add-charge-dialog.tsx:447
 msgid "Item"
 msgstr ""
@@ -4046,7 +4063,7 @@ msgstr ""
 msgid "Item options"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:457
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:467
 msgid "Its lines are deleted. Nothing was added or invoiced from it."
 msgstr ""
 
@@ -4066,8 +4083,8 @@ msgstr ""
 msgid "Joined {0} as {1}"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:459
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:476
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:469
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:486
 msgid "Keep it"
 msgstr ""
 
@@ -4178,7 +4195,7 @@ msgstr ""
 msgid "Legal name"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:106
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:107
 msgid "less {discount}%"
 msgstr ""
 
@@ -4788,7 +4805,7 @@ msgstr ""
 msgid "No BillingEntitlement found for this account. New accounts pick up the default Offer automatically when catalog defaults are configured."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:85
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:86
 msgid "No card on file. Not needed while invoice terms are active."
 msgstr ""
 
@@ -4800,7 +4817,7 @@ msgstr ""
 msgid "No changes found"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:420
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:430
 msgid "No charges"
 msgstr ""
 
@@ -4808,7 +4825,7 @@ msgstr ""
 msgid "No charges included in this Offer."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:402
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:412
 msgid "No charges yet. A charge goes on the account's next invoice, or on an invoice of its own straight away."
 msgstr ""
 
@@ -4963,15 +4980,15 @@ msgstr ""
 msgid "No instances."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:335
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:352
 msgid "No invoices"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:319
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:336
 msgid "No invoices match your search"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:304
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:317
 msgid "No invoices yet"
 msgstr ""
 
@@ -5051,11 +5068,11 @@ msgstr ""
 msgid "No payment method"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:87
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:88
 msgid "No payment method on file"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:200
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:214
 msgid "No payment terms"
 msgstr ""
 
@@ -5289,6 +5306,10 @@ msgstr ""
 msgid "Not published, so nothing is billed from it yet."
 msgstr ""
 
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:180
+msgid "Not set up"
+msgstr ""
+
 #: app/features/billing/components/application-labels.tsx:31
 #: app/features/billing/components/application-labels.tsx:41
 msgid "Not sure"
@@ -5474,15 +5495,11 @@ msgstr ""
 msgid "Oldest first ↑"
 msgstr ""
 
-#: app/features/billing/lib/charges.ts:738
-msgid "On its invoice, so it can't be removed. Once the invoice is issued, correct it with a credit note."
-msgstr ""
-
 #: app/features/billing/components/charges/add-charge-dialog.tsx:909
 msgid "On the invoice"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:265
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:275
 msgid "on the next invoice"
 msgstr ""
 
@@ -5516,12 +5533,12 @@ msgstr ""
 msgid "One of Stripe's tax codes, such as txcd_20030000. Leave it empty for the account's default."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:345
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:355
 msgid "One-off items billed once, outside the account's plan or contract: an install, remote hands, a correction. Anything billed every period belongs in a contract instead."
 msgstr ""
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-card.tsx:523
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:189
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:198
 #: app/features/billing/utils.ts:76
 msgid "Open"
 msgstr ""
@@ -5547,7 +5564,7 @@ msgstr ""
 msgid "Open instance"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:202
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:211
 msgid "Open invoice"
 msgstr ""
 
@@ -5563,7 +5580,7 @@ msgstr ""
 msgid "Open quota usage"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:198
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:207
 msgid "Open the invoice in Stripe"
 msgstr ""
 
@@ -5768,7 +5785,7 @@ msgstr ""
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:139
 #: app/features/billing/components/billing-account-dashboard/billing-account-attention-banner.tsx:147
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:65
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:66
 msgid "Payment"
 msgstr ""
 
@@ -5821,11 +5838,11 @@ msgstr ""
 msgid "Pays by card"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:204
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:218
 msgid "Pays by card. Invoice billing (net terms, PO) isn't granted."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:139
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:140
 msgid "pays invoices on terms"
 msgstr ""
 
@@ -5882,7 +5899,7 @@ msgstr ""
 msgid "Per-service discounts"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:128
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:130
 msgid "Period"
 msgstr ""
 
@@ -6050,7 +6067,7 @@ msgstr ""
 msgid "Postal Code"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:282
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:292
 #: app/features/email/components/email-detail.tsx:116
 msgid "Preview"
 msgstr ""
@@ -6275,7 +6292,7 @@ msgstr ""
 msgid "Qty"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:164
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:165
 msgid "Qty × price"
 msgstr ""
 
@@ -6432,7 +6449,7 @@ msgstr ""
 msgid "Reject User"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:227
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:237
 #: app/features/contact/components/contact-groups-card.tsx:101
 msgid "Remove"
 msgstr ""
@@ -6441,11 +6458,11 @@ msgstr ""
 msgid "Remove {revokeConsumerProject}'s access to {revokeEntitlementName}? They'll lose access immediately and all of their resources for this service will be permanently deleted. This cannot be undone."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:475
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:485
 msgid "Remove charge"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:469
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:479
 msgid "Remove charge?"
 msgstr ""
 
@@ -6669,7 +6686,7 @@ msgstr ""
 msgid "Save draft"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:273
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:283
 msgid "Saved <0/>"
 msgstr ""
 
@@ -6693,7 +6710,7 @@ msgstr ""
 msgid "Schedule invitation to be sent at specific time"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:185
+#: app/features/billing/components/billing-account-dashboard/billing-account-payment-card.tsx:199
 msgid "Scheduled"
 msgstr ""
 
@@ -6806,8 +6823,8 @@ msgstr ""
 msgid "Search groups..."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:312
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:313
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:329
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:330
 msgid "Search invoices"
 msgstr ""
 
@@ -7145,7 +7162,7 @@ msgstr ""
 msgid "Show every month for a year"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:287
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:300
 #: app/features/billing/components/contract-schedule-list.tsx:81
 msgid "Show fewer"
 msgstr ""
@@ -7282,7 +7299,7 @@ msgstr ""
 msgid "Staff note:"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:77
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:78
 msgid "Staff only:"
 msgstr ""
 
@@ -7342,9 +7359,9 @@ msgstr ""
 #: app/features/billing/components/application-list.tsx:172
 #: app/features/billing/components/application-review.tsx:245
 #: app/features/billing/components/application-review.tsx:303
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:194
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:195
 #: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:111
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:180
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:189
 #: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:139
 #: app/features/billing/components/billing-account-list.tsx:216
 #: app/features/billing/components/billing-account-list.tsx:291
@@ -7404,7 +7421,7 @@ msgstr ""
 msgid "Stripe didn't make a draft."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:117
+#: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:119
 msgid "Stripe number"
 msgstr ""
 
@@ -7438,7 +7455,7 @@ msgstr ""
 msgid "Summary"
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:174
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:175
 #: app/features/billing/components/item-options.tsx:92
 msgid "Supply date"
 msgstr ""
@@ -7598,7 +7615,7 @@ msgstr ""
 msgid "The card on file is charged {amount} plus tax straight away."
 msgstr ""
 
-#: app/features/billing/lib/charges.ts:750
+#: app/features/billing/lib/charges.ts:760
 msgid "The charge"
 msgstr ""
 
@@ -7707,7 +7724,7 @@ msgstr ""
 msgid "The nameservers Datum serves this zone from. The domain must be delegated to them at its registrar."
 msgstr ""
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:364
+#: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:374
 msgid "The organization has too many charges to read them all, so some of this account's may be missing."
 msgstr ""
 
