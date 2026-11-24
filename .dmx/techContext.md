@@ -40,6 +40,7 @@
 - E2E: Cypress in `cypress/e2e`; `pnpm test:e2e` (starts dev server) or `test:e2e:prod`.
 - `pnpm lint` (ESLint), `pnpm format:check` (Prettier with import sorting and Tailwind plugins), `pnpm typecheck` (`react-router typegen && tsc`).
 - CI (`.github/workflows/ci.yml`) runs install → lint/format + typecheck → build → vitest, Cypress component tests and an E2E smoke job. Every job sets up the pnpm `packageManager` pins, restores `node_modules` from a cache keyed on `pnpm-lock.yaml`, `pnpm-workspace.yaml` and `package.json`, and fails on a missing or stale cache (`pnpm_config_verify_deps_before_run: error`) rather than reinstalling. `ci.yaml` (`ci-basic`) and `vuln-scan` detect pnpm from the lockfile.
+- Renovate: `renovate.json` only extends the org preset `local>datum-cloud/.github:renovate-config`, as cloud-portal does. Validate it from the repo root with `pnpm dlx --package=renovate@<version> renovate-config-validator --strict`: a file argument validates it as global config, and `pnpm dlx renovate@<version> renovate-config-validator` runs Renovate itself. The validator doesn't fetch the org preset, and its RE2 `MODULE_NOT_FOUND` warning is harmless (pnpm skips re2's build; Renovate falls back to RegExp).
 - Lefthook pre-commit runs ESLint and Prettier on staged files and re-extracts/compiles Lingui catalogs.
 
 ## Constraints
