@@ -1,6 +1,5 @@
 import { createContextGenerator } from '../context';
 import { EnvVariables } from '../iface';
-import { honoLoggerMiddleware } from '../middleware';
 import { Hono } from 'hono';
 import type { Server } from 'node:http';
 import { createGetLoadContext, createHonoServer } from 'react-router-hono-server/node';
@@ -56,8 +55,8 @@ export const nodeAdapter = async (app: Hono<{ Variables: EnvVariables }>) => {
       keepAliveBeyondGateway(server as Server);
       drainOnShutdown(server as Server);
     },
-    configure: (app) => {
-      app.use(honoLoggerMiddleware());
-    },
+    // No request logger here: `entry.ts` registers it first, and middleware
+    // added in `configure` lands in the same router, so it would log every
+    // request twice (#873).
   });
 };
