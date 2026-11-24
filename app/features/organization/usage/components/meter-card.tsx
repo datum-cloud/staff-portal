@@ -1,8 +1,8 @@
 import { formatUsagePair } from '../usage.format';
 import type { MeterPoint, UsageMeter } from '../usage.types';
 import { humanizeDimension } from '../usage.view';
+import { DiscountedSpend } from './discounted-spend';
 import { MeterAreaChart, type MeterStack } from './meter-area-chart';
-import { SpendValue } from './spend-value';
 import { QuotaIndicator } from '@/features/organization/components/quota-ring';
 import { Card, CardContent, CardHeader } from '@datum-cloud/datum-ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@datum-cloud/datum-ui/tabs';
@@ -80,10 +80,11 @@ export function MeterCard({ meter }: MeterCardProps) {
           <div className="flex items-center gap-2 sm:gap-3">
             {meter.spend || meter.spendError ? (
               <Text size="xs" textColor="muted" className="text-right">
-                <SpendValue
+                <DiscountedSpend
                   spend={meter.spend}
                   spendError={meter.spendError}
                   className="text-foreground font-medium"
+                  beforeClassName="mr-1"
                 />{' '}
                 spent
               </Text>
