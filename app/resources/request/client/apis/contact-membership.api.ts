@@ -24,7 +24,7 @@ export const contactMembershipForGroupListQuery = async (
   return {
     metadata: { continue: data?.continue ?? undefined },
     items: (data?.items ?? []).map((item) => ({
-      metadata: { name: item.name },
+      metadata: { name: item.name, namespace: item.namespace },
       spec: {
         contactRef: {
           name: item.contactRef.name,
@@ -62,7 +62,11 @@ export const contactMembershipForContactListQuery = async (
   return {
     metadata: { continue: data?.continue ?? undefined },
     items: (data?.items ?? []).map((item) => ({
-      metadata: { name: item.name, creationTimestamp: item.creationTimestamp ?? undefined },
+      metadata: {
+        name: item.name,
+        namespace: item.namespace,
+        creationTimestamp: item.creationTimestamp ?? undefined,
+      },
       spec: {
         contactGroupRef: {
           name: item.contactGroupRef.name,
