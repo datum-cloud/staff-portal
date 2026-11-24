@@ -8,14 +8,14 @@
  * Saves selections to config file for incremental updates.
  *
  * Usage:
- *   npm run graphql              # Generate from config (or interactive if no config)
- *   npm run graphql -i           # Interactive mode to modify selections
- *   npm run graphql --interactive
- *   npm run graphql --reset      # Clear config and start fresh
+ *   pnpm graphql                 # Generate from config (or interactive if no config)
+ *   pnpm graphql -i              # Interactive mode to modify selections
+ *   pnpm graphql --interactive
+ *   pnpm graphql --reset         # Clear config and start fresh
  *
  * Workflow:
  *   1. Edit graphql.config.json to add queries/mutations you need
- *   2. Run `npm run graphql` to generate
+ *   2. Run `pnpm graphql` to generate
  */
 import { checkbox, confirm, input } from '@inquirer/prompts';
 import {

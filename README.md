@@ -56,7 +56,8 @@ staff-portal/
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) 26.12.1 (see `.nvmrc`)
+- [Node.js](https://nodejs.org/) 26.13.1 (see `.nvmrc`)
+- [pnpm](https://pnpm.io/) 11. Node 26 ships without corepack, so install it once with `npm install -g pnpm@11`; it then switches to the version `package.json` pins (`packageManager`) on its own.
 
 ### Installation
 
@@ -69,7 +70,7 @@ staff-portal/
 
 2. Install dependencies:
    ```bash
-   npm install
+   pnpm install
    ```
 
 ### Development
@@ -77,7 +78,7 @@ staff-portal/
 Start the development server:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 ### Building
@@ -85,7 +86,7 @@ npm run dev
 Build the application:
 
 ```bash
-npm run build
+pnpm build
 ```
 
 ### Running Production Build
@@ -93,25 +94,25 @@ npm run build
 Start the production server:
 
 ```bash
-npm run start
+pnpm start
 ```
 
 ## Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build the application
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run format` - Format code with Prettier
-- `npm run typecheck` - Run TypeScript type checking
-- `npm test` - Run the vitest unit tests
-- `npm run extract` - Extract messages for translation
-- `npm run compile` - Compile translation messages
-- `npm run test:e2e` - Run end-to-end tests in CI mode
-- `npm run test:e2e:prod` - Run end-to-end tests against production build
-- `npm run test:e2e:debug` - Open Cypress Test Runner for E2E tests
-- `npm run test:unit:prod` - Run component tests in CI mode
-- `npm run test:unit:debug` - Open Cypress Test Runner for component tests
+- `pnpm dev` - Start development server
+- `pnpm build` - Build the application
+- `pnpm start` - Start production server
+- `pnpm lint` - Run ESLint
+- `pnpm format` - Format code with Prettier
+- `pnpm typecheck` - Run TypeScript type checking
+- `pnpm test` - Run the vitest unit tests
+- `pnpm i18n:extract` - Extract messages for translation
+- `pnpm i18n:compile` - Compile translation messages
+- `pnpm test:e2e` - Run end-to-end tests in CI mode
+- `pnpm test:e2e:prod` - Run end-to-end tests against production build
+- `pnpm test:e2e:debug` - Open Cypress Test Runner for E2E tests
+- `pnpm test:unit:prod` - Run component tests in CI mode
+- `pnpm test:unit:debug` - Open Cypress Test Runner for component tests
 
 ## Testing
 
@@ -120,22 +121,22 @@ The project uses vitest for unit tests and Cypress for end-to-end (e2e) and comp
 ### Unit Testing
 
 - Unit tests sit next to the code they cover as `*.test.ts` files under `app/`
-- Run them with `npm test`
+- Run them with `pnpm test`
 
 ### Component Testing
 
 - Component tests are written using Cypress Component Testing
 - Tests are located in the `cypress/component` directory
-- Run component tests in CI mode with `npm run test:unit:prod`
-- Open Cypress Test Runner for component tests with `npm run test:unit:debug`
+- Run component tests in CI mode with `pnpm test:unit:prod`
+- Open Cypress Test Runner for component tests with `pnpm test:unit:debug`
 
 ### End-to-End Testing
 
 - E2E tests are written using Cypress
 - Tests are located in the `cypress/e2e` directory
-- Run E2E tests in CI mode with `npm run test:e2e`
-- Run E2E tests against production build with `npm run test:e2e:prod`
-- Open Cypress Test Runner for E2E tests with `npm run test:e2e:debug`
+- Run E2E tests in CI mode with `pnpm test:e2e`
+- Run E2E tests against production build with `pnpm test:e2e:prod`
+- Open Cypress Test Runner for E2E tests with `pnpm test:e2e:debug`
 
 ## Code Quality
 
