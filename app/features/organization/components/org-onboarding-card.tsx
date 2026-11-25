@@ -285,7 +285,7 @@ export function OrgOnboardingCard({
       title={<Trans>Onboarding</Trans>}
       action={
         isLoading ? (
-          <Skeleton className="h-4 w-[54px] rounded-[3px]" />
+          <Skeleton className="h-4 w-13.5 rounded-[3px]" />
         ) : org ? (
           <CustomerStatus
             status={headerStatus ?? 'inactive'}

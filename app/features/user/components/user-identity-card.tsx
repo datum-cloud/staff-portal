@@ -241,7 +241,7 @@ export const UserIdentityCard = ({
             ) : (
               <div
                 // Cap visible rows at ~4 and scroll for the rest. Each
-                // IdentityItem is ~50px (size-[34px] icon + py-2), so
+                // IdentityItem is ~50px (size-8.5 icon + py-2), so
                 // max-h-52 keeps the 5th+ row just out of view to
                 // hint there's more.
                 className="divide-stepper-line flex max-h-52 flex-col divide-y overflow-y-auto pr-1">

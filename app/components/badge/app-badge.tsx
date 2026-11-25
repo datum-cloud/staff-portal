@@ -86,7 +86,7 @@ export default function AppBadge({ status, label, tooltip, className }: Props) {
       size="4xs"
       className={cn(
         // Figma: h 16, px 5, radius 3, 8px Medium, tracking 0.3, uppercase
-        'inline-flex h-4 min-w-[70px] shrink-0 items-center justify-center rounded-[3px] px-[5px]',
+        'inline-flex h-4 min-w-17.5 shrink-0 items-center justify-center rounded-[3px] px-1.25',
         'leading-4 font-medium tracking-[0.3px] uppercase',
         style.className,
         className

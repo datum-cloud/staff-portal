@@ -18,8 +18,8 @@ interface UsageToolbarProps {
   isPlaceholder?: boolean;
 }
 
-const BILLING_CYCLE_TRIGGER_CLASS = 'h-9 min-h-9 w-full text-sm sm:w-[350px]';
-const PROJECT_TRIGGER_CLASS = 'h-9 min-h-9 w-full text-sm sm:w-[150px]';
+const BILLING_CYCLE_TRIGGER_CLASS = 'h-9 min-h-9 w-full text-sm sm:w-87.5';
+const PROJECT_TRIGGER_CLASS = 'h-9 min-h-9 w-full text-sm sm:w-37.5';
 
 function ToolbarSelectPlaceholder({ className }: { className: string }) {
   return (
