@@ -1,3 +1,4 @@
+import { BILLING_SERVICE_CONFIGURATION_NAME } from '@/features/billing/utils';
 import { ENTITY_ICONS, SECTION_ICONS } from '@/utils/config/icons.config';
 import {
   activityRoutes,
@@ -217,6 +218,13 @@ export const NAV_SECTIONS: NavSection[] = [
               label: 'Offers',
               href: offerRoutes.list(),
               icon: ENTITY_ICONS.offer,
+            },
+            // The billing service's Overview, which the billing plugin
+            // replaces with its fleet billing overview.
+            {
+              label: 'Billing',
+              href: serviceCatalogRoutes.detail(BILLING_SERVICE_CONFIGURATION_NAME),
+              icon: ENTITY_ICONS.billingOverview,
             },
           ],
         },
