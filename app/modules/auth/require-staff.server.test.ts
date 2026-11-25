@@ -163,10 +163,29 @@ describe('requireStaffUser', () => {
   });
 
   describe('membership lookup failures', () => {
-    it.each([401, 403])('treats a thrown %i Response as not staff', async (status) => {
-      memberships.mockRejectedValue(new Response(null, { status }));
+    it('treats a thrown 403 Response as not staff', async () => {
+      memberships.mockRejectedValue(new Response(null, { status: 403 }));
 
       expectRedirect(await thrownBy(), '/error/unauthorized');
+      expect(reauth).not.toHaveBeenCalled();
+      expect(userDetail).not.toHaveBeenCalled();
+    });
+
+    // Milo refusing the token itself means the session is dead even though its
+    // cookie has not expired. Re-auth recovers it; "not staff" would strand the
+    // user on Access Denied until they cleared their cookies.
+    it('throws the reauth redirect when the API rejects the token with 401', async () => {
+      const reauthResponse = new Response(null, {
+        status: 302,
+        headers: { Location: '/login?redirectTo=%2Fcustomers%2Fusers' },
+      });
+      reauth.mockResolvedValue(reauthResponse);
+      memberships.mockRejectedValue(new Response(null, { status: 401 }));
+
+      const thrown = await thrownBy('/customers/users');
+
+      expect(thrown).toBe(reauthResponse);
+      expect(reauth).toHaveBeenCalledWith(expect.any(Request), '/customers/users');
       expect(userDetail).not.toHaveBeenCalled();
     });
 

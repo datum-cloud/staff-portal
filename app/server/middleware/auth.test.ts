@@ -5,7 +5,7 @@ import {
   STAFF_MEMBERSHIP_TTL_MS,
 } from './auth';
 import { authenticator } from '@/modules/auth';
-import { isStaffMember } from '@/modules/auth/require-staff.server';
+import { checkStaffMembership } from '@/modules/auth/require-staff.server';
 import { EnvVariables } from '@/server/iface';
 import { assertNoCypressInProduction, env } from '@/utils/config/env.server';
 import { Hono } from 'hono';
@@ -18,7 +18,7 @@ const USER_ID = 'user-123';
 vi.mock('@/modules/auth', () => ({
   authenticator: { isAuthenticated: vi.fn(), getSession: vi.fn() },
 }));
-vi.mock('@/modules/auth/require-staff.server', () => ({ isStaffMember: vi.fn() }));
+vi.mock('@/modules/auth/require-staff.server', () => ({ checkStaffMembership: vi.fn() }));
 vi.mock('@/server/logger', () => ({ logApiError: vi.fn() }));
 vi.mock('@/utils/config/env.server', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/utils/config/env.server')>();
@@ -27,7 +27,7 @@ vi.mock('@/utils/config/env.server', async (importOriginal) => {
 
 const isAuthenticated = vi.mocked(authenticator.isAuthenticated);
 const getSession = vi.mocked(authenticator.getSession);
-const staffMember = vi.mocked(isStaffMember);
+const staffMember = vi.mocked(checkStaffMembership);
 
 function createApp() {
   const app = new Hono<{ Variables: EnvVariables }>();
@@ -55,7 +55,7 @@ describe('authMiddleware', () => {
     env.isProd = false;
     isAuthenticated.mockResolvedValue(true);
     signIn();
-    staffMember.mockResolvedValue(true);
+    staffMember.mockResolvedValue('staff');
   });
 
   afterEach(() => {
@@ -71,7 +71,7 @@ describe('authMiddleware', () => {
   });
 
   it('answers 403 JSON for a signed-in user outside the staff group', async () => {
-    staffMember.mockResolvedValue(false);
+    staffMember.mockResolvedValue('not-staff');
 
     const res = await createApp().request('/api/thing');
 
@@ -89,6 +89,29 @@ describe('authMiddleware', () => {
     expect(staffMember).not.toHaveBeenCalled();
   });
 
+  // A rejected token is a dead session, not a permission problem: answer the
+  // 401 AUTH_ERROR the axios client turns into a re-auth, not a 403.
+  it('answers 401 AUTH_ERROR when the API rejects the session token', async () => {
+    staffMember.mockResolvedValue('token-rejected');
+
+    const res = await createApp().request('/api/thing');
+
+    expect(res.status).toBe(401);
+    expect(await res.json()).toMatchObject({ code: 'AUTH_ERROR', path: '/api/thing' });
+  });
+
+  it('does not cache a rejected token', async () => {
+    staffMember.mockResolvedValueOnce('token-rejected');
+    const app = createApp();
+
+    const rejected = await app.request('/api/thing');
+    const retried = await app.request('/api/thing');
+
+    expect(rejected.status).toBe(401);
+    expect(retried.status).toBe(200);
+    expect(staffMember).toHaveBeenCalledTimes(2);
+  });
+
   it('reuses a cached decision instead of looking membership up again', async () => {
     const app = createApp();
 
@@ -100,7 +123,7 @@ describe('authMiddleware', () => {
   });
 
   it('caches a non-staff decision too', async () => {
-    staffMember.mockResolvedValue(false);
+    staffMember.mockResolvedValue('not-staff');
     const app = createApp();
 
     await app.request('/api/thing');
@@ -155,7 +178,7 @@ describe('authMiddleware', () => {
   it('still checks staff membership under Cypress in production', async () => {
     env.isCypress = true;
     env.isProd = true;
-    staffMember.mockResolvedValue(false);
+    staffMember.mockResolvedValue('not-staff');
 
     const res = await createApp().request('/api/thing');
 
