@@ -16,8 +16,12 @@ export const handle = {
   // `handle` is module scope (no hooks, no `useLingui` macro — see
   // entity-scoped-left-nav.md's i18n gap, tracked as a follow-up), so these
   // labels are plain strings, same as `NAV_SECTIONS`.
-  entityNav: (data: ComMiloapisIamV1Alpha1Group, params: { groupName?: string }): EntityNav => {
+  entityNav: (
+    data: ComMiloapisIamV1Alpha1Group,
+    params: { namespace?: string; groupName?: string }
+  ): EntityNav => {
     const name = params.groupName ?? data?.metadata?.name ?? '';
+    const namespace = params.namespace ?? data?.metadata?.namespace ?? '';
     const displayName = data?.metadata?.annotations?.['kubernetes.io/display-name'] || name;
 
     return {
@@ -27,8 +31,16 @@ export const handle = {
       groups: [
         {
           items: [
-            { label: 'Overview', href: groupRoutes.detail(name), icon: TAB_ICONS.overview },
-            { label: 'Members', href: groupRoutes.member(name), icon: ENTITY_ICONS.user },
+            {
+              label: 'Overview',
+              href: groupRoutes.detail(namespace, name),
+              icon: TAB_ICONS.overview,
+            },
+            {
+              label: 'Members',
+              href: groupRoutes.member(namespace, name),
+              icon: ENTITY_ICONS.user,
+            },
           ],
         },
       ],
@@ -38,7 +50,11 @@ export const handle = {
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   const session = await authenticator.getSession(request);
-  const data = await groupDetailQuery(session?.accessToken ?? '', params?.groupName ?? '');
+  const data = await groupDetailQuery(
+    session?.accessToken ?? '',
+    params.groupName ?? '',
+    params.namespace ?? ''
+  );
 
   return data;
 };
