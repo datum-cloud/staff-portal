@@ -57,6 +57,7 @@ import {
   UserPlus,
   Users,
   UsersRound,
+  Wallet,
   X,
   XCircle,
 } from 'lucide-react';
@@ -97,6 +98,7 @@ export const ENTITY_ICONS = {
   group: ShieldUser,
   serviceCatalog: Newspaper,
   offer: Tag,
+  billingOverview: Wallet,
   // Resources (global views across all projects)
   edge: Gauge,
   dns: Signpost,
