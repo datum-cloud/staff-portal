@@ -31,7 +31,7 @@ function ServicePricingListSkeleton({ rows = 5 }: { rows?: number }) {
         <div key={i} className="flex items-start gap-2">
           <Skeleton className="mt-0.5 size-4 shrink-0 rounded" />
           <div className="flex min-w-0 flex-1 flex-col gap-1.5 pt-0.5">
-            <Skeleton className="h-3.5 w-2/3 max-w-[220px]" />
+            <Skeleton className="h-3.5 w-2/3 max-w-55" />
             <Skeleton className="h-3 w-16" />
           </div>
         </div>

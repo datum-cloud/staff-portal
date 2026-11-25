@@ -126,7 +126,7 @@ export default function Page() {
                         <Trans>Query</Trans>
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="min-w-[400px]">
+                    <PopoverContent className="min-w-100">
                       <CodeEditor
                         value={source.metrics?.metricsql ?? ''}
                         language={'promql' as unknown as EditorLanguage}
@@ -205,7 +205,7 @@ export default function Page() {
                         <Trans>Configuration</Trans>
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="min-w-[500px]">
+                    <PopoverContent className="min-w-125">
                       <CodeEditor
                         value={JSON.stringify(sink.target?.prometheusRemoteWrite, null, 2)}
                         language="json"

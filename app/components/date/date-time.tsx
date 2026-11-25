@@ -129,7 +129,7 @@ export const DateTime = ({
     <Tooltip
       message={tooltipContent}
       contentClassName={
-        detailedTooltip ? 'min-w-[15rem] text-left text-wrap whitespace-normal' : undefined
+        detailedTooltip ? 'min-w-60 text-left text-wrap whitespace-normal' : undefined
       }>
       <span className={cn('cursor-pointer', textClass)}>{content}</span>
     </Tooltip>

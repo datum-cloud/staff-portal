@@ -112,7 +112,7 @@ export function EmailDetail({ email }: EmailDetailProps) {
 
       <SectionCard>
         <Tabs defaultValue="preview" className="w-full">
-          <TabsList className="grid w-full max-w-[360px] grid-cols-3">
+          <TabsList className="grid w-full max-w-90 grid-cols-3">
             <TabsTrigger value="preview">{t`Preview`}</TabsTrigger>
             <TabsTrigger value="plain">{t`Plain Text`}</TabsTrigger>
             <TabsTrigger value="html">{t`HTML`}</TabsTrigger>

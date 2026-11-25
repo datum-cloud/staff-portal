@@ -111,7 +111,7 @@ function AppSearch({ className = '', placeholder }: Props) {
             ref={panelRef}
             className="bg-popover text-popover-foreground fixed z-50 rounded-md border shadow-md"
             style={{ top: dropdownPos.top, left: dropdownPos.left, width: dropdownPos.width }}>
-            <SearchResults state={wrappedState} listClassName="max-h-[400px]" />
+            <SearchResults state={wrappedState} listClassName="max-h-100" />
           </div>,
           document.body
         )}

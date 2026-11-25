@@ -34,7 +34,7 @@ function MeterCardSkeleton() {
         </div>
       </CardHeader>
       <CardContent className="px-4 pt-4 pb-6 sm:px-8 sm:pb-8">
-        <Skeleton className="h-[220px] w-full rounded-lg" />
+        <Skeleton className="h-55 w-full rounded-lg" />
       </CardContent>
     </Card>
   );

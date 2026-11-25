@@ -463,7 +463,7 @@ export function ListTable<TData extends RowData>({
             {loading ? (
               <div className="flex h-7 w-full items-center justify-between gap-3">
                 <Skeleton className="h-7 w-[158px]" />
-                <Skeleton className="h-7 w-[180px]" />
+                <Skeleton className="h-7 w-45" />
               </div>
             ) : (
               <ListPagination className="min-w-0 flex-1" resourceLabel={resourceLabel} />

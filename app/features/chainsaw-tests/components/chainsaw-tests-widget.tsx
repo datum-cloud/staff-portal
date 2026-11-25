@@ -184,7 +184,7 @@ export function ChainsawTestsWidget() {
           )}
         </div>
       </CardHeader>
-      <CardContent className="min-h-[180px] px-4 pt-0 pb-3">
+      <CardContent className="min-h-45 px-4 pt-0 pb-3">
         {isLoading ? (
           <LoadingSkeleton />
         ) : isError ? (
@@ -226,7 +226,7 @@ export function ChainsawTestsWidget() {
               <TableBody>
                 {tests.map((row) => (
                   <TableRow key={row.key}>
-                    <TableCell className="max-w-[180px]">
+                    <TableCell className="max-w-45">
                       <Text size="sm" className="truncate font-medium">
                         {row.test}
                       </Text>

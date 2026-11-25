@@ -179,7 +179,7 @@ export function ProjectsFilter({
         </PopoverTrigger>
 
         <PopoverContent
-          className="w-[280px] p-0"
+          className="w-70 p-0"
           align="start"
           onOpenAutoFocus={(e) => e.preventDefault()}>
           {/* Search input */}

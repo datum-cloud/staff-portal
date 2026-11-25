@@ -18,7 +18,7 @@ import { Trans } from '@lingui/react/macro';
 import { useMemo, type ReactNode } from 'react';
 import { Link } from 'react-router';
 
-const LIST_MAX_HEIGHT = 'max-h-[9.5rem]';
+const LIST_MAX_HEIGHT = 'max-h-38';
 const TOP_N = 4;
 
 type Props = {
