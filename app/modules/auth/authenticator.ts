@@ -29,19 +29,6 @@ export class CustomAuthenticator extends Authenticator<ISession> {
     return super.authenticate(strategy, toFetchRequest(request));
   }
 
-  async logout(strategy: string, request: Request) {
-    const provider = this.get(strategy);
-    if (!provider) {
-      throw new AuthenticationError(`Strategy ${strategy} not found`).toResponse();
-    }
-
-    if (typeof (provider as any).logout === 'function') {
-      return await (provider as any).logout(request);
-    }
-
-    throw new AuthenticationError(`Strategy ${strategy} does not support logout`).toResponse();
-  }
-
   async refresh(strategy: string, request: Request): Promise<ISession> {
     const provider = this.get(strategy);
     if (!provider) {

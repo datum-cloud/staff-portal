@@ -105,6 +105,15 @@ jobs:
           pnpm install --prod --frozen-lockfile --ignore-scripts --dir "$prod_dir"
           cp -R build "$prod_dir/build"
           node scripts/check-server-imports.mjs "$prod_dir/build/server"
+      # A Lingui macro the build never compiled throws as soon as its chunk
+      # loads. A route with a clientLoader gets its component split into its own
+      # chunk, where the macro plugin doesn't run, so this has shipped before.
+      - name: Check client chunks for uncompiled macros
+        run: |
+          if grep -l "outside the context of compilation" build/client/assets/*.js; then
+            echo "::error::The client chunks listed above run a Lingui macro that the build never compiled, so they throw when they load."
+            exit 1
+          fi
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: build
