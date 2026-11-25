@@ -1,3 +1,4 @@
+import { fetchWithReauth } from '@/modules/auth/fetch-with-reauth';
 import type { OrgUsageSummary } from '@/modules/billing/org-usage.types';
 import type { OrgUsageDashboardData } from '@/modules/billing/usage.types';
 import { HttpError } from '@/utils/errors';
@@ -7,7 +8,7 @@ export async function fetchOrgUsageSummary(
   cycle: 'current' | 'previous' = 'current'
 ): Promise<OrgUsageSummary> {
   const search = new URLSearchParams({ orgName, cycle });
-  const response = await fetch(`/api/usage?${search.toString()}`);
+  const response = await fetchWithReauth(`/api/usage?${search.toString()}`);
   const body = (await response.json().catch(() => ({}))) as {
     data?: OrgUsageSummary;
     error?: string;
@@ -53,7 +54,7 @@ export async function fetchOrgUsageDashboard(
   if (scope.samePoint) {
     search.set('samePoint', 'true');
   }
-  const response = await fetch(`/api/usage/dashboard?${search.toString()}`, { signal });
+  const response = await fetchWithReauth(`/api/usage/dashboard?${search.toString()}`, { signal });
   const body = (await response.json().catch(() => ({}))) as {
     data?: OrgUsageDashboardData;
     error?: string;
