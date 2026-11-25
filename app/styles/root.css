@@ -88,6 +88,52 @@ body {
   --text-8xl--line-height: 72px;
 }
 
+
+/*
+ * Colours from the Datum Figma file that datum-ui has no token for, named
+ * once here so components use classes instead of hex values (#834). The values
+ * are exact; dark mode stays a `dark:` class on the component, as before.
+ *
+ * Mist: the neutrals of Milo's table chrome (header background, lines).
+ * datum-ui's nearest, glacier-mist-900 (#eeefe6), is close but not the same.
+ *
+ * Chip: the status badge palette (AppBadge, CustomerStatus). Each hue has a
+ * text colour, a `-soft` text for dark panels, a translucent `-tint` fill and,
+ * where light mode uses an opaque fill, a `-wash`.
+ */
+@theme {
+  --color-mist-line: #efefed;
+  --color-mist-surface: #fbfbfa;
+  --color-mist-subtle: #f6f6f5;
+
+  --color-chip-red: #b84848;
+  --color-chip-red-soft: #d47878;
+  --color-chip-red-tint: rgb(194 128 128 / 0.2);
+  --color-chip-red-wash: #ecdfde;
+
+  --color-chip-orange: #d28d5b;
+  --color-chip-orange-tint: rgb(194 159 128 / 0.2);
+
+  --color-chip-amber: #a67c1a;
+  --color-chip-amber-soft: #e0b866;
+  --color-chip-amber-tint: rgb(217 164 65 / 0.2);
+
+  --color-chip-green: #446e3d;
+  --color-chip-green-soft: #8fbc88;
+  --color-chip-green-tint: rgb(68 110 61 / 0.2);
+  --color-chip-green-tint-soft: rgb(143 188 136 / 0.18);
+
+  --color-chip-grey: #90969c;
+  --color-chip-grey-tint: rgb(184 184 184 / 0.2);
+  --color-chip-grey-tint-faint: rgb(184 184 184 / 0.12);
+  --color-chip-grey-wash: #f6f6f5;
+
+  --color-chip-slate: #67717c;
+  --color-chip-slate-soft: #c8ccc8;
+  --color-chip-slate-tint: rgb(227 226 223 / 0.16);
+  --color-chip-slate-wash: #efefed;
+}
+
 /*
  * The display steps shrink per breakpoint in datum-ui, and those media queries
  * carry the shared values — larger than the ones above. Left alone, `xl` would

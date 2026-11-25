@@ -26,25 +26,26 @@ const STATUS_STYLES: Record<CustomerStatusValue, { label: string; className: str
   active: {
     label: 'Active',
     // Light: Glacier Mist 800 / Utility 3. Dark: tinted chip (same recipe as AppBadge).
-    className: 'bg-[#efefed] text-[#67717c] dark:bg-[rgba(227,226,223,0.16)] dark:text-[#c8ccc8]',
+    className:
+      'bg-chip-slate-wash text-chip-slate dark:bg-chip-slate-tint dark:text-chip-slate-soft',
   },
   inactive: {
     label: 'Inactive',
     // Light: Glacier Mist 700 / Utility 4 @ 60%. Dark: quieter tint + muted label.
     className:
-      'bg-[#f6f6f5] text-[#90969c]/60 dark:bg-[rgba(184,184,184,0.12)] dark:text-[#90969c]',
+      'bg-chip-grey-wash text-chip-grey/60 dark:bg-chip-grey-tint-faint dark:text-chip-grey',
   },
   flagged: {
     label: 'Fraud',
-    className: 'bg-[#ecdfde] text-[#b84848] dark:bg-[rgba(194,128,128,0.2)] dark:text-[#d47878]',
+    className: 'bg-chip-red-wash text-chip-red dark:bg-chip-red-tint dark:text-chip-red-soft',
   },
   fraud: {
     label: 'Fraud',
-    className: 'bg-[#ecdfde] text-[#b84848] dark:bg-[rgba(194,128,128,0.2)] dark:text-[#d47878]',
+    className: 'bg-chip-red-wash text-chip-red dark:bg-chip-red-tint dark:text-chip-red-soft',
   },
   failed: {
     label: 'Failed',
-    className: 'bg-[#ecdfde] text-[#b84848] dark:bg-[rgba(194,128,128,0.2)] dark:text-[#d47878]',
+    className: 'bg-chip-red-wash text-chip-red dark:bg-chip-red-tint dark:text-chip-red-soft',
   },
 };
 

@@ -25,38 +25,38 @@ const BADGE_STYLES: Record<AppBadgeValue, { label: string; className: string }> 
   // Figma: Open — rgba(194,128,128,0.2) / #b84848
   open: {
     label: 'Open',
-    className: 'bg-[rgba(194,128,128,0.2)] text-[#b84848]',
+    className: 'bg-chip-red-tint text-chip-red',
   },
   // Figma: Closed — rgba(184,184,184,0.2) / #90969c
   closed: {
     label: 'Closed',
-    className: 'bg-[rgba(184,184,184,0.2)] text-[#90969c]',
+    className: 'bg-chip-grey-tint text-chip-grey',
   },
   // Figma: In progress — rgba(194,159,128,0.2) / #d28d5b
   'in-progress': {
     label: 'In progress',
-    className: 'bg-[rgba(194,159,128,0.2)] text-[#d28d5b]',
+    className: 'bg-chip-orange-tint text-chip-orange',
   },
   // Registration aliases (same visual language)
   pending: {
     label: 'Pending',
-    className: 'bg-[rgba(194,159,128,0.2)] text-[#d28d5b]',
+    className: 'bg-chip-orange-tint text-chip-orange',
   },
   rejected: {
     label: 'Rejected',
-    className: 'bg-[rgba(194,128,128,0.2)] text-[#b84848]',
+    className: 'bg-chip-red-tint text-chip-red',
   },
   // Approved isn’t in the Figma badge set — same chip recipe with pine green
   approved: {
     label: 'Approved',
     // Dark text needs a lighter green on navy panels for contrast.
     className:
-      'bg-[rgba(68,110,61,0.2)] text-[#446e3d] dark:bg-[rgba(143,188,136,0.18)] dark:text-[#8fbc88]',
+      'bg-chip-green-tint text-chip-green dark:bg-chip-green-tint-soft dark:text-chip-green-soft',
   },
   // Suspended — amber, distinct from pending's soft orange
   suspended: {
     label: 'Suspended',
-    className: 'bg-[rgba(217,164,65,0.2)] text-[#a67c1a] dark:text-[#e0b866]',
+    className: 'bg-chip-amber-tint text-chip-amber dark:text-chip-amber-soft',
   },
 };
 
