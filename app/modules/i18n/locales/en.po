@@ -207,6 +207,11 @@ msgstr "{0} services"
 msgid "{0} this cycle"
 msgstr "{0} this cycle"
 
+#. placeholder {0}: getBillingAccountDisplayName(account)
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:90
+msgid "{0}'s contact, address and tax IDs. Changes show on upcoming invoices and on the account's activity; past invoices keep theirs."
+msgstr "{0}'s contact, address and tax IDs. Changes show on upcoming invoices and on the account's activity; past invoices keep theirs."
+
 #. placeholder {0}: override.discount
 #: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:233
 msgid "{0}% off"
@@ -354,7 +359,7 @@ msgstr "{failed, plural, one {# check couldn't run} other {# checks couldn't run
 msgid "{frequency} · due <0/> (net {0})"
 msgstr "{frequency} · due <0/> (net {0})"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:122
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:153
 msgid "{frequency}, on day {invoiceDay}"
 msgstr "{frequency}, on day {invoiceDay}"
 
@@ -977,6 +982,10 @@ msgstr "Add Provider"
 msgid "Add Stage"
 msgstr "Add Stage"
 
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:275
+msgid "Add tax ID"
+msgstr "Add tax ID"
+
 #: app/features/notes/components/notes-card.tsx:120
 msgid "Add the first note below to start tracking context."
 msgstr "Add the first note below to start tracking context."
@@ -1012,6 +1021,22 @@ msgstr "Added to contact group “{0}”"
 #: app/features/organization/components/org-contact-card.tsx:56
 msgid "Address"
 msgstr "Address"
+
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:190
+msgid "Address line 1"
+msgstr "Address line 1"
+
+#: app/features/billing/components/billing-contact/schema.ts:29
+msgid "Address line 1 is too long (256 characters max)"
+msgstr "Address line 1 is too long (256 characters max)"
+
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:193
+msgid "Address line 2"
+msgstr "Address line 2"
+
+#: app/features/billing/components/billing-contact/schema.ts:33
+msgid "Address line 2 is too long (256 characters max)"
+msgstr "Address line 2 is too long (256 characters max)"
 
 #: app/routes/admin/layout.tsx:7
 #: app/routes/customer/organization/detail/member.tsx:191
@@ -1502,14 +1527,19 @@ msgstr "Billing account not found or you do not have permission to view it."
 msgid "Billing Accounts"
 msgstr "Billing Accounts"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:62
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:90
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:188
 msgid "Billing address"
 msgstr "Billing address"
 
 #: app/features/billing/components/application-review.tsx:507
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:30
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:46
 msgid "Billing contact"
 msgstr "Billing contact"
+
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:62
+msgid "Billing contact updated. Upcoming invoices use the new details."
+msgstr "Billing contact updated. Upcoming invoices use the new details."
 
 #: app/routes/customer/project/index.tsx:147
 msgid "Billing could not be read"
@@ -1553,6 +1583,14 @@ msgstr "Business account with a billing address in {country} and no tax ID."
 msgid "Business account with no tax ID."
 msgstr "Business account with no tax ID."
 
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:120
+msgid "Business name"
+msgstr "Business name"
+
+#: app/features/billing/components/billing-contact/schema.ts:23
+msgid "Business name is too long (256 characters max)"
+msgstr "Business name is too long (256 characters max)"
+
 #: app/routes/admin/service-catalog/index.tsx:54
 msgid "by"
 msgstr "by"
@@ -1578,6 +1616,7 @@ msgstr "Can't be removed"
 #: app/components/danger-zone-card/index.tsx:43
 #: app/features/billing/components/application-review.tsx:601
 #: app/features/billing/components/billing-account-dashboard/billing-account-offer-card.tsx:365
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:138
 #: app/features/billing/components/charges/add-charge-dialog.tsx:675
 #: app/features/billing/components/contract-editor/contract-editor.tsx:480
 #: app/features/billing/components/default-offer-card.tsx:77
@@ -1804,6 +1843,14 @@ msgstr "Choose the dates"
 msgid "CI runs"
 msgstr "CI runs"
 
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:197
+msgid "City"
+msgstr "City"
+
+#: app/features/billing/components/billing-contact/schema.ts:37
+msgid "City is too long (128 characters max)"
+msgstr "City is too long (128 characters max)"
+
 #: app/features/fraud/detail/maxmind-rows.tsx:244
 msgid "Classification"
 msgstr "Classification"
@@ -1874,7 +1921,7 @@ msgid "Collapse sidebar"
 msgstr "Collapse sidebar"
 
 #: app/features/billing/components/application-labels.tsx:34
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:38
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:66
 #: app/features/billing/components/billing-account-list.tsx:194
 #: app/features/billing/components/billing-account-list.tsx:265
 #: app/features/project/components/project-organization-card.tsx:34
@@ -1923,7 +1970,7 @@ msgstr "Condition"
 msgid "Conditions"
 msgstr "Conditions"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:107
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:138
 #: app/features/edge/components/detail/edge-config-card.tsx:72
 #: app/routes/customer/project/detail/export-policy/detail.tsx:171
 #: app/routes/customer/project/detail/export-policy/detail.tsx:205
@@ -1963,7 +2010,7 @@ msgstr "Consumer Project"
 msgid "Consumers"
 msgstr "Consumers"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:34
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:62
 #: app/features/fraud/detail/evaluation-sections.tsx:697
 #: app/features/organization/components/org-account-card.tsx:145
 #: app/routes/marketing/contact-group/detail/member.tsx:67
@@ -1993,6 +2040,7 @@ msgstr "Contact details"
 
 #: app/features/billing/components/billing-account-list.tsx:234
 #: app/features/billing/components/billing-account-list.tsx:311
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:113
 msgid "Contact email"
 msgstr "Contact email"
 
@@ -2044,6 +2092,7 @@ msgstr "Contact Groups - Create"
 msgid "Contact Information"
 msgstr "Contact Information"
 
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:107
 #: app/features/organization/components/org-contact-card.tsx:48
 msgid "Contact name"
 msgstr "Contact name"
@@ -2144,7 +2193,7 @@ msgstr "Could not load usage"
 msgid "Could not revoke the session"
 msgstr "Could not revoke the session"
 
-#: app/features/billing/components/charges/server-errors.ts:143
+#: app/features/billing/components/charges/server-errors.ts:63
 msgid "Couldn't add the charge."
 msgstr "Couldn't add the charge."
 
@@ -2253,13 +2302,21 @@ msgstr "Couldn't preview the invoice."
 msgid "Couldn't read"
 msgstr "Couldn't read"
 
-#: app/features/billing/components/charges/server-errors.ts:131
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:67
+msgid "Couldn't save the billing contact."
+msgstr "Couldn't save the billing contact."
+
+#: app/features/billing/components/charges/server-errors.ts:56
 msgid "Couldn't save the draft."
 msgstr "Couldn't save the draft."
 
 #: app/features/organization/components/org-warning-events.tsx:139
 msgid "Count"
 msgstr "Count"
+
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:208
+msgid "Country"
+msgstr "Country"
 
 #: app/features/project/components/project-resources-card.tsx:59
 msgid "Counts for resources in this project"
@@ -2313,7 +2370,7 @@ msgstr "Create Policy"
 msgid "created"
 msgstr "created"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:133
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:164
 #: app/features/billing/components/billing-account-list.tsx:239
 #: app/features/billing/components/billing-account-list.tsx:317
 #: app/features/contact/components/contact-about-card.tsx:32
@@ -2381,7 +2438,7 @@ msgid "Cross-connect install, cage 12"
 msgstr "Cross-connect install, cage 12"
 
 #: app/features/billing/components/application-review.tsx:503
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:115
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:146
 #: app/features/billing/components/billing-account-list.tsx:224
 #: app/features/billing/components/billing-account-list.tsx:298
 msgid "Currency"
@@ -2992,6 +3049,7 @@ msgid "Each routing rule has its own pool, weighted within the rule."
 msgstr "Each routing rule has its own pool, weighted within the rule."
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:113
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:56
 #: app/features/contact/components/contact-list.tsx:56
 #: app/features/contact/components/edit-contact-dialog.tsx:39
 #: app/features/fraud/policy/policy-detail.tsx:318
@@ -3002,6 +3060,10 @@ msgstr "Each routing rule has its own pool, weighted within the rule."
 #: app/routes/marketing/contact/detail/notes.tsx:78
 msgid "Edit"
 msgstr "Edit"
+
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:89
+msgid "Edit billing contact"
+msgstr "Edit billing contact"
 
 #: app/features/contact/components/edit-contact-dialog.tsx:44
 msgid "Edit contact"
@@ -3054,7 +3116,7 @@ msgstr "editor of {editorCount}"
 msgid "Education or research"
 msgstr "Education or research"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:46
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:74
 #: app/features/contact/components/contact-about-card.tsx:30
 #: app/features/contact/components/contact-form.tsx:136
 #: app/features/contact/components/contact-list.tsx:91
@@ -3211,9 +3273,18 @@ msgstr "Enter a price per unit, such as 250.00."
 msgid "Enter a reason (at least {REASON_MIN_LENGTH} characters)..."
 msgstr "Enter a reason (at least {REASON_MIN_LENGTH} characters)..."
 
+#: app/features/billing/components/billing-contact/schema.ts:61
+#: app/features/billing/components/billing-contact/schema.ts:65
+msgid "Enter a valid email address"
+msgstr "Enter a valid email address"
+
 #: app/features/billing/components/contract-editor/schema.ts:108
 msgid "Enter an amount, such as 1000 or 1000.00."
 msgstr "Enter an amount, such as 1000 or 1000.00."
+
+#: app/features/billing/components/billing-contact/schema.ts:60
+msgid "Enter an email for the billing contact"
+msgstr "Enter an email for the billing contact"
 
 #: app/routes/customer/user/index.tsx:239
 msgid "Enter first name"
@@ -3231,6 +3302,10 @@ msgstr "Enter reason for rejection..."
 #: app/routes/marketing/contact-group/detail/member.tsx:114
 msgid "Enter the full email to search..."
 msgstr "Enter the full email to search..."
+
+#: app/features/billing/components/billing-contact/schema.ts:83
+msgid "Enter the registration number"
+msgstr "Enter the registration number"
 
 #: app/components/dialog/dialog-confirm.tsx:94
 msgid "Enter the word <0>{confirmationText}</0> to perform this action."
@@ -3709,6 +3784,10 @@ msgstr "General discount"
 msgid "Get"
 msgstr "Get"
 
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:114
+msgid "Gets billing notifications."
+msgstr "Gets billing notifications."
+
 #: app/routes/error/not-found.tsx:96
 msgid "Go Back"
 msgstr "Go Back"
@@ -4023,7 +4102,11 @@ msgstr "Invoice"
 msgid "Invoice details"
 msgstr "Invoice details"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:119
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:159
+msgid "Invoice email"
+msgstr "Invoice email"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:150
 msgid "Invoice frequency"
 msgstr "Invoice frequency"
 
@@ -4036,7 +4119,7 @@ msgstr "Invoice now"
 msgid "Invoice past due — {amount}"
 msgstr "Invoice past due — {amount}"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:54
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:82
 msgid "Invoice recipients"
 msgstr "Invoice recipients"
 
@@ -4363,7 +4446,7 @@ msgid "Line {0}"
 msgstr "Line {0}"
 
 #. placeholder {0}: Number(line[1]) + 1
-#: app/features/billing/components/charges/server-errors.ts:128
+#: app/features/billing/components/charges/server-errors.ts:58
 msgid "Line {0}: {text}"
 msgstr "Line {0}: {text}"
 
@@ -4698,6 +4781,10 @@ msgstr "My Profile"
 msgid "Name"
 msgstr "Name"
 
+#: app/features/billing/components/billing-contact/schema.ts:18
+msgid "Name is too long (256 characters max)"
+msgstr "Name is too long (256 characters max)"
+
 #: app/features/billing/components/contract-editor/schema.ts:98
 msgid "Name the fee, as invoices show it."
 msgstr "Name the fee, as invoices show it."
@@ -4717,6 +4804,10 @@ msgstr "Namespace"
 #: app/components/app-search/search-results.tsx:117
 msgid "Navigation"
 msgstr "Navigation"
+
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:209
+msgid "Needed with an address. Sets the account's tax."
+msgstr "Needed with an address. Sets the account's tax."
 
 #: app/features/organization/components/org-needs-attention.tsx:452
 msgid "Needs attention"
@@ -4757,7 +4848,7 @@ msgstr "Net {netDays}, scheduled from {start} until <0/>."
 msgid "Net {netDays}, scheduled from {start} with no end date."
 msgstr "Net {netDays}, scheduled from {start} with no end date."
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:129
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:160
 #: app/features/billing/components/payment-terms.tsx:369
 #: app/features/billing/components/payment-terms.tsx:504
 msgid "Net days"
@@ -5418,7 +5509,7 @@ msgstr "Not for a service"
 msgid "Not linked to a user"
 msgstr "Not linked to a user"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:19
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:24
 msgid "Not provided"
 msgstr "Not provided"
 
@@ -5652,6 +5743,10 @@ msgstr "Once a contact is associated with a user, this association cannot be rem
 #: app/features/billing/components/charges/add-charge-dialog.tsx:998
 msgid "One of Stripe's tax codes, such as txcd_20030000. Leave it empty for the account's default."
 msgstr "One of Stripe's tax codes, such as txcd_20030000. Leave it empty for the account's default."
+
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:233
+msgid "One per tax registration, each of a different type."
+msgstr "One per tax registration, each of a different type."
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:376
 msgid "One-off items billed once, outside the account's plan or contract: an install, remote hands, a correction. Anything billed every period belongs in a contract instead."
@@ -6055,6 +6150,14 @@ msgstr "Phase"
 msgid "Pick a catalog item, or type a name for a custom one."
 msgstr "Pick a catalog item, or type a name for a custom one."
 
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:214
+msgid "Pick a country"
+msgstr "Pick a country"
+
+#: app/features/billing/components/billing-contact/schema.ts:69
+msgid "Pick a country, which an address needs"
+msgstr "Pick a country, which an address needs"
+
 #: app/features/billing/components/contract-editor/contract-editor.tsx:544
 #: app/features/billing/components/item-options.tsx:158
 msgid "Pick a date"
@@ -6068,6 +6171,11 @@ msgstr "Pick a start date before publishing: edit the draft."
 #: app/features/billing/components/contract-editor/schema.ts:229
 msgid "Pick a start date."
 msgstr "Pick a start date."
+
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:248
+#: app/features/billing/components/billing-contact/schema.ts:75
+msgid "Pick a tax type"
+msgstr "Pick a tax type"
 
 #: app/features/billing/components/charges/schema.ts:105
 msgid "Pick an end date."
@@ -6188,9 +6296,17 @@ msgstr "port, kW"
 msgid "Portal Preferences"
 msgstr "Portal Preferences"
 
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:203
+msgid "Postal code"
+msgstr "Postal code"
+
 #: app/features/fraud/detail/maxmind-rows.tsx:185
 msgid "Postal Code"
 msgstr "Postal Code"
+
+#: app/features/billing/components/billing-contact/schema.ts:45
+msgid "Postal code is too long (32 characters max)"
+msgstr "Postal code is too long (32 characters max)"
 
 #: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:309
 #: app/features/email/components/email-detail.tsx:116
@@ -6560,6 +6676,10 @@ msgstr "Registrar"
 msgid "Registration expires <0/>"
 msgstr "Registration expires <0/>"
 
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:252
+msgid "Registration number"
+msgstr "Registration number"
+
 #: app/features/project/components/project-suspension-card.tsx:99
 #: app/features/project/components/project-suspension-card.tsx:190
 msgid "Reinstate authority"
@@ -6612,6 +6732,11 @@ msgstr "Remove from Contact Group"
 #: app/features/billing/components/charges/add-charge-dialog.tsx:897
 msgid "Remove line {number}"
 msgstr "Remove line {number}"
+
+#. placeholder {0}: index + 1
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:261
+msgid "Remove tax ID {0}"
+msgstr "Remove tax ID {0}"
 
 #: app/features/contact/components/contact-groups-card.tsx:110
 #: app/routes/marketing/contact/detail/group.tsx:164
@@ -6794,6 +6919,7 @@ msgstr "Running"
 msgid "Same as last cycle at this point"
 msgstr "Same as last cycle at this point"
 
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:141
 #: app/features/billing/components/payment-terms.tsx:212
 #: app/features/group/group-dialogs.tsx:125
 #: app/features/profile/components/profile-form.tsx:58
@@ -6931,6 +7057,10 @@ msgstr "Search contact groups..."
 msgid "Search contacts..."
 msgstr "Search contacts..."
 
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:215
+msgid "Search countries"
+msgstr "Search countries"
+
 #: app/features/dns/components/dns-zone-list.tsx:151
 msgid "Search DNS zones..."
 msgstr "Search DNS zones..."
@@ -6985,6 +7115,10 @@ msgstr "Search notes..."
 #: app/routes/admin/offer/index.tsx:112
 msgid "Search offers..."
 msgstr "Search offers..."
+
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:249
+msgid "Search or enter a type, like gb_vat"
+msgstr "Search or enter a type, like gb_vat"
 
 #: app/routes/customer/organization/index.tsx:146
 #: app/routes/customer/user/detail/organization.tsx:68
@@ -7495,12 +7629,20 @@ msgstr "Starts"
 msgid "Starts <0/>"
 msgstr "Starts <0/>"
 
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:200
+msgid "State or region"
+msgstr "State or region"
+
+#: app/features/billing/components/billing-contact/schema.ts:41
+msgid "State or region is too long (128 characters max)"
+msgstr "State or region is too long (128 characters max)"
+
 #: app/features/billing/components/application-list.tsx:148
 #: app/features/billing/components/application-list.tsx:172
 #: app/features/billing/components/application-review.tsx:245
 #: app/features/billing/components/application-review.tsx:303
 #: app/features/billing/components/billing-account-dashboard/billing-account-charges-card.tsx:196
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:111
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:142
 #: app/features/billing/components/billing-account-dashboard/billing-account-invoices-card.tsx:189
 #: app/features/billing/components/billing-account-dashboard/billing-account-projects-card.tsx:139
 #: app/features/billing/components/billing-account-list.tsx:216
@@ -7674,7 +7816,12 @@ msgstr "Tax code"
 msgid "Tax details OK"
 msgstr "Tax details OK"
 
-#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:70
+#: app/features/billing/components/billing-contact/schema.ts:50
+msgid "Tax ID is too long (64 characters max)"
+msgstr "Tax ID is too long (64 characters max)"
+
+#: app/features/billing/components/billing-account-dashboard/billing-account-details-cards.tsx:98
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:230
 msgid "Tax IDs"
 msgstr "Tax IDs"
 
@@ -7718,6 +7865,11 @@ msgstr "The <0/> of each month, with the first month prorated"
 msgid "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 msgstr "The <0>services.miloapis.com-approver</0> role has not yet been provisioned for this staff token. Approval data is not visible until the role is deployed."
 
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:70
+#: app/features/billing/components/billing-contact/schema.ts:79
+msgid "The account already has a tax ID of this type"
+msgstr "The account already has a tax ID of this type"
+
 #: app/features/billing/components/billing-account-dashboard/billing-account-contract-draft-card.tsx:253
 msgid "The account is on a contract now, so this draft can't set one up. Edit it to change the contract's fees instead."
 msgstr "The account is on a contract now, so this draft can't set one up. Edit it to change the contract's fees instead."
@@ -7754,6 +7906,10 @@ msgstr "The account's payment terms have no end date. Give them one on the billi
 #: app/features/billing/components/charges/add-charge-dialog.tsx:765
 msgid "The added charges wait for the rest: their invoice goes out once every line is added. Closing loses the lines not added yet."
 msgstr "The added charges wait for the rest: their invoice goes out once every line is added. Closing loses the lines not added yet."
+
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:108
+msgid "The ATTN line on invoices."
+msgstr "The ATTN line on invoices."
 
 #: app/features/billing/lib/charges.ts:640
 msgid "The card on file is charged {amount} plus tax straight away."
@@ -7847,6 +8003,10 @@ msgstr "The fraud verdict from the score against policy thresholds: Accepted, Re
 #: app/features/billing/lib/charges.ts:631
 msgid "The invoice comes to {amount}, so nothing is charged."
 msgstr "The invoice comes to {amount}, so nothing is charged."
+
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:121
+msgid "The legal entity on invoices. Empty for a personal account."
+msgstr "The legal entity on invoices. Empty for a personal account."
 
 #: app/features/milo/components/page/list-table.tsx:451
 msgid "The list is limited to 2,000 results at a time. Refine your search to surface other items."
@@ -8117,6 +8277,7 @@ msgstr "Try again"
 msgid "TTL"
 msgstr "TTL"
 
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:243
 #: app/features/billing/components/offer-included-pricing-list.tsx:146
 #: app/features/dns/components/dns-zone-status.tsx:56
 #: app/features/edge/components/detail/edge-backends-card.tsx:55
@@ -8320,6 +8481,10 @@ msgstr "Usage will appear here once this project starts consuming metered resour
 #: app/features/group/group-dialogs.tsx:55
 msgid "Use lowercase letters, numbers and hyphens, starting and ending with a letter or number"
 msgstr "Use lowercase letters, numbers and hyphens, starting and ending with a letter or number"
+
+#: app/features/billing/components/billing-contact/schema.ts:77
+msgid "Use the jurisdiction_scheme form, like gb_vat"
+msgstr "Use the jurisdiction_scheme form, like gb_vat"
 
 #: app/features/activity/components/activity-list.tsx:118
 #: app/features/activity/components/activity-list.tsx:393
@@ -8549,6 +8714,14 @@ msgstr "When"
 #: app/features/milo/components/page/rule-filter.tsx:227
 msgid "Where"
 msgstr "Where"
+
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:162
+msgid "Where invoices are emailed. Empty sends them to the contact email ({contactEmail})."
+msgstr "Where invoices are emailed. Empty sends them to the contact email ({contactEmail})."
+
+#: app/features/billing/components/billing-contact/edit-contact-dialog.tsx:163
+msgid "Where invoices are emailed. Empty sends them to the contact email."
+msgstr "Where invoices are emailed. Empty sends them to the contact email."
 
 #: app/features/billing/components/application-review.tsx:618
 msgid "Why it was declined. Never shown to the customer."

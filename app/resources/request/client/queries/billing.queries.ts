@@ -27,6 +27,7 @@ import {
   offerListQuery,
   paymentMethodListForOrgQuery,
   paymentMethodListQuery,
+  patchBillingAccountContact,
   patchBillingArrangement,
   previewNextInvoice,
   saveChargeDraft,
@@ -44,6 +45,7 @@ import {
   type SetUpContractInput,
 } from '../apis/billing.api';
 import type { ChargeDraft, ChargeDraftSpec, ChargeSpec } from '@/features/billing/lib/charges';
+import type { ContactMergePatch } from '@/features/billing/lib/contact-details';
 import type {
   ArrangementMergePatch,
   BillingArrangementSpec,
@@ -147,6 +149,22 @@ export const useBillingAccountDetailQuery = (
     enabled: !!orgName && !!accountName,
     staleTime: 5 * 60 * 1000,
     initialData: loaderData,
+  });
+};
+
+/** Saves staff's edit of a billing account's contact details and tax IDs. */
+export const usePatchBillingAccountContactMutation = (orgName: string, accountName: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (patch: ContactMergePatch) =>
+      patchBillingAccountContact(orgName, accountName, patch),
+    onSuccess: async (account) => {
+      if (account) queryClient.setQueryData(billingQueryKeys.detail(orgName, accountName), account);
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: billingQueryKeys.detail(orgName, accountName) }),
+        queryClient.invalidateQueries({ queryKey: billingQueryKeys.orgList(orgName) }),
+      ]);
+    },
   });
 };
 

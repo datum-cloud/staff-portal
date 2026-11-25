@@ -1,5 +1,5 @@
 import type { ChargeFormValues } from '../../lib/charges';
-import { parseK8sMessage } from '@/utils/errors';
+import { apiFieldErrors } from '../../lib/server-errors';
 import { t } from '@lingui/core/macro';
 
 /**
@@ -47,98 +47,21 @@ export const chargeFieldForPath = (
   return field;
 };
 
-const QUOTED = '"(?:[^"\\\\]|\\\\.)*"';
-/** The kind of error Kubernetes puts before each field's detail. */
-const CAUSE_PREFIX = new RegExp(
-  `^(?:Invalid value: (?:${QUOTED}|[^:]*): |Unsupported value: (?:${QUOTED}|[^:]*): |Required value: |Forbidden: |Too long: |Duplicate value: )`
-);
-
-const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
-
-/** A cause's message without its kind, e.g. "Required value: a note…" → "A note…". */
-export const causeMessage = (message: string): string => {
-  const trimmed = message.trim();
-  const detail = trimmed.replace(CAUSE_PREFIX, '').trim();
-  return capitalize(detail || trimmed);
-};
-
-interface StatusCause {
-  field?: string;
-  message?: string;
-}
-
-interface StatusLike {
-  message?: string;
-  details?: { causes?: StatusCause[] };
-}
-
-const isObject = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null;
-
-/** The Kubernetes Status in an API error, wherever the proxy put it. */
-const findStatus = (err: unknown): StatusLike | undefined => {
-  if (!isObject(err)) return undefined;
-  const response = isObject(err.response) ? err.response : undefined;
-  const data = response?.data;
-  const candidates = [
-    data,
-    isObject(data) ? data.data : undefined,
-    isObject(data) ? data.error : undefined,
-  ];
-  const statuses = candidates.filter(isObject) as StatusLike[];
-  return (
-    statuses.find((status) => Array.isArray(status.details?.causes)) ??
-    statuses.find((status) => typeof status.message === 'string')
-  );
-};
-
-/**
- * Field errors from an Invalid status's message, for when the causes didn't
- * come through: `… is invalid: [spec.quantity: Invalid value: "3.33": …,
- * spec.note: Required value: …]`.
- */
-const causesFromMessage = (message: string): StatusCause[] => {
-  const causes: StatusCause[] = [];
-  const pattern = /(spec(?:\.[A-Za-z]+|\[\d+\])+): ((?:(?!, spec[.[]).)+?)(?=, spec[.[]|\]?$)/g;
-  for (const match of message.matchAll(pattern)) {
-    causes.push({ field: match[1], message: match[2] });
-  }
-  return causes;
-};
-
-/** The refusal's causes, field by field, and its overall message. */
-const serverCauses = (err: unknown): { found: StatusCause[]; message: string } => {
-  const status = findStatus(err);
-  const message = status?.message ?? (err instanceof Error ? err.message : '');
-  const causes = status?.details?.causes?.filter((cause) => cause.message) ?? [];
-  return { found: causes.length > 0 ? causes : message ? causesFromMessage(message) : [], message };
-};
-
 /**
  * What billing refused in a charge draft, each as a sentence: a line's
  * problems start with its number, as billing reports them at
  * `spec.lines[i]`.
  */
-export const chargeDraftServerErrors = (err: unknown): string[] => {
-  const { found, message } = serverCauses(err);
-  if (found.length > 0) {
-    return found.map((cause) => {
-      const text = causeMessage(cause.message ?? '');
-      const line = cause.field?.match(/^spec\.lines\[(\d+)\]/);
-      return line ? t`Line ${Number(line[1]) + 1}: ${text}` : text;
-    });
-  }
-  return [message ? parseK8sMessage(message) : t`Couldn't save the draft.`];
-};
+export const chargeDraftServerErrors = (err: unknown): string[] =>
+  apiFieldErrors(err, t`Couldn't save the draft.`).map(({ path, message: text }) => {
+    const line = path?.match(/^spec\.lines\[(\d+)\]/);
+    return line ? t`Line ${Number(line[1]) + 1}: ${text}` : text;
+  });
 
 /** What the webhook refused, field by field, from a failed create. */
-export const chargeServerErrors = (err: unknown, setPeriod: boolean): ChargeServerError[] => {
-  const { found, message } = serverCauses(err);
-  if (found.length > 0) {
-    return found.map((cause) => ({
-      field: chargeFieldForPath(cause.field, setPeriod),
-      message: causeMessage(cause.message ?? ''),
-    }));
-  }
-  return [{ message: message ? parseK8sMessage(message) : t`Couldn't add the charge.` }];
-};
+export const chargeServerErrors = (err: unknown, setPeriod: boolean): ChargeServerError[] =>
+  apiFieldErrors(err, t`Couldn't add the charge.`).map(({ path, message }) =>
+    path ? { field: chargeFieldForPath(path, setPeriod), message } : { message }
+  );
+
+export { causeMessage } from '../../lib/server-errors';
