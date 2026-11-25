@@ -8,12 +8,25 @@ import type { UsageView } from '@/features/organization/usage/usage.view';
 
 export const meterSpend = (meter: UsageMeter): number => meter.spend?.amount ?? 0;
 
-const bySpendDesc = (a: UsageMeter, b: UsageMeter): number => meterSpend(b) - meterSpend(a);
+/**
+ * What a meter's usage costs before discounts, which orders meters and
+ * services: a 100% discount would otherwise leave every meter at 0.
+ */
+export const meterSpendBeforeDiscounts = (meter: UsageMeter): number =>
+  meter.spend?.beforeDiscounts ?? meterSpend(meter);
+
+const bySpendDesc = (a: UsageMeter, b: UsageMeter): number =>
+  meterSpendBeforeDiscounts(b) - meterSpendBeforeDiscounts(a);
 
 export interface ServiceSpend {
   id: string;
   title: string;
+  /** What the service's usage costs, after discounts. */
   amount: number;
+  /** What it costs before discounts; `amount` when nothing is discounted. */
+  beforeDiscounts: number;
+  /** What the discounts take off `beforeDiscounts`. */
+  discount: number;
   /** The service's highest-spend meter, which a click on the service selects. */
   topMeterId: string;
 }
@@ -25,22 +38,24 @@ export interface MeterOptionGroup {
   meters: UsageMeter[];
 }
 
-const groupSpend = (group: UsageGroupSection): number =>
-  group.meters.reduce((total, meter) => total + meterSpend(meter), 0);
+const sum = (meters: UsageMeter[], value: (meter: UsageMeter) => number): number =>
+  meters.reduce((total, meter) => total + value(meter), 0);
 
-/** Services with usage, highest spend first. */
+/** Services with usage, highest spend before discounts first. */
 export const getServiceSpend = (view: UsageView): ServiceSpend[] =>
   view.groups
     .filter((group) => group.meters.length > 0)
     .map((group) => ({
       id: group.id,
       title: group.title,
-      amount: groupSpend(group),
+      amount: sum(group.meters, meterSpend),
+      beforeDiscounts: sum(group.meters, meterSpendBeforeDiscounts),
+      discount: sum(group.meters, (meter) => meter.spend?.discount ?? 0),
       topMeterId: [...group.meters].sort(bySpendDesc)[0].id,
     }))
-    .sort((a, b) => b.amount - a.amount);
+    .sort((a, b) => b.beforeDiscounts - a.beforeDiscounts);
 
-/** The meter select's groups: services by spend, each with its meters by spend. */
+/** The meter select's groups: services by spend, each with its meters by spend (before discounts). */
 export const getMeterOptionGroups = (view: UsageView): MeterOptionGroup[] => {
   const order = new Map(getServiceSpend(view).map((service, index) => [service.id, index]));
   return view.groups
@@ -53,6 +68,6 @@ export const getMeterOptionGroups = (view: UsageView): MeterOptionGroup[] => {
     .sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
 };
 
-/** The meter the card opens on: the highest spend across every service. */
+/** The meter the card opens on: the highest spend before discounts across every service. */
 export const getTopMeter = (view: UsageView): UsageMeter | undefined =>
   view.groups.flatMap((group) => group.meters).sort(bySpendDesc)[0];

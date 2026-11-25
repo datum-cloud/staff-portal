@@ -10,7 +10,9 @@ import {
   type UsageBillingCycleOption,
   type UsageProjectOption,
 } from '@/features/organization/usage';
+import { SpendBreakdown } from '@/features/organization/usage/components/spend-breakdown';
 import { SpendValue } from '@/features/organization/usage/components/spend-value';
+import { spendDiscount } from '@/features/organization/usage/usage.format';
 import type { UsageSpend } from '@/modules/billing/usage.types';
 import { useOrgProjectListQuery, useOrgUsageDashboardQuery } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
@@ -112,11 +114,12 @@ function UsagePageHeader({
       {spend || spendError ? (
         <div className="shrink-0 text-left lg:text-right">
           <Text as="p" size="xs" textColor="muted">
-            Spend this period
+            {spendDiscount(spend) ? 'Due this period' : 'Spend this period'}
           </Text>
           <Text as="p" size="xl" weight="semibold" textColor="default" className="sm:text-2xl">
             <SpendValue spend={spend} spendError={spendError} />
           </Text>
+          <SpendBreakdown spend={spend} className="mt-0.5" />
         </div>
       ) : null}
     </div>

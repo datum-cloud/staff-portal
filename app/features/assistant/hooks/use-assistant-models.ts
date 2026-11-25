@@ -1,4 +1,5 @@
 import type { ModelOption } from '../types';
+import { fetchWithReauth } from '@/modules/auth/fetch-with-reauth';
 import { useEffect, useState } from 'react';
 
 /**
@@ -12,7 +13,7 @@ export function useAssistantModels() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/assistant/models')
+    fetchWithReauth('/api/assistant/models')
       .then(async (res) => {
         if (!res.ok) {
           const body = (await res.json().catch(() => null)) as { error?: string } | null;

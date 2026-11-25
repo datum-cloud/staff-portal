@@ -1,7 +1,7 @@
 import { createGenericOAuthProvider, OAuthProviderConfig, OIDCPrompt } from '../oauth.helper';
 import { authUserQuery } from '@/resources/request/server';
 import { env } from '@/utils/config/env.server';
-import { sessionCookie, tokenCookie } from '@/utils/cookies';
+import { sessionCookie } from '@/utils/cookies';
 import { AuthenticationError } from '@/utils/errors';
 import { OAuth2Strategy } from 'remix-auth-oauth2';
 
@@ -13,25 +13,10 @@ export interface IZitadelResponse {
   expiredAt: Date;
 }
 
+// Sign-out does not go through the strategy: the logout route sends the
+// browser to end_session (see `buildEndSessionUrl`), since only the browser
+// carries the Zitadel session cookies.
 class ZitadelStrategy extends OAuth2Strategy<IZitadelResponse> {
-  async logout(request: Request) {
-    const { data } = await tokenCookie.get(request);
-    if (!data?.idToken) {
-      throw new AuthenticationError('No id_token in request');
-    }
-
-    const body = new URLSearchParams();
-    body.append('id_token_hint', data.idToken);
-
-    await fetch(`${env.AUTH_OIDC_ISSUER}/oidc/v1/end_session`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body,
-    });
-  }
-
   async refresh(request: Request): Promise<IZitadelResponse> {
     const { data } = await sessionCookie.get(request);
     if (!data?.refreshToken) {

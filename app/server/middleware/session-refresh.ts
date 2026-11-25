@@ -10,10 +10,19 @@ import { createMiddleware } from 'hono/factory';
  */
 const SKIPPED_PATHS = [routes.login(), routes.logout(), '/auth/'];
 
-const isSkipped = (path: string): boolean =>
-  SKIPPED_PATHS.some((skipped) =>
-    skipped.endsWith('/') ? path.startsWith(skipped) : path === skipped
+/**
+ * A client navigation fetches a route's loader data as `<path>.data`, so in-app
+ * sign-out arrives as `/logout.data`. Strip that suffix before matching, or a
+ * refresh there would re-set the cookies logout just cleared.
+ */
+const withoutDataSuffix = (path: string): string => path.replace(/\.data$/, '');
+
+const isSkipped = (path: string): boolean => {
+  const routePath = withoutDataSuffix(path);
+  return SKIPPED_PATHS.some((skipped) =>
+    skipped.endsWith('/') ? routePath.startsWith(skipped) : routePath === skipped
   );
+};
 
 /**
  * Appends Set-Cookie values to the context's response. Hono's `c.res` setter

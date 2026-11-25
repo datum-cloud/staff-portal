@@ -1,4 +1,9 @@
-import type { Charge, ChargeSpec } from '@/features/billing/lib/charges';
+import type {
+  Charge,
+  ChargeDraft,
+  ChargeDraftSpec,
+  ChargeSpec,
+} from '@/features/billing/lib/charges';
 import type { ContactMergePatch } from '@/features/billing/lib/contact-details';
 import {
   CONTRACT_BILLING_ACCOUNT_LABEL,
@@ -36,10 +41,12 @@ import {
   createBillingMiloapisComV1Alpha1NamespacedBillingArrangementDecline,
   createBillingMiloapisComV1Alpha1NamespacedBillingEntitlement,
   createBillingMiloapisComV1Alpha1NamespacedCharge,
+  createBillingMiloapisComV1Alpha1NamespacedChargeDraft,
   createBillingMiloapisComV1Alpha1NamespacedInvoiceRequest,
   createBillingMiloapisComV1Alpha1NamespacedServicePricing,
   createBillingMiloapisComV1Alpha1Offer,
   deleteBillingMiloapisComV1Alpha1NamespacedCharge,
+  deleteBillingMiloapisComV1Alpha1NamespacedChargeDraft,
   deleteBillingMiloapisComV1Alpha1NamespacedServicePricing,
   deleteBillingMiloapisComV1Alpha1Offer,
   listBillingMiloapisComV1Alpha1BillingAccountBindingForAllNamespaces,
@@ -52,6 +59,8 @@ import {
   listBillingMiloapisComV1Alpha1NamespacedBillingArrangementDecline,
   listBillingMiloapisComV1Alpha1NamespacedBillingEntitlement,
   listBillingMiloapisComV1Alpha1NamespacedCharge,
+  listBillingMiloapisComV1Alpha1NamespacedChargeDraft,
+  replaceBillingMiloapisComV1Alpha1NamespacedChargeDraft,
   listBillingMiloapisComV1Alpha1NamespacedInvoice,
   listBillingMiloapisComV1Alpha1NamespacedPaymentMethod,
   listBillingMiloapisComV1Alpha1NamespacedServicePricing,
@@ -1113,7 +1122,11 @@ export interface ContractDraftPreview {
 export const createInvoicePreviewRequest = async (
   orgName: string,
   accountName: string,
-  { draft = false, contractDraft }: { draft?: boolean; contractDraft?: ContractDraftPreview } = {}
+  {
+    draft = false,
+    contractDraft,
+    chargeDraft,
+  }: { draft?: boolean; contractDraft?: ContractDraftPreview; chargeDraft?: string } = {}
 ) => {
   const namespace = buildOrganizationNamespace(orgName);
   const response = await createBillingMiloapisComV1Alpha1NamespacedInvoiceRequest({
@@ -1137,6 +1150,7 @@ export const createInvoicePreviewRequest = async (
               },
             }
           : {}),
+        ...(chargeDraft ? { chargeDraftRef: { name: chargeDraft } } : {}),
       },
     },
   });
@@ -1155,16 +1169,20 @@ export const previewNextInvoice = async (
     intervalMs = 2000,
     draft = false,
     contractDraft,
+    chargeDraft,
   }: {
     attempts?: number;
     intervalMs?: number;
     draft?: boolean;
     contractDraft?: ContractDraftPreview;
+    /** A charge draft's name, to preview its lines on their own. */
+    chargeDraft?: string;
   } = {}
 ): Promise<InvoiceRequest> => {
   const created = await createInvoicePreviewRequest(orgName, accountName, {
     draft,
     contractDraft,
+    chargeDraft,
   });
   const name = created?.metadata?.name;
   if (!name) throw new Error('The preview request was not created.');
@@ -1453,4 +1471,108 @@ export const deleteCharge = async (orgName: string, chargeName: string) => {
     baseURL: getClientOrgControlPlaneBaseURL(orgName),
     path: { namespace, name: chargeName },
   });
+};
+
+// ─── ChargeDraft (org-namespaced, staff-only) ────────────────────────────────
+
+/** An account's charge drafts, and whether billing serves them at all. */
+export interface AccountChargeDrafts {
+  items: ChargeDraft[];
+  /** False when the control plane has no ChargeDraft resource yet. */
+  served: boolean;
+}
+
+/** The account's charge drafts, newest first. */
+export const chargeDraftListForAccountQuery = async (
+  orgName: string,
+  accountName: string
+): Promise<AccountChargeDrafts> => {
+  const namespace = buildOrganizationNamespace(orgName);
+  // Milo answers 403 for a resource it doesn't serve yet, as well as for
+  // staff without the role: either way, there are no drafts to show.
+  const response = await listBillingMiloapisComV1Alpha1NamespacedChargeDraft({
+    baseURL: getClientOrgControlPlaneBaseURL(orgName),
+    path: { namespace },
+    validateStatus: (status) => (status >= 200 && status < 300) || status === 403 || status === 404,
+    skipErrorToast: true,
+  });
+  if (response.status === 403 || response.status === 404) return { items: [], served: false };
+  const items = filterNotDeleting(response.data?.data?.items ?? [])
+    .filter((draft) => draft.spec?.billingAccountRef?.name === accountName)
+    .sort((a, b) =>
+      (b.metadata?.creationTimestamp ?? '').localeCompare(a.metadata?.creationTimestamp ?? '')
+    );
+  return { items, served: true };
+};
+
+/**
+ * Saves a charge draft: a new one when `draft` is undefined, otherwise the
+ * draft as it was read, so a change someone else saved meanwhile is refused
+ * rather than overwritten. Billing's refusals skip the generic error toast:
+ * the dialog shows them.
+ */
+export const saveChargeDraft = async (
+  orgName: string,
+  accountName: string,
+  spec: ChargeDraftSpec,
+  draft?: ChargeDraft,
+  annotations?: Record<string, string | undefined>
+): Promise<ChargeDraft | undefined> => {
+  const namespace = buildOrganizationNamespace(orgName);
+  // Set annotations replace the draft's, and undefined ones are removed.
+  const withAnnotations = (current?: Record<string, string>) => {
+    if (!annotations) return current;
+    const merged: Record<string, string> = { ...current };
+    for (const [key, value] of Object.entries(annotations)) {
+      if (value === undefined) delete merged[key];
+      else merged[key] = value;
+    }
+    return Object.keys(merged).length > 0 ? merged : undefined;
+  };
+  if (draft?.metadata?.name) {
+    const response = await replaceBillingMiloapisComV1Alpha1NamespacedChargeDraft({
+      baseURL: getClientOrgControlPlaneBaseURL(orgName),
+      path: { namespace, name: draft.metadata.name },
+      query: { fieldManager: FIELD_MANAGER },
+      body: {
+        ...draft,
+        metadata: { ...draft.metadata, annotations: withAnnotations(draft.metadata.annotations) },
+        spec,
+      },
+      skipErrorToast: true,
+    });
+    return response.data?.data;
+  }
+  const response = await createBillingMiloapisComV1Alpha1NamespacedChargeDraft({
+    baseURL: getClientOrgControlPlaneBaseURL(orgName),
+    path: { namespace },
+    query: { fieldManager: FIELD_MANAGER },
+    body: {
+      apiVersion: 'billing.miloapis.com/v1alpha1',
+      kind: 'ChargeDraft',
+      metadata: {
+        generateName: `${accountName}-draft-`,
+        namespace,
+        annotations: withAnnotations(undefined),
+      },
+      spec,
+    },
+    skipErrorToast: true,
+  });
+  return response.data?.data;
+};
+
+/** Discards a charge draft. One already gone counts as discarded. */
+export const deleteChargeDraft = async (orgName: string, draftName: string) => {
+  const namespace = buildOrganizationNamespace(orgName);
+  try {
+    await deleteBillingMiloapisComV1Alpha1NamespacedChargeDraft({
+      baseURL: getClientOrgControlPlaneBaseURL(orgName),
+      path: { namespace, name: draftName },
+      skipErrorToast: true,
+    });
+  } catch (err) {
+    if (isAxiosError(err) && err.response?.status === 404) return;
+    throw err;
+  }
 };

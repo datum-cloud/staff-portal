@@ -97,7 +97,14 @@ export const contactGroupMembershipCreateMutation = async (
 export const contactGroupMembershipDeleteMutation = (
   metadata: ComMiloapisNotificationV1Alpha1ContactGroupMembership['metadata']
 ) => {
+  // An empty namespace or name collapses the path into a collection DELETE,
+  // which Milo rejects as an unregistered `deletecollection` permission.
+  if (!metadata?.namespace || !metadata?.name) {
+    throw new Error(
+      'Cannot delete contact group membership: its namespace and name are both required.'
+    );
+  }
   return deleteNotificationMiloapisComV1Alpha1NamespacedContactGroupMembership({
-    path: { namespace: metadata?.namespace ?? '', name: metadata?.name ?? '' },
+    path: { namespace: metadata.namespace, name: metadata.name },
   });
 };

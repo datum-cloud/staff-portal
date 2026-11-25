@@ -3,6 +3,7 @@ import { buildScopedPath, buildProxyPath } from './endpoints';
 import { generateQueryOp } from './generated';
 import type { FieldsSelection, Query, QueryRequest } from './generated';
 import type { GqlScope } from './types';
+import { fetchWithReauth } from '@/modules/auth/fetch-with-reauth';
 import { mapApiError } from '@/utils/errors/error-mapper';
 import { createClient, cacheExchange, fetchExchange } from '@urql/core';
 import type { Client as UrqlClient, OperationResult, SSRExchange } from '@urql/core';
@@ -68,11 +69,13 @@ export function createGqlClient(scope: GqlScope, ssr?: SSRExchange): UrqlClient 
     });
   }
 
-  // Client-side: Hono proxy at /api/graphql handles auth via session cookie
+  // Client-side: Hono proxy at /api/graphql handles auth via session cookie;
+  // a 401 AUTH_ERROR from it (dead session) restarts login like axios does.
   return createClient({
     url: buildProxyPath(scope),
     preferGetMethod: false, // @urql/core@6 defaults to GET; backend requires POST
     exchanges: [cacheExchange, ...(ssr ? [ssr] : []), fetchExchange],
+    fetch: fetchWithReauth,
   });
 }
 

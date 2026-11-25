@@ -1,8 +1,17 @@
 import {
   billingPeriodContaining,
+  CHARGE_DRAFT_SEND_ANNOTATION,
+  chargeDraftAddedCount,
+  chargeDraftSendAnnotations,
+  readChargeDraftSend,
+  buildChargeDraftSpec,
   buildChargeSpec,
   chargeAmounts,
+  chargeDraftTotal,
+  chargeFormValuesFromLine,
   chargeBillingDay,
+  chargeInvoiceGroup,
+  chargeInvoiceGroupName,
   chargeItemOptions,
   chargeName,
   chargeQuantityText,
@@ -17,6 +26,7 @@ import {
   invoiceNowOutcome,
   isBeforePeriod,
   isChargeRemovable,
+  isEmptyChargeForm,
   isInvoiceWriterReady,
   isoDayFromLocalDate,
   localDateFromIsoDay,
@@ -26,6 +36,7 @@ import {
   servicePeriodShapeProblems,
   sortChargesNewestFirst,
   type Charge,
+  type ChargeDraft,
   type ChargeFormValues,
 } from './charges';
 import type {
@@ -319,6 +330,101 @@ describe('buildChargeSpec', () => {
   });
 });
 
+describe('invoice groups', () => {
+  it('groups two or more lines invoiced now', () => {
+    expect(chargeInvoiceGroup('Now', 2, 'invoice-x7k2p')).toEqual({
+      name: 'invoice-x7k2p',
+      size: 2,
+    });
+    expect(chargeInvoiceGroup('Now', 1, 'invoice-x7k2p')).toBeUndefined();
+    expect(chargeInvoiceGroup('NextInvoice', 3, 'invoice-x7k2p')).toBeUndefined();
+    expect(chargeInvoiceGroupName('x7k2p')).toBe('invoice-x7k2p');
+  });
+
+  it('puts the group on a charge invoiced now only', () => {
+    const group = { name: 'invoice-x7k2p', size: 2 };
+    const line = values({ item: 'GPU node', description: 'GPU node', unitAmount: '10' });
+    expect(buildChargeSpec({ ...line, invoice: 'Now' }, 'acme', group).invoiceGroup).toEqual(group);
+    expect(buildChargeSpec(line, 'acme', group)).not.toHaveProperty('invoiceGroup');
+    expect(buildChargeSpec({ ...line, invoice: 'Now' }, 'acme')).not.toHaveProperty('invoiceGroup');
+  });
+
+  it('tells an empty form from a started one', () => {
+    expect(isEmptyChargeForm(emptyChargeFormValues())).toBe(true);
+    expect(isEmptyChargeForm({ ...emptyChargeFormValues(), invoice: 'Now', quantity: '3' })).toBe(
+      true
+    );
+    expect(isEmptyChargeForm({ ...emptyChargeFormValues(), description: 'CPU node' })).toBe(false);
+  });
+});
+
+describe('charge drafts', () => {
+  const custom = values({
+    item: 'Remote hands',
+    description: 'Remote hands',
+    quantity: '3',
+    unitAmount: '150',
+    discountPercent: '12.5',
+    notTaxable: true,
+    note: 'Reseller, exempt',
+    setPeriod: true,
+    periodStart: '2026-12-01',
+    periodEnd: '2026-12-05',
+  });
+  const catalog = values({ item: 'pricing:install-v1', description: 'Install', unitAmount: '300' });
+
+  it('builds a draft from the lines, timing the draft and not each line', () => {
+    const spec = buildChargeDraftSpec([custom, catalog], 'Now', 'acme');
+    expect(spec.billingAccountRef).toEqual({ name: 'acme' });
+    expect(spec.invoice).toBe('Now');
+    expect(spec.lines).toHaveLength(2);
+    for (const line of spec.lines) {
+      expect(line).not.toHaveProperty('billingAccountRef');
+      expect(line).not.toHaveProperty('invoice');
+      expect(line).not.toHaveProperty('invoiceGroup');
+    }
+    expect(spec.lines[0]).toMatchObject({
+      description: 'Remote hands',
+      quantity: '3',
+      unitAmount: '150.00',
+      discountPercent: '12.5',
+      tax: { taxable: false },
+      servicePeriod: { start: '2026-12-01', end: '2026-12-05' },
+    });
+    expect(spec.lines[1].servicePricingRef).toEqual({
+      name: 'install-v1',
+      namespace: 'milo-system',
+    });
+  });
+
+  it('brings a saved line back into the form as it was', () => {
+    const spec = buildChargeDraftSpec([custom, catalog], 'Now', 'acme');
+    const back = spec.lines.map((line) => chargeFormValuesFromLine(line, 'Now'));
+    expect(back[0]).toMatchObject({
+      item: 'Remote hands',
+      unitAmount: '150.00',
+      notTaxable: true,
+      taxCode: '',
+      setPeriod: true,
+      periodEnd: '2026-12-05',
+      invoice: 'Now',
+    });
+    expect(back[1]).toMatchObject({ item: 'pricing:install-v1', notTaxable: false });
+    // And saved again, it's the same draft.
+    expect(buildChargeDraftSpec(back, 'Now', 'acme')).toEqual(spec);
+  });
+
+  it('totals a draft before tax, or not while a line waits for its catalog price', () => {
+    const spec = buildChargeDraftSpec([custom, catalog], 'Now', 'acme');
+    expect(chargeDraftTotal({ spec })).toBe(69375n);
+    const unpriced = {
+      ...spec,
+      lines: [{ servicePricingRef: { name: 'install-v1' }, quantity: '1' }],
+    };
+    expect(chargeDraftTotal({ spec: unpriced })).toBeNull();
+  });
+});
+
 describe('chargeName', () => {
   it('is a slug of the description and a suffix', () => {
     expect(chargeName('Cross-connect install, cage 12', 'x7k2p')).toBe(
@@ -551,6 +657,7 @@ describe('charge status', () => {
     expect(waitingFor('WaitingForProvider')).toBe('Waiting for the billing provider');
     expect(waitingFor('WaitingForCustomer')).toBe("Waiting for the account's billing customer");
     expect(waitingFor('WaitingForAmounts')).toBe('Waiting for billing to work out the amount');
+    expect(waitingFor('WaitingForInvoiceGroup')).toBe('Waiting for the other lines on its invoice');
     // A reason this doesn't know shows the condition's own message.
     expect(waitingFor('SomethingElse')).toBe('Waiting for x');
     expect(chargeStatusText(getChargeStatus(charge()))).toBe('Waiting');
@@ -584,7 +691,9 @@ describe('charge status', () => {
       },
     });
     expect(isChargeRemovable(held)).toBe(true);
-    expect(chargeRemovalNote(held)).toBe('Can be removed until Dec 31, 2026, 00:00 UTC');
+    expect(chargeRemovalNote(held)).toEqual({
+      note: 'Can be removed until Dec 31, 2026, 00:00 UTC',
+    });
     expect(chargeRemovalText(held)).toBe(
       "Install is held until Dec 31, 2026, 00:00 UTC and isn't on an invoice yet, so removing it bills nothing."
     );
@@ -597,9 +706,10 @@ describe('charge status', () => {
       },
     });
     expect(isChargeRemovable(added)).toBe(false);
-    expect(chargeRemovalNote(added)).toBe(
-      "On its invoice, so it can't be removed. Once the invoice is issued, correct it with a credit note."
-    );
+    expect(chargeRemovalNote(added)).toEqual({
+      note: "Can't be removed",
+      detail: "It's on its invoice. Once the invoice is issued, correct it with a credit note.",
+    });
     const addedNow = charge(
       { status: { phase: 'Scheduled', conditions: [onInvoice('True')] } },
       { invoice: 'Now' }
@@ -646,5 +756,50 @@ describe('isInvoiceWriterReady', () => {
     expect(isInvoiceWriterReady(withCondition('True'))).toBe(true);
     expect(isInvoiceWriterReady(withCondition('False'))).toBe(false);
     expect(isInvoiceWriterReady(account())).toBe(false);
+  });
+});
+
+describe('recording a draft send', () => {
+  const draft = (annotation?: string, lines = 2): ChargeDraft => ({
+    apiVersion: 'billing.miloapis.com/v1alpha1',
+    kind: 'ChargeDraft',
+    metadata: {
+      name: 'acme-draft-x7k2p',
+      annotations: annotation ? { [CHARGE_DRAFT_SEND_ANNOTATION]: annotation } : undefined,
+    },
+    spec: {
+      billingAccountRef: { name: 'acme' },
+      invoice: 'Now',
+      lines: Array.from({ length: lines }, () => ({ description: 'Install', quantity: '1' })),
+    },
+  });
+
+  it('reads back what it records', () => {
+    const send = { names: ['setup-a1b2c', 'install-d3e4f'], group: { name: 'invoice-x7k2p', size: 2 } };
+    const annotation = chargeDraftSendAnnotations(send)[CHARGE_DRAFT_SEND_ANNOTATION];
+    expect(readChargeDraftSend(draft(annotation))).toEqual(send);
+  });
+
+  it('reads a send without a group', () => {
+    const annotation = JSON.stringify({ names: ['setup-a1b2c', 'install-d3e4f'] });
+    expect(readChargeDraftSend(draft(annotation))).toEqual({ names: ['setup-a1b2c', 'install-d3e4f'] });
+  });
+
+  it('counts the lines whose charges exist', () => {
+    const recorded = draft(JSON.stringify({ names: ['setup-a1b2c', 'install-d3e4f'] }));
+    expect(chargeDraftAddedCount(recorded, new Set(['setup-a1b2c', 'other']))).toBe(1);
+    expect(chargeDraftAddedCount(recorded, new Set())).toBe(0);
+    expect(chargeDraftAddedCount(draft(), new Set(['setup-a1b2c']))).toBe(0);
+  });
+
+  it('ignores a record that is missing, unreadable or for other lines', () => {
+    expect(readChargeDraftSend(undefined)).toBeUndefined();
+    expect(readChargeDraftSend(draft())).toBeUndefined();
+    expect(readChargeDraftSend(draft('not json'))).toBeUndefined();
+    expect(readChargeDraftSend(draft(JSON.stringify({ names: ['only-one'] })))).toBeUndefined();
+    expect(readChargeDraftSend(draft(JSON.stringify({ names: ['a', ''] })))).toBeUndefined();
+    expect(
+      readChargeDraftSend(draft(JSON.stringify({ names: ['a', 'b'], group: { name: 'g' } })))
+    ).toBeUndefined();
   });
 });

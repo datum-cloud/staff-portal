@@ -1,6 +1,8 @@
 import { useAccountInvoices } from '../../hooks';
 import {
   chargeAmounts,
+  chargeDraftAddedCount,
+  chargeDraftTotal,
   chargeQuantityText,
   chargeRemovalNote,
   chargeRemovalText,
@@ -13,14 +15,17 @@ import {
   isInvoiceWriterReady,
   sortChargesNewestFirst,
   type Charge,
+  type ChargeDraft,
   type ChargeStatus,
 } from '../../lib/charges';
 import { getStripeInvoiceNumber, type BillingAccount, type Invoice } from '../../utils';
 import { AddChargeDialog } from '../charges/add-charge-dialog';
+import { InvoicePreviewDialog } from './billing-account-contract-card';
 import {
   BILLING_ACCOUNT_SECTION_IDS,
   CardMessage,
   CardQueryState,
+  InlineDate,
   TableRowsSkeleton,
 } from './card-parts';
 import { DialogConfirm } from '@/components/dialog';
@@ -35,11 +40,17 @@ import {
   TABLE_CARD_FRAME_CLASS,
   TableCard,
 } from '@/features/milo';
-import { useChargeListForAccountQuery, useDeleteChargeMutation } from '@/resources/request/client';
+import {
+  useChargeDraftListForAccountQuery,
+  useChargeListForAccountQuery,
+  useDeleteChargeDraftMutation,
+  useDeleteChargeMutation,
+} from '@/resources/request/client';
 import { createColumnHelper, type ColumnDef } from '@/utils/table';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
 import { Icon } from '@datum-cloud/datum-ui/icons';
+import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
@@ -194,9 +205,18 @@ const buildColumns = (invoicesByName: Map<string, Invoice>, onRemove: (charge: C
               status.kind === 'invoiced' ? invoicesByName.get(status.invoiceName) : undefined
             }
           />
-          {removalNote ? (
+          {removalNote?.detail ? (
+            <Tooltip message={removalNote.detail}>
+              <Text
+                size="xs"
+                tabIndex={0}
+                className="text-muted-foreground w-fit cursor-help underline decoration-dotted underline-offset-2">
+                {removalNote.note}
+              </Text>
+            </Tooltip>
+          ) : removalNote ? (
             <Text size="xs" className="text-muted-foreground">
-              {removalNote}
+              {removalNote.note}
             </Text>
           ) : null}
         </div>
@@ -223,6 +243,83 @@ const buildColumns = (invoicesByName: Map<string, Invoice>, onRemove: (charge: C
 ];
 
 /**
+ * A saved charge draft: its lines, what they come to before tax and when
+ * they'd be invoiced, with ways to change, preview, add or discard it.
+ */
+function ChargeDraftRow({
+  draft,
+  added,
+  onEdit,
+  onPreview,
+  onDiscard,
+}: {
+  draft: ChargeDraft;
+  /** How many of its lines are charges already, from a send that stopped partway. */
+  added: number;
+  onEdit: () => void;
+  onPreview: () => void;
+  onDiscard: () => void;
+}) {
+  const lines = draft.spec.lines;
+  const total = chargeDraftTotal(draft);
+  const descriptions = lines
+    .map((line) => line.description || line.servicePricingRef?.name || '—')
+    .join(', ');
+  const created = draft.metadata?.creationTimestamp;
+  return (
+    <div className="flex flex-wrap items-start justify-between gap-3 rounded-md border border-dashed px-3 py-2">
+      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <Text size="xs" weight="medium">
+          <Plural value={lines.length} one="Draft of # line" other="Draft of # lines" />
+          {total !== null ? <> · {formatChargeMoney(total)}</> : null}
+          {' · '}
+          {draft.spec.invoice === 'Now' ? (
+            <Trans>invoiced on its own</Trans>
+          ) : (
+            <Trans>on the next invoice</Trans>
+          )}
+        </Text>
+        <Text size="xs" textColor="muted" className="break-words">
+          {descriptions}
+        </Text>
+        {added > 0 ? (
+          <Text size="xs" className="text-warning">
+            {draft.spec.invoice === 'Now' ? (
+              <Trans>
+                {added} of {lines.length} added. Add the rest to send their invoice.
+              </Trans>
+            ) : (
+              <Trans>
+                {added} of {lines.length} added. Add the rest from here.
+              </Trans>
+            )}
+          </Text>
+        ) : null}
+        {created ? (
+          <Text size="xs" textColor="muted">
+            <Trans>
+              Saved{' '}
+              <InlineDate date={created} variant="absolute" format="MMM d, yyyy" timezone="UTC" />
+            </Trans>
+          </Text>
+        ) : null}
+      </div>
+      <div className="flex shrink-0 gap-1">
+        <Button type="quaternary" theme="borderless" size="small" onClick={onPreview}>
+          <Trans>Preview</Trans>
+        </Button>
+        <Button type="quaternary" theme="borderless" size="small" onClick={onEdit}>
+          <Trans>Edit or add</Trans>
+        </Button>
+        <Button type="quaternary" theme="borderless" size="small" onClick={onDiscard}>
+          <Trans>Discard</Trans>
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+/**
  * One-off charges staff add to the account, newest first: catalog or
  * custom items billed on the next invoice or straight away. Nothing shows
  * until billing has said whether it serves charges, and nothing at all
@@ -234,13 +331,24 @@ export function BillingAccountChargesCard({ orgName, account }: ChargesCardProps
   const accountName = account.metadata?.name ?? '';
   const chargesQuery = useChargeListForAccountQuery(orgName, accountName);
   const deleteCharge = useDeleteChargeMutation(orgName, accountName);
+  const draftsQuery = useChargeDraftListForAccountQuery(orgName, accountName);
+  const deleteDraft = useDeleteChargeDraftMutation(orgName, accountName);
   const { invoices } = useAccountInvoices(orgName, account);
   const [adding, setAdding] = useState(false);
   const [removing, setRemoving] = useState<Charge | null>(null);
+  const [editingDraft, setEditingDraft] = useState<ChargeDraft | null>(null);
+  const [previewingDraft, setPreviewingDraft] = useState<string | null>(null);
+  const [discarding, setDiscarding] = useState<ChargeDraft | null>(null);
+  const drafts = draftsQuery.data?.items ?? [];
+  const draftsServed = draftsQuery.data?.served ?? false;
 
   const charges = useMemo(
     () => sortChargesNewestFirst(chargesQuery.data?.items ?? []),
     [chargesQuery.data?.items]
+  );
+  const chargeNames = useMemo(
+    () => new Set(charges.map((charge) => charge.metadata?.name ?? '')),
+    [charges]
   );
   const invoicesByName = useMemo(
     () => new Map((invoices ?? []).map((invoice) => [invoice.metadata?.name ?? '', invoice])),
@@ -265,9 +373,10 @@ export function BillingAccountChargesCard({ orgName, account }: ChargesCardProps
       contentClassName="flex flex-col gap-3"
       title={<Trans>Charges</Trans>}
       description={
-        chargesQuery.data && count > 0 ? (
-          <Plural value={count} one="# charge" other="# charges" />
-        ) : null
+        <Trans>
+          One-off items billed once, outside the account&apos;s plan or contract: an install, remote
+          hands, a correction. Anything billed every period belongs in a contract instead.
+        </Trans>
       }
       action={
         canAdd ? (
@@ -297,6 +406,20 @@ export function BillingAccountChargesCard({ orgName, account }: ChargesCardProps
           </Trans>
         </CardMessage>
       )}
+      {canAdd && drafts.length > 0 ? (
+        <div className="flex flex-col gap-2">
+          {drafts.map((draft) => (
+            <ChargeDraftRow
+              key={draft.metadata?.name}
+              draft={draft}
+              added={chargeDraftAddedCount(draft, chargeNames)}
+              onEdit={() => setEditingDraft(draft)}
+              onPreview={() => setPreviewingDraft(draft.metadata?.name ?? null)}
+              onDiscard={() => setDiscarding(draft)}
+            />
+          ))}
+        </div>
+      ) : null}
       <CardQueryState
         isLoading={chargesQuery.isLoading}
         isError={chargesQuery.isError}
@@ -308,7 +431,10 @@ export function BillingAccountChargesCard({ orgName, account }: ChargesCardProps
         }
         error={<Trans>Couldn&apos;t load charges</Trans>}
         empty={
-          <Trans>No charges. Charges added here go on the account&apos;s next invoice.</Trans>
+          <Trans>
+            No charges yet. A charge goes on the account&apos;s next invoice, or on an invoice of
+            its own straight away.
+          </Trans>
         }>
         <div className={TABLE_CARD_FRAME_CLASS}>
           <DataTable.Client
@@ -331,8 +457,49 @@ export function BillingAccountChargesCard({ orgName, account }: ChargesCardProps
       </CardQueryState>
 
       {adding ? (
-        <AddChargeDialog orgName={orgName} account={account} onClose={() => setAdding(false)} />
+        <AddChargeDialog
+          orgName={orgName}
+          account={account}
+          canSaveDraft={draftsServed}
+          onClose={() => setAdding(false)}
+        />
       ) : null}
+      {editingDraft ? (
+        <AddChargeDialog
+          orgName={orgName}
+          account={account}
+          draft={editingDraft}
+          canSaveDraft
+          onClose={() => setEditingDraft(null)}
+        />
+      ) : null}
+      {previewingDraft ? (
+        <InvoicePreviewDialog
+          orgName={orgName}
+          account={account}
+          firstInvoice={false}
+          chargeDraft={previewingDraft}
+          onClose={() => setPreviewingDraft(null)}
+        />
+      ) : null}
+      <DialogConfirm
+        open={discarding !== null}
+        onOpenChange={(open) => (open ? undefined : setDiscarding(null))}
+        title={t`Discard draft?`}
+        description={
+          discarding && chargeDraftAddedCount(discarding, chargeNames) > 0
+            ? discarding.spec.invoice === 'Now'
+              ? t`Its lines not added yet are deleted. The ones already added wait for them, so remove those from the charges list too.`
+              : t`Its lines not added yet are deleted. The ones already added stay on the next invoice.`
+            : t`Its lines are deleted. Nothing was added or invoiced from it.`
+        }
+        confirmText={t`Discard draft`}
+        cancelText={t`Keep it`}
+        variant="destructive"
+        onConfirm={async () => {
+          if (discarding?.metadata?.name) await deleteDraft.mutateAsync(discarding.metadata.name);
+        }}
+      />
 
       <DialogConfirm
         open={removing !== null}

@@ -198,12 +198,14 @@ export default {
     },
     ContactGroupMembershipEnriched: {
       name: [2],
+      namespace: [2],
       contactRef: [9],
       contact: [10],
       __typename: [2],
     },
     ContactMembershipEnriched: {
       name: [2],
+      namespace: [2],
       creationTimestamp: [2],
       contactGroupRef: [9],
       contactGroup: [13],

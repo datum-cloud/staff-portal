@@ -67,7 +67,7 @@ const findStatus = (err: unknown): StatusLike | undefined => {
  */
 const causesFromMessage = (message: string): StatusCause[] => {
   const causes: StatusCause[] = [];
-  const pattern = /(spec(?:\.[A-Za-z]+(?:\[\d+\])?)+): ((?:(?!, spec\.).)+?)(?=, spec\.|\]?$)/g;
+  const pattern = /(spec(?:\.[A-Za-z]+|\[\d+\])+): ((?:(?!, spec[.[]).)+?)(?=, spec[.[]|\]?$)/g;
   for (const match of message.matchAll(pattern)) {
     causes.push({ field: match[1], message: match[2] });
   }

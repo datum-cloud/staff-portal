@@ -47,6 +47,17 @@ export const chargeFieldForPath = (
   return field;
 };
 
+/**
+ * What billing refused in a charge draft, each as a sentence: a line's
+ * problems start with its number, as billing reports them at
+ * `spec.lines[i]`.
+ */
+export const chargeDraftServerErrors = (err: unknown): string[] =>
+  apiFieldErrors(err, t`Couldn't save the draft.`).map(({ path, message: text }) => {
+    const line = path?.match(/^spec\.lines\[(\d+)\]/);
+    return line ? t`Line ${Number(line[1]) + 1}: ${text}` : text;
+  });
+
 /** What the webhook refused, field by field, from a failed create. */
 export const chargeServerErrors = (err: unknown, setPeriod: boolean): ChargeServerError[] =>
   apiFieldErrors(err, t`Couldn't add the charge.`).map(({ path, message }) =>
