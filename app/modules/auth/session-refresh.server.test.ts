@@ -316,13 +316,22 @@ describe('sessionRefreshMiddleware', () => {
     expect(response.headers.getSetCookie()).toEqual([]);
   });
 
-  it('does not refresh on logout, which needs the id token', async () => {
-    const request = await requestWithSession(new Date(NOW - 1000));
-    await sessionMiddlewareApp().request('http://localhost:3000/logout', {
-      headers: request.headers,
-    });
-    expect(refresh).not.toHaveBeenCalled();
-  });
+  // In-app sign-out is a client navigation, so its request is `/logout.data`. A
+  // refresh there would append fresh cookies after logout's clears and sign the
+  // user straight back in.
+  it.each(['/logout', '/logout.data', '/login', '/login.data'])(
+    'does not refresh on %s, which manages the session itself',
+    async (path) => {
+      const request = await requestWithSession(new Date(NOW - 1000));
+
+      const response = await sessionMiddlewareApp().request(`http://localhost:3000${path}`, {
+        headers: request.headers,
+      });
+
+      expect(refresh).not.toHaveBeenCalled();
+      expect(response.headers.getSetCookie()).toEqual([]);
+    }
+  );
 });
 
 describe('isRefreshTokenRejected', () => {
