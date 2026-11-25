@@ -1,6 +1,6 @@
 import { assertSameOrigin } from './same-origin';
 import { authenticator } from '@/modules/auth';
-import { isStaffMember } from '@/modules/auth/require-staff.server';
+import { checkStaffMembership, StaffMembership } from '@/modules/auth/require-staff.server';
 import { EnvVariables } from '@/server/iface';
 import { logApiError } from '@/server/logger';
 import { createErrorResponse } from '@/server/response';
@@ -38,18 +38,24 @@ function rememberDecision(key: string, isStaff: boolean, now: number): void {
 
 /**
  * Same staff-group check the page layouts run (`requireStaffUser`), cached per
- * session for `STAFF_MEMBERSHIP_TTL_MS`. Lookup failures other than 401/403
- * are not cached and surface as errors.
+ * session for `STAFF_MEMBERSHIP_TTL_MS`. Only staff and not-staff decisions are
+ * cached: a rejected token and lookup failures (network, 500) are asked again
+ * next time.
  */
-async function isStaffSession(accessToken: string, userId: string): Promise<boolean> {
+async function staffSessionMembership(
+  accessToken: string,
+  userId: string
+): Promise<StaffMembership> {
   const key = sessionKey(accessToken);
   const now = Date.now();
   const cached = staffDecisions.get(key);
-  if (cached && cached.expiresAt > now) return cached.isStaff;
+  if (cached && cached.expiresAt > now) return cached.isStaff ? 'staff' : 'not-staff';
 
-  const isStaff = await isStaffMember(accessToken, userId);
-  rememberDecision(key, isStaff, Date.now());
-  return isStaff;
+  const membership = await checkStaffMembership(accessToken, userId);
+  if (membership !== 'token-rejected') {
+    rememberDecision(key, membership === 'staff', Date.now());
+  }
+  return membership;
 }
 
 /** Test hook: forget every cached staff decision. */
@@ -101,8 +107,16 @@ export function authMiddleware() {
       // Under Cypress the caller is a CI service account outside the staff
       // group, matching the bypass in requireStaffUser. Never in production.
       const skipStaffCheck = env.isCypress && !env.isProd;
-      if (!skipStaffCheck && !(await isStaffSession(session.accessToken, session.sub))) {
-        throw new AuthorizationError('Staff access required', reqId);
+      if (!skipStaffCheck) {
+        const membership = await staffSessionMembership(session.accessToken, session.sub);
+        // A 401 AUTH_ERROR makes the axios client re-authenticate; a 403 would
+        // leave a staff user with a dead token stuck on "Staff access required".
+        if (membership === 'token-rejected') {
+          throw new AuthenticationError('Session token rejected', reqId);
+        }
+        if (membership === 'not-staff') {
+          throw new AuthorizationError('Staff access required', reqId);
+        }
       }
 
       c.set('token', session.accessToken);
