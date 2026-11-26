@@ -241,7 +241,7 @@ export function DateRangePicker({
             <Button
               theme="outline"
               className={cn(
-                'w-[350px] justify-start pr-8 text-left font-normal',
+                'w-87.5 justify-start pr-8 text-left font-normal',
                 !value && 'text-muted-foreground'
               )}
               disabled={disabled}>
@@ -265,7 +265,7 @@ export function DateRangePicker({
         <PopoverContent className="w-auto p-0" align="start">
           <div className="p-3">
             <div className="flex items-start gap-4">
-              <div className="min-w-[350px] flex-1">
+              <div className="min-w-87.5 flex-1">
                 <Calendar
                   mode="range"
                   defaultMonth={value?.from}

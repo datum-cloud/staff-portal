@@ -54,7 +54,7 @@ function ListTableBodySkeleton({ columnCount }: { columnCount: number }) {
     <div className="min-h-0 flex-1 overflow-hidden" data-slot="dt-loading" aria-busy="true">
       <div
         className={cn(
-          'flex h-9 items-center border-b border-[#efefed] bg-[#fbfbfa] px-4',
+          'border-table-line bg-table-surface flex h-9 items-center border-b px-4',
           'dark:border-border dark:bg-muted'
         )}>
         {Array.from({ length: cols }, (_, i) => (
@@ -329,7 +329,7 @@ export function ListTable<TData extends RowData>({
               type="button"
               onClick={() => setFiltersCollapsed((c) => !c)}
               aria-label={filtersCollapsed ? t`Show filters` : t`Hide filters`}
-              className="border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground flex size-[25px] items-center justify-center rounded-full border transition-[color,background-color]">
+              className="border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground flex size-6.25 items-center justify-center rounded-full border transition-[color,background-color]">
               <ChevronLeft className={cn('size-3.5', filtersCollapsed && 'rotate-180')} />
             </button>
           </Tooltip>
@@ -462,8 +462,8 @@ export function ListTable<TData extends RowData>({
             )}
             {loading ? (
               <div className="flex h-7 w-full items-center justify-between gap-3">
-                <Skeleton className="h-7 w-[158px]" />
-                <Skeleton className="h-7 w-[180px]" />
+                <Skeleton className="h-7 w-39.5" />
+                <Skeleton className="h-7 w-45" />
               </div>
             ) : (
               <ListPagination className="min-w-0 flex-1" resourceLabel={resourceLabel} />

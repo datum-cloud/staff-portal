@@ -15,10 +15,10 @@ export const SECTION_CARD_CHROME =
  * that sits below other content in an unframed `TableCard`.
  */
 export const TABLE_CARD_FRAME_CLASS =
-  'dark:border-border overflow-hidden rounded-sm border border-[#efefed]';
+  'dark:border-border overflow-hidden rounded-sm border border-table-line';
 
 /** A note under the table inside a `TableCard` frame, with the frame's border. */
-export const TABLE_CARD_FOOTER_CLASS = 'dark:border-border border-t border-[#efefed]';
+export const TABLE_CARD_FOOTER_CLASS = 'dark:border-border border-t border-table-line';
 
 /**
  * Figma mist table header / dense cell classes — shared by ListTable and
@@ -29,14 +29,14 @@ export const TABLE_CARD_FOOTER_CLASS = 'dark:border-border border-t border-[#efe
 export const LIST_TABLE_HEADER_CLASS = '[&_tr]:border-0';
 export const LIST_TABLE_HEADER_ROW_CLASS = 'border-0 hover:bg-transparent';
 export const LIST_TABLE_HEADER_CELL_CLASS = cn(
-  'sticky top-0 z-10 h-9 border-b border-[#efefed] bg-[#fbfbfa] px-4',
-  'text-xs leading-4 font-normal tracking-normal text-[#0c1d31]/60 uppercase',
+  'sticky top-0 z-10 h-9 border-b border-table-line bg-table-surface px-4',
+  'text-xs leading-4 font-normal tracking-normal text-foreground/60 uppercase',
   'dark:border-border dark:bg-muted dark:text-muted-foreground'
 );
 /** Mist header for tables nested inside overview TableCards (Figma 32px / #f6f6f5@50%). */
 export const EMBEDDED_TABLE_HEADER_CELL_CLASS = cn(
-  'sticky top-0 z-10 h-8 border-b border-[#efefed] bg-[#f6f6f5]/50 px-4',
-  'text-2xs leading-4 font-normal tracking-normal text-[#0c1d31]/60 uppercase',
+  'sticky top-0 z-10 h-8 border-b border-table-line bg-table-surface-subtle/50 px-4',
+  'text-2xs leading-4 font-normal tracking-normal text-foreground/60 uppercase',
   'dark:border-border dark:bg-muted dark:text-muted-foreground'
 );
 /** Kill TableRow's default border-b so only cell borders draw (avoids double lines). */
@@ -50,6 +50,6 @@ export const LIST_TABLE_CELL_CLASS =
 export const LIST_TABLE_BODY_CLASS = '[&_tr:last-child>td]:border-b-0';
 /** Dense body cells for overview TableCards (Figma 32px rows). */
 export const EMBEDDED_TABLE_CELL_CLASS =
-  'border-b border-[#efefed] px-4 py-0 h-8 text-xs dark:border-border [&_[data-slot=dt-row-actions]]:!size-7 [&_[data-slot=dt-row-actions]]:!p-0';
+  'border-b border-table-line px-4 py-0 h-8 text-xs dark:border-border [&_[data-slot=dt-row-actions]]:!size-7 [&_[data-slot=dt-row-actions]]:!p-0';
 /** Drop last-row cell borders so they don’t stack with the nested table frame. */
 export const EMBEDDED_TABLE_BODY_CLASS = '[&_tr:last-child>td]:border-b-0';

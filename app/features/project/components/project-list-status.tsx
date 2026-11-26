@@ -26,7 +26,7 @@ export function ProjectCleanupMessage({ message }: { message: string | null | un
   }
   return (
     <Tooltip message={message}>
-      <Text size="xs" ellipsis className="block max-w-[20rem] font-mono">
+      <Text size="xs" ellipsis className="block max-w-80 font-mono">
         {message}
       </Text>
     </Tooltip>

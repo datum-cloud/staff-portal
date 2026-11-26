@@ -117,11 +117,11 @@ export function MeterCard({ meter }: MeterCardProps) {
 
       <CardContent className="min-w-0 px-4 pt-4 pb-6 sm:px-8 sm:pb-8">
         {isBreakdownView && !isStackedChart ? (
-          <Text as="div" textColor="muted" className="flex h-[220px] items-center justify-center">
+          <Text as="div" textColor="muted" className="flex h-55 items-center justify-center">
             No {activeTab.toLowerCase()} breakdown recorded in this period.
           </Text>
         ) : chartData.length === 0 ? (
-          <Text as="div" textColor="muted" className="flex h-[220px] items-center justify-center">
+          <Text as="div" textColor="muted" className="flex h-55 items-center justify-center">
             No usage recorded in this period.
           </Text>
         ) : (

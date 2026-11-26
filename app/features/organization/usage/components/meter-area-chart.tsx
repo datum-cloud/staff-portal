@@ -146,7 +146,7 @@ export function MeterAreaChart({
                           className="flex items-center gap-1.5"
                           key={entry.dataKey as string}>
                           <span
-                            className="size-2 shrink-0 rounded-[2px]"
+                            className="size-2 shrink-0 rounded-xs"
                             style={{ backgroundColor: entry.color }}
                           />
                           <span className="text-muted-foreground">{String(entry.dataKey)}</span>

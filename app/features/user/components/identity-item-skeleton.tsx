@@ -33,7 +33,7 @@ export const IdentityItemSkeleton = ({
         <div key={index} className={cn('flex items-center justify-between gap-6 py-2', className)}>
           {/* Left Section */}
           <div className="flex items-center space-x-3.5">
-            <div className="bg-muted flex size-[34px] items-center justify-center rounded-lg">
+            <div className="bg-muted flex size-8.5 items-center justify-center rounded-lg">
               <Skeleton className="size-3.5 rounded-sm" />
             </div>
 

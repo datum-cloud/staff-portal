@@ -9,7 +9,7 @@ import { Link } from 'react-router';
 const GenericError = ({ message, requestId }: { message: string; requestId?: string }) => {
   return (
     <Card className="mx-4 w-full max-w-xl overflow-hidden">
-      <CardContent className="flex min-h-[500px] flex-col items-center justify-center gap-6">
+      <CardContent className="flex min-h-125 flex-col items-center justify-center gap-6">
         <LogoIcon width={64} className="mb-4" />
 
         <div className="flex w-full max-w-xl flex-col gap-2">

@@ -83,7 +83,7 @@ export const SelectTimezone = ({
   triggerClassName,
   contentClassName,
   width = 'w-full',
-  maxHeight = 'max-h-[300px]',
+  maxHeight = 'max-h-75',
 }: SelectTimezoneProps) => {
   const timezoneData = React.useMemo(() => getTimeZones({ includeUtc: true }), []);
 

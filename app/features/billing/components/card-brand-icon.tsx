@@ -102,7 +102,7 @@ export function CardBrandIcon({ brand, className }: CardBrandIconProps) {
   return (
     <span
       className={cn(
-        'text-foreground/80 inline-flex h-6 w-[38px] shrink-0 items-center justify-center',
+        'text-foreground/80 inline-flex h-6 w-9.5 shrink-0 items-center justify-center',
         className
       )}
       aria-hidden>

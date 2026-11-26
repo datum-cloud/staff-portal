@@ -89,10 +89,7 @@ export function TimelineItem({ event }: { event: TimelineEvent }) {
   return (
     <div className={cn('flex gap-3 py-2', body ? 'items-start' : 'items-center')}>
       <div
-        className={cn(
-          'flex size-[30px] shrink-0 items-center justify-center rounded-full',
-          dotClass
-        )}>
+        className={cn('flex size-7.5 shrink-0 items-center justify-center rounded-full', dotClass)}>
         <Icon className="size-3.5" />
       </div>
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">

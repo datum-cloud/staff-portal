@@ -146,7 +146,7 @@ export function PriceListTable({
         className="h-9 w-full sm:w-64"
       />
       <div className={cn(TABLE_CARD_FRAME_CLASS, 'overflow-x-auto')}>
-        <Table className="min-w-[54rem]">
+        <Table className="min-w-216">
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead className={EMBEDDED_TABLE_HEADER_CELL_CLASS}>

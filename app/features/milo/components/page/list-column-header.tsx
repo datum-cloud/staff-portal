@@ -15,7 +15,7 @@ type Props<TData extends RowData, TValue> = {
  */
 function SortIcon({ sorted }: { sorted: false | 'asc' | 'desc' }) {
   return (
-    <span className="relative h-[15px] w-[5px] shrink-0" aria-hidden>
+    <span className="relative h-3.75 w-1.25 shrink-0" aria-hidden>
       {/* Up caret — Figma inset 26.66% / 6.67% / 58.34% / 7.62% */}
       <svg
         viewBox="0 0 5.28572 3.25"

@@ -18,7 +18,7 @@ import { Trans } from '@lingui/react/macro';
 import { useMemo, type ReactNode } from 'react';
 import { Link } from 'react-router';
 
-const LIST_MAX_HEIGHT = 'max-h-[9.5rem]';
+const LIST_MAX_HEIGHT = 'max-h-38';
 const TOP_N = 4;
 
 type Props = {
@@ -46,7 +46,7 @@ function LoadingRows() {
     <ul className={cn(LIST_MAX_HEIGHT, 'space-y-2 overflow-hidden')}>
       {Array.from({ length: TOP_N }).map((_, i) => (
         <li key={i} className="flex items-center gap-2 py-1.5">
-          <Skeleton className="size-[18px] shrink-0 rounded-full" />
+          <Skeleton className="size-4.5 shrink-0 rounded-full" />
           <Skeleton className="h-3.5 flex-1" />
           <Skeleton className="h-3.5 w-16" />
         </li>

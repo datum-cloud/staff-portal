@@ -47,8 +47,8 @@ export function SelectAutocomplete({
   className,
   triggerClassName,
   contentClassName,
-  width = 'w-[200px]',
-  maxHeight = 'max-h-[300px]',
+  width = 'w-50',
+  maxHeight = 'max-h-75',
 }: SelectAutocompleteProps) {
   const [open, setOpen] = React.useState(false);
 

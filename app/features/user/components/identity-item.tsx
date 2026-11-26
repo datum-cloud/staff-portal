@@ -49,9 +49,7 @@ export const IdentityItem = ({
     <div className={cn('flex items-center justify-between gap-6', className)}>
       {/* Left Section */}
       <div className="flex items-center space-x-3.5">
-        <div className="bg-muted flex size-[34px] items-center justify-center rounded-lg">
-          {icon}
-        </div>
+        <div className="bg-muted flex size-8.5 items-center justify-center rounded-lg">{icon}</div>
         <div className="flex flex-col text-left">
           <Text weight="medium">{label}</Text>
           {sublabel && <Text textColor="muted">{sublabel}</Text>}
