@@ -88,23 +88,26 @@ body {
   --text-8xl--line-height: 72px;
 }
 
-
 /*
  * Colours from the Datum Figma file that datum-ui has no token for, named
  * once here so components use classes instead of hex values (#834). The values
  * are exact; dark mode stays a `dark:` class on the component, as before.
  *
- * Mist: the neutrals of Milo's table chrome (header background, lines).
- * datum-ui's nearest, glacier-mist-900 (#eeefe6), is close but not the same.
+ * Table: the Glacier Mist neutrals of Milo's table chrome (lines, header
+ * backgrounds). Named for what they're for rather than "mist", which is one of
+ * Tailwind's own palettes (`mist-50` to `mist-950`). datum-ui's nearest,
+ * glacier-mist-900 (#eeefe6), is close but not the same.
  *
  * Chip: the status badge palette (AppBadge, CustomerStatus). Each hue has a
  * text colour, a `-soft` text for dark panels, a translucent `-tint` fill and,
- * where light mode uses an opaque fill, a `-wash`.
+ * where light mode uses an opaque fill, a `-wash`. The grey and slate washes
+ * are the same Glacier Mist neutrals as the table, so they point at those
+ * tokens instead of repeating the values.
  */
 @theme {
-  --color-mist-line: #efefed;
-  --color-mist-surface: #fbfbfa;
-  --color-mist-subtle: #f6f6f5;
+  --color-table-line: #efefed;
+  --color-table-surface: #fbfbfa;
+  --color-table-surface-subtle: #f6f6f5;
 
   --color-chip-red: #b84848;
   --color-chip-red-soft: #d47878;
@@ -126,12 +129,12 @@ body {
   --color-chip-grey: #90969c;
   --color-chip-grey-tint: rgb(184 184 184 / 0.2);
   --color-chip-grey-tint-faint: rgb(184 184 184 / 0.12);
-  --color-chip-grey-wash: #f6f6f5;
+  --color-chip-grey-wash: var(--color-table-surface-subtle);
 
   --color-chip-slate: #67717c;
   --color-chip-slate-soft: #c8ccc8;
   --color-chip-slate-tint: rgb(227 226 223 / 0.16);
-  --color-chip-slate-wash: #efefed;
+  --color-chip-slate-wash: var(--color-table-line);
 }
 
 /*

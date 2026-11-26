@@ -54,7 +54,7 @@ function ListTableBodySkeleton({ columnCount }: { columnCount: number }) {
     <div className="min-h-0 flex-1 overflow-hidden" data-slot="dt-loading" aria-busy="true">
       <div
         className={cn(
-          'border-mist-line bg-mist-surface flex h-9 items-center border-b px-4',
+          'border-table-line bg-table-surface flex h-9 items-center border-b px-4',
           'dark:border-border dark:bg-muted'
         )}>
         {Array.from({ length: cols }, (_, i) => (
