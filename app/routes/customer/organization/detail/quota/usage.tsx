@@ -1,12 +1,7 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../../shared';
 import type { Route } from './+types/usage';
 import { QuotaBucketList } from '@/features/quota';
-import {
-  listOrgQuotaBuckets,
-  orgQuotaGrantCreateMutation,
-  orgQuotaGrantDeleteMutation,
-  orgQuotaGrantListQuery,
-} from '@/resources/request/client';
+import { listOrgQuotaBuckets, quotaQueryKeys } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 
@@ -25,13 +20,9 @@ export default function Page() {
 
   return (
     <QuotaBucketList
-      queryKeyPrefix={['organizations', orgName, 'buckets']}
+      queryKeyPrefix={[...quotaQueryKeys.organizations.buckets.all(orgName), 'gql']}
       fetchFn={() => listOrgQuotaBuckets(orgName)}
-      createGrantFn={(namespace, payload) =>
-        orgQuotaGrantCreateMutation(orgName, namespace, payload)
-      }
-      fetchGrantsFn={() => orgQuotaGrantListQuery(orgName)}
-      deleteGrantFn={(name, namespace) => orgQuotaGrantDeleteMutation(orgName, name, namespace)}
+      consumer={{ kind: 'Organization', name: orgName }}
     />
   );
 }

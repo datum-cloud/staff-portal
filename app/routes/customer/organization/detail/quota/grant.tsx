@@ -1,11 +1,7 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../../shared';
 import type { Route } from './+types/grant';
 import { QuotaGrantList } from '@/features/quota';
-import {
-  listOrgQuotaGrants,
-  orgQuotaGrantDeleteMutation,
-  orgQuotaGrantListQuery,
-} from '@/resources/request/client';
+import { listOrgQuotaGrants, quotaQueryKeys } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 
@@ -20,15 +16,13 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 
 export default function Page() {
   const data = useOrganizationDetailData();
+  const orgName = data.metadata?.name ?? '';
 
   return (
     <QuotaGrantList
-      queryKeyPrefix={['organizations', data.metadata?.name ?? '', 'grants']}
-      fetchFn={() => listOrgQuotaGrants(data.metadata?.name ?? '')}
-      deleteGrantFn={(name, namespace) =>
-        orgQuotaGrantDeleteMutation(data.metadata?.name ?? '', name, namespace)
-      }
-      fetchOwnersFn={() => orgQuotaGrantListQuery(data.metadata?.name ?? '')}
+      queryKeyPrefix={[...quotaQueryKeys.organizations.grants.all(orgName), 'gql']}
+      fetchFn={() => listOrgQuotaGrants(orgName)}
+      consumer={{ kind: 'Organization', name: orgName }}
     />
   );
 }

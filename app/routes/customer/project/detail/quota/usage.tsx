@@ -1,12 +1,7 @@
 import { getProjectDetailMetadata, useProjectDetailData } from '../../shared';
 import type { Route } from './+types/usage';
 import { QuotaBucketList } from '@/features/quota';
-import {
-  listProjectQuotaBuckets,
-  projectQuotaGrantCreateMutation,
-  projectQuotaGrantDeleteMutation,
-  projectQuotaGrantListQuery,
-} from '@/resources/request/client';
+import { listProjectQuotaBuckets, quotaQueryKeys } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 
@@ -25,15 +20,9 @@ export default function Page() {
 
   return (
     <QuotaBucketList
-      queryKeyPrefix={['projects', projectName, 'buckets']}
+      queryKeyPrefix={[...quotaQueryKeys.projects.buckets.all(projectName), 'gql']}
       fetchFn={() => listProjectQuotaBuckets(projectName)}
-      createGrantFn={(namespace, payload) =>
-        projectQuotaGrantCreateMutation(projectName, namespace, payload)
-      }
-      fetchGrantsFn={() => projectQuotaGrantListQuery(projectName)}
-      deleteGrantFn={(name, namespace) =>
-        projectQuotaGrantDeleteMutation(projectName, name, namespace)
-      }
+      consumer={{ kind: 'Project', name: projectName }}
     />
   );
 }

@@ -1,3 +1,8 @@
+import {
+  useConsumerQuotaGrantMutations,
+  useConsumerQuotaGrants,
+  type QuotaConsumer,
+} from '../hooks/use-quota-grants';
 import { grantOwner, type GrantOwner } from '../lib/quota-grants';
 import { groupQuotas, type QuotaRow } from '../lib/quotas-grouping';
 import { GrantOwnerLabel } from './grant-owner-label';
@@ -15,19 +20,14 @@ import { toast } from '@datum-cloud/datum-ui/toast';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
-import { ComMiloapisQuotaV1Alpha1ResourceGrant } from '@openapi/quota.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 
 interface QuotaGrantListProps {
-  queryKeyPrefix: string[];
+  /** Start it with the consumer's `quotaQueryKeys…grants.all` so grant changes refresh the table. */
+  queryKeyPrefix: readonly string[];
   fetchFn: (params?: Record<string, unknown>) => Promise<GqlQuotaGrantList>;
-  deleteGrantFn: (name: string, namespace: string) => Promise<unknown>;
-  /**
-   * The same grants from the API, with managedFields, to show who owns each
-   * and lock the ones staff can't remove (platform default, GitOps) (#343).
-   */
-  fetchOwnersFn?: () => Promise<{ items?: ComMiloapisQuotaV1Alpha1ResourceGrant[] } | undefined>;
+  consumer: QuotaConsumer;
 }
 
 interface QuotaGrantRow extends QuotaRow {
@@ -41,12 +41,7 @@ const isLocked = (owner?: GrantOwner): boolean => owner === 'platform' || owner 
 
 const grantKey = (namespace: string, name: string): string => `${namespace}/${name}`;
 
-export function QuotaGrantList({
-  queryKeyPrefix,
-  fetchFn,
-  deleteGrantFn,
-  fetchOwnersFn,
-}: QuotaGrantListProps) {
+export function QuotaGrantList({ queryKeyPrefix, fetchFn, consumer }: QuotaGrantListProps) {
   const { t } = useLingui();
   const [selectedGrant, setSelectedGrant] = useState<GqlQuotaGrant | null>(null);
 
@@ -55,17 +50,11 @@ export function QuotaGrantList({
     queryFn: () => fetchFn({}),
     enabled: queryKeyPrefix.length > 0 && queryKeyPrefix.some(Boolean),
     staleTime: 60 * 1000,
-    // Grants also change from the Usage page and feature flags.
-    refetchOnMount: 'always',
   });
 
-  const ownersQuery = useQuery({
-    queryKey: [...queryKeyPrefix, 'owners'],
-    queryFn: () => fetchOwnersFn?.() ?? Promise.resolve(undefined),
-    enabled: Boolean(fetchOwnersFn) && queryKeyPrefix.some(Boolean),
-    staleTime: 60 * 1000,
-    refetchOnMount: 'always',
-  });
+  // The same grants from the API, whose managedFields tell who owns each (#343).
+  const ownersQuery = useConsumerQuotaGrants(consumer);
+  const { deleteGrant } = useConsumerQuotaGrantMutations(consumer);
 
   const owners = useMemo(
     () =>
@@ -211,8 +200,8 @@ export function QuotaGrantList({
         variant="destructive"
         requireConfirmation
         onConfirm={async () => {
-          await deleteGrantFn(selectedGrant?.name ?? '', selectedGrant?.namespace ?? '');
-          await new Promise((resolve) => setTimeout(() => resolve(tableQuery.refetch()), 1000));
+          // The mutation hook waits for the quota controller, then refreshes both tables.
+          await deleteGrant(selectedGrant?.name ?? '', selectedGrant?.namespace ?? '');
           setSelectedGrant(null);
           toast.success(t`Grant deleted successfully`);
         }}
