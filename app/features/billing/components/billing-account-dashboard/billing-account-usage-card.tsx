@@ -167,11 +167,14 @@ function UsageBody({
               <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                 <Select value={selected.id} onValueChange={setSelectedId}>
                   <SelectTrigger
-                    className="h-9 min-h-9 w-full text-sm sm:w-64"
+                    // The trigger shows the meter's name alone: its spend is
+                    // beside the menu already.
+                    className="h-9 min-h-9 w-full text-sm sm:w-64 [&_[data-meter-spend]]:hidden"
                     aria-label={t`Meter`}>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  {/* Wider than the trigger, so a name and its spend fit on a line. */}
+                  <SelectContent className="w-96 max-w-[calc(100vw-2rem)]">
                     {groups.map((group, index) => (
                       <SelectGroup key={group.id}>
                         {index > 0 ? <SelectSeparator /> : null}
@@ -179,11 +182,16 @@ function UsageBody({
                           {group.title}
                         </SelectLabel>
                         {group.meters.map((meter) => (
-                          <SelectItem key={meter.id} value={meter.id}>
-                            <span className="flex items-center gap-2 pr-6">
-                              <span className="truncate">{meter.label}</span>
+                          <SelectItem
+                            key={meter.id}
+                            value={meter.id}
+                            className="[&>span:last-child]:w-full">
+                            <span className="flex w-full items-center justify-between gap-4 pr-6">
+                              <span className="min-w-0 truncate">{meter.label}</span>
                               {meter.spend && meterSpendBeforeDiscounts(meter) > 0 ? (
-                                <span className="text-muted-foreground tabular-nums">
+                                <span
+                                  data-meter-spend
+                                  className="text-muted-foreground shrink-0 tabular-nums">
                                   {spendDiscount(meter.spend) ? (
                                     <span className="mr-1 line-through">
                                       {formatCurrency({
@@ -289,22 +297,7 @@ export function ServiceSpendList({
                 // An outline rather than a fill, so the share bar stays visible.
                 service.id === selectedServiceId && 'border-border bg-background shadow-xs'
               )}>
-              <span className="flex items-center justify-between gap-2">
-                <Text as="span" size="sm" ellipsis>
-                  {service.title}
-                </Text>
-                <Text as="span" size="sm" weight="medium" className="tabular-nums">
-                  {formatCurrency({ amount: service.amount, currency })}
-                </Text>
-              </span>
-              <SpendBreakdown
-                spend={{
-                  amount: service.amount,
-                  beforeDiscounts: service.beforeDiscounts,
-                  discount: service.discount,
-                  currency,
-                }}
-              />
+              <ServiceSpendLines service={service} currency={currency} total={total} />
               <ShareBar value={service.beforeDiscounts} max={total} />
             </button>
           </li>
@@ -322,6 +315,61 @@ export function ServiceSpendList({
         </div>
       ) : null}
     </div>
+  );
+}
+
+/**
+ * A service's row: what's due, after the price before discounts struck
+ * through when something was taken off, then its share of the usage, which
+ * the bar under it shows, and the discount. The share is of usage before
+ * discounts, so the line says so: a service that's 100% off has a full bar
+ * beside $0.
+ */
+function ServiceSpendLines({
+  service,
+  currency,
+  total,
+}: {
+  service: ServiceSpend;
+  currency: string;
+  total: number;
+}) {
+  const discount = spendDiscount({
+    amount: service.amount,
+    beforeDiscounts: service.beforeDiscounts,
+    discount: service.discount,
+    currency,
+  });
+  const share = total > 0 ? Math.round((service.beforeDiscounts / total) * 100) : 0;
+  const percent = discount?.percent;
+  return (
+    <>
+      <span className="flex items-center justify-between gap-2">
+        <Text as="span" size="sm" ellipsis>
+          {service.title}
+        </Text>
+        <span className="flex shrink-0 items-baseline gap-1.5">
+          {discount ? (
+            <Text as="span" size="xs" textColor="muted" className="tabular-nums line-through">
+              {formatCurrency(discount.beforeDiscounts)}
+            </Text>
+          ) : null}
+          <Text as="span" size="sm" weight="medium" className="tabular-nums">
+            {formatCurrency({ amount: service.amount, currency })}
+          </Text>
+        </span>
+      </span>
+      <span className="flex items-center justify-between gap-2">
+        <Text as="span" size="xs" textColor="muted" className="tabular-nums">
+          <Trans>{share}% of usage</Trans>
+        </Text>
+        {discount ? (
+          <Text as="span" size="xs" textColor="muted" className="tabular-nums">
+            <Trans>{percent}% off</Trans>
+          </Text>
+        ) : null}
+      </span>
+    </>
   );
 }
 

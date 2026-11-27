@@ -1,17 +1,7 @@
-import { billingCycleTerms, type ContractState } from '../../lib/contract';
-import {
-  formatBillingAddress,
-  getAccountCurrency,
-  getEffectiveNetDays,
-  type BillingAccount,
-} from '../../utils';
+import { formatBillingAddress, type BillingAccount } from '../../utils';
 import { EditContactDialog } from '../billing-contact/edit-contact-dialog';
-import { AccountStatusBadge } from './account-status-badge';
-import { frequencyLabel } from './card-parts';
-import { DateTime } from '@/components/date';
 import { DescriptionList } from '@/components/description-list';
 import { SectionCard } from '@/features/milo';
-import { resolveCycleTerms } from '@/modules/billing/billing-cycle';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { Icon } from '@datum-cloud/datum-ui/icons';
@@ -113,59 +103,6 @@ export function BillingAccountContactCard({
       {editing ? (
         <EditContactDialog orgName={orgName} account={account} onClose={() => setEditing(false)} />
       ) : null}
-    </SectionCard>
-  );
-}
-
-/** The account's status, currency and invoicing settings. */
-export function BillingAccountConfigCard({
-  orgName,
-  account,
-  contract,
-}: {
-  orgName: string;
-  account: BillingAccount;
-  /** The account's contract, which sets its billing day once it starts. */
-  contract?: ContractState | null;
-}) {
-  const terms = billingCycleTerms(account.spec?.paymentTerms, contract);
-  const netDays = getEffectiveNetDays(account);
-  const cycle = resolveCycleTerms(terms);
-  const frequency = frequencyLabel(cycle.frequency);
-  const invoiceDay = cycle.invoiceDay;
-
-  return (
-    <SectionCard title={<Trans>Configuration</Trans>}>
-      <DescriptionList
-        items={[
-          {
-            label: <Trans>Status</Trans>,
-            value: <AccountStatusBadge orgName={orgName} account={account} />,
-          },
-          {
-            label: <Trans>Currency</Trans>,
-            value: <Text>{getAccountCurrency(account)}</Text>,
-          },
-          {
-            label: <Trans>Invoice frequency</Trans>,
-            value: (
-              <Text>
-                <Trans>
-                  {frequency}, on day {invoiceDay}
-                </Trans>
-              </Text>
-            ),
-          },
-          {
-            label: <Trans>Net days</Trans>,
-            value: <Text>{netDays ?? '—'}</Text>,
-          },
-          {
-            label: <Trans>Created</Trans>,
-            value: <DateTime date={account.metadata?.creationTimestamp} variant="both" />,
-          },
-        ]}
-      />
     </SectionCard>
   );
 }

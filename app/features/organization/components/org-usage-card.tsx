@@ -2,7 +2,7 @@ import { aggregationQualifier, formatUsagePair, ucumToMeterUnit } from '../lib/u
 import { OverviewCardLink, OverviewCardTitle, OverviewEmptyState } from './overview-card';
 import { QuotaIndicator } from './quota-ring';
 import { SectionCard } from '@/features/milo';
-import { SpendValue } from '@/features/organization/usage/components/spend-value';
+import { DiscountedSpend } from '@/features/organization/usage/components/discounted-spend';
 import type { OrgUsageMeterSummary } from '@/modules/billing/org-usage.types';
 import { useOrgUsageSummaryQuery } from '@/resources/request/client/queries/usage.queries';
 import { STATUS_ICONS, TAB_ICONS } from '@/utils/config/icons.config';
@@ -98,7 +98,12 @@ export function OrgUsageCard({ orgName, className }: Props) {
           {summary.spend || summary.spendError ? (
             <div className="flex flex-wrap items-baseline gap-x-2">
               <Text size="xl" weight="semibold" textColor="default">
-                <SpendValue spend={summary.spend} spendError={summary.spendError} />
+                {/* Before any discount, struck through, then what's due. */}
+                <DiscountedSpend
+                  spend={summary.spend}
+                  spendError={summary.spendError}
+                  beforeClassName="text-sm font-normal"
+                />
               </Text>
               <Text size="xs" textColor="muted">
                 <Trans>spend this period</Trans>
@@ -111,7 +116,7 @@ export function OrgUsageCard({ orgName, className }: Props) {
               <col className="w-7" />
               <col />
               <col className="w-28" />
-              <col className="w-32" />
+              <col className="w-40" />
             </colgroup>
             <tbody className="divide-border divide-y">
               {shownMeters.map((meter) => {
@@ -143,7 +148,11 @@ export function OrgUsageCard({ orgName, className }: Props) {
                     </td>
                     <td className="overflow-hidden text-right align-middle whitespace-nowrap">
                       <Text size="sm" weight="medium" textColor="default">
-                        <SpendValue spend={meter.spend} spendError={meter.spendError} />
+                        <DiscountedSpend
+                          spend={meter.spend}
+                          spendError={meter.spendError}
+                          beforeClassName="font-normal"
+                        />
                       </Text>
                     </td>
                   </tr>

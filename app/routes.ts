@@ -59,6 +59,7 @@ export default [
             ]),
             route('feature-flags', 'routes/customer/organization/detail/feature-flags.tsx'),
             route('usage', 'routes/customer/organization/detail/usage/index.tsx'),
+            route('billing', 'routes/customer/organization/detail/billing.tsx'),
           ]
         ),
       ]),
@@ -148,6 +149,9 @@ export default [
           { id: 'billing-account-detail' },
           [
             index('routes/customer/billing-account/detail/index.tsx'),
+            route('invoices', 'routes/customer/billing-account/detail/invoices.tsx'),
+            route('charges', 'routes/customer/billing-account/detail/charges.tsx'),
+            route('activity', 'routes/customer/billing-account/detail/activity.tsx'),
             route('contract', 'routes/customer/billing-account/detail/contract.tsx'),
           ]
         ),

@@ -1,27 +1,24 @@
 import { useBillingAccountHeaderActions } from '../../hooks/use-billing-account-header-actions';
-import { getContractState } from '../../lib/contract';
+import { isInvoiceWriterReady } from '../../lib/charges';
+import { getContractState, offerBillsUsage } from '../../lib/contract';
 import type { BillingAccount } from '../../utils';
 import { usePaymentTerms } from '../payment-terms';
 import { BillingAccountActivityCard } from './billing-account-activity-card';
 import { BillingAccountAttentionBanner } from './billing-account-attention-banner';
 import { BillingAccountChargesCard } from './billing-account-charges-card';
-import { BillingAccountContractCard } from './billing-account-contract-card';
-import { BillingAccountContractDraftCard } from './billing-account-contract-draft-card';
-import {
-  BillingAccountConfigCard,
-  BillingAccountContactCard,
-} from './billing-account-details-cards';
+import { BillingAccountContactCard } from './billing-account-details-cards';
 import { BillingAccountHeader } from './billing-account-header';
 import { BillingAccountHealthCards } from './billing-account-health-cards';
 import { BillingAccountInvoicesCard } from './billing-account-invoices-card';
-import { BillingAccountOfferCard } from './billing-account-offer-card';
 import { BillingAccountPaymentCard } from './billing-account-payment-card';
+import { BillingAccountPlanCard } from './billing-account-plan-card';
 import { BillingAccountProjectsCard } from './billing-account-projects-card';
 import { BillingAccountUsageCard } from './billing-account-usage-card';
 import { useEnv } from '@/hooks';
 import {
   useBillingAccountDetailQuery,
   useBillingEntitlementForAccountQuery,
+  useOfferDetailQuery,
 } from '@/resources/request/client';
 import { cloudPortalUrls } from '@/utils/config/routes.config';
 import { useMemo, useState } from 'react';
@@ -60,6 +57,16 @@ export function BillingAccountDashboard({
     () => getContractState(entitlementQuery.data ?? null, now),
     [entitlementQuery.data, now]
   );
+  // A contract can bill fixed fees alone: then there's no usage to show.
+  const contractOfferQuery = useOfferDetailQuery(
+    contract ? (entitlementQuery.data?.spec?.offerRef?.name ?? '') : ''
+  );
+  const usageNotBilled = Boolean(
+    contract && contractOfferQuery.data && !offerBillsUsage(contractOfferQuery.data)
+  );
+  // Opened from the header, shown by the cards that own them.
+  const [addingCharge, setAddingCharge] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const headerActions = useBillingAccountHeaderActions({
     orgName,
     account,
@@ -75,6 +82,9 @@ export function BillingAccountDashboard({
         account={account}
         cloudPortalUrl={cloudPortalUrl}
         actions={headerActions}
+        onAddCharge={isInvoiceWriterReady(account) ? () => setAddingCharge(true) : undefined}
+        onPreviewInvoice={contract ? () => setPreviewOpen(true) : undefined}
+        previewsFirstInvoice={Boolean(contract && !contract.started)}
       />
 
       <BillingAccountAttentionBanner
@@ -89,6 +99,7 @@ export function BillingAccountDashboard({
         account={account}
         now={now}
         contract={contract}
+        usageNotBilled={usageNotBilled}
       />
 
       {/*
@@ -101,48 +112,46 @@ export function BillingAccountDashboard({
       */}
       <div className="grid grid-cols-1 items-start gap-4 @5xl/main:grid-cols-[minmax(0,1fr)_400px] @5xl/main:grid-rows-[auto_1fr]">
         <div className="flex min-w-0 flex-col gap-4">
-          <BillingAccountUsageCard
-            orgName={orgName}
-            account={account}
-            now={now}
-            contract={contract}
-          />
+          {usageNotBilled ? null : (
+            <BillingAccountUsageCard
+              orgName={orgName}
+              account={account}
+              now={now}
+              contract={contract}
+            />
+          )}
           <BillingAccountInvoicesCard
             orgName={orgName}
             account={account}
             now={now}
             contract={contract}
           />
-          <BillingAccountChargesCard orgName={orgName} account={account} />
+          <BillingAccountChargesCard
+            orgName={orgName}
+            account={account}
+            adding={addingCharge}
+            onAddingChange={setAddingCharge}
+          />
           <BillingAccountProjectsCard orgName={orgName} account={account} />
         </div>
 
         <aside className="flex min-w-0 flex-col gap-4 @5xl/main:row-span-2">
+          {/* What the account is on comes first. */}
+          <BillingAccountPlanCard
+            orgName={orgName}
+            account={account}
+            now={now}
+            switchOfferOpen={switchOfferOpen}
+            onSwitchOfferOpenChange={setSwitchOfferOpen}
+            previewOpen={previewOpen}
+            onPreviewOpenChange={setPreviewOpen}
+          />
           <BillingAccountPaymentCard orgName={orgName} account={account} terms={paymentTerms} />
-          <BillingAccountContractCard
-            orgName={orgName}
-            account={account}
-            entitlement={entitlementQuery.data ?? null}
-            now={now}
-          />
-          <BillingAccountContractDraftCard
-            orgName={orgName}
-            account={account}
-            entitlement={entitlementQuery.data ?? null}
-            now={now}
-          />
-          <BillingAccountOfferCard
-            orgName={orgName}
-            account={account}
-            switchOpen={switchOfferOpen}
-            onSwitchOpenChange={setSwitchOfferOpen}
-          />
           <BillingAccountContactCard orgName={orgName} account={account} />
-          <BillingAccountConfigCard orgName={orgName} account={account} contract={contract} />
         </aside>
 
         <div className="min-w-0 @5xl/main:col-start-1">
-          <BillingAccountActivityCard orgName={orgName} />
+          <BillingAccountActivityCard orgName={orgName} accountName={accountName} />
         </div>
       </div>
     </div>

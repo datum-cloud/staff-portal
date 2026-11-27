@@ -10,6 +10,7 @@ import {
   getContractFirstInvoice,
   getContractState,
   offerBillsUsage,
+  recurringTotals,
   type ContractState,
 } from '../../lib/contract';
 import { contractInvoiceSchedule, upcomingInvoices } from '../../lib/contract-schedule';
@@ -25,13 +26,19 @@ import {
   billingTimingText,
   feeChargeText,
   periodsText,
+  recurringTotalsText,
   supplyDateText,
 } from '../contract-fee-text';
 import { ContractScheduleList } from '../contract-schedule-list';
 import { PricingInfo } from '../pricing-info';
-import { BILLING_ACCOUNT_SECTION_IDS, CardMessage, InlineDate, SectionAnchor } from './card-parts';
+import {
+  BILLING_ACCOUNT_SECTION_IDS,
+  CardMessage,
+  InlineDate,
+  PlanSection,
+  SectionAnchor,
+} from './card-parts';
 import { BadgeState } from '@/components/badge';
-import { SectionCard } from '@/features/milo';
 import {
   useOfferDetailQuery,
   usePreviewNextInvoiceMutation,
@@ -47,14 +54,14 @@ import { Dialog } from '@datum-cloud/datum-ui/dialog';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
-import { t } from '@lingui/core/macro';
+import { plural, t } from '@lingui/core/macro';
 import { Plural, Trans } from '@lingui/react/macro';
 import type {
   ComMiloapisBillingV1Alpha1BillingAccount,
   ComMiloapisBillingV1Alpha1BillingEntitlement,
   ComMiloapisBillingV1Alpha1Offer,
 } from '@openapi/billing.miloapis.com/v1alpha1';
-import { FileSearch } from 'lucide-react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 /** A date as fee details show it, e.g. "Feb 12, 2027" (UTC). */
@@ -71,41 +78,51 @@ interface ContractCardProps {
   account: ComMiloapisBillingV1Alpha1BillingAccount;
   entitlement: ComMiloapisBillingV1Alpha1BillingEntitlement | null;
   now: Date;
+  /** The next-invoice preview, opened from the page header. */
+  previewOpen: boolean;
+  onPreviewOpenChange: (open: boolean) => void;
+  /** Shows the contract without the link to change its fees. */
+  readOnly?: boolean;
 }
 
 /**
- * A negotiated contract on the account: its fees, when it starts and bills,
- * and a preview of the next invoice. Hidden for accounts without a contract,
- * which the header's Actions menu can set one up for.
+ * A negotiated contract on the account, in its Plan card: its fees, when it
+ * starts and bills, and the next-invoice preview the page header opens.
+ * Nothing for accounts without a contract, which the header's menu can set
+ * one up for.
  */
 export function BillingAccountContractCard({
   orgName,
   account,
   entitlement,
   now,
+  previewOpen,
+  onPreviewOpenChange,
+  readOnly = false,
 }: ContractCardProps) {
   const accountName = account.metadata?.name ?? '';
   const contract = getContractState(entitlement, now);
   const invoiceDay = contractInvoiceDay(contract?.billingDay, account.spec?.paymentTerms);
   const offerQuery = useOfferDetailQuery(entitlement?.spec?.offerRef?.name ?? '');
-  const [previewOpen, setPreviewOpen] = useState(false);
 
   return (
     <>
       {contract ? (
         <SectionAnchor id={BILLING_ACCOUNT_SECTION_IDS.contract}>
-          <SectionCard
+          <PlanSection
             title={<Trans>Contract</Trans>}
             action={
-              <LinkButton
-                type="quaternary"
-                theme="borderless"
-                size="small"
-                href={billingAccountRoutes.contract(orgName, accountName)}
-                icon={<Icon icon={ACTION_ICONS.edit} size={14} />}
-                iconPosition="right">
-                <Trans>Change fees</Trans>
-              </LinkButton>
+              readOnly ? undefined : (
+                <LinkButton
+                  type="quaternary"
+                  theme="borderless"
+                  size="small"
+                  href={billingAccountRoutes.contract(orgName, accountName)}
+                  icon={<Icon icon={ACTION_ICONS.edit} size={14} />}
+                  iconPosition="right">
+                  <Trans>Change fees</Trans>
+                </LinkButton>
+              )
             }>
             <div className="flex flex-col gap-3">
               <ContractDates contract={contract} invoiceDay={invoiceDay} />
@@ -117,6 +134,8 @@ export function BillingAccountContractCard({
                     offer={offerQuery.data}
                     startsAt={contract.startsAt}
                     invoiceDay={invoiceDay}
+                    summarize
+                    chargedOneTime={contract.started}
                   />
                   <div className="border-t pt-3">
                     <ContractScheduleList
@@ -138,22 +157,8 @@ export function BillingAccountContractCard({
                   <Trans>Couldn&apos;t load the contract&apos;s offer.</Trans>
                 </CardMessage>
               )}
-              <div className="border-t pt-3">
-                <Button
-                  type="secondary"
-                  theme="outline"
-                  size="small"
-                  onClick={() => setPreviewOpen(true)}
-                  icon={<Icon icon={FileSearch} size={14} />}>
-                  {contract.started ? (
-                    <Trans>Preview next invoice</Trans>
-                  ) : (
-                    <Trans>Preview first invoice</Trans>
-                  )}
-                </Button>
-              </div>
             </div>
-          </SectionCard>
+          </PlanSection>
         </SectionAnchor>
       ) : null}
 
@@ -163,7 +168,7 @@ export function BillingAccountContractCard({
           account={account}
           firstInvoice={contract ? !contract.started : false}
           startedAt={contract?.started ? contract.startsAt : undefined}
-          onClose={() => setPreviewOpen(false)}
+          onClose={() => onPreviewOpenChange(false)}
         />
       ) : null}
     </>
@@ -249,16 +254,40 @@ export function ContractFees({
   offer,
   startsAt,
   invoiceDay,
+  summarize = false,
+  chargedOneTime = false,
 }: {
   offer: ComMiloapisBillingV1Alpha1Offer;
   startsAt?: Date;
   invoiceDay?: number;
+  /** Leads with what the recurring fees come to each period. */
+  summarize?: boolean;
+  /**
+   * The contract has started, so its one-time fees are charged already:
+   * they're kept closed under a line with their total.
+   */
+  chargedOneTime?: boolean;
 }) {
-  const fees = getContractFees(offer);
+  const allFees = getContractFees(offer);
+  const oneTime = chargedOneTime ? allFees.filter((fee) => fee.chargeType === 'OneTime') : [];
+  const fees = chargedOneTime ? allFees.filter((fee) => fee.chargeType !== 'OneTime') : allFees;
+  const totals = recurringTotals(
+    allFees.map((fee) => ({ ...fee, amount: discountedFeeTotal(fee), quantity: 1 }))
+  );
+  const recurring = recurringTotalsText({
+    monthly: totals.monthly > 0 ? formatMoney(totals.monthly, CONTRACT_CURRENCY) : undefined,
+    quarterly: totals.quarterly > 0 ? formatMoney(totals.quarterly, CONTRACT_CURRENCY) : undefined,
+    annual: totals.annual > 0 ? formatMoney(totals.annual, CONTRACT_CURRENCY) : undefined,
+  });
+  const oneTimeTotal = formatMoney(
+    oneTime.reduce((sum, fee) => sum + discountedFeeTotal(fee), 0),
+    CONTRACT_CURRENCY
+  );
   const discount = offer.spec?.discount?.percentage;
   const customRates = (offer.spec?.servicePricings ?? []).filter(
     (snapshot) => snapshot.spec?.chargeType === 'Usage' && snapshot.spec.basedOn
   ).length;
+  const [oneTimeOpen, setOneTimeOpen] = useState(false);
   const servicesQuery = useServiceListQuery();
   const servicesByRef = useMemo(
     () => indexServicesByRef(servicesQuery.data?.items ?? []),
@@ -287,13 +316,23 @@ export function ContractFees({
   );
   return (
     <div className="flex flex-col gap-1.5">
-      {fees.length === 0 ? (
+      {summarize && recurring ? (
+        <div className="flex items-baseline justify-between gap-3">
+          <Text size="sm" weight="medium">
+            <Trans>Recurring</Trans>
+          </Text>
+          <Text size="sm" weight="medium" className="text-right tabular-nums">
+            {recurring}
+          </Text>
+        </div>
+      ) : null}
+      {allFees.length === 0 ? (
         <Text size="sm" textColor="muted">
           <Trans>This offer has no fixed fees.</Trans>
         </Text>
       ) : (
         <ul className="flex flex-col gap-1">
-          {fees.map((fee) => {
+          {[...fees, ...(oneTimeOpen ? oneTime : [])].map((fee) => {
             // What the customer pays, after any discount; the full amount is
             // shown with the discount underneath.
             const total = formatMoney(discountedFeeTotal(fee), CONTRACT_CURRENCY);
@@ -341,6 +380,25 @@ export function ContractFees({
           })}
         </ul>
       )}
+      {oneTime.length > 0 ? (
+        <button
+          type="button"
+          className="flex items-center gap-1.5 text-left"
+          aria-expanded={oneTimeOpen}
+          onClick={() => setOneTimeOpen((open) => !open)}>
+          <Icon
+            icon={oneTimeOpen ? ChevronDown : ChevronRight}
+            size={14}
+            className="text-muted-foreground shrink-0"
+          />
+          <Text as="span" size="sm" textColor="muted">
+            {plural(oneTime.length, {
+              one: `# one-time fee · ${oneTimeTotal}, charged when the contract started`,
+              other: `# one-time fees · ${oneTimeTotal}, charged when the contract started`,
+            })}
+          </Text>
+        </button>
+      ) : null}
       <Text size="xs" textColor="muted">
         {!offerBillsUsage(offer) ? (
           <Trans>Fixed fees only: usage isn&apos;t billed.</Trans>

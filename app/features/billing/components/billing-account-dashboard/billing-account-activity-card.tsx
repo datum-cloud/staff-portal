@@ -6,7 +6,7 @@ import {
 } from '@/features/activity/lib/activity-client';
 import { staffResourceLinkResolver } from '@/features/activity/lib/activity-link-resolvers';
 import { SectionCard } from '@/features/milo';
-import { orgRoutes } from '@/utils/config/routes.config';
+import { billingAccountRoutes, orgRoutes } from '@/utils/config/routes.config';
 import { ActivityApiClient, ActivityFeed } from '@datum-cloud/activity-ui';
 import { Trans } from '@lingui/react/macro';
 import { useMemo } from 'react';
@@ -18,7 +18,9 @@ import { useMemo } from 'react';
 const TIME_RANGE = { start: 'now-30d' };
 
 /** Changes shown in the card; the activity log has the rest. */
-const ACTIVITY_PAGE_SIZE = 8;
+const ACTIVITY_PAGE_SIZE = 5;
+/** Changes per page on the account's Activity page. */
+const FULL_PAGE_SIZE = 25;
 
 /** Every row is in this org, so its tenant badge adds nothing. */
 const hideTenant = () => null;
@@ -34,7 +36,17 @@ const hideTenant = () => null;
  * only turn billing's own timeline events into activity. Filters are fixed
  * and hidden.
  */
-export function BillingAccountActivityCard({ orgName }: { orgName: string }) {
+export function BillingAccountActivityCard({
+  orgName,
+  accountName,
+  full = false,
+}: {
+  orgName: string;
+  /** The account whose page this is, for the overview's link to its Activity page. */
+  accountName: string;
+  /** A longer page of changes, for the account's Activity page. */
+  full?: boolean;
+}) {
   // Billing resources live on the org's control plane.
   const client = useMemo(
     () =>
@@ -52,12 +64,20 @@ export function BillingAccountActivityCard({ orgName }: { orgName: string }) {
 
   return (
     <SectionCard
-      // Billing activity can only be filtered by org, not by account.
-      title={<Trans>Organization billing activity</Trans>}
+      // Billing activity can only be filtered by org, not by account, so
+      // the description says whose it is.
+      title={<Trans>Billing activity</Trans>}
+      description={<Trans>For every billing account in the organization.</Trans>}
       action={
-        <CardLink href={orgRoutes.activity.root(orgName)}>
-          <Trans>Activity log</Trans>
-        </CardLink>
+        full ? (
+          <CardLink href={orgRoutes.activity.root(orgName)}>
+            <Trans>Organization activity log</Trans>
+          </CardLink>
+        ) : (
+          <CardLink href={billingAccountRoutes.activity(orgName, accountName)}>
+            <Trans>All activity</Trans>
+          </CardLink>
+        )
       }
       contentClassName="pb-2 [&_[data-slot=card]]:border-0 [&_[data-slot=card]]:bg-transparent [&_[data-slot=card]]:p-0">
       <ActivityFeed
@@ -69,7 +89,7 @@ export function BillingAccountActivityCard({ orgName }: { orgName: string }) {
         hiddenFilters={['changeSource', 'apiGroups', 'resourceNamespaces']}
         variant="timeline"
         compact
-        pageSize={ACTIVITY_PAGE_SIZE}
+        pageSize={full ? FULL_PAGE_SIZE : ACTIVITY_PAGE_SIZE}
         infiniteScroll={false}
         resourceLinkResolver={staffResourceLinkResolver}
         tenantRenderer={hideTenant}

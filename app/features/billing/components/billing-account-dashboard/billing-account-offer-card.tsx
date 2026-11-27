@@ -18,12 +18,12 @@ import { feeChargeText, rateSlotText } from '../contract-fee-text';
 import {
   BILLING_ACCOUNT_SECTION_IDS,
   CardQueryState,
-  SectionAnchor,
   InlineDate,
+  PlanSection,
+  SectionAnchor,
 } from './card-parts';
 import { BadgeState } from '@/components/badge';
 import { DialogForm } from '@/components/dialog';
-import { SectionCard } from '@/features/milo';
 import {
   useBillingEntitlementForAccountQuery,
   useOfferDetailQuery,
@@ -53,6 +53,8 @@ interface OfferCardProps {
   /** The switch dialog, held by the page so its header can open it too. */
   switchOpen: boolean;
   onSwitchOpenChange: (open: boolean) => void;
+  /** Shows the offer without the button to switch it. */
+  readOnly?: boolean;
 }
 
 /**
@@ -64,17 +66,32 @@ export function BillingAccountOfferCard({
   account,
   switchOpen,
   onSwitchOpenChange,
+  readOnly = false,
 }: OfferCardProps) {
   const accountName = account.metadata?.name ?? '';
   const entitlementQuery = useBillingEntitlementForAccountQuery(orgName, accountName);
   const entitlement = entitlementQuery.data ?? null;
+  const switchDialog = entitlement ? (
+    <SwitchOfferDialog
+      orgName={orgName}
+      accountName={accountName}
+      entitlement={entitlement}
+      open={switchOpen}
+      onOpenChange={onSwitchOpenChange}
+    />
+  ) : null;
+
+  // A contract's offer is the contract itself, which its own section shows:
+  // repeating it here by its resource name adds nothing. The header's menu
+  // still switches the account off it.
+  if (entitlement?.spec?.contract) return switchDialog;
 
   return (
     <SectionAnchor id={BILLING_ACCOUNT_SECTION_IDS.offer}>
-      <SectionCard
+      <PlanSection
         title={<Trans>Offer</Trans>}
         action={
-          entitlement ? (
+          entitlement && !readOnly ? (
             <Button
               type="quaternary"
               theme="borderless"
@@ -105,16 +122,8 @@ export function BillingAccountOfferCard({
           }>
           {entitlement ? <ActiveOffer entitlement={entitlement} /> : null}
         </CardQueryState>
-      </SectionCard>
-      {entitlement ? (
-        <SwitchOfferDialog
-          orgName={orgName}
-          accountName={accountName}
-          entitlement={entitlement}
-          open={switchOpen}
-          onOpenChange={onSwitchOpenChange}
-        />
-      ) : null}
+      </PlanSection>
+      {switchDialog}
     </SectionAnchor>
   );
 }

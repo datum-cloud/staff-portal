@@ -17,7 +17,12 @@ import {
   phaseBadgeState,
   type PaymentTermsState,
 } from '../payment-terms';
-import { BILLING_ACCOUNT_SECTION_IDS, CardQueryState, SectionAnchor } from './card-parts';
+import {
+  BILLING_ACCOUNT_SECTION_IDS,
+  CardQueryState,
+  Disclosure,
+  SectionAnchor,
+} from './card-parts';
 import { BadgeState } from '@/components/badge';
 import { SectionCard } from '@/features/milo';
 import { Button } from '@datum-cloud/datum-ui/button';
@@ -83,7 +88,7 @@ export function BillingAccountPaymentCard({ orgName, account, terms }: PaymentCa
           empty={
             // An account on invoice terms pays by transfer, so no card is fine.
             terms.current ? (
-              <Trans>No card on file. Not needed while invoice terms are active.</Trans>
+              <Trans>No card on file. Not needed while payment terms are active.</Trans>
             ) : (
               <Trans>No payment method on file</Trans>
             )
@@ -108,7 +113,11 @@ export function BillingAccountPaymentCard({ orgName, account, terms }: PaymentCa
             ) : null}
             {/* While the customer's application waits, review it rather than grant terms. */}
             {terms.current || !terms.pendingApplication ? <TermsSummary terms={terms} /> : null}
-            <PaymentTermsHistory orgName={orgName} terms={terms} />
+            {terms.history.length + terms.pastApplications.length > 0 ? (
+              <Disclosure label={<Trans>Previous terms and applications</Trans>}>
+                <PaymentTermsHistory orgName={orgName} terms={terms} />
+              </Disclosure>
+            ) : null}
           </>
         )}
       </SectionCard>
@@ -187,12 +196,13 @@ function TermsSummary({ terms }: { terms: PaymentTermsState }) {
   const { current, currentPhase, billingStatus } = terms;
 
   if (current && currentPhase) {
+    const invoice = current.spec?.invoice;
     return (
       <div className="bg-background flex flex-col gap-3 rounded-md p-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <Text size="sm" weight="medium">
-              <Trans>Invoice terms</Trans>
+              <Trans>Payment terms</Trans>
             </Text>
             <BadgeState
               state={phaseBadgeState[currentPhase]}
@@ -202,7 +212,20 @@ function TermsSummary({ terms }: { terms: PaymentTermsState }) {
           </div>
           <CurrentTermsActions terms={terms} />
         </div>
-        <ArrangementDetails arrangement={current} formatCreditLimit={terms.formatCreditLimit} />
+        <Text size="sm">
+          {[
+            invoice?.netDays !== undefined ? t`Net ${invoice.netDays}` : null,
+            invoice?.creditLimit
+              ? t`credit limit ${terms.formatCreditLimit(invoice.creditLimit)}`
+              : null,
+            invoice?.accountsPayableEmail ? t`invoices to ${invoice.accountsPayableEmail}` : null,
+          ]
+            .filter(Boolean)
+            .join(' · ')}
+        </Text>
+        <Disclosure label={<Trans>Dates, PO number, agreement and reason</Trans>}>
+          <ArrangementDetails arrangement={current} formatCreditLimit={terms.formatCreditLimit} />
+        </Disclosure>
       </div>
     );
   }

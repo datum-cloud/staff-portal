@@ -8,8 +8,8 @@ import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
-import { ArrowRight } from 'lucide-react';
-import type { ComponentProps, ReactNode } from 'react';
+import { ArrowRight, ChevronDown, ChevronRight } from 'lucide-react';
+import { useState, type ComponentProps, type ReactNode } from 'react';
 
 /** Shared pieces for the dashboard's section and table cards. */
 
@@ -73,6 +73,7 @@ export function CardQueryState({
   skeleton,
   error,
   empty,
+  compactEmpty = false,
   children,
 }: {
   isLoading: boolean;
@@ -83,11 +84,19 @@ export function CardQueryState({
   /** What failed, e.g. "Couldn't load invoices". */
   error: ReactNode;
   empty?: ReactNode;
+  /** Says it's empty in one quiet line, for a card that's often empty. */
+  compactEmpty?: boolean;
   children: ReactNode;
 }) {
   if (isLoading) return <>{skeleton}</>;
   if (isError) return <EmptyState size="sm" icon={STATUS_ICONS.alert} title={error} />;
-  if (isEmpty) return <EmptyState size="sm" title={empty} />;
+  if (isEmpty) {
+    return compactEmpty ? (
+      <CardMessage className="py-0">{empty}</CardMessage>
+    ) : (
+      <EmptyState size="sm" title={empty} />
+    );
+  }
   return <>{children}</>;
 }
 
@@ -134,6 +143,67 @@ export function SectionAnchor({ id, children }: { id: string; children: ReactNod
   return (
     <div id={id} className="scroll-mt-4">
       {children}
+    </div>
+  );
+}
+
+/**
+ * One part of the account's Plan card: its contract, a draft, or its offer.
+ * The card puts a rule between the parts it has.
+ */
+export function PlanSection({
+  title,
+  action,
+  children,
+}: {
+  title: ReactNode;
+  action?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <section className="flex flex-col gap-3">
+      <div className="flex min-h-7 items-center justify-between gap-3">
+        <Text size="sm" weight="medium">
+          {title}
+        </Text>
+        {action ? <div className="shrink-0">{action}</div> : null}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+/**
+ * Detail a card keeps closed until asked for: a line saying what's inside,
+ * which opens it in place.
+ */
+export function Disclosure({
+  label,
+  defaultOpen = false,
+  children,
+}: {
+  label: ReactNode;
+  defaultOpen?: boolean;
+  children: ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="flex flex-col gap-2">
+      <button
+        type="button"
+        className="flex items-center gap-1.5 text-left"
+        aria-expanded={open}
+        onClick={() => setOpen((value) => !value)}>
+        <Icon
+          icon={open ? ChevronDown : ChevronRight}
+          size={14}
+          className="text-muted-foreground shrink-0"
+        />
+        <Text as="span" size="sm" textColor="muted">
+          {label}
+        </Text>
+      </button>
+      {open ? children : null}
     </div>
   );
 }

@@ -39,7 +39,8 @@ describe('summarizeAccount', () => {
   it('summarizes a fully set-up organization', () => {
     expect(summarizeAccount(input())).toEqual({
       onboarding: { complete: 4, total: 4 },
-      billing: { state: 'Ready', accountName: 'main' },
+      // A Ready billing account reads "Active" to staff.
+      billing: { state: 'Active', accountName: 'main' },
       paymentMethod: { state: 'Active' },
       members: { count: 3, owners: 2 },
       contact: { name: 'Michael Costello', email: 'm@acme.test', location: 'Austin, US' },

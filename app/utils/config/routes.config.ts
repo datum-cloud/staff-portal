@@ -37,6 +37,7 @@ export const orgRoutes = {
   },
   featureFlags: (orgName: string) => `/customers/organizations/${orgName}/feature-flags`,
   usage: (orgName: string) => `/customers/organizations/${orgName}/usage`,
+  billing: (orgName: string) => `/customers/organizations/${orgName}/billing`,
 } as const;
 
 // Customers → Projects
@@ -117,6 +118,13 @@ export const billingAccountRoutes = {
   // Set up the account's contract, or change its fees.
   contract: (orgName: string, accountName: string) =>
     `/customers/billing-accounts/${orgName}/${accountName}/contract`,
+  // The account's sections with a page of their own, beside its overview.
+  invoices: (orgName: string, accountName: string) =>
+    `/customers/billing-accounts/${orgName}/${accountName}/invoices`,
+  charges: (orgName: string, accountName: string) =>
+    `/customers/billing-accounts/${orgName}/${accountName}/charges`,
+  activity: (orgName: string, accountName: string) =>
+    `/customers/billing-accounts/${orgName}/${accountName}/activity`,
   // Payment terms applications: the review queue and one application.
   applications: {
     list: () => '/customers/billing-accounts/applications',

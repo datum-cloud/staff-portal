@@ -6,7 +6,7 @@ import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { t } from '@lingui/core/macro';
 
 /**
- * The account's status, as the header and the Configuration card show it.
+ * The account's status, as the header shows it.
  * Past due outranks the account phase: it's the first thing staff need to
  * know, so the badge waits for invoices, and says so when they fail to load.
  */

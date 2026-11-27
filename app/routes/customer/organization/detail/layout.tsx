@@ -52,6 +52,11 @@ export const handle = {
             { label: 'Members', href: orgRoutes.member(orgName), icon: ENTITY_ICONS.user },
             { label: 'Usage', href: orgRoutes.usage(orgName), icon: TAB_ICONS.usage },
             {
+              label: 'Billing',
+              href: orgRoutes.billing(orgName),
+              icon: ENTITY_ICONS.billingAccount,
+            },
+            {
               label: 'Activity',
               icon: ENTITY_ICONS.activity,
               match: orgRoutes.activity.root(orgName),

@@ -10,9 +10,8 @@ import {
 } from '../../lib/contract';
 import { DEFAULT_SERVICE_PRICING_NAMESPACE } from '../../utils';
 import { ContractFees, InvoicePreviewDialog } from './billing-account-contract-card';
-import { InlineDate } from './card-parts';
+import { InlineDate, PlanSection } from './card-parts';
 import { DialogConfirm } from '@/components/dialog';
-import { SectionCard } from '@/features/milo';
 import {
   type ContractDraftPreview,
   useContractDraftQuery,
@@ -27,6 +26,7 @@ import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
+import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type {
@@ -46,11 +46,14 @@ export function BillingAccountContractDraftCard({
   account,
   entitlement,
   now,
+  readOnly = false,
 }: {
   orgName: string;
   account: ComMiloapisBillingV1Alpha1BillingAccount;
   entitlement: ComMiloapisBillingV1Alpha1BillingEntitlement | null;
   now: Date;
+  /** Shows the draft without ways to edit, publish or discard it. */
+  readOnly?: boolean;
 }) {
   const accountName = account.metadata?.name ?? '';
   const draftQuery = useContractDraftQuery(orgName, accountName);
@@ -100,18 +103,20 @@ export function BillingAccountContractDraftCard({
   };
 
   return (
-    <SectionCard
+    <PlanSection
       title={contract ? <Trans>Draft fee change</Trans> : <Trans>Draft contract</Trans>}
       action={
-        <LinkButton
-          type="quaternary"
-          theme="borderless"
-          size="small"
-          href={billingAccountRoutes.contract(orgName, accountName)}
-          icon={<Icon icon={ACTION_ICONS.edit} size={14} />}
-          iconPosition="right">
-          <Trans>Edit</Trans>
-        </LinkButton>
+        readOnly ? undefined : (
+          <LinkButton
+            type="quaternary"
+            theme="borderless"
+            size="small"
+            href={billingAccountRoutes.contract(orgName, accountName)}
+            icon={<Icon icon={ACTION_ICONS.edit} size={14} />}
+            iconPosition="right">
+            <Trans>Edit</Trans>
+          </LinkButton>
+        )
       }>
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-1">
@@ -175,7 +180,7 @@ export function BillingAccountContractDraftCard({
           </Text>
         ) : null}
 
-        <div className="flex flex-wrap gap-2 border-t pt-3">
+        <div className={cn('flex flex-wrap gap-2 border-t pt-3', readOnly && 'hidden')}>
           <Button
             size="small"
             disabled={Boolean(problem) || discard.isPending}
@@ -237,7 +242,7 @@ export function BillingAccountContractDraftCard({
         variant="destructive"
         onConfirm={() => run('discard')}
       />
-    </SectionCard>
+    </PlanSection>
   );
 }
 

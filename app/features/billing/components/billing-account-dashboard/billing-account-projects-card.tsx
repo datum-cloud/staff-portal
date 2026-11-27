@@ -169,11 +169,12 @@ export function BillingAccountProjectsCard({ orgName, account }: ProjectsCardPro
     }))
     .sort((a, b) => (b.spend.amount ?? -1) - (a.spend.amount ?? -1));
 
-  const subtitle = projects ? (
+  // With none linked, the card's empty message says so.
+  const subtitle = projects?.length ? (
     <Plural
       value={projects.length}
-      one="# active binding · spend this cycle by project"
-      other="# active bindings · spend this cycle by project"
+      one="# linked project · spend this cycle by project"
+      other="# linked projects · spend this cycle by project"
     />
   ) : null;
 
@@ -185,6 +186,7 @@ export function BillingAccountProjectsCard({ orgName, account }: ProjectsCardPro
         isEmpty={rows.length === 0}
         skeleton={<TableRowsSkeleton />}
         error={<Trans>Couldn&apos;t load linked projects</Trans>}
+        compactEmpty
         empty={<Trans>No linked projects</Trans>}>
         <DataTable.Client
           data={rows}
