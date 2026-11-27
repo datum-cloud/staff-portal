@@ -1,9 +1,4 @@
-import {
-  QuotaChangeError,
-  useQuotaLimitChange,
-  type QuotaConsumer,
-} from '../hooks/use-quota-grants';
-import { type GrantOwner, type QuotaBreakdown } from '../lib/quota-grants';
+import { quotaBreakdown, type GrantOwner, type QuotaBreakdown } from '../lib/quota-grants';
 import { groupQuotas, type QuotaRow } from '../lib/quotas-grouping';
 import { GrantOwnerLabel } from './grant-owner-label';
 import { DialogForm } from '@/components/dialog';
@@ -19,6 +14,7 @@ import { toast } from '@datum-cloud/datum-ui/toast';
 import { Tooltip } from '@datum-cloud/datum-ui/tooltip';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { useLingui } from '@lingui/react/macro';
+import type { ComMiloapisQuotaV1Alpha1ResourceGrant } from '@openapi/quota.miloapis.com/v1alpha1';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import z from 'zod';
@@ -27,7 +23,10 @@ interface QuotaBucketListProps {
   /** Start it with the consumer's `quotaQueryKeys…buckets.all` so grant changes refresh the table. */
   queryKeyPrefix: readonly string[];
   fetchFn: (params?: Record<string, unknown>) => Promise<GqlQuotaBucketList>;
-  consumer: QuotaConsumer;
+  /** The consumer's grants from the API, to show how each limit is made up (#343). */
+  resourceGrants?: ComMiloapisQuotaV1Alpha1ResourceGrant[];
+  grantsError?: boolean;
+  changeLimitFn: (bucket: GqlQuotaBucket, target: number) => Promise<void>;
 }
 
 /** Each owner's share of the limit, in the order it was added. */
@@ -71,13 +70,17 @@ function barColor(percentage: number, total: number) {
   return 'bg-destructive';
 }
 
-export function QuotaBucketList({ queryKeyPrefix, fetchFn, consumer }: QuotaBucketListProps) {
+export function QuotaBucketList({
+  queryKeyPrefix,
+  fetchFn,
+  resourceGrants,
+  grantsError,
+  changeLimitFn,
+}: QuotaBucketListProps) {
   const { t } = useLingui();
   // Kept after closing so the dialog doesn't re-render empty while it fades out.
   const [selected, setSelected] = useState<GqlQuotaBucket | null>(null);
   const [editOpen, setEditOpen] = useState(false);
-  // Grants load with the page, so the breakdown is ready when Edit opens.
-  const { grantsQuery, breakdownFor, changeLimit } = useQuotaLimitChange(consumer);
 
   const tableQuery = useQuery({
     queryKey: [...queryKeyPrefix, 'list'],
@@ -186,7 +189,8 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, consumer }: QuotaBuck
     },
   ];
 
-  const breakdown = selected ? breakdownFor(selected.resourceType) : undefined;
+  const breakdown =
+    selected && resourceGrants ? quotaBreakdown(resourceGrants, selected.resourceType) : undefined;
   // The grants are the source of the limit, and the bucket can lag behind them
   // for a few seconds after a change.
   const currentLimit = breakdown?.total ?? selected?.limit ?? 0;
@@ -216,13 +220,8 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, consumer }: QuotaBuck
         cancelText={t`Cancel`}
         onSubmit={async (formData) => {
           if (!selected) return;
-          try {
-            await changeLimit(selected, formData.newLimit);
-          } catch (error) {
-            // Failed requests already show the API client's toast.
-            if (error instanceof QuotaChangeError) toast.error(error.message);
-            throw error;
-          }
+          // Errors show their own toast and keep the dialog open.
+          await changeLimitFn(selected, formData.newLimit);
           toast.success(t`Quota updated successfully`);
         }}
         schema={editSchema}
@@ -250,7 +249,7 @@ export function QuotaBucketList({ queryKeyPrefix, fetchFn, consumer }: QuotaBuck
             </div>
           ) : (
             <Text size="sm" textColor="muted">
-              {grantsQuery.isError
+              {grantsError
                 ? t`Couldn't load this quota's grants, so it can only be raised.`
                 : t`Checking which grants can be lowered…`}
             </Text>

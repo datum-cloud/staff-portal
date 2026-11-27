@@ -1,7 +1,12 @@
 import { getProjectDetailMetadata, useProjectDetailData } from '../../shared';
 import type { Route } from './+types/grant';
 import { QuotaGrantList } from '@/features/quota';
-import { listProjectQuotaGrants, quotaQueryKeys } from '@/resources/request/client';
+import {
+  listProjectQuotaGrants,
+  quotaQueryKeys,
+  useProjectQuotaGrantDeleteMutation,
+  useProjectQuotaGrantListQuery,
+} from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 
@@ -17,12 +22,17 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 export default function Page() {
   const { project } = useProjectDetailData();
   const projectName = project?.metadata?.name ?? '';
+  const grantsQuery = useProjectQuotaGrantListQuery(projectName);
+  const deleteMutation = useProjectQuotaGrantDeleteMutation();
 
   return (
     <QuotaGrantList
       queryKeyPrefix={[...quotaQueryKeys.projects.grants.all(projectName), 'gql']}
       fetchFn={() => listProjectQuotaGrants(projectName)}
-      consumer={{ kind: 'Project', name: projectName }}
+      deleteGrantFn={(name, namespace) =>
+        deleteMutation.mutateAsync({ projectName, name, namespace })
+      }
+      resourceGrants={grantsQuery.data?.items}
     />
   );
 }
