@@ -4,6 +4,7 @@ import { QuotaGrantList } from '@/features/quota';
 import {
   listProjectQuotaGrants,
   projectQuotaGrantDeleteMutation,
+  projectQuotaGrantListQuery,
 } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
@@ -27,6 +28,7 @@ export default function Page() {
       deleteGrantFn={(name, namespace) =>
         projectQuotaGrantDeleteMutation(project?.metadata?.name ?? '', name, namespace)
       }
+      fetchOwnersFn={() => projectQuotaGrantListQuery(project?.metadata?.name ?? '')}
     />
   );
 }

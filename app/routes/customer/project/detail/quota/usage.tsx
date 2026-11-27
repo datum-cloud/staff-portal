@@ -4,6 +4,8 @@ import { QuotaBucketList } from '@/features/quota';
 import {
   listProjectQuotaBuckets,
   projectQuotaGrantCreateMutation,
+  projectQuotaGrantDeleteMutation,
+  projectQuotaGrantListQuery,
 } from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
@@ -19,13 +21,18 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 
 export default function Page() {
   const { project } = useProjectDetailData();
+  const projectName = project?.metadata?.name ?? '';
 
   return (
     <QuotaBucketList
-      queryKeyPrefix={['projects', project?.metadata?.name ?? '', 'buckets']}
-      fetchFn={() => listProjectQuotaBuckets(project?.metadata?.name ?? '')}
+      queryKeyPrefix={['projects', projectName, 'buckets']}
+      fetchFn={() => listProjectQuotaBuckets(projectName)}
       createGrantFn={(namespace, payload) =>
-        projectQuotaGrantCreateMutation(project?.metadata?.name ?? '', namespace, payload)
+        projectQuotaGrantCreateMutation(projectName, namespace, payload)
+      }
+      fetchGrantsFn={() => projectQuotaGrantListQuery(projectName)}
+      deleteGrantFn={(name, namespace) =>
+        projectQuotaGrantDeleteMutation(projectName, name, namespace)
       }
     />
   );

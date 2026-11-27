@@ -18,6 +18,12 @@ import {
 
 const MILO_SYSTEM_NAMESPACE = 'milo-system';
 
+/**
+ * Field manager recorded on grants this portal creates, so they can be told
+ * apart from the platform's and GitOps' grants (#343).
+ */
+export const QUOTA_GRANT_FIELD_MANAGER = 'datum-staff-portal';
+
 const getProjectControlPlaneBaseURL = (projectName: string) =>
   `${PROXY_URL}/apis/resourcemanager.miloapis.com/v1alpha1/projects/${projectName}/control-plane`;
 
@@ -86,6 +92,7 @@ export const quotaGrantCreateMutation = async (
   const response = await createQuotaMiloapisComV1Alpha1NamespacedResourceGrant({
     baseURL,
     path: { namespace },
+    query: { fieldManager: QUOTA_GRANT_FIELD_MANAGER },
     body: {
       apiVersion: 'quota.miloapis.com/v1alpha1',
       kind: 'ResourceGrant',

@@ -1,7 +1,12 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../../shared';
 import type { Route } from './+types/usage';
 import { QuotaBucketList } from '@/features/quota';
-import { listOrgQuotaBuckets, orgQuotaGrantCreateMutation } from '@/resources/request/client';
+import {
+  listOrgQuotaBuckets,
+  orgQuotaGrantCreateMutation,
+  orgQuotaGrantDeleteMutation,
+  orgQuotaGrantListQuery,
+} from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 
@@ -16,14 +21,17 @@ export const meta: Route.MetaFunction = ({ matches }) => {
 
 export default function Page() {
   const data = useOrganizationDetailData();
+  const orgName = data.metadata?.name ?? '';
 
   return (
     <QuotaBucketList
-      queryKeyPrefix={['organizations', data.metadata?.name ?? '', 'buckets']}
-      fetchFn={() => listOrgQuotaBuckets(data.metadata?.name ?? '')}
+      queryKeyPrefix={['organizations', orgName, 'buckets']}
+      fetchFn={() => listOrgQuotaBuckets(orgName)}
       createGrantFn={(namespace, payload) =>
-        orgQuotaGrantCreateMutation(data.metadata?.name ?? '', namespace, payload)
+        orgQuotaGrantCreateMutation(orgName, namespace, payload)
       }
+      fetchGrantsFn={() => orgQuotaGrantListQuery(orgName)}
+      deleteGrantFn={(name, namespace) => orgQuotaGrantDeleteMutation(orgName, name, namespace)}
     />
   );
 }

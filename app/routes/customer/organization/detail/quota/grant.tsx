@@ -1,7 +1,11 @@
 import { getOrganizationDetailMetadata, useOrganizationDetailData } from '../../shared';
 import type { Route } from './+types/grant';
 import { QuotaGrantList } from '@/features/quota';
-import { listOrgQuotaGrants, orgQuotaGrantDeleteMutation } from '@/resources/request/client';
+import {
+  listOrgQuotaGrants,
+  orgQuotaGrantDeleteMutation,
+  orgQuotaGrantListQuery,
+} from '@/resources/request/client';
 import { metaObject } from '@/utils/helpers';
 import { Trans } from '@lingui/react/macro';
 
@@ -24,6 +28,7 @@ export default function Page() {
       deleteGrantFn={(name, namespace) =>
         orgQuotaGrantDeleteMutation(data.metadata?.name ?? '', name, namespace)
       }
+      fetchOwnersFn={() => orgQuotaGrantListQuery(data.metadata?.name ?? '')}
     />
   );
 }
