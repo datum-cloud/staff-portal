@@ -22,6 +22,7 @@ import {
 } from '../../utils';
 import {
   BILLING_ACCOUNT_SECTION_IDS,
+  CardLink,
   CardQueryState,
   SectionAnchor,
   TableRowsSkeleton,
@@ -45,6 +46,7 @@ import {
 } from '@/features/milo';
 import { resolveCycleTerms } from '@/modules/billing/billing-cycle';
 import { ACTION_ICONS } from '@/utils/config/icons.config';
+import { billingAccountRoutes } from '@/utils/config/routes.config';
 import { createColumnHelper, type ColumnDef } from '@/utils/table';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
@@ -55,7 +57,6 @@ import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
 import { Plural, Trans } from '@lingui/react/macro';
-import { ArrowRight, ChevronUp } from 'lucide-react';
 import { useMemo, useState, type ReactNode } from 'react';
 
 interface InvoicesCardProps {
@@ -64,6 +65,8 @@ interface InvoicesCardProps {
   now: Date;
   /** The account's contract, which sets its billing day once it starts. */
   contract?: ContractState | null;
+  /** Every invoice, with search and paging: the account's Invoices page. */
+  full?: boolean;
 }
 
 /** Rows shown before "All invoices" expands the table. */
@@ -77,9 +80,9 @@ const agingLabel = (bucket: InvoiceAgingBucket, byCard: boolean): string => {
     case 'days1to30':
       return t`1–30 days overdue`;
     case 'days31to60':
-      return t`31–60 days`;
+      return t`31–60 days overdue`;
     case 'days60plus':
-      return t`60+ days`;
+      return t`61+ days overdue`;
     default:
       return byCard ? t`Awaiting card payment` : t`Not yet due`;
   }
@@ -107,22 +110,24 @@ const shortDate = (date: string | undefined): ReactNode =>
 // byCard: the account pays by card, so an invoice is charged rather than
 // due on a date, and its due date only matters once it's overdue.
 const buildColumns = (now: Date, byCard: boolean) => [
-  columnHelper.display({
-    id: 'invoice',
-    enableSorting: false,
-    header: ({ column }) => <ListColumnHeader column={column} title={t`Invoice`} />,
-    cell: ({ row }) => <DisplayId value={row.original.invoice.metadata?.name ?? ''} />,
-  }),
+  // The number printed on the invoice comes first: it's what the customer
+  // quotes. Billing's own name for the invoice follows, for staff.
   columnHelper.display({
     id: 'stripeNumber',
     enableSorting: false,
-    header: ({ column }) => <ListColumnHeader column={column} title={t`Stripe number`} />,
+    header: ({ column }) => <ListColumnHeader column={column} title={t`Invoice number`} />,
     cell: ({ row }) =>
       row.original.display.stripeNumber ? (
         <DisplayId value={row.original.display.stripeNumber} />
       ) : (
         '—'
       ),
+  }),
+  columnHelper.display({
+    id: 'invoice',
+    enableSorting: false,
+    header: ({ column }) => <ListColumnHeader column={column} title={t`Internal ID`} />,
+    cell: ({ row }) => <DisplayId value={row.original.invoice.metadata?.name ?? ''} />,
   }),
   columnHelper.display({
     id: 'period',
@@ -218,11 +223,18 @@ const buildColumns = (now: Date, byCard: boolean) => [
 
 /**
  * The account's invoices: an aging summary, then past-due invoices first.
- * "All invoices" expands the table in place with search and paging.
+ * The overview shows the first few, with a link to the account's Invoices
+ * page, which has them all (`full`) with search and paging.
  */
-export function BillingAccountInvoicesCard({ orgName, account, now, contract }: InvoicesCardProps) {
+export function BillingAccountInvoicesCard({
+  orgName,
+  account,
+  now,
+  contract,
+  full = false,
+}: InvoicesCardProps) {
   const { invoices, hasMore, isLoading, isError } = useAccountInvoices(orgName, account);
-  const [expanded, setExpanded] = useState(false);
+  const expanded = full;
   const [search, setSearch] = useState('');
 
   const sorted = useMemo(
@@ -252,7 +264,7 @@ export function BillingAccountInvoicesCard({ orgName, account, now, contract }: 
     [sorted, expanded, search]
   );
   const rows = expanded ? filtered : sorted.slice(0, PREVIEW_ROWS);
-  const canExpand = sorted.length > PREVIEW_ROWS;
+  const canExpand = !full && sorted.length > PREVIEW_ROWS;
 
   const terms = billingCycleTerms(account.spec?.paymentTerms, contract);
   // Net days only mean something on invoice terms: a card account is charged
@@ -289,16 +301,9 @@ export function BillingAccountInvoicesCard({ orgName, account, now, contract }: 
         description={subtitle}
         action={
           canExpand ? (
-            <Button
-              type="quaternary"
-              theme="borderless"
-              size="small"
-              aria-expanded={expanded}
-              onClick={() => setExpanded((open) => !open)}
-              icon={<Icon icon={expanded ? ChevronUp : ArrowRight} size={14} />}
-              iconPosition="right">
-              {expanded ? <Trans>Show fewer</Trans> : <Trans>All invoices</Trans>}
-            </Button>
+            <CardLink href={billingAccountRoutes.invoices(orgName, account.metadata?.name ?? '')}>
+              <Trans>All invoices</Trans>
+            </CardLink>
           ) : undefined
         }>
         <CardQueryState

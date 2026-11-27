@@ -27,6 +27,7 @@ import {
   CardQueryState,
   InlineDate,
   TableRowsSkeleton,
+  CardLink,
 } from './card-parts';
 import { DialogConfirm } from '@/components/dialog';
 import {
@@ -46,6 +47,7 @@ import {
   useDeleteChargeDraftMutation,
   useDeleteChargeMutation,
 } from '@/resources/request/client';
+import { billingAccountRoutes } from '@/utils/config/routes.config';
 import { createColumnHelper, type ColumnDef } from '@/utils/table';
 import { Button } from '@datum-cloud/datum-ui/button';
 import { DataTable } from '@datum-cloud/datum-ui/data-table';
@@ -61,6 +63,14 @@ import { useMemo, useState } from 'react';
 interface ChargesCardProps {
   orgName: string;
   account: BillingAccount;
+  /** The add charge dialog, which the page header opens too. */
+  adding?: boolean;
+  onAddingChange?: (adding: boolean) => void;
+  /**
+   * Shows the charges and drafts without ways to add, change or remove
+   * them, with a link to where that's done: the organization's billing page.
+   */
+  readOnly?: boolean;
 }
 
 const columnHelper = createColumnHelper<Charge>();
@@ -252,6 +262,7 @@ function ChargeDraftRow({
   onEdit,
   onPreview,
   onDiscard,
+  readOnly,
 }: {
   draft: ChargeDraft;
   /** How many of its lines are charges already, from a send that stopped partway. */
@@ -259,6 +270,8 @@ function ChargeDraftRow({
   onEdit: () => void;
   onPreview: () => void;
   onDiscard: () => void;
+  /** Shows the draft without its buttons. */
+  readOnly: boolean;
 }) {
   const lines = draft.spec.lines;
   const total = chargeDraftTotal(draft);
@@ -304,7 +317,7 @@ function ChargeDraftRow({
           </Text>
         ) : null}
       </div>
-      <div className="flex shrink-0 gap-1">
+      <div className={cn('flex shrink-0 gap-1', readOnly && 'hidden')}>
         <Button type="quaternary" theme="borderless" size="small" onClick={onPreview}>
           <Trans>Preview</Trans>
         </Button>
@@ -327,14 +340,19 @@ function ChargeDraftRow({
  * once the account's invoices are written by the invoice writer; existing
  * ones are listed either way.
  */
-export function BillingAccountChargesCard({ orgName, account }: ChargesCardProps) {
+export function BillingAccountChargesCard({
+  orgName,
+  account,
+  adding = false,
+  onAddingChange: setAdding = () => {},
+  readOnly = false,
+}: ChargesCardProps) {
   const accountName = account.metadata?.name ?? '';
   const chargesQuery = useChargeListForAccountQuery(orgName, accountName);
   const deleteCharge = useDeleteChargeMutation(orgName, accountName);
   const draftsQuery = useChargeDraftListForAccountQuery(orgName, accountName);
   const deleteDraft = useDeleteChargeDraftMutation(orgName, accountName);
   const { invoices } = useAccountInvoices(orgName, account);
-  const [adding, setAdding] = useState(false);
   const [removing, setRemoving] = useState<Charge | null>(null);
   const [editingDraft, setEditingDraft] = useState<ChargeDraft | null>(null);
   const [previewingDraft, setPreviewingDraft] = useState<string | null>(null);
@@ -355,8 +373,11 @@ export function BillingAccountChargesCard({ orgName, account }: ChargesCardProps
     [invoices]
   );
   const columns = useMemo(
-    () => buildColumns(invoicesByName, setRemoving) as ColumnDef<Charge, unknown>[],
-    [invoicesByName]
+    () =>
+      buildColumns(invoicesByName, setRemoving).filter(
+        (column) => !readOnly || column.id !== 'actions'
+      ) as ColumnDef<Charge, unknown>[],
+    [invoicesByName, readOnly]
   );
 
   // Until the list answers, it isn't known whether charges are served. A
@@ -374,12 +395,16 @@ export function BillingAccountChargesCard({ orgName, account }: ChargesCardProps
       title={<Trans>Charges</Trans>}
       description={
         <Trans>
-          One-off items billed once, outside the account&apos;s plan or contract: an install, remote
-          hands, a correction. Anything billed every period belongs in a contract instead.
+          One-off items, such as an install or remote hands. Anything billed every period belongs in
+          a contract.
         </Trans>
       }
       action={
-        canAdd ? (
+        readOnly ? (
+          <CardLink href={billingAccountRoutes.charges(orgName, account.metadata?.name ?? '')}>
+            <Trans>Manage charges</Trans>
+          </CardLink>
+        ) : canAdd ? (
           <Button
             type="secondary"
             theme="outline"
@@ -398,7 +423,7 @@ export function BillingAccountChargesCard({ orgName, account }: ChargesCardProps
           </Trans>
         </CardMessage>
       ) : null}
-      {canAdd ? null : (
+      {canAdd || readOnly ? null : (
         <CardMessage className="py-0">
           <Trans>
             Charges become available when this account&apos;s invoices move to the new invoice
@@ -416,6 +441,7 @@ export function BillingAccountChargesCard({ orgName, account }: ChargesCardProps
               onEdit={() => setEditingDraft(draft)}
               onPreview={() => setPreviewingDraft(draft.metadata?.name ?? null)}
               onDiscard={() => setDiscarding(draft)}
+              readOnly={readOnly}
             />
           ))}
         </div>
@@ -430,12 +456,8 @@ export function BillingAccountChargesCard({ orgName, account }: ChargesCardProps
           </div>
         }
         error={<Trans>Couldn&apos;t load charges</Trans>}
-        empty={
-          <Trans>
-            No charges yet. A charge goes on the account&apos;s next invoice, or on an invoice of
-            its own straight away.
-          </Trans>
-        }>
+        compactEmpty
+        empty={<Trans>No charges yet.</Trans>}>
         <div className={TABLE_CARD_FRAME_CLASS}>
           <DataTable.Client
             data={charges}

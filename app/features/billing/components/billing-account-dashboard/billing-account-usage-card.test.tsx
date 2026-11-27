@@ -34,13 +34,15 @@ const list = (services: ServiceSpend[]) => (
 describe('ServiceSpendList', () => {
   it('shows a discounted service before and after its discount', () => {
     const html = text(list([service('Compute', 0, 40)]));
-    expect(html).toContain('Compute$0');
-    expect(html).toContain('$40.00 before discount · −$40.00 (100% off)');
+    // The price before discounts, struck through, then what's due.
+    expect(html).toContain('Compute$40.00$0');
+    expect(html).toContain('100% of usage');
+    expect(html).toContain('100% off');
   });
 
   it('shows only the cost of a service that is not discounted', () => {
     const html = text(list([service('Network', 12.5)]));
     expect(html).toContain('Network$12.50');
-    expect(html).not.toContain('before discount');
+    expect(html).not.toContain('% off');
   });
 });

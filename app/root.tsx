@@ -99,7 +99,10 @@ function App() {
   }, [locale]);
 
   return (
-    <html lang={lang} className={clsx(resolvedTheme)} suppressHydrationWarning>
+    // overscroll-none goes on <html>: it's the element that scrolls, and the
+    // browser ignores it on <body>. Without it the page rubber-bands, the
+    // sticky bars move with it and the fixed left rail doesn't.
+    <html lang={lang} className={clsx(resolvedTheme, 'overscroll-none')} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -194,7 +197,7 @@ function ErrorLayout({ children }: { children: React.ReactNode }) {
   const { resolvedTheme } = useTheme();
 
   return (
-    <html lang="en" className={clsx(resolvedTheme)} suppressHydrationWarning>
+    <html lang="en" className={clsx(resolvedTheme, 'overscroll-none')} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

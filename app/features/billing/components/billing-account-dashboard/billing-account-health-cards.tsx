@@ -1,8 +1,23 @@
 import { useAccountInvoices, useAccountUsageSpend } from '../../hooks';
 import { isUsageSpike, type UsageSpendComparison } from '../../lib/account-health';
-import type { ContractState } from '../../lib/contract';
+import {
+  contractInvoiceDay,
+  discountedFeeTotal,
+  getContractFees,
+  offerBillsUsage,
+  recurringTotals,
+  type ContractState,
+} from '../../lib/contract';
+import { contractInvoiceSchedule, upcomingInvoices } from '../../lib/contract-schedule';
 import { getNextInvoice, summarizeInvoices, type InvoiceSummary } from '../../lib/invoice-summary';
-import { formatMoney, getAccountCurrency, type BillingAccount } from '../../utils';
+import { getBillingMode } from '../../lib/payment-terms';
+import {
+  formatMoney,
+  getAccountCurrency,
+  getEffectiveNetDays,
+  type BillingAccount,
+} from '../../utils';
+import { recurringTotalsText } from '../contract-fee-text';
 import { frequencyLabel, InlineDate } from './card-parts';
 import {
   StatTile,
@@ -11,7 +26,11 @@ import {
   StatTileMessage,
   StatTileSkeleton,
 } from '@/components/stat-tile';
-import { SpendValue } from '@/features/organization/usage/components/spend-value';
+import { DiscountedSpend } from '@/features/organization/usage/components/discounted-spend';
+import {
+  useBillingEntitlementForAccountQuery,
+  useOfferDetailQuery,
+} from '@/resources/request/client';
 import { STATUS_ICONS } from '@/utils/config/icons.config';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
@@ -26,6 +45,8 @@ interface HealthCardsProps {
   now: Date;
   /** The account's contract, which sets when it's invoiced, if it has one. */
   contract?: ContractState | null;
+  /** The account's plan doesn't bill usage, so there's no usage to show. */
+  usageNotBilled?: boolean;
 }
 
 /**
@@ -73,49 +94,37 @@ function OutstandingTile(props: HealthCardsProps) {
     <InvoiceTile
       {...props}
       title={<Trans>Outstanding balance</Trans>}
-      render={(s, more) => (
-        <>
-          <StatTileHeadline>{`${formatMoney(s.outstanding, currency)}${more}`}</StatTileHeadline>
-          <StatTileDetail>
-            {s.unpaidCount === 0 ? (
-              <Trans>Nothing owed</Trans>
-            ) : (
-              <Plural value={s.unpaidCount} one="# unpaid invoice" other="# unpaid invoices" />
-            )}
-          </StatTileDetail>
-        </>
-      )}
-    />
-  );
-}
-
-function PastDueTile(props: HealthCardsProps) {
-  const currency = getAccountCurrency(props.account);
-  return (
-    <InvoiceTile
-      {...props}
-      title={<Trans>Past due</Trans>}
-      render={(s) =>
-        s.pastDueCount === 0 ? (
+      render={(s, more) => {
+        const unpaid = (
+          <Plural value={s.unpaidCount} one="# unpaid invoice" other="# unpaid invoices" />
+        );
+        const pastDue = formatMoney(s.pastDue, currency);
+        const overdue = <PastDueDetail count={s.pastDueCount} days={s.maxDaysOverdue} />;
+        return (
           <>
-            <StatTileHeadline>{formatMoney(0, currency)}</StatTileHeadline>
+            <StatTileHeadline>{`${formatMoney(s.outstanding, currency)}${more}`}</StatTileHeadline>
             <StatTileDetail>
-              <Trans>Nothing past due</Trans>
+              {s.unpaidCount === 0 ? (
+                <Trans>Nothing owed</Trans>
+              ) : s.pastDueCount === 0 ? (
+                <Trans>{unpaid} · nothing past due</Trans>
+              ) : (
+                unpaid
+              )}
             </StatTileDetail>
+            {s.pastDueCount > 0 ? (
+              <StatTileDetail className="text-destructive flex items-center gap-1">
+                <Icon icon={STATUS_ICONS.alert} size={12} className="shrink-0" aria-hidden />
+                <span>
+                  <Trans>
+                    {pastDue} past due · {overdue}
+                  </Trans>
+                </span>
+              </StatTileDetail>
+            ) : null}
           </>
-        ) : (
-          <>
-            <StatTileHeadline
-              className="text-destructive"
-              icon={<Icon icon={STATUS_ICONS.alert} size={18} className="shrink-0" aria-hidden />}>
-              {formatMoney(s.pastDue, currency)}
-            </StatTileHeadline>
-            <StatTileDetail>
-              <PastDueDetail count={s.pastDueCount} days={s.maxDaysOverdue} />
-            </StatTileDetail>
-          </>
-        )
-      }
+        );
+      }}
     />
   );
 }
@@ -135,21 +144,50 @@ function PastDueDetail({ count, days }: { count: number; days: number }) {
   );
 }
 
-function LifetimePaidTile(props: HealthCardsProps) {
-  const currency = getAccountCurrency(props.account);
+/**
+ * What the contract's recurring fees come to each period, after discounts
+ * and before tax. Shown in place of usage for a contract that bills none.
+ */
+function ContractValueTile({ orgName, account, contract }: HealthCardsProps) {
+  const accountName = account.metadata?.name ?? '';
+  const entitlementQuery = useBillingEntitlementForAccountQuery(orgName, accountName);
+  const offerQuery = useOfferDetailQuery(
+    contract ? (entitlementQuery.data?.spec?.offerRef?.name ?? '') : ''
+  );
+  const currency = getAccountCurrency(account);
+  const totals = useMemo(
+    () =>
+      recurringTotals(
+        getContractFees(offerQuery.data).map((fee) => ({
+          ...fee,
+          amount: discountedFeeTotal(fee),
+          quantity: 1,
+        }))
+      ),
+    [offerQuery.data]
+  );
+  const recurring = recurringTotalsText({
+    monthly: totals.monthly > 0 ? formatMoney(totals.monthly, currency) : undefined,
+    quarterly: totals.quarterly > 0 ? formatMoney(totals.quarterly, currency) : undefined,
+    annual: totals.annual > 0 ? formatMoney(totals.annual, currency) : undefined,
+  });
   return (
-    <InvoiceTile
-      {...props}
-      title={<Trans>Lifetime paid</Trans>}
-      render={(s, more) => (
+    <StatTile title={<Trans>Contract value</Trans>}>
+      {offerQuery.isLoading || entitlementQuery.isLoading ? (
+        <StatTileSkeleton />
+      ) : !offerQuery.data ? (
+        <StatTileMessage>
+          <Trans>Couldn&apos;t load the contract.</Trans>
+        </StatTileMessage>
+      ) : (
         <>
-          <StatTileHeadline>{`${formatMoney(s.lifetimePaid, currency)}${more}`}</StatTileHeadline>
+          <StatTileHeadline>{recurring || formatMoney(0, currency)}</StatTileHeadline>
           <StatTileDetail>
-            <Plural value={s.paidCount} one="# paid invoice" other="# paid invoices" />
+            <Trans>Recurring fees · usage isn&apos;t billed</Trans>
           </StatTileDetail>
         </>
       )}
-    />
+    </StatTile>
   );
 }
 
@@ -158,7 +196,7 @@ function UsageTrend({ comparison }: { comparison: UsageSpendComparison }) {
   if (previous <= 0) {
     return (
       <StatTileDetail>
-        <Trans>No spend last cycle at this point</Trans>
+        <Trans>No spend at this point last cycle</Trans>
       </StatTileDetail>
     );
   }
@@ -168,7 +206,7 @@ function UsageTrend({ comparison }: { comparison: UsageSpendComparison }) {
     return (
       <StatTileDetail className="text-warning flex items-center gap-1">
         <Icon icon={ArrowUp} size={12} className="shrink-0" aria-hidden />
-        <Trans>{times}× last cycle at this point</Trans>
+        <Trans>{times}× this point last cycle</Trans>
       </StatTileDetail>
     );
   }
@@ -176,14 +214,14 @@ function UsageTrend({ comparison }: { comparison: UsageSpendComparison }) {
   if (percent === 0) {
     return (
       <StatTileDetail>
-        <Trans>Same as last cycle at this point</Trans>
+        <Trans>Same as this point last cycle</Trans>
       </StatTileDetail>
     );
   }
   return (
     <StatTileDetail className="flex items-center gap-1">
       <Icon icon={factor > 1 ? ArrowUp : ArrowDown} size={12} className="shrink-0" aria-hidden />
-      <Trans>{percent}% vs last cycle at this point</Trans>
+      <Trans>{percent}% vs this point last cycle</Trans>
     </StatTileDetail>
   );
 }
@@ -209,7 +247,8 @@ function UsageTile({ orgName, account }: HealthCardsProps) {
       ) : (
         <>
           <StatTileHeadline>
-            <SpendValue
+            <DiscountedSpend
+              beforeClassName="text-sm font-normal"
               spend={
                 current.usage.spendError
                   ? undefined
@@ -233,18 +272,32 @@ function UsageTile({ orgName, account }: HealthCardsProps) {
  * Dates come from the account's payment terms, or its contract's billing
  * day, so there's nothing to load beyond the entitlement.
  */
-function NextInvoiceTile({ account, now, contract }: HealthCardsProps) {
+function NextInvoiceTile({ orgName, account, now, contract }: HealthCardsProps) {
   const next = useMemo(() => getNextInvoice(account, now, contract), [account, now, contract]);
   // A contract's first invoice goes out the day it starts, then monthly.
   const frequency = next.contractStart ? t`Contract starts` : frequencyLabel(next.frequency);
+  // Net days only mean something on payment terms: a card account is
+  // charged when it's invoiced, whatever spec.paymentTerms says.
+  const byCard = getBillingMode(account) === 'card';
+  const fixed = useContractNextInvoiceTotal(orgName, account, now, contract);
+  const issued = (
+    <InlineDate date={next.issuedAt} variant="absolute" format="MMM d, yyyy" timezone="UTC" />
+  );
 
   return (
     <StatTile title={<Trans>Next invoice</Trans>}>
-      <StatTileHeadline>
-        <InlineDate date={next.issuedAt} variant="absolute" format="MMM d, yyyy" timezone="UTC" />
-      </StatTileHeadline>
+      {/* A contract's fixed fees are known ahead, so they lead; otherwise
+          the date does, since billing doesn't estimate usage. */}
+      <StatTileHeadline>{fixed ? fixed.total : issued}</StatTileHeadline>
+      {fixed ? (
+        <StatTileDetail>
+          {fixed.billsUsage ? <Trans>{issued} · plus usage</Trans> : issued}
+        </StatTileDetail>
+      ) : null}
       <StatTileDetail>
-        {next.dueAt ? (
+        {byCard ? (
+          <Trans>{frequency} · charged to the card</Trans>
+        ) : next.dueAt ? (
           <Trans>
             {frequency} · due{' '}
             <InlineDate date={next.dueAt} variant="absolute" format="MMM d" timezone="UTC" /> (net{' '}
@@ -258,17 +311,57 @@ function NextInvoiceTile({ account, now, contract }: HealthCardsProps) {
   );
 }
 
-/** The dashboard's headline numbers. Each tile loads and fails on its own. */
+/**
+ * The fixed fees on a contract's next invoice, as the contract card's
+ * schedule works them out: before tax, discounts and any usage. Nothing for
+ * an account without a contract, or a contract with no fee on that invoice:
+ * billing doesn't estimate usage.
+ */
+function useContractNextInvoiceTotal(
+  orgName: string,
+  account: BillingAccount,
+  now: Date,
+  contract?: ContractState | null
+): { total: string; billsUsage: boolean } | null {
+  const accountName = account.metadata?.name ?? '';
+  const entitlementQuery = useBillingEntitlementForAccountQuery(orgName, accountName);
+  const offerName = contract ? (entitlementQuery.data?.spec?.offerRef?.name ?? '') : '';
+  const offerQuery = useOfferDetailQuery(offerName);
+  return useMemo(() => {
+    if (!contract || !offerQuery.data) return null;
+    const [first] = upcomingInvoices(
+      contractInvoiceSchedule({
+        startsAt: contract.startsAt,
+        fees: getContractFees(offerQuery.data),
+        billsUsage: offerBillsUsage(offerQuery.data),
+        netDays: getEffectiveNetDays(account),
+        invoiceDay: contractInvoiceDay(contract.billingDay, account.spec?.paymentTerms),
+      }),
+      now
+    );
+    if (!first || first.total <= 0) return null;
+    return {
+      total: formatMoney(first.total, getAccountCurrency(account)),
+      billsUsage: first.billsUsage,
+    };
+  }, [contract, offerQuery.data, account, now]);
+}
+
+/**
+ * The dashboard's headline numbers: what's owed, the next invoice, and
+ * this cycle's usage, or the contract's value when it bills no usage. Each
+ * tile loads and fails on its own.
+ */
 export function BillingAccountHealthCards(props: HealthCardsProps) {
   return (
     <section
       aria-label={t`Account summary`}
-      className="grid grid-cols-1 gap-4 @xl/main:grid-cols-2 @5xl/main:grid-cols-5">
+      // Wide, the last tile is as wide as the page's side column, so the
+      // tiles' edges meet the cards' below them.
+      className="grid grid-cols-1 gap-4 @xl/main:grid-cols-3 @5xl/main:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_400px]">
       <OutstandingTile {...props} />
-      <PastDueTile {...props} />
-      <UsageTile {...props} />
       <NextInvoiceTile {...props} />
-      <LifetimePaidTile {...props} />
+      {props.usageNotBilled ? <ContractValueTile {...props} /> : <UsageTile {...props} />}
     </section>
   );
 }

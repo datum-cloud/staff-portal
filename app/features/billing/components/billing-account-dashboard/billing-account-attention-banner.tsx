@@ -397,7 +397,9 @@ export function BillingAccountAttentionBanner({
         failed + partial > 0 ? (
           <Unchecked failed={failed} partial={partial} />
         ) : (
-          passing.map(passingLabel).join(' · ')
+          <span title={passing.map(passingLabel).join(' · ')}>
+            <Plural value={passing.length} one="# check passed" other="# checks passed" />
+          </span>
         )
       }
       incomplete={

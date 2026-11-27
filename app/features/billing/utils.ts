@@ -579,7 +579,11 @@ export type BillingAccountDisplayStatus = {
   tooltip?: string;
 };
 
-/** Prefer Failed when payment failure is critical; otherwise the account phase. */
+/**
+ * Prefer Failed when payment failure is critical; otherwise the account's
+ * phase, in staff's words: a Ready account is one that's active, so it
+ * reads "Active", in the badge's green.
+ */
 export const getBillingAccountDisplayStatus = (
   account: ComMiloapisBillingV1Alpha1BillingAccount,
   paymentMethods: readonly ComMiloapisBillingV1Alpha1PaymentMethod[]
@@ -591,7 +595,8 @@ export const getBillingAccountDisplayStatus = (
       tooltip: formatPaymentMethodFailureTooltip(failedMethod),
     };
   }
-  return { state: account.status?.phase ?? 'Unknown' };
+  const phase = account.status?.phase ?? 'Unknown';
+  return { state: phase === 'Ready' ? 'Active' : phase };
 };
 
 export const getActiveProjectBinding = (

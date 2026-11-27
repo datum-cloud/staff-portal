@@ -6,18 +6,28 @@ import { ButtonCopy } from '@/components/button';
 import { PageHeader } from '@/components/page-header';
 import { ACTION_ICONS, ENTITY_ICONS } from '@/utils/config/icons.config';
 import { orgRoutes } from '@/utils/config/routes.config';
-import { Button, LinkButton } from '@datum-cloud/datum-ui/button';
+import { Button } from '@datum-cloud/datum-ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@datum-cloud/datum-ui/dropdown';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { CalendarDays, ChevronDown, Coins, CreditCard, FileText, Hash } from 'lucide-react';
+import {
+  CalendarDays,
+  ChevronDown,
+  Coins,
+  CreditCard,
+  FileSearch,
+  FileText,
+  Hash,
+  Plus,
+} from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 
@@ -33,8 +43,14 @@ interface BillingAccountHeaderProps {
   orgDisplayName: string;
   account: BillingAccount;
   cloudPortalUrl?: string | null;
-  /** Items for the Actions menu; the menu is hidden when there are none. */
+  /** Items for the More menu, above its links to the organization and Cloud Portal. */
   actions?: BillingAccountHeaderAction[];
+  /** Opens the add charge dialog; unset when the account can't take charges. */
+  onAddCharge?: () => void;
+  /** Opens the next-invoice preview; unset when there's none to show. */
+  onPreviewInvoice?: () => void;
+  /** Whether the preview is of a contract's first invoice. */
+  previewsFirstInvoice?: boolean;
 }
 
 function MetaItem({ icon, children }: { icon: typeof Hash; children: ReactNode }) {
@@ -71,6 +87,9 @@ export function BillingAccountHeader({
   account,
   cloudPortalUrl,
   actions = [],
+  onAddCharge,
+  onPreviewInvoice,
+  previewsFirstInvoice = false,
 }: BillingAccountHeaderProps) {
   const accountName = account.metadata?.name ?? '';
 
@@ -118,45 +137,66 @@ export function BillingAccountHeader({
         </Text>
       }
       actions={
+        // What staff do most sits out as buttons; the rest, and the links
+        // away from the page, are in the menu.
         <>
-          <LinkButton type="secondary" theme="outline" href={orgRoutes.detail(orgName)}>
-            <Trans>View organization</Trans>
-          </LinkButton>
-          {cloudPortalUrl ? (
-            <LinkButton
+          {onPreviewInvoice ? (
+            <Button
               type="secondary"
               theme="outline"
-              href={cloudPortalUrl}
-              target="_blank"
-              rel="noreferrer"
-              icon={<ACTION_ICONS.externalLink className="size-4" />}
-              iconPosition="right">
-              <Trans>Open in Cloud Portal</Trans>
-            </LinkButton>
+              icon={<Icon icon={FileSearch} size={14} />}
+              onClick={onPreviewInvoice}>
+              {previewsFirstInvoice ? (
+                <Trans>Preview first invoice</Trans>
+              ) : (
+                <Trans>Preview next invoice</Trans>
+              )}
+            </Button>
           ) : null}
-          {actions.length > 0 ? (
-            <DropdownMenu modal={false}>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  type="secondary"
-                  theme="solid"
-                  icon={<Icon icon={ChevronDown} size={14} />}
-                  iconPosition="right">
-                  <Trans>Actions</Trans>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {actions.map((action) => (
-                  <DropdownMenuItem
-                    key={action.key}
-                    disabled={action.disabled}
-                    onClick={action.onSelect}>
-                    {action.label}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+          {onAddCharge ? (
+            <Button
+              type="secondary"
+              theme="solid"
+              icon={<Icon icon={Plus} size={14} />}
+              onClick={onAddCharge}>
+              <Trans>Add charge</Trans>
+            </Button>
           ) : null}
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button
+                type="secondary"
+                theme="outline"
+                icon={<Icon icon={ChevronDown} size={14} />}
+                iconPosition="right">
+                <Trans>More</Trans>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {actions.map((action) => (
+                <DropdownMenuItem
+                  key={action.key}
+                  disabled={action.disabled}
+                  onClick={action.onSelect}>
+                  {action.label}
+                </DropdownMenuItem>
+              ))}
+              {actions.length > 0 ? <DropdownMenuSeparator /> : null}
+              <DropdownMenuItem asChild>
+                <Link to={orgRoutes.detail(orgName)}>
+                  <Trans>View organization</Trans>
+                </Link>
+              </DropdownMenuItem>
+              {cloudPortalUrl ? (
+                <DropdownMenuItem asChild>
+                  <a href={cloudPortalUrl} target="_blank" rel="noreferrer">
+                    <Trans>Open in Cloud Portal</Trans>
+                    <ACTION_ICONS.externalLink className="size-3.5" />
+                  </a>
+                </DropdownMenuItem>
+              ) : null}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </>
       }
     />

@@ -1,21 +1,28 @@
 import { CONTRACT_CURRENCY } from '../../lib/contract';
-import { isPricedPerContract, type ListFeeOption } from '../../lib/contract-list-fees';
-import { rateSlots, type UsageMeterOption } from '../../lib/contract-usage';
-import { formatMoney, indexServicesByRef } from '../../utils';
-import { feeChargeText, periodUnitText, rateSlotText } from '../contract-fee-text';
+import {
+  isPricedPerContract,
+  listFeeRowsFromOffer,
+  type ListFeeOption,
+} from '../../lib/contract-list-fees';
+import { rateSlots, usageRowsFromOffer, type UsageMeterOption } from '../../lib/contract-usage';
+import { formatMoney, getOfferDisplayName, indexServicesByRef } from '../../utils';
+import { periodUnitText, rateSlotText } from '../contract-fee-text';
 import { PricingInfo } from '../pricing-info';
 import { FeeSupplyDate, useFeeItemOptions } from './fee-supply-date';
 import type { ContractFormValues, ListFeeRowValues, UsageRowValues } from './schema';
 import { WholeNumberInput } from './whole-number-input';
-import { EMBEDDED_TABLE_HEADER_CELL_CLASS, TABLE_CARD_FRAME_CLASS } from '@/features/milo';
-import { useServiceListQuery } from '@/resources/request/client';
-import { Button } from '@datum-cloud/datum-ui/button';
+import { EMBEDDED_TABLE_HEADER_CELL_CLASS } from '@/features/milo';
+import { HEADER_STACK_H } from '@/features/milo/lib/dimensions';
+import {
+  useBillingDefaultOfferQuery,
+  useOfferDetailQuery,
+  useServiceListQuery,
+} from '@/resources/request/client';
 import { Checkbox } from '@datum-cloud/datum-ui/checkbox';
 import { Form } from '@datum-cloud/datum-ui/form';
 import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Input } from '@datum-cloud/datum-ui/input';
 import {
-  Table,
   TableBody,
   TableCell,
   TableHead,
@@ -25,10 +32,23 @@ import {
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
 import { t } from '@lingui/core/macro';
-import { Trans } from '@lingui/react/macro';
+import { Plural, Trans } from '@lingui/react/macro';
 import { ChevronDown, ChevronRight } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
+
+/**
+ * The header's cells, stuck below the page's navbar and breadcrumb bar
+ * (--price-list-top) and opaque, so rows scrolling under them don't show
+ * through.
+ */
+const STICKY_HEADER_CELL_CLASS = cn(
+  EMBEDDED_TABLE_HEADER_CELL_CLASS,
+  'top-(--price-list-top) bg-table-surface-subtle'
+);
+
+/** The table's columns: the item, then its quantity, discount and customer price. */
+const COLUMNS = 4;
 
 type PriceListEntry =
   | { kind: 'usage'; option: UsageMeterOption; index: number }
@@ -138,6 +158,7 @@ export function PriceListTable({
 
   return (
     <div className="flex flex-col gap-2">
+      <IncludeDefaultOffer usageOptions={usageOptions} feeOptions={feeOptions} />
       <Input
         value={search}
         onChange={(event) => setSearch(event.target.value)}
@@ -145,29 +166,29 @@ export function PriceListTable({
         aria-label={t`Search the price list`}
         className="h-9 w-full sm:w-64"
       />
-      <div className={cn(TABLE_CARD_FRAME_CLASS, 'overflow-x-auto')}>
-        <Table className="min-w-216">
+      {/*
+        The header sticks below the navbar and breadcrumb bar as the page
+        scrolls, so nothing between it and the page may scroll or clip: a
+        plain table rather than datum-ui's, which wraps it in a scroller, and
+        a frame that only scrolls sideways on a narrow screen, where the
+        table is wider than it.
+      */}
+      <div
+        className="dark:border-border border-table-line overflow-x-auto rounded-sm border md:overflow-visible"
+        style={{ '--price-list-top': `${HEADER_STACK_H}px` } as CSSProperties}>
+        <table className="w-full min-w-xl table-fixed caption-bottom text-sm">
           <TableHeader>
             <TableRow className="hover:bg-transparent">
-              <TableHead className={EMBEDDED_TABLE_HEADER_CELL_CLASS}>
+              <TableHead className={cn(STICKY_HEADER_CELL_CLASS, 'rounded-tl-sm')}>
                 <SelectAll entries={onScreen} />
               </TableHead>
-              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-44')}>
-                <Trans>List price</Trans>
-              </TableHead>
-              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-36')}>
-                <Trans>Billed</Trans>
-              </TableHead>
-              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-32')}>
-                <Trans>Renewals</Trans>
-              </TableHead>
-              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-20')}>
+              <TableHead className={cn(STICKY_HEADER_CELL_CLASS, 'w-20')}>
                 <Trans>Qty</Trans>
               </TableHead>
-              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-20')}>
+              <TableHead className={cn(STICKY_HEADER_CELL_CLASS, 'w-20')}>
                 <Trans>% off</Trans>
               </TableHead>
-              <TableHead className={cn(EMBEDDED_TABLE_HEADER_CELL_CLASS, 'w-36')}>
+              <TableHead className={cn(STICKY_HEADER_CELL_CLASS, 'w-40 rounded-tr-sm')}>
                 <Trans>Customer price</Trans>
               </TableHead>
             </TableRow>
@@ -206,7 +227,7 @@ export function PriceListTable({
             ))}
             {!anyVisible ? (
               <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={7} className="py-6 text-center">
+                <TableCell colSpan={COLUMNS} className="py-6 text-center">
                   <Text size="sm" textColor="muted">
                     <Trans>Nothing on the price list matches “{search.trim()}”.</Trans>
                   </Text>
@@ -214,9 +235,98 @@ export function PriceListTable({
               </TableRow>
             ) : null}
           </TableBody>
-        </Table>
+        </table>
       </div>
     </div>
+  );
+}
+
+/**
+ * Ticks, or unticks, everything the platform's default offer bills that's
+ * on the price list, at the offer's pricing versions. The offer's discounts
+ * aren't copied: the contract sets its own. Rows already ticked are left as
+ * they are, so a customer price typed in one is kept. Shown only when the
+ * default offer bills something on the price list.
+ */
+function IncludeDefaultOffer({
+  usageOptions,
+  feeOptions,
+}: {
+  usageOptions: UsageMeterOption[];
+  feeOptions: ListFeeOption[];
+}) {
+  const form = Form.useFormContext().form.raw as UseFormReturn<ContractFormValues>;
+  const usage = (Form.useWatch('usage') as UsageRowValues[] | undefined) ?? [];
+  const listFees = (Form.useWatch('listFees') as ListFeeRowValues[] | undefined) ?? [];
+  const defaultOfferQuery = useBillingDefaultOfferQuery();
+  const offerQuery = useOfferDetailQuery(defaultOfferQuery.data ?? '');
+  const offer = offerQuery.data;
+  const included = useMemo(
+    () => ({
+      usage: usageRowsFromOffer(usageOptions, offer)
+        .map((row, index) => ({ row, index }))
+        .filter(({ row }) => row.selected),
+      fees: listFeeRowsFromOffer(feeOptions, offer)
+        .map((row, index) => ({ row, index }))
+        .filter(({ row }) => row.selected),
+    }),
+    [usageOptions, feeOptions, offer]
+  );
+  const total = included.usage.length + included.fees.length;
+  if (!offer || total === 0) return null;
+
+  const ticked =
+    included.usage.filter(({ index }) => usage[index]?.selected).length +
+    included.fees.filter(({ index }) => listFees[index]?.selected).length;
+  const checked = ticked === 0 ? false : ticked === total ? true : ('indeterminate' as const);
+  const options = { shouldDirty: true, shouldValidate: form.formState.isSubmitted };
+  const include = () => {
+    included.usage.forEach(({ row, index }) => {
+      if (usage[index]?.selected) return;
+      form.setValue(`usage.${index}.pricingName`, row.pricingName, options);
+      form.setValue(`usage.${index}.selected`, true, options);
+    });
+    included.fees.forEach(({ row, index }) => {
+      if (listFees[index]?.selected) return;
+      form.setValue(`listFees.${index}.quantity`, row.quantity, options);
+      form.setValue(`listFees.${index}.selected`, true, options);
+    });
+  };
+  const exclude = () => {
+    included.usage.forEach(({ index }) => form.setValue(`usage.${index}.selected`, false, options));
+    included.fees.forEach(({ index }) =>
+      form.setValue(`listFees.${index}.selected`, false, options)
+    );
+  };
+  const name = getOfferDisplayName(offer);
+  return (
+    <label className="hover:bg-muted/40 flex cursor-pointer items-start gap-2 rounded-md border px-3 py-2.5">
+      <Checkbox
+        checked={checked}
+        onCheckedChange={() => (checked === true ? exclude() : include())}
+        className="mt-0.5"
+      />
+      <span className="flex flex-col gap-0.5">
+        <Text size="sm" weight="medium">
+          <Trans>Include everything in the default offer, {name}</Trans>
+        </Text>
+        <Text size="xs" textColor="muted">
+          <Plural
+            value={total}
+            one="Ticks its # price, at list price. Its discounts aren't copied."
+            other="Ticks its # prices, at list price. Its discounts aren't copied."
+          />
+          {checked === 'indeterminate' ? (
+            <>
+              {' '}
+              <Trans>
+                {ticked} of {total} ticked.
+              </Trans>
+            </>
+          ) : null}
+        </Text>
+      </span>
+    </label>
   );
 }
 
@@ -247,7 +357,7 @@ function SelectAll({ entries }: { entries: PriceListEntry[] }) {
         aria-label={checked === true ? t`Untick all` : t`Tick all`}
       />
       <span>
-        <Trans>Pricing</Trans>
+        <Trans>Item</Trans>
       </span>
     </div>
   );
@@ -278,7 +388,7 @@ function ServiceGroup({
   return (
     <>
       <TableRow className="bg-muted/40 hover:bg-muted/40">
-        <TableCell colSpan={7} className="py-1.5">
+        <TableCell colSpan={COLUMNS} className="py-1.5">
           {onToggle ? (
             <button
               type="button"
@@ -293,12 +403,12 @@ function ServiceGroup({
               <Text size="xs" weight="medium" textColor="muted">
                 {title}
               </Text>
-              {!open && ticked > 0 ? (
-                <Text size="xs" textColor="muted">
-                  {' · '}
-                  <Trans>{ticked} ticked</Trans>
-                </Text>
-              ) : null}
+              <Text size="xs" textColor="muted">
+                {' · '}
+                <Trans>
+                  {ticked} of {entries.length} ticked
+                </Trans>
+              </Text>
             </button>
           ) : (
             <Text size="xs" weight="medium" textColor="muted">
@@ -347,21 +457,77 @@ function PriceListRow({
   );
 }
 
-/** A list fee's name, after its SKU when it has one. The SKU is for staff only. */
-const feeLabel = (option: ListFeeOption) =>
-  option.sku ? `[${option.sku}] ${option.label}` : option.label;
+/**
+ * A list fee's name, with its SKU beside it as a small tag. The SKU is for
+ * staff only and never goes on an invoice.
+ */
+function ItemName({
+  name,
+  label,
+  sku,
+}: {
+  /** The ticking field's name. */
+  name: string;
+  label: string;
+  sku?: string;
+}) {
+  return (
+    <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5">
+      <Form.Field name={name} className="space-y-0">
+        <Form.Checkbox label={label} />
+      </Form.Field>
+      {sku ? (
+        <Text
+          as="span"
+          size="2xs"
+          textColor="muted"
+          className="rounded border px-1 font-mono"
+          title={t`SKU, for staff only`}>
+          {sku}
+        </Text>
+      ) : null}
+    </div>
+  );
+}
+
+/** How often a list fee charges, as a word: "one-time", "monthly", "quarterly" or "annual". */
+const feeCadenceText = (option: ListFeeOption) => {
+  if (option.chargeType === 'OneTime') return t`one-time`;
+  switch (option.interval) {
+    case 'quarterly':
+      return t`quarterly`;
+    case 'annual':
+      return t`annual`;
+    default:
+      return t`monthly`;
+  }
+};
 
 /**
- * A list fee's price, e.g. "$300.00 / month per port" or "$6,000.00 / year",
- * or "Per contract / month" for one priced on each order form.
+ * A list fee's price and how often it charges, under its name, e.g.
+ * "$300.00 per port · monthly", or "Priced per contract · one-time, per
+ * project" for one whose amount is set on each order form.
  */
 const feePriceText = (option: ListFeeOption) => {
-  const amount = isPricedPerContract(option)
-    ? t`Per contract`
-    : formatMoney(Number.parseFloat(option.amount), CONTRACT_CURRENCY);
-  const price = feeChargeText(amount, option);
-  return option.pricingUnit ? t`${price} per ${option.pricingUnit}` : price;
+  const cadence = feeCadenceText(option);
+  const unit = option.pricingUnit;
+  if (isPricedPerContract(option)) {
+    return unit
+      ? t`Priced per contract · ${cadence}, per ${unit}`
+      : t`Priced per contract · ${cadence}`;
+  }
+  const amount = formatMoney(Number.parseFloat(option.amount), CONTRACT_CURRENCY);
+  return unit ? t`${amount} per ${unit} · ${cadence}` : t`${amount} · ${cadence}`;
 };
+
+/** What an unticked row's customer price would be: the list price, or none yet. */
+function UntickedPrice({ perContract = false }: { perContract?: boolean }) {
+  return (
+    <Text size="sm" textColor="muted">
+      {perContract ? <Trans>Priced per contract</Trans> : <Trans>List price</Trans>}
+    </Text>
+  );
+}
 
 function ListFeeRows({
   option,
@@ -378,22 +544,59 @@ function ListFeeRows({
   const selected = Boolean(row?.selected);
   const prefix = `listFees.${index}.`;
   const options = useFeeItemOptions(prefix);
+  const perContract = isPricedPerContract(option);
   // A ticked one-time fee has item options: its supply date.
   const hasOptions = selected && option.chargeType === 'OneTime';
+  // Unticked rows show no inputs. They stay mounted, hidden, so what was
+  // typed in them is kept if the row is ticked again.
+  const whenTicked = cn(!selected && 'hidden');
   return (
     <>
       <TableRow className={cn(hidden && 'hidden', hasOptions && options.open && 'border-b-0')}>
-        <TableCell className="align-middle">
+        <TableCell className="align-top whitespace-normal">
           <div className="flex flex-col gap-1">
-            <Form.Field name={`listFees.${index}.selected`}>
-              <Form.Checkbox label={feeLabel(option)} />
-            </Form.Field>
+            <ItemName name={`${prefix}selected`} label={option.label} sku={option.sku} />
+            <Text size="xs" textColor="muted" className="pl-6">
+              {feePriceText(option)}
+            </Text>
             <PricingInfo
               description={option.description}
               notes={option.notes}
               clamp
-              className="max-w-xs pl-6"
+              className="max-w-md pl-6"
             />
+            {option.chargeType === 'Recurring' ? (
+              // When the contract invoices it, and for how long: its terms,
+              // not the list fee's. Empty renewals for no end.
+              <Text
+                as="div"
+                size="sm"
+                textColor="muted"
+                className={cn('flex flex-wrap items-center gap-x-2 gap-y-1 pt-1 pl-6', whenTicked)}>
+                <Trans>Billed</Trans>
+                {/* space-y-0: Form.Field spaces its children, and a Select is
+                    followed by its hidden native select. */}
+                <Form.Field name={`${prefix}billingTiming`} className="w-32 space-y-0">
+                  <Form.Select aria-label={t`Billed`}>
+                    <Form.SelectItem value="InArrears">
+                      <Trans>In arrears</Trans>
+                    </Form.SelectItem>
+                    <Form.SelectItem value="InAdvance">
+                      <Trans>In advance</Trans>
+                    </Form.SelectItem>
+                  </Form.Select>
+                </Form.Field>
+                <Trans>for</Trans>
+                <Form.Field name={`${prefix}periods`} className="space-y-0">
+                  <WholeNumberInput
+                    placeholder={t`No end`}
+                    aria-label={t`Renewals`}
+                    className="w-20"
+                  />
+                </Form.Field>
+                {periodUnitText(option.interval)}
+              </Text>
+            ) : null}
             {hasOptions ? (
               <button
                 type="button"
@@ -411,81 +614,30 @@ function ListFeeRows({
             ) : null}
           </div>
         </TableCell>
-        <TableCell className="align-middle">
-          <Text size="sm" className="tabular-nums">
-            {feePriceText(option)}
-          </Text>
-        </TableCell>
-        <TableCell className="align-middle">
-          {option.chargeType === 'Recurring' ? (
-            // When the contract invoices it: its term, not the list fee's.
-            // space-y-0: Form.Field spaces its children, and a Select is followed
-            // by its hidden native select, so its box would carry a bottom margin
-            // and sit higher than the inputs beside it.
-            <Form.Field name={`listFees.${index}.billingTiming`} className="space-y-0">
-              <Form.Select disabled={!selected} aria-label={t`Billed`}>
-                <Form.SelectItem value="InArrears">
-                  <Trans>In arrears</Trans>
-                </Form.SelectItem>
-                <Form.SelectItem value="InAdvance">
-                  <Trans>In advance</Trans>
-                </Form.SelectItem>
-              </Form.Select>
-            </Form.Field>
-          ) : (
-            // A one-time fee is invoiced when it's charged.
-            <Text size="sm" textColor="muted">
-              <Trans>In advance</Trans>
-            </Text>
-          )}
-        </TableCell>
-        <TableCell className="align-middle">
-          {option.chargeType === 'Recurring' ? (
-            // How many periods the contract charges it for: its term, not
-            // the list fee's. Empty for no end.
-            <Form.Field name={`listFees.${index}.periods`}>
-              <div className="flex items-center gap-1.5">
-                <WholeNumberInput
-                  placeholder={t`No end`}
-                  aria-label={t`Renewals`}
-                  disabled={!selected}
-                  className="w-16"
-                />
-                <Text size="xs" textColor="muted">
-                  {periodUnitText(option.interval)}
-                </Text>
-              </div>
-            </Form.Field>
-          ) : (
-            <Text size="sm" textColor="muted">
-              —
-            </Text>
-          )}
-        </TableCell>
-        <TableCell className="align-middle">
-          <Form.Field name={`listFees.${index}.quantity`}>
-            <WholeNumberInput placeholder="1" aria-label={t`Quantity`} disabled={!selected} />
+        <TableCell className="align-top">
+          <Form.Field name={`${prefix}quantity`} className={whenTicked}>
+            <WholeNumberInput placeholder="1" aria-label={t`Quantity`} />
           </Form.Field>
         </TableCell>
-        <TableCell className="align-middle">
-          <Form.Field name={`listFees.${index}.discount`}>
-            <WholeNumberInput placeholder="0" aria-label={t`Discount`} disabled={!selected} />
+        <TableCell className="align-top">
+          <Form.Field name={`${prefix}discount`} className={whenTicked}>
+            <WholeNumberInput placeholder="0" aria-label={t`Discount`} />
           </Form.Field>
         </TableCell>
-        <TableCell className="align-middle">
-          <Form.Field name={`listFees.${index}.amount`}>
+        <TableCell className="align-top">
+          <Form.Field name={`${prefix}amount`} className={whenTicked}>
             <Form.Input
               inputMode="decimal"
-              placeholder={isPricedPerContract(option) ? t`Required` : option.amount}
+              placeholder={perContract ? t`Enter a price` : option.amount}
               aria-label={t`Customer amount`}
-              disabled={!selected}
             />
           </Form.Field>
+          {selected ? null : <UntickedPrice perContract={perContract} />}
         </TableCell>
       </TableRow>
       {hasOptions && options.open ? (
         <TableRow className={cn('hover:bg-transparent', hidden && 'hidden')}>
-          <TableCell colSpan={7} className="pt-0 pb-3 pl-9">
+          <TableCell colSpan={COLUMNS} className="pt-0 pb-3 pl-9">
             <div className="max-w-md">
               <FeeSupplyDate prefix={prefix} contractStartsAt={contractStartsAt} />
             </div>
@@ -513,6 +665,7 @@ function UsageRows({
   const unit = option.pricingUnit;
   const hasCustomRates = (row?.amounts ?? []).some((amount) => amount.trim() !== '');
   const [expanded, setExpanded] = useState(hasCustomRates);
+  const whenTicked = cn(!selected && 'hidden');
 
   // Rates typed against one list pricing don't carry over to another, which
   // may price the meter differently or in more or fewer rates: picking a
@@ -538,16 +691,33 @@ function UsageRows({
   return (
     <>
       <TableRow className={cn(hidden && 'hidden')}>
-        <TableCell className="align-middle">
+        <TableCell className="align-top whitespace-normal">
           <div className="flex flex-col gap-1">
-            <Form.Field name={`usage.${index}.selected`}>
-              <Form.Checkbox label={option.label} />
-            </Form.Field>
+            <ItemName name={`usage.${index}.selected`} label={option.label} />
+            {/* Usage is always invoiced at the end of the period. */}
+            <Text size="xs" textColor="muted" className="pl-6">
+              {single ? (
+                <span className="tabular-nums">{t`$${slots[0].listAmount} per ${unit}`}</span>
+              ) : (
+                <button
+                  type="button"
+                  className="text-foreground -ml-0.5 inline-flex items-center gap-0.5 align-bottom font-medium"
+                  aria-expanded={expanded}
+                  onClick={() => setExpanded((open) => !open)}>
+                  <Icon icon={expanded ? ChevronDown : ChevronRight} size={12} />
+                  {t`${slots.length} rates per ${unit}`}
+                </button>
+              )}
+              <span>
+                {' · '}
+                <Trans>usage, billed in arrears</Trans>
+              </span>
+            </Text>
             <PricingInfo
               description={list?.spec?.description}
               notes={list?.spec?.notes}
               clamp
-              className="max-w-xs pl-6"
+              className="max-w-md pl-6"
             />
             {option.pricings.length > 1 ? (
               <Form.Field name={`usage.${index}.pricingName`} className="w-56 space-y-0 pl-6">
@@ -566,60 +736,33 @@ function UsageRows({
             ) : null}
           </div>
         </TableCell>
-        <TableCell className="align-middle">
-          {single ? (
-            <Text size="sm" className="tabular-nums">
-              {t`$${slots[0].listAmount} per ${unit}`}
+        <TableCell className="align-top">
+          {selected ? (
+            <Text size="sm" textColor="muted" className="flex h-9 items-center">
+              <Trans>Usage</Trans>
             </Text>
-          ) : (
-            <Button
-              type="quaternary"
-              theme="borderless"
-              size="small"
-              htmlType="button"
-              className="-ml-2 h-auto px-2 py-1"
-              icon={<Icon icon={expanded ? ChevronDown : ChevronRight} size={14} />}
-              onClick={() => setExpanded((open) => !open)}>
-              {t`${slots.length} rates per ${unit}`}
-            </Button>
-          )}
+          ) : null}
         </TableCell>
-        <TableCell className="align-middle">
-          {/* Usage is always invoiced at the end of the period. */}
-          <Text size="sm" textColor="muted">
-            <Trans>In arrears</Trans>
-          </Text>
-        </TableCell>
-        <TableCell className="align-middle">
-          <Text size="sm" textColor="muted">
-            —
-          </Text>
-        </TableCell>
-        <TableCell className="align-middle">
-          <Text size="sm" textColor="muted">
-            <Trans>Usage</Trans>
-          </Text>
-        </TableCell>
-        <TableCell className="align-middle">
-          <Form.Field name={`usage.${index}.discount`}>
-            <WholeNumberInput placeholder="0" aria-label={t`Discount`} disabled={!selected} />
+        <TableCell className="align-top">
+          <Form.Field name={`usage.${index}.discount`} className={whenTicked}>
+            <WholeNumberInput placeholder="0" aria-label={t`Discount`} />
           </Form.Field>
         </TableCell>
-        <TableCell className="align-middle">
+        <TableCell className="align-top">
           {single ? (
-            <Form.Field name={`usage.${index}.amounts.0`}>
+            <Form.Field name={`usage.${index}.amounts.0`} className={whenTicked}>
               <Form.Input
                 inputMode="decimal"
                 placeholder={slots[0].listAmount}
                 aria-label={t`Customer rate`}
-                disabled={!selected}
               />
             </Form.Field>
-          ) : !expanded && hasCustomRates ? (
-            <Text size="sm">
-              <Trans>Customer rates</Trans>
+          ) : selected && !expanded ? (
+            <Text size="sm" textColor="muted" className="flex h-9 items-center">
+              {hasCustomRates ? <Trans>Customer rates</Trans> : <Trans>List rates</Trans>}
             </Text>
           ) : null}
+          {selected ? null : <UntickedPrice />}
         </TableCell>
       </TableRow>
       {!single && expanded
@@ -627,20 +770,13 @@ function UsageRows({
             <TableRow
               key={`${row?.pricingName}-${slotIndex}`}
               className={cn('hover:bg-transparent', hidden && 'hidden')}>
-              <TableCell className="pl-12">
+              <TableCell colSpan={COLUMNS - 1} className="pl-12 whitespace-normal">
                 <Text size="xs" textColor="muted">
                   {rateSlotText(slot.label)}
+                  {' · '}
+                  <span className="text-foreground tabular-nums">{`$${slot.listAmount}`}</span>
                 </Text>
               </TableCell>
-              <TableCell>
-                <Text size="xs" className="tabular-nums">
-                  {`$${slot.listAmount}`}
-                </Text>
-              </TableCell>
-              <TableCell />
-              <TableCell />
-              <TableCell />
-              <TableCell />
               <TableCell>
                 <Form.Field name={`usage.${index}.amounts.${slotIndex}`}>
                   <Form.Input

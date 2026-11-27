@@ -2,9 +2,10 @@ import { CONTRACT_CURRENCY } from '../lib/contract';
 import { notableInvoices, type ScheduledInvoice } from '../lib/contract-schedule';
 import { formatMoney } from '../utils';
 import { InlineDate } from './billing-account-dashboard/card-parts';
-import { Button } from '@datum-cloud/datum-ui/button';
+import { Icon } from '@datum-cloud/datum-ui/icons';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { Trans } from '@lingui/react/macro';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 
 /**
@@ -40,7 +41,7 @@ export function ContractScheduleList({ upcoming }: { upcoming: ScheduledInvoice[
                 </Text>
                 <Text size="sm" className="shrink-0 tabular-nums">
                   {invoice.charges.length === 0 ? (
-                    <Trans>Usage</Trans>
+                    <Trans>Usage only</Trans>
                   ) : invoice.billsUsage ? (
                     <Trans>{total} plus usage</Trans>
                   ) : (
@@ -71,15 +72,15 @@ export function ContractScheduleList({ upcoming }: { upcoming: ScheduledInvoice[
       </ul>
       {upcoming.length > notable.length ? (
         <div>
-          <Button
-            type="quaternary"
-            theme="borderless"
-            size="small"
-            htmlType="button"
-            className="-ml-2"
+          {/* A link-style toggle, so it doesn't read as one of the form's buttons. */}
+          <button
+            type="button"
+            className="text-foreground flex items-center gap-1 text-sm underline underline-offset-2"
+            aria-expanded={all}
             onClick={() => setAll((value) => !value)}>
-            {all ? <Trans>Show fewer</Trans> : <Trans>Show every month for a year</Trans>}
-          </Button>
+            {all ? <Trans>Show fewer</Trans> : <Trans>Show all 12 months</Trans>}
+            <Icon icon={all ? ChevronUp : ChevronDown} size={14} />
+          </button>
         </div>
       ) : null}
       <Text size="xs" textColor="muted">
