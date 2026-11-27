@@ -406,104 +406,113 @@ function ContractEditorForm({
 
   return (
     <Form.Root schema={schema} defaultValues={defaultValues} onSubmit={handleSubmit}>
-      {({ isSubmitting, isDirty }) => (
-        <div className="grid grid-cols-1 items-start gap-4 @5xl/main:grid-cols-[minmax(0,1fr)_360px]">
-          <ShowSubmitErrors />
-          <div className="flex min-w-0 flex-col gap-4">
-            <SectionCard
-              title={<Trans>Contract fees</Trans>}
-              description={t`Anything that isn't on the price list, such as a manual product, one-off work or a negotiated price. Each fee is its own invoice line.`}>
-              <ContractFeeList
-                services={services}
-                allowOneTime={allowOneTime}
-                contractStartsAt={contract?.startsAt}
-              />
-            </SectionCard>
-
-            <SectionCard
-              title={<Trans>Price list</Trans>}
-              description={t`What the contract bills from the platform's prices. Leave the customer price empty to bill the list price.`}>
-              <div className="flex flex-col gap-3">
-                {keptUsageNames.length > 0 ? (
-                  <Text size="sm" textColor="muted">
-                    <Trans>
-                      Also kept as it is, because it isn&apos;t on the price list:{' '}
-                      {keptUsageNames.join(', ')}.
-                    </Trans>
-                  </Text>
-                ) : null}
-                <PriceListTable
-                  usageOptions={usageOptions}
-                  feeOptions={feeOptions}
+      {({ isSubmitting, isDirty }) => {
+        // A change to the fees needs a change, or a draft, to publish.
+        const nothingToPublish = !isSetup && !isDirty && !draft;
+        return (
+          <div className="grid grid-cols-1 items-start gap-4 @5xl/main:grid-cols-[minmax(0,1fr)_360px]">
+            <ShowSubmitErrors />
+            <div className="flex min-w-0 flex-col gap-4">
+              <SectionCard
+                title={<Trans>Contract fees</Trans>}
+                description={t`Anything that isn't on the price list, such as a manual product, one-off work or a negotiated price. Each fee is its own invoice line.`}>
+                <ContractFeeList
+                  services={services}
+                  allowOneTime={allowOneTime}
                   contractStartsAt={contract?.startsAt}
                 />
-              </div>
-            </SectionCard>
-          </div>
+              </SectionCard>
 
-          {/* Sticks below the navbar and breadcrumb bar, which would cover
-              it otherwise, and scrolls on its own when taller than the window. */}
-          <aside
-            className="flex flex-col gap-4 @5xl/main:sticky @5xl/main:top-(--contract-aside-top) @5xl/main:max-h-[calc(100vh-var(--contract-aside-top)-1rem)] @5xl/main:overflow-y-auto"
-            style={{ '--contract-aside-top': `${HEADER_STACK_H + 16}px` } as CSSProperties}>
-            {isSetup ? (
-              <SectionCard title={<Trans>Start date</Trans>}>
-                <div className="flex flex-col gap-4">
-                  <Form.Field
-                    name="startsAt"
-                    description={t`Charges start on this day, in UTC. Today or later.`}
-                    required>
-                    <ContractStartPicker now={now} />
-                  </Form.Field>
-                  <BillingDayField invoiceDay={invoiceDay} />
+              <SectionCard
+                title={<Trans>Price list</Trans>}
+                description={t`What the contract bills from the platform's prices. Leave the customer price empty to bill the list price.`}>
+                <div className="flex flex-col gap-3">
+                  {keptUsageNames.length > 0 ? (
+                    <Text size="sm" textColor="muted">
+                      <Trans>
+                        Also kept as it is, because it isn&apos;t on the price list:{' '}
+                        {keptUsageNames.join(', ')}.
+                      </Trans>
+                    </Text>
+                  ) : null}
+                  <PriceListTable
+                    usageOptions={usageOptions}
+                    feeOptions={feeOptions}
+                    contractStartsAt={contract?.startsAt}
+                  />
                 </div>
               </SectionCard>
-            ) : null}
-            <SectionCard title={<Trans>Summary</Trans>}>
-              <ContractSummary
-                isSetup={isSetup}
-                feeOptions={feeOptions}
-                contractStartsAt={contract?.startsAt}
-                invoiceDay={
-                  isSetup
-                    ? invoiceDay
-                    : contractInvoiceDay(contract?.billingDay, account.spec?.paymentTerms)
-                }
-                netDays={getEffectiveNetDays(account)}>
-                <div className="flex justify-end gap-2 border-t pt-4">
-                  <Button
-                    type="quaternary"
-                    theme="borderless"
-                    htmlType="button"
-                    disabled={isSubmitting}
-                    onClick={() => navigate(detailUrl)}>
-                    <Trans>Cancel</Trans>
-                  </Button>
-                  <Button
-                    type="secondary"
-                    theme="outline"
-                    htmlType="submit"
-                    onClick={() => submitAs('draft')}
-                    loading={isSubmitting && intent === 'draft'}
-                    // Nothing to save until the form differs from what it
-                    // started from, unless that was a new contract's blank.
-                    disabled={isSubmitting || (!isDirty && Boolean(base))}>
-                    <Trans>Save as draft</Trans>
-                  </Button>
-                  <Button
-                    htmlType="submit"
-                    onClick={() => submitAs('publish')}
-                    loading={isSubmitting && intent === 'publish'}
-                    // A draft can be published as it is.
-                    disabled={isSubmitting || (!isSetup && !isDirty && !draft)}>
-                    <Trans>Publish</Trans>
-                  </Button>
-                </div>
-              </ContractSummary>
-            </SectionCard>
-          </aside>
-        </div>
-      )}
+            </div>
+
+            {/* Sticks below the navbar and breadcrumb bar, which would cover
+              it otherwise, and scrolls on its own when taller than the window. */}
+            <aside
+              className="flex flex-col gap-4 @5xl/main:sticky @5xl/main:top-(--contract-aside-top) @5xl/main:max-h-[calc(100vh-var(--contract-aside-top)-1rem)] @5xl/main:overflow-y-auto"
+              style={{ '--contract-aside-top': `${HEADER_STACK_H + 16}px` } as CSSProperties}>
+              {isSetup ? (
+                <SectionCard title={<Trans>Start date</Trans>}>
+                  <div className="flex flex-col gap-4">
+                    <Form.Field
+                      name="startsAt"
+                      description={t`Charges start on this day, in UTC. Today or later.`}
+                      required>
+                      <ContractStartPicker now={now} />
+                    </Form.Field>
+                    <BillingDayField invoiceDay={invoiceDay} />
+                  </div>
+                </SectionCard>
+              ) : null}
+              <SectionCard title={<Trans>Summary</Trans>}>
+                <ContractSummary
+                  isSetup={isSetup}
+                  feeOptions={feeOptions}
+                  contractStartsAt={contract?.startsAt}
+                  invoiceDay={
+                    isSetup
+                      ? invoiceDay
+                      : contractInvoiceDay(contract?.billingDay, account.spec?.paymentTerms)
+                  }
+                  netDays={getEffectiveNetDays(account)}>
+                  <div className="flex flex-wrap justify-end gap-2 border-t pt-4">
+                    <Button
+                      type="quaternary"
+                      theme="borderless"
+                      htmlType="button"
+                      disabled={isSubmitting}
+                      onClick={() => navigate(detailUrl)}>
+                      <Trans>Cancel</Trans>
+                    </Button>
+                    <Button
+                      type="secondary"
+                      theme="outline"
+                      htmlType="submit"
+                      onClick={() => submitAs('draft')}
+                      loading={isSubmitting && intent === 'draft'}
+                      // Nothing to save until the form differs from what it
+                      // started from, unless that was a new contract's blank.
+                      disabled={isSubmitting || (!isDirty && Boolean(base))}>
+                      <Trans>Save as draft</Trans>
+                    </Button>
+                    <Button
+                      htmlType="submit"
+                      onClick={() => submitAs('publish')}
+                      loading={isSubmitting && intent === 'publish'}
+                      // A draft can be published as it is.
+                      disabled={isSubmitting || nothingToPublish}>
+                      <Trans>Publish</Trans>
+                    </Button>
+                    {nothingToPublish ? (
+                      <Text size="xs" textColor="muted" className="w-full text-right">
+                        <Trans>No changes to publish yet.</Trans>
+                      </Text>
+                    ) : null}
+                  </div>
+                </ContractSummary>
+              </SectionCard>
+            </aside>
+          </div>
+        );
+      }}
     </Form.Root>
   );
 }

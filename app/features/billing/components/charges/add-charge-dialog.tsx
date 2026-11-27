@@ -1,5 +1,6 @@
 import { useAccountPaymentMethods } from '../../hooks';
 import {
+  addDays,
   buildChargeDraftSpec,
   buildChargeSpec,
   CHARGE_DRAFT_SEND_ANNOTATION,
@@ -16,6 +17,7 @@ import {
   emptyChargeFormValues,
   formatChargeMoney,
   formatServicePeriod,
+  formatUtcDay,
   invoiceNowOutcome,
   isBeforePeriod,
   isEmptyChargeForm,
@@ -61,7 +63,7 @@ import { Skeleton } from '@datum-cloud/datum-ui/skeleton';
 import { toast } from '@datum-cloud/datum-ui/toast';
 import { Text } from '@datum-cloud/datum-ui/typography';
 import { cn } from '@datum-cloud/datum-ui/utils';
-import { t } from '@lingui/core/macro';
+import { plural, t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { Plus, TriangleAlert } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
@@ -355,9 +357,7 @@ function AddChargeForm({
     form?.reset({ ...failed.values, invoice });
     const unplaced: string[] = [];
     if (added.size > 0) {
-      const kept = draftRef.current
-        ? t` The draft keeps the rest until they're all added.`
-        : '';
+      const kept = draftRef.current ? t` The draft keeps the rest until they're all added.` : '';
       unplaced.push(
         (invoice === 'Now' && all.length > 1
           ? t`${added.size} of the ${all.length} lines are added. Fix this one and add it again: the invoice goes out once all of them are added.`
@@ -526,27 +526,22 @@ function AddChargeForm({
                   <Trans>Couldn&apos;t load the catalog. You can still add a custom item.</Trans>
                 </Text>
               ) : null}
-              <div className="grid grid-cols-[minmax(0,1fr)_7rem] items-start gap-3">
-                <Form.Field name="item" label={t`Item`} required>
-                  <ChargeItemPicker
-                    options={options}
-                    accountPricesLabel={t`${accountDisplayName}'s contract prices`}
-                    onCatalogTax={() => setOptionsOpen(true)}
-                  />
-                </Form.Field>
-                <Form.Field name="quantity" label={t`Qty`} required>
-                  <Form.Input inputMode="decimal" placeholder="1" />
-                </Form.Field>
-              </div>
+              <Form.Field name="item" label={t`Item`} required>
+                <ChargeItemPicker
+                  options={options}
+                  accountPricesLabel={t`${accountDisplayName}'s contract prices`}
+                  onCatalogTax={() => setOptionsOpen(true)}
+                />
+              </Form.Field>
               <PickedItemInfo options={options} />
               <Form.Field
                 name="description"
                 label={t`Description`}
-                description={t`What the invoice calls the line. Never put the SKU here.`}
+                description={t`Shown on the customer's invoice. Don't include SKUs.`}
                 required>
                 <Form.Input placeholder={t`Cross-connect install, cage 12`} />
               </Form.Field>
-              <PriceField options={options} />
+              <LineAmountFields options={options} />
 
               <ChargeItemOptions
                 open={optionsOpen}
@@ -559,18 +554,25 @@ function AddChargeForm({
               <Form.Field
                 name="invoice"
                 label={t`When`}
+                className="border-t pt-4"
                 description={
                   lines.length > 0
                     ? t`For every line. Invoiced now, they go out together on one invoice.`
                     : undefined
                 }>
-                <Form.RadioGroup orientation="horizontal" disabled={locked}>
-                  <TimingOption value="NextInvoice" label={t`On the next invoice`} />
-                  <TimingOption value="Now" label={t`Invoice now`} />
+                <Form.RadioGroup disabled={locked} className="gap-3">
+                  <TimingOption
+                    value="NextInvoice"
+                    label={t`On the next invoice`}
+                    hint={t`${formatUtcDay(addDays(currentPeriod.end, 1))}, with the account's usage`}
+                  />
+                  <TimingOption
+                    value="Now"
+                    label={t`Invoice now`}
+                    hint={t`On an invoice of its own, sent straight away`}
+                  />
                 </Form.RadioGroup>
               </Form.Field>
-
-              <ChargeInvoiceLine currentPeriod={currentPeriod} />
 
               {locked ? null : (
                 <div>
@@ -666,6 +668,7 @@ function AddChargeForm({
                 </>
               ) : (
                 <>
+                  <ChargeTotal keptLines={lines} />
                   <Button
                     type="quaternary"
                     theme="borderless"
@@ -908,14 +911,17 @@ function KeptLines({
 }
 
 /**
- * The price per unit: a catalog item's, which staff can change, with the
- * list price and a reset beside it when they have. A custom item's is
- * required.
+ * The line's sums, as on an invoice: quantity × unit price = amount. A
+ * catalog item's unit price can be changed, with the list price and a reset
+ * under it when it has been; a custom item's is required. The amount is
+ * after any discount from the item options.
  */
-function PriceField({ options }: { options: ReturnType<typeof chargeItemOptions> }) {
+function LineAmountFields({ options }: { options: ReturnType<typeof chargeItemOptions> }) {
   const form = Form.useFormContext().form.raw as UseFormReturn<ChargeFormValues>;
   const item = (Form.useWatch('item') as string | undefined) ?? '';
+  const quantity = (Form.useWatch('quantity') as string | undefined) ?? '';
   const unitAmount = (Form.useWatch('unitAmount') as string | undefined) ?? '';
+  const discountPercent = (Form.useWatch('discountPercent') as string | undefined) ?? '';
   const pricingName = catalogPricingName(item);
   const fee = pricingName
     ? [...options.accountPrices, ...options.catalog].find((option) => option.name === pricingName)
@@ -923,37 +929,151 @@ function PriceField({ options }: { options: ReturnType<typeof chargeItemOptions>
   const listCents = fee ? parseHundredths(fee.amount) : null;
   const changed = fee !== undefined && parseHundredths(unitAmount) !== listCents;
   const unit = fee?.pricingUnit || t`unit`;
-
+  const amounts = chargeAmounts(quantity, unitAmount, discountPercent);
+  const discounted = amounts.ok && amounts.discount > 0n;
   return (
     <div className="flex flex-col gap-1">
-      <div className="flex flex-wrap items-end gap-x-3 gap-y-1">
-        <Form.Field name="unitAmount" label={t`Price (US$)`} required className="w-40">
-          <Form.Input inputMode="decimal" placeholder="250.00" />
+      <div className="grid grid-cols-[5rem_minmax(0,1fr)] items-start gap-x-2 gap-y-3 sm:grid-cols-[5rem_auto_minmax(0,1fr)_auto_8rem]">
+        <Form.Field name="quantity" label={t`Qty`} required>
+          <Form.Input inputMode="decimal" placeholder="1" />
         </Form.Field>
-        <Text size="sm" textColor="muted" className="pb-2">
-          <Trans>per {unit}</Trans>
-        </Text>
-        {changed ? (
-          <Text size="sm" textColor="muted" className="ml-auto pb-2">
-            <Trans>
-              List price {listCents === null ? `${fee.amount} USD` : formatChargeMoney(listCents)}
-            </Trans>{' '}
-            ·{' '}
-            <button
-              type="button"
-              className="text-foreground underline underline-offset-2"
-              onClick={() =>
-                form.setValue('unitAmount', pricingUnitAmount(fee.amount), {
-                  shouldDirty: true,
-                  shouldValidate: form.formState.isSubmitted,
-                })
-              }>
-              <Trans>Reset</Trans>
-            </button>
+        <LineCell className="hidden sm:flex">
+          <Text as="span" size="sm" textColor="muted" aria-hidden>
+            ×
           </Text>
-        ) : null}
+        </LineCell>
+        <Form.Field name="unitAmount" label={t`Unit price (US$)`} required>
+          <Form.InputGroup
+            inputMode="decimal"
+            placeholder="250.00"
+            leading="$"
+            trailing={
+              <Text as="span" size="sm" textColor="muted" className="whitespace-nowrap">
+                <Trans>per {unit}</Trans>
+              </Text>
+            }
+          />
+        </Form.Field>
+        <LineCell className="hidden sm:flex">
+          <Text as="span" size="sm" textColor="muted" aria-hidden>
+            =
+          </Text>
+        </LineCell>
+        <LineCell label={t`Amount`} className="col-span-2 items-end sm:col-span-1">
+          <Text
+            size="sm"
+            weight="medium"
+            textColor={amounts.ok ? undefined : 'muted'}
+            className="tabular-nums"
+            aria-live="polite">
+            {formatChargeMoney(amounts.ok ? amounts.amountDue : 0n)}
+          </Text>
+        </LineCell>
       </div>
+      {discounted ? (
+        <Text size="xs" textColor="muted" className="text-right tabular-nums">
+          <Trans>after {discountPercent.trim()}% off</Trans>
+        </Text>
+      ) : null}
+      {changed ? (
+        <Text size="sm" textColor="muted">
+          <Trans>
+            List price {listCents === null ? `${fee.amount} USD` : formatChargeMoney(listCents)}
+          </Trans>{' '}
+          ·{' '}
+          <button
+            type="button"
+            className="text-foreground underline underline-offset-2"
+            onClick={() =>
+              form.setValue('unitAmount', pricingUnitAmount(fee.amount), {
+                shouldDirty: true,
+                shouldValidate: form.formState.isSubmitted,
+              })
+            }>
+            <Trans>Reset</Trans>
+          </button>
+        </Text>
+      ) : null}
     </div>
+  );
+}
+
+/**
+ * One choice of when the charge is invoiced, with what it means under it.
+ * Form.RadioItem nudges the radio down by a fixed margin, which leaves it
+ * off the label's line; this lines the two up.
+ */
+function TimingOption({ value, label, hint }: { value: string; label: string; hint: string }) {
+  const id = `charge-invoice-${value}`;
+  return (
+    <div className="flex items-start gap-2">
+      <RadioGroupItem id={id} value={value} className="mt-0.5" />
+      <Label htmlFor={id} className="flex cursor-pointer flex-col items-start gap-0.5 font-normal">
+        <Text as="span" size="sm">
+          {label}
+        </Text>
+        <Text as="span" size="xs" textColor="muted">
+          {hint}
+        </Text>
+      </Label>
+    </div>
+  );
+}
+
+/**
+ * A cell in the line's sums laid out as a form field is, so what's in it
+ * sits level with the inputs beside it: a label (an empty one keeps the
+ * space) over a box the inputs' height.
+ */
+function LineCell({
+  label,
+  className,
+  children,
+}: {
+  label?: string;
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className={cn('flex flex-col space-y-2', className)}>
+      <Label
+        aria-hidden={!label}
+        className={cn('text-foreground/80 text-xs font-semibold', !label && 'invisible')}>
+        {label || '\u00a0'}
+      </Label>
+      <div className="flex h-10 items-center">{children}</div>
+    </div>
+  );
+}
+
+/**
+ * What the dialog adds, by the footer's buttons: how many lines and their
+ * total before tax, counting the line in the form once it has one.
+ */
+function ChargeTotal({ keptLines }: { keptLines: ChargeLine[] }) {
+  const form = Form.useFormContext().form.raw as UseFormReturn<ChargeFormValues>;
+  const values = useWatch({ control: form.control }) as ChargeFormValues;
+  const all = [
+    ...keptLines.map((line) => line.values),
+    ...(isEmptyChargeForm(values) ? [] : [values]),
+  ];
+  const total = all.reduce((sum, line) => {
+    const amounts = chargeAmounts(line.quantity, line.unitAmount, line.discountPercent);
+    return sum + (amounts.ok ? amounts.amountDue : 0n);
+  }, 0n);
+  if (all.length === 0) return null;
+  const amount = formatChargeMoney(total);
+  const count = plural(all.length, { one: '# line', other: '# lines' });
+  return (
+    <Text
+      size="sm"
+      textColor="muted"
+      className="order-last text-center sm:order-none sm:mr-auto sm:self-center sm:text-left">
+      <Trans>
+        {count} · <span className="text-foreground font-medium tabular-nums">{amount}</span> before
+        tax
+      </Trans>
+    </Text>
   );
 }
 
@@ -977,6 +1097,20 @@ function ChargeItemOptions({
   const form = Form.useFormContext().form.raw as UseFormReturn<ChargeFormValues>;
   const notTaxable = Boolean(Form.useWatch('notTaxable'));
   const periodEnd = (Form.useWatch('periodEnd') as string | undefined) ?? '';
+  const taxCode = ((Form.useWatch('taxCode') as string | undefined) ?? '').trim();
+  const discount = ((Form.useWatch('discountPercent') as string | undefined) ?? '').trim();
+  const setPeriod = Boolean(Form.useWatch('setPeriod'));
+  const periodStart = (Form.useWatch('periodStart') as string | undefined) ?? '';
+  const note = ((Form.useWatch('note') as string | undefined) ?? '').trim();
+  // What's set, shown beside the toggle while the options are closed.
+  const summary = [
+    notTaxable ? t`Not taxable` : taxCode ? t`Tax ${taxCode}` : t`Default tax`,
+    discount ? t`${discount}% off` : null,
+    formatServicePeriod(setPeriod ? { start: periodStart, end: periodEnd } : currentPeriod),
+    note ? t`Note` : null,
+  ]
+    .filter(Boolean)
+    .join(' · ');
   const nextPeriod = useMemo(() => nextBillingPeriod(account, now), [account, now]);
   const today = isoDay(startOfUtcDay(now));
   const set = <K extends keyof ChargeFormValues>(name: K, value: ChargeFormValues[K]) =>
@@ -990,7 +1124,12 @@ function ChargeItemOptions({
   };
 
   return (
-    <ItemOptions open={open} onToggle={onToggle}>
+    <ItemOptions
+      open={open}
+      onToggle={onToggle}
+      summary={summary}
+      // Closed, it's a quiet row rather than a box that looks like a field.
+      className={open ? undefined : 'border-transparent px-0 py-1'}>
       <div className="flex flex-col gap-1.5">
         <Form.Field
           name="taxCode"
@@ -1062,13 +1201,6 @@ function Shortcut({ onClick, children }: { onClick: () => void; children: ReactN
   );
 }
 
-/** The line as the customer will read it on the invoice. */
-function ChargeInvoiceLine({ currentPeriod }: { currentPeriod: ServicePeriod }) {
-  const form = Form.useFormContext().form.raw as UseFormReturn<ChargeFormValues>;
-  const values = useWatch({ control: form.control }) as ChargeFormValues;
-  return <ChargeLineSummary summary={chargeSummary(values, currentPeriod)} />;
-}
-
 /** The invoice line: description, quantity and price, amount and dates. */
 export function ChargeLineSummary({
   summary,
@@ -1101,23 +1233,6 @@ export function ChargeLineSummary({
           {summary.amount || '—'}
         </Text>
       </div>
-    </div>
-  );
-}
-
-/**
- * One choice of when the charge is invoiced. Form.RadioItem top-aligns the
- * radio and nudges it down by a fixed margin, which leaves it below the
- * middle of a one-line label; this centres the two instead.
- */
-function TimingOption({ value, label }: { value: string; label: string }) {
-  const id = `charge-invoice-${value}`;
-  return (
-    <div className="flex items-center gap-2">
-      <RadioGroupItem id={id} value={value} />
-      <Label htmlFor={id} className="cursor-pointer text-sm font-normal">
-        {label}
-      </Label>
     </div>
   );
 }

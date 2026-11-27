@@ -84,17 +84,24 @@ export function ContractFeeList({
           <div className="flex flex-col gap-3">
             {fields.map((field, index) => (
               <div key={field.key} className="flex flex-col gap-2 rounded-md border p-3">
-                <div className="grid grid-cols-[minmax(0,1fr)_8rem_5rem_auto] items-start gap-2">
+                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2 sm:grid-cols-[minmax(0,1fr)_8rem_5rem_auto]">
                   <Form.Field name={`fees.${index}.label`} label={t`Name`} required>
                     <Form.Input placeholder={t`Dedicated server`} />
                   </Form.Field>
                   <Form.Field
                     name={`fees.${index}.amount`}
                     label={t`Amount (${CONTRACT_CURRENCY})`}
-                    required>
+                    required
+                    // On a narrow screen the remove button sits by the name,
+                    // and the amount and quantity share the next line.
+                    className="order-3 sm:order-none">
                     <Form.Input inputMode="decimal" placeholder="1000.00" />
                   </Form.Field>
-                  <Form.Field name={`fees.${index}.quantity`} label={t`Quantity`} required>
+                  <Form.Field
+                    name={`fees.${index}.quantity`}
+                    label={t`Quantity`}
+                    required
+                    className="order-4 w-20 sm:order-none sm:w-auto">
                     <WholeNumberInput placeholder="1" />
                   </Form.Field>
                   <Button
@@ -102,13 +109,13 @@ export function ContractFeeList({
                     theme="borderless"
                     size="small"
                     htmlType="button"
-                    className="mt-6"
+                    className="order-2 mt-6 sm:order-none"
                     aria-label={t`Remove fee`}
                     icon={<Icon icon={ACTION_ICONS.close} size={14} />}
                     onClick={() => remove(index)}
                   />
                 </div>
-                <div className="grid grid-cols-[8rem_8rem_9rem_9rem] items-start gap-2">
+                <div className="grid grid-cols-2 items-start gap-2 sm:grid-cols-[8rem_8rem_9rem_9rem]">
                   <Form.Field name={`fees.${index}.chargeType`} label={t`Charged`} required>
                     <Form.Select>
                       {allowOneTime || fees[index]?.chargeType === 'OneTime' ? (
@@ -164,7 +171,7 @@ export function ContractFeeList({
                     </>
                   ) : null}
                 </div>
-                <div className="grid grid-cols-[8rem_8rem_minmax(0,1fr)] items-start gap-2">
+                <div className="grid grid-cols-2 items-start gap-2 sm:grid-cols-[8rem_8rem_minmax(0,1fr)]">
                   <Form.Field name={`fees.${index}.pricingUnit`} label={t`Per`}>
                     <Form.Input placeholder={t`port, kW`} />
                   </Form.Field>

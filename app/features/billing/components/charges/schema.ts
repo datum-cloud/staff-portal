@@ -25,13 +25,14 @@ export const buildChargeSchema = (now: Date) =>
       description: z.string(),
       quantity: z.string(),
       unitAmount: z.string(),
-      taxCode: z.string(),
+      // Optional, so their labels carry no required mark: empty is fine.
+      taxCode: z.string().default(''),
       notTaxable: z.boolean(),
-      discountPercent: z.string(),
+      discountPercent: z.string().default(''),
       setPeriod: z.boolean(),
       periodStart: z.string(),
       periodEnd: z.string(),
-      note: z.string(),
+      note: z.string().default(''),
       invoice: z.enum(['NextInvoice', 'Now']),
     })
     .superRefine((values, ctx) => {
